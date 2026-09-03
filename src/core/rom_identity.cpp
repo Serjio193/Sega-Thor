@@ -28,6 +28,39 @@ std::uint32_t read_be32(std::span<const std::uint8_t> data, std::size_t offset) 
            static_cast<std::uint32_t>(data[offset + 3]);
 }
 
+std::string hex_words(std::span<const std::uint32_t> words) {
+    std::ostringstream out;
+    out << std::hex << std::setfill('0');
+    for (const auto word : words) out << std::setw(8) << word;
+    return out.str();
+}
+
+void sha1_transform(std::array<std::uint32_t, 5>& state, const std::uint8_t* block) {
+    std::array<std::uint32_t, 80> w{};
+    for (std::size_t i = 0; i < 16; ++i) {
+        w[i] = (static_cast<std::uint32_t>(block[i * 4]) << 24U) |
+               (static_cast<std::uint32_t>(block[i * 4 + 1]) << 16U) |
+               (static_cast<std::uint32_t>(block[i * 4 + 2]) << 8U) |
+               static_cast<std::uint32_t>(block[i * 4 + 3]);
+    }
+    for (std::size_t i = 16; i < 80; ++i) {
+        w[i] = std::rotl(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
+    }
+
+    auto a = state[0]; auto b = state[1]; auto c = state[2]; auto d = state[3]; auto e = state[4];
+    for (std::size_t i = 0; i < 80; ++i) {
+        std::uint32_t f{};
+        std::uint32_t k{};
+        if (i < 20) { f = (b & c) | ((~b) & d); k = 0x5A827999U; }
+        else if (i < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1U; }
+        else if (i < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDCU; }
+        else { f = b ^ c ^ d; k = 0xCA62C1D6U; }
+        const auto temp = std::rotl(a, 5) + f + e + k + w[i];
+        e = d; d = c; c = std::rotl(b, 30); b = a; a = temp;
+    }
+    state[0] += a; state[1] += b; state[2] += c; state[3] += d; state[4] += e;
+}
+
 constexpr std::array<std::uint32_t, 64> kSha256Constants{
     0x428a2f98U,0x71374491U,0xb5c0fbcfU,0xe9b5dba5U,0x3956c25bU,0x59f111f1U,0x923f82a4U,0xab1c5ed5U,
     0xd807aa98U,0x12835b01U,0x243185beU,0x550c7dc3U,0x72be5d74U,0x80deb1feU,0x9bdc06a7U,0xc19bf174U,
@@ -67,6 +100,28 @@ void sha256_transform(std::array<std::uint32_t, 8>& state, const std::uint8_t* b
     state[4] += e; state[5] += f; state[6] += g; state[7] += h;
 }
 
+template <std::size_t N, typename Transform>
+std::string calculate_merkle_damgard_hash(
+    std::span<const std::uint8_t> data,
+    std::array<std::uint32_t, N> state,
+    Transform transform) {
+    std::size_t offset = 0;
+    while (offset + 64 <= data.size()) {
+        transform(state, data.data() + offset);
+        offset += 64;
+    }
+    std::array<std::uint8_t, 128> tail{};
+    const auto remaining = data.size() - offset;
+    for (std::size_t i = 0; i < remaining; ++i) tail[i] = data[offset + i];
+    tail[remaining] = 0x80;
+    const std::size_t total_tail = remaining < 56 ? 64 : 128;
+    const auto bit_length = static_cast<std::uint64_t>(data.size()) * 8U;
+    for (int i = 0; i < 8; ++i) tail[total_tail - 1 - i] = static_cast<std::uint8_t>(bit_length >> (i * 8));
+    transform(state, tail.data());
+    if (total_tail == 128) transform(state, tail.data() + 64);
+    return hex_words(state);
+}
+
 } // namespace
 
 MegaDriveHeader parse_mega_drive_header(std::span<const std::uint8_t> rom) {
@@ -103,31 +158,19 @@ std::uint32_t calculate_crc32(std::span<const std::uint8_t> data) {
     return ~crc;
 }
 
+std::string calculate_sha1(std::span<const std::uint8_t> data) {
+    return calculate_merkle_damgard_hash(
+        data,
+        std::array<std::uint32_t, 5>{0x67452301U,0xEFCDAB89U,0x98BADCFEU,0x10325476U,0xC3D2E1F0U},
+        sha1_transform);
+}
+
 std::string calculate_sha256(std::span<const std::uint8_t> data) {
-    std::array<std::uint32_t, 8> state{0x6a09e667U,0xbb67ae85U,0x3c6ef372U,0xa54ff53aU,
-                                       0x510e527fU,0x9b05688cU,0x1f83d9abU,0x5be0cd19U};
-    std::size_t offset = 0;
-    while (offset + 64 <= data.size()) {
-        sha256_transform(state, data.data() + offset);
-        offset += 64;
-    }
-
-    std::array<std::uint8_t, 128> tail{};
-    const auto remaining = data.size() - offset;
-    for (std::size_t i = 0; i < remaining; ++i) tail[i] = data[offset + i];
-    tail[remaining] = 0x80;
-    const std::size_t total_tail = remaining < 56 ? 64 : 128;
-    const auto bit_length = static_cast<std::uint64_t>(data.size()) * 8U;
-    for (int i = 0; i < 8; ++i) {
-        tail[total_tail - 1 - i] = static_cast<std::uint8_t>(bit_length >> (i * 8));
-    }
-    sha256_transform(state, tail.data());
-    if (total_tail == 128) sha256_transform(state, tail.data() + 64);
-
-    std::ostringstream out;
-    out << std::hex << std::setfill('0');
-    for (const auto word : state) out << std::setw(8) << word;
-    return out.str();
+    return calculate_merkle_damgard_hash(
+        data,
+        std::array<std::uint32_t, 8>{0x6a09e667U,0xbb67ae85U,0x3c6ef372U,0xa54ff53aU,
+                                     0x510e527fU,0x9b05688cU,0x1f83d9abU,0x5be0cd19U},
+        sha256_transform);
 }
 
 RomIdentity identify_rom(std::span<const std::uint8_t> rom) {
@@ -135,6 +178,7 @@ RomIdentity identify_rom(std::span<const std::uint8_t> rom) {
     result.header = parse_mega_drive_header(rom);
     result.fingerprint.size = rom.size();
     result.fingerprint.crc32 = calculate_crc32(rom);
+    result.fingerprint.sha1 = calculate_sha1(rom);
     result.fingerprint.sha256 = calculate_sha256(rom);
     result.fingerprint.calculated_sega_checksum = calculate_sega_checksum(rom);
     result.fingerprint.sega_checksum_valid =
@@ -142,9 +186,12 @@ RomIdentity identify_rom(std::span<const std::uint8_t> rom) {
 
     constexpr std::size_t kReferenceSize = 3U * 1024U * 1024U;
     constexpr std::uint32_t kUsaCrc32 = 0xC4728225U;
+    constexpr std::string_view kUsaSha1 = "2944910c07c02eace98c17d78d07bef7859d386a";
     constexpr std::uint32_t kEuropeCrc32 = 0x1110B0DBU;
 
-    if (rom.size() == kReferenceSize && result.fingerprint.crc32 == kUsaCrc32) {
+    if (rom.size() == kReferenceSize &&
+        result.fingerprint.crc32 == kUsaCrc32 &&
+        result.fingerprint.sha1 == kUsaSha1) {
         result.id = "beyond-oasis-usa-retail";
         result.display_name = "Beyond Oasis (USA retail)";
         result.status = RomSupportStatus::Supported;
