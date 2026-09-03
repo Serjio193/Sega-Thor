@@ -1,36 +1,43 @@
 # Current Task
 
-TASK: M5 — VDP data model and rendering primitives
-WHY: M4 is verified; the next dependency for faithful scene reconstruction is a narrow, testable representation of Mega Drive video state used by Beyond Oasis.
-CURRENT MILESTONE: M5
-UNDERSTANDING CONFIDENCE: 96%
+TASK: M6 — Deterministic runtime frame/input skeleton
+WHY: M5 now provides a tested portable representation of the Mega Drive video state needed by translated code. The next dependency is a platform-independent frame step and input model before translating world/player behavior.
+CURRENT MILESTONE: M6
+UNDERSTANDING CONFIDENCE: 95%
 STATUS: ACTIVE
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
-- M3 native graphics decompressor matches original 68000 behavior for both observed formats.
-- M4 local asset inspector decodes verified ROM graphics into Genesis 4bpp tile sheets.
-- `oasis_inspect` was verified on ROM offset `0x16943C`: 1217 compressed bytes -> 3072 bytes -> 96 tiles -> 128x48 PGM.
-- General CI and ROM-backed reference workflow pass.
+- M3 graphics decompression is native and differentially verified.
+- M4 local graphics inspection is verified against the reference ROM.
+- M5 raw VDP state model is implemented and tested without renderer dependencies.
 
-## M5 Definition of Done
-- [ ] extend VDP state with 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM storage;
-- [ ] provide bounded byte/word read/write operations required by translated code;
-- [ ] define and test Genesis tile attribute decoding: tile index, palette, priority, horizontal flip, vertical flip;
-- [ ] define minimal plane-cell representation without implementing a full emulator;
-- [ ] define minimal sprite attribute representation only after the raw format is documented;
-- [ ] keep hardware representation independent from SDL/GPU APIs;
-- [ ] add synthetic tests for memory bounds and tile attributes;
-- [ ] document implemented VDP semantics and explicitly list unsupported semantics;
+## M5 completion evidence
+- VRAM: 64 KiB; CRAM: 128 bytes; VSRAM: 80 bytes.
+- Bounded byte-span and big-endian word access implemented.
+- Standard tile attributes decode tile index, palette, priority, H-flip and V-flip.
+- Minimal plane-cell and four-word sprite-attribute views implemented.
+- Sprite raw layout documented before structured use.
+- `docs/VDP_MODEL.md` explicitly lists unsupported/full-emulator semantics.
+- `oasis_vdp` synthetic test covers attribute decoding, storage and bounds.
+- CI build/test completed successfully on the M5 head.
+- No SDL/GPU/platform dependency was added to `oasis_core`.
+
+## M6 Definition of Done
+- [ ] define a platform-independent controller input snapshot;
+- [ ] define one deterministic game-frame step API;
+- [ ] keep time/frame progression explicit rather than reading wall-clock time in game logic;
+- [ ] add deterministic tests proving identical state for identical initial state + input sequence;
+- [ ] keep platform-specific polling outside `game` and `genesis` layers;
+- [ ] document frame/input ownership and unsupported timing behavior;
 - [ ] keep every file <= 500 lines;
 - [ ] CI green.
 
 ## Constraints
-- Do not implement a general-purpose Mega Drive emulator.
-- Do not add rendering libraries to `oasis_core` yet.
-- Do not invent Beyond Oasis-specific VDP behavior without evidence.
-- Prefer raw hardware-level structures first; semantic scene abstractions come later.
-- Do not start M6 until M5 acceptance criteria pass.
+- Do not implement SDL/windowing yet.
+- Do not translate player/world logic as part of the frame-loop scaffold.
+- Do not add variable-delta gameplay semantics without original-game evidence.
+- Do not begin M7 until M6 acceptance criteria pass.
 
 ## Exact next action
-Replace the placeholder VDP scaffold with bounded VRAM/CRAM/VSRAM storage and add a tested decoder for the standard 16-bit Genesis tile attribute word.
+Create a small `game/runtime` frame-state/input API with an explicit frame counter and deterministic `step()` behavior, then prove repeatability with synthetic input-sequence tests.
