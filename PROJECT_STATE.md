@@ -1,11 +1,11 @@
 # Project State
 
-CURRENT_MILESTONE: M9 — Entities/enemies/NPCs
-CURRENT_TASK: M9 acceptance complete; await explicit scope for the next milestone
-STATUS: COMPLETE
-LAST_VERIFIED_RESULT: M9 raw entity-pool descriptors, shared movement field offsets, and FF2954 callback-dispatch path are implemented and ROM-verified
-NEXT_ACTION: await explicit authorization before beginning M10
-DO_NOT_WORK_ON: M10+, Thor 2, Saturn support, remaster features, speculative enemy/NPC behavior
+CURRENT_MILESTONE: M10 — Spirits
+CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
+STATUS: ACTIVE
+LAST_VERIFIED_RESULT: M9 entity framework is accepted and pushed; M10 scope is now explicitly authorized
+NEXT_ACTION: identify summon entry, spirit slot storage, dispatch path and one testable ability/interaction contract in the local USA ROM
+DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
 BLOCKERS: none
 
 ## M7 verified evidence
@@ -37,6 +37,10 @@ BLOCKERS: none
 - Active records are selected by signed word `+0x00 > 0`; the loop dispatches through `FF193C` and enters `0x8F12` or `0x8F22`.
 - Native `EntityPoolView` and synthetic tests reproduce bounded record addressing and the positive active predicate; local ROM oracle checks the loop constants.
 - `EntityRecordView` reads only bounded big-endian raw fields; the local USA-ROM oracle verifies the shared movement accesses and the FF2954 `+0x3A`/`+0x22` dispatch path.
+
+## M10 investigation boundary
+- The M10 implementation must begin from a caller/data-backed summon or spirit-slot path.
+- Spirit names, targeting rules, ability semantics, rendering and audio remain unknown until direct ROM evidence is recorded.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

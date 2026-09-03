@@ -4,6 +4,16 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 spirit lifecycle investigation started
+
+**Objective:** Recover one evidence-backed spirit summon/slot/dispatch lifecycle slice and, only if its dependencies are proven, one ability or interaction contract.
+
+**Acceptance criteria:** identify the summon caller and ROM data; identify slot storage and lifecycle transitions; identify active-spirit dispatch; implement a deterministic portable slice with synthetic tests and a local USA-ROM oracle; keep rendering/audio/unproven semantics out; update the file map, reverse-engineering ledger and roadmap; keep files at or below 500 lines; finish with green CI.
+
+**Current boundary:** M10 is authorized. No spirit names, targeting rules, abilities, interactions or presentation behavior are treated as facts until direct callers/data prove them.
+
+**Exact next step:** scan the local USA ROM for summon/slot/dispatch candidates and record the first confirmed address chain.
+
 ## 2026-09-03 — M9 common entity pool slice
 **Objective:** Recover and implement the common entity-pool iteration contract before translating representative enemy/NPC behavior.
 
