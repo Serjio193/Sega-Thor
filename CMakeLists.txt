@@ -54,7 +54,7 @@ add_executable(oasis_re_trace src/tools/re_trace_report.cpp)
 target_link_libraries(oasis_re_trace PRIVATE oasis_core oasis_re_tooling)
 
 add_executable(oasis_re_diff src/tools/re_diff_report.cpp)
-target_link_libraries(oasis_re_diff PRIVATE oasis_core oasis_re_tooling)
+target_link_libraries(oasis_re_diff PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -123,7 +123,7 @@ target_link_libraries(oasis_re_trace_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_trace COMMAND oasis_re_trace_test)
 
 add_executable(oasis_re_diff_test tests/re_diff_test.cpp)
-target_link_libraries(oasis_re_diff_test PRIVATE oasis_core oasis_re_tooling)
+target_link_libraries(oasis_re_diff_test PRIVATE oasis_re_tooling oasis_core)
 add_test(NAME oasis_re_diff COMMAND oasis_re_diff_test)
 
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
@@ -155,7 +155,7 @@ add_executable(oasis_re_trace_reference tests/re_trace_reference.cpp)
 target_link_libraries(oasis_re_trace_reference PRIVATE oasis_core oasis_re_tooling)
 
 add_executable(oasis_re_diff_reference tests/re_diff_reference.cpp)
-target_link_libraries(oasis_re_diff_reference PRIVATE oasis_core oasis_re_tooling)
+target_link_libraries(oasis_re_diff_reference PRIVATE oasis_re_tooling oasis_core)
 
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
