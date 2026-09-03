@@ -25,17 +25,20 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Prepare original routine and representative stream
+      - name: Prepare original routine and representative streams
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
           Path('/tmp/decompress.bin').write_bytes(rom[0x3820:0x3b3e])
-          # Representative caller 0x3A7FE: A0=0x16943C, A1=0xFF316C.
-          # Oversized temporary source window; only consumed length is reported.
-          Path('/tmp/source.bin').write_bytes(rom[0x16943c:0x17943c])
-          print('source_byte_2=', rom[0x16943e])
+          cases=[
+              ('a',0x16943c,0x3a7fe,0xff316c),
+              ('b',0x141580,0x3e820,0xff2fa8),
+          ]
+          for name,src,caller,dst in cases:
+              Path(f'/tmp/source_{name}.bin').write_bytes(rom[src:src+0x10000])
+              print(f'case_{name}: caller=0x{caller:x} source=0x{src:x} dest=0x{dst:x} source_byte_2={rom[src+2]}')
           PY
 
       - name: Install M68K compiler and QEMU user emulator
@@ -50,33 +53,48 @@ jobs:
           cat >/tmp/harness.S <<'ASM'
           .section .text
           .global _start
-          _start:
-              lea source_data,%a0
+
+          /* Execute one case. Inputs: A0=source, D7=case id. */
+          run_case:
               lea output_data,%a1
               move.l %a0,%a3
               move.l %a1,%a4
+              move.l %d7,%a6
               jsr original_decompressor
+              move.l %a6,%d7
 
               move.l %a0,%d4
               sub.l %a3,%d4
               move.l %a1,%d5
               sub.l %a4,%d5
 
+              lea metadata,%a5
+              move.l #0x54485232,(%a5)
+              move.l %d7,4(%a5)
+              move.l %d5,8(%a5)
+              move.l %d4,12(%a5)
+
+              move.l #4,%d0
+              move.l #1,%d1
+              move.l %a5,%d2
+              move.l #16,%d3
+              trap #0
+
               move.l #4,%d0
               move.l #1,%d1
               move.l %a4,%d2
               move.l %d5,%d3
               trap #0
+              rts
 
-              lea metadata,%a5
-              move.l #0x54485231,(%a5)
-              move.l %d5,4(%a5)
-              move.l %d4,8(%a5)
-              move.l #4,%d0
-              move.l #1,%d1
-              move.l %a5,%d2
-              move.l #12,%d3
-              trap #0
+          _start:
+              lea source_a,%a0
+              moveq #1,%d7
+              bsr run_case
+
+              lea source_b,%a0
+              moveq #2,%d7
+              bsr run_case
 
               move.l #1,%d0
               clr.l %d1
@@ -88,18 +106,19 @@ jobs:
 
           .section .rodata
           .align 2
-          source_data:
-              .incbin "/tmp/source.bin"
+          source_a:
+              .incbin "/tmp/source_a.bin"
+          source_b:
+              .incbin "/tmp/source_b.bin"
 
           .section .bss
           .align 4
           output_data:
-              .skip 1048576
+              .skip 2097152
           metadata:
-              .skip 12
+              .skip 16
           ASM
           m68k-linux-gnu-gcc -nostdlib -static -Wl,-e,_start -o /tmp/harness-m68k /tmp/harness.S
-          file /tmp/harness-m68k
 
       - name: Execute original routine and report metadata only
         shell: bash
@@ -110,19 +129,26 @@ jobs:
           from pathlib import Path
           import hashlib, struct
           data=Path('/tmp/trace.bin').read_bytes()
-          if len(data) < 12:
-              raise SystemExit('trace too short')
-          magic,out_len,consumed=struct.unpack('>III', data[-12:])
-          if magic != 0x54485231:
-              raise SystemExit(f'bad trailer magic: {magic:08x}')
-          out=data[:-12]
-          if len(out) != out_len:
-              raise SystemExit(f'output length mismatch: file={len(out)} trailer={out_len}')
-          print(f'original_routine=0x3820..0x3b3c')
-          print(f'caller=0x3a7fe')
-          print(f'source_rom_address=0x16943c')
-          print(f'destination_original=0xff316c')
-          print(f'source_consumed={consumed}')
-          print(f'output_length={out_len}')
-          print(f'output_sha256={hashlib.sha256(out).hexdigest()}')
+          pos=0
+          case_info={
+              1:('0x3a7fe','0x16943c','0xff316c'),
+              2:('0x3e820','0x141580','0xff2fa8'),
+          }
+          while pos < len(data):
+              if pos+16 > len(data): raise SystemExit('truncated trace header')
+              magic,case_id,out_len,consumed=struct.unpack('>IIII',data[pos:pos+16])
+              pos += 16
+              if magic != 0x54485232: raise SystemExit(f'bad trace magic {magic:08x}')
+              if pos+out_len > len(data): raise SystemExit('truncated trace output')
+              out=data[pos:pos+out_len]
+              pos += out_len
+              caller,source,dest=case_info[case_id]
+              print(f'case={case_id}')
+              print(f'caller={caller}')
+              print(f'source_rom_address={source}')
+              print(f'destination_original={dest}')
+              print(f'source_consumed={consumed}')
+              print(f'output_length={out_len}')
+              print(f'output_sha256={hashlib.sha256(out).hexdigest()}')
+          if pos != len(data): raise SystemExit('trace parse mismatch')
           PY
