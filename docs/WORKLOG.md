@@ -2,93 +2,67 @@
 
 Chronological record of meaningful project actions. New entries go at the top under the latest date.
 
-Each work session/task should state:
-- objective;
-- files changed;
-- evidence/reasoning;
-- tests/build performed;
-- result;
-- unresolved questions;
-- exact next step.
+Each work session/task should state objective, files changed, evidence, tests, result, unresolved questions, and exact next step.
 
-## 2026-09-03 — M2 canonical ROM identity implementation
-**Objective:** Pin down the binary reference used for reverse engineering and make ROM identification explicit/reproducible.
+## 2026-09-03 — M3 static contract for decompressor `0x3820`
+**Objective:** Establish routine boundaries and calling contract before any C++ translation.
 
 **Actions:**
-- accepted ADR-0005: USA retail `Beyond Oasis` is the canonical engineering reference; final C++ game model remains region-independent;
-- added `RomIdentity`, Mega Drive header parsing, Sega checksum validation, CRC32, SHA-1, and SHA-256;
-- added classification states `SUPPORTED`, `KNOWN_UNSUPPORTED`, `MODIFIED`, `UNKNOWN`;
-- configured USA `SUPPORTED` matching to require size `3145728`, CRC32 `C4728225`, and SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
-- recorded Europe CRC32 `1110B0DB` as a known unsupported secondary revision;
-- added CLI identity/fingerprint reporting;
-- added synthetic hash/header/checksum tests;
-- added GitHub Actions CI for CMake build + CTest;
-- updated reverse-engineering ledger, file map, project state, and task state.
-
-**Files changed:** `docs/DECISIONS.md`, `PROJECT_STATE.md`, `TASK.md`, `src/core/rom_identity.hpp`, `src/core/rom_identity.cpp`, `src/main.cpp`, `tests/rom_identity_test.cpp`, `CMakeLists.txt`, `.github/workflows/ci.yml`, `docs/REVERSE_ENGINEERING.md`, `docs/FILE_MAP.md`, `docs/WORKLOG.md`.
+- added an M68K disassembly probe workflow using the verified uploaded USA ROM;
+- found 52 direct absolute `JSR 0x3820` call sites and no direct absolute JMPs;
+- disassembled the complete candidate routine and representative callers;
+- established candidate range `0x3820..0x3B3C`, with unrelated next-function prologue at `0x3B3E`;
+- identified two decompression paths selected by `source[2]`;
+- confirmed A0 as compressed source and A1 as destination using multiple callers;
+- confirmed A1 returns as the end-of-output pointer because caller `0x3A7FE` computes `A1 - initial_A1` after return;
+- documented literal, repeated-byte and backreference behavior without assigning an unsupported external algorithm name.
 
 **Evidence:**
-- current MAME metadata marks the USA ROM as `good`, size `3145728`, CRC32 `c4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
-- GameHacking.org independently reports USA size 3M and CRC32 `C4728225`;
-- public `smd_beyondoasis` work targets the USA good dump.
+- callers at `0xC394`, `0xD3C8`, `0x3A7FE`, and `0x3E820` load ROM addresses into A0 and RAM buffers into A1;
+- routine writes through `A1@+`, reads through `A0@+`, and performs backreferences from previous output;
+- returns occur at `0x38CE` and `0x3A24`; refill/helper branches extend to `0x3B3A`; unrelated prologue begins at `0x3B3E`;
+- routine contains no JSR/BSR and is self-contained apart from memory access.
 
-**Tests/build:**
-- local reconstructed bootstrap compiled successfully with the first ROM identity implementation;
-- smoke and ROM identity tests passed (`2/2`);
-- standard vectors verified CRC32 `123456789` and SHA-256 `abc` before SHA-1 strengthening;
-- SHA-1 standard-vector test was then added to repository;
-- actual branch-level GitHub Actions result still needs to be observed before M2 is marked DONE.
+**Tests/build:** M3 probe workflows completed successfully against the exact reference ROM fingerprint. Static evidence is now reproducible in GitHub Actions.
 
-**Result:** Canonical reference policy and implementation are in place. M2 is functionally implemented but remains ACTIVE until current branch CI is observed green.
+**Result:** Major static contract is established. C++ translation remains intentionally blocked by project rules until an independent dynamic reference trace is captured.
 
-**Unresolved:** SHA-256 of the confirmed clean USA ROM is not yet independently pinned; it is diagnostic and not required for current exact matching because confirmed SHA-1 is available.
+**Unresolved:** A0 returned-advanced behavior is HIGH but not yet independently observed; exact output fingerprints for representative streams are not yet captured.
 
-**Exact next step:** Observe branch CI. If green, mark M2 DONE and begin M3 by establishing exact routine boundaries and call contract for USA address `0x00003820`.
+**Exact next step:** Execute the original routine bytes in an isolated M68K harness against representative compressed streams and record source-consumed length, output length, and SHA-256 without committing raw extracted assets.
+
+## 2026-09-03 — M2 canonical ROM identity verified — DONE
+**Objective:** Pin down the exact binary reference used for reverse engineering.
+
+**Actions:**
+- accepted ADR-0005: USA retail `Beyond Oasis` is the canonical engineering reference while final C++ remains region-independent;
+- implemented Mega Drive header parsing, Sega checksum, CRC32, SHA-1, SHA-256 and ROM classification;
+- added synthetic tests, CLI reporting, general CI and dedicated reference-ROM verification;
+- fixed an actual CI-detected C++ most-vexing-parse error in `rom.cpp`;
+- verified the user-uploaded `Beyond Oasis (USA).md` inside GitHub Actions.
+
+**Confirmed fingerprint:**
+- size `3145728`;
+- CRC32 `C4728225`;
+- SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
+- SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
+- detector status `SUPPORTED`.
+
+**Tests/build:** General CI passed after the loader fix; reference-ROM workflow passed and asserted `SUPPORTED`.
+
+**Result:** M2 completed with executable evidence; M3 activated.
+
+**Exact next step:** Establish and verify the `0x3820` decompressor contract.
 
 ## 2026-09-03 — Governance enforcement completed
 **Objective:** Make the project resistant to scope drift and ensure rules are enforceable, not merely descriptive.
 
 **Actions:**
-- added `docs/TASK_TEMPLATE.md` for task/AI handoff;
-- added `tests/check_file_limits.cmake`;
-- registered the line-limit check with CTest;
-- updated README to make governance documents mandatory entry points;
-- updated canonical file map;
-- marked M1 governance milestone complete and M2 active.
+- added `AGENTS.md`, architecture/vision/file-map/roadmap/rules/decision/research/worklog documents;
+- added task/session handoff files;
+- added `tests/check_file_limits.cmake` and CTest enforcement of <=500 lines per file.
 
-**Files changed:** `README.md`, `CMakeLists.txt`, `docs/TASK_TEMPLATE.md`, `tests/check_file_limits.cmake`, `docs/FILE_MAP.md`, `docs/ROADMAP.md`, `docs/WORKLOG.md`.
-
-**Evidence/reasoning:** The owner requested persistent rules, architecture/file map, <=500 lines per file, documented development steps, idea/roadmap descriptions, and safeguards against AI development drift.
-
-**Tests/build:** Added `project_file_line_limit` CTest. It checks C/C++/Markdown/CMake project files and fails if any checked file exceeds 500 lines. No runtime behavior changed in this documentation/governance pass.
-
-**Result:** M1 is complete. Project direction, scope, file-size policy, documentation obligations, and AI handoff process are now explicit. The next active milestone is M2 ROM revision identification.
-
-**Unresolved:** Exact canonical Beyond Oasis ROM revision/hash remains to be identified.
-
-**Exact next step:** Implement and document ROM revision identification without starting `0x3820` translation until the reference revision is pinned down.
-
-## 2026-09-03 — Governance/documentation pass
-**Objective:** Prevent project drift and make work reproducible for human and AI contributors.
-
-**Actions:**
-- added mandatory `AGENTS.md` workflow;
-- documented project vision and non-goals;
-- documented architecture/layer boundaries;
-- added canonical file map;
-- added ordered development roadmap;
-- added coding/reverse-engineering rules;
-- added decision log and reverse-engineering ledger;
-- established 500-line hard limit for each source/document file;
-- required documentation updates for every meaningful change.
-
-**Result:** Project direction is now explicitly constrained. Story of Thor 2 and remaster features remain deferred. The first reverse-engineering target remains graphics decompression routine `0x00003820` after ROM revision identification.
-
-**Tests/build:** Documentation-only changes; existing code build status is unchanged by these files.
-
-**Unresolved:** Exact supported reference ROM revision/hash still needs to be established.
-
-**Next step:** Complete M1 documentation integration in README, then begin M2 ROM revision identification.
+**Result:** Project direction, scope, file-size policy, documentation obligations, and AI handoff process are explicit and enforceable.
 
 ## 2026-09-03 — Initial C++ bootstrap
 **Objective:** Create a minimal native C++ project suitable for incremental Beyond Oasis translation.
@@ -96,32 +70,22 @@ Each work session/task should state:
 **Actions:**
 - created C++20/CMake build;
 - added ROM loader/header parsing;
-- added minimal 24-bit memory bus/work RAM scaffold;
-- added minimal VDP/VRAM scaffold;
-- recorded known addresses (`0xC00000`, `0xC00004`, `0xFF0000`, `0x00003820`);
+- added minimal memory bus and VDP/VRAM scaffolding;
+- recorded known hardware/routine addresses;
 - translated initial tile-copy helper behavior;
 - added smoke test.
 
-**Result:** Repository has a compilable architectural starting point without ROM/assets.
-
-**Next step at the time:** translate graphics decompression routine. Governance work was inserted before that to stabilize development process.
+**Result:** Repository has a compilable architectural starting point without requiring ROM bytes in source/tests.
 
 ## Entry template
 ```text
 ## YYYY-MM-DD — Short task name
 Objective:
-
 Actions:
-
 Files changed:
-
 Evidence:
-
 Tests/build:
-
 Result:
-
 Unresolved:
-
-Next step:
+Exact next step:
 ```
