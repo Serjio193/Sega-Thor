@@ -38,7 +38,9 @@ int main() {
     }
 
     {
-        const std::array<std::uint8_t, 6> source{0x00, 0x00, 0x00, 0x06, 'X', 0x00};
+        // Initial flag bits: literal (0), then terminator token (1,1,00000).
+        // The zero distance byte is followed by the zero end marker.
+        const std::array<std::uint8_t, 7> source{0x00, 0x00, 0x00, 0x06, 'X', 0x00, 0x00};
         std::array<std::uint8_t, 16> output{};
         const auto result = decompress_graphics(source, output);
         assert(result.source_consumed == source.size());
