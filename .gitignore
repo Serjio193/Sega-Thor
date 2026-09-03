@@ -3,7 +3,6 @@ cmake-build-*/
 CMakeCache.txt
 CMakeFiles/
 *.bin
-*.md
 *.gen
 *.smd
 *.rom
