@@ -1,0 +1,113 @@
+name: m8-player-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  trace-player-input:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Locate controller port references
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          for target in (0x00a10003,0x00a10005,0x00a10009,0x00a1000b):
+              pat=target.to_bytes(4,'big')
+              hits=[]; p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+              print(f'port_0x{target:08x}_refs=' + ','.join(f'0x{x:06x}' for x in hits))
+          PY
+
+      - name: Install M68K binutils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq binutils-m68k-linux-gnu
+
+      - name: Disassemble controller access neighborhoods
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          rom=Path('/tmp/reference.md').read_bytes()
+          hits=[]
+          for target in (0x00a10003,0x00a10005,0x00a10009,0x00a1000b):
+              pat=target.to_bytes(4,'big'); p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+          for p in sorted(set(hits)):
+              start=max(0,p-0x80); end=min(len(rom),p+0x120)
+              print(f'===== controller ref 0x{p:06x} =====')
+              out=subprocess.check_output([
+                  'm68k-linux-gnu-objdump','-D','-b','binary','-m','m68k:68000','--adjust-vma=0',
+                  f'--start-address={start}',f'--stop-address={end}','/tmp/reference.md'
+              ], text=True)
+              print(out)
+          PY
+
+      - name: Inventory calls into player movement cluster
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from collections import defaultdict
+          rom=Path('/tmp/reference.md').read_bytes()
+          calls=defaultdict(list)
+          # Absolute JSR/JMP targets into the verified movement/terrain cluster.
+          for p in range(0,len(rom)-6,2):
+              op=rom[p:p+2]
+              if op not in (b'\x4e\xb9',b'\x4e\xf9'):
+                  continue
+              target=int.from_bytes(rom[p+2:p+6],'big')
+              if 0x8f00 <= target < 0xa100:
+                  calls[target].append((p,'JSR' if op==b'\x4e\xb9' else 'JMP'))
+          for target in sorted(calls):
+              refs=','.join(f'{kind}@0x{p:06x}' for p,kind in calls[target])
+              print(f'movement_target=0x{target:06x} refs={refs}')
+          PY
+
+      - name: Disassemble external movement callers
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          rom=Path('/tmp/reference.md').read_bytes()
+          callers=[]
+          for p in range(0,len(rom)-6,2):
+              if rom[p:p+2] != b'\x4e\xb9': continue
+              target=int.from_bytes(rom[p+2:p+6],'big')
+              if 0x8f00 <= target < 0xa100:
+                  callers.append((p,target))
+          for p,target in callers[:80]:
+              start=max(0,p-0x60); end=min(len(rom),p+0xa0)
+              print(f'===== caller 0x{p:06x} -> 0x{target:06x} =====')
+              out=subprocess.check_output([
+                  'm68k-linux-gnu-objdump','-D','-b','binary','-m','m68k:68000','--adjust-vma=0',
+                  f'--start-address={start}',f'--stop-address={end}','/tmp/reference.md'
+              ], text=True)
+              print(out)
+          PY
