@@ -270,6 +270,11 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
   `0xB922` receives that owner in `A6` but scans target records from
   `FF19E8` — **CONFIRMED**. This corrects the native boundary; it does not
   prove summon or ability names.
+- A static scan of field `+0x00` writers found the only literal raw type
+  `0x16` write at `0x847C`, targeting singleton record `FF1AA4`. The observed
+  `FF19E8` construction sites at `0x11DF0`, `0x27B2A` and `0x2BD20` use other
+  literal/table values or data-driven values; no producer of raw type `0x16`
+  in `FF19E8` is proven — **UNKNOWN**.
 
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.

@@ -4,6 +4,22 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 raw type-0x16 producer remains unresolved
+
+**Evidence:** the static scan found one literal `move.w #$16,$0(a6)` at
+`0x847C`, where `A6` is explicitly `FF1AA4`. Main-pool construction sites at
+`0x11DF0`, `0x27B2A` and `0x2BD20` initialize other literal/table types or
+consume data-driven values; none proves a raw type `0x16` producer in
+`FF19E8`.
+
+**Action/result:** kept the native cross-pool raw contract unchanged and
+recorded the producer as an explicit unknown. No summon name, ability name or
+runtime data layout was inferred.
+
+**Exact next step:** obtain the missing runtime/data evidence for the
+`FF19E8` record that satisfies the `0x17CA6` type check, then map it to the
+slot-gated dispatch only if that relationship is demonstrated.
+
 ## 2026-09-03 — M10 target exclusion wording corrected
 
 **Result:** clarified that `0xB922` excludes the owner by pointer equality,
