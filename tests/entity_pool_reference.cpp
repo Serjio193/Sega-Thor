@@ -3,6 +3,7 @@
 #include "game/entities/entity_pool.hpp"
 
 #include <cstdint>
+#include <initializer_list>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,6 +21,21 @@ void expect_word(const oasis::Rom& rom,
                  std::uint16_t expected,
                  const char* message) {
     if (read_u16(rom, offset) != expected) throw std::runtime_error(message);
+}
+
+void expect_bytes(const oasis::Rom& rom,
+                  std::size_t offset,
+                  std::initializer_list<std::uint8_t> expected,
+                  const char* message) {
+    if (offset + expected.size() > rom.size()) {
+        throw std::runtime_error(message);
+    }
+    std::size_t index = 0;
+    for (const auto value : expected) {
+        if (rom.bytes()[offset + index++] != value) {
+            throw std::runtime_error(message);
+        }
+    }
 }
 
 } // namespace
@@ -49,6 +65,27 @@ int main(int argc, char** argv) {
         expect_word(rom, 0x8EDA, 0x7E05, "second entity pool count mismatch");
         expect_word(rom, 0x8EE6, 0x3C2E, "second entity active read mismatch");
         expect_word(rom, 0x8EF0, 0x005A, "second entity stride mismatch");
+
+        // The shared movement entry consumes these raw record offsets.
+        expect_bytes(rom, 0x8F22, {0x36, 0x2E, 0x00, 0x9C},
+                     "movement counter read mismatch");
+        expect_bytes(rom, 0x8FA8, {0x36, 0x2E, 0x00, 0x2E},
+                     "movement cursor read mismatch");
+        expect_bytes(rom, 0x8FCC, {0x20, 0x6E, 0x00, 0x26},
+                     "movement pointer read mismatch");
+        expect_bytes(rom, 0x8F12, {0x08, 0xEE, 0x00, 0x04},
+                     "movement flag read mismatch");
+
+        // Representative FF2954 path: +0/+3A gate, then +22 dispatch.
+        expect_bytes(rom, 0xA6A4,
+                     {0x4D, 0xF9, 0x00, 0xFF, 0x29, 0x54, 0x7E, 0x03,
+                      0x3C, 0x2E, 0x00, 0x00, 0x6F, 0x00, 0x00, 0x0C,
+                      0x08, 0x2E, 0x00, 0x02, 0x00, 0x3A},
+                     "FF2954 behavior gate mismatch");
+        expect_bytes(rom, 0xA7D4,
+                     {0x0C, 0x6E, 0xFF, 0xFE, 0x00, 0x00, 0x67, 0x00,
+                      0x00, 0x08, 0x20, 0x6E, 0x00, 0x22, 0x4E, 0xD0},
+                     "FF2954 callback dispatch mismatch");
 
         using oasis::game::entities::kEntityPoolAtFf19e8;
         using oasis::game::entities::kEntityPoolAtFf2954;

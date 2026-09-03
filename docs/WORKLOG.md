@@ -19,6 +19,18 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** trace the shared record fields consumed at `0x8F22` and identify one representative non-player behavior with caller/data evidence.
 
+## 2026-09-03 — M9 shared record contract
+
+**Objective:** Trace the common movement fields and close one representative non-player dispatch path without inventing AI semantics.
+
+**Evidence:** `0x8F22..0x9382` directly accesses raw offsets `+0x9C`, `+0x9D`, `+0x2A`, `+0x2C`, `+0x2E`, `+0x30`, `+0x32`, `+0x37`, `+0x38`, `+0x72` and `+0x76`; `0x8D06` initializes `+0x26` and `+0x22`. The `FF2954` block at `0xA6A4` gates a four-slot record on `+0x00` and bit 2 of `+0x3A`, then `0xA7D4` jumps through `+0x22`.
+
+**Actions:** Added bounded big-endian `EntityRecordView`, raw offset constants, synthetic boundary tests and local USA-ROM byte assertions for the shared accesses and representative dispatch contract. Kept callback invocation, AI, attacks, animation and spawn semantics outside the native layer.
+
+**Result:** The shared record contract and one raw non-player callback-dispatch behavior are evidenced and tested; semantic callback translation remains the next M9 decision point.
+
+**Exact next step:** run full M9 acceptance checks, update roadmap status, and only then decide whether M9 can be marked DONE.
+
 ## 2026-09-03 — M8 acceptance review
 **Objective:** Close M8 after local, ROM-reference and remote CI verification.
 

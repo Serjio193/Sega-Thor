@@ -3,8 +3,8 @@
 CURRENT_MILESTONE: M9 — Entities/enemies/NPCs
 CURRENT_TASK: Recover the common entity-pool iteration contract before translating representative entity behavior
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M8 player movement/state slice is accepted; M9 raw entity-pool descriptors and active-record view are implemented and locally tested
-NEXT_ACTION: trace shared record fields consumed at 0x8F22 and identify one representative non-player behavior with caller/data evidence
+LAST_VERIFIED_RESULT: M9 raw entity-pool descriptors, shared movement field offsets, and FF2954 callback-dispatch path are implemented and locally ROM-verified
+NEXT_ACTION: keep M9 behavior translation bounded to one proven callback contract, then complete acceptance checks
 DO_NOT_WORK_ON: M10+, Thor 2, Saturn support, remaster features, speculative enemy/NPC behavior
 BLOCKERS: none
 
@@ -36,6 +36,7 @@ BLOCKERS: none
 - The common loop has three raw pool descriptors: `FF2954 × 4` at stride `0x5A`, `FF19E8 × 21` at stride `0xBC`, and `FF2D8C × 6` at stride `0x5A`.
 - Active records are selected by signed word `+0x00 > 0`; the loop dispatches through `FF193C` and enters `0x8F12` or `0x8F22`.
 - Native `EntityPoolView` and synthetic tests reproduce bounded record addressing and the positive active predicate; local ROM oracle checks the loop constants.
+- `EntityRecordView` reads only bounded big-endian raw fields; the local USA-ROM oracle verifies the shared movement accesses and the FF2954 `+0x3A`/`+0x22` dispatch path.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

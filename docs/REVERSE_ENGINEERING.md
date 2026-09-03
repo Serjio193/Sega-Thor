@@ -196,6 +196,22 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 ### M9 boundary
 The first M9 slice does not translate AI, attacks, animation callbacks, spawn tables or entity field names beyond the raw offsets required by pool iteration. Those require separate caller/data evidence.
 
+### M9 shared record fields and representative dispatch
+
+- The common movement entry at `0x8F22` reads raw record offsets `+0x9C`,
+  `+0x9D`, `+0x2A`, `+0x2C`, `+0x2E`, `+0x30`, `+0x32`, `+0x37`, `+0x38`,
+  `+0x72` and `+0x76` — **CONFIRMED** by direct accesses in the shared
+  entry. The initializer at `0x8D06` copies two ROM pointers into `+0x26`
+  and `+0x22`; their presentation/behavior meanings remain unassigned.
+- A representative non-player path is the `FF2954` processing block at
+  `0xA6A4`: it scans four `0x5A`-byte records, gates on `+0x00 > 0` and
+  bit 2 of `+0x3A`, then reaches `0xA7D4`, which performs the proven
+  indirect `jmp (+0x22)`. This is recorded as a raw callback-dispatch
+  behavior, not as enemy/NPC AI.
+- `EntityRecordView` exposes bounded big-endian word/long reads and the raw
+  `+0x22` pointer. It deliberately does not invoke ROM addresses or assign
+  semantic names to the remaining fields.
+
 ## Existing translated compatibility behavior
 
 ### Tile copy to work RAM
