@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(oasis_core
     src/core/rom.cpp
     src/core/rom_identity.cpp
+    src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
     src/game/translated_routines.cpp
@@ -44,6 +45,10 @@ add_test(NAME oasis_genesis_graphics COMMAND oasis_genesis_graphics_test)
 add_executable(oasis_vdp_test tests/vdp_test.cpp)
 target_link_libraries(oasis_vdp_test PRIVATE oasis_core)
 add_test(NAME oasis_vdp COMMAND oasis_vdp_test)
+
+add_executable(oasis_runtime_test tests/runtime_test.cpp)
+target_link_libraries(oasis_runtime_test PRIVATE oasis_core)
+add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
 
 # Uses a locally supplied verified ROM and is intentionally not registered with CTest.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
