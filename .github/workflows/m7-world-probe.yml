@@ -25,34 +25,45 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Inspect dispatch table at 0xC928
+      - name: Inspect screen group table and resolve known descriptors
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          base=0x00c928
-          values=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(22)]
-          print('dispatch_base=0x00c928 entries=22')
-          for i,v in enumerate(values):
-              print(f'dispatch_entry={i:02d} target=0x{v:06x}')
-          for width in (3,4):
-              pat=base.to_bytes(width,'big')
-              hits=[]; p=0
-              while True:
-                  p=rom.find(pat,p)
-                  if p<0: break
-                  hits.append(p); p+=1
-              print(f'refs_width_{width}_to_dispatch=',','.join(f'0x{x:06x}' for x in hits[:100]))
-          for target in values:
-              pat=target.to_bytes(4,'big')
-              hits=[]; p=0
-              while True:
-                  p=rom.find(pat,p)
-                  if p<0: break
-                  hits.append(p); p+=1
-              if hits:
-                  print(f'refs_to_target_0x{target:06x}=',','.join(f'0x{x:06x}' for x in hits[:20]))
+          base=0x00c92c
+          groups=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(21)]
+          print('group_table=0x00c92c entries=21')
+          for i,v in enumerate(groups):
+              print(f'group={i:02x} base=0x{v:06x}')
+
+          targets={0x02cf82,0x02d3e8,0x032144,0x03285c}
+          found={}
+          for group,group_base in enumerate(groups):
+              # Probe all byte-sized screen indices exactly as C8F0/C8FC does.
+              for index in range(256):
+                  entry=group_base+index*2
+                  if entry+2>len(rom): break
+                  rel=int.from_bytes(rom[entry:entry+2],'big',signed=True)
+                  descriptor=entry+rel
+                  if descriptor in targets:
+                      found[descriptor]=(group,index,entry,rel)
+          for descriptor in sorted(targets):
+              if descriptor not in found:
+                  print(f'descriptor=0x{descriptor:06x} screen_id=NOT_FOUND')
+                  continue
+              group,index,entry,rel=found[descriptor]
+              print(f'descriptor=0x{descriptor:06x} screen_id=0x{group:02x}{index:02x} entry=0x{entry:06x} rel={rel}')
+
+          # Print a few low IDs for each group while resolved addresses remain in ROM.
+          for group,group_base in enumerate(groups):
+              row=[]
+              for index in range(8):
+                  entry=group_base+index*2
+                  rel=int.from_bytes(rom[entry:entry+2],'big',signed=True)
+                  descriptor=entry+rel
+                  row.append(f'{group:02x}{index:02x}->0x{descriptor:06x}')
+              print('sample_ids', ' '.join(row))
           PY
 
       - name: Install M68K binutils
@@ -60,31 +71,13 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble dispatch reader neighborhood
+      - name: Disassemble screen dispatcher
         shell: bash
         run: |
           m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-            --start-address=0x00c860 --stop-address=0x00ca80 /tmp/reference.md
+            --start-address=0x00c8aa --stop-address=0x00c9b2 /tmp/reference.md
 
-      - name: Disassemble all dispatch targets
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          rom=Path('/tmp/reference.md').read_bytes()
-          base=0x00c928
-          vals=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(22)]
-          Path('/tmp/targets.txt').write_text('\n'.join(f'{v:06x}' for v in vals))
-          PY
-          while read -r TARGET; do
-            START=$((0x$TARGET))
-            END=$((START+0x90))
-            printf '===== target 0x%06x..0x%06x =====\n' "$START" "$END"
-            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-              --start-address=$START --stop-address=$END /tmp/reference.md
-          done </tmp/targets.txt
-
-      - name: Inspect candidate 26-byte descriptors
+      - name: Inspect candidate descriptors structurally
         shell: bash
         run: |
           python3 - <<'PY'
@@ -96,5 +89,6 @@ jobs:
               ids=list(raw[8:12])
               signed=[x if x<128 else x-256 for x in raw[12:16]]
               words=[int.from_bytes(raw[o:o+2],'big') for o in (16,18,20,22,24)]
-              print(f'descriptor=0x{addr:06x} ptr4=0x{ptr:06x} resource_ids={ids} signed12_15={signed} words16_24={words}')
+              init=int.from_bytes(rom[addr+26:addr+30],'big')
+              print(f'descriptor=0x{addr:06x} ptr4=0x{ptr:06x} resource_ids={ids} signed12_15={signed} words16_24={words} init=0x{init:06x}')
           PY
