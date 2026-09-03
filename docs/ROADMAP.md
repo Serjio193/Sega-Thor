@@ -16,21 +16,23 @@ Acceptance criteria:
 - smoke test exists;
 - no copyrighted ROM/assets are committed.
 
-## M1 — Project governance and documentation — NEXT
+## M1 — Project governance and documentation — DONE
 Goal: make development deterministic for human and AI contributors.
 
-Acceptance criteria:
-- `AGENTS.md` mandatory workflow exists;
-- architecture documented;
-- canonical file map documented;
-- 500-line file limit documented;
-- development rules documented;
-- decision log exists;
-- worklog exists;
-- reverse-engineering ledger exists;
-- README points contributors to these documents.
+Completed:
+- `AGENTS.md` mandatory workflow;
+- architecture document;
+- canonical file map;
+- hard 500-line source/document limit;
+- automatic CTest line-limit check;
+- development rules;
+- decision log;
+- worklog;
+- reverse-engineering ledger;
+- task/AI handoff template;
+- README entry points to all governance documents.
 
-## M2 — Identify supported ROM revision — TODO
+## M2 — Identify supported ROM revision — NEXT
 Goal: establish one reproducible reference binary.
 
 Tasks:
