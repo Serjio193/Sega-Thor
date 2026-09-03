@@ -4,26 +4,55 @@ This document defines the mandatory operating discipline for AI-assisted develop
 
 ## Core execution rules
 
-1. Start implementation only when understanding is at least 90%. Before asking the user, first inspect repository documentation, current code, worklog, reverse-engineering notes, and available evidence.
-2. If understanding is below 90% after inspection, stop implementation and ask only the minimum clarifying questions required.
-3. Define explicit acceptance criteria before substantive implementation.
-4. Do not declare a task DONE until implementation, build/tests, behavioral verification, documentation, and exact next step are all recorded.
-5. If blocked, prove the blocker. Record what was checked, what evidence is missing, why work cannot continue safely, and the smallest next action.
-6. Work on one active technical result at a time. Future ideas go to roadmap/backlog; do not switch milestones casually.
-7. Do not expand scope, redesign architecture, or add speculative frameworks without a documented need and ADR when architectural.
-8. Prefer evidence over elegance. Reverse-engineering statements must be marked CONFIRMED, LIKELY, HYPOTHESIS, or UNKNOWN.
-9. Never turn a hypothesis into a fact without new evidence.
-10. Never rename an unknown original routine to a confident semantic name without evidence.
-11. Keep every source and project-document file at or below 500 lines. At roughly 400 lines, evaluate semantic splitting.
-12. Do not change tests merely to make a failing implementation pass. Determine whether implementation, understanding, or test is wrong.
-13. Prefer two independent verification methods for critical reverse-engineered behavior when practical.
-14. Keep commits/tasks small and single-purpose.
-15. Every meaningful task must update the project record: WORKLOG, REVERSE_ENGINEERING when applicable, DECISIONS when applicable, FILE_MAP when structure changes, ROADMAP/PROJECT_STATE when status changes.
-16. Explanations to the user should be concise: what was found, what changed, how it was verified, what is next.
-17. If a prior implementation is wrong, say so directly and record the reason and fix.
-18. Do not optimize without measurement.
-19. Do not work on The Story of Thor 2, Saturn support, widescreen, remaster features, or unrelated engine work until explicitly allowed by roadmap.
-20. Faithful behavior comes first; enhancements come only after verified parity.
+1. Track two confidence levels separately when useful: **milestone understanding** and **current implementation-slice understanding**. Milestone understanding may be below 90% during reverse engineering; this is expected for partially reconstructed systems.
+2. Start or extend production C++ for a specific implementation slice only when **CURRENT SLICE UNDERSTANDING CONFIDENCE is at least 90%**. Confidence must be based on concrete evidence for that slice: callers/data, observed behavior, tests, ROM bytes/traces, or equivalent reproducible evidence.
+3. If current-slice confidence is below 90% after inspecting repository documentation, code, worklog, reverse-engineering notes and available evidence, do **not** implement speculative production behavior. Continue reverse engineering, evidence gathering, documentation, probes or the minimum necessary clarification until the slice reaches at least 90%, becomes objectively BLOCKED, or requires a USER DECISION.
+4. A low overall milestone confidence does not block a well-bounded >=90% slice. Conversely, high milestone confidence never authorizes a <90% slice.
+5. Define explicit acceptance criteria before substantive implementation.
+6. Do not declare a task DONE until implementation, build/tests, behavioral verification, documentation, and exact next step are all recorded.
+7. If blocked, prove the blocker. Record what was checked, what evidence is missing, why work cannot continue safely, and the smallest next action.
+8. Work on one active technical result at a time. Future ideas go to roadmap/backlog; do not switch milestones casually.
+9. Do not expand scope, redesign architecture, or add speculative frameworks without a documented need and ADR when architectural.
+10. Prefer evidence over elegance. Reverse-engineering statements must be marked CONFIRMED, LIKELY, HYPOTHESIS, or UNKNOWN.
+11. Never turn a hypothesis into a fact without new evidence.
+12. Never rename an unknown original routine to a confident semantic name without evidence.
+13. Keep every source and project-document file at or below 500 lines. At roughly 400 lines, evaluate semantic splitting.
+14. Do not change tests merely to make a failing implementation pass. Determine whether implementation, understanding, or test is wrong.
+15. Prefer two independent verification methods for critical reverse-engineered behavior when practical.
+16. Keep commits/tasks small and single-purpose.
+17. Every meaningful task must update the project record: WORKLOG, REVERSE_ENGINEERING when applicable, DECISIONS when applicable, FILE_MAP when structure changes, ROADMAP/PROJECT_STATE when status changes.
+18. Explanations to the user should be concise: what was found, what changed, how it was verified, what is next.
+19. If a prior implementation is wrong, say so directly and record the reason and fix.
+20. Do not optimize without measurement.
+21. Do not work on The Story of Thor 2, Saturn support, widescreen, remaster features, or unrelated engine work until explicitly allowed by roadmap.
+22. Faithful behavior comes first; enhancements come only after verified parity.
+
+## Confidence interpretation
+
+Use confidence narrowly and operationally:
+
+```text
+MILESTONE UNDERSTANDING CONFIDENCE:
+CURRENT SLICE UNDERSTANDING CONFIDENCE:
+```
+
+Examples:
+
+```text
+MILESTONE UNDERSTANDING CONFIDENCE: 55%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
+```
+
+This is valid: the full subsystem is still poorly understood, but one bounded routine/data contract is sufficiently evidenced to translate.
+
+```text
+MILESTONE UNDERSTANDING CONFIDENCE: 90%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 75%
+```
+
+This does **not** authorize production implementation of that slice. Continue RE/evidence work first.
+
+Confidence is not a subjective optimism score. State briefly what evidence justifies >=90% when production implementation begins.
 
 ## Required task lifecycle
 
@@ -48,11 +77,15 @@ Before code changes, record:
 TASK:
 WHY:
 CURRENT MILESTONE:
-UNDERSTANDING CONFIDENCE:
+MILESTONE UNDERSTANDING CONFIDENCE:
+CURRENT SLICE UNDERSTANDING CONFIDENCE:
+SLICE CONFIDENCE EVIDENCE:
 ACCEPTANCE CRITERIA:
 EVIDENCE AVAILABLE:
 KNOWN UNKNOWNS:
 ```
+
+If `CURRENT SLICE UNDERSTANDING CONFIDENCE < 90%`, the task is in evidence-gathering mode and production C++ changes for that slice are prohibited.
 
 ## Allowed stop states
 
@@ -77,6 +110,8 @@ At the end of every work session record:
 CURRENT MILESTONE:
 CURRENT TASK:
 TASK STATUS:
+MILESTONE UNDERSTANDING CONFIDENCE:
+CURRENT SLICE UNDERSTANDING CONFIDENCE:
 LAST VERIFIED RESULT:
 FILES CHANGED:
 TESTS RUN:
