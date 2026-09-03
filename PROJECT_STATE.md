@@ -3,7 +3,7 @@
 CURRENT_MILESTONE: M10 — Spirits
 CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M10 slot mapping and raw dispatch trace pass Debug/Release CTest and the local USA-ROM oracle
+LAST_VERIFIED_RESULT: M10 slot mapping, raw dispatch trace and first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
 NEXT_ACTION: investigate the next caller/data dependency needed to connect the raw dispatch trace to a proven summon or ability contract
 DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
 BLOCKERS: none

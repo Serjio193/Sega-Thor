@@ -4,6 +4,12 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 target selection committed
+
+**Result:** The target-selection slice was committed as `3042689` and pushed to `origin/main`. The working tree is clean and `main` matches the remote branch.
+
+**Exact next step:** trace the caller/data path that proves whether the slot-gated record is a summon or a different interaction; do not add another semantic layer until that evidence is found.
+
 ## 2026-09-03 — M10 spirit slot/dispatch trace
 
 **Objective:** Translate the first evidence-backed spirit slot lifecycle and active-dispatch gate.
