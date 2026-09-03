@@ -4,6 +4,21 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M8 player update dispatch closure
+**Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
+
+**Evidence:**
+- main loop `0x8B22` calls player update `0x557A` before shared movement `0x8E90`;
+- `0x557A` selects `FF19E8` and `0x5670` dispatches through table `0x59BA`;
+- dispatch entries route state `0` to `0x61F6`, state `2` to `0x62E4`, and state `4` to `0x6516`;
+- `0x61F6` writes direction `+0x16`, intent deltas `+0x4E/+0x52`, accumulated deltas `+0x72/+0x76`, and state `+0x04=2`.
+
+**Actions:** Added the confirmed update/state addresses to the player API, modelled the state-2 transition, and extended the local ROM oracle to validate the dispatch entries.
+
+**Result:** The earlier absence of direct calls to `0x61F6` is explained by the indirect `0x59BA` dispatcher. Animation callback/presentation meaning remains intentionally outside the native movement slice.
+
+**Exact next step:** validate the state-2/state-4 stop and turning branches against additional ROM traces before modelling any presentation state.
+
 ## 2026-09-03 — M8 player movement evidence and native slice
 **Objective:** Translate the confirmed player input-to-movement path into a portable deterministic model.
 

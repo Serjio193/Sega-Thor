@@ -48,6 +48,7 @@ int main() {
     assert(!free_move.blocked);
     assert(player.x_fixed == before_x + 0x36000);
     assert(player.terrain_state == 2);
+    assert(player.movement_state == 2);
 
     grid[2U * 8U + 3U] = 0x05U; // terrain code 5 is rejected by the table
     PlayerState blocked_player{3 * 8 * 0x10000, 2 * 8 * 0x10000, 2};
@@ -56,6 +57,7 @@ int main() {
     assert(!blocked_move.moved);
     assert(blocked_move.blocked);
     assert(blocked_player.x_fixed == blocked_x);
+    assert(blocked_player.movement_state == 2);
 
     return 0;
 }

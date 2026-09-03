@@ -69,6 +69,7 @@ MovementResult try_move(PlayerState& player,
     const auto vector = movement_vector(input, config);
     MovementResult result{vector, false, false};
     if (vector.direction == Direction::none) {
+        player.movement_state = 0;
         return result;
     }
 
@@ -78,6 +79,7 @@ MovementResult try_move(PlayerState& player,
         world_coordinate(candidate_x), world_coordinate(candidate_y),
         config.footprint_radius);
     if (!aggregate) {
+        player.movement_state = 2;
         result.blocked = true;
         return result;
     }
@@ -88,6 +90,7 @@ MovementResult try_move(PlayerState& player,
         world::TerrainGateInput{config.entity_flags, player.terrain_state,
                                 prospective_state, aggregate->any_bits});
     if (gate == world::TerrainGateResult::blocked) {
+        player.movement_state = 2;
         result.blocked = true;
         return result;
     }
@@ -95,6 +98,7 @@ MovementResult try_move(PlayerState& player,
     player.x_fixed = candidate_x;
     player.y_fixed = candidate_y;
     player.terrain_state = prospective_state;
+    player.movement_state = 2;
     result.moved = true;
     return result;
 }

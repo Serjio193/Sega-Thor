@@ -8,6 +8,9 @@
 namespace oasis::game::player {
 
 inline constexpr std::uint32_t kPlayerEntityRamAddress = 0x00FF19E8;
+inline constexpr std::uint32_t kPlayerUpdateRoutineAddress = 0x0000557A;
+inline constexpr std::uint32_t kPlayerStateDispatchTableAddress = 0x000059BA;
+inline constexpr std::uint32_t kPlayerMovementIntentRoutineAddress = 0x000061F6;
 inline constexpr std::uint32_t kPlayerDirectionRoutineAddress = 0x000085E2;
 inline constexpr std::uint32_t kPlayerMovementRoutineAddress = 0x00008F12;
 inline constexpr std::uint32_t kPlayerFootprintRoutineAddress = 0x00009BF2;
@@ -40,6 +43,8 @@ struct PlayerState {
     std::int32_t x_fixed{};
     std::int32_t y_fixed{};
     std::int8_t terrain_state{-1};
+    // Entity +0x04 selects the movement/update state in the 0x59BA table.
+    std::uint16_t movement_state{};
 };
 
 struct MovementVector {

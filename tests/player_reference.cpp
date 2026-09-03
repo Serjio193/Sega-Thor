@@ -42,6 +42,11 @@ int main(int argc, char** argv) {
         if (read_u32(rom, 0x85E2) != 0x362E0016U) {
             throw std::runtime_error("unexpected player direction routine bytes");
         }
+        if (read_u16(rom, 0x59BA) != 0x083CU ||
+            read_u16(rom, 0x59BC) != 0x0928U ||
+            read_u16(rom, 0x59BE) != 0x0B58U) {
+            throw std::runtime_error("player state dispatch table mismatch");
+        }
         constexpr std::array<std::int16_t, 16> dispatch_offsets{
             0x20, 0x58, 0x46, 0x1A, 0x32, 0x9C, 0x86, 0x2C,
             0x1A, 0x6C, 0x56, 0x14, 0x08, 0x40, 0x2E, 0x02,

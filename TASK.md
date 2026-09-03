@@ -15,7 +15,7 @@ STATUS: ACTIVE
 - M7 screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are verified and tested.
 
 ## M8 Definition of Done
-- [x] identify the player entity/update entry point and document its confirmed slot/call path;
+- [x] identify the player entity/update entry point and document its confirmed indirect call path;
 - [x] trace controller input bits into player movement intent without guessing field names;
 - [x] connect player movement to the confirmed M7 terrain/collision gate;
 - [ ] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Keep the player slice isolated; the next M8 task is to prove animation/entity callback semantics before adding attack, presentation or broader entity behavior.
+Validate the state-2/state-4 stop and turning branches against additional ROM traces before modelling any presentation state.

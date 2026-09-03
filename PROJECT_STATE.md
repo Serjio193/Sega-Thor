@@ -4,7 +4,7 @@ CURRENT_MILESTONE: M8 — Player system
 CURRENT_TASK: Recover the first verified player movement/update path from the canonical USA ROM and define only the confirmed portable state needed to reproduce it
 STATUS: ACTIVE
 LAST_VERIFIED_RESULT: M7 completed; screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are implemented/tested, and build/reference/probe checks are green
-NEXT_ACTION: keep the isolated player slice stable; prove animation/entity callback semantics before extending beyond movement
+NEXT_ACTION: validate state-2/state-4 stop and turning branches before modelling presentation state
 DO_NOT_WORK_ON: M9+, Thor 2, Saturn support, remaster features, speculative attacks/animation systems
 BLOCKERS: none
 
@@ -23,6 +23,7 @@ BLOCKERS: none
 - Controller normalization writes the movement nibble to `0xFF165E`; `0x85E2` maps it to confirmed cardinal/diagonal fixed-point vectors.
 - The shared movement cluster commits positions from `+0x72/+0x76` into `+0x08/+0x0C` and gates the footprint through `0x9BF2`/`0x938E`.
 - Native player state, movement mapping and terrain-gated update are implemented with synthetic and local ROM-oracle checks.
+- The indirect update path is closed: `0x8B22 -> 0x557A -> 0x5670 -> 0x59BA`, with state `0` entering `0x61F6`.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

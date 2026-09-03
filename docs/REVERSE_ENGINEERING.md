@@ -165,6 +165,10 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 - The native mapping preserves the original low-nibble behavior, including opposite-direction collapse and diagonal combinations; unsupported combinations resolve to no movement — **VERIFIED by synthetic tests**.
 
 ### Movement and collision contract
+- The main game loop at `0x008B22` calls `0x00557A` (player update) before `0x008E90` (active-entity movement), and then `0x00A196` (sprite/entity scheduling) — **CONFIRMED**.
+- `0x00557A` selects `0xFF19E8` and enters `0x005670`; the state dispatch at `0x0059BA` routes entity `+0x04` state `0` to `0x0061F6`, state `2` to `0x0062E4`, and state `4` to `0x006516` — **CONFIRMED**.
+- `0x0061F6` reads the normalized direction, writes direction `+0x16`, intent deltas `+0x4E/+0x52`, accumulated deltas `+0x72/+0x76`, and transitions `+0x04` to state `2` — **CONFIRMED**.
+- The shared movement routine consumes `+0x72/+0x76` before committing position; `+0x2A` and `+0x26` participate in the animation/state sequence, but their presentation semantics remain **INVESTIGATING**.
 - `0x008F12..0x00938C` is the shared active-entity movement update; main-pool records enter at `0x8F22` — **CONFIRMED**.
 - X/Y fixed-point deltas are accumulated in entity fields `+0x72/+0x76`; integer positions are committed to `+0x08/+0x0C` — **CONFIRMED**.
 - `0x009BF2` aggregates the entity footprint, and `0x00938E` is called before an axis commit; carry set takes the blocked path — **CONFIRMED**.
