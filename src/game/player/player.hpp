@@ -12,6 +12,7 @@ inline constexpr std::uint32_t kPlayerUpdateRoutineAddress = 0x0000557A;
 inline constexpr std::uint32_t kPlayerStateDispatchTableAddress = 0x000059BA;
 inline constexpr std::uint32_t kPlayerMovementIntentRoutineAddress = 0x000061F6;
 inline constexpr std::uint32_t kPlayerDirectionRoutineAddress = 0x000085E2;
+inline constexpr std::uint32_t kPlayerVelocityAdjustRoutineAddress = 0x000064C4;
 inline constexpr std::uint32_t kPlayerMovementRoutineAddress = 0x00008F12;
 inline constexpr std::uint32_t kPlayerFootprintRoutineAddress = 0x00009BF2;
 inline constexpr std::uint32_t kPlayerTerrainGateAddress = 0x0000938E;
@@ -52,6 +53,7 @@ struct PlayerState {
     std::int32_t intent_y_fixed{}; // entity +0x52
     std::int32_t accumulated_x_fixed{}; // entity +0x72
     std::int32_t accumulated_y_fixed{}; // entity +0x76
+    std::uint8_t footprint_any_bits{}; // entity +0x6F, produced by 0x9BF2
     std::uint16_t turn_timer{}; // FF197E in the state-4 branch
 };
 

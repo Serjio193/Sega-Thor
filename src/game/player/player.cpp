@@ -167,6 +167,7 @@ MovementResult try_move(PlayerState& player,
         result.blocked = true;
         return result;
     }
+    player.footprint_any_bits = aggregate->any_bits;
 
     const auto prospective_state = world::terrain_state_from_code(
         aggregate->common_terrain_code());

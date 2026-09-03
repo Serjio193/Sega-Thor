@@ -18,6 +18,15 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** verify the native state driver against the shared movement consumer and isolate the remaining state-4 slowdown context around `0x64C4`.
 
+## 2026-09-03 — M8 shared movement consumer integration
+**Objective:** Verify that the native state driver hands accumulated deltas to the same terrain-gated consumer and preserve the footprint mask needed by `0x64C4`.
+
+**Actions:** Added an integration test covering state-4 axis selection through `try_move`, terrain aggregation and accumulated-delta cleanup. Preserved the aggregate OR mask as raw entity `+0x6F` and added a ROM oracle for the `0x64C4` branch structure.
+
+**Result:** State-driver output reaches the shared movement consumer and the native player records the confirmed footprint mask. The remaining external flags at `FF1985`, `FF1984` and `FF16F1` are isolated as slowdown context, not presentation state.
+
+**Exact next step:** determine the lifecycle and writers of the three `0x64C4` global flags before adding a slowdown context object.
+
 ## 2026-09-03 — M8 player update dispatch closure
 **Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
 

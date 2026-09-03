@@ -95,6 +95,16 @@ int main(int argc, char** argv) {
             throw std::runtime_error("player cardinal vector oracle mismatch");
         }
 
+        // 0x64C4 is called by state 4 before adding its retained axis delta.
+        // It reads the footprint OR mask at entity +0x6F and global flags.
+        if (read_u16(rom, 0x64C4) != 0x4A39U ||
+            read_u16(rom, 0x64E4) != 0x1C2EU ||
+            read_u16(rom, 0x64E8) != 0x0206U ||
+            read_u16(rom, 0x650CU) != 0xE282U ||
+            read_u16(rom, 0x6510) != 0xE281U) {
+            throw std::runtime_error("player velocity-adjust oracle mismatch");
+        }
+
         const auto right = oasis::game::player::movement_vector(0x8U);
         const auto up_left = oasis::game::player::movement_vector(0x5U);
         if (right.x_fixed != 0x36000 || right.y_fixed != 0 ||

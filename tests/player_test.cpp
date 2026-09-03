@@ -50,6 +50,7 @@ int main() {
     assert(player.x_fixed == before_x + 0x36000);
     assert(player.terrain_state == 2);
     assert(player.movement_state == 2);
+    assert(player.footprint_any_bits == 0x02);
 
     grid[2U * 8U + 3U] = 0x05U; // terrain code 5 is rejected by the table
     PlayerState blocked_player{3 * 8 * 0x10000, 2 * 8 * 0x10000, 2};

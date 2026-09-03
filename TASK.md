@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Verify the native state driver against the shared movement consumer and isolate the remaining state-4 slowdown context around `0x64C4`.
+Determine the lifecycle and writers of the three `0x64C4` global flags before adding a slowdown context object.

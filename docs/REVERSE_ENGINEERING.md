@@ -176,7 +176,8 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 - X/Y fixed-point deltas are accumulated in entity fields `+0x72/+0x76`; integer positions are committed to `+0x08/+0x0C` — **CONFIRMED**.
 - `0x009BF2` aggregates the entity footprint, and `0x00938E` is called before an axis commit; carry set takes the blocked path — **CONFIRMED**.
 - Native `update_movement_state` mirrors the confirmed state-2 stop and state-4 axis-selection/accumulation rules; `PlayerState::try_move` then consumes those deltas through `ByteGridView::aggregate_world_square` and `evaluate_terrain_gate`.
-- Rendering, animation scripts, the unknown entity callback at `+0x22`, and state-4 slowdown context from `0x64C4` are intentionally outside this slice.
+- The shared footprint OR result is written at entity `+0x6F`; state-4 calls `0x64C4` with the retained axis delta, where global flags and the low nibble of `+0x6F` select no scaling, half scaling, or a Y-only half scaling — **CONFIRMED**, exact global lifecycle **INVESTIGATING**.
+- Rendering, animation scripts and the unknown entity callback at `+0x22` are intentionally outside this slice.
 
 ## Existing translated compatibility behavior
 
