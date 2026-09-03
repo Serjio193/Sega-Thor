@@ -3,8 +3,8 @@
 TASK: M9 — Entities/enemies/NPCs
 WHY: M8 established the player path and shared movement consumer. The next dependency is the common entity-pool contract before translating representative non-player behavior.
 CURRENT MILESTONE: M9
-UNDERSTANDING CONFIDENCE: 86%
-STATUS: ACTIVE
+UNDERSTANDING CONFIDENCE: 90%
+STATUS: COMPLETE
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
@@ -21,12 +21,12 @@ STATUS: ACTIVE
 - [x] implement bounded raw record access and the confirmed active-record predicate;
 - [x] add synthetic tests for pool bounds, stride and active selection;
 - [x] add a local USA-ROM oracle for the pool loop constants;
-- [ ] trace shared record fields consumed by the common movement entry;
-- [ ] identify one representative non-player behavior from caller/data evidence;
-- [ ] keep AI, attacks, animation callbacks and spawn semantics out until their dependencies are proven;
-- [ ] record unknown fields without invented semantic names;
-- [ ] keep every file <= 500 lines;
-- [ ] CI green.
+- [x] trace shared record fields consumed by the common movement entry;
+- [x] identify one representative non-player behavior from caller/data evidence;
+- [x] keep AI, attacks, animation callbacks and spawn semantics out until their dependencies are proven;
+- [x] record unknown fields without invented semantic names;
+- [x] keep every file <= 500 lines;
+- [x] CI green.
 
 ## Constraints
 - Do not begin M10 or spirits work.
@@ -38,4 +38,4 @@ STATUS: ACTIVE
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Trace the shared record fields consumed at `0x8F22` and identify one representative non-player behavior with caller/data evidence.
+M9 is complete. Do not begin M10 or spirits work without explicit authorization.

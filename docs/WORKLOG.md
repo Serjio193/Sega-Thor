@@ -31,6 +31,16 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** run full M9 acceptance checks, update roadmap status, and only then decide whether M9 can be marked DONE.
 
+## 2026-09-03 — M9 acceptance — DONE
+
+**Objective:** Verify the completed M9 slice and close the milestone without expanding into M10.
+
+**Checks:** Debug CTest `12/12` passed; Release CTest `12/12` passed; local USA-ROM entity oracle passed; file-size check passed; ROM archive stayed local-only and untracked; GitHub Actions CI #254 for `eae566c` completed successfully.
+
+**Result:** M9 is accepted. The repository now contains the common entity-pool contract, shared raw movement-field view and one evidence-backed `FF2954` callback-dispatch path. AI, attacks, animation and spawn semantics remain outside the milestone.
+
+**Exact next step:** await explicit authorization before starting M10.
+
 ## 2026-09-03 — M8 acceptance review
 **Objective:** Close M8 after local, ROM-reference and remote CI verification.
 

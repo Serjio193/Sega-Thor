@@ -1,10 +1,10 @@
 # Project State
 
 CURRENT_MILESTONE: M9 — Entities/enemies/NPCs
-CURRENT_TASK: Recover the common entity-pool iteration contract before translating representative entity behavior
-STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M9 raw entity-pool descriptors, shared movement field offsets, and FF2954 callback-dispatch path are implemented and locally ROM-verified
-NEXT_ACTION: keep M9 behavior translation bounded to one proven callback contract, then complete acceptance checks
+CURRENT_TASK: M9 acceptance complete; await explicit scope for the next milestone
+STATUS: COMPLETE
+LAST_VERIFIED_RESULT: M9 raw entity-pool descriptors, shared movement field offsets, and FF2954 callback-dispatch path are implemented and ROM-verified
+NEXT_ACTION: await explicit authorization before beginning M10
 DO_NOT_WORK_ON: M10+, Thor 2, Saturn support, remaster features, speculative enemy/NPC behavior
 BLOCKERS: none
 

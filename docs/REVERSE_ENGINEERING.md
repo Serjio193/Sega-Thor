@@ -184,7 +184,7 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 - Rendering, animation scripts and the unknown entity callback at `+0x22` are intentionally outside this slice.
 
 ## M9 — common entity pool framework
-**Status:** ACTIVE; raw pool iteration is implemented, entity behavior remains INVESTIGATING.
+**Status:** IMPLEMENTED; raw pool iteration and one representative callback-dispatch path are verified. Semantic entity behavior remains outside M9.
 
 ### Pool iteration evidence
 - `0x008E90` iterates four records from `FF2954` with stride `0x5A`, stores dispatcher `0x8EAA` in `FF193C`, and branches active records to `0x8F12` — **CONFIRMED**.

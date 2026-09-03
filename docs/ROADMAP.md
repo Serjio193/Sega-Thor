@@ -79,8 +79,14 @@ Delivered on `main`: the portable movement/state slice, M7 terrain-gated integra
 ROM-backed evidence, raw velocity context boundary, local Debug/Release verification
 and successful GitHub Actions CI. The commercial ROM remains local-only.
 
-## M9 — Entities/enemies/NPCs — TODO
-Goal: translate common entity framework and representative behaviors.
+## M9 — Entities/enemies/NPCs — DONE
+Goal: translate the common entity framework and one evidence-backed representative
+non-player callback-dispatch path.
+
+Delivered on `main`: raw pool descriptors and bounded record views, the shared
+movement field-access contract, a representative `FF2954` dispatch gate, local
+Debug/Release verification and successful GitHub Actions CI. AI, attacks,
+animation and spawn semantics remain explicitly outside this milestone.
 
 ## M10 — Spirits — TODO
 Goal: reproduce spirit summoning, targeting, abilities and interactions.
