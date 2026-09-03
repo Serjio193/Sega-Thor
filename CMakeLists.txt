@@ -41,6 +41,10 @@ add_executable(oasis_genesis_graphics_test tests/genesis_graphics_test.cpp)
 target_link_libraries(oasis_genesis_graphics_test PRIVATE oasis_core)
 add_test(NAME oasis_genesis_graphics COMMAND oasis_genesis_graphics_test)
 
+add_executable(oasis_vdp_test tests/vdp_test.cpp)
+target_link_libraries(oasis_vdp_test PRIVATE oasis_core)
+add_test(NAME oasis_vdp COMMAND oasis_vdp_test)
+
 # Uses a locally supplied verified ROM and is intentionally not registered with CTest.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
