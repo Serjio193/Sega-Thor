@@ -14,6 +14,7 @@ add_library(oasis_core
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
     src/game/genesis_graphics.cpp
+    src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
 )
 
@@ -54,6 +55,10 @@ add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
 add_executable(oasis_screen_descriptor_test tests/screen_descriptor_test.cpp)
 target_link_libraries(oasis_screen_descriptor_test PRIVATE oasis_core)
 add_test(NAME oasis_screen_descriptor COMMAND oasis_screen_descriptor_test)
+
+add_executable(oasis_byte_grid_test tests/byte_grid_test.cpp)
+target_link_libraries(oasis_byte_grid_test PRIVATE oasis_core)
+add_test(NAME oasis_byte_grid COMMAND oasis_byte_grid_test)
 
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
