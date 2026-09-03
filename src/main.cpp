@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
         std::cout << "Sega checksum: " << (identity.fingerprint.sega_checksum_valid ? "valid" : "invalid") << "\n";
         std::cout << "CRC32: " << std::hex << std::uppercase << std::setw(8) << std::setfill('0')
                   << identity.fingerprint.crc32 << "\n";
+        std::cout << "SHA-1: " << identity.fingerprint.sha1 << "\n";
         std::cout << "SHA-256: " << identity.fingerprint.sha256 << "\n";
         return 0;
     } catch (const std::exception& e) {
