@@ -1,6 +1,5 @@
 #include "game/graphics_decompression.hpp"
 
-#include <algorithm>
 #include <cstdint>
 #include <stdexcept>
 
@@ -12,6 +11,13 @@ public:
     explicit Stream(std::span<const std::uint8_t> source) : source_(source) {}
 
     [[nodiscard]] std::size_t position() const noexcept { return position_; }
+
+    [[nodiscard]] std::uint8_t peek_u8() const {
+        if (position_ >= source_.size()) {
+            throw std::runtime_error("graphics stream truncated while peeking");
+        }
+        return source_[position_];
+    }
 
     std::uint8_t read_u8() {
         if (position_ >= source_.size()) {
@@ -61,10 +67,7 @@ private:
 
 class BitReader {
 public:
-    explicit BitReader(Stream& stream) : stream_(stream) {
-        bits_ = stream_.read_u8();
-        remaining_ = 8;
-    }
+    explicit BitReader(Stream& stream) : stream_(stream), bits_(stream_.read_u8()), remaining_(8) {}
 
     bool read_bit() {
         --remaining_;
@@ -144,25 +147,16 @@ void decompress_format_a(Stream& stream, Output& output) {
             }
 
             const std::uint16_t length_counter = static_cast<std::uint16_t>(
-                (((command & 0x60U) >> 5U) + 3U));
+                ((command & 0x60U) >> 5U) + 3U);
             const std::uint16_t distance = static_cast<std::uint16_t>(
                 ((command & 0x1FU) << 8U) | stream.read_u8());
             output.copy_back(distance, dbf_count(length_counter));
 
-            while (stream.position() != block_end) {
-                const auto extension = stream.position();
-                (void)extension;
-                // The original peeks without consuming and chains only 0b011xxxxx commands.
-                // Stream has no peek API; consume then keep it only when it is an extension.
-                // To preserve exact source position, inspect through a temporary read is avoided by
-                // requiring a small explicit peek implementation below.
-                break;
-            }
-
-            // Extension handling is performed by the dedicated helper below via a position-aware
-            // stream implementation in the final branch; reaching here without it is not valid.
-            if (stream.position() != block_end) {
-                throw std::runtime_error("format-A extension handling incomplete");
+            while (stream.position() != block_end &&
+                   (stream.peek_u8() & 0xE0U) == 0x60U) {
+                const auto extension = static_cast<std::uint8_t>(stream.read_u8() & 0x1FU);
+                const std::size_t count = extension == 0 ? 256U : extension;
+                output.copy_back(distance, count);
             }
         }
 
