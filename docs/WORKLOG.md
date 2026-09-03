@@ -4,6 +4,18 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 spirit slot/dispatch trace
+
+**Objective:** Translate the first evidence-backed spirit slot lifecycle and active-dispatch gate.
+
+**Evidence:** `0x7BE8` maps event codes `0x16..0x19` to bits `0..3` of `FF0DBA`; `0x5202` reads that flag byte and `0x522E` contains the contiguous selector table `0x12..0x19`; `0x31B80` gates the observed path on raw entity `+0x41` bits `3|1`, checks slot bit 1 and guard bit 0 of `FF0DC4`, calls `0xC2EC` with selector `0x13` when open, sets the guard, then queues selector `0x15` through `0xCA24`.
+
+**Actions:** Added `src/game/spirits/spirit_slots.*` with raw address/selector constants, event-to-slot mapping and a deterministic dispatch trace. Added synthetic coverage and a USA-ROM byte oracle. No spirit names, button meanings, targeting, attacks, rendering or audio semantics were invented.
+
+**Result:** First M10 implementation slice is verified: Debug/Release build and CTest pass 13/13, and the local USA-ROM oracle passes. Files remain under 500 lines and ROM remains ignored/untracked.
+
+**Exact next step:** commit/push this conceptual M10 slice, then investigate the next caller/data dependency needed for a proven summon or ability contract.
+
 ## 2026-09-03 — M10 spirit lifecycle investigation started
 
 **Objective:** Recover one evidence-backed spirit summon/slot/dispatch lifecycle slice and, only if its dependencies are proven, one ability or interaction contract.

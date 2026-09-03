@@ -3,7 +3,7 @@
 TASK: M10 — Spirits
 WHY: M9 established the common entity framework. The next dependency is one evidence-backed spirit lifecycle slice before expanding into abilities or interactions.
 CURRENT MILESTONE: M10
-UNDERSTANDING CONFIDENCE: 24%
+UNDERSTANDING CONFIDENCE: 42%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -19,9 +19,9 @@ STATUS: ACTIVE
 
 ## M10 Definition of Done
 - [ ] identify a summon entry and its caller/data evidence;
-- [ ] identify spirit slot storage and lifecycle state transitions;
-- [ ] identify the dispatch path for an active spirit;
-- [ ] translate one deterministic summon/slot/dispatch slice;
+- [x] identify spirit slot storage and lifecycle state transitions;
+- [x] identify the dispatch path for an active spirit;
+- [x] translate one deterministic summon/slot/dispatch slice;
 - [ ] translate one ability or interaction contract only when its dependencies are proven;
 - [ ] add synthetic tests for the native deterministic slice;
 - [ ] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
@@ -40,4 +40,4 @@ STATUS: ACTIVE
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Identify the summon entry, spirit slot storage, active-spirit dispatch and one testable ability/interaction contract in the local USA ROM.
+Trace the caller/data dependency that connects the accepted raw dispatch trace to a proven summon or ability contract.

@@ -214,6 +214,40 @@ The first M9 slice does not translate AI, attacks, animation callbacks, spawn ta
 
 ## Existing translated compatibility behavior
 
+## M10 — spirit slot and dispatch trace
+**Status:** IMPLEMENTED as a narrow deterministic slice; spirit names, button
+meanings, targeting, abilities and presentation semantics remain UNKNOWN.
+
+### Slot storage and lifecycle evidence
+- At `0x007BE8`, the event handler subtracts `0x16` from the event code and
+  uses the result as a bit index for `0x00FF0DBA` — **CONFIRMED**. The four
+  observed event values `0x16..0x19` therefore map to slot bits `0..3`.
+- At `0x005202`, the status-display path reads `0x00FF0DBA`; the adjacent
+  byte table at `0x00522E` is `12 13 14 15 16 17 18 19` — **CONFIRMED**.
+  This establishes four contiguous slot/event entries, but does not prove
+  their character names or ability semantics.
+
+### Active dispatch evidence
+- `0x0031B80` checks bits `3` and `1` of entity field `+0x41` before entering
+  the observed path — **CONFIRMED**. The meanings of these raw input bits are
+  intentionally unassigned.
+- The path tests bit `1` of `0x00FF0DBA`, then tests bit `0` of
+  `0x00FF0DC4` as a one-shot guard — **CONFIRMED**.
+- When the slot gate is open, it calls `0x0000C2EC` with selector `0x13`,
+  fixed values `D5=0`, `D6=0x4000`, `D7=0x4800`, and sets guard bit 0 —
+  **CONFIRMED**.
+- It then falls through to queue selector `0x15` through `0x0000CA24`, using
+  the player record's `+0x08` position-derived value and `D4=0x18` —
+  **CONFIRMED**. The selectors are retained as raw trace values; their
+  resource/effect semantics are not promoted beyond what the callers prove.
+
+### Native mapping and oracle
+`src/game/spirits/spirit_slots.*` models event-to-slot bit updates and the raw
+`0x31B80` gate/selector trace without invoking ROM addresses. Synthetic tests
+cover inactive input, unavailable slot, open guard and repeated guarded
+dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
+`0x5202`, `0x522E`, `0x31B80` and `0x31BC4`.
+
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.
 

@@ -88,10 +88,11 @@ movement field-access contract, a representative `FF2954` dispatch gate, local
 Debug/Release verification and successful GitHub Actions CI. AI, attacks,
 animation and spawn semantics remain explicitly outside this milestone.
 
-## M10 — Spirits — NEXT
+## M10 — Spirits — ACTIVE
 Goal: reproduce one evidence-backed spirit lifecycle slice: summon/slot state,
-target selection and one ability/interaction contract. Keep rendering, audio and
-unproven spirit semantics outside the milestone.
+target selection and one ability/interaction contract. The first accepted slice
+maps four event-backed slot bits and one raw dispatch trace. Rendering, audio and
+unproven spirit semantics remain outside the milestone.
 
 ## M11 — Scripts/events/dialogue — TODO
 Goal: reproduce game progression and event semantics.

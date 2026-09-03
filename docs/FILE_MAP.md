@@ -54,6 +54,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── entities/
 │   │   │   ├── entity_pool.cpp  Raw entity-pool bounds and active-record view
 │   │   │   └── entity_pool.hpp  Entity-pool descriptors from the common loop
+│   │   ├── spirits/
+│   │   │   ├── spirit_slots.cpp  Evidence-backed spirit slot and dispatch trace
+│   │   │   └── spirit_slots.hpp  Spirit slot/dispatch constants and API
 │   │   └── world/
 │   │       ├── byte_grid.cpp          8-pixel world grid and footprint aggregation
 │   │       ├── byte_grid.hpp          Bounded world-grid view API
@@ -86,7 +89,6 @@ Create these only when their milestone begins and evidence justifies the structu
 
 ```text
 src/game/entities/  Enemy/NPC/entity systems
-src/game/spirits/   Spirit mechanics
 src/game/scripts/   Event/script interpreter or translated semantics
 src/audio/          Audio runtime/compatibility layer
 src/platform/       Window/input/render/audio platform integration
