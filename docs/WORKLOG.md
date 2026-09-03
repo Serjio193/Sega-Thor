@@ -4,6 +4,31 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 closure attempt stopped at the evidence boundary
+
+**Concrete task:** attempt to close M10 by tracing the producer and caller/data
+chain for the raw type `0x16` check in the `FF19E8` target pool.
+
+**Evidence:** the additional scan confirms that `0xFFDE` is a data-stream
+initializer for the six-record `FF2D8C` pool: it obtains a record through
+`0xD9F0`, copies a data-driven type and installs callback `0x17A96`. The
+generic stream loaders around `0xFF1A` and `0xFCB8` allocate from `FF1CD8`,
+not `FF19E8`. No caller/data record was found that proves a raw type `0x16`
+write into `FF19E8`; the only literal write remains `0x847C -> FF1AA4`.
+
+**Result:** M10 cannot be honestly closed. The cross-pool target query,
+slot-gated dispatch and deterministic tests are complete, but summon entry,
+summon identity and ability/interaction semantics remain UNKNOWN. M10 stays
+ACTIVE and M11 remains out of scope.
+
+**Verification:** the previously recorded Debug/Release CTest `13/13`, local
+USA-ROM oracle and file-limit checks remain valid; this investigation changed
+documentation only.
+
+**Exact next step:** obtain runtime trace or identify the data table that
+feeds a `0x16` record in `FF19E8`, then prove its caller relationship to
+`0x17A96`/`0x17CA6` before adding behavior or closing M10.
+
 ## 2026-09-03 — M10 raw type-0x16 producer remains unresolved
 
 **Evidence:** the static scan found one literal `move.w #$16,$0(a6)` at

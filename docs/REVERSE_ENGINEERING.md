@@ -275,6 +275,12 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
   `FF19E8` construction sites at `0x11DF0`, `0x27B2A` and `0x2BD20` use other
   literal/table values or data-driven values; no producer of raw type `0x16`
   in `FF19E8` is proven — **UNKNOWN**.
+- The additional loader scan confirms that `0xFFDE` consumes a data stream
+  into the auxiliary `FF2D8C` pool, while the generic stream loaders at
+  `0xFF1A` and `0xFCB8` allocate from `FF1CD8`. These are concrete pool
+  boundaries, but they do not identify a producer for raw type `0x16` in
+  `FF19E8` or prove that the `0x17A96`/`0x17CA6` callback is a summon —
+  **CONFIRMED boundary; UNKNOWN semantics**.
 
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.
