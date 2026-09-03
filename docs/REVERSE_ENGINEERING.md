@@ -259,6 +259,9 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
   behavior. The raw fields used by the query are exposed without semantic
   names; interaction meaning remains UNKNOWN. The ROM oracle also checks the
   query setup at `0x17CA6` and the scan prologue at `0xB922`.
+- `0x846C` separately initializes raw type `0x16` in record `FF1AA4`; because
+  `0xB922` scans `FF19E8`, this is tracked as a possible related producer but
+  not as proof of a summon/ability relationship — **UNKNOWN**.
 
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.

@@ -10,6 +10,14 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** trace the caller/data path that proves whether the slot-gated record is a summon or a different interaction; do not add another semantic layer until that evidence is found.
 
+## 2026-09-03 — M10 target linkage remains unproven
+
+**Evidence:** `0x846C` initializes raw type `0x16` in the separate record at `FF1AA4`, while `0xB922` scans the 21-record pool at `FF19E8`. The shared numeric type alone does not establish that these are the same object or that `0x17CA6` is a spirit ability.
+
+**Action/result:** kept the native implementation unchanged and recorded the storage split as an explicit unknown. No summon name, ability name or interaction meaning was inferred.
+
+**Exact next step:** trace producers of type `0x16` in `FF19E8` and the data/caller path that enters the `0x17CA6` behavior before extending M10.
+
 ## 2026-09-03 — M10 spirit slot/dispatch trace
 
 **Objective:** Translate the first evidence-backed spirit slot lifecycle and active-dispatch gate.
