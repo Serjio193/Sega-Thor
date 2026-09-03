@@ -50,7 +50,7 @@ The active grid is selected by bit 7 of `0xFF16F0`.
 
 ### `0x9C40` — single-cell world query
 
-`0x9C40` is a direct single-cell byte-grid reader. It takes entity coordinates from `FP+8` and `FP+12`, arithmetic-shifts both by three (8-pixel cells), and computes:
+`0x9C40` takes entity coordinates from `FP+8` and `FP+12`, arithmetic-shifts both by three and reads one byte:
 
 ```text
 cell_x = world_x >> 3
@@ -59,60 +59,93 @@ index  = cell_x + (cell_y << row_shift)
 value  = grid[index]
 ```
 
-The raw byte is returned in `D5`. This establishes the native world-to-byte-grid addressing rule.
+The raw byte is returned in `D5`. Native implementation: `src/game/world/byte_grid.*`. The safe C++ view rejects negative or out-of-span coordinates instead of reproducing unchecked 68000 memory access.
 
-Native implementation: `src/game/world/byte_grid.*`. The safe C++ view rejects negative or out-of-span coordinates instead of reproducing unchecked 68000 memory access.
+### `0x9BF2` — footprint OR/AND aggregation
 
-### `0x9AD6` — terrain/property decoding
+`0x9BF2` samples every byte-grid cell intersected by a square centered at `(D1,D2)` with radius `D3`:
 
-`0x9AD6` samples the same byte grid from entity world coordinates and masks the result with `0x0F`. The resulting low-nibble code is passed through ROM table `0x96F8`, and the mapped value affects subsequent movement/height logic. Neighboring grid cells are also compared and table-derived values are interpolated.
+```text
+x0 = (center_x - radius) >> 3
+x1 = (center_x + radius) >> 3
+y0 = (center_y - radius) >> 3
+y1 = (center_y + radius) >> 3
+```
 
-Therefore the low nibble is a confirmed gameplay terrain/property code. Individual bits are not yet named as `blocked`, `water`, `slope`, or similar until their meanings are proven.
+For the inclusive rectangle it computes:
 
-### `0x9BF2` / `0x9D00` — footprint terrain aggregation
+```text
+D4.low = OR  of all covered grid bytes, starting from 0x00
+D5.low = AND of all covered grid bytes, starting from 0xFF
+```
 
-`0x9BF2` samples a rectangular region of the byte grid around supplied coordinates and accumulates both OR and AND results across the covered cells. Wrapper `0x9BC2` supplies entity coordinates and a footprint/radius-like field. `0x9D00` stores the aggregate results into entity state and invokes `0x9AD6` for the single-position terrain calculation.
+Wrapper `0x9BC2` supplies entity `FP+8`, `FP+12` and footprint/radius field `FP+70`. Native `ByteGridView::aggregate_world_square()` reproduces the confirmed query with bounds checking and synthetic OR/AND tests.
 
-This confirms that the byte grid participates directly in entity movement/terrain handling rather than only rendering.
+### Terrain code and state tables
 
-## `0x10382` — active entity ID lookup, NOT collision
+The low nibble of the grid byte is a confirmed gameplay terrain/property code.
 
-The collision probe rejected an earlier hypothesis.
+ROM table `0x96E8` maps terrain code to the state used by movement gates:
 
-`0x10382` receives an ID in `D0`, walks the entity array starting at `0xFF1CD8`, and checks 17 slots with stride 188 bytes.
+```text
+code:   0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+state: -1  0  2  1  4 -1  3 -1  6  7 -1 -1  5 -1 -1 -1
+```
 
-For each slot:
+ROM table `0x96F8` maps terrain code to a height/behavior class:
 
-1. word `+0` must be positive/active;
-2. word `+24` is masked with `0x07FF`;
-3. the masked value is compared with incoming `D0`.
+```text
+code:      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+behavior: -1  0  2  1  4  4  3  3  6  6  6  6  5  5  5  5
+```
 
-Result contract:
+`0x9AD6` uses the `0x96F8` class. Even classes select a direct runtime value from `0xFF1706`; odd classes interpolate between neighboring terrain cells. The interpolation behavior is confirmed, but surface names such as ramp/water/ledge are not assigned yet.
 
-- matching active entity: carry clear;
-- no matching entity: carry set.
+`0x9D00` calls `0x9BF2`, stores the aggregate bytes in entity fields `FP+111` and `FP+110`, converts `(D5 & 0x0F)` through `0x96E8` into `FP+112`, then calls `0x9AD6` and stores its derived value in `FP+20`.
 
-Callers at `0x1027C`, `0x102BE`, `0x10300`, and nearby iterate words from `0xFF17C6`, mask them with `0x07FF`, and use `0x10382` to determine whether a corresponding active entity exists. Therefore `0xFF17C6` is not evidence for a collision map in this path.
+## `0x938E` — directional terrain movement gate — CONFIRMED
 
-Direct absolute callers elsewhere were also found at `0x26DE4`, `0x26DF2`, `0x26E00`, and `0x26E0E`.
+The normal X-axis movement loop calls `0x938E` immediately before committing a step and branches on Carry:
 
-## `0x10594` — target steering / velocity generation, NOT collision
+```text
+BSR 0x938E
+BCS blocked_path
+```
 
-A second collision candidate was rejected after caller and routine analysis.
+Therefore:
 
-Fourteen direct callers pass world-like coordinates in `D0/D1`, current direction in `D2`, and movement magnitudes in `D3/D4`. Common callers load `D0/D1` from `0xFF19F0/0xFF19F4`.
+- Carry clear = movement permitted;
+- Carry set = movement blocked / collision response.
 
-The routine:
+The routine samples the prospective footprint edge, converts the common low-nibble terrain code through `0x96E8`, compares the prospective terrain state with the entity's current `FP+112` state, and applies entity/grid flags.
 
-1. subtracts entity position fields `FP+8` / `FP+12` from the target coordinates to form signed X/Y deltas;
-2. uses helper `0x10660` and the ROM table at `0x5D906` to derive a 256-step direction angle;
-3. turns the existing `D2` direction toward that target direction by at most eight angle units per call;
-4. maps the resulting angle to a coarse orientation stored in `FP+22`;
-5. uses the signed lookup table at `0x5D706` as sine/cosine-style data;
-6. scales those components by `D3/D4` and writes the resulting fixed-point velocity components to `FP+78` and `FP+82`.
+For the boolean allow/block result, the confirmed decision is:
 
-This routine belongs with later entity/player/enemy movement work, not the M7 collision API.
+1. entity flag bit 0 at `FP+56` bypasses the gate;
+2. negative current terrain state bypasses the gate;
+3. negative prospective terrain state blocks movement;
+4. terrain-state differences `>= +2` or `<= -2` block movement;
+5. for a nonzero difference, entity flag bit 5 blocks the transition;
+6. for equal states, prospective aggregate bit 7 combined with entity flag bit 6 blocks movement;
+7. prospective aggregate bit 4 blocks movement;
+8. otherwise movement is allowed.
 
-## M7 next proof
+Large downward transitions have additional side effects involving runtime height table `0xFF1706`, `0xFF196E` and entity status bit 5, but still return Carry set. Those side effects are intentionally not part of the pure boolean C++ gate.
 
-The world-grid storage and raw terrain-code sampling contract are now translated. The remaining M7 proof target is the exact interpretation of terrain-code lookup results in `0x9AD6` / `0x9D00`: which combinations prevent movement, alter height, or represent traversable slopes/surfaces. Do not collapse this into a boolean collision flag before that behavior is demonstrated.
+Native implementation: `src/game/world/terrain_collision.*`. `TerrainGateResult` models only the original Carry result; player/entity response side effects remain for later milestones.
+
+Sibling routines beginning near `0x94D2` and `0x95AA` apply the same state-transition logic to other directional edges and set the corresponding entity collision/status byte.
+
+## Rejected collision candidates
+
+### `0x10382` — active entity ID lookup, NOT collision
+
+It receives an ID in `D0`, walks 17 entity slots from `0xFF1CD8` with stride 188 bytes and compares `(word +24 & 0x07FF)`. Matching active entity returns Carry clear; no match returns Carry set. `0xFF17C6` is an entity/object ID list in this path, not a collision map.
+
+### `0x10594` — target steering / velocity generation, NOT collision
+
+It computes target direction, turns toward it by at most eight angle units per call, maps the angle to orientation and uses lookup data to generate fixed-point velocity components. It belongs with later player/enemy movement work.
+
+## Remaining M7 work
+
+The collision representation and boolean movement-gate semantics are now evidenced and translated. Remaining acceptance work is integration/verification: run the new synthetic tests, keep the supported-ROM screen descriptor oracle green, update project state/worklog, and only then decide whether M7 can be marked DONE.
