@@ -25,20 +25,52 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Prepare original routine and representative streams
+      - name: Select one verified caller for each format
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
           Path('/tmp/decompress.bin').write_bytes(rom[0x3820:0x3b3e])
-          cases=[
-              ('a',0x16943c,0x3a7fe,0xff316c),
-              ('b',0x141580,0x3e820,0xff2fa8),
-          ]
-          for name,src,caller,dst in cases:
-              Path(f'/tmp/source_{name}.bin').write_bytes(rom[src:src+0x10000])
-              print(f'case_{name}: caller=0x{caller:x} source=0x{src:x} dest=0x{dst:x} source_byte_2={rom[src+2]}')
+          jsr=bytes.fromhex('4eb900003820')
+          hits=[]
+          pos=0
+          while True:
+              pos=rom.find(jsr,pos)
+              if pos<0: break
+              hits.append(pos); pos+=1
+
+          immediate=[]
+          for call in hits:
+              start=max(0,call-64)
+              window=rom[start:call]
+              a0pos=window.rfind(bytes.fromhex('41f9'))
+              if a0pos<0: continue
+              absolute=start+a0pos
+              if absolute+6>call: continue
+              src=int.from_bytes(rom[absolute+2:absolute+6],'big')
+              if not (0 <= src+2 < len(rom)): continue
+              a1pos=window.rfind(bytes.fromhex('43f9'))
+              dst=None
+              if a1pos>=0:
+                  a1abs=start+a1pos
+                  if a1abs+6<=call:
+                      dst=int.from_bytes(rom[a1abs+2:a1abs+6],'big')
+              immediate.append((call,src,dst,rom[src+2]))
+              print(f'immediate_caller=0x{call:x} source=0x{src:x} dest={"unknown" if dst is None else hex(dst)} source_byte_2={rom[src+2]}')
+
+          format_a=next((x for x in immediate if x[3]!=0),None)
+          format_b=next((x for x in immediate if x[3]==0),None)
+          if not format_a:
+              raise SystemExit('no immediate format-A caller found')
+          if not format_b:
+              raise SystemExit('no immediate format-B caller found')
+
+          for name,case in [('a',format_a),('b',format_b)]:
+              call,src,dst,flag=case
+              Path(f'/tmp/source_{name}.bin').write_bytes(rom[src:src+0x20000])
+              Path(f'/tmp/case_{name}.txt').write_text(f'{call:x} {src:x} {0 if dst is None else dst:x} {flag}\n')
+              print(f'selected_{name}: caller=0x{call:x} source=0x{src:x} dest={"unknown" if dst is None else hex(dst)} source_byte_2={flag}')
           PY
 
       - name: Install M68K compiler and QEMU user emulator
@@ -54,7 +86,6 @@ jobs:
           .section .text
           .global _start
 
-          /* Execute one case. Inputs: A0=source, D7=case id. */
           run_case:
               lea output_data,%a1
               move.l %a0,%a3
@@ -62,18 +93,16 @@ jobs:
               move.l %d7,%a6
               jsr original_decompressor
               move.l %a6,%d7
-
               move.l %a0,%d4
               sub.l %a3,%d4
               move.l %a1,%d5
               sub.l %a4,%d5
 
               lea metadata,%a5
-              move.l #0x54485232,(%a5)
+              move.l #0x54485233,(%a5)
               move.l %d7,4(%a5)
               move.l %d5,8(%a5)
               move.l %d4,12(%a5)
-
               move.l #4,%d0
               move.l #1,%d1
               move.l %a5,%d2
@@ -91,11 +120,9 @@ jobs:
               lea source_a,%a0
               moveq #1,%d7
               bsr run_case
-
               lea source_b,%a0
               moveq #2,%d7
               bsr run_case
-
               move.l #1,%d0
               clr.l %d1
               trap #0
@@ -114,7 +141,7 @@ jobs:
           .section .bss
           .align 4
           output_data:
-              .skip 2097152
+              .skip 4194304
           metadata:
               .skip 16
           ASM
@@ -128,27 +155,29 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, struct
+          meta={}
+          for case_id,name in [(1,'a'),(2,'b')]:
+              call,src,dst,flag=Path(f'/tmp/case_{name}.txt').read_text().split()
+              meta[case_id]=(call,src,dst,int(flag))
           data=Path('/tmp/trace.bin').read_bytes()
           pos=0
-          case_info={
-              1:('0x3a7fe','0x16943c','0xff316c'),
-              2:('0x3e820','0x141580','0xff2fa8'),
-          }
+          seen=[]
           while pos < len(data):
-              if pos+16 > len(data): raise SystemExit('truncated trace header')
-              magic,case_id,out_len,consumed=struct.unpack('>IIII',data[pos:pos+16])
-              pos += 16
-              if magic != 0x54485232: raise SystemExit(f'bad trace magic {magic:08x}')
-              if pos+out_len > len(data): raise SystemExit('truncated trace output')
-              out=data[pos:pos+out_len]
-              pos += out_len
-              caller,source,dest=case_info[case_id]
+              if pos+16>len(data): raise SystemExit('truncated trace header')
+              magic,case_id,out_len,consumed=struct.unpack('>IIII',data[pos:pos+16]); pos+=16
+              if magic!=0x54485233: raise SystemExit(f'bad trace magic {magic:08x}')
+              if pos+out_len>len(data): raise SystemExit('truncated trace output')
+              out=data[pos:pos+out_len]; pos+=out_len
+              call,src,dst,flag=meta[case_id]
               print(f'case={case_id}')
-              print(f'caller={caller}')
-              print(f'source_rom_address={source}')
-              print(f'destination_original={dest}')
+              print(f'format_selector_byte_2={flag}')
+              print(f'caller=0x{call}')
+              print(f'source_rom_address=0x{src}')
+              print(f'destination_original={"unknown" if int(dst,16)==0 else "0x"+dst}')
               print(f'source_consumed={consumed}')
               print(f'output_length={out_len}')
               print(f'output_sha256={hashlib.sha256(out).hexdigest()}')
-          if pos != len(data): raise SystemExit('trace parse mismatch')
+              seen.append(flag==0)
+          if pos!=len(data): raise SystemExit('trace parse mismatch')
+          if not any(seen): raise SystemExit('format-B trace was not executed')
           PY
