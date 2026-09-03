@@ -33,6 +33,10 @@ add_executable(oasis_graphics_decompress_test tests/graphics_decompress_test.cpp
 target_link_libraries(oasis_graphics_decompress_test PRIVATE oasis_core)
 add_test(NAME oasis_graphics_decompress COMMAND oasis_graphics_decompress_test)
 
+# Uses a locally supplied verified ROM and is intentionally not registered with CTest.
+add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
+target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
+
 add_test(
     NAME project_file_line_limit
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_file_limits.cmake
