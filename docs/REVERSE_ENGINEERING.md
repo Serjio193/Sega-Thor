@@ -328,6 +328,11 @@ dialogue and command semantics remain UNKNOWN.
   `0x01FF`, then clears mask `0xFFF9` at `FF17B8` and writes raw `FF0D7E` to
   current-record `+0x06` and `0xFFFF` to `+0x5C` — **CONFIRMED**. The helper
   and field meanings remain UNKNOWN.
+- The external entry at `0x60004` branches to `0x6042C`; its raw command
+  dispatcher compares `D0` against values `1..8`, and the command `0x0006`
+  branch at `0x60478` reaches `0x609C8` — **CONFIRMED**. That handler tests
+  raw flags at several driver RAM locations before its later branches; its
+  complete return and side-effect contract remains UNKNOWN.
 - The native `event_router` module exposes the producer transfer, raw
   handler-address mapping and the bounded `0x7B2A` trace. Synthetic tests and
   the USA-ROM oracle cover the type gate, field composition and dispatch
