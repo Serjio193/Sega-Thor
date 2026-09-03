@@ -1,0 +1,91 @@
+name: m7-inline-descriptor-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  verify-inline-descriptors:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Validate 26-byte descriptor pattern before D406 calls
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          pat=b'\x4e\xb9'+(0xd406).to_bytes(4,'big')
+          calls=[]; p=0
+          while True:
+              p=rom.find(pat,p)
+              if p<0: break
+              calls.append(p); p+=1
+
+          plausible=[]
+          for call in calls:
+              start=call-26
+              if start<0: continue
+              d=rom[start:call]
+              ptr4=int.from_bytes(d[4:8],'big')
+              ptr8=int.from_bytes(d[8:12],'big')
+              offsets=[int.from_bytes(d[i:i+1],'big',signed=True) for i in range(12,16)]
+              words=[int.from_bytes(d[i:i+2],'big') for i in range(16,26,2)]
+              ptr4_ok=0 < ptr4 < len(rom) and (ptr4 & 1)==0
+              ptr8_ok=ptr8==0 or (0 < ptr8 < len(rom))
+              offsets_ok=all(-64 <= x <= 64 for x in offsets)
+              if ptr4_ok and ptr8_ok and offsets_ok:
+                  plausible.append((call,start,ptr4,ptr8,offsets,words))
+          print(f'total_d406_calls={len(calls)}')
+          print(f'plausible_inline_26={len(plausible)}')
+          for row in plausible[:40]:
+              call,start,ptr4,ptr8,offsets,words=row
+              print(f'call=0x{call:06x} desc=0x{start:06x} ptr4=0x{ptr4:06x} ptr8=0x{ptr8:06x} '
+                    f'offsets={offsets} words={[hex(x) for x in words]}')
+          PY
+
+      - name: Decode selected descriptor payload headers with project algorithm
+        shell: bash
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release >/dev/null
+          cmake --build build --parallel >/dev/null
+          cat > /tmp/probe.py <<'PY'
+          from pathlib import Path
+          import subprocess, tempfile, os
+          rom=Path('/tmp/reference.md').read_bytes()
+          calls=[0x2cf9c,0x2db40,0x2f67c,0x32166]
+          for call in calls:
+              start=call-26
+              d=rom[start:call]
+              ptr4=int.from_bytes(d[4:8],'big')
+              ptr8=int.from_bytes(d[8:12],'big')
+              print(f'descriptor=0x{start:06x} call=0x{call:06x} ptr4=0x{ptr4:06x} ptr8=0x{ptr8:06x}')
+              if not (0 < ptr4 < len(rom)):
+                  print('  ptr4_invalid')
+                  continue
+              # Use the verified inspector to prove ptr4 is a valid decompressor stream.
+              out=f'/tmp/desc_{start:06x}.pgm'
+              cp=subprocess.run(['./build/oasis_inspect','/tmp/reference.md',hex(ptr4),out],
+                                text=True,capture_output=True)
+              print('  inspector_rc=',cp.returncode)
+              for line in cp.stdout.splitlines():
+                  if line.startswith(('source_consumed=','decompressed_bytes=','complete_tiles=')):
+                      print(' ',line)
+              if cp.returncode!=0:
+                  print('  stderr=',cp.stderr.strip())
+          PY
+          python3 /tmp/probe.py
