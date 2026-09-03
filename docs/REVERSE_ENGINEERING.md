@@ -310,6 +310,8 @@ dialogue and command semantics remain UNKNOWN.
 - The producer composes `FF1976` from source `+0x32` shifted left by eight
   and source byte `+0x52`, then copies source `+0x04` to `FF1978` and source
   long `+0x4E` to `FF197A` — **CONFIRMED**.
+- A static USA-ROM scan found no direct literal `BSR` or absolute `JSR` to
+  `0x82AE`; its caller may be indirect or data-driven and remains UNKNOWN.
 - The source type-8 meaning and resulting event-code meaning are not
   assigned. Internal selection semantics of `0xB9EC` remain outside this
   slice.

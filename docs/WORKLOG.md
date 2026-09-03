@@ -20,8 +20,7 @@ bounded handlers and sends a clear flag bit to `0x7B2A`.
 and router functions, synthetic coverage and a local USA-ROM oracle.
 **Verification:** Debug and Release CTest pass 14/14. All six local ROM
 oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression and event meanings remain unknown.
-**Exact next step:** investigate the type-8 source caller or downstream
-handler `0x7B2A` without adding a generic stream parser.
+**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. **Exact next step:** investigate that caller or downstream handler `0x7B2A` without adding a generic stream parser.
 
 ## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
 
