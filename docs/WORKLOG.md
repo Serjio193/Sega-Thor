@@ -14,7 +14,7 @@ interpreter, not linked into `oasis_core` runtime behavior. **RESULT:** 5 PCs,
 **EVIDENCE:** controlled `A6=FF2954`, raw word `1`, raw `+0x22` pointer to
 `0xA7E4`; USA oracle reproduces PCs, RAM addresses and target. **TESTS:**
 Debug/Release CTest 17/17, synthetic/USA oracle, deterministic JSON,
-file-limit and diff-check pass; CI status is recorded after push.
+file-limit and diff-check pass; GitHub Actions CI `33756628793` is green.
 **UNKNOWN:** all other register-based refs, indirect targets and function
 semantics. **NEXT:** stop; await explicit instruction, no full tracing or M12.
 
