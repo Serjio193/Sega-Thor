@@ -55,9 +55,12 @@ add_executable(oasis_screen_descriptor_test tests/screen_descriptor_test.cpp)
 target_link_libraries(oasis_screen_descriptor_test PRIVATE oasis_core)
 add_test(NAME oasis_screen_descriptor COMMAND oasis_screen_descriptor_test)
 
-# Uses a locally supplied verified ROM and is intentionally not registered with CTest.
+# These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
+
+add_executable(oasis_screen_descriptor_reference tests/screen_descriptor_reference.cpp)
+target_link_libraries(oasis_screen_descriptor_reference PRIVATE oasis_core)
 
 add_test(
     NAME project_file_line_limit
