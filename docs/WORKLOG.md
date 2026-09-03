@@ -48,6 +48,15 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** verify frame-boundary ordering between state-4 context sampling, footprint update and shared movement consumption.
 
+## 2026-09-03 — M8 frame-boundary ordering
+**Objective:** Verify that state-4 velocity context is sampled before the shared movement consumer updates the footprint mask.
+
+**Actions:** Added a two-frame test: the first state-4 update uses the old `footprint_any_bits`, then `try_move` records the new aggregate mask; the second update consumes that new mask.
+
+**Result:** The native order matches the recovered loop: player update reads prior-frame context, shared movement commits/cleans accumulated deltas, and the footprint OR mask becomes available to the next frame.
+
+**Exact next step:** finish M8 acceptance review and keep the ROM reference workflow local-only.
+
 ## 2026-09-03 — M8 player update dispatch closure
 **Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
 

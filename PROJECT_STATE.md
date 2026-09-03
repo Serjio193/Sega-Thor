@@ -4,7 +4,7 @@ CURRENT_MILESTONE: M8 — Player system
 CURRENT_TASK: Recover the first verified player movement/update path from the canonical USA ROM and define only the confirmed portable state needed to reproduce it
 STATUS: ACTIVE
 LAST_VERIFIED_RESULT: M7 completed; screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are implemented/tested, and build/reference/probe checks are green
-NEXT_ACTION: verify frame-boundary ordering between state-4 context sampling, footprint update and shared movement consumption
+NEXT_ACTION: finish M8 acceptance review and keep the ROM reference workflow local-only
 DO_NOT_WORK_ON: M9+, Thor 2, Saturn support, remaster features, speculative attacks/animation systems
 BLOCKERS: none
 
@@ -29,6 +29,7 @@ BLOCKERS: none
 - The native state driver is integration-tested through the shared terrain consumer; footprint OR mask `+0x6F` is preserved, while the `0x64C4` globals `FF1985`, `FF1984` and bit 4 of `FF16F1` remain lifecycle-investigating.
 - The `0x64C4` context boundary is isolated: `FF1985` and `FF1984` have external writers, while bit 4 of `FF16F1` is read without a direct writer in the scanned references.
 - Optional native `VelocityAdjustContext` now covers the three confirmed `0x64C4` arithmetic outcomes; unavailable context preserves the existing deterministic path.
+- Frame-boundary ordering is covered: state-4 reads the prior footprint mask, then shared movement updates the mask for the next frame.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

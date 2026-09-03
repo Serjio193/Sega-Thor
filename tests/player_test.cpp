@@ -120,5 +120,23 @@ int main() {
     adjust_velocity_for_context(adjusted_x, adjusted_y, half_y_context);
     assert(adjusted_x == 0x36000 && adjusted_y == 0x18000);
 
+    PlayerState frame_player{16 * 0x10000, 16 * 0x10000, -1};
+    frame_player.movement_state = 4;
+    frame_player.direction_code = 0;
+    frame_player.intent_y_fixed = 0x30000;
+    const auto old_mask_context = half_y_context;
+    const auto first_frame = try_move(frame_player, turning_controller, terrain,
+                                      config, old_mask_context);
+    assert(first_frame.moved);
+    assert(frame_player.y_fixed == 16 * 0x10000 + 0x18000);
+    assert(frame_player.footprint_any_bits == 0x02);
+
+    auto new_mask_context = half_y_context;
+    new_mask_context.footprint_any_bits = frame_player.footprint_any_bits;
+    const auto second_frame = try_move(frame_player, turning_controller, terrain,
+                                       config, new_mask_context);
+    assert(second_frame.moved);
+    assert(frame_player.y_fixed == 16 * 0x10000 + 0x18000 + 0x30000);
+
     return 0;
 }

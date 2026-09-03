@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Verify frame-boundary ordering between state-4 context sampling, footprint update and shared movement consumption.
+Finish M8 acceptance review and keep the ROM reference workflow local-only.
