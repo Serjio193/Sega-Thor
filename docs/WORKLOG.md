@@ -15,7 +15,7 @@ A6A4 structural changed block 10 and raw dynamic `A7D4->FF2954`,
 582 unresolved/unsupported/indirect items and zero conflicts. **TESTS:**
   synthetic, Debug CTest 19/19, Release CTest 19/19, GNU-equivalent CTest 19/19,
   Debug/Release USA+Beta oracle, JSON parse plus matching report hashes,
-  deterministic report, file-limit and diff-check green. **UNKNOWN/NEXT:** table sizes at `96E8/96F8/C92C`, ownership and
+  deterministic report, file-limit, diff-check and GitHub Actions run `33766030021` green. **UNKNOWN/NEXT:** table sizes at `96E8/96F8/C92C`, ownership and
 semantics remain unknown; sync focused commit, then stop—no M12 or wider scan.
 
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed

@@ -4,7 +4,7 @@ CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 first bounded ROM Atlas prototype
 STATUS: COMPLETE
 LAST_VERIFIED_RESULT: Deterministic oasis.m68k.re-atlas.v1 maps 13 bounded evidence entries, accepted beta correspondences, calls/refs, raw A6A4 dynamic facts and no conflicts; USA/Beta oracle, Debug/Release/GNU CTest and JSON determinism pass
-NEXT_ACTION: Synchronize the focused Atlas commit after CI, then stop
+NEXT_ACTION: Stop at the verified Atlas checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 
