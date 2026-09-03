@@ -28,68 +28,75 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Decode pad poll and post-processing
+      - name: Build instruction-level disassembly
         shell: bash
         run: |
-          set -euo pipefail
-          for RANGE in '0x000b90 0x000c90' '0x000240 0x0002c0' '0x000e20 0x000eb0' '0x001600 0x0016f0'; do
-            set -- $RANGE
-            echo "===== $1..$2 ====="
-            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-              --start-address=$1 --stop-address=$2 /tmp/reference.md
-          done
+          m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 /tmp/reference.md > /tmp/reference.dis
+          wc -l /tmp/reference.dis
 
-      - name: Find pad-state RAM consumers
+      - name: Find real controller I/O instructions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import subprocess
-          rom=Path('/tmp/reference.md').read_bytes()
+          lines=Path('/tmp/reference.dis').read_text(errors='replace').splitlines()
+          keys=('a10003','a10005','a10009','a1000b','a1000d','a10000')
           hits=[]
-          for target in range(0xff1512,0xff1518):
-              pat=target.to_bytes(4,'big'); p=0; one=[]
-              while True:
-                  p=rom.find(pat,p)
-                  if p<0: break
-                  one.append(p); hits.append((p,target)); p+=1
-              print(f'ram_0x{target:06x}_refs=' + ','.join(f'0x{x:06x}' for x in one))
-          for p,target in sorted(hits):
-              start=max(0,p-0x50); end=min(len(rom),p+0x80)
-              print(f'===== RAM ref 0x{p:06x} -> 0x{target:06x} =====')
-              print(subprocess.check_output([
-                  'm68k-linux-gnu-objdump','-D','-b','binary','-m','m68k:68000','--adjust-vma=0',
-                  f'--start-address={start}',f'--stop-address={end}','/tmp/reference.md'
-              ],text=True))
+          for i,line in enumerate(lines):
+              low=line.lower().replace(' ','')
+              if any(k in low for k in keys): hits.append(i)
+          print(f'controller_instruction_hits={len(hits)}')
+          for i in hits:
+              print('===== controller instruction =====')
+              for line in lines[max(0,i-12):min(len(lines),i+18)]: print(line)
           PY
 
-      - name: Decode movement entry 0x8F0C
-        shell: bash
-        run: |
-          set -euo pipefail
-          for RANGE in '0x008ee0 0x008f90' '0x038a60 0x038b60' '0x011e70 0x011ef0'; do
-            set -- $RANGE
-            echo "===== $1..$2 ====="
-            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-              --start-address=$1 --stop-address=$2 /tmp/reference.md
-          done
-
-      - name: Trace callers around 0x38ADC
+      - name: Find instruction-level movement-cluster calls
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          rom=Path('/tmp/reference.md').read_bytes()
-          for target in (0x38a60,0x38a80,0x38aa0,0x38ac0,0x38adc,0x38d22,0x8f0c):
-              refs=[]
-              pat=b'\x4e\xb9'+target.to_bytes(4,'big'); p=0
-              while True:
-                  p=rom.find(pat,p)
-                  if p<0: break
-                  refs.append(('JSR.L',p)); p+=1
-              for p in range(0,len(rom)-4,2):
-                  if rom[p:p+2] != b'\x61\x00': continue
-                  disp=int.from_bytes(rom[p+2:p+4],'big',signed=True)
-                  if p+4+disp == target: refs.append(('BSR.W',p))
-              print(f'target=0x{target:06x} refs=' + ','.join(f'{k}@0x{p:06x}' for k,p in sorted(refs,key=lambda x:x[1])))
+          import re
+          lines=Path('/tmp/reference.dis').read_text(errors='replace').splitlines()
+          found=[]
+          for i,line in enumerate(lines):
+              m=re.search(r'^\s*([0-9a-f]+):.*\b(?:jsr|bsr\w*|jmp)\s+0x([0-9a-f]+)\b',line,re.I)
+              if not m: continue
+              src=int(m.group(1),16); dst=int(m.group(2),16)
+              if 0x8ef8 <= dst < 0xa100 and not (0x8ef8 <= src < 0xa100):
+                  found.append((i,src,dst))
+          print(f'external_movement_calls={len(found)}')
+          for i,src,dst in found:
+              print(f'===== external call 0x{src:06x} -> 0x{dst:06x} =====')
+              for line in lines[max(0,i-10):min(len(lines),i+14)]: print(line)
           PY
+
+      - name: Find RAM addresses referenced by real controller routine
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          lines=Path('/tmp/reference.dis').read_text(errors='replace').splitlines()
+          controller=[]
+          for i,line in enumerate(lines):
+              low=line.lower().replace(' ','')
+              if any(k in low for k in ('a10003','a10005','a10009','a1000b','a1000d')):
+                  controller.append(i)
+          windows=set()
+          for i in controller:
+              for j in range(max(0,i-30),min(len(lines),i+60)): windows.add(j)
+          refs={}
+          for j in sorted(windows):
+              for x in re.findall(r'0xff[0-9a-f]{4}',lines[j].lower()):
+                  refs.setdefault(x,[]).append(j)
+          for addr,idxs in sorted(refs.items()):
+              print(f'candidate_input_ram={addr} occurrences={len(idxs)}')
+              for j in idxs[:4]: print('  '+lines[j])
+          PY
+
+      - name: Decode verified movement core start
+        shell: bash
+        run: |
+          m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+            --start-address=0x8ef8 --stop-address=0x93a0 /tmp/reference.md
