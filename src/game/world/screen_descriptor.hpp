@@ -17,7 +17,7 @@ struct ScreenDescriptorRaw {
 
     std::uint32_t rom_address{};
     std::array<std::uint8_t, kSize> bytes{};
-    std::uint32_t init_function{};
+    std::uint32_t init_code_address{};
 
     [[nodiscard]] std::uint32_t primary_stream_pointer() const noexcept;
     [[nodiscard]] std::array<std::uint8_t, 4> resource_ids() const noexcept;
