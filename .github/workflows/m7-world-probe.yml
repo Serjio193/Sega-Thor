@@ -32,14 +32,12 @@ jobs:
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
           jsr=bytes.fromhex('4eb900003820')
-          pos=0
-          rows=[]
+          pos=0; rows=[]
           while True:
               call=rom.find(jsr,pos)
               if call<0: break
               pos=call+1
-              start=max(0,call-96)
-              window=rom[start:call]
+              start=max(0,call-96); window=rom[start:call]
               def last_abs(opcode):
                   p=window.rfind(opcode)
                   if p<0 or p+6>len(window): return None
@@ -49,40 +47,40 @@ jobs:
               flag=None if src is None or src+2>=len(rom) else rom[src+2]
               rows.append((call,src,dst,flag))
           for call,src,dst,flag in rows:
-              print(f'call=0x{call:06x} src={"?" if src is None else f"0x{src:06x}"} '
-                    f'dst={"?" if dst is None else f"0x{dst:06x}"} selector={flag}')
+              print(f'call=0x{call:06x} src={"?" if src is None else f"0x{src:06x}"} dst={"?" if dst is None else f"0x{dst:06x}"} selector={flag}')
           print(f'total_calls={len(rows)}')
           PY
 
-      - name: Find dense ROM pointer-table candidates
+      - name: Inspect 0x05CE96 candidate screen-resource table
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import hashlib
           rom=Path('/tmp/reference.md').read_bytes()
-          lo=0x40000
-          hi=len(rom)
-          candidates=[]
-          i=0x400
-          while i+24<=len(rom):
-              vals=[]
-              j=i
-              while j+4<=len(rom):
-                  v=int.from_bytes(rom[j:j+4],'big')
-                  if not (lo <= v < hi and (v & 1)==0): break
-                  vals.append(v); j+=4
-              if len(vals)>=6:
-                  unique=len(set(vals))
-                  spread=max(vals)-min(vals)
-                  if unique>=4 and spread>16:
-                      candidates.append((len(vals),i,vals[:8]))
-                  i=j
-              else:
-                  i+=2
-          candidates.sort(reverse=True)
-          print(f'pointer_table_candidates={len(candidates)}')
-          for count,addr,vals in candidates[:60]:
-              print(f'table=0x{addr:06x} count={count} first=' + ','.join(f'0x{x:06x}' for x in vals))
+          base=0x05ce96
+          print('table_prefix=', rom[base:base+16].hex())
+          values=[]
+          # 0x05CE96 precedes the dense pointer run by one 32-bit value.
+          for i in range(108):
+              off=base+i*4
+              v=int.from_bytes(rom[off:off+4],'big')
+              values.append(v)
+              print(f'entry={i:03d} table_addr=0x{off:06x} value=0x{v:06x}')
+          valid=[(i,v) for i,v in enumerate(values) if 0<=v<len(rom)]
+          print('valid_rom_pointers=',len(valid))
+          for i,v in valid[:12]:
+              prefix=rom[v:v+16]
+              print(f'sample={i:03d} ptr=0x{v:06x} selector={rom[v+2] if v+2<len(rom) else -1} prefix={prefix.hex()} sha256_64={hashlib.sha256(rom[v:v+64]).hexdigest()}')
+          # Find exact references to the table base and to first pointer element.
+          for target in (0x05ce96,0x05ce9a):
+              pat=target.to_bytes(4,'big')
+              hits=[]; pos=0
+              while True:
+                  pos=rom.find(pat,pos)
+                  if pos<0: break
+                  hits.append(pos); pos+=1
+              print(f'refs_to_0x{target:06x}=',','.join(f'0x{x:06x}' for x in hits))
           PY
 
       - name: Install M68K binutils
@@ -94,17 +92,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # These ranges contain clusters of decompressor calls and are discovery targets only.
           for RANGE in \
-            '0x2a600 0x2a740' \
-            '0x2b160 0x2b260' \
-            '0x2daE0 0x2dc00' \
-            '0x2f620 0x2f720' \
-            '0x3bfE0 0x3c360' \
-            '0x3c520 0x3c700' \
-            '0x3c920 0x3ca80' \
-            '0x3cb40 0x3cd40' \
-            '0x3ce00 0x3d100'; do
+            '0x00d360 0x00d450' \
+            '0x02a600 0x02a740' \
+            '0x02b160 0x02b260' \
+            '0x02dae0 0x02dc00' \
+            '0x02f620 0x02f720' \
+            '0x03bfe0 0x03c360' \
+            '0x03c520 0x03c700' \
+            '0x03c920 0x03ca80' \
+            '0x03cb40 0x03cd40' \
+            '0x03ce00 0x03d100'; do
             set -- $RANGE
             echo "===== candidate $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
