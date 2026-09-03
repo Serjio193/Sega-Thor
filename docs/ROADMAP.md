@@ -9,115 +9,62 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `DONE` — acceptance criteria met
 
 ## M0 — Repository bootstrap — DONE
-Acceptance criteria:
-- C++20/CMake project exists;
-- ROM loader exists;
-- minimal memory/VDP scaffolding exists;
-- smoke test exists;
-- no copyrighted ROM/assets are committed in development code.
+C++20/CMake bootstrap, ROM loader, minimal memory/VDP scaffolding and smoke test established.
 
 ## M1 — Project governance and documentation — DONE
-Goal: make development deterministic for human and AI contributors.
-
-Completed:
-- `AGENTS.md` mandatory workflow;
-- architecture document;
-- canonical file map;
-- hard 500-line source/document limit;
-- automatic CTest line-limit check;
-- development rules;
-- decision log;
-- worklog;
-- reverse-engineering ledger;
-- task/AI handoff template;
-- README entry points to all governance documents.
+Mandatory AI workflow, architecture/file map, 500-line rule, decision/research/work logs and task handoff are enforced.
 
 ## M2 — Identify supported ROM revision — DONE
-Goal: establish one reproducible reference binary.
+Canonical engineering reference is USA retail `Beyond Oasis`; final C++ model remains region-independent.
 
-Accepted reference:
-- USA retail `Beyond Oasis` is the canonical engineering binary;
-- final reconstructed game model remains region-independent;
-- Europe/Japan are secondary evidence/future data profiles.
-
-Verified implementation:
-- exact byte-size reporting;
-- Mega Drive header parsing;
-- Sega checksum calculation/validation;
-- CRC32, SHA-1 and SHA-256 calculation;
-- known-ROM classification;
-- `SUPPORTED / KNOWN_UNSUPPORTED / MODIFIED / UNKNOWN` states;
-- synthetic tests;
-- CLI fingerprint output;
-- GitHub Actions build/test workflow;
-- dedicated reference-ROM verification workflow.
-
-Confirmed USA reference:
+Confirmed USA fingerprint:
 - size `3145728`;
 - CRC32 `C4728225`;
 - SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
-- SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
-- uploaded archive member `Beyond Oasis (USA).md`;
-- detector result `SUPPORTED`.
+- SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 
-## M3 — Reverse-engineer graphics decompression at `0x00003820` — DONE
-Goal: translate the first substantial original routine to tested C++.
-
-Verified:
-- exact routine range `[0x3820, 0x3B3E)`;
-- 52 direct absolute JSR callers and no direct absolute JMP callers;
-- `A0` compressed-source and `A1` output/end-pointer contract;
-- two formats selected by `source[2]`;
-- complete native C++ translation in `src/game/graphics_decompress.cpp`;
-- synthetic tests for literals, RLE, backreferences, extension chains and bitstream control;
-- original 68000 routine executed in an isolated QEMU harness for reference only;
-- native result matches original source-consumed count, output length and SHA-256 for one real sample from each format;
-- ordinary CI and ROM-backed verifier green.
+## M3 — Graphics decompression `0x00003820` — DONE
+Verified native C++ translation of original routine `[0x3820, 0x3B3E)`.
 
 Reference vectors:
-- format A, ROM `0x16943C`: `1217 -> 3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
-- format B, ROM `0x1894EA`: `112 -> 128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
+- format A `0x16943C`: `1217 -> 3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
+- format B `0x1894EA`: `112 -> 128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
 
 ## M4 — Local asset inspection tool — DONE
-Goal: inspect original graphics without committing assets.
+`oasis_inspect` performs supported-ROM validation, native decompression, Genesis 4bpp tile decoding and local PGM/PPM export. Generated commercial data remains local/ignored.
+
+## M5 — VDP data model and rendering primitives — DONE
+Goal: represent the narrow video-state semantics needed by the native reconstruction without implementing a full console emulator.
 
 Verified:
-- `oasis_inspect` accepts a supported local ROM and explicit graphics offset;
-- verified decompression is reused rather than duplicated;
-- Genesis 4bpp tile decoding implemented and tested;
-- Genesis CRAM color conversion implemented and tested;
-- local PGM/PPM output supported;
-- generated output patterns are ignored by Git;
-- ROM-backed workflow verified `0x16943C`: 1217 compressed bytes, 3072 decompressed bytes, 96 complete tiles, 128x48 PGM;
-- PGM header and exact byte size verified;
-- five CTest tests pass including line-limit enforcement.
+- 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM storage;
+- bounded byte-span and big-endian word access;
+- standard tile pattern-name decoding (index/palette/priority/H/V flip);
+- minimal `PlaneCell` representation;
+- standard raw four-word sprite attribute decoding;
+- explicit unsupported-semantics list in `docs/VDP_MODEL.md`;
+- no SDL/GPU dependency in `oasis_core`;
+- synthetic VDP tests registered with CTest;
+- current GitHub CI build/test job green.
 
-## M5 — VDP data model and rendering primitives — NEXT
-Goal: represent game-visible tile/sprite operations without full-console emulation.
+## M6 — Runtime frame/input skeleton — NEXT
+Goal: establish deterministic update/frame stepping and a portable controller-input abstraction.
 
 Tasks:
-- VRAM/CRAM/VSRAM state with bounded access;
-- Genesis tile attribute decoding;
-- minimal plane-cell representation;
-- document sprite attribute layout before implementation;
-- palette state;
-- scrolling and priority semantics actually used by the game.
+- integer frame index with explicit one-frame stepping;
+- portable controller button state;
+- immutable per-frame input snapshot passed to update code;
+- deterministic replay-style test using the same input sequence twice;
+- no wall-clock or platform API inside core runtime.
 
 Acceptance criteria:
-- video-state primitives have synthetic tests;
-- known scene data can be represented without a full VDP emulator;
-- compatibility layer remains narrow and documented;
-- no SDL/GPU dependency leaks into core video state;
-- CI passes.
-
-## M6 — Runtime frame/input skeleton — TODO
-Goal: establish deterministic update/frame loop and input abstraction.
-
-Acceptance criteria:
-- stable frame stepping;
+- stable explicit frame stepping;
 - controller input abstraction;
-- deterministic test mode;
-- no gameplay logic buried in platform layer.
+- deterministic test mode/evidence;
+- no gameplay logic buried in platform layer;
+- no SDL/OS dependency in core runtime;
+- files remain <= 500 lines;
+- CI green.
 
 ## M7 — World/map/collision foundations — TODO
 Goal: decode room/map structures and collision semantics.
@@ -129,10 +76,6 @@ Acceptance criteria:
 
 ## M8 — Player system — TODO
 Goal: translate movement, animation state, attacks and relevant state machine.
-
-Acceptance criteria:
-- player behavior is mapped to original routines/data;
-- core behavior passes differential/regression tests.
 
 ## M9 — Entities/enemies/NPCs — TODO
 Goal: translate common entity framework and representative behaviors.
@@ -147,35 +90,16 @@ Goal: reproduce game progression and event semantics.
 Goal: menus, inventory, item behavior and compatible save semantics.
 
 ## M13 — Audio — TODO
-Goal: faithful music/SFX playback with the narrowest viable compatibility strategy.
-
-Audio architecture requires an ADR before implementation.
+Goal: faithful music/SFX playback with the narrowest viable compatibility strategy. Audio architecture requires an ADR before implementation.
 
 ## M14 — Full-game parity — TODO
 Goal: complete game from start to credits with regression coverage.
 
-Acceptance criteria:
-- full playthrough possible;
-- known differences are documented;
-- critical progression blockers resolved.
-
 ## M15 — Portability and packaging — TODO
-Targets initially:
-- Windows;
-- Linux;
-- macOS.
-
-Additional platforms are later decisions.
+Initial targets: Windows, Linux and macOS. Additional platforms are later decisions.
 
 ## M16 — Optional enhancements — TODO
-Only after base parity:
-- resolution/scaling options;
-- improved controller UX;
-- widescreen experiments;
-- QoL options;
-- rendering enhancements.
-
-Enhancements must be optional and must not replace the faithful mode.
+Only after base parity: scaling/resolution, controller UX, widescreen experiments, QoL and rendering enhancements. Faithful mode remains available.
 
 ## Deferred
 **The Story of Thor 2 / The Legend of Oasis** is explicitly deferred until the first project reaches a mature parity milestone.
