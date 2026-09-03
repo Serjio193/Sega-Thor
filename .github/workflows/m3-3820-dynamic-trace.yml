@@ -32,8 +32,6 @@ jobs:
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
           Path('/tmp/decompress.bin').write_bytes(rom[0x3820:0x3b3e])
-          # Format A: caller 0xC394 directly sets A0=0x16943C, A1=0xFF2FA8.
-          # Format B: caller family at 0x3C276 directly uses A0=0x1894EA, A1=0xFF3FAC.
           cases={
               'a': (0x00c394, 0x16943c, 0xff2fa8),
               'b': (0x03c276, 0x1894ea, 0xff3fac),
@@ -71,7 +69,6 @@ jobs:
               sub.l %a3,%d4
               move.l %a1,%d5
               sub.l %a4,%d5
-
               lea metadata,%a5
               move.l #0x54485234,(%a5)
               move.l %d7,4(%a5)
@@ -82,7 +79,6 @@ jobs:
               move.l %a5,%d2
               move.l #16,%d3
               trap #0
-
               move.l #4,%d0
               move.l #1,%d1
               move.l %a4,%d2
@@ -121,7 +117,7 @@ jobs:
           ASM
           m68k-linux-gnu-gcc -nostdlib -static -Wl,-e,_start -o /tmp/harness-m68k /tmp/harness.S
 
-      - name: Execute original routine and report metadata only
+      - name: Execute original routine and verify oracle metadata
         shell: bash
         run: |
           set -euo pipefail
@@ -129,29 +125,52 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, struct
-          meta={}
-          for case_id,name in [(1,'a'),(2,'b')]:
-              call,src,dst,flag=Path(f'/tmp/case_{name}.txt').read_text().split()
-              meta[case_id]=(call,src,dst,int(flag))
-          data=Path('/tmp/trace.bin').read_bytes()
-          pos=0
-          seen_b=False
+          expected={
+              1:(1217,3072,'65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a'),
+              2:(112,128,'167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9'),
+          }
+          data=Path('/tmp/trace.bin').read_bytes(); pos=0
           while pos < len(data):
-              if pos+16>len(data): raise SystemExit('truncated trace header')
               magic,case_id,out_len,consumed=struct.unpack('>IIII',data[pos:pos+16]); pos+=16
-              if magic!=0x54485234: raise SystemExit(f'bad trace magic {magic:08x}')
-              if pos+out_len>len(data): raise SystemExit('truncated trace output')
+              if magic!=0x54485234: raise SystemExit('bad trace magic')
               out=data[pos:pos+out_len]; pos+=out_len
-              call,src,dst,flag=meta[case_id]
-              print(f'case={case_id}')
-              print(f'format_selector_byte_2={flag}')
-              print(f'caller=0x{call}')
-              print(f'source_rom_address=0x{src}')
-              print(f'destination_original=0x{dst}')
-              print(f'source_consumed={consumed}')
-              print(f'output_length={out_len}')
-              print(f'output_sha256={hashlib.sha256(out).hexdigest()}')
-              seen_b = seen_b or flag==0
-          if pos!=len(data): raise SystemExit('trace parse mismatch')
-          if not seen_b: raise SystemExit('format-B trace was not executed')
+              digest=hashlib.sha256(out).hexdigest()
+              print(f'original case={case_id} consumed={consumed} output={out_len} sha256={digest}')
+              if (consumed,out_len,digest)!=expected[case_id]: raise SystemExit('original oracle changed')
           PY
+
+      - name: Compare native C++ translation against both original traces
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/native_check.cpp <<'CPP'
+          #include "game/graphics_decompress.hpp"
+          #include <cstdint>
+          #include <fstream>
+          #include <iostream>
+          #include <iterator>
+          #include <string>
+          #include <vector>
+
+          int main() {
+              std::ifstream file("/tmp/reference.md", std::ios::binary);
+              std::vector<std::uint8_t> rom{std::istreambuf_iterator<char>(file), {}};
+              struct Case { const char* name; std::size_t address; };
+              const Case cases[]{{"a", 0x16943c}, {"b", 0x1894ea}};
+              for (const auto& c : cases) {
+                  std::vector<std::uint8_t> out(4 * 1024 * 1024);
+                  auto source = std::span<const std::uint8_t>(rom).subspan(c.address);
+                  const auto result = oasis::game::decompress_graphics(source, out);
+                  std::ofstream output(std::string("/tmp/native_") + c.name + ".bin", std::ios::binary);
+                  output.write(reinterpret_cast<const char*>(out.data()), static_cast<std::streamsize>(result.output_size));
+                  std::cout << c.name << " consumed=" << result.source_consumed
+                            << " output=" << result.output_size << '\n';
+              }
+          }
+          CPP
+          c++ -std=c++20 -Isrc /tmp/native_check.cpp src/game/graphics_decompress.cpp -o /tmp/native_check
+          /tmp/native_check | tee /tmp/native_meta.txt
+          grep -qx 'a consumed=1217 output=3072' /tmp/native_meta.txt
+          grep -qx 'b consumed=112 output=128' /tmp/native_meta.txt
+          test "$(sha256sum /tmp/native_a.bin | awk '{print $1}')" = "65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a"
+          test "$(sha256sum /tmp/native_b.bin | awk '{print $1}')" = "167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9"
