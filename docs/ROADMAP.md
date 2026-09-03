@@ -14,7 +14,7 @@ Acceptance criteria:
 - ROM loader exists;
 - minimal memory/VDP scaffolding exists;
 - smoke test exists;
-- no copyrighted ROM/assets are committed.
+- no copyrighted ROM/assets are committed in development code.
 
 ## M1 — Project governance and documentation — DONE
 Goal: make development deterministic for human and AI contributors.
@@ -32,7 +32,7 @@ Completed:
 - task/AI handoff template;
 - README entry points to all governance documents.
 
-## M2 — Identify supported ROM revision — NEXT
+## M2 — Identify supported ROM revision — DONE
 Goal: establish one reproducible reference binary.
 
 Accepted reference:
@@ -40,7 +40,7 @@ Accepted reference:
 - final reconstructed game model remains region-independent;
 - Europe/Japan are secondary evidence/future data profiles.
 
-Completed implementation:
+Verified implementation:
 - exact byte-size reporting;
 - Mega Drive header parsing;
 - Sega checksum calculation/validation;
@@ -49,38 +49,36 @@ Completed implementation:
 - `SUPPORTED / KNOWN_UNSUPPORTED / MODIFIED / UNKNOWN` states;
 - synthetic tests;
 - CLI fingerprint output;
-- GitHub Actions build/test workflow.
+- GitHub Actions build/test workflow;
+- dedicated reference-ROM verification workflow.
 
-Confirmed USA identity evidence:
+Confirmed USA reference:
 - size `3145728`;
 - CRC32 `C4728225`;
 - SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
-- preservation status `good` in current MAME metadata.
+- SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
+- uploaded archive member `Beyond Oasis (USA).md`;
+- detector result `SUPPORTED`;
+- CI and reference-ROM workflow both green after ROM loader fix.
 
-Remaining before DONE:
-- observe green CI for the current branch revision;
-- optionally pin SHA-256 when independently established from a verified clean dump.
-
-Acceptance criteria:
-- tool/runtime can identify the supported reference ROM;
-- tests cover version detection primitives using non-copyrighted synthetic fixtures;
-- current branch build/tests are verified.
-
-## M3 — Reverse-engineer graphics decompression at `0x00003820` — TODO
+## M3 — Reverse-engineer graphics decompression at `0x00003820` — NEXT
 Goal: translate the first substantial original routine to tested C++.
 
 Tasks:
-- obtain/disassemble exact routine boundaries from the reference ROM;
+- obtain/disassemble exact routine boundaries from the verified reference ROM;
 - document registers, inputs, outputs, memory effects and callers;
 - record control flow;
-- produce readable C++ translation;
-- compare output against original routine behavior/traces.
+- obtain reproducible reference behavior;
+- produce readable C++ translation only after the contract is understood;
+- compare translated output against original behavior/reference evidence.
 
 Acceptance criteria:
 - routine is documented in `REVERSE_ENGINEERING.md`;
+- exact boundaries and direct control flow are established;
 - C++ implementation has tests;
 - assumptions are explicitly marked;
-- behavior is verified against reference evidence.
+- behavior is verified against reference evidence;
+- CI passes.
 
 ## M4 — Local asset inspection tool — TODO
 Goal: inspect original graphics without committing assets.
