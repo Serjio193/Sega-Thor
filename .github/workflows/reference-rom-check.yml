@@ -1,0 +1,57 @@
+name: reference-rom-check
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  verify-reference-rom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout development branch
+        uses: actions/checkout@v4
+
+      - name: Fetch reference ROM archive from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' > /tmp/beyond-oasis.zip
+          mkdir -p /tmp/reference-rom
+          unzip -q /tmp/beyond-oasis.zip -d /tmp/reference-rom
+          find /tmp/reference-rom -type f -maxdepth 2 -print
+
+      - name: Fingerprint reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          test -n "$ROM"
+          echo "reference_file=$(basename "$ROM")"
+          echo "size=$(stat -c%s "$ROM")"
+          sha1sum "$ROM"
+          sha256sum "$ROM"
+          python3 - "$ROM" <<'PY'
+          import sys, zlib
+          p=sys.argv[1]
+          data=open(p,'rb').read()
+          print(f"crc32={zlib.crc32(data)&0xffffffff:08x}")
+          PY
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Verify detector against uploaded ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          ./build/oasis "$ROM" | tee /tmp/oasis-rom-report.txt
+          grep -q 'Status: SUPPORTED' /tmp/oasis-rom-report.txt
