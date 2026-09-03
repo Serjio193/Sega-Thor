@@ -321,9 +321,9 @@ dialogue and command semantics remain UNKNOWN.
   dispatches bounded raw ranges to `0x7B64`, `0x7BD4`, `0x7BF6`, `0x7BA4`,
   `0x7BE8` and `0x7B84`; zero and values above `0x3F` fall through to
   `0x7A6C` — **CONFIRMED**.
-- When the tested bit is clear, control goes to raw address `0x7B2A` —
-  **CONFIRMED**. No semantic label is assigned to this path.
-- The `0x7B2A` path calls external raw address `0x60004` with constants
+- When the tested bit is clear, control goes to raw address `0x7B28`, an
+  immediate `RTS`; the adjacent routine begins at `0x7B2A` — **CONFIRMED**.
+- The separate `0x7B2A` routine calls external raw address `0x60004` with constants
   `0x0006` and `0x0008`, masks the result to `0x01FF`, returns on the sentinel
   `0x01FF`, then clears mask `0xFFF9` at `FF17B8` and writes raw `FF0D7E` to
   current-record `+0x06` and `0xFFFF` to `+0x5C` — **CONFIRMED**. The helper
@@ -341,7 +341,7 @@ dialogue and command semantics remain UNKNOWN.
   driver RAM locations before returning through `0x611D8` — **CONFIRMED**.
   The event-side meaning of this mask remains UNKNOWN.
 - The native `event_router` module exposes the producer transfer, raw
-  handler-address mapping and the bounded `0x7B2A` trace. Synthetic tests and
+  handler-address mapping and the bounded adjacent `0x7B2A` trace. Synthetic tests and
   the USA-ROM oracle cover the type gate, field composition and dispatch
   boundaries.
 

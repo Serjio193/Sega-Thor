@@ -4,7 +4,7 @@ CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: Locate and recover one evidence-backed event/script router operation
 STATUS: ACTIVE
 LAST_VERIFIED_RESULT: M11 raw type-8 event producer and 0x7A28 handler-range mapping pass synthetic tests, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI
-NEXT_ACTION: investigate the type-8 source caller or downstream handler 0x7B2A without adding a stream parser
+NEXT_ACTION: investigate the type-8 source caller or adjacent handler 0x7B2A without adding a stream parser
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 
@@ -47,7 +47,7 @@ BLOCKERS: none
   clears that type and transfers raw fields to `FF1976`, `FF1978` and
   `FF197A`; native producer tests and the USA-ROM oracle pass.
 - `0x7A28` maps the raw `FF1976` byte to bounded handler addresses, including
-  the flag-clear path at `0x7B2A`; native routing tests and byte checks pass.
+  the flag-clear return at `0x7B28`; native routing tests and byte checks pass.
 - Type-8 meaning, event-code meaning, stream format, dialogue and progression
   semantics remain unknown. No generic parser has been added.
 

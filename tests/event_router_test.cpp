@@ -35,7 +35,7 @@ int main() {
 
     const auto flag_clear = route_observed_event(0x16, 0);
     assert(flag_clear.eligible);
-    assert(flag_clear.handler_address == kObservedRouteFlagClearAddress);
+    assert(flag_clear.handler_address == kObservedRouteFlagClearReturnAddress);
 
     assert(route_observed_event(0x00, 0x02).handler_address == 0x7A6C);
     assert(route_observed_event(0x0C, 0x02).handler_address == 0x7B64);

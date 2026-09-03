@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
         }
         if (route_observed_event(0x16, 0x02).handler_address != 0x7BE8 ||
             route_observed_event(0x16, 0).handler_address !=
-                kObservedRouteFlagClearAddress) {
+                kObservedRouteFlagClearReturnAddress) {
             throw std::runtime_error("native event router mismatch");
         }
         const auto state_update = trace_flag_clear_handler(0xFFFF);

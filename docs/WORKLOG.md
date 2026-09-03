@@ -15,13 +15,13 @@ rules.
 **Evidence:** `0x82AE` calls `0xB9EC` to select a record from `FF19E8`, accepts
 raw type `0x0008`, clears the source type, composes `FF1976` from `+0x32/+0x52`
 and copies `+0x04/+0x4E` to `FF1978/FF197A`. `0x7A28` maps the raw code to
-bounded handlers and sends a clear flag bit to `0x7B2A`.
+bounded handlers and returns a clear flag bit to `0x7B28`; adjacent `0x7B2A` is a separate raw routine.
 **Implementation:** added `src/game/scripts/event_router.*` with raw producer,
 router and `0x7B2A` trace functions, synthetic coverage and a local USA-ROM
 oracle.
 **Verification:** Debug and Release CTest pass 14/14. All six local ROM
 oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression and event meanings remain unknown.
-**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x609C6` now has a confirmed raw flag-mask formula and return epilogue; command `0x0008` still reaches `0x60D10`, whose driver protocol remains unknown. **Exact next step:** bound the post-sentinel path or indirect producer call without adding a generic stream parser.
+**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x609C6` now has a confirmed raw flag-mask formula and return epilogue; command `0x0008` still reaches `0x60D10`, whose driver protocol remains unknown. **Exact next step:** bound the post-sentinel path of adjacent `0x7B2A` or the indirect producer call without adding a generic stream parser.
 
 ## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
 

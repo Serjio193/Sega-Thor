@@ -19,7 +19,8 @@ inline constexpr std::uint16_t kObservedDriverSentinel = 0x01FF;
 inline constexpr std::uint32_t kObservedDriverStateRamAddress = 0x00FF17B8;
 inline constexpr std::uint16_t kObservedDriverStateAndMask = 0xFFF9;
 inline constexpr std::uint32_t kObservedDriverSourceRamAddress = 0x00FF0D7E;
-inline constexpr std::uint32_t kObservedRouteFlagClearAddress = 0x00007B2A;
+inline constexpr std::uint32_t kObservedRouteFlagClearReturnAddress = 0x00007B28;
+inline constexpr std::uint32_t kObservedFlagClearHandlerAddress = 0x00007B2A;
 inline constexpr std::uint32_t kObservedRouteFallbackAddress = 0x00007A6C;
 
 struct ObservedEventSource {
@@ -86,7 +87,7 @@ struct ObservedFlagClearTrace {
     std::uint16_t raw_event_code,
     std::uint8_t flags_37) noexcept {
     if ((flags_37 & 0x02U) == 0) {
-        return {true, kObservedRouteFlagClearAddress};
+        return {true, kObservedRouteFlagClearReturnAddress};
     }
     if (raw_event_code == 0 || raw_event_code > 0x3FU) {
         return {true, kObservedRouteFallbackAddress};
