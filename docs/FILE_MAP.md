@@ -11,7 +11,10 @@ This document is the canonical map of repository structure. Update it whenever s
 ├── TASK.md                    Current task, evidence, acceptance criteria, next action
 ├── .github/
 │   └── workflows/
-│       └── ci.yml             GitHub Actions build + CTest verification
+│       ├── ci.yml                    Build + ordinary CTest verification
+│       ├── reference-rom-check.yml   ROM fingerprint + differential/reference checks
+│       ├── m3-3820-probe.yml         Reproducible static M68K investigation of 0x3820
+│       └── m3-3820-dynamic-trace.yml Original-routine QEMU reference traces
 ├── docs/
 │   ├── ARCHITECTURE.md        Layering, dependencies, translation strategy
 │   ├── DECISIONS.md           Architecture decision records (ADR-style)
@@ -23,7 +26,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
 │   └── WORKLOG.md             Chronological record of every development step
 ├── src/
-│   ├── main.cpp               CLI entry point and ROM identity report
+│   ├── main.cpp               ROM identity/report entry point
 │   ├── core/
 │   │   ├── rom.cpp            ROM file loading/basic title access
 │   │   ├── rom.hpp            ROM byte-container API
@@ -34,22 +37,30 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── memory_bus.hpp     Memory bus interface
 │   │   ├── vdp.cpp            Minimal VDP/VRAM compatibility behavior
 │   │   └── vdp.hpp            VDP interface/state
-│   └── game/
-│       ├── symbols.cpp        Known original ROM symbol/address table
-│       ├── symbols.hpp        Symbol metadata API
-│       ├── translated_routines.cpp  First translated game/utility routines
-│       └── translated_routines.hpp  Translated routine declarations
+│   ├── game/
+│   │   ├── graphics_decompress.cpp Native translation of original 0x3820 routine
+│   │   ├── graphics_decompress.hpp Decompressor result/API
+│   │   ├── genesis_graphics.cpp Pure 4bpp tile + CRAM palette decoding
+│   │   ├── genesis_graphics.hpp Graphics decoder data types/API
+│   │   ├── symbols.cpp        Known original ROM symbol/address table
+│   │   ├── symbols.hpp        Symbol metadata API
+│   │   ├── translated_routines.cpp Initial translated compatibility routines
+│   │   └── translated_routines.hpp Their public declarations
+│   └── tools/
+│       └── asset_inspector.cpp Local-only ROM graphics inspection CLI
 └── tests/
-    ├── check_file_limits.cmake Enforces <=500-line rule through CTest
-    ├── rom_identity_test.cpp   Synthetic CRC/hash/header/checksum tests
-    └── smoke.cpp               Minimal build/runtime smoke test
+    ├── check_file_limits.cmake          Enforces <=500-line rule through CTest
+    ├── graphics_decompress_test.cpp     Synthetic decompressor behavior tests
+    ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
+    ├── genesis_graphics_test.cpp        Synthetic tile/palette conversion tests
+    ├── rom_identity_test.cpp            Synthetic CRC/hash/header/checksum tests
+    └── smoke.cpp                        Minimal build/runtime smoke test
 ```
 
 ## Planned directories
-These directories are approved but should be created only when their milestone begins:
+Create these only when their milestone begins:
 
 ```text
-src/tools/          ROM inspection/extraction command implementations
 src/game/player/    Player behavior after routine boundaries are understood
 src/game/world/     Rooms/maps/collision after formats are documented
 src/game/entities/  Enemy/NPC/entity systems
