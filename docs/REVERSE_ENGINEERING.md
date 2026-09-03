@@ -414,6 +414,32 @@ function boundaries, and it is not an emulator, whole-ROM discovery pass or
 recompiler. The `0x8E90` and `0xA6A4` reports intentionally include only their
 explicit windows and must not be read as complete function recovery.
 
+### M11.5 third checkpoint — bounded dynamic trace at `0xA7D4`
+**Status:** VERIFIED as a developer-only dynamic evidence PoC; no gameplay
+runtime or full emulator was added.
+
+- The isolated scenario uses the static `0xA6A4` slice but starts from the
+  controlled/savestate-like PC `0xA7D4`. It initializes raw `A6=FF2954`, the
+  record word at `+0x00` to `1`, and the raw pointer at `+0x22` to `0xA7E4`.
+- The bounded backend executes exactly `A7D4, A7DA, A7DE, A7E2, A7E4`:
+  three static blocks, one not-taken `BEQ` at `A7DA`, two RAM reads, one
+  indirect jump and one `RTS`. Relevant `A6`/`A0` snapshots are retained only
+  at the unresolved memory/control-flow sites.
+- Static/dynamic comparison resolves three prior items: the effective RAM
+  addresses at `A7D4` (`FF2954`) and `A7DE` (`FF2976`), plus indirect target
+  `A7E2 -> A7E4`. Nine other static unresolved memory references remain
+  unobserved and therefore unresolved.
+- The deterministic `oasis.m68k.re-trace.v1` JSON and human report retain PC,
+  block, branch, call/return, memory and indirect-target evidence. Synthetic
+  and USA-ROM oracles reproduce the same five PCs, branch outcome, RAM reads,
+  pointer value and resolved target.
+
+**Backend limitation:** this is a bounded scenario interpreter for the exact
+five-opcode path, not a general 68000 CPU or Mega Drive emulator. It models no
+full call stack, writes, interrupts, peripherals or alternate path; execution
+stops explicitly on an unsupported scenario PC. Full-game tracing remains out
+of scope.
+
 ## ROM identification implementation
 **Status:** VERIFIED.
 

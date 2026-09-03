@@ -1,12 +1,23 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 second RE-acceleration slice — bounded multi-function 68000 report
+CURRENT_TASK: M11.5 third checkpoint — bounded dynamic tracing PoC
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Multi-slice report covers 4 evidenced routines, 421 instructions, 131 basic blocks, 1 direct call graph edge, 18 confirmed refs and explicit unresolved/unsupported categories; USA oracle and Debug/Release CTest pass
-NEXT_ACTION: Stop at the verified M11.5 checkpoint and await explicit instruction
+LAST_VERIFIED_RESULT: Isolated A7D4 scenario executes 5 PCs/3 blocks, observes 2 RAM reads and resolves A7E2->A7E4 plus two effective addresses; USA oracle and Debug/Release CTest pass
+NEXT_ACTION: Stop at the verified third M11.5 checkpoint and await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 third checkpoint — bounded dynamic trace
+- `oasis_re_trace` uses a scenario-bounded 68000 interpreter in `oasis_re_tooling`;
+  it is not linked into the native gameplay runtime and is not a full emulator.
+- The controlled `0xA6A4` scenario starts at `0xA7D4` with raw `A6=FF2954`,
+  record word `1` and raw `+0x22=0xA7E4`; it deterministically executes five
+  PCs, three blocks, one branch, two RAM reads, one indirect jump and one RTS.
+- Runtime evidence newly resolves the prior static `A7D4/A7DE` register-based
+  accesses and `A7E2 -> A7E4`; nine other static items remain unresolved.
+- The backend deliberately supports only this exact scenario and stops on
+  unsupported PCs; no full-game tracing, TAS, whole-ROM discovery or M12 work.
 
 ## M11.5 verified RE tooling
 - Representative bounded targets are `0x3820`, `0x8E90`, `0xA6A4` and `0xD3B2`;

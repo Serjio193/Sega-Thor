@@ -76,7 +76,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
 │       ├── re_program.cpp Conservative function boundaries/call and memory bindings
 │       ├── re_program_format.cpp Deterministic multi-slice JSON/human formatting
-│       └── re_program_report.cpp Local-only representative multi-slice CLI
+│       ├── re_program_report.cpp Local-only representative multi-slice CLI
+│       ├── re_trace.hpp Bounded dynamic trace data model/API
+│       ├── re_trace.cpp Isolated scenario interpreter and static/dynamic comparison
+│       ├── re_trace_format.cpp Deterministic trace JSON/human formatting
+│       └── re_trace_report.cpp Local-only bounded dynamic trace CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -94,6 +98,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
     ├── re_program_test.cpp                 Synthetic multi-function RE aggregation tests
     ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets
+    ├── re_trace_test.cpp                   Synthetic dynamic trace/report tests
+    ├── re_trace_reference.cpp              Local USA-ROM oracle for bounded dynamic scenario
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

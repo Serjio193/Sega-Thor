@@ -4,30 +4,26 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
+
+**TASK:** Test a minimal isolated execution backend against the unresolved
+`0xA7E2` path; confidence remains evidence-only. **BACKEND:** bounded scenario
+interpreter, not linked into `oasis_core` runtime behavior. **RESULT:** 5 PCs,
+3 blocks, 1 branch outcome, 2 RAM reads, 0 writes, 1 return and indirect target
+`0xA7E2 -> 0xA7E4`; 3 static items newly resolved, 9 remain unresolved.
+**EVIDENCE:** controlled `A6=FF2954`, raw word `1`, raw `+0x22` pointer to
+`0xA7E4`; USA oracle reproduces PCs, RAM addresses and target. **TESTS:**
+Debug/Release CTest 17/17, synthetic/USA oracle, deterministic JSON,
+file-limit and diff-check pass; CI status is recorded after push.
+**UNKNOWN:** all other register-based refs, indirect targets and function
+semantics. **NEXT:** stop; await explicit instruction, no full tracing or M12.
+
 ## 2026-09-03 — M11.5 second RE-acceleration slice completed
 
-**TASK:** Scale the developer-only bounded 68000 report from `0x60004` to a
-small set of evidenced routines with conservative boundaries, call-graph and
-memory-reference bindings. **CONFIDENCE:** slice 95%; gameplay semantics stay
-unknown. **ACCEPTANCE:** deterministic machine/human reports, synthetic tests,
-USA oracle/evidence comparison, Debug/Release CTest, file-limit, diff-check and
-CI; do not start M12 or runtime integration. **UNKNOWN:** decoder remains
-bounded and unsupported instructions/addressing must stay explicit.
-**IMPLEMENTATION:** added isolated `oasis_re_program` aggregate over targets
-`0x3820`, `0x8E90`, `0xA6A4`, `0xD3B2`; added conservative return-boundary
-discovery, caller→callee and block/instruction call sites, and bound confirmed,
-unresolved and unsupported memory/control-flow categories. No semantics or
-runtime dependency was added.
-**RESULT:** 4 functions, 421 instructions, 131 blocks, 1 direct call site/1
-caller→callee edge, 18 confirmed refs, 114 unresolved refs, 1 indirect jump,
-2 unsupported opcodes. Exact boundaries remain confirmed only for `0x3820` and
-`0xD3B2`; other targets are bounded-only.
-**EVIDENCE:** USA oracle reproduces `0xD3B2 -> 0x3820`, pool edges
-`0x8EA6 -> 0x8F12` and `0x8EC8 -> 0x8F22`, `0xA7E2` indirect jump, table
-`0x5CE96` and destination `FF2FA8`; Debug/Release JSON SHA-256 matches.
-**TESTS:** Debug/Release CTest 16/16, synthetic and USA oracle pass; file-limit
-and diff-check pass. **UNKNOWN:** register-based refs, indirect targets and
-unproven function boundaries. **NEXT:** stop; await explicit instruction.
+**RESULT:** `oasis_re_program` covers `0x3820`, `0x8E90`, `0xA6A4`, `0xD3B2`:
+421 instructions, 131 blocks, 1 direct call graph edge, 18 confirmed refs,
+114 unresolved refs and explicit unsupported categories. USA evidence and
+Debug/Release CTest 16/16 passed; no runtime behavior was added.
 
 ## 2026-09-03 — RE-acceleration checkpoint: bounded 68000 slice report
 

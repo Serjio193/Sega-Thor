@@ -97,6 +97,11 @@ writes `oasis.m68k.re-program.v1` JSON plus a short text report. Its boundaries,
 direct call graph, confirmed references and unresolved/unsupported categories
 remain conservative and developer-only.
 
+The third bounded experiment is `oasis_re_trace`; it runs a controlled
+`0xA7D4` scenario from the `0xA6A4` evidence slice and writes deterministic
+`oasis.m68k.re-trace.v1` JSON plus a text report. It is a scenario-bounded
+backend, not a general emulator or full-game tracing system.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.
