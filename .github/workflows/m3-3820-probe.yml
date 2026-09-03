@@ -63,7 +63,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for RANGE in '0xc360 0xc3b0' '0xd390 0xd410' '0x3a7c0 0x3a830' '0x3e7e0 0x3e850'; do
+          for RANGE in \
+            '0xc360 0xc3b0' \
+            '0xd390 0xd410' \
+            '0x3a7c0 0x3a830' \
+            '0x3c240 0x3c2a0' \
+            '0x3e7e0 0x3e850'; do
             set -- $RANGE
             echo "===== caller window $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
