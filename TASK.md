@@ -27,7 +27,7 @@ STATUS: ACTIVE
 - [x] keep dialogue semantics and unproven commands out;
 - [x] record unknown fields without invented meanings;
 - [x] keep every file <= 500 lines;
-- [ ] CI green.
+- [x] CI green.
 
 ## Constraints
 - Do not begin M12 or later work.

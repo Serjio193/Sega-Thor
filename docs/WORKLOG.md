@@ -19,7 +19,8 @@ bounded handlers and sends a clear flag bit to `0x7B2A`.
 **Implementation:** added `src/game/scripts/event_router.*` with raw producer
 and router functions, synthetic coverage and a local USA-ROM oracle.
 **Verification:** Debug and Release CTest pass 14/14. All six local ROM
-oracles pass. Dialogue, progression and event meanings remain unknown.
+oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression
+and event meanings remain unknown.
 **Exact next step:** investigate the type-8 source caller or downstream
 handler `0x7B2A` without adding a generic stream parser.
 
