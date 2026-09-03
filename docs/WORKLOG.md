@@ -2,35 +2,37 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-03 — M11.5 bounded address-displacement resolution PoC completed
+
+**TASK/ACTIONS:** Added separate `oasis_re_resolution` and schema
+`oasis.m68k.re-resolution.v1` for bounded setup/copy/arithmetic propagation,
+CFG merges, invalidation, provenance, address classes and ranking comparison.
+**RESULT:** USA examined 390, resolved 294, left 96 (92 unknown base, 4 CFG
+merge), 0 provenance failures; 294 RAM / 78 unique, 0 ROM. Atlas delta:
+577→283 unresolved, displacement 446→152, A6 387→123, immediate 168→54;
+80 records remain outside reachable CFG.
+**TESTS:** synthetic/USA oracle, Debug/Release/GNU CTest, deterministic JSON,
+file-limit and diff-check pass; CI will be recorded after push.
+**UNKNOWN/NEXT:** no semantics, calling convention, interprocedural state,
+emulator, whole-ROM propagation, production behavior or M12; stop and await
+explicit next bounded evidence class.
 ## 2026-09-03 — M11.5 Atlas-driven unresolved evidence ranking completed
 
-**TASK/ACTIONS:** Extended typed Atlas records with raw unresolved
-instruction/block/function, addressing mode, register, instruction family and
-structural candidate flags. Added `oasis_re_atlas_rank` and schema
-`oasis.m68k.re-ranking.v1`; groups are deterministic and dimensions overlap by
-design. **RESULT:** USA Atlas ranks 577 refs in 31 groups: displacement 446,
-function `0x60004` 424, register `A6` 387, move/address 360, immediate
-propagation candidates 168, dynamic-scenario candidates 2; unsupported decoder
-items 4 are separate with potential 0. **TESTS:** synthetic, USA/Beta oracle,
-Debug/Release/GNU CTest 20/20, JSON parse, file-limit, diff-check and GitHub
-Actions run `33767878177` green.
-**UNKNOWN/NEXT:** candidate counts are not proof of resolution; select the next
-bounded decoder/trace improvement from this ranking only, then stop—no M12.
-
+**RESULT:** Added typed Atlas unresolved records and `oasis_re_atlas_rank` /
+`oasis.m68k.re-ranking.v1`; USA ranks 577 refs: displacement 446, function
+`0x60004` 424, A6 387, move/address 360, immediate 168, dynamic 2; 4
+unsupported items remain separate. **TESTS:** synthetic, USA/Beta oracle,
+Debug/Release/GNU CTest 20/20, JSON/diff-check/file-limit and CI
+`33767878177` green. **UNKNOWN/NEXT:** candidates are not resolution; choose
+the next bounded improvement only, then stop—no M12.
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
 
-**TASK:** Test a minimal isolated execution backend against the unresolved
-`0xA7E2` path; confidence remains evidence-only. **BACKEND:** bounded scenario
-interpreter, not linked into `oasis_core` runtime behavior. **RESULT:** 5 PCs,
-3 blocks, 1 branch outcome, 2 RAM reads, 0 writes, 1 return and indirect target
-`0xA7E2 -> 0xA7E4`; 3 static items newly resolved, 9 remain unresolved.
-**EVIDENCE:** controlled `A6=FF2954`, raw word `1`, raw `+0x22` pointer to
-`0xA7E4`; USA oracle reproduces PCs, RAM addresses and target. **TESTS:**
-Debug/Release CTest 17/17, synthetic/USA oracle, deterministic JSON,
-file-limit and diff-check pass; GitHub Actions CI `33756628793` is green.
-**UNKNOWN:** all other register-based refs, indirect targets and function
-semantics. **NEXT:** stop; await explicit instruction, no full tracing or M12.
-
+**RESULT:** Isolated bounded scenario tracing at `0xA7E2` recorded 5 PCs,
+3 blocks, 1 branch, 2 RAM reads, 1 return and `A7E2→A7E4`, resolving 3 static
+items; backend is outside `oasis_core`. **TESTS:** synthetic/USA oracle,
+Debug/Release CTest 17/17, deterministic JSON, file-limit/diff-check and CI
+`33756628793` green. **UNKNOWN/NEXT:** other refs, targets and semantics;
+stop without full tracing or M12.
 ## 2026-09-03 — M11.5 second RE-acceleration slice completed
 
 **RESULT:** `oasis_re_program` covers `0x3820`, `0x8E90`, `0xA6A4`, `0xD3B2`:

@@ -92,7 +92,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_atlas_report.cpp Local-only bounded Atlas CLI
 │       ├── re_atlas_ranking.hpp Atlas unresolved-evidence ranking API
 │       ├── re_atlas_ranking.cpp Deterministic ranking aggregation and priority groups
-│       └── re_atlas_ranking_report.cpp Local-only Atlas ranking CLI
+│       ├── re_atlas_ranking_report.cpp Local-only Atlas ranking CLI
+│       ├── re_resolution.hpp Bounded address-displacement resolution API
+│       ├── re_resolution.cpp Conservative register propagation and CFG merge handling
+│       ├── re_resolution_format.cpp Deterministic resolution JSON/text formatting
+│       └── re_resolution_report.cpp Local-only bounded resolution CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -117,6 +121,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_atlas_test.cpp                   Synthetic Atlas model/query/conflict tests
     ├── re_atlas_reference.cpp              Local USA/Beta Atlas oracle
     ├── re_atlas_ranking_test.cpp            Synthetic ranking/grouping tests
+    ├── re_resolution_test.cpp               Synthetic bounded propagation/merge tests
+    ├── re_resolution_reference.cpp          Local USA-ROM resolution oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

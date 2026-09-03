@@ -1,12 +1,24 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 first bounded ROM Atlas prototype
+CURRENT_TASK: M11.5 bounded address-displacement resolution PoC around 0x60004
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Deterministic oasis.m68k.re-atlas.v1 maps 13 bounded evidence entries, accepted beta correspondences, calls/refs, raw A6A4 dynamic facts and no conflicts; USA/Beta oracle, Debug/Release/GNU CTest and JSON determinism pass
-NEXT_ACTION: Stop at the verified Atlas checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: oasis.m68k.re-resolution.v1 examines 390 bounded displacement refs, resolves 294 with zero provenance failures, and reduces Atlas unresolved 577 to 283; USA oracle and Debug verification pass
+NEXT_ACTION: Stop at the verified bounded resolution checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 bounded address-displacement resolution PoC
+- `oasis_re_resolution` is a developer-only bounded dataflow/report layer over
+  the existing `0x60004` slice; it is not linked into `oasis_core`.
+- The pass supports only conservative address-register setup/copy/arithmetic,
+  agreed predecessor states and explicit invalidation at calls/unknown writes.
+- USA result: 390 candidates examined, 294 resolved, 96 unresolved (92 unknown
+  base and 4 CFG merge), 0 provenance failures; 294 RAM effective addresses,
+  78 unique, 0 ROM effective addresses.
+- Ranking delta: Atlas unresolved 577→283; displacement 446→152; A6 387→123;
+  immediate candidates 168→54. The 80 candidates outside the entry-reachable
+  CFG remain unknown; no semantic field names were assigned.
 
 ## M11.5 first bounded ROM Atlas prototype
 - `oasis_re_atlas` is a developer-only typed manifest/report layer over the

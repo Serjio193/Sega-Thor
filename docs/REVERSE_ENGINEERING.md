@@ -1,7 +1,18 @@
 # Reverse-Engineering Ledger
-
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
-
+## M11.5 — bounded address-displacement resolution around `0x00060004`
+**Status:** VERIFIED bounded tooling checkpoint; no semantics inferred.
+`oasis_re_resolution` analyzes only Atlas displacement records in
+`[0x60004,0x61204)`, supporting immediate/LEA setup, address-register copy,
+immediate arithmetic and agreeing CFG merges; calls/unknown writes invalidate.
+USA: 390 examined, 294 resolved, 96 unresolved (92 unknown base, 4 CFG merge),
+0 provenance failures, 294 RAM refs / 78 unique addresses, 0 ROM refs.
+Atlas delta: unresolved `577→283`, displacement `446→152`, A6 `387→123`,
+immediate candidates `168→54`; 80 records are outside the reachable CFG.
+Synthetic and USA tests cover propagation, signed offsets, invalidation, merges
+and deterministic reports. This remains developer-only; no runtime, emulator,
+interprocedural or whole-ROM analysis was added. Next proof requires explicit
+selection of another bounded evidence class.
 ## Known hardware addresses
 | Address | Meaning | Confidence | Evidence/status |
 |---|---|---:|---|
