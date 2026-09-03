@@ -52,13 +52,13 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble bounded window around 0x3820
+      - name: Disassemble full candidate routine window
         shell: bash
         run: |
           set -euo pipefail
           m68k-linux-gnu-objdump \
             -D -b binary -m m68k:68000 \
             --adjust-vma=0 \
-            --start-address=0x37e0 \
-            --stop-address=0x3980 \
+            --start-address=0x3820 \
+            --stop-address=0x3c80 \
             /tmp/reference.md
