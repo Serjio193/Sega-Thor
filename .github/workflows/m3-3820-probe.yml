@@ -56,9 +56,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          m68k-linux-gnu-objdump \
-            -D -b binary -m m68k:68000 \
-            --adjust-vma=0 \
-            --start-address=0x3820 \
-            --stop-address=0x3c80 \
-            /tmp/reference.md
+          m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+            --start-address=0x3820 --stop-address=0x3b50 /tmp/reference.md
+
+      - name: Disassemble representative callers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for RANGE in '0xc360 0xc3b0' '0xd390 0xd410' '0x3a7c0 0x3a830' '0x3e7e0 0x3e850'; do
+            set -- $RANGE
+            echo "===== caller window $1..$2 ====="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
