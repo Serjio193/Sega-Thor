@@ -330,9 +330,12 @@ dialogue and command semantics remain UNKNOWN.
   and field meanings remain UNKNOWN.
 - The external entry at `0x60004` branches to `0x6042C`; its raw command
   dispatcher compares `D0` against values `1..8`, and the command `0x0006`
-  branch at `0x60478` reaches `0x609C8` — **CONFIRMED**. That handler tests
-  raw flags at several driver RAM locations before its later branches; its
-  complete return and side-effect contract remains UNKNOWN.
+  branch at `0x60478` reaches `0x609C6` — **CONFIRMED**. That handler starts
+  with `D0=0`, builds a raw flag mask from driver RAM bit 4 values and returns
+  through the shared driver epilogue at `0x611D8` — **CONFIRMED**.
+- The command `0x0008` branch reaches `0x60D10`, which performs raw 68000/Z80
+  bus operations and copies `0x0606` bytes from `A01000` to `FF0022` —
+  **CONFIRMED**. Driver protocol and audio meaning remain outside M11.
 - The native `event_router` module exposes the producer transfer, raw
   handler-address mapping and the bounded `0x7B2A` trace. Synthetic tests and
   the USA-ROM oracle cover the type gate, field composition and dispatch
