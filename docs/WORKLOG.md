@@ -11,6 +11,40 @@ Each work session/task should state:
 - unresolved questions;
 - exact next step.
 
+## 2026-09-03 — M2 canonical ROM identity implementation
+**Objective:** Pin down the binary reference used for reverse engineering and make ROM identification explicit/reproducible.
+
+**Actions:**
+- accepted ADR-0005: USA retail `Beyond Oasis` is the canonical engineering reference; final C++ game model remains region-independent;
+- added `RomIdentity`, Mega Drive header parsing, Sega checksum validation, CRC32, SHA-1, and SHA-256;
+- added classification states `SUPPORTED`, `KNOWN_UNSUPPORTED`, `MODIFIED`, `UNKNOWN`;
+- configured USA `SUPPORTED` matching to require size `3145728`, CRC32 `C4728225`, and SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
+- recorded Europe CRC32 `1110B0DB` as a known unsupported secondary revision;
+- added CLI identity/fingerprint reporting;
+- added synthetic hash/header/checksum tests;
+- added GitHub Actions CI for CMake build + CTest;
+- updated reverse-engineering ledger, file map, project state, and task state.
+
+**Files changed:** `docs/DECISIONS.md`, `PROJECT_STATE.md`, `TASK.md`, `src/core/rom_identity.hpp`, `src/core/rom_identity.cpp`, `src/main.cpp`, `tests/rom_identity_test.cpp`, `CMakeLists.txt`, `.github/workflows/ci.yml`, `docs/REVERSE_ENGINEERING.md`, `docs/FILE_MAP.md`, `docs/WORKLOG.md`.
+
+**Evidence:**
+- current MAME metadata marks the USA ROM as `good`, size `3145728`, CRC32 `c4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
+- GameHacking.org independently reports USA size 3M and CRC32 `C4728225`;
+- public `smd_beyondoasis` work targets the USA good dump.
+
+**Tests/build:**
+- local reconstructed bootstrap compiled successfully with the first ROM identity implementation;
+- smoke and ROM identity tests passed (`2/2`);
+- standard vectors verified CRC32 `123456789` and SHA-256 `abc` before SHA-1 strengthening;
+- SHA-1 standard-vector test was then added to repository;
+- actual branch-level GitHub Actions result still needs to be observed before M2 is marked DONE.
+
+**Result:** Canonical reference policy and implementation are in place. M2 is functionally implemented but remains ACTIVE until current branch CI is observed green.
+
+**Unresolved:** SHA-256 of the confirmed clean USA ROM is not yet independently pinned; it is diagnostic and not required for current exact matching because confirmed SHA-1 is available.
+
+**Exact next step:** Observe branch CI. If green, mark M2 DONE and begin M3 by establishing exact routine boundaries and call contract for USA address `0x00003820`.
+
 ## 2026-09-03 — Governance enforcement completed
 **Objective:** Make the project resistant to scope drift and ensure rules are enforceable, not merely descriptive.
 
