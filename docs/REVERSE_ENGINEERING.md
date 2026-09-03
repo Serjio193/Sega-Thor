@@ -30,27 +30,15 @@ This file records what is known about the original Beyond Oasis binary. Do not p
 ## `[0x00003820, 0x00003B3E)` — graphics decompression routine
 **Status:** VERIFIED and translated to native C++.
 
-**Semantic confidence:** CONFIRMED for decompression behavior and call contract. Public work labels the entry `decompress_gfx`; independent static and dynamic analysis establishes the implementation details below.
+**Semantic confidence:** CONFIRMED for decompression behavior and call contract.
 
-### Boundaries
-- Entry: `0x3820`.
-- Format-A return: `0x38CE`.
-- Format-B return: `0x3A24`.
-- Internal bit-refill branches extend through `0x3B3A`.
-- `0x3B3E` begins an unrelated function with a new register-save prologue.
-- Exact half-open routine range: `[0x3820, 0x3B3E)`.
-
-### Direct callers
-Verified USA ROM contains **52 direct absolute `JSR 0x3820` calls** and **0 direct absolute JMPs**. Representative callers include `0x00C394`, `0x00D3C8`, `0x03A7FE`, and `0x03E820`.
-
-### Calling convention
-- `A0`: compressed source pointer — CONFIRMED.
-- `A1`: destination pointer — CONFIRMED.
-- On return, `A0` points immediately after consumed compressed data — CONFIRMED by dynamic trace.
-- On return, `A1` points immediately after decompressed output — CONFIRMED statically by caller `0x3A7FE` and dynamically by trace.
-- `D0-D2/A2` are preserved by the outer routine.
-- Format B additionally preserves `D3/D6/D7`.
-- No hardware-register access or nested subroutine call occurs inside the decompressor.
+### Boundaries and call contract
+- Exact half-open range: `[0x3820, 0x3B3E)`.
+- Verified USA ROM contains 52 direct absolute `JSR 0x3820` calls and 0 direct absolute JMPs.
+- `A0`: compressed source pointer; returns advanced to immediately after consumed input — CONFIRMED.
+- `A1`: destination pointer; returns advanced to immediately after output — CONFIRMED.
+- `D0-D2/A2` are preserved; format B additionally preserves `D3/D6/D7`.
+- No hardware access or nested subroutine call occurs inside the decompressor.
 
 ### Format dispatch
 At `0x3824`, byte `source[2]` selects the format:
@@ -62,38 +50,106 @@ Observed command families:
 - literal byte runs;
 - repeated-byte runs;
 - sliding-window backreferences into already-produced output;
-- chained `0b011xxxxx` extensions that continue the preceding backreference;
-- block-length framing and a byte terminator deciding whether another block follows.
-
-The low 5 bits of a chained extension encode its copy count; zero behaves as 256 because the original uses byte decrement followed by word-sized DBF semantics.
+- chained `0b011xxxxx` extensions continuing the preceding backreference;
+- block-length framing and byte terminator.
 
 ### Format B
 Observed behavior:
-- each block begins with three skipped header bytes followed by an LSB-first control bit stream;
-- literal tokens copy one source byte;
-- several distance/length backreference forms copy previous output;
-- distance `1` is a special repeated-byte run;
-- distance `0` ends the current compressed block, followed by a byte marker deciding whether another block follows;
-- control bits refill from two source bytes when exhausted.
+- three-byte block header followed by LSB-first control bits;
+- literal tokens;
+- multiple backreference forms;
+- distance `1` special repeated-byte run;
+- distance `0` block terminator;
+- 16-bit control-bit refill.
 
-### Native mapping
-Implementation:
-- `src/game/graphics_decompress.hpp`
-- `src/game/graphics_decompress.cpp`
-
-Tests:
-- `tests/graphics_decompress_test.cpp` — synthetic literals, RLE, backreferences, extension chains and bitstream cases;
-- `tests/graphics_decompress_reference.cpp` — local verified-ROM differential verifier.
-
-### Original 68000 oracle traces
-The exact original bytes `[0x3820,0x3B3E)` were executed in an isolated M68K Linux/QEMU harness. This is reference verification only; final runtime does not execute original 68000 code.
+### Native mapping and oracle traces
+Implementation: `src/game/graphics_decompress.*`.
 
 | Format | Caller | ROM source | Source consumed | Output bytes | Output SHA-256 |
 |---|---:|---:|---:|---:|---|
 | A | `0x00C394` | `0x16943C` | 1217 | 3072 | `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a` |
 | B | `0x03C276` | `0x1894EA` | 112 | 128 | `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9` |
 
-The native C++ implementation matches both traces exactly on source bytes consumed, output size, and output SHA-256. ROM-backed GitHub Actions verification and ordinary CTest/CI are green.
+Native C++ matches original 68000 execution on source consumed, output length and SHA-256 for both oracle cases.
+
+## M7 — indexed compressed-resource table at `0x0005CE96`
+**Status:** INVESTIGATING.
+
+### Table structure
+- Base used by original code: `0x0005CE96` — CONFIRMED.
+- Entry width: 4-byte absolute ROM pointer — CONFIRMED by reader at `0xD3B2`.
+- Entry 0: `0x000000` — CONFIRMED; semantic role remains UNKNOWN (likely sentinel/unused).
+- Entries 1..107 form a dense run of valid compressed-resource pointers from `0x1AD000` through `0x1E6EDA` — CONFIRMED.
+- First entries:
+  - index 1 -> `0x1AD000`;
+  - index 2 -> `0x1AD9D4`;
+  - index 3 -> `0x1AE1A8`;
+  - index 4 -> `0x1AE8AA`.
+- Sample pointed streams have nonzero `source[2]` and therefore use verified decompressor format A — CONFIRMED for sampled entries.
+
+### Reader at `0x0000D3B2`
+**Behavior: CONFIRMED.**
+
+Relevant original sequence:
+```text
+D3B2 save D0/A0/A1
+D3B6 A1 = 0xFF2FA8
+D3BC A0 = 0x05CE96
+D3C2 D0 <<= 2
+D3C4 A0 = *(A0 + D0)
+D3C8 JSR 0x3820
+...
+D404 RTS
+```
+
+Therefore incoming `D0` is a 0-based resource-table index and selected entry is decompressed into work RAM `0xFF2FA8`.
+
+### Direct calls to `0xD3B2`
+Static absolute-call search found seven direct calls:
+- `0x02CFAA`, `0x02CFB8`;
+- `0x02D410`;
+- `0x032174`, `0x032182`;
+- `0x032884`, `0x032892`.
+
+Immediate `D0` values observed immediately before these calls include:
+- `3`, `4`;
+- `0x57` (87);
+- `0x23` (35), `0x24` (36).
+
+This proves the table is selected by stable numeric IDs used in gameplay/scene code. What those IDs mean is still under investigation.
+
+### Developer screen-name list
+The canonical ROM contains a developer-facing screen-name list in the same general metadata region:
+- `VILLAGE` at `0x05DB4D`;
+- `ECAPITAL` at `0x05DB56`;
+- `HARBOR` at `0x05DB61`;
+- `01-00` at `0x05DC48`;
+- `01-05 BOSS` at `0x05DC70`;
+- `14-01 KING` at `0x05E110`.
+
+**Current hypothesis:** the `0x5CE96` indexed compressed-resource table may correspond to screen/room resources because its ~107 meaningful entries and stable numeric selectors are compatible with the ROM's developer screen inventory. **Confidence: LIKELY, not CONFIRMED.** Exact index-to-name correlation is the next proof target.
+
+### Structure-processing routine at `0x0000D406`
+**Status:** INVESTIGATING; high relevance to world/screen setup.
+
+This routine is called extensively from code in roughly `0x2Cxxx..0x3Axxx` and reads a structured record through `A1`:
+- words at offsets `+16`, `+18`, `+20` copied to RAM `0xFF16F4..0xFF16F8`;
+- word `+22` -> `D6`;
+- word `+24` -> `D7` and RAM `0xFF16F0`;
+- long at `+8` -> RAM `0xFF16FA`;
+- bytes beginning at `+12` are transformed into derived RAM tables;
+- additional state buffers begin at `0xFF1716` and `0xFF173E`.
+
+Do not name the record fields until caller/data evidence establishes semantics.
+
+### Related resource loading at `0xD4C8..`
+The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each nonzero index selects and decompresses a resource into separate 4096-byte-spaced destinations beginning at `0xFF3FA8`. This strongly indicates the table contains reusable scene-related graphic/data resources, but exact semantics remain UNCONFIRMED.
+
+### M7 next proof
+1. enumerate developer screen names in exact order and compare indices `3`, `4`, `35`, `36`, `87` against table selectors;
+2. disassemble the seven `0xD3B2` callers far enough backward to identify their surrounding screen/event identity;
+3. decompress representative table entries with native C++ and compare header/structure patterns;
+4. only after correlation, introduce a portable room/screen resource loader.
 
 ## Existing translated compatibility behavior
 
@@ -101,7 +157,7 @@ The native C++ implementation matches both traces exactly on source bytes consum
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.
 
 ### Tile copy to VRAM
-Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_vram` macro. Current VDP model is intentionally minimal.
+Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_vram` macro. Current VDP model is intentionally narrow.
 
 ## ROM identification implementation
 **Status:** VERIFIED.
