@@ -11,22 +11,26 @@ The native runtime needs enough VDP semantics to represent and reconstruct the o
 ### VRAM
 - Size: 64 KiB.
 - Stored as raw bytes.
-- Bounded writes are supported.
-- Big-endian 16-bit reads are supported for tile/name-table words and other verified structures.
+- Bounded byte-span writes.
+- Bounded big-endian 16-bit reads and writes.
 
 ### CRAM
 - Size: 128 bytes / 64 words.
 - Stored as raw bytes so original values can be preserved exactly.
+- Bounded byte-span writes.
+- Bounded big-endian 16-bit reads and writes.
 - Color conversion to portable RGB is implemented separately in `game/genesis_graphics`.
 
 ### VSRAM
 - Size: 80 bytes / 40 words.
 - Stored as raw bytes.
-- This represents the hardware vertical-scroll RAM capacity; actual Beyond Oasis usage must still be established from original code/traces.
+- Bounded byte-span writes.
+- Bounded big-endian 16-bit reads and writes.
+- Exact Beyond Oasis scroll usage still requires original-code evidence.
 
 ## Tile attribute word
 
-The standard 16-bit Genesis name-table attribute layout is represented by `TileAttributes`:
+The standard 16-bit Genesis pattern-name layout is represented by `TileAttributes`:
 
 ```text
 15       priority
@@ -43,7 +47,19 @@ The decoder returns:
 - `flip_h`;
 - `flip_v`.
 
-A plane cell can therefore remain a raw 16-bit word in VRAM and be decoded at the boundary where rendering/state inspection needs structured fields.
+`PlaneCell` is intentionally only a thin decoded view of that raw word.
+
+## Sprite attribute entry
+
+`SpriteAttributes` represents the standard four-word sprite table entry at raw VDP level:
+
+- 9-bit raw Y coordinate;
+- width and height in 1..4 tile cells;
+- 7-bit sprite-link field;
+- pattern-name tile/palette/priority/flip attributes;
+- 9-bit raw X coordinate.
+
+Visible-screen coordinate conversion and sprite-chain traversal are renderer/state-reconstruction concerns, not part of this structure.
 
 ## Current design rule
 
@@ -63,16 +79,16 @@ The following are intentionally outside the current code until Beyond Oasis evid
 - sprite-link traversal and per-scanline limits;
 - shadow/highlight mode;
 - interlace modes;
-- pixel-perfect hardware contention.
+- pixel-perfect hardware contention;
+- SDL/OpenGL/Vulkan/Metal/console rendering APIs.
 
-## M5 next evidence targets
+## Next evidence targets
 
 1. identify original code that configures the plane/name-table bases used by Beyond Oasis;
-2. identify where sprite attribute table entries are built or uploaded;
-3. document the exact sprite raw-word layout before adding a structured sprite type;
-4. determine which scrolling modes the game actually uses;
-5. add only those semantics to the compatibility layer.
+2. identify where sprite attribute entries are built or uploaded;
+3. determine which scrolling modes the game actually uses;
+4. add only evidence-backed semantics to the compatibility layer.
 
 ## Portability boundary
 
-`src/genesis/` contains portable hardware-state semantics only. SDL, Vulkan, OpenGL, Metal, console SDKs, Android APIs and other platform renderers must consume this state from a higher layer and must not be dependencies of `oasis_core`.
+`src/genesis/` contains portable hardware-state semantics only. Platform renderers consume decoded state from a higher layer and must not become dependencies of `oasis_core`.
