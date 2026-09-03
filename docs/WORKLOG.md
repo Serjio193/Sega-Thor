@@ -27,6 +27,27 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** determine the lifecycle and writers of the three `0x64C4` global flags before adding a slowdown context object.
 
+## 2026-09-03 — M8 velocity-adjust context isolation
+**Objective:** Determine the writers and ownership boundary of the external flags consumed by `0x64C4`.
+
+**Evidence:**
+- `FF1985` has direct writes in event/control paths at `0x56F2`, `0x57C6` and `0x7E50`, while player update and `0x64C4` only read it;
+- `FF1984` is cleared/set by the active-entity scans at `0x2D220..0x2D23A` and `0x2F250..0x2F286`, with the main entity selected through `FF19E8`;
+- bit 4 of `FF16F1` is read at `0x64D8`, but no direct bit-4 write appears among the scanned references.
+
+**Result:** The three conditions are external timing/context inputs, not player presentation fields. A future context object can expose them without assigning gameplay names that the ROM does not establish.
+
+**Exact next step:** add a small `VelocityAdjustContext` and differential unit tests for the three confirmed `0x64C4` branch outcomes.
+
+## 2026-09-03 — M8 velocity-adjust context implementation
+**Objective:** Add the confirmed `0x64C4` branch outcomes without assigning semantics to external RAM flags.
+
+**Actions:** Added an optional raw `VelocityAdjustContext` carrying `FF1985`, `FF1984`, bit 4 of `FF16F1` and footprint `+0x6F`. Added unit coverage for bypass, half-both and Y-only-half outcomes, and connected the context to state-4 retained-axis accumulation.
+
+**Result:** The native driver reproduces the isolated `0x64C4` arithmetic when a caller supplies external context; the default path remains unchanged when context is unavailable.
+
+**Exact next step:** verify frame-boundary ordering between state-4 context sampling, footprint update and shared movement consumption.
+
 ## 2026-09-03 — M8 player update dispatch closure
 **Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
 

@@ -39,6 +39,15 @@ struct PlayerMovementConfig {
     std::uint8_t entity_flags{};
 };
 
+struct VelocityAdjustContext {
+    // These names intentionally preserve the observed external RAM sources.
+    bool available{};
+    bool flag_ff1985{};
+    bool flag_ff1984{};
+    bool flag_ff16f1_bit4{};
+    std::uint8_t footprint_any_bits{};
+};
+
 struct PlayerState {
     // Positions use the same 16.16 fixed-point convention as movement deltas.
     std::int32_t x_fixed{};
@@ -80,12 +89,19 @@ struct MovementResult {
 [[nodiscard]] MovementVector update_movement_state(
     PlayerState& player,
     std::uint8_t input_nibble,
-    const PlayerMovementConfig& config = {}) noexcept;
+    const PlayerMovementConfig& config = {},
+    const VelocityAdjustContext& velocity_context = {}) noexcept;
+
+void adjust_velocity_for_context(
+    std::int32_t& x_fixed,
+    std::int32_t& y_fixed,
+    const VelocityAdjustContext& context) noexcept;
 
 [[nodiscard]] MovementResult try_move(
     PlayerState& player,
     const core::ControllerState& controller,
     const world::ByteGridView& terrain,
-    const PlayerMovementConfig& config = {}) noexcept;
+    const PlayerMovementConfig& config = {},
+    const VelocityAdjustContext& velocity_context = {}) noexcept;
 
 } // namespace oasis::game::player

@@ -58,6 +58,18 @@ std::int32_t approach_zero(std::int32_t value) noexcept {
     return 0;
 }
 
+bool cardinal_footprint_mask(std::uint8_t mask) noexcept {
+    switch (mask & 0x0FU) {
+    case 0x1U:
+    case 0x2U:
+    case 0x4U:
+    case 0x8U:
+        return true;
+    default:
+        return false;
+    }
+}
+
 } // namespace
 
 Direction direction_from_input(std::uint8_t input_nibble) noexcept {
@@ -80,9 +92,27 @@ MovementVector movement_vector(std::uint8_t input_nibble,
                           static_cast<std::int32_t>(entry.y_sign * y_speed)};
 }
 
-MovementVector update_movement_state(PlayerState& player,
-                                     std::uint8_t input_nibble,
-                                     const PlayerMovementConfig& config) noexcept {
+void adjust_velocity_for_context(std::int32_t& x_fixed,
+                                 std::int32_t& y_fixed,
+                                 const VelocityAdjustContext& context) noexcept {
+    if (!context.available || context.flag_ff1985 || context.flag_ff16f1_bit4) {
+        return;
+    }
+    if (context.flag_ff1984) {
+        x_fixed >>= 1;
+        y_fixed >>= 1;
+        return;
+    }
+    if (!cardinal_footprint_mask(context.footprint_any_bits)) {
+        y_fixed >>= 1;
+    }
+}
+
+MovementVector update_movement_state(
+    PlayerState& player,
+    std::uint8_t input_nibble,
+    const PlayerMovementConfig& config,
+    const VelocityAdjustContext& velocity_context) noexcept {
     const auto input = static_cast<std::uint8_t>(input_nibble & 0x0FU);
     if (player.movement_state == 4U) {
         const auto& entry = kDirectionTable[input];
@@ -104,7 +134,10 @@ MovementVector update_movement_state(PlayerState& player,
         const auto diagonal_y = config.diagonal_y_speed;
         MovementVector result{entry.direction, 0, 0};
         if ((player.orientation_flags & 1U) == 0U) {
-            player.accumulated_y_fixed += player.intent_y_fixed;
+            auto retained_y = player.intent_y_fixed;
+            std::int32_t ignored_x = 0;
+            adjust_velocity_for_context(ignored_x, retained_y, velocity_context);
+            player.accumulated_y_fixed += retained_y;
             if ((input & (1U << 2U)) != 0U) {
                 player.accumulated_x_fixed -= diagonal_x;
                 result.x_fixed -= diagonal_x;
@@ -113,9 +146,12 @@ MovementVector update_movement_state(PlayerState& player,
                 player.accumulated_x_fixed += diagonal_x;
                 result.x_fixed += diagonal_x;
             }
-            result.y_fixed = player.intent_y_fixed;
+            result.y_fixed = retained_y;
         } else {
-            player.accumulated_x_fixed += player.intent_x_fixed;
+            auto retained_x = player.intent_x_fixed;
+            std::int32_t ignored_y = 0;
+            adjust_velocity_for_context(retained_x, ignored_y, velocity_context);
+            player.accumulated_x_fixed += retained_x;
             if ((input & (1U << 0U)) != 0U) {
                 player.accumulated_y_fixed -= diagonal_y;
                 result.y_fixed -= diagonal_y;
@@ -124,7 +160,7 @@ MovementVector update_movement_state(PlayerState& player,
                 player.accumulated_y_fixed += diagonal_y;
                 result.y_fixed += diagonal_y;
             }
-            result.x_fixed = player.intent_x_fixed;
+            result.x_fixed = retained_x;
         }
         ++player.turn_timer;
         return result;
@@ -148,9 +184,10 @@ MovementVector update_movement_state(PlayerState& player,
 MovementResult try_move(PlayerState& player,
                         const core::ControllerState& controller,
                         const world::ByteGridView& terrain,
-                        const PlayerMovementConfig& config) noexcept {
+                        const PlayerMovementConfig& config,
+                        const VelocityAdjustContext& velocity_context) noexcept {
     const auto input = static_cast<std::uint8_t>(controller.buttons & 0x0FU);
-    const auto vector = update_movement_state(player, input, config);
+    const auto vector = update_movement_state(player, input, config, velocity_context);
     MovementResult result{vector, false, false};
     if (vector.direction == Direction::none && player.movement_state == 0U) {
         return result;

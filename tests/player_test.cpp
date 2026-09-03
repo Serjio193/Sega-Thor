@@ -11,6 +11,8 @@ int main() {
     using oasis::game::player::Direction;
     using oasis::game::player::PlayerMovementConfig;
     using oasis::game::player::PlayerState;
+    using oasis::game::player::VelocityAdjustContext;
+    using oasis::game::player::adjust_velocity_for_context;
     using oasis::game::player::direction_from_input;
     using oasis::game::player::movement_vector;
     using oasis::game::player::try_move;
@@ -99,6 +101,24 @@ int main() {
     assert(turning_move_player.y_fixed == 16 * 0x10000 + 0x30000);
     assert(turning_move_player.accumulated_x_fixed == 0);
     assert(turning_move_player.accumulated_y_fixed == 0);
+
+    std::int32_t adjusted_x = 0x36000;
+    std::int32_t adjusted_y = 0x30000;
+    VelocityAdjustContext bypass_context{true, true, false, false, 0};
+    adjust_velocity_for_context(adjusted_x, adjusted_y, bypass_context);
+    assert(adjusted_x == 0x36000 && adjusted_y == 0x30000);
+
+    adjusted_x = 0x36000;
+    adjusted_y = 0x30000;
+    VelocityAdjustContext half_both_context{true, false, true, false, 0};
+    adjust_velocity_for_context(adjusted_x, adjusted_y, half_both_context);
+    assert(adjusted_x == 0x1B000 && adjusted_y == 0x18000);
+
+    adjusted_x = 0x36000;
+    adjusted_y = 0x30000;
+    VelocityAdjustContext half_y_context{true, false, false, false, 0};
+    adjust_velocity_for_context(adjusted_x, adjusted_y, half_y_context);
+    assert(adjusted_x == 0x36000 && adjusted_y == 0x18000);
 
     return 0;
 }

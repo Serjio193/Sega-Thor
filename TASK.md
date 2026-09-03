@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Determine the lifecycle and writers of the three `0x64C4` global flags before adding a slowdown context object.
+Verify frame-boundary ordering between state-4 context sampling, footprint update and shared movement consumption.
