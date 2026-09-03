@@ -40,6 +40,7 @@ add_library(oasis_re_tooling
     src/tools/re_trace.cpp
     src/tools/re_trace_format.cpp
     src/tools/re_diff.cpp
+    src/tools/re_diff_detail.cpp
     src/tools/re_diff_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)

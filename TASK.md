@@ -1,65 +1,59 @@
 # Current Task
 
-TASK: M11.5 — USA retail versus USA beta bounded opcode correspondence
-WHY: Compare the five requested known retail targets against the user-supplied
-USA Beta 1994-11-01 ROM without semantic inference or runtime changes.
+TASK: M11.5 fifth checkpoint — retail/beta changed block ordinal 10 detail
+WHY: Compare only retail `0xA6A4` block ordinal 10 with beta `0xA654` block
+ordinal 10 at instruction, raw-data and CFG level, without semantic inference.
 CURRENT MILESTONE: M11.5
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 95%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE
 
 ## Scope and method
 
-`oasis_re_diff` loads both binaries through `oasis::Rom::load`. It analyzes
-bounded windows for `0x3820`, `0x60004`, `0x82AE`, `0x7A28` and `0xA6A4`, then
-compares decoded instruction bytes, normalized opcode signatures and CFG block
-topology. Normalization retains decoder opcode-family/addressing/flow shape and
-operand widths while omitting relocation-sensitive branch and extension values.
-`exact_match` requires raw decoded bytes plus CFG shape; `structural_match`
-requires normalized signatures plus CFG shape; `changed_blocks` means CFG shape
-is shared but aligned block bytes differ; otherwise the comparison is
-`unmatched`. Analog search is bounded by the target window and reports only
-candidate entries passing the same conservative comparison. The beta scan is
-limited to even ROM offsets for these five signatures; each candidate decode
-uses only the selected target window and this is not general routine discovery.
+`oasis_re_diff` continues to load both binaries through `oasis::Rom::load` and
+keeps the existing five-target bounded scan. The `oasis.m68k.re-diff.v1` report
+now adds detail only for aligned changed blocks: exact block ranges, direct and
+conditional-fallthrough CFG edges, raw decoded instruction records, addressing
+mode evidence, condition codes, constants, memory references and conservative
+diff classifications. A changed immediate is `relocation_only` only when both
+values point to corresponding decoded instructions at the same slice-relative
+offset; otherwise it is `constant_changed`. Unsupported or unresolved evidence
+remains explicitly classified and no semantics are assigned.
 
 ## Acceptance criteria
 
-- [x] fingerprint the user-supplied beta ROM without committing ROM bytes;
-- [x] compare exactly the five requested retail targets;
-- [x] emit deterministic `oasis.m68k.re-diff.v1` JSON and human report;
-- [x] report exact, structural, changed-block and unmatched categories;
-- [x] include normalized opcode signatures and candidate beta addresses;
-- [x] preserve unknown/unsupported decoder evidence without semantic names;
-- [x] add synthetic exact/structural/changed classification tests;
-- [x] add a local retail/beta fingerprint and correspondence oracle;
-- [x] keep the tool developer-only and separate from `oasis_core` gameplay;
-- [x] pass Debug/Release build, CTest, file-limit and `git diff --check`.
+- [x] localize retail and beta changed block ordinal 10 and exact ranges;
+- [x] report predecessor, direct successor and conditional fallthrough edges;
+- [x] emit deterministic instruction-by-instruction raw/evidence detail;
+- [x] classify relocation, constants, offsets, branches, addressing and unknowns;
+- [x] add synthetic changed-block classification coverage;
+- [x] add retail/beta exact-byte, block-range, instruction and CFG oracle;
+- [x] keep the tooling bounded, developer-only and outside gameplay runtime;
+- [x] pass Debug/Release CTest, USA oracle, GNU-equivalent link, file-limit and
+  `git diff --check` before push.
 
 ## Verified result
 
-Beta fingerprint: size `3145728`, CRC32 `FA59F847`, SHA-1
-`cb0606faeab0398244d4721d71cf7e1c5724a9ef`, SHA-256
-`5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`;
-Mega Drive header and Sega checksum are valid. The report has 5 targets.
-Retail `0x3820` has an exact analogue at beta `0x37D0`; `0x60004` is exact at
-the same address; `0x82AE` has an exact analogue at beta `0x825E`; `0x7A28`
-has an exact analogue at beta `0x79D8`; `0xA6A4` has a structural analogue at
-beta `0xA654` with one raw changed block (ordinal 10). Same-address comparisons
-are unmatched for every moved target and exact for `0x60004`.
+Retail block ordinal 10 is `[0xA786,0xA792)` (12 bytes, 3 instructions);
+beta block ordinal 10 is `[0xA736,0xA742)` (12 bytes, 3 instructions).
+Each has one direct predecessor (`A6BA->A786` / `A66A->A736`), one taken
+conditional edge (`A78E->A7D4` / `A73E->A784`) and one fallthrough edge
+(`A78E->A792` / `A73E->A742`). The CFG topology is unchanged. The first
+instruction is raw `2F3C0000A6BE` versus `2F3C0000A66E`; its immediate points
+to corresponding local decoded instruction offsets, so the difference is
+classified `relocation_only`. The remaining `4A46` and `6B000044` instructions
+are byte-identical; condition code `0xB` is recorded for the branch.
 
 ## Known unknowns and hard boundaries
 
-These results establish byte/decoder/CFG correspondence only. They do not
-prove routine semantics, call contracts, function identity beyond the reported
-evidence, or equivalence of unanalysed bytes. The decoder remains bounded and
-unsupported opcodes/ambiguous control flow remain visible in the underlying
-reports. No production behavior, emulator, whole-ROM recompiler or M12 work
-was added.
+The result proves only bounded byte/decoder/CFG correspondence and a
+relocation-only classification for this block. It does not prove function
+semantics, the meaning of the pushed address, runtime behavior, or equivalence
+outside the analyzed windows. No production behavior, emulator, recompiler,
+wide similarity search, full-game tracing or M12 work was added.
 
 ## Exact next action
 
-Stop at this verified comparison checkpoint and await explicit instruction.
-Do not start dynamic tracing expansion, similarity search beyond these targets,
-whole-ROM discovery, recompilation or M12 automatically.
+Stop at this verified block-detail checkpoint and await explicit instruction.
+Do not start wider beta scans, full-game tracing, recompilation or M12.

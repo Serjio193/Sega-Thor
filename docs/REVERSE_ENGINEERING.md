@@ -442,31 +442,51 @@ of scope.
 
 ### M11.5 fourth checkpoint — USA retail versus USA Beta 1994-11-01
 **Status:** VERIFIED as bounded differential evidence only; no semantic identity
-or behavior is inferred.
+or behavior is inferred. Beta is 3145728 bytes, checksum-valid, CRC32
+`FA59F847`, SHA-1 `cb0606faeab0398244d4721d71cf7e1c5724a9ef` and SHA-256
+`5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`.
+`oasis_re_diff` emits deterministic `oasis.m68k.re-diff.v1` JSON/text for only
+the five requested bounded targets: exact `0x3820->0x37D0`, `0x60004->0x60004`,
+`0x82AE->0x825E`, `0x7A28->0x79D8`, and structural `0xA6A4->0xA654` with one
+raw changed block (ordinal 10). Normalization retains opcode-family,
+addressing/flow shape and widths while omitting relocation-sensitive values;
+candidate scanning is bounded and deterministic. **Boundary:** this proves
+only byte/decoder/CFG correspondence in selected windows, not semantics,
+function names or behavior outside them.
 
-- The user-supplied beta is `3145728` bytes with valid Mega Drive header and
-  Sega checksum. Fingerprint: CRC32 `FA59F847`, SHA-1
-  `cb0606faeab0398244d4721d71cf7e1c5724a9ef`, SHA-256
-  `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`.
-- `oasis_re_diff` analyzes only the five requested bounded retail targets and
-  emits deterministic `oasis.m68k.re-diff.v1` JSON plus a human report.
-- Raw decoded bytes plus CFG shape produce exact correspondence at beta
-  `0x37D0` for retail `0x3820`, beta `0x60004` for retail `0x60004`, beta
-  `0x825E` for retail `0x82AE` and beta `0x79D8` for retail `0x7A28`.
-- Normalized opcode signatures and CFG shape produce a structural match for
-  retail `0xA6A4` at beta `0xA654`; one aligned raw block differs (ordinal 10).
-  Same-address comparison is exact only for `0x60004`; the other four are
-  unmatched at their retail addresses and are reported through candidate
-  correspondence instead.
-- Normalization retains decoder opcode-family, addressing/flow shape and
-  operand widths while omitting relocation-sensitive branch and extension
-  values. `changed_blocks` reports aligned raw-byte differences, and all
-  candidates are bounded and sorted deterministically.
+### M11.5 fifth checkpoint — changed block ordinal 10 detail
+**Status:** CONFIRMED as bounded instruction/CFG/data-level evidence only; no
+semantic interpretation is assigned.
 
-**Boundary:** these results prove only byte/decoder/CFG correspondence within
-the selected windows. They do not prove semantic equivalence, caller contracts,
-function names or behavior outside the analyzed bytes. Broader similarity
-search and whole-ROM discovery remain out of scope.
+- The selected correspondence is retail entry `0xA6A4` to beta entry `0xA654`,
+  changed block ordinal 10. Retail block range is `[0xA786,0xA792)` and beta
+  range is `[0xA736,0xA742)`; both are 12 bytes and contain 3 decoded
+  instructions.
+- Retail has direct predecessor `0xA6BA -> 0xA786`; beta has
+  `0xA66A -> 0xA736`. The changed block's conditional branch is
+  `0xA78E -> 0xA7D4` in retail and `0xA73E -> 0xA784` in beta. The explicit
+  conditional fallthrough edges are `0xA78E -> 0xA792` and
+  `0xA73E -> 0xA742`. These edges have the same block-relative topology.
+- Instruction 0 is `move` opcode `0x2F3C`, addressing modes immediate plus
+  address-predecrement: retail bytes `2F3C0000A6BE`, beta bytes
+  `2F3C0000A66E`. The recorded immediate is `0xA6BE` versus `0xA66E`.
+  Each value is the address of a decoded instruction at the same relative
+  offset in its bounded slice, so the tool classifies this raw difference as
+  `relocation_only`, not as a semantic constant change.
+- Instruction 1 is byte-identical `4A46`. Instruction 2 is byte-identical
+  `6B000044`; both sides record direct-branch condition code `0xB`, with the
+  corresponding relocated targets above. No direct memory reference occurs in
+  this block; the address-predecrement register use and pushed immediate are
+  recorded as raw decoder evidence only.
+- `oasis.m68k.re-diff.v1` adds `changed_block_details` without changing the
+  schema identifier. The section includes both direct and fallthrough CFG
+  edges, raw instruction records, addressing modes, condition codes,
+  immediate values and unresolved/unsupported fields.
+
+**Unknown:** the meaning of the pushed address, the condition's gameplay role,
+function semantics and any behavior outside these bounded blocks remain
+unknown. This checkpoint does not establish a semantic constant change or
+authorize wider beta scanning, tracing, recompilation or production changes.
 
 ## ROM identification implementation
 **Status:** VERIFIED.

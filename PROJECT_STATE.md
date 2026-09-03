@@ -1,12 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 fourth checkpoint — USA retail versus 1994-11-01 beta correspondence
+CURRENT_TASK: M11.5 fifth checkpoint — retail/beta changed block ordinal 10 detail
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Bounded differential report fingerprints beta and finds exact analogues for 0x3820, 0x60004, 0x82AE and 0x7A28 plus structural 0xA6A4->0xA654; oracle and Debug/Release CTest pass
-NEXT_ACTION: Stop at the verified fourth M11.5 checkpoint and await explicit instruction
+LAST_VERIFIED_RESULT: Retail block 0xA786..0xA792 and beta block 0xA736..0xA742 are 12-byte, 3-instruction CFG-equivalent blocks; the only raw change is relocation-only immediate 0xA6BE versus 0xA66E, with oracle and Debug/Release CTest passing
+NEXT_ACTION: Stop at the verified fifth M11.5 checkpoint and await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 fifth checkpoint — changed block ordinal 10 detail
+- Retail block 10 is `[0xA786,0xA792)`; beta block 10 is
+  `[0xA736,0xA742)`. Both contain 3 instructions and 12 bytes.
+- Each has one direct predecessor, one taken conditional branch and one
+  conditional fallthrough. The corresponding edges are
+  `A6BA->A786` / `A66A->A736`, `A78E->A7D4` / `A73E->A784`, and
+  `A78E->A792` / `A73E->A742`; topology is unchanged.
+- The first instruction changes from raw `2F3C0000A6BE` to
+  `2F3C0000A66E`. Its immediate values point to corresponding local decoded
+  instruction offsets and are classified `relocation_only`; `4A46` and
+  `6B000044` are identical, with branch condition code `0xB` recorded.
+- `oasis.m68k.re-diff.v1` now carries bounded block detail, raw instruction
+  evidence, addressing modes, condition codes and conservative classifications.
+  No semantic meaning is assigned to the pushed address or branch.
 
 ## M11.5 fourth checkpoint — retail/beta correspondence
 - `oasis_re_diff` remains developer-only and loads both ROMs through `oasis::Rom::load`.

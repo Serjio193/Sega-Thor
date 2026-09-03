@@ -15,6 +15,22 @@ bool has_analog(const oasis::tools::TargetComparison& target, std::uint32_t entr
     return false;
 }
 
+bool has_classification(const oasis::tools::InstructionDifference& difference,
+                        oasis::tools::InstructionDiffKind kind) {
+    for (const auto item : difference.classifications) {
+        if (item == kind) return true;
+    }
+    return false;
+}
+
+const oasis::tools::AnalogCandidate& find_analog(const oasis::tools::TargetComparison& target,
+                                                  std::uint32_t entry) {
+    for (const auto& candidate : target.analogs) {
+        if (candidate.beta_entry == entry) return candidate;
+    }
+    throw "missing synthetic analogue";
+}
+
 } // namespace
 
 int main() {
@@ -42,6 +58,17 @@ int main() {
     assert(has_analog(report.targets[1], 0x40U, MatchKind::structural_match));
     assert(report.targets[1].analogs.front().matching_instructions == 2U);
     assert(has_analog(report.targets[2], 0x80U, MatchKind::changed_blocks));
+    const auto& moved = find_analog(report.targets[1], 0x40U);
+    assert(moved.changed_block_details.size() == 1U);
+    assert(has_classification(moved.changed_block_details.front().instruction_differences[0],
+                              InstructionDiffKind::constant_changed));
+    const auto& changed = find_analog(report.targets[2], 0x80U).changed_block_details;
+    assert(changed.size() == 1U);
+    assert(changed.front().instruction_differences.size() == 3U);
+    assert(has_classification(changed.front().instruction_differences[0],
+                              InstructionDiffKind::constant_changed));
+    assert(has_classification(changed.front().instruction_differences[1],
+                              InstructionDiffKind::unresolved));
 
     const auto json = diff_to_json(report);
     assert(json.find("oasis.m68k.re-diff.v1") != std::string::npos);

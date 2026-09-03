@@ -1,23 +1,23 @@
 # Development Worklog
-
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
-## 2026-09-03 — M11.5 fourth checkpoint: retail/beta comparison completed
+## 2026-09-03 — M11.5 fifth checkpoint: changed block ordinal 10 completed
 
-**RESULT:** Added developer-only `oasis_re_diff` with deterministic
-`oasis.m68k.re-diff.v1` output. Exact analogues: retail `0x3820 ->` beta
-`0x37D0`, `0x60004 -> 0x60004`, `0x82AE -> 0x825E`, `0x7A28 -> 0x79D8`.
-Normalized structural analogue: `0xA6A4 -> 0xA654`, with one raw changed block
-(ordinal 10). Beta fingerprint is `FA59F847`, SHA-1 `cb0606faeab0398244d4721d71cf7e1c5724a9ef`,
-SHA-256 `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`;
-header/checksum valid. **TESTS:** Debug/Release build and CTest 18/18, local
-beta oracle, deterministic JSON equality, file-limit and diff-check pass.
-The first GitHub build exposed GNU static-library ordering; the new targets
-now link tooling before core, and GitHub Actions run `33759454191` is green.
-**UNKNOWN:** no semantic equivalence or function meaning is inferred; results
-are bounded byte/normalized-signature/CFG evidence only. **NEXT:** stop.
+**TASK/ACTIONS:** Inspect only retail `0xA6A4` versus beta `0xA654` changed
+block 10. Extended developer-only `oasis_re_diff` JSON/text with aligned
+ranges, direct/fallthrough edges, raw instruction records, addressing modes,
+condition codes and conservative classifications. **RESULT:** Retail
+`[0xA786,0xA792)` and beta `[0xA736,0xA742)` are 12-byte, 3-instruction blocks;
+predecessors `A6BA->A786` / `A66A->A736`, taken edges `A78E->A7D4` /
+`A73E->A784`, fallthrough `A78E->A792` / `A73E->A742`. Raw
+`2F3C0000A6BE` versus `2F3C0000A66E` is `relocation_only`; `4A46` and
+`6B000044` are identical with condition code `0xB`. **TESTS:** synthetic,
+retail/beta oracle, Debug/Release CTest, GNU-equivalent link, deterministic
+report, file-limit and diff-check green before push; CI recorded below.
+**UNKNOWN/NEXT:** pushed-address and branch semantics plus outside bytes;
+stop, await instruction, no M12 or wider scan/tracing/recompilation.
 
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
 

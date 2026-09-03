@@ -83,6 +83,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_trace_report.cpp Local-only bounded dynamic trace CLI
 │       ├── re_diff.hpp Retail/beta bounded correspondence types/API
 │       ├── re_diff.cpp Conservative normalized signature and analogue matching
+│       ├── re_diff_detail.cpp Bounded changed-block CFG/instruction detail
 │       ├── re_diff_format.cpp Deterministic revision-diff JSON/human formatting
 │       └── re_diff_report.cpp Local-only retail/beta differential CLI
 └── tests/

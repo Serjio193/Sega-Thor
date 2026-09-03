@@ -40,6 +40,8 @@ std::string instruction_signature(const DecodedInstruction& instruction) {
     output << instruction.mnemonic << ':' << flow_kind_name(instruction.flow)
            << ":op=" << hex16(opcode_shape(instruction.opcode))
            << ":len=" << instruction.bytes.size();
+    output << ":ea=";
+    for (const auto& mode : instruction.addressing_modes) output << mode << ',';
     output << ":imm=";
     for (const auto& immediate : instruction.immediate_constants) {
         output << static_cast<unsigned>(immediate.width_bytes) << ',';
@@ -59,6 +61,14 @@ std::string instruction_signature(const DecodedInstruction& instruction) {
     return output.str();
 }
 
+std::map<std::uint32_t, std::size_t> block_indexes(const DecodedSlice& slice) {
+    std::map<std::uint32_t, std::size_t> result;
+    for (std::size_t index = 0; index < slice.basic_blocks.size(); ++index) {
+        for (const auto address : slice.basic_blocks[index].instruction_addresses) result[address] = index;
+    }
+    return result;
+}
+
 struct SliceProfile {
     std::vector<std::uint32_t> relative_instruction_addresses;
     std::vector<std::string> instruction_signatures;
@@ -67,16 +77,6 @@ struct SliceProfile {
     std::vector<std::string> topology;
     std::vector<std::vector<std::uint8_t>> raw_instruction_bytes;
 };
-
-std::map<std::uint32_t, std::size_t> block_indexes(const DecodedSlice& slice) {
-    std::map<std::uint32_t, std::size_t> result;
-    for (std::size_t index = 0; index < slice.basic_blocks.size(); ++index) {
-        for (const auto address : slice.basic_blocks[index].instruction_addresses) {
-            result[address] = index;
-        }
-    }
-    return result;
-}
 
 SliceProfile profile_slice(const DecodedSlice& slice) {
     SliceProfile profile;
@@ -230,11 +230,13 @@ AnalogCandidate make_candidate(std::uint32_t entry, const DecodedSlice& retail,
                                const DecodedSlice& beta) {
     const auto match = classify(retail, beta);
     const auto beta_profile = profile_slice(beta);
+    const auto block_changes = changed_blocks(retail, beta);
     return {.beta_entry = entry,
             .match = match,
             .matching_instructions = matching_instructions(retail, beta),
             .matching_blocks = matching_blocks(retail, beta),
-            .changed_blocks = changed_blocks(retail, beta),
+            .changed_blocks = block_changes,
+            .changed_block_details = make_changed_block_details(retail, beta, block_changes),
             .beta_normalized_opcode_signature = std::move(beta_profile.instruction_signatures)};
 }
 
@@ -258,6 +260,22 @@ std::string match_kind_name(MatchKind kind) {
     case MatchKind::unmatched: return "unmatched";
     }
     return "unmatched";
+}
+
+std::string instruction_diff_kind_name(InstructionDiffKind kind) {
+    switch (kind) {
+    case InstructionDiffKind::identical: return "identical";
+    case InstructionDiffKind::relocation_only: return "relocation_only";
+    case InstructionDiffKind::constant_changed: return "constant_changed";
+    case InstructionDiffKind::memory_offset_changed: return "memory_offset_changed";
+    case InstructionDiffKind::branch_changed: return "branch_changed";
+    case InstructionDiffKind::instruction_added: return "instruction_added";
+    case InstructionDiffKind::instruction_removed: return "instruction_removed";
+    case InstructionDiffKind::addressing_mode_changed: return "addressing_mode_changed";
+    case InstructionDiffKind::control_flow_topology_changed: return "control_flow_topology_changed";
+    case InstructionDiffKind::unresolved: return "unresolved";
+    }
+    return "unresolved";
 }
 
 DifferentialReport compare_m68k_revisions(std::span<const std::uint8_t> retail_rom,
@@ -288,6 +306,10 @@ DifferentialReport compare_m68k_revisions(std::span<const std::uint8_t> retail_r
                                     .same_address_changed_blocks = changed_blocks(retail, beta_same_address),
                                     .unmatched_retail_instructions = mismatching_instructions(retail, beta_same_address),
                                     .unmatched_beta_instructions = mismatching_instructions(beta_same_address, retail)};
+        if (comparison.same_address_match != MatchKind::unmatched) {
+            comparison.same_address_changed_block_details = make_changed_block_details(
+                retail, beta_same_address, comparison.same_address_changed_blocks);
+        }
         std::vector<AnalogCandidate> candidates;
         std::size_t scanned = 0;
         for (std::uint32_t candidate = 0; candidate + target_budget(target) <= beta_rom.size(); candidate += 2U) {

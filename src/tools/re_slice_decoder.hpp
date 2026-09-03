@@ -58,6 +58,8 @@ struct DecodedInstruction {
     bool supported{};
     FlowKind flow{FlowKind::none};
     std::optional<std::uint32_t> direct_target;
+    std::optional<std::uint8_t> branch_condition_code;
+    std::vector<std::string> addressing_modes;
     std::vector<ImmediateConstant> immediate_constants;
     std::vector<MemoryReference> memory_references;
     std::vector<UnresolvedMemoryReference> unresolved_memory_references;

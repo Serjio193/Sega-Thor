@@ -65,10 +65,27 @@ void add_unsupported_addressing(DecodedInstruction& instruction, unsigned mode,
         {static_cast<std::uint8_t>(mode), static_cast<std::uint8_t>(reg), reason});
 }
 
+std::string addressing_mode_name(unsigned mode, unsigned reg) {
+    if (mode == 0U) return "data_register";
+    if (mode == 1U) return "address_register";
+    if (mode == 2U) return "address_indirect";
+    if (mode == 3U) return "address_postincrement";
+    if (mode == 4U) return "address_predecrement";
+    if (mode == 5U) return "address_displacement";
+    if (mode == 6U) return "address_indexed";
+    if (mode == 7U && reg == 0U) return "absolute_word";
+    if (mode == 7U && reg == 1U) return "absolute_long";
+    if (mode == 7U && reg == 2U) return "pc_displacement";
+    if (mode == 7U && reg == 3U) return "pc_indexed";
+    if (mode == 7U && reg == 4U) return "immediate";
+    return "invalid_mode_7_register";
+}
+
 std::size_t parse_ea(Bytes rom, std::uint32_t pc, std::uint32_t range_end,
                      unsigned mode, unsigned reg, std::size_t data_width,
                      MemoryAccess access, DecodedInstruction& instruction,
                      std::size_t extension_offset) {
+    instruction.addressing_modes.push_back(addressing_mode_name(mode, reg));
     const auto extension_size = ea_extension_bytes(mode, reg, data_width);
     if (mode == 7U && reg >= 5U) {
         add_unsupported_addressing(instruction, mode, reg, "invalid_mode_7_register");
@@ -157,6 +174,7 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
     const auto branch_group = static_cast<unsigned>(opcode >> 12U);
     if (branch_group == 6U) {
         const auto condition = static_cast<unsigned>((opcode >> 8U) & 0x0FU);
+        instruction.branch_condition_code = static_cast<std::uint8_t>(condition);
         const auto displacement_byte = static_cast<std::uint8_t>(opcode & 0xFFU);
         std::int32_t displacement = static_cast<std::int8_t>(displacement_byte);
         if (displacement_byte == 0U) {
@@ -256,6 +274,7 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
         }
     } else if ((opcode & 0xF0F8U) == 0x50C8U) {
         instruction.mnemonic = "dbcc";
+        instruction.branch_condition_code = static_cast<std::uint8_t>((opcode >> 8U) & 0x0FU);
         set_length(4U);
         if (pc + 4U <= rom.size() && pc + 4U <= range_end) {
             const auto displacement = static_cast<std::int16_t>(read16(rom, pc + 2U));
