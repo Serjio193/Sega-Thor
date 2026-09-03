@@ -25,40 +25,44 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Correlate indexed resource table and developer screen list
+      - name: Locate candidate 26-byte screen descriptors and pointer tables
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
           rom=Path('/tmp/reference.md').read_bytes()
-          base=0x05ce96
-          values=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(108)]
-          print('table_base=0x05ce96 entries=108 first_null=', values[0]==0)
-          for i in (0,1,2,3,4,0x23,0x24,0x57,107):
-              print(f'table_entry={i:03d} value=0x{values[i]:06x}')
+          # Candidate descriptor starts are exactly 26 bytes before setup code that calls D406.
+          candidates=[0x02cf82,0x02d3e8,0x032144,0x03285c]
+          for addr in candidates:
+              raw=rom[addr:addr+26]
+              print(f'descriptor=0x{addr:06x} bytes={raw.hex()}')
+              for width in (3,4):
+                  pat=addr.to_bytes(width,'big')
+                  hits=[]; p=0
+                  while True:
+                      p=rom.find(pat,p)
+                      if p<0: break
+                      hits.append(p); p+=1
+                  print(f' refs_width_{width}=',','.join(f'0x{x:06x}' for x in hits[:80]))
 
-          # The ROM contains a developer-facing screen-name list beginning at VILLAGE.
-          start=rom.find(b'VILLAGE')
-          end=rom.find(b'14-01 KING', start)
-          end=end+len(b'14-01 KING') if end>=0 else start+0x800
-          blob=rom[start:end]
-          runs=[m.group().decode('ascii') for m in re.finditer(rb'[ -~]{3,}', blob)]
-          print(f'screen_list_start=0x{start:06x} end=0x{end:06x} printable_runs={len(runs)}')
-          for i,name in enumerate(runs):
-              print(f'screen_name_index={i:03d} name={name}')
-          for wanted in (3,4,0x23,0x24,0x57):
-              if wanted < len(runs):
-                  print(f'index_match={wanted:03d} name={runs[wanted]} table_ptr=0x{values[wanted]:06x}')
-
-          for target in (0x00d3b2,0x00d406):
-              pat=bytes.fromhex('4eb9')+target.to_bytes(4,'big')
-              hits=[]; p=0
-              while True:
-                  p=rom.find(pat,p)
-                  if p<0: break
-                  hits.append(p); p+=1
-              print(f'jsr_to_0x{target:06x}=', ','.join(f'0x{x:06x}' for x in hits))
+          # Search for dense runs of 4-byte pointers into the screen-code region.
+          lo,hi=0x02c000,0x03b000
+          runs=[]
+          start=None; count=0
+          for off in range(0,len(rom)-4,4):
+              v=int.from_bytes(rom[off:off+4],'big')
+              valid=lo <= v < hi
+              if valid:
+                  if start is None: start=off; count=0
+                  count+=1
+              else:
+                  if start is not None and count>=4: runs.append((start,count))
+                  start=None; count=0
+          if start is not None and count>=4: runs.append((start,count))
+          print('dense_screen_code_pointer_runs=',len(runs))
+          for start,count in sorted(runs,key=lambda x:x[1],reverse=True)[:30]:
+              vals=[int.from_bytes(rom[start+i*4:start+i*4+4],'big') for i in range(min(count,12))]
+              print(f'run=0x{start:06x} count={count} first='+','.join(f'0x{x:06x}' for x in vals))
           PY
 
       - name: Install M68K binutils
@@ -66,37 +70,31 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble all direct callers of indexed resource loader
+      - name: Disassemble candidate descriptor setup blocks
         shell: bash
         run: |
           set -euo pipefail
           for RANGE in \
-            '0x02cf60 0x02cff0' \
-            '0x02d3c0 0x02d450' \
-            '0x032130 0x0321c0' \
-            '0x032840 0x0328d0' \
-            '0x00d3a0 0x00d700'; do
+            '0x02cf70 0x02cfd0' \
+            '0x02d3d0 0x02d440' \
+            '0x032130 0x0321a0' \
+            '0x032840 0x0328b0' \
+            '0x00d400 0x00d540'; do
             set -- $RANGE
             echo "===== candidate $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
 
-      - name: Decode immediate D0 values before calls to 0xD3B2
+      - name: Correlate developer screen names with descriptor-like pointer runs
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           rom=Path('/tmp/reference.md').read_bytes()
-          call=bytes.fromhex('4eb90000d3b2')
-          pos=0
-          while True:
-              pos=rom.find(call,pos)
-              if pos<0: break
-              # MOVE.W #imm,D0 is 0x303c xxxx. Search only the final 20 bytes.
-              window=rom[max(0,pos-20):pos]
-              p=window.rfind(bytes.fromhex('303c'))
-              imm=None if p<0 or p+4>len(window) else int.from_bytes(window[p+2:p+4],'big')
-              print(f'call=0x{pos:06x} immediate_d0={"unknown" if imm is None else str(imm)}')
-              pos+=1
+          start=rom.find(b'VILLAGE'); end=rom.find(b'14-01 KING',start)+len(b'14-01 KING')
+          runs=[m.group().decode('ascii',errors='replace') for m in re.finditer(rb'[ -~]{3,}',rom[start:end])]
+          print('developer_screen_printable_count=',len(runs))
+          print('screen_samples=', ' | '.join(f'{i}:{runs[i]}' for i in [0,1,2,3,4,27,35,36,87,107] if i<len(runs)))
           PY
