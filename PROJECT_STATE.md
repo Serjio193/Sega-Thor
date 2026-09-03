@@ -1,10 +1,10 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: Locate and recover one evidence-backed event/script router operation
+CURRENT_TASK: M11 post-completion RE-acceleration checkpoint — bounded 68000 slice report
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: M11 bounded raw event producer/router and 0x7B2A sentinel trace pass synthetic tests, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI
-NEXT_ACTION: M11 complete; stop and await explicit next-milestone instruction
+LAST_VERIFIED_RESULT: Bounded 0x60004 report passes synthetic tests, local USA-ROM oracle, Debug/Release CTest and deterministic JSON verification; 801 instructions and 109 basic blocks reported
+NEXT_ACTION: Stop at the verified M11 checkpoint and await explicit next-milestone instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 

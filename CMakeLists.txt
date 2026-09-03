@@ -31,6 +31,16 @@ target_link_libraries(oasis PRIVATE oasis_core)
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 
+# Developer-only reverse-engineering tooling; it is not linked into oasis_core.
+add_library(oasis_re_tooling
+    src/tools/re_slice_decoder.cpp
+    src/tools/re_slice_format.cpp
+)
+target_include_directories(oasis_re_tooling PUBLIC src)
+
+add_executable(oasis_re_slice src/tools/re_slice_report.cpp)
+target_link_libraries(oasis_re_slice PRIVATE oasis_core oasis_re_tooling)
+
 enable_testing()
 
 add_executable(oasis_smoke tests/smoke.cpp)
@@ -85,6 +95,10 @@ add_executable(oasis_event_router_test tests/event_router_test.cpp)
 target_link_libraries(oasis_event_router_test PRIVATE oasis_core)
 add_test(NAME oasis_event_router COMMAND oasis_event_router_test)
 
+add_executable(oasis_re_slice_decoder_test tests/re_slice_decoder_test.cpp)
+target_link_libraries(oasis_re_slice_decoder_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_slice_decoder COMMAND oasis_re_slice_decoder_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -104,6 +118,9 @@ target_link_libraries(oasis_spirit_slots_reference PRIVATE oasis_core)
 add_executable(oasis_event_router_reference tests/event_router_reference.cpp)
 target_link_libraries(oasis_event_router_reference PRIVATE oasis_core)
 
+add_executable(oasis_re_slice_reference tests/re_slice_reference.cpp)
+target_link_libraries(oasis_re_slice_reference PRIVATE oasis_core oasis_re_tooling)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -119,6 +136,7 @@ set(oasis_test_targets
     oasis_entity_pool_test
     oasis_spirit_slots_test
     oasis_event_router_test
+    oasis_re_slice_decoder_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -147,6 +165,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_entity_pool
         oasis_spirit_slots
         oasis_event_router
+        oasis_re_slice_decoder
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

@@ -108,12 +108,14 @@ Current slice: the type-8 producer at `0x82AE` transfers raw fields to
 addresses. Event, progression and dialogue meanings remain unknown.
 
 The evidence-backed bounded M11 slice is complete with native tests, local
-USA-ROM verification and CI. Unknown dialogue, progression and driver
-semantics remain explicitly unimplemented.
+USA-ROM verification and CI. The post-M11 RE-acceleration checkpoint is also
+complete: a separate bounded decoder/report covers entry `0x60004` without
+adding gameplay behavior. Unknown dialogue, progression and driver semantics
+remain explicitly unimplemented.
 
-Current follow-up is evidence-gathering only while its implementation-slice
-confidence remains below 90%; production C++ must not expand until caller/data
-or downstream-handler evidence raises that slice to >=90%.
+Any later follow-up remains evidence-gathering only while its implementation-
+slice confidence remains below 90%; production C++ must not expand until
+caller/data or downstream-handler evidence raises that slice to >=90%.
 
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.

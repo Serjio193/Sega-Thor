@@ -328,7 +328,9 @@ dialogue and command semantics remain UNKNOWN.
   `0x01FF`, then clears mask `0xFFF9` at `FF17B8` and writes raw `FF0D7E` to
   current-record `+0x06` and `0xFFFF` to `+0x5C` — **CONFIRMED**. The helper
   and field meanings remain UNKNOWN.
-- The external entry at `0x60004` branches to `0x6042C`; its raw command
+- The external entry at `0x60004` contains `BRA.W +0x0424`, whose 68000
+  word-displacement target is `0x6042A`; `0x6042C` is the following
+  instruction. Its raw command
   dispatcher compares `D0` against values `1..8`, and the command `0x0006`
   branch at `0x60478` reaches `0x609C6` — **CONFIRMED**. That handler starts
   with `D0=0`, builds a raw flag mask from driver RAM bit 4 values and returns
@@ -353,6 +355,36 @@ dialogue and command semantics remain UNKNOWN.
 No generic event-stream parser, dialogue decoder, progression model or
 unproven command is introduced. Further work must establish the caller/data
 contract around the selected type-8 source or a downstream handler first.
+
+### M11 post-completion RE-acceleration checkpoint — bounded `0x60004` slice
+**Status:** VERIFIED as developer-only evidence tooling; no native gameplay
+behavior is inferred or added.
+
+- The local USA-ROM tool reads through `Rom::load`, validates the canonical
+  fingerprint, and decodes only reachable direct control flow in the explicit
+  half-open range `[0x60004, 0x61204)` — **VERIFIED**.
+- The bytes `60 00 04 24` at `0x60004` are `BRA.W +0x0424`; the 68000
+  word-displacement target is `0x6042A`. `0x6042C` is the following opcode,
+  correcting the earlier ledger wording — **CONFIRMED by oracle**.
+- The deterministic report contains 801 reachable instructions, 109 basic
+  blocks, 72 direct branches, 17 direct calls, 3 absolute ROM references and
+  114 absolute RAM references. Immediate constants are attached to decoded
+  instructions — **VERIFIED by local report**.
+- Direct edges include `0x60004 -> 0x6042A`, `0x60478 -> 0x609C6` and
+  `0x60488 -> 0x60D10`; the report also contains explicit separate arrays for
+  unresolved indirect control flow and unsupported opcodes. Neither category
+  occurs on the current reachable USA slice; synthetic tests cover both —
+  **VERIFIED**.
+- JSON schema `oasis.m68k.re-slice.v1` and the human report are generated from
+  sorted deterministic data. Debug/Release outputs have the same SHA-256 —
+  **VERIFIED**.
+- Decoder coverage is intentionally bounded to opcode families exercised by
+  this slice. It is not a generic 68000 decoder, emulator, whole-ROM
+  recompiler or production runtime dependency. Any unsupported instruction or
+  indirect target must remain explicit — **CONFIRMED design boundary**.
+
+**Open questions:** driver command meanings, audio protocol, event/progression
+semantics and the producer caller remain **UNKNOWN**.
 
 ## ROM identification implementation
 **Status:** VERIFIED.

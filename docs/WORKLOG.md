@@ -4,6 +4,40 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — RE-acceleration checkpoint: bounded 68000 slice report
+
+**TASK:** Build a developer-only bounded decoder/report for USA-ROM entry
+`0x60004`, following reachable direct control flow inside an explicit budget.
+**WHY:** Make the next M11 evidence step reproducible before new native
+gameplay behavior is considered. **CURRENT MILESTONE:** M11 follow-up
+evidence/tooling; do not start M12. **MILESTONE UNDERSTANDING CONFIDENCE:** 70%.
+**CURRENT SLICE UNDERSTANDING CONFIDENCE:** 95% for the raw
+`0x7B2A -> 0x60004 -> 0x609C6/0x60D10 -> 0x62CC` trace; driver/audio/
+progression semantics remain below 90%, so this checkpoint is tooling only.
+**SLICE CONFIDENCE EVIDENCE:** Existing M11 oracle plus USA bytes prove
+`0x60004 -> 0x6042A`, dispatcher edges to `0x609C6`/`0x60D10`, and epilogue
+`0x611D8`. **ACCEPTANCE CRITERIA:** safe ROM load/identity check; bounded
+basic blocks; direct flow, immediates, reliable absolute ROM/RAM references;
+separate unresolved/unsupported categories; deterministic JSON/text reports;
+synthetic tests, USA oracle, Debug/Release CTest, file-limit and diff checks.
+**EVIDENCE AVAILABLE:** canonical local archive, `Rom::load`, M11 oracle and
+raw bytes around `0x60004..0x611D8`. **KNOWN UNKNOWNS:** this is not a generic
+68000 emulator/disassembler; driver command/audio/progression semantics remain
+unknown. **ACTIONS COMPLETED:** added isolated `oasis_re_tooling`, CLI,
+synthetic decoder test and local USA-ROM oracle; corrected `0x60004` target
+documentation from `0x6042C` to the byte-proven `0x6042A`.
+**RESULT:** report generated deterministically with 801 instructions, 109
+basic blocks, 72 direct branches, 17 direct calls, 3 ROM and 114 RAM refs;
+actual reachable slice has no unresolved/unsupported instruction, while both
+categories are covered synthetically. **TESTS/BUILD:** Debug and Release
+CTest pass 15/15; USA oracle passes in both; report SHA-256 matches; line-limit
+check passes. **Exact next step:** stop at this verified checkpoint and await
+explicit instruction; do not begin M12.
+
+**Follow-up:** shortened the text report to summary/windows while retaining
+full JSON detail, added a synthetic direct-jump assertion, and reran both
+configurations plus JSON parsing and `git diff --check` successfully.
+
 ## 2026-09-03 — M11 activated: event/script router investigation
 **Concrete task:** locate the producer and consumer contract for the raw event
 code in `FF1976`, then translate one deterministic event operation.

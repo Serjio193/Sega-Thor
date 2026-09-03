@@ -77,6 +77,20 @@ ctest --test-dir build --output-on-failure
 On Windows with LLVM-MinGW, the CMake test configuration supplies the compiler
 runtime DLL directory to CTest automatically.
 
+## Bounded reverse-engineering report
+
+The developer-only `oasis_re_slice` tool reads a locally supplied verified USA
+ROM and writes deterministic JSON plus a short text report. Its default target
+is the bounded M11 entry `0x60004`:
+
+```bash
+oasis_re_slice "Beyond Oasis (USA).bin" slice.json slice.txt
+```
+
+The decoder follows direct control flow only within `[0x60004, 0x61204)`;
+indirect control flow and unsupported opcode families are reported separately.
+It is not an emulator, whole-ROM recompiler or gameplay-runtime dependency.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.

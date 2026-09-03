@@ -68,7 +68,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │       ├── terrain_collision.cpp  Terrain-state and movement gate semantics
 │   │       └── terrain_collision.hpp  Terrain gate API
 │   └── tools/
-│       └── asset_inspector.cpp Local-only ROM graphics inspection CLI
+│       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
+│       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
+│       ├── re_slice_decoder.hpp Decoder data types and report API
+│       ├── re_slice_format.cpp Deterministic JSON/human report formatting
+│       └── re_slice_report.cpp Local-only bounded ROM slice report CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -82,6 +86,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── entity_pool_reference.cpp         Local USA-ROM oracle for entity pool loops
     ├── event_router_test.cpp              Synthetic raw event producer/router tests
     ├── event_router_reference.cpp         Local USA-ROM oracle for event boundaries
+    ├── re_slice_decoder_test.cpp           Synthetic bounded decoder/report tests
+    ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
