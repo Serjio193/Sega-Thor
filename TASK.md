@@ -18,12 +18,12 @@ STATUS: ACTIVE
 - [x] identify the player entity/update entry point and document its confirmed indirect call path;
 - [x] trace controller input bits into player movement intent without guessing field names;
 - [x] connect player movement to the confirmed M7 terrain/collision gate;
-- [ ] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
+- [x] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
 - [x] implement a portable player movement/state slice only after the raw behavior is evidenced;
 - [x] add deterministic synthetic tests for movement and blocked movement;
 - [x] add a local USA-ROM reference/oracle check for translated player vectors;
-- [ ] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
-- [ ] record unknown fields without invented semantic names;
+- [x] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
+- [x] record unknown fields without invented semantic names;
 - [ ] keep every file <= 500 lines;
 - [ ] CI green.
 
@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Extend the native state driver with the confirmed state-2 stop and state-4 directional accumulation rules, keeping presentation callbacks outside the API.
+Verify the native state driver against the shared movement consumer and isolate the remaining state-4 slowdown context around `0x64C4`.

@@ -14,6 +14,7 @@ int main() {
     using oasis::game::player::direction_from_input;
     using oasis::game::player::movement_vector;
     using oasis::game::player::try_move;
+    using oasis::game::player::update_movement_state;
     using oasis::game::world::ByteGridView;
 
     assert(direction_from_input(0x1) == Direction::up);
@@ -58,6 +59,28 @@ int main() {
     assert(blocked_move.blocked);
     assert(blocked_player.x_fixed == blocked_x);
     assert(blocked_player.movement_state == 2);
+
+    PlayerState stopped_player{};
+    stopped_player.movement_state = 2;
+    stopped_player.intent_x_fixed = 0x36000;
+    stopped_player.accumulated_x_fixed = 0x36000;
+    const auto stopped = update_movement_state(stopped_player, 0U, config);
+    assert(stopped.direction == Direction::none);
+    assert(stopped_player.movement_state == 0);
+    assert(stopped_player.intent_x_fixed == 0);
+    assert(stopped_player.accumulated_x_fixed == 0x36000);
+
+    PlayerState turning_player{};
+    turning_player.movement_state = 4;
+    turning_player.direction_code = 0; // state-4 direction bit 0
+    turning_player.orientation_flags = 0; // preserve the Y axis
+    turning_player.intent_y_fixed = 0x30000;
+    const auto turning = update_movement_state(turning_player, 0x9U, config);
+    assert(turning.direction == Direction::up_right);
+    assert(turning_player.accumulated_y_fixed == 0x30000);
+    assert(turning_player.accumulated_x_fixed == 0x2A000);
+    assert(turning_player.movement_state == 4);
+    assert(turning_player.turn_timer == 1);
 
     return 0;
 }

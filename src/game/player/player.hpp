@@ -45,6 +45,14 @@ struct PlayerState {
     std::int8_t terrain_state{-1};
     // Entity +0x04 selects the movement/update state in the 0x59BA table.
     std::uint16_t movement_state{};
+    // These fields mirror only offsets observed by the verified movement path.
+    std::uint16_t direction_code{}; // entity +0x16
+    std::uint8_t orientation_flags{}; // entity +0x17
+    std::int32_t intent_x_fixed{}; // entity +0x4E
+    std::int32_t intent_y_fixed{}; // entity +0x52
+    std::int32_t accumulated_x_fixed{}; // entity +0x72
+    std::int32_t accumulated_y_fixed{}; // entity +0x76
+    std::uint16_t turn_timer{}; // FF197E in the state-4 branch
 };
 
 struct MovementVector {
@@ -62,6 +70,13 @@ struct MovementResult {
 [[nodiscard]] Direction direction_from_input(std::uint8_t input_nibble) noexcept;
 
 [[nodiscard]] MovementVector movement_vector(
+    std::uint8_t input_nibble,
+    const PlayerMovementConfig& config = {}) noexcept;
+
+// Update the confirmed input/state portion of the player path. Collision is
+// intentionally left to try_move, which consumes the accumulated deltas.
+[[nodiscard]] MovementVector update_movement_state(
+    PlayerState& player,
     std::uint8_t input_nibble,
     const PlayerMovementConfig& config = {}) noexcept;
 

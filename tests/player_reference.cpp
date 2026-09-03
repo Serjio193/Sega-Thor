@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
             throw std::runtime_error("player state dispatch table mismatch");
         }
 
-        // State 2: no direction branches to the shared stop block, which
-        // clears both intent and accumulated deltas and returns to state 0.
+        // State 2: no direction branches to the stop block, which clears the
+        // intent fields and returns to state 0. Shared movement owns +0x72/+0x76.
         if (read_u16(rom, 0x62EC) != 0x6400U ||
             read_u16(rom, 0x62EE) != 0xFFDEU ||
             read_u16(rom, 0x62CE) != 0x2D40U ||

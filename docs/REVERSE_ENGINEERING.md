@@ -152,7 +152,7 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 4. only after correlation, introduce a portable room/screen resource loader.
 
 ## M8 — player input and movement slice
-**Status:** IMPLEMENTED as a portable slice; full animation/entity callback semantics remain INVESTIGATING.
+**Status:** IMPLEMENTED as a portable movement/state slice; full animation/entity callback semantics remain INVESTIGATING.
 
 ### Player entity selection
 - `0x0013D6..0x00142E` initializes the main entity at work RAM `0xFF19E8` and writes entity type `2` before calling `0x8D06` — **CONFIRMED**.
@@ -168,14 +168,15 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 - The main game loop at `0x008B22` calls `0x00557A` (player update) before `0x008E90` (active-entity movement), and then `0x00A196` (sprite/entity scheduling) — **CONFIRMED**.
 - `0x00557A` selects `0xFF19E8` and enters `0x005670`; the state dispatch at `0x0059BA` routes entity `+0x04` state `0` to `0x0061F6`, state `2` to `0x0062E4`, and state `4` to `0x006516` — **CONFIRMED**.
 - `0x0061F6` reads the normalized direction, writes direction `+0x16`, intent deltas `+0x4E/+0x52`, accumulated deltas `+0x72/+0x76`, and transitions `+0x04` to state `2` — **CONFIRMED**.
-- The state-2 branch at `0x0062E4` calls the same direction routine; its no-input path at `0x0062CC` clears `+0x4E/+0x52`, `+0x2A` and returns `+0x04` to `0` — **CONFIRMED**.
+- The state-2 branch at `0x0062E4` calls the same direction routine; its no-input path at `0x0062CC` clears `+0x4E/+0x52`, writes `+0x2A=0` and returns `+0x04` to `0`; shared movement owns cleanup of `+0x72/+0x76` — **CONFIRMED**.
 - The state-4 branch at `0x006516` maps `+0x16` through `0x83D4`, gates the turn on `+0x17` and the normalized input, and accumulates the selected axis through `+0x72/+0x76` — **CONFIRMED**.
 - When state-4 input is absent, `0x006618` compares `FF197E` with `6`; the short path reaches the state-2 stop block, while the timeout path writes `+0x04=0x000C` at `0x006624` — **CONFIRMED**.
 - The shared movement routine consumes `+0x72/+0x76` before committing position; `+0x2A` and `+0x26` participate in the animation/state sequence, but their presentation semantics remain **INVESTIGATING**.
 - `0x008F12..0x00938C` is the shared active-entity movement update; main-pool records enter at `0x8F22` — **CONFIRMED**.
 - X/Y fixed-point deltas are accumulated in entity fields `+0x72/+0x76`; integer positions are committed to `+0x08/+0x0C` — **CONFIRMED**.
 - `0x009BF2` aggregates the entity footprint, and `0x00938E` is called before an axis commit; carry set takes the blocked path — **CONFIRMED**.
-- Native `PlayerState::try_move` reuses `ByteGridView::aggregate_world_square` and `evaluate_terrain_gate`. Rendering, animation scripts and the unknown entity callback at `+0x22` are intentionally outside this slice.
+- Native `update_movement_state` mirrors the confirmed state-2 stop and state-4 axis-selection/accumulation rules; `PlayerState::try_move` then consumes those deltas through `ByteGridView::aggregate_world_square` and `evaluate_terrain_gate`.
+- Rendering, animation scripts, the unknown entity callback at `+0x22`, and state-4 slowdown context from `0x64C4` are intentionally outside this slice.
 
 ## Existing translated compatibility behavior
 
