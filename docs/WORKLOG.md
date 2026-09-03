@@ -12,7 +12,8 @@ design. **RESULT:** USA Atlas ranks 577 refs in 31 groups: displacement 446,
 function `0x60004` 424, register `A6` 387, move/address 360, immediate
 propagation candidates 168, dynamic-scenario candidates 2; unsupported decoder
 items 4 are separate with potential 0. **TESTS:** synthetic, USA/Beta oracle,
-Debug/Release/GNU CTest 20/20, JSON parse, file-limit and diff-check green.
+Debug/Release/GNU CTest 20/20, JSON parse, file-limit, diff-check and GitHub
+Actions run `33767878177` green.
 **UNKNOWN/NEXT:** candidate counts are not proof of resolution; select the next
 bounded decoder/trace improvement from this ranking only, then stop—no M12.
 
