@@ -1,22 +1,21 @@
 # Project State
 
-CURRENT_MILESTONE: M6 — Deterministic runtime frame/input skeleton
-CURRENT_TASK: Add a platform-independent frame counter and input snapshot with deterministic step semantics
+CURRENT_MILESTONE: M7 — World/map/collision foundations
+CURRENT_TASK: Establish the first verified room/map loading path and raw data format from the canonical USA ROM
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M5 completed; VRAM/CRAM/VSRAM, tile/plane/sprite raw attributes and bounds are implemented and CI passed
-NEXT_ACTION: implement `game/runtime` input snapshot + frame state + deterministic step test
-DO_NOT_WORK_ON: M7+, Thor 2, Saturn support, remaster features
+LAST_VERIFIED_RESULT: M6 completed; one core runtime/input API remains, deterministic input-sequence tests pass, and CI is green
+NEXT_ACTION: inspect existing reverse-engineering map/tilemap knowledge, then verify candidate pointers/functions directly against the USA ROM before defining C++ room structures
+DO_NOT_WORK_ON: M8+, Thor 2, Saturn support, remaster features
 BLOCKERS: none
 
-## M5 verified evidence
-- 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM modeled as raw portable state.
-- Bounded byte-span writes and big-endian 16-bit read/write operations implemented.
-- Standard tile word fields: index, palette, priority, horizontal flip, vertical flip.
-- Minimal plane-cell representation uses the same raw tile semantics.
-- Standard four-word sprite attribute layout represented without sprite rendering/emulation.
-- Full-emulator behavior remains explicitly unsupported in `docs/VDP_MODEL.md`.
-- `oasis_vdp` tests raw formats, storage and bounds.
-- M5 head passed GitHub Actions build/test.
+## M6 verified evidence
+- `src/core/runtime.hpp/.cpp` is the single runtime/input source of truth.
+- Explicit integer frame stepping; no wall-clock dependency.
+- Portable controller snapshot for two ports.
+- Identical initial state + input sequence produces identical recorded traces.
+- Altering input changes the trace.
+- Duplicate experimental `game/runtime` API was removed.
+- GitHub CI build/test passed on the M6 head.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes
