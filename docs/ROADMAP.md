@@ -78,36 +78,37 @@ Reference vectors:
 - format A, ROM `0x16943C`: `1217 -> 3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
 - format B, ROM `0x1894EA`: `112 -> 128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
 
-## M4 — Local asset inspection tool — NEXT
+## M4 — Local asset inspection tool — DONE
 Goal: inspect original graphics without committing assets.
 
-Tasks:
-- CLI command for local ROM;
-- decompression invocation;
-- Genesis 4bpp tile decoding;
-- palette decoding;
-- local-only export format such as PNG/debug dump.
+Verified:
+- `oasis_inspect` accepts a supported local ROM and explicit graphics offset;
+- verified decompression is reused rather than duplicated;
+- Genesis 4bpp tile decoding implemented and tested;
+- Genesis CRAM color conversion implemented and tested;
+- local PGM/PPM output supported;
+- generated output patterns are ignored by Git;
+- ROM-backed workflow verified `0x16943C`: 1217 compressed bytes, 3072 decompressed bytes, 96 complete tiles, 128x48 PGM;
+- PGM header and exact byte size verified;
+- five CTest tests pass including line-limit enforcement.
 
-Acceptance criteria:
-- user can locally inspect selected graphics from their ROM;
-- generated files are ignored by Git;
-- repository contains no extracted commercial assets;
-- tile/palette conversion primitives have synthetic tests;
-- CI passes.
-
-## M5 — VDP data model and rendering primitives — TODO
+## M5 — VDP data model and rendering primitives — NEXT
 Goal: represent game-visible tile/sprite operations without full-console emulation.
 
 Tasks:
-- document needed VDP semantics;
-- tile planes;
-- sprite attributes;
+- VRAM/CRAM/VSRAM state with bounded access;
+- Genesis tile attribute decoding;
+- minimal plane-cell representation;
+- document sprite attribute layout before implementation;
 - palette state;
 - scrolling and priority semantics actually used by the game.
 
 Acceptance criteria:
-- known scenes/primitives can be reconstructed from local ROM data;
-- compatibility layer remains narrow and documented.
+- video-state primitives have synthetic tests;
+- known scene data can be represented without a full VDP emulator;
+- compatibility layer remains narrow and documented;
+- no SDL/GPU dependency leaks into core video state;
+- CI passes.
 
 ## M6 — Runtime frame/input skeleton — TODO
 Goal: establish deterministic update/frame loop and input abstraction.
