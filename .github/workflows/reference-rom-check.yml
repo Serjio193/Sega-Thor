@@ -62,3 +62,23 @@ jobs:
           set -euo pipefail
           ROM="$(find /tmp/reference-rom -type f | head -n 1)"
           ./build/oasis_graphics_reference "$ROM"
+
+      - name: Verify local asset inspector on known graphics stream
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          mkdir -p /tmp/inspection-output
+          ./build/oasis_inspect "$ROM" 0x16943C /tmp/inspection-output/tiles.pgm | tee /tmp/inspect-report.txt
+          grep -q 'source_consumed=1217' /tmp/inspect-report.txt
+          grep -q 'decompressed_bytes=3072' /tmp/inspect-report.txt
+          grep -q 'complete_tiles=96' /tmp/inspect-report.txt
+          grep -q 'sheet=128x48' /tmp/inspect-report.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/inspection-output/tiles.pgm')
+          data=p.read_bytes()
+          assert data.startswith(b'P5\n128 48\n255\n')
+          assert len(data) == len(b'P5\n128 48\n255\n') + 128*48
+          print('asset_inspector_pgm=verified')
+          PY
