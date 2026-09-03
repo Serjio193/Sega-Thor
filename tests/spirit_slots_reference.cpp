@@ -111,6 +111,31 @@ int main(int argc, char** argv) {
                      {0x4A, 0x6E, 0x00, 0x2A, 0x67, 0x00, 0x00, 0xFC,
                       0x4B, 0xF9, 0x00, 0xFF, 0x19, 0xE8},
                      "observed cross-pool query entry mismatch");
+        // 0x7A10 gates the raw entry and 0x846C seeds singleton FF1AA4.
+        expect_bytes(rom, 0x7A10,
+                     {0x08, 0x2E, 0x00, 0x01, 0x00, 0x37, 0x66, 0x00,
+                      0xE8, 0xB4, 0x0C, 0x6E, 0x00, 0x18, 0x00, 0x30,
+                      0x66, 0x04},
+                     "observed summon entry gate mismatch");
+        expect_bytes(rom, 0x846C,
+                     {0x48, 0xE7, 0x00, 0x02, 0x61, 0x00, 0x00, 0x92,
+                      0x20, 0x4E, 0x4D, 0xF9, 0x00, 0xFF, 0x1A, 0xA4,
+                      0x3D, 0x7C, 0x00, 0x16, 0x00, 0x00},
+                     "observed summon initializer mismatch");
+        const auto summon = initialize_observed_summon({
+            .state_30 = 0x18,
+            .position_x = 0x0123,
+            .position_y = 0x0456,
+            .raw_17 = 0x07,
+            .raw_14 = 0x0011,
+        });
+        if (!summon || summon->raw_type != kObservedSummonType ||
+            summon->position_x != 0x0123 || summon->position_y != 0x0456 ||
+            summon->raw_depth != kObservedSummonDepth ||
+            summon->raw_resource_18 != kObservedSummonResource ||
+            summon->raw_resource_5a != kObservedSummonResource) {
+            throw std::runtime_error("native summon seed mismatch");
+        }
         std::cout << "verified spirit slot mapping and dispatch trace\n";
         return 0;
     } catch (const std::exception& error) {

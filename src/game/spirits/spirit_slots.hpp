@@ -19,10 +19,16 @@ inline constexpr std::uint32_t kObservedResourceDispatchAddress = 0x0000C2EC;
 inline constexpr std::uint32_t kObservedEffectQueueAddress = 0x0000CA24;
 inline constexpr std::uint32_t kObservedOwnerCallbackAddress = 0x00017A96;
 inline constexpr std::uint32_t kObservedTargetQueryAddress = 0x00017CA6;
+inline constexpr std::uint32_t kObservedSummonEntryAddress = 0x00007A10;
+inline constexpr std::uint32_t kObservedSummonInitializerAddress = 0x0000846C;
+inline constexpr std::uint32_t kObservedSummonRecordAddress = 0x00FF1AA4;
 inline constexpr std::uint32_t kObservedOwnerPoolAddress = 0x00FF2D8C;
 inline constexpr std::uint32_t kObservedTargetPoolAddress = 0x00FF19E8;
 inline constexpr std::uint16_t kObservedResourceSelector = 0x13;
 inline constexpr std::uint16_t kObservedEffectSelector = 0x15;
+inline constexpr std::uint16_t kObservedSummonType = 0x16;
+inline constexpr std::uint16_t kObservedSummonDepth = 0x13;
+inline constexpr std::uint16_t kObservedSummonResource = 0x04F8;
 inline constexpr std::uint8_t kObservedDispatchSlot = 1;
 inline constexpr std::uint8_t kObservedDispatchGuardBit = 0;
 
@@ -71,6 +77,30 @@ struct SpiritDispatchTrace {
     std::size_t selector_count{};
 };
 
+struct ObservedSummonCaller {
+    // Raw fields read by the 0x7A10 gate and 0x846C initializer. Their game
+    // meanings remain unassigned.
+    std::uint16_t state_30{};
+    std::uint8_t flags_37{};
+    std::uint16_t position_x{};
+    std::uint16_t position_y{};
+    std::uint8_t raw_17{};
+    std::uint16_t raw_14{};
+};
+
+struct ObservedSummonSeed {
+    std::uint16_t raw_type{};
+    std::uint16_t position_x{};
+    std::uint16_t position_y{};
+    std::uint16_t raw_depth{};
+    std::uint8_t raw_66{};
+    std::uint16_t raw_14{};
+    std::uint16_t raw_resource_18{};
+    std::uint16_t raw_resource_5a{};
+    std::uint32_t raw_a6{};
+    std::uint32_t raw_aa{};
+};
+
 struct ObservedTargetQuery {
     std::size_t owner_index{};
     std::int16_t relative_x_min{-10};
@@ -91,5 +121,10 @@ struct ObservedTargetQuery {
 
 [[nodiscard]] SpiritDispatchTrace trace_observed_dispatch(
     const SpiritDispatchInput& input) noexcept;
+
+// Mirrors the caller gate at 0x7A10 and the field writes in 0x846C. The
+// later table-derived velocity writes are intentionally not represented.
+[[nodiscard]] std::optional<ObservedSummonSeed> initialize_observed_summon(
+    const ObservedSummonCaller& caller) noexcept;
 
 } // namespace oasis::game::spirits

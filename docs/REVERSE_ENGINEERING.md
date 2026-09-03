@@ -242,11 +242,13 @@ meanings, targeting, abilities and presentation semantics remain UNKNOWN.
   resource/effect semantics are not promoted beyond what the callers prove.
 
 ### Native mapping and oracle
-`src/game/spirits/spirit_slots.*` models event-to-slot bit updates and the raw
-`0x31B80` gate/selector trace without invoking ROM addresses. Synthetic tests
-cover inactive input, unavailable slot, open guard and repeated guarded
-dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
-`0x5202`, `0x522E`, `0x31B80` and `0x31BC4`.
+`src/game/spirits/spirit_slots.*` models event-to-slot bit updates, the raw
+`0x31B80` gate/selector trace and the `0x7A10`/`0x846C` summon-entry seed
+without invoking ROM addresses. Synthetic tests cover inactive input,
+unavailable slot, open guard, repeated guarded dispatch and the accepted or
+rejected summon-entry gate. `oasis_spirit_slots_reference` checks the USA
+bytes at `0x7BE8`, `0x5202`, `0x522E`, `0x31B80`, `0x31BC4`, `0x7A10` and
+`0x846C`.
 
 ### Target-selection evidence
 - `0x17CA6` calls `0xB922` with relative bounds `[-10,-6,10,6,0,4]`, then
@@ -281,6 +283,14 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
   boundaries, but they do not identify a producer for raw type `0x16` in
   `FF19E8` or prove that the `0x17A96`/`0x17CA6` callback is a summon —
   **CONFIRMED boundary; UNKNOWN semantics**.
+- A separate summon-entry candidate is now byte-backed: `0x7A10` rejects
+  caller flag bit 1 and calls `0x846C` only for caller state `+0x30 == 0x18`.
+  `0x846C` writes raw type `0x16` to singleton `FF1AA4`, copies caller
+  position `+0x08/+0x0C`, writes raw `0x13` to `+0x10`, copies `+0x17` to
+  `+0x66` and `+0x14`, writes `0x4F8` to `+0x18/+0x5A`, and clears `+0xA6`
+  and `+0xAA` — **CONFIRMED raw entry; summon identity UNKNOWN**. The
+  table-derived velocity tail beginning at `0x84B2` remains outside the native
+  slice until its complete data contract is recovered.
 
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.

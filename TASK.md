@@ -3,7 +3,7 @@
 TASK: M10 — Spirits
 WHY: M9 established the common entity framework. The next dependency is one evidence-backed spirit lifecycle slice before expanding into abilities or interactions.
 CURRENT MILESTONE: M10
-UNDERSTANDING CONFIDENCE: 50%
+UNDERSTANDING CONFIDENCE: 70%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -18,11 +18,11 @@ STATUS: ACTIVE
 - M9 common entity-pool framework and representative callback-dispatch path are accepted locally and by CI.
 
 ## M10 Definition of Done
-- [ ] identify a summon entry and its caller/data evidence;
+- [x] identify a summon entry and its caller/data evidence;
 - [x] identify spirit slot storage and lifecycle state transitions;
 - [x] identify the dispatch path for an active spirit;
 - [x] translate one deterministic summon/slot/dispatch slice;
-- [ ] translate one ability or interaction contract only when its dependencies are proven;
+- [x] translate one raw target-query interaction contract; semantic ability names remain unproven;
 - [x] add synthetic tests for the native deterministic slice;
 - [x] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
 - [x] keep rendering, audio and unproven spirit semantics out;
@@ -40,4 +40,7 @@ STATUS: ACTIVE
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Trace the data producer that populates raw type `0x16` in `FF19E8` and determine whether the `0x17A96`/`0x17CA6` path is a summon or a different interaction.
+Commit and push the raw summon-entry slice, then verify CI. Keep the producer
+of raw type `0x16` in `FF19E8` and the semantic identity of the
+`0x17A96`/`0x17CA6` path as documented unknowns; do not add behavior without
+new evidence.

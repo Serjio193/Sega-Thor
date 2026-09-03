@@ -57,6 +57,28 @@ int main() {
     assert(!unrelated_input.entered_observed_path);
     assert(unrelated_input.selector_count == 0);
 
+    const auto summon = initialize_observed_summon({
+        .state_30 = 0x18,
+        .flags_37 = 0,
+        .position_x = 0x0123,
+        .position_y = 0x0456,
+        .raw_17 = 0x07,
+        .raw_14 = 0x0011,
+    });
+    assert(summon);
+    assert(summon->raw_type == kObservedSummonType);
+    assert(summon->position_x == 0x0123);
+    assert(summon->position_y == 0x0456);
+    assert(summon->raw_depth == kObservedSummonDepth);
+    assert(summon->raw_66 == 0x07);
+    assert(summon->raw_14 == 0x0011);
+    assert(summon->raw_resource_18 == kObservedSummonResource);
+    assert(summon->raw_resource_5a == kObservedSummonResource);
+    assert(summon->raw_a6 == 0);
+    assert(summon->raw_aa == 0);
+    assert(!initialize_observed_summon({.state_30 = 0x17}));
+    assert(!initialize_observed_summon({.state_30 = 0x18, .flags_37 = 0x02}));
+
     std::array<std::uint8_t, 6U * 0x5AU> owner_storage{};
     write_word(owner_storage, 0x00, 0x2E);
     write_word(owner_storage, 0x08, 100);

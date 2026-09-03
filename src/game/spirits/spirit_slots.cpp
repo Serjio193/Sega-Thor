@@ -111,4 +111,27 @@ SpiritDispatchTrace trace_observed_dispatch(
     return trace;
 }
 
+std::optional<ObservedSummonSeed> initialize_observed_summon(
+    const ObservedSummonCaller& caller) noexcept {
+    // 0x7A10 tests bit 1 of +0x37 and only enters 0x846C for state +0x30=0x18.
+    if ((caller.flags_37 & 0x02U) != 0 || caller.state_30 != 0x18U) {
+        return std::nullopt;
+    }
+
+    // These fields are the direct writes performed by 0x846C. The routine's
+    // later table-derived velocity calculation is deliberately left raw.
+    return ObservedSummonSeed{
+        .raw_type = kObservedSummonType,
+        .position_x = caller.position_x,
+        .position_y = caller.position_y,
+        .raw_depth = kObservedSummonDepth,
+        .raw_66 = caller.raw_17,
+        .raw_14 = caller.raw_14,
+        .raw_resource_18 = kObservedSummonResource,
+        .raw_resource_5a = kObservedSummonResource,
+        .raw_a6 = 0,
+        .raw_aa = 0,
+    };
+}
+
 } // namespace oasis::game::spirits

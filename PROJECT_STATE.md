@@ -3,8 +3,8 @@
 CURRENT_MILESTONE: M10 — Spirits
 CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M10 slot mapping, raw dispatch trace and cross-pool first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
-NEXT_ACTION: trace the data producer for raw type 0x16 in FF19E8 and determine whether the 0x17A96/0x17CA6 path is a summon or a different interaction
+LAST_VERIFIED_RESULT: M10 raw summon-entry seed, slot mapping, raw dispatch trace and cross-pool first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
+NEXT_ACTION: commit/push the raw summon-entry slice and verify CI; retain the FF19E8 producer relationship as a documented unknown
 DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
 BLOCKERS: none
 
@@ -39,8 +39,8 @@ BLOCKERS: none
 - `EntityRecordView` reads only bounded big-endian raw fields; the local USA-ROM oracle verifies the shared movement accesses and the FF2954 `+0x3A`/`+0x22` dispatch path.
 
 ## M10 investigation boundary
-- The M10 implementation must begin from a caller/data-backed summon or spirit-slot path.
-- Spirit names, targeting rules, ability semantics, rendering and audio remain unknown until direct ROM evidence is recorded.
+- The M10 implementation begins from the caller/data-backed `0x7A10 -> 0x846C` raw entry and slot path.
+- Spirit names, semantic targeting, rendering and audio remain unknown until direct ROM evidence is recorded.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

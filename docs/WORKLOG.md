@@ -4,6 +4,48 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
+
+**Concrete task:** translate the newly confirmed caller/initializer path at
+`0x7A10 -> 0x846C` without assigning an unproven spirit name or ability.
+
+**Acceptance criteria:** gate the path on the raw caller fields used at
+`0x7A10`; reproduce the verified `0x846C` writes to singleton `FF1AA4`;
+add synthetic coverage and extend the USA-ROM oracle; keep the separate
+`FF19E8` target-query semantics explicitly unknown.
+
+**Evidence:** `0x7A10` rejects caller records with flag bit 1 at `+0x37`,
+then calls `0x846C` only when `+0x30 == 0x18`. `0x846C` writes raw type
+`0x16` to `FF1AA4`, copies caller position fields, writes raw `0x13` to
+`+0x10`, copies `+0x17` to `+0x66` and caller `+0x14`, sets both resource
+words to `0x4F8`, and clears the two long fields at `+0xA6/+0xAA`.
+
+**Implementation boundary:** model this as an observed raw summon-entry
+seed. The table-derived velocity calculation after `0x84B2` remains outside
+the native API until its complete data contract is translated.
+
+**Exact next step:** implement and verify this raw entry; then reassess M10
+completion without promoting `0x17A96`/`0x17CA6` to an ability contract.
+
+## 2026-09-03 — M10 raw summon-entry slice implemented
+
+**Result:** added `initialize_observed_summon`, which reproduces the raw gate
+at `0x7A10` and the direct singleton-record writes at `0x846C`. Synthetic
+tests cover the accepted and rejected gates, copied position/raw fields,
+constant raw fields and cleared long fields. The local USA-ROM oracle now
+checks both entry addresses and the native result.
+
+**Boundary:** this proves a summon-entry candidate and its caller/data
+contract, but does not identify a spirit by name or prove that the separate
+`FF19E8` type check is the same object. The existing raw target-query slice is
+retained as an evidence-backed interaction contract without semantic labels.
+
+**Verification:** Debug and Release CTest pass `13/13`; file limits and
+`git diff --check` pass. CI remains the final M10 verification item.
+
+**Exact next step:** commit/push this conceptual slice, wait for CI, then
+close M10 if CI is green; retain the `FF19E8` producer relationship as a
+documented unknown for later evidence gathering.
 ## 2026-09-03 — M10 closure attempt stopped at the evidence boundary
 
 **Concrete task:** attempt to close M10 by tracing the producer and caller/data
