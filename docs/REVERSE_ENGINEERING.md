@@ -440,6 +440,34 @@ full call stack, writes, interrupts, peripherals or alternate path; execution
 stops explicitly on an unsupported scenario PC. Full-game tracing remains out
 of scope.
 
+### M11.5 fourth checkpoint — USA retail versus USA Beta 1994-11-01
+**Status:** VERIFIED as bounded differential evidence only; no semantic identity
+or behavior is inferred.
+
+- The user-supplied beta is `3145728` bytes with valid Mega Drive header and
+  Sega checksum. Fingerprint: CRC32 `FA59F847`, SHA-1
+  `cb0606faeab0398244d4721d71cf7e1c5724a9ef`, SHA-256
+  `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`.
+- `oasis_re_diff` analyzes only the five requested bounded retail targets and
+  emits deterministic `oasis.m68k.re-diff.v1` JSON plus a human report.
+- Raw decoded bytes plus CFG shape produce exact correspondence at beta
+  `0x37D0` for retail `0x3820`, beta `0x60004` for retail `0x60004`, beta
+  `0x825E` for retail `0x82AE` and beta `0x79D8` for retail `0x7A28`.
+- Normalized opcode signatures and CFG shape produce a structural match for
+  retail `0xA6A4` at beta `0xA654`; one aligned raw block differs (ordinal 10).
+  Same-address comparison is exact only for `0x60004`; the other four are
+  unmatched at their retail addresses and are reported through candidate
+  correspondence instead.
+- Normalization retains decoder opcode-family, addressing/flow shape and
+  operand widths while omitting relocation-sensitive branch and extension
+  values. `changed_blocks` reports aligned raw-byte differences, and all
+  candidates are bounded and sorted deterministically.
+
+**Boundary:** these results prove only byte/decoder/CFG correspondence within
+the selected windows. They do not prove semantic equivalence, caller contracts,
+function names or behavior outside the analyzed bytes. Broader similarity
+search and whole-ROM discovery remain out of scope.
+
 ## ROM identification implementation
 **Status:** VERIFIED.
 

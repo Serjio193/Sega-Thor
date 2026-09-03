@@ -102,6 +102,13 @@ The third bounded experiment is `oasis_re_trace`; it runs a controlled
 `oasis.m68k.re-trace.v1` JSON plus a text report. It is a scenario-bounded
 backend, not a general emulator or full-game tracing system.
 
+The fourth bounded experiment is `oasis_re_diff`; it accepts the canonical USA
+retail ROM and a user-supplied USA Beta 1994-11-01 ROM, then compares only the
+five targets recorded in `TASK.md`. It writes deterministic
+`oasis.m68k.re-diff.v1` JSON plus a text report with raw exact, normalized
+structural, changed-block and unmatched correspondence. It does not assign
+semantic names or imply behavioral equivalence.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.

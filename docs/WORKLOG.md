@@ -4,6 +4,19 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M11.5 fourth checkpoint: retail/beta comparison completed
+
+**RESULT:** Added developer-only `oasis_re_diff` with deterministic
+`oasis.m68k.re-diff.v1` output. Exact analogues: retail `0x3820 ->` beta
+`0x37D0`, `0x60004 -> 0x60004`, `0x82AE -> 0x825E`, `0x7A28 -> 0x79D8`.
+Normalized structural analogue: `0xA6A4 -> 0xA654`, with one raw changed block
+(ordinal 10). Beta fingerprint is `FA59F847`, SHA-1 `cb0606faeab0398244d4721d71cf7e1c5724a9ef`,
+SHA-256 `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`;
+header/checksum valid. **TESTS:** Debug/Release build and CTest 18/18, local
+beta oracle, deterministic JSON equality, file-limit and diff-check pass.
+**UNKNOWN:** no semantic equivalence or function meaning is inferred; results
+are bounded byte/normalized-signature/CFG evidence only. **NEXT:** stop.
+
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
 
 **TASK:** Test a minimal isolated execution backend against the unresolved

@@ -80,7 +80,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_trace.hpp Bounded dynamic trace data model/API
 │       ├── re_trace.cpp Isolated scenario interpreter and static/dynamic comparison
 │       ├── re_trace_format.cpp Deterministic trace JSON/human formatting
-│       └── re_trace_report.cpp Local-only bounded dynamic trace CLI
+│       ├── re_trace_report.cpp Local-only bounded dynamic trace CLI
+│       ├── re_diff.hpp Retail/beta bounded correspondence types/API
+│       ├── re_diff.cpp Conservative normalized signature and analogue matching
+│       ├── re_diff_format.cpp Deterministic revision-diff JSON/human formatting
+│       └── re_diff_report.cpp Local-only retail/beta differential CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -100,6 +104,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets
     ├── re_trace_test.cpp                   Synthetic dynamic trace/report tests
     ├── re_trace_reference.cpp              Local USA-ROM oracle for bounded dynamic scenario
+    ├── re_diff_test.cpp                    Synthetic exact/structural/changed matching tests
+    ├── re_diff_reference.cpp               Local retail/beta fingerprint/correspondence oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

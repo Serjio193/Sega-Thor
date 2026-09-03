@@ -1,12 +1,26 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 third checkpoint — bounded dynamic tracing PoC
+CURRENT_TASK: M11.5 fourth checkpoint — USA retail versus 1994-11-01 beta correspondence
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Isolated A7D4 scenario executes 5 PCs/3 blocks, observes 2 RAM reads and resolves A7E2->A7E4 plus two effective addresses; USA oracle and Debug/Release CTest pass
-NEXT_ACTION: Stop at the verified third M11.5 checkpoint and await explicit instruction
+LAST_VERIFIED_RESULT: Bounded differential report fingerprints beta and finds exact analogues for 0x3820, 0x60004, 0x82AE and 0x7A28 plus structural 0xA6A4->0xA654; oracle and Debug/Release CTest pass
+NEXT_ACTION: Stop at the verified fourth M11.5 checkpoint and await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 fourth checkpoint — retail/beta correspondence
+- `oasis_re_diff` remains developer-only and loads both ROMs through `oasis::Rom::load`.
+- Beta fingerprint is size `3145728`, CRC32 `FA59F847`, SHA-1
+  `cb0606faeab0398244d4721d71cf7e1c5724a9ef` and SHA-256
+  `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`;
+  header and Sega checksum are valid.
+- Requested targets yield exact beta analogues `0x3820 -> 0x37D0`,
+  `0x60004 -> 0x60004`, `0x82AE -> 0x825E` and `0x7A28 -> 0x79D8`.
+  `0xA6A4 -> 0xA654` is structural with one raw changed block.
+- Results are only decoded-byte, normalized-signature and CFG evidence; no
+  semantic identity or behavior is inferred. Candidate scanning is limited to
+  these five signatures/windows and does not add runtime/emulator code or a
+  general whole-ROM discovery pass.
 
 ## M11.5 third checkpoint — bounded dynamic trace
 - `oasis_re_trace` uses a scenario-bounded 68000 interpreter in `oasis_re_tooling`;

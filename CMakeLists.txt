@@ -39,6 +39,8 @@ add_library(oasis_re_tooling
     src/tools/re_program_format.cpp
     src/tools/re_trace.cpp
     src/tools/re_trace_format.cpp
+    src/tools/re_diff.cpp
+    src/tools/re_diff_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -50,6 +52,9 @@ target_link_libraries(oasis_re_program PRIVATE oasis_core oasis_re_tooling)
 
 add_executable(oasis_re_trace src/tools/re_trace_report.cpp)
 target_link_libraries(oasis_re_trace PRIVATE oasis_core oasis_re_tooling)
+
+add_executable(oasis_re_diff src/tools/re_diff_report.cpp)
+target_link_libraries(oasis_re_diff PRIVATE oasis_core oasis_re_tooling)
 
 enable_testing()
 
@@ -117,6 +122,10 @@ add_executable(oasis_re_trace_test tests/re_trace_test.cpp)
 target_link_libraries(oasis_re_trace_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_trace COMMAND oasis_re_trace_test)
 
+add_executable(oasis_re_diff_test tests/re_diff_test.cpp)
+target_link_libraries(oasis_re_diff_test PRIVATE oasis_core oasis_re_tooling)
+add_test(NAME oasis_re_diff COMMAND oasis_re_diff_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -145,6 +154,9 @@ target_link_libraries(oasis_re_program_reference PRIVATE oasis_core oasis_re_too
 add_executable(oasis_re_trace_reference tests/re_trace_reference.cpp)
 target_link_libraries(oasis_re_trace_reference PRIVATE oasis_core oasis_re_tooling)
 
+add_executable(oasis_re_diff_reference tests/re_diff_reference.cpp)
+target_link_libraries(oasis_re_diff_reference PRIVATE oasis_core oasis_re_tooling)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -163,6 +175,7 @@ set(oasis_test_targets
     oasis_re_slice_decoder_test
     oasis_re_program_test
     oasis_re_trace_test
+    oasis_re_diff_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -194,6 +207,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_slice_decoder
         oasis_re_program
         oasis_re_trace
+        oasis_re_diff
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}
