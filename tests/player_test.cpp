@@ -82,5 +82,22 @@ int main() {
     assert(turning_player.movement_state == 4);
     assert(turning_player.turn_timer == 1);
 
+    PlayerState turning_move_player{16 * 0x10000, 16 * 0x10000, -1};
+    turning_move_player.movement_state = 4;
+    turning_move_player.direction_code = 0;
+    turning_move_player.orientation_flags = 0;
+    turning_move_player.intent_y_fixed = 0x30000;
+    ControllerState turning_controller;
+    turning_controller.set(Button::Up);
+    turning_controller.set(Button::Right);
+    const auto turning_move = try_move(turning_move_player, turning_controller,
+                                       terrain, config);
+    assert(turning_move.moved);
+    assert(turning_move.vector.direction == Direction::up_right);
+    assert(turning_move_player.x_fixed == 16 * 0x10000 + 0x2A000);
+    assert(turning_move_player.y_fixed == 16 * 0x10000 + 0x30000);
+    assert(turning_move_player.accumulated_x_fixed == 0);
+    assert(turning_move_player.accumulated_y_fixed == 0);
+
     return 0;
 }
