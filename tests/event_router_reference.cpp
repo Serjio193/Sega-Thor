@@ -72,6 +72,16 @@ int main(int argc, char** argv) {
                       0x00, 0x04, 0x02, 0x39, 0xFF, 0xF9, 0x00, 0xFF,
                       0x17, 0xB8},
                      "event flag-clear state update mismatch");
+        expect_bytes(rom, 0x7B52,
+                     {0x3D, 0x79, 0x00, 0xFF, 0x0D, 0x7E, 0x00, 0x06,
+                      0x3D, 0x7C, 0xFF, 0xFF, 0x00, 0x5C, 0x60, 0x00,
+                      0xE7, 0x6A},
+                     "event flag-clear record update mismatch");
+        expect_bytes(rom, 0x62CC,
+                     {0x70, 0x00, 0x2D, 0x40, 0x00, 0x4E, 0x2D, 0x40,
+                      0x00, 0x52, 0x3D, 0x7C, 0x00, 0x00, 0x00, 0x2A,
+                      0x3D, 0x7C, 0x00, 0x00, 0x00, 0x04, 0x4E, 0x75},
+                     "event flag-clear cleanup mismatch");
 
         using namespace oasis::game::scripts;
         const auto transfer = produce_observed_event({
@@ -98,7 +108,9 @@ int main(int argc, char** argv) {
             state_update.second_selector != kObservedDriverSecondSelector ||
             state_update.state_and_mask != kObservedDriverStateAndMask ||
             state_update.record_field_source != kObservedDriverSourceRamAddress ||
-            state_update.timeout_field_value != 0xFFFF) {
+            state_update.timeout_field_value != 0xFFFF ||
+            state_update.cleanup_handler_address != kObservedFlagClearCleanupAddress ||
+            !state_update.cleanup_clears_record_fields) {
             throw std::runtime_error("native flag-clear trace mismatch");
         }
         std::cout << "verified event producer and raw router ranges\n";

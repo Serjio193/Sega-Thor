@@ -99,13 +99,17 @@ The milestone acceptance slice is complete with local Debug/Release verification
 and successful GitHub Actions CI; remaining unknown relationships stay documented
 as unknown and may be revisited when later evidence requires them.
 
-## M11 — Scripts/events/dialogue — ACTIVE
+## M11 — Scripts/events/dialogue — DONE
 Goal: reproduce game progression and event semantics. The first task is to
 prove one bounded event/script router operation from its ROM data source.
 
 Current slice: the type-8 producer at `0x82AE` transfers raw fields to
 `FF1976/FF1978/FF197A`, and `0x7A28` maps the raw event byte to bounded handler
 addresses. Event, progression and dialogue meanings remain unknown.
+
+The evidence-backed bounded M11 slice is complete with native tests, local
+USA-ROM verification and CI. Unknown dialogue, progression and driver
+semantics remain explicitly unimplemented.
 
 Current follow-up is evidence-gathering only while its implementation-slice
 confidence remains below 90%; production C++ must not expand until caller/data

@@ -32,6 +32,8 @@ int main() {
     assert(state_update.state_and_mask == kObservedDriverStateAndMask);
     assert(state_update.record_field_source == kObservedDriverSourceRamAddress);
     assert(state_update.timeout_field_value == 0xFFFF);
+    assert(state_update.cleanup_handler_address == kObservedFlagClearCleanupAddress);
+    assert(state_update.cleanup_clears_record_fields);
 
     const auto flag_clear = route_observed_event(0x16, 0);
     assert(flag_clear.eligible);

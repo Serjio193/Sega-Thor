@@ -21,7 +21,7 @@ router and `0x7B2A` trace functions, synthetic coverage and a local USA-ROM
 oracle.
 **Verification:** Debug and Release CTest pass 14/14. All six local ROM
 oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression and event meanings remain unknown.
-**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x609C6` now has a confirmed raw flag-mask formula and return epilogue; command `0x0008` still reaches `0x60D10`, whose driver protocol remains unknown. **Exact next step:** bound the post-sentinel path of adjacent `0x7B2A` or the indirect producer call without adding a generic stream parser.
+**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x609C6` has a confirmed raw flag-mask formula, command `0x0008` reaches `0x60D10`, and the sentinel path ends at `0x62CC`, which clears four current-record fields. **Result:** corrected router target `0x7B28`, extended the bounded raw trace with verified writes and cleanup, and completed the M11 acceptance slice. Debug/Release CTest pass 14/14, the local ROM-oracle passes, and remaining dialogue, progression and driver semantics stay unknown. **Exact next step:** stop at completed M11 and await explicit next-milestone instruction.
 
 ## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
 

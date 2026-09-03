@@ -19,6 +19,7 @@ inline constexpr std::uint16_t kObservedDriverSentinel = 0x01FF;
 inline constexpr std::uint32_t kObservedDriverStateRamAddress = 0x00FF17B8;
 inline constexpr std::uint16_t kObservedDriverStateAndMask = 0xFFF9;
 inline constexpr std::uint32_t kObservedDriverSourceRamAddress = 0x00FF0D7E;
+inline constexpr std::uint32_t kObservedFlagClearCleanupAddress = 0x000062CC;
 inline constexpr std::uint32_t kObservedRouteFlagClearReturnAddress = 0x00007B28;
 inline constexpr std::uint32_t kObservedFlagClearHandlerAddress = 0x00007B2A;
 inline constexpr std::uint32_t kObservedRouteFallbackAddress = 0x00007A6C;
@@ -53,6 +54,8 @@ struct ObservedFlagClearTrace {
     std::uint16_t state_and_mask{};
     std::uint32_t record_field_source{};
     std::uint16_t timeout_field_value{};
+    std::uint32_t cleanup_handler_address{};
+    bool cleanup_clears_record_fields{};
 };
 
 // Mirrors the type-8 producer at 0x82AE after its bounded pool query has
@@ -78,7 +81,9 @@ struct ObservedFlagClearTrace {
             .second_selector = kObservedDriverSecondSelector,
             .state_and_mask = kObservedDriverStateAndMask,
             .record_field_source = kObservedDriverSourceRamAddress,
-            .timeout_field_value = 0xFFFF};
+            .timeout_field_value = 0xFFFF,
+            .cleanup_handler_address = kObservedFlagClearCleanupAddress,
+            .cleanup_clears_record_fields = true};
 }
 
 // Mirrors the bounded dispatch split at 0x7A28. Handler addresses remain raw

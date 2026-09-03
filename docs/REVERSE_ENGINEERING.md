@@ -340,6 +340,10 @@ dialogue and command semantics remain UNKNOWN.
   `0x01FF` when bit 0 of `FF001A` is set, then ORs bits from bit 4 of eleven
   driver RAM locations before returning through `0x611D8` — **CONFIRMED**.
   The event-side meaning of this mask remains UNKNOWN.
+- On the `0x01FF` path, `0x7B2A` calls command `0x0008`, performs the raw
+  state writes, then branches to `0x62CC`; `0x62CC` clears current-record
+  fields `+0x4E`, `+0x52`, `+0x2A` and `+0x04` — **CONFIRMED**. This closes
+  the bounded raw side-effect contract without assigning driver semantics.
 - The native `event_router` module exposes the producer transfer, raw
   handler-address mapping and the bounded adjacent `0x7B2A` trace. Synthetic tests and
   the USA-ROM oracle cover the type gate, field composition and dispatch

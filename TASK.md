@@ -4,14 +4,14 @@ TASK: M11 — Event/script router investigation
 WHY: M10 is complete; the next dependency is evidence-backed script/event behavior beyond the already verified raw router slice.
 CURRENT MILESTONE: M11
 MILESTONE UNDERSTANDING CONFIDENCE: 70%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 70%
-SLICE MODE: EVIDENCE_GATHERING_ONLY
-STATUS: ACTIVE
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 95%
+SLICE MODE: IMPLEMENTATION_ALLOWED
+STATUS: COMPLETE
 
 ## Confidence evidence
 - The completed M11 raw producer/router slice had >=90% slice confidence before implementation because its type gate, field transfer, bounded handler ranges, synthetic tests, USA-ROM oracle and CI were independently verified.
-- The **current** follow-up slice does not yet have enough evidence to identify the type-8 producer caller or assign semantics to downstream helper `0x60004` / handler `0x7B2A`.
-- Therefore current-slice confidence remains below 90% and no new production C++ behavior may be added for that follow-up until additional ROM/caller/data evidence raises it to >=90%.
+- The **current** follow-up slice now has exact raw inputs, outputs and side effects for `0x7B2A -> 0x60004 -> 0x609C6/0x60D10 -> 0x62CC`; the producer caller itself remains an independent unknown.
+- Current-slice confidence is 95% for this bounded downstream contract. No semantic audio/dialogue label is assigned.
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
@@ -36,13 +36,16 @@ STATUS: ACTIVE
 - [x] CI green.
 
 ## Current follow-up acceptance gate
-Before any new production C++ is added for the current follow-up:
-- [ ] identify the direct/indirect caller or data path that reaches the type-8 producer, **or** fully bound the relevant downstream helper/handler contract;
-- [ ] record exact addresses, inputs, outputs and side effects;
-- [ ] raise CURRENT SLICE UNDERSTANDING CONFIDENCE to >=90% with written evidence;
-- [ ] only then define implementation-specific acceptance criteria and write native behavior.
+- [x] fully bound the relevant downstream handler contract;
+- [x] record exact addresses, inputs, outputs and side effects;
+- [x] raise CURRENT SLICE UNDERSTANDING CONFIDENCE to >=90% with written evidence;
+- [x] define implementation-specific criteria for the bounded raw trace.
 
-Until those boxes are satisfied, allowed work is reverse engineering, probes, evidence capture and documentation only.
+## Current follow-up implementation criteria
+- preserve the masked result from the first raw driver call;
+- issue raw selector `0x0008` only for sentinel `0x01FF`;
+- expose the verified `FF17B8`, current-record and `0x62CC` cleanup effects;
+- keep driver, audio, dialogue and progression meanings unassigned.
 
 ## Constraints
 - Do not begin M12 or later work.
@@ -54,4 +57,5 @@ Until those boxes are satisfied, allowed work is reverse engineering, probes, ev
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Investigate the type-8 source caller and/or downstream `0x7B2A -> 0x60004` contract. Gather evidence only until the current slice reaches >=90% confidence; do not extend production C++ before then.
+M11 bounded event-router slice is complete and verified. Stop here and await
+an explicit next-milestone instruction; do not begin M12.

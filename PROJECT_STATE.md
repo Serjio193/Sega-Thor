@@ -2,9 +2,9 @@
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: Locate and recover one evidence-backed event/script router operation
-STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M11 raw type-8 event producer and 0x7A28 handler-range mapping pass synthetic tests, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI
-NEXT_ACTION: investigate the type-8 source caller or adjacent handler 0x7B2A without adding a stream parser
+STATUS: COMPLETE
+LAST_VERIFIED_RESULT: M11 bounded raw event producer/router and 0x7B2A sentinel trace pass synthetic tests, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI
+NEXT_ACTION: M11 complete; stop and await explicit next-milestone instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 
