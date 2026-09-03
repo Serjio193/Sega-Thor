@@ -3,7 +3,7 @@
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 bounded address-displacement resolution PoC around 0x60004
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: oasis.m68k.re-resolution.v1 examines 390 bounded displacement refs, resolves 294 with zero provenance failures, and reduces Atlas unresolved 577 to 283; USA oracle and Debug verification pass
+LAST_VERIFIED_RESULT: oasis.m68k.re-resolution.v1 examines 390 bounded displacement refs, resolves 294 with zero provenance failures, and reduces Atlas unresolved 577 to 283; USA oracle, Debug/Release/GNU verification and CI run 33770283842 pass
 NEXT_ACTION: Stop at the verified bounded resolution checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none

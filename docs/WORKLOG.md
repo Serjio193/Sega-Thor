@@ -12,7 +12,7 @@ merge), 0 provenance failures; 294 RAM / 78 unique, 0 ROM. Atlas delta:
 577→283 unresolved, displacement 446→152, A6 387→123, immediate 168→54;
 80 records remain outside reachable CFG.
 **TESTS:** synthetic/USA oracle, Debug/Release/GNU CTest, deterministic JSON,
-file-limit and diff-check pass; CI will be recorded after push.
+file-limit and diff-check pass; GitHub Actions CI `33770283842` is green.
 **UNKNOWN/NEXT:** no semantics, calling convention, interprocedural state,
 emulator, whole-ROM propagation, production behavior or M12; stop and await
 explicit next bounded evidence class.
