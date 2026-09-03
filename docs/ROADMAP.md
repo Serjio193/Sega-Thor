@@ -53,7 +53,7 @@ Verified:
 - portable byte-grid, footprint and terrain-gate tests pass;
 - final build-test, reference-ROM workflow and M7 probe are green.
 
-## M8 — Player system — NEXT
+## M8 — Player system — DONE
 Goal: translate player movement/state from verified binary behavior before attacks and presentation layers.
 
 Tasks:
@@ -74,6 +74,10 @@ Acceptance criteria:
 - reverse-engineering ledger/worklog updated;
 - files remain <= 500 lines;
 - CI green.
+
+Delivered on `main`: the portable movement/state slice, M7 terrain-gated integration,
+ROM-backed evidence, raw velocity context boundary, local Debug/Release verification
+and successful GitHub Actions CI. The commercial ROM remains local-only.
 
 ## M9 — Entities/enemies/NPCs — TODO
 Goal: translate common entity framework and representative behaviors.
