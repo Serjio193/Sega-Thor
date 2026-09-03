@@ -76,8 +76,7 @@ ScreenDescriptorRaw load_screen_descriptor(std::span<const std::uint8_t> rom, Sc
         throw std::out_of_range("screen descriptor resolves before ROM start");
     }
     const auto descriptor = static_cast<std::size_t>(descriptor_signed);
-    constexpr std::size_t required = ScreenDescriptorRaw::kSize + 4U;
-    if (descriptor > rom.size() || rom.size() - descriptor < required) {
+    if (descriptor > rom.size() || rom.size() - descriptor < ScreenDescriptorRaw::kSize) {
         throw std::out_of_range("screen descriptor resolves outside ROM");
     }
 
@@ -86,7 +85,7 @@ ScreenDescriptorRaw load_screen_descriptor(std::span<const std::uint8_t> rom, Sc
     std::copy_n(rom.begin() + static_cast<std::ptrdiff_t>(descriptor),
                 ScreenDescriptorRaw::kSize,
                 result.bytes.begin());
-    result.init_function = read_u32(rom, descriptor + ScreenDescriptorRaw::kSize);
+    result.init_code_address = static_cast<std::uint32_t>(descriptor + ScreenDescriptorRaw::kSize);
     return result;
 }
 
