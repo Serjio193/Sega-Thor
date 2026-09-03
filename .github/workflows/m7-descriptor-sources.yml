@@ -1,0 +1,114 @@
+name: m7-descriptor-sources
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  descriptor-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Recover nearby A1 sources for all direct loader calls
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          target=0xd406
+          pat=b'\x4e\xb9'+target.to_bytes(4,'big')
+          calls=[]; p=0
+          while True:
+              p=rom.find(pat,p)
+              if p<0: break
+              calls.append(p); p+=1
+
+          absolute=[]
+          for call in calls:
+              start=max(0,call-48)
+              w=rom[start:call]
+              candidates=[]
+              # LEA abs.l,A1 = 43f9 addr32
+              q=0
+              while True:
+                  q=w.find(b'\x43\xf9',q)
+                  if q<0: break
+                  if q+6<=len(w): candidates.append((start+q,int.from_bytes(w[q+2:q+6],'big'),'LEA.L'))
+                  q+=1
+              # MOVEA.L #imm,A1 = 227c addr32
+              q=0
+              while True:
+                  q=w.find(b'\x22\x7c',q)
+                  if q<0: break
+                  if q+6<=len(w): candidates.append((start+q,int.from_bytes(w[q+2:q+6],'big'),'MOVEA.L'))
+                  q+=1
+              candidates=[x for x in candidates if x[0]<call]
+              if candidates:
+                  src=max(candidates,key=lambda x:x[0])
+                  absolute.append((call,*src))
+                  print(f'call=0x{call:06x} a1_set=0x{src[0]:06x} kind={src[2]} value=0x{src[1]:06x}')
+              else:
+                  print(f'call=0x{call:06x} a1_source=non-immediate')
+          print('calls=',len(calls),'immediate_a1=',len(absolute),'unique_values=',len(set(x[2] for x in absolute)))
+          vals=sorted(set(x[2] for x in absolute))
+          print('descriptor_values=',','.join(f'0x{x:06x}' for x in vals))
+          PY
+
+      - name: Inspect immediate descriptor bytes and pointer fields
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          pat=b'\x4e\xb9'+(0xd406).to_bytes(4,'big')
+          vals=[]; p=0
+          while True:
+              call=rom.find(pat,p)
+              if call<0: break
+              p=call+1
+              start=max(0,call-48); w=rom[start:call]
+              q=w.rfind(b'\x43\xf9')
+              if q>=0 and q+6<=len(w):
+                  v=int.from_bytes(w[q+2:q+6],'big')
+                  if 0<=v<len(rom): vals.append(v)
+          for v in sorted(set(vals))[:80]:
+              b=rom[v:v+32]
+              ptr4=int.from_bytes(b[4:8],'big') if len(b)>=8 else 0
+              print(f'desc=0x{v:06x} bytes={b.hex()} ptr4=0x{ptr4:06x} ptr4_in_rom={0<=ptr4<len(rom)}')
+          PY
+
+      - name: Install M68K binutils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq binutils-m68k-linux-gnu
+
+      - name: Disassemble representative loader callers
+        shell: bash
+        run: |
+          for RANGE in \
+            '0x2c6c0 0x2c760' \
+            '0x2cf50 0x2cfd0' \
+            '0x2db00 0x2db80' \
+            '0x2f630 0x2f6c0' \
+            '0x32120 0x321b0' \
+            '0x34f20 0x34fa0' \
+            '0x39590 0x39610'; do
+            set -- $RANGE
+            echo "===== $1..$2 ====="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
