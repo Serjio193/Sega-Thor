@@ -4,7 +4,7 @@ TASK: M8 — Player system
 WHY: M7 established tested world-grid and terrain collision primitives. The next dependency is recovering the original player's update/movement contract before translating attacks or animation state.
 CURRENT MILESTONE: M8
 UNDERSTANDING CONFIDENCE: 93%
-STATUS: ACTIVE
+STATUS: DONE
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
@@ -24,8 +24,8 @@ STATUS: ACTIVE
 - [x] add a local USA-ROM reference/oracle check for translated player vectors;
 - [x] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
 - [x] record unknown fields without invented semantic names;
-- [ ] keep every file <= 500 lines;
-- [ ] CI green.
+- [x] keep every file <= 500 lines;
+- [x] CI green.
 
 ## Constraints
 - Do not begin M9.
@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Finish M8 acceptance review and keep the ROM reference workflow local-only.
+M8 is closed; do not begin M9 without an explicit new project scope.

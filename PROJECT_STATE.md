@@ -2,9 +2,9 @@
 
 CURRENT_MILESTONE: M8 — Player system
 CURRENT_TASK: Recover the first verified player movement/update path from the canonical USA ROM and define only the confirmed portable state needed to reproduce it
-STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M7 completed; screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are implemented/tested, and build/reference/probe checks are green
-NEXT_ACTION: finish M8 acceptance review and keep the ROM reference workflow local-only
+STATUS: M8 ACCEPTED
+LAST_VERIFIED_RESULT: M8 player movement/state slice is implemented, locally verified in Debug/Release, ROM-oracle checked, and GitHub Actions CI green
+NEXT_ACTION: M8 is closed; do not begin M9 without an explicit new project scope
 DO_NOT_WORK_ON: M9+, Thor 2, Saturn support, remaster features, speculative attacks/animation systems
 BLOCKERS: none
 

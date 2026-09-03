@@ -4,6 +4,22 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M8 acceptance review
+**Objective:** Close M8 after local, ROM-reference and remote CI verification.
+
+**Evidence/tests:**
+- Debug CTest: 11/11 passed from a clean shell;
+- Release CTest: 11/11 passed from a clean shell;
+- local USA-ROM player oracle passed;
+- GitHub Actions `CI #250` for `c705157` completed with `Success`;
+- file-size check passed and the ROM archive is ignored/untracked.
+
+**Result:** M8 is accepted. The portable player movement/state slice, terrain-gated consumer integration, optional raw velocity context and Windows CTest runtime setup are committed on `main`; the commercial ROM remains local-only.
+
+**Unresolved:** presentation callbacks/animation fields and the lifecycle of bit 4 of `FF16F1` remain outside the verified scope.
+
+**Exact next step:** no M9 work; await explicit new project scope.
+
 ## 2026-09-03 — M8 state-2/state-4 branch closure
 **Objective:** Validate the stop and turning branches reached through the player state dispatcher before modelling any presentation state.
 
