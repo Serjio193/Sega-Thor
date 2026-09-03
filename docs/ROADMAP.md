@@ -34,45 +34,48 @@ Reference vectors:
 `oasis_inspect` performs supported-ROM validation, native decompression, Genesis 4bpp tile decoding and local PGM/PPM export. Generated commercial data remains local/ignored.
 
 ## M5 — VDP data model and rendering primitives — DONE
-Goal: represent the narrow video-state semantics needed by the native reconstruction without implementing a full console emulator.
-
 Verified:
 - 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM storage;
 - bounded byte-span and big-endian word access;
-- standard tile pattern-name decoding (index/palette/priority/H/V flip);
-- minimal `PlaneCell` representation;
-- standard raw four-word sprite attribute decoding;
-- explicit unsupported-semantics list in `docs/VDP_MODEL.md`;
-- no SDL/GPU dependency in `oasis_core`;
-- synthetic VDP tests registered with CTest;
-- current GitHub CI build/test job green.
+- standard tile pattern-name decoding;
+- minimal plane-cell and raw four-word sprite attribute decoding;
+- explicit unsupported/full-emulator semantics list;
+- no SDL/GPU dependency in core;
+- VDP synthetic tests and CI green.
 
-## M6 — Runtime frame/input skeleton — NEXT
-Goal: establish deterministic update/frame stepping and a portable controller-input abstraction.
+M5 reference probe additionally found 196 raw `0xC00000` data-port references and 33 `0xC00004` control-port references in the USA ROM. The `0x2BA0` routine writes 40 zero words after a VDP control setup, providing direct game evidence consistent with 80-byte VSRAM usage.
+
+## M6 — Runtime frame/input skeleton — DONE
+Goal: deterministic portable frame stepping without wall-clock or platform dependencies.
+
+Verified:
+- portable controller bit state for two ports;
+- explicit `FrameContext` with integer `frame_index` and immutable input snapshot;
+- `RuntimeLoop::step()` advances exactly one frame per call;
+- deterministic test runs the same input sequence twice and requires identical traces;
+- changed input produces a different trace;
+- no SDL/OS dependency in runtime core;
+- duplicate experimental frame API removed rather than maintaining parallel abstractions;
+- current CI green.
+
+## M7 — World/map/collision foundations — NEXT
+Goal: decode room/map structures and collision semantics from the reference ROM before translating player behavior.
 
 Tasks:
-- integer frame index with explicit one-frame stepping;
-- portable controller button state;
-- immutable per-frame input snapshot passed to update code;
-- deterministic replay-style test using the same input sequence twice;
-- no wall-clock or platform API inside core runtime.
+- locate candidate room/map data tables and their readers;
+- identify pointer tables versus packed structures using code + ROM evidence;
+- document one room/area data path from table entry to consumed fields;
+- identify collision representation and query/update routines;
+- implement only confirmed portable data structures;
+- build a local ROM-backed room inspector when enough format is proven.
 
 Acceptance criteria:
-- stable explicit frame stepping;
-- controller input abstraction;
-- deterministic test mode/evidence;
-- no gameplay logic buried in platform layer;
-- no SDL/OS dependency in core runtime;
+- at least one room/map structure documented with evidence and confidence levels;
+- a confirmed room/map record can be loaded from local ROM without executing 68000 code;
+- collision representation has a tested portable query API or milestone remains ACTIVE;
+- reverse-engineering ledger/worklog updated;
 - files remain <= 500 lines;
 - CI green.
-
-## M7 — World/map/collision foundations — TODO
-Goal: decode room/map structures and collision semantics.
-
-Acceptance criteria:
-- documented data formats;
-- a room can be loaded from local ROM;
-- collision queries have tests.
 
 ## M8 — Player system — TODO
 Goal: translate movement, animation state, attacks and relevant state machine.
