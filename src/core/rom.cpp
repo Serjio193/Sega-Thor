@@ -19,9 +19,9 @@ Rom Rom::load(const std::filesystem::path& path) {
     std::ifstream file(path, std::ios::binary);
     if (!file) throw std::runtime_error("Unable to open ROM: " + path.string());
 
-    std::vector<std::uint8_t> data(
+    std::vector<std::uint8_t> data{
         std::istreambuf_iterator<char>(file),
-        std::istreambuf_iterator<char>());
+        std::istreambuf_iterator<char>()};
 
     if (data.size() < 0x200) throw std::runtime_error("File is too small to be a Mega Drive ROM");
     return Rom(std::move(data));
