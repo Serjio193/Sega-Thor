@@ -23,40 +23,28 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Find FF17C6 references and exact calls to 0x10382
+      - name: Locate exact callers of 0x10594
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-
-          target_ram=0xff17c6
-          pat=target_ram.to_bytes(4,'big')
-          hits=[]; p=0
-          while True:
-              p=rom.find(pat,p)
-              if p < 0: break
-              hits.append(p); p += 1
-          print('refs_FF17C6=' + ','.join(f'0x{x:06x}' for x in hits))
-
-          target=0x10382
+          target=0x10594
           calls=[]
-          # JSR absolute long.
           pat=b'\x4e\xb9'+target.to_bytes(4,'big')
           p=0
           while True:
               p=rom.find(pat,p)
               if p < 0: break
               calls.append((p,'JSR.L')); p += 1
-
-          # BSR.W: opcode 0x6100, signed displacement relative to PC after 4-byte instruction.
-          for p in range(0, len(rom)-4, 2):
-              if rom[p:p+2] != b'\x61\x00':
-                  continue
+          for p in range(0,len(rom)-4,2):
+              if rom[p:p+2] != b'\x61\x00': continue
               disp=int.from_bytes(rom[p+2:p+4],'big',signed=True)
-              if p+4+disp == target:
-                  calls.append((p,'BSR.W'))
-          print('calls_10382=' + ','.join(f'{kind}@0x{p:06x}' for p,kind in sorted(calls)))
+              if p+4+disp == target: calls.append((p,'BSR.W'))
+          print('calls_10594=' + ','.join(f'{kind}@0x{p:06x}' for p,kind in sorted(calls)))
+          for p,kind in sorted(calls):
+              start=max(0,p-48); end=min(len(rom),p+48)
+              print(f'caller_window {kind}@0x{p:06x}=' + rom[start:end].hex())
           PY
 
       - name: Install M68K binutils
@@ -64,35 +52,39 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble tile query and surrounding producers
+      - name: Disassemble spatial query and known gameplay callers
         shell: bash
         run: |
           set -euo pipefail
           for RANGE in \
-            '0x010240 0x010540' \
-            '0x00db70 0x00dd40' \
-            '0x00d620 0x00d6a0'; do
+            '0x010540 0x010720' \
+            '0x022780 0x022820' \
+            '0x027090 0x027110'; do
             set -- $RANGE
             echo "===== $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
 
-      - name: Find ROM and RAM addresses referenced by 0x10382 neighborhood
+      - name: Inventory memory references used by 0x10594 neighborhood
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          start,end=0x10382,0x10480
+          start,end=0x10594,0x10720
           block=rom[start:end]
-          print('query_bytes=' + block.hex())
-          # Report 32-bit constants that plausibly point into ROM or 68K RAM.
+          for target in range(0xff0000,0x1000000):
+              pass
+          # Exact absolute-RAM constants actually present in the function bytes.
+          found=[]
+          for i in range(len(block)-3):
+              v=int.from_bytes(block[i:i+4],'big')
+              if 0xff0000 <= v <= 0xffffff:
+                  found.append((start+i,v))
           seen=set()
-          for i in range(0,len(block)-3,2):
-              value=int.from_bytes(block[i:i+4],'big')
-              if value < len(rom) or 0xff0000 <= value <= 0xffffff:
-                  if value not in seen:
-                      seen.add(value)
-                      print(f'candidate_ref@0x{start+i:06x}=0x{value:06x}')
+          for pos,v in found:
+              if (pos,v) in seen: continue
+              seen.add((pos,v))
+              print(f'ram_ref@0x{pos:06x}=0x{v:06x}')
           PY
