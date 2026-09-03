@@ -12,12 +12,16 @@ add_library(oasis_core
     src/genesis/vdp.cpp
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
+    src/game/genesis_graphics.cpp
 )
 
 target_include_directories(oasis_core PUBLIC src)
 
 add_executable(oasis src/main.cpp)
 target_link_libraries(oasis PRIVATE oasis_core)
+
+add_executable(oasis_inspect src/tools/asset_inspector.cpp)
+target_link_libraries(oasis_inspect PRIVATE oasis_core)
 
 enable_testing()
 
@@ -32,6 +36,10 @@ add_test(NAME oasis_rom_identity COMMAND oasis_rom_identity_test)
 add_executable(oasis_graphics_decompress_test tests/graphics_decompress_test.cpp)
 target_link_libraries(oasis_graphics_decompress_test PRIVATE oasis_core)
 add_test(NAME oasis_graphics_decompress COMMAND oasis_graphics_decompress_test)
+
+add_executable(oasis_genesis_graphics_test tests/genesis_graphics_test.cpp)
+target_link_libraries(oasis_genesis_graphics_test PRIVATE oasis_core)
+add_test(NAME oasis_genesis_graphics COMMAND oasis_genesis_graphics_test)
 
 # Uses a locally supplied verified ROM and is intentionally not registered with CTest.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
