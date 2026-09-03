@@ -1,0 +1,99 @@
+name: m7-a1-source-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  resolve-a1-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Resolve direct A1 setup instructions near every D406 call
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          callpat=b'\x4e\xb9'+(0xd406).to_bytes(4,'big')
+          calls=[]; p=0
+          while True:
+              p=rom.find(callpat,p)
+              if p<0: break
+              calls.append(p); p+=1
+
+          def s16(b): return int.from_bytes(b,'big',signed=True)
+          rows=[]
+          for call in calls:
+              start=max(0,call-128)
+              candidates=[]
+              # LEA (d16,PC),A1 : 43 FA disp16; target = address after extension + disp
+              for q in range(start,call-3,2):
+                  if rom[q:q+2]==b'\x43\xfa':
+                      target=q+4+s16(rom[q+2:q+4])
+                      candidates.append((q,target,'LEA_PC'))
+                  elif rom[q:q+2]==b'\x43\xf9' and q+6<=call:
+                      candidates.append((q,int.from_bytes(rom[q+2:q+6],'big'),'LEA_ABS'))
+                  elif rom[q:q+2]==b'\x22\x7c' and q+6<=call:
+                      candidates.append((q,int.from_bytes(rom[q+2:q+6],'big'),'MOVEA_IMM'))
+              if candidates:
+                  src=max(candidates,key=lambda x:x[0])
+                  rows.append((call,*src))
+                  dist=call-src[1] if 0<=src[1]<len(rom) else 999999
+                  print(f'call=0x{call:06x} set=0x{src[0]:06x} kind={src[2]} target=0x{src[1]:06x} call_minus_target={dist}')
+              else:
+                  print(f'call=0x{call:06x} source=UNRESOLVED')
+
+          from collections import Counter
+          print('total_calls=',len(calls))
+          print('resolved=',len(rows))
+          print('kinds=',dict(Counter(r[3] for r in rows)))
+          pc=[r for r in rows if r[3]=='LEA_PC' and 0<=r[2]<len(rom)]
+          print('pc_relative_resolved=',len(pc))
+          print('pc_target_deltas=',Counter(r[0]-r[2] for r in pc).most_common(20))
+          PY
+
+      - name: Validate structures at resolved PC-relative A1 targets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          callpat=b'\x4e\xb9'+(0xd406).to_bytes(4,'big')
+          p=0; shown=0
+          while shown<50:
+              call=rom.find(callpat,p)
+              if call<0: break
+              p=call+1
+              start=max(0,call-128)
+              found=[]
+              for q in range(start,call-3,2):
+                  if rom[q:q+2]==b'\x43\xfa':
+                      disp=int.from_bytes(rom[q+2:q+4],'big',signed=True)
+                      target=q+4+disp
+                      found.append((q,target))
+              if not found: continue
+              q,target=max(found,key=lambda x:x[0])
+              if not (0<=target and target+26<=len(rom)): continue
+              d=rom[target:target+26]
+              ptr4=int.from_bytes(d[4:8],'big')
+              ptr8=int.from_bytes(d[8:12],'big')
+              print(f'call=0x{call:06x} lea=0x{q:06x} target=0x{target:06x} raw={d.hex()} '
+                    f'ptr4=0x{ptr4:08x} ptr8=0x{ptr8:08x} ptr4_rom={0<ptr4<len(rom)} ptr8_rom={0<ptr8<len(rom)}')
+              shown+=1
+          print('shown=',shown)
+          PY
