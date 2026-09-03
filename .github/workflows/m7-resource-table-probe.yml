@@ -1,0 +1,83 @@
+name: m7-resource-table-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  trace-resource-table:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Find exact references to candidate table and streaming RAM pointers
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          patterns={
+            'table_05ce96': bytes.fromhex('0005ce96'),
+            'table_05ce9a': bytes.fromhex('0005ce9a'),
+            'ram_ff17aa': bytes.fromhex('00ff17aa'),
+            'ram_ff17ae': bytes.fromhex('00ff17ae'),
+          }
+          for name,pat in patterns.items():
+            hits=[]; p=0
+            while True:
+              p=rom.find(pat,p)
+              if p<0: break
+              hits.append(p); p+=1
+            print(name,'count=',len(hits),'hits=',','.join(f'0x{x:06x}' for x in hits))
+          PY
+
+      - name: Inspect table header and pointed resource signatures
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          rom=Path('/tmp/reference.md').read_bytes()
+          base=0x5ce96
+          print('table_prefix=',rom[base:base+16].hex())
+          vals=[int.from_bytes(rom[0x5ce9a+i*4:0x5ce9e+i*4],'big') for i in range(107)]
+          for i,v in enumerate(vals[:24]):
+            head=rom[v:v+16]
+            print(f'entry={i:02d} ptr=0x{v:06x} selector={head[2] if len(head)>2 else -1} head={head.hex()}')
+          print('first24_unique=',len(set(vals[:24])))
+          print('pointer_min=',hex(min(vals)),'pointer_max=',hex(max(vals)))
+          PY
+
+      - name: Install M68K binutils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq binutils-m68k-linux-gnu
+
+      - name: Disassemble table consumer and stream-state routines
+        shell: bash
+        run: |
+          set -euo pipefail
+          for RANGE in \
+            '0xd300 0xd720' \
+            '0xd380 0xd480' \
+            '0xd3e0 0xd4a0' \
+            '0x2d40 0x2f20' \
+            '0x2c80 0x2de0'; do
+            set -- $RANGE
+            echo "===== $1..$2 ====="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
