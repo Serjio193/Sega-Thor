@@ -41,11 +41,11 @@ contract, but does not identify a spirit by name or prove that the separate
 retained as an evidence-backed interaction contract without semantic labels.
 
 **Verification:** Debug and Release CTest pass `13/13`; file limits and
-`git diff --check` pass. CI remains the final M10 verification item.
-
-**Exact next step:** commit/push this conceptual slice, wait for CI, then
-close M10 if CI is green; retain the `FF19E8` producer relationship as a
-documented unknown for later evidence gathering.
+`git diff --check` pass. GitHub Actions CI for commit `d64e584` completed
+successfully.
+**Result:** M10 is complete. The `FF19E8` producer relationship remains a
+documented unknown and is not used to invent spirit or ability semantics.
+The next milestone may begin.
 ## 2026-09-03 — M10 closure attempt stopped at the evidence boundary
 
 **Concrete task:** attempt to close M10 by tracing the producer and caller/data

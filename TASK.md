@@ -4,7 +4,7 @@ TASK: M10 — Spirits
 WHY: M9 established the common entity framework. The next dependency is one evidence-backed spirit lifecycle slice before expanding into abilities or interactions.
 CURRENT MILESTONE: M10
 UNDERSTANDING CONFIDENCE: 70%
-STATUS: ACTIVE
+STATUS: COMPLETE
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
@@ -28,7 +28,7 @@ STATUS: ACTIVE
 - [x] keep rendering, audio and unproven spirit semantics out;
 - [x] record unknown fields without invented semantic names;
 - [x] keep every file <= 500 lines;
-- [ ] CI green.
+- [x] CI green.
 
 ## Constraints
 - Do not begin M11 or later work.
@@ -39,8 +39,7 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 - Keep the ROM archive local-only and untracked.
 
-## Exact next action
-Commit and push the raw summon-entry slice, then verify CI. Keep the producer
-of raw type `0x16` in `FF19E8` and the semantic identity of the
-`0x17A96`/`0x17CA6` path as documented unknowns; do not add behavior without
-new evidence.
+## Completion result
+M10 is complete. The producer of raw type `0x16` in `FF19E8` and the semantic
+identity of the `0x17A96`/`0x17CA6` path remain documented unknowns; no
+unproven behavior was added.

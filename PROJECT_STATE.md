@@ -2,9 +2,9 @@
 
 CURRENT_MILESTONE: M10 — Spirits
 CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
-STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M10 raw summon-entry seed, slot mapping, raw dispatch trace and cross-pool first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
-NEXT_ACTION: commit/push the raw summon-entry slice and verify CI; retain the FF19E8 producer relationship as a documented unknown
+STATUS: COMPLETE
+LAST_VERIFIED_RESULT: M10 closed: raw summon-entry seed, slot mapping, raw dispatch trace, cross-pool first-match target selection, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI all pass
+NEXT_ACTION: begin M11 — Scripts/events/dialogue after recording its concrete task and acceptance criteria
 DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
 BLOCKERS: none
 

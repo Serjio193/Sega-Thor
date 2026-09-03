@@ -88,12 +88,14 @@ movement field-access contract, a representative `FF2954` dispatch gate, local
 Debug/Release verification and successful GitHub Actions CI. AI, attacks,
 animation and spawn semantics remain explicitly outside this milestone.
 
-## M10 — Spirits — ACTIVE (awaiting CI)
+## M10 — Spirits — CLOSED
 Goal: reproduce one evidence-backed spirit lifecycle slice: summon/slot state,
 target selection and one ability/interaction contract. The first accepted slice
 now includes the caller-gated raw summon-entry seed at `0x7A10 -> 0x846C`,
 four event-backed slot bits, raw dispatch and first-match target selection.
 Rendering, audio and unproven spirit semantics remain outside the milestone.
+The milestone is closed with local Debug/Release verification and successful
+GitHub Actions CI.
 
 ## M11 — Scripts/events/dialogue — TODO
 Goal: reproduce game progression and event semantics.
