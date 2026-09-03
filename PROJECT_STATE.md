@@ -1,14 +1,17 @@
 # Project State
 
 CURRENT_MILESTONE: M2 — Identify supported ROM revision
-CURRENT_TASK: Define and implement reference ROM identification strategy
-STATUS: DISCUSSION / USER DECISION REQUIRED
-LAST_VERIFIED_RESULT: C++ bootstrap and project governance are present in branch oasis-cpp-bootstrap
-NEXT_ACTION: Choose reference ROM policy, then implement identification by size + header + cryptographic hash
+CURRENT_TASK: Implement ROM identification by size + header + checksum + hashes
+STATUS: ACTIVE
+LAST_VERIFIED_RESULT: USA reference / region-independent runtime policy accepted in ADR-0005
+NEXT_ACTION: implement and test ROM identity primitives, then confirm exact clean-USA cryptographic metadata
 DO_NOT_WORK_ON: M3+, Thor 2, Saturn support, remaster features
-BLOCKERS: Reference-ROM policy not yet selected
+BLOCKERS: none for implementation; exact canonical USA SHA-256 remains evidence-pending
 
-## Candidate policy under discussion
-- Canonical engineering reference: one exact clean ROM revision.
-- Recognition layers: file size, Sega header fields/checksum, SHA-256 (primary), SHA-1/CRC32 optional compatibility metadata.
-- Additional known revisions may be recognized but marked unsupported until mapped/verified.
+## Accepted reference policy
+- Canonical engineering reference: clean USA retail `Beyond Oasis`.
+- Final reconstructed C++ game model is region-independent.
+- Europe/Japan are secondary evidence and future data profiles.
+- Recognition layers: byte size, Mega Drive header, Sega checksum, CRC32, SHA-256.
+- Known regional revisions may be recognized but remain unsupported until mapped/verified.
+- Exact cryptographic metadata is not marked CONFIRMED without independent evidence.
