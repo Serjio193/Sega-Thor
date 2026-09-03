@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(oasis_core
     src/core/rom.cpp
+    src/core/rom_identity.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
     src/game/translated_routines.cpp
@@ -22,6 +23,10 @@ enable_testing()
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
 add_test(NAME oasis_smoke COMMAND oasis_smoke)
+
+add_executable(oasis_rom_identity_test tests/rom_identity_test.cpp)
+target_link_libraries(oasis_rom_identity_test PRIVATE oasis_core)
+add_test(NAME oasis_rom_identity COMMAND oasis_rom_identity_test)
 
 add_test(
     NAME project_file_line_limit
