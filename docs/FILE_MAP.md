@@ -53,10 +53,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   │   └── player.hpp     Player movement API and ROM evidence constants
 │   │   ├── entities/
 │   │   │   ├── entity_pool.cpp  Raw entity-pool bounds and active-record view
-│   │   │   └── entity_pool.hpp  Entity-pool descriptors from the common loop
+│   │   │   └── entity_pool.hpp  Entity-pool descriptors and raw field offsets
 │   │   ├── spirits/
-│   │   │   ├── spirit_slots.cpp  Evidence-backed spirit slot and dispatch trace
-│   │   │   └── spirit_slots.hpp  Spirit slot/dispatch constants and API
+│   │   │   ├── spirit_slots.cpp  Evidence-backed slot, target and dispatch trace
+│   │   │   └── spirit_slots.hpp  Spirit slot/target/dispatch constants and API
 │   │   └── world/
 │   │       ├── byte_grid.cpp          8-pixel world grid and footprint aggregation
 │   │       ├── byte_grid.hpp          Bounded world-grid view API

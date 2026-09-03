@@ -1,8 +1,11 @@
 #pragma once
 
+#include "game/entities/entity_pool.hpp"
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 
 namespace oasis::game::spirits {
 
@@ -63,6 +66,23 @@ struct SpiritDispatchTrace {
     std::array<std::uint16_t, 2> selectors{};
     std::size_t selector_count{};
 };
+
+struct ObservedTargetQuery {
+    std::size_t owner_index{};
+    std::int16_t relative_x_min{-10};
+    std::int16_t relative_y_min{-6};
+    std::int16_t relative_x_max{10};
+    std::int16_t relative_y_max{6};
+    std::int16_t relative_z_min{};
+    std::int16_t relative_z_max{4};
+    std::uint16_t required_type{0x16};
+};
+
+// Mirrors the first-match behavior of 0xB922 followed by the type check at
+// 0x17CE4. A later record is not considered after the first spatial match.
+[[nodiscard]] std::optional<std::size_t> find_observed_target(
+    const entities::EntityPoolView& pool,
+    const ObservedTargetQuery& query) noexcept;
 
 [[nodiscard]] SpiritDispatchTrace trace_observed_dispatch(
     const SpiritDispatchInput& input) noexcept;

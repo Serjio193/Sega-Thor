@@ -248,6 +248,18 @@ cover inactive input, unavailable slot, open guard and repeated guarded
 dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
 `0x5202`, `0x522E`, `0x31B80` and `0x31BC4`.
 
+### Target-selection evidence
+- `0x17CA6` calls `0xB922` with relative bounds `[-10,-6,10,6,0,4]`, then
+  checks the returned record's raw type word against `0x16` at `0x17CE4` —
+  **CONFIRMED**.
+- `0xB922` scans the 21-record `FF19E8` pool in order, skips the owner and
+  inactive records, applies the observed X/Y interval checks and Z containment
+  check, and returns the first spatial match — **CONFIRMED**.
+- The native `find_observed_target` preserves the first-match-then-type-check
+  behavior. The raw fields used by the query are exposed without semantic
+  names; interaction meaning remains UNKNOWN. The ROM oracle also checks the
+  query setup at `0x17CA6` and the scan prologue at `0xB922`.
+
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.
 

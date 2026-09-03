@@ -18,8 +18,13 @@ struct EntityPoolSpec {
 // These offsets are intentionally raw. Their meanings are only promoted when
 // a caller proves them; the common movement entry reads the listed bytes.
 inline constexpr std::size_t kEntityFieldType = 0x00;
+inline constexpr std::size_t kEntityFieldWord10 = 0x10;
+inline constexpr std::size_t kEntityFieldWord14 = 0x14;
 inline constexpr std::size_t kEntityFieldPositionX = 0x08;
 inline constexpr std::size_t kEntityFieldPositionY = 0x0C;
+inline constexpr std::size_t kEntityFieldWord42 = 0x42;
+inline constexpr std::size_t kEntityFieldWord44 = 0x44;
+inline constexpr std::size_t kEntityFieldWord4A = 0x4A;
 inline constexpr std::size_t kEntityFieldPointer22 = 0x22;
 inline constexpr std::size_t kEntityFieldPointer26 = 0x26;
 inline constexpr std::size_t kEntityFieldWord2A = 0x2A;

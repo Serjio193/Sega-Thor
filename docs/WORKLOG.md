@@ -16,6 +16,20 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** commit/push this conceptual M10 slice, then investigate the next caller/data dependency needed for a proven summon or ability contract.
 
+## 2026-09-03 — M10 observed target selection
+
+**Objective:** Translate the target-selection portion of the caller at `0x17CA6` without assigning semantic names to the raw collision fields.
+
+**Acceptance criteria:** mirror `0xB922` bounds and pool order for the observed query `D1=-10,D2=-6,D3=10,D4=6,D5=0,D6=4`; skip the owner; preserve the original first-spatial-match behavior before the caller's type `0x16` check; add synthetic coverage and ROM-byte oracle; keep files at or below 500 lines and leave the prior pushed slice intact.
+
+**Evidence boundary:** `0x17CA6` passes the query to `0xB922`, compares the returned record's raw `+0x00` word with `0x16`, then changes its own raw state and queues selector `0x80022F`. The interaction meaning and spirit identity remain unproven.
+
+**Implementation plan:** add a bounded `find_observed_target` query over the existing main entity pool, preserve the first spatial match before the raw type check, and verify it against the exact ROM bytes at `0x17CA6` and `0xB922`.
+
+**Result:** `find_observed_target` is implemented and verified by synthetic tests, Debug/Release CTest (13/13 each) and the local USA-ROM oracle. No interaction or spirit identity was assigned to raw type `0x16`.
+
+**Exact next step:** commit/push this target-selection slice, then trace the caller/data path that proves whether the slot-gated record is a summon or a different interaction.
+
 ## 2026-09-03 — M10 spirit lifecycle investigation started
 
 **Objective:** Recover one evidence-backed spirit summon/slot/dispatch lifecycle slice and, only if its dependencies are proven, one ability or interaction contract.
