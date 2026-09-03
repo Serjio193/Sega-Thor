@@ -47,6 +47,36 @@ int main(int argc, char** argv) {
             read_u16(rom, 0x59BE) != 0x0B58U) {
             throw std::runtime_error("player state dispatch table mismatch");
         }
+
+        // State 2: no direction branches to the shared stop block, which
+        // clears both intent and accumulated deltas and returns to state 0.
+        if (read_u16(rom, 0x62EC) != 0x6400U ||
+            read_u16(rom, 0x62EE) != 0xFFDEU ||
+            read_u16(rom, 0x62CE) != 0x2D40U ||
+            read_u16(rom, 0x62D2) != 0x2D40U ||
+            read_u16(rom, 0x62D6) != 0x3D7CU ||
+            read_u16(rom, 0x62D8) != 0x0000U ||
+            read_u16(rom, 0x62DA) != 0x002AU ||
+            read_u16(rom, 0x62DC) != 0x3D7CU ||
+            read_u16(rom, 0x62DE) != 0x0000U ||
+            read_u16(rom, 0x62E0) != 0x0004U) {
+            throw std::runtime_error("player state-2 stop branch mismatch");
+        }
+
+        // State 4: the selected facing bit gates turning; no input waits on
+        // FF197E and then enters state C after the six-frame threshold.
+        if (read_u16(rom, 0x6516) != 0x6100U ||
+            read_u16(rom, 0x6518) != 0x18B0U ||
+            read_u16(rom, 0x6524) != 0x6100U ||
+            read_u16(rom, 0x6526) != 0x1EAEU ||
+            read_u16(rom, 0x6618) != 0x0C79U ||
+            read_u16(rom, 0x661A) != 0x0006U ||
+            read_u16(rom, 0x6620) != 0x6500U ||
+            read_u16(rom, 0x6622) != 0xFCAAU ||
+            read_u16(rom, 0x6624) != 0x3D7CU ||
+            read_u16(rom, 0x6628) != 0x0004U) {
+            throw std::runtime_error("player state-4 turning branch mismatch");
+        }
         constexpr std::array<std::int16_t, 16> dispatch_offsets{
             0x20, 0x58, 0x46, 0x1A, 0x32, 0x9C, 0x86, 0x2C,
             0x1A, 0x6C, 0x56, 0x14, 0x08, 0x40, 0x2E, 0x02,

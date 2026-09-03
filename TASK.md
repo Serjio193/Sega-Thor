@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Validate the state-2/state-4 stop and turning branches against additional ROM traces before modelling any presentation state.
+Extend the native state driver with the confirmed state-2 stop and state-4 directional accumulation rules, keeping presentation callbacks outside the API.

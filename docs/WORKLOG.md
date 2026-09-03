@@ -4,6 +4,20 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M8 state-2/state-4 branch closure
+**Objective:** Validate the stop and turning branches reached through the player state dispatcher before modelling any presentation state.
+
+**Evidence:**
+- state `2` enters at `0x62E4`; no direction branches to `0x62CC`, which clears `+0x4E/+0x52`, `+0x2A` and writes state `+0x04=0`;
+- state `4` enters at `0x6516`, maps the current direction through `0x83D4`, and uses `+0x17` plus the normalized input to select an axis;
+- the valid state-4 path accumulates deltas in `+0x72/+0x76`; the no-input path compares `FF197E` against `6` and writes state `+0x04=0x000C` after the threshold.
+
+**Actions:** Added ROM byte-oracle assertions for the state-2 stop block and state-4 turning/timeout branches. Recorded only raw offsets and observed transitions; presentation meanings of `+0x2A`, `+0x26` and related callbacks remain unknown.
+
+**Result:** State-2 stopping and state-4 directional accumulation are closed at the branch level. The native slice still intentionally models only the portable movement contract and does not invent animation state.
+
+**Exact next step:** extend the native state driver with the confirmed state-2 stop and state-4 directional accumulation rules, keeping presentation callbacks outside the API.
+
 ## 2026-09-03 — M8 player update dispatch closure
 **Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
 
