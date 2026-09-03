@@ -58,29 +58,27 @@ Confirmed USA reference:
 - SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
 - SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
 - uploaded archive member `Beyond Oasis (USA).md`;
-- detector result `SUPPORTED`;
-- CI and reference-ROM workflow both green after ROM loader fix.
+- detector result `SUPPORTED`.
 
-## M3 — Reverse-engineer graphics decompression at `0x00003820` — NEXT
+## M3 — Reverse-engineer graphics decompression at `0x00003820` — DONE
 Goal: translate the first substantial original routine to tested C++.
 
-Tasks:
-- obtain/disassemble exact routine boundaries from the verified reference ROM;
-- document registers, inputs, outputs, memory effects and callers;
-- record control flow;
-- obtain reproducible reference behavior;
-- produce readable C++ translation only after the contract is understood;
-- compare translated output against original behavior/reference evidence.
+Verified:
+- exact routine range `[0x3820, 0x3B3E)`;
+- 52 direct absolute JSR callers and no direct absolute JMP callers;
+- `A0` compressed-source and `A1` output/end-pointer contract;
+- two formats selected by `source[2]`;
+- complete native C++ translation in `src/game/graphics_decompress.cpp`;
+- synthetic tests for literals, RLE, backreferences, extension chains and bitstream control;
+- original 68000 routine executed in an isolated QEMU harness for reference only;
+- native result matches original source-consumed count, output length and SHA-256 for one real sample from each format;
+- ordinary CI and ROM-backed verifier green.
 
-Acceptance criteria:
-- routine is documented in `REVERSE_ENGINEERING.md`;
-- exact boundaries and direct control flow are established;
-- C++ implementation has tests;
-- assumptions are explicitly marked;
-- behavior is verified against reference evidence;
-- CI passes.
+Reference vectors:
+- format A, ROM `0x16943C`: `1217 -> 3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
+- format B, ROM `0x1894EA`: `112 -> 128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
 
-## M4 — Local asset inspection tool — TODO
+## M4 — Local asset inspection tool — NEXT
 Goal: inspect original graphics without committing assets.
 
 Tasks:
@@ -93,7 +91,9 @@ Tasks:
 Acceptance criteria:
 - user can locally inspect selected graphics from their ROM;
 - generated files are ignored by Git;
-- repository contains no extracted commercial assets.
+- repository contains no extracted commercial assets;
+- tile/palette conversion primitives have synthetic tests;
+- CI passes.
 
 ## M5 — VDP data model and rendering primitives — TODO
 Goal: represent game-visible tile/sprite operations without full-console emulation.
