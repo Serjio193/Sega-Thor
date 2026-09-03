@@ -14,6 +14,7 @@ add_library(oasis_core
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
     src/game/genesis_graphics.cpp
+    src/game/player/player.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
@@ -65,12 +66,36 @@ add_executable(oasis_terrain_collision_test tests/terrain_collision_test.cpp)
 target_link_libraries(oasis_terrain_collision_test PRIVATE oasis_core)
 add_test(NAME oasis_terrain_collision COMMAND oasis_terrain_collision_test)
 
+add_executable(oasis_player_test tests/player_test.cpp)
+target_link_libraries(oasis_player_test PRIVATE oasis_core)
+add_test(NAME oasis_player COMMAND oasis_player_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
 
 add_executable(oasis_screen_descriptor_reference tests/screen_descriptor_reference.cpp)
 target_link_libraries(oasis_screen_descriptor_reference PRIVATE oasis_core)
+
+add_executable(oasis_player_reference tests/player_reference.cpp)
+target_link_libraries(oasis_player_reference PRIVATE oasis_core)
+
+# Keep assert-based test bodies active in Release builds as well.
+set(oasis_test_targets
+    oasis_smoke
+    oasis_rom_identity_test
+    oasis_graphics_decompress_test
+    oasis_genesis_graphics_test
+    oasis_vdp_test
+    oasis_runtime_test
+    oasis_screen_descriptor_test
+    oasis_byte_grid_test
+    oasis_terrain_collision_test
+    oasis_player_test
+)
+foreach(test_target IN LISTS oasis_test_targets)
+    target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
+endforeach()
 
 add_test(
     NAME project_file_line_limit

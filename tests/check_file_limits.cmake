@@ -17,7 +17,7 @@ file(GLOB_RECURSE PROJECT_FILES
 set(violations "")
 
 foreach(path IN LISTS PROJECT_FILES)
-    if(path MATCHES "/build/" OR path MATCHES "/cmake-build-")
+    if(path MATCHES "/build[^/]*/" OR path MATCHES "/cmake-build-[^/]*/")
         continue()
     endif()
 

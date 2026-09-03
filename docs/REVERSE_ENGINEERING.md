@@ -151,6 +151,25 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 3. decompress representative table entries with native C++ and compare header/structure patterns;
 4. only after correlation, introduce a portable room/screen resource loader.
 
+## M8 — player input and movement slice
+**Status:** IMPLEMENTED as a portable slice; full animation/entity callback semantics remain INVESTIGATING.
+
+### Player entity selection
+- `0x0013D6..0x00142E` initializes the main entity at work RAM `0xFF19E8` and writes entity type `2` before calling `0x8D06` — **CONFIRMED**.
+- The main entity pool uses 21 records with stride `0xBC`; `0x008EB2..0x008ED0` iterates that pool — **CONFIRMED**.
+
+### Controller normalization and direction mapping
+- `0x00217C..0x002188` calls the controller reader at `0x2992`; normalized port state is stored beginning at `0xFF165C`, with the movement nibble in `0xFF165E` — **CONFIRMED**.
+- `0x0085E2` masks `0xFF165E` with `0x0F`, dispatches through the table at `0x85FA`, and returns direction plus fixed-point deltas — **CONFIRMED**.
+- Cardinal vectors are `(+0x36000,0)`, `(-0x36000,0)`, `(0,+0x30000)`, `(0,-0x30000)`; diagonal vectors are `(+/-0x2A000,+/-0x25800)` — **CONFIRMED** from `0x8624..0x86AE`.
+- The native mapping preserves the original low-nibble behavior, including opposite-direction collapse and diagonal combinations; unsupported combinations resolve to no movement — **VERIFIED by synthetic tests**.
+
+### Movement and collision contract
+- `0x008F12..0x00938C` is the shared active-entity movement update; main-pool records enter at `0x8F22` — **CONFIRMED**.
+- X/Y fixed-point deltas are accumulated in entity fields `+0x72/+0x76`; integer positions are committed to `+0x08/+0x0C` — **CONFIRMED**.
+- `0x009BF2` aggregates the entity footprint, and `0x00938E` is called before an axis commit; carry set takes the blocked path — **CONFIRMED**.
+- Native `PlayerState::try_move` reuses `ByteGridView::aggregate_world_square` and `evaluate_terrain_gate`. Rendering, animation scripts and the unknown entity callback at `+0x22` are intentionally outside this slice.
+
 ## Existing translated compatibility behavior
 
 ### Tile copy to work RAM

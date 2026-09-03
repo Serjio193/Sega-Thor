@@ -4,6 +4,27 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M8 player movement evidence and native slice
+**Objective:** Translate the confirmed player input-to-movement path into a portable deterministic model.
+
+**Actions before implementation:**
+- installed CMake 4.4.3 and LLVM-MinGW locally because the workspace had no C++ toolchain;
+- traced player initialization at `0x13D6..0x142E`, which selects entity slot `0xFF19E8` and type `2`;
+- confirmed controller normalization at `0x2992` into `0xFF165C..0xFF1661`;
+- decoded the direction dispatch table at `0x85E2`: low nibble of `0xFF165E` maps to cardinal/diagonal fixed-point vectors;
+- confirmed the shared movement cluster starts at `0x8F12`, samples the entity footprint through `0x9BF2`, and gates terrain changes through `0x938E`.
+
+**Understanding confidence:** 93% for input mapping, player slot and movement-gate contract; unknown animation/entity callback semantics remain outside this slice.
+
+**Acceptance criteria for this task:**
+- portable player state and deterministic direction mapping;
+- default speeds and diagonal vectors match the confirmed `0x85E2` table;
+- free and blocked movement tests reuse the M7 footprint and terrain-gate APIs;
+- local Debug and Release builds/tests pass;
+- evidence, file map and milestone state are updated.
+
+**Exact next step:** implement and test the isolated player movement slice, then run both build configurations.
+
 ## 2026-09-03 — Repository merge and ROM hygiene
 **Objective:** Bring the native implementation into `main` without tracking the user-supplied commercial ROM.
 

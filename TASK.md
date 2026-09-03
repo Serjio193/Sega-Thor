@@ -3,7 +3,7 @@
 TASK: M8 — Player system
 WHY: M7 established tested world-grid and terrain collision primitives. The next dependency is recovering the original player's update/movement contract before translating attacks or animation state.
 CURRENT MILESTONE: M8
-UNDERSTANDING CONFIDENCE: 91%
+UNDERSTANDING CONFIDENCE: 93%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -15,13 +15,13 @@ STATUS: ACTIVE
 - M7 screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are verified and tested.
 
 ## M8 Definition of Done
-- [ ] identify the player entity/update entry point and document its call path;
-- [ ] trace controller input bits into player movement intent without guessing field names;
-- [ ] connect player movement to the confirmed M7 terrain/collision gate;
+- [x] identify the player entity/update entry point and document its confirmed slot/call path;
+- [x] trace controller input bits into player movement intent without guessing field names;
+- [x] connect player movement to the confirmed M7 terrain/collision gate;
 - [ ] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
-- [ ] implement a portable player movement/state slice only after the raw behavior is evidenced;
-- [ ] add deterministic synthetic tests for movement and blocked movement;
-- [ ] add at least one ROM-backed reference/oracle check for translated player behavior where practical;
+- [x] implement a portable player movement/state slice only after the raw behavior is evidenced;
+- [x] add deterministic synthetic tests for movement and blocked movement;
+- [x] add a local USA-ROM reference/oracle check for translated player vectors;
 - [ ] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
 - [ ] record unknown fields without invented semantic names;
 - [ ] keep every file <= 500 lines;
@@ -35,4 +35,4 @@ STATUS: ACTIVE
 - Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Locate the player entity/update routine in the USA ROM, then trace reads of controller state and the first calls into the movement cluster around `0x8F00..0x9D00`.
+Keep the player slice isolated; the next M8 task is to prove animation/entity callback semantics before adding attack, presentation or broader entity behavior.

@@ -13,10 +13,7 @@ This document is the canonical map of repository structure. Update it whenever s
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                    Build + ordinary CTest verification
-│       ├── reference-rom-check.yml   ROM fingerprint + differential/reference checks
-│       ├── m3-3820-probe.yml         Static M68K investigation of decompressor
-│       ├── m3-3820-dynamic-trace.yml Original-routine QEMU reference traces
-│       └── m5-vdp-probe.yml          Evidence probe for VDP-related original code
+│       └── (ROM-backed probes run locally; the commercial ROM is never fetched by CI)
 ├── docs/
 │   ├── ARCHITECTURE.md        Layering, dependencies, translation strategy
 │   ├── DECISIONS.md           Architecture decision records (ADR-style)
@@ -49,19 +46,32 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── graphics_decompress.hpp Decompressor result/API
 │   │   ├── genesis_graphics.cpp Pure 4bpp tile + CRAM palette decoding
 │   │   ├── genesis_graphics.hpp Graphics decoder data types/API
-│   │   ├── symbols.cpp        Known original ROM symbol/address table
-│   │   ├── symbols.hpp        Symbol metadata API
 │   │   ├── translated_routines.cpp Initial translated compatibility routines
-│   │   └── translated_routines.hpp Their public declarations
+│   │   ├── translated_routines.hpp Their public declarations
+│   │   ├── player/
+│   │   │   ├── player.cpp     Portable input, state and terrain-gated movement
+│   │   │   └── player.hpp     Player movement API and ROM evidence constants
+│   │   └── world/
+│   │       ├── byte_grid.cpp          8-pixel world grid and footprint aggregation
+│   │       ├── byte_grid.hpp          Bounded world-grid view API
+│   │       ├── screen_descriptor.cpp Screen descriptor table reader
+│   │       ├── screen_descriptor.hpp Screen descriptor data types/API
+│   │       ├── terrain_collision.cpp  Terrain-state and movement gate semantics
+│   │       └── terrain_collision.hpp  Terrain gate API
 │   └── tools/
 │       └── asset_inspector.cpp Local-only ROM graphics inspection CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
+    ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests
     ├── rom_identity_test.cpp             Synthetic ROM/hash/header tests
+    ├── player_test.cpp                   Deterministic input and movement tests
+    ├── player_reference.cpp              Local USA-ROM oracle for player vectors
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
+    ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
+    ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
     ├── smoke.cpp                         Minimal build/runtime smoke test
     └── vdp_test.cpp                      VDP storage/bounds/attribute tests
 ```
@@ -70,8 +80,6 @@ This document is the canonical map of repository structure. Update it whenever s
 Create these only when their milestone begins and evidence justifies the structure:
 
 ```text
-src/game/world/     Rooms/maps/collision after formats are documented
-src/game/player/    Player behavior after routine boundaries are understood
 src/game/entities/  Enemy/NPC/entity systems
 src/game/spirits/   Spirit mechanics
 src/game/scripts/   Event/script interpreter or translated semantics
