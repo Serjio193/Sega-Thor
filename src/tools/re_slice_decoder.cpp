@@ -53,11 +53,27 @@ void add_memory_reference(DecodedInstruction& instruction, std::uint32_t address
         {address, static_cast<std::uint8_t>(width), memory_kind(address), access});
 }
 
+void add_unresolved_memory_reference(DecodedInstruction& instruction, unsigned mode,
+                                    unsigned reg, const char* reason) {
+    instruction.unresolved_memory_references.push_back(
+        {static_cast<std::uint8_t>(mode), static_cast<std::uint8_t>(reg), reason});
+}
+
+void add_unsupported_addressing(DecodedInstruction& instruction, unsigned mode,
+                                unsigned reg, const char* reason) {
+    instruction.unsupported_addressing.push_back(
+        {static_cast<std::uint8_t>(mode), static_cast<std::uint8_t>(reg), reason});
+}
+
 std::size_t parse_ea(Bytes rom, std::uint32_t pc, std::uint32_t range_end,
                      unsigned mode, unsigned reg, std::size_t data_width,
                      MemoryAccess access, DecodedInstruction& instruction,
                      std::size_t extension_offset) {
     const auto extension_size = ea_extension_bytes(mode, reg, data_width);
+    if (mode == 7U && reg >= 5U) {
+        add_unsupported_addressing(instruction, mode, reg, "invalid_mode_7_register");
+        return extension_size;
+    }
     if (mode == 7U && reg == 4U && extension_offset + extension_size <= rom.size() &&
         extension_offset + extension_size <= range_end) {
         if (data_width <= 2U) {
@@ -67,6 +83,14 @@ std::size_t parse_ea(Bytes rom, std::uint32_t pc, std::uint32_t range_end,
         } else {
             add_immediate(instruction, read32(rom, extension_offset), data_width);
         }
+        if (access == MemoryAccess::write) {
+            add_unsupported_addressing(instruction, mode, reg, "immediate_destination");
+        }
+    }
+    if (mode >= 2U && mode <= 6U) {
+        add_unresolved_memory_reference(instruction, mode, reg, "register_based");
+    } else if (mode == 7U && reg == 3U) {
+        add_unresolved_memory_reference(instruction, mode, reg, "pc_indexed");
     }
     if (mode != 7U || (reg != 0U && reg != 1U && reg != 2U)) {
         return extension_size;
@@ -301,6 +325,7 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
     }
 
     const auto available_end = std::min<std::size_t>(rom.size(), range_end);
+    if (!instruction.unsupported_addressing.empty()) recognized = false;
     if (pc + length > available_end || length < 2U || (length & 1U) != 0U) {
         recognized = false;
         length = std::min<std::size_t>(2U, available_end - pc);

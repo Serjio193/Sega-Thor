@@ -108,10 +108,12 @@ Current slice: the type-8 producer at `0x82AE` transfers raw fields to
 addresses. Event, progression and dialogue meanings remain unknown.
 
 The evidence-backed bounded M11 slice is complete with native tests, local
-USA-ROM verification and CI. The post-M11 RE-acceleration checkpoint is also
-complete: a separate bounded decoder/report covers entry `0x60004` without
+USA-ROM verification and CI. The post-M11 RE-acceleration checkpoints are also
+complete: separate bounded decoder/report tooling covers `0x60004` and the
+representative routines `0x3820`, `0x8E90`, `0xA6A4` and `0xD3B2` without
 adding gameplay behavior. Unknown dialogue, progression and driver semantics
-remain explicitly unimplemented.
+remain explicitly unimplemented. Dynamic tracing, whole-ROM discovery,
+recompilation and M12 remain out of scope until explicitly authorized.
 
 Any later follow-up remains evidence-gathering only while its implementation-
 slice confidence remains below 90%; production C++ must not expand until

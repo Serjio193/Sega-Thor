@@ -386,6 +386,34 @@ behavior is inferred or added.
 **Open questions:** driver command meanings, audio protocol, event/progression
 semantics and the producer caller remain **UNKNOWN**.
 
+### M11.5 second RE-acceleration slice — bounded multi-function report
+**Status:** VERIFIED as developer-only tooling; no production C++ behavior or
+semantic names were added.
+
+- The local-USA CLI analyzes four existing evidence targets: exact documented
+  `[0x3820,0x3B3E)` and `[0xD3B2,0xD406)`, plus bounded-only windows beginning
+  at `0x8E90` (`0x120` bytes) and `0xA6A4` (`0x180` bytes). Boundary discovery
+  marks a return boundary only when every bounded path is complete; no boundary
+  is guessed for the two windows.
+- The deterministic `oasis.m68k.re-program.v1` report contains 421 decoded
+  instructions in 131 basic blocks, one direct call site and one analyzed
+  caller→callee edge (`0xD3B2 -> 0x3820`). Call sites retain caller function,
+  basic block and instruction address; indirect/unresolved flow is separate.
+- It records 18 confirmed absolute references (including `0x5CE96` and
+  `FF2FA8`), 114 unresolved register-based references, one unresolved indirect
+  jump at `0xA7E2`, and two unsupported opcode locations. Each memory item is
+  bound to function, bounded slice, basic block and instruction.
+- The USA oracle reproduces entry bytes, the reader call, pool dispatch edges
+  `0x8EA6 -> 0x8F12` and `0x8EC8 -> 0x8F22`, and the raw callback jump boundary.
+  Debug/Release JSON hashes match; synthetic tests cover confirmed boundaries,
+  caller/callee grouping, bindings, unresolved flow and unsupported addressing.
+
+**Limitations:** the decoder remains a bounded opcode-family decoder. It does
+not resolve register-based effective addresses, indirect targets or unknown
+function boundaries, and it is not an emulator, whole-ROM discovery pass or
+recompiler. The `0x8E90` and `0xA6A4` reports intentionally include only their
+explicit windows and must not be read as complete function recovery.
+
 ## ROM identification implementation
 **Status:** VERIFIED.
 

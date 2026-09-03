@@ -91,6 +91,12 @@ The decoder follows direct control flow only within `[0x60004, 0x61204)`;
 indirect control flow and unsupported opcode families are reported separately.
 It is not an emulator, whole-ROM recompiler or gameplay-runtime dependency.
 
+The second bounded experiment is available as `oasis_re_program`; it analyzes
+the four evidence-backed representative routines selected in `TASK.md` and
+writes `oasis.m68k.re-program.v1` JSON plus a short text report. Its boundaries,
+direct call graph, confirmed references and unresolved/unsupported categories
+remain conservative and developer-only.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.

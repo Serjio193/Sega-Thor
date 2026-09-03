@@ -89,6 +89,22 @@ std::string slice_to_json(const DecodedSlice& slice) {
                    << ",\"kind\":\"" << memory_kind_name(reference.kind)
                    << "\",\"access\":\"" << memory_access_name(reference.access) << "\"}";
         }
+        output << "],\"unresolved_memory_references\":[";
+        for (std::size_t j = 0; j < instruction.unresolved_memory_references.size(); ++j) {
+            if (j != 0U) output << ',';
+            const auto& reference = instruction.unresolved_memory_references[j];
+            output << "{\"mode\":" << static_cast<unsigned>(reference.mode)
+                   << ",\"register\":" << static_cast<unsigned>(reference.register_index)
+                   << ",\"reason\":\"" << json_escape(reference.reason) << "\"}";
+        }
+        output << "],\"unsupported_addressing\":[";
+        for (std::size_t j = 0; j < instruction.unsupported_addressing.size(); ++j) {
+            if (j != 0U) output << ',';
+            const auto& item = instruction.unsupported_addressing[j];
+            output << "{\"mode\":" << static_cast<unsigned>(item.mode)
+                   << ",\"register\":" << static_cast<unsigned>(item.register_index)
+                   << ",\"reason\":\"" << json_escape(item.reason) << "\"}";
+        }
         output << "]}";
     }
     output << "],\"basic_blocks\":[";
@@ -135,6 +151,8 @@ std::string slice_to_text(const DecodedSlice& slice) {
     std::size_t direct_jumps = 0;
     std::size_t rom_refs = 0;
     std::size_t ram_refs = 0;
+    std::size_t unresolved_memory_refs = 0;
+    std::size_t unsupported_addressing = 0;
     std::set<std::uint32_t> immediate_addresses;
     for (const auto& edge : slice.control_flow) {
         if (edge.kind == FlowKind::direct_call) ++direct_calls;
@@ -143,6 +161,8 @@ std::string slice_to_text(const DecodedSlice& slice) {
     }
     for (const auto& instruction : slice.instructions) {
         if (!instruction.immediate_constants.empty()) immediate_addresses.insert(instruction.address);
+        unresolved_memory_refs += instruction.unresolved_memory_references.size();
+        unsupported_addressing += instruction.unsupported_addressing.size();
         for (const auto& reference : instruction.memory_references) {
             if (reference.kind == MemoryKind::rom) ++rom_refs;
             if (reference.kind == MemoryKind::ram) ++ram_refs;
@@ -160,6 +180,8 @@ std::string slice_to_text(const DecodedSlice& slice) {
            << "\nimmediate-bearing instructions=" << immediate_addresses.size()
            << " absolute ROM references=" << rom_refs
            << " absolute RAM references=" << ram_refs << '\n';
+    output << "unresolved memory references=" << unresolved_memory_refs
+           << " unsupported addressing=" << unsupported_addressing << '\n';
     output << "\nBasic blocks (first/last window):\n";
     const auto block_window = std::min<std::size_t>(8U, slice.basic_blocks.size());
     for (std::size_t i = 0; i < block_window; ++i) {

@@ -38,6 +38,18 @@ struct MemoryReference {
     MemoryAccess access{MemoryAccess::unknown};
 };
 
+struct UnresolvedMemoryReference {
+    std::uint8_t mode{};
+    std::uint8_t register_index{};
+    std::string reason;
+};
+
+struct UnsupportedAddressing {
+    std::uint8_t mode{};
+    std::uint8_t register_index{};
+    std::string reason;
+};
+
 struct DecodedInstruction {
     std::uint32_t address{};
     std::uint16_t opcode{};
@@ -48,6 +60,8 @@ struct DecodedInstruction {
     std::optional<std::uint32_t> direct_target;
     std::vector<ImmediateConstant> immediate_constants;
     std::vector<MemoryReference> memory_references;
+    std::vector<UnresolvedMemoryReference> unresolved_memory_references;
+    std::vector<UnsupportedAddressing> unsupported_addressing;
 };
 
 struct BasicBlock {

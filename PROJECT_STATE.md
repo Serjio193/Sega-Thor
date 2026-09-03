@@ -1,12 +1,25 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11 post-completion RE-acceleration checkpoint — bounded 68000 slice report
+CURRENT_TASK: M11.5 second RE-acceleration slice — bounded multi-function 68000 report
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Bounded 0x60004 report passes synthetic tests, local USA-ROM oracle, Debug/Release CTest and deterministic JSON verification; 801 instructions and 109 basic blocks reported
-NEXT_ACTION: Stop at the verified M11 checkpoint and await explicit next-milestone instruction
+LAST_VERIFIED_RESULT: Multi-slice report covers 4 evidenced routines, 421 instructions, 131 basic blocks, 1 direct call graph edge, 18 confirmed refs and explicit unresolved/unsupported categories; USA oracle and Debug/Release CTest pass
+NEXT_ACTION: Stop at the verified M11.5 checkpoint and await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 verified RE tooling
+- Representative bounded targets are `0x3820`, `0x8E90`, `0xA6A4` and `0xD3B2`;
+  only documented exact boundaries at `0x3820..0x3B3E` and `0xD3B2..0xD406`
+  are marked confirmed.
+- `oasis_re_program` keeps RE tooling separate from `oasis_core`, emits
+  deterministic JSON/text, groups direct calls into caller→callee and
+  block/instruction edges, and binds memory evidence to function/slice/block.
+- USA oracle reproduces `0xD3B2 -> 0x3820`, pool edges `0x8EA6 -> 0x8F12`
+  and `0x8EC8 -> 0x8F22`, indirect callback flow at `0xA7E2`, table `0x5CE96`
+  and destination `FF2FA8`.
+- Register-based references, indirect targets and unsupported decoder coverage
+  remain explicit UNKNOWN/unsupported; no gameplay behavior was added.
 
 ## M7 verified evidence
 - Screen dispatcher `0xC8F0` resolves 16-bit screen IDs through group table `0xC92C` to 26-byte descriptors; native loader has ROM-backed reference tests.

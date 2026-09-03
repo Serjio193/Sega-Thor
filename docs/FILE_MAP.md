@@ -72,7 +72,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
 │       ├── re_slice_decoder.hpp Decoder data types and report API
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
-│       └── re_slice_report.cpp Local-only bounded ROM slice report CLI
+│       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
+│       ├── re_program.hpp Multi-function bounded RE aggregation types/API
+│       ├── re_program.cpp Conservative function boundaries/call and memory bindings
+│       ├── re_program_format.cpp Deterministic multi-slice JSON/human formatting
+│       └── re_program_report.cpp Local-only representative multi-slice CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -88,6 +92,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── event_router_reference.cpp         Local USA-ROM oracle for event boundaries
     ├── re_slice_decoder_test.cpp           Synthetic bounded decoder/report tests
     ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
+    ├── re_program_test.cpp                 Synthetic multi-function RE aggregation tests
+    ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

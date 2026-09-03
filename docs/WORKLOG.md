@@ -4,39 +4,39 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M11.5 second RE-acceleration slice completed
+
+**TASK:** Scale the developer-only bounded 68000 report from `0x60004` to a
+small set of evidenced routines with conservative boundaries, call-graph and
+memory-reference bindings. **CONFIDENCE:** slice 95%; gameplay semantics stay
+unknown. **ACCEPTANCE:** deterministic machine/human reports, synthetic tests,
+USA oracle/evidence comparison, Debug/Release CTest, file-limit, diff-check and
+CI; do not start M12 or runtime integration. **UNKNOWN:** decoder remains
+bounded and unsupported instructions/addressing must stay explicit.
+**IMPLEMENTATION:** added isolated `oasis_re_program` aggregate over targets
+`0x3820`, `0x8E90`, `0xA6A4`, `0xD3B2`; added conservative return-boundary
+discovery, caller→callee and block/instruction call sites, and bound confirmed,
+unresolved and unsupported memory/control-flow categories. No semantics or
+runtime dependency was added.
+**RESULT:** 4 functions, 421 instructions, 131 blocks, 1 direct call site/1
+caller→callee edge, 18 confirmed refs, 114 unresolved refs, 1 indirect jump,
+2 unsupported opcodes. Exact boundaries remain confirmed only for `0x3820` and
+`0xD3B2`; other targets are bounded-only.
+**EVIDENCE:** USA oracle reproduces `0xD3B2 -> 0x3820`, pool edges
+`0x8EA6 -> 0x8F12` and `0x8EC8 -> 0x8F22`, `0xA7E2` indirect jump, table
+`0x5CE96` and destination `FF2FA8`; Debug/Release JSON SHA-256 matches.
+**TESTS:** Debug/Release CTest 16/16, synthetic and USA oracle pass; file-limit
+and diff-check pass. **UNKNOWN:** register-based refs, indirect targets and
+unproven function boundaries. **NEXT:** stop; await explicit instruction.
+
 ## 2026-09-03 — RE-acceleration checkpoint: bounded 68000 slice report
 
-**TASK:** Build a developer-only bounded decoder/report for USA-ROM entry
-`0x60004`, following reachable direct control flow inside an explicit budget.
-**WHY:** Make the next M11 evidence step reproducible before new native
-gameplay behavior is considered. **CURRENT MILESTONE:** M11 follow-up
-evidence/tooling; do not start M12. **MILESTONE UNDERSTANDING CONFIDENCE:** 70%.
-**CURRENT SLICE UNDERSTANDING CONFIDENCE:** 95% for the raw
-`0x7B2A -> 0x60004 -> 0x609C6/0x60D10 -> 0x62CC` trace; driver/audio/
-progression semantics remain below 90%, so this checkpoint is tooling only.
-**SLICE CONFIDENCE EVIDENCE:** Existing M11 oracle plus USA bytes prove
-`0x60004 -> 0x6042A`, dispatcher edges to `0x609C6`/`0x60D10`, and epilogue
-`0x611D8`. **ACCEPTANCE CRITERIA:** safe ROM load/identity check; bounded
-basic blocks; direct flow, immediates, reliable absolute ROM/RAM references;
-separate unresolved/unsupported categories; deterministic JSON/text reports;
-synthetic tests, USA oracle, Debug/Release CTest, file-limit and diff checks.
-**EVIDENCE AVAILABLE:** canonical local archive, `Rom::load`, M11 oracle and
-raw bytes around `0x60004..0x611D8`. **KNOWN UNKNOWNS:** this is not a generic
-68000 emulator/disassembler; driver command/audio/progression semantics remain
-unknown. **ACTIONS COMPLETED:** added isolated `oasis_re_tooling`, CLI,
-synthetic decoder test and local USA-ROM oracle; corrected `0x60004` target
-documentation from `0x6042C` to the byte-proven `0x6042A`.
-**RESULT:** report generated deterministically with 801 instructions, 109
-basic blocks, 72 direct branches, 17 direct calls, 3 ROM and 114 RAM refs;
-actual reachable slice has no unresolved/unsupported instruction, while both
-categories are covered synthetically. **TESTS/BUILD:** Debug and Release
-CTest pass 15/15; USA oracle passes in both; report SHA-256 matches; line-limit
-check passes. **Exact next step:** stop at this verified checkpoint and await
-explicit instruction; do not begin M12.
-
-**Follow-up:** shortened the text report to summary/windows while retaining
-full JSON detail, added a synthetic direct-jump assertion, and reran both
-configurations plus JSON parsing and `git diff --check` successfully.
+**TASK/RESULT:** Added isolated `oasis_re_tooling` and CLI for reachable entry
+`0x60004`; corrected its byte-proven target to `0x6042A`. The report has 801
+instructions, 109 blocks, 72 direct branches, 17 direct calls, 3 ROM and 114
+RAM refs. Synthetic unresolved/unsupported cases and USA evidence passed.
+**TESTS:** Debug/Release CTest 15/15, USA oracle, deterministic JSON,
+file-limit and diff-check passed. No native gameplay behavior was added.
 
 ## 2026-09-03 — M11 activated: event/script router investigation
 **Concrete task:** locate the producer and consumer contract for the raw event

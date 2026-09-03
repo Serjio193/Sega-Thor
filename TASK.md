@@ -1,7 +1,8 @@
 # Current Task
 
-TASK: M11.5 — Narrow 68000 RE acceleration experiment
-WHY: M11 is complete. Test whether a small static 68000 analysis tool materially reduces manual reverse-engineering work on evidenced routine `0x60004`.
+TASK: M11.5 — Second bounded 68000 RE acceleration slice
+WHY: The accepted `0x60004` checkpoint must scale to several evidenced
+routines without becoming an emulator, recompiler or gameplay dependency.
 CURRENT MILESTONE: M11.5
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 95%
@@ -14,31 +15,32 @@ This is a bounded tooling checkpoint, not a gameplay/runtime milestone. The
 tool is research infrastructure only and must not become part of the native
 game runtime.
 
-Initial target: USA-ROM routine `0x00060004`, already encountered and
-partially bounded during M11.
+Representative targets: exact-boundary `0x3820` and `0xD3B2`; bounded-only
+`0x8E90` and `0xA6A4`. All are selected from existing RE evidence and retain
+raw addresses only.
 
 ## Acceptance criteria
 
 - [x] use the user-supplied canonical USA ROM only; do not commit ROM bytes or extracted commercial assets;
-- [x] add one small isolated RE tool that starts from `0x60004` and decodes enough Motorola 68000 control flow to produce useful evidence;
-- [x] identify basic blocks and direct branch/call targets reachable inside the bounded analysis;
-- [x] report direct ROM/RAM absolute references and immediate constants encountered where decoding is reliable;
-- [x] emit a deterministic human-readable report and a machine-readable JSON report;
-- [x] add synthetic tests for decoder/control-flow behavior and a local USA-ROM oracle for the `0x60004` experiment;
-- [x] verify that the generated result independently recovers already-known M11 control-flow/data evidence;
-- [x] update FILE_MAP / WORKLOG / REVERSE_ENGINEERING as required;
+- [x] analyze several existing evidenced routines with different control-flow forms;
+- [x] discover a return boundary only when all bounded paths support that conclusion;
+- [x] report caller/callee and block/instruction direct-call edges separately from indirect/unresolved flow;
+- [x] bind confirmed, unresolved and unsupported memory evidence to function, slice, block and instruction;
+- [x] emit deterministic `oasis.m68k.re-program.v1` JSON and a short human report;
+- [x] add synthetic tests, a USA-ROM oracle and automatic comparisons with existing RE evidence;
+- [x] update FILE_MAP / WORKLOG / REVERSE_ENGINEERING / PROJECT_STATE as required;
 - [x] keep every source/document file <= 500 lines;
 - [x] Debug/Release builds and CTest are green.
 
 ## Result
 
-The bounded report covers `[0x60004, 0x61204)`: 801 reachable instructions,
-109 basic blocks, 72 direct branches, 17 direct calls, 3 absolute ROM
-references and 114 absolute RAM references. It independently recovers
-`0x60004 -> 0x6042A`, `0x60478 -> 0x609C6` and `0x60488 -> 0x60D10`.
-The current reachable slice has no indirect or unsupported opcode; synthetic
-coverage proves those categories are reported separately. JSON is deterministic
-across Debug/Release. No production gameplay behavior was added.
+The multi-slice report analyzes 4 functions, 421 instructions and 131 basic
+blocks. It records 1 direct call site and 1 caller→callee edge, 18 confirmed
+memory references, 114 unresolved register-based references, 1 indirect jump,
+and 2 unsupported opcodes. Known boundaries for `0x3820` and `0xD3B2` remain
+confirmed; `0x8E90` and `0xA6A4` remain bounded-only. USA evidence reproduces
+the documented decompressor/reader call, pool dispatch edges, callback jump,
+table and RAM destination references. No production gameplay behavior was added.
 
 ## Hard boundaries
 
@@ -53,8 +55,9 @@ across Debug/Release. No production gameplay behavior was added.
 ## Known unknowns
 
 Driver command meanings, audio protocol, event/progression semantics and the
-producer caller remain UNKNOWN. The decoder is intentionally bounded and is
-not a generic 68000 decoder or emulator.
+producer caller remain UNKNOWN. The decoder is intentionally bounded; the
+aggregate is not a generic 68000 decoder, emulator, whole-ROM discovery pass or
+recompiler. Register-based references and indirect targets remain unresolved.
 
 ## Exact next action
 
