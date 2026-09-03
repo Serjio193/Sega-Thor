@@ -23,28 +23,22 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Locate exact callers of 0x10594
+      - name: Locate all references to auxiliary byte-grid structures
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          target=0x10594
-          calls=[]
-          pat=b'\x4e\xb9'+target.to_bytes(4,'big')
-          p=0
-          while True:
-              p=rom.find(pat,p)
-              if p < 0: break
-              calls.append((p,'JSR.L')); p += 1
-          for p in range(0,len(rom)-4,2):
-              if rom[p:p+2] != b'\x61\x00': continue
-              disp=int.from_bytes(rom[p+2:p+4],'big',signed=True)
-              if p+4+disp == target: calls.append((p,'BSR.W'))
-          print('calls_10594=' + ','.join(f'{kind}@0x{p:06x}' for p,kind in sorted(calls)))
-          for p,kind in sorted(calls):
-              start=max(0,p-48); end=min(len(rom),p+48)
-              print(f'caller_window {kind}@0x{p:06x}=' + rom[start:end].hex())
+          all_hits=[]
+          for target in (0xff1766,0xff1770):
+              pat=target.to_bytes(4,'big')
+              hits=[]; p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p < 0: break
+                  hits.append(p); all_hits.append((p,target)); p+=1
+              print(f'refs_0x{target:06x}_count={len(hits)} offsets=' + ','.join(f'0x{x:06x}' for x in hits))
+          Path('/tmp/grid_refs.txt').write_text('\n'.join(f'{p:x} {t:x}' for p,t in sorted(all_hits)))
           PY
 
       - name: Install M68K binutils
@@ -52,39 +46,66 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble spatial query and known gameplay callers
+      - name: Disassemble every byte-grid reference neighborhood
         shell: bash
         run: |
           set -euo pipefail
-          for RANGE in \
-            '0x010540 0x010720' \
-            '0x022780 0x022820' \
-            '0x027090 0x027110'; do
-            set -- $RANGE
-            echo "===== $1..$2 ====="
+          while read -r POS TARGET; do
+            START=$((0x$POS - 0x80)); if [ "$START" -lt 0 ]; then START=0; fi
+            END=$((0x$POS + 0x120))
+            printf '===== ref 0x%06x -> 0x%06x, window 0x%06x..0x%06x =====\n' "$((0x$POS))" "$((0x$TARGET))" "$START" "$END"
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-              --start-address=$1 --stop-address=$2 /tmp/reference.md
-          done
+              --start-address=$START --stop-address=$END /tmp/reference.md
+          done </tmp/grid_refs.txt
 
-      - name: Inventory memory references used by 0x10594 neighborhood
+      - name: Find likely single-cell grid readers
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          refs=[]
+          for line in Path('/tmp/grid_refs.txt').read_text().splitlines():
+              p,t=(int(x,16) for x in line.split())
+              refs.append((p,t))
+          # Disassemble compact neighborhoods and report lines using indirect reads
+          # after each absolute load of FF1766/FF1770. Rectangular-copy/render loops
+          # remain evidence, but isolated move.b/move.w/tst/cmp accesses are stronger
+          # collision/property candidates.
+          for p,t in refs:
+              start=max(0,p-0x40); end=p+0x180
+              out=subprocess.check_output([
+                  'm68k-linux-gnu-objdump','-D','-b','binary','-m','m68k:68000','--adjust-vma=0',
+                  f'--start-address={start}',f'--stop-address={end}','/tmp/reference.md'
+              ], text=True)
+              interesting=[]
+              for line in out.splitlines():
+                  lower=line.lower()
+                  if any(k in lower for k in ('moveb %a','movew %a','tstb %a','tstw %a','cmpb %a','cmpw %a')):
+                      interesting.append(line.strip())
+              print(f'candidate_ref=0x{p:06x} structure=0x{t:06x}')
+              for line in interesting[:80]: print('  '+line)
+          PY
+
+      - name: Trace direct callers of routines containing byte-grid references
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          start,end=0x10594,0x10720
-          block=rom[start:end]
-          for target in range(0xff0000,0x1000000):
-              pass
-          # Exact absolute-RAM constants actually present in the function bytes.
-          found=[]
-          for i in range(len(block)-3):
-              v=int.from_bytes(block[i:i+4],'big')
-              if 0xff0000 <= v <= 0xffffff:
-                  found.append((start+i,v))
-          seen=set()
-          for pos,v in found:
-              if (pos,v) in seen: continue
-              seen.add((pos,v))
-              print(f'ram_ref@0x{pos:06x}=0x{v:06x}')
+          # Known function entries established around the grid-management cluster.
+          targets=(0xdb1a,0xdb64,0xdb68,0xdbca,0xdc26)
+          for target in targets:
+              refs=[]
+              pat=b'\x4e\xb9'+target.to_bytes(4,'big')
+              p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  refs.append(('JSR.L',p)); p+=1
+              for p in range(0,len(rom)-4,2):
+                  if rom[p:p+2] != b'\x61\x00': continue
+                  disp=int.from_bytes(rom[p+2:p+4],'big',signed=True)
+                  if p+4+disp == target: refs.append(('BSR.W',p))
+              print(f'target=0x{target:06x} refs=' + ','.join(f'{k}@0x{p:06x}' for k,p in sorted(refs,key=lambda x:x[1])))
           PY
