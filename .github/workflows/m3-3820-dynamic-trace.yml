@@ -1,0 +1,128 @@
+name: m3-3820-dynamic-trace
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  trace-original-decompressor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout development branch
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM temporarily
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' > /tmp/beyond-oasis.zip
+          mkdir -p /tmp/reference-rom
+          unzip -q /tmp/beyond-oasis.zip -d /tmp/reference-rom
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          test "$(stat -c%s "$ROM")" = "3145728"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Prepare original routine and representative stream
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          Path('/tmp/decompress.bin').write_bytes(rom[0x3820:0x3b3e])
+          # Representative caller 0x3A7FE: A0=0x16943C, A1=0xFF316C.
+          # Oversized temporary source window; only consumed length is reported.
+          Path('/tmp/source.bin').write_bytes(rom[0x16943c:0x17943c])
+          print('source_byte_2=', rom[0x16943e])
+          PY
+
+      - name: Install M68K compiler and QEMU user emulator
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-m68k-linux-gnu binutils-m68k-linux-gnu qemu-user
+
+      - name: Build isolated M68K harness around original routine bytes
+        shell: bash
+        run: |
+          cat >/tmp/harness.S <<'ASM'
+          .section .text
+          .global _start
+          _start:
+              lea source_data,%a0
+              lea output_data,%a1
+              move.l %a0,%a3
+              move.l %a1,%a4
+              jsr original_decompressor
+
+              move.l %a0,%d4
+              sub.l %a3,%d4
+              move.l %a1,%d5
+              sub.l %a4,%d5
+
+              move.l #4,%d0
+              move.l #1,%d1
+              move.l %a4,%d2
+              move.l %d5,%d3
+              trap #0
+
+              lea metadata,%a5
+              move.l #0x54485231,(%a5)
+              move.l %d5,4(%a5)
+              move.l %d4,8(%a5)
+              move.l #4,%d0
+              move.l #1,%d1
+              move.l %a5,%d2
+              move.l #12,%d3
+              trap #0
+
+              move.l #1,%d0
+              clr.l %d1
+              trap #0
+
+          .align 2
+          original_decompressor:
+              .incbin "/tmp/decompress.bin"
+
+          .section .rodata
+          .align 2
+          source_data:
+              .incbin "/tmp/source.bin"
+
+          .section .bss
+          .align 4
+          output_data:
+              .skip 1048576
+          metadata:
+              .skip 12
+          ASM
+          m68k-linux-gnu-gcc -nostdlib -static -Wl,-e,_start -o /tmp/harness-m68k /tmp/harness.S
+          file /tmp/harness-m68k
+
+      - name: Execute original routine and report metadata only
+        shell: bash
+        run: |
+          set -euo pipefail
+          qemu-m68k /tmp/harness-m68k > /tmp/trace.bin
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, struct
+          data=Path('/tmp/trace.bin').read_bytes()
+          if len(data) < 12:
+              raise SystemExit('trace too short')
+          magic,out_len,consumed=struct.unpack('>III', data[-12:])
+          if magic != 0x54485231:
+              raise SystemExit(f'bad trailer magic: {magic:08x}')
+          out=data[:-12]
+          if len(out) != out_len:
+              raise SystemExit(f'output length mismatch: file={len(out)} trailer={out_len}')
+          print(f'original_routine=0x3820..0x3b3c')
+          print(f'caller=0x3a7fe')
+          print(f'source_rom_address=0x16943c')
+          print(f'destination_original=0xff316c')
+          print(f'source_consumed={consumed}')
+          print(f'output_length={out_len}')
+          print(f'output_sha256={hashlib.sha256(out).hexdigest()}')
+          PY
