@@ -11,6 +11,29 @@ Each work session/task should state:
 - unresolved questions;
 - exact next step.
 
+## 2026-09-03 — Governance enforcement completed
+**Objective:** Make the project resistant to scope drift and ensure rules are enforceable, not merely descriptive.
+
+**Actions:**
+- added `docs/TASK_TEMPLATE.md` for task/AI handoff;
+- added `tests/check_file_limits.cmake`;
+- registered the line-limit check with CTest;
+- updated README to make governance documents mandatory entry points;
+- updated canonical file map;
+- marked M1 governance milestone complete and M2 active.
+
+**Files changed:** `README.md`, `CMakeLists.txt`, `docs/TASK_TEMPLATE.md`, `tests/check_file_limits.cmake`, `docs/FILE_MAP.md`, `docs/ROADMAP.md`, `docs/WORKLOG.md`.
+
+**Evidence/reasoning:** The owner requested persistent rules, architecture/file map, <=500 lines per file, documented development steps, idea/roadmap descriptions, and safeguards against AI development drift.
+
+**Tests/build:** Added `project_file_line_limit` CTest. It checks C/C++/Markdown/CMake project files and fails if any checked file exceeds 500 lines. No runtime behavior changed in this documentation/governance pass.
+
+**Result:** M1 is complete. Project direction, scope, file-size policy, documentation obligations, and AI handoff process are now explicit. The next active milestone is M2 ROM revision identification.
+
+**Unresolved:** Exact canonical Beyond Oasis ROM revision/hash remains to be identified.
+
+**Exact next step:** Implement and document ROM revision identification without starting `0x3820` translation until the reference revision is pinned down.
+
 ## 2026-09-03 — Governance/documentation pass
 **Objective:** Prevent project drift and make work reproducible for human and AI contributors.
 
