@@ -3,7 +3,8 @@
 The roadmap is ordered. Do not skip ahead unless a blocking dependency is documented.
 
 ## Status legend
-- `NEXT` — active milestone
+- `ACTIVE` — current milestone being worked on
+- `NEXT` — immediate queued milestone when useful to distinguish it from general TODO work
 - `TODO` — planned
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
@@ -88,14 +89,15 @@ movement field-access contract, a representative `FF2954` dispatch gate, local
 Debug/Release verification and successful GitHub Actions CI. AI, attacks,
 animation and spawn semantics remain explicitly outside this milestone.
 
-## M10 — Spirits — CLOSED
+## M10 — Spirits — DONE
 Goal: reproduce one evidence-backed spirit lifecycle slice: summon/slot state,
 target selection and one ability/interaction contract. The first accepted slice
 now includes the caller-gated raw summon-entry seed at `0x7A10 -> 0x846C`,
 four event-backed slot bits, raw dispatch and first-match target selection.
 Rendering, audio and unproven spirit semantics remain outside the milestone.
-The milestone is closed with local Debug/Release verification and successful
-GitHub Actions CI.
+The milestone acceptance slice is complete with local Debug/Release verification
+and successful GitHub Actions CI; remaining unknown relationships stay documented
+as unknown and may be revisited when later evidence requires them.
 
 ## M11 — Scripts/events/dialogue — ACTIVE
 Goal: reproduce game progression and event semantics. The first task is to
@@ -104,6 +106,10 @@ prove one bounded event/script router operation from its ROM data source.
 Current slice: the type-8 producer at `0x82AE` transfers raw fields to
 `FF1976/FF1978/FF197A`, and `0x7A28` maps the raw event byte to bounded handler
 addresses. Event, progression and dialogue meanings remain unknown.
+
+Current follow-up is evidence-gathering only while its implementation-slice
+confidence remains below 90%; production C++ must not expand until caller/data
+or downstream-handler evidence raises that slice to >=90%.
 
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
