@@ -101,6 +101,10 @@ GitHub Actions CI.
 Goal: reproduce game progression and event semantics. The first task is to
 prove one bounded event/script router operation from its ROM data source.
 
+Current slice: the type-8 producer at `0x82AE` transfers raw fields to
+`FF1976/FF1978/FF197A`, and `0x7A28` maps the raw event byte to bounded handler
+addresses. Event, progression and dialogue meanings remain unknown.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

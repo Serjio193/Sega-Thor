@@ -14,6 +14,7 @@ add_library(oasis_core
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
     src/game/genesis_graphics.cpp
+    src/game/scripts/event_router.cpp
     src/game/entities/entity_pool.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
@@ -80,6 +81,10 @@ add_executable(oasis_spirit_slots_test tests/spirit_slots_test.cpp)
 target_link_libraries(oasis_spirit_slots_test PRIVATE oasis_core)
 add_test(NAME oasis_spirit_slots COMMAND oasis_spirit_slots_test)
 
+add_executable(oasis_event_router_test tests/event_router_test.cpp)
+target_link_libraries(oasis_event_router_test PRIVATE oasis_core)
+add_test(NAME oasis_event_router COMMAND oasis_event_router_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -96,6 +101,9 @@ target_link_libraries(oasis_entity_pool_reference PRIVATE oasis_core)
 add_executable(oasis_spirit_slots_reference tests/spirit_slots_reference.cpp)
 target_link_libraries(oasis_spirit_slots_reference PRIVATE oasis_core)
 
+add_executable(oasis_event_router_reference tests/event_router_reference.cpp)
+target_link_libraries(oasis_event_router_reference PRIVATE oasis_core)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -110,6 +118,7 @@ set(oasis_test_targets
     oasis_player_test
     oasis_entity_pool_test
     oasis_spirit_slots_test
+    oasis_event_router_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -137,6 +146,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_player
         oasis_entity_pool
         oasis_spirit_slots
+        oasis_event_router
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

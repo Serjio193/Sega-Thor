@@ -3,7 +3,7 @@
 TASK: M11 — Event/script router investigation
 WHY: M10 is complete; the next dependency is one evidence-backed event/script operation.
 CURRENT MILESTONE: M11
-UNDERSTANDING CONFIDENCE: 25%
+UNDERSTANDING CONFIDENCE: 70%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -19,14 +19,14 @@ STATUS: ACTIVE
 - M10 spirit raw entry, slot/dispatch and target-query slice is accepted locally and by CI.
 
 ## M11 Definition of Done
-- [ ] identify one event/script producer and its caller/data evidence;
-- [ ] identify one bounded dispatch boundary;
-- [ ] translate one deterministic event/script operation;
-- [ ] add synthetic tests for the native operation;
-- [ ] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
-- [ ] keep dialogue semantics and unproven commands out;
-- [ ] record unknown fields without invented meanings;
-- [ ] keep every file <= 500 lines;
+- [x] identify one event/script producer and its data-source evidence;
+- [x] identify one bounded dispatch boundary;
+- [x] translate one deterministic event/script operation;
+- [x] add synthetic tests for the native operation;
+- [x] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
+- [x] keep dialogue semantics and unproven commands out;
+- [x] record unknown fields without invented meanings;
+- [x] keep every file <= 500 lines;
 - [ ] CI green.
 
 ## Constraints
@@ -39,5 +39,5 @@ STATUS: ACTIVE
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Trace writes and callers for `FF1976` and prove the event/script stream format
-before adding a new native API.
+Use the new raw boundary to investigate the caller of the type-8 source or
+the downstream handler at `0x7B2A`; do not add a stream parser yet.

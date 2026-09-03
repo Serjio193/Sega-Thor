@@ -3,8 +3,8 @@
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: Locate and recover one evidence-backed event/script router operation
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M10 closed: raw summon-entry seed, slot mapping, raw dispatch trace, cross-pool first-match target selection, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI all pass
-NEXT_ACTION: trace writes and callers for FF1976 and prove the event/script stream format
+LAST_VERIFIED_RESULT: M11 raw type-8 event producer and 0x7A28 handler-range mapping pass synthetic tests, local Debug/Release CTest and USA-ROM oracle
+NEXT_ACTION: investigate the type-8 source caller or downstream handler 0x7B2A without adding a stream parser
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 
@@ -41,6 +41,15 @@ BLOCKERS: none
 ## M10 investigation boundary
 - The M10 implementation begins from the caller/data-backed `0x7A10 -> 0x846C` raw entry and slot path.
 - Spirit names, semantic targeting, rendering and audio remain unknown until direct ROM evidence is recorded.
+
+## M11 verified evidence
+- `0x82AE` accepts a selected `FF19E8` record only when raw type `0x0008`,
+  clears that type and transfers raw fields to `FF1976`, `FF1978` and
+  `FF197A`; native producer tests and the USA-ROM oracle pass.
+- `0x7A28` maps the raw `FF1976` byte to bounded handler addresses, including
+  the flag-clear path at `0x7B2A`; native routing tests and byte checks pass.
+- Type-8 meaning, event-code meaning, stream format, dialogue and progression
+  semantics remain unknown. No generic parser has been added.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

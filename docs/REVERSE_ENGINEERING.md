@@ -298,6 +298,38 @@ Initial C++ compatibility implementation exists, derived from the public `tileco
 ### Tile copy to VRAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_vram` macro. Current VDP model is intentionally narrow.
 
+## M11 — raw event producer and router boundary
+**Status:** IMPLEMENTED as a bounded raw-data slice; event names, progression,
+dialogue and command semantics remain UNKNOWN.
+
+### Producer evidence
+- `0x0082AE` calls bounded helper `0xB9EC` with the active `FF19E8` pool and
+  a search window built from raw bounds `[-6,+6]` — **CONFIRMED**.
+- The first returned record is accepted only when raw type `+0x00` equals
+  `0x0008`; the source type is then cleared — **CONFIRMED**.
+- The producer composes `FF1976` from source `+0x32` shifted left by eight
+  and source byte `+0x52`, then copies source `+0x04` to `FF1978` and source
+  long `+0x4E` to `FF197A` — **CONFIRMED**.
+- The source type-8 meaning and resulting event-code meaning are not
+  assigned. Internal selection semantics of `0xB9EC` remain outside this
+  slice.
+
+### Router evidence
+- `0x007A28` tests caller field `+0x37` bit 1, reads byte `FF1976` and
+  dispatches bounded raw ranges to `0x7B64`, `0x7BD4`, `0x7BF6`, `0x7BA4`,
+  `0x7BE8` and `0x7B84`; zero and values above `0x3F` fall through to
+  `0x7A6C` — **CONFIRMED**.
+- When the tested bit is clear, control goes to raw address `0x7B2A` —
+  **CONFIRMED**. No semantic label is assigned to this path.
+- The native `event_router` module exposes the producer transfer and raw
+  handler-address mapping only. Synthetic tests and the USA-ROM oracle cover
+  the type gate, field composition and dispatch boundaries.
+
+### M11 boundary
+No generic event-stream parser, dialogue decoder, progression model or
+unproven command is introduced. Further work must establish the caller/data
+contract around the selected type-8 source or a downstream handler first.
+
 ## ROM identification implementation
 **Status:** VERIFIED.
 

@@ -54,6 +54,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── entities/
 │   │   │   ├── entity_pool.cpp  Raw entity-pool bounds and active-record view
 │   │   │   └── entity_pool.hpp  Entity-pool descriptors and raw field offsets
+│   │   ├── scripts/
+│   │   │   ├── event_router.cpp  Raw event producer and handler-range mapping
+│   │   │   └── event_router.hpp  Event RAM addresses and raw router API
 │   │   ├── spirits/
 │   │   │   ├── spirit_slots.cpp  Evidence-backed slot, target and dispatch trace
 │   │   │   └── spirit_slots.hpp  Spirit slot/target/dispatch constants and API
@@ -77,6 +80,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── player_reference.cpp              Local USA-ROM oracle for player vectors
     ├── entity_pool_test.cpp              Synthetic raw entity-pool/active-record tests
     ├── entity_pool_reference.cpp         Local USA-ROM oracle for entity pool loops
+    ├── event_router_test.cpp              Synthetic raw event producer/router tests
+    ├── event_router_reference.cpp         Local USA-ROM oracle for event boundaries
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

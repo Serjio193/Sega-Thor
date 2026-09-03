@@ -5,23 +5,23 @@ Chronological record of meaningful project actions. New entries go at the top.
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
 ## 2026-09-03 — M11 activated: event/script router investigation
-
 **Concrete task:** locate the producer and consumer contract for the raw event
 code in `FF1976`, then translate one deterministic event operation.
-
 **Acceptance criteria:** prove the caller/data source and dispatch boundary,
 implement one small native event operation with synthetic coverage, verify it
 against local USA-ROM bytes, keep dialogue meaning, progression rules and
 unproven commands explicitly unknown, preserve the 500-line and ROM hygiene
 rules.
-
-**Initial evidence:** the USA routine at `0x7A28` consumes `FF1976` and
-dispatches ranges to handlers beginning at `0x7B64`, including the existing
-raw slot-event branch at `0x7BE8`. The producer and broader stream format are
-not yet established.
-
-**Exact next step:** trace writes and callers for `FF1976` before adding a
-new script/event API.
+**Evidence:** `0x82AE` calls `0xB9EC` to select a record from `FF19E8`, accepts
+raw type `0x0008`, clears the source type, composes `FF1976` from `+0x32/+0x52`
+and copies `+0x04/+0x4E` to `FF1978/FF197A`. `0x7A28` maps the raw code to
+bounded handlers and sends a clear flag bit to `0x7B2A`.
+**Implementation:** added `src/game/scripts/event_router.*` with raw producer
+and router functions, synthetic coverage and a local USA-ROM oracle.
+**Verification:** Debug and Release CTest pass 14/14. All six local ROM
+oracles pass. Dialogue, progression and event meanings remain unknown.
+**Exact next step:** investigate the type-8 source caller or downstream
+handler `0x7B2A` without adding a generic stream parser.
 
 ## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
 
