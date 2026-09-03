@@ -25,36 +25,40 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Inspect indexed compressed-resource table
+      - name: Correlate indexed resource table and developer screen list
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           rom=Path('/tmp/reference.md').read_bytes()
           base=0x05ce96
           values=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(108)]
           print('table_base=0x05ce96 entries=108 first_null=', values[0]==0)
-          for i,v in enumerate(values[:16]):
-              print(f'entry={i:03d} value=0x{v:06x}')
+          for i in (0,1,2,3,4,0x23,0x24,0x57,107):
+              print(f'table_entry={i:03d} value=0x{values[i]:06x}')
 
-          for target in (0x00d3b2,0x00d406,0x05ce96):
-              patterns=[bytes.fromhex('4eb9')+target.to_bytes(4,'big'), bytes.fromhex('4ef9')+target.to_bytes(4,'big')]
-              hits=[]
-              for pat in patterns:
-                  p=0
-                  while True:
-                      p=rom.find(pat,p)
-                      if p<0: break
-                      hits.append(p); p+=1
-              print(f'abs_calls_or_jumps_to_0x{target:06x}=', ','.join(f'0x{x:06x}' for x in sorted(set(hits))))
+          # The ROM contains a developer-facing screen-name list beginning at VILLAGE.
+          start=rom.find(b'VILLAGE')
+          end=rom.find(b'14-01 KING', start)
+          end=end+len(b'14-01 KING') if end>=0 else start+0x800
+          blob=rom[start:end]
+          runs=[m.group().decode('ascii') for m in re.finditer(rb'[ -~]{3,}', blob)]
+          print(f'screen_list_start=0x{start:06x} end=0x{end:06x} printable_runs={len(runs)}')
+          for i,name in enumerate(runs):
+              print(f'screen_name_index={i:03d} name={name}')
+          for wanted in (3,4,0x23,0x24,0x57):
+              if wanted < len(runs):
+                  print(f'index_match={wanted:03d} name={runs[wanted]} table_ptr=0x{values[wanted]:06x}')
 
-          for text in (b'VILLAGE',b'ECAPITAL',b'HARBOR',b'01-00',b'01-05 BOSS',b'14-01 KING'):
+          for target in (0x00d3b2,0x00d406):
+              pat=bytes.fromhex('4eb9')+target.to_bytes(4,'big')
               hits=[]; p=0
               while True:
-                  p=rom.find(text,p)
+                  p=rom.find(pat,p)
                   if p<0: break
                   hits.append(p); p+=1
-              print(text.decode(), 'hits=', ','.join(f'0x{x:06x}' for x in hits))
+              print(f'jsr_to_0x{target:06x}=', ','.join(f'0x{x:06x}' for x in hits))
           PY
 
       - name: Install M68K binutils
@@ -62,22 +66,23 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble table reader and its likely callers
+      - name: Disassemble all direct callers of indexed resource loader
         shell: bash
         run: |
           set -euo pipefail
           for RANGE in \
-            '0x00d300 0x00d700' \
-            '0x00ce80 0x00cf80' \
-            '0x02da80 0x02dc20' \
-            '0x02f620 0x02f760'; do
+            '0x02cf60 0x02cff0' \
+            '0x02d3c0 0x02d450' \
+            '0x032130 0x0321c0' \
+            '0x032840 0x0328d0' \
+            '0x00d3a0 0x00d700'; do
             set -- $RANGE
             echo "===== candidate $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
 
-      - name: Find immediate D0 setup before calls to 0xD3B2
+      - name: Decode immediate D0 values before calls to 0xD3B2
         shell: bash
         run: |
           python3 - <<'PY'
@@ -88,7 +93,10 @@ jobs:
           while True:
               pos=rom.find(call,pos)
               if pos<0: break
-              start=max(0,pos-24)
-              print(f'call_0xd3b2=0x{pos:06x} preceding={rom[start:pos].hex()}')
+              # MOVE.W #imm,D0 is 0x303c xxxx. Search only the final 20 bytes.
+              window=rom[max(0,pos-20):pos]
+              p=window.rfind(bytes.fromhex('303c'))
+              imm=None if p<0 or p+4>len(window) else int.from_bytes(window[p+2:p+4],'big')
+              print(f'call=0x{pos:06x} immediate_d0={"unknown" if imm is None else str(imm)}')
               pos+=1
           PY
