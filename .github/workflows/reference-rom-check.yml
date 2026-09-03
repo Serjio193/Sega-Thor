@@ -55,3 +55,10 @@ jobs:
           ROM="$(find /tmp/reference-rom -type f | head -n 1)"
           ./build/oasis "$ROM" | tee /tmp/oasis-rom-report.txt
           grep -q 'Status: SUPPORTED' /tmp/oasis-rom-report.txt
+
+      - name: Verify native decompressor against original 68000 traces
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          ./build/oasis_graphics_reference "$ROM"
