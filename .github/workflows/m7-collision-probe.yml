@@ -23,18 +23,28 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Dump terrain lookup tables
+      - name: Dump terrain support tables
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          for base,name in ((0x96e8,'terrain_state'),(0x96f8,'terrain_behavior')):
-              raw=rom[base:base+16]
-              signed=[b if b < 128 else b-256 for b in raw]
-              print(f'{name}_table@0x{base:06x}_hex=' + raw.hex())
-              for i,(u,s) in enumerate(zip(raw,signed)):
-                  print(f'{name}[{i:02x}]=0x{u:02x} signed={s}')
+          for base,length,name in (
+              (0x96e8,16,'terrain_state'),
+              (0x96f8,16,'terrain_behavior'),
+              (0x5d706,64,'height_or_motion_lut_head')):
+              raw=rom[base:base+length]
+              print(f'{name}@0x{base:06x}=' + raw.hex())
+          # FF1706 is runtime RAM, so locate code that populates it instead of pretending
+          # its values are static ROM data.
+          for target in (0xff1706,):
+              pat=target.to_bytes(4,'big')
+              hits=[]; p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+              print('refs_FF1706=' + ','.join(f'0x{x:06x}' for x in hits))
           PY
 
       - name: Install M68K binutils
@@ -42,27 +52,28 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble terrain samplers and movement integration
+      - name: Disassemble movement gate and its immediate call sites
         shell: bash
         run: |
           set -euo pipefail
           for RANGE in \
-            '0x009a80 0x009c90' \
-            '0x009be0 0x009d80' \
-            '0x008f80 0x009180'; do
+            '0x009340 0x009490' \
+            '0x009480 0x009710' \
+            '0x009d40 0x009f20' \
+            '0x009080 0x009230'; do
             set -- $RANGE
             echo "===== $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
 
-      - name: Trace callers of terrain routines
+      - name: Find exact callers of 0x938e and nearby helpers
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          targets=(0x9ad6,0x9bc2,0x9bf2,0x9c40,0x9d00,0x9d4e,0x9dd6)
+          targets=(0x938e,0x9ad6,0x9bf2,0x9d4e,0x9dd6,0x9eba)
           for target in targets:
               refs=[]
               pat=b'\x4e\xb9'+target.to_bytes(4,'big')
@@ -79,23 +90,21 @@ jobs:
               print(f'target=0x{target:06x} refs=' + ','.join(f'{k}@0x{p:06x}' for k,p in sorted(refs,key=lambda x:x[1])))
           PY
 
-      - name: Inventory terrain-code tests in movement cluster
+      - name: Locate writes and reads of entity terrain fields
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          start,end=0x8f00,0x9e40
-          block=rom[start:end]
-          for code in range(16):
-              # Report immediate byte/word occurrences only as search anchors;
-              # disassembly above determines whether they are actual compares/tests.
-              hits=[]
-              for pat in (bytes((code,)), code.to_bytes(2,'big')):
-                  p=0
-                  while True:
-                      p=block.find(pat,p)
-                      if p<0: break
-                      hits.append(start+p); p+=1
-              print(f'code_{code:02x}_anchors=' + ','.join(f'0x{x:06x}' for x in sorted(set(hits))[:80]))
+          # Fields +110/+111/+112 and +20 are relative to FP, so scan the movement
+          # cluster for their displacement words and keep output as navigation anchors.
+          block=rom[0x8f00:0xa100]
+          for field in (20,64,65,70,110,111,112,114,118):
+              pat=field.to_bytes(2,'big')
+              hits=[]; p=0
+              while True:
+                  p=block.find(pat,p)
+                  if p<0: break
+                  hits.append(0x8f00+p); p+=1
+              print(f'field_plus_{field}_anchors=' + ','.join(f'0x{x:06x}' for x in hits[:120]))
           PY
