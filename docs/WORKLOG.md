@@ -2,7 +2,6 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
-
 ## 2026-09-03 — M11.5 fifth checkpoint: changed block ordinal 10 completed
 
 **TASK/ACTIONS:** Inspect only retail `0xA6A4` versus beta `0xA654` changed
@@ -15,7 +14,8 @@ predecessors `A6BA->A786` / `A66A->A736`, taken edges `A78E->A7D4` /
 `2F3C0000A6BE` versus `2F3C0000A66E` is `relocation_only`; `4A46` and
 `6B000044` are identical with condition code `0xB`. **TESTS:** synthetic,
 retail/beta oracle, Debug/Release CTest, GNU-equivalent link, deterministic
-report, file-limit and diff-check green before push; CI recorded below.
+report, file-limit and diff-check green before push; GitHub Actions CI run
+`33763142425` is green.
 **UNKNOWN/NEXT:** pushed-address and branch semantics plus outside bytes;
 stop, await instruction, no M12 or wider scan/tracing/recompilation.
 
