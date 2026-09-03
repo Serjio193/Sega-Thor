@@ -262,6 +262,12 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
 - `0x846C` separately initializes raw type `0x16` in record `FF1AA4`; because
   `0xB922` scans `FF19E8`, this is tracked as a possible related producer but
   not as proof of a summon/ability relationship — **UNKNOWN**.
+- The callback path is cross-pool: initializer `0xFFDE` obtains an owner from
+  the six-record `FF2D8C` pool via `0xD9F0`, stores callback `0x17A96`, and
+  `0x17A96` enters `0x17CA6` when its state word is zero. The query helper
+  `0xB922` receives that owner in `A6` but scans target records from
+  `FF19E8` — **CONFIRMED**. This corrects the native boundary; it does not
+  prove summon or ability names.
 
 ### Tile copy to work RAM
 Initial C++ compatibility implementation exists, derived from the public `tilecopy_to_ram` macro. Revisit after data interfaces stabilize.

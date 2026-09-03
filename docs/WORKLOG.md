@@ -18,6 +18,36 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** trace producers of type `0x16` in `FF19E8` and the data/caller path that enters the `0x17CA6` behavior before extending M10.
 
+## 2026-09-03 — M10 cross-pool target boundary correction
+
+**Concrete task:** correct the native target-query boundary after proving that
+the callback containing `0x17CA6` runs with an owner from `FF2D8C`, while
+`0xB922` scans targets from `FF19E8`.
+
+**Acceptance criteria:** represent separate owner and target pools; preserve
+the observed owner-relative bounds, active-record filtering, first spatial
+match and raw type `0x16` check; add synthetic coverage and extend the local
+USA-ROM oracle with the callback/allocator evidence; do not assign summon,
+ability or object names.
+
+**Evidence:** initializer `0xFFDE` calls allocator `0xD9F0` for `FF2D8C`,
+installs callback `0x17A96`, and that callback branches to `0x17CA6` when its
+state word reaches zero. `0x17CA6` passes the owner in `A6` to `0xB922`, whose
+scan base is hardcoded to `FF19E8`.
+
+**Result:** `find_observed_target` now accepts separate owner and target pools;
+synthetic coverage verifies that an equal numeric index is not incorrectly
+excluded across pools. Debug and Release CTest pass `13/13`, the local USA-ROM
+oracle passes, and all checked files remain at or below 500 lines.
+
+**Remaining unknown:** the cross-pool raw contract is confirmed, but its
+summon/ability meaning and the producer of raw type `0x16` in `FF19E8` remain
+unproven.
+
+**Exact next step:** trace the data producer that populates raw type `0x16` in
+`FF19E8` and determine whether the `0x17A96`/`0x17CA6` path is a summon or a
+different interaction before adding semantic behavior.
+
 ## 2026-09-03 — M10 spirit slot/dispatch trace
 
 **Objective:** Translate the first evidence-backed spirit slot lifecycle and active-dispatch gate.

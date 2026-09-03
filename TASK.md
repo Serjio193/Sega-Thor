@@ -3,7 +3,7 @@
 TASK: M10 — Spirits
 WHY: M9 established the common entity framework. The next dependency is one evidence-backed spirit lifecycle slice before expanding into abilities or interactions.
 CURRENT MILESTONE: M10
-UNDERSTANDING CONFIDENCE: 42%
+UNDERSTANDING CONFIDENCE: 50%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -23,11 +23,11 @@ STATUS: ACTIVE
 - [x] identify the dispatch path for an active spirit;
 - [x] translate one deterministic summon/slot/dispatch slice;
 - [ ] translate one ability or interaction contract only when its dependencies are proven;
-- [ ] add synthetic tests for the native deterministic slice;
-- [ ] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
-- [ ] keep rendering, audio and unproven spirit semantics out;
-- [ ] record unknown fields without invented semantic names;
-- [ ] keep every file <= 500 lines;
+- [x] add synthetic tests for the native deterministic slice;
+- [x] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
+- [x] keep rendering, audio and unproven spirit semantics out;
+- [x] record unknown fields without invented semantic names;
+- [x] keep every file <= 500 lines;
 - [ ] CI green.
 
 ## Constraints
@@ -40,4 +40,4 @@ STATUS: ACTIVE
 - Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-Trace the caller/data dependency that connects the accepted raw dispatch trace to a proven summon or ability contract.
+Trace the data producer that populates raw type `0x16` in `FF19E8` and determine whether the `0x17A96`/`0x17CA6` path is a summon or a different interaction.

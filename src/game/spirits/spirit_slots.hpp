@@ -17,6 +17,10 @@ inline constexpr std::size_t kSpiritSlotCount = 4;
 inline constexpr std::uint32_t kObservedDispatchRoutineAddress = 0x00031B80;
 inline constexpr std::uint32_t kObservedResourceDispatchAddress = 0x0000C2EC;
 inline constexpr std::uint32_t kObservedEffectQueueAddress = 0x0000CA24;
+inline constexpr std::uint32_t kObservedOwnerCallbackAddress = 0x00017A96;
+inline constexpr std::uint32_t kObservedTargetQueryAddress = 0x00017CA6;
+inline constexpr std::uint32_t kObservedOwnerPoolAddress = 0x00FF2D8C;
+inline constexpr std::uint32_t kObservedTargetPoolAddress = 0x00FF19E8;
 inline constexpr std::uint16_t kObservedResourceSelector = 0x13;
 inline constexpr std::uint16_t kObservedEffectSelector = 0x15;
 inline constexpr std::uint8_t kObservedDispatchSlot = 1;
@@ -81,7 +85,8 @@ struct ObservedTargetQuery {
 // Mirrors the first-match behavior of 0xB922 followed by the type check at
 // 0x17CE4. A later record is not considered after the first spatial match.
 [[nodiscard]] std::optional<std::size_t> find_observed_target(
-    const entities::EntityPoolView& pool,
+    const entities::EntityPoolView& owner_pool,
+    const entities::EntityPoolView& target_pool,
     const ObservedTargetQuery& query) noexcept;
 
 [[nodiscard]] SpiritDispatchTrace trace_observed_dispatch(

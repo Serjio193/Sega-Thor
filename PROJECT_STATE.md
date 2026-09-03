@@ -3,8 +3,8 @@
 CURRENT_MILESTONE: M10 — Spirits
 CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M10 slot mapping, raw dispatch trace and first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
-NEXT_ACTION: investigate the next caller/data dependency needed to connect the raw dispatch trace to a proven summon or ability contract
+LAST_VERIFIED_RESULT: M10 slot mapping, raw dispatch trace and cross-pool first-match target selection pass Debug/Release CTest and the local USA-ROM oracle
+NEXT_ACTION: trace the data producer for raw type 0x16 in FF19E8 and determine whether the 0x17A96/0x17CA6 path is a summon or a different interaction
 DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
 BLOCKERS: none
 

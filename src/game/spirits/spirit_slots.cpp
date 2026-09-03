@@ -21,9 +21,10 @@ namespace {
 } // namespace
 
 std::optional<std::size_t> find_observed_target(
-    const entities::EntityPoolView& pool,
+    const entities::EntityPoolView& owner_pool,
+    const entities::EntityPoolView& target_pool,
     const ObservedTargetQuery& query) noexcept {
-    const auto owner = pool.record_view(query.owner_index);
+    const auto owner = owner_pool.record_view(query.owner_index);
     if (!owner) {
         return std::nullopt;
     }
@@ -40,11 +41,13 @@ std::optional<std::size_t> find_observed_target(
     const auto query_z_min = owner_z + query.relative_z_min;
     const auto query_z_max = owner_z + query.relative_z_max;
 
-    for (std::size_t index = 0; index < pool.spec().record_count; ++index) {
-        if (index == query.owner_index || !pool.active(index)) {
+    for (std::size_t index = 0; index < target_pool.spec().record_count; ++index) {
+        // The original owner is in FF2D8C and targets are in FF19E8, so an
+        // equal numeric index is not the owner-pointer exclusion from B922.
+        if (!target_pool.active(index)) {
             continue;
         }
-        const auto record = pool.record_view(index);
+        const auto record = target_pool.record_view(index);
         if (!record) {
             continue;
         }
