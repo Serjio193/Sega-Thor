@@ -25,62 +25,36 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Inventory decompressor call inputs and destinations
+      - name: Inspect indexed compressed-resource table
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          rom=Path('/tmp/reference.md').read_bytes()
-          jsr=bytes.fromhex('4eb900003820')
-          pos=0; rows=[]
-          while True:
-              call=rom.find(jsr,pos)
-              if call<0: break
-              pos=call+1
-              start=max(0,call-96); window=rom[start:call]
-              def last_abs(opcode):
-                  p=window.rfind(opcode)
-                  if p<0 or p+6>len(window): return None
-                  return int.from_bytes(window[p+2:p+6],'big')
-              src=last_abs(bytes.fromhex('41f9'))
-              dst=last_abs(bytes.fromhex('43f9'))
-              flag=None if src is None or src+2>=len(rom) else rom[src+2]
-              rows.append((call,src,dst,flag))
-          for call,src,dst,flag in rows:
-              print(f'call=0x{call:06x} src={"?" if src is None else f"0x{src:06x}"} dst={"?" if dst is None else f"0x{dst:06x}"} selector={flag}')
-          print(f'total_calls={len(rows)}')
-          PY
-
-      - name: Inspect 0x05CE96 candidate screen-resource table
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import hashlib
           rom=Path('/tmp/reference.md').read_bytes()
           base=0x05ce96
-          print('table_prefix=', rom[base:base+16].hex())
-          values=[]
-          # 0x05CE96 precedes the dense pointer run by one 32-bit value.
-          for i in range(108):
-              off=base+i*4
-              v=int.from_bytes(rom[off:off+4],'big')
-              values.append(v)
-              print(f'entry={i:03d} table_addr=0x{off:06x} value=0x{v:06x}')
-          valid=[(i,v) for i,v in enumerate(values) if 0<=v<len(rom)]
-          print('valid_rom_pointers=',len(valid))
-          for i,v in valid[:12]:
-              prefix=rom[v:v+16]
-              print(f'sample={i:03d} ptr=0x{v:06x} selector={rom[v+2] if v+2<len(rom) else -1} prefix={prefix.hex()} sha256_64={hashlib.sha256(rom[v:v+64]).hexdigest()}')
-          # Find exact references to the table base and to first pointer element.
-          for target in (0x05ce96,0x05ce9a):
-              pat=target.to_bytes(4,'big')
-              hits=[]; pos=0
+          values=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(108)]
+          print('table_base=0x05ce96 entries=108 first_null=', values[0]==0)
+          for i,v in enumerate(values[:16]):
+              print(f'entry={i:03d} value=0x{v:06x}')
+
+          for target in (0x00d3b2,0x00d406,0x05ce96):
+              patterns=[bytes.fromhex('4eb9')+target.to_bytes(4,'big'), bytes.fromhex('4ef9')+target.to_bytes(4,'big')]
+              hits=[]
+              for pat in patterns:
+                  p=0
+                  while True:
+                      p=rom.find(pat,p)
+                      if p<0: break
+                      hits.append(p); p+=1
+              print(f'abs_calls_or_jumps_to_0x{target:06x}=', ','.join(f'0x{x:06x}' for x in sorted(set(hits))))
+
+          for text in (b'VILLAGE',b'ECAPITAL',b'HARBOR',b'01-00',b'01-05 BOSS',b'14-01 KING'):
+              hits=[]; p=0
               while True:
-                  pos=rom.find(pat,pos)
-                  if pos<0: break
-                  hits.append(pos); pos+=1
-              print(f'refs_to_0x{target:06x}=',','.join(f'0x{x:06x}' for x in hits))
+                  p=rom.find(text,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+              print(text.decode(), 'hits=', ','.join(f'0x{x:06x}' for x in hits))
           PY
 
       - name: Install M68K binutils
@@ -88,23 +62,33 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble candidate loader neighborhoods
+      - name: Disassemble table reader and its likely callers
         shell: bash
         run: |
           set -euo pipefail
           for RANGE in \
-            '0x00d360 0x00d450' \
-            '0x02a600 0x02a740' \
-            '0x02b160 0x02b260' \
-            '0x02dae0 0x02dc00' \
-            '0x02f620 0x02f720' \
-            '0x03bfe0 0x03c360' \
-            '0x03c520 0x03c700' \
-            '0x03c920 0x03ca80' \
-            '0x03cb40 0x03cd40' \
-            '0x03ce00 0x03d100'; do
+            '0x00d300 0x00d700' \
+            '0x00ce80 0x00cf80' \
+            '0x02da80 0x02dc20' \
+            '0x02f620 0x02f760'; do
             set -- $RANGE
             echo "===== candidate $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
+
+      - name: Find immediate D0 setup before calls to 0xD3B2
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          call=bytes.fromhex('4eb90000d3b2')
+          pos=0
+          while True:
+              pos=rom.find(call,pos)
+              if pos<0: break
+              start=max(0,pos-24)
+              print(f'call_0xd3b2=0x{pos:06x} preceding={rom[start:pos].hex()}')
+              pos+=1
+          PY
