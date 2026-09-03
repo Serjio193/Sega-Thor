@@ -4,22 +4,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M7 indexed resources and screen descriptor pattern
+**Objective:** Move from generic world-data searching to a reproducible original loading path without inventing room semantics.
+
+**Actions:**
+- added ROM-backed `m7-world-probe` workflow;
+- identified indexed compressed-resource table at `0x05CE96` with 108 entries including a zero entry and 107 dense ROM pointers;
+- established reader routine `0xD3B2`: incoming `D0` is multiplied by four, used to select a pointer, and the selected stream is decompressed to `0xFF2FA8`;
+- found seven direct `D3B2` calls using immediate resource IDs `3`, `4`, `35`, `36`, and `87`;
+- located the ROM developer screen-name inventory beginning at `0x05DB4D`;
+- found repeated 26-byte blocks immediately before several setup sequences calling `0xD406`;
+- observed that `D406` reads a structured input through `A1` through at least offset `+24`;
+- launched a focused probe for pointer tables referencing candidate 26-byte descriptor starts.
+
+**Evidence:**
+- `0xD3B2` performs `A0=0x5CE96`, `D0<<=2`, pointer lookup, `JSR 0x3820`;
+- caller pairs `3/4` and `35/36` pass `D1=0x4000/0x5000`, followed by original VDP/DMA activity, indicating these selected resources are likely graphics/data banks rather than the room record itself;
+- index 87 is separately loaded by another setup path;
+- developer strings include `VILLAGE`, `ECAPITAL`, `HARBOR`, numbered dungeon screens, boss labels, and `14-01 KING`;
+- candidate descriptor spans such as `0x2CF82..0x2CF9B` and `0x2D3E8..0x2D401` are exactly 26 bytes, matching `D406` accesses through offset `+24`.
+
+**Result:** A stable scene-resource loader and a strong candidate screen-descriptor shape are established. `0x5CE96` is deliberately not called a room table; its exact graphics/data role remains to be classified. M7 remains ACTIVE.
+
+**Unresolved:** Need direct pointer/dispatcher evidence connecting 26-byte descriptors to developer screen identities, then collision data/query evidence.
+
+**Exact next step:** Locate table(s) of pointers to candidate descriptor starts and map at least one descriptor to a named developer screen before implementing native world structures.
+
 ## 2026-09-03 — M7 world/map/collision research started
 **Objective:** Identify raw room/map/collision data before creating native structures.
 
 **Actions:**
 - activated M7 after verified completion of deterministic runtime/input;
-- inspected the public `hansbonini/smd_beyondoasis` reverse-engineering repository for map-related evidence;
-- confirmed its `tilemap/` directory contains fixed UI/screen tilemaps (`game_over`, `name_screen`, `save_screen`), not documented world-room formats;
-- searched broader public material; available map images/walkthroughs are useful visual references but do not establish ROM data layout.
+- inspected public reverse-engineering work for map-related evidence;
+- confirmed its documented tilemaps are fixed UI/screen tilemaps rather than proven world-room formats.
 
-**Evidence:** Existing public translation work gives useful address/text/graphics hooks but does not yet provide a proven world-map structure suitable for native implementation.
-
-**Result:** No semantic room structure has been invented. M7 remains ACTIVE.
-
-**Unresolved:** Exact room table, layer dimensions, collision representation and loader routines remain unknown.
-
-**Exact next step:** Probe the canonical USA binary for a verified room-loading path and pointer tables, then document raw fields before adding `src/game/world/` code.
+**Result:** No semantic room structure was invented; binary-first probing was selected.
 
 ## 2026-09-03 — M6 deterministic runtime/input — DONE
 **Objective:** Establish portable one-frame stepping and controller snapshots before gameplay translation.
@@ -40,8 +59,6 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Result:** M6 completed; M7 activated.
 
-**Exact next step:** Establish room/map/collision raw formats from original evidence.
-
 ## 2026-09-03 — M5 narrow VDP model — DONE
 **Objective:** Replace the placeholder video scaffold with only the Mega Drive state needed for reconstruction.
 
@@ -56,8 +73,6 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 **Evidence/tests:** Bounds, word storage, tile attributes and sprite fields are covered by synthetic tests; current CI build/test is green.
 
 **Result:** M5 completed without adding a full VDP emulator or renderer dependency.
-
-**Exact next step:** Deterministic runtime/input skeleton.
 
 ## 2026-09-03 — M4 local asset inspector — DONE
 **Objective:** Inspect graphics from a user-owned ROM using the verified native decompressor.
@@ -77,8 +92,6 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Result:** M4 completed; no extracted commercial assets are committed.
 
-**Exact next step:** Narrow VDP state model.
-
 ## 2026-09-03 — M3 native graphics decompressor — DONE
 **Objective:** Translate original 68000 decompression routine `0x3820` into verified native C++.
 
@@ -89,26 +102,16 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 - identified two formats selected by `source[2]`;
 - executed the original routine bytes in an isolated M68K/QEMU harness to obtain reference behavior;
 - translated both paths to C++;
-- detected and corrected two errors in an earlier implementation (format-A extension handling and format-B repeated-byte path).
+- corrected format-A extension handling and format-B repeated-byte behavior using oracle evidence.
 
 **Reference evidence:**
 - format A `0x16943C`: consumed `1217`, output `3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
 - format B `0x1894EA`: consumed `112`, output `128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
 
-**Tests/build:** Native C++ matches original source-consumed count, output length and output SHA-256 for both formats; ordinary CI and reference workflow pass.
-
-**Result:** M3 completed with differential evidence.
-
-**Exact next step:** Build local asset inspection tooling.
+**Result:** Native C++ matches both original traces; M3 completed.
 
 ## 2026-09-03 — M2 canonical ROM identity verified — DONE
 **Objective:** Pin down the exact binary reference used for reverse engineering.
-
-**Actions:**
-- accepted USA retail `Beyond Oasis` as address/disassembly reference while keeping final C++ region-independent;
-- implemented header/checksum/CRC32/SHA-1/SHA-256 identification and ROM classification;
-- added synthetic tests and GitHub reference-ROM verification;
-- fixed a CI-detected C++ construction error in the ROM loader.
 
 **Confirmed fingerprint:**
 - size `3145728`;
@@ -122,12 +125,9 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 ## 2026-09-03 — Governance enforcement — DONE
 **Objective:** Make project direction recoverable and resistant to scope drift.
 
-**Actions:**
-- added mandatory AI/contributor rules, architecture/vision/file-map/roadmap/decision/research/work logs;
-- added `PROJECT_STATE.md`, `TASK.md` and task template;
-- enforced <=500 lines per source/project-document file using CTest.
+**Actions:** mandatory AI workflow, architecture/vision/file-map/roadmap/decision/research/work logs, `PROJECT_STATE.md`, `TASK.md`, and <=500-line CTest enforcement.
 
-**Result:** Project direction, completion criteria and documentation obligations are explicit.
+**Result:** Project direction and completion criteria are explicit.
 
 ## 2026-09-03 — Initial C++ bootstrap — DONE
 **Objective:** Create a minimal native C++ starting point.
