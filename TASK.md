@@ -1,9 +1,9 @@
 # Current Task
 
-TASK: M11.5 fifth checkpoint — retail/beta changed block ordinal 10 detail
-WHY: Compare only retail `0xA6A4` block ordinal 10 with beta `0xA654` block
-ordinal 10 at instruction, raw-data and CFG level, without semantic inference.
-CURRENT MILESTONE: M11.5
+TASK: M11.5 first bounded ROM Atlas prototype
+WHY: Combine accepted bounded RE evidence into a reproducible machine-readable
+map without whole-ROM discovery, semantic invention or runtime changes.
+CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
 SLICE MODE: RE_TOOLING_ONLY
@@ -11,49 +11,42 @@ STATUS: COMPLETE
 
 ## Scope and method
 
-`oasis_re_diff` continues to load both binaries through `oasis::Rom::load` and
-keeps the existing five-target bounded scan. The `oasis.m68k.re-diff.v1` report
-now adds detail only for aligned changed blocks: exact block ranges, direct and
-conditional-fallthrough CFG edges, raw decoded instruction records, addressing
-mode evidence, condition codes, constants, memory references and conservative
-diff classifications. A changed immediate is `relocation_only` only when both
-values point to corresponding decoded instructions at the same slice-relative
-offset; otherwise it is `constant_changed`. Unsupported or unresolved evidence
-remains explicitly classified and no semantics are assigned.
+`oasis_re_atlas` builds `oasis.m68k.re-atlas.v1` from a typed manifest and the
+existing `re_program`, `re_trace` and `re_diff` APIs. It records raw-address
+entries for proven code/table evidence, confirmed versus bounded ranges,
+callers/callees, ROM/RAM refs, unresolved/unsupported evidence, beta
+correspondence, dynamic `0xA6A4` facts, native status and coverage. Markdown is
+documentation, not the primary database; bounded windows are not ownership.
 
 ## Acceptance criteria
 
-- [x] localize retail and beta changed block ordinal 10 and exact ranges;
-- [x] report predecessor, direct successor and conditional fallthrough edges;
-- [x] emit deterministic instruction-by-instruction raw/evidence detail;
-- [x] classify relocation, constants, offsets, branches, addressing and unknowns;
-- [x] add synthetic changed-block classification coverage;
-- [x] add retail/beta exact-byte, block-range, instruction and CFG oracle;
-- [x] keep the tooling bounded, developer-only and outside gameplay runtime;
-- [x] pass Debug/Release CTest, USA oracle, GNU-equivalent link, file-limit and
-  `git diff --check` before push.
+- [x] include only the 9 documented code targets and 4 named table targets;
+- [x] preserve exact boundaries separately from bounded evidence windows;
+- [x] expose deterministic calls, refs, unresolved evidence and queries;
+- [x] include accepted USA/Beta correspondences and A6A4 dynamic facts;
+- [x] detect incompatible evidence overlap without choosing silently;
+- [x] emit deterministic JSON/text and synthetic model/query tests;
+- [x] pass USA+Beta oracle, Debug/Release CTest, GNU-equivalent link,
+  file-limit and `git diff --check` before push.
 
 ## Verified result
 
-Retail block ordinal 10 is `[0xA786,0xA792)` (12 bytes, 3 instructions);
-beta block ordinal 10 is `[0xA736,0xA742)` (12 bytes, 3 instructions).
-Each has one direct predecessor (`A6BA->A786` / `A66A->A736`), one taken
-conditional edge (`A78E->A7D4` / `A73E->A784`) and one fallthrough edge
-(`A78E->A792` / `A73E->A742`). The CFG topology is unchanged. The first
-instruction is raw `2F3C0000A6BE` versus `2F3C0000A66E`; its immediate points
-to corresponding local decoded instruction offsets, so the difference is
-classified `relocation_only`. The remaining `4A46` and `6B000044` instructions
-are byte-identical; condition code `0xB` is recorded for the branch.
+Atlas contains 13 entries: 5 bounded/exact code entries from the previous
+program report plus `0x82AE`, `0x7A28`, `0x938E`, `0x9BF2`, and four named table
+starts. The local USA/Beta oracle reproduces exact correspondences at
+`0x3820/0x37D0`, `0x60004`, `0x82AE/0x825E`, `0x7A28/0x79D8`, and structural
+`0xA6A4/0xA654` with changed block 10. Dynamic evidence remains raw:
+`A7D4->FF2954`, `A7DE->FF2976`, `A7E2->A7E4`.
 
 ## Known unknowns and hard boundaries
 
-The result proves only bounded byte/decoder/CFG correspondence and a
-relocation-only classification for this block. It does not prove function
-semantics, the meaning of the pushed address, runtime behavior, or equivalence
-outside the analyzed windows. No production behavior, emulator, recompiler,
-wide similarity search, full-game tracing or M12 work was added.
+Some table sizes, bounded function ownership, unresolved register refs and
+routine semantics remain UNKNOWN. Atlas is developer-only and does not add an
+emulator, whole-ROM scan, dynamic-tracing expansion, recompiler, generated
+C++ or gameplay-runtime dependency.
 
 ## Exact next action
 
-Stop at this verified block-detail checkpoint and await explicit instruction.
-Do not start wider beta scans, full-game tracing, recompilation or M12.
+Stop at this verified Atlas checkpoint. Await explicit instruction; do not
+start M12, whole-ROM discovery, wider tracing, similarity search or
+recompilation.

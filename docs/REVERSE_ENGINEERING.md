@@ -441,52 +441,43 @@ stops explicitly on an unsupported scenario PC. Full-game tracing remains out
 of scope.
 
 ### M11.5 fourth checkpoint — USA retail versus USA Beta 1994-11-01
-**Status:** VERIFIED as bounded differential evidence only; no semantic identity
-or behavior is inferred. Beta is 3145728 bytes, checksum-valid, CRC32
-`FA59F847`, SHA-1 `cb0606faeab0398244d4721d71cf7e1c5724a9ef` and SHA-256
-`5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`.
-`oasis_re_diff` emits deterministic `oasis.m68k.re-diff.v1` JSON/text for only
-the five requested bounded targets: exact `0x3820->0x37D0`, `0x60004->0x60004`,
-`0x82AE->0x825E`, `0x7A28->0x79D8`, and structural `0xA6A4->0xA654` with one
-raw changed block (ordinal 10). Normalization retains opcode-family,
-addressing/flow shape and widths while omitting relocation-sensitive values;
-candidate scanning is bounded and deterministic. **Boundary:** this proves
-only byte/decoder/CFG correspondence in selected windows, not semantics,
-function names or behavior outside them.
+**Status:** VERIFIED bounded correspondence only. `oasis_re_diff` reports the
+five requested pairs: exact `0x3820->0x37D0`, `0x60004->0x60004`,
+`0x82AE->0x825E`, `0x7A28->0x79D8`, and structural `0xA6A4->0xA654` with
+changed block ordinal 10. No semantic identity or behavior is inferred.
 
 ### M11.5 fifth checkpoint — changed block ordinal 10 detail
-**Status:** CONFIRMED as bounded instruction/CFG/data-level evidence only; no
-semantic interpretation is assigned.
+**Status:** CONFIRMED raw bounded instruction/CFG evidence. Retail
+`[0xA786,0xA792)` and beta `[0xA736,0xA742)` are 12-byte, 3-instruction
+blocks. Edges correspond as `A6BA->A786`/`A66A->A736`,
+`A78E->A7D4`/`A73E->A784`, and `A78E->A792`/`A73E->A742`. Only
+`2F3C0000A6BE` versus `2F3C0000A66E` differs and is `relocation_only`;
+`4A46` and `6B000044` (condition `0xB`) are identical. Semantics remain
+unknown.
 
-- The selected correspondence is retail entry `0xA6A4` to beta entry `0xA654`,
-  changed block ordinal 10. Retail block range is `[0xA786,0xA792)` and beta
-  range is `[0xA736,0xA742)`; both are 12 bytes and contain 3 decoded
-  instructions.
-- Retail has direct predecessor `0xA6BA -> 0xA786`; beta has
-  `0xA66A -> 0xA736`. The changed block's conditional branch is
-  `0xA78E -> 0xA7D4` in retail and `0xA73E -> 0xA784` in beta. The explicit
-  conditional fallthrough edges are `0xA78E -> 0xA792` and
-  `0xA73E -> 0xA742`. These edges have the same block-relative topology.
-- Instruction 0 is `move` opcode `0x2F3C`, addressing modes immediate plus
-  address-predecrement: retail bytes `2F3C0000A6BE`, beta bytes
-  `2F3C0000A66E`. The recorded immediate is `0xA6BE` versus `0xA66E`.
-  Each value is the address of a decoded instruction at the same relative
-  offset in its bounded slice, so the tool classifies this raw difference as
-  `relocation_only`, not as a semantic constant change.
-- Instruction 1 is byte-identical `4A46`. Instruction 2 is byte-identical
-  `6B000044`; both sides record direct-branch condition code `0xB`, with the
-  corresponding relocated targets above. No direct memory reference occurs in
-  this block; the address-predecrement register use and pushed immediate are
-  recorded as raw decoder evidence only.
-- `oasis.m68k.re-diff.v1` adds `changed_block_details` without changing the
-  schema identifier. The section includes both direct and fallthrough CFG
-  edges, raw instruction records, addressing modes, condition codes,
-  immediate values and unresolved/unsupported fields.
+### M11.5 first bounded ROM Atlas prototype
+**Status:** VERIFIED as developer-only aggregation; no semantic names or
+runtime behavior were added. Schema: `oasis.m68k.re-atlas.v1`.
 
-**Unknown:** the meaning of the pushed address, the condition's gameplay role,
-function semantics and any behavior outside these bounded blocks remain
-unknown. This checkpoint does not establish a semantic constant change or
-authorize wider beta scanning, tracing, recompilation or production changes.
+- The typed manifest contains 13 entries: code `0x3820`, `0x60004`, `0x7A28`,
+  `0x82AE`, `0x8E90`, `0x938E`, `0x9BF2`, `0xA6A4`, `0xD3B2`; tables
+  `0x5CE96`, `0x96E8`, `0x96F8`, `0xC92C`. IDs are raw address IDs.
+- Exact boundaries are claimed only for `[0x3820,0x3B3E)`,
+  `[0xD3B2,0xD406)` and the documented 108-entry table
+  `[0x5CE96,0x5D046)`. Other entries expose bounded evidence ends without
+  claiming function ownership.
+- The report reuses `re_program` for 13 direct call edges, function/block-bound
+  ROM/RAM refs and unresolved/unsupported/indirect categories; `re_diff` for
+  beta correspondence; and `re_trace` for raw A6A4 facts `A7D4->FF2954`,
+  `A7DE->FF2976`, `A7E2->A7E4`. No whole-ROM scan was added.
+- USA/Beta oracle result: 13 entries, 1314 confirmed classified bytes, 6560
+  bounded evidence bytes and zero conflicts. Verified native statuses are
+  limited to previously tested paths at `0x3820`, `0x7A28`, `0x82AE`, `0x938E`
+  and `0x9BF2`; other entries remain unimplemented or unverified.
+
+**Unknown:** table sizes at `0x96E8`, `0x96F8`, `0xC92C`, bounded ownership,
+unresolved effective addresses and routine semantics remain unknown. Atlas is
+not an emulator, recompiler, whole-ROM map or gameplay runtime dependency.
 
 ## ROM identification implementation
 **Status:** VERIFIED.

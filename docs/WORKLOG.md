@@ -2,22 +2,21 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
-## 2026-09-03 — M11.5 fifth checkpoint: changed block ordinal 10 completed
+## 2026-09-03 — M11.5 first bounded ROM Atlas prototype completed
 
-**TASK/ACTIONS:** Inspect only retail `0xA6A4` versus beta `0xA654` changed
-block 10. Extended developer-only `oasis_re_diff` JSON/text with aligned
-ranges, direct/fallthrough edges, raw instruction records, addressing modes,
-condition codes and conservative classifications. **RESULT:** Retail
-`[0xA786,0xA792)` and beta `[0xA736,0xA742)` are 12-byte, 3-instruction blocks;
-predecessors `A6BA->A786` / `A66A->A736`, taken edges `A78E->A7D4` /
-`A73E->A784`, fallthrough `A78E->A792` / `A73E->A742`. Raw
-`2F3C0000A6BE` versus `2F3C0000A66E` is `relocation_only`; `4A46` and
-`6B000044` are identical with condition code `0xB`. **TESTS:** synthetic,
-retail/beta oracle, Debug/Release CTest, GNU-equivalent link, deterministic
-report, file-limit and diff-check green before push; GitHub Actions CI run
-`33763142425` is green.
-**UNKNOWN/NEXT:** pushed-address and branch semantics plus outside bytes;
-stop, await instruction, no M12 or wider scan/tracing/recompilation.
+**TASK/ACTIONS:** Added developer-only typed `oasis.m68k.re-atlas.v1` over
+existing `re_program`, `re_trace` and `re_diff`; updated TASK/PROJECT_STATE,
+REVERSE_ENGINEERING and FILE_MAP. Manifest has 13 raw-address entries, exact
+boundaries only at `3820..3B3E`, `D3B2..D406`, `5CE96..5D046`, separate bounded
+windows elsewhere, 13 call edges, 6 ROM refs, 50 RAM refs and conflict/query
+APIs. **RESULT:** USA/Beta oracle confirms entries, five prior correspondences,
+A6A4 structural changed block 10 and raw dynamic `A7D4->FF2954`,
+`A7DE->FF2976`, `A7E2->A7E4`; 1314 confirmed bytes, 6560 bounded bytes,
+582 unresolved/unsupported/indirect items and zero conflicts. **TESTS:**
+  synthetic, Debug CTest 19/19, Release CTest 19/19, GNU-equivalent CTest 19/19,
+  Debug/Release USA+Beta oracle, JSON parse plus matching report hashes,
+  deterministic report, file-limit and diff-check green. **UNKNOWN/NEXT:** table sizes at `96E8/96F8/C92C`, ownership and
+semantics remain unknown; sync focused commit, then stop—no M12 or wider scan.
 
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
 

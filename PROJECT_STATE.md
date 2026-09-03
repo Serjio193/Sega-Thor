@@ -1,12 +1,29 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 fifth checkpoint — retail/beta changed block ordinal 10 detail
+CURRENT_TASK: M11.5 first bounded ROM Atlas prototype
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: Retail block 0xA786..0xA792 and beta block 0xA736..0xA742 are 12-byte, 3-instruction CFG-equivalent blocks; the only raw change is relocation-only immediate 0xA6BE versus 0xA66E, with oracle and Debug/Release CTest passing
-NEXT_ACTION: Stop at the verified fifth M11.5 checkpoint and await explicit instruction
+LAST_VERIFIED_RESULT: Deterministic oasis.m68k.re-atlas.v1 maps 13 bounded evidence entries, accepted beta correspondences, calls/refs, raw A6A4 dynamic facts and no conflicts; USA/Beta oracle, Debug/Release/GNU CTest and JSON determinism pass
+NEXT_ACTION: Synchronize the focused Atlas commit after CI, then stop
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 first bounded ROM Atlas prototype
+- `oasis_re_atlas` is a developer-only typed manifest/report layer over the
+  existing bounded `re_program`, `re_trace` and `re_diff` tooling; `oasis_core`
+  gameplay runtime is unchanged.
+- The manifest has 13 raw-address entries: code at `0x3820`, `0x60004`,
+  `0x7A28`, `0x82AE`, `0x8E90`, `0x938E`, `0x9BF2`, `0xA6A4`, `0xD3B2`, and
+  tables at `0x5CE96`, `0x96E8`, `0x96F8`, `0xC92C`.
+- Exact boundaries are only claimed for `0x3820..0x3B3E`, `0xD3B2..0xD406`
+  and the 108-entry `0x5CE96` table. Other windows retain a separate bounded
+  evidence end and do not claim ownership.
+- Atlas records direct call sites/edges, function/block-bound refs, unresolved
+  and unsupported categories, beta correspondence, native status and queries.
+  A6A4 carries raw dynamic facts `A7D4->FF2954`, `A7DE->FF2976`, `A7E2->A7E4`.
+- Current local result: 13 entries, 13 call edges, 1314 confirmed classified
+  bytes, 6560 bounded evidence bytes and zero conflicts. Semantics remain raw
+  or UNKNOWN; no milestone status changed.
 
 ## M11.5 fifth checkpoint — changed block ordinal 10 detail
 - Retail block 10 is `[0xA786,0xA792)`; beta block 10 is

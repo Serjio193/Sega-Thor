@@ -85,7 +85,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_diff.cpp Conservative normalized signature and analogue matching
 │       ├── re_diff_detail.cpp Bounded changed-block CFG/instruction detail
 │       ├── re_diff_format.cpp Deterministic revision-diff JSON/human formatting
-│       └── re_diff_report.cpp Local-only retail/beta differential CLI
+│       ├── re_diff_report.cpp Local-only retail/beta differential CLI
+│       ├── re_atlas.hpp Typed bounded ROM Atlas model/query API
+│       ├── re_atlas.cpp Atlas manifest, evidence aggregation and conflict detection
+│       ├── re_atlas_format.cpp Deterministic Atlas JSON/human formatting
+│       └── re_atlas_report.cpp Local-only bounded Atlas CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -107,6 +111,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_trace_reference.cpp              Local USA-ROM oracle for bounded dynamic scenario
     ├── re_diff_test.cpp                    Synthetic exact/structural/changed matching tests
     ├── re_diff_reference.cpp               Local retail/beta fingerprint/correspondence oracle
+    ├── re_atlas_test.cpp                   Synthetic Atlas model/query/conflict tests
+    ├── re_atlas_reference.cpp              Local USA/Beta Atlas oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
