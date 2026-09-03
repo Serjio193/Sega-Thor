@@ -19,6 +19,20 @@ int main() {
     assert(transfer->source_type_cleared);
     assert(!produce_observed_event({.raw_type = 0x0007}));
 
+    const auto early_return = trace_flag_clear_handler(0x0123);
+    assert(early_return.first_selector == kObservedDriverFirstSelector);
+    assert(early_return.first_result_masked == 0x0123);
+    assert(!early_return.first_result_was_sentinel);
+    assert(!early_return.second_call_issued);
+
+    const auto state_update = trace_flag_clear_handler(0xFFFF);
+    assert(state_update.first_result_was_sentinel);
+    assert(state_update.second_call_issued);
+    assert(state_update.second_selector == kObservedDriverSecondSelector);
+    assert(state_update.state_and_mask == kObservedDriverStateAndMask);
+    assert(state_update.record_field_source == kObservedDriverSourceRamAddress);
+    assert(state_update.timeout_field_value == 0xFFFF);
+
     const auto flag_clear = route_observed_event(0x16, 0);
     assert(flag_clear.eligible);
     assert(flag_clear.handler_address == kObservedRouteFlagClearAddress);

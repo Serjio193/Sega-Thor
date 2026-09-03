@@ -328,9 +328,10 @@ dialogue and command semantics remain UNKNOWN.
   `0x01FF`, then clears mask `0xFFF9` at `FF17B8` and writes raw `FF0D7E` to
   current-record `+0x06` and `0xFFFF` to `+0x5C` — **CONFIRMED**. The helper
   and field meanings remain UNKNOWN.
-- The native `event_router` module exposes the producer transfer and raw
-  handler-address mapping only. Synthetic tests and the USA-ROM oracle cover
-  the type gate, field composition and dispatch boundaries.
+- The native `event_router` module exposes the producer transfer, raw
+  handler-address mapping and the bounded `0x7B2A` trace. Synthetic tests and
+  the USA-ROM oracle cover the type gate, field composition and dispatch
+  boundaries.
 
 ### M11 boundary
 No generic event-stream parser, dialogue decoder, progression model or

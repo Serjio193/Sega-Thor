@@ -62,6 +62,16 @@ int main(int argc, char** argv) {
                      {0x0C, 0x00, 0x00, 0x15, 0x63, 0x00, 0x01, 0x4A,
                       0x0C, 0x00, 0x00, 0x19, 0x63, 0x00, 0x01, 0x86},
                      "event router range mismatch");
+        expect_bytes(rom, 0x7B2A,
+                     {0x30, 0x3C, 0x00, 0x06, 0x4E, 0xB9, 0x00, 0x06,
+                      0x00, 0x04, 0x02, 0x40, 0x01, 0xFF, 0x0C, 0x40,
+                      0x01, 0xFF, 0x67, 0x02, 0x4E, 0x75},
+                     "event flag-clear handler mismatch");
+        expect_bytes(rom, 0x7B40,
+                     {0x30, 0x3C, 0x00, 0x08, 0x4E, 0xB9, 0x00, 0x06,
+                      0x00, 0x04, 0x02, 0x39, 0xFF, 0xF9, 0x00, 0xFF,
+                      0x17, 0xB8},
+                     "event flag-clear state update mismatch");
 
         using namespace oasis::game::scripts;
         const auto transfer = produce_observed_event({
@@ -81,6 +91,15 @@ int main(int argc, char** argv) {
             route_observed_event(0x16, 0).handler_address !=
                 kObservedRouteFlagClearAddress) {
             throw std::runtime_error("native event router mismatch");
+        }
+        const auto state_update = trace_flag_clear_handler(0xFFFF);
+        if (state_update.first_selector != kObservedDriverFirstSelector ||
+            !state_update.second_call_issued ||
+            state_update.second_selector != kObservedDriverSecondSelector ||
+            state_update.state_and_mask != kObservedDriverStateAndMask ||
+            state_update.record_field_source != kObservedDriverSourceRamAddress ||
+            state_update.timeout_field_value != 0xFFFF) {
+            throw std::runtime_error("native flag-clear trace mismatch");
         }
         std::cout << "verified event producer and raw router ranges\n";
         return 0;

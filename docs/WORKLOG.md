@@ -16,8 +16,9 @@ rules.
 raw type `0x0008`, clears the source type, composes `FF1976` from `+0x32/+0x52`
 and copies `+0x04/+0x4E` to `FF1978/FF197A`. `0x7A28` maps the raw code to
 bounded handlers and sends a clear flag bit to `0x7B2A`.
-**Implementation:** added `src/game/scripts/event_router.*` with raw producer
-and router functions, synthetic coverage and a local USA-ROM oracle.
+**Implementation:** added `src/game/scripts/event_router.*` with raw producer,
+router and `0x7B2A` trace functions, synthetic coverage and a local USA-ROM
+oracle.
 **Verification:** Debug and Release CTest pass 14/14. All six local ROM
 oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression and event meanings remain unknown.
 **Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x7B2A` is now bounded to raw calls at `0x60004` plus writes to `FF17B8` and current-record fields. **Exact next step:** investigate that caller or downstream handler without adding a generic stream parser.
