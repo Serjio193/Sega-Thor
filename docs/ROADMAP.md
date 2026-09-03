@@ -35,16 +35,36 @@ Completed:
 ## M2 — Identify supported ROM revision — NEXT
 Goal: establish one reproducible reference binary.
 
-Tasks:
-- identify exact Beyond Oasis revision/region used for initial work;
-- record file size and cryptographic hashes locally without committing ROM;
-- add ROM identification code;
-- reject/flag unsupported revisions clearly;
-- document header fields and relevant address assumptions.
+Accepted reference:
+- USA retail `Beyond Oasis` is the canonical engineering binary;
+- final reconstructed game model remains region-independent;
+- Europe/Japan are secondary evidence/future data profiles.
+
+Completed implementation:
+- exact byte-size reporting;
+- Mega Drive header parsing;
+- Sega checksum calculation/validation;
+- CRC32, SHA-1 and SHA-256 calculation;
+- known-ROM classification;
+- `SUPPORTED / KNOWN_UNSUPPORTED / MODIFIED / UNKNOWN` states;
+- synthetic tests;
+- CLI fingerprint output;
+- GitHub Actions build/test workflow.
+
+Confirmed USA identity evidence:
+- size `3145728`;
+- CRC32 `C4728225`;
+- SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
+- preservation status `good` in current MAME metadata.
+
+Remaining before DONE:
+- observe green CI for the current branch revision;
+- optionally pin SHA-256 when independently established from a verified clean dump.
 
 Acceptance criteria:
 - tool/runtime can identify the supported reference ROM;
-- tests cover version detection using non-copyrighted synthetic fixtures where possible.
+- tests cover version detection primitives using non-copyrighted synthetic fixtures;
+- current branch build/tests are verified.
 
 ## M3 — Reverse-engineer graphics decompression at `0x00003820` — TODO
 Goal: translate the first substantial original routine to tested C++.
