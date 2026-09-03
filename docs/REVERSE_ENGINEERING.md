@@ -336,6 +336,10 @@ dialogue and command semantics remain UNKNOWN.
 - The command `0x0008` branch reaches `0x60D10`, which performs raw 68000/Z80
   bus operations and copies `0x0606` bytes from `A01000` to `FF0022` —
   **CONFIRMED**. Driver protocol and audio meaning remain outside M11.
+- The command `0x0006` handler at `0x609C6` starts `D0` at zero, sets it to
+  `0x01FF` when bit 0 of `FF001A` is set, then ORs bits from bit 4 of eleven
+  driver RAM locations before returning through `0x611D8` — **CONFIRMED**.
+  The event-side meaning of this mask remains UNKNOWN.
 - The native `event_router` module exposes the producer transfer, raw
   handler-address mapping and the bounded `0x7B2A` trace. Synthetic tests and
   the USA-ROM oracle cover the type gate, field composition and dispatch
