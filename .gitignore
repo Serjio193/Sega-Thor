@@ -1,0 +1,15 @@
+Beyond Oasis (USA).zip
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+*.bin
+*.gen
+*.smd
+*.rom
+*.pgm
+*.ppm
+output/
+.DS_Store
+.vscode/
+.idea/
