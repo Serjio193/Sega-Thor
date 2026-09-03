@@ -252,9 +252,11 @@ dispatch. `oasis_spirit_slots_reference` checks the USA bytes at `0x7BE8`,
 - `0x17CA6` calls `0xB922` with relative bounds `[-10,-6,10,6,0,4]`, then
   checks the returned record's raw type word against `0x16` at `0x17CE4` —
   **CONFIRMED**.
-- `0xB922` scans the 21-record `FF19E8` pool in order, skips the owner and
-  inactive records, applies the observed X/Y interval checks and Z containment
-  check, and returns the first spatial match — **CONFIRMED**.
+- `0xB922` scans the 21-record `FF19E8` pool in order, skips an inactive
+  record or a record whose pointer equals the owner pointer, applies the
+  observed X/Y interval checks and Z containment check, and returns the first
+  spatial match — **CONFIRMED**. In the observed path the owner is from
+  `FF2D8C`, so equal numeric indices across the two pools are not excluded.
 - The native `find_observed_target` preserves the first-match-then-type-check
   behavior. The raw fields used by the query are exposed without semantic
   names; interaction meaning remains UNKNOWN. The ROM oracle also checks the

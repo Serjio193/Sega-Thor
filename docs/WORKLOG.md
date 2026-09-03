@@ -4,6 +4,15 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M10 target exclusion wording corrected
+
+**Result:** clarified that `0xB922` excludes the owner by pointer equality,
+not by numeric pool index. This matches the verified cross-pool path and keeps
+the reverse-engineering record consistent with the native implementation.
+
+**Exact next step:** trace the data producer that populates raw type `0x16` in
+`FF19E8`; do not assign summon or ability semantics without that evidence.
+
 ## 2026-09-03 — M10 target selection committed
 
 **Result:** The target-selection slice was committed as `3042689` and pushed to `origin/main`. The working tree is clean and `main` matches the remote branch.
