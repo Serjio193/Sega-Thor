@@ -1,61 +1,51 @@
 # Current Task
 
-TASK: M11 — Event/script router investigation
-WHY: M10 is complete; the next dependency is evidence-backed script/event behavior beyond the already verified raw router slice.
-CURRENT MILESTONE: M11
-MILESTONE UNDERSTANDING CONFIDENCE: 70%
+TASK: M11.5 — Narrow 68000 RE acceleration experiment
+WHY: M11 is complete. Before starting M12, test whether a small static 68000 analysis tool can materially reduce manual reverse-engineering work on already-evidenced routine `0x60004`.
+CURRENT MILESTONE: M11.5
+MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 95%
-SLICE MODE: IMPLEMENTATION_ALLOWED
-STATUS: COMPLETE
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: ACTIVE
 
-## Confidence evidence
-- The completed M11 raw producer/router slice had >=90% slice confidence before implementation because its type gate, field transfer, bounded handler ranges, synthetic tests, USA-ROM oracle and CI were independently verified.
-- The **current** follow-up slice now has exact raw inputs, outputs and side effects for `0x7B2A -> 0x60004 -> 0x609C6/0x60D10 -> 0x62CC`; the producer caller itself remains an independent unknown.
-- Current-slice confidence is 95% for this bounded downstream contract. No semantic audio/dialogue label is assigned.
+## Scope
+This is a bounded tooling checkpoint, not a gameplay/runtime milestone. The tool is research infrastructure only and must not become part of the native game runtime.
 
-## Preconditions completed
-- M2 canonical USA ROM identification is complete.
-- M3 graphics decompression is native and differentially verified.
-- M4 local graphics inspection is verified against the reference ROM.
-- M5 narrow VDP state model is tested and renderer-independent.
-- M6 deterministic runtime/input skeleton is complete.
-- M7 screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are verified and tested.
-- M8 player movement/state slice is accepted locally and by CI.
-- M9 common entity-pool framework and representative callback-dispatch path are accepted locally and by CI.
-- M10 spirit raw entry, slot/dispatch and target-query slice is accepted locally and by CI.
+Initial target: USA-ROM routine `0x00060004`, already encountered and partially bounded during M11.
 
-## Completed M11 initial slice
-- [x] identify one event/script producer and its data-source evidence;
-- [x] identify one bounded dispatch boundary;
-- [x] translate one deterministic event/script operation;
-- [x] add synthetic tests for the native operation;
-- [x] add a local USA-ROM oracle for addresses/bytes/data used by the slice;
-- [x] keep dialogue semantics and unproven commands out;
-- [x] record unknown fields without invented meanings;
-- [x] keep every file <= 500 lines;
-- [x] CI green.
+## Acceptance criteria
+- [ ] use the user-supplied canonical USA ROM only; do not commit ROM bytes or extracted commercial assets;
+- [ ] add one small isolated RE tool that starts from `0x60004` and decodes enough Motorola 68000 control flow to produce useful evidence;
+- [ ] identify basic blocks and direct branch/call targets reachable inside the bounded analysis;
+- [ ] report direct ROM/RAM absolute references and immediate constants encountered where decoding is reliable;
+- [ ] emit a deterministic human-readable report and a machine-readable JSON report;
+- [ ] add synthetic tests for decoder/control-flow behavior and a local USA-ROM oracle for the `0x60004` experiment;
+- [ ] verify that the generated result independently recovers already-known M11 evidence around the `0x60004` path;
+- [ ] update FILE_MAP / WORKLOG / REVERSE_ENGINEERING as required by added files or new evidence;
+- [ ] keep every source/document file <= 500 lines;
+- [ ] CI green.
 
-## Current follow-up acceptance gate
-- [x] fully bound the relevant downstream handler contract;
-- [x] record exact addresses, inputs, outputs and side effects;
-- [x] raise CURRENT SLICE UNDERSTANDING CONFIDENCE to >=90% with written evidence;
-- [x] define implementation-specific criteria for the bounded raw trace.
+## Hard boundaries
+- Do not build a full Motorola 68000 emulator.
+- Do not build a general-purpose Mega Drive emulator.
+- Do not attempt whole-ROM recompilation in this checkpoint.
+- Do not add generated 68000 instruction-by-instruction code to the native gameplay runtime.
+- Do not invent semantic names for unknown routines, RAM fields, driver commands or event meanings.
+- Do not start M12 implementation while this checkpoint is ACTIVE.
+- Do not add a broad dependency/framework unless the narrow `0x60004` experiment proves it is required.
 
-## Current follow-up implementation criteria
-- preserve the masked result from the first raw driver call;
-- issue raw selector `0x0008` only for sentinel `0x01FF`;
-- expose the verified `FF17B8`, current-record and `0x62CC` cleanup effects;
-- keep driver, audio, dialogue and progression meanings unassigned.
+## Evaluation gate
+The experiment succeeds only if it makes the `0x60004` analysis materially easier than the current manual method. Merely producing a disassembly listing is insufficient.
 
-## Constraints
-- Do not begin M12 or later work.
-- Do not label a raw record as enemy/NPC/effect without evidence.
-- Do not infer entity fields from common engine conventions; prove them from callers/accesses.
-- Do not add a generic stream parser without direct evidence that the current slice requires it.
-- Keep pool iteration, behavior selection and presentation separate.
-- Prefer exact integer/fixed-point behavior over floating point.
-- Keep the ROM archive local-only and untracked.
+Useful output should include, when recoverable:
+- entry/basic-block addresses;
+- direct branch and call edges;
+- return/termination boundaries;
+- absolute memory references;
+- immediate constants;
+- unresolved indirect targets explicitly marked UNKNOWN.
+
+If the PoC cannot independently reproduce known M11 control-flow/data evidence or adds excessive complexity, stop it and return to the normal evidence-first RE workflow instead of expanding the tool.
 
 ## Exact next action
-M11 bounded event-router slice is complete and verified. Stop here and await
-an explicit next-milestone instruction; do not begin M12.
+Implement the smallest `0x60004` static-analysis PoC, verify it against existing M11 evidence, then stop for review before adding dynamic tracing, similarity search, whole-ROM discovery or recompilation.
