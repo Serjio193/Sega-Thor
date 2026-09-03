@@ -37,6 +37,32 @@ Use this file for decisions that can redirect architecture, dependencies, scope,
 
 **Reason:** Keep modules understandable for humans and AI agents, discourage monoliths, make review and context retrieval reliable.
 
+## ADR-0005 — USA reference binary, region-independent reconstructed game
+**Status:** Accepted
+**Date:** 2026-09-03
+
+**Context:** The project aims to reconstruct the complete game so the native C++ runtime can target desktop, mobile, and future consoles. Regional retail binaries differ, while existing public reverse-engineering work and known addresses are based on the USA `Beyond Oasis` release.
+
+**Decision:**
+- Use the clean USA retail `Beyond Oasis` binary as the canonical engineering reference for addresses, traces, and differential verification.
+- The reconstructed game model must be region-independent and must not embed USA ROM addresses in gameplay code.
+- Europe and Japan are secondary evidence sources and future data profiles, not separate game implementations.
+- ROM-specific offsets belong only in extraction/reverse-engineering metadata.
+- Runtime gameplay code consumes normalized game data structures rather than raw ROM addresses.
+
+**Alternatives considered:**
+- Europe as primary reference: rejected because current public address knowledge targets USA.
+- Supporting all regions equally from the beginning: rejected because it multiplies binary-diff work before core behavior is understood.
+- Building a USA-only final runtime: rejected because it conflicts with the portable reconstruction goal.
+
+**Consequences:**
+- address annotations default to USA reference addresses;
+- later regional support maps region-specific data to the same C++ game model;
+- regional differences are documented rather than forked into separate engines;
+- reference identity must be established before translating substantial 68000 routines.
+
+**Affected files/milestones:** M2 onward, all reverse-engineering documentation and extraction code.
+
 ## ADR template
 Copy this block for new decisions:
 
