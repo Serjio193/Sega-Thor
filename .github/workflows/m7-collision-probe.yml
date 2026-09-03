@@ -1,0 +1,82 @@
+name: m7-collision-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  inspect-collision-readers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' >/tmp/beyond.zip
+          mkdir -p /tmp/rom && unzip -q /tmp/beyond.zip -d /tmp/rom
+          ROM="$(find /tmp/rom -type f | head -n1)"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Find exact xrefs to map-state RAM fields
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          for addr in (0xff1716,0xff171a,0xff173e,0xff174a,0xff17aa,0xff17ae):
+              pat=addr.to_bytes(4,'big')
+              hits=[]; p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+              print(f'ram=0x{addr:06x} count={len(hits)} hits=' + ','.join(f'0x{x:06x}' for x in hits))
+          PY
+
+      - name: Install M68K binutils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq binutils-m68k-linux-gnu
+
+      - name: Disassemble focused FF17AE readers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for RANGE in \
+            '0x013e70 0x013f20' \
+            '0x013f20 0x013fc0' \
+            '0x022740 0x022820' \
+            '0x027080 0x027180' \
+            '0x00d780 0x00d940' \
+            '0x00d940 0x00db30' \
+            '0x00db80 0x00dc80'; do
+            set -- $RANGE
+            echo "===== $1..$2 ====="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
+
+      - name: Find direct callers of focused candidate routines
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          targets=[0x13ed0,0x13f60,0x227b0,0x2710c]
+          for t in targets:
+              hits=[]
+              for pat,label in ((b'\x4e\xb9'+t.to_bytes(4,'big'),'JSR.L'),
+                                (b'\x4e\xb8'+(t&0xffff).to_bytes(2,'big'),'JSR.W')):
+                  p=0
+                  while True:
+                      p=rom.find(pat,p)
+                      if p<0: break
+                      hits.append((p,label)); p+=1
+              print(f'target=0x{t:06x} refs=' + ','.join(f'{label}@0x{p:06x}' for p,label in sorted(hits)))
+          PY
