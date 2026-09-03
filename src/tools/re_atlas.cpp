@@ -110,6 +110,33 @@ const AnalyzedFunction* find_function(const MultiSliceReport& report, std::uint3
     return found == report.functions.end() ? nullptr : &*found;
 }
 
+const DecodedInstruction* find_instruction(const AnalyzedFunction& function,
+                                           std::uint32_t address) {
+    const auto found = std::find_if(function.slice.instructions.begin(), function.slice.instructions.end(),
+                                    [=](const auto& item) { return item.address == address; });
+    return found == function.slice.instructions.end() ? nullptr : &*found;
+}
+
+std::string addressing_mode_name(std::uint8_t mode, std::uint8_t reg) {
+    if (mode == 2U) return "address_indirect";
+    if (mode == 3U) return "address_postincrement";
+    if (mode == 4U) return "address_predecrement";
+    if (mode == 5U) return "address_displacement";
+    if (mode == 6U) return "address_indexed";
+    if (mode == 7U && reg == 3U) return "pc_indexed";
+    return "unknown_addressing_mode";
+}
+
+std::string instruction_family(const std::string& mnemonic) {
+    if (mnemonic == "move" || mnemonic == "moveq" || mnemonic == "movem" || mnemonic == "lea" || mnemonic == "pea") return "move_address";
+    if (mnemonic == "binary" || mnemonic == "addq" || mnemonic == "subq") return "arithmetic";
+    if (mnemonic == "unary" || mnemonic == "ext" || mnemonic == "swap") return "unary";
+    if (mnemonic == "shift_or_rotate") return "shift_rotate";
+    if (mnemonic == "immediate" || mnemonic == "static_bit") return "immediate_bit";
+    if (mnemonic == "branch" || mnemonic == "bcc" || mnemonic == "dbcc" || mnemonic == "scc") return "control_condition";
+    return mnemonic.empty() ? "unknown" : mnemonic;
+}
+
 void add_program_evidence(AtlasEntry& entry, const MultiSliceReport& program) {
     std::vector<std::uint32_t> callees;
     for (const auto& call : program.direct_call_sites) {
@@ -140,6 +167,28 @@ void add_program_evidence(AtlasEntry& entry, const MultiSliceReport& program) {
     entry.indirect_control_flow_count = static_cast<std::size_t>(std::count_if(
         program.unresolved_control_flow.begin(), program.unresolved_control_flow.end(),
         [=](const auto& item) { return item.function_entry == entry.start; }));
+    const auto* function = find_function(program, entry.start);
+    if (!function) return;
+    for (const auto& item : program.unresolved_memory_references) {
+        if (item.function_entry != entry.start) continue;
+        const auto* instruction = find_instruction(*function, item.instruction_address);
+        if (!instruction) continue;
+        entry.unresolved_references.push_back({
+            item.instruction_address, item.block_start, item.reference.mode,
+            item.reference.register_index, addressing_mode_name(item.reference.mode, item.reference.register_index),
+            instruction_family(instruction->mnemonic), item.reference.reason,
+            entry.start == kReTraceFunctionEntry &&
+                (item.instruction_address == 0xA7D4U || item.instruction_address == 0xA7DEU),
+            !instruction->immediate_constants.empty()});
+    }
+    for (const auto& item : program.unsupported_addressing) {
+        if (item.function_entry == entry.start)
+            entry.unsupported_evidence.push_back({item.instruction_address, item.block_start, "addressing", item.reference.reason});
+    }
+    for (const auto& item : program.unsupported_instructions) {
+        if (item.function_entry == entry.start)
+            entry.unsupported_evidence.push_back({item.instruction_address, item.block_start, "opcode", "unsupported_opcode"});
+    }
 }
 
 AtlasCorrespondence map_match(MatchKind match) {

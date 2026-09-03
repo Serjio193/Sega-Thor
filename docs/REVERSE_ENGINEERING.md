@@ -474,6 +474,10 @@ runtime behavior were added. Schema: `oasis.m68k.re-atlas.v1`.
   bounded evidence bytes and zero conflicts. Verified native statuses are
   limited to previously tested paths at `0x3820`, `0x7A28`, `0x82AE`, `0x938E`
   and `0x9BF2`; other entries remain unimplemented or unverified.
+- Atlas-driven `oasis.m68k.re-ranking.v1` ranks all 577 static unresolved
+  memory refs by mode/register/family/function frequency and raw candidate
+  flags. USA result: displacement 446, `0x60004` 424, `A6` 387, immediate-based
+  propagation 168, dynamic-scenario candidates 2; unsupported decoder items 4.
 
 **Unknown:** table sizes at `0x96E8`, `0x96F8`, `0xC92C`, bounded ownership,
 unresolved effective addresses and routine semantics remain unknown. Atlas is

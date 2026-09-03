@@ -1,52 +1,52 @@
 # Current Task
 
-TASK: M11.5 first bounded ROM Atlas prototype
-WHY: Combine accepted bounded RE evidence into a reproducible machine-readable
-map without whole-ROM discovery, semantic invention or runtime changes.
+TASK: M11.5 Atlas-driven unresolved evidence ranking
+WHY: Turn the existing unresolved set into an objective priority loop without
+claiming that structural candidates are already resolved.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
+SLICE CONFIDENCE EVIDENCE: accepted typed Atlas over bounded `re_program`,
+`re_trace` and `re_diff`; USA Atlas has 577 unresolved memory refs.
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE
 
 ## Scope and method
 
-`oasis_re_atlas` builds `oasis.m68k.re-atlas.v1` from a typed manifest and the
-existing `re_program`, `re_trace` and `re_diff` APIs. It records raw-address
-entries for proven code/table evidence, confirmed versus bounded ranges,
-callers/callees, ROM/RAM refs, unresolved/unsupported evidence, beta
-correspondence, dynamic `0xA6A4` facts, native status and coverage. Markdown is
-documentation, not the primary database; bounded windows are not ownership.
+`oasis_re_atlas_rank` consumes Atlas typed unresolved records and emits
+`oasis.m68k.re-ranking.v1` JSON/text. Each record remains linked to raw
+instruction, block and function addresses and is grouped by addressing mode,
+register, instruction family, containing function and frequency. Separate raw
+candidate dimensions mark the bounded dynamic scenario and instructions with
+immediates; unsupported decoder items are separate and use zero potential refs.
+Counts overlap across dimensions and are explicitly not semantic guarantees.
 
 ## Acceptance criteria
 
-- [x] include only the 9 documented code targets and 4 named table targets;
-- [x] preserve exact boundaries separately from bounded evidence windows;
-- [x] expose deterministic calls, refs, unresolved evidence and queries;
-- [x] include accepted USA/Beta correspondences and A6A4 dynamic facts;
-- [x] detect incompatible evidence overlap without choosing silently;
-- [x] emit deterministic JSON/text and synthetic model/query tests;
-- [x] pass USA+Beta oracle, Debug/Release CTest, GNU-equivalent link,
-  file-limit and `git diff --check` before push.
+- [x] rank all Atlas unresolved records deterministically;
+- [x] expose mode/register/family/function/frequency and candidate dimensions;
+- [x] print `If support X: potentially resolve N refs` priorities;
+- [x] preserve unsupported decoder dependencies separately;
+- [x] add synthetic grouping/format tests and USA oracle counts;
+- [x] pass Debug/Release/GNU CTest, JSON parse, file-limit and diff-check;
+- [x] keep the loop developer-only with no production/runtime changes.
 
 ## Verified result
 
-Atlas contains 13 entries: 5 bounded/exact code entries from the previous
-program report plus `0x82AE`, `0x7A28`, `0x938E`, `0x9BF2`, and four named table
-starts. The local USA/Beta oracle reproduces exact correspondences at
-`0x3820/0x37D0`, `0x60004`, `0x82AE/0x825E`, `0x7A28/0x79D8`, and structural
-`0xA6A4/0xA654` with changed block 10. Dynamic evidence remains raw:
-`A7D4->FF2954`, `A7DE->FF2976`, `A7E2->A7E4`.
+The USA report ranks 577 refs in 31 groups. Largest structural opportunities:
+`address_displacement` 446, containing function `0x60004` 424, register `A6`
+387, `move_address` 360, immediate-based propagation candidates 168 and the
+bounded dynamic scenario 2. Unsupported decoder evidence is 4 items. These
+counts are objective prioritization signals, not automatic resolution.
 
 ## Known unknowns and hard boundaries
 
-Some table sizes, bounded function ownership, unresolved register refs and
-routine semantics remain UNKNOWN. Atlas is developer-only and does not add an
-emulator, whole-ROM scan, dynamic-tracing expansion, recompiler, generated
-C++ or gameplay-runtime dependency.
+Candidate flags do not prove constant propagation or dynamic coverage; the
+bounded trace backend remains limited to its accepted scenario. No production
+behavior, emulator, whole-ROM scan, recompiler, semantic names or M12 work was
+added.
 
 ## Exact next action
 
-Stop at this verified Atlas checkpoint. Await explicit instruction; do not
-start M12, whole-ROM discovery, wider tracing, similarity search or
-recompilation.
+Stop at this verified ranking checkpoint. Await explicit instruction; the next
+tool improvement must be selected from the ranked evidence, not started here.

@@ -2,21 +2,19 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
-## 2026-09-03 — M11.5 first bounded ROM Atlas prototype completed
+## 2026-09-03 — M11.5 Atlas-driven unresolved evidence ranking completed
 
-**TASK/ACTIONS:** Added developer-only typed `oasis.m68k.re-atlas.v1` over
-existing `re_program`, `re_trace` and `re_diff`; updated TASK/PROJECT_STATE,
-REVERSE_ENGINEERING and FILE_MAP. Manifest has 13 raw-address entries, exact
-boundaries only at `3820..3B3E`, `D3B2..D406`, `5CE96..5D046`, separate bounded
-windows elsewhere, 13 call edges, 6 ROM refs, 50 RAM refs and conflict/query
-APIs. **RESULT:** USA/Beta oracle confirms entries, five prior correspondences,
-A6A4 structural changed block 10 and raw dynamic `A7D4->FF2954`,
-`A7DE->FF2976`, `A7E2->A7E4`; 1314 confirmed bytes, 6560 bounded bytes,
-582 unresolved/unsupported/indirect items and zero conflicts. **TESTS:**
-  synthetic, Debug CTest 19/19, Release CTest 19/19, GNU-equivalent CTest 19/19,
-  Debug/Release USA+Beta oracle, JSON parse plus matching report hashes,
-  deterministic report, file-limit, diff-check and GitHub Actions run `33766030021` green. **UNKNOWN/NEXT:** table sizes at `96E8/96F8/C92C`, ownership and
-semantics remain unknown; sync focused commit, then stop—no M12 or wider scan.
+**TASK/ACTIONS:** Extended typed Atlas records with raw unresolved
+instruction/block/function, addressing mode, register, instruction family and
+structural candidate flags. Added `oasis_re_atlas_rank` and schema
+`oasis.m68k.re-ranking.v1`; groups are deterministic and dimensions overlap by
+design. **RESULT:** USA Atlas ranks 577 refs in 31 groups: displacement 446,
+function `0x60004` 424, register `A6` 387, move/address 360, immediate
+propagation candidates 168, dynamic-scenario candidates 2; unsupported decoder
+items 4 are separate with potential 0. **TESTS:** synthetic, USA/Beta oracle,
+Debug/Release/GNU CTest 20/20, JSON parse, file-limit and diff-check green.
+**UNKNOWN/NEXT:** candidate counts are not proof of resolution; select the next
+bounded decoder/trace improvement from this ranking only, then stop—no M12.
 
 ## 2026-09-03 — M11.5 third checkpoint: bounded dynamic tracing PoC completed
 

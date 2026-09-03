@@ -38,6 +38,25 @@ struct AtlasNativeImplementation {
     std::optional<std::string> path;
 };
 
+struct AtlasUnresolvedReference {
+    std::uint32_t instruction_address{};
+    std::uint32_t block_start{};
+    std::uint8_t mode{};
+    std::uint8_t register_index{};
+    std::string addressing_mode;
+    std::string instruction_family;
+    std::string reason;
+    bool dynamic_resolvable_candidate{};
+    bool constant_propagation_candidate{};
+};
+
+struct AtlasUnsupportedEvidence {
+    std::uint32_t instruction_address{};
+    std::uint32_t block_start{};
+    std::string kind;
+    std::string reason;
+};
+
 struct AtlasEntry {
     std::string id;
     AtlasEntryType type{AtlasEntryType::unknown_ref};
@@ -51,6 +70,8 @@ struct AtlasEntry {
     std::vector<std::uint32_t> callees;
     std::vector<std::uint32_t> direct_rom_refs;
     std::vector<std::uint32_t> direct_ram_refs;
+    std::vector<AtlasUnresolvedReference> unresolved_references;
+    std::vector<AtlasUnsupportedEvidence> unsupported_evidence;
     std::size_t unresolved_reference_count{};
     std::size_t unsupported_evidence_count{};
     std::size_t indirect_control_flow_count{};

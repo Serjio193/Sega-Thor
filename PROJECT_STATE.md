@@ -24,6 +24,10 @@ BLOCKERS: none
 - Current local result: 13 entries, 13 call edges, 1314 confirmed classified
   bytes, 6560 bounded evidence bytes and zero conflicts. Semantics remain raw
   or UNKNOWN; no milestone status changed.
+- `oasis.m68k.re-ranking.v1` ranks the 577 static unresolved memory refs from
+  Atlas. Largest structural opportunities are displacement mode 446 refs,
+  function `0x60004` 424, register `A6` 387, immediate candidates 168 and the
+  bounded dynamic scenario 2; 4 unsupported decoder items stay separate.
 
 ## M11.5 fifth checkpoint — changed block ordinal 10 detail
 - Retail block 10 is `[0xA786,0xA792)`; beta block 10 is

@@ -44,6 +44,7 @@ add_library(oasis_re_tooling
     src/tools/re_diff_format.cpp
     src/tools/re_atlas.cpp
     src/tools/re_atlas_format.cpp
+    src/tools/re_atlas_ranking.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -61,6 +62,9 @@ target_link_libraries(oasis_re_diff PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_atlas src/tools/re_atlas_report.cpp)
 target_link_libraries(oasis_re_atlas PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_atlas_rank src/tools/re_atlas_ranking_report.cpp)
+target_link_libraries(oasis_re_atlas_rank PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -136,6 +140,10 @@ add_executable(oasis_re_atlas_test tests/re_atlas_test.cpp)
 target_link_libraries(oasis_re_atlas_test PRIVATE oasis_re_tooling oasis_core)
 add_test(NAME oasis_re_atlas COMMAND oasis_re_atlas_test)
 
+add_executable(oasis_re_atlas_ranking_test tests/re_atlas_ranking_test.cpp)
+target_link_libraries(oasis_re_atlas_ranking_test PRIVATE oasis_re_tooling oasis_core)
+add_test(NAME oasis_re_atlas_ranking COMMAND oasis_re_atlas_ranking_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -190,6 +198,7 @@ set(oasis_test_targets
     oasis_re_trace_test
     oasis_re_diff_test
     oasis_re_atlas_test
+    oasis_re_atlas_ranking_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -223,6 +232,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_trace
         oasis_re_diff
         oasis_re_atlas
+        oasis_re_atlas_ranking
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

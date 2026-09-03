@@ -1,5 +1,6 @@
 #include "core/rom.hpp"
 #include "tools/re_atlas.hpp"
+#include "tools/re_atlas_ranking.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -44,6 +45,23 @@ int main(int argc, char** argv) {
     }
     if (report.coverage.confirmed_classified_bytes != (0x3B3E - 0x3820) + (0xD406 - 0xD3B2) + (0x5D046 - 0x5CE96)) {
         throw std::runtime_error("atlas coverage mismatch");
+    }
+    const auto ranking = oasis::tools::rank_atlas_unresolved(report);
+    if (ranking.atlas_unresolved_reference_count != 577 ||
+        ranking.dynamic_resolvable_candidate_count != 2 ||
+        ranking.constant_propagation_candidate_count != 168 ||
+        ranking.unsupported_decoder_item_count != 4) {
+        throw std::runtime_error("atlas ranking totals mismatch");
+    }
+    const auto has_group = [&](const char* dimension, const char* key, std::size_t potential) {
+        return std::find_if(ranking.groups.begin(), ranking.groups.end(), [&](const auto& group) {
+            return group.dimension == dimension && group.key == key && group.potentially_resolvable_refs == potential;
+        }) != ranking.groups.end();
+    };
+    if (!has_group("addressing_mode", "address_displacement", 446) ||
+        !has_group("containing_function", "0x00060004", 424) ||
+        !has_group("register", "A6", 387)) {
+        throw std::runtime_error("atlas ranking priority mismatch");
     }
     const auto first = oasis::tools::atlas_to_json(report);
     if (first != oasis::tools::atlas_to_json(report)) throw std::runtime_error("atlas JSON is not deterministic");

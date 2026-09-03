@@ -46,6 +46,38 @@ void json_strings(std::ostringstream& out, const std::vector<std::string>& value
     out << ']';
 }
 
+void json_unresolved(std::ostringstream& out, const std::vector<AtlasUnresolvedReference>& values) {
+    out << '[';
+    for (std::size_t i = 0; i < values.size(); ++i) {
+        if (i) out << ',';
+        const auto& item = values[i];
+        out << "{\"instruction_address\":" << json_string(hex32(item.instruction_address))
+            << ",\"block_start\":" << json_string(hex32(item.block_start))
+            << ",\"mode\":" << static_cast<unsigned>(item.mode)
+            << ",\"register_index\":" << static_cast<unsigned>(item.register_index)
+            << ",\"addressing_mode\":" << json_string(item.addressing_mode)
+            << ",\"instruction_family\":" << json_string(item.instruction_family)
+            << ",\"reason\":" << json_string(item.reason)
+            << ",\"dynamic_resolvable_candidate\":" << (item.dynamic_resolvable_candidate ? "true" : "false")
+            << ",\"constant_propagation_candidate\":" << (item.constant_propagation_candidate ? "true" : "false")
+            << '}';
+    }
+    out << ']';
+}
+
+void json_unsupported(std::ostringstream& out, const std::vector<AtlasUnsupportedEvidence>& values) {
+    out << '[';
+    for (std::size_t i = 0; i < values.size(); ++i) {
+        if (i) out << ',';
+        const auto& item = values[i];
+        out << "{\"instruction_address\":" << json_string(hex32(item.instruction_address))
+            << ",\"block_start\":" << json_string(hex32(item.block_start))
+            << ",\"kind\":" << json_string(item.kind)
+            << ",\"reason\":" << json_string(item.reason) << '}';
+    }
+    out << ']';
+}
+
 void json_identity(std::ostringstream& out, const RomIdentity& identity) {
     out << "{\"id\":" << json_string(identity.id)
         << ",\"display_name\":" << json_string(identity.display_name)
@@ -74,6 +106,8 @@ void json_entry(std::ostringstream& out, const AtlasEntry& entry) {
     out << ",\"callees\":"; json_numbers(out, entry.callees);
     out << ",\"direct_rom_refs\":"; json_numbers(out, entry.direct_rom_refs);
     out << ",\"direct_ram_refs\":"; json_numbers(out, entry.direct_ram_refs);
+    out << ",\"unresolved_references\":"; json_unresolved(out, entry.unresolved_references);
+    out << ",\"unsupported_evidence\":"; json_unsupported(out, entry.unsupported_evidence);
     out << ",\"unresolved_reference_count\":" << entry.unresolved_reference_count
         << ",\"unsupported_evidence_count\":" << entry.unsupported_evidence_count
         << ",\"indirect_control_flow_count\":" << entry.indirect_control_flow_count
