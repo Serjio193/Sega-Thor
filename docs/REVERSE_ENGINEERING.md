@@ -9,6 +9,43 @@ This file records what is known about the original Beyond Oasis binary. Do not p
 | `0x00C00004` | Mega Drive VDP control port | CONFIRMED | Present in public ROM-hacking constants and standard hardware mapping |
 | `0x00FF0000` | 68000 work RAM base | CONFIRMED | Present in public ROM-hacking constants and standard hardware mapping |
 
+## Reference ROM identity
+
+### USA retail — canonical engineering reference
+**Role:** Canonical binary for original addresses, disassembly, traces, and differential verification.
+
+**Confidence:** CONFIRMED for size/CRC32/SHA-1 identity from public preservation/database evidence. SHA-256 will be recorded when independently established from a verified local/reference dump.
+
+| Field | Value | Confidence |
+|---|---|---|
+| Title | `Beyond Oasis (USA)` | CONFIRMED |
+| Size | `3145728` bytes (3 MiB) | CONFIRMED |
+| CRC32 | `C4728225` | CONFIRMED |
+| SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` | CONFIRMED |
+| SHA-256 | not yet pinned | UNKNOWN |
+| Runtime role | reference evidence/data source, not region-specific gameplay model | ACCEPTED ADR-0005 |
+
+**Evidence:**
+- current MAME software-list metadata marks `beyond oasis (usa).bin` as `good`, size `3145728`, CRC `c4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`;
+- GameHacking.org independently reports USA / 3M / CRC32 `C4728225`;
+- existing public `smd_beyondoasis` work explicitly targets `Beyond Oasis (U) [!]`.
+
+### Europe retail — known secondary revision
+**Role:** Secondary evidence/future data profile; not current address reference.
+
+| Field | Value | Confidence |
+|---|---|---|
+| Title | `The Story of Thor (Europe)` | HIGH |
+| Size | `3145728` bytes (3 MiB) | HIGH |
+| CRC32 | `1110B0DB` | HIGH |
+| Current runtime status | `KNOWN_UNSUPPORTED` | PROJECT POLICY |
+
+### Region policy
+- USA addresses are the default notation in reverse-engineering documents.
+- Region-specific offsets must not leak into native gameplay code.
+- Europe/Japan may be compared to USA to understand regional data/code differences.
+- The final C++ game model is region-independent.
+
 ## Known game routine candidates
 
 ### `0x00003820` — `DecompressGraphics`
@@ -54,16 +91,19 @@ This file records what is known about the original Beyond Oasis binary. Do not p
 
 **Status:** Initial C++ compatibility implementation exists. Current VDP model is intentionally minimal.
 
-## ROM revision research
-**Status:** NOT STARTED.
+## ROM identification implementation
+**Status:** IMPLEMENTED, verification in progress.
 
-Record here when M2 begins:
-- regional title/header values;
-- ROM size;
-- checksum fields;
-- SHA-1/SHA-256 of developer-owned reference dump (hashes only, never ROM data);
-- differences between known revisions;
-- which revision defines canonical original addresses.
+Current detector records:
+- exact input byte size;
+- Mega Drive header signature/titles/product/region/ROM range;
+- stored and calculated Sega checksum;
+- CRC32;
+- SHA-1;
+- SHA-256;
+- classification: `SUPPORTED`, `KNOWN_UNSUPPORTED`, `MODIFIED`, `UNKNOWN`.
+
+USA `SUPPORTED` matching requires the confirmed 3 MiB size + CRC32 + SHA-1 tuple. No commercial ROM bytes are stored in tests or repository.
 
 ## Routine entry template
 ```text
