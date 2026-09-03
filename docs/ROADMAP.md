@@ -34,51 +34,46 @@ Reference vectors:
 `oasis_inspect` performs supported-ROM validation, native decompression, Genesis 4bpp tile decoding and local PGM/PPM export. Generated commercial data remains local/ignored.
 
 ## M5 — VDP data model and rendering primitives — DONE
-Verified:
-- 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM storage;
-- bounded byte-span and big-endian word access;
-- standard tile pattern-name decoding;
-- minimal plane-cell and raw four-word sprite attribute decoding;
-- explicit unsupported/full-emulator semantics list;
-- no SDL/GPU dependency in core;
-- VDP synthetic tests and CI green.
-
-M5 reference probe additionally found 196 raw `0xC00000` data-port references and 33 `0xC00004` control-port references in the USA ROM. The `0x2BA0` routine writes 40 zero words after a VDP control setup, providing direct game evidence consistent with 80-byte VSRAM usage.
+Verified 64 KiB VRAM, 128-byte CRAM, 80-byte VSRAM, bounded byte/word access, standard tile pattern-name decoding, minimal plane/sprite data, explicit unsupported emulator semantics and green tests.
 
 ## M6 — Runtime frame/input skeleton — DONE
-Goal: deterministic portable frame stepping without wall-clock or platform dependencies.
+Portable controller snapshots, explicit integer frame stepping and deterministic replay-style tests are established without wall-clock or platform dependencies.
+
+## M7 — World/map/collision foundations — DONE
+Goal: decode room/map structures and collision semantics before translating player behavior.
 
 Verified:
-- portable controller bit state for two ports;
-- explicit `FrameContext` with integer `frame_index` and immutable input snapshot;
-- `RuntimeLoop::step()` advances exactly one frame per call;
-- deterministic test runs the same input sequence twice and requires identical traces;
-- changed input produces a different trace;
-- no SDL/OS dependency in runtime core;
-- duplicate experimental frame API removed rather than maintaining parallel abstractions;
-- current CI green.
+- screen dispatcher `0xC8F0` uses high/low bytes of the screen ID with group table `0xC92C` and resolves 26-byte descriptors;
+- multiple USA ROM screen IDs resolve to fixed descriptor addresses and are covered by ROM-backed native tests;
+- auxiliary byte-grid descriptors at `0xFF1766` / `0xFF1770` expose backing pointer, row stride and row shift;
+- world coordinates map to 8-pixel cells; `0x9C40` is the confirmed single-cell reader;
+- `0x9BF2` aggregates OR/AND values across an entity footprint and is reproduced by `ByteGridView`;
+- low-nibble terrain codes are mapped by tables `0x96E8` / `0x96F8` into movement/height classes;
+- `0x938E` is a confirmed directional terrain movement gate: carry set blocks, carry clear allows;
+- portable byte-grid, footprint and terrain-gate tests pass;
+- final build-test, reference-ROM workflow and M7 probe are green.
 
-## M7 — World/map/collision foundations — NEXT
-Goal: decode room/map structures and collision semantics from the reference ROM before translating player behavior.
+## M8 — Player system — NEXT
+Goal: translate player movement/state from verified binary behavior before attacks and presentation layers.
 
 Tasks:
-- locate candidate room/map data tables and their readers;
-- identify pointer tables versus packed structures using code + ROM evidence;
-- document one room/area data path from table entry to consumed fields;
-- identify collision representation and query/update routines;
-- implement only confirmed portable data structures;
-- build a local ROM-backed room inspector when enough format is proven.
+- identify player entity/update entry and call path;
+- trace controller bits into movement intent;
+- connect player movement to the M7 terrain gate;
+- identify exact position/delta/facing/movement-state fields used by the path;
+- translate the smallest portable movement slice with integer/fixed-point semantics;
+- add deterministic movement and blocked-movement tests;
+- add ROM-backed behavior evidence where practical;
+- only then expand into animation and attacks.
 
 Acceptance criteria:
-- at least one room/map structure documented with evidence and confidence levels;
-- a confirmed room/map record can be loaded from local ROM without executing 68000 code;
-- collision representation has a tested portable query API or milestone remains ACTIVE;
+- player movement/update path documented with addresses and confidence labels;
+- portable movement state/update exists without platform/render dependencies;
+- collision uses the single M7 world model;
+- deterministic tests cover free and blocked movement;
 - reverse-engineering ledger/worklog updated;
 - files remain <= 500 lines;
 - CI green.
-
-## M8 — Player system — TODO
-Goal: translate movement, animation state, attacks and relevant state machine.
 
 ## M9 — Entities/enemies/NPCs — TODO
 Goal: translate common entity framework and representative behaviors.

@@ -1,8 +1,6 @@
 name: m7-collision-probe
 
 on:
-  push:
-    branches: [oasis-cpp-bootstrap]
   workflow_dispatch:
 
 jobs:
@@ -35,8 +33,6 @@ jobs:
               (0x5d706,64,'height_or_motion_lut_head')):
               raw=rom[base:base+length]
               print(f'{name}@0x{base:06x}=' + raw.hex())
-          # FF1706 is runtime RAM, so locate code that populates it instead of pretending
-          # its values are static ROM data.
           for target in (0xff1706,):
               pat=target.to_bytes(4,'big')
               hits=[]; p=0
@@ -67,7 +63,7 @@ jobs:
               --start-address=$1 --stop-address=$2 /tmp/reference.md
           done
 
-      - name: Find exact callers of 0x938e and nearby helpers
+      - name: Find exact callers of movement helpers
         shell: bash
         run: |
           python3 - <<'PY'
@@ -88,23 +84,4 @@ jobs:
                   if p+4+disp == target:
                       refs.append(('BSR.W',p))
               print(f'target=0x{target:06x} refs=' + ','.join(f'{k}@0x{p:06x}' for k,p in sorted(refs,key=lambda x:x[1])))
-          PY
-
-      - name: Locate writes and reads of entity terrain fields
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          rom=Path('/tmp/reference.md').read_bytes()
-          # Fields +110/+111/+112 and +20 are relative to FP, so scan the movement
-          # cluster for their displacement words and keep output as navigation anchors.
-          block=rom[0x8f00:0xa100]
-          for field in (20,64,65,70,110,111,112,114,118):
-              pat=field.to_bytes(2,'big')
-              hits=[]; p=0
-              while True:
-                  p=block.find(pat,p)
-                  if p<0: break
-                  hits.append(0x8f00+p); p+=1
-              print(f'field_plus_{field}_anchors=' + ','.join(f'0x{x:06x}' for x in hits[:120]))
           PY

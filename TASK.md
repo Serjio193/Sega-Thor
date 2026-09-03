@@ -1,9 +1,9 @@
 # Current Task
 
-TASK: M7 — World/map/collision foundations
-WHY: Deterministic runtime/input is now established. The next dependency for native gameplay is understanding how Beyond Oasis stores and loads rooms, map layers and collision data.
-CURRENT MILESTONE: M7
-UNDERSTANDING CONFIDENCE: 92%
+TASK: M8 — Player system
+WHY: M7 established tested world-grid and terrain collision primitives. The next dependency is recovering the original player's update/movement contract before translating attacks or animation state.
+CURRENT MILESTONE: M8
+UNDERSTANDING CONFIDENCE: 91%
 STATUS: ACTIVE
 
 ## Preconditions completed
@@ -11,35 +11,28 @@ STATUS: ACTIVE
 - M3 graphics decompression is native and differentially verified.
 - M4 local graphics inspection is verified against the reference ROM.
 - M5 narrow VDP state model is tested and renderer-independent.
-- M6 core runtime has explicit integer frame stepping, portable controller snapshots and deterministic replay-style tests.
+- M6 deterministic runtime/input skeleton is complete.
+- M7 screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are verified and tested.
 
-## M6 completion evidence
-- `src/core/runtime.hpp/.cpp` owns the platform-independent runtime step contract.
-- controller state supports standard Genesis direction/action/start and extended buttons without platform APIs;
-- each call to `RuntimeLoop::step()` produces exactly one numbered `FrameContext`;
-- a synthetic input sequence run twice produces identical traces;
-- modifying one frame of input changes the trace;
-- duplicate experimental `game/runtime` API was removed so there is one source of truth;
-- GitHub CI build/test is green.
-
-## M7 Definition of Done
-- [ ] identify at least one verified room/map loading path in the USA binary;
-- [ ] document relevant ROM pointer/table addresses and call flow;
-- [ ] identify map dimensions/layer representation with confidence labels;
-- [ ] identify collision representation or explicitly isolate it as a separate unknown structure;
-- [ ] create a portable C++ data model only after raw formats are evidenced;
-- [ ] load at least one room/map structure from a supported local ROM;
-- [ ] add synthetic tests for decoded structures and collision queries once semantics are known;
-- [ ] record unknown fields without invented names;
+## M8 Definition of Done
+- [ ] identify the player entity/update entry point and document its call path;
+- [ ] trace controller input bits into player movement intent without guessing field names;
+- [ ] connect player movement to the confirmed M7 terrain/collision gate;
+- [ ] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
+- [ ] implement a portable player movement/state slice only after the raw behavior is evidenced;
+- [ ] add deterministic synthetic tests for movement and blocked movement;
+- [ ] add at least one ROM-backed reference/oracle check for translated player behavior where practical;
+- [ ] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
+- [ ] record unknown fields without invented semantic names;
 - [ ] keep every file <= 500 lines;
 - [ ] CI green.
 
 ## Constraints
-- Do not translate player behavior yet.
-- Do not invent room fields from visual guesses.
-- Keep ROM offsets inside reverse-engineering/data-reader code, not gameplay logic.
-- Prefer static evidence + caller tracing + local inspection before naming structures.
-- Do not begin M8 until M7 acceptance criteria pass.
+- Do not begin M9.
+- Do not infer player fields from common engine conventions; prove them from callers/accesses.
+- Reuse M7 `ByteGridView` / terrain gate rather than introducing a second collision model.
+- Separate input intent, movement resolution and presentation/animation.
+- Prefer exact integer/fixed-point behavior over floating point.
 
 ## Exact next action
-Inventory existing public reverse-engineering knowledge for Beyond Oasis map/tilemap pointers, then verify candidate addresses/functions directly against the canonical USA ROM before creating C++ room structures.
+Locate the player entity/update routine in the USA ROM, then trace reads of controller state and the first calls into the movement cluster around `0x8F00..0x9D00`.

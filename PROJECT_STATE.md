@@ -1,21 +1,22 @@
 # Project State
 
-CURRENT_MILESTONE: M7 — World/map/collision foundations
-CURRENT_TASK: Establish the first verified room/map loading path and raw data format from the canonical USA ROM
+CURRENT_MILESTONE: M8 — Player system
+CURRENT_TASK: Recover the first verified player movement/update path from the canonical USA ROM and define only the confirmed portable state needed to reproduce it
 STATUS: ACTIVE
-LAST_VERIFIED_RESULT: M6 completed; one core runtime/input API remains, deterministic input-sequence tests pass, and CI is green
-NEXT_ACTION: inspect existing reverse-engineering map/tilemap knowledge, then verify candidate pointers/functions directly against the USA ROM before defining C++ room structures
-DO_NOT_WORK_ON: M8+, Thor 2, Saturn support, remaster features
+LAST_VERIFIED_RESULT: M7 completed; screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are implemented/tested, and build/reference/probe checks are green
+NEXT_ACTION: identify the player entity/update entry point, trace controller input into movement deltas and the confirmed terrain gate, then record the smallest verified player state contract
+DO_NOT_WORK_ON: M9+, Thor 2, Saturn support, remaster features, speculative attacks/animation systems
 BLOCKERS: none
 
-## M6 verified evidence
-- `src/core/runtime.hpp/.cpp` is the single runtime/input source of truth.
-- Explicit integer frame stepping; no wall-clock dependency.
-- Portable controller snapshot for two ports.
-- Identical initial state + input sequence produces identical recorded traces.
-- Altering input changes the trace.
-- Duplicate experimental `game/runtime` API was removed.
-- GitHub CI build/test passed on the M6 head.
+## M7 verified evidence
+- Screen dispatcher `0xC8F0` resolves 16-bit screen IDs through group table `0xC92C` to 26-byte descriptors; native loader has ROM-backed reference tests.
+- Auxiliary byte grids at `0xFF1766` / `0xFF1770` use 8-pixel cells with confirmed pointer/stride/shift addressing.
+- `0x9C40` is a confirmed single-cell world-grid reader.
+- `0x9BF2` aggregates the entity footprint with OR/AND over covered grid bytes; native `ByteGridView` reproduces this contract.
+- Low nibble terrain codes map through `0x96E8` / `0x96F8` into movement/height classes.
+- `0x938E` is a confirmed directional terrain movement gate: carry set blocks movement, carry clear allows it.
+- Synthetic byte-grid/footprint/terrain-gate tests pass.
+- Main build-test, reference-ROM workflow and final M7 probe passed on the M7 completion head.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes
