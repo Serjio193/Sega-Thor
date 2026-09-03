@@ -57,6 +57,15 @@ Each task records objective, actions, evidence, tests, result, unresolved questi
 
 **Exact next step:** finish M8 acceptance review and keep the ROM reference workflow local-only.
 
+## 2026-09-03 — Windows test runtime fix
+**Objective:** Make the documented CTest command work from a clean PowerShell session.
+
+**Actions:** Added a Windows GNU/Clang CMake test environment that supplies the active compiler's runtime DLL directory to CTest, and documented the behavior in the README.
+
+**Result:** Debug and Release CTest runs pass 11/11 without manually editing `PATH`; the previous `libwinpthread-1.dll` dialog is no longer produced by the test workflow.
+
+**Exact next step:** finish M8 acceptance review and keep the ROM reference workflow local-only.
+
 ## 2026-09-03 — M8 player update dispatch closure
 **Objective:** Close the indirect player update path and preserve its confirmed state transition in the native slice.
 

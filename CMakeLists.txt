@@ -101,3 +101,25 @@ add_test(
     NAME project_file_line_limit
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_file_limits.cmake
 )
+
+# LLVM-MinGW links the test executables to runtime DLLs. Keep CTest runnable
+# from a clean shell without requiring the user to edit PATH manually.
+if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    get_filename_component(oasis_compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    set(oasis_runtime_test_names
+        oasis_smoke
+        oasis_rom_identity
+        oasis_graphics_decompress
+        oasis_genesis_graphics
+        oasis_vdp
+        oasis_runtime
+        oasis_screen_descriptor
+        oasis_byte_grid
+        oasis_terrain_collision
+        oasis_player
+        project_file_line_limit
+    )
+    set_tests_properties(${oasis_runtime_test_names}
+        PROPERTIES ENVIRONMENT "PATH=${oasis_compiler_bin}"
+    )
+endif()

@@ -74,6 +74,9 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
+On Windows with LLVM-MinGW, the CMake test configuration supplies the compiler
+runtime DLL directory to CTest automatically.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.

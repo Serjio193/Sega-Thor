@@ -30,6 +30,7 @@ BLOCKERS: none
 - The `0x64C4` context boundary is isolated: `FF1985` and `FF1984` have external writers, while bit 4 of `FF16F1` is read without a direct writer in the scanned references.
 - Optional native `VelocityAdjustContext` now covers the three confirmed `0x64C4` arithmetic outcomes; unavailable context preserves the existing deterministic path.
 - Frame-boundary ordering is covered: state-4 reads the prior footprint mask, then shared movement updates the mask for the next frame.
+- The Windows CTest runtime path is configured in CMake; clean-shell Debug and Release runs pass 11/11 without manual `PATH` edits.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes
