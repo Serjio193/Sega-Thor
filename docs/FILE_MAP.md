@@ -5,7 +5,7 @@ This document is the canonical map of repository structure. Update it whenever s
 ```text
 /
 ├── AGENTS.md                  Mandatory rules for AI agents and contributors
-├── CMakeLists.txt             Top-level build configuration
+├── CMakeLists.txt             Top-level build configuration and CTest registration
 ├── README.md                  Public project overview and build entry point
 ├── docs/
 │   ├── ARCHITECTURE.md        Layering, dependencies, translation strategy
@@ -15,6 +15,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── PROJECT_VISION.md      Goal, scope, non-goals and end-state
 │   ├── REVERSE_ENGINEERING.md Address/routine/data-layout research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
+│   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
 │   └── WORKLOG.md             Chronological record of every development step
 ├── src/
 │   ├── main.cpp               Current executable entry point
@@ -32,7 +33,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── translated_routines.cpp  First translated game/utility routines
 │       └── translated_routines.hpp  Translated routine declarations
 └── tests/
-    └── smoke.cpp              Minimal build/runtime smoke test
+    ├── check_file_limits.cmake Enforces <=500-line rule through CTest
+    └── smoke.cpp               Minimal build/runtime smoke test
 ```
 
 ## Planned directories
