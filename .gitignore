@@ -6,6 +6,9 @@ CMakeFiles/
 *.gen
 *.smd
 *.rom
+*.pgm
+*.ppm
+output/
 .DS_Store
 .vscode/
 .idea/
