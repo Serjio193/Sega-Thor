@@ -1,0 +1,72 @@
+name: m5-vdp-probe
+
+on:
+  push:
+    branches: [oasis-cpp-bootstrap]
+  workflow_dispatch:
+
+jobs:
+  probe-vdp-references:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout development branch
+        uses: actions/checkout@v4
+
+      - name: Obtain verified reference ROM temporarily
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          git show 'origin/main:Beyond Oasis (USA).zip' > /tmp/beyond-oasis.zip
+          mkdir -p /tmp/reference-rom
+          unzip -q /tmp/beyond-oasis.zip -d /tmp/reference-rom
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          test "$(stat -c%s "$ROM")" = "3145728"
+          test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
+          cp "$ROM" /tmp/reference.md
+
+      - name: Find absolute VDP address references
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          for label,value in [('VDP_DATA',0x00c00000),('VDP_CTRL',0x00c00004)]:
+              pat=value.to_bytes(4,'big')
+              hits=[]
+              pos=0
+              while True:
+                  pos=rom.find(pat,pos)
+                  if pos<0: break
+                  hits.append(pos); pos+=1
+              print(label, 'count=', len(hits))
+              print(label, 'offsets=', ','.join(f'0x{x:06x}' for x in hits[:120]))
+          PY
+
+      - name: Install M68K binutils
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq binutils-m68k-linux-gnu
+
+      - name: Disassemble selected VDP-reference neighborhoods
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          targets=[]
+          for value in (0x00c00000,0x00c00004):
+              pat=value.to_bytes(4,'big')
+              pos=0
+              while len(targets)<40:
+                  pos=rom.find(pat,pos)
+                  if pos<0: break
+                  targets.append(pos); pos+=1
+          targets=sorted(set(targets))[:40]
+          Path('/tmp/windows.txt').write_text('\n'.join(f'{max(0,x-24):x} {min(len(rom),x+32):x}' for x in targets))
+          PY
+          while read -r START END; do
+            echo "=== window 0x$START..0x$END ==="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 \
+              --adjust-vma=0 --start-address="0x$START" --stop-address="0x$END" /tmp/reference.md
+          done </tmp/windows.txt
