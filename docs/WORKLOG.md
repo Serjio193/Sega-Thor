@@ -15,7 +15,7 @@ SHA-256 `5111d21c8344cce00765b32b971849f62950d31869307cc479f5ee7febf87a80`;
 header/checksum valid. **TESTS:** Debug/Release build and CTest 18/18, local
 beta oracle, deterministic JSON equality, file-limit and diff-check pass.
 The first GitHub build exposed GNU static-library ordering; the new targets
-now link tooling before core, and the fix is queued for CI verification.
+now link tooling before core, and GitHub Actions run `33759454191` is green.
 **UNKNOWN:** no semantic equivalence or function meaning is inferred; results
 are bounded byte/normalized-signature/CFG evidence only. **NEXT:** stop.
 
