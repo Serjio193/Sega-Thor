@@ -1,45 +1,114 @@
 # Development Worklog
 
-Chronological record of meaningful project actions. New entries go at the top under the latest date.
+Chronological record of meaningful project actions. New entries go at the top.
 
-Each work session/task should state objective, files changed, evidence, tests, result, unresolved questions, and exact next step.
+Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
-## 2026-09-03 — M3 static contract for decompressor `0x3820`
-**Objective:** Establish routine boundaries and calling contract before any C++ translation.
+## 2026-09-03 — M7 world/map/collision research started
+**Objective:** Identify raw room/map/collision data before creating native structures.
 
 **Actions:**
-- added an M68K disassembly probe workflow using the verified uploaded USA ROM;
-- found 52 direct absolute `JSR 0x3820` call sites and no direct absolute JMPs;
-- disassembled the complete candidate routine and representative callers;
-- established candidate range `0x3820..0x3B3C`, with unrelated next-function prologue at `0x3B3E`;
-- identified two decompression paths selected by `source[2]`;
-- confirmed A0 as compressed source and A1 as destination using multiple callers;
-- confirmed A1 returns as the end-of-output pointer because caller `0x3A7FE` computes `A1 - initial_A1` after return;
-- documented literal, repeated-byte and backreference behavior without assigning an unsupported external algorithm name.
+- activated M7 after verified completion of deterministic runtime/input;
+- inspected the public `hansbonini/smd_beyondoasis` reverse-engineering repository for map-related evidence;
+- confirmed its `tilemap/` directory contains fixed UI/screen tilemaps (`game_over`, `name_screen`, `save_screen`), not documented world-room formats;
+- searched broader public material; available map images/walkthroughs are useful visual references but do not establish ROM data layout.
 
-**Evidence:**
-- callers at `0xC394`, `0xD3C8`, `0x3A7FE`, and `0x3E820` load ROM addresses into A0 and RAM buffers into A1;
-- routine writes through `A1@+`, reads through `A0@+`, and performs backreferences from previous output;
-- returns occur at `0x38CE` and `0x3A24`; refill/helper branches extend to `0x3B3A`; unrelated prologue begins at `0x3B3E`;
-- routine contains no JSR/BSR and is self-contained apart from memory access.
+**Evidence:** Existing public translation work gives useful address/text/graphics hooks but does not yet provide a proven world-map structure suitable for native implementation.
 
-**Tests/build:** M3 probe workflows completed successfully against the exact reference ROM fingerprint. Static evidence is now reproducible in GitHub Actions.
+**Result:** No semantic room structure has been invented. M7 remains ACTIVE.
 
-**Result:** Major static contract is established. C++ translation remains intentionally blocked by project rules until an independent dynamic reference trace is captured.
+**Unresolved:** Exact room table, layer dimensions, collision representation and loader routines remain unknown.
 
-**Unresolved:** A0 returned-advanced behavior is HIGH but not yet independently observed; exact output fingerprints for representative streams are not yet captured.
+**Exact next step:** Probe the canonical USA binary for a verified room-loading path and pointer tables, then document raw fields before adding `src/game/world/` code.
 
-**Exact next step:** Execute the original routine bytes in an isolated M68K harness against representative compressed streams and record source-consumed length, output length, and SHA-256 without committing raw extracted assets.
+## 2026-09-03 — M6 deterministic runtime/input — DONE
+**Objective:** Establish portable one-frame stepping and controller snapshots before gameplay translation.
+
+**Actions:**
+- added `src/core/runtime.hpp/.cpp`;
+- defined portable Genesis-style button masks and two controller ports;
+- added explicit integer frame index and `FrameContext`;
+- added `RuntimeLoop::step()` with one update per explicit call;
+- added replay-style deterministic tests;
+- detected and removed a duplicate experimental `game/runtime` API so one source of truth remains.
+
+**Evidence/tests:**
+- identical input sequences produce identical recorded traces;
+- changing one frame of input changes the trace;
+- no wall-clock, SDL or OS input API is used by core runtime;
+- GitHub Actions build/test completed successfully after duplicate removal.
+
+**Result:** M6 completed; M7 activated.
+
+**Exact next step:** Establish room/map/collision raw formats from original evidence.
+
+## 2026-09-03 — M5 narrow VDP model — DONE
+**Objective:** Replace the placeholder video scaffold with only the Mega Drive state needed for reconstruction.
+
+**Actions:**
+- modeled 64 KiB VRAM, 128-byte CRAM and 80-byte VSRAM;
+- added bounded byte-span and big-endian word access;
+- decoded standard tile pattern-name fields: index, palette, priority, H/V flip;
+- added thin plane-cell and raw four-word sprite attribute representations;
+- documented explicitly unsupported emulator semantics in `docs/VDP_MODEL.md`;
+- added/registered VDP tests.
+
+**Evidence/tests:** Bounds, word storage, tile attributes and sprite fields are covered by synthetic tests; current CI build/test is green.
+
+**Result:** M5 completed without adding a full VDP emulator or renderer dependency.
+
+**Exact next step:** Deterministic runtime/input skeleton.
+
+## 2026-09-03 — M4 local asset inspector — DONE
+**Objective:** Inspect graphics from a user-owned ROM using the verified native decompressor.
+
+**Actions:**
+- added Genesis 4bpp tile decoding and CRAM-to-RGB conversion;
+- added `oasis_inspect` local ROM tool;
+- added PGM index output and optional palette-based PPM output;
+- ignored generated outputs through `.gitignore`;
+- added ROM-backed inspector verification.
+
+**Evidence/tests:**
+- reference source `0x16943C` consumes `1217` compressed bytes and produces `3072` bytes;
+- inspector interprets this as `96` complete tiles and a default `128x48` sheet;
+- CI verifies PGM header and exact payload size;
+- five CTests passed at M4 closure.
+
+**Result:** M4 completed; no extracted commercial assets are committed.
+
+**Exact next step:** Narrow VDP state model.
+
+## 2026-09-03 — M3 native graphics decompressor — DONE
+**Objective:** Translate original 68000 decompression routine `0x3820` into verified native C++.
+
+**Actions:**
+- found 52 direct absolute `JSR 0x3820` callers and no direct absolute JMPs;
+- established routine range `[0x3820, 0x3B3E)`;
+- confirmed A0 source and A1 destination/end-pointer roles;
+- identified two formats selected by `source[2]`;
+- executed the original routine bytes in an isolated M68K/QEMU harness to obtain reference behavior;
+- translated both paths to C++;
+- detected and corrected two errors in an earlier implementation (format-A extension handling and format-B repeated-byte path).
+
+**Reference evidence:**
+- format A `0x16943C`: consumed `1217`, output `3072`, SHA-256 `65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`;
+- format B `0x1894EA`: consumed `112`, output `128`, SHA-256 `167d4e5409f6b075b3b6f2bc61dbb747e8d8c857e8699745184ddf48d83bcda9`.
+
+**Tests/build:** Native C++ matches original source-consumed count, output length and output SHA-256 for both formats; ordinary CI and reference workflow pass.
+
+**Result:** M3 completed with differential evidence.
+
+**Exact next step:** Build local asset inspection tooling.
 
 ## 2026-09-03 — M2 canonical ROM identity verified — DONE
 **Objective:** Pin down the exact binary reference used for reverse engineering.
 
 **Actions:**
-- accepted ADR-0005: USA retail `Beyond Oasis` is the canonical engineering reference while final C++ remains region-independent;
-- implemented Mega Drive header parsing, Sega checksum, CRC32, SHA-1, SHA-256 and ROM classification;
-- added synthetic tests, CLI reporting, general CI and dedicated reference-ROM verification;
-- fixed an actual CI-detected C++ most-vexing-parse error in `rom.cpp`;
-- verified the user-uploaded `Beyond Oasis (USA).md` inside GitHub Actions.
+- accepted USA retail `Beyond Oasis` as address/disassembly reference while keeping final C++ region-independent;
+- implemented header/checksum/CRC32/SHA-1/SHA-256 identification and ROM classification;
+- added synthetic tests and GitHub reference-ROM verification;
+- fixed a CI-detected C++ construction error in the ROM loader.
 
 **Confirmed fingerprint:**
 - size `3145728`;
@@ -48,34 +117,24 @@ Each work session/task should state objective, files changed, evidence, tests, r
 - SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
 - detector status `SUPPORTED`.
 
-**Tests/build:** General CI passed after the loader fix; reference-ROM workflow passed and asserted `SUPPORTED`.
+**Result:** M2 completed with executable evidence.
 
-**Result:** M2 completed with executable evidence; M3 activated.
-
-**Exact next step:** Establish and verify the `0x3820` decompressor contract.
-
-## 2026-09-03 — Governance enforcement completed
-**Objective:** Make the project resistant to scope drift and ensure rules are enforceable, not merely descriptive.
+## 2026-09-03 — Governance enforcement — DONE
+**Objective:** Make project direction recoverable and resistant to scope drift.
 
 **Actions:**
-- added `AGENTS.md`, architecture/vision/file-map/roadmap/rules/decision/research/worklog documents;
-- added task/session handoff files;
-- added `tests/check_file_limits.cmake` and CTest enforcement of <=500 lines per file.
+- added mandatory AI/contributor rules, architecture/vision/file-map/roadmap/decision/research/work logs;
+- added `PROJECT_STATE.md`, `TASK.md` and task template;
+- enforced <=500 lines per source/project-document file using CTest.
 
-**Result:** Project direction, scope, file-size policy, documentation obligations, and AI handoff process are explicit and enforceable.
+**Result:** Project direction, completion criteria and documentation obligations are explicit.
 
-## 2026-09-03 — Initial C++ bootstrap
-**Objective:** Create a minimal native C++ project suitable for incremental Beyond Oasis translation.
+## 2026-09-03 — Initial C++ bootstrap — DONE
+**Objective:** Create a minimal native C++ starting point.
 
-**Actions:**
-- created C++20/CMake build;
-- added ROM loader/header parsing;
-- added minimal memory bus and VDP/VRAM scaffolding;
-- recorded known hardware/routine addresses;
-- translated initial tile-copy helper behavior;
-- added smoke test.
+**Actions:** C++20/CMake project, ROM loader, memory/VDP scaffold, known symbol table, tile-copy compatibility helpers and smoke test.
 
-**Result:** Repository has a compilable architectural starting point without requiring ROM bytes in source/tests.
+**Result:** Compilable native bootstrap established.
 
 ## Entry template
 ```text
