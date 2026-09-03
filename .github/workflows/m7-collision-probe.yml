@@ -23,22 +23,18 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Locate all references to auxiliary byte-grid structures
+      - name: Dump terrain lookup tables
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          all_hits=[]
-          for target in (0xff1766,0xff1770):
-              pat=target.to_bytes(4,'big')
-              hits=[]; p=0
-              while True:
-                  p=rom.find(pat,p)
-                  if p < 0: break
-                  hits.append(p); all_hits.append((p,target)); p+=1
-              print(f'refs_0x{target:06x}_count={len(hits)} offsets=' + ','.join(f'0x{x:06x}' for x in hits))
-          Path('/tmp/grid_refs.txt').write_text('\n'.join(f'{p:x} {t:x}' for p,t in sorted(all_hits)))
+          for base,name in ((0x96e8,'terrain_state'),(0x96f8,'terrain_behavior')):
+              raw=rom[base:base+16]
+              signed=[b if b < 128 else b-256 for b in raw]
+              print(f'{name}_table@0x{base:06x}_hex=' + raw.hex())
+              for i,(u,s) in enumerate(zip(raw,signed)):
+                  print(f'{name}[{i:02x}]=0x{u:02x} signed={s}')
           PY
 
       - name: Install M68K binutils
@@ -46,55 +42,27 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble every byte-grid reference neighborhood
+      - name: Disassemble terrain samplers and movement integration
         shell: bash
         run: |
           set -euo pipefail
-          while read -r POS TARGET; do
-            START=$((0x$POS - 0x80)); if [ "$START" -lt 0 ]; then START=0; fi
-            END=$((0x$POS + 0x120))
-            printf '===== ref 0x%06x -> 0x%06x, window 0x%06x..0x%06x =====\n' "$((0x$POS))" "$((0x$TARGET))" "$START" "$END"
+          for RANGE in \
+            '0x009a80 0x009c90' \
+            '0x009be0 0x009d80' \
+            '0x008f80 0x009180'; do
+            set -- $RANGE
+            echo "===== $1..$2 ====="
             m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-              --start-address=$START --stop-address=$END /tmp/reference.md
-          done </tmp/grid_refs.txt
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
 
-      - name: Find likely single-cell grid readers
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import subprocess
-          refs=[]
-          for line in Path('/tmp/grid_refs.txt').read_text().splitlines():
-              p,t=(int(x,16) for x in line.split())
-              refs.append((p,t))
-          # Disassemble compact neighborhoods and report lines using indirect reads
-          # after each absolute load of FF1766/FF1770. Rectangular-copy/render loops
-          # remain evidence, but isolated move.b/move.w/tst/cmp accesses are stronger
-          # collision/property candidates.
-          for p,t in refs:
-              start=max(0,p-0x40); end=p+0x180
-              out=subprocess.check_output([
-                  'm68k-linux-gnu-objdump','-D','-b','binary','-m','m68k:68000','--adjust-vma=0',
-                  f'--start-address={start}',f'--stop-address={end}','/tmp/reference.md'
-              ], text=True)
-              interesting=[]
-              for line in out.splitlines():
-                  lower=line.lower()
-                  if any(k in lower for k in ('moveb %a','movew %a','tstb %a','tstw %a','cmpb %a','cmpw %a')):
-                      interesting.append(line.strip())
-              print(f'candidate_ref=0x{p:06x} structure=0x{t:06x}')
-              for line in interesting[:80]: print('  '+line)
-          PY
-
-      - name: Trace direct callers of routines containing byte-grid references
+      - name: Trace callers of terrain routines
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          # Known function entries established around the grid-management cluster.
-          targets=(0xdb1a,0xdb64,0xdb68,0xdbca,0xdc26)
+          targets=(0x9ad6,0x9bc2,0x9bf2,0x9c40,0x9d00,0x9d4e,0x9dd6)
           for target in targets:
               refs=[]
               pat=b'\x4e\xb9'+target.to_bytes(4,'big')
@@ -106,6 +74,28 @@ jobs:
               for p in range(0,len(rom)-4,2):
                   if rom[p:p+2] != b'\x61\x00': continue
                   disp=int.from_bytes(rom[p+2:p+4],'big',signed=True)
-                  if p+4+disp == target: refs.append(('BSR.W',p))
+                  if p+4+disp == target:
+                      refs.append(('BSR.W',p))
               print(f'target=0x{target:06x} refs=' + ','.join(f'{k}@0x{p:06x}' for k,p in sorted(refs,key=lambda x:x[1])))
+          PY
+
+      - name: Inventory terrain-code tests in movement cluster
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rom=Path('/tmp/reference.md').read_bytes()
+          start,end=0x8f00,0x9e40
+          block=rom[start:end]
+          for code in range(16):
+              # Report immediate byte/word occurrences only as search anchors;
+              # disassembly above determines whether they are actual compares/tests.
+              hits=[]
+              for pat in (bytes((code,)), code.to_bytes(2,'big')):
+                  p=0
+                  while True:
+                      p=block.find(pat,p)
+                      if p<0: break
+                      hits.append(start+p); p+=1
+              print(f'code_{code:02x}_anchors=' + ','.join(f'0x{x:06x}' for x in sorted(set(hits))[:80]))
           PY
