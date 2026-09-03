@@ -323,6 +323,11 @@ dialogue and command semantics remain UNKNOWN.
   `0x7A6C` — **CONFIRMED**.
 - When the tested bit is clear, control goes to raw address `0x7B2A` —
   **CONFIRMED**. No semantic label is assigned to this path.
+- The `0x7B2A` path calls external raw address `0x60004` with constants
+  `0x0006` and `0x0008`, masks the result to `0x01FF`, returns on the sentinel
+  `0x01FF`, then clears mask `0xFFF9` at `FF17B8` and writes raw `FF0D7E` to
+  current-record `+0x06` and `0xFFFF` to `+0x5C` — **CONFIRMED**. The helper
+  and field meanings remain UNKNOWN.
 - The native `event_router` module exposes the producer transfer and raw
   handler-address mapping only. Synthetic tests and the USA-ROM oracle cover
   the type gate, field composition and dispatch boundaries.
