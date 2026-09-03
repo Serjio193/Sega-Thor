@@ -20,7 +20,7 @@ struct Case {
 int main(int argc, char** argv) {
     if (argc != 2) return 2;
 
-    const oasis::Rom rom(argv[1]);
+    const oasis::Rom rom = oasis::Rom::load(argv[1]);
     const std::array<Case, 4> cases{{
         {{0x00, 0x09}, 0x02CF82, 0x001F4E64, {21, 22, 5, 6}},
         {{0x00, 0x0C}, 0x02D3E8, 0x001FA32A, {7, 8, 86, 10}},
