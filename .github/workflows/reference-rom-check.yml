@@ -63,6 +63,13 @@ jobs:
           ROM="$(find /tmp/reference-rom -type f | head -n 1)"
           ./build/oasis_graphics_reference "$ROM"
 
+      - name: Verify screen descriptor loader against original ROM
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROM="$(find /tmp/reference-rom -type f | head -n 1)"
+          ./build/oasis_screen_descriptor_reference "$ROM"
+
       - name: Verify local asset inspector on known graphics stream
         shell: bash
         run: |
