@@ -18,6 +18,12 @@ add_executable(oasis src/main.cpp)
 target_link_libraries(oasis PRIVATE oasis_core)
 
 enable_testing()
+
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
 add_test(NAME oasis_smoke COMMAND oasis_smoke)
+
+add_test(
+    NAME project_file_line_limit
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_file_limits.cmake
+)
