@@ -1,5 +1,6 @@
 #include "game/world/screen_descriptor.hpp"
 
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -47,7 +48,6 @@ int main() {
     for (std::size_t i = 0; i < 5; ++i) {
         write_u16(rom, descriptor + 16 + i * 2, static_cast<std::uint16_t>(0x100 + i));
     }
-    write_u32(rom, descriptor + 26, 0x0000D406U);
 
     const auto result = load_screen_descriptor(rom, ScreenId{2, 3});
     assert(result.rom_address == descriptor);
@@ -56,7 +56,7 @@ int main() {
     assert((result.signed_parameters() == std::array<std::int8_t, 4>{7, -2, 9, -1}));
     assert(result.trailing_words()[0] == 0x100U);
     assert(result.trailing_words()[4] == 0x104U);
-    assert(result.init_function == 0x0000D406U);
+    assert(result.init_code_address == descriptor + 26U);
 
     bool threw = false;
     try {
