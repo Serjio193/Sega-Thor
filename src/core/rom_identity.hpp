@@ -30,6 +30,7 @@ struct MegaDriveHeader {
 struct RomFingerprint {
     std::size_t size{};
     std::uint32_t crc32{};
+    std::string sha1;
     std::string sha256;
     std::uint16_t calculated_sega_checksum{};
     bool sega_checksum_valid{};
@@ -46,6 +47,7 @@ struct RomIdentity {
 [[nodiscard]] MegaDriveHeader parse_mega_drive_header(std::span<const std::uint8_t> rom);
 [[nodiscard]] std::uint16_t calculate_sega_checksum(std::span<const std::uint8_t> rom);
 [[nodiscard]] std::uint32_t calculate_crc32(std::span<const std::uint8_t> data);
+[[nodiscard]] std::string calculate_sha1(std::span<const std::uint8_t> data);
 [[nodiscard]] std::string calculate_sha256(std::span<const std::uint8_t> data);
 [[nodiscard]] RomIdentity identify_rom(std::span<const std::uint8_t> rom);
 [[nodiscard]] std::string_view to_string(RomSupportStatus status) noexcept;
