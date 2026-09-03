@@ -49,4 +49,37 @@ std::optional<std::uint8_t> ByteGridView::terrain_code_world(
     return static_cast<std::uint8_t>(*value & 0x0FU);
 }
 
+std::optional<ByteGridAggregate> ByteGridView::aggregate_world_square(
+    std::int32_t center_x,
+    std::int32_t center_y,
+    std::uint16_t radius) const noexcept {
+    const auto r = static_cast<std::int64_t>(radius);
+    const auto min_x = static_cast<std::int64_t>(center_x) - r;
+    const auto max_x = static_cast<std::int64_t>(center_x) + r;
+    const auto min_y = static_cast<std::int64_t>(center_y) - r;
+    const auto max_y = static_cast<std::int64_t>(center_y) + r;
+    if (min_x < 0 || min_y < 0 || max_x > std::numeric_limits<std::int32_t>::max() ||
+        max_y > std::numeric_limits<std::int32_t>::max()) {
+        return std::nullopt;
+    }
+
+    const auto x0 = static_cast<std::int32_t>(min_x) / 8;
+    const auto x1 = static_cast<std::int32_t>(max_x) / 8;
+    const auto y0 = static_cast<std::int32_t>(min_y) / 8;
+    const auto y1 = static_cast<std::int32_t>(max_y) / 8;
+
+    ByteGridAggregate result{};
+    for (auto y = y0; y <= y1; ++y) {
+        for (auto x = x0; x <= x1; ++x) {
+            const auto value = sample_cell(x, y);
+            if (!value) {
+                return std::nullopt;
+            }
+            result.any_bits = static_cast<std::uint8_t>(result.any_bits | *value);
+            result.common_bits = static_cast<std::uint8_t>(result.common_bits & *value);
+        }
+    }
+    return result;
+}
+
 } // namespace oasis::game::world
