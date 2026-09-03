@@ -21,6 +21,7 @@ Reimplement **Beyond Oasis / The Story of Thor** as a portable C++20 project usi
 13. Never silently invent unknown game behavior. Mark unknowns explicitly and gather evidence.
 14. Never replace reverse engineering with a full CPU emulator unless the decision is explicitly approved and documented.
 15. Keep commits focused. One conceptual task per commit whenever practical.
+16. Do not push an implementation commit until the locally available CI-equivalent validation is green. At minimum run the relevant Debug and Release builds/tests, `git diff --check`, the file-limit check, and a GNU/Linux-equivalent build or link check when the change affects CMake targets, static libraries, link order, portability, or toolchain-sensitive code. If the exact CI toolchain is unavailable locally, record that limitation before push and avoid claiming CI readiness.
 
 ## Required workflow for every task
 Before coding:
@@ -39,12 +40,14 @@ During coding:
 5. Avoid speculative refactors unrelated to the active task.
 
 After coding:
-1. Build the project.
-2. Run tests.
-3. Update `docs/WORKLOG.md` with results and remaining unknowns.
-4. Update `docs/FILE_MAP.md` if structure changed.
-5. Update roadmap status if a milestone moved.
-6. Record any architectural decision.
+1. Build the project in the relevant Debug and Release configurations.
+2. Run tests and CI-equivalent local validation, including GNU/Linux-equivalent linking when the change is toolchain-sensitive.
+3. Run `git diff --check` and the project file-limit check before push.
+4. Update `docs/WORKLOG.md` with results, local-toolchain limitations and remaining unknowns.
+5. Update `docs/FILE_MAP.md` if structure changed.
+6. Update roadmap status if a milestone moved.
+7. Record any architectural decision.
+8. Push only after the available pre-push validation is green; do not use GitHub Actions as the first compile/link test for a work-in-progress implementation.
 
 ## Definition of done
 A task is not done merely because code compiles. It is done when:
