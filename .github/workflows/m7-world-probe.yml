@@ -25,45 +25,20 @@ jobs:
           test "$(sha1sum "$ROM" | awk '{print $1}')" = "2944910c07c02eace98c17d78d07bef7859d386a"
           cp "$ROM" /tmp/reference.md
 
-      - name: Inspect screen group table and resolve known descriptors
+      - name: Find absolute references to collision candidate RAM
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          base=0x00c92c
-          groups=[int.from_bytes(rom[base+i*4:base+i*4+4],'big') for i in range(21)]
-          print('group_table=0x00c92c entries=21')
-          for i,v in enumerate(groups):
-              print(f'group={i:02x} base=0x{v:06x}')
-
-          targets={0x02cf82,0x02d3e8,0x032144,0x03285c}
-          found={}
-          for group,group_base in enumerate(groups):
-              # Probe all byte-sized screen indices exactly as C8F0/C8FC does.
-              for index in range(256):
-                  entry=group_base+index*2
-                  if entry+2>len(rom): break
-                  rel=int.from_bytes(rom[entry:entry+2],'big',signed=True)
-                  descriptor=entry+rel
-                  if descriptor in targets:
-                      found[descriptor]=(group,index,entry,rel)
-          for descriptor in sorted(targets):
-              if descriptor not in found:
-                  print(f'descriptor=0x{descriptor:06x} screen_id=NOT_FOUND')
-                  continue
-              group,index,entry,rel=found[descriptor]
-              print(f'descriptor=0x{descriptor:06x} screen_id=0x{group:02x}{index:02x} entry=0x{entry:06x} rel={rel}')
-
-          # Print a few low IDs for each group while resolved addresses remain in ROM.
-          for group,group_base in enumerate(groups):
-              row=[]
-              for index in range(8):
-                  entry=group_base+index*2
-                  rel=int.from_bytes(rom[entry:entry+2],'big',signed=True)
-                  descriptor=entry+rel
-                  row.append(f'{group:02x}{index:02x}->0x{descriptor:06x}')
-              print('sample_ids', ' '.join(row))
+          for target in (0xff179e,0xff17a2,0xff138c,0xff16ec,0xff16fa):
+              pat=target.to_bytes(4,'big')
+              hits=[]; p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  hits.append(p); p+=1
+              print(f'refs_0x{target:06x}_count={len(hits)} offsets='+','.join(f'0x{x:06x}' for x in hits[:120]))
           PY
 
       - name: Install M68K binutils
@@ -71,24 +46,39 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq binutils-m68k-linux-gnu
 
-      - name: Disassemble screen dispatcher
+      - name: Disassemble candidate RAM readers and writers
         shell: bash
         run: |
-          m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
-            --start-address=0x00c8aa --stop-address=0x00c9b2 /tmp/reference.md
+          set -euo pipefail
+          for RANGE in \
+            '0x00ce80 0x00cf80' \
+            '0x00d740 0x00d880' \
+            '0x00d980 0x00db40' \
+            '0x00e000 0x00e220' \
+            '0x00f000 0x00f300' \
+            '0x010000 0x010300'; do
+            set -- $RANGE
+            echo "===== candidate $1..$2 ====="
+            m68k-linux-gnu-objdump -D -b binary -m m68k:68000 --adjust-vma=0 \
+              --start-address=$1 --stop-address=$2 /tmp/reference.md
+          done
 
-      - name: Inspect candidate descriptors structurally
+      - name: Find coordinate-shaped accesses near candidate buffers
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           rom=Path('/tmp/reference.md').read_bytes()
-          for addr in (0x02cf82,0x02d3e8,0x032144,0x03285c):
-              raw=rom[addr:addr+26]
-              ptr=int.from_bytes(raw[4:8],'big')
-              ids=list(raw[8:12])
-              signed=[x if x<128 else x-256 for x in raw[12:16]]
-              words=[int.from_bytes(raw[o:o+2],'big') for o in (16,18,20,22,24)]
-              init=int.from_bytes(rom[addr+26:addr+30],'big')
-              print(f'descriptor=0x{addr:06x} ptr4=0x{ptr:06x} resource_ids={ids} signed12_15={signed} words16_24={words} init=0x{init:06x}')
+          targets=[0xff179e,0xff17a2,0xff138c]
+          refs=[]
+          for target in targets:
+              pat=target.to_bytes(4,'big')
+              p=0
+              while True:
+                  p=rom.find(pat,p)
+                  if p<0: break
+                  refs.append((p,target)); p+=1
+          for pos,target in refs:
+              start=max(0,pos-48); end=min(len(rom),pos+64)
+              print(f'window target=0x{target:06x} ref=0x{pos:06x} bytes={rom[start:end].hex()}')
           PY
