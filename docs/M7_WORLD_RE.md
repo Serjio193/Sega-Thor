@@ -58,6 +58,28 @@ Callers at `0x1027C`, `0x102BE`, `0x10300`, and nearby iterate words from `0xFF1
 
 Direct absolute callers elsewhere were also found at `0x26DE4`, `0x26DF2`, `0x26E00`, and `0x26E0E`.
 
+## `0x10594` — target steering / velocity generation, NOT collision
+
+A second collision candidate was rejected after caller and routine analysis.
+
+Fourteen direct callers pass world-like coordinates in `D0/D1`, current direction in `D2`, and movement magnitudes in `D3/D4`. Common callers load `D0/D1` from `0xFF19F0/0xFF19F4`.
+
+The routine:
+
+1. subtracts entity position fields `FP+8` / `FP+12` from the target coordinates to form signed X/Y deltas;
+2. uses helper `0x10660` and the ROM table at `0x5D906` to derive a 256-step direction angle;
+3. turns the existing `D2` direction toward that target direction by at most eight angle units per call;
+4. maps the resulting angle to a coarse orientation stored in `FP+22`;
+5. uses the signed lookup table at `0x5D706` as sine/cosine-style data;
+6. scales those components by `D3/D4` and writes the resulting fixed-point velocity components to `FP+78` and `FP+82`.
+
+Examples:
+
+- caller `0x227BC` uses magnitudes `0x00020000` and `0x00018000`;
+- caller `0x270BE` uses `0x00030000` and `0x00024000`.
+
+This routine belongs with later entity/player/enemy movement work, not the M7 collision API.
+
 ## Current collision target
 
-`0x10594` is the next spatial-query candidate. Known gameplay callers load coordinate-like values from `0xFF19F0` / `0xFF19F4` together with additional state and fixed-point-looking magnitude arguments before calling it. Its exact contract must be established before introducing a native collision API.
+Search now focuses on readers of the auxiliary byte-grid structures at `0xFF1766` / `0xFF1770`. Rendering code proves these structures participate in row/column addressing, but the next required evidence is a routine that reads individual grid values from world coordinates and returns a gameplay property such as blocking, surface, height, or traversal type.
