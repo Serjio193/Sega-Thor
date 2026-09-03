@@ -1,11 +1,11 @@
 # Project State
 
-CURRENT_MILESTONE: M8 — Player system
-CURRENT_TASK: Recover the first verified player movement/update path from the canonical USA ROM and define only the confirmed portable state needed to reproduce it
-STATUS: M8 ACCEPTED
-LAST_VERIFIED_RESULT: M8 player movement/state slice is implemented, locally verified in Debug/Release, ROM-oracle checked, and GitHub Actions CI green
-NEXT_ACTION: M8 is closed; do not begin M9 without an explicit new project scope
-DO_NOT_WORK_ON: M9+, Thor 2, Saturn support, remaster features, speculative attacks/animation systems
+CURRENT_MILESTONE: M9 — Entities/enemies/NPCs
+CURRENT_TASK: Recover the common entity-pool iteration contract before translating representative entity behavior
+STATUS: ACTIVE
+LAST_VERIFIED_RESULT: M8 player movement/state slice is accepted; M9 raw entity-pool descriptors and active-record view are implemented and locally tested
+NEXT_ACTION: trace shared record fields consumed at 0x8F22 and identify one representative non-player behavior with caller/data evidence
+DO_NOT_WORK_ON: M10+, Thor 2, Saturn support, remaster features, speculative enemy/NPC behavior
 BLOCKERS: none
 
 ## M7 verified evidence
@@ -31,6 +31,11 @@ BLOCKERS: none
 - Optional native `VelocityAdjustContext` now covers the three confirmed `0x64C4` arithmetic outcomes; unavailable context preserves the existing deterministic path.
 - Frame-boundary ordering is covered: state-4 reads the prior footprint mask, then shared movement updates the mask for the next frame.
 - The Windows CTest runtime path is configured in CMake; clean-shell Debug and Release runs pass 11/11 without manual `PATH` edits.
+
+## M9 verified evidence
+- The common loop has three raw pool descriptors: `FF2954 × 4` at stride `0x5A`, `FF19E8 × 21` at stride `0xBC`, and `FF2D8C × 6` at stride `0x5A`.
+- Active records are selected by signed word `+0x00 > 0`; the loop dispatches through `FF193C` and enters `0x8F12` or `0x8F22`.
+- Native `EntityPoolView` and synthetic tests reproduce bounded record addressing and the positive active predicate; local ROM oracle checks the loop constants.
 
 ## Confirmed USA reference fingerprint
 - Size: 3,145,728 bytes

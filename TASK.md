@@ -1,10 +1,10 @@
 # Current Task
 
-TASK: M8 — Player system
-WHY: M7 established tested world-grid and terrain collision primitives. The next dependency is recovering the original player's update/movement contract before translating attacks or animation state.
-CURRENT MILESTONE: M8
-UNDERSTANDING CONFIDENCE: 93%
-STATUS: DONE
+TASK: M9 — Entities/enemies/NPCs
+WHY: M8 established the player path and shared movement consumer. The next dependency is the common entity-pool contract before translating representative non-player behavior.
+CURRENT MILESTONE: M9
+UNDERSTANDING CONFIDENCE: 86%
+STATUS: ACTIVE
 
 ## Preconditions completed
 - M2 canonical USA ROM identification is complete.
@@ -14,25 +14,28 @@ STATUS: DONE
 - M6 deterministic runtime/input skeleton is complete.
 - M7 screen descriptors, byte-grid addressing, footprint aggregation and terrain movement gate are verified and tested.
 
-## M8 Definition of Done
-- [x] identify the player entity/update entry point and document its confirmed indirect call path;
-- [x] trace controller input bits into player movement intent without guessing field names;
-- [x] connect player movement to the confirmed M7 terrain/collision gate;
-- [x] identify the minimal position, velocity/delta, facing/direction and movement-state fields actually used by the verified path;
-- [x] implement a portable player movement/state slice only after the raw behavior is evidenced;
-- [x] add deterministic synthetic tests for movement and blocked movement;
-- [x] add a local USA-ROM reference/oracle check for translated player vectors;
-- [x] keep attacks, animation, inventory and enemy behavior out until their dependencies are proven;
-- [x] record unknown fields without invented semantic names;
-- [x] keep every file <= 500 lines;
-- [x] CI green.
+- M8 player movement/state slice is accepted locally and by CI.
+
+## M9 Definition of Done
+- [x] identify the common entity-pool loops and raw pool descriptors;
+- [x] implement bounded raw record access and the confirmed active-record predicate;
+- [x] add synthetic tests for pool bounds, stride and active selection;
+- [x] add a local USA-ROM oracle for the pool loop constants;
+- [ ] trace shared record fields consumed by the common movement entry;
+- [ ] identify one representative non-player behavior from caller/data evidence;
+- [ ] keep AI, attacks, animation callbacks and spawn semantics out until their dependencies are proven;
+- [ ] record unknown fields without invented semantic names;
+- [ ] keep every file <= 500 lines;
+- [ ] CI green.
 
 ## Constraints
-- Do not begin M9.
-- Do not infer player fields from common engine conventions; prove them from callers/accesses.
+- Do not begin M10 or spirits work.
+- Do not label a raw record as enemy/NPC/effect without evidence.
+- Do not infer entity fields from common engine conventions; prove them from callers/accesses.
 - Reuse M7 `ByteGridView` / terrain gate rather than introducing a second collision model.
-- Separate input intent, movement resolution and presentation/animation.
+- Keep pool iteration, behavior selection and presentation separate.
 - Prefer exact integer/fixed-point behavior over floating point.
+- Keep the ROM archive local-only and untracked.
 
 ## Exact next action
-M8 is closed; do not begin M9 without an explicit new project scope.
+Trace the shared record fields consumed at `0x8F22` and identify one representative non-player behavior with caller/data evidence.

@@ -4,6 +4,21 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-03 — M9 common entity pool slice
+**Objective:** Recover and implement the common entity-pool iteration contract before translating representative enemy/NPC behavior.
+
+**Evidence:**
+- `0x8E90` scans `FF2954` with 4 records at stride `0x5A` and routes active entries to `0x8F12`;
+- `0x8EB2` scans `FF19E8` with 21 records at stride `0xBC` and routes active entries to `0x8F22`;
+- `0x8ED4` scans `FF2D8C` with 6 records at stride `0x5A` and routes active entries to `0x8F12`;
+- each loop reads word `+0x00` and enters movement only when the signed word is positive.
+
+**Actions:** Added raw `EntityPoolSpec` descriptors, bounded `EntityPoolView`, synthetic active-record tests and a local USA-ROM oracle for the three loop shapes. Updated the file map and M9 reverse-engineering ledger.
+
+**Result:** The common pool framework is represented without inventing whether a record is an enemy, NPC or effect. No entity behavior has been started.
+
+**Exact next step:** trace the shared record fields consumed at `0x8F22` and identify one representative non-player behavior with caller/data evidence.
+
 ## 2026-09-03 — M8 acceptance review
 **Objective:** Close M8 after local, ROM-reference and remote CI verification.
 

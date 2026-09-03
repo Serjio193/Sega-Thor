@@ -183,6 +183,19 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 - Bit 4 of `FF16F1` is read by `0x64C4`; no direct bit-4 writer was found in the scanned ROM references, so its producer remains **UNKNOWN**.
 - Rendering, animation scripts and the unknown entity callback at `+0x22` are intentionally outside this slice.
 
+## M9 — common entity pool framework
+**Status:** ACTIVE; raw pool iteration is implemented, entity behavior remains INVESTIGATING.
+
+### Pool iteration evidence
+- `0x008E90` iterates four records from `FF2954` with stride `0x5A`, stores dispatcher `0x8EAA` in `FF193C`, and branches active records to `0x8F12` — **CONFIRMED**.
+- `0x008EB2` iterates 21 records from `FF19E8` with stride `0xBC`, stores dispatcher `0x8ECC` in `FF193C`, and branches active records to `0x8F22` — **CONFIRMED**.
+- `0x008ED4` iterates six records from `FF2D8C` with stride `0x5A`, stores dispatcher `0x8EEE` in `FF193C`, and branches active records to `0x8F12` — **CONFIRMED**.
+- Each loop reads record word `+0x00` and uses `bgt` as the active test; zero and negative values are skipped — **CONFIRMED**.
+- The native `EntityPoolView` exposes bounds, raw record spans and this active predicate without assigning enemy/NPC semantics to records.
+
+### M9 boundary
+The first M9 slice does not translate AI, attacks, animation callbacks, spawn tables or entity field names beyond the raw offsets required by pool iteration. Those require separate caller/data evidence.
+
 ## Existing translated compatibility behavior
 
 ### Tile copy to work RAM

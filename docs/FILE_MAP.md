@@ -51,6 +51,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── player/
 │   │   │   ├── player.cpp     Portable input, state and terrain-gated movement
 │   │   │   └── player.hpp     Player movement API and ROM evidence constants
+│   │   ├── entities/
+│   │   │   ├── entity_pool.cpp  Raw entity-pool bounds and active-record view
+│   │   │   └── entity_pool.hpp  Entity-pool descriptors from the common loop
 │   │   └── world/
 │   │       ├── byte_grid.cpp          8-pixel world grid and footprint aggregation
 │   │       ├── byte_grid.hpp          Bounded world-grid view API
@@ -69,6 +72,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── rom_identity_test.cpp             Synthetic ROM/hash/header tests
     ├── player_test.cpp                   Deterministic input and movement tests
     ├── player_reference.cpp              Local USA-ROM oracle for player vectors
+    ├── entity_pool_test.cpp              Synthetic raw entity-pool/active-record tests
+    ├── entity_pool_reference.cpp         Local USA-ROM oracle for entity pool loops
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
