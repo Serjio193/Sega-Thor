@@ -97,8 +97,9 @@ Rendering, audio and unproven spirit semantics remain outside the milestone.
 The milestone is closed with local Debug/Release verification and successful
 GitHub Actions CI.
 
-## M11 — Scripts/events/dialogue — TODO
-Goal: reproduce game progression and event semantics.
+## M11 — Scripts/events/dialogue — ACTIVE
+Goal: reproduce game progression and event semantics. The first task is to
+prove one bounded event/script router operation from its ROM data source.
 
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.

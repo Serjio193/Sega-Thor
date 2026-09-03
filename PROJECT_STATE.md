@@ -1,11 +1,11 @@
 # Project State
 
-CURRENT_MILESTONE: M10 — Spirits
-CURRENT_TASK: Locate and recover one evidence-backed spirit summon/slot/dispatch lifecycle slice
-STATUS: COMPLETE
+CURRENT_MILESTONE: M11 — Scripts/events/dialogue
+CURRENT_TASK: Locate and recover one evidence-backed event/script router operation
+STATUS: ACTIVE
 LAST_VERIFIED_RESULT: M10 closed: raw summon-entry seed, slot mapping, raw dispatch trace, cross-pool first-match target selection, local Debug/Release CTest, USA-ROM oracle and GitHub Actions CI all pass
-NEXT_ACTION: begin M11 — Scripts/events/dialogue after recording its concrete task and acceptance criteria
-DO_NOT_WORK_ON: M11+, Thor 2, Saturn support, remaster features, speculative spirit behavior
+NEXT_ACTION: trace writes and callers for FF1976 and prove the event/script stream format
+DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
 
 ## M7 verified evidence
