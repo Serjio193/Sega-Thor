@@ -1,5 +1,37 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — external emulator boot-trace oracle PoC
+**Status:** BLOCKED on an external execution backend; adapter implementation
+and synthetic verification are complete. No emulator binary/source or ROM is
+part of the repository, and no fake dynamic trace is used.
+
+`oasis.m68k.emulator-trace.v1` is a developer-only normalized capture layer
+outside `oasis_core`. Its neutral importer accepts externally supplied event
+records for PC, optional block, branch, direct/indirect control flow, return,
+memory access and optional D0-D7/A0-A7/SR snapshots. The normalizer records
+ROM/emulator/scenario metadata, deterministic event order and hash, bounded
+coverage, direct call edges, indirect targets, reset-vector evidence, and
+Atlas-known/Atlas-unknown executed PCs. Branch/call/indirect targets are
+separately split into Atlas-known and Atlas-unknown sets. Frame/cycle values
+are retained as non-deterministic fields and excluded from the hash; optional
+register snapshots are deterministic hash input.
+
+The static reset-vector reader is limited to the first eight ROM bytes:
+initial A7 is the longword at offset 0 and initial PC is the longword at offset
+4. Agreement with a first observed PC is reported only when an external trace
+is supplied; it is not inferred from static bytes alone. The accepted input
+header is `oasis.m68k.external-trace.v1`, followed by metadata lines such as
+`scenario=boot_initial` and event lines such as
+`event seq=0 pc=0x00000100 kind=instruction block=0x00000100 size=4`.
+
+Local inventory found no installed BlastEm, RetroArch, MAME, Mednafen, BizHawk,
+Ares, Kega/Fusion or equivalent debugger-capable executable in PATH, common
+install roots, user folders or package listings. Consequently boot execution,
+first observed PC, reset agreement, replay match, `0x6121A` observation and
+watchpoint/writer capability are UNKNOWN. No emulator was installed or copied;
+the next step requires an approved external backend and its documented capture
+interface. No semantic Atlas entries were added.
+
 ## M11.5 — bounded caller-stack provenance before `0x60BCC`
 **Status:** bounded implementation and USA oracle verified. No semantic role is
 assigned to any stack value. The additive schema is

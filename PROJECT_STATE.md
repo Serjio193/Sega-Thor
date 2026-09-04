@@ -1,12 +1,28 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded caller-stack provenance audit before direct call 0x60BCC
-STATUS: COMPLETE
-LAST_VERIFIED_RESULT: bounded symbolic A7 audit reaches call block 0x60BC4; unknown direct BSR 0x60B8C -> 0x6121A invalidates memory[P], leaving 0x60BFA/0x60C08 unresolved and speculative resolutions at zero
-NEXT_ACTION: Stop at this completed bounded caller-stack checkpoint and await explicit instruction
+CURRENT_TASK: M11.5 external emulator boot-trace oracle PoC
+STATUS: BLOCKED_EXTERNAL_BACKEND
+LAST_VERIFIED_RESULT: neutral external-capture importer and oasis.m68k.emulator-trace.v1 normalizer pass synthetic tests; no external emulator/debug interface is installed for real boot execution
+NEXT_ACTION: provide/install an approved external emulator with PC/register/memory-debug access, then run only boot_initial
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: none for this checkpoint
+BLOCKERS: no installed external Mega Drive emulator or debugger automation interface; real boot oracle cannot be claimed
+
+## M11.5 external emulator boot-trace oracle
+- Added developer-only `oasis.m68k.emulator-trace.v1` importer/normalizer;
+  it is not linked into `oasis_core` and has no emulator dependency. It accepts
+  externally captured PC, block, branch, call, return, memory and indirect
+  events, optional D0-D7/A0-A7/SR snapshots, metadata and bounded limits.
+- The report computes deterministic event ordering/hash, static reset-vector
+  evidence, safe observed ranges, direct call edges, indirect targets and
+  Atlas-known/Atlas-unknown PC sets and separate control-flow-target sets.
+  Frame/cycle fields are retained but are excluded from deterministic identity;
+  optional register snapshots are included in it.
+- Local inventory found no BlastEm, RetroArch, MAME, Mednafen, BizHawk,
+  Ares, Kega/Fusion or equivalent executable in PATH, common install roots,
+  user folders or package listings. Boot execution, first PC, replay match,
+  `0x6121A` observation and watchpoint capability remain UNKNOWN. No emulator
+  source/binary, ROM or fake trace was added. Synthetic tests pass.
 
 ## M11.5 bounded caller-stack provenance audit
 - Schema: `oasis.m68k.re-caller-stack.v1`, developer-only and separate from

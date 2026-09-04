@@ -2,6 +2,49 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 external emulator boot-trace oracle PoC blocked at backend
+OBJECTIVE/SCOPE: test only whether an existing external Mega Drive emulator can
+produce deterministic reset-to-boot evidence; no emulator implementation,
+copied source/binary, production dependency, whole-game trace, autoplay,
+semantic Atlas changes, call-clobber resolution or M12.
+IMPLEMENTATION: added neutral `oasis.m68k.emulator-trace.v1` capture importer,
+normalizer, deterministic hash/ordering, optional D0-D7/A0-A7/SR snapshots,
+safe PC/block/range coverage, direct call and indirect target aggregation,
+static reset-vector reader and Atlas-known/unknown comparison. Added CLI and
+synthetic parser/normalization/edge/coverage/malformed-input tests. Adapter is
+outside `oasis_core` and has no emulator dependency.
+INVESTIGATION: PATH, common install roots, user folders and package listings
+contained no BlastEm, RetroArch, MAME, Mednafen, BizHawk, Ares, Kega/Fusion or
+equivalent debugger-capable executable. No real boot was run and no fake trace
+was substituted. First PC, reset agreement, replay match, `0x6121A` observation
+and watchpoint/writer capability remain UNKNOWN.
+TESTS: synthetic validation passed, including parser rejection, normalization,
+ordering, coverage, direct-call/indirect-target edges, Atlas PC/target split,
+reset-vector comparison and register-sensitive deterministic hashing. Full
+Debug/Release/GNU CTest passed 26/26 in each configuration; file-limit,
+diff-check and the focused rebuilt target passed. CI is pending the push of
+this implementation.
+PROVEN/UNKNOWN: the adapter is useful for importing a future external capture,
+but no boot execution, first PC, reset agreement, replay match, `0x6121A`
+observation or watchpoint capability can be claimed without a backend.
+NEXT: push only after the local gate, then provide/install an approved external
+emulator with PC/register/memory-debug automation and run only `boot_initial`.
+## 2026-09-04 — M11.5 external emulator boot-trace oracle PoC started
+TASK: determine whether an already installed external Mega Drive emulator/debug
+interface can produce a reproducible reset-to-boot normalized trace for the
+canonical USA ROM.
+SCOPE: boot_initial only; no emulator implementation, copied emulator source,
+production dependency, whole-game tracing, autoplay, semantic Atlas changes,
+call-clobber resolution or M12.
+ACCEPTANCE: identify a viable existing interface or document the blocker; keep
+the normalized adapter separate from `oasis_core`; add synthetic parser,
+normalization, deterministic replay, coverage, Atlas comparison and malformed
+input tests; run local boot oracle only if emulator and ROM are available; pass
+Debug/Release/GNU CTest, source file-limit, diff-check and CI before push.
+EVIDENCE/UNKNOWN: previous static checkpoint is `07f106b`; reset vector,
+emulator availability, debugger fields, watchpoint support and first observed
+PC are not yet established. NEXT: inventory local emulator executables and
+documented automation/debug capabilities.
 ## 2026-09-04 — M11.5 bounded caller-stack provenance audit completed
 TASK/SCOPE: audit only reachable paths in `[0x60004,0x61204)` before `0x60BCC`,
 using symbolic A7 and no ABI, general stack model, caller discovery, emulator,

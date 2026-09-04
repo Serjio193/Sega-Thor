@@ -56,6 +56,8 @@ add_library(oasis_re_tooling
     src/tools/re_callee_effect_format.cpp
     src/tools/re_caller_stack.cpp
     src/tools/re_caller_stack_format.cpp
+    src/tools/re_emulator_trace.cpp
+    src/tools/re_emulator_trace_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -91,6 +93,9 @@ target_link_libraries(oasis_re_callee_effect PRIVATE oasis_re_tooling oasis_core
 
 add_executable(oasis_re_caller_stack src/tools/re_caller_stack_report.cpp)
 target_link_libraries(oasis_re_caller_stack PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_emulator_trace src/tools/re_emulator_trace_report.cpp)
+target_link_libraries(oasis_re_emulator_trace PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -190,6 +195,10 @@ add_executable(oasis_re_caller_stack_test tests/re_caller_stack_test.cpp)
 target_link_libraries(oasis_re_caller_stack_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_caller_stack COMMAND oasis_re_caller_stack_test)
 
+add_executable(oasis_re_emulator_trace_test tests/re_emulator_trace_test.cpp)
+target_link_libraries(oasis_re_emulator_trace_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_emulator_trace COMMAND oasis_re_emulator_trace_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -265,6 +274,7 @@ set(oasis_test_targets
     oasis_re_reachable_closure_test
     oasis_re_callee_effect_test
     oasis_re_caller_stack_test
+    oasis_re_emulator_trace_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -304,6 +314,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_reachable_closure
         oasis_re_callee_effect
         oasis_re_caller_stack
+        oasis_re_emulator_trace
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

@@ -110,11 +110,15 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_callee_effect.hpp Bounded direct-callee register/stack effect API
 │       ├── re_callee_effect.cpp Conservative callee return-effect audit
 │       ├── re_callee_effect_format.cpp Deterministic callee-effect JSON/text formatting
-│       └── re_callee_effect_report.cpp Local-only USA callee-effect CLI
+│       ├── re_callee_effect_report.cpp Local-only USA callee-effect CLI
 │       ├── re_caller_stack.hpp Bounded caller pre-BSR stack provenance API
 │       ├── re_caller_stack.cpp Symbolic A7 paths and conservative stack effects
 │       ├── re_caller_stack_format.cpp Deterministic caller-stack JSON/text formatting
-│       └── re_caller_stack_report.cpp Local-only USA caller-stack CLI
+│       ├── re_caller_stack_report.cpp Local-only USA caller-stack CLI
+│       ├── re_emulator_trace.hpp Neutral external emulator capture model/API
+│       ├── re_emulator_trace.cpp Capture parser, normalization and Atlas comparison
+│       ├── re_emulator_trace_format.cpp Deterministic emulator-trace JSON/text formatting
+│       └── re_emulator_trace_report.cpp External capture import CLI; no emulator backend
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -149,6 +153,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_callee_effect_reference.cpp        Local USA-ROM callee-effect oracle
     ├── re_caller_stack_test.cpp              Synthetic bounded caller-stack tests
     ├── re_caller_stack_reference.cpp         Local USA-ROM caller-stack oracle
+    ├── re_emulator_trace_test.cpp            Synthetic external capture/import tests
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
