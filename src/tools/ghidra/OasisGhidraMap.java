@@ -453,7 +453,7 @@ public class OasisGhidraMap extends GhidraScript {
             field(out, 3, "classification", classification, false);
             out.println(index + 1 == values.size() ? "    }" : "    },");
         }
-        out.println("  ]");
+        out.println("  ],");
     }
     private void field(PrintWriter out, int indent, String name, String value, boolean comma) {
         out.println("  ".repeat(indent) + quote(name) + ": " + quote(value) + (comma ? "," : ""));

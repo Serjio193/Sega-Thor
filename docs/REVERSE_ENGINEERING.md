@@ -807,6 +807,53 @@ runtime behavior were added. Schema: `oasis.m68k.re-atlas.v1`.
 **Unknown:** table sizes at `0x96E8`, `0x96F8`, `0xC92C`, bounded ownership,
 unresolved effective addresses and routine semantics remain unknown. Atlas is
 not an emulator, recompiler, whole-ROM map or gameplay runtime dependency.
+### M11.5 Ghidra ROM Mapping PoC — canonical USA baseline
+**Status:** VERIFIED as a developer-only structural discovery experiment;
+decision `GHIDRA_USEFUL_WITH_PROJECT_FIXUPS` (option B). No semantic function
+names or gameplay behavior are inferred from this output. Ghidra findings are
+candidate evidence only; the existing `oasis_re` and runtime captures remain
+the verification authority.
+
+- Input fingerprint: 3145728 bytes, SHA-256
+  `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+  Official Ghidra 12.1.3 headless used Temurin JDK 21.0.12.1+1, raw
+  BinaryLoader, base `0x000000`, language `68000:BE:32:default`, compiler
+  `default`, normal conservative auto-analysis and the developer-only
+  `OasisGhidraMap` post-script.
+- Export schema is `oasis.m68k.ghidra-map.v1`. The map contains 496 functions,
+  438 candidates, 364 direct BSR targets, 106 direct JSR targets and 6
+  vector-derived targets. The unresolved-call field is present and empty for
+  this Ghidra run; no unresolved target is promoted to a resolved edge.
+- Known-entry benchmark over
+  `0x3820, 0x7A28, 0x82AE, 0x8E90, 0x938E, 0x9BF2, 0xA6A4, 0xD3B2,
+  0x60004, 0x604BC, 0x6121A`: 7 exact function matches, one wrong boundary
+  (`0x3820`, Ghidra ended at `0x38D0` versus known `0x3B3E`), one code-only
+  entry (`0xA6A4`) and two missed entries (`0x7A28`, `0x82AE`). Thus exact
+  function recall is 7/11 (63.6%) and code presence is 9/11 (81.8%).
+- Required direct call edges were found at
+  `0x60B8C->0x6121A`, `0x60D4A->0x6121A`, `0x611EE->0x6121A` and
+  `0x60BCC->0x604BC`; the edges `0x60004->0x6042A` and
+  `0xD3B2->0x3820` were missed. Result: 4/6 (66.7%). These are structural
+  reference results, not proof of routine semantics.
+- Data checks at `0x5CE96`, `0x96E8`, `0x96F8` and `0xC92C` all decoded as
+  non-code and had useful xrefs (4, 20, 4 and 2 respectively). Only `0xC92C`
+  was recognized as defined data. At `0xA7E2`, Ghidra listed `jmp`, did not
+  identify an indirect flow through its API and exposed no reference/target;
+  the existing bounded `oasis_re` evidence remains authoritative for the
+  indirect dispatch observation.
+- A bounded 20-item false-positive sample contained 19 `LIKELY_CODE` and one
+  `AMBIGUOUS` item at `0x020E`. Two fresh external Ghidra projects produced
+  identical 390972-byte JSON exports, SHA-256
+  `613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`.
+
+**Limitations:** Ghidra emitted decompiler warnings around `0x6163E` and
+several invalid or unresolved instruction addresses; these were not treated
+as semantic evidence. The Windows wrapper rejected the `.md` suffix before
+import, so an externally stored byte-identical `.bin` adapter copy was used;
+the supplied ROM itself was not changed or copied into a tracked path. No
+Ghidra project/database/raw disassembly or ROM was committed. This checkpoint
+ends after the option-B decision; M12 is not started.
+
 ## ROM identification implementation
 **Status:** VERIFIED.
 

@@ -2,19 +2,21 @@
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 Ghidra ROM Mapping PoC availability gate
-STATUS: BLOCKED
-LAST_VERIFIED_RESULT: official Ghidra 12.1.3 and Temurin JDK 21.0.12.1+1 are
-installed outside the repository; `support\\analyzeHeadless.bat` runs and the
-68000 family language `68000:BE:32:default` is available. Canonical USA ROM is
-not present, so no import or analysis has been performed.
-NEXT_ACTION: provide the canonical USA ROM locally, verify its required
-fingerprint, then create the ignored Ghidra project and run the single
-conservative baseline export.
+STATUS: COMPLETE_WITH_LIMITATIONS
+LAST_VERIFIED_RESULT: canonical USA ROM size and SHA-256 matched the required
+fingerprint. Official Ghidra 12.1.3 with Temurin JDK 21.0.12.1+1 imported the
+raw binary at `0x000000` using `68000:BE:32:default`; two independent
+headless runs exported identical 390972-byte JSON maps. Benchmark: 7/11 exact
+entry matches, 9/11 code presence, 4/6 required call edges; data and indirect
+flow checks are recorded in the RE ledger. Decision:
+`GHIDRA_USEFUL_WITH_PROJECT_FIXUPS`.
+NEXT_ACTION: STOP at the bounded M11.5 checkpoint; await an explicit new task.
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative
 dialogue or event semantics, replacement whole-ROM scanner
-BLOCKERS: canonical USA ROM is absent; do not download/reconstruct it. Ghidra
-12.1.3/Temurin JDK 21.0.12.1+1 and the exporter synthetic smoke-test are ready.
-The checkpoint forbids a replacement whole-ROM scanner and M12 work.
+BLOCKERS: Ghidra does not provide complete function-boundary recovery or an
+indirect target at `0xA7E2` for this raw import; project fixups and independent
+`oasis_re`/runtime verification remain required. The checkpoint forbids a
+replacement whole-ROM scanner and M12 work.
 
 ## M11.5 bounded downstream runtime resolution
 - Static USA bytes/decode were independently rechecked: `0x60BFA` is

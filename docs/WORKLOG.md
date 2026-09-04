@@ -3,6 +3,57 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC — COMPLETE WITH FIXUPS DECISION
+TASK: run the bounded Ghidra mapping PoC against the supplied canonical USA
+ROM and make exactly one A/B/C usefulness decision. Production C++ and M12
+were out of scope.
+ACCEPTANCE: verify the requested ROM fingerprint; use only official Ghidra;
+run conservative raw-binary M68000 auto-analysis; export Ghidra functions,
+candidate sources, direct calls, vector-derived targets, unresolved-call
+field, benchmarks and a bounded false-positive sample; repeat the export;
+run the required repository validation; stop after the decision.
+ACTIONS: verified `D:\Proect\Github\Sega-Thor\local-roms\Beyond Oasis (USA).md`
+is 3145728 bytes with SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. The
+official NSA GitHub release Ghidra 12.1.3 (`Ghidra_12.1.3_build`) and official
+supported Temurin JDK 21.0.12.1+1 remain installed only under
+`C:\Users\Serjio\Tools\Sega-Thor-Ghidra`, outside the repository. Because the
+Windows Ghidra wrapper rejected the supplied `.md` suffix before import, a
+developer-only external copy was used at `BeyondOasisUSA.bin`; its size and
+SHA-256 were reverified identical. No copy was placed in a tracked path.
+The raw BinaryLoader used base `0x000000`, language
+`68000:BE:32:default`, compiler `default`, normal headless auto-analysis,
+`OasisGhidraMap`, and `-max-cpu 1`; no manual labels or custom whole-ROM
+scanner were used.
+EVIDENCE: schema `oasis.m68k.ghidra-map.v1`; 496 Ghidra functions, 438
+candidates (432 recognized functions plus 6 vector/direct-call candidates),
+364 direct BSR targets, 106 direct JSR targets, 6 vector-derived targets and
+0 exported unresolved call targets. Entry benchmark: 7
+`EXACT_FUNCTION_MATCH`, 1 `WRONG_BOUNDARY`, 1 `CODE_ONLY`, 2
+`MISSED_ENTRY`; code presence is 9/11 (81.8%) and exact function match is 7/11
+(63.6%). Call-edge benchmark is 4/6 (66.7%). Data checks: all four addresses
+were non-code with useful xrefs; only `0xC92C` was recognized as defined data,
+while `0x5CE96`, `0x96E8` and `0x96F8` remained undefined but xref-bearing.
+At `0xA7E2`, Ghidra listed `jmp`, did not mark the flow indirect and exposed
+no target. The bounded 20-entry sample contained 19 `LIKELY_CODE` and one
+`AMBIGUOUS` item (`0x020E`).
+REPEATABILITY: two fresh external projects and exports were byte-identical;
+both JSON files are 390972 bytes with SHA-256
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`.
+RESULT/DECISION: `GHIDRA_USEFUL_WITH_PROJECT_FIXUPS` (option B). Ghidra is a
+useful broad structural discovery layer, but the missed entries, one known
+boundary mismatch, incomplete data typing and unresolved indirect flow make
+it unsuitable as the authority. Keep `oasis_re`, ROM oracles and runtime
+captures as verification authority. No production code, ROM, Ghidra project,
+database, raw disassembly or generated commercial-data report was committed.
+TESTS/VALIDATION: Debug, Release and GNU/MinGW-equivalent builds/tests passed
+27/27; project file-limit checks passed; `git diff --check` and tracked-file
+sensitive-artifact checks passed. The JSON was parsed with PowerShell
+`ConvertFrom-Json`. Existing CI run `33882125335` for the exporter commit was
+green; no new production target was introduced.
+UNKNOWN/NEXT: Ghidra's warnings on several decompilations and the lack of
+semantic confidence are recorded limitations. STOP at M11.5; do not begin M12.
+
 ## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC availability gate — ROM BLOCKED
 TASK: determine whether a local Ghidra M68000 analyzer is available for the
 bounded discovery-layer experiment described by the user.

@@ -6,10 +6,11 @@ wide structural discovery layer over the canonical USA ROM, with oasis_re and
 runtime captures remaining the verification authority.
 CURRENT MILESTONE: M11.5 post-M11 evidence tooling
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 100% for the availability check; 0%
-for Ghidra analysis results because the required tool is not installed
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 100% for the bounded baseline and
+benchmark measurements; semantic confidence remains intentionally limited
+to Ghidra candidate evidence
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: BLOCKED
+STATUS: COMPLETE_WITH_LIMITATIONS
 
 ## Current task — availability gate
 
@@ -19,11 +20,11 @@ Acceptance criteria:
 - [x] required project governance and evidence documents reviewed;
 - [x] local Ghidra GUI and headless availability checked without downloading
   an unofficial build or installing through CI;
-- [ ] canonical USA ROM import and fingerprint verification;
-- [ ] conservative baseline auto-analysis and deterministic map export;
-- [ ] known-entry, call-edge, data-table and indirect-flow benchmarks;
-- [ ] bounded false-positive sample and evidence-based A/B/C decision;
-- [ ] Ghidra export parser/tests and local Debug/Release/GNU validation, if
+- [x] canonical USA ROM import and fingerprint verification;
+- [x] conservative baseline auto-analysis and deterministic map export;
+- [x] known-entry, call-edge, data-table and indirect-flow benchmarks;
+- [x] bounded false-positive sample and evidence-based A/B/C decision;
+- [x] Ghidra export parser/tests and local Debug/Release/GNU validation, if
   reusable repository code is added.
 
 Availability check: initially no Ghidra installation was present. The user
@@ -38,19 +39,22 @@ is 68000). Temurin JDK `21.0.12.1+1` 64-bit LTS is installed outside the
 repository and verified with SHA-256
 `f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`.
 
-Current blocker: the canonical USA ROM is not present in the workspace or
-checked local user roots, and no same-size `3145728`-byte candidate was found.
-It cannot be downloaded or reconstructed. No ROM import, Ghidra project,
-analysis, export, benchmark or decision is claimed yet.
+The supplied canonical USA ROM matched the required size `3145728` and
+SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The official developer-only Ghidra baseline imported it as raw binary at
+`0x000000` with `68000:BE:32:default`; the project and exports remain outside
+the repository. Repeated runs produced byte-identical JSON.
 
-The developer-only exporter `src/tools/ghidra/OasisGhidraMap.java` is prepared
-for the required schema and passed a synthetic headless smoke-test, but remains
-unvalidated against the canonical ROM. The checkpoint still prohibits writing
-a replacement whole-ROM scanner.
-
-Exact next action: provide the canonical USA ROM locally, verify its required
-fingerprint, then create the ignored project and run the conservative baseline
-export. Do not begin M12.
+Benchmark result: 7/11 exact function matches, 1 wrong boundary, 1 code-only
+entry and 2 missed entries; 9/11 entries had code presence. Required call
+edges were found 4/6. All four data-table addresses decoded as non-code and
+had useful xrefs, but only `0xC92C` was recognized as defined data. The
+`0xA7E2` indirect-flow observation found a `jmp`, but Ghidra exposed no
+indirect target. The bounded 20-item false-positive sample contained 19
+`LIKELY_CODE` and 1 `AMBIGUOUS` item. Decision:
+`GHIDRA_USEFUL_WITH_PROJECT_FIXUPS`. Ghidra is retained as a structural
+discovery layer; `oasis_re` and runtime evidence remain the verification
+authority. Do not begin M12.
 
 LAST_VERIFIED_RESULT: the frozen scenario reaches `0x60BFA` and `0x60C08` at
 frame 423. Actual A0 is `0x0006F8B0` / `0x0006F8B2`, so the byte reads resolve
