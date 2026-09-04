@@ -5,7 +5,10 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <optional>
 #include <stdexcept>
+#include <string>
 
 namespace {
 

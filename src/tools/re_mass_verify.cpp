@@ -4,9 +4,11 @@
 
 #include <algorithm>
 #include <map>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <tuple>
+#include <utility>
 
 namespace oasis::tools {
 namespace {
