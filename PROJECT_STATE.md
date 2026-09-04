@@ -5,7 +5,7 @@ CURRENT_TASK: M11.5 bounded natural reachability search for 0x60B8C / 0x60D4A
 STATUS: COMPLETE_WITH_LIMITATIONS
 LAST_VERIFIED_RESULT: one raw Start pulse at frame 120 reaches 0x60B8C at
 frame 423 after 424 frame advances; downstream 0x6121A is observed and two
-identical replays are byte-identical
+identical replays are byte-identical; GitHub Actions CI run 33871898019 passed
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: 0x60D4A remains unobserved in this bounded family; complete

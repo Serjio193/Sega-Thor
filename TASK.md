@@ -13,7 +13,7 @@ STATUS: COMPLETE_WITH_LIMITATIONS
 LAST_VERIFIED_RESULT: one raw `Start` pulse at frame 120 in the existing
 BizHawk 2.11.1 probe reaches `0x60B8C` at frame 423 after 424 frame advances;
 the same run observes downstream `0x6121A`, and two identical replays match
-byte-for-byte
+byte-for-byte; GitHub Actions CI run `33871898019` is successful
 NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
 BLOCKERS: this probe samples frame boundaries plus exact watched bus-exec hooks,
 not every instruction; `0x60D4A` was not reached by the first successful

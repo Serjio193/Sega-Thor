@@ -56,6 +56,8 @@ TESTS: Debug, Release and GNU/MinGW-equivalent CTest 27/27 passed; frozen USA
 natural oracle and caller-search USA oracle passed; exact BizHawk replay and
 hash comparison passed; file-limit and `git diff --check` passed. No ROM,
 trace, emulator binary or generated artifact is tracked.
+CI: GitHub Actions run `33871898019` for implementation commit `81e3642`
+completed successfully.
 RESULT: bounded natural reachability for `0x60B8C` is confirmed; `0x60D4A`
 remains unobserved. Input meaning, complete execution trace, callee effects,
 broader reachability and semantic roles remain UNKNOWN. CURRENT SLICE
