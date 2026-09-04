@@ -1,12 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded reachable-unresolved closure audit for 0x60004
+CURRENT_TASK: M11.5 bounded MOVEA postincrement transfer support for 0x60BFA/0x60C08
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: oasis.m68k.re-reachable-closure.v1 accounts for exactly 16 reachable unresolved refs; 14 are call-clobbered and 2 are unsupported-transfer cases, with zero new resolutions and raw Atlas counts unchanged
-NEXT_ACTION: Stop at the verified bounded closure checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: exact MOVEA.L (A7)+,An support preserves 16 reachable unresolved refs: 14 call_clobber and 2 stack-unknown targets; zero speculative resolutions
+NEXT_ACTION: Stop at this verified bounded transfer checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 bounded MOVEA postincrement transfer checkpoint
+- `oasis.m68k.re-reachable-closure.v1` recognizes only longword `MOVEA.L
+  (A7)+,An`: source mode 3/A7, destination mode 1/An, `An=memory[old A7]`,
+  and `A7 += 4`. Narrow stack provenance accepts only immediate long push,
+  known-address PEA, proven `MOVE.L An,-(A7)` and this pop.
+- USA `0x60BD0` is confirmed as `20 5F`; the path to both `0x60BFA` and
+  `0x60C08` crosses `BSR 0x60BCC`. Therefore their stack value and A7 input
+  are unknown; no callee/return-address/ABI effect is assumed. Instruction-level
+  increment is recorded as 4 bytes and no semantic role is assigned to A0.
+- Result: exact target refs 2, newly resolved 0, reachable unresolved 16→16,
+  14 prior `call_clobber` preserved and 2 `other` with
+  `stack_value_unknown_call_boundary`; speculative resolutions 0.
+- Synthetic stack/merge/call-boundary tests and USA oracle pass. No other
+  postincrement form, general stack emulator, dynamic tracing, runtime or M12.
 
 ## M11.5 bounded reachable-unresolved closure audit
 - `oasis_re_reachable_closure` is a local-USA-ROM-only developer report over
@@ -18,8 +33,9 @@ BLOCKERS: none
 - USA result: 14 `call_clobber`, 2 `unsupported_transfer`, newly resolved 0,
   reachable unresolved after 16, nonreachable unresolved 80. Raw Atlas remains
   577 and raw displacement backlog remains 446; no evidence was removed.
-- The two unsupported transfers are the existing bounded `MOVEA (A7)+,A0`
-  pattern at the local backward boundary. No new transfer rule was added.
+- The former unsupported transfers at `0x60BFA` and `0x60C08` are now covered
+  by the narrow MOVEA pop rule; their actual stack value remains unknown at the
+  call boundary documented above.
 - No dynamic scenario, calling convention, entry-state guess, semantic name,
   island investigation or M12 work was added.
 

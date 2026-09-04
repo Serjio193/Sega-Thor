@@ -33,6 +33,10 @@ struct BackwardAnalysis {
     std::optional<std::uint32_t> value;
     std::vector<ClosureDefinition> definitions;
     std::vector<ResolutionProofStep> provenance;
+    std::string stack_status;
+    std::optional<std::uint32_t> a7_before;
+    std::optional<std::uint32_t> a7_increment_bytes;
+    std::vector<ClosureDefinition> stack_provenance;
 };
 
 struct ReachableClosureItem {
@@ -48,12 +52,17 @@ struct ReachableClosureItem {
     std::vector<std::uint32_t> cfg_predecessors;
     ResolutionStatus initial_status{ResolutionStatus::unresolved_unknown_base};
     std::string current_unresolved_reason;
+    std::string prior_closure_reason;
     ClosureReason reason{ClosureReason::other};
     std::vector<ClosureDefinition> last_known_definitions;
     std::optional<ResolutionProofStep> nearest_proven_register_state;
     std::optional<std::uint32_t> effective_address;
     EffectiveAddressClass address_class{EffectiveAddressClass::unknown};
     std::vector<ResolutionProofStep> provenance;
+    std::string stack_status;
+    std::optional<std::uint32_t> a7_before;
+    std::optional<std::uint32_t> a7_increment_bytes;
+    std::vector<ClosureDefinition> stack_provenance;
     std::string evidence;
     std::string confidence;
 };
@@ -82,6 +91,7 @@ struct ReachableClosureReport {
     std::size_t atlas_unresolved_after{};
     std::size_t ranking_displacement_before{};
     std::size_t ranking_displacement_after{};
+    std::string transfer_rule;
     std::string dynamic_scenario;
     std::vector<ClosureReasonCount> reason_counts;
     std::vector<ReachableClosureItem> items;

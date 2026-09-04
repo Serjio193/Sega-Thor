@@ -63,6 +63,7 @@ void json_item(std::ostringstream& out, const ReachableClosureItem& item) {
     json_addresses(out, item.cfg_predecessors);
     out << ",\"initial_status\":" << json_string(resolution_status_name(item.initial_status))
         << ",\"current_unresolved_reason\":" << json_string(item.current_unresolved_reason)
+        << ",\"prior_closure_reason\":" << json_string(item.prior_closure_reason)
         << ",\"closure_reason\":" << json_string(closure_reason_name(item.reason))
         << ",\"last_known_definitions\":[";
     for (std::size_t i = 0; i < item.last_known_definitions.size(); ++i) {
@@ -85,7 +86,23 @@ void json_item(std::ostringstream& out, const ReachableClosureItem& item) {
         json_proof(out, item.provenance[i]);
     }
     out << "],\"evidence\":" << json_string(item.evidence)
-        << ",\"confidence\":" << json_string(item.confidence) << '}';
+        << ",\"confidence\":" << json_string(item.confidence)
+        << ",\"stack_status\":" << json_string(item.stack_status)
+        << ",\"a7_before\":";
+    if (item.a7_before) out << json_string(hex32(*item.a7_before)); else out << "null";
+    out << ",\"a7_increment_bytes\":";
+    if (item.a7_increment_bytes) out << *item.a7_increment_bytes; else out << "null";
+    out << ",\"stack_provenance\":[";
+    for (std::size_t i = 0; i < item.stack_provenance.size(); ++i) {
+        if (i) out << ',';
+        const auto& definition = item.stack_provenance[i];
+        out << "{\"instruction_address\":" << json_string(hex32(definition.instruction_address))
+            << ",\"block_start\":" << json_string(hex32(definition.block_start))
+            << ",\"operation\":" << json_string(definition.operation) << ",\"value\":";
+        if (definition.value) out << json_string(hex32(*definition.value)); else out << "null";
+        out << ",\"supported\":" << (definition.supported ? "true" : "false") << '}';
+    }
+    out << "]" << '}';
 }
 
 } // namespace
@@ -110,7 +127,8 @@ std::string reachable_closure_to_json(const ReachableClosureReport& report) {
         << ",\"atlas_unresolved_after\":" << report.atlas_unresolved_after
         << ",\"ranking_displacement_before\":" << report.ranking_displacement_before
         << ",\"ranking_displacement_after\":" << report.ranking_displacement_after << "},\"dynamic_scenario\":"
-        << json_string(report.dynamic_scenario) << ",\"reason_counts\":[";
+        << json_string(report.dynamic_scenario) << ",\"transfer_rule\":"
+        << json_string(report.transfer_rule) << ",\"reason_counts\":[";
     for (std::size_t i = 0; i < report.reason_counts.size(); ++i) {
         if (i) out << ',';
         out << "{\"reason\":" << json_string(report.reason_counts[i].key)
@@ -135,7 +153,7 @@ std::string reachable_closure_to_text(const ReachableClosureReport& report) {
         << "atlas=" << report.atlas_unresolved_before << " -> " << report.atlas_unresolved_after
         << " displacement_rank=" << report.ranking_displacement_before << " -> " << report.ranking_displacement_after
         << " ram=" << report.ram_effective_address_count << " rom=" << report.rom_effective_address_count
-        << " provenance_failures=" << report.provenance_failures << '\n'
+        << " provenance_failures=" << report.provenance_failures << "\ntransfer_rule=" << report.transfer_rule << '\n'
         << "dynamic_scenario=" << report.dynamic_scenario << "\nreasons:";
     for (const auto& count : report.reason_counts) out << ' ' << count.key << '=' << count.count;
     out << "\nitems:\n";
@@ -143,13 +161,15 @@ std::string reachable_closure_to_text(const ReachableClosureReport& report) {
         out << "- " << hex32(item.instruction_address) << " block=" << hex32(item.block_start)
             << " opcode=" << hex32(item.opcode) << " " << item.operand
             << " displacement=" << item.displacement << " initial=" << resolution_status_name(item.initial_status)
-            << " current=\"" << item.current_unresolved_reason << "\" closure=" << closure_reason_name(item.reason)
+            << " prior=" << item.prior_closure_reason << " current=\"" << item.current_unresolved_reason << "\" closure=" << closure_reason_name(item.reason)
             << " confidence=" << item.confidence << " predecessors=";
         for (std::size_t i = 0; i < item.cfg_predecessors.size(); ++i) {
             if (i) out << ',';
             out << hex32(item.cfg_predecessors[i]);
         }
-        out << " defs=" << item.last_known_definitions.size();
+        out << " defs=" << item.last_known_definitions.size() << " stack=" << item.stack_status;
+        if (item.a7_before) out << " a7_before=" << hex32(*item.a7_before);
+        if (item.a7_increment_bytes) out << " a7_increment=" << *item.a7_increment_bytes;
         if (item.effective_address) out << " effective=" << hex32(*item.effective_address) << ' ' << effective_address_class_name(item.address_class);
         out << '\n';
     }

@@ -2,17 +2,21 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded MOVEA postincrement transfer checkpoint completed
+TASK/RESULT: Added only longword `MOVEA.L (A7)+,An` with exact mode/register
+decode, four-byte A7 increment, and narrow proven push/PEA/source-register
+stack provenance. USA `0x60BD0=205F`; both targets cross `BSR 0x60BCC`, so no
+stack value is invented. Metrics: targets 2, newly resolved 0, reachable 16→16,
+14 prior `call_clobber` preserved, 2 stack-unknown `other`, speculative 0.
+TESTS: synthetic stack/merge/call-boundary, USA oracle, deterministic JSON/text,
+Debug/Release/GNU CTest, file-limit and diff-check passed. UNKNOWN/NEXT: no A7
+entry value, callee effect, return-address model or ABI; stop at this checkpoint.
+CI: local pre-push gate green; GitHub Actions is pending the implementation push.
 ## 2026-09-04 — M11.5 reachable-unresolved closure audit completed
-TASK/RESULT: `oasis.m68k.re-reachable-closure.v1` accounts for exactly 16
-reachable unresolved refs in `[0x60004,0x61204)`: 14 `call_clobber`, 2
-`unsupported_transfer`, newly resolved 0, after 16; nonreachable 80 stays
-separate. Bounded definitions, predecessor CFG, current reasons and provenance
-are deterministic. MILESTONE/CONFIDENCE: M11.5 / 95%; slice 96%.
-TESTS: synthetic backward/merge/call/boundary, USA oracle, Debug/Release/GNU
-CTest, deterministic JSON/text, file-limit and diff-check passed. UNKNOWNS:
-no calling convention, entry state or semantics inferred. NEXT: stop and await
-explicit bounded evidence selection; no dynamic scenario, whole-ROM or M12.
-CI: GitHub Actions run 33849249267 succeeded on implementation commit 31870d6.
+RESULT: `oasis.m68k.re-reachable-closure.v1` accounted for 16 reachable refs:
+14 call-clobber and 2 former unsupported-transfer boundaries; nonreachable 80
+stays separate. Bounded CFG/provenance, synthetic/USA/Debug/Release/GNU tests,
+determinism and CI run 33849249267 passed. No ABI, semantics or M12 work.
 ## 2026-09-04 — M11.5 unreachable-CFG audit completed
 RESULT: `oasis.m68k.re-cfg-audit.v1` preserved raw 577/96 Atlas counts; USA
 classified 80 nonreachable refs into 17 islands. CI 33847410245 succeeded.
@@ -50,23 +54,10 @@ RAM refs. Synthetic unresolved/unsupported cases and USA evidence passed.
 file-limit and diff-check passed. No native gameplay behavior was added.
 
 ## 2026-09-03 — M11 activated: event/script router investigation
-**Concrete task:** locate the producer and consumer contract for the raw event
-code in `FF1976`, then translate one deterministic event operation.
-**Acceptance criteria:** prove the caller/data source and dispatch boundary,
-implement one small native event operation with synthetic coverage, verify it
-against local USA-ROM bytes, keep dialogue meaning, progression rules and
-unproven commands explicitly unknown, preserve the 500-line and ROM hygiene
-rules.
-**Evidence:** `0x82AE` calls `0xB9EC` to select a record from `FF19E8`, accepts
-raw type `0x0008`, clears the source type, composes `FF1976` from `+0x32/+0x52`
-and copies `+0x04/+0x4E` to `FF1978/FF197A`. `0x7A28` maps the raw code to
-bounded handlers and returns a clear flag bit to `0x7B28`; adjacent `0x7B2A` is a separate raw routine.
-**Implementation:** added `src/game/scripts/event_router.*` with raw producer,
-router and `0x7B2A` trace functions, synthetic coverage and a local USA-ROM
-oracle.
-**Verification:** Debug and Release CTest pass 14/14. All six local ROM
-oracles and GitHub Actions CI run `33742561205` pass. Dialogue, progression and event meanings remain unknown.
-**Static follow-up:** no direct literal `BSR/JSR` to `0x82AE` was found, so the caller may be indirect or data-driven and remains unknown. `0x609C6` has a confirmed raw flag-mask formula, command `0x0008` reaches `0x60D10`, and the sentinel path ends at `0x62CC`, which clears four current-record fields. **Result:** corrected router target `0x7B28`, extended the bounded raw trace with verified writes and cleanup, and completed the M11 acceptance slice. Debug/Release CTest pass 14/14, the local ROM-oracle passes, and remaining dialogue, progression and driver semantics stay unknown. **Exact next step:** stop at completed M11 and await explicit next-milestone instruction.
+**RESULT:** Confirmed raw `0x82AE` producer fields and `0x7A28` router boundary;
+added the bounded event router/trace and local USA oracle. Debug/Release CTest,
+six ROM oracles and CI `33742561205` passed. Dialogue, progression, caller
+identity and driver semantics remain unknown; M11 was completed and work stopped.
 
 ## 2026-09-03 — M10 summon-entry candidate added to the deterministic slice
 

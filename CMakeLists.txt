@@ -51,6 +51,7 @@ add_library(oasis_re_tooling
     src/tools/re_cfg_audit_format.cpp
     src/tools/re_reachable_closure.cpp
     src/tools/re_reachable_closure_format.cpp
+    src/tools/re_reachable_stack.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 

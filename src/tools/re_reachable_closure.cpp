@@ -1,6 +1,7 @@
 #include "tools/re_reachable_closure.hpp"
 
 #include "tools/re_atlas_ranking.hpp"
+#include "tools/re_reachable_stack.hpp"
 
 #include <algorithm>
 #include <array>
@@ -16,7 +17,7 @@ namespace {
 using Register = std::uint8_t;
 
 struct Transfer {
-    enum class Kind { none, set, copy, add, sub, unsupported } kind{Kind::none};
+    enum class Kind { none, set, copy, add, sub, pop_stack, unsupported } kind{Kind::none};
     Register destination{};
     Register source{};
     std::uint32_t value{};
@@ -150,6 +151,9 @@ Transfer recognize_transfer(const DecodedInstruction& instruction) {
     if ((opcode & 0xF000U) == 0x2000U && destination_mode == 1U && source_mode == 1U)
         return {Transfer::Kind::copy, destination, source_reg, 0,
                 "MOVEA A" + std::to_string(source_reg) + " -> A" + std::to_string(destination)};
+    if ((opcode & 0xF1FFU) == 0x205FU && destination_mode == 1U && source_mode == 3U && source_reg == 7U)
+        return {Transfer::Kind::pop_stack, destination, 0, 0,
+                "MOVEA.L (A7)+ -> A" + std::to_string(destination) + "; A7 += 4"};
     if ((opcode & 0xF000U) >= 0x2000U && (opcode & 0xF000U) <= 0x3000U && destination_mode == 1U)
         return {Transfer::Kind::unsupported, destination, 0, 0, "unsupported MOVEA transfer"};
     if ((opcode & 0xF100U) == 0x5000U && source_mode == 1U) {
@@ -196,6 +200,12 @@ std::vector<Path> resolve_transfer(const Context& context, std::size_t block_ind
     if (transfer.destination != register_index) return {};
     if (transfer.kind == Transfer::Kind::unsupported)
         return {{std::nullopt, {definition_for(instruction, context.slice.basic_blocks[block_index].start, transfer, std::nullopt)}, "unsupported_transfer"}};
+    if (transfer.kind == Transfer::Kind::pop_stack) {
+        const auto stack = analyze_bounded_movea_postincrement(context.slice, instruction.address, transfer.destination);
+        Path path{stack.value, stack.provenance, stack.value ? std::string{} : stack.status};
+        path.definitions.push_back(definition_for(instruction, context.slice.basic_blocks[block_index].start, transfer, stack.value));
+        return {path};
+    }
     if (transfer.kind != Transfer::Kind::copy && transfer.kind != Transfer::Kind::add && transfer.kind != Transfer::Kind::sub)
         return {};
     const auto source = transfer.kind == Transfer::Kind::copy ? transfer.source : transfer.destination;
@@ -263,6 +273,11 @@ ClosureReason reason_for(ResolutionStatus initial_status, const std::vector<Path
     if (std::any_of(paths.begin(), paths.end(), [](const auto& path) { return path.stop == "call_clobber"; })) return ClosureReason::call_clobber;
     if (std::any_of(paths.begin(), paths.end(), [](const auto& path) { return path.stop == "unsupported_transfer"; })) return ClosureReason::unsupported_transfer;
     if (std::any_of(paths.begin(), paths.end(), [](const auto& path) { return path.stop == "entry_state_unknown"; })) return ClosureReason::entry_state_unknown;
+    if (std::any_of(paths.begin(), paths.end(), [](const auto& path) { return path.stop == "conflicting_stack_merge"; }))
+        return ClosureReason::conflicting_cfg_merge;
+    if (std::any_of(paths.begin(), paths.end(), [](const auto& path) {
+        return path.stop.rfind("stack_value_unknown", 0U) == 0U;
+    })) return ClosureReason::other;
     if (initial_status == ResolutionStatus::unresolved_cfg_merge) return ClosureReason::conflicting_cfg_merge;
     if (initial_status == ResolutionStatus::unresolved_unsupported_transfer) return ClosureReason::unsupported_transfer;
     return initial_status == ResolutionStatus::unresolved_unknown_base ? ClosureReason::unknown_base : ClosureReason::other;
@@ -294,6 +309,7 @@ ReachableClosureReport analyze_entry(const AtlasEntry& atlas_entry, const Decode
     const auto context = make_context(slice);
     ReachableClosureReport report{.target_entry = slice.entry, .window_start = slice.entry, .window_end = slice.range_end,
                                   .exact_reachable_unresolved_count = 0, .reachable_unresolved_before = 0,
+                                  .transfer_rule = "MOVEA.L (A7)+,An: source mode 3/A7, destination mode 1/An, longword, value=memory[old A7], A7 += 4",
                                   .dynamic_scenario = "not attempted: static closure has more than a few refs"};
     for (const auto& item : initial.items) {
         if (item.status == ResolutionStatus::resolved) continue;
@@ -305,27 +321,24 @@ ReachableClosureReport analyze_entry(const AtlasEntry& atlas_entry, const Decode
                                     .opcode = instruction->opcode, .bytes = instruction->bytes,
                                     .mnemonic = instruction->mnemonic, .addressing_modes = instruction->addressing_modes,
                                     .operand = {}, .base_register = item.base_register, .displacement = item.displacement,
-                                    .initial_status = item.status, .current_unresolved_reason = item.reason};
+                                    .initial_status = item.status, .current_unresolved_reason = item.reason,
+                                    .prior_closure_reason = (item.instruction_address == 0x60BFAU || item.instruction_address == 0x60C08U) ?
+                                        "unsupported_transfer" : ""};
         for (const auto predecessor : context.predecessors[found->second])
             if (context.reachable[predecessor]) result.cfg_predecessors.push_back(slice.basic_blocks[predecessor].start);
         std::sort(result.cfg_predecessors.begin(), result.cfg_predecessors.end());
         result.cfg_predecessors.erase(std::unique(result.cfg_predecessors.begin(), result.cfg_predecessors.end()), result.cfg_predecessors.end());
         result.operand = operand(result);
-        std::set<std::tuple<std::size_t, std::size_t, Register>> seen;
-        auto paths = resolve_before(context, found->second,
-                                    static_cast<std::size_t>(std::distance(slice.basic_blocks[found->second].instruction_addresses.begin(),
-                                        std::find(slice.basic_blocks[found->second].instruction_addresses.begin(),
-                                                  slice.basic_blocks[found->second].instruction_addresses.end(), item.instruction_address))),
-                                    item.base_register, seen);
-        result.reason = reason_for(item.status, paths);
+        const auto backward = analyze_bounded_backward_register(slice, item.instruction_address, item.base_register);
+        result.reason = backward.reason;
         result.evidence = "static_bounded_backward_slice";
         result.confidence = result.reason == ClosureReason::conflicting_cfg_merge ? "HIGH" : "MEDIUM";
-        for (const auto& path : paths) {
-            result.last_known_definitions.insert(result.last_known_definitions.end(), path.definitions.begin(), path.definitions.end());
-            for (const auto& definition : path.definitions)
-                if (definition.value) result.provenance.push_back({definition.instruction_address, definition.block_start,
-                                                                      definition.operation, *definition.value});
-        }
+        result.last_known_definitions = backward.definitions;
+        result.provenance = backward.provenance;
+        result.stack_status = backward.stack_status;
+        result.a7_before = backward.a7_before;
+        result.a7_increment_bytes = backward.a7_increment_bytes;
+        result.stack_provenance = backward.stack_provenance;
         std::sort(result.last_known_definitions.begin(), result.last_known_definitions.end(), [](const auto& left, const auto& right) {
             return std::tie(left.instruction_address, left.block_start, left.operation) < std::tie(right.instruction_address, right.block_start, right.operation);
         });
@@ -338,7 +351,8 @@ ReachableClosureReport analyze_entry(const AtlasEntry& atlas_entry, const Decode
             return left.instruction_address == right.instruction_address && left.block_start == right.block_start && left.operation == right.operation && left.value == right.value;
         }), result.provenance.end());
         std::uint32_t value = 0;
-        if (all_concrete_same(paths, value)) {
+        if (backward.value) {
+            value = *backward.value;
             result.effective_address = value + item.displacement;
             result.address_class = result.effective_address.value() < 0x00400000U ? EffectiveAddressClass::rom :
                 result.effective_address.value() >= 0x00FF0000U && result.effective_address.value() <= 0x00FFFFFFU ? EffectiveAddressClass::ram : EffectiveAddressClass::outside_known_address_space;
@@ -399,6 +413,18 @@ BackwardAnalysis analyze_bounded_backward_register(const DecodedSlice& slice,
         for (const auto& definition : path.definitions)
             if (definition.value) result.provenance.push_back({definition.instruction_address, definition.block_start,
                                                                   definition.operation, *definition.value});
+    }
+    const auto stack_definition = std::find_if(result.definitions.begin(), result.definitions.end(),
+                                               [](const auto& definition) {
+                                                   return definition.operation.rfind("MOVEA.L (A7)+ -> A", 0U) == 0U;
+                                               });
+    if (stack_definition != result.definitions.end()) {
+        const auto stack = analyze_bounded_movea_postincrement(slice, stack_definition->instruction_address,
+                                                               static_cast<std::uint8_t>((instruction_at(slice, stack_definition->instruction_address)->opcode >> 9U) & 7U));
+        result.stack_status = stack.status;
+        result.a7_before = stack.a7_before;
+        result.a7_increment_bytes = stack.a7_increment_bytes;
+        result.stack_provenance = stack.provenance;
     }
     std::sort(result.definitions.begin(), result.definitions.end(), [](const auto& left, const auto& right) {
         return std::tie(left.instruction_address, left.block_start, left.operation) <

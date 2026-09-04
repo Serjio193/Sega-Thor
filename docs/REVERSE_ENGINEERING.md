@@ -1,20 +1,20 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
-## M11.5 — bounded resolution, CFG audit and reachable closure at `0x00060004`
+## M11.5 — bounded resolution, CFG audit, closure and MOVEA transfer
 **Status:** VERIFIED bounded tooling; no semantics inferred. Prior resolution
-examined 390 refs, resolved 294 and left 96; Atlas changed 577→283.
-`oasis.m68k.re-cfg-audit.v1` accounts for 80 nonreachable refs in 17 islands:
-77 code candidates / 332 bytes and 3 unknown / 18 bytes; no known incoming
-edges. `oasis.m68k.re-reachable-closure.v1` accounts for the exact 16 reachable
-refs: 14 `call_clobber`, 2 `unsupported_transfer`, newly resolved 0, after 16.
-The two unsupported transfers are existing `MOVEA (A7)+,A0` evidence; no
-transfer rule was added. Raw unresolved remains 577 and displacement backlog
-446; nonreachable 80 stays separate. All records retain raw instruction,
-block, predecessor and bounded provenance context. No dynamic scenario, beta
-scan, runtime, emulator, whole-ROM analysis or semantic naming was added.
-Exact reachable addresses: `604EA`, `60BD8`, `60BFA`, `60C08`, `60C1E`,
-`60C34`, `60C4A`, `60C60`, `60C76`, `60C8A`, `60C94`, `60CAA`, `60CC2`,
-`60D94`, `60DB0`, `60DC8`.
+examined 390 refs, resolved 294 and left 96; Atlas remains 577 raw unresolved.
+`oasis.m68k.re-cfg-audit.v1` accounts for 80 nonreachable refs in 17 islands.
+`oasis.m68k.re-reachable-closure.v1` accounts for exactly 16 reachable refs:
+14 prior `call_clobber`, 2 stack-unknown `other`, newly resolved 0, after 16.
+The former unsupported boundary is now the exact longword rule
+`MOVEA.L (A7)+,An`: mode 3/A7 to mode 1/An, `An=memory[old A7]`, `A7 += 4`.
+Narrow stack provenance accepts only immediate long push, known-address PEA,
+proven `MOVE.L An,-(A7)` and this pop. USA `0x60BD0` is `20 5F`; both target
+paths cross `BSR 0x60BCC`, so stack value/A7 input remain unknown. No callee,
+ABI, return-address effect, semantic role, dynamic scenario, runtime,
+whole-ROM analysis or M12 work was added.
+Exact reachable addresses: `604EA`, `60BD8`, `60BFA`, `60C08`, `60C1E`, `60C34`,
+`60C4A`, `60C60`, `60C76`, `60C8A`, `60C94`, `60CAA`, `60CC2`, `60D94`, `60DB0`, `60DC8`.
 ## Known hardware addresses
 | Address | Meaning | Confidence | Evidence/status |
 |---|---|---:|---|

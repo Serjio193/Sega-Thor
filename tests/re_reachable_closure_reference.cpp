@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
                                         [=](const auto& item) { return item.key == key; });
         return found == report.reason_counts.end() ? 0U : found->count;
     };
-    if (count("call_clobber") != 14 || count("unsupported_transfer") != 2 ||
+    if (count("call_clobber") != 14 || count("other") != 2 ||
         report.reason_counts.size() != 2 ||
         report.raw_static_unresolved != 577 || report.raw_displacement_backlog != 446 ||
         report.atlas_unresolved_after != 577 || report.ranking_displacement_after != 446) {
@@ -41,15 +41,29 @@ int main(int argc, char** argv) {
         }
     }
     if (actual != expected) throw std::runtime_error("reachable closure target set mismatch");
-    const auto unsupported = std::find_if(report.items.begin(), report.items.end(), [](const auto& item) {
+    const auto movea_targets = std::find_if(report.items.begin(), report.items.end(), [](const auto& item) {
         return item.instruction_address == 0x60BFA;
     });
-    if (unsupported == report.items.end() || unsupported->last_known_definitions.empty() ||
-        unsupported->last_known_definitions.front().supported) {
-        throw std::runtime_error("reachable closure definition evidence mismatch");
+    const auto second_target = std::find_if(report.items.begin(), report.items.end(), [](const auto& item) {
+        return item.instruction_address == 0x60C08;
+    });
+    const auto has_pop = [](const auto& item) {
+        return item.prior_closure_reason == "unsupported_transfer" &&
+            item.stack_status == "stack_value_unknown_call_boundary" && item.a7_increment_bytes == 4U &&
+            std::any_of(item.stack_provenance.begin(), item.stack_provenance.end(), [](const auto& definition) {
+                return definition.instruction_address == 0x60BD0 && definition.supported &&
+                    definition.operation == "MOVEA.L (A7)+ -> A0; A7 += 4";
+            });
+    };
+    if (movea_targets == report.items.end() || second_target == report.items.end() ||
+        !has_pop(*movea_targets) || !has_pop(*second_target)) {
+        throw std::runtime_error("reachable closure MOVEA stack evidence mismatch");
     }
-    if (rom.bytes()[0x60BD0] != 0x20 || rom.bytes()[0x60BD1] != 0x5F)
-        throw std::runtime_error("reachable closure unsupported transfer bytes mismatch");
+    if (rom.bytes()[0x60BCC] != 0x61 || rom.bytes()[0x60BCD] != 0x00 ||
+        rom.bytes()[0x60BD0] != 0x20 || rom.bytes()[0x60BD1] != 0x5F ||
+        rom.bytes()[0x60BF6] != 0x54 || rom.bytes()[0x60BF7] != 0x88 ||
+        rom.bytes()[0x60BFA] != 0x16 || rom.bytes()[0x60C08] != 0x14)
+        throw std::runtime_error("reachable closure MOVEA oracle bytes mismatch");
     const auto json = oasis::tools::reachable_closure_to_json(report);
     if (json != oasis::tools::reachable_closure_to_json(report) ||
         json.find("oasis.m68k.re-reachable-closure.v1") == std::string::npos) {

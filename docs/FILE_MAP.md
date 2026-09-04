@@ -104,6 +104,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_reachable_closure.hpp Bounded reachable unresolved closure API
 │       ├── re_reachable_closure.cpp Backward register provenance and reason audit
 │       ├── re_reachable_closure_format.cpp Deterministic closure JSON/text formatting
+│       ├── re_reachable_stack.hpp Narrow MOVEA postincrement stack API
+│       ├── re_reachable_stack.cpp Bounded push/pop value provenance only
 │       └── re_reachable_closure_report.cpp Local-only USA closure CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
@@ -133,7 +135,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_resolution_reference.cpp          Local USA-ROM resolution oracle
     ├── re_cfg_audit_test.cpp                Synthetic CFG-audit classification/island tests
     ├── re_cfg_audit_reference.cpp           Local USA-ROM CFG-audit oracle
-    ├── re_reachable_closure_test.cpp        Synthetic backward closure/merge tests
+    ├── re_reachable_closure_test.cpp        Synthetic backward closure/stack/merge tests
     └── re_reachable_closure_reference.cpp   Local USA-ROM closure oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
