@@ -47,6 +47,8 @@ project file-limit test passed again in all three configurations,
 savestate, Ghidra project or decompiler/disassembly dump. The exporter passed
 a Ghidra 12.1.3 headless synthetic smoke-test; it has not been run against the
 canonical ROM.
+CI: GitHub Actions run `33882125335` for implementation commit `3a55b8a`
+completed successfully.
 UNKNOWN/NEXT: provide the canonical USA ROM locally; then verify size,
 CRC32, SHA-1 and SHA-256, create the ignored project, run one conservative
 headless analysis/export, perform the required bounded benchmarks and make
