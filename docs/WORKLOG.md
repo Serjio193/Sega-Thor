@@ -2,6 +2,33 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded caller-stack provenance audit completed
+TASK/SCOPE: audit only reachable paths in `[0x60004,0x61204)` before `0x60BCC`,
+using symbolic A7 and no ABI, general stack model, caller discovery, emulator,
+dynamic tracing, gameplay behavior or M12.
+GOVERNANCE: main `c76ae829` policy was followed: the 500-line limit applies to
+executable/source/build-code; prose Markdown/documentation is exempt.
+IMPLEMENTATION: added `oasis.m68k.re-caller-stack.v1` with containing block
+`[0x60BC4,0x60CDA)`, predecessor `0x60BA4`, deterministic paths/events,
+symbolic merges and target rechecks. It supports only encountered
+`MOVE.W SR,-(A7)`, `MOVEM.L regs,-(A7)` depth, longword push/PEA, A7 adjustment,
+and `MOVEA.L (A7)+,An`; unknown direct calls invalidate stack provenance.
+EVIDENCE: the USA oracle finds two relevant paths. One records `0x6042A`,
+`0x60430`, `0x60B66`, then unknown `BSR.W 0x6121A` at `0x60B8C`; another
+crosses unknown `0x60D4A -> 0x6121A` and one locally proven balanced call.
+The previously proven `0x60BCC -> 0x604BC` effect is recorded without ABI
+assumptions. Therefore memory[P] is unknown, `0x60BFA`/`0x60C08` remain
+unresolved, reachable unresolved is `16→16`, the 14 `call_clobber` refs are
+unchanged, speculative resolutions are zero, and no semantic role was assigned.
+USA metrics: 2 paths, 14 unique stack events, 4 prior direct calls, 1 known
+effect and 3 unknown call effects.
+TESTS: Debug/Release/GNU-equivalent full CTest (25/25), USA oracle,
+deterministic JSON/text, source file-limit and diff-check all passed. The USA
+oracle ran against the supported local reference ROM and verified exact bytes,
+CFG, events, both unknown-call blockers and unresolved target results. CI
+remains pending for this change.
+UNKNOWN/NEXT: unknown effects of callees `0x6121A`; stop at this checkpoint and
+await explicit instruction.
 ## 2026-09-04 — M11.5 bounded callee-effect audit completed
 TASK/SCOPE: audited only direct call-site `0x60BCC` -> actual callee `0x604BC`; no ABI, recursion, emulator, runtime or M12.
 EVIDENCE: bounded `[0x604BC,0x604E6)` has one block/RTS `0x604E4`, no nested call/indirect/unsupported flow; A0 unknown, A1-A5 untouched, A6 known `0x00FF06F2`, A7 preserved.

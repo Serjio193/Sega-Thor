@@ -1,5 +1,37 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — bounded caller-stack provenance before `0x60BCC`
+**Status:** bounded implementation and USA oracle verified. No semantic role is
+assigned to any stack value. The additive schema is
+`oasis.m68k.re-caller-stack.v1`, a developer-only report over the existing
+reachable `[0x60004,0x61204)` slice.
+
+The call-site is `0x60BCC` in block `[0x60BC4,0x60CDA)` with reachable
+predecessor `0x60BA4`. Symbolic entry A7 is `S`; the pre-call value is named
+`P` only as the caller's pre-BSR stack pointer. The captured reachable path
+contains these bounded stack events: `0x6042A MOVE.W SR,-(A7)` (2 bytes),
+`0x60430 MOVEM.L` with mask `0x7FFE` (14 longwords, 56 bytes), and
+`0x60B66 MOVE.L A0,-(A7)` (4 bytes). These operations establish depth only;
+unknown register/status values are not converted into concrete data.
+
+The USA oracle finds two relevant paths. One crosses direct `BSR.W 0x6121A`
+at `0x60B8C`; another reaches the same call-site through `0x60D4A -> 0x6121A`
+and a locally proven balanced call. Each unknown callee is outside the
+permitted effect set, so its A7 and stack-slot effect is UNKNOWN and the
+bounded provenance is invalidated. The later `BSR.W 0x604BC` at
+`0x60BCC` uses the previously proven local callee summary only: its explicit
+stack delta is zero and RTS restores caller pre-BSR A7. Consequently the
+longword read by `0x60BD0 MOVEA.L (A7)+,A0` at `memory[P]` has no proven value;
+`0x60BFA` and `0x60C08` remain unresolved. Reachable unresolved remains
+`16→16`; the 14 `call_clobber` records are unchanged; speculative resolutions
+are zero.
+
+The USA oracle checks raw bytes at `0x6042A`, `0x60430`, `0x60B66`, `0x60B8C`,
+`0x60D4A`, `0x60BCC`, `0x60BD0`, `0x60BFA`, and `0x60C08`, plus bounded CFG
+and blocker evidence. It passes for the local supported USA ROM. No general
+stack emulator, ABI, recursive callee analysis,
+dynamic tracing, gameplay runtime integration, or M12 work was added.
+
 ## M11.5 — bounded callee-effect audit for `0x60BCC`
 **Status:** VERIFIED bounded raw effect; no semantics inferred. The call-site
 bytes `61 00 F8 EE` at `0x60BCC` decode as direct `BSR.W 0x604BC`; `0x60BCC`

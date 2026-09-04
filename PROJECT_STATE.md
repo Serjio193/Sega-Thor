@@ -1,12 +1,32 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded callee-effect audit for direct callee 0x60BCC
+CURRENT_TASK: M11.5 bounded caller-stack provenance audit before direct call 0x60BCC
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: direct BSR.W 0x60BCC targets bounded callee 0x604BC; one RTS path preserves A7, leaves 0x60BFA/0x60C08 stack values unknown, and adds zero speculative resolutions
-NEXT_ACTION: Stop at this verified bounded callee-effect checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: bounded symbolic A7 audit reaches call block 0x60BC4; unknown direct BSR 0x60B8C -> 0x6121A invalidates memory[P], leaving 0x60BFA/0x60C08 unresolved and speculative resolutions at zero
+NEXT_ACTION: Stop at this completed bounded caller-stack checkpoint and await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: none
+BLOCKERS: none for this checkpoint
+
+## M11.5 bounded caller-stack provenance audit
+- Schema: `oasis.m68k.re-caller-stack.v1`, developer-only and separate from
+  `oasis_core`; scope is only reachable paths from `0x60004` to `0x60BCC`.
+- The call-site is in block `[0x60BC4,0x60CDA)` with reachable predecessor
+  block `0x60BA4`. Symbolic A7 begins at `S`. The actual captured path records
+  `0x6042A MOVE.W SR,-(A7)`, `0x60430 MOVEM.L regs,-(A7)`, and
+  `0x60B66 MOVE.L A0,-(A7)`.
+- Two relevant bounded paths reach the call-site. One crosses direct
+  `BSR.W 0x60B8C -> 0x6121A` after the observed push sequence; another crosses
+  `0x60D4A -> 0x6121A` and a locally proven balanced call. Both unknown calls
+  invalidate A7 and stack slots. The already audited `0x60BCC -> 0x604BC` is
+  recorded as balanced only. Thus `memory[P]` is unknown, targets remain
+  `16→16` unresolved, 14 `call_clobber` items remain unchanged, and
+  speculative resolutions are zero. USA metrics are 2 paths, 14 unique stack
+  events, 4 prior direct calls, 1 locally proven effect and 3 unknown effects.
+- Synthetic tests and the USA oracle pass. The oracle checks exact raw bytes,
+  CFG location, stack events and both unknown-call blockers. No general stack
+  model, ABI, recursion, emulator, dynamic tracing, runtime dependency or M12
+  work was added.
 
 ## M11.5 bounded callee-effect audit
 - Schema: `oasis.m68k.re-callee-effect.v1`, developer-only and separate from
