@@ -3,17 +3,18 @@
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 Ghidra ROM Mapping PoC availability gate
 STATUS: BLOCKED
-LAST_VERIFIED_RESULT: local `main == origin/main` at
-5aeb338c8d8be86f1de0178815abdfd00e6db890; required Ghidra GUI and headless
-executables were not found in PATH, environment variables, or checked local
-installation roots. No ROM was imported and no Ghidra project was created.
-NEXT_ACTION: provide a provenance-appropriate local Ghidra installation with
-Motorola 68000 big-endian support and `analyzeHeadless.bat`, then restart this
-availability-gated checkpoint.
+LAST_VERIFIED_RESULT: official Ghidra 12.1.3 and Temurin JDK 21.0.12.1+1 are
+installed outside the repository; `support\\analyzeHeadless.bat` runs and the
+68000 family language `68000:BE:32:default` is available. Canonical USA ROM is
+not present, so no import or analysis has been performed.
+NEXT_ACTION: provide the canonical USA ROM locally, verify its required
+fingerprint, then create the ignored Ghidra project and run the single
+conservative baseline export.
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative
 dialogue or event semantics, replacement whole-ROM scanner
-BLOCKERS: Ghidra is not installed locally; the checkpoint forbids unofficial
-downloads and CI-based installation
+BLOCKERS: canonical USA ROM is absent; do not download/reconstruct it. Ghidra
+12.1.3/Temurin JDK 21.0.12.1+1 and the exporter synthetic smoke-test are ready.
+The checkpoint forbids a replacement whole-ROM scanner and M12 work.
 
 ## M11.5 bounded downstream runtime resolution
 - Static USA bytes/decode were independently rechecked: `0x60BFA` is

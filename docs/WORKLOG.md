@@ -3,7 +3,7 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
-## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC availability gate — BLOCKED
+## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC availability gate — ROM BLOCKED
 TASK: determine whether a local Ghidra M68000 analyzer is available for the
 bounded discovery-layer experiment described by the user.
 WHY: the checkpoint requires measuring Ghidra's own conservative auto-analysis
@@ -20,29 +20,37 @@ structured map; if unavailable, document the blocker and stop.
 ACTIONS: synchronized with `git fetch`; verified clean `main` and
 `origin/main` at `5aeb338c8d8be86f1de0178815abdfd00e6db890`; reviewed the
 required project governance, architecture, roadmap, evidence and toolchain
-guidance documents. Checked PATH, environment variables, `where.exe`, common
-Ghidra roots, Program Files roots and user Downloads/Desktop/Documents for
-`ghidraRun.bat` and `analyzeHeadless.bat`.
-EVIDENCE: no matching executable or installation was found. Consequently
-Ghidra version, local path, headless availability, processor/language setup,
-ROM import, export schema/path, function counts, benchmarks and decision A/B/C
-are UNKNOWN and were not fabricated.
-RESULT: BLOCKED exactly at the required availability gate. No production C++,
-oasis_re replacement scanner, ROM, emulator, Ghidra project/database or
-generated report was added. `TASK.md` and `PROJECT_STATE.md` now record the
-blocked checkpoint and exact restart condition; `docs/FILE_MAP.md` and
-`docs/REVERSE_ENGINEERING.md` are unchanged because no repository structure or
-ROM fact changed.
-TESTS/VALIDATION: documentation-only checkpoint; no code/build behavior
-changed. Existing Debug, Release and GNU/MinGW-equivalent build directories
-rebuilt and full CTest passed 27/27 in each configuration. The project
-file-limit test passed, `git diff --check` passed, and `git ls-files` found no
-tracked ROM, archive, savestate, Ghidra project or decompiler/disassembly dump.
-Full Ghidra benchmark and Ghidra-dependent validation are not run because the
-required tool is absent.
-UNKNOWN/NEXT: provide a provenance-appropriate local Ghidra distribution with
-Motorola 68000 big-endian support and `analyzeHeadless.bat`, then restart this
-exact bounded task. Do not begin M12 or implement a replacement scanner.
+guidance documents. After explicit user authorization, downloaded the
+official NSA GitHub release Ghidra 12.1.3 (`Ghidra_12.1.3_build`) and verified
+SHA-256 `93a5d11a9ad510622acaaf908c556a7b9b764d338e78a7567f3689bf5081fd54`.
+Downloaded official supported Temurin JDK 21.0.12.1+1 and verified SHA-256
+`f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`. Both
+are installed only under `C:\\Users\\Serjio\\Tools\\Sega-Thor-Ghidra`, outside
+the repository. `support\\analyzeHeadless.bat` runs; the available processor
+language is `68000:BE:32:default`.
+EVIDENCE: the canonical USA ROM is not present in the workspace or checked
+local user roots, and no same-size `3145728`-byte candidate was found. ROM
+fingerprint, project creation, analysis results, export counts and benchmark
+decision therefore remain UNKNOWN. A developer-only exporter was added at
+`src/tools/ghidra/OasisGhidraMap.java`; its Ghidra 12.1.3 headless synthetic
+smoke-test passed with `68000:BE:32:default`, but it has not run on the
+canonical ROM.
+RESULT: the Ghidra availability blocker is resolved, but the PoC is blocked
+at the required ROM-input gate. No production C++, oasis_re replacement
+scanner, emulator, ROM, Ghidra project/database or generated commercial-data
+report was added. `docs/FILE_MAP.md` records the new exporter; no reverse-
+engineering fact or semantic Atlas entry was changed.
+TESTS/VALIDATION: existing Debug, Release and GNU/MinGW-equivalent build
+directories rebuilt and full CTest passed 27/27 in each configuration. The
+project file-limit test passed again in all three configurations,
+`git diff --check` passed, and `git ls-files` found no tracked ROM, archive,
+savestate, Ghidra project or decompiler/disassembly dump. The exporter passed
+a Ghidra 12.1.3 headless synthetic smoke-test; it has not been run against the
+canonical ROM.
+UNKNOWN/NEXT: provide the canonical USA ROM locally; then verify size,
+CRC32, SHA-1 and SHA-256, create the ignored project, run one conservative
+headless analysis/export, perform the required bounded benchmarks and make
+one A/B/C decision. Do not begin M12 or implement a replacement scanner.
 
 ## 2026-09-04 — M11.5 bounded downstream runtime resolution CI follow-up
 RESULT: GitHub Actions CI run `33878595233` (`#326`) for implementation

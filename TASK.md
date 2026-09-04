@@ -26,22 +26,31 @@ Acceptance criteria:
 - [ ] Ghidra export parser/tests and local Debug/Release/GNU validation, if
   reusable repository code is added.
 
-Availability check: no `ghidraRun.bat`, `analyzeHeadless.bat`, `ghidraRun` or
-`analyzeHeadless` executable was found in PATH, environment variables, or the
-checked local roots `C:\\Ghidra`, `D:\\Ghidra`, `C:\\Tools\\ghidra`,
-`D:\\Tools\\ghidra`, `C:\\Program Files`, `C:\\Program Files (x86)`,
-`D:\\Program Files`, and the user's Downloads/Desktop/Documents directories.
-No version, install path, headless runner, or processor/language configuration
-is therefore available to report.
+Availability check: initially no Ghidra installation was present. The user
+then explicitly authorized an official developer-only install. Ghidra
+12.1.3 was downloaded from the official NSA GitHub release
+`Ghidra_12.1.3_build` and verified with SHA-256
+`93a5d11a9ad510622acaaf908c556a7b9b764d338e78a7567f3689bf5081fd54`.
+Headless `support\\analyzeHeadless.bat` runs. It exposes the 68000 family
+language `68000:BE:32:default` (big-endian, 32-bit address space; the release
+describes the default variant as Motorola 68040, while the processor family
+is 68000). Temurin JDK `21.0.12.1+1` 64-bit LTS is installed outside the
+repository and verified with SHA-256
+`f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`.
 
-Blocker: Ghidra is not locally available. The checkpoint explicitly prohibits
-writing a replacement whole-ROM scanner and using CI to install Ghidra.
-ROM import, analysis, export, benchmark, precision sample and final Ghidra
-decision are not performed.
+Current blocker: the canonical USA ROM is not present in the workspace or
+checked local user roots, and no same-size `3145728`-byte candidate was found.
+It cannot be downloaded or reconstructed. No ROM import, Ghidra project,
+analysis, export, benchmark or decision is claimed yet.
 
-Exact next action: install or provide a provenance-appropriate local Ghidra
-distribution with Motorola 68000 big-endian support and `analyzeHeadless.bat`,
-then restart this exact availability-gated checkpoint. Do not begin M12.
+The developer-only exporter `src/tools/ghidra/OasisGhidraMap.java` is prepared
+for the required schema and passed a synthetic headless smoke-test, but remains
+unvalidated against the canonical ROM. The checkpoint still prohibits writing
+a replacement whole-ROM scanner.
+
+Exact next action: provide the canonical USA ROM locally, verify its required
+fingerprint, then create the ignored project and run the conservative baseline
+export. Do not begin M12.
 
 LAST_VERIFIED_RESULT: the frozen scenario reaches `0x60BFA` and `0x60C08` at
 frame 423. Actual A0 is `0x0006F8B0` / `0x0006F8B2`, so the byte reads resolve

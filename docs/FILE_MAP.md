@@ -70,6 +70,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │       └── terrain_collision.hpp  Terrain gate API
 │   └── tools/
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
+│       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
 │       ├── re_slice_decoder.hpp Decoder data types and report API
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
