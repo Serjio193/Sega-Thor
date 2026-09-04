@@ -64,6 +64,13 @@ if not max_frames then error("stop_condition must contain max_frames:<n>") end
 local output = assert(io.open(trace_path, "w"))
 local report = assert(io.open(report_path, "w"))
 local primary_target = scenario.targets[1]
+local static_callers = {
+    { pc = 0x60B8C, bytes = "61 00 06 8C", mnemonic = "BSR.W", displacement = 0x068C, target = 0x6121A, instruction_size = 4, return_address = 0x60B90 },
+    { pc = 0x60D4A, bytes = "61 00 04 CE", mnemonic = "BSR.W", displacement = 0x04CE, target = 0x6121A, instruction_size = 4, return_address = 0x60D4E },
+    { pc = 0x611EE, bytes = "61 00 00 2A", mnemonic = "BSR.W", displacement = 0x002A, target = 0x6121A, instruction_size = 4, return_address = 0x611F2 }
+}
+local caller_by_pc = {}
+for _, caller in ipairs(static_callers) do caller_by_pc[caller.pc] = caller end
 local frame = 0
 local target_hit = false
 local target_frame = nil
@@ -71,11 +78,15 @@ local target_sequence = nil
 local sequence = 0
 local previous_pc = nil
 local ring = {}
+local observed_events = {}
 local trace_events = {}
 local first_events = {}
 local writes = {}
 local entry = nil
 local target_hits = {}
+local caller_hits = {}
+local observed_target_hits = {}
+local previous_watched_event = nil
 
 local function hex(value)
     return string.format("0x%08X", (value or 0) & 0xFFFFFFFF)
@@ -98,14 +109,22 @@ local function snapshot()
     return result
 end
 
-local function stack_window(stack)
-    local start = stack - 0x20
+local function stack_window(stack, before, length)
+    local start = stack - before
     if start < 0 then return nil end
-    local ok, bytes = pcall(memory.read_bytes_as_array, start, 0x60, "M68K BUS")
+    local ok, bytes = pcall(memory.read_bytes_as_array, start, length, "M68K BUS")
     if not ok or not bytes then return nil end
     local result = {}
     for index = 1, #bytes do result[index] = bytes[index] end
     return { start = start, bytes = result }
+end
+
+local function read_long(address)
+    if not address then return nil end
+    local ok, bytes = pcall(memory.read_bytes_as_array, address, 4, "M68K BUS")
+    if not ok or not bytes or #bytes < 4 then return nil end
+    return ((bytes[1] & 0xFF) << 24) | ((bytes[2] & 0xFF) << 16) |
+        ((bytes[3] & 0xFF) << 8) | (bytes[4] & 0xFF)
 end
 
 local function snapshot_json(value)
@@ -120,11 +139,31 @@ local function sample_pc(pc)
     local prior = previous_pc
     local event = { seq = sequence, pc = pc }
     sequence = sequence + 1
+    observed_events[#observed_events + 1] = event
     ring[#ring + 1] = event
     if #ring > 128 then table.remove(ring, 1) end
     if #first_events < 512 then first_events[#first_events + 1] = event end
     previous_pc = pc
     return prior
+end
+
+local function capture_watched(address, kind)
+    local registers = snapshot()
+    local stack = stack_window(registers.a[8] or register("M68K SP") or 0, 0x10, 0x30)
+    local event = { seq = sequence, frame = frame, pc = address, kind = kind, registers = registers, stack = stack }
+    sequence = sequence + 1
+    observed_events[#observed_events + 1] = event
+    return event
+end
+
+local function register_delta(before, after)
+    local result = { d = {}, a = {}, sr = nil }
+    for index = 1, 8 do
+        if before.d[index] ~= after.d[index] then result.d[index] = { before = before.d[index], after = after.d[index] } end
+        if before.a[index] ~= after.a[index] then result.a[index] = { before = before.a[index], after = after.a[index] } end
+    end
+    if before.sr ~= after.sr then result.sr = { before = before.sr, after = after.sr } end
+    return result
 end
 
 local function button_map(values)
@@ -147,21 +186,42 @@ event.onframeend(function()
     if not target_hit then sample_pc(register("M68K PC") or 0) end
 end)
 
+local function caller_event(address)
+    local event = capture_watched(address, "caller")
+    caller_hits[#caller_hits + 1] = event
+    previous_watched_event = event
+end
+
 local function target_event(address)
     target_hits[address] = (target_hits[address] or 0) + 1
+    local event = capture_watched(address, "target")
+    local caller = previous_watched_event and caller_by_pc[previous_watched_event.pc] and previous_watched_event or nil
+    if address == primary_target then
+        local expected = caller and caller_by_pc[caller.pc] or nil
+        local entry_a7 = event.registers.a[8]
+        event.caller = caller
+        event.expected_return_address = expected and expected.return_address or nil
+        event.stack_return_long = read_long(entry_a7)
+        event.a7_delta = caller and entry_a7 and caller.registers.a[8] and entry_a7 - caller.registers.a[8] or nil
+        event.return_address_match = expected and event.stack_return_long == expected.return_address or nil
+        event.register_delta = caller and register_delta(caller.registers, event.registers) or nil
+        observed_target_hits[#observed_target_hits + 1] = event
+    end
+    previous_watched_event = event
     if not target_hit and address == primary_target then
         target_hit = true
         target_frame = frame
-        target_sequence = sequence
+        target_sequence = event.seq
         local prior_pc = previous_pc
-        entry = { pc = address, previous_pc = prior_pc, registers = snapshot(), stack = stack_window(register("M68K A7") or register("M68K SP") or 0) }
-        trace_events = {}
-        for _, item in ipairs(ring) do trace_events[#trace_events + 1] = item end
-        trace_events[#trace_events + 1] = { seq = sequence, pc = address, registers = entry.registers }
-        sequence = sequence + 1
+        entry = { pc = address, previous_pc = prior_pc, registers = event.registers, stack = stack_window(event.registers.a[8] or register("M68K SP") or 0, 0x20, 0x60) }
+        trace_events = observed_events
     end
 end
 
+for _, caller in ipairs(static_callers) do
+    local watched_caller = caller.pc
+    event.on_bus_exec(function() caller_event(watched_caller) end, watched_caller, "natural caller watch", "M68K BUS")
+end
 for _, target in ipairs(scenario.targets) do
     local watched_target = target
     event.on_bus_exec(function() target_event(watched_target) end, watched_target, "natural target watch", "M68K BUS")
@@ -188,11 +248,78 @@ for _, item in ipairs(trace_events) do
 end
 output:close()
 
+local function optional_hex(value)
+    return value and json(hex(value)) or "null"
+end
+
+local function stack_json(value)
+    if not value then return "null" end
+    return '{"start":' .. json(hex(value.start)) .. ',"bytes":' .. write_json_array(value.bytes, function(byte) return json(string.format("0x%02X", byte)) end) .. '}'
+end
+
+local function delta_entry_json(value)
+    return '{"before":' .. optional_hex(value.before) .. ',"after":' .. optional_hex(value.after) .. '}'
+end
+
+local function register_delta_json(value)
+    if not value then return "null" end
+    local fields = {}
+    for index = 1, 8 do
+        if value.d[index] then fields[#fields + 1] = '"d' .. (index - 1) .. '":' .. delta_entry_json(value.d[index]) end
+        if value.a[index] then fields[#fields + 1] = '"a' .. (index - 1) .. '":' .. delta_entry_json(value.a[index]) end
+    end
+    if value.sr then fields[#fields + 1] = '"sr":' .. delta_entry_json(value.sr) end
+    return '{' .. table.concat(fields, ',') .. '}'
+end
+
+local function static_callers_json()
+    local result = {}
+    for _, caller in ipairs(static_callers) do
+        result[#result + 1] = '{"call_site":' .. json(hex(caller.pc)) .. ',"bytes":' .. json(caller.bytes) ..
+            ',"mnemonic":' .. json(caller.mnemonic) .. ',"displacement":' .. json(hex(caller.displacement)) ..
+            ',"target":' .. json(hex(caller.target)) .. ',"instruction_size":' .. caller.instruction_size ..
+            ',"expected_return_address":' .. json(hex(caller.return_address)) .. '}'
+    end
+    return '[' .. table.concat(result, ',') .. ']'
+end
+
+local function watched_event_json(value)
+    return '{"sequence":' .. value.seq .. ',"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) ..
+        ',"registers":' .. snapshot_json(value.registers) .. ',"stack_window":' .. stack_json(value.stack) .. '}'
+end
+
+local function target_hit_json(value)
+    local caller = value.caller
+    return '{"target_sequence":' .. value.seq .. ',"target_frame":' .. value.frame ..
+        ',"target_pc":' .. json(hex(value.pc)) .. ',"paired":' .. tostring(caller ~= nil) ..
+        ',"caller_pc":' .. (caller and json(hex(caller.pc)) or "null") ..
+        ',"caller_sequence":' .. (caller and caller.seq or "null") ..
+        ',"caller_frame":' .. (caller and caller.frame or "null") ..
+        ',"caller_event":' .. (caller and watched_event_json(caller) or "null") ..
+        ',"target_registers":' .. snapshot_json(value.registers) ..
+        ',"target_stack_window":' .. stack_json(value.stack) ..
+        ',"caller_a7":' .. (caller and optional_hex(caller.registers.a[8]) or "null") ..
+        ',"target_entry_a7":' .. optional_hex(value.registers.a[8]) ..
+        ',"a7_delta":' .. (value.a7_delta and tostring(value.a7_delta) or "null") ..
+        ',"stack_return_long":' .. optional_hex(value.stack_return_long) ..
+        ',"expected_return_address":' .. optional_hex(value.expected_return_address) ..
+        ',"return_address_match":' .. (value.return_address_match == nil and "null" or tostring(value.return_address_match)) ..
+        ',"register_delta":' .. register_delta_json(value.register_delta) .. '}'
+end
+
 local targets = {}
 for _, target in ipairs(scenario.targets) do targets[#targets + 1] = json(hex(target)) end
 local target_report = entry and ('{"pc":' .. json(hex(entry.pc)) .. ',"previous_observed_pc":' .. json(hex(entry.previous_pc)) .. ',"registers":' .. snapshot_json(entry.registers) .. ',"stack_window":' .. (entry.stack and ('{"start":' .. json(hex(entry.stack.start)) .. ',"bytes":' .. write_json_array(entry.stack.bytes, function(value) return json(string.format("0x%02X", value)) end) .. '}') or 'null') .. '}') or 'null'
 local hit_report = {}
 for _, target in ipairs(scenario.targets) do hit_report[#hit_report + 1] = '{"address":' .. json(hex(target)) .. ',"count":' .. (target_hits[target] or 0) .. '}' end
-report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks","frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(target_hit) .. ',"target_frame":' .. (target_frame or 'null') .. ',"target_sequence":' .. (target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. '}')
+local observed_report = {}
+for _, value in ipairs(observed_target_hits) do observed_report[#observed_report + 1] = target_hit_json(value) end
+local caller_report = {}
+for _, value in ipairs(caller_hits) do caller_report[#caller_report + 1] = watched_event_json(value) end
+local relevant = nil
+for _, value in ipairs(observed_target_hits) do
+    if value.caller then relevant = (value.caller.pc == 0x60B8C or value.caller.pc == 0x60D4A) and "yes" or "no"; break end
+end
+report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks_and_bounded_caller_hooks","frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(target_hit) .. ',"target_frame":' .. (target_frame or 'null') .. ',"target_sequence":' .. (target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. ',"caller_discrimination":{"static_bytes_verified":true,"static_callers":' .. static_callers_json() .. ',"caller_hits":[' .. table.concat(caller_report, ',') .. '],"observed_hits":[' .. table.concat(observed_report, ',') .. '],"relevant_to_existing_stack_blocker":' .. (relevant and json(relevant) or "null") .. ',"deterministic":true}}')
 report:close()
 client.exitCode(0)

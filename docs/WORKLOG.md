@@ -2,6 +2,62 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded dynamic caller discrimination completed
+TASK/SCOPE: reuse only frozen `natural_idle_to_6121a_v1` to discriminate the
+three known direct callers of `0x6121A`; no input changes, autoplay, callee
+analysis, ABI inference, stack-writer tracing, production behavior or M12.
+IMPLEMENTATION: extended the existing developer-only BizHawk natural Lua
+probe with exact caller/target hooks, ordered watched events, full D0-D7/A0-A7/
+SR snapshots, `[A7-0x10,A7+0x20)` windows, raw target-entry stack longword,
+return-address comparison and raw register delta. Extended the existing
+natural report additively; no new general trace framework was added.
+STATIC EVIDENCE: USA oracle verifies `0x60B8C=61 00 06 8C` -> return
+`0x60B90`, `0x60D4A=61 00 04 CE` -> `0x60D4E`, and
+`0x611EE=61 00 00 2A` -> `0x611F2`; all are four-byte `BSR.W` to `0x6121A`.
+PROVEN: both frame-113 target hits pair directly with `0x611EE`:
+`113->114` and `115->116`. Caller/entry A7 are
+`00FF0BE6->00FF0BE2` and `00FF0BAC->00FF0BA8`, both delta `-4`. The raw
+longword at target entry is `0x000611F2` for both and matches the expected
+return address. Register delta contains only A7; D0-D7/A0-A6/SR are unchanged.
+The two pairs are observed as distinct events; whether the second is re-entry
+is UNKNOWN. This is not relevant to the existing `0x60B8C`/`0x60D4A` blocker.
+DETERMINISM: two fresh identical runs have byte-identical caller reports and
+traces. Existing importer result: 117 events, 23 unique PCs, 0 inferred
+blocks, hash `0x52F951E69F5A7100`, and zero inferred branch/call/return/read/
+write events because the bounded trace has no instruction-size/event typing.
+UNKNOWN/LIMITATIONS: BizHawk exposes no separate post-instruction callback;
+callee behavior, return state and stack-writer provenance remain unexamined.
+CURRENT SLICE CONFIDENCE: 96% for this caller/entry pairing, not for callee
+semantics. TESTS: Debug CTest 27/27, Release CTest 27/27 and GNU/MinGW CTest
+27/27 passed; local USA oracle passed with exact bytes, pairings, A7/return
+values and raw register deltas; two fresh BizHawk runs and normalized imports
+are byte-identical; file-limit and `git diff --check` passed; no tracked ROM,
+emulator binary, savestate or generated trace exists. NEXT: commit/push this
+focused checkpoint, verify GitHub CI, record its result and STOP.
+## 2026-09-04 — M11.5 bounded dynamic caller discrimination started
+TASK: reuse `natural_idle_to_6121a_v1` to identify which of the three already
+confirmed direct call-sites transfers control to `0x6121A` during frame 113.
+WHY: the previous natural probe proves target reachability but not the dynamic
+predecessor, return-address stack value or call/entry register delta.
+CURRENT MILESTONE: M11.5 follow-up under completed M11
+MILESTONE UNDERSTANDING CONFIDENCE: 95%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 78%; caller/hook timing and stack
+evidence are not yet captured, so this remains RE/probe/documentation only.
+SLICE CONFIDENCE EVIDENCE: static USA bytes already prove direct edges from
+`0x60B8C`, `0x60D4A` and `0x611EE` to `0x6121A`; BizHawk proves two natural
+target hits at frame 113 but its prior report has no exact predecessor.
+ACCEPTANCE: watch only the three callers and `0x6121A`; capture ordered full
+register snapshots and `[A7-0x10,A7+0x20)` windows; validate BSR return address
+and A7 delta; report both target hits; compare two fresh identical replays;
+keep CI independent of ROM/emulator and stop after this result. No callee
+analysis, stack-writer tracing, autoplay, production behavior or M12.
+KNOWN/UNKNOWN: expected return addresses are `0x60B90`, `0x60D4E` and
+`0x611F2`, pending exact-byte oracle; dynamic caller, target-entry A7, stack
+return longword, register delta and whether duplicate hook hits are distinct
+entries are UNKNOWN.
+NEXT: add the minimal ordered caller/target event capture to the existing
+BizHawk natural probe, run the frozen scenario twice, and record only the
+result or an explicit hook-timing limitation.
 ## 2026-09-04 — M11.5 bounded natural reachability scenario completed
 TASK/SCOPE: determine whether natural reset-to-input execution can reach raw
 target `0x6121A` using only the existing BizHawk adapter and finite real

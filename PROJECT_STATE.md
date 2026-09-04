@@ -1,12 +1,30 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded natural reachability scenario for 0x6121A
+CURRENT_TASK: M11.5 bounded dynamic caller discrimination for 0x6121A
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario reached 0x6121A at frame 113 with identical A/B reports; GitHub CI `33868387017` passed
+LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario proves 0x611EE -> 0x6121A twice with matching BSR return address 0x611F2; GitHub CI passed
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: exact pre-target instruction/caller and stack provenance are not exposed by the bounded target hook; secondary watched targets were not reached
+BLOCKERS: callee semantics and stack-writer provenance remain outside scope; 0x60B8C and 0x60D4A were not observed in the frozen scenario
+
+## M11.5 bounded dynamic caller discrimination
+- Reused `natural_idle_to_6121a_v1` without gameplay inputs and added only exact
+  BizHawk hooks for `0x60B8C`, `0x60D4A`, `0x611EE` and `0x6121A`.
+- Both target hits at frame 113 pair unambiguously with `0x611EE`: sequences
+  `113 -> 114` and `115 -> 116`. Caller A7/target-entry A7 are respectively
+  `0x00FF0BE6 -> 0x00FF0BE2` and `0x00FF0BAC -> 0x00FF0BA8`; both deltas are
+  `-4`.
+- At both target entries, raw stack longword is `0x000611F2`, matching the
+  statically computed four-byte BSR return address. Raw register delta contains
+  only A7; D0-D7, A0-A6 and SR are unchanged in captured snapshots.
+- Static USA oracle verifies all three BSR.W encodings and return addresses.
+  Natural reports, normalized traces and imported reports are deterministic;
+  normalized result is 117 events, 23 unique PCs, 0 inferred blocks and hash
+  `0x52F951E69F5A7100`. This upgrades only executed edge `0x611EE -> 0x6121A`.
+- This path is not one of the existing `0x60B8C`/`0x60D4A` stack-blocker paths.
+  Whether the second raw pair is re-entry remains UNKNOWN; no callee analysis,
+  ABI inference, stack-writer tracing, production behavior or M12 work was done.
 
 ## M11.5 bounded natural reachability scenario
 - Added developer-only `oasis.m68k.emulator-scenario.v1` parsing/serialization and

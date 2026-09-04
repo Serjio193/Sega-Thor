@@ -1,5 +1,49 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — bounded dynamic caller discrimination of 0x6121A
+**Status:** VERIFIED bounded raw execution evidence, developer-only. The frozen
+`natural_idle_to_6121a_v1` scenario remains unchanged: BizHawk 2.11.1,
+hardware reset, neutral input, canonical USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, horizon
+`max_frames:300`.
+
+Static caller table, verified against the local canonical USA ROM:
+
+| call-site | bytes | instruction | displacement | target | size | return address |
+|---|---|---|---:|---|---:|---|
+| `0x60B8C` | `61 00 06 8C` | `BSR.W` | `+0x068C` | `0x6121A` | 4 | `0x60B90` |
+| `0x60D4A` | `61 00 04 CE` | `BSR.W` | `+0x04CE` | `0x6121A` | 4 | `0x60D4E` |
+| `0x611EE` | `61 00 00 2A` | `BSR.W` | `+0x002A` | `0x6121A` | 4 | `0x611F2` |
+
+The bounded probe watches only those three call-sites and `0x6121A`. Both
+target hits occur at frame 113 and pair with `0x611EE` without an intervening
+watched event: `caller seq=113 -> target seq=114`, then `caller seq=115 ->
+target seq=116`. Hit 1 has caller A7 `0x00FF0BE6`, target-entry A7
+`0x00FF0BE2`, delta `-4`; hit 2 has caller A7 `0x00FF0BAC`, target-entry A7
+`0x00FF0BA8`, delta `-4`.
+
+The longword read at target entry `[A7]` is `0x000611F2` for both hits, exactly
+matching the statically computed return address for `0x611EE`. The captured raw
+register delta for each pair contains only A7; D0-D7, A0-A6 and SR are equal in
+the caller and target snapshots. This is instruction-level stack/register
+evidence, not an ABI or semantic conclusion. The second pair is recorded as a
+second observed caller-target event; whether it represents re-entry remains
+UNKNOWN.
+
+Two fresh executions of the identical scenario produce byte-identical caller
+reports and traces. The normalized existing importer reports 117 events, 23
+unique PCs, 0 inferred basic blocks, 0 inferred branch/call/return/read/write
+events and deterministic hash `0x52F951E69F5A7100`. The trace includes frame
+samples and exact watched-hook events; it is not a full instruction trace.
+
+The result upgrades only the specific executed edge `0x611EE -> 0x6121A` for
+this scenario. `0x60B8C` and `0x60D4A` were not observed, so their static edges
+remain dynamically unselected. Because the selected caller is `0x611EE`, the
+result is not relevant to the existing `0x60B8C`/`0x60D4A` caller-stack blocker.
+The adapter exposes no separate post-instruction hook, so broader hook-timing
+and callee/return-state questions remain outside this checkpoint. No semantic
+name or function purpose is assigned to `0x6121A`.
+
 ## M11.5 — bounded natural reachability of 0x6121A
 **Status:** VERIFIED bounded runtime evidence, developer-only. No emulator,
 ROM, savestate or generated trace is part of the repository.

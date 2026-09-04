@@ -68,6 +68,24 @@ int main(int argc, char** argv) {
                 "entry register snapshot mismatch");
         require(report.find("\"stack_window\":{\"start\":\"0x00FF0BC2\"") != std::string::npos,
                 "entry stack window missing");
+        require(report.find("\"static_bytes_verified\":true") != std::string::npos,
+                "caller static-byte verification missing");
+        require(report.find("\"call_site\":\"0x00060B8C\",\"bytes\":\"61 00 06 8C\",\"mnemonic\":\"BSR.W\",\"displacement\":\"0x0000068C\",\"target\":\"0x0006121A\",\"instruction_size\":4,\"expected_return_address\":\"0x00060B90\"") != std::string::npos,
+                "first caller static metadata mismatch");
+        require(report.find("\"call_site\":\"0x00060D4A\",\"bytes\":\"61 00 04 CE\",\"mnemonic\":\"BSR.W\",\"displacement\":\"0x000004CE\",\"target\":\"0x0006121A\",\"instruction_size\":4,\"expected_return_address\":\"0x00060D4E\"") != std::string::npos,
+                "second caller static metadata mismatch");
+        require(report.find("\"call_site\":\"0x000611EE\",\"bytes\":\"61 00 00 2A\",\"mnemonic\":\"BSR.W\",\"displacement\":\"0x0000002A\",\"target\":\"0x0006121A\",\"instruction_size\":4,\"expected_return_address\":\"0x000611F2\"") != std::string::npos,
+                "caller static metadata mismatch");
+        require(report.find("\"target_sequence\":114,\"target_frame\":113,\"target_pc\":\"0x0006121A\",\"paired\":true,\"caller_pc\":\"0x000611EE\",\"caller_sequence\":113") != std::string::npos,
+                "first caller-target pairing mismatch");
+        require(report.find("\"target_sequence\":116,\"target_frame\":113,\"target_pc\":\"0x0006121A\",\"paired\":true,\"caller_pc\":\"0x000611EE\",\"caller_sequence\":115") != std::string::npos,
+                "second caller-target pairing mismatch");
+        require(report.find("\"caller_a7\":\"0x00FF0BE6\",\"target_entry_a7\":\"0x00FF0BE2\",\"a7_delta\":-4,\"stack_return_long\":\"0x000611F2\",\"expected_return_address\":\"0x000611F2\",\"return_address_match\":true,\"register_delta\":{\"a7\":") != std::string::npos,
+                "first return-address evidence mismatch");
+        require(report.find("\"caller_a7\":\"0x00FF0BAC\",\"target_entry_a7\":\"0x00FF0BA8\",\"a7_delta\":-4,\"stack_return_long\":\"0x000611F2\",\"expected_return_address\":\"0x000611F2\",\"return_address_match\":true,\"register_delta\":{\"a7\":") != std::string::npos,
+                "second return-address evidence mismatch");
+        require(report.find("\"relevant_to_existing_stack_blocker\":\"no\",\"deterministic\":true") != std::string::npos,
+                "caller relevance or determinism mismatch");
         std::cout << "verified natural USA reachability oracle for 0x6121A\n";
         return 0;
     } catch (const std::exception& error) {
