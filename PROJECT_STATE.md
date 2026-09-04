@@ -3,7 +3,7 @@
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 bounded dynamic caller discrimination for 0x6121A
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario proves 0x611EE -> 0x6121A twice with matching BSR return address 0x611F2; GitHub CI passed
+LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario proves 0x611EE -> 0x6121A twice with matching BSR return address 0x611F2; GitHub CI `33870143848` passed
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: callee semantics and stack-writer provenance remain outside scope; 0x60B8C and 0x60D4A were not observed in the frozen scenario

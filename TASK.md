@@ -10,7 +10,7 @@ pairing; callee behavior and broader path semantics remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 scenario proves `0x611EE -> 0x6121A` for both frame-113 target hits, with A7 deltas `-4`, matching stack return `0x611F2`, identical A/B reports, and successful GitHub CI
+LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 scenario proves `0x611EE -> 0x6121A` for both frame-113 target hits, with A7 deltas `-4`, matching stack return `0x611F2`, identical A/B reports, and GitHub CI run `33870143848` successful
 NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
 BLOCKERS: caller hooks expose bus-exec snapshots but no separate post-instruction timing channel; `0x60B8C` and `0x60D4A` remain unobserved in this scenario; callee effects and stack-writer provenance remain outside scope
 

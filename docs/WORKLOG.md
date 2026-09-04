@@ -33,7 +33,9 @@ semantics. TESTS: Debug CTest 27/27, Release CTest 27/27 and GNU/MinGW CTest
 values and raw register deltas; two fresh BizHawk runs and normalized imports
 are byte-identical; file-limit and `git diff --check` passed; no tracked ROM,
 emulator binary, savestate or generated trace exists. NEXT: commit/push this
-focused checkpoint, verify GitHub CI, record its result and STOP.
+focused checkpoint, verify GitHub CI, record its result and STOP. GitHub Actions
+run `33870143848` for implementation commit `3d1d2793b2319c12b1d5d710bf8e65ebca767052`
+completed successfully.
 ## 2026-09-04 — M11.5 bounded dynamic caller discrimination started
 TASK: reuse `natural_idle_to_6121a_v1` to identify which of the three already
 confirmed direct call-sites transfers control to `0x6121A` during frame 113.
