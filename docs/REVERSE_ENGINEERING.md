@@ -1,15 +1,15 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 ## M11.5 — external emulator boot-trace oracle PoC
-**Status:** BLOCKED on an external execution backend; adapter implementation
-and synthetic verification are complete. No emulator binary/source or ROM is
-part of the repository, and no fake dynamic trace is used.
+**Status:** VERIFIED with real local backends, bounded to `boot_initial` and
+developer-only. No emulator binary/source or ROM is part of the repository,
+and no fake dynamic trace is used.
 
 `oasis.m68k.emulator-trace.v1` is a developer-only normalized capture layer
 outside `oasis_core`. Its neutral importer accepts externally supplied event
 records for PC, optional block, branch, direct/indirect control flow, return,
 memory access and optional D0-D7/A0-A7/SR snapshots. The normalizer records
-ROM/emulator/scenario metadata, deterministic event order and hash, bounded
+ROM/emulator/backend/scenario/stop-condition metadata, deterministic event order and hash, bounded
 coverage, direct call edges, indirect targets, reset-vector evidence, and
 Atlas-known/Atlas-unknown executed PCs. Branch/call/indirect targets are
 separately split into Atlas-known and Atlas-unknown sets. Frame/cycle values
@@ -24,13 +24,45 @@ header is `oasis.m68k.external-trace.v1`, followed by metadata lines such as
 `scenario=boot_initial` and event lines such as
 `event seq=0 pc=0x00000100 kind=instruction block=0x00000100 size=4`.
 
-Local inventory found no installed BlastEm, RetroArch, MAME, Mednafen, BizHawk,
-Ares, Kega/Fusion or equivalent debugger-capable executable in PATH, common
-install roots, user folders or package listings. Consequently boot execution,
-first observed PC, reset agreement, replay match, `0x6121A` observation and
-watchpoint/writer capability are UNKNOWN. No emulator was installed or copied;
-the next step requires an approved external backend and its documented capture
-interface. No semantic Atlas entries were added.
+The real bake-off used already-installed MAME and BizHawk against the ignored
+canonical USA ROM. Exact results follow; no emulator binary/source or ROM is
+part of the repository.
+| backend | exact executable/version | boot capture | register/memory evidence | replay |
+|---|---|---|---|---|
+| BizHawk primary | `D:\Program Files\BizHawk-2.11.1-win-x64\EmuHawk.exe`, `2.11.1` | 512 instruction events, 640 total events | D0-D7/A0-A7/SR and 128 bus writes through Lua hooks | A/B equal, `0x5CCA6906FAA6A219` |
+| MAME secondary | `D:\Program Files\Mame\mame.exe`, `0.289` | 512 instruction events | D0-D7/A0-A7/SR through debugger trace; separate write watchpoint | A/B equal, `0xC2B1C053D1E43D76` |
+
+Capability record (tested means exercised locally; untested means not claimed):
+
+| capability | BizHawk 2.11.1 | MAME 0.289 |
+|---|---|---|
+| CLI launch / Genesis ROM load | tested | tested |
+| unattended execution / automated shutdown | tested (`--chromeless`, `client.exitCode`) | tested (`-video none`, debugger `quit`) |
+| scripting / Lua | tested Lua | debugger command script tested; Lua not used |
+| M68000 PC | tested | tested |
+| D0-D7, A0-A7, SR | tested | tested |
+| execution hook/breakpoint | tested instruction hook | tested registerpoint |
+| memory read hook | untested | untested |
+| memory write hook/watchpoint | tested bus write hook | tested RAM watchpoint |
+| save-state load/save | untested | untested |
+| deterministic stepping / fixed stop | tested `emu.frameadvance`, 512 callbacks | tested fixed 512-event registerpoint |
+| stdout/file trace export | tested Lua file export | tested debugger trace file |
+
+MAME working command:
+`mame.exe genesis -cart "Beyond Oasis (USA).bin" -homepath mame-home -video none -sound none -nothrottle -skip_gameinfo -debug -debugscript re_mame_boot_trace.cmd -seconds_to_run 10`.
+BizHawk working command:
+`EmuHawk.exe --chromeless --lua="re_bizhawk_boot_trace.lua" "Beyond Oasis (USA).bin"`.
+The Lua script uses `event.on_bus_exec_any`, `event.on_bus_write`, register
+reads and `emu.frameadvance`, then exits at exactly 512 instruction callbacks.
+MAME's debugger script uses a fixed registerpoint and trace action; its
+separate writer probe caught a 16-bit write at address `0x00FFFFFE`, with the
+stopped instruction PC `0x0000026A`. The instruction-trace adapters currently
+emit no normalized branch/call/return/read events, so those report counts are
+zero and are not inferred from opcode text. Save-state APIs and read hooks were
+not probed. The MAME trace begins at `0x214`; BizHawk begins at `0x26C`; both
+are after reset PC `0x20E`, so reset/bootstrap transitions remain unknown.
+Neither trace observed `0x6121A`, `0x60B8C` or `0x60D4A`. No semantic Atlas
+entries were added.
 
 ## M11.5 — bounded caller-stack provenance before `0x60BCC`
 **Status:** bounded implementation and USA oracle verified. No semantic role is

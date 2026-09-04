@@ -7,16 +7,16 @@ CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: BLOCKED_EXTERNAL_BACKEND
+STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: neutral external-capture importer and `oasis.m68k.emulator-trace.v1` normalizer pass synthetic tests; no installed emulator/debug interface is available for real boot execution
-NEXT_ACTION: provide/install an approved external emulator with PC/register/memory-debug access, then run only `boot_initial`
-BLOCKERS: no installed external Mega Drive emulator or debugger automation interface found; no real boot oracle can be claimed
+LAST_VERIFIED_RESULT: real MAME 0.289 and BizHawk 2.11.1 `boot_initial` captures imported through `oasis.m68k.emulator-trace.v1`; BizHawk is primary and MAME secondary
+NEXT_ACTION: stop at this checkpoint; use the normalized boot evidence only in a future explicitly requested bounded RE task
+BLOCKERS: adapters do not yet normalize instruction-level branch/call/return or memory-read events; save-state APIs and full target reachability remain untested
 
 ## External adapter result
 
 The developer-only adapter is separate from `oasis_core`. It accepts an
-external normalized capture, records ROM/emulator metadata, `boot_initial`
+external normalized capture, records ROM/emulator/backend metadata, `boot_initial`
 limits, PC/events, optional D0-D7/A0-A7/SR snapshots, direct call edges,
 branch/call/return/memory/indirect counts, safely observed blocks and ranges,
 static reset vectors, and Atlas-known versus Atlas-unknown PCs. Its schema is
@@ -25,12 +25,20 @@ Atlas-known and Atlas-unknown sets. Frame/cycle fields are retained as
 non-deterministic metadata and excluded from `trace_hash`; optional register
 snapshots participate in the deterministic hash.
 
-Local inventory found no BlastEm, RetroArch, MAME, Mednafen, BizHawk, Ares,
-Kega/Fusion or equivalent executable in PATH, common install roots, user
-folders or package listings. No emulator source, binary, ROM or fake dynamic
-trace was added. Real boot execution, first observed PC, replay match,
-`0x6121A` observation and watchpoint capability are therefore UNKNOWN. The
-checkpoint stops at the adapter and documented external-backend blocker.
+The local bake-off verified `D:\Program Files\Mame\mame.exe` version `0.289`
+and `D:\Program Files\BizHawk-2.11.1-win-x64\EmuHawk.exe` version `2.11.1`
+against the ignored canonical USA ROM. BizHawk's Lua bus hooks produced 512
+instruction events plus 128 writes; MAME's debugger trace produced 512
+instruction events and a separate RAM watchpoint caught a real writer at
+`0x0000026A` for address `0x00FFFFFE`. BizHawk replay hashes matched
+`0x5CCA6906FAA6A219`; MAME replay hashes matched
+`0xC2B1C053D1E43D76`. BizHawk is primary because its event hook supplies
+direct executed-PC/register/write records; MAME is secondary because its
+debugger trace requires PC normalization and its memory probe is separate.
+Both runs began observing after reset setup (`0x26C` and `0x214`, versus reset
+PC `0x20E`), so hidden bootstrap transitions are recorded, not inferred.
+`0x6121A`, `0x60B8C` and `0x60D4A` were not observed. No emulator source,
+binary, ROM or generated trace was added to the repository.
 
 ## Acceptance criteria
 
@@ -39,15 +47,19 @@ checkpoint stops at the adapter and documented external-backend blocker.
   indirect targets, reset-vector comparison and Atlas split are implemented;
 - [x] synthetic adapter tests pass without ROM or emulator;
 - [x] adapter remains outside `oasis_core`, with no emulator dependency;
-- [ ] real `boot_initial` execution, reset agreement, replay comparison,
-  `0x6121A` observation and watchpoint capability require an external backend.
+- [x] real `boot_initial` execution, normalized replay comparison, register
+  capture and RAM writer/watchpoint capability were verified with installed
+  external backends;
+- [ ] reset PC is not the first observed callback PC, target routines were not
+  reached in this 512-instruction window, and branch/call/read event adapters
+  remain unimplemented.
 
 ## Hard boundaries and exact next action
 
 No emulator, copied emulator source, production runtime dependency, whole-game
 trace, autoplay, semantic Atlas changes, call-clobber resolution or M12 work
-was added. STOP. Provide one approved external emulator with documented
-automation/debug access, then rerun only this bounded boot oracle.
+was added. STOP at this verified bake-off; do not begin another tracing or
+analysis scope without explicit instruction.
 
 ## Previous caller-stack checkpoint
 

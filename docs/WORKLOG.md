@@ -2,6 +2,43 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 real external emulator bake-off completed
+OBJECTIVE/SCOPE: run only the canonical USA ROM through the user-installed
+MAME and BizHawk backends, obtain a bounded deterministic `boot_initial` trace,
+prove register/memory-writer capture, and import both results through the
+existing developer-only `oasis.m68k.emulator-trace.v1`. No emulator was added
+to the repository, no production dependency or gameplay runtime change was
+made, and no M12 work started.
+IMPLEMENTATION: added MAME debugger scripts for fixed 512-instruction trace
+and a separate RAM write watchpoint, a BizHawk Lua script using
+`event.on_bus_exec_any`/`event.on_bus_write` with D0-D7/A0-A7/SR snapshots, and
+a local normalizer for both raw formats. The neutral capture metadata now also
+records `backend` and `stop_condition`; the schema remains
+`oasis.m68k.emulator-trace.v1`.
+EVIDENCE: verified MAME `D:\Program Files\Mame\mame.exe` `0.289` and BizHawk
+`D:\Program Files\BizHawk-2.11.1-win-x64\EmuHawk.exe` `2.11.1` against the
+ignored USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. BizHawk
+produced 512 instruction plus 128 write events (640 total), unique PCs
+`0x26A,0x26C`, and replay hash `0x5CCA6906FAA6A219` on both runs. MAME
+produced 512 instruction events, 32 unique PCs, and replay hash
+`0xC2B1C053D1E43D76` on both runs. The independent MAME watchpoint caught a
+16-bit write at `0x00FFFFFE`, stopped PC `0x0000026A`, value `0`.
+PROVEN/UNKNOWN: both backends execute the ROM and expose useful M68K state;
+BizHawk is primary and MAME secondary. First observed PCs (`0x26C` and
+`0x214`) differ from reset PC `0x20E`, so hidden reset/bootstrap transitions
+remain unknown. Neither trace reached `0x6121A`, `0x60B8C` or `0x60D4A`.
+The adapters intentionally do not infer branch/call/return/read events from
+instruction text; those normalized counts are zero. Save-state and read-hook
+capabilities were not probed. Generated traces, emulator files and ROM remain
+ignored and untracked.
+TESTS: fresh Debug/Release/GNU-equivalent CTest passed 26/26 in each
+configuration. ROM imports passed; BizHawk C/D and MAME E/F normalized replay
+streams matched. Source file-limit and `git diff --check` passed. CI remains
+the only post-push gate.
+NEXT: complete the local gate, commit this focused bake-off, push to GitHub,
+wait for CI, record the CI result, push the documentation-only CI update, and
+STOP. Do not expand tracing scope without explicit instruction.
 ## 2026-09-04 — M11.5 external emulator boot-trace oracle PoC blocked at backend
 OBJECTIVE/SCOPE: test only whether an existing external Mega Drive emulator can
 produce deterministic reset-to-boot evidence; no emulator implementation,

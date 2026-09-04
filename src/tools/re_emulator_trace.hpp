@@ -36,8 +36,10 @@ struct ExternalTraceEvent {
 
 struct ExternalTraceCapture {
     std::string emulator;
+    std::string backend;
     std::string version;
     std::string scenario;
+    std::string stop_condition;
     std::size_t event_limit{};
     std::vector<ExternalTraceEvent> events;
 };
@@ -51,8 +53,10 @@ struct EmulatorTraceMetadata {
     std::string rom_id;
     std::string rom_sha256;
     std::string emulator;
+    std::string backend;
     std::string version;
     std::string scenario;
+    std::string stop_condition;
     std::size_t event_limit{};
 };
 

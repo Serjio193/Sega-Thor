@@ -80,6 +80,27 @@ ExternalTraceEvent parse_event(const std::vector<std::string>& tokens) {
     if (const auto found = fields.find("address"); found != fields.end()) event.address = static_cast<std::uint32_t>(number(found->second, 16));
     if (const auto found = fields.find("width"); found != fields.end()) event.width_bytes = static_cast<std::uint8_t>(number(found->second, 10));
     if (const auto found = fields.find("size"); found != fields.end()) event.instruction_size = static_cast<std::uint8_t>(number(found->second, 10));
+    EmulatorRegisterSnapshot snapshot{};
+    bool has_snapshot = false;
+    for (std::size_t index = 0; index < 8U; ++index) {
+        const auto key = "d" + std::to_string(index);
+        if (const auto found = fields.find(key); found != fields.end()) {
+            snapshot.d[index] = static_cast<std::uint32_t>(number(found->second, 16));
+            has_snapshot = true;
+        }
+    }
+    for (std::size_t index = 0; index < 8U; ++index) {
+        const auto key = "a" + std::to_string(index);
+        if (const auto found = fields.find(key); found != fields.end()) {
+            snapshot.a[index] = static_cast<std::uint32_t>(number(found->second, 16));
+            has_snapshot = true;
+        }
+    }
+    if (const auto found = fields.find("sr"); found != fields.end()) {
+        snapshot.sr = static_cast<std::uint16_t>(number(found->second, 16));
+        has_snapshot = true;
+    }
+    if (has_snapshot) event.registers = snapshot;
     if (event.kind == EmulatorEventKind::branch && !event.target)
         throw std::invalid_argument("branch event requires target");
     if ((event.kind == EmulatorEventKind::call || event.kind == EmulatorEventKind::indirect_control_flow) && !event.target)
@@ -131,7 +152,8 @@ ExternalTraceCapture parse_external_trace(std::string_view text) {
     for (std::string line; std::getline(input, line);) {
         const auto first = line.find_first_not_of(" \t\r");
         if (first == std::string::npos || line[first] == '#') continue;
-        const auto content = std::string_view(line).substr(first);
+        auto content = std::string_view(line).substr(first);
+        if (!content.empty() && content.back() == '\r') content.remove_suffix(1);
         if (content == "oasis.m68k.external-trace.v1") { header = true; continue; }
         const auto fields = tokens(content);
         if (fields.empty()) continue;
@@ -146,8 +168,10 @@ ExternalTraceCapture parse_external_trace(std::string_view text) {
         const auto key = fields.front().substr(0, separator);
         const auto value = fields.front().substr(separator + 1U);
         if (key == "emulator") result.emulator = value;
+        else if (key == "backend") result.backend = value;
         else if (key == "version") result.version = value;
         else if (key == "scenario") result.scenario = value;
+        else if (key == "stop_condition") result.stop_condition = value;
         else if (key == "limit") result.event_limit = static_cast<std::size_t>(number(value, 10));
         else throw std::invalid_argument("unknown external trace metadata: " + key);
     }
@@ -177,7 +201,8 @@ EmulatorTraceReport normalize_emulator_trace(
             throw std::invalid_argument("duplicate external trace sequence");
 
     EmulatorTraceReport report{.metadata = {std::move(rom_id), std::move(rom_sha256), std::move(capture.emulator),
-                                             std::move(capture.version), std::move(capture.scenario), capture.event_limit},
+                                             std::move(capture.backend), std::move(capture.version),
+                                             std::move(capture.scenario), std::move(capture.stop_condition), capture.event_limit},
                                .events = std::move(capture.events), .reset_vectors = reset_vectors};
     report.deterministic_fields = {"sequence", "pc", "kind", "block", "target", "taken", "address", "width_bytes", "instruction_size", "registers"};
     report.nondeterministic_fields = {"frame", "cycles"};

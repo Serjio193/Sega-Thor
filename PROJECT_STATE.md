@@ -2,27 +2,33 @@
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 external emulator boot-trace oracle PoC
-STATUS: BLOCKED_EXTERNAL_BACKEND
-LAST_VERIFIED_RESULT: neutral external-capture importer and oasis.m68k.emulator-trace.v1 normalizer pass synthetic tests; no external emulator/debug interface is installed for real boot execution
-NEXT_ACTION: provide/install an approved external emulator with PC/register/memory-debug access, then run only boot_initial
+STATUS: COMPLETE_WITH_LIMITATIONS
+LAST_VERIFIED_RESULT: real MAME 0.289 and BizHawk 2.11.1 boot_initial captures imported through oasis.m68k.emulator-trace.v1; BizHawk primary, MAME secondary
+NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: no installed external Mega Drive emulator or debugger automation interface; real boot oracle cannot be claimed
+BLOCKERS: common trace normalization does not yet classify instruction-level branches/calls/returns or reads; save-state APIs and deeper target reachability remain untested
 
 ## M11.5 external emulator boot-trace oracle
 - Added developer-only `oasis.m68k.emulator-trace.v1` importer/normalizer;
   it is not linked into `oasis_core` and has no emulator dependency. It accepts
   externally captured PC, block, branch, call, return, memory and indirect
-  events, optional D0-D7/A0-A7/SR snapshots, metadata and bounded limits.
+  events, optional D0-D7/A0-A7/SR snapshots, backend metadata and bounded
+  limits.
 - The report computes deterministic event ordering/hash, static reset-vector
   evidence, safe observed ranges, direct call edges, indirect targets and
   Atlas-known/Atlas-unknown PC sets and separate control-flow-target sets.
   Frame/cycle fields are retained but are excluded from deterministic identity;
   optional register snapshots are included in it.
-- Local inventory found no BlastEm, RetroArch, MAME, Mednafen, BizHawk,
-  Ares, Kega/Fusion or equivalent executable in PATH, common install roots,
-  user folders or package listings. Boot execution, first PC, replay match,
-  `0x6121A` observation and watchpoint capability remain UNKNOWN. No emulator
-  source/binary, ROM or fake trace was added. Synthetic tests pass.
+- Real local bake-off: MAME `0.289` produced two matching 512-event normalized
+  traces with first observed PC `0x214`; BizHawk `2.11.1` produced two matching
+  normalized traces containing 512 instructions and 128 RAM writes, with first
+  observed PC `0x26C`. ROM fingerprint is the canonical USA SHA-256
+  `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+  BizHawk Lua bus hooks are primary; MAME debugger trace/watchpoint is
+  secondary. A MAME watchpoint caught writer PC `0x26A`, address `0xFFFFFE`,
+  16-bit value `0`. `0x6121A`, `0x60B8C` and `0x60D4A` were not observed.
+  Synthetic tests and real ROM imports pass; no emulator source/binary, ROM or
+  generated trace was added.
 
 ## M11.5 bounded caller-stack provenance audit
 - Schema: `oasis.m68k.re-caller-stack.v1`, developer-only and separate from

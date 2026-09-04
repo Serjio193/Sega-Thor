@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
             std::move(capture), atlas_code_addresses(atlas), oasis::tools::read_reset_vectors(rom.bytes()),
             identity.id, identity.fingerprint.sha256);
         write_file(argv[3], oasis::tools::emulator_trace_to_json(report));
+        write_file(argv[4], oasis::tools::emulator_trace_to_text(report));
         std::cout << oasis::tools::emulator_trace_to_text(report);
         return 0;
     } catch (const std::exception& error) {

@@ -86,8 +86,10 @@ std::string emulator_trace_to_json(const EmulatorTraceReport& report) {
     output << "\"rom_id\":" << json(report.metadata.rom_id)
         << ",\"rom_sha256\":" << json(report.metadata.rom_sha256)
         << ",\"emulator\":" << json(report.metadata.emulator)
+        << ",\"backend\":" << json(report.metadata.backend)
         << ",\"version\":" << json(report.metadata.version)
         << ",\"scenario\":" << json(report.metadata.scenario)
+        << ",\"stop_condition\":" << json(report.metadata.stop_condition)
         << ",\"event_limit\":" << report.metadata.event_limit << "},\"events\":[";
     for (std::size_t index = 0; index < report.events.size(); ++index) {
         if (index) output << ',';
@@ -170,8 +172,10 @@ std::string emulator_trace_to_json(const EmulatorTraceReport& report) {
 std::string emulator_trace_to_text(const EmulatorTraceReport& report) {
     std::ostringstream output;
     output << "oasis.m68k.emulator-trace.v1\n"
-        << "emulator=" << report.metadata.emulator << " version=" << report.metadata.version
-        << " scenario=" << report.metadata.scenario << "\n"
+        << "emulator=" << report.metadata.emulator << " backend=" << report.metadata.backend
+        << " version=" << report.metadata.version
+        << " scenario=" << report.metadata.scenario
+        << " stop_condition=" << report.metadata.stop_condition << "\n"
         << "first_pc=" << (report.first_observed_pc ? hex32(*report.first_observed_pc) : "UNKNOWN")
         << " reset_match=" << (report.first_pc_matches_reset ? (*report.first_pc_matches_reset ? "yes" : "no") : "UNKNOWN") << '\n'
         << "events=" << report.events.size() << " unique_pcs=" << report.unique_pcs.size()

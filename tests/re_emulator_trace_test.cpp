@@ -18,7 +18,7 @@ ExternalTraceEvent event(std::uint64_t sequence, std::uint32_t pc, EmulatorEvent
 }
 
 ExternalTraceCapture capture() {
-    ExternalTraceCapture result{.emulator = "synthetic", .version = "1", .scenario = "boot_initial", .event_limit = 16};
+    ExternalTraceCapture result{.emulator = "synthetic", .backend = "synthetic-backend", .version = "1", .scenario = "boot_initial", .stop_condition = "event_limit:16", .event_limit = 16};
     auto first = event(0, 0x100, EmulatorEventKind::instruction);
     first.block_start = 0x100; first.instruction_size = 4;
     auto call = event(1, 0x100, EmulatorEventKind::call);
@@ -39,7 +39,7 @@ ExternalTraceCapture capture() {
 void test_parser_and_normalization() {
     const auto parsed = parse_external_trace(
         "oasis.m68k.external-trace.v1\n"
-        "emulator=synthetic\nversion=1\nscenario=boot_initial\nlimit=16\n"
+        "emulator=synthetic\nbackend=synthetic-backend\nversion=1\nscenario=boot_initial\nstop_condition=event_limit:16\nlimit=16\n"
         "event seq=1 pc=0x100 kind=call block=0x100 target=0x200 size=4\n"
         "event seq=0 pc=0x100 kind=instruction block=0x100 size=4 frame=2 cycles=99\n");
     assert(parsed.events.size() == 2U && parsed.emulator == "synthetic" && parsed.event_limit == 16U);
@@ -50,6 +50,8 @@ void test_parser_and_normalization() {
     assert(report.unique_pcs.size() == 1U && report.atlas_known_pcs.size() == 1U);
     assert(report.call_count == 1U && report.direct_call_edges.size() == 1U);
     assert(report.nondeterministic_fields.size() == 2U && report.trace_hash != "");
+    assert(report.metadata.backend == "synthetic-backend" && report.metadata.stop_condition == "event_limit:16");
+    assert(emulator_trace_to_json(report).find("\"backend\":\"synthetic-backend\"") != std::string::npos);
 }
 
 void test_coverage_edges_and_atlas_split() {
@@ -103,6 +105,10 @@ void test_malformed_input_rejected() {
     try { (void)normalize_emulator_trace(std::move(duplicate), {}); }
     catch (const std::invalid_argument&) { failed = true; }
     assert(failed);
+    const auto crlf = parse_external_trace("oasis.m68k.external-trace.v1\r\n"
+        "emulator=synthetic\r\nbackend=synthetic-backend\r\nversion=1\r\nscenario=boot_initial\r\nstop_condition=event_limit:1\r\n"
+        "event seq=0 pc=0x100 kind=instruction\r\n");
+    assert(crlf.events.size() == 1U && crlf.backend == "synthetic-backend" && crlf.stop_condition == "event_limit:1");
 }
 
 void test_reset_vector_reader() {

@@ -118,7 +118,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_emulator_trace.hpp Neutral external emulator capture model/API
 │       ├── re_emulator_trace.cpp Capture parser, normalization and Atlas comparison
 │       ├── re_emulator_trace_format.cpp Deterministic emulator-trace JSON/text formatting
-│       └── re_emulator_trace_report.cpp External capture import CLI; no emulator backend
+│       ├── re_emulator_trace_report.cpp External capture import CLI; no emulator backend
+│       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
+│       ├── re_mame_boot_trace.cmd Developer-only MAME fixed-instruction debugger trace
+│       ├── re_mame_writer_probe.cmd Developer-only MAME RAM writer watchpoint probe
+│       └── re_mame_trace_normalize.ps1 Normalize MAME/BizHawk raw events to neutral trace
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
