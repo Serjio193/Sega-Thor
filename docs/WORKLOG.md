@@ -12,6 +12,7 @@ TESTS: synthetic backward/merge/call/boundary, USA oracle, Debug/Release/GNU
 CTest, deterministic JSON/text, file-limit and diff-check passed. UNKNOWNS:
 no calling convention, entry state or semantics inferred. NEXT: stop and await
 explicit bounded evidence selection; no dynamic scenario, whole-ROM or M12.
+CI: GitHub Actions run 33849249267 succeeded on implementation commit 31870d6.
 ## 2026-09-04 — M11.5 unreachable-CFG audit completed
 RESULT: `oasis.m68k.re-cfg-audit.v1` preserved raw 577/96 Atlas counts; USA
 classified 80 nonreachable refs into 17 islands. CI 33847410245 succeeded.
