@@ -2,6 +2,57 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded runtime stack-value provenance completed
+TASK/SCOPE: capture only the runtime stack chain on the already proven
+`start_pulse_120` / `120:Start` hardware-reset path. No `0x60D4A` search,
+generic tracer, emulator, interpreter, production behavior, ABI inference,
+semantic naming or M12 work.
+IMPLEMENTATION: added developer-only
+`src/tools/re_bizhawk_stack_provenance.lua`, schema
+`oasis.m68k.re-stack-runtime-provenance.v1`; extended the existing local USA
+oracle with stack mode, exact writer bytes and raw target boundary checks.
+The probe watches only the requested PCs and optional concrete range `[P,P+4)`.
+EVIDENCE: BizHawk 2.11.1 with canonical USA ROM
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` reaches
+`0x60B8C`, `0x6121A`, `0x60B90`, `0x60BCC`, `0x604BC`, `0x604E4`, `0x60BD0`,
+`0x60BFA` and `0x60C08`. Raw values are caller A7=P=`0x00FF0BA8`,
+`memory[P]=0x0006F8AE`, callee entry A7=P-4=`0x00FF0BA4` with return slot
+`0x00060BD0`, RTS restoration to P, then `0x60BD0` consume into A0
+`0x0006F8AE` and A7=`0x00FF0BAC`.
+WRITER: USA bytes `0x60B66=2F 08`; BizHawk concrete-range callbacks correlate
+PC `0x60B68` to static instruction `0x60B66` and observe `P+2=0x0000F8AE`
+then `P=0x00000006`. Callback width is UNKNOWN; reconstructed final value is
+raw evidence only. MAME was not used because the bounded BizHawk evidence
+identified the static writer and ordered concrete writes without expanding
+scope.
+DETERMINISM: fresh A/B JSON SHA-256 is
+`EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D`; human
+report SHA-256 is
+`4239B4182758FAEA49C56524953632C7568A52C508EF4E5BFFDCE6995872F7AC`; both
+match byte-for-byte.
+TESTS: Debug, Release and GNU/MinGW-equivalent full CTest 27/27; stack and
+prior natural USA oracles pass; file-limit and `git diff --check` pass. No ROM,
+emulator binary, savestate or raw trace is tracked. CI is pending the focused
+implementation commit.
+RESULT/UNKNOWN: the previous scenario path had `memory[P]` UNKNOWN; it is now
+concrete only for this controlled runtime scenario. Writer callback width,
+cross-scenario invariance, full instruction trace, downstream references and
+semantic role remain UNKNOWN. CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for
+the raw chain, lower for any interpretation. NEXT: commit, push, verify GitHub
+CI and final `main==origin/main`, then STOP.
+
+## 2026-09-04 — M11.5 bounded runtime stack-value provenance started
+TASK/SCOPE: use exactly the frozen successful BizHawk scenario to test whether
+runtime evidence can identify the value consumed by `0x60BD0 MOVEA.L (A7)+,A0`
+after `0x60BCC`; keep tooling separate from the native runtime.
+KNOWN/UNKNOWN: static evidence distinguishes the BSR return slot at P-4 from
+memory[P], but the runtime P, value, writer and post-consume state are UNKNOWN
+at task start. ACCEPTANCE: capture the bounded path, concrete stack value,
+callee mechanics, concrete-range writer evidence, deterministic A/B output,
+USA oracle and local validation without introducing a general stack/emulator.
+NEXT: run the narrow probe, compare A/B, document raw evidence or bounded
+failure, then stop.
+
 ## 2026-09-04 — M11.5 bounded natural reachability search started
 TASK/SCOPE: search only for the first deterministic natural reset-to-input
 execution of the already proven direct callers `0x60B8C` or `0x60D4A`.

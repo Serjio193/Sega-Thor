@@ -1,16 +1,36 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded natural reachability search for 0x60B8C / 0x60D4A
+CURRENT_TASK: M11.5 bounded runtime stack-value provenance for the 0x60B8C path
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: one raw Start pulse at frame 120 reaches 0x60B8C at
-frame 423 after 424 frame advances; downstream 0x6121A is observed and two
-identical replays are byte-identical; GitHub Actions CI run 33871898019 passed
+LAST_VERIFIED_RESULT: frozen start_pulse_120 reaches the bounded chain through
+0x60BCC/0x604BC/0x60BD0 and both requested downstream boundaries; P=0x00FF0BA8,
+memory[P]=0x0006F8AE, post-MOVEA A0=0x0006F8AE and A7=0x00FF0BAC; A/B JSON
+SHA-256 EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: 0x60D4A remains unobserved in this bounded family; complete
-instruction-level trace, input meaning, callee effects and stack-writer
-provenance remain outside scope
+BLOCKERS: BizHawk concrete bus-write callbacks do not expose width; no semantic
+role or global invariance is inferred from the scenario-local writer chain
+
+## M11.5 bounded runtime stack-value provenance
+- Added only the developer-only BizHawk probe
+  `src/tools/re_bizhawk_stack_provenance.lua` with schema
+  `oasis.m68k.re-stack-runtime-provenance.v1`. It reuses hardware reset,
+  canonical USA ROM and `start_pulse_120` (`120:Start`), and watches the exact
+  bounded path including `0x6121A`, without changing `oasis_core`.
+- Runtime path is confirmed at all requested addresses:
+  `0x60B8C`, `0x6121A`, `0x60B90`, `0x60BCC`, `0x604BC`, `0x604E4`, `0x60BD0`,
+  `0x60BFA` and `0x60C08`. Raw stack chain is caller A7=P=`0x00FF0BA8`;
+  `memory[P]=0x0006F8AE`; BSR return slot at P-4 contains `0x60BD0`; callee
+  entry A7=P-4; RTS restores P; MOVEA consumes memory[P], gives raw A0
+  `0x0006F8AE` and advances A7 to `0x00FF0BAC`.
+- Concrete-range writer evidence is correlated to static `0x60B66` bytes
+  `2F 08`: BizHawk callback PC is `0x60B68` and reports writes
+  `P+2=0x0000F8AE`, then `P=0x00000006`. Callback width is UNKNOWN, so the
+  final longword reconstruction is recorded as bounded raw evidence only.
+- Debug/Release/GNU full CTest are 27/27; USA oracle, deterministic A/B report,
+  file-limit and diff-check pass. No ROM/emulator/savestate/raw trace is
+  tracked. This is a scenario-local runtime fact, not a static/global resolve.
 
 ## M11.5 bounded natural reachability search
 - Reused the frozen hardware-reset USA scenario and existing BizHawk Lua probe;

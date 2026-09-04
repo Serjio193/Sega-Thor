@@ -124,6 +124,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_scenario.cpp              Frozen natural emulator-scenario parser/JSON
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
+│       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
 │       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
 │       ├── re_mame_boot_trace.cmd Developer-only MAME fixed-instruction debugger trace
 │       ├── re_mame_writer_probe.cmd Developer-only MAME RAM writer watchpoint probe

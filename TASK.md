@@ -1,23 +1,57 @@
 # Current Task
 
-TASK: M11.5 bounded natural reachability search for 0x60B8C / 0x60D4A
-WHY: determine whether a minimal deterministic raw controller input can reach
-either already proven direct caller from hardware reset.
+TASK: M11.5 bounded runtime stack-value provenance for the 0x60B8C path
+WHY: capture concrete runtime evidence for the already reached stack value at
+the bounded 0x60BCC / 0x60BD0 sequence without inferring semantics.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the observed bounded caller
-path; broader path semantics and the unobserved second caller remain unknown
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the observed raw runtime
+stack chain; writer callback width and global value invariance remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: one raw `Start` pulse at frame 120 in the existing
-BizHawk 2.11.1 probe reaches `0x60B8C` at frame 423 after 424 frame advances;
-the same run observes downstream `0x6121A`, and two identical replays match
-byte-for-byte; GitHub Actions CI run `33871898019` is successful
+LAST_VERIFIED_RESULT: the frozen `start_pulse_120` / `120:Start` BizHawk 2.11.1
+run reaches `0x60B8C`, `0x6121A`, `0x60B90`, `0x60BCC`, `0x604BC`, `0x604E4`,
+`0x60BD0`, `0x60BFA` and `0x60C08`. At `0x60BCC`, P=`0x00FF0BA8` and
+memory[P]=`0x0006F8AE`; the callee entry A7 is P-4, RTS restores P, and
+`0x60BD0` consumes that longword into A0 while advancing A7 by 4. Two fresh
+replays are byte-identical: JSON SHA-256
+`EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D`.
 NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
-BLOCKERS: this probe samples frame boundaries plus exact watched bus-exec hooks,
-not every instruction; `0x60D4A` was not reached by the first successful
-variant, and no broader input search or gameplay interpretation is justified
+BLOCKERS: BizHawk bus-write callbacks do not expose write width; the concrete
+writer is correlated to static `0x60B66 MOVE.L A0,-(A7)` and its two observed
+bus writes, but no global invariant or semantic role is claimed
+
+## Current checkpoint result — bounded runtime stack provenance
+
+Implementation: developer-only `src/tools/re_bizhawk_stack_provenance.lua`,
+schema `oasis.m68k.re-stack-runtime-provenance.v1`, reusing the frozen
+hardware-reset `start_pulse_120` scenario and canonical USA ROM. The bounded
+probe watches only the requested path and concrete stack range `[P,P+4)`;
+it does not add an emulator, interpreter, generic tracer or production
+dependency.
+
+Raw runtime chain: `0x60B8C` A7=`0x00FF0BA8`; `0x60BCC` has the same P and
+`memory[P]=0x0006F8AE`; `0x60BCC` is `BSR.W 0x604BC` with return address
+`0x60BD0`; callee entry A7=`0x00FF0BA4` and return slot=`0x00060BD0`;
+`0x604E4 RTS` returns to P; pre-`0x60BD0` A7=P and stack longword is unchanged;
+post-`0x60BD0` A0=`0x0006F8AE`, A7=`0x00FF0BAC`. The report records target
+boundaries `0x60BFA` and `0x60C08` as reached only, with raw event snapshots.
+
+Bounded writer evidence: static USA bytes at `0x60B66` are `2F 08`
+(`MOVE.L A0,-(A7)`). BizHawk reports two concrete-range bus writes at
+`0x00FF0BAA`=`0x0000F8AE` and `0x00FF0BA8`=`0x00000006`, callback PC
+`0x00060B68`, correlated to instruction `0x60B66`; callback width is UNKNOWN.
+The reconstructed final four bytes are `0x0006F8AE`. No semantic name is
+assigned, and this scenario-local observation does not globally resolve the
+static value.
+
+Validation: Debug, Release and GNU/MinGW-equivalent full CTest 27/27; USA
+stack-provenance oracle and prior natural oracle pass; deterministic A/B JSON
+and human reports match; file-limit and `git diff --check` pass. No ROM,
+emulator binary, savestate or raw trace is tracked. GitHub CI is pending the
+focused implementation commit. This checkpoint is complete with the bounded
+BizHawk writer-width limitation documented.
 
 ## Natural caller search result
 

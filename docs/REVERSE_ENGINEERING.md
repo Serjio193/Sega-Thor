@@ -1,5 +1,49 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — bounded runtime stack-value provenance for the `0x60B8C` path
+**Status:** VERIFIED as bounded runtime evidence, developer-only, with writer
+callback width UNKNOWN. No semantic role is assigned to the observed value.
+The additive report is `oasis.m68k.re-stack-runtime-provenance.v1` and runs
+outside `oasis_core` against the canonical USA ROM
+(`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`) in
+BizHawk 2.11.1. It reuses hardware reset, `start_pulse_120` and raw input
+`120:Start`; it stops after the first post-`0x60BD0` continuation.
+
+The same controlled run reaches every requested boundary:
+`0x60B8C`, `0x6121A`, `0x60B90`, `0x60BCC`, `0x604BC`, `0x604E4`, `0x60BD0`,
+`0x60BFA` and `0x60C08`. At `0x60B8C` the raw A7 is
+`0x00FF0BA8`. Immediately before `0x60BCC`, P=A7 is
+`0x00FF0BA8` and the big-endian longword at memory[P] is
+`0x0006F8AE`. USA bytes at the call site are `61 00 F8 EE`, which decode as
+`BSR.W 0x604BC` with return address `0x60BD0`.
+
+The observed stack timeline is exact for this run: caller A7=P; BSR places
+return `0x60BD0` at P-4 and callee entry A7 becomes `0x00FF0BA4`; the callee
+return snapshot at `0x604E4 RTS` preserves that entry A7; the next caller
+instruction `0x60BD0` has A7=P and reads the same `0x0006F8AE`; the following
+`0x60BD2` snapshot has A0=`0x0006F8AE` and A7=`0x00FF0BAC`. This distinguishes
+the BSR return slot from the separately consumed memory[P] longword without
+assigning meaning to either value.
+
+Bounded writer capture watched only `[P,P+4)`. The USA oracle confirms
+`0x60B66` bytes `2F 08` (`MOVE.L A0,-(A7)`). BizHawk bus-write callbacks
+reported callback PC `0x60B68`, correlated by the exact instruction hook to
+`0x60B66`, with writes at `0x00FF0BAA`=`0x0000F8AE` and
+`0x00FF0BA8`=`0x00000006`. The callback API exposes no width, so both widths
+remain UNKNOWN; the final four bytes are reconstructed as
+`0x0006F8AE` from the ordered concrete-range writes and pre-consume memory.
+No MAME probe was needed, and no global writer or value invariant is claimed.
+
+The JSON and human-readable reports were repeated from fresh runs. Their
+SHA-256 values are respectively
+`EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D` and
+`4239B4182758FAEA49C56524953632C7568A52C508EF4E5BFFDCE6995872F7AC`, equal
+between A/B. `0x60BFA` and `0x60C08` are recorded only as reached plus raw
+boundary events; their memory references are not resolved. The result is a
+concrete value for this scenario, not a static constant. Debug/Release/GNU
+CTest, USA oracle, file-limit and diff-check pass; CI follows the focused
+implementation commit.
+
 ## M11.5 — bounded natural reachability search for `0x60B8C` / `0x60D4A`
 **Status:** VERIFIED for one bounded natural caller path, developer-only. This
 is not a complete instruction trace, emulator, input interpretation or

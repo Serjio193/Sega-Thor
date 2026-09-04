@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
     }
     try {
         const bool search_mode = argc == 5 && std::string(argv[4]) == "caller-search";
-        require(argc != 5 || search_mode, "unknown oracle mode");
+        const bool stack_mode = argc == 5 && std::string(argv[4]) == "stack-provenance";
+        require(argc != 5 || search_mode || stack_mode, "unknown oracle mode");
         const auto rom = oasis::Rom::load(argv[1]);
         const auto identity = oasis::identify_rom(rom.bytes());
         require(identity.status == oasis::RomSupportStatus::Supported, "oracle requires supported USA ROM");
@@ -53,9 +54,52 @@ int main(int argc, char** argv) {
         const std::uint8_t third_call[] = {0x61, 0x00, 0x00, 0x2A};
         for (std::size_t index = 0; index < 4; ++index)
             require(bytes[0x611EEU + index] == third_call[index], "third static call-site bytes mismatch");
+        const std::uint8_t stack_call[] = {0x61, 0x00, 0xF8, 0xEE};
+        for (std::size_t index = 0; index < 4; ++index)
+            require(bytes[0x60BCCU + index] == stack_call[index], "stack call-site bytes mismatch");
+        require(bytes[0x60BD0U] == 0x20 && bytes[0x60BD1U] == 0x5F,
+                "MOVEA stack-consume bytes mismatch");
+        require(bytes[0x60B66U] == 0x2F && bytes[0x60B67U] == 0x08,
+                "stack writer bytes mismatch");
         const auto report = read_text(argv[3]);
-        require(report.find("oasis.m68k.natural-reach.v1") != std::string::npos,
+        require(report.find("oasis.m68k.natural-reach.v1") != std::string::npos ||
+                    report.find("oasis.m68k.re-stack-runtime-provenance.v1") != std::string::npos,
                 "natural report schema missing");
+        if (stack_mode) {
+            require(report.find("oasis.m68k.re-stack-runtime-provenance.v1") != std::string::npos,
+                    "stack provenance schema missing");
+            require(report.find("\"scenario_family\":\"natural_reach_60b8c_60d4a_v1\",\"variant_id\":\"start_pulse_120\"") != std::string::npos,
+                    "stack provenance scenario mismatch");
+            require(report.find("\"input_events\":\"120:Start\"") != std::string::npos,
+                    "stack provenance input mismatch");
+            require(report.find("\"path\":{\"0x60B8C\":true,\"0x6121A\":true,\"0x60B90\":true,\"0x60BCC\":true,\"0x604BC\":true,\"0x604E4\":true,\"0x60BD0\":true,\"0x60BFA\":true,\"0x60C08\":true}") != std::string::npos,
+                    "stack provenance path mismatch");
+            require(report.find("\"p\":\"0x00FF0BA8\",\"stack_long\":\"0x0006F8AE\"") != std::string::npos,
+                    "pre-60BCC stack value mismatch");
+            require(report.find("\"entry_a7\":\"0x00FF0BA4\",\"return_slot_long\":\"0x00060BD0\",\"entry_a7_equals_p_minus_4\":true") != std::string::npos,
+                    "callee entry stack distinction mismatch");
+            require(report.find("\"a7\":\"0x00FF0BA8\",\"stack_long\":\"0x0006F8AE\",\"a7_equals_p\":true,\"matches_pre_60bcc_stack_long\":true") != std::string::npos,
+                    "MOVEA pre-state mismatch");
+            require(report.find("\"a0\":\"0x0006F8AE\",\"a7\":\"0x00FF0BAC\",\"a0_equals_consumed_long\":true,\"a7_equals_p_plus_4\":true") != std::string::npos,
+                    "MOVEA post-state mismatch");
+            require(report.find("\"stack_writer_instruction_60b66\":") != std::string::npos,
+                    "stack writer instruction evidence missing");
+            require(report.find("\"instruction_pc\":\"0x00060B66\"") != std::string::npos,
+                    "stack writer instruction correlation missing");
+            require(report.find("\"address\":\"0x00FF0BAA\",\"value\":\"0x0000F8AE\"") != std::string::npos,
+                    "stack writer upper-word evidence missing");
+            require(report.find("\"address\":\"0x00FF0BA8\",\"value\":\"0x00000006\"") != std::string::npos,
+                    "stack writer lower-word evidence missing");
+            require(report.find("\"target_60bfa_reached\":true,\"target_60bfa_event\":{") != std::string::npos,
+                    "0x60BFA raw boundary evidence missing");
+            require(report.find("\"target_60c08_reached\":true,\"target_60c08_event\":{") != std::string::npos,
+                    "0x60C08 raw boundary evidence missing");
+            require(report.find("\"deterministic\":true") != std::string::npos,
+                    "stack provenance determinism missing");
+            std::cout << "verified natural USA stack-provenance oracle for 0x60B8C\n";
+            return 0;
+        }
+        require(argc == 4, "unknown natural oracle mode");
         if (search_mode) {
             require(report.find("\"scenario_family\":\"natural_reach_60b8c_60d4a_v1\"") != std::string::npos,
                     "caller-search family missing");
