@@ -22,8 +22,8 @@ TESTS: synthetic validation passed, including parser rejection, normalization,
 ordering, coverage, direct-call/indirect-target edges, Atlas PC/target split,
 reset-vector comparison and register-sensitive deterministic hashing. Full
 Debug/Release/GNU CTest passed 26/26 in each configuration; file-limit,
-diff-check and the focused rebuilt target passed. CI is pending the push of
-this implementation.
+diff-check and the focused rebuilt target passed. GitHub Actions CI run
+`33859968218` for implementation commit `e901686` completed successfully.
 PROVEN/UNKNOWN: the adapter is useful for importing a future external capture,
 but no boot execution, first PC, reset agreement, replay match, `0x6121A`
 observation or watchpoint capability can be claimed without a backend.
