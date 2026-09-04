@@ -26,7 +26,8 @@ TESTS: Debug/Release/GNU-equivalent full CTest (25/25), USA oracle,
 deterministic JSON/text, source file-limit and diff-check all passed. The USA
 oracle ran against the supported local reference ROM and verified exact bytes,
 CFG, events, both unknown-call blockers and unresolved target results. GitHub
-Actions CI run `33858039902` completed successfully.
+Actions CI runs `33858039902` (implementation) and `33858141062`
+(documentation follow-up) completed successfully.
 UNKNOWN/NEXT: unknown effects of callees `0x6121A`; stop at this checkpoint and
 await explicit instruction.
 ## 2026-09-04 — M11.5 bounded callee-effect audit completed
