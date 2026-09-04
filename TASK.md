@@ -1,8 +1,8 @@
 # Current Task
 
-TASK: M11.5 bounded unreachable-CFG evidence audit for `0x60004`
-WHY: classify the exact 80 displacement records outside the entry-reachable
-CFG without reducing raw unresolved Atlas evidence or inventing semantics.
+TASK: M11.5 bounded reachable-unresolved closure audit for `0x60004`
+WHY: analyze exactly the 16 reachable unresolved displacement refs with bounded
+backward provenance, without investigating the 17 unreachable islands.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
 CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
@@ -13,44 +13,41 @@ STATUS: COMPLETE
 
 ## Scope and method
 
-The audit consumes the existing Atlas and bounded decoder CFG for
-`[0x60004, 0x61204)`. It records instruction/block context, bounded incoming
-edges, lexical fallthrough, outgoing direct edges, nearest reachable blocks,
-padding/data and decoder status. It classifies records only as candidates:
-unreachable code, embedded data, secondary entry, decoder artifact, boundary
-tail or unknown. It does not infer semantics or mutate Atlas/ranking.
+The closure consumes the existing Atlas, decoder CFG and resolution result for
+`[0x60004, 0x61204)`. It records opcode/operand mode, A-register,
+displacement, block predecessors, current reason, bounded backward definitions
+and nearest proven pre-use state. Only existing conservative transfer rules are
+used; calls invalidate state and unknown entry state is never guessed.
 
-Output schema is `oasis.m68k.re-cfg-audit.v1`; JSON and text are deterministic.
-The CLI is local-USA-ROM-only developer tooling and remains outside
-`oasis_core` and gameplay runtime.
+Output schema is `oasis.m68k.re-reachable-closure.v1`; JSON and text are
+deterministic. The CLI is local-USA-ROM-only developer tooling and remains
+outside `oasis_core` and gameplay runtime.
 
 ## Acceptance criteria
 
-- [x] exact 80 outside-reachable records are audited and grouped into 17 islands;
-- [x] bounded incoming/outgoing CFG context and reachability factors are reported;
-- [x] classifications remain hypotheses/unknown; raw Atlas counts are unchanged;
-- [x] synthetic classification/island/format tests and USA oracle pass;
+- [x] exact 16 reachable unresolved records are reported and reason-counted;
+- [x] backward definitions, predecessor CFG and provenance are bounded to target CFG;
+- [x] call clobber, unsupported transfer and entry-state uncertainty stay explicit;
+- [x] synthetic backward/merge/call/boundary tests and USA oracle pass;
 - [x] Debug/Release/GNU-equivalent CTest, JSON determinism, file-limit and
   diff-check pass; tooling remains separate from `oasis_core`.
 
 ## Verified result
 
 Prior resolution remains 390 examined / 294 resolved / 96 unresolved
-(92 unknown-base, 4 CFG-merge), Atlas 577→283. This audit accounts for 80 of
-those 96 as nonreachable records: 77 unreachable-code candidates (332 bytes)
-and 3 unknown (18 bytes), with zero known incoming edges. Reachable unresolved
-remains 16; raw unresolved stays 96, Atlas stays 577 and displacement ranking
-stays 446 because classification does not remove evidence.
+(92 unknown-base, 4 CFG-merge), Atlas 577→283. This closure accounts for all
+16 reachable refs: 14 `call_clobber`, 2 `unsupported_transfer`, newly resolved
+0, reachable unresolved after 16. Raw unresolved stays 577, displacement
+backlog stays 446, and the 80 nonreachable refs remain separately audited.
 
 ## Known unknowns and hard boundaries
 
-No secondary-entry, embedded-data, decoder-artifact or boundary-tail candidate
-was confirmed. No dynamic scenario, interprocedural inference, symbolic
-execution, emulator, decompiler, whole-ROM scan, recompiler, production C++
-behavior or M12 work was added.
+No speculative resolution or dynamic scenario was used. No calling convention,
+entry register value, semantic field name, emulator, whole-ROM scan, recompiler,
+production C++ behavior or M12 work was added.
 
 ## Exact next action
 
-Stop at this verified audit checkpoint. Await explicit selection of the next
+Stop at this verified closure checkpoint. Await explicit selection of the next
 bounded evidence class; do not begin dynamic tracing, whole-ROM discovery or
 M12 automatically.

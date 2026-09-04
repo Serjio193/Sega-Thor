@@ -1,19 +1,20 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
-## M11.5 — bounded resolution and unreachable-CFG audit at `0x00060004`
+## M11.5 — bounded resolution, CFG audit and reachable closure at `0x00060004`
 **Status:** VERIFIED bounded tooling; no semantics inferred. Prior resolution
-examined 390 displacement refs, resolved 294 and left 96 (92 unknown-base,
-4 CFG-merge); Atlas changed 577→283 and displacement 446→152.
-`oasis.m68k.re-cfg-audit.v1` then audited exactly 80 records outside the
-entry-reachable `[0x60004,0x61204)` CFG and grouped them into 17 islands.
-USA classification is 77 `unreachable_code_candidate` (332 bytes) and 3
-`unknown` (18 bytes), with zero known incoming edges and zero secondary-entry,
-embedded-data, decoder-artifact or boundary-tail candidates. Reachable
-unresolved remains 16; raw unresolved remains 96, Atlas remains 577 and
-displacement ranking remains 446. Classifications do not reduce evidence.
-All findings retain raw instruction/block/edge context and remain hypotheses
-or unknown; no beta scan, runtime, emulator, interprocedural or whole-ROM
-analysis was added.
+examined 390 refs, resolved 294 and left 96; Atlas changed 577→283.
+`oasis.m68k.re-cfg-audit.v1` accounts for 80 nonreachable refs in 17 islands:
+77 code candidates / 332 bytes and 3 unknown / 18 bytes; no known incoming
+edges. `oasis.m68k.re-reachable-closure.v1` accounts for the exact 16 reachable
+refs: 14 `call_clobber`, 2 `unsupported_transfer`, newly resolved 0, after 16.
+The two unsupported transfers are existing `MOVEA (A7)+,A0` evidence; no
+transfer rule was added. Raw unresolved remains 577 and displacement backlog
+446; nonreachable 80 stays separate. All records retain raw instruction,
+block, predecessor and bounded provenance context. No dynamic scenario, beta
+scan, runtime, emulator, whole-ROM analysis or semantic naming was added.
+Exact reachable addresses: `604EA`, `60BD8`, `60BFA`, `60C08`, `60C1E`,
+`60C34`, `60C4A`, `60C60`, `60C76`, `60C8A`, `60C94`, `60CAA`, `60CC2`,
+`60D94`, `60DB0`, `60DC8`.
 ## Known hardware addresses
 | Address | Meaning | Confidence | Evidence/status |
 |---|---|---:|---|
@@ -400,7 +401,6 @@ semantics and the producer caller remain **UNKNOWN**.
 ### M11.5 second RE-acceleration slice — bounded multi-function report
 **Status:** VERIFIED as developer-only tooling; no production C++ behavior or
 semantic names were added.
-
 - The local-USA CLI analyzes four existing evidence targets: exact documented
   `[0x3820,0x3B3E)` and `[0xD3B2,0xD406)`, plus bounded-only windows beginning
   at `0x8E90` (`0x120` bytes) and `0xA6A4` (`0x180` bytes). Boundary discovery

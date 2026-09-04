@@ -2,18 +2,19 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
-## 2026-09-04 — M11.5 bounded unreachable-CFG evidence audit completed
-TASK/RESULT: `oasis.m68k.re-cfg-audit.v1` audits exactly 80 outside-reachable
-records in `[0x60004,0x61204)`, groups 17 islands, and preserves raw Atlas
-counts. USA: 77 unreachable-code candidates / 332 bytes, 3 unknown / 18 bytes,
-zero known incoming edges, zero secondary/data/artifact/tail records; 16
-reachable unresolved remain out of raw 96. MILESTONE/CONFIDENCE: M11.5 / 95%,
-slice 96%. TESTS: synthetic classification/island/format, USA oracle,
-Debug/Release/GNU CTest, deterministic JSON, file-limit and diff-check passed.
-UNKNOWNS: no semantic or data/code confirmation; indirect entries remain
-unknown. NEXT: stop and await explicit bounded evidence selection; no runtime,
-dynamic scenario, whole-ROM discovery, recompiler or M12.
-CI: GitHub Actions run 33847337191 succeeded on implementation commit 3d79fd4.
+## 2026-09-04 — M11.5 reachable-unresolved closure audit completed
+TASK/RESULT: `oasis.m68k.re-reachable-closure.v1` accounts for exactly 16
+reachable unresolved refs in `[0x60004,0x61204)`: 14 `call_clobber`, 2
+`unsupported_transfer`, newly resolved 0, after 16; nonreachable 80 stays
+separate. Bounded definitions, predecessor CFG, current reasons and provenance
+are deterministic. MILESTONE/CONFIDENCE: M11.5 / 95%; slice 96%.
+TESTS: synthetic backward/merge/call/boundary, USA oracle, Debug/Release/GNU
+CTest, deterministic JSON/text, file-limit and diff-check passed. UNKNOWNS:
+no calling convention, entry state or semantics inferred. NEXT: stop and await
+explicit bounded evidence selection; no dynamic scenario, whole-ROM or M12.
+## 2026-09-04 — M11.5 unreachable-CFG audit completed
+RESULT: `oasis.m68k.re-cfg-audit.v1` preserved raw 577/96 Atlas counts; USA
+classified 80 nonreachable refs into 17 islands. CI 33847410245 succeeded.
 ## 2026-09-03 — M11.5 Atlas-driven unresolved evidence ranking completed
 
 **RESULT:** Added typed Atlas unresolved records and `oasis_re_atlas_rank` /

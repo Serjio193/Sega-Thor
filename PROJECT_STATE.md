@@ -1,12 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded unreachable-CFG evidence audit for 0x60004
+CURRENT_TASK: M11.5 bounded reachable-unresolved closure audit for 0x60004
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: oasis.m68k.re-cfg-audit.v1 accounts for exactly 80 outside-reachable records in [0x60004,0x61204) across 17 islands; 77 are unreachable-code candidates and 3 remain unknown, with Atlas counts unchanged
-NEXT_ACTION: Stop at the verified bounded CFG audit checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: oasis.m68k.re-reachable-closure.v1 accounts for exactly 16 reachable unresolved refs; 14 are call-clobbered and 2 are unsupported-transfer cases, with zero new resolutions and raw Atlas counts unchanged
+NEXT_ACTION: Stop at the verified bounded closure checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 bounded reachable-unresolved closure audit
+- `oasis_re_reachable_closure` is a local-USA-ROM-only developer report over
+  the existing Atlas, bounded decoder CFG and resolution result; it is not
+  linked into `oasis_core` or gameplay runtime.
+- Schema: `oasis.m68k.re-reachable-closure.v1`. The report accounts for exactly
+  16 reachable unresolved refs and preserves instruction, operand mode,
+  predecessor, bounded-definition and provenance evidence.
+- USA result: 14 `call_clobber`, 2 `unsupported_transfer`, newly resolved 0,
+  reachable unresolved after 16, nonreachable unresolved 80. Raw Atlas remains
+  577 and raw displacement backlog remains 446; no evidence was removed.
+- The two unsupported transfers are the existing bounded `MOVEA (A7)+,A0`
+  pattern at the local backward boundary. No new transfer rule was added.
+- No dynamic scenario, calling convention, entry-state guess, semantic name,
+  island investigation or M12 work was added.
 
 ## M11.5 bounded unreachable-CFG evidence audit
 - `oasis_re_cfg_audit` is a local-USA-ROM-only developer report over the

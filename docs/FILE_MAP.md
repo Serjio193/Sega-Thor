@@ -100,7 +100,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_cfg_audit.hpp Bounded unreachable-CFG audit data model/API
 │       ├── re_cfg_audit.cpp Audit classifications, islands and bounded CFG context
 │       ├── re_cfg_audit_format.cpp Deterministic CFG-audit JSON/text formatting
-│       └── re_cfg_audit_report.cpp Local-only USA CFG-audit CLI
+│       ├── re_cfg_audit_report.cpp Local-only USA CFG-audit CLI
+│       ├── re_reachable_closure.hpp Bounded reachable unresolved closure API
+│       ├── re_reachable_closure.cpp Backward register provenance and reason audit
+│       ├── re_reachable_closure_format.cpp Deterministic closure JSON/text formatting
+│       └── re_reachable_closure_report.cpp Local-only USA closure CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -128,7 +132,9 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_resolution_test.cpp               Synthetic bounded propagation/merge tests
     ├── re_resolution_reference.cpp          Local USA-ROM resolution oracle
     ├── re_cfg_audit_test.cpp                Synthetic CFG-audit classification/island tests
-    └── re_cfg_audit_reference.cpp           Local USA-ROM CFG-audit oracle
+    ├── re_cfg_audit_reference.cpp           Local USA-ROM CFG-audit oracle
+    ├── re_reachable_closure_test.cpp        Synthetic backward closure/merge tests
+    └── re_reachable_closure_reference.cpp   Local USA-ROM closure oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
