@@ -7,7 +7,7 @@ TASK/SCOPE: audited only direct call-site `0x60BCC` -> actual callee `0x604BC`; 
 EVIDENCE: bounded `[0x604BC,0x604E6)` has one block/RTS `0x604E4`, no nested call/indirect/unsupported flow; A0 unknown, A1-A5 untouched, A6 known `0x00FF06F2`, A7 preserved.
 STACK: caller A7=P -> BSR return `0x60BD0` at P-4 -> callee no explicit stack delta -> RTS restores P -> outside-callee `0x60BD0` reads unknown longword at P and A7+=4.
 RESULT: schema `oasis.m68k.re-callee-effect.v1`; targets `0x60BFA`/`0x60C08` remain unresolved; reachable 16→16; 14 `call_clobber` unchanged; speculative 0.
-TESTS: synthetic suite, Debug/Release/GNU-equivalent full CTest (24/24), deterministic report, file-limit and diff-check passed. USA oracle executable added but local ROM was absent here.
+TESTS: synthetic suite, Debug/Release/GNU-equivalent full CTest (24/24), deterministic report, file-limit and diff-check passed. USA oracle executable added but local ROM was absent here. CI `build-test` run `33854626198` passed for `ebbb4f0`.
 UNKNOWN/NEXT: stack longword at caller pre-BSR A7 and its raw role remain unknown. STOP; await next bounded evidence task.
 ## 2026-09-04 — M11.5 bounded MOVEA postincrement transfer checkpoint completed
 TASK/RESULT: Added only longword `MOVEA.L (A7)+,An` with exact mode/register
