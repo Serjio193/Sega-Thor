@@ -1,5 +1,53 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — bounded natural reachability search for `0x60B8C` / `0x60D4A`
+**Status:** VERIFIED for one bounded natural caller path, developer-only. This
+is not a complete instruction trace, emulator, input interpretation or
+semantic conclusion.
+
+The experiment reused `src/tools/re_bizhawk_natural_scenario.txt` and the
+existing BizHawk 2.11.1 Lua probe against the canonical USA ROM
+(`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`). Every
+variant started from `hardware_reset`; the additive report remains schema
+`oasis.m68k.natural-reach.v1` and the probe remains outside production runtime.
+Search family: `natural_reach_60b8c_60d4a_v1`.
+
+The bounded search tested neutral baseline, then stopped at the first primary
+hit, `start_pulse_120` with one raw event `120:Start` and max horizon 1800.
+It reached `0x60B8C` at frame 423 after 424 frame advances. Watched target
+counts were:
+
+| watched address | exact count |
+|---|---:|
+| `0x60B8C` | 3 |
+| `0x60D4A` | 0 |
+| `0x6121A` | 5 |
+| `0x611EE` | 2 |
+
+The first primary caller snapshot has PC `0x60B8C`, A7 `0x00FF0BA8` and
+stack window `[0x00FF0B88,0x00FF0BE8)`, exactly the bounded
+`[A7-0x20,A7+0x40)` window requested for this experiment. A following
+`0x6121A` watched event is paired with raw caller `0x60B8C`; its observed
+longword matches the statically computed BSR return address `0x60B90`.
+These are register/stack observations only; no value receives a semantic
+name.
+
+Bounded input minimization tested the same one-event pulse at frames 119 and
+121; both reached `0x60B8C` at frame 423. The neutral baseline, which removes
+the only event, did not reach either primary caller. The successful input is
+therefore minimal by event/button count within this bounded check, while
+nearby timing is observationally equivalent. The exact `start_pulse_120` run
+was repeated twice: JSON SHA-256
+`20AA010BAECFE696A119D431A7EE6562074848219DD9C08A16D00BE3BBD994F2` and
+trace SHA-256
+`66F0095A195A9899789F08D0D4E8C5CF45EEFDDEE97EEE14B8A24516A9FB2271` matched.
+
+The report contains 438 ordered events, but frame-boundary samples and exact
+watch hooks do not establish a full instruction count or basic-block trace.
+`0x60D4A` was not dynamically observed. The meaning of `Start`, the meaning
+of the routines/data, complete callee/return state, and any unobserved control
+flow remain UNKNOWN. No broader search was performed after the first success.
+
 ## M11.5 — bounded dynamic caller discrimination of 0x6121A
 **Status:** VERIFIED bounded raw execution evidence, developer-only. The frozen
 `natural_idle_to_6121a_v1` scenario remains unchanged: BizHawk 2.11.1,

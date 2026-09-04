@@ -1,12 +1,31 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded dynamic caller discrimination for 0x6121A
+CURRENT_TASK: M11.5 bounded natural reachability search for 0x60B8C / 0x60D4A
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario proves 0x611EE -> 0x6121A twice with matching BSR return address 0x611F2; GitHub CI `33870143848` passed
+LAST_VERIFIED_RESULT: one raw Start pulse at frame 120 reaches 0x60B8C at
+frame 423 after 424 frame advances; downstream 0x6121A is observed and two
+identical replays are byte-identical
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: callee semantics and stack-writer provenance remain outside scope; 0x60B8C and 0x60D4A were not observed in the frozen scenario
+BLOCKERS: 0x60D4A remains unobserved in this bounded family; complete
+instruction-level trace, input meaning, callee effects and stack-writer
+provenance remain outside scope
+
+## M11.5 bounded natural reachability search
+- Reused the frozen hardware-reset USA scenario and existing BizHawk Lua probe;
+  additive search mode watches only `0x60B8C`, `0x60D4A`, `0x6121A` and
+  `0x611EE` and stops on the first requested caller.
+- The first successful structured variant is one raw `Start` pulse at frame
+  120. It reaches `0x60B8C` at frame 423 after 424 frame advances. Counts are
+  `0x60B8C=3`, `0x60D4A=0`, `0x6121A=5`, `0x611EE=2`; the downstream target
+  includes a matching raw BSR return address `0x60B90`.
+- Adjacent one-pulse timings 119 and 121 also reach the same caller; neutral
+  input does not. Two exact 120-pulse replays are byte-identical. This is raw
+  reachability evidence, not an input or routine semantic claim.
+- No production code, emulator dependency, full-game tracing, whole-ROM scan,
+  semantic name or M12 work was added. `0x60D4A`, complete instruction order,
+  input meaning and broader effects remain UNKNOWN.
 
 ## M11.5 bounded dynamic caller discrimination
 - Reused `natural_idle_to_6121a_v1` without gameplay inputs and added only exact

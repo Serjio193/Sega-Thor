@@ -1,18 +1,55 @@
 # Current Task
 
-TASK: M11.5 bounded dynamic caller discrimination for 0x6121A
-WHY: determine which already confirmed direct call-site transfers control to
-the naturally reached target during the frozen frame-113 execution.
+TASK: M11.5 bounded natural reachability search for 0x60B8C / 0x60D4A
+WHY: determine whether a minimal deterministic raw controller input can reach
+either already proven direct caller from hardware reset.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the bounded caller/entry
-pairing; callee behavior and broader path semantics remain unknown
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the observed bounded caller
+path; broader path semantics and the unobserved second caller remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 scenario proves `0x611EE -> 0x6121A` for both frame-113 target hits, with A7 deltas `-4`, matching stack return `0x611F2`, identical A/B reports, and GitHub CI run `33870143848` successful
+LAST_VERIFIED_RESULT: one raw `Start` pulse at frame 120 in the existing
+BizHawk 2.11.1 probe reaches `0x60B8C` at frame 423 after 424 frame advances;
+the same run observes downstream `0x6121A`, and two identical replays match
+byte-for-byte
 NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
-BLOCKERS: caller hooks expose bus-exec snapshots but no separate post-instruction timing channel; `0x60B8C` and `0x60D4A` remain unobserved in this scenario; callee effects and stack-writer provenance remain outside scope
+BLOCKERS: this probe samples frame boundaries plus exact watched bus-exec hooks,
+not every instruction; `0x60D4A` was not reached by the first successful
+variant, and no broader input search or gameplay interpretation is justified
+
+## Natural caller search result
+
+Search family `natural_reach_60b8c_60d4a_v1` reused
+`src/tools/re_bizhawk_natural_scenario.txt`, canonical USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, BizHawk
+2.11.1, hardware reset and the existing Lua probe. The additive report fields
+are in `oasis.m68k.natural-reach.v1`; no new emulator or trace framework was
+introduced.
+
+The bounded search tested neutral baseline, then stopped at the first success:
+`start_pulse_120` (`120:Start`, max 1800). It reached `0x60B8C` at frame 423
+after 424 frame advances. The watched counts were `0x60B8C=3`, `0x60D4A=0`,
+`0x6121A=5` and `0x611EE=2`. The first `0x60B8C` event has PC
+`0x60B8C`, A7 `0x00FF0BA8`, and stack window
+`[0x00FF0B88,0x00FF0BE8)`. A downstream `0x6121A` event is paired with the
+same raw caller and its BSR return address `0x60B90` matches the observed
+stack longword. No semantic role is assigned to any value.
+
+Bounded minimization changed only the timing of the same single `Start` pulse:
+`119:Start` and `121:Start` also reached `0x60B8C` at frame 423. Removing the
+only input (neutral baseline) did not reach either requested caller. Thus the
+successful input has one event and one button; timing equivalence near frame
+120 is recorded, not interpreted. Two fresh `start_pulse_120` replays have
+identical JSON SHA-256 `20AA010BAECFE696A119D431A7EE6562074848219DD9C08A16D00BE3BBD994F2`
+and trace SHA-256 `66F0095A195A9899789F08D0D4E8C5CF45EEFDDEE97EEE14B8A24516A9FB2271`.
+
+This is a bounded natural reachability result only. The probe captured 438
+ordered report events, but it is not a complete instruction trace and reports
+no inferred basic blocks. `0x60D4A` remains unresolved by this scenario;
+return state beyond the watched downstream hook, input meaning and gameplay
+semantics remain UNKNOWN.
 
 ## Dynamic caller discrimination result
 
@@ -55,7 +92,18 @@ two observed caller-target events; whether the second is re-entry or another
 raw control-flow circumstance is UNKNOWN. `0x6135E` remains only a prior
 frame-boundary sample, not caller evidence.
 
-## Acceptance criteria
+## Search acceptance criteria
+
+- [x] existing hardware-reset USA scenario and BizHawk backend reused;
+- [x] bounded search stopped at the first primary caller hit;
+- [x] one raw `Start` pulse reaches `0x60B8C` and downstream `0x6121A` is observed;
+- [x] caller/target snapshots include the requested `[A7-0x20,A7+0x40)` window;
+- [x] neutral removal check, adjacent timing minimization and two-run replay equality passed;
+- [x] local USA oracle, Debug/Release/GNU CTest, file-limit and diff-check passed;
+- [x] no production runtime, emulator, whole-game trace, broad search or M12 work added;
+- [ ] `0x60D4A`, complete instruction/basic-block trace and input meaning remain unknown.
+
+## Previous caller-discrimination acceptance criteria
 
 - [x] exact canonical-USA bytes, BSR.W displacement and return addresses verified for all three callers;
 - [x] only the frozen natural scenario and four exact caller/target hooks used;

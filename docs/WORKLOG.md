@@ -2,6 +2,67 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded natural reachability search started
+TASK/SCOPE: search only for the first deterministic natural reset-to-input
+execution of the already proven direct callers `0x60B8C` or `0x60D4A`.
+Reuse the existing BizHawk natural probe and frozen USA ROM scenario; do not
+add a trace framework, emulator, autoplay, production behavior, deeper callee
+analysis, whole-ROM search or M12 work.
+CURRENT MILESTONE: M11.5 follow-up under completed M11
+MILESTONE UNDERSTANDING CONFIDENCE: 95%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 78%; the natural input sequence and
+whether either caller is reachable from hardware reset are UNKNOWN. Until a
+caller is observed, this task remains RE/probe/documentation only.
+ACCEPTANCE: test at most twelve structured raw controller variants, with a
+maximum horizon of 1800 frames per variant; stop at the first primary caller
+hit. Record exact caller/target snapshots, watched context, bounded stack
+window `[A7-0x20,A7+0x40)`, return-address evidence where observed and a
+repeatability comparison. If no caller is observed, record every tested
+variant and the closest bounded result without inventing reachability.
+KNOWN/UNKNOWN: static direct edges to `0x6121A` from `0x60B8C`, `0x60D4A` and
+`0x611EE` are proven. Frozen neutral execution reaches only the `0x611EE`
+caller path so far; whether input can reach the two requested callers,
+whether `0x6121A` follows them, and any deeper runtime state are UNKNOWN.
+NEXT: add the minimal search-mode stop/report fields to the existing Lua
+probe, run the structured variants from hardware reset, then stop on success
+or bounded NOT OBSERVED and document the evidence.
+## 2026-09-04 — M11.5 bounded natural reachability search completed
+TASK/SCOPE: bounded natural reset-to-input search for the two already proven
+direct callers `0x60B8C` and `0x60D4A`; stop after the first primary hit. No
+whole-game search, emulator work, production runtime, semantic interpretation
+or M12 work.
+IMPLEMENTATION: added only additive search-mode metadata and stop/report
+fields to the existing developer-only BizHawk Lua probe. Search mode watches
+`0x60B8C`, `0x60D4A`, `0x6121A` and `0x611EE`, captures the requested
+`[A7-0x20,A7+0x40)` window and preserves exact caller/target hook evidence.
+The existing frozen neutral scenario and report schema remain compatible.
+PROVEN: canonical USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, BizHawk
+2.11.1, hardware reset and one raw `Start` pulse at frame 120 reach
+`0x60B8C` at frame 423 after 424 frame advances. Watched counts are
+`0x60B8C=3`, `0x60D4A=0`, `0x6121A=5`, `0x611EE=2`; a downstream
+`0x6121A` event is paired with the raw caller and matching BSR return address
+`0x60B90`. The first caller A7 is `0x00FF0BA8`, and its stack window starts
+at `0x00FF0B88`.
+MINIMIZATION/DETERMINISM: neutral baseline did not reach either requested
+caller. One-event pulses at frames 119 and 121 also reached `0x60B8C` at
+frame 423, so the successful sequence is minimal by event/button count within
+the bounded check. Two fresh frame-120 runs are byte-identical: JSON SHA-256
+`20AA010BAECFE696A119D431A7EE6562074848219DD9C08A16D00BE3BBD994F2`, trace
+SHA-256 `66F0095A195A9899789F08D0D4E8C5CF45EEFDDEE97EEE14B8A24516A9FB2271`.
+The report has 438 ordered sampled/hook events; it is not a complete
+instruction or basic-block trace.
+TESTS: Debug, Release and GNU/MinGW-equivalent CTest 27/27 passed; frozen USA
+natural oracle and caller-search USA oracle passed; exact BizHawk replay and
+hash comparison passed; file-limit and `git diff --check` passed. No ROM,
+trace, emulator binary or generated artifact is tracked.
+RESULT: bounded natural reachability for `0x60B8C` is confirmed; `0x60D4A`
+remains unobserved. Input meaning, complete execution trace, callee effects,
+broader reachability and semantic roles remain UNKNOWN. CURRENT SLICE
+UNDERSTANDING CONFIDENCE: 96% for the observed raw caller/downstream path;
+not a claim about the unobserved caller or routine semantics.
+NEXT: commit this focused checkpoint, push only after the local pre-push gate,
+verify GitHub CI, then STOP. Do not begin broader input search or M12.
 ## 2026-09-04 — M11.5 bounded dynamic caller discrimination completed
 TASK/SCOPE: reuse only frozen `natural_idle_to_6121a_v1` to discriminate the
 three known direct callers of `0x6121A`; no input changes, autoplay, callee

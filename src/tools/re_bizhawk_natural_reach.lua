@@ -5,6 +5,9 @@ local scenario_path = os.getenv("OASIS_SCENARIO_FILE")
 local trace_path = os.getenv("OASIS_NATURAL_TRACE_OUTPUT") or "natural-trace.txt"
 local report_path = os.getenv("OASIS_NATURAL_REPORT_OUTPUT") or "natural-report.json"
 local input_override = os.getenv("OASIS_INPUT_EVENTS")
+local search_mode = os.getenv("OASIS_NATURAL_SEARCH") == "caller_targets"
+local scenario_family = os.getenv("OASIS_SCENARIO_FAMILY") or "natural_idle_to_6121a_v1"
+local variant_id = os.getenv("OASIS_VARIANT_ID") or "default"
 
 local scenario = {
     id = "env_input_probe",
@@ -73,8 +76,12 @@ local caller_by_pc = {}
 for _, caller in ipairs(static_callers) do caller_by_pc[caller.pc] = caller end
 local frame = 0
 local target_hit = false
+local stop_requested = false
 local target_frame = nil
 local target_sequence = nil
+local search_target_address = nil
+local search_target_frame = nil
+local search_target_sequence = nil
 local sequence = 0
 local previous_pc = nil
 local ring = {}
@@ -87,6 +94,11 @@ local target_hits = {}
 local caller_hits = {}
 local observed_target_hits = {}
 local previous_watched_event = nil
+local primary_search_callers = { [0x60B8C] = true, [0x60D4A] = true }
+local watch_targets = scenario.targets
+if search_mode then
+    watch_targets = { 0x60B8C, 0x60D4A, 0x6121A, 0x611EE }
+end
 
 local function hex(value)
     return string.format("0x%08X", (value or 0) & 0xFFFFFFFF)
@@ -149,7 +161,7 @@ end
 
 local function capture_watched(address, kind)
     local registers = snapshot()
-    local stack = stack_window(registers.a[8] or register("M68K SP") or 0, 0x10, 0x30)
+    local stack = stack_window(registers.a[8] or register("M68K SP") or 0, 0x20, 0x60)
     local event = { seq = sequence, frame = frame, pc = address, kind = kind, registers = registers, stack = stack }
     sequence = sequence + 1
     observed_events[#observed_events + 1] = event
@@ -183,13 +195,24 @@ event.on_bus_write(function(address, value, flags)
 end, "natural reach writes", "M68K BUS")
 
 event.onframeend(function()
-    if not target_hit then sample_pc(register("M68K PC") or 0) end
+    if not stop_requested then sample_pc(register("M68K PC") or 0) end
 end)
 
 local function caller_event(address)
     local event = capture_watched(address, "caller")
     caller_hits[#caller_hits + 1] = event
     previous_watched_event = event
+    if search_mode and primary_search_callers[address] and not stop_requested then
+        stop_requested = true
+        search_target_address = address
+        search_target_frame = frame
+        search_target_sequence = event.seq
+        target_frame = frame
+        target_sequence = event.seq
+        target_hit = true
+        entry = { pc = address, previous_pc = previous_pc, registers = event.registers, stack = event.stack }
+        trace_events = observed_events
+    end
 end
 
 local function target_event(address)
@@ -208,7 +231,8 @@ local function target_event(address)
         observed_target_hits[#observed_target_hits + 1] = event
     end
     previous_watched_event = event
-    if not target_hit and address == primary_target then
+    if not search_mode and not stop_requested and address == primary_target then
+        stop_requested = true
         target_hit = true
         target_frame = frame
         target_sequence = event.seq
@@ -222,12 +246,12 @@ for _, caller in ipairs(static_callers) do
     local watched_caller = caller.pc
     event.on_bus_exec(function() caller_event(watched_caller) end, watched_caller, "natural caller watch", "M68K BUS")
 end
-for _, target in ipairs(scenario.targets) do
+for _, target in ipairs(watch_targets) do
     local watched_target = target
     event.on_bus_exec(function() target_event(watched_target) end, watched_target, "natural target watch", "M68K BUS")
 end
 
-while frame < max_frames and not target_hit do
+while frame < max_frames and not stop_requested do
     joypad.set(button_map(scenario.inputs[frame]), 1)
     emu.frameadvance()
     frame = frame + 1
@@ -308,10 +332,10 @@ local function target_hit_json(value)
 end
 
 local targets = {}
-for _, target in ipairs(scenario.targets) do targets[#targets + 1] = json(hex(target)) end
+for _, target in ipairs(watch_targets) do targets[#targets + 1] = json(hex(target)) end
 local target_report = entry and ('{"pc":' .. json(hex(entry.pc)) .. ',"previous_observed_pc":' .. json(hex(entry.previous_pc)) .. ',"registers":' .. snapshot_json(entry.registers) .. ',"stack_window":' .. (entry.stack and ('{"start":' .. json(hex(entry.stack.start)) .. ',"bytes":' .. write_json_array(entry.stack.bytes, function(value) return json(string.format("0x%02X", value)) end) .. '}') or 'null') .. '}') or 'null'
 local hit_report = {}
-for _, target in ipairs(scenario.targets) do hit_report[#hit_report + 1] = '{"address":' .. json(hex(target)) .. ',"count":' .. (target_hits[target] or 0) .. '}' end
+for _, target in ipairs(watch_targets) do hit_report[#hit_report + 1] = '{"address":' .. json(hex(target)) .. ',"count":' .. (target_hits[target] or 0) .. '}' end
 local observed_report = {}
 for _, value in ipairs(observed_target_hits) do observed_report[#observed_report + 1] = target_hit_json(value) end
 local caller_report = {}
@@ -320,6 +344,9 @@ local relevant = nil
 for _, value in ipairs(observed_target_hits) do
     if value.caller then relevant = (value.caller.pc == 0x60B8C or value.caller.pc == 0x60D4A) and "yes" or "no"; break end
 end
-report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks_and_bounded_caller_hooks","frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(target_hit) .. ',"target_frame":' .. (target_frame or 'null') .. ',"target_sequence":' .. (target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. ',"caller_discrimination":{"static_bytes_verified":true,"static_callers":' .. static_callers_json() .. ',"caller_hits":[' .. table.concat(caller_report, ',') .. '],"observed_hits":[' .. table.concat(observed_report, ',') .. '],"relevant_to_existing_stack_blocker":' .. (relevant and json(relevant) or "null") .. ',"deterministic":true}}')
+local old_target_reached = not search_mode and target_hit
+local old_target_frame = not search_mode and target_frame or nil
+local old_target_sequence = not search_mode and target_sequence or nil
+report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"scenario_family":' .. json(scenario_family) .. ',"variant_id":' .. json(variant_id) .. ',"search_mode":' .. tostring(search_mode) .. ',"input_events":' .. json(input_override or "") .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks_and_bounded_caller_hooks","frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(old_target_reached) .. ',"target_frame":' .. (old_target_frame or 'null') .. ',"target_sequence":' .. (old_target_sequence or 'null') .. ',"search_target_reached":' .. tostring(search_target_address ~= nil) .. ',"search_target_address":' .. optional_hex(search_target_address) .. ',"search_target_frame":' .. (search_target_frame or 'null') .. ',"search_target_sequence":' .. (search_target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. ',"caller_discrimination":{"static_bytes_verified":true,"static_callers":' .. static_callers_json() .. ',"caller_hits":[' .. table.concat(caller_report, ',') .. '],"observed_hits":[' .. table.concat(observed_report, ',') .. '],"relevant_to_existing_stack_blocker":' .. (relevant and json(relevant) or "null") .. ',"deterministic":true}}')
 report:close()
 client.exitCode(0)

@@ -23,11 +23,13 @@ void require(bool condition, const char* message) {
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc != 4) {
-        std::cerr << "usage: oasis_re_natural_reference <USA ROM> <scenario> <natural report>\n";
+    if (argc != 4 && argc != 5) {
+        std::cerr << "usage: oasis_re_natural_reference <USA ROM> <scenario> <natural report> [caller-search]\n";
         return 2;
     }
     try {
+        const bool search_mode = argc == 5 && std::string(argv[4]) == "caller-search";
+        require(argc != 5 || search_mode, "unknown oracle mode");
         const auto rom = oasis::Rom::load(argv[1]);
         const auto identity = oasis::identify_rom(rom.bytes());
         require(identity.status == oasis::RomSupportStatus::Supported, "oracle requires supported USA ROM");
@@ -54,6 +56,36 @@ int main(int argc, char** argv) {
         const auto report = read_text(argv[3]);
         require(report.find("oasis.m68k.natural-reach.v1") != std::string::npos,
                 "natural report schema missing");
+        if (search_mode) {
+            require(report.find("\"scenario_family\":\"natural_reach_60b8c_60d4a_v1\"") != std::string::npos,
+                    "caller-search family missing");
+            require(report.find("\"variant_id\":\"start_pulse_120\"") != std::string::npos,
+                    "caller-search variant mismatch");
+            require(report.find("\"search_mode\":true,\"input_events\":\"120:Start\"") != std::string::npos,
+                    "caller-search input metadata mismatch");
+            require(report.find("\"search_target_reached\":true,\"search_target_address\":\"0x00060B8C\",\"search_target_frame\":423") != std::string::npos,
+                    "caller-search target mismatch");
+            require(report.find("\"frames_executed\":424") != std::string::npos,
+                    "caller-search frame horizon mismatch");
+            require(report.find("\"address\":\"0x00060B8C\",\"count\":3") != std::string::npos,
+                    "caller-search hit count mismatch");
+            require(report.find("\"address\":\"0x00060D4A\",\"count\":0") != std::string::npos,
+                    "unobserved caller count mismatch");
+            require(report.find("\"entry\":{\"pc\":\"0x00060B8C\"") != std::string::npos,
+                    "caller-search entry snapshot missing");
+            require(report.find("\"a\":[\"0x0006F8AE\",\"0x00000C00\",\"0x00FF316C\",\"0x00FF136C\",\"0x00000000\",\"0x00FF001A\",\"0x0003BDA6\",\"0x00FF0BA8\"]") != std::string::npos,
+                    "caller-search register snapshot mismatch");
+            require(report.find("\"stack_window\":{\"start\":\"0x00FF0B88\"") != std::string::npos,
+                    "caller-search stack window missing");
+            require(report.find("\"caller_pc\":\"0x00060B8C\"") != std::string::npos,
+                    "caller-search downstream pairing missing");
+            require(report.find("\"expected_return_address\":\"0x00060B90\",\"return_address_match\":true") != std::string::npos,
+                    "caller-search return-address evidence missing");
+            require(report.find("\"deterministic\":true") != std::string::npos,
+                    "caller-search determinism missing");
+            std::cout << "verified natural USA caller-search oracle for 0x60B8C\n";
+            return 0;
+        }
         require(report.find("\"target_reached\":true") != std::string::npos,
                 "natural target was not reached");
         require(report.find("\"target_frame\":113") != std::string::npos,
