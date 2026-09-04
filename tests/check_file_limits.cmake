@@ -1,4 +1,5 @@
-# Enforce the project's hard 500-line limit for source and documentation files.
+# Enforce the project's hard 500-line limit for executable/source-code files.
+# Prose/reference Markdown is intentionally exempt from the numeric limit.
 
 set(ROOT "${CMAKE_CURRENT_LIST_DIR}/..")
 set(MAX_LINES 500)
@@ -9,7 +10,9 @@ file(GLOB_RECURSE PROJECT_FILES
     "${ROOT}/*.h"
     "${ROOT}/*.c"
     "${ROOT}/*.cc"
-    "${ROOT}/*.md"
+    "${ROOT}/*.cxx"
+    "${ROOT}/*.hh"
+    "${ROOT}/*.hxx"
     "${ROOT}/*.cmake"
     "${ROOT}/CMakeLists.txt"
 )
@@ -35,7 +38,7 @@ foreach(path IN LISTS PROJECT_FILES)
 endforeach()
 
 if(violations)
-    message(FATAL_ERROR "Files exceed ${MAX_LINES}-line project limit:\n${violations}")
+    message(FATAL_ERROR "Source-code files exceed ${MAX_LINES}-line project limit:\n${violations}")
 endif()
 
-message(STATUS "File-size rule passed: all checked files are <= ${MAX_LINES} lines")
+message(STATUS "Source-code size rule passed: all checked files are <= ${MAX_LINES} lines; documentation is exempt")

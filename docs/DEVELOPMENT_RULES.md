@@ -1,9 +1,11 @@
 # Development Rules
 
 ## Source limits
-- Hard limit: **500 lines per file** for source and documentation files.
-- At ~400 lines, evaluate a split before adding another major responsibility.
-- Generated local files are not source and must not be committed.
+- Hard limit: **500 lines per file** for executable/source-code files, including C/C++ source and headers, tests, developer tooling, and build scripts such as CMake.
+- Documentation, project instructions, worklogs, ADRs, task/state files, and other prose/reference Markdown are exempt from the numeric line limit.
+- At ~400 lines in a source-code file, evaluate a split before adding another major responsibility.
+- Large documentation should remain structured with headings/indexes and may be split when navigation or responsibility improves, but not merely to satisfy a line count.
+- Generated local files are not source and must not be committed unless an explicit project rule says otherwise.
 
 ## C++ rules
 - Standard: C++20.

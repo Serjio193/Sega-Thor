@@ -8,7 +8,7 @@ Reimplement **Beyond Oasis / The Story of Thor** as a portable C++20 project usi
 ## Non-negotiable rules
 1. Do not change the project goal without an explicit architecture decision recorded in `docs/DECISIONS.md`.
 2. Do not add ROMs, extracted copyrighted assets, BIOS files, or commercial game data to the repository.
-3. Keep every source/document file at **500 lines or fewer**. Split before exceeding the limit.
+3. Keep executable/source-code files at **500 lines or fewer**. This includes C/C++ source and headers, tests, developer tooling, and build scripts such as CMake. Documentation, project instructions, worklogs, ADRs, task/state files, and other prose/reference Markdown are exempt from the numeric limit. Large documentation should remain well structured and may be split when navigation or responsibility improves, but must not be split merely to satisfy a line count.
 4. Prefer small modules with one responsibility.
 5. Do not implement unrelated features while the current roadmap milestone is unfinished.
 6. Every meaningful code change must have a corresponding entry in `docs/WORKLOG.md`.
@@ -21,7 +21,7 @@ Reimplement **Beyond Oasis / The Story of Thor** as a portable C++20 project usi
 13. Never silently invent unknown game behavior. Mark unknowns explicitly and gather evidence.
 14. Never replace reverse engineering with a full CPU emulator unless the decision is explicitly approved and documented.
 15. Keep commits focused. One conceptual task per commit whenever practical.
-16. Do not push an implementation commit until the locally available CI-equivalent validation is green. At minimum run the relevant Debug and Release builds/tests, `git diff --check`, the file-limit check, and a GNU/Linux-equivalent build or link check when the change affects CMake targets, static libraries, link order, portability, or toolchain-sensitive code. If the exact CI toolchain is unavailable locally, record that limitation before push and avoid claiming CI readiness.
+16. Do not push an implementation commit until the locally available CI-equivalent validation is green. At minimum run the relevant Debug and Release builds/tests, `git diff --check`, the source-code file-limit check, and a GNU/Linux-equivalent build or link check when the change affects CMake targets, static libraries, link order, portability, or toolchain-sensitive code. If the exact CI toolchain is unavailable locally, record that limitation before push and avoid claiming CI readiness.
 
 ## Required workflow for every task
 Before coding:
@@ -34,7 +34,7 @@ Before coding:
 
 During coding:
 1. Work only on the active task.
-2. Keep files below 500 lines.
+2. Keep files covered by the source-code size policy below 500 lines; documentation is exempt from the numeric limit.
 3. Add/update tests alongside translated logic.
 4. Record reverse-engineering discoveries immediately.
 5. Avoid speculative refactors unrelated to the active task.
@@ -42,7 +42,7 @@ During coding:
 After coding:
 1. Build the project in the relevant Debug and Release configurations.
 2. Run tests and CI-equivalent local validation, including GNU/Linux-equivalent linking when the change is toolchain-sensitive.
-3. Run `git diff --check` and the project file-limit check before push.
+3. Run `git diff --check` and the project source-code file-limit check before push.
 4. Update `docs/WORKLOG.md` with results, local-toolchain limitations and remaining unknowns.
 5. Update `docs/FILE_MAP.md` if structure changed.
 6. Update roadmap status if a milestone moved.
@@ -55,7 +55,7 @@ A task is not done merely because code compiles. It is done when:
 - behavior is tested or explicitly marked unverified;
 - documentation is updated;
 - architecture/file map remains accurate;
-- no file exceeds 500 lines;
+- no executable/source-code file covered by the size policy exceeds 500 lines;
 - no copyrighted ROM/assets were committed;
 - next step is clearly stated.
 
