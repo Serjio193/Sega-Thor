@@ -119,7 +119,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_emulator_trace.cpp Capture parser, normalization and Atlas comparison
 │       ├── re_emulator_trace_format.cpp Deterministic emulator-trace JSON/text formatting
 │       ├── re_emulator_trace_report.cpp External capture import CLI; no emulator backend
+│       ├── re_scenario.hpp              Frozen natural emulator-scenario data/API
+│       ├── re_scenario.cpp              Frozen natural emulator-scenario parser/JSON
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
+│       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target probe
+│       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
 │       ├── re_mame_boot_trace.cmd Developer-only MAME fixed-instruction debugger trace
 │       ├── re_mame_writer_probe.cmd Developer-only MAME RAM writer watchpoint probe
 │       └── re_mame_trace_normalize.ps1 Normalize MAME/BizHawk raw events to neutral trace
@@ -158,6 +162,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_caller_stack_test.cpp              Synthetic bounded caller-stack tests
     ├── re_caller_stack_reference.cpp         Local USA-ROM caller-stack oracle
     ├── re_emulator_trace_test.cpp            Synthetic external capture/import tests
+    ├── re_scenario_test.cpp                  Synthetic scenario parser/serialization tests
+    ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests

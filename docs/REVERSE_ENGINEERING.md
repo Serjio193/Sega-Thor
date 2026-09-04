@@ -1,5 +1,49 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+## M11.5 — bounded natural reachability of 0x6121A
+**Status:** VERIFIED bounded runtime evidence, developer-only. No emulator,
+ROM, savestate or generated trace is part of the repository.
+
+The frozen scenario `src/tools/re_bizhawk_natural_scenario.txt` uses schema
+`oasis.m68k.emulator-scenario.v1`, ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, backend
+BizHawk 2.11.1, `start_state=hardware_reset`, neutral controller state and
+`stop_condition=max_frames:300`. The Lua probe uses real frame advancement and
+target execution hooks only; it does not force PC/register/memory state or
+patch the ROM.
+
+Two independent runs reached primary target `0x6121A` at frame 113 after 114
+frame advances. The exact target hook fired twice. The first-hit entry snapshot
+is raw evidence only: PC `0x0006121A`, SR `0x00002714`, D0-D7
+`FFFF,7FF0FFFF,FFFF,0,940F0A8C,60000083,0,40`, A0-A7
+`00FF06F2,00FF0BFC,00000000,00FF13CC,00C00004,00FF001A,00000000,00FF0BE2`,
+and stack window `[0x00FF0BC2,0x00FF0C22)`. No semantic role is assigned to
+any register or stack value. The two natural JSON reports and normalized
+human-readable trace imports are byte-identical.
+
+Watched secondary addresses `0x60B8C`, `0x60D4A`, `0x60BCC`, `0x60BD0`,
+`0x60BFA` and `0x60C08` were not observed in this finite scenario. Static raw
+inspection confirms three direct call-sites to the primary target:
+
+| call-site | bytes | displacement | target |
+|---|---|---:|---|
+| `0x60B8C` | `61 00 06 8C` | `+0x068C` | `0x6121A` |
+| `0x60D4A` | `61 00 04 CE` | `+0x04CE` | `0x6121A` |
+| `0x611EE` | `61 00 00 2A` | `+0x002A` | `0x6121A` |
+
+The dynamic target callback does not expose the immediately preceding CPU
+instruction. `previous_observed_pc=0x6135E` is only the last frame-boundary
+sample and is explicitly not caller evidence. Exact transfer source, caller
+selection, return state and stack provenance therefore remain UNKNOWN. The
+normalized imported trace contains 114 bounded events, 113 frame-boundary PC
+samples plus the exact target event(s), and no inferred branch/call/memory edge.
+MAME writer provenance was not repeated because the BizHawk target reach was
+already reproducible and a second backend would not expose the missing
+preceding instruction without expanding scope.
+
+This result proves deterministic natural reachability of the raw target only;
+it does not prove routine semantics or resolve any static unresolved reference.
+
 ## M11.5 — external emulator boot-trace oracle PoC
 **Status:** VERIFIED with real local backends, bounded to `boot_initial` and
 developer-only. No emulator binary/source or ROM is part of the repository,

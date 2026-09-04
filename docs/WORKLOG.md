@@ -2,6 +2,41 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded natural reachability scenario completed
+TASK/SCOPE: determine whether natural reset-to-input execution can reach raw
+target `0x6121A` using only the existing BizHawk adapter and finite real
+controller input. No forced PC/register/memory state, ROM patch, autoplay,
+production runtime, emulator dependency, call-clobber analysis or M12 work was
+added.
+IMPLEMENTATION: added the bounded developer-only
+`oasis.m68k.emulator-scenario.v1` parser/JSON model, frozen scenario
+`natural_idle_to_6121a_v1`, exact target hooks and the natural report path in
+`re_bizhawk_natural_reach.lua`. Added synthetic parser/serialization tests and
+the local USA oracle `oasis_re_natural_reference`.
+PROVEN: with the canonical USA ROM (SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`), BizHawk
+2.11.1 from hardware reset with neutral input reached `0x6121A` at frame 113;
+114 frames executed and the exact hook counted two hits. Entry PC is
+`0x6121A`, A7 is `0x00FF0BE2`, and the captured stack window starts at
+`0x00FF0BC2`. Two fresh runs produced byte-identical JSON and normalized
+trace/report output. Static USA bytes also confirm direct callers
+`0x60B8C`, `0x60D4A` and `0x611EE` to `0x6121A`.
+UNKNOWN/LIMITATIONS: the probe samples PC at frame boundaries and exact target
+hooks, so the immediately preceding instruction, dynamic caller, return state
+and stack provenance are unknown; `0x6135E` is not treated as caller evidence.
+The six secondary watched addresses were not reached. MAME writer provenance
+was not repeated because it would not resolve this missing predecessor within
+the bounded scope. Current bounded reachability confidence is 95%; no semantic
+claim follows from the snapshot.
+TESTS: Debug CTest 27/27 passed; Release CTest 27/27 passed; GNU/MinGW
+equivalent CTest 27/27 passed; local USA natural oracle passed against the
+canonical ROM and report; natural A/B JSON, trace and imported JSON hashes are
+equal; `git diff --check` and file-limit passed. The normalized report records
+114 events, 22 unique PCs, 0 inferred blocks and 0 inferred branch/call/return/
+memory events, as required by its bounded coverage mode.
+NEXT: commit this focused checkpoint, push after the AGENTS pre-push gate is
+green, verify GitHub CI, record its result, push the documentation-only CI
+update, then STOP and await explicit work.
 ## 2026-09-04 — M11.5 real external emulator bake-off completed
 OBJECTIVE/SCOPE: run only the canonical USA ROM through the user-installed
 MAME and BizHawk backends, obtain a bounded deterministic `boot_initial` trace,

@@ -1,12 +1,30 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 external emulator boot-trace oracle PoC
+CURRENT_TASK: M11.5 bounded natural reachability scenario for 0x6121A
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: real MAME 0.289 and BizHawk 2.11.1 boot_initial captures imported through oasis.m68k.emulator-trace.v1; BizHawk primary, MAME secondary
+LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario reached 0x6121A at frame 113 with identical A/B reports
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: common trace normalization does not yet classify instruction-level branches/calls/returns or reads; save-state APIs and deeper target reachability remain untested
+BLOCKERS: exact pre-target instruction/caller and stack provenance are not exposed by the bounded target hook; secondary watched targets were not reached
+
+## M11.5 bounded natural reachability scenario
+- Added developer-only `oasis.m68k.emulator-scenario.v1` parsing/serialization and
+  a frozen neutral-input BizHawk scenario. It starts from hardware reset, uses
+  no forced CPU state or ROM patch, watches `0x6121A` plus the six related
+  addresses, and stops at `max_frames:300`.
+- BizHawk 2.11.1 reached `0x6121A` at frame 113 after 114 frame advances; the
+  exact target hook fired twice. Entry PC is `0x6121A`, A7 is `0x00FF0BE2`,
+  stack window starts at `0x00FF0BC2`, and D0-D7/A0-A7/SR are captured. All
+  secondary watched targets were zero in this scenario.
+- Two fresh runs produced byte-identical natural JSON and normalized trace
+  reports. Coverage is intentionally bounded to frame-boundary PC samples plus
+  exact target hooks, so the source instruction is UNKNOWN. Static raw evidence
+  separately confirms direct call-sites `0x60B8C`, `0x60D4A` and `0x611EE` to
+  `0x6121A`; dynamic caller selection is not claimed.
+- Local USA oracle checks the ROM fingerprint, exact call-site bytes, frozen
+  scenario and observed target/frame/register/stack facts. No emulator or ROM
+  is tracked; no roadmap milestone changed.
 
 ## M11.5 external emulator boot-trace oracle
 - Added developer-only `oasis.m68k.emulator-trace.v1` importer/normalizer;

@@ -1,65 +1,59 @@
 # Current Task
 
-TASK: M11.5 external emulator boot-trace oracle PoC
-WHY: determine whether an existing external Mega Drive emulator can produce
-reproducible reset-to-boot evidence without becoming a project dependency.
+TASK: M11.5 bounded natural reachability scenario for 0x6121A
+WHY: determine whether a real hardware-reset execution can reach the primary
+static target with a finite, reproducible controller scenario.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 96%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 95% for bounded reachability evidence;
+exact source instruction and callee state remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: real MAME 0.289 and BizHawk 2.11.1 `boot_initial` captures imported through `oasis.m68k.emulator-trace.v1`; BizHawk is primary and MAME secondary
-NEXT_ACTION: stop at this checkpoint; use the normalized boot evidence only in a future explicitly requested bounded RE task
-BLOCKERS: adapters do not yet normalize instruction-level branch/call/return or memory-read events; save-state APIs and full target reachability remain untested
+LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 hardware-reset scenario reaches `0x6121A` at frame 113 (114 frames executed), with two exact target-hook hits and identical A/B reports
+NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
+BLOCKERS: the exact instruction before `0x6121A` is not observable from the target hook; frame-boundary PC `0x6135E` is not caller evidence; `0x60B8C`, `0x60D4A`, `0x60BCC`, `0x60BD0`, `0x60BFA` and `0x60C08` were not observed in this scenario
 
-## External adapter result
+## Natural reachability result
 
-The developer-only adapter is separate from `oasis_core`. It accepts an
-external normalized capture, records ROM/emulator/backend metadata, `boot_initial`
-limits, PC/events, optional D0-D7/A0-A7/SR snapshots, direct call edges,
-branch/call/return/memory/indirect counts, safely observed blocks and ranges,
-static reset vectors, and Atlas-known versus Atlas-unknown PCs. Its schema is
-`oasis.m68k.emulator-trace.v1`; control-flow targets are separately split into
-Atlas-known and Atlas-unknown sets. Frame/cycle fields are retained as
-non-deterministic metadata and excluded from `trace_hash`; optional register
-snapshots participate in the deterministic hash.
+The frozen scenario is `src/tools/re_bizhawk_natural_scenario.txt` with schema
+`oasis.m68k.emulator-scenario.v1`, canonical USA SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, backend
+`bizhawk-lua-natural-input`, `start_state=hardware_reset`, no input events and
+`max_frames:300`. The developer-only Lua probe uses only real frame input and
+exact target execution hooks; it never writes ROM, registers or memory.
 
-The local bake-off verified `D:\Program Files\Mame\mame.exe` version `0.289`
-and `D:\Program Files\BizHawk-2.11.1-win-x64\EmuHawk.exe` version `2.11.1`
-against the ignored canonical USA ROM. BizHawk's Lua bus hooks produced 512
-instruction events plus 128 writes; MAME's debugger trace produced 512
-instruction events and a separate RAM watchpoint caught a real writer at
-`0x0000026A` for address `0x00FFFFFE`. BizHawk replay hashes matched
-`0x5CCA6906FAA6A219`; MAME replay hashes matched
-`0xC2B1C053D1E43D76`. BizHawk is primary because its event hook supplies
-direct executed-PC/register/write records; MAME is secondary because its
-debugger trace requires PC normalization and its memory probe is separate.
-Both runs began observing after reset setup (`0x26C` and `0x214`, versus reset
-PC `0x20E`), so hidden bootstrap transitions are recorded, not inferred.
-`0x6121A`, `0x60B8C` and `0x60D4A` were not observed. No emulator source,
-binary, ROM or generated trace was added to the repository.
+Two independent runs reached primary target `0x6121A` at frame 113, after 114
+frame advances, with target-hook count 2. The entry snapshot is PC
+`0x0006121A`, A7 `0x00FF0BE2`, and stack window start `0x00FF0BC2`; D0-D7,
+A0-A7 and SR are recorded in the ignored natural report. A/B natural reports
+and normalized imported traces are byte-identical. Secondary target counts are
+zero. The trace coverage is explicitly
+`frame_boundary_samples_plus_exact_target_hooks`, not a full instruction trace.
+
+Static bounded evidence independently confirms direct call-sites
+`0x60B8C -> 0x6121A`, `0x60D4A -> 0x6121A` and `0x611EE -> 0x6121A`; the
+natural run does not identify which one led to the observed target hit.
+Previous frame-boundary PC `0x6135E` is retained only as sampled context.
 
 ## Acceptance criteria
 
-- [x] external capture parser rejects malformed input and normalizes event order;
-- [x] deterministic JSON/text report, hash, coverage, calls, branches,
-  indirect targets, reset-vector comparison and Atlas split are implemented;
-- [x] synthetic adapter tests pass without ROM or emulator;
-- [x] adapter remains outside `oasis_core`, with no emulator dependency;
-- [x] real `boot_initial` execution, normalized replay comparison, register
-  capture and RAM writer/watchpoint capability were verified with installed
-  external backends;
-- [ ] reset PC is not the first observed callback PC, target routines were not
-  reached in this 512-instruction window, and branch/call/read event adapters
-  remain unimplemented.
+- [x] deterministic `oasis.m68k.emulator-scenario.v1` parser/JSON and malformed-input tests;
+- [x] hardware-reset natural scenario with finite horizon and real neutral input;
+- [x] primary target reached and full entry register/A7/stack snapshot captured;
+- [x] two-run replay equality and local USA-ROM scenario oracle;
+- [x] natural probe remains developer-only and separate from `oasis_core`;
+- [x] normalized human-readable import report generated from the captured trace;
+- [ ] exact transfer caller and stack provenance remain unresolved because target
+  hooks do not expose the preceding instruction; watched secondary targets were
+  not reached.
 
 ## Hard boundaries and exact next action
 
 No emulator, copied emulator source, production runtime dependency, whole-game
 trace, autoplay, semantic Atlas changes, call-clobber resolution or M12 work
-was added. STOP at this verified bake-off; do not begin another tracing or
-analysis scope without explicit instruction.
+was added. STOP at this verified natural reachability result; do not begin
+dynamic tracing expansion or another analysis scope without explicit instruction.
 
 ## Previous caller-stack checkpoint
 

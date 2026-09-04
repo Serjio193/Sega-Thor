@@ -1,0 +1,13 @@
+oasis.m68k.emulator-scenario.v1
+scenario_id=natural_idle_to_6121a_v1
+rom_sha256=eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263
+backend=bizhawk-lua-natural-input
+start_state=hardware_reset
+stop_condition=max_frames:300
+target_address=0x6121A
+target_address=0x60B8C
+target_address=0x60D4A
+target_address=0x60BCC
+target_address=0x60BD0
+target_address=0x60BFA
+target_address=0x60C08

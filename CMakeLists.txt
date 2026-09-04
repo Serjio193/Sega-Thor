@@ -58,6 +58,7 @@ add_library(oasis_re_tooling
     src/tools/re_caller_stack_format.cpp
     src/tools/re_emulator_trace.cpp
     src/tools/re_emulator_trace_format.cpp
+    src/tools/re_scenario.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -199,6 +200,10 @@ add_executable(oasis_re_emulator_trace_test tests/re_emulator_trace_test.cpp)
 target_link_libraries(oasis_re_emulator_trace_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_emulator_trace COMMAND oasis_re_emulator_trace_test)
 
+add_executable(oasis_re_scenario_test tests/re_scenario_test.cpp)
+target_link_libraries(oasis_re_scenario_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_scenario COMMAND oasis_re_scenario_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -248,6 +253,9 @@ target_link_libraries(oasis_re_callee_effect_reference PRIVATE oasis_re_tooling 
 add_executable(oasis_re_caller_stack_reference tests/re_caller_stack_reference.cpp)
 target_link_libraries(oasis_re_caller_stack_reference PRIVATE oasis_re_tooling oasis_core)
 
+add_executable(oasis_re_natural_reference tests/re_natural_reference.cpp)
+target_link_libraries(oasis_re_natural_reference PRIVATE oasis_core)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -275,6 +283,7 @@ set(oasis_test_targets
     oasis_re_callee_effect_test
     oasis_re_caller_stack_test
     oasis_re_emulator_trace_test
+    oasis_re_scenario_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
