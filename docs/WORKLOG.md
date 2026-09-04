@@ -3,6 +3,47 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC availability gate — BLOCKED
+TASK: determine whether a local Ghidra M68000 analyzer is available for the
+bounded discovery-layer experiment described by the user.
+WHY: the checkpoint requires measuring Ghidra's own conservative auto-analysis
+of the canonical USA ROM; it explicitly forbids replacing Ghidra with a new
+whole-ROM scanner or installing it through CI.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling.
+MILESTONE UNDERSTANDING CONFIDENCE: 95%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 100% for the availability gate; no
+analysis confidence is claimed because Ghidra was unavailable.
+ACCEPTANCE: check local GUI/headless availability and version without fetching
+unofficial software; if available, create an ignored local project, verify the
+USA fingerprint, run one conservative baseline and export the required
+structured map; if unavailable, document the blocker and stop.
+ACTIONS: synchronized with `git fetch`; verified clean `main` and
+`origin/main` at `5aeb338c8d8be86f1de0178815abdfd00e6db890`; reviewed the
+required project governance, architecture, roadmap, evidence and toolchain
+guidance documents. Checked PATH, environment variables, `where.exe`, common
+Ghidra roots, Program Files roots and user Downloads/Desktop/Documents for
+`ghidraRun.bat` and `analyzeHeadless.bat`.
+EVIDENCE: no matching executable or installation was found. Consequently
+Ghidra version, local path, headless availability, processor/language setup,
+ROM import, export schema/path, function counts, benchmarks and decision A/B/C
+are UNKNOWN and were not fabricated.
+RESULT: BLOCKED exactly at the required availability gate. No production C++,
+oasis_re replacement scanner, ROM, emulator, Ghidra project/database or
+generated report was added. `TASK.md` and `PROJECT_STATE.md` now record the
+blocked checkpoint and exact restart condition; `docs/FILE_MAP.md` and
+`docs/REVERSE_ENGINEERING.md` are unchanged because no repository structure or
+ROM fact changed.
+TESTS/VALIDATION: documentation-only checkpoint; no code/build behavior
+changed. Existing Debug, Release and GNU/MinGW-equivalent build directories
+rebuilt and full CTest passed 27/27 in each configuration. The project
+file-limit test passed, `git diff --check` passed, and `git ls-files` found no
+tracked ROM, archive, savestate, Ghidra project or decompiler/disassembly dump.
+Full Ghidra benchmark and Ghidra-dependent validation are not run because the
+required tool is absent.
+UNKNOWN/NEXT: provide a provenance-appropriate local Ghidra distribution with
+Motorola 68000 big-endian support and `analyzeHeadless.bat`, then restart this
+exact bounded task. Do not begin M12 or implement a replacement scanner.
+
 ## 2026-09-04 — M11.5 bounded downstream runtime resolution CI follow-up
 RESULT: GitHub Actions CI run `33878595233` (`#326`) for implementation
 commit `2351545f74b68fb26e7ea6b146e6bd3467a8f3af` completed successfully.

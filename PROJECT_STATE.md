@@ -1,18 +1,19 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded downstream runtime resolution for 0x60BFA/0x60C08
-STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen start_pulse_120 reaches both targets at frame 423;
-actual target A0 values are 0x0006F8B0 and 0x0006F8B2, resolving ROM effective
-addresses 0x0006F8B1/0x0006F8B3 with raw bytes 0x13/0x00. A0 differs from the
-earlier post-MOVEA value 0x0006F8AE, so no old-value invariance is claimed.
-Fresh A/B JSON SHA-256 CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91
-matched.
-NEXT_ACTION: STOP at this bounded M11.5 checkpoint; await an explicit new task
-DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: BizHawk concrete bus-write callbacks do not expose writer width;
-semantic role and cross-scenario A0 invariance remain unknown
+CURRENT_TASK: M11.5 Ghidra ROM Mapping PoC availability gate
+STATUS: BLOCKED
+LAST_VERIFIED_RESULT: local `main == origin/main` at
+5aeb338c8d8be86f1de0178815abdfd00e6db890; required Ghidra GUI and headless
+executables were not found in PATH, environment variables, or checked local
+installation roots. No ROM was imported and no Ghidra project was created.
+NEXT_ACTION: provide a provenance-appropriate local Ghidra installation with
+Motorola 68000 big-endian support and `analyzeHeadless.bat`, then restart this
+availability-gated checkpoint.
+DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative
+dialogue or event semantics, replacement whole-ROM scanner
+BLOCKERS: Ghidra is not installed locally; the checkpoint forbids unofficial
+downloads and CI-based installation
 
 ## M11.5 bounded downstream runtime resolution
 - Static USA bytes/decode were independently rechecked: `0x60BFA` is

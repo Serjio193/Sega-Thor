@@ -1,15 +1,47 @@
 # Current Task
 
-TASK: M11.5 bounded downstream runtime resolution for 0x60BFA/0x60C08
-WHY: capture concrete runtime evidence for the already reached stack value at
-the bounded 0x60BCC / 0x60BD0 sequence without inferring semantics.
-CURRENT MILESTONE: M11.5 follow-up under M11
+TASK: M11.5 Ghidra ROM Mapping PoC availability gate
+WHY: measure whether a locally available Ghidra M68000 analyzer can provide a
+wide structural discovery layer over the canonical USA ROM, with oasis_re and
+runtime captures remaining the verification authority.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 98% for the observed target decode,
-register-derived effective addresses and raw bytes; cross-scenario invariance
-and writer callback width remain unknown
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 100% for the availability check; 0%
+for Ghidra analysis results because the required tool is not installed
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: COMPLETE_WITH_LIMITATIONS
+STATUS: BLOCKED
+
+## Current task — availability gate
+
+Acceptance criteria:
+- [x] baseline synchronized: local `main == origin/main` at
+  `5aeb338c8d8be86f1de0178815abdfd00e6db890`;
+- [x] required project governance and evidence documents reviewed;
+- [x] local Ghidra GUI and headless availability checked without downloading
+  an unofficial build or installing through CI;
+- [ ] canonical USA ROM import and fingerprint verification;
+- [ ] conservative baseline auto-analysis and deterministic map export;
+- [ ] known-entry, call-edge, data-table and indirect-flow benchmarks;
+- [ ] bounded false-positive sample and evidence-based A/B/C decision;
+- [ ] Ghidra export parser/tests and local Debug/Release/GNU validation, if
+  reusable repository code is added.
+
+Availability check: no `ghidraRun.bat`, `analyzeHeadless.bat`, `ghidraRun` or
+`analyzeHeadless` executable was found in PATH, environment variables, or the
+checked local roots `C:\\Ghidra`, `D:\\Ghidra`, `C:\\Tools\\ghidra`,
+`D:\\Tools\\ghidra`, `C:\\Program Files`, `C:\\Program Files (x86)`,
+`D:\\Program Files`, and the user's Downloads/Desktop/Documents directories.
+No version, install path, headless runner, or processor/language configuration
+is therefore available to report.
+
+Blocker: Ghidra is not locally available. The checkpoint explicitly prohibits
+writing a replacement whole-ROM scanner and using CI to install Ghidra.
+ROM import, analysis, export, benchmark, precision sample and final Ghidra
+decision are not performed.
+
+Exact next action: install or provide a provenance-appropriate local Ghidra
+distribution with Motorola 68000 big-endian support and `analyzeHeadless.bat`,
+then restart this exact availability-gated checkpoint. Do not begin M12.
 
 LAST_VERIFIED_RESULT: the frozen scenario reaches `0x60BFA` and `0x60C08` at
 frame 423. Actual A0 is `0x0006F8B0` / `0x0006F8B2`, so the byte reads resolve
