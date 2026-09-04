@@ -123,6 +123,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_emulator_trace_report.cpp External capture import CLI; no emulator backend
 │       ├── re_scenario.hpp              Frozen natural emulator-scenario data/API
 │       ├── re_scenario.cpp              Frozen natural emulator-scenario parser/JSON
+│       ├── re_candidate_map.hpp         Ghidra/Atlas normalized candidate model/API
+│       ├── re_candidate_map.cpp         Conservative evidence merge/classification/ranking
+│       ├── re_candidate_map_parse.cpp   Strict parser for the external Ghidra JSON schema
+│       ├── re_candidate_map_format.cpp  Deterministic candidate JSON/top-report formatting
+│       ├── re_candidate_map_report.cpp  Local-only Ghidra-to-Atlas candidate CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
@@ -166,6 +171,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_caller_stack_reference.cpp         Local USA-ROM caller-stack oracle
     ├── re_emulator_trace_test.cpp            Synthetic external capture/import tests
     ├── re_scenario_test.cpp                  Synthetic scenario parser/serialization tests
+    ├── re_candidate_map_test.cpp              Synthetic Ghidra/Atlas merge/ranking tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests

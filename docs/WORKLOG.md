@@ -3,6 +3,59 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 Ghidra-to-Atlas candidate integration completed
+TASK: normalize the deterministic external Ghidra map, merge it with the
+existing ROM Atlas and reuse already recorded static, dynamic and beta
+evidence to produce a conservative ranked candidate set. No new ROM-wide
+scanner, emulator trace, production C++ or gameplay behavior is in scope.
+WHY: make Ghidra's wide structural discovery useful for selecting the next
+bounded reverse-engineering target without promoting Ghidra hypotheses to
+project truth.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling.
+MILESTONE UNDERSTANDING CONFIDENCE: 95%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 94% for the normalized merge,
+classification and deterministic scoring contract; semantic confidence is not
+claimed for Ghidra-only records.
+SLICE CONFIDENCE EVIDENCE: the external Ghidra export is deterministic and
+schema-validated; Atlas exposes existing static/beta/dynamic evidence; the
+project ledger fixes the 11-entry benchmark and natural BizHawk observations.
+ACCEPTANCE: parse the prior export with malformed-input rejection; merge
+duplicate/function/candidate records deterministically; preserve all existing
+confirmed benchmark entries; classify each normalized entry as CONFIRMED,
+STATIC_SUPPORTED, DYNAMIC_OBSERVED, GHIDRA_ONLY or CONFLICT; apply a documented
+explainable score with address tie-breaking; emit full JSON and top-20 text;
+cover merge priority, conflicts, overlays, ranking and serialization with
+synthetic CI-safe tests; repeat the real report and compare hashes.
+EVIDENCE AVAILABLE: external v3 Ghidra JSON, current Atlas and bounded Beta
+comparison, existing Atlas dynamic A6A4 scenario, and documented BizHawk
+natural caller observations at 0x60B8C/0x611EE/0x6121A.
+KNOWN UNKNOWNS: Ghidra boundary quality, indirect-flow target recovery,
+unobserved runtime callers and all routine semantics remain unknown.
+IMPLEMENTATION: added developer-only `oasis_re_candidate_map` with strict
+Ghidra JSON parsing, duplicate merge, conservative classification, explainable
+ranking and full/top-report serialization. Added synthetic tests and registered
+the tooling in CMake; no production target or gameplay code changed.
+RESULT: the real USA/Beta merge produced 534 unique entries: 11 CONFIRMED, 39
+STATIC_SUPPORTED, 0 DYNAMIC_OBSERVED, 483 GHIDRA_ONLY and 1 CONFLICT. Complexity
+counts are LEAF 234, SHALLOW 172, COMPLEX 90 and UNKNOWN 38. Existing dynamic
+facts remain flags when stronger static/project evidence determines the class.
+The highest-ranked new bounded Ghidra function is `0x611EA` with shallow
+structure, existing static support and no recorded conflict.
+DETERMINISM: candidate JSON SHA-256
+`5C17F6A735DC715B18CD5A5E8FA34F876CAD5CEB5D4511C80547E2C8720A22AC` and human
+report SHA-256
+`9E5A5884FE05B816C0265535529E79E2C336FBB4CE176D60AF57F522DAFD9C84` matched
+between fresh runs A/B. External Ghidra v3 input SHA-256 is
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`.
+TESTS/VALIDATION: clean Debug, Release and GNU/MinGW-equivalent builds and
+full CTest passed 28/28 in each configuration; parser/merge tests passed;
+JSON was parsed independently; file-limit, `git diff --check` and tracked
+sensitive-artifact checks passed. No ROM, Ghidra project, emulator, savestate
+or raw trace was added.
+UNKNOWN/NEXT: Ghidra boundary correctness, indirect targets, unobserved
+callers and semantics remain UNKNOWN. STOP at this bounded checkpoint; the
+next task may inspect `0x611EA` but must not begin it here.
+
 ## 2026-09-04 — M11.5 Ghidra ROM Mapping PoC — COMPLETE WITH FIXUPS DECISION
 TASK: run the bounded Ghidra mapping PoC against the supplied canonical USA
 ROM and make exactly one A/B/C usefulness decision. Production C++ and M12

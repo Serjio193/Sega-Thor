@@ -1,6 +1,50 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.5 — Ghidra-to-Atlas candidate integration
+**Status:** VERIFIED as developer-only prioritization tooling. Ghidra discovery
+remains candidate evidence; no new entry is promoted to project truth.
+
+The normalized model is `oasis.m68k.re-candidate-map.v1`. It consumes the
+deterministic external Ghidra v3 export (schema
+`oasis.m68k.ghidra-map.v1`, 496 functions and 438 candidates, export SHA-256
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`) and
+merges it with the existing Atlas, bounded static call/reference evidence,
+the already-recorded Beta correspondence and documented BizHawk observations.
+No new broad trace or whole-ROM scanner was run.
+
+Merge behavior is conservative and deterministic. Function and candidate
+records with the same entry are merged; Atlas entries and known static/dynamic
+addresses are retained even when Ghidra missed them. The classification
+priority is: existing confirmed project evidence -> `CONFIRMED`; code/data or
+boundary disagreement -> `CONFLICT` (except a known confirmed entry retains
+`CONFIRMED` with boundary conflict metadata); independent static support ->
+`STATIC_SUPPORTED`; runtime-only observation -> `DYNAMIC_OBSERVED`; otherwise
+`GHIDRA_ONLY`. Dynamic flags remain visible when stronger evidence selects a
+different classification. A Ghidra range containing a known table start is a
+code/data conflict; unknown table extents are not invented.
+
+The score is explainable: dynamic +40, known direct target +20, known direct
+caller/call-site +10, Beta exact/structural/changed +10/+8/+4, LEAF/SHALLOW/
+COMPLEX +10/+6/-8, no observed indirect flow +4, exact Atlas entry +5,
+boundary/code-data conflict -50 and Ghidra-only without xrefs -5. Ties sort by
+ascending address. This is prioritization only, not confidence.
+
+The real USA/Beta merge produced 534 unique entries: 11 `CONFIRMED`, 39
+`STATIC_SUPPORTED`, 0 `DYNAMIC_OBSERVED`, 483 `GHIDRA_ONLY` and 1 `CONFLICT`.
+Complexity counts are LEAF 234, SHALLOW 172, COMPLEX 90 and UNKNOWN 38.
+The top-10 non-confirmed audit retained the existing runtime call-site facts
+and identified `0x611EA` as the highest-ranked new bounded Ghidra function with
+static support and no recorded conflict. This is the recommended next target,
+not work started by this checkpoint.
+
+Two fresh runs were byte-identical: normalized JSON SHA-256
+`5C17F6A735DC715B18CD5A5E8FA34F876CAD5CEB5D4511C80547E2C8720A22AC` and
+human report SHA-256
+`9E5A5884FE05B816C0265535529E79E2C336FBB4CE176D60AF57F522DAFD9C84`.
+Remaining unknowns are Ghidra boundary correctness, indirect target recovery,
+unobserved callers and routine semantics.
+
 ## M11.5 — bounded downstream runtime resolution at `0x60BFA` / `0x60C08`
 **Status:** VERIFIED as scenario-only runtime evidence, developer-only. Static
 global unresolved status is unchanged and no semantic field names are assigned.

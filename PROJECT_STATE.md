@@ -1,16 +1,18 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 Ghidra ROM Mapping PoC availability gate
-STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: canonical USA ROM size and SHA-256 matched the required
-fingerprint. Official Ghidra 12.1.3 with Temurin JDK 21.0.12.1+1 imported the
-raw binary at `0x000000` using `68000:BE:32:default`; two independent
-headless runs exported identical 390972-byte JSON maps. Benchmark: 7/11 exact
-entry matches, 9/11 code presence, 4/6 required call edges; data and indirect
-flow checks are recorded in the RE ledger. Decision:
-`GHIDRA_USEFUL_WITH_PROJECT_FIXUPS`.
-NEXT_ACTION: STOP at the bounded M11.5 checkpoint; await an explicit new task.
+CURRENT_TASK: M11.5 Ghidra-to-Atlas Candidate Integration PoC
+STATUS: COMPLETE
+LAST_VERIFIED_RESULT: developer-only `oasis_re_candidate_map` normalized the
+external deterministic Ghidra v3 map and merged existing Atlas, static, beta
+and documented dynamic evidence. Real result: 534 unique entries, 11
+CONFIRMED, 39 STATIC_SUPPORTED, 0 DYNAMIC_OBSERVED, 483 GHIDRA_ONLY and 1
+CONFLICT; complexity LEAF 234, SHALLOW 172, COMPLEX 90, UNKNOWN 38. Full JSON
+and top report are byte-identical across two runs. Recommended next bounded
+target is `0x611EA`: shallow Ghidra structure plus existing static support and
+no recorded conflict.
+NEXT_ACTION: STOP at the bounded candidate-ranking checkpoint; await an
+explicit new task before inspecting `0x611EA`.
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative
 dialogue or event semantics, replacement whole-ROM scanner
 BLOCKERS: Ghidra does not provide complete function-boundary recovery or an

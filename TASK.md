@@ -1,18 +1,60 @@
 # Current Task
 
-TASK: M11.5 Ghidra ROM Mapping PoC availability gate
-WHY: measure whether a locally available Ghidra M68000 analyzer can provide a
-wide structural discovery layer over the canonical USA ROM, with oasis_re and
-runtime captures remaining the verification authority.
+TASK: M11.5 Ghidra-to-Atlas Candidate Integration PoC
+WHY: connect deterministic Ghidra wide-discovery output to the existing ROM
+Atlas and evidence overlays without promoting Ghidra hypotheses to project
+truth.
 CURRENT MILESTONE: M11.5 post-M11 evidence tooling
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 100% for the bounded baseline and
-benchmark measurements; semantic confidence remains intentionally limited
-to Ghidra candidate evidence
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the bounded normalized merge,
+classification and deterministic ranking; semantic confidence remains
+intentionally limited to independent project evidence.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: COMPLETE_WITH_LIMITATIONS
+STATUS: COMPLETE
 
-## Current task — availability gate
+## Current task — candidate integration
+
+Acceptance criteria:
+- [x] parse the prior deterministic Ghidra export and reject malformed input;
+- [x] merge Ghidra functions/candidates, Atlas entries, existing static edges,
+  documented runtime observations and bounded Beta correspondence;
+- [x] preserve the 11 known confirmed benchmark entries and never promote a
+  Ghidra-only record to `CONFIRMED`;
+- [x] classify every normalized entry and retain code/data and boundary
+  conflict metadata;
+- [x] emit deterministic full JSON and top-20 human-readable ranking with
+  documented scoring and top-10 non-confirmed quality audit;
+- [x] synthetic merge/ranking/serialization tests and Debug/Release/GNU
+  validation pass;
+- [x] two real runs produce byte-identical candidate JSON and text reports.
+
+RESULT: the developer-only `oasis_re_candidate_map` tool consumes the external
+`oasis.m68k.ghidra-map.v1` export and existing bounded Atlas/evidence. The real
+union has 534 unique entries: 11 `CONFIRMED`, 39 `STATIC_SUPPORTED`, 0
+`DYNAMIC_OBSERVED`, 483 `GHIDRA_ONLY` and 1 `CONFLICT`. Dynamic observations
+remain visible on records even when stronger static/project evidence determines
+the classification. Complexity counts are LEAF 234, SHALLOW 172, COMPLEX 90
+and UNKNOWN 38. The selected next bounded target is `0x611EA`, a shallow
+Ghidra function with existing static call-site support and no recorded conflict.
+
+INPUTS: external Ghidra v3 JSON SHA-256
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`; current
+Atlas; existing bounded USA Beta correspondence; existing A6A4 dynamic
+scenario and documented BizHawk natural observations for `0x60B8C`, `0x611EE`
+and `0x6121A`. No new ROM-wide trace was run.
+
+DETERMINISM: full JSON SHA-256
+`5C17F6A735DC715B18CD5A5E8FA34F876CAD5CEB5D4511C80547E2C8720A22AC` and
+human report SHA-256
+`9E5A5884FE05B816C0265535529E79E2C336FBB4CE176D60AF57F522DAFD9C84` matched
+between runs A/B.
+
+NEXT_ACTION: STOP after this bounded candidate-ranking checkpoint. The next
+task may inspect `0x611EA`, but must not begin it in this checkpoint.
+BLOCKERS: Ghidra boundaries, indirect-flow coverage and routine semantics
+remain independent-reverification unknowns.
+
+## Previous checkpoint — availability gate
 
 Acceptance criteria:
 - [x] baseline synchronized: local `main == origin/main` at
