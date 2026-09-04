@@ -52,6 +52,8 @@ full CTest passed 28/28 in each configuration; parser/merge tests passed;
 JSON was parsed independently; file-limit, `git diff --check` and tracked
 sensitive-artifact checks passed. No ROM, Ghidra project, emulator, savestate
 or raw trace was added.
+CI: GitHub Actions run `33887363813` for implementation commit `aa514db`
+completed successfully.
 UNKNOWN/NEXT: Ghidra boundary correctness, indirect targets, unobserved
 callers and semantics remain UNKNOWN. STOP at this bounded checkpoint; the
 next task may inspect `0x611EA` but must not begin it here.
