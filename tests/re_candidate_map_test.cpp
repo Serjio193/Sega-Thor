@@ -1,5 +1,6 @@
 #include "tools/re_candidate_map.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <stdexcept>
 #include <string>
@@ -72,6 +73,8 @@ void test_parser_and_duplicate_merge() {
     const auto* static_target = find(0x300);
     assert(static_target && static_target->classification == CandidateClassification::static_supported);
     assert(static_target->beta_match_kind == "exact");
+    assert(std::find(static_target->source_flags.begin(), static_target->source_flags.end(),
+                     "GHIDRA_VECTOR_TARGET") != static_target->source_flags.end());
     const auto* conflict = find(0x180);
     assert(conflict && conflict->classification == CandidateClassification::conflict);
     assert(conflict->code_data_conflict);

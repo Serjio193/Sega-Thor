@@ -3,6 +3,68 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 Mass Structural Verification Pass v1 completed
+TASK: batch-verify every normalized candidate-map entry with the existing
+project-specific bounded decoder and Atlas evidence, cluster blockers and
+estimate the highest-value systemic follow-ups. Production C++ and gameplay
+semantics were out of scope.
+WHY: replace candidate-by-candidate triage with one deterministic measurement
+pass while preserving Ghidra as a discovery layer and `oasis_re`/runtime as
+verification authority.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling.
+MILESTONE UNDERSTANDING CONFIDENCE: 95%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 94% for bounded decode, structural
+classification, clustering and deterministic serialization; semantic
+confidence remains intentionally unclaimed.
+SLICE CONFIDENCE EVIDENCE: existing `oasis.m68k.re-candidate-map.v1` model,
+bounded `re_slice_decoder`, Atlas typed data/code intervals, prior Beta and
+dynamic evidence fields, and the fixed 11-entry control set.
+ACCEPTANCE: process 534 entries in address order; record decode/reachable-flow,
+boundary and overlap signals; preserve confirmed anchors; classify and cluster
+failures; provide leaf plus GHIDRA_ONLY/STATIC_SUPPORTED breakdowns; estimate
+the top three fix classes; add synthetic validation; repeat JSON/text runs.
+EVIDENCE AVAILABLE: canonical USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, existing
+normalized candidate-map output, Atlas and Beta/reference artifacts under the
+ignored build workspace. The raw Ghidra v3 export itself is absent from this
+checkout.
+KNOWN UNKNOWNS: Ghidra boundaries and indirect targets remain unverified;
+runtime semantics remain out of scope; Linux/WSL validation is unavailable in
+this environment.
+IMPLEMENTATION: added developer-only `oasis_re_mass_verify` with reusable
+batch model/API, deterministic JSON/text formatting and local CLI. It checks
+bounded entry decode, reachable instruction/block counts, RTS/RTE and known
+transfer terminals, direct BSR/JSR/vector/static signals, boundary categories,
+Atlas data/code overlap, existing Beta/dynamic flags and non-exclusive failure
+clusters. Added precise BSR/JSR/vector source flags to candidate-map records.
+Added synthetic tests for categories, leaf accounting, controls,
+deterministic output, malformed empty input and duplicate candidates. No
+production target changed.
+RESULT: the local 534-entry measurement processed previous classes 483
+GHIDRA_ONLY, 39 STATIC_SUPPORTED, 11 CONFIRMED and 1 CONFLICT. Leaves: 234
+total, 208 clean, 7 unsupported, 13 indirect-flow, 6 boundary-conflict and
+0 terminal failures. Largest clusters: boundary-longer-than-Ghidra 185,
+multiple-entry-overlap 82 and unsupported-opcode 54. Top fix classes: boundary
+continuation 277 affected, decoder coverage 61 and static edge recovery 51.
+Six confirmed control entries were heuristic misses and five passed; none was
+downgraded. Because the raw Ghidra export was absent, this run reconstructed
+the Ghidra-shaped input from prior normalized evidence and is not an
+independent re-export.
+DETERMINISM: JSON SHA-256
+`1F5B31C2789D62752FC6CE0F8E5977357914573116965FCA96A02DA55FA296BC` and text
+SHA-256 `E1F9E895E245BFB6A504B1D34891D2E12B5CE2F6A04F43D848BA37E87A062BAF`
+matched between runs A/B. Measured wall-clock durations were 13385 ms and
+13434 ms and are intentionally excluded from serialized identity.
+TESTS/VALIDATION: Debug full CTest 29/29, Release full CTest 29/29 and
+GNU/LLVM-MinGW full CTest 29/29 passed; file-limit and `git diff --check`
+passed. WSL/Linux was unavailable because WSL is not installed. No ROM,
+Ghidra project/database, emulator, savestate, raw trace or commercial asset
+was added to Git.
+STATUS: DONE for the measurement checkpoint.
+EXACT NEXT ACTION: restore the raw Ghidra export and rerun independently;
+then choose exactly one systemic fix from the measured top-three list. STOP;
+do not start M12, semantic translation, leaf translation or broad tracing.
+
 ## 2026-09-04 — M11.5 Ghidra-to-Atlas candidate integration completed
 TASK: normalize the deterministic external Ghidra map, merge it with the
 existing ROM Atlas and reuse already recorded static, dynamic and beta

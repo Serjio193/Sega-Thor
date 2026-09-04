@@ -1,16 +1,58 @@
 # Current Task
 
-TASK: M11.5 Ghidra-to-Atlas Candidate Integration PoC
-WHY: connect deterministic Ghidra wide-discovery output to the existing ROM
-Atlas and evidence overlays without promoting Ghidra hypotheses to project
-truth.
+TASK: M11.5 Mass Structural Verification Pass v1
+WHY: batch-check the normalized Ghidra candidate map with the existing
+project-specific decoder and Atlas evidence, then measure failure classes and
+rank one to three systemic follow-ups without promoting semantics.
 CURRENT MILESTONE: M11.5 post-M11 evidence tooling
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the bounded normalized merge,
-classification and deterministic ranking; semantic confidence remains
-intentionally limited to independent project evidence.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 94% for the bounded decode,
+classification, clustering and deterministic report contract; semantic
+confidence remains intentionally limited to independent project evidence.
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE
+
+## Current task — mass structural verification
+
+Acceptance criteria:
+- [x] process all 534 normalized entries in stable ascending-address order;
+- [x] record bounded entry decode, reachable flow, boundary and overlap signals;
+- [x] classify failure reasons and aggregate quantitative clusters;
+- [x] preserve all 11 confirmed control entries and mark heuristic misses
+  without downgrading them;
+- [x] provide GHIDRA_ONLY and STATIC_SUPPORTED structural breakdowns plus leaf
+  analysis and top-three systemic-fix ROI estimates;
+- [x] add synthetic CI-safe tests for classification, clustering, controls,
+  boundary/leaf behavior, deterministic ordering, duplicates and malformed
+  input;
+- [x] pass Debug, Release and GNU/MinGW-equivalent full validation and
+  deterministic A/B report comparison.
+
+RESULT: added developer-only `oasis_re_mass_verify`. The 534-entry bake-off
+processed 483 previous `GHIDRA_ONLY`, 39 `STATIC_SUPPORTED`, 11 `CONFIRMED`
+and 1 `CONFLICT` record. The current local run used the prior normalized
+candidate-map evidence to reconstruct the external Ghidra-shaped input because
+the original 390972-byte export is not present in this checkout; this is a
+reproducibility exercise, not an independent re-export. The pass produced
+208 clean leaves of 234, with 7 unsupported, 13 indirect-flow, 6 boundary-
+conflict and 0 terminal-failure leaves. The largest measured clusters were
+boundary-longer-than-Ghidra (185), multiple-entry-overlap (82), and
+unsupported-opcode (54). Top fix classes were boundary continuation (277
+affected), decoder coverage (61), and static edge recovery (51).
+
+DETERMINISM: mass JSON SHA-256
+`C826718A0FD1AB0CFE1730B3C7E184A79C70954DD356DC6FC009216DF46A1EA6` and
+human report SHA-256
+`3A905792BBA276D444EA10D280CCFAED59C903FC54DF2EC2EC239316AA5BC616` matched
+between runs A/B. The report excludes wall-clock duration from serialized
+bytes; the two local runs took 13385 ms and 13434 ms respectively.
+
+NEXT_ACTION: STOP after measurement. The next checkpoint may implement exactly
+one systemic fix, selected from the measured ROI, after the raw Ghidra export
+is restored for an independent rerun.
+BLOCKERS: raw external Ghidra export is absent from this checkout; Linux/WSL
+runtime validation is unavailable because WSL is not installed. No broad
+runtime trace or semantic translation was started.
 
 ## Current task — candidate integration
 

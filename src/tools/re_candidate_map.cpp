@@ -130,9 +130,18 @@ void merge_ghidra_candidate(WorkingRecord& working, const GhidraCandidate& candi
         record.ghidra_range_start = candidate.range_start;
         record.ghidra_range_end = candidate.range_end;
     }
-    if (candidate.source.find("DIRECT_CALL") != std::string::npos ||
-        candidate.source == "VECTOR_OR_DIRECT_CALL_TARGET")
+    if (candidate.source == "VECTOR_OR_DIRECT_CALL_TARGET") {
+        add_flag(record.source_flags, "GHIDRA_VECTOR_TARGET");
         add_flag(record.source_flags, "GHIDRA_DIRECT_CALL_TARGET");
+    } else if (candidate.source == "DIRECT_BSR_TARGET") {
+        add_flag(record.source_flags, "GHIDRA_DIRECT_BSR_TARGET");
+        add_flag(record.source_flags, "GHIDRA_DIRECT_CALL_TARGET");
+    } else if (candidate.source == "DIRECT_JSR_TARGET") {
+        add_flag(record.source_flags, "GHIDRA_DIRECT_JSR_TARGET");
+        add_flag(record.source_flags, "GHIDRA_DIRECT_CALL_TARGET");
+    } else if (candidate.source.find("DIRECT_CALL") != std::string::npos) {
+        add_flag(record.source_flags, "GHIDRA_DIRECT_CALL_TARGET");
+    }
 }
 
 void add_static_signals(CandidateRecord& record, const std::vector<StaticEdge>& edges) {

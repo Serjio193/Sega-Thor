@@ -1,24 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 Ghidra-to-Atlas Candidate Integration PoC
+CURRENT_TASK: M11.5 Mass Structural Verification Pass v1
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: developer-only `oasis_re_candidate_map` normalized the
-external deterministic Ghidra v3 map and merged existing Atlas, static, beta
-and documented dynamic evidence. Real result: 534 unique entries, 11
-CONFIRMED, 39 STATIC_SUPPORTED, 0 DYNAMIC_OBSERVED, 483 GHIDRA_ONLY and 1
-CONFLICT; complexity LEAF 234, SHALLOW 172, COMPLEX 90, UNKNOWN 38. Full JSON
-and top report are byte-identical across two runs. Recommended next bounded
-target is `0x611EA`: shallow Ghidra structure plus existing static support and
-no recorded conflict.
-NEXT_ACTION: STOP at the bounded candidate-ranking checkpoint; await an
-explicit new task before inspecting `0x611EA`.
+LAST_VERIFIED_RESULT: developer-only `oasis_re_mass_verify` processed all 534
+normalized entries in ascending-address order and emitted deterministic JSON
+and text reports. The local bake-off reused the prior normalized candidate-map
+evidence to reconstruct the Ghidra-shaped input because the original external
+390972-byte export is not present in this checkout; it is not an independent
+Ghidra re-export. Leaf breakdown: 234 total, 208 clean, 7 unsupported, 13
+indirect-flow, 6 boundary-conflict and 0 terminal-failure. Largest failure
+clusters: boundary-longer-than-Ghidra 185, multiple-entry-overlap 82 and
+unsupported-opcode 54. Top measured systemic fix classes: boundary
+continuation 277, decoder coverage 61 and static edge recovery 51.
+NEXT_ACTION: STOP after measurement; restore the raw Ghidra export before an
+independent rerun or implementing exactly one systemic fix.
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative
 dialogue or event semantics, replacement whole-ROM scanner
-BLOCKERS: Ghidra does not provide complete function-boundary recovery or an
-indirect target at `0xA7E2` for this raw import; project fixups and independent
-`oasis_re`/runtime verification remain required. The checkpoint forbids a
-replacement whole-ROM scanner and M12 work.
+BLOCKERS: raw external Ghidra export is absent from this checkout and WSL is
+not installed for Linux runtime validation. Ghidra does not provide complete
+function-boundary recovery or an indirect target at `0xA7E2`; project fixups
+and independent `oasis_re`/runtime verification remain required. The
+checkpoint forbids a replacement whole-ROM scanner and M12 work.
 
 ## M11.5 bounded downstream runtime resolution
 - Static USA bytes/decode were independently rechecked: `0x60BFA` is

@@ -1,6 +1,61 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.5 — Mass structural verification pass v1
+**Status:** VERIFIED as developer-only measurement tooling; structural classes
+are not semantic confidence and no new routine meaning was inferred.
+
+`oasis_re_mass_verify` consumes the normalized
+`oasis.m68k.re-candidate-map.v1` records, the existing Atlas and the canonical
+USA ROM. For each entry it performs a bounded entry decode, conservative
+reachable-flow walk, direct-reference signal check, Ghidra-boundary comparison,
+Atlas data/code overlap check and reuse of existing Beta/dynamic flags. It
+records `BOUNDARY_AGREES`, `BOUNDARY_SHORTER`, `BOUNDARY_LONGER`,
+`BOUNDARY_UNKNOWN` or `BOUNDARY_CONFLICT`, then assigns one structural class:
+`STRONG_STATIC`, `MODERATE_STATIC`, `WEAK_STATIC`, `INDIRECT_FLOW`,
+`UNSUPPORTED`, `BOUNDARY_CONFLICT`, `DATA_CONFLICT`, `DECODE_FAILURE` or
+`UNKNOWN`. The pass does not run BizHawk/MAME and does not modify
+`src/game/`, `src/core/` or `src/genesis/`.
+
+The 534-entry local measurement covered the previous 483 `GHIDRA_ONLY`, 39
+`STATIC_SUPPORTED`, 11 `CONFIRMED` and 1 `CONFLICT` records. Previous
+`GHIDRA_ONLY` outcomes were: 262 `MODERATE_STATIC`, 176
+`BOUNDARY_CONFLICT`, 17 `INDIRECT_FLOW`, 10 `UNSUPPORTED` and 18
+`WEAK_STATIC`. Previous `STATIC_SUPPORTED` outcomes were: 11
+`STRONG_STATIC`, 5 `BOUNDARY_CONFLICT`, 4 `DATA_CONFLICT`, 7 `UNSUPPORTED`
+and 12 `WEAK_STATIC`.
+
+Leaf analysis found 234 leaves: 208 clean, 7 with unsupported decoder
+coverage, 13 with indirect flow, 6 with boundary conflict and 0 terminal
+failures. Failure clusters are per-entry, non-exclusive: boundary longer than
+Ghidra 185, multiple-entry overlap 82, unsupported opcode 54, unknown terminal
+44, indirect flow 31, call-target-only 27, no direct xref 24, boundary shorter
+9, unsupported addressing 7, decode failure 5, known data overlap 4,
+boundary conflict 1 and confirmed-code overlap 1. The three highest measured
+fix classes are boundary continuation heuristic (277 affected; medium/high
+effort; medium risk), decoder coverage (61; medium; low risk), and static
+edge recovery (51; medium; medium risk). Affected counts are aggregated from
+the current report and are not a claim of semantic improvement.
+
+All 11 confirmed control anchors were retained. Five passed the batch
+heuristic and six were reported as `HEURISTIC_MISS_ON_CONFIRMED`; none was
+downgraded. The control result is specifically a checker-quality signal.
+
+The raw external Ghidra v3 export is not present in this checkout. Therefore
+the local 534-entry bake-off reconstructed a Ghidra-shaped input from the
+previous normalized candidate-map evidence. Its hashes prove deterministic
+serialization of this measurement, not a fresh independent Ghidra export.
+The canonical export remains the previously recorded
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315` input.
+Mass JSON A/B SHA-256 is
+`1F5B31C2789D62752FC6CE0F8E5977357914573116965FCA96A02DA55FA296BC`; human
+report A/B SHA-256 is
+`E1F9E895E245BFB6A504B1D34891D2E12B5CE2F6A04F43D848BA37E87A062BAF`.
+
+**Exact next step:** restore the raw Ghidra export and rerun this pass before
+implementing exactly one systemic fix. Do not translate leaves, add runtime
+tracing, investigate `0x611EA`, or begin M12 in this checkpoint.
+
 ## M11.5 — Ghidra-to-Atlas candidate integration
 **Status:** VERIFIED as developer-only prioritization tooling. Ghidra discovery
 remains candidate evidence; no new entry is promoted to project truth.
