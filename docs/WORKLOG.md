@@ -11,7 +11,8 @@ stack value is invented. Metrics: targets 2, newly resolved 0, reachable 16→16
 TESTS: synthetic stack/merge/call-boundary, USA oracle, deterministic JSON/text,
 Debug/Release/GNU CTest, file-limit and diff-check passed. UNKNOWN/NEXT: no A7
 entry value, callee effect, return-address model or ABI; stop at this checkpoint.
-CI: local pre-push gate green; GitHub Actions is pending the implementation push.
+CI: local pre-push gate green; GitHub Actions run 33851500297 for commit
+219ee585cf7b1283f72fe214c5d6320f16286f1b completed successfully.
 ## 2026-09-04 — M11.5 reachable-unresolved closure audit completed
 RESULT: `oasis.m68k.re-reachable-closure.v1` accounted for 16 reachable refs:
 14 call-clobber and 2 former unsupported-transfer boundaries; nonreachable 80
