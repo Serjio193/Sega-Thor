@@ -22,6 +22,7 @@ Reimplement **Beyond Oasis / The Story of Thor** as a portable C++20 project usi
 14. Never replace reverse engineering with a full CPU emulator unless the decision is explicitly approved and documented.
 15. Keep commits focused. One conceptual task per commit whenever practical.
 16. Do not push an implementation commit until the locally available CI-equivalent validation is green. At minimum run the relevant Debug and Release builds/tests, `git diff --check`, the source-code file-limit check, and a GNU/Linux-equivalent build or link check when the change affects CMake targets, static libraries, link order, portability, or toolchain-sensitive code. If the exact CI toolchain is unavailable locally, record that limitation before push and avoid claiming CI readiness.
+17. Historical SDK/toolchain material is evidence, not authority. For any task involving historical assemblers, linkers, compilers, development kits, preserved source trees or SDK fingerprints, read and follow `docs/RE_TOOLCHAIN_GUIDE.md`. Do not claim Ancient used a candidate toolchain without project-specific evidence and do not fetch/commit proprietary or leaked SDK binaries.
 
 ## Required workflow for every task
 Before coding:
@@ -30,7 +31,8 @@ Before coding:
 3. Read `docs/ARCHITECTURE.md`.
 4. Read `docs/FILE_MAP.md`.
 5. Read the latest entries in `docs/WORKLOG.md` and `docs/DECISIONS.md`.
-6. State the concrete task and acceptance criteria in the worklog.
+6. If the task uses historical SDK/toolchain/compiler/library evidence, read `docs/RE_TOOLCHAIN_GUIDE.md` before drawing any conclusion from it.
+7. State the concrete task and acceptance criteria in the worklog.
 
 During coding:
 1. Work only on the active task.
