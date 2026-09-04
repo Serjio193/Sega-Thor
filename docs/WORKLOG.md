@@ -3,6 +3,14 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 bounded downstream runtime resolution CI follow-up
+RESULT: GitHub Actions CI run `33878595233` (`#326`) for implementation
+commit `2351545f74b68fb26e7ea6b146e6bd3467a8f3af` completed successfully.
+The docs-only follow-up records the final green remote validation; no code,
+scope or runtime evidence changed.
+UNKNOWN/NEXT: writer callback width, semantic role and cross-scenario A0
+invariance remain UNKNOWN. STOP at this bounded M11.5 checkpoint.
+
 ## 2026-09-04 — M11.5 bounded downstream runtime resolution completed
 TASK: resolve only the already reached downstream memory operations at
 `0x60BFA` and `0x60C08` on frozen `start_pulse_120` / `120:Start`.

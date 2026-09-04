@@ -16,7 +16,7 @@ frame 423. Actual A0 is `0x0006F8B0` / `0x0006F8B2`, so the byte reads resolve
 to ROM `0x0006F8B1`=`0x13` / `0x0006F8B3`=`0x00`. A0 differs from the earlier
 post-`0x60BD0` `0x0006F8AE`; this is scenario-only evidence. Fresh A/B JSON
 SHA-256: `CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91`.
-NEXT_ACTION: commit/push, verify CI, then STOP
+NEXT_ACTION: STOP at this bounded M11.5 checkpoint; await an explicit new task
 BLOCKERS: writer callback width, semantic role and cross-scenario invariance
 remain unknown
 

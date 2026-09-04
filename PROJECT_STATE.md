@@ -9,7 +9,7 @@ addresses 0x0006F8B1/0x0006F8B3 with raw bytes 0x13/0x00. A0 differs from the
 earlier post-MOVEA value 0x0006F8AE, so no old-value invariance is claimed.
 Fresh A/B JSON SHA-256 CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91
 matched.
-NEXT_ACTION: commit/push, verify CI, then stop
+NEXT_ACTION: STOP at this bounded M11.5 checkpoint; await an explicit new task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: BizHawk concrete bus-write callbacks do not expose writer width;
 semantic role and cross-scenario A0 invariance remain unknown
