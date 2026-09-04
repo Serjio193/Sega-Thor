@@ -13,6 +13,7 @@ Debug/Release/GNU CTest, deterministic JSON, file-limit and diff-check passed.
 UNKNOWNS: no semantic or data/code confirmation; indirect entries remain
 unknown. NEXT: stop and await explicit bounded evidence selection; no runtime,
 dynamic scenario, whole-ROM discovery, recompiler or M12.
+CI: GitHub Actions run 33847337191 succeeded on implementation commit 3d79fd4.
 ## 2026-09-03 — M11.5 Atlas-driven unresolved evidence ranking completed
 
 **RESULT:** Added typed Atlas unresolved records and `oasis_re_atlas_rank` /
