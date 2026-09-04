@@ -14,11 +14,11 @@ the test's `std::invalid_argument` catch. No algorithm, classification, report
 field or production target changed.
 TESTS/VALIDATION: Debug, Release and GNU/LLVM-MinGW builds plus full CTest
 29/29 passed locally after the include-only fixes. Ubuntu CI identified the
-missing `<stdexcept>` declaration in the test; its corrected follow-up result
-is pending. WSL/Linux remains unavailable locally.
-STATUS: READY FOR CI RECHECK.
-EXACT NEXT ACTION: push this focused portability fix and wait for the Ubuntu
-workflow result before declaring the checkpoint complete.
+missing `<stdexcept>` declaration in the test; corrected follow-up run
+33890964756 passed. WSL/Linux remains unavailable locally.
+STATUS: DONE.
+EXACT NEXT ACTION: hard stop at the M11.5 measurement checkpoint; restore the
+raw Ghidra export before any independent rerun or systemic fix.
 
 ## 2026-09-04 — M11.5 Mass Structural Verification Pass v1 completed
 TASK: batch-verify every normalized candidate-map entry with the existing
