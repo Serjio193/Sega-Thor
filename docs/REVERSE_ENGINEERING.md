@@ -1,25 +1,25 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
-## M11.5 — bounded address-displacement resolution around `0x00060004`
-**Status:** VERIFIED bounded tooling checkpoint; no semantics inferred.
-`oasis_re_resolution` analyzes only Atlas displacement records in
-`[0x60004,0x61204)`, supporting immediate/LEA setup, address-register copy,
-immediate arithmetic and agreeing CFG merges; calls/unknown writes invalidate.
-USA: 390 examined, 294 resolved, 96 unresolved (92 unknown base, 4 CFG merge),
-0 provenance failures, 294 RAM refs / 78 unique addresses, 0 ROM refs.
-Atlas delta: unresolved `577→283`, displacement `446→152`, A6 `387→123`,
-immediate candidates `168→54`; 80 records are outside the reachable CFG.
-Synthetic and USA tests cover propagation, signed offsets, invalidation, merges
-and deterministic reports. This remains developer-only; no runtime, emulator,
-interprocedural or whole-ROM analysis was added. Next proof requires explicit
-selection of another bounded evidence class.
+## M11.5 — bounded resolution and unreachable-CFG audit at `0x00060004`
+**Status:** VERIFIED bounded tooling; no semantics inferred. Prior resolution
+examined 390 displacement refs, resolved 294 and left 96 (92 unknown-base,
+4 CFG-merge); Atlas changed 577→283 and displacement 446→152.
+`oasis.m68k.re-cfg-audit.v1` then audited exactly 80 records outside the
+entry-reachable `[0x60004,0x61204)` CFG and grouped them into 17 islands.
+USA classification is 77 `unreachable_code_candidate` (332 bytes) and 3
+`unknown` (18 bytes), with zero known incoming edges and zero secondary-entry,
+embedded-data, decoder-artifact or boundary-tail candidates. Reachable
+unresolved remains 16; raw unresolved remains 96, Atlas remains 577 and
+displacement ranking remains 446. Classifications do not reduce evidence.
+All findings retain raw instruction/block/edge context and remain hypotheses
+or unknown; no beta scan, runtime, emulator, interprocedural or whole-ROM
+analysis was added.
 ## Known hardware addresses
 | Address | Meaning | Confidence | Evidence/status |
 |---|---|---:|---|
 | `0x00C00000` | Mega Drive VDP data port | CONFIRMED | Public ROM-hacking constants + standard Mega Drive mapping |
 | `0x00C00004` | Mega Drive VDP control port | CONFIRMED | Public ROM-hacking constants + standard Mega Drive mapping |
 | `0x00FF0000` | 68000 work RAM base | CONFIRMED | Public ROM-hacking constants + standard Mega Drive mapping |
-
 ## Reference ROM identity
 
 ### USA retail — canonical engineering reference

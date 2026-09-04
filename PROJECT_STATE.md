@@ -1,12 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded address-displacement resolution PoC around 0x60004
+CURRENT_TASK: M11.5 bounded unreachable-CFG evidence audit for 0x60004
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: oasis.m68k.re-resolution.v1 examines 390 bounded displacement refs, resolves 294 with zero provenance failures, and reduces Atlas unresolved 577 to 283; USA oracle, Debug/Release/GNU verification and CI run 33770283842 pass
-NEXT_ACTION: Stop at the verified bounded resolution checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: oasis.m68k.re-cfg-audit.v1 accounts for exactly 80 outside-reachable records in [0x60004,0x61204) across 17 islands; 77 are unreachable-code candidates and 3 remain unknown, with Atlas counts unchanged
+NEXT_ACTION: Stop at the verified bounded CFG audit checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 bounded unreachable-CFG evidence audit
+- `oasis_re_cfg_audit` is a local-USA-ROM-only developer report over the
+  existing Atlas, bounded decoder and resolution result; it is not linked into
+  `oasis_core` or gameplay runtime.
+- The report schema is `oasis.m68k.re-cfg-audit.v1`. It audits exactly 80
+  nonreachable records in `[0x60004,0x61204)`, groups them into 17 islands,
+  and preserves instruction, block, edge, reachability-factor and byte evidence.
+- USA result: 77 unreachable-code candidates / 332 bytes and 3 unknown / 18
+  bytes; zero known incoming edges, zero secondary/data/artifact/tail records.
+  Reachable unresolved remains 16 of raw 96; Atlas remains 577 and its
+  displacement ranking remains 446. These are classifications, not semantic
+  conclusions or automatic unresolved-count reductions.
+- No new beta scan or dynamic scenario was added. All data/code status and
+  indirect/address-taken entry possibilities remain unknown.
 
 ## M11.5 bounded address-displacement resolution PoC
 - `oasis_re_resolution` is a developer-only bounded dataflow/report layer over

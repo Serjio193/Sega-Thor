@@ -2,20 +2,17 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
-## 2026-09-03 — M11.5 bounded address-displacement resolution PoC completed
-
-**TASK/ACTIONS:** Added separate `oasis_re_resolution` and schema
-`oasis.m68k.re-resolution.v1` for bounded setup/copy/arithmetic propagation,
-CFG merges, invalidation, provenance, address classes and ranking comparison.
-**RESULT:** USA examined 390, resolved 294, left 96 (92 unknown base, 4 CFG
-merge), 0 provenance failures; 294 RAM / 78 unique, 0 ROM. Atlas delta:
-577→283 unresolved, displacement 446→152, A6 387→123, immediate 168→54;
-80 records remain outside reachable CFG.
-**TESTS:** synthetic/USA oracle, Debug/Release/GNU CTest, deterministic JSON,
-file-limit and diff-check pass; GitHub Actions CI `33770283842` is green.
-**UNKNOWN/NEXT:** no semantics, calling convention, interprocedural state,
-emulator, whole-ROM propagation, production behavior or M12; stop and await
-explicit next bounded evidence class.
+## 2026-09-04 — M11.5 bounded unreachable-CFG evidence audit completed
+TASK/RESULT: `oasis.m68k.re-cfg-audit.v1` audits exactly 80 outside-reachable
+records in `[0x60004,0x61204)`, groups 17 islands, and preserves raw Atlas
+counts. USA: 77 unreachable-code candidates / 332 bytes, 3 unknown / 18 bytes,
+zero known incoming edges, zero secondary/data/artifact/tail records; 16
+reachable unresolved remain out of raw 96. MILESTONE/CONFIDENCE: M11.5 / 95%,
+slice 96%. TESTS: synthetic classification/island/format, USA oracle,
+Debug/Release/GNU CTest, deterministic JSON, file-limit and diff-check passed.
+UNKNOWNS: no semantic or data/code confirmation; indirect entries remain
+unknown. NEXT: stop and await explicit bounded evidence selection; no runtime,
+dynamic scenario, whole-ROM discovery, recompiler or M12.
 ## 2026-09-03 — M11.5 Atlas-driven unresolved evidence ranking completed
 
 **RESULT:** Added typed Atlas unresolved records and `oasis_re_atlas_rank` /

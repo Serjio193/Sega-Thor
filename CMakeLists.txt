@@ -47,6 +47,8 @@ add_library(oasis_re_tooling
     src/tools/re_atlas_ranking.cpp
     src/tools/re_resolution.cpp
     src/tools/re_resolution_format.cpp
+    src/tools/re_cfg_audit.cpp
+    src/tools/re_cfg_audit_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -70,6 +72,9 @@ target_link_libraries(oasis_re_atlas_rank PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_resolution src/tools/re_resolution_report.cpp)
 target_link_libraries(oasis_re_resolution PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_cfg_audit src/tools/re_cfg_audit_report.cpp)
+target_link_libraries(oasis_re_cfg_audit PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -153,6 +158,10 @@ add_executable(oasis_re_resolution_test tests/re_resolution_test.cpp)
 target_link_libraries(oasis_re_resolution_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_resolution COMMAND oasis_re_resolution_test)
 
+add_executable(oasis_re_cfg_audit_test tests/re_cfg_audit_test.cpp)
+target_link_libraries(oasis_re_cfg_audit_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_cfg_audit COMMAND oasis_re_cfg_audit_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -190,6 +199,9 @@ target_link_libraries(oasis_re_atlas_reference PRIVATE oasis_re_tooling oasis_co
 add_executable(oasis_re_resolution_reference tests/re_resolution_reference.cpp)
 target_link_libraries(oasis_re_resolution_reference PRIVATE oasis_re_tooling oasis_core)
 
+add_executable(oasis_re_cfg_audit_reference tests/re_cfg_audit_reference.cpp)
+target_link_libraries(oasis_re_cfg_audit_reference PRIVATE oasis_re_tooling oasis_core)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -212,6 +224,7 @@ set(oasis_test_targets
     oasis_re_atlas_test
     oasis_re_atlas_ranking_test
     oasis_re_resolution_test
+    oasis_re_cfg_audit_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -247,6 +260,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_atlas
         oasis_re_atlas_ranking
         oasis_re_resolution
+        oasis_re_cfg_audit
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

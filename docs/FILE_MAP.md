@@ -96,7 +96,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_resolution.hpp Bounded address-displacement resolution API
 │       ├── re_resolution.cpp Conservative register propagation and CFG merge handling
 │       ├── re_resolution_format.cpp Deterministic resolution JSON/text formatting
-│       └── re_resolution_report.cpp Local-only bounded resolution CLI
+│       ├── re_resolution_report.cpp Local-only bounded resolution CLI
+│       ├── re_cfg_audit.hpp Bounded unreachable-CFG audit data model/API
+│       ├── re_cfg_audit.cpp Audit classifications, islands and bounded CFG context
+│       ├── re_cfg_audit_format.cpp Deterministic CFG-audit JSON/text formatting
+│       └── re_cfg_audit_report.cpp Local-only USA CFG-audit CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -123,6 +127,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_atlas_ranking_test.cpp            Synthetic ranking/grouping tests
     ├── re_resolution_test.cpp               Synthetic bounded propagation/merge tests
     ├── re_resolution_reference.cpp          Local USA-ROM resolution oracle
+    ├── re_cfg_audit_test.cpp                Synthetic CFG-audit classification/island tests
+    └── re_cfg_audit_reference.cpp           Local USA-ROM CFG-audit oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
