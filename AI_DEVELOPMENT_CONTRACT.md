@@ -16,7 +16,7 @@ This document defines the mandatory operating discipline for AI-assisted develop
 10. Prefer evidence over elegance. Reverse-engineering statements must be marked CONFIRMED, LIKELY, HYPOTHESIS, or UNKNOWN.
 11. Never turn a hypothesis into a fact without new evidence.
 12. Never rename an unknown original routine to a confident semantic name without evidence.
-13. Keep every source and project-document file at or below 500 lines. At roughly 400 lines, evaluate semantic splitting.
+13. Keep executable/source/build-code files at or below 500 lines. This includes C/C++ source and headers, tests, developer tooling and build scripts. Prose documentation, project instructions, worklogs, ADRs, task/state files and other reference Markdown are exempt from the numeric limit; split large documentation only when structure or navigation materially improves.
 14. Do not change tests merely to make a failing implementation pass. Determine whether implementation, understanding, or test is wrong.
 15. Prefer two independent verification methods for critical reverse-engineered behavior when practical.
 16. Keep commits/tasks small and single-purpose.

@@ -21,6 +21,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── FILE_MAP.md            This canonical repository map
 │   ├── PORTING.md             Portability boundary/target notes
 │   ├── PROJECT_VISION.md      Goal, scope, non-goals and end-state
+│   ├── RE_TOOLCHAIN_GUIDE.md  Historical Mega Drive SDK/toolchain evidence and fingerprinting rules
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -185,5 +186,5 @@ src/platform/       Window/input/render/audio platform integration
 - Do not create a generic `utils` dumping ground. Name modules by responsibility.
 - Do not create planned directories early merely to make the tree look complete.
 - New top-level directories require an architecture decision.
-- Keep each file <= 500 lines.
-- When a file approaches 400 lines, consider splitting before adding major functionality.
+- Keep executable/source/build-code files at or below 500 lines; prose/reference documentation is exempt from the numeric limit.
+- When a source/build file approaches 400 lines, consider splitting before adding major functionality.
