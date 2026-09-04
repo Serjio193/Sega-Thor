@@ -52,6 +52,8 @@ add_library(oasis_re_tooling
     src/tools/re_reachable_closure.cpp
     src/tools/re_reachable_closure_format.cpp
     src/tools/re_reachable_stack.cpp
+    src/tools/re_callee_effect.cpp
+    src/tools/re_callee_effect_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -81,6 +83,9 @@ target_link_libraries(oasis_re_cfg_audit PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_reachable_closure src/tools/re_reachable_closure_report.cpp)
 target_link_libraries(oasis_re_reachable_closure PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_callee_effect src/tools/re_callee_effect_report.cpp)
+target_link_libraries(oasis_re_callee_effect PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -172,6 +177,10 @@ add_executable(oasis_re_reachable_closure_test tests/re_reachable_closure_test.c
 target_link_libraries(oasis_re_reachable_closure_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_reachable_closure COMMAND oasis_re_reachable_closure_test)
 
+add_executable(oasis_re_callee_effect_test tests/re_callee_effect_test.cpp)
+target_link_libraries(oasis_re_callee_effect_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_callee_effect COMMAND oasis_re_callee_effect_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -215,6 +224,9 @@ target_link_libraries(oasis_re_cfg_audit_reference PRIVATE oasis_re_tooling oasi
 add_executable(oasis_re_reachable_closure_reference tests/re_reachable_closure_reference.cpp)
 target_link_libraries(oasis_re_reachable_closure_reference PRIVATE oasis_re_tooling oasis_core)
 
+add_executable(oasis_re_callee_effect_reference tests/re_callee_effect_reference.cpp)
+target_link_libraries(oasis_re_callee_effect_reference PRIVATE oasis_re_tooling oasis_core)
+
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
     oasis_smoke
@@ -239,6 +251,7 @@ set(oasis_test_targets
     oasis_re_resolution_test
     oasis_re_cfg_audit_test
     oasis_re_reachable_closure_test
+    oasis_re_callee_effect_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
@@ -276,6 +289,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_resolution
         oasis_re_cfg_audit
         oasis_re_reachable_closure
+        oasis_re_callee_effect
         project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}

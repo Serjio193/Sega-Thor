@@ -1,18 +1,32 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
-## M11.5 — bounded resolution, CFG audit, closure and MOVEA transfer
-**Status:** VERIFIED bounded tooling; no semantics inferred. Prior resolution
-examined 390 refs, resolved 294 and left 96; Atlas remains 577 raw unresolved.
-`oasis.m68k.re-cfg-audit.v1` accounts for 80 nonreachable refs in 17 islands.
-`oasis.m68k.re-reachable-closure.v1` accounts for exactly 16 reachable refs:
-14 prior `call_clobber`, 2 stack-unknown `other`, newly resolved 0, after 16.
-The former unsupported boundary is now the exact longword rule
-`MOVEA.L (A7)+,An`: mode 3/A7 to mode 1/An, `An=memory[old A7]`, `A7 += 4`.
-Narrow stack provenance accepts only immediate long push, known-address PEA,
-proven `MOVE.L An,-(A7)` and this pop. USA `0x60BD0` is `20 5F`; both target
-paths cross `BSR 0x60BCC`, so stack value/A7 input remain unknown. No callee,
-ABI, return-address effect, semantic role, dynamic scenario, runtime,
-whole-ROM analysis or M12 work was added.
+## M11.5 — bounded callee-effect audit for `0x60BCC`
+**Status:** VERIFIED bounded raw effect; no semantics inferred. The call-site
+bytes `61 00 F8 EE` at `0x60BCC` decode as direct `BSR.W 0x604BC`; `0x60BCC`
+is not the callee entry. Current decoder evidence bounds the callee as
+`[0x604BC,0x604E6)`: one reachable block, one `RTS` at `0x604E4`, no direct
+nested calls, indirect flow or unsupported instructions. The three static bit
+operations use unresolved `(d16,A6)` references; concrete decoder references
+are at `0x604BC -> 0x00FF0628`, `0x604C8 -> 0x00FF06F2` and
+`0x604DE -> 0x00FF0016`.
+
+The effect table is raw register evidence: A0 `overwritten_unknown` due to
+three `(A0)+` writes; A1-A5 `not_touched`; A6 `overwritten_known`
+`0x00FF06F2`; A7 `preserved`. The callee has no explicit stack operation.
+Timeline: caller A7=P -> BSR pushes return `0x60BD0` at P-4 -> callee runs with
+A7=P-4 -> `RTS` pops that return address and restores P -> caller executes
+`0x60BD0 MOVEA.L (A7)+,A0`, reading an unknown longword at P and incrementing
+A7 by 4. Therefore `0x60BD0` consumes another stack value, not the BSR return
+address. Targets `0x60BFA` and `0x60C08` remain unresolved; 14
+`call_clobber` refs and zero speculative resolutions are unchanged.
+
+The additive developer-only report schema is
+`oasis.m68k.re-callee-effect.v1`; it includes bounded CFG edges, return sites,
+per-register effects, instruction/block-bound memory evidence, unsupported and
+indirect categories, stack timeline and the two target rechecks. The USA oracle
+checks exact bytes/CFG/effects when the local user-supplied ROM is available;
+that ROM was absent in the current workspace. No ABI, recursive callee scan,
+emulator, dynamic tracing, runtime behavior, whole-ROM work or M12 was added.
 Exact reachable addresses: `604EA`, `60BD8`, `60BFA`, `60C08`, `60C1E`, `60C34`,
 `60C4A`, `60C60`, `60C76`, `60C8A`, `60C94`, `60CAA`, `60CC2`, `60D94`, `60DB0`, `60DC8`.
 ## Known hardware addresses
@@ -378,22 +392,15 @@ behavior is inferred or added.
 - The bytes `60 00 04 24` at `0x60004` are `BRA.W +0x0424`; the 68000
   word-displacement target is `0x6042A`. `0x6042C` is the following opcode,
   correcting the earlier ledger wording — **CONFIRMED by oracle**.
-- The deterministic report contains 801 reachable instructions, 109 basic
-  blocks, 72 direct branches, 17 direct calls, 3 absolute ROM references and
-  114 absolute RAM references. Immediate constants are attached to decoded
-  instructions — **VERIFIED by local report**.
-- Direct edges include `0x60004 -> 0x6042A`, `0x60478 -> 0x609C6` and
-  `0x60488 -> 0x60D10`; the report also contains explicit separate arrays for
-  unresolved indirect control flow and unsupported opcodes. Neither category
-  occurs on the current reachable USA slice; synthetic tests cover both —
-  **VERIFIED**.
-- JSON schema `oasis.m68k.re-slice.v1` and the human report are generated from
-  sorted deterministic data. Debug/Release outputs have the same SHA-256 —
-  **VERIFIED**.
-- Decoder coverage is intentionally bounded to opcode families exercised by
-  this slice. It is not a generic 68000 decoder, emulator, whole-ROM
-  recompiler or production runtime dependency. Any unsupported instruction or
-  indirect target must remain explicit — **CONFIRMED design boundary**.
+- The deterministic report contains 801 reachable instructions, 109 blocks,
+  72 direct branches, 17 direct calls, 3 absolute ROM refs and 114 absolute
+  RAM refs with constants attached — **VERIFIED**. Direct edges include
+  `0x60004->0x6042A`, `0x60478->0x609C6`, `0x60488->0x60D10`; indirect and
+  unsupported categories remain separate and empty on this reachable slice.
+- Schema `oasis.m68k.re-slice.v1` and the human report are sorted/deterministic;
+  Debug/Release hashes match. Decoder coverage remains bounded to exercised
+  opcode families, never a generic CPU/emulator/recompiler/runtime dependency;
+  unsupported instructions and indirect targets stay explicit.
 
 **Open questions:** driver command meanings, audio protocol, event/progression
 semantics and the producer caller remain **UNKNOWN**.
@@ -458,13 +465,12 @@ five requested pairs: exact `0x3820->0x37D0`, `0x60004->0x60004`,
 changed block ordinal 10. No semantic identity or behavior is inferred.
 
 ### M11.5 fifth checkpoint — changed block ordinal 10 detail
-**Status:** CONFIRMED raw bounded instruction/CFG evidence. Retail
-`[0xA786,0xA792)` and beta `[0xA736,0xA742)` are 12-byte, 3-instruction
-blocks. Edges correspond as `A6BA->A786`/`A66A->A736`,
-`A78E->A7D4`/`A73E->A784`, and `A78E->A792`/`A73E->A742`. Only
-`2F3C0000A6BE` versus `2F3C0000A66E` differs and is `relocation_only`;
-`4A46` and `6B000044` (condition `0xB`) are identical. Semantics remain
-unknown.
+**Status:** CONFIRMED raw bounded evidence. Retail `[0xA786,0xA792)` and beta
+`[0xA736,0xA742)` are 12-byte blocks; corresponding edges are
+`A6BA->A786`/`A66A->A736`, `A78E->A7D4`/`A73E->A784`, and
+`A78E->A792`/`A73E->A742`. Only `2F3C0000A6BE` vs `2F3C0000A66E` differs
+(`relocation_only`); `4A46` and `6B000044` (condition B) are identical.
+Semantics remain unknown.
 
 ### M11.5 first bounded ROM Atlas prototype
 **Status:** VERIFIED as developer-only aggregation; no semantic names or
@@ -477,23 +483,17 @@ runtime behavior were added. Schema: `oasis.m68k.re-atlas.v1`.
   `[0xD3B2,0xD406)` and the documented 108-entry table
   `[0x5CE96,0x5D046)`. Other entries expose bounded evidence ends without
   claiming function ownership.
-- The report reuses `re_program` for 13 direct call edges, function/block-bound
-  ROM/RAM refs and unresolved/unsupported/indirect categories; `re_diff` for
-  beta correspondence; and `re_trace` for raw A6A4 facts `A7D4->FF2954`,
-  `A7DE->FF2976`, `A7E2->A7E4`. No whole-ROM scan was added.
-- USA/Beta oracle result: 13 entries, 1314 confirmed classified bytes, 6560
-  bounded evidence bytes and zero conflicts. Verified native statuses are
-  limited to previously tested paths at `0x3820`, `0x7A28`, `0x82AE`, `0x938E`
-  and `0x9BF2`; other entries remain unimplemented or unverified.
-- Atlas-driven `oasis.m68k.re-ranking.v1` ranks all 577 static unresolved
-  memory refs by mode/register/family/function frequency and raw candidate
-  flags. USA result: displacement 446, `0x60004` 424, `A6` 387, immediate-based
-  propagation 168, dynamic-scenario candidates 2; unsupported decoder items 4.
-
+- The report reuses `re_program`/`re_diff`/`re_trace` for 13 call edges,
+  function/block-bound refs, beta correspondence and raw A6A4 facts; no
+  whole-ROM scan was added. USA/Beta oracle: 13 entries, 1314 confirmed
+  classified bytes, 6560 bounded bytes and zero conflicts; native statuses
+  remain limited to previously tested paths.
+- Atlas-driven `oasis.m68k.re-ranking.v1` ranks all 577 unresolved refs. USA
+  result: displacement 446, `0x60004` 424, A6 387, immediate propagation 168,
+  dynamic candidates 2 and unsupported decoder items 4.
 **Unknown:** table sizes at `0x96E8`, `0x96F8`, `0xC92C`, bounded ownership,
 unresolved effective addresses and routine semantics remain unknown. Atlas is
 not an emulator, recompiler, whole-ROM map or gameplay runtime dependency.
-
 ## ROM identification implementation
 **Status:** VERIFIED.
 

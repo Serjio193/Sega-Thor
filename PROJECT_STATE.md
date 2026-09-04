@@ -1,12 +1,27 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded MOVEA postincrement transfer support for 0x60BFA/0x60C08
+CURRENT_TASK: M11.5 bounded callee-effect audit for direct callee 0x60BCC
 STATUS: COMPLETE
-LAST_VERIFIED_RESULT: exact MOVEA.L (A7)+,An support preserves 16 reachable unresolved refs: 14 call_clobber and 2 stack-unknown targets; zero speculative resolutions
-NEXT_ACTION: Stop at this verified bounded transfer checkpoint; await explicit instruction
+LAST_VERIFIED_RESULT: direct BSR.W 0x60BCC targets bounded callee 0x604BC; one RTS path preserves A7, leaves 0x60BFA/0x60C08 stack values unknown, and adds zero speculative resolutions
+NEXT_ACTION: Stop at this verified bounded callee-effect checkpoint; await explicit instruction
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: none
+
+## M11.5 bounded callee-effect audit
+- Schema: `oasis.m68k.re-callee-effect.v1`, developer-only and separate from
+  `oasis_core`. The call-site `0x60BCC` is `BSR.W` to actual callee `0x604BC`.
+- Bounded callee: `[0x604BC,0x604E6)`, one reachable block, one return at
+  `0x604E4`, no nested calls, indirect flow or unsupported instructions.
+- A0=`overwritten_unknown` (three `(A0)+` writes), A1-A5=`not_touched`,
+  A6=`overwritten_known(0x00FF06F2)`, A7=`preserved`. Explicit callee stack
+  delta is zero; `RTS` pops the BSR return address and restores caller pre-BSR A7.
+- Raw timeline: caller A7=P; BSR stores return `0x60BD0` at P-4 and A7=P-4;
+  callee has no explicit stack operation; RTS restores P; `0x60BD0` is outside
+  callee and reads unknown longword at P before A7+=4. Both target refs remain
+  unresolved; the 14 `call_clobber` refs are unchanged.
+- Synthetic tests pass. USA oracle is implemented and requires the local user ROM;
+  that ROM was absent in this workspace. No ABI, emulator, recursion or M12.
 
 ## M11.5 bounded MOVEA postincrement transfer checkpoint
 - `oasis.m68k.re-reachable-closure.v1` recognizes only longword `MOVEA.L

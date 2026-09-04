@@ -106,7 +106,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_reachable_closure_format.cpp Deterministic closure JSON/text formatting
 │       ├── re_reachable_stack.hpp Narrow MOVEA postincrement stack API
 │       ├── re_reachable_stack.cpp Bounded push/pop value provenance only
-│       └── re_reachable_closure_report.cpp Local-only USA closure CLI
+│       ├── re_reachable_closure_report.cpp Local-only USA closure CLI
+│       ├── re_callee_effect.hpp Bounded direct-callee register/stack effect API
+│       ├── re_callee_effect.cpp Conservative callee return-effect audit
+│       ├── re_callee_effect_format.cpp Deterministic callee-effect JSON/text formatting
+│       └── re_callee_effect_report.cpp Local-only USA callee-effect CLI
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
@@ -136,7 +140,9 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_cfg_audit_test.cpp                Synthetic CFG-audit classification/island tests
     ├── re_cfg_audit_reference.cpp           Local USA-ROM CFG-audit oracle
     ├── re_reachable_closure_test.cpp        Synthetic backward closure/stack/merge tests
-    └── re_reachable_closure_reference.cpp   Local USA-ROM closure oracle
+    ├── re_reachable_closure_reference.cpp   Local USA-ROM closure oracle
+    ├── re_callee_effect_test.cpp             Synthetic bounded callee-effect tests
+    ├── re_callee_effect_reference.cpp        Local USA-ROM callee-effect oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
     ├── terrain_collision_test.cpp        Synthetic terrain-gate tests
