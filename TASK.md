@@ -49,9 +49,10 @@ static value.
 Validation: Debug, Release and GNU/MinGW-equivalent full CTest 27/27; USA
 stack-provenance oracle and prior natural oracle pass; deterministic A/B JSON
 and human reports match; file-limit and `git diff --check` pass. No ROM,
-emulator binary, savestate or raw trace is tracked. GitHub CI is pending the
-focused implementation commit. This checkpoint is complete with the bounded
-BizHawk writer-width limitation documented.
+emulator binary, savestate or raw trace is tracked. GitHub Actions CI run
+`33874638457` for implementation commit `ea14f898d93f3508b877ce1f059f7926cfebe2cd`
+completed successfully. This checkpoint is complete with the bounded BizHawk
+writer-width limitation documented.
 
 ## Natural caller search result
 

@@ -2,6 +2,14 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+## 2026-09-04 — M11.5 bounded runtime stack-value provenance CI follow-up
+RESULT: GitHub Actions CI run `33874638457` for implementation commit
+`ea14f898d93f3508b877ce1f059f7926cfebe2cd` completed successfully. The focused
+checkpoint is synchronized to GitHub; no code or scope change was made.
+UNKNOWN/NEXT: BizHawk writer callback width and scenario-to-scenario invariance
+remain UNKNOWN. Push the documentation result if needed, verify final
+`main==origin/main` and clean status, then STOP.
+
 ## 2026-09-04 — M11.5 bounded runtime stack-value provenance completed
 TASK/SCOPE: capture only the runtime stack chain on the already proven
 `start_pulse_120` / `120:Start` hardware-reset path. No `0x60D4A` search,
@@ -32,8 +40,8 @@ report SHA-256 is
 match byte-for-byte.
 TESTS: Debug, Release and GNU/MinGW-equivalent full CTest 27/27; stack and
 prior natural USA oracles pass; file-limit and `git diff --check` pass. No ROM,
-emulator binary, savestate or raw trace is tracked. CI is pending the focused
-implementation commit.
+emulator binary, savestate or raw trace is tracked. CI was pending at the time
+of this entry and is recorded as successful in the follow-up entry above.
 RESULT/UNKNOWN: the previous scenario path had `memory[P]` UNKNOWN; it is now
 concrete only for this controlled runtime scenario. Writer callback width,
 cross-scenario invariance, full instruction trace, downstream references and

@@ -30,7 +30,8 @@ role or global invariance is inferred from the scenario-local writer chain
   final longword reconstruction is recorded as bounded raw evidence only.
 - Debug/Release/GNU full CTest are 27/27; USA oracle, deterministic A/B report,
   file-limit and diff-check pass. No ROM/emulator/savestate/raw trace is
-  tracked. This is a scenario-local runtime fact, not a static/global resolve.
+  tracked. GitHub Actions CI run `33874638457` for `ea14f89` passed. This is a
+  scenario-local runtime fact, not a static/global resolve.
 
 ## M11.5 bounded natural reachability search
 - Reused the frozen hardware-reset USA scenario and existing BizHawk Lua probe;

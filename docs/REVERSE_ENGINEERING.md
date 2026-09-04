@@ -41,8 +41,8 @@ SHA-256 values are respectively
 between A/B. `0x60BFA` and `0x60C08` are recorded only as reached plus raw
 boundary events; their memory references are not resolved. The result is a
 concrete value for this scenario, not a static constant. Debug/Release/GNU
-CTest, USA oracle, file-limit and diff-check pass; CI follows the focused
-implementation commit.
+CTest, USA oracle, file-limit and diff-check pass; GitHub Actions CI run
+`33874638457` for the focused implementation commit passed.
 
 ## M11.5 — bounded natural reachability search for `0x60B8C` / `0x60D4A`
 **Status:** VERIFIED for one bounded natural caller path, developer-only. This
