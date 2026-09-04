@@ -3,6 +3,21 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-04 — M11.5 CI portability follow-up
+TASK: address the first Linux CI failure without changing the mass-verification
+measurement or its serialized output.
+WHY: the initial implementation passed the local Debug, Release and
+GNU/LLVM-MinGW gates but GitHub Actions failed during its Ubuntu build step.
+IMPLEMENTATION: added the direct `<iterator>` include required by the
+formatter's `std::size` call. No algorithm, classification, report field or
+production target changed.
+TESTS/VALIDATION: Debug, Release and GNU/LLVM-MinGW builds plus full CTest
+29/29 passed locally after the include-only fix. Ubuntu CI result is pending
+for the follow-up commit. WSL/Linux remains unavailable locally.
+STATUS: READY FOR CI RECHECK.
+EXACT NEXT ACTION: push this focused portability fix and wait for the Ubuntu
+workflow result before declaring the checkpoint complete.
+
 ## 2026-09-04 — M11.5 Mass Structural Verification Pass v1 completed
 TASK: batch-verify every normalized candidate-map entry with the existing
 project-specific bounded decoder and Atlas evidence, cluster blockers and
