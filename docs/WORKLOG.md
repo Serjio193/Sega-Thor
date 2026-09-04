@@ -33,7 +33,9 @@ equivalent CTest 27/27 passed; local USA natural oracle passed against the
 canonical ROM and report; natural A/B JSON, trace and imported JSON hashes are
 equal; `git diff --check` and file-limit passed. The normalized report records
 114 events, 22 unique PCs, 0 inferred blocks and 0 inferred branch/call/return/
-memory events, as required by its bounded coverage mode.
+memory events, as required by its bounded coverage mode. GitHub Actions CI run
+`33868387017` completed successfully for implementation commit
+`461ddb18d2e2f9618c2253910ae8918983a48c9b`.
 NEXT: commit this focused checkpoint, push after the AGENTS pre-push gate is
 green, verify GitHub CI, record its result, push the documentation-only CI
 update, then STOP and await explicit work.

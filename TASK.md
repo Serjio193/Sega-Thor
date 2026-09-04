@@ -10,7 +10,7 @@ exact source instruction and callee state remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 hardware-reset scenario reaches `0x6121A` at frame 113 (114 frames executed), with two exact target-hook hits and identical A/B reports
+LAST_VERIFIED_RESULT: frozen neutral-input BizHawk 2.11.1 hardware-reset scenario reaches `0x6121A` at frame 113 (114 frames executed), with two exact target-hook hits, identical A/B reports, and GitHub CI run `33868387017` successful
 NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
 BLOCKERS: the exact instruction before `0x6121A` is not observable from the target hook; frame-boundary PC `0x6135E` is not caller evidence; `0x60B8C`, `0x60D4A`, `0x60BCC`, `0x60BD0`, `0x60BFA` and `0x60C08` were not observed in this scenario
 

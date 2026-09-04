@@ -3,7 +3,7 @@
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 bounded natural reachability scenario for 0x6121A
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario reached 0x6121A at frame 113 with identical A/B reports
+LAST_VERIFIED_RESULT: frozen neutral hardware-reset BizHawk scenario reached 0x6121A at frame 113 with identical A/B reports; GitHub CI `33868387017` passed
 NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
 BLOCKERS: exact pre-target instruction/caller and stack provenance are not exposed by the bounded target hook; secondary watched targets were not reached
