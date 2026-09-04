@@ -133,6 +133,22 @@ local function read_long(address)
         ((bytes[3] & 0xFF) << 8) | (bytes[4] & 0xFF)
 end
 
+local function read_byte(address)
+    if not address then return nil end
+    local ok, bytes = pcall(memory.read_bytes_as_array, address, 1, "M68K BUS")
+    if not ok or not bytes or #bytes < 1 then return nil end
+    return bytes[1] & 0xFF
+end
+
+local function address_class(address)
+    if not address then return "UNKNOWN" end
+    if address <= 0x3FFFFF then return "ROM" end
+    if address >= 0xFF0000 and address <= 0xFFFFFF then return "RAM" end
+    if address >= 0xA00000 and address <= 0xA0FFFF then return "hardware/register" end
+    if address >= 0xC00000 and address <= 0xC0001F then return "hardware/register" end
+    return "invalid/out-of-range"
+end
+
 local function stack_json(value)
     if not value then return "null" end
     local values = {}
@@ -154,11 +170,21 @@ end
 
 local function event_json(value)
     if not value then return "null" end
-    return '{"sequence":' .. value.sequence .. ',"frame":' .. value.frame ..
+    local result = '{"sequence":' .. value.sequence .. ',"frame":' .. value.frame ..
         ',"pc":' .. json(hex(value.pc)) .. ',"kind":' .. json(value.kind) ..
         ',"registers":' .. snapshot_json(value.registers) ..
         ',"a7":' .. optional_hex(value.registers.a[8]) ..
-        ',"stack_window":' .. stack_json(value.stack) .. '}'
+        ',"stack_window":' .. stack_json(value.stack)
+    if value.resolved_effective_address then
+        local instruction_bytes = value.pc == 0x60BFA and "16 28 00 01" or "14 28 00 01"
+        local instruction = value.pc == 0x60BFA and "MOVE.B 1(A0),D3" or "MOVE.B 1(A0),D2"
+        result = result .. ',"instruction_bytes":' .. json(instruction_bytes) .. ',"instruction":' .. json(instruction) ..
+            ',"addressing_mode":"d8(A0)","direction":"read","base_register":"A0","base_value":' .. optional_hex(value.base_value) ..
+            ',"displacement":1,"access_width_bytes":1,"access":"read","resolved_effective_address":' ..
+            optional_hex(value.resolved_effective_address) .. ',"address_class":' .. json(value.address_class) ..
+            ',"raw_value":' .. optional_hex(value.raw_value) .. ',"resolution_scope":"scenario_only","static_global":false,"resolution_status":"runtime_resolved_for_scenario","confidence":"CONFIRMED"'
+    end
+    return result .. '}'
 end
 
 local function register_delta(before, after)
@@ -193,6 +219,12 @@ local function capture(address, kind)
     local registers = snapshot()
     local value = { sequence = sequence, frame = frame, pc = address, kind = kind,
         registers = registers, stack = stack_window(registers.a[8]) }
+    if address == 0x60BFA or address == 0x60C08 then
+        value.base_value = registers.a[1]
+        value.resolved_effective_address = value.base_value and value.base_value + 1 or nil
+        value.address_class = address_class(value.resolved_effective_address)
+        value.raw_value = read_byte(value.resolved_effective_address)
+    end
     sequence = sequence + 1
     events[#events + 1] = value
     return value
@@ -303,6 +335,11 @@ output:write("stop_condition=" .. scenario.stop_condition .. "\nframes_executed=
 for _, value in ipairs(events) do
     output:write(string.format("event seq=%d frame=%d pc=%s kind=%s a7=%s\n",
         value.sequence, value.frame, hex(value.pc), value.kind, hex(value.registers.a[8])))
+    if value.resolved_effective_address then
+        output:write(string.format("target pc=%s base=A0:%s displacement=1 effective=%s class=%s raw=%s\n",
+            hex(value.pc), hex(value.base_value), hex(value.resolved_effective_address), value.address_class,
+            value.raw_value and hex(value.raw_value) or "UNKNOWN"))
+    end
 end
 for _, value in ipairs(writer_events_before_pre) do
     output:write(string.format("writer seq=%d frame=%d pc=%s address=%s value=%s width=%s\n",
@@ -341,6 +378,7 @@ report:write('{"schema":"oasis.m68k.re-stack-runtime-provenance.v1","scenario_id
     ',"stack_writer_instruction_60b66":' .. event_json(stack_writer_instruction_60b66) ..
     ',"writer_event_count_before_pre_60bcc":' .. writer_events_before_pre_total ..
     ',"static_60bcc":{"bytes":"61 00 F8 EE","target":"0x000604BC","return_address":"0x00060BD0"},"static_60bd0_bytes":"20 5F"' ..
+    ',"static_targets":{"0x60BFA":{"instruction_bytes":"16 28 00 01","instruction":"MOVE.B 1(A0),D3","addressing_mode":"d8(A0)","base_register":"A0","displacement":1,"access_width_bytes":1,"direction":"read"},"0x60C08":{"instruction_bytes":"14 28 00 01","instruction":"MOVE.B 1(A0),D2","addressing_mode":"d8(A0)","base_register":"A0","displacement":1,"access_width_bytes":1,"direction":"read"}}' ..
     ',"path":' .. path .. ',' .. field_event("caller_60b8c", caller_60b8c) .. ',' ..
     field_event("return_continuation_60b90", return_60b90) ..
     ',"caller_to_return_delta":' .. delta_json(caller_return_delta) ..

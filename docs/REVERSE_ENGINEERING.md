@@ -1,5 +1,42 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+
+## M11.5 — bounded downstream runtime resolution at `0x60BFA` / `0x60C08`
+**Status:** VERIFIED as scenario-only runtime evidence, developer-only. Static
+global unresolved status is unchanged and no semantic field names are assigned.
+
+Canonical-USA static verification found:
+
+| PC | bytes | instruction | mode | base | displacement | width | direction |
+|---|---|---|---|---|---:|---:|---|
+| `0x60BFA` | `16 28 00 01` | `MOVE.B 1(A0),D3` | `d8(A0)` | A0 | 1 | 1 | read |
+| `0x60C08` | `14 28 00 01` | `MOVE.B 1(A0),D2` | `d8(A0)` | A0 | 1 | 1 | read |
+
+The frozen `start_pulse_120` / `120:Start` hardware-reset scenario under
+BizHawk 2.11.1 reaches both targets at frame 423. The earlier stack consume
+produces A0=`0x0006F8AE` at `0x60BD2`, but A0 changes before these targets;
+the old value is therefore not a target-base invariant.
+
+| PC | sequence | SR | relevant D registers | A0 | A7 | effective address | class | raw byte |
+|---|---:|---|---|---|---|---|---|---|
+| `0x60BFA` | 891 | `0x00002704` | D2=`0x00000100`, D3=`0x00000000` | `0x0006F8B0` | `0x00FF0BAC` | `0x0006F8B1` | ROM | `0x13` |
+| `0x60C08` | 892 | `0x00002704` | D2=`0x00000000`, D3=`0x00070BCD` | `0x0006F8B2` | `0x00FF0BAC` | `0x0006F8B3` | ROM | `0x00` |
+
+Full snapshots remain in the report. D0-D7 at `0x60BFA` are
+`54,6F8AE,100,0,940F0EEE,60000000,0,FFFF`; at `0x60C08` they are
+`54,6F8AE,0,70BCD,940F0EEE,60000000,0,FFFF`. A0-A7 are respectively
+`6F8B0,C00,FF316C,FF136C,0,FF001A,FF06F2,FF0BAC` and
+`6F8B2,C00,FF316C,FF136C,0,FF001A,FF06F2,FF0BAC`.
+
+Both targets are `runtime_resolved_for_scenario` with
+`resolution_scope=scenario_only`, confidence `CONFIRMED`, and
+`static_global=false`. Two fresh reports are byte-identical: JSON SHA-256
+`CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91`; human
+trace SHA-256 `34717649BB6DA2C389180A994DE226715F51739036A742BDCDD6B573B7FDE0C4`.
+The relevant previous unresolved count is two target rechecks; two are now
+scenario-resolved and zero are globally resolved. Global invariance is not
+proven. Writer callback width and semantic role remain UNKNOWN.
+
 ## M11.5 — bounded runtime stack-value provenance for the `0x60B8C` path
 **Status:** VERIFIED as bounded runtime evidence, developer-only, with writer
 callback width UNKNOWN. No semantic role is assigned to the observed value.

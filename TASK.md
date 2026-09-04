@@ -1,26 +1,36 @@
 # Current Task
 
-TASK: M11.5 bounded runtime stack-value provenance for the 0x60B8C path
+TASK: M11.5 bounded downstream runtime resolution for 0x60BFA/0x60C08
 WHY: capture concrete runtime evidence for the already reached stack value at
 the bounded 0x60BCC / 0x60BD0 sequence without inferring semantics.
 CURRENT MILESTONE: M11.5 follow-up under M11
 MILESTONE UNDERSTANDING CONFIDENCE: 95%
-CURRENT SLICE UNDERSTANDING CONFIDENCE: 96% for the observed raw runtime
-stack chain; writer callback width and global value invariance remain unknown
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 98% for the observed target decode,
+register-derived effective addresses and raw bytes; cross-scenario invariance
+and writer callback width remain unknown
 SLICE MODE: RE_TOOLING_ONLY
 STATUS: COMPLETE_WITH_LIMITATIONS
 
-LAST_VERIFIED_RESULT: the frozen `start_pulse_120` / `120:Start` BizHawk 2.11.1
-run reaches `0x60B8C`, `0x6121A`, `0x60B90`, `0x60BCC`, `0x604BC`, `0x604E4`,
-`0x60BD0`, `0x60BFA` and `0x60C08`. At `0x60BCC`, P=`0x00FF0BA8` and
-memory[P]=`0x0006F8AE`; the callee entry A7 is P-4, RTS restores P, and
-`0x60BD0` consumes that longword into A0 while advancing A7 by 4. Two fresh
-replays are byte-identical: JSON SHA-256
-`EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D`.
-NEXT_ACTION: STOP; await an explicitly requested bounded evidence task
-BLOCKERS: BizHawk bus-write callbacks do not expose write width; the concrete
-writer is correlated to static `0x60B66 MOVE.L A0,-(A7)` and its two observed
-bus writes, but no global invariant or semantic role is claimed
+LAST_VERIFIED_RESULT: the frozen scenario reaches `0x60BFA` and `0x60C08` at
+frame 423. Actual A0 is `0x0006F8B0` / `0x0006F8B2`, so the byte reads resolve
+to ROM `0x0006F8B1`=`0x13` / `0x0006F8B3`=`0x00`. A0 differs from the earlier
+post-`0x60BD0` `0x0006F8AE`; this is scenario-only evidence. Fresh A/B JSON
+SHA-256: `CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91`.
+NEXT_ACTION: commit/push, verify CI, then STOP
+BLOCKERS: writer callback width, semantic role and cross-scenario invariance
+remain unknown
+
+## Current checkpoint result — downstream runtime resolution
+
+Both static operations were independently verified against the canonical USA
+ROM: `0x60BFA` bytes `16 28 00 01`, `MOVE.B 1(A0),D3`; `0x60C08` bytes
+`14 28 00 01`, `MOVE.B 1(A0),D2`. BizHawk 2.11.1 captures full D0-D7/A0-A7/SR
+snapshots at both boundaries. The report records effective addresses derived
+from actual A0 plus displacement 1, ROM classification, raw byte values,
+`resolution_scope=scenario_only` and `resolution_status=runtime_resolved_for_scenario`.
+
+The previous relevant unresolved count is 2 target rechecks; 2 are now
+scenario-resolved and 0 are globally resolved. Global invariance is not proven.
 
 ## Current checkpoint result — bounded runtime stack provenance
 

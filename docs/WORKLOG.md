@@ -2,6 +2,35 @@
 Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
+
+## 2026-09-04 — M11.5 bounded downstream runtime resolution completed
+TASK: resolve only the already reached downstream memory operations at
+`0x60BFA` and `0x60C08` on frozen `start_pulse_120` / `120:Start`.
+WHY: determine whether the observed stack-derived A0 is sufficient for these
+two references without inferring global invariance or semantics.
+ACCEPTANCE: reverify USA bytes/decoding; capture full BizHawk register state,
+A0 and memory at both boundaries; compute effective addresses and address
+classes from actual registers; compare two fresh runs; preserve the
+scenario-only/global distinction; update the RE ledger and oracle.
+EVIDENCE: USA bytes are `16 28 00 01` (`MOVE.B 1(A0),D3`) at `0x60BFA` and
+`14 28 00 01` (`MOVE.B 1(A0),D2`) at `0x60C08`. BizHawk 2.11.1 reaches both
+at frame 423 with A0=`0x0006F8B0` / `0x0006F8B2`, not the earlier consumed
+`0x0006F8AE`. Effective addresses are ROM `0x0006F8B1` / `0x0006F8B3`, with
+raw bytes `0x13` / `0x00`.
+RESULT: both targets are `runtime_resolved_for_scenario`; neither is
+`static_global`. Fresh A/B JSON and human reports are byte-identical with
+hashes `CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91`
+and `34717649BB6DA2C389180A994DE226715F51739036A742BDCDD6B573B7FDE0C4`.
+The two target rechecks were the relevant previous unresolved count: two are
+scenario-resolved, zero globally resolved. No recursive writer chase or M12
+work was started.
+UNKNOWN/NEXT: A0 invariance across other paths, writer callback width and
+semantic meaning remain UNKNOWN. VALIDATION: Debug, Release and GNU/MinGW
+builds and sequential full CTest are 27/27 in each configuration; all three
+USA stack-provenance oracles pass; BizHawk A/B JSON and text captures match;
+file-limit, `git diff --check` and tracked-ROM/emulator hygiene pass.
+NEXT: commit/push, verify GitHub CI and then STOP at this bounded checkpoint.
+
 ## 2026-09-04 — M11.5 bounded runtime stack-value provenance CI follow-up
 RESULT: GitHub Actions CI run `33874638457` for implementation commit
 `ea14f898d93f3508b877ce1f059f7926cfebe2cd` completed successfully. The focused

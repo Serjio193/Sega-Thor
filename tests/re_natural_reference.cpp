@@ -61,6 +61,12 @@ int main(int argc, char** argv) {
                 "MOVEA stack-consume bytes mismatch");
         require(bytes[0x60B66U] == 0x2F && bytes[0x60B67U] == 0x08,
                 "stack writer bytes mismatch");
+        const std::uint8_t target_bfa[] = {0x16, 0x28, 0x00, 0x01};
+        const std::uint8_t target_c08[] = {0x14, 0x28, 0x00, 0x01};
+        for (std::size_t index = 0; index < 4; ++index) {
+            require(bytes[0x60BFAU + index] == target_bfa[index], "0x60BFA bytes mismatch");
+            require(bytes[0x60C08U + index] == target_c08[index], "0x60C08 bytes mismatch");
+        }
         const auto report = read_text(argv[3]);
         require(report.find("oasis.m68k.natural-reach.v1") != std::string::npos ||
                     report.find("oasis.m68k.re-stack-runtime-provenance.v1") != std::string::npos,
@@ -94,6 +100,12 @@ int main(int argc, char** argv) {
                     "0x60BFA raw boundary evidence missing");
             require(report.find("\"target_60c08_reached\":true,\"target_60c08_event\":{") != std::string::npos,
                     "0x60C08 raw boundary evidence missing");
+            require(report.find("\"static_targets\":{\"0x60BFA\":{\"instruction_bytes\":\"16 28 00 01\",\"instruction\":\"MOVE.B 1(A0),D3\",\"addressing_mode\":\"d8(A0)\",\"base_register\":\"A0\",\"displacement\":1,\"access_width_bytes\":1,\"direction\":\"read\"},\"0x60C08\":{\"instruction_bytes\":\"14 28 00 01\",\"instruction\":\"MOVE.B 1(A0),D2\"") != std::string::npos,
+                    "target static instruction metadata mismatch");
+            require(report.find("\"instruction_bytes\":\"16 28 00 01\",\"instruction\":\"MOVE.B 1(A0),D3\",\"addressing_mode\":\"d8(A0)\",\"direction\":\"read\",\"base_register\":\"A0\",\"base_value\":\"0x0006F8B0\",\"displacement\":1,\"access_width_bytes\":1,\"access\":\"read\",\"resolved_effective_address\":\"0x0006F8B1\",\"address_class\":\"ROM\",\"raw_value\":\"0x00000013\",\"resolution_scope\":\"scenario_only\",\"static_global\":false,\"resolution_status\":\"runtime_resolved_for_scenario\",\"confidence\":\"CONFIRMED\"") != std::string::npos,
+                    "0x60BFA runtime resolution mismatch");
+            require(report.find("\"instruction_bytes\":\"14 28 00 01\",\"instruction\":\"MOVE.B 1(A0),D2\",\"addressing_mode\":\"d8(A0)\",\"direction\":\"read\",\"base_register\":\"A0\",\"base_value\":\"0x0006F8B2\",\"displacement\":1,\"access_width_bytes\":1,\"access\":\"read\",\"resolved_effective_address\":\"0x0006F8B3\",\"address_class\":\"ROM\",\"raw_value\":\"0x00000000\",\"resolution_scope\":\"scenario_only\",\"static_global\":false,\"resolution_status\":\"runtime_resolved_for_scenario\",\"confidence\":\"CONFIRMED\"") != std::string::npos,
+                    "0x60C08 runtime resolution mismatch");
             require(report.find("\"deterministic\":true") != std::string::npos,
                     "stack provenance determinism missing");
             std::cout << "verified natural USA stack-provenance oracle for 0x60B8C\n";

@@ -1,16 +1,31 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 bounded runtime stack-value provenance for the 0x60B8C path
+CURRENT_TASK: M11.5 bounded downstream runtime resolution for 0x60BFA/0x60C08
 STATUS: COMPLETE_WITH_LIMITATIONS
-LAST_VERIFIED_RESULT: frozen start_pulse_120 reaches the bounded chain through
-0x60BCC/0x604BC/0x60BD0 and both requested downstream boundaries; P=0x00FF0BA8,
-memory[P]=0x0006F8AE, post-MOVEA A0=0x0006F8AE and A7=0x00FF0BAC; A/B JSON
-SHA-256 EFB30EEBF3EE0CEE929A02075088D684A2900B0DAFA192BC00390E484A846D0D
-NEXT_ACTION: stop at this checkpoint; await an explicitly scoped bounded RE task
+LAST_VERIFIED_RESULT: frozen start_pulse_120 reaches both targets at frame 423;
+actual target A0 values are 0x0006F8B0 and 0x0006F8B2, resolving ROM effective
+addresses 0x0006F8B1/0x0006F8B3 with raw bytes 0x13/0x00. A0 differs from the
+earlier post-MOVEA value 0x0006F8AE, so no old-value invariance is claimed.
+Fresh A/B JSON SHA-256 CF092C8B91BD2FDA858E3E165A75D3A891F8B90997D6F3E839A65FD053C97D91
+matched.
+NEXT_ACTION: commit/push, verify CI, then stop
 DO_NOT_WORK_ON: M12+, Thor 2, Saturn support, remaster features, speculative dialogue or event semantics
-BLOCKERS: BizHawk concrete bus-write callbacks do not expose width; no semantic
-role or global invariance is inferred from the scenario-local writer chain
+BLOCKERS: BizHawk concrete bus-write callbacks do not expose writer width;
+semantic role and cross-scenario A0 invariance remain unknown
+
+## M11.5 bounded downstream runtime resolution
+- Static USA bytes/decode were independently rechecked: `0x60BFA` is
+  `MOVE.B 1(A0),D3` (`16 28 00 01`) and `0x60C08` is `MOVE.B 1(A0),D2`
+  (`14 28 00 01`), both byte reads through `d8(A0)` with displacement 1.
+- The existing developer-only BizHawk probe now records target static metadata,
+  full boundary snapshots, actual A0-derived effective addresses, raw bytes,
+  address class, and explicit `scenario_only` resolution status.
+- At frame 423, target A0 is `0x0006F8B0` / `0x0006F8B2`, yielding ROM
+  `0x0006F8B1`=`0x13` and `0x0006F8B3`=`0x00`. The old consumed value
+  `0x0006F8AE` is not the target base and is not promoted to an invariant.
+- Two fresh A/B JSON and text captures match byte-for-byte. Previous relevant
+  unresolved count is 2; scenario-resolved now 2; globally resolved now 0.
 
 ## M11.5 bounded runtime stack-value provenance
 - Added only the developer-only BizHawk probe
