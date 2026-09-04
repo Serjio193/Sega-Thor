@@ -34,8 +34,8 @@ capabilities were not probed. Generated traces, emulator files and ROM remain
 ignored and untracked.
 TESTS: fresh Debug/Release/GNU-equivalent CTest passed 26/26 in each
 configuration. ROM imports passed; BizHawk C/D and MAME E/F normalized replay
-streams matched. Source file-limit and `git diff --check` passed. CI remains
-the only post-push gate.
+streams matched. Source file-limit and `git diff --check` passed. GitHub Actions
+CI run `33864901965` for implementation commit `9f487ac` passed successfully.
 NEXT: complete the local gate, commit this focused bake-off, push to GitHub,
 wait for CI, record the CI result, push the documentation-only CI update, and
 STOP. Do not expand tracing scope without explicit instruction.
