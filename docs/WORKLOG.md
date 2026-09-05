@@ -37,11 +37,13 @@ TESTS: Debug CTest 32/32, Release CTest 32/32 and GNU/MinGW-equivalent CTest
 32/32 passed, including the queue contract and project file-limit tests.
 `git diff --check` and the tracked sensitive-artifact check passed; WSL has no
 installed Linux distribution, so a native Linux run was unavailable.
+CI: GitHub Actions run `33963041522` for implementation commit `cb1c78b`
+completed successfully.
 UNKNOWNS: the fallback jobs remain naturally unreachable under the bounded
 neutral scenario; no forced state, random input or semantic interpretation was
 introduced. No ADR is required because the project direction is unchanged.
-EXACT NEXT ACTION: run the final validation gate, commit/push, verify CI, then
-hard stop before parallelism or M12.
+EXACT NEXT ACTION: record the successful CI result in this worklog, push the
+docs-only update, verify its CI, then hard stop before parallelism or M12.
 
 ## 2026-09-05 — M11.5 sequential ant queue PoC started
 TASK: extend the completed single-ant loop to one frozen bounded queue of five

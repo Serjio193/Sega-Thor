@@ -43,8 +43,12 @@ Batch merge accepted three dynamic edges and one explorer rerun changed
 instruction bytes `60916 -> 61506`, decoded instructions `19623 -> 19765`,
 entries processed `537 -> 541`, unresolved indirects `35 -> 32`, and frontiers
 `148 -> 145`. Production runtime remains unchanged.
-EXACT NEXT ACTION: commit, push, verify CI, then STOP. Do not schedule another
-frontier job, add parallelism, or begin M12.
+VALIDATION: local Debug/Release/GNU-equivalent CTest 32/32 passed; GitHub
+Actions CI run `33963041522` for implementation commit `cb1c78b` completed
+successfully. WSL has no installed Linux distribution, so native Linux
+validation remains unavailable.
+EXACT NEXT ACTION: hard stop. Do not schedule another frontier job, add
+parallelism, or begin M12.
 
 TASK: M11.5 Single Ant Closed-Loop PoC v1
 WHY: prove one real indirect frontier can become a deterministic natural

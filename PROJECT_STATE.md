@@ -12,7 +12,8 @@ observations resolved `0x045A -> 0x307A`, `0x61F60 -> 0x6211A` and
 Batch merge added three `DYNAMIC_NATURAL` edges. Explorer metrics changed
 `60916 -> 61506` instruction bytes, `19623 -> 19765` decoded instructions and
 `148 -> 145` frontiers. A/B normalized evidence was identical.
-NEXT_ACTION: commit/push and verify CI, then STOP.
+NEXT_ACTION: hard stop. Implementation commit `cb1c78b` is pushed and GitHub
+Actions CI run `33963041522` completed successfully.
 DO_NOT_WORK_ON: parallel workers, scheduler, swarm, mass queue, savestate farm,
 random input, state signatures, production runtime, semantics or M12+
 
