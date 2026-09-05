@@ -62,6 +62,11 @@ struct AntResult {
     std::string backend_version;
     std::string rom_sha256;
     AntReachabilityClass reachability_class{AntReachabilityClass::forced};
+    std::string scenario_id;
+    std::string input_events;
+    std::string input_policy;
+    std::string checkpoint_reference;
+    std::string worker_run_id;
     std::uint32_t source_entry{};
     std::uint32_t source_pc{};
     std::optional<AntObservation> observed;
@@ -84,6 +89,11 @@ struct AntMerge {
 
 [[nodiscard]] AntJob make_ant_job(const FrontierRecord& frontier, std::string rom_sha256,
                                   std::size_t rom_size, std::string backend_version);
+[[nodiscard]] AntJob make_ant_job_for_scenario(
+    const FrontierRecord& frontier, std::string rom_sha256, std::size_t rom_size,
+    std::string backend_version, std::string scenario_id,
+    std::string input_events, std::size_t max_frames,
+    std::size_t max_steps = 3000000);
 [[nodiscard]] std::optional<FrontierRecord> select_ant_frontier(
     std::string_view explore_json, std::uint32_t source_pc);
 [[nodiscard]] AntJob parse_ant_job(std::string_view json);

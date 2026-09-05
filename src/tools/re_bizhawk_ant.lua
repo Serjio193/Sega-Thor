@@ -46,10 +46,16 @@ local function snapshot()
     return result
 end
 
+local instruction_byte_count = 0
+local instruction_byte_text = job:match('"instruction_bytes":%[([^]]*)%]') or ""
+for _ in instruction_byte_text:gmatch("%d+") do instruction_byte_count = instruction_byte_count + 1 end
+
 local function bytes_at(address)
-    local ok, values = pcall(memory.read_bytes_as_array, address, 2, "M68K BUS")
-    if not ok or not values or #values < 2 then return {} end
-    return { values[1] & 0xFF, values[2] & 0xFF }
+    local ok, values = pcall(memory.read_bytes_as_array, address, instruction_byte_count, "M68K BUS")
+    if not ok or not values or #values < instruction_byte_count then return {} end
+    local result = {}
+    for index = 1, instruction_byte_count do result[index] = values[index] & 0xFF end
+    return result
 end
 
 local function bytes_json(values)
@@ -81,6 +87,11 @@ local rom_size = tonumber(required("rom_size"))
 local job_id = required("job_id")
 local frontier_id = required("frontier_id")
 local rom_sha256 = required("rom_sha256")
+local scenario_id = required("scenario_id")
+local input_events = field("input_events") or ""
+local input_policy = field("allowed_input_policy") or "neutral_only"
+local checkpoint_reference = field("checkpoint_reference") or "none"
+local worker_run_id = os.getenv("OASIS_WORKER_RUN_ID") or "single-ant"
 local backend_version = client.getversion()
 local started = os.clock()
 local frame = 0
@@ -89,6 +100,18 @@ local instructions = 0
 local source = nil
 local next_pc = nil
 local stopped = false
+local inputs = {}
+for item in input_events:gmatch("[^,]+") do
+    local event_frame, buttons = item:match("(%d+):(.+)")
+    if not event_frame then error("malformed ant input event: " .. item) end
+    inputs[tonumber(event_frame)] = buttons
+end
+
+local function button_map(value)
+    local result = {}
+    for button in (value or ""):gmatch("[^+]+") do result["P1 " .. button] = true end
+    return result
+end
 
 event.on_bus_exec_any(function(address)
     if stopped then return end
@@ -105,7 +128,7 @@ event.on_bus_exec_any(function(address)
 end)
 
 while frame < max_frames and instructions < max_steps and not stopped do
-    joypad.set({}, 1)
+    joypad.set(button_map(inputs[frame]), 1)
     emu.frameadvance()
     frame = frame + 1
 end
@@ -121,7 +144,10 @@ local hash_input = job_id .. "|" .. tostring(source_pc) .. "|" .. target_text ..
 local output = assert(io.open(result_path, "w"))
 output:write('{"schema":"oasis.m68k.re-ant-result.v1","job_id":' .. json(job_id) .. ',"frontier_id":' .. json(frontier_id) ..
     ',"status":' .. json(status) .. ',"backend":"bizhawk","backend_version":' .. json(backend_version) ..
-    ',"rom_sha256":' .. json(rom_sha256) .. ',"reachability_class":"DYNAMIC_NATURAL","source_entry":' .. json(hex(number("source_entry"))) ..
+    ',"rom_sha256":' .. json(rom_sha256) .. ',"reachability_class":"DYNAMIC_NATURAL","scenario_id":' .. json(scenario_id) ..
+    ',"input_events":' .. json(input_events) .. ',"input_policy":' .. json(input_policy) ..
+    ',"checkpoint_reference":' .. json(checkpoint_reference) .. ',"worker_run_id":' .. json(worker_run_id) ..
+    ',"source_entry":' .. json(hex(number("source_entry"))) ..
     ',"source_pc":' .. json(hex(source_pc))
     .. (source and ',"observed_actual_pc":' .. json(hex(source.pc)) .. ',"observed_instruction":' .. json(required("instruction")) ..
         ',"instruction_bytes":' .. bytes_json(source.bytes) .. ',"observed_next_pc":' .. json(hex(target)) ..

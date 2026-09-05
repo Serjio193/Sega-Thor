@@ -3,6 +3,69 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-05 — M11.5 sequential ant queue PoC completed
+TASK: process exactly five frozen `oasis.m68k.re-ant-job.v1` jobs through one
+sequential BizHawk worker and batch-merge accepted natural observations.
+IMPLEMENTATION: added the developer-only `oasis.m68k.re-ant-queue.v1` model,
+deterministic frontier ranking, bounded lifecycle/claim/recovery/finalize API,
+queue CLI, queue contract tests and provenance-aware input/result fields in the
+existing ant worker. The queue is frozen at five jobs and refuses additions;
+only one job may be `CLAIMED`. Duplicate suppression and stale-claim recovery
+are covered synthetically. Production runtime is unchanged.
+QUEUE: `queue-0x4C23AB2632531710`, initial queue SHA-256
+`DC3FC952C6B7682E7F8E28F0180F4C1E3AC9A5D2B55187F92B1E55AE71D97EA6`.
+Selection ranked observed neutral frontiers first (`0x045A`, `0x61F60`,
+`0x62878`), then stable-address fallbacks (`0x0790`, `0x5328`).
+A/B: both runs used the identical frozen queue, one BizHawk process at a time
+with a process restart between jobs. Three jobs resolved to `0x307A`, `0x6211A`
+and `0x62900`; two ended `FAILED_FINAL` with `NOT_REACHED`. The normalized
+result-set SHA-256 was identical in A/B:
+`3B38333E9688208096CDA5D92178CFA0F01FBD32A15514E3A2AA9B9FE2657BFE`.
+MERGE/ROI: one batch merge accepted three `DYNAMIC_NATURAL` edges and reran
+the explorer once. Instruction bytes `60916 -> 61506` (+590), decoded
+instructions `19623 -> 19765` (+142), discovered entries `504 -> 508` (+4),
+entries processed `537 -> 541` (+4), unresolved indirects `35 -> 32` (-3),
+frontiers `148 -> 145` (-3), dynamic edges `0 -> 3`.
+PERFORMANCE: A worker execution totaled 520627 ms and B totaled 517110 ms;
+three accepted edges over those sums are approximately 0.346/0.348 edges per
+minute. Static explorer time was measured by the CLI but is not promoted here
+as a cross-run invariant. Queue counts were selected/claimed/attempted 5,
+resolved 3, NOT_REACHED 2, timeout 0, retryable 0, final 2,
+nondeterministic 0, duplicate_jobs_avoided 0 and unique dynamic edges 3.
+No ROM, savestate or trace artifact is tracked.
+TESTS: Debug CTest 32/32, Release CTest 32/32 and GNU/MinGW-equivalent CTest
+32/32 passed, including the queue contract and project file-limit tests.
+`git diff --check` and the tracked sensitive-artifact check passed; WSL has no
+installed Linux distribution, so a native Linux run was unavailable.
+UNKNOWNS: the fallback jobs remain naturally unreachable under the bounded
+neutral scenario; no forced state, random input or semantic interpretation was
+introduced. No ADR is required because the project direction is unchanged.
+EXACT NEXT ACTION: run the final validation gate, commit/push, verify CI, then
+hard stop before parallelism or M12.
+
+## 2026-09-05 — M11.5 sequential ant queue PoC started
+TASK: extend the completed single-ant loop to one frozen bounded queue of five
+sequential ant jobs and one BizHawk worker instance at a time.
+WHY: measure whether explicit claim/finalize lifecycle, duplicate suppression,
+honest NOT_REACHED results and one batch merge provide cumulative structural
+gain without parallel emulator processes.
+REUSE AUDIT: reuse `re_ant.*`, `re_bizhawk_ant.lua`, `re_explore.*`, existing
+ROM identity and scenario/input normalization. No second ant implementation,
+CPU emulator, database or scheduler is planned.
+EVIDENCE: baseline main is `55ffd5bc5034db90c202c4ace8d1650e14ffdead`.
+The current fresh explorer has 35 INDIRECT_FLOW frontiers. A full 1800-frame
+neutral natural probe reaches `0x045A`, `0x61F60` and `0x62878`; the queue
+will rank observed frontiers first and use a deterministic stable-address
+fallback for two additional frozen frontier jobs. This allows honest
+NOT_REACHED outcomes without inventing dynamic targets.
+ACCEPTANCE: exactly five frozen jobs, deterministic queue A/B, one CLAIMED at a
+time, lifecycle/recovery/duplicate tests, one worker at a time, batch merge,
+before/after metrics, ROI, full local validation, push and hard stop.
+KNOWN UNKNOWNS: two fallback frontiers may not be reached naturally; this is
+data rather than a reason to force registers/flags or expand the scenario.
+EXACT NEXT ACTION: add queue model/CLI and job-input support, then run the
+five-job queue A/B.
+
 ## 2026-09-05 — M11.5 single-ant closed-loop PoC completed
 TASK: implement one deterministic job → natural emulator observation → merge →
 static rerun cycle for a single indirect-flow frontier.

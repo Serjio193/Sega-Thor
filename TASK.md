@@ -1,5 +1,51 @@
 # Current Task
 
+TASK: M11.5 Single Worker Sequential Ant Queue PoC v1
+WHY: extend the proven one-frontier natural ant loop to a small frozen queue
+processed strictly sequentially by one worker, with explicit lifecycle,
+duplicate suppression, honest failures and cumulative static feedback.
+CURRENT MILESTONE: M11.5 post-explorer sequential evidence queue
+MILESTONE UNDERSTANDING CONFIDENCE: 93%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 92% for a bounded five-job queue,
+single-worker restart policy, deterministic lifecycle and batch merge.
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+Acceptance criteria:
+- [x] create a deterministic frozen queue of exactly five current explorer
+  `INDIRECT_FLOW` frontiers using documented ranking;
+- [x] reference existing `oasis.m68k.re-ant-job.v1` jobs without duplicating
+  their schema fields unnecessarily;
+- [x] enforce one `CLAIMED` job at a time and explicit lifecycle transitions;
+- [x] suppress already accepted resolved duplicates and recover stale claims;
+- [x] process the queue sequentially with one BizHawk worker instance at a time;
+- [x] run the identical frozen queue A/B and compare queue/result determinism;
+- [x] preserve `DYNAMIC_NATURAL`/checkpoint provenance and reject forbidden or
+  contradictory results;
+- [x] batch-merge accepted results and rerun `oasis_re_explore` once;
+- [x] record queue/lifecycle/ROI/performance metrics and stop before parallelism.
+
+EVIDENCE AVAILABLE: previous checkpoint `55ffd5b` resolved `0x020E:0x045A`
+to `0x307A`. A full 1800-frame neutral natural probe currently reaches three
+distinct indirect frontiers: `0x045A`, `0x61F60` and `0x62878`. The queue
+policy will rank these observed candidates first and fill the bounded five-job
+queue with the next stable unresolved frontiers; any NOT_REACHED result remains
+valid data and is not forced.
+KNOWN UNKNOWNS: the two stable-address fallback jobs were not reached by the
+existing natural scenario. Their `FAILED_FINAL` results are retained as evidence;
+no target was invented or forced.
+RESULT: queue `queue-0x4C23AB2632531710` used five jobs. Three resolved to
+`0x307A`, `0x6211A` and `0x62900`; two fallback jobs at `0x0790` and `0x5328`
+ended `FAILED_FINAL` after bounded neutral runs. A/B normalized result sets,
+including observed registers and targets, were equal with SHA-256
+`3B38333E9688208096CDA5D92178CFA0F01FBD32A15514E3A2AA9B9FE2657BFE`.
+Batch merge accepted three dynamic edges and one explorer rerun changed
+instruction bytes `60916 -> 61506`, decoded instructions `19623 -> 19765`,
+entries processed `537 -> 541`, unresolved indirects `35 -> 32`, and frontiers
+`148 -> 145`. Production runtime remains unchanged.
+EXACT NEXT ACTION: commit, push, verify CI, then STOP. Do not schedule another
+frontier job, add parallelism, or begin M12.
+
 TASK: M11.5 Single Ant Closed-Loop PoC v1
 WHY: prove one real indirect frontier can become a deterministic natural
 emulator job, produce runtime target evidence, merge back into static

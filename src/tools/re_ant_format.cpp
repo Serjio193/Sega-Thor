@@ -68,6 +68,9 @@ std::string ant_result_to_json(const AntResult& value) {
         << ",\"frontier_id\":" << quote(value.frontier_id) << ",\"status\":" << quote(ant_status_name(value.status))
         << ",\"backend\":" << quote(value.backend) << ",\"backend_version\":" << quote(value.backend_version)
         << ",\"rom_sha256\":" << quote(value.rom_sha256) << ",\"reachability_class\":" << quote(ant_reachability_name(value.reachability_class))
+        << ",\"scenario_id\":" << quote(value.scenario_id) << ",\"input_events\":" << quote(value.input_events)
+        << ",\"input_policy\":" << quote(value.input_policy) << ",\"checkpoint_reference\":" << quote(value.checkpoint_reference)
+        << ",\"worker_run_id\":" << quote(value.worker_run_id)
         << ",\"source_entry\":" << quote(hex32(value.source_entry)) << ",\"source_pc\":" << quote(hex32(value.source_pc));
     if (value.observed) {
         const auto& observed = *value.observed;

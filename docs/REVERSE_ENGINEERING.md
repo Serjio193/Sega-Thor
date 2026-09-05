@@ -1,6 +1,57 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.5 — Single-worker sequential ant queue PoC v1
+Status: VERIFIED as a bounded developer-only queue experiment. One frozen queue
+of five existing explorer `INDIRECT_FLOW` frontiers was processed strictly
+sequentially with one BizHawk 2.11.1 process at a time. No production runtime,
+CPU emulator, scheduler, parallel worker or forced state was added.
+
+Selection: the fresh USA explorer baseline contained 35 indirect-flow frontiers.
+The neutral 1800-frame reachability report observed `0x045A`, `0x61F60` and
+`0x62878`; the deterministic policy ranked those first by first frame and then
+source identity, and filled the bounded queue with stable-address fallbacks
+`0x0790` and `0x5328`. The queue schema is
+`oasis.m68k.re-ant-queue.v1`; each item references an existing
+`oasis.m68k.re-ant-job.v1` and the queue is frozen at creation.
+
+Queue identity: `queue-0x4C23AB2632531710`, initial JSON SHA-256
+`DC3FC952C6B7682E7F8E28F0180F4C1E3AC9A5D2B55187F92B1E55AE71D97EA6`.
+Lifecycle is `AVAILABLE -> CLAIMED -> RESOLVED`, or a bounded failure through
+`FAILED_RETRYABLE`/`FAILED_FINAL`; only one item can be claimed. Tests cover
+stale-claim recovery, resolved-duplicate suppression and frozen-queue refusal.
+
+Runs A/B used the same frozen queue and restarted the single worker between
+jobs. Results were identical after normalization, including target, frame,
+instruction bytes and observed D/A/SR registers. The normalized result-set
+SHA-256 was
+`3B38333E9688208096CDA5D92178CFA0F01FBD32A15514E3A2AA9B9FE2657BFE`.
+Three jobs resolved naturally: `0x045A -> 0x307A` at frame 113,
+`0x61F60 -> 0x6211A` at frame 424 and `0x62878 -> 0x62900` at frame 424.
+The two fallback jobs were `NOT_REACHED` and finalized `FAILED_FINAL`; no
+target was invented. A worker-instance poll showed at most one BizHawk process.
+
+Merge: the five results were batch-validated once; only the three
+`DYNAMIC_NATURAL` observations were accepted and the explorer was rerun once.
+Instruction bytes changed `60916 -> 61506`, decoded instructions
+`19623 -> 19765`, discovered entries `504 -> 508`, entries processed
+`537 -> 541`, unresolved indirects `35 -> 32`, and frontiers `148 -> 145`.
+Dynamic edges increased `0 -> 3`, retaining source entry/PC, frontier ID, job
+ID, result hash, backend and scenario provenance. The fallback failures remain
+valid bounded reachability evidence, not proof of semantic absence.
+
+Performance: worker execution totaled 520627 ms in A and 517110 ms in B;
+three accepted edges correspond to approximately 0.346 and 0.348 edges/minute.
+The two fallback jobs consumed the bounded neutral budget and were not retried.
+Queue metrics were `selected=5`, `claimed=5`, `attempted=5`, `resolved=3`,
+`not_reached=2`, `timeout=0`, `failed_retryable=0`, `failed_final=2`,
+`nondeterministic=0`, `duplicate_jobs_avoided=0`, and `unique_dynamic_edges=3`.
+No multi-target PC was observed. The initial queue did not contain an already
+resolved duplicate; the suppression rule is nevertheless exercised by the
+CI-safe queue test.
+Checkpoint policy: stop here. Any parallelism, scheduler, larger queue,
+savestate farm, random input or M12 work requires a separately authorized task.
+
 ## M11.5 — Single-ant closed-loop PoC v1
 Status: VERIFIED as one developer-only natural evidence loop. No gameplay
 meaning is assigned to the observed target, and no production runtime code or

@@ -69,6 +69,8 @@ add_library(oasis_re_tooling
     src/tools/re_explore_dynamic.cpp
     src/tools/re_ant.cpp
     src/tools/re_ant_format.cpp
+    src/tools/re_ant_queue.cpp
+    src/tools/re_ant_queue_format.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -119,6 +121,9 @@ target_link_libraries(oasis_re_explore PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_ant src/tools/re_ant_report.cpp)
 target_link_libraries(oasis_re_ant PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_ant_queue src/tools/re_ant_queue_report.cpp)
+target_link_libraries(oasis_re_ant_queue PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -242,6 +247,10 @@ add_executable(oasis_re_ant_test tests/re_ant_test.cpp)
 target_link_libraries(oasis_re_ant_test PRIVATE oasis_re_tooling oasis_core)
 add_test(NAME oasis_re_ant COMMAND oasis_re_ant_test)
 
+add_executable(oasis_re_ant_queue_test tests/re_ant_queue_test.cpp)
+target_link_libraries(oasis_re_ant_queue_test PRIVATE oasis_re_tooling oasis_core)
+add_test(NAME oasis_re_ant_queue COMMAND oasis_re_ant_queue_test)
+
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
@@ -326,6 +335,7 @@ set(oasis_test_targets
     oasis_re_mass_verify_test
     oasis_re_explore_test
     oasis_re_ant_test
+    oasis_re_ant_queue_test
 )
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)

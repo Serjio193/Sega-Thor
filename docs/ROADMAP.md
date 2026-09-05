@@ -158,6 +158,20 @@ The worker is a developer-only bridge; production runtime and architecture are
 unchanged. No scheduler, swarm, second frontier job or M12 work is authorized
 by this checkpoint.
 
+## M11.5 — Single-worker sequential ant queue PoC — DONE
+Goal: process a small bounded frontier batch through one emulator worker while
+preserving deterministic identity, lifecycle, natural-only provenance and
+honest failure states.
+
+Delivered: frozen `oasis.m68k.re-ant-queue.v1` queue of exactly five existing
+ant jobs, one-claim lifecycle with stale recovery and resolved-duplicate
+suppression, deterministic A/B comparison, sequential BizHawk process restarts,
+and one batch merge into `oasis_re_explore`. Three jobs produced natural
+dynamic edges (`0x307A`, `0x6211A`, `0x62900`); two bounded fallback jobs were
+`FAILED_FINAL`/`NOT_REACHED`. Explorer frontiers changed `148 -> 145`, with
+three provenance-tagged dynamic edges. This checkpoint ends before parallel
+workers, a scheduler, a larger queue, or M12.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

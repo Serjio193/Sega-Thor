@@ -1,6 +1,22 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
+CURRENT_TASK: M11.5 Single Worker Sequential Ant Queue PoC v1
+STATUS: COMPLETE
+CURRENT_SLICE_CONFIDENCE: 95% for a bounded five-job sequential queue;
+production runtime and gameplay semantics remain out of scope.
+LAST_VERIFIED_RESULT: frozen queue `queue-0x4C23AB2632531710` processed five
+jobs sequentially with one BizHawk 2.11.1 process at a time. Three natural
+observations resolved `0x045A -> 0x307A`, `0x61F60 -> 0x6211A` and
+`0x62878 -> 0x62900`; two bounded fallback jobs ended `FAILED_FINAL`.
+Batch merge added three `DYNAMIC_NATURAL` edges. Explorer metrics changed
+`60916 -> 61506` instruction bytes, `19623 -> 19765` decoded instructions and
+`148 -> 145` frontiers. A/B normalized evidence was identical.
+NEXT_ACTION: commit/push and verify CI, then STOP.
+DO_NOT_WORK_ON: parallel workers, scheduler, swarm, mass queue, savestate farm,
+random input, state signatures, production runtime, semantics or M12+
+
+CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 Single Ant Closed-Loop PoC v1
 STATUS: COMPLETE
 CURRENT_SLICE_CONFIDENCE: 96% for the one-frontier developer-only closed loop;

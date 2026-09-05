@@ -27,7 +27,10 @@ AntResult resolved(const AntJob& job, std::uint32_t target = 0x200) {
                                .sequence = 42, .target_inside_rom = true};
     return {.job_id = job.job_id, .frontier_id = job.frontier_id, .status = AntStatus::resolved,
             .backend = "bizhawk", .backend_version = "2.11.1", .rom_sha256 = job.rom_sha256,
-            .reachability_class = AntReachabilityClass::natural_observed, .source_entry = job.source_entry,
+            .reachability_class = AntReachabilityClass::natural_observed, .scenario_id = job.scenario_id,
+            .input_events = job.input_events, .input_policy = job.allowed_input_policy,
+            .checkpoint_reference = job.checkpoint_reference, .worker_run_id = "test-A",
+            .source_entry = job.source_entry,
             .source_pc = job.source_pc, .observed = observation, .stop_reason = "next_pc_observed",
             .reproducible = true, .result_hash = "0xA", .frames_executed = 8,
             .instructions_until_observation = 100};

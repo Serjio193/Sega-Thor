@@ -141,6 +141,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_ant.cpp                     Deterministic ant identity, parsing and merge rules
 │       ├── re_ant_format.cpp              Deterministic ant JSON/text formatting
 │       ├── re_ant_report.cpp              Local-only single-ant job/merge CLI
+│       ├── re_ant_queue.hpp               Frozen sequential ant queue model and lifecycle API
+│       ├── re_ant_queue.cpp                Deterministic queue selection, lifecycle and parsing
+│       ├── re_ant_queue_format.cpp         Deterministic queue JSON/text formatting
+│       ├── re_ant_queue_report.cpp         Local-only queue make/claim/finalize/merge CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
 │       ├── re_bizhawk_ant.lua            Developer-only one-frontier natural ant worker
@@ -189,6 +193,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_mass_verify_test.cpp                Synthetic batch classification/clustering tests
     ├── re_explore_test.cpp                    Synthetic recursive explorer/control/frontier tests
     ├── re_ant_test.cpp                         Synthetic single-ant contract/merge tests
+    ├── re_ant_queue_test.cpp                    Synthetic queue selection/lifecycle tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
