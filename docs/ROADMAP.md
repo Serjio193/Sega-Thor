@@ -145,6 +145,19 @@ The result is structural evidence only; no Atlas classification or production
 runtime behavior was changed. The dynamic ant PoC remains the next separately
 authorized checkpoint and is not implemented here.
 
+## M11.5 — Single-ant closed-loop evidence bridge — DONE
+Goal: resolve exactly one current indirect-flow frontier through one bounded
+natural emulator job, preserve its provenance, and measure one static rerun.
+
+Delivered: deterministic `oasis.m68k.re-ant-job.v1` and
+`oasis.m68k.re-ant-result.v1` tooling, one BizHawk natural-reset worker,
+natural-only A/B validation and a provenance-tagged dynamic explorer edge.
+Frontier `0x020E:0x045A` resolved to `0x307A` twice with result hash
+`0x21238399`; the rerun closed one frontier and added 480 instruction bytes.
+The worker is a developer-only bridge; production runtime and architecture are
+unchanged. No scheduler, swarm, second frontier job or M12 work is authorized
+by this checkpoint.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

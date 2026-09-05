@@ -1,5 +1,46 @@
 # Current Task
 
+TASK: M11.5 Single Ant Closed-Loop PoC v1
+WHY: prove one real indirect frontier can become a deterministic natural
+emulator job, produce runtime target evidence, merge back into static
+exploration and yield measured before/after structural results.
+CURRENT MILESTONE: M11.5 post-explorer dynamic evidence bridge
+MILESTONE UNDERSTANDING CONFIDENCE: 94%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 93% for the one-frontier job/result,
+natural BizHawk observation, provenance-preserving merge and static rerun;
+the selected target is still runtime evidence to be captured.
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+Acceptance criteria:
+- [x] select exactly one current `INDIRECT_FLOW` frontier with deterministic
+  identity and existing natural provenance;
+- [x] create deterministic `oasis.m68k.re-ant-job.v1` JSON with no forced
+  register/flag mutation and bounded limits;
+- [x] execute exactly one BizHawk worker and emit
+  `oasis.m68k.re-ant-result.v1` with source/register/next-PC evidence;
+- [x] run the identical job twice and compare normalized result hashes;
+- [x] reject wrong frontier, ROM mismatch, forced evidence and nondeterministic
+  results in CI-safe synthetic tests;
+- [x] merge only NATURAL_OBSERVED evidence while preserving static/dynamic
+  provenance and rerun `oasis_re_explore` with the dynamic edge;
+- [x] record before/after metrics, ROI, performance and checkpoint policy;
+- [x] keep production runtime unchanged, pass local validation and stop after
+  this one job.
+
+SELECTED FRONTIER: `0x0000020E:0x0000045A:INDIRECT_FLOW`, identity
+`size=3145728;fnv1a64=EA6BB7880F4BB247:0x0000020E:0x0000045A:INDIRECT_FLOW:address_indirect:computed target is unresolved`.
+`0xA7E2` was rejected because current natural bounded scenarios did not reach
+it; `0x045A` was reached from hardware reset at frame 114 and resolved twice
+to `0x307A` with result hash `0x21238399`.
+
+RESULT: job `ant-0x43919998981C2FF` accepted as `DYNAMIC_NATURAL`. The static
+rerun closed the selected frontier and added one provenance-tagged dynamic
+edge; instruction coverage grew `60916 -> 61396` bytes, decoded instructions
+`19623 -> 19729`, entries processed `537 -> 539`, and frontiers fell
+`148 -> 147`. Production runtime was unchanged.
+EXACT NEXT ACTION: STOP. Do not schedule another frontier job or begin M12.
+
 TASK: M11.5 oasis_re_explore bounded recursive exploration engine v1
 WHY: automate structurally provable 68000 ROM exploration while preserving
 explicit uncertainty for indirect flow, unsupported instructions, boundaries

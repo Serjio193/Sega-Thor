@@ -18,7 +18,8 @@ enum class AnalysisState {
     blocked_unsupported, blocked_data, conflict
 };
 enum class ExploreEdgeKind {
-    direct_call, direct_jump, conditional_branch, dbcc, fallthrough, unresolved_indirect
+    direct_call, direct_jump, conditional_branch, dbcc, fallthrough, unresolved_indirect,
+    dynamic_indirect
 };
 enum class StopReason {
     return_instruction, direct_terminal_transfer, indirect_transfer,
@@ -45,6 +46,24 @@ struct ExploreEdge {
     std::uint32_t target{};
     ExploreEdgeKind kind{ExploreEdgeKind::fallthrough};
     bool target_queued{};
+    std::string evidence_class{"STATIC_PROVEN"};
+    std::string frontier_id;
+    std::string job_id;
+    std::string result_hash;
+    std::string backend;
+    std::string scenario;
+};
+
+struct DynamicEdgeEvidence {
+    std::string frontier_id;
+    std::uint32_t source_entry{};
+    std::uint32_t source_pc{};
+    std::uint32_t target{};
+    std::string evidence_class{"DYNAMIC_NATURAL"};
+    std::string job_id;
+    std::string result_hash;
+    std::string backend;
+    std::string scenario;
 };
 
 struct PathTermination {
@@ -132,6 +151,7 @@ struct ExploreMetrics {
     std::size_t conditional_branches{};
     std::size_t fallthroughs{};
     std::size_t unresolved_indirect{};
+    std::size_t dynamic_indirect_edges{};
     std::size_t decoded_instructions{};
     std::size_t unsupported_instructions{};
     std::size_t decode_failures{};
@@ -146,6 +166,7 @@ struct ExploreOptions {
     std::size_t max_entries{5000};
     std::vector<std::uint32_t> control_entries;
     std::vector<ControlExpectation> control_edges;
+    std::vector<DynamicEdgeEvidence> dynamic_edges;
 };
 
 struct ExploreReport {
@@ -177,6 +198,9 @@ struct ExploreReport {
 [[nodiscard]] std::string explore_edge_name(ExploreEdgeKind value);
 [[nodiscard]] std::string stop_reason_name(StopReason value);
 [[nodiscard]] std::string frontier_type_name(FrontierType value);
+[[nodiscard]] const DynamicEdgeEvidence* find_dynamic_edge(
+    std::span<const DynamicEdgeEvidence> edges, std::uint32_t source_entry,
+    std::uint32_t source_pc);
 [[nodiscard]] std::string explore_to_json(const ExploreReport& report);
 [[nodiscard]] std::string explore_to_text(const ExploreReport& report);
 

@@ -1,6 +1,50 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.5 — Single-ant closed-loop PoC v1
+Status: VERIFIED as one developer-only natural evidence loop. No gameplay
+meaning is assigned to the observed target, and no production runtime code or
+CPU emulator was added.
+
+Selection: the current ROM-wide explorer exposed 35 `INDIRECT_FLOW` frontiers.
+The preferred `0xA7E2` was not reached by the existing natural reset/Start
+scenarios, so it was rejected. A bounded neutral hardware-reset selection probe
+reached `source_entry=0x020E`, `source_pc=0x045A`, bytes `4E 91` (`JSR (A1)+`)
+at frame 114. Its stable frontier identity is
+`size=3145728;fnv1a64=EA6BB7880F4BB247:0x0000020E:0x0000045A:INDIRECT_FLOW:address_indirect:computed target is unresolved`.
+
+Job: `ant-0x43919998981C2FF`, schema `oasis.m68k.re-ant-job.v1`, canonical USA
+ROM SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`,
+BizHawk `2.11.1`, scenario `natural_reset_idle_v1`, hardware reset, neutral
+input only, no checkpoint, limits 3000000 instructions/300 frames. The job
+requires `NATURAL_OBSERVED`; it does not write registers or flags.
+
+Runs A and B used the identical job. Both were `RESOLVED`: A1 and the observed
+next PC/indirect target were `0x0000307A`, at frame 113 and sequence 1734712,
+with result hash `0x21238399`. All normalized evidence fields matched;
+wall-clock execution was about 51.5 seconds per run and was excluded from the
+deterministic hash.
+
+Merge: result schema `oasis.m68k.re-ant-result.v1` was accepted as
+`DYNAMIC_NATURAL` (the result-side name for the job's `NATURAL_OBSERVED`
+requirement). Wrong frontier, ROM mismatch, forced/state-guided evidence and
+hash divergence are rejected by tests. The explorer edge retains
+`evidence_class=DYNAMIC_NATURAL` plus the frontier ID, job ID, result hash,
+backend and scenario; the job/result retain the full ROM and register
+provenance.
+
+Static rerun, using the same USA/Beta Atlas inputs as baseline, changed the
+following metrics: instruction bytes `60916 -> 61396` (+480), decoded
+instructions `19623 -> 19729` (+106), discovered entries `504 -> 506` (+2),
+entries processed `537 -> 539` (+2), direct calls `986 -> 1000` (+14),
+fallthroughs `17538 -> 17637` (+99), unresolved indirect edges `35 -> 34`
+(-1), and frontiers `148 -> 147` (-1). One dynamic edge was present after the
+merge, and the selected frontier was absent. This proves the closed loop and
+has positive structural ROI; it does not prove the target's game semantics.
+
+Checkpoint policy: hard stop after this one job. Do not add a scheduler,
+second frontier job, swarm, savestate replay, forced-state path or M12 feature.
+
 ## M11.5 — Recursive structural exploration v1
 Status: VERIFIED as developer-only structural evidence tooling. The explorer
 does not execute a CPU, infer gameplay semantics, modify Atlas classification

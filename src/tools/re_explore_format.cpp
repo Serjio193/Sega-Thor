@@ -96,7 +96,8 @@ void json_metrics(std::ostringstream& out, const ExploreMetrics& m) {
         << ",\"fallthroughs\":" << m.fallthroughs << ",\"unresolved_indirect\":" << m.unresolved_indirect
         << ",\"decoded_instructions\":" << m.decoded_instructions << ",\"unsupported_instructions\":" << m.unsupported_instructions
         << ",\"decode_failures\":" << m.decode_failures << ",\"frontier_count\":" << m.frontier_count
-        << ",\"entries_processed\":" << m.entries_processed << '}';
+        << ",\"entries_processed\":" << m.entries_processed
+        << ",\"dynamic_indirect_edges\":" << m.dynamic_indirect_edges << '}';
 }
 
 } // namespace
@@ -118,7 +119,13 @@ std::string explore_to_json(const ExploreReport& report) {
         const auto& item = report.edges[i];
         out << "{\"source_entry\":" << quote(hex32(item.source_entry)) << ",\"source_pc\":" << quote(hex32(item.source_pc))
             << ",\"target\":" << quote(hex32(item.target)) << ",\"kind\":" << quote(explore_edge_name(item.kind))
-            << ",\"target_queued\":" << (item.target_queued ? "true" : "false") << '}';
+            << ",\"target_queued\":" << (item.target_queued ? "true" : "false")
+            << ",\"evidence_class\":" << quote(item.evidence_class)
+            << ",\"frontier_id\":" << quote(item.frontier_id)
+            << ",\"job_id\":" << quote(item.job_id)
+            << ",\"result_hash\":" << quote(item.result_hash)
+            << ",\"backend\":" << quote(item.backend)
+            << ",\"scenario\":" << quote(item.scenario) << '}';
     }
     out << "],\"stops\":[";
     for (std::size_t i = 0; i < report.stops.size(); ++i) { if (i) out << ','; const auto& item = report.stops[i]; out << "{\"source_entry\":" << quote(hex32(item.source_entry)) << ",\"source_pc\":" << quote(hex32(item.source_pc)) << ",\"reason\":" << quote(stop_reason_name(item.reason)) << ",\"detail\":" << quote(item.detail) << '}'; }
@@ -157,7 +164,8 @@ std::string explore_to_text(const ExploreReport& report) {
         << " blocked_unsupported=" << m.blocked_unsupported_entries << " blocked_data=" << m.blocked_data_entries
         << " conflicts=" << m.conflict_entries << " processed=" << m.entries_processed << '\n'
         << "edges calls=" << m.direct_calls << " jumps=" << m.direct_jumps << " conditional=" << m.conditional_branches
-        << " fallthrough=" << m.fallthroughs << " unresolved_indirect=" << m.unresolved_indirect << '\n'
+        << " fallthrough=" << m.fallthroughs << " unresolved_indirect=" << m.unresolved_indirect
+        << " dynamic_indirect=" << m.dynamic_indirect_edges << '\n'
         << "instructions decoded=" << m.decoded_instructions << " unsupported=" << m.unsupported_instructions
         << " decode_failures=" << m.decode_failures << " frontier=" << m.frontier_count << " wall_clock_ms=CLI_ONLY\n"
         << "control_set:\n";

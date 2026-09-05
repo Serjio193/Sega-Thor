@@ -144,12 +144,12 @@ void add_edge(ExploreReport& report, ExploreEdge edge) {
 
 void sort_and_unique(ExploreReport& report) {
     std::sort(report.edges.begin(), report.edges.end(), [](const auto& left, const auto& right) {
-        return std::tie(left.source_entry, left.source_pc, left.target, left.kind) <
-            std::tie(right.source_entry, right.source_pc, right.target, right.kind);
+        return std::tie(left.source_entry, left.source_pc, left.target, left.kind, left.evidence_class) <
+            std::tie(right.source_entry, right.source_pc, right.target, right.kind, right.evidence_class);
     });
     report.edges.erase(std::unique(report.edges.begin(), report.edges.end(), [](const auto& left, const auto& right) {
-        return std::tie(left.source_entry, left.source_pc, left.target, left.kind) ==
-            std::tie(right.source_entry, right.source_pc, right.target, right.kind);
+        return std::tie(left.source_entry, left.source_pc, left.target, left.kind, left.evidence_class) ==
+            std::tie(right.source_entry, right.source_pc, right.target, right.kind, right.evidence_class);
     }), report.edges.end());
     std::sort(report.stops.begin(), report.stops.end(), [](const auto& left, const auto& right) {
         return std::tie(left.source_entry, left.source_pc, left.reason, left.detail) <
@@ -344,11 +344,24 @@ ExploreReport explore_m68k(std::span<const std::uint8_t> rom, const CandidateMap
                     continue;
                 }
                 if (instruction.flow == FlowKind::indirect_call || instruction.flow == FlowKind::indirect_jump) {
-                    saw_indirect = true;
-                    add_edge(report, {work.address, pc, 0U, ExploreEdgeKind::unresolved_indirect, false});
-                    add_stop(report, work.address, pc, StopReason::indirect_transfer, instruction.mnemonic);
-                    add_frontier(report, report.rom_identity, {"", work.address, pc, FrontierType::indirect_flow, instruction.bytes, instruction.opcode, instruction.mnemonic, context_for(instruction), {work.address}, {}, StopReason::indirect_transfer, "computed target is unresolved"});
-                    if (instruction.flow == FlowKind::indirect_jump) continue;
+                    const auto* dynamic = find_dynamic_edge(options.dynamic_edges, work.address, pc);
+                    const bool dynamic_valid = dynamic && in_rom(rom, dynamic->target) &&
+                        !data_at(intervals, dynamic->target);
+                    if (dynamic_valid) {
+                        const bool is_call = instruction.flow == FlowKind::indirect_call;
+                        add_edge(report, {work.address, pc, dynamic->target, ExploreEdgeKind::dynamic_indirect,
+                                          is_call, dynamic->evidence_class, dynamic->frontier_id,
+                                          dynamic->job_id, dynamic->result_hash, dynamic->backend,
+                                          dynamic->scenario});
+                        if (is_call) queue_entry(dynamic->target);
+                        else pending.insert(dynamic->target);
+                    } else {
+                        saw_indirect = true;
+                        add_edge(report, {work.address, pc, 0U, ExploreEdgeKind::unresolved_indirect, false});
+                        add_stop(report, work.address, pc, StopReason::indirect_transfer, instruction.mnemonic);
+                        add_frontier(report, report.rom_identity, {"", work.address, pc, FrontierType::indirect_flow, instruction.bytes, instruction.opcode, instruction.mnemonic, context_for(instruction), {work.address}, {}, StopReason::indirect_transfer, "computed target is unresolved"});
+                    }
+                    if (instruction.flow == FlowKind::indirect_jump && !dynamic_valid) continue;
                 }
                 if (instruction.direct_target) {
                     const auto target = *instruction.direct_target;
@@ -437,6 +450,7 @@ ExploreReport explore_m68k(std::span<const std::uint8_t> rom, const CandidateMap
     report.metrics.conditional_branches = std::count_if(report.edges.begin(), report.edges.end(), [](const auto& item) { return item.kind == ExploreEdgeKind::conditional_branch || item.kind == ExploreEdgeKind::dbcc; });
     report.metrics.fallthroughs = std::count_if(report.edges.begin(), report.edges.end(), [](const auto& item) { return item.kind == ExploreEdgeKind::fallthrough; });
     report.metrics.unresolved_indirect = std::count_if(report.edges.begin(), report.edges.end(), [](const auto& item) { return item.kind == ExploreEdgeKind::unresolved_indirect; });
+    report.metrics.dynamic_indirect_edges = std::count_if(report.edges.begin(), report.edges.end(), [](const auto& item) { return item.kind == ExploreEdgeKind::dynamic_indirect; });
     report.metrics.unsupported_instructions = std::count_if(report.stops.begin(), report.stops.end(), [](const auto& item) { return item.reason == StopReason::unsupported_instruction; });
     report.metrics.decode_failures = std::count_if(report.stops.begin(), report.stops.end(), [](const auto& item) { return item.reason == StopReason::decode_failure; });
     report.metrics.frontier_count = report.frontier.size();
@@ -452,7 +466,7 @@ std::string analysis_state_name(AnalysisState value) {
     switch (value) { case AnalysisState::unseen: return "UNSEEN"; case AnalysisState::discovered: return "DISCOVERED"; case AnalysisState::queued: return "QUEUED"; case AnalysisState::analyzing: return "ANALYZING"; case AnalysisState::analyzed: return "ANALYZED"; case AnalysisState::blocked_indirect: return "BLOCKED_INDIRECT"; case AnalysisState::blocked_unsupported: return "BLOCKED_UNSUPPORTED"; case AnalysisState::blocked_data: return "BLOCKED_DATA"; case AnalysisState::conflict: return "CONFLICT"; } return "UNSEEN";
 }
 std::string explore_edge_name(ExploreEdgeKind value) {
-    switch (value) { case ExploreEdgeKind::direct_call: return "DIRECT_CALL"; case ExploreEdgeKind::direct_jump: return "DIRECT_JUMP"; case ExploreEdgeKind::conditional_branch: return "CONDITIONAL_BRANCH"; case ExploreEdgeKind::dbcc: return "DBCC"; case ExploreEdgeKind::fallthrough: return "FALLTHROUGH"; case ExploreEdgeKind::unresolved_indirect: return "UNRESOLVED_INDIRECT"; } return "FALLTHROUGH";
+    switch (value) { case ExploreEdgeKind::direct_call: return "DIRECT_CALL"; case ExploreEdgeKind::direct_jump: return "DIRECT_JUMP"; case ExploreEdgeKind::conditional_branch: return "CONDITIONAL_BRANCH"; case ExploreEdgeKind::dbcc: return "DBCC"; case ExploreEdgeKind::fallthrough: return "FALLTHROUGH"; case ExploreEdgeKind::unresolved_indirect: return "UNRESOLVED_INDIRECT"; case ExploreEdgeKind::dynamic_indirect: return "DYNAMIC_INDIRECT"; } return "FALLTHROUGH";
 }
 std::string stop_reason_name(StopReason value) {
     switch (value) { case StopReason::return_instruction: return "RETURN"; case StopReason::direct_terminal_transfer: return "DIRECT_TERMINAL_TRANSFER"; case StopReason::indirect_transfer: return "INDIRECT_TRANSFER"; case StopReason::unsupported_instruction: return "UNSUPPORTED_INSTRUCTION"; case StopReason::known_data: return "KNOWN_DATA"; case StopReason::out_of_rom: return "OUT_OF_ROM"; case StopReason::conflict: return "CONFLICT"; case StopReason::already_analyzed: return "ALREADY_ANALYZED"; case StopReason::decode_failure: return "DECODE_FAILURE"; } return "DECODE_FAILURE";

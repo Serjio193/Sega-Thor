@@ -136,8 +136,14 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_explore.cpp                Tiered deterministic guarded structural worklist
 │       ├── re_explore_format.cpp         Deterministic explorer JSON/human formatting
 │       ├── re_explore_report.cpp         Local-only bounded/ROM-wide explorer CLI
+│       ├── re_explore_dynamic.cpp        Dynamic-edge validation for natural ant evidence
+│       ├── re_ant.hpp                     Single-ant job/result/merge model and API
+│       ├── re_ant.cpp                     Deterministic ant identity, parsing and merge rules
+│       ├── re_ant_format.cpp              Deterministic ant JSON/text formatting
+│       ├── re_ant_report.cpp              Local-only single-ant job/merge CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
+│       ├── re_bizhawk_ant.lua            Developer-only one-frontier natural ant worker
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
 │       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
 │       ├── re_mame_boot_trace.cmd Developer-only MAME fixed-instruction debugger trace
@@ -182,6 +188,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_candidate_map_test.cpp              Synthetic Ghidra/Atlas merge/ranking tests
     ├── re_mass_verify_test.cpp                Synthetic batch classification/clustering tests
     ├── re_explore_test.cpp                    Synthetic recursive explorer/control/frontier tests
+    ├── re_ant_test.cpp                         Synthetic single-ant contract/merge tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests

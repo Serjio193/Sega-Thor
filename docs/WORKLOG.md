@@ -3,6 +3,65 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-05 — M11.5 single-ant closed-loop PoC completed
+TASK: implement one deterministic job → natural emulator observation → merge →
+static rerun cycle for a single indirect-flow frontier.
+IMPLEMENTATION: added developer-only `re_ant` job/result schemas and parser,
+stable job identity, natural-only merge validation, dynamic-edge provenance,
+the `oasis_re_ant` CLI, one BizHawk worker and synthetic contract tests. The
+explorer now accepts only validated dynamic evidence and serializes its dynamic
+edge class. Production C++ runtime behavior is unchanged.
+SELECTION: `0xA7E2` was rejected after zero reachability in the existing
+natural scenarios. The current frontier at `0x020E:0x045A` (`4E 91`, `JSR
+(A1)+`) was reached naturally during selection at frame 114.
+EVIDENCE: job `ant-0x43919998981C2FF` used the canonical USA ROM, BizHawk 2.11.1,
+hardware reset, neutral input, no checkpoint, and limits 3000000 instructions /
+300 frames. Runs A/B both observed A1 and next PC/target `0x307A` at frame 113,
+sequence 1734712, result hash `0x21238399`; only wall-clock timing differed.
+MERGE: accepted `DYNAMIC_NATURAL`, rejected-path rules covered by tests, one
+dynamic edge preserved the source/frontier/backend/scenario provenance across
+the job/result/edge artifacts, and the selected frontier disappeared on rerun.
+ROI: instruction bytes `60916 -> 61396` (+480), decoded instructions
+`19623 -> 19729` (+106), entries processed `537 -> 539` (+2), unresolved
+indirects `35 -> 34` (-1), frontiers `148 -> 147` (-1), dynamic edges `0 -> 1`.
+The worker took approximately 51.5 seconds per run; static explorer time was
+15.5 seconds baseline and 15.8 seconds in the merge rerun.
+TESTS: synthetic ant tests passed; Debug CTest 31/31, Release CTest 31/31 and
+GNU/MinGW-equivalent CTest 31/31 passed, including the project file-limit test;
+diff-check and sensitive-artifact checks also passed. WSL has no installed
+Linux distribution, so a native Linux run was unavailable.
+UNKNOWNS: `0x307A` is a resolved structural target only; its game role and
+runtime semantics remain unknown. No savestate or ROM artifact is tracked.
+STATUS: COMPLETE.
+EXACT NEXT ACTION: run the final local validation gate, commit/push this single
+conceptual change, verify CI, then hard stop without a second ant job.
+
+## 2026-09-05 — M11.5 single-ant closed-loop PoC started
+TASK: implement one deterministic `oasis.m68k.re-ant-job.v1` / result / merge
+cycle for exactly one real `INDIRECT_FLOW` frontier.
+WHY: prove the static-frontier → one natural BizHawk worker → runtime evidence
+→ provenance-preserving merge → static rerun architecture without a swarm,
+scheduler, forced state or production emulator dependency.
+MILESTONE UNDERSTANDING CONFIDENCE: 94%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 93% for the bounded contract; target
+observation remains pending.
+SELECTION EVIDENCE: the latest ROM-wide explorer JSON is external-only and
+contains 35 indirect-flow records. Preferred `0xA7E2` was tested with the
+existing natural reset/Start scenarios and reached zero times. A single
+bounded selection probe watching the current indirect PCs reached
+`source_entry=0x020E`, `source_pc=0x045A` at frame 114; its instruction bytes
+are `4E 91` (`JSR (A1)+`). This is the selected frontier. No job has yet been
+created or merged.
+ACCEPTANCE: one deterministic job; one BizHawk worker; natural-only evidence;
+A/B normalized equality; wrong-frontier/ROM/forced/nondeterminism tests;
+dynamic-provenance merge and one static explorer rerun; before/after metrics;
+no tracked ROM/savestate/emulator artifact; local Debug/Release/GNU validation;
+then STOP.
+KNOWN UNKNOWNS: the runtime value in A1 and next PC/target are unknown until
+the natural worker observes them; no semantic role may be assigned.
+EXACT NEXT ACTION: add the minimal model, one Lua worker, merge and tests;
+run only the selected job twice and stop.
+
 ## 2026-09-05 — M11.5 recursive structural explorer completed
 TASK: implement and verify oasis_re_explore bounded recursive exploration
 engine v1.
