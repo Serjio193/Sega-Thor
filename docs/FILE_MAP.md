@@ -132,6 +132,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_mass_verify.cpp            Bounded decode, overlap, classification and clustering
 │       ├── re_mass_verify_format.cpp     Deterministic mass JSON/text report formatting
 │       ├── re_mass_verify_report.cpp     Local-only mass verification CLI
+│       ├── re_explore.hpp                Recursive explorer model, states, edges and frontier API
+│       ├── re_explore.cpp                Tiered deterministic guarded structural worklist
+│       ├── re_explore_format.cpp         Deterministic explorer JSON/human formatting
+│       ├── re_explore_report.cpp         Local-only bounded/ROM-wide explorer CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
@@ -177,6 +181,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_scenario_test.cpp                  Synthetic scenario parser/serialization tests
     ├── re_candidate_map_test.cpp              Synthetic Ghidra/Atlas merge/ranking tests
     ├── re_mass_verify_test.cpp                Synthetic batch classification/clustering tests
+    ├── re_explore_test.cpp                    Synthetic recursive explorer/control/frontier tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests

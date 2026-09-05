@@ -124,6 +124,27 @@ Any later follow-up remains evidence-gathering only while its implementation-
 slice confidence remains below 90%; production C++ must not expand until
 caller/data or downstream-handler evidence raises that slice to >=90%.
 
+## M11.5 — Recursive structural exploration — DONE
+Goal: automate bounded, provable 68000 structural exploration while retaining
+explicit uncertainty frontiers and a reusable ROM address map.
+
+Delivered: developer-only oasis_re_explore reuses re_slice_decoder, re_atlas
+and re_candidate_map; it applies tiered provenance seeds, a deterministic
+priority worklist, guarded recursive control-flow traversal, explicit
+analysis states, compact map ranges and stable blocker identities. Bounded
+validation runs before the optional single ROM-wide measurement.
+
+The fresh USA Ghidra 12.1.3 raw export was repeated A/B with identical
+390972-byte SHA-256
+613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315.
+The bounded corpus passed: 15 entries and all six current direct-edge
+anchors were recovered. The gated ROM-wide evidence run processed 537 entries,
+decoded 19623 instructions and emitted 148 frontiers; 451 entries were
+analyzed, 25 stopped on indirect flow and 28 on unsupported instructions.
+The result is structural evidence only; no Atlas classification or production
+runtime behavior was changed. The dynamic ant PoC remains the next separately
+authorized checkpoint and is not implemented here.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

@@ -3,6 +3,80 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-05 — M11.5 recursive structural explorer completed
+TASK: implement and verify oasis_re_explore bounded recursive exploration
+engine v1.
+IMPLEMENTATION: added the developer-only re_explore model, guarded
+deterministic priority worklist, compact persistent address map, explicit
+entry states, edge/stop records, stable frontier identities, blocker
+clusters, deterministic JSON/text formatters and CLI. It reuses
+re_slice_decoder, re_atlas and re_candidate_map; no decoder, CFG or emulator
+implementation was duplicated and no production target changed.
+RAW BASELINE: fresh Ghidra 12.1.3 A/B exports from the canonical USA ROM were
+390972 bytes each with identical SHA-256
+613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315. Fresh
+candidate-map and mass-verifier reruns using the approved local Beta input
+were deterministic with SHA-256
+9ACD162CE078C2D31C108BA480F0306DA75D6B8FFDFF2D008A1DAE8253263A9B and
+6B9A6A366C0CEC047C1616A5840C8DA59D7AC89DD75021A0240F4F8E89D69C0D.
+BOUNDED: 15 control entries passed. All six known direct-edge anchors were
+recovered; 0x60004 -> 0x6042A is a direct jump encoding. RTS/RTE and the
+0xA7E2 indirect blocker were observed as expected, and Atlas data guards were
+not traversed as code.
+ROM-WIDE: after the gate, one run processed 537 entries from 547 seeds,
+analyzed 451, blocked 25 on indirect flow and 28 on unsupported instructions,
+decoded 19623 instructions and emitted 148 frontiers. Coverage was 60916
+instruction bytes, 432 pointer-data bytes, 6 probable-data bytes, 0 conflict
+bytes and 3084374 unclassified bytes (98.05%). Frontier classes ranked by
+count were DECODE_FAILURE 81, INDIRECT_FLOW 35 and UNSUPPORTED 32. These are
+structural prioritization measurements, not semantic or expected byte gains.
+DETERMINISM: ROM-wide JSON A/B SHA-256
+8CD0C9B669786C76C16FF8E276A4314B5789925371153EB181783FBE8181F8DE and text
+A/B SHA-256
+E1E314077F300AE71AD3B6362865243CE6C917C48C18733786AD133EB5687460.
+Measured CLI wall-clock was 15507 ms and 15462 ms; it is excluded from
+serialized identity.
+TESTS/VALIDATION: Debug CTest 30/30, Release CTest 30/30 and
+GNU/LLVM-MinGW-equivalent CTest 30/30 passed; file-limit and git diff check
+passed. WSL/Linux runtime/link check is unavailable because WSL is not
+installed. No ROM, raw trace, Ghidra project/database, emulator or commercial
+asset entered Git.
+STATUS: DONE.
+UNRESOLVED: indirect targets, Ghidra boundaries, unknown table extents and
+routine semantics remain unknown. No dynamic ant or scheduler was started.
+EXACT NEXT ACTION: stop; a future checkpoint may implement one bounded
+single-emulator ant PoC against this frontier format.
+
+## 2026-09-05 — M11.5 bounded recursive explorer started
+TASK: implement `oasis_re_explore` bounded recursive exploration engine v1.
+WHY: automate provable 68000 structural flow and preserve uncertainty as
+explicit persistent map/frontier evidence without changing production runtime.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling.
+MILESTONE UNDERSTANDING CONFIDENCE: 95%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 95% for the bounded worklist, seed
+provenance, address-map, blocker identity and deterministic serialization.
+SLICE CONFIDENCE EVIDENCE: existing `re_slice_decoder`, `re_program`, Atlas,
+candidate-map and prior bounded CFG audits; fresh raw Ghidra A/B export and
+fresh candidate-map/mass pipeline rerun completed before implementation.
+ACCEPTANCE: add small developer-only model/engine/report modules; use tiered
+seeds and deterministic priority; recurse through direct calls/branches and
+valid fallthrough; stop returns and record blockers; guard Atlas data; retain
+multiple owners; emit deterministic map/frontier/metrics; gate one ROM-wide run
+on the control corpus; add synthetic CI-safe tests and full local validation.
+REUSE AUDIT: decoder/operand decode and flow edges come directly from
+`re_slice_decoder`; Atlas and candidate-map provide data guards/evidence and
+seed provenance; no decoder or CFG implementation is copied.
+EVIDENCE: canonical USA ROM size 3145728, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`; fresh raw
+Ghidra export A/B size 390972, SHA-256
+`613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315`; fresh
+candidate-map SHA-256 `9ACD162CE078C2D31C108BA480F0306DA75D6B8FFDFF2D008A1DAE8253263A9B`
+and mass JSON SHA-256 `6B9A6A366C0CEC047C1616A5840C8DA59D7AC89DD75021A0240F4F8E89D69C0D`.
+KNOWN UNKNOWNS: indirect targets, Ghidra boundaries, data extents for
+unbounded table starts and all routine semantics.
+STATUS: EVIDENCE COMPLETE; implementation in progress.
+EXACT NEXT ACTION: add the explorer model and guarded deterministic engine.
+
 ## 2026-09-04 — M11.5 CI portability follow-up
 TASK: address the first Linux CI failure without changing the mass-verification
 measurement or its serialized output.

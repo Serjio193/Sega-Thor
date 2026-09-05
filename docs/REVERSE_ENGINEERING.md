@@ -1,6 +1,89 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.5 — Recursive structural exploration v1
+Status: VERIFIED as developer-only structural evidence tooling. The explorer
+does not execute a CPU, infer gameplay semantics, modify Atlas classification
+or generate production C++.
+
+The implementation is oasis_re_explore. It calls the existing
+re_slice_decoder for instruction/operand decoding and direct target
+resolution, uses re_atlas typed data intervals as traversal guardrails, and
+uses re_candidate_map records as provenance input. re_program, re_cfg_audit
+and re_reachable_closure were not copied; their relevant evidence models and
+deterministic ordering conventions were reused. The worklist creates new
+entry candidates only for direct call targets and independent seeds; internal
+branch targets remain paths in the current decoded slice.
+
+Seed tiers are deterministic: TIER_0 vectors and confirmed project/control
+entries; TIER_1 Atlas static direct-call targets; TIER_2 Ghidra functions with
+xrefs; TIER_3 other Ghidra functions; TIER_4 is reserved for future
+heuristics. Every seed retains source, source reference, initial confidence
+and priority. Existing confirmed entries remain evidence anchors; Ghidra-only
+records are never promoted to CONFIRMED.
+
+The persistent output schema is oasis.m68k.re-explore.v1. It records
+instruction/data/pointer/conflict ranges, multiple owners, entry analysis
+states, direct call/jump/conditional/DBcc/fallthrough edges, explicit return
+and terminal stops, compact machine-readable frontiers and quantitative
+coverage. A stable frontier identity combines the ROM identity, source entry,
+source PC, blocker type, context and reason; it is not a random UUID.
+
+Raw baseline: two fresh Ghidra 12.1.3 headless imports of the canonical USA
+ROM (size 3145728, SHA-256
+eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263) produced
+identical 390972-byte raw exports, SHA-256
+613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315.
+The existing candidate-map/mass pipeline was rerun against the fresh export
+and the approved local Beta ROM: candidate JSON SHA-256
+9ACD162CE078C2D31C108BA480F0306DA75D6B8FFDFF2D008A1DAE8253263A9B,
+mass JSON SHA-256
+6B9A6A366C0CEC047C1616A5840C8DA59D7AC89DD75021A0240F4F8E89D69C0D.
+Counts and top failure clusters matched the prior Ghidra-shaped measurement;
+the prior reconstructed input itself is not present, so byte-level comparison
+against it is unavailable.
+
+Bounded corpus: 15 entries were analyzed before wide expansion. The six
+current call-edge anchors were recovered: 0x60004 -> 0x6042A (direct jump
+encoding), 0x60B8C -> 0x6121A, 0x60D4A -> 0x6121A,
+0x611EE -> 0x6121A, 0x60BCC -> 0x604BC and
+0xD3B2 -> 0x3820. RTS/RTE terminated paths. 0xA7E2 remained an explicit
+indirect frontier. Known Atlas tables were guarded and not decoded as code.
+
+ROM-wide measurement: the bounded gate passed, so one experimental run was
+allowed. It processed 537 entries from 547 tiered seed records, decoded
+19623 instructions and produced 986 direct-call, 592 direct-jump, 2551
+conditional/DBcc, 17538 fallthrough and 35 unresolved-indirect edges.
+Coverage was 60916 instruction bytes, 432 pointer-data bytes, 6 probable-data
+bytes, 0 conflict bytes and 3084374 unclassified bytes (98.05%). The
+unclassified percentage is not a percentage of unreversed gameplay code.
+The ROM also contains graphics, audio, tables, maps, strings, padding and
+other data.
+
+Entry results were 451 analyzed, 25 BLOCKED_INDIRECT, 28
+BLOCKED_UNSUPPORTED, 0 BLOCKED_DATA and 0 conflicts. There were 148
+frontiers: 81 DECODE_FAILURE, 35 INDIRECT_FLOW and 32 UNSUPPORTED records
+after stable identity deduplication. The full representative addresses are
+emitted in JSON/text, not copied into this ledger.
+
+The measured top frontier classes are: (1) decode/boundary failures, 81,
+estimated medium effort and medium false-positive risk; (2) unresolved
+indirect flow, 35, estimated high effort and high risk; (3) unsupported
+decoder coverage, 32, estimated medium effort and low/medium risk. These are
+prioritization hypotheses based on frontier counts, not claimed byte gains.
+STATIC_BYTES_UNLOCKED_PER_FIXED_BLOCKER was not fabricated because no decoder
+or boundary fix was implemented in this checkpoint.
+
+Two ROM-wide runs using the fresh A/B exports were byte-identical:
+JSON SHA-256 8CD0C9B669786C76C16FF8E276A4314B5789925371153EB181783FBE8181F8DE;
+human summary SHA-256
+E1E314077F300AE71AD3B6362865243CE6C917C48C18733786AD133EB5687460.
+Wall-clock is intentionally CLI-only and excluded from serialized identity.
+
+Exact next step: stop before the dynamic ant/scheduler PoC. Any next
+checkpoint must consume this frontier format with one bounded emulator probe;
+do not broaden the decoder, translate leaves or start M12 here.
+
 ## M11.5 — Mass structural verification pass v1
 **Status:** VERIFIED as developer-only measurement tooling; structural classes
 are not semantic confidence and no new routine meaning was inferred.

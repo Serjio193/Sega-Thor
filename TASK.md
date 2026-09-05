@@ -1,5 +1,57 @@
 # Current Task
 
+TASK: M11.5 oasis_re_explore bounded recursive exploration engine v1
+WHY: automate structurally provable 68000 ROM exploration while preserving
+explicit uncertainty for indirect flow, unsupported instructions, boundaries
+and code/data conflicts. This is developer-only RE tooling; production runtime
+and gameplay semantics remain out of scope.
+CURRENT MILESTONE: M11.5 post-M11 evidence tooling
+MILESTONE UNDERSTANDING CONFIDENCE: 95%
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 95% for the bounded worklist,
+provenance, region-map, blocker/frontier and deterministic report contracts;
+ROM-wide coverage remains an evidence measurement, not semantic truth.
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+Acceptance criteria:
+- [x] fresh raw Ghidra baseline is verified A/B and candidate-map/mass metrics
+  are rerun before Ghidra candidates are used as seeds;
+- [x] reuse audit is recorded; existing decoder/CFG logic is reused without
+  duplication;
+- [x] deterministic tiered seed model and priority worklist exist;
+- [x] recursive direct calls, jumps, conditional branches, DBcc, returns and
+  valid fallthrough are recorded with explicit path stop reasons;
+- [x] persistent instruction/data/conflict address map and explicit analysis
+  states are emitted;
+- [x] indirect/unsupported/data/conflict frontiers have stable identities and
+  machine-readable records;
+- [x] CI-safe synthetic tests cover the required control-flow, ownership,
+  guard, conflict, suppression, identity and serialization cases;
+- [x] bounded control corpus passes before one optional ROM-wide measurement;
+- [x] deterministic A/B JSON/text comparison, Debug/Release/GNU-equivalent
+  validation, file-limit, diff-check and sensitive-artifact hygiene pass;
+- [x] blocker clusters are ranked and the task stops before any dynamic ant,
+  emulator scheduler, semantic translation or M12 work.
+
+Reuse audit:
+| Capability | Existing implementation | Reuse | Extension |
+| instruction/operand decode | `re_slice_decoder` | direct | none |
+| direct target resolution | `DecodedInstruction`/`ControlFlowEdge` | direct | edge classification |
+| CFG representation | `DecodedSlice`/`BasicBlock` | direct | guarded traversal |
+| reachable traversal | `re_cfg_audit` local walk | pattern only | explorer-owned guarded worklist |
+| call-edge representation | `ControlFlowEdge`/`AtlasCallEdge` | direct | recursive provenance |
+| unresolved indirect/unsupported | decoder slice fields | direct | frontier records |
+| Atlas/candidate input | `re_atlas`/`re_candidate_map` | direct | tiered seeds and guards |
+| deterministic JSON helpers | existing formatters | convention | explorer formatter |
+
+RESULT: implemented and verified. The bounded gate passed for 15 control
+entries and all six known edge anchors. One gated ROM-wide measurement
+processed 537 entries and emitted deterministic map/frontier evidence.
+KNOWN BLOCKERS: WSL/Linux runtime validation is unavailable because WSL is not
+installed; no semantic or dynamic conclusion is claimed.
+EXACT NEXT ACTION: stop before the dynamic ant/scheduler PoC; consume the
+frontier format only in a separately authorized bounded emulator checkpoint.
+
 TASK: M11.5 Mass Structural Verification Pass v1
 WHY: batch-check the normalized Ghidra candidate map with the existing
 project-specific decoder and Atlas evidence, then measure failure classes and

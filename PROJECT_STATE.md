@@ -1,8 +1,20 @@
 # Project State
 
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
-CURRENT_TASK: M11.5 Mass Structural Verification Pass v1
+CURRENT_TASK: M11.5 oasis_re_explore bounded recursive exploration engine v1
 STATUS: COMPLETE
+CURRENT_SLICE_CONFIDENCE: 95% for developer-only bounded structural
+exploration, persistent map and deterministic frontier output; semantics remain
+unknown by design.
+LAST_VERIFIED_RESULT: fresh raw Ghidra 12.1.3 exports A/B were generated from
+the canonical USA ROM and are byte-identical at 390972 bytes, SHA-256
+613A3AA6DEB8D2DCF994C82ADC6A6939B7D5F27AF67A51D05C16F090D60A5315. The
+bounded explorer gate passed for 15 controls; the gated ROM-wide run processed
+537 entries, decoded 19623 instructions and emitted 148 frontiers.
+NEXT_ACTION: STOP before the dynamic ant/scheduler PoC; the next checkpoint
+must be separately authorized.
+DO_NOT_WORK_ON: dynamic ant/scheduler, emulator, semantic translation, M12+,
+production runtime behavior or broad decoder fixups
 LAST_VERIFIED_RESULT: developer-only `oasis_re_mass_verify` processed all 534
 normalized entries in ascending-address order and emitted deterministic JSON
 and text reports. The local bake-off reused the prior normalized candidate-map
