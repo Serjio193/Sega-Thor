@@ -4,6 +4,12 @@ Chronological record of meaningful project actions. New entries go at the top.
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
 ## 2026-09-06 — M11.9 exact reassembly verified locally
+CI/PUSH: implementation commit `1d2d10d` was pushed after local validation.
+GitHub Actions run `34029898270` completed successfully (configure/build/test).
+CI uses synthetic inputs; the commercial-ROM round-trips remain locally verified.
+The sole annotation was the existing checkout action's Node.js deprecation.
+TASK STATUS: DONE / `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`.
+
 RESULT: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`. Canonical ROM through the existing
 decoder, decoder-owned exact operands, generated ASM and vasm matches 5/5 slices:
 0x3820 (306 instructions/798 bytes), 0x62CC (6/24), A8DA (10/22), 0x1108 (4/10),

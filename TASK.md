@@ -29,6 +29,7 @@ assembler workaround class; no instruction-specific patches.
 
 VERIFICATION: synthetic CTest plus local Debug/Release round-trip commands;
 full compiler/test outcomes and CI evidence are in the newest worklog entry.
+GitHub Actions `34029898270` passed for implementation commit `1d2d10d`.
 Reproduction, tool provenance/license, range evidence and first-difference
 example: `docs/REASSEMBLY_POC.md`.
 

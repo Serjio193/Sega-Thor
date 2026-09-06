@@ -14,6 +14,7 @@ TOOL: local vasm 1.8g, `-m68000 -no-opt -Fbin`, one optimization-control
 workaround, zero handwritten opcode overrides or commercial artifacts in Git.
 VALIDATION: see latest WORKLOG for final compiler/CTest and CI evidence;
 docs/REASSEMBLY_POC.md records reproduction and precise limitations.
+CI_PROOF: implementation `1d2d10d`, GitHub Actions `34029898270` succeeded.
 NEXT_ACTION: recommendation A — expand to 25–50 verified routines; not started.
 DO_NOT_WORK_ON: M12, production runtime, full ROM split, AI semantics,
 automatic C++ translation, emulator, ant/scenario work or architecture changes.
