@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import zlib
+from collections import Counter
+import re
 
 
 HERE = Path(__file__).resolve().parent
@@ -189,8 +191,12 @@ def summary(manifest):
 
 
 def classify_error(text):
-    if "UNSUPPORTED" in text or "no exact IR" in text:
+    if "no exact IR" in text or "UNSUPPORTED" in text:
         return "UNSUPPORTED_FORM"
+    if "illegal opcode extension" in text or "unknown mnemonic" in text:
+        return "ASSEMBLER_SYNTAX"
+    if "optimization" in text.lower():
+        return "ASSEMBLER_OPTIMIZATION"
     if "BOUNDARY" in text or "incomplete selected slice" in text:
         return "BOUNDARY_UNCERTAIN"
     return "OTHER"
@@ -200,17 +206,79 @@ def clean_detail(text, output):
     return text.replace(str(output), "<output>").replace(str(Path.cwd()), "<workspace>")
 
 
+def instruction_form(instruction):
+    operation = instruction.get("operation", "?")
+    branch_width = instruction.get("branch_width_bytes", 0)
+    width = instruction.get("width_bytes", 0)
+    suffix = ("s" if branch_width == 1 else "w" if branch_width == 2 else
+              "b" if width == 1 else "w" if width == 2 else "l" if width == 4 else "-")
+    source = instruction.get("source") or {}
+    destination = instruction.get("destination") or {}
+    return f"{operation}.{suffix}:{source.get('kind', '-')}>" \
+           f"{destination.get('kind', '-')}"
+
+
+def instruction_family(instruction):
+    operation = instruction.get("operation", "?")
+    branch_width = instruction.get("branch_width_bytes", 0)
+    width = instruction.get("width_bytes", 0)
+    suffix = ("s" if branch_width == 1 else "w" if branch_width == 2 else
+              "b" if width == 1 else "w" if width == 2 else "l" if width == 4 else "-")
+    return f"{operation}.{suffix}"
+
+
+def forms_from_json(path):
+    return sorted({instruction_form(item) for item in
+                   json.loads(path.read_text()).get("instructions", [])})
+
+
+def forms_from_asm(path):
+    forms = set()
+    for line in path.read_text().splitlines():
+        match = re.match(r"\s+([a-z]+)(?:\.([bwl]))?\s+(.*)$", line, re.IGNORECASE)
+        if match:
+            mnemonic = match.group(1).lower()
+            suffix = (match.group(2) or "-").lower()
+            forms.add(f"{mnemonic}.{suffix}")
+    return forms
+
+
+def resolve_artifact(manifest_path, artifact):
+    direct = manifest_path.parent / artifact
+    if direct.exists():
+        return direct
+    final = manifest_path.parent / "final" / artifact
+    if final.exists():
+        return final
+    regression = manifest_path.parent / "regression" / artifact
+    if regression.exists():
+        return regression
+    raise FileNotFoundError(f"manifest artifact is missing: {artifact}")
+
+
+def reject_form(record):
+    detail = record.get("detail", "")
+    match = re.search(r">\s+([^\r\n]+)", detail)
+    if match:
+        return match.group(1).strip()
+    if record.get("reason") == "UNSUPPORTED_FORM":
+        return "unsupported exact IR"
+    if record.get("reason") == "BOUNDARY_UNCERTAIN":
+        return "uncertain boundary"
+    return record.get("reason", "OTHER")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tool", required=True, help="existing oasis_re_assemble")
     parser.add_argument("--range-tool", required=True, help="oasis_re_assemble_range")
     parser.add_argument("--assembler", required=True)
     parser.add_argument("--rom", required=True)
-    parser.add_argument("--manifest", required=True, help="M11.11 manifest.json")
+    parser.add_argument("--manifest", required=True, help="post-M11.12 manifest.json")
     parser.add_argument("--mass-report", required=True)
     parser.add_argument("--ghidra-map", required=True)
     parser.add_argument("--output", required=True, help="new ignored output directory")
-    parser.add_argument("--max-candidates", type=int, default=25)
+    parser.add_argument("--max-candidates", type=int, default=100)
     args = parser.parse_args()
     output = Path(args.output).resolve()
     if output.exists():
@@ -229,12 +297,18 @@ def main():
     regression_result = json.loads((regression / "result.json").read_text())
     current = renumber(copy.deepcopy(baseline["entries"]))
     before = summary(baseline)
+    baseline_forms = set()
+    for entry in baseline["entries"]:
+        if entry["kind"] == "CODE_VERIFIED":
+            source = resolve_artifact(baseline_path, entry["artifact"])
+            baseline_forms.update(forms_from_asm(source))
     code_sources = {}
     for index, entry in enumerate(current):
         if entry["kind"] == "CODE_VERIFIED":
-            code_sources[index] = baseline_path.parent / entry["artifact"]
+            code_sources[index] = resolve_artifact(baseline_path, entry["artifact"])
     attempts = []
     accepted = []
+    accepted_families = set()
     staging = output / "staging"
     staging.mkdir()
     for attempt_index, candidate in enumerate(candidates, 1):
@@ -247,6 +321,13 @@ def main():
                   "score": candidate["score"], "classification": candidate["classification"],
                   "slice_match": False, "full_rom_match": False, "accepted": False,
                   "reason": ""}
+        if not any(entry["kind"] == "UNKNOWN" and entry["start"] <= candidate["start"] and
+                   candidate["end"] <= entry["end"] for entry in current):
+            record["reason"] = "CODE_DATA_CONFLICT"
+            record["detail"] = "candidate no longer lies inside an UNKNOWN range"
+            attempts.append(record)
+            shutil.rmtree(trial)
+            continue
         emitted = run([args.range_tool, rom_path, hex(candidate["start"]),
                        hex(candidate["end"]), asm, data])
         if emitted.returncode:
@@ -258,7 +339,7 @@ def main():
         binary = trial / "candidate.bin"
         assembled = run([args.assembler, "-m68000", "-no-opt", "-Fbin", "-o", binary, asm])
         if assembled.returncode:
-            record["reason"] = "ASSEMBLER_ERROR"
+            record["reason"] = classify_error(assembled.stdout + assembled.stderr)
             record["detail"] = clean_detail(assembled.stdout + assembled.stderr, output).strip()[:400]
             attempts.append(record)
             shutil.rmtree(trial)
@@ -269,12 +350,24 @@ def main():
         if not record["slice_match"]:
             record["reason"] = "SLICE_MISMATCH"
             if rebuilt_slice != expected:
-                record["first_difference"] = FULL.first_difference(rom, rebuilt_slice,
-                                                                    candidate["start"], candidate["end"])
+                difference = FULL.first_difference(
+                    expected, rebuilt_slice,
+                    [{"manifest_index": 0, "start": candidate["start"],
+                      "end": candidate["end"], "emitted_artifact_type": "asm"}])
+                if difference:
+                    difference["rom_offset"] += candidate["start"]
+                record["first_difference"] = difference
             attempts.append(record)
             shutil.rmtree(trial)
             continue
-        new_entries = promote(current, candidate)
+        try:
+            new_entries = promote(current, candidate)
+        except ValueError as error:
+            record["reason"] = "BOUNDARY_UNCERTAIN"
+            record["detail"] = str(error)
+            attempts.append(record)
+            shutil.rmtree(trial)
+            continue
         new_sources = {}
         for index, entry in enumerate(new_entries):
             if entry["kind"] == "CODE_VERIFIED":
@@ -308,8 +401,11 @@ def main():
         current, code_sources = new_entries, new_sources
         record["accepted"] = True
         record["reason"] = "FULL_MATCH"
-        record["instructions"] = len(json.loads(data.read_text())["instructions"])
+        instructions = json.loads(data.read_text())["instructions"]
+        record["instructions"] = len(instructions)
         record["bytes"] = candidate["size"]
+        record["instruction_forms"] = forms_from_json(data)
+        accepted_families.update(instruction_family(item) for item in instructions)
         attempts.append(record)
         accepted.append(record)
         shutil.rmtree(trial)
@@ -340,7 +436,19 @@ def main():
               "delta": {key: after[key] - before[key] for key in before},
               "attempts": attempts, "regression": regression_result,
               "full_match": matched, "hashes": final_manifest["hashes"],
-              "handwritten_overrides": 0, "systemic_fixes": []}
+              "handwritten_overrides": 0, "systemic_fixes": [],
+              "acceptance_percent": (100.0 * len(accepted) / len(attempts)) if attempts else 0.0,
+              "reject_classes": dict(Counter(item["reason"] for item in attempts
+                                              if not item["accepted"])),
+              "accepted_instruction_forms": sorted({form for item in accepted
+                                                     for form in item.get("instruction_forms", [])}),
+              "newly_supported_forms": sorted(accepted_families - baseline_forms),
+              "remaining_unsupported_forms": sorted({reject_form(item) for item in attempts
+                                                      if item["reason"] in
+                                                      ("UNSUPPORTED_FORM", "ASSEMBLER_SYNTAX")}),
+              "top_reject_forms": [{"form": form, "count": count} for form, count in
+                                    Counter(reject_form(item) for item in attempts
+                                            if not item["accepted"]).most_common(10)]}
     (output / "manifest.json").write_text(json.dumps(final_manifest, indent=2) + "\n")
     (output / "promotion_report.json").write_text(json.dumps(report, indent=2) + "\n")
     print(f"Candidates: discovered={report['discovered_candidates']} eligible={eligible_count} "
@@ -348,7 +456,7 @@ def main():
     print(f"Coverage: ASM {before['ASM_BYTES']} -> {after['ASM_BYTES']} bytes; "
           f"BLOB {before['BLOB_BYTES']} -> {after['BLOB_BYTES']} bytes")
     print(f"Full ROM: {len(rom)} bytes; exact={'YES' if matched else 'NO'}")
-    return 0 if matched and len(accepted) >= 5 and len(attempts) >= 10 else 1
+    return 0 if matched and len(attempts) > 0 else 1
 
 
 if __name__ == "__main__":

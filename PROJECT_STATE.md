@@ -1,22 +1,22 @@
 # Project State
 
-CURRENT_MILESTONE: M11.12 automated blob-to-source promotion PoC
-CURRENT_TASK: deterministic evidence-ranked promotion of safe UNKNOWN ranges
-STATUS: AUTO_PROMOTION_HIGH_VALUE
-CURRENT_BASELINE: M11.11 full-ROM split is the transactional input; canonical
+CURRENT_MILESTONE: M11.13 automated promotion scale pass
+CURRENT_TASK: continue deterministic promotion from the post-M11.12 manifest
+STATUS: AUTO_PROMOTION_SCALE_HIGH_VALUE
+CURRENT_BASELINE: M11.12 post-promotion manifest; canonical
 USA ROM remains 3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: 534 records discovered, 210 eligible, 25 attempted and
-21 accepted automatically. Final manifest has 88 contiguous entries: 46
-`CODE_VERIFIED`, 42 `UNKNOWN`, zero gaps/overlaps.
-COVERAGE: ASM 2,632 bytes (0.0836690267%), structured data 0, blobs 3,143,096
-bytes (99.9163309733%), conflicts 0. Blob bytes decreased by 786; the UNKNOWN
-entry count rises only because promoted interior ranges split existing blobs.
+LAST_VERIFIED_RESULT: 534 records discovered, 189 eligible after baseline
+exclusion, 100 attempted and 84 accepted automatically. Final manifest has 231
+contiguous entries: 130 `CODE_VERIFIED`, 101 `UNKNOWN`, zero gaps/overlaps.
+COVERAGE: ASM 6,462 bytes, structured data 0, blobs 3,139,266 bytes. Blob
+bytes decreased by 3,830 from M11.12; UNKNOWN splits are structural.
 IMPLEMENTATION: `src/tools/re_auto_promote.py` reuses candidate/mass evidence,
 the existing decoder/ASM emitter and vasm. `oasis_re_assemble_range` provides
 generic bounded emission. Each candidate is accepted only after exact slice and
 full-ROM checks; rejected transactions leave the prior manifest unchanged.
-NEXT_ACTION: defer exactly one recommendation, A — increase the automatic
-promotion batch to 100 candidates; do not implement it in this checkpoint.
+The emitter has a generic immediate-to-CCR syntax rule and regression test.
+NEXT_ACTION: defer exactly one recommendation, A — continue automatic code
+promotion with another large batch; do not implement it in this checkpoint.
 DO_NOT_WORK_ON: structured-data promotion, classifier rewrites, AI naming,
 C++ generation, Z80, production runtime, full semantic disassembly, emulator,
 ants or M12.

@@ -35,6 +35,9 @@ def main():
     assert manifest["entries"] == [{"start": 0, "end": 100, "kind": "UNKNOWN"}]
     assert AUTO.FULL.first_difference(b"abcd", b"abxd", [{"manifest_index": 0,
         "start": 0, "end": 4, "emitted_artifact_type": "blob"}])["rom_offset"] == 2
+    assert AUTO.classify_error("fatal error: illegal opcode extension") == "ASSEMBLER_SYNTAX"
+    assert AUTO.reject_form({"reason": "UNSUPPORTED_FORM", "detail": "no exact IR"}) == \
+        "unsupported exact IR"
     print("auto promotion helper tests passed")
 
 

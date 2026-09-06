@@ -1,4 +1,10 @@
-# M11.12 — automated blob-to-source promotion PoC
+# M11.13 — automated promotion scale pass
+
+The M11.13 scale pass continues from the M11.12 post-promotion manifest and
+accepts 84 of 100 deterministic candidates. The full-ROM result remains exact;
+details are in docs/AUTO_PROMOTION_SCALE.md.
+
+## M11.12 — automated blob-to-source promotion PoC
 
 `AUTO_PROMOTION_HIGH_VALUE` extends the M11.11 full-ROM split through a
 developer-only transactional runner. Existing candidate-map and mass-verify

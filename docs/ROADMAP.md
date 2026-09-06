@@ -234,6 +234,16 @@ bytes and the canonical hashes remained exact. Decision:
 `AUTO_PROMOTION_HIGH_VALUE`. Recommendation A — increase the automatic batch to
 100 candidates — is deferred and not implemented here.
 
+## M11.13 — Automated promotion scale pass — DONE
+The post-M11.12 manifest was carried forward without repeating accepted
+candidates. One hundred deterministic candidates were attempted and 84 accepted
+after exact slice and full-ROM checks. ASM coverage increased from 2,632 to
+6,462 bytes; canonical full-ROM hashes remained exact. A generic
+immediate-to-CCR emitter syntax fix (.b for CCR) was regression-tested and
+accepted both prior CCR-blocked candidates. Decision: AUTO_PROMOTION_SCALE_HIGH_VALUE.
+Recommendation A — continue automatic code promotion with another large batch —
+is deferred.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

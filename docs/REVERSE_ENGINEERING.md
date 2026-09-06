@@ -1,6 +1,17 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.13 — Automated promotion scale pass
+STATUS: AUTO_PROMOTION_SCALE_HIGH_VALUE for bounded byte reproduction only.
+The post-M11.12 manifest was the input; 100 deterministic candidates were
+attempted and 84 accepted after exact slice/full-ROM checks. ASM coverage rose
+from 2,632 to 6,462 bytes. Rejections were 14 unsupported exact-IR forms and
+2 slice mismatches; no data ownership or semantic names were inferred.
+
+The shared emitter now prints immediate ori/andi/eori to CCR with .b, the syntax
+accepted by vasm for the 68000 CCR encoding. This is a general operand-kind
+rule with a regression test, not an address-specific override.
+
 ## M11.12 — Automated blob-to-source promotion PoC
 STATUS: `AUTO_PROMOTION_HIGH_VALUE` for bounded byte reproduction only. The
 promotion tool does not assign semantic names or classify unknown data.

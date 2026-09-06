@@ -81,6 +81,22 @@ void pc_relative_encoding() {
     assert(slice.instructions[0].exact->source->kind == OperandKind::pc_displacement);
     assert(exact_instruction_asm(slice.instructions[0]) == "lea.l ($0002,PC),A0");
 }
+void ccr_immediate_encoding() {
+    DecodedInstruction instruction{};
+    instruction.address = 0xDA2AU;
+    instruction.supported = true;
+    ExactInstruction exact{};
+    exact.operation = "ori";
+    exact.width_bytes = 2;
+    exact.source = DecodedOperand{};
+    exact.source->kind = OperandKind::immediate;
+    exact.source->value = 1;
+    exact.destination = DecodedOperand{};
+    exact.destination->kind = OperandKind::status_register;
+    exact.destination->value = 0;
+    instruction.exact = exact;
+    assert(exact_instruction_asm(instruction) == "ori.b #$1,CCR");
+}
 void differences() {
     const std::vector<std::uint8_t> rom{9,8,0x36,0xC1,0x4E,0x75};
     std::vector<std::uint8_t> rebuilt{0x36,0xC1,0x4E,0x75};
@@ -116,6 +132,7 @@ int main() {
     movem_and_sizes();
     diverse_addressing_and_unary_forms();
     pc_relative_encoding();
+    ccr_immediate_encoding();
     differences();
     rejects_unknown_and_gaps();
 }

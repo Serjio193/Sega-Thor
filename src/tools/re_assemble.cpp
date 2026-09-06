@@ -59,8 +59,15 @@ std::string exact_instruction_asm(const DecodedInstruction& instruction) {
     if (exact.branch_width_bytes) {
         if (exact.operation.substr(0, 2) != "db")
             text += exact.branch_width_bytes == 1 ? ".s" : ".w";
-    } else if (exact.width_bytes && exact.operation != "moveq")
-        text += exact.width_bytes == 1 ? ".b" : exact.width_bytes == 2 ? ".w" : ".l";
+    } else if (exact.width_bytes && exact.operation != "moveq") {
+        const bool ccr_immediate = exact.destination &&
+            exact.destination->kind == OperandKind::status_register &&
+            exact.destination->value == 0 && exact.width_bytes == 2 &&
+            (exact.operation == "ori" || exact.operation == "andi" ||
+             exact.operation == "eori");
+        text += ccr_immediate ? ".b" :
+            exact.width_bytes == 1 ? ".b" : exact.width_bytes == 2 ? ".w" : ".l";
+    }
     if (exact.source) {
         if (exact.operation == "moveq")
             text += " #" + std::to_string(static_cast<std::int32_t>(exact.source->value));

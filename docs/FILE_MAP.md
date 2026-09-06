@@ -25,6 +25,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── REASSEMBLY_POC.md     M11.9/M11.10 bounded reassembly reproduction and measured results
 │   ├── FULL_ROM_SPLIT_BASELINE.md M11.11 full-ROM split manifest and exact baseline report
 │   ├── AUTO_BLOB_PROMOTION.md M11.12 transactional blob-to-source promotion report
+│   ├── AUTO_PROMOTION_SCALE.md M11.13 100-attempt promotion scale report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template

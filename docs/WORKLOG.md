@@ -3,6 +3,30 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.13 automated promotion scale pass
+TASK: continue M11.12 transactional blob-to-source promotion from its
+post-promotion manifest, with at most 100 deterministic attempts and no new
+address list.
+
+IMPLEMENTATION: the runner default is now 100 candidates, resolves artifacts
+from generated M11.12 final outputs, excludes candidates that no longer fit an
+UNKNOWN range, classifies rejection classes, records accepted instruction forms
+and reject-form counts, and preserves transactional rollback. A latent slice
+difference reporting call was corrected. The shared emitter prints immediate
+ori/andi/eori to CCR as .b; tests/re_assemble_test.cpp covers the general rule.
+
+RESULT: 534 records discovered, 189 eligible after M11.12 exclusion, 100
+attempted, 84 accepted and 16 rejected (14 UNSUPPORTED_FORM, 2 SLICE_MISMATCH).
+ASM changed 2,632 -> 6,462 bytes and blobs 3,143,096 -> 3,139,266 bytes. The
+final manifest has 231 contiguous entries (130 code, 101 unknown), and no
+structured-data promotion occurred. Both former CCR candidates (0x00DA2A,
+0x00B9EC) now pass. The full ROM is 3,145,728 bytes with canonical hashes.
+
+REGRESSION: M11.9, M11.10, M11.11 and M11.12 controls all report MATCH.
+
+DECISION: AUTO_PROMOTION_SCALE_HIGH_VALUE. Exactly one next recommendation is
+A — continue automatic code promotion with another large batch; it is deferred.
+
 ## 2026-09-06 — M11.12 automated blob-to-source promotion PoC
 TASK: reduce UNKNOWN blob coverage from the M11.11 full-ROM split using only
 existing candidate-map and mass-verification evidence.
