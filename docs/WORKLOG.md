@@ -3,6 +3,47 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.6.2 static translation trust restored
+TASK: repair only the three bounded static-translation PoC defects identified
+by the task: A8DA memory operands, CCR X semantics and Release assertion
+coverage.
+
+BASELINE: synchronized `main` and `origin/main` at `a2bc039`. The canonical
+USA ROM remained local-only with the previously recorded SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+EVIDENCE: the existing bounded decoder was rerun for `0xA8DA` and `0x62CC`.
+It confirms `0x3AC2` is `MOVE.W D2,(A5)+`, three further A8DA word stores
+through `(A5)+`, and the complete six-instruction 0x62CC leaf. No scenario,
+BizHawk, ant, runtime or production work was performed.
+
+IMPLEMENTATION: A8DA now takes `BoundedMemory`, performs four exact big-endian
+word writes, postincrements A5 after each store and preserves upper register
+halves. Narrow independent CCR helpers implement bit-4 X preservation for
+MOVE/MOVEQ/CMPI and X=carry for ADD/ADDQ. 0x62CC now preserves X across its
+MOVEQ/MOVE.L/MOVE.W sequence. `TranslationStatus::verified` was replaced by
+neutral `EXECUTED`; verification remains external. The static translation test
+was added to both Release `-UNDEBUG` and MinGW runtime-path CMake lists.
+
+OLD ERROR: the former M11.6 Case B fixture is invalidated. It used empty
+memory and expected the same register-only operand interpretation as the
+incorrect implementation, so it could pass while missing every RAM write.
+The replacement fixture independently derives four addresses/word values,
+A5 delta, D0/D5, upper halves, CCR/X and the no-write early path. 0x62CC now
+uses non-zero starting memory, non-zero upper register halves and X=1.
+
+TESTS: MinGW Debug full build and CTest `33/33` passed. MinGW Release full
+build and CTest `33/33` passed. The actual Release compile command for
+`tests/re_static_translation_test.cpp` contained `-O3 -DNDEBUG -UNDEBUG`,
+proving assertions are active. 0x3820 positive-control tests remained green.
+The CTest file-line-limit check passed. MSVC tools were not available on this
+host and are not a blocker under the task instructions.
+
+RESULT: `STATIC_TRANSLATION_TRUST_RESTORED`. Production runtime is unchanged.
+
+EXACT NEXT ACTION: recommendation C — expand independent machine-semantics
+reference tests. Do not implement the next step in this task.
+
 ## 2026-09-06 — M11.8 natural reachability recovery advanced root cause
 TASK: recover a natural caller for `0x62CC`, or produce a concrete blocker and
 reproducible next experiment beyond M11.7.

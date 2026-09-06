@@ -11,27 +11,32 @@ constexpr std::uint16_t kZero = 1U << 2U;
 constexpr std::uint16_t kOverflow = 1U << 1U;
 constexpr std::uint16_t kCarry = 1U << 0U;
 
-void set_move_flags(M68kState& state, std::uint16_t value) {
-    state.ccr = value == 0 ? kZero : static_cast<std::uint16_t>(
-        (value & 0x8000U) != 0 ? kNegative : 0);
+std::uint16_t move_flags(std::uint16_t previous, std::uint32_t value,
+                         std::uint32_t sign_bit) {
+    return static_cast<std::uint16_t>((previous & ccr::kExtend) |
+        (value == 0 ? kZero : 0) |
+        ((value & sign_bit) != 0 ? kNegative : 0));
 }
 
-void set_compare_flags(M68kState& state, std::uint16_t left, std::uint16_t right) {
+std::uint16_t compare_flags(std::uint16_t previous, std::uint16_t left,
+                            std::uint16_t right) {
     const auto result = static_cast<std::uint16_t>(left - right);
     const bool overflow = ((left ^ right) & (left ^ result) & 0x8000U) != 0;
     const bool carry = left < right;
-    state.ccr = (result == 0 ? kZero : 0) |
+    return static_cast<std::uint16_t>((previous & ccr::kExtend) |
+        (result == 0 ? kZero : 0) |
         ((result & 0x8000U) != 0 ? kNegative : 0) |
-        (overflow ? kOverflow : 0) | (carry ? kCarry : 0);
+        (overflow ? kOverflow : 0) | (carry ? kCarry : 0));
 }
 
-void set_add_flags(M68kState& state, std::uint16_t left, std::uint16_t right,
-                   std::uint16_t result) {
+std::uint16_t add_flags(std::uint16_t left, std::uint16_t right,
+                        std::uint16_t result) {
     const bool overflow = (~(left ^ right) & (left ^ result) & 0x8000U) != 0;
     const bool carry = static_cast<std::uint32_t>(left) + right > 0xFFFFU;
-    state.ccr = (result == 0 ? kZero : 0) |
+    return static_cast<std::uint16_t>((carry ? ccr::kExtend : 0) |
+        (result == 0 ? kZero : 0) |
         ((result & 0x8000U) != 0 ? kNegative : 0) |
-        (overflow ? kOverflow : 0) | (carry ? kCarry : 0);
+        (overflow ? kOverflow : 0) | (carry ? kCarry : 0));
 }
 
 class Stream {
@@ -186,6 +191,29 @@ void mechanical_format_b(Stream& stream, Output& output) {
 
 } // namespace
 
+namespace ccr {
+
+std::uint16_t move_word(std::uint16_t previous, std::uint16_t value) {
+    return move_flags(previous, value, 0x8000U);
+}
+
+std::uint16_t move_long(std::uint16_t previous, std::uint32_t value) {
+    return move_flags(previous, value, 0x80000000U);
+}
+
+std::uint16_t compare_word(std::uint16_t previous, std::uint16_t left,
+                           std::uint16_t right) {
+    return compare_flags(previous, left, right);
+}
+
+std::uint16_t add_word(std::uint16_t previous, std::uint16_t left,
+                       std::uint16_t right) {
+    (void)previous;
+    return add_flags(left, right, static_cast<std::uint16_t>(left + right));
+}
+
+} // namespace ccr
+
 BoundedMemory::BoundedMemory(std::uint32_t base, std::span<std::uint8_t> bytes)
     : base_(base), bytes_(bytes) {}
 
@@ -257,36 +285,46 @@ oasis::game::DecompressResult mechanical_3820(std::span<const std::uint8_t> sour
     return {stream.position(), output.size()};
 }
 
-TranslationRun mechanical_A8DA(M68kState& state) {
-    set_compare_flags(state, static_cast<std::uint16_t>(state.d[5]), 0x0050U);
-    if ((state.ccr & kCarry) == 0) return {TranslationStatus::verified, 3U, {}};
-    state.d[5] = (state.d[5] & 0xFFFF0000U) | static_cast<std::uint16_t>(state.d[5] + 1U);
-    set_move_flags(state, static_cast<std::uint16_t>(state.d[5]));
-    state.d[5] = (state.d[5] & 0xFFFF0000U) | static_cast<std::uint16_t>(state.d[2]);
-    set_move_flags(state, static_cast<std::uint16_t>(state.d[5]));
+TranslationRun mechanical_A8DA(M68kState& state, BoundedMemory& memory) {
+    state.ccr = ccr::compare_word(state.ccr, static_cast<std::uint16_t>(state.d[5]), 0x0050U);
+    if ((state.ccr & kCarry) == 0) return {TranslationStatus::executed, 2U, {}};
+    const auto incremented = static_cast<std::uint16_t>(state.d[5] + 1U);
+    state.ccr = ccr::add_word(state.ccr, static_cast<std::uint16_t>(state.d[5]), 1U);
+    state.d[5] = (state.d[5] & 0xFFFF0000U) | incremented;
+    memory.write_u16(state.a[5], static_cast<std::uint16_t>(state.d[2]));
+    state.a[5] += 2U;
+    state.ccr = ccr::move_word(state.ccr, static_cast<std::uint16_t>(state.d[2]));
     state.d[0] = (state.d[0] & 0xFFFF0000U) | static_cast<std::uint16_t>(state.d[5]);
-    set_move_flags(state, static_cast<std::uint16_t>(state.d[0]));
+    state.ccr = ccr::move_word(state.ccr, static_cast<std::uint16_t>(state.d[0]));
     const auto sum = static_cast<std::uint16_t>(state.d[0] + state.d[4]);
-    set_add_flags(state, static_cast<std::uint16_t>(state.d[0]), static_cast<std::uint16_t>(state.d[4]), sum);
+    state.ccr = ccr::add_word(state.ccr, static_cast<std::uint16_t>(state.d[0]),
+                              static_cast<std::uint16_t>(state.d[4]));
     state.d[0] = (state.d[0] & 0xFFFF0000U) | sum;
-    state.d[5] = (state.d[5] & 0xFFFF0000U) | sum;
-    set_move_flags(state, sum);
-    state.d[5] = (state.d[5] & 0xFFFF0000U) | static_cast<std::uint16_t>(state.d[3]);
-    set_move_flags(state, static_cast<std::uint16_t>(state.d[5]));
-    state.d[5] = (state.d[5] & 0xFFFF0000U) | static_cast<std::uint16_t>(state.d[1]);
-    set_move_flags(state, static_cast<std::uint16_t>(state.d[5]));
-    return {TranslationStatus::verified, 10U, {}};
+    memory.write_u16(state.a[5], sum);
+    state.a[5] += 2U;
+    state.ccr = ccr::move_word(state.ccr, sum);
+    memory.write_u16(state.a[5], static_cast<std::uint16_t>(state.d[3]));
+    state.a[5] += 2U;
+    state.ccr = ccr::move_word(state.ccr, static_cast<std::uint16_t>(state.d[3]));
+    memory.write_u16(state.a[5], static_cast<std::uint16_t>(state.d[1]));
+    state.a[5] += 2U;
+    state.ccr = ccr::move_word(state.ccr, static_cast<std::uint16_t>(state.d[1]));
+    return {TranslationStatus::executed, 10U, {}};
 }
 
 TranslationRun mechanical_62CC(M68kState& state, BoundedMemory& memory) {
     state.d[0] = 0;
+    state.ccr = ccr::move_long(state.ccr, state.d[0]);
     const auto base = state.a[6];
     memory.write_u32(base + 0x4EU, 0);
+    state.ccr = ccr::move_long(state.ccr, 0);
     memory.write_u32(base + 0x52U, 0);
+    state.ccr = ccr::move_long(state.ccr, 0);
     memory.write_u16(base + 0x2AU, 0);
+    state.ccr = ccr::move_word(state.ccr, 0);
     memory.write_u16(base + 0x04U, 0);
-    state.ccr = kZero;
-    return {TranslationStatus::verified, 6U, {}};
+    state.ccr = ccr::move_word(state.ccr, 0);
+    return {TranslationStatus::executed, 6U, {}};
 }
 
 TranslationRun unsupported_opcode(std::uint16_t opcode) {

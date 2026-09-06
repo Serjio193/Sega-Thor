@@ -1,5 +1,27 @@
 # Project State
 
+CURRENT_MILESTONE: M11.6 static translation trust repair
+CURRENT_TASK: M11.6.2 Static Translation Trust Repair
+STATUS: STATIC_TRANSLATION_TRUST_RESTORED
+CURRENT_SLICE_CONFIDENCE: 98% for the bounded A8DA/62CC semantics and test
+coverage; this remains developer-only tooling and does not prove general
+68000 translation.
+LAST_VERIFIED_RESULT: canonical ROM decoding confirms all A8DA operands,
+including `MOVE.W D2,(A5)+`, and all six 0x62CC instructions. A8DA now writes
+four ordered words through BoundedMemory, advances A5 by 8 on fall-through,
+preserves upper register halves and models CCR X correctly. 0x62CC writes the
+two long and two word zero fields while preserving X. Independent regression
+tests cover non-zero memory, upper halves, early return and CCR edge cases.
+RELEASE_PROOF: `oasis_re_static_translation_test` is included in the CMake
+Release `-UNDEBUG` target list; the observed compile command contains both
+`-DNDEBUG` and the later `-UNDEBUG`.
+OLD_EVIDENCE: the previous M11.6 Case B claim was invalidated because its
+oracle used empty memory and mirrored the incorrect register-only translation.
+PRODUCTION_BOUNDARY: unchanged; no runtime, recompiler, interpreter, emulator,
+BizHawk, ant or scenario work was performed.
+NEXT_ACTION: recommendation C — expand independent machine-semantics
+reference tests. Do not implement it in this checkpoint.
+
 CURRENT_MILESTONE: M11.8 natural reachability recovery
 CURRENT_TASK: Natural Reachability Recovery for `0x62CC`
 STATUS: ROOT_CAUSE_ADVANCED

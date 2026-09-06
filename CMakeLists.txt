@@ -341,6 +341,7 @@ set(oasis_test_targets
     oasis_re_scenario_test
     oasis_re_candidate_map_test
     oasis_re_mass_verify_test
+    oasis_re_static_translation_test
     oasis_re_explore_test
     oasis_re_ant_test
     oasis_re_ant_queue_test
@@ -386,6 +387,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_emulator_trace
         oasis_re_candidate_map
         oasis_re_mass_verify
+        oasis_re_static_translation
         oasis_re_explore
         oasis_re_ant
         project_file_line_limit

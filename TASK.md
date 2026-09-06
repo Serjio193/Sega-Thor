@@ -1,5 +1,48 @@
 # Current Task
 
+TASK: M11.6.2 Static Translation Trust Repair
+WHY: repair the three bounded PoC defects that made the earlier static B/C
+evidence unreliable: A8DA memory operands, CCR X semantics and Release test
+assertion coverage.
+CURRENT MILESTONE: M11.6 static translation trust repair
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: STATIC_TRANSLATION_TRUST_RESTORED
+
+BASELINE: synchronized `main` and `origin/main` at `a2bc039`.
+
+ROM TRUTH: the canonical decoder confirms A8DA as
+`CMPI.W #$50,D5; BCC.S 0xA8EE; ADDQ.W #1,D5; MOVE.W D2,(A5)+;
+MOVE.W D5,D0; ADD.W D4,D0; MOVE.W D0,(A5)+; MOVE.W D3,(A5)+;
+MOVE.W D1,(A5)+; RTS`. The normal path makes four ordered word writes and
+advances A5 by 8; the BCC early path executes only the compare and branch.
+`0x62CC` remains the six-instruction leaf `MOVEQ #0,D0; MOVE.L D0,0x4E(A6);
+MOVE.L D0,0x52(A6); MOVE.W #0,0x2A(A6); MOVE.W #0,0x04(A6); RTS`.
+
+REPAIRS: `mechanical_A8DA` now uses `BoundedMemory`, performs the four real
+postincrement word writes and preserves word-operation upper halves. Narrow
+CCR helpers model X as bit 4: MOVE/MOVEQ/CMPI preserve X, while ADD/ADDQ set
+X together with carry. `mechanical_62CC` preserves X and applies the correct
+MOVEQ/MOVE.L/MOVE.W flags. Success status is neutral `EXECUTED`; external
+comparisons/tests own the VERIFIED conclusion. The static translation test is
+now in the Release `-UNDEBUG` list and the MinGW runtime-path test list.
+
+OLD EVIDENCE INVALIDATED: the earlier M11.6 Case B fixture was not a valid
+oracle. It compared empty memory and accepted register results from the wrong
+operand model, so it did not detect the missing `(A5)+` writes. It is replaced
+by an independent instruction-derived fixture with non-zero memory/register
+upper halves, four exact writes, A5 delta, D0/D5 and CCR/X assertions.
+
+VALIDATION: MinGW Debug and Release builds and CTest pass 33/33; Release
+compile output contains `-UNDEBUG` for the static translation test. The 0x3820
+positive control remains green. MSVC availability and CI status are recorded
+in the final worklog entry.
+
+DECISION: STATIC_TRANSLATION_TRUST_RESTORED.
+EXACT NEXT ACTION: recommendation C — expand independent machine-semantics
+reference tests. Do not implement that next step here.
+DO_NOT_WORK_ON: production runtime, recompiler, interpreter, CPU emulator,
+BizHawk reachability, ant/scenario work, new translated routines or M12.
+
 TASK: M11.8 Natural Reachability Recovery for `0x62CC`
 WHY: recover one natural runtime caller for the target or advance the root
 cause beyond M11.7 with a concrete blocker and a reproducible next experiment.

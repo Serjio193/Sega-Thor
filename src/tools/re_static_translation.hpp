@@ -11,6 +11,23 @@
 
 namespace oasis::tools {
 
+namespace ccr {
+
+inline constexpr std::uint16_t kExtend = 1U << 4U;
+
+[[nodiscard]] std::uint16_t move_word(std::uint16_t previous,
+                                      std::uint16_t value);
+[[nodiscard]] std::uint16_t move_long(std::uint16_t previous,
+                                      std::uint32_t value);
+[[nodiscard]] std::uint16_t compare_word(std::uint16_t previous,
+                                         std::uint16_t left,
+                                         std::uint16_t right);
+[[nodiscard]] std::uint16_t add_word(std::uint16_t previous,
+                                     std::uint16_t left,
+                                     std::uint16_t right);
+
+} // namespace ccr
+
 struct M68kState {
     std::array<std::uint32_t, 8> d{};
     std::array<std::uint32_t, 8> a{};
@@ -43,10 +60,10 @@ private:
     std::vector<MemoryWrite> writes_;
 };
 
-enum class TranslationStatus { verified, unsupported };
+enum class TranslationStatus { executed, unsupported };
 
 struct TranslationRun {
-    TranslationStatus status{TranslationStatus::verified};
+    TranslationStatus status{TranslationStatus::executed};
     std::size_t instructions_executed{};
     std::string detail;
 };
@@ -67,7 +84,8 @@ struct StateDiff {
     std::span<const std::uint8_t> source, std::span<std::uint8_t> destination);
 
 // 0xA8DA: bounded arithmetic leaf selected from current mass verification.
-[[nodiscard]] TranslationRun mechanical_A8DA(M68kState& state);
+[[nodiscard]] TranslationRun mechanical_A8DA(M68kState& state,
+                                             BoundedMemory& memory);
 
 // 0x62CC: bounded RAM-state leaf selected from current mass verification.
 [[nodiscard]] TranslationRun mechanical_62CC(M68kState& state, BoundedMemory& memory);

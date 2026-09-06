@@ -47,8 +47,8 @@ int main(int argc, char** argv) {
             throw std::runtime_error("case A requires the supported USA ROM");
         for (const auto item : std::array<CaseA, 2>{{{0x16943C, 1217, 3072}, {0x1894EA, 112, 128}}})
             run_a(rom, item);
-        std::cout << "B entry=0xA8DA instructions=10 fixture=static-mass-verified\n"
-                     "C entry=0x62CC instructions=6 fixture=static-mass-verified\n"
+        std::cout << "B entry=0xA8DA instructions=10 fixture=static-reference verification=external-test\n"
+                     "C entry=0x62CC instructions=6 fixture=static-reference verification=external-test\n"
                      "unsupported=explicit-stop fallback-interpreter=no production-cpu-emulator=no\n";
         return 0;
     } catch (const std::exception& error) {

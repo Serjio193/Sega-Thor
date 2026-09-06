@@ -1,6 +1,35 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.6.2 — Static translation trust repair
+Status: `STATIC_TRANSLATION_TRUST_RESTORED` for the bounded developer-only
+PoC; this is not a general 68000 translation claim.
+
+Canonical-USA ROM slice decoding confirms the complete A8DA sequence:
+`0x0C45 0x0050` (`CMPI.W #$50,D5`), `0x640E` (`BCC.S 0xA8EE`), `0x5245`
+(`ADDQ.W #1,D5`), `0x3AC2` (`MOVE.W D2,(A5)+`), `0x3005`
+(`MOVE.W D5,D0`), `0xD044` (`ADD.W D4,D0`), `0x3AC0`
+(`MOVE.W D0,(A5)+`), `0x3AC3` (`MOVE.W D3,(A5)+`), `0x3AC1`
+(`MOVE.W D1,(A5)+`) and `0x4E75` (`RTS`). The fall-through effect is four
+ordered word writes at the incoming A5, A5+2, A5+4 and A5+6, followed by an
+A5 delta of 8; D5 receives only the word ADDQ result and D0 receives the word
+ADD result while their upper halves remain unchanged. The BCC early path is
+the two-instruction compare/branch path when CCR.C is clear.
+
+The six-instruction 0x62CC slice is confirmed as `MOVEQ #0,D0`, two
+`MOVE.L D0,(d16,A6)` writes at offsets `0x4E` and `0x52`, two
+`MOVE.W #0,(d16,A6)` writes at `0x2A` and `0x04`, then `RTS`. MOVE/MOVEQ
+clear N/Z/V/C according to their width and preserve X; the used ADD/ADDQ
+forms set X together with carry. These are the only CCR semantics added.
+
+The former M11.6 Case B evidence is explicitly invalidated: its C++ routine
+treated the memory operands as register moves, and its fixture compared no
+meaningful memory writes while expecting that same incorrect model. The new
+test derives expected addresses, widths, values, register effects and CCR
+from the decoded instruction list without calling `mechanical_A8DA` as an
+oracle. Runtime capture remains unavailable under the separate M11.6.1/
+M11.7/M11.8 evidence boundary.
+
 ## M11.8 — Natural reachability recovery for `0x62CC`
 Status: `ROOT_CAUSE_ADVANCED`; no natural target or direct caller was recovered.
 
