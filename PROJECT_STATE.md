@@ -15,6 +15,8 @@ tests cover non-zero memory, upper halves, early return and CCR edge cases.
 RELEASE_PROOF: `oasis_re_static_translation_test` is included in the CMake
 Release `-UNDEBUG` target list; the observed compile command contains both
 `-DNDEBUG` and the later `-UNDEBUG`.
+CI_PROOF: GitHub Actions run `34026330082` completed successfully for the
+implementation commit.
 OLD_EVIDENCE: the previous M11.6 Case B claim was invalidated because its
 oracle used empty memory and mirrored the incorrect register-only translation.
 PRODUCTION_BOUNDARY: unchanged; no runtime, recompiler, interpreter, emulator,

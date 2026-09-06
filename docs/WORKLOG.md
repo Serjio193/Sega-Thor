@@ -37,7 +37,9 @@ build and CTest `33/33` passed. The actual Release compile command for
 `tests/re_static_translation_test.cpp` contained `-O3 -DNDEBUG -UNDEBUG`,
 proving assertions are active. 0x3820 positive-control tests remained green.
 The CTest file-line-limit check passed. MSVC tools were not available on this
-host and are not a blocker under the task instructions.
+host and are not a blocker under the task instructions. GitHub Actions run
+`34026330082` completed successfully; its only annotation was the unrelated
+Node.js 20 action deprecation warning.
 
 RESULT: `STATIC_TRANSLATION_TRUST_RESTORED`. Production runtime is unchanged.
 

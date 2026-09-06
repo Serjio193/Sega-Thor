@@ -34,8 +34,9 @@ upper halves, four exact writes, A5 delta, D0/D5 and CCR/X assertions.
 
 VALIDATION: MinGW Debug and Release builds and CTest pass 33/33; Release
 compile output contains `-UNDEBUG` for the static translation test. The 0x3820
-positive control remains green. MSVC availability and CI status are recorded
-in the final worklog entry.
+positive control remains green. GitHub Actions run `34026330082` completed
+successfully. MSVC is unavailable on this host; that limitation is recorded in
+the final worklog entry.
 
 DECISION: STATIC_TRANSLATION_TRUST_RESTORED.
 EXACT NEXT ACTION: recommendation C — expand independent machine-semantics
