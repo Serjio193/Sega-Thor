@@ -277,7 +277,7 @@ or recorded as conflicts, and the future code-promotion gate vetoes only
 trusted data classifications. Decision: `STRUCTURED_DATA_HIGH_VALUE`. The
 single deferred recommendation is A — return to the native vertical slice.
 
-## M11.18 — Native controlled screen vertical slice — PARTIAL
+## M11.18 — Native controlled screen vertical slice — DONE
 Goal: prove the first interactive native path with explicit synthetic geometry:
 input, deterministic logical update, player movement, terrain collision, software
 framebuffer and visible window.
@@ -290,11 +290,16 @@ replay compares state after every frame and is invariant across presentation
 intervals. The framebuffer has a fixed SHA-256 oracle, and canonical ROM identity
 is enforced before opening the window.
 
-Limitation: non-Windows builds compile an unavailable GUI adapter, and no manual
-end-to-end window/input observation was accepted in this checkpoint. The fixture
-is synthetic and does not claim an original room. Decision:
-`NATIVE_VERTICAL_SLICE_PARTIAL`. The single recommendation is D — fix the
-remaining vertical-slice blocker.
+Validation closure: the canonical-ROM Win32 executable was manually checked for
+window creation, cardinal and diagonal movement, release, focus-loss clearing,
+focus restoration, visible fixture-wall collision and responsiveness. The
+fixture is synthetic and does not claim an original room. MSVC, Linux,
+deterministic replay/hash and ROM identity checks passed locally; CI is the
+post-push gate. The non-Windows
+GUI adapter remains intentionally unavailable and is recorded as the next
+recommendation rather than an M11.18 Win32 runtime blocker. Decision:
+`NATIVE_VERTICAL_SLICE_PLAYABLE`. The single recommendation is D — platform
+portability.
 
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.

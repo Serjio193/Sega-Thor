@@ -4,9 +4,10 @@
 
 This is a bounded controlled screen for proving the native execution path,
 not a reconstructed original Beyond Oasis room. The current status is
-`NATIVE_VERTICAL_SLICE_PARTIAL`: the interactive Windows path is implemented
-and unit-tested, while the non-Windows build has no GUI backend and end-to-end
-window/input observation remains a manual platform check.
+`NATIVE_VERTICAL_SLICE_PLAYABLE`: the supported Win32 path is implemented,
+unit-tested and manually validated with the canonical ROM. The non-Windows
+build still has no GUI backend; that portability limitation is recorded as the
+single next recommendation and is not a Win32 vertical-slice runtime blocker.
 
 ## Native path
 
@@ -71,11 +72,35 @@ controlled fixture itself is synthetic. No commercial ROM bytes, extracted
 tiles, palette data or room assets are compiled into the repository, and no
 Ghidra, BizHawk, vasm, RE script or 68000 emulator is needed at runtime.
 
+## M11.18.1 validation evidence
+
+Baseline checkout: `19d364403757e1f19afbff5607235692523e893d`.
+
+The Debug native executable was launched with the canonical USA retail ROM.
+The Win32 window opened with the expected title and remained responsive during
+the complete input/focus/collision sequence. Repeated presses visibly moved the
+player in all four cardinal directions and in all four diagonal combinations.
+Each discrete press released cleanly; after a movement sequence the player
+stopped rather than continuing on a stale direction. The foreground was
+switched to Explorer and back to the game; input was cleared while unfocused,
+and no stuck movement was observed after focus returned. A fresh rightward
+movement sequence visibly reached the fixture wall and remained blocked while
+the window continued repainting/responding.
+
+The UI automation key API provides discrete press/release events rather than a
+separate held-key primitive. Accordingly, the release and focus checks record
+the observable press/release and foreground-transition behavior supported by
+the native validation harness; the product path itself uses foreground-safe
+polling and is covered by the deterministic tests.
+
+Canonical ROM acceptance and unsupported/beta ROM rejection were both checked.
+The 600-frame replay and framebuffer SHA-256 oracle remained unchanged:
+`3e1c211e1560ea42243e27f05be0704537c51ec3901995d89f228b0e616aa0da`.
+
 ## Unknowns and next work
 
 This slice does not prove an original room format, camera behavior, sprite
 engine semantics, combat, lifecycle flags or ROM-derived rendering. The next
-recommendation is D: fix the remaining vertical-slice blocker. The platform
-follow-up should add and verify a native non-Windows window path or explicitly
-narrow the supported runtime platform before broader gameplay features are
-added.
+recommendation is D: platform portability. That follow-up should add and verify
+a native non-Windows window path or explicitly narrow the supported runtime
+platform before broader gameplay features are added.

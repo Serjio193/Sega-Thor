@@ -3,6 +3,42 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.18.1 Native vertical slice validation closure
+Objective: close the remaining M11.18 validation gaps on the current checkout
+without expanding gameplay scope.
+
+Baseline: verified `19d364403757e1f19afbff5607235692523e893d` on `main`.
+
+Manual Win32 evidence: launched the Debug native executable with the canonical
+USA retail ROM. The window opened with the expected title and stayed responsive.
+Cardinal movement, all four diagonal combinations, discrete release, focus-loss
+clearing, focus restoration without stuck movement, visible wall collision and
+continued responsiveness were checked through the native UI sequence. Explorer
+was used as the foreground focus target. The key API exposes press/release
+events, so no separate held-key event could be injected; the observed release
+and foreground-transition behavior was recorded without claiming a stronger
+held-key observation than the harness supports.
+
+Automated evidence: the existing 600-frame replay and framebuffer SHA-256
+oracle remained green with hash
+`3e1c211e1560ea42243e27f05be0704537c51ec3901995d89f228b0e616aa0da`.
+Canonical-ROM acceptance and beta/unsupported-ROM rejection remained green.
+MSVC Debug/Release builds and CTest passed; Linux build and CTest passed with
+the mounted-NTFS slow source-limit case excluded, while source-limit passed in
+the Windows configurations and separate source scan. MinGW `_WIN32`
+syntax-only checks passed; compile/link still fails in the saved local driver at
+assembler/collect2 with no diagnostics because its cached sysroot is absent.
+This is `TOOLCHAIN_UNAVAILABLE_LOCAL`, not a project regression, and tests were
+not weakened.
+
+Result: `NATIVE_VERTICAL_SLICE_PLAYABLE` for the supported Win32 runtime. No
+reproducible product blocker was found. The intentionally unavailable
+non-Windows GUI adapter is a portability limitation, not an M11.18 Win32
+acceptance blocker.
+
+Exact next step: recommendation D — platform portability. Do not implement it
+as part of this closure.
+
 ## 2026-09-06 — M11.18 Native controlled screen vertical slice
 Objective: implement the first interactive native path while freezing broad RE
 and reconstructed-source expansion.
