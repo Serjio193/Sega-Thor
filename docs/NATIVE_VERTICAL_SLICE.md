@@ -83,7 +83,7 @@ player in all four cardinal directions and in all four diagonal combinations.
 Each discrete press released cleanly; after a movement sequence the player
 stopped rather than continuing on a stale direction. The foreground was
 switched to Explorer and back to the game; input was cleared while unfocused,
-and no stuck movement was observed after focus returned. A fresh rightward
+and no stuck movement was observed after focus returned. A sustained rightward
 movement sequence visibly reached the fixture wall and remained blocked while
 the window continued repainting/responding.
 
