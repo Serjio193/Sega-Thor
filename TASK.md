@@ -1,28 +1,30 @@
 # Current Task
 
-TASK: M11.13 Automated Promotion Scale Pass
+TASK: M11.14 Automatic Code Promotion Large Batch II
 WHY: reduce UNKNOWN blob coverage through evidence-ranked, transactional
 promotion into byte-verified ASM while preserving the exact full-ROM rebuild.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — scale pass is exact and high value.
-BASELINE: M11.12 post-promotion manifest; M11.9 controls, M11.10 corpus,
-M11.11 full-ROM split and M11.12 promotions remain mandatory regressions.
+STATUS: DONE — batch II is exact and high value.
+BASELINE: M11.13 post-promotion manifest; M11.9 controls, M11.10 corpus,
+M11.11 full-ROM split, M11.12 and M11.13 promotions remain mandatory regressions.
 
 ACCEPTANCE: discover candidates from existing evidence, rank deterministically,
-attempt up to 100 bounded candidates, accept only slice/full-ROM exact
-promotions, rollback rejected trials, increase ASM coverage, keep unknown/data
-conservative, and preserve canonical hashes without commercial artifacts.
+attempt up to 150 additional candidates, exclude prior attempts, accept only
+slice/full-ROM exact promotions, rollback rejected trials, measure saturation,
+and preserve canonical hashes without commercial artifacts.
 
-CURRENT RESULT: `src/tools/re_auto_promote.py` discovered 534 records, retained
-189 eligible candidates after M11.12 exclusion, attempted 100 and accepted 84.
-The final manifest has 130 `CODE_VERIFIED` and 101 `UNKNOWN` entries; ASM is
-6,462 bytes and blobs are 3,139,266 bytes. Full-ROM comparison is exact.
+CURRENT RESULT: src/tools/re_auto_promote.py discovered 534 records, retained
+89 new candidates after M11.13 exclusion, retried 2 old slice mismatches,
+attempted 91 and accepted 73. The final manifest has 203 CODE_VERIFIED and 136
+UNKNOWN entries; ASM is 13,550 bytes and blobs are 3,132,178 bytes. Full-ROM
+comparison is exact.
 
-EXACT NEXT ACTION: preserve the result and defer recommendation A — continue
-automatic code promotion with another large batch. Do not implement that recommendation,
+EXACT NEXT ACTION: preserve the result and defer recommendation A — run
+another automatic code batch. Do not implement that recommendation,
 structured-data promotion, classifier rewrites, AI naming, C++ generation, Z80,
 runtime changes, full semantic disassembly, emulator work or unrelated refactors.
+
 
 HISTORICAL CHECKPOINTS:
 

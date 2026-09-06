@@ -244,6 +244,14 @@ accepted both prior CCR-blocked candidates. Decision: AUTO_PROMOTION_SCALE_HIGH_
 Recommendation A — continue automatic code promotion with another large batch —
 is deferred.
 
+## M11.14 — Automatic promotion large batch II — DONE
+The post-M11.13 manifest excluded prior attempts and carried two old slice
+mismatch retries. Ninety-one attempts accepted 73 (80.22%); acceptance windows
+remained stable and ASM grew to 13,550 bytes. Full-ROM hashes stayed exact.
+Rejects are clustered by systemic form; unsupported and nonrepresentable vasm
+forms remain explicit. Decision: AUTO_PROMOTION_BATCH2_HIGH_VALUE.
+Recommendation A — run another automatic code batch — is deferred.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

@@ -38,6 +38,15 @@ def main():
     assert AUTO.classify_error("fatal error: illegal opcode extension") == "ASSEMBLER_SYNTAX"
     assert AUTO.reject_form({"reason": "UNSUPPORTED_FORM", "detail": "no exact IR"}) == \
         "unsupported exact IR"
+    windows = AUTO.acceptance_windows([{"accepted": value} for value in
+                                       [True, False, True, True]])
+    assert windows[0]["accepted"] == 3 and windows[0]["attempted"] == 4
+    clusters = AUTO.reject_clusters([
+        {"accepted": False, "reason": "UNSUPPORTED_FORM", "mnemonic": "foo",
+         "operand_forms": ["unknown"], "address": "0x10"},
+        {"accepted": False, "reason": "UNSUPPORTED_FORM", "mnemonic": "foo",
+         "operand_forms": ["unknown"], "address": "0x20"}])
+    assert clusters[0]["count"] == 2 and clusters[0]["mnemonic"] == "foo"
     print("auto promotion helper tests passed")
 
 

@@ -1,4 +1,9 @@
-# M11.13 — automated promotion scale pass
+# M11.14 — automated promotion large batch II
+
+M11.14 continues from M11.13, accepts 73 of 91 attempts, and keeps the
+canonical full-ROM rebuild exact. Details are in docs/AUTO_PROMOTION_BATCH2.md.
+
+## M11.13 — automated promotion scale pass
 
 The M11.13 scale pass continues from the M11.12 post-promotion manifest and
 accepts 84 of 100 deterministic candidates. The full-ROM result remains exact;

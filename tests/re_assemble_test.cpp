@@ -97,6 +97,10 @@ void ccr_immediate_encoding() {
     instruction.exact = exact;
     assert(exact_instruction_asm(instruction) == "ori.b #$1,CCR");
 }
+void byte_immediate_preserves_extension() {
+    const auto slice = decode({0x02,0x00,0xFF,0xF3,0x4E,0x75});
+    assert(exact_instruction_asm(slice.instructions[0]) == "andi.b #$FFF3,D0");
+}
 void differences() {
     const std::vector<std::uint8_t> rom{9,8,0x36,0xC1,0x4E,0x75};
     std::vector<std::uint8_t> rebuilt{0x36,0xC1,0x4E,0x75};
@@ -133,6 +137,7 @@ int main() {
     diverse_addressing_and_unary_forms();
     pc_relative_encoding();
     ccr_immediate_encoding();
+    byte_immediate_preserves_extension();
     differences();
     rejects_unknown_and_gaps();
 }

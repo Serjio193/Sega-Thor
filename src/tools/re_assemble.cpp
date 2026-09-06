@@ -49,6 +49,19 @@ std::string operand_text(const DecodedOperand& operand) {
     default: throw std::invalid_argument("indexed operand is outside exact PoC");
     }
 }
+
+DecodedOperand encoding_operand(const DecodedInstruction& instruction,
+                                const DecodedOperand& operand) {
+    if (operand.kind != OperandKind::immediate || operand.width_bytes != 1 ||
+        operand.extension_bytes != 2 || operand.extension_address < instruction.address)
+        return operand;
+    const auto offset = operand.extension_address - instruction.address;
+    if (offset + 1 >= instruction.bytes.size()) return operand;
+    auto result = operand;
+    result.value = (static_cast<std::uint32_t>(instruction.bytes[offset]) << 8U) |
+                   instruction.bytes[offset + 1];
+    return result;
+}
 } // namespace
 
 std::string exact_instruction_asm(const DecodedInstruction& instruction) {
@@ -69,9 +82,10 @@ std::string exact_instruction_asm(const DecodedInstruction& instruction) {
             exact.width_bytes == 1 ? ".b" : exact.width_bytes == 2 ? ".w" : ".l";
     }
     if (exact.source) {
+        const auto source = encoding_operand(instruction, *exact.source);
         if (exact.operation == "moveq")
-            text += " #" + std::to_string(static_cast<std::int32_t>(exact.source->value));
-        else text += " " + operand_text(*exact.source);
+            text += " #" + std::to_string(static_cast<std::int32_t>(source.value));
+        else text += " " + operand_text(source);
     }
     if (exact.destination) text += (exact.source ? "," : " ") + operand_text(*exact.destination);
     if (exact.branch_width_bytes) {

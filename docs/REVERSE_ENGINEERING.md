@@ -1,6 +1,18 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.14 — Automated promotion large batch II
+STATUS: AUTO_PROMOTION_BATCH2_HIGH_VALUE for bounded byte reproduction only.
+The post-M11.13 manifest and prior report were used; 89 new candidates and 2
+systemic-fix retries were attempted, with 73 accepted. ASM coverage rose from
+6,462 to 13,550 bytes and reject windows stayed stable. Remaining blockers are
+clustered by form in the batch report; no semantic ownership was inferred.
+
+The byte-immediate emitter preserves noncanonical extension words but leaves
+forms vasm cannot encode rejected. The repeated cmp.w mismatch is retained as
+ASM_ENCODING pending a safe general encoding rule. No address-specific or raw
+opcode override was introduced.
+
 ## M11.13 — Automated promotion scale pass
 STATUS: AUTO_PROMOTION_SCALE_HIGH_VALUE for bounded byte reproduction only.
 The post-M11.12 manifest was the input; 100 deterministic candidates were

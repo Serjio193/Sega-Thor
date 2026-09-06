@@ -3,6 +3,32 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.14 automatic promotion large batch II
+TASK: continue automatic blob-to-ASM promotion from the M11.13 manifest, with
+up to 150 new candidates and no repeated attempted candidates except affected
+slice mismatches retried after systemic investigation.
+
+IMPLEMENTATION: the runner consumes a prior promotion report, excludes its
+attempts, retries the two old slice mismatches, records mnemonic/operand/raw
+opcode metadata, clusters rejects, and reports 25-attempt acceptance windows.
+The general byte-immediate emitter preserves source extension words; vasm still
+rejects noncanonical byte immediates. A decoder experiment that rejected the
+repeated CMP opcode was reverted because it broke the M11.9 0x3820 control.
+
+RESULT: 89 new candidates plus 2 retries produced 91 attempts, 73 accepted and
+18 rejected (8 UNSUPPORTED_FORM, 7 ASSEMBLER_SYNTAX, 3 SLICE_MISMATCH). ASM
+changed 6,462 -> 13,550 bytes and blobs 3,139,266 -> 3,132,178 bytes. The
+manifest has 339 entries (203 code, 136 unknown), and no structured data was
+promoted. Acceptance windows were 72%, 88%, 76% and 87.5% (`STABLE`).
+
+OLD MISMATCHES: 0x020802 is an IR_OPERAND/nonrepresentable vasm byte-extension
+case; 0x00B6A6 is ASM_ENCODING for the repeated cmp.w register form. Both stay
+rejected and are documented in the batch report. All canonical hashes remain
+exact; handwritten overrides remain zero.
+
+DECISION: AUTO_PROMOTION_BATCH2_HIGH_VALUE. Exactly one next recommendation is
+A — run another automatic code batch; it is deferred.
+
 ## 2026-09-06 — M11.13 automated promotion scale pass
 TASK: continue M11.12 transactional blob-to-source promotion from its
 post-promotion manifest, with at most 100 deterministic attempts and no new

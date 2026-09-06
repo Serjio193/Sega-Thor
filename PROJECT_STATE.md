@@ -1,27 +1,26 @@
 # Project State
 
-CURRENT_MILESTONE: M11.13 automated promotion scale pass
-CURRENT_TASK: continue deterministic promotion from the post-M11.12 manifest
-STATUS: AUTO_PROMOTION_SCALE_HIGH_VALUE
-CURRENT_BASELINE: M11.12 post-promotion manifest; canonical
-USA ROM remains 3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: 534 records discovered, 189 eligible after baseline
-exclusion, 100 attempted and 84 accepted automatically. Final manifest has 231
-contiguous entries: 130 `CODE_VERIFIED`, 101 `UNKNOWN`, zero gaps/overlaps.
-COVERAGE: ASM 6,462 bytes, structured data 0, blobs 3,139,266 bytes. Blob
-bytes decreased by 3,830 from M11.12; UNKNOWN splits are structural.
-IMPLEMENTATION: `src/tools/re_auto_promote.py` reuses candidate/mass evidence,
-the existing decoder/ASM emitter and vasm. `oasis_re_assemble_range` provides
-generic bounded emission. Each candidate is accepted only after exact slice and
-full-ROM checks; rejected transactions leave the prior manifest unchanged.
-The emitter has a generic immediate-to-CCR syntax rule and regression test.
-NEXT_ACTION: defer exactly one recommendation, A — continue automatic code
-promotion with another large batch; do not implement it in this checkpoint.
+CURRENT_MILESTONE: M11.14 automatic code promotion large batch II
+CURRENT_TASK: continue deterministic promotion from the post-M11.13 manifest
+STATUS: AUTO_PROMOTION_BATCH2_HIGH_VALUE
+CURRENT_BASELINE: M11.13 post-promotion manifest; canonical USA ROM remains
+3,145,728 bytes with exact hashes.
+LAST_VERIFIED_RESULT: 89 new candidates plus 2 retried slice mismatches were
+attempted; 73 accepted and 18 rejected. Final manifest has 339 contiguous
+entries: 203 CODE_VERIFIED, 136 UNKNOWN, zero gaps/overlaps.
+COVERAGE: ASM 13,550 bytes, structured data 0, blobs 3,132,178 bytes. ASM grew
+by 7,088 bytes from M11.13; UNKNOWN splits are structural.
+IMPLEMENTATION: src/tools/re_auto_promote.py consumes the previous report to
+exclude attempted candidates, retries only affected slice mismatches, and emits
+acceptance windows and blocker clusters. The decoder/ASM emitter remains
+bounded and developer-only; rejected transactions are rolled back.
+NEXT_ACTION: defer exactly one recommendation, A — run another automatic code
+batch; do not implement it in this checkpoint.
 DO_NOT_WORK_ON: structured-data promotion, classifier rewrites, AI naming,
 C++ generation, Z80, production runtime, full semantic disassembly, emulator,
 ants or M12.
 
-HISTORICAL CHECKPOINTS:
+
 
 CURRENT_MILESTONE: M11.6 static translation trust repair
 CURRENT_TASK: M11.6.2 Static Translation Trust Repair

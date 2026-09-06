@@ -10,13 +10,19 @@ import subprocess
 import sys
 import zlib
 from collections import Counter
-import re
 
 
 HERE = Path(__file__).resolve().parent
 SPEC = importlib.util.spec_from_file_location("re_full_split_run", HERE / "re_full_split_run.py")
 FULL = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(FULL)
+
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+from re_auto_promote_helpers import (acceptance_windows, classify_error, clean_detail,
+    forms_from_asm, forms_from_json, instruction_family,
+    legacy_mismatch_analysis, reject_clusters, reject_form, resolve_artifact,
+    finalize_rejection)
 
 
 def run(command, cwd=None, check=False):
@@ -53,7 +59,8 @@ def candidate_score(item, size):
     return structural + complexity + callers + target + beta + small
 
 
-def discover_candidates(mass, ghidra, manifest, limit=25):
+def discover_candidates(mass, ghidra, manifest, limit=25, excluded_addresses=None):
+    excluded_addresses = excluded_addresses or set()
     functions = {}
     for function in ghidra.get("functions", []):
         bounds = parse_range(function.get("range", ""))
@@ -66,6 +73,8 @@ def discover_candidates(mass, ghidra, manifest, limit=25):
     eligible = []
     for item in mass.get("candidates", []):
         address = parse_int(item["entry"])
+        if address in excluded_addresses:
+            continue
         bounds = functions.get(address)
         if not bounds or bounds[0] & 1 or bounds[0] >= bounds[1]:
             continue
@@ -190,83 +199,6 @@ def summary(manifest):
             "UNKNOWN_ENTRIES": manifest["quality"]["blob_ranges"]}
 
 
-def classify_error(text):
-    if "no exact IR" in text or "UNSUPPORTED" in text:
-        return "UNSUPPORTED_FORM"
-    if "illegal opcode extension" in text or "unknown mnemonic" in text:
-        return "ASSEMBLER_SYNTAX"
-    if "optimization" in text.lower():
-        return "ASSEMBLER_OPTIMIZATION"
-    if "BOUNDARY" in text or "incomplete selected slice" in text:
-        return "BOUNDARY_UNCERTAIN"
-    return "OTHER"
-
-
-def clean_detail(text, output):
-    return text.replace(str(output), "<output>").replace(str(Path.cwd()), "<workspace>")
-
-
-def instruction_form(instruction):
-    operation = instruction.get("operation", "?")
-    branch_width = instruction.get("branch_width_bytes", 0)
-    width = instruction.get("width_bytes", 0)
-    suffix = ("s" if branch_width == 1 else "w" if branch_width == 2 else
-              "b" if width == 1 else "w" if width == 2 else "l" if width == 4 else "-")
-    source = instruction.get("source") or {}
-    destination = instruction.get("destination") or {}
-    return f"{operation}.{suffix}:{source.get('kind', '-')}>" \
-           f"{destination.get('kind', '-')}"
-
-
-def instruction_family(instruction):
-    operation = instruction.get("operation", "?")
-    branch_width = instruction.get("branch_width_bytes", 0)
-    width = instruction.get("width_bytes", 0)
-    suffix = ("s" if branch_width == 1 else "w" if branch_width == 2 else
-              "b" if width == 1 else "w" if width == 2 else "l" if width == 4 else "-")
-    return f"{operation}.{suffix}"
-
-
-def forms_from_json(path):
-    return sorted({instruction_form(item) for item in
-                   json.loads(path.read_text()).get("instructions", [])})
-
-
-def forms_from_asm(path):
-    forms = set()
-    for line in path.read_text().splitlines():
-        match = re.match(r"\s+([a-z]+)(?:\.([bwl]))?\s+(.*)$", line, re.IGNORECASE)
-        if match:
-            mnemonic = match.group(1).lower()
-            suffix = (match.group(2) or "-").lower()
-            forms.add(f"{mnemonic}.{suffix}")
-    return forms
-
-
-def resolve_artifact(manifest_path, artifact):
-    direct = manifest_path.parent / artifact
-    if direct.exists():
-        return direct
-    final = manifest_path.parent / "final" / artifact
-    if final.exists():
-        return final
-    regression = manifest_path.parent / "regression" / artifact
-    if regression.exists():
-        return regression
-    raise FileNotFoundError(f"manifest artifact is missing: {artifact}")
-
-
-def reject_form(record):
-    detail = record.get("detail", "")
-    match = re.search(r">\s+([^\r\n]+)", detail)
-    if match:
-        return match.group(1).strip()
-    if record.get("reason") == "UNSUPPORTED_FORM":
-        return "unsupported exact IR"
-    if record.get("reason") == "BOUNDARY_UNCERTAIN":
-        return "uncertain boundary"
-    return record.get("reason", "OTHER")
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -279,6 +211,7 @@ def main():
     parser.add_argument("--ghidra-map", required=True)
     parser.add_argument("--output", required=True, help="new ignored output directory")
     parser.add_argument("--max-candidates", type=int, default=100)
+    parser.add_argument("--prior-report", help="previous promotion report to exclude")
     args = parser.parse_args()
     output = Path(args.output).resolve()
     if output.exists():
@@ -289,7 +222,27 @@ def main():
     baseline = json.loads(baseline_path.read_text())
     mass = json.loads(Path(args.mass_report).read_text())
     ghidra = json.loads(Path(args.ghidra_map).read_text())
-    candidates, eligible_count = discover_candidates(mass, ghidra, baseline, args.max_candidates)
+    prior = None
+    excluded_addresses = set()
+    retried_addresses = set()
+    if args.prior_report:
+        prior = json.loads(Path(args.prior_report).read_text())
+        for item in prior.get("attempts", []):
+            address = parse_int(item["address"])
+            if item.get("reason") == "SLICE_MISMATCH":
+                retried_addresses.add(address)
+            else:
+                excluded_addresses.add(address)
+    candidates, eligible_count = discover_candidates(
+        mass, ghidra, baseline, args.max_candidates,
+        excluded_addresses | retried_addresses)
+    if retried_addresses:
+        retry_candidates, _ = discover_candidates(
+            mass, ghidra, baseline, len(mass.get("candidates", [])),
+            set(excluded_addresses))
+        candidates = sorted(candidates + [item for item in retry_candidates
+                                          if item["address"] in retried_addresses],
+                           key=lambda item: (-item["score"], item["size"], item["address"]))[:args.max_candidates]
     output.mkdir(parents=True)
     regression = output / "regression"
     run([sys.executable, HERE / "re_assemble_run.py", "--tool", args.tool,
@@ -325,7 +278,7 @@ def main():
                    candidate["end"] <= entry["end"] for entry in current):
             record["reason"] = "CODE_DATA_CONFLICT"
             record["detail"] = "candidate no longer lies inside an UNKNOWN range"
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom))
             shutil.rmtree(trial)
             continue
         emitted = run([args.range_tool, rom_path, hex(candidate["start"]),
@@ -333,7 +286,7 @@ def main():
         if emitted.returncode:
             record["reason"] = classify_error(emitted.stdout + emitted.stderr)
             record["detail"] = clean_detail(emitted.stdout + emitted.stderr, output).strip()[:400]
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom))
             shutil.rmtree(trial)
             continue
         binary = trial / "candidate.bin"
@@ -341,7 +294,7 @@ def main():
         if assembled.returncode:
             record["reason"] = classify_error(assembled.stdout + assembled.stderr)
             record["detail"] = clean_detail(assembled.stdout + assembled.stderr, output).strip()[:400]
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom))
             shutil.rmtree(trial)
             continue
         rebuilt_slice = binary.read_bytes()
@@ -357,7 +310,7 @@ def main():
                 if difference:
                     difference["rom_offset"] += candidate["start"]
                 record["first_difference"] = difference
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom, data))
             shutil.rmtree(trial)
             continue
         try:
@@ -365,7 +318,7 @@ def main():
         except ValueError as error:
             record["reason"] = "BOUNDARY_UNCERTAIN"
             record["detail"] = str(error)
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom, data))
             shutil.rmtree(trial)
             continue
         new_sources = {}
@@ -388,7 +341,7 @@ def main():
             record["detail"] = detail[:400]
             if difference:
                 record["first_difference"] = difference
-            attempts.append(record)
+            attempts.append(finalize_rejection(record, rom, data))
             shutil.rmtree(trial)
             continue
         accepted_code = output / "accepted_code"
@@ -423,6 +376,16 @@ def main():
     else:
         final_manifest["hashes"] = {}
     after = summary(final_manifest)
+    windows = acceptance_windows(attempts)
+    rates = [item["acceptance_percent"] for item in windows]
+    if rates and rates[-1] < 50.0:
+        trend = "SATURATED"
+    elif len(rates) >= 2 and rates[-1] + 15.0 < rates[0]:
+        trend = "DECLINING"
+    else:
+        trend = "STABLE"
+    unsupported = Counter(reject_form(item) for item in attempts
+                          if item.get("reason") == "UNSUPPORTED_FORM")
     report = {"schema": "oasis.m68k.re-auto-promote.v1",
               "rom_sha256": final_manifest["rom_sha256"],
               "evidence": {"mass_schema": mass.get("schema"), "ghidra_schema": ghidra.get("schema"),
@@ -430,14 +393,19 @@ def main():
               "deterministic": True, "manual_candidate_addresses": False,
               "transactional": True,
               "discovered_candidates": len(mass.get("candidates", [])),
-              "eligible_candidates": eligible_count, "attempted": len(attempts),
+              "eligible_candidates": eligible_count, "new_candidates": len(candidates) - len(retried_addresses),
+              "maximum_attempts": args.max_candidates, "attempted": len(attempts),
               "accepted": len(accepted), "rejected": len(attempts) - len(accepted),
               "before": before, "after": after,
               "delta": {key: after[key] - before[key] for key in before},
               "attempts": attempts, "regression": regression_result,
               "full_match": matched, "hashes": final_manifest["hashes"],
               "handwritten_overrides": 0, "systemic_fixes": [],
+              "prior_report": args.prior_report or "",
+              "retried_addresses": [f"0x{address:06X}" for address in sorted(retried_addresses)],
+              "legacy_slice_mismatch_analysis": legacy_mismatch_analysis(prior, attempts),
               "acceptance_percent": (100.0 * len(accepted) / len(attempts)) if attempts else 0.0,
+              "acceptance_windows": windows, "acceptance_trend": trend,
               "reject_classes": dict(Counter(item["reason"] for item in attempts
                                               if not item["accepted"])),
               "accepted_instruction_forms": sorted({form for item in accepted
@@ -446,6 +414,14 @@ def main():
               "remaining_unsupported_forms": sorted({reject_form(item) for item in attempts
                                                       if item["reason"] in
                                                       ("UNSUPPORTED_FORM", "ASSEMBLER_SYNTAX")}),
+              "unsupported_form_inventory": [
+                  {"form": form, "count": count,
+                   "examples": [item["address"] for item in attempts
+                                if item.get("reason") == "UNSUPPORTED_FORM" and
+                                reject_form(item) == form][:3],
+                   "fixed": False}
+                  for form, count in unsupported.most_common()],
+              "reject_clusters": reject_clusters(attempts),
               "top_reject_forms": [{"form": form, "count": count} for form, count in
                                     Counter(reject_form(item) for item in attempts
                                             if not item["accepted"]).most_common(10)]}

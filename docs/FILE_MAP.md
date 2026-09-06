@@ -26,6 +26,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── FULL_ROM_SPLIT_BASELINE.md M11.11 full-ROM split manifest and exact baseline report
 │   ├── AUTO_BLOB_PROMOTION.md M11.12 transactional blob-to-source promotion report
 │   ├── AUTO_PROMOTION_SCALE.md M11.13 100-attempt promotion scale report
+│   ├── AUTO_PROMOTION_BATCH2.md M11.14 large batch II and saturation report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -85,6 +86,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_full_split_run.py Full-ROM local-blob split, manifest metrics and exact comparison
 │       ├── re_assemble_range_report.cpp Generic bounded decoder/ASM emitter for candidate slices
 │       ├── re_auto_promote.py Evidence-ranked transactional UNKNOWN→ASM promotion runner
+│       ├── re_auto_promote_helpers.py Promotion failure metadata, clustering and trend helpers
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
