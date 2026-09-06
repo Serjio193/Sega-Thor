@@ -296,7 +296,8 @@ focus restoration, visible fixture-wall collision and responsiveness. The
 fixture is synthetic and does not claim an original room. MSVC, Linux,
 deterministic replay/hash and ROM identity checks passed locally. GitHub Actions
 run `34052574735` passed for the closure commit; the final documentation-only
-commit remains subject to its exact-SHA CI gate. The non-Windows
+commit `4118867a487227275d18246c93b8ebbe7980d8f2` also passed exact-SHA CI in
+run `34052627403`. The non-Windows
 GUI adapter remains intentionally unavailable and is recorded as the next
 recommendation rather than an M11.18 Win32 runtime blocker. Decision:
 `NATIVE_VERTICAL_SLICE_PLAYABLE`. The single recommendation is D — platform

@@ -41,8 +41,11 @@ as part of this closure.
 
 CI: GitHub Actions run `34052574735` for closure commit
 `7de43a393409ab7c4c0548645a9467afbfbed438` completed successfully. A final
-documentation-only commit will record this result and receive its own exact-SHA
-CI gate before closure.
+documentation-only commit recorded this result. Its final exact-SHA CI run is
+recorded below.
+
+Final CI: GitHub Actions run `34052627403` for
+`4118867a487227275d18246c93b8ebbe7980d8f2` completed successfully.
 
 ## 2026-09-06 — M11.18 Native controlled screen vertical slice
 Objective: implement the first interactive native path while freezing broad RE
