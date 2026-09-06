@@ -1,22 +1,23 @@
 # Current Task
 
-TASK: M11.15 Evidence Integrity Audit & Classification Trust Repair
+TASK: M11.16 Targeted Dynamic Code Confirmation
 WHY: separate exact ASM representation from evidence that a range is executable code.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — audit is exact; bounded provenance fixups remain.
-BASELINE: M11.14 post-promotion manifest with 203 CODE_VERIFIED ranges and 13,550 ASM bytes.
+STATUS: DONE — reachability limited under retained natural evidence.
+BASELINE: M11.15 audited manifest with 203 exact ranges and canonical full-ROM match.
 
-ACCEPTANCE: audit every range, validate artifact/ROM/entry/range provenance, require trusted
-incoming xrefs for static support, preserve exact full-ROM ownership, add negative corpus/tests,
-normalize form metrics, and prevent future promotions from implying static code trust.
+ACCEPTANCE: select at most eight critical ranges before runs; reuse natural evidence; reject forced
+or mismatched evidence; classify not-reached causes; verify 0x6121A as a positive control; add
+bounded linkage/coverage/trust tests; preserve exact full-ROM ownership and document one decision.
 
-CURRENT RESULT: 197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED and
-0 BEHAVIOR_VERIFIED; one known Ghidra boundary mismatch remains at 0x3820. The audited full ROM
-is exact with canonical hashes and no new promotions.
+CURRENT RESULT: five targets (`0x3820`, `0x62CC`, `0x9BF2`, `0xA8DA`, `0xD3B2`) were selected
+before inspection. No retained artifact reaches them; `0x6121A` has two matching natural runs
+and remains `CODE_EXECUTED`. Counts remain 197 `ASM_ROUNDTRIP_EXACT`, 5 `CODE_STATIC_SUPPORTED`,
+1 `CODE_EXECUTED`, 0 `BEHAVIOR_VERIFIED`.
 
-EXACT NEXT ACTION: preserve the result and defer exactly one recommendation, B — targeted dynamic
-confirmation of critical code. Do not implement that recommendation, structured-data
+EXACT NEXT ACTION: preserve the result and defer exactly one recommendation, D — one bounded
+timing/hold-input sweep around the M11.8 startup transition. Do not implement that recommendation, structured-data
 classification, automatic promotion, AI naming, C++ generation, Z80, runtime changes,
 full semantic disassembly, emulator batch expansion or unrelated refactors.
 

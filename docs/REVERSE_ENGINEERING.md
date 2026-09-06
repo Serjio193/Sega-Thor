@@ -1,6 +1,25 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.16 — Targeted dynamic code confirmation
+STATUS: `TARGETED_DYNAMIC_REACHABILITY_LIMITED`.
+
+Five critical ranges were selected before inspection: `0x3820`, `0x62CC`,
+`0x9BF2`, `0xA8DA` and `0xD3B2`. The retained natural corpus contains no
+accepted target-hit artifact for these ranges, so no classification changed.
+The prior M11.8 prose count of 13 hits for `0x3820` has no retained JSON
+artifact and is not promoted to dynamic evidence. The existing `0x6121A`
+positive control remains valid: two matching natural reports use the canonical
+ROM hash and record two hits at frame 113, with exact range linkage and
+`DYNAMIC_NATURAL` classification. No new emulator run or scenario was added.
+
+Per-target blockers are `EVIDENCE_ARTIFACT_MISSING` for `0x3820`,
+`CALLER_NOT_REACHED` for `0x62CC`, `SCENARIO_COVERAGE` for `0x9BF2` and
+`0xA8DA`, and `CONTROL_FLOW_GAP` for `0xD3B2`. Dynamic trust remains local;
+forced evidence cannot promote and caller/callee trust is not propagated.
+The exact full-ROM split and the M11.15 trust counts remain unchanged. See
+`docs/TARGETED_DYNAMIC_CONFIRMATION.md` for the bounded selection and hashes.
+
 ## M11.15 — Evidence integrity audit and classification trust repair
 STATUS: `EVIDENCE_TRUST_NEEDS_FIXUPS` for the post-M11.14 reconstructed layout.
 The 203 exact ASM ranges were individually reassembled against the canonical

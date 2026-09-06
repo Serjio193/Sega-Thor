@@ -1,18 +1,19 @@
 # Project State
 
-CURRENT_MILESTONE: M11.15 evidence integrity audit and classification trust repair
-CURRENT_TASK: audit all M11.14 reconstructed ranges and separate ASM exactness from code trust
-STATUS: EVIDENCE_TRUST_NEEDS_FIXUPS
-CURRENT_BASELINE: M11.14 manifest; canonical USA ROM remains 3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: all 203 CODE_VERIFIED ranges reassembled exactly. Classification is
+CURRENT_MILESTONE: M11.16 targeted dynamic code confirmation
+CURRENT_TASK: confirm five critical ranges with retained natural evidence, without forcing state
+STATUS: TARGETED_DYNAMIC_REACHABILITY_LIMITED
+CURRENT_BASELINE: M11.15 audited manifest; canonical USA ROM remains 3,145,728 bytes with exact hashes.
+LAST_VERIFIED_RESULT: retained natural reports confirm only the existing 0x6121A positive control;
+the five selected critical ranges have no accepted natural hit artifact. Classification remains
 197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED and 0 BEHAVIOR_VERIFIED.
 PROVENANCE: one known Ghidra boundary mismatch remains at 0x3820; exact entry/range linkage
 is enforced and weak caller chains cannot bootstrap trust.
-IMPLEMENTATION: src/tools/re_evidence_audit.py writes an audited manifest/report with per-range
-artifact hashes, xref source addresses, caller trust, data conflicts and normalized forms.
-The automatic promoter now labels a successful round trip ASM_ROUNDTRIP_EXACT unless explicit
-static/dynamic evidence qualifies it.
-NEXT_ACTION: defer exactly one recommendation, B — targeted dynamic confirmation of critical code;
+IMPLEMENTATION: src/tools/re_dynamic_confirm.py writes a pre-run selection and fail-closed
+confirmation report with exact range linkage, natural artifact hashes, blocker classes and trust
+counts. No new emulator run or scenario was added.
+NEXT_ACTION: exactly one recommendation, D — a separately authorized bounded timing/hold-input sweep
+around the M11.8 startup transition;
 do not implement it in this checkpoint.
 DO_NOT_WORK_ON: structured-data classification, automatic promotion, AI naming, C++ generation,
 Z80, production runtime, full semantic disassembly, emulator batch expansion, ants or M12.

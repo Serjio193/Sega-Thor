@@ -85,6 +85,27 @@ the exact full-ROM rebuild. Audits must retain artifact identity, ROM identity,
 entry/range linkage and concrete xref sources. Missing dynamic evidence remains
 unknown and is never synthesized.
 
+## ADR-0007 — Natural runtime evidence is range-local and fail-closed
+**Status:** Accepted
+**Date:** 2026-09-06
+
+**Context:** M11.16 needs to distinguish a naturally observed program counter
+from a forced hook, a stale report, or a report whose provenance artifact is
+missing. Dynamic reachability of one routine must not silently trust callers,
+callees, or adjacent ranges.
+
+**Decision:** Accept only `DYNAMIC_NATURAL` evidence whose ROM identity,
+scenario, artifact hash, target address and audited half-open range all match.
+Reuse of an existing artifact is preferred to rerunning an emulator. Missing
+or forced evidence remains non-promoting, and trust changes are local to the
+observed range. A pre-run selection report is mandatory for bounded target
+passes.
+
+**Consequences:** Dynamic passes can end with a reachability-limited result
+without weakening static exactness. Historical runtime claims without a
+retained artifact are explicitly reported as unaccepted context. Callers and
+callees require their own evidence.
+
 ## ADR template
 Copy this block for new decisions:
 

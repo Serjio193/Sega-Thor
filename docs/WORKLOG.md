@@ -3,6 +3,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.16 targeted dynamic code confirmation
+TASK: confirm a bounded set of critical ranges with natural runtime evidence,
+reusing retained reports and never forcing emulator state.
+
+IMPLEMENTATION: added `src/tools/re_dynamic_confirm.py`, a pre-run selection
+artifact and fail-closed confirmation report. Five ranges were selected:
+`0x3820`, `0x62CC`, `0x9BF2`, `0xA8DA` and `0xD3B2`. Added pure helper tests
+for exact range linkage, partial coverage, forced-evidence rejection, natural
+promotion and non-propagation, and registered them with CTest. Updated the
+ledger, roadmap, file map, task state and ADR-0007. No emulator, scenario,
+production runtime, ROM or generated artifact was added to Git.
+
+EVIDENCE: retained `natural-final-a.json` and `natural-final-b.json` share the
+canonical ROM SHA-256 and confirm the `0x6121A` positive control twice at frame
+113. No retained JSON artifact substantiates the older M11.8 prose count of 13
+hits for `0x3820`; it remains unaccepted context. None of the five selected
+ranges has an accepted natural hit artifact. Trust counts remain 197
+`ASM_ROUNDTRIP_EXACT`, 5 `CODE_STATIC_SUPPORTED`, 1 `CODE_EXECUTED` and 0
+`BEHAVIOR_VERIFIED`; full-ROM hashes remain exact.
+
+RESULT: `TARGETED_DYNAMIC_REACHABILITY_LIMITED`. New-run efficiency is not
+applicable because existing evidence was reused and no new run was authorized
+or available in this checkout. The single next recommendation is D — one
+separately authorized bounded timing/hold-input sweep around the M11.8 startup
+transition; it is not implemented here.
+
+VALIDATION: MSVC Debug and Release builds completed sequentially and CTest
+passed 38/38 in both configurations. GNU/Linux CMake build completed and
+CTest passed 37/37 when excluding the mounted-workspace source-limit test;
+the Windows source-limit test passed, while the equivalent WSL mounted-path
+run timed out as in the prior baseline. The standalone helper test passed,
+`git diff --check` passed, and all edited executable/source files are below
+500 lines. MinGW is not installed on this host, so a fresh MinGW matrix was
+not runnable; the M11.15 MinGW 37/37 baseline remains the available result.
+
 ## 2026-09-06 — M11.15 evidence integrity audit and classification trust repair
 TASK: audit every M11.14 reconstructed range and separate exact ASM bytes from
 proof that a range is executable code; do not add promotions.

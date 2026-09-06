@@ -261,6 +261,14 @@ ROM remains exact. One known Ghidra boundary mismatch at `0x3820` remains a
 bounded fixup. Decision: `EVIDENCE_TRUST_NEEDS_FIXUPS`. Recommendation B —
 targeted dynamic confirmation of critical code — is deferred.
 
+## M11.16 — Targeted dynamic code confirmation — DONE
+Five critical ranges were selected before any run and checked against retained
+natural reports. None had a verifiable target-hit artifact; the existing
+`0x6121A` natural positive control passed exact ROM/scenario/hash checks. No
+promotion, emulator run, or scenario expansion was performed. Decision:
+`TARGETED_DYNAMIC_REACHABILITY_LIMITED`. The single deferred recommendation is
+D — one bounded timing/hold-input sweep around the M11.8 startup transition.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

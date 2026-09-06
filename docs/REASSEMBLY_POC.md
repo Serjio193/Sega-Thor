@@ -1,3 +1,11 @@
+# M11.16 — targeted dynamic code confirmation
+
+M11.16 selected five critical ranges before any run and inspected only retained
+natural evidence. The `0x6121A` positive control remains exact and natural;
+the selected ranges have no accepted hit artifacts, so trust counts and the
+full-ROM exact split are unchanged. Details and artifact hashes are in
+docs/TARGETED_DYNAMIC_CONFIRMATION.md.
+
 # M11.15 — evidence integrity audit and classification trust repair
 
 M11.15 audits all 203 M11.14 exact ASM ranges and separates

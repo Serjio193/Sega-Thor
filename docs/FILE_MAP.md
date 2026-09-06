@@ -28,6 +28,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── AUTO_PROMOTION_SCALE.md M11.13 100-attempt promotion scale report
 │   ├── AUTO_PROMOTION_BATCH2.md M11.14 large batch II and saturation report
 │   ├── EVIDENCE_INTEGRITY_AUDIT.md M11.15 exactness/trust classification audit
+│   ├── TARGETED_DYNAMIC_CONFIRMATION.md M11.16 bounded natural evidence report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -88,6 +89,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_assemble_range_report.cpp Generic bounded decoder/ASM emitter for candidate slices
 │       ├── re_auto_promote.py Evidence-ranked transactional UNKNOWN→ASM promotion runner
 │       ├── re_auto_promote_helpers.py Promotion failure metadata, clustering and trend helpers
+│       ├── re_dynamic_confirm.py Fail-closed bounded natural evidence confirmation
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
@@ -189,6 +191,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_assemble_test.cpp                Exact operands, golden ASM, encoding widths and byte-difference tests
     ├── re_full_split_test.py               Synthetic deterministic full-split manifest/helper tests
     ├── re_auto_promote_test.py             Synthetic ranking/promotion/rollback helper tests
+    ├── re_dynamic_confirm_test.py           Synthetic range-linkage/coverage/trust tests
     ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
     ├── re_program_test.cpp                 Synthetic multi-function RE aggregation tests
     ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets
