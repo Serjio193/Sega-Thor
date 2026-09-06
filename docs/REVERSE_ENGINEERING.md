@@ -1,6 +1,26 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.12 — Automated blob-to-source promotion PoC
+STATUS: `AUTO_PROMOTION_HIGH_VALUE` for bounded byte reproduction only. The
+promotion tool does not assign semantic names or classify unknown data.
+
+`re_auto_promote.py` consumes the existing candidate-map/mass-verification
+evidence and the M11.11 manifest. Deterministic ranking selected 25 of 210
+eligible candidates without a new hardcoded address list. Twenty-one passed
+the existing decoder/ASM emitter, vasm `-m68000 -no-opt -Fbin`, exact slice
+comparison and transactional full-ROM comparison. Four were retained as
+UNKNOWN after bounded unsupported-form or assembler blockers. No handwritten
+opcode overrides were used.
+
+The final manifest has 46 `CODE_VERIFIED` and 42 `UNKNOWN` entries, zero gaps or
+overlaps, ASM coverage 2,632 bytes (0.0836690267%) and local-ROM blobs 3,143,096
+bytes (99.9163309733%). The rebuilt 3,145,728-byte ROM matches canonical
+CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a` and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+Rejected trials are rolled back; semantic ownership remains UNKNOWN. See
+`docs/AUTO_BLOB_PROMOTION.md` for the accepted/rejected table and reproduction.
+
 ## M11.11 — Full-ROM split reassembly baseline
 STATUS: `FULL_ROM_SPLIT_EXACT` for byte reproduction only. This baseline does not
 classify unknown bytes or assign semantic names.

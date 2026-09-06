@@ -136,6 +136,8 @@ enable_testing()
 
 add_executable(oasis_re_assemble src/tools/re_assemble_report.cpp)
 target_link_libraries(oasis_re_assemble PRIVATE oasis_re_tooling oasis_core)
+add_executable(oasis_re_assemble_range src/tools/re_assemble_range_report.cpp)
+target_link_libraries(oasis_re_assemble_range PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_assemble_test tests/re_assemble_test.cpp)
 target_link_libraries(oasis_re_assemble_test PRIVATE oasis_re_tooling)
@@ -145,6 +147,8 @@ find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_full_split_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_full_split_test.py)
+    add_test(NAME oasis_re_auto_promote_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_auto_promote_test.py)
 endif()
 
 add_executable(oasis_smoke tests/smoke.cpp)

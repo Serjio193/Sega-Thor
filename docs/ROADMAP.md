@@ -226,6 +226,14 @@ regions remain local-ROM-backed blobs, with zero gaps and overlaps. Decision:
 `FULL_ROM_SPLIT_EXACT`. Recommendation A — replace verified blob regions with
 ASM/data — is deferred and not implemented here.
 
+## M11.12 — Automated blob-to-source promotion PoC — DONE
+Existing candidate-map and mass-verification evidence now drives deterministic
+bounded promotions. Twenty-one of 25 attempted candidates were accepted after
+exact slice and full-ROM checks; ASM coverage increased from 1,846 to 2,632
+bytes and the canonical hashes remained exact. Decision:
+`AUTO_PROMOTION_HIGH_VALUE`. Recommendation A — increase the automatic batch to
+100 candidates — is deferred and not implemented here.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

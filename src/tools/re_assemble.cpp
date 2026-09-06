@@ -33,7 +33,7 @@ std::string operand_text(const DecodedOperand& operand) {
     case OperandKind::absolute_word: return "($" + hex(operand.value, 4) + ").W";
     case OperandKind::absolute_long: return "($" + hex(operand.value, 8) + ").L";
     case OperandKind::pc_displacement:
-        return "($" + hex(operand.extension_address + operand.displacement) + ",PC)";
+        return "($" + hex(static_cast<std::uint32_t>(operand.displacement), 4) + ",PC)";
     case OperandKind::immediate: return "#$" + hex(operand.value);
     case OperandKind::status_register: return operand.value ? "SR" : "CCR";
     case OperandKind::register_list: {

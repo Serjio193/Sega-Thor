@@ -3,6 +3,52 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.12 automated blob-to-source promotion PoC
+TASK: reduce UNKNOWN blob coverage from the M11.11 full-ROM split using only
+existing candidate-map and mass-verification evidence.
+MILESTONE UNDERSTANDING CONFIDENCE: 99% — M11.11 already proves the complete
+layout and exact comparison; this slice only changes accepted source ownership.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 98% — candidates require agreed bounded
+decoder ranges, supported IR, no conflicts and two exact byte comparisons.
+SLICE CONFIDENCE EVIDENCE: 210 eligible records were ranked deterministically;
+21 promotions passed slice and full-ROM verification, while four transactions
+were rejected and rolled back.
+
+IMPLEMENTATION: added `oasis_re_assemble_range` as a thin CLI over the existing
+decoder and ASM emitter, plus `src/tools/re_auto_promote.py`. The runner loads
+the M11.11 manifest, discovers/ranks candidates from existing evidence, emits a
+trial ASM range, assembles and compares it, rebuilds the full layout, and only
+then commits the promotion to its local generated output. Added bounded helper
+tests, the PC-relative emitter regression and `docs/AUTO_BLOB_PROMOTION.md`.
+No production runtime, semantic naming or classifier rewrite changed.
+
+RESULT: 534 records discovered, 210 eligible, 25 attempted and 21 accepted.
+Coverage changed from ASM 1,846 to 2,632 bytes (+786) and blobs from 3,143,882
+to 3,143,096 bytes (-786). Structured data and conflicts remain zero. The final
+manifest has 88 entries (46 code, 42 unknown), zero gaps and zero overlaps.
+The full 3,145,728-byte ROM matches canonical CRC32/SHA-1/SHA-256 exactly.
+
+REJECTIONS: `0x00E6BA` and `0x00E268` were unsupported exact-IR forms;
+`0x00DA2A` and `0x00B9EC` reached the assembler's `ori.w #$1,CCR` blocker.
+No rejected trial changed the accepted manifest.
+
+REGRESSION: the M11.9 controls, M11.10 corpus and M11.11 full-ROM baseline are
+rerun by the runner and remain exact. Handwritten opcode overrides: 0.
+
+TESTS: Python helper tests pass; the bounded PC-relative emitter test passes.
+MSVC Debug/Release CTest pass 36/36 each, including the source-limit test.
+MinGW Debug/Release CTest pass 35/35 with the mounted-tree line-limit test
+excluded. Linux GCC builds successfully and CTest passes 35/35 with that test
+excluded. Generated ROMs, blobs, reports and binaries remain ignored.
+
+DECISION: `AUTO_PROMOTION_HIGH_VALUE`. Exactly one next recommendation is A —
+increase the automatic promotion batch to 100 candidates. It is deferred and
+not implemented by this task.
+
+OPEN QUESTIONS: structured-data promotion remains at zero because exact table
+length/representation evidence is insufficient; semantic ownership of promoted
+code remains UNKNOWN.
+
 ## 2026-09-06 — M11.11 full-ROM split reassembly baseline
 TASK: build a deterministic full-ROM split for the canonical USA ROM without
 attempting whole-ROM semantic disassembly.

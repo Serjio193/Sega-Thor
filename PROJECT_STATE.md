@@ -1,24 +1,25 @@
 # Project State
 
-CURRENT_MILESTONE: M11.11 full-ROM split reassembly baseline
-CURRENT_TASK: deterministic full-ROM layout using 25 trusted ASM ranges and
-local-ROM blobs for every uncertain range
-STATUS: FULL_ROM_SPLIT_EXACT
-CURRENT_BASELINE: canonical USA ROM size 3,145,728 bytes; manifest has 50
-contiguous entries, 25 `CODE_VERIFIED` and 25 `UNKNOWN` blob ranges.
-LAST_VERIFIED_RESULT: rebuilt size 3,145,728 and byte-for-byte exact; CRC32
-`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256
-`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
-COVERAGE: ASM 1,846 bytes (0.0586827596%), structured data 0, blobs 3,143,882
-bytes (99.9413172404%), conflicts 0. No whole-ROM semantic classification is
-claimed.
-IMPLEMENTATION: `src/tools/re_full_split_run.py` reuses the M11.10 emitter and
-vasm pipeline, materializes only ignored local artifacts, emits a deterministic
-manifest, and reports first differences with manifest entry/artifact type.
-NEXT_ACTION: defer exactly one recommendation, A — replace verified blob regions
-with ASM/data; do not implement it in this checkpoint.
-DO_NOT_WORK_ON: semantic blob replacement, AI naming, C++ generation, Z80,
-production runtime, full semantic disassembly, emulator, ants or M12.
+CURRENT_MILESTONE: M11.12 automated blob-to-source promotion PoC
+CURRENT_TASK: deterministic evidence-ranked promotion of safe UNKNOWN ranges
+STATUS: AUTO_PROMOTION_HIGH_VALUE
+CURRENT_BASELINE: M11.11 full-ROM split is the transactional input; canonical
+USA ROM remains 3,145,728 bytes with exact hashes.
+LAST_VERIFIED_RESULT: 534 records discovered, 210 eligible, 25 attempted and
+21 accepted automatically. Final manifest has 88 contiguous entries: 46
+`CODE_VERIFIED`, 42 `UNKNOWN`, zero gaps/overlaps.
+COVERAGE: ASM 2,632 bytes (0.0836690267%), structured data 0, blobs 3,143,096
+bytes (99.9163309733%), conflicts 0. Blob bytes decreased by 786; the UNKNOWN
+entry count rises only because promoted interior ranges split existing blobs.
+IMPLEMENTATION: `src/tools/re_auto_promote.py` reuses candidate/mass evidence,
+the existing decoder/ASM emitter and vasm. `oasis_re_assemble_range` provides
+generic bounded emission. Each candidate is accepted only after exact slice and
+full-ROM checks; rejected transactions leave the prior manifest unchanged.
+NEXT_ACTION: defer exactly one recommendation, A — increase the automatic
+promotion batch to 100 candidates; do not implement it in this checkpoint.
+DO_NOT_WORK_ON: structured-data promotion, classifier rewrites, AI naming,
+C++ generation, Z80, production runtime, full semantic disassembly, emulator,
+ants or M12.
 
 HISTORICAL CHECKPOINTS:
 

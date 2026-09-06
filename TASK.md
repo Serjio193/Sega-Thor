@@ -1,25 +1,27 @@
 # Current Task
 
-TASK: M11.11 Full-ROM Split Reassembly Baseline
-WHY: prove a deterministic full-ROM byte-perfect rebuild while preserving all
-uncertain regions as local-ROM-backed blobs.
+TASK: M11.12 Automated Blob-to-Source Promotion PoC
+WHY: reduce UNKNOWN blob coverage through evidence-ranked, transactional
+promotion into byte-verified ASM while preserving the exact full-ROM rebuild.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — full-ROM split is exact.
-BASELINE: M11.10 exact 25-slice corpus; controls, expanded split and legacy split
-remain mandatory regressions.
+STATUS: DONE — automatic promotion is exact and high value.
+BASELINE: M11.11 exact full-ROM split; M11.9 controls, M11.10 corpus and the
+M11.11 full-ROM hash comparison remain mandatory regressions.
 
-ACCEPTANCE: deterministic manifest covers the canonical ROM from `0x000000` to
-`0x300000` without gaps or overlaps; trusted ranges emit existing ASM; all other
-bytes are local-ROM blobs; rebuilt size and bytes plus canonical hashes match;
-M11.9/M11.10 regressions remain green; no commercial artifacts are committed.
+ACCEPTANCE: discover candidates from existing evidence, rank deterministically,
+attempt 10–25 bounded candidates, accept only slice/full-ROM exact promotions,
+rollback rejected trials, increase ASM coverage, keep unknown/data conservative,
+and preserve canonical hashes without commercial artifacts.
 
-CURRENT BASELINE: `src/tools/re_full_split_run.py` produces 50 manifest entries:
-25 `CODE_VERIFIED` ranges and 25 `UNKNOWN` ranges. ASM coverage is 1,846 bytes
-(0.0586827596%); 3,143,882 bytes remain explicit local-ROM blobs.
+CURRENT RESULT: `src/tools/re_auto_promote.py` discovered 534 records, retained
+210 eligible candidates, attempted 25 and accepted 21 automatically. The final
+manifest has 46 `CODE_VERIFIED` and 42 `UNKNOWN` entries; ASM is 2,632 bytes
+(0.0836690267%) and blobs are 3,143,096 bytes (99.9163309733%).
 
-EXACT NEXT ACTION: preserve the result and defer recommendation A. Do not implement
-the recommendation, semantic blob replacement, AI naming, C++ generation, Z80,
+EXACT NEXT ACTION: preserve the result and defer recommendation A — increase the
+automatic promotion batch to 100 candidates. Do not implement that recommendation,
+structured-data promotion, classifier rewrites, AI naming, C++ generation, Z80,
 runtime changes, full semantic disassembly, emulator work or unrelated refactors.
 
 HISTORICAL CHECKPOINTS:

@@ -1,4 +1,13 @@
-# M11.11 — full-ROM split reassembly baseline
+# M11.12 — automated blob-to-source promotion PoC
+
+`AUTO_PROMOTION_HIGH_VALUE` extends the M11.11 full-ROM split through a
+developer-only transactional runner. Existing candidate-map and mass-verify
+evidence ranks bounded UNKNOWN ranges; 25 candidates were attempted and 21
+accepted after exact slice and full-ROM checks. ASM coverage rose to 2,632
+bytes while the canonical 3,145,728-byte ROM remained byte-perfect. Details and
+the accepted/rejected table are in `docs/AUTO_BLOB_PROMOTION.md`.
+
+## M11.11 — full-ROM split reassembly baseline
 
 The full split baseline is `FULL_ROM_SPLIT_EXACT`. It reuses the trusted
 M11.10 25-slice corpus as generated ASM and keeps every other byte as an

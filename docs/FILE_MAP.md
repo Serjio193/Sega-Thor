@@ -24,6 +24,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── RE_TOOLCHAIN_GUIDE.md  Historical Mega Drive SDK/toolchain evidence and fingerprinting rules
 │   ├── REASSEMBLY_POC.md     M11.9/M11.10 bounded reassembly reproduction and measured results
 │   ├── FULL_ROM_SPLIT_BASELINE.md M11.11 full-ROM split manifest and exact baseline report
+│   ├── AUTO_BLOB_PROMOTION.md M11.12 transactional blob-to-source promotion report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -81,6 +82,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_assemble_report.cpp Canonical-ROM 25-slice emit/verify CLI and bounded split manifest
 │       ├── re_assemble_run.py Local vasm orchestration, gap extraction and exact comparison
 │       ├── re_full_split_run.py Full-ROM local-blob split, manifest metrics and exact comparison
+│       ├── re_assemble_range_report.cpp Generic bounded decoder/ASM emitter for candidate slices
+│       ├── re_auto_promote.py Evidence-ranked transactional UNKNOWN→ASM promotion runner
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
@@ -181,6 +184,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_slice_decoder_test.cpp           Synthetic bounded decoder/report tests
     ├── re_assemble_test.cpp                Exact operands, golden ASM, encoding widths and byte-difference tests
     ├── re_full_split_test.py               Synthetic deterministic full-split manifest/helper tests
+    ├── re_auto_promote_test.py             Synthetic ranking/promotion/rollback helper tests
     ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
     ├── re_program_test.cpp                 Synthetic multi-function RE aggregation tests
     ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets
