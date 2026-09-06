@@ -18,6 +18,8 @@ add_library(oasis_core
     src/game/entities/entity_pool.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
+    src/game/controlled_screen.cpp
+    src/game/render/framebuffer.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
@@ -26,7 +28,13 @@ add_library(oasis_core
 target_include_directories(oasis_core PUBLIC src)
 
 add_executable(oasis src/main.cpp)
-target_link_libraries(oasis PRIVATE oasis_core)
+add_library(oasis_platform src/platform/window.cpp)
+target_include_directories(oasis_platform PUBLIC src)
+target_link_libraries(oasis_platform PUBLIC oasis_core)
+target_link_libraries(oasis PRIVATE oasis_core oasis_platform)
+if(WIN32)
+    target_link_libraries(oasis PRIVATE user32 gdi32)
+endif()
 
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
@@ -197,6 +205,10 @@ add_executable(oasis_player_test tests/player_test.cpp)
 target_link_libraries(oasis_player_test PRIVATE oasis_core)
 add_test(NAME oasis_player COMMAND oasis_player_test)
 
+add_executable(oasis_native_vertical_slice_test tests/native_vertical_slice_test.cpp)
+target_link_libraries(oasis_native_vertical_slice_test PRIVATE oasis_core)
+add_test(NAME oasis_native_vertical_slice COMMAND oasis_native_vertical_slice_test)
+
 add_executable(oasis_entity_pool_test tests/entity_pool_test.cpp)
 target_link_libraries(oasis_entity_pool_test PRIVATE oasis_core)
 add_test(NAME oasis_entity_pool COMMAND oasis_entity_pool_test)
@@ -350,6 +362,7 @@ set(oasis_test_targets
     oasis_byte_grid_test
     oasis_terrain_collision_test
     oasis_player_test
+    oasis_native_vertical_slice_test
     oasis_entity_pool_test
     oasis_spirit_slots_test
     oasis_event_router_test
@@ -398,6 +411,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_byte_grid
         oasis_terrain_collision
         oasis_player
+        oasis_native_vertical_slice
         oasis_entity_pool
         oasis_spirit_slots
         oasis_event_router

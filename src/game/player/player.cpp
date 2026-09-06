@@ -195,6 +195,12 @@ MovementResult try_move(PlayerState& player,
 
     const auto candidate_x = player.x_fixed + player.accumulated_x_fixed;
     const auto candidate_y = player.y_fixed + player.accumulated_y_fixed;
+    if (candidate_x < 0 || candidate_y < 0) {
+        player.accumulated_x_fixed = 0;
+        player.accumulated_y_fixed = 0;
+        result.blocked = true;
+        return result;
+    }
     const auto aggregate = terrain.aggregate_world_square(
         world_coordinate(candidate_x), world_coordinate(candidate_y),
         config.footprint_radius);

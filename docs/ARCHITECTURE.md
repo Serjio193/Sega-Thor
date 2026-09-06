@@ -79,6 +79,12 @@ Modern OS/window/input/audio/rendering integration.
 
 This layer should remain isolated from game rules.
 
+M11.18 adds the small `oasis_platform` adapter library. It owns Win32 window,
+keyboard polling, focus handling and software-framebuffer presentation. Game
+state remains in `oasis_core`; the adapter consumes controller snapshots and
+packed pixels. Non-Windows builds retain a compile-only unavailable adapter
+until a platform backend is separately justified.
+
 ### `tests`
 Behavioral and regression tests.
 

@@ -126,6 +126,29 @@ blob-backed full-ROM representation. Resource payloads remain unknown until
 their own compressed boundaries are proven, and code/data conflicts cannot be
 resolved silently.
 
+## ADR-0009 — Bounded native controlled-screen platform seam
+**Status:** Accepted
+**Date:** 2026-09-06
+
+**Context:** M11.18 requires the first interactive native vertical slice while
+reconstructed-source and broad RE expansion are frozen. The repository has
+portable runtime/game logic but no window or input backend.
+
+**Decision:** Add a small `oasis_platform` adapter. On Windows it owns a native
+Win32 window, keyboard polling, focus-loss clearing and scaled software-DIB
+presentation. The game layer owns the deterministic fixture, movement and
+software rasterization. Non-Windows builds keep a compile-only unavailable
+adapter until a concrete backend is justified.
+
+**Consequences:** The core/game path remains platform-independent and has no
+new third-party dependency. The first playable runtime is Windows-only; this
+is an explicit bounded limitation, not a claim of cross-platform GUI support.
+The screen geometry is synthetic and cannot be used as evidence for an
+original room.
+
+**Affected files/milestones:** `src/platform/`, `src/game/controlled_screen.*`,
+`src/game/render/`, M11.18.
+
 ## ADR template
 Copy this block for new decisions:
 

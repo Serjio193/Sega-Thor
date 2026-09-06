@@ -1,24 +1,24 @@
 # Current Task
 
-TASK: M11.17 Structured Data Classification PoC
-WHY: classify proven ROM data structures without converting unknown bytes into guessed data.
-CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
-SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — ten bounded data ranges accepted with exact deterministic parsing.
-BASELINE: M11.16 trust report with 203 exact code ranges and canonical full-ROM match.
+TASK: M11.18 Native Controlled Screen Vertical Slice
+WHY: prove input -> native fixed-step runtime -> movement -> terrain collision -> software
+framebuffer -> visible window without expanding reconstructed-source or RE tooling.
+CURRENT MILESTONE: M11.18 native controlled screen vertical slice; M12 remains TODO.
+SLICE MODE: NATIVE_RUNTIME
+STATUS: NATIVE_VERTICAL_SLICE_PARTIAL
+BASELINE: M11.17 structured-data classification and exact canonical USA ROM identity.
 
-ACCEPTANCE: prove exact ranges, widths, counts and termination; record consumers/provenance,
-reject invalid pointer-like and code-like data, expose code/data conflicts, veto trusted-data
-overlap in the future code gate, preserve exact full-ROM ownership and document one decision.
+ACCEPTANCE: interactive Windows window path, four-way/diagonal input and focus release;
+synthetic visible terrain/player fixture; deterministic fixed timestep; 600-frame replay;
+framebuffer hash; preserved graphics tests; canonical ROM rejection; no runtime RE/emulator/
+assembler dependency.
 
-CURRENT RESULT: vectors, header, two terrain tables, group/resource pointer tables and four
-screen descriptors were checked against the canonical ROM. Nine structures and one weaker data
-region were accepted; no conflicts or guessed payload boundaries were promoted.
+CURRENT RESULT: core movement/collision and software rasterization are implemented and tested.
+The Windows adapter is compiled through MSVC. Non-Windows GUI presentation and manual
+end-to-end visual/input observation remain bounded limitations.
 
-EXACT NEXT ACTION: preserve the result and defer exactly one recommendation, A — return to the
-native vertical slice. Do not implement that recommendation, automatic promotion batches, AI
-naming, C++ generation, Z80, runtime changes, emulator sweeps, full semantic disassembly or
-unrelated refactors.
+EXACT NEXT ACTION: recommendation D — fix the remaining vertical-slice blocker. Do not
+implement the next step here.
 
 
 HISTORICAL CHECKPOINTS:

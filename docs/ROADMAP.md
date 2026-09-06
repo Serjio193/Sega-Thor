@@ -277,6 +277,25 @@ or recorded as conflicts, and the future code-promotion gate vetoes only
 trusted data classifications. Decision: `STRUCTURED_DATA_HIGH_VALUE`. The
 single deferred recommendation is A — return to the native vertical slice.
 
+## M11.18 — Native controlled screen vertical slice — PARTIAL
+Goal: prove the first interactive native path with explicit synthetic geometry:
+input, deterministic logical update, player movement, terrain collision, software
+framebuffer and visible window.
+
+Delivered: `ControlledScreen` reuses the M6/M7/M8 runtime, player and byte-grid
+contracts; a 32x28 test fixture renders free terrain, walls, a corner and an
+isolated obstacle; `oasis_platform` provides a minimal Windows Win32 input/window
+adapter with focus-loss clearing and scaled DIB presentation. A 600-frame input
+replay compares state after every frame and is invariant across presentation
+intervals. The framebuffer has a fixed SHA-256 oracle, and canonical ROM identity
+is enforced before opening the window.
+
+Limitation: non-Windows builds compile an unavailable GUI adapter, and no manual
+end-to-end window/input observation was accepted in this checkpoint. The fixture
+is synthetic and does not claim an original room. Decision:
+`NATIVE_VERTICAL_SLICE_PARTIAL`. The single recommendation is D — fix the
+remaining vertical-slice blocker.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

@@ -30,13 +30,14 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── EVIDENCE_INTEGRITY_AUDIT.md M11.15 exactness/trust classification audit
 │   ├── TARGETED_DYNAMIC_CONFIRMATION.md M11.16 bounded natural evidence report
 │   ├── STRUCTURED_DATA_CLASSIFICATION.md M11.17 bounded data classification report
+│   ├── NATIVE_VERTICAL_SLICE.md M11.18 native controlled-screen boundary and status
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
 │   ├── VDP_MODEL.md           Narrow portable video-state model and non-goals
 │   └── WORKLOG.md             Chronological record of development actions
 ├── src/
-│   ├── main.cpp               ROM identity/report entry point
+│   ├── main.cpp               Canonical ROM gate and native runtime entry point
 │   ├── core/
 │   │   ├── rom.cpp            ROM file loading/basic title access
 │   │   ├── rom.hpp            ROM byte-container API
@@ -51,6 +52,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── vdp.hpp            Narrow VDP state API
 │   │   └── vdp_types.hpp      Tile/plane/sprite raw attribute decoding
 │   ├── game/
+│   │   ├── controlled_screen.cpp Synthetic M11.18 screen update and rasterizer
+│   │   ├── controlled_screen.hpp Controlled-screen state and fixture API
+│   │   ├── render/
+│   │   │   ├── framebuffer.cpp Software framebuffer storage
+│   │   │   └── framebuffer.hpp Packed software framebuffer API
 │   │   ├── graphics_decompress.cpp Native translation of original 0x3820 routine
 │   │   ├── graphics_decompress.hpp Decompressor result/API
 │   │   ├── genesis_graphics.cpp Pure 4bpp tile + CRAM palette decoding
@@ -76,6 +82,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │       ├── screen_descriptor.hpp Screen descriptor data types/API
 │   │       ├── terrain_collision.cpp  Terrain-state and movement gate semantics
 │   │       └── terrain_collision.hpp  Terrain gate API
+│   ├── platform/
+│   │   ├── window.cpp Minimal Win32 window/input/presentation adapter; non-Windows stub
+│   │   └── window.hpp Platform boundary for controller polling and framebuffer presentation
 │   └── tools/
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
@@ -184,6 +193,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests
     ├── rom_identity_test.cpp             Synthetic ROM/hash/header tests
     ├── player_test.cpp                   Deterministic input and movement tests
+    ├── native_vertical_slice_test.cpp    M11.18 fixture, replay and framebuffer oracle
     ├── player_reference.cpp              Local USA-ROM oracle for player vectors
     ├── entity_pool_test.cpp              Synthetic raw entity-pool/active-record tests
     ├── entity_pool_reference.cpp         Local USA-ROM oracle for entity pool loops

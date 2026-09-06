@@ -3,6 +3,55 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.18 Native controlled screen vertical slice
+Objective: implement the first interactive native path while freezing broad RE
+and reconstructed-source expansion.
+
+Actions: reused `RuntimeLoop`, `ControllerState`, existing player movement
+constants, `ByteGridView` footprint aggregation and the terrain gate. Added a
+synthetic 32x28 fixture with free terrain, joined wall/corner, isolated block
+and explicit non-zero player footprint. Added deterministic software
+rasterization into a 320x224 framebuffer. Added `oasis_platform` with a
+minimal Win32 window, arrow-key polling, foreground/focus-safe input release
+and scaled DIB presentation. The executable now validates canonical ROM
+identity before opening the window. Added a 600-frame state replay and fixed
+framebuffer SHA-256 oracle.
+
+Files changed: `src/game/controlled_screen.*`, `src/game/render/framebuffer.*`,
+`src/platform/window.*`, `src/game/player/player.cpp`, `src/main.cpp`,
+`CMakeLists.txt`, `tests/native_vertical_slice_test.cpp`, and M11.18
+documentation/state files.
+
+Evidence: existing source-of-truth movement values remain right `0x36000`,
+diagonal `0x2A000/0x25800`. The fixture test covers all 16 direction nibbles,
+release, free movement, wall blocking, joined-corner blocking, map boundary
+blocking and non-zero footprint blocking. Replays are equal after every one of
+600 logical frames at presentation intervals 1, 7 and 31, including repeated
+runs. Framebuffer hash is
+`3e1c211e1560ea42243e27f05be0704537c51ec3901995d89f228b0e616aa0da`.
+
+Tests/build: MSVC Visual Studio 18 2026 Debug and Release full builds passed;
+Debug and Release CTest passed 40/40, including the vertical-slice test and
+source-limit test. WSL Ubuntu 24.04 GNU/Linux configure/build passed and CTest
+passed 39/39 when excluding only the mounted-NTFS slow source-limit test; the
+same source-limit check passed in both Windows configurations and the separate
+source scan. All changed C++ files passed MinGW `-fsyntax-only`, including
+`_WIN32` platform syntax. The saved MinGW driver could not compile/link: its
+assembler/collect2 exited with codes 1/53 without diagnostics because the
+cached toolchain sysroot is unavailable. The canonical-ROM CLI smoke opened a
+responsive window process with the expected title; a manual key/focus sequence
+was not performed. CI was not run because no push/remote CI invocation was
+requested.
+
+Result: `NATIVE_VERTICAL_SLICE_PARTIAL`. Native game logic, fixture collision,
+fixed-step replay and Windows presentation path exist; non-Windows GUI support
+and end-to-end visual/input proof remain bounded limitations.
+
+Unresolved: no original room, camera, sprite engine, combat, audio or ROM-derived
+visual semantics were introduced. No RE detour was needed.
+
+Exact next step: recommendation D — fix the remaining vertical-slice blocker.
+
 ## 2026-09-06 — M11.17 structured data classification PoC
 TASK: prove a small set of ROM data structures without guessing unknown bytes,
 running new emulator sweeps or changing production code.

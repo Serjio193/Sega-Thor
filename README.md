@@ -74,6 +74,18 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
+The native controlled-screen executable requires the external canonical USA
+retail ROM. On Windows it opens the M11.18 synthetic fixture window and uses
+the arrow keys for movement:
+
+```text
+oasis "Beyond Oasis (USA).bin"
+```
+
+The screen is deliberately a test fixture, not a reconstructed original room.
+See [`docs/NATIVE_VERTICAL_SLICE.md`](docs/NATIVE_VERTICAL_SLICE.md) for the
+runtime boundary and known platform limitation.
+
 On Windows with LLVM-MinGW, the CMake test configuration supplies the compiler
 runtime DLL directory to CTest automatically.
 

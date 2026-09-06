@@ -1,22 +1,21 @@
 # Project State
 
-CURRENT_MILESTONE: M11.17 structured data classification PoC
-CURRENT_TASK: classify a small set of ROM data structures with exact bounded evidence
-STATUS: STRUCTURED_DATA_HIGH_VALUE
-CURRENT_BASELINE: M11.16 audited trust state; canonical USA ROM remains 3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: ten data ranges were parsed deterministically and accepted: 9
-DATA_STRUCTURE_SUPPORTED ranges (908 bytes) and 1 DATA_REGION_SUPPORTED range (256 bytes).
-Code classification remains 197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED
-and 0 BEHAVIOR_VERIFIED.
-PROVENANCE: one known Ghidra boundary mismatch remains at 0x3820; exact entry/range linkage
-is enforced and weak caller chains cannot bootstrap trust.
-IMPLEMENTATION: src/tools/re_structured_data.py writes exact byte/range hashes, fixed-width
-parses, consumers, conflicts and metrics. re_auto_promote.py now vetoes explicit trusted-data
-overlaps while weak data hypotheses remain non-blocking.
-NEXT_ACTION: exactly one recommendation, A — return to the native vertical slice;
-do not implement it in this checkpoint.
-DO_NOT_WORK_ON: automatic promotion batches, AI naming, C++ generation, Z80, production runtime,
-full semantic disassembly, emulator sweeps, ants or M12.
+CURRENT_MILESTONE: M11.18 native controlled screen vertical slice
+CURRENT_TASK: first interactive native runtime path with explicit synthetic terrain fixture
+STATUS: NATIVE_VERTICAL_SLICE_PARTIAL
+CURRENT_BASELINE: M11.17 structured-data classification; canonical USA ROM remains exact.
+LAST_VERIFIED_RESULT: native ControlledScreen, fixed-step replay, software framebuffer and
+Windows Win32 presentation adapter are implemented. A 600-frame replay is identical across
+repeated runs and presentation intervals 1, 7 and 31. The bounded framebuffer SHA-256 is
+3e1c211e1560ea42243e27f05be0704537c51ec3901995d89f228b0e616aa0da.
+LIMITATION: non-Windows builds compile an unavailable GUI adapter; window launch was smoke-tested
+but a manual key/focus sequence remains unverified. The terrain is an explicit synthetic fixture,
+not an original room. The canonical USA ROM is required before the executable opens a window.
+IMPLEMENTATION: src/game/controlled_screen.* and src/game/render/ provide fixture simulation
+and software rasterization; src/platform/window.* provides the minimal OS seam.
+NEXT_ACTION: exactly one recommendation, D — fix the remaining vertical-slice blocker.
+DO_NOT_WORK_ON: broad RE expansion, automatic promotion, emulator runtime, combat, M12 or
+replacement fixture with a ROM-backed room.
 
 
 
