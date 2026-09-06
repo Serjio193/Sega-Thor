@@ -71,6 +71,7 @@ add_library(oasis_re_tooling
     src/tools/re_ant_format.cpp
     src/tools/re_ant_queue.cpp
     src/tools/re_ant_queue_format.cpp
+    src/tools/re_static_translation.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
 
@@ -124,6 +125,9 @@ target_link_libraries(oasis_re_ant PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_ant_queue src/tools/re_ant_queue_report.cpp)
 target_link_libraries(oasis_re_ant_queue PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_static_translation src/tools/re_static_translation_report.cpp)
+target_link_libraries(oasis_re_static_translation PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
 
@@ -238,6 +242,10 @@ add_test(NAME oasis_re_candidate_map COMMAND oasis_re_candidate_map_test)
 add_executable(oasis_re_mass_verify_test tests/re_mass_verify_test.cpp)
 target_link_libraries(oasis_re_mass_verify_test PRIVATE oasis_re_tooling oasis_core)
 add_test(NAME oasis_re_mass_verify COMMAND oasis_re_mass_verify_test)
+
+add_executable(oasis_re_static_translation_test tests/re_static_translation_test.cpp)
+target_link_libraries(oasis_re_static_translation_test PRIVATE oasis_re_tooling oasis_core)
+add_test(NAME oasis_re_static_translation COMMAND oasis_re_static_translation_test)
 
 add_executable(oasis_re_explore_test tests/re_explore_test.cpp)
 target_link_libraries(oasis_re_explore_test PRIVATE oasis_re_tooling oasis_core)

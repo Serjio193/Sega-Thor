@@ -1,5 +1,73 @@
 # Current Task
 
+TASK: M11.6 Verified Static Translation PoC
+WHY: measure whether three bounded, evidence-backed routines can be emitted as
+ordinary C++ and differentially checked without introducing a runtime 68000
+interpreter or production CPU emulator.
+CURRENT MILESTONE: M11.6 verified static translation experiment
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+CASES: A=`0x3820` decompressor; B=`0xA8DA` clean arithmetic leaf from the
+current mass/explorer output; C=`0x62CC` bounded RAM-state leaf from the same
+output. A uses the two existing USA-ROM vectors. B and C use small normalized
+state fixtures whose opcode bytes, instruction counts and bounds are anchored
+to the current ROM/mass evidence; no ROM, trace or savestate is committed.
+
+RESULT: A passed two-way C++ differential verification against the existing
+native decompressor on both local USA-ROM vectors (`1217 -> 3072` and
+`112 -> 128`), whose known original-ROM hashes remain the behavioral oracle.
+B passed two normalized static-state fixtures including the early branch. C
+passed one normalized RAM-state fixture with four ordered writes. These B/C
+fixtures are not BizHawk runtime captures; they are bounded expected states
+anchored to the current ROM bytes and mass/explorer evidence. The comparator reports the
+first differing register/CCR/write/byte, and an unsupported opcode returns an
+explicit STOP status. No fallback interpreter, PC dispatcher, production CPU
+emulator or production runtime change was added.
+
+METRICS: three routines; three verified slices; one explicit unsupported
+fixture; generated/mechanical implementation 297 LOC plus 77 LOC interface;
+handwritten fixups 0 LOC by the experiment definition; 306/10/6 original
+instructions for A/B/C; attempted/passed vectors 2/2 for A, 2/2 for B and
+1/1 for C; state mismatches 0 in verification; approximate manual work 3-4
+hours; first verified result approximately 2 hours from implementation start.
+The 297 LOC includes the bounded stream helpers and comparison support, so the
+experiment does not claim that all of it would be emitted by a future compiler.
+
+DECISION: `STATIC_TRANSLATION_POC_NEEDS_FIXUPS`. The bounded approach is
+useful for small known slices, but the A implementation still contains
+mechanically shaped helper code and B/C use captured fixtures rather than a
+general compiler frontend. EXACT NEXT ACTION: choose recommendation C — use
+mechanical translation only as a verification aid. Do not implement it here.
+
+VALIDATION: MSVC Debug and Release builds passed; full CTest passed 33/33 in
+both configurations. MinGW/GNU-equivalent build and CTest passed 33/33 after
+the configured MinGW `bin` directory was supplied on the process PATH (the
+first attempt reproduced the visible missing `libstdc++-6.dll` launcher error).
+File-limit, artifact-hygiene and `git diff --check` passed.
+
+HISTORICAL CHECKPOINTS:
+
+TASK: M11.5 Ant Reachability Diagnostic PoC v1
+WHY: determine whether existing deterministic scenarios can reach ten selected
+unresolved `INDIRECT_FLOW` source PCs before spending ant target-resolution cost.
+CURRENT MILESTONE: M11.5 reachability diagnostic
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+RESULT: two existing scenarios were checked in two batched BizHawk runs. All
+ten frontier contexts were `NOT_REACHED`; static bytes and frontier classes
+were valid. The known-positive `0x045A -> 0x307A` natural control resolved at
+frame 113 in 104103 ms, proving the C: ROM/emulator/PC-hook environment works.
+No sampled frontier had a matched scenario, so no sampled ant retest or merge
+was attempted and no dynamic target was invented.
+
+DECISION: `SCENARIO_COVERAGE_INSUFFICIENT`.
+EXACT NEXT ACTION: choose recommendation B — create a small bounded set of new
+natural gameplay scenarios. Do not implement that recommendation in this task.
+
+HISTORICAL CHECKPOINTS:
+
 TASK: M11.5 Single Worker Sequential Ant Queue PoC v1
 WHY: extend the proven one-frontier natural ant loop to a small frozen queue
 processed strictly sequentially by one worker, with explicit lifecycle,

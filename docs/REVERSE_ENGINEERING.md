@@ -1,6 +1,74 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.6 — Verified static translation PoC
+Status: VERIFIED as a bounded developer-only experiment. No production runtime
+or CPU model changed, and no ROM/trace/savestate entered Git.
+
+Case A is the confirmed decompressor `[0x3820,0x3B3E)`, 306 decoded
+instructions. A fixed compiled C++ mechanical output reproduced the existing
+native decompressor for the two local USA-ROM vectors: `0x16943C` consumed
+1217 bytes and produced 3072 bytes; `0x1894EA` consumed 112 bytes and produced
+128 bytes. The existing original-ROM output hashes remain the oracle:
+`65e99e...` and `167d4e...` as recorded in the M3 ledger.
+
+Case B is `0xA8DA`, a current mass/explorer clean leaf with 10 instructions,
+no nested call, indirect flow, device address or unsupported instruction. Its
+bounded path is `CMPI.W #$50,D5; BCC; ADDQ.W; MOVE.W`/`ADD.W` register
+operations through `RTS`. Two normalized static-state fixtures (fall-through
+and early branch) matched register/CCR expectations. No BizHawk runtime
+capture for this leaf is claimed.
+
+Case C is `0x62CC`, a current mass/explorer clean leaf with 6 instructions.
+It writes four bounded offsets `0x04`, `0x2A`, `0x4E` and `0x52` from `A6`,
+after `MOVEQ #0,D0`, and returns without unknown control flow. One normalized
+RAM-state fixture matched ordered write records and final memory. No BizHawk
+runtime capture for this leaf is claimed, and the fixture does not claim a
+gameplay meaning for the routine.
+
+The PoC state model contains only D0-D7, A0-A7, CCR and a bounded big-endian
+memory span. It has no fetch/decode loop. Unsupported opcode input produces an
+explicit STOP result. First divergence is reported by register, CCR, ordered
+write record or memory byte. This is evidence for a verification aid, not a
+general recompiler or an authorization to translate additional routines.
+
+## M11.5 — Ant reachability diagnostic PoC v1
+Status: VERIFIED as a bounded developer-only reachability experiment. The
+canonical USA ROM was checked with BizHawk 2.11.1 on the migrated environment.
+The fresh bounded explorer contained 35 unresolved `INDIRECT_FLOW` frontiers.
+After excluding the three previously accepted dynamic sources, ten contexts
+were selected deterministically: `0x0790`, `0x5328`, `0x59B8`, `0x85F8`,
+`0xA322`, `0xA332`, `0xA680`, `0xA690` and two separate owners of `0xA7E2`.
+
+Existing scenario inventory used for reachability: hardware-reset neutral
+`natural_reset_idle_v1` / `natural_idle_to_6121a_v1` with a 300-frame bound;
+hardware-reset `120:Start` with an 1800-frame bound; and the existing boot-trace
+scenario, which was inspected but does not provide frontier-PC coverage. The
+watch-only diagnostic mode changed target observation only; it did not invent
+inputs or alter RAM, registers, flags, ROM or checkpoints.
+
+The reachability matrix had 18 cells (two scenarios across ten contexts, with
+the duplicate `0xA7E2` watch deduplicated). Every cell was `NOT_REACHED` and no
+first-frame/register snapshot exists for the sample. Both historical negative
+controls, `0x0790` and `0x5328`, remained unreached. Static cross-checks found
+valid explored code, matching ROM bytes, plausible owning entries and matching
+indirect forms for all ten contexts; no `STATIC_FRONTIER_SUSPECT` was assigned.
+
+The environment positive control was a fresh natural ant job for the known
+frontier `0x045A`: source reached at frame 113, sequence 1734712, and the
+natural indirect target was `0x307A` after 104103 ms. This distinguishes
+scenario coverage failure from a BizHawk/ROM/PC-hook regression. No sampled
+frontier had a matched scenario, so no sampled target-resolution retest or
+dynamic merge was performed. The correct result is
+`SCENARIO_COVERAGE_INSUFFICIENT`, not proof of global unreachability.
+
+Cost comparison is bounded and approximate: the previous blind queue cost
+about 104 seconds per ant frontier, while two shared reachability runs covered
+the ten contexts in about 65 seconds total. This avoids an estimated 16+ minutes
+of blind `NOT_REACHED` work for this sample. The next authorized recommendation
+is to create a small bounded set of new natural gameplay scenarios; stop before
+resuming the blind queue, adding workers, or beginning M12.
+
 ## M11.5 — Single-worker sequential ant queue PoC v1
 Status: VERIFIED as a bounded developer-only queue experiment. One frozen queue
 of five existing explorer `INDIRECT_FLOW` frontiers was processed strictly

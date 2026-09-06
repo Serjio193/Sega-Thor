@@ -1,5 +1,38 @@
 # Project State
 
+CURRENT_MILESTONE: M11.6 verified static translation experiment
+CURRENT_TASK: Verified Static Translation PoC
+STATUS: COMPLETE
+CURRENT_SLICE_CONFIDENCE: 93% for the three bounded tooling slices; no claim
+is made about general 68000 translation or full-game semantic coverage.
+LAST_VERIFIED_RESULT: `0x3820`, `0xA8DA` and `0x62CC` compiled as ordinary
+developer-only C++ functions and passed their bounded differential fixtures;
+the two local USA-ROM decompression vectors also matched the existing native
+implementation. First-divergence comparison and explicit unsupported STOP are
+covered by tests. MSVC Debug/Release and MinGW/GNU-equivalent CTest passed
+33/33; production runtime is unchanged.
+NEXT_ACTION: stop and use mechanical translation only as a verification aid;
+do not implement the recommendation in this task.
+DO_NOT_WORK_ON: general translator/frontend, runtime interpreter, production
+CPU emulator, full PC dispatcher, ROM-wide translation, M12+, or ant work
+
+HISTORICAL CHECKPOINTS:
+
+CURRENT_MILESTONE: M11.5 reachability diagnostic
+CURRENT_TASK: Ant Reachability Diagnostic PoC v1
+STATUS: COMPLETE
+CURRENT_SLICE_CONFIDENCE: 93% for environment health and existing-scenario
+reachability; no claim is made about global semantic reachability.
+LAST_VERIFIED_RESULT: ten selected unresolved frontier contexts were checked
+against two existing deterministic scenarios. All remained NOT_REACHED, while
+the known-positive `0x045A -> 0x307A` control reproduced on BizHawk 2.11.1.
+NEXT_ACTION: stop dynamic work and create only a small bounded set of new
+natural gameplay scenarios in a separately authorized task.
+DO_NOT_WORK_ON: blind queue resume, parallel workers, scheduler, checkpoint
+farm, random input, forced state, production runtime, semantics or M12+
+
+HISTORICAL CHECKPOINTS:
+
 CURRENT_MILESTONE: M11 — Scripts/events/dialogue
 CURRENT_TASK: M11.5 Single Worker Sequential Ant Queue PoC v1
 STATUS: COMPLETE

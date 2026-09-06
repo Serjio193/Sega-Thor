@@ -3,6 +3,98 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.6 verified static translation PoC completed
+TASK: test whether three confirmed/bounded 68000 slices can become ordinary
+compiled C++ with evidence-preserving differential checks, without adding a
+runtime interpreter or production CPU emulator.
+BASELINE: synchronized `main` and `origin/main` at
+`02e532ce832f88abf8d039d5961638c4d2263cdd`; pre-existing M11.5 reachability
+and queue changes were preserved.
+IMPLEMENTATION: added developer-only `re_static_translation.*`, a CLI and one
+contract test. The minimal state is D0-D7, A0-A7, CCR and bounded big-endian
+memory. Mechanical functions are ordinary compiled C++; there is no PC loop,
+fallback interpreter, full bus or production dependency.
+CASES: A=`0x3820` (306 instructions) reproduced both existing local USA-ROM
+vectors against `oasis::game::decompress_graphics`: `1217 -> 3072` and
+`112 -> 128`, with no mismatch. B=`0xA8DA` (10 instructions) passed two
+normalized static register/CCR fixtures, including the early branch. C=`0x62CC`
+(6 instructions) passed one normalized RAM-state fixture with four ordered
+writes. B/C are not claimed as BizHawk runtime captures; their states are
+anchored to static ROM/mass evidence. The comparator tests first register and
+memory-byte divergence.
+Unsupported opcode handling returns explicit STOP and is tested.
+METRICS: routines `3`; verified `3`; unsupported fixtures `1`; mechanical
+implementation `297` LOC plus `77` LOC interface; handwritten fixups `0` by
+the experiment definition; attempted/passed `2/2`, `2/2`, `1/1`; verification
+mismatches `0`; approximate manual work `3-4 h`; first verified result about
+`2 h`. These metrics include bounded support/comparison code and do not claim
+that all mechanical LOC came from an automatic frontend.
+DECISION: `STATIC_TRANSLATION_POC_NEEDS_FIXUPS`. The bounded output is useful,
+but A still uses shaped helper code and B/C use captured fixtures rather than
+a general frontend. Recommendation C: use mechanical translation only as a
+verification aid. Do not implement the next step here.
+TESTS: MSVC Debug/Release builds and full CTest passed `33/33` in each
+configuration. MinGW/GNU-equivalent build and full CTest passed `33/33` after
+the configured MinGW `bin` directory was added to the process PATH; without
+that PATH, Windows showed the expected missing `libstdc++-6.dll` launcher
+error. File-limit passed, tracked sensitive-artifact count was zero, and
+`git diff --check` passed. Native Linux/WSL remains unavailable.
+OPEN QUESTIONS: whether a future verification aid should emit more leaf forms;
+no production translation is authorized by this checkpoint.
+EXACT NEXT ACTION: stop.
+
+## 2026-09-06 — M11.5 ant reachability diagnostic completed
+TASK: determine whether existing deterministic scenarios reach ten selected
+unresolved `INDIRECT_FLOW` frontier source PCs before ant target resolution.
+BASELINE: synchronized `main` and `origin/main` at `02e532ce832f88abf8d039d5961638c4d2263cdd`.
+The fresh bounded explorer contained 35 unresolved indirect frontiers; the
+three previously accepted dynamic sources `0x045A`, `0x61F60` and `0x62878`
+were excluded. Queue selection supplied ten contexts: `0x0790`, `0x5328`,
+`0x59B8`, `0x85F8`, `0xA322`, `0xA332`, `0xA680`, `0xA690` and two owners of
+`0xA7E2`.
+IMPLEMENTATION: extended the existing developer-only natural reach probe with
+a reachability-only mode and first-hit snapshots. It does not write emulator
+state, add workers or change production code. Watch-only manifests reused the
+existing hardware-reset neutral scenario and the existing `120:Start` scenario.
+EVIDENCE: all ten contexts were `NOT_REACHED` in both scenarios (18 matrix
+cells, 9 unique watched PCs, two batched runs). Static ROM bytes matched every
+frontier record; no static suspect was found. The historical negative controls
+`0x0790` and `0x5328` remained unreached. A fresh positive control resolved
+`0x045A -> 0x307A` at frame 113, sequence 1734712, in 104103 ms with BizHawk
+2.11.1 and the canonical USA ROM SHA-256.
+METRICS: sampled 10; existing scenarios inspected 4 applicable scenario
+families; matrix combinations 18 and executed 18 via 2 batched runs; source
+PCs reached 0; naturally/checkpoint reachable 0; no existing scenario reach 10;
+static suspects 0; sampled ant retests 0; resolved sampled edges 0; NOT_REACHED
+after matching 10. Median and p90 time-to-source are not applicable. The old
+blind ant cost is about 104 s/frontier from the prior queue; the two shared
+reachability runs took about 65 s total, avoiding an estimated 16+ minutes of
+blind attempts for this sample.
+DECISION: `SCENARIO_COVERAGE_INSUFFICIENT`; the environment is healthy but the
+current scenario corpus has no matched path for this sample. Recommendation B:
+create a small bounded set of new natural gameplay scenarios. Stop here; do not
+resume the blind queue, add parallelism, build checkpoints, or begin M12.
+TESTS: fresh MSVC Debug/Release and MinGW builds; CTest 32/32 in each; project
+file-limit test included. `git diff --check` remains required before commit.
+
+## 2026-09-05 — M11.5 medium sequential ant queue started
+TASK: scale the proven single-worker sequential queue from five jobs to a
+bounded Phase A sample of exactly 25 frozen jobs, then decide whether Phase B=50
+is justified by measured yield.
+BASELINE: synchronized `main` and `origin/main` at
+`02e532ce832f88abf8d039d5961638c4d2263cdd`. Reuse audit confirms the existing
+`re_ant.*`, `re_ant_queue.*`, BizHawk worker and explorer are the only required
+machinery; no scheduler or second worker is authorized.
+SCOPE: extend the bounded queue-size guard/CLI and add prefix/selection/failure
+metrics only. Phase A must remain frozen after generation; natural evidence and
+the existing lifecycle/dedup rules remain unchanged. Phase B is conditional on
+the Phase A gate and cannot exceed 50.
+KNOWN UNKNOWNS: the prior neutral scenario reached three of five jobs; lower
+ranks may be dominated by `NOT_REACHED`, making frontier reachability rather
+than worker throughput the likely bottleneck.
+EXACT NEXT ACTION: implement bounded Phase A scaling and metrics, then run the
+25-job queue strictly sequentially.
+
 ## 2026-09-05 — M11.5 sequential ant queue PoC completed
 TASK: process exactly five frozen `oasis.m68k.re-ant-job.v1` jobs through one
 sequential BizHawk worker and batch-merge accepted natural observations.

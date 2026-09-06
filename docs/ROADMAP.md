@@ -120,6 +120,13 @@ explicitly unimplemented. Full-game tracing, broader similarity search,
 whole-ROM discovery, recompilation and M12 remain out of scope until explicitly
 authorized.
 
+Post-M11.5 evidence checkpoint: M11.6 verified static translation PoC is DONE.
+It verified three small developer-only compiled C++ slices (`0x3820`, `0xA8DA`
+and `0x62CC`) with bounded differential fixtures and no runtime interpreter.
+The result is `STATIC_TRANSLATION_POC_NEEDS_FIXUPS`; mechanical translation is
+retained only as a verification aid. No next-step implementation is authorized
+by that checkpoint.
+
 Any later follow-up remains evidence-gathering only while its implementation-
 slice confidence remains below 90%; production C++ must not expand until
 caller/data or downstream-handler evidence raises that slice to >=90%.
@@ -171,6 +178,15 @@ dynamic edges (`0x307A`, `0x6211A`, `0x62900`); two bounded fallback jobs were
 `FAILED_FINAL`/`NOT_REACHED`. Explorer frontiers changed `148 -> 145`, with
 three provenance-tagged dynamic edges. This checkpoint ends before parallel
 workers, a scheduler, a larger queue, or M12.
+
+## M11.5 — Ant reachability diagnostic — DONE
+Delivered: a bounded reachability-only extension to the existing natural
+BizHawk probe, a deterministic ten-context sample, two existing scenario
+checks, static source validation and a fresh positive control. All sampled
+contexts remained `NOT_REACHED`; the environment was healthy, so the result is
+`SCENARIO_COVERAGE_INSUFFICIENT`. The next recommendation is a separately
+authorized small set of natural gameplay scenarios. No queue expansion,
+parallelism, checkpoint farm or production runtime work was added.
 
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
