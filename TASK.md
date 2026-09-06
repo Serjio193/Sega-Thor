@@ -26,6 +26,15 @@ GO/NO-GO ACCEPTANCE:
 - [ ] No production emulator dependency added to oasis/oasis_core.
 - [ ] Full locally available build/test/file-limit/diff validation green before any implementation commit is pushed.
 
+IMPLEMENTATION ORDER:
+1. Test A only: establish exact upstream Genesis Plus GX revision and baseline performance.
+2. Add the minimal hook-local coverage bitmap/counters in the external core; export only at frame/batch cadence.
+3. Repeat the identical deterministic segment and make the Test A PASS/FAIL decision.
+4. Only after Test A PASS, implement the Sega-Thor-side persistent coverage format and live viewer for Test B.
+5. Only after Test B PASS, connect coverage to the existing decoder/Atlas for Test C.
+6. Only after Test C PASS, test Stable-Retro/headless/reset/savestate/parallel workers for Test D.
+7. Only after all four PASS, propose an ADR/roadmap migration. No early architecture switch.
+
 PER-INSTRUCTION PERFORMANCE RULE:
 The M68K callback may only update fixed-size in-memory coverage state/counters. It must not perform file I/O, JSON, disassembly, AI inference, UI work, heap allocation, cross-process IPC, locks, or console logging per instruction. Export/merge happens at frame or bounded batch cadence.
 
