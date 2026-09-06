@@ -4,7 +4,7 @@ TASK: M11.19 Instrumented Genesis Plus GX live coverage + RL feasibility spike
 WHY: prove whether one developer-only emulator core can support both human-driven Motorola 68000 coverage discovery and future headless reinforcement-learning workers before changing Sega-Thor's main reconstruction strategy.
 CURRENT MILESTONE: M11.19 experimental discovery-core feasibility; M12 remains TODO and is not started.
 SLICE MODE: RE_TOOLING_ONLY / EXTERNAL_CORE_SPIKE
-STATUS: ACTIVE
+STATUS: READY_FOR_LOCAL_TEST_A
 BRANCH: experiment/gpgx-live-coverage
 ISSUE: #3
 BASELINE: M11.18 `NATIVE_VERTICAL_SLICE_PLAYABLE` on main; existing verified C++ translations remain intact and are not expanded in this spike.
