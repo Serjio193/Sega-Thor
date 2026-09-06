@@ -22,7 +22,7 @@ if str(HERE) not in sys.path:
 from re_auto_promote_helpers import (acceptance_windows, classify_error, clean_detail,
     forms_from_asm, forms_from_json, instruction_family,
     legacy_mismatch_analysis, reject_clusters, reject_form, resolve_artifact,
-    finalize_rejection, trust_classification)
+    finalize_rejection, trust_classification, trusted_data_overlap)
 
 
 def run(command, cwd=None, check=False):
@@ -48,6 +48,15 @@ def overlap(left, right):
     return left[0] < right[1] and right[0] < left[1]
 
 
+def trusted_data_ranges(report):
+    """Extract only accepted data ranges for the future code gate."""
+    ranges = []
+    for item in report.get("ranges", []):
+        if item.get("classification") in ("DATA_REGION_SUPPORTED", "DATA_STRUCTURE_SUPPORTED"):
+            ranges.append((parse_int(item["start"]), parse_int(item["end"])))
+    return ranges
+
+
 def candidate_score(item, size):
     structural = {"STRONG_STATIC": 40, "MODERATE_STATIC": 30,
                   "WEAK_STATIC": 15}.get(item["structural_classification"], 0)
@@ -59,8 +68,10 @@ def candidate_score(item, size):
     return structural + complexity + callers + target + beta + small
 
 
-def discover_candidates(mass, ghidra, manifest, limit=25, excluded_addresses=None):
+def discover_candidates(mass, ghidra, manifest, limit=25, excluded_addresses=None,
+                        data_ranges=None):
     excluded_addresses = excluded_addresses or set()
+    data_ranges = data_ranges or []
     functions = {}
     for function in ghidra.get("functions", []):
         bounds = parse_range(function.get("range", ""))
@@ -89,6 +100,9 @@ def discover_candidates(mass, ghidra, manifest, limit=25, excluded_addresses=Non
                 not item["unresolved_indirect_flow"] and not item["decode_conflict"] and
                 not item["known_data_overlap"] and not item["confirmed_code_overlap"] and
                 not item["other_ghidra_overlap"] and item["complexity"] in ("LEAF", "SHALLOW"))
+        if safe and (trusted_data_overlap(item) or any(overlap(bounds, data)
+                                                       for data in data_ranges)):
+            safe = False
         if not safe:
             continue
         size = bounds[1] - bounds[0]
@@ -222,6 +236,7 @@ def main():
     parser.add_argument("--output", required=True, help="new ignored output directory")
     parser.add_argument("--max-candidates", type=int, default=100)
     parser.add_argument("--prior-report", help="previous promotion report to exclude")
+    parser.add_argument("--structured-data-report", help="accepted structured-data report for code veto")
     args = parser.parse_args()
     output = Path(args.output).resolve()
     if output.exists():
@@ -232,6 +247,9 @@ def main():
     baseline = json.loads(baseline_path.read_text())
     mass = json.loads(Path(args.mass_report).read_text())
     ghidra = json.loads(Path(args.ghidra_map).read_text())
+    data_ranges = []
+    if args.structured_data_report:
+        data_ranges = trusted_data_ranges(json.loads(Path(args.structured_data_report).read_text()))
     prior = None
     excluded_addresses = set()
     retried_addresses = set()
@@ -245,11 +263,11 @@ def main():
                 excluded_addresses.add(address)
     candidates, eligible_count = discover_candidates(
         mass, ghidra, baseline, args.max_candidates,
-        excluded_addresses | retried_addresses)
+        excluded_addresses | retried_addresses, data_ranges)
     if retried_addresses:
         retry_candidates, _ = discover_candidates(
             mass, ghidra, baseline, len(mass.get("candidates", [])),
-            set(excluded_addresses))
+            set(excluded_addresses), data_ranges)
         candidates = sorted(candidates + [item for item in retry_candidates
                                           if item["address"] in retried_addresses],
                            key=lambda item: (-item["score"], item["size"], item["address"]))[:args.max_candidates]

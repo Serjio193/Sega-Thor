@@ -3,6 +3,33 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.17 structured data classification PoC
+TASK: prove a small set of ROM data structures without guessing unknown bytes,
+running new emulator sweeps or changing production code.
+
+IMPLEMENTATION: added `src/tools/re_structured_data.py` and its CTest helper.
+The classifier parses the 64-entry vector table, fixed ROM header region,
+two 16-byte terrain tables, the 21-entry `0xC92C` group table, the 108-entry
+`0x5CE96` resource-pointer table and four 26-byte screen descriptors. It
+records exact range/byte hashes, width, count, termination, consumers,
+references, unresolved fields and explicit code/data conflicts. Updated the
+future code-promotion gate to veto only explicit trusted-data overlap; weak
+data hypotheses remain non-blocking.
+
+RESULT: 10 ranges accepted: 9 `DATA_STRUCTURE_SUPPORTED` ranges (908 bytes)
+and 1 `DATA_REGION_SUPPORTED` header range (256 bytes). There were 0 rejected
+candidates, 0 conflicts and no payload-boundary guess. Full-ROM representation
+and code trust counts remain unchanged. Decision:
+`STRUCTURED_DATA_HIGH_VALUE`.
+
+TESTS: synthetic structured-data and auto-promotion helper tests passed;
+MSVC Debug/Release and Linux CTest remain green after CMake registration.
+Source-limit, diff-check and artifact hygiene remain green. MinGW is not
+available on this host; the prior M11.15 MinGW matrix is the available result.
+
+NEXT ACTION: exactly one recommendation, A — return to the native vertical
+slice. Do not implement it in this task.
+
 ## 2026-09-06 — M11.16 targeted dynamic code confirmation
 TASK: confirm a bounded set of critical ranges with natural runtime evidence,
 reusing retained reports and never forcing emulator state.

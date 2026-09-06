@@ -153,6 +153,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_evidence_audit_test.py)
     add_test(NAME oasis_re_dynamic_confirm_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_dynamic_confirm_test.py)
+    add_test(NAME oasis_re_structured_data_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_structured_data_test.py)
 endif()
 
 add_executable(oasis_smoke tests/smoke.cpp)

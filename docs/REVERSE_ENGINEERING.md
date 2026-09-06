@@ -1,6 +1,23 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.17 — Structured data classification
+STATUS: `STRUCTURED_DATA_HIGH_VALUE`.
+
+The bounded classifier accepted nine `DATA_STRUCTURE_SUPPORTED` ranges (the
+vector table, two terrain tables, two pointer tables and four 26-byte screen
+descriptors) plus the weaker fixed ROM header `DATA_REGION_SUPPORTED`. Every
+accepted range has an exact ROM slice hash, width, deterministic count/end and
+at least one consumer or parser reference. Pointer targets were validated
+against the canonical ROM. The `0x5CE96` table's null entry is preserved, but
+compressed payload boundaries remain unresolved and are not classified.
+
+The classifier intersects every candidate with the M11.15 code ranges and
+emits explicit conflict records; this pass found none. The future promotion
+gate rejects only explicit trusted-data overlap and leaves weak/unknown data
+hypotheses non-blocking. See `docs/STRUCTURED_DATA_CLASSIFICATION.md` and the
+ignored local JSON report for per-range hashes and parsed elements.
+
 ## M11.16 — Targeted dynamic code confirmation
 STATUS: `TARGETED_DYNAMIC_REACHABILITY_LIMITED`.
 

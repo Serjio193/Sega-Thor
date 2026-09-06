@@ -6,6 +6,7 @@ from pathlib import Path
 
 TRUST_LEVELS = ("ASM_ROUNDTRIP_EXACT", "CODE_STATIC_SUPPORTED",
                 "CODE_EXECUTED", "BEHAVIOR_VERIFIED")
+TRUSTED_DATA_CLASSIFICATIONS = ("DATA_REGION_SUPPORTED", "DATA_STRUCTURE_SUPPORTED")
 
 
 def trust_classification(roundtrip_exact, static_supported=False,
@@ -19,6 +20,14 @@ def trust_classification(roundtrip_exact, static_supported=False,
     if static_supported:
         return "CODE_STATIC_SUPPORTED"
     return "ASM_ROUNDTRIP_EXACT"
+
+
+def trusted_data_overlap(candidate):
+    """Return true only when an explicit trusted data classification overlaps."""
+    classes = candidate.get("data_classifications", [])
+    return bool(set(classes) & set(TRUSTED_DATA_CLASSIFICATIONS) or
+                candidate.get("data_region_supported_overlap") or
+                candidate.get("data_structure_supported_overlap"))
 
 
 def classify_error(text):

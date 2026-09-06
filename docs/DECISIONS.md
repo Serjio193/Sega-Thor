@@ -106,6 +106,26 @@ without weakening static exactness. Historical runtime claims without a
 retained artifact are explicitly reported as unaccepted context. Callers and
 callees require their own evidence.
 
+## ADR-0008 — Structured data classifications are explicit and non-heuristic
+**Status:** Accepted
+**Date:** 2026-09-06
+
+**Context:** The full-ROM split contains millions of bytes whose apparent
+shape is not proof of data. M11.17 needs a useful data inventory while keeping
+unknown bytes and code/data boundaries honest.
+
+**Decision:** Accept `DATA_STRUCTURE_SUPPORTED` only when an exact range,
+element width, deterministic count/end, canonical byte identity and a proven
+consumer or parser are present. Use `DATA_REGION_SUPPORTED` for a bounded
+non-code region whose field semantics are incomplete. A trusted data range
+creates a conflict record on code overlap and vetoes future code promotion;
+weak or unknown data hypotheses do not veto.
+
+**Consequences:** Structured data can be reported without replacing the
+blob-backed full-ROM representation. Resource payloads remain unknown until
+their own compressed boundaries are proven, and code/data conflicts cannot be
+resolved silently.
+
 ## ADR template
 Copy this block for new decisions:
 

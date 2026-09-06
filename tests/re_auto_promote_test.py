@@ -27,6 +27,9 @@ def main():
                              {"entry": "0xA", "range": "0xA..0x12"}]}
     first, count = AUTO.discover_candidates(mass, ghidra, manifest, 2)
     assert count == 2 and first[0]["address"] == 0xA
+    gated, gated_count = AUTO.discover_candidates(mass, ghidra, manifest, 2,
+                                                   data_ranges=[(0x28, 0x30)])
+    assert gated_count == 1 and gated[0]["address"] == 0xA
     assert first == AUTO.discover_candidates(mass, ghidra, manifest, 2)[0]
     promoted = AUTO.promote(manifest["entries"], first[0])
     assert [(e["start"], e["end"], e["kind"]) for e in promoted] == [
@@ -39,6 +42,10 @@ def main():
     assert AUTO.promotion_trust_level({}) == "ASM_ROUNDTRIP_EXACT"
     assert AUTO.promotion_trust_level({"known_static_target": True}) == "CODE_STATIC_SUPPORTED"
     assert AUTO.promotion_trust_level({"existing_dynamic_support": True}) == "CODE_EXECUTED"
+    assert AUTO.trusted_data_overlap({"data_classifications": ["DATA_STRUCTURE_SUPPORTED"]})
+    assert not AUTO.trusted_data_overlap({"data_classifications": ["DATA_HYPOTHESIS"]})
+    assert AUTO.trusted_data_ranges({"ranges": [{"start": "0x20", "end": "0x30",
+        "classification": "DATA_REGION_SUPPORTED"}]}) == [(0x20, 0x30)]
     assert AUTO.reject_form({"reason": "UNSUPPORTED_FORM", "detail": "no exact IR"}) == \
         "unsupported exact IR"
     windows = AUTO.acceptance_windows([{"accepted": value} for value in

@@ -1,22 +1,22 @@
 # Project State
 
-CURRENT_MILESTONE: M11.16 targeted dynamic code confirmation
-CURRENT_TASK: confirm five critical ranges with retained natural evidence, without forcing state
-STATUS: TARGETED_DYNAMIC_REACHABILITY_LIMITED
-CURRENT_BASELINE: M11.15 audited manifest; canonical USA ROM remains 3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: retained natural reports confirm only the existing 0x6121A positive control;
-the five selected critical ranges have no accepted natural hit artifact. Classification remains
-197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED and 0 BEHAVIOR_VERIFIED.
+CURRENT_MILESTONE: M11.17 structured data classification PoC
+CURRENT_TASK: classify a small set of ROM data structures with exact bounded evidence
+STATUS: STRUCTURED_DATA_HIGH_VALUE
+CURRENT_BASELINE: M11.16 audited trust state; canonical USA ROM remains 3,145,728 bytes with exact hashes.
+LAST_VERIFIED_RESULT: ten data ranges were parsed deterministically and accepted: 9
+DATA_STRUCTURE_SUPPORTED ranges (908 bytes) and 1 DATA_REGION_SUPPORTED range (256 bytes).
+Code classification remains 197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED
+and 0 BEHAVIOR_VERIFIED.
 PROVENANCE: one known Ghidra boundary mismatch remains at 0x3820; exact entry/range linkage
 is enforced and weak caller chains cannot bootstrap trust.
-IMPLEMENTATION: src/tools/re_dynamic_confirm.py writes a pre-run selection and fail-closed
-confirmation report with exact range linkage, natural artifact hashes, blocker classes and trust
-counts. No new emulator run or scenario was added.
-NEXT_ACTION: exactly one recommendation, D — a separately authorized bounded timing/hold-input sweep
-around the M11.8 startup transition;
+IMPLEMENTATION: src/tools/re_structured_data.py writes exact byte/range hashes, fixed-width
+parses, consumers, conflicts and metrics. re_auto_promote.py now vetoes explicit trusted-data
+overlaps while weak data hypotheses remain non-blocking.
+NEXT_ACTION: exactly one recommendation, A — return to the native vertical slice;
 do not implement it in this checkpoint.
-DO_NOT_WORK_ON: structured-data classification, automatic promotion, AI naming, C++ generation,
-Z80, production runtime, full semantic disassembly, emulator batch expansion, ants or M12.
+DO_NOT_WORK_ON: automatic promotion batches, AI naming, C++ generation, Z80, production runtime,
+full semantic disassembly, emulator sweeps, ants or M12.
 
 
 

@@ -269,6 +269,14 @@ promotion, emulator run, or scenario expansion was performed. Decision:
 `TARGETED_DYNAMIC_REACHABILITY_LIMITED`. The single deferred recommendation is
 D — one bounded timing/hold-input sweep around the M11.8 startup transition.
 
+## M11.17 — Structured data classification PoC — DONE
+The bounded proof accepted nine exact structured-data ranges and one weaker
+header region, covering 1,164 bytes without changing the blob-backed full-ROM
+representation. Invalid pointer-like data and code/data overlap are rejected
+or recorded as conflicts, and the future code-promotion gate vetoes only
+trusted data classifications. Decision: `STRUCTURED_DATA_HIGH_VALUE`. The
+single deferred recommendation is A — return to the native vertical slice.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 
