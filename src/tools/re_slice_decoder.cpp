@@ -91,6 +91,21 @@ std::size_t parse_ea(Bytes rom, std::uint32_t pc, std::uint32_t range_end,
         add_unsupported_addressing(instruction, mode, reg, "invalid_mode_7_register");
         return extension_size;
     }
+    DecodedOperand operand{};
+    operand.kind = static_cast<OperandKind>(mode == 7U ? 7U + reg : mode);
+    operand.register_index = static_cast<std::uint8_t>(reg);
+    operand.width_bytes = static_cast<std::uint8_t>(data_width);
+    operand.extension_bytes = static_cast<std::uint8_t>(extension_size);
+    operand.extension_address = static_cast<std::uint32_t>(extension_offset);
+    if (extension_size && extension_offset + extension_size <= rom.size() &&
+        extension_offset + extension_size <= range_end) {
+        operand.value = extension_size == 4U ? read32(rom, extension_offset)
+                                             : read16(rom, extension_offset);
+        operand.displacement = static_cast<std::int16_t>(operand.value);
+        if (operand.kind == OperandKind::immediate && data_width == 1U)
+            operand.value &= 0xFFU;
+    }
+    instruction.effective_operands.push_back(operand);
     if (mode == 7U && reg == 4U && extension_offset + extension_size <= rom.size() &&
         extension_offset + extension_size <= range_end) {
         if (data_width <= 2U) {
@@ -140,8 +155,9 @@ bool is_immediate_group(std::uint16_t opcode) {
 }
 
 bool is_no_extension_binary(std::uint16_t opcode) {
-    if ((opcode & 0xF130U) == 0x8100U || (opcode & 0xF130U) == 0x9100U ||
-        (opcode & 0xF130U) == 0xD100U) {
+    if ((opcode & 0xF130U) == 0x8100U ||
+        (((opcode & 0xF130U) == 0x9100U || (opcode & 0xF130U) == 0xD100U) &&
+         (opcode & 0x00C0U) != 0x00C0U)) {
         return true;
     }
     if ((opcode & 0xF1F8U) == 0xC100U || (opcode & 0xF138U) == 0xC140U) {
@@ -301,7 +317,8 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
     } else if ((opcode & 0xFB80U) == 0x4880U) {
         instruction.mnemonic = "movem";
         set_length(4U + parse_ea(rom, pc, range_end, (opcode >> 3U) & 7U, opcode & 7U,
-                                 4U, MemoryAccess::unknown, instruction, pc + 4U));
+                                 (opcode & 0x40U) ? 4U : 2U,
+                                 MemoryAccess::unknown, instruction, pc + 4U));
         if (pc + 4U <= rom.size() && pc + 4U <= range_end) add_immediate(instruction, read16(rom, pc + 2U), 2U);
     } else if ((opcode & 0xFFF8U) == 0x4840U || (opcode & 0xFFF8U) == 0x4880U ||
                (opcode & 0xFFF8U) == 0x48C0U) {
@@ -328,8 +345,10 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
             set_length(2U);
         } else {
             const auto operation_mode = static_cast<unsigned>((opcode >> 6U) & 7U);
+            const auto address_arithmetic = (opcode >> 12U) == 9U ||
+                (opcode >> 12U) == 0xBU || (opcode >> 12U) == 0xDU;
             const auto width = operation_mode == 3U || operation_mode == 7U
-                                   ? 2U
+                                   ? (address_arithmetic && operation_mode == 7U ? 4U : 2U)
                                    : size_bytes(operation_mode & 3U);
             parse_single((opcode >> 3U) & 7U, opcode & 7U, width, MemoryAccess::unknown);
         }
@@ -353,6 +372,7 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
     instruction.supported = recognized;
     if (!recognized && instruction.mnemonic != "unsupported") instruction.mnemonic = "unsupported";
     if (!recognized) instruction.flow = FlowKind::unsupported;
+    if (recognized) normalize_exact_instruction(instruction);
     return instruction;
 }
 

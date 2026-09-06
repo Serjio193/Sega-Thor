@@ -34,6 +34,9 @@ target_link_libraries(oasis_inspect PRIVATE oasis_core)
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
     src/tools/re_slice_decoder.cpp
+    src/tools/re_slice_exact.cpp
+    src/tools/re_assemble.cpp
+    src/tools/re_assemble_format.cpp
     src/tools/re_slice_format.cpp
     src/tools/re_program.cpp
     src/tools/re_program_format.cpp
@@ -130,6 +133,13 @@ add_executable(oasis_re_static_translation src/tools/re_static_translation_repor
 target_link_libraries(oasis_re_static_translation PRIVATE oasis_re_tooling oasis_core)
 
 enable_testing()
+
+add_executable(oasis_re_assemble src/tools/re_assemble_report.cpp)
+target_link_libraries(oasis_re_assemble PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_assemble_test tests/re_assemble_test.cpp)
+target_link_libraries(oasis_re_assemble_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_re_assemble COMMAND oasis_re_assemble_test)
 
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
@@ -313,6 +323,7 @@ target_link_libraries(oasis_re_natural_reference PRIVATE oasis_core)
 
 # Keep assert-based test bodies active in Release builds as well.
 set(oasis_test_targets
+    oasis_re_assemble_test
     oasis_smoke
     oasis_rom_identity_test
     oasis_graphics_decompress_test
@@ -360,6 +371,7 @@ add_test(
 if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(oasis_compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
     set(oasis_runtime_test_names
+        oasis_re_assemble
         oasis_smoke
         oasis_rom_identity
         oasis_graphics_decompress

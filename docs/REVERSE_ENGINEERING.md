@@ -1,6 +1,41 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.9 — Reassemblable disassembly pipeline
+CONFIRMED: canonical local ROM -> existing decoder typed operands -> deterministic
+ASM -> vasm gives five exact slices: [0x3820,0x3B3E), [0x62CC,0x62E4),
+[0xA8DA,0xA8F0), [0x1108,0x1112), [0x2B6E,0x2B8A). Respectively these contain
+306/6/10/4/4 instructions and 798/24/22/10/28 bytes: 330 instructions, 882 bytes.
+No handwritten opcode overrides or code-byte directives were needed.
+
+0x1108 and 0x2B6E were selected from the existing clean LEAF mass evidence:
+MODERATE_STATIC, BOUNDARY_AGREES, no failure reasons, indirect flow or known
+data/overlap conflict. Current bounded decoding confirms contiguous ranges and
+RTS terminals. The former has indirect/displacement reads and a shift; the
+latter has absolute-long writes and long immediates. Their semantic meanings
+and runtime evidence remain UNKNOWN. A8DA's old mass `multiple_entry_overlap`
+flag is retained; exact selected-byte agreement does not resolve global ownership.
+Its four `(A5)+` destinations, including `MOVE.W D2,(A5)+`, are preserved exactly.
+No new runtime evidence is claimed for A8DA/62CC. 0x3820 retains its established
+decompressor meaning and prior vector/runtime evidence.
+
+At 0x389C, opcode 0x95C1 is SUBA.L D1,A2. The existing decoder's overly broad
+SUBX no-extension mask omitted its EA metadata. Excluding size-code 3 from that
+mask restores decoder-owned operands. Address-arithmetic long EA width and
+MOVEM word EA width are now retained; synthetic tests cover these distinctions.
+ASM and future emitters can consume the same typed operands without another EA
+decoder. Supported family recognition alone does not imply exact-emitter support;
+unhandled forms are rejected rather than output as raw opcode patches.
+
+The local split covers only [0x1108,0xA8F0): 38,888 bytes, including four UNKNOWN
+gaps totaling 38,006 bytes extracted at build time from the canonical ROM.
+It compares exactly. All generated ASM/IR and commercial blobs remain ignored.
+vasm 1.8g with `-m68000 -no-opt -Fbin` is output-compatible for this experiment;
+without `-no-opt`, 0x3820 shrinks to 794 bytes. Ancient's assembler is UNKNOWN.
+See `REASSEMBLY_POC.md` for provenance, assumptions, per-range tests and the
+first-difference example. Result: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`.
+Next recommendation: A, expand to 25–50 verified routines; not implemented.
+
 ## M11.6.2 — Static translation trust repair
 Status: `STATIC_TRANSLATION_TRUST_RESTORED` for the bounded developer-only
 PoC; this is not a general 68000 translation claim.

@@ -1,5 +1,25 @@
 # Project State
 
+CURRENT_MILESTONE: M11.9 bounded reassemblable disassembly PoC
+CURRENT_TASK: five selected ROM slices through exact shared IR, ASM and vasm
+STATUS: REASSEMBLABLE_DISASM_POC_HIGH_VALUE
+CURRENT_SLICE_CONFIDENCE: 99% for the measured five-slice encoding round-trip;
+this does not establish unknown gameplay meanings or general 68000 coverage.
+LAST_VERIFIED_RESULT: 5/5 exact, 330 instructions, 882/882 bytes (100%);
+all A8DA postincrement writes preserved, full 0x3820 included. Local bounded
+split [0x1108,0xA8F0) also MATCH, including 38,006 unknown blob bytes.
+IMPLEMENTATION: existing decoder owns typed exact operands; new bounded ASM
+emission and byte-difference tools have no production runtime dependency.
+TOOL: local vasm 1.8g, `-m68000 -no-opt -Fbin`, one optimization-control
+workaround, zero handwritten opcode overrides or commercial artifacts in Git.
+VALIDATION: see latest WORKLOG for final compiler/CTest and CI evidence;
+docs/REASSEMBLY_POC.md records reproduction and precise limitations.
+NEXT_ACTION: recommendation A — expand to 25–50 verified routines; not started.
+DO_NOT_WORK_ON: M12, production runtime, full ROM split, AI semantics,
+automatic C++ translation, emulator, ant/scenario work or architecture changes.
+
+HISTORICAL CHECKPOINTS:
+
 CURRENT_MILESTONE: M11.6 static translation trust repair
 CURRENT_TASK: M11.6.2 Static Translation Trust Repair
 STATUS: STATIC_TRANSLATION_TRUST_RESTORED

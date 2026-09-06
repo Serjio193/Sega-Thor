@@ -203,6 +203,13 @@ contexts remained `NOT_REACHED`; the environment was healthy, so the result is
 authorized small set of natural gameplay scenarios. No queue expansion,
 parallelism, checkpoint farm or production runtime work was added.
 
+## M11.9 — Reassemblable disassembly pipeline PoC — DONE
+Post-M11 tooling checkpoint M11.9 is DONE: five selected slices (330 instructions,
+882 bytes) round-trip exactly through decoder-owned typed IR and vasm. The local
+bounded split also matches. Result: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`.
+Next recommendation is A, expand to 25–50 verified routines; not implemented.
+M12 remains TODO.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

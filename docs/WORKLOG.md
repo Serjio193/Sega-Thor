@@ -3,6 +3,89 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.9 exact reassembly verified locally
+RESULT: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`. Canonical ROM through the existing
+decoder, decoder-owned exact operands, generated ASM and vasm matches 5/5 slices:
+0x3820 (306 instructions/798 bytes), 0x62CC (6/24), A8DA (10/22), 0x1108 (4/10),
+0x2B6E (4/28). Total 330 instructions, 882/882 ASM bytes, 100%, zero final
+mismatches/unsupported selected forms/handwritten opcode overrides. Full 0x3820
+is covered; all four A8DA postincrement writes are retained.
+
+IMPLEMENTATION: developer-only exact normalization within the existing decoder,
+ASM and raw-word/typed-operand JSON emission, first-difference verification and
+standard-library Python assembler runner. SUBA.L's existing SUBX-mask collision
+was repaired; address-arithmetic long EA and MOVEM word widths are retained.
+The decoder, ROM identity and frozen mass candidate evidence were reused; no
+second decoder, architecture change/ADR, production runtime or C++ emitter.
+
+SPLIT: the local layout covers only [0x1108,0xA8F0), 38,888 bytes, with 38,006
+unknown bytes preserved in four exact local-ROM blobs. The whole bounded layout
+also matches. All generated ASM/IR, blobs, binaries and tool sources are ignored.
+Per-routine bounds, status, evidence, assumptions, meanings and test status are
+recorded in REVERSE_ENGINEERING and REASSEMBLY_POC.
+
+ASSEMBLER: no installed M68K assembler was found. Official source host refused
+connection; public vaelen/vasm mirror revision
+`8ecb8e6c7a31350ef32c7f1fee289e3677a9a8f0` was built locally with configured
+MinGW GCC. vasm 1.8g/backend 2.3f/Motorola syntax 3.13, `-m68000 -no-opt -Fbin`.
+Without `-no-opt`, 0x3820 shrinks to 794 bytes and first diverges at 0x382B.
+One bounded assembler workaround class, no per-instruction encoding patches.
+License/provenance and reproduction commands are in docs/REASSEMBLY_POC.md;
+no claim is made about Ancient's historical assembler.
+
+VERIFICATION: MinGW Debug and Release full builds and CTest pass 34/34, with
+assertions enabled in Release. Both CLI pipelines independently match all five
+routines and the split. MSVC 19.51 was found via vswhere despite older notes;
+Debug and Release full builds/CTest pass 34/34. Ubuntu-24.04 WSL GCC Debug
+full build/link and CTest pass 34/34; the filesystem line-limit scan took 244s
+on the mounted Windows checkout. Final focused checks after review are recorded
+below. No missing local toolchain is claimed.
+
+FINAL PRE-PUSH CHECKS: after the last IR metadata review, MinGW and MSVC full
+Debug/Release builds and CTest again pass 34/34. Linux full relinking and all
+33 behavioral tests pass; its already-green filesystem-only line-limit test was
+not repeated across the slow mount. The current Windows CTest file-limit check
+and explicit counts including the Python runner pass (maximum changed source:
+465 lines). Final Debug/Release pipelines match 5/5 plus the split and produce
+17 identical ASM/IR/manifest/binary artifacts. Staged diff review, diff --check
+and artifact hygiene pass: only the 17 reviewed source/build/documentation files
+are staged; no ROM, commercial output, state or assembler binary is tracked.
+
+NEGATIVE CONTROL: deliberately changing rebuilt A8DA byte 9 returns exit 1 and
+`FIRST_DIFFERENCE rom_offset=0x00A8E3 slice_offset=0x9 expected=0xC2 actual=0xC3
+instruction=0x00A8E2 move.w D2,(A5)+`. Synthetic tests also cover missing/extra
+bytes, invalid bounds, exact operand/branch sizes and golden deterministic ASM.
+
+FILES CHANGED: decoder/IR, bounded emitter/comparator/CLI/runner, CMake target and
+test, TASK/PROJECT_STATE and project worklog/RE/file map/roadmap/reproduction docs.
+OPEN QUESTIONS: semantics/runtime of new leaves remain UNKNOWN; A8DA's older
+mass multiple-entry flag is retained. No full-ROM or general-encoding claim.
+Manual engineering effort estimate: 2–3 hours, not measured human labor.
+EXACT NEXT ACTION: recommendation A — expand to 25–50 verified routines;
+not implemented. Push and verify CI for this checkpoint, then STOP.
+
+## 2026-09-06 — M11.9 initial acceptance criteria
+TASK: prove canonical ROM -> existing decoder with exact operands -> deterministic
+68000 ASM -> external assembler -> byte comparison for exactly five selected slices.
+WHY: make encoding fidelity independently verifiable before future emitters.
+CURRENT MILESTONE: post-M11 bounded RE tooling, M11.9; M12 remains deferred.
+MILESTONE UNDERSTANDING CONFIDENCE: 93% for the tooling boundary.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 95% for operand extraction; assembler
+round-trip is still unverified. SLICE MODE: RE_TOOLING_ONLY.
+SLICE CONFIDENCE EVIDENCE: existing decoder, canonical local ROM, prior A8DA
+repair and mass candidate evidence; no handwritten C++ is an instruction oracle.
+BASELINE: synchronized clean main/origin/main at `77c0c44`.
+ACCEPTANCE CRITERIA: five bounded selections, A8DA mandatory exact and at least
+four exact round-trips; typed operands/raw words, deterministic ASM and useful
+first difference; ignored local split/blobs with offsets; synthetic tests,
+Debug/Release CTest, Linux link/build, file limits and artifact hygiene green.
+EVIDENCE AVAILABLE: local canonical ROM, current MinGW toolchain, Ubuntu WSL,
+mass map and existing decoder/Atlas. Initial clean leaf choices: 0x1108 and
+0x2B6E (4 instructions each, no mass failure reasons or indirect flow).
+KNOWN UNKNOWNS: assembler encoding choices; gameplay semantics of leaves;
+Ancient's historical assembler remains UNKNOWN. No architecture change/ADR,
+production runtime, C++ emitter, full ROM split or automatic discovery is planned.
+
 ## 2026-09-06 — M11.6.2 static translation trust restored
 TASK: repair only the three bounded static-translation PoC defects identified
 by the task: A8DA memory operands, CCR X semantics and Release assertion

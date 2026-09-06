@@ -50,6 +50,31 @@ struct UnsupportedAddressing {
     std::string reason;
 };
 
+// Encoding operands belong to the decoder, not to individual emitters.
+enum class OperandKind {
+    data_register, address_register, indirect, postincrement, predecrement,
+    displacement, indexed, absolute_word, absolute_long, pc_displacement,
+    pc_indexed, immediate, register_list
+};
+
+struct DecodedOperand {
+    OperandKind kind{OperandKind::data_register};
+    std::uint8_t register_index{};
+    std::uint8_t width_bytes{};
+    std::uint8_t extension_bytes{};
+    std::uint32_t value{}; // Immediate, full absolute address, or register mask.
+    std::int32_t displacement{};
+    std::uint32_t extension_address{}; // PC-relative base, when applicable.
+};
+
+struct ExactInstruction {
+    std::string operation;
+    std::uint8_t width_bytes{};
+    std::uint8_t branch_width_bytes{};
+    std::optional<DecodedOperand> source;
+    std::optional<DecodedOperand> destination;
+};
+
 struct DecodedInstruction {
     std::uint32_t address{};
     std::uint16_t opcode{};
@@ -64,7 +89,12 @@ struct DecodedInstruction {
     std::vector<MemoryReference> memory_references;
     std::vector<UnresolvedMemoryReference> unresolved_memory_references;
     std::vector<UnsupportedAddressing> unsupported_addressing;
+    std::vector<DecodedOperand> effective_operands;
+    std::optional<ExactInstruction> exact;
 };
+
+// Bounded normalization of already decoded operands; unknown forms fail closed.
+void normalize_exact_instruction(DecodedInstruction& instruction);
 
 struct BasicBlock {
     std::uint32_t start{};
