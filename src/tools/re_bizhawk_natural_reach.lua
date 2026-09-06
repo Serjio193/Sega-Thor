@@ -9,6 +9,7 @@ local search_mode = os.getenv("OASIS_NATURAL_SEARCH") == "caller_targets"
 local reachability_only = os.getenv("OASIS_REACHABILITY_ONLY") == "1"
 local scenario_family = os.getenv("OASIS_SCENARIO_FAMILY") or "natural_idle_to_6121a_v1"
 local variant_id = os.getenv("OASIS_VARIANT_ID") or "default"
+local target_override = os.getenv("OASIS_TARGET_ADDRESSES")
 
 local scenario = {
     id = "env_input_probe",
@@ -59,6 +60,16 @@ elseif input_override then
         local frame, buttons = item:match("(%d+):(.+)")
         if not frame then error("malformed OASIS_INPUT_EVENTS item: " .. item) end
         add_input(tonumber(frame), 1, buttons)
+    end
+end
+
+if target_override then
+    scenario.targets = {}
+    for item in target_override:gmatch("[^,]+") do
+        local token = trim(item)
+        local address = tonumber(token:gsub("^0x", ""), 16)
+        if not address then error("malformed OASIS_TARGET_ADDRESSES item: " .. token) end
+        scenario.targets[#scenario.targets + 1] = address
     end
 end
 

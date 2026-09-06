@@ -1,5 +1,36 @@
 # Current Task
 
+TASK: M11.6.1 Runtime Capture Fixup for Static Translation PoC
+WHY: attempt natural BizHawk runtime captures for the already-selected `0xA8DA`
+and `0x62CC` leaves before treating their static fixtures as runtime evidence.
+CURRENT MILESTONE: M11.6.1 bounded runtime capture
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE_WITH_RUNTIME_CAPTURE_UNAVAILABLE
+
+RUNTIME RESULT: the existing hardware-reset scenario and canonical USA ROM were
+used without forced PC, register, flag, RAM, ROM or savestate mutation. A
+developer-only target override was added to observe exactly `0xA8DA` and
+`0x62CC`. BizHawk 2.11.1 opens without a ROM, but loading the Genesis ROM
+raises an `Exception` in the current migrated BizHawk process before Lua emits
+a report; the same failure reproduces with the existing boot-trace probe and
+with the explicit `Genplus-gx` core. Therefore both routines are recorded as
+`RUNTIME_CAPTURE_UNAVAILABLE_EXISTING_SCENARIOS`, not `NOT_REACHED` and not a
+translation mismatch. No runtime register/memory capture, replay comparison or
+new natural scenario was fabricated.
+
+DECISION: `STATIC_TRANSLATION_RUNTIME_PARTIAL`. This is a bounded partial
+checkpoint with no contrary evidence against B/C, but neither routine is
+runtime-confirmed because the current BizHawk Genesis launch is unavailable.
+EXACT NEXT ACTION: repair or replace the local BizHawk Genesis launch in a
+separately authorized task, then repeat only this capture; do not implement a
+translator, interpreter, production CPU model or M12 work here.
+
+VALIDATION: the pre-capture M11.5/M11.6 commits were pushed as focused commits
+`a02e6b4` and `6e56c06`; MSVC Debug/Release and GNU/MinGW-equivalent CTest
+passed 33/33, and GitHub Actions run `34019056461` passed for `6e56c06`.
+The capture attempt itself produced no accepted runtime report because BizHawk
+failed while loading the ROM.
+
 TASK: M11.6 Verified Static Translation PoC
 WHY: measure whether three bounded, evidence-backed routines can be emitted as
 ordinary C++ and differentially checked without introducing a runtime 68000
