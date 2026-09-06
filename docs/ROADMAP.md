@@ -133,6 +133,15 @@ is DONE. Static incoming analysis and watch-only BizHawk observations show
 33 direct incoming PCs executed. The next recommendation is one separately
 authorized minimal natural scenario; no scenario is created here.
 
+Post-M11.7 evidence checkpoint: M11.8 is `ROOT_CAUSE_ADVANCED`. A new
+hardware-reset natural scenario with title/start, movement, attack/use and
+interaction/room input phases ran 1800 frames with exact hooks for all 33
+incoming sites, player/event owners and the `0x3820` positive control. The
+positive control remained live, while the target and all incoming sites stayed
+unreached. The probe now records input schedule, frame PCs and selected RAM
+state. The next bounded action is a timing/hold-input sweep around the
+startup-to-gameplay transition; production C++ and M12 remain out of scope.
+
 Any later follow-up remains evidence-gathering only while its implementation-
 slice confidence remains below 90%; production C++ must not expand until
 caller/data or downstream-handler evidence raises that slice to >=90%.

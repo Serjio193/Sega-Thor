@@ -149,10 +149,11 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_static_translation.cpp        Developer-only bounded static C++ PoC
 │       ├── re_static_translation_report.cpp Local ROM-backed PoC report CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
-│       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller probe
+│       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller/state probe
 │       ├── re_bizhawk_ant.lua            Developer-only one-frontier natural ant worker
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
 │       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
+│       ├── re_bizhawk_m11_8_natural_scenario.txt M11.8 natural input/target/RAM scenario
 │       ├── re_mame_boot_trace.cmd Developer-only MAME fixed-instruction debugger trace
 │       ├── re_mame_writer_probe.cmd Developer-only MAME RAM writer watchpoint probe
 │       └── re_mame_trace_normalize.ps1 Normalize MAME/BizHawk raw events to neutral trace

@@ -10,6 +10,8 @@ local reachability_only = os.getenv("OASIS_REACHABILITY_ONLY") == "1"
 local scenario_family = os.getenv("OASIS_SCENARIO_FAMILY") or "natural_idle_to_6121a_v1"
 local variant_id = os.getenv("OASIS_VARIANT_ID") or "default"
 local target_override = os.getenv("OASIS_TARGET_ADDRESSES")
+local ram_watch_override = os.getenv("OASIS_RAM_WATCH_ADDRESSES")
+local max_target_snapshots = tonumber(os.getenv("OASIS_MAX_TARGET_SNAPSHOTS") or "8")
 
 local scenario = {
     id = "env_input_probe",
@@ -18,6 +20,8 @@ local scenario = {
     start_state = "hardware_reset",
     stop_condition = "max_frames:1800",
     targets = { 0x6121A, 0x60B8C, 0x60D4A, 0x60BCC, 0x60BD0, 0x60BFA, 0x60C08 },
+    ram_watch = {},
+    pc_regions = {},
     inputs = {}
 }
 
@@ -35,6 +39,8 @@ end
 
 local function load_scenario(path)
     scenario.targets = {}
+    scenario.ram_watch = {}
+    scenario.pc_regions = {}
     local input = assert(io.open(path, "r"))
     for line in input:lines() do
         line = trim(line)
@@ -45,6 +51,13 @@ local function load_scenario(path)
         elseif key == "start_state" then scenario.start_state = value
         elseif key == "stop_condition" then scenario.stop_condition = value
         elseif key == "target_address" then scenario.targets[#scenario.targets + 1] = tonumber(value:gsub("0x", ""), 16)
+        elseif key == "ram_watch_address" then scenario.ram_watch[#scenario.ram_watch + 1] = tonumber(value:gsub("0x", ""), 16)
+        elseif key == "pc_region" then
+            local name, start, finish = value:match("([^,]+),([^,]+),([^,]+)")
+            if not name or not start or not finish then error("malformed pc_region: " .. value) end
+            scenario.pc_regions[#scenario.pc_regions + 1] = {
+                name = name, start = tonumber(start:gsub("^0x", ""), 16), finish = tonumber(finish:gsub("^0x", ""), 16)
+            }
         elseif line:match("^input ") then
             local frame, port, buttons = line:match("^input frame=(%d+) port=(%d+) buttons=(%S+)$")
             if not frame then error("malformed scenario input: " .. line) end
@@ -70,6 +83,16 @@ if target_override then
         local address = tonumber(token:gsub("^0x", ""), 16)
         if not address then error("malformed OASIS_TARGET_ADDRESSES item: " .. token) end
         scenario.targets[#scenario.targets + 1] = address
+    end
+end
+
+if ram_watch_override then
+    scenario.ram_watch = {}
+    for item in ram_watch_override:gmatch("[^,]+") do
+        local token = trim(item)
+        local address = tonumber(token:gsub("^0x", ""), 16)
+        if not address then error("malformed OASIS_RAM_WATCH_ADDRESSES item: " .. token) end
+        scenario.ram_watch[#scenario.ram_watch + 1] = address
     end
 end
 
@@ -104,8 +127,14 @@ local writes = {}
 local entry = nil
 local target_hits = {}
 local first_target_hits = {}
+local target_snapshot_counts = {}
 local caller_hits = {}
 local observed_target_hits = {}
+local frame_samples = {}
+local pc_region_hits = {}
+for _, region in ipairs(scenario.pc_regions) do
+    pc_region_hits[region.name] = { count = 0, first = nil, last = nil }
+end
 local previous_watched_event = nil
 local primary_search_callers = { [0x60B8C] = true, [0x60D4A] = true }
 local watch_targets = scenario.targets
@@ -150,6 +179,12 @@ local function read_long(address)
     if not ok or not bytes or #bytes < 4 then return nil end
     return ((bytes[1] & 0xFF) << 24) | ((bytes[2] & 0xFF) << 16) |
         ((bytes[3] & 0xFF) << 8) | (bytes[4] & 0xFF)
+end
+
+local function read_bytes(address, length)
+    local ok, bytes = pcall(memory.read_bytes_as_array, address, length, "M68K BUS")
+    if not ok or not bytes or #bytes < length then return nil end
+    return bytes
 end
 
 local function snapshot_json(value)
@@ -203,12 +238,73 @@ local function write_json_array(values, formatter)
     return result .. ']'
 end
 
+local function input_schedule_json()
+    local result = {}
+    for input_frame = 0, max_frames - 1 do
+        local values = scenario.inputs[input_frame]
+        if values then
+            result[#result + 1] = '{"frame":' .. input_frame .. ',"buttons":' ..
+                write_json_array(values, json) .. '}'
+        end
+    end
+    return '[' .. table.concat(result, ',') .. ']'
+end
+
+local function frame_samples_json()
+    local result = {}
+    for _, sample in ipairs(frame_samples) do
+        local values = {}
+        for _, value in ipairs(sample.values) do values[#values + 1] = value and json(hex(value)) or "null" end
+        result[#result + 1] = '{"frame":' .. sample.frame .. ',"pc":' .. json(hex(sample.pc)) ..
+            ',"ram":' .. write_json_array(values, function(value) return value end) .. '}'
+    end
+    return '[' .. table.concat(result, ',') .. ']'
+end
+
+local function pc_regions_json()
+    local result = {}
+    for _, region in ipairs(scenario.pc_regions) do
+        local hit = pc_region_hits[region.name]
+        local function point(value)
+            return value and '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. '}' or "null"
+        end
+        result[#result + 1] = '{"name":' .. json(region.name) .. ',"start":' .. json(hex(region.start)) ..
+            ',"end":' .. json(hex(region.finish)) .. ',"executions":' .. hit.count ..
+            ',"first":' .. point(hit.first) .. ',"last":' .. point(hit.last) .. '}'
+    end
+    return '[' .. table.concat(result, ',') .. ']'
+end
+
 event.on_bus_write(function(address, value, flags)
     if #writes < 32 then writes[#writes + 1] = { frame = frame, pc = register("M68K PC"), address = address, value = value, flags = flags } end
 end, "natural reach writes", "M68K BUS")
 
+if #scenario.pc_regions > 0 then
+    event.on_bus_exec_any(function(address)
+        for _, region in ipairs(scenario.pc_regions) do
+            if address >= region.start and address < region.finish then
+                local hit = pc_region_hits[region.name]
+                hit.count = hit.count + 1
+                hit.first = hit.first or { frame = frame, pc = address }
+                hit.last = { frame = frame, pc = address }
+            end
+        end
+    end)
+end
+
 event.onframeend(function()
-    if not stop_requested then sample_pc(register("M68K PC") or 0) end
+    if not stop_requested then
+        local pc = register("M68K PC") or 0
+        sample_pc(pc)
+        if #scenario.ram_watch > 0 then
+            local values = {}
+            for _, address in ipairs(scenario.ram_watch) do
+                local bytes = read_bytes(address, 1)
+                values[#values + 1] = bytes and bytes[1] or nil
+            end
+            frame_samples[#frame_samples + 1] = { frame = frame, pc = pc, values = values }
+        end
+    end
 end)
 
 local function caller_event(address)
@@ -230,6 +326,8 @@ end
 
 local function target_event(address)
     target_hits[address] = (target_hits[address] or 0) + 1
+    target_snapshot_counts[address] = (target_snapshot_counts[address] or 0) + 1
+    if target_snapshot_counts[address] > max_target_snapshots then return end
     local event = capture_watched(address, "target")
     if not first_target_hits[address] then first_target_hits[address] = event end
     local caller = previous_watched_event and caller_by_pc[previous_watched_event.pc] and previous_watched_event or nil
@@ -365,6 +463,6 @@ end
 local old_target_reached = not search_mode and target_hit
 local old_target_frame = not search_mode and target_frame or nil
 local old_target_sequence = not search_mode and target_sequence or nil
-report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"scenario_family":' .. json(scenario_family) .. ',"variant_id":' .. json(variant_id) .. ',"search_mode":' .. tostring(search_mode) .. ',"input_events":' .. json(input_override or "") .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks_and_bounded_caller_hooks","frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(old_target_reached) .. ',"target_frame":' .. (old_target_frame or 'null') .. ',"target_sequence":' .. (old_target_sequence or 'null') .. ',"search_target_reached":' .. tostring(search_target_address ~= nil) .. ',"search_target_address":' .. optional_hex(search_target_address) .. ',"search_target_frame":' .. (search_target_frame or 'null') .. ',"search_target_sequence":' .. (search_target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. ',"caller_discrimination":{"static_bytes_verified":true,"static_callers":' .. static_callers_json() .. ',"caller_hits":[' .. table.concat(caller_report, ',') .. '],"observed_hits":[' .. table.concat(observed_report, ',') .. '],"relevant_to_existing_stack_blocker":' .. (relevant and json(relevant) or "null") .. ',"deterministic":true}}')
+report:write('{"schema":"oasis.m68k.natural-reach.v1","scenario_id":' .. json(scenario.id) .. ',"scenario_family":' .. json(scenario_family) .. ',"variant_id":' .. json(variant_id) .. ',"search_mode":' .. tostring(search_mode) .. ',"input_events":' .. json(input_override or "") .. ',"input_schedule":' .. input_schedule_json() .. ',"rom_sha256":' .. json(scenario.rom_sha256) .. ',"backend":' .. json(scenario.backend) .. ',"start_state":' .. json(scenario.start_state) .. ',"stop_condition":' .. json(scenario.stop_condition) .. ',"coverage_mode":"frame_boundary_samples_plus_exact_target_hooks_and_bounded_caller_hooks_plus_ram_watch","ram_watch_addresses":' .. write_json_array(scenario.ram_watch, function(value) return json(hex(value)) end) .. ',"frame_samples":' .. frame_samples_json() .. ',"pc_regions":' .. pc_regions_json() .. ',"target_snapshot_limit":' .. max_target_snapshots .. ',"frames_executed":' .. frame .. ',"target_addresses":[' .. table.concat(targets, ',') .. '],"target_hits":[' .. table.concat(hit_report, ',') .. '],"target_reached":' .. tostring(old_target_reached) .. ',"target_frame":' .. (old_target_frame or 'null') .. ',"target_sequence":' .. (old_target_sequence or 'null') .. ',"search_target_reached":' .. tostring(search_target_address ~= nil) .. ',"search_target_address":' .. optional_hex(search_target_address) .. ',"search_target_frame":' .. (search_target_frame or 'null') .. ',"search_target_sequence":' .. (search_target_sequence or 'null') .. ',"entry":' .. target_report .. ',"previous_pcs":' .. write_json_array(ring, function(value) return json(hex(value.pc)) end) .. ',"writes":' .. write_json_array(writes, function(value) return '{"frame":' .. value.frame .. ',"pc":' .. json(hex(value.pc)) .. ',"address":' .. json(hex(value.address)) .. ',"value":' .. json(hex(value.value)) .. ',"flags":' .. tostring(value.flags or 0) .. '}' end) .. ',"caller_discrimination":{"static_bytes_verified":true,"static_callers":' .. static_callers_json() .. ',"caller_hits":[' .. table.concat(caller_report, ',') .. '],"observed_hits":[' .. table.concat(observed_report, ',') .. '],"relevant_to_existing_stack_blocker":' .. (relevant and json(relevant) or "null") .. ',"deterministic":true}}')
 report:close()
 client.exitCode(0)

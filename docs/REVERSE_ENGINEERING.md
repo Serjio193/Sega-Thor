@@ -1,6 +1,49 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.8 — Natural reachability recovery for `0x62CC`
+Status: `ROOT_CAUSE_ADVANCED`; no natural target or direct caller was recovered.
+
+The M11.8 scenario is a new hardware-reset, natural-input experiment, not a
+forced checkpoint. Its 25 one-frame controller events cover title/start,
+movement, attack/use and interaction/room hypotheses. The developer-only
+BizHawk probe now records the input schedule, every frame-boundary PC, selected
+RAM bytes and exact target-hit counts. It never writes PC, registers, CCR, RAM,
+ROM or savestate data. Per-target register/stack snapshots are bounded to the
+first eight hits so a high-frequency address cannot make the diagnostic itself
+the dominant workload.
+
+The full canonical-USA run executed 1800/1800 frames and watched 43 targets:
+the 33 static incoming encodings, the player/event owner candidates, `0x3820`
+and `0x60004`. It also sampled 21 RAM bytes. The only target hits were the
+positive control `0x3820` (13) and startup/control entry `0x60004` (5). Every
+one of the 33 incoming PCs and `0x62CC` itself had zero hits. The frame samples
+were live and stateful, with transitions through `0x32EE/0x32F4` and
+`0x3A8E8/0x3A8EE`; this narrows the current blocker to the natural transition
+from startup/system scheduling into the player/event owner band. It does not
+prove that `0x62CC` is globally unreachable, and frame-boundary PCs are not
+substitutes for exact branch outcomes.
+
+All 33 incoming sites were ranked from their bounded local slices as follows.
+The ranking is a natural-reachability priority, not a recovered semantic
+function name:
+
+| Rank | Sites | Static reason and next natural hypothesis |
+| --- | --- | --- |
+| 1 | `0x5850` | Direct `BSR.W 0x62CC` in the bounded `0x557A` player-owner path; highest-value gameplay entry. |
+| 2 | `0x61FE`, `0x62EC` | `BCC.W` edges after `BSR.W 0x85E2`; test after a real player-state update and capture CCR.C. |
+| 3 | `0x7AC2`, `0x7B60` | Direct event/entity-side transfer; `0x7B60` follows the `0x7B2A`/`0x7B3C` event gate. |
+| 4 | `0x635A`, `0x646E`, `0x673E`, `0x748A`, `0x78DE`, `0x7A16` | Conditional edges with a nontrivial handler/cleanup body; plausible state-handler alternatives but no dynamic owner. |
+| 5 | `0x6C0E` | Direct `BSR.W 0x62CC` followed by a handler body; natural only after its unknown producer is reached. |
+| 6 | `0x5CDC`, `0x5F6C`, `0x5F8E`, `0x784E`, `0x796C`, `0x7CC2` | Unconditional transfers, but their enclosing callers are not recovered; useful as exact hooks after an owner appears. |
+| 7 | `0x5F36`, `0x6620`, `0x66A4`, `0x6732`, `0x6C40`, `0x6E64`, `0x6FDE`, `0x7054`, `0x7060`, `0x725C`, `0x72D0`, `0x73D2`, `0x757E`, `0x760C`, `0x7924` | Short conditional/return or cleanup sites; lowest first-search priority until their containing routine is naturally observed. |
+
+The next experiment is prepared, not forced: sweep button hold/edge timing
+around the observed startup/transition helpers `0x6135E`,
+`0x32EE` and `0x3A8E8`, retain exact hooks for the ranked sites, and preserve
+the input/frame/RAM report. This is the concrete advancement beyond M11.7's
+generic `CALLER_NOT_REACHED`.
+
 ## M11.7 — Single-target reachability root cause for `0x62CC`
 Status: `CALLER_NOT_REACHED` under the two existing natural scenarios.
 

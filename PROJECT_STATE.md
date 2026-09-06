@@ -1,5 +1,25 @@
 # Project State
 
+CURRENT_MILESTONE: M11.8 natural reachability recovery
+CURRENT_TASK: Natural Reachability Recovery for `0x62CC`
+STATUS: ROOT_CAUSE_ADVANCED
+CURRENT_SLICE_CONFIDENCE: 96% for the bounded natural negative result and
+the positive-control/tooling evidence; no runtime `0x62CC` predecessor state
+is claimed.
+LAST_VERIFIED_RESULT: the new hardware-reset scenario ran 1800/1800 frames
+with 43 target hooks, 21 RAM watches and 25 natural input events. `0x3820`
+hit 13 times and `0x60004` hit 5 times; all 33 direct `0x62CC` incoming PCs
+and `0x62CC` itself hit 0 times. Frame PCs and watched RAM changed, but the
+sampled path stayed in startup/system transition helpers before the player/
+event owner band.
+ROOT_CAUSE: `NATURAL_TRANSITION_NOT_RECOVERED`; this advances M11.7's
+`CALLER_NOT_REACHED` without claiming global unreachability.
+NEXT_ACTION: run the prepared bounded timing/hold-input sweep around the
+natural startup/transition helpers, retaining exact target hooks and
+the input/frame/RAM report. Do not force state or start M12.
+DO_NOT_WORK_ON: forced PC/RAM/register/CCR/ROM/callback, branch patching,
+production runtime, translator/interpreter, blind ant expansion or M12+
+
 CURRENT_MILESTONE: M11.7 bounded single-target reachability root cause
 CURRENT_TASK: Single Target Reachability Root-Cause PoC
 STATUS: COMPLETE

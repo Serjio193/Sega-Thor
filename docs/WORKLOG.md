@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.8 natural reachability recovery advanced root cause
+TASK: recover a natural caller for `0x62CC`, or produce a concrete blocker and
+reproducible next experiment beyond M11.7.
+
+BASELINE: synchronized `main` and `origin/main` at `67c99b7`. The canonical
+USA ROM remained local-only with SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+IMPLEMENTATION: added the developer-only
+`re_bizhawk_m11_8_natural_scenario.txt` with 25 natural input events, all 33
+static incoming targets, player/event owners, `0x3820`/`0x60004` controls and
+21 RAM watches. Extended `re_bizhawk_natural_reach.lua` to emit the input
+schedule, frame-boundary PC/RAM samples, optional PC-region counters and a
+bounded per-target snapshot policy. No emulator state, PC, register, CCR, RAM,
+ROM or savestate was written.
+
+RUNTIME EVIDENCE: canonical USA hardware reset, 1800/1800 frames. The final
+report covered 43 targets, 21 RAM bytes and 25 input events. `0x3820` hit 13
+times and `0x60004` hit 5 times. `0x62CC` and every one of its 33 incoming PCs
+hit 0 times. Frame PCs were dominated by startup/system transition helpers
+`0x32EE/0x32F4` and `0x3A8E8/0x3A8EE`; watched RAM changed, so this is a live
+pre-game transition blocker rather than a zero-RAM freeze. The result is
+`ROOT_CAUSE_ADVANCED`, not `FAILED` and not a claim of global unreachability.
+
+STATIC TRIAGE: all 33 sites were ranked from bounded local slices. The highest
+priority natural hypotheses are `0x5850` in the `0x557A` player owner,
+`0x61FE/0x62EC` after `0x85E2`, and the `0x7AC2/0x7B60` event/entity path.
+The next experiment is a bounded timing/hold-input sweep around the startup/
+transition helpers `0x6135E`, `0x32EE` and `0x3A8E8` retaining exact target
+hooks and state capture.
+
+TESTS: MinGW Debug build and CTest passed 33/33; MinGW Release build and
+CTest passed 33/33. `git diff --check`, tracked-artifact inspection and the
+CTest file-line-limit test passed. MSVC tools/`VsDevCmd.bat` were not present
+on this host, so MSVC Debug/Release was not runnable. A short BizHawk scenario
+self-check after the probe changes produced a valid JSON report with the
+expected target/RAM/sample fields. GitHub Actions remains the final remote
+verification after push.
+
+NEXT ACTION: commit this focused tooling/docs/scenario change, push `main`,
+wait for GitHub Actions, verify the remote SHA and clean tree, then stop at
+the bounded timing/hold-input experiment boundary.
+
 ## 2026-09-06 — M11.7 single-target reachability root cause completed
 TASK: explain why natural execution does not reach only `0x62CC`, using the
 existing static tools and two existing BizHawk scenarios without creating a

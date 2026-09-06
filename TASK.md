@@ -1,5 +1,44 @@
 # Current Task
 
+TASK: M11.8 Natural Reachability Recovery for `0x62CC`
+WHY: recover one natural runtime caller for the target or advance the root
+cause beyond M11.7 with a concrete blocker and a reproducible next experiment.
+CURRENT MILESTONE: M11.8 natural reachability recovery
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: ROOT_CAUSE_ADVANCED
+
+RESULT: a new hardware-reset scenario was added at
+`src/tools/re_bizhawk_m11_8_natural_scenario.txt`. It contains 25 natural
+input events covering title/start, movement, attack/use and interaction/room
+phases, all 33 static direct incoming sites, the known player/event owners,
+and 21 RAM state bytes. The enhanced BizHawk probe records the exact target
+hooks, bounded register snapshots, input schedule, frame-boundary PC and
+per-frame RAM samples without writing emulator memory, registers, flags, ROM
+or savestates.
+
+FINAL RUNTIME RESULT: the canonical USA ROM ran from hardware reset for
+1800/1800 frames. The report covered 43 targets and 25 input events. Positive
+control `0x3820` hit 13 times and startup/control entry `0x60004` hit 5 times.
+`0x62CC` and all 33 direct incoming PCs hit 0 times. The sampled frame PC
+stream remained concentrated in the startup/system transition helpers
+`0x32EE/0x32F4` and `0x3A8E8/0x3A8EE`, while watched RAM values changed; this
+is evidence of a live pre-game transition path, not a frozen zero-RAM run.
+No branch outcome or CCR value at an unexecuted `0x62CC` predecessor is
+claimed.
+
+ROOT CAUSE ADVANCED: the blocker is narrowed from M11.7's generic
+`CALLER_NOT_REACHED` to a missing natural transition from the startup/system
+layer into the player/event owner band. The next prepared experiment is a
+ bounded timing/hold-input sweep around the observed startup/transition
+helpers (`0x6135E`, `0x32EE`, `0x3A8E8`) with exact target hooks
+and the already implemented RAM/input/frame capture. This remains evidence
+gathering only; no forced PC, RAM, register, CCR, ROM, callback or savestate
+operation is allowed.
+
+VALIDATION: the full local build/CTest and CI checks for this checkpoint are
+listed in the final worklog entry. No ROM, state, trace or generated report is
+tracked.
+
 TASK: M11.7 Single Target Reachability Root-Cause PoC
 WHY: determine why the existing natural scenarios do not reach the single
 target `0x62CC`, stopping at the first evidence boundary and without forcing

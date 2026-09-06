@@ -1,0 +1,105 @@
+oasis.m68k.emulator-scenario.v1
+scenario_id=m11_8_natural_reachability_v1
+rom_sha256=eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263
+backend=bizhawk-lua-natural-input
+start_state=hardware_reset
+stop_condition=max_frames:1800
+target_address=0x62CC
+
+# Target and owner coverage: the complete M11.7 direct incoming set plus the
+# player/event owners and the existing 0x3820 positive control.
+target_address=0x5850
+target_address=0x5CDC
+target_address=0x5F36
+target_address=0x5F6C
+target_address=0x5F8E
+target_address=0x61FE
+target_address=0x62EC
+target_address=0x635A
+target_address=0x646E
+target_address=0x6620
+target_address=0x66A4
+target_address=0x6732
+target_address=0x673E
+target_address=0x6C0E
+target_address=0x6C40
+target_address=0x6E64
+target_address=0x6FDE
+target_address=0x7054
+target_address=0x7060
+target_address=0x725C
+target_address=0x72D0
+target_address=0x73D2
+target_address=0x748A
+target_address=0x757E
+target_address=0x760C
+target_address=0x784E
+target_address=0x78DE
+target_address=0x7924
+target_address=0x796C
+target_address=0x7A16
+target_address=0x7AC2
+target_address=0x7B60
+target_address=0x7CC2
+target_address=0x8B22
+target_address=0x8B2E
+target_address=0x557A
+target_address=0x59B8
+target_address=0x61F6
+target_address=0x62E4
+target_address=0x7B2A
+target_address=0x3820
+target_address=0x60004
+
+# RAM state sampled at every frame; these are the state/flag bytes used by the
+# bounded 0x609C6 player-owner slice and the 0x7B2A event path.
+ram_watch_address=0xFF001A
+ram_watch_address=0xFF0022
+ram_watch_address=0xFF00EC
+ram_watch_address=0xFF01B6
+ram_watch_address=0xFF0280
+ram_watch_address=0xFF034A
+ram_watch_address=0xFF0414
+ram_watch_address=0xFF049E
+ram_watch_address=0xFF0528
+ram_watch_address=0xFF05B2
+ram_watch_address=0xFF0628
+ram_watch_address=0xFF06F2
+ram_watch_address=0xFF17B8
+ram_watch_address=0xFF1654
+ram_watch_address=0xFF165E
+ram_watch_address=0xFF0BFD
+ram_watch_address=0xFF18A4
+ram_watch_address=0xFF189A
+ram_watch_address=0xFF189C
+ram_watch_address=0xFF18A0
+ram_watch_address=0xFF18A2
+
+# Natural input phases: boot/title confirmation, movement, attack/use, and
+# repeated room/interactions. Each event is a normal one-frame controller
+# input from hardware reset; no RAM/register/PC/savestate mutation is used.
+input frame=120 port=1 buttons=Start
+input frame=300 port=1 buttons=A
+input frame=360 port=1 buttons=Right
+input frame=420 port=1 buttons=Right+A
+input frame=480 port=1 buttons=B
+input frame=540 port=1 buttons=Down
+input frame=600 port=1 buttons=Left
+input frame=660 port=1 buttons=C
+input frame=720 port=1 buttons=Up
+input frame=780 port=1 buttons=Start
+input frame=840 port=1 buttons=A+B
+input frame=900 port=1 buttons=Right
+input frame=960 port=1 buttons=Right+C
+input frame=1020 port=1 buttons=Down
+input frame=1080 port=1 buttons=Left+A
+input frame=1140 port=1 buttons=Up
+input frame=1200 port=1 buttons=B
+input frame=1260 port=1 buttons=Start
+input frame=1320 port=1 buttons=Right
+input frame=1380 port=1 buttons=C
+input frame=1440 port=1 buttons=Left
+input frame=1500 port=1 buttons=A
+input frame=1560 port=1 buttons=Down
+input frame=1620 port=1 buttons=Up
+input frame=1680 port=1 buttons=Start
