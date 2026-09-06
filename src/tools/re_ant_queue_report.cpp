@@ -25,12 +25,13 @@ void write_file(const char* path, const std::string& value) {
 }
 
 int make_queue(int argc, char** argv) {
-    if (argc != 7) throw std::invalid_argument("usage: oasis_re_ant_queue make <usa_rom> <explore.json> <reach.json> <queue.json> <queue.txt>");
+    if (argc != 7 && argc != 8) throw std::invalid_argument("usage: oasis_re_ant_queue make <usa_rom> <explore.json> <reach.json> <queue.json> <queue.txt> [max_jobs]");
     const auto rom = oasis::Rom::load(argv[2]);
     const auto identity = oasis::identify_rom(rom.bytes());
     if (identity.status != oasis::RomSupportStatus::Supported) throw std::runtime_error("queue requires supported USA ROM");
+    const auto max_jobs = argc == 8 ? std::stoul(argv[7]) : 5U;
     const auto queue = oasis::tools::make_ant_queue(read_file(argv[3]), read_file(argv[4]),
-                                                     identity.fingerprint.sha256, rom.bytes().size(), "2.11.1");
+                                                     identity.fingerprint.sha256, rom.bytes().size(), "2.11.1", max_jobs);
     write_file(argv[5], oasis::tools::ant_queue_to_json(queue));
     write_file(argv[6], oasis::tools::ant_queue_to_text(queue));
     std::cout << "created " << queue.queue_id << " jobs=" << queue.jobs.size() << '\n';

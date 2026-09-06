@@ -35,7 +35,7 @@ struct AntQueue {
     std::string backend{"bizhawk"};
     std::string backend_version;
     std::string created_from_explorer_hash;
-    std::string generation_policy{"natural_reachability_then_source_address_v1"};
+    std::string generation_policy{"natural_reachability_then_cost_conflict_provenance_address_v2"};
     std::string queue_state{"FROZEN"};
     std::size_t version{1};
     std::size_t duplicate_jobs_avoided{};

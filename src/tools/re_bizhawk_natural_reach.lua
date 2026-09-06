@@ -6,6 +6,7 @@ local trace_path = os.getenv("OASIS_NATURAL_TRACE_OUTPUT") or "natural-trace.txt
 local report_path = os.getenv("OASIS_NATURAL_REPORT_OUTPUT") or "natural-report.json"
 local input_override = os.getenv("OASIS_INPUT_EVENTS")
 local search_mode = os.getenv("OASIS_NATURAL_SEARCH") == "caller_targets"
+local reachability_only = os.getenv("OASIS_REACHABILITY_ONLY") == "1"
 local scenario_family = os.getenv("OASIS_SCENARIO_FAMILY") or "natural_idle_to_6121a_v1"
 local variant_id = os.getenv("OASIS_VARIANT_ID") or "default"
 
@@ -91,6 +92,7 @@ local first_events = {}
 local writes = {}
 local entry = nil
 local target_hits = {}
+local first_target_hits = {}
 local caller_hits = {}
 local observed_target_hits = {}
 local previous_watched_event = nil
@@ -218,6 +220,7 @@ end
 local function target_event(address)
     target_hits[address] = (target_hits[address] or 0) + 1
     local event = capture_watched(address, "target")
+    if not first_target_hits[address] then first_target_hits[address] = event end
     local caller = previous_watched_event and caller_by_pc[previous_watched_event.pc] and previous_watched_event or nil
     if address == primary_target then
         local expected = caller and caller_by_pc[caller.pc] or nil
@@ -231,7 +234,7 @@ local function target_event(address)
         observed_target_hits[#observed_target_hits + 1] = event
     end
     previous_watched_event = event
-    if not search_mode and not stop_requested and address == primary_target then
+    if not reachability_only and not search_mode and not stop_requested and address == primary_target then
         stop_requested = true
         target_hit = true
         target_frame = frame
@@ -335,7 +338,11 @@ local targets = {}
 for _, target in ipairs(watch_targets) do targets[#targets + 1] = json(hex(target)) end
 local target_report = entry and ('{"pc":' .. json(hex(entry.pc)) .. ',"previous_observed_pc":' .. json(hex(entry.previous_pc)) .. ',"registers":' .. snapshot_json(entry.registers) .. ',"stack_window":' .. (entry.stack and ('{"start":' .. json(hex(entry.stack.start)) .. ',"bytes":' .. write_json_array(entry.stack.bytes, function(value) return json(string.format("0x%02X", value)) end) .. '}') or 'null') .. '}') or 'null'
 local hit_report = {}
-for _, target in ipairs(watch_targets) do hit_report[#hit_report + 1] = '{"address":' .. json(hex(target)) .. ',"count":' .. (target_hits[target] or 0) .. '}' end
+for _, target in ipairs(watch_targets) do
+    local first = first_target_hits[target]
+    hit_report[#hit_report + 1] = '{"address":' .. json(hex(target)) .. ',"count":' .. (target_hits[target] or 0) ..
+        (reachability_only and ',"first":' .. (first and watched_event_json(first) or "null") or '') .. '}'
+end
 local observed_report = {}
 for _, value in ipairs(observed_target_hits) do observed_report[#observed_report + 1] = target_hit_json(value) end
 local caller_report = {}

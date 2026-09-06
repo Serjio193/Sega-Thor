@@ -16,8 +16,13 @@ std::string frontier(std::uint32_t pc) {
         value + "\",\"blocker_type\":\"INDIRECT_FLOW\",\"instruction_bytes\":[78,145],\"opcode\":\"0x00004E91\",\"instruction\":\"jsr\",\"known_context\":\"address_indirect\",\"stop_reason\":\"INDIRECT_TRANSFER\",\"reason\":\"computed target is unresolved\"}";
 }
 
-std::string explorer() {
-    return "{\"frontier\":[" + frontier(0x100) + "," + frontier(0x200) + "," + frontier(0x300) + "," + frontier(0x400) + "," + frontier(0x500) + "],\"address_map\":[]}";
+std::string explorer(std::size_t count = 5) {
+    std::string result = "{\"frontier\":[";
+    for (std::size_t index = 0; index < count; ++index) {
+        if (index) result += ',';
+        result += frontier(static_cast<std::uint32_t>(0x100U + index * 0x100U));
+    }
+    return result + "],\"address_map\":[]}";
 }
 
 AntResult result_for(const AntJob& job) {
@@ -41,6 +46,9 @@ void test_deterministic_selection_and_serialization() {
     assert(first.jobs[0].job.source_pc == 0x100 && first.jobs[1].job.source_pc == 0x300);
     assert(first.jobs[2].job.source_pc == 0x200 && ant_queue_equal(first, second));
     assert(ant_queue_equal(first, parse_ant_queue(ant_queue_to_json(first))));
+    const auto medium = make_ant_queue(explorer(30), reach, "sha", 0x1000, "2.11.1", 25);
+    assert(medium.jobs.size() == 25 && medium.queue_state == "FROZEN");
+    assert(medium.jobs[24].job.source_pc == 0x1900);
 }
 
 void test_lifecycle_duplicate_and_recovery() {

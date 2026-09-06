@@ -150,7 +150,7 @@ std::vector<AntReachabilityHint> parse_ant_reachability(std::string_view json) {
 AntQueue make_ant_queue(std::string_view explore_json, std::string_view reachability_json,
                         std::string rom_sha256, std::size_t rom_size,
                         std::string backend_version, std::size_t max_jobs) {
-    if (max_jobs < 5U || max_jobs > 10U) throw std::invalid_argument("queue must contain 5 to 10 jobs");
+    if (max_jobs < 5U || max_jobs > 50U) throw std::invalid_argument("queue must contain 5 to 50 jobs");
     const auto frontiers = select_ant_frontiers(explore_json);
     const auto hints = parse_ant_reachability(reachability_json);
     const auto hint_for = [&](const FrontierRecord& item) -> std::optional<AntReachabilityHint> {
