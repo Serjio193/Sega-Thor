@@ -294,8 +294,9 @@ Validation closure: the canonical-ROM Win32 executable was manually checked for
 window creation, cardinal and diagonal movement, release, focus-loss clearing,
 focus restoration, visible fixture-wall collision and responsiveness. The
 fixture is synthetic and does not claim an original room. MSVC, Linux,
-deterministic replay/hash and ROM identity checks passed locally; CI is the
-post-push gate. The non-Windows
+deterministic replay/hash and ROM identity checks passed locally. GitHub Actions
+run `34052574735` passed for the closure commit; the final documentation-only
+commit remains subject to its exact-SHA CI gate. The non-Windows
 GUI adapter remains intentionally unavailable and is recorded as the next
 recommendation rather than an M11.18 Win32 runtime blocker. Decision:
 `NATIVE_VERTICAL_SLICE_PLAYABLE`. The single recommendation is D — platform
