@@ -36,6 +36,12 @@ evidence that `0x62CC` is globally unreachable, and it is not a static or
 translation failure. The exact first gameplay-state transition remains outside
 the current evidence boundary.
 
+TESTS: after the SSD environment repair, fresh GNU/MinGW Debug and Release
+builds passed. CTest passed 33/33 in both configurations with the active MinGW
+DLL directory in the test-process PATH; the earlier system dialogs were
+missing-DLL launch failures. File-limit, artifact hygiene and `git diff --check`
+passed. GitHub Actions run `34021104372` for `6a48232` completed successfully.
+
 NEXT ACTION: recommendation A — build one minimal natural scenario that causes
 the missing state. Stop here; do not implement that scenario, force a branch,
 edit RAM/registers/CCR/ROM, install a callback, expand ant work or begin M12.

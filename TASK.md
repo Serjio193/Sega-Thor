@@ -22,10 +22,12 @@ while the event alternative requires D0=`0x01FF` at `0x7B3C`.
 EXACT NEXT ACTION: recommendation A — build one minimal natural scenario that
 causes the missing state. Do not implement it in this checkpoint.
 
-VALIDATION: file-limit, artifact hygiene and `git diff --check` passed. Local
-CTest could not run because `cmake/ctest` are absent after the environment
-move and the retained build caches reference a missing LLVM-MinGW installation;
-full Debug/Release/GNU CTest is delegated to GitHub Actions after push.
+VALIDATION: fresh GNU/MinGW Debug and Release builds succeeded; CTest passed
+33/33 in both configurations after adding the active MinGW DLL directory to
+the test-process PATH. The previous `libgcc_s_seh-1.dll`/`libstdc++-6.dll`
+dialogs were an environment-path issue, not a project failure. File-limit,
+artifact hygiene and `git diff --check` passed. GitHub Actions run
+`34021104372` for commit `6a48232` completed successfully.
 
 TASK: M11.6.1 Runtime Capture Fixup for Static Translation PoC
 WHY: attempt natural BizHawk runtime captures for the already-selected `0xA8DA`
