@@ -1,4 +1,11 @@
-# M11.14 — automated promotion large batch II
+# M11.15 — evidence integrity audit and classification trust repair
+
+M11.15 audits all 203 M11.14 exact ASM ranges and separates
+`ASM_ROUNDTRIP_EXACT` from static, dynamic and behavioral trust. The audit
+keeps the full-ROM split byte-perfect; details are in
+docs/EVIDENCE_INTEGRITY_AUDIT.md.
+
+## M11.14 — automated promotion large batch II
 
 M11.14 continues from M11.13, accepts 73 of 91 attempts, and keeps the
 canonical full-ROM rebuild exact. Details are in docs/AUTO_PROMOTION_BATCH2.md.

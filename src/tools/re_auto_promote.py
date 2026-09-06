@@ -22,7 +22,7 @@ if str(HERE) not in sys.path:
 from re_auto_promote_helpers import (acceptance_windows, classify_error, clean_detail,
     forms_from_asm, forms_from_json, instruction_family,
     legacy_mismatch_analysis, reject_clusters, reject_form, resolve_artifact,
-    finalize_rejection)
+    finalize_rejection, trust_classification)
 
 
 def run(command, cwd=None, check=False):
@@ -125,6 +125,8 @@ def promote(entries, candidate):
         replacement.append({"start": candidate["start"], "end": candidate["end"],
                             "kind": "CODE_VERIFIED", "source": "automated_blob_promotion",
                             "confidence": "STRUCTURAL_EXACT_BYTE_ROUND_TRIP",
+                            "classification": promotion_trust_level(candidate),
+                            "trust_level": promotion_trust_level(candidate),
                             "emitted_artifact_type": "asm",
                             "promotion_score": candidate["score"]})
         if candidate["end"] < entry["end"]:
@@ -197,6 +199,14 @@ def summary(manifest):
             "BLOB_BYTES": manifest["metrics"]["BLOB_BYTES"],
             "CODE_VERIFIED_ENTRIES": manifest["quality"]["verified_code_ranges"],
             "UNKNOWN_ENTRIES": manifest["quality"]["blob_ranges"]}
+
+
+def promotion_trust_level(candidate):
+    return trust_classification(
+        True,
+        static_supported=bool(candidate.get("known_static_target") or
+                               candidate.get("vector_target")),
+        executed=bool(candidate.get("existing_dynamic_support")))
 
 
 
@@ -272,6 +282,7 @@ def main():
         record = {"address": f"0x{candidate['address']:06X}",
                   "range": [candidate["start"], candidate["end"]],
                   "score": candidate["score"], "classification": candidate["classification"],
+                  "trust_level": "UNVERIFIED", "new_classification": "UNVERIFIED",
                   "slice_match": False, "full_rom_match": False, "accepted": False,
                   "reason": ""}
         if not any(entry["kind"] == "UNKNOWN" and entry["start"] <= candidate["start"] and
@@ -354,6 +365,8 @@ def main():
         current, code_sources = new_entries, new_sources
         record["accepted"] = True
         record["reason"] = "FULL_MATCH"
+        record["trust_level"] = promotion_trust_level(candidate)
+        record["new_classification"] = record["trust_level"]
         instructions = json.loads(data.read_text())["instructions"]
         record["instructions"] = len(instructions)
         record["bytes"] = candidate["size"]

@@ -1,24 +1,21 @@
 # Project State
 
-CURRENT_MILESTONE: M11.14 automatic code promotion large batch II
-CURRENT_TASK: continue deterministic promotion from the post-M11.13 manifest
-STATUS: AUTO_PROMOTION_BATCH2_HIGH_VALUE
-CURRENT_BASELINE: M11.13 post-promotion manifest; canonical USA ROM remains
-3,145,728 bytes with exact hashes.
-LAST_VERIFIED_RESULT: 89 new candidates plus 2 retried slice mismatches were
-attempted; 73 accepted and 18 rejected. Final manifest has 339 contiguous
-entries: 203 CODE_VERIFIED, 136 UNKNOWN, zero gaps/overlaps.
-COVERAGE: ASM 13,550 bytes, structured data 0, blobs 3,132,178 bytes. ASM grew
-by 7,088 bytes from M11.13; UNKNOWN splits are structural.
-IMPLEMENTATION: src/tools/re_auto_promote.py consumes the previous report to
-exclude attempted candidates, retries only affected slice mismatches, and emits
-acceptance windows and blocker clusters. The decoder/ASM emitter remains
-bounded and developer-only; rejected transactions are rolled back.
-NEXT_ACTION: defer exactly one recommendation, A — run another automatic code
-batch; do not implement it in this checkpoint.
-DO_NOT_WORK_ON: structured-data promotion, classifier rewrites, AI naming,
-C++ generation, Z80, production runtime, full semantic disassembly, emulator,
-ants or M12.
+CURRENT_MILESTONE: M11.15 evidence integrity audit and classification trust repair
+CURRENT_TASK: audit all M11.14 reconstructed ranges and separate ASM exactness from code trust
+STATUS: EVIDENCE_TRUST_NEEDS_FIXUPS
+CURRENT_BASELINE: M11.14 manifest; canonical USA ROM remains 3,145,728 bytes with exact hashes.
+LAST_VERIFIED_RESULT: all 203 CODE_VERIFIED ranges reassembled exactly. Classification is
+197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED and 0 BEHAVIOR_VERIFIED.
+PROVENANCE: one known Ghidra boundary mismatch remains at 0x3820; exact entry/range linkage
+is enforced and weak caller chains cannot bootstrap trust.
+IMPLEMENTATION: src/tools/re_evidence_audit.py writes an audited manifest/report with per-range
+artifact hashes, xref source addresses, caller trust, data conflicts and normalized forms.
+The automatic promoter now labels a successful round trip ASM_ROUNDTRIP_EXACT unless explicit
+static/dynamic evidence qualifies it.
+NEXT_ACTION: defer exactly one recommendation, B — targeted dynamic confirmation of critical code;
+do not implement it in this checkpoint.
+DO_NOT_WORK_ON: structured-data classification, automatic promotion, AI naming, C++ generation,
+Z80, production runtime, full semantic disassembly, emulator batch expansion, ants or M12.
 
 
 

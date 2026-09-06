@@ -3,6 +3,29 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.15 evidence integrity audit and classification trust repair
+TASK: audit every M11.14 reconstructed range and separate exact ASM bytes from
+proof that a range is executable code; do not add promotions.
+
+IMPLEMENTATION: added `src/tools/re_evidence_audit.py` and its bounded helper
+test. The audit assembles all 203 artifacts, validates ROM/entry/range and
+artifact identity, records concrete incoming xref sources and trusted caller
+levels, emits an audited manifest/report, and normalizes RTS/MOVEQ/.s branch
+form metrics. Added a deterministic negative data-like corpus and mismatch
+tests. The promoter now labels a successful round trip `ASM_ROUNDTRIP_EXACT`
+and raises trust only from explicit evidence fields. The source-limit CMake
+check now covers Python, Lua, PowerShell, shell, JavaScript and TypeScript.
+
+RESULT: 203/203 ranges round-trip exactly. Levels are 197
+`ASM_ROUNDTRIP_EXACT` (12,520 bytes), 5 `CODE_STATIC_SUPPORTED` (1,006 bytes),
+1 `CODE_EXECUTED` (24 bytes) and 0 `BEHAVIOR_VERIFIED`. One known Ghidra range
+mismatch remains at `0x3820` (`0x38D0` vs `0x3B3E`); no weak caller chain is
+trusted. The audited full ROM remains exact with canonical hashes; stored M11.9,
+M11.10, M11.11, M11.12, M11.13 and M11.14 controls all report `MATCH`.
+
+DECISION: `EVIDENCE_TRUST_NEEDS_FIXUPS`. Exactly one next recommendation is
+B — targeted dynamic confirmation of critical code; it is deferred.
+
 ## 2026-09-06 — M11.14 automatic promotion large batch II
 TASK: continue automatic blob-to-ASM promotion from the M11.13 manifest, with
 up to 150 new candidates and no repeated attempted candidates except affected

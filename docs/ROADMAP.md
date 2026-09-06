@@ -252,6 +252,15 @@ Rejects are clustered by systemic form; unsupported and nonrepresentable vasm
 forms remain explicit. Decision: AUTO_PROMOTION_BATCH2_HIGH_VALUE.
 Recommendation A — run another automatic code batch — is deferred.
 
+## M11.15 — Evidence integrity audit and classification trust repair — DONE
+All 203 M11.14 ranges were audited with per-artifact round-trip checks, ROM
+identity, entry/range provenance, concrete incoming xrefs and caller trust.
+The resulting ladder is 197 `ASM_ROUNDTRIP_EXACT`, 5
+`CODE_STATIC_SUPPORTED`, 1 `CODE_EXECUTED` and 0 `BEHAVIOR_VERIFIED`; the full
+ROM remains exact. One known Ghidra boundary mismatch at `0x3820` remains a
+bounded fixup. Decision: `EVIDENCE_TRUST_NEEDS_FIXUPS`. Recommendation B —
+targeted dynamic confirmation of critical code — is deferred.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

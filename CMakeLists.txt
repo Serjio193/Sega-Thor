@@ -149,6 +149,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_full_split_test.py)
     add_test(NAME oasis_re_auto_promote_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_auto_promote_test.py)
+    add_test(NAME oasis_re_evidence_audit_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_evidence_audit_test.py)
 endif()
 
 add_executable(oasis_smoke tests/smoke.cpp)

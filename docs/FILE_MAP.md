@@ -27,6 +27,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── AUTO_BLOB_PROMOTION.md M11.12 transactional blob-to-source promotion report
 │   ├── AUTO_PROMOTION_SCALE.md M11.13 100-attempt promotion scale report
 │   ├── AUTO_PROMOTION_BATCH2.md M11.14 large batch II and saturation report
+│   ├── EVIDENCE_INTEGRITY_AUDIT.md M11.15 exactness/trust classification audit
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template

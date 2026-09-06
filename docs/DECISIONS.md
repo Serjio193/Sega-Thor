@@ -50,6 +50,7 @@ Use this file for decisions that can redirect architecture, dependencies, scope,
 - ROM-specific offsets belong only in extraction/reverse-engineering metadata.
 - Runtime gameplay code consumes normalized game data structures rather than raw ROM addresses.
 
+
 **Alternatives considered:**
 - Europe as primary reference: rejected because current public address knowledge targets USA.
 - Supporting all regions equally from the beginning: rejected because it multiplies binary-diff work before core behavior is understood.
@@ -62,6 +63,27 @@ Use this file for decisions that can redirect architecture, dependencies, scope,
 - reference identity must be established before translating substantial 68000 routines.
 
 **Affected files/milestones:** M2 onward, all reverse-engineering documentation and extraction code.
+
+## ADR-0006 — Separate reassembly exactness from execution trust
+**Status:** Accepted
+**Date:** 2026-09-06
+
+**Context:** M11.14 `CODE_VERIFIED` proved exact decoder/assembler bytes but did
+not prove that each reconstructed range is executed code. Treating those facts
+as one classification could make weak structural evidence appear trusted.
+
+**Decision:** Keep the existing full-ROM ownership and ASM artifacts, while
+reporting an evidence ladder: `ASM_ROUNDTRIP_EXACT`, `CODE_STATIC_SUPPORTED`,
+`CODE_EXECUTED` and `BEHAVIOR_VERIFIED`. Static support requires an independent
+anchor, vector/startup provenance, dynamic evidence, or an exact incoming xref
+from an already trusted caller. Direct-caller counts and Ghidra boundary
+agreement alone do not raise trust. The automatic promoter records a successful
+round trip at the lowest level unless explicit evidence qualifies it.
+
+**Consequences:** Existing ranges can be downgraded without changing bytes or
+the exact full-ROM rebuild. Audits must retain artifact identity, ROM identity,
+entry/range linkage and concrete xref sources. Missing dynamic evidence remains
+unknown and is never synthesized.
 
 ## ADR template
 Copy this block for new decisions:

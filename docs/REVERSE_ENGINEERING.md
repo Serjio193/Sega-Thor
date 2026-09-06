@@ -1,6 +1,24 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.15 — Evidence integrity audit and classification trust repair
+STATUS: `EVIDENCE_TRUST_NEEDS_FIXUPS` for the post-M11.14 reconstructed layout.
+The 203 exact ASM ranges were individually reassembled against the canonical
+ROM and linked to candidate/Ghidra entry and range evidence. Exact bytes alone
+now map to `ASM_ROUNDTRIP_EXACT`; static support requires an independent anchor,
+an exact incoming edge from an already trusted caller, vector/startup evidence,
+or dynamic execution. Dynamic execution and behavior are never inferred from
+round-trip success.
+
+The audit result is 197 `ASM_ROUNDTRIP_EXACT`, 5 `CODE_STATIC_SUPPORTED`, 1
+`CODE_EXECUTED` (`0x6121A`) and 0 `BEHAVIOR_VERIFIED`. Every record retains ROM
+identity, source artifact SHA-256, entry/range consistency, incoming xref source
+addresses, caller trust, beta/dynamic fields, data conflicts, boundary status
+and unresolved concerns. One known provenance mismatch remains: Ghidra ends
+`0x3820` at `0x38D0`, while the independently confirmed range ends at `0x3B3E`.
+This bounded issue is recorded rather than hidden. The full-ROM split remains
+byte-perfect; no new promotion was performed.
+
 ## M11.14 — Automated promotion large batch II
 STATUS: AUTO_PROMOTION_BATCH2_HIGH_VALUE for bounded byte reproduction only.
 The post-M11.13 manifest and prior report were used; 89 new candidates and 2

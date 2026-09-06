@@ -36,6 +36,9 @@ def main():
     assert AUTO.FULL.first_difference(b"abcd", b"abxd", [{"manifest_index": 0,
         "start": 0, "end": 4, "emitted_artifact_type": "blob"}])["rom_offset"] == 2
     assert AUTO.classify_error("fatal error: illegal opcode extension") == "ASSEMBLER_SYNTAX"
+    assert AUTO.promotion_trust_level({}) == "ASM_ROUNDTRIP_EXACT"
+    assert AUTO.promotion_trust_level({"known_static_target": True}) == "CODE_STATIC_SUPPORTED"
+    assert AUTO.promotion_trust_level({"existing_dynamic_support": True}) == "CODE_EXECUTED"
     assert AUTO.reject_form({"reason": "UNSUPPORTED_FORM", "detail": "no exact IR"}) == \
         "unsupported exact IR"
     windows = AUTO.acceptance_windows([{"accepted": value} for value in

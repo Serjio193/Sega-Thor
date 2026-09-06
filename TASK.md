@@ -1,29 +1,24 @@
 # Current Task
 
-TASK: M11.14 Automatic Code Promotion Large Batch II
-WHY: reduce UNKNOWN blob coverage through evidence-ranked, transactional
-promotion into byte-verified ASM while preserving the exact full-ROM rebuild.
+TASK: M11.15 Evidence Integrity Audit & Classification Trust Repair
+WHY: separate exact ASM representation from evidence that a range is executable code.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — batch II is exact and high value.
-BASELINE: M11.13 post-promotion manifest; M11.9 controls, M11.10 corpus,
-M11.11 full-ROM split, M11.12 and M11.13 promotions remain mandatory regressions.
+STATUS: DONE — audit is exact; bounded provenance fixups remain.
+BASELINE: M11.14 post-promotion manifest with 203 CODE_VERIFIED ranges and 13,550 ASM bytes.
 
-ACCEPTANCE: discover candidates from existing evidence, rank deterministically,
-attempt up to 150 additional candidates, exclude prior attempts, accept only
-slice/full-ROM exact promotions, rollback rejected trials, measure saturation,
-and preserve canonical hashes without commercial artifacts.
+ACCEPTANCE: audit every range, validate artifact/ROM/entry/range provenance, require trusted
+incoming xrefs for static support, preserve exact full-ROM ownership, add negative corpus/tests,
+normalize form metrics, and prevent future promotions from implying static code trust.
 
-CURRENT RESULT: src/tools/re_auto_promote.py discovered 534 records, retained
-89 new candidates after M11.13 exclusion, retried 2 old slice mismatches,
-attempted 91 and accepted 73. The final manifest has 203 CODE_VERIFIED and 136
-UNKNOWN entries; ASM is 13,550 bytes and blobs are 3,132,178 bytes. Full-ROM
-comparison is exact.
+CURRENT RESULT: 197 ASM_ROUNDTRIP_EXACT, 5 CODE_STATIC_SUPPORTED, 1 CODE_EXECUTED and
+0 BEHAVIOR_VERIFIED; one known Ghidra boundary mismatch remains at 0x3820. The audited full ROM
+is exact with canonical hashes and no new promotions.
 
-EXACT NEXT ACTION: preserve the result and defer recommendation A — run
-another automatic code batch. Do not implement that recommendation,
-structured-data promotion, classifier rewrites, AI naming, C++ generation, Z80,
-runtime changes, full semantic disassembly, emulator work or unrelated refactors.
+EXACT NEXT ACTION: preserve the result and defer exactly one recommendation, B — targeted dynamic
+confirmation of critical code. Do not implement that recommendation, structured-data
+classification, automatic promotion, AI naming, C++ generation, Z80, runtime changes,
+full semantic disassembly, emulator batch expansion or unrelated refactors.
 
 
 HISTORICAL CHECKPOINTS:

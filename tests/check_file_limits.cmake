@@ -14,6 +14,13 @@ file(GLOB_RECURSE PROJECT_FILES
     "${ROOT}/*.hh"
     "${ROOT}/*.hxx"
     "${ROOT}/*.cmake"
+    "${ROOT}/*.py"
+    "${ROOT}/*.lua"
+    "${ROOT}/*.ps1"
+    "${ROOT}/*.sh"
+    "${ROOT}/*.java"
+    "${ROOT}/*.js"
+    "${ROOT}/*.ts"
     "${ROOT}/CMakeLists.txt"
 )
 

@@ -4,6 +4,23 @@ import re
 from pathlib import Path
 
 
+TRUST_LEVELS = ("ASM_ROUNDTRIP_EXACT", "CODE_STATIC_SUPPORTED",
+                "CODE_EXECUTED", "BEHAVIOR_VERIFIED")
+
+
+def trust_classification(roundtrip_exact, static_supported=False,
+                         executed=False, behavior_verified=False):
+    if not roundtrip_exact:
+        return "UNVERIFIED"
+    if behavior_verified:
+        return "BEHAVIOR_VERIFIED"
+    if executed:
+        return "CODE_EXECUTED"
+    if static_supported:
+        return "CODE_STATIC_SUPPORTED"
+    return "ASM_ROUNDTRIP_EXACT"
+
+
 def classify_error(text):
     if "no exact IR" in text or "UNSUPPORTED" in text:
         return "UNSUPPORTED_FORM"
