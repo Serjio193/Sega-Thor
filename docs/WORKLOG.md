@@ -3,7 +3,7 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
-## 2026-09-06 — M11.6.1 runtime capture fixup stopped at BizHawk launch
+## 2026-09-06 — M11.6.1 runtime capture fixup completed with existing-scenario gap
 TASK: attempt only natural runtime capture/replay for the existing static
 translation leaves `0xA8DA` and `0x62CC`.
 BASELINE: focused M11.5 commit `a02e6b4` and M11.6 commit `6e56c06` were
@@ -13,23 +13,26 @@ IMPLEMENTATION: added only the developer-only `OASIS_TARGET_ADDRESSES` override
 to `re_bizhawk_natural_reach.lua`; existing scenario, hardware-reset start and
 natural input policy remain unchanged. No PC/register/CCR/RAM/ROM/savestate
 mutation was used.
-EVIDENCE: BizHawk 2.11.1 launches without a ROM. Loading the canonical USA
-Genesis ROM raises an `Exception` before the Lua report is emitted. The same
-failure reproduced with the existing boot-trace probe and explicit
-`Genplus-gx`; process-local BizHawk `dll` PATH was also supplied. This is a
-backend launch blocker, not a target reachability result.
+EVIDENCE: the ROM path was passed with correct quoting. Neutral hardware-reset
+ran for 300 frames and existing `120:Start` ran for 1800 frames. Both emitted
+valid reports with `target_hits=0` for `0xA8DA` and `0x62CC`,
+`target_reached=false` and `entry=null`. The earlier BizHawk exception was only
+an unquoted `Start-Process` argument and was not the final runtime result.
 RESULT: both `0xA8DA` and `0x62CC` are
 `RUNTIME_CAPTURE_UNAVAILABLE_EXISTING_SCENARIOS`. No natural invocation was
 accepted, so no register/flag/memory/PC/return replay or mismatch comparison
-exists. The static fixtures remain unchanged. Decision:
-`STATIC_TRANSLATION_RUNTIME_PARTIAL`; no translation failure is inferred.
+exists. The static fixtures remain unchanged. The task's `PARTIAL` decision
+predicate requires at least one confirmed B/C capture; with both unavailable,
+no one of the three runtime decision enums applies, and no translation failure
+is inferred.
 TESTS: the pushed M11.6 baseline had MSVC Debug/Release and GNU/MinGW CTest
 33/33 plus successful CI. The post-capture change is Lua/docs only; final
 repository checks are rerun before the fixup push. No ROM, savestate, emulator
 binary or generated report is tracked.
-EXACT NEXT ACTION: repair the local BizHawk Genesis launch in a separately
-authorized task and repeat only this bounded capture. Stop before any new
-scenario, translator, interpreter, production CPU model or M12 work.
+EXACT NEXT ACTION: recommendation B — create a small bounded set of new
+natural gameplay scenarios in a separately authorized task and repeat only this
+bounded capture. Stop before translator, interpreter, production CPU model or
+M12 work.
 
 ## 2026-09-06 — M11.6 verified static translation PoC completed
 TASK: test whether three confirmed/bounded 68000 slices can become ordinary

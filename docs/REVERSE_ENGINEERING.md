@@ -2,26 +2,25 @@
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
 ## M11.6.1 — Runtime capture fixup for static translation
-Status: runtime capture unavailable in the current migrated BizHawk launch;
-the static B/C fixtures remain static evidence only.
+Status: existing-scenario runtime capture unavailable; the static B/C fixtures
+remain static evidence only.
 
 The existing hardware-reset scenario and canonical USA ROM were reused. The
 developer-only natural probe gained `OASIS_TARGET_ADDRESSES`, an observation
 override for the exact selected targets `0xA8DA,0x62CC`; it does not write
-emulator state or alter inputs. BizHawk 2.11.1 opens without a ROM, but loading
-the Genesis ROM raises its `Exception` path before the Lua probe writes a
-report. The failure reproduces with the existing boot-trace probe and an
-explicit `Genplus-gx` launch, so it is not evidence that either target is
-unreachable.
+emulator state or alter inputs. The neutral hardware-reset run was bounded at
+300 frames and the existing `120:Start` run at 1800 frames. Both reports have
+zero hits for both targets, `target_reached=false` and no entry snapshot.
 
 Both B and C therefore have result
 `RUNTIME_CAPTURE_UNAVAILABLE_EXISTING_SCENARIOS`. There are no accepted
 register/CCR/memory/PC/return captures, no runtime replay comparisons and no
-natural invocation count to report. The correct bounded decision is
-`STATIC_TRANSLATION_RUNTIME_PARTIAL`, with no claim of runtime confirmation or
-translated-output mismatch. Repairing the local BizHawk Genesis launch is the
-only next action for this slice; no new scenario, emulator, interpreter,
-production runtime or M12 work is authorized here.
+natural invocation count to report. The three decision predicates in the task
+do not include the case where both routines are unavailable: `PARTIAL` requires
+at least one confirmed B/C capture. No translation failure is inferred. The
+only next action is recommendation B, a separately authorized small bounded
+set of natural gameplay scenarios; no emulator, interpreter, production
+runtime or M12 work is authorized here.
 
 ## M11.6 — Verified static translation PoC
 Status: VERIFIED as a bounded developer-only experiment. No production runtime

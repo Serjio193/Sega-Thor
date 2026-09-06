@@ -2,18 +2,17 @@
 
 CURRENT_MILESTONE: M11.6.1 bounded runtime capture fixup
 CURRENT_TASK: Runtime Capture Fixup for Static Translation PoC
-STATUS: COMPLETE_WITH_RUNTIME_CAPTURE_UNAVAILABLE
+STATUS: COMPLETE
 CURRENT_SLICE_CONFIDENCE: 93% for the static B/C fixtures; 0% runtime
-confirmation for B/C because BizHawk failed during current ROM loading.
+confirmation for B/C because neither existing scenario reached either target.
 LAST_VERIFIED_RESULT: the existing hardware-reset natural scenario was kept
 unchanged and the developer-only probe can target `0xA8DA`/`0x62CC` through an
-environment override. BizHawk 2.11.1 opens without a ROM but raises an
-`Exception` while loading the canonical Genesis ROM, including the existing
-boot-trace probe and explicit `Genplus-gx` launch. No natural runtime capture
-was accepted, and no translation mismatch was observed.
-NEXT_ACTION: repair the local BizHawk Genesis launch in a separately authorized
-task, then rerun this bounded capture only.
-DO_NOT_WORK_ON: new gameplay scenarios, forced state, translator/frontend,
+environment override. Neutral 300-frame and existing `120:Start` 1800-frame
+runs both emitted zero target hits and no entry snapshots. No natural runtime
+capture was accepted, and no translation mismatch was observed.
+NEXT_ACTION: recommendation B — create a small bounded set of new natural
+gameplay scenarios in a separately authorized task, then rerun this capture.
+DO_NOT_WORK_ON: forced state, translator/frontend,
 runtime interpreter, production CPU emulator, ROM-wide translation or M12+
 
 CURRENT_MILESTONE: M11.6 verified static translation experiment
