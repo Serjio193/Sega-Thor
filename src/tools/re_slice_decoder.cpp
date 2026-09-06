@@ -102,6 +102,12 @@ std::size_t parse_ea(Bytes rom, std::uint32_t pc, std::uint32_t range_end,
         operand.value = extension_size == 4U ? read32(rom, extension_offset)
                                              : read16(rom, extension_offset);
         operand.displacement = static_cast<std::int16_t>(operand.value);
+        if (mode == 6U || (mode == 7U && reg == 3U)) {
+            operand.index_register = static_cast<std::uint8_t>((operand.value >> 12U) & 7U);
+            operand.index_is_address = (operand.value & 0x8000U) != 0U;
+            operand.index_long = (operand.value & 0x0800U) != 0U;
+            operand.displacement = static_cast<std::int8_t>(operand.value & 0xFFU);
+        }
         if (operand.kind == OperandKind::immediate && data_width == 1U)
             operand.value &= 0xFFU;
     }
@@ -233,6 +239,13 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
             instruction.direct_target = read32(rom, pc + 2U);
             instruction.flow = is_call ? FlowKind::direct_call : FlowKind::direct_jump;
             add_memory_reference(instruction, *instruction.direct_target, 0U, MemoryAccess::address);
+            DecodedOperand operand{};
+            operand.kind = OperandKind::absolute_long;
+            operand.width_bytes = 4;
+            operand.extension_bytes = 4;
+            operand.value = *instruction.direct_target;
+            operand.extension_address = pc + 2U;
+            instruction.effective_operands.push_back(operand);
         } else {
             instruction.flow = is_call ? FlowKind::indirect_call : FlowKind::indirect_jump;
             parse_single(mode, reg, 4U, MemoryAccess::address);
@@ -311,10 +324,14 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
     } else if ((opcode & 0xF1C0U) == 0x41C0U) {
         instruction.mnemonic = "lea";
         parse_single((opcode >> 3U) & 7U, opcode & 7U, 0U, MemoryAccess::address);
-    } else if ((opcode & 0xFFC0U) == 0x4840U) {
+    } else if ((opcode & 0xFFC0U) == 0x4840U &&
+               (((opcode >> 3U) & 7U) >= 2U && ((opcode >> 3U) & 7U) <= 6U ||
+                ((opcode >> 3U) & 7U) == 7U && (opcode & 7U) <= 3U)) {
         instruction.mnemonic = "pea";
         parse_single((opcode >> 3U) & 7U, opcode & 7U, 4U, MemoryAccess::read);
-    } else if ((opcode & 0xFB80U) == 0x4880U) {
+    } else if ((opcode & 0xFB80U) == 0x4880U &&
+               (((opcode >> 3U) & 7U) >= 2U && ((opcode >> 3U) & 7U) <= 6U ||
+                ((opcode >> 3U) & 7U) == 7U && (opcode & 7U) <= 1U)) {
         instruction.mnemonic = "movem";
         set_length(4U + parse_ea(rom, pc, range_end, (opcode >> 3U) & 7U, opcode & 7U,
                                  (opcode & 0x40U) ? 4U : 2U,

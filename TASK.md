@@ -1,41 +1,26 @@
 # Current Task
 
-TASK: M11.9 Reassemblable Disassembly Pipeline PoC
-WHY: prove exact ROM -> shared decoder IR -> ASM -> rebuilt bytes before
-considering another emitter or a larger reconstructed source experiment.
+TASK: M11.10 Diverse Reassembly Coverage Expansion
+WHY: measure whether exact shared-IR reassembly remains valuable across a diverse,
+mass-evidence-selected corpus rather than only five controls.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: REASSEMBLABLE_DISASM_POC_HIGH_VALUE
-BASELINE: synchronized clean main/origin/main at `77c0c44`.
+STATUS: DONE — 25-slice corpus and cross-toolchain validation are complete.
+BASELINE: M11.9 exact five-slice result; controls `0x3820`, `0x62CC`, `0xA8DA`
+remain mandatory.
 
-RESULT: all five explicitly selected ranges round-trip exactly through vasm:
-0x3820..0x3B3E (306 instructions/798 bytes), 0x62CC..0x62E4 (6/24),
-0xA8DA..0xA8F0 (10/22), 0x1108..0x1112 (4/10), 0x2B6E..0x2B8A (4/28).
-Total: 330 instructions, 882/882 bytes, 100%, zero final mismatches and zero
-handwritten opcode overrides. A8DA's four postincrement writes survive exact
-typed operands, ASM and assembly. Full 0x3820 is covered.
+ACCEPTANCE: exactly 25 bounded routines selected from frozen mass/explorer
+evidence; diverse practical forms inventoried; exact routine and expanded split
+round-trips measured; the M11.9 mixed split is rerun; every mismatch is classified;
+tests/docs are updated; no per-function encoding hacks or `dc.w` patches.
 
-IMPLEMENTATION: existing DecodedInstruction/parse_ea own exact typed operands;
-bounded normalization, ASM/IR output, first-difference CLI and a standard-library
-Python runner remain developer-only. One discovered decoder mask defect
-(SUBA.L misclassified as SUBX for EA metadata) and long address-arithmetic/
-MOVEM word widths are repaired with regression tests. No second decoder.
+CURRENT SELECTION: 25 ranges are defined in `src/tools/re_assemble_report.cpp`,
+sorted by address, with 606 instructions and 1,846 selected bytes. The runner
+reports the bounded observed-form inventory and the legacy five-routine split.
 
-SPLIT: only [0x1108,0xA8F0), 38,888 bytes; four unknown local-ROM blobs contain
-38,006 bytes. Full split MATCH. All generated ASM/IR/blobs/binaries stay ignored.
-TOOL: locally built vasm 1.8g; `-m68000 -no-opt -Fbin`. Omitting `-no-opt`
-reduces 0x3820 to 794 bytes and causes an exact comparison failure. One bounded
-assembler workaround class; no instruction-specific patches.
-
-VERIFICATION: synthetic CTest plus local Debug/Release round-trip commands;
-full compiler/test outcomes and CI evidence are in the newest worklog entry.
-GitHub Actions `34029898270` passed for implementation commit `1d2d10d`.
-Reproduction, tool provenance/license, range evidence and first-difference
-example: `docs/REASSEMBLY_POC.md`.
-
-EXACT NEXT ACTION: recommendation A — expand to 25–50 verified routines.
-Do not implement it here. No M12, runtime changes, AI semantics, C++ generation,
-full ROM split/disassembly, emulator, ant/scenario work or architecture ADR.
+EXACT NEXT ACTION: preserve the result and defer recommendation A. Do not implement
+the recommendation, M12, full-ROM splitting, runtime changes, AI semantics,
+automatic C++ generation, emulator work or unrelated refactors.
 
 HISTORICAL CHECKPOINTS:
 

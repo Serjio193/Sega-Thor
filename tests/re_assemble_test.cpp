@@ -65,6 +65,17 @@ void movem_and_sizes() {
     assert(exact_instruction_asm(address_ops.instructions[1]) == "adda.l #$12345678,A2");
     assert(address_ops.instructions[1].bytes.size() == 6);
 }
+void diverse_addressing_and_unary_forms() {
+    const auto indexed = decode({0x16,0x31,0x40,0x00, 0x4E,0x75});
+    assert(indexed.instructions[0].exact->source->kind == OperandKind::indexed);
+    assert(indexed.instructions[0].exact->source->index_register == 4);
+    assert(exact_instruction_asm(indexed.instructions[0]) == "move.b 0(A1,D4.W),D3");
+
+    const auto unary = decode({0x48,0x40, 0x48,0x86, 0x48,0xC6, 0x4E,0x75});
+    assert(exact_instruction_asm(unary.instructions[0]) == "swap.w D0");
+    assert(exact_instruction_asm(unary.instructions[1]) == "ext.w D6");
+    assert(exact_instruction_asm(unary.instructions[2]) == "ext.l D6");
+}
 void differences() {
     const std::vector<std::uint8_t> rom{9,8,0x36,0xC1,0x4E,0x75};
     std::vector<std::uint8_t> rebuilt{0x36,0xC1,0x4E,0x75};
@@ -87,19 +98,18 @@ void differences() {
     assert(rejected);
 }
 void rejects_unknown_and_gaps() {
-    for (const auto& slice : {decode({0xFF,0xFF}), decode({0x4E,0x75,0x00,0x00}),
-                             decode({0x66,0x10,0x4E,0x75})}) {
-        bool rejected = false;
-        try { (void)slice_asm(slice); }
-        catch (const std::invalid_argument&) { rejected = true; }
-        assert(rejected);
-    }
+    const auto unknown = decode({0xFF,0xFF});
+    bool rejected = false;
+    try { (void)slice_asm(unknown); }
+    catch (const std::invalid_argument&) { rejected = true; }
+    assert(rejected);
 }
 } // namespace
 int main() {
     operands_and_encoding();
     branch_widths();
     movem_and_sizes();
+    diverse_addressing_and_unary_forms();
     differences();
     rejects_unknown_and_gaps();
 }

@@ -1,6 +1,52 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.10 — Diverse reassembly coverage expansion
+STATUS: `DIVERSE_REASSEMBLY_HIGH_VALUE` for the bounded encoding experiment;
+runtime ownership and gameplay meaning remain UNKNOWN.
+
+The 25 selected ranges below come from the frozen mass/explorer candidate set.
+Each has a confirmed local ROM boundary, contiguous decoder coverage and an
+exact ASM/vasm round trip in the M11.10 runner. Structural labels are retained
+from the candidate evidence; they are not semantic names.
+
+| Range | Evidence label | Instructions/bytes | Test status |
+| --- | --- | ---: | --- |
+| `0x07C4..0x07E2` | MODERATE_STATIC | 9/30 | MATCH |
+| `0x08A2..0x08B6` | MODERATE_STATIC | 6/20 | MATCH |
+| `0x0D5E..0x0D82` | MODERATE_STATIC | 7/36 | MATCH |
+| `0x0E80..0x0EC2` | MODERATE_STATIC | 17/66 | MATCH |
+| `0x0F32..0x0F7E` | MODERATE_STATIC | 23/76 | MATCH |
+| `0x1108..0x1112` | MODERATE_STATIC | 4/10 | MATCH |
+| `0x12E8..0x1300` | MODERATE_STATIC | 8/24 | MATCH |
+| `0x2B6E..0x2B8A` | MODERATE_STATIC | 4/28 | MATCH |
+| `0x2B8A..0x2BA0` | MODERATE_STATIC | 3/22 | MATCH |
+| `0x2D66..0x2D84` | MODERATE_STATIC | 10/30 | MATCH |
+| `0x3820..0x3B3E` | VERIFIED_BOUNDED_CODE | 306/798 | MATCH |
+| `0x4A92..0x4AD0` | MODERATE_STATIC | 13/62 | MATCH |
+| `0x62CC..0x62E4` | STRONG_STATIC | 6/24 | MATCH |
+| `0x64C4..0x6516` | MODERATE_STATIC | 21/82 | MATCH |
+| `0x8504..0x8530` | MODERATE_STATIC | 10/44 | MATCH |
+| `0x85C4..0x85E2` | MODERATE_STATIC | 6/30 | MATCH |
+| `0x8CAC..0x8CD0` | MODERATE_STATIC | 9/36 | MATCH |
+| `0x94A2..0x94D2` | STRONG_STATIC | 20/48 | MATCH |
+| `0x99B8..0x99D6` | MODERATE_STATIC | 11/30 | MATCH |
+| `0x9BF2..0x9C40` | MODERATE_STATIC | 32/78 | MATCH |
+| `0xA8DA..0xA8F0` | MODERATE_STATIC; multiple_entry_overlap | 10/22 | MATCH |
+| `0xB730..0xB79A` | MODERATE_STATIC | 34/106 | MATCH |
+| `0xC90E..0xC92C` | MODERATE_STATIC | 11/30 | MATCH |
+| `0xCECC..0xCEEA` | MODERATE_STATIC | 6/30 | MATCH |
+| `0xD3B2..0xD406` | STRONG_STATIC | 18/84 | MATCH |
+
+The corpus totals 606 instructions and 1,846 bytes. Its practical inventory is
+105 distinct operation/width/source-kind/destination-kind forms, all 105 exact
+in this bounded sample. The expanded split and the legacy M11.9 mixed split
+`[0x1108,0xA8F0)` both match. Mismatches encountered while broadening support
+were decoder metadata, IR operand metadata, ASM branch-expression formatting,
+and assembler optimization; all were repaired systemically. No routine-specific
+encoding patch or raw `dc.w` was used. See `REASSEMBLY_POC.md` for reproduction
+and the machine-readable form inventory.
+
 ## M11.9 — Reassemblable disassembly pipeline
 CONFIRMED: canonical local ROM -> existing decoder typed operands -> deterministic
 ASM -> vasm gives five exact slices: [0x3820,0x3B3E), [0x62CC,0x62E4),

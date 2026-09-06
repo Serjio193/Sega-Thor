@@ -23,11 +23,19 @@ std::string operand_text(const DecodedOperand& operand) {
     case OperandKind::predecrement: return "-(" + address + ")";
     case OperandKind::displacement:
         return std::to_string(operand.displacement) + "(" + address + ")";
+    case OperandKind::indexed:
+    case OperandKind::pc_indexed: {
+        const auto index = std::string(operand.index_is_address ? "A" : "D") +
+            std::to_string(operand.index_register) + (operand.index_long ? ".L" : ".W");
+        const auto base = operand.kind == OperandKind::pc_indexed ? "PC" : address;
+        return std::to_string(operand.displacement) + "(" + base + "," + index + ")";
+    }
     case OperandKind::absolute_word: return "($" + hex(operand.value, 4) + ").W";
     case OperandKind::absolute_long: return "($" + hex(operand.value, 8) + ").L";
     case OperandKind::pc_displacement:
         return "($" + hex(operand.extension_address + operand.displacement) + ",PC)";
     case OperandKind::immediate: return "#$" + hex(operand.value);
+    case OperandKind::status_register: return operand.value ? "SR" : "CCR";
     case OperandKind::register_list: {
         std::string text;
         for (unsigned bit = 0; bit < 16; ++bit) {
@@ -73,20 +81,33 @@ std::string slice_asm(const DecodedSlice& slice) {
     for (const auto& instruction : slice.instructions) {
         if (instruction.address != cursor) throw std::invalid_argument("slice has gap/overlap");
         cursor += static_cast<std::uint32_t>(instruction.bytes.size());
-        if (instruction.direct_target && (*instruction.direct_target < slice.entry ||
-                                         *instruction.direct_target >= slice.range_end))
-            throw std::invalid_argument("external flow is outside selected PoC");
     }
     if (cursor != slice.range_end) throw std::invalid_argument("incomplete selected slice");
     for (const auto& instruction : slice.instructions) {
-        if (instruction.direct_target && std::none_of(slice.instructions.begin(), slice.instructions.end(),
+        if (instruction.direct_target && *instruction.direct_target >= slice.entry &&
+            *instruction.direct_target < slice.range_end &&
+            std::none_of(slice.instructions.begin(), slice.instructions.end(),
             [&](const auto& target) { return target.address == *instruction.direct_target; }))
             throw std::invalid_argument("branch into instruction interior");
     }
-    out << "    org $" << hex(slice.entry) << "\nsub_" << hex(slice.entry, 6) << ":\n";
+    out << "    org $" << hex(slice.entry) << "\n";
+    out << "sub_" << hex(slice.entry, 6) << ":\n";
     for (const auto& instruction : slice.instructions)
-        out << "loc_" << hex(instruction.address, 6) << ":\n    "
-            << exact_instruction_asm(instruction) << '\n';
+    {
+        auto assembly = exact_instruction_asm(instruction);
+        if (instruction.direct_target && instruction.exact && instruction.exact->branch_width_bytes &&
+            (*instruction.direct_target < slice.entry || *instruction.direct_target >= slice.range_end)) {
+            // vasm's '*' denotes the address after the branch opcode for this form.
+            const auto delta = static_cast<std::int64_t>(*instruction.direct_target) -
+                               static_cast<std::int64_t>(instruction.address);
+            const auto target = "loc_" + hex(*instruction.direct_target, 6);
+            const auto expression = "*" + std::string(delta < 0 ? "-$" : "+$") +
+                                    hex(static_cast<std::uint32_t>(delta < 0 ? -delta : delta));
+            const auto position = assembly.find(target);
+            if (position != std::string::npos) assembly.replace(position, target.size(), expression);
+        }
+        out << "loc_" << hex(instruction.address, 6) << ":\n    " << assembly << '\n';
+    }
     return out.str();
 }
 

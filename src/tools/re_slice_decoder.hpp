@@ -54,7 +54,7 @@ struct UnsupportedAddressing {
 enum class OperandKind {
     data_register, address_register, indirect, postincrement, predecrement,
     displacement, indexed, absolute_word, absolute_long, pc_displacement,
-    pc_indexed, immediate, register_list
+    pc_indexed, immediate, register_list, status_register
 };
 
 struct DecodedOperand {
@@ -62,6 +62,9 @@ struct DecodedOperand {
     std::uint8_t register_index{};
     std::uint8_t width_bytes{};
     std::uint8_t extension_bytes{};
+    std::uint8_t index_register{};
+    bool index_is_address{};
+    bool index_long{};
     std::uint32_t value{}; // Immediate, full absolute address, or register mask.
     std::int32_t displacement{};
     std::uint32_t extension_address{}; // PC-relative base, when applicable.

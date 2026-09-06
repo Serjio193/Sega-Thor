@@ -3,6 +3,46 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.10 diverse reassembly coverage expansion
+TASK: expand the M11.9 exact reassembly experiment to exactly 25 diverse
+mass/explorer-selected routines while retaining controls `0x3820`, `0x62CC`
+and `0xA8DA`.
+
+IMPLEMENTATION: `re_assemble_report.cpp` now emits 25 sorted bounded slices.
+The standard-library runner inventories operation/width/operand-kind forms,
+classifies the bounded mismatch families, and reconstructs the M11.9 mixed
+split `[0x1108,0xA8F0)` as a separate regression. vasm source naming is made
+unique for that legacy layout because vasm resolves a conflicting `main.asm`
+basename from its working directory. No per-function opcode override or raw
+`dc.w` patch was added.
+
+RESULT: local canonical-USA run `build/m11-10/corpus23` is 25/25 exact,
+606 instructions, 1,846/1,846 selected bytes, expanded split MATCH, and legacy
+mixed split MATCH. The bounded inventory is 105 distinct practical forms;
+105/105 are exact (100%), with zero selected unsupported forms and zero final
+mismatches. The runner records the complete machine-readable inventory in
+`result.json`. Generated ROM-derived files remain ignored.
+
+TESTS: MSVC 19.51 Debug and Release builds and CTest pass 34/34. The focused
+MSVC reassembly test covers indexed EA, SWAP, EXT, exact operands, branch widths,
+MOVEM, address arithmetic, and first-difference behavior. Ubuntu WSL GCC rebuilt
+all targets successfully; its behavioral CTest pass is 33/33 when the known slow
+mounted-filesystem line-limit scan is excluded. The equivalent MSVC line-limit
+test passes in both configurations.
+MinGW CMake compilation currently fails in the local toolchain's temporary
+assembler invocation without diagnostics; direct MSVC/Linux builds are green.
+
+DOCS: TASK, PROJECT_STATE, REVERSE_ENGINEERING and REASSEMBLY_POC now record the
+25-slice evidence, 105-form metric, mismatch classes and legacy split. The
+decision is `DIVERSE_REASSEMBLY_HIGH_VALUE`; exactly one next recommendation is
+A — establish a full-ROM split baseline. That recommendation is not implemented.
+
+OPEN QUESTIONS: runtime ownership and semantic meaning of the new leaves remain
+UNKNOWN; bounded form coverage is not a whole-ROM/general-68000 claim. The Linux
+mounted-filesystem line-limit scan was started but terminated after over four
+minutes without progress; explicit changed-file counts remain below 500 lines.
+Run final diff/artifact review, then commit and push this checkpoint.
+
 ## 2026-09-06 — M11.9 exact reassembly verified locally
 CI/PUSH: implementation commit `1d2d10d` was pushed after local validation.
 GitHub Actions run `34029898270` completed successfully (configure/build/test).

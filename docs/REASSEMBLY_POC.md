@@ -1,4 +1,42 @@
-# M11.9 — bounded reassemblable disassembly
+# M11.10 — diverse bounded reassembly coverage
+
+Result: `DIVERSE_REASSEMBLY_HIGH_VALUE`. The expansion stops at exactly 25
+routines, selected from the frozen mass/explorer candidate evidence rather than
+random adjacent leafs. The mandatory M11.9 controls `0x3820`, `0x62CC` and
+`0xA8DA` remain in the corpus. Selection is sorted by address and contains
+606 instructions across 1,846 selected bytes.
+
+The practical bounded inventory contains **105 distinct instruction forms**,
+keyed by operation, width and decoder-owned source/destination kinds. All 105
+forms are emitted and round-trip tested in this corpus: 105/105 exact forms,
+100% bounded form coverage, zero selected unsupported forms and zero final
+mismatches. This percentage describes the selected corpus only; it is not a
+whole-ROM or general-68000 coverage claim.
+
+The corpus deliberately exercises register and memory moves, postincrement and
+predecrement, displacement and indexed addressing, absolute word/long and PC
+relative forms, immediate operations, `LEA`, `PEA`, `MOVEM`, `DBcc`, short/word
+branches, `BSR`, shifts/rotates, bit operations, status-register immediates,
+`SWAP`, `EXT`, and direct `JSR`. The runner records the complete form list in
+`result.json` for each local run.
+
+During expansion, mismatches were classified as decoder metadata (SUBX mask,
+MOVEM width, PEA/SWAP and EXT classification), IR operand metadata (indexed
+EA extension), ASM emission/branch width (external branch expressions), and
+assembler optimization (the existing `-no-opt` control). These were systemic
+fixes in shared decoder metadata or formatting; the final corpus uses zero
+per-function overrides and no raw `dc.w` patches.
+
+The expanded layout matches across all selected slices and its split. The
+runner also reconstructs the original M11.9 mixed split `[0x1108,0xA8F0)` from
+the same emitted bodies and local-ROM gap blobs; that legacy split is an
+independent `MATCH` regression. Unknown gaps remain exact local blobs and are
+never committed.
+
+The single next recommendation is **A — establish a full-ROM split baseline**.
+It is recorded for a later milestone and is not implemented by M11.10.
+
+## M11.9 — bounded reassemblable disassembly
 
 Result: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`. This developer-only experiment
 does not change the native production architecture or identify Ancient's tools.

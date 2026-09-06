@@ -53,6 +53,32 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         result.width_bytes = 2;
         result.source = reg(op & 7U);
         result.branch_width_bytes = 2;
+    } else if (family == "scc" && ea.size() == 1U) {
+        constexpr std::array names{"st", "sf", "shi", "sls", "scc", "scs", "sne", "seq",
+                                   "svc", "svs", "spl", "smi", "sge", "slt", "sgt", "sle"};
+        result.operation = names[(op >> 8U) & 0x0FU];
+        result.width_bytes = 1;
+        result.destination = ea[0];
+    } else if (family == "lea" && ea.size() == 1U) {
+        result.operation = "lea";
+        result.width_bytes = 4;
+        result.source = ea[0];
+        result.destination = reg((op >> 9U) & 7U, true);
+    } else if (family == "pea" && ea.size() == 1U) {
+        result.operation = "pea";
+        result.width_bytes = 4;
+        result.source = ea[0];
+    } else if ((family == "jsr" || family == "jmp") && ea.size() == 1U) {
+        result.operation = family;
+        result.width_bytes = 4;
+        result.source = ea[0];
+    } else if (family == "swap") {
+        result.operation = "swap";
+        result.width_bytes = 2;
+        result.destination = reg(op & 7U);
+    } else if (family == "ext") {
+        result.operation = (op & 0x40U) ? "ext.l" : "ext.w";
+        result.destination = reg(op & 7U);
     } else if ((family == "addq" || family == "subq") && ea.size() == 1U) {
         result.operation = family;
         result.width_bytes = width;
@@ -68,8 +94,24 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         result.source->extension_bytes = width == 4 ? 4 : 2;
         result.source->extension_address = instruction.address + 2;
         result.destination = ea[0];
+    } else if (family == "immediate" && ea.empty() && constants.size() == 1U &&
+               (op & 0x3FU) == 0x3CU) {
+        constexpr std::array names{"ori", "andi", "subi", "addi", "", "eori", "cmpi"};
+        const auto group = (op >> 9U) & 7U;
+        if (group >= names.size() || names[group][0] == '\0') return;
+        result.operation = names[group];
+        result.width_bytes = 2;
+        result.source = immediate(constants[0].value, 2);
+        result.source->extension_bytes = 2;
+        result.source->extension_address = instruction.address + 2;
+        result.destination = DecodedOperand{};
+        result.destination->kind = OperandKind::status_register;
+        result.destination->value = (op & 0x40U) ? 1U : 0U;
     } else if (family == "unary" && ea.size() == 1U) {
-        if ((op & 0xFF00U) == 0x4200U) result.operation = "clr";
+        if ((op & 0xFF00U) == 0x4000U) result.operation = "negx";
+        else if ((op & 0xFF00U) == 0x4200U) result.operation = "clr";
+        else if ((op & 0xFF00U) == 0x4400U) result.operation = "neg";
+        else if ((op & 0xFF00U) == 0x4600U) result.operation = "not";
         else if ((op & 0xFF00U) == 0x4A00U) result.operation = "tst";
         else return;
         result.width_bytes = width;
@@ -96,6 +138,8 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         } else {
             if (group == 8U) result.operation = "or";
             else if (group == 9U) result.operation = "sub";
+            else if (group == 0xBU) result.operation = "cmp";
+            else if (group == 0xCU) result.operation = (op & 0x0100U) ? "exg" : "and";
             else if (group == 0xDU) result.operation = "add";
             else return;
             result.width_bytes = width;

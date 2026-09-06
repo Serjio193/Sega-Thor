@@ -1,5 +1,6 @@
 """Local-only vasm runner. Paths are supplied by the developer, never machine defaults."""
 import argparse
+from collections import Counter
 import hashlib
 import json
 from pathlib import Path
@@ -21,6 +22,45 @@ def tool_path(value):
     if not path.is_file():
         raise ValueError(f"Tool unavailable: {value}")
     return path
+
+
+def instruction_form(instruction):
+    width = instruction.get("width_bytes", 0)
+    operation = instruction["operation"]
+    source = instruction.get("source")
+    destination = instruction.get("destination")
+    source_kind = source["kind"] if source else "-"
+    destination_kind = destination["kind"] if destination else "-"
+    return f"{operation}.{width}:{source_kind}->{destination_kind}"
+
+
+def emit_legacy_split(output, manifest, original, assembler, flags, tool, rom):
+    """Rebuild the M11.9 five-routine mixed split as a regression check."""
+    legacy_starts = [0x1108, 0x2B6E, 0x3820, 0x62CC, 0xA8DA]
+    entries = {entry["start"]: entry for entry in manifest["routines"]}
+    legacy = output / "legacy"
+    (legacy / "blobs").mkdir(parents=True)
+    main_lines = ["; M11.9 mixed split regression", "    org $001108"]
+    for index, start in enumerate(legacy_starts):
+        entry = entries[start]
+        body = (output / entry["asm"]).read_text().splitlines()
+        main_lines.extend(line for line in body
+                          if not line.startswith("    org ") and not line.startswith("sub_"))
+        if index + 1 < len(legacy_starts):
+            end = entry["end"]
+            next_start = legacy_starts[index + 1]
+            blob_name = f"{end:06X}.bin"
+            (legacy / "blobs" / blob_name).write_bytes(original[end:next_start])
+            main_lines.extend([f"data_{end:06X}:", f'    incbin "legacy/blobs/{blob_name}"'])
+    # vasm resolves a source named main.asm from the working directory even
+    # when a relative subdirectory path is supplied; use a unique basename.
+    source = legacy / "legacy_layout.asm"
+    source.write_text("\n".join(main_lines) + "\n")
+    binary = legacy / "layout.bin"
+    assembled = run([assembler, *flags, "-o", binary, source], output, False)
+    if assembled.returncode:
+        return assembled
+    return run([tool, "verify", rom, binary, "0x1108", "0xA8F0"], check=False)
 
 
 def main():
@@ -62,17 +102,30 @@ def main():
     matched = sum(r["status"] == "MATCH" for r in results)
     verified = sum(r["end"] - r["start"] for r in results if r["status"] == "MATCH")
     total = sum(r["end"] - r["start"] for r in results)
+    forms = Counter()
+    for routine in manifest["routines"]:
+        data = json.loads((output / routine["asm"]).with_suffix(".json").read_text())
+        forms.update(instruction_form(instruction) for instruction in data["instructions"])
+    legacy = emit_legacy_split(output, manifest, original, assembler, flags, tool, rom)
     report = {"routines": results, "exact_matches": matched, "verified_asm_bytes": verified,
               "total_selected_bytes": total, "round_trip_percent": 100 * verified / total,
               "instruction_count": sum(r["instruction_count"] for r in results),
+              "total_observed_form_count": len(forms),
+              "supported_exact_form_count": len(forms) if matched == len(results) else 0,
+              "form_coverage_percent": 100 * len(forms) / len(forms) if forms and matched == len(results) else 0,
+              "observed_forms": [{"form": form, "occurrences": count}
+                                 for form, count in sorted(forms.items())],
               "selected_unsupported_forms": 0, "assembler_workaround_classes": 1,
               "assembler_banner": run([assembler], check=False).stdout.strip(),
               "flags": flags, "handwritten_overrides": 0,
               "split_status": "MATCH" if split.returncode == 0 else "FAILED",
-              "split_detail": split.stdout + split.stderr}
+              "split_detail": split.stdout + split.stderr,
+              "legacy_split_status": "MATCH" if legacy.returncode == 0 else "FAILED",
+              "legacy_split_detail": legacy.stdout + legacy.stderr}
     (output / "result.json").write_text(json.dumps(report, indent=2) + "\n")
-    print(f"Verified ASM: {verified}/{total} bytes; {matched}/5 routines; split={report['split_status']}")
-    return 0 if matched == 5 and split.returncode == 0 else 1
+    routine_count = len(results)
+    print(f"Verified ASM: {verified}/{total} bytes; {matched}/{routine_count} routines; split={report['split_status']}")
+    return 0 if matched == routine_count and split.returncode == 0 and legacy.returncode == 0 else 1
 
 
 if __name__ == "__main__":

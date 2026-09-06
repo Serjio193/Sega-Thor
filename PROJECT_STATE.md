@@ -1,21 +1,22 @@
 # Project State
 
-CURRENT_MILESTONE: M11.9 bounded reassemblable disassembly PoC
-CURRENT_TASK: five selected ROM slices through exact shared IR, ASM and vasm
-STATUS: REASSEMBLABLE_DISASM_POC_HIGH_VALUE
-CURRENT_SLICE_CONFIDENCE: 99% for the measured five-slice encoding round-trip;
-this does not establish unknown gameplay meanings or general 68000 coverage.
-LAST_VERIFIED_RESULT: 5/5 exact, 330 instructions, 882/882 bytes (100%);
-all A8DA postincrement writes preserved, full 0x3820 included. Local bounded
-split [0x1108,0xA8F0) also MATCH, including 38,006 unknown blob bytes.
-IMPLEMENTATION: existing decoder owns typed exact operands; new bounded ASM
-emission and byte-difference tools have no production runtime dependency.
-TOOL: local vasm 1.8g, `-m68000 -no-opt -Fbin`, one optimization-control
-workaround, zero handwritten opcode overrides or commercial artifacts in Git.
-VALIDATION: see latest WORKLOG for final compiler/CTest and CI evidence;
-docs/REASSEMBLY_POC.md records reproduction and precise limitations.
-CI_PROOF: implementation `1d2d10d`, GitHub Actions `34029898270` succeeded.
-NEXT_ACTION: recommendation A — expand to 25–50 verified routines; not started.
+CURRENT_MILESTONE: M11.10 diverse reassembly coverage expansion
+CURRENT_TASK: exactly 25 mass-evidence-selected slices through shared exact IR,
+ASM and vasm, retaining M11.9 controls
+STATUS: DIVERSE_REASSEMBLY_HIGH_VALUE — implementation, corpus runner and
+cross-toolchain validation are complete.
+CURRENT_CORPUS: 25 routines, 606 instructions, 1,846 selected bytes; selection
+is sorted and includes `0x3820`, `0x62CC` and `0xA8DA`.
+MEASURED_SCOPE: bounded inventory currently observes 105 practical forms; final
+runner records exact-form coverage, mismatch classes, and the legacy
+`[0x1108,0xA8F0)` mixed split result. This is not a whole-ROM taxonomy.
+IMPLEMENTATION: decoder-owned typed operands and deterministic ASM remain
+developer-only; indexed EA, unary/status forms and external branch emission use
+systemic metadata/format fixes, with no per-function opcode patches.
+TOOL: local vasm 1.8g, `-m68000 -no-opt -Fbin`; one optimization-control
+workaround remains bounded and documented. No ROM/assets/binaries are tracked.
+NEXT_ACTION: defer exactly one recommendation, A — establish a full-ROM split
+baseline; do not implement it in this checkpoint.
 DO_NOT_WORK_ON: M12, production runtime, full ROM split, AI semantics,
 automatic C++ translation, emulator, ant/scenario work or architecture changes.
 

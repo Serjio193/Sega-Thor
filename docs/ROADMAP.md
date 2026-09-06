@@ -210,6 +210,15 @@ bounded split also matches. Result: `REASSEMBLABLE_DISASM_POC_HIGH_VALUE`.
 Next recommendation is A, expand to 25–50 verified routines; not implemented.
 M12 remains TODO.
 
+## M11.10 — Diverse reassembly coverage expansion — DONE
+The bounded corpus now contains exactly 25 mass/explorer-selected routines,
+including the three M11.9 controls. Shared decoder metadata and ASM emission
+cover 105 observed practical forms with 105/105 exact round trips; the expanded
+split and legacy M11.9 mixed split both match. No routine-specific encoding
+patches or raw opcode directives were used. Runtime meaning remains unknown.
+Decision: `DIVERSE_REASSEMBLY_HIGH_VALUE`. The one queued recommendation is A,
+establish a full-ROM split baseline; it is deferred and not implemented here.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

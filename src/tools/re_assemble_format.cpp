@@ -9,10 +9,13 @@ void operand_json(std::ostream& out, const std::optional<DecodedOperand>& operan
     if (!operand) { out << "null"; return; }
     constexpr std::array names{"data_register", "address_register", "indirect", "postincrement",
         "predecrement", "displacement", "indexed", "absolute_word", "absolute_long",
-        "pc_displacement", "pc_indexed", "immediate", "register_list"};
+        "pc_displacement", "pc_indexed", "immediate", "register_list", "status_register"};
     const auto& p = *operand;
     out << "{\"kind\":\"" << names[static_cast<unsigned>(p.kind)]
         << "\",\"register\":" << unsigned(p.register_index)
+        << ",\"index_register\":" << unsigned(p.index_register)
+        << ",\"index_is_address\":" << (p.index_is_address ? "true" : "false")
+        << ",\"index_long\":" << (p.index_long ? "true" : "false")
         << ",\"width_bytes\":" << unsigned(p.width_bytes)
         << ",\"extension_bytes\":" << unsigned(p.extension_bytes)
         << ",\"value\":" << p.value << ",\"displacement\":" << p.displacement
