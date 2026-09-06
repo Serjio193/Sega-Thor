@@ -22,7 +22,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── PORTING.md             Portability boundary/target notes
 │   ├── PROJECT_VISION.md      Goal, scope, non-goals and end-state
 │   ├── RE_TOOLCHAIN_GUIDE.md  Historical Mega Drive SDK/toolchain evidence and fingerprinting rules
-│   ├── REASSEMBLY_POC.md     M11.9 local assembler requirement, reproduction and measured results
+│   ├── REASSEMBLY_POC.md     M11.9/M11.10 bounded reassembly reproduction and measured results
+│   ├── FULL_ROM_SPLIT_BASELINE.md M11.11 full-ROM split manifest and exact baseline report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -77,8 +78,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_slice_exact.cpp Bounded exact instruction normalization over decoder-owned operands
 │       ├── re_assemble.hpp/.cpp Developer-only ASM emission and first-byte comparator
 │       ├── re_assemble_format.cpp Raw-word and typed-operand JSON output
-│       ├── re_assemble_report.cpp Canonical-ROM five-slice emit/verify CLI and split manifest
+│       ├── re_assemble_report.cpp Canonical-ROM 25-slice emit/verify CLI and bounded split manifest
 │       ├── re_assemble_run.py Local vasm orchestration, gap extraction and exact comparison
+│       ├── re_full_split_run.py Full-ROM local-blob split, manifest metrics and exact comparison
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
@@ -178,6 +180,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── event_router_reference.cpp         Local USA-ROM oracle for event boundaries
     ├── re_slice_decoder_test.cpp           Synthetic bounded decoder/report tests
     ├── re_assemble_test.cpp                Exact operands, golden ASM, encoding widths and byte-difference tests
+    ├── re_full_split_test.py               Synthetic deterministic full-split manifest/helper tests
     ├── re_slice_reference.cpp              Local USA-ROM oracle for the 0x60004 slice
     ├── re_program_test.cpp                 Synthetic multi-function RE aggregation tests
     ├── re_program_reference.cpp            Local USA-ROM oracle for representative RE targets

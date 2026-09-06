@@ -1,24 +1,24 @@
 # Project State
 
-CURRENT_MILESTONE: M11.10 diverse reassembly coverage expansion
-CURRENT_TASK: exactly 25 mass-evidence-selected slices through shared exact IR,
-ASM and vasm, retaining M11.9 controls
-STATUS: DIVERSE_REASSEMBLY_HIGH_VALUE — implementation, corpus runner and
-cross-toolchain validation are complete.
-CURRENT_CORPUS: 25 routines, 606 instructions, 1,846 selected bytes; selection
-is sorted and includes `0x3820`, `0x62CC` and `0xA8DA`.
-MEASURED_SCOPE: bounded inventory currently observes 105 practical forms; final
-runner records exact-form coverage, mismatch classes, and the legacy
-`[0x1108,0xA8F0)` mixed split result. This is not a whole-ROM taxonomy.
-IMPLEMENTATION: decoder-owned typed operands and deterministic ASM remain
-developer-only; indexed EA, unary/status forms and external branch emission use
-systemic metadata/format fixes, with no per-function opcode patches.
-TOOL: local vasm 1.8g, `-m68000 -no-opt -Fbin`; one optimization-control
-workaround remains bounded and documented. No ROM/assets/binaries are tracked.
-NEXT_ACTION: defer exactly one recommendation, A — establish a full-ROM split
-baseline; do not implement it in this checkpoint.
-DO_NOT_WORK_ON: M12, production runtime, full ROM split, AI semantics,
-automatic C++ translation, emulator, ant/scenario work or architecture changes.
+CURRENT_MILESTONE: M11.11 full-ROM split reassembly baseline
+CURRENT_TASK: deterministic full-ROM layout using 25 trusted ASM ranges and
+local-ROM blobs for every uncertain range
+STATUS: FULL_ROM_SPLIT_EXACT
+CURRENT_BASELINE: canonical USA ROM size 3,145,728 bytes; manifest has 50
+contiguous entries, 25 `CODE_VERIFIED` and 25 `UNKNOWN` blob ranges.
+LAST_VERIFIED_RESULT: rebuilt size 3,145,728 and byte-for-byte exact; CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+COVERAGE: ASM 1,846 bytes (0.0586827596%), structured data 0, blobs 3,143,882
+bytes (99.9413172404%), conflicts 0. No whole-ROM semantic classification is
+claimed.
+IMPLEMENTATION: `src/tools/re_full_split_run.py` reuses the M11.10 emitter and
+vasm pipeline, materializes only ignored local artifacts, emits a deterministic
+manifest, and reports first differences with manifest entry/artifact type.
+NEXT_ACTION: defer exactly one recommendation, A — replace verified blob regions
+with ASM/data; do not implement it in this checkpoint.
+DO_NOT_WORK_ON: semantic blob replacement, AI naming, C++ generation, Z80,
+production runtime, full semantic disassembly, emulator, ants or M12.
 
 HISTORICAL CHECKPOINTS:
 

@@ -1,6 +1,25 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.11 — Full-ROM split reassembly baseline
+STATUS: `FULL_ROM_SPLIT_EXACT` for byte reproduction only. This baseline does not
+classify unknown bytes or assign semantic names.
+
+The trusted code set is exactly the 25 M11.10 ranges, including the M11.9
+controls. Every other canonical-USA byte is emitted as an `UNKNOWN` blob sourced
+at build time from the hash-verified local ROM. The deterministic manifest spans
+`[0x000000,0x300000)` with 50 entries, 25 code and 25 blob ranges, zero gaps and
+zero overlaps. No `DATA_KNOWN` or `CONFLICT` range was inferred.
+
+The full layout reassembles to 3,145,728 bytes and matches the canonical ROM
+byte-for-byte. Hashes are CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+ASM coverage is 1,846 bytes (0.0586827596%); 3,143,882 bytes (99.9413172404%)
+remain explicit local-ROM blobs. The M11.9 controls, M11.10 corpus, expanded
+split and legacy split are rerun before the full comparison. See
+`docs/FULL_ROM_SPLIT_BASELINE.md` for commands and metrics.
+
 ## M11.10 — Diverse reassembly coverage expansion
 STATUS: `DIVERSE_REASSEMBLY_HIGH_VALUE` for the bounded encoding experiment;
 runtime ownership and gameplay meaning remain UNKNOWN.

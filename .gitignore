@@ -11,6 +11,8 @@ CMakeFiles/
 *.rom
 *.pgm
 *.ppm
+__pycache__/
+*.pyc
 output/
 .DS_Store
 .vscode/

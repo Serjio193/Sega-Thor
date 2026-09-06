@@ -1,4 +1,13 @@
-# M11.10 — diverse bounded reassembly coverage
+# M11.11 — full-ROM split reassembly baseline
+
+The full split baseline is `FULL_ROM_SPLIT_EXACT`. It reuses the trusted
+M11.10 25-slice corpus as generated ASM and keeps every other byte as an
+ignored local-ROM blob. The deterministic manifest spans `[0x000000,0x300000)`
+with 50 entries, zero gaps and zero overlaps. The rebuilt output is exactly
+3,145,728 bytes and matches the canonical USA ROM byte-for-byte. Detailed
+metrics, hashes and reproduction are in `docs/FULL_ROM_SPLIT_BASELINE.md`.
+
+## M11.10 — diverse bounded reassembly coverage
 
 Result: `DIVERSE_REASSEMBLY_HIGH_VALUE`. The expansion stops at exactly 25
 routines, selected from the frozen mass/explorer candidate evidence rather than

@@ -219,6 +219,13 @@ patches or raw opcode directives were used. Runtime meaning remains unknown.
 Decision: `DIVERSE_REASSEMBLY_HIGH_VALUE`. The one queued recommendation is A,
 establish a full-ROM split baseline; it is deferred and not implemented here.
 
+## M11.11 — Full-ROM split reassembly baseline — DONE
+The trusted M11.10 ranges now anchor a deterministic manifest spanning the
+canonical ROM. The full 3,145,728-byte output matches byte-for-byte; uncertain
+regions remain local-ROM-backed blobs, with zero gaps and overlaps. Decision:
+`FULL_ROM_SPLIT_EXACT`. Recommendation A — replace verified blob regions with
+ASM/data — is deferred and not implemented here.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

@@ -141,6 +141,12 @@ add_executable(oasis_re_assemble_test tests/re_assemble_test.cpp)
 target_link_libraries(oasis_re_assemble_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_assemble COMMAND oasis_re_assemble_test)
 
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+    add_test(NAME oasis_re_full_split_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_full_split_test.py)
+endif()
+
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
 add_test(NAME oasis_smoke COMMAND oasis_smoke)

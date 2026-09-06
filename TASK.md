@@ -1,26 +1,26 @@
 # Current Task
 
-TASK: M11.10 Diverse Reassembly Coverage Expansion
-WHY: measure whether exact shared-IR reassembly remains valuable across a diverse,
-mass-evidence-selected corpus rather than only five controls.
+TASK: M11.11 Full-ROM Split Reassembly Baseline
+WHY: prove a deterministic full-ROM byte-perfect rebuild while preserving all
+uncertain regions as local-ROM-backed blobs.
 CURRENT MILESTONE: post-M11 bounded RE tooling; M12 remains TODO.
 SLICE MODE: RE_TOOLING_ONLY
-STATUS: DONE — 25-slice corpus and cross-toolchain validation are complete.
-BASELINE: M11.9 exact five-slice result; controls `0x3820`, `0x62CC`, `0xA8DA`
-remain mandatory.
+STATUS: DONE — full-ROM split is exact.
+BASELINE: M11.10 exact 25-slice corpus; controls, expanded split and legacy split
+remain mandatory regressions.
 
-ACCEPTANCE: exactly 25 bounded routines selected from frozen mass/explorer
-evidence; diverse practical forms inventoried; exact routine and expanded split
-round-trips measured; the M11.9 mixed split is rerun; every mismatch is classified;
-tests/docs are updated; no per-function encoding hacks or `dc.w` patches.
+ACCEPTANCE: deterministic manifest covers the canonical ROM from `0x000000` to
+`0x300000` without gaps or overlaps; trusted ranges emit existing ASM; all other
+bytes are local-ROM blobs; rebuilt size and bytes plus canonical hashes match;
+M11.9/M11.10 regressions remain green; no commercial artifacts are committed.
 
-CURRENT SELECTION: 25 ranges are defined in `src/tools/re_assemble_report.cpp`,
-sorted by address, with 606 instructions and 1,846 selected bytes. The runner
-reports the bounded observed-form inventory and the legacy five-routine split.
+CURRENT BASELINE: `src/tools/re_full_split_run.py` produces 50 manifest entries:
+25 `CODE_VERIFIED` ranges and 25 `UNKNOWN` ranges. ASM coverage is 1,846 bytes
+(0.0586827596%); 3,143,882 bytes remain explicit local-ROM blobs.
 
 EXACT NEXT ACTION: preserve the result and defer recommendation A. Do not implement
-the recommendation, M12, full-ROM splitting, runtime changes, AI semantics,
-automatic C++ generation, emulator work or unrelated refactors.
+the recommendation, semantic blob replacement, AI naming, C++ generation, Z80,
+runtime changes, full semantic disassembly, emulator work or unrelated refactors.
 
 HISTORICAL CHECKPOINTS:
 

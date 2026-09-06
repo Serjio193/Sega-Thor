@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.11 full-ROM split reassembly baseline
+TASK: build a deterministic full-ROM split for the canonical USA ROM without
+attempting whole-ROM semantic disassembly.
+MILESTONE UNDERSTANDING CONFIDENCE: 99% — M11.9/M11.10 provide the trusted
+decoder/emitter corpus and the task explicitly permits local-ROM blobs.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 99% — the split is contiguous and the
+assembler comparison is byte-level, with no semantic claims for blob ranges.
+SLICE CONFIDENCE EVIDENCE: 25 M11.10 ranges are reused, vasm emits the same
+flags as the prior exact baseline, and the full output has no first difference.
+
+IMPLEMENTATION: added `src/tools/re_full_split_run.py`. It invokes the existing
+M11.10 runner, copies only its 25 verified ASM ranges, extracts all other bytes
+from the hash-verified local ROM into ignored blobs, writes a contiguous
+manifest/layout, assembles one full output and reports first differences with
+manifest entry and artifact type. Added deterministic helper tests and a
+CTest registration when Python is available. No production runtime or
+classifier/data semantics changed.
+
+RESULT: `build/m11-11/full1` contains a 50-entry manifest spanning
+`[0x000000,0x300000)`: 25 `CODE_VERIFIED` ranges and 25 `UNKNOWN` blob ranges,
+zero gaps, zero overlaps, smallest range 10 bytes and largest range 3,091,450
+bytes. Full output is 3,145,728/3,145,728 bytes and exact. Coverage is ASM
+1,846 bytes (0.0586827596%), structured data 0, blobs 3,143,882 bytes
+(99.9413172404%), conflicts 0. Canonical CRC32/SHA-1/SHA-256 all match.
+
+REGRESSION: M11.9 controls, M11.10 25-slice corpus, expanded split and legacy
+split all report MATCH before the full comparison. Rebuilt ROM, blobs,
+assembler binaries and local corpus remain ignored.
+
+TESTS: `python tests/re_full_split_test.py` passes. Full baseline runs pass with
+MSVC Debug/Release and MinGW Debug/Release `oasis_re_assemble`. MSVC Debug and
+Release CTest are 35/35; MinGW Debug and Release CTest are 34/34 with the
+mounted-tree line-limit test excluded; Linux GCC build and CTest are 34/34 with
+that same exclusion. The source-limit test passes in both MSVC configurations;
+`git diff --check` and artifact-hygiene checks are clean.
+
+DECISION: `FULL_ROM_SPLIT_EXACT`. Exactly one next recommendation is A — begin
+automatically replacing verified blob regions with ASM/data. It is deferred and
+not implemented by this task.
+
+OPEN QUESTIONS: 99.9413172404% remains deliberately opaque blob data; no
+semantic ownership, data structure or full-ROM disassembly claim is made.
+
 ## 2026-09-06 — M11.10 diverse reassembly coverage expansion
 TASK: expand the M11.9 exact reassembly experiment to exactly 25 diverse
 mass/explorer-selected routines while retaining controls `0x3820`, `0x62CC`
