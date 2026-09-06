@@ -39,8 +39,8 @@ CTest passed 33/33. `git diff --check`, tracked-artifact inspection and the
 CTest file-line-limit test passed. MSVC tools/`VsDevCmd.bat` were not present
 on this host, so MSVC Debug/Release was not runnable. A short BizHawk scenario
 self-check after the probe changes produced a valid JSON report with the
-expected target/RAM/sample fields. GitHub Actions remains the final remote
-verification after push.
+expected target/RAM/sample fields. GitHub Actions run `34024337014` completed
+successfully for the pushed implementation commit.
 
 NEXT ACTION: commit this focused tooling/docs/scenario change, push `main`,
 wait for GitHub Actions, verify the remote SHA and clean tree, then stop at
