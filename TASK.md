@@ -27,13 +27,20 @@ GO/NO-GO ACCEPTANCE:
 - [ ] Full locally available build/test/file-limit/diff validation green before any implementation commit is pushed.
 
 PER-INSTRUCTION PERFORMANCE RULE:
-The M68K callback may only update fixed-size in-memory coverage state/counters. It must not perform file I/O, JSON, disassembly, AI inference, UI work, heap allocation, or cross-process IPC per instruction. Export/merge happens at frame or bounded batch cadence.
+The M68K callback may only update fixed-size in-memory coverage state/counters. It must not perform file I/O, JSON, disassembly, AI inference, UI work, heap allocation, cross-process IPC, locks, or console logging per instruction. Export/merge happens at frame or bounded batch cadence.
+
+COVERAGE REPRESENTATION:
+- exact instruction-start evidence is address-level and keyed by canonical ROM SHA-256;
+- the 192x64 map is visualization only (one cell = 0x100 ROM bytes);
+- do not use `touched cells / 12288` as `% code recovered` because total executable-code size is unknown;
+- persistent state stores only derived execution metadata, not ROM bytes;
+- session coverage and lifetime coverage are separate so the viewer can highlight what the current play session discovers.
 
 EXPECTED DATA FLOW:
 
 ```text
 Genesis Plus GX M68K hook
-    -> local instruction-start bitmap + counters
+    -> local instruction-start bitmap + coarse counters
     -> once-per-frame/batched delta export
     -> Sega-Thor coverage collector
     -> persistent per-ROM coverage database
@@ -41,6 +48,9 @@ Genesis Plus GX M68K hook
     -> offline decoder/static direct-edge expansion
     -> Atlas with explicit provenance
 ```
+
+DEEP TRACE IS SEPARATE FROM NORMAL COVERAGE:
+Normal human play records cheap PC coverage. A bounded deep-trace mode may later capture opcode bytes, register snapshots, branches/calls/returns and memory accesses for selected ranges/scenarios. Deep trace must never be the always-on per-instruction path used for long play sessions.
 
 FUTURE RL BOUNDARY IF GO:
 
@@ -63,6 +73,9 @@ If a critical gate fails, record the measured reason and test the next emulator 
 
 EXACT NEXT ACTION:
 On a local development machine, build an unmodified current Genesis Plus GX libretro core and an otherwise identical `HOOK_CPU` instrumented build. Run the same fixed Beyond Oasis segment, capture baseline/instrumented frame-time and normalized instruction-start coverage, and stop at the Test A PASS/FAIL decision before implementing the live viewer.
+
+LOCAL-VALIDATION RULE:
+Do not push implementation code for this experiment until it has been built/tested locally according to AGENTS.md. GitHub Actions is a post-push gate, not the first compiler. Documentation-only task setup may live on the experiment branch before Test A.
 
 DO_NOT_WORK_ON:
 M12 inventory/UI/save, new room renderer, new gameplay systems, broad C++ semantic translation, production emulator integration, RL training, random-input swarm, or any architecture migration before Test A-D produce a GO result.
