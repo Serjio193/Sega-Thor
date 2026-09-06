@@ -127,6 +127,12 @@ The result is `STATIC_TRANSLATION_POC_NEEDS_FIXUPS`; mechanical translation is
 retained only as a verification aid. No next-step implementation is authorized
 by that checkpoint.
 
+Post-M11.6.1 evidence checkpoint: M11.7 single-target reachability root cause
+is DONE. Static incoming analysis and watch-only BizHawk observations show
+`CALLER_NOT_REACHED` for `0x62CC` under both existing scenarios: none of its
+33 direct incoming PCs executed. The next recommendation is one separately
+authorized minimal natural scenario; no scenario is created here.
+
 Any later follow-up remains evidence-gathering only while its implementation-
 slice confidence remains below 90%; production C++ must not expand until
 caller/data or downstream-handler evidence raises that slice to >=90%.

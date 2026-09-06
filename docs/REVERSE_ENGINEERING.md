@@ -1,6 +1,49 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.7 — Single-target reachability root cause for `0x62CC`
+Status: `CALLER_NOT_REACHED` under the two existing natural scenarios.
+
+The target is a six-instruction leaf `[0x62CC,0x62E4)` with no calls,
+indirect flow or unsupported instruction:
+`MOVEQ #0,D0; MOVE.L D0,0x4E(A6); MOVE.L D0,0x52(A6); MOVE.W #0,0x2A(A6);`
+`MOVE.W #0,0x04(A6); RTS`. Bounded static slices confirm the local player
+paths `0x61FE -> 0x62CC` and `0x62EC -> 0x62CC`, the `0x5850 -> 0x62CC`
+call, and the event path `0x7B60 -> 0x62CC`. A complete even-address ROM
+branch-reference scan found 33 direct branch/call encodings to `0x62CC`:
+`0x5850`, `0x5CDC`, `0x5F36`, `0x5F6C`, `0x5F8E`, `0x61FE`, `0x62EC`,
+`0x635A`, `0x646E`, `0x6620`, `0x66A4`, `0x6732`, `0x673E`, `0x6C0E`,
+`0x6C40`, `0x6E64`, `0x6FDE`, `0x7054`, `0x7060`, `0x725C`, `0x72D0`,
+`0x73D2`, `0x748A`, `0x757E`, `0x760C`, `0x784E`, `0x78DE`, `0x7924`,
+`0x796C`, `0x7A16`, `0x7AC2`, `0x7B60` and `0x7CC2`. This is target-local
+incoming evidence, not a claim that all 33 addresses have recovered semantic
+function boundaries.
+
+The cheap boot-path check confirms a direct main-loop call `0x8B2E -> 0x557A`,
+but the bounded natural observations did not execute `0x8B22`, `0x8B2E`,
+`0x557A`, `0x59B8`, `0x61F6`, `0x62E4`, `0x7B2A`, any of the 33 incoming
+addresses, or `0x62CC`. Neutral hardware reset ran 300 frames; the existing
+`120:Start` run ran 1800 frames. Both had zero hits for every incoming address
+and for the target. The nearest observed shared raw entry was `0x60004`
+(2 neutral hits, 5 `120:Start` hits), reached from the already-known
+`0x611EE`/`0x6121A` path; it is not a direct incoming edge to `0x62CC`.
+
+The static conditions are therefore requirements, not observed failures:
+the player branches at `0x61FE` and `0x62EC` are `BCC.W`, requiring CCR.C=0
+after `0x85E2`; the event branch at `0x7B3C` is `BEQ.S`, requiring the first
+`0x60004` result after `ANDI.W #$1FF,D0` to equal `0x01FF`. Neither branch PC
+was reached, so no runtime registers, CCR, RAM read or taken/not-taken result
+may be asserted. The event producer `0x609C6` statically constructs D0 from
+RAM bit checks, but it was also not reached. No single RAM writer or callback
+installation is proven as the root cause.
+
+Minimum natural requirement: reach at least one target-owned incoming routine;
+for the player route this means naturally entering `0x557A`, selecting
+`0x61F6` or `0x62E4` through `0x59B8`, and returning CCR.C=0 from `0x85E2`;
+for the event route it means reaching `0x7B2A` and satisfying `0x7B3C`.
+Next recommendation: A — build one minimal natural scenario that causes the
+missing state. No such scenario is implemented in this checkpoint.
+
 ## M11.6.1 — Runtime capture fixup for static translation
 Status: existing-scenario runtime capture unavailable; the static B/C fixtures
 remain static evidence only.

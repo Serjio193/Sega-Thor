@@ -1,5 +1,32 @@
 # Current Task
 
+TASK: M11.7 Single Target Reachability Root-Cause PoC
+WHY: determine why the existing natural scenarios do not reach the single
+target `0x62CC`, stopping at the first evidence boundary and without forcing
+emulator state or creating a new gameplay scenario.
+CURRENT MILESTONE: M11.7 bounded single-target reachability root cause
+SLICE MODE: RE_TOOLING_ONLY
+STATUS: COMPLETE
+
+RESULT: static slices and a target-local ROM reference scan found a valid
+`0x62CC` leaf with 33 direct incoming branch/call encodings. The existing
+neutral 300-frame and `120:Start` 1800-frame scenarios reached none of the 33
+incoming PCs or the target. They also did not reach the gameplay-loop/player
+owners `0x8B22`, `0x8B2E`, `0x557A`, `0x59B8`, `0x61F6`, `0x62E4` or the
+event owner `0x7B2A`. Root cause is `CALLER_NOT_REACHED`, not a proven branch
+condition failure, writer failure or translation failure.
+
+MINIMUM NATURAL REQUIREMENT: naturally reach one target-owned caller; the
+player alternatives require `0x85E2` to return CCR.C=0 at `0x61FE`/`0x62EC`,
+while the event alternative requires D0=`0x01FF` at `0x7B3C`.
+EXACT NEXT ACTION: recommendation A — build one minimal natural scenario that
+causes the missing state. Do not implement it in this checkpoint.
+
+VALIDATION: file-limit, artifact hygiene and `git diff --check` passed. Local
+CTest could not run because `cmake/ctest` are absent after the environment
+move and the retained build caches reference a missing LLVM-MinGW installation;
+full Debug/Release/GNU CTest is delegated to GitHub Actions after push.
+
 TASK: M11.6.1 Runtime Capture Fixup for Static Translation PoC
 WHY: attempt natural BizHawk runtime captures for the already-selected `0xA8DA`
 and `0x62CC` leaves before treating their static fixtures as runtime evidence.

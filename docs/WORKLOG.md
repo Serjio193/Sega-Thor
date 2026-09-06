@@ -3,6 +3,43 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-06 — M11.7 single-target reachability root cause completed
+TASK: explain why natural execution does not reach only `0x62CC`, using the
+existing static tools and two existing BizHawk scenarios without creating a
+new gameplay scenario or forcing emulator state.
+
+BASELINE: synchronized `main` and `origin/main` at `942b00a779eb2fe4ff2ec62c4dc9ba44c9e41050`.
+
+STATIC EVIDENCE: `0x62CC` is the valid six-instruction leaf
+`[0x62CC,0x62E4)`. Bounded slices confirmed direct local edges
+`0x5850 -> 0x62CC`, `0x61FE -> 0x62CC`, `0x62EC -> 0x62CC` and
+`0x7B60 -> 0x62CC`; a complete even-address ROM branch-reference scan found
+33 direct incoming branch/call encodings. The boot slice confirms
+`0x8B2E -> 0x557A`; the player dispatcher is the bounded `0x59B8` indirect
+state path. Static requirements are CCR.C=0 after `0x85E2` for the player
+`BCC.W` edges, or D0=`0x01FF` at `0x7B3C` after the first `0x60004` call on
+the `0x7B2A` event path.
+
+RUNTIME EVIDENCE: the existing hardware-reset neutral scenario ran 300 frames
+and the existing `120:Start` scenario ran 1800 frames. A single-target
+observation of `0x62CC` plus all 33 direct incoming PCs reported zero hits for
+every incoming PC and the target in both scenarios. Neither scenario reached
+`0x8B22`, `0x8B2E`, `0x557A`, `0x59B8`, `0x61F6`, `0x62E4` or `0x7B2A`.
+The nearest observed shared raw entry was `0x60004` (2 neutral hits and 5
+`120:Start` hits) on the already-known `0x611EE`/`0x6121A` path; it is not a
+static predecessor of `0x62CC`. No branch outcome, RAM value or writer was
+promoted from an unexecuted target path.
+
+RESULT: `CALLER_NOT_REACHED`. The current scenario corpus remains in the
+boot/transition path before the target-owned player/event callers. This is not
+evidence that `0x62CC` is globally unreachable, and it is not a static or
+translation failure. The exact first gameplay-state transition remains outside
+the current evidence boundary.
+
+NEXT ACTION: recommendation A — build one minimal natural scenario that causes
+the missing state. Stop here; do not implement that scenario, force a branch,
+edit RAM/registers/CCR/ROM, install a callback, expand ant work or begin M12.
+
 ## 2026-09-06 — M11.6.1 runtime capture fixup completed with existing-scenario gap
 TASK: attempt only natural runtime capture/replay for the existing static
 translation leaves `0xA8DA` and `0x62CC`.

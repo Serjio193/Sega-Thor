@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.7 bounded single-target reachability root cause
+CURRENT_TASK: Single Target Reachability Root-Cause PoC
+STATUS: COMPLETE
+CURRENT_SLICE_CONFIDENCE: 93% for the target-local static incoming set and
+existing-scenario negative result; no runtime branch outcome is claimed because
+no target-owned predecessor executed.
+LAST_VERIFIED_RESULT: `0x62CC` is a valid six-instruction leaf with 33 direct
+incoming branch/call encodings. Neutral 300-frame and existing `120:Start`
+1800-frame BizHawk observations reached none of those incoming PCs or the
+target, and did not reach the player/event owners that can feed them.
+ROOT_CAUSE: `CALLER_NOT_REACHED`.
+NEXT_ACTION: recommendation A — build one minimal natural scenario that causes
+the missing state. No scenario or production code is added here.
+DO_NOT_WORK_ON: forced PC/RAM/register/CCR/ROM/callback, branch patching,
+production runtime, ant expansion, translator/interpreter, M12+
+
 CURRENT_MILESTONE: M11.6.1 bounded runtime capture fixup
 CURRENT_TASK: Runtime Capture Fixup for Static Translation PoC
 STATUS: COMPLETE
