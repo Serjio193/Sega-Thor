@@ -33,6 +33,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── NATIVE_VERTICAL_SLICE.md M11.18 native controlled-screen boundary and status
 │   ├── reports/
 │   │   └── NATIVE_ROM_RESOURCE_ID3.md M11.25 verified native resource baseline
+│   │   └── NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md M11.26 bounded visual-role report
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone

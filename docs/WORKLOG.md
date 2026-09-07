@@ -3,6 +3,34 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.26 resource ID 3 visual-role investigation — PARTIAL
+**Objective:** Determine the bounded visual consumption of the verified ID 3
+resource without broad RE, new runtime capture, Screen 0 implementation or
+semantic naming.
+
+**Evidence:** The caller at `0x02CFA2..0x02CFB8` selects ID `3` and destination
+`0x4000`, then ID `4` and destination `0x5000`, through the verified `0xD3B2`
+loader. With 32 bytes per Genesis 4bpp tile, ID 3 occupies pattern indices
+`0x0200..0x027F` (128 tiles). The adjacent `0xD406..0xD7AE` path initializes
+scene/map RAM and VDP state, but the bounded decode contains no proven CRAM
+association or exact plane-name-table/sprite selection for those patterns.
+
+**Implementation:** No production code or diagnostic palette was changed.
+`DIAGNOSTIC_PALETTE` remains explicitly non-authentic. Added the bounded report
+`docs/reports/NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md` and updated the file map.
+
+**Tests:** Existing M11.25 resource/negative/tile-oracle evidence remains the
+input baseline. Bounded exact-decoder/assembler checks for the ID 3 caller,
+`0xD3B2`, `0xD406..0xD7AE` and `0xD7C0` completed. No ROM or generated artifact
+was added.
+
+**Result:** `RESOURCE_ID3_VISUAL_ROLE_PARTIAL`: a graphics/data bank in a scene
+initialization path is supported, but palette and displayed consumer remain
+unknown. No whole-resource semantic promotion was made.
+
+**Exact next step:** A — connect verified ID 3 visual data to one authentic
+layout. Do not implement it in M11.26.
+
 ## 2026-09-07 — M11.25 first authentic native ROM resource baseline — HIGH VALUE
 **Objective:** Use only the verified M11.24 resource ID 3 contract in the
 production native executable. No GPGX, replay, new capture, room integration or
