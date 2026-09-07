@@ -271,6 +271,21 @@ The analysis ROM-read to reader-PC correlation report is retained in
 The bounded M11.24 resource contract is retained in
 `docs/reports/RESOURCE_CONTRACT_ID3.md`.
 
+## M11.28 hybrid experiment files
+M11.28 adds the developer-only `src/tools/hybrid/` directory:
+
+- `CMakeLists.txt`: separate contract/tests and opt-in external GPGX frontend.
+- `contract.hpp/.cpp`: 0x3820 bounded effect prediction/comparison and explicit
+  unsupported override gate, reusing native/mechanical decompressors.
+- `dispatch.hpp/.cpp`: natural entry/return capture, footprint checks and ISR
+  isolation through the existing emulator hook.
+- `runner.cpp`: deterministic neutral libretro frontend, local hash evidence.
+- `gpgx_bridge.c`: read-only bridge compiled only inside the external emulator.
+- `prepare_gpgx.py`: reproducible bridge installation and coverage opt-out guard.
+- `tests/hybrid_contract_test.cpp`, `tests/hybrid_dispatch_test.cpp`: independent
+  synthetic state/output/stack, corruption, footprint and override-gate tests.
+- `docs/reports/HYBRID_NATIVE_MIGRATION_POC.md`: evidence and exact blockers.
+
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:
 

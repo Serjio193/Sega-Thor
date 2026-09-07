@@ -311,6 +311,16 @@ diagnostic 128-tile atlas. The result is
 semantic role was promoted. The single deferred recommendation is A — identify
 the resource's palette/visual role.
 
+## M11.28 — Hybrid native migration PoC — DONE (shadow); override BLOCKED
+M11.27 manual ID3 runtime hunting is stopped by explicit user direction.
+The developer-only `0x3820` hook observes six natural calls in the existing
+600-frame neutral startup scenario. Three shadow runs provide 18 clean bounded
+comparisons and identical emulator checkpoints/video to EMULATED. Result:
+`HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED`. CCR.X, interrupt-aware timing and
+prefetch/IR continuation remain unproven, so override is rejected before
+execution. No production emulator dependency is introduced. STOP; no follow-up
+routine, gameplay search or tooling expansion is active.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

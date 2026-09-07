@@ -3,6 +3,68 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.28 hybrid native migration PoC — SHADOW PROVEN / OVERRIDE BLOCKED
+**Objective:** Stop M11.27 manual ID3 runtime hunting. Prove a developer-only
+natural GPGX dispatch boundary for exactly `0x3820`, with `EMULATED`,
+`SHADOW_NATIVE` and fail-closed `NATIVE_OVERRIDE` states. Reuse the existing
+mechanical and native decompression implementations and deterministic neutral
+startup scenario; no gameplay search, ID3 investigation or coverage expansion.
+
+**Acceptance:** Record canonical ROM/build identity, bounded entry and return
+state, natural-call/comparison/divergence counts and independent output/source
+equivalence. Override is permitted only with a complete proven CPU/memory/return
+contract and clean bounded shadow corpus; otherwise name its precise missing
+contract. If enabled, prove body skipping and continued scenario equivalence.
+Run relevant Debug/Release tests/builds, GNU/Linux linking, file limits and
+diff review. Keep all hybrid code outside production targets and dependencies.
+
+**Implementation:** Added the small developer-only `src/tools/hybrid/`
+contract/dispatch/frontend, synthetic regression tests and a read-only bridge
+installed in the existing external GPGX hook build. The only external existing
+source edit is a coverage/UI opt-out guard; CPU architecture is unchanged.
+ADR-0011 records the scope. Production source/link dependencies are unchanged.
+
+**Evidence:** Six distinct natural calls (two format A, four format B) per
+600-frame cold-reset neutral scenario. Two Debug and one Release shadow runs
+provide 18 clean comparisons; all call logs are byte-identical. Ten emulator
+state checkpoints and all 600 video callbacks match the EMULATED baseline.
+Six interrupts occur during calls in each run. Capture is bounded to the exact
+source/output/saved-stack footprint; no broad trace or coverage is collected.
+Canonical ROM/build identity, per-call values and hashes are recorded in
+`reports/HYBRID_NATIVE_MIGRATION_POC.md` and local `build/m1128/` evidence.
+
+**Tests/build:** Relevant GCC Debug/Release targets and focused CTest selections
+pass 5/5 each (hybrid contract, dispatch, existing graphics/mechanical tests,
+source limits). Canonical graphics references pass in both configurations.
+GNU/Linux Release frontend/contract/test linking and both hybrid plus existing
+graphics/mechanical tests pass. The external Windows GPGX DLL rebuild passes;
+no Linux GPGX runtime comparison was performed. The override CLI rejects before
+loading GPGX or creating a scenario directory. No commit/push was performed.
+The redundant Linux source-limit scan over mounted NTFS was stopped after
+more than six minutes; Windows source-limit checks passed. Final Linux
+functional CTest selection: 4/4. This is not a full repository CI claim.
+
+**Result:** `HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED`. This is a bounded shadow
+effect proof, not full CPU equivalence: SR mask is `0xFFEF`, excluding X.
+CCR.X, cycle/refresh and interrupt scheduling, and prefetch/IR return state
+lack independent replacement contracts. Native override calls = 0; original
+body skip = false; continuation after override = not run. Preliminary failed
+capture guards are retained and explicitly excluded from accepted evidence.
+
+**Exact next step:** STOP as requested. No manual gameplay/ID3 search, other
+routine, AI generation or broader tooling work is active.
+
+**Publication closure (subsequent user request):** Finalized the focused M11.28
+implementation/tests/report for commit and push before starting M11.29.
+Fresh Windows Debug/Release builds and focused checks pass 5/5 each. A
+source-only copy on the native WSL filesystem passes the complete GNU/Linux
+Debug build and all 47/47 CTests, including file limits; this resolves the
+earlier mounted-NTFS validation limitation. Staged diff review and
+`git diff --cached --check` pass. Only source, tests and governance/report prose
+are included; ROM, captures, binaries, generated evidence and existing
+untracked `game.srm` are excluded. Remote main and exact-commit CI will be
+verified after push before M11.29 candidate discovery.
+
 ## 2026-09-07 — M11.26 resource ID 3 visual-role investigation — PARTIAL
 **Objective:** Determine the bounded visual consumption of the verified ID 3
 resource without broad RE, new runtime capture, Screen 0 implementation or

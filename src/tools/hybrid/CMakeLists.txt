@@ -1,0 +1,23 @@
+add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp)
+target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
+
+add_executable(oasis_hybrid_contract_test ${PROJECT_SOURCE_DIR}/tests/hybrid_contract_test.cpp)
+target_link_libraries(oasis_hybrid_contract_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_contract COMMAND oasis_hybrid_contract_test)
+add_executable(oasis_hybrid_dispatch_test ${PROJECT_SOURCE_DIR}/tests/hybrid_dispatch_test.cpp)
+target_link_libraries(oasis_hybrid_dispatch_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_dispatch COMMAND oasis_hybrid_dispatch_test)
+if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch
+        PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
+endif()
+
+set(OASIS_HYBRID_GPGX_SOURCE "" CACHE PATH "External GPGX source for developer-only PoC")
+if(OASIS_HYBRID_GPGX_SOURCE)
+    add_executable(oasis_hybrid_poc runner.cpp)
+    target_include_directories(oasis_hybrid_poc PRIVATE
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    target_link_libraries(oasis_hybrid_poc PRIVATE oasis_hybrid_contract ${CMAKE_DL_LIBS})
+endif()

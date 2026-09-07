@@ -1,5 +1,20 @@
 # Project State
 
+CURRENT_MILESTONE: M11.28 hybrid native migration PoC
+CURRENT_TASK: complete; stopped at the explicit bounded shadow decision
+STATUS: HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED
+LAST_VERIFIED_RESULT: six natural 0x3820 calls per cold-reset 600-frame startup;
+18 bounded shadow comparisons across repeated Debug and Release runs, zero
+accepted-corpus divergences. EMULATED state checkpoints and video match.
+LIMITATION: full CPU equivalence is not proven. CCR.X, precise timing/interrupt
+scheduling and prefetch/IR continuation block override. Zero override calls;
+the original routine body is not skipped.
+PRODUCTION_BOUNDARY: new hybrid code is developer-only; no production dependency.
+EVIDENCE: docs/reports/HYBRID_NATIVE_MIGRATION_POC.md
+NEXT_ACTION: STOP. M11.27 manual ID3 hunting is stopped; no further scope active.
+
+## Historical state context
+
 CURRENT_MILESTONE: M11.18 native controlled screen vertical slice
 CURRENT_TASK: first interactive native runtime path with explicit synthetic terrain fixture
 STATUS: NATIVE_VERTICAL_SLICE_PARTIAL

@@ -182,6 +182,25 @@ changed.
 **Affected files/milestones:** `src/tools/gpgx_import_gpgx_coverage.cpp`,
 `CMakeLists.txt`, M11.19.
 
+## ADR-0011 — Developer-only hybrid migration experiment
+**Status:** Accepted
+**Date:** 2026-09-07
+
+**Context:** The user explicitly replaces M11.27 manual ID3 hunting with a
+bounded hybrid execution PoC for the already translated `0x3820` decompressor.
+
+**Decision:** A developer-only adapter may observe natural GPGX calls, run
+existing C++ translations on copied bounded inputs and compare their effects.
+Its dispatch states are `EMULATED`, `SHADOW_NATIVE`, `NATIVE_OVERRIDE`. Shadow
+always preserves the original CPU result. Override must fail closed until all
+CPU, memory, return and execution-timing effects needed by continuation are
+proven; output equivalence alone cannot authorize it.
+
+**Consequences:** GPGX remains an external developer tool. No production target
+may depend on the emulator, its CPU context, original PCs or its RAM layout
+through this experiment. Exactly one routine is in scope; no emulator rewrite,
+AI generation, routine expansion or manual gameplay search is authorized.
+
 ## ADR template
 Copy this block for new decisions:
 

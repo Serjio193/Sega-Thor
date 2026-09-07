@@ -1,5 +1,18 @@
 # Current Task
 
+TASK: M11.28 Hybrid Native Migration PoC
+STATUS: HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED
+SCOPE: developer-only natural 0x3820 dispatch; M11.27 manual ID3 hunting stopped.
+RESULT: six natural calls per 600-frame neutral startup; 18 clean bounded
+shadow comparisons across three runs. Baseline/repeat/Release video and GPGX
+checkpoints match. Production sources/dependencies unchanged.
+LIMITS: X excluded from SR comparison (0xFFEF); cycle/refresh/interrupt and
+prefetch/IR contracts unproven. Override rejected, zero replaced calls, no skip.
+EVIDENCE: docs/reports/HYBRID_NATIVE_MIGRATION_POC.md
+EXACT NEXT ACTION: STOP. No further implementation or manual search authorized.
+
+## Historical task context
+
 TASK: M11.18 Native Controlled Screen Vertical Slice
 WHY: prove input -> native fixed-step runtime -> movement -> terrain collision -> software
 framebuffer -> visible window without expanding reconstructed-source or RE tooling.

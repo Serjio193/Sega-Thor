@@ -1,6 +1,24 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.28 — Natural hybrid shadow of `0x3820`
+STATUS: `HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED`.
+
+Six distinct natural startup calls cover both known formats. Three clean
+shadow runs compare existing native/mechanical output with GPGX, including
+source consumption, D/A register effects, stack saves/restores, RTS return and
+SR mask `0xFFEF`. Final X is explicitly unmodeled. GPGX's predecrement MOVEM
+bus order is low word then high word. Six external interrupts during calls
+preserve the suspended routine registers/CCR and do not touch its required
+footprint. Their timing/device effects stay outside the native contract.
+
+All 600 video frames and 10 whole-emulator state checkpoints match EMULATED.
+No override or body skip is claimed. The original executes authoritatively;
+instruction timing, interrupt scheduling, X and prefetch/IR return behavior
+must be established before replacement. Exact source/build/artifact hashes,
+captured bounds, assumptions, tests and excluded preliminary captures are in
+`reports/HYBRID_NATIVE_MIGRATION_POC.md`. Manual ID3 hunting is stopped.
+
 ## M11.24 — Bounded resource contract `0x02CFAA -> 0xD3B2`
 STATUS: `RESOURCE_CONTRACT_ID3_VERIFIED`.
 

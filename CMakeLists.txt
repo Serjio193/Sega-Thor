@@ -463,3 +463,6 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         PROPERTIES ENVIRONMENT "PATH=${oasis_compiler_bin}"
     )
 endif()
+
+# Optional external-emulator experiment; never linked into a production target.
+add_subdirectory(src/tools/hybrid)

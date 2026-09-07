@@ -80,6 +80,17 @@ Responsibilities:
 
 Tools must not require committing extracted assets.
 
+M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
+The optional frontend loads an external instrumented libretro library and
+compares one naturally reached routine against existing C++ implementations.
+`EMULATED` preserves execution, `SHADOW_NATIVE` compares bounded copied inputs
+while the emulator remains authoritative, and `NATIVE_OVERRIDE` fails closed
+until its CPU/timing/return contract is proven. The external bridge exposes
+only register reads, bounded memory peeks and hook installation. Neither the
+bridge nor the frontend is linked into `oasis_core`, `oasis_platform` or `oasis`.
+See ADR-0011 and `reports/HYBRID_NATIVE_MIGRATION_POC.md` for the explicit
+partial SR contract and interrupt/prefetch blockers.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 
@@ -108,7 +119,8 @@ Preferred test types:
 - cyclic dependencies are prohibited.
 
 ## File-size rule
-Every code and documentation file must remain at or below **500 lines**. Split modules by responsibility before reaching the limit.
+Every human-maintained source/build file must remain at or below **500 lines**.
+Prose documentation is exempt, as specified in `AGENTS.md`.
 
 ## Translation strategy
 Do not translate all 68000 instructions mechanically into a monolithic CPU state loop. Preferred order:
