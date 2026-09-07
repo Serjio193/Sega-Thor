@@ -201,6 +201,25 @@ may depend on the emulator, its CPU context, original PCs or its RAM layout
 through this experiment. Exactly one routine is in scope; no emulator rewrite,
 AI generation, routine expansion or manual gameplay search is authorized.
 
+## ADR-0012 — Target-specific developer-only native override boundary
+**Status:** Accepted
+**Date:** 2026-09-07
+
+**Context:** M11.29 requires one native override whose CPU/hardware contract is
+simpler than `0x3820`, while preserving the original GPGX execution path and
+avoiding a generic replacement engine.
+
+**Decision:** Use the naturally executed `0x2D66` leaf as the single override
+target. Its adapter captures and proves only its bounded registers, full SR,
+source/output RAM and saved stack window. On override it applies those effects
+and uses GPGX's existing `m68k_set_reg(PC)` transition rather than reimplementing
+prefetch or IR state. The adapter stays in developer-only hybrid tooling.
+
+**Consequences:** The 600-frame neutral scenario proves one native replacement
+and exact checkpoint/video continuation. The proof does not generalize to
+other routines; `0x3820` remains blocked by its separate timing/CCR.X/prefetch
+contract. Production targets and dependencies remain unchanged.
+
 ## ADR template
 Copy this block for new decisions:
 

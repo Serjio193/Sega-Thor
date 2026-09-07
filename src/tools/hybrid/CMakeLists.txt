@@ -1,4 +1,4 @@
-add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp)
+add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp candidate_2d66.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
 
@@ -8,9 +8,12 @@ add_test(NAME oasis_hybrid_contract COMMAND oasis_hybrid_contract_test)
 add_executable(oasis_hybrid_dispatch_test ${PROJECT_SOURCE_DIR}/tests/hybrid_dispatch_test.cpp)
 target_link_libraries(oasis_hybrid_dispatch_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_dispatch COMMAND oasis_hybrid_dispatch_test)
+add_executable(oasis_hybrid_candidate_2d66_test ${PROJECT_SOURCE_DIR}/tests/hybrid_candidate_2d66_test.cpp)
+target_link_libraries(oasis_hybrid_candidate_2d66_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_candidate_2d66 COMMAND oasis_hybrid_candidate_2d66_test)
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
-    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch
+    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66
         PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
 endif()
 

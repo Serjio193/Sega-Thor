@@ -1,15 +1,17 @@
 # Current Task
 
-TASK: M11.28 Hybrid Native Migration PoC
-STATUS: HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED
-SCOPE: developer-only natural 0x3820 dispatch; M11.27 manual ID3 hunting stopped.
-RESULT: six natural calls per 600-frame neutral startup; 18 clean bounded
-shadow comparisons across three runs. Baseline/repeat/Release video and GPGX
-checkpoints match. Production sources/dependencies unchanged.
-LIMITS: X excluded from SR comparison (0xFFEF); cycle/refresh/interrupt and
-prefetch/IR contracts unproven. Override rejected, zero replaced calls, no skip.
-EVIDENCE: docs/reports/HYBRID_NATIVE_MIGRATION_POC.md
-EXACT NEXT ACTION: STOP. No further implementation or manual search authorized.
+TASK: M11.29 Minimal Safe Native Override Target
+STATUS: HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN
+SCOPE: developer-only target-specific hybrid override for naturally executed
+0x2D66; M11.27 manual ID3 hunting and 0x3820 repair remain stopped.
+RESULT: one natural call, one zero-divergence full-SR shadow comparison, one
+native override call, zero original target-body instruction starts, and complete
+600-frame continuation. EMULATED checkpoint/video sequences match exactly.
+LIMITS: this proves only 0x2D66; no generic replacement engine or production
+emulator dependency exists. 0x3820 timing/CCR.X/prefetch remains blocked.
+EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md
+EXACT NEXT ACTION: STOP. Do not add another target, manual gameplay, coverage,
+AI generation or production runtime dependency.
 
 ## Historical task context
 

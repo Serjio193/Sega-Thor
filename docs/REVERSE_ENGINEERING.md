@@ -1,6 +1,34 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.29 — Minimal safe native override target
+STATUS: `HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN`.
+
+The existing deterministic 600-frame neutral PC bitmap contains `0x2D66` and
+its direct static caller `0x2D58` is decoded. The exact range is
+`[0x2D66,0x2D84)`, 10 instructions ending in `RTS`, with no nested or indirect
+control flow. The body saves/restores `D7/A3`, consumes two bytes through `A6`,
+uses `D7` as a bounded `DBF` count, and writes words sequentially through
+`A3 = 0xFF134C + sign_extended(first_byte)`. It does not access
+VDP/Z80/I/O or its own code; the observed neutral call reads its source from
+canonical ROM through `A6` and writes only the fixed RAM destination and saved
+register stack footprint. `DBF` does
+not alter CCR. The final `MOVE.W` derives N/Z/V/C and X is preserved, so the
+full SR result is mechanically bounded. This is the selected target for the
+bounded M11.29 shadow/override proof.
+
+The executed `0x6121A` leaf was rejected because its `MOVE.B` writes target
+`0xC00011` in the VDP range. `0x62CC` and `0xA8DA` were rejected because the
+same deterministic 600-frame bitmap has no target PC for either routine.
+
+The target-specific shadow comparison observed one natural call with zero
+divergences, including full SR, exact MOVEM stack write order, output bytes,
+register deltas and RTS return. Native override then made one call, skipped all
+original target-body instruction starts, and matched the EMULATED 600-frame
+checkpoint and video sequences. No interrupt was observed while inside the
+routine. Evidence and identities are recorded in
+`docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md`.
+
 ## M11.28 — Natural hybrid shadow of `0x3820`
 STATUS: `HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED`.
 

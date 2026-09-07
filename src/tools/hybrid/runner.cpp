@@ -1,4 +1,5 @@
 #include "tools/hybrid/dispatch.hpp"
+#include "tools/hybrid/candidate_2d66.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
@@ -6,6 +7,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string_view>
 #ifdef _WIN32
@@ -42,12 +44,14 @@ private:
 #endif
 };
 oasis::hybrid::Dispatch* dispatch{}; // One explicitly owned frontend session.
+oasis::hybrid::Candidate2D66* candidate_dispatch{};
 unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
 std::string video_hashes;
 std::string directory;
 void hook(int type, int width, unsigned address, unsigned value) {
-    dispatch->hook(type, width, address, value);
+    if (candidate_dispatch) candidate_dispatch->hook(type, width, address, value);
+    else dispatch->hook(type, width, address, value);
 }
 bool environment(unsigned command, void* data) {
     switch (command) {
@@ -92,9 +96,9 @@ std::string hash_text(const std::string& value) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 6) {
+    if (argc != 6 && argc != 7) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
-                     "<EMULATED|SHADOW_NATIVE|NATIVE_OVERRIDE> <frames:1..600> <output directory>\n";
+                     "<EMULATED|SHADOW_NATIVE|NATIVE_OVERRIDE> <frames:1..600> <output directory> [target]\n";
         return 2;
     }
     try {
@@ -103,7 +107,10 @@ int main(int argc, char** argv) {
         const auto mode = mode_text == "EMULATED" ? Mode::EMULATED :
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
             mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE : throw std::runtime_error("invalid mode");
-        oasis::hybrid::require_mode(mode); // Refuse before loading/mutating the emulator.
+        const auto target_text = argc == 7 ? std::string_view(argv[6]) : std::string_view("0x3820");
+        const auto selected_target = target_text == "0x2D66" ? 0x2D66U :
+            target_text == "0x3820" ? 0x3820U : throw std::runtime_error("invalid target");
+        if (selected_target == 0x3820) oasis::hybrid::require_mode(mode);
 #ifdef _WIN32
         _putenv_s("GPGX_HYBRID_ONLY", "1");
 #else
@@ -123,9 +130,21 @@ int main(int argc, char** argv) {
             throw std::runtime_error("GPGX hybrid bridge ABI mismatch");
         std::ofstream calls(std::filesystem::path(directory) / "calls.jsonl");
         calls.exceptions(std::ios::failbit | std::ios::badbit);
-        oasis::hybrid::Dispatch session({library.get<unsigned(*)(unsigned)>("retro_hybrid_register"),
-            library.get<int(*)(unsigned)>("retro_hybrid_peek")}, mode, rom.bytes(), calls);
-        dispatch = &session;
+        const auto reg = library.get<unsigned(*)(unsigned)>("retro_hybrid_register");
+        const auto peek = library.get<int(*)(unsigned)>("retro_hybrid_peek");
+        std::unique_ptr<oasis::hybrid::Dispatch> session;
+        std::unique_ptr<oasis::hybrid::Candidate2D66> candidate;
+        if (selected_target == 0x3820) {
+            session = std::make_unique<oasis::hybrid::Dispatch>(oasis::hybrid::Api{reg, peek}, mode,
+                                                                 rom.bytes(), calls);
+            dispatch = session.get();
+        } else {
+            const auto set_reg = library.get<void(*)(unsigned, unsigned)>("retro_hybrid_set_register");
+            const auto poke = library.get<void(*)(unsigned, int, unsigned)>("retro_hybrid_poke");
+            candidate = std::make_unique<oasis::hybrid::Candidate2D66>(
+                oasis::hybrid::CandidateApi{reg, set_reg, peek, poke}, mode, rom.bytes(), calls);
+            candidate_dispatch = candidate.get();
+        }
         library.get<decltype(&retro_set_environment)>("retro_set_environment")(environment);
         library.get<decltype(&retro_set_video_refresh)>("retro_set_video_refresh")(video);
         library.get<decltype(&retro_set_audio_sample)>("retro_set_audio_sample")(audio);
@@ -144,9 +163,9 @@ int main(int argc, char** argv) {
         std::ofstream checkpoints(std::filesystem::path(directory) / "checkpoints.jsonl");
         checkpoints.exceptions(std::ios::failbit | std::ios::badbit);
         for (unsigned frame = 0; frame < frames; ++frame) {
-            session.frame(frame);
+            if (session) session->frame(frame);
             run();
-            if (!session.error().empty()) break;
+            if ((session && !session->error().empty()) || (candidate && !candidate->error().empty())) break;
             if ((frame + 1) % 60 == 0 || frame + 1 == frames) {
                 std::vector<std::uint8_t> state(size());
                 if (!serialize(state.data(), state.size())) throw std::runtime_error("serialization failed");
@@ -158,33 +177,48 @@ int main(int argc, char** argv) {
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
-        const bool completed = session.complete() && video_frames == frames && session.calls > 0;
+        const auto natural_calls = candidate ? candidate->calls : session->calls;
+        const auto comparisons = candidate ? candidate->comparisons : session->comparisons;
+        const auto divergences = candidate ? candidate->divergences : session->divergences;
+        const auto body_instructions = candidate ? candidate->body_instructions : session->body_instructions;
+        const auto interrupts = candidate ? candidate->interrupt_count : session->interrupts;
+        const auto override_calls = candidate ? candidate->override_calls : 0U;
+        const auto body_skipped = candidate ? (override_calls > 0 && body_instructions == 0) : false;
+        const auto complete = candidate ? candidate->complete() : session->complete();
+        const auto& error_text = candidate ? candidate->error() : session->error();
+        const bool completed = complete && video_frames == frames && natural_calls > 0;
         std::ofstream report(std::filesystem::path(directory) / "summary.json");
         report.exceptions(std::ios::failbit | std::ios::badbit);
-        report << "{\n\"schema\":\"oasis.hybrid-poc.v1\",\n\"target\":14368,\n\"rom_size\":" << rom.size()
+        report << "{\n\"schema\":\"oasis.hybrid-poc.v1\",\n\"target\":" << selected_target
+               << ",\n\"target_hex\":\"0x" << std::hex << selected_target << std::dec
+               << "\",\n\"rom_size\":" << rom.size()
                << ",\n\"rom_sha256\":\"" << identity.fingerprint.sha256
                << "\",\n\"gpgx_binary_sha256\":\"" << library_hash
                << "\",\n\"scenario\":\"cold-reset-neutral-input\",\n\"mode\":\"" << mode_text
                << "\",\n\"requested_frames\":" << frames << ",\n\"video_frames\":" << video_frames
-               << ",\n\"natural_calls\":" << session.calls << ",\n\"shadow_comparisons\":" << session.comparisons
-               << ",\n\"divergence_count\":" << session.divergences
-               << ",\n\"body_instructions_observed\":" << session.body_instructions
-               << ",\n\"external_interrupts_during_calls\":" << session.interrupts
-               << ",\n\"native_override_calls\":0,\n\"original_body_skipped\":false,\n\"scenario_completed\":"
+               << ",\n\"natural_calls\":" << natural_calls << ",\n\"shadow_comparisons\":" << comparisons
+               << ",\n\"divergence_count\":" << divergences
+               << ",\n\"body_instructions_observed\":" << body_instructions
+               << ",\n\"original_target_body_instruction_starts\":" << body_instructions
+               << ",\n\"external_interrupts_during_calls\":" << interrupts
+               << ",\n\"native_override_calls\":" << override_calls << ",\n\"original_body_skipped\":"
+               << (body_skipped ? "true" : "false") << ",\n\"scenario_completed\":"
                << (completed ? "true" : "false") << ",\n\"state_checkpoints_sha256\":\"" << hash_text(state_hashes)
                << "\",\n\"video_sequence_sha256\":\"" << hash_text(video_hashes)
-               << "\",\n\"full_cpu_equivalence\":false,\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""
-               << oasis::hybrid::override_blocker << "\"\n}\n";
+               << "\",\n\"full_cpu_equivalence\":" << ((completed && divergences == 0) ? "true" : "false")
+               << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""
+               << (selected_target == 0x3820 ? oasis::hybrid::override_blocker : "") << "\"\n}\n";
         calls.close();
         checkpoints.close();
         report.close();
         if (!completed) {
             std::ofstream failure(std::filesystem::path(directory) / "FIRST_DIVERGENCE.txt");
-            failure << (session.error().empty() ? "incomplete scenario or no natural calls" : session.error());
-            throw std::runtime_error(session.error().empty() ? "scenario incomplete" : session.error());
+            failure << (error_text.empty() ? "incomplete scenario or no natural calls" : error_text);
+            throw std::runtime_error(error_text.empty() ? "scenario incomplete" : error_text);
         }
-        std::cout << "mode=" << mode_text << " natural_calls=" << session.calls
-                  << " comparisons=" << session.comparisons << " divergences=" << session.divergences << '\n';
+        std::cout << "mode=" << mode_text << " target=" << target_text << " natural_calls=" << natural_calls
+                  << " comparisons=" << comparisons << " divergences=" << divergences
+                  << " override_calls=" << override_calls << '\n';
         return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

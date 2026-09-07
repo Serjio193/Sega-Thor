@@ -3,6 +3,82 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.29 minimal safe override target — PHASE 1
+**Objective:** Select one naturally executed, short direct-return routine from
+the existing 600-frame neutral scenario before implementing override. Reuse
+existing execution/CFG evidence and the hybrid hook, with no ranking framework,
+manual gameplay, ID3 work or repair of the 0x3820 timing/CCR/prefetch contract.
+
+**Prerequisite:** M11.28 is committed and pushed as
+`ae1b76d951ba8c125e96873bc81f404bfa44c4db`. Remote `main` matches; exact-SHA CI
+run `34153157452` is completed/success. Source-only Linux CI-equivalent build
+and 47/47 tests, and Windows focused Debug/Release 5/5 each passed before push.
+
+**Acceptance:** Identify one fully decoded bounded target with natural calls,
+direct entry/RTS, no indirect flow, no I/O/self-modification, and an exact
+register/RAM/CCR contract. Check observed interrupt absence and existing GPGX
+return/prefetch mechanisms without implementing replacement. Report the target
+and reasons at the requested pre-implementation checkpoint. Subsequent shadow
+and override must prove full effects, body skipping, and EMULATED checkpoint/
+video equivalence; those proofs are not inferred from candidate selection.
+
+**Candidate selection:** `0x2D66..0x2D84` is selected. Existing 600-frame
+neutral PC bitmap contains the target, and static ROM evidence has direct
+caller `0x2D58` plus the exact 10-instruction decoder range. The body is
+`MOVEM.L D7/A3,-(A7); CLR.W D7; MOVE.B (A6)+,D7; LEA $FF134C,A3;
+ADDA.W D7,A3; MOVE.B (A6)+,D7; MOVE.W (A6)+,(A3)+; DBF D7,loop;
+MOVEM.L (A7)+,D7/A3; RTS`. It has no nested call, indirect flow, VDP/Z80/I/O
+address, self-modifying write or unknown CCR.X producer; the final `MOVE.W`
+derives N/Z/V/C and X is preserved. `DBF` preserves SR, and MOVEM/RTS preserve
+the remaining flags. Its only effects are bounded A6 post-increments,
+`0xFF134C` RAM writes, A7 saved-register stack traffic and restored D7/A3,
+making it materially simpler than `0x3820`. The nearby executed `0x6121A`
+leaf was rejected because it writes VDP address `0xC00011`; `0x62CC` and
+`0xA8DA` were rejected because the deterministic 600-frame bitmap does not
+contain them. Candidate selection is complete before override code.
+
+## 2026-09-07 — M11.29 minimal safe override target — PROVEN
+**Objective:** Prove one native override on a naturally executed routine with a
+materially simpler CPU contract than `0x3820`, using the existing deterministic
+600-frame neutral scenario and developer-only GPGX hook.
+
+**Implementation:** Added target-specific `Candidate2D66` shadow/override and
+bridge register/memory setters. It captures D0-D7/A0-A7, PC and full SR,
+canonical ROM source bytes, bounded output and the exact 12-byte stack window.
+Shadow checks MOVEM bus order, output/stack writes, full SR, post-increments and
+RTS return. Override applies those effects and uses GPGX `m68k_set_reg(PC)` for
+the documented CPU jump; it does not emulate prefetch or create a replacement
+engine. The adapter remains developer-only and is absent from production links.
+
+**Evidence:** Canonical ROM SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+Instrumented GPGX source is commit `d60d079934977aa6973e220d123533387159f66e`
+and its DLL SHA-256 is
+`4488ae775fd8252d8a8cb169000f20ac388e6d102fa6e1b1d4a4eccaa7f49799`.
+Target `0x2D66` had one natural call in 600 frames, one clean shadow
+comparison and zero divergences. Native override had one call, zero original
+target-body instruction starts and completed all 600 frames. Checkpoint sequence
+SHA-256 is `1690fd7d9bd1a26aeacaccfeff943f17f2bb30a5e130f28a88973916e8e9abca`;
+video sequence SHA-256 is
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`; both
+match EMULATED. No interrupt occurred inside the candidate.
+
+**Tests/build:** Synthetic candidate shadow/override test passes in MSVC Debug,
+Release and GNU/Linux. Focused hybrid contract/dispatch/candidate CTests pass
+3/3 in all three configurations; project file-limit CTest passes in Windows
+Debug/Release (4/4 selections including the three hybrid tests). The
+GNU/Linux-equivalent Release build and three hybrid tests pass; its mounted-NTFS
+file-limit scan was not used because that known scan is too slow on WSL. The
+real EMULATED, SHADOW_NATIVE and NATIVE_OVERRIDE 600-frame runs pass in both
+MSVC configurations. `git diff --check` passes; generated run directories
+remain untracked.
+
+**Result:** `HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN`.
+
+**Exact next step:** STOP. Do not repair `0x3820`, investigate ID3, add manual
+gameplay, broaden coverage, add AI generation or change production runtime
+dependencies.
+
 ## 2026-09-07 — M11.28 hybrid native migration PoC — SHADOW PROVEN / OVERRIDE BLOCKED
 **Objective:** Stop M11.27 manual ID3 runtime hunting. Prove a developer-only
 natural GPGX dispatch boundary for exactly `0x3820`, with `EMULATED`,

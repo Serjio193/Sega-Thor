@@ -321,6 +321,17 @@ prefetch/IR continuation remain unproven, so override is rejected before
 execution. No production emulator dependency is introduced. STOP; no follow-up
 routine, gameplay search or tooling expansion is active.
 
+## M11.29 — Minimal safe native override target — DONE
+The naturally executed `0x2D66` leaf was selected from the existing 600-frame
+neutral PC bitmap: ten decoded instructions, direct `RTS`, one local `DBF`, no
+hardware access, no nested call and bounded full-SR/RAM/stack effects. One
+SHADOW_NATIVE call compared cleanly with zero divergences. One NATIVE_OVERRIDE
+call skipped all original target-body instruction starts, completed 600 frames,
+and matched EMULATED checkpoint and video sequences exactly. Result:
+`HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN`. The adapter remains developer-only;
+`0x3820` timing/CCR.X/prefetch work, ID3, manual gameplay, coverage expansion
+and AI generation remain out of scope.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

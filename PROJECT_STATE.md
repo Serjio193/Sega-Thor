@@ -1,16 +1,16 @@
 # Project State
 
-CURRENT_MILESTONE: M11.28 hybrid native migration PoC
-CURRENT_TASK: complete; stopped at the explicit bounded shadow decision
-STATUS: HYBRID_SHADOW_PROVEN_OVERRIDE_BLOCKED
-LAST_VERIFIED_RESULT: six natural 0x3820 calls per cold-reset 600-frame startup;
-18 bounded shadow comparisons across repeated Debug and Release runs, zero
-accepted-corpus divergences. EMULATED state checkpoints and video match.
-LIMITATION: full CPU equivalence is not proven. CCR.X, precise timing/interrupt
-scheduling and prefetch/IR continuation block override. Zero override calls;
-the original routine body is not skipped.
+CURRENT_MILESTONE: M11.29 minimal safe native override target
+CURRENT_TASK: complete; one target-specific developer-only override proven
+STATUS: HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN
+LAST_VERIFIED_RESULT: natural 0x2D66 call shadowed with full-SR, exact stack/RAM
+and return equivalence, then one native override skipped all original body
+instruction starts and completed the 600-frame neutral scenario. Checkpoints
+and video match EMULATED.
+LIMITATION: proof is target-specific. 0x3820 CCR.X, precise timing/interrupt
+scheduling and prefetch/IR continuation remain blocked and untouched.
 PRODUCTION_BOUNDARY: new hybrid code is developer-only; no production dependency.
-EVIDENCE: docs/reports/HYBRID_NATIVE_MIGRATION_POC.md
+EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md
 NEXT_ACTION: STOP. M11.27 manual ID3 hunting is stopped; no further scope active.
 
 ## Historical state context

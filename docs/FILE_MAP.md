@@ -279,12 +279,18 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   unsupported override gate, reusing native/mechanical decompressors.
 - `dispatch.hpp/.cpp`: natural entry/return capture, footprint checks and ISR
   isolation through the existing emulator hook.
+- `candidate_2d66.hpp/.cpp`: the single M11.29 target-specific shadow and
+  native-override adapter for the bounded `0x2D66` leaf.
 - `runner.cpp`: deterministic neutral libretro frontend, local hash evidence.
 - `gpgx_bridge.c`: read-only bridge compiled only inside the external emulator.
 - `prepare_gpgx.py`: reproducible bridge installation and coverage opt-out guard.
 - `tests/hybrid_contract_test.cpp`, `tests/hybrid_dispatch_test.cpp`: independent
   synthetic state/output/stack, corruption, footprint and override-gate tests.
+- `tests/hybrid_candidate_2d66_test.cpp`: synthetic exact MOVEM-stack shadow and
+  native-side-effect regression test for the selected candidate.
 - `docs/reports/HYBRID_NATIVE_MIGRATION_POC.md`: evidence and exact blockers.
+- `docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md`: M11.29 target selection,
+  identity and shadow/override equivalence evidence.
 
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:
