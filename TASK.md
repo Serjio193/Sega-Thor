@@ -1,17 +1,15 @@
 # Current Task
 
-TASK: M11.29 Minimal Safe Native Override Target
-STATUS: HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN
-SCOPE: developer-only target-specific hybrid override for naturally executed
-0x2D66; M11.27 manual ID3 hunting and 0x3820 repair remain stopped.
-RESULT: one natural call, one zero-divergence full-SR shadow comparison, one
-native override call, zero original target-body instruction starts, and complete
-600-frame continuation. EMULATED checkpoint/video sequences match exactly.
-LIMITS: this proves only 0x2D66; no generic replacement engine or production
-emulator dependency exists. 0x3820 timing/CCR.X/prefetch remains blocked.
-EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md
-EXACT NEXT ACTION: STOP. Do not add another target, manual gameplay, coverage,
-AI generation or production runtime dependency.
+TASK: M11.30 Hybrid Migration Small Batch
+STATUS: HYBRID_OVERRIDE_NOT_YET_REPEATABLE
+SCOPE: developer-only registry and bounded natural shadow/override experiment.
+RESULT: 0x2D66, 0x604BC and 0x61032 shadowed 14/14 with zero divergence; the
+simultaneous override skipped all original bodies but diverged in serialized
+VDP/sound state.
+LIMITS: exact GPGX bus-refresh and hardware phase effects remain unavailable.
+EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md
+EXACT NEXT ACTION: STOP. Do not expand timing work, repair 0x3820, investigate
+ID3, search manually, broaden coverage, add AI or change production dependencies.
 
 ## Historical task context
 

@@ -238,3 +238,22 @@ Consequences:
 
 Affected files/milestones:
 ```
+
+## ADR-0010 — Minimal developer-only hybrid replacement registry
+**Status:** Accepted for migration experiments only
+**Date:** 2026-09-07
+
+**Context:** M11.29 proved one target-specific override. M11.30 tests repeatability
+across a small natural batch without making the emulator hook a production
+runtime dependency or a generic M68K replacement engine.
+
+**Decision:** Keep a small registry mapping explicit ROM PCs to target-owned
+`EMULATED`, `SHADOW_NATIVE` and `NATIVE_OVERRIDE` adapters. Each adapter owns
+its exact state/effect contract; the registry only routes hook events and
+aggregates metrics. Return/prefetch transitions use GPGX's internal bridge
+state. Timing and hardware phase are not synthesized by the registry.
+
+**Consequence:** Multiple routines can share the migration boundary, while
+unsafe candidates fail closed. The M11.30 batch shadow is clean, but override
+promotion remains blocked until the exact GPGX bus-refresh/VDP/sound phase
+contract is proven. Production Sega-Thor code remains emulator-free.

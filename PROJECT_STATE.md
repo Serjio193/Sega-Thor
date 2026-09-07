@@ -1,16 +1,16 @@
 # Project State
 
-CURRENT_MILESTONE: M11.29 minimal safe native override target
-CURRENT_TASK: complete; one target-specific developer-only override proven
-STATUS: HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN
-LAST_VERIFIED_RESULT: natural 0x2D66 call shadowed with full-SR, exact stack/RAM
-and return equivalence, then one native override skipped all original body
-instruction starts and completed the 600-frame neutral scenario. Checkpoints
-and video match EMULATED.
-LIMITATION: proof is target-specific. 0x3820 CCR.X, precise timing/interrupt
-scheduling and prefetch/IR continuation remain blocked and untouched.
+CURRENT_MILESTONE: M11.30 hybrid migration small batch
+CURRENT_TASK: complete; batch shadow proven, override repeatability blocked
+STATUS: HYBRID_OVERRIDE_NOT_YET_REPEATABLE
+LAST_VERIFIED_RESULT: 0x2D66, 0x604BC and 0x61032 produced 14/14 clean shadow
+comparisons and zero interrupts. Simultaneous native override skipped all
+original bodies and completed video, but serialized VDP/sound checkpoints
+diverged from EMULATED.
+LIMITATION: exact GPGX bus-refresh and hardware phase contract for skipped
+instructions is missing; no timing engine was added.
 PRODUCTION_BOUNDARY: new hybrid code is developer-only; no production dependency.
-EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md
+EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md
 NEXT_ACTION: STOP. M11.27 manual ID3 hunting is stopped; no further scope active.
 
 ## Historical state context

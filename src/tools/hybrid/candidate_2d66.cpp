@@ -46,6 +46,8 @@ void Candidate2D66::begin() {
             "candidate source is outside canonical ROM/RAM");
     require(entry_[15] >= 12 && !(entry_[15] & 1), "candidate stack bound");
     entry_stack_ = entry_[15];
+    entry_cycles_ = api_.cycles ? api_.cycles() : 0;
+    entry_refresh_ = api_.refresh_cycles ? api_.refresh_cycles() : 0;
     const auto offset = static_cast<unsigned>(peek(entry_[14]));
     const auto count = static_cast<unsigned>(peek(entry_[14] + 1));
     loop_count_ = count;
@@ -145,7 +147,10 @@ void Candidate2D66::finish() {
     log_ << "{\"call\":" << calls << ",\"source\":" << entry_[14]
          << ",\"destination\":" << destination_ << ",\"source_size\":" << source_size_
          << ",\"output_size\":" << output_size_ << ",\"body_instruction_starts\":"
-         << body_starts_ << ",\"override\":false,\"interrupts\":" << interrupt_count << "}\n";
+         << body_starts_ << ",\"cycle_delta\":"
+         << (api_.cycles ? api_.cycles() - entry_cycles_ : 0)
+         << ",\"refresh_delta\":" << (api_.refresh_cycles ? api_.refresh_cycles() - entry_refresh_ : 0)
+         << ",\"override\":false,\"interrupts\":" << interrupt_count << "}\n";
     active_ = false;
 }
 
@@ -166,6 +171,9 @@ void Candidate2D66::apply_override() {
     api_.set_reg(15, entry_stack_ + 4);
     api_.set_reg(17, sr);
     api_.set_reg(16, return_pc_);
+    if (api_.set_return_state)
+        api_.set_return_state(return_pc_, 0x2D84, (api_.peek(0x2D84) << 8) | api_.peek(0x2D85));
+    if (api_.add_cycles) api_.add_cycles(2828);
     ++override_calls;
     overridden_ = true;
     active_ = false;

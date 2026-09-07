@@ -34,6 +34,20 @@ RETRO_API void retro_hybrid_set_register(unsigned int reg, unsigned int value)
     if (reg < 18) m68k_set_reg((m68k_register_t)reg, value);
 }
 
+RETRO_API int retro_hybrid_cycles(void) { return m68k.cycles; }
+
+RETRO_API void retro_hybrid_add_cycles(int delta) { m68k.cycles += delta; }
+RETRO_API int retro_hybrid_refresh_cycles(void) { return m68k.refresh_cycles; }
+
+RETRO_API void retro_hybrid_set_return_state(unsigned int pc, unsigned int pref_addr,
+                                              unsigned int pref_data)
+{
+    m68k.pc = pc;
+    m68k.pref_addr = pref_addr;
+    m68k.pref_data = pref_data;
+    m68k.ir = 0x4E75;
+}
+
 RETRO_API void retro_hybrid_poke(unsigned int address, int width, unsigned int value)
 {
     cpu_memory_map *map;

@@ -3,6 +3,34 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.30 hybrid migration small batch — SHADOW PROVEN / OVERRIDE BLOCKED
+**Objective:** Reuse the M11.29 hybrid boundary for a bounded batch of naturally
+executed routines without broad coverage, manual gameplay, ID3 work or changes
+to production runtime dependencies.
+
+**Selection:** `0x604BC` and `0x61032` were selected from existing deterministic
+execution evidence. Both are fully decoded direct-RTS leaf routines with bounded
+RAM/register effects and no observed interrupt or hardware I/O. `0x6121A`,
+`0x611F4`, `0x611EA` and `0x60004` were rejected for VDP, YM/Z80, nested-call
+or non-RTS control-flow contracts.
+
+**Evidence:** The shared registry observed 14 natural calls in 600 frames
+(`0x2D66`: 1, `0x604BC`: 4, `0x61032`: 9). Shadow comparisons were 14/14 with
+zero divergences and zero interrupts. Native override calls were 14 with zero
+original-body instruction starts, zero fallback calls, complete scenario and
+matching video sequence. Serialized state first diverged at frame 120 in four
+VDP/sound-state bytes; later checkpoints diverged. Exact hashes and the blocker
+contract are recorded in `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`.
+
+**Tests:** Focused hybrid Debug build and four hybrid CTests pass. The native
+batch is intentionally not reported as equivalent because state checkpoints are
+not clean.
+
+**Result:** `HYBRID_OVERRIDE_NOT_YET_REPEATABLE`.
+
+**Next:** Stop. Do not add timing-engine work, repair `0x3820`, investigate ID3,
+search manually, broaden coverage or add AI generation.
+
 ## 2026-09-07 — M11.29 minimal safe override target — PHASE 1
 **Objective:** Select one naturally executed, short direct-return routine from
 the existing 600-frame neutral scenario before implementing override. Reuse

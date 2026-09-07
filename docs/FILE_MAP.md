@@ -291,6 +291,11 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `docs/reports/HYBRID_NATIVE_MIGRATION_POC.md`: evidence and exact blockers.
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md`: M11.29 target selection,
   identity and shadow/override equivalence evidence.
+- `src/tools/hybrid/replacement.hpp/.cpp`: developer-only explicit routine registry and metrics.
+- `src/tools/hybrid/candidate_604bc.hpp/.cpp`: M11.30 bounded RAM flag routine contract.
+- `src/tools/hybrid/candidate_61032.hpp/.cpp`: M11.30 bounded table/RAM routine contract.
+- `tests/hybrid_replacement_test.cpp`: synthetic registry routing regression.
+- `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`: M11.30 shadow evidence and override blocker.
 
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:

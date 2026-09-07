@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/hybrid/contract.hpp"
+#include "tools/hybrid/replacement.hpp"
 #include <array>
 #include <cstdint>
 #include <ostream>
@@ -10,20 +11,18 @@
 
 namespace oasis::hybrid {
 
-struct CandidateApi {
-    unsigned (*reg)(unsigned);
-    void (*set_reg)(unsigned, unsigned);
-    int (*peek)(unsigned);
-    void (*poke)(unsigned, int, unsigned);
-};
-
-class Candidate2D66 {
+class Candidate2D66 final : public Replacement {
 public:
     Candidate2D66(CandidateApi api, Mode mode, std::span<const std::uint8_t> rom,
                   std::ostream& log);
     void hook(int type, int width, unsigned address, unsigned value) noexcept;
+    unsigned target_address() const override { return 0x2D66; }
     bool complete() const { return !active_ && error_.empty(); }
     const std::string& error() const { return error_; }
+    ReplacementMetrics metrics() const override {
+        return {calls, comparisons, divergences, body_instructions, override_calls,
+                interrupt_count};
+    }
     unsigned calls{}, comparisons{}, divergences{}, body_instructions{},
              override_calls{}, interrupt_count{};
 
@@ -48,6 +47,8 @@ private:
     bool active_{}, overridden_{};
     unsigned current_pc_{}, return_pc_{}, entry_stack_{}, destination_{}, source_size_{},
              output_size_{}, loop_count_{}, body_starts_{};
+    int entry_cycles_{};
+    int entry_refresh_{};
     State entry_{};
     std::vector<std::uint8_t> source_, initial_output_, initial_stack_, expected_stack_;
     std::vector<Write> writes_;

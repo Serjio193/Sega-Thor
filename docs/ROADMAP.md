@@ -332,6 +332,15 @@ and matched EMULATED checkpoint and video sequences exactly. Result:
 `0x3820` timing/CCR.X/prefetch work, ID3, manual gameplay, coverage expansion
 and AI generation remain out of scope.
 
+## M11.30 — Hybrid migration small batch — DONE (shadow); override not repeatable
+The shared developer-only registry covers `0x2D66`, `0x604BC` and `0x61032`.
+All 14 natural calls shadow cleanly with zero divergences and no interrupts.
+The simultaneous native run skips every original body and completes the
+scenario, but serialized VDP/sound state diverges from EMULATED because the
+minimal boundary lacks the exact per-instruction bus-refresh/hardware phase
+contract. Result: `HYBRID_OVERRIDE_NOT_YET_REPEATABLE`. Stop here; do not expand
+timing work or production dependencies.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

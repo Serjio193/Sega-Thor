@@ -1,6 +1,27 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.30 — Small batch candidates
+STATUS: `SHADOW_PROVEN_OVERRIDE_BLOCKED`.
+
+`0x604BC..0x604E6` is a ten-instruction direct-RTS leaf. It sets two bounded
+RAM flag bytes, emits three Scc bytes through `A5+5` and one absolute RAM byte,
+then returns with `A0`, `A6`, `A7`, PC and the Z flag mechanically determined.
+It has four natural calls in the 600-frame neutral scenario, no observed
+interrupt and no hardware access. Shadow comparisons are 4/4 clean.
+
+`0x61032..0x610C8` is a fully decoded short direct-RTS RAM/table transform. It
+updates bounded fields relative to `A6`, performs one bounded indirect ROM/RAM
+read and has nine natural calls, no observed interrupt and no hardware access.
+Shadow comparisons are 9/9 clean with full SR checks. Its exact write list and
+register contract are implemented in the developer-only candidate adapter.
+
+Both candidates pass shadow in the natural batch with `0x2D66`. Native-side
+register/RAM effects and body skipping work, but serialized VDP/sound state
+diverges because the skipped instructions' GPGX bus-refresh and hardware phase
+contract is not available through the minimal boundary. Override promotion is
+blocked; no timing engine or production dependency is implied.
+
 ## M11.29 — Minimal safe native override target
 STATUS: `HYBRID_NATIVE_OVERRIDE_MINIMAL_PROVEN`.
 
