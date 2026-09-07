@@ -3,6 +3,37 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.24 bounded resource contract `0x02CFAA -> 0xD3B2` — VERIFIED
+**Objective:** Prove one bounded resource-loading contract for resource ID `3`
+without new runtime instrumentation, replay, broad RE tooling or semantic
+naming.
+
+**Evidence:** Natural retained GPGX execution facts reach caller `0x02CFAA`,
+loader `0xD3B2` and decompressor `0x3820`. The caller sets `D0=3` and
+`D1=0x4000`. Canonical ROM table entry `0x05CEA2` contains `0x1AE1A8`; the
+existing native decompressor consumes `1794` bytes to `0x1AE8AA`, which is the
+next table pointer, and emits `4096` bytes at the loader's
+`0xFF2FA8` destination. Native and the independent mechanical original-derived
+`0x3820` translation are byte-identical with output SHA-256
+`36bbea13cb564ab194dd438b1fe75076525525068b57f2f02a4c0142630dc277`.
+
+**Immediate consumer:** The bounded post-call sequence at `0xD3D2..0xD3E4`
+queues source word address `0x7F97D4` (`0xFF2FA8 >> 1`), destination `D1`, and
+`0x800` words in the DMA descriptor queue at `0xFF1892`. No semantic asset or
+room label was added.
+
+**Tests:** Existing native decompressor tests and ROM-backed reference checks
+pass; the one-off M11.24 calculation was removed after recording its result.
+`git diff --check` and the source-file limit check pass. No ROM, capture,
+bitmap, binary or generated commercial data is tracked.
+
+**Result:** `RESOURCE_CONTRACT_ID3_VERIFIED`. Semantic role remains
+`RESOURCE_ROLE_PARTIAL`; only the bounded selection, stream, output and
+immediate transfer contract are promoted.
+
+**Exact next step:** E — return to native gameplay. Do not implement it in
+M11.24.
+
 ## 2026-09-07 — M11.23 GPGX evidence integrity repair — REPAIRED
 **Objective:** Repair only confirmed producer attribution, exact bitmap-union,
 JSON parsing, bounded completeness and provenance defects before the bounded
@@ -33,8 +64,8 @@ this local toolchain limitation is not hidden or repaired in M11.23.
 focused regressions are green; the documented full Release MinGW limitation is
 unrelated to this evidence pipeline.
 
-**Exact next step:** document-only `BOUNDED RESOURCE CONTRACT`; do not
-implement it in M11.23.
+**Historical next step (superseded by M11.24):** bounded resource contract
+`0x02CFAA -> 0xD3B2`. M11.23 itself did not implement that contract.
 
 ## 2026-09-07 — GPGX analysis ROM-read to reader-PC correlation — HIGH VALUE
 **Objective:** Correlate the existing post-startup analysis ROM-read regions

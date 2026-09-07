@@ -260,6 +260,8 @@ region investigation is retained in
 retained in `docs/reports/RUNTIME_REGION_060BB6_CLASSIFICATION.md`.
 The analysis ROM-read to reader-PC correlation report is retained in
 `docs/reports/GPGX_ROM_READER_CORRELATION.md`.
+The bounded M11.24 resource contract is retained in
+`docs/reports/RESOURCE_CONTRACT_ID3.md`.
 
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:

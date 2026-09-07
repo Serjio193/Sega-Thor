@@ -57,6 +57,7 @@ was taken, so the retained old correlation output is not relabeled as repaired.
 
 `GPGX_EVIDENCE_INTEGRITY_REPAIRED`
 
-The next work is documentation-only planning of the bounded resource contract
-for `0x02CFAA -> 0xD3B2` (resource 3, table `0x05CE96`, stream `0x1AE1A8`,
-decompressor `0x3820`, RAM near `0xFF2FA8`). It is not implemented here.
+The next work was the bounded resource contract for `0x02CFAA -> 0xD3B2`
+(resource 3, table `0x05CE96`, stream `0x1AE1A8`, decompressor `0x3820`, RAM
+near `0xFF2FA8`). M11.23 did not implement it; M11.24 records the resulting
+evidence in `docs/reports/RESOURCE_CONTRACT_ID3.md`.

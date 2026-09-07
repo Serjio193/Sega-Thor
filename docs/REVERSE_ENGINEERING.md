@@ -1,6 +1,28 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.24 — Bounded resource contract `0x02CFAA -> 0xD3B2`
+STATUS: `RESOURCE_CONTRACT_ID3_VERIFIED`.
+
+The natural executed-PC evidence reaches `0x02CFAA`, `0xD3B2` and `0x3820`.
+At `0x02CFA2`, the caller selects resource ID `3`; `0x02CFAA` calls the
+indexed loader. The exact table entry `0x05CEA2` contains `0x001AE1A8`, and
+the existing native decompressor consumes `0x702` bytes through exclusive
+end `0x1AE8AA`. The next table entry independently contains that end pointer.
+
+The loader decodes to `0xFF2FA8..0xFF3FA8` (`0x1000` bytes). The native output
+SHA-256 is
+`36bbea13cb564ab194dd438b1fe75076525525068b57f2f02a4c0142630dc277`.
+An independent mechanical translation of the original `0x3820` algorithm
+produces the same consumed length, output length and bytes. Immediately after
+the call, `0xD3B2` queues a bounded DMA descriptor: source word address
+`0x7F97D4` (`0xFF2FA8 >> 1`), caller-supplied destination `D1=0x4000`, and
+`0x800` words. This is a neutral transfer fact, not a semantic resource name.
+
+No adjacent routine or resource meaning was promoted. The complete bounded
+contract, provenance and remaining semantic unknown are recorded in
+`docs/reports/RESOURCE_CONTRACT_ID3.md`.
+
 ## M11.22 — Bounded static classification for `0x060BB6-0x060BC4`
 STATUS: `BOUNDED_REGION_060BB6_STATIC_SUPPORTED`.
 
