@@ -31,6 +31,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── TARGETED_DYNAMIC_CONFIRMATION.md M11.16 bounded natural evidence report
 │   ├── STRUCTURED_DATA_CLASSIFICATION.md M11.17 bounded data classification report
 │   ├── NATIVE_VERTICAL_SLICE.md M11.18 native controlled-screen boundary and status
+│   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
 │   ├── TASK_TEMPLATE.md       Mandatory task/session handoff template
@@ -103,6 +104,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_structured_data.py Exact bounded ROM data structure classifier
 │       ├── re_slice_format.cpp Deterministic JSON/human report formatting
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
+│       ├── gpgx_coverage_report.cpp Developer-only NEW executed-PC bitmap decoder/report
+│       ├── gpgx_import_gpgx_coverage.cpp Developer-only address-level GPGX trust evidence importer
+│       ├── gpgx_unknown_priority.py Deterministic ranking and bounded-slice report for runtime-unknown PCs
+│       ├── oasis_gpgx_rom_reader_correlation.py Deterministic analysis ROM-read to reader-PC correlation
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
 │       ├── re_program.cpp Conservative function boundaries/call and memory bindings
 │       ├── re_program_format.cpp Deterministic multi-slice JSON/human formatting
@@ -233,6 +238,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_ant_test.cpp                         Synthetic single-ant contract/merge tests
     ├── re_ant_queue_test.cpp                    Synthetic queue selection/lifecycle tests
     ├── re_static_translation_test.cpp            Synthetic static translation differential tests
+    ├── gpgx_persistent_coverage_test.py           Synthetic persistent bitmap merge contract test
+    ├── gpgx_rom_reader_correlation_test.py        Synthetic reader correlation/provenance tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
@@ -240,6 +247,14 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── smoke.cpp                         Minimal build/runtime smoke test
     └── vdp_test.cpp                      VDP storage/bounds/attribute tests
 ```
+
+`docs/reports/GPGX_RUNTIME_EXECUTION_TRUST.md` is the retained human-readable
+report for the canonical manual-realtime evidence import. The bounded M11.21
+region investigation is retained in
+`docs/reports/RUNTIME_REGION_060BB6.md`; its M11.22 bounded classification is
+retained in `docs/reports/RUNTIME_REGION_060BB6_CLASSIFICATION.md`.
+The analysis ROM-read to reader-PC correlation report is retained in
+`docs/reports/GPGX_ROM_READER_CORRELATION.md`.
 
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:

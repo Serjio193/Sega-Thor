@@ -140,6 +140,12 @@ target_link_libraries(oasis_re_ant_queue PRIVATE oasis_re_tooling oasis_core)
 add_executable(oasis_re_static_translation src/tools/re_static_translation_report.cpp)
 target_link_libraries(oasis_re_static_translation PRIVATE oasis_re_tooling oasis_core)
 
+add_executable(oasis_gpgx_coverage_report src/tools/gpgx_coverage_report.cpp)
+target_link_libraries(oasis_gpgx_coverage_report PRIVATE oasis_re_tooling oasis_core)
+
+add_executable(oasis_re_import_gpgx_coverage src/tools/gpgx_import_gpgx_coverage.cpp)
+target_link_libraries(oasis_re_import_gpgx_coverage PRIVATE oasis_re_tooling oasis_core)
+
 enable_testing()
 
 add_executable(oasis_re_assemble src/tools/re_assemble_report.cpp)
@@ -150,6 +156,8 @@ target_link_libraries(oasis_re_assemble_range PRIVATE oasis_re_tooling oasis_cor
 add_executable(oasis_re_assemble_test tests/re_assemble_test.cpp)
 target_link_libraries(oasis_re_assemble_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_assemble COMMAND oasis_re_assemble_test)
+add_test(NAME oasis_re_import_gpgx_coverage_self_test
+         COMMAND oasis_re_import_gpgx_coverage --self-test)
 
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
@@ -163,6 +171,14 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_dynamic_confirm_test.py)
     add_test(NAME oasis_re_structured_data_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_structured_data_test.py)
+    add_test(NAME oasis_gpgx_persistent_coverage_semantics
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_persistent_coverage_test.py)
+    add_test(NAME oasis_gpgx_unknown_priority_self_test
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/tools/gpgx_unknown_priority.py --self-test)
+    add_test(NAME oasis_gpgx_bounded_classification
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_bounded_classification_test.py)
+    add_test(NAME oasis_gpgx_rom_reader_correlation
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_rom_reader_correlation_test.py)
 endif()
 
 add_executable(oasis_smoke tests/smoke.cpp)
@@ -401,6 +417,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(oasis_compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
     set(oasis_runtime_test_names
         oasis_re_assemble
+        oasis_re_import_gpgx_coverage_self_test
         oasis_smoke
         oasis_rom_identity
         oasis_graphics_decompress
@@ -431,6 +448,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_mass_verify
         oasis_re_static_translation
         oasis_re_explore
+        oasis_gpgx_unknown_priority_self_test
         oasis_re_ant
         project_file_line_limit
     )

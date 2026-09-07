@@ -1,6 +1,83 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.22 — Bounded static classification for `0x060BB6-0x060BC4`
+STATUS: `BOUNDED_REGION_060BB6_STATIC_SUPPORTED`.
+
+The exact bounded unit was re-verified against the canonical ROM and retained
+M11.19 runtime evidence: 8/8 instruction starts are byte-exact, decoded and
+observed. The exact bounded decoder and structural explorer corroborate the
+four required local edges, including the fallthrough entry at `0x060BAE`, the
+loop-back at `0x060BC2`, the alternate entry at `0x060BAA`, and the immediate
+successor call at `0x060BCC`.
+
+Only the inclusive unit `0x060BB6-0x060BC4` changed from its prior unknown
+state to `CODE_STATIC_SUPPORTED`. Its eight address facts remain
+`CODE_EXECUTED_AT_ADDRESS`. `boundary_status` is
+`LIKELY_INTERNAL_BLOCK`; routine identity, whole-routine promotion and
+adjacent-range changes are explicitly absent. Provenance and deterministic
+regression results are in
+`docs/reports/RUNTIME_REGION_060BB6_CLASSIFICATION.md` and
+`build/m11-22-gpgx-bounded-classification.json`.
+
+## M11.21 — Bounded runtime region `0x060BB6-0x060BC4`
+STATUS: `RUNTIME_REGION_060BB6_STRUCTURALLY_UNDERSTOOD`.
+
+The retained M11.19 manual-realtime bitmap contains all eight target
+instruction-start PCs. Exact ROM decoding gives a coherent local loop:
+`0x060BAE` falls through to `0x060BB6`, the six-NOP sequence reaches
+`0x060BC2`, `0x060BC2` branches to `0x060B90`, and `0x060BAA` can enter at
+`0x060BC4`. `0x060BC4` falls through to `0x060BCC`, whose direct call targets
+the existing candidate-map `CONFIRMED` leaf `0x0604BC`. The surrounding
+`0x060B8C -> 0x06121A` call is also exact and its target is globally observed.
+
+The bounded fragment is assessed as `LIKELY_INTERNAL_BLOCK`; no whole routine
+boundary or semantic name is claimed. The evidence is retained as eight
+`CODE_EXECUTED_AT_ADDRESS` facts only. It does not promote the full range to
+`CODE_STATIC_SUPPORTED`, and no trust classification changed. See
+`docs/reports/RUNTIME_REGION_060BB6.md` for the listing, edge provenance,
+rank-1 comparison and unknowns.
+
+## M11.19 — GPGX executed-PC evidence import
+STATUS: `GPGX_RUNTIME_EXECUTION_EVIDENCE_HIGH_VALUE`.
+
+The developer-only `oasis_re_import_gpgx_coverage` importer accepted the
+validated manual-realtime GPGX capture for the canonical USA ROM
+(`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`). The
+persistent global bitmap contributed 14,732 unique even instruction-start
+addresses; the latest session contributed 1,447 new addresses. The importer
+stored 14,732 address-level `CODE_EXECUTED_AT_ADDRESS` facts, retained 94
+`DECODE_UNSUPPORTED` results, and reported 12,698 executed addresses without
+an existing static classification as `RUNTIME_EXECUTED_UNKNOWN`.
+
+Canonical identity, bitmap size and capture hashes were verified. No
+runtime/data conflicts were found. The anchors `0x3820`, `0x62CC`, `0x9BF2`,
+`0xD3B2` and `0x6121A` were observed; `0xA8DA` was not. No range-level trust
+classification changed and no function boundary or semantic claim is made.
+The deterministic artifact and human report are
+`build/gpgx_runtime_execution_evidence.json` and
+`docs/reports/GPGX_RUNTIME_EXECUTION_TRUST.md`.
+
+## M11.20 — Runtime-executed unknown prioritization
+STATUS: `RUNTIME_UNKNOWN_PRIORITIZATION_HIGH_VALUE`.
+
+The M11.19 address evidence was grouped into 9,012 neutral
+`RUNTIME_EXECUTED_REGION`s containing 12,698 PCs. The deterministic shortlist
+does not treat contiguity as a function boundary and does not change any
+classification. It identified 525 regions with runtime evidence plus strong
+existing static/candidate corroboration; the highest overall region is
+`0x000374..0x0003A0`, while the highest-ranked corroborated region is
+`0x060BB6..0x060BC4`.
+
+Top-five bounded slices use the exact decoder's instruction records and only
+local direct control flow. Unsupported, indirect, conflict and external
+boundaries are retained as stops. The report checks `0x62CC`, `0x9BF2` and
+`0xD3B2` independently; they are already `CODE_STATIC_SUPPORTED` and are not
+selected by hardcoded priority. The observed systemic gap is Ghidra overlap
+without trusted/static corroboration, not a demonstrated decoder defect.
+No semantic names, mass classifier repair, runtime capture or trust promotion
+was performed. See `docs/reports/RUNTIME_EXECUTED_UNKNOWN_PRIORITY.md`.
+
 ## M11.17 — Structured data classification
 STATUS: `STRUCTURED_DATA_HIGH_VALUE`.
 

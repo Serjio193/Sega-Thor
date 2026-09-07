@@ -3,6 +3,280 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — GPGX analysis ROM-read to reader-PC correlation — HIGH VALUE
+**Objective:** Correlate the existing post-startup analysis ROM-read regions
+with their first executed reader PCs, without adding runtime instrumentation,
+semantic naming, replay, destination provenance or trust promotion.
+
+**Implementation:** Added the developer-only deterministic tool
+`src/tools/oasis_gpgx_rom_reader_correlation.py`. It validates canonical ROM,
+analysis bitmap/ranges, analysis metadata, GPGX execution provenance and the
+current classification artifact; deduplicates exact regions; groups only by
+the retained first-reader field; and emits per-region, per-reader,
+classification, top-20 and checksum-contamination summaries. Added focused
+synthetic tests and CTest registration.
+
+**Evidence:** The retained automatic post-startup capture contains `103,674`
+analysis ROM bytes in `1,412` regions and `90` first-reader PCs. Correlation
+produced `1,099` ASM-roundtrip bytes, `93,877` statically supported bytes and
+`8,698` runtime-executed-unknown bytes. Reader `0x000380` has zero analysis
+regions/bytes, so checksum coverage does not dominate the analysis artifact;
+the reader is not hardcoded or blacklisted. Exact first-reader-only limits are
+reported rather than expanded into multi-reader claims.
+
+**Artifacts:** Human report
+`docs/reports/GPGX_ROM_READER_CORRELATION.md`; generated JSON is kept under
+ignored `build/` and no ROM, DLL, bitmap or runtime dump is tracked. The
+report records canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, GPGX
+SHA `27426f00aa68f9f358c86919e8a40985326fa05b`, and the input artifact hashes.
+
+**Tests:** Tool self-test, focused Python tests, CTest
+`oasis_gpgx_rom_reader_correlation`, deterministic JSON/report rerun,
+`git diff --check`, and the project file-limit check all passed. CMake was
+configured in the separate local `build-correlation` directory because the
+existing `build` cache points at an old checkout path.
+
+**Result:** `GPGX_ROM_READER_CORRELATION_HIGH_VALUE`.
+
+**Exact next step:** STOP GPGX EXPERIMENT and request independent Astra audit.
+
+## 2026-09-07 — M11.22 bounded static classification for `0x060BB6` — PASS
+**Objective:** Classify only the proven bounded unit `0x060BB6-0x060BC4`
+without expanding boundaries, naming a routine, starting a new capture or
+changing the broad trust model.
+
+**Implementation:** Added the developer-only
+`src/tools/gpgx_bounded_classification.py` and its regression test. The tool
+re-verifies canonical ROM bytes, exact decode and address-level runtime
+execution, then requires the existing exact bounded decoder and structural
+explorer evidence for the four requested edges. It emits the deterministic
+artifact `build/m11-22-gpgx-bounded-classification.json` and changes no
+adjacent classifications.
+
+**Evidence:** All 8/8 target instruction starts decode and are observed. The
+bounded unit changes from current `UNKNOWN`/runtime-unknown evidence to
+`CODE_STATIC_SUPPORTED`; each observed PC retains
+`CODE_EXECUTED_AT_ADDRESS`. Boundary status remains
+`LIKELY_INTERNAL_BLOCK`, with no routine identity or whole-routine promotion.
+The artifact records canonical ROM, runtime, exact-decoder, bounded-decoder,
+explorer and M11.21 report SHA-256 provenance.
+
+**Tests:** Python bounded-classification tests and `--self-test` passed. CMake
+reconfigured successfully with MSYS2 UCRT64; the importer self-test and new
+CTest both passed (`2/2`).
+
+**Result:** `BOUNDED_REGION_060BB6_STATIC_SUPPORTED`.
+
+**Artifacts:** `docs/reports/RUNTIME_REGION_060BB6_CLASSIFICATION.md` and
+`build/m11-22-gpgx-bounded-classification.json`.
+
+**Exact next step:** recommendation **A — investigate parent routine boundary
+around `0x060B90`**; do not implement it in this task.
+
+## 2026-09-07 — M11.21 bounded investigation of `0x060BB6` — STRUCTURALLY UNDERSTOOD
+**Objective:** Determine the instruction boundaries and bounded direct control
+flow of runtime-executed region `0x060BB6-0x060BC4` using retained M11.19/M11.20
+evidence, without new capture, replay, ranking changes, semantic naming or
+automatic trust promotion.
+
+**Evidence:** The canonical exact decoder reports all eight target PCs as
+decoded and observed: `0x060BB6`, `0x060BB8`, `0x060BBA`, `0x060BBC`,
+`0x060BBE`, `0x060BC0`, `0x060BC2` and `0x060BC4`. The bounded CFG confirms
+the loop-back `0x060BC2 -> 0x060B90`, the alternate entry
+`0x060BAA -> 0x060BC4`, fallthrough entry `0x060BAE -> 0x060BB6`, and the
+successor call `0x060BCC -> 0x0604BC`. The lower/upper static window was
+extended only to include complete instructions crossing its requested edges.
+
+**Result:** `RUNTIME_REGION_060BB6_STRUCTURALLY_UNDERSTOOD`. The target is a
+likely internal bounded fragment, not a proven whole routine. Evidence supports
+`CODE_EXECUTED_AT_ADDRESS` for the eight PCs only; no range-level promotion was
+made. Rank-1 `0x000374-0x0003A0` remains higher by transparent score but has
+no static support or gameplay-specific corroboration in the retained artifacts.
+
+**Tests:** Existing exact decoder, candidate-map and bounded explorer outputs
+were inspected. No new deterministic translation/classification logic was
+added, so no new test was required.
+
+**Artifacts:** `docs/reports/RUNTIME_REGION_060BB6.md`.
+
+**Exact next step:** recommendation **B — classify bounded region with static
+support**; do not implement it in this task.
+
+## 2026-09-07 — M11.20 runtime-unknown prioritization — HIGH VALUE
+**Objective:** Produce a deterministic bounded shortlist from the M11.19
+manual-realtime executed-PC evidence without new capture, replay automation,
+semantic naming, mass classification or automatic trust changes.
+
+**Implementation:** Added `src/tools/gpgx_unknown_priority.py`. It validates
+the canonical ROM against the M11.19 artifact, consumes the existing exact
+decoder output, audited classifications, candidate map, Ghidra evidence and
+bounded structural-explorer output, then groups only contiguous even
+instruction starts as neutral `RUNTIME_EXECUTED_REGION`s. The transparent
+score rewards observed/decoded PCs, known xrefs/edges, candidate/Ghidra/
+explorer overlap and proximity to trusted ranges; it penalizes unsupported
+decodes, tiny fragments and conflicts. Repeated-hit data was unavailable and
+contributes zero. Top-five slices follow only direct local control flow and
+stop at unsupported, indirect, external or region-boundary edges.
+
+**Evidence:** `12,698` runtime-unknown PCs form `9,012` regions. The top
+target is `0x000374-0x0003A0` with score `99`; it was not selected by anchor
+priority. `525` regions are separately marked
+`RUNTIME_EXECUTED_STATIC_CORROBORATED`; the top-20 includes
+`0x060BB6-0x060BC4` with score `80`. Anchor checks remain independent:
+`0x62CC`, `0x9BF2` and `0xD3B2` are exact-decoder
+`CODE_STATIC_SUPPORTED` addresses outside unknown regions; `0xA8DA` was not
+observed. The systemic pattern is Ghidra overlap without corresponding
+trusted/static corroboration (`4,949/9,012` regions overlap Ghidra, while
+`525` have stronger candidate/audit support). No mass fix was applied.
+
+**Artifacts:** deterministic JSON is `build/m11-20-gpgx-priority.json`; the
+required report is `docs/reports/RUNTIME_EXECUTED_UNKNOWN_PRIORITY.md`.
+Running the tool twice produced identical JSON SHA-256
+`E37BA2E5C83B8F8E79AED002E89033B7F185D5FF86950A016AFAB3D98217E540` and
+identical report SHA-256
+`4889FD7AAAE25725922146275C7D5C846DCB210532D2FC4A796CC993FB8AE181`.
+
+**Tests:** Python self-test, persistent coverage semantics and source line
+limit CTest passed. The exact-decoder report and bounded explorer were run
+from existing tools; no runtime capture was started.
+
+**Result:** `RUNTIME_UNKNOWN_PRIORITIZATION_HIGH_VALUE`.
+
+**Exact next step:** `A. investigate highest-ranked region` — do not
+implement it in this task.
+
+## 2026-09-07 — M11.19 GPGX executed-PC evidence import — HIGH VALUE
+**Objective:** Integrate the validated manual-realtime Genesis Plus GX capture
+into the trust pipeline without changing instrumentation semantics, range
+classifications, gameplay code or `main`.
+
+**Implementation:** Added the developer-only
+`oasis_re_import_gpgx_coverage` tool and its CTest self-test. It validates the
+canonical ROM SHA-256, bitmap size and metadata/file hashes; imports global
+and session bitmaps idempotently; retains even address-level
+`CODE_EXECUTED_AT_ADDRESS` facts; records `DECODE_UNSUPPORTED`; reports
+`RUNTIME_EXECUTED_UNKNOWN` and data conflicts; and emits deterministic JSON
+plus `docs/reports/GPGX_RUNTIME_EXECUTION_TRUST.md`. It reports coverage of
+existing ranges but applies no range-level promotion.
+
+**Evidence:** Canonical ROM SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The imported global capture has 14,732 unique PCs; the current session has
+1,447 new PCs from 11,153 frames. The evidence artifact has 14,732 unique
+addresses and 16,179 address/capture facts, with 14,638 decoded starts and
+94 unsupported decoder results. Classification summary is
+`ASM_ROUNDTRIP_EXACT=1666`, `CODE_STATIC_SUPPORTED=362`, `CODE_EXECUTED=6`,
+`DATA_REGION_SUPPORTED=0`, `DATA_STRUCTURE_SUPPORTED=0`, `UNKNOWN=0`,
+`RUNTIME_EXECUTED_UNKNOWN=12698`, `RUNTIME_DATA_CONFLICT=0`; range-level
+changes are zero. Anchors observed are `0x3820`, `0x62CC`, `0x9BF2`,
+`0xD3B2`, `0x6121A`; `0xA8DA` was not observed.
+
+**Tests:** `oasis_re_import_gpgx_coverage --self-test` passed. CTest passed
+`oasis_re_import_gpgx_coverage_self_test` and `project_file_line_limit`.
+The built importer was run against both validated captures; the emitted
+capture metadata, fact counts and deterministic report were inspected.
+
+**Result:** `GPGX_RUNTIME_EXECUTION_EVIDENCE_HIGH_VALUE`. The trust pipeline
+now has address-level runtime evidence only; it does not claim function
+boundaries, semantics or full-range execution.
+
+**Exact next step:** `A. prioritize RUNTIME_EXECUTED_UNKNOWN regions for
+bounded static investigation` is recommended. Do not implement it in this
+task.
+
+## 2026-09-07 — GPGX persistent coverage validation run — PASS
+**Objective:** Validate one fresh manual realtime capture after the SHA-256 metadata fix, including provenance and persistent merge invariants.
+
+**Evidence:** RetroArch was launched through the desktop shortcut with the fixed instrumented DLL; the user played manually and performed normal shutdown. The capture contains `11,153` frames, `185.883` seconds and `113,589,477` instruction starts. Metadata reports `known_pcs_before=13,285`, `session_unique_pcs=12,006`, `new_pcs_session=1,447`, `known_pcs_after=14,732`; `13,285 + 1,447 = 14,732`. Global bitmap load status was `loaded` and commit status was `saved`.
+
+**Independent checks:** all three metadata bitmap SHA-256 values exactly matched the on-disk files. Bitmap size was `196,608` bytes for all maps; session-new was a subset of session-all, disjoint from reconstructed global-known-before, and `global_after == global_before OR session_all` passed. The NEW report contains exactly `1,447` PCs in `1,114` neutral regions; `1,442` decoded plus `5` `DECODE_UNSUPPORTED` equals `1,447`.
+
+**Classification summary:** `ASM_ROUNDTRIP_EXACT=139`, `CODE_STATIC_SUPPORTED=18`, `CODE_EXECUTED=0`, `DATA_REGION_SUPPORTED=0`, `DATA_STRUCTURE_SUPPORTED=0`, `UNKNOWN=1,290`, runtime/data conflicts `0`.
+
+**Anchors:** `0x3820=85`, `0x62CC=267`, `0x9BF2=21,406`, `0xA8DA=0`, `0xD3B2=4`, `0x6121A=9`. `0xD3B2` was newly discovered in this session; the other reached anchors were already known.
+
+**Provenance:** `rom_file_sha256` is explicitly `unavailable` because the frontend buffer is not claimed as the exact original file. The canonical local ROM independently remains SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. The corrected runtime SHA implementation was verified against the standard `abc` test vector.
+
+**Result:** `PERSISTENT_COVERAGE_HIGH_VALUE`.
+
+**Exact next step:** `C. integrate GPGX executed-PC evidence into trust pipeline` may be considered, but integration is intentionally not implemented in this task.
+
+## 2026-09-07 — GPGX persistent coverage and NEW executed-code report
+**Objective:** Extend the external Genesis Plus GX realtime PC capture with persistent global knowledge and a developer-side report for PCs newly executed in the current session.
+
+**Actions:**
+- Added persistent `global_known_pc_bitmap.bin` loading with exact-size validation, session-all/session-new maps, atomic global temp-and-replace commit, sorted PC lists, neutral adjacent-PC ranges, and expanded coverage metadata.
+- Kept the M68K hook bounded to bitmap marking, atomic counters, last-PC and anchor updates; no I/O, decoder, UI or semantic promotion is performed in the hook.
+- Extended the live window with the main `NEW PCs THIS SESSION` indicator, known-before/after counts, global load/commit state and separate dirty flags.
+- Added `oasis_gpgx_coverage_report`, which consumes a canonical ROM and `session_new_pc_bitmap.bin`, uses the existing exact decoder, records `DECODE_UNSUPPORTED` explicitly, and optionally compares code/data classification ranges without inventing function boundaries.
+
+**Files changed:** `core/debug/coverage.c`, `core/debug/coverage.h`, `core/debug/coverage_storage.c`, `core/debug/coverage_storage.h`, `core/debug/coverage_ui.c`, `libretro/libretro.c` in `C:\Github\Genesis-Plus-GX-instrumented`; `src/tools/gpgx_coverage_report.cpp`, `CMakeLists.txt`, `tests/gpgx_persistent_coverage_test.py`, `docs/FILE_MAP.md` here.
+
+**Evidence/tests:** instrumented GPGX DLL built with MSYS2 UCRT64 `make -f Makefile.libretro platform=win HOOK_CPU=1 -j4`; CMake configured in `build-codex-msys2` and `oasis_gpgx_coverage_report` built; persistent three-session contract CTest passed; report smoke test decoded 14,621 PCs into 10,093 neutral regions from the existing local capture bitmap. This smoke input is legacy all-session coverage, not claimed as a new persistent gameplay session.
+
+**Result:** implementation and developer tooling are locally build-verified. A fresh manual RetroArch session is still required to verify the new persistent files and global merge using real user input.
+
+**Unresolved:** no automated input or RetroArch shutdown was performed; no new gameplay capture was generated in this turn.
+
+**Exact next step:** user manually starts the instrumented core with `GPGX_COVERAGE_DIR` pointing at the capture directory, plays, exits normally, and checks the five new session/global files before a second session validates `new_pcs_session` against the first global bitmap.
+
+## 2026-09-06 — M11.19 Test A live GPGX coverage experiment
+Objective: validate the existing Genesis-Plus-GX `HOOK_CPU` path with a
+minimal address-level M68K instruction-start bitmap, while keeping this
+repository's gameplay code and `main` unchanged.
+
+Scope was limited to Test A. No Stable-Retro, live-map, Atlas, RL or C++
+gameplay translation work was started. The official upstream repository was
+cloned outside this repository at `C:\Github\Genesis-Plus-GX` and pinned at
+`27426f00aa68f9f358c86919e8a40985326fa05b`. The instrumented worktree is
+`C:\Github\Genesis-Plus-GX-instrumented` on branch
+`experiment/gpgx-live-coverage`; the baseline source tree remained
+unmodified, with only its generated DLL untracked.
+
+Installed tools were checked rather than reinstalled: Git for Windows
+2.55.0.2, MSYS2 UCRT64 with GCC 16.2.0, GNU Make 4.4.1 and zlib 1.3.2-2,
+and RetroArch 1.22.2. The unmodified baseline command passed:
+`make -f Makefile.libretro platform=win -j$(nproc)`. The clean upstream
+`HOOK_CPU=1` build first failed at link time because the upstream header's
+tentative `cpu_hook` definition is rejected by this GCC default (`-fno-common`);
+the exact failure was multiple `cpu_hook` definitions. After that cause was
+established, the instrumented branch made only the declaration correction to
+`extern`, then added the coverage callback and bounded export outside the
+instruction hook. The hook build passed with:
+`make -f Makefile.libretro platform=win HOOK_CPU=1 -j$(nproc)`.
+
+The callback only checks `HOOK_M68K_E` and the `0x300000` cartridge-ROM
+address bound, sets one bit per instruction-start byte in a 393216-byte fixed
+bitmap, and increments a counter. It performs no logging, file I/O, JSON,
+disassembly, allocation, locking, IPC, GUI or AI work. Export is performed at
+core unload/deinit; bounded checkpoints are sampled every 60 frames.
+
+The canonical 3 MiB Beyond Oasis ROM was loaded through RetroArch with both
+DLLs. The reproducible 600-frame replay was
+`C:\Github\gpgx-test-roms\test-a-600.rpl` (SHA-256
+`B36FFD6782DD8ADDD1C84CC992C516B2F18BFF7B16CE918BE56C9F5A3344CB0C`). It
+was a no-input startup/title segment, not a manually played movement segment.
+Instrumentation evidence was positive: unique PCs grew from 173 at frame 60
+to 2188 at frame 600, with 6488885 instruction starts total. Two independent
+runs produced identical report SHA-256
+`CBFF415FF07CCF328A451B1B9F27FAB64E5AA17235D8AA23D9CEE88C762BCFA2` and
+bitmap SHA-256
+`BF97D2CCCB1CA1400C3A386B5A62AB8C07C5A185BE5C95BA7C78C595A366674E`.
+
+Seven fast-forward wall-clock runs over the same replay gave median baseline
+8.274 ms and instrumented 15.177 ms for 600 frames, an overhead ratio of
+1.8342x. This is a process wall-time measurement including frontend startup,
+not a core-internal frame timer. The core reported nominal 59.92 FPS while
+loaded. The instrumentation and deterministic replay checks pass, but strict
+Test A is `FAIL`: the measured segment contained no gameplay input and the
+native automation surface did not provide a human visual/input check, so
+gameplay correctness and human playability remain unverified.
+
+Exact next step: do not start Test B or build workaround architecture. Obtain
+a real input-bearing RetroArch gameplay replay (or a user-run equivalent),
+repeat the same baseline/instrumented measurement, and reassess Test A.
+
 ## 2026-09-06 — M11.18.1 Native vertical slice validation closure
 Objective: close the remaining M11.18 validation gaps on the current checkout
 without expanding gameplay scope.

@@ -149,6 +149,39 @@ original room.
 **Affected files/milestones:** `src/platform/`, `src/game/controlled_screen.*`,
 `src/game/render/`, M11.18.
 
+## ADR-0010 — Address-level GPGX manual runtime evidence
+**Status:** Accepted
+**Date:** 2026-09-07
+
+**Context:** The instrumented Genesis Plus GX core now provides persistent
+manual-realtime executed-PC bitmaps for the canonical Beyond Oasis ROM. This
+is stronger evidence than static reachability for individual instruction
+starts, but it does not establish function boundaries, semantics, or complete
+range execution.
+
+**Decision:** Add `GPGX_MANUAL_REALTIME` as a provenance-bound evidence source
+that records only `CODE_EXECUTED_AT_ADDRESS` facts. The importer must verify
+the canonical ROM identity, bitmap size and metadata/file hashes, retain
+unsupported decoder results, and reject odd, out-of-range or data-conflicting
+addresses. Evidence is duplicate-safe by ROM, source and capture identity.
+It may report existing-range coverage, but it must not promote or otherwise
+change range classifications.
+
+**Alternatives considered:** Promoting an entire static range from one
+executed PC was rejected because it invents boundaries and branch coverage.
+Reclassifying trusted data on runtime overlap was rejected because conflicts
+must remain explicit and fail-closed. Replay or input automation was rejected
+because this source is specifically manual realtime capture.
+
+**Consequences:** Runtime execution evidence is available to later trust
+analysis at address granularity. Unknown executed addresses remain separately
+reported as `RUNTIME_EXECUTED_UNKNOWN`; `RUNTIME_DATA_CONFLICT` is retained as
+a critical diagnostic. No gameplay code, `main`, ROM or extracted asset is
+changed.
+
+**Affected files/milestones:** `src/tools/gpgx_import_gpgx_coverage.cpp`,
+`CMakeLists.txt`, M11.19.
+
 ## ADR template
 Copy this block for new decisions:
 
