@@ -60,6 +60,12 @@ Responsibilities:
 - menus/inventory;
 - save semantics.
 
+The M11.25 resource baseline also keeps a narrow production path for verified
+ROM resource extraction, native VDP transfer and structural tile diagnostics.
+It consumes the canonical ROM through `resource_loader`, stores bytes only in
+the bounded VDP model, and does not expose original work-RAM addresses as
+native architecture or assign unproven resource semantics.
+
 Every routine translated from assembly should retain a traceable mapping to original ROM address(es).
 
 ### `tools`

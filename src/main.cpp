@@ -1,7 +1,10 @@
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include "game/controlled_screen.hpp"
+#include "game/resource_diagnostic.hpp"
+#include "game/resource_loader.hpp"
 #include "game/render/framebuffer.hpp"
+#include "genesis/vdp.hpp"
 #include "platform/window.hpp"
 
 #include <chrono>
@@ -9,11 +12,41 @@
 #include <exception>
 #include <iomanip>
 #include <iostream>
+#include <string_view>
 #include <thread>
 
+namespace {
+
+int run_resource_diagnostic(const oasis::Rom& rom) {
+    const auto resource = oasis::game::load_verified_resource(
+        rom.bytes(), oasis::game::kVerifiedResourceId);
+    oasis::genesis::Vdp vdp;
+    oasis::game::render::ResourceDiagnosticScreen screen;
+    screen.transfer_to_vram(vdp, resource.bytes);
+    oasis::game::render::SoftwareFramebuffer framebuffer;
+    oasis::platform::NativeWindow window(framebuffer.kWidth, framebuffer.kHeight);
+    if (!window.backend_available() ||
+        !window.open("ROM-backed resource ID 3 diagnostic visualization")) {
+        std::cerr << "error: native window backend is unavailable on this platform\n";
+        return 4;
+    }
+
+    while (window.is_open()) {
+        if (!window.process_events()) break;
+        screen.render(vdp, framebuffer.pixels());
+        window.present(framebuffer.pixels());
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+    return 0;
+}
+
+} // namespace
+
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cerr << "usage: oasis <rom.bin>\n";
+    const bool resource_mode = argc == 4 && std::string_view(argv[2]) == "--resource-id" &&
+                               std::string_view(argv[3]) == "3";
+    if (argc != 2 && !resource_mode) {
+        std::cerr << "usage: oasis <rom.bin> [--resource-id 3]\n";
         return 1;
     }
 
@@ -39,6 +72,7 @@ int main(int argc, char** argv) {
             std::cerr << "error: controlled native screen requires the canonical supported ROM\n";
             return 3;
         }
+        if (resource_mode) return run_resource_diagnostic(rom);
 
         oasis::game::screen::ControlledScreen screen;
         oasis::game::render::SoftwareFramebuffer framebuffer;

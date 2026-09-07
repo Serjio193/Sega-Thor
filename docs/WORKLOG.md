@@ -3,6 +3,37 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.25 first authentic native ROM resource baseline — HIGH VALUE
+**Objective:** Use only the verified M11.24 resource ID 3 contract in the
+production native executable. No GPGX, replay, new capture, room integration or
+semantic resource naming was added.
+
+**Implementation:** Added a bounded resource loader that reads the verified
+table range from the canonical ROM, invokes the existing native decompressor,
+checks the `0x702` compressed consumption, `0x1000` output size and expected
+SHA-256, and returns normalized resource bytes. Added a VDP transfer and a
+diagnostic native mode using the existing 4bpp tile decoder. The mode renders
+128 tiles from native VRAM `0x4000..0x4FFF` with an explicitly documented
+`DIAGNOSTIC_PALETTE`; the existing ControlledScreen mode remains unchanged.
+
+**Evidence:** Resource output and VRAM range SHA-256 are both
+`36bbea13cb564ab194dd438b1fe75076525525068b57f2f02a4c0142630dc277`.
+The deterministic diagnostic framebuffer SHA-256 is
+`d2b7655501ff3babf6ef9dd44af720b3afab3ba3e2673fa7aeff33248a3ab1b1`.
+The native executable opened the diagnostic window and remained responsive.
+
+**Tests:** Debug build, Release production/reference targets, all `45/45`
+CTest tests, deterministic canonical-ROM reference checks in Debug and
+Release, negative resource/VRAM checks, source limits and artifact hygiene
+passed. No ROM, extracted asset, capture or binary is tracked.
+
+**Result:** `NATIVE_ROM_RESOURCE_ID3_HIGH_VALUE`. This proves an authentic
+ROM-backed native resource path and structural tile compatibility, not a
+semantic room/background/player/sprite assignment.
+
+**Exact next step:** A — identify resource ID 3 palette/visual role. Do not
+implement it in M11.25.
+
 ## 2026-09-07 — M11.24 bounded resource contract `0x02CFAA -> 0xD3B2` — VERIFIED
 **Objective:** Prove one bounded resource-loading contract for resource ID `3`
 without new runtime instrumentation, replay, broad RE tooling or semantic

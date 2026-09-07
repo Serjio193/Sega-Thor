@@ -31,6 +31,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── TARGETED_DYNAMIC_CONFIRMATION.md M11.16 bounded natural evidence report
 │   ├── STRUCTURED_DATA_CLASSIFICATION.md M11.17 bounded data classification report
 │   ├── NATIVE_VERTICAL_SLICE.md M11.18 native controlled-screen boundary and status
+│   ├── reports/
+│   │   └── NATIVE_ROM_RESOURCE_ID3.md M11.25 verified native resource baseline
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -62,6 +64,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── graphics_decompress.hpp Decompressor result/API
 │   │   ├── genesis_graphics.cpp Pure 4bpp tile + CRAM palette decoding
 │   │   ├── genesis_graphics.hpp Graphics decoder data types/API
+│   │   ├── resource_loader.cpp Verified canonical-ROM resource extraction
+│   │   ├── resource_loader.hpp Bounded resource ID 3 contract/API
+│   │   ├── resource_diagnostic.cpp Native VRAM transfer and tile-atlas renderer
+│   │   ├── resource_diagnostic.hpp Diagnostic resource visualization API
 │   │   ├── translated_routines.cpp Initial translated compatibility routines
 │   │   ├── translated_routines.hpp Their public declarations
 │   │   ├── player/
@@ -199,6 +205,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
+    ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests
     ├── rom_identity_test.cpp             Synthetic ROM/hash/header tests
     ├── player_test.cpp                   Deterministic input and movement tests

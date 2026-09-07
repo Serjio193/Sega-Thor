@@ -14,6 +14,8 @@ add_library(oasis_core
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
     src/game/genesis_graphics.cpp
+    src/game/resource_loader.cpp
+    src/game/resource_diagnostic.cpp
     src/game/scripts/event_router.cpp
     src/game/entities/entity_pool.cpp
     src/game/spirits/spirit_slots.cpp
@@ -318,6 +320,9 @@ add_test(NAME oasis_re_ant_queue COMMAND oasis_re_ant_queue_test)
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
+
+add_executable(oasis_resource_id3_reference tests/resource_id3_reference.cpp)
+target_link_libraries(oasis_resource_id3_reference PRIVATE oasis_core)
 
 add_executable(oasis_screen_descriptor_reference tests/screen_descriptor_reference.cpp)
 target_link_libraries(oasis_screen_descriptor_reference PRIVATE oasis_core)

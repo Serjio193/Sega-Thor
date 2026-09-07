@@ -303,6 +303,14 @@ recommendation rather than an M11.18 Win32 runtime blocker. Decision:
 `NATIVE_VERTICAL_SLICE_PLAYABLE`. The single recommendation is D — platform
 portability.
 
+Post-M11.25 native resource checkpoint: resource ID 3 is now loaded from the
+verified canonical-ROM table contract, decompressed by the existing native
+routine, transferred to native VRAM `0x4000..0x4FFF` and rendered as a
+diagnostic 128-tile atlas. The result is
+`NATIVE_ROM_RESOURCE_ID3_HIGH_VALUE`; no room, background, player or sprite
+semantic role was promoted. The single deferred recommendation is A — identify
+the resource's palette/visual role.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 
