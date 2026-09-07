@@ -3,6 +3,39 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-07 — M11.23 GPGX evidence integrity repair — REPAIRED
+**Objective:** Repair only confirmed producer attribution, exact bitmap-union,
+JSON parsing, bounded completeness and provenance defects before the bounded
+resource contract. No new capture or RE work was started.
+
+**Implementation:** GPGX range emitters now split on first-reader PC or access
+width changes. Sega-Thor correlation validation now proves sorted,
+non-overlapping range union equals the ROM-read bitmap. The importer now uses
+small dependency-free structural JSON modules instead of line-oriented regex.
+Bounded classification independently reconciles sequential exact-decoder
+starts/lengths through the target boundary. Capture metadata/build IDs and
+persistent merge compatibility are checked; old captures remain
+`LEGACY_WEAK`.
+
+**Evidence:** External repaired GPGX commit
+`d60d079934977aa6973e220d123533387159f66e` builds with GCC 16.2.0. Native
+reader-range and auto-analysis regressions pass. Existing raw M11.19–M11.22
+execution and ROM-read facts remain valid; reader group/correlation outputs
+dependent on old grouping require a future capture/regeneration.
+
+**Tests:** Focused Python tests, importer self-test and external native tests
+pass. Full Debug build and CTest pass (`45/45`), and the focused Release
+importer target/self-test pass. The full Release MinGW build is blocked by an
+unrelated pre-existing `oasis_re_callee_effect` static-library link failure;
+this local toolchain limitation is not hidden or repaired in M11.23.
+
+**Result:** `GPGX_EVIDENCE_INTEGRITY_REPAIRED`. Full Debug/CTest and all
+focused regressions are green; the documented full Release MinGW limitation is
+unrelated to this evidence pipeline.
+
+**Exact next step:** document-only `BOUNDED RESOURCE CONTRACT`; do not
+implement it in M11.23.
+
 ## 2026-09-07 — GPGX analysis ROM-read to reader-PC correlation — HIGH VALUE
 **Objective:** Correlate the existing post-startup analysis ROM-read regions
 with their first executed reader PCs, without adding runtime instrumentation,

@@ -1,5 +1,6 @@
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
+#include "tools/gpgx_import_io.hpp"
 #include "tools/re_assemble.hpp"
 #include "tools/re_slice_decoder.hpp"
 
@@ -12,7 +13,6 @@
 #include <iostream>
 #include <map>
 #include <optional>
-#include <regex>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -23,26 +23,22 @@ namespace {
 
 constexpr std::string_view kCanonicalSha =
     "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263";
+constexpr std::string_view kRuntimeBufferSha =
+    "9ab80b5bbf33d9067015ad705537997fc3198228d731f457889a1c17b39aa19d";
 constexpr std::size_t kBitmapBytes = 3145728U / 16U;
 constexpr std::array<std::uint32_t, 6> kAnchors{
     0x3820, 0x62CC, 0x9BF2, 0xA8DA, 0xD3B2, 0x6121A};
 constexpr std::array<std::string_view, 6> kClasses{
     "ASM_ROUNDTRIP_EXACT", "CODE_STATIC_SUPPORTED", "CODE_EXECUTED",
     "DATA_REGION_SUPPORTED", "DATA_STRUCTURE_SUPPORTED", "UNKNOWN"};
-struct Range {
-    std::uint32_t start{};
-    std::uint32_t end{};
-    std::string classification;
-    bool data{};
-};
-struct Capture {
-    std::string id;
-    std::string bitmap_kind;
-    std::string bitmap_sha256;
-    std::size_t address_count{};
-    std::uint64_t frames{};
-    std::uint64_t new_pcs{};
-};
+using oasis::tools::gpgx::Capture;
+using oasis::tools::gpgx::Range;
+using oasis::tools::gpgx::Store;
+using oasis::tools::gpgx::load_ranges;
+using oasis::tools::gpgx::load_store;
+using oasis::tools::gpgx::allowed_gpgx_build;
+using oasis::tools::gpgx::field_number;
+using oasis::tools::gpgx::field_string;
 struct Instruction {
     std::uint32_t address{};
     std::string raw;
@@ -62,11 +58,6 @@ struct RangeCoverage {
     std::size_t decoded{};
     std::optional<std::uint32_t> first;
     std::optional<std::uint32_t> last;
-};
-struct Store {
-    std::set<std::uint32_t> addresses;
-    std::map<std::uint32_t, std::set<std::string>> facts;
-    std::vector<Capture> captures;
 };
 std::string read_file(const std::filesystem::path& path, std::ios::openmode mode = {}) {
     std::ifstream input(path, mode | std::ios::binary);
@@ -94,54 +85,6 @@ std::string hex(std::uint32_t value) {
     output << "0x" << std::uppercase << std::hex << std::setw(6)
            << std::setfill('0') << value;
     return output.str();
-}
-
-std::string field_string(const std::string& json, std::string_view key) {
-    const std::regex pattern("\\\"" + std::string(key) + "\\\"\\s*:\\s*\\\"([^\\\"]*)\\\"");
-    std::smatch match;
-    if (!std::regex_search(json, match, pattern)) return {};
-    return match[1].str();
-}
-
-std::uint64_t field_number(const std::string& json, std::string_view key) {
-    const std::regex pattern("\\\"" + std::string(key) + "\\\"\\s*:\\s*([0-9]+)");
-    std::smatch match;
-    if (!std::regex_search(json, match, pattern)) return 0;
-    return std::stoull(match[1].str());
-}
-
-std::uint32_t parse_number(std::string value) {
-    std::size_t used = 0;
-    const auto number = std::stoull(value, &used, 0);
-    if (used != value.size() || number > 0xFFFFFFFFULL)
-        throw std::runtime_error("invalid range number: " + value);
-    return static_cast<std::uint32_t>(number);
-}
-
-std::vector<Range> load_ranges(const std::filesystem::path& path) {
-    const auto text = read_file(path);
-    const std::regex number("\\\"(start|end)\\\"\\s*:\\s*(?:\\\"(0x[0-9A-Fa-f]+)\\\"|([0-9]+))");
-    const std::regex classification("\\\"(?:classification|trust_level)\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
-    std::vector<Range> ranges;
-    std::optional<std::uint32_t> start;
-    std::optional<std::uint32_t> end;
-    std::istringstream lines(text);
-    std::string line;
-    while (std::getline(lines, line)) {
-        std::smatch match;
-        if (std::regex_search(line, match, number)) {
-            const auto value = match[2].matched ? match[2].str() : match[3].str();
-            if (match[1] == "start") start = parse_number(value);
-            else end = parse_number(value);
-        }
-        if (std::regex_search(line, match, classification) && start && end) {
-            const auto label = match[1].str();
-            ranges.push_back({*start, *end, label, label.rfind("DATA_", 0) == 0});
-            start.reset();
-            end.reset();
-        }
-    }
-    return ranges;
 }
 
 std::vector<std::uint8_t> read_bitmap(const std::filesystem::path& path) {
@@ -263,40 +206,17 @@ std::string capture_id(std::string_view kind, std::string_view bitmap_sha,
     return std::string(kind) + ":" + std::string(bitmap_sha) + ":" + std::string(rom_sha);
 }
 
-Store load_store(const std::filesystem::path& path, std::string_view canonical_sha) {
-    Store store;
-    if (!std::filesystem::exists(path)) return store;
-    const auto text = read_file(path);
-    if (field_string(text, "canonical_rom_sha256") != canonical_sha)
-        throw std::runtime_error("existing evidence has a different canonical ROM");
-    const auto section_start = text.find("\"executed_addresses\"");
-    const auto section_end = text.find(']', section_start);
-    if (section_start != std::string::npos && section_end != std::string::npos) {
-        const std::regex address("0x[0-9A-Fa-f]+");
-        for (auto it = std::sregex_iterator(text.begin() + section_start, text.begin() + section_end, address);
-             it != std::sregex_iterator(); ++it)
-            store.addresses.insert(parse_number(it->str()));
-    }
-    const std::regex capture("\\{\\\"capture_id\\\":\\\"([^\\\"]+)\\\",\\\"bitmap_kind\\\":\\\"([^\\\"]*)\\\",\\\"bitmap_sha256\\\":\\\"([^\\\"]*)\\\",\\\"address_count\\\":([0-9]+),\\\"frames\\\":([0-9]+),\\\"new_pcs\\\":([0-9]+)\\}");
-    const std::regex fact("\\\"address\\\"\\s*:\\s*\\\"(0x[0-9A-Fa-f]+)\\\"[^}]*\\\"capture_id\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
-    for (auto it = std::sregex_iterator(text.begin(), text.end(), fact);
-         it != std::sregex_iterator(); ++it)
-        store.facts[parse_number((*it)[1].str())].insert((*it)[2].str());
-    for (auto it = std::sregex_iterator(text.begin(), text.end(), capture);
-         it != std::sregex_iterator(); ++it)
-        if (std::none_of(store.captures.begin(), store.captures.end(), [&](const auto& item) { return item.id == (*it)[1].str(); }))
-            store.captures.push_back({(*it)[1].str(), (*it)[2].str(), (*it)[3].str(),
-                                      static_cast<std::size_t>(std::stoull((*it)[4].str())),
-                                      std::stoull((*it)[5].str()), std::stoull((*it)[6].str())});
-    return store;
-}
-
 void merge_capture(Store& store, Capture capture, const std::vector<std::uint32_t>& addresses) {
+    if (!capture.build_id.empty() && !store.build_ids.empty() &&
+        !store.build_ids.contains(capture.build_id))
+        throw std::runtime_error("cannot merge evidence from an incompatible GPGX build");
+    const auto build_id = capture.build_id;
     store.addresses.insert(addresses.begin(), addresses.end());
     for (const auto address : addresses) store.facts[address].insert(capture.id);
     if (std::none_of(store.captures.begin(), store.captures.end(),
                      [&](const auto& item) { return item.id == capture.id; }))
         store.captures.push_back(std::move(capture));
+    if (!build_id.empty()) store.build_ids.insert(build_id);
     std::sort(store.captures.begin(), store.captures.end(),
               [](const auto& left, const auto& right) { return left.id < right.id; });
 }
@@ -325,9 +245,13 @@ std::string emit_json(const Store& store, const std::vector<Instruction>& instru
             << "\",\"bitmap_kind\":\"" << capture.bitmap_kind
             << "\",\"bitmap_sha256\":\"" << capture.bitmap_sha256
             << "\",\"address_count\":" << capture.address_count
-            << ",\"frames\":" << capture.frames << ",\"new_pcs\":" << capture.new_pcs << "}";
+            << ",\"frames\":" << capture.frames << ",\"new_pcs\":" << capture.new_pcs;
+        if (!capture.build_id.empty()) out << ",\"gpgx_build_id\":\"" << capture.build_id << "\"";
+        out << "}";
     }
-    out << "\n  ],\n  \"executed_addresses\": [";
+    out << "\n  ],\n  \"provenance_status\": \""
+        << (store.legacy_provenance ? "LEGACY_WEAK" : "STRONG")
+        << "\",\n  \"executed_addresses\": [";
     std::size_t index = 0;
     for (const auto address : store.addresses) out << (index++ ? "," : "") << "\"" << hex(address) << "\"";
     out << "],\n  \"execution_facts\": [";
@@ -431,8 +355,47 @@ bool self_test() {
     if (classify(0x300, {}, conflict) != "RUNTIME_EXECUTED_UNKNOWN") return false;
     if ((0x101U & 1U) == 0U || (0x100U & 1U) != 0U) return false;
     if (field_string("{\"rom_file_sha256\":\"unavailable\"}", "rom_file_sha256") != "unavailable") return false;
+    if (classify(0x100, code, conflict) != "CODE_STATIC_SUPPORTED" ||
+        classify(0x10F, code, conflict) != "CODE_STATIC_SUPPORTED" ||
+        classify(0x110, code, conflict) != "RUNTIME_EXECUTED_UNKNOWN") return false;
     const auto first = emit_json(store, {}, {}, {}, std::string(kCanonicalSha));
-    return first == emit_json(store, {}, {}, {}, std::string(kCanonicalSha));
+    if (first.find("execution_facts") == std::string::npos ||
+        first.find("0x000100") == std::string::npos) return false;
+    if (first != emit_json(store, {}, {}, {}, std::string(kCanonicalSha))) return false;
+    Store incompatible;
+    incompatible.build_ids.insert("old-build");
+    bool incompatible_rejected = false;
+    try { merge_capture(incompatible, {"new", "session_new", "hash", 0, 0, 0, "new-build"}, {}); }
+    catch (const std::exception&) { incompatible_rejected = true; }
+    if (!incompatible_rejected || allowed_gpgx_build("unknown-build") ||
+        !allowed_gpgx_build("7e2fe295e905e6046b043155b249c7fd289701ab")) return false;
+    const auto temporary = std::filesystem::temp_directory_path() / "oasis_gpgx_json_self_test.json";
+    const auto equivalent = std::array<std::string, 3>{
+        R"({"ranges":[{"start":"0x100","end":"0x110","classification":"CODE_STATIC_SUPPORTED"}]})",
+        R"({ "ranges" : [ { "classification":"CODE_STATIC_SUPPORTED", "end":272, "start":256 } ] })",
+        "{\n  \"ranges\": [\n    {\"end\":\"0x110\",\"start\":\"0x100\",\"classification\":\"CODE_STATIC_SUPPORTED\"}\n  ]\n}"};
+    std::vector<Range> parsed;
+    for (const auto& text : equivalent) {
+        write_file(temporary, text);
+        const auto current = load_ranges(temporary);
+        if (current.size() != 1 || current[0].start != 0x100 || current[0].end != 0x110 ||
+            current[0].classification != "CODE_STATIC_SUPPORTED") {
+            std::filesystem::remove(temporary);
+            return false;
+        }
+        if (parsed.empty()) parsed = current;
+        else if (parsed[0].start != current[0].start || parsed[0].end != current[0].end ||
+                 parsed[0].classification != current[0].classification) {
+            std::filesystem::remove(temporary);
+            return false;
+        }
+    }
+    write_file(temporary, R"({"ranges":[{"start":256}]})");
+    bool malformed_rejected = false;
+    try { (void)load_ranges(temporary); }
+    catch (const std::exception&) { malformed_rejected = true; }
+    std::filesystem::remove(temporary);
+    return malformed_rejected;
 }
 
 } // namespace
@@ -462,6 +425,25 @@ int main(int argc, char** argv) {
         const auto file_sha = field_string(metadata, "rom_file_sha256");
         if (!file_sha.empty() && file_sha != "unavailable" && file_sha != kCanonicalSha)
             throw std::runtime_error("coverage ROM provenance mismatch");
+        const auto schema = field_string(metadata, "schema");
+        const auto build_id = field_string(metadata, "gpgx_build_id");
+        const auto session_id = field_string(metadata, "capture_id");
+        const auto runtime_sha = field_string(metadata, "rom_runtime_buffer_sha256");
+        const auto transform = field_string(metadata, "runtime_buffer_transform");
+        const bool has_new_provenance = !schema.empty() || !build_id.empty() || !session_id.empty();
+        if (has_new_provenance) {
+            if (schema != "gpgx.coverage.capture.v2" || session_id.empty() ||
+                !allowed_gpgx_build(build_id))
+                throw std::runtime_error("coverage metadata has incomplete or incompatible provenance");
+            if (runtime_sha != kRuntimeBufferSha ||
+                transform != "canonical_rom_word_byteswapped_16")
+                throw std::runtime_error("runtime ROM buffer provenance mismatch");
+            if (file_sha != kCanonicalSha)
+                throw std::runtime_error("canonical ROM file SHA-256 is required for strong provenance");
+        } else if (!runtime_sha.empty() && runtime_sha != "unavailable" &&
+                   runtime_sha != kRuntimeBufferSha) {
+            throw std::runtime_error("legacy runtime ROM buffer provenance mismatch");
+        }
         const auto bitmap = read_bitmap(bitmap_path);
         const auto actual_bitmap_sha = oasis::calculate_sha256(bitmap);
         const auto expected_key = bitmap_key(argv[4]);
@@ -478,7 +460,8 @@ int main(int argc, char** argv) {
         auto report_path = std::filesystem::path(argv[8]);
         Store store = load_store(evidence_path, kCanonicalSha);
         merge_capture(store, {capture_id(argv[4], bitmap_sha, std::string(kCanonicalSha)), argv[4], bitmap_sha,
-                              addresses.size(), field_number(metadata, "frames"), field_number(metadata, "new_pcs_session")}, addresses);
+                              addresses.size(), field_number(metadata, "frames"), field_number(metadata, "new_pcs_session"),
+                              build_id}, addresses);
         std::vector<std::uint32_t> union_addresses(store.addresses.begin(), store.addresses.end());
         std::vector<Instruction> instructions;
         instructions.reserve(union_addresses.size());

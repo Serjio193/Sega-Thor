@@ -73,6 +73,34 @@ def verify_rom_bytes(rom: bytes, instructions: list[dict[str, Any]]) -> list[dic
     return checked
 
 
+def independently_decode_target(
+    rom: bytes, bounded_decoder: dict[str, Any], supplied: list[dict[str, Any]]
+) -> bool:
+    """Prove starts/lengths from independent bounded exact-decoder output."""
+    independent = [
+        item for item in bounded_decoder.get("instructions", [])
+        if START <= address(item["address"]) <= END
+    ]
+    independent.sort(key=lambda item: address(item["address"]))
+    expected: list[int] = []
+    next_pc = START
+    reached_end = False
+    for item in independent:
+        pc = address(item["address"])
+        raw = bytes.fromhex(item.get("bytes", ""))
+        if pc != next_pc or not raw or len(raw) % 2 or not item.get("supported", False):
+            return False
+        if rom[pc:pc + len(raw)] != raw:
+            return False
+        expected.append(pc)
+        next_pc = pc + len(raw)
+        if pc == END:
+            reached_end = True
+            break
+    supplied_starts = [address(item["address"]) for item in supplied]
+    return reached_end and supplied_starts == expected
+
+
 def classify_unit(
     rom: bytes,
     runtime: dict[str, Any],
@@ -95,7 +123,9 @@ def classify_unit(
     runtime_pcs = {address(item) for item in runtime["executed_addresses"]}
     checked = verify_rom_bytes(rom, instructions)
     observed = [item for item in checked if address(item["address"]) in runtime_pcs]
-    full_decode = bool(checked) and all(item["decode_status"] == "DECODED" for item in checked)
+    independent_decode = independently_decode_target(rom, bounded_decoder, instructions)
+    full_decode = (bool(checked) and independent_decode and
+                   all(item["decode_status"] == "DECODED" for item in checked))
     full_runtime = bool(checked) and len(observed) == len(checked)
 
     decoder_pairs = {
@@ -190,6 +220,9 @@ def self_test() -> bool:
     bounded_decoder = {"direct_control_flow": [
         {"source": fmt(source), "target": fmt(target)}
         for source, target, kind in TARGET_EDGES if kind != "FALLTHROUGH"
+    ], "instructions": [
+        {"address": fmt(pc), "bytes": value.lower(), "supported": True}
+        for pc, value in raw.items()
     ]}
     explorer = {"bounded_control_pass": True, "edges": [
         {"source_pc": fmt(source), "target": fmt(target), "kind": kind}

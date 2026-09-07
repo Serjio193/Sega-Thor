@@ -10,6 +10,11 @@ from collections import defaultdict
 from pathlib import Path
 
 CANONICAL_SHA256 = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+RUNTIME_BUFFER_SHA256 = "9ab80b5bbf33d9067015ad705537997fc3198228d731f457889a1c17b39aa19d"
+ALLOWED_GPGX_BUILDS = {
+    "7e2fe295e905e6046b043155b249c7fd289701ab",
+    "d60d079934977aa6973e220d123533387159f66e",
+}
 ROM_SIZE = 3145728
 READER_CLASSES = (
     "ASM_ROUNDTRIP_EXACT", "CODE_STATIC_SUPPORTED", "CODE_EXECUTED_AT_ADDRESS",
@@ -41,6 +46,11 @@ def bitmap_count(bitmap: bytes) -> int:
 
 def bitmap_set(bitmap: bytes, address: int) -> bool:
     return bool(bitmap[address >> 3] & (1 << (address & 7)))
+
+
+def validate_gpgx_build(build_id: str) -> None:
+    if build_id not in ALLOWED_GPGX_BUILDS:
+        raise ValueError("incompatible GPGX build provenance")
 
 
 def source_classifications(path: Path) -> dict[int, str]:
@@ -102,7 +112,11 @@ def read_regions(path: Path, bitmap: bytes) -> list[dict]:
     source = load(path)
     if not isinstance(source, list):
         raise ValueError("analysis ranges must be a JSON array")
-    unique: dict[tuple[int, int], dict] = {}
+    if len(bitmap) != ROM_SIZE // 8:
+        raise ValueError("analysis bitmap has an invalid size")
+    regions: list[dict] = []
+    covered = bytearray(ROM_SIZE)
+    previous_end = -1
     for item in source:
         start, end = number(item["start"]), number(item["end"])
         reader = number(item["first_reader_pc"])
@@ -118,16 +132,20 @@ def read_regions(path: Path, bitmap: bytes) -> list[dict]:
             raise ValueError(f"analysis region byte count mismatch at {hex_address(start)}")
         if any(not bitmap_set(bitmap, address) for address in range(start, end + 1)):
             raise ValueError(f"analysis range is not represented in bitmap: {hex_address(start)}")
+        if start <= previous_end:
+            raise ValueError(f"analysis ranges overlap or are not sorted at {hex_address(start)}")
+        for address in range(start, end + 1):
+            if covered[address]:
+                raise ValueError(f"analysis ranges overlap at {hex_address(address)}")
+            covered[address] = 1
         value = {"start": start, "end": end, "observed_bytes": end - start + 1,
                  "first_reader_pc": reader, "first_access_width": width,
                  "range_reader_executed": bool(item.get("reader_executed", False))}
-        key = (start, end)
-        if key in unique and unique[key] != value:
-            raise ValueError(f"conflicting duplicate region {hex_address(start)}")
-        unique[key] = value
-    regions = sorted(unique.values(), key=lambda item: (item["start"], item["end"]))
-    if sum(item["observed_bytes"] for item in regions) != bitmap_count(bitmap):
-        raise ValueError("analysis ranges do not exactly cover analysis bitmap")
+        regions.append(value)
+        previous_end = end
+    for address in range(ROM_SIZE):
+        if bool(covered[address]) != bitmap_set(bitmap, address):
+            raise ValueError(f"analysis ranges do not exactly cover analysis bitmap at {hex_address(address)}")
     return regions
 
 
@@ -150,7 +168,24 @@ def validate_provenance(rom: Path, analysis_meta: Path, bitmap: Path,
         raise ValueError("analysis bitmap hash mismatch in metadata")
     if evidence.get("source") != "GPGX_MANUAL_REALTIME":
         raise ValueError("runtime evidence source is not GPGX_MANUAL_REALTIME")
-    return {"status": "PASS", "canonical_rom_sha256": rom_hash,
+    schema = meta.get("schema")
+    build_id = meta.get("gpgx_build_id")
+    capture_id = meta.get("capture_id")
+    if schema is None and build_id is None and capture_id is None:
+        provenance_status = "LEGACY_WEAK"
+    else:
+        if schema != "gpgx.coverage.analysis.v2" or not capture_id or not build_id:
+            raise ValueError("analysis metadata has incomplete or incompatible provenance")
+        validate_gpgx_build(build_id)
+        if meta.get("rom_runtime_buffer_sha256") != RUNTIME_BUFFER_SHA256:
+            raise ValueError("runtime ROM buffer provenance mismatch")
+        if meta.get("runtime_buffer_transform") != "canonical_rom_word_byteswapped_16":
+            raise ValueError("runtime ROM buffer transform is not verified")
+        if meta.get("rom_file_sha256") != CANONICAL_SHA256:
+            raise ValueError("canonical ROM file SHA-256 is required for strong provenance")
+        provenance_status = "STRONG"
+    return {"status": "PASS", "provenance_status": provenance_status,
+            "canonical_rom_sha256": rom_hash,
             "rom_size": ROM_SIZE, "analysis_bitmap_sha256": actual_bitmap_hash,
             "runtime_evidence_sha256": sha256(Path(evidence["_path"])),
             "analysis_meta_sha256": sha256(analysis_meta),

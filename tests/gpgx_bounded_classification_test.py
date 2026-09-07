@@ -31,6 +31,9 @@ def fixtures():
     bounded_decoder = {"direct_control_flow": [
         {"source": MODULE.fmt(source), "target": MODULE.fmt(target)}
         for source, target, kind in MODULE.TARGET_EDGES if kind != "FALLTHROUGH"
+    ], "instructions": [
+        {"address": MODULE.fmt(pc), "bytes": value.lower(), "supported": True}
+        for pc, value in raw.items()
     ]}
     explorer = {"bounded_control_pass": True, "edges": [
         {"source_pc": MODULE.fmt(source), "target": MODULE.fmt(target), "kind": kind}
@@ -54,6 +57,13 @@ def test_decode_failure_prevents_upgrade():
     result = MODULE.classify_unit(rom, runtime, decoded, bounded_decoder, explorer, report)
     assert result["decision"] == "BOUNDED_REGION_060BB6_CLASSIFICATION_NEEDS_FIXUPS"
     assert result["unit"]["classification_after"] == "UNKNOWN"
+
+
+def test_incomplete_supplied_fixture_prevents_upgrade():
+    rom, runtime, decoded, bounded_decoder, explorer, report = fixtures()
+    del decoded["instructions"][1:]
+    result = MODULE.classify_unit(rom, runtime, decoded, bounded_decoder, explorer, report)
+    assert result["decision"] == "BOUNDED_REGION_060BB6_CLASSIFICATION_NEEDS_FIXUPS"
 
 
 def test_missing_runtime_preserves_previous_classification():
@@ -81,6 +91,7 @@ def test_output_is_deterministic():
 if __name__ == "__main__":
     for test in (test_full_decode_and_runtime_support_upgrades_only_unit,
                  test_decode_failure_prevents_upgrade,
+                 test_incomplete_supplied_fixture_prevents_upgrade,
                  test_missing_runtime_preserves_previous_classification,
                  test_boundary_is_not_a_routine_identity,
                  test_output_is_deterministic):

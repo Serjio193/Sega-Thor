@@ -41,6 +41,8 @@ target_link_libraries(oasis_inspect PRIVATE oasis_core)
 
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
+    src/tools/gpgx_import_io.cpp
+    src/tools/gpgx_json.cpp
     src/tools/re_slice_decoder.cpp
     src/tools/re_slice_exact.cpp
     src/tools/re_assemble.cpp

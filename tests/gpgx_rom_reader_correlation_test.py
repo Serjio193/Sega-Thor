@@ -42,7 +42,7 @@ def test_known_reader_and_unknown_reader_grouping():
         assert groups[1]["classification"] == "RUNTIME_EXECUTED_UNKNOWN"
 
 
-def test_duplicate_regions_are_not_double_counted():
+def test_duplicate_regions_are_rejected():
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         bitmap = bytearray(MODULE.ROM_SIZE // 8)
@@ -52,7 +52,33 @@ def test_duplicate_regions_are_not_double_counted():
                 "first_reader_pc": "0x200", "access_width": 1,
                 "reader_executed": True}
         path.write_text(json.dumps([item, item]), encoding="utf-8")
-        assert len(MODULE.read_regions(path, bytes(bitmap))) == 1
+        try:
+            MODULE.read_regions(path, bytes(bitmap))
+        except ValueError:
+            return
+        raise AssertionError("duplicate region was accepted")
+
+
+def test_overlap_with_compensating_gap_is_rejected():
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        bitmap = bytearray(MODULE.ROM_SIZE // 8)
+        for address in range(0x100, 0x104):
+            bitmap[address >> 3] |= 1 << (address & 7)
+        path = root / "overlap.json"
+        path.write_text(json.dumps([
+            {"start": "0x100", "end": "0x101", "bytes_observed": 2,
+             "first_reader_pc": "0x200", "access_width": 1,
+             "reader_executed": True},
+            {"start": "0x101", "end": "0x103", "bytes_observed": 3,
+             "first_reader_pc": "0x202", "access_width": 1,
+             "reader_executed": True},
+        ]), encoding="utf-8")
+        try:
+            MODULE.read_regions(path, bytes(bitmap))
+        except ValueError:
+            return
+        raise AssertionError("overlap with compensating coverage was accepted")
 
 
 def test_first_reader_only_is_explicit():
@@ -102,6 +128,14 @@ def test_bad_provenance_fails():
         raise AssertionError("bad ROM provenance was accepted")
 
 
+def test_incompatible_build_provenance_fails():
+    try:
+        MODULE.validate_gpgx_build("incompatible")
+    except ValueError:
+        return
+    raise AssertionError("incompatible build provenance was accepted")
+
+
 def test_json_is_deterministic():
     value = {"reader_groups": [{"reader_pc": "0x000200", "bytes": 2}],
              "regions": [{"region_start": "0x000100"}]}
@@ -112,10 +146,12 @@ def test_json_is_deterministic():
 
 if __name__ == "__main__":
     for test in (test_known_reader_and_unknown_reader_grouping,
-                 test_duplicate_regions_are_not_double_counted,
+                 test_duplicate_regions_are_rejected,
+                 test_overlap_with_compensating_gap_is_rejected,
                  test_first_reader_only_is_explicit,
                  test_mismatched_byte_count_fails,
                  test_bad_provenance_fails,
+                 test_incompatible_build_provenance_fails,
                  test_json_is_deterministic):
         test()
     print("GPGX reader correlation tests passed")

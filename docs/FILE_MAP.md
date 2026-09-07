@@ -106,6 +106,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_slice_report.cpp Local-only bounded ROM slice report CLI
 │       ├── gpgx_coverage_report.cpp Developer-only NEW executed-PC bitmap decoder/report
 │       ├── gpgx_import_gpgx_coverage.cpp Developer-only address-level GPGX trust evidence importer
+│       ├── gpgx_import_io.cpp Structural JSON range/evidence import helpers
+│       ├── gpgx_import_io.hpp GPGX importer model and provenance helper API
+│       ├── gpgx_json.cpp Minimal dependency-free structural JSON parser
+│       ├── gpgx_json.hpp Structural JSON value/parser declarations
 │       ├── gpgx_unknown_priority.py Deterministic ranking and bounded-slice report for runtime-unknown PCs
 │       ├── oasis_gpgx_rom_reader_correlation.py Deterministic analysis ROM-read to reader-PC correlation
 │       ├── re_program.hpp Multi-function bounded RE aggregation types/API
@@ -240,6 +244,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_static_translation_test.cpp            Synthetic static translation differential tests
     ├── gpgx_persistent_coverage_test.py           Synthetic persistent bitmap merge contract test
     ├── gpgx_rom_reader_correlation_test.py        Synthetic reader correlation/provenance tests
+    ├── gpgx_bounded_classification_test.py        Bounded decode/runtime completeness tests
     ├── re_natural_reference.cpp              Local USA-ROM natural reachability oracle
     ├── runtime_test.cpp                  Deterministic frame/input sequence tests
     ├── screen_descriptor_test.cpp        Synthetic screen descriptor tests
