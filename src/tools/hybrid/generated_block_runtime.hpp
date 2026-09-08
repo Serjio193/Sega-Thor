@@ -21,5 +21,11 @@ void move_w_postincrement_to_postincrement(BasicBlockApi& api,
                                             unsigned destination_register);
 void add_l_data_to_data(BasicBlockApi& api, unsigned source_register,
                         unsigned destination_register);
+void branch_condition(BasicBlockApi& api, unsigned condition, unsigned target,
+                      int not_taken_cycles);
+void dbcc(BasicBlockApi& api, unsigned condition, unsigned data_register,
+          unsigned target);
+void test_absolute_long(BasicBlockApi& api, std::uint32_t address,
+                        unsigned width);
 
 } // namespace oasis::hybrid::generated

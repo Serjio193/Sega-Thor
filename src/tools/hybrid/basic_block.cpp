@@ -13,6 +13,13 @@ constexpr unsigned k604BC = 0x604BC;
 constexpr unsigned k604BCExit = 0x604C2;
 constexpr unsigned k61032 = 0x61032;
 constexpr unsigned k61032Exit = 0x61034;
+constexpr unsigned k3A85E = 0x3A85E;
+constexpr unsigned k3A85EExit = 0x3A864;
+constexpr unsigned k3A8BA = 0x3A8BA;
+constexpr unsigned k3A8BAExit = 0x3A8C0;
+constexpr unsigned k3A88C = 0x3A88C;
+constexpr unsigned k3A88CExit = 0x3A892;
+constexpr unsigned kInvalidBlock = 6U;
 constexpr unsigned kRamBase = 0xFF0000;
 constexpr unsigned kRefreshPeriod = 128U * 7U;
 constexpr unsigned kRefreshPenalty = 2U * 7U;
@@ -41,6 +48,31 @@ void set_add_long_flags(std::uint32_t& sr, std::uint32_t lhs,
     sr = (sr & ~0x1FU) | (carry ? 0x11U : 0U) |
          (result & 0x80000000U ? 0x08U : 0U) |
          (result == 0 ? 0x04U : 0U) | (overflow ? 0x02U : 0U);
+}
+
+bool condition_holds(std::uint32_t sr, unsigned condition) {
+    const bool c = (sr & 0x01U) != 0;
+    const bool v = (sr & 0x02U) != 0;
+    const bool z = (sr & 0x04U) != 0;
+    const bool n = (sr & 0x08U) != 0;
+    switch (condition & 0x0FU) {
+    case 0: return true;
+    case 1: return false;
+    case 2: return !c && !z;
+    case 3: return c || z;
+    case 4: return !c;
+    case 5: return c;
+    case 6: return !z;
+    case 7: return z;
+    case 8: return !v;
+    case 9: return v;
+    case 10: return !n;
+    case 11: return n;
+    case 12: return n == v;
+    case 13: return n != v;
+    case 14: return !z && n == v;
+    default: return z || n != v;
+    }
 }
 
 void add_prediction_cycle(const BasicBlockApi& api, unsigned opcode,
@@ -139,13 +171,22 @@ bool BasicBlockRegistry::in_block(unsigned pc) const {
 }
 
 unsigned block_index(unsigned pc) {
-    return pc == k2D66 ? 0U : pc == k604BC ? 1U : 2U;
+    if (pc == k2D66) return 0U;
+    if (pc == k604BC) return 1U;
+    if (pc == k61032) return 2U;
+    if (pc == k3A85E) return 3U;
+    if (pc == k3A8BA) return 4U;
+    if (pc == k3A88C) return 5U;
+    return kInvalidBlock;
 }
 
 bool BasicBlockRegistry::in_registered_range(unsigned address) const {
     return (address >= k2D66 && address < k2D66Exit) ||
            (address >= k604BC && address < k604BCExit) ||
-           (address >= k61032 && address < k61032Exit);
+           (address >= k61032 && address < k61032Exit) ||
+           (address >= k3A85E && address < k3A85EExit) ||
+           (address >= k3A8BA && address < k3A8BAExit) ||
+           (address >= k3A88C && address < k3A88CExit);
 }
 
 BasicBlockRegistry::Prediction BasicBlockRegistry::predict(unsigned pc,
@@ -153,6 +194,9 @@ BasicBlockRegistry::Prediction BasicBlockRegistry::predict(unsigned pc,
     if (pc == k2D66) return predict_2d66(entry);
     if (pc == k604BC) return predict_604bc(entry);
     if (pc == k61032) return predict_61032(entry);
+    if (pc == k3A85E) return predict_3a85e(entry);
+    if (pc == k3A8BA) return predict_3a8ba(entry);
+    if (pc == k3A88C) return predict_3a88c(entry);
     throw std::runtime_error("unregistered basic block");
 }
 
@@ -214,6 +258,36 @@ BasicBlockRegistry::Prediction BasicBlockRegistry::predict_61032(const State& en
     result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2); return result;
 }
 
+BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a85e(const State& entry) const {
+    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
+    auto pc = k3A85E; predict_fetch(api_, result, pc, 0x4A79);
+    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
+    const auto value = read(0xFF1654U, 2); add_read(result, 0xFF1654U, 2);
+    set_move_flags(result.state[17], value, 2); result.state[16] = k3A85EExit; result.ir = 0x4A79;
+    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
+    return result;
+}
+
+BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a8ba(const State& entry) const {
+    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
+    auto pc = k3A8BA; predict_fetch(api_, result, pc, 0x4A79);
+    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
+    const auto value = read(0xFF1654U, 2); add_read(result, 0xFF1654U, 2);
+    set_move_flags(result.state[17], value, 2); result.state[16] = k3A8BAExit; result.ir = 0x4A79;
+    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
+    return result;
+}
+
+BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a88c(const State& entry) const {
+    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
+    auto pc = k3A88C; predict_fetch(api_, result, pc, 0x4A39);
+    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
+    const auto value = read(0xFF0BFDU, 1); add_read(result, 0xFF0BFDU, 1);
+    set_move_flags(result.state[17], value, 1); result.state[16] = k3A88CExit; result.ir = 0x4A39;
+    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
+    return result;
+}
+
 void BasicBlockRegistry::execute_2d66() {
     generated::execute_0x002D66(api_);
 }
@@ -226,11 +300,33 @@ void BasicBlockRegistry::execute_61032() {
     generated::execute_0x061032(api_);
 }
 
+void BasicBlockRegistry::execute_3a85e() {
+    generated::execute_0x03A85E(api_);
+}
+
+void BasicBlockRegistry::execute_3a8ba() {
+    generated::execute_0x03A8BA(api_);
+}
+
+void BasicBlockRegistry::execute_3a88c() {
+    generated::execute_0x03A88C(api_);
+}
+
 void BasicBlockRegistry::compare(const Prediction& prediction) {
     const auto actual = state();
-    for (unsigned i = 0; i < actual.size(); ++i)
-        require(actual[i] == prediction.state[i], "register[" + std::to_string(i) + "]");
-    require(field(18) == prediction.ir, "IR");
+    for (unsigned i = 0; i < actual.size(); ++i) {
+        if (actual[i] != prediction.state[i]) {
+            std::ostringstream register_error;
+            register_error << "register[" << i << "] actual=0x" << std::hex << actual[i]
+                           << " expected=0x" << prediction.state[i];
+            throw std::runtime_error(register_error.str());
+        }
+    }
+    if (field(18) != prediction.ir) {
+        std::ostringstream ir;
+        ir << "IR actual=0x" << std::hex << field(18) << " expected=0x" << prediction.ir;
+        throw std::runtime_error(ir.str());
+    }
     require(field(19) == prediction.pref_addr && field(20) == prediction.pref_data,
             "prefetch");
     if (field(21) != prediction.cycles || field(22) != prediction.refresh) {
@@ -266,7 +362,9 @@ void BasicBlockRegistry::finish_native(const Prediction& prediction) {
 
 void BasicBlockRegistry::execute(unsigned pc) {
     active_pc_ = pc; prediction_ = predict(pc, state()); writes_.clear(); reads_.clear(); active_ = true; shadow_ = false;
-    if (pc == k2D66) execute_2d66(); else if (pc == k604BC) execute_604bc(); else execute_61032();
+    if (pc == k2D66) execute_2d66(); else if (pc == k604BC) execute_604bc();
+    else if (pc == k61032) execute_61032(); else if (pc == k3A85E) execute_3a85e();
+    else if (pc == k3A8BA) execute_3a8ba(); else execute_3a88c();
     finish_native(prediction_); ++metrics_.translated_entries;
     ++metrics_.translated_by_block[block_index(pc)];
     metrics_.translated_instructions += pc == k2D66 ? 7U : 1U;
@@ -278,10 +376,11 @@ void BasicBlockRegistry::execute(unsigned pc) {
 int BasicBlockRegistry::dispatch(unsigned pc) noexcept {
     if (!error_.empty()) return 0;
     try {
-        if (pc != k2D66 && pc != k604BC && pc != k61032) return 0;
+        const auto index = block_index(pc);
+        if (index == kInvalidBlock) return 0;
         require(!active_, "nested translated block");
         ++metrics_.natural_entries;
-        ++metrics_.natural_by_block[block_index(pc)];
+        ++metrics_.natural_by_block[index];
         if (mode_ == BasicBlockMode::SHADOW_NATIVE) { start_shadow(pc); return 0; }
         execute(pc); return 1;
     } catch (const std::exception& error) { fail(error.what()); return 0; }
@@ -292,7 +391,7 @@ void BasicBlockRegistry::event(int type, int width, unsigned address, unsigned v
     try {
         address &= 0xFFFFFFU;
         if (type == 1) {
-            if (shadow_ && address == (active_pc_ == k2D66 ? k2D66Exit : active_pc_ == k604BC ? k604BCExit : k61032Exit)) {
+            if (shadow_ && address == prediction_.state[16]) {
                 finish_shadow(); return;
             }
             if (shadow_ && in_block(address)) ++metrics_.original_starts_inside_translated;

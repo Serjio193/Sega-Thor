@@ -9,15 +9,20 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
-## M11.33 — Recomp generator v1 — DONE
-Generate the three M11.32 basic blocks from the shared decoder/exact IR and
-execute the generated instruction sequence through developer-only hybrid
-helpers. Generated output retains guest provenance and unsupported forms fail
-closed. The existing 600-frame GPGX proof remains the behavioral gate.
+## M11.35 — Demand-driven block promotion pilot — BLOCKED
+Run one bounded 600-frame natural trace, select only a small set of additional
+guest block entries, decode them through the existing exact IR, independently
+verify newly required forms, generate provenance-bound C++ and require exact
+GPGX shadow equivalence before any native promotion. Keep failed candidates on
+the interpreter fallback and do not implement a runtime JIT or automatic trust.
 
-Gate result: `MECHANICAL_BLOCK_GENERATION_PROVEN`. The canonical USA ROM
-regenerated the three blocks byte-for-input deterministically; GPGX shadow and
-native runs both completed 600 frames with 14/14 calls and matching state/video.
+Gate result: `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`. Discovery recorded 2,188
+unique PCs and the bounded shortlist was `0x3A85E`, `0x3A8BA`, `0x3A88C`.
+Independent TST vectors and generator/provenance checks passed. Shadow stopped
+at the first candidate with `actual_cycles=74 expected_cycles=896114` and
+`actual_refresh=228 expected_refresh=896268`; no M11.35 candidate was promoted.
+The first blocker is the GPGX cycle/refresh and interrupt-boundary contract, not
+a semantic pass or a whole-game coverage result.
 
 ## M11.34 — M68K semantic core — DONE
 Extract and independently verify common instruction semantics, beginning with
@@ -29,6 +34,16 @@ Gate result: `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`. The exact seven
 M11.33 emitted combinations passed 23 deterministic independent-reference
 vectors, decode/length/provenance checks, and the unchanged M11.33 600-frame
 GPGX shadow/native regression. No broader instruction or production surface was added.
+
+## M11.33 — Recomp generator v1 — DONE
+Generate the three M11.32 basic blocks from the shared decoder/exact IR and
+execute the generated instruction sequence through developer-only hybrid
+helpers. Generated output retains guest provenance and unsupported forms fail
+closed. The existing 600-frame GPGX proof remains the behavioral gate.
+
+Gate result: `MECHANICAL_BLOCK_GENERATION_PROVEN`. The canonical USA ROM
+regenerated the three blocks byte-for-input deterministically; GPGX shadow and
+native runs both completed 600 frames with 14/14 calls and matching state/video.
 
 ## M11.32 — Basic-block recompilation timing proof — DONE
 Three naturally executed blocks (`0x2D66`, `0x604BC`, `0x61032`) now share a

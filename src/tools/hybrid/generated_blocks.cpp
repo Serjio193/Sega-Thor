@@ -64,4 +64,34 @@ void execute_0x061032(BasicBlockApi& api) {
     api.finish_instruction(opcode_0x061032);
 }
 
+void execute_0x03A85E(BasicBlockApi& api) {
+    // guest 0x03A85E opcode 0x4A79 4A79 00FF 1654 tst.w ($00FF1654).L
+    const auto opcode_0x03A85E = fetch_checked(api, 0x4A79U);
+    api.begin_instruction(opcode_0x03A85E);
+    (void)fetch_checked(api, 0x00FFU);
+    (void)fetch_checked(api, 0x1654U);
+    test_absolute_long(api, 0xFF1654U, 2U);
+    api.finish_instruction(opcode_0x03A85E);
+}
+
+void execute_0x03A8BA(BasicBlockApi& api) {
+    // guest 0x03A8BA opcode 0x4A79 4A79 00FF 1654 tst.w ($00FF1654).L
+    const auto opcode_0x03A8BA = fetch_checked(api, 0x4A79U);
+    api.begin_instruction(opcode_0x03A8BA);
+    (void)fetch_checked(api, 0x00FFU);
+    (void)fetch_checked(api, 0x1654U);
+    test_absolute_long(api, 0xFF1654U, 2U);
+    api.finish_instruction(opcode_0x03A8BA);
+}
+
+void execute_0x03A88C(BasicBlockApi& api) {
+    // guest 0x03A88C opcode 0x4A39 4A39 00FF 0BFD tst.b ($00FF0BFD).L
+    const auto opcode_0x03A88C = fetch_checked(api, 0x4A39U);
+    api.begin_instruction(opcode_0x03A88C);
+    (void)fetch_checked(api, 0x00FFU);
+    (void)fetch_checked(api, 0x0BFDU);
+    test_absolute_long(api, 0xFF0BFDU, 1U);
+    api.finish_instruction(opcode_0x03A88C);
+}
+
 } // namespace oasis::hybrid::generated

@@ -38,9 +38,9 @@ struct BasicBlockMetrics {
     unsigned fallback_entries{};
     unsigned interrupts{};
     unsigned hardware_accesses{};
-    std::array<unsigned, 3> natural_by_block{};
-    std::array<unsigned, 3> shadow_by_block{};
-    std::array<unsigned, 3> translated_by_block{};
+    std::array<unsigned, 6> natural_by_block{};
+    std::array<unsigned, 6> shadow_by_block{};
+    std::array<unsigned, 6> translated_by_block{};
 };
 
 class BasicBlockRegistry final {
@@ -81,10 +81,16 @@ private:
     Prediction predict_2d66(const State& entry) const;
     Prediction predict_604bc(const State& entry) const;
     Prediction predict_61032(const State& entry) const;
+    Prediction predict_3a85e(const State& entry) const;
+    Prediction predict_3a8ba(const State& entry) const;
+    Prediction predict_3a88c(const State& entry) const;
     void execute(unsigned pc);
     void execute_2d66();
     void execute_604bc();
     void execute_61032();
+    void execute_3a85e();
+    void execute_3a8ba();
+    void execute_3a88c();
     void start_shadow(unsigned pc);
     void finish_shadow();
     void finish_native(const Prediction& prediction);

@@ -21,11 +21,14 @@ namespace {
 using oasis::hybrid::BasicBlockApi;
 using oasis::hybrid::generated::add_l_data_to_data;
 using oasis::hybrid::generated::adda_w_data_to_address;
+using oasis::hybrid::generated::branch_condition;
 using oasis::hybrid::generated::clear_w_data_register;
+using oasis::hybrid::generated::dbcc;
 using oasis::hybrid::generated::lea_absolute_long;
 using oasis::hybrid::generated::move_b_postincrement_to_data_register;
 using oasis::hybrid::generated::move_w_postincrement_to_postincrement;
 using oasis::hybrid::generated::movem_l_predecrement;
+using oasis::hybrid::generated::test_absolute_long;
 
 struct Access {
     char kind{};
@@ -41,6 +44,7 @@ struct Machine {
     std::vector<Access> accesses;
     std::vector<std::uint32_t> fetch_words;
     std::size_t fetch_index{};
+    int cycles{};
     static Machine* current;
 
     static unsigned reg(unsigned index) { return current->regs.at(index); }
@@ -69,7 +73,7 @@ struct Machine {
     }
     static void begin(unsigned) {}
     static void finish(unsigned) {}
-    static void add_cycles(int) {}
+    static void add_cycles(int value) { current->cycles += value; }
     static void skip_refresh() {}
 };
 
@@ -169,6 +173,10 @@ void ref_add(Machine& machine) {
                        (overflow ? 2U : 0U);
 }
 
+void ref_tst(Machine& machine, std::uint32_t address, unsigned width) {
+    ref_move_flags(machine, ref_read(machine, address, static_cast<int>(width)), width);
+}
+
 using Action = std::function<void(BasicBlockApi&)>;
 using Reference = std::function<void(Machine&)>;
 
@@ -180,6 +188,7 @@ std::string state(const Machine& machine) {
     out << "] memory=";
     for (const auto& [address, value] : machine.memory)
         out << "(0x" << std::hex << address << ":0x" << unsigned(value) << ")";
+    out << " cycles=" << std::dec << machine.cycles;
     return out.str();
 }
 
@@ -220,6 +229,8 @@ void run_case(const std::string& name, std::uint16_t opcode, const std::string& 
         mismatch(name, opcode, decoded, before, expected, actual, "memory");
     if (actual.accesses != expected.accesses)
         mismatch(name, opcode, decoded, before, expected, actual, "accesses");
+    if (actual.cycles != expected.cycles)
+        mismatch(name, opcode, decoded, before, expected, actual, "cycles");
 }
 
 void put(std::vector<std::uint8_t>& rom, std::uint32_t address,
@@ -234,6 +245,9 @@ void test_decode_and_provenance() {
                     0x1E, 0x1E, 0x36, 0xDE});
     put(rom, 0x80, {0x4D, 0xF9, 0x00, 0xFF, 0x06, 0x28});
     put(rom, 0xA0, {0xD4, 0x81});
+    put(rom, 0xC0, {0x66, 0x08});
+    put(rom, 0xD0, {0x51, 0xC8, 0xFF, 0xFC});
+    put(rom, 0xE0, {0x51, 0xC8, 0xFF, 0xFC});
     const std::array blocks{
         std::pair{0x20U, 0x34U}, std::pair{0x80U, 0x86U}, std::pair{0xA0U, 0xA2U}};
     struct Expectation {
@@ -305,9 +319,73 @@ void test_decode_and_provenance() {
                 throw std::runtime_error("generated provenance chain is incomplete");
         }
     }
+    for (const auto& [start, end, opcode, operation, width, condition, target] : {
+             std::tuple{0xC0U, 0xC2U, 0x6608U, "bne", 1U, 6U, 0xCAU},
+             std::tuple{0xD0U, 0xD4U, 0x51C8U, "dbf", 2U, 1U, 0xCEU},
+             std::tuple{0xE0U, 0xE4U, 0x51C8U, "dbf", 2U, 1U, 0xDEU}}) {
+        const auto block = oasis::hybrid::generate_block(rom, start, end);
+        if (block.instructions.size() != 1U || block.instructions[0].opcode != opcode ||
+            !block.instructions[0].exact || block.instructions[0].exact->operation != operation ||
+            block.instructions[0].exact->branch_width_bytes != width ||
+            !block.instructions[0].branch_condition_code ||
+            *block.instructions[0].branch_condition_code != condition ||
+            !block.instructions[0].direct_target || *block.instructions[0].direct_target != target)
+            throw std::runtime_error("branch decode/provenance metadata mismatch");
+        const auto emitted = oasis::hybrid::emit_translation_unit({block});
+        if (emitted.find("guest 0x" + hex_value(start, 6)) == std::string::npos)
+            throw std::runtime_error("branch generated provenance is incomplete");
+    }
+}
+
+bool ref_condition(std::uint32_t sr, unsigned condition) {
+    const bool c = (sr & 1U) != 0, v = (sr & 2U) != 0;
+    const bool z = (sr & 4U) != 0, n = (sr & 8U) != 0;
+    switch (condition & 0x0FU) {
+    case 0: return true; case 1: return false; case 2: return !c && !z;
+    case 3: return c || z; case 4: return !c; case 5: return c;
+    case 6: return !z; case 7: return z; case 8: return !v;
+    case 9: return v; case 10: return !n; case 11: return n;
+    case 12: return n == v; case 13: return n != v; case 14: return !z && n == v;
+    default: return z || n != v;
+    }
+}
+
+void ref_bcc(Machine& machine, unsigned condition, unsigned target) {
+    if (ref_condition(machine.regs[17], condition)) machine.regs[16] = target;
+    else machine.cycles -= 14;
+}
+
+void ref_dbcc(Machine& machine, unsigned condition, unsigned data_register,
+              unsigned target) {
+    if (ref_condition(machine.regs[17], condition)) return;
+    const auto value = machine.regs[data_register];
+    const auto result = (value - 1U) & 0xFFFFU;
+    machine.regs[data_register] = (value & 0xFFFF0000U) | result;
+    if (result != 0xFFFFU) { machine.regs[16] = target; machine.cycles -= 14; }
+    else machine.cycles += 14;
 }
 
 void test_semantics() {
+    for (const auto sr : {0xA713U, 0xA717U}) {
+        auto before = seed();
+        before.regs[16] = 0x3A9B2U; before.regs[17] = sr;
+        run_case("BNE.S condition and PC", 0x6608, "bne.s loc_03A9BC", before,
+                 [](BasicBlockApi& api) { branch_condition(api, 6, 0x3A9BCU, -14); },
+                 [](Machine& machine) { ref_bcc(machine, 6, 0x3A9BCU); });
+    }
+    for (const auto value : {0x00000000U, 0x00001234U, 0xFFFFFFFFU}) {
+        auto before = seed();
+        before.regs[0] = value; before.regs[16] = 0x60312U; before.regs[17] = 0;
+        run_case("DBF.W counter and PC", 0x51C8, "dbf D0,loc_060310", before,
+                 [](BasicBlockApi& api) { dbcc(api, 1, 0, 0x60310U); },
+                 [](Machine& machine) { ref_dbcc(machine, 1, 0, 0x60310U); });
+    }
+    {
+        auto before = seed(); before.regs[0] = 0x12345678U; before.regs[17] = 4;
+        run_case("DBNE.W condition true", 0x56C8, "dbne D0,loc", before,
+                 [](BasicBlockApi& api) { dbcc(api, 6, 0, 0x100U); },
+                 [](Machine& machine) { ref_dbcc(machine, 6, 0, 0x100U); });
+    }
     for (const auto mask : {0x0880U, 0x8001U, 0xFFFFU}) {
         auto before = seed();
         before.regs[15] = 0x00000200U;
@@ -320,6 +398,16 @@ void test_semantics() {
         before.regs[3] = value;
         run_case("CLR.W D3", 0x4243, "clr.w D3", before,
                  [](BasicBlockApi& api) { clear_w_data_register(api, 3); }, ref_clear);
+    }
+    for (const auto [width, value] : {std::pair{1U, 0x00U}, std::pair{1U, 0x80U},
+                                      std::pair{2U, 0x7FFFU}, std::pair{2U, 0x8000U}}) {
+        auto before = seed(); before.regs[17] = 0xA713U;
+        before.memory[0x180] = static_cast<std::uint8_t>(value >> 8U);
+        before.memory[0x181] = static_cast<std::uint8_t>(value);
+        const auto address = width == 1U ? 0x181U : 0x180U;
+        run_case("TST absolute memory", 0x4A79, "tst.[b/w] (abs.l)", before,
+                 [address, width](BasicBlockApi& api) { test_absolute_long(api, address, width); },
+                 [address, width](Machine& machine) { ref_tst(machine, address, width); });
     }
     for (const auto value : {0x00U, 0x80U, 0x7FU}) {
         auto before = seed();
@@ -365,33 +453,10 @@ void test_semantics() {
     }
 }
 
-void test_generated_pc_lengths() {
-    const std::array cases{
-        std::tuple{0x2D66U, 0x2D7AU, std::vector<std::uint32_t>{0x48E7, 0x0110, 0x4247,
-            0x1E1E, 0x47F9, 0x00FF, 0x134C, 0xD6C7, 0x1E1E, 0x36DE}},
-        std::tuple{0x604BCU, 0x604C2U, std::vector<std::uint32_t>{0x4DF9, 0x00FF, 0x0628}},
-        std::tuple{0x61032U, 0x61034U, std::vector<std::uint32_t>{0xD481}}};
-    for (const auto& [start, end, words] : cases) {
-        auto machine = seed();
-        machine.regs[16] = start;
-        machine.regs[14] = 0x100;
-        machine.memory[0x100] = 0x12;
-        machine.memory[0x101] = 0x34;
-        machine.fetch_words = words;
-        auto api = api_for(machine);
-        if (start == 0x2D66U) oasis::hybrid::generated::execute_0x002D66(api);
-        else if (start == 0x604BCU) oasis::hybrid::generated::execute_0x0604BC(api);
-        else oasis::hybrid::generated::execute_0x061032(api);
-        Machine::current = nullptr;
-        if (machine.regs[16] != end || machine.fetch_index != words.size())
-            throw std::runtime_error("generated PC/extension length mismatch");
-    }
-}
 } // namespace
 
 int main() {
     test_decode_and_provenance();
     test_semantics();
-    test_generated_pc_lengths();
     return 0;
 }

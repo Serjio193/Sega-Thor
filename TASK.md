@@ -1,32 +1,33 @@
 # Current task
 
-TASK: M11.34 Independent M68K Semantic Core Verification
-STATUS: COMPLETE — `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`
-BASELINE: committed M11.33 `MECHANICAL_BLOCK_GENERATION_PROVEN` at `origin/main`
-SCOPE: Independently verify the exact seven instruction/addressing-mode/size
-combinations emitted by the current M11.33 generator, using a test-only
-Motorola/NXP 68000 Programmer's Reference Manual model and deterministic vectors.
-SURFACE: `MOVEM.L <register-list>,-(A7)`, `CLR.W Dn`, `MOVE.B (A6)+,Dn`,
-`LEA.L (abs.L),A3`, `ADDA.W D7,A3`, `MOVE.W (A6)+,(A3)+`, and `ADD.L D1,D2`.
-SUPPORTED_NOT_YET_USED: none in the current emitter; all other exact-IR forms
-remain unsupported and fail closed.
+TASK: M11.35 Demand-Driven Block Promotion Pilot
+STATUS: COMPLETE — `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`
+BASELINE: committed M11.34 `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED` at
+`32708bdcec086c6e954acdbb53715e4e3293fd2e` / `origin/main`
+SCOPE: bounded natural-trace discovery, exact block decoding, independent
+semantic gating, generated candidate bodies and GPGX shadow verification for
+only three additional natural entries. No whole-game coverage or automatic
+trust/promotion framework.
+CANDIDATES: `0x3A85E`, `0x3A8BA`, `0x3A88C`, all exact TST absolute-long forms.
 NON-GOALS: whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
-production emulator work, AI-generated semantics, or decoder architecture rewrite.
-ACCEPTANCE: exact independent post-state/decode/provenance checks for every
-used combination, permanent edge vectors with first-mismatch diagnostics, and
-the unchanged M11.33 600-frame proof. Result:
-`M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`; all seven used combinations are
-independently verified and no used-subset disagreement remains.
+production emulator/runtime JIT work, toolchain archaeology, or broad RE.
+ACCEPTANCE: discovery evidence, fail-closed exact IR generation, independent
+semantic vectors, direct-successor generated bodies, and zero-divergence shadow
+before native promotion. The semantic gate passed for the new TST forms, but
+the runtime shadow gate stopped at the first candidate.
 
-RESULT: 23 deterministic semantic vectors passed across the seven used forms,
-with exact D/A/register/SR/memory/access comparisons. Decode checks covered
-opcode, exact operation/operands, size, extension length and next PC; generated
-provenance comments were checked for every instruction. The M11.33 external
-GPGX shadow/native gate remained exact at 14/14 and 14 overrides.
-VALIDATION: Debug, Release and fresh GNU-equivalent build+CTest; semantic
-target and full CTest passed, source limits and `git diff --check` passed.
-NEXT ACTION: stop; broader exact-IR forms remain unverified and require a new
-bounded milestone before any surface expansion.
+RESULT: `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`. The 600-frame natural trace
+contained 2,188 unique guest PCs. The selected generated candidates remained
+interpreter fallback because shadow first diverged at `0x3A85E`:
+`timing actual_cycles=74 expected_cycles=896114 actual_refresh=228
+expected_refresh=896268`. Native promotion was not run. M11.33 blocks remain
+preserved and the M11.34 semantic result remains intact.
+VALIDATION: final code build and independent semantic test passed; full Debug,
+Release and GNU-equivalent build+CTest, diff/source-limit/hygiene checks are
+recorded in the worklog. The expected negative GPGX shadow gate is recorded as
+the milestone blocker, not as a passing equivalence claim.
+NEXT ACTION: stop; resolve the GPGX cycle/refresh and interrupt-boundary bridge
+contract in a separately approved milestone before any promotion attempt.
 
 # Historical task
 

@@ -1,13 +1,17 @@
 # Project State
 
-CURRENT_MILESTONE: M11.34 independent M68K semantic core verification
-CURRENT_TASK: verify the seven M11.33 generated instruction combinations
-STATUS: COMPLETE — M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED
-SCOPE_BOUNDARY: test-only independent semantic oracle inside developer tooling;
-production Sega-Thor remains free of GPGX, guest CPU state and generated-block
-dependencies.
-NEXT_GATE: broader exact-IR forms remain unverified; require a new bounded milestone
-LAST_VERIFIED_RESULT: 23 independent semantic vectors passed and M11.33 regression remained exact
+CURRENT_MILESTONE: M11.35 demand-driven block promotion pilot
+CURRENT_TASK: discover and gate only additional natural basic-block candidates
+STATUS: COMPLETE — DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED
+SCOPE_BOUNDARY: developer-only discovery, generated candidates, independent
+semantic vectors and GPGX shadow; production Sega-Thor remains free of GPGX,
+guest CPU state, generated-block dependencies and runtime JIT logic.
+NEXT_GATE: resolve the GPGX cycle/refresh and interrupt-boundary bridge contract
+in a separately bounded milestone; do not promote failed candidates.
+LAST_VERIFIED_RESULT: 2,188 unique PCs were discovered; new TST candidate
+semantics passed, but shadow first diverged at `0x3A85E` with timing
+`actual_cycles=74 expected_cycles=896114`, so zero M11.35 candidates were
+promoted and fallback remains active.
 
 # Historical state context
 

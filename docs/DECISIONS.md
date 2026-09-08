@@ -2,6 +2,32 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0017 — Fail-closed demand-driven block promotion gate
+**Status:** Accepted for M11.35 developer-only pilot
+**Date:** 2026-09-08
+
+**Context:** M11.33 generated three proven blocks and M11.34 independently
+verified their used instruction semantics. The next bounded experiment needs a
+repeatable way to select naturally executed blocks without turning the project
+into a whole-ROM recompiler or trusting generated output by construction.
+
+**Decision:** Permit only one bounded natural trace, exact decoder-owned block
+IR, independent vectors for newly required forms, provenance-bound generated
+bodies and full GPGX shadow comparison before promotion. Keep candidate bodies
+and discovery evidence in developer-only tooling. If semantic or runtime shadow
+evidence fails, do not promote the candidate and retain interpreter fallback.
+Do not add runtime JIT, automatic trust, or whole-game ranking in this pilot.
+
+**Consequences:** M11.35 may end in a negative gate result while preserving
+useful discovery, semantic and generator evidence. The first runtime blocker is
+recorded rather than hidden by running native execution. Any future promotion
+must establish the missing cycle/refresh and interrupt-boundary contract in
+a separately bounded task.
+
+**Result:** `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED` at `0x3A85E`, with
+`actual_cycles=74 expected_cycles=896114 actual_refresh=228
+expected_refresh=896268`.
+
 ## ADR-0016 — Test-only independent M68K semantic oracle
 **Status:** Accepted for M11.34 verification tooling
 **Date:** 2026-09-08

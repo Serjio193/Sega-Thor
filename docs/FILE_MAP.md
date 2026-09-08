@@ -97,9 +97,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── hybrid/
 │       │   ├── generated_block_runtime.cpp Helpers used by generated blocks
 │       │   ├── generated_block_runtime.hpp Generated-block helper boundary
-│       │   ├── generated_blocks.cpp Generated M11.33 block bodies
+│       │   ├── generated_blocks.cpp Generated M11.33/M11.35 candidate bodies
 │       │   ├── generated_blocks.hpp Generated block declarations
-│       │   ├── recomp_generator.cpp Decoder-to-C++ generator
+│       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   └── recomp_generator_report.cpp Generator CLI
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
@@ -306,11 +306,16 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`: M11.30 shadow evidence and override blocker.
 - `basic_block.hpp/.cpp`: M11.32 developer-only bounded block registry and
   exact fetch, bus, CCR, prefetch, cycle and refresh contracts for the three
-  proven blocks.
+  proven blocks plus the M11.35 shadow-only candidate entries.
 - `tests/hybrid_semantic_core_test.cpp`: M11.34 independent reference vectors,
-  exact decode/length checks and generated-block PC/provenance assertions.
+  M11.35 newly required semantic vectors, exact decode/length checks and
+  exact-IR assertions.
+- `tests/hybrid_generated_provenance_test.cpp`: generated M11.33/M11.35 block
+  extension-word consumption and direct-successor PC/provenance regression.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
+- `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,
+  semantic/generation gate and first runtime shadow blocker; no promotion claim.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

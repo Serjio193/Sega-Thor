@@ -39,6 +39,31 @@ std::string helper_call(const DecodedInstruction& instruction) {
     const auto& exact = *instruction.exact;
     const auto& source = exact.source;
     const auto& destination = exact.destination;
+    if (exact.operation.size() >= 2 && exact.operation[0] == 'b' &&
+        exact.operation != "bra" && exact.operation != "bsr" && instruction.direct_target &&
+        instruction.branch_condition_code) {
+        const auto not_taken = exact.branch_width_bytes == 1 ? -14 : 14;
+        std::ostringstream branch;
+        branch << "branch_condition(api, " << unsigned(*instruction.branch_condition_code)
+               << "U, 0x" << hex(*instruction.direct_target, 6) << "U, " << not_taken << ");";
+        return branch.str();
+    }
+    if (exact.operation.size() >= 2 && exact.operation[0] == 'd' &&
+        exact.operation[1] == 'b' && instruction.direct_target && source) {
+        require_kind(instruction, *source, OperandKind::data_register, "DBcc counter");
+        std::ostringstream dbcc;
+        dbcc << "dbcc(api, " << unsigned(*instruction.branch_condition_code)
+             << "U, " << unsigned(source->register_index) << "U, 0x"
+             << hex(*instruction.direct_target, 6) << "U);";
+        return dbcc.str();
+    }
+    if (exact.operation == "tst" && destination && exact.width_bytes != 4) {
+        require_kind(instruction, *destination, OperandKind::absolute_long, "TST destination");
+        std::ostringstream tst;
+        tst << "test_absolute_long(api, 0x" << hex(destination->value, 6) << "U, "
+            << unsigned(exact.width_bytes) << "U);";
+        return tst.str();
+    }
     const auto& dst = operand(instruction, destination, "destination");
     std::ostringstream out;
     if (exact.operation == "movem" && exact.width_bytes == 4 && source) {

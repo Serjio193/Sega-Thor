@@ -1,6 +1,40 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.35 — Demand-driven block promotion pilot
+STATUS: `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`. This is developer-only
+natural-execution evidence, not a whole-ROM coverage claim.
+
+The cold-reset neutral 600-frame GPGX trace used the same external identity as
+the M11.33/M11.34 regression: instrumented source commit
+`d60d079934977aa6973e220d123533387159f66e`, DLL SHA-256
+`ba6c10fdb1fe421e1e38c88b70ce18b0d2a122f4472f477b8a1a7aba14fce274`, and the
+local canonical USA ROM. `DISCOVER_BLOCKS` recorded 2,188 unique guest PCs.
+
+The bounded final shortlist and exact decoded forms are:
+
+| entry | bytes/form | exit | classification | gate |
+| --- | --- | --- | --- | --- |
+| `0x3A85E` | `4A79 00FF 1654` — `TST.W ($00FF1654).L` | `0x3A864` | `NEW_VERIFICATION_REQUIRED` | shadow blocked, first divergence |
+| `0x3A8BA` | `4A79 00FF 1654` — `TST.W ($00FF1654).L` | `0x3A8C0` | `NEW_VERIFICATION_REQUIRED` | not reached after first blocker |
+| `0x3A88C` | `4A39 00FF 0BFD` — `TST.B ($00FF0BFD).L` | `0x3A892` | `NEW_VERIFICATION_REQUIRED` | not reached after first blocker |
+
+The independent semantic harness passed the new TST edge vectors and the
+generator emitted provenance-bound bodies only for exact supported forms. Bcc
+and DBF candidates were explored as pilot alternatives but did not satisfy the
+runtime gate because of timing/interrupt-boundary divergence. `0x3A7AE` was
+also rejected after an IR/prefetch mismatch (`actual 0x4E73`, `expected 0x4A79`).
+Candidates involving indirect control flow or unsupported exact IR were
+rejected without widening the slice.
+
+The final shadow stopped at the first selected entry with:
+`FIRST_DIVERGENCE block=0x3a85e timing actual_cycles=74 expected_cycles=896114
+actual_refresh=228 expected_refresh=896268`.
+No M11.35 candidate is promoted; failed candidates remain interpreter fallback.
+This result does not establish native equivalence, full CPU equivalence, or any
+new production architecture. Detailed evidence is in
+`docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`.
+
 ## M11.34 — Independent M68K semantic core verification
 STATUS: `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED` for the exact used subset;
 all other exact-IR forms remain `UNVERIFIED`.

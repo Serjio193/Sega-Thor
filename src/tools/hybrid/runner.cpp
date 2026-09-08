@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <stdexcept>
 #include <string_view>
@@ -55,7 +56,13 @@ unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
 std::string video_hashes;
 std::string directory;
+bool discovery_mode{};
+std::map<unsigned, unsigned> discovered_pcs;
 void hook(int type, int width, unsigned address, unsigned value) {
+    if (discovery_mode) {
+        if (type == 1) ++discovered_pcs[address & 0xFFFFFFU];
+        return;
+    }
     if (block_registry) block_registry->event(type, width, address, value);
     else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
@@ -117,22 +124,23 @@ int main(int argc, char** argv) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
                      "<mode> <frames:1..600> <output directory> [target]\n"
                      "modes: EMULATED, SHADOW_NATIVE, NATIVE_OVERRIDE, "
-                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE\n";
+                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE, DISCOVER_BLOCKS\n";
         return 2;
     }
     try {
         const std::string_view mode_text(argv[3]);
         using oasis::hybrid::Mode;
+        const bool discover_mode = mode_text == "DISCOVER_BLOCKS";
         const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE";
-        const auto mode = mode_text == "EMULATED" ? Mode::EMULATED :
+        const auto mode = discover_mode ? Mode::EMULATED : mode_text == "EMULATED" ? Mode::EMULATED :
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
             mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE :
             block_mode ? Mode::SHADOW_NATIVE : throw std::runtime_error("invalid mode");
-        const auto target_text = argc == 7 ? std::string_view(argv[6]) :
-            block_mode ? std::string_view("0x2D66,0x604BC,0x61032") : std::string_view("0x3820");
+        const auto target_text = discover_mode ? std::string_view{} : argc == 7 ? std::string_view(argv[6]) :
+            block_mode ? std::string_view("0x2D66,0x604BC,0x61032,0x3A85E,0x3A8BA,0x3A88C") : std::string_view("0x3820");
         std::vector<unsigned> selected_targets;
         std::size_t begin = 0;
-        while (begin < target_text.size()) {
+        while (!target_text.empty() && begin < target_text.size()) {
             const auto comma = target_text.find(',', begin);
             const auto token = target_text.substr(begin, comma == std::string_view::npos ?
                                                        target_text.size() - begin : comma - begin);
@@ -141,14 +149,18 @@ int main(int argc, char** argv) {
             if (comma == std::string_view::npos) break;
             begin = comma + 1;
         }
-        if (selected_targets.empty()) throw std::runtime_error("empty target list");
-        const auto selected_target = selected_targets.front();
-        if (!block_mode) {
+        const auto selected_target = selected_targets.empty() ? 0U : selected_targets.front();
+        if (discover_mode) {
+            discovery_mode = true;
+            discovered_pcs.clear();
+        } else if (selected_targets.empty()) throw std::runtime_error("empty target list");
+        if (!block_mode && !discover_mode) {
             if (selected_targets.size() == 1 && selected_target == 0x3820) oasis::hybrid::require_mode(mode);
             for (const auto target : selected_targets)
                 if (target == 0x3820) throw std::runtime_error("0x3820 cannot be combined with registry targets");
-        } else if (selected_targets != std::vector<unsigned>{0x2D66, 0x604BC, 0x61032}) {
-            throw std::runtime_error("basic-block proof requires exactly 0x2D66,0x604BC,0x61032");
+        } else if (block_mode && selected_targets != std::vector<unsigned>{0x2D66, 0x604BC, 0x61032,
+                                                                             0x3A85E, 0x3A8BA, 0x3A88C}) {
+            throw std::runtime_error("basic-block proof requires the M11.33 blocks plus the M11.35 shortlist");
         }
 #ifdef _WIN32
         _putenv_s("GPGX_HYBRID_ONLY", "1");
@@ -177,7 +189,10 @@ int main(int argc, char** argv) {
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
         std::unique_ptr<oasis::hybrid::Registry> registry;
         std::unique_ptr<oasis::hybrid::BasicBlockRegistry> blocks;
-        if (block_mode) {
+        if (discover_mode) {
+            // Discovery deliberately installs only the execution observer. It does not
+            // register a candidate, so every natural instruction remains authoritative.
+        } else if (block_mode) {
             const auto set_reg = library.get<void(*)(unsigned, unsigned)>("retro_hybrid_set_register");
             const auto fetch16 = library.get<unsigned(*)()>("retro_hybrid_fetch16");
             const auto read = library.get<unsigned(*)(unsigned, int)>("retro_hybrid_read");
@@ -257,6 +272,27 @@ int main(int argc, char** argv) {
                 checkpoints << "{\"frame\":" << frame + 1 << ",\"state_sha256\":\"" << hash
                             << "\",\"cpu_cycles\":" << cpu_cycles() << "}\n";
             }
+        }
+        if (discover_mode) {
+            discovery_mode = false;
+            library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
+            library.get<decltype(&retro_unload_game)>("retro_unload_game")();
+            library.get<decltype(&retro_deinit)>("retro_deinit")();
+            std::ofstream discovery(std::filesystem::path(directory) / "discovered_pcs.json");
+            discovery.exceptions(std::ios::failbit | std::ios::badbit);
+            discovery << "{\"schema\":\"oasis.hybrid.discovery.v1\",\"frames\":" << frames
+                      << ",\"unique_pcs\":" << discovered_pcs.size() << ",\"pcs\":[";
+            bool first = true;
+            for (const auto& [pc, count] : discovered_pcs) {
+                if (!first) discovery << ',';
+                first = false;
+                discovery << "{\"pc\":\"0x" << std::hex << pc << std::dec
+                          << "\",\"count\":" << count << '}';
+            }
+            discovery << "]}\n";
+            std::cout << "mode=DISCOVER_BLOCKS frames=" << frames
+                      << " unique_pcs=" << discovered_pcs.size() << '\n';
+            return discovered_pcs.empty() ? 1 : 0;
         }
         if (block_mode)
             library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
@@ -348,8 +384,8 @@ int main(int argc, char** argv) {
                << ",\n\"per_block\":[";
         if (blocks) {
             const auto metrics = blocks->metrics();
-            constexpr unsigned targets[] = {0x2D66, 0x604BC, 0x61032};
-            for (unsigned i = 0; i < 3; ++i) {
+            constexpr unsigned targets[] = {0x2D66, 0x604BC, 0x61032, 0x3A85E, 0x3A8BA, 0x3A88C};
+            for (unsigned i = 0; i < 6; ++i) {
                 if (i) report << ',';
                 report << "{\"target\":\"0x" << std::hex << targets[i] << std::dec
                        << "\",\"natural_entries\":" << metrics.natural_by_block[i]

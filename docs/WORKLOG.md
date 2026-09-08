@@ -3,6 +3,72 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.35 Demand-Driven Block Promotion Pilot — COMPLETE / RUNTIME BLOCKED
+**Objective:** Starting from committed M11.34 `32708bdcec086c6e954acdbb53715e4e3293fd2e`,
+run one bounded natural guest trace, discover a small candidate set outside the
+M11.33 blocks, decode and classify exact forms, independently verify only newly
+required semantics, generate provenance-bound bodies, and require exact GPGX
+shadow equivalence before any native promotion.
+
+**Acceptance criteria:** preserve the M11.33 three-block proof; record only
+3–8 natural candidates and rejects; refuse unverified exact IR; retain
+independent semantic vectors; generate direct-successor bodies with guest
+provenance; compare full CPU/RAM/PC/SR/IR/prefetch/cycle/refresh/hardware state
+through the GPGX bridge; promote zero candidates unless every shadow gate passes;
+leave failed candidates on interpreter fallback; keep production targets
+emulator-free and keep ROM/assets/generated evidence out of Git.
+
+**Discovery:** The existing cold-reset neutral 600-frame scenario was run in
+`DISCOVER_BLOCKS` mode against external instrumented GPGX source commit
+`d60d079934977aa6973e220d123533387159f66e` and DLL SHA-256
+`ba6c10fdb1fe421e1e38c88b70ce18b0d2a122f4472f477b8a1a7aba14fce274`.
+The trace recorded 2,188 unique guest PCs. The bounded final shortlist was
+`0x3A85E`, `0x3A8BA` and `0x3A88C`; all are direct TST absolute-long entries
+with exits `0x3A864`, `0x3A8C0` and `0x3A892`. DBF and Bcc alternatives were
+examined but rejected at the runtime/timing/interrupt boundary; broader
+indirect-control-flow or unsupported candidates were not expanded.
+
+**Semantic/generation gate:** The test-only independent model added deterministic
+Bcc, DBcc and TST edge vectors, including flag, loop-counter and timing edges.
+The TST vectors passed. The exact decoder classified the selected forms as
+`NEW_VERIFICATION_REQUIRED`; the generator emitted only supported TST helper
+calls and rejected unsupported forms. Generated bodies contain only
+decoder-derived guest PC/opcode/assembly comments, fetch/finish boundaries and
+direct successors. M11.33 generated bodies and handwritten hybrid glue remain
+separate.
+
+**Shadow evidence:** The final bounded shadow run rebuilt the current code and
+stopped on the first candidate at `0x3A85E`:
+`FIRST_DIVERGENCE block=0x3a85e timing actual_cycles=74 expected_cycles=896114
+actual_refresh=228 expected_refresh=896268`. The required exact cycle/refresh
+and interrupt-boundary contract was therefore not established. Later shortlist
+entries were not promoted or treated as independently proven.
+Native promotion was not run after the failed shadow gate. The M11.35 entries
+remain an offline shadow experiment with interpreter fallback; no production
+runtime or automatic trust path was added.
+
+**M11.34 preservation:** The previously proven M11.33 three-block result was
+left in place and its 600-frame regression remained the baseline. No ID3,
+`0x3820`, whole-game coverage, timing optimization, emulator dependency or
+toolchain archaeology was added.
+
+**Tests/build:** Current GPGX hybrid targets rebuilt successfully and the
+independent semantic executable passed. Full Debug, Release, GNU-equivalent and
+GPGX build+CTest each passed 53/53, including the source-file line-limit test.
+The generator reproduced `src/tools/hybrid/generated_blocks.cpp` byte-for-byte
+for all six generated blocks; `git diff --check` passed. The expected negative
+GPGX shadow result is the milestone gate blocker, not a passing equivalence
+claim. `game.srm` remains untouched and untracked; no ROM/assets/emulator or
+generated run evidence is staged.
+
+**Result:** `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`.
+
+**First blocker:** the developer-only GPGX cycle/refresh and interrupt-boundary
+contract prevents exact timing agreement for the first selected TST candidate.
+
+**Exact next step:** stop. Resolve that bridge contract in a new bounded task
+before attempting any M11.35 native promotion or scalable promotion loop.
+
 ## 2026-09-08 — M11.34 Independent M68K Semantic Core Verification — COMPLETE
 **Objective:** Independently verify the exact semantic subset emitted by the
 M11.33 mechanical generator without using the decoder/emitter as its oracle.

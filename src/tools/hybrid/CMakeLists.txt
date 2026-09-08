@@ -22,6 +22,9 @@ add_test(NAME oasis_hybrid_recomp_generator COMMAND oasis_hybrid_recomp_generato
 add_executable(oasis_hybrid_generated_block_test ${PROJECT_SOURCE_DIR}/tests/hybrid_generated_block_test.cpp)
 target_link_libraries(oasis_hybrid_generated_block_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_generated_block COMMAND oasis_hybrid_generated_block_test)
+add_executable(oasis_hybrid_generated_provenance_test ${PROJECT_SOURCE_DIR}/tests/hybrid_generated_provenance_test.cpp)
+target_link_libraries(oasis_hybrid_generated_provenance_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_generated_provenance COMMAND oasis_hybrid_generated_provenance_test)
 add_executable(oasis_hybrid_semantic_core_test ${PROJECT_SOURCE_DIR}/tests/hybrid_semantic_core_test.cpp)
 target_link_libraries(oasis_hybrid_semantic_core_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_semantic_core COMMAND oasis_hybrid_semantic_core_test)
@@ -29,10 +32,11 @@ add_executable(oasis_hybrid_recomp_generate recomp_generator_report.cpp)
 target_link_libraries(oasis_hybrid_recomp_generate PRIVATE oasis_hybrid_contract)
 target_compile_options(oasis_hybrid_recomp_generator_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_generated_block_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
+target_compile_options(oasis_hybrid_generated_provenance_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_semantic_core_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
-    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block oasis_hybrid_semantic_core
+    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block oasis_hybrid_generated_provenance oasis_hybrid_semantic_core
         PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
 endif()
 

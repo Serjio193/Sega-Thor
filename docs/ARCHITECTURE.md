@@ -102,6 +102,14 @@ harness beside that boundary. It verifies the seven currently emitted forms
 against the Motorola/NXP 68000 specification; it is not linked into production,
 does not broaden decoder coverage and does not replace the GPGX timing oracle.
 
+M11.35 adds a bounded offline discovery and promotion gate within the same
+developer-only boundary. `DISCOVER_BLOCKS` records naturally entered guest PCs;
+the exact decoder classifies new forms; the generator refuses unverified or
+unsupported IR; and GPGX remains authoritative for shadow comparison. A failed
+candidate is interpreter fallback only. The pilot has no runtime JIT, no
+automatic trust, no production dependency, and no native promotion after the
+first cycle/refresh and interrupt-boundary divergence at `0x3A85E`.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 
