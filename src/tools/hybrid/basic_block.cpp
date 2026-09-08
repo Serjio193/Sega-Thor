@@ -398,6 +398,10 @@ void BasicBlockRegistry::event(int type, int width, unsigned address, unsigned v
             if (in_registered_range(address) && !in_block(address)) ++metrics_.fallback_entries;
             return;
         }
+        if (type == (1 << 14)) {
+            if (shadow_ && address == prediction_.state[16]) finish_shadow();
+            return;
+        }
         if (!active_) return;
         if (type == 2) {
             if (address < kRamBase && address >= 0xA00000U) ++metrics_.hardware_accesses;

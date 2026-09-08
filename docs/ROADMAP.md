@@ -9,7 +9,21 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
-## M11.35 — Demand-driven block promotion pilot — BLOCKED
+## M11.36 — GPGX timing / refresh bridge contract — DONE
+Resolve the M11.35 cycle/refresh observer boundary without expanding the
+candidate set. GPGX source evidence establishes frame-relative accumulated
+`m68k.cycles`/`refresh_cycles`, frame rebasing through `mcycles_vdp`, normal
+interrupt polling at `m68k_run` entry, and the post-instruction comparison
+boundary before the next scheduler transition.
+
+Gate result: `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
+`DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN`. The existing six-entry registry passed
+185,975/185,975 shadow comparisons with zero divergence; native promotion then
+passed the unchanged 600-frame scenario with exact checkpoint/video hashes,
+185,975 native entries, zero original-body starts and zero observed interrupts.
+The M11.35 negative result remains historical evidence.
+
+## M11.35 — Demand-driven block promotion pilot — DONE (initial gate blocked)
 Run one bounded 600-frame natural trace, select only a small set of additional
 guest block entries, decode them through the existing exact IR, independently
 verify newly required forms, generate provenance-bound C++ and require exact

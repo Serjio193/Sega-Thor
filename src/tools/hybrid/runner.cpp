@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
         std::filesystem::create_directories(directory);
         const auto library_hash = oasis::calculate_sha256(oasis::Rom::load(argv[1]).bytes());
         Library library(argv[1]);
-        if (library.get<unsigned(*)()>("retro_hybrid_abi")() != 1)
+        if (library.get<unsigned(*)()>("retro_hybrid_abi")() != 2)
             throw std::runtime_error("GPGX hybrid bridge ABI mismatch");
         std::ofstream calls(std::filesystem::path(directory) / "calls.jsonl");
         calls.exceptions(std::ios::failbit | std::ios::badbit);

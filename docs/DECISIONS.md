@@ -2,6 +2,29 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0018 — GPGX post-instruction bridge comparison boundary
+**Status:** Accepted for M11.36 developer-only hybrid tooling
+**Date:** 2026-09-08
+
+**Context:** M11.35 compared a prediction sampled before a direct TST entry with
+an execution event observed at the next instruction boundary. GPGX rebases its
+frame-relative `m68k.cycles` and `refresh_cycles` counters at frame end, so the
+first mismatch was `896114/896268` versus `74/228` even though the instruction
+effect itself was exact.
+
+**Decision:** Keep GPGX as the timing, refresh, hardware and interrupt oracle.
+Expose one generic post-instruction hook from the normal interpreter after
+semantic and cycle/refresh advancement, before the next scheduler/frame
+transition. Close shadow comparison there. Keep the existing entry hook for
+block dispatch. A translated block remains valid only for bounded code whose
+accesses cannot expose a GPGX-observable boundary; interrupt polling and trace
+handling remain outside generated semantics and are never crossed atomically.
+
+**Consequences:** No baseline subtraction, magic constant, candidate-address
+patch or parallel timing engine is needed. The old M11.35 negative result stays
+historical. The existing M11.33 plus three M11.35 blocks pass the full shadow
+and native 600-frame gate; future blocks still require the same exact contract.
+
 ## ADR-0017 — Fail-closed demand-driven block promotion gate
 **Status:** Accepted for M11.35 developer-only pilot
 **Date:** 2026-09-08

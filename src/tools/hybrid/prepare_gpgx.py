@@ -17,7 +17,7 @@ def prepare(root):
     hook_header = root / "core/debug/cpuhook.h"
     hook_text = hook_header.read_text(encoding="utf-8")
     hook_anchor = "void set_cpu_hook(void(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value));"
-    hook_decl = "typedef int (*cpu_block_hook_t)(unsigned int pc);\nextern cpu_block_hook_t cpu_block_hook;\nvoid set_cpu_block_hook(cpu_block_hook_t hook);"
+    hook_decl = "typedef int (*cpu_block_hook_t)(unsigned int pc);\nextern cpu_block_hook_t cpu_block_hook;\nvoid set_cpu_block_hook(cpu_block_hook_t hook);\n#define HOOK_M68K_POST ((hook_type_t)(1 << 14))"
     if "cpu_block_hook_t" not in hook_text:
         if hook_text.count(hook_anchor) != 1:
             raise ValueError("unsupported external CPU hook header")
@@ -50,6 +50,13 @@ unsigned int m68k_hybrid_refresh_penalty(void);"""
         if cpu_text.count(cpu_anchor) != 1:
             raise ValueError("unsupported external CPU execution loop")
         cpu_source.write_text(cpu_text.replace(cpu_anchor, cpu_replacement), encoding="utf-8")
+    post_anchor = "    /* Trace m68k_exception, if necessary */\n    m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */"
+    post_replacement = "    /* M11.36: expose the authoritative instruction-exit boundary before the\n     * next scheduler/frame transition can rebase the counters. */\n#ifdef HOOK_CPU\n    if (UNLIKELY(cpu_hook))\n      cpu_hook((hook_type_t)(1 << 14), 0, REG_PC, 0);\n#endif\n\n" + post_anchor
+    cpu_text = cpu_source.read_text(encoding="utf-8")
+    if "authoritative instruction-exit boundary" not in cpu_text:
+        if cpu_text.count(post_anchor) != 1:
+            raise ValueError("unsupported external CPU post-instruction anchor")
+        cpu_source.write_text(cpu_text.replace(post_anchor, post_replacement), encoding="utf-8")
     cpu_text = cpu_source.read_text(encoding="utf-8")
     helper_anchor = "void m68k_clear_halt(void)\n{\n  /* Clear the HALT line on the CPU */\n  CPU_STOPPED &= ~STOP_LEVEL_HALT;\n}"
     helper_code = r'''void m68k_hybrid_begin_instruction(unsigned int opcode)

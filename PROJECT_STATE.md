@@ -1,17 +1,16 @@
 # Project State
 
-CURRENT_MILESTONE: M11.35 demand-driven block promotion pilot
-CURRENT_TASK: discover and gate only additional natural basic-block candidates
-STATUS: COMPLETE — DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED
-SCOPE_BOUNDARY: developer-only discovery, generated candidates, independent
-semantic vectors and GPGX shadow; production Sega-Thor remains free of GPGX,
-guest CPU state, generated-block dependencies and runtime JIT logic.
-NEXT_GATE: resolve the GPGX cycle/refresh and interrupt-boundary bridge contract
-in a separately bounded milestone; do not promote failed candidates.
-LAST_VERIFIED_RESULT: 2,188 unique PCs were discovered; new TST candidate
-semantics passed, but shadow first diverged at `0x3A85E` with timing
-`actual_cycles=74 expected_cycles=896114`, so zero M11.35 candidates were
-promoted and fallback remains active.
+CURRENT_MILESTONE: M11.36 GPGX timing / refresh bridge contract
+CURRENT_TASK: complete the bounded bridge contract and existing M11.35 gate
+STATUS: COMPLETE — GPGX_TIMING_REFRESH_BRIDGE_PROVEN;
+DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN
+SCOPE_BOUNDARY: developer-only discovery, generated candidates, semantic
+vectors, bridge and GPGX shadow/native checks; production Sega-Thor remains
+free of GPGX, guest CPU state, generated-block dependencies and runtime JIT.
+NEXT_GATE: stop; any new block coverage requires a new bounded milestone.
+LAST_VERIFIED_RESULT: final external GPGX shadow compared 185,975 entries with
+zero divergences; native promoted 185,975 entries, skipped all original target
+bodies, observed zero interrupts, and matched checkpoint/video hashes.
 
 # Historical state context
 

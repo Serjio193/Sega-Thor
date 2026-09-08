@@ -291,7 +291,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   native-override adapter for the bounded `0x2D66` leaf.
 - `runner.cpp`: deterministic neutral libretro frontend, local hash evidence.
 - `gpgx_bridge.c`: read-only bridge compiled only inside the external emulator.
-- `prepare_gpgx.py`: reproducible bridge installation and coverage opt-out guard.
+- `prepare_gpgx.py`: reproducible bridge installation, coverage opt-out guard
+  and M11.36 post-instruction comparison hook.
 - `tests/hybrid_contract_test.cpp`, `tests/hybrid_dispatch_test.cpp`: independent
   synthetic state/output/stack, corruption, footprint and override-gate tests.
 - `tests/hybrid_candidate_2d66_test.cpp`: synthetic exact MOVEM-stack shadow and
@@ -312,10 +313,14 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   exact-IR assertions.
 - `tests/hybrid_generated_provenance_test.cpp`: generated M11.33/M11.35 block
   extension-word consumption and direct-successor PC/provenance regression.
+- `tests/hybrid_basic_block_test.cpp`: post-instruction boundary regression
+  proving shadow closes before a scheduler/frame rebase.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 - `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,
   semantic/generation gate and first runtime shadow blocker; no promotion claim.
+- `docs/reports/GPGX_TIMING_REFRESH_BRIDGE_M11_36.md`: counter ownership,
+  frame epoch, bounded A–G boundary evidence and final three-candidate gate.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

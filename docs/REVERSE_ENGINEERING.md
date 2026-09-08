@@ -1,6 +1,38 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.36 — GPGX timing / refresh bridge contract
+STATUS: `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
+`DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN` for the existing six-entry developer
+registry only.
+
+The M11.35 first mismatch was an incompatible observer epoch, not an
+instruction timing disagreement. In external GPGX source commit
+`d60d079934977aa6973e220d123533387159f66e`, `m68k.cycles` and
+`m68k.refresh_cycles` are accumulated master-cycle counters for the current
+frame. `system.c` subtracts `mcycles_vdp` from both at frame end. The old
+entry/next-entry comparison consequently observed
+`actual_cycles=74 actual_refresh=228` after a rebase while the same candidate's
+pre-rebase expected state was `896114/896268`; the difference is exactly
+`mcycles_vdp=896040`.
+
+The corrected bridge compares at a generic GPGX post-instruction boundary,
+after opcode fetch, semantic execution and `USE_CYCLES`/refresh advancement,
+before the next scheduler/frame transition. Interrupt polling remains owned by
+GPGX: `m68k_run` checks at entry and no registered block crossed an observed
+interrupt or hardware-visible access. This is an absolute-state comparison;
+no entry-baseline subtraction or candidate-specific delta is used.
+
+Bounded A–G evidence for `0x3A85E` (`TST.W ($00FF1654).L`, exit `0x3A864`)
+found exact PC, IR, prefetch, SR, RAM read and timing state through the
+post-instruction point. The old observer was the first point to change epoch.
+The final shadow gate then completed `185975/185975` with zero divergence for
+the preserved M11.33 blocks and only the existing three M11.35 candidates.
+Native promotion of that same set completed 600 frames with exact checkpoint
+and video hashes, `185975` promoted entries, zero original-body starts, zero
+interrupt crossings and zero hardware accesses. The full identity and evidence
+are in `docs/reports/GPGX_TIMING_REFRESH_BRIDGE_M11_36.md`.
+
 ## M11.35 — Demand-driven block promotion pilot
 STATUS: `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`. This is developer-only
 natural-execution evidence, not a whole-ROM coverage claim.

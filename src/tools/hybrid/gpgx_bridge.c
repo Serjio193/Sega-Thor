@@ -7,7 +7,7 @@
 #include "cpuhook.h"
 #include "libretro.h"
 
-RETRO_API unsigned int retro_hybrid_abi(void) { return 1; }
+RETRO_API unsigned int retro_hybrid_abi(void) { return 2; }
 
 RETRO_API void retro_hybrid_install(void (*callback)(hook_type_t, int, unsigned int, unsigned int))
 {

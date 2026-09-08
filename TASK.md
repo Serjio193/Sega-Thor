@@ -1,33 +1,28 @@
 # Current task
 
-TASK: M11.35 Demand-Driven Block Promotion Pilot
-STATUS: COMPLETE — `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`
-BASELINE: committed M11.34 `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED` at
-`32708bdcec086c6e954acdbb53715e4e3293fd2e` / `origin/main`
-SCOPE: bounded natural-trace discovery, exact block decoding, independent
-semantic gating, generated candidate bodies and GPGX shadow verification for
-only three additional natural entries. No whole-game coverage or automatic
-trust/promotion framework.
-CANDIDATES: `0x3A85E`, `0x3A8BA`, `0x3A88C`, all exact TST absolute-long forms.
+TASK: M11.36 GPGX Timing / Refresh Bridge Contract
+STATUS: COMPLETE — `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
+`DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN`
+BASELINE: committed M11.35 `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED` at
+`291012425bdc85f37cb5c11ffede71223916e3a4` / `origin/main`
+SCOPE: establish the generic GPGX instruction-exit timing/refresh bridge for
+only `0x3A85E`, `0x3A8BA` and `0x3A88C`, then rerun the existing six-entry
+developer-only block gate. No discovery or semantic coverage expansion.
 NON-GOALS: whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
 production emulator/runtime JIT work, toolchain archaeology, or broad RE.
-ACCEPTANCE: discovery evidence, fail-closed exact IR generation, independent
-semantic vectors, direct-successor generated bodies, and zero-divergence shadow
-before native promotion. The semantic gate passed for the new TST forms, but
-the runtime shadow gate stopped at the first candidate.
 
-RESULT: `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED`. The 600-frame natural trace
-contained 2,188 unique guest PCs. The selected generated candidates remained
-interpreter fallback because shadow first diverged at `0x3A85E`:
-`timing actual_cycles=74 expected_cycles=896114 actual_refresh=228
-expected_refresh=896268`. Native promotion was not run. M11.33 blocks remain
-preserved and the M11.34 semantic result remains intact.
-VALIDATION: final code build and independent semantic test passed; full Debug,
-Release and GNU-equivalent build+CTest, diff/source-limit/hygiene checks are
-recorded in the worklog. The expected negative GPGX shadow gate is recorded as
-the milestone blocker, not as a passing equivalence claim.
-NEXT ACTION: stop; resolve the GPGX cycle/refresh and interrupt-boundary bridge
-contract in a separately approved milestone before any promotion attempt.
+RESULT: GPGX `m68k.cycles` and `refresh_cycles` are frame-relative accumulated
+master-cycle counters rebased by `mcycles_vdp`; the M11.35 mismatch compared a
+pre-rebase prediction with a post-rebase execution observer. The generic
+post-instruction hook now closes shadow comparison before the next scheduler
+or frame transition. The old M11.35 mismatch is preserved in history.
+The existing gate passed `185975/185975` shadow comparisons with zero
+divergences, then native promotion passed for all three M11.35 candidates and
+the three preserved M11.33 blocks.
+VALIDATION: final Debug, Release and GNU-equivalent full CTest, semantic and
+generator/provenance tests, source-limit/diff/hygiene checks, final GPGX shadow,
+and final native 600-frame regression are recorded in the worklog.
+NEXT ACTION: stop; do not expand block coverage without a new milestone.
 
 # Historical task
 

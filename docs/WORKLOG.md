@@ -3,6 +3,59 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.36 GPGX Timing / Refresh Bridge Contract — COMPLETE
+**Objective:** Starting from M11.35 `291012425bdc85f37cb5c11ffede71223916e3a4`,
+resolve only the cycle/refresh/interrupt-boundary bridge for the existing
+`0x3A85E`, `0x3A8BA` and `0x3A88C` candidates, then rerun the existing gate.
+
+**Evidence:** GPGX source inspection established that `m68k.cycles` and
+`refresh_cycles` are accumulated signed master-cycle counters owned by the
+68K core, relative to the current frame and rebased by subtracting
+`mcycles_vdp` in `system.c`. `m68k_run` polls interrupts at entry, invokes the
+block hook before normal fetch, and charges refresh/instruction timing in the
+normal interpreter. The M11.35 mismatch was a pre-rebase prediction versus a
+post-rebase next-entry observer: `896114/896268` became `74/228`, with
+`mcycles_vdp=896040`. Decode, TST semantics, RAM access and refresh primitive
+were not the blocker.
+
+**Implementation:** Added a generic developer-only GPGX post-instruction hook
+before the next scheduler/frame transition and taught the block registry to
+close shadow comparison at that authoritative boundary. The GPGX bridge ABI
+is now `2`; generated instruction semantics and the existing M11.33 bodies
+were unchanged. Added `hybrid_basic_block_test.cpp`, which fails under the old
+entry-only observer and passes only when the post-instruction boundary closes
+the shadow. Generated code remains in `generated_blocks.cpp`; handwritten
+bridge/registry glue remains separate.
+
+**Gate:** Final external GPGX source commit was
+`d60d079934977aa6973e220d123533387159f66e`; final DLL SHA-256 was
+`9b345293c239805cbfe22bb3c582e7d42164a701ba2c50e1934e1a8ef80b2ec8`.
+The six-entry shadow run completed `185975/185975` comparisons with zero
+divergences. Native then completed the unchanged 600-frame scenario with
+`185975` native entries, `185981` translated guest instruction executions,
+zero original-body starts, zero fallback entries, zero interrupts and zero
+hardware accesses. All three M11.35 candidates were naturally promoted; the
+three M11.33 blocks remained exact.
+
+**Equivalence:** Shadow and native both report full CPU equivalence and equal
+checkpoint hash `66e2a51afdd0ee4e790063b0e603dff77ae678b43e6c411c9da57ed2f27a3cba`
+and video hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+The old negative M11.35 result remains unchanged in its historical entry.
+
+**Validation:** Final Debug, Release and GNU-equivalent full CTest were run;
+the targeted semantic, generator/provenance and new bridge regression tests
+passed. Final GPGX shadow/native runs passed. `git diff --check`, source file
+limits and repository hygiene checks are recorded before commit. The
+pre-existing tracked generated `gpgx-coverage-report.txt` was removed; no ROM,
+asset, emulator binary or generated run evidence is tracked; `game.srm` remains
+untouched and untracked.
+
+**Result:** `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
+`DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN`.
+
+**Next action:** stop; require a new bounded milestone for any additional
+block discovery or coverage.
+
 ## 2026-09-08 — M11.35 Demand-Driven Block Promotion Pilot — COMPLETE / RUNTIME BLOCKED
 **Objective:** Starting from committed M11.34 `32708bdcec086c6e954acdbb53715e4e3293fd2e`,
 run one bounded natural guest trace, discover a small candidate set outside the

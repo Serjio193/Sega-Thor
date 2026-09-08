@@ -110,6 +110,17 @@ candidate is interpreter fallback only. The pilot has no runtime JIT, no
 automatic trust, no production dependency, and no native promotion after the
 first cycle/refresh and interrupt-boundary divergence at `0x3A85E`.
 
+M11.36 fixes the observer boundary generically. GPGX owns the authoritative
+`m68k.cycles` and `refresh_cycles` counters; they are accumulated master-cycle
+values in the current frame and are rebased with `mcycles_vdp` at frame end.
+The bridge therefore compares shadow state at a GPGX post-instruction hook,
+after semantic and timing advancement but before the next scheduler/frame
+transition. Normal interrupt polling remains GPGX-owned: `m68k_run` polls at
+entry, the post hook is before trace/interrupt handling, and a translated block
+is valid only when its bounded accesses cannot expose an intervening hardware
+or interrupt boundary. The M11.33 and M11.35 blocks satisfy that observed
+contract; no second timing model or candidate-specific correction was added.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 
