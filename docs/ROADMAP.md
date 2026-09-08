@@ -341,6 +341,17 @@ minimal boundary lacks the exact per-instruction bus-refresh/hardware phase
 contract. Result: `HYBRID_OVERRIDE_NOT_YET_REPEATABLE`. Stop here; do not expand
 timing work or production dependencies.
 
+## M11.31 — Comparative disassembly method transfer — DONE
+Pinned public Streets of Rage 2/3 projects were compared with existing Beyond
+Oasis evidence. The RuiNelson disassembly/recompilation workflow is retained as
+`PARTIAL_TRANSFERABILITY`; IDA assembly and Pancakes are `SPECIALIZED_ONLY`.
+Programmer-style similarity is `NON_DISCRIMINATING`, binary structure is only
+`PARTIAL`, and sound-driver lineage is `SPECIALIZED_ONLY`/unresolved. The
+`0x2D66` dry-run confirms workflow compatibility without importing code or
+changing runtime dependencies. No high-confidence template was found.
+Possible M11.32: one bounded Beyond Oasis evidence-led pass using the adapted
+sequence in the report. Do not broaden coverage or repair hybrid timing here.
+
 ## M12 — Inventory/UI/save — TODO
 Goal: menus, inventory, item behavior and compatible save semantics.
 

@@ -1,6 +1,27 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.31 — Comparative method transfer
+STATUS: `PARTIAL_TRANSFERABILITY`.
+
+Public Streets of Rage references were inspected at pinned revisions and remain
+external methodology evidence only. `gsaurus/sor-disassemblies` is an IDA
+database/generated-assembly reference (`SPECIALIZED_ONLY`), while
+`gsaurus/sor_pancakes` is a graphics/data hacking toolkit (`SPECIALIZED_ONLY`).
+The RuiNelson `RageDecompiler`/recompilation workflow is the strongest process
+reference (`PARTIAL_TRANSFERABILITY`): preserve ROM addresses, maintain an
+explicit code/data/unknown map, record unresolved indirect entries, iterate
+from natural evidence, and separate generated code from hand-written helpers.
+It does not establish exact ROM reassembly, shared programmer style, shared
+binary modules or Beyond Oasis sound-driver lineage.
+
+The bounded dry-run on the existing `0x2D66` target followed that sequence and
+reproduced the M11.29 evidence without importing external labels, RAM formats,
+audio assumptions or runtime code. This is a workflow confirmation, not a new
+ROM fact or a reason to expand RE tooling. Full source/commit inventory and the
+separate conclusions are in
+`docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`.
+
 ## M11.30 — Small batch candidates
 STATUS: `SHADOW_PROVEN_OVERRIDE_BLOCKED`.
 

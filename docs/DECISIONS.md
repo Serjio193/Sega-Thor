@@ -257,3 +257,28 @@ state. Timing and hardware phase are not synthesized by the registry.
 unsafe candidates fail closed. The M11.30 batch shadow is clean, but override
 promotion remains blocked until the exact GPGX bus-refresh/VDP/sound phase
 contract is proven. Production Sega-Thor code remains emulator-free.
+
+## ADR-0013 — Comparative projects are method references only
+**Status:** Accepted
+**Date:** 2026-09-08
+
+**Context:** M11.31 compares public Streets of Rage 2/3 disassembly,
+extraction and static-recompilation projects with the existing Beyond Oasis
+evidence. The comparison found no public exact-ROM reassembly proof and no
+evidence sufficient to establish shared programmer style, binary modules or
+sound-driver lineage.
+
+**Decision:** Transfer only the bounded evidence workflow: canonical identity,
+address-preserving maps, explicit unknown/indirect-entry ledgers, natural
+evidence gates, and separation of generated/mechanical output from native
+helpers. Do not import SoR labels, RAM/object/audio assumptions, generated CPU
+recompiler machinery or external code/data. Keep sound lineage as a separate
+specialized investigation.
+
+**Consequences:** M11.32, if started, remains a localized Beyond Oasis pass
+using existing decoders/contracts. Similarity claims stay separated into
+programmer style, binary structure, RE method and sound lineage. No production
+runtime dependency changes.
+
+**Affected files/milestones:** M11.31 report and governance documents; no
+production source or ROM data.

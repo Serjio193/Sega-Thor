@@ -297,6 +297,11 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `tests/hybrid_replacement_test.cpp`: synthetic registry routing regression.
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`: M11.30 shadow evidence and override blocker.
 
+## M11.31 comparative method transfer
+- `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned
+  public Streets of Rage 2/3 project inventory, bounded similarity matrix,
+  transferable workflow, Beyond Oasis dry-run and separated conclusions.
+
 ## Planned directories
 Create these only when their milestone begins and evidence justifies the structure:
 

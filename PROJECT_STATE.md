@@ -1,17 +1,18 @@
 # Project State
 
-CURRENT_MILESTONE: M11.30 hybrid migration small batch
-CURRENT_TASK: complete; batch shadow proven, override repeatability blocked
-STATUS: HYBRID_OVERRIDE_NOT_YET_REPEATABLE
-LAST_VERIFIED_RESULT: 0x2D66, 0x604BC and 0x61032 produced 14/14 clean shadow
-comparisons and zero interrupts. Simultaneous native override skipped all
-original bodies and completed video, but serialized VDP/sound checkpoints
-diverged from EMULATED.
-LIMITATION: exact GPGX bus-refresh and hardware phase contract for skipped
-instructions is missing; no timing engine was added.
-PRODUCTION_BOUNDARY: new hybrid code is developer-only; no production dependency.
-EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md
-NEXT_ACTION: STOP. M11.27 manual ID3 hunting is stopped; no further scope active.
+CURRENT_MILESTONE: M11.31 comparative disassembly method transfer
+CURRENT_TASK: complete; bounded public-project comparison and Beyond Oasis dry-run
+STATUS: PARTIAL_TRANSFERABILITY
+LAST_VERIFIED_RESULT: `RuiNelson/StreetsOfRageProject` plus `RageDecompiler`
+provides the strongest transferable process pattern, but no inspected project
+demonstrates exact ROM reassembly or shared Beyond Oasis binary lineage.
+LIMITATION: comparison cannot establish programmer style, module boundaries or
+Ancient Music Driver lineage from common 68000/Mega Drive conventions.
+PRODUCTION_BOUNDARY: no code or dependency changed; emulator/hybrid tooling
+remains developer-only.
+EVIDENCE: docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md
+NEXT_ACTION: M11.32 may perform one bounded evidence-led Beyond Oasis pass;
+retain localized decoders/contracts and do not import SoR-specific machinery.
 
 ## Historical state context
 

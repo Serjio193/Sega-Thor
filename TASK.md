@@ -1,15 +1,19 @@
 # Current Task
 
-TASK: M11.30 Hybrid Migration Small Batch
-STATUS: HYBRID_OVERRIDE_NOT_YET_REPEATABLE
-SCOPE: developer-only registry and bounded natural shadow/override experiment.
-RESULT: 0x2D66, 0x604BC and 0x61032 shadowed 14/14 with zero divergence; the
-simultaneous override skipped all original bodies but diverged in serialized
-VDP/sound state.
-LIMITS: exact GPGX bus-refresh and hardware phase effects remain unavailable.
-EVIDENCE: docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md
-EXACT NEXT ACTION: STOP. Do not expand timing work, repair 0x3820, investigate
-ID3, search manually, broaden coverage, add AI or change production dependencies.
+TASK: M11.31 Comparative Disassembly Method Transfer Baseline
+STATUS: COMPLETE — partial method transfer; no high-confidence template
+SCOPE: bounded comparison of public Streets of Rage 2/3 disassembly, extraction
+and static-recompilation workflows against existing Beyond Oasis evidence.
+RESULT: the RuiNelson workflow is `PARTIAL_TRANSFERABILITY`; IDA assembly and
+Pancakes are `SPECIALIZED_ONLY`; programmer style is `NON_DISCRIMINATING`;
+binary structure is only `PARTIAL`; sound-driver lineage is unresolved and
+`SPECIALIZED_ONLY`.
+LIMITS: no inspected public project demonstrates exact ROM reassembly; no ROM,
+asset, IDA database, generated assembly or external source was imported.
+EVIDENCE: docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md
+EXACT NEXT ACTION: M11.32 may run one bounded Beyond Oasis pass using the
+adapted evidence workflow. Do not import SoR-specific code, expand coverage,
+investigate ID3, repair 0x3820 timing, or add production emulator dependencies.
 
 ## Historical task context
 

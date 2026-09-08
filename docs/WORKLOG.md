@@ -3,6 +3,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.31 comparative disassembly method transfer — COMPLETE
+**Objective:** Compare public Streets of Rage 2/3 disassembly and recompiler
+projects with the existing Beyond Oasis evidence, then dry-run the strongest
+transferable method on one already-proven bounded subsystem. No ROM, asset,
+external source, emulator binary or generated run evidence may enter Git.
+
+**Sources:** `gsaurus/sor-disassemblies` at `4dd719f`, `gsaurus/sor_pancakes`
+at `96cef9b`, the `StreetsOfRageProject` meta repository at `4987085`,
+`RageDecompiler` at `9d58a51`, and `StreetsOfRageRecompilation` at `dc578f5`.
+Each exact revision and URL is recorded in the report. Exact ROM reassembly is
+not demonstrated by any inspected project.
+
+**Result:** the static IDA repository is `SPECIALIZED_ONLY`; Pancakes is
+`SPECIALIZED_ONLY`; the RuiNelson process is `PARTIAL_TRANSFERABILITY` because
+its byte map, explicit unknown/auxiliary-entry state, bounded direct closure,
+natural evidence loop and generated/native separation transfer. Programmer
+style is `NON_DISCRIMINATING`, binary structure is `PARTIAL`, and sound-driver
+lineage is `SPECIALIZED_ONLY`/unresolved.
+
+**Dry-run:** applied the sequence to existing `0x2D66` evidence: canonical ROM
+seed, exact decoder/RTS range, raw bounded state contract, natural shadow, and
+promotion gate. It reproduces the M11.29 proof without importing SoR labels,
+RAM offsets, object formats, audio assumptions or a recompiler runtime. No new
+structural claim or code change was justified.
+
+**Checks:** documentation-only change; `git diff --check`, source file-limit
+check, focused hybrid Debug/Release CTests and the existing CI-equivalent
+checks are run before commit. `game.srm` remains untracked.
+
+**Decision:** retain localized Beyond Oasis methods. A possible M11.32 is one
+bounded evidence-led pass over vectors/interrupts, raw RAM symbols, one
+state/object/resource path, exact decoding and natural evidence. Do not expand
+coverage, investigate ID3, repair `0x3820` timing, or add production emulator
+dependencies.
+
 ## 2026-09-07 — M11.30 hybrid migration small batch — SHADOW PROVEN / OVERRIDE BLOCKED
 **Objective:** Reuse the M11.29 hybrid boundary for a bounded batch of naturally
 executed routines without broad coverage, manual gameplay, ID3 work or changes
