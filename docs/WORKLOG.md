@@ -26,9 +26,9 @@ matching EMULATED. The full evidence is in
 
 **Checks:** current Debug and Release builds and CTest 49/49 pass; changed
 source files remain below 500 lines; `git diff --check` passes. The existing
-`build-gnu` tree is stale and points to an old `D:/Proect` checkout, so its
-build cannot be claimed as validation; a fresh local GNU-equivalent check is
-recorded separately if available. `game.srm` remains untracked.
+`build-gnu` tree is stale and points to an old `D:/Proect` checkout, so it was
+not used; a fresh MinGW GNU-equivalent configuration (`build-m1132-gnu`) built
+and passed CTest 49/49. `game.srm` remains untracked.
 
 **Decision:** `BASIC_BLOCK_RECOMP_TIMING_PROVEN`. Stop this migration batch;
 do not expand coverage, investigate ID3, repair `0x3820`, add AI generation,
