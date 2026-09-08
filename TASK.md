@@ -1,5 +1,24 @@
 # Current task
 
+TASK: M11.40 Remaining Interpreter Attribution and 95% Coverage Gate
+STATUS: BLOCKED — `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`
+BASELINE: M11.39 commit `37857a31a1c2965ecbe68e3695ca5aa187617c2f`, 28-range
+registry, canonical USA ROM, external GPGX identity and 600-frame neutral
+scenario.
+SCOPE: reproduce the exact M11.39 baseline before any remainder ledger,
+semantic expansion, generation, shadow certification or promotion. Do not
+force 95% coverage.
+RESULT: the reproduction matches ROM/DLL identity, 28 ranges, total guest
+instructions `6,488,773`, translated `5,826,857`, interpreter `661,916`,
+89.7991% share, video hash, yields and interrupted resumptions. The
+checkpoint aggregate differs from the historical M11.39 value, while two
+current reproductions agree with each other. Cause is not proven.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`
+NEXT ACTION: resolve the checkpoint identity discrepancy; do not begin M11.40
+PHASE 2 or implement M11.41.
+
+# Historical M11.39 result
+
 TASK: M11.39 Hot-Path Multi-Block Coverage Expansion
 STATUS: COMPLETE — `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN`
 BASELINE: committed M11.38 `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN` at

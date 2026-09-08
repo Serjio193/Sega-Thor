@@ -1,6 +1,27 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.40 — Remaining interpreter attribution and 95% coverage gate
+STATUS: `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`. The milestone
+stopped before attribution, semantic expansion, generation, shadow or native
+promotion because the reproduced checkpoint aggregate did not match the
+historical M11.39 identity.
+
+The current run used the same canonical USA ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, external
+GPGX DLL SHA-256
+`140c00fc7475cf22ca22415d65dfc7ffc66523de128454f9994e7ab77d9826fd`, 28-range
+registry and 600-frame neutral scenario. It reproduced `6,488,773` total,
+`5,826,857` translated and `661,916` interpreter instruction executions,
+89.7991% translated share, the M11.39 video hash, 140,065 boundary yields and
+274 interrupted resumptions. Two independent current runs agree on checkpoint
+aggregate `fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052`,
+but M11.39 recorded
+`20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`. The
+cause of the historical/current difference is unknown with present evidence;
+no interpreter PC was promoted and no complete M11.40 ledger is claimed.
+See `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`.
+
 ## M11.39 — Hot-path multi-block coverage expansion
 STATUS: `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN` for two new developer-only
 decoder-owned ranges. This is dynamic instruction coverage, not ROM-byte or

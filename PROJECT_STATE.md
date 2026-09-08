@@ -1,5 +1,20 @@
 # Project State
 
+CURRENT_MILESTONE: M11.40 remaining interpreter attribution and 95% coverage gate
+CURRENT_TASK: reproduce the exact M11.39 identity before classifying or promoting
+the remaining interpreter executions
+STATUS: BLOCKED — `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`
+SCOPE_BOUNDARY: baseline reproduction only; no ledger promotion, semantic
+expansion, generator change, shadow certification, hardware broadening or 95%
+coverage claim until checkpoint identity is resolved.
+NEXT_GATE: resolve the historical/current checkpoint aggregate discrepancy.
+LAST_VERIFIED_RESULT: current runs reproduce 6,488,773 total, 5,826,857
+translated and 661,916 interpreter instructions, 89.7991% share, the same
+ROM/DLL/video identities, 140,065 yields and 274 resumptions. Both current
+checkpoint aggregates are `fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052`,
+not the historical M11.39 `20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`
+
 CURRENT_MILESTONE: M11.39 hot-path multi-block coverage expansion
 CURRENT_TASK: profile the post-M11.38 interpreter remainder and promote only
 exactly verified hot ranges through the generic boundary shadow gate
@@ -8,7 +23,7 @@ SCOPE_BOUNDARY: developer-only generated blocks, independent ADD.W semantic
 vectors, ranked bounded profile and GPGX shadow/native checks; no runtime JIT,
 indirect CFG invention, hardware bridge expansion or production emulator
 dependency.
-NEXT_GATE: stop; M11.40 is not implemented.
+NEXT_GATE: M11.40 baseline identity must be resolved before further coverage.
 LAST_VERIFIED_RESULT: 28 registered ranges translated 5,826,857 of 6,488,773
 guest instructions (89.7991%); 661,916 remained interpreter fallback. Shadow
 completed 5,826,857/5,826,857 comparisons with zero divergence. Native and

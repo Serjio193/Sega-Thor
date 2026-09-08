@@ -3,6 +3,46 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.40 Remaining Interpreter Attribution and 95% Coverage Gate — BLOCKED
+**Objective:** Reproduce the exact M11.39 baseline before classifying the
+remaining interpreter executions or attempting any semantic, generator,
+shadow or native promotion.
+
+**Acceptance:** use the M11.39 commit, canonical USA ROM, external GPGX
+identity, 28-range registry and unchanged 600-frame neutral scenario; stop if
+the baseline differs; do not force 95% coverage or implement M11.41.
+
+**Actions:** Rebuilt the existing developer-only `oasis_hybrid_poc` target and
+ran `BASIC_BLOCK_NATIVE` twice with the same external GPGX DLL and canonical
+ROM. No production source, registry, generated block or emulator code was
+changed.
+
+**Evidence:** Both runs reproduced `6,488,773` total guest instructions,
+`5,826,857` translated, `661,916` interpreter executions, 28 ranges, 89.7991%
+translated share, the M11.39 video hash, 140,065 boundary yields and 274
+interrupted resumptions. Both current checkpoint aggregates are
+`fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052`, differing
+from historical M11.39 `20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`.
+The discrepancy's cause is not proven.
+
+**Tests/build:** Baseline hybrid target build passed; the two 600-frame runs
+completed without divergence. Full Debug, Release and GNU-equivalent CTest
+passed `54/54` in each configuration, including source-limit and all existing
+semantic/generator/provenance/boundary tests. GPGX shadow/native promotion
+gates were not run after the failed baseline identity gate, so no coverage
+result is eligible for promotion.
+
+**Result:** `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`. The complete
+M11.40 remainder ledger and 95% gate are not claimed. M11.39 remains the
+latest valid coverage result.
+
+**Unresolved:** determine why the historical checkpoint aggregate differs from
+the stable current aggregate despite matching ROM/DLL identity and all other
+recorded metrics.
+
+**Exact next step:** resolve checkpoint identity, then restart M11.40 PHASE 1;
+do not begin PHASE 2 or implement M11.41.
+
 ## 2026-09-09 — M11.39 Hot-Path Multi-Block Coverage Expansion — COMPLETE
 **Objective:** Starting from committed M11.38
 `daa0a09b5cd8845a48733e771774491b35e73d9e`, profile only interpreter

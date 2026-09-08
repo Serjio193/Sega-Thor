@@ -35,6 +35,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── NATIVE_ROM_RESOURCE_ID3.md M11.25 verified native resource baseline
 │   │   └── NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md M11.26 bounded visual-role report
 │   │   └── HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md M11.39 bounded hot-path coverage report
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md M11.40 baseline-blocked attribution report
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -337,6 +338,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `docs/reports/INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_M11_38.md`: frozen
   candidate ledger, generic yield contract, per-boundary shadow and interrupted
   continuation evidence.
+- `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`: M11.40 baseline
+  reproduction and checkpoint identity mismatch; no attribution or promotion.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

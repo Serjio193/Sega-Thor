@@ -9,6 +9,16 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.40 — Remaining interpreter attribution and 95% coverage gate — BLOCKED
+The required M11.39 baseline reproduction matches the canonical ROM, external
+GPGX DLL, 28-range registry, instruction counts, video sequence, boundary
+yields and interrupted resumptions. It does not match the historical
+checkpoint aggregate: current repeated runs produce
+`fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052` versus
+M11.39's `20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`.
+M11.40 stopped before remainder classification or promotion. No 95% claim was
+made. Evidence: `reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`.
+
 ## M11.39 — Hot-path multi-block coverage expansion — DONE
 Starting from M11.38, profile only the remaining interpreter executions and
 select at most 40 decoder-owned candidates by dynamic instruction payoff. The
