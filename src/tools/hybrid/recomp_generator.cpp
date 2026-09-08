@@ -42,10 +42,17 @@ std::string helper_call(const DecodedInstruction& instruction) {
     if (exact.operation.size() >= 2 && exact.operation[0] == 'b' &&
         exact.operation != "bra" && exact.operation != "bsr" && instruction.direct_target &&
         instruction.branch_condition_code) {
-        const auto not_taken = exact.branch_width_bytes == 1 ? -14 : 14;
+        const auto word_branch = instruction.bytes.size() > 2;
+        const auto not_taken = word_branch ? 14 : -14;
         std::ostringstream branch;
         branch << "branch_condition(api, " << unsigned(*instruction.branch_condition_code)
-               << "U, 0x" << hex(*instruction.direct_target, 6) << "U, " << not_taken << ");";
+               << "U, 0x" << hex(*instruction.direct_target, 6) << "U, " << not_taken;
+        if (word_branch) {
+            const auto extension = (static_cast<unsigned>(instruction.bytes[2]) << 8U) |
+                                    instruction.bytes[3];
+            branch << ", 0x" << hex(extension, 4) << "U";
+        }
+        branch << ");";
         return branch.str();
     }
     if (exact.operation.size() >= 2 && exact.operation[0] == 'd' &&
@@ -54,7 +61,9 @@ std::string helper_call(const DecodedInstruction& instruction) {
         std::ostringstream dbcc;
         dbcc << "dbcc(api, " << unsigned(*instruction.branch_condition_code)
              << "U, " << unsigned(source->register_index) << "U, 0x"
-             << hex(*instruction.direct_target, 6) << "U);";
+             << hex(*instruction.direct_target, 6) << "U, 0x"
+             << hex((static_cast<unsigned>(instruction.bytes[2]) << 8U) |
+                    instruction.bytes[3], 4) << "U);";
         return dbcc.str();
     }
     if (exact.operation == "tst" && destination && exact.width_bytes != 4) {
@@ -148,7 +157,8 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
     if (blocks.empty()) throw std::invalid_argument("no blocks to generate");
     std::ostringstream out;
     out << "// GENERATED FILE: oasis_hybrid_recomp_generate; do not hand-edit.\n"
-        << "#include \"tools/hybrid/generated_block_runtime.hpp\"\n\n"
+        << "#include \"tools/hybrid/generated_block_runtime.hpp\"\n"
+        << "#include \"tools/hybrid/generated_blocks.hpp\"\n\n"
         << "namespace oasis::hybrid::generated {\n\n";
     for (const auto& block : blocks) {
         validate_contiguous(block);
@@ -165,10 +175,16 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
                 << "    const auto opcode_0x" << hex(instruction.address, 6)
                 << " = fetch_checked(api, 0x" << hex(instruction.opcode, 4) << "U);\n"
                 << "    api.begin_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
-            for (std::size_t i = 2; i < instruction.bytes.size(); i += 2)
-                out << "    (void)fetch_checked(api, 0x"
-                    << hex((static_cast<std::uint32_t>(instruction.bytes[i]) << 8U) |
-                               instruction.bytes[i + 1U], 4) << "U);\n";
+            const auto conditional_extension = instruction.bytes.size() > 2 &&
+                ((instruction.exact->operation.size() >= 2 && instruction.exact->operation[0] == 'b') ||
+                 (instruction.exact->operation.size() >= 2 && instruction.exact->operation[0] == 'd' &&
+                  instruction.exact->operation[1] == 'b'));
+            if (!conditional_extension) {
+                for (std::size_t i = 2; i < instruction.bytes.size(); i += 2)
+                    out << "    (void)fetch_checked(api, 0x"
+                        << hex((static_cast<std::uint32_t>(instruction.bytes[i]) << 8U) |
+                                   instruction.bytes[i + 1U], 4) << "U);\n";
+            }
             out << "    " << helper_call(instruction) << "\n"
                 << "    api.finish_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
             if (instruction.exact->operation == "movem")
@@ -176,7 +192,13 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
         }
         out << "}\n\n";
     }
-    out << "} // namespace oasis::hybrid::generated\n";
+    out << "const GeneratedBlockSpec kBlocks[] = {\n";
+    for (const auto& block : blocks)
+        out << "    {0x" << hex(block.start, 6) << "U, 0x" << hex(block.end, 6)
+            << "U, " << block.instructions.size() << "U, execute_0x"
+            << hex(block.start, 6) << "},\n";
+    out << "};\n\nstd::span<const GeneratedBlockSpec> blocks() { return kBlocks; }\n\n"
+        << "} // namespace oasis::hybrid::generated\n";
     return out.str();
 }
 

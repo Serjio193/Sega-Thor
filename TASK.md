@@ -1,15 +1,28 @@
 # Current task
 
-TASK: M11.36 GPGX Timing / Refresh Bridge Contract
-STATUS: COMPLETE — `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
-`DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN`
-BASELINE: committed M11.35 `DEMAND_DRIVEN_PROMOTION_RUNTIME_BLOCKED` at
-`291012425bdc85f37cb5c11ffede71223916e3a4` / `origin/main`
-SCOPE: establish the generic GPGX instruction-exit timing/refresh bridge for
-only `0x3A85E`, `0x3A8BA` and `0x3A88C`, then rerun the existing six-entry
-developer-only block gate. No discovery or semantic coverage expansion.
+TASK: M11.37 Controlled Dynamic Coverage Expansion
+STATUS: COMPLETE — CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN
+BASELINE: committed M11.36 `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` at
+`d2cf0b942eaff6ba61cdfe34b440fc595a5ebc86` / `origin/main`
+SCOPE: use the existing cold-reset neutral 600-frame scenario to discover,
+classify, independently verify, mechanically generate, shadow-certify and
+boundedly promote approximately 10–25 new natural blocks outside the six
+verified entries. No runtime JIT, whole-ROM recompilation or automatic trust.
 NON-GOALS: whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
 production emulator/runtime JIT work, toolchain archaeology, or broad RE.
+
+ACCEPTANCE: success requires at least 10 new naturally executed blocks with
+independently verified forms, provenance-bound generated bodies, zero shadow
+divergence, unchanged 600-frame CPU/RAM/VDP/sound/interrupt/checkpoint/video
+equivalence, and a measurable increase in translated guest instruction share.
+If the bounded queue or gates cannot reach 10, preserve the exact negative
+classification and keep the unproven candidates on interpreter fallback.
+
+RESULT: 16 new natural single-instruction blocks promoted; all 22 registry
+entries passed independent-form, generator/provenance and 600-frame GPGX
+shadow/native gates. Translated share increased from 0 to 5.9844% of guest
+instruction executions with exact checkpoint/video equivalence.
+NEXT ACTION: stop; do not expand coverage without a new milestone.
 
 RESULT: GPGX `m68k.cycles` and `refresh_cycles` are frame-relative accumulated
 master-cycle counters rebased by `mcycles_vdp`; the M11.35 mismatch compared a

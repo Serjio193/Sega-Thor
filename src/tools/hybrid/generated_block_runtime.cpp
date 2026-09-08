@@ -135,21 +135,37 @@ void add_l_data_to_data(BasicBlockApi& api, unsigned source_register,
 }
 
 void branch_condition(BasicBlockApi& api, unsigned condition, unsigned target,
-                      int not_taken_cycles) {
-    if (condition_holds(api.reg(17), condition)) api.set_reg(16, target);
-    else if (not_taken_cycles) api.add_cycles(not_taken_cycles);
+                      int not_taken_cycles, int extension) {
+    if (condition_holds(api.reg(17), condition)) {
+        if (extension >= 0) {
+            const auto actual = fetch_checked(api, static_cast<unsigned>(extension));
+            (void)actual;
+        }
+        api.set_reg(16, target);
+    } else {
+        if (extension >= 0) api.set_reg(16, api.reg(16) + 2U);
+        if (not_taken_cycles) api.add_cycles(not_taken_cycles);
+    }
 }
 
 void dbcc(BasicBlockApi& api, unsigned condition, unsigned data_register,
-          unsigned target) {
-    if (condition_holds(api.reg(17), condition)) return;
+          unsigned target, int extension) {
+    if (condition_holds(api.reg(17), condition)) {
+        if (extension >= 0) api.set_reg(16, api.reg(16) + 2U);
+        return;
+    }
     const auto value = api.reg(data_register);
     const auto result = (value - 1U) & 0xFFFFU;
     api.set_reg(data_register, (value & 0xFFFF0000U) | result);
     if (result != 0xFFFFU) {
+        if (extension >= 0) {
+            const auto actual = fetch_checked(api, static_cast<unsigned>(extension));
+            (void)actual;
+        }
         api.set_reg(16, target);
         api.add_cycles(-14);
     } else {
+        if (extension >= 0) api.set_reg(16, api.reg(16) + 2U);
         api.add_cycles(14);
     }
 }

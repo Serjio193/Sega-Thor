@@ -1,16 +1,18 @@
 # Project State
 
-CURRENT_MILESTONE: M11.36 GPGX timing / refresh bridge contract
-CURRENT_TASK: complete the bounded bridge contract and existing M11.35 gate
-STATUS: COMPLETE — GPGX_TIMING_REFRESH_BRIDGE_PROVEN;
-DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN
-SCOPE_BOUNDARY: developer-only discovery, generated candidates, semantic
-vectors, bridge and GPGX shadow/native checks; production Sega-Thor remains
-free of GPGX, guest CPU state, generated-block dependencies and runtime JIT.
-NEXT_GATE: stop; any new block coverage requires a new bounded milestone.
-LAST_VERIFIED_RESULT: final external GPGX shadow compared 185,975 entries with
-zero divergences; native promoted 185,975 entries, skipped all original target
-bodies, observed zero interrupts, and matched checkpoint/video hashes.
+CURRENT_MILESTONE: M11.37 controlled dynamic coverage expansion
+CURRENT_TASK: bounded offline discovery, certification and promotion of new
+natural blocks outside the six M11.36 entries
+STATUS: COMPLETE — CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN
+SCOPE_BOUNDARY: developer-only trace, candidate manifest, semantic/generator
+gates, GPGX shadow/native checks and approved registry; production Sega-Thor
+remains free of GPGX, guest CPU state, generated-block dependencies and JIT.
+NEXT_GATE: new milestone required before further block expansion.
+LAST_VERIFIED_RESULT: M11.37 promoted 16 new natural blocks (22 total registry
+entries). The 600-frame shadow gate passed 388,308/388,308 with zero divergence;
+native translated 388,314 of 6,488,773 guest instruction executions (5.9844%),
+with exact checkpoint/video hashes and zero original starts inside translated
+blocks.
 
 # Historical state context
 

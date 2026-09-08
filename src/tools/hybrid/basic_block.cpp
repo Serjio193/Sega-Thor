@@ -1,4 +1,5 @@
 #include "tools/hybrid/basic_block.hpp"
+#include "tools/hybrid/basic_block_reference.hpp"
 #include "tools/hybrid/generated_blocks.hpp"
 
 #include <algorithm>
@@ -7,22 +8,7 @@
 
 namespace oasis::hybrid {
 namespace {
-constexpr unsigned k2D66 = 0x2D66;
-constexpr unsigned k2D66Exit = 0x2D7A;
-constexpr unsigned k604BC = 0x604BC;
-constexpr unsigned k604BCExit = 0x604C2;
-constexpr unsigned k61032 = 0x61032;
-constexpr unsigned k61032Exit = 0x61034;
-constexpr unsigned k3A85E = 0x3A85E;
-constexpr unsigned k3A85EExit = 0x3A864;
-constexpr unsigned k3A8BA = 0x3A8BA;
-constexpr unsigned k3A8BAExit = 0x3A8C0;
-constexpr unsigned k3A88C = 0x3A88C;
-constexpr unsigned k3A88CExit = 0x3A892;
-constexpr unsigned kInvalidBlock = 6U;
 constexpr unsigned kRamBase = 0xFF0000;
-constexpr unsigned kRefreshPeriod = 128U * 7U;
-constexpr unsigned kRefreshPenalty = 2U * 7U;
 
 std::uint32_t read_be(const BasicBlockApi& api, unsigned address, int width) {
     std::uint32_t value = 0;
@@ -34,97 +20,14 @@ std::uint32_t read_be(const BasicBlockApi& api, unsigned address, int width) {
     return value;
 }
 
-void set_move_flags(std::uint32_t& sr, std::uint32_t value, unsigned width) {
-    const auto mask = width == 1 ? 0x80U : width == 2 ? 0x8000U : 0x80000000U;
-    const auto value_mask = width == 1 ? 0xFFU : width == 2 ? 0xFFFFU : 0xFFFFFFFFU;
-    sr = (sr & ~0x0FU) | (value & value_mask ? 0U : 4U) |
-         (value & mask ? 8U : 0U);
-}
-
-void set_add_long_flags(std::uint32_t& sr, std::uint32_t lhs,
-                        std::uint32_t rhs, std::uint32_t result) {
-    const auto carry = (static_cast<std::uint64_t>(lhs) + rhs) > 0xFFFFFFFFULL;
-    const auto overflow = ((~(lhs ^ rhs) & (lhs ^ result)) & 0x80000000U) != 0;
-    sr = (sr & ~0x1FU) | (carry ? 0x11U : 0U) |
-         (result & 0x80000000U ? 0x08U : 0U) |
-         (result == 0 ? 0x04U : 0U) | (overflow ? 0x02U : 0U);
-}
-
-bool condition_holds(std::uint32_t sr, unsigned condition) {
-    const bool c = (sr & 0x01U) != 0;
-    const bool v = (sr & 0x02U) != 0;
-    const bool z = (sr & 0x04U) != 0;
-    const bool n = (sr & 0x08U) != 0;
-    switch (condition & 0x0FU) {
-    case 0: return true;
-    case 1: return false;
-    case 2: return !c && !z;
-    case 3: return c || z;
-    case 4: return !c;
-    case 5: return c;
-    case 6: return !z;
-    case 7: return z;
-    case 8: return !v;
-    case 9: return v;
-    case 10: return !n;
-    case 11: return n;
-    case 12: return n == v;
-    case 13: return n != v;
-    case 14: return !z && n == v;
-    default: return z || n != v;
-    }
-}
-
-void add_prediction_cycle(const BasicBlockApi& api, unsigned opcode,
-                          unsigned& cycles, unsigned& refresh) {
-    const auto period = api.refresh_period ? api.refresh_period() : kRefreshPeriod;
-    const auto penalty = api.refresh_penalty ? api.refresh_penalty() : kRefreshPenalty;
-    if (cycles >= refresh) {
-        refresh = cycles + period;
-        cycles += penalty;
-    }
-    cycles += api.instruction_cycles(opcode);
-}
-
-void add_write(BasicBlockRegistry::Prediction& result, unsigned address, int width,
-               unsigned value) {
-    result.writes.push_back({address, width, value});
-}
-
-void add_read(BasicBlockRegistry::Prediction& result, unsigned address, int width) {
-    result.reads.push_back({address, width});
-}
-
-void predict_fetch(const BasicBlockApi& api, BasicBlockRegistry::Prediction& result,
-                  unsigned& pc, unsigned opcode) {
-    const auto actual = read_be(api, pc, 2);
-    if (actual != opcode) {
-        std::ostringstream message;
-        message << "basic-block opcode mismatch pc=0x" << std::hex << pc
-                << " expected=0x" << opcode << " actual=0x" << actual;
-        throw std::runtime_error(message.str());
-    }
-    pc += 2;
-    result.pref_addr = pc;
-    result.pref_data = read_be(api, pc, 2);
-    // timing is accumulated below using the same CPU table as GPGX
-    add_prediction_cycle(api, opcode, result.cycles, result.refresh);
-    result.ir = opcode;
-}
-
-void predict_extension16(const BasicBlockApi& api,
-                         BasicBlockRegistry::Prediction& result, unsigned& pc) {
-    (void)read_be(api, pc, 2);
-    pc += 2;
-    result.pref_addr = pc;
-    result.pref_data = read_be(api, pc, 2);
-}
-
 } // namespace
 
 BasicBlockRegistry::BasicBlockRegistry(BasicBlockApi api, BasicBlockMode mode,
                                        std::ostream& log)
-    : api_(api), mode_(mode), log_(log) {}
+    : api_(api), mode_(mode), log_(log) {
+    for (const auto& block : generated::blocks())
+        metrics_.per_block.push_back({block.start, block.end, block.instruction_count});
+}
 
 BasicBlockRegistry::State BasicBlockRegistry::state() const {
     State result{};
@@ -165,151 +68,30 @@ void BasicBlockRegistry::fail(const std::string& message) {
 }
 
 bool BasicBlockRegistry::in_block(unsigned pc) const {
-    if (active_pc_ == k2D66) return pc == k2D66 || pc == 0x2D6A || pc == 0x2D6C ||
-        pc == 0x2D6E || pc == 0x2D74 || pc == 0x2D76 || pc == 0x2D78;
-    return pc == active_pc_;
+    return active_block_ && pc >= active_block_->start && pc < active_block_->end;
 }
 
-unsigned block_index(unsigned pc) {
-    if (pc == k2D66) return 0U;
-    if (pc == k604BC) return 1U;
-    if (pc == k61032) return 2U;
-    if (pc == k3A85E) return 3U;
-    if (pc == k3A8BA) return 4U;
-    if (pc == k3A88C) return 5U;
-    return kInvalidBlock;
+const GeneratedBlockSpec* BasicBlockRegistry::find(unsigned pc) const {
+    for (const auto& block : generated::blocks())
+        if (block.start == pc) return &block;
+    return nullptr;
+}
+
+std::size_t BasicBlockRegistry::index_of(unsigned pc) const {
+    for (std::size_t i = 0; i < metrics_.per_block.size(); ++i)
+        if (metrics_.per_block[i].target == pc) return i;
+    return metrics_.per_block.size();
 }
 
 bool BasicBlockRegistry::in_registered_range(unsigned address) const {
-    return (address >= k2D66 && address < k2D66Exit) ||
-           (address >= k604BC && address < k604BCExit) ||
-           (address >= k61032 && address < k61032Exit) ||
-           (address >= k3A85E && address < k3A85EExit) ||
-           (address >= k3A8BA && address < k3A8BAExit) ||
-           (address >= k3A88C && address < k3A88CExit);
+    for (const auto& block : generated::blocks())
+        if (address >= block.start && address < block.end) return true;
+    return false;
 }
 
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict(unsigned pc,
-                                                            const State& entry) const {
-    if (pc == k2D66) return predict_2d66(entry);
-    if (pc == k604BC) return predict_604bc(entry);
-    if (pc == k61032) return predict_61032(entry);
-    if (pc == k3A85E) return predict_3a85e(entry);
-    if (pc == k3A8BA) return predict_3a8ba(entry);
-    if (pc == k3A88C) return predict_3a88c(entry);
-    throw std::runtime_error("unregistered basic block");
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_2d66(const State& entry) const {
-    Prediction result{};
-    result.state = entry;
-    result.cycles = field(21);
-    result.refresh = field(22);
-    auto pc = k2D66;
-    predict_fetch(api_, result, pc, 0x48E7);
-    predict_extension16(api_, result, pc);
-    result.cycles += 2U * 8U * 7U;
-    if (result.cycles >= result.refresh) result.refresh += kRefreshPeriod;
-    auto sp = result.state[15] - 2; add_write(result, sp, 2, result.state[11] & 0xFFFFU);
-    sp -= 2; add_write(result, sp, 2, result.state[11] >> 16U);
-    sp -= 2; add_write(result, sp, 2, result.state[7] & 0xFFFFU);
-    sp -= 2; add_write(result, sp, 2, result.state[7] >> 16U);
-    result.state[15] = sp;
-    predict_fetch(api_, result, pc, 0x4247);
-    result.state[7] &= 0xFFFF0000U; result.state[17] = (result.state[17] & ~0x0FU) | 4U;
-    predict_fetch(api_, result, pc, 0x1E1E);
-    auto value = read_be(api_, result.state[14], 1); add_read(result, result.state[14], 1);
-    result.state[14] += 1; result.state[7] = (result.state[7] & 0xFFFFFF00U) | value;
-    set_move_flags(result.state[17], value, 1);
-    predict_fetch(api_, result, pc, 0x47F9);
-    result.state[11] = read_be(api_, pc, 4);
-    predict_extension16(api_, result, pc);
-    predict_extension16(api_, result, pc);
-    predict_fetch(api_, result, pc, 0xD6C7); result.state[11] += static_cast<std::int16_t>(result.state[7]);
-    predict_fetch(api_, result, pc, 0x1E1E);
-    value = read_be(api_, result.state[14], 1); add_read(result, result.state[14], 1);
-    result.state[14] += 1; result.state[7] = (result.state[7] & 0xFFFFFF00U) | value;
-    set_move_flags(result.state[17], value, 1);
-    predict_fetch(api_, result, pc, 0x36DE);
-    value = read_be(api_, result.state[14], 2); add_read(result, result.state[14], 2);
-    result.state[14] += 2; add_write(result, result.state[11], 2, value); result.state[11] += 2;
-    set_move_flags(result.state[17], value, 2);
-    result.state[16] = k2D66Exit; result.ir = 0x36DE;
-    result.pref_addr = k2D66Exit; result.pref_data = read_be(api_, k2D66Exit, 2);
-    return result;
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_604bc(const State& entry) const {
-    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
-    auto pc = k604BC; predict_fetch(api_, result, pc, 0x4DF9);
-    result.state[14] = read_be(api_, pc, 4);
-    predict_extension16(api_, result, pc);
-    predict_extension16(api_, result, pc);
-    result.state[16] = k604BCExit; result.ir = 0x4DF9; return result;
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_61032(const State& entry) const {
-    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
-    auto pc = k61032; predict_fetch(api_, result, pc, 0xD481);
-    const auto lhs = result.state[2];
-    result.state[2] = lhs + result.state[1];
-    set_add_long_flags(result.state[17], lhs, result.state[1], result.state[2]);
-    result.state[16] = k61032Exit; result.ir = 0xD481;
-    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2); return result;
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a85e(const State& entry) const {
-    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
-    auto pc = k3A85E; predict_fetch(api_, result, pc, 0x4A79);
-    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
-    const auto value = read(0xFF1654U, 2); add_read(result, 0xFF1654U, 2);
-    set_move_flags(result.state[17], value, 2); result.state[16] = k3A85EExit; result.ir = 0x4A79;
-    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
-    return result;
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a8ba(const State& entry) const {
-    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
-    auto pc = k3A8BA; predict_fetch(api_, result, pc, 0x4A79);
-    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
-    const auto value = read(0xFF1654U, 2); add_read(result, 0xFF1654U, 2);
-    set_move_flags(result.state[17], value, 2); result.state[16] = k3A8BAExit; result.ir = 0x4A79;
-    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
-    return result;
-}
-
-BasicBlockRegistry::Prediction BasicBlockRegistry::predict_3a88c(const State& entry) const {
-    Prediction result{}; result.state = entry; result.cycles = field(21); result.refresh = field(22);
-    auto pc = k3A88C; predict_fetch(api_, result, pc, 0x4A39);
-    predict_extension16(api_, result, pc); predict_extension16(api_, result, pc);
-    const auto value = read(0xFF0BFDU, 1); add_read(result, 0xFF0BFDU, 1);
-    set_move_flags(result.state[17], value, 1); result.state[16] = k3A88CExit; result.ir = 0x4A39;
-    result.pref_addr = pc; result.pref_data = read_be(api_, pc, 2);
-    return result;
-}
-
-void BasicBlockRegistry::execute_2d66() {
-    generated::execute_0x002D66(api_);
-}
-
-void BasicBlockRegistry::execute_604bc() {
-    generated::execute_0x0604BC(api_);
-}
-
-void BasicBlockRegistry::execute_61032() {
-    generated::execute_0x061032(api_);
-}
-
-void BasicBlockRegistry::execute_3a85e() {
-    generated::execute_0x03A85E(api_);
-}
-
-void BasicBlockRegistry::execute_3a8ba() {
-    generated::execute_0x03A8BA(api_);
-}
-
-void BasicBlockRegistry::execute_3a88c() {
-    generated::execute_0x03A88C(api_);
+BasicBlockRegistry::Prediction BasicBlockRegistry::predict(
+    const GeneratedBlockSpec& block, const State& entry) const {
+    return predict_generated_block(api_, block, entry);
 }
 
 void BasicBlockRegistry::compare(const Prediction& prediction) {
@@ -327,8 +109,14 @@ void BasicBlockRegistry::compare(const Prediction& prediction) {
         ir << "IR actual=0x" << std::hex << field(18) << " expected=0x" << prediction.ir;
         throw std::runtime_error(ir.str());
     }
-    require(field(19) == prediction.pref_addr && field(20) == prediction.pref_data,
-            "prefetch");
+    if (field(19) != prediction.pref_addr || field(20) != prediction.pref_data) {
+        std::ostringstream prefetch;
+        prefetch << "prefetch actual_addr=0x" << std::hex << field(19)
+                 << " expected_addr=0x" << prediction.pref_addr
+                 << " actual_data=0x" << field(20)
+                 << " expected_data=0x" << prediction.pref_data;
+        throw std::runtime_error(prefetch.str());
+    }
     if (field(21) != prediction.cycles || field(22) != prediction.refresh) {
         std::ostringstream timing;
         timing << "timing actual_cycles=" << field(21) << " expected_cycles=" << prediction.cycles
@@ -347,42 +135,58 @@ void BasicBlockRegistry::compare(const Prediction& prediction) {
 }
 
 void BasicBlockRegistry::start_shadow(unsigned pc) {
-    active_pc_ = pc; prediction_ = predict(pc, state()); writes_.clear(); reads_.clear(); active_ = true; shadow_ = true;
+    active_pc_ = pc;
+    active_block_ = find(pc);
+    if (!active_block_) throw std::runtime_error("unregistered basic block");
+    prediction_ = predict(*active_block_, state());
+    writes_.clear(); reads_.clear(); active_ = true; shadow_ = true;
+    instruction_exit_seen_ = false; instruction_exits_ = 0;
 }
 
 void BasicBlockRegistry::finish_shadow() {
     compare(prediction_); ++metrics_.shadow_comparisons;
-    ++metrics_.shadow_by_block[block_index(active_pc_)];
-    active_ = false; shadow_ = false;
+    ++metrics_.per_block.at(index_of(active_pc_)).shadow_comparisons;
+    active_ = false; shadow_ = false; instruction_exit_seen_ = false; instruction_exits_ = 0;
+    active_block_ = nullptr;
 }
 
 void BasicBlockRegistry::finish_native(const Prediction& prediction) {
-    compare(prediction); active_ = false; shadow_ = false;
+    compare(prediction); active_ = false; shadow_ = false; instruction_exit_seen_ = false;
+    instruction_exits_ = 0; active_block_ = nullptr;
 }
 
-void BasicBlockRegistry::execute(unsigned pc) {
-    active_pc_ = pc; prediction_ = predict(pc, state()); writes_.clear(); reads_.clear(); active_ = true; shadow_ = false;
-    if (pc == k2D66) execute_2d66(); else if (pc == k604BC) execute_604bc();
-    else if (pc == k61032) execute_61032(); else if (pc == k3A85E) execute_3a85e();
-    else if (pc == k3A8BA) execute_3a8ba(); else execute_3a88c();
+void BasicBlockRegistry::execute(const GeneratedBlockSpec& block) {
+    active_pc_ = block.start; active_block_ = &block;
+    prediction_ = predict(block, state());
+    writes_.clear(); reads_.clear(); active_ = true; shadow_ = false;
+    block.execute(api_);
     finish_native(prediction_); ++metrics_.translated_entries;
-    ++metrics_.translated_by_block[block_index(pc)];
-    metrics_.translated_instructions += pc == k2D66 ? 7U : 1U;
+    ++metrics_.per_block.at(index_of(block.start)).translated_entries;
+    metrics_.translated_instructions += block.instruction_count;
     ++metrics_.translated_blocks;
-    log_ << "{\"block\":\"0x" << std::hex << pc << std::dec << "\",\"translated_instructions\":"
-         << (pc == k2D66 ? 7 : 1) << ",\"timing_exact\":true}\n";
+    log_ << "{\"block\":\"0x" << std::hex << block.start << std::dec
+         << "\",\"translated_instructions\":" << block.instruction_count
+         << ",\"timing_exact\":true}\n";
 }
 
 int BasicBlockRegistry::dispatch(unsigned pc) noexcept {
     if (!error_.empty()) return 0;
     try {
-        const auto index = block_index(pc);
-        if (index == kInvalidBlock) return 0;
-        require(!active_, "nested translated block");
+        if (active_ && shadow_ && pc == prediction_.state[16])
+            finish_shadow();
+        const auto* block = find(pc);
+        if (!block) return 0;
+        const auto index = index_of(pc);
+        if (active_) {
+            std::ostringstream nested;
+            nested << "nested translated block pc=0x" << std::hex << pc
+                   << " expected=0x" << prediction_.state[16];
+            throw std::runtime_error(nested.str());
+        }
         ++metrics_.natural_entries;
-        ++metrics_.natural_by_block[index];
+        ++metrics_.per_block.at(index).natural_entries;
         if (mode_ == BasicBlockMode::SHADOW_NATIVE) { start_shadow(pc); return 0; }
-        execute(pc); return 1;
+        execute(*block); return 1;
     } catch (const std::exception& error) { fail(error.what()); return 0; }
 }
 
@@ -391,15 +195,15 @@ void BasicBlockRegistry::event(int type, int width, unsigned address, unsigned v
     try {
         address &= 0xFFFFFFU;
         if (type == 1) {
-            if (shadow_ && address == prediction_.state[16]) {
-                finish_shadow(); return;
-            }
             if (shadow_ && in_block(address)) ++metrics_.original_starts_inside_translated;
             if (in_registered_range(address) && !in_block(address)) ++metrics_.fallback_entries;
             return;
         }
         if (type == (1 << 14)) {
-            if (shadow_ && address == prediction_.state[16]) finish_shadow();
+            instruction_exit_seen_ = true;
+            ++instruction_exits_;
+            if (shadow_ && active_block_ &&
+                instruction_exits_ >= active_block_->instruction_count) finish_shadow();
             return;
         }
         if (!active_) return;

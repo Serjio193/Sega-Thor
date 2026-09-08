@@ -121,6 +121,17 @@ is valid only when its bounded accesses cannot expose an intervening hardware
 or interrupt boundary. The M11.33 and M11.35 blocks satisfy that observed
 contract; no second timing model or candidate-specific correction was added.
 
+M11.37 keeps this boundary data-driven for a bounded offline promotion set.
+Natural PCs are discovered first, then exact decoder ranges are classified;
+independently verified Bcc/DBcc/TST forms are emitted by the existing
+generator, which also emits `GeneratedBlockSpec` metadata consumed by the
+developer-only registry. `basic_block_reference` is only a generic state,
+prefetch and timing prediction adapter for shadow setup; the semantic gate
+remains the independent M68K test oracle and GPGX remains authoritative for
+runtime effects. A block is not promoted when its bounded range can cross an
+observed interrupt or hardware-visible boundary. The production targets do
+not link this registry, generated artifact, external GPGX bridge or any JIT.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 

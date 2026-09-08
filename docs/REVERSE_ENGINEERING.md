@@ -1,6 +1,43 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.37 — Controlled dynamic coverage expansion
+STATUS: `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN` for the bounded
+developer-only registry; this is not ROM-byte coverage or a whole-ROM claim.
+
+The unchanged cold-reset neutral 600-frame scenario was run against canonical
+USA ROM SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`,
+external GPGX source commit
+`d60d079934977aa6973e220d123533387159f66e` and DLL SHA-256
+`9b345293c239805cbfe22bb3c582e7d42164a701ba2c50e1934e1a8ef80b2ec8`.
+The EMULATED baseline recorded 6,488,773 interpreter instruction executions,
+2,188 unique interpreter PCs, 600 video frames, checkpoint hash
+`b8e1e07908d75e9c8b21f3ed661352a7005c51dcf3120e2502cc0f73788a4bd4` and video
+sequence hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+The six-entry historical registry is the before basic-block-entry baseline;
+the promoted registry contains 22 entries, of which 16 are new.
+
+The bounded candidate queue considered 61 generator-eligible natural entry
+PCs. Each row is recorded in
+`docs/reports/CONTROLLED_DYNAMIC_COVERAGE_M11_37.md` with observed count,
+decoded form/control flow and gate status. All promoted forms were already
+covered by the independent M11.34/M11.35 semantic harness. Four multi-
+instruction candidates were not promoted after shadow exposed interrupt
+interleaving inside their ranges; `0x060BA4` was rejected because its TST.B
+touches hardware-visible `0xA00003`; the historical `0x03A7AE` mismatch remains
+unpromoted. No candidate-specific timing correction or second CPU model was
+introduced.
+
+The final shadow run completed `388308/388308` comparisons with zero divergence
+and full CPU equivalence. Native promotion completed the same 600 frames and
+translated `388314` guest instructions out of `6488773` (`5.9844%`), leaving
+`6100459` interpreter executions and 12 fallback entries. There were zero
+original starts inside translated blocks and zero hardware-visible accesses.
+Native checkpoint and video hashes exactly matched the EMULATED baseline.
+Generated bodies and metadata are mechanical output; handwritten registry
+glue is separate. The production target remains free of ROM/assets, GPGX,
+emulator binaries and generated run evidence.
+
 ## M11.36 — GPGX timing / refresh bridge contract
 STATUS: `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` and
 `DEMAND_DRIVEN_BLOCK_PROMOTION_PROVEN` for the existing six-entry developer

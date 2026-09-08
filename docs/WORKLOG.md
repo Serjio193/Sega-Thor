@@ -3,6 +3,58 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.37 Controlled Dynamic Coverage Expansion — COMPLETE
+**Objective:** Starting from committed M11.36
+`d2cf0b942eaff6ba61cdfe34b440fc595a5ebc86`, prove whether the existing
+developer-only trace → exact decode → independent semantics → mechanical
+generation → GPGX shadow → bounded promotion pipeline can expand translated
+execution beyond the six-entry registry.
+
+**Acceptance criteria:** Freeze exact before/after metrics using the canonical
+USA ROM, external GPGX identity and unchanged cold-reset neutral 600-frame
+scenario. Build a bounded natural-execution candidate queue of approximately
+10–25 new blocks; record every considered candidate's entry/count/instruction
+forms/control-flow/semantic status/rejection reason; require independent
+verification, generator/provenance and zero-tolerance GPGX shadow gates before
+promotion. Success requires at least 10 new promoted blocks, unchanged CPU,
+RAM, VDP, sound, interrupt, checkpoint and video equivalence, and a measurable
+increase in translated guest-instruction share. Runtime JIT, automatic trust,
+whole-ROM recompilation and ROM-byte coverage are excluded.
+
+**Discovery/baseline:** The unchanged canonical 600-frame run recorded
+6,488,773 interpreter instruction executions, 2,188 unique interpreter PCs,
+600 video frames, checkpoint hash
+`b8e1e07908d75e9c8b21f3ed661352a7005c51dcf3120e2502cc0f73788a4bd4` and video
+hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+The queue considered 61 generator-eligible natural entries; the complete
+entry/form/status ledger is in `reports/CONTROLLED_DYNAMIC_COVERAGE_M11_37.md`.
+
+**Implementation:** Reused the exact decoder and generator, adding only
+generated `GeneratedBlockSpec` metadata and a generic developer-only registry
+prediction adapter. No new semantic form was accepted: promoted Bcc/DBcc/TST
+forms were independently verified by the existing M11.34/M11.35 harness.
+Generated bodies remain in `generated_blocks.cpp`; handwritten glue is in the
+registry/reference files. Four multi-instruction candidates failed closed on
+observed interrupt interleaving and `0x060BA4` failed closed on hardware access.
+
+**Gate:** Full GPGX shadow completed `388308/388308` comparisons with zero
+divergences and full CPU equivalence. Native promotion completed 600/600
+frames, translated `388314` of `6488773` guest instructions (`5.9844%`), left
+`6100459` interpreter instructions and 12 fallback entries, with zero original
+starts inside translated blocks and zero hardware-visible accesses. Checkpoint
+and video hashes exactly matched the EMULATED baseline.
+
+**Validation:** Targeted Debug GPGX-enabled build, generator regeneration,
+semantic/generator/provenance/basic-block tests, final GPGX shadow and native
+600-frame runs passed. Full Debug CTest passed 54/54, Release CTest passed
+54/54, and GNU-equivalent CTest passed 54/54; source-limit, `git diff --check`
+and tracked-artifact hygiene checks also passed. No ROM, asset, emulator
+binary or generated run evidence is tracked; `game.srm` remains untouched and
+untracked.
+
+**Result:** `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN`.
+**Next action:** stop; require a new bounded milestone before further coverage.
+
 ## 2026-09-08 — M11.36 GPGX Timing / Refresh Bridge Contract — COMPLETE
 **Objective:** Starting from M11.35 `291012425bdc85f37cb5c11ffede71223916e3a4`,
 resolve only the cycle/refresh/interrupt-boundary bridge for the existing

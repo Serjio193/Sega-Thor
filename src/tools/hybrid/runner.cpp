@@ -4,6 +4,7 @@
 #include "tools/hybrid/candidate_61032.hpp"
 #include "tools/hybrid/replacement.hpp"
 #include "tools/hybrid/basic_block.hpp"
+#include "tools/hybrid/generated_blocks.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
@@ -57,12 +58,21 @@ unsigned video_frames{};
 std::string video_hashes;
 std::string directory;
 bool discovery_mode{};
+bool plain_emulated_mode{};
 std::map<unsigned, unsigned> discovered_pcs;
+std::map<unsigned, unsigned> observed_pcs;
+unsigned interpreter_instruction_executions{};
 void hook(int type, int width, unsigned address, unsigned value) {
+    address &= 0xFFFFFFU;
+    if (type == 1) {
+        ++observed_pcs[address];
+        ++interpreter_instruction_executions;
+    }
     if (discovery_mode) {
-        if (type == 1) ++discovered_pcs[address & 0xFFFFFFU];
+        if (type == 1) ++discovered_pcs[address];
         return;
     }
+    if (plain_emulated_mode) return;
     if (block_registry) block_registry->event(type, width, address, value);
     else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
@@ -136,8 +146,10 @@ int main(int argc, char** argv) {
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
             mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE :
             block_mode ? Mode::SHADOW_NATIVE : throw std::runtime_error("invalid mode");
-        const auto target_text = discover_mode ? std::string_view{} : argc == 7 ? std::string_view(argv[6]) :
-            block_mode ? std::string_view("0x2D66,0x604BC,0x61032,0x3A85E,0x3A8BA,0x3A88C") : std::string_view("0x3820");
+        const bool plain_emulated = mode_text == "EMULATED";
+        plain_emulated_mode = plain_emulated;
+        const auto target_text = discover_mode || plain_emulated ? std::string_view{} : argc == 7 ?
+            std::string_view(argv[6]) : block_mode ? std::string_view{} : std::string_view("0x3820");
         std::vector<unsigned> selected_targets;
         std::size_t begin = 0;
         while (!target_text.empty() && begin < target_text.size()) {
@@ -153,14 +165,12 @@ int main(int argc, char** argv) {
         if (discover_mode) {
             discovery_mode = true;
             discovered_pcs.clear();
-        } else if (selected_targets.empty()) throw std::runtime_error("empty target list");
+        } else if (!plain_emulated && !block_mode && selected_targets.empty())
+            throw std::runtime_error("empty target list");
         if (!block_mode && !discover_mode) {
             if (selected_targets.size() == 1 && selected_target == 0x3820) oasis::hybrid::require_mode(mode);
             for (const auto target : selected_targets)
                 if (target == 0x3820) throw std::runtime_error("0x3820 cannot be combined with registry targets");
-        } else if (block_mode && selected_targets != std::vector<unsigned>{0x2D66, 0x604BC, 0x61032,
-                                                                             0x3A85E, 0x3A8BA, 0x3A88C}) {
-            throw std::runtime_error("basic-block proof requires the M11.33 blocks plus the M11.35 shortlist");
         }
 #ifdef _WIN32
         _putenv_s("GPGX_HYBRID_ONLY", "1");
@@ -189,6 +199,8 @@ int main(int argc, char** argv) {
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
         std::unique_ptr<oasis::hybrid::Registry> registry;
         std::unique_ptr<oasis::hybrid::BasicBlockRegistry> blocks;
+        observed_pcs.clear();
+        interpreter_instruction_executions = 0;
         if (discover_mode) {
             // Discovery deliberately installs only the execution observer. It does not
             // register a candidate, so every natural instruction remains authoritative.
@@ -214,6 +226,8 @@ int main(int argc, char** argv) {
                     oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
                     oasis::hybrid::BasicBlockMode::NATIVE_OVERRIDE, calls);
             block_registry = blocks.get();
+        } else if (plain_emulated) {
+            // Plain EMULATED is the authoritative before-promotion baseline.
         } else if (selected_targets.size() == 1 && selected_target == 0x3820) {
             session = std::make_unique<oasis::hybrid::Dispatch>(oasis::hybrid::Api{reg, peek}, mode,
                                                                  rom.bytes(), calls);
@@ -301,6 +315,8 @@ int main(int argc, char** argv) {
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};
         unsigned translated_blocks{}, translated_entries{}, translated_instructions{}, original_inside{}, fallback_entries{}, hardware_accesses{};
+        unsigned interpreter_instructions{}, total_guest_instructions{}, observed_interpreter_pcs{};
+        std::size_t registered_block_count{};
         bool complete{};
         std::string error_text;
         if (blocks) {
@@ -318,19 +334,27 @@ int main(int argc, char** argv) {
             hardware_accesses = metrics.hardware_accesses;
             complete = blocks->complete();
             error_text = blocks->error();
+            registered_block_count = metrics.per_block.size();
         } else {
-            const auto totals = registry ? registry->totals() : oasis::hybrid::ReplacementMetrics{
+            const auto totals = registry ? registry->totals() : session ? oasis::hybrid::ReplacementMetrics{
                 session->calls, session->comparisons, session->divergences, session->body_instructions, 0,
-                session->interrupts};
+                session->interrupts} : oasis::hybrid::ReplacementMetrics{};
             natural_calls = totals.calls;
             comparisons = totals.comparisons;
             divergences = totals.divergences;
             body_instructions = totals.body_instructions;
             interrupts = totals.interrupts;
             override_calls = totals.override_calls;
-            complete = registry ? registry->complete() : session->complete();
-            error_text = registry ? registry->error() : session->error();
+            complete = registry ? registry->complete() : session ? session->complete() : true;
+            error_text = registry ? registry->error() : session ? session->error() : std::string{};
         }
+        if (plain_emulated) {
+            natural_calls = interpreter_instruction_executions;
+            complete = true;
+        }
+        interpreter_instructions = interpreter_instruction_executions;
+        total_guest_instructions = interpreter_instructions + translated_instructions;
+        observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
         const auto body_skipped = block_mode ? (override_calls > 0 && original_inside == 0)
                                              : (registry && override_calls > 0 && body_instructions == 0);
         const bool completed = complete && video_frames == frames && natural_calls > 0;
@@ -340,7 +364,7 @@ int main(int argc, char** argv) {
         report.exceptions(std::ios::failbit | std::ios::badbit);
         report << "{\n\"schema\":\"oasis.hybrid-poc.v2\",\n\"target\":" << selected_target
                << ",\n\"target_hex\":\"0x" << std::hex << selected_target << std::dec
-               << "\",\n\"registered_target_count\":" << selected_targets.size()
+               << "\",\n\"registered_target_count\":" << (block_mode ? registered_block_count : selected_targets.size())
                << ",\n\"registered_targets\":\"" << target_text
                << "\",\n\"rom_size\":" << rom.size()
                << ",\n\"rom_sha256\":\"" << identity.fingerprint.sha256
@@ -362,6 +386,11 @@ int main(int argc, char** argv) {
                << ",\n\"translated_blocks\":" << translated_blocks
                << ",\n\"translated_entries\":" << translated_entries
                << ",\n\"translated_guest_instruction_executions\":" << translated_instructions
+               << ",\n\"interpreter_instruction_executions\":" << interpreter_instructions
+               << ",\n\"total_guest_instruction_executions\":" << total_guest_instructions
+               << ",\n\"translated_instruction_share\":" << (total_guest_instructions ?
+                   static_cast<double>(translated_instructions) / total_guest_instructions : 0.0)
+               << ",\n\"unique_observed_interpreter_pcs\":" << observed_interpreter_pcs
                << ",\n\"original_starts_inside_translated\":" << original_inside
                << ",\n\"interpreter_fallback_entries\":" << fallback_entries
                << ",\n\"hardware_visible_accesses\":" << hardware_accesses
@@ -384,13 +413,15 @@ int main(int argc, char** argv) {
                << ",\n\"per_block\":[";
         if (blocks) {
             const auto metrics = blocks->metrics();
-            constexpr unsigned targets[] = {0x2D66, 0x604BC, 0x61032, 0x3A85E, 0x3A8BA, 0x3A88C};
-            for (unsigned i = 0; i < 6; ++i) {
+            for (std::size_t i = 0; i < metrics.per_block.size(); ++i) {
                 if (i) report << ',';
-                report << "{\"target\":\"0x" << std::hex << targets[i] << std::dec
-                       << "\",\"natural_entries\":" << metrics.natural_by_block[i]
-                       << ",\"shadow_comparisons\":" << metrics.shadow_by_block[i]
-                       << ",\"translated_entries\":" << metrics.translated_by_block[i]
+                const auto& block = metrics.per_block[i];
+                report << "{\"target\":\"0x" << std::hex << block.target << std::dec
+                       << "\",\"end\":\"0x" << std::hex << block.end << std::dec
+                       << "\",\"instruction_count\":" << block.instruction_count
+                       << ",\"natural_entries\":" << block.natural_entries
+                       << ",\"shadow_comparisons\":" << block.shadow_comparisons
+                       << ",\"translated_entries\":" << block.translated_entries
                        << '}';
             }
         }

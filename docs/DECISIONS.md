@@ -2,6 +2,29 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0019 — Controlled dynamic block promotion remains offline and generic
+**Status:** Accepted for M11.37 developer-only hybrid tooling
+**Date:** 2026-09-08
+
+**Context:** M11.36 made the GPGX timing/refresh boundary authoritative. M11.37
+needed to expand coverage beyond six entries without turning discovery into a
+runtime JIT or trusting generated code by construction.
+
+**Decision:** Use one bounded natural trace, an explicit candidate queue,
+independent semantic verification of the used Bcc/DBcc/TST forms, existing
+decoder-owned mechanical generation, and the same GPGX shadow gate before
+promotion. Store block boundaries and instruction counts as generated metadata;
+the registry dispatches through that metadata rather than a candidate-specific
+hard-coded list. Reject a candidate if its block crosses an observed interrupt
+or hardware-visible boundary. Keep all discovery, generated bodies and GPGX
+bridge code in developer-only tooling; do not add runtime JIT, whole-ROM
+translation or ROM-byte coverage claims.
+
+**Consequences:** Sixteen new single-instruction natural blocks passed the
+full shadow/native gate. Four multi-instruction candidates remain unpromoted
+because the trace showed interrupt interleaving; a hardware-visible candidate
+was rejected fail-closed. Further expansion requires a new bounded milestone.
+
 ## ADR-0018 — GPGX post-instruction bridge comparison boundary
 **Status:** Accepted for M11.36 developer-only hybrid tooling
 **Date:** 2026-09-08

@@ -1,4 +1,5 @@
 add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.cpp basic_block.cpp
+    basic_block_reference.cpp
     generated_block_runtime.cpp generated_blocks.cpp recomp_generator.cpp
     candidate_2d66.cpp candidate_604bc.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)

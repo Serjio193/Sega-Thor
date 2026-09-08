@@ -97,8 +97,10 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── hybrid/
 │       │   ├── generated_block_runtime.cpp Helpers used by generated blocks
 │       │   ├── generated_block_runtime.hpp Generated-block helper boundary
-│       │   ├── generated_blocks.cpp Generated M11.33/M11.35 candidate bodies
-│       │   ├── generated_blocks.hpp Generated block declarations
+│       │   ├── basic_block_reference.cpp Generic prediction adapter for generated blocks
+│       │   ├── basic_block_reference.hpp Generic generated-block prediction API
+│       │   ├── generated_blocks.cpp Generated M11.33/M11.35/M11.37 bodies and registry metadata
+│       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   └── recomp_generator_report.cpp Generator CLI

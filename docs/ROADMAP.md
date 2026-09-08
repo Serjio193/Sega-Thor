@@ -9,6 +9,25 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.37 — Controlled dynamic coverage expansion — DONE
+Starting from the M11.36 bridge proof, freeze exact before metrics for the
+unchanged canonical 600-frame scenario, then use only natural execution to
+build a bounded queue of approximately 10–25 blocks outside the existing six.
+Every selected block must pass exact decode, independent semantic verification,
+mechanical generation/provenance and authoritative GPGX shadow certification
+before bounded native promotion. No runtime JIT or whole-ROM coverage claim.
+
+Gate result: `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN`. Sixteen new
+natural single-instruction blocks were promoted beside the six existing
+entries. Shadow completed 388,308/388,308 with zero divergence; native
+promotion completed the unchanged 600-frame scenario with exact checkpoint
+and video hashes, 388,314 translated guest instructions, 12 interpreter
+fallback entries, zero starts inside translated blocks and a 5.9844%
+translated-instruction share. Four multi-instruction candidates were rejected
+fail-closed after observed interrupt interleaving; one hardware-visible
+candidate was rejected before promotion. No runtime JIT or ROM-byte coverage
+claim was added.
+
 ## M11.36 — GPGX timing / refresh bridge contract — DONE
 Resolve the M11.35 cycle/refresh observer boundary without expanding the
 candidate set. GPGX source evidence establishes frame-relative accumulated

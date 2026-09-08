@@ -25,6 +25,15 @@ struct BasicBlockApi {
     unsigned (*refresh_penalty)();
 };
 
+using GeneratedBlockExecutor = void (*)(BasicBlockApi&);
+
+struct GeneratedBlockSpec {
+    unsigned start{};
+    unsigned end{};
+    unsigned instruction_count{};
+    GeneratedBlockExecutor execute{};
+};
+
 enum class BasicBlockMode { SHADOW_NATIVE, NATIVE_OVERRIDE };
 
 struct BasicBlockMetrics {
@@ -38,9 +47,15 @@ struct BasicBlockMetrics {
     unsigned fallback_entries{};
     unsigned interrupts{};
     unsigned hardware_accesses{};
-    std::array<unsigned, 6> natural_by_block{};
-    std::array<unsigned, 6> shadow_by_block{};
-    std::array<unsigned, 6> translated_by_block{};
+    struct BlockCounts {
+        unsigned target{};
+        unsigned end{};
+        unsigned instruction_count{};
+        unsigned natural_entries{};
+        unsigned shadow_comparisons{};
+        unsigned translated_entries{};
+    };
+    std::vector<BlockCounts> per_block;
 };
 
 class BasicBlockRegistry final {
@@ -77,20 +92,10 @@ private:
     void write(unsigned address, int width, unsigned value) const;
     void require(bool condition, const std::string& message) const;
     void fail(const std::string& message);
-    Prediction predict(unsigned pc, const State& entry) const;
-    Prediction predict_2d66(const State& entry) const;
-    Prediction predict_604bc(const State& entry) const;
-    Prediction predict_61032(const State& entry) const;
-    Prediction predict_3a85e(const State& entry) const;
-    Prediction predict_3a8ba(const State& entry) const;
-    Prediction predict_3a88c(const State& entry) const;
-    void execute(unsigned pc);
-    void execute_2d66();
-    void execute_604bc();
-    void execute_61032();
-    void execute_3a85e();
-    void execute_3a8ba();
-    void execute_3a88c();
+    const GeneratedBlockSpec* find(unsigned pc) const;
+    std::size_t index_of(unsigned pc) const;
+    Prediction predict(const GeneratedBlockSpec& block, const State& entry) const;
+    void execute(const GeneratedBlockSpec& block);
     void start_shadow(unsigned pc);
     void finish_shadow();
     void finish_native(const Prediction& prediction);
@@ -103,7 +108,10 @@ private:
     std::ostream& log_;
     bool active_{};
     bool shadow_{};
+    bool instruction_exit_seen_{};
+    unsigned instruction_exits_{};
     unsigned active_pc_{};
+    const GeneratedBlockSpec* active_block_{};
     Prediction prediction_{};
     std::vector<Write> writes_;
     std::vector<Read> reads_;
