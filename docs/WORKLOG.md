@@ -3,6 +3,58 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.38 Interrupt-Safe Multi-Instruction Block Execution — COMPLETE
+**Objective:** Starting from committed M11.37
+`5d353beaddffbca73c7388903cc22a790c634330`, prove generic conservative
+instruction-boundary yielding and exact continuation for only the four M11.37
+multi-instruction candidates rejected for interrupt interleaving.
+
+**Acceptance:** preserve the four original rejection records; use authoritative
+GPGX interrupt/trace/timing/scheduler ownership; generate `BlockExit` bodies
+mechanically; compare every instruction boundary; reproduce a natural
+interrupted continuation; promote only after shadow; do not add discovery,
+atomic blocks, a second scheduler, runtime JIT or production dependencies.
+
+**Frozen evidence:** The ranges were `[0x0032EE,0x0032F6)` with natural count
+1,121,997, `[0x03A9AC,0x03A9B4)` with 248,291, `[0x03A9B4,0x03A9BC)` with
+248,290 and `[0x03A9CA,0x03A9D4)` with 248,290. Their exact forms are,
+respectively, TST.W/Bcc.S, TST.W/Bcc.S, TST.B/Bcc.S and TST.W/Bcc.W. Each
+range has one internal boundary, resolved conservatively after instruction 1
+and before instruction 2. TST absolute-long and Bcc short/word were already
+independently verified. The M11.37 range-level rejection remains unchanged.
+
+**Implementation:** Added generic `BlockExit {next_pc, reason,
+instructions_executed}`, instruction-granular generated continuation bodies,
+per-boundary state prediction/comparison, GPGX boundary-reason bridge and
+interrupt-resumption metrics. Generated output is split into historical,
+M11.37 and M11.38 translation units plus a generated registry; handwritten
+registry/reference glue is separate. No candidate-specific timing or interrupt
+branch was added.
+
+**Evidence:** Current external GPGX source is
+`d60d079934977aa6973e220d123533387159f66e`, DLL SHA-256
+`140c00fc7475cf22ca22415d65dfc7ffc66523de128454f9994e7ab77d9826fd`, and
+canonical ROM SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The 600-frame shadow run completed 4,122,062/4,122,062 comparisons with zero
+divergence. Native execution translated 4,122,062/6,488,773 instructions
+(63.5261%), yielded 111,009 event boundaries, observed 486 interrupt services
+and resumed 274 translated continuations after actual interrupt service. The
+current EMULATED/native checkpoint hash is
+`20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`; video
+hash remains `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+All four per-candidate boundary counts and resumptions are in the dedicated
+M11.38 report.
+
+**Validation:** Generated-block yield/resume, semantic, generator,
+provenance and basic-block tests pass in Debug. Final Debug, Release and
+GNU-equivalent full CTest each passed 54/54; source-limit, `git diff --check`
+and tracked-artifact hygiene checks passed. Final GPGX shadow/native runs
+passed after the last source change.
+
+**Result:** `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN`.
+**Next action:** stop; require a new bounded milestone before further coverage.
+
 ## 2026-09-08 — M11.37 Controlled Dynamic Coverage Expansion — COMPLETE
 **Objective:** Starting from committed M11.36
 `d2cf0b942eaff6ba61cdfe34b440fc595a5ebc86`, prove whether the existing

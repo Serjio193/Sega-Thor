@@ -99,8 +99,13 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_block_runtime.hpp Generated-block helper boundary
 │       │   ├── basic_block_reference.cpp Generic prediction adapter for generated blocks
 │       │   ├── basic_block_reference.hpp Generic generated-block prediction API
-│       │   ├── generated_blocks.cpp Generated M11.33/M11.35/M11.37 bodies and registry metadata
+│       │   ├── generated_blocks.cpp Generated historical M11.33 bodies
+│       │   ├── generated_blocks_m1137.cpp Generated M11.37 single-instruction bodies
+│       │   ├── generated_blocks_m1138.cpp Generated M11.38 multi-instruction bodies
+│       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
+│       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue
+│       │   ├── basic_block.hpp BlockExit contract, registry state and metrics
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   └── recomp_generator_report.cpp Generator CLI
@@ -308,8 +313,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `tests/hybrid_replacement_test.cpp`: synthetic registry routing regression.
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`: M11.30 shadow evidence and override blocker.
 - `basic_block.hpp/.cpp`: M11.32 developer-only bounded block registry and
-  exact fetch, bus, CCR, prefetch, cycle and refresh contracts for the three
-  proven blocks plus the M11.35 shadow-only candidate entries.
+  generic M11.38 `BlockExit`/yield continuation glue; generated execution
+  remains separate from this handwritten registry.
 - `tests/hybrid_semantic_core_test.cpp`: M11.34 independent reference vectors,
   M11.35 newly required semantic vectors, exact decode/length checks and
   exact-IR assertions.
@@ -317,12 +322,17 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   extension-word consumption and direct-successor PC/provenance regression.
 - `tests/hybrid_basic_block_test.cpp`: post-instruction boundary regression
   proving shadow closes before a scheduler/frame rebase.
+- `tests/hybrid_generated_block_test.cpp`: generated semantics and
+  instruction-boundary yield/resume regression for a frozen M11.38 range.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 - `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,
   semantic/generation gate and first runtime shadow blocker; no promotion claim.
 - `docs/reports/GPGX_TIMING_REFRESH_BRIDGE_M11_36.md`: counter ownership,
   frame epoch, bounded A–G boundary evidence and final three-candidate gate.
+- `docs/reports/INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_M11_38.md`: frozen
+  candidate ledger, generic yield contract, per-boundary shadow and interrupted
+  continuation evidence.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

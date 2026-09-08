@@ -14,12 +14,17 @@ struct Fake {
     unsigned extra_cycles{};
     unsigned refresh_skips{};
     unsigned fetch_index{};
+    unsigned boundary_calls{};
+    unsigned stop_after{};
     std::vector<unsigned> fetch_words;
     static Fake* current;
 
     static unsigned reg(unsigned index) { return current->regs[index]; }
     static void set_reg(unsigned index, unsigned value) { current->regs[index] = value; }
-    static unsigned fetch16() { return current->fetch_words.at(current->fetch_index++); }
+    static unsigned fetch16() {
+        current->regs[16] += 2U;
+        return current->fetch_words.at(current->fetch_index++);
+    }
     static int peek(unsigned address) {
         const auto it = current->memory.find(address);
         return it == current->memory.end() ? 0 : it->second;
@@ -38,6 +43,12 @@ struct Fake {
     static void finish(unsigned) {}
     static void add_cycles(int value) { current->extra_cycles += value; }
     static void skip_refresh() { ++current->refresh_skips; }
+    static oasis::hybrid::BlockExitReason boundary_reason() {
+        ++current->boundary_calls;
+        return current->stop_after && current->boundary_calls >= current->stop_after
+                   ? oasis::hybrid::BlockExitReason::EVENT_BOUNDARY
+                   : oasis::hybrid::BlockExitReason::CONTINUE_BLOCK;
+    }
 };
 
 Fake* Fake::current = nullptr;
@@ -45,7 +56,7 @@ Fake* Fake::current = nullptr;
 oasis::hybrid::BasicBlockApi api() {
     return {Fake::reg, Fake::set_reg, Fake::peek, Fake::fetch16, Fake::read, Fake::write,
             Fake::begin, Fake::finish, Fake::add_cycles, Fake::skip_refresh, nullptr,
-            nullptr, nullptr, nullptr};
+            nullptr, nullptr, nullptr, Fake::boundary_reason};
 }
 
 } // namespace
@@ -68,7 +79,9 @@ int main() {
                         0x00FF, 0x134C, 0xD6C7, 0x1E1E, 0x36DE};
 
     auto bridge = api();
-    oasis::hybrid::generated::execute_0x002D66(bridge);
+    const auto exit = oasis::hybrid::generated::execute_0x002D66(bridge, 0x2D66U);
+    assert(exit.reason == oasis::hybrid::BlockExitReason::NORMAL_EXIT);
+    assert(exit.instructions_executed == 7U);
     assert(fake.begins == 7U);
     assert(fake.fetch_index == fake.fetch_words.size());
     assert(fake.extra_cycles == 112U && fake.refresh_skips == 1U);
@@ -83,5 +96,25 @@ int main() {
     assert(Fake::read(0xFFFEFE, 2) == 0x2000U);
     assert(Fake::read(0xFF134E, 2) == 0x1234U);
     assert(Fake::read(0xFF1350, 2) == 0U);
+
+    fake.fetch_index = 0;
+    fake.fetch_words = {0x4A79, 0x00FF, 0x1658};
+    fake.regs[16] = 0x0032EEU;
+    fake.regs[17] = 0;
+    fake.stop_after = 1;
+    fake.boundary_calls = 0;
+    const auto yielded = oasis::hybrid::generated::execute_0x0032EE(bridge, 0x0032EEU);
+    assert(yielded.reason == oasis::hybrid::BlockExitReason::EVENT_BOUNDARY);
+    assert(yielded.instructions_executed == 1U && yielded.next_pc == 0x0032F4U);
+    assert(fake.boundary_calls == 1U);
+
+    fake.fetch_index = 0;
+    fake.fetch_words = {0x66F8};
+    fake.regs[17] = 0;
+    fake.stop_after = 0;
+    fake.boundary_calls = 0;
+    const auto resumed = oasis::hybrid::generated::execute_0x0032EE(bridge, 0x0032F4U);
+    assert(resumed.reason == oasis::hybrid::BlockExitReason::NORMAL_EXIT);
+    assert(resumed.instructions_executed == 1U && resumed.next_pc == 0x0032EEU);
     return 0;
 }

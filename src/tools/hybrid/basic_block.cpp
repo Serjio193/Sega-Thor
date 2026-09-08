@@ -20,6 +20,18 @@ std::uint32_t read_be(const BasicBlockApi& api, unsigned address, int width) {
     return value;
 }
 
+int dispatch_result(BlockExitReason reason) {
+    switch (reason) {
+    case BlockExitReason::CONTINUE_BLOCK:
+    case BlockExitReason::NORMAL_EXIT: return 1;
+    case BlockExitReason::EVENT_BOUNDARY: return 2;
+    case BlockExitReason::INTERRUPT_BOUNDARY: return 3;
+    case BlockExitReason::TRACE_BOUNDARY: return 4;
+    case BlockExitReason::FALLBACK: return 0;
+    }
+    return 0;
+}
+
 } // namespace
 
 BasicBlockRegistry::BasicBlockRegistry(BasicBlockApi api, BasicBlockMode mode,
@@ -37,6 +49,22 @@ BasicBlockRegistry::State BasicBlockRegistry::state() const {
 
 unsigned BasicBlockRegistry::field(unsigned index) const {
     return api_.cpu_field ? api_.cpu_field(index) : 0;
+}
+
+BasicBlockRegistry::Prediction BasicBlockRegistry::capture() const {
+    Prediction result{};
+    result.state = state();
+    result.ir = field(18);
+    result.pref_addr = field(19);
+    result.pref_data = field(20);
+    result.cycles = field(21);
+    result.refresh = field(22);
+    result.cycle_end = field(23);
+    result.interrupt_level = field(24);
+    result.interrupt_mask = field(25);
+    result.tracing = field(26);
+    result.stopped = field(27);
+    return result;
 }
 
 int BasicBlockRegistry::peek(unsigned address) const {
@@ -73,13 +101,17 @@ bool BasicBlockRegistry::in_block(unsigned pc) const {
 
 const GeneratedBlockSpec* BasicBlockRegistry::find(unsigned pc) const {
     for (const auto& block : generated::blocks())
-        if (block.start == pc) return &block;
+        if (pc >= block.start && pc < block.end &&
+            block.instruction_count_from_entry &&
+            block.instruction_count_from_entry(pc)) return &block;
     return nullptr;
 }
 
 std::size_t BasicBlockRegistry::index_of(unsigned pc) const {
+    const auto* block = find(pc);
+    if (!block) return metrics_.per_block.size();
     for (std::size_t i = 0; i < metrics_.per_block.size(); ++i)
-        if (metrics_.per_block[i].target == pc) return i;
+        if (metrics_.per_block[i].target == block->start) return i;
     return metrics_.per_block.size();
 }
 
@@ -90,8 +122,9 @@ bool BasicBlockRegistry::in_registered_range(unsigned address) const {
 }
 
 BasicBlockRegistry::Prediction BasicBlockRegistry::predict(
-    const GeneratedBlockSpec& block, const State& entry) const {
-    return predict_generated_block(api_, block, entry);
+    const GeneratedBlockSpec& block, const Prediction& entry,
+    unsigned entry_pc, unsigned instruction_limit) const {
+    return predict_generated_block(api_, block, entry, entry_pc, instruction_limit);
 }
 
 void BasicBlockRegistry::compare(const Prediction& prediction) {
@@ -123,6 +156,10 @@ void BasicBlockRegistry::compare(const Prediction& prediction) {
                << " actual_refresh=" << field(22) << " expected_refresh=" << prediction.refresh;
         throw std::runtime_error(timing.str());
     }
+    require(field(23) == prediction.cycle_end && field(24) == prediction.interrupt_level &&
+                field(25) == prediction.interrupt_mask && field(26) == prediction.tracing &&
+                field(27) == prediction.stopped,
+            "boundary state");
     require(writes_.size() == prediction.writes.size(), "write count");
     for (std::size_t i = 0; i < writes_.size(); ++i)
         require(writes_[i].address == prediction.writes[i].address &&
@@ -134,59 +171,126 @@ void BasicBlockRegistry::compare(const Prediction& prediction) {
                 "read[" + std::to_string(i) + "]");
 }
 
-void BasicBlockRegistry::start_shadow(unsigned pc) {
-    active_pc_ = pc;
-    active_block_ = find(pc);
-    if (!active_block_) throw std::runtime_error("unregistered basic block");
-    prediction_ = predict(*active_block_, state());
-    writes_.clear(); reads_.clear(); active_ = true; shadow_ = true;
-    instruction_exit_seen_ = false; instruction_exits_ = 0;
+void BasicBlockRegistry::compare_shadow_boundary() {
+    compare(prediction_);
+    ++metrics_.shadow_comparisons;
+    ++metrics_.per_block.at(index_of(active_pc_)).shadow_comparisons;
+}
+
+BlockExitReason BasicBlockRegistry::boundary_reason() const {
+    return api_.boundary_reason ? api_.boundary_reason() : BlockExitReason::CONTINUE_BLOCK;
+}
+
+void BasicBlockRegistry::record_yield(BlockExitReason reason) {
+    if (reason == BlockExitReason::CONTINUE_BLOCK || reason == BlockExitReason::NORMAL_EXIT)
+        return;
+    ++metrics_.boundary_yields;
+    if (active_block_) ++metrics_.per_block.at(index_of(active_pc_)).boundary_yields;
+    if (reason == BlockExitReason::EVENT_BOUNDARY) {
+        ++metrics_.event_boundary_yields;
+        if (active_block_) ++metrics_.per_block.at(index_of(active_pc_)).event_boundary_yields;
+    }
+    if (reason == BlockExitReason::INTERRUPT_BOUNDARY) {
+        ++metrics_.interrupt_boundary_yields;
+        if (active_block_) ++metrics_.per_block.at(index_of(active_pc_)).interrupt_boundary_yields;
+    }
+    if (reason == BlockExitReason::TRACE_BOUNDARY) {
+        ++metrics_.trace_boundary_yields;
+        if (active_block_) ++metrics_.per_block.at(index_of(active_pc_)).trace_boundary_yields;
+    }
+    if (active_block_ && instructions_remaining_ > 1 &&
+        prediction_.state[16] >= active_block_->start &&
+        prediction_.state[16] < active_block_->end) {
+        awaiting_interrupt_ = true;
+        continuation_pc_ = prediction_.state[16];
+        continuation_block_ = active_block_->start;
+    }
 }
 
 void BasicBlockRegistry::finish_shadow() {
-    compare(prediction_); ++metrics_.shadow_comparisons;
-    ++metrics_.per_block.at(index_of(active_pc_)).shadow_comparisons;
-    active_ = false; shadow_ = false; instruction_exit_seen_ = false; instruction_exits_ = 0;
+    active_ = false;
+    shadow_ = false;
+    instruction_exit_seen_ = false;
+    entry_event_pending_ = false;
+    instruction_exits_ = 0;
+    instructions_remaining_ = 0;
     active_block_ = nullptr;
+    expected_entry_pc_ = 0;
+}
+
+void BasicBlockRegistry::start_shadow(unsigned pc) {
+    active_block_ = find(pc);
+    if (!active_block_) throw std::runtime_error("unregistered basic block");
+    active_pc_ = active_block_->start;
+    active_entry_pc_ = pc;
+    instructions_remaining_ = active_block_->instruction_count_from_entry(pc);
+    prediction_ = predict(*active_block_, capture(), pc, 1);
+    expected_entry_pc_ = prediction_.state[16];
+    writes_.clear(); reads_.clear(); active_ = true; shadow_ = true;
+    entry_event_pending_ = true;
+    instruction_exit_seen_ = false; instruction_exits_ = 0;
 }
 
 void BasicBlockRegistry::finish_native(const Prediction& prediction) {
     compare(prediction); active_ = false; shadow_ = false; instruction_exit_seen_ = false;
-    instruction_exits_ = 0; active_block_ = nullptr;
+    entry_event_pending_ = false; instruction_exits_ = 0; instructions_remaining_ = 0;
+    active_block_ = nullptr;
 }
 
-void BasicBlockRegistry::execute(const GeneratedBlockSpec& block) {
-    active_pc_ = block.start; active_block_ = &block;
-    prediction_ = predict(block, state());
+BlockExit BasicBlockRegistry::execute(const GeneratedBlockSpec& block, unsigned entry_pc) {
+    active_pc_ = block.start; active_entry_pc_ = entry_pc; active_block_ = &block;
+    instructions_remaining_ = block.instruction_count_from_entry(entry_pc);
+    const auto entry = capture();
     writes_.clear(); reads_.clear(); active_ = true; shadow_ = false;
-    block.execute(api_);
+    const auto exit = block.execute(api_, entry_pc);
+    if (exit.reason == BlockExitReason::FALLBACK || !exit.instructions_executed)
+        throw std::runtime_error("generated block continuation unavailable");
+    prediction_ = predict(block, entry, entry_pc,
+                          exit.reason == BlockExitReason::NORMAL_EXIT ? 0 :
+                          exit.instructions_executed);
+    record_yield(exit.reason);
     finish_native(prediction_); ++metrics_.translated_entries;
     ++metrics_.per_block.at(index_of(block.start)).translated_entries;
-    metrics_.translated_instructions += block.instruction_count;
+    metrics_.translated_instructions += exit.instructions_executed;
+    if (block.instruction_count > 1) ++metrics_.translated_multi_instruction_entries;
     ++metrics_.translated_blocks;
     log_ << "{\"block\":\"0x" << std::hex << block.start << std::dec
-         << "\",\"translated_instructions\":" << block.instruction_count
+         << "\",\"translated_instructions\":" << exit.instructions_executed
+         << ",\"reason\":" << static_cast<unsigned>(exit.reason)
          << ",\"timing_exact\":true}\n";
+    return exit;
 }
 
 int BasicBlockRegistry::dispatch(unsigned pc) noexcept {
     if (!error_.empty()) return 0;
     try {
-        if (active_ && shadow_ && pc == prediction_.state[16])
-            finish_shadow();
         const auto* block = find(pc);
         if (!block) return 0;
         const auto index = index_of(pc);
         if (active_) {
+            if (shadow_ && pc == expected_entry_pc_ && in_block(pc)) return 0;
             std::ostringstream nested;
             nested << "nested translated block pc=0x" << std::hex << pc
-                   << " expected=0x" << prediction_.state[16];
+                   << " expected=0x" << expected_entry_pc_
+                   << " actual_pref=0x" << field(19) << "/0x" << field(20)
+                   << " predicted_pref=0x" << prediction_.pref_addr << "/0x"
+                   << prediction_.pref_data;
             throw std::runtime_error(nested.str());
         }
         ++metrics_.natural_entries;
         ++metrics_.per_block.at(index).natural_entries;
         if (mode_ == BasicBlockMode::SHADOW_NATIVE) { start_shadow(pc); return 0; }
-        execute(*block); return 1;
+        const auto exit = execute(*block, pc);
+        if (interrupt_after_yield_ && pc == continuation_pc_ &&
+            block->start == continuation_block_) {
+            ++metrics_.interrupted_resumptions;
+            ++metrics_.per_block.at(index).interrupted_resumptions;
+            interrupt_after_yield_ = false;
+            awaiting_interrupt_ = false;
+        } else if (awaiting_interrupt_ && pc == continuation_pc_) {
+            awaiting_interrupt_ = false;
+        }
+        return dispatch_result(exit.reason);
     } catch (const std::exception& error) { fail(error.what()); return 0; }
 }
 
@@ -195,15 +299,39 @@ void BasicBlockRegistry::event(int type, int width, unsigned address, unsigned v
     try {
         address &= 0xFFFFFFU;
         if (type == 1) {
+            if (shadow_ && entry_event_pending_) {
+                if (address != active_entry_pc_)
+                    throw std::runtime_error("basic-block entry event mismatch");
+                entry_event_pending_ = false;
+                return;
+            }
             if (shadow_ && in_block(address)) ++metrics_.original_starts_inside_translated;
             if (in_registered_range(address) && !in_block(address)) ++metrics_.fallback_entries;
+            return;
+        }
+        if (type == (1 << 15)) {
+            ++metrics_.interrupts;
+            if (awaiting_interrupt_) interrupt_after_yield_ = true;
             return;
         }
         if (type == (1 << 14)) {
             instruction_exit_seen_ = true;
             ++instruction_exits_;
-            if (shadow_ && active_block_ &&
-                instruction_exits_ >= active_block_->instruction_count) finish_shadow();
+            if (shadow_ && active_block_) {
+                compare_shadow_boundary();
+                --instructions_remaining_;
+                const auto reason = boundary_reason();
+                if (reason != BlockExitReason::CONTINUE_BLOCK || !instructions_remaining_) {
+                    record_yield(reason);
+                    finish_shadow();
+                } else {
+                    const auto next_entry_pc = prediction_.state[16];
+                    prediction_ = predict(*active_block_, prediction_, next_entry_pc, 1);
+                    expected_entry_pc_ = next_entry_pc;
+                    writes_.clear();
+                    reads_.clear();
+                }
+            }
             return;
         }
         if (!active_) return;

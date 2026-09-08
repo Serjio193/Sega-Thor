@@ -2,6 +2,30 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0020 — Generic instruction-boundary yields for rejected multi-instruction blocks
+**Status:** Accepted for M11.38 developer-only hybrid tooling
+**Date:** 2026-09-08
+
+**Context:** M11.37 rejected four mechanically generated two-instruction ranges
+because natural execution showed interrupt interleaving inside their ranges.
+GPGX owns interrupt service, trace handling, cycle/refresh state and the VDP/Z80
+schedule; treating the ranges as atomic would change observable ordering.
+
+**Decision:** Make generated execution instruction-granular at the bridge
+boundary. After each guest instruction, the generated body asks one generic
+GPGX-owned boundary callback and returns `BlockExit` with the exact next PC,
+reason and executed count when continuation is required. The shadow adapter
+compares registers, SR, PC, prefetch, RAM/bus effects, cycle/refresh and
+interrupt-visible fields at every boundary. Native continuation re-enters the
+same generated block at the exact instruction entry PC; GPGX performs any
+pending interrupt before the continuation. Do not add candidate-specific
+timing, a second scheduler, atomic blocks, runtime JIT or production linkage.
+
+**Consequences:** The four frozen M11.37 ranges pass the per-boundary shadow
+gate and native 600-frame equivalence; 274 naturally observed continuations
+resumed after actual GPGX interrupt service. The capability is conservative and
+instruction-granular, and further coverage still requires a separate milestone.
+
 ## ADR-0019 — Controlled dynamic block promotion remains offline and generic
 **Status:** Accepted for M11.37 developer-only hybrid tooling
 **Date:** 2026-09-08

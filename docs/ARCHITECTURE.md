@@ -132,6 +132,17 @@ runtime effects. A block is not promoted when its bounded range can cross an
 observed interrupt or hardware-visible boundary. The production targets do
 not link this registry, generated artifact, external GPGX bridge or any JIT.
 
+M11.38 adds a generic instruction-boundary yield contract for only the four
+previously rejected two-instruction ranges. Generated bodies remain mechanical
+and return `BlockExit { next_pc, reason, instructions_executed }`; they call the
+boundary callback after every instruction and may yield for event, interrupt or
+trace handling. The shadow adapter compares fully materialized state at each
+boundary, while GPGX retains interrupt service and scheduler ownership. A
+continuation is dispatched at the exact next guest PC, so no multi-instruction
+block is atomic and no candidate-specific timing or interrupt branch exists in
+handwritten glue. The result is developer-only and does not widen production
+dependencies.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 

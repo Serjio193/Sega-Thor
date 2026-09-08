@@ -1,6 +1,29 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.38 — Interrupt-safe multi-instruction block execution
+STATUS: `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN` for exactly the four
+M11.37 rejected developer-only ranges. The original M11.37 rejection remains
+in `docs/reports/CONTROLLED_DYNAMIC_COVERAGE_M11_37.md`.
+
+| range | exact instructions | M11.37 natural count | resolved boundary |
+| --- | --- | ---: | --- |
+| `[0x0032EE,0x0032F6)` | `TST.W ($00FF1658).L`; `BNE.S -> 0x0032EE` | 1,121,997 | after `0x0032EE`, before `0x0032F4` |
+| `[0x03A9AC,0x03A9B4)` | `TST.W ($00FFAFAE).L`; `BNE.S -> 0x03A9BC` | 248,291 | after `0x03A9AC`, before `0x03A9B2` |
+| `[0x03A9B4,0x03A9BC)` | `TST.B ($00FF0BFD).L`; `BNE.S -> 0x03A9CA` | 248,290 | after `0x03A9B4`, before `0x03A9BA` |
+| `[0x03A9CA,0x03A9D4)` | `TST.W ($00FF1654).L`; `BNE.W -> 0x03A9AC` (`FFDA`) | 248,290 | after `0x03A9CA`, before `0x03A9D0` |
+
+M11.37 recorded the interrupt interleaving at range level; each frozen range
+has one and only one internal instruction boundary, so the exact conservative
+yield ordinal is uniquely the boundary shown above. TST absolute-long and Bcc
+short/word are already independently verified semantic forms. The mechanical
+generator emits resumable bodies and the registry contains no candidate-specific
+timing or interrupt logic. The four-candidate shadow gate recorded
+4,122,062/4,122,062 per-boundary comparisons with zero divergence; native
+execution recorded 274 exact continuations after actual GPGX interrupt service.
+See `docs/reports/INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_M11_38.md` for the
+identity-bound run evidence and per-candidate counts.
+
 ## M11.37 — Controlled dynamic coverage expansion
 STATUS: `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN` for the bounded
 developer-only registry; this is not ROM-byte coverage or a whole-ROM claim.

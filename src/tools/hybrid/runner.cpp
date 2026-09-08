@@ -53,6 +53,7 @@ oasis::hybrid::Dispatch* dispatch{}; // One explicitly owned frontend session.
 oasis::hybrid::Registry* registry_dispatch{};
 oasis::hybrid::BasicBlockRegistry* block_registry{};
 int (*cpu_cycles)(){};
+unsigned (*gpgx_boundary_reason)(){};
 unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
 std::string video_hashes;
@@ -76,6 +77,13 @@ void hook(int type, int width, unsigned address, unsigned value) {
     if (block_registry) block_registry->event(type, width, address, value);
     else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
+}
+oasis::hybrid::BlockExitReason boundary_reason() noexcept {
+    if (!gpgx_boundary_reason) return oasis::hybrid::BlockExitReason::FALLBACK;
+    const auto value = gpgx_boundary_reason();
+    return value <= static_cast<unsigned>(oasis::hybrid::BlockExitReason::FALLBACK) ?
+        static_cast<oasis::hybrid::BlockExitReason>(value) :
+        oasis::hybrid::BlockExitReason::FALLBACK;
 }
 int block_hook(unsigned address) {
     return block_registry ? block_registry->dispatch(address) : 0;
@@ -187,7 +195,7 @@ int main(int argc, char** argv) {
         std::filesystem::create_directories(directory);
         const auto library_hash = oasis::calculate_sha256(oasis::Rom::load(argv[1]).bytes());
         Library library(argv[1]);
-        if (library.get<unsigned(*)()>("retro_hybrid_abi")() != 2)
+        if (library.get<unsigned(*)()>("retro_hybrid_abi")() != 3)
             throw std::runtime_error("GPGX hybrid bridge ABI mismatch");
         std::ofstream calls(std::filesystem::path(directory) / "calls.jsonl");
         calls.exceptions(std::ios::failbit | std::ios::badbit);
@@ -215,12 +223,14 @@ int main(int argc, char** argv) {
             const auto cpu_field = library.get<unsigned(*)(unsigned)>("retro_hybrid_cpu_field");
             const auto refresh_period = library.get<unsigned(*)()>("retro_hybrid_refresh_period");
             const auto refresh_penalty = library.get<unsigned(*)()>("retro_hybrid_refresh_penalty");
+            gpgx_boundary_reason = library.get<unsigned(*)()>("retro_hybrid_boundary_reason");
             const auto add_block_cycles = library.get<void(*)(int)>("retro_hybrid_add_cycles");
             const auto skip_block_refresh = library.get<void(*)()>("retro_hybrid_skip_bus_refresh");
             const oasis::hybrid::BasicBlockApi api{
                 reg, set_reg, peek, fetch16, read, write, begin_instruction,
                 finish_instruction, add_block_cycles, skip_block_refresh,
-                instruction_cycles, cpu_field, refresh_period, refresh_penalty};
+                instruction_cycles, cpu_field, refresh_period, refresh_penalty,
+                boundary_reason};
             blocks = std::make_unique<oasis::hybrid::BasicBlockRegistry>(
                 api, mode_text == "BASIC_BLOCK_SHADOW" ?
                     oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
@@ -315,6 +325,8 @@ int main(int argc, char** argv) {
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};
         unsigned translated_blocks{}, translated_entries{}, translated_instructions{}, original_inside{}, fallback_entries{}, hardware_accesses{};
+        unsigned boundary_yields{}, event_boundary_yields{}, interrupt_boundary_yields{}, trace_boundary_yields{};
+        unsigned translated_multi_instruction_entries{}, interrupted_resumptions{};
         unsigned interpreter_instructions{}, total_guest_instructions{}, observed_interpreter_pcs{};
         std::size_t registered_block_count{};
         bool complete{};
@@ -332,6 +344,12 @@ int main(int argc, char** argv) {
             fallback_entries = metrics.fallback_entries;
             interrupts = metrics.interrupts;
             hardware_accesses = metrics.hardware_accesses;
+            boundary_yields = metrics.boundary_yields;
+            event_boundary_yields = metrics.event_boundary_yields;
+            interrupt_boundary_yields = metrics.interrupt_boundary_yields;
+            trace_boundary_yields = metrics.trace_boundary_yields;
+            translated_multi_instruction_entries = metrics.translated_multi_instruction_entries;
+            interrupted_resumptions = metrics.interrupted_resumptions;
             complete = blocks->complete();
             error_text = blocks->error();
             registered_block_count = metrics.per_block.size();
@@ -394,6 +412,12 @@ int main(int argc, char** argv) {
                << ",\n\"original_starts_inside_translated\":" << original_inside
                << ",\n\"interpreter_fallback_entries\":" << fallback_entries
                << ",\n\"hardware_visible_accesses\":" << hardware_accesses
+               << ",\n\"instruction_boundary_yields\":" << boundary_yields
+               << ",\n\"event_boundary_yields\":" << event_boundary_yields
+               << ",\n\"interrupt_boundary_yields\":" << interrupt_boundary_yields
+               << ",\n\"trace_boundary_yields\":" << trace_boundary_yields
+               << ",\n\"translated_multi_instruction_entries\":" << translated_multi_instruction_entries
+               << ",\n\"interrupted_resumptions\":" << interrupted_resumptions
                << ",\n\"per_target\":[";
         if (registry) {
             for (std::size_t i = 0; i < registry->targets().size(); ++i) {
@@ -422,6 +446,11 @@ int main(int argc, char** argv) {
                        << ",\"natural_entries\":" << block.natural_entries
                        << ",\"shadow_comparisons\":" << block.shadow_comparisons
                        << ",\"translated_entries\":" << block.translated_entries
+                       << ",\"boundary_yields\":" << block.boundary_yields
+                       << ",\"event_boundary_yields\":" << block.event_boundary_yields
+                       << ",\"interrupt_boundary_yields\":" << block.interrupt_boundary_yields
+                       << ",\"trace_boundary_yields\":" << block.trace_boundary_yields
+                       << ",\"interrupted_resumptions\":" << block.interrupted_resumptions
                        << '}';
             }
         }

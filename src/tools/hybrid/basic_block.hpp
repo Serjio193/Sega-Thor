@@ -8,6 +8,21 @@
 
 namespace oasis::hybrid {
 
+enum class BlockExitReason {
+    CONTINUE_BLOCK,
+    NORMAL_EXIT,
+    EVENT_BOUNDARY,
+    INTERRUPT_BOUNDARY,
+    TRACE_BOUNDARY,
+    FALLBACK,
+};
+
+struct BlockExit {
+    unsigned next_pc{};
+    BlockExitReason reason{BlockExitReason::NORMAL_EXIT};
+    unsigned instructions_executed{};
+};
+
 struct BasicBlockApi {
     unsigned (*reg)(unsigned);
     void (*set_reg)(unsigned, unsigned);
@@ -23,15 +38,18 @@ struct BasicBlockApi {
     unsigned (*cpu_field)(unsigned);
     unsigned (*refresh_period)();
     unsigned (*refresh_penalty)();
+    BlockExitReason (*boundary_reason)();
 };
 
-using GeneratedBlockExecutor = void (*)(BasicBlockApi&);
+using GeneratedBlockExecutor = BlockExit (*)(BasicBlockApi&, unsigned entry_pc);
+using GeneratedBlockLength = unsigned (*)(unsigned entry_pc);
 
 struct GeneratedBlockSpec {
     unsigned start{};
     unsigned end{};
     unsigned instruction_count{};
     GeneratedBlockExecutor execute{};
+    GeneratedBlockLength instruction_count_from_entry{};
 };
 
 enum class BasicBlockMode { SHADOW_NATIVE, NATIVE_OVERRIDE };
@@ -47,6 +65,12 @@ struct BasicBlockMetrics {
     unsigned fallback_entries{};
     unsigned interrupts{};
     unsigned hardware_accesses{};
+    unsigned boundary_yields{};
+    unsigned event_boundary_yields{};
+    unsigned interrupt_boundary_yields{};
+    unsigned trace_boundary_yields{};
+    unsigned translated_multi_instruction_entries{};
+    unsigned interrupted_resumptions{};
     struct BlockCounts {
         unsigned target{};
         unsigned end{};
@@ -54,6 +78,11 @@ struct BasicBlockMetrics {
         unsigned natural_entries{};
         unsigned shadow_comparisons{};
         unsigned translated_entries{};
+        unsigned boundary_yields{};
+        unsigned event_boundary_yields{};
+        unsigned interrupt_boundary_yields{};
+        unsigned trace_boundary_yields{};
+        unsigned interrupted_resumptions{};
     };
     std::vector<BlockCounts> per_block;
 };
@@ -81,6 +110,11 @@ public:
         unsigned pref_data{};
         unsigned cycles{};
         unsigned refresh{};
+        unsigned cycle_end{};
+        unsigned interrupt_level{};
+        unsigned interrupt_mask{};
+        unsigned tracing{};
+        unsigned stopped{};
     };
 
 private:
@@ -94,12 +128,17 @@ private:
     void fail(const std::string& message);
     const GeneratedBlockSpec* find(unsigned pc) const;
     std::size_t index_of(unsigned pc) const;
-    Prediction predict(const GeneratedBlockSpec& block, const State& entry) const;
-    void execute(const GeneratedBlockSpec& block);
+    Prediction capture() const;
+    Prediction predict(const GeneratedBlockSpec& block, const Prediction& entry,
+                       unsigned entry_pc, unsigned instruction_limit) const;
+    BlockExit execute(const GeneratedBlockSpec& block, unsigned entry_pc);
     void start_shadow(unsigned pc);
     void finish_shadow();
     void finish_native(const Prediction& prediction);
     void compare(const Prediction& prediction);
+    void compare_shadow_boundary();
+    BlockExitReason boundary_reason() const;
+    void record_yield(BlockExitReason reason);
     bool in_registered_range(unsigned address) const;
     bool in_block(unsigned pc) const;
 
@@ -109,9 +148,17 @@ private:
     bool active_{};
     bool shadow_{};
     bool instruction_exit_seen_{};
+    bool entry_event_pending_{};
     unsigned instruction_exits_{};
+    unsigned instructions_remaining_{};
     unsigned active_pc_{};
+    unsigned active_entry_pc_{};
+    unsigned expected_entry_pc_{};
     const GeneratedBlockSpec* active_block_{};
+    bool awaiting_interrupt_{};
+    bool interrupt_after_yield_{};
+    unsigned continuation_pc_{};
+    unsigned continuation_block_{};
     Prediction prediction_{};
     std::vector<Write> writes_;
     std::vector<Read> reads_;

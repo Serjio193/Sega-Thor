@@ -22,4 +22,7 @@ struct GeneratedBlock {
 [[nodiscard]] std::string emit_translation_unit(
     const std::vector<GeneratedBlock>& blocks);
 
+[[nodiscard]] std::string emit_registry_translation_unit(
+    const std::vector<GeneratedBlock>& blocks);
+
 } // namespace oasis::hybrid

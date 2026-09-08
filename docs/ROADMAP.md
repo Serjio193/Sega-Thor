@@ -9,6 +9,21 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.38 — Interrupt-safe multi-instruction block execution — DONE
+Starting from M11.37, use only its four rejected two-instruction ranges and
+prove a generic event/interrupt-safe continuation contract. Preserve the
+M11.37 rejection evidence, yield after a guest instruction when GPGX reports a
+boundary, and compare every boundary before native promotion. No atomic blocks,
+runtime JIT, second scheduler or additional candidate discovery.
+
+Gate result: `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN`. All four frozen
+ranges passed `4,122,062` per-instruction shadow comparisons with zero
+divergence. Native execution preserved the current 600-frame checkpoint/video
+equivalence, translated 4,122,062 of 6,488,773 guest instructions (63.5261%),
+recorded 111,009 event boundary yields and 274 continuations after actual
+GPGX interrupt service. No hardware-visible access or original start inside a
+translated range occurred. Further coverage requires a new bounded milestone.
+
 ## M11.37 — Controlled dynamic coverage expansion — DONE
 Starting from the M11.36 bridge proof, freeze exact before metrics for the
 unchanged canonical 600-frame scenario, then use only natural execution to

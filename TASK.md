@@ -1,28 +1,30 @@
 # Current task
 
-TASK: M11.37 Controlled Dynamic Coverage Expansion
-STATUS: COMPLETE — CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN
-BASELINE: committed M11.36 `GPGX_TIMING_REFRESH_BRIDGE_PROVEN` at
-`d2cf0b942eaff6ba61cdfe34b440fc595a5ebc86` / `origin/main`
-SCOPE: use the existing cold-reset neutral 600-frame scenario to discover,
-classify, independently verify, mechanically generate, shadow-certify and
-boundedly promote approximately 10–25 new natural blocks outside the six
-verified entries. No runtime JIT, whole-ROM recompilation or automatic trust.
-NON-GOALS: whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
-production emulator/runtime JIT work, toolchain archaeology, or broad RE.
-
-ACCEPTANCE: success requires at least 10 new naturally executed blocks with
-independently verified forms, provenance-bound generated bodies, zero shadow
-divergence, unchanged 600-frame CPU/RAM/VDP/sound/interrupt/checkpoint/video
-equivalence, and a measurable increase in translated guest instruction share.
-If the bounded queue or gates cannot reach 10, preserve the exact negative
-classification and keep the unproven candidates on interpreter fallback.
-
-RESULT: 16 new natural single-instruction blocks promoted; all 22 registry
-entries passed independent-form, generator/provenance and 600-frame GPGX
-shadow/native gates. Translated share increased from 0 to 5.9844% of guest
-instruction executions with exact checkpoint/video equivalence.
+TASK: M11.38 Interrupt-Safe Multi-Instruction Block Execution
+STATUS: COMPLETE — `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN`
+BASELINE: committed M11.37 `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN` at
+`5d353beaddffbca73c7388903cc22a790c634330`
+SCOPE: only the four M11.37 rejected two-instruction ranges; generic
+instruction-boundary yield, per-boundary shadow proof, interrupted continuation
+and bounded native promotion. No new discovery, atomic blocks, runtime JIT,
+second scheduler or production emulator dependency.
+RESULT: all four frozen ranges passed 4,122,062/4,122,062 shadow comparisons
+with zero divergence. Native translated 4,122,062 of 6,488,773 guest
+instructions (63.5261%), recorded 111,009 event boundary yields and 274 exact
+continuations after actual GPGX interrupt service. Current-run checkpoint and
+video hashes matched the EMULATED baseline; no hardware-visible accesses or
+original starts inside translated ranges occurred.
+EVIDENCE: `docs/reports/INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_M11_38.md`
 NEXT ACTION: stop; do not expand coverage without a new milestone.
+
+# Historical M11.37 result
+
+TASK: M11.37 Controlled Dynamic Coverage Expansion
+STATUS: COMPLETE — `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN`
+RESULT: 16 new natural single-instruction blocks were promoted beside the six
+historical entries. Four multi-instruction candidates remained interpreter-only
+after observed interrupt interleaving; the hardware-visible `0x060BA4`
+candidate remained rejected. Evidence: `docs/reports/CONTROLLED_DYNAMIC_COVERAGE_M11_37.md`.
 
 RESULT: GPGX `m68k.cycles` and `refresh_cycles` are frame-relative accumulated
 master-cycle counters rebased by `mcycles_vdp`; the M11.35 mismatch compared a

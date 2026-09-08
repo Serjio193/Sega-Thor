@@ -1,18 +1,18 @@
 # Project State
 
-CURRENT_MILESTONE: M11.37 controlled dynamic coverage expansion
-CURRENT_TASK: bounded offline discovery, certification and promotion of new
-natural blocks outside the six M11.36 entries
-STATUS: COMPLETE — CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN
-SCOPE_BOUNDARY: developer-only trace, candidate manifest, semantic/generator
-gates, GPGX shadow/native checks and approved registry; production Sega-Thor
-remains free of GPGX, guest CPU state, generated-block dependencies and JIT.
+CURRENT_MILESTONE: M11.38 interrupt-safe multi-instruction block execution
+CURRENT_TASK: prove generic instruction-boundary yield and exact continuation
+for the four M11.37 rejected multi-instruction ranges
+STATUS: COMPLETE — INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN
+SCOPE_BOUNDARY: developer-only generated blocks, boundary shadow/native checks
+and GPGX bridge; no new discovery, atomic blocks, runtime JIT or production
+emulator dependency.
 NEXT_GATE: new milestone required before further block expansion.
-LAST_VERIFIED_RESULT: M11.37 promoted 16 new natural blocks (22 total registry
-entries). The 600-frame shadow gate passed 388,308/388,308 with zero divergence;
-native translated 388,314 of 6,488,773 guest instruction executions (5.9844%),
-with exact checkpoint/video hashes and zero original starts inside translated
-blocks.
+LAST_VERIFIED_RESULT: four frozen ranges passed 4,122,062 per-boundary shadow
+comparisons with zero divergence. Native translated 4,122,062 of 6,488,773
+guest instructions (63.5261%), yielded 111,009 times at event boundaries and
+resumed 274 times after actual GPGX interrupt service, with exact current-run
+checkpoint/video hashes and zero original starts inside translated blocks.
 
 # Historical state context
 

@@ -26,8 +26,11 @@ void write_file(const char* path, const std::string& content) {
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc < 5 || ((argc - 3) & 1) != 0) {
-        std::cerr << "usage: oasis_hybrid_recomp_generate <usa_rom> <out.cpp> "
+    const bool registry_mode = argc > 2 && std::string(argv[2]) == "--registry";
+    const auto output_index = registry_mode ? 3 : 2;
+    const auto pair_begin = registry_mode ? 4 : 3;
+    if (argc < pair_begin + 2 || ((argc - pair_begin) & 1) != 0) {
+        std::cerr << "usage: oasis_hybrid_recomp_generate <usa_rom> [--registry] <out.cpp> "
                      "<start> <end> [<start> <end> ...]\n";
         return 2;
     }
@@ -36,10 +39,12 @@ int main(int argc, char** argv) {
         if (oasis::identify_rom(rom.bytes()).status != oasis::RomSupportStatus::Supported)
             throw std::invalid_argument("canonical supported USA ROM required");
         std::vector<oasis::hybrid::GeneratedBlock> blocks;
-        for (int i = 3; i < argc; i += 2)
+        for (int i = pair_begin; i < argc; i += 2)
             blocks.push_back(oasis::hybrid::generate_block(rom.bytes(), number(argv[i]),
                                                            number(argv[i + 1])));
-        write_file(argv[2], oasis::hybrid::emit_translation_unit(blocks));
+        write_file(argv[output_index], registry_mode ?
+            oasis::hybrid::emit_registry_translation_unit(blocks) :
+            oasis::hybrid::emit_translation_unit(blocks));
         std::cout << "generated " << blocks.size() << " decoder-owned blocks\n";
         return 0;
     } catch (const std::exception& error) {

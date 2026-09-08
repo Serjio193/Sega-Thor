@@ -11,6 +11,8 @@ struct Context {
     BasicBlockApi source{};
     BasicBlockRegistry::Prediction result{};
     std::map<unsigned, std::uint8_t> overlay;
+    unsigned instruction_limit{};
+    unsigned instructions_seen{};
     static Context* current;
 };
 
@@ -98,28 +100,37 @@ void skip_bus_refresh() {
         context.result.refresh += context.source.refresh_period();
 }
 
+BlockExitReason boundary_reason() {
+    auto& context = *Context::current;
+    ++context.instructions_seen;
+    return context.instruction_limit &&
+        context.instructions_seen >= context.instruction_limit ?
+        BlockExitReason::EVENT_BOUNDARY : BlockExitReason::CONTINUE_BLOCK;
+}
+
 BasicBlockApi api_for(Context& context) {
     Context::current = &context;
     return {reg, set_reg, peek, fetch16, read, write, begin_instruction,
             finish_instruction, add_cycles, skip_bus_refresh,
             context.source.instruction_cycles, context.source.cpu_field,
-            context.source.refresh_period, context.source.refresh_penalty};
+            context.source.refresh_period, context.source.refresh_penalty,
+            boundary_reason};
 }
 
 } // namespace
 
 BasicBlockRegistry::Prediction predict_generated_block(
     const BasicBlockApi& source, const GeneratedBlockSpec& block,
-    const BasicBlockRegistry::State& entry) {
+    const BasicBlockRegistry::Prediction& entry, unsigned entry_pc,
+    unsigned instruction_limit) {
     Context context{source};
-    context.result.state = entry;
-    context.result.ir = source.cpu_field(18);
-    context.result.pref_addr = source.cpu_field(19);
-    context.result.pref_data = source.cpu_field(20);
-    context.result.cycles = source.cpu_field(21);
-    context.result.refresh = source.cpu_field(22);
-    const auto api = api_for(context);
-    block.execute(const_cast<BasicBlockApi&>(api));
+    context.result = entry;
+    context.result.state[16] = entry_pc;
+    context.result.writes.clear();
+    context.result.reads.clear();
+    context.instruction_limit = instruction_limit;
+    auto api = api_for(context);
+    block.execute(api, entry_pc);
     Context::current = nullptr;
     return context.result;
 }

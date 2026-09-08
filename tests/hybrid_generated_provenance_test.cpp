@@ -51,7 +51,7 @@ oasis::hybrid::BasicBlockApi api() {
 
 void run_block(std::uint32_t start, std::uint32_t end,
                std::vector<unsigned> words,
-               void (*execute)(oasis::hybrid::BasicBlockApi&)) {
+               oasis::hybrid::GeneratedBlockExecutor execute) {
     Fake fake;
     Fake::current = &fake;
     fake.regs[7] = 0x11223344U;
@@ -69,7 +69,9 @@ void run_block(std::uint32_t start, std::uint32_t end,
     fake.memory[0xFF0BFDU] = 0x80U;
     fake.fetch_words = std::move(words);
     auto bridge = api();
-    execute(bridge);
+    const auto exit = execute(bridge, start);
+    assert(exit.reason == oasis::hybrid::BlockExitReason::NORMAL_EXIT);
+    assert(exit.instructions_executed > 0U);
     assert(fake.regs[16] == end);
     assert(fake.fetch_index == fake.fetch_words.size());
     Fake::current = nullptr;

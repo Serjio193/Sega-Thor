@@ -162,9 +162,25 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
         << "namespace oasis::hybrid::generated {\n\n";
     for (const auto& block : blocks) {
         validate_contiguous(block);
-        out << "void execute_0x" << hex(block.start, 6) << "(BasicBlockApi& api) {\n";
+        out << "unsigned instruction_count_from_0x" << hex(block.start, 6)
+            << "(unsigned entry_pc) {\n";
+        for (std::size_t i = 0; i < block.instructions.size(); ++i)
+            out << "    if (entry_pc == 0x" << hex(block.instructions[i].address, 6)
+                << "U) return " << (block.instructions.size() - i) << "U;\n";
+        out << "    return 0;\n}\n\n";
+        out << "BlockExit execute_0x" << hex(block.start, 6)
+            << "(BasicBlockApi& api, unsigned entry_pc) {\n"
+            << "    unsigned instructions_executed = 0;\n"
+            << "    bool execute_from_here = false;\n"
+            << "    if (entry_pc != ";
+        for (std::size_t i = 0; i < block.instructions.size(); ++i) {
+            if (i) out << " && entry_pc != ";
+            out << "0x" << hex(block.instructions[i].address, 6) << "U";
+        }
+        out << ") return {entry_pc, BlockExitReason::FALLBACK, 0};\n";
         for (const auto& instruction : block.instructions) {
-            out << "    // guest 0x" << hex(instruction.address, 6) << " opcode 0x"
+            out << "    if (execute_from_here || entry_pc == 0x" << hex(instruction.address, 6) << "U) {\n"
+                << "    // guest 0x" << hex(instruction.address, 6) << " opcode 0x"
                 << hex(instruction.opcode, 4) << " ";
             for (std::size_t i = 0; i < instruction.bytes.size(); i += 2) {
                 if (i) out << ' ';
@@ -189,14 +205,36 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
                 << "    api.finish_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
             if (instruction.exact->operation == "movem")
                 out << "    api.add_cycles(112);\n    api.skip_bus_refresh();\n";
+            out << "    ++instructions_executed;\n"
+                << "    execute_from_here = true;\n"
+                << "    if (api.boundary_reason) {\n"
+                << "        const auto reason = api.boundary_reason();\n"
+                << "        if (reason != BlockExitReason::CONTINUE_BLOCK)\n"
+                << "            return {api.reg(16), reason, instructions_executed};\n"
+                << "    }\n"
+                << "    }\n";
         }
-        out << "}\n\n";
+        out << "    return {api.reg(16), BlockExitReason::NORMAL_EXIT, instructions_executed};\n"
+            << "}\n\n";
     }
-    out << "const GeneratedBlockSpec kBlocks[] = {\n";
-    for (const auto& block : blocks)
+    out << "} // namespace oasis::hybrid::generated\n";
+    return out.str();
+}
+
+std::string emit_registry_translation_unit(const std::vector<GeneratedBlock>& blocks) {
+    if (blocks.empty()) throw std::invalid_argument("no blocks to generate");
+    std::ostringstream out;
+    out << "// GENERATED FILE: oasis_hybrid_recomp_generate; do not hand-edit.\n"
+        << "#include \"tools/hybrid/generated_blocks.hpp\"\n\n"
+        << "namespace oasis::hybrid::generated {\n\n"
+        << "const GeneratedBlockSpec kBlocks[] = {\n";
+    for (const auto& block : blocks) {
+        validate_contiguous(block);
         out << "    {0x" << hex(block.start, 6) << "U, 0x" << hex(block.end, 6)
             << "U, " << block.instructions.size() << "U, execute_0x"
+            << hex(block.start, 6) << ", instruction_count_from_0x"
             << hex(block.start, 6) << "},\n";
+    }
     out << "};\n\nstd::span<const GeneratedBlockSpec> blocks() { return kBlocks; }\n\n"
         << "} // namespace oasis::hybrid::generated\n";
     return out.str();
