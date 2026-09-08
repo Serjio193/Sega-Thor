@@ -1,5 +1,16 @@
 # Project State
 
+CURRENT_MILESTONE: M11.34 independent M68K semantic core verification
+CURRENT_TASK: verify the seven M11.33 generated instruction combinations
+STATUS: COMPLETE — M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED
+SCOPE_BOUNDARY: test-only independent semantic oracle inside developer tooling;
+production Sega-Thor remains free of GPGX, guest CPU state and generated-block
+dependencies.
+NEXT_GATE: broader exact-IR forms remain unverified; require a new bounded milestone
+LAST_VERIFIED_RESULT: 23 independent semantic vectors passed and M11.33 regression remained exact
+
+# Historical state context
+
 CURRENT_MILESTONE: M11.33 recomp generator v1
 CURRENT_TASK: decoder-owned generation for the three proven M11.32 blocks
 STATUS: COMPLETE — MECHANICAL_BLOCK_GENERATION_PROVEN

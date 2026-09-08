@@ -3,6 +3,64 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.34 Independent M68K Semantic Core Verification — COMPLETE
+**Objective:** Independently verify the exact semantic subset emitted by the
+M11.33 mechanical generator without using the decoder/emitter as its oracle.
+
+**Acceptance criteria:** Freeze the seven used instruction/addressing-mode/size
+combinations; compare deterministic independent-reference vectors for exact
+register, PC, SR/CCR, memory and ordered-access results; verify decode length
+and provenance; preserve the M11.33 600-frame proof; classify every used form.
+
+**Independent reference:** Motorola/NXP 68000 Family Programmer's Reference
+Manual, `https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf`, used as
+the semantic specification for the test-only reference model. No external
+implementation is linked into production targets.
+
+**Non-goals:** whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
+production emulator work, speculative/AI-generated semantics, or decoder rewrite.
+
+**Plan:** Add only a test-only reference/vector harness, exact decode and
+provenance assertions, then rerun the bounded M11.33 external GPGX proof and
+the required local build/test gates.
+
+**Implementation:** Added `oasis_hybrid_semantic_core`, a test-only reference
+model independent from the decoder/emitter and transcribed from the Motorola/NXP
+manual. The frozen surface remained exactly seven used combinations; no
+supported-but-unused emitter combination was introduced. The harness emits
+first-mismatch diagnostics containing opcode, decoded form, complete pre-state,
+expected state and actual state.
+
+**Evidence:** 23 deterministic vectors passed: three MOVEM mask/order cases,
+three CLR flag/upper-half cases, three MOVE.B flag/address-wrap cases, two LEA
+address cases, four ADDA sign-extension/wrap cases, three overlapping MOVE.W
+ordering cases and five ADD.L carry/overflow/X cases. Exact decode checks passed
+for all three generated blocks, including opcode, operand kind/value/register,
+size, extension-word count and next-PC continuity. Generated provenance comments
+were present for every emitted instruction.
+
+**M11.33 regression:** external GPGX checkout `d60d079934977aa6973e220d123533387159f66e`
+and DLL SHA-256 `ba6c10fdb1fe421e1e38c88b70ce18b0d2a122f4472f477b8a1a7aba14fce274`
+repeated the 600-frame cold-reset neutral proof. Shadow was 14/14 with zero
+divergences; native was 14/14 overrides with zero divergences, skipped all
+original target bodies, and retained `full_cpu_equivalence=true`, matching
+checkpoint hash `fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052`
+and video hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+
+**Tests/build:** Debug, Release and fresh GNU-equivalent builds and full CTest
+passed after the harness was added; targeted semantic tests passed in Debug,
+Release and GNU-equivalent configurations. `git diff --check` and source
+file-limit checks pass. `game.srm` remains untracked and untouched.
+
+**Result:** `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`.
+
+**Unresolved:** no disagreement remains in the seven used combinations.
+All other exact-IR forms, including branches, DBcc, status-register operations,
+other addressing modes and wider instruction families, remain unverified and
+must not be emitted without a new bounded milestone.
+
+**Exact next step:** stop; do not expand the semantic surface in this checkpoint.
+
 ## 2026-09-08 — M11.33 Recomp Generator v1 — COMPLETE
 **Objective:** Replace the three handwritten M11.32 hybrid instruction bodies
 with deterministic C++ generated from the shared decoder/exact IR, while

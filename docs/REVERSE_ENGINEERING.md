@@ -1,6 +1,30 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.34 — Independent M68K semantic core verification
+STATUS: `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED` for the exact used subset;
+all other exact-IR forms remain `UNVERIFIED`.
+
+The frozen M11.33 mechanical surface contains exactly these seven used
+combinations: `MOVEM.L <register-list>,-(A7)`, `CLR.W Dn`, `MOVE.B (A6)+,Dn`,
+`LEA.L (abs.L),A3`, `ADDA.W D7,A3`, `MOVE.W (A6)+,(A3)+`, and `ADD.L D1,D2`.
+There are no supported-but-unused emitter combinations at this checkpoint;
+all other exact-IR forms fail closed in the generator.
+
+The independent semantic reference is the Motorola/NXP 68000 Family
+Programmer's Reference Manual:
+https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf
+The test-only reference model is separate from the decoder and emitter and is
+not a production dependency. Twenty-three vectors independently established
+result values, D/A effects, PC and length, SR/CCR, effective-address ordering,
+memory width/order, MOVEM mask ordering and boundary behavior. No semantic
+disagreement remains in the used subset.
+
+Decode/provenance checks independently assert opcode identity, exact operation
+and operands, instruction size, extension-word count, effective-address values,
+next-PC continuity and generated guest-PC/opcode comments for all three blocks.
+The unchanged M11.33 external GPGX proof remains the separate timing/state gate.
+
 ## M11.32 — Basic-block recompilation timing proof
 STATUS: `BASIC_BLOCK_RECOMP_TIMING_PROVEN`.
 

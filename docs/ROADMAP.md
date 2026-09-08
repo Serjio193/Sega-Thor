@@ -19,11 +19,16 @@ Gate result: `MECHANICAL_BLOCK_GENERATION_PROVEN`. The canonical USA ROM
 regenerated the three blocks byte-for-input deterministically; GPGX shadow and
 native runs both completed 600 frames with 14/14 calls and matching state/video.
 
-## M11.34 — M68K semantic core — NEXT
+## M11.34 — M68K semantic core — DONE
 Extract and independently verify common instruction semantics, beginning with
 CCR/SR and the instruction families emitted by M11.33. Keep the oracle and
 generated hybrid boundary separate until the semantic helpers have their own
 tests and machine-derived contracts.
+
+Gate result: `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`. The exact seven
+M11.33 emitted combinations passed 23 deterministic independent-reference
+vectors, decode/length/provenance checks, and the unchanged M11.33 600-frame
+GPGX shadow/native regression. No broader instruction or production surface was added.
 
 ## M11.32 — Basic-block recompilation timing proof — DONE
 Three naturally executed blocks (`0x2D66`, `0x604BC`, `0x61032`) now share a

@@ -307,6 +307,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `basic_block.hpp/.cpp`: M11.32 developer-only bounded block registry and
   exact fetch, bus, CCR, prefetch, cycle and refresh contracts for the three
   proven blocks.
+- `tests/hybrid_semantic_core_test.cpp`: M11.34 independent reference vectors,
+  exact decode/length checks and generated-block PC/provenance assertions.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 

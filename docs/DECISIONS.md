@@ -2,6 +2,27 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0016 — Test-only independent M68K semantic oracle
+**Status:** Accepted for M11.34 verification tooling
+**Date:** 2026-09-08
+
+**Context:** M11.33 established decoder-owned generated execution, but shared
+decoder, emitter and helper assumptions could agree while encoding an incorrect
+68000 rule.
+
+**Decision:** Verify only the seven currently emitted M11.33 combinations with
+a small deterministic reference model transcribed from the Motorola/NXP 68000
+Programmer's Reference Manual. Keep it in tests/developer tooling, separate
+from the decoder, emitter and production targets; do not broaden the instruction
+surface to make the verification table larger.
+
+**Consequences:** A mismatch must remain visible as a first-mismatch vector and
+be fixed only with sufficient evidence. Passing this checkpoint establishes
+independent verification of the bounded used subset, not a general CPU core or
+whole-ROM semantic claim.
+
+**Reference:** `https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf`
+
 ## ADR-0015 — Decoder-owned generated basic-block bodies
 **Status:** Accepted for developer-only migration tooling
 **Date:** 2026-09-08

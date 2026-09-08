@@ -1,5 +1,35 @@
 # Current task
 
+TASK: M11.34 Independent M68K Semantic Core Verification
+STATUS: COMPLETE — `M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`
+BASELINE: committed M11.33 `MECHANICAL_BLOCK_GENERATION_PROVEN` at `origin/main`
+SCOPE: Independently verify the exact seven instruction/addressing-mode/size
+combinations emitted by the current M11.33 generator, using a test-only
+Motorola/NXP 68000 Programmer's Reference Manual model and deterministic vectors.
+SURFACE: `MOVEM.L <register-list>,-(A7)`, `CLR.W Dn`, `MOVE.B (A6)+,Dn`,
+`LEA.L (abs.L),A3`, `ADDA.W D7,A3`, `MOVE.W (A6)+,(A3)+`, and `ADD.L D1,D2`.
+SUPPORTED_NOT_YET_USED: none in the current emitter; all other exact-IR forms
+remain unsupported and fail closed.
+NON-GOALS: whole-ROM coverage, M12, ID3, `0x3820`, timing optimization,
+production emulator work, AI-generated semantics, or decoder architecture rewrite.
+ACCEPTANCE: exact independent post-state/decode/provenance checks for every
+used combination, permanent edge vectors with first-mismatch diagnostics, and
+the unchanged M11.33 600-frame proof. Result:
+`M68K_SEMANTIC_CORE_INDEPENDENTLY_VERIFIED`; all seven used combinations are
+independently verified and no used-subset disagreement remains.
+
+RESULT: 23 deterministic semantic vectors passed across the seven used forms,
+with exact D/A/register/SR/memory/access comparisons. Decode checks covered
+opcode, exact operation/operands, size, extension length and next PC; generated
+provenance comments were checked for every instruction. The M11.33 external
+GPGX shadow/native gate remained exact at 14/14 and 14 overrides.
+VALIDATION: Debug, Release and fresh GNU-equivalent build+CTest; semantic
+target and full CTest passed, source limits and `git diff --check` passed.
+NEXT ACTION: stop; broader exact-IR forms remain unverified and require a new
+bounded milestone before any surface expansion.
+
+# Historical task
+
 TASK: M11.33 Recomp Generator v1
 STATUS: COMPLETE — `MECHANICAL_BLOCK_GENERATION_PROVEN`
 SCOPE: Generate and execute the exact three M11.32 basic blocks from the

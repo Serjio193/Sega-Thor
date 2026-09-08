@@ -97,6 +97,11 @@ with guest address/opcode comments. The generated block artifact is an input
 to the hybrid proof only; it is not production game code, a general CPU
 interpreter, or a replacement for semantic lifting.
 
+M11.34 adds only a test-only independent semantic reference model and vector
+harness beside that boundary. It verifies the seven currently emitted forms
+against the Motorola/NXP 68000 specification; it is not linked into production,
+does not broaden decoder coverage and does not replace the GPGX timing oracle.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 
