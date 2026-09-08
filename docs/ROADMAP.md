@@ -9,6 +9,14 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.32 — Basic-block recompilation timing proof — DONE
+Three naturally executed blocks (`0x2D66`, `0x604BC`, `0x61032`) now share a
+minimal developer-only GPGX block boundary. Shadow comparisons are 14/14 with
+zero divergence; native override completes the 600-frame neutral scenario with
+matching serialized state/video and zero original-body instruction starts.
+Keep this migration infrastructure separate from production runtime. Do not
+expand coverage, repair `0x3820`, investigate ID3 or add AI generation here.
+
 ## M0 — Repository bootstrap — DONE
 C++20/CMake bootstrap, ROM loader, minimal memory/VDP scaffolding and smoke test established.
 

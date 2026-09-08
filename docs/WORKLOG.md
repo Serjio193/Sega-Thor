@@ -3,6 +3,37 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.32 basic-block recompilation timing proof — COMPLETE
+**Objective:** prove repeatable developer-only basic-block replacement for the
+three M11.30 targets while keeping GPGX responsible for state, memory, bus,
+prefetch, timing and scheduler behavior.
+
+**Implementation:** added the smallest block hook boundary before GPGX opcode
+dispatch, a target-specific registry, and exact mechanical blocks for
+`0x2D66`, `0x604BC` and `0x61032`. The MOVEM block delegates immediate fetch,
+memory access, cycle-table accounting and refresh skipping to GPGX helpers;
+no generic M68K interpreter or production dependency was added.
+
+**Evidence:** canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`; GPGX
+source `d60d079934977aa6973e220d123533387159f66e`; DLL SHA-256
+`ba6c10fdb1fe421e1e38c88b70ce18b0d2a122f4472f477b8a1a7aba14fce274`.
+Shadow was 14/14 with zero divergences. Native override was 14/14, with 20
+translated guest instructions, zero original-body starts, zero interrupts or
+hardware accesses, complete 600-frame scenario, and exact state/video hashes
+matching EMULATED. The full evidence is in
+`docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`.
+
+**Checks:** current Debug and Release builds and CTest 49/49 pass; changed
+source files remain below 500 lines; `git diff --check` passes. The existing
+`build-gnu` tree is stale and points to an old `D:/Proect` checkout, so its
+build cannot be claimed as validation; a fresh local GNU-equivalent check is
+recorded separately if available. `game.srm` remains untracked.
+
+**Decision:** `BASIC_BLOCK_RECOMP_TIMING_PROVEN`. Stop this migration batch;
+do not expand coverage, investigate ID3, repair `0x3820`, add AI generation,
+or move hybrid code into production.
+
 ## 2026-09-08 — M11.31 comparative disassembly method transfer — COMPLETE
 **Objective:** Compare public Streets of Rage 2/3 disassembly and recompiler
 projects with the existing Beyond Oasis evidence, then dry-run the strongest

@@ -1,6 +1,20 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.32 — Basic-block recompilation timing proof
+STATUS: `BASIC_BLOCK_RECOMP_TIMING_PROVEN`.
+
+The existing deterministic scenario naturally entered `0x2D66` once,
+`0x604BC` four times and `0x61032` nine times. Exact block contracts include
+all registers, PC/SR, prefetch state, cycles/refresh and ordered bounded
+memory effects. Shadow comparisons passed 14/14 with zero divergence. Native
+execution reused GPGX's own fetch/bus/timing helpers and skipped the original
+body for all 14 calls; serialized checkpoints and video matched EMULATED.
+This is migration evidence only. It does not promote a production emulator,
+general recompiler, or a claim about other ROM routines. Full identities and
+the per-block instruction contracts are in
+`docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`.
+
 ## M11.31 — Comparative method transfer
 STATUS: `PARTIAL_TRANSFERABILITY`.
 

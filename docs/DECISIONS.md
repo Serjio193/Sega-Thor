@@ -2,6 +2,28 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0014 — Developer-only GPGX basic-block replacement boundary
+**Status:** Accepted for migration experiments only
+**Date:** 2026-09-08
+
+**Context:** The M11.30 atomic override skipped GPGX instruction-body timing
+and diverged in serialized VDP/sound state. A bounded proof needs native
+mechanical execution while preserving GPGX's own fetch, memory bus, prefetch,
+cycle and refresh behavior.
+
+**Decision:** Add one developer-only block callback immediately before GPGX's
+opcode dispatch. A registered block may perform its exact bounded operations
+through helper functions implemented inside GPGX, then return control to the
+normal CPU loop. The initial registry contains only `0x2D66`, `0x604BC` and
+`0x61032`, each with an explicit state/effect contract. This is not a generic
+M68K replacement engine and is not linked by production Sega-Thor targets.
+
+**Consequences:** The three-block 600-frame proof can reuse GPGX hardware and
+timing semantics and has passed with exact state/video equivalence. Every new
+block still requires an independent shadow proof; uncertain side effects must
+fail closed. The bridge, ROM PCs, emulated memory and GPGX remain confined to
+developer tooling. See `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`.
+
 ## ADR-0001 — Native C++ reimplementation, not a general emulator
 **Status:** Accepted
 

@@ -296,6 +296,11 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `src/tools/hybrid/candidate_61032.hpp/.cpp`: M11.30 bounded table/RAM routine contract.
 - `tests/hybrid_replacement_test.cpp`: synthetic registry routing regression.
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_BATCH_POC.md`: M11.30 shadow evidence and override blocker.
+- `basic_block.hpp/.cpp`: M11.32 developer-only bounded block registry and
+  exact fetch, bus, CCR, prefetch, cycle and refresh contracts for the three
+  proven blocks.
+- `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
+  shadow, native override and state/video equivalence evidence.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

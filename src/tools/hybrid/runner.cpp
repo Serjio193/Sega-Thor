@@ -3,6 +3,7 @@
 #include "tools/hybrid/candidate_604bc.hpp"
 #include "tools/hybrid/candidate_61032.hpp"
 #include "tools/hybrid/replacement.hpp"
+#include "tools/hybrid/basic_block.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
@@ -48,14 +49,19 @@ private:
 };
 oasis::hybrid::Dispatch* dispatch{}; // One explicitly owned frontend session.
 oasis::hybrid::Registry* registry_dispatch{};
+oasis::hybrid::BasicBlockRegistry* block_registry{};
 int (*cpu_cycles)(){};
 unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
 std::string video_hashes;
 std::string directory;
 void hook(int type, int width, unsigned address, unsigned value) {
-    if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
+    if (block_registry) block_registry->event(type, width, address, value);
+    else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
+}
+int block_hook(unsigned address) {
+    return block_registry ? block_registry->dispatch(address) : 0;
 }
 
 unsigned parse_target(std::string_view text) {
@@ -109,16 +115,21 @@ std::string hash_text(const std::string& value) {
 int main(int argc, char** argv) {
     if (argc != 6 && argc != 7) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
-                     "<EMULATED|SHADOW_NATIVE|NATIVE_OVERRIDE> <frames:1..600> <output directory> [target]\n";
+                     "<mode> <frames:1..600> <output directory> [target]\n"
+                     "modes: EMULATED, SHADOW_NATIVE, NATIVE_OVERRIDE, "
+                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE\n";
         return 2;
     }
     try {
         const std::string_view mode_text(argv[3]);
         using oasis::hybrid::Mode;
+        const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE";
         const auto mode = mode_text == "EMULATED" ? Mode::EMULATED :
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
-            mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE : throw std::runtime_error("invalid mode");
-        const auto target_text = argc == 7 ? std::string_view(argv[6]) : std::string_view("0x3820");
+            mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE :
+            block_mode ? Mode::SHADOW_NATIVE : throw std::runtime_error("invalid mode");
+        const auto target_text = argc == 7 ? std::string_view(argv[6]) :
+            block_mode ? std::string_view("0x2D66,0x604BC,0x61032") : std::string_view("0x3820");
         std::vector<unsigned> selected_targets;
         std::size_t begin = 0;
         while (begin < target_text.size()) {
@@ -132,9 +143,13 @@ int main(int argc, char** argv) {
         }
         if (selected_targets.empty()) throw std::runtime_error("empty target list");
         const auto selected_target = selected_targets.front();
-        if (selected_targets.size() == 1 && selected_target == 0x3820) oasis::hybrid::require_mode(mode);
-        for (const auto target : selected_targets)
-            if (target == 0x3820) throw std::runtime_error("0x3820 cannot be combined with registry targets");
+        if (!block_mode) {
+            if (selected_targets.size() == 1 && selected_target == 0x3820) oasis::hybrid::require_mode(mode);
+            for (const auto target : selected_targets)
+                if (target == 0x3820) throw std::runtime_error("0x3820 cannot be combined with registry targets");
+        } else if (selected_targets != std::vector<unsigned>{0x2D66, 0x604BC, 0x61032}) {
+            throw std::runtime_error("basic-block proof requires exactly 0x2D66,0x604BC,0x61032");
+        }
 #ifdef _WIN32
         _putenv_s("GPGX_HYBRID_ONLY", "1");
 #else
@@ -161,7 +176,30 @@ int main(int argc, char** argv) {
         std::vector<std::unique_ptr<oasis::hybrid::Replacement>> candidate_storage;
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
         std::unique_ptr<oasis::hybrid::Registry> registry;
-        if (selected_targets.size() == 1 && selected_target == 0x3820) {
+        std::unique_ptr<oasis::hybrid::BasicBlockRegistry> blocks;
+        if (block_mode) {
+            const auto set_reg = library.get<void(*)(unsigned, unsigned)>("retro_hybrid_set_register");
+            const auto fetch16 = library.get<unsigned(*)()>("retro_hybrid_fetch16");
+            const auto read = library.get<unsigned(*)(unsigned, int)>("retro_hybrid_read");
+            const auto write = library.get<void(*)(unsigned, int, unsigned)>("retro_hybrid_write");
+            const auto begin_instruction = library.get<void(*)(unsigned)>("retro_hybrid_begin_instruction");
+            const auto finish_instruction = library.get<void(*)(unsigned)>("retro_hybrid_finish_instruction");
+            const auto instruction_cycles = library.get<unsigned(*)(unsigned)>("retro_hybrid_instruction_cycles");
+            const auto cpu_field = library.get<unsigned(*)(unsigned)>("retro_hybrid_cpu_field");
+            const auto refresh_period = library.get<unsigned(*)()>("retro_hybrid_refresh_period");
+            const auto refresh_penalty = library.get<unsigned(*)()>("retro_hybrid_refresh_penalty");
+            const auto add_block_cycles = library.get<void(*)(int)>("retro_hybrid_add_cycles");
+            const auto skip_block_refresh = library.get<void(*)()>("retro_hybrid_skip_bus_refresh");
+            const oasis::hybrid::BasicBlockApi api{
+                reg, set_reg, peek, fetch16, read, write, begin_instruction,
+                finish_instruction, add_block_cycles, skip_block_refresh,
+                instruction_cycles, cpu_field, refresh_period, refresh_penalty};
+            blocks = std::make_unique<oasis::hybrid::BasicBlockRegistry>(
+                api, mode_text == "BASIC_BLOCK_SHADOW" ?
+                    oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
+                    oasis::hybrid::BasicBlockMode::NATIVE_OVERRIDE, calls);
+            block_registry = blocks.get();
+        } else if (selected_targets.size() == 1 && selected_target == 0x3820) {
             session = std::make_unique<oasis::hybrid::Dispatch>(oasis::hybrid::Api{reg, peek}, mode,
                                                                  rom.bytes(), calls);
             dispatch = session.get();
@@ -198,6 +236,8 @@ int main(int argc, char** argv) {
         if (!library.get<decltype(&retro_load_game)>("retro_load_game")(&game))
             throw std::runtime_error("GPGX rejected ROM");
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(hook);
+        if (block_mode)
+            library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(block_hook);
         const auto run = library.get<decltype(&retro_run)>("retro_run");
         const auto size = library.get<decltype(&retro_serialize_size)>("retro_serialize_size");
         const auto serialize = library.get<decltype(&retro_serialize)>("retro_serialize");
@@ -207,7 +247,8 @@ int main(int argc, char** argv) {
         for (unsigned frame = 0; frame < frames; ++frame) {
             if (session) session->frame(frame);
             run();
-            if ((session && !session->error().empty()) || (registry && !registry->error().empty())) break;
+            if ((session && !session->error().empty()) || (registry && !registry->error().empty()) ||
+                (blocks && !blocks->error().empty())) break;
             if ((frame + 1) % 60 == 0 || frame + 1 == frames) {
                 std::vector<std::uint8_t> state(size());
                 if (!serialize(state.data(), state.size())) throw std::runtime_error("serialization failed");
@@ -217,22 +258,48 @@ int main(int argc, char** argv) {
                             << "\",\"cpu_cycles\":" << cpu_cycles() << "}\n";
             }
         }
+        if (block_mode)
+            library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
-        const auto totals = registry ? registry->totals() : oasis::hybrid::ReplacementMetrics{
-            session->calls, session->comparisons, session->divergences, session->body_instructions, 0,
-            session->interrupts};
-        const auto natural_calls = totals.calls;
-        const auto comparisons = totals.comparisons;
-        const auto divergences = totals.divergences;
-        const auto body_instructions = totals.body_instructions;
-        const auto interrupts = totals.interrupts;
-        const auto override_calls = totals.override_calls;
-        const auto body_skipped = registry && override_calls > 0 && body_instructions == 0;
-        const auto complete = registry ? registry->complete() : session->complete();
-        const auto& error_text = registry ? registry->error() : session->error();
+        unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};
+        unsigned translated_blocks{}, translated_entries{}, translated_instructions{}, original_inside{}, fallback_entries{}, hardware_accesses{};
+        bool complete{};
+        std::string error_text;
+        if (blocks) {
+            const auto metrics = blocks->metrics();
+            natural_calls = metrics.natural_entries;
+            comparisons = metrics.shadow_comparisons;
+            divergences = metrics.divergences;
+            translated_blocks = metrics.translated_blocks;
+            translated_entries = metrics.translated_entries;
+            translated_instructions = metrics.translated_instructions;
+            override_calls = metrics.translated_entries;
+            original_inside = metrics.original_starts_inside_translated;
+            fallback_entries = metrics.fallback_entries;
+            interrupts = metrics.interrupts;
+            hardware_accesses = metrics.hardware_accesses;
+            complete = blocks->complete();
+            error_text = blocks->error();
+        } else {
+            const auto totals = registry ? registry->totals() : oasis::hybrid::ReplacementMetrics{
+                session->calls, session->comparisons, session->divergences, session->body_instructions, 0,
+                session->interrupts};
+            natural_calls = totals.calls;
+            comparisons = totals.comparisons;
+            divergences = totals.divergences;
+            body_instructions = totals.body_instructions;
+            interrupts = totals.interrupts;
+            override_calls = totals.override_calls;
+            complete = registry ? registry->complete() : session->complete();
+            error_text = registry ? registry->error() : session->error();
+        }
+        const auto body_skipped = block_mode ? (override_calls > 0 && original_inside == 0)
+                                             : (registry && override_calls > 0 && body_instructions == 0);
         const bool completed = complete && video_frames == frames && natural_calls > 0;
+        const bool full_cpu_equivalent = completed && divergences == 0 &&
+            (block_mode || mode != Mode::NATIVE_OVERRIDE);
         std::ofstream report(std::filesystem::path(directory) / "summary.json");
         report.exceptions(std::ios::failbit | std::ios::badbit);
         report << "{\n\"schema\":\"oasis.hybrid-poc.v2\",\n\"target\":" << selected_target
@@ -256,6 +323,12 @@ int main(int argc, char** argv) {
                << "\",\n\"fallback_emulated_calls\":" << (natural_calls - override_calls)
                << ",\n\"native_call_share\":" << (natural_calls ?
                    static_cast<double>(override_calls) / natural_calls : 0.0)
+               << ",\n\"translated_blocks\":" << translated_blocks
+               << ",\n\"translated_entries\":" << translated_entries
+               << ",\n\"translated_guest_instruction_executions\":" << translated_instructions
+               << ",\n\"original_starts_inside_translated\":" << original_inside
+               << ",\n\"interpreter_fallback_entries\":" << fallback_entries
+               << ",\n\"hardware_visible_accesses\":" << hardware_accesses
                << ",\n\"per_target\":[";
         if (registry) {
             for (std::size_t i = 0; i < registry->targets().size(); ++i) {
@@ -272,7 +345,21 @@ int main(int argc, char** argv) {
             }
         }
         report << "]"
-               << ",\n\"full_cpu_equivalence\":" << ((mode != Mode::NATIVE_OVERRIDE && completed && divergences == 0) ? "true" : "false")
+               << ",\n\"per_block\":[";
+        if (blocks) {
+            const auto metrics = blocks->metrics();
+            constexpr unsigned targets[] = {0x2D66, 0x604BC, 0x61032};
+            for (unsigned i = 0; i < 3; ++i) {
+                if (i) report << ',';
+                report << "{\"target\":\"0x" << std::hex << targets[i] << std::dec
+                       << "\",\"natural_entries\":" << metrics.natural_by_block[i]
+                       << ",\"shadow_comparisons\":" << metrics.shadow_by_block[i]
+                       << ",\"translated_entries\":" << metrics.translated_by_block[i]
+                       << '}';
+            }
+        }
+        report << "]"
+               << ",\n\"full_cpu_equivalence\":" << (full_cpu_equivalent ? "true" : "false")
                << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""
                << (selected_target == 0x3820 ? oasis::hybrid::override_blocker : "") << "\"\n}\n";
         calls.close();

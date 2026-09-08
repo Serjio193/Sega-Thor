@@ -1,5 +1,17 @@
 # Project State
 
+CURRENT_MILESTONE: M11.32 basic-block recompilation timing proof
+CURRENT_TASK: complete; bounded developer-only block replacement proof
+STATUS: BASIC_BLOCK_RECOMP_TIMING_PROVEN
+LAST_VERIFIED_RESULT: GPGX reused its own bus, prefetch, cycle and refresh
+paths for 14 native overrides across `0x2D66`, `0x604BC` and `0x61032`.
+Shadow comparisons were 14/14 clean; native state/video checkpoints matched
+EMULATED and original body starts were zero during overrides.
+PRODUCTION_BOUNDARY: the block hook and bridge are developer-only; production
+Sega-Thor has no GPGX, CPU emulator, ROM-PC or emulated-RAM dependency.
+EVIDENCE: docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md
+NEXT_ACTION: stop; do not expand coverage or repair `0x3820` in this milestone.
+
 CURRENT_MILESTONE: M11.31 comparative disassembly method transfer
 CURRENT_TASK: complete; bounded public-project comparison and Beyond Oasis dry-run
 STATUS: PARTIAL_TRANSFERABILITY

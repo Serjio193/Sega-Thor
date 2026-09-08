@@ -1,5 +1,6 @@
 /* Developer-only bridge compiled inside an external HOOK_CPU GPGX build.
- * No CPU mutation API: override remains impossible until its contract exists.
+ * The block API is only for mechanical timing experiments and is never linked
+ * into the production Sega-Thor target.
  * retro_ prefix uses the existing libretro export map; this is not libretro ABI.
  */
 #include "shared.h"
@@ -11,6 +12,11 @@ RETRO_API unsigned int retro_hybrid_abi(void) { return 1; }
 RETRO_API void retro_hybrid_install(void (*callback)(hook_type_t, int, unsigned int, unsigned int))
 {
     set_cpu_hook(callback);
+}
+
+RETRO_API void retro_hybrid_install_block(int (*callback)(unsigned int))
+{
+    set_cpu_block_hook(callback);
 }
 
 RETRO_API unsigned int retro_hybrid_register(unsigned int reg)
@@ -37,7 +43,49 @@ RETRO_API void retro_hybrid_set_register(unsigned int reg, unsigned int value)
 RETRO_API int retro_hybrid_cycles(void) { return m68k.cycles; }
 
 RETRO_API void retro_hybrid_add_cycles(int delta) { m68k.cycles += delta; }
+RETRO_API void retro_hybrid_skip_bus_refresh(void)
+{
+    if (m68k.cycles >= m68k.refresh_cycles) m68k.refresh_cycles += 128 * 7;
+}
 RETRO_API int retro_hybrid_refresh_cycles(void) { return m68k.refresh_cycles; }
+
+RETRO_API unsigned int retro_hybrid_fetch16(void)
+{
+    return m68k_hybrid_fetch16();
+}
+
+RETRO_API unsigned int retro_hybrid_read(unsigned int address, int width)
+{
+    return m68k_hybrid_read(address, width);
+}
+
+RETRO_API void retro_hybrid_write(unsigned int address, int width, unsigned int value)
+{
+    m68k_hybrid_write(address, width, value);
+}
+
+RETRO_API void retro_hybrid_begin_instruction(unsigned int opcode)
+{
+    m68k_hybrid_begin_instruction(opcode);
+}
+
+RETRO_API void retro_hybrid_finish_instruction(unsigned int opcode)
+{
+    m68k_hybrid_finish_instruction(opcode);
+}
+
+RETRO_API unsigned int retro_hybrid_instruction_cycles(unsigned int opcode)
+{
+    return m68k_hybrid_instruction_cycles(opcode);
+}
+
+RETRO_API unsigned int retro_hybrid_cpu_field(unsigned int field)
+{
+    return m68k_hybrid_cpu_field(field);
+}
+
+RETRO_API unsigned int retro_hybrid_refresh_period(void) { return m68k_hybrid_refresh_period(); }
+RETRO_API unsigned int retro_hybrid_refresh_penalty(void) { return m68k_hybrid_refresh_penalty(); }
 
 RETRO_API void retro_hybrid_set_return_state(unsigned int pc, unsigned int pref_addr,
                                               unsigned int pref_data)

@@ -1,5 +1,18 @@
 # Current Task
 
+TASK: M11.32 Basic-Block Recompilation Timing Proof
+STATUS: COMPLETE — `BASIC_BLOCK_RECOMP_TIMING_PROVEN`
+BASELINE: `c1e28b2f7db6b4d756bf29df4b20dbaffa3ba78d`
+SCOPE: developer-only GPGX basic-block execution for `0x2D66`, `0x604BC`
+and `0x61032` in the existing 600-frame neutral scenario.
+RESULT: 14/14 shadow comparisons passed; 14 native overrides completed with
+zero divergences, zero original-body starts, matching serialized checkpoints
+and matching video sequence. Production runtime remains emulator-free.
+EVIDENCE: docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md
+LIMITS: no ID3 work, no `0x3820` override repair, no manual gameplay, no
+coverage expansion, no generic CPU emulator, and no tracked ROM/assets/binaries.
+NEXT ACTION: stop; do not broaden the block batch without a new milestone.
+
 TASK: M11.31 Comparative Disassembly Method Transfer Baseline
 STATUS: COMPLETE — partial method transfer; no high-confidence template
 SCOPE: bounded comparison of public Streets of Rage 2/3 disassembly, extraction
