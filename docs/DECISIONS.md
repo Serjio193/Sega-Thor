@@ -2,6 +2,27 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0015 — Decoder-owned generated basic-block bodies
+**Status:** Accepted for developer-only migration tooling
+**Date:** 2026-09-08
+
+**Context:** M11.32 proved three manually written basic-block bodies, while
+the next milestone must remove routine-specific instruction authoring without
+changing the proven GPGX timing and hardware boundary.
+
+**Decision:** M11.33 uses the existing decoder/exact IR to generate C++ calls
+to a small hybrid instruction-helper boundary. Generated functions retain the
+guest PC, opcode and decoded assembly as provenance. The initial generated set
+is exactly the three M11.32 blocks; unsupported forms fail closed. The oracle
+prediction path remains separate until M11.34 verifies common semantics.
+
+**Consequences:** Adding an ordinary supported block can use generator output
+rather than a handwritten body, while the hybrid bridge, GPGX state and
+generated artifact remain developer-only. This does not create a production
+CPU emulator or authorize semantic promotion.
+
+**Affected files/milestones:** `src/tools/hybrid/`, `CMakeLists.txt`, M11.33.
+
 ## ADR-0014 — Developer-only GPGX basic-block replacement boundary
 **Status:** Accepted for migration experiments only
 **Date:** 2026-09-08

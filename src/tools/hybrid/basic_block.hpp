@@ -75,8 +75,6 @@ private:
     int peek(unsigned address) const;
     unsigned read(unsigned address, int width) const;
     void write(unsigned address, int width, unsigned value) const;
-    unsigned fetch();
-    void step(unsigned opcode);
     void require(bool condition, const std::string& message) const;
     void fail(const std::string& message);
     Prediction predict(unsigned pc, const State& entry) const;

@@ -1,4 +1,5 @@
 #include "tools/hybrid/basic_block.hpp"
+#include "tools/hybrid/generated_blocks.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -119,17 +120,6 @@ void BasicBlockRegistry::write(unsigned address, int width, unsigned value) cons
     api_.write(address, width, value);
 }
 
-unsigned BasicBlockRegistry::fetch() {
-    require(api_.fetch16 != nullptr, "basic-block fetch bridge unavailable");
-    return api_.fetch16();
-}
-
-void BasicBlockRegistry::step(unsigned opcode) {
-    require(api_.begin_instruction && api_.finish_instruction,
-            "basic-block timing bridge unavailable");
-    api_.begin_instruction(opcode);
-}
-
 void BasicBlockRegistry::require(bool condition, const std::string& message) const {
     if (!condition) throw std::runtime_error(message);
 }
@@ -225,46 +215,15 @@ BasicBlockRegistry::Prediction BasicBlockRegistry::predict_61032(const State& en
 }
 
 void BasicBlockRegistry::execute_2d66() {
-    auto opcode = fetch(); require(opcode == 0x48E7, "0x2D66 opcode mismatch"); step(opcode);
-    (void)fetch();
-    auto sp = api_.reg(15) - 2; write(sp, 2, api_.reg(11) & 0xFFFFU); sp -= 2;
-    write(sp, 2, api_.reg(11) >> 16U); sp -= 2; write(sp, 2, api_.reg(7) & 0xFFFFU);
-    sp -= 2; write(sp, 2, api_.reg(7) >> 16U); api_.set_reg(15, sp); api_.finish_instruction(opcode);
-    api_.add_cycles(2 * 8 * 7); api_.skip_bus_refresh();
-    opcode = fetch(); require(opcode == 0x4247, "0x2D6A opcode mismatch"); step(opcode);
-    api_.set_reg(7, api_.reg(7) & 0xFFFF0000U); api_.set_reg(17, (api_.reg(17) & ~0x0FU) | 4U); api_.finish_instruction(opcode);
-    opcode = fetch(); require(opcode == 0x1E1E, "0x2D6C opcode mismatch"); step(opcode);
-    auto value = read(api_.reg(14), 1); api_.set_reg(14, api_.reg(14) + 1);
-    api_.set_reg(7, (api_.reg(7) & 0xFFFFFF00U) | value); auto sr = api_.reg(17);
-    set_move_flags(sr, value, 1); api_.set_reg(17, sr); api_.finish_instruction(opcode);
-    opcode = fetch(); require(opcode == 0x47F9, "0x2D6E opcode mismatch"); step(opcode);
-    const auto address = (fetch() << 16U) | fetch(); api_.set_reg(11, address); api_.finish_instruction(opcode);
-    opcode = fetch(); require(opcode == 0xD6C7, "0x2D74 opcode mismatch"); step(opcode);
-    api_.set_reg(11, api_.reg(11) + static_cast<std::int16_t>(api_.reg(7))); api_.finish_instruction(opcode);
-    opcode = fetch(); require(opcode == 0x1E1E, "0x2D76 opcode mismatch"); step(opcode);
-    value = read(api_.reg(14), 1); api_.set_reg(14, api_.reg(14) + 1);
-    api_.set_reg(7, (api_.reg(7) & 0xFFFFFF00U) | value); sr = api_.reg(17);
-    set_move_flags(sr, value, 1); api_.set_reg(17, sr); api_.finish_instruction(opcode);
-    opcode = fetch(); require(opcode == 0x36DE, "0x2D78 opcode mismatch"); step(opcode);
-    value = read(api_.reg(14), 2); api_.set_reg(14, api_.reg(14) + 2);
-    write(api_.reg(11), 2, value); api_.set_reg(11, api_.reg(11) + 2); sr = api_.reg(17);
-    set_move_flags(sr, value, 2); api_.set_reg(17, sr); api_.finish_instruction(opcode);
+    generated::execute_0x002D66(api_);
 }
 
 void BasicBlockRegistry::execute_604bc() {
-    auto opcode = fetch(); require(opcode == 0x4DF9, "0x604BC opcode mismatch"); step(opcode);
-    api_.set_reg(14, (fetch() << 16U) | fetch()); api_.finish_instruction(opcode);
+    generated::execute_0x0604BC(api_);
 }
 
 void BasicBlockRegistry::execute_61032() {
-    const auto opcode = fetch(); require(opcode == 0xD481, "0x61032 opcode mismatch"); step(opcode);
-    const auto lhs = api_.reg(2);
-    const auto rhs = api_.reg(1);
-    const auto sum = lhs + rhs;
-    api_.set_reg(2, sum);
-    auto sr = api_.reg(17);
-    set_add_long_flags(sr, lhs, rhs, sum);
-    api_.set_reg(17, sr); api_.finish_instruction(opcode);
+    generated::execute_0x061032(api_);
 }
 
 void BasicBlockRegistry::compare(const Prediction& prediction) {

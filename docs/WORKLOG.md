@@ -3,6 +3,51 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-08 — M11.33 Recomp Generator v1 — COMPLETE
+**Objective:** Replace the three handwritten M11.32 hybrid instruction bodies
+with deterministic C++ generated from the shared decoder/exact IR, while
+retaining the existing GPGX timing/hardware contract.
+
+**Acceptance criteria:** generator output retains guest PC/opcode/decoded
+assembly provenance; the three blocks `0x2D66`, `0x604BC` and `0x61032` are
+generated and used by the hybrid registry; unsupported forms fail closed; the
+M11.32 behavioral proof remains unchanged; production targets remain untouched.
+
+**Non-goals:** common semantic-core verification, automatic discovery,
+indirect dispatch discovery, new gameplay scenarios, `0x3820` repair and
+production emulator work.
+
+**Implementation:** Added `oasis_hybrid_recomp_generate`, which consumes the
+shared decoder/exact IR and emits provenance-bound C++ for the exact M11.32
+blocks. Added a small generated-helper boundary for MOVEM, MOVE, LEA, ADDA,
+ADD and CLR forms, including checked opcode/extension fetches and the proven
+post-instruction MOVEM timing/refresh ordering. The hybrid registry now calls
+the generated bodies; production targets remain unchanged.
+
+**Evidence:** The canonical USA ROM generated 7 instructions at `0x2D66`, 1 at
+`0x604BC` and 1 at `0x61032`. A second generator run matched the checked-in
+artifact SHA-256 `06F1C15137D8A239862C083EF6E358FEC8C42798BB54DA4A150B89A4EF5D46E9`.
+The external GPGX bridge (instrumented source `d60d079`, DLL SHA-256
+`ba6c10fdb1fe421e1e38c88b70ce18b0d2a122f4472f477b8a1a7aba14fce274`) completed
+the 600-frame cold-reset neutral scenario in shadow and native modes: 14/14
+calls, zero divergences, `full_cpu_equivalence=true`, matching state/video
+hashes, and 20 native guest instruction executions.
+
+**Tests/build:** Full Debug CTest was 51/51, full Release CTest was 51/51,
+and full fresh GNU-equivalent Release CTest was 51/51. After the final fetch
+and MOVEM-order corrections, changed-path hybrid tests were 6/6 in Debug,
+Release and GNU-equivalent builds. `git diff --check` and the source file-limit
+check pass. The stale pre-existing `game.srm` remains untracked and untouched.
+
+**Result:** `MECHANICAL_BLOCK_GENERATION_PROVEN`.
+
+**Unresolved:** Generated helper semantics are intentionally still scoped to
+the three M11.32 forms. General CCR/SR semantics, wider instruction-family
+coverage and automatic block discovery remain M11.34+ work.
+
+**Exact next step:** M11.34 — independently verify the common M68K semantic
+core; do not expand discovery or production dependencies here.
+
 ## 2026-09-08 — M11.32 basic-block recompilation timing proof — COMPLETE
 **Objective:** prove repeatable developer-only basic-block replacement for the
 three M11.30 targets while keeping GPGX responsible for state, memory, bus,

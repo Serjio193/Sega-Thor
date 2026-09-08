@@ -1,5 +1,17 @@
 # Project State
 
+CURRENT_MILESTONE: M11.33 recomp generator v1
+CURRENT_TASK: decoder-owned generation for the three proven M11.32 blocks
+STATUS: COMPLETE — MECHANICAL_BLOCK_GENERATION_PROVEN
+SCOPE_BOUNDARY: developer-only hybrid tooling; production Sega-Thor remains
+free of GPGX, guest CPU state and generated-block dependencies.
+NEXT_GATE: M11.34 `M68K_SEMANTICS_VERIFIED`
+LAST_VERIFIED_RESULT: canonical-ROM generation reproduced 3 blocks and the
+external GPGX shadow/native 600-frame runs completed 14/14 with zero
+divergence, matching state/video hashes and 20 native guest instructions.
+
+# Historical state context
+
 CURRENT_MILESTONE: M11.32 basic-block recompilation timing proof
 CURRENT_TASK: complete; bounded developer-only block replacement proof
 STATUS: BASIC_BLOCK_RECOMP_TIMING_PROVEN

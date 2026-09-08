@@ -91,6 +91,12 @@ bridge nor the frontend is linked into `oasis_core`, `oasis_platform` or `oasis`
 See ADR-0011 and `reports/HYBRID_NATIVE_MIGRATION_POC.md` for the explicit
 partial SR contract and interrupt/prefetch blockers.
 
+M11.33 adds a bounded recomp generator in the same developer-only boundary.
+It consumes `re_slice_decoder` exact IR and emits C++ instruction-helper calls
+with guest address/opcode comments. The generated block artifact is an input
+to the hybrid proof only; it is not production game code, a general CPU
+interpreter, or a replacement for semantic lifting.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 

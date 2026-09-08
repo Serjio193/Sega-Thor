@@ -1,4 +1,5 @@
 add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.cpp basic_block.cpp
+    generated_block_runtime.cpp generated_blocks.cpp recomp_generator.cpp
     candidate_2d66.cpp candidate_604bc.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
@@ -15,9 +16,19 @@ add_test(NAME oasis_hybrid_candidate_2d66 COMMAND oasis_hybrid_candidate_2d66_te
 add_executable(oasis_hybrid_replacement_test ${PROJECT_SOURCE_DIR}/tests/hybrid_replacement_test.cpp)
 target_link_libraries(oasis_hybrid_replacement_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_replacement COMMAND oasis_hybrid_replacement_test)
+add_executable(oasis_hybrid_recomp_generator_test ${PROJECT_SOURCE_DIR}/tests/hybrid_recomp_generator_test.cpp)
+target_link_libraries(oasis_hybrid_recomp_generator_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_recomp_generator COMMAND oasis_hybrid_recomp_generator_test)
+add_executable(oasis_hybrid_generated_block_test ${PROJECT_SOURCE_DIR}/tests/hybrid_generated_block_test.cpp)
+target_link_libraries(oasis_hybrid_generated_block_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_generated_block COMMAND oasis_hybrid_generated_block_test)
+add_executable(oasis_hybrid_recomp_generate recomp_generator_report.cpp)
+target_link_libraries(oasis_hybrid_recomp_generate PRIVATE oasis_hybrid_contract)
+target_compile_options(oasis_hybrid_recomp_generator_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
+target_compile_options(oasis_hybrid_generated_block_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
-    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement
+    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block
         PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
 endif()
 

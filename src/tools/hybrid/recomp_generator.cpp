@@ -1,0 +1,158 @@
+#include "tools/hybrid/recomp_generator.hpp"
+
+#include "tools/re_assemble.hpp"
+
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
+#include <stdexcept>
+
+namespace oasis::hybrid {
+namespace {
+
+using oasis::tools::DecodedInstruction;
+using oasis::tools::DecodedOperand;
+using oasis::tools::OperandKind;
+
+std::string hex(std::uint32_t value, unsigned digits) {
+    std::ostringstream out;
+    out << std::hex << std::uppercase << std::setfill('0') << std::setw(digits) << value;
+    return out.str();
+}
+
+const DecodedOperand& operand(const DecodedInstruction& instruction,
+                             const std::optional<DecodedOperand>& value,
+                             const char* name) {
+    if (!value) throw std::invalid_argument(std::string("missing ") + name + " operand at 0x" +
+                                            hex(instruction.address, 6));
+    return *value;
+}
+
+void require_kind(const DecodedInstruction& instruction, const DecodedOperand& value,
+                  OperandKind kind, const char* name) {
+    if (value.kind != kind)
+        throw std::invalid_argument(std::string("unsupported ") + name + " operand at 0x" +
+                                    hex(instruction.address, 6));
+}
+
+std::string helper_call(const DecodedInstruction& instruction) {
+    const auto& exact = *instruction.exact;
+    const auto& source = exact.source;
+    const auto& destination = exact.destination;
+    const auto& dst = operand(instruction, destination, "destination");
+    std::ostringstream out;
+    if (exact.operation == "movem" && exact.width_bytes == 4 && source) {
+        require_kind(instruction, *source, OperandKind::register_list, "MOVEM source");
+        require_kind(instruction, dst, OperandKind::predecrement, "MOVEM destination");
+        if (dst.register_index != 7) throw std::invalid_argument("MOVEM stack register is not A7");
+        out << "movem_l_predecrement(api, 0x" << hex(source->value, 4) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "clr" && exact.width_bytes == 2) {
+        require_kind(instruction, dst, OperandKind::data_register, "CLR destination");
+        out << "clear_w_data_register(api, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "lea" && exact.width_bytes == 4 && source) {
+        require_kind(instruction, *source, OperandKind::absolute_long, "LEA source");
+        require_kind(instruction, dst, OperandKind::address_register, "LEA destination");
+        out << "lea_absolute_long(api, 0x" << hex(source->value, 6) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "adda" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::data_register, "ADDA source");
+        require_kind(instruction, dst, OperandKind::address_register, "ADDA destination");
+        out << "adda_w_data_to_address(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "add" && exact.width_bytes == 4 && source) {
+        require_kind(instruction, *source, OperandKind::data_register, "ADD source");
+        require_kind(instruction, dst, OperandKind::data_register, "ADD destination");
+        out << "add_l_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "move" && source) {
+        require_kind(instruction, *source, OperandKind::postincrement, "MOVE source");
+        if (exact.width_bytes == 1 && dst.kind == OperandKind::data_register) {
+            out << "move_b_postincrement_to_data_register(api, "
+                << unsigned(source->register_index) << "U, " << unsigned(dst.register_index) << "U);";
+            return out.str();
+        }
+        if (exact.width_bytes == 2 && dst.kind == OperandKind::postincrement) {
+            out << "move_w_postincrement_to_postincrement(api, "
+                << unsigned(source->register_index) << "U, " << unsigned(dst.register_index) << "U);";
+            return out.str();
+        }
+    }
+    throw std::invalid_argument("unsupported generated instruction at 0x" +
+                                hex(instruction.address, 6));
+}
+
+void validate_contiguous(const GeneratedBlock& block) {
+    if (block.instructions.empty()) throw std::invalid_argument("generated block is empty");
+    auto cursor = block.start;
+    for (const auto& instruction : block.instructions) {
+        if (!instruction.supported || !instruction.exact || instruction.address != cursor)
+            throw std::invalid_argument("generated block is unsupported or non-contiguous");
+        cursor += static_cast<std::uint32_t>(instruction.bytes.size());
+    }
+    if (cursor != block.end) throw std::invalid_argument("generated block boundary is incomplete");
+}
+
+} // namespace
+
+GeneratedBlock generate_block(std::span<const std::uint8_t> rom,
+                              std::uint32_t start, std::uint32_t end) {
+    if (start >= end || (start & 1U) || end > rom.size())
+        throw std::invalid_argument("invalid generated block range");
+    const auto slice = oasis::tools::decode_m68k_slice(
+        rom, {.entry = start, .byte_budget = end - start, .instruction_budget = 128});
+    if (slice.range_end != end || !slice.unsupported_instruction_addresses.empty() ||
+        !slice.unresolved_control_flow.empty())
+        throw std::invalid_argument("generated block has unsupported control/data flow");
+    GeneratedBlock result{start, end, slice.instructions};
+    validate_contiguous(result);
+    for (const auto& instruction : result.instructions) (void)helper_call(instruction);
+    return result;
+}
+
+std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
+    if (blocks.empty()) throw std::invalid_argument("no blocks to generate");
+    std::ostringstream out;
+    out << "// GENERATED FILE: oasis_hybrid_recomp_generate; do not hand-edit.\n"
+        << "#include \"tools/hybrid/generated_block_runtime.hpp\"\n\n"
+        << "namespace oasis::hybrid::generated {\n\n";
+    for (const auto& block : blocks) {
+        validate_contiguous(block);
+        out << "void execute_0x" << hex(block.start, 6) << "(BasicBlockApi& api) {\n";
+        for (const auto& instruction : block.instructions) {
+            out << "    // guest 0x" << hex(instruction.address, 6) << " opcode 0x"
+                << hex(instruction.opcode, 4) << " ";
+            for (std::size_t i = 0; i < instruction.bytes.size(); i += 2) {
+                if (i) out << ' ';
+                out << hex((static_cast<std::uint32_t>(instruction.bytes[i]) << 8U) |
+                               instruction.bytes[i + 1U], 4);
+            }
+            out << " " << oasis::tools::exact_instruction_asm(instruction) << "\n"
+                << "    const auto opcode_0x" << hex(instruction.address, 6)
+                << " = fetch_checked(api, 0x" << hex(instruction.opcode, 4) << "U);\n"
+                << "    api.begin_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
+            for (std::size_t i = 2; i < instruction.bytes.size(); i += 2)
+                out << "    (void)fetch_checked(api, 0x"
+                    << hex((static_cast<std::uint32_t>(instruction.bytes[i]) << 8U) |
+                               instruction.bytes[i + 1U], 4) << "U);\n";
+            out << "    " << helper_call(instruction) << "\n"
+                << "    api.finish_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
+            if (instruction.exact->operation == "movem")
+                out << "    api.add_cycles(112);\n    api.skip_bus_refresh();\n";
+        }
+        out << "}\n\n";
+    }
+    out << "} // namespace oasis::hybrid::generated\n";
+    return out.str();
+}
+
+} // namespace oasis::hybrid

@@ -1,4 +1,30 @@
-# Current Task
+# Current task
+
+TASK: M11.33 Recomp Generator v1
+STATUS: COMPLETE — `MECHANICAL_BLOCK_GENERATION_PROVEN`
+SCOPE: Generate and execute the exact three M11.32 basic blocks from the
+shared decoder/exact IR through developer-only hybrid helpers.
+ACCEPTANCE: generated provenance-bound C++ covers `0x2D66`, `0x604BC` and
+`0x61032`; unsupported forms fail closed; generated execution is used by the
+registry; existing M11.32 proof remains green; production targets remain
+emulator-free; Debug/Release/GNU-equivalent checks and file limits pass.
+NON-GOALS: M11.34 semantic-core verification, block discovery, indirect
+dispatch discovery, new gameplay coverage, `0x3820` repair, or production CPU
+emulation.
+
+RESULT: decoder-owned generated C++ replaced the three handwritten hybrid
+bodies. The canonical ROM generator run produced 7 + 1 + 1 instructions with
+guest address/opcode/assembly provenance. GPGX shadow/native 600-frame runs
+were 14/14 and 14/14 with zero divergence, matching state/video hashes and
+20 translated guest instruction executions in native mode.
+VALIDATION: Final sequential Debug, Release and fresh GNU-equivalent builds
+and full CTest were 51/51 after the fetch and MOVEM-order corrections; final
+changed-path hybrid tests were 6/6 in all three configurations. Final GPGX
+shadow/native proof passed.
+NEXT ACTION: M11.34 semantic core; do not expand block discovery or production
+runtime dependencies in this task.
+
+# Historical Task
 
 TASK: M11.32 Basic-Block Recompilation Timing Proof
 STATUS: COMPLETE — `BASIC_BLOCK_RECOMP_TIMING_PROVEN`

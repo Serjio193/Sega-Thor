@@ -9,6 +9,22 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.33 — Recomp generator v1 — DONE
+Generate the three M11.32 basic blocks from the shared decoder/exact IR and
+execute the generated instruction sequence through developer-only hybrid
+helpers. Generated output retains guest provenance and unsupported forms fail
+closed. The existing 600-frame GPGX proof remains the behavioral gate.
+
+Gate result: `MECHANICAL_BLOCK_GENERATION_PROVEN`. The canonical USA ROM
+regenerated the three blocks byte-for-input deterministically; GPGX shadow and
+native runs both completed 600 frames with 14/14 calls and matching state/video.
+
+## M11.34 — M68K semantic core — NEXT
+Extract and independently verify common instruction semantics, beginning with
+CCR/SR and the instruction families emitted by M11.33. Keep the oracle and
+generated hybrid boundary separate until the semantic helpers have their own
+tests and machine-derived contracts.
+
 ## M11.32 — Basic-block recompilation timing proof — DONE
 Three naturally executed blocks (`0x2D66`, `0x604BC`, `0x61032`) now share a
 minimal developer-only GPGX block boundary. Shadow comparisons are 14/14 with

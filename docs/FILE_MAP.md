@@ -94,6 +94,14 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── window.cpp Minimal Win32 window/input/presentation adapter; non-Windows stub
 │   │   └── window.hpp Platform boundary for controller polling and framebuffer presentation
 │   └── tools/
+│       ├── hybrid/
+│       │   ├── generated_block_runtime.cpp Helpers used by generated blocks
+│       │   ├── generated_block_runtime.hpp Generated-block helper boundary
+│       │   ├── generated_blocks.cpp Generated M11.33 block bodies
+│       │   ├── generated_blocks.hpp Generated block declarations
+│       │   ├── recomp_generator.cpp Decoder-to-C++ generator
+│       │   ├── recomp_generator.hpp Generator model/emitter API
+│       │   └── recomp_generator_report.cpp Generator CLI
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
