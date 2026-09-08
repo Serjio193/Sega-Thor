@@ -134,6 +134,24 @@ void add_l_data_to_data(BasicBlockApi& api, unsigned source_register,
     add_flags(api, lhs, rhs, result);
 }
 
+void add_w_postincrement_to_data_register(BasicBlockApi& api,
+                                          unsigned address_register,
+                                          unsigned data_register) {
+    const auto address = api.reg(8U + address_register);
+    const auto rhs = read(api, address, 2) & 0xFFFFU;
+    api.set_reg(8U + address_register, address + 2U);
+    const auto lhs = api.reg(data_register) & 0xFFFFU;
+    const auto result = (lhs + rhs) & 0xFFFFU;
+    const auto carry = lhs + rhs > 0xFFFFU;
+    const auto overflow = ((~(lhs ^ rhs) & (lhs ^ result)) & 0x8000U) != 0;
+    api.set_reg(data_register, (api.reg(data_register) & 0xFFFF0000U) | result);
+    auto sr = api.reg(17);
+    sr = (sr & ~0x1FU) | (carry ? 0x11U : 0U) |
+         (result & 0x8000U ? 0x08U : 0U) | (result == 0 ? 0x04U : 0U) |
+         (overflow ? 0x02U : 0U);
+    api.set_reg(17, sr);
+}
+
 void branch_condition(BasicBlockApi& api, unsigned condition, unsigned target,
                       int not_taken_cycles, int extension) {
     if (condition_holds(api.reg(17), condition)) {

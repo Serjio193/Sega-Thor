@@ -143,6 +143,16 @@ block is atomic and no candidate-specific timing or interrupt branch exists in
 handwritten glue. The result is developer-only and does not widen production
 dependencies.
 
+M11.39 keeps the same boundary and adds a bounded post-M11.38 interpreter
+profile. The profile ranks dynamic instruction executions, while exact decoder
+ownership supplies candidate ranges; it does not infer functions or indirect
+target sets. The selected `ADD.W (An)+,Dn` helper is handwritten semantic glue
+covered by the independent test oracle, while `generated_blocks_m1139.cpp` and
+the registry metadata are mechanical generator output. The profile writer and
+registry remain in `tools/hybrid`; none of these files are linked into
+production targets. Hardware-visible candidates remain fallback unless an
+existing bridge already proves the ordered effect.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 

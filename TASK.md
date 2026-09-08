@@ -1,5 +1,25 @@
 # Current task
 
+TASK: M11.39 Hot-Path Multi-Block Coverage Expansion
+STATUS: COMPLETE — `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN`
+BASELINE: committed M11.38 `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN` at
+`daa0a09b5cd8845a48733e771774491b35e73d9e`
+SCOPE: one bounded post-M11.38 interpreter profile, two decoder-owned ranges,
+the exact new `ADD.W (An)+,Dn` semantic form, generic M11.38 boundary yielding,
+and explicit offline promotion. No runtime JIT, indirect-target invention,
+hardware-bridge broadening or M11.40 implementation.
+RESULT: the ranked profile contained 2,152 remaining interpreter PCs. The
+selected `[0x000380,0x0003A0)` 16-instruction loop and `[0x03A864,0x03A868)`
+direct BNE range passed independent semantics/generator/provenance and the
+full GPGX shadow gate. Native translated 5,826,857 of 6,488,773 guest
+instructions (89.7991%), with 661,916 interpreter executions, zero divergence,
+zero starts inside translated ranges, exact checkpoint/video hashes, 140,065
+boundary yields and 274 interrupted continuations.
+EVIDENCE: `docs/reports/HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md`
+NEXT ACTION: stop; do not implement M11.40 in this task.
+
+# Historical M11.38 result
+
 TASK: M11.38 Interrupt-Safe Multi-Instruction Block Execution
 STATUS: COMPLETE — `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN`
 BASELINE: committed M11.37 `CONTROLLED_DYNAMIC_COVERAGE_EXPANSION_PROVEN` at

@@ -3,6 +3,50 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.39 Hot-Path Multi-Block Coverage Expansion — COMPLETE
+**Objective:** Starting from committed M11.38
+`daa0a09b5cd8845a48733e771774491b35e73d9e`, profile only interpreter
+executions left by the proven 26-range registry and promote a bounded set of
+the highest dynamic-payoff exact ranges through the existing semantic,
+generator, provenance, shadow and native gates.
+
+**Acceptance:** use the unchanged canonical USA ROM, external GPGX identity
+and cold-reset neutral 600-frame scenario; select no more than 40 ranges; do
+not invent indirect CFG targets or broaden hardware modeling; compare every
+selected instruction boundary; update all required governance documents; keep
+generated code separate from handwritten glue; preserve M11.32–M11.38 and keep
+ROM/assets/binaries/run evidence/game.srm out of Git.
+
+**Profile and implementation:** The M11.38 native registry run recorded 2,152
+remaining interpreter PCs and 2,366,711 interpreter executions. The dominant
+eligible path was `[0x000380,0x0003A0)`: sixteen exact `ADD.W (A0)+,D0`
+instructions, 1,572,608 dynamic instructions and 122,886 entries. The second
+selected path was `[0x03A864,0x03A868)`, one exact direct `BNE.W`, with 132,187
+dynamic instructions. The independent semantic harness added only the exact
+word post-increment ADD form; four edge vectors passed. The generator emitted
+both bodies and the generated 28-entry registry. A profile writer emits local
+ranked JSON evidence; it is not a runtime policy or auto-promoter.
+
+**Evidence:** GPGX shadow completed `5,826,857/5,826,857` per-instruction
+comparisons with zero divergence. Native completed 600/600 frames and
+translated `5,826,857` of `6,488,773` guest instructions (`89.7991%`), leaving
+`661,916` interpreter executions. There were zero original starts inside
+translated ranges, zero hardware-visible accesses, 140,065 event-boundary
+yields and 274 interrupted continuations. Checkpoint hash is
+`20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`; video
+hash is `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+
+**Validation:** Debug semantic, generator, provenance and boundary tests
+passed, followed by final GPGX shadow and native runs. The final Debug,
+Release and GNU-equivalent full CTest runs, source-limit, `git diff --check`
+and repository hygiene checks are recorded before push. No ROM, asset,
+emulator binary, generated run evidence or `game.srm` is tracked.
+
+**Result:** `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN`.
+**Unresolved:** The remaining 661,916 executions are retained by the
+conservative Pareto ledger; no M11.40 work or indirect-target set is claimed.
+**Next action:** stop; require M11.40 as a separate bounded milestone.
+
 ## 2026-09-08 — M11.38 Interrupt-Safe Multi-Instruction Block Execution — COMPLETE
 **Objective:** Starting from committed M11.37
 `5d353beaddffbca73c7388903cc22a790c634330`, prove generic conservative

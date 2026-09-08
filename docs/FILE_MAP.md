@@ -34,6 +34,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── reports/
 │   │   └── NATIVE_ROM_RESOURCE_ID3.md M11.25 verified native resource baseline
 │   │   └── NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md M11.26 bounded visual-role report
+│   │   └── HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md M11.39 bounded hot-path coverage report
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -102,10 +103,13 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks.cpp Generated historical M11.33 bodies
 │       │   ├── generated_blocks_m1137.cpp Generated M11.37 single-instruction bodies
 │       │   ├── generated_blocks_m1138.cpp Generated M11.38 multi-instruction bodies
+│       │   ├── generated_blocks_m1139.cpp Generated M11.39 hot-path bodies
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue
 │       │   ├── basic_block.hpp BlockExit contract, registry state and metrics
+│       │   ├── interpreter_profile.cpp Ranked interpreter fallback profile writer
+│       │   ├── interpreter_profile.hpp Interpreter profile writer API
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   └── recomp_generator_report.cpp Generator CLI

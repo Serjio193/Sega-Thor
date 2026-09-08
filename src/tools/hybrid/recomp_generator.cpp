@@ -108,6 +108,14 @@ std::string helper_call(const DecodedInstruction& instruction) {
             << unsigned(dst.register_index) << "U);";
         return out.str();
     }
+    if (exact.operation == "add" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::postincrement, "ADD source");
+        require_kind(instruction, dst, OperandKind::data_register, "ADD destination");
+        out << "add_w_postincrement_to_data_register(api, "
+            << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
     if (exact.operation == "move" && source) {
         require_kind(instruction, *source, OperandKind::postincrement, "MOVE source");
         if (exact.width_bytes == 1 && dst.kind == OperandKind::data_register) {

@@ -2,6 +2,34 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0021 — Bounded hot-path profile and exact multi-block promotion
+**Status:** Accepted for M11.39 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.38 proved generic instruction-boundary continuation, but
+661,916 interpreter executions remained after the exact M11.38 registry. The
+next coverage step needed a dynamic-payoff ranking without becoming an
+indefinite discovery pass or weakening the exactness gate.
+
+**Decision:** Emit a deterministic interpreter-PC profile from the existing
+M11.38 registry run, rank by dynamic instruction executions, and consider a
+bounded maximum of 40 decoder-owned ranges. Promote only candidates whose exact
+forms pass the independent semantic harness, whose bodies are generated from
+canonical ROM provenance, and whose every instruction boundary passes the
+existing GPGX shadow contract. Keep indirect control unresolved and hardware
+visible candidates in fallback unless an existing bridge already proves them.
+
+The M11.39 set contains `[0x000380,0x0003A0)` and `[0x03A864,0x03A868)`.
+The first required one new exact semantic form, `ADD.W (An)+,Dn`; the second
+reused the verified direct Bcc form. Generated code and metadata remain
+separate from handwritten helper/registry glue, and promotion remains offline.
+
+**Consequences:** Native translated dynamic share rose from 63.5261% to
+89.7991% with exact 600-frame checkpoint/video, CPU, interrupt and boundary
+evidence. The remaining profile is reported conservatively; no latent function
+boundaries or indirect target sets are claimed. M11.40 remains a separate
+milestone and is not implemented here.
+
 ## ADR-0020 — Generic instruction-boundary yields for rejected multi-instruction blocks
 **Status:** Accepted for M11.38 developer-only hybrid tooling
 **Date:** 2026-09-08

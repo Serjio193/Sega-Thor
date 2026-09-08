@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.39 hot-path multi-block coverage expansion
+CURRENT_TASK: profile the post-M11.38 interpreter remainder and promote only
+exactly verified hot ranges through the generic boundary shadow gate
+STATUS: COMPLETE — `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN`
+SCOPE_BOUNDARY: developer-only generated blocks, independent ADD.W semantic
+vectors, ranked bounded profile and GPGX shadow/native checks; no runtime JIT,
+indirect CFG invention, hardware bridge expansion or production emulator
+dependency.
+NEXT_GATE: stop; M11.40 is not implemented.
+LAST_VERIFIED_RESULT: 28 registered ranges translated 5,826,857 of 6,488,773
+guest instructions (89.7991%); 661,916 remained interpreter fallback. Shadow
+completed 5,826,857/5,826,857 comparisons with zero divergence. Native and
+shadow preserved exact checkpoint/video hashes, zero starts inside translated
+ranges, zero hardware-visible accesses and 274 interrupted continuations.
+EVIDENCE: `docs/reports/HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md`
+
 CURRENT_MILESTONE: M11.38 interrupt-safe multi-instruction block execution
 CURRENT_TASK: prove generic instruction-boundary yield and exact continuation
 for the four M11.37 rejected multi-instruction ranges

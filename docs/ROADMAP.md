@@ -9,6 +9,21 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.39 — Hot-path multi-block coverage expansion — DONE
+Starting from M11.38, profile only the remaining interpreter executions and
+select at most 40 decoder-owned candidates by dynamic instruction payoff. The
+selected ranges must pass exact semantics, mechanical generation, provenance,
+per-boundary GPGX shadow and the unchanged 600-frame native gate.
+
+Gate result: `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN`. Two new ranges were
+promoted: the 16-instruction RAM-only `ADD.W (A0)+,D0` loop
+`[0x000380,0x0003A0)` and the direct `BNE.W` range `[0x03A864,0x03A868)`.
+Native translated 5,826,857 of 6,488,773 guest instructions (89.7991%);
+shadow completed 5,826,857 comparisons with zero divergence. Checkpoint/video,
+interrupt continuation, hardware-access and no-start-inside-range gates stayed
+exact. The remaining-interpreter Pareto ledger is conservative and recorded in
+`reports/HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md`; M11.40 is not implemented.
+
 ## M11.38 — Interrupt-safe multi-instruction block execution — DONE
 Starting from M11.37, use only its four rejected two-instruction ranges and
 prove a generic event/interrupt-safe continuation contract. Preserve the

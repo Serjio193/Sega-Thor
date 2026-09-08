@@ -5,6 +5,7 @@
 #include "tools/hybrid/replacement.hpp"
 #include "tools/hybrid/basic_block.hpp"
 #include "tools/hybrid/generated_blocks.hpp"
+#include "tools/hybrid/interpreter_profile.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
@@ -373,6 +374,9 @@ int main(int argc, char** argv) {
         interpreter_instructions = interpreter_instruction_executions;
         total_guest_instructions = interpreter_instructions + translated_instructions;
         observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
+        oasis::hybrid::write_interpreter_profile(
+            std::filesystem::path(directory) / "interpreter_profile.json", mode_text,
+            observed_pcs, interpreter_instructions);
         const auto body_skipped = block_mode ? (override_calls > 0 && original_inside == 0)
                                              : (registry && override_calls > 0 && body_instructions == 0);
         const bool completed = complete && video_frames == frames && natural_calls > 0;

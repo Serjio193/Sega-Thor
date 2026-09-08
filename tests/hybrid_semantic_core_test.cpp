@@ -20,6 +20,7 @@
 namespace {
 using oasis::hybrid::BasicBlockApi;
 using oasis::hybrid::generated::add_l_data_to_data;
+using oasis::hybrid::generated::add_w_postincrement_to_data_register;
 using oasis::hybrid::generated::adda_w_data_to_address;
 using oasis::hybrid::generated::branch_condition;
 using oasis::hybrid::generated::clear_w_data_register;
@@ -170,6 +171,20 @@ void ref_add(Machine& machine) {
     machine.regs[2] = result;
     machine.regs[17] = (machine.regs[17] & ~0x1FU) | (carry ? 0x11U : 0U) |
                        (result & 0x80000000U ? 8U : 0U) | (result ? 0U : 4U) |
+                       (overflow ? 2U : 0U);
+}
+
+void ref_add_w_postincrement(Machine& machine) {
+    const auto address = machine.regs[8];
+    const auto rhs = ref_read(machine, address, 2) & 0xFFFFU;
+    machine.regs[8] = address + 2U;
+    const auto lhs = machine.regs[0] & 0xFFFFU;
+    const auto result = (lhs + rhs) & 0xFFFFU;
+    const auto carry = lhs + rhs > 0xFFFFU;
+    const auto overflow = ((~(lhs ^ rhs) & (lhs ^ result)) & 0x8000U) != 0;
+    machine.regs[0] = (machine.regs[0] & 0xFFFF0000U) | result;
+    machine.regs[17] = (machine.regs[17] & ~0x1FU) | (carry ? 0x11U : 0U) |
+                       (result & 0x8000U ? 8U : 0U) | (result ? 0U : 4U) |
                        (overflow ? 2U : 0U);
 }
 
@@ -450,6 +465,20 @@ void test_semantics() {
         before.regs[1] = pair.second;
         run_case("ADD.L D1,D2", 0xD481, "add.l D1,D2", before,
                  [](BasicBlockApi& api) { add_l_data_to_data(api, 1, 2); }, ref_add);
+    }
+    for (const auto pair : {std::pair{0x0000U, 0x0000U},
+                            std::pair{0x7FFFU, 0x0001U},
+                            std::pair{0x8000U, 0x8000U},
+                            std::pair{0xFFFFU, 0x0001U}}) {
+        auto before = seed();
+        before.regs[0] = 0xCAFE0000U | pair.first;
+        before.regs[8] = 0x00000100U;
+        before.memory[0x100] = static_cast<std::uint8_t>(pair.second >> 8U);
+        before.memory[0x101] = static_cast<std::uint8_t>(pair.second);
+        run_case("ADD.W postincrement to data", 0xD058, "add.w (A0)+,D0", before,
+                 [](BasicBlockApi& api) {
+                     add_w_postincrement_to_data_register(api, 0, 0);
+                 }, ref_add_w_postincrement);
     }
 }
 

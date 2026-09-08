@@ -67,6 +67,7 @@ int main() {
     fake.regs[7] = 0x11223344;
     fake.regs[11] = 0x00FF2000;
     fake.regs[14] = 0x100;
+    fake.regs[8] = 0x100;
     fake.regs[15] = 0xFFFF00;
     fake.regs[17] = 0x2713;
     fake.memory[0x100] = 0x02;
@@ -116,5 +117,16 @@ int main() {
     const auto resumed = oasis::hybrid::generated::execute_0x0032EE(bridge, 0x0032F4U);
     assert(resumed.reason == oasis::hybrid::BlockExitReason::NORMAL_EXIT);
     assert(resumed.instructions_executed == 1U && resumed.next_pc == 0x0032EEU);
+
+    fake.fetch_index = 0;
+    fake.fetch_words = {0xD058, 0xD058, 0xD058, 0xD058, 0xD058, 0xD058,
+                        0xD058, 0xD058, 0xD058, 0xD058, 0xD058, 0xD058,
+                        0xD058, 0xD058, 0xD058, 0xD058};
+    fake.regs[16] = 0x380U;
+    fake.regs[8] = 0x100U;
+    const auto add_loop = oasis::hybrid::generated::execute_0x000380(bridge, 0x380U);
+    assert(add_loop.reason == oasis::hybrid::BlockExitReason::NORMAL_EXIT);
+    assert(add_loop.instructions_executed == 16U && add_loop.next_pc == 0x3A0U);
+    assert(fake.regs[8] == 0x120U);
     return 0;
 }

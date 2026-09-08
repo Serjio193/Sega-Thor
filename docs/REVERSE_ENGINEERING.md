@@ -1,6 +1,40 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.39 — Hot-path multi-block coverage expansion
+STATUS: `HOT_PATH_DYNAMIC_COVERAGE_80_PROVEN` for two new developer-only
+decoder-owned ranges. This is dynamic instruction coverage, not ROM-byte or
+whole-ROM coverage.
+
+The unchanged canonical USA 600-frame run used ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, external
+GPGX source commit `d60d079934977aa6973e220d123533387159f66e` and DLL SHA-256
+`140c00fc7475cf22ca22415d65dfc7ffc66523de128454f9994e7ab77d9826fd`.
+The M11.38 registry left 2,366,711 interpreter executions. The bounded profile
+ranked 2,152 remaining PCs; it did not discover indefinitely or invent
+function/indirect-target ownership.
+
+The selected range `[0x000380,0x0003A0)` contains exactly sixteen contiguous
+`ADD.W (A0)+,D0` instructions and has direct fallthrough to the preserved
+`DBF D2,[0x000380]` range at `0x0003A0`. The new exact semantic form was
+independently checked with four edge vectors covering word carry/overflow,
+N/V/Z/C/X, post-increment and address wrap. The selected range contributed
+1,572,608 translated dynamic instructions across 122,886 entries.
+
+The selected range `[0x03A864,0x03A868)` is exactly one `BNE.W -> 0x03A85E`
+instruction. Its Bcc semantic form was already independently verified. A
+broader attempted window was rejected by the generator as an incomplete
+decoder range; no guessed neighboring instruction was included. It contributed
+132,187 translated dynamic instructions.
+
+Both generated bodies are provenance-bound to the canonical ROM and use the
+generic M11.38 per-instruction yield/resume contract. Full shadow completed
+5,826,857/5,826,857 comparisons with zero divergence; native completed 600/600
+frames with exact checkpoint/video hashes, zero starts inside translated ranges,
+zero hardware-visible accesses and 274 interrupted continuations. The remaining
+661,916 interpreter executions and conservative blocker Pareto are recorded in
+`docs/reports/HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md`.
+
 ## M11.38 — Interrupt-safe multi-instruction block execution
 STATUS: `INTERRUPT_SAFE_MULTI_INSTRUCTION_BLOCKS_PROVEN` for exactly the four
 M11.37 rejected developer-only ranges. The original M11.37 rejection remains
