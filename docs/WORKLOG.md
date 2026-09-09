@@ -3,6 +3,38 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.42 Restart Gate — BLOCKED
+**Objective:** Restart the remaining interpreter attribution and 95% coverage
+gate from M11.41's committed baseline without weakening checkpoint identity.
+
+**Actions:** Re-read repository instructions and current project governance;
+rebuilt the developer-only hybrid runner from `5c19e22`; ran the unchanged
+600-frame `BASIC_BLOCK_NATIVE` scenario twice with the canonical USA ROM,
+external GPGX DLL and 28-range registry. One run retained opt-in raw checkpoint
+evidence for a bounded byte comparison.
+
+**Evidence:** ROM/DLL identity, video hash, 6,488,773 total, 5,826,857
+translated, 661,916 interpreter, 140,065 yields, 274 resumptions, 28 ranges
+and zero starts inside translated ranges all matched. The required repaired
+aggregate `c9236218...` did not; both fresh runs produced `d5de401c...`.
+The first raw difference remains offset `140654`; after the committed M11.41
+scrub spans, offset `140734` still differs as the next `FM_SLOT.DT` host-pointer
+byte.
+
+**Result:** `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`.
+PHASE 2 through PHASE 11 were not performed. M11.39, M11.40 and M11.41 history
+remains preserved. No source, generated block, semantic candidate, hardware
+contract or production runtime was changed.
+
+**Validation:** The baseline hybrid target build and both 600-frame runs passed.
+After the documentation update, final Debug, Release and GNU-equivalent full
+CTest each passed `55/55`; the source-limit check, `git diff --check` and
+tracked-artifact hygiene check also passed.
+
+**Exact next step:** repair and independently re-prove the developer-only
+checkpoint identity in a separate bounded task; do not classify remainder PCs or
+claim coverage from this blocked baseline.
+
 ## 2026-09-09 — M11.41 Checkpoint Identity Provenance and Reproduction Repair — COMPLETE
 **Objective:** Determine why the M11.39 checkpoint aggregate was not
 reproducible, prove the first differing serialized field, and restore one

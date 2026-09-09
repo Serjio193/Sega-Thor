@@ -1,6 +1,26 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.42 — Restart gate blocked by incomplete checkpoint canonicalization
+STATUS: `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`.
+
+From committed baseline `5c19e22`, two unchanged 600-frame
+`BASIC_BLOCK_NATIVE` runs reproduced the M11.39 execution metrics and video but
+not the M11.41 authoritative checkpoint aggregate. The expected
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1` was
+`d5de401ceb64da875219d3ca2564160b954d55a217f4bb47ff0dc204c547ae36`.
+
+Opt-in raw evidence compared one fresh run to preserved M11.41 evidence. The
+first raw difference is frame 60, offset `140654`, in the first
+`FM_SLOT.DT` host pointer. Applying the committed M11.41 canonicalization still
+leaves offset `140734`, the first byte of the next serialized `FM_SLOT.DT`
+pointer. The M11.41 assumed YM2612 offset/slot stride therefore leaves host
+representation in the authoritative hash. No guest semantic or interpreter
+execution attribution is inferred. PHASE 2 and later gates are invalid until
+this identity defect is repaired and re-proven.
+
+See `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md`.
+
 ## M11.41 — Checkpoint identity provenance and reproduction repair
 STATUS: `CHECKPOINT_IDENTITY_SERIALIZATION_BUG_PROVEN`; restart gate
 `CHECKPOINT_BASELINE_IDENTITY_RESTORED`.

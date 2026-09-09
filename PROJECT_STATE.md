@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.42 restart — remaining interpreter attribution and 95% coverage gate
+CURRENT_TASK: PHASE 1 restart gate
+STATUS: BLOCKED — `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`
+SCOPE_BOUNDARY: do not classify the `661,916` interpreter remainder or promote
+coverage until the authoritative checkpoint aggregate is reproduced exactly.
+LAST_VERIFIED_RESULT: ROM/DLL, video, counts, 28 ranges, yields, resumptions and
+zero starts inside translated ranges matched. The required `c9236218...` aggregate
+did not; two fresh runs produced `d5de401c...`. The first remaining byte after
+M11.41 canonicalization is serialized offset `140734`, a host-pointer byte in
+the next YM2612 `FM_SLOT.DT` representation.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md`
+NEXT_GATE: repair and re-prove checkpoint identity; then restart PHASE 1.
+
+HISTORICAL_MILESTONE: M11.41 checkpoint identity provenance and reproduction repair
+STATUS: COMPLETE — `CHECKPOINT_BASELINE_IDENTITY_RESTORED`
+
 CURRENT_MILESTONE: M11.41 checkpoint identity provenance and reproduction repair
 CURRENT_TASK: complete; restore one deterministic authoritative checkpoint identity
 STATUS: COMPLETE — `CHECKPOINT_BASELINE_IDENTITY_RESTORED`

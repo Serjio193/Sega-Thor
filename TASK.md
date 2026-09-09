@@ -1,5 +1,25 @@
 # Current task
 
+TASK: M11.42 Restart — Remaining Interpreter Attribution and 95% Coverage Gate
+STATUS: BLOCKED — `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`
+BASELINE: `5c19e22a93150ab17f51c69ed5aadaa59651a70a`
+SCOPE: restart PHASE 1 only until the repaired authoritative checkpoint identity
+is reproduced. If the gate passes, account for all `661,916` interpreter
+executions through exact evidence, then apply the existing semantic, generator,
+shadow, hardware-boundary and native gates independently.
+RESULT: ROM/DLL, video, execution counts, 28-range registry, yields, resumptions
+and zero starts inside translated ranges matched, but the required aggregate
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1` was not
+reproduced; two fresh runs produced
+`d5de401ceb64da875219d3ca2564160b954d55a217f4bb47ff0dc204c547ae36`.
+Raw evidence proves the committed M11.41 canonicalization leaves a host-pointer
+byte at serialized offset `140734`.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md`
+NEXT ACTION: repair and independently re-prove checkpoint identity in a new
+bounded task; do not perform M11.42 PHASE 2 or weaken the restart gate.
+
+## Historical M11.41 result
+
 TASK: M11.41 Checkpoint Identity Provenance and Reproduction Repair
 STATUS: COMPLETE — `CHECKPOINT_BASELINE_IDENTITY_RESTORED`
 BASELINE: M11.40 commit `23aab8997592726a001d1483b7f109c6915f6bd8` and exact

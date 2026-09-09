@@ -78,6 +78,11 @@ Responsibilities:
 - symbol/address reports;
 - differential test helpers.
 
+The M11.41 checkpoint identity adapter and the M11.42 restart evidence remain
+strictly developer-only hybrid tooling. They do not alter the native runtime,
+introduce an emulator dependency into production, or authorize interpreter
+coverage promotion while serialized host representation remains unresolved.
+
 Tools must not require committing extracted assets.
 
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.

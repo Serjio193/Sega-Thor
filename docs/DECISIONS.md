@@ -2,6 +2,26 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0023 — Keep M11.42 closed on checkpoint identity mismatch
+**Status:** Accepted for M11.42 gate governance
+**Date:** 2026-09-09
+
+**Context:** The M11.41 repair was expected to reproduce authoritative
+checkpoint aggregate `c9236218...` from commit `5c19e22`. Two fresh runs matched
+all execution and video metrics but produced `d5de401c...`. Raw evidence shows
+the M11.41 canonicalization leaves a host-pointer byte at serialized offset
+`140734`.
+
+**Decision:** Treat the restart as blocked. Do not classify the remaining
+interpreter executions, broaden semantic forms, generate candidates, run shadow
+promotion, broaden hardware behavior or weaken the checkpoint identity gate.
+Repair and independently re-prove the developer-only identity contract in a
+separate bounded task before resuming M11.42.
+
+**Consequences:** M11.39, M11.40 and M11.41 evidence remain preserved; no
+coverage or attribution result is claimed from this run. Production/native
+architecture is unchanged.
+
 ## ADR-0022 — Deterministic developer-only checkpoint identity
 **Status:** Accepted for M11.41 developer-only hybrid tooling
 **Date:** 2026-09-09

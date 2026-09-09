@@ -37,6 +37,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md M11.39 bounded hot-path coverage report
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md M11.40 baseline-blocked attribution report
 │   │   └── CHECKPOINT_IDENTITY_M11_41.md M11.41 checkpoint provenance/repair report
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md M11.42 restart-gate blocker report
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone

@@ -9,6 +9,17 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.42 — Restart: remaining interpreter attribution and 95% coverage gate — BLOCKED
+The restart gate was run from M11.41 commit `5c19e22` with the restored target
+aggregate `c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`.
+ROM/DLL, video, execution counts, 28-range registry, yields, resumptions and
+zero starts inside translated ranges matched, but two fresh runs produced
+`d5de401ceb64da875219d3ca2564160b954d55a217f4bb47ff0dc204c547ae36`.
+Byte evidence shows M11.41 canonicalization leaves the next `FM_SLOT.DT`
+pointer at serialized offset `140734`. Stop before attribution, semantics,
+generation, shadow, hardware or native promotion. Evidence:
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md`.
+
 ## M11.41 — Checkpoint identity provenance and reproduction repair — DONE
 The M11.40 baseline blocker was traced to host pointer and ABI representation
 bytes included by the external GPGX wholesale state serializer. The first
