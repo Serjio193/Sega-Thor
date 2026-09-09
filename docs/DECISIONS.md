@@ -1,3 +1,32 @@
+# ADR-0030 — Metadata-driven mechanical primitive family
+**Status:** Accepted for M11.49 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.48 proved one resumable `CLR.B`/`DBF` loop. M11.47 also
+identified two byte copy loops and one word clear loop, but the family
+abstraction, exact source/destination and width contracts, and coexistence
+behavior had not been proven.
+
+**Decision:** Generalize the architecture-neutral primitive executor around a
+metadata-only `MechanicalLoopContract`. Promote only the exact two
+`MOVE.B (A2)+,(A1)+` plus DBF forms and `CLR.W (A0)+` plus DBF form that pass
+deterministic vectors, generated-oracle shadow, existing bus/timing/refresh
+contracts and unchanged native identity. Keep ROM PCs in registry metadata,
+keep generated code as oracle/fallback, use explicit ordered byte copy and
+width-specific clear writes, and fail closed on unsupported forms. Do not
+broaden hardware emulation or add a production dependency.
+
+**Consequences:** Four mechanical loops share one reusable implementation and
+preserve exact 32-bit address, DBF, CCR/X, bus ordering and interruption
+behavior. Native execution represents 42,384 guest instructions while the
+generated-plus-mechanical translated-equivalent count remains 6,241,765;
+checkpoint/video, yields, resumptions and CPU equivalence remain unchanged.
+The promoted family has no hardware-visible access; the existing hardware
+boundary remains unchanged. Extraction is a future boundary, not part of M11.49.
+
+**Affected files/milestones:** `mechanical_primitive.*`, runner report,
+synthetic primitive test, M11.49 governance and evidence report.
+
 # ADR-0029 — Resumable native mechanical primitive layer
 **Status:** Accepted for M11.48 developer-only hybrid tooling
 **Date:** 2026-09-09

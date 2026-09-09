@@ -1,3 +1,18 @@
+# M11.49 — Mechanical primitive family closure — DONE
+
+The M11.48 metadata-driven primitive was generalized without adding production
+dependencies or address-specific executor branches. Two `MOVE.B (A2)+,(A1)+`
+plus DBF loops (`0x003A0C`/`0x003A0E` and `0x00389E`/`0x0038A0`) and the
+`CLR.W (A0)+` plus DBF loop (`0x0003F0`/`0x0003F2`) joined the existing byte
+clear family member. Synthetic vectors, the unchanged 600-frame mechanical
+shadow and native proof all passed with zero divergence. Native totals are
+6,199,381 generated translated, 42,384 mechanical and 247,008 interpreter
+instructions out of 6,488,773; checkpoint/video, 150,135 yields and 288
+resumptions are unchanged. The promoted family had no hardware-visible access;
+`0x060BA4` remains hardware-boundary blocked. Result:
+`NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`.
+Evidence: `reports/MECHANICAL_PRIMITIVE_FAMILY_M11_49.md`.
+
 # M11.48 — First proven native mechanical primitive replacement — DONE
 
 The M11.47 `MEMORY_CLEAR` candidate at `0x061266` plus `DBF` at `0x061268`

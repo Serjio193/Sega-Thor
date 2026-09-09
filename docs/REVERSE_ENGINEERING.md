@@ -1,6 +1,30 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.49 — Mechanical primitive family closure
+STATUS: `NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`.
+
+The M11.48 resumable body/DBF contract generalizes to four exact ROM forms.
+Canonical bytes are `12DA` at `0x003A0C` and `0x00389E`, `4258` at `0x0003F0`
+and `421D` at `0x061266`; each is followed by `DBF` with displacement `FFFC`.
+The exact loop continuations are `0x003A12`, `0x0038A4`, `0x0003F6` and
+`0x06126C`. The copy forms use source A2, destination A1 and counters D2/D0;
+the clear forms use A0/A5 and D0. Dynamic native counts are respectively
+7,613, 7,124, 4,565 and 1,890 body iterations, with equal DBF counts.
+
+The shared primitive proof establishes source-before-destination byte-copy
+ordering, postincrement timing, DBF low-word decrement/upper-word preservation,
+32-bit address wrap, exact CCR N/Z/V/C behavior with X preservation, and the
+single width-2 clear bus operation. The copy candidates had no hardware-visible
+access in the native proof and the full ordered shadow matched; no hardware
+contract was broadened. Odd word addresses are outside
+the reachable proven contract and fail closed. Synthetic vectors cover overlap,
+wrap, interruption, word width and unsupported forms. All four loops are now
+`PROMOTED_FAMILY_MEMBER`; the M11.47 isolated `0x00026A`, `0x06193C` and
+`0x061954` forms remain generated-oracle-only because no mechanical loop
+contract was proven. Full evidence is in
+`reports/MECHANICAL_PRIMITIVE_FAMILY_M11_49.md`.
+
 # M11.48 — First proven native mechanical primitive replacement
 STATUS: `FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`.
 

@@ -122,6 +122,18 @@ instantaneous operation. Primitive shadow runs beside the generated/basic-block
 oracle, which remains responsible for the full decoded IR/prefetch comparison
 and remains the fallback path. This layer is not linked into production.
 
+M11.49 closes the mechanical family using the same developer-only boundary.
+`MechanicalLoopContract` carries canonical body/DBF opcodes, register roles,
+width and continuation metadata; `execute_mechanical_loop` contains only the
+generic resumable body/DBF semantics. The registry owns candidate metadata,
+dispatch state and per-candidate evidence, while native and detached shadow
+adapters remain separate. Copy remains ordered read-before-write and clear
+uses the exact width-specific bus operation. Unsupported operation, width,
+displacement and odd-word alignment forms fail closed. Generated M11.47 bodies
+remain generated oracle/fallback code and are not merged into handwritten
+mechanical glue. No GPGX/libretro or serialized-state dependency crosses into
+the primitive API, and the family layer remains absent from `oasis_core`.
+
 M11.46 adds `address_provenance` as a separate developer-only observer around
 the same GPGX hook and block-registry path. It records runtime fallback PC
 counts, top-level data-bus address/width/direction/order and A0–A7 transitions,

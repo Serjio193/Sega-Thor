@@ -3,6 +3,55 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.49 Mechanical Primitive Family Closure — COMPLETE
+**Objective:** From M11.48 baseline `678534862ad16be7cc1627fe4ed5008f53c7365f`,
+determine whether the proven resumable mechanical primitive generalizes to the
+remaining M11.47 copy/clear loops. Do not add gameplay semantics, candidates,
+hardware emulation or production dependencies.
+
+**Acceptance criteria:** Reproduce the M11.48 authoritative native baseline
+twice; reconstruct exact contracts for both byte copies and word clear; add
+generic fail-closed executor and per-candidate provenance; prove synthetic
+semantics and resumable coexistence; pass unchanged 600-frame shadow/native
+gates with exact state, video, counts, yields and resumptions; update all
+governance; preserve ROM/game.srm/run-evidence hygiene.
+
+**Actions:** Replaced the single-form mechanical API with metadata-driven
+`MechanicalLoopContract` and one generic body/DBF executor. The registry now
+covers `MEMORY_COPY` at `0x003A0C`/`0x00389E` and `MEMORY_CLEAR` word at
+`0x0003F0`, while retaining the M11.48 byte-clear member. The implementation
+keeps generated M11.47 bodies as oracle/fallback, performs explicit ordered
+copy accesses, preserves width-specific CCR/X behavior, records per-candidate
+reads/writes/hardware visibility and fails closed on unsupported forms.
+
+**Evidence:** Two pre-change native baselines matched the authoritative
+aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total / 6,237,985 generated / 3,780 mechanical / 247,008
+interpreter, 587 ranges, 150,135 yields and 288 resumptions. Shadow compared
+42,384 mechanical instructions with zero divergence. Native preserved the same
+identity and exact totals with 6,199,381 generated / 42,384 mechanical /
+247,008 interpreter instructions, 150,135 yields, 288 resumptions, zero
+unexpected fallback entries and zero starts inside translated ranges. The
+family recorded 2,216 invocations, 21,192 iterations, 14,737 reads and 21,192
+writes with zero hardware-visible accesses; no hardware behavior was added.
+The four candidate counts sum to 42,384 exactly.
+
+**Validation:** Targeted mechanical unit test passed after synthetic fixes.
+Debug, Release and GNU-equivalent full CTest, semantic/generator/provenance/
+checkpoint/boundary tests, two authoritative baseline runs, mechanical shadow,
+mechanical native proof, `git diff --check`, source line limits and repository
+hygiene were rerun on the final diff. CI was checked after push.
+
+**Result:** `NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`.
+
+**Unresolved:** The M11.47 interpreter Pareto remains unchanged at 247,008;
+`0x060BA4` remains hardware-visible blocked. Extraction is classified ready as
+a future refactoring boundary but was not performed. No next milestone is
+implemented.
+
+**Exact next step:** Stop.
+
 ## 2026-09-09 — M11.48 First Proven Native Mechanical Primitive Replacement — COMPLETE
 **Objective:** From M11.47 baseline `f51f3b370b8e7acdc3613b1cec7f9ffcdf05f14e`,
 promote the safest complete mechanical loop without adding gameplay semantics,

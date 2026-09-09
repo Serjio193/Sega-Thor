@@ -403,8 +403,8 @@ int main(int argc, char** argv) {
                 complete = complete && primitives->complete();
                 if (error_text.empty()) error_text = primitives->error();
                 if (mode_text == "MECHANICAL_PRIMITIVE_NATIVE") {
-                    boundary_yields += primitive_metrics.mid_operation_yields;
-                    event_boundary_yields += primitive_metrics.mid_operation_yields;
+                    boundary_yields += primitive_metrics.boundary_yields;
+                    event_boundary_yields += primitive_metrics.boundary_yields;
                 }
             }
         } else {

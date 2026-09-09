@@ -1,24 +1,22 @@
 # Current task
 
-TASK: M11.48 First Proven Native Mechanical Primitive Replacement
-STATUS: COMPLETE — `FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`
-BASELINE: `f51f3b370b8e7acdc3613b1cec7f9ffcdf05f14e`
-SCOPE: Promote exactly one independently verified mechanical loop through a
-resumable architecture-neutral primitive API. Preserve generated/basic-block
-oracle and fallback, event/timing boundaries, and the developer-only GPGX
-boundary. Do not add gameplay semantics, hardware emulation or candidates.
-RESULT: `MEMORY_CLEAR` at `0x061266` with `DBF D0,0x061266` at `0x061268`
-passed synthetic interruption tests, 3,780/3,780 combined shadow comparisons,
-zero divergence and unchanged 600-frame native proof. It performed 1,890
-iterations, 1,890 byte writes in `0x00FF001A..0x00FF077B`, 86 resumable
-mid-operation yields, and removed two guest PCs from the instruction-level
-native dispatch path. Native totals remain 6,488,773 total, 6,237,985
-generated translated, 3,780 mechanical, 247,008 interpreter, 587 ranges,
-150,135 yields and 288 interrupted resumptions; checkpoint/video identity and
-full CPU equivalence are preserved.
-EVIDENCE: `docs/reports/NATIVE_MECHANICAL_PRIMITIVE_M11_48.md` and the
-untracked local 600-frame outputs `build-m1148-mechanical-*`.
-NEXT ACTION: Stop. Do not implement another primitive or the next milestone.
+TASK: M11.49 Mechanical Primitive Family Closure
+STATUS: COMPLETE — `NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`
+BASELINE: `678534862ad16be7cc1627fe4ed5008f53c7365f`
+SCOPE: Generalize the developer-only resumable mechanical primitive layer and
+promote only the three exact M11.47 copy/clear loops that pass independent
+semantic, shadow, bus, timing and unchanged native gates. Preserve M11.48
+history, generated oracle/fallback, hardware boundaries and game.srm hygiene.
+RESULT: Two `MEMORY_COPY` loops and one `MEMORY_CLEAR` word loop now share the
+same metadata-driven executor with the existing byte clear. The family passed
+synthetic vectors, 42,384/42,384 shadow comparisons and zero-divergence native
+proof. Native totals are 6,488,773 total, 6,199,381 generated translated,
+42,384 mechanical, 247,008 interpreter, 587 ranges, 150,135 yields and 288
+interrupted resumptions; checkpoint/video identity and full CPU equivalence are
+preserved. No 95% gate was forced and no hardware emulation was broadened.
+EVIDENCE: `docs/reports/MECHANICAL_PRIMITIVE_FAMILY_M11_49.md` and untracked
+local `build-m1149-*` 600-frame outputs.
+NEXT ACTION: Stop. Do not implement extraction or the next milestone.
 
 TASK: M11.47 Safe-Memory Semantic Closure and Primitive Discovery
 STATUS: COMPLETE — `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`
