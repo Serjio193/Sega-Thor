@@ -38,6 +38,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md M11.40 baseline-blocked attribution report
 │   │   └── CHECKPOINT_IDENTITY_M11_41.md M11.41 checkpoint provenance/repair report
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md M11.42 restart-gate blocker report
+│   │   └── CHECKPOINT_CANONICALIZATION_M11_43.md M11.43 exact GPGX state-layout and identity proof
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -117,6 +118,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   ├── checkpoint_evidence.cpp Raw checkpoint evidence and canonical identity adapter
 │       │   ├── checkpoint_evidence.hpp Checkpoint identity/evidence API
+│       │   ├── gpgx_checkpoint_layout.cpp Pinned GPGX ABI layout and representation span table
+│       │   ├── gpgx_checkpoint_layout.hpp Checkpoint layout contract API
 │       │   ├── runner.cpp Developer-only GPGX hybrid scenario runner
 │       │   └── recomp_generator_report.cpp Generator CLI
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
@@ -334,6 +337,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   proving shadow closes before a scheduler/frame rebase.
 - `tests/hybrid_generated_block_test.cpp`: generated semantics and
   instruction-boundary yield/resume regression for a frozen M11.38 range.
+- `tests/hybrid_checkpoint_layout_test.cpp`: GPGX layout, representation-span,
+  version-guard and cross-process canonicalization regression.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 - `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,
@@ -345,6 +350,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   continuation evidence.
 - `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`: M11.40 baseline
   reproduction and checkpoint identity mismatch; no attribution or promotion.
+- `docs/reports/CHECKPOINT_CANONICALIZATION_M11_43.md`: exact pinned GPGX
+  wholesale-state layout, canonicalization contract and cross-process proof.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

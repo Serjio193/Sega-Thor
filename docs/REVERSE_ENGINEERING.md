@@ -1,6 +1,20 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.43 — Complete GPGX checkpoint canonicalization contract
+STATUS: `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`.
+
+The pinned GPGX v1.7.6 wholesale state contract is recorded in
+`reports/CHECKPOINT_CANONICALIZATION_M11_43.md`. Machine-checked x64 models
+prove `FM_SLOT=80`, `FM_CH=400`, `YM2612=3576` and `Z80_Regs=88`, with the
+pinned-DLL serialized YM base at `140652` and Z80 base at `144504`. The adapter
+clears only 55 host-pointer spans, one function-pointer span and 111 ABI-padding
+spans. Five current proofs and raw replay from current, exact M11.39 and M11.41
+evidence agree on new aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+The older `c9236218...` aggregate is preserved as superseded historical output
+because its adapter erased semantic bytes. No interpreter attribution or 95%
+coverage work was started.
+
 ## M11.42 — Restart gate blocked by incomplete checkpoint canonicalization
 STATUS: `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`.
 

@@ -1,5 +1,21 @@
 # Current task
 
+TASK: M11.43 Complete GPGX Checkpoint Canonicalization Contract
+STATUS: COMPLETE — `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`
+BASELINE: `c59dd1bb62e03df0639484de214a482204eb0d63`
+SCOPE: developer-only exact layout contract and identity canonicalization for the
+pinned GPGX v1.7.6 STATE_SIZE format. M11.42 attribution, semantic expansion,
+generation, shadow and coverage work were not started.
+RESULT: The proven contract preserves semantic bytes and clears only generated
+YM2612/Z80 host-pointer and ABI-padding spans. Five independent current proofs,
+three raw current runs, and current/exact-historical/M11.41 raw replay agree on
+aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+The prior `c9236218...` identity is superseded because M11.41 cleared semantic
+bytes; its history remains unchanged below.
+EVIDENCE: `docs/reports/CHECKPOINT_CANONICALIZATION_M11_43.md`
+NEXT ACTION: M11.42 PHASE 1 may be resumed as a separate task; do not begin
+PHASE 2 in M11.43.
+
 TASK: M11.42 Restart — Remaining Interpreter Attribution and 95% Coverage Gate
 STATUS: BLOCKED — `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`
 BASELINE: `5c19e22a93150ab17f51c69ed5aadaa59651a70a`

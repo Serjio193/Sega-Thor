@@ -9,6 +9,19 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
+## M11.43 — Complete GPGX checkpoint canonicalization contract — DONE
+Starting from M11.42's checkpoint canonicalization blocker, reconstruct the
+pinned GPGX v1.7.6 wholesale-struct layout, prove its ABI representation spans,
+and make the developer-only identity adapter preserve every semantic byte.
+
+Gate result: `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`.
+The exact layout verifier proves the x64 sizes/offsets for YM2612 and Z80,
+including the observed pinned-DLL Z80 base `144504`. Five independent current
+proofs and raw replay from current, exact M11.39 and M11.41 evidence agree on
+aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+No M11.42 attribution, candidate promotion or 95% coverage work was performed.
+Evidence: `reports/CHECKPOINT_CANONICALIZATION_M11_43.md`.
+
 ## M11.42 — Restart: remaining interpreter attribution and 95% coverage gate — BLOCKED
 The restart gate was run from M11.41 commit `5c19e22` with the restored target
 aggregate `c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`.

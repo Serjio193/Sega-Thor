@@ -83,6 +83,13 @@ strictly developer-only hybrid tooling. They do not alter the native runtime,
 introduce an emulator dependency into production, or authorize interpreter
 coverage promotion while serialized host representation remains unresolved.
 
+M11.43 keeps this boundary explicit with `gpgx_checkpoint_layout`: pinned
+GPGX wholesale-struct layout models and representation spans are isolated in
+the hybrid contract library, while `checkpoint_evidence` owns only raw-preserving
+hashing and evidence files. The layout table is generated from mirrored field
+offsets and ABI assertions; production `oasis_core` and generated game blocks
+do not depend on it.
+
 Tools must not require committing extracted assets.
 
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.

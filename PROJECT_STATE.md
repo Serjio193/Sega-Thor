@@ -1,5 +1,18 @@
 # Project State
 
+CURRENT_MILESTONE: M11.43 complete — GPGX checkpoint canonicalization contract
+CURRENT_TASK: complete; no M11.42 attribution or coverage work performed
+STATUS: COMPLETE — `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`
+SCOPE_BOUNDARY: exact developer-only GPGX v1.7.6 state layout, raw-preserving
+canonicalization and cross-process identity proof only.
+LAST_VERIFIED_RESULT: five current 600-frame proofs and current/exact-historical/
+M11.41 raw replay agree on aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`. The
+canonicalizer clears 55 host pointers, one function pointer and 111 ABI-padding
+spans; no semantic or unknown varying bytes remain.
+EVIDENCE: `docs/reports/CHECKPOINT_CANONICALIZATION_M11_43.md`
+NEXT_GATE: resume M11.42 PHASE 1 in a separate bounded task.
+
 CURRENT_MILESTONE: M11.42 restart — remaining interpreter attribution and 95% coverage gate
 CURRENT_TASK: PHASE 1 restart gate
 STATUS: BLOCKED — `M11.42_BASELINE_BLOCKED_CHECKPOINT_CANONICALIZATION_INCOMPLETE`

@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.43 GPGX Checkpoint Canonicalization Contract — COMPLETE
+**Objective:** Resolve the M11.42 checkpoint identity blocker by proving the
+pinned GPGX v1.7.6 raw-state layout and canonicalizing only host representation.
+Do not resume interpreter attribution or coverage expansion.
+
+**Actions:** Re-read repository instructions and governance; audited pinned
+GPGX source, ABI declarations, active MD serializer and the pinned DLL's raw
+state. Added the developer-only `gpgx_checkpoint_layout` contract with exact
+x64 `sizeof`/`offsetof` assertions and one generated non-overlapping span table.
+Updated `checkpoint_evidence` to guard version/size, preserve raw buffers and
+clear only representation spans. Added adversarial layout/canonicalization and
+raw replay tests.
+
+**Evidence:** Proven layout: `FM_SLOT=80`, `FM_CH=400`, `YM2612=3576`,
+`Z80_Regs=88`; YM serialized base `140652`; pinned-DLL Z80 base `144504`, with
+`daisy` at `144576` and callback at `144584`. The source/object timestamp drift
+explains why source-only arithmetic predicts an earlier Z80 boundary; no
+conflicting source-only offset was used for the pinned binary. The table has
+55 host-pointer spans, one function-pointer span, 111 ABI-padding spans and
+281 padding bytes. Three raw current runs were identical; current versus
+preserved M11.41 raw evidence varied only 110 bytes per record across 10
+records, all proven YM pointers or Z80 `daisy`.
+
+**Validation:** Five independent current 600-frame `BASIC_BLOCK_NATIVE` proofs
+agree on aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total, 5,826,857 translated, 661,916 interpreter, 140,065 yields,
+274 resumptions, 28 ranges and zero starts inside translated ranges. Canonical
+raw replay from current, exact M11.39 and M11.41 evidence agrees on the new
+aggregate. The old `c9236218...` identity is superseded because M11.41 also
+cleared semantic bytes. No ROM/assets/binaries/run evidence was tracked;
+`game.srm` stayed untouched and untracked.
+
+After the final Release assertion fix, full CTest passed 56/56 in MSVC Debug,
+56/56 in MSVC Release and 56/56 in the GNU-equivalent MinGW configuration.
+`git diff --check` and the project source-file line-limit check passed.
+
+**Result:** `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`.
+M11.39, M11.40, M11.41 and M11.42 historical records remain preserved; M11.42
+PHASE 2 was not started.
+
+**Exact next step:** Resume M11.42 PHASE 1 in a separate bounded task.
+
 ## 2026-09-09 — M11.42 Restart Gate — BLOCKED
 **Objective:** Restart the remaining interpreter attribution and 95% coverage
 gate from M11.41's committed baseline without weakening checkpoint identity.

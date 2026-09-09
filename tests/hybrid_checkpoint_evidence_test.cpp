@@ -2,6 +2,7 @@
 
 #include "core/rom_identity.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <filesystem>
@@ -25,6 +26,9 @@ void write_evidence(const std::filesystem::path& directory) {
     oasis::hybrid::CheckpointEvidence evidence(directory);
     std::vector<std::uint8_t> first(0xfd000);
     std::vector<std::uint8_t> second(0xfd000);
+    const std::string version{"GENPLUS-GX 1.7.6"};
+    std::copy(version.begin(), version.end(), first.begin());
+    std::copy(version.begin(), version.end(), second.begin());
     first[659] = 0x01;
     second[659] = 0x02;
     evidence.record(60, first, 123, oasis::calculate_sha256(first),
@@ -39,11 +43,14 @@ void write_evidence(const std::filesystem::path& directory) {
 int main() {
     std::vector<std::uint8_t> pointer_a(0xfd000);
     std::vector<std::uint8_t> pointer_b = pointer_a;
+    const std::string version{"GENPLUS-GX 1.7.6"};
+    std::copy(version.begin(), version.end(), pointer_a.begin());
+    std::copy(version.begin(), version.end(), pointer_b.begin());
     pointer_a[140654] = 0x12;
     pointer_b[140654] = 0x98;
     assert(oasis::hybrid::checkpoint_identity_hash(pointer_a) ==
            oasis::hybrid::checkpoint_identity_hash(pointer_b));
-    pointer_b[140659] = 0x01;
+    pointer_b[140660] = 0x01;
     assert(oasis::hybrid::checkpoint_identity_hash(pointer_a) !=
            oasis::hybrid::checkpoint_identity_hash(pointer_b));
 

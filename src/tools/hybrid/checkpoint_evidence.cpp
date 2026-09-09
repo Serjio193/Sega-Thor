@@ -1,10 +1,11 @@
 #include "tools/hybrid/checkpoint_evidence.hpp"
+#include "tools/hybrid/gpgx_checkpoint_layout.hpp"
 
 #include "core/rom_identity.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <memory>
-#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -19,43 +20,18 @@ std::string quote(std::string_view value) {
     return result;
 }
 
-void zero_bytes(std::vector<std::uint8_t>& state, std::size_t offset, std::size_t size) {
-    std::memset(state.data() + offset, 0, size);
-}
-
 void canonicalize_host_representation(std::vector<std::uint8_t>& state) {
-    constexpr std::size_t state_size = 0xfd000;
-    constexpr std::size_t ym_offset = 140651;
-    constexpr std::size_t slot_size = 84;
-    constexpr std::size_t channel_size = 416;
-    constexpr std::size_t ym_size = 3672;
-    constexpr std::size_t z80_offset = ym_offset + ym_size + 86;
-    if (state.size() != state_size) {
+    const auto& layout = gpgx_checkpoint_layout();
+    if (state.size() != layout.state_size) {
         throw std::runtime_error("unsupported GPGX checkpoint state size");
     }
-    for (std::size_t channel = 0; channel < 6; ++channel) {
-        const auto channel_offset = ym_offset + channel * channel_size;
-        for (std::size_t slot = 0; slot < 4; ++slot) {
-            const auto slot_offset = channel_offset + slot * slot_size;
-            zero_bytes(state, slot_offset, 8);
-            zero_bytes(state, slot_offset + 9, 3);
-            zero_bytes(state, slot_offset + 29, 3);
-            zero_bytes(state, slot_offset + 45, 3);
-            zero_bytes(state, slot_offset + 75, 5);
-        }
-        zero_bytes(state, channel_offset + 338, 2);
-        zero_bytes(state, channel_offset + 348, 4);
-        zero_bytes(state, channel_offset + 352, 5 * 8);
-        zero_bytes(state, channel_offset + 401, 3);
-        zero_bytes(state, channel_offset + 409, 3);
+    if (std::string_view(reinterpret_cast<const char*>(state.data()), 16) != layout.state_version) {
+        throw std::runtime_error("unsupported GPGX checkpoint state version");
     }
-    zero_bytes(state, ym_offset + 2497, 3);
-    zero_bytes(state, ym_offset + 2504 + 3, 1);
-    zero_bytes(state, ym_offset + 2504 + 9, 3);
-    zero_bytes(state, ym_offset + 2504 + 1092 + 29, 3);
-    zero_bytes(state, ym_offset + 2504 + 1148 + 1, 3);
-    zero_bytes(state, z80_offset + 59, 1);
-    zero_bytes(state, z80_offset + 64, 16);
+    for (const auto& span : layout.representation_spans) {
+        std::fill_n(state.begin() + static_cast<std::ptrdiff_t>(span.offset),
+                    static_cast<std::ptrdiff_t>(span.size), std::uint8_t{0});
+    }
 }
 
 } // namespace

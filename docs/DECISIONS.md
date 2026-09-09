@@ -2,6 +2,32 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0024 — Canonicalize only the proven pinned-GPGX representation layout
+**Status:** Accepted for M11.43 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.42 found that the M11.41 adapter left a YM2612 host pointer at
+serialized offset `140734`. The pinned DLL's raw state also showed its Z80
+`daisy` pointer at `144576`. The available external `state.c` source and stale
+build objects were not byte-for-byte synchronized with that DLL: source-only
+arithmetic predicts an earlier Z80 position, while raw cart mapping and pointer
+evidence prove the pinned binary position.
+
+**Decision:** Model the raw-saved YM2612/Z80 structs with machine-checked x64
+`sizeof`/`offsetof` assertions and construct one non-overlapping representation
+span table from those fields. Guard `STATE_SIZE=0xfd000` and version
+`GENPLUS-GX 1.7.6`; reject unknown values. Canonicalization copies the raw
+buffer and clears only the table's 55 host-pointer, one function-pointer and
+111 ABI-padding spans. It does not clear semantic bytes or broaden hardware
+serialization. The active USA cart path is separately serialized field-by-field;
+optional SVP wholesale state is out of scope for this active baseline.
+
+**Consequences:** The complete contract produces the new authoritative aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d` across five
+current proofs and current/exact-historical/M11.41 raw replay. M11.41's
+`c9236218...` remains historical and is superseded because its adapter erased
+semantic bytes. M11.42 PHASE 2 remains unstarted.
+
 ## ADR-0023 — Keep M11.42 closed on checkpoint identity mismatch
 **Status:** Accepted for M11.42 gate governance
 **Date:** 2026-09-09
