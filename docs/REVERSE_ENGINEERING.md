@@ -1,6 +1,19 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.57 — parent-owned suffix helper — CONFIRMED
+
+The exact sequence `604F0 SF.B`, `604F6 BSR 604BC`, `604FA/60500/60506/6050C
+SF.B`, `60512 BRA 611D6` is a hardware-free parent suffix. Its entry requires
+the parent-established A5=`FF001A` and an even A7; it consumes no saved-frame
+bytes. Its ordered writes are `FF0012`, `FF0010`, `FF0011`, `FF0013`, `FF0014`,
+plus the existing RamFlag writes. A7 is restored by the composed RamFlag RTS;
+full SR, stack banks, shared epilogue and final RTS remain parent-owned.
+The portable contract and all 17 represented instruction boundaries are
+independently tested, with a structural RamFlag composition and opaque parent
+continuation token. Natural shadow and native 600-frame evidence are recorded
+in `reports/PARENT_SUFFIX_HANDOFF_M11_57.md`.
+
 # M11.56 — 0x604F0 parent-frame ownership — CONFIRMED bounded negative
 
 Result: THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE. Exact natural predecessor

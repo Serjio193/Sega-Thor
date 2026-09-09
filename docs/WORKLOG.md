@@ -3,6 +3,48 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.57 parent-owned suffix handoff — COMPLETE
+
+TASK: Determine whether the proven hardware-free `0x604F0` suffix can be an
+architecture-neutral parent-owned helper from baseline
+`ca95f24ebb7b92d2943166a802d8aeef8a70d5d0`.
+ACCEPTANCE CRITERIA: exact baseline twice; minimal entry/exit and ownership
+contract; adverse entry vectors; every helper boundary event/resume; structural
+RamFlag composition; natural shadow; authoritative native identity; explicit
+accounting and documentation.
+
+BASELINE GATE: PASS twice with checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+`6,488,773 = 6,488,699 interpreter + 34 TableCopy + 40 RamFlag`, zero
+fallback/divergence, attribution `1 x 0x604F6 / 3 x 0x60BCC / 0 unknown`, and
+the existing one yield/resumption.
+
+IMPLEMENTATION: Added `oasis_core` `ParentSuffixMachine` with opaque phase and
+parent-continuation tokens. It owns the five safe-RAM SF writes and composes
+the existing RamFlag executor. The hybrid adapter retains ROM/GPGX validation,
+per-instruction fetch/timing, nested BSR representation, and `0x611D6` mapping.
+Parent frame, hardware prefix, SR restoration, shared epilogue and RTS remain
+parent-owned.
+
+RESULT: `FIRST_PORTABLE_INTERNAL_HELPER_PROVEN`.
+`oasis_parent_suffix_test` passes exact write order, invalid A5/continuation
+rejection and all 17 represented boundary resumptions without duplicate
+writes or RamFlag calls. The 600-frame `SHADOW_NATIVE` run is 5/5 with zero
+divergence and frozen checkpoint/video identity. The 600-frame `NATIVE_OVERRIDE`
+run reports 7 helper instructions, 40 RamFlag, 34 TableCopy and 6,488,692
+interpreter instructions, summing exactly to 6,488,773 with zero fallback or
+divergence. The legacy report `full_cpu_equivalence` field remains false for
+NATIVE_OVERRIDE by existing schema policy; serialized checkpoint/video,
+timing/refresh, RAM and continuation gates are exact.
+
+TESTS: Full Debug MinGW, Release MinGW and GNU/UCRT CTest pass 69/69 each;
+Release and UCRT authoritative helper runs also preserve both frozen hashes,
+exact accounting, zero fallback and zero divergence. `git diff --check` and
+the source line-limit check are pending final review.
+EVIDENCE: reports/PARENT_SUFFIX_HANDOFF_M11_57.md.
+NEXT ACTION: Complete cross-configuration validation, review diff and commit.
+
 # 2026-09-09 — M11.56 caller continuation closure — COMPLETE (negative)
 
 TASK: Close the exact 0x604F0 entry/exit contract from baseline

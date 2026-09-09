@@ -29,6 +29,6 @@ bool body_was_skipped(bool block_mode, unsigned overrides, unsigned original_ins
 bool full_cpu_identity(bool completed, unsigned divergences, bool block_mode, Mode mode);
 unsigned guest_instruction_total(unsigned interpreter, unsigned translated,
                                  unsigned mechanical, unsigned routine,
-                                 unsigned second_routine);
+                                 unsigned second_routine, unsigned internal_helper);
 
 } // namespace oasis::hybrid

@@ -11,6 +11,7 @@ add_library(oasis_core
     src/core/mechanical_primitive.cpp
     src/core/table_copy_routine.cpp
     src/core/ram_flag_routine.cpp
+    src/core/parent_suffix.cpp
     src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp

@@ -1,5 +1,11 @@
 # File Map
 
+M11.57 additions: `src/core/parent_suffix.hpp/.cpp` owns the minimal portable
+parent-owned suffix contract; `src/tools/hybrid/candidate_parent_suffix.hpp/.cpp`
+owns ROM/GPGX adapter and shadow/native proof; `tests/parent_suffix_test.cpp`
+covers adverse entries and every represented boundary; report:
+`docs/reports/PARENT_SUFFIX_HANDOFF_M11_57.md`.
+
 M11.56 additions: src/tools/hybrid/caller_continuation.hpp/.cpp owns the
 bounded EMULATED-only parent/entry/exit and data-hook evidence observer;
 src/tools/hybrid/validate_caller_continuation.py checks paired local traces,
@@ -75,6 +81,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── NATIVE_ROUTINE_MISMATCH_M11_52.md M11.52 continuation mismatch closure and promotion proof
 │   │   └── SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md M11.53 second routine contract and dual promotion proof
 │   │   └── RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md M11.55 caller/data/hardware closure evidence
+│   │   └── PARENT_SUFFIX_HANDOFF_M11_57.md M11.57 parent-owned helper and handoff proof
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone

@@ -1,24 +1,26 @@
 # Project State
 
-CURRENT_MILESTONE: M11.56 complete — 0x604F0 caller continuation ownership
-CURRENT_TASK: complete; bounded structural negative result
-STATUS: COMPLETE — THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE
-SCOPE_BOUNDARY: 0x604F0 internal tail and existing parent's shared restore;
-no third routine, typed shared data, subsystem, or 0x60BCC expansion.
-LAST_VERIFIED_RESULT: paired emulated provenance has one natural path,
+CURRENT_MILESTONE: M11.57 complete — parent-owned portable suffix handoff
+CURRENT_TASK: complete; bounded internal helper promotion
+STATUS: COMPLETE — FIRST_PORTABLE_INTERNAL_HELPER_PROVEN
+SCOPE_BOUNDARY: 0x604F0 internal suffix only; no standalone third routine,
+typed data, subsystem, or 0x60BCC expansion.
+LAST_VERIFIED_RESULT: 600-frame shadow and native helper runs preserve the
+frozen checkpoint/video identity and exact accounting; helper owns seven
+represented instructions including structural RamFlag composition and opaque
+parent handoff. Paired emulated provenance has one natural path,
 21 instructions and 32 ordered data accesses, with a validated 58-byte
 parent save frame and return 0x424. Exact selected span is [0x604F0,0x60516);
 0x60516 is another arm's entry inside the old decoder budget. Frozen
 dual-native checkpoint/video/accounting/attribution passes before and after
 instrumentation; full Debug/Release/GCC-UCRT CTest passes 68/68 each.
-BLOCKER: ENCLOSING_ROUTINE_BOUNDARY; 0x611D6 is an enclosing continuation
-using a shared epilogue. Full-SR/event portability remains partial and the
-parent prefix touches hardware. No production implementation gate opened.
-INVENTORY: 2 authoritative routines, 4 mechanical primitives, 2 complete
-and 5 partial routine/caller-region contracts, 0 typed structures,
-1 portable routine cluster, 0 portable subsystem boundaries.
-EVIDENCE: docs/reports/RAMFLAG_CALLER_ROUTINE_M11_56.md
-NEXT_ACTION: STOP; M11.57 may close the explicit parent/suffix handoff only.
+BLOCKER: Parent full-SR restoration, hardware prefix and shared epilogue remain
+outside the helper and are not promoted. INVENTORY: 2 authoritative routines,
+4 mechanical primitives, 3 complete portable contracts and 5 partial
+routine/caller-region contracts, 0 typed structures, 1 portable routine
+cluster, 0 portable subsystem boundaries.
+EVIDENCE: docs/reports/PARENT_SUFFIX_HANDOFF_M11_57.md
+NEXT_ACTION: Keep the helper parent-owned; do not infer a subsystem boundary.
 
 # Prior milestone states
 

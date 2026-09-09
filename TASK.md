@@ -1,5 +1,21 @@
 # Current task
 
+TASK: M11.57 Parent-owned suffix handoff and portable internal helper gate
+STATUS: COMPLETE — FIRST_PORTABLE_INTERNAL_HELPER_PROVEN
+BASELINE: ca95f24ebb7b92d2943166a802d8aeef8a70d5d0
+SCOPE: Exact hardware-free `0x604F0` suffix only; no standalone third routine,
+subsystem, typed data, `0x60BCC` expansion or coverage search.
+RESULT: The seven-instruction suffix is a parent-owned helper that composes the
+existing portable RamFlag contract and returns an opaque parent continuation.
+The parent frame, hardware prefix, full SR, shared epilogue and RTS remain
+adapter/parent-owned. Shadow and authoritative 600-frame proofs are exact.
+VALIDATION: Baseline twice; helper core adverse/event tests; Debug MinGW build;
+600-frame shadow/native identity, frozen checkpoint/video/accounting, zero
+fallback/divergence. GNU/UCRT validation is pending in this task.
+EVIDENCE: docs/reports/PARENT_SUFFIX_HANDOFF_M11_57.md
+NEXT ACTION: Record the promotion in the roadmap and preserve the parent-only
+continuation boundary for subsequent milestones.
+
 TASK: M11.56 Close 0x604F0 caller contract and attempt third portable routine
 STATUS: COMPLETE — THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE
 BASELINE: 47c37ead7beb9a7e063588cd39a5cbf65deb41e8
@@ -17,9 +33,8 @@ independent frame/journal validator and three negative controls; unchanged
 pre/post dual-native hashes, accounting and attribution. Hygiene/line-limit
 checks passed. GNU/UCRT is local portability evidence, not native Linux CI.
 EVIDENCE: docs/reports/RAMFLAG_CALLER_ROUTINE_M11_56.md
-NEXT ACTION: Stop. Proposed M11.57 closes an explicit parent-owned suffix
-handoff and full-SR/event contract; it must not relabel an internal helper as
-a third complete routine or absorb unrelated parent/hardware paths.
+NEXT ACTION: Superseded by M11.57, which closes the explicit parent-owned
+suffix handoff without relabelling it as a third complete routine.
 
 # Previous tasks
 

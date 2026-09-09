@@ -1,3 +1,13 @@
+# M11.57 — Parent-owned suffix handoff — DONE
+
+Result: FIRST_PORTABLE_INTERNAL_HELPER_PROVEN. The exact seven-instruction
+0x604F0 suffix is represented by a small architecture-neutral core helper
+composing RamFlagRoutine and returning an opaque parent continuation token.
+Natural shadow and authoritative 600-frame native runs preserve frozen
+checkpoint/video/accounting identity with zero fallback/divergence. Parent
+frame, hardware prefix, full SR, shared epilogue and RTS remain outside the
+helper. Evidence: reports/PARENT_SUFFIX_HANDOFF_M11_57.md.
+
 # M11.56 — 0x604F0 caller continuation closure — DONE (negative)
 
 Result: THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE. The natural internal path
@@ -10,9 +20,8 @@ routine or subsystem was implemented. Debug/Release/GCC-UCRT CTest 68/68 each
 and pre/post dual-native gates passed. Evidence:
 reports/RAMFLAG_CALLER_ROUTINE_M11_56.md.
 
-M11.57 proposed only: close an explicit parent-owned suffix handoff and
-full-SR/event contract without promoting an internal helper as a standalone
-routine or absorbing unrelated hardware paths. STOP after M11.56.
+M11.57 subsequently closed the explicit parent-owned suffix handoff while
+keeping full-SR/event, hardware and shared-epilogue ownership with the parent.
 
 # M11.55 — RamFlag caller and shared-data contract closure — DONE
 

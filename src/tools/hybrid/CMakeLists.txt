@@ -21,7 +21,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     generated_blocks_m1145_registry_2.cpp generated_blocks_m1145_registry_3.cpp
     generated_block_registry.cpp
     recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp
-    caller_attribution.cpp caller_continuation.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_61032.cpp)
+    caller_attribution.cpp caller_continuation.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
 
@@ -80,6 +80,9 @@ add_test(NAME oasis_hybrid_caller_attribution COMMAND oasis_hybrid_caller_attrib
 add_executable(oasis_hybrid_caller_continuation_test ${PROJECT_SOURCE_DIR}/tests/hybrid_caller_continuation_test.cpp)
 target_link_libraries(oasis_hybrid_caller_continuation_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_caller_continuation COMMAND oasis_hybrid_caller_continuation_test)
+add_executable(oasis_parent_suffix_test ${PROJECT_SOURCE_DIR}/tests/parent_suffix_test.cpp)
+target_link_libraries(oasis_parent_suffix_test PRIVATE oasis_core)
+add_test(NAME oasis_parent_suffix COMMAND oasis_parent_suffix_test)
 target_compile_options(oasis_hybrid_checkpoint_layout_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 add_executable(oasis_hybrid_recomp_generate recomp_generator_report.cpp)
 target_link_libraries(oasis_hybrid_recomp_generate PRIVATE oasis_hybrid_contract)

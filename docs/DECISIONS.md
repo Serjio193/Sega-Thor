@@ -881,3 +881,28 @@ the distinction between a portable internal helper and a complete routine.
 
 Affected files/milestones: caller continuation observer/validator/test,
 M11.56 report and governance. No production implementation.
+# ADR-0038 — Parent-owned portable suffix helper
+**Status:** Accepted for M11.57
+**Date:** 2026-09-10
+
+**Context:** M11.56 proved that `0x604F0` is an internal fallthrough carrying
+the parent frame into a shared epilogue, so it cannot be promoted as a third
+standalone routine. Its hardware-free suffix nevertheless has a closed
+entry/exit contract and composes with the already-proven RamFlag routine.
+
+**Decision:** Add one small architecture-neutral `ParentSuffixMachine` core
+executor with opaque phase and parent-continuation tokens. It owns only the
+five safe-RAM SF writes and structural RamFlag call. Keep ROM addresses,
+canonical bytes, GPGX fetch/timing, nested BSR representation and the mapping
+to `0x611D6` in the developer-only hybrid adapter. Keep parent frame/SR,
+hardware, shared epilogue and RTS ownership with the parent.
+
+**Consequences:** The exact suffix can be tested and resumed independently
+without inventing gameplay meaning or a subsystem boundary. The native helper
+is counted as `PORTABLE_INTERNAL_HELPER`; it is never called a third routine.
+Full-SR and hardware behavior remain outside the helper and require a separate
+milestone if they are ever considered.
+
+**Affected files/milestone:** `src/core/parent_suffix.*`,
+`src/tools/hybrid/candidate_parent_suffix.*`, `tests/parent_suffix_test.cpp`,
+M11.57 report and hybrid accounting.

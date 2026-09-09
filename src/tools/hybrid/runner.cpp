@@ -1,6 +1,6 @@
 #include "tools/hybrid/dispatch.hpp"
 #include "tools/hybrid/candidate_2d66.hpp"
-#include "tools/hybrid/candidate_604bc.hpp"
+#include "tools/hybrid/candidate_604bc.hpp" // candidate registry
 #include "tools/hybrid/candidate_61032.hpp"
 #include "tools/hybrid/replacement.hpp"
 #include "tools/hybrid/basic_block.hpp"
@@ -9,6 +9,7 @@
 #include "tools/hybrid/address_provenance.hpp"
 #include "tools/hybrid/caller_attribution.hpp"
 #include "tools/hybrid/caller_continuation.hpp"
+#include "tools/hybrid/candidate_parent_suffix.hpp"
 #include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/mechanical_primitive.hpp"
 #include "tools/hybrid/runner_report.hpp"
@@ -168,7 +169,9 @@ int main(int argc, char** argv) {
             begin = comma + 1;
         }
         const auto selected_target = selected_targets.empty() ? 0U : selected_targets.front();
-        const auto native_routine_block_mode = mode_text == "NATIVE_OVERRIDE" && std::find(selected_targets.begin(), selected_targets.end(), 0x604BCU) != selected_targets.end();
+        const auto native_routine_block_mode = mode_text == "NATIVE_OVERRIDE" &&
+            (std::find(selected_targets.begin(), selected_targets.end(), 0x604BCU) != selected_targets.end() ||
+             std::find(selected_targets.begin(), selected_targets.end(), 0x604F0U) != selected_targets.end());
         if (discover_mode) {
             discovery_mode = true;
             discovered_pcs.clear();
@@ -221,8 +224,7 @@ int main(int argc, char** argv) {
                 std::filesystem::path(directory) / "caller_attribution.json",
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
         if (discover_mode) {
-            // Discovery deliberately installs only the execution observer. It does not
-            // register a candidate, so every natural instruction remains authoritative.
+            // Discovery installs only the execution observer; natural instructions remain authoritative.
         } else if (block_mode) {
             const auto set_reg = library.get<void(*)(unsigned, unsigned)>("retro_hybrid_set_register");
             const auto fetch16 = library.get<unsigned(*)()>("retro_hybrid_fetch16");
@@ -274,7 +276,11 @@ int main(int argc, char** argv) {
                 library.get<void(*)(unsigned)>("retro_hybrid_begin_instruction"),
                 library.get<void(*)(unsigned)>("retro_hybrid_finish_instruction"),
                 library.get<unsigned(*)()>("retro_hybrid_boundary_reason")};
+            if (std::find(selected_targets.begin(), selected_targets.end(), 0x604F0U) != selected_targets.end())
+                candidate_storage.push_back(std::make_unique<oasis::hybrid::CandidateParentSuffix>(api, mode, calls));
             for (const auto target : selected_targets) {
+                if (target == 0x604F0)
+                    continue;
                 if (target == 0x2D66)
                     candidate_storage.push_back(std::make_unique<oasis::hybrid::Candidate2D66>(api, mode, rom.bytes(), calls));
                 else if (target == 0x604BC)
@@ -425,7 +431,7 @@ int main(int argc, char** argv) {
             complete = true;
         }
         interpreter_instructions = interpreter_instruction_executions;
-        total_guest_instructions = oasis::hybrid::guest_instruction_total(interpreter_instructions, translated_instructions, primitive_guest_instructions, routine_metrics.native_routine_instructions, routine_metrics.native_routine_second_instructions);
+        total_guest_instructions = oasis::hybrid::guest_instruction_total(interpreter_instructions, translated_instructions, primitive_guest_instructions, routine_metrics.native_routine_instructions, routine_metrics.native_routine_second_instructions, routine_metrics.native_internal_helper_instructions);
         observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
         oasis::hybrid::write_interpreter_profile_report(std::filesystem::path(directory) / "interpreter_profile.json", mode_text, observed_pcs, interpreter_instructions);
         const auto body_skipped = oasis::hybrid::body_was_skipped(block_mode, override_calls, original_inside, registry.get(), body_instructions);
@@ -475,18 +481,12 @@ int main(int argc, char** argv) {
                << ",\n\"translated_multi_instruction_entries\":" << translated_multi_instruction_entries
                << ",\n\"interrupted_resumptions\":" << interrupted_resumptions;
         oasis::hybrid::write_runner_report_details(report, registry.get(), blocks.get(), primitives.get());
-        oasis::hybrid::write_native_routine_accounting(report, routine_metrics,
-                                                       translated_instructions,
-                                                       primitive_guest_instructions,
-                                                       interpreter_instructions);
+        oasis::hybrid::write_native_routine_accounting(report, routine_metrics, translated_instructions, primitive_guest_instructions, interpreter_instructions);
         report
                << ",\n\"full_cpu_equivalence\":" << (full_cpu_equivalent ? "true" : "false")
                << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""
                << (selected_target == 0x3820 ? oasis::hybrid::override_blocker : "") << "\"\n}\n";
-        calls.close();
-        checkpoints.close();
-        if (evidence) evidence->close();
-        report.close();
+        calls.close(); checkpoints.close(); if (evidence) evidence->close(); report.close();
         if (!completed) {
             std::ofstream failure(std::filesystem::path(directory) / "FIRST_DIVERGENCE.txt");
             failure << (error_text.empty() ? "incomplete scenario or no natural calls" : error_text);

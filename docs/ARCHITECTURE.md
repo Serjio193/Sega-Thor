@@ -2,6 +2,17 @@
 
 ## Target architecture
 
+## M11.57 parent-owned suffix helper
+
+`oasis_core` now contains `ParentSuffixMachine` and the minimal
+`ParentSuffixContract`. It owns only the five safe-RAM SF writes, structural
+RamFlag composition, resumable phase tokens and opaque parent handoff. The
+developer-only hybrid adapter owns canonical ROM validation, GPGX fetch/timing,
+nested BSR representation, and mapping the handoff to `0x611D6`. The helper
+does not know the parent frame, SR restoration, hardware prefix, shared
+epilogue or enclosing RTS. See ADR-0038 and
+`reports/PARENT_SUFFIX_HANDOFF_M11_57.md`.
+
 ## M11.56 parent-frame boundary
 
 The 0x604F0 RamFlag caller suffix is an internal tail, not an independently

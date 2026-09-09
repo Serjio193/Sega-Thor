@@ -27,8 +27,8 @@ bool full_cpu_identity(bool completed, unsigned divergences, bool block_mode, Mo
 
 unsigned guest_instruction_total(unsigned interpreter, unsigned translated,
                                  unsigned mechanical, unsigned routine,
-                                 unsigned second_routine) {
-    return interpreter + translated + mechanical + routine + second_routine;
+                                 unsigned second_routine, unsigned internal_helper) {
+    return interpreter + translated + mechanical + routine + second_routine + internal_helper;
 }
 
 void write_native_routine_accounting(std::ostream& report,
@@ -51,12 +51,22 @@ void write_native_routine_accounting(std::ostream& report,
            << metrics.native_routine_second_boundary_yields
            << ",\n\"native_routine_second_resumptions\":"
            << metrics.native_routine_second_resumptions
+           << ",\n\"native_internal_helper_guest_instruction_executions\":"
+           << metrics.native_internal_helper_instructions
+           << ",\n\"native_internal_helper_invocations\":"
+           << metrics.native_internal_helper_invocations
+           << ",\n\"native_internal_helper_boundary_yields\":"
+           << metrics.native_internal_helper_boundary_yields
+           << ",\n\"native_internal_helper_resumptions\":"
+           << metrics.native_internal_helper_resumptions
            << ",\n\"guest_instruction_accounting\":{\"GENERATED_TRANSLATED\":"
            << generated_translated << ",\"MECHANICAL_PRIMITIVE\":"
            << mechanical_primitive << ",\"NATIVE_ROUTINE_TABLE_COPY\":"
            << metrics.native_routine_instructions
            << ",\"NATIVE_ROUTINE_SECOND\":"
            << metrics.native_routine_second_instructions
+           << ",\"PORTABLE_INTERNAL_HELPER\":"
+           << metrics.native_internal_helper_instructions
            << ",\"INTERPRETER\":" << interpreter << "}";
 }
 

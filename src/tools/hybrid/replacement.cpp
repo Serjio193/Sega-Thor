@@ -69,6 +69,10 @@ ReplacementMetrics Registry::totals() const {
         result.native_routine_second_invocations += metrics.native_routine_second_invocations;
         result.native_routine_second_boundary_yields += metrics.native_routine_second_boundary_yields;
         result.native_routine_second_resumptions += metrics.native_routine_second_resumptions;
+        result.native_internal_helper_instructions += metrics.native_internal_helper_instructions;
+        result.native_internal_helper_invocations += metrics.native_internal_helper_invocations;
+        result.native_internal_helper_boundary_yields += metrics.native_internal_helper_boundary_yields;
+        result.native_internal_helper_resumptions += metrics.native_internal_helper_resumptions;
     }
     return result;
 }

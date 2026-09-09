@@ -39,6 +39,10 @@ struct ReplacementMetrics {
     unsigned native_routine_second_invocations{};
     unsigned native_routine_second_boundary_yields{};
     unsigned native_routine_second_resumptions{};
+    unsigned native_internal_helper_instructions{};
+    unsigned native_internal_helper_invocations{};
+    unsigned native_internal_helper_boundary_yields{};
+    unsigned native_internal_helper_resumptions{};
 };
 
 class Replacement {
