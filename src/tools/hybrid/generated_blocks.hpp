@@ -36,6 +36,7 @@ BlockExit execute_0x03A9B4(BasicBlockApi&, unsigned);
 BlockExit execute_0x03A9CA(BasicBlockApi&, unsigned);
 BlockExit execute_0x000380(BasicBlockApi&, unsigned);
 BlockExit execute_0x03A864(BasicBlockApi&, unsigned);
+BlockExit execute_0x03A7AE(BasicBlockApi&, unsigned);
 
 unsigned instruction_count_from_0x002D66(unsigned);
 unsigned instruction_count_from_0x0604BC(unsigned);
@@ -65,6 +66,7 @@ unsigned instruction_count_from_0x03A9B4(unsigned);
 unsigned instruction_count_from_0x03A9CA(unsigned);
 unsigned instruction_count_from_0x000380(unsigned);
 unsigned instruction_count_from_0x03A864(unsigned);
+unsigned instruction_count_from_0x03A7AE(unsigned);
 
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks();
 

@@ -2,6 +2,29 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0025 — Promote only the canonical 0x03A7AE generated block
+**Status:** Accepted for M11.44 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** After M11.43 restored the authoritative checkpoint identity, the
+M11.42 restart gate reproduced the frozen 661,916 interpreter remainder. The
+hottest pair, 0x03A7AE `TST.W ($00FF1654).L` and 0x03A7B4 `BNE.W`, retained the
+M11.35 IR/prefetch rejection (`actual 0x4E73`, expected `0x4A79`).
+
+**Decision:** Re-run the exact decoder-owned pair through the current generic
+timing/refresh, instruction-boundary, checkpoint-canonicalization and GPGX
+shadow contracts. Promote it only as generator output with no address-specific
+semantic body or timing constant. Keep all other remaining forms fail-closed,
+retain 0x060BA4 as hardware-visible fallback, and close the complete remainder
+with a per-PC ledger rather than using an `other` bucket.
+
+**Consequences:** The historical rejection is preserved but classified obsolete.
+The pair passed 100,948 per-instruction shadow comparisons with zero divergence;
+the unchanged 600-frame native proof preserves checkpoint/video/CPU/boundary
+identity and removes 100,948 interpreter executions. Final translated share is
+91.3548%, below the 95% gate, so the result is
+`REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`.
+
 ## ADR-0024 — Canonicalize only the proven pinned-GPGX representation layout
 **Status:** Accepted for M11.43 developer-only hybrid tooling
 **Date:** 2026-09-09

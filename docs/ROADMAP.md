@@ -2,6 +2,27 @@
 
 The roadmap is ordered. Do not skip ahead unless a blocking dependency is documented.
 
+## M11.44 — Restart and remaining interpreter attribution — DONE
+
+M11.42 PHASE 1 was reproduced exactly twice from the M11.43 identity baseline:
+6,488,773 total, 5,826,857 translated, 661,916 interpreter, 28 ranges,
+140,065 yields, 274 interrupted resumptions, zero starts inside translated
+ranges, checkpoint aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`
+and video hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+
+Gate result: `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`.
+The exhaustive decoder-backed baseline ledger closes exactly at 661,916. The
+historical 0x03A7AE rejection is obsolete under the repaired bridge,
+canonicalization and current boundary contract. Its exact generated
+0x03A7AE–0x03A7B8 block passed 100,948 shadow comparisons with zero divergence
+and the unchanged 600-frame native proof. Final native execution translated
+5,927,805 instructions (91.3548%) and left 560,968 interpreter executions.
+No 95% claim is made; 0x060BA4 remains hardware-visible fallback and the
+remaining final Pareto is dominated by unverified semantic forms and proven
+unknown register-address evidence. Evidence:
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md` and
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md`.
+
 ## Status legend
 - `ACTIVE` — current milestone being worked on
 - `NEXT` — immediate queued milestone when useful to distinguish it from general TODO work

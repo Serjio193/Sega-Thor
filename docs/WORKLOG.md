@@ -3,6 +3,52 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.44 Restart and Remaining Interpreter Attribution — COMPLETE
+**Objective:** Reproduce the M11.43 authoritative baseline twice, then account
+for all `661,916` remaining interpreter executions with decoder-backed evidence.
+Coverage promotion remains conditional on exact semantic, shadow, boundary and
+native gates; no coverage is to be forced.
+
+**Acceptance criteria:** exact restart metrics; complete PC/count ledger whose
+counts sum to `661,916`; preserved `0x03A7AE` historical rejection re-tested
+against the current bridge; independent verification and mechanical generation
+only for proven candidates; governance, hygiene, full Debug/Release/GNU checks,
+commit, push and CI result.
+
+**Actions:** Re-read repository instructions and all current governance docs;
+reproduced the M11.43 authoritative restart baseline twice. Added the bounded
+developer-only `interpreter_ledger`, reusing the existing profile and exact
+slice decoder, and generated complete pre-/post-promotion per-PC ledgers.
+Re-tested 0x03A7AE/0x03A7B4 under the current bridge and boundary contract;
+generated the exact decoder-owned block mechanically and registered it as
+`generated_blocks_m1144.cpp`. No handwritten candidate execution body,
+address-specific semantic patch, candidate timing constant or hardware-model
+change was added.
+
+**Evidence:** Restart runs matched aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, total
+6,488,773, translated 5,826,857, interpreter 661,916, 28 ranges, 140,065
+yields, 274 resumptions and zero starts inside translated ranges. The historical
+0x03A7AE mismatch (`actual IR/prefetch 0x4E73`, expected `0x4A79`) is obsolete:
+the current generated block passed 100,948 shadow comparisons with zero
+divergence. Native promotion preserved exact checkpoint/video identity, CPU /
+RAM / VDP / sound and boundary equivalence; final metrics are 29 ranges,
+5,927,805 translated, 560,968 interpreter, 142,813 yields and 288 resumptions.
+The 0x060BA4 `0xA00003` access remains hardware-visible fallback.
+
+**Validation:** The baseline and final profiles close exactly at 661,916 and
+560,968 respectively. Full MSVC Debug CTest passed 56/56, MSVC Release CTest
+passed 56/56, and GNU-equivalent MinGW CTest passed 56/56. The focused semantic,
+generator/provenance, checkpoint and boundary suites are included in those
+runs; diff hygiene, source line-limit and repository hygiene passed before push.
+
+**Result:** `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`.
+Final translated share is 91.3548%; the 95% gate was not forced. M11.39,
+M11.40, M11.41, M11.42 and M11.43 history remains preserved.
+
+**Exact next step:** stop; do not implement the next milestone in this task.
+
 ## 2026-09-09 — M11.43 GPGX Checkpoint Canonicalization Contract — COMPLETE
 **Objective:** Resolve the M11.42 checkpoint identity blocker by proving the
 pinned GPGX v1.7.6 raw-state layout and canonicalizing only host representation.

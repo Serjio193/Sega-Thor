@@ -90,6 +90,15 @@ hashing and evidence files. The layout table is generated from mirrored field
 offsets and ABI assertions; production `oasis_core` and generated game blocks
 do not depend on it.
 
+M11.44 adds `interpreter_ledger`, a developer-only consumer of the existing
+profile writer and `re_slice_decoder`. It records one evidence row per dynamic
+interpreter PC and closes counts exactly; it does not infer indirect CFGs or
+hardware behavior. The promoted 0x03A7AE block is emitted by the existing
+decoder-to-C++ generator into `generated_blocks_m1144.cpp`; registry metadata
+and the generic `basic_block` boundary glue remain separate handwritten
+integration code. The final interpreter remainder stays fail-closed for
+unverified semantics, unresolved register-based memory and 0xA00003 hardware.
+
 Tools must not require committing extracted assets.
 
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.

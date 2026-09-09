@@ -2,7 +2,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     basic_block_reference.cpp
     interpreter_profile.cpp
     generated_block_runtime.cpp generated_blocks.cpp generated_blocks_m1137.cpp
-    generated_blocks_m1138.cpp generated_blocks_m1139.cpp generated_block_registry.cpp
+    generated_blocks_m1138.cpp generated_blocks_m1139.cpp generated_blocks_m1144.cpp generated_block_registry.cpp
     recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp
     candidate_2d66.cpp candidate_604bc.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
@@ -45,6 +45,8 @@ add_test(NAME oasis_hybrid_checkpoint_layout COMMAND oasis_hybrid_checkpoint_lay
 target_compile_options(oasis_hybrid_checkpoint_layout_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 add_executable(oasis_hybrid_recomp_generate recomp_generator_report.cpp)
 target_link_libraries(oasis_hybrid_recomp_generate PRIVATE oasis_hybrid_contract)
+add_executable(oasis_hybrid_interpreter_ledger interpreter_ledger.cpp)
+target_link_libraries(oasis_hybrid_interpreter_ledger PRIVATE oasis_hybrid_contract)
 target_compile_options(oasis_hybrid_recomp_generator_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_generated_block_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_generated_provenance_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)

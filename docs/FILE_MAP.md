@@ -39,6 +39,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── CHECKPOINT_IDENTITY_M11_41.md M11.41 checkpoint provenance/repair report
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_42.md M11.42 restart-gate blocker report
 │   │   └── CHECKPOINT_CANONICALIZATION_M11_43.md M11.43 exact GPGX state-layout and identity proof
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md M11.44 exhaustive pre-promotion interpreter ledger
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md M11.44 final post-promotion interpreter ledger/Pareto
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -108,12 +110,14 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks_m1137.cpp Generated M11.37 single-instruction bodies
 │       │   ├── generated_blocks_m1138.cpp Generated M11.38 multi-instruction bodies
 │       │   ├── generated_blocks_m1139.cpp Generated M11.39 hot-path bodies
+│       │   ├── generated_blocks_m1144.cpp Generated M11.44 0x03A7AE block body
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue
 │       │   ├── basic_block.hpp BlockExit contract, registry state and metrics
 │       │   ├── interpreter_profile.cpp Ranked interpreter fallback profile writer
 │       │   ├── interpreter_profile.hpp Interpreter profile writer API
+│       │   ├── interpreter_ledger.cpp Exhaustive decoder-backed interpreter attribution CLI
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   ├── checkpoint_evidence.cpp Raw checkpoint evidence and canonical identity adapter

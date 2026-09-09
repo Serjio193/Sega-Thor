@@ -1,6 +1,37 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.44 — Remaining interpreter attribution and bounded promotion
+STATUS: `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`.
+
+The M11.43 authoritative identity restart was reproduced twice from
+`f71c92eecc128ef3eb2ffac835ec9f9dfd6bde94`: 6,488,773 total guest
+instructions, 5,826,857 translated, 661,916 interpreter, 28 registered ranges,
+140,065 boundary yields, 274 interrupted resumptions, zero original starts
+inside translated ranges, checkpoint aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, and video
+hash `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+
+`interpreter_ledger` uses the existing profile and exact slice decoder to emit
+one row per executed PC. The pre-promotion profile closes exactly at 661,916;
+the final post-promotion profile closes exactly at 560,968. Each row retains
+opcode bytes, exact decoded form when available, decoder range, bounded static
+predecessor/successor evidence, semantic/generator state, memory class,
+hardware visibility, history and a terminal blocker. Register-based unresolved
+addresses are explicitly `UNKNOWN_WITH_EVIDENCE`; no generic `other` bucket is
+used. See `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md` and
+`docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md`.
+
+The required historical rejection at 0x03A7AE is still preserved, but is
+obsolete under the current bridge/boundary/canonicalization contract. Its
+generator output for `TST.W ($00FF1654).L` followed by `BNE.W` passed 100,948
+per-instruction shadow comparisons with zero divergence and the unchanged
+native scenario. The final run has 29 ranges, 5,927,805 translated
+instructions, 560,968 interpreter instructions and 91.3548% translated share.
+The 0x060BA4 `0xA00003` access remains fallback because the existing shared bus
+contract does not prove its ordered hardware behavior. No other candidate was
+promoted.
+
 ## M11.43 — Complete GPGX checkpoint canonicalization contract
 STATUS: `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`.
 

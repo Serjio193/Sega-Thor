@@ -32,6 +32,7 @@ const GeneratedBlockSpec kBlocks[] = {
     {0x03A9CAU, 0x03A9D4U, 2U, execute_0x03A9CA, instruction_count_from_0x03A9CA},
     {0x000380U, 0x0003A0U, 16U, execute_0x000380, instruction_count_from_0x000380},
     {0x03A864U, 0x03A868U, 1U, execute_0x03A864, instruction_count_from_0x03A864},
+    {0x03A7AEU, 0x03A7B8U, 2U, execute_0x03A7AE, instruction_count_from_0x03A7AE},
 };
 
 std::span<const GeneratedBlockSpec> blocks() { return kBlocks; }

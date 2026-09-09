@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.44 complete — remaining interpreter attribution and
+bounded block promotion
+CURRENT_TASK: complete; M11.42 attribution resumed after M11.43 identity repair
+STATUS: COMPLETE — `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`
+SCOPE_BOUNDARY: developer-only decoder ledger and one exact generated block;
+no hardware bridge expansion, indirect CFG invention, production dependency or
+forced 95% coverage.
+LAST_VERIFIED_RESULT: baseline 661,916 interpreter executions closed exactly;
+0x03A7AE/0x03A7B4 passed 100,948 per-instruction shadow comparisons with zero
+divergence and the final native run preserved the authoritative checkpoint and
+video identities. Final translated share is 91.3548% with 560,968 interpreter
+executions.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md` and
+`docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md`.
+NEXT_GATE: new milestone required before further promotion.
+
 CURRENT_MILESTONE: M11.43 complete — GPGX checkpoint canonicalization contract
 CURRENT_TASK: complete; no M11.42 attribution or coverage work performed
 STATUS: COMPLETE — `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`

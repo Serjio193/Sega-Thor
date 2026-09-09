@@ -1,5 +1,20 @@
 # Current task
 
+TASK: M11.44 Restart — Remaining Interpreter Attribution and 95% Coverage Gate
+STATUS: COMPLETE — `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`
+BASELINE: `f71c92eecc128ef3eb2ffac835ec9f9dfd6bde94`
+SCOPE: Resume M11.42 only after the M11.43 checkpoint identity repair; build an
+exhaustive decoder-backed interpreter ledger, re-test 0x03A7AE, and promote only
+the exact mechanically generated block that passes the existing shadow/native
+gates. No hardware-contract broadening, indirect-CFG invention or 95% forcing.
+RESULT: The 661,916 baseline remainder is closed exactly. The generated
+0x03A7AE–0x03A7B8 block removed 100,948 executions after zero-divergence shadow
+and native proof. The final run has 560,968 interpreter executions and 91.3548%
+translated share; the 95% gate is not met. Hardware 0x060BA4 remains fallback.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md` and
+`docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md`
+NEXT ACTION: Do not implement the next milestone in this task.
+
 TASK: M11.43 Complete GPGX Checkpoint Canonicalization Contract
 STATUS: COMPLETE — `CHECKPOINT_CANONICALIZATION_COMPLETED_NEW_AUTHORITATIVE_IDENTITY`
 BASELINE: `c59dd1bb62e03df0639484de214a482204eb0d63`
