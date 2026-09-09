@@ -52,7 +52,8 @@ dependency was added. Final Debug, Release and GNU/MinGW-equivalent builds
 and CTest all pass `64/64`; `git diff --check`, source-limit,
 core-dependency and repository-hygiene gates pass. Two final native runs are
 byte-for-byte deterministic at the canonical manifest level and each matches
-the reference; final CI status is recorded after push.
+the reference. GitHub Actions `CI` run `34369580063` for commit
+`d84bf14610cd3699edbd1f9f43f68f372668e811` passed build and test.
 
 ## 2026-09-09 — M11.51 First Portable Native Routine Reconstruction — REPLACEMENT BLOCKED
 **Objective:** Extract exactly one complete, evidence-backed structural ROM
