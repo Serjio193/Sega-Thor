@@ -777,3 +777,27 @@ own post-return and serialized-state boundary.
 **Affected files/milestones:** `src/tools/hybrid/replacement.hpp`,
 `src/tools/hybrid/gpgx_bridge.c`, `src/tools/hybrid/runner.cpp`, the 2D66
 adapter/test and M11.52 evidence/governance.
+# ADR-0034 — Second portable native routine contract
+Status: Accepted for M11.53
+Date: 2026-09-09
+
+Context: M11.52 proved that native replacement requires per-instruction GPGX
+continuation. M11.53 had one complete natural candidate, 0x604BC, whose old
+adapter used a lump-sum timing handoff.
+
+Decision: Extract only the structured BSET/Scc/LEA/RTS semantics of
+0x604BC..0x604E6 into oasis_core with opaque tokens, portable registers and
+memory, and explicit resumable boundaries. Keep ROM metadata, canonical
+opcode/extension validation, GPGX fetch/begin/finish, prefetch/refresh,
+boundary sampling, block-hook continuation return and RTS return state in
+tools/hybrid. Promote only after
+paired dual-routine checkpoint/video identity and separate accounting.
+
+Consequences: TableCopyRoutine and the second routine coexist through the
+existing registry without shared candidate state. No gameplay meaning,
+hardware behavior, subsystem abstraction or second timing model is added.
+The old lump-sum adapter path is removed for 0x604BC; generated execution
+remains the oracle/fallback.
+
+Affected files/milestones: src/core/ram_flag_routine.*, the 0x604BC adapter
+and regression test, replacement accounting, M11.53 report.

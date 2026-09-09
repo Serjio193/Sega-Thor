@@ -20,6 +20,7 @@ struct CandidateApi {
     unsigned (*fetch16)(){};
     void (*begin_instruction)(unsigned){};
     void (*finish_instruction)(unsigned){};
+    unsigned (*boundary_reason)(){};
 };
 
 struct ReplacementMetrics {
@@ -34,12 +35,17 @@ struct ReplacementMetrics {
     unsigned native_routine_iterations{};
     unsigned native_routine_boundary_yields{};
     unsigned native_routine_resumptions{};
+    unsigned native_routine_second_instructions{};
+    unsigned native_routine_second_invocations{};
+    unsigned native_routine_second_boundary_yields{};
+    unsigned native_routine_second_resumptions{};
 };
 
 class Replacement {
 public:
     virtual ~Replacement() = default;
     virtual unsigned target_address() const = 0;
+    virtual int dispatch(unsigned) noexcept { return 0; }
     virtual void hook(int type, int width, unsigned address, unsigned value) noexcept = 0;
     virtual bool complete() const = 0;
     virtual const std::string& error() const = 0;
@@ -49,6 +55,7 @@ public:
 class Registry {
 public:
     explicit Registry(std::vector<Replacement*> targets) : targets_(std::move(targets)) {}
+    int dispatch(unsigned address) noexcept;
     void hook(int type, int width, unsigned address, unsigned value) noexcept;
     bool complete() const;
     const std::string& error() const { return error_; }

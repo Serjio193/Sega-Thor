@@ -1,5 +1,19 @@
 # Project State
 
+CURRENT_MILESTONE: M11.53 complete — second portable native routine
+CURRENT_TASK: complete; 0x604BC extraction, continuation and dual promotion
+STATUS: COMPLETE — SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN
+SCOPE_BOUNDARY: two isolated structural routines only; no gameplay role,
+new hardware behavior, full emulator dependency or subsystem implementation.
+LAST_VERIFIED_RESULT: paired 600-frame dual-routine evidence matches aggregate
+251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d and video
+5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58, with
+6,488,773 total / 6,488,699 interpreter / 34 TableCopy / 40 second-routine
+instructions and zero fallback.
+The native continuation bridge recorded one event-boundary yield and one
+resumption; shadow remained 5/5 with zero divergence.
+EVIDENCE: docs/reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md.
+
 CURRENT_MILESTONE: M11.52 complete — native routine checkpoint mismatch closure
 CURRENT_TASK: complete; `TableCopyRoutine` continuation repair and promotion
 STATUS: COMPLETE — `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`

@@ -659,3 +659,15 @@ Only after base parity: scaling/resolution, controller UX, widescreen experiment
 
 ## Deferred
 **The Story of Thor 2 / The Legend of Oasis** is explicitly deferred until the first project reaches a mature parity milestone.
+# M11.53 — Second portable native routine — DONE
+
+M11.53 extracted the bounded direct-RTS RAM flag/output leaf
+0x604BC..0x604E6 into oasis_core. Its adapter validates the exact
+opcode/extension stream and drives every instruction through GPGX
+fetch/begin/finish, boundary sampling and RTS return/prefetch handoff. The
+dual 0x2D66,0x604BC 600-frame native runs match the reference aggregate,
+video and accounting: 6,488,699 interpreter, 34 TableCopy and 40 second
+routine instructions, zero fallback/divergence. Result:
+SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN. Evidence:
+reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md.
+The shared block-hook continuation recorded one event yield and one resumption.

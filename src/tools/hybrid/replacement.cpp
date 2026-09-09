@@ -4,6 +4,23 @@
 
 namespace oasis::hybrid {
 
+int Registry::dispatch(unsigned address) noexcept {
+    if (!error_.empty()) return 0;
+    try {
+        for (auto* target : targets_) {
+            const auto result = target->dispatch(address);
+            if (!target->error().empty()) throw std::runtime_error(target->error());
+            if (result) {
+                active_ = target->complete() ? nullptr : target;
+                return result;
+            }
+        }
+    } catch (const std::exception& error) {
+        error_ = error.what();
+    }
+    return 0;
+}
+
 void Registry::hook(int type, int width, unsigned address, unsigned value) noexcept {
     if (!error_.empty()) return;
     try {
@@ -48,6 +65,10 @@ ReplacementMetrics Registry::totals() const {
         result.native_routine_iterations += metrics.native_routine_iterations;
         result.native_routine_boundary_yields += metrics.native_routine_boundary_yields;
         result.native_routine_resumptions += metrics.native_routine_resumptions;
+        result.native_routine_second_instructions += metrics.native_routine_second_instructions;
+        result.native_routine_second_invocations += metrics.native_routine_second_invocations;
+        result.native_routine_second_boundary_yields += metrics.native_routine_second_boundary_yields;
+        result.native_routine_second_resumptions += metrics.native_routine_second_resumptions;
     }
     return result;
 }

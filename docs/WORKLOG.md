@@ -3,6 +3,43 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-09 — M11.53 second portable native routine — COMPLETE
+
+**TASK:** From baseline f2d82cba8fc7c038d28652949783d38f0df5f1a0, prove and
+promote exactly one second complete portable native routine. The pre-change
+baseline gate must reproduce M11.52 twice; the selected routine must have a
+closed contract, independent core vectors, per-instruction hybrid continuation,
+paired 600-frame identity and separated accounting. If any gate fails, stop
+and record the negative result.
+
+**ACCEPTANCE:** Candidate 0x604BC..0x604E6 is the selected bounded direct-RTS
+RAM flag/output leaf. It has one reachable block, ten instructions, no calls,
+indirect edges or loops, four natural calls and safe RAM/stack effects.
+oasis_core owns only the structured flag/output semantics and continuation
+tokens; tools/hybrid owns ROM opcode/extension validation, GPGX fetch,
+begin/finish, prefetch/RTS state and boundary mapping. The dual native proof
+must preserve the frozen aggregate/video identity and total
+6,488,773 = 6,488,699 interpreter + 34 TableCopy + 40 second routine.
+
+**CONFIDENCE BEFORE PRODUCTION CODE:** 95%. The candidate's exact range,
+natural ledger, safe-memory evidence and 4/4 shadow proof were already
+documented; the remaining uncertainty was the M11.52 per-instruction
+continuation and full checkpoint identity, which are now being tested
+explicitly.
+
+**RESULT:** Baseline A/B reference/native passed exactly. The extracted
+0x604BC adapter passed 4/4 shadow, standalone core vectors, exact bridge
+regression and dual 600-frame native A/B. The authoritative paired aggregate
+is 251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d and the
+video hash is 5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58.
+Accounting is 6,488,699 interpreter + 34 TableCopy + 40 second routine =
+6,488,773, with one native event yield, one resumption, and zero
+fallback/divergence. Debug, Release and GNU-equivalent full CTest all passed
+66/66, including source line-limit and core dependency-boundary checks;
+`git diff --check` passed; the source-limit gate reports `runner.cpp` at the
+500-line ceiling, and tracked repository hygiene is clean with all ROM-backed
+run evidence left untracked.
+
 ## 2026-09-09 — M11.52 native routine checkpoint mismatch root-cause closure — COMPLETE
 **TASK:** Close the M11.51 authoritative checkpoint mismatch for the single
 `TableCopyRoutine` call at `0x2D66..0x2D84`.

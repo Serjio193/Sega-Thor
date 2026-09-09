@@ -1,6 +1,32 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.53 — Second portable native routine
+STATUS: SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN.
+
+The bounded USA-ROM leaf 0x604BC..0x604E6 is a complete routine contract:
+ten instructions, one CFG block, one RTS at 0x604E4, no calls, indirect
+edges or loops, four natural invocations and only bounded main-RAM flag/output
+plus caller-stack effects. BSET updates only Z from the tested pre-operation
+bit; the three postincrement and one absolute SF writes are zero-byte writes.
+oasis_core owns the portable structured executor and opaque continuation
+tokens. The developer-only adapter owns exact bytes, fetch/begin/finish,
+prefetch/IR, refresh/boundary and RTS state.
+
+Independent core vectors and an adapter fetch/finish regression pass. A paired
+600-frame dual native proof with 0x2D66 matches the frozen checkpoint
+aggregate/video identity and closes 6,488,773 as 6,488,699 interpreter + 34
+TableCopy + 40 second-routine instructions. Nearby candidates remain
+CONTINUATION_BLOCKED (0x61032 and 0x3820), HARDWARE_BLOCKED (0x6121A),
+SEMANTICS_BLOCKED (broad graphics slices) or ROUTINE_CONTRACT_PARTIAL
+(isolated M11.47 forms). No subsystem boundary or gameplay meaning is
+assigned.
+
+The authoritative native adapter uses the shared block-hook continuation path:
+the unchanged 600-frame run recorded one event boundary yield and one resume
+at opaque continuation token 0x604DA, with zero fallback or divergence. The
+natural shadow remained 5/5 with zero divergence.
+
 # M11.52 — Native routine checkpoint mismatch root-cause closure
 STATUS: `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN` for the bounded
 `TableCopyRoutine` at `0x002D66..0x002D84`.

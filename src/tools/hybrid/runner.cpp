@@ -13,6 +13,7 @@
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
+#include <algorithm>
 #include <filesystem>
 #include <cstdlib>
 #include <fstream>
@@ -26,7 +27,6 @@
 #else
 #include <dlfcn.h>
 #endif
-
 namespace {
 class Library {
 public:
@@ -97,6 +97,10 @@ int block_hook(unsigned address) {
         const auto result = primitive_registry->dispatch(address);
         if (result) return result;
     }
+    if (registry_dispatch) {
+        const auto result = registry_dispatch->dispatch(address);
+        if (result) return result;
+    }
     return block_registry ? block_registry->dispatch(address) : 0;
 }
 unsigned parse_target(std::string_view text) {
@@ -142,14 +146,7 @@ void audio(std::int16_t, std::int16_t) {}
 std::size_t audio_batch(const std::int16_t*, std::size_t frames) { return frames; }
 void poll() {}
 std::int16_t input(unsigned, unsigned, unsigned, unsigned) { return 0; }
-std::string hash_text(const std::string& value) {
-    return oasis::calculate_sha256({reinterpret_cast<const std::uint8_t*>(value.data()), value.size()});
 }
-bool checkpoint_evidence_enabled() {
-    return std::getenv("OASIS_CHECKPOINT_EVIDENCE") != nullptr;
-}
-}
-
 int main(int argc, char** argv) {
     if (argc != 6 && argc != 7) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
@@ -188,6 +185,7 @@ int main(int argc, char** argv) {
             begin = comma + 1;
         }
         const auto selected_target = selected_targets.empty() ? 0U : selected_targets.front();
+        const auto native_routine_block_mode = mode_text == "NATIVE_OVERRIDE" && std::find(selected_targets.begin(), selected_targets.end(), 0x604BCU) != selected_targets.end();
         if (discover_mode) {
             discovery_mode = true;
             discovered_pcs.clear();
@@ -280,7 +278,8 @@ int main(int argc, char** argv) {
                 refresh_cycles, skip_bus_refresh,
                 library.get<unsigned(*)()>("retro_hybrid_fetch16"),
                 library.get<void(*)(unsigned)>("retro_hybrid_begin_instruction"),
-                library.get<void(*)(unsigned)>("retro_hybrid_finish_instruction")};
+                library.get<void(*)(unsigned)>("retro_hybrid_finish_instruction"),
+                library.get<unsigned(*)()>("retro_hybrid_boundary_reason")};
             for (const auto target : selected_targets) {
                 if (target == 0x2D66)
                     candidate_storage.push_back(std::make_unique<oasis::hybrid::Candidate2D66>(api, mode, rom.bytes(), calls));
@@ -306,8 +305,7 @@ int main(int argc, char** argv) {
             throw std::runtime_error("GPGX rejected ROM");
         if (address_mode) address_observer = std::make_unique<oasis::hybrid::AddressProvenanceObserver>(std::filesystem::path(directory) / "address_provenance.json", rom.size(), reg);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(hook);
-        if (block_mode)
-            library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(block_hook);
+        if (block_mode || native_routine_block_mode) library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(block_hook);
         const auto run = library.get<decltype(&retro_run)>("retro_run");
         const auto size = library.get<decltype(&retro_serialize_size)>("retro_serialize_size");
         const auto serialize = library.get<decltype(&retro_serialize)>("retro_serialize");
@@ -315,7 +313,7 @@ int main(int argc, char** argv) {
         std::ofstream checkpoints(std::filesystem::path(directory) / "checkpoints.jsonl");
         checkpoints.exceptions(std::ios::failbit | std::ios::badbit);
         std::unique_ptr<oasis::hybrid::CheckpointEvidence> evidence;
-        if (checkpoint_evidence_enabled()) {
+        if (std::getenv("OASIS_CHECKPOINT_EVIDENCE") != nullptr) {
             evidence = std::make_unique<oasis::hybrid::CheckpointEvidence>(directory);
         }
         for (unsigned frame = 0; frame < frames; ++frame) {
@@ -357,8 +355,7 @@ int main(int argc, char** argv) {
                       << " unique_pcs=" << discovered_pcs.size() << '\n';
             return discovered_pcs.empty() ? 1 : 0;
         }
-        if (block_mode)
-            library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
+        if (block_mode || native_routine_block_mode) library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
         if (address_observer) { address_observer->finish(); address_observer.reset(); }
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
@@ -428,7 +425,7 @@ int main(int argc, char** argv) {
             complete = true;
         }
         interpreter_instructions = interpreter_instruction_executions;
-        total_guest_instructions = oasis::hybrid::guest_instruction_total(interpreter_instructions, translated_instructions, primitive_guest_instructions, routine_metrics.native_routine_instructions);
+        total_guest_instructions = oasis::hybrid::guest_instruction_total(interpreter_instructions, translated_instructions, primitive_guest_instructions, routine_metrics.native_routine_instructions, routine_metrics.native_routine_second_instructions);
         observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
         oasis::hybrid::write_interpreter_profile_report(std::filesystem::path(directory) / "interpreter_profile.json", mode_text, observed_pcs, interpreter_instructions);
         const auto body_skipped = oasis::hybrid::body_was_skipped(block_mode, override_calls, original_inside, registry.get(), body_instructions);
@@ -452,8 +449,8 @@ int main(int argc, char** argv) {
                << ",\n\"external_interrupts_during_calls\":" << interrupts
                << ",\n\"native_override_calls\":" << override_calls << ",\n\"original_body_skipped\":"
                << (body_skipped ? "true" : "false") << ",\n\"scenario_completed\":"
-               << (completed ? "true" : "false") << ",\n\"state_checkpoints_sha256\":\"" << hash_text(state_hashes)
-               << "\",\n\"video_sequence_sha256\":\"" << hash_text(video_hashes)
+               << (completed ? "true" : "false") << ",\n\"state_checkpoints_sha256\":\"" << oasis::hybrid::hash_text(state_hashes)
+               << "\",\n\"video_sequence_sha256\":\"" << oasis::hybrid::hash_text(video_hashes)
                << "\",\n\"fallback_emulated_calls\":" << (natural_calls - override_calls)
                << ",\n\"native_call_share\":" << (natural_calls ?
                    static_cast<double>(override_calls) / natural_calls : 0.0)
@@ -478,7 +475,10 @@ int main(int argc, char** argv) {
                << ",\n\"translated_multi_instruction_entries\":" << translated_multi_instruction_entries
                << ",\n\"interrupted_resumptions\":" << interrupted_resumptions;
         oasis::hybrid::write_runner_report_details(report, registry.get(), blocks.get(), primitives.get());
-        oasis::hybrid::write_native_routine_accounting(report, routine_metrics);
+        oasis::hybrid::write_native_routine_accounting(report, routine_metrics,
+                                                       translated_instructions,
+                                                       primitive_guest_instructions,
+                                                       interpreter_instructions);
         report
                << ",\n\"full_cpu_equivalence\":" << (full_cpu_equivalent ? "true" : "false")
                << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""

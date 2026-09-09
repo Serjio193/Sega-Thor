@@ -1,8 +1,13 @@
 #include "tools/hybrid/runner_report.hpp"
 
 #include "tools/hybrid/interpreter_profile.hpp"
+#include "core/rom_identity.hpp"
 
 namespace oasis::hybrid {
+
+std::string hash_text(std::string_view value) {
+    return oasis::calculate_sha256({reinterpret_cast<const std::uint8_t*>(value.data()), value.size()});
+}
 
 void write_interpreter_profile_report(const std::filesystem::path& path, std::string_view mode,
                                       const std::map<unsigned, unsigned>& pcs,
@@ -21,19 +26,38 @@ bool full_cpu_identity(bool completed, unsigned divergences, bool block_mode, Mo
 }
 
 unsigned guest_instruction_total(unsigned interpreter, unsigned translated,
-                                 unsigned mechanical, unsigned routine) {
-    return interpreter + translated + mechanical + routine;
+                                 unsigned mechanical, unsigned routine,
+                                 unsigned second_routine) {
+    return interpreter + translated + mechanical + routine + second_routine;
 }
 
 void write_native_routine_accounting(std::ostream& report,
-                                     const ReplacementMetrics& metrics) {
+                                     const ReplacementMetrics& metrics,
+                                     unsigned generated_translated,
+                                     unsigned mechanical_primitive,
+                                     unsigned interpreter) {
     report << ",\n\"native_routine_guest_instruction_executions\":"
            << metrics.native_routine_instructions
            << ",\n\"native_routine_invocations\":" << metrics.native_routine_invocations
            << ",\n\"native_routine_copy_iterations\":" << metrics.native_routine_iterations
            << ",\n\"native_routine_boundary_yields\":"
            << metrics.native_routine_boundary_yields
-           << ",\n\"native_routine_resumptions\":" << metrics.native_routine_resumptions;
+           << ",\n\"native_routine_resumptions\":" << metrics.native_routine_resumptions
+           << ",\n\"native_routine_second_guest_instruction_executions\":"
+           << metrics.native_routine_second_instructions
+           << ",\n\"native_routine_second_invocations\":"
+           << metrics.native_routine_second_invocations
+           << ",\n\"native_routine_second_boundary_yields\":"
+           << metrics.native_routine_second_boundary_yields
+           << ",\n\"native_routine_second_resumptions\":"
+           << metrics.native_routine_second_resumptions
+           << ",\n\"guest_instruction_accounting\":{\"GENERATED_TRANSLATED\":"
+           << generated_translated << ",\"MECHANICAL_PRIMITIVE\":"
+           << mechanical_primitive << ",\"NATIVE_ROUTINE_TABLE_COPY\":"
+           << metrics.native_routine_instructions
+           << ",\"NATIVE_ROUTINE_SECOND\":"
+           << metrics.native_routine_second_instructions
+           << ",\"INTERPRETER\":" << interpreter << "}";
 }
 
 void write_runner_report_details(std::ostream& report, const Registry* registry,

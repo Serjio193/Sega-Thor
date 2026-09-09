@@ -1,5 +1,19 @@
 # Current task
 
+TASK: M11.53 Second Portable Native Routine Candidate and Promotion
+STATUS: COMPLETE — SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN
+BASELINE: f2d82cba8fc7c038d28652949783d38f0df5f1a0
+SCOPE: Extract exactly one second complete routine into oasis_core, while
+keeping ROM/GPGX continuation and provenance in developer-only hybrid tooling.
+RESULT: 0x604BC..0x604E6 passed closed-contract, semantic-vector,
+per-instruction continuation, paired 600-frame dual-routine checkpoint/video
+and accounting gates. Total: 6,488,773 = 6,488,699 interpreter + 34 TableCopy
++ 40 second routine; fallback and divergence are zero.
+The native continuation bridge recorded one event yield and one resumption.
+EVIDENCE: docs/reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md.
+NEXT ACTION: Stop. Do not implement a subsystem or chase coverage without a
+new bounded milestone.
+
 TASK: M11.52 Native Routine Checkpoint Mismatch Root-Cause Closure
 STATUS: COMPLETE — `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`
 BASELINE: `765dad685b73a72a06d2fd3d1c7b8c5b2f7f61f2`

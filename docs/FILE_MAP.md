@@ -1,5 +1,12 @@
 # File Map
 
+M11.53 additions: src/core/ram_flag_routine.cpp/.hpp owns the portable
+structured RAM flag/output routine contract; src/tools/hybrid/candidate_604bc
+owns the ROM-specific per-instruction adapter; tests/ram_flag_routine_test.cpp
+and tests/hybrid_candidate_604bc_test.cpp provide standalone and bridge
+regressions; docs/reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md records the
+candidate inventory and dual promotion evidence.
+
 This document is the canonical map of repository structure. Update it whenever structure or responsibilities change.
 
 ```text
@@ -50,6 +57,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── MECHANICAL_PRIMITIVE_FAMILY_M11_49.md M11.49 mechanical primitive family closure proof
 │   │   └── FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md M11.51 routine extraction and replacement gate
 │   │   └── NATIVE_ROUTINE_MISMATCH_M11_52.md M11.52 continuation mismatch closure and promotion proof
+│   │   └── SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md M11.53 second routine contract and dual promotion proof
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -67,6 +75,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── mechanical_primitive.hpp Portable primitive contract and continuation API
 │   │   ├── table_copy_routine.cpp Portable structured table-copy routine executor
 │   │   ├── table_copy_routine.hpp Routine contract, machine interface and continuation API
+│   │   ├── ram_flag_routine.cpp Portable structured RAM flag/output routine executor
+│   │   ├── ram_flag_routine.hpp RAM flag/output contract and continuation API
 │   │   ├── runtime.cpp        Explicit deterministic frame stepping
 │   │   └── runtime.hpp        Portable controller/input/frame runtime API
 │   ├── genesis/

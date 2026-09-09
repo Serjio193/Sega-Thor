@@ -62,6 +62,14 @@ update is not a valid continuation. Checkpoint canonicalization remains an
 identity proof for host representation only and is not a native promotion
 escape hatch.
 
+M11.53 adds RamFlagRoutine as a second isolated core contract. It owns only
+structured BSET/Scc/LEA/RTS semantics, opaque tokens and resumable boundaries.
+The 0x604BC adapter owns canonical bytes, ROM addresses, GPGX prefetch
+seeding, per-instruction timing/refresh, block-hook boundary return and return
+state. The shared registry allows deterministic coexistence with
+TableCopyRoutine; the two core contracts have no shared candidate state or
+address assumptions.
+
 ### `genesis`
 Minimal compatibility layer for Mega Drive concepts actually used by the game.
 

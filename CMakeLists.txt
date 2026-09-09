@@ -10,6 +10,7 @@ add_library(oasis_core
     src/core/rom_identity.cpp
     src/core/mechanical_primitive.cpp
     src/core/table_copy_routine.cpp
+    src/core/ram_flag_routine.cpp
     src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
@@ -201,6 +202,9 @@ add_test(NAME oasis_mechanical_primitive COMMAND oasis_mechanical_primitive_test
 add_executable(oasis_table_copy_routine_test tests/table_copy_routine_test.cpp)
 target_link_libraries(oasis_table_copy_routine_test PRIVATE oasis_core)
 add_test(NAME oasis_table_copy_routine COMMAND oasis_table_copy_routine_test)
+add_executable(oasis_ram_flag_routine_test tests/ram_flag_routine_test.cpp)
+target_link_libraries(oasis_ram_flag_routine_test PRIVATE oasis_core)
+add_test(NAME oasis_ram_flag_routine COMMAND oasis_ram_flag_routine_test)
 add_test(
     NAME oasis_core_dependency_boundary
     COMMAND ${CMAKE_COMMAND}
