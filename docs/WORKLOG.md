@@ -3,6 +3,55 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.51 First Portable Native Routine Reconstruction — REPLACEMENT BLOCKED
+**Objective:** Extract exactly one complete, evidence-backed structural ROM
+routine into `oasis_core` as portable structured C++, while preserving the
+M11.50 generated/mechanical baseline and stopping on any identity mismatch.
+
+**Acceptance criteria:** Reproduce the M11.50 baseline twice before edits;
+inventory and select one complete routine; prove its CFG, entry/exit, effects,
+flags, timing boundary and resumable contract; add an independent core oracle;
+run unchanged 600-frame shadow and authoritative replacement gates; close
+separate execution accounting; update governance and push a focused result.
+
+**Actions:** Selected structural `TableCopyRoutine` at `0x2D66..0x2D84` from
+the existing exact decoder, M11.29 natural shadow and M11.45–M11.50 ledgers.
+Added the ROM-independent `src/core/table_copy_routine.*` contract/executor,
+hybrid adapter extraction, native routine accounting, standalone semantic and
+synthetic CFG tests, and the M11.51 report. The core has no ROM PC constants,
+GPGX/libretro types, generated block types, checkpoint dependency or PC
+dispatch. Existing generated code remains the oracle/fallback.
+
+**Evidence:** Two unchanged M11.50 native baselines matched checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, total
+6,488,773, generated 6,199,381, mechanical 42,384, interpreter 247,008,
+587 ranges, 150,135 yields and 288 resumptions. Standalone routine, CFG and
+hybrid shadow tests pass with zero divergence; natural shadow observed one
+call, 34 represented instructions and 13 copied words. The isolated native
+candidate closes 6,488,773 as 6,488,739 interpreter plus 34 native routine
+instructions and preserves video, but produces checkpoint aggregate
+`ae8887f5b32a4973a8243775612d68b891b588f6f5dc693558a5a8a2489e5403`.
+
+**Validation:** Targeted Debug builds/tests passed. Full Debug, Release and
+GNU/MinGW-equivalent CTest each passed 64/64, including standalone core,
+primitive regression, dependency boundary, semantic/CFG/yield/oracle,
+provenance and checkpoint tests. Final 600-frame baseline A/B runs matched
+the frozen identity; shadow had one comparison and zero divergence. The native
+candidate closed accounting at 6,488,773 but failed the frozen CPU/RAM/
+checkpoint identity while video remained exact, so it is not promoted.
+Source-limit, `git diff --check` and hygiene checks are also green.
+
+**Result:** `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`.
+
+**Unresolved:** The exact current-pinned-GPGX CPU/RAM/timing/refresh continuation
+delta causing the native checkpoint mismatch is not attributed. No timing or
+hardware behavior was invented to force equality. Nearby candidates remain
+blocked by their documented hardware/bus/semantic contracts.
+
+**Exact next step:** Stop; investigate the four-byte serialized checkpoint
+delta and its timing/refresh provenance in a separate bounded milestone.
+
 ## 2026-09-09 — M11.50 Portable Mechanical Primitive Layer — COMPLETE
 **Objective:** Extract the proven M11.49 mechanical primitive semantics into
 `oasis_core` while keeping ROM-specific registry/provenance and all GPGX

@@ -21,10 +21,15 @@ public:
     const std::string& error() const { return error_; }
     ReplacementMetrics metrics() const override {
         return {calls, comparisons, divergences, body_instructions, override_calls,
-                interrupt_count};
+                interrupt_count, native_routine_instructions,
+                native_routine_invocations, native_routine_iterations,
+                native_routine_boundary_yields, native_routine_resumptions};
     }
     unsigned calls{}, comparisons{}, divergences{}, body_instructions{},
              override_calls{}, interrupt_count{};
+    unsigned native_routine_instructions{}, native_routine_invocations{},
+        native_routine_iterations{}, native_routine_boundary_yields{},
+        native_routine_resumptions{};
 
 private:
     using State = std::array<std::uint32_t, 18>;
@@ -52,6 +57,10 @@ private:
     State entry_{};
     std::vector<std::uint8_t> source_, initial_output_, initial_stack_, expected_stack_;
     std::vector<Write> writes_;
+    State portable_state_{};
+    std::vector<std::uint8_t> portable_output_, portable_stack_;
+    std::vector<Write> portable_writes_;
+    bool portable_shadow_ready_{};
     std::string error_;
 };
 

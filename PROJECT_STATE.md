@@ -1,22 +1,20 @@
 # Project State
 
-CURRENT_MILESTONE: M11.50 complete — portable mechanical primitive extraction
-CURRENT_TASK: complete; extract proven primitive semantics into `oasis_core`
-STATUS: COMPLETE — `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`
-SCOPE_BOUNDARY: four already-proven copy/clear loops only. Core owns generic
-semantics and continuation state; hybrid owns ROM metadata, canonical
-provenance, GPGX/BasicBlock adapters, oracle and evidence. No new candidate,
-gameplay semantics, hardware behavior or emulator dependency was added.
-LAST_VERIFIED_RESULT: two unchanged native baselines matched before extraction.
-The extracted implementation preserved aggregate
-`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
-`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, full CPU
-equivalence, 6,488,773 total, 6,199,381 generated translated, 42,384
-mechanical, 247,008 interpreter, 587 ranges, 150,135 yields and 288
-resumptions. Shadow compared 42,384/42,384 primitive instructions with zero
-divergence; standalone core and dependency-boundary tests passed.
-EVIDENCE: `docs/reports/PORTABLE_MECHANICAL_PRIMITIVE_LAYER_M11_50.md`.
-NEXT_GATE: stop; do not implement the next abstraction layer.
+CURRENT_MILESTONE: M11.51 complete — first portable native routine reconstruction
+CURRENT_TASK: complete; bounded `TableCopyRoutine` extraction and proof
+STATUS: COMPLETE — `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`
+SCOPE_BOUNDARY: one structural routine at `0x2D66..0x2D84`; no gameplay role,
+new hardware behavior, dynamic coverage chase or production emulator dependency.
+Core owns only tokenized routine semantics; ROM mapping, GPGX timing and
+shadow/native adapters remain developer-only.
+LAST_VERIFIED_RESULT: standalone differential, CFG/entry/exit and hybrid shadow
+tests pass with zero divergence. The native candidate closes 6,488,773 as
+6,488,739 interpreter plus 34 native routine instructions and preserves video,
+but checkpoint aggregate `ae8887f5b32a4973a8243775612d68b891b588f6f5dc693558a5a8a2489e5403`
+does not equal frozen M11.50 aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+EVIDENCE: `docs/reports/FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md`.
+NEXT_GATE: stop; investigate the exact CPU/RAM/timing continuation mismatch.
 
 CURRENT_MILESTONE: M11.47 complete — safe-memory semantic closure and primitive discovery
 CURRENT_TASK: complete; bounded developer-only safe-memory promotion

@@ -1,6 +1,40 @@
 #include "tools/hybrid/runner_report.hpp"
 
+#include "tools/hybrid/interpreter_profile.hpp"
+
 namespace oasis::hybrid {
+
+void write_interpreter_profile_report(const std::filesystem::path& path, std::string_view mode,
+                                      const std::map<unsigned, unsigned>& pcs,
+                                      unsigned instructions) {
+    write_interpreter_profile(path, mode, pcs, instructions);
+}
+
+bool body_was_skipped(bool block_mode, unsigned overrides, unsigned original_inside,
+                      const Registry* registry, unsigned body_instructions) {
+    return block_mode ? (overrides > 0 && original_inside == 0) :
+        (registry && overrides > 0 && body_instructions == 0);
+}
+
+bool full_cpu_identity(bool completed, unsigned divergences, bool block_mode, Mode mode) {
+    return completed && divergences == 0 && (block_mode || mode != Mode::NATIVE_OVERRIDE);
+}
+
+unsigned guest_instruction_total(unsigned interpreter, unsigned translated,
+                                 unsigned mechanical, unsigned routine) {
+    return interpreter + translated + mechanical + routine;
+}
+
+void write_native_routine_accounting(std::ostream& report,
+                                     const ReplacementMetrics& metrics) {
+    report << ",\n\"native_routine_guest_instruction_executions\":"
+           << metrics.native_routine_instructions
+           << ",\n\"native_routine_invocations\":" << metrics.native_routine_invocations
+           << ",\n\"native_routine_copy_iterations\":" << metrics.native_routine_iterations
+           << ",\n\"native_routine_boundary_yields\":"
+           << metrics.native_routine_boundary_yields
+           << ",\n\"native_routine_resumptions\":" << metrics.native_routine_resumptions;
+}
 
 void write_runner_report_details(std::ostream& report, const Registry* registry,
                                  const BasicBlockRegistry* blocks,

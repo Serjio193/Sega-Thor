@@ -717,3 +717,28 @@ runtime dependency changes.
 
 **Affected files/milestones:** M11.31 report and governance documents; no
 production source or ROM data.
+# ADR-0032 — Keep first portable native routine shadow-only pending identity proof
+**Status:** Accepted for M11.51
+**Date:** 2026-09-09
+
+**Context:** M11.29 supplied complete structural evidence for the bounded
+`0x2D66..0x2D84` table-copy leaf, and M11.50 supplied the portable mechanical
+ownership boundary. A structured `TableCopyRoutine` can now be extracted, but
+the current pinned GPGX authoritative replacement does not preserve the frozen
+M11.50 checkpoint aggregate even though video and isolated accounting match.
+
+**Decision:** Keep the portable routine and zero-divergence shadow adapter as
+developer-visible evidence, but do not promote it as authoritative execution.
+The hybrid generated/interpreter path remains the oracle/fallback. Any future
+promotion must independently close CPU, RAM, VDP, sound, interrupt,
+timing/refresh and continuation identity against the frozen 600-frame run.
+No timing constant, hardware behavior or gameplay meaning is invented to force
+the gate.
+
+**Consequences:** `oasis_core` demonstrates the next abstraction boundary
+without weakening behavioral parity. The milestone result is
+`PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`; the next task must
+explain the exact identity mismatch before another authoritative replacement.
+
+**Affected files/milestones:** `src/core/table_copy_routine.*`, the 2D66
+developer adapter and tests, M11.51 governance and report.

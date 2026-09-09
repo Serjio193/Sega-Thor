@@ -278,8 +278,9 @@ int main(int argc, char** argv) {
             const auto cycles = library.get<int(*)()>("retro_hybrid_cycles");
             const auto add_cycles = library.get<void(*)(int)>("retro_hybrid_add_cycles");
             const auto refresh_cycles = library.get<int(*)()>("retro_hybrid_refresh_cycles");
+            const auto skip_bus_refresh = library.get<void(*)()>("retro_hybrid_skip_bus_refresh");
             const oasis::hybrid::CandidateApi api{reg, set_reg, peek, poke, set_return_state, cycles, add_cycles,
-                                                  refresh_cycles};
+                                                  refresh_cycles, skip_bus_refresh};
             for (const auto target : selected_targets) {
                 if (target == 0x2D66)
                     candidate_storage.push_back(std::make_unique<oasis::hybrid::Candidate2D66>(api, mode, rom.bytes(), calls));
@@ -368,6 +369,7 @@ int main(int argc, char** argv) {
         unsigned translated_multi_instruction_entries{}, interrupted_resumptions{};
         unsigned interpreter_instructions{}, total_guest_instructions{}, observed_interpreter_pcs{};
         unsigned primitive_guest_instructions{};
+        oasis::hybrid::ReplacementMetrics routine_metrics{};
         std::size_t registered_block_count{};
         bool complete{};
         std::string error_text;
@@ -411,6 +413,7 @@ int main(int argc, char** argv) {
             const auto totals = registry ? registry->totals() : session ? oasis::hybrid::ReplacementMetrics{
                 session->calls, session->comparisons, session->divergences, session->body_instructions, 0,
                 session->interrupts} : oasis::hybrid::ReplacementMetrics{};
+            routine_metrics = totals;
             natural_calls = totals.calls;
             comparisons = totals.comparisons;
             divergences = totals.divergences;
@@ -425,16 +428,12 @@ int main(int argc, char** argv) {
             complete = true;
         }
         interpreter_instructions = interpreter_instruction_executions;
-        total_guest_instructions = interpreter_instructions + translated_instructions + primitive_guest_instructions;
+        total_guest_instructions = oasis::hybrid::guest_instruction_total(interpreter_instructions, translated_instructions, primitive_guest_instructions, routine_metrics.native_routine_instructions);
         observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
-        oasis::hybrid::write_interpreter_profile(
-            std::filesystem::path(directory) / "interpreter_profile.json", mode_text,
-            observed_pcs, interpreter_instructions);
-        const auto body_skipped = block_mode ? (override_calls > 0 && original_inside == 0)
-                                             : (registry && override_calls > 0 && body_instructions == 0);
+        oasis::hybrid::write_interpreter_profile_report(std::filesystem::path(directory) / "interpreter_profile.json", mode_text, observed_pcs, interpreter_instructions);
+        const auto body_skipped = oasis::hybrid::body_was_skipped(block_mode, override_calls, original_inside, registry.get(), body_instructions);
         const bool completed = complete && video_frames == frames && natural_calls > 0;
-        const bool full_cpu_equivalent = completed && divergences == 0 &&
-            (block_mode || mode != Mode::NATIVE_OVERRIDE);
+        const bool full_cpu_equivalent = oasis::hybrid::full_cpu_identity(completed, divergences, block_mode, mode);
         std::ofstream report(std::filesystem::path(directory) / "summary.json");
         report.exceptions(std::ios::failbit | std::ios::badbit);
         report << "{\n\"schema\":\"oasis.hybrid-poc.v2\",\n\"target\":" << selected_target
@@ -479,6 +478,7 @@ int main(int argc, char** argv) {
                << ",\n\"translated_multi_instruction_entries\":" << translated_multi_instruction_entries
                << ",\n\"interrupted_resumptions\":" << interrupted_resumptions;
         oasis::hybrid::write_runner_report_details(report, registry.get(), blocks.get(), primitives.get());
+        oasis::hybrid::write_native_routine_accounting(report, routine_metrics);
         report
                << ",\n\"full_cpu_equivalence\":" << (full_cpu_equivalent ? "true" : "false")
                << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""

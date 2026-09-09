@@ -43,6 +43,15 @@ instruction-boundary results. Instruction tokens are opaque values supplied by
 an adapter; core contains no ROM addresses, canonical opcodes, GPGX/libretro
 types or checkpoint layout.
 
+M11.51 adds the first complete routine-shaped boundary as
+`TableCopyRoutine`. Its semantic implementation receives opaque entry,
+continuation and destination tokens plus a portable register/memory machine;
+the routine contains no ROM PC dispatch or instruction decoder. The
+developer-only hybrid adapter supplies the `0x2D66..0x2D84` mapping, GPGX
+prefetch/timing bridge and shadow comparator. The native replacement remains
+blocked until its frozen checkpoint identity matches the unchanged baseline;
+the generated/interpreter path remains the authoritative oracle/fallback.
+
 ### `genesis`
 Minimal compatibility layer for Mega Drive concepts actually used by the game.
 

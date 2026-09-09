@@ -16,6 +16,7 @@ struct CandidateApi {
     int (*cycles)(){};
     void (*add_cycles)(int){};
     int (*refresh_cycles)(){};
+    void (*skip_bus_refresh)(){};
 };
 
 struct ReplacementMetrics {
@@ -25,6 +26,11 @@ struct ReplacementMetrics {
     unsigned body_instructions{};
     unsigned override_calls{};
     unsigned interrupts{};
+    unsigned native_routine_instructions{};
+    unsigned native_routine_invocations{};
+    unsigned native_routine_iterations{};
+    unsigned native_routine_boundary_yields{};
+    unsigned native_routine_resumptions{};
 };
 
 class Replacement {

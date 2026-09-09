@@ -1,5 +1,24 @@
 # Current task
 
+TASK: M11.51 First Portable Native Routine Reconstruction
+STATUS: COMPLETE — `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`
+BASELINE: `df1537547ec98f50dd7252caccf443990f5fa559`
+SCOPE: Extract only the complete structural table-copy routine at
+`0x2D66..0x2D84` into a ROM-independent `oasis_core` routine. Preserve the
+generated/interpreter path as oracle/fallback; do not assign gameplay meaning
+or broaden hardware behavior.
+RESULT: The structured routine, independent differential oracle, CFG contract
+test and unchanged 600-frame shadow proof pass with zero divergence. The
+isolated authoritative native run closes 6,488,773 as 6,488,739 interpreter
+plus 34 native routine instructions and preserves video, but its checkpoint
+aggregate is `ae8887f5b32a4973a8243775612d68b891b588f6f5dc693558a5a8a2489e5403`,
+not frozen M11.50 aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+No authoritative promotion is claimed.
+EVIDENCE: `docs/reports/FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md`.
+NEXT ACTION: Stop; investigate the exact CPU/RAM/timing continuation mismatch
+before another replacement attempt.
+
 TASK: M11.50 Extract Proven Mechanical Primitive Layer into oasis_core
 STATUS: COMPLETE — `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`
 BASELINE: `4a3f0fa8473daa5c4f1f831402b8d0a5d7667da8`

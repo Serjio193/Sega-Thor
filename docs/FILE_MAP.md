@@ -48,6 +48,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md M11.47 exhaustive post-promotion interpreter ledger
 │   │   └── NATIVE_MECHANICAL_PRIMITIVE_M11_48.md M11.48 resumable native mechanical primitive proof
 │   │   └── MECHANICAL_PRIMITIVE_FAMILY_M11_49.md M11.49 mechanical primitive family closure proof
+│   │   └── FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md M11.51 routine extraction and replacement gate
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -63,6 +64,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── rom_identity.hpp   ROM identity models and public API
 │   │   ├── mechanical_primitive.cpp Portable proven copy/clear/DBF executor
 │   │   ├── mechanical_primitive.hpp Portable primitive contract and continuation API
+│   │   ├── table_copy_routine.cpp Portable structured table-copy routine executor
+│   │   ├── table_copy_routine.hpp Routine contract, machine interface and continuation API
 │   │   ├── runtime.cpp        Explicit deterministic frame stepping
 │   │   └── runtime.hpp        Portable controller/input/frame runtime API
 │   ├── genesis/
@@ -252,6 +255,8 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
     ├── check_core_boundary.cmake         Enforces core source/link dependency boundary
     ├── mechanical_primitive_test.cpp     Standalone oasis_core primitive semantics and continuation tests
+    ├── table_copy_routine_test.cpp       Standalone portable routine oracle and yield/resume tests
+    ├── table_copy_routine_contract_test.cpp Synthetic 0x2D66 CFG/entry/exit contract test
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
@@ -368,6 +373,11 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   aggregation regression for the developer-only runtime provenance path.
 - `src/core/mechanical_primitive.*`: M11.50 portable primitive contract,
   executor and continuation state; contains no ROM candidate/opcode metadata.
+- `src/core/table_copy_routine.*`: M11.51 tokenized structured table-copy
+  routine contract and resumable executor; contains no ROM PC constants.
+- `tests/table_copy_routine_test.cpp` and
+  `tests/table_copy_routine_contract_test.cpp`: standalone semantic,
+  continuation and synthetic CFG proof.
 - `tests/hybrid_mechanical_primitive_test.cpp`: hybrid registry metadata and
   portable-contract conversion regression.
 - `tests/check_core_boundary.cmake`: source scan for hybrid/GPGX/libretro and

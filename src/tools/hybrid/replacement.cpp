@@ -43,6 +43,11 @@ ReplacementMetrics Registry::totals() const {
         result.body_instructions += metrics.body_instructions;
         result.override_calls += metrics.override_calls;
         result.interrupts += metrics.interrupts;
+        result.native_routine_instructions += metrics.native_routine_instructions;
+        result.native_routine_invocations += metrics.native_routine_invocations;
+        result.native_routine_iterations += metrics.native_routine_iterations;
+        result.native_routine_boundary_yields += metrics.native_routine_boundary_yields;
+        result.native_routine_resumptions += metrics.native_routine_resumptions;
     }
     return result;
 }

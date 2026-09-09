@@ -1,6 +1,52 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.51 — First portable native routine reconstruction
+STATUS: `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`.
+
+The selected structural routine is `0x002D66..0x002D84`, entered at `0x2D66`
+and exited by `RTS` at `0x2D82`, with continuation `0x2D84`. Exact decoding
+contains ten instructions, three basic blocks and one local direct `DBF`
+back-edge from `0x2D7A` to `0x2D78`; there are no calls, indirect edges,
+unresolved control flow or unsupported instructions. The structural name is
+`TableCopyRoutine`; no gameplay role is assigned.
+
+The proven entry contract captures A6 as a bounded ROM/RAM source, an even
+caller stack A7 with a four-byte return address, D7/A3 as the MOVEM-preserved
+registers and full SR including CCR.X. The first two source bytes are an
+unsigned destination offset and DBF count. The routine consumes
+`2 + 2*(count+1)` source bytes, writes `count+1` sequential words at
+`0xFF134C + sign_extend_word(offset)`, advances A6, restores D7/A3, consumes
+the return address with RTS, and changes only N/Z/V/C from the final word while
+preserving the rest of SR. The exact ordered save/output writes and 12-byte
+stack window were independently checked against the M11.29 natural shadow.
+No VDP, Z80, I/O, indirect call, self-modifying or other hardware access is
+reachable in this closed slice.
+
+`oasis_core` now implements this contract through opaque adapter tokens and a
+portable register/memory machine. It is structured routine-level C++, not a
+PC/opcode interpreter; ROM mapping and GPGX timing remain outside core. The
+synthetic differential oracle covers zero and multi-word terminal cases,
+CCR.X/N/Z behavior, exact ordered writes, interruption before DBF resume,
+address arithmetic and invalid entry rejection. The CFG contract test and the
+unchanged 600-frame shadow proof pass with zero divergence: one natural call,
+34 represented guest instructions, 13 word iterations, zero yields and zero
+resumptions in the natural call.
+
+The isolated authoritative native candidate also represents 34 instructions
+and closes its accounting at 6,488,773 (`6,488,739` interpreter plus `34`
+native routine). Video remains the frozen
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, but the
+checkpoint aggregate is
+`ae8887f5b32a4973a8243775612d68b891b588f6f5dc693558a5a8a2489e5403`, not the
+frozen M11.50
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+Therefore the routine is shadow-proven but not authoritative; the generated /
+interpreter path remains the oracle and fallback. Nearby candidates remain
+classified `HARDWARE_BLOCKED` (`0x6121A`), `SEMANTICS_BLOCKED` (broad graphics
+slices), or timing/bus-contract blocked (`0x604BC`, `0x61032`); none is
+implemented here.
+
 # M11.50 — Portable mechanical primitive layer extraction
 STATUS: `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`.
 

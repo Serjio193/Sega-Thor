@@ -9,6 +9,7 @@ add_library(oasis_core
     src/core/rom.cpp
     src/core/rom_identity.cpp
     src/core/mechanical_primitive.cpp
+    src/core/table_copy_routine.cpp
     src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
@@ -197,6 +198,9 @@ add_test(NAME oasis_smoke COMMAND oasis_smoke)
 add_executable(oasis_mechanical_primitive_test tests/mechanical_primitive_test.cpp)
 target_link_libraries(oasis_mechanical_primitive_test PRIVATE oasis_core)
 add_test(NAME oasis_mechanical_primitive COMMAND oasis_mechanical_primitive_test)
+add_executable(oasis_table_copy_routine_test tests/table_copy_routine_test.cpp)
+target_link_libraries(oasis_table_copy_routine_test PRIVATE oasis_core)
+add_test(NAME oasis_table_copy_routine COMMAND oasis_table_copy_routine_test)
 add_test(
     NAME oasis_core_dependency_boundary
     COMMAND ${CMAKE_COMMAND}
@@ -259,6 +263,9 @@ add_test(NAME oasis_event_router COMMAND oasis_event_router_test)
 add_executable(oasis_re_slice_decoder_test tests/re_slice_decoder_test.cpp)
 target_link_libraries(oasis_re_slice_decoder_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_slice_decoder COMMAND oasis_re_slice_decoder_test)
+add_executable(oasis_table_copy_routine_contract_test tests/table_copy_routine_contract_test.cpp)
+target_link_libraries(oasis_table_copy_routine_contract_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_table_copy_routine_contract COMMAND oasis_table_copy_routine_contract_test)
 
 add_executable(oasis_re_program_test tests/re_program_test.cpp)
 target_link_libraries(oasis_re_program_test PRIVATE oasis_re_tooling)

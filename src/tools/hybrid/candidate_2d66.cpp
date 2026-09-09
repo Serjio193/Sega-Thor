@@ -1,13 +1,109 @@
 #include "tools/hybrid/candidate_2d66.hpp"
+#include "core/table_copy_routine.hpp"
 #include "core/rom_identity.hpp"
 #include <algorithm>
 #include <stdexcept>
+#include <tuple>
+#include <unordered_map>
 
 namespace oasis::hybrid {
 namespace {
 constexpr unsigned kTarget = 0x2D66;
 constexpr unsigned kDestination = 0xFF134C;
 constexpr unsigned kRomLimit = 0x300000;
+
+using PortableState = std::array<std::uint32_t, 18>;
+using PortableWrite = std::tuple<unsigned, int, unsigned>;
+
+oasis::core::TableCopyRoutineContract portable_contract() {
+    return {0x2D66, 0x2D6A, 0x2D6C, 0x2D6E, 0x2D74, 0x2D76,
+            0x2D78, 0x2D7A, 0x2D7E, 0x2D82, 0x2D84, kDestination};
+}
+
+class ApiMachine final : public oasis::core::TableCopyRoutineMachine {
+public:
+    explicit ApiMachine(CandidateApi api) : api_(api) {}
+
+    std::uint32_t reg(unsigned index) const override { return api_.reg(index); }
+    void set_reg(unsigned index, std::uint32_t value) override { api_.set_reg(index, value); }
+    std::uint32_t read(std::uint32_t address, unsigned width) override {
+        std::uint32_t value = 0;
+        for (unsigned i = 0; i < width; ++i)
+            value = (value << 8U) | static_cast<unsigned>(api_.peek(address + i));
+        return value;
+    }
+    void write(std::uint32_t address, unsigned width, std::uint32_t value) override {
+        api_.poke(address, static_cast<int>(width), value);
+    }
+    void begin(oasis::core::TableCopyStep) override {}
+    void finish(oasis::core::TableCopyStep) override {}
+    oasis::core::RoutineBoundaryReason boundary() override {
+        return oasis::core::RoutineBoundaryReason::CONTINUE;
+    }
+    void complete_return(std::uint32_t return_pc) override {
+        api_.set_reg(16, return_pc);
+        if (api_.set_return_state)
+            api_.set_return_state(return_pc, 0x2D84,
+                                   (api_.peek(0x2D84) << 8) | api_.peek(0x2D85));
+        if (api_.add_cycles) api_.add_cycles(2828);
+        if (api_.skip_bus_refresh) api_.skip_bus_refresh();
+    }
+
+private:
+    CandidateApi api_;
+};
+
+class ShadowMachine final : public oasis::core::TableCopyRoutineMachine {
+public:
+    ShadowMachine(const PortableState& initial, unsigned source,
+                  std::span<const std::uint8_t> source_bytes, unsigned destination,
+                  std::span<const std::uint8_t> output, unsigned stack,
+                  std::span<const std::uint8_t> stack_bytes)
+        : state_(initial), destination_(destination), stack_(stack) {
+        load(source, source_bytes);
+        load(destination, output);
+        load(stack - 8U, stack_bytes);
+    }
+
+    std::uint32_t reg(unsigned index) const override { return state_[index]; }
+    void set_reg(unsigned index, std::uint32_t value) override { state_[index] = value; }
+    std::uint32_t read(std::uint32_t address, unsigned width) override {
+        std::uint32_t value = 0;
+        for (unsigned i = 0; i < width; ++i)
+            value = (value << 8U) | bytes_[address + i];
+        return value;
+    }
+    void write(std::uint32_t address, unsigned width, std::uint32_t value) override {
+        for (unsigned i = 0; i < width; ++i)
+            bytes_[address + i] = static_cast<std::uint8_t>(value >> (8U * (width - i - 1U)));
+        writes_.emplace_back(address, static_cast<int>(width), value & (width == 2U ? 0xFFFFU : 0xFFFFFFFFU));
+    }
+    void begin(oasis::core::TableCopyStep) override {}
+    void finish(oasis::core::TableCopyStep) override {}
+    oasis::core::RoutineBoundaryReason boundary() override {
+        return oasis::core::RoutineBoundaryReason::CONTINUE;
+    }
+    void complete_return(std::uint32_t return_pc) override { state_[16] = return_pc; }
+
+    const PortableState& state() const { return state_; }
+    std::vector<std::uint8_t> range(unsigned address, unsigned size) const {
+        std::vector<std::uint8_t> result;
+        result.reserve(size);
+        for (unsigned i = 0; i < size; ++i) result.push_back(bytes_.at(address + i));
+        return result;
+    }
+    const std::vector<PortableWrite>& writes() const { return writes_; }
+
+private:
+    void load(unsigned address, std::span<const std::uint8_t> bytes) {
+        for (unsigned i = 0; i < bytes.size(); ++i) bytes_[address + i] = bytes[i];
+    }
+    PortableState state_{};
+    std::unordered_map<unsigned, std::uint8_t> bytes_;
+    std::vector<PortableWrite> writes_;
+    unsigned destination_{};
+    unsigned stack_{};
+};
 }
 
 Candidate2D66::Candidate2D66(CandidateApi api, Mode mode,
@@ -88,7 +184,26 @@ void Candidate2D66::begin() {
     body_starts_ = 0;
     active_ = true;
     overridden_ = false;
-    if (mode_ == Mode::NATIVE_OVERRIDE) apply_override();
+    portable_shadow_ready_ = false;
+    if (mode_ == Mode::SHADOW_NATIVE) {
+        ShadowMachine shadow(entry_, entry_[14], source_, destination_, initial_output_,
+                             entry_stack_, initial_stack_);
+        oasis::core::RoutineContinuation continuation{};
+        const auto result = oasis::core::execute_table_copy_routine(
+            shadow, portable_contract(), kTarget, continuation);
+        require(result.reason == oasis::core::RoutineExitReason::NORMAL &&
+                    !continuation.active && result.next_token == 0x2D84,
+                "portable shadow routine did not return normally");
+        portable_state_ = shadow.state();
+        portable_output_ = shadow.range(destination_, output_size_);
+        portable_stack_ = shadow.range(entry_stack_ - 8U, initial_stack_.size());
+        portable_writes_.clear();
+        for (const auto& write : shadow.writes())
+            portable_writes_.push_back({std::get<0>(write), std::get<1>(write), std::get<2>(write)});
+        portable_shadow_ready_ = true;
+    } else if (mode_ == Mode::NATIVE_OVERRIDE) {
+        apply_override();
+    }
 }
 
 std::string Candidate2D66::compare_state(const State& expected, const State& actual) const {
@@ -143,6 +258,20 @@ void Candidate2D66::finish() {
                 writes_[i].value == expected_writes[i].value,
                 "FIRST_DIVERGENCE write[" + std::to_string(i) + "]");
     }
+    if (portable_shadow_ready_) {
+        require(compare_state(portable_state_, state()).empty(),
+                "FIRST_DIVERGENCE portable state");
+        require(compare_memory(destination_, portable_output_, "portable output").empty(),
+                "FIRST_DIVERGENCE portable output");
+        require(compare_memory(entry_stack_ - 8U, portable_stack_, "portable stack").empty(),
+                "FIRST_DIVERGENCE portable stack");
+        require(writes_.size() == portable_writes_.size(), "portable write count");
+        for (std::size_t i = 0; i < writes_.size(); ++i)
+            require(writes_[i].address == portable_writes_[i].address &&
+                        writes_[i].width == portable_writes_[i].width &&
+                        writes_[i].value == portable_writes_[i].value,
+                    "FIRST_DIVERGENCE portable write[" + std::to_string(i) + "]");
+    }
     ++comparisons;
     log_ << "{\"call\":" << calls << ",\"source\":" << entry_[14]
          << ",\"destination\":" << destination_ << ",\"source_size\":" << source_size_
@@ -155,25 +284,17 @@ void Candidate2D66::finish() {
 }
 
 void Candidate2D66::apply_override() {
-    std::vector<std::uint8_t> expected_output(source_size_ - 2U);
-    std::copy(source_.begin() + 2, source_.end(), expected_output.begin());
-    for (unsigned i = 0; i < output_size_; i += 2)
-        api_.poke(destination_ + i, 2, (expected_output[i] << 8U) | expected_output[i + 1]);
-    for (unsigned i = 0; i < 4; i += 2)
-        api_.poke(entry_stack_ - 8 + i, 2, (entry_[7] >> (16 - 8 * i)) & 0xFFFFU);
-    for (unsigned i = 0; i < 4; i += 2)
-        api_.poke(entry_stack_ - 4 + i, 2, (entry_[11] >> (16 - 8 * i)) & 0xFFFFU);
-    const auto last = static_cast<unsigned>((source_[source_size_ - 2] << 8U) |
-                                            source_[source_size_ - 1]);
-    const auto sr = (entry_[17] & 0xFFF0U) | ((last & 0x8000U) ? 8U : 0U) |
-                    (last == 0 ? 4U : 0U);
-    api_.set_reg(14, entry_[14] + source_size_);
-    api_.set_reg(15, entry_stack_ + 4);
-    api_.set_reg(17, sr);
-    api_.set_reg(16, return_pc_);
-    if (api_.set_return_state)
-        api_.set_return_state(return_pc_, 0x2D84, (api_.peek(0x2D84) << 8) | api_.peek(0x2D85));
-    if (api_.add_cycles) api_.add_cycles(2828);
+    ApiMachine machine(api_);
+    oasis::core::RoutineContinuation continuation{};
+    const auto result = oasis::core::execute_table_copy_routine(
+        machine, portable_contract(), kTarget, continuation);
+    require(result.reason == oasis::core::RoutineExitReason::NORMAL &&
+                !continuation.active && result.next_token == 0x2D84,
+            "portable native routine did not return normally");
+    native_routine_instructions += result.guest_instructions;
+    native_routine_invocations += 1U;
+    native_routine_iterations += result.copy_iterations;
+    native_routine_boundary_yields += result.boundary_yields;
     ++override_calls;
     overridden_ = true;
     active_ = false;

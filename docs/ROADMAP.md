@@ -1,3 +1,15 @@
+# M11.51 — First portable native routine reconstruction — BLOCKED AT REPLACEMENT
+
+The structural `TableCopyRoutine` (`0x2D66..0x2D84`) is implemented in
+`oasis_core` with an external token/ROM adapter, independent differential and
+CFG tests, and a zero-divergence 600-frame shadow proof. The authoritative
+replacement is blocked because the current pinned GPGX native run produces
+checkpoint aggregate `ae8887f5b32a4973a8243775612d68b891b588f6f5dc693558a5a8a2489e5403`
+instead of frozen M11.50 aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`.
+Video and isolated instruction accounting remain exact; no promotion or
+hardware broadening is authorized.
+
 # M11.50 — Extract proven mechanical primitive layer into `oasis_core` — DONE
 
 The four M11.49 copy/clear loops now use a portable core executor and
