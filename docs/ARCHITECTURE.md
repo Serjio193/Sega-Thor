@@ -49,8 +49,18 @@ continuation and destination tokens plus a portable register/memory machine;
 the routine contains no ROM PC dispatch or instruction decoder. The
 developer-only hybrid adapter supplies the `0x2D66..0x2D84` mapping, GPGX
 prefetch/timing bridge and shadow comparator. The native replacement remains
-blocked until its frozen checkpoint identity matches the unchanged baseline;
-the generated/interpreter path remains the authoritative oracle/fallback.
+proven after M11.52 closed the frozen checkpoint identity mismatch. The
+generated/interpreter path remains the authoritative oracle/fallback for the
+routine's shadow comparison and for all other paths.
+
+M11.52 keeps the ownership split explicit: `oasis_core` owns only portable
+routine semantics and continuation tokens, while `tools/hybrid` owns
+GPGX-specific instruction fetch, IR/prefetch, cycle, refresh and RTS handoff
+reconstruction. A native adapter must enter and finish each represented guest
+instruction through the developer-only bridge; a lump-sum routine timing
+update is not a valid continuation. Checkpoint canonicalization remains an
+identity proof for host representation only and is not a native promotion
+escape hatch.
 
 ### `genesis`
 Minimal compatibility layer for Mega Drive concepts actually used by the game.

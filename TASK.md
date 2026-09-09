@@ -1,5 +1,22 @@
 # Current task
 
+TASK: M11.52 Native Routine Checkpoint Mismatch Root-Cause Closure
+STATUS: COMPLETE — `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`
+BASELINE: `765dad685b73a72a06d2fd3d1c7b8c5b2f7f61f2`
+SCOPE: Close the single `TableCopyRoutine` replacement mismatch at
+`0x2D66..0x2D84`. Preserve checkpoint comparison, avoid new routines and
+gameplay semantics, and repair only a proven generic continuation boundary.
+RESULT: The M11.51 native adapter skipped per-instruction GPGX prefetch/refresh
+processing. The repaired hybrid bridge now matches the frozen per-frame
+canonical checkpoint identity, video, CPU timing/refresh boundary and all
+execution counts: 6,488,773 total, 6,488,739 interpreter and 34 native
+routine instructions, 13 copy iterations, zero fallback.
+EVIDENCE: `docs/reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`.
+NEXT ACTION: Keep the generated/interpreter path as oracle/fallback and require
+the same continuation/serialized-state proof for any future routine.
+
+TASK: M11.51 First Portable Native Routine Reconstruction
+
 TASK: M11.51 First Portable Native Routine Reconstruction
 STATUS: COMPLETE — `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`
 BASELINE: `df1537547ec98f50dd7252caccf443990f5fa559`

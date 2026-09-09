@@ -3,6 +3,57 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.52 native routine checkpoint mismatch root-cause closure — COMPLETE
+**TASK:** Close the M11.51 authoritative checkpoint mismatch for the single
+`TableCopyRoutine` call at `0x2D66..0x2D84`.
+
+**ACCEPTANCE:** Identify every differing byte and owner; localize the first
+temporal divergence; explain the shadow blind spot; repair only the causally
+proven generic continuation layer; add a regression that fails under M11.51;
+preserve checkpoint comparison and complete paired authoritative evidence.
+
+**ROOT CAUSE:** M11.51's portable register/memory routine was correct. Its
+hybrid adapter replaced 34 represented 68000 instructions with one `2828`
+cycle update and one refresh update. Entry/exit cycles matched, but refresh
+ended at `194704` instead of reference `196622`; GPGX instruction-boundary
+prefetch/refresh and the following scheduler phase were not represented.
+The shadow compared portable state/output/stack before that post-return state,
+so it had `SHADOW_FIELD_NOT_COMPARED`, `POST_RETURN_STATE_NOT_COMPARED`,
+`PREFETCH_NOT_FULLY_MODELED` and `SCHEDULER_PHASE_NOT_COMPARED` blind spots.
+
+**BYTE EVIDENCE:** The first M11.51 divergence was frame 120 and consisted of
+four isolated canonical bytes: `3060 F4->EE` (work RAM `0xFF0BE4`),
+`144468 EE->F4` and `144482 13->2F` (pinned semantic sound/PSG region with
+field names unresolved due to the M11.43 source/object layout discrepancy),
+and `144558 96->87` (Z80 `iff1`, base `144504 + 54`). None is a host
+representation span; canonicalization was unchanged.
+
+**IMPLEMENTATION:** Added developer-only hybrid callbacks for exact instruction
+fetch/begin/finish. The 2D66 adapter now validates opcodes and extension words,
+reconstructs DBF branch continuation, uses the existing MOVEM dynamic timing
+operation and restores RTS PC/prefetch state at the correct boundary. The
+portable `oasis_core` routine and checkpoint canonicalizer were not changed.
+
+**REGRESSION:** The candidate test checks the exact bridge sequence, DBF
+extension, MOVEM/DBF timing adjustment and absence of one-shot refresh skip; a
+legacy boundary model asserts the M11.51 refresh result is not `196622`.
+
+**AUTHORITATIVE EVIDENCE:** Repaired 600-frame native replacement matches all
+ten per-frame canonical reference hashes and the frozen aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, exact
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+cycles `193626->196454`, refresh `193808->196622`, 34 native instructions,
+13 iterations, 6,488,773 total and zero fallback. Repaired shadow remains one
+comparison/zero divergence. Full evidence: `docs/reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`.
+
+**RESULT:** `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`. No second routine,
+canonicalization exception, gameplay semantics or production emulator
+dependency was added. Final Debug, Release and GNU/MinGW-equivalent builds
+and CTest all pass `64/64`; `git diff --check`, source-limit,
+core-dependency and repository-hygiene gates pass. Two final native runs are
+byte-for-byte deterministic at the canonical manifest level and each matches
+the reference; final CI status is recorded after push.
+
 ## 2026-09-09 — M11.51 First Portable Native Routine Reconstruction — REPLACEMENT BLOCKED
 **Objective:** Extract exactly one complete, evidence-backed structural ROM
 routine into `oasis_core` as portable structured C++, while preserving the

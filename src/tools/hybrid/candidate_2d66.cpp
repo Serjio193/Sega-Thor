@@ -35,8 +35,45 @@ public:
     void write(std::uint32_t address, unsigned width, std::uint32_t value) override {
         api_.poke(address, static_cast<int>(width), value);
     }
-    void begin(oasis::core::TableCopyStep) override {}
-    void finish(oasis::core::TableCopyStep) override {}
+    void begin(oasis::core::TableCopyStep step) override {
+        opcode_ = opcode(step);
+        require(api_.fetch16 && api_.begin_instruction,
+                "routine instruction bridge unavailable");
+        const auto actual = api_.fetch16();
+        if (actual != opcode_) {
+            throw std::runtime_error("routine opcode/prefetch mismatch expected=" +
+                                     std::to_string(opcode_) + " actual=" +
+                                     std::to_string(actual) + " pc=" +
+                                     std::to_string(api_.reg(16)));
+        }
+        api_.begin_instruction(opcode_);
+        if (step == oasis::core::TableCopyStep::SAVE_FRAME)
+            require(api_.fetch16() == 0x0110U, "routine MOVEM mask mismatch");
+        if (step == oasis::core::TableCopyStep::SET_DESTINATION) {
+            require(api_.fetch16() == 0x00FFU, "routine LEA high word mismatch");
+            require(api_.fetch16() == 0x134CU, "routine LEA low word mismatch");
+        }
+        if (step == oasis::core::TableCopyStep::RESTORE_FRAME)
+            require(api_.fetch16() == 0x0880U, "routine MOVEM restore mask mismatch");
+    }
+    void finish(oasis::core::TableCopyStep step) override {
+        require(api_.finish_instruction, "routine instruction bridge unavailable");
+        if (step == oasis::core::TableCopyStep::DBF) {
+            const auto taken = (api_.reg(7U) & 0xFFFFU) != 0xFFFFU;
+            if (taken) {
+                require(api_.fetch16() == 0xFFFCU, "routine DBF displacement mismatch");
+                api_.set_reg(16U, 0x2D78U);
+                if (api_.add_cycles) api_.add_cycles(-14);
+            } else {
+                api_.set_reg(16U, api_.reg(16U) + 2U);
+                if (api_.add_cycles) api_.add_cycles(14);
+            }
+        }
+        api_.finish_instruction(opcode_);
+        if ((step == oasis::core::TableCopyStep::SAVE_FRAME ||
+             step == oasis::core::TableCopyStep::RESTORE_FRAME) && api_.add_cycles)
+            api_.add_cycles(112);
+    }
     oasis::core::RoutineBoundaryReason boundary() override {
         return oasis::core::RoutineBoundaryReason::CONTINUE;
     }
@@ -45,12 +82,31 @@ public:
         if (api_.set_return_state)
             api_.set_return_state(return_pc, 0x2D84,
                                    (api_.peek(0x2D84) << 8) | api_.peek(0x2D85));
-        if (api_.add_cycles) api_.add_cycles(2828);
-        if (api_.skip_bus_refresh) api_.skip_bus_refresh();
     }
 
 private:
+    static unsigned opcode(oasis::core::TableCopyStep step) {
+        switch (step) {
+        case oasis::core::TableCopyStep::SAVE_FRAME: return 0x48E7U;
+        case oasis::core::TableCopyStep::CLEAR_COUNTER: return 0x4247U;
+        case oasis::core::TableCopyStep::READ_OFFSET: return 0x1E1EU;
+        case oasis::core::TableCopyStep::SET_DESTINATION: return 0x47F9U;
+        case oasis::core::TableCopyStep::ADD_DESTINATION: return 0xD6C7U;
+        case oasis::core::TableCopyStep::READ_COUNT: return 0x1E1EU;
+        case oasis::core::TableCopyStep::COPY_WORD: return 0x36DEU;
+        case oasis::core::TableCopyStep::DBF: return 0x51CFU;
+        case oasis::core::TableCopyStep::RESTORE_FRAME: return 0x4CDFU;
+        case oasis::core::TableCopyStep::RETURN: return 0x4E75U;
+        }
+        throw std::runtime_error("unknown table-copy timing step");
+    }
+
+    static void require(bool condition, const char* message) {
+        if (!condition) throw std::runtime_error(message);
+    }
+
     CandidateApi api_;
+    unsigned opcode_{};
 };
 
 class ShadowMachine final : public oasis::core::TableCopyRoutineMachine {
@@ -279,6 +335,10 @@ void Candidate2D66::finish() {
          << body_starts_ << ",\"cycle_delta\":"
          << (api_.cycles ? api_.cycles() - entry_cycles_ : 0)
          << ",\"refresh_delta\":" << (api_.refresh_cycles ? api_.refresh_cycles() - entry_refresh_ : 0)
+         << ",\"entry_cycles\":" << entry_cycles_ << ",\"exit_cycles\":"
+         << (api_.cycles ? api_.cycles() : 0) << ",\"entry_refresh\":"
+         << entry_refresh_ << ",\"exit_refresh\":"
+         << (api_.refresh_cycles ? api_.refresh_cycles() : 0)
          << ",\"override\":false,\"interrupts\":" << interrupt_count << "}\n";
     active_ = false;
 }
@@ -301,7 +361,11 @@ void Candidate2D66::apply_override() {
     log_ << "{\"call\":" << calls << ",\"source\":" << entry_[14]
          << ",\"destination\":" << destination_ << ",\"source_size\":" << source_size_
          << ",\"output_size\":" << output_size_ << ",\"body_instruction_starts\":0"
-         << ",\"override\":true,\"interrupts\":0}\n";
+         << ",\"override\":true,\"interrupts\":0,\"entry_cycles\":"
+         << entry_cycles_ << ",\"exit_cycles\":"
+         << (api_.cycles ? api_.cycles() : 0) << ",\"entry_refresh\":"
+         << entry_refresh_ << ",\"exit_refresh\":"
+         << (api_.refresh_cycles ? api_.refresh_cycles() : 0) << "}\n";
 }
 
 void Candidate2D66::event(int type, int width, unsigned address, unsigned value) {

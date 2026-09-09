@@ -1,4 +1,19 @@
-# M11.51 — First portable native routine reconstruction — BLOCKED AT REPLACEMENT
+# M11.52 — Native routine checkpoint mismatch root-cause closure — DONE
+
+The single `TableCopyRoutine` replacement at `0x2D66..0x2D84` is now
+authoritatively proven. M11.51's four-byte canonical checkpoint mismatch was
+caused by a hybrid adapter that collapsed the routine into one lump-sum timing
+handoff, omitting GPGX instruction-boundary prefetch/refresh processing. The
+adapter now performs the exact instruction fetch/begin/finish continuation and
+preserves the RTS/DBF/MOVEM contract. Paired 600-frame evidence matches the
+frozen checkpoint aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video,
+CPU timing/refresh boundary and all counts: 6,488,773 total, 34 native routine
+instructions, 13 iterations and zero fallback. Result:
+`FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`. No second routine is started by this
+milestone. Evidence: `reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`.
+
+# Historical M11.51 — First portable native routine reconstruction — CLOSED
 
 The structural `TableCopyRoutine` (`0x2D66..0x2D84`) is implemented in
 `oasis_core` with an external token/ROM adapter, independent differential and

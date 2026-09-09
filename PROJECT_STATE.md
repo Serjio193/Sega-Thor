@@ -1,5 +1,22 @@
 # Project State
 
+CURRENT_MILESTONE: M11.52 complete — native routine checkpoint mismatch closure
+CURRENT_TASK: complete; `TableCopyRoutine` continuation repair and promotion
+STATUS: COMPLETE — `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN`
+SCOPE_BOUNDARY: one structural routine at `0x2D66..0x2D84`; no gameplay role,
+new hardware behavior, full emulator dependency or second routine.
+LAST_VERIFIED_RESULT: paired 600-frame reference/native evidence has identical
+canonical checkpoint hashes and aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, exact
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total / 6,488,739 interpreter / 34 native routine instructions,
+13 iterations and zero fallback. The root cause was missing per-instruction
+GPGX prefetch/refresh continuation in the hybrid adapter; `oasis_core` was not
+changed.
+EVIDENCE: `docs/reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`.
+
+# Historical project state
+
 CURRENT_MILESTONE: M11.51 complete — first portable native routine reconstruction
 CURRENT_TASK: complete; bounded `TableCopyRoutine` extraction and proof
 STATUS: COMPLETE — `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`

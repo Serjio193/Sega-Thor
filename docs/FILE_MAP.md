@@ -49,6 +49,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── NATIVE_MECHANICAL_PRIMITIVE_M11_48.md M11.48 resumable native mechanical primitive proof
 │   │   └── MECHANICAL_PRIMITIVE_FAMILY_M11_49.md M11.49 mechanical primitive family closure proof
 │   │   └── FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md M11.51 routine extraction and replacement gate
+│   │   └── NATIVE_ROUTINE_MISMATCH_M11_52.md M11.52 continuation mismatch closure and promotion proof
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -333,16 +334,17 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   unsupported override gate, reusing native/mechanical decompressors.
 - `dispatch.hpp/.cpp`: natural entry/return capture, footprint checks and ISR
   isolation through the existing emulator hook.
-- `candidate_2d66.hpp/.cpp`: the single M11.29 target-specific shadow and
-  native-override adapter for the bounded `0x2D66` leaf.
+- `candidate_2d66.hpp/.cpp`: the M11.29/M11.52 target adapter for the bounded
+  `0x2D66` leaf, including exact GPGX instruction-continuation reconstruction.
 - `runner.cpp`: deterministic neutral libretro frontend, local hash evidence.
 - `gpgx_bridge.c`: read-only bridge compiled only inside the external emulator.
 - `prepare_gpgx.py`: reproducible bridge installation, coverage opt-out guard
   and M11.36 post-instruction comparison hook.
 - `tests/hybrid_contract_test.cpp`, `tests/hybrid_dispatch_test.cpp`: independent
   synthetic state/output/stack, corruption, footprint and override-gate tests.
-- `tests/hybrid_candidate_2d66_test.cpp`: synthetic exact MOVEM-stack shadow and
-  native-side-effect regression test for the selected candidate.
+- `tests/hybrid_candidate_2d66_test.cpp`: synthetic exact MOVEM-stack shadow,
+  instruction bridge and M11.51 refresh-blind-spot regression for the selected
+  candidate.
 - `docs/reports/HYBRID_NATIVE_MIGRATION_POC.md`: evidence and exact blockers.
 - `docs/reports/HYBRID_NATIVE_OVERRIDE_MINIMAL_POC.md`: M11.29 target selection,
   identity and shadow/override equivalence evidence.
@@ -397,6 +399,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   reproduction and checkpoint identity mismatch; no attribution or promotion.
 - `docs/reports/CHECKPOINT_CANONICALIZATION_M11_43.md`: exact pinned GPGX
   wholesale-state layout, canonicalization contract and cross-process proof.
+- `docs/reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`: exact four-byte mismatch,
+  temporal root cause, continuation repair and paired authoritative proof.
 
 ## M11.31 comparative method transfer
 - `docs/reports/COMPARATIVE_DISASSEMBLY_METHOD_TRANSFER_M11_31.md`: pinned

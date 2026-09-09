@@ -10,6 +10,10 @@ namespace {
 struct Fake {
     std::array<unsigned, 18> regs{};
     std::unordered_map<unsigned, std::uint8_t> memory;
+    std::vector<unsigned> began;
+    std::vector<unsigned> finished;
+    int cycle_adjustment{};
+    unsigned skipped_refreshes{};
     static Fake* current;
 
     static unsigned reg(unsigned index) { return current->regs[index]; }
@@ -23,11 +27,25 @@ struct Fake {
             current->memory[address + static_cast<unsigned>(i)] =
                 static_cast<std::uint8_t>(value >> (8 * (width - i - 1)));
     }
+    static unsigned fetch16() {
+        const auto pc = current->regs[16];
+        const auto value = (peek(pc) << 8) | peek(pc + 1);
+        current->regs[16] += 2;
+        return static_cast<unsigned>(value);
+    }
+    static void begin_instruction(unsigned opcode) { current->began.push_back(opcode); }
+    static void finish_instruction(unsigned opcode) { current->finished.push_back(opcode); }
+    static void add_cycles(int delta) { current->cycle_adjustment += delta; }
+    static void skip_bus_refresh() { ++current->skipped_refreshes; }
     void word(unsigned address, unsigned value) { poke(address, 2, value); }
     void longword(unsigned address, unsigned value) { poke(address, 4, value); }
     void reset() {
         regs.fill(0);
         memory.clear();
+        began.clear();
+        finished.clear();
+        cycle_adjustment = 0;
+        skipped_refreshes = 0;
         regs[7] = 0x11223344;
         regs[11] = 0x00FF2000;
         regs[14] = 0x100;
@@ -38,6 +56,14 @@ struct Fake {
         word(0x102, 0x1234);
         word(0x104, 0x8000);
         longword(0xFFFF00, 0x00000200);
+        word(0x2D66, 0x48E7); word(0x2D68, 0x0110);
+        word(0x2D6A, 0x4247); word(0x2D6C, 0x1E1E);
+        word(0x2D6E, 0x47F9); word(0x2D70, 0x00FF);
+        word(0x2D72, 0x134C); word(0x2D74, 0xD6C7);
+        word(0x2D76, 0x1E1E); word(0x2D78, 0x36DE);
+        word(0x2D7A, 0x51CF); word(0x2D7C, 0xFFFC);
+        word(0x2D7E, 0x4CDF); word(0x2D80, 0x0880);
+        word(0x2D82, 0x4E75);
     }
 };
 Fake* Fake::current = nullptr;
@@ -64,7 +90,8 @@ void run_shadow() {
     rom[0x104] = 0x80; rom[0x105] = 0x00;
     std::ostringstream log;
     oasis::hybrid::Candidate2D66 candidate(
-        {Fake::reg, Fake::set_reg, Fake::peek, Fake::poke},
+        {Fake::reg, Fake::set_reg, Fake::peek, Fake::poke, {}, {}, {}, {}, {},
+         Fake::fetch16, Fake::begin_instruction, Fake::finish_instruction},
         oasis::hybrid::Mode::SHADOW_NATIVE, rom, log);
     candidate.hook(1, 2, 0x2D66, 0);
     original_body(fake);
@@ -88,7 +115,9 @@ void run_override() {
     rom[0x104] = 0x80; rom[0x105] = 0x00;
     std::ostringstream log;
     oasis::hybrid::Candidate2D66 candidate(
-        {Fake::reg, Fake::set_reg, Fake::peek, Fake::poke},
+        {Fake::reg, Fake::set_reg, Fake::peek, Fake::poke, {}, {}, Fake::add_cycles, {},
+         Fake::skip_bus_refresh,
+         Fake::fetch16, Fake::begin_instruction, Fake::finish_instruction},
         oasis::hybrid::Mode::NATIVE_OVERRIDE, rom, log);
     candidate.hook(1, 2, 0x2D66, 0);
     assert(candidate.complete());
@@ -96,11 +125,27 @@ void run_override() {
     assert(fake.regs[14] == 0x106 && fake.regs[15] == 0xFFFF04 && fake.regs[16] == 0x200);
     assert(Fake::peek(0xFF134E) == 0x12 && Fake::peek(0xFF134F) == 0x34);
     assert(Fake::peek(0xFF1350) == 0x80 && Fake::peek(0xFF1351) == 0x00);
+    assert(fake.began.size() == 12 && fake.finished.size() == 12);
+    assert(fake.began.front() == 0x48E7 && fake.finished.back() == 0x4E75);
+    assert(fake.cycle_adjustment == 224);
+    assert(fake.skipped_refreshes == 0);
+}
+
+void run_legacy_boundary_regression() {
+    // M11.51's lump-sum handoff advanced one refresh epoch instead of letting
+    // GPGX sample refresh at each represented instruction boundary.
+    int cycles = 193626;
+    int refresh = 193808;
+    cycles += 2828;
+    if (cycles >= refresh) refresh += 896;
+    assert(cycles == 196454);
+    assert(refresh != 196622);
 }
 }
 
 int main() {
     run_shadow();
     run_override();
+    run_legacy_boundary_regression();
     return 0;
 }

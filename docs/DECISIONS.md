@@ -742,3 +742,38 @@ explain the exact identity mismatch before another authoritative replacement.
 
 **Affected files/milestones:** `src/core/table_copy_routine.*`, the 2D66
 developer adapter and tests, M11.51 governance and report.
+
+## ADR-0033 — Per-instruction hybrid continuation is required for native routine promotion
+**Status:** Accepted for M11.52
+**Date:** 2026-09-09
+
+**Context:** M11.51's portable `TableCopyRoutine` shadow matched, but its
+authoritative native adapter changed four canonical checkpoint bytes after
+frame 120. The adapter's routine-level lump-sum cycle update produced the same
+exit cycle count as the interpreter while missing intermediate GPGX refresh
+sampling. The shadow comparison stopped before the scheduler-visible state
+where the mismatch appeared.
+
+**Decision:** Keep portable routine semantics in `oasis_core`. Extend the
+developer-only hybrid bridge with instruction fetch and per-instruction
+begin/finish callbacks, and require the adapter to reconstruct the exact
+opcode/extension stream, DBF continuation decision, MOVEM dynamic timing and
+RTS prefetch state. Do not use checkpoint canonicalization or aggregate-hash
+exceptions to promote a native routine. Promotion requires paired per-frame
+canonical checkpoint identity, video identity, continuation timing and
+execution accounting.
+
+**Alternatives considered:** Keep the lump-sum adapter; rejected because it
+misses refresh/scheduler semantics. Canonicalize the four bytes; rejected
+because RAM, sound and Z80 interrupt fields are semantic. Add a candidate-local
+checkpoint patch or a full CPU emulator; rejected by project scope and evidence
+rules.
+
+**Consequences:** The 2D66 routine is promoted with a generic hybrid
+continuation contract, while the generated/interpreter path remains the
+oracle/fallback for other routines. Future routine adapters must prove their
+own post-return and serialized-state boundary.
+
+**Affected files/milestones:** `src/tools/hybrid/replacement.hpp`,
+`src/tools/hybrid/gpgx_bridge.c`, `src/tools/hybrid/runner.cpp`, the 2D66
+adapter/test and M11.52 evidence/governance.

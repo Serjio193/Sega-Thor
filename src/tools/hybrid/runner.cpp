@@ -62,15 +62,12 @@ int (*cpu_cycles)(){};
 unsigned (*gpgx_boundary_reason)(){};
 unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
-std::string video_hashes;
-std::string directory;
-bool discovery_mode{};
-bool plain_emulated_mode{};
+std::string video_hashes, directory;
+bool discovery_mode{}, plain_emulated_mode{};
 std::map<unsigned, unsigned> discovered_pcs;
 std::map<unsigned, unsigned> observed_pcs;
 std::unique_ptr<oasis::hybrid::AddressProvenanceObserver> address_observer;
-unsigned current_frame{};
-unsigned interpreter_instruction_executions{};
+unsigned current_frame{}, interpreter_instruction_executions{};
 void hook(int type, int width, unsigned address, unsigned value) {
     address &= 0xFFFFFFU;
     if (type == 1) {
@@ -275,12 +272,15 @@ int main(int argc, char** argv) {
             const auto set_reg = library.get<void(*)(unsigned, unsigned)>("retro_hybrid_set_register");
             const auto poke = library.get<void(*)(unsigned, int, unsigned)>("retro_hybrid_poke");
             const auto set_return_state = library.get<void(*)(unsigned, unsigned, unsigned)>("retro_hybrid_set_return_state");
-            const auto cycles = library.get<int(*)()>("retro_hybrid_cycles");
             const auto add_cycles = library.get<void(*)(int)>("retro_hybrid_add_cycles");
             const auto refresh_cycles = library.get<int(*)()>("retro_hybrid_refresh_cycles");
             const auto skip_bus_refresh = library.get<void(*)()>("retro_hybrid_skip_bus_refresh");
-            const oasis::hybrid::CandidateApi api{reg, set_reg, peek, poke, set_return_state, cycles, add_cycles,
-                                                  refresh_cycles, skip_bus_refresh};
+            const oasis::hybrid::CandidateApi api{
+                reg, set_reg, peek, poke, set_return_state, cpu_cycles, add_cycles,
+                refresh_cycles, skip_bus_refresh,
+                library.get<unsigned(*)()>("retro_hybrid_fetch16"),
+                library.get<void(*)(unsigned)>("retro_hybrid_begin_instruction"),
+                library.get<void(*)(unsigned)>("retro_hybrid_finish_instruction")};
             for (const auto target : selected_targets) {
                 if (target == 0x2D66)
                     candidate_storage.push_back(std::make_unique<oasis::hybrid::Candidate2D66>(api, mode, rom.bytes(), calls));

@@ -17,6 +17,9 @@ struct CandidateApi {
     void (*add_cycles)(int){};
     int (*refresh_cycles)(){};
     void (*skip_bus_refresh)(){};
+    unsigned (*fetch16)(){};
+    void (*begin_instruction)(unsigned){};
+    void (*finish_instruction)(unsigned){};
 };
 
 struct ReplacementMetrics {

@@ -1,6 +1,29 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.52 — Native routine checkpoint mismatch root-cause closure
+STATUS: `FIRST_PORTABLE_NATIVE_ROUTINE_PROVEN` for the bounded
+`TableCopyRoutine` at `0x002D66..0x002D84`.
+
+M11.51's four canonical checkpoint differences were not representation noise.
+At frame 120 the bytes were serialized offsets `3060`, `144468`, `144482` and
+`144558`. Offset 3060 is work RAM `0xFF0BE4`; 144558 is `Z80_Regs.iff1` at
+the pinned Z80 base `144504 + 54`; 144468 and 144482 are in the pinned sound
+semantic region between the YM2612 and Z80 objects, with exact PSG field names
+left unresolved because the M11.43 source/object layout comparison found a
+124-byte sound-layout discrepancy. None is within a host representation span.
+
+Temporal evidence showed equal entry/exit cycles (`193626` to `196454`) but
+M11.51 native refresh ending at `194704` instead of the reference `196622`.
+The adapter had collapsed 34 represented 68000 instructions into one cycle
+delta and one refresh update. The portable routine's register, stack, output
+and return semantics were not the cause. The hybrid adapter now drives each
+instruction through GPGX fetch/begin/finish callbacks, including extension
+words, DBF taken/not-taken continuation, MOVEM dynamic timing and RTS
+prefetch state. Paired 600-frame evidence matches the frozen canonical
+checkpoint aggregate and video with exact execution accounting. Full evidence
+is in `reports/NATIVE_ROUTINE_MISMATCH_M11_52.md`.
+
 # M11.51 — First portable native routine reconstruction
 STATUS: `PORTABLE_NATIVE_ROUTINE_SHADOW_PROVEN_REPLACEMENT_BLOCKED`.
 
