@@ -99,6 +99,14 @@ and the generic `basic_block` boundary glue remain separate handwritten
 integration code. The final interpreter remainder stays fail-closed for
 unverified semantics, unresolved register-based memory and 0xA00003 hardware.
 
+M11.46 adds `address_provenance` as a separate developer-only observer around
+the same GPGX hook and block-registry path. It records runtime fallback PC
+counts, top-level data-bus address/width/direction/order and A0–A7 transitions,
+then classifies observed addresses against the existing Genesis map. It has no
+dependency from `oasis_core`, generated gameplay blocks or handwritten native
+game logic. The observer resolves memory evidence only; semantic eligibility,
+hardware ordering and generator promotion remain independent gates.
+
 M11.45 keeps this boundary and adds the generated
 `generated_blocks_m1145_*.cpp` translation units containing only decoder-owned
 candidate bodies and registry fragments. Handwritten runtime helpers in

@@ -1,3 +1,26 @@
+# ADR-0027 — Observe runtime addresses without promotion
+**Status:** Accepted for M11.46 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.45 left 149,678 interpreter executions in 635
+`UNKNOWN_WITH_EVIDENCE` register-address PCs. Static decoding could not prove
+their runtime memory classes, while the existing GPGX path already exposes
+instruction and top-level data-bus boundaries.
+
+**Decision:** Add a separate observer mode around the existing GPGX hook and
+M11.45 block registry. Record PC counts, data-bus address/width/direction/order
+and A-register transitions, and classify only observed addresses using the
+existing Genesis address contract. Keep mapper-dependent cartridge SRAM
+unproven when address alone is insufficient. Do not promote semantics, broaden
+hardware emulation, add address-specific execution bodies or connect the
+observer to production runtime.
+
+**Consequences:** Three independent processes matched the M11.45 identity and
+metrics. Runtime classes were resolved for 147,847 executions; 1,831
+address-computation-only executions remain exact-evidence unresolved. The result
+is `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`; M11.45 history and all prior
+negative gates remain intact.
+
 # Architecture Decision Log
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.

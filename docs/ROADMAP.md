@@ -1,3 +1,16 @@
+# M11.46 — Runtime address provenance and memory-class resolution — DONE
+
+The unchanged M11.45 native baseline was reproduced twice. Three independent
+600-frame `BASIC_BLOCK_ADDRESS_PROVENANCE` processes preserved the same
+checkpoint/video identity and execution metrics. The existing GPGX developer
+hook recorded exact PC counts, data-bus address/width/direction/order and A0–A7
+transitions. All 635 register-address unknown PCs were observed, totaling
+149,678 executions; 147,847 received runtime memory classification and 1,831
+address-computation-only executions remain `UNKNOWN_WITH_EVIDENCE`. No semantic
+candidate was promoted and no hardware contract was broadened.
+Result: `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`.
+Evidence: `reports/RUNTIME_ADDRESS_PROVENANCE_M11_46.md`.
+
 # Development Roadmap
 
 The roadmap is ordered. Do not skip ahead unless a blocking dependency is documented.

@@ -1,5 +1,17 @@
 # Project State
 
+CURRENT_MILESTONE: M11.46 complete — runtime address provenance and memory-class resolution
+CURRENT_TASK: complete; bounded developer-only runtime observation
+STATUS: COMPLETE — `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`
+SCOPE_BOUNDARY: existing GPGX hook path and address classification only; no
+semantic promotion, bus broadening, generator change or native runtime dependency
+LAST_VERIFIED_RESULT: M11.45 native baseline reproduced twice; three independent
+provenance runs matched checkpoint/video and all execution metrics. The 635
+register-address unknown PCs close at 149,678 executions; 147,847 are classified
+from observed bus addresses and 1,831 remain exact-evidence unresolved.
+EVIDENCE: `docs/reports/RUNTIME_ADDRESS_PROVENANCE_M11_46.md`.
+NEXT_GATE: new milestone required; do not expand M11.46 scope.
+
 CURRENT_MILESTONE: M11.45 complete — bounded semantic closure and 95% gate
 CURRENT_TASK: complete; semantic-only candidate tranche shadow/native certified
 STATUS: COMPLETE — `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`

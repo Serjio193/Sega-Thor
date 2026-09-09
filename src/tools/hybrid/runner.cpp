@@ -6,6 +6,7 @@
 #include "tools/hybrid/basic_block.hpp"
 #include "tools/hybrid/generated_blocks.hpp"
 #include "tools/hybrid/interpreter_profile.hpp"
+#include "tools/hybrid/address_provenance.hpp"
 #include "tools/hybrid/checkpoint_evidence.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
@@ -64,6 +65,8 @@ bool discovery_mode{};
 bool plain_emulated_mode{};
 std::map<unsigned, unsigned> discovered_pcs;
 std::map<unsigned, unsigned> observed_pcs;
+std::unique_ptr<oasis::hybrid::AddressProvenanceObserver> address_observer;
+unsigned current_frame{};
 unsigned interpreter_instruction_executions{};
 void hook(int type, int width, unsigned address, unsigned value) {
     address &= 0xFFFFFFU;
@@ -71,6 +74,7 @@ void hook(int type, int width, unsigned address, unsigned value) {
         ++observed_pcs[address];
         ++interpreter_instruction_executions;
     }
+    if (address_observer) address_observer->event(type, width, address, value, current_frame);
     if (discovery_mode) {
         if (type == 1) ++discovered_pcs[address];
         return;
@@ -148,14 +152,15 @@ int main(int argc, char** argv) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
                      "<mode> <frames:1..600> <output directory> [target]\n"
                      "modes: EMULATED, SHADOW_NATIVE, NATIVE_OVERRIDE, "
-                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE, DISCOVER_BLOCKS\n";
+                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE, BASIC_BLOCK_ADDRESS_PROVENANCE, DISCOVER_BLOCKS\n";
         return 2;
     }
     try {
         const std::string_view mode_text(argv[3]);
         using oasis::hybrid::Mode;
         const bool discover_mode = mode_text == "DISCOVER_BLOCKS";
-        const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE";
+        const bool address_mode = mode_text == "BASIC_BLOCK_ADDRESS_PROVENANCE";
+        const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE" || address_mode;
         const auto mode = discover_mode ? Mode::EMULATED : mode_text == "EMULATED" ? Mode::EMULATED :
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
             mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE :
@@ -280,6 +285,7 @@ int main(int argc, char** argv) {
         const retro_game_info game{argv[2], rom.bytes().data(), rom.size(), nullptr};
         if (!library.get<decltype(&retro_load_game)>("retro_load_game")(&game))
             throw std::runtime_error("GPGX rejected ROM");
+        if (address_mode) address_observer = std::make_unique<oasis::hybrid::AddressProvenanceObserver>(std::filesystem::path(directory) / "address_provenance.json", rom.size(), reg);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(hook);
         if (block_mode)
             library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(block_hook);
@@ -294,6 +300,7 @@ int main(int argc, char** argv) {
             evidence = std::make_unique<oasis::hybrid::CheckpointEvidence>(directory);
         }
         for (unsigned frame = 0; frame < frames; ++frame) {
+            current_frame = frame + 1;
             if (session) session->frame(frame);
             run();
             if ((session && !session->error().empty()) || (registry && !registry->error().empty()) ||
@@ -334,6 +341,7 @@ int main(int argc, char** argv) {
         if (block_mode)
             library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
+        if (address_observer) { address_observer->finish(); address_observer.reset(); }
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};

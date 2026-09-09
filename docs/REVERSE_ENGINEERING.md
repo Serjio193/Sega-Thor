@@ -1,6 +1,26 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.46 — Runtime address provenance and memory-class resolution
+STATUS: `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`.
+
+The M11.45 baseline was reproduced twice after adding a developer-only
+observer. Three independent 600-frame provenance runs matched the authoritative
+checkpoint/video identity and all M11.45 metrics. The observer uses the existing
+GPGX `HOOK_M68K_E`, `HOOK_M68K_R/W` and `HOOK_M68K_POST` events. It records each
+fallback PC count, effective bus address, width, direction, ordered bus
+sequence, and A0–A7 before/after transition. Immediate instruction reads are
+outside the top-level R/W callbacks, so no fetch heuristic is used.
+
+The M11.45 final ledger has 635 `UNKNOWN_WITH_EVIDENCE` register-address PCs
+with 149,678 executions. All 635 PCs were observed with exact matching counts.
+Runtime memory classes were proven for 147,847 executions: 112,490 safe-memory,
+14,085 hardware-only, and 21,272 mixed. Eighteen address-computation-only rows
+remain unresolved exact evidence for 1,831 executions; they have no data-bus
+event for this observation path. No semantic or hardware promotion follows
+from address knowledge. Full evidence is in
+`reports/RUNTIME_ADDRESS_PROVENANCE_M11_46.md`.
+
 ## M11.45 — Bounded semantic closure and final interpreter Pareto
 STATUS: `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`.
 

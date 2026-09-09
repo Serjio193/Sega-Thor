@@ -3,6 +3,52 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.46 Runtime Address Provenance and Memory-Class Resolution — COMPLETE
+**Objective:** Resume from the committed M11.45 baseline and resolve, with
+runtime evidence only, the dominant register-address `UNKNOWN_WITH_EVIDENCE`
+remainder. Do not promote semantics, broaden hardware, alter generated blocks
+or redefine the 95% gate.
+
+**Acceptance criteria:** Reproduce the unchanged 600-frame baseline twice;
+observe the existing GPGX fallback path in three independent processes; close
+the 635 register-address unknown PCs with exact counts; record address, width,
+direction, ordered bus sequence and A-register transitions; classify observed
+addresses without invented semantic names; preserve unresolved no-bus cases;
+update governance, hygiene and validation evidence; commit and push the
+bounded positive result.
+
+**Actions:** Re-read repository instructions and required project documents.
+Added `address_provenance` to the developer-only hybrid contract and a distinct
+`BASIC_BLOCK_ADDRESS_PROVENANCE` runner mode. The observer wraps the existing
+GPGX execution/data-bus/post-instruction callbacks and does not read or write
+machine state. Mapper-dependent cartridge SRAM remains unclassified when the
+address alone is insufficient.
+
+**Evidence:** Two unchanged native runs matched checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, totals
+6,488,773 / 6,199,718 / 289,055, 580 ranges, 149,059 yields and 288
+resumptions. Three provenance runs matched byte-for-byte and recorded
+289,055 entries with zero unclosed instructions. The 635 final unknown PCs
+sum exactly to 149,678 executions; 147,847 are runtime-classified and 1,831
+address-computation-only executions remain exact-evidence unresolved.
+
+**Validation:** Debug full CTest 58/58 passed; Release full CTest 58/58
+passed; GNU-equivalent MinGW full CTest 58/58 passed. The exhaustive ledger
+recheck closed at 289,055. Final shadow completed 6,199,718 comparisons with
+zero divergence, followed by an unchanged native 600-frame proof preserving
+all M11.45 identity metrics. The address observer regression passed in Debug
+and Release. `git diff --check` and source line-limit checks passed. Repository
+hygiene review found no tracked ROM/assets/emulator binaries/generated run
+evidence; `game.srm` remains untouched and untracked.
+
+**Result:** `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`; no semantic candidate,
+hardware contract or native runtime path was changed. Evidence:
+`docs/reports/RUNTIME_ADDRESS_PROVENANCE_M11_46.md`.
+
+**Exact next step:** Complete the required repository validation, commit and
+push this focused M11.46 result, then stop.
+
 ## 2026-09-09 — M11.45 Bounded Semantic Closure Toward 95% Dynamic Coverage — COMPLETE
 **Objective:** Resume from the committed M11.44 baseline and close only a bounded,
 decoder-backed semantic tranche toward 95% translated dynamic execution. Do not

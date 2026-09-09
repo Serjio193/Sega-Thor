@@ -43,6 +43,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md M11.44 final post-promotion interpreter ledger/Pareto
 │   │   └── SEMANTIC_CLOSURE_M11_45.md M11.45 candidate selection and shadow/native proof
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md M11.45 exhaustive final interpreter ledger
+│   │   └── RUNTIME_ADDRESS_PROVENANCE_M11_46.md M11.46 bounded runtime address and memory-class evidence
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -121,6 +122,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── interpreter_profile.cpp Ranked interpreter fallback profile writer
 │       │   ├── interpreter_profile.hpp Interpreter profile writer API
 │       │   ├── interpreter_ledger.cpp Exhaustive decoder-backed interpreter attribution CLI
+│       │   ├── address_provenance.hpp/.cpp Developer-only runtime address observer and memory classification
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
 │       │   ├── checkpoint_evidence.cpp Raw checkpoint evidence and canonical identity adapter
@@ -348,6 +350,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   instruction-boundary yield/resume regression for a frozen M11.38 range.
 - `tests/hybrid_checkpoint_layout_test.cpp`: GPGX layout, representation-span,
   version-guard and cross-process canonicalization regression.
+- `tests/hybrid_address_provenance_test.cpp`: address-class and observer
+  aggregation regression for the developer-only runtime provenance path.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 - `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,

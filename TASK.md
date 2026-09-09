@@ -1,5 +1,20 @@
 # Current task
 
+TASK: M11.46 Runtime Address Provenance and Memory-Class Resolution
+STATUS: COMPLETE — `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`
+BASELINE: `ece2c557cb4c2573ced325f5579a83c3a06e9fc6`
+SCOPE: Developer-only observation of the existing GPGX fallback path; no
+semantic promotion, hardware-contract broadening, generator change or native
+gameplay replacement.
+RESULT: Two unchanged native baseline runs and three independent provenance
+runs preserved the M11.45 checkpoint/video/count metrics. All 635 final
+register-address unknown PCs were observed with exact counts totaling 149,678;
+147,847 executions received runtime memory classification and 1,831 exact
+address-computation-only executions remain `UNKNOWN_WITH_EVIDENCE`.
+EVIDENCE: `docs/reports/RUNTIME_ADDRESS_PROVENANCE_M11_46.md` and the
+untracked local `address_provenance.json` outputs.
+NEXT ACTION: Stop; do not implement the next milestone in this task.
+
 TASK: M11.45 Bounded Semantic Closure Toward 95% Dynamic Coverage
 STATUS: COMPLETE — `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`
 BASELINE: `b1c624072e1341bbe26a569841d325152cf3bd7b`
