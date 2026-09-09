@@ -1,5 +1,18 @@
 # Current task
 
+TASK: M11.54 Native Routine Cluster and First Subsystem Boundary Discovery
+STATUS: COMPLETE — PORTABLE_ROUTINE_CLUSTER_PROVEN
+BASELINE: 6c81803dbd230ff54862d6ae8e8a04a7c79f727d
+SCOPE: Discovery only. The RamFlag-centered caller/raw-memory cluster is
+proven, but no portable subsystem boundary or typed data is proven.
+RESULT: Unchanged dual-native M11.53 baseline reproduced twice with exact
+checkpoint/video/accounting/continuation identity. Static provenance proves
+0x2D58 -> 0x2D66 and 0x604F6/0x60BCC -> 0x604BC. No dynamic caller pairing,
+third routine, typed structure, hardware expansion or subsystem implementation.
+EVIDENCE: docs/reports/NATIVE_ROUTINE_CLUSTER_M11_54.md
+NEXT ACTION: Proposed M11.55 is bounded closure of 0x604F6/0x60BCC callers and
+raw 0x00FF0010..0x00FF0016 data; do not execute it in this task.
+
 TASK: M11.53 Second Portable Native Routine Candidate and Promotion
 STATUS: COMPLETE — SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN
 BASELINE: f2d82cba8fc7c038d28652949783d38f0df5f1a0

@@ -3,6 +3,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-09 — M11.54 native routine cluster discovery — COMPLETE
+
+TASK: From baseline 6c81803dbd230ff54862d6ae8e8a04a7c79f727d, reproduce the
+unchanged M11.53 dual-native proof, establish exact caller/callee and
+shared-memory provenance for 0x2D66 and 0x604BC, classify bounded
+neighborhoods/blockers, and stop without forcing a third routine or subsystem.
+
+RESULT: Baseline A/B passed with aggregate
+251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d, video
+5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58, total
+6,488,773 = 6,488,699 interpreter + 34 TableCopy + 40 RamFlag, zero
+fallback/divergence, and one yield/resumption at 0x604DA.
+
+EVIDENCE: Static exact slices prove 0x2D58 -> 0x2D66 and
+0x604F6/0x60BCC -> 0x604BC. Target entry totals are dynamic-only because the
+runner does not capture caller PCs. The RamFlag-centered call/data cluster
+shares raw 0x00FF0010..0x00FF0016, but caller CFG/semantics and hardware
+isolation are incomplete. TableCopy and RamFlag have no proven shared edge or
+structure. Architecture inventory is 2 authoritative routines, 4 mechanical
+primitives, 2 complete contracts, 3 partial contracts, 0 typed structures,
+0 subsystem candidates, 1 hardware-blocked and 2 continuation-blocked.
+
+DECISION: PORTABLE_ROUTINE_CLUSTER_PROVEN. No third routine, typed data,
+hardware behavior or subsystem boundary was implemented. Proposed M11.55 is
+bounded caller/data closure for 0x604F6/0x60BCC and is not executed here.
+Full report: docs/reports/NATIVE_ROUTINE_CLUSTER_M11_54.md.
+
+TESTS: Fresh Debug and Release MinGW full CTest passed `66/66`; fresh
+GNU-equivalent UCRT/MinGW full CTest passed `66/66`. Direct mechanical and
+developer-only candidate/dispatch regression executables passed. The fresh
+standalone configurations do not emit the conditional GPGX-linked hybrid POC
+target; the unchanged M11.53 POC reproduced the native baseline twice.
+`git diff --check` and the source-code file-limit gate passed. No source or
+runtime files changed.
+
 # 2026-09-09 — M11.53 second portable native routine — COMPLETE
 
 **TASK:** From baseline f2d82cba8fc7c038d28652949783d38f0df5f1a0, prove and

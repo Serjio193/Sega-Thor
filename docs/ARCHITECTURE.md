@@ -2,6 +2,21 @@
 
 ## Target architecture
 
+## M11.54 discovery boundary
+
+M11.54 proves a RamFlag-centered call-graph/raw-memory cluster, but not a
+portable subsystem. The two authoritative core routines remain separate
+ownership islands because no shared proven structure or edge connects
+TableCopyRoutine to RamFlagRoutine. The raw 0x00FF0010..0x00FF0016 window is
+shared with bounded callers, but field lifetime, aliasing and meaning are not
+closed. The 0x060BCC context also reaches hardware register 0x00A11100.
+
+The current dependency direction remains explicit: oasis_core owns only the
+portable TableCopy/RamFlag contracts and opaque continuation tokens;
+tools/hybrid owns ROM PC/opcode provenance, GPGX continuation/timing/prefetch,
+checkpoint/oracle tooling, accounting and hardware interaction. No typed
+structure or subsystem owner is accepted by M11.54.
+
 ```text
 User-owned ROM
     |

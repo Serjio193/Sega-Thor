@@ -1,6 +1,28 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.54 — Native routine cluster and first subsystem boundary discovery
+STATUS: PORTABLE_ROUTINE_CLUSTER_PROVEN.
+
+The unchanged M11.53 dual-native 600-frame baseline reproduced twice with
+checkpoint aggregate 251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d,
+video 5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58,
+6,488,773 total instructions, 6,488,699 interpreter remainder, 34 TableCopy,
+40 RamFlag, zero fallback/divergence and one RamFlag yield/resumption.
+
+Exact static provenance proves 0x2D58 -> 0x2D66 (return 0x2D5C) and
+0x604F6 -> 0x604BC (return 0x604FA), 0x60BCC -> 0x604BC (return 0x60BD0).
+Dynamic target counts are 1 and 4, but caller PCs were not captured; those
+edges remain STATIC_PROVEN rather than BOTH. The RamFlag callers share only
+the raw byte window 0x00FF0010..0x00FF0016. Its field lifetime, aliasing and
+meaning are unknown, and 0x60BCC is hardware-coupled through 0x00A11100.
+No edge or shared structure connects the two authoritative native routines.
+
+No typed structure, gameplay meaning or subsystem boundary is promoted.
+Nearby 0x61032 and 0x3820 remain continuation-blocked by routine-specific
+contracts; 0x6121A remains hardware-blocked. Full discovery evidence is in
+reports/NATIVE_ROUTINE_CLUSTER_M11_54.md.
+
 # M11.53 — Second portable native routine
 STATUS: SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN.
 

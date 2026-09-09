@@ -1,5 +1,7 @@
 # File Map
 
+M11.54 additions: docs/reports/NATIVE_ROUTINE_CLUSTER_M11_54.md records the
+bounded caller/data cluster, provenance, metrics and proposed M11.55.
 M11.53 additions: src/core/ram_flag_routine.cpp/.hpp owns the portable
 structured RAM flag/output routine contract; src/tools/hybrid/candidate_604bc
 owns the ROM-specific per-instruction adapter; tests/ram_flag_routine_test.cpp

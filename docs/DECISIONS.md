@@ -801,3 +801,28 @@ remains the oracle/fallback.
 
 Affected files/milestones: src/core/ram_flag_routine.*, the 0x604BC adapter
 and regression test, replacement accounting, M11.53 report.
+
+# ADR-0035 — Stop at the first proven native routine cluster
+Status: Accepted for M11.54
+Date: 2026-09-09
+
+Context: M11.52 and M11.53 authoritatively proved two portable native routine
+contracts, TableCopyRoutine at 0x2D66..0x2D84 and RamFlagRoutine at
+0x604BC..0x604E6. M11.54 reproduced the dual proof twice and audited exact
+caller/callee and raw-memory evidence.
+
+Decision: Classify the RamFlag direct callers at 0x604F6 and 0x60BCC, together
+with the raw 0x00FF0010..0x00FF0016 window, as a CALL_GRAPH_CLUSTER and
+MEMORY_STRUCTURE_CLUSTER. Do not call it a gameplay subsystem or move callers
+into oasis_core until caller CFG, data ownership and hardware ordering close.
+Keep TableCopy and RamFlag as separate ownership islands. Do not add a third
+routine or typed data in M11.54.
+
+Consequences: The architectural result is PORTABLE_ROUTINE_CLUSTER_PROVEN,
+not FIRST_PORTABLE_SUBSYSTEM_BOUNDARY_IDENTIFIED. The next proposed task is a
+bounded RamFlag caller/data closure audit. The existing dependency direction
+is preserved: oasis_core owns portable semantics/tokens, while tools/hybrid
+owns ROM provenance, GPGX continuation, oracle/accounting and hardware.
+
+Affected files/milestones: M11.54 governance documents and
+reports/NATIVE_ROUTINE_CLUSTER_M11_54.md; no production source change.

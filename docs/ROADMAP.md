@@ -1,3 +1,25 @@
+# M11.54 — Native routine cluster and first subsystem boundary discovery — DONE
+
+Result: PORTABLE_ROUTINE_CLUSTER_PROVEN. The unchanged M11.53 dual-native
+baseline reproduced twice with exact frozen checkpoint/video/accounting and
+continuation identity. Static ROM evidence proves one TableCopy caller and
+two RamFlag callers. The RamFlag-centered call-graph/raw-memory cluster is
+useful but not a portable subsystem: caller CFG/semantics are incomplete,
+0x060BCC is hardware-coupled, and no typed shared structure is proven.
+No third routine was implemented. Evidence:
+reports/NATIVE_ROUTINE_CLUSTER_M11_54.md.
+
+Next proposed milestone: bounded closure of 0x0604F6/0x060BCC caller CFGs and
+the raw 0x00FF0010..0x00FF0016 window; implementation remains conditional.
+
+# M11.53 — Second portable native routine — DONE
+
+Result: SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN. RamFlagRoutine at
+0x0604BC..0x0604E6 was extracted into oasis_core and promoted beside
+TableCopyRoutine with exact paired 600-frame checkpoint/video/accounting and
+one event yield/resumption. Evidence:
+reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md.
+
 # M11.52 — Native routine checkpoint mismatch root-cause closure — DONE
 
 The single `TableCopyRoutine` replacement at `0x2D66..0x2D84` is now
