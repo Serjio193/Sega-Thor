@@ -7,6 +7,8 @@
 #include "tools/hybrid/generated_blocks.hpp"
 #include "tools/hybrid/interpreter_profile.hpp"
 #include "tools/hybrid/address_provenance.hpp"
+#include "tools/hybrid/caller_attribution.hpp"
+#include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/mechanical_primitive.hpp"
 #include "tools/hybrid/runner_report.hpp"
 #include "tools/hybrid/checkpoint_evidence.hpp"
@@ -22,44 +24,14 @@
 #include <memory>
 #include <stdexcept>
 #include <string_view>
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
 namespace {
-class Library {
-public:
-    explicit Library(const char* path) {
-#ifdef _WIN32
-        handle_ = LoadLibraryA(path);
-#else
-        handle_ = dlopen(path, RTLD_NOW | RTLD_LOCAL);
-#endif
-        if (!handle_) throw std::runtime_error("cannot load external GPGX library");
-    }
-    template<class T> T get(const char* name) {
-#ifdef _WIN32
-        const auto symbol = GetProcAddress(handle_, name);
-#else
-        const auto symbol = dlsym(handle_, name);
-#endif
-        if (!symbol) throw std::runtime_error(std::string("missing GPGX symbol ") + name);
-        return reinterpret_cast<T>(symbol);
-    }
-private:
-#ifdef _WIN32
-    HMODULE handle_{};
-#else
-    void* handle_{};
-#endif
-};
 oasis::hybrid::Dispatch* dispatch{}; // One explicitly owned frontend session.
 oasis::hybrid::Registry* registry_dispatch{};
 oasis::hybrid::BasicBlockRegistry* block_registry{};
 oasis::hybrid::MechanicalPrimitiveRegistry* primitive_registry{};
 int (*cpu_cycles)(){};
 unsigned (*gpgx_boundary_reason)(){};
+int (*gpgx_refresh_cycles)(){};
 unsigned bytes_per_pixel = 2;
 unsigned video_frames{};
 std::string video_hashes, directory;
@@ -67,12 +39,17 @@ bool discovery_mode{}, plain_emulated_mode{};
 std::map<unsigned, unsigned> discovered_pcs;
 std::map<unsigned, unsigned> observed_pcs;
 std::unique_ptr<oasis::hybrid::AddressProvenanceObserver> address_observer;
+std::unique_ptr<oasis::hybrid::CallerAttributionObserver> caller_observer;
 unsigned current_frame{}, interpreter_instruction_executions{};
+unsigned previous_execute_pc{};
 void hook(int type, int width, unsigned address, unsigned value) {
     address &= 0xFFFFFFU;
+    if (type == 1 && caller_observer && address == 0x0604BC)
+        caller_observer->entry(address, previous_execute_pc, current_frame);
     if (type == 1) {
         ++observed_pcs[address];
         ++interpreter_instruction_executions;
+        previous_execute_pc = address;
     }
     if (address_observer) address_observer->event(type, width, address, value, current_frame);
     if (discovery_mode) {
@@ -93,6 +70,8 @@ oasis::hybrid::BlockExitReason boundary_reason() noexcept {
         oasis::hybrid::BlockExitReason::FALLBACK;
 }
 int block_hook(unsigned address) {
+    if (caller_observer && address == 0x0604BC)
+        caller_observer->entry(address, previous_execute_pc, current_frame);
     if (primitive_registry && primitive_registry->handles(address)) {
         const auto result = primitive_registry->dispatch(address);
         if (result) return result;
@@ -210,7 +189,7 @@ int main(int argc, char** argv) {
         directory = std::filesystem::absolute(argv[5]).string();
         std::filesystem::create_directories(directory);
         const auto library_hash = oasis::calculate_sha256(oasis::Rom::load(argv[1]).bytes());
-        Library library(argv[1]);
+        oasis::hybrid::ExternalLibrary library(argv[1]);
         if (library.get<unsigned(*)()>("retro_hybrid_abi")() != 3)
             throw std::runtime_error("GPGX hybrid bridge ABI mismatch");
         std::ofstream calls(std::filesystem::path(directory) / "calls.jsonl");
@@ -218,6 +197,7 @@ int main(int argc, char** argv) {
         const auto reg = library.get<unsigned(*)(unsigned)>("retro_hybrid_register");
         const auto peek = library.get<int(*)(unsigned)>("retro_hybrid_peek");
         cpu_cycles = library.get<int(*)()>("retro_hybrid_cycles");
+        gpgx_refresh_cycles = library.get<int(*)()>("retro_hybrid_refresh_cycles");
         std::unique_ptr<oasis::hybrid::Dispatch> session;
         std::vector<std::unique_ptr<oasis::hybrid::Replacement>> candidate_storage;
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
@@ -226,6 +206,11 @@ int main(int argc, char** argv) {
         std::unique_ptr<oasis::hybrid::MechanicalPrimitiveRegistry> primitives;
         observed_pcs.clear();
         interpreter_instruction_executions = 0;
+        previous_execute_pc = 0;
+        if (std::find(selected_targets.begin(), selected_targets.end(), 0x604BCU) != selected_targets.end())
+            caller_observer = std::make_unique<oasis::hybrid::CallerAttributionObserver>(
+                std::filesystem::path(directory) / "caller_attribution.json",
+                oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
         if (discover_mode) {
             // Discovery deliberately installs only the execution observer. It does not
             // register a candidate, so every natural instruction remains authoritative.
@@ -358,6 +343,7 @@ int main(int argc, char** argv) {
         if (block_mode || native_routine_block_mode) library.get<void(*)(int(*)(unsigned))>("retro_hybrid_install_block")(nullptr);
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
         if (address_observer) { address_observer->finish(); address_observer.reset(); }
+        if (caller_observer) { caller_observer->finish(); caller_observer.reset(); }
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};

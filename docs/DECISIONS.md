@@ -826,3 +826,33 @@ owns ROM provenance, GPGX continuation, oracle/accounting and hardware.
 
 Affected files/milestones: M11.54 governance documents and
 reports/NATIVE_ROUTINE_CLUSTER_M11_54.md; no production source change.
+
+# ADR-0036 — Keep RamFlag caller regions developer-only after M11.55 closure
+Status: Accepted for M11.55
+Date: 2026-09-09
+
+Context: M11.54 had static-only caller edges for `0x0604F6` and `0x060BCC`.
+M11.55 added a natural-entry observer and reproduced the unchanged dual-native
+proof twice. The observer deterministically attributes one `0x0604F6` entry
+and three `0x060BCC` entries, while exact bounded slices expose continuation,
+sibling-call, A5-relative memory and hardware-boundary gaps.
+
+Decision: Accept `RAMFLAG_CALLER_CONTRACTS_PROVEN` only as a bounded caller-
+region result. Keep attribution, ROM byte provenance, GPGX timing/hooks,
+address provenance and the `0x00A11100` hardware interaction in
+`tools/hybrid`. Treat the `0x0604F0` path and `0x060BC4` path as partial
+contracts, not portable routines. Do not create a typed structure for
+`FF0010..FF0016`; offset `FF0015`, A5-relative effects, lifetime and aliasing
+remain unknown. Do not implement a caller or subsystem unless a future task
+closes its complete continuation and memory/hardware contract.
+
+Consequences: Dynamic caller provenance is now reproducible and fail-closed for
+unknown caller classes without widening `oasis_core`. The exact
+`0x060BC4` hardware-prefix/RamFlag-suffix ordering is recorded, but the wider
+caller remains boundary-blocked. `PORTABLE_ROUTINE_CLUSTERS` remains 1 and
+`PORTABLE_SUBSYSTEM_BOUNDARIES` remains 0. M11.56 must choose one falsifiable
+continuation or sibling/data closure and is not executed by this decision.
+
+Affected files/milestones: caller attribution observer/test, extracted hybrid
+library wrapper, M11.55 governance documents and report; no production source
+change.

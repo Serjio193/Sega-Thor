@@ -1,6 +1,47 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.55 — RamFlag caller and shared-data contract closure
+STATUS: RAMFLAG_CALLER_CONTRACTS_PROVEN.
+
+The unchanged dual-native 600-frame proof reproduced twice with exact state
+checkpoint `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total instructions, 6,488,699 interpreter instructions, 34
+TableCopy instructions, 40 RamFlag instructions, zero fallback/divergence and
+one yield/resumption. The new developer-only observer is deterministic and
+byte-identical across runs.
+
+Every natural entry to `0x0604BC` was dynamically paired with its direct BSR.W
+site and stacked return: ordinal 1 is `0x0604F6 -> 0x0604BC` with return
+`0x0604FA`; ordinals 2–4 are `0x060BCC -> 0x0604BC` with return `0x060BD0`.
+All records have `unknown_count=0`, caller PCs `0x0604F0` and `0x060BC4`,
+and include A7, frame, cycles/refresh and all D/A/SR values. The `0x0604F0`
+label corrects M11.54's provisional `0x0604EC`: ROM bytes at `0x0604EC..EF`
+are zero data.
+
+Exact slices prove 7 instructions/1 block/1 direct call/1 direct branch for
+`[0x0604F0,0x060520)`, with edge `0x0604F6 -> 0x0604BC` and exit
+`0x060512 -> 0x0611D6`. The `0x060BC4..0x060CDA` block has 84 instructions;
+the wider `[0x060B50,0x060E50)` slice has 111 instructions, 9 blocks, 11
+direct calls, 6 direct branches, zero unresolved control-flow edges and 25
+unresolved memory references. It is therefore a bounded caller region, not a
+closed routine.
+
+Address provenance proves fixed byte writes to `FF0010`, `FF0011`, `FF0012`,
+`FF0013`, `FF0014` and internal `FF0016`; `FF0015` has no fixed absolute access
+in the audited paths. The `0x060BD8` access to `FF001A`, A5-relative writes,
+field lifetime, aliasing and type remain unknown. The typed shared-data gate is
+blocked.
+
+Raw decoding proves `0x060BC4` writes word zero to hardware register
+`0x00A11100` before the RamFlag call. Runtime provenance observes that hardware
+access at `0x060BC4` only, so the exact handoff has an adapter-owned hardware
+prefix and portable RamFlag/data suffix. The whole caller region remains
+hardware-boundary incomplete because sibling calls and memory effects are not
+closed. No caller, typed structure or subsystem is promoted. Full evidence:
+`reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md`.
+
 # M11.54 — Native routine cluster and first subsystem boundary discovery
 STATUS: PORTABLE_ROUTINE_CLUSTER_PROVEN.
 

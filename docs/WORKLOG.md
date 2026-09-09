@@ -3,6 +3,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-09 — M11.55 RamFlag caller/data closure — COMPLETE
+
+TASK: From baseline `160422e8a280890a01f6e314a57f7e024b644ba0`, reproduce the
+M11.54 dual-native proof, dynamically attribute every natural `0x0604BC`
+entry, close bounded caller CFG/semantics and shared-memory provenance for
+`0x0604F6`/`0x060BCC`, audit the `0xA11100` boundary, and stop before
+conditional implementation unless a complete contract is proven.
+
+RESULT: `RAMFLAG_CALLER_CONTRACTS_PROVEN`. One natural call from `0x0604F6`
+and three from `0x060BCC` were paired with exact return PC, A7, frame,
+cycle/refresh and register snapshots; unknown attribution is zero and the two
+run JSON artifacts are byte-identical. The `0x0604F0` and `0x060BC4` caller
+regions have exact direct CFG evidence, but neither is a complete routine.
+Fixed RAM byte effects are proven at offsets 0,1,2,3,4,6; offset 5, A5-
+relative effects, lifetime, aliasing and type are unresolved. `0x060BC4` is a
+proven hardware prefix before RamFlag, but the wider region remains hardware-
+boundary incomplete. No production source, third routine, typed structure or
+subsystem was implemented.
+
+EVIDENCE: `docs/reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md`.
+
+TESTS: Fresh GPGX-enabled Debug MinGW full CTest `67/67`; Release GPGX-
+enabled MinGW full CTest `67/67`; GNU-equivalent UCRT/MinGW full CTest
+`67/67`; synthetic attribution test passed; two fresh 600-frame
+`NATIVE_OVERRIDE` runs matched checkpoint/video/accounting/yield/resumption
+identity with zero fallback/divergence; `git diff --check` and source-code
+file-limit validation passed.
+
+DECISION: `RAMFLAG_CALLER_CONTRACTS_PROVEN`; conditional implementation gates
+remain closed. Proposed M11.56 only: independently close either the
+`0x0604F0` continuation owner or the `0x060BC4..0x060CDA` sibling/data
+contract. Do not execute that milestone here. No ROM, asset, binary or run
+evidence is tracked; pre-existing `game.srm` and historical artifacts remain
+unmodified.
+
 # 2026-09-09 — M11.54 native routine cluster discovery — COMPLETE
 
 TASK: From baseline 6c81803dbd230ff54862d6ae8e8a04a7c79f727d, reproduce the

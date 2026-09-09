@@ -1,3 +1,17 @@
+# M11.55 — RamFlag caller and shared-data contract closure — DONE
+
+Result: RAMFLAG_CALLER_CONTRACTS_PROVEN. Dynamic attribution deterministically
+matches every natural RamFlag entry in the unchanged dual-native 600-frame
+scenario: one `0x0604F6` caller and three `0x060BCC` callers, zero unknowns.
+Exact bounded CFGs, fixed RAM address provenance and the `0xA11100` hardware
+prefix are recorded, but continuation ownership, sibling effects, typed shared
+data and a complete hardware boundary remain blocked. No production source,
+third routine or subsystem was implemented. Evidence:
+reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md.
+
+Next proposed milestone: M11.56 must select one falsifiable continuation or
+sibling/data closure; implementation remains conditional.
+
 # M11.54 — Native routine cluster and first subsystem boundary discovery — DONE
 
 Result: PORTABLE_ROUTINE_CLUSTER_PROVEN. The unchanged M11.53 dual-native

@@ -1,5 +1,23 @@
 # Project State
 
+CURRENT_MILESTONE: M11.55 complete — RamFlag caller/data contract closure
+CURRENT_TASK: complete; dynamic caller attribution and bounded data/hardware audit
+STATUS: COMPLETE — RAMFLAG_CALLER_CONTRACTS_PROVEN
+SCOPE_BOUNDARY: two authoritative native routines, two proven bounded RamFlag
+caller regions, and one partial hardware-prefix/portable-suffix handoff; no
+typed shared structure, complete enclosing routine or portable subsystem.
+LAST_VERIFIED_RESULT: dual-native 600-frame proof reproduced twice with
+checkpoint `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total / 6,488,699 interpreter / 34 TableCopy / 40 RamFlag,
+zero fallback/divergence and one yield/resumption. Attribution was byte-
+identical: 1 call-site `0x0604F6`, 3 call-sites `0x060BCC`, zero unknown.
+Architecture inventory: 2 authoritative native routines, 4 mechanical
+primitives, 2 complete contracts, 5 partial routine/caller-region contracts,
+0 typed structures, 1 portable routine cluster, 0 portable subsystem
+boundaries, 1 hardware-blocked and 2 continuation-blocked.
+EVIDENCE: docs/reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md.
+
 CURRENT_MILESTONE: M11.54 complete — native routine cluster discovery
 CURRENT_TASK: complete; RamFlag caller/data cluster boundary discovery
 STATUS: COMPLETE — PORTABLE_ROUTINE_CLUSTER_PROVEN

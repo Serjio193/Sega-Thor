@@ -1,5 +1,19 @@
 # Current task
 
+TASK: M11.55 RamFlag caller and shared-data contract closure
+STATUS: COMPLETE — RAMFLAG_CALLER_CONTRACTS_PROVEN
+BASELINE: 160422e8a280890a01f6e314a57f7e024b644ba0
+SCOPE: Developer-only dynamic caller attribution and exact bounded CFG/data/
+hardware audit for `0x0604F6` and `0x060BCC`; no production implementation.
+RESULT: Every natural `0x0604BC` entry was attributed deterministically: one
+`0x0604F6` and three `0x060BCC`, with zero unknown callers. Caller regions and
+direct edges are proven, but `0x0604F0` continuation, `0x060BC4` sibling
+effects, typed shared data and a complete hardware boundary remain blocked.
+The unchanged dual-native proof reproduced twice with exact checkpoint/video/
+accounting/yield/resume identity and zero fallback/divergence.
+EVIDENCE: docs/reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md
+NEXT ACTION: Propose M11.56 only; do not execute it in this task.
+
 TASK: M11.54 Native Routine Cluster and First Subsystem Boundary Discovery
 STATUS: COMPLETE — PORTABLE_ROUTINE_CLUSTER_PROVEN
 BASELINE: 6c81803dbd230ff54862d6ae8e8a04a7c79f727d

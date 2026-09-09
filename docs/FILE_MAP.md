@@ -1,5 +1,11 @@
 # File Map
 
+M11.55 additions: src/tools/hybrid/caller_attribution.hpp/.cpp owns the
+developer-only natural RamFlag caller/return/register/cycle attribution schema;
+src/tools/hybrid/external_library.hpp owns the shared dynamic-library wrapper;
+tests/hybrid_caller_attribution_test.cpp covers deterministic attribution JSON;
+docs/reports/RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md records the caller CFG,
+shared-data, hardware-boundary and STOP-gate evidence.
 M11.54 additions: docs/reports/NATIVE_ROUTINE_CLUSTER_M11_54.md records the
 bounded caller/data cluster, provenance, metrics and proposed M11.55.
 M11.53 additions: src/core/ram_flag_routine.cpp/.hpp owns the portable
@@ -60,6 +66,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── FIRST_PORTABLE_NATIVE_ROUTINE_M11_51.md M11.51 routine extraction and replacement gate
 │   │   └── NATIVE_ROUTINE_MISMATCH_M11_52.md M11.52 continuation mismatch closure and promotion proof
 │   │   └── SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md M11.53 second routine contract and dual promotion proof
+│   │   └── RAMFLAG_CALLER_DATA_CLOSURE_M11_55.md M11.55 caller/data/hardware closure evidence
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -127,6 +134,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── window.hpp Platform boundary for controller polling and framebuffer presentation
 │   └── tools/
 │       ├── hybrid/
+│       │   ├── caller_attribution.hpp/.cpp Developer-only natural RamFlag caller attribution and JSON evidence
+│       │   ├── external_library.hpp Developer-only cross-platform external-library loading wrapper
 │       │   ├── generated_block_runtime.cpp Helpers used by generated blocks
 │       │   ├── generated_block_runtime.hpp Generated-block helper boundary
 │       │   ├── basic_block_reference.cpp Generic prediction adapter for generated blocks

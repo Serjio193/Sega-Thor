@@ -2,6 +2,22 @@
 
 ## Target architecture
 
+## M11.55 caller/data boundary
+
+M11.55 adds a developer-only `tools/hybrid` caller-attribution observer. It
+records the natural `0x0604BC` entry context and proves one `0x0604F6` caller
+region beginning at `0x0604F0` and one `0x060BCC` caller region beginning at
+`0x060BC4`. The first region is corrected away from zero data at `0x0604EC`;
+the second begins with a `MOVE.W` to hardware register `0x00A11100` before the
+RamFlag call. Neither region is a closed portable routine.
+
+The fixed subset of the raw `0x00FF0010..0x00FF0016` window is byte-proven at
+offsets 0, 1, 2, 3, 4 and 6; offset 5 and A5-relative effects remain unknown.
+No typed structure, caller owner or subsystem boundary is accepted. The
+dependency direction is unchanged: core owns only already-proven portable
+routine semantics/tokens, while hybrid owns ROM PC/opcode provenance, GPGX
+hooks/timing, address provenance, hardware interaction and attribution output.
+
 ## M11.54 discovery boundary
 
 M11.54 proves a RamFlag-centered call-graph/raw-memory cluster, but not a
