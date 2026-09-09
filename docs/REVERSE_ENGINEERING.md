@@ -1,6 +1,40 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.48 — First proven native mechanical primitive replacement
+STATUS: `FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`.
+
+M11.47 proved four mechanical loop shapes but left all higher-level replacement
+unpromoted. M11.48 selected the safest complete contract:
+`0x061266: 421D / CLR.B (A5)+`, followed by `0x061268: 51C8 FFFC /
+DBF D0,0x061266`, with continuation `0x06126C`. Setup evidence at `0x061260`
+loads `D0` with `0x761`, yielding 1,890 body iterations and 1,890 DBF
+executions. Runtime writes are byte stores to main RAM
+`0x00FF001A..0x00FF077B`, stride one, with no reads, overlap or hardware
+accesses observed.
+
+The replacement contract is exact and resumable: CLR writes zero, increments
+the 32-bit address register with wrap and sets N/Z/V/C while preserving X;
+DBF decrements only the low counter word, preserves the upper word, and either
+branches to `0x061266` or continues at `0x06126C`. Timing, refresh, canonical
+prefetch and boundary reasons flow through the existing generic machine
+interface. The generated/basic-block path remains the oracle/fallback. The
+primitive's own detached comparator checks registers, IR, timing, boundary
+state and ordered writes; concurrent generated shadow checks the complete
+decoded IR/prefetch state.
+
+Synthetic mid-iteration event and interrupt vectors prove that the operation
+does not complete atomically. The unchanged 600-frame shadow compares 3,780
+primitive guest instructions with zero divergence and records 86 yields and
+86 resumptions. Native proof preserves the M11.47 checkpoint/video identity,
+full CPU equivalence, 150,135 yields and 288 resumptions with zero fallback or
+hardware-visible accesses.
+
+The other M11.47 structures remain unpromoted: copy loops at `0x003A0C` and
+`0x00389E` still need complete source/destination/control contracts; word clear
+at `0x0003F0` still needs the selected word-bus/alignment/wrap contract. No
+gameplay role is assigned to any primitive.
+
 # M11.47 — Safe-memory semantic closure and primitive discovery
 STATUS: `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`.
 

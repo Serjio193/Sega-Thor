@@ -1,3 +1,30 @@
+# ADR-0029 — Resumable native mechanical primitive layer
+**Status:** Accepted for M11.48 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.47 proved repeated safe-memory copy/clear structures but did
+not define a higher-level replacement contract. The first replacement must
+preserve instruction-boundary timing, refresh, event/interrupt behavior and
+continuation state, while remaining independent of GPGX internals.
+
+**Decision:** Add a small architecture-neutral `MechanicalMachine` interface
+and resumable primitive registry in `src/tools/hybrid/mechanical_primitive.*`.
+Promote only the exact `CLR.B (A5)+` plus `DBF D0` loop at `0x061266`/`0x061268`.
+Dispatch metadata identifies the proven ROM loop; the implementation executes
+one guest body/DBF pair at a time and fails closed on canonical-byte or bridge
+contract mismatch. Keep generated blocks and generic basic-block glue separate;
+retain the generated path as the shadow oracle and fallback for all other PCs.
+Do not add gameplay meaning, hardware emulation or a production dependency.
+
+**Consequences:** The native path represents 3,780 guest instructions through
+1,890 resumable clear iterations and preserves 86 synthetic/observed
+mid-operation yields in shadow evidence. The unchanged 600-frame proof retains
+checkpoint/video/CPU identity, 150,135 total yields, 288 resumptions and zero
+fallback/hardware accesses. The three other discovered loops remain unpromoted.
+
+**Affected files/milestones:** M11.48 mechanical primitive API, runner/CMake,
+synthetic primitive test, governance and evidence report.
+
 # ADR-0028 — Bounded safe-memory semantic tranche and mechanical primitives
 **Status:** Accepted for M11.47 developer-only hybrid tooling
 **Date:** 2026-09-09

@@ -109,6 +109,19 @@ handwritten `basic_block` registry remains generic boundary glue. Primitive
 discovery records only exact mechanical copy/clear structure and does not add a
 native higher-level replacement or hardware dependency.
 
+M11.48 adds `mechanical_primitive.hpp/.cpp` as a second, still developer-only
+layer above the generated instruction blocks. `MechanicalMachine` exposes only
+registers, byte/word memory effects, instruction timing hooks, canonical
+displacement fetch and boundary reasons; it has no GPGX types or ownership.
+`execute_memory_clear` is generic resumable loop semantics, while the registry
+is handwritten dispatch/measurement glue containing only the proven loop
+metadata. The native adapter maps that interface to `BasicBlockApi`; the shadow
+adapter runs a detached snapshot. Each dispatch yields after the current guest
+instruction and resumes from the body or DBF PC, so a loop is never an atomic
+instantaneous operation. Primitive shadow runs beside the generated/basic-block
+oracle, which remains responsible for the full decoded IR/prefetch comparison
+and remains the fallback path. This layer is not linked into production.
+
 M11.46 adds `address_provenance` as a separate developer-only observer around
 the same GPGX hook and block-registry path. It records runtime fallback PC
 counts, top-level data-bus address/width/direction/order and A0–A7 transitions,

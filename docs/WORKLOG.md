@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.48 First Proven Native Mechanical Primitive Replacement — COMPLETE
+**Objective:** From M11.47 baseline `f51f3b370b8e7acdc3613b1cec7f9ffcdf05f14e`,
+promote the safest complete mechanical loop without adding gameplay semantics,
+hardware behavior, candidates or a production emulator dependency.
+
+**Acceptance criteria:** Keep generated/basic-block code as oracle/fallback;
+provide an architecture-neutral resumable primitive API; prove synthetic and
+GPGX instruction-boundary interruption behavior; pass unchanged 600-frame
+shadow/native gates; update governance and hygiene; commit and push this
+focused result.
+
+**Actions:** Added `mechanical_primitive.hpp/.cpp` as a developer-only generic
+machine/registry layer. The selected `MEMORY_CLEAR` loop is dispatched by
+metadata, executes one body/DBF instruction at a time, preserves CCR/register/
+memory/timing state, and yields/resumes at existing event boundaries. The
+existing generated block oracle remains active in primitive shadow mode; the
+primitive adapter contains no GPGX types or handwritten candidate body.
+Added synthetic interruption coverage and runner/CMake integration.
+
+**Evidence:** Baseline native run was reproduced twice before promotion with
+aggregate `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total / 6,241,765 translated / 247,008 interpreter, 587 ranges,
+150,135 yields and 288 resumptions. Primitive shadow compared 3,780 logical
+guest instructions with zero divergence, including 86 mid-operation yields and
+86 resumptions. Native 600-frame proof preserved identity and full CPU
+equivalence with 3,780 mechanical executions, zero fallback and zero hardware
+accesses. The M11.47 remainder ledger was rerun and closed at 247,008 exactly.
+
+**Validation:** Debug targeted build/test and full CTest, Release full CTest,
+GNU-equivalent full CTest, semantic/generator/provenance/checkpoint/boundary
+tests, 600-frame primitive shadow/native runs, `git diff --check`, source line
+limits and repository hygiene passed. Final detailed evidence is in
+`docs/reports/NATIVE_MECHANICAL_PRIMITIVE_M11_48.md`.
+
+**Result:** `FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`.
+
+**Unresolved:** The three other M11.47 copy/clear structures remain
+`NEEDS_CONTRACT_WORK`; no hardware behavior was broadened. `game.srm`, ROM,
+assets, emulator binaries and run outputs remain untracked.
+
+**Exact next step:** Stop; do not implement the next milestone.
+
 ## 2026-09-09 — M11.47 Safe-Memory Semantic Closure and Primitive Discovery — COMPLETE
 **Objective:** From baseline `7cf947cffee7507e6157e147049bb2b746baa3fa`, close
 only the highest-payoff M11.46 `SAFE_MEMORY_OBSERVED` interpreter rows with

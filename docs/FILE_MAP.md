@@ -46,6 +46,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── RUNTIME_ADDRESS_PROVENANCE_M11_46.md M11.46 bounded runtime address and memory-class evidence
 │   │   └── SAFE_MEMORY_SEMANTIC_CLOSURE_M11_47.md M11.47 safe-memory semantic and primitive proof
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md M11.47 exhaustive post-promotion interpreter ledger
+│   │   └── NATIVE_MECHANICAL_PRIMITIVE_M11_48.md M11.48 resumable native mechanical primitive proof
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -119,6 +120,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks_m1145_*.cpp Generated M11.45 semantic candidate bodies and registry fragments
 │       │   ├── generated_blocks_m1147.cpp Generated M11.47 safe-memory candidate bodies
 │       │   ├── generated_blocks_m1147_registry.cpp Generated M11.47 registry fragment
+│       │   ├── mechanical_primitive.hpp/.cpp Developer-only architecture-neutral resumable primitive layer
+│       │   ├── runner_report.hpp/.cpp Developer-only hybrid summary detail serializer
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue

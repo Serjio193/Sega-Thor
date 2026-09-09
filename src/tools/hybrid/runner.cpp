@@ -7,6 +7,8 @@
 #include "tools/hybrid/generated_blocks.hpp"
 #include "tools/hybrid/interpreter_profile.hpp"
 #include "tools/hybrid/address_provenance.hpp"
+#include "tools/hybrid/mechanical_primitive.hpp"
+#include "tools/hybrid/runner_report.hpp"
 #include "tools/hybrid/checkpoint_evidence.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
@@ -55,6 +57,7 @@ private:
 oasis::hybrid::Dispatch* dispatch{}; // One explicitly owned frontend session.
 oasis::hybrid::Registry* registry_dispatch{};
 oasis::hybrid::BasicBlockRegistry* block_registry{};
+oasis::hybrid::MechanicalPrimitiveRegistry* primitive_registry{};
 int (*cpu_cycles)(){};
 unsigned (*gpgx_boundary_reason)(){};
 unsigned bytes_per_pixel = 2;
@@ -80,6 +83,7 @@ void hook(int type, int width, unsigned address, unsigned value) {
         return;
     }
     if (plain_emulated_mode) return;
+    if (primitive_registry) primitive_registry->event(type, width, address, value);
     if (block_registry) block_registry->event(type, width, address, value);
     else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
@@ -92,9 +96,12 @@ oasis::hybrid::BlockExitReason boundary_reason() noexcept {
         oasis::hybrid::BlockExitReason::FALLBACK;
 }
 int block_hook(unsigned address) {
+    if (primitive_registry && primitive_registry->handles(address)) {
+        const auto result = primitive_registry->dispatch(address);
+        if (result) return result;
+    }
     return block_registry ? block_registry->dispatch(address) : 0;
 }
-
 unsigned parse_target(std::string_view text) {
     std::size_t consumed = 0;
     const auto value = std::stoul(std::string(text), &consumed, 0);
@@ -141,7 +148,6 @@ std::int16_t input(unsigned, unsigned, unsigned, unsigned) { return 0; }
 std::string hash_text(const std::string& value) {
     return oasis::calculate_sha256({reinterpret_cast<const std::uint8_t*>(value.data()), value.size()});
 }
-
 bool checkpoint_evidence_enabled() {
     return std::getenv("OASIS_CHECKPOINT_EVIDENCE") != nullptr;
 }
@@ -152,7 +158,8 @@ int main(int argc, char** argv) {
         std::cerr << "usage: oasis_hybrid_poc <GPGX library> <canonical ROM> "
                      "<mode> <frames:1..600> <output directory> [target]\n"
                      "modes: EMULATED, SHADOW_NATIVE, NATIVE_OVERRIDE, "
-                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE, BASIC_BLOCK_ADDRESS_PROVENANCE, DISCOVER_BLOCKS\n";
+                     "BASIC_BLOCK_SHADOW, BASIC_BLOCK_NATIVE, BASIC_BLOCK_ADDRESS_PROVENANCE, "
+                     "MECHANICAL_PRIMITIVE_SHADOW, MECHANICAL_PRIMITIVE_NATIVE, DISCOVER_BLOCKS\n";
         return 2;
     }
     try {
@@ -160,7 +167,10 @@ int main(int argc, char** argv) {
         using oasis::hybrid::Mode;
         const bool discover_mode = mode_text == "DISCOVER_BLOCKS";
         const bool address_mode = mode_text == "BASIC_BLOCK_ADDRESS_PROVENANCE";
-        const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE" || address_mode;
+        const bool primitive_mode = mode_text == "MECHANICAL_PRIMITIVE_SHADOW" ||
+                                    mode_text == "MECHANICAL_PRIMITIVE_NATIVE";
+        const bool block_mode = mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "BASIC_BLOCK_NATIVE" ||
+                                address_mode || primitive_mode;
         const auto mode = discover_mode ? Mode::EMULATED : mode_text == "EMULATED" ? Mode::EMULATED :
             mode_text == "SHADOW_NATIVE" ? Mode::SHADOW_NATIVE :
             mode_text == "NATIVE_OVERRIDE" ? Mode::NATIVE_OVERRIDE :
@@ -218,6 +228,7 @@ int main(int argc, char** argv) {
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
         std::unique_ptr<oasis::hybrid::Registry> registry;
         std::unique_ptr<oasis::hybrid::BasicBlockRegistry> blocks;
+        std::unique_ptr<oasis::hybrid::MechanicalPrimitiveRegistry> primitives;
         observed_pcs.clear();
         interpreter_instruction_executions = 0;
         if (discover_mode) {
@@ -243,10 +254,17 @@ int main(int argc, char** argv) {
                 instruction_cycles, cpu_field, refresh_period, refresh_penalty,
                 boundary_reason};
             blocks = std::make_unique<oasis::hybrid::BasicBlockRegistry>(
-                api, mode_text == "BASIC_BLOCK_SHADOW" ?
+                api, (mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "MECHANICAL_PRIMITIVE_SHADOW") ?
                     oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
                     oasis::hybrid::BasicBlockMode::NATIVE_OVERRIDE, calls);
             block_registry = blocks.get();
+            if (primitive_mode) {
+                primitives = std::make_unique<oasis::hybrid::MechanicalPrimitiveRegistry>(
+                    api, mode_text == "MECHANICAL_PRIMITIVE_SHADOW" ?
+                        oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
+                        oasis::hybrid::BasicBlockMode::NATIVE_OVERRIDE, calls);
+                primitive_registry = primitives.get();
+            }
         } else if (plain_emulated) {
             // Plain EMULATED is the authoritative before-promotion baseline.
         } else if (selected_targets.size() == 1 && selected_target == 0x3820) {
@@ -349,6 +367,7 @@ int main(int argc, char** argv) {
         unsigned boundary_yields{}, event_boundary_yields{}, interrupt_boundary_yields{}, trace_boundary_yields{};
         unsigned translated_multi_instruction_entries{}, interrupted_resumptions{};
         unsigned interpreter_instructions{}, total_guest_instructions{}, observed_interpreter_pcs{};
+        unsigned primitive_guest_instructions{};
         std::size_t registered_block_count{};
         bool complete{};
         std::string error_text;
@@ -374,6 +393,20 @@ int main(int argc, char** argv) {
             complete = blocks->complete();
             error_text = blocks->error();
             registered_block_count = metrics.per_block.size();
+            if (primitives) {
+                const auto primitive_metrics = primitives->metrics();
+                primitive_guest_instructions = primitive_metrics.iterations * 2U;
+                natural_calls += primitive_metrics.dispatches;
+                comparisons += primitive_metrics.shadow_comparisons;
+                divergences += primitive_metrics.divergences;
+                override_calls += primitive_metrics.dispatches;
+                complete = complete && primitives->complete();
+                if (error_text.empty()) error_text = primitives->error();
+                if (mode_text == "MECHANICAL_PRIMITIVE_NATIVE") {
+                    boundary_yields += primitive_metrics.mid_operation_yields;
+                    event_boundary_yields += primitive_metrics.mid_operation_yields;
+                }
+            }
         } else {
             const auto totals = registry ? registry->totals() : session ? oasis::hybrid::ReplacementMetrics{
                 session->calls, session->comparisons, session->divergences, session->body_instructions, 0,
@@ -392,7 +425,7 @@ int main(int argc, char** argv) {
             complete = true;
         }
         interpreter_instructions = interpreter_instruction_executions;
-        total_guest_instructions = interpreter_instructions + translated_instructions;
+        total_guest_instructions = interpreter_instructions + translated_instructions + primitive_guest_instructions;
         observed_interpreter_pcs = static_cast<unsigned>(observed_pcs.size());
         oasis::hybrid::write_interpreter_profile(
             std::filesystem::path(directory) / "interpreter_profile.json", mode_text,
@@ -428,6 +461,9 @@ int main(int argc, char** argv) {
                << ",\n\"translated_blocks\":" << translated_blocks
                << ",\n\"translated_entries\":" << translated_entries
                << ",\n\"translated_guest_instruction_executions\":" << translated_instructions
+               << ",\n\"native_mechanical_guest_instruction_executions\":" << primitive_guest_instructions
+               << ",\n\"native_mechanical_replacement_share\":" << (total_guest_instructions ?
+                   static_cast<double>(primitive_guest_instructions) / total_guest_instructions : 0.0)
                << ",\n\"interpreter_instruction_executions\":" << interpreter_instructions
                << ",\n\"total_guest_instruction_executions\":" << total_guest_instructions
                << ",\n\"translated_instruction_share\":" << (total_guest_instructions ?
@@ -441,44 +477,9 @@ int main(int argc, char** argv) {
                << ",\n\"interrupt_boundary_yields\":" << interrupt_boundary_yields
                << ",\n\"trace_boundary_yields\":" << trace_boundary_yields
                << ",\n\"translated_multi_instruction_entries\":" << translated_multi_instruction_entries
-               << ",\n\"interrupted_resumptions\":" << interrupted_resumptions
-               << ",\n\"per_target\":[";
-        if (registry) {
-            for (std::size_t i = 0; i < registry->targets().size(); ++i) {
-                const auto metrics = registry->targets()[i]->metrics();
-                if (i) report << ',';
-                report << "{\"target\":\"0x" << std::hex << registry->targets()[i]->target_address()
-                       << std::dec << "\",\"natural_calls\":" << metrics.calls
-                       << ",\"shadow_comparisons\":" << metrics.comparisons
-                       << ",\"divergence_count\":" << metrics.divergences
-                       << ",\"body_instruction_starts\":" << metrics.body_instructions
-                       << ",\"native_override_calls\":" << metrics.override_calls
-                       << ",\"fallback_emulated_calls\":" << (metrics.calls - metrics.override_calls)
-                       << ",\"interrupts\":" << metrics.interrupts << '}';
-            }
-        }
-        report << "]"
-               << ",\n\"per_block\":[";
-        if (blocks) {
-            const auto metrics = blocks->metrics();
-            for (std::size_t i = 0; i < metrics.per_block.size(); ++i) {
-                if (i) report << ',';
-                const auto& block = metrics.per_block[i];
-                report << "{\"target\":\"0x" << std::hex << block.target << std::dec
-                       << "\",\"end\":\"0x" << std::hex << block.end << std::dec
-                       << "\",\"instruction_count\":" << block.instruction_count
-                       << ",\"natural_entries\":" << block.natural_entries
-                       << ",\"shadow_comparisons\":" << block.shadow_comparisons
-                       << ",\"translated_entries\":" << block.translated_entries
-                       << ",\"boundary_yields\":" << block.boundary_yields
-                       << ",\"event_boundary_yields\":" << block.event_boundary_yields
-                       << ",\"interrupt_boundary_yields\":" << block.interrupt_boundary_yields
-                       << ",\"trace_boundary_yields\":" << block.trace_boundary_yields
-                       << ",\"interrupted_resumptions\":" << block.interrupted_resumptions
-                       << '}';
-            }
-        }
-        report << "]"
+               << ",\n\"interrupted_resumptions\":" << interrupted_resumptions;
+        oasis::hybrid::write_runner_report_details(report, registry.get(), blocks.get(), primitives.get());
+        report
                << ",\n\"full_cpu_equivalence\":" << (full_cpu_equivalent ? "true" : "false")
                << ",\n\"sr_comparison_mask\":65519,\n\"override_blocker\":\""
                << (selected_target == 0x3820 ? oasis::hybrid::override_blocker : "") << "\"\n}\n";

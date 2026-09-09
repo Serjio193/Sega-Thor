@@ -1,5 +1,22 @@
 # Project State
 
+CURRENT_MILESTONE: M11.48 complete — first native mechanical primitive replacement
+CURRENT_TASK: complete; bounded developer-only resumable mechanical primitive
+STATUS: COMPLETE — `FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`
+SCOPE_BOUNDARY: exactly `MEMORY_CLEAR` `0x061266`/`0x061268`/`0x06126C`; no
+gameplay semantics, hardware-contract broadening, new candidate or production
+runtime dependency. Generated/basic-block execution remains the oracle/fallback.
+LAST_VERIFIED_RESULT: M11.48 shadow and native runs preserved aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, full CPU
+equivalence, 6,488,773 total, 6,237,985 generated translated, 3,780 mechanical,
+247,008 interpreter, 587 ranges, 150,135 yields and 288 resumptions. Primitive
+shadow comparison is 3,780/3,780 with zero divergence; native fallback and
+hardware-visible counts are zero.
+EVIDENCE: `docs/reports/NATIVE_MECHANICAL_PRIMITIVE_M11_48.md`.
+NEXT_GATE: stop; a separately scoped task is required before any further
+primitive promotion.
+
 CURRENT_MILESTONE: M11.47 complete — safe-memory semantic closure and primitive discovery
 CURRENT_TASK: complete; bounded developer-only safe-memory promotion
 STATUS: COMPLETE — `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`

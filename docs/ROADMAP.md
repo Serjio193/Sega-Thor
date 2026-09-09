@@ -1,3 +1,18 @@
+# M11.48 — First proven native mechanical primitive replacement — DONE
+
+The M11.47 `MEMORY_CLEAR` candidate at `0x061266` plus `DBF` at `0x061268`
+was promoted through a reusable architecture-neutral, resumable primitive API.
+The generated/basic-block path remains the differential oracle and fallback.
+Synthetic mid-iteration interruption tests passed; the 600-frame shadow
+completed 3,780/3,780 combined primitive comparisons with zero divergence and
+86 mid-operation yields/resumptions. Native proof preserved checkpoint/video,
+full CPU equivalence, 150,135 aggregate yields, 288 interrupted resumptions,
+zero fallback and zero hardware-visible accesses. The result is 6,488,773
+total, 6,237,985 generated translated, 3,780 mechanical, and 247,008
+interpreter executions across 587 ranges. Result:
+`FIRST_NATIVE_MECHANICAL_PRIMITIVE_PROVEN`.
+Evidence: `reports/NATIVE_MECHANICAL_PRIMITIVE_M11_48.md`.
+
 # M11.47 — Safe-memory semantic closure and primitive discovery — DONE
 
 The M11.46 runtime provenance was joined with the M11.45 final ledger. Seven
