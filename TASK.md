@@ -1,5 +1,28 @@
 # Current task
 
+TASK: M11.56 Close 0x604F0 caller contract and attempt third portable routine
+STATUS: COMPLETE — THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE
+BASELINE: 47c37ead7beb9a7e063588cd39a5cbf65deb41e8
+SCOPE: Bounded developer-only parent/entry/exit and memory provenance; no
+production promotion, 0x60BCC expansion, typed data or coverage search.
+RESULT: Natural 0x604F0 is an internal fallthrough at 0x604EA, carrying the
+58-byte save frame of 0x60004/0x6042A. The shared 0x611D6 epilogue restores
+that frame and returns to 0x424, the caller of 0x60004. The exact selected
+span ends at 0x60516; a different arm enters there inside the old 0x60520
+budget. Independent entry, full-SR/event continuation and whole-parent
+hardware isolation are not closed. Dominant blocker: ENCLOSING_ROUTINE_BOUNDARY.
+VALIDATION: Debug, Release and GCC/UCRT full CTest 68/68 each; deterministic
+paired natural trace with 21 instructions / 32 ordered data accesses;
+independent frame/journal validator and three negative controls; unchanged
+pre/post dual-native hashes, accounting and attribution. Hygiene/line-limit
+checks passed. GNU/UCRT is local portability evidence, not native Linux CI.
+EVIDENCE: docs/reports/RAMFLAG_CALLER_ROUTINE_M11_56.md
+NEXT ACTION: Stop. Proposed M11.57 closes an explicit parent-owned suffix
+handoff and full-SR/event contract; it must not relabel an internal helper as
+a third complete routine or absorb unrelated parent/hardware paths.
+
+# Previous tasks
+
 TASK: M11.55 RamFlag caller and shared-data contract closure
 STATUS: COMPLETE — RAMFLAG_CALLER_CONTRACTS_PROVEN
 BASELINE: 160422e8a280890a01f6e314a57f7e024b644ba0

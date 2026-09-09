@@ -2,6 +2,24 @@
 
 ## Target architecture
 
+## M11.56 parent-frame boundary
+
+The 0x604F0 RamFlag caller suffix is an internal tail, not an independently
+callable routine. Its 0x611D6 destination restores 56 saved register bytes
+and the parent's SR before returning to the original 0x60004 caller.
+Full-SR restoration and parent hardware effects remain adapter concerns;
+no third portable routine or new composition interface enters oasis_core.
+The selected seven-instruction region ends at 0x60516; the previous 0x60520
+decoder budget also contains the beginning of another parent arm.
+
+CallerContinuationObserver is a bounded, opt-in, EMULATED-only read-only
+tools/hybrid observer. It records the existing parent prologue through the
+selected natural enclosing return; its local validator checks paired traces,
+saved-frame ownership and ordered RAM accesses. It supplies evidence only
+and never controls guest execution. Dependency direction and the two existing
+authoritative core routines are unchanged. See ADR-0037 and
+reports/RAMFLAG_CALLER_ROUTINE_M11_56.md.
+
 ## M11.55 caller/data boundary
 
 M11.55 adds a developer-only `tools/hybrid` caller-attribution observer. It

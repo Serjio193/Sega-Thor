@@ -8,6 +8,7 @@
 #include "tools/hybrid/interpreter_profile.hpp"
 #include "tools/hybrid/address_provenance.hpp"
 #include "tools/hybrid/caller_attribution.hpp"
+#include "tools/hybrid/caller_continuation.hpp"
 #include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/mechanical_primitive.hpp"
 #include "tools/hybrid/runner_report.hpp"
@@ -42,8 +43,11 @@ std::unique_ptr<oasis::hybrid::AddressProvenanceObserver> address_observer;
 std::unique_ptr<oasis::hybrid::CallerAttributionObserver> caller_observer;
 unsigned current_frame{}, interpreter_instruction_executions{};
 unsigned previous_execute_pc{};
+std::unique_ptr<oasis::hybrid::CallerContinuationObserver> continuation_observer;
 void hook(int type, int width, unsigned address, unsigned value) {
     address &= 0xFFFFFFU;
+    if (continuation_observer)
+        continuation_observer->event(type, width, address, value, current_frame, previous_execute_pc);
     if (type == 1 && caller_observer && address == 0x0604BC)
         caller_observer->entry(address, previous_execute_pc, current_frame);
     if (type == 1) {
@@ -198,6 +202,11 @@ int main(int argc, char** argv) {
         const auto peek = library.get<int(*)(unsigned)>("retro_hybrid_peek");
         cpu_cycles = library.get<int(*)()>("retro_hybrid_cycles");
         gpgx_refresh_cycles = library.get<int(*)()>("retro_hybrid_refresh_cycles");
+        if (std::getenv("OASIS_CALLER_CONTINUATION")) {
+            if (!plain_emulated) throw std::runtime_error("continuation evidence requires EMULATED");
+            continuation_observer = std::make_unique<oasis::hybrid::CallerContinuationObserver>(
+                oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
+        }
         std::unique_ptr<oasis::hybrid::Dispatch> session;
         std::vector<std::unique_ptr<oasis::hybrid::Replacement>> candidate_storage;
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
@@ -318,6 +327,11 @@ int main(int argc, char** argv) {
                             << "\",\"raw_state_sha256\":\"" << raw_hash
                             << "\",\"cpu_cycles\":" << cpu_cycles() << "}\n";
             }
+        }
+        if (continuation_observer) {
+            std::ofstream trace(std::filesystem::path(directory) / "caller_continuation.jsonl");
+            trace.exceptions(std::ios::failbit | std::ios::badbit);
+            trace << continuation_observer->jsonl();
         }
         if (discover_mode) {
             discovery_mode = false;

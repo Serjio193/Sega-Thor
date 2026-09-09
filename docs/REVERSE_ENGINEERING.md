@@ -1,6 +1,40 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.56 — 0x604F0 parent-frame ownership — CONFIRMED bounded negative
+
+Result: THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE. Exact natural predecessor
+is 0x604EA (BSET), not a standalone call. Parent entry 0x60004 is reached
+from JSR at 0x41E, with return 0x424 at A7=FF0BEA. The 0x6042A/0x60430
+prologue saves SR and D1-D7/A0-A6, leaving a 58-byte frame at FF0BB0.
+0x604F0 inherits that frame; its top longword 7FF0FFFF is saved D1.
+The shared epilogue 0x611D6..0x611E0 sets D0=0, restores 14 registers,
+performs a pinned GPGX extra word read at FF0BE8, restores full SR=2114,
+and returns at 0x611DE to 0x424 with A7=FF0BEE. Classification:
+ENCLOSING_ROUTINE_CONTINUATION, using a shared tail, not an independent tail call.
+
+Boundary correction: selected seven instructions occupy [0x604F0,0x60516).
+The old budget [0x604F0,0x60520) also contains a different arm entered by
+0x60480 -> 0x60516 and cuts an instruction at 0x6051C. Parent-scope CFG
+finds 15 branches plus fallthrough to 0x611D6 and another entry at 0x611D8.
+Global external/indirect entry exclusion is UNKNOWN, not inferred from the
+bounded decoder's zero unresolved count. The SF forms are unconditional
+zero writes; this corrects the generic unknown-condition description in M11.55.
+
+Paired EMULATED runs produce byte-identical parent/entry/exit register,
+stack, cycle/refresh and journal evidence: 21 selected path instructions and
+32 ordered main-RAM data accesses. Parent-established A5=FF001A resolves
+the natural output writes to FF001F/20/21. Saved-frame bytes and returns
+are independently validated. Broader aliasing and arbitrary entry are UNKNOWN.
+Whole-parent prefix expansion encounters A11100/A00003/C00011 hardware via
+0x604E6 -> 0x611EA; full-SR/event portability remains SEMANTICS_PARTIAL.
+No 0x60BCC expansion, production translation, typed data or subsystem claim.
+
+Tests: observer regression, local independent validator with three negative
+controls, Debug/Release/GCC-UCRT CTest 68/68 each and exact pre/post dual-native
+gates. Assumptions/complete instruction ledger, timing, addresses and remaining
+unknowns: reports/RAMFLAG_CALLER_ROUTINE_M11_56.md. Translation status: STOP.
+
 # M11.55 — RamFlag caller and shared-data contract closure
 STATUS: RAMFLAG_CALLER_CONTRACTS_PROVEN.
 

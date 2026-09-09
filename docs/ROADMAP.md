@@ -1,3 +1,19 @@
+# M11.56 — 0x604F0 caller continuation closure — DONE (negative)
+
+Result: THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE. The natural internal path
+inherits a 58-byte saved frame from 0x60004/0x6042A and uses the shared
+0x611D6 epilogue to return to original caller 0x424. The seven-instruction
+span ends at 0x60516, where another arm enters inside the old decoder budget.
+Dominant blocker: ENCLOSING_ROUTINE_BOUNDARY; whole-parent promotion would
+also absorb observed hardware and partial full-SR/event semantics. No third
+routine or subsystem was implemented. Debug/Release/GCC-UCRT CTest 68/68 each
+and pre/post dual-native gates passed. Evidence:
+reports/RAMFLAG_CALLER_ROUTINE_M11_56.md.
+
+M11.57 proposed only: close an explicit parent-owned suffix handoff and
+full-SR/event contract without promoting an internal helper as a standalone
+routine or absorbing unrelated hardware paths. STOP after M11.56.
+
 # M11.55 — RamFlag caller and shared-data contract closure — DONE
 
 Result: RAMFLAG_CALLER_CONTRACTS_PROVEN. Dynamic attribution deterministically

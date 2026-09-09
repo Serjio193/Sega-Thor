@@ -1,5 +1,13 @@
 # File Map
 
+M11.56 additions: src/tools/hybrid/caller_continuation.hpp/.cpp owns the
+bounded EMULATED-only parent/entry/exit and data-hook evidence observer;
+src/tools/hybrid/validate_caller_continuation.py checks paired local traces,
+canonical bytes, saved-frame ownership and the exact memory journal;
+tests/hybrid_caller_continuation_test.cpp tests capture boundaries and negative
+paths; docs/reports/RAMFLAG_CALLER_ROUTINE_M11_56.md records the exact internal
+tail, shared epilogue and negative third-routine promotion result.
+
 M11.55 additions: src/tools/hybrid/caller_attribution.hpp/.cpp owns the
 developer-only natural RamFlag caller/return/register/cycle attribution schema;
 src/tools/hybrid/external_library.hpp owns the shared dynamic-library wrapper;

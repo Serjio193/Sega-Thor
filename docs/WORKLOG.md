@@ -3,6 +3,57 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-09 — M11.56 caller continuation closure — COMPLETE (negative)
+
+TASK: Close the exact 0x604F0 entry/exit contract from baseline
+47c37ead7beb9a7e063588cd39a5cbf65deb41e8 and attempt promotion only after
+every contract gate passes. WHY: the 0x611D6 continuation is unresolved.
+CURRENT MILESTONE: M11.56. MILESTONE UNDERSTANDING CONFIDENCE: 70%.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: 70%; evidence-gathering only.
+SLICE CONFIDENCE EVIDENCE: exact seven-instruction region and four-instruction
+shared restore/RTS tail; enclosing stack ownership still needs provenance.
+ACCEPTANCE CRITERIA: unchanged dual-native baseline twice; deterministic
+bounded entry/exit and memory evidence; exact positive or negative gate;
+Debug/Release/UCRT CTest, hygiene, focused commit/push and exact-SHA CI check.
+EVIDENCE AVAILABLE: M11.55 report, canonical ROM, external GPGX bridge.
+KNOWN UNKNOWNS: entry owner, saved stack frame, all incoming edges and
+portable continuation. No 0x60BCC investigation, typed data or coverage search.
+
+BASELINE GATE: PASS twice, including frozen hashes, 6,488,773 total,
+6,488,699 interpreter, 34 TableCopy, 40 RamFlag, zero fallback/divergence,
+one yield/resumption, and byte-identical M11.55 caller attribution.
+
+RESULT: THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE. Dominant blocker is
+ENCLOSING_ROUTINE_BOUNDARY. The natural 0x604EA -> 0x604F0 suffix inherits
+the 58-byte frame created by 0x60004/0x6042A; 0x611D6 is its shared
+restore/return epilogue and returns to original caller 0x424. The exact
+seven-instruction span ends at 0x60516; a different arm enters there inside
+the old 0x60520 budget. Parent prefix hardware and full-SR/event semantics
+prevent promoting the enclosing path. No production routine was implemented.
+
+EVIDENCE: reports/RAMFLAG_CALLER_ROUTINE_M11_56.md. Paired natural EMULATED
+trace SHA-256 8b23fce6088956ecdc443bf432f183a6204eabe6fdf0aeb71dbe9e29087ea877;
+21 path instructions / 32 ordered RAM accesses, complete parent save/restore
+and nested/original return discrimination. Independent validator rejects
+wrong final A7, missing MOVEM extra read, and incomplete capture.
+
+TESTS: Rebuilt Debug and Release MinGW full CTest 68/68 each; rebuilt
+GNU-equivalent GCC/UCRT full CTest 68/68. These include TableCopy/RamFlag,
+mechanical primitives, native continuation/dispatch adapters, caller
+attribution, new observer and checkpoint canonicalization/layout tests.
+Post-edit Debug/Release 600-frame dual-native runs match every baseline gate,
+all ten canonical checkpoint/cycle pairs and attribution. New third-routine
+tests/shadow/three-routine proof are not applicable because promotion stopped.
+The source line-limit and git diff checks pass. Existing game.srm SHA-256
+CD1CD62F7EB68F68D0CB13E22FC160CD6396B1CBAE1FE35C8BBE79B38E352F1F is unchanged.
+No ROM, asset, emulator binary or raw run evidence is staged. GCC/UCRT provides
+local GNU link/portability validation; native Linux CI is not claimed locally.
+
+DECISION: ADR-0037; high confidence in the bounded negative result, production
+slice remains below 90%. NEXT ACTION: STOP. Proposed M11.57 closes only the
+explicit parent-owned suffix handoff and full-SR/event contract; no unrelated
+parent-arm/hardware expansion or relabeling an internal helper as a routine.
+
 # 2026-09-09 — M11.55 RamFlag caller/data closure — COMPLETE
 
 TASK: From baseline `160422e8a280890a01f6e314a57f7e024b644ba0`, reproduce the

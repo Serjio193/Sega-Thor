@@ -1,5 +1,27 @@
 # Project State
 
+CURRENT_MILESTONE: M11.56 complete — 0x604F0 caller continuation ownership
+CURRENT_TASK: complete; bounded structural negative result
+STATUS: COMPLETE — THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE
+SCOPE_BOUNDARY: 0x604F0 internal tail and existing parent's shared restore;
+no third routine, typed shared data, subsystem, or 0x60BCC expansion.
+LAST_VERIFIED_RESULT: paired emulated provenance has one natural path,
+21 instructions and 32 ordered data accesses, with a validated 58-byte
+parent save frame and return 0x424. Exact selected span is [0x604F0,0x60516);
+0x60516 is another arm's entry inside the old decoder budget. Frozen
+dual-native checkpoint/video/accounting/attribution passes before and after
+instrumentation; full Debug/Release/GCC-UCRT CTest passes 68/68 each.
+BLOCKER: ENCLOSING_ROUTINE_BOUNDARY; 0x611D6 is an enclosing continuation
+using a shared epilogue. Full-SR/event portability remains partial and the
+parent prefix touches hardware. No production implementation gate opened.
+INVENTORY: 2 authoritative routines, 4 mechanical primitives, 2 complete
+and 5 partial routine/caller-region contracts, 0 typed structures,
+1 portable routine cluster, 0 portable subsystem boundaries.
+EVIDENCE: docs/reports/RAMFLAG_CALLER_ROUTINE_M11_56.md
+NEXT_ACTION: STOP; M11.57 may close the explicit parent/suffix handoff only.
+
+# Prior milestone states
+
 CURRENT_MILESTONE: M11.55 complete — RamFlag caller/data contract closure
 CURRENT_TASK: complete; dynamic caller attribution and bounded data/hardware audit
 STATUS: COMPLETE — RAMFLAG_CALLER_CONTRACTS_PROVEN

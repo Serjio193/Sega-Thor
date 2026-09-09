@@ -856,3 +856,28 @@ continuation or sibling/data closure and is not executed by this decision.
 Affected files/milestones: caller attribution observer/test, extracted hybrid
 library wrapper, M11.55 governance documents and report; no production source
 change.
+
+# ADR-0037 — Keep the parent-owned 0x604F0 suffix internal
+Status: Accepted for M11.56
+Date: 2026-09-09
+
+Context: Exact natural evidence identifies the previously unknown 0x611D6
+destination as the shared saved-register/SR epilogue of the 0x60004/0x6042A
+parent. 0x604F0 has no ordinary standalone return at A7; it inherits 58
+bytes of parent state. The old decoder budget also includes another arm.
+
+Decision: Record THIRD_ROUTINE_NOT_A_STANDALONE_ROUTINE with dominant blocker
+ENCLOSING_ROUTINE_BOUNDARY. Do not manufacture a third routine by attaching
+the shared restore/RTS tail or absorbing the parent's hardware prefix.
+Retain full-SR/event continuation as partial. Keep the bounded read-only
+observer and local evidence validator in tools/hybrid; do not change core,
+RamFlag semantics, typed data or subsystem ownership.
+
+Consequences: Structural continuation ownership is now proven for the natural
+path, while a portable independent entry contract is still absent. Inventory
+remains two authoritative routines and one cluster, with no subsystem boundary.
+A future M11.57 may test an explicit parent/suffix handoff contract, preserving
+the distinction between a portable internal helper and a complete routine.
+
+Affected files/milestones: caller continuation observer/validator/test,
+M11.56 report and governance. No production implementation.
