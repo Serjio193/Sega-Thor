@@ -41,6 +41,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── CHECKPOINT_CANONICALIZATION_M11_43.md M11.43 exact GPGX state-layout and identity proof
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_44.md M11.44 exhaustive pre-promotion interpreter ledger
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_FINAL_M11_44.md M11.44 final post-promotion interpreter ledger/Pareto
+│   │   └── SEMANTIC_CLOSURE_M11_45.md M11.45 candidate selection and shadow/native proof
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md M11.45 exhaustive final interpreter ledger
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -111,6 +113,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks_m1138.cpp Generated M11.38 multi-instruction bodies
 │       │   ├── generated_blocks_m1139.cpp Generated M11.39 hot-path bodies
 │       │   ├── generated_blocks_m1144.cpp Generated M11.44 0x03A7AE block body
+│       │   ├── generated_blocks_m1145_*.cpp Generated M11.45 semantic candidate bodies and registry fragments
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue
@@ -335,6 +338,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
 - `tests/hybrid_semantic_core_test.cpp`: M11.34 independent reference vectors,
   M11.35 newly required semantic vectors, exact decode/length checks and
   exact-IR assertions.
+- `tests/hybrid_m1145_semantic_test.cpp`: M11.45 independent exact vectors for
+  the bounded generated semantic helpers.
 - `tests/hybrid_generated_provenance_test.cpp`: generated M11.33/M11.35 block
   extension-word consumption and direct-successor PC/provenance regression.
 - `tests/hybrid_basic_block_test.cpp`: post-instruction boundary regression

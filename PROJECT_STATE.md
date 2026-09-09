@@ -1,5 +1,23 @@
 # Project State
 
+CURRENT_MILESTONE: M11.45 complete — bounded semantic closure and 95% gate
+CURRENT_TASK: complete; semantic-only candidate tranche shadow/native certified
+STATUS: COMPLETE — `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`
+SCOPE_BOUNDARY: 551 mechanically generated decoder-owned candidates only;
+three exact forms failed their independent shadow timing/flags gates and remain
+fallback. Hardware-visible, indirect-CFG, decoder and unknown runtime-address
+classes were not broadened.
+LAST_VERIFIED_RESULT: baseline reproduced twice. Shadow completed 6,199,718 /
+6,199,718 comparisons with zero divergence. Native 600-frame execution matched
+checkpoint `251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`,
+video `5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total, 6,199,718 translated, 289,055 interpreter, 580 registered
+ranges, 149,059 yields, 288 resumptions, zero fallbacks, zero hardware-visible
+accesses and zero starts inside translated ranges. Translated share is 95.5453%.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md` and
+`docs/reports/SEMANTIC_CLOSURE_M11_45.md`.
+NEXT_GATE: new milestone required; do not expand M11.45 scope.
+
 CURRENT_MILESTONE: M11.44 complete — remaining interpreter attribution and
 bounded block promotion
 CURRENT_TASK: complete; M11.42 attribution resumed after M11.43 identity repair

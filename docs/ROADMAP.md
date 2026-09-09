@@ -2,6 +2,21 @@
 
 The roadmap is ordered. Do not skip ahead unless a blocking dependency is documented.
 
+## M11.45 — Bounded semantic closure toward 95% dynamic coverage — DONE
+
+The M11.44 baseline was reproduced exactly twice. A bounded eligible semantic
+tranche of 551 decoder-owned generated candidates passed independent exact-form
+vectors, mechanical generation/provenance and the existing GPGX boundary shadow:
+6,199,718/6,199,718 comparisons, zero divergence. Three forms remain fail-closed
+after independent shadow rejection: LSR.W at 0x0038E0, ROR.W at 0x06115A and
+CMPI.B at 0x0038AA. The unchanged native 600-frame scenario preserved checkpoint,
+video, CPU/RAM/VDP/sound, event/interrupt boundaries, 149,059 yields,
+288 resumptions and zero fallback/hardware-visible accesses. Final coverage is
+6,199,718 translated and 289,055 interpreter executions, 95.5453%, across 580
+registered ranges. Result: `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`.
+Evidence: `reports/SEMANTIC_CLOSURE_M11_45.md` and
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md`.
+
 ## M11.44 — Restart and remaining interpreter attribution — DONE
 
 M11.42 PHASE 1 was reproduced exactly twice from the M11.43 identity baseline:

@@ -1,6 +1,38 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.45 — Bounded semantic closure and final interpreter Pareto
+STATUS: `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`.
+
+The M11.44 baseline was reproduced twice with the canonical ROM, pinned GPGX
+DLL and authoritative checkpoint aggregate. Ranking the complete final ledger
+selected 551 decoder-owned exact single-instruction ranges with a dynamic upper
+bound of 271,913 executions, above the 236,530 threshold. The selection excluded
+register-based/other memory, hardware-visible, indirect-CFG, decoder and unknown
+runtime-address classes.
+
+Independent deterministic vectors verified only the exact forms needed by the
+selected rows: BTST immediate absolute-long/data-register, MOVEQ, MOVE.W,
+ADD/SUB.W, ADDQ.W, SUBQ.B/W, ANDI.B/W, OR.W, ADDI.B, SUBI.B, BCLR.L, MOVEA.L,
+plus existing proven forms. The mechanical generator emits only decoder-owned
+canonical ROM bytes and exact helper calls; unsupported forms fail closed. The
+existing boundary shadow vetoed LSR.W at 0x0038E0 (+14 cycles), ROR.W at
+0x06115A (+112 cycles) and CMPI.B at 0x0038AA (X flag divergence). These
+rejections remain interpreter fallback and are not hidden by the coverage gate.
+
+The promoted set passed 6,199,718/6,199,718 per-instruction shadow comparisons
+with zero divergence. The unchanged 600-frame native run preserved checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, CPU/RAM/
+VDP/sound and event/interrupt continuation identity. Final metrics are
+6,488,773 total, 6,199,718 translated, 289,055 interpreter, 580 registered
+ranges, 149,059 yields, 288 interrupted resumptions, zero fallback entries,
+zero hardware-visible accesses and 95.5453% translated share. The complete
+final ledger closes exactly at 289,055 in
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md`; `0x060BA4` remains
+hardware-boundary blocked. The historical 0x03A7AE rejection is preserved but
+remains obsolete after the repaired bridge/boundary/canonicalization contract.
+
 ## M11.44 — Remaining interpreter attribution and bounded promotion
 STATUS: `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`.
 

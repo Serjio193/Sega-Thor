@@ -1,5 +1,25 @@
 # Current task
 
+TASK: M11.45 Bounded Semantic Closure Toward 95% Dynamic Coverage
+STATUS: COMPLETE — `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`
+BASELINE: `b1c624072e1341bbe26a569841d325152cf3bd7b`
+SCOPE: Resume from M11.44 with an eligible semantic-only tranche. Preserve the
+generic boundary, timing/refresh, checkpoint, bus and developer-only hybrid
+contracts; do not broaden hardware, indirect CFG, decoder or unresolved runtime
+address scope.
+RESULT: The restart gate matched twice. After retaining three exact shadow
+rejections (LSR.W, ROR.W and CMPI.B), 551 decoder-owned generated candidates
+removed exactly 271,913 interpreter executions. Shadow completed 6,199,718
+comparisons with zero divergence; native 600-frame proof preserved checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d` and video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`.
+Final total is 6,488,773, translated 6,199,718, interpreter 289,055,
+registered ranges 580, yields 149,059, interrupted resumptions 288, and
+translated share 95.5453%. No fallback or hardware-visible access occurred.
+EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md` and
+`docs/reports/SEMANTIC_CLOSURE_M11_45.md`
+NEXT ACTION: Stop; do not implement the next milestone in this task.
+
 TASK: M11.44 Restart — Remaining Interpreter Attribution and 95% Coverage Gate
 STATUS: COMPLETE — `REMAINING_INTERPRETER_ATTRIBUTION_PROVEN_SEMANTICS_BLOCKED`
 BASELINE: `f71c92eecc128ef3eb2ffac835ec9f9dfd6bde94`

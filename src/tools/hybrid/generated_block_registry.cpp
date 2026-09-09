@@ -1,6 +1,8 @@
 // GENERATED FILE: oasis_hybrid_recomp_generate; do not hand-edit.
 #include "tools/hybrid/generated_blocks.hpp"
 
+#include <vector>
+
 namespace oasis::hybrid::generated {
 
 const GeneratedBlockSpec kBlocks[] = {
@@ -35,6 +37,32 @@ const GeneratedBlockSpec kBlocks[] = {
     {0x03A7AEU, 0x03A7B8U, 2U, execute_0x03A7AE, instruction_count_from_0x03A7AE},
 };
 
-std::span<const GeneratedBlockSpec> blocks() { return kBlocks; }
+std::span<const GeneratedBlockSpec> blocks() {
+    static const auto all = [] {
+        std::vector<GeneratedBlockSpec> result(
+            kBlocks, kBlocks + sizeof(kBlocks) / sizeof(kBlocks[0]));
+        const auto m1145 = blocks_m1145();
+        result.insert(result.end(), m1145.begin(), m1145.end());
+        return result;
+    }();
+    return all;
+}
+
+std::span<const GeneratedBlockSpec> blocks_m1145() {
+    static const auto all = [] {
+        std::vector<GeneratedBlockSpec> result;
+        const auto part0 = blocks_m1145_part0();
+        const auto part1 = blocks_m1145_part1();
+        const auto part2 = blocks_m1145_part2();
+        const auto part3 = blocks_m1145_part3();
+        result.reserve(part0.size() + part1.size() + part2.size() + part3.size());
+        result.insert(result.end(), part0.begin(), part0.end());
+        result.insert(result.end(), part1.begin(), part1.end());
+        result.insert(result.end(), part2.begin(), part2.end());
+        result.insert(result.end(), part3.begin(), part3.end());
+        return result;
+    }();
+    return all;
+}
 
 } // namespace oasis::hybrid::generated

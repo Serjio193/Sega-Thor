@@ -69,5 +69,10 @@ unsigned instruction_count_from_0x03A864(unsigned);
 unsigned instruction_count_from_0x03A7AE(unsigned);
 
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part0();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part1();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part2();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part3();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145();
 
 } // namespace oasis::hybrid::generated

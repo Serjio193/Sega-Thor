@@ -3,6 +3,53 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.45 Bounded Semantic Closure Toward 95% Dynamic Coverage — COMPLETE
+**Objective:** Resume from the committed M11.44 baseline and close only a bounded,
+decoder-backed semantic tranche toward 95% translated dynamic execution. Do not
+force coverage or broaden hardware, indirect-control-flow, decoder, or unresolved
+runtime-address scope.
+
+**Acceptance criteria:** Reproduce the M11.44 checkpoint, video and execution
+metrics twice; rank the complete semantic remainder and select an eligible tranche
+capable of at least 236,530 executions; independently verify only exact required
+68000 forms; mechanically generate and provenance-check those forms; pass
+per-candidate GPGX shadow and unchanged 600-frame native gates; close the final
+ledger and Pareto categories; update governance, hygiene and validation evidence;
+commit and push the meaningful positive or negative result.
+
+**Actions:** Re-read repository instructions and all required governance docs;
+reproduced the unchanged Release baseline twice. Ranked the complete final
+M11.44 ledger, excluding hardware/indirect/decoder/unknown runtime-address
+classes. Independently verified the selected exact helper forms with deterministic
+68000 vectors and emitted 551 decoder-owned candidates mechanically. Three forms
+were vetoed independently by the existing shadow contract: LSR.W at 0x0038E0
+(+14 cycles), ROR.W at 0x06115A (+112 cycles), and CMPI.B at 0x0038AA (X flag).
+
+**Evidence:** The final native run preserved checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total, 6,199,718 translated, 289,055 interpreter executions,
+580 registered ranges, 149,059 yields, 288 interrupted resumptions and zero
+original starts inside translated ranges.
+
+**Validation:** The final shadow completed 6,199,718/6,199,718 comparisons with
+zero divergence. The unchanged 600-frame native run completed with zero
+fallbacks, zero hardware-visible accesses, zero starts inside translated ranges,
+checkpoint/video/CPU/RAM/VDP/sound identity, 149,059 boundary yields and 288
+interrupted resumptions. The final ledger closes at 289,055 exactly. Full MSVC
+Debug CTest passed 57/57, full MSVC Release CTest passed 57/57 and the GNU/
+MinGW-equivalent full CTest passed 57/57, including semantic, generator,
+provenance, checkpoint, boundary and source-limit tests. `git diff --check` and
+repository hygiene passed; the final generated output is split into <=500-line
+translation units.
+
+**Result:** `REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`. Final native
+metrics are 6,199,718 translated and 289,055 interpreter executions, 580
+registered ranges and 95.5453% translated share. No hardware contract or
+production runtime was broadened.
+
+**Exact next step:** commit and push this focused M11.45 result, then stop.
+
 ## 2026-09-09 — M11.44 Restart and Remaining Interpreter Attribution — COMPLETE
 **Objective:** Reproduce the M11.43 authoritative baseline twice, then account
 for all `661,916` remaining interpreter executions with decoder-backed evidence.

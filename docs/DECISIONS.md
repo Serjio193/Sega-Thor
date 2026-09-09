@@ -2,6 +2,28 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0026 — Bounded semantic closure with independent shadow vetoes
+**Status:** Accepted for M11.45 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.44 left 560,968 interpreter executions. The highest-payoff
+decoder-backed semantic/proven candidates could exceed the 236,530 execution
+threshold needed for a 95% result, but exact GPGX timing and flags remained
+unproven for new forms.
+
+**Decision:** Select only decoder-owned rows with proven static memory class and
+exact mechanical support, excluding register-based/other memory, hardware,
+indirect CFG, decoder gaps and unknown runtime addresses. Verify exact helpers
+with deterministic vectors, generate all candidate bodies mechanically, and let
+the existing per-boundary shadow gate veto candidates independently. Do not add
+candidate-specific timing constants or hardware behavior.
+
+**Consequences:** 551 candidates passed 6,199,718 shadow comparisons and native
+proof, removing 271,913 executions. LSR.W, ROR.W and CMPI.B were retained as
+fail-closed shadow rejections. The resulting 95.5453% translated share proves
+`REMAINING_ATTRIBUTION_AND_DYNAMIC_COVERAGE_95_PROVEN`; the final ledger still
+accounts for every 289,055 interpreter execution.
+
 ## ADR-0025 — Promote only the canonical 0x03A7AE generated block
 **Status:** Accepted for M11.44 developer-only hybrid tooling
 **Date:** 2026-09-09

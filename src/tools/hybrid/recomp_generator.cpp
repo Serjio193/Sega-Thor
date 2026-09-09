@@ -73,6 +73,37 @@ std::string helper_call(const DecodedInstruction& instruction) {
             << unsigned(exact.width_bytes) << "U);";
         return tst.str();
     }
+    if (exact.operation == "nop") return {};
+    if (exact.operation == "cmpi" && exact.width_bytes == 2 && source && destination) {
+        require_kind(instruction, *source, OperandKind::immediate, "CMPI source");
+        require_kind(instruction, *destination, OperandKind::absolute_long, "CMPI destination");
+        std::ostringstream cmp;
+        cmp << "compare_immediate_w_absolute_long(api, " << source->value << "U, 0x"
+            << hex(destination->value, 6) << "U);";
+        return cmp.str();
+    }
+    if (exact.operation == "cmpi" && exact.width_bytes == 1 && source && destination) {
+        require_kind(instruction, *source, OperandKind::immediate, "CMPI.B source");
+        require_kind(instruction, *destination, OperandKind::data_register, "CMPI.B destination");
+        std::ostringstream cmp;
+        cmp << "compare_immediate_b_data(api, " << source->value << "U, "
+            << unsigned(destination->register_index) << "U);";
+        return cmp.str();
+    }
+    if (exact.operation == "btst" && source && destination) {
+        require_kind(instruction, *source, OperandKind::immediate, "BTST source");
+        std::ostringstream bit;
+        if (destination->kind == OperandKind::absolute_long) {
+            bit << "bit_test_immediate_absolute_long(api, " << source->value << "U, 0x"
+                << hex(destination->value, 6) << "U);";
+            return bit.str();
+        }
+        if (destination->kind == OperandKind::data_register) {
+            bit << "bit_test_immediate_data(api, " << source->value << "U, "
+                << unsigned(destination->register_index) << "U);";
+            return bit.str();
+        }
+    }
     const auto& dst = operand(instruction, destination, "destination");
     std::ostringstream out;
     if (exact.operation == "movem" && exact.width_bytes == 4 && source) {
@@ -85,6 +116,96 @@ std::string helper_call(const DecodedInstruction& instruction) {
     if (exact.operation == "clr" && exact.width_bytes == 2) {
         require_kind(instruction, dst, OperandKind::data_register, "CLR destination");
         out << "clear_w_data_register(api, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "moveq" && source) {
+        require_kind(instruction, *source, OperandKind::immediate, "MOVEQ source");
+        require_kind(instruction, dst, OperandKind::data_register, "MOVEQ destination");
+        out << "moveq_data(api, " << static_cast<int>(static_cast<std::int8_t>(source->value))
+            << ", " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "move" && exact.width_bytes == 2 && source &&
+        source->kind == OperandKind::data_register && dst.kind == OperandKind::data_register) {
+        require_kind(instruction, *source, OperandKind::data_register, "MOVE.W source");
+        require_kind(instruction, dst, OperandKind::data_register, "MOVE.W destination");
+        out << "move_w_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "movea" && exact.width_bytes == 4 && source) {
+        require_kind(instruction, *source, OperandKind::address_register, "MOVEA source");
+        require_kind(instruction, dst, OperandKind::address_register, "MOVEA destination");
+        out << "movea_l_address_to_address(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "add" && exact.width_bytes == 2 && source &&
+        source->kind == OperandKind::data_register && dst.kind == OperandKind::data_register) {
+        require_kind(instruction, *source, OperandKind::data_register, "ADD.W source");
+        require_kind(instruction, dst, OperandKind::data_register, "ADD.W destination");
+        out << "add_w_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "sub" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::data_register, "SUB.W source");
+        require_kind(instruction, dst, OperandKind::data_register, "SUB.W destination");
+        out << "sub_w_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if ((exact.operation == "addq" || exact.operation == "subq") && source) {
+        require_kind(instruction, *source, OperandKind::immediate, "quick source");
+        require_kind(instruction, dst, OperandKind::data_register, "quick destination");
+        if (exact.operation == "addq" && exact.width_bytes == 2)
+            out << "addq_w_data(api, " << source->value << "U, ";
+        else if (exact.operation == "subq" && exact.width_bytes == 1)
+            out << "subq_b_data(api, " << source->value << "U, ";
+        else if (exact.operation == "subq" && exact.width_bytes == 2)
+            out << "subq_w_data(api, " << source->value << "U, ";
+        else throw std::invalid_argument("unsupported quick instruction at 0x" + hex(instruction.address, 6));
+        out << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if ((exact.operation == "andi" || exact.operation == "addi" || exact.operation == "subi") &&
+        source && dst.kind == OperandKind::data_register) {
+        require_kind(instruction, *source, OperandKind::immediate, "immediate source");
+        if (exact.operation == "andi" && exact.width_bytes == 2)
+            out << "andi_w_data(api, " << source->value << "U, ";
+        else if (exact.operation == "andi" && exact.width_bytes == 1)
+            out << "andi_b_data(api, " << source->value << "U, ";
+        else if (exact.operation == "addi" && exact.width_bytes == 1)
+            out << "addi_b_data(api, " << source->value << "U, ";
+        else if (exact.operation == "subi" && exact.width_bytes == 1)
+            out << "subi_b_data(api, " << source->value << "U, ";
+        else throw std::invalid_argument("unsupported immediate instruction at 0x" + hex(instruction.address, 6));
+        out << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "or" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::data_register, "OR source");
+        require_kind(instruction, dst, OperandKind::data_register, "OR destination");
+        out << "or_w_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "ror" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::immediate, "ROR source");
+        require_kind(instruction, dst, OperandKind::data_register, "ROR destination");
+        out << "ror_w_data(api, " << source->value << "U, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "lsr" && exact.width_bytes == 2 && source) {
+        require_kind(instruction, *source, OperandKind::immediate, "LSR source");
+        require_kind(instruction, dst, OperandKind::data_register, "LSR destination");
+        out << "lsr_w_data(api, " << source->value << "U, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "bclr" && exact.width_bytes == 4 && source) {
+        require_kind(instruction, *source, OperandKind::immediate, "BCLR source");
+        require_kind(instruction, dst, OperandKind::data_register, "BCLR destination");
+        out << "bclr_l_data(api, " << source->value << "U, " << unsigned(dst.register_index) << "U);";
         return out.str();
     }
     if (exact.operation == "lea" && exact.width_bytes == 4 && source) {
@@ -199,10 +320,14 @@ std::string emit_translation_unit(const std::vector<GeneratedBlock>& blocks) {
                 << "    const auto opcode_0x" << hex(instruction.address, 6)
                 << " = fetch_checked(api, 0x" << hex(instruction.opcode, 4) << "U);\n"
                 << "    api.begin_instruction(opcode_0x" << hex(instruction.address, 6) << ");\n";
+            const auto operation = instruction.exact->operation;
+            const auto is_branch = instruction.direct_target && instruction.branch_condition_code &&
+                operation.size() >= 2 && operation[0] == 'b' && operation != "btst" &&
+                operation != "bclr" && operation != "bchg" && operation != "bset";
+            const auto is_dbcc = operation.size() >= 2 && operation[0] == 'd' &&
+                operation[1] == 'b';
             const auto conditional_extension = instruction.bytes.size() > 2 &&
-                ((instruction.exact->operation.size() >= 2 && instruction.exact->operation[0] == 'b') ||
-                 (instruction.exact->operation.size() >= 2 && instruction.exact->operation[0] == 'd' &&
-                  instruction.exact->operation[1] == 'b'));
+                (is_branch || is_dbcc);
             if (!conditional_extension) {
                 for (std::size_t i = 2; i < instruction.bytes.size(); i += 2)
                     out << "    (void)fetch_checked(api, 0x"

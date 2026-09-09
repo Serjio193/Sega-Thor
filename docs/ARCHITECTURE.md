@@ -99,6 +99,16 @@ and the generic `basic_block` boundary glue remain separate handwritten
 integration code. The final interpreter remainder stays fail-closed for
 unverified semantics, unresolved register-based memory and 0xA00003 hardware.
 
+M11.45 keeps this boundary and adds the generated
+`generated_blocks_m1145_*.cpp` translation units containing only decoder-owned
+candidate bodies and registry fragments. Handwritten runtime helpers in
+`generated_block_runtime.cpp`
+implement exact operation/size/addressing-mode contracts; the generator emits
+the address-specific calls and canonical ROM-byte provenance. The handwritten
+registry glue combines the historical and M11.45 spans. Failed timing/flags
+candidates, unresolved register-based memory, indirect CFG, decoder gaps and
+0xA00003 hardware remain outside the promoted set.
+
 Tools must not require committing extracted assets.
 
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
