@@ -1,6 +1,33 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M11.41 — Checkpoint identity provenance and reproduction repair
+STATUS: `CHECKPOINT_IDENTITY_SERIALIZATION_BUG_PROVEN`; restart gate
+`CHECKPOINT_BASELINE_IDENTITY_RESTORED`.
+
+The developer-only checkpoint pipeline in `src/tools/hybrid/runner.cpp` takes
+full `retro_serialize()` buffers at frames 60 through 600 and hashes the
+lowercase per-record state hashes in ordinal order. The raw state evidence
+adapter is `src/tools/hybrid/checkpoint_evidence.cpp`; it records the complete
+buffers only under the ignored `OASIS_CHECKPOINT_EVIDENCE` opt-in.
+
+The external GPGX v1.7.6 serializer saves `YM2612` and `Z80_Regs` by raw
+`sizeof` copies. `FM_SLOT.DT`, `FM_CH` connection fields, and Z80 `daisy` /
+`irq_callback` are host pointers; ABI padding is also part of those wholesale
+copies. The first independently observed difference was checkpoint ordinal 0,
+frame 60, state offset `140654`, byte 3 of the first `FM_SLOT.DT` pointer
+(state offset `140651` is the YM2612 context start). This representation byte
+is not gameplay-visible state and explains why matching ROM, DLL, video and
+instruction metrics did not imply matching raw checkpoint hashes.
+
+`checkpoint_identity_hash()` now copies the recognized `STATE_SIZE=0xfd000`
+buffer and clears only the proven pointer/padding spans. It rejects another
+state size, leaves the raw buffer unchanged, and retains all semantic bytes in
+the identity. Three current and two exact historical-checkout repaired runs
+produce authoritative aggregate
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1` with the
+same video and M11.39 execution metrics. M11.40 PHASE 2 was not performed.
+
 ## M11.40 — Remaining interpreter attribution and 95% coverage gate
 STATUS: `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`. The milestone
 stopped before attribution, semantic expansion, generation, shadow or native

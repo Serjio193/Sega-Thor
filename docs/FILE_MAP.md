@@ -36,6 +36,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md M11.26 bounded visual-role report
 │   │   └── HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md M11.39 bounded hot-path coverage report
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md M11.40 baseline-blocked attribution report
+│   │   └── CHECKPOINT_IDENTITY_M11_41.md M11.41 checkpoint provenance/repair report
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -113,6 +114,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── interpreter_profile.hpp Interpreter profile writer API
 │       │   ├── recomp_generator.cpp Decoder-to-C++ generator with fail-closed forms
 │       │   ├── recomp_generator.hpp Generator model/emitter API
+│       │   ├── checkpoint_evidence.cpp Raw checkpoint evidence and canonical identity adapter
+│       │   ├── checkpoint_evidence.hpp Checkpoint identity/evidence API
+│       │   ├── runner.cpp Developer-only GPGX hybrid scenario runner
 │       │   └── recomp_generator_report.cpp Generator CLI
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked

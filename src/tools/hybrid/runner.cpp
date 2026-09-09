@@ -6,6 +6,7 @@
 #include "tools/hybrid/basic_block.hpp"
 #include "tools/hybrid/generated_blocks.hpp"
 #include "tools/hybrid/interpreter_profile.hpp"
+#include "tools/hybrid/checkpoint_evidence.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
@@ -135,6 +136,10 @@ void poll() {}
 std::int16_t input(unsigned, unsigned, unsigned, unsigned) { return 0; }
 std::string hash_text(const std::string& value) {
     return oasis::calculate_sha256({reinterpret_cast<const std::uint8_t*>(value.data()), value.size()});
+}
+
+bool checkpoint_evidence_enabled() {
+    return std::getenv("OASIS_CHECKPOINT_EVIDENCE") != nullptr;
 }
 }
 
@@ -284,6 +289,10 @@ int main(int argc, char** argv) {
         std::string state_hashes;
         std::ofstream checkpoints(std::filesystem::path(directory) / "checkpoints.jsonl");
         checkpoints.exceptions(std::ios::failbit | std::ios::badbit);
+        std::unique_ptr<oasis::hybrid::CheckpointEvidence> evidence;
+        if (checkpoint_evidence_enabled()) {
+            evidence = std::make_unique<oasis::hybrid::CheckpointEvidence>(directory);
+        }
         for (unsigned frame = 0; frame < frames; ++frame) {
             if (session) session->frame(frame);
             run();
@@ -292,9 +301,12 @@ int main(int argc, char** argv) {
             if ((frame + 1) % 60 == 0 || frame + 1 == frames) {
                 std::vector<std::uint8_t> state(size());
                 if (!serialize(state.data(), state.size())) throw std::runtime_error("serialization failed");
-                const auto hash = oasis::calculate_sha256(state);
+                const auto raw_hash = oasis::calculate_sha256(state);
+                const auto hash = oasis::hybrid::checkpoint_identity_hash(state);
                 state_hashes += hash;
+                if (evidence) evidence->record(frame + 1, state, cpu_cycles(), raw_hash, hash);
                 checkpoints << "{\"frame\":" << frame + 1 << ",\"state_sha256\":\"" << hash
+                            << "\",\"raw_state_sha256\":\"" << raw_hash
                             << "\",\"cpu_cycles\":" << cpu_cycles() << "}\n";
             }
         }
@@ -464,6 +476,7 @@ int main(int argc, char** argv) {
                << (selected_target == 0x3820 ? oasis::hybrid::override_blocker : "") << "\"\n}\n";
         calls.close();
         checkpoints.close();
+        if (evidence) evidence->close();
         report.close();
         if (!completed) {
             std::ofstream failure(std::filesystem::path(directory) / "FIRST_DIVERGENCE.txt");

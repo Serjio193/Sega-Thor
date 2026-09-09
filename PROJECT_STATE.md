@@ -1,18 +1,22 @@
 # Project State
 
-CURRENT_MILESTONE: M11.40 remaining interpreter attribution and 95% coverage gate
-CURRENT_TASK: reproduce the exact M11.39 identity before classifying or promoting
-the remaining interpreter executions
-STATUS: BLOCKED — `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`
-SCOPE_BOUNDARY: baseline reproduction only; no ledger promotion, semantic
-expansion, generator change, shadow certification, hardware broadening or 95%
-coverage claim until checkpoint identity is resolved.
-NEXT_GATE: resolve the historical/current checkpoint aggregate discrepancy.
-LAST_VERIFIED_RESULT: current runs reproduce 6,488,773 total, 5,826,857
-translated and 661,916 interpreter instructions, 89.7991% share, the same
-ROM/DLL/video identities, 140,065 yields and 274 resumptions. Both current
-checkpoint aggregates are `fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052`,
-not the historical M11.39 `20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`.
+CURRENT_MILESTONE: M11.41 checkpoint identity provenance and reproduction repair
+CURRENT_TASK: complete; restore one deterministic authoritative checkpoint identity
+STATUS: COMPLETE — `CHECKPOINT_BASELINE_IDENTITY_RESTORED`
+SCOPE_BOUNDARY: checkpoint provenance and developer-only serialization identity
+repair; M11.40 PHASE 2 and all coverage expansion remain outside this task.
+NEXT_GATE: M11.40 PHASE 2, as a separate bounded task.
+LAST_VERIFIED_RESULT: GPGX host pointer/ABI representation bytes caused the
+historical mismatch. The first differing byte was frame 60, state offset
+`140654`, in `FM_SLOT.DT`. Three current and two exact historical-checkout
+repaired runs agree on authoritative aggregate
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`, video,
+instruction counts, yields and resumptions.
+EVIDENCE: `docs/reports/CHECKPOINT_IDENTITY_M11_41.md`
+
+HISTORICAL_MILESTONE: M11.40 remaining interpreter attribution and 95% coverage gate
+STATUS: BLOCKED — `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`; phase 2
+was not performed. M11.41 resolved the identity blocker.
 EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`
 
 CURRENT_MILESTONE: M11.39 hot-path multi-block coverage expansion

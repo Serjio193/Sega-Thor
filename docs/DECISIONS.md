@@ -2,6 +2,29 @@
 
 Use this file for decisions that can redirect architecture, dependencies, scope, or reverse-engineering strategy.
 
+## ADR-0022 — Deterministic developer-only checkpoint identity
+**Status:** Accepted for M11.41 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.40 matched ROM, GPGX, video, instruction and boundary metrics
+but could not reproduce the historical checkpoint aggregate. Byte evidence
+showed that GPGX v1.7.6 wholesale-serialized host pointers and ABI padding in
+the YM2612 and Z80 contexts. The first mismatch was frame 60, state offset
+`140654`, inside `FM_SLOT.DT`.
+
+**Decision:** Preserve the complete raw `retro_serialize()` buffer in ignored
+developer evidence, but compute the authoritative checkpoint identity from a
+copy with only the proven pointer/padding spans cleared for the recognized
+`STATE_SIZE=0xfd000` format. Reject unknown state sizes. Keep the existing
+frame cadence and aggregate order; retain all semantic state bytes and record
+both raw and authoritative per-record hashes.
+
+**Consequences:** Checkpoint identity is deterministic across the current and
+exact historical checkout: the repaired 600-frame aggregate is
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`. Raw
+evidence remains available for future audits but is not tracked. This does not
+start M11.40 PHASE 2 and does not add a production emulator dependency.
+
 ## ADR-0021 — Bounded hot-path profile and exact multi-block promotion
 **Status:** Accepted for M11.39 developer-only hybrid tooling
 **Date:** 2026-09-09

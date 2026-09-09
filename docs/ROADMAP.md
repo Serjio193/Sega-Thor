@@ -9,15 +9,26 @@ The roadmap is ordered. Do not skip ahead unless a blocking dependency is docume
 - `BLOCKED` — cannot proceed until documented dependency is resolved
 - `DONE` — acceptance criteria met
 
-## M11.40 — Remaining interpreter attribution and 95% coverage gate — BLOCKED
+## M11.41 — Checkpoint identity provenance and reproduction repair — DONE
+The M11.40 baseline blocker was traced to host pointer and ABI representation
+bytes included by the external GPGX wholesale state serializer. The first
+difference was frame 60, serialized state offset `140654`, inside
+`FM_SLOT.DT`. Raw state evidence is opt-in and ignored; the authoritative
+identity canonicalizes only the proven representation spans for the recognized
+GPGX state format. Three current and two exact historical-checkout repaired
+runs agree on aggregate
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`, video and
+all recorded execution metrics. M11.40 PHASE 2 was not performed. Evidence:
+`reports/CHECKPOINT_IDENTITY_M11_41.md`.
+
+## M11.40 — Remaining interpreter attribution and 95% coverage gate — NEXT
 The required M11.39 baseline reproduction matches the canonical ROM, external
 GPGX DLL, 28-range registry, instruction counts, video sequence, boundary
-yields and interrupted resumptions. It does not match the historical
-checkpoint aggregate: current repeated runs produce
-`fffe59fcdbed7fdac8ef22badb4f7236b8619459fed27c9931e0f93906549052` versus
-M11.39's `20217e10565c51b571db6a4e474aa40854ea6c22277ba14c46ea97c4b1c60a04`.
+yields and interrupted resumptions. M11.41 restored the authoritative repaired
+aggregate `c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`.
 M11.40 stopped before remainder classification or promotion. No 95% claim was
-made. Evidence: `reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`.
+made. Evidence: `reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md` and
+`reports/CHECKPOINT_IDENTITY_M11_41.md`.
 
 ## M11.39 — Hot-path multi-block coverage expansion — DONE
 Starting from M11.38, profile only the remaining interpreter executions and

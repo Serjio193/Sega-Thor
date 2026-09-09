@@ -153,6 +153,14 @@ registry remain in `tools/hybrid`; none of these files are linked into
 production targets. Hardware-visible candidates remain fallback unless an
 existing bridge already proves the ordered effect.
 
+M11.41 keeps checkpoint identity in the same developer-only boundary. The
+runner retains complete external serialize buffers as ignored raw evidence,
+while `checkpoint_evidence` owns the format-guarded identity adapter. It clears
+only proven host-pointer and ABI-padding representation spans from the known
+GPGX state format before ordered hashing; semantic machine-state bytes remain
+authoritative. No production target, generated block, ROM, asset or emulator
+dependency is introduced.
+
 ### `platform`
 Modern OS/window/input/audio/rendering integration.
 

@@ -3,7 +3,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     interpreter_profile.cpp
     generated_block_runtime.cpp generated_blocks.cpp generated_blocks_m1137.cpp
     generated_blocks_m1138.cpp generated_blocks_m1139.cpp generated_block_registry.cpp
-    recomp_generator.cpp
+    recomp_generator.cpp checkpoint_evidence.cpp
     candidate_2d66.cpp candidate_604bc.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
@@ -36,15 +36,19 @@ add_test(NAME oasis_hybrid_generated_provenance COMMAND oasis_hybrid_generated_p
 add_executable(oasis_hybrid_semantic_core_test ${PROJECT_SOURCE_DIR}/tests/hybrid_semantic_core_test.cpp)
 target_link_libraries(oasis_hybrid_semantic_core_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_semantic_core COMMAND oasis_hybrid_semantic_core_test)
+add_executable(oasis_hybrid_checkpoint_evidence_test ${PROJECT_SOURCE_DIR}/tests/hybrid_checkpoint_evidence_test.cpp)
+target_link_libraries(oasis_hybrid_checkpoint_evidence_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_checkpoint_evidence COMMAND oasis_hybrid_checkpoint_evidence_test)
 add_executable(oasis_hybrid_recomp_generate recomp_generator_report.cpp)
 target_link_libraries(oasis_hybrid_recomp_generate PRIVATE oasis_hybrid_contract)
 target_compile_options(oasis_hybrid_recomp_generator_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_generated_block_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_generated_provenance_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 target_compile_options(oasis_hybrid_semantic_core_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
+target_compile_options(oasis_hybrid_checkpoint_evidence_test PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
-    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block oasis_hybrid_basic_block oasis_hybrid_generated_provenance oasis_hybrid_semantic_core
+    set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block oasis_hybrid_basic_block oasis_hybrid_generated_provenance oasis_hybrid_semantic_core oasis_hybrid_checkpoint_evidence
         PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
 endif()
 

@@ -1,21 +1,31 @@
 # Current task
 
+TASK: M11.41 Checkpoint Identity Provenance and Reproduction Repair
+STATUS: COMPLETE — `CHECKPOINT_BASELINE_IDENTITY_RESTORED`
+BASELINE: M11.40 commit `23aab8997592726a001d1483b7f109c6915f6bd8` and exact
+M11.39 coverage commit `37857a31a1c2965ecbe68e3695ca5aa187617c2f`.
+SCOPE: checkpoint pipeline provenance, byte-level divergence proof and the
+minimum developer-only identity repair. Do not perform M11.40 PHASE 2.
+RESULT: GPGX wholesale serialization included host pointer/ABI representation
+bytes. The first differing byte was frame 60, state offset `140654`, inside
+the first YM2612 `FM_SLOT.DT` pointer. Raw buffers remain evidence-only; the
+authoritative repaired aggregate is
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`.
+Three current and two exact historical-checkout repaired runs agree on
+checkpoint sequence, video, instruction counts, yields and resumptions.
+EVIDENCE: `docs/reports/CHECKPOINT_IDENTITY_M11_41.md`
+NEXT ACTION: start M11.40 PHASE 2 as a separate bounded task; do not expand
+scope in M11.41.
+
+## Historical M11.40 result
+
 TASK: M11.40 Remaining Interpreter Attribution and 95% Coverage Gate
 STATUS: BLOCKED — `M11.40_BASELINE_BLOCKED_CHECKPOINT_IDENTITY_MISMATCH`
-BASELINE: M11.39 commit `37857a31a1c2965ecbe68e3695ca5aa187617c2f`, 28-range
-registry, canonical USA ROM, external GPGX identity and 600-frame neutral
-scenario.
-SCOPE: reproduce the exact M11.39 baseline before any remainder ledger,
-semantic expansion, generation, shadow certification or promotion. Do not
-force 95% coverage.
-RESULT: the reproduction matches ROM/DLL identity, 28 ranges, total guest
-instructions `6,488,773`, translated `5,826,857`, interpreter `661,916`,
-89.7991% share, video hash, yields and interrupted resumptions. The
-checkpoint aggregate differs from the historical M11.39 value, while two
-current reproductions agree with each other. Cause is not proven.
+RESULT: the M11.40 attribution/95% gate was stopped before PHASE 2 because its
+raw checkpoint aggregate did not match the historical M11.39 report. M11.41
+proved the serialization cause and restored a deterministic authoritative
+identity, but did not execute M11.40 PHASE 2.
 EVIDENCE: `docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_40.md`
-NEXT ACTION: resolve the checkpoint identity discrepancy; do not begin M11.40
-PHASE 2 or implement M11.41.
 
 # Historical M11.39 result
 

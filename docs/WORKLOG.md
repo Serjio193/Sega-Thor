@@ -3,6 +3,36 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.41 Checkpoint Identity Provenance and Reproduction Repair — COMPLETE
+**Objective:** Determine why the M11.39 checkpoint aggregate was not
+reproducible, prove the first differing serialized field, and restore one
+authoritative deterministic identity without starting M11.40 PHASE 2.
+
+**Actions:** Re-read repository instructions and all required project documents;
+reconstructed the runner pipeline from `retro_run`, `retro_serialize_size`,
+`retro_serialize`, per-record hashing and ordered aggregate hashing. Built the
+exact M11.39 commit twice before instrumentation; it produced stable aggregate
+`3923a3d6...`, not the recorded `20217e...`. Added ignored opt-in raw evidence
+with per-record offsets/hashes and manifest order. The first independent raw
+divergence was frame 60, state offset `140654`, byte 3 of the first YM2612
+`FM_SLOT.DT` host pointer. Added the minimum format-guarded canonical identity
+adapter that removes only proven pointer/padding representation bytes while
+retaining raw buffers and semantic bytes.
+
+**Result:** `CHECKPOINT_IDENTITY_SERIALIZATION_BUG_PROVEN` and
+`CHECKPOINT_BASELINE_IDENTITY_RESTORED`. The authoritative aggregate is
+`c9236218f55fb18f7f1d5095e4970b25f228de588bd03bd7cbbffccc2e225fd1`.
+
+**Proof:** Three repaired current runs and two repaired exact historical-checkout
+runs matched the checkpoint sequence, aggregate, video hash, 6,488,773 total,
+5,826,857 translated, 661,916 interpreter, 140,065 yields and 274 resumptions.
+The M11.40 negative report, M11.39 report/hash, ROM/DLL identities and all local
+raw evidence remain preserved; no run evidence is tracked and `game.srm` was
+not edited.
+
+**Exact next step:** start M11.40 PHASE 2 in a separate task. Do not expand
+M11.41 scope.
+
 ## 2026-09-09 — M11.40 Remaining Interpreter Attribution and 95% Coverage Gate — BLOCKED
 **Objective:** Reproduce the exact M11.39 baseline before classifying the
 remaining interpreter executions or attempting any semantic, generator,
