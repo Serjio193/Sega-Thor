@@ -37,6 +37,13 @@ BlockExit execute_0x03A9CA(BasicBlockApi&, unsigned);
 BlockExit execute_0x000380(BasicBlockApi&, unsigned);
 BlockExit execute_0x03A864(BasicBlockApi&, unsigned);
 BlockExit execute_0x03A7AE(BasicBlockApi&, unsigned);
+BlockExit execute_0x00026A(BasicBlockApi&, unsigned);
+BlockExit execute_0x003A0C(BasicBlockApi&, unsigned);
+BlockExit execute_0x00389E(BasicBlockApi&, unsigned);
+BlockExit execute_0x0003F0(BasicBlockApi&, unsigned);
+BlockExit execute_0x06193C(BasicBlockApi&, unsigned);
+BlockExit execute_0x061954(BasicBlockApi&, unsigned);
+BlockExit execute_0x061266(BasicBlockApi&, unsigned);
 
 unsigned instruction_count_from_0x002D66(unsigned);
 unsigned instruction_count_from_0x0604BC(unsigned);
@@ -67,6 +74,13 @@ unsigned instruction_count_from_0x03A9CA(unsigned);
 unsigned instruction_count_from_0x000380(unsigned);
 unsigned instruction_count_from_0x03A864(unsigned);
 unsigned instruction_count_from_0x03A7AE(unsigned);
+unsigned instruction_count_from_0x00026A(unsigned);
+unsigned instruction_count_from_0x003A0C(unsigned);
+unsigned instruction_count_from_0x00389E(unsigned);
+unsigned instruction_count_from_0x0003F0(unsigned);
+unsigned instruction_count_from_0x06193C(unsigned);
+unsigned instruction_count_from_0x061954(unsigned);
+unsigned instruction_count_from_0x061266(unsigned);
 
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks();
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part0();
@@ -74,5 +88,6 @@ unsigned instruction_count_from_0x03A7AE(unsigned);
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part2();
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145_part3();
 [[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1145();
+[[nodiscard]] std::span<const GeneratedBlockSpec> blocks_m1147();
 
 } // namespace oasis::hybrid::generated

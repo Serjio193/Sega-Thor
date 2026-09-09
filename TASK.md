@@ -1,5 +1,22 @@
 # Current task
 
+TASK: M11.47 Safe-Memory Semantic Closure and Primitive Discovery
+STATUS: COMPLETE — `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`
+BASELINE: `7cf947cffee7507e6157e147049bb2b746baa3fa`
+SCOPE: Promote only the bounded high-payoff `SAFE_MEMORY_OBSERVED` forms from
+M11.46. Keep hardware, mixed, unresolved, indirect-CFG and decoder gaps
+fail-closed; identify mechanical primitives without replacing them natively.
+RESULT: Seven exact forms passed independent vectors, mechanical generation,
+600-frame GPGX shadow and unchanged native proof. Native execution is
+6,241,765 translated / 247,008 interpreter (96.1933%) across 587 ranges,
+with checkpoint/video identity preserved, 150,135 yields, 288 resumptions,
+zero unexpected fallbacks, zero hardware-visible accesses and zero starts
+inside translated ranges. The exhaustive M11.47 remainder ledger closes at
+247,008 exactly.
+EVIDENCE: `docs/reports/SAFE_MEMORY_SEMANTIC_CLOSURE_M11_47.md` and
+`docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md`
+NEXT ACTION: Stop; do not implement native primitive replacement in M11.47.
+
 TASK: M11.46 Runtime Address Provenance and Memory-Class Resolution
 STATUS: COMPLETE — `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`
 BASELINE: `ece2c557cb4c2573ced325f5579a83c3a06e9fc6`

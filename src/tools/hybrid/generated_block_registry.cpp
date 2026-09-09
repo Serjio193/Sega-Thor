@@ -43,6 +43,8 @@ std::span<const GeneratedBlockSpec> blocks() {
             kBlocks, kBlocks + sizeof(kBlocks) / sizeof(kBlocks[0]));
         const auto m1145 = blocks_m1145();
         result.insert(result.end(), m1145.begin(), m1145.end());
+        const auto m1147 = blocks_m1147();
+        result.insert(result.end(), m1147.begin(), m1147.end());
         return result;
     }();
     return all;

@@ -44,6 +44,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   └── SEMANTIC_CLOSURE_M11_45.md M11.45 candidate selection and shadow/native proof
 │   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_45.md M11.45 exhaustive final interpreter ledger
 │   │   └── RUNTIME_ADDRESS_PROVENANCE_M11_46.md M11.46 bounded runtime address and memory-class evidence
+│   │   └── SAFE_MEMORY_SEMANTIC_CLOSURE_M11_47.md M11.47 safe-memory semantic and primitive proof
+│   │   └── REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md M11.47 exhaustive post-promotion interpreter ledger
 │   ├── M11_19_TEST_A.md       M11.19 external Genesis-Plus-GX live-coverage report
 │   ├── REVERSE_ENGINEERING.md Address/routine/ROM/data research ledger
 │   ├── ROADMAP.md             Ordered milestones and current active milestone
@@ -115,6 +117,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks_m1139.cpp Generated M11.39 hot-path bodies
 │       │   ├── generated_blocks_m1144.cpp Generated M11.44 0x03A7AE block body
 │       │   ├── generated_blocks_m1145_*.cpp Generated M11.45 semantic candidate bodies and registry fragments
+│       │   ├── generated_blocks_m1147.cpp Generated M11.47 safe-memory candidate bodies
+│       │   ├── generated_blocks_m1147_registry.cpp Generated M11.47 registry fragment
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
 │       │   ├── basic_block.cpp Handwritten generic shadow/native boundary glue
@@ -342,6 +346,8 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   exact-IR assertions.
 - `tests/hybrid_m1145_semantic_test.cpp`: M11.45 independent exact vectors for
   the bounded generated semantic helpers.
+- `tests/hybrid_m1147_semantic_test.cpp`: M11.47 exact safe-memory vectors,
+  overlap/address-wrap checks and generator provenance regression.
 - `tests/hybrid_generated_provenance_test.cpp`: generated M11.33/M11.35 block
   extension-word consumption and direct-successor PC/provenance regression.
 - `tests/hybrid_basic_block_test.cpp`: post-instruction boundary regression

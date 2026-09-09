@@ -1,6 +1,39 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.47 — Safe-memory semantic closure and primitive discovery
+STATUS: `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`.
+
+The M11.46 runtime-address ledger identified a bounded safe-memory tranche.
+Exact ROM forms `MOVE.L D0,-(A6)` at `0x00026A`, byte postincrement copy at
+`0x003A0C` and `0x00389E`, `CLR.W (A0)+` at `0x0003F0`, `BTST.B #0,0(A5)` at
+`0x06193C`, `MOVE.B #$FF,(A4)+` at `0x061954` and `CLR.B (A5)+` at `0x061266`
+were independently verified and mechanically generated. Their dynamic count
+is exactly 42,047. Generated bodies preserve canonical ROM bytes and exact
+decoder provenance; shared helpers contain the semantic implementation and
+unsupported forms remain fail-closed.
+
+The pinned GPGX evidence for `MOVE.L D0,-(A6)` is two 16-bit writes, high word
+at the decremented address plus two followed by low word at the decremented
+address. Register arithmetic wraps at 32 bits while the observed bus address
+is 24-bit. This is an exact form-specific fact, not a family-wide claim.
+
+Natural adjacent loop evidence supports mechanical `MEMORY_COPY` candidates
+`[0x003A0C,0x003A0E)` + `DBF 0x003A0E` and
+`[0x00389E,0x0038A0)` + `DBF 0x0038A0`, with byte stride one and observed
+main-RAM source/destination regions. It also supports `MEMORY_CLEAR` candidates
+at `0x0003F0` + `DBF 0x0003F2` (word stride two) and `0x061266` + `DBF
+0x061268` (byte stride one). These loops are not atomic and no gameplay role
+is assigned. The isolated store/test forms and `0x00026A` lack a complete
+higher-level contract and remain `INSUFFICIENT_EVIDENCE` for replacement.
+
+The unchanged native proof translated 6,241,765 of 6,488,773 guest
+instructions, leaving 247,008 interpreter executions. The exhaustive ledger in
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md` closes every remaining
+executed PC exactly; unresolved register-address rows remain
+`UNKNOWN_WITH_EVIDENCE`, hardware rows remain blocked, and no hardware
+behavior was inferred.
+
 # M11.46 — Runtime address provenance and memory-class resolution
 STATUS: `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`.
 

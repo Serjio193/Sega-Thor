@@ -1,3 +1,20 @@
+# M11.47 — Safe-memory semantic closure and primitive discovery — DONE
+
+The M11.46 runtime provenance was joined with the M11.45 final ledger. Seven
+high-payoff `SAFE_MEMORY_OBSERVED` exact forms were independently verified and
+mechanically generated: `0x00026A`, `0x003A0C`, `0x00389E`, `0x0003F0`,
+`0x06193C`, `0x061954` and `0x061266`. The unchanged 600-frame GPGX shadow
+completed 6,241,765 comparisons with zero divergence; native proof preserved
+checkpoint/video identity, 150,135 yields, 288 resumptions, zero unexpected
+fallbacks, zero hardware-visible accesses and zero starts inside translated
+ranges. Final execution is 6,241,765 translated and 247,008 interpreter
+instructions (96.1933%) across 587 ranges. The exhaustive remainder ledger
+closes exactly, and repeated copy/clear structures are classified as mechanical
+future replacement candidates without replacing them in this milestone.
+Result: `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`.
+Evidence: `reports/SAFE_MEMORY_SEMANTIC_CLOSURE_M11_47.md` and
+`reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md`.
+
 # M11.46 — Runtime address provenance and memory-class resolution — DONE
 
 The unchanged M11.45 native baseline was reproduced twice. Three independent

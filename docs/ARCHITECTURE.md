@@ -99,6 +99,16 @@ and the generic `basic_block` boundary glue remain separate handwritten
 integration code. The final interpreter remainder stays fail-closed for
 unverified semantics, unresolved register-based memory and 0xA00003 hardware.
 
+M11.47 extends this developer-only boundary with shared safe-memory semantic
+helpers and generated candidate translation units. `recomp_generator` owns
+decoder/exact-IR to C++ emission and canonical ROM provenance;
+`generated_block_runtime` owns reusable instruction semantics;
+`generated_blocks_m1147.cpp` contains generated bodies; and
+`generated_blocks_m1147_registry.cpp` contains generated metadata. The
+handwritten `basic_block` registry remains generic boundary glue. Primitive
+discovery records only exact mechanical copy/clear structure and does not add a
+native higher-level replacement or hardware dependency.
+
 M11.46 adds `address_provenance` as a separate developer-only observer around
 the same GPGX hook and block-registry path. It records runtime fallback PC
 counts, top-level data-bus address/width/direction/order and A0–A7 transitions,

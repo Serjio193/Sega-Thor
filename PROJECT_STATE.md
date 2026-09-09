@@ -1,5 +1,23 @@
 # Project State
 
+CURRENT_MILESTONE: M11.47 complete — safe-memory semantic closure and primitive discovery
+CURRENT_TASK: complete; bounded developer-only safe-memory promotion
+STATUS: COMPLETE — `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`
+SCOPE_BOUNDARY: seven exact `SAFE_MEMORY_OBSERVED` forms only; no hardware
+bus broadening, mixed/unresolved promotion, indirect-CFG invention, 100%
+coverage target or native higher-level primitive replacement
+LAST_VERIFIED_RESULT: M11.47 baseline reproduced twice. GPGX shadow completed
+6,241,765/6,241,765 comparisons with zero divergence. Native 600-frame proof
+preserved aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`,
+6,488,773 total, 6,241,765 translated, 247,008 interpreter, 587 ranges,
+150,135 yields, 288 resumptions, zero fallback/hardware accesses and zero
+starts inside translated ranges.
+EVIDENCE: `docs/reports/SAFE_MEMORY_SEMANTIC_CLOSURE_M11_47.md` and
+`docs/reports/REMAINING_INTERPRETER_ATTRIBUTION_M11_47.md`.
+NEXT_GATE: new bounded task is required; do not replace discovered primitives here.
+
 CURRENT_MILESTONE: M11.46 complete — runtime address provenance and memory-class resolution
 CURRENT_TASK: complete; bounded developer-only runtime observation
 STATUS: COMPLETE — `BOUNDED_RUNTIME_ADDRESS_PROVENANCE_PROVEN`

@@ -8,10 +8,20 @@ namespace oasis::hybrid::generated {
 
 std::uint32_t fetch_checked(BasicBlockApi& api, std::uint32_t expected);
 void movem_l_predecrement(BasicBlockApi& api, std::uint32_t mask);
+void move_l_data_to_predecrement_address(BasicBlockApi& api,
+                                         unsigned data_register,
+                                         unsigned address_register);
 void clear_w_data_register(BasicBlockApi& api, unsigned data_register);
+void clear_w_postincrement(BasicBlockApi& api, unsigned address_register);
+void clear_b_postincrement(BasicBlockApi& api, unsigned address_register);
 void move_b_postincrement_to_data_register(BasicBlockApi& api,
                                            unsigned address_register,
                                            unsigned data_register);
+void move_b_postincrement_to_postincrement(BasicBlockApi& api,
+                                           unsigned source_register,
+                                           unsigned destination_register);
+void move_b_immediate_to_postincrement(BasicBlockApi& api, unsigned immediate,
+                                       unsigned address_register);
 void lea_absolute_long(BasicBlockApi& api, std::uint32_t address,
                        unsigned address_register);
 void adda_w_data_to_address(BasicBlockApi& api, unsigned data_register,
@@ -36,6 +46,10 @@ void compare_immediate_b_data(BasicBlockApi& api, unsigned immediate,
                                unsigned data_register);
 void bit_test_immediate_absolute_long(BasicBlockApi& api, unsigned immediate,
                                       std::uint32_t address);
+void bit_test_immediate_displacement_address(BasicBlockApi& api,
+                                              unsigned immediate,
+                                              unsigned address_register,
+                                              int displacement);
 void bit_test_immediate_data(BasicBlockApi& api, unsigned immediate,
                              unsigned data_register);
 void moveq_data(BasicBlockApi& api, int immediate, unsigned data_register);

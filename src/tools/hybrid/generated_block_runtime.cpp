@@ -114,9 +114,37 @@ void movem_l_predecrement(BasicBlockApi& api, std::uint32_t mask) {
     api.set_reg(15, stack);
 }
 
+void move_l_data_to_predecrement_address(BasicBlockApi& api,
+                                         unsigned data_register,
+                                         unsigned address_register) {
+    const auto target = 8U + address_register;
+    const auto address = api.reg(target) - 4U;
+    api.set_reg(target, address);
+    const auto value = api.reg(data_register);
+    write(api, (address + 2U) & 0x00FFFFFFU, 2, value >> 16U);
+    write(api, address & 0x00FFFFFFU, 2, value & 0xFFFFU);
+    move_flags(api, value, 4);
+}
+
 void clear_w_data_register(BasicBlockApi& api, unsigned data_register) {
     api.set_reg(data_register, api.reg(data_register) & 0xFFFF0000U);
     move_flags(api, 0, 2);
+}
+
+void clear_w_postincrement(BasicBlockApi& api, unsigned address_register) {
+    const auto target = 8U + address_register;
+    const auto address = api.reg(target);
+    write(api, address, 2, 0);
+    api.set_reg(target, address + 2U);
+    move_flags(api, 0, 2);
+}
+
+void clear_b_postincrement(BasicBlockApi& api, unsigned address_register) {
+    const auto target = 8U + address_register;
+    const auto address = api.reg(target);
+    write(api, address, 1, 0);
+    api.set_reg(target, address + 1U);
+    move_flags(api, 0, 1);
 }
 
 void move_b_postincrement_to_data_register(BasicBlockApi& api,
@@ -127,6 +155,27 @@ void move_b_postincrement_to_data_register(BasicBlockApi& api,
     api.set_reg(8U + address_register, address + 1U);
     api.set_reg(data_register, (api.reg(data_register) & 0xFFFFFF00U) | value);
     move_flags(api, value, 1);
+}
+
+void move_b_postincrement_to_postincrement(BasicBlockApi& api,
+                                           unsigned source_register,
+                                           unsigned destination_register) {
+    const auto source = 8U + source_register;
+    const auto destination = 8U + destination_register;
+    const auto value = read(api, api.reg(source), 1);
+    api.set_reg(source, api.reg(source) + 1U);
+    write(api, api.reg(destination), 1, value);
+    api.set_reg(destination, api.reg(destination) + 1U);
+    move_flags(api, value, 1);
+}
+
+void move_b_immediate_to_postincrement(BasicBlockApi& api, unsigned immediate,
+                                       unsigned address_register) {
+    const auto target = 8U + address_register;
+    const auto address = api.reg(target);
+    write(api, address, 1, immediate & 0xFFU);
+    api.set_reg(target, address + 1U);
+    move_flags(api, immediate, 1);
 }
 
 void lea_absolute_long(BasicBlockApi& api, std::uint32_t address,
@@ -241,6 +290,19 @@ void compare_immediate_b_data(BasicBlockApi& api, unsigned immediate,
 
 void bit_test_immediate_absolute_long(BasicBlockApi& api, unsigned immediate,
                                       std::uint32_t address) {
+    const auto value = read(api, address, 1);
+    auto sr = api.reg(17);
+    const auto z = ((value & (1U << (immediate & 7U))) == 0) ? 0x04U : 0U;
+    sr = (sr & ~0x04U) | z;
+    api.set_reg(17, sr);
+}
+
+void bit_test_immediate_displacement_address(BasicBlockApi& api,
+                                              unsigned immediate,
+                                              unsigned address_register,
+                                              int displacement) {
+    const auto address = api.reg(8U + address_register) +
+        static_cast<std::int32_t>(displacement);
     const auto value = read(api, address, 1);
     auto sr = api.reg(17);
     const auto z = ((value & (1U << (immediate & 7U))) == 0) ? 0x04U : 0U;

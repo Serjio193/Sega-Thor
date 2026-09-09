@@ -1,3 +1,31 @@
+# ADR-0028 — Bounded safe-memory semantic tranche and mechanical primitives
+**Status:** Accepted for M11.47 developer-only hybrid tooling
+**Date:** 2026-09-09
+
+**Context:** M11.46 resolved runtime memory classes for a bounded set of
+interpreter PCs. Seven high-payoff rows were observed only in safe main RAM,
+but their exact instruction semantics and bus effects still required proof.
+Repeated copy/clear loops also appeared mechanically structured, while their
+native higher-level replacement contract was not yet needed.
+
+**Decision:** Independently verify only the exact seven forms required by the
+M11.47 safe-memory tranche, emit them through the decoder-owned mechanical
+generator and shared runtime helpers, and certify each through the existing
+instruction-boundary GPGX shadow and unchanged 600-frame native gates. Keep
+hardware-reachable, mixed, unresolved, indirect-CFG and decoder rows
+fail-closed. Record copy/clear structures as mechanical future replacement
+candidates only; do not replace loops or assign gameplay semantics in M11.47.
+
+**Consequences:** Seven generated ranges remove exactly 42,047 interpreter
+executions, raising translated execution to 96.1933% while preserving the
+authoritative checkpoint/video identity, bus/timing/event contract and zero
+hardware-visible native accesses. The remaining ledger closes at 247,008
+executions. Generated bodies, registry metadata, shared helpers and handwritten
+boundary glue remain separate.
+
+**Affected files/milestones:** M11.47 hybrid generator/runtime, generated
+block registry, semantic regression test and M11.47 reports.
+
 # ADR-0027 — Observe runtime addresses without promotion
 **Status:** Accepted for M11.46 developer-only hybrid tooling
 **Date:** 2026-09-09

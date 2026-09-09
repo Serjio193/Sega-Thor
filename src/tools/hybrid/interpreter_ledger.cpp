@@ -112,14 +112,30 @@ bool semantics_verified(const DecodedInstruction& instruction) {
     if (exact.operation == "movem" && exact.width_bytes == 4 &&
         operand_is(exact.source, OperandKind::register_list) &&
         operand_is(exact.destination, OperandKind::predecrement)) return true;
+    if (exact.operation == "move" && exact.width_bytes == 4 &&
+        operand_is(exact.source, OperandKind::data_register) &&
+        operand_is(exact.destination, OperandKind::predecrement)) return true;
+    if (exact.operation == "move" && exact.width_bytes == 1 &&
+        operand_is(exact.source, OperandKind::postincrement) &&
+        operand_is(exact.destination, OperandKind::postincrement)) return true;
+    if (exact.operation == "move" && exact.width_bytes == 1 &&
+        operand_is(exact.source, OperandKind::immediate) &&
+        operand_is(exact.destination, OperandKind::postincrement)) return true;
     if (exact.operation == "clr" && exact.width_bytes == 2 &&
         operand_is(exact.destination, OperandKind::data_register)) return true;
+    if (exact.operation == "clr" && exact.width_bytes == 1 &&
+        operand_is(exact.destination, OperandKind::postincrement)) return true;
+    if (exact.operation == "clr" && exact.width_bytes == 2 &&
+        operand_is(exact.destination, OperandKind::postincrement)) return true;
     if (exact.operation == "move" && exact.width_bytes == 1 &&
         operand_is(exact.source, OperandKind::postincrement) &&
         operand_is(exact.destination, OperandKind::data_register)) return true;
     if (exact.operation == "move" && exact.width_bytes == 2 &&
         operand_is(exact.source, OperandKind::postincrement) &&
         operand_is(exact.destination, OperandKind::postincrement)) return true;
+    if (exact.operation == "btst" && exact.width_bytes == 1 &&
+        operand_is(exact.source, OperandKind::immediate) &&
+        operand_is(exact.destination, OperandKind::displacement)) return true;
     if (exact.operation == "lea" && exact.width_bytes == 4 &&
         operand_is(exact.source, OperandKind::absolute_long) &&
         operand_is(exact.destination, OperandKind::address_register)) return true;

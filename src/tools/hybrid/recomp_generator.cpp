@@ -103,6 +103,12 @@ std::string helper_call(const DecodedInstruction& instruction) {
                 << unsigned(destination->register_index) << "U);";
             return bit.str();
         }
+        if (destination->kind == OperandKind::displacement) {
+            bit << "bit_test_immediate_displacement_address(api, " << source->value
+                << "U, " << unsigned(destination->register_index) << "U, "
+                << destination->displacement << ");";
+            return bit.str();
+        }
     }
     const auto& dst = operand(instruction, destination, "destination");
     std::ostringstream out;
@@ -113,9 +119,20 @@ std::string helper_call(const DecodedInstruction& instruction) {
         out << "movem_l_predecrement(api, 0x" << hex(source->value, 4) << "U);";
         return out.str();
     }
-    if (exact.operation == "clr" && exact.width_bytes == 2) {
+    if (exact.operation == "clr" && exact.width_bytes == 2 &&
+        dst.kind == OperandKind::data_register) {
         require_kind(instruction, dst, OperandKind::data_register, "CLR destination");
         out << "clear_w_data_register(api, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "clr" && exact.width_bytes == 1) {
+        require_kind(instruction, dst, OperandKind::postincrement, "CLR.B destination");
+        out << "clear_b_postincrement(api, " << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "clr" && exact.width_bytes == 2 &&
+        dst.kind == OperandKind::postincrement) {
+        out << "clear_w_postincrement(api, " << unsigned(dst.register_index) << "U);";
         return out.str();
     }
     if (exact.operation == "moveq" && source) {
@@ -130,6 +147,13 @@ std::string helper_call(const DecodedInstruction& instruction) {
         require_kind(instruction, *source, OperandKind::data_register, "MOVE.W source");
         require_kind(instruction, dst, OperandKind::data_register, "MOVE.W destination");
         out << "move_w_data_to_data(api, " << unsigned(source->register_index) << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
+    if (exact.operation == "move" && exact.width_bytes == 4 && source &&
+        source->kind == OperandKind::data_register && dst.kind == OperandKind::predecrement) {
+        out << "move_l_data_to_predecrement_address(api, "
+            << unsigned(source->register_index) << "U, "
             << unsigned(dst.register_index) << "U);";
         return out.str();
     }
@@ -237,11 +261,24 @@ std::string helper_call(const DecodedInstruction& instruction) {
             << unsigned(dst.register_index) << "U);";
         return out.str();
     }
+    if (exact.operation == "move" && exact.width_bytes == 1 && source &&
+        source->kind == OperandKind::immediate && dst.kind == OperandKind::postincrement) {
+        out << "move_b_immediate_to_postincrement(api, " << source->value << "U, "
+            << unsigned(dst.register_index) << "U);";
+        return out.str();
+    }
     if (exact.operation == "move" && source) {
         require_kind(instruction, *source, OperandKind::postincrement, "MOVE source");
         if (exact.width_bytes == 1 && dst.kind == OperandKind::data_register) {
             out << "move_b_postincrement_to_data_register(api, "
                 << unsigned(source->register_index) << "U, " << unsigned(dst.register_index) << "U);";
+            return out.str();
+        }
+        if (exact.width_bytes == 1 && source->kind == OperandKind::postincrement &&
+            dst.kind == OperandKind::postincrement) {
+            out << "move_b_postincrement_to_postincrement(api, "
+                << unsigned(source->register_index) << "U, "
+                << unsigned(dst.register_index) << "U);";
             return out.str();
         }
         if (exact.width_bytes == 2 && dst.kind == OperandKind::postincrement) {

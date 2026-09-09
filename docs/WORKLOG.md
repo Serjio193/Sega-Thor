@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.47 Safe-Memory Semantic Closure and Primitive Discovery — COMPLETE
+**Objective:** From baseline `7cf947cffee7507e6157e147049bb2b746baa3fa`, close
+only the highest-payoff M11.46 `SAFE_MEMORY_OBSERVED` interpreter rows with
+independent exact semantics and mechanical generated code. Discover only
+evidence-backed mechanical copy/clear primitives; do not broaden hardware or
+replace primitives natively.
+
+**Acceptance criteria:** Reproduce the M11.45/M11.46 baseline twice; verify the
+seven required exact forms with deterministic vectors; generate canonical
+decoder-owned bodies with shared helpers and fail-closed unsupported variants;
+pass per-instruction GPGX shadow and unchanged 600-frame native proof; close
+the remaining interpreter ledger exactly; update governance, hygiene and all
+required validation evidence; commit and push the focused result.
+
+**Actions:** Added shared generated helpers for the exact MOVE/CLR/BTST forms,
+mechanical generator branches, generated M11.47 bodies/registry and an
+independent semantic/provenance test. The predecrement long write helper uses
+the pinned GPGX-observed high-word-then-low-word 16-bit bus sequence with
+24-bit bus-visible addresses and 32-bit register wrap. Added the exhaustive
+post-promotion ledger and primitive suitability report.
+
+**Evidence:** Two unchanged baseline runs matched checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, totals
+6,488,773 / 6,199,718 / 289,055, 580 ranges, 149,059 yields and 288
+resumptions. The seven selected rows remove exactly 42,047 executions.
+Shadow completed 6,241,765 comparisons with zero divergence. Native completed
+600 frames at 6,241,765 translated and 247,008 interpreter executions across
+587 ranges, preserving the authoritative identity and zero hardware-visible
+accesses. The final ledger closes exactly at 247,008.
+
+**Validation:** Targeted M11.47 semantic tests, generator/provenance tests,
+shadow and native proof passed. Full Debug CTest passed 59/59, full Release
+CTest passed 59/59 on the serialized rerun, and GNU-equivalent MinGW CTest
+passed 59/59. The first parallel Release attempt hit a shared temporary-file
+collision between self-tests; the isolated rerun was green. `git diff --check`,
+changed/new source line-limit checks and repository hygiene passed.
+
+**Result:** `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`.
+
+**Exact next step:** Review the final diff, commit and push this focused M11.47
+result, verify CI and stop.
+
 ## 2026-09-09 — M11.46 Runtime Address Provenance and Memory-Class Resolution — COMPLETE
 **Objective:** Resume from the committed M11.45 baseline and resolve, with
 runtime evidence only, the dominant register-address `UNKNOWN_WITH_EVIDENCE`
