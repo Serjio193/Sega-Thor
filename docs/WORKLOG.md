@@ -3,6 +3,49 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+## 2026-09-09 — M11.50 Portable Mechanical Primitive Layer — COMPLETE
+**Objective:** Extract the proven M11.49 mechanical primitive semantics into
+`oasis_core` while keeping ROM-specific registry/provenance and all GPGX
+hybrid machinery developer-only. Do not add candidates, gameplay semantics or
+hardware behavior.
+
+**Acceptance criteria:** Reproduce the M11.49 native baseline twice before
+editing; classify dependencies; provide a minimal portable contract and
+continuation state; add standalone synthetic semantics and dependency-boundary
+tests; reconnect the hybrid adapter; pass the existing primitive shadow/native
+identity; update governance and preserve ROM/run-evidence hygiene.
+
+**Actions:** Added `src/core/mechanical_primitive.*` with opaque instruction
+tokens, portable register/memory/timing-boundary callbacks, ordered byte copy,
+byte/word clear, CCR/X effects, DBF low-word semantics, 32-bit wrapping and
+fail-closed continuation validation. Removed semantic ownership from the
+hybrid implementation. The hybrid layer now supplies only the four proven ROM
+contracts, canonical body/DBF encoding checks, GPGX/BasicBlock timing and
+prefetch adapter, detached snapshot, shadow comparator, registry metrics and
+reporting. Added a standalone core test and source/CMake dependency boundary.
+
+**Evidence:** Two unchanged pre-extraction native runs matched checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, totals
+6,488,773 / 6,199,381 generated / 42,384 mechanical / 247,008 interpreter,
+150,135 yields and 288 resumptions. Post-extraction shadow compared
+6,284,149 combined generated/mechanical instructions including 42,384
+mechanical instructions with zero divergence. Post-extraction native preserved
+the same identity and all frozen counts, with zero fallback, hardware access,
+divergence or starts inside translated ranges.
+
+**Validation:** Targeted Debug standalone, hybrid and dependency tests passed;
+Debug shadow/native 600-frame proofs passed. Full Debug/Release/GNU-equivalent
+CTest, source-limit, diff and hygiene checks are recorded in the M11.50 report.
+
+**Result:** `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`.
+
+**Unresolved:** The M11.49 interpreter Pareto remains unchanged at 247,008;
+`0x060BA4` remains hardware-visible blocked. No next routine was implemented.
+
+**Exact next step:** Stop; require a separate bounded milestone before the
+next abstraction inventory is implemented.
+
 ## 2026-09-09 — M11.49 Mechanical Primitive Family Closure — COMPLETE
 **Objective:** From M11.48 baseline `678534862ad16be7cc1627fe4ed5008f53c7365f`,
 determine whether the proven resumable mechanical primitive generalizes to the

@@ -1,3 +1,18 @@
+# M11.50 — Extract proven mechanical primitive layer into `oasis_core` — DONE
+
+The four M11.49 copy/clear loops now use a portable core executor and
+continuation state. `oasis_core` has no ROM candidate constants, canonical
+opcode metadata, GPGX/libretro dependency or hybrid link dependency; the
+developer-only hybrid layer retains registry/provenance, adapters, oracle and
+reporting. Standalone synthetic tests and the dependency-boundary check pass.
+The unchanged 600-frame shadow/native identity remains exact: 42,384/42,384
+mechanical shadow comparisons, zero divergence, checkpoint aggregate
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, 6,488,773
+total, 6,199,381 generated, 42,384 mechanical, 247,008 interpreter, 587
+ranges, 150,135 yields and 288 resumptions. Result:
+`PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`.
+Evidence: `reports/PORTABLE_MECHANICAL_PRIMITIVE_LAYER_M11_50.md`.
+
 # M11.49 — Mechanical primitive family closure — DONE
 
 The M11.48 metadata-driven primitive was generalized without adding production

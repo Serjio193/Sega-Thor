@@ -1,3 +1,29 @@
+# ADR-0031 — Portable mechanical primitive layer in `oasis_core`
+**Status:** Accepted for M11.50
+**Date:** 2026-09-09
+
+**Context:** M11.49 proved one generic resumable executor for four exact
+copy/clear plus DBF loops, but its implementation still lived in the
+developer-only hybrid library. The semantics were reusable; the registry,
+canonical bytes, GPGX bridge, shadow comparator and evidence were not.
+
+**Decision:** Move only the generic mechanical contract and executor into
+`oasis_core`. Use opaque instruction tokens, a portable machine interface and
+explicit continuation state. Keep ROM PCs, candidate names, canonical opcodes
+and displacement, GPGX/BasicBlock timing/prefetch adapters, shadow snapshots,
+metrics and reporting in `tools/hybrid`. Add a standalone core test and a
+repository-visible dependency-boundary check. Do not add new primitive forms,
+gameplay semantics or hardware modeling.
+
+**Consequences:** There is one implementation of copy/clear/DBF semantics and
+it is independently linkable without GPGX/libretro. The hybrid adapter remains
+responsible for hardware/bus mapping and canonical provenance. The extracted
+layer preserves the M11.49 shadow/native identity; future native routines may
+compose these operations only after separate evidence closes their contracts.
+
+**Affected files/milestones:** `src/core/mechanical_primitive.*`, hybrid
+adapter/registry, standalone core and boundary tests, CMake and M11.50 report.
+
 # ADR-0030 — Metadata-driven mechanical primitive family
 **Status:** Accepted for M11.49 developer-only hybrid tooling
 **Date:** 2026-09-09

@@ -1,22 +1,22 @@
 # Current task
 
-TASK: M11.49 Mechanical Primitive Family Closure
-STATUS: COMPLETE — `NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`
-BASELINE: `678534862ad16be7cc1627fe4ed5008f53c7365f`
-SCOPE: Generalize the developer-only resumable mechanical primitive layer and
-promote only the three exact M11.47 copy/clear loops that pass independent
-semantic, shadow, bus, timing and unchanged native gates. Preserve M11.48
-history, generated oracle/fallback, hardware boundaries and game.srm hygiene.
-RESULT: Two `MEMORY_COPY` loops and one `MEMORY_CLEAR` word loop now share the
-same metadata-driven executor with the existing byte clear. The family passed
-synthetic vectors, 42,384/42,384 shadow comparisons and zero-divergence native
-proof. Native totals are 6,488,773 total, 6,199,381 generated translated,
-42,384 mechanical, 247,008 interpreter, 587 ranges, 150,135 yields and 288
-interrupted resumptions; checkpoint/video identity and full CPU equivalence are
-preserved. No 95% gate was forced and no hardware emulation was broadened.
-EVIDENCE: `docs/reports/MECHANICAL_PRIMITIVE_FAMILY_M11_49.md` and untracked
-local `build-m1149-*` 600-frame outputs.
-NEXT ACTION: Stop. Do not implement extraction or the next milestone.
+TASK: M11.50 Extract Proven Mechanical Primitive Layer into oasis_core
+STATUS: COMPLETE — `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`
+BASELINE: `4a3f0fa8473daa5c4f1f831402b8d0a5d7667da8`
+SCOPE: Move only the proven generic copy/clear loop semantics and resumable
+continuation contract into `oasis_core`. Keep ROM registry/provenance,
+canonical opcodes, GPGX/BasicBlock adapters, oracle and reporting in tools.
+RESULT: `oasis_core` owns the portable mechanical contract, executor and
+continuation state. The standalone core target links only `oasis_core`; the
+hybrid registry supplies the four proven ROM contracts and adapter-owned
+opcode/timing validation. Synthetic core tests, 6,284,149 shadow comparisons
+with zero divergence, and the unchanged native proof preserved checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video,
+6,488,773 total / 6,199,381 generated / 42,384 mechanical / 247,008
+interpreter, 587 ranges, 150,135 yields and 288 resumptions. No new primitive,
+gameplay semantics or hardware behavior was added.
+EVIDENCE: `docs/reports/PORTABLE_MECHANICAL_PRIMITIVE_LAYER_M11_50.md`.
+NEXT ACTION: Stop. Do not implement the next abstraction layer.
 
 TASK: M11.47 Safe-Memory Semantic Closure and Primitive Discovery
 STATUS: COMPLETE — `SAFE_MEMORY_SEMANTIC_CLOSURE_PROVEN`

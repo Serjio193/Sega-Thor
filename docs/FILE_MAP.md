@@ -61,6 +61,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │   │   ├── rom.hpp            ROM byte-container API
 │   │   ├── rom_identity.cpp   Header/checksum/hash/known-revision identification
 │   │   ├── rom_identity.hpp   ROM identity models and public API
+│   │   ├── mechanical_primitive.cpp Portable proven copy/clear/DBF executor
+│   │   ├── mechanical_primitive.hpp Portable primitive contract and continuation API
 │   │   ├── runtime.cpp        Explicit deterministic frame stepping
 │   │   └── runtime.hpp        Portable controller/input/frame runtime API
 │   ├── genesis/
@@ -121,7 +123,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── generated_blocks_m1145_*.cpp Generated M11.45 semantic candidate bodies and registry fragments
 │       │   ├── generated_blocks_m1147.cpp Generated M11.47 safe-memory candidate bodies
 │       │   ├── generated_blocks_m1147_registry.cpp Generated M11.47 registry fragment
-│       │   ├── mechanical_primitive.hpp/.cpp Developer-only metadata-driven resumable primitive family layer
+│       │   ├── mechanical_primitive.hpp/.cpp Hybrid ROM registry, canonical adapter and evidence glue
 │       │   ├── runner_report.hpp/.cpp Developer-only hybrid summary detail serializer
 │       │   ├── generated_block_registry.cpp Generated registry metadata/glue
 │       │   ├── generated_blocks.hpp Generated block declarations and registry API
@@ -248,6 +250,8 @@ This document is the canonical map of repository structure. Update it whenever s
 │       └── re_mame_trace_normalize.ps1 Normalize MAME/BizHawk raw events to neutral trace
 └── tests/
     ├── check_file_limits.cmake           Enforces <=500-line rule through CTest
+    ├── check_core_boundary.cmake         Enforces core source/link dependency boundary
+    ├── mechanical_primitive_test.cpp     Standalone oasis_core primitive semantics and continuation tests
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
@@ -362,6 +366,14 @@ M11.28 adds the developer-only `src/tools/hybrid/` directory:
   version-guard and cross-process canonicalization regression.
 - `tests/hybrid_address_provenance_test.cpp`: address-class and observer
   aggregation regression for the developer-only runtime provenance path.
+- `src/core/mechanical_primitive.*`: M11.50 portable primitive contract,
+  executor and continuation state; contains no ROM candidate/opcode metadata.
+- `tests/hybrid_mechanical_primitive_test.cpp`: hybrid registry metadata and
+  portable-contract conversion regression.
+- `tests/check_core_boundary.cmake`: source scan for hybrid/GPGX/libretro and
+  candidate-specific constants, paired with the CMake no-link assertion.
+- `docs/reports/PORTABLE_MECHANICAL_PRIMITIVE_LAYER_M11_50.md`: exact before /
+  after ownership, dependency audit and extraction proof.
 - `docs/reports/BASIC_BLOCK_RECOMPILATION_TIMING_M11_32.md`: M11.32 identity,
   shadow, native override and state/video equivalence evidence.
 - `docs/reports/DEMAND_DRIVEN_BLOCK_PROMOTION_M11_35.md`: bounded discovery,

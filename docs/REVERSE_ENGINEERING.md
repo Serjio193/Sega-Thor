@@ -1,6 +1,29 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.50 — Portable mechanical primitive layer extraction
+STATUS: `PORTABLE_MECHANICAL_PRIMITIVE_LAYER_PROVEN`.
+
+M11.50 changes ownership only; it does not discover or promote a new ROM
+routine. The four M11.49 contracts remain the exact evidence-backed family:
+two byte copies and byte/word clears followed by DBF. `oasis_core` now stores
+only generic operation/width/register roles, opaque body/loop/continuation
+tokens, a portable machine interface and explicit continuation state. The
+core executor preserves the previously proven read-before-write ordering,
+postincrement and 32-bit wrap, DBF low-word decrement with upper-word
+preservation, CCR N/Z/V/C with X preservation, instruction-boundary yields,
+resume validation and odd-word fail-closed behavior.
+
+ROM PCs, canonical opcode/displacement validation, GPGX/BasicBlock timing and
+prefetch, detached shadow snapshots, hardware-address accounting, registry
+provenance and report metrics remain in `tools/hybrid`. A source scan rejects
+hybrid/GPGX/libretro names and all four ROM PCs/opcode encodings from
+`src/core`; CMake keeps `oasis_core` free of link dependencies. The standalone
+core test uses synthetic tokens unrelated to Beyond Oasis addresses.
+
+Full ownership and validation evidence is in
+`reports/PORTABLE_MECHANICAL_PRIMITIVE_LAYER_M11_50.md`.
+
 # M11.49 — Mechanical primitive family closure
 STATUS: `NATIVE_MECHANICAL_PRIMITIVE_FAMILY_PROVEN`.
 

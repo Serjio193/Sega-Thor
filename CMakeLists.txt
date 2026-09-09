@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(oasis_core
     src/core/rom.cpp
     src/core/rom_identity.cpp
+    src/core/mechanical_primitive.cpp
     src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
@@ -28,6 +29,10 @@ add_library(oasis_core
 )
 
 target_include_directories(oasis_core PUBLIC src)
+get_target_property(oasis_core_links oasis_core LINK_LIBRARIES)
+if(oasis_core_links)
+    message(FATAL_ERROR "oasis_core must not link to developer-only or platform targets: ${oasis_core_links}")
+endif()
 
 add_executable(oasis src/main.cpp)
 add_library(oasis_platform src/platform/window.cpp)
@@ -188,6 +193,16 @@ endif()
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
 add_test(NAME oasis_smoke COMMAND oasis_smoke)
+
+add_executable(oasis_mechanical_primitive_test tests/mechanical_primitive_test.cpp)
+target_link_libraries(oasis_mechanical_primitive_test PRIVATE oasis_core)
+add_test(NAME oasis_mechanical_primitive COMMAND oasis_mechanical_primitive_test)
+add_test(
+    NAME oasis_core_dependency_boundary
+    COMMAND ${CMAKE_COMMAND}
+        -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src/core
+        -P ${CMAKE_SOURCE_DIR}/tests/check_core_boundary.cmake
+)
 
 add_executable(oasis_rom_identity_test tests/rom_identity_test.cpp)
 target_link_libraries(oasis_rom_identity_test PRIVATE oasis_core)
@@ -376,6 +391,7 @@ target_link_libraries(oasis_re_natural_reference PRIVATE oasis_core)
 set(oasis_test_targets
     oasis_re_assemble_test
     oasis_smoke
+    oasis_mechanical_primitive_test
     oasis_rom_identity_test
     oasis_graphics_decompress_test
     oasis_genesis_graphics_test
@@ -426,6 +442,8 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_assemble
         oasis_re_import_gpgx_coverage_self_test
         oasis_smoke
+        oasis_mechanical_primitive
+        oasis_core_dependency_boundary
         oasis_rom_identity
         oasis_graphics_decompress
         oasis_genesis_graphics

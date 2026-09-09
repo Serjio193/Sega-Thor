@@ -36,6 +36,13 @@ Responsibilities:
 - endian-aware reads;
 - diagnostics.
 
+M11.50 also places the proven mechanical primitive contract in `core`. Its
+executor knows only generic register roles, byte/word memory effects, CCR/X
+rules, DBF low-word semantics, 32-bit address arithmetic and resumable
+instruction-boundary results. Instruction tokens are opaque values supplied by
+an adapter; core contains no ROM addresses, canonical opcodes, GPGX/libretro
+types or checkpoint layout.
+
 ### `genesis`
 Minimal compatibility layer for Mega Drive concepts actually used by the game.
 
@@ -123,16 +130,24 @@ oracle, which remains responsible for the full decoded IR/prefetch comparison
 and remains the fallback path. This layer is not linked into production.
 
 M11.49 closes the mechanical family using the same developer-only boundary.
-`MechanicalLoopContract` carries canonical body/DBF opcodes, register roles,
-width and continuation metadata; `execute_mechanical_loop` contains only the
-generic resumable body/DBF semantics. The registry owns candidate metadata,
-dispatch state and per-candidate evidence, while native and detached shadow
-adapters remain separate. Copy remains ordered read-before-write and clear
+The hybrid registry carries canonical body/DBF opcodes, ROM PCs, register roles,
+width and continuation metadata; its executor previously contained the generic
+resumable body/DBF semantics. Copy remains ordered read-before-write and clear
 uses the exact width-specific bus operation. Unsupported operation, width,
 displacement and odd-word alignment forms fail closed. Generated M11.47 bodies
-remain generated oracle/fallback code and are not merged into handwritten
-mechanical glue. No GPGX/libretro or serialized-state dependency crosses into
-the primitive API, and the family layer remains absent from `oasis_core`.
+remain generated oracle/fallback code.
+
+M11.50 extracts that generic semantic ownership into
+`src/core/mechanical_primitive.*`. `oasis_core` owns the portable
+`MechanicalMachine`, `MechanicalLoopContract`, `PrimitiveContinuation` and
+`PrimitiveExit` contracts plus the single executor implementation. The hybrid
+layer owns only the four ROM registry entries, canonical opcode/displacement
+validation, GPGX/BasicBlock timing and prefetch adapters, detached shadow
+snapshot, comparison, metrics and reporting. The adapter maps hybrid boundary
+reasons into the core enum and maps core instruction steps back to the
+canonical ROM encodings. A standalone core test links without hybrid,
+GPGX or libretro, and CMake plus a source scan enforce the reverse-dependency
+boundary.
 
 M11.46 adds `address_provenance` as a separate developer-only observer around
 the same GPGX hook and block-registry path. It records runtime fallback PC

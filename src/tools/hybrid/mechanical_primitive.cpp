@@ -6,9 +6,11 @@
 
 namespace oasis::hybrid {
 namespace {
+using core::DbfResult;
+using core::PrimitiveBoundaryReason;
+using core::PrimitiveStep;
+
 constexpr unsigned kPc = 16U;
-constexpr unsigned kSr = 17U;
-constexpr unsigned kCcrMask = 0x0FU;
 constexpr unsigned kInterruptEvent = 1U << 15;
 constexpr unsigned kPostEvent = 1U << 14;
 
@@ -16,91 +18,76 @@ void require(bool condition, const char* message) {
     if (!condition) throw std::runtime_error(message);
 }
 
-void logical_flags(MechanicalMachine& machine, unsigned value, unsigned width) {
-    const auto mask = width == 1 ? 0xFFU : width == 2 ? 0xFFFFU : 0U;
-    const auto sign = width == 1 ? 0x80U : width == 2 ? 0x8000U : 0U;
-    require(mask != 0U, "unsupported primitive flag width");
-    auto sr = machine.reg(kSr);
-    sr = (sr & ~kCcrMask) | (((value & mask) == 0U) ? 0x04U : 0U) |
-         (((value & sign) != 0U) ? 0x08U : 0U);
-    machine.set_reg(kSr, sr);
-}
-
-void validate(const MechanicalLoopContract& contract) {
-    require(contract.name != nullptr && contract.name[0] != '\0', "primitive contract name missing");
-    require(contract.body_pc != contract.loop_pc && contract.body_pc != contract.continuation_pc &&
-            contract.loop_pc != contract.continuation_pc, "primitive contract PC collision");
-    require(contract.body_opcode != 0U && contract.dbf_opcode != 0U, "primitive contract opcode missing");
-    require(contract.dbf_displacement == 0xFFFCU, "unsupported primitive DBF displacement");
-    require(contract.counter_register < 8U, "primitive counter is not a data register");
-    if (contract.operation == MechanicalOperation::MEMORY_CLEAR) {
-        require(contract.address_register < 8U && contract.width <= 2U && contract.width != 0U &&
-                contract.source_register == 0U && contract.destination_register == 0U,
-                "unsupported memory-clear form");
-        require(contract.width == 1U ? contract.body_opcode == 0x421DU :
-                contract.body_opcode == 0x4258U, "memory-clear opcode mismatch");
-    } else if (contract.operation == MechanicalOperation::MEMORY_COPY) {
-        require(contract.source_register < 8U && contract.destination_register < 8U && contract.width == 1U,
-                "unsupported memory-copy form");
-        require(contract.body_opcode == 0x12DAU, "memory-copy opcode mismatch");
-    } else {
-        throw std::runtime_error("unsupported mechanical operation");
-    }
-}
-
-int dispatch_result(BlockExitReason reason) {
+int dispatch_result(core::PrimitiveExitReason reason) {
     switch (reason) {
-    case BlockExitReason::CONTINUE_BLOCK:
-    case BlockExitReason::NORMAL_EXIT: return 1;
-    case BlockExitReason::EVENT_BOUNDARY: return 2;
-    case BlockExitReason::INTERRUPT_BOUNDARY: return 3;
-    case BlockExitReason::TRACE_BOUNDARY: return 4;
-    case BlockExitReason::FALLBACK: return 0;
+    case core::PrimitiveExitReason::NORMAL_EXIT: return 1;
+    case core::PrimitiveExitReason::EVENT_BOUNDARY: return 2;
+    case core::PrimitiveExitReason::INTERRUPT_BOUNDARY: return 3;
+    case core::PrimitiveExitReason::TRACE_BOUNDARY: return 4;
+    case core::PrimitiveExitReason::FALLBACK: return 0;
     }
     return 0;
 }
 
-class NativeMachine final : public MechanicalMachine {
+PrimitiveBoundaryReason portable_boundary(BlockExitReason reason) {
+    switch (reason) {
+    case BlockExitReason::CONTINUE_BLOCK: return PrimitiveBoundaryReason::CONTINUE_BLOCK;
+    case BlockExitReason::EVENT_BOUNDARY: return PrimitiveBoundaryReason::EVENT_BOUNDARY;
+    case BlockExitReason::INTERRUPT_BOUNDARY: return PrimitiveBoundaryReason::INTERRUPT_BOUNDARY;
+    case BlockExitReason::TRACE_BOUNDARY: return PrimitiveBoundaryReason::TRACE_BOUNDARY;
+    case BlockExitReason::FALLBACK: return PrimitiveBoundaryReason::FALLBACK;
+    }
+    return PrimitiveBoundaryReason::FALLBACK;
+}
+
+class NativeMachine final : public core::MechanicalMachine {
 public:
-    explicit NativeMachine(BasicBlockApi& api) : api_(api) {}
-    unsigned reg(unsigned index) const override { return api_.reg(index); }
-    void set_reg(unsigned index, unsigned value) override { api_.set_reg(index, value); }
-    unsigned read(unsigned address, unsigned width) override {
+    NativeMachine(BasicBlockApi& api, const MechanicalLoopContract& contract)
+        : api_(api), contract_(contract) {}
+    std::uint32_t reg(unsigned index) const override { return api_.reg(index); }
+    void set_reg(unsigned index, std::uint32_t value) override { api_.set_reg(index, value); }
+    std::uint32_t read(std::uint32_t address, unsigned width) override {
         require(api_.read != nullptr, "primitive read bridge unavailable");
         return api_.read(address, static_cast<int>(width));
     }
-    void write(unsigned address, unsigned width, unsigned value) override {
+    void write(std::uint32_t address, unsigned width, std::uint32_t value) override {
         require(api_.write != nullptr, "primitive write bridge unavailable");
         api_.write(address, static_cast<int>(width), value);
     }
-    void begin(PrimitiveStep, unsigned expected_opcode) override {
+    void begin(PrimitiveStep step) override {
         require(api_.fetch16 && api_.begin_instruction, "primitive timing bridge unavailable");
+        const auto expected_opcode = step == PrimitiveStep::BODY ? contract_.body_opcode : contract_.dbf_opcode;
         if (api_.fetch16() != expected_opcode) throw std::runtime_error("primitive canonical opcode mismatch");
         api_.begin_instruction(expected_opcode);
     }
-    void fetch_dbf_displacement(unsigned expected) override {
-        if (api_.fetch16() != expected) throw std::runtime_error("primitive canonical DBF displacement mismatch");
+    void fetch_dbf_displacement() override {
+        if (api_.fetch16() != contract_.dbf_displacement)
+            throw std::runtime_error("primitive canonical DBF displacement mismatch");
     }
-    void finish(PrimitiveStep step, DbfResult result, unsigned opcode) override {
+    void finish(PrimitiveStep step, DbfResult result) override {
         require(api_.finish_instruction, "primitive timing bridge unavailable");
+        const auto opcode = step == PrimitiveStep::BODY ? contract_.body_opcode : contract_.dbf_opcode;
         api_.finish_instruction(opcode);
         if (step == PrimitiveStep::DBF && api_.add_cycles)
             api_.add_cycles(result == DbfResult::TAKEN ? -14 : 14);
     }
-    BlockExitReason boundary() const override {
-        return api_.boundary_reason ? api_.boundary_reason() : BlockExitReason::CONTINUE_BLOCK;
+    PrimitiveBoundaryReason boundary() const override {
+        return portable_boundary(api_.boundary_reason ? api_.boundary_reason() :
+                                  BlockExitReason::CONTINUE_BLOCK);
     }
 private:
     BasicBlockApi& api_;
+    const MechanicalLoopContract& contract_;
 };
 
-class SimulationMachine final : public MechanicalMachine {
+class SimulationMachine final : public core::MechanicalMachine {
 public:
-    SimulationMachine(BasicBlockApi& source, const MechanicalPrimitiveRegistry::Snapshot& initial)
-        : source_(source), snapshot_(initial) {}
-    unsigned reg(unsigned index) const override { return snapshot_.registers[index]; }
-    void set_reg(unsigned index, unsigned value) override { snapshot_.registers[index] = value; }
-    unsigned read(unsigned address, unsigned width) override {
+    SimulationMachine(BasicBlockApi& source, const MechanicalLoopContract& contract,
+                      const MechanicalPrimitiveRegistry::Snapshot& initial)
+        : source_(source), contract_(contract), snapshot_(initial) {}
+    std::uint32_t reg(unsigned index) const override { return snapshot_.registers[index]; }
+    void set_reg(unsigned index, std::uint32_t value) override { snapshot_.registers[index] = value; }
+    std::uint32_t read(std::uint32_t address, unsigned width) override {
         reads_.push_back({address & 0xFFFFFFU, static_cast<int>(width)});
         unsigned value = 0;
         for (unsigned offset = 0; offset < width; ++offset) {
@@ -110,10 +97,11 @@ public:
         }
         return value;
     }
-    void write(unsigned address, unsigned width, unsigned value) override {
+    void write(std::uint32_t address, unsigned width, std::uint32_t value) override {
         writes_.push_back({address & 0xFFFFFFU, static_cast<int>(width), value});
     }
-    void begin(PrimitiveStep, unsigned expected_opcode) override {
+    void begin(PrimitiveStep step) override {
+        const auto expected_opcode = step == PrimitiveStep::BODY ? contract_.body_opcode : contract_.dbf_opcode;
         if (fetch16() != expected_opcode) throw std::runtime_error("simulation canonical opcode mismatch");
         const auto period = source_.refresh_period ? source_.refresh_period() : 0U;
         const auto penalty = source_.refresh_penalty ? source_.refresh_penalty() : 0U;
@@ -123,17 +111,19 @@ public:
         }
         snapshot_.ir = expected_opcode;
     }
-    void fetch_dbf_displacement(unsigned expected) override {
-        if (fetch16() != expected) throw std::runtime_error("simulation canonical DBF displacement mismatch");
+    void fetch_dbf_displacement() override {
+        if (fetch16() != contract_.dbf_displacement)
+            throw std::runtime_error("simulation canonical DBF displacement mismatch");
     }
-    void finish(PrimitiveStep step, DbfResult result, unsigned opcode) override {
+    void finish(PrimitiveStep step, DbfResult result) override {
+        const auto opcode = step == PrimitiveStep::BODY ? contract_.body_opcode : contract_.dbf_opcode;
         snapshot_.ir = opcode;
         snapshot_.cycles += source_.instruction_cycles ? source_.instruction_cycles(opcode) : 0U;
         if (step == PrimitiveStep::DBF)
             snapshot_.cycles = static_cast<unsigned>(static_cast<std::int64_t>(snapshot_.cycles) +
                 (result == DbfResult::TAKEN ? -14 : 14));
     }
-    BlockExitReason boundary() const override { return BlockExitReason::EVENT_BOUNDARY; }
+    PrimitiveBoundaryReason boundary() const override { return PrimitiveBoundaryReason::EVENT_BOUNDARY; }
     const auto& snapshot() const { return snapshot_; }
     const auto& reads() const { return reads_; }
     const auto& writes() const { return writes_; }
@@ -157,78 +147,12 @@ private:
         return value;
     }
     BasicBlockApi& source_;
+    const MechanicalLoopContract& contract_;
     MechanicalPrimitiveRegistry::Snapshot snapshot_{};
     std::vector<MechanicalPrimitiveRegistry::Read> reads_;
     std::vector<MechanicalPrimitiveRegistry::Write> writes_;
 };
 } // namespace
-
-PrimitiveExit execute_mechanical_loop(MechanicalMachine& machine,
-                                      const MechanicalLoopContract& contract, unsigned entry_pc) {
-    validate(contract);
-    require(entry_pc == contract.body_pc || entry_pc == contract.loop_pc,
-            "primitive entry outside registered loop");
-    PrimitiveExit exit{entry_pc, BlockExitReason::NORMAL_EXIT, 0, 0, 0};
-    auto pc = entry_pc;
-    for (;;) {
-        if (pc == contract.body_pc) {
-            machine.begin(PrimitiveStep::BODY, contract.body_opcode);
-            if (contract.operation == MechanicalOperation::MEMORY_CLEAR) {
-                const auto address = machine.reg(8U + contract.address_register);
-                require(contract.width != 2U || (address & 1U) == 0U,
-                        "odd word address outside primitive contract");
-                machine.write(address, contract.width, 0U);
-                machine.set_reg(8U + contract.address_register, address + contract.width);
-                logical_flags(machine, 0U, contract.width);
-            } else {
-                const auto source = 8U + contract.source_register;
-                const auto destination = 8U + contract.destination_register;
-                const auto value = machine.read(machine.reg(source), contract.width);
-                machine.set_reg(source, machine.reg(source) + contract.width);
-                machine.write(machine.reg(destination), contract.width, value);
-                machine.set_reg(destination, machine.reg(destination) + contract.width);
-                logical_flags(machine, value, contract.width);
-            }
-            machine.set_reg(kPc, contract.loop_pc);
-            machine.finish(PrimitiveStep::BODY, DbfResult::FALLTHROUGH, contract.body_opcode);
-            ++exit.guest_instructions;
-            ++exit.iterations;
-            const auto reason = machine.boundary();
-            if (reason != BlockExitReason::CONTINUE_BLOCK) {
-                ++exit.boundary_yields;
-                return {contract.loop_pc, reason, exit.guest_instructions, exit.iterations,
-                        exit.boundary_yields};
-            }
-            pc = contract.loop_pc;
-        }
-        machine.begin(PrimitiveStep::DBF, contract.dbf_opcode);
-        const auto value = machine.reg(contract.counter_register);
-        const auto result = (value - 1U) & 0xFFFFU;
-        machine.set_reg(contract.counter_register, (value & 0xFFFF0000U) | result);
-        const auto taken = result != 0xFFFFU;
-        if (taken) machine.fetch_dbf_displacement(contract.dbf_displacement);
-        machine.set_reg(kPc, taken ? contract.body_pc : contract.continuation_pc);
-        machine.finish(PrimitiveStep::DBF, taken ? DbfResult::TAKEN : DbfResult::FALLTHROUGH,
-                       contract.dbf_opcode);
-        ++exit.guest_instructions;
-        const auto reason = machine.boundary();
-        if (reason != BlockExitReason::CONTINUE_BLOCK) {
-            ++exit.boundary_yields;
-            return {machine.reg(kPc), reason, exit.guest_instructions, exit.iterations,
-                    exit.boundary_yields};
-        }
-        if (!taken) return {contract.continuation_pc, BlockExitReason::NORMAL_EXIT,
-                            exit.guest_instructions, exit.iterations, exit.boundary_yields};
-        pc = contract.body_pc;
-    }
-}
-
-PrimitiveExit execute_memory_clear(MechanicalMachine& machine,
-                                   const MemoryClearLoopContract& contract, unsigned entry_pc) {
-    require(contract.operation == MechanicalOperation::MEMORY_CLEAR,
-            "memory-clear executor received another operation");
-    return execute_mechanical_loop(machine, contract, entry_pc);
-}
 
 MechanicalPrimitiveRegistry::MechanicalPrimitiveRegistry(BasicBlockApi api, BasicBlockMode mode,
                                                          std::ostream& log)
@@ -298,12 +222,13 @@ void MechanicalPrimitiveRegistry::start_shadow(unsigned pc) {
     }
     expected_ = capture();
     reads_.clear(); writes_.clear();
-    SimulationMachine simulation(api_, expected_);
-    const auto result = execute_mechanical_loop(simulation, *contract, pc);
+    SimulationMachine simulation(api_, *contract, expected_);
+    const auto result = core::execute_mechanical_loop(
+        simulation, contract->portable(), pc, continuation_);
     expected_ = simulation.snapshot();
     expected_reads_.assign(simulation.reads().begin(), simulation.reads().end());
     expected_writes_.assign(simulation.writes().begin(), simulation.writes().end());
-    expected_pc_ = result.next_pc;
+    expected_pc_ = result.next_token;
     pending_shadow_step_ = true;
     active_ = true;
     metrics_.iterations += result.iterations;
@@ -332,7 +257,7 @@ void MechanicalPrimitiveRegistry::compare_shadow() {
     pending_shadow_step_ = false;
     const auto yielded = api_.boundary_reason && api_.boundary_reason() != BlockExitReason::CONTINUE_BLOCK;
     if (yielded && find(expected_pc_) == active_contract_) add_metric(&MechanicalPrimitiveMetrics::mid_operation_yields);
-    active_ = find(expected_pc_) == active_contract_;
+    active_ = continuation_.active && find(expected_pc_) == active_contract_;
     if (!active_) active_contract_ = nullptr;
 }
 void MechanicalPrimitiveRegistry::record_read(int width, unsigned address) {
@@ -374,18 +299,20 @@ int MechanicalPrimitiveRegistry::dispatch(unsigned pc) noexcept {
         }
         active_ = true;
         native_step_active_ = true;
-        NativeMachine machine(api_);
-        const auto result = execute_mechanical_loop(machine, *contract, pc);
+        NativeMachine machine(api_, *contract);
+        const auto result = core::execute_mechanical_loop(
+            machine, contract->portable(), pc, continuation_);
         native_step_active_ = false;
         add_metric(&MechanicalPrimitiveMetrics::dispatches);
         metrics_.iterations += result.iterations;
         current_metrics().iterations += result.iterations;
         metrics_.boundary_yields += result.boundary_yields;
         current_metrics().boundary_yields += result.boundary_yields;
-        expected_pc_ = result.next_pc;
-        if (result.reason != BlockExitReason::NORMAL_EXIT && find(result.next_pc) == active_contract_)
+        expected_pc_ = result.next_token;
+        if (result.reason != core::PrimitiveExitReason::NORMAL_EXIT &&
+            find(result.next_token) == active_contract_)
             add_metric(&MechanicalPrimitiveMetrics::mid_operation_yields);
-        active_ = find(result.next_pc) == active_contract_;
+        active_ = continuation_.active && find(result.next_token) == active_contract_;
         if (!active_) active_contract_ = nullptr;
         log_ << "{\"primitive\":\"" << contract->name << "\",\"entry\":\"0x" << std::hex << pc
              << "\",\"iterations\":" << std::dec << result.iterations

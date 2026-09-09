@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/mechanical_primitive.hpp"
 #include "tools/hybrid/basic_block.hpp"
 
 #include <cstdint>
@@ -10,22 +11,7 @@
 
 namespace oasis::hybrid {
 
-enum class PrimitiveStep { BODY, DBF };
-enum class DbfResult { TAKEN, FALLTHROUGH };
-enum class MechanicalOperation { MEMORY_CLEAR, MEMORY_COPY };
-
-class MechanicalMachine {
-public:
-    virtual ~MechanicalMachine() = default;
-    virtual unsigned reg(unsigned index) const = 0;
-    virtual void set_reg(unsigned index, unsigned value) = 0;
-    virtual unsigned read(unsigned address, unsigned width) = 0;
-    virtual void write(unsigned address, unsigned width, unsigned value) = 0;
-    virtual void begin(PrimitiveStep step, unsigned expected_opcode) = 0;
-    virtual void fetch_dbf_displacement(unsigned expected_displacement) = 0;
-    virtual void finish(PrimitiveStep step, DbfResult result, unsigned opcode) = 0;
-    virtual BlockExitReason boundary() const = 0;
-};
+using MechanicalOperation = core::MechanicalOperation;
 
 struct MechanicalLoopContract {
     const char* name{};
@@ -41,24 +27,14 @@ struct MechanicalLoopContract {
     unsigned source_register{};
     unsigned destination_register{};
     unsigned width{};
+
+    [[nodiscard]] core::MechanicalLoopContract portable() const noexcept {
+        return {operation, body_pc, loop_pc, continuation_pc, counter_register,
+                address_register, source_register, destination_register, width};
+    }
 };
 
 using MemoryClearLoopContract = MechanicalLoopContract;
-
-struct PrimitiveExit {
-    unsigned next_pc{};
-    BlockExitReason reason{BlockExitReason::NORMAL_EXIT};
-    unsigned guest_instructions{};
-    unsigned iterations{};
-    unsigned boundary_yields{};
-};
-
-PrimitiveExit execute_mechanical_loop(MechanicalMachine& machine,
-                                      const MechanicalLoopContract& contract,
-                                      unsigned entry_pc);
-PrimitiveExit execute_memory_clear(MechanicalMachine& machine,
-                                   const MemoryClearLoopContract& contract,
-                                   unsigned entry_pc);
 
 struct MechanicalPrimitiveMetrics {
     unsigned invocations{};
@@ -145,6 +121,7 @@ private:
     std::vector<Read> reads_;
     std::vector<Write> writes_;
     std::string error_;
+    core::PrimitiveContinuation continuation_{};
 };
 
 } // namespace oasis::hybrid
