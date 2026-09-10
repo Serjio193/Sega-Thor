@@ -24,6 +24,19 @@ M11.62 adds `src/tools/hybrid/callee_61934_observer.hpp/.cpp` and runtime
 wiring for the bounded 0x061934 natural callee contract. The deterministic
 regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
+# M12-AUTO6 adds the developer-only fixed-stride table promoter
+`src/tools/re_m12_fixed_stride_table_promote.py` and its deterministic
+regression `tests/re_m12_fixed_stride_table_promote_test.py`. It records only
+the bounded 50-record table `[0x5D046,0x5D686)` selected by four exact 68000
+consumers; generated transaction output remains ignored and no C++ migration
+or ROM asset is tracked.
+
+M12-AUTO7 adds the developer-only direct-graphics promoter
+`src/tools/re_m12_direct_graphics_promote.py` and its deterministic regression
+`tests/re_m12_direct_graphics_promote_test.py`. It records seven exact
+decoder-consumed streams selected by direct `0x3820` consumers and sequential
+`A0` continuation; generated transaction output remains ignored.
+
 # File Map
 
 M12-AUTO5 adds the developer-only exact lookup-table promoter

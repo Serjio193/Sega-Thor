@@ -1,5 +1,27 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO7 direct-graphics boundary
+
+The M12-AUTO7 transaction promotes 774,132 bytes (24.608993530%) of the
+canonical ROM, preserving the exact ROM hashes. Seven non-overlapping streams
+totaling 40,065 bytes are closed by direct `0x3820` consumers and sequential
+decoder-advanced `A0`: `[0x150000,0x1503D3)`, four streams spanning
+`[0x152340,0x15335A)`, and two streams spanning `[0x180C56,0x1894EA)`.
+The fifth adjacent call after the first chain is decoder-rejected and remains
+UNKNOWN. The threshold still requires 2,057,024 additional bytes. No M13 or
+C++ migration is authorized.
+
+## M12-AUTO6 fixed-stride-table boundary
+
+The M12-AUTO6 transaction promotes 734,067 bytes (23.335361481%) of the
+canonical ROM, preserving the exact ROM hashes. The new structured-data edge
+is `[0x5D046,0x5D686)`: 50 records of 32 bytes selected by exact consumers at
+`0x00D72C`, `0x010086`, `0x0100AA`, and `0x039100`. Each consumer uses the same
+literal base, `index << 5`, and an eight-longword copy. The end is the start of
+the independently confirmed `0x0EEE` word table. No semantic field names or
+adjacent UNKNOWN spans are included. The threshold still requires 2,097,089
+additional bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO5 exact lookup-table boundary
 
 The M12-AUTO5 transaction promotes 732,467 bytes (23.284498851%) of the

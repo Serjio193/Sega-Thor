@@ -1,9 +1,14 @@
-# M12-AUTO5 lookup-table provenance checkpoint
+# M12-AUTO7 direct-graphics provenance checkpoint
 
-The current local M12 transaction reaches 732,467 bytes (23.284498851%) of
+The current local M12 transaction reaches 774,132 bytes (24.608993530%) of
 source-owned ROM while preserving the canonical ROM SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
-consumer evidence now also includes the 64-entry word lookup table
+consumer evidence now also includes seven direct graphics streams totaling
+40,065 bytes: `[0x150000,0x1503D3)`, `[0x152340,0x15335A)`, and
+`[0x180C56,0x1894EA)`, selected by exact `0x3820` consumers and sequential
+decoder-advanced `A0` continuation. The bounded 50-record, 32-byte-stride
+table `[0x5D046,0x5D686)` selected by consumers at `0x00D72C`, `0x010086`,
+`0x0100AA`, and `0x039100` remains included. The following 64-entry word lookup table
 `[0x5D686,0x5D706)` and 512-byte indexed lookup table
 `[0x5D706,0x5D906)`, with direct consumers at `0x00302E`, `0x010684`,
 `0x01108C`, `0x0161FA`, and `0x030200`. The nested table at `0x5D918`, its exact
@@ -28,6 +33,26 @@ table `[0x5D686,0x5D706)` is exactly 64 `0x0EEE` words and is read by
 `[0x5D706,0x5D906)` is exactly 512 bytes; consumers index it after an explicit
 `ANDI.W #$1FE` at `0x030200` and equivalent doubled-angle accesses at
 `0x010704`, `0x0110E6`, and `0x01626A`. No bytes after `0x5D906` are included.
+
+# M12-AUTO7 direct-graphics boundary
+
+The exact transaction is
+`build/m12-auto7-direct-graphics-transaction-b/materialized/manifest.json`.
+The direct consumers at `0x003278`, `0x004E8`, `0x004F2`, `0x004FC`, `0x0050A`,
+`0x003356`, and `0x00335C` select or continue the seven listed streams. The
+local decoder reported source lengths 979, 2,145, 182, 1,700, 95, 73, and
+34,891 bytes respectively. The adjacent fifth call after the `0x004E8..0x0050A`
+chain was decoder-rejected and remains UNKNOWN.
+
+# M12-AUTO6 fixed-stride-table boundary
+
+The exact transaction is
+`build/m12-auto6-fixed-stride-transaction-a/materialized/manifest.json`. The
+range `[0x5D046,0x5D686)` is exactly 50 records of 32 bytes. Consumers at
+`0x00D72C`, `0x010086`, `0x0100AA`, and `0x039100` all use the literal ROM base
+`0x5D046`, select with `index << 5`, and copy eight longwords. The upper
+boundary is the start of the independently confirmed `0x0EEE` word table;
+no semantic field names or neighboring UNKNOWN bytes are asserted.
 
 # M12-AUTO4 nested level-table boundary
 

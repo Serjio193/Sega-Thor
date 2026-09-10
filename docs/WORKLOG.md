@@ -1,3 +1,72 @@
+# 2026-09-11 — M12-AUTO7 direct graphics provenance — <90% / BLOCKED
+
+**TASK:** Continue from the published M12-AUTO6 checkpoint toward a >=90%
+SOURCE-OWNED ROM MAP, preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Promote only exact direct-consumer streams with
+decoder-verified source boundaries; preserve zero-gap, zero-overlap full-ROM
+materialization and canonical hashes; add helper regression coverage and
+current M12 documentation; leave rejected or adjacent ambiguous data UNKNOWN.
+
+**RESULT:** M12-AUTO7 promotes seven non-overlapping direct graphics streams,
+totaling 40,065 bytes: `[0x150000,0x1503D3)`, four sequential streams spanning
+`[0x152340,0x15335A)`, and two sequential streams spanning
+`[0x180C56,0x1894EA)`. The map reaches 774,132 / 3,145,728 bytes
+(`24.608993530%`); 2,057,024 bytes remain to the integer 90% threshold. The
+fifth adjacent call after the first chain was decoder-rejected and remains
+UNKNOWN. No C++ migration, ROM, BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** AUTO7 full materialization is 3,145,728 bytes with CRC32
+`C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The direct-consumer byte audit, seven decoder source-length
+checks, full vasm round-trip, and AUTO7 helper regression pass. Fresh Debug and
+Release MinGW builds plus full CTest are `88/88` in both configurations. The
+GNU-equivalent Release build/link passed and its 17-test focused suite passed,
+including the line-limit scan. The independent AUTO7 manifest/hash audit,
+Python compilation, source-size check, and `git diff --check` passed; generated
+transactions remain local ignored build evidence.
+
+**STATUS:** The >=90% gate remains unmet; unresolved mixed code/data/resource
+spans remain conservative blobs. Continue M12 from the next independently
+closed provenance edge.
+
+# 2026-09-11 — M12-AUTO6 fixed-stride table provenance — <90% / BLOCKED
+
+**TASK:** Continue toward a >=90% SOURCE-OWNED ROM MAP from the published
+M12-AUTO5 checkpoint, preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Promote only a bounded, independently evidenced ROM
+range; prove its exact consumer/stride/boundary contract; preserve zero-gap,
+zero-overlap full-ROM materialization and canonical hashes; add helper
+regression coverage and current M12 documentation; leave neighboring ambiguous
+spans UNKNOWN.
+
+**RESULT:** M12-AUTO6 promotes only `[0x5D046,0x5D686)`, exactly 50 records of
+32 bytes, adding 1,600 source-owned bytes. The map reaches 734,067 / 3,145,728
+bytes (`23.335361481%`); 2,097,089 bytes remain to the integer 90% threshold.
+The four exact consumers are `0x00D72C`, `0x010086`, `0x0100AA`, and `0x039100`.
+The following `0x0EEE` table is used as the independent upper boundary; no
+semantic fields or adjacent UNKNOWN spans were promoted. No C++ migration,
+ROM, BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** AUTO6 full materialization is 3,145,728 bytes with CRC32
+`C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** Fixed-stride helper regression, Python compile checks, exact
+consumer/fingerprint audit, full vasm round-trip, and `git diff --check` pass.
+The generated transaction is local ignored build evidence at
+`build/m12-auto6-fixed-stride-transaction-a`; Debug/Release/GNU-equivalent
+builds and full CTest remain required before publication.
+
+**STATUS:** The >=90% gate remains unmet; unresolved mixed code/data/resource
+spans remain conservative blobs. Continue M12 from the next independently
+closed provenance edge; do not redefine the goal around this checkpoint.
+
 # 2026-09-10 — M12-AUTO exact islands and resource map — COMPLETE / GLOBAL BLOCKER
 
 **TASK:** Continue autonomously from baseline

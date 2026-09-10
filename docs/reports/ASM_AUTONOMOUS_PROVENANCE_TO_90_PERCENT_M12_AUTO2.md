@@ -1,6 +1,6 @@
-# M12-AUTO5 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO7 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO5_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
+Status: `M12_AUTO7_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -15,8 +15,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `8515faab2a60d3bc1cc55975a473e43b61fbfa17` |
-| Final local transaction | `build/m12-auto5-lookup-transaction-b/materialized/manifest.json` |
+| Baseline Git SHA | `beb15b9e2c173de8c2cae0f8310c818e35b8ec7e` |
+| Final local transaction | `build/m12-auto7-direct-graphics-transaction-b/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -27,8 +27,10 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Indexed script table + streams | 729,658 | 23.195203145% |
 | Nested level table + records | 731,827 | 23.264153798% |
 | Exact lookup tables | 732,467 | 23.284498851% |
+| Fixed-stride 50-record table | 734,067 | 23.335361481% |
+| Direct graphics consumers | 774,132 | 24.608993530% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 2,098,689 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 2,057,024 bytes.
 
 ## Final ownership census
 
@@ -36,11 +38,11 @@ The 90% threshold is 2,831,156 bytes; the current gap is 2,098,689 bytes.
 | --- | ---: | ---: |
 | 68000 `CODE_VERIFIED` | 48,906 | 1.554679871% |
 | Header/vector ASM | 512 | 0.016276042% |
-| Confirmed structured data | 28,225 | 0.897248586% |
+| Confirmed structured data | 29,825 | 0.948111216% |
 | Confirmed alignment padding | 47 | 0.001494090% |
-| Local ROM-derived assets | 654,777 | 20.814800262% |
-| **SOURCE_OWNED** | **732,467** | **23.284498851%** |
-| Remaining `UNKNOWN` blob | 2,413,261 | 76.715501149% |
+| Local ROM-derived assets | 694,842 | 22.088432312% |
+| **SOURCE_OWNED** | **774,132** | **24.608993530%** |
+| Remaining `UNKNOWN` blob | 2,371,596 | 75.391006470% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, and
@@ -50,8 +52,9 @@ records, the 196-byte indexed table, and 98 exact streams totalling 11,210
 bytes, the 64-byte nested outer table, 492 bytes of count-bounded nested
 groups, and 185 pointer-backed records totalling 1,613 bytes. The one
 8-byte unindexed record-shaped span remains UNKNOWN. The structured-data total
-also includes the 64-entry `0x0EEE` word lookup table and the 512-byte bounded
-byte lookup table. The Z80 8192-byte image is included in the ASM total and is also
+also includes the 50-record table at `0x5D046`, the 64-entry `0x0EEE` word
+lookup table, and the 512-byte bounded byte lookup table. The Z80 8192-byte
+image is included in the ASM total and is also
 recorded as `Z80_SOURCE_OWNED_BYTES=8192`.
 
 ## Provenance graph
@@ -73,7 +76,9 @@ Nodes:
 11. Nested level table `[0x5D918,0x5D958)`, contiguous groups through
     `0x5DB44`, and 185 pointer-backed records through `0x5E1A0`.
 12. Exact lookup tables `[0x5D686,0x5D706)` and `[0x5D706,0x5D906)`.
-13. Remaining ROM spans retained as canonical-local-ROM blobs.
+13. Fixed-stride table `[0x5D046,0x5D686)` and its four exact consumers.
+14. Seven direct graphics streams selected by exact consumers and A0 continuation.
+15. Remaining ROM spans retained as canonical-local-ROM blobs.
 
 Edges:
 
@@ -91,6 +96,8 @@ Edges:
 - Exact 68000 nested lookup sites → outer table → count-bounded group → inner
   relative pointer → bounded NUL-terminated record family.
 - Exact lookup consumers → bounded word/byte table ranges.
+- Four exact fixed-stride consumers → 50-record table `[0x5D046,0x5D686)`.
+- Direct `0x3820` consumers and decoder-advanced `A0` → seven exact streams.
 - No edge was created from a decoder coincidence alone to an owned asset.
 
 ## Methods and outcomes
@@ -107,6 +114,8 @@ Edges:
 | Indexed script parser proof | `0x00C2EC`, `0x00C326`, `0x0051514` | 196-byte table + 11,210-byte streams |
 | Nested level-table proof | `0x004D4E`, `0x004F48`, lookup sites `0x4D58..0x4F4A` | 64-byte outer table + 492-byte groups + 1,613-byte records |
 | Exact lookup-table proof | `0x00302E`, `0x010684`, `0x01108C`, `0x0161FA`, `0x030200` | 128-byte word table + 512-byte byte table |
+| Fixed-stride table proof | `0x00D72C`, `0x010086`, `0x0100AA`, `0x039100` | 50 × 32-byte records, 1,600 bytes |
+| Direct graphics proof | `0x003278`, `0x004E8..0x0050A`, `0x003356`, `0x00335C` | 7 streams, 40,065 bytes |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
@@ -154,8 +163,8 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. Debug MinGW and Release MinGW full CTest each passed 86/86 after
-the lookup-table helper was registered. The GNU/Linux-equivalent build linked
-successfully and all 12 M12 helper tests passed. `git diff --check`, source
-file limits, Python helper checks, and the independent manifest/hash audit
-passed.
+repository. Debug MinGW and Release MinGW full CTest each passed 88/88 after
+the direct-graphics helper was registered. The GNU/Linux-equivalent build
+linked successfully and all 17 focused tests passed, including the line-limit
+scan. `git diff --check`, source file limits, Python helper checks, and the
+independent manifest/hash audit passed.
