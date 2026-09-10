@@ -1,3 +1,38 @@
+# 2026-09-11 — M12-AUTO10 exact code continuation — <90% / BLOCKED
+
+**TASK:** Continue from the published M12-AUTO9 checkpoint toward a >=90%
+SOURCE-OWNED ROM MAP, preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Reuse the existing automatic exact-code promotion
+workflow, carry forward every ASM-backed baseline entry including header/vector
+ASM, promote only candidates with exact decode, vasm slice round-trip, static
+caller evidence, and full-ROM equality; preserve canonical hashes and document
+rejections.
+
+**RESULT:** The corrected batch discovered 534 candidates, retained 14 eligible
+candidates, attempted all 14, and accepted two exact code islands:
+`0x00F0EC..0x00F10C` (32 bytes) and `0x00B28E..0x00B34C` (190 bytes). The map
+reaches 928,000 / 3,145,728 bytes (`29.500325521%`); 1,903,156 bytes remain to
+the integer 90% threshold. Twelve candidates were rejected as unsupported exact
+IR. The developer-only orchestrator now preserves all entries whose emitted
+artifact type is ASM, including `HEADER_VECTOR_ASM`; no C++ migration, ROM,
+BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** AUTO10 full materialization is 3,145,728 bytes with CRC32
+`C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The updated automatic-promotion regression, Python compilation,
+transactional vasm round-trip, independent manifest/hash audit, source
+file-limit check, and `git diff --check` passed. The Debug/Release/GNU and
+remote-CI validation results for the preceding AUTO9 commit remain green; this
+follow-up requires its own publication gate.
+
+**STATUS:** The >=90% gate remains unmet; unresolved mixed code/data/resource
+spans remain conservative blobs. Continue M12 from the next independently
+closed provenance edge.
+
 # 2026-09-11 — M12-AUTO9 erased alignment padding — <90% / BLOCKED
 
 **TASK:** Continue from the published M12-AUTO8 checkpoint toward a >=90%

@@ -1,5 +1,15 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO10 exact code continuation
+
+The M12-AUTO10 transaction reaches 928,000 bytes (29.500325521%) of the
+canonical ROM and preserves the exact ROM hashes. Two new caller-backed 68000
+islands, `[0x00F0EC,0x00F10C)` and `[0x00B28E,0x00B34C)`, add 222 exact ASM
+bytes. The automatic promoter now carries all ASM-backed baseline entries,
+including header/vector ASM, through trials. Twelve other eligible candidates
+remain rejected as unsupported exact IR. The threshold still requires
+1,903,156 additional bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO9 erased alignment padding
 
 The M12-AUTO9 transaction promotes 927,778 bytes (29.493268331%) of the

@@ -125,6 +125,12 @@ def renumber(entries):
     return result
 
 
+def source_map(entries, manifest_path):
+    return {index: resolve_artifact(manifest_path, entry["artifact"])
+            for index, entry in enumerate(entries)
+            if entry.get("emitted_artifact_type") == "asm"}
+
+
 def promote(entries, candidate):
     for index, entry in enumerate(entries):
         if entry["kind"] != "UNKNOWN" or not (entry["start"] <= candidate["start"] and
@@ -283,10 +289,7 @@ def main():
         if entry["kind"] == "CODE_VERIFIED":
             source = resolve_artifact(baseline_path, entry["artifact"])
             baseline_forms.update(forms_from_asm(source))
-    code_sources = {}
-    for index, entry in enumerate(current):
-        if entry["kind"] == "CODE_VERIFIED":
-            code_sources[index] = resolve_artifact(baseline_path, entry["artifact"])
+    code_sources = source_map(current, baseline_path)
     attempts = []
     accepted = []
     accepted_families = set()
@@ -352,13 +355,13 @@ def main():
             continue
         new_sources = {}
         for index, entry in enumerate(new_entries):
-            if entry["kind"] == "CODE_VERIFIED":
+            if entry.get("emitted_artifact_type") == "asm":
                 if entry["start"] == candidate["start"]:
                     new_sources[index] = asm
                 else:
                     old = next((old_index for old_index, old_entry in enumerate(current)
                                 if old_entry["start"] == entry["start"] and
-                                old_entry["kind"] == "CODE_VERIFIED"), None)
+                                old_entry.get("emitted_artifact_type") == "asm"), None)
                     if old is None:
                         raise ValueError("accepted source mapping lost")
                     new_sources[index] = code_sources[old]
@@ -378,7 +381,8 @@ def main():
         stable = accepted_code / f"sub_{candidate['start']:06X}.asm"
         shutil.copyfile(asm, stable)
         for index, entry in enumerate(new_entries):
-            if entry["kind"] == "CODE_VERIFIED" and entry["start"] == candidate["start"]:
+            if (entry.get("emitted_artifact_type") == "asm" and
+                    entry["start"] == candidate["start"]):
                 new_sources[index] = stable
         current, code_sources = new_entries, new_sources
         record["accepted"] = True

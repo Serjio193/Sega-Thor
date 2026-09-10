@@ -1,3 +1,14 @@
+# M12-AUTO10 exact code continuation checkpoint
+
+The AUTO10 transaction is `build/m12-auto10-code-transaction-b/manifest.json`.
+It promotes two new exact, caller-backed 68000 islands totaling 222 bytes:
+`0x00F0EC..0x00F10C` and `0x00B28E..0x00B34C`. The automatic promoter first
+reassembles each candidate and then verifies the complete ROM; 12 additional
+eligible candidates are rejected as unsupported exact IR. A compatibility fix
+now carries every baseline entry with `emitted_artifact_type=asm`, including
+the M12 header/vector entry, through candidate trials and final materialization.
+The canonical ROM hashes remain unchanged. No C++ migration is started.
+
 # M12-AUTO9 erased-alignment provenance checkpoint
 
 The current local M12 transaction reaches 927,778 bytes (29.493268331%) of

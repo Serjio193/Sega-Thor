@@ -1,6 +1,7 @@
 """Regression checks for the M12-AUTO candidate selector."""
 import importlib.util
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,18 @@ SPEC.loader.exec_module(MODULE)
 
 
 def main():
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "header.asm").write_text("header")
+        (root / "code.asm").write_text("code")
+        manifest = root / "manifest.json"
+        asm_entries = [
+            {"start": 0, "end": 2, "kind": "HEADER_VECTOR_ASM",
+             "emitted_artifact_type": "asm", "artifact": "header.asm"},
+            {"start": 2, "end": 4, "kind": "CODE_VERIFIED",
+             "emitted_artifact_type": "asm", "artifact": "code.asm"},
+        ]
+        assert set(MODULE.auto.source_map(asm_entries, manifest)) == {0, 1}
     code = [
         {"start": 0x100, "end": 0x180, "size": 0x80, "exact": True, "called_by": 2},
         {"start": 0x140, "end": 0x150, "size": 0x10, "exact": True, "called_by": 1},

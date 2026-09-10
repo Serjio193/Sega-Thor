@@ -1,3 +1,16 @@
+# M12-AUTO10 — Source-owned ROM map checkpoint — 29.5003% / BELOW-90 BLOCKER
+
+M12-AUTO10 extends the byte-exact source-owned map to 928,000 of 3,145,728
+bytes (29.500325521%). It adds two caller-backed exact 68000 islands totaling
+222 bytes and fixes developer-only baseline ASM mapping for header/vector
+entries. The canonical ROM remains unchanged; M13 and ASM-to-C++ migration
+remain prohibited. Full evidence is in
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
+The 90% threshold is not reached. The remaining 1,903,156 bytes needed for
+the threshold lack a complete independent code/data/resource provenance graph;
+unknown spans remain conservative blobs.
+
 # M12-AUTO9 — Source-owned ROM map checkpoint — 29.4933% / BELOW-90 BLOCKER
 
 M12-AUTO9 extends the byte-exact source-owned map to 927,778 of 3,145,728
