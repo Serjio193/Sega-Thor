@@ -48,6 +48,9 @@ endif()
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 
+add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
+target_link_libraries(oasis_resource_boundary_scan PRIVATE oasis_core)
+
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
     src/tools/gpgx_import_io.cpp
@@ -169,21 +172,18 @@ add_test(NAME oasis_re_import_gpgx_coverage_self_test
          COMMAND oasis_re_import_gpgx_coverage --self-test)
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
-    add_test(NAME oasis_re_full_split_helpers
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_full_split_test.py)
-    add_test(NAME oasis_re_auto_promote_helpers
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_auto_promote_test.py)
-    add_test(NAME oasis_re_evidence_audit_helpers
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_evidence_audit_test.py)
-    add_test(NAME oasis_re_dynamic_confirm_helpers
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_dynamic_confirm_test.py)
+    add_test(NAME oasis_re_full_split_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_full_split_test.py)
+    add_test(NAME oasis_re_auto_promote_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_auto_promote_test.py)
+    add_test(NAME oasis_re_evidence_audit_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_evidence_audit_test.py)
+    add_test(NAME oasis_re_dynamic_confirm_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_dynamic_confirm_test.py)
     add_test(NAME oasis_re_structured_data_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_structured_data_test.py)
-    add_test(NAME oasis_re_m12_1_helpers
-             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_1_test.py)
+    add_test(NAME oasis_re_m12_1_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_1_test.py)
     add_test(NAME oasis_re_m12_2_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_2_test.py)
     add_test(NAME oasis_re_m12_3_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_3_test.py)
     add_test(NAME oasis_re_m12_4_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_4_test.py)
+    add_test(NAME oasis_re_m12_5_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_5_test.py)
+    add_test(NAME oasis_re_m12_auto_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_auto_test.py)
     add_test(NAME oasis_gpgx_persistent_coverage_semantics
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_persistent_coverage_test.py)
     add_test(NAME oasis_gpgx_unknown_priority_self_test

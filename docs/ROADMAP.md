@@ -1,3 +1,24 @@
+# M12-AUTO — Source-owned ROM map checkpoint — 8.884% / GLOBAL BLOCKER
+
+M12-AUTO advances the exact source-owned map from 16,478 to 279,468 bytes
+while preserving the canonical 3,145,728-byte ROM. It adds 181 caller-backed
+exact 68000 islands, all 107 streams from the proven compressed-resource
+pointer table, and 47 deterministic alignment bytes. Full-ROM CRC32, SHA-1,
+and SHA-256 remain canonical with zero gaps and overlaps. The final report is
+`docs/reports/ASM_AUTONOMOUS_TO_90_PERCENT_M12_AUTO.md`.
+
+The 90% target is not reached. The remaining 2,866,260 bytes lack a complete
+independent code/data/resource provenance map; they remain conservative blobs.
+This is a global evidence blocker, not permission to begin M13 or C++
+migration. The next M12 action is a new independent resource/pointer or
+consumer-evidence track for the largest remaining intervals.
+
+# M12.5 — Transactional ASM promotion of P0 region 0x003B3E..0x004A92 — DONE
+
+M12.5 completed as an evidence-backed partial exact promotion before the
+M12-AUTO combined checkpoint below. It promotes 1,426 exact nested ASM bytes.
+Full evidence is in `docs/reports/ASM_PROMOTION_003B3E_004A92_M12_5.md`.
+
 # M12.4 — Transactional ASM promotion of P0 region 0x000000..0x0007C4 — DONE
 
 M12.4 completed as `M12_4_ROM_START_PROMOTION_PARTIAL_EXACT`. It promotes

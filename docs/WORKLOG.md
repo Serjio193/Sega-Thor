@@ -1,3 +1,52 @@
+# 2026-09-10 — M12-AUTO exact islands and resource map — COMPLETE / GLOBAL BLOCKER
+
+**TASK:** Continue autonomously from baseline
+`33cb6d9985b3a87cd9eb92d4ad0883a736bde9ff` toward a >=90% source-owned ROM
+map, preserving byte-exact ROM and not starting M13 or C++ migration.
+
+**RESULT:** `M12_AUTO_BLOCKED_GLOBAL_NO_FULL_ROM_DATA_PROVENANCE`. The combined
+checkpoint promotes 181 non-overlapping caller-backed exact 68000 islands
+(23,430 bytes beyond M12.5), all 107 streams from the proven compressed
+resource pointer table (238,087 local-ROM-derived asset bytes), and 47
+alignment bytes. Final source ownership is 279,468 / 3,145,728 bytes
+(8.884048461%); remaining blob bytes are 2,866,260. No guessed asset or
+executable classification was used.
+
+**EVIDENCE:** The broad bounded probe examined 253 Ghidra intervals and found
+209 exact round-trips; static caller gating and overlap resolution selected
+181. The resource boundary scanner confirmed 107/107 streams from
+`0x05CE96..0x05D046`; decompressor-consumed boundaries and 47 one-byte gaps
+are deterministic. Screen-group pointer spans remain inconclusive because
+they intersect unresolved code candidates.
+
+**EXACTNESS:** Combined materialization is 3,145,728 bytes with canonical
+CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, with
+zero gaps and overlaps. See
+`docs/reports/ASM_AUTONOMOUS_TO_90_PERCENT_M12_AUTO.md`.
+
+**VALIDATION:** `tests/re_m12_auto_test.py`, `tests/re_m12_5_test.py`, Python
+compile checks, resource scanner Debug build/run, 181 exact range assembly,
+combined full-ROM assembly/hash verification, and source-size checks passed.
+Final Debug/Release CTest, diff/hygiene audit, commit SHA, push SHA, and CI
+status are appended before the checkpoint is committed.
+
+**BLOCKER:** 2,866,260 bytes remain without a complete independent
+code/data/resource provenance graph. The largest are
+`0x062D6C..0x1AD000` and `0x1E7236..0x300000`. They remain blobs; M13 and
+ASM-to-C++ migration stay prohibited.
+
+**TASK:** Continue M12_AUTO from baseline `33cb6d9985b3a87cd9eb92d4ad0883a736bde9ff`
+by independently promoting exact source-owned islands inside the recomputed
+P0 candidate `0x003B3E..0x004A92`. Preserve the canonical ROM byte-for-byte;
+do not begin M13 or ASM-to-C++ migration.
+
+**ACCEPTANCE CRITERIA:** Every promoted interval has exact bounded decode and
+vasm round-trip; the full materialized ROM has zero gaps/overlaps and canonical
+CRC32/SHA-1/SHA-256; helper regression coverage and M12 documentation are
+updated; enclosing mixed/ambiguous regions remain explicitly blob-backed.
+
 # 2026-09-10 — M12.3 transactional ASM promotion — COMPLETE
 
 # 2026-09-10 — M12.4 ROM-start transactional ASM promotion — COMPLETE

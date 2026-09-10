@@ -1,5 +1,23 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO source-owned map boundary
+
+The M12-AUTO checkpoint promotes 181 caller-backed exact 68000 islands for
+23,430 bytes beyond M12.5, 107 pointer-table-selected compressed resource
+streams for 238,087 bytes, and 47 deterministic alignment bytes. Combined
+source ownership is 279,468 bytes (8.884048461%) of the canonical ROM. The
+combined materialization has zero gaps/overlaps and canonical CRC32/SHA-1/
+SHA-256. The exact resource proof is `src/tools/re_resource_boundary_scan.cpp`:
+each stream is consumed by the existing graphics decompressor and ends at or
+before the next table pointer; one-byte gaps are classified as alignment.
+
+The remaining 2,866,260 bytes stay blob-backed. The largest unresolved ranges
+are `0x062D6C..0x1AD000` (1,352,340 bytes) and
+`0x1E7236..0x300000` (1,150,410 bytes). No global code/data/resource
+provenance exists for those spans; no asset or executable ownership is
+claimed. This is the current M12 global evidence blocker. No C++ migration or
+M13 work is authorized.
+
 ## M12.2 ASM promotion boundary
 
 M12.2 transactionally promotes thirteen exact source-owned intervals inside

@@ -25,6 +25,15 @@ wiring for the bounded 0x061934 natural callee contract. The deterministic
 regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
+
+M12-AUTO adds the developer-only combined promoter
+`src/tools/re_m12_auto_promote.py`, the compressed-resource boundary scanner
+`src/tools/re_resource_boundary_scan.cpp`, their helper regression
+`tests/re_m12_auto_test.py`, the M12.5 bounded report
+`docs/reports/ASM_PROMOTION_003B3E_004A92_M12_5.md`, and the autonomous final
+report `docs/reports/ASM_AUTONOMOUS_TO_90_PERCENT_M12_AUTO.md`. Generated
+ROM/source/assets remain local ignored build outputs; no ROM or extracted
+commercial asset is tracked.
 M12.4 adds the developer-only ROM-start transaction
 `src/tools/re_m12_4_promote.py`, its deterministic helper regression
 `tests/re_m12_4_test.py`, and the report
@@ -257,6 +266,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       │   ├── runner.cpp Developer-only GPGX hybrid scenario runner
 │       │   └── recomp_generator_report.cpp Generator CLI
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
+│       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
 │       ├── re_slice_decoder.hpp Decoder data types and report API
@@ -266,6 +276,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_assemble_report.cpp Canonical-ROM 25-slice emit/verify CLI and bounded split manifest
 │       ├── re_assemble_run.py Local vasm orchestration, gap extraction and exact comparison
 │       ├── re_full_split_run.py Full-ROM local-blob split, manifest metrics and exact comparison
+│       ├── re_m12_auto_promote.py Combined exact-island/resource transactional promoter
 │       ├── re_assemble_range_report.cpp Generic bounded decoder/ASM emitter for candidate slices
 │       ├── re_auto_promote.py Evidence-ranked transactional UNKNOWN→ASM promotion runner
 │       ├── re_auto_promote_helpers.py Promotion failure metadata, clustering and trend helpers

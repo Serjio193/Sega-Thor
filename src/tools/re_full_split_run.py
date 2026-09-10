@@ -103,12 +103,15 @@ def first_difference(expected, actual, entries):
 def metrics(entries, rom_size):
     totals = {"ASM_BYTES": 0, "HEADER_VECTOR_ASM_BYTES": 0,
               "STRUCTURED_DATA_ASM_BYTES": 0, "PADDING_ALIGNMENT_BYTES": 0,
-              "STRUCTURED_DATA_BYTES": 0, "BLOB_BYTES": 0, "CONFLICT_BYTES": 0}
+              "STRUCTURED_DATA_BYTES": 0, "LOCAL_ROM_DERIVED_ASSET_BYTES": 0,
+              "BLOB_BYTES": 0, "CONFLICT_BYTES": 0}
     for entry in entries:
         key = {"CODE_VERIFIED": "ASM_BYTES", "HEADER_VECTOR_ASM": "HEADER_VECTOR_ASM_BYTES",
                "STRUCTURED_DATA_CONFIRMED": "STRUCTURED_DATA_ASM_BYTES",
                "PADDING_ALIGNMENT_CONFIRMED": "PADDING_ALIGNMENT_BYTES",
-               "DATA_KNOWN": "STRUCTURED_DATA_BYTES", "UNKNOWN": "BLOB_BYTES",
+               "DATA_KNOWN": "STRUCTURED_DATA_BYTES",
+               "LOCAL_ROM_DERIVED_ASSET": "LOCAL_ROM_DERIVED_ASSET_BYTES",
+               "UNKNOWN": "BLOB_BYTES",
                "CONFLICT": "CONFLICT_BYTES"}[entry["kind"]]
         totals[key] += entry["size"]
     return {**totals, "TOTAL_ROM_BYTES": rom_size,
