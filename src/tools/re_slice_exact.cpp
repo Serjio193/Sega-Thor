@@ -79,6 +79,23 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
     } else if (family == "ext") {
         result.operation = (op & 0x40U) ? "ext.l" : "ext.w";
         result.destination = reg(op & 7U);
+    } else if (family == "move_status" && ea.size() == 1U) {
+        const auto group = op & 0xFF00U;
+        if (group == 0x4000U) {
+            result.operation = "move";
+            result.width_bytes = 2;
+            result.source = DecodedOperand{};
+            result.source->kind = OperandKind::status_register;
+            result.source->value = 1;
+            result.destination = ea[0];
+        } else if (group == 0x4600U) {
+            result.operation = "move";
+            result.width_bytes = 2;
+            result.source = ea[0];
+            result.destination = DecodedOperand{};
+            result.destination->kind = OperandKind::status_register;
+            result.destination->value = 1;
+        } else return;
     } else if ((family == "addq" || family == "subq") && ea.size() == 1U) {
         result.operation = family;
         result.width_bytes = width;

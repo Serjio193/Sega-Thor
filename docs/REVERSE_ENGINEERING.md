@@ -43,6 +43,22 @@ reported separately. Full evidence:
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M12.1 — P0 region 0x06042A..0x0611F4 — PARTIAL EXACT PROMOTION
+
+The M12.1 transaction promotes six exact bounded ASM slices totaling 546
+bytes: `0x06042A..0x060484`, `0x060490..0x0604B0`, `0x060B50..0x060CDA`,
+`0x0611D6..0x0611E0`, `0x0611E0..0x0611EA`, and `0x0611EA..0x0611F4`.
+The two larger slices have prior execution evidence (`CODE_EXECUTED`); the
+other four are statically supported exact slices. The current decoder handles
+the three legacy `MOVE SR` forms at `0x06042A`, `0x0611DC`, and `0x0611E6`.
+
+Each promoted slice has exact local vasm reassembly, no unsupported instruction
+record, and no unresolved memory reference. Direct branch targets, external
+continuations and returns are retained as evidence; no gameplay semantics or
+portable C++ routine is inferred. The remaining 2,984 bytes stay UNKNOWN
+blob-backed because their dispatch/case and linear/CFG boundaries are not
+closed. Full report: `reports/ASM_PROMOTION_06042A_0611F4_M12_1.md`.
+
 # M11.61 — 0x062AE0 callee contract — CONFIRMED NATURAL / STATIC NEGATIVE
 
 The callee rooted at `0x062AE0` has six static RTS exits (`0x062B1A`,

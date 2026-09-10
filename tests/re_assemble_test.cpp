@@ -76,6 +76,14 @@ void diverse_addressing_and_unary_forms() {
     assert(exact_instruction_asm(unary.instructions[1]) == "ext.w D6");
     assert(exact_instruction_asm(unary.instructions[2]) == "ext.l D6");
 }
+void status_register_moves() {
+    const auto from_status = decode({0x40,0xE7, 0x4E,0x75});
+    assert(from_status.instructions[0].exact);
+    assert(exact_instruction_asm(from_status.instructions[0]) == "move.w SR,-(A7)");
+    const auto to_status = decode({0x46,0xDF, 0x4E,0x75});
+    assert(to_status.instructions[0].exact);
+    assert(exact_instruction_asm(to_status.instructions[0]) == "move.w (A7)+,SR");
+}
 void pc_relative_encoding() {
     const auto slice = decode({0x41,0xFA,0x00,0x02, 0x4E,0x75});
     assert(slice.instructions[0].exact->source->kind == OperandKind::pc_displacement);
@@ -135,6 +143,7 @@ int main() {
     branch_widths();
     movem_and_sizes();
     diverse_addressing_and_unary_forms();
+    status_register_moves();
     pc_relative_encoding();
     ccr_immediate_encoding();
     byte_immediate_preserves_extension();

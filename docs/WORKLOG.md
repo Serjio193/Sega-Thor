@@ -1,3 +1,51 @@
+# 2026-09-10 — M12.1 transactional ASM promotion — COMPLETE
+
+TASK: Execute the single M12.1 transaction for P0
+`0x06042A..0x0611F4` from baseline
+`b4937c8e1b99de7ca4f45cb20b3cdf37df51e932`. No C++ gameplay/runtime
+migration, emulator expansion, ROM/asset commit, or M12.2 execution was
+authorized.
+
+RESULT: `M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT`. Six non-overlapping exact
+slices were accepted: 90 + 32 + 394 + 10 + 10 + 10 = 546 ASM bytes. The
+target changes from 0 ASM / 3,530 UNKNOWN blob bytes to 546 ASM / 2,984
+conservative UNKNOWN blob bytes. The gap census is
+`POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`,
+`UNRESOLVED_BOUNDARY_BYTES=2,984`. No data interpretation is claimed for the
+remaining bytes. The whole materialized map is 209 ASM ranges and 138 blobs,
+with 0 gaps and 0 overlaps.
+
+EXACTNESS: All six slices assemble with the existing vasm M68k assembler and
+match the canonical bytes. Full rebuilt-ROM identity is exact: 3,145,728
+bytes, CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The current decoder normalizes the three legacy `MOVE SR` forms at
+`0x06042A`, `0x0611DC`, and `0x0611E6`; the regression and exact reassembly
+pass. Remaining dispatch/case and continuation boundaries stay blob-backed.
+
+EVIDENCE: `docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md` and the local
+transaction output under `build/m12-1-transaction-d`.
+NEXT PROPOSAL: Exactly one M12.2 candidate,
+`0x00DE00..0x00E338` (1,336 bytes, 31 observed PCs, 87 static xrefs), not
+started. STOP after M12.1.
+
+VALIDATION: Targeted Debug/Release reconstruction-tool builds and helper
+regression passed before the final full validation. Final Debug/Release CTest,
+GNU-equivalent build/link, exact materialized-manifest audit, diff-check,
+source-size and tracked-artifact checks, commit/push and CI are recorded below
+when complete.
+
+FINAL VALIDATION: Full Debug CTest is 75/75 and full Release CTest is 75/75.
+Fresh GNU-equivalent MinGW Release build/link passed for
+`oasis_re_assemble`, `oasis_re_assemble_range` and `oasis_re_assemble_test`;
+targeted GNU CTest is 2/2. The independent materialized-manifest evidence
+audit reports 209/209 ASM ranges round-trip exact; its historical provenance
+view retains five mismatches and one dynamic-evidence range without changing
+the transaction result. `git diff --check`, changed-source file limits and
+tracked artifact hygiene passed. No ADR was added because this is a bounded
+developer-tooling change with no architecture change.
+
 # 2026-09-10 — M11.64 G0 portability boundary consolidation — COMPLETE
 
 TASK: Consolidate M11.60–M11.63 into one bounded G0 architecture and close the
@@ -3995,3 +4043,21 @@ failure while both build directories were being exercised; the sequential
 rerun passed and is the accepted result. The older re_full_split helper also
 passed its M11.10 50-entry control, while the current 203-range result is
 the M11.15 audit above.
+## M12.1 — Transactional ASM promotion of P0 0x06042A..0x0611F4
+
+TASK: promote only evidence-backed source-owned 68000 ASM intervals inside
+the selected 3,530-byte P0 region, preserve exact canonical-ROM identity, and
+leave all unresolved code/data boundaries blob-backed. No C++ runtime or
+ASM-to-C++ migration is in scope.
+
+ACCEPTANCE: baseline `b4937c8e1b99de7ca4f45cb20b3cdf37df51e932` and canonical
+ROM identity must match before work; each promoted interval must assemble and
+round-trip exactly; the full split must remain gap/overlap-free and hash-exact;
+Debug/Release/GNU-equivalent validation, file limits, diff check and artifact
+hygiene must pass; one M12.2 candidate must be selected without starting it.
+
+The first bounded probe found that the coarse target is not one reassemblable
+interval: existing M11 evidence has eight internal coverage gaps and the
+decoder lacked exact IR for executable `MOVE SR` encodings at `0x06042A`,
+`0x0611DC` and `0x0611E6`. The decoder/tooling change is limited to exact
+normalization of `MOVE SR,<ea>` and `<ea>,SR`; no gameplay code is added.

@@ -1,17 +1,33 @@
 # Current task
 
+TASK: M12.1 Transactional ASM promotion of P0 region 0x06042A..0x0611F4
+STATUS: COMPLETE — M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT
+BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
+SCOPE: Six bounded developer-only ASM promotions and exact remaining-gap
+census. No native C++ gameplay/runtime migration, emulator expansion, ROM or
+asset commit, or M12.2 execution.
+RESULT: 546 exact ASM bytes promoted from the 3,530-byte target; 2,984 bytes
+remain conservative UNKNOWN blobs. POSSIBLE_CODE_BYTES=0,
+UNKNOWN_DATA_BYTES=0, UNRESOLVED_BOUNDARY_BYTES=2,984. The full materialized
+ROM is exact with 0 gaps and 0 overlaps.
+EVIDENCE: docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md
+NEXT ACTION: One M12.2 proposal only, 0x00DE00..0x00E338; do not start it.
+STOP after M12.1.
+
+# Historical task
+
 TASK: M12.0 Rebase roadmap and produce exact ASM completion census
-STATUS: ACTIVE — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
-BASELINE: 37c6bc1695771cb74839f48b05d40aa348ba7874
+STATUS: HISTORICAL — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
+BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
 SCOPE: Governance, deterministic reassembly evidence and documentation only.
-No new native C++ routine, ASM promotion, emulator expansion, gameplay naming,
-subsystem implementation or M12.1 work.
+No new native C++ routine, emulator expansion, gameplay naming, subsystem
+implementation or M12.2 work.
 RESULT: Roadmap is ROM -> complete ASM -> rebuilt-ROM parity -> systematic
 ASM-to-C++ migration. Current exact split: 203 68000 ASM ranges / 13550 bytes,
 136 local-ROM blobs / 3132178 bytes, 0 gaps, 0 overlaps. M11.17 data evidence
 adds 1164 bounded classified bytes but no source ownership.
 EVIDENCE: docs/reports/ASM_COMPLETION_CENSUS_M12_0.md
-NEXT ACTION: Exactly one M12.1 target is 0x06042A..0x0611F4; do not begin it.
+NEXT ACTION: M12.1 target is recorded above; stop after M12.0 history.
 
 # Historical task
 

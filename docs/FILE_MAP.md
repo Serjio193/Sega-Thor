@@ -1,3 +1,10 @@
+M12.1 adds the developer-only transactional promotion orchestrator
+`src/tools/re_m12_1_promote.py`, its helper regression
+`tests/re_m12_1_test.py`, exact status-register decoding coverage in
+`src/tools/re_slice_exact.cpp`, and the M12.1 report
+`docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md`. The transaction promotes
+only six exact source-owned slices; no production/core file changed.
+
 M12.0 adds the roadmap rebase, exact ASM completion census report
 docs/reports/ASM_COMPLETION_CENSUS_M12_0.md and the M12.0 state/task/ledger
 updates. The report contains the machine-readable 136-range blob inventory.

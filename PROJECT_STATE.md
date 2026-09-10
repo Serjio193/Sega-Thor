@@ -1,9 +1,29 @@
 # Project State
 
-CURRENT_MILESTONE: M12.0 active — complete ASM reconstruction
+CURRENT_MILESTONE: M12.1 complete — transactional ASM promotion of
+0x06042A..0x0611F4
+CURRENT_TASK: exact promotion transaction and bounded remaining-gap census
+STATUS: COMPLETE — M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT
+BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
+SCOPE_BOUNDARY: Developer-only reconstruction tooling and documentation;
+no native C++ gameplay/runtime migration, emulator expansion, M12.2 execution,
+or copyrighted ROM/assets committed.
+LAST_VERIFIED_RESULT: Six non-overlapping slices promote 546 bytes from the
+3,530-byte target. The target now has 546 ASM bytes and 2,984 conservative
+unknown blobs; POSSIBLE_CODE_BYTES=0, UNKNOWN_DATA_BYTES=0 and
+UNRESOLVED_BOUNDARY_BYTES=2,984. Full materialized ROM reassembly is exact,
+with 209 code ranges, 138 blob ranges, 0 gaps and 0 overlaps.
+BLOCKER: The remaining target bytes are unresolved dispatch/case and
+continuation boundaries; they remain blob-backed. CPP_MIGRATION remains
+PAUSED_PENDING_ASM_COMPLETION.
+EVIDENCE: docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md
+NEXT ACTION: Propose exactly M12.2 at 0x00DE00..0x00E338 only; do not start it
+in this task. STOP after M12.1.
+
+CURRENT_MILESTONE: M12.0 historical — complete ASM reconstruction
 CURRENT_TASK: exact full-ROM ASM completion census and roadmap rebase
-STATUS: ACTIVE — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
-BASELINE: 37c6bc1695771cb74839f48b05d40aa348ba7874
+STATUS: HISTORICAL — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
+BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
 SCOPE_BOUNDARY: Governance and deterministic reconstruction census only; no
 new native C++ routine, no C++ migration, no gameplay naming, no subsystem
 promotion and no M12.1 implementation.
@@ -16,8 +36,7 @@ BLOCKER: ASM_CODE_COMPLETE is blocked by 136 blob ranges, including 8 P0
 coarse ranges with observed execution evidence, and by the absent Z80/source
 and complete ROM map. CPP_MIGRATION=PAUSED_PENDING_ASM_COMPLETION.
 EVIDENCE: docs/reports/ASM_COMPLETION_CENSUS_M12_0.md
-NEXT ACTION: M12.1 may target only 0x06042A..0x0611F4 after explicit
-continuation; STOP after M12.0.
+NEXT ACTION: M12.1 target is recorded above; STOP after M12.1.
 
 # Historical Project State — M11.64
 

@@ -1,5 +1,25 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12.1 ASM promotion boundary
+
+M12.1 transactionally promotes only six exact source-owned intervals inside
+`0x06042A..0x0611F4`: `0x06042A..0x060484`, `0x060490..0x0604B0`,
+`0x060B50..0x060CDA`, `0x0611D6..0x0611E0`, `0x0611E0..0x0611EA`, and
+`0x0611EA..0x0611F4`. They total 546 bytes and are backed by exact local
+assembler output plus full-ROM exactness. The remaining 2,984 bytes are kept
+as UNKNOWN blobs because dispatch/case and continuation boundaries are not
+closed. The gap census is `POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`,
+`UNRESOLVED_BOUNDARY_BYTES=2,984`; these categories are not additional
+ownership claims. No range below is a typed data structure or portable routine.
+
+The legacy global census marked `0x06042A`, `0x0611DC`, and `0x0611E6` as
+unsupported status-register forms. The current exact decoder normalizes these
+`MOVE SR` encodings, and the affected slices reassemble exactly. This resolves
+the decoder limitation only; it does not close the remaining target CFG.
+
+One M12.2 proposal is recorded for `0x00DE00..0x00E338` (1,336 bytes, 31
+observed PCs, 87 static xrefs). It was not started.
+
 ## M12.0 ASM completion boundary
 
 M12.0 changes project sequencing, not the M11 G0 evidence. The authoritative

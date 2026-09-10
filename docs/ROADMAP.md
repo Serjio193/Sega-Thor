@@ -1,4 +1,27 @@
-# M12.0 — Complete ASM reconstruction — ACTIVE
+# M12.1 — Transactional ASM promotion of P0 region 0x06042A..0x0611F4 — DONE
+
+M12.1 completed one transactional, evidence-backed promotion against the
+M12.0 baseline at `b4937c8e1b99de7ca4f45cb20b3cdf37df51e932`. Six bounded
+slices are now source-owned ASM: `0x06042A..0x060484` (90 bytes),
+`0x060490..0x0604B0` (32), `0x060B50..0x060CDA` (394),
+`0x0611D6..0x0611E0` (10), `0x0611E0..0x0611EA` (10), and
+`0x0611EA..0x0611F4` (10). Total promotion is 546 bytes.
+
+Result: `M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT`. The target changes from
+0 ASM / 3,530 unknown blob bytes to 546 ASM / 2,984 conservatively retained
+unknown blob bytes. `POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`, and
+`UNRESOLVED_BOUNDARY_BYTES=2,984`; no data interpretation is claimed for the
+remaining bytes. The materialized whole-ROM map has 209 ASM ranges and 138
+blob ranges, with 0 gaps and 0 overlaps. Reassembly is exact for every slice
+and for the complete 3,145,728-byte ROM. No C++ gameplay/runtime migration or
+M12.2 work started. Full evidence is in
+`docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md`.
+
+The next proposal is exactly one M12.2 candidate:
+`0x00DE00..0x00E338` (1,336 bytes, 31 observed PCs, 87 static xrefs), not
+started. STOP after M12.1.
+
+# M12.0 — Complete ASM reconstruction — COMPLETE / BLOCKED
 
 M12.0 rebases the ordered project sequence to ROM -> complete reassemblable
 ASM -> rebuilt-ROM runtime parity -> systematic ASM-to-portable-C++ migration.
@@ -11,13 +34,13 @@ reconstruction/migration phases. CPP_MIGRATION is
 PAUSED_PENDING_ASM_COMPLETION. No new portable C++ routine is authorized in
 M12.0.
 
-Current M12.0 result:
+Historical M12.0 result:
 M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED. The current exact split owns
 13,550 bytes as 203 68000 ASM ranges and 3,132,178 bytes as 136 local-ROM
 blobs, with 0 gaps and 0 overlaps. M11.17 separately classifies 1,164
 bounded bytes as structured data, but those bytes remain blob-backed and are
 not yet source-owned. Eight coarse blobs contain observed execution evidence;
-the single M12.1 target is 0x06042A..0x0611F4. Do not begin M12.1 here.
+the single M12.1 target was 0x06042A..0x0611F4 and is covered above.
 
 # M13 — Rebuilt ROM runtime parity — TODO
 

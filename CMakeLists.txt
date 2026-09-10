@@ -154,7 +154,6 @@ target_link_libraries(oasis_re_static_translation PRIVATE oasis_re_tooling oasis
 
 add_executable(oasis_gpgx_coverage_report src/tools/gpgx_coverage_report.cpp)
 target_link_libraries(oasis_gpgx_coverage_report PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_import_gpgx_coverage src/tools/gpgx_import_gpgx_coverage.cpp)
 target_link_libraries(oasis_re_import_gpgx_coverage PRIVATE oasis_re_tooling oasis_core)
 
@@ -170,7 +169,6 @@ target_link_libraries(oasis_re_assemble_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_assemble COMMAND oasis_re_assemble_test)
 add_test(NAME oasis_re_import_gpgx_coverage_self_test
          COMMAND oasis_re_import_gpgx_coverage --self-test)
-
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_full_split_helpers
@@ -183,6 +181,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_dynamic_confirm_test.py)
     add_test(NAME oasis_re_structured_data_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_structured_data_test.py)
+    add_test(NAME oasis_re_m12_1_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_1_test.py)
     add_test(NAME oasis_gpgx_persistent_coverage_semantics
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_persistent_coverage_test.py)
     add_test(NAME oasis_gpgx_unknown_priority_self_test

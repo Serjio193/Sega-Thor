@@ -44,7 +44,13 @@ constexpr std::array selections{
     Selection{0xB730, 0xB79A, "MODERATE_STATIC", "UNKNOWN", "UNKNOWN"},
     Selection{0xC90E, 0xC92C, "MODERATE_STATIC", "UNKNOWN", "UNKNOWN"},
     Selection{0xCECC, 0xCEEA, "MODERATE_STATIC", "UNKNOWN", "UNKNOWN"},
-    Selection{0xD3B2, 0xD406, "STRONG_STATIC", "M11 prior bounded evidence", "UNKNOWN"}};
+    Selection{0xD3B2, 0xD406, "STRONG_STATIC", "M11 prior bounded evidence", "UNKNOWN"},
+    Selection{0x06042A, 0x060484, "M12_1_CODE_CONFIRMED", "M11 dynamic/static evidence", "UNKNOWN"},
+    Selection{0x060490, 0x0604B0, "M12_1_CODE_CONFIRMED", "M11 static case target", "UNKNOWN"},
+    Selection{0x060B50, 0x060CDA, "M12_1_CODE_CONFIRMED", "M11 dynamic/static evidence", "UNKNOWN"},
+    Selection{0x0611D6, 0x0611E0, "M12_1_CODE_CONFIRMED", "M11 static epilogue evidence", "UNKNOWN"},
+    Selection{0x0611E0, 0x0611EA, "M12_1_CODE_CONFIRMED", "M11 dynamic/static evidence", "UNKNOWN"},
+    Selection{0x0611EA, 0x0611F4, "M12_1_CODE_CONFIRMED", "M11 static caller evidence", "UNKNOWN"}};
 std::string label(std::uint32_t address) {
     std::ostringstream out;
     out << std::hex << std::uppercase << std::setw(6) << std::setfill('0') << address;
