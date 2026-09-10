@@ -4393,3 +4393,8 @@ source-file line-limit check passed.
 **STOP:** The >=90% gate remains unmet; 2,099,329 additional bytes are
 required. No guessed padding, unknown asset classification, semantic text
 claim, ROM mutation, or ASM-to-C++ migration was performed.
+
+**PUBLISHED:** Implementation/docs commit `fa883c8770dbf37401ec76381e8181cf0ed733aa`
+is pushed and matches `origin/main`. GitHub Actions CI run `34526971234`
+completed successfully; build and test passed, with only the upstream Node.js
+20 deprecation annotation.
