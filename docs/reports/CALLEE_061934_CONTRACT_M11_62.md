@@ -352,6 +352,8 @@ Post-change native and shadow runs retain the baseline checkpoint/video hashes a
 instructions with zero fallback/divergence; shadow has 5/5 comparisons and
 zero divergence.
 
+Implementation commit `c3a4d346d38c3b6024a73376c97eca7ddc22632d` is on `origin/main`; GitHub Actions CI run `34447382790` passed build and test.
+
 Debug CTest and Release CTest both pass 73/73, including the new observer
 regression and source-size limit. `git diff --check` and tracked source/data
 hygiene are clean. The configured UCRT build again stops while compiling the
