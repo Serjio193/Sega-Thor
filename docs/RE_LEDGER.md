@@ -1,5 +1,18 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO2 source-owned map boundary
+
+The current local M12-AUTO2 transaction promotes 718,252 bytes (22.832616170%)
+of the canonical ROM. It preserves the exact ROM hashes while adding the Z80
+upload, screen graph, direct graphics consumers, the `0x03B8DE` table consumer
+graph, and eight fixed 1208-byte parser records. The exact report is
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
+The 90% threshold requires 2,831,156 bytes; 2,112,904 additional bytes still
+lack independently closed provenance. Decoder census coincidences and raw
+pointer literals without a closed parser/consumer edge remain UNKNOWN. No M13
+or C++ migration is authorized.
+
 ## M12-AUTO source-owned map boundary
 
 The M12-AUTO checkpoint promotes 181 caller-backed exact 68000 islands for

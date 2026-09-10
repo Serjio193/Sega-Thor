@@ -193,7 +193,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_gpgx_rom_reader_correlation
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_rom_reader_correlation_test.py)
 endif()
-
+include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)
 target_link_libraries(oasis_smoke PRIVATE oasis_core)
 add_test(NAME oasis_smoke COMMAND oasis_smoke)

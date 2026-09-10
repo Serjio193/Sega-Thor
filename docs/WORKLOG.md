@@ -4274,3 +4274,48 @@ Implementation commit: `7cbcbf0b2c73606f6572849d5384a0890fd496a9`.
 `origin/main` matched this SHA after push. GitHub Actions CI run
 `34480825830` completed successfully for that commit (build and test green;
 only the platform's Node.js 20 deprecation annotation was reported).
+# 2026-09-10 — M12-AUTO2 consumer graph and bounded census — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+the canonical ROM byte-for-byte and not starting M13, native gameplay/runtime
+C++, or emulator expansion. Acceptance required exact ownership evidence,
+zero manifest gaps/overlaps, full-ROM hash identity, and no promotion of
+unknown bytes solely to increase the percentage.
+
+**RESULT:** The exact M12-AUTO2 transaction is
+`build/m12-auto2-consumer-transaction-d/materialized/manifest.json` with
+718,252 / 3,145,728 source-owned bytes (`22.832616170%`). It adds 79,176
+consumer-backed graphics bytes and 9,664 bytes of fixed parser records to the
+previous Z80/screen checkpoint. The >=90% gate is not reached; 2,112,904 more
+source-owned bytes are required.
+
+**POSITIVE EVIDENCE:** The 68000 upload at `0x06134E` copies the exact
+`0x62E38..0x64E38` Z80 image to `$A00000`; reset/signature checks and the
+source representation are byte-exact. Direct `0x3820`/`0x37D2` consumers
+close 29 deterministic graphics streams. The bounded 16-byte table at
+`0x03B8DE`, selected by `0x03A9EE` and consumed through `0x03B1D0`, closes
+seven more graphics streams. The `0x0012E8` copy routine closes eight
+consecutive 1208-byte records at `0x200009..0x2025C9`; no save bytes after
+`0x2025C9` were included. A census of `0x1AD000..0x1E7236` found 113 valid
+streams, all already covered by the original 107-entry resource graph.
+
+**EXACTNESS:** The transaction rebuilt 3,145,728 bytes with CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** Debug MinGW and Release MinGW full CTest each passed 83/83;
+the GNU/Linux-equivalent build and five relevant M12/helper tests passed. GNU
+full CTest reached the file-limit test but was stopped after its mounted-NTFS
+scan remained active for roughly ten minutes; the same test passed in Debug
+and Release. `git diff --check`, source-file limits, Python helper checks, and
+the exact manifest/hash audit passed.
+
+**STOP:** The remaining largest unknown ranges include
+`0x064E38..0x141580` (902,984 bytes), `0x25FEC2..0x2E2FE6` (536,868
+bytes), `0x03E7F4..0x060000` (137,228 bytes), and `0x1ED5EC..0x200009`
+(76,317 bytes). Graphics census results without a closed table/consumer
+contract were not promoted. No percentage gaming, guessed padding, unknown
+asset classification, or ASM-to-C++ migration was performed.
+
+**EVIDENCE:** The final report is
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.

@@ -1,3 +1,15 @@
+# M12-AUTO2 consumer-backed provenance checkpoint
+
+The current local M12 transaction reaches 718,252 bytes (22.832616170%) of
+source-owned ROM while preserving the canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
+consumer evidence now includes the 68000 Z80 upload at `0x06134E`, direct
+`0x3820`/`0x37D2` graphics calls, the `0x03B8DE` 16-byte table selected by
+`0x03A9EE` and consumed by `0x03B1D0`, and eight 1208-byte records copied by
+`0x0012E8`. Decoder census candidates without a closed table/consumer edge
+remain UNKNOWN. Full evidence is in
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
 # M11.64 G0 portability boundary closure
 
 The consolidated bounded ledger is `docs/RE_LEDGER.md`; the full evidence report

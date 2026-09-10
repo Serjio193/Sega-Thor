@@ -26,6 +26,17 @@ regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
 
+M12-AUTO2 adds the developer-only consumer-backed graphics census
+`src/tools/re_graphics_stream_census.cpp`, pointer consumer scanner
+`src/tools/re_m12_pointer_resource_scan.cpp`, and transactional promoter
+`src/tools/re_m12_consumer_promote.py` with helper regression
+`tests/re_m12_consumer_promote_test.py`. The bounded transaction preserves
+the canonical ROM while recording exact 68000 graphics consumers, the Z80
+upload, screen descriptors, and fixed 1208-byte parser records. Census and
+materialization outputs stay in ignored build evidence directories; the
+isolated target/test definitions live in `cmake/m12_auto2.cmake`; no ROM or
+extracted commercial asset is tracked.
+
 M12-AUTO adds the developer-only combined promoter
 `src/tools/re_m12_auto_promote.py`, the compressed-resource boundary scanner
 `src/tools/re_resource_boundary_scan.cpp`, their helper regression
