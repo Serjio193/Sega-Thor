@@ -1,24 +1,24 @@
 # Project State
 
-CURRENT_MILESTONE: M12.1 complete — transactional ASM promotion of
-0x06042A..0x0611F4
+CURRENT_MILESTONE: M12.2 complete — transactional ASM promotion of
+0x00DE00..0x00E338
 CURRENT_TASK: exact promotion transaction and bounded remaining-gap census
-STATUS: COMPLETE — M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT
-BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
+STATUS: COMPLETE — M12_2_P0_CODE_PROMOTION_PARTIAL_EXACT
+BASELINE: 0dac30bcca103ae03a6372d24c2aca25e1fb6460
 SCOPE_BOUNDARY: Developer-only reconstruction tooling and documentation;
-no native C++ gameplay/runtime migration, emulator expansion, M12.2 execution,
+no native C++ gameplay/runtime migration, emulator expansion, M12.3 execution,
 or copyrighted ROM/assets committed.
-LAST_VERIFIED_RESULT: Six non-overlapping slices promote 546 bytes from the
-3,530-byte target. The target now has 546 ASM bytes and 2,984 conservative
+LAST_VERIFIED_RESULT: Thirteen non-overlapping slices promote 366 bytes from
+the 1,336-byte target. The target now has 366 ASM bytes and 970 conservative
 unknown blobs; POSSIBLE_CODE_BYTES=0, UNKNOWN_DATA_BYTES=0 and
-UNRESOLVED_BOUNDARY_BYTES=2,984. Full materialized ROM reassembly is exact,
-with 209 code ranges, 138 blob ranges, 0 gaps and 0 overlaps.
-BLOCKER: The remaining target bytes are unresolved dispatch/case and
-continuation boundaries; they remain blob-backed. CPP_MIGRATION remains
-PAUSED_PENDING_ASM_COMPLETION.
-EVIDENCE: docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md
-NEXT ACTION: Propose exactly M12.2 at 0x00DE00..0x00E338 only; do not start it
-in this task. STOP after M12.1.
+UNRESOLVED_BOUNDARY_BYTES=970. Full materialized ROM reassembly is exact,
+with 222 code ranges, 144 blob ranges, 0 gaps and 0 overlaps.
+BLOCKER: The remaining target bytes include unresolved continuation boundaries
+and the indirect dispatch at 0x00E2F0; they remain blob-backed.
+CPP_MIGRATION remains PAUSED_PENDING_ASM_COMPLETION.
+EVIDENCE: docs/reports/ASM_PROMOTION_00DE00_00E338_M12_2.md
+NEXT ACTION: Propose exactly M12.3 at 0x006516..0x0083D4 only; do not start it
+in this task. STOP after M12.2.
 
 CURRENT_MILESTONE: M12.0 historical — complete ASM reconstruction
 CURRENT_TASK: exact full-ROM ASM completion census and roadmap rebase

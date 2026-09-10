@@ -25,6 +25,13 @@ wiring for the bounded 0x061934 natural callee contract. The deterministic
 regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
+M12.2 adds the developer-only transactional promoter
+`src/tools/re_m12_2_promote.py`, its deterministic helper test
+`tests/re_m12_2_test.py`, the bounded promotion report
+`docs/reports/ASM_PROMOTION_00DE00_00E338_M12_2.md`, and exact decoder/
+reassembler coverage for the target's ADDX, MULU, EOR/CMP and indirect-call
+forms. No production/core runtime file or ROM/asset was added.
+
 M11.61 adds `src/tools/hybrid/callee_62ae0_observer.hpp/.cpp` and the
 developer-only runtime wiring for natural entry/return, A5 equality, paths,
 and memory-effect evidence. `tests/hybrid_callee_62ae0_test.cpp` locks the

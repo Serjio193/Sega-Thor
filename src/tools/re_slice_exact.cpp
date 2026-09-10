@@ -72,6 +72,16 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         result.operation = family;
         result.width_bytes = 4;
         result.source = ea[0];
+    } else if (family == "multiply" && ea.size() == 1U) {
+        result.operation = (op & 0x0100U) ? "muls" : "mulu";
+        result.width_bytes = 2;
+        result.source = ea[0];
+        result.destination = dn;
+    } else if (family == "addx" && ea.size() == 2U) {
+        result.operation = "addx";
+        result.width_bytes = width;
+        result.source = ea[0];
+        result.destination = ea[1];
     } else if (family == "swap") {
         result.operation = "swap";
         result.width_bytes = 2;
@@ -155,13 +165,15 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         } else {
             if (group == 8U) result.operation = "or";
             else if (group == 9U) result.operation = "sub";
-            else if (group == 0xBU) result.operation = "cmp";
+            else if (group == 0xBU) result.operation = (op & 0x0100U) ? "eor" : "cmp";
             else if (group == 0xCU) result.operation = (op & 0x0100U) ? "exg" : "and";
             else if (group == 0xDU) result.operation = "add";
             else return;
             result.width_bytes = width;
-            result.source = mode < 4U ? ea[0] : dn;
-            result.destination = mode < 4U ? dn : ea[0];
+            const auto reverse = (op & 0x0100U) != 0U;
+            const auto source_is_ea = !reverse;
+            result.source = source_is_ea ? ea[0] : dn;
+            result.destination = source_is_ea ? dn : ea[0];
         }
     } else if (family == "shift_or_rotate" && size != 3U) {
         constexpr std::array names{"as", "ls", "rox", "ro"};

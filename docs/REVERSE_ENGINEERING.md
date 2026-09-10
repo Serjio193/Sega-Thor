@@ -43,6 +43,23 @@ reported separately. Full evidence:
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M12.2 — P0 region `0x00DE00..0x00E338` — PARTIAL EXACT
+
+The M12.2 transaction promotes 366 bytes in 13 exact, non-overlapping
+`68000_CODE_CONFIRMED` intervals. Evidence combines 31 observed PCs, 87 static
+incoming xrefs, direct branches/calls, fallthrough, surrounding ASM, decoder
+output and vasm 1.8g byte round trips. The bounded routines at
+`0x00DEEC`, `0x00E0BA`, `0x00E106`, `0x00E268`, and `0x00E2A2` retain their
+indirect JSR sites as explicit exits. The `0x00E2D4` prefix stops immediately
+before the unresolved indirect JMP at `0x00E2F0`.
+
+The repeated `0xD140` words are normalized as `ADDX.W D0,D0`; `0xC2C0` as
+`MULU.W D0,D1`; and the repeated `0xB141` words as exact `EOR.W D0,D1`.
+These are decoder/reassembly facts, not gameplay semantics. The remaining 970
+bytes stay blob-backed as `UNRESOLVED_BOUNDARY`; no `POSSIBLE_CODE`, structured
+data, padding, or `UNKNOWN_DATA` ownership is claimed. Full evidence:
+`reports/ASM_PROMOTION_00DE00_00E338_M12_2.md`.
+
 # M12.1 — P0 region 0x06042A..0x0611F4 — PARTIAL EXACT PROMOTION
 
 The M12.1 transaction promotes six exact bounded ASM slices totaling 546

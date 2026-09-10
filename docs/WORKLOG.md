@@ -4067,3 +4067,41 @@ interval: existing M11 evidence has eight internal coverage gaps and the
 decoder lacked exact IR for executable `MOVE SR` encodings at `0x06042A`,
 `0x0611DC` and `0x0611E6`. The decoder/tooling change is limited to exact
 normalization of `MOVE SR,<ea>` and `<ea>,SR`; no gameplay code is added.
+# M12.2 — Transactional ASM promotion of P0 region `0x00DE00..0x00E338`
+
+## Acceptance criteria
+
+- Start from baseline `0dac30bcca103ae03a6372d24c2aca25e1fb6460` and operate
+  only on the 1,336-byte target.
+- Promote only evidence-backed exact ASM intervals, with explicit indirect
+  exits, boundaries, classifications, and conservative unresolved blobs.
+- Preserve exact bytes for every slice and the full canonical ROM, with no
+  manifest gaps or overlaps.
+- Add deterministic regressions, run Debug/Release/GNU-equivalent checks,
+  source-limit/diff/hygiene checks, update the RE ledger/state/report, and
+  stop after recomputing exactly one M12.3 proposal.
+
+## Implementation and current result
+
+The target's independently closed ASM islands are being materialized through
+`src/tools/re_m12_2_promote.py`. The decoder now has exact `ADDX`, `MULU`, and
+EOR/CMP direction handling required by the target; the range checker permits
+exact indirect calls but remains fail-closed for indirect JMP dispatch. The
+focused decoder/reassembler regression and the transactional full-ROM pass
+have succeeded locally. Final configuration/build/CI results are recorded
+below before commit.
+
+## Final validation
+
+- Target transaction `build/m12-2-transaction-g` passed all 13 slice round trips
+  and the full 3,145,728-byte ROM round trip; exact hashes are in the report.
+- Debug build and CTest: **76/76 passed**.
+- Release build and CTest: **76/76 passed**.
+- Fresh GNU-equivalent MinGW build completed; targeted CTest: **2/2 passed**.
+- Independent evidence audit: **222/222** materialized ASM ranges round-trip
+  exactly; 15 historical provenance mismatches are retained as an audit
+  limitation and do not alter ownership.
+- Static bounded report emitted 44 exact routines; `git diff --check` passed;
+  source-size gate passed with the largest edited source at 500 lines; no
+  tracked ROM, save, commercial asset or generated evidence was staged.
+- Implementation commit and CI run SHA are appended after push.

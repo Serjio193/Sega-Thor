@@ -84,6 +84,24 @@ void status_register_moves() {
     assert(to_status.instructions[0].exact);
     assert(exact_instruction_asm(to_status.instructions[0]) == "move.w (A7)+,SR");
 }
+void promoted_instruction_forms() {
+    const auto addx = decode({0xD1,0x40, 0x4E,0x75});
+    assert(addx.instructions[0].exact);
+    assert(exact_instruction_asm(addx.instructions[0]) == "addx.w D0,D0");
+    const auto mulu = decode({0xC2,0xC0, 0x4E,0x75});
+    assert(mulu.instructions[0].exact);
+    assert(exact_instruction_asm(mulu.instructions[0]) == "mulu.w D0,D1");
+    const auto exg = decode({0xC3,0x42, 0x4E,0x75});
+    assert(exact_instruction_asm(exg.instructions[0]) == "exg D1,D2");
+    const auto eor = decode({0xB1,0x41, 0x4E,0x75});
+    assert(exact_instruction_asm(eor.instructions[0]) == "eor.w D0,D1");
+    const auto cmp = decode({0xB0,0x41, 0x4E,0x75});
+    assert(exact_instruction_asm(cmp.instructions[0]) == "cmp.w D1,D0");
+    const auto indirect_call = decode({0x4E,0x91, 0x4E,0x75});
+    assert(indirect_call.instructions[0].exact);
+    assert(exact_instruction_asm(indirect_call.instructions[0]) == "jsr.l (A1)");
+    assert(indirect_call.unresolved_control_flow.size() == 1U);
+}
 void pc_relative_encoding() {
     const auto slice = decode({0x41,0xFA,0x00,0x02, 0x4E,0x75});
     assert(slice.instructions[0].exact->source->kind == OperandKind::pc_displacement);
@@ -144,6 +162,7 @@ int main() {
     movem_and_sizes();
     diverse_addressing_and_unary_forms();
     status_register_moves();
+    promoted_instruction_forms();
     pc_relative_encoding();
     ccr_immediate_encoding();
     byte_immediate_preserves_extension();

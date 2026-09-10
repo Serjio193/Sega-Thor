@@ -1,25 +1,23 @@
-# M12.1 — Transactional ASM promotion of P0 region 0x06042A..0x0611F4 — DONE
+# M12.2 — Transactional ASM promotion of P0 region 0x00DE00..0x00E338 — DONE
 
-M12.1 completed one transactional, evidence-backed promotion against the
-M12.0 baseline at `b4937c8e1b99de7ca4f45cb20b3cdf37df51e932`. Six bounded
-slices are now source-owned ASM: `0x06042A..0x060484` (90 bytes),
-`0x060490..0x0604B0` (32), `0x060B50..0x060CDA` (394),
-`0x0611D6..0x0611E0` (10), `0x0611E0..0x0611EA` (10), and
-`0x0611EA..0x0611F4` (10). Total promotion is 546 bytes.
+M12.2 completed an evidence-backed partial exact promotion against baseline
+`0dac30bcca103ae03a6372d24c2aca25e1fb6460`. Thirteen independently bounded
+intervals are now source-owned 68000 ASM, totaling 366 bytes of the 1,336-byte
+target. The target retains 970 conservative unknown bytes with
+`POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`, and
+`UNRESOLVED_BOUNDARY_BYTES=970`. No structured data or padding ownership was
+claimed; the indirect dispatch at `0x00E2F0` remains blob-backed.
 
-Result: `M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT`. The target changes from
-0 ASM / 3,530 unknown blob bytes to 546 ASM / 2,984 conservatively retained
-unknown blob bytes. `POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`, and
-`UNRESOLVED_BOUNDARY_BYTES=2,984`; no data interpretation is claimed for the
-remaining bytes. The materialized whole-ROM map has 209 ASM ranges and 138
-blob ranges, with 0 gaps and 0 overlaps. Reassembly is exact for every slice
-and for the complete 3,145,728-byte ROM. No C++ gameplay/runtime migration or
-M12.2 work started. Full evidence is in
-`docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md`.
+Result: `M12_2_P0_CODE_PROMOTION_PARTIAL_EXACT`. The whole-ROM materialization
+now has 222 ASM ranges / 14,462 bytes and 144 blob ranges / 3,131,266 bytes,
+with 0 gaps and 0 overlaps. Every promoted slice and the complete
+3,145,728-byte ROM reassemble byte-for-byte exactly. No C++ gameplay/runtime
+migration or emulator expansion was started. Full evidence is in
+`docs/reports/ASM_PROMOTION_00DE00_00E338_M12_2.md`.
 
-The next proposal is exactly one M12.2 candidate:
-`0x00DE00..0x00E338` (1,336 bytes, 31 observed PCs, 87 static xrefs), not
-started. STOP after M12.1.
+The recomputed queue proposes exactly one M12.3 candidate:
+`0x006516..0x0083D4` (7,870 bytes, 25 observed PCs, 0 static xrefs), not
+started. STOP after M12.2.
 
 # M12.0 — Complete ASM reconstruction — COMPLETE / BLOCKED
 

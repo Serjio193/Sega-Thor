@@ -1,5 +1,24 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12.2 ASM promotion boundary
+
+M12.2 transactionally promotes thirteen exact source-owned intervals inside
+`0x00DE00..0x00E338`: `0x00DEEC..0x00DF52`, `0x00E0B8..0x00E0BA`,
+`0x00E0BA..0x00E0F4`, `0x00E0F4..0x00E0FE`, `0x00E106..0x00E140`,
+`0x00E268..0x00E2A2`, `0x00E2A2..0x00E2BA`, `0x00E2D4..0x00E2F0`,
+the four observed case arms `0x00E302..0x00E308`, `0x00E308..0x00E30C`,
+`0x00E30C..0x00E310`, `0x00E310..0x00E316`, and the shared tail
+`0x00E332..0x00E338`. They total 366 bytes and reassemble exactly.
+
+The remaining 970 bytes are `UNRESOLVED_BOUNDARY`; `POSSIBLE_CODE_BYTES=0`
+and `UNKNOWN_DATA_BYTES=0`. Exact indirect JSR sites at `0x00DF1A`,
+`0x00E0E4`, and `0x00E130` are recorded evidence, not unresolved range
+boundaries. The indirect JMP dispatch at `0x00E2F0` and its continuation remain
+blob-backed. No interval is a typed data structure or portable routine.
+
+The recomputed P0 queue proposes only `0x006516..0x0083D4` for M12.3
+(7,870 bytes, 25 observed PCs, 0 static xrefs); it is not started.
+
 ## M12.1 ASM promotion boundary
 
 M12.1 transactionally promotes only six exact source-owned intervals inside

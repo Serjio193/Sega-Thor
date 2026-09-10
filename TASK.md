@@ -1,18 +1,18 @@
 # Current task
 
-TASK: M12.1 Transactional ASM promotion of P0 region 0x06042A..0x0611F4
-STATUS: COMPLETE — M12_1_P0_CODE_PROMOTION_PARTIAL_EXACT
-BASELINE: b4937c8e1b99de7ca4f45cb20b3cdf37df51e932
-SCOPE: Six bounded developer-only ASM promotions and exact remaining-gap
+TASK: M12.2 Transactional ASM promotion of P0 region 0x00DE00..0x00E338
+STATUS: COMPLETE — M12_2_P0_CODE_PROMOTION_PARTIAL_EXACT
+BASELINE: 0dac30bcca103ae03a6372d24c2aca25e1fb6460
+SCOPE: Thirteen bounded developer-only ASM promotions and exact remaining-gap
 census. No native C++ gameplay/runtime migration, emulator expansion, ROM or
-asset commit, or M12.2 execution.
-RESULT: 546 exact ASM bytes promoted from the 3,530-byte target; 2,984 bytes
+asset commit, or M12.3 execution.
+RESULT: 366 exact ASM bytes promoted from the 1,336-byte target; 970 bytes
 remain conservative UNKNOWN blobs. POSSIBLE_CODE_BYTES=0,
-UNKNOWN_DATA_BYTES=0, UNRESOLVED_BOUNDARY_BYTES=2,984. The full materialized
-ROM is exact with 0 gaps and 0 overlaps.
-EVIDENCE: docs/reports/ASM_PROMOTION_06042A_0611F4_M12_1.md
-NEXT ACTION: One M12.2 proposal only, 0x00DE00..0x00E338; do not start it.
-STOP after M12.1.
+UNKNOWN_DATA_BYTES=0, UNRESOLVED_BOUNDARY_BYTES=970. The full materialized ROM
+is exact with 0 gaps and 0 overlaps.
+EVIDENCE: docs/reports/ASM_PROMOTION_00DE00_00E338_M12_2.md
+NEXT ACTION: One M12.3 proposal only, 0x006516..0x0083D4; do not start it.
+STOP after M12.2.
 
 # Historical task
 

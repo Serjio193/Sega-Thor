@@ -72,7 +72,7 @@ std::string exact_instruction_asm(const DecodedInstruction& instruction) {
     if (exact.branch_width_bytes) {
         if (exact.operation.substr(0, 2) != "db")
             text += exact.branch_width_bytes == 1 ? ".s" : ".w";
-    } else if (exact.width_bytes && exact.operation != "moveq") {
+    } else if (exact.width_bytes && exact.operation != "moveq" && exact.operation != "exg") {
         const bool ccr_immediate = exact.destination &&
             exact.destination->kind == OperandKind::status_register &&
             exact.destination->value == 0 && exact.width_bytes == 2 &&

@@ -2,6 +2,7 @@
 #include "core/rom_identity.hpp"
 #include "tools/re_assemble.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -41,8 +42,10 @@ int main(int argc, char** argv) {
         const auto slice = oasis::tools::decode_m68k_slice(rom.bytes(), options);
         if (slice.range_end != end || slice.instructions.empty())
             throw std::invalid_argument("BOUNDARY_UNCERTAIN");
-        if (!slice.unsupported_instruction_addresses.empty() ||
-            !slice.unresolved_control_flow.empty())
+        const auto unresolved_dispatch = std::any_of(
+            slice.unresolved_control_flow.begin(), slice.unresolved_control_flow.end(),
+            [](const auto& flow) { return flow.kind == oasis::tools::FlowKind::indirect_jump; });
+        if (!slice.unsupported_instruction_addresses.empty() || unresolved_dispatch)
             throw std::invalid_argument("UNSUPPORTED_FORM");
         write_file(argv[4], oasis::tools::slice_asm(slice));
         write_file(argv[5], oasis::tools::exact_slice_json(slice));

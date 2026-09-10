@@ -159,7 +159,6 @@ bool is_immediate_group(std::uint16_t opcode) {
     return group == 0x0000U || group == 0x0200U || group == 0x0400U ||
            group == 0x0600U || group == 0x0A00U || group == 0x0C00U;
 }
-
 bool is_no_extension_binary(std::uint16_t opcode) {
     if ((opcode & 0xF130U) == 0x8100U ||
         (((opcode & 0xF130U) == 0x9100U || (opcode & 0xF130U) == 0xD100U) &&
@@ -171,7 +170,6 @@ bool is_no_extension_binary(std::uint16_t opcode) {
     }
     return false;
 }
-
 DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
                               std::uint32_t range_end) {
     DecodedInstruction instruction{};
@@ -353,6 +351,26 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
             instruction.mnemonic = "unary";
             parse_single((opcode >> 3U) & 7U, opcode & 7U, size_bytes(size_code),
                          MemoryAccess::unknown);
+        }
+    } else if ((opcode & 0xF1C0U) == 0xC0C0U || (opcode & 0xF1C0U) == 0xC1C0U) {
+        instruction.mnemonic = "multiply";
+        parse_single((opcode >> 3U) & 7U, opcode & 7U, 2U, MemoryAccess::read);
+    } else if ((opcode & 0xF130U) == 0xD100U && (opcode & 0x00C0U) != 0x00C0U) {
+        const auto size_code = static_cast<unsigned>((opcode >> 6U) & 3U);
+        instruction.mnemonic = "addx";
+        if (size_code == 3U) recognized = false;
+        else {
+            const auto width = size_bytes(size_code);
+            const auto predecrement = (opcode & 0x0008U) != 0U;
+            DecodedOperand source{};
+            source.kind = predecrement ? OperandKind::predecrement : OperandKind::data_register;
+            source.register_index = static_cast<std::uint8_t>(opcode & 7U);
+            source.width_bytes = static_cast<std::uint8_t>(width);
+            DecodedOperand destination{};
+            destination.kind = predecrement ? OperandKind::predecrement : OperandKind::data_register;
+            destination.register_index = static_cast<std::uint8_t>((opcode >> 9U) & 7U);
+            destination.width_bytes = static_cast<std::uint8_t>(width);
+            instruction.effective_operands = {source, destination};
         }
     } else if ((opcode >> 12U) == 8U || (opcode >> 12U) == 9U ||
                (opcode >> 12U) == 0xBU || (opcode >> 12U) == 0xCU ||
