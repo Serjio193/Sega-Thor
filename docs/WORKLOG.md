@@ -35,6 +35,8 @@ and zero divergence; shadow has 5/5 comparisons, zero divergence and the
 expected five emulated fallback entries.
 NEXT ACTION: Propose M11.61 for one selected callee preservation/effect gap,
 starting at 062AE0; do not execute it in M11.60.
+COMMIT/CI: implementation commit c5cc77fb6b3718f773b9e0e7b16e156a381e7033
+is on origin/main; GitHub Actions run 34442718782 passed build and test.
 
 # 2026-09-10 — M11.59 raw data alias/lifetime closure — COMPLETE
 

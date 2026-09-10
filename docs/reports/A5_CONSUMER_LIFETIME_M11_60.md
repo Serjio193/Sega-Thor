@@ -148,3 +148,6 @@ reports 5/5 comparisons with zero divergence.
 Follow only the dominant blocker exposed here: close preservation/effects for
 one selected direct callee while G0 is live (start with `0x062AE0`), without
 promoting the lifetime or widening into another routine.
+
+The implementation is committed as `c5cc77fb6b3718f773b9e0e7b16e156a381e7033`;
+GitHub Actions run `34442718782` passed its build and test job.
