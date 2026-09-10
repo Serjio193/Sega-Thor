@@ -20,8 +20,8 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     generated_blocks_m1145_registry_0.cpp generated_blocks_m1145_registry_1.cpp
     generated_blocks_m1145_registry_2.cpp generated_blocks_m1145_registry_3.cpp
     generated_block_registry.cpp
-    recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp
-    caller_attribution.cpp caller_continuation.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
+    recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp runner_support.cpp
+    caller_attribution.cpp caller_continuation.cpp a5_lifetime_observer.cpp a5_lifetime_runtime.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
 
@@ -80,6 +80,9 @@ add_test(NAME oasis_hybrid_caller_attribution COMMAND oasis_hybrid_caller_attrib
 add_executable(oasis_hybrid_caller_continuation_test ${PROJECT_SOURCE_DIR}/tests/hybrid_caller_continuation_test.cpp)
 target_link_libraries(oasis_hybrid_caller_continuation_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_caller_continuation COMMAND oasis_hybrid_caller_continuation_test)
+add_executable(oasis_hybrid_a5_lifetime_test ${PROJECT_SOURCE_DIR}/tests/hybrid_a5_lifetime_test.cpp)
+target_link_libraries(oasis_hybrid_a5_lifetime_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_a5_lifetime COMMAND oasis_hybrid_a5_lifetime_test)
 add_executable(oasis_parent_suffix_test ${PROJECT_SOURCE_DIR}/tests/parent_suffix_test.cpp)
 target_link_libraries(oasis_parent_suffix_test PRIVATE oasis_core)
 add_test(NAME oasis_parent_suffix COMMAND oasis_parent_suffix_test)
@@ -96,7 +99,7 @@ target_compile_options(oasis_hybrid_checkpoint_evidence_test PRIVATE $<$<CONFIG:
 if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     get_filename_component(compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
     set_tests_properties(oasis_hybrid_contract oasis_hybrid_dispatch oasis_hybrid_candidate_2d66 oasis_hybrid_candidate_604bc oasis_hybrid_replacement oasis_hybrid_recomp_generator oasis_hybrid_generated_block oasis_hybrid_basic_block oasis_hybrid_generated_provenance oasis_hybrid_semantic_core oasis_hybrid_m1145_semantic oasis_hybrid_m1147_semantic oasis_hybrid_mechanical_primitive oasis_hybrid_checkpoint_evidence oasis_hybrid_checkpoint_layout oasis_hybrid_address_provenance oasis_hybrid_caller_attribution
-        oasis_hybrid_caller_continuation PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
+        oasis_hybrid_caller_continuation oasis_hybrid_a5_lifetime PROPERTIES ENVIRONMENT "PATH=${compiler_bin}")
 endif()
 
 set(OASIS_HYBRID_GPGX_SOURCE "" CACHE PATH "External GPGX source for developer-only PoC")

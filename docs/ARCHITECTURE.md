@@ -1,4 +1,15 @@
 # Architecture
+## M11.60 bounded A5 lifetime
+
+M11.60 adds only an opt-in, EMULATED-only developer observer under
+`src/tools/hybrid`. It records the raw A5 generation rooted at `0x060182`,
+selected register-relative consumers, call handoffs and the parent-owned
+`0x06027E` restore. The enclosing region remains parent-owned; no typed shared
+memory, subsystem or `oasis_core` boundary is introduced. The existing raw
+ParentSuffix + RamFlag cluster and its storage remain separate alternate
+producer/consumer paths. See ADR-0041 and
+`reports/A5_CONSUMER_LIFETIME_M11_60.md`.
+
 ## M11.59 raw ownership boundary
 
 M11.59 keeps the first behavior cluster raw and parent-parameterized. The

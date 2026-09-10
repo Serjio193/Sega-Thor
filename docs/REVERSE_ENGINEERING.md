@@ -1,6 +1,28 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.60 — bounded A5 consumer/lifetime closure — CONFIRMED
+
+G0 is the value materialized by `0x060182 LEA.L $FF001A,A5`. Exact bounded
+CFG evidence gives predecessor `0x060170 -> 0x060182`, a natural always-taken
+`0x06018E BCC.W 0x0601D4`, and a parent-owned continuation ending at
+`0x06027E MOVEM.L (A7)+,D0-D7/A0-A6` before `0x060284 RTS`. The fallthrough
+arm containing `0x06019E CMP.B 7(A5),D0` and `0x0601A6 MOVE.B D0,7(A5)` is
+dead because `TST.B` clears C. Live selected consumers are `0x06193C
+BTST.B #0,0(A5)` (+0 read, 10 natural events) and `0x061946 MOVE.B D7,4(A5)`
+(+4 write, 1,361 events); `0x061998 MOVE.B 4(A5),(A4)+` is static but was not
+reached in the 600-frame trace. No G0 spill, reload, arithmetic or direct A5
+overwrite was observed. The endpoint is `A5_LIFETIME_MERGES_WITH_PARENT`.
+
+The opt-in developer-only observer produced three byte-identical traces with
+486 generations and 486 parent restores. Five thousand eight hundred thirty-two
+direct call entries and callee entries were observed; the simple return pairer
+records 4,860 returns and is not treated as whole-call preservation proof.
+The raw transaction is therefore `BOUNDED_A5_TRANSACTION_BLOCKED_PARENT_LIFETIME`;
+the relation to M11.58 is `ARE_ALTERNATE_PRODUCER_CONSUMER_PATHS`. The typed
+gate remains `TYPED_DATA_BLOCKED_OVERLAPPING_ACCESS`. Full evidence:
+`reports/A5_CONSUMER_LIFETIME_M11_60.md`.
+
 # M11.59 — raw data alias/lifetime closure — CONFIRMED NEGATIVE
 
 Result: `RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED`. The all-ROM

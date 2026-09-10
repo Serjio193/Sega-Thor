@@ -1,3 +1,24 @@
+# ADR-0041 — Keep the 0x060182 A5 lifetime parent-owned
+**Status:** Accepted for M11.60
+**Date:** 2026-09-10
+
+**Context:** The natural generation written by `0x060182 LEA FF001A,A5` has a
+bounded CFG and exact +0/+4 consumers, while the +7 arm is dead. Its endpoint
+is the parent's `0x06027E MOVEM` restore. Calls crossed while G0 is live do not
+yet have complete whole-callee effect proofs, and M11.59 retains broader raw
+aliases and external writers.
+
+**Decision:** Record the generation with a developer-only hybrid observer and
+decoder regression test. Classify it as `A5_LIFETIME_MERGES_WITH_PARENT` and
+keep the transaction and typed-data gates fail-closed. Do not add a type,
+subsystem, production helper, or native routine.
+
+**Consequences:** The exact consumer/lifetime evidence is reusable for one
+future callee-preservation closure. Parent frame, GPGX, timing, ROM-PC and
+raw-storage ownership remain outside `oasis_core`.
+
+**Evidence:** `docs/reports/A5_CONSUMER_LIFETIME_M11_60.md`.
+
 # ADR-0040 — Preserve raw ownership boundary after M11.59 census
 **Status:** Accepted for M11.59
 **Date:** 2026-09-10

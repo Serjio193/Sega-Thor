@@ -1,5 +1,25 @@
 # Current task
 
+TASK: M11.60 Bounded A5 consumer/lifetime closure at 0x060182
+STATUS: COMPLETE — BOUNDED_A5_CONSUMER_LIFETIME_PROVEN
+BASELINE: 37ef10694bdab1a52b042f79bc8e1f480f3f25f2
+SCOPE: Developer-only natural G0 provenance rooted at 0x060182; no typed
+structure, production/core abstraction, 0x60BCC or 0x061258 expansion,
+gameplay meaning or new routine search.
+RESULT: G0=A5=FF001A has one natural taken CFG path, exact +0/+4 consumers,
+and an exact parent MOVEM restore endpoint at 0x06027E. The lifetime merges
+with the parent; the raw transaction remains blocked by parent/callee effects.
+Relation to M11.58 is ARE_ALTERNATE_PRODUCER_CONSUMER_PATHS. Typed data stays
+fail-closed as TYPED_DATA_BLOCKED_OVERLAPPING_ACCESS.
+VALIDATION: Repeated 600-frame observer traces are byte-identical; each has
+486 generations/kills, 10 +0 reads and 1,361 +4 writes. Authoritative identity
+remains checkpoint 251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d,
+video 5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58 and
+6,488,773 accounting with zero fallback/divergence.
+EVIDENCE: docs/reports/A5_CONSUMER_LIFETIME_M11_60.md
+NEXT ACTION: Propose M11.61 for preservation/effects of one selected callee,
+starting at 0x062AE0; do not execute it here.
+
 TASK: M11.59 Raw data alias/lifetime and external-writer closure
 STATUS: COMPLETE — RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED
 BASELINE: 9d75a836f727989158761d666c112cc0b76d2888

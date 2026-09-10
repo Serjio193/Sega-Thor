@@ -3,6 +3,39 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.60 bounded A5 consumer/lifetime closure — COMPLETE
+
+TASK: Close the natural A5 generation rooted at 0x060182 from baseline
+37ef10694bdab1a52b042f79bc8e1f480f3f25f2 without changing production/core.
+ACCEPTANCE CRITERIA: reproduce M11.59 identity; recover exact CFG and G0
+consumers; prove or falsify the lifetime endpoint; classify calls, relation to
+M11.58 and typed gate; add only developer-only deterministic provenance test;
+validate Debug/Release/UCRT and governance.
+
+RESULT: BOUNDED_A5_CONSUMER_LIFETIME_PROVEN. Static CFG classifies the region
+as PARENT_OWNED_REGION. TST/BCC makes the +7 arm dead; natural G0 consumers
+are 06193C +0 read (10) and 061946 +4 write (1,361). The exact endpoint is
+06027E MOVEM restore, so A5_LIFETIME_MERGES_WITH_PARENT. The raw transaction
+is BOUNDED_A5_TRANSACTION_BLOCKED_PARENT_LIFETIME; relation to M11.58 is
+ARE_ALTERNATE_PRODUCER_CONSUMER_PATHS; typed gate remains
+TYPED_DATA_BLOCKED_OVERLAPPING_ACCESS. No typed data, subsystem, 0x60BCC
+analysis or new routine was added.
+
+EVIDENCE: docs/reports/A5_CONSUMER_LIFETIME_M11_60.md; the opt-in observer
+produced three byte-identical 600-frame traces with 486 generations/kills.
+VALIDATION: authoritative checkpoint/video/accounting identity unchanged;
+targeted hybrid and line-limit checks passed. Full Debug and Release CTest
+pass 71/71. The configured UCRT build still fails compiling the existing
+raw_data_provenance_test.cpp before source diagnostics (exit 1), so its prior
+69/69 suite is not evidence for this new test. This remains
+LOCAL_TOOLCHAIN_ENVIRONMENT, per scope.
+Post-change authoritative 600-frame runs also match exactly: native override
+has 6,488,692 interpreter + 81 translated = 6,488,773 total, zero fallback
+and zero divergence; shadow has 5/5 comparisons, zero divergence and the
+expected five emulated fallback entries.
+NEXT ACTION: Propose M11.61 for one selected callee preservation/effect gap,
+starting at 062AE0; do not execute it in M11.60.
+
 # 2026-09-10 — M11.59 raw data alias/lifetime closure — COMPLETE
 
 TASK: Close the smallest raw-data ownership, alias/lifetime and external-writer

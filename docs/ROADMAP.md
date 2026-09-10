@@ -1,3 +1,14 @@
+# M11.60 — Bounded A5 consumer/lifetime closure — DONE
+
+Result: `BOUNDED_A5_CONSUMER_LIFETIME_PROVEN`. The natural G0 rooted at
+`0x060182` has an exact parent-owned CFG, one taken path, selected +0/+4
+consumers and a `0x06027E` parent restore endpoint. Transaction promotion is
+blocked by parent lifetime and incomplete callee effects; typed data remains
+fail-closed. Evidence: `reports/A5_CONSUMER_LIFETIME_M11_60.md`.
+
+Next proposed milestone: M11.61 may close preservation/effects for one direct
+callee crossed by G0, starting at `0x062AE0`; do not execute it as part of M11.60.
+
 # M11.59 — Raw data alias/lifetime and external-writer closure — DONE
 
 Result: `RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED`. The exact

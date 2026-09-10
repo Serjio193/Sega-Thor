@@ -9,10 +9,12 @@
 #include "tools/hybrid/address_provenance.hpp"
 #include "tools/hybrid/caller_attribution.hpp"
 #include "tools/hybrid/caller_continuation.hpp"
+#include "tools/hybrid/a5_lifetime_runtime.hpp"
 #include "tools/hybrid/candidate_parent_suffix.hpp"
 #include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/mechanical_primitive.hpp"
 #include "tools/hybrid/runner_report.hpp"
+#include "tools/hybrid/runner_support.hpp"
 #include "tools/hybrid/checkpoint_evidence.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
@@ -49,6 +51,7 @@ void hook(int type, int width, unsigned address, unsigned value) {
     address &= 0xFFFFFFU;
     if (continuation_observer)
         continuation_observer->event(type, width, address, value, current_frame, previous_execute_pc);
+    oasis::hybrid::record_a5_lifetime_event(type, width, address, value, current_frame, previous_execute_pc);
     if (type == 1 && caller_observer && address == 0x0604BC)
         caller_observer->entry(address, previous_execute_pc, current_frame);
     if (type == 1) {
@@ -67,13 +70,6 @@ void hook(int type, int width, unsigned address, unsigned value) {
     else if (registry_dispatch) registry_dispatch->hook(type, width, address, value);
     else dispatch->hook(type, width, address, value);
 }
-oasis::hybrid::BlockExitReason boundary_reason() noexcept {
-    if (!gpgx_boundary_reason) return oasis::hybrid::BlockExitReason::FALLBACK;
-    const auto value = gpgx_boundary_reason();
-    return value <= static_cast<unsigned>(oasis::hybrid::BlockExitReason::FALLBACK) ?
-        static_cast<oasis::hybrid::BlockExitReason>(value) :
-        oasis::hybrid::BlockExitReason::FALLBACK;
-}
 int block_hook(unsigned address) {
     if (caller_observer && address == 0x0604BC)
         caller_observer->entry(address, previous_execute_pc, current_frame);
@@ -86,12 +82,6 @@ int block_hook(unsigned address) {
         if (result) return result;
     }
     return block_registry ? block_registry->dispatch(address) : 0;
-}
-unsigned parse_target(std::string_view text) {
-    std::size_t consumed = 0;
-    const auto value = std::stoul(std::string(text), &consumed, 0);
-    if (consumed != text.size() || value > 0xFFFFFF) throw std::runtime_error("invalid target");
-    return value;
 }
 bool environment(unsigned command, void* data) {
     switch (command) {
@@ -164,7 +154,7 @@ int main(int argc, char** argv) {
             const auto token = target_text.substr(begin, comma == std::string_view::npos ?
                                                        target_text.size() - begin : comma - begin);
             if (token.empty()) throw std::runtime_error("invalid target list");
-            selected_targets.push_back(parse_target(token));
+            selected_targets.push_back(oasis::hybrid::parse_runner_target(token));
             if (comma == std::string_view::npos) break;
             begin = comma + 1;
         }
@@ -210,6 +200,11 @@ int main(int argc, char** argv) {
             continuation_observer = std::make_unique<oasis::hybrid::CallerContinuationObserver>(
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
         }
+        if (std::getenv("OASIS_A5_LIFETIME")) {
+            if (!plain_emulated) throw std::runtime_error("A5 lifetime evidence requires EMULATED");
+            oasis::hybrid::start_a5_lifetime_observer(
+                oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
+        }
         std::unique_ptr<oasis::hybrid::Dispatch> session;
         std::vector<std::unique_ptr<oasis::hybrid::Replacement>> candidate_storage;
         std::vector<oasis::hybrid::Replacement*> candidate_targets;
@@ -237,13 +232,14 @@ int main(int argc, char** argv) {
             const auto refresh_period = library.get<unsigned(*)()>("retro_hybrid_refresh_period");
             const auto refresh_penalty = library.get<unsigned(*)()>("retro_hybrid_refresh_penalty");
             gpgx_boundary_reason = library.get<unsigned(*)()>("retro_hybrid_boundary_reason");
+            oasis::hybrid::set_boundary_reason_provider(gpgx_boundary_reason);
             const auto add_block_cycles = library.get<void(*)(int)>("retro_hybrid_add_cycles");
             const auto skip_block_refresh = library.get<void(*)()>("retro_hybrid_skip_bus_refresh");
             const oasis::hybrid::BasicBlockApi api{
                 reg, set_reg, peek, fetch16, read, write, begin_instruction,
                 finish_instruction, add_block_cycles, skip_block_refresh,
                 instruction_cycles, cpu_field, refresh_period, refresh_penalty,
-                boundary_reason};
+                oasis::hybrid::runner_boundary_reason};
             blocks = std::make_unique<oasis::hybrid::BasicBlockRegistry>(
                 api, (mode_text == "BASIC_BLOCK_SHADOW" || mode_text == "MECHANICAL_PRIMITIVE_SHADOW") ?
                     oasis::hybrid::BasicBlockMode::SHADOW_NATIVE :
@@ -339,6 +335,7 @@ int main(int argc, char** argv) {
             trace.exceptions(std::ios::failbit | std::ios::badbit);
             trace << continuation_observer->jsonl();
         }
+        oasis::hybrid::finish_a5_lifetime_observer(std::filesystem::path(directory) / "a5_lifetime.jsonl");
         if (discover_mode) {
             discovery_mode = false;
             library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
@@ -364,6 +361,7 @@ int main(int argc, char** argv) {
         library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
         if (address_observer) { address_observer->finish(); address_observer.reset(); }
         if (caller_observer) { caller_observer->finish(); caller_observer.reset(); }
+        oasis::hybrid::stop_a5_lifetime_observer();
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};

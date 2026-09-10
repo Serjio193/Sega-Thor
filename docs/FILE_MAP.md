@@ -1,4 +1,12 @@
 # File Map
+M11.60 adds `src/tools/hybrid/a5_lifetime_observer.hpp/.cpp` and the small
+`a5_lifetime_runtime.*` bridge for opt-in natural G0 provenance, plus
+`runner_support.*` to keep the developer runner below the source-size limit.
+`tests/hybrid_a5_lifetime_test.cpp` locks deterministic materialization,
+consumer and parent-restore evidence. The milestone report is
+`docs/reports/A5_CONSUMER_LIFETIME_M11_60.md`. These are developer-only
+artifacts; no `oasis_core` or production behavior changed.
+
 M11.59 adds `docs/reports/RAW_DATA_OWNERSHIP_M11_59.md`, the all-ROM raw-data
 ownership/alias/lifetime census and typed-gate result. It also adds
 `tests/raw_data_provenance_test.cpp`, a decoder-only address-mode regression,

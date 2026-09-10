@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.60 complete — bounded A5 consumer/lifetime closure
+CURRENT_TASK: complete; natural G0 provenance at 0x060182
+STATUS: COMPLETE — BOUNDED_A5_CONSUMER_LIFETIME_PROVEN
+SCOPE_BOUNDARY: Developer-only A5 lifetime observer and decoder evidence;
+no typed data, production/core abstraction, 0x60BCC/0x061258 expansion,
+gameplay meaning or new routine search.
+LAST_VERIFIED_RESULT: G0 materialized as FF001A at 0x060182, takes the
+0x06018E edge in all 486 generations, reaches exact +0/+4 consumers and
+merges into the parent at 0x06027E MOVEM restore. Raw transaction promotion
+is blocked by parent lifetime and incomplete callee effects.
+BLOCKER: BOUNDED_A5_TRANSACTION_BLOCKED_PARENT_LIFETIME.
+INVENTORY: 2 authoritative routines, 4 mechanical primitives, 1 proven
+portable behavior cluster, 0 typed structures, 0 portable subsystem boundaries.
+EVIDENCE: docs/reports/A5_CONSUMER_LIFETIME_M11_60.md
+NEXT ACTION: Propose M11.61 for one callee preservation/effect closure only.
+
 CURRENT_MILESTONE: M11.59 complete — raw data alias/lifetime closure
 CURRENT_TASK: complete; fixed and register-relative ownership census
 STATUS: COMPLETE — RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED
