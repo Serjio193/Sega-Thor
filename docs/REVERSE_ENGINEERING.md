@@ -1,9 +1,12 @@
-# M12-AUTO3 indexed script provenance checkpoint
+# M12-AUTO4 nested level-table provenance checkpoint
 
-The current local M12 transaction reaches 729,658 bytes (23.195203145%) of
+The current local M12 transaction reaches 731,827 bytes (23.264153798%) of
 source-owned ROM while preserving the canonical ROM SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
-consumer evidence now includes the `0x51514` indexed script table, the
+consumer evidence now also includes the nested table at `0x5D918`, its exact
+count-bounded group region `[0x5D958,0x5DB44)`, and 185 unique
+pointer-backed NUL-terminated records in `[0x5DB44,0x5E1A0)`. The earlier
+`0x51514` indexed script table, the
 `0x00C2EC` loop over indices `0x00..0x61` excluding `0x1B..0x1D`, and 98
 NUL-terminated streams resolved by `0x00C326`, in addition to the 68000 Z80
 upload at `0x06134E`, direct
@@ -12,6 +15,17 @@ upload at `0x06134E`, direct
 `0x0012E8`. Decoder census candidates without a closed table/consumer edge
 remain UNKNOWN. Full evidence is in
 `docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
+# M12-AUTO4 nested level-table boundary
+
+The exact transaction is
+`build/m12-auto4-level-transaction-a/materialized/manifest.json`. The outer
+table `[0x5D918,0x5D958)` contributes 64 bytes, its contiguous non-empty
+count-bounded groups `[0x5D958,0x5DB44)` contribute 492 bytes, and 185 unique
+inner-pointer records contribute 1,613 bytes. The 186 non-zero inner edges
+resolve to those 185 records. One 8-byte record-shaped span at
+`0x5E0FE..0x5E106` is not pointer-backed by the closed graph and remains
+UNKNOWN. No semantic level/text interpretation is required for ownership.
 
 # M11.64 G0 portability boundary closure
 

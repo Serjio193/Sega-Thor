@@ -1,5 +1,19 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO4 nested level-table boundary
+
+The M12-AUTO4 transaction promotes 731,827 bytes (23.264153798%) of the
+canonical ROM, preserving the exact ROM hashes. The new structured-data edge
+is the outer table `[0x5D918,0x5D958)` selected by exact 68000 lookup sites at
+`0x4D58`, `0x4DCC`, `0x4E2C`, `0x4F00`, `0x4F12`, and `0x4F4A`. Every non-empty
+group has a 16-bit count and exact boundary `start + 2*(count+2)`; the groups
+are contiguous through `0x5DB44` and contribute 492 bytes. Their 186 non-zero
+inner pointers resolve to 185 unique records with printable bodies and exact
+NUL terminators, contributing 1,613 bytes through `0x5E1A0`, immediately
+before all-`FF` filler. The 8-byte unindexed record-shaped span
+`0x5E0FE..0x5E106` remains UNKNOWN. The threshold still requires 2,099,329
+additional bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO3 indexed script-table boundary
 
 The M12-AUTO3 transaction promotes 729,658 bytes (23.195203145%) of the

@@ -4362,3 +4362,34 @@ focused commit/push and its remote CI result below.
 is pushed and matches `origin/main`. GitHub Actions CI run `34524552827`
 completed successfully; build and test passed, with only the upstream Node.js
 20 deprecation annotation.
+
+# 2026-09-10 — M12-AUTO4 nested level-table provenance — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+the canonical ROM byte-for-byte and not starting M13, native gameplay/runtime
+C++, or emulator expansion. Acceptance required a closed nested table/group/
+record graph, zero manifest gaps/overlaps, full-ROM hash identity, and no
+promotion of the unindexed record-shaped gap.
+
+**RESULT:** The new developer-only promoter
+`src/tools/re_m12_level_table_promote.py` records outer table
+`[0x5D918,0x5D958)`, contiguous count-bounded groups
+`[0x5D958,0x5DB44)`, 186 non-zero inner edges, and 185 unique bounded records
+through `0x5E1A0`. The transaction is
+`build/m12-auto4-level-transaction-a/materialized/manifest.json` and reaches
+731,827 / 3,145,728 source-owned bytes (`23.264153798%`), adding 2,169 bytes.
+The 8-byte unindexed record-shaped span `0x5E0FE..0x5E106` remains UNKNOWN.
+
+**EXACTNESS:** The rebuilt ROM is 3,145,728 bytes with CRC32 `C4728225`,
+SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** Focused helper, Python compilation, promoter round trip, and
+independent manifest/hash audit passed. Debug MinGW full CTest passed 85/85;
+Release MinGW full CTest passed 85/85; the GNU/Linux-equivalent build linked
+successfully and all 11 M12 helper tests passed. `git diff --check` and the
+source-file line-limit check passed.
+
+**STOP:** The >=90% gate remains unmet; 2,099,329 additional bytes are
+required. No guessed padding, unknown asset classification, semantic text
+claim, ROM mutation, or ASM-to-C++ migration was performed.

@@ -26,6 +26,14 @@ regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
 
+M12-AUTO4 adds the developer-only nested level-table promoter
+`src/tools/re_m12_level_table_promote.py` and its deterministic regression
+`tests/re_m12_level_table_promote_test.py`. It records the exact
+`0x5D918..0x5D958` outer table, contiguous count-bounded nested groups, and
+only the 185 pointer-backed NUL-terminated record spans through `0x5E1A0`;
+the generated transaction remains ignored build evidence and no C++ migration
+or ROM asset is tracked.
+
 M12-AUTO2 adds the developer-only consumer-backed graphics census
 `src/tools/re_graphics_stream_census.cpp`, pointer consumer scanner
 `src/tools/re_m12_pointer_resource_scan.cpp`, and transactional promoter
