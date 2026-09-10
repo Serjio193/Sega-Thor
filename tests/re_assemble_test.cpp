@@ -107,6 +107,15 @@ void pc_relative_encoding() {
     assert(slice.instructions[0].exact->source->kind == OperandKind::pc_displacement);
     assert(exact_instruction_asm(slice.instructions[0]) == "lea.l ($0002,PC),A0");
 }
+void dynamic_bit_forms() {
+    const auto indexed = decode({0x03,0xF1,0x00,0x00,0x4E,0x75});
+    assert(indexed.instructions[0].exact);
+    assert(indexed.instructions[0].bytes.size() == 4);
+    assert(exact_instruction_asm(indexed.instructions[0]) == "bset.b D1,0(A1,D0.W)");
+    const auto absolute = decode({0x01,0xF9,0x00,0xFF,0x0D,0xBA,0x4E,0x75});
+    assert(absolute.instructions[0].exact);
+    assert(exact_instruction_asm(absolute.instructions[0]) == "bset.b D0,($00FF0DBA).L");
+}
 void ccr_immediate_encoding() {
     DecodedInstruction instruction{};
     instruction.address = 0xDA2AU;
@@ -125,7 +134,7 @@ void ccr_immediate_encoding() {
 }
 void byte_immediate_preserves_extension() {
     const auto slice = decode({0x02,0x00,0xFF,0xF3,0x4E,0x75});
-    assert(exact_instruction_asm(slice.instructions[0]) == "andi.b #$FFF3,D0");
+    assert(exact_instruction_asm(slice.instructions[0]) == "dc.w $0200,$FFF3");
 }
 void differences() {
     const std::vector<std::uint8_t> rom{9,8,0x36,0xC1,0x4E,0x75};
@@ -163,6 +172,7 @@ int main() {
     diverse_addressing_and_unary_forms();
     status_register_moves();
     promoted_instruction_forms();
+    dynamic_bit_forms();
     pc_relative_encoding();
     ccr_immediate_encoding();
     byte_immediate_preserves_extension();

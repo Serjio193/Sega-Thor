@@ -1,3 +1,60 @@
+# 2026-09-10 — M12.3 transactional ASM promotion — COMPLETE
+
+TASK: Execute the single M12.3 transaction for P0
+`0x006516..0x0083D4` from baseline
+`b9b55fc46fad88eb2ff1285e85bd9d8169d0289d`. Acceptance required exact
+evidence-backed ASM ownership, conservative gap classification, byte-exact
+target/full-ROM round trips, deterministic regressions, documentation, and
+one recomputed next proposal. No ASM-to-C++ migration, production/runtime
+expansion, emulator expansion, G0 reopening, or M12.4 execution was allowed.
+
+RESULT: `M12_3_P0_CODE_PROMOTION_PARTIAL_EXACT`. Fourteen non-overlapping
+exact islands were accepted: 258 + 18 + 4 + 10 + 22 + 10 + 48 + 16 + 4 + 14
++ 42 + 28 + 74 + 148 = 696 ASM bytes. The target changes from 0 ASM / 7,870
+blob bytes to 696 ASM / 7,174 conservative unresolved-boundary bytes.
+`POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`, and no structured-data or
+padding ownership is claimed. The remaining intervals and exact reasons are
+in `docs/reports/ASM_PROMOTION_006516_0083D4_M12_3.md`.
+
+EVIDENCE: The 25 observed PCs in `0x0082FC..0x00832C` are interior fallthrough
+of the proven `0x0082F8` entry; the priority report's zero static xrefs is
+subregion accounting, not absence of code. Atlas-local verified entries at
+`0x007A28` and `0x0082AE`, direct CFG edges, exact fallthrough, and bounded
+returns/branches support the accepted islands. Multi-seed walks stop at
+returns, external unconditional branches, unresolved indirect exits, invalid
+or unsupported instructions, data, and overlaps.
+
+DECODER: Added only the required dynamic-bit forms (`BSET/BCHG/BCLR/BTST`),
+including `BSET D1,(A1,D0.W)` at `0x007B24` and
+`BSET D0,($00FF0DBA).L` at `0x007BEC`. Exact reassembly retains canonical
+byte-immediate `0xFF` extension words with `dc.w` when vasm would normalize
+the mnemonic encoding. This remains developer-only executable ASM source.
+
+WHOLE-ROM: The exact map changes from 222 ASM ranges / 14,462 bytes
+(0.459734599%) and 144 blob ranges / 3,131,266 bytes (99.540265401%) to
+236 ASM ranges / 15,158 bytes (0.481859843%) and 147 blob ranges / 3,130,570
+bytes (99.518140157%). Gaps and overlaps remain zero. Canonical and rebuilt
+ROM identities are unchanged: CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: M12.3 helper and exact-reassembly regressions pass. Fresh Debug
+and Release MinGW builds pass, and full Debug and Release CTest are both
+`77/77`. A fresh GNU/MinGW-equivalent Release build/link passes; targeted GNU
+CTest is `2/2` (`oasis_re_assemble` and `oasis_re_m12_3_helpers`). The
+independent materialized-manifest audit confirms all fourteen target
+boundaries, four retained intervals, and exact full-ROM SHA-256. The
+evidence-integrity audit reports the full ROM exact and 236/236 ranges
+materialized; its historical provenance view retains 29 mismatches without
+changing the transaction result. `git diff --check`, the source-size limit
+(CMakeLists.txt 500 lines; decoder 499; all other changed source files below
+500), and tracked-artifact hygiene pass. No ADR was added because this is a
+bounded developer-tooling change with no architecture change.
+
+NEXT PROPOSAL: Exactly one M12.4 candidate, `0x000000..0x0007C4` (1,988
+bytes, 23 observed PCs, 3 static xrefs), selected by remaining observed-PC
+concentration. It was not started. STOP after M12.3.
+
 # 2026-09-10 — M12.1 transactional ASM promotion — COMPLETE
 
 TASK: Execute the single M12.1 transaction for P0

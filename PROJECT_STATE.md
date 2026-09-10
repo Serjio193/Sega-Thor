@@ -1,5 +1,25 @@
 # Project State
 
+CURRENT_MILESTONE: M12.3 complete — transactional ASM promotion of
+0x006516..0x0083D4
+CURRENT_TASK: exact promotion transaction and bounded remaining-gap census
+STATUS: COMPLETE — M12_3_P0_CODE_PROMOTION_PARTIAL_EXACT
+BASELINE: b9b55fc46fad88eb2ff1285e85bd9d8169d0289d
+SCOPE_BOUNDARY: Developer-only reconstruction tooling and documentation;
+no native C++ gameplay/runtime migration, emulator expansion, G0 reopening,
+M12.4 execution, or copyrighted ROM/assets committed.
+LAST_VERIFIED_RESULT: Fourteen non-overlapping slices promote 696 bytes from
+the 7,870-byte target. The target now has 696 ASM bytes and 7,174 conservative
+UNRESOLVED_BOUNDARY blobs; POSSIBLE_CODE_BYTES=0 and UNKNOWN_DATA_BYTES=0.
+Full materialized ROM reassembly is exact, with 236 code ranges, 147 blob
+ranges, 0 gaps and 0 overlaps.
+BLOCKER: The remaining target bytes lack independently closed entry,
+continuation, or neighboring dispatch ownership; they remain blob-backed.
+CPP_MIGRATION remains PAUSED_PENDING_ASM_COMPLETION.
+EVIDENCE: docs/reports/ASM_PROMOTION_006516_0083D4_M12_3.md
+NEXT ACTION: Propose exactly M12.4 at 0x000000..0x0007C4 only; do not start it
+in this task. STOP after M12.3.
+
 CURRENT_MILESTONE: M12.2 complete — transactional ASM promotion of
 0x00DE00..0x00E338
 CURRENT_TASK: exact promotion transaction and bounded remaining-gap census

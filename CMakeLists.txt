@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 project(sega_thor LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -183,6 +182,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_1_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_1_test.py)
     add_test(NAME oasis_re_m12_2_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_2_test.py)
+    add_test(NAME oasis_re_m12_3_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_3_test.py)
     add_test(NAME oasis_gpgx_persistent_coverage_semantics
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_persistent_coverage_test.py)
     add_test(NAME oasis_gpgx_unknown_priority_self_test

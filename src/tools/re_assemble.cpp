@@ -62,12 +62,25 @@ DecodedOperand encoding_operand(const DecodedInstruction& instruction,
                    instruction.bytes[offset + 1];
     return result;
 }
+std::string raw_words(const DecodedInstruction& instruction) {
+    std::ostringstream out;
+    out << "dc.w";
+    for (std::size_t offset = 0; offset < instruction.bytes.size(); offset += 2U)
+        out << (offset ? "," : " ") << "$" << hex(
+            (static_cast<std::uint16_t>(instruction.bytes[offset]) << 8U) |
+            instruction.bytes[offset + 1U], 4);
+    return out.str();
+}
 } // namespace
 
 std::string exact_instruction_asm(const DecodedInstruction& instruction) {
     if (!instruction.supported || !instruction.exact)
         throw std::invalid_argument("no exact IR at 0x" + hex(instruction.address));
     const auto& exact = *instruction.exact;
+    if (exact.source && exact.source->kind == OperandKind::immediate &&
+        exact.source->width_bytes == 1U && instruction.bytes.size() >= 4U &&
+        instruction.bytes[2] == 0xFFU)
+        return raw_words(instruction);
     std::string text = exact.operation;
     if (exact.branch_width_bytes) {
         if (exact.operation.substr(0, 2) != "db")

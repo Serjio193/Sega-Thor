@@ -1,3 +1,19 @@
+# M12.3 — Transactional ASM promotion of P0 region 0x006516..0x0083D4 — DONE
+
+M12.3 completed an evidence-backed partial exact promotion against baseline
+`b9b55fc46fad88eb2ff1285e85bd9d8169d0289d`. Fourteen independently bounded
+intervals are now source-owned 68000 ASM, totaling 696 bytes of the 7,870-byte
+target. The target retains 7,174 conservative unresolved-boundary bytes with
+`POSSIBLE_CODE_BYTES=0`, `UNKNOWN_DATA_BYTES=0`, and no structured-data or
+padding ownership. Full evidence is in
+`docs/reports/ASM_PROMOTION_006516_0083D4_M12_3.md`.
+
+The whole-ROM materialization now has 236 ASM ranges / 15,158 ASM bytes and
+147 blob ranges / 3,130,570 blob bytes, with 0 gaps and 0 overlaps. The
+canonical ROM round trip remains byte-exact. Exactly one M12.4 proposal is
+recorded: `0x000000..0x0007C4` (1,988 bytes, 23 observed PCs, 3 static xrefs),
+not started. STOP after M12.3.
+
 # M12.2 — Transactional ASM promotion of P0 region 0x00DE00..0x00E338 — DONE
 
 M12.2 completed an evidence-backed partial exact promotion against baseline

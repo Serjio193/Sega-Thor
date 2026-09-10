@@ -43,6 +43,25 @@ reported separately. Full evidence:
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M12.3 — P0 region `0x006516..0x0083D4` — PARTIAL EXACT
+
+The M12.3 transaction promotes 696 bytes in fourteen exact, non-overlapping
+`68000_CODE_CONFIRMED` intervals. Evidence combines the 25 observed PCs in
+`0x0082FC..0x00832C`, Atlas-local verified entries at `0x007A28` and
+`0x0082AE`, the direct caller at `0x007F98`, direct CFG edges, exact
+fallthrough, neighboring ASM, and vasm byte round trips. The reported zero
+static xrefs is scoped to the priority subregion; it does not negate the
+containing `0x0082F8` entry or its observed interior execution.
+
+The decoder/reassembler now covers dynamic bit operations, including
+`BSET D1,(A1,D0.W)` at `0x007B24` and `BSET D0,($00FF0DBA).L` at `0x007BEC`.
+The exact byte-immediate `0xFF` extension case is retained with raw `dc.w`
+words because vasm normalizes that encoding when written as a mnemonic. These
+are encoding facts; no gameplay semantics are inferred. The remaining 7,174
+bytes stay `UNRESOLVED_BOUNDARY` because their entry, continuation, or
+neighboring dispatch ownership is not independently closed. Full evidence:
+`reports/ASM_PROMOTION_006516_0083D4_M12_3.md`.
+
 ## M12.2 — P0 region `0x00DE00..0x00E338` — PARTIAL EXACT
 
 The M12.2 transaction promotes 366 bytes in 13 exact, non-overlapping

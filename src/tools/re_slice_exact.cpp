@@ -151,6 +151,12 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         result.source->extension_bytes = 2;
         result.source->extension_address = instruction.address + 2;
         result.destination = ea[0];
+    } else if (family == "dynamic_bit" && ea.size() == 2U) {
+        constexpr std::array names{"btst", "bchg", "bclr", "bset"};
+        result.operation = names[(op >> 6U) & 3U];
+        result.width_bytes = ea[1].kind == OperandKind::data_register ? 4U : 1U;
+        result.source = ea[0];
+        result.destination = ea[1];
     } else if (family == "binary" && ea.size() == 1U) {
         const auto group = op >> 12U;
         const auto mode = (op >> 6U) & 7U;

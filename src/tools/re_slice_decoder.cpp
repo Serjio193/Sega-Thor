@@ -10,21 +10,17 @@ namespace oasis::tools {
 namespace {
 
 using Bytes = std::span<const std::uint8_t>;
-
 std::uint16_t read16(Bytes bytes, std::size_t offset) {
     return static_cast<std::uint16_t>(
         (static_cast<std::uint16_t>(bytes[offset]) << 8U) | bytes[offset + 1U]);
 }
-
 std::uint32_t read32(Bytes bytes, std::size_t offset) {
     return (static_cast<std::uint32_t>(read16(bytes, offset)) << 16U) |
            read16(bytes, offset + 2U);
 }
-
 std::size_t size_bytes(unsigned size_code) {
     return size_code == 0U ? 1U : size_code == 1U ? 2U : 4U;
 }
-
 std::size_t ea_extension_bytes(unsigned mode, unsigned reg,
                                std::size_t data_width) {
     if (mode == 5U || mode == 6U || (mode == 7U && (reg == 0U || reg == 2U || reg == 3U))) {
@@ -34,37 +30,31 @@ std::size_t ea_extension_bytes(unsigned mode, unsigned reg,
     if (mode == 7U && reg == 4U) return data_width <= 2U ? 2U : 4U;
     return 0U;
 }
-
 MemoryKind memory_kind(std::uint32_t address) {
     if (address < 0x00400000U) return MemoryKind::rom;
     if (address >= 0x00FF0000U && address <= 0x00FFFFFFU) return MemoryKind::ram;
     return MemoryKind::other;
 }
-
 void add_immediate(DecodedInstruction& instruction, std::uint32_t value,
                    std::size_t width) {
     instruction.immediate_constants.push_back(
         {value, static_cast<std::uint8_t>(width)});
 }
-
 void add_memory_reference(DecodedInstruction& instruction, std::uint32_t address,
                           std::size_t width, MemoryAccess access) {
     instruction.memory_references.push_back(
         {address, static_cast<std::uint8_t>(width), memory_kind(address), access});
 }
-
 void add_unresolved_memory_reference(DecodedInstruction& instruction, unsigned mode,
                                     unsigned reg, const char* reason) {
     instruction.unresolved_memory_references.push_back(
         {static_cast<std::uint8_t>(mode), static_cast<std::uint8_t>(reg), reason});
 }
-
 void add_unsupported_addressing(DecodedInstruction& instruction, unsigned mode,
                                 unsigned reg, const char* reason) {
     instruction.unsupported_addressing.push_back(
         {static_cast<std::uint8_t>(mode), static_cast<std::uint8_t>(reg), reason});
 }
-
 std::string addressing_mode_name(unsigned mode, unsigned reg) {
     if (mode == 0U) return "data_register";
     if (mode == 1U) return "address_register";
@@ -159,6 +149,8 @@ bool is_immediate_group(std::uint16_t opcode) {
     return group == 0x0000U || group == 0x0200U || group == 0x0400U ||
            group == 0x0600U || group == 0x0A00U || group == 0x0C00U;
 }
+bool is_dynamic_bit(std::uint16_t opcode) { const auto base = opcode & 0xF1C0U;
+    return base == 0x0100U || base == 0x0140U || base == 0x0180U || base == 0x01C0U; }
 bool is_no_extension_binary(std::uint16_t opcode) {
     if ((opcode & 0xF130U) == 0x8100U ||
         (((opcode & 0xF130U) == 0x9100U || (opcode & 0xF130U) == 0xD100U) &&
@@ -266,6 +258,13 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
                                                width, MemoryAccess::write, instruction,
                                                destination_offset);
         set_length(2U + source_size + destination_size);
+    } else if (is_dynamic_bit(opcode)) {
+        instruction.mnemonic = "dynamic_bit";
+        const auto mode = static_cast<unsigned>((opcode >> 3U) & 7U), reg = opcode & 7U;
+        DecodedOperand source{}; source.kind = OperandKind::data_register;
+        source.register_index = static_cast<std::uint8_t>((opcode >> 9U) & 7U); source.width_bytes = 1U;
+        instruction.effective_operands.push_back(source);
+        parse_single(mode, reg, mode == 0U ? 4U : 1U, MemoryAccess::unknown);
     } else if (is_immediate_group(opcode)) {
         const auto size_code = static_cast<unsigned>((opcode >> 6U) & 3U);
         const auto group_low = static_cast<unsigned>(opcode & 0x3FU);
