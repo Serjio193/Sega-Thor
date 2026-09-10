@@ -17,8 +17,7 @@ RamFlag + 7 ParentSuffix). Targeted Debug regression passed; full Debug and
 Release CTest pass 74/74, including source-limit and the new regression.
 Diff-check and tracked hygiene are clean. UCRT remains
 LOCAL_TOOLCHAIN_ENVIRONMENT because the existing raw_data_provenance_test.cpp
-fails before diagnostics; no new-test UCRT coverage is claimed. CI result is
-appended after commit.
+fails before diagnostics; no new-test UCRT coverage is claimed. Implementation commit `b61aab47bd7fb4023b4e9f889b7f09a26598caec` is on `origin/main`; GitHub Actions CI run `34449689357` passed build and test.
 NEXT ACTION: Recompute only if new evidence changes the bounded-G0 ledger;
 otherwise STOP after M11.63.
 

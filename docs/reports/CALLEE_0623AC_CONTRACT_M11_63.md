@@ -675,6 +675,8 @@ This milestone proves call/effect observations only. It does not transfer parent
 
 Post-change native and shadow runs retain the exact checkpoint/video hashes and `6,488,773` accounting. Native has `6,488,692` interpreter + `34` TableCopy + `40` RamFlag + `7` ParentSuffix = `6,488,773`, zero fallback/divergence; shadow has `5/5` comparisons and zero divergence. Full Debug and Release CTest pass `74/74`, including the new regression and source-size test. `git diff --check` and tracked sensitive-artifact hygiene are clean. The configured UCRT build stops while compiling the existing `raw_data_provenance_test.cpp` before diagnostics; this remains `LOCAL_TOOLCHAIN_ENVIRONMENT`, and no new-test UCRT coverage is claimed.
 
+Implementation commit `b61aab47bd7fb4023b4e9f889b7f09a26598caec` is on `origin/main`; GitHub Actions CI run `34449689357` passed build and test.
+
 ## M11.64 proposal — STOP
 
 M11.64 may target only the highest-ranked remaining bounded-G0 blocker after this ledger is accepted. No M11.64 work is performed here.
