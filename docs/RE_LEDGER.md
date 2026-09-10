@@ -15,6 +15,7 @@ G0 is the parent-owned region addressed by `A5 = 0xFF001A`. M11.60 proves its ob
 | `0x060286` continuation | `NOT_YET_CLOSED` | Deferred; not executed in M11.64. |
 | Parent restore/return | `PROVEN_NATURAL_CONTRACT` | `0x06027E` restore followed by `0x060284 RTS`. |
 | External writers/aliasing | `UNRESOLVED` | Typed ownership is blocked. |
+| Interrupt and unresolved runtime effects | `NATURAL_ZERO` | Zero events in the bounded natural evidence. |
 | Broader `0x061258` lifetime | `NOT_YET_CLOSED` | Outside bounded G0 interval. |
 
 ## Required gates
