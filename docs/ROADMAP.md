@@ -1,3 +1,16 @@
+# M11.59 — Raw data alias/lifetime and external-writer closure — DONE
+
+Result: `RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED`. The exact
+all-ROM census and repeated developer-only provenance show that A5 escapes to
+the stack, is reloaded and post-incremented across a broad range, with
+multiple consumers of derived offsets. Fixed bytes have multiple writers;
+the 0x60BCC siblings are hardware-ordered writers with the same raw order.
+No typed structure, production abstraction or 0x60BCC promotion was made.
+Evidence: `reports/RAW_DATA_OWNERSHIP_M11_59.md`.
+
+Next proposed milestone: M11.60 should close one bounded A5 consumer/lifetime
+contract or produce an exact negative for that blocker only.
+
 # M11.58 — Portable behavior cluster boundary — DONE
 
 Result: `PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED`. The

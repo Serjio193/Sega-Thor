@@ -3,6 +3,35 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.59 raw data alias/lifetime closure — COMPLETE
+
+TASK: Close the smallest raw-data ownership, alias/lifetime and external-writer
+blocker around the M11.58 cluster from baseline `9d75a836f727989158761d666c112cc0b76d2888`.
+ACCEPTANCE CRITERIA: reproduce paired native/shadow identity; complete the
+all-ROM fixed census; trace A5 producers, copies, readers and writers; close
+the bounded 0x60BCC writer relationship without promotion; falsify aliases;
+classify A-E; add no typed data unless every gate condition passes; update
+ledgers and run pre-push validation.
+
+RESULT: `RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED`. Three LEA
+producers establish A5=`FF001A`; the `061258` path saves/reloads A5 and clears
+through `0x762` post-increments, while other paths consume 0/4/5/7(A5).
+Fixed bytes have multiple bounded writers. The 0x60BCC sibling writes match
+the raw order after an A11100 hardware prefix and remain
+`HARDWARE_ORDERED_WRITER`. No production/core abstraction or typed structure
+was added.
+
+EVIDENCE: `docs/reports/RAW_DATA_OWNERSHIP_M11_59.md`; added the standalone
+decoder provenance regression `tests/raw_data_provenance_test.cpp` and CTest
+registration.
+VALIDATION: Two native and two shadow runs preserve the frozen checkpoint,
+video, exact `6,488,773` accounting, zero fallback/divergence and shadow 5/5.
+Debug and Release CTest pass `70/70`; diff, source-size and hygiene checks
+pass. Existing UCRT CTest was `69/69`; the configured UCRT compiler now exits
+1 without diagnostics even for a trivial compile, leaving the new test not
+run. This is recorded as a local toolchain limitation.
+NEXT ACTION: Propose M11.60 only for one bounded A5 consumer/lifetime closure.
+
 # 2026-09-10 — M11.58 portable behavior cluster boundary — COMPLETE
 
 TASK: Determine whether the proven RamFlagRoutine + parent-owned ParentSuffix

@@ -1,3 +1,26 @@
+# ADR-0040 — Preserve raw ownership boundary after M11.59 census
+**Status:** Accepted for M11.59
+**Date:** 2026-09-10
+
+**Context:** M11.58 left the typed-data gate open because fixed bytes had
+external writers and the A5-derived range had unresolved alias/lifetime
+evidence. M11.59 found three A5 materializers; one path saves and reloads A5
+and post-increments it through a broad range, while other routines consume
+multiple derived offsets. The sibling 0x60BCC writers also retain a hardware
+prefix.
+
+**Decision:** Keep `ParentSuffix + RamFlag` raw and parent-parameterized. Do
+not add a typed structure, shared-memory owner, subsystem wrapper or
+0x60BCC promotion. Permit only a standalone decoder provenance regression
+test; keep ROM/GPGX, hardware ordering, lifetime and continuation evidence in
+developer-only tooling and the parent adapter.
+
+**Consequences:** The aliasing boundary is proven negative for typed
+replacement while the behavior-cluster contract remains valid. M11.60 must
+close one bounded A5 consumer/lifetime contract before revisiting typed data.
+
+**Evidence:** `docs/reports/RAW_DATA_OWNERSHIP_M11_59.md`.
+
 # ADR-0039 — Keep the first behavior cluster raw and parent-parameterized
 **Status:** Accepted for M11.58
 **Date:** 2026-09-10

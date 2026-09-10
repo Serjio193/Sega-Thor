@@ -1,5 +1,27 @@
 # Current task
 
+TASK: M11.59 Raw data alias/lifetime and external-writer closure
+STATUS: COMPLETE — RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED
+BASELINE: 9d75a836f727989158761d666c112cc0b76d2888
+SCOPE: All-ROM fixed-byte census, A5 register-relative provenance, bounded
+external-writer closure and alias/lifetime falsification; no typed structure,
+production/core abstraction, gameplay meaning, 0x60BCC promotion or new
+routine search.
+RESULT: A5 escapes to the stack, is reloaded and post-incremented through a
+broad range; separate consumers use 0(A5), 4(A5) and 7(A5). Fixed bytes have
+multiple bounded writers, while the 0x60BCC siblings are hardware-ordered
+writers with the same raw transaction order. The typed gate is blocked by a
+proven overlapping alias/lifetime boundary. Only a decoder provenance test
+was added; production behavior and the existing raw cluster are unchanged.
+VALIDATION: Paired native and shadow 600-frame gates retain checkpoint
+251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d, video
+5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58, exact
+6,488,773 accounting, zero fallback/divergence and shadow 5/5; Debug/Release
+CTest 70/70. The configured UCRT compiler cannot compile the new test
+(exit 1 without diagnostics); its prior 69/69 suite remains separate evidence.
+EVIDENCE: docs/reports/RAW_DATA_OWNERSHIP_M11_59.md
+NEXT ACTION: Propose M11.60 only for one bounded A5 consumer/lifetime closure.
+
 TASK: M11.58 Portable behavior cluster boundary and data-ownership gate
 STATUS: COMPLETE — PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED
 BASELINE: f5f0118325dad3b36961a546ca5e06fd866d8f95

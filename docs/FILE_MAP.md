@@ -1,4 +1,10 @@
 # File Map
+M11.59 adds `docs/reports/RAW_DATA_OWNERSHIP_M11_59.md`, the all-ROM raw-data
+ownership/alias/lifetime census and typed-gate result. It also adds
+`tests/raw_data_provenance_test.cpp`, a decoder-only address-mode regression,
+and its CTest registration in `CMakeLists.txt`. No production/core runtime
+module or ROM/GPGX adapter changed.
+
 M11.58 adds `docs/reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`, the raw
 footprint/ownership census and cluster gate result. No source files or runtime
 modules were added; the existing `src/core/parent_suffix.*` composition remains

@@ -1,5 +1,22 @@
 # Project State
 
+CURRENT_MILESTONE: M11.59 complete — raw data alias/lifetime closure
+CURRENT_TASK: complete; fixed and register-relative ownership census
+STATUS: COMPLETE — RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED
+SCOPE_BOUNDARY: All-ROM raw-data census and developer-only provenance only;
+no typed data, production/core abstraction, gameplay meaning, 0x60BCC
+promotion or new routine search.
+LAST_VERIFIED_RESULT: A5=`FF001A` is stack-escaped, reloaded and
+post-incremented across a broad range; 0(A5), 4(A5), 5(A5) and 7(A5) have
+separate consumers. Fixed bytes have multiple writers, and 0x60BCC siblings
+are hardware-ordered writers with matching raw order. Aliasing/lifetime
+overlap blocks typed replacement.
+BLOCKER: TYPED_DATA_BLOCKED_OVERLAPPING_ACCESS.
+INVENTORY: 2 authoritative routines, 4 mechanical primitives, 1 proven
+portable behavior cluster, 0 typed structures, 0 portable subsystem boundaries.
+EVIDENCE: docs/reports/RAW_DATA_OWNERSHIP_M11_59.md
+NEXT_ACTION: Propose M11.60 for one bounded A5 consumer/lifetime contract.
+
 CURRENT_MILESTONE: M11.58 complete — portable behavior cluster boundary
 CURRENT_TASK: complete; raw-data ownership and typed-data gate
 STATUS: COMPLETE — PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED

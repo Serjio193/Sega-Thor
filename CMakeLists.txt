@@ -268,6 +268,9 @@ add_test(NAME oasis_event_router COMMAND oasis_event_router_test)
 add_executable(oasis_re_slice_decoder_test tests/re_slice_decoder_test.cpp)
 target_link_libraries(oasis_re_slice_decoder_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_re_slice_decoder COMMAND oasis_re_slice_decoder_test)
+add_executable(oasis_raw_data_provenance_test tests/raw_data_provenance_test.cpp)
+target_link_libraries(oasis_raw_data_provenance_test PRIVATE oasis_re_tooling)
+add_test(NAME oasis_raw_data_provenance COMMAND oasis_raw_data_provenance_test)
 add_executable(oasis_table_copy_routine_contract_test tests/table_copy_routine_contract_test.cpp)
 target_link_libraries(oasis_table_copy_routine_contract_test PRIVATE oasis_re_tooling)
 add_test(NAME oasis_table_copy_routine_contract COMMAND oasis_table_copy_routine_contract_test)
@@ -347,13 +350,10 @@ add_test(NAME oasis_re_ant_queue COMMAND oasis_re_ant_queue_test)
 # These executables use a locally supplied verified ROM and are intentionally not CTest tests.
 add_executable(oasis_graphics_reference tests/graphics_decompress_reference.cpp)
 target_link_libraries(oasis_graphics_reference PRIVATE oasis_core)
-
 add_executable(oasis_resource_id3_reference tests/resource_id3_reference.cpp)
 target_link_libraries(oasis_resource_id3_reference PRIVATE oasis_core)
-
 add_executable(oasis_screen_descriptor_reference tests/screen_descriptor_reference.cpp)
 target_link_libraries(oasis_screen_descriptor_reference PRIVATE oasis_core)
-
 add_executable(oasis_player_reference tests/player_reference.cpp)
 target_link_libraries(oasis_player_reference PRIVATE oasis_core)
 
@@ -418,6 +418,7 @@ set(oasis_test_targets
     oasis_spirit_slots_test
     oasis_event_router_test
     oasis_re_slice_decoder_test
+    oasis_raw_data_provenance_test
     oasis_re_program_test
     oasis_re_trace_test
     oasis_re_diff_test
@@ -470,6 +471,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_spirit_slots
         oasis_event_router
         oasis_re_slice_decoder
+        oasis_raw_data_provenance
         oasis_re_program
         oasis_re_trace
         oasis_re_diff

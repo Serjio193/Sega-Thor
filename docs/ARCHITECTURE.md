@@ -1,4 +1,15 @@
 # Architecture
+## M11.59 raw ownership boundary
+
+M11.59 keeps the first behavior cluster raw and parent-parameterized. The
+all-ROM provenance census proves that the `FF001A` base escapes to the stack,
+is reloaded and is post-incremented across a broad range; fixed bytes also
+have multiple bounded writers. Therefore no typed shared-memory structure or
+new `oasis_core` owner is justified. The developer-only decoder provenance
+test records address modes and widths without importing ROM PCs or GPGX types
+into core. The 0x60BCC hardware prefix and sibling continuation remain
+adapter-owned. See ADR-0040 and `reports/RAW_DATA_OWNERSHIP_M11_59.md`.
+
 ## M11.58 raw-parameter behavior cluster
 
 The existing `ParentSuffixMachine` is the minimal behavior-cluster boundary:

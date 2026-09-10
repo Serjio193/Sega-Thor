@@ -1,6 +1,21 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.59 — raw data alias/lifetime closure — CONFIRMED NEGATIVE
+
+Result: `RAW_DATA_ALIASING_BOUNDARY_PROVEN_TYPED_DATA_BLOCKED`. The all-ROM
+census confirms 60 exact fixed absolute/LEA references among 66 raw candidates
+for `FF0010..FF0016`, `FF0628` and `FF06F2`. A5=`FF001A` is materialized at
+`060182`, `060434` and `061258`; the latter saves A5 on the stack, clears via
+`(A5)+` for `0x762` iterations and reloads it. Separate consumers use
+`0(A5)`, `4(A5)`, `5(A5)` and `7(A5)`, proving overlapping alias/lifetime
+boundaries. Sibling writers `60BD2/60BDC/60BE2/60BE8/60BEE` match the raw
+zero-write order but follow an A11100 hardware prefix and remain
+`HARDWARE_ORDERED_WRITER` contexts. Candidate groups are A
+`SHARED_STATE_WINDOW`, B `ALIASING_PREVENTS_BOUNDARY`, C/D
+`INDEPENDENT_SCALAR`, E `INSUFFICIENT_EVIDENCE`. No typed structure or
+production routine was promoted. Full evidence: `reports/RAW_DATA_OWNERSHIP_M11_59.md`.
+
 # M11.58 — portable behavior cluster raw-data census — CONFIRMED
 
 The proven composition is `ParentSuffix -> RamFlagRoutine -> ParentSuffix`
