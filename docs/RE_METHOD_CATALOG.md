@@ -1,5 +1,15 @@
 # Reverse-engineering method catalog
 
+## BUILD_RECONSTRUCTION
+
+- BUILD-03 — Full-ROM ASM completion census. Domain: BUILD_RECONSTRUCTION.
+  Evidence: canonical ROM identity, contiguous manifest, source/blob byte
+  totals, exact rebuild hashes and an explicit dependency graph. Prerequisites:
+  M11.15 exact split, M11.17 bounded data report and local vasm proof.
+  Failure/falsification: any gap, overlap, identity mismatch or untracked
+  executable blob. Used: M12.0. Future blocker: complete source ownership and
+  Z80 map.
+
 This catalog names reusable evidence methods and their limits. It is a method index, not a claim that every domain is solved. A method may produce a storage, control-flow, or provenance fact without supplying a semantic type. External projects are references for method shape only; their game behavior is not imported.
 
 Every new entry must state: **ID/name**, **domain**, **evidence**, **prerequisites**, **failure/falsification**, **already used in Sega-Thor**, and **likely future blocker**. Preserve these rules: storage/compression is not a semantic type; decoder correctness is not encoder equivalence or historical byte equivalence; natural-path proof is not whole-static proof; hardware must remain visible rather than hidden behind mocks.

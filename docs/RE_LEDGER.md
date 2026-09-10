@@ -1,5 +1,20 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12.0 ASM completion boundary
+
+M12.0 changes project sequencing, not the M11 G0 evidence. The authoritative
+full-ROM materialization is the local M11.15 manifest: 203 exact 68000 ASM
+ranges totaling 13,550 bytes, 136 canonical-local-ROM blob ranges totaling
+3,132,178 bytes, 0 gaps and 0 overlaps. M11.17 independently classifies 10
+bounded data ranges totaling 1,164 bytes, but they remain blob-backed and are
+not source-owned in the exact rebuild.
+
+The 8 blob ranges intersecting bounded observed execution evidence are P0
+until split and promoted transactionally. The highest concentration is
+0x06042A..0x0611F4 (3,530 coarse bytes, 76 unique observed PCs and 77 static
+xrefs); this is the single M12.1 target. All other unclassified ranges remain
+P3 code/data/asset ambiguity. No range is promoted by this ledger.
+
 ## M11.64 closure
 
 Status: `G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED`.

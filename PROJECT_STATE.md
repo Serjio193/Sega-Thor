@@ -1,5 +1,26 @@
 # Project State
 
+CURRENT_MILESTONE: M12.0 active — complete ASM reconstruction
+CURRENT_TASK: exact full-ROM ASM completion census and roadmap rebase
+STATUS: ACTIVE — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
+BASELINE: 37c6bc1695771cb74839f48b05d40aa348ba7874
+SCOPE_BOUNDARY: Governance and deterministic reconstruction census only; no
+new native C++ routine, no C++ migration, no gameplay naming, no subsystem
+promotion and no M12.1 implementation.
+LAST_VERIFIED_RESULT: The canonical USA ROM is 3145728 bytes with SHA-256
+eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263. The
+current exact split contains 203 68000 ASM ranges (13550 bytes) and 136
+local-ROM blobs (3132178 bytes), with 0 gaps and 0 overlaps. M11.17
+separately accepts 1164 bounded structured-data bytes, still blob-backed.
+BLOCKER: ASM_CODE_COMPLETE is blocked by 136 blob ranges, including 8 P0
+coarse ranges with observed execution evidence, and by the absent Z80/source
+and complete ROM map. CPP_MIGRATION=PAUSED_PENDING_ASM_COMPLETION.
+EVIDENCE: docs/reports/ASM_COMPLETION_CENSUS_M12_0.md
+NEXT ACTION: M12.1 may target only 0x06042A..0x0611F4 after explicit
+continuation; STOP after M12.0.
+
+# Historical Project State — M11.64
+
 CURRENT_MILESTONE: M11.64 complete — G0 portability boundary consolidation
 CURRENT_TASK: complete; close the M11 G0 line without new callee reverse engineering
 STATUS: COMPLETE — G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED

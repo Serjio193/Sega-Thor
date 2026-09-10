@@ -1,13 +1,41 @@
+# M12.0 — Complete ASM reconstruction — ACTIVE
+
+M12.0 rebases the ordered project sequence to ROM -> complete reassemblable
+ASM -> rebuilt-ROM runtime parity -> systematic ASM-to-portable-C++ migration.
+The exact completion gates and current full-ROM census are recorded in
+docs/reports/ASM_COMPLETION_CENSUS_M12_0.md.
+
+The former M12 Inventory / UI / Save proposal is withdrawn as an immediate
+C++ milestone. Those subsystem tracks remain future work inside the
+reconstruction/migration phases. CPP_MIGRATION is
+PAUSED_PENDING_ASM_COMPLETION. No new portable C++ routine is authorized in
+M12.0.
+
+Current M12.0 result:
+M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED. The current exact split owns
+13,550 bytes as 203 68000 ASM ranges and 3,132,178 bytes as 136 local-ROM
+blobs, with 0 gaps and 0 overlaps. M11.17 separately classifies 1,164
+bounded bytes as structured data, but those bytes remain blob-backed and are
+not yet source-owned. Eight coarse blobs contain observed execution evidence;
+the single M12.1 target is 0x06042A..0x0611F4. Do not begin M12.1 here.
+
+# M13 — Rebuilt ROM runtime parity — TODO
+
+Start only after ASM_CODE_COMPLETE, ASM_ROM_MAP_COMPLETE and
+ASM_REASSEMBLY_BYTE_EXACT. ASM_REBUILT_ROM_BOOT_PROVEN is the M13 gate.
+
+# M14 — Systematic ASM -> C++ migration — TODO
+
+Start only after rebuilt-ROM runtime parity is proven. Inventory, UI, Save,
+Audio and other subsystem tracks belong here or in the preceding ASM
+reconstruction work as evidence dictates.
+
 # M11.64 — G0 portability boundary consolidation — DONE
 
 Result: `G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED`. M11.60–M11.63 evidence
 is consolidated in `RE_LEDGER.md` and the closure report. G0 remains parent-owned,
 0x0623AC is a real VDP hardware boundary, typed data is blocked, and 0x060286 is
 deferred with `NO_ARCHITECTURAL_DECISION_CHANGE`. No production code changed.
-
-M12 proposal only: Inventory / UI / Save using catalogued save/load RAM oracles,
-controlled perturbation, differential snapshots, runtime provenance/taint and
-resource graph reconstruction. Do not start M12 in M11.64.
 
 # M11.63 — Exact 0x0623AC natural G0 callee/effect closure — DONE
 
@@ -789,14 +817,12 @@ changing runtime dependencies. No high-confidence template was found.
 Possible M11.32: one bounded Beyond Oasis evidence-led pass using the adapted
 sequence in the report. Do not broaden coverage or repair hybrid timing here.
 
-## M12 — Inventory/UI/save — TODO
-Goal: menus, inventory, item behavior and compatible save semantics.
+## Future subsystem tracks after M14
 
-## M13 — Audio — TODO
-Goal: faithful music/SFX playback with the narrowest viable compatibility strategy. Audio architecture requires an ADR before implementation.
-
-## M14 — Full-game parity — TODO
-Goal: complete game from start to credits with regression coverage.
+Inventory/UI/Save, Audio and other gameplay subsystems remain TODO tracks
+inside the ASM reconstruction and systematic migration work. They are not
+standalone milestones ahead of the M12 -> M13 -> M14 gates. Each track requires
+its own evidence and architectural decision before implementation.
 
 ## M15 — Portability and packaging — TODO
 Initial targets: Windows, Linux and macOS. Additional platforms are later decisions.

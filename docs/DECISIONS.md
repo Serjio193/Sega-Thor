@@ -993,3 +993,27 @@ milestone if they are ever considered.
 **Affected files/milestone:** `src/core/parent_suffix.*`,
 `src/tools/hybrid/candidate_parent_suffix.*`, `tests/parent_suffix_test.cpp`,
 M11.57 report and hybrid accounting.
+
+# ADR-0043 — Complete ASM reconstruction before systematic C++ migration
+**Status:** Accepted for M12.0
+**Date:** 2026-09-10
+
+**Context:** The existing exact reassembly proof is a local-ROM-backed split
+with 13,550 exact 68000 ASM bytes and 3,132,178 blob bytes. The prior roadmap
+would have started Inventory/UI/Save as a portable C++ milestone before the
+executable ROM was represented as complete assembler/source.
+
+**Decision:** Rebase the project sequence to ROM -> complete reassemblable ASM
+-> rebuilt-ROM runtime parity -> systematic ASM-to-portable-C++ migration.
+Define ASM_CODE_COMPLETE, ASM_ROM_MAP_COMPLETE, ASM_REASSEMBLY_BYTE_EXACT and
+ASM_REBUILT_ROM_BOOT_PROVEN as separate gates. Keep current native C++ proofs
+preserved and set CPP_MIGRATION=PAUSED_PENDING_ASM_COMPLETION. Do not begin
+M12.1 implementation in this decision.
+
+**Consequences:** The former Inventory/UI/Save proposal is no longer the
+immediate M12 milestone. Executable code cannot be hidden in local blobs;
+unknown data and copyrighted payloads may remain local only under deterministic
+tooling and explicit classification. M13 owns rebuilt-ROM boot/runtime parity
+and M14 owns systematic C++ migration.
+
+**Evidence:** docs/reports/ASM_COMPLETION_CENSUS_M12_0.md.

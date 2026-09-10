@@ -1,5 +1,20 @@
 # Current task
 
+TASK: M12.0 Rebase roadmap and produce exact ASM completion census
+STATUS: ACTIVE — M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED
+BASELINE: 37c6bc1695771cb74839f48b05d40aa348ba7874
+SCOPE: Governance, deterministic reassembly evidence and documentation only.
+No new native C++ routine, ASM promotion, emulator expansion, gameplay naming,
+subsystem implementation or M12.1 work.
+RESULT: Roadmap is ROM -> complete ASM -> rebuilt-ROM parity -> systematic
+ASM-to-C++ migration. Current exact split: 203 68000 ASM ranges / 13550 bytes,
+136 local-ROM blobs / 3132178 bytes, 0 gaps, 0 overlaps. M11.17 data evidence
+adds 1164 bounded classified bytes but no source ownership.
+EVIDENCE: docs/reports/ASM_COMPLETION_CENSUS_M12_0.md
+NEXT ACTION: Exactly one M12.1 target is 0x06042A..0x0611F4; do not begin it.
+
+# Historical task
+
 TASK: M11.64 G0 portability boundary consolidation and M11 closure
 STATUS: COMPLETE — G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED
 BASELINE: 6b0e43d6ab6547f3232b1bee11e52e80347e425f

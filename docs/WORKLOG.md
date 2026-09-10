@@ -3946,3 +3946,52 @@ Result:
 Unresolved:
 Exact next step:
 ```
+# 2026-09-10 — M12.0 ASM reconstruction roadmap rebase and exact census
+
+TASK: Rebase the roadmap to complete reassemblable ASM before rebuilt-ROM
+runtime parity and systematic ASM-to-C++ migration. Produce an exact
+evidence-backed full-ROM census, executable blob inventory, dependency audit,
+toolchain status and one M12.1 blocker. No production behavior changed.
+
+BASELINE: 37c6bc1695771cb74839f48b05d40aa348ba7874; canonical USA ROM
+3145728 bytes, CRC32 C4728225, SHA-1
+2944910c07c02eace98c17d78d07bef7859d386a and SHA-256
+eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+
+RESULT: M12_0_CENSUS_COMPLETE_ASM_COMPLETION_BLOCKED. The current M11.15
+manifest has 203 exact 68000 ASM ranges totaling 13550 bytes and 136
+canonical-local-ROM blobs totaling 3132178 bytes. It is contiguous with
+0 gaps and 0 overlaps. No Z80 ASM, source-owned structured data,
+header/vector ASM, padding map or accepted asset source exists. M11.17
+separately accepts 10 bounded structured-data ranges totaling 1164 bytes,
+but these remain blob-backed in the exact rebuild. Eight coarse blob ranges
+contain observed execution evidence and total 22394 coarse bytes; 128 remain
+P3 code/data/asset ambiguity.
+
+DEPENDENCY: Current exact reconstruction still requires the original ROM at
+build time to generate local blobs and verify identity. vasm 1.8g with
+-m68000 -no-opt -Fbin is the current flat-binary assembler; no separate
+linker is used. Ancient's historical assembler remains UNKNOWN.
+
+M12.1_SELECTION: Exactly one target is selected:
+0x06042A..0x0611F4, a 3530-byte P0 coarse blob with 76 unique observed PCs
+and 77 static xrefs. It is selected by evidence concentration, not subsystem
+attractiveness. M12.1 is not started.
+
+FILES: PROJECT_STATE.md, TASK.md, docs/ROADMAP.md, docs/FILE_MAP.md,
+docs/RE_LEDGER.md, docs/RE_METHOD_CATALOG.md, docs/DECISIONS.md and
+docs/reports/ASM_COMPLETION_CENSUS_M12_0.md. No executable/source production
+file changed and no ROM or asset was added to the repository.
+
+VALIDATION: Existing M11.15/M11.17 evidence was inspected and the M11.15
+audit was rerun against the 203-range manifest. It passed 203/203 exact ASM
+slice round trips and rebuilt 3145728 bytes exactly with CRC32 C4728225,
+SHA-1 2944910c07c02eace98c17d78d07bef7859d386a and canonical SHA-256.
+Debug CTest passed 74/74; Release CTest passed 74/74 when run sequentially.
+The source-size check passed in both matrices, git diff --check passed, and
+tracked-artifact hygiene found no prohibited tracked ROM/build/payload file.
+The initial concurrent CTest attempt produced one transient Release test
+failure while both build directories were being exercised; the sequential
+rerun passed and is the accepted result. The older re_full_split helper also
+passed its M11.10 50-entry control, while the current 203-range result is
+the M11.15 audit above.

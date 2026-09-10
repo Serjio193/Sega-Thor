@@ -1,3 +1,8 @@
+M12.0 adds the roadmap rebase, exact ASM completion census report
+docs/reports/ASM_COMPLETION_CENSUS_M12_0.md and the M12.0 state/task/ledger
+updates. The report contains the machine-readable 136-range blob inventory.
+No source or production/core file changed.
+
 M11.64 adds the documentation-only bounded G0 ledger
 `docs/RE_LEDGER.md`, reusable method index `docs/RE_METHOD_CATALOG.md`, and
 closure report `docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md`. No source or
@@ -101,6 +106,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │   ├── STRUCTURED_DATA_CLASSIFICATION.md M11.17 bounded data classification report
 │   ├── NATIVE_VERTICAL_SLICE.md M11.18 native controlled-screen boundary and status
 │   ├── reports/
+│   │   └── ASM_COMPLETION_CENSUS_M12_0.md M12.0 full-ROM ASM completion census
 │   │   └── NATIVE_ROM_RESOURCE_ID3.md M11.25 verified native resource baseline
 │   │   └── NATIVE_ROM_RESOURCE_ID3_VISUAL_ROLE.md M11.26 bounded visual-role report
 │   │   └── HOT_PATH_MULTI_BLOCK_COVERAGE_M11_39.md M11.39 bounded hot-path coverage report
