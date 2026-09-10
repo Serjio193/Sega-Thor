@@ -1,3 +1,38 @@
+# 2026-09-11 — M12-AUTO9 erased alignment padding — <90% / BLOCKED
+
+**TASK:** Continue from the published M12-AUTO8 checkpoint toward a >=90%
+SOURCE-OWNED ROM MAP, preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Promote only complete UNKNOWN ranges that are exact
+`0xFF` fill, at least 256 bytes, and terminate on a 4 KiB ROM alignment
+boundary; preserve zero-gap, zero-overlap full-ROM materialization and
+canonical hashes; add helper regression coverage and current M12
+documentation; leave mixed, zero-filled, and decoder-only spans UNKNOWN.
+
+**RESULT:** M12-AUTO9 promotes 16 exact erased alignment runs totaling 132,630
+bytes. The map reaches 927,778 / 3,145,728 bytes (`29.493268331%`); 1,903,378
+bytes remain to the integer 90% threshold. The promoted runs end at
+`0x058000`, `0x060000`, `0x080000`, `0x088000`, `0x090000`, `0x098000`,
+`0x0A0000`, `0x0A8000`, `0x0B0000`, `0x0B8000`, `0x0C0000`, `0x150000`,
+`0x170000`, `0x1AD000`, `0x260000`, and `0x300000`. No C++ migration, ROM,
+BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** AUTO9 full materialization is 3,145,728 bytes with CRC32
+`C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The synthetic FF-run helper regression, Python compilation,
+transactional full vasm round-trip, independent manifest/hash audit, source
+file-limit check, and `git diff --check` passed. Fresh Debug, Release, and
+GNU-equivalent builds passed; full CTest passed `90/90` in all three
+configurations after registering the new helper. Generated transactions remain
+local ignored build evidence.
+
+**STATUS:** The >=90% gate remains unmet; unresolved mixed code/data/resource
+spans remain conservative blobs. Continue M12 from the next independently
+closed provenance edge.
+
 # 2026-09-11 — M12-AUTO8 direct graphics chain continuation — <90% / BLOCKED
 
 **TASK:** Continue from the published M12-AUTO7 checkpoint toward a >=90%

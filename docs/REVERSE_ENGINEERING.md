@@ -1,3 +1,24 @@
+# M12-AUTO9 erased-alignment provenance checkpoint
+
+The current local M12 transaction reaches 927,778 bytes (29.493268331%) of
+source-owned ROM while preserving the canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. AUTO9
+adds 16 non-overlapping UNKNOWN ranges totaling 132,630 bytes. Each range is
+entirely `0xFF`, is at least 256 bytes, begins at an UNKNOWN boundary or after
+non-fill, and ends on a 4 KiB ROM alignment boundary:
+`0x0551B6..0x058000`, `0x05E1A0..0x060000`, `0x07D780..0x080000`,
+`0x0879F9..0x088000`, `0x08FA1E..0x090000`, `0x097C60..0x098000`,
+`0x09FC3A..0x0A0000`, `0x0A7C85..0x0A8000`, `0x0AF54A..0x0B0000`,
+`0x0B7B45..0x0B8000`, `0x0BF768..0x0C0000`, `0x144A04..0x150000`,
+`0x16F9CA..0x170000`, `0x1A4DC6..0x1AD000`, `0x25FEC2..0x260000`, and
+`0x2FDD91..0x300000`. They are classified as
+`ERASED_ROM_ALIGNMENT_PADDING`, not executable code or game data. Zero-filled,
+mixed, and decoder-only candidates remain UNKNOWN. The exact transaction is
+`build/m12-auto9-erased-alignment-transaction-b/materialized/manifest.json`;
+the helper is `src/tools/re_m12_padding_promote.py` with regression
+`tests/re_m12_padding_promote_test.py`. Full evidence is in
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
 # M12-AUTO8 direct-graphics chain provenance checkpoint
 
 The current local M12 transaction reaches 795,148 bytes (25.277074178%) of

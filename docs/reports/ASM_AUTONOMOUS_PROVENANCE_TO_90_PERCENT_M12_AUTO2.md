@@ -1,6 +1,6 @@
-# M12-AUTO8 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO9 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO8_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
+Status: `M12_AUTO9_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -15,8 +15,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `93df0717738e8a3f541fb6692399135b7da4953a` |
-| Final local transaction | `build/m12-auto8-direct-graphics-chain-transaction-c/materialized/manifest.json` |
+| Baseline Git SHA | `9f7a065ea693bb487aa90a5ad0570ad81625ed54` |
+| Final local transaction | `build/m12-auto9-erased-alignment-transaction-b/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -30,8 +30,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Fixed-stride 50-record table | 734,067 | 23.335361481% |
 | Direct graphics consumers | 774,132 | 24.608993530% |
 | Direct graphics chain continuation | 795,148 | 25.277074178% |
+| Erased alignment padding | 927,778 | 29.493268331% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 2,036,008 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,903,378 bytes.
 
 ## Final ownership census
 
@@ -40,10 +41,10 @@ The 90% threshold is 2,831,156 bytes; the current gap is 2,036,008 bytes.
 | 68000 `CODE_VERIFIED` | 48,906 | 1.554679871% |
 | Header/vector ASM | 512 | 0.016276042% |
 | Confirmed structured data | 29,825 | 0.948111216% |
-| Confirmed alignment padding | 47 | 0.001494090% |
+| Confirmed alignment padding | 132,677 | 4.217688243% |
 | Local ROM-derived assets | 715,858 | 22.756512960% |
-| **SOURCE_OWNED** | **795,148** | **25.277074178%** |
-| Remaining `UNKNOWN` blob | 2,350,580 | 74.722925822% |
+| **SOURCE_OWNED** | **927,778** | **29.493268331%** |
+| Remaining `UNKNOWN` blob | 2,217,950 | 70.506731669% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -58,6 +59,11 @@ also includes the 50-record table at `0x5D046`, the 64-entry `0x0EEE` word
 lookup table, and the 512-byte bounded byte lookup table. The Z80 8192-byte
 image is included in the ASM total and is also
 recorded as `Z80_SOURCE_OWNED_BYTES=8192`.
+
+AUTO9 additionally owns 132,630 bytes as exact erased alignment padding in 16
+complete `0xFF` runs. The runs are accepted only when they are at least 256
+bytes long, end on a 4 KiB ROM boundary, and do not overlap an existing owned
+range. No zero-filled or mixed range is promoted by this rule.
 
 ## Provenance graph
 
@@ -83,6 +89,8 @@ Nodes:
 15. Five direct graphics chain continuations selected from three exact chain
     anchors and sequential A0 advancement.
 16. Remaining ROM spans retained as canonical-local-ROM blobs.
+17. Exact erased-alignment runs accepted by the `0xFF`/minimum-length/4 KiB
+    boundary contract.
 
 Edges:
 
@@ -104,6 +112,8 @@ Edges:
 - Direct `0x3820` consumers and decoder-advanced `A0` → seven exact streams.
 - Three exact chain anchors and sequential `0x3820` consumers → five new exact
   continuation streams.
+- Complete UNKNOWN `0xFF` runs with minimum length and 4 KiB end boundary →
+  confirmed erased alignment padding.
 - No edge was created from a decoder coincidence alone to an owned asset.
 
 ## Methods and outcomes
@@ -123,6 +133,7 @@ Edges:
 | Fixed-stride table proof | `0x00D72C`, `0x010086`, `0x0100AA`, `0x039100` | 50 × 32-byte records, 1,600 bytes |
 | Direct graphics proof | `0x003278`, `0x004E8..0x0050A`, `0x003356`, `0x00335C` | 7 streams, 40,065 bytes |
 | Direct graphics chain proof | `0x03C074`, `0x03C276..0x03C286`, `0x03C5CA..0x03C5E6` | 5 new streams, 21,016 bytes; 3 existing anchors revalidated |
+| Erased alignment proof | 16 UNKNOWN ranges across the canonical ROM | 132,630 exact `0xFF` bytes ending on 4 KiB boundaries |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
@@ -170,8 +181,7 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. Debug MinGW and Release MinGW full CTest each passed 89/89 after
-the direct-graphics-chain helper was registered. The GNU/Linux-equivalent build
-linked successfully and all 18 focused tests passed, including the line-limit
-scan. `git diff --check`, source file limits, Python helper checks, and the
-independent manifest/hash audit passed.
+repository. Fresh Debug, Release, and GNU-equivalent builds passed; full CTest
+passed `90/90` in all three configurations after the padding helper was
+registered. `git diff --check`, source file limits, Python helper checks, and
+the independent manifest/hash audit passed.

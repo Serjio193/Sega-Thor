@@ -1,5 +1,15 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO9 erased alignment padding
+
+The M12-AUTO9 transaction promotes 927,778 bytes (29.493268331%) of the
+canonical ROM, preserving the exact ROM hashes. Sixteen new ranges totaling
+132,630 bytes are complete `0xFF` fill, at least 256 bytes each, and end on
+4 KiB ROM alignment boundaries. They are classified only as
+`ERASED_ROM_ALIGNMENT_PADDING`; zero-filled, mixed, and decoder-only spans
+remain UNKNOWN. The integer 90% threshold still requires 1,903,378 additional
+bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO8 direct-graphics chain continuation
 
 The M12-AUTO8 transaction promotes 795,148 bytes (25.277074178%) of the

@@ -1,4 +1,10 @@
-# M12-AUTO8 adds the developer-only sequential direct-graphics-chain promoter
+# M12-AUTO9 adds the developer-only erased-alignment padding promoter
+`src/tools/re_m12_padding_promote.py` and deterministic regression
+`tests/re_m12_padding_promote_test.py`. It records only complete UNKNOWN
+`0xFF` runs ending on 4 KiB ROM boundaries; generated transaction output
+remains ignored and no C++ migration or ROM asset is tracked.
+
+M12-AUTO8 adds the developer-only sequential direct-graphics-chain promoter
 `src/tools/re_m12_direct_graphics_chain_promote.py` and its deterministic
 regression `tests/re_m12_direct_graphics_chain_promote_test.py`. It records
 five new decoder-verified continuation streams while revalidating three
