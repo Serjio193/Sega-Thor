@@ -79,20 +79,21 @@ The dependency-boundary test confirms that no ROM PC or GPGX type crosses into
 
 ## Raw footprint and bounded ownership census
 
-Widths are bytes. The table records effects, not semantic fields.
+Widths are bytes. The table records effects, initialization/final guarantees,
+address supply and provenance; it does not declare semantic fields.
 
-| range | effect and order | component | bounded provenance / classification |
-|---|---|---|---|
-| `FF0012` | `WRITE 1`, first suffix effect | ParentSuffix | also written by `0x60BCC` caller path; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF0628` | `READ_MODIFY_WRITE 1`, bit `0x10` | RamFlag | fixed at `0x604C2`; other bounded code addresses it; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF06F2` | `READ_MODIFY_WRITE 1`, bit `0x10` | RamFlag | fixed at `0x604C8`; other bounded code addresses it; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF001F..FF0021` | `WRITE 1` three times at supplied base `FF001A + 5..7` | RamFlag | natural A5 resolves these addresses; aliases/lifetime outside capture are unresolved |
-| `FF0016` | `WRITE 1`, after the three derived writes | RamFlag | bounded writer `0x604DE`; absence elsewhere is not ownership proof; `LIFETIME_UNRESOLVED` |
-| `FF0010` | `WRITE 1`, after RamFlag | ParentSuffix | writers `0x604FA`, `0x60BDC`; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF0011` | `WRITE 1`, after `FF0010` | ParentSuffix | writers `0x60500`, `0x60BE2`; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF0013` | `WRITE 1`, after `FF0011` | ParentSuffix | writers `0x60506`, `0x60BE8`; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| `FF0014` | `WRITE 1`, final suffix effect | ParentSuffix | writers `0x6050C`, `0x60BEE`; `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
-| base `FF001A` | register-supplied base; no direct core memory read | adapter/parent supplied | register-relative aliases and lifetime are not closed; `ALIASING_UNRESOLVED` |
+| range | mode/width and ordering | initial dependency / final guarantee | address and owner | aliases, lifetime, bounded writers/readers | classification |
+|---|---|---|---|---|---|
+| `FF0012` | `WRITE 1`, first suffix effect | no read; byte is zero afterward | fixed address; ParentSuffix effect | `0x604F0`, `0x60BD2` writers; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF0628` | `READ_MODIFY_WRITE 1`, bit `0x10` | reads old byte; writes old value OR `0x10` | fixed adapter address; RamFlag effect | effect at `0x604C2`; address setup also appears at `0x6025A`, `0x6127A`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF06F2` | `READ_MODIFY_WRITE 1`, bit `0x10` | reads old byte; writes old value OR `0x10` | fixed adapter address; RamFlag effect | effect at `0x604C8`; address setup also appears at `0x60270`, `0x61286`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF001F..FF0021` | `WRITE 1` three times, after `FF0012` and flags | no read; each byte is zero afterward | supplied base register `FF001A` plus `5..7`; RamFlag effect | register-relative aliases and producer/consumer lifetime outside capture unresolved | `ALIASING_UNRESOLVED` + `LIFETIME_UNRESOLVED` |
+| `FF0016` | `WRITE 1`, after derived writes | no read; byte is zero afterward | fixed adapter address; RamFlag effect | bounded writer `0x604DE`; no exclusivity inferred from absence elsewhere; lifetime unresolved | `LIFETIME_UNRESOLVED` |
+| `FF0010` | `WRITE 1`, after RamFlag | no read; byte is zero afterward | fixed address; ParentSuffix effect | writers `0x604FA`, `0x60BDC`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF0011` | `WRITE 1`, after `FF0010` | no read; byte is zero afterward | fixed address; ParentSuffix effect | writers `0x60500`, `0x60BE2`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF0013` | `WRITE 1`, after `FF0011` | no read; byte is zero afterward | fixed address; ParentSuffix effect | writers `0x60506`, `0x60BE8`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| `FF0014` | `WRITE 1`, final suffix effect | no read; byte is zero afterward | fixed address; ParentSuffix effect | writers `0x6050C`, `0x60BEE`; lifetime not closed | `SHARED_WITH_KNOWN_EXTERNAL_CODE` |
+| base `FF001A` | register input, no direct memory access | required on entry; base register is preserved | supplied parent register; parent/adapter owns it | register-relative aliases and lifetime unresolved | `ALIASING_UNRESOLVED` + `LIFETIME_UNRESOLVED` |
 
 The bounded ROM/runtime evidence identifies exact access PCs where known. It
 does not infer exclusivity from a single natural trace. The `0x60BCC` path has
