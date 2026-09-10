@@ -4355,5 +4355,10 @@ passed. `git diff --check` and the source-file line-limit check passed.
 required. Unknown spans remain conservative blobs, including the 36-byte
 unresolved area between the table and first stream and all other mixed
 regions. No guessed padding, unknown asset classification, or ASM-to-C++
-migration was performed. Publication still requires the focused commit/push
-and its remote CI result.
+migration was performed. The publication gate was then satisfied by the
+focused commit/push and its remote CI result below.
+
+**PUBLISHED:** Implementation commit `fd775d1afe7df672dddc0d49dc3063eb5eb30cf6`
+is pushed and matches `origin/main`. GitHub Actions CI run `34524552827`
+completed successfully; build and test passed, with only the upstream Node.js
+20 deprecation annotation.
