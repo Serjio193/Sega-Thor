@@ -1,5 +1,25 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO3 indexed script-table boundary
+
+The M12-AUTO3 transaction promotes 729,658 bytes (23.195203145%) of the
+canonical ROM, preserving the exact ROM hashes. The new structured-data edge
+is the 16-bit table `[0x051514,0x0515D8)` selected by the exact parser at
+`0x00C326`; its caller `0x00C2EC` enumerates 98 indices (`0x1B..0x1D` are
+explicitly skipped), and every table target resolves monotonically to a
+NUL-terminated stream. The 98 streams occupy `[0x0515FC,0x0541FD)` as
+11,210 non-overlapping bytes; the table adds 196 bytes. All control bytes in
+the streams are accepted by the parser's observed dispatch set. The skipped
+indices remain included only as table-addressed records with the same closed
+parser/boundary contract; no text semantics are asserted.
+
+The exact transaction is
+`build/m12-auto3-script-transaction-b/materialized/manifest.json`, and the
+full evidence is in
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`. The 90%
+threshold still requires 2,101,498 bytes. No M13 or C++ migration is
+authorized.
+
 ## M12-AUTO2 source-owned map boundary
 
 The current local M12-AUTO2 transaction promotes 718,252 bytes (22.832616170%)

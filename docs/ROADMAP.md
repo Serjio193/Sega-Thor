@@ -1,13 +1,14 @@
-# M12-AUTO2 — Source-owned ROM map checkpoint — 22.8326% / BELOW-90 BLOCKER
+# M12-AUTO3 — Source-owned ROM map checkpoint — 23.1952% / BELOW-90 BLOCKER
 
-M12-AUTO2 extends the byte-exact source-owned map to 718,252 of 3,145,728
-bytes (22.832616170%). It adds the exact Z80 upload proof, screen descriptor
-graph, direct graphics consumers, the bounded `0x03B8DE` consumer table, and
-eight fixed 1208-byte parser records. The canonical ROM remains unchanged;
-M13 and ASM-to-C++ migration remain prohibited. Full evidence is in
+M12-AUTO3 extends the byte-exact source-owned map to 729,658 of 3,145,728
+bytes (23.195203145%). It adds the exact `0x51514` indexed script table and
+98 NUL-terminated streams closed by the `0x00C2EC`/`0x00C326` parser contract,
+on top of the M12-AUTO2 Z80, screen, graphics-consumer, and fixed-record
+evidence. The canonical ROM remains unchanged; M13 and ASM-to-C++ migration
+remain prohibited. Full evidence is in
 `docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
 
-The 90% threshold is not reached. The remaining 2,112,904 bytes needed for
+The 90% threshold is not reached. The remaining 2,101,498 bytes needed for
 the threshold lack a complete independent code/data/resource provenance graph;
 unknown spans remain conservative blobs.
 

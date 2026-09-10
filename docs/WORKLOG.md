@@ -4324,3 +4324,36 @@ asset classification, or ASM-to-C++ migration was performed.
 is pushed and matches `origin/main`. GitHub Actions CI run `34522064935`
 completed successfully; build and test passed, with only the upstream Node.js
 20 deprecation annotation.
+
+# 2026-09-10 — M12-AUTO3 indexed script-table provenance — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+the canonical ROM byte-for-byte and not starting M13, native gameplay/runtime
+C++, or emulator expansion. Acceptance required a closed parser/table graph,
+zero manifest gaps/overlaps, full-ROM hash identity, and no semantic text
+claims or percentage-only promotion.
+
+**RESULT:** The exact M12-AUTO3 transaction is
+`build/m12-auto3-script-transaction-b/materialized/manifest.json` with
+729,658 / 3,145,728 source-owned bytes (`23.195203145%`). It adds the 196-byte
+16-bit table `[0x51514,0x515D8)` and 98 table-resolved NUL-terminated streams
+totalling 11,210 bytes. The `0x00C2EC` caller enumerates `0x00..0x61` and
+explicitly skips only `0x1B..0x1D`; the `0x00C326` parser computes the exact
+entry-relative target and terminates at byte zero.
+
+**EXACTNESS:** The transaction rebuilt 3,145,728 bytes with CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The focused Python helper passed before transaction execution;
+the transaction's full-ROM vasm round trip and independent manifest/hash audit
+passed. Debug MinGW full CTest passed 84/84, Release MinGW full CTest passed
+84/84, and the GNU/Linux-equivalent build plus four relevant M12 helper tests
+passed. `git diff --check` and the source-file line-limit check passed.
+
+**STOP:** The >=90% gate remains unmet; 2,101,498 additional bytes are
+required. Unknown spans remain conservative blobs, including the 36-byte
+unresolved area between the table and first stream and all other mixed
+regions. No guessed padding, unknown asset classification, or ASM-to-C++
+migration was performed. Publication still requires the focused commit/push
+and its remote CI result.

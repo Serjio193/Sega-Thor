@@ -37,6 +37,12 @@ materialization outputs stay in ignored build evidence directories; the
 isolated target/test definitions live in `cmake/m12_auto2.cmake`; no ROM or
 extracted commercial asset is tracked.
 
+M12-AUTO3 adds the developer-only indexed script-table promoter
+`src/tools/re_m12_script_promote.py` and its deterministic regression
+`tests/re_m12_script_promote_test.py`. It records the exact `0x51514` table,
+the `0x00C2EC` index loop, and the NUL-terminated streams without beginning
+production C++ migration; generated transaction output remains ignored.
+
 M12-AUTO adds the developer-only combined promoter
 `src/tools/re_m12_auto_promote.py`, the compressed-resource boundary scanner
 `src/tools/re_resource_boundary_scan.cpp`, their helper regression
