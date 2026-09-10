@@ -16,9 +16,10 @@ EVIDENCE: docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md; docs/RE_LEDGER.md;
 docs/RE_METHOD_CATALOG.md.
 VALIDATION: Existing Debug/Release CTest results are 74/74. UCRT remains
 LOCAL_TOOLCHAIN_ENVIRONMENT because tests/raw_data_provenance_test.cpp fails
-before diagnostics; no new UCRT coverage is claimed. Re-run diff-check,
-source-limit and tracked hygiene before commit/push. Recommend M12 — Inventory /
-UI / Save only as a proposal; STOP after M11.64.
+before diagnostics; no new UCRT coverage is claimed. Diff-check, source-limit and tracked hygiene passed before commit/push. Implementation
+commit `df9d2b8600cf8ab5fb492982aef5795738a35e57` is on `origin/main`; GitHub Actions
+CI run `34459998820` passed build and test. Recommend M12 — Inventory / UI / Save
+only as a proposal; STOP after M11.64.
 
 # 2026-09-10 — M11.63 exact 0x0623AC natural callee closure — COMPLETE
 

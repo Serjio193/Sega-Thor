@@ -76,4 +76,4 @@ Recommend exactly one next major milestone: **M12 — Inventory / UI / Save** (p
 
 ## Validation record
 
-Documentation-only diff; no production/core changes. Exact baseline gates above passed. Existing Debug and Release CTest runs are 74/74, including source-limit and M11.63 regression coverage. UCRT remains `LOCAL_TOOLCHAIN_ENVIRONMENT`: the pre-existing `tests/raw_data_provenance_test.cpp` compile failure occurs before diagnostics, so no new UCRT coverage is claimed. `git diff --check`, source-limit and tracked hygiene are required again before commit/push.
+Documentation-only diff; no production/core changes. Exact baseline gates above passed. Existing Debug and Release CTest runs are 74/74, including source-limit and M11.63 regression coverage. UCRT remains `LOCAL_TOOLCHAIN_ENVIRONMENT`: the pre-existing `tests/raw_data_provenance_test.cpp` compile failure occurs before diagnostics, so no new UCRT coverage is claimed. `git diff --check`, source-limit and tracked hygiene passed before commit/push. Implementation commit `df9d2b8600cf8ab5fb492982aef5795738a35e57` is on `origin/main`; GitHub Actions CI run `34459998820` passed build and test.
