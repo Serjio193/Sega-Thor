@@ -41,8 +41,10 @@ evidence audit reports full-ROM exactness with 239 ASM round-trip records and
 5 statically supported records; an independent manifest/source audit passed
 contiguous coverage, target partitioning, non-target preservation, explicit
 directives, and canonical rebuilt hash. `git diff --check`, source-size
-policy, and tracked-artifact hygiene passed. Commit/push and final CI result
-are recorded after delivery steps.
+policy, and tracked-artifact hygiene passed. Commit `8b1a70c4c4f9d5dc60e2156aac5d227ac62bb744`
+is pushed to `origin/main`. GitHub Actions CI run `34497428251` (`CI`,
+`build-test`) passed for that exact SHA. The workflow emitted only the existing
+Node.js 20 deprecation annotation.
 
 TASK: Execute the single M12.3 transaction for P0
 `0x006516..0x0083D4` from baseline
