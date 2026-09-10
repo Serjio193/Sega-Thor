@@ -3,6 +3,41 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.58 portable behavior cluster boundary — COMPLETE
+
+TASK: Determine whether the proven RamFlagRoutine + parent-owned ParentSuffix
+composition has an evidence-backed raw-data ownership contract from baseline
+`f5f0118325dad3b36961a546ca5e06fd866d8f95`.
+ACCEPTANCE CRITERIA: reproduce the M11.57 identity twice; document control,
+data, continuation and adapter dependencies; census every raw byte/range;
+close or reject typed data; classify the cluster; run independent and 600-frame
+shadow/native gates; update ledgers and preserve all parent/hardware boundaries.
+
+BASELINE GATE: PASS. Two native and two shadow runs retain checkpoint
+`251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d`, video
+`5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58`, exact
+`6,488,773 = 6,488,692 interpreter + 34 TableCopy + 40 RamFlag + 7 helper`,
+zero fallback/divergence and shadow `5/5`.
+
+AUDIT: The existing ParentSuffix contract is already the smallest explicit
+composition and keeps RamFlag, raw addresses and opaque continuation separate.
+The footprint is `FF0010..FF0014`, `FF0016`, `FF0628`, `FF06F2` and the
+parent-base-derived `FF001F..FF0021`. Known external writers and unresolved
+alias/lifetime boundaries block any typed structure; no semantic names were
+introduced.
+
+RESULT: `PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED`.
+No production code changed. Full Debug MinGW, Release MinGW and GNU/UCRT CTest
+pass `69/69` each; diff, line-limit and repository-hygiene checks pass. Debug
+and Release rebuilds pass. The configured UCRT compiler relink returns
+`collect2.exe` exit 53 without a source diagnostic; its existing build remains
+CTest-green and this local toolchain limitation is recorded.
+`game.srm` remains unchanged and untracked. Evidence:
+`reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`.
+
+NEXT ACTION: Propose M11.59 only for the dominant raw-data alias/lifetime and
+external-writer blocker; do not execute it in this milestone.
+
 # 2026-09-10 — M11.57 parent-owned suffix handoff — COMPLETE
 
 TASK: Determine whether the proven hardware-free `0x604F0` suffix can be an

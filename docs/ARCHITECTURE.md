@@ -1,4 +1,21 @@
 # Architecture
+## M11.58 raw-parameter behavior cluster
+
+The existing `ParentSuffixMachine` is the minimal behavior-cluster boundary:
+it composes `RamFlagRoutine` once, preserves each component's resumable token
+space and exposes only supplied raw addresses/register state. Its exact
+footprint is `FF0010`, `FF0011`, `FF0012`, `FF0013`, `FF0014`, `FF0016`,
+`FF0628`, `FF06F2` and the A5-derived `FF001F..FF0021` range when the parent
+base is `FF001A`. `oasis_core` owns byte effects and opaque continuations;
+the parent/adapter owns the actual memory lifetime, ROM-PC provenance, GPGX
+fetch/timing, hardware prefix, full SR, shared epilogue and RTS.
+
+The data gate remains raw: fixed-window bytes have known external writers and
+the A5-derived range has unresolved aliases and lifetime. No typed structure or
+new cluster wrapper is justified. This is a portable behavior cluster contract,
+not a portable subsystem boundary. See ADR-0039 and
+`reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`.
+
 
 ## Target architecture
 

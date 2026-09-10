@@ -1,5 +1,22 @@
 # Project State
 
+CURRENT_MILESTONE: M11.58 complete — portable behavior cluster boundary
+CURRENT_TASK: complete; raw-data ownership and typed-data gate
+STATUS: COMPLETE — PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED
+SCOPE_BOUNDARY: ParentSuffix + RamFlag composition only; no typed data,
+subsystem boundary, gameplay meaning, 0x60BCC expansion or new routine search.
+LAST_VERIFIED_RESULT: Paired native and shadow 600-frame runs preserve frozen
+checkpoint/video identity, exact 6,488,773 accounting and zero fallback/
+divergence; shadow is 5/5. The cluster is raw-parameter based. FF0010..14
+have known external writers, FF0628/FF06F2 are addressed by other bounded code,
+and FF001A+5..7 alias/lifetime closure is unresolved. Parent frame, hardware
+prefix, full SR, shared epilogue and RTS remain outside core.
+BLOCKER: TYPED_DATA_CONTRACT_BLOCKED_SHARED_WRITERS_UNRESOLVED_ALIAS_LIFETIME.
+INVENTORY: 2 authoritative routines, 4 mechanical primitives, 1 proven
+portable behavior cluster, 0 typed structures, 0 portable subsystem boundaries.
+EVIDENCE: docs/reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md
+NEXT_ACTION: Propose M11.59 only for the dominant raw-data ownership blocker.
+
 CURRENT_MILESTONE: M11.57 complete — parent-owned portable suffix handoff
 CURRENT_TASK: complete; bounded internal helper promotion
 STATUS: COMPLETE — FIRST_PORTABLE_INTERNAL_HELPER_PROVEN

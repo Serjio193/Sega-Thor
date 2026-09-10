@@ -1,3 +1,27 @@
+# ADR-0039 — Keep the first behavior cluster raw and parent-parameterized
+**Status:** Accepted for M11.58
+**Date:** 2026-09-10
+
+**Context:** M11.57 proved a parent-owned suffix helper that composes the
+portable RamFlagRoutine. M11.58 audited its exact raw footprint and bounded
+ROM/runtime provenance. The fixed `FF0010..FF0014` bytes have known external
+writers, the flag addresses are used by other bounded code, and the
+`FF001A + 5..7` derived range has unresolved alias and lifetime boundaries.
+
+**Decision:** Treat the existing ParentSuffix + RamFlag composition as the
+portable behavior-cluster contract, retaining raw address parameters and each
+component's independent continuation tokens. Do not add a typed shared-memory
+structure, opaque replacement wrapper, subsystem owner or new routine. Keep
+parent frame/SR/hardware/epilogue/RTS ownership and all ROM/GPGX provenance in
+the parent or developer-only hybrid adapter.
+
+**Consequences:** The cluster can be tested and shadow/native-proven without
+inventing gameplay meaning or hiding unresolved ownership. M11.59 must close
+one dominant alias/lifetime and external-writer blocker before any typed data
+replacement is considered. `PORTABLE_SUBSYSTEM_BOUNDARY_PROVEN` remains false.
+
+**Evidence:** `docs/reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`.
+
 # ADR-0031 — Portable mechanical primitive layer in `oasis_core`
 **Status:** Accepted for M11.50
 **Date:** 2026-09-09

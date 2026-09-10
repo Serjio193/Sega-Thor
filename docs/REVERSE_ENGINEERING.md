@@ -1,6 +1,24 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.58 — portable behavior cluster raw-data census — CONFIRMED
+
+The proven composition is `ParentSuffix -> RamFlagRoutine -> ParentSuffix`
+with an opaque parent handoff. Ordered effects are byte writes at `FF0012`,
+RamFlag read-modify-writes at `FF0628`/`FF06F2`, writes to the supplied
+`FF001A + 5..7` range, `FF0016`, then `FF0010`, `FF0011`, `FF0013` and
+`FF0014`. The exact bounded access PCs, widths and ordering are recorded in
+`reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`.
+
+Ownership census: `FF0010..FF0014` are shared with known external callers;
+`FF0628`/`FF06F2` are addressed by known code outside the composition;
+`FF001A + 5..7` have unresolved alias and lifetime boundaries; `FF0016` has a
+bounded writer but no exclusivity proof. No access is hardware-visible inside
+the core cluster. Classification:
+`PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED` with
+`TYPED_DATA_CONTRACT_BLOCKED_SHARED_WRITERS_UNRESOLVED_ALIAS_LIFETIME`.
+No typed data, subsystem or new routine is promoted.
+
 # M11.57 — parent-owned suffix helper — CONFIRMED
 
 The exact sequence `604F0 SF.B`, `604F6 BSR 604BC`, `604FA/60500/60506/6050C

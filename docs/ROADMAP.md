@@ -1,3 +1,16 @@
+# M11.58 — Portable behavior cluster boundary — DONE
+
+Result: `PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED`. The
+existing ParentSuffix contract is the first evidence-backed raw-parameter
+composition of RamFlagRoutine and a parent-owned suffix. Its exact ordering,
+opaque continuation and 600-frame shadow/native identity are proven. Typed data
+is blocked by shared writers and unresolved alias/lifetime boundaries; no new
+structure, subsystem or routine was added. Evidence:
+`reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`.
+
+Next proposed milestone: M11.59 must close one dominant raw-data alias/lifetime
+and external-writer blocker only; do not execute it as part of M11.58.
+
 # M11.57 — Parent-owned suffix handoff — DONE
 
 Result: FIRST_PORTABLE_INTERNAL_HELPER_PROVEN. The exact seven-instruction

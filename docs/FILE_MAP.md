@@ -1,4 +1,10 @@
 # File Map
+M11.58 adds `docs/reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md`, the raw
+footprint/ownership census and cluster gate result. No source files or runtime
+modules were added; the existing `src/core/parent_suffix.*` composition remains
+the minimal behavior-cluster boundary and `src/tools/hybrid/candidate_parent_suffix.*`
+continues to own ROM/GPGX adaptation and proof.
+
 
 M11.57 additions: `src/core/parent_suffix.hpp/.cpp` owns the minimal portable
 parent-owned suffix contract; `src/tools/hybrid/candidate_parent_suffix.hpp/.cpp`

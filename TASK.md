@@ -1,5 +1,27 @@
 # Current task
 
+TASK: M11.58 Portable behavior cluster boundary and data-ownership gate
+STATUS: COMPLETE — PORTABLE_BEHAVIOR_CLUSTER_CONTRACT_PROVEN_REPLACEMENT_BLOCKED
+BASELINE: f5f0118325dad3b36961a546ca5e06fd866d8f95
+SCOPE: Existing RamFlagRoutine + parent-owned ParentSuffix composition only;
+raw ownership/alias/lifetime census; no gameplay meaning, typed structure,
+subsystem, 0x60BCC expansion or new routine search.
+RESULT: The existing ParentSuffix contract is the smallest architecture-neutral
+behavior-cluster composition. It invokes RamFlag exactly once, preserves exact
+raw write ordering and opaque resumable continuation, and leaves parent frame,
+full SR, hardware prefix, shared epilogue and RTS outside core. The typed-data
+gate is blocked by shared writers plus unresolved alias/lifetime boundaries.
+No new production abstraction was added because M11.57 already introduced the
+minimal raw-parameter composition.
+VALIDATION: Two native and two shadow 600-frame runs preserve checkpoint
+251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d, video
+5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58, exact
+6,488,773 = 6,488,692 interpreter + 34 TableCopy + 40 RamFlag + 7 helper,
+zero fallback/divergence and shadow 5/5; Debug/Release/UCRT CTest 69/69.
+EVIDENCE: docs/reports/PORTABLE_BEHAVIOR_CLUSTER_M11_58.md
+NEXT ACTION: Propose M11.59 to close the single dominant raw-data alias/lifetime
+and external-writer blocker; do not execute it here.
+
 TASK: M11.57 Parent-owned suffix handoff and portable internal helper gate
 STATUS: COMPLETE — FIRST_PORTABLE_INTERNAL_HELPER_PROVEN
 BASELINE: ca95f24ebb7b92d2943166a802d8aeef8a70d5d0
