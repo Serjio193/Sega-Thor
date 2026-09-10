@@ -1,3 +1,40 @@
+# 2026-09-11 — M12-AUTO8 direct graphics chain continuation — <90% / BLOCKED
+
+**TASK:** Continue from the published M12-AUTO7 checkpoint toward a >=90%
+SOURCE-OWNED ROM MAP, preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Promote only exact sequential `0x3820` consumer chains
+with decoder-verified source boundaries; preserve zero-gap, zero-overlap
+full-ROM materialization and canonical hashes; validate already-owned chain
+anchors without double promotion; add helper regression coverage and current
+M12 documentation; leave ambiguous spans UNKNOWN.
+
+**RESULT:** M12-AUTO8 promotes five new non-overlapping continuation streams,
+totaling 21,016 bytes: `[0x18955A,0x18CC6E)` and `[0x18D01B,0x18EB1F)`.
+The map reaches 795,148 / 3,145,728 bytes (`25.277074178%`); 2,036,008 bytes
+remain to the integer 90% threshold. Three adjacent chain anchors were
+revalidated but were already owned and were not counted twice: `0x172168`,
+`0x1894EA`, and `0x18CF98`. No C++ migration, ROM, BIOS, or extracted
+commercial asset was added.
+
+**EXACTNESS:** AUTO8 full materialization is 3,145,728 bytes with CRC32
+`C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The eight-consumer byte audit, eight decoder source-length
+checks including three existing anchors, full vasm round-trip, and AUTO8 helper
+regression pass locally. Fresh Debug and Release MinGW builds plus full CTest
+are `89/89` in both configurations. The GNU-equivalent Release build/link
+passed and its 18-test focused suite passed, including the line-limit scan. An
+independent AUTO8 manifest/hash audit, Python compilation, source-size check,
+and `git diff --check` passed; generated transactions remain local ignored
+build evidence.
+
+**STATUS:** The >=90% gate remains unmet; unresolved mixed code/data/resource
+spans remain conservative blobs. Continue M12 from the next independently
+closed provenance edge.
+
 # 2026-09-11 — M12-AUTO7 direct graphics provenance — <90% / BLOCKED
 
 **TASK:** Continue from the published M12-AUTO6 checkpoint toward a >=90%

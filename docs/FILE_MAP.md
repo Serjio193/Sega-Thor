@@ -1,3 +1,9 @@
+# M12-AUTO8 adds the developer-only sequential direct-graphics-chain promoter
+`src/tools/re_m12_direct_graphics_chain_promote.py` and its deterministic
+regression `tests/re_m12_direct_graphics_chain_promote_test.py`. It records
+five new decoder-verified continuation streams while revalidating three
+already-owned anchors; generated transaction output remains ignored.
+
 M12.1 adds the developer-only transactional promotion orchestrator
 `src/tools/re_m12_1_promote.py`, its helper regression
 `tests/re_m12_1_test.py`, exact status-register decoding coverage in

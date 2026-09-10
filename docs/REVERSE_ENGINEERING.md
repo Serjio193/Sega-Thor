@@ -1,12 +1,13 @@
-# M12-AUTO7 direct-graphics provenance checkpoint
+# M12-AUTO8 direct-graphics chain provenance checkpoint
 
-The current local M12 transaction reaches 774,132 bytes (24.608993530%) of
+The current local M12 transaction reaches 795,148 bytes (25.277074178%) of
 source-owned ROM while preserving the canonical ROM SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
-consumer evidence now also includes seven direct graphics streams totaling
-40,065 bytes: `[0x150000,0x1503D3)`, `[0x152340,0x15335A)`, and
-`[0x180C56,0x1894EA)`, selected by exact `0x3820` consumers and sequential
-decoder-advanced `A0` continuation. The bounded 50-record, 32-byte-stride
+consumer evidence now includes five new direct graphics continuation streams
+totaling 21,016 bytes: `[0x18955A,0x18CC6E)` and `[0x18D01B,0x18EB1F)`,
+selected by exact `0x3820` consumers and sequential decoder-advanced `A0`; the
+anchors at `0x172168`, `0x1894EA`, and `0x18CF98` were already owned. The
+bounded 50-record, 32-byte-stride
 table `[0x5D046,0x5D686)` selected by consumers at `0x00D72C`, `0x010086`,
 `0x0100AA`, and `0x039100` remains included. The following 64-entry word lookup table
 `[0x5D686,0x5D706)` and 512-byte indexed lookup table

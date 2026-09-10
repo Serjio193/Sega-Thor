@@ -1,5 +1,15 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO8 direct-graphics chain continuation
+
+The M12-AUTO8 transaction promotes 795,148 bytes (25.277074178%) of the
+canonical ROM, preserving the exact ROM hashes. Five new streams totaling
+21,016 bytes are closed by exact sequential `0x3820` consumers and decoder
+boundaries: `[0x18955A,0x18CC6E)` and `[0x18D01B,0x18EB1F)`. The chain also
+revalidates already-owned anchors at `0x172168`, `0x1894EA`, and `0x18CF98`;
+they are not double-counted. The threshold still requires 2,036,008 additional
+bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO7 direct-graphics boundary
 
 The M12-AUTO7 transaction promotes 774,132 bytes (24.608993530%) of the
