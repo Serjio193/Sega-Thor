@@ -1,5 +1,23 @@
 # Project State
 
+CURRENT_MILESTONE: M11.63 complete — 0x0623AC natural callee contract
+CURRENT_TASK: complete; natural G0 preservation/effect closure for 0x0623AC
+STATUS: COMPLETE — CALLEE_0623AC_BLOCKED_HARDWARE
+SCOPE_BOUNDARY: One developer-only 0x0623AC observer and bounded CFG evidence;
+no 0x060286, 0x061F60, 0x062CEC, 0x60BCC, 0x061258, typed data, subsystem,
+gameplay or native replacement expansion.
+LAST_VERIFIED_RESULT: 1,944 natural entries/returns across four parent sites;
+A5 equality 1,944/1,944; 1,297 direct and 12 indirect nested returns exact.
+Natural effect classes are G0-relative 2,483, safe-RAM 17,361, ROM 104,
+stack 4,638 and hardware 407 writes to C00011. Static status is INDIRECT_CFG
+at 0x062878; natural indirect targets are closed.
+BLOCKER: CALLEE_0623AC_BLOCKED_HARDWARE; bounded-G0 ledger also retains
+0x062AE0 static effect debt and 0x060286 not-yet-closed effects.
+EVIDENCE: docs/reports/CALLEE_0623AC_CONTRACT_M11_63.md
+NEXT ACTION: STOP after M11.63; do not start M11.64 here.
+
+# Project State
+
 CURRENT_MILESTONE: M11.62 complete — 0x061934 natural callee contract
 CURRENT_TASK: complete; natural G0 preservation/effect closure for 0x061934
 STATUS: COMPLETE — CALLEE_061934_NATURAL_CONTRACT_PROVEN

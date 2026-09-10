@@ -1,5 +1,25 @@
 # Current task
 
+TASK: M11.63 Exact natural G0 callee/effect closure for 0x0623AC
+STATUS: COMPLETE — CALLEE_0623AC_BLOCKED_HARDWARE
+BASELINE: 0d8844e98c4cbf6143e4bdf0cdc807479b3cf8e4
+SCOPE: One natural callee rooted at 0x0623AC; no 0x060286, 0x061F60,
+0x062CEC, 0x60BCC, 0x061258, typed RAM, subsystem, gameplay or native
+replacement expansion.
+RESULT: 1,944 entries/returns across four parent call sites (486 each),
+A5 equality 1,944/1,944, 1,297 direct and 12 indirect nested returns exact.
+Natural effects total 24,993: 2,483 G0-relative, 17,361 safe-RAM, 104 ROM,
+4,638 stack and 407 VDP hardware writes at 0xC00011. Static status is
+INDIRECT_CFG at 0x062878; natural targets are closed, but hardware effects
+keep the callee fail-closed.
+VALIDATION: Baseline identity, repeated byte-identical traces, Debug/Release,
+UCRT, source-limit, diff-check, hygiene and CI are recorded in the report and
+worklog. Transaction and typed-data gates remain fail-closed.
+EVIDENCE: docs/reports/CALLEE_0623AC_CONTRACT_M11_63.md
+NEXT ACTION: STOP after M11.63; M11.64 may target only a newly ranked blocker.
+
+# Current task
+
 TASK: M11.62 Exact natural G0 callee/effect closure for 0x061934
 STATUS: COMPLETE — CALLEE_061934_NATURAL_CONTRACT_PROVEN
 BASELINE: 3ad8870529486688b7a86974bad0f0cc2180abb8

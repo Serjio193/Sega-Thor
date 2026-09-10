@@ -201,8 +201,7 @@ int main(int argc, char** argv) {
             continuation_observer = std::make_unique<oasis::hybrid::CallerContinuationObserver>(
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
         }
-        if (std::getenv("OASIS_A5_LIFETIME") || std::getenv("OASIS_CALLEE_62AE0") ||
-            std::getenv("OASIS_CALLEE_61934")) {
+        if (oasis::hybrid::any_a5_observer_requested()) {
             if (!plain_emulated) throw std::runtime_error("A5 lifetime evidence requires EMULATED");
             oasis::hybrid::start_a5_lifetime_observer(
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});

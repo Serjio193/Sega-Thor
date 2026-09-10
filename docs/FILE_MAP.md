@@ -1,3 +1,8 @@
+M11.63 adds `src/tools/hybrid/callee_623ac_observer.hpp/.cpp` and runtime
+wiring for the bounded 0x0623AC natural callee contract. The deterministic
+regression is `tests/hybrid_callee_623ac_test.cpp`; the report is
+`docs/reports/CALLEE_0623AC_CONTRACT_M11_63.md`. No `oasis_core` file changed.
+
 M11.62 adds `src/tools/hybrid/callee_61934_observer.hpp/.cpp` and runtime
 wiring for the bounded 0x061934 natural callee contract. The deterministic
 regression is `tests/hybrid_callee_61934_test.cpp`; the report is

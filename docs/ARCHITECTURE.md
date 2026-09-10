@@ -1,3 +1,14 @@
+## M11.63 bounded 0x0623AC callee evidence
+
+M11.63 adds a developer-only observer for the natural callee rooted at
+`0x0623AC`. It records four parent continuations, exact A5 preservation,
+all natural nested direct/indirect calls, path signatures, ordered effects and
+hardware interaction. The static transitive slice retains `INDIRECT_CFG` at
+`0x062878`; natural targets are closed, but VDP writes at `0xC00011` keep the
+portable call-effect gate blocked. No production/core boundary, typed data,
+transaction or subsystem is introduced. See
+`reports/CALLEE_0623AC_CONTRACT_M11_63.md`.
+
 # Architecture
 ## M11.62 bounded 0x061934 callee evidence
 

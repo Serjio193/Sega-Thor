@@ -1,3 +1,19 @@
+# M11.63 — Exact 0x0623AC natural G0 callee/effect closure — DONE
+
+Result: `CALLEE_0623AC_BLOCKED_HARDWARE`. Four parent call sites produce
+1,944 exact entries/returns with A5 preservation; natural nested direct and
+indirect calls return exactly. The static slice is `INDIRECT_CFG` at `0x062878`.
+The complete natural effects include 407 VDP writes at `0xC00011`, so call
+effect closure remains hardware-blocked. Evidence:
+`reports/CALLEE_0623AC_CONTRACT_M11_63.md`.
+
+Recomputed bounded-G0 ledger: `0x061934` is `PROVEN_NATURAL_CONTRACT`;
+`0x062AE0` remains `EFFECTS_BLOCKED` by its latent `0x062CEC` indirect edge;
+`0x0623AC` is `EFFECTS_BLOCKED` by hardware; `0x060286` is
+`NOT_YET_CLOSED`. No sole remaining blocker is claimed.
+
+M11.64 is proposal-only and STOP applies.
+
 # M11.62 — Exact 0x061934 natural G0 callee/effect closure — DONE
 
 Result: `CALLEE_061934_NATURAL_CONTRACT_PROVEN`. The six parent call sites

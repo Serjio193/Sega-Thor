@@ -1,3 +1,21 @@
+# M11.63 — 0x0623AC natural callee contract — CONFIRMED NATURAL / HARDWARE BLOCKED
+
+The bounded slice rooted at `0x0623AC` decodes 352 instructions in 135 blocks,
+86 direct branches, 16 direct calls and one unresolved indirect call at
+`0x062878`; static status is `INDIRECT_CFG`. Natural G0 execution has 1,944
+entries and returns across parent call sites `0x060234`, `0x060242`, `0x060250`
+and `0x060276`, each 486. A5 equality is 1,944/1,944. Nested direct calls
+return 1,297/1,297 and indirect calls return 12/12; indirect targets are
+`0x0621F8`, `0x062218`, `0x062900` and `0x06293A`.
+
+The complete natural effect set is 24,993 events: G0-relative 2,483,
+safe-RAM 17,361, ROM reads 104, stack 4,638 and hardware 407. The hardware
+set is six byte writes to VDP register `0x00C00011`; no interrupts or unresolved
+runtime addresses occur. The natural result is
+`CALLEE_0623AC_BLOCKED_HARDWARE`; A5 is `A5_PRESERVED_EXACT`, while the static
+indirect boundary remains separate evidence. Full evidence:
+`reports/CALLEE_0623AC_CONTRACT_M11_63.md`.
+
 # M11.62 — 0x061934 natural callee contract — CONFIRMED
 
 The bounded transitive slice rooted at `0x061934` decodes 475 instructions in

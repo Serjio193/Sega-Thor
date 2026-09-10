@@ -17,4 +17,6 @@ void record_callee_62ae0_event(int type, int width, unsigned address, unsigned v
 void finish_callee_62ae0_observer(const std::filesystem::path& output);
 void stop_callee_62ae0_observer();
 
+bool any_a5_observer_requested();
+
 } // namespace oasis::hybrid

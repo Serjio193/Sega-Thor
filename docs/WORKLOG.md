@@ -1,3 +1,27 @@
+# 2026-09-10 — M11.63 exact 0x0623AC natural callee closure — COMPLETE
+
+TASK: Close the natural G0-crossed callee rooted at 0x0623AC from baseline
+0d8844e98c4cbf6143e4bdf0cdc807479b3cf8e4. No excluded routine or production
+boundary was in scope.
+RESULT: CALLEE_0623AC_BLOCKED_HARDWARE. Static CFG is INDIRECT_CFG at
+0x062878. Natural evidence is exact: 1,944 entries/returns, four parent call
+sites at 486 each, A5 equality 1,944/1,944, 1,297 direct nested returns and
+12 indirect nested returns across four deterministic targets. Effects total
+24,993: 2,483 G0-relative, 17,361 safe-RAM, 104 ROM reads, 4,638 stack and
+407 VDP writes at 0xC00011; interrupt and unresolved active effects are zero.
+EVIDENCE: docs/reports/CALLEE_0623AC_CONTRACT_M11_63.md; repeated traces are
+byte-identical with SHA-256 BBAFF3DC24F2EAF94B66D3ECB775C84F9CCCFF73489F9046DE92B30D13531566.
+VALIDATION: Baseline and post-change identity retain checkpoint/video hashes
+and 6,488,773 accounting (6,488,692 interpreter + 34 TableCopy + 40
+RamFlag + 7 ParentSuffix). Targeted Debug regression passed; full Debug and
+Release CTest pass 74/74, including source-limit and the new regression.
+Diff-check and tracked hygiene are clean. UCRT remains
+LOCAL_TOOLCHAIN_ENVIRONMENT because the existing raw_data_provenance_test.cpp
+fails before diagnostics; no new-test UCRT coverage is claimed. CI result is
+appended after commit.
+NEXT ACTION: Recompute only if new evidence changes the bounded-G0 ledger;
+otherwise STOP after M11.63.
+
 # Development Worklog
 Chronological record of meaningful project actions. New entries go at the top.
 
