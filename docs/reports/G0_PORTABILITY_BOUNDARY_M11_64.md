@@ -36,6 +36,7 @@ The interval is the natural path from G0 materialization at `0x060182` to the pa
 | `0x061F60` latent edge from `0x061934` | `STATIC_ONLY` | Static indirect CFG debt; natural targets/effects are bounded and closed. |
 | `0x062878` latent edge from `0x0623AC` | `STATIC_ONLY` | Static indirect CFG debt; natural targets/effects are observed, hardware remains blocking. |
 | External writers and aliasing of the G0 region | `UNRESOLVED` | No typed ownership claim is justified while overlapping/shared access remains possible. |
+| Interrupt and unresolved runtime effects | `NATURAL_ZERO` | No interrupt event and no unresolved active runtime address were observed in the bounded natural evidence. |
 | Broader lifetime around `0x061258` | `NOT_YET_CLOSED` | Parent/context ownership outside the bounded interval is unresolved. |
 
 `0x060286` is included as a ledger dependency but was not analyzed. Proving it later would not change the architectural decision: **`NO_ARCHITECTURAL_DECISION_CHANGE`**. The parent-owned lifetime, hardware boundary, and typed-data block already determine the M11 result.
@@ -76,4 +77,4 @@ Recommend exactly one next major milestone: **M12 — Inventory / UI / Save** (p
 
 ## Validation record
 
-Documentation-only diff; no production/core changes. Exact baseline gates above passed. Existing Debug and Release CTest runs are 74/74, including source-limit and M11.63 regression coverage. UCRT remains `LOCAL_TOOLCHAIN_ENVIRONMENT`: the pre-existing `tests/raw_data_provenance_test.cpp` compile failure occurs before diagnostics, so no new UCRT coverage is claimed. `git diff --check`, source-limit and tracked hygiene passed before commit/push. Implementation commit `df9d2b8600cf8ab5fb492982aef5795738a35e57` is on `origin/main`; GitHub Actions CI run `34459998820` passed build and test.
+Documentation-only diff; no production/core changes. Exact baseline gates above passed. Existing Debug and Release CTest runs are 74/74, including source-limit and M11.63 regression coverage. UCRT remains `LOCAL_TOOLCHAIN_ENVIRONMENT`: the pre-existing `tests/raw_data_provenance_test.cpp` compile failure occurs before diagnostics, so no new UCRT coverage is claimed. `git diff --check`, source-limit and tracked hygiene passed before commit/push. Implementation commit `df9d2b8600cf8ab5fb492982aef5795738a35e57` and documentation follow-ups are on `origin/main`; the current publication SHA is `8ff8a72a7114a7a2a1f1616207256226f6465898`. GitHub Actions CI run `34459998820` passed build and test; the final ledger-classification follow-up is validated by the subsequent CI run.
