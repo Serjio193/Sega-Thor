@@ -55,6 +55,12 @@ NEXT PROPOSAL: Exactly one M12.4 candidate, `0x000000..0x0007C4` (1,988
 bytes, 23 observed PCs, 3 static xrefs), selected by remaining observed-PC
 concentration. It was not started. STOP after M12.3.
 
+DELIVERY: Implementation commit `5f22a5ae2644c73f95179d529796a4bcb25c1465`
+is published on `origin/main`; the remote SHA matched exactly. GitHub Actions
+CI run `34492049406` passed build and test. The only annotation is the
+existing Node.js 20 deprecation notice for `actions/checkout@v4`; it is not a
+test or build failure.
+
 # 2026-09-10 — M12.1 transactional ASM promotion — COMPLETE
 
 TASK: Execute the single M12.1 transaction for P0
