@@ -29,8 +29,12 @@ zero gaps and overlaps. See
 **VALIDATION:** `tests/re_m12_auto_test.py`, `tests/re_m12_5_test.py`, Python
 compile checks, resource scanner Debug build/run, 181 exact range assembly,
 combined full-ROM assembly/hash verification, and source-size checks passed.
-Final Debug/Release CTest, diff/hygiene audit, commit SHA, push SHA, and CI
-status are appended before the checkpoint is committed.
+Debug/Release CTest, diff/hygiene audit, and independent manifest/hash audit
+passed. Implementation checkpoint SHA, pushed `origin/main` SHA, and exact
+CI are `5aaaa23fcfaea6de56629280f56bcd9c46935f58`,
+`5aaaa23fcfaea6de56629280f56bcd9c46935f58`, and GitHub Actions run
+`34502629852` (`build-test`, passed). CI emitted only an upstream Node.js 20
+deprecation annotation.
 
 **BLOCKER:** 2,866,260 bytes remain without a complete independent
 code/data/resource provenance graph. The largest are

@@ -13,8 +13,8 @@ migration, or emulator expansion.
 | Requested baseline | `33cb6d9985b3a87cd9eb92d4ad0883a736bde9ff` |
 | Baseline materialization | M12.4 manifest, then M12.5 exact nested islands |
 | Working checkpoint | `build/m12-auto-transaction-f/materialized/manifest.json` |
-| Final commit SHA | recorded after validation and commit |
-| `origin/main` SHA | recorded after push, or `CI=UNAVAILABLE` |
+| Final implementation checkpoint SHA | `5aaaa23fcfaea6de56629280f56bcd9c46935f58` |
+| `origin/main` SHA at checkpoint | `5aaaa23fcfaea6de56629280f56bcd9c46935f58` |
 
 Checkpoint progression:
 
@@ -109,8 +109,10 @@ The materialized ROM is exactly 3,145,728 bytes with CRC32 `C4728225`, SHA-1
 Completed in this checkpoint: Python helper tests, M12.5 regression tests,
 resource boundary scanner build/run, exact range assembly, combined full-ROM
 assembly/hash verification, and source-size checks for new source files.
-Debug/Release CTest and final repository hygiene are recorded in the final
-worklog entry after they run against the committed tree.
+Debug CTest and Release CTest both passed 80/80. The implementation
+checkpoint was pushed as `5aaaa23fcfaea6de56629280f56bcd9c46935f58`; GitHub
+Actions CI run `34502629852` (`build-test`) passed for that exact SHA. The
+only CI annotation is an upstream Node.js 20 deprecation warning.
 
 ## Global blocker and path to 100%
 
