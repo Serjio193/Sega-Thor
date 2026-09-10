@@ -151,5 +151,7 @@ emulated fallback entries.
 entry/return equality, zero nested-call contract and representative
 FF0013/FF001A/FF077C effects. No ROM/GPGX type enters `oasis_core`.
 
+CI: GitHub Actions run 34445181596 passed build and test for commit
+`de248d98b5ca9fee058c7d26dd031e0eb202ed26`.
 M11.62 may target only the dominant remaining blocker in the already-bounded
 G0 lifetime: one remaining callee/effect or the latent `0x062CEC` CFG edge.
