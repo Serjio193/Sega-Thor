@@ -4105,3 +4105,10 @@ below before commit.
   source-size gate passed with the largest edited source at 500 lines; no
   tracked ROM, save, commercial asset or generated evidence was staged.
 - Implementation commit and CI run SHA are appended after push.
+
+## Published result
+
+Implementation commit: `7cbcbf0b2c73606f6572849d5384a0890fd496a9`.
+`origin/main` matched this SHA after push. GitHub Actions CI run
+`34480825830` completed successfully for that commit (build and test green;
+only the platform's Node.js 20 deprecation annotation was reported).
