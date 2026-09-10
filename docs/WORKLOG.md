@@ -46,6 +46,12 @@ the transaction result. `git diff --check`, changed-source file limits and
 tracked artifact hygiene passed. No ADR was added because this is a bounded
 developer-tooling change with no architecture change.
 
+DELIVERY: Implementation commit `0d81ad81372a43d623f118965ae9b84d95401402`
+is published on `origin/main`; remote SHA matched exactly. GitHub Actions CI
+run `34477397124` passed build and test. The only annotation is the existing
+Node.js 20 deprecation notice for `actions/checkout@v4`; it is not a test or
+build failure.
+
 # 2026-09-10 — M11.64 G0 portability boundary consolidation — COMPLETE
 
 TASK: Consolidate M11.60–M11.63 into one bounded G0 architecture and close the
