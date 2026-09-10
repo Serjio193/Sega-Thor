@@ -1,3 +1,25 @@
+# 2026-09-10 — M11.64 G0 portability boundary consolidation — COMPLETE
+
+TASK: Consolidate M11.60–M11.63 into one bounded G0 architecture and close the
+M11 line. Acceptance required the exact 6b0e43d6ab6547f3232b1bee11e52e80347e425f
+baseline gate, complete dependency ledger, four-gate matrix, explicit 0x060286
+decision, hardware evidence, method catalog, and no production changes.
+RESULT: `G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED`. The 600-frame target set
+0x2D66,0x604BC,0x604F0 matches checkpoint/video and 6,488,773 accounting;
+native 5 calls have zero fallback/divergence, shadow is 5/5 with zero divergence,
+and the repeat is identical. G0 lifetime is parent-owned; 0x0623AC hardware is a
+real portability boundary; typed data remains blocked. 0x060286 is deferred and
+has `NO_ARCHITECTURAL_DECISION_CHANGE`.
+SCOPE: Documentation/governance only; no new observer, hook, callee, routine,
+typed RAM, VDP abstraction, gameplay or production/core change.
+EVIDENCE: docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md; docs/RE_LEDGER.md;
+docs/RE_METHOD_CATALOG.md.
+VALIDATION: Existing Debug/Release CTest results are 74/74. UCRT remains
+LOCAL_TOOLCHAIN_ENVIRONMENT because tests/raw_data_provenance_test.cpp fails
+before diagnostics; no new UCRT coverage is claimed. Re-run diff-check,
+source-limit and tracked hygiene before commit/push. Recommend M12 — Inventory /
+UI / Save only as a proposal; STOP after M11.64.
+
 # 2026-09-10 — M11.63 exact 0x0623AC natural callee closure — COMPLETE
 
 TASK: Close the natural G0-crossed callee rooted at 0x0623AC from baseline

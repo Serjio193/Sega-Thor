@@ -1,3 +1,13 @@
+## M11.64 G0 boundary closure
+
+M11 closes the bounded G0 evidence line without creating a portable subsystem.
+`A5 = 0xFF001A` has parent-owned natural lifetime through `0x06027E`/`0x060284`;
+`0x0623AC` exposes six natural VDP byte-write sites and therefore a hardware
+portability boundary; overlapping raw access and unresolved external writers block
+typed-data ownership. Static indirect edges and `0x060286` remain explicit debt.
+All ROM-PC, GPGX, hardware, timing and parent-continuation facts stay in
+developer-only hybrid evidence. See `RE_LEDGER.md` and the M11.64 report.
+
 ## M11.63 bounded 0x0623AC callee evidence
 
 M11.63 adds a developer-only observer for the natural callee rooted at

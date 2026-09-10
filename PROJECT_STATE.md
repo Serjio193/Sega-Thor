@@ -1,5 +1,24 @@
 # Project State
 
+CURRENT_MILESTONE: M11.64 complete — G0 portability boundary consolidation
+CURRENT_TASK: complete; close the M11 G0 line without new callee reverse engineering
+STATUS: COMPLETE — G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED
+SCOPE_BOUNDARY: Documentation/governance consolidation only; no 0x060286 execution,
+new observer, emulator hook, portable routine, typed RAM, VDP abstraction,
+production/core change, gameplay naming or subsystem promotion.
+LAST_VERIFIED_RESULT: Parent-owned G0 lifetime is proven from 0x060182 through
+0x06027E/0x060284; natural hardware dependency is proven at 0x0623AC;
+typed-data ownership remains blocked. Baseline target set 0x2D66,0x604BC,0x604F0
+matches checkpoint 251fab870a22fe5ac053f626e73413f1ecf83b4c548bfbe572e5ab417f32d38d,
+video 5e74ec4ef4a0c6891d5c6d60f4f260703c0bc2ebde9b15edea7e4f2ae3437a58 and
+6,488,773 accounting (6,488,692 interpreter + 34 TableCopy + 40 RamFlag + 7 ParentSuffix).
+BLOCKER: G0_TYPED_DATA_BOUNDARY_BLOCKED; deferred 0x060286, latent static CFG,
+external writers/aliasing and broader 0x061258 lifetime remain explicit.
+EVIDENCE: docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md; docs/RE_LEDGER.md
+NEXT ACTION: Propose exactly M12 — Inventory / UI / Save; do not start it here. STOP after M11.64.
+
+# Project State
+
 CURRENT_MILESTONE: M11.63 complete — 0x0623AC natural callee contract
 CURRENT_TASK: complete; natural G0 preservation/effect closure for 0x0623AC
 STATUS: COMPLETE — CALLEE_0623AC_BLOCKED_HARDWARE

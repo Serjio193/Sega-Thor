@@ -1,3 +1,14 @@
+# M11.64 — G0 portability boundary consolidation — DONE
+
+Result: `G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED`. M11.60–M11.63 evidence
+is consolidated in `RE_LEDGER.md` and the closure report. G0 remains parent-owned,
+0x0623AC is a real VDP hardware boundary, typed data is blocked, and 0x060286 is
+deferred with `NO_ARCHITECTURAL_DECISION_CHANGE`. No production code changed.
+
+M12 proposal only: Inventory / UI / Save using catalogued save/load RAM oracles,
+controlled perturbation, differential snapshots, runtime provenance/taint and
+resource graph reconstruction. Do not start M12 in M11.64.
+
 # M11.63 — Exact 0x0623AC natural G0 callee/effect closure — DONE
 
 Result: `CALLEE_0623AC_BLOCKED_HARDWARE`. Four parent call sites produce

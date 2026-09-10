@@ -1,3 +1,12 @@
+# M11.64 G0 portability boundary closure
+
+The consolidated bounded ledger is `docs/RE_LEDGER.md`; the full evidence report
+is `docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md`. G0 parent-owned lifetime is
+proven, the natural 0x0623AC VDP dependency is proven, and typed-data ownership
+is blocked. `0x060286`, latent `0x062CEC`/`0x061F60`/`0x062878`, external
+writers/aliasing and broader `0x061258` lifetime remain unresolved. No new
+callee was reverse-engineered.
+
 # M11.63 — 0x0623AC natural callee contract — CONFIRMED NATURAL / HARDWARE BLOCKED
 
 The bounded slice rooted at `0x0623AC` decodes 352 instructions in 135 blocks,

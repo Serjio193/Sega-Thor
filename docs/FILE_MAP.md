@@ -1,3 +1,8 @@
+M11.64 adds the documentation-only bounded G0 ledger
+`docs/RE_LEDGER.md`, reusable method index `docs/RE_METHOD_CATALOG.md`, and
+closure report `docs/reports/G0_PORTABILITY_BOUNDARY_M11_64.md`. No source or
+production/core file changed.
+
 M11.63 adds `src/tools/hybrid/callee_623ac_observer.hpp/.cpp` and runtime
 wiring for the bounded 0x0623AC natural callee contract. The deterministic
 regression is `tests/hybrid_callee_623ac_test.cpp`; the report is

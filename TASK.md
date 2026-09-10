@@ -1,5 +1,17 @@
 # Current task
 
+TASK: M11.64 G0 portability boundary consolidation and M11 closure
+STATUS: COMPLETE — G0_PORTABILITY_BOUNDARY_PROVEN_M11_LINE_CLOSED
+BASELINE: 6b0e43d6ab6547f3232b1bee11e52e80347e425f
+SCOPE: Documentation-only consolidation of M11.60–M11.63. No new callee,
+0x060286 execution, observer, hook, portable routine, typed RAM, VDP abstraction,
+production/core change, gameplay or subsystem expansion.
+RESULT: G0 parent-owned lifetime and natural hardware boundary are proven;
+typed-data ownership and standalone raw transaction promotion are blocked.
+NEXT ACTION: Recommend M12 — Inventory / UI / Save as proposal only; STOP.
+
+# Current task
+
 TASK: M11.63 Exact natural G0 callee/effect closure for 0x0623AC
 STATUS: COMPLETE — CALLEE_0623AC_BLOCKED_HARDWARE
 BASELINE: 0d8844e98c4cbf6143e4bdf0cdc807479b3cf8e4
