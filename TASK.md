@@ -1,5 +1,24 @@
 # Current task
 
+TASK: M11.62 Exact natural G0 callee/effect closure for 0x061934
+STATUS: COMPLETE — CALLEE_061934_NATURAL_CONTRACT_PROVEN
+BASELINE: 3ad8870529486688b7a86974bad0f0cc2180abb8
+SCOPE: One natural callee rooted at 0x061934; no 0x062CEC, 0x0623AC,
+0x060286, typed RAM, subsystem, gameplay or native replacement expansion.
+RESULT: 2,916 entries and returns preserve A5 exactly. Direct G0 consumers
+0x06193C (+0 read) occur 2,430 times and 0x061946 (+4 write) 1,361 times.
+The complete natural interval is closed across 65,765 data effects; nested
+calls return with exact A5, including 13 observed indirect calls. Static
+status remains INDIRECT_CFG only because 0x061F60 has no recoverable static
+target; its natural targets and effects are fully observed.
+VALIDATION: Baseline and post-change checkpoint/video/accounting remain exact;
+Debug/Release/UCRT results, deterministic traces and CI are recorded in the
+report and worklog. Transaction and typed-data gates remain fail-closed.
+EVIDENCE: docs/reports/CALLEE_061934_CONTRACT_M11_62.md
+NEXT ACTION: Propose M11.63 only for the highest-ranked remaining natural G0
+blocker inside the already-bounded lifetime; stop after M11.62.
+# Current task
+
 TASK: M11.61 Exact callee preservation/effect closure for 0x062AE0
 STATUS: COMPLETE — CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED
 BASELINE: 424c92c3f583e40c70cc82dcf1a7e9488483e4a6

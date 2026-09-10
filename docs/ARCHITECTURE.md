@@ -1,4 +1,14 @@
 # Architecture
+## M11.62 bounded 0x061934 callee evidence
+
+M11.62 adds a developer-only observer for the natural callee rooted at
+`0x061934`. It records parent entry/return distribution, direct `A5` consumers,
+all nested direct/indirect calls, A5 equality and complete natural effects.
+The static transitive slice retains `INDIRECT_CFG` at `0x061F60`, while the
+bounded natural target set is closed. No production/core boundary, typed data,
+transaction or subsystem is introduced. See
+`reports/CALLEE_061934_CONTRACT_M11_62.md`.
+# Architecture
 ## M11.61 bounded 0x062AE0 callee evidence
 
 M11.61 adds a developer-only observer for the natural callee rooted at

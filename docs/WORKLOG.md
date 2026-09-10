@@ -3,6 +3,26 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.62 exact 0x061934 natural callee closure — COMPLETE
+
+TASK: Close the natural G0-crossed callee rooted at 0x061934 from baseline
+3ad8870529486688b7a86974bad0f0cc2180abb8. No unrelated routine or production
+boundary was in scope.
+RESULT: CALLEE_061934_NATURAL_CONTRACT_PROVEN. The bounded static slice is
+INDIRECT_CFG only at unresolved 0x061F60. Natural evidence is exact: 2,916
+entries/returns, six parent call sites at 486 each, A5 equality 2,916/2,916,
++0 read count 2,430, +4 write count 1,361, 2,655 direct nested returns and
+13 indirect nested returns. Four indirect targets are observed deterministically.
+The complete natural effects are 7,017 G0-relative, 36,108 safe-RAM, 338 ROM
+reads and 22,302 stack effects; hardware and unresolved active effects are 0.
+EVIDENCE: docs/reports/CALLEE_061934_CONTRACT_M11_62.md; repeated traces are
+byte-identical with SHA-256 C9C2F9077C62233182854963608E9533377856BD08ABBEEDEFCE526C6CD8CFF6.
+VALIDATION: Baseline and post-change identity retain checkpoint/video hashes
+and 6,488,773 accounting. Debug and Release CTest pass 73/73; diff-check and
+source-limit checks are clean. UCRT again fails at existing
+raw_data_provenance_test.cpp before meaningful diagnostics and remains
+LOCAL_TOOLCHAIN_ENVIRONMENT. CI result is appended after commit.
+NEXT ACTION: Propose M11.63 only for the highest-ranked remaining natural G0 blocker, currently 0x0623AC or 0x060286; stop after M11.62.
 # 2026-09-10 — M11.61 exact 0x062AE0 callee closure — COMPLETE
 
 TASK: Close one unresolved callee crossed by M11.60 G0 from baseline

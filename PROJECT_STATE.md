@@ -1,5 +1,21 @@
 # Project State
 
+CURRENT_MILESTONE: M11.62 complete — 0x061934 natural callee contract
+CURRENT_TASK: complete; natural G0 preservation/effect closure for 0x061934
+STATUS: COMPLETE — CALLEE_061934_NATURAL_CONTRACT_PROVEN
+SCOPE_BOUNDARY: One developer-only callee observer and bounded CFG evidence;
+no 0x062CEC investigation, typed data, subsystem, 0x60BCC or 0x061258 expansion.
+LAST_VERIFIED_RESULT: 2,916 natural entries/returns preserve A5=FF001A exactly;
++0 read count 2,430, +4 write count 1,361; all observed nested calls return
+with equal A5. Natural effects classify as G0-relative, safe RAM, ROM reads,
+stack, with zero hardware or unresolved active effects. Static status is
+INDIRECT_CFG at 0x061F60.
+BLOCKER: BOUNDED_A5_TRANSACTION_BLOCKED_PARENT_LIFETIME; remaining natural
+G0 callees are 0x0623AC and 0x060286.
+EVIDENCE: docs/reports/CALLEE_061934_CONTRACT_M11_62.md
+NEXT ACTION: Propose M11.63 for one ranked remaining natural G0 blocker only.
+# Project State
+
 CURRENT_MILESTONE: M11.61 complete — 0x062AE0 callee contract
 CURRENT_TASK: complete; natural A5 preservation/effect closure for 0x062AE0
 STATUS: COMPLETE — CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED

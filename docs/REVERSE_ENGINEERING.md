@@ -1,3 +1,18 @@
+# M11.62 — 0x061934 natural callee contract — CONFIRMED
+
+The bounded transitive slice rooted at `0x061934` decodes 475 instructions in
+156 blocks with 105 direct branches, 12 direct calls and one unresolved
+indirect call at `0x061F60`; static status is `INDIRECT_CFG`. Natural G0
+execution has 2,916 entries and returns across six parent call sites (486 each).
+A5 equality is 2,916/2,916. Direct consumers `0x06193C` (+0 read) and
+`0x061946` (+4 write) occur 2,430 and 1,361 times. All 2,655 direct and 13
+indirect nested calls return with equal A5; indirect targets are
+`0x06211A`, `0x06202C`, `0x062048` and `0x0620B0`. The complete natural effect
+classes are G0-relative, safe-RAM, ROM-read and stack; hardware and unresolved
+active effects are zero. The narrow result is
+`CALLEE_061934_NATURAL_CONTRACT_PROVEN`; the static indirect boundary is
+reported separately. Full evidence:
+`reports/CALLEE_061934_CONTRACT_M11_62.md`.
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 

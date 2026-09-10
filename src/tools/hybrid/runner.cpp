@@ -201,7 +201,8 @@ int main(int argc, char** argv) {
             continuation_observer = std::make_unique<oasis::hybrid::CallerContinuationObserver>(
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
         }
-        if (std::getenv("OASIS_A5_LIFETIME")) {
+        if (std::getenv("OASIS_A5_LIFETIME") || std::getenv("OASIS_CALLEE_62AE0") ||
+            std::getenv("OASIS_CALLEE_61934")) {
             if (!plain_emulated) throw std::runtime_error("A5 lifetime evidence requires EMULATED");
             oasis::hybrid::start_a5_lifetime_observer(
                 oasis::hybrid::CallerAttributionApi{reg, peek, cpu_cycles, gpgx_refresh_cycles});
@@ -363,7 +364,6 @@ int main(int argc, char** argv) {
         if (address_observer) { address_observer->finish(); address_observer.reset(); }
         if (caller_observer) { caller_observer->finish(); caller_observer.reset(); }
         oasis::hybrid::stop_a5_lifetime_observer();
-        oasis::hybrid::stop_callee_62ae0_observer();
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};

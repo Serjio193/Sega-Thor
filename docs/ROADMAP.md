@@ -1,3 +1,14 @@
+# M11.62 — Exact 0x061934 natural G0 callee/effect closure — DONE
+
+Result: `CALLEE_061934_NATURAL_CONTRACT_PROVEN`. The six parent call sites
+produce 2,916 entries/returns with exact A5 preservation; +0/+4 counts are
+2,430/1,361. Natural nested direct and indirect calls return exactly. Static
+status remains `INDIRECT_CFG` at 0x061F60, but its bounded natural targets are
+closed. Transaction and typed-data gates remain fail-closed. Evidence:
+`reports/CALLEE_061934_CONTRACT_M11_62.md`.
+
+Next proposed milestone: M11.63 may target only the highest-ranked remaining
+natural G0 blocker, currently 0x0623AC or 0x060286.
 # M11.61 — Exact 0x062AE0 callee preservation/effect closure — DONE
 
 Result: `CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED`. Natural G0 calls
