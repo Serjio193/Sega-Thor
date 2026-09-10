@@ -3,6 +3,32 @@ Chronological record of meaningful project actions. New entries go at the top.
 
 Each task records objective, actions, evidence, tests, result, unresolved questions and exact next step.
 
+# 2026-09-10 — M11.61 exact 0x062AE0 callee closure — COMPLETE
+
+TASK: Close one unresolved callee crossed by M11.60 G0 from baseline
+424c92c3f583e40c70cc82dcf1a7e9488483e4a6. No other routine or production/core
+boundary was in scope.
+
+RESULT: CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED. The expanded static
+slice classifies 0x062AE0 as INDIRECT_CFG because reachable 0x062CEC performs
+an unresolved indexed JSR. Natural G0 evidence is exact: 486 entries, 486
+returns at 0x0601E6, A5 equality 486/486, three paths (310/175/1), zero direct
+or indirect nested calls, 2,302 data effects, and no hardware hook events.
+Observed effects are FF0013 safe-RAM read, FF001A/+0 G0 read, FF001E/+4 G0
+write, A4/A6-derived safe-RAM accesses and stack return reads. The M11.60
+transaction gate remains BOUNDED_A5_TRANSACTION_BLOCKED_PARENT_LIFETIME;
+typed data remains TYPED_DATA_BLOCKED_OVERLAPPING_ACCESS.
+
+EVIDENCE: docs/reports/CALLEE_062AE0_CONTRACT_M11_61.md; repeated natural
+traces are byte-identical with SHA-256
+80D4CDCBC9BD85013C70B15FE621070F5BB65AFEC8B78A43784D0790A04BDAC4.
+VALIDATION: Baseline and post-change authoritative identity retain the frozen
+checkpoint/video and 6,488,773 accounting. Debug and Release CTest pass 72/72
+after the new regression. The configured UCRT build was retried and remains
+LOCAL_TOOLCHAIN_ENVIRONMENT because the existing raw_data_provenance_test.cpp
+fails before compiler diagnostics. Push/CI results are appended after commit.
+NEXT ACTION: Propose M11.62 only for the dominant remaining bounded G0 gap.
+
 # 2026-09-10 — M11.60 bounded A5 consumer/lifetime closure — COMPLETE
 
 TASK: Close the natural A5 generation rooted at 0x060182 from baseline

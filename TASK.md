@@ -1,5 +1,23 @@
 # Current task
 
+TASK: M11.61 Exact callee preservation/effect closure for 0x062AE0
+STATUS: COMPLETE — CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED
+BASELINE: 424c92c3f583e40c70cc82dcf1a7e9488483e4a6
+SCOPE: One callee crossed by M11.60 G0=A5=FF001A; no other routine, typed
+RAM model, subsystem, gameplay semantics, 0x60BCC or 0x061258 expansion.
+RESULT: Natural 0x062AE0 calls have exact A5 preservation and complete observed
+RAM/stack effects: 486 entries, 486 returns, A5 equal 486/486, three paths,
+zero nested-call executions and zero hardware hooks. Static reachable CFG has
+an unresolved indexed JSR at 0x062CEC, so the callee boundary is INDIRECT_CFG
+and all-static effects remain blocked. M11.60 transaction and typed gates stay
+fail-closed.
+VALIDATION: Baseline and post-change checkpoint/video/accounting remain exact;
+Debug/Release/UCRT results, deterministic traces and CI are recorded in the
+report and worklog.
+EVIDENCE: docs/reports/CALLEE_062AE0_CONTRACT_M11_61.md
+NEXT ACTION: Propose M11.62 only for the dominant remaining blocker inside the
+already-bounded G0 lifetime; do not execute it here.
+
 TASK: M11.60 Bounded A5 consumer/lifetime closure at 0x060182
 STATUS: COMPLETE — BOUNDED_A5_CONSUMER_LIFETIME_PROVEN
 BASELINE: 37ef10694bdab1a52b042f79bc8e1f480f3f25f2

@@ -1,4 +1,10 @@
 # File Map
+M11.61 adds `src/tools/hybrid/callee_62ae0_observer.hpp/.cpp` and the
+developer-only runtime wiring for natural entry/return, A5 equality, paths,
+and memory-effect evidence. `tests/hybrid_callee_62ae0_test.cpp` locks the
+minimum deterministic contract. The report is
+`docs/reports/CALLEE_062AE0_CONTRACT_M11_61.md`; no `oasis_core` file changed.
+
 M11.60 adds `src/tools/hybrid/a5_lifetime_observer.hpp/.cpp` and the small
 `a5_lifetime_runtime.*` bridge for opt-in natural G0 provenance, plus
 `runner_support.*` to keep the developer runner below the source-size limit.

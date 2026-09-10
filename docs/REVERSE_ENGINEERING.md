@@ -1,6 +1,25 @@
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+# M11.61 — 0x062AE0 callee contract — CONFIRMED NATURAL / STATIC NEGATIVE
+
+The callee rooted at `0x062AE0` has six static RTS exits (`0x062B1A`,
+`0x062C36`, `0x062CBC`, `0x062D0A`, `0x062D62`, `0x062D6A`), one direct nested
+BSR at `0x062B4E -> 0x062D4C`, and one unresolved indexed JSR at `0x062CEC`.
+The expanded bounded CFG is therefore `INDIRECT_CFG`. In the M11.60 natural
+G0 distribution only the early `0x062B1A` return occurs: 486 entries and
+486 returns, with A5 entry/exit equality 486/486 and no nested-call executions.
+
+The complete observed data set is 2,302 effects: safe-RAM `FF0013` reads,
+G0-relative `FF001A` reads and `FF001E` writes, A4/A6-derived safe-RAM byte
+effects, and stack return-longword reads. Hook types inside the interval are
+execution/data only; no hardware event occurs. Three paths occur with counts
+310, 175 and 1. The natural result is
+`CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED`: preservation and natural
+effects are proven, while the latent indexed CFG prevents an all-static
+whole-callee effect claim. Full evidence:
+`reports/CALLEE_062AE0_CONTRACT_M11_61.md`.
+
 # M11.60 — bounded A5 consumer/lifetime closure — CONFIRMED
 
 G0 is the value materialized by `0x060182 LEA.L $FF001A,A5`. Exact bounded

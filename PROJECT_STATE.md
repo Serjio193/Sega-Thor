@@ -1,5 +1,18 @@
 # Project State
 
+CURRENT_MILESTONE: M11.61 complete — 0x062AE0 callee contract
+CURRENT_TASK: complete; natural A5 preservation/effect closure for 0x062AE0
+STATUS: COMPLETE — CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED
+SCOPE_BOUNDARY: One developer-only callee observer and bounded CFG evidence;
+no other routine, typed data, subsystem, 0x60BCC or 0x061258 expansion.
+LAST_VERIFIED_RESULT: 486 natural 0x062AE0 entries and returns preserve
+A5=FF001A exactly. Three natural paths produce safe-RAM, G0-relative and stack
+effects; nested direct/indexed calls are not naturally executed. Static CFG
+retains an unresolved indexed JSR at 0x062CEC.
+BLOCKER: INDIRECT_CFG plus remaining G0 callee/parent lifetime ownership.
+EVIDENCE: docs/reports/CALLEE_062AE0_CONTRACT_M11_61.md
+NEXT ACTION: Propose M11.62 for one remaining bounded G0 blocker only.
+
 CURRENT_MILESTONE: M11.60 complete — bounded A5 consumer/lifetime closure
 CURRENT_TASK: complete; natural G0 provenance at 0x060182
 STATUS: COMPLETE — BOUNDED_A5_CONSUMER_LIFETIME_PROVEN

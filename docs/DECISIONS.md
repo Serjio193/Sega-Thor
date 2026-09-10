@@ -1,3 +1,22 @@
+# ADR-0042 — Keep 0x062AE0 natural evidence developer-only
+**Status:** Accepted for M11.61
+**Date:** 2026-09-10
+
+**Context:** The natural callee crossed by M11.60 G0 preserves A5 exactly and
+has a complete observed safe-RAM/G0-relative/stack effect set. Its static CFG
+also contains an unresolved indexed JSR at `0x062CEC` and multiple latent RTS
+exits.
+
+**Decision:** Record only the natural preservation/effect contract with a
+developer-only observer and regression test. Classify the static boundary as
+`INDIRECT_CFG`; retain the M11.60 parent-lifetime transaction gate and typed
+data block. Do not recurse into a subsystem or add a production abstraction.
+
+**Consequences:** One G0 callee dependency is reduced to an exact natural
+fact. The latent indirect path and other G0 callees remain explicit blockers.
+
+**Evidence:** `docs/reports/CALLEE_062AE0_CONTRACT_M11_61.md`.
+
 # ADR-0041 — Keep the 0x060182 A5 lifetime parent-owned
 **Status:** Accepted for M11.60
 **Date:** 2026-09-10

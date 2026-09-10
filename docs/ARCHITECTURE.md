@@ -1,4 +1,14 @@
 # Architecture
+## M11.61 bounded 0x062AE0 callee evidence
+
+M11.61 adds a developer-only observer for the natural callee rooted at
+`0x062AE0`. It proves exact A5 entry/exit equality and records the complete
+natural data effects without importing ROM/GPGX state into `oasis_core`. The
+static CFG retains an indexed indirect call at `0x062CEC`, so this evidence
+does not create a portable callee, transaction or subsystem boundary. The
+parent-owned G0 lifetime and raw typed-data gate remain unchanged. See ADR-0042
+and `reports/CALLEE_062AE0_CONTRACT_M11_61.md`.
+
 ## M11.60 bounded A5 lifetime
 
 M11.60 adds only an opt-in, EMULATED-only developer observer under

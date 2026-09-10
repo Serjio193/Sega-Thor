@@ -1,3 +1,14 @@
+# M11.61 — Exact 0x062AE0 callee preservation/effect closure — DONE
+
+Result: `CALLEE_A5_PRESERVATION_PROVEN_EFFECTS_BLOCKED`. Natural G0 calls
+preserve A5 exactly and have a complete observed safe-RAM/G0-relative/stack
+effect set. The static callee boundary retains an unresolved indexed JSR at
+`0x062CEC`, so M11.60 transaction and typed-data gates remain fail-closed.
+Evidence: `reports/CALLEE_062AE0_CONTRACT_M11_61.md`.
+
+Next proposed milestone: M11.62 may follow only the dominant remaining blocker
+inside the already-bounded G0 lifetime.
+
 # M11.60 — Bounded A5 consumer/lifetime closure — DONE
 
 Result: `BOUNDED_A5_CONSUMER_LIFETIME_PROVEN`. The natural G0 rooted at

@@ -52,6 +52,7 @@ void hook(int type, int width, unsigned address, unsigned value) {
     if (continuation_observer)
         continuation_observer->event(type, width, address, value, current_frame, previous_execute_pc);
     oasis::hybrid::record_a5_lifetime_event(type, width, address, value, current_frame, previous_execute_pc);
+    oasis::hybrid::record_callee_62ae0_event(type, width, address, value, current_frame, previous_execute_pc);
     if (type == 1 && caller_observer && address == 0x0604BC)
         caller_observer->entry(address, previous_execute_pc, current_frame);
     if (type == 1) {
@@ -335,7 +336,7 @@ int main(int argc, char** argv) {
             trace.exceptions(std::ios::failbit | std::ios::badbit);
             trace << continuation_observer->jsonl();
         }
-        oasis::hybrid::finish_a5_lifetime_observer(std::filesystem::path(directory) / "a5_lifetime.jsonl");
+        oasis::hybrid::finish_a5_lifetime_observer(std::filesystem::path(directory) / "a5_lifetime.jsonl"); oasis::hybrid::finish_callee_62ae0_observer(std::filesystem::path(directory) / "callee_62ae0.jsonl");
         if (discover_mode) {
             discovery_mode = false;
             library.get<void(*)(decltype(&hook))>("retro_hybrid_install")(nullptr);
@@ -362,6 +363,7 @@ int main(int argc, char** argv) {
         if (address_observer) { address_observer->finish(); address_observer.reset(); }
         if (caller_observer) { caller_observer->finish(); caller_observer.reset(); }
         oasis::hybrid::stop_a5_lifetime_observer();
+        oasis::hybrid::stop_callee_62ae0_observer();
         library.get<decltype(&retro_unload_game)>("retro_unload_game")();
         library.get<decltype(&retro_deinit)>("retro_deinit")();
         unsigned natural_calls{}, comparisons{}, divergences{}, body_instructions{}, interrupts{}, override_calls{};
