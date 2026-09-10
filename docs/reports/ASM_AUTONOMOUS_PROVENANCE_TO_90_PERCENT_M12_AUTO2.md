@@ -1,6 +1,6 @@
-# M12-AUTO4 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO5 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO4_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
+Status: `M12_AUTO5_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -16,7 +16,7 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
 | Baseline Git SHA | `8515faab2a60d3bc1cc55975a473e43b61fbfa17` |
-| Final local transaction | `build/m12-auto4-level-transaction-a/materialized/manifest.json` |
+| Final local transaction | `build/m12-auto5-lookup-transaction-b/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -26,8 +26,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Consumer graph + fixed records | 718,252 | 22.832616170% |
 | Indexed script table + streams | 729,658 | 23.195203145% |
 | Nested level table + records | 731,827 | 23.264153798% |
+| Exact lookup tables | 732,467 | 23.284498851% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 2,099,329 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 2,098,689 bytes.
 
 ## Final ownership census
 
@@ -35,11 +36,11 @@ The 90% threshold is 2,831,156 bytes; the current gap is 2,099,329 bytes.
 | --- | ---: | ---: |
 | 68000 `CODE_VERIFIED` | 48,906 | 1.554679871% |
 | Header/vector ASM | 512 | 0.016276042% |
-| Confirmed structured data | 27,585 | 0.876903534% |
+| Confirmed structured data | 28,225 | 0.897248586% |
 | Confirmed alignment padding | 47 | 0.001494090% |
 | Local ROM-derived assets | 654,777 | 20.814800262% |
-| **SOURCE_OWNED** | **731,827** | **23.264153798%** |
-| Remaining `UNKNOWN` blob | 2,413,901 | 76.735846202% |
+| **SOURCE_OWNED** | **732,467** | **23.284498851%** |
+| Remaining `UNKNOWN` blob | 2,413,261 | 76.715501149% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, and
@@ -48,7 +49,9 @@ data total includes the existing exact ASM-backed data, eight fixed 1208-byte
 records, the 196-byte indexed table, and 98 exact streams totalling 11,210
 bytes, the 64-byte nested outer table, 492 bytes of count-bounded nested
 groups, and 185 pointer-backed records totalling 1,613 bytes. The one
-8-byte unindexed record-shaped span remains UNKNOWN. The Z80 8192-byte image is included in the ASM total and is also
+8-byte unindexed record-shaped span remains UNKNOWN. The structured-data total
+also includes the 64-entry `0x0EEE` word lookup table and the 512-byte bounded
+byte lookup table. The Z80 8192-byte image is included in the ASM total and is also
 recorded as `Z80_SOURCE_OWNED_BYTES=8192`.
 
 ## Provenance graph
@@ -69,7 +72,8 @@ Nodes:
     `[0x515FC,0x541FD)`.
 11. Nested level table `[0x5D918,0x5D958)`, contiguous groups through
     `0x5DB44`, and 185 pointer-backed records through `0x5E1A0`.
-12. Remaining ROM spans retained as canonical-local-ROM blobs.
+12. Exact lookup tables `[0x5D686,0x5D706)` and `[0x5D706,0x5D906)`.
+13. Remaining ROM spans retained as canonical-local-ROM blobs.
 
 Edges:
 
@@ -86,6 +90,7 @@ Edges:
   stream parser → 98 exact NUL-terminated structured-data streams.
 - Exact 68000 nested lookup sites → outer table → count-bounded group → inner
   relative pointer → bounded NUL-terminated record family.
+- Exact lookup consumers → bounded word/byte table ranges.
 - No edge was created from a decoder coincidence alone to an owned asset.
 
 ## Methods and outcomes
@@ -101,6 +106,7 @@ Edges:
 | Fixed-record parser proof | `0x00129A`, `0x0012E8` | 8 × 1,208-byte structured records |
 | Indexed script parser proof | `0x00C2EC`, `0x00C326`, `0x0051514` | 196-byte table + 11,210-byte streams |
 | Nested level-table proof | `0x004D4E`, `0x004F48`, lookup sites `0x4D58..0x4F4A` | 64-byte outer table + 492-byte groups + 1,613-byte records |
+| Exact lookup-table proof | `0x00302E`, `0x010684`, `0x01108C`, `0x0161FA`, `0x030200` | 128-byte word table + 512-byte byte table |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
@@ -148,8 +154,8 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. Debug MinGW and Release MinGW full CTest each passed 85/85 after
-the nested-level helper was registered. The GNU/Linux-equivalent build linked
-successfully and all 11 M12 helper tests passed. `git diff --check`, source
+repository. Debug MinGW and Release MinGW full CTest each passed 86/86 after
+the lookup-table helper was registered. The GNU/Linux-equivalent build linked
+successfully and all 12 M12 helper tests passed. `git diff --check`, source
 file limits, Python helper checks, and the independent manifest/hash audit
 passed.

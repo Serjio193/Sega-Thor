@@ -1,5 +1,17 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO5 exact lookup-table boundary
+
+The M12-AUTO5 transaction promotes 732,467 bytes (23.284498851%) of the
+canonical ROM, preserving the exact ROM hashes. The word table
+`[0x5D686,0x5D706)` is a bounded 64-entry table consumed by `0x00302E`; the
+largest observed caller count is `0x3F`, so the 128-byte boundary is exact.
+The byte table `[0x5D706,0x5D906)` is selected by exact consumers at
+`0x010684`, `0x01108C`, `0x0161FA`, and `0x030200`; the latter masks the index
+with `0x1FE`, closing the 512-byte boundary. The two tables add 640 bytes of
+confirmed structured data. The threshold still requires 2,098,689 additional
+bytes. No M13 or C++ migration is authorized.
+
 ## M12-AUTO4 nested level-table boundary
 
 The M12-AUTO4 transaction promotes 731,827 bytes (23.264153798%) of the

@@ -26,6 +26,12 @@ regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
 
+M12-AUTO5 adds the developer-only exact lookup-table promoter
+`src/tools/re_m12_lookup_table_promote.py` and its deterministic regression
+`tests/re_m12_lookup_table_promote_test.py`. It records the bounded
+`0x5D686..0x5D706` word table and `0x5D706..0x5D906` byte table from their
+68000 consumers; generated transaction output remains ignored.
+
 M12-AUTO4 adds the developer-only nested level-table promoter
 `src/tools/re_m12_level_table_promote.py` and its deterministic regression
 `tests/re_m12_level_table_promote_test.py`. It records the exact

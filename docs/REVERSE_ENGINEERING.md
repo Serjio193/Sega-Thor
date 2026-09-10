@@ -1,9 +1,12 @@
-# M12-AUTO4 nested level-table provenance checkpoint
+# M12-AUTO5 lookup-table provenance checkpoint
 
-The current local M12 transaction reaches 731,827 bytes (23.264153798%) of
+The current local M12 transaction reaches 732,467 bytes (23.284498851%) of
 source-owned ROM while preserving the canonical ROM SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
-consumer evidence now also includes the nested table at `0x5D918`, its exact
+consumer evidence now also includes the 64-entry word lookup table
+`[0x5D686,0x5D706)` and 512-byte indexed lookup table
+`[0x5D706,0x5D906)`, with direct consumers at `0x00302E`, `0x010684`,
+`0x01108C`, `0x0161FA`, and `0x030200`. The nested table at `0x5D918`, its exact
 count-bounded group region `[0x5D958,0x5DB44)`, and 185 unique
 pointer-backed NUL-terminated records in `[0x5DB44,0x5E1A0)`. The earlier
 `0x51514` indexed script table, the
@@ -15,6 +18,16 @@ upload at `0x06134E`, direct
 `0x0012E8`. Decoder census candidates without a closed table/consumer edge
 remain UNKNOWN. Full evidence is in
 `docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
+# M12-AUTO5 exact lookup-table boundary
+
+The exact transaction is
+`build/m12-auto5-lookup-transaction-b/materialized/manifest.json`. The word
+table `[0x5D686,0x5D706)` is exactly 64 `0x0EEE` words and is read by
+`0x00302E`; callers include a `DBF` count of `0x3F`. The byte table
+`[0x5D706,0x5D906)` is exactly 512 bytes; consumers index it after an explicit
+`ANDI.W #$1FE` at `0x030200` and equivalent doubled-angle accesses at
+`0x010704`, `0x0110E6`, and `0x01626A`. No bytes after `0x5D906` are included.
 
 # M12-AUTO4 nested level-table boundary
 

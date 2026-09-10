@@ -4398,3 +4398,32 @@ claim, ROM mutation, or ASM-to-C++ migration was performed.
 is pushed and matches `origin/main`. GitHub Actions CI run `34526971234`
 completed successfully; build and test passed, with only the upstream Node.js
 20 deprecation annotation.
+
+# 2026-09-10 — M12-AUTO5 exact lookup-table provenance — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+the canonical ROM byte-for-byte and not starting M13, native gameplay/runtime
+C++, or emulator expansion. Acceptance required exact consumer-backed table
+boundaries and no promotion of adjacent unclosed bytes.
+
+**RESULT:** The developer-only promoter
+`src/tools/re_m12_lookup_table_promote.py` closes the 64-entry word table
+`[0x5D686,0x5D706)` through `0x00302E` and the 512-byte indexed byte table
+`[0x5D706,0x5D906)` through consumers including `0x030200`'s `0x1FE` mask.
+The transaction is
+`build/m12-auto5-lookup-transaction-b/materialized/manifest.json` and reaches
+732,467 / 3,145,728 source-owned bytes (`23.284498851%`), adding 640 bytes.
+
+**EXACTNESS:** The rebuilt ROM is 3,145,728 bytes with CRC32 `C4728225`,
+SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** Focused helper, Python compilation, promoter round trip, and
+independent manifest/hash audit passed. Debug MinGW full CTest passed 86/86;
+Release MinGW full CTest passed 86/86; the GNU/Linux-equivalent build linked
+successfully and all 12 M12 helper tests passed. `git diff --check` and the
+source-file line-limit check passed.
+
+**STOP:** The >=90% gate remains unmet; 2,098,689 additional bytes are
+required. No guessed padding, unknown asset classification, ROM mutation, or
+ASM-to-C++ migration was performed.

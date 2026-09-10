@@ -21,4 +21,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_script_promote_test.py)
     add_test(NAME oasis_re_m12_level_table_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_level_table_promote_test.py)
+    add_test(NAME oasis_re_m12_lookup_table_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_lookup_table_promote_test.py)
 endif()
