@@ -1,5 +1,19 @@
 # Current task
 
+TASK: M12.4 Transactional ASM promotion of P0 region 0x000000..0x0007C4
+STATUS: COMPLETE — M12_4_ROM_START_PROMOTION_PARTIAL_EXACT
+BASELINE: 3e667c304382c5bce81d2e5a4ff75751139db314
+SCOPE: Mixed vector/header/startup classification with bounded developer-only
+ASM ownership and exact remaining-gap census. No native C++ gameplay/runtime
+migration, emulator expansion, ROM or asset commit, or M12.5 execution.
+RESULT: 512 HEADER_VECTOR_ASM bytes, 700 exact 68000 ASM bytes, 108 structured
+data bytes, and 0 padding bytes were promoted. 668 bytes remain blob-backed:
+560 POSSIBLE_CODE, 104 UNKNOWN_DATA, and 4 UNRESOLVED_BOUNDARY. Full ROM is
+exact with 0 gaps and 0 overlaps.
+EVIDENCE: docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md
+NEXT ACTION: One M12.5 proposal only, 0x003B3E..0x004A92; do not start it.
+STOP after M12.4.
+
 TASK: M12.3 Transactional ASM promotion of P0 region 0x006516..0x0083D4
 STATUS: COMPLETE — M12_3_P0_CODE_PROMOTION_PARTIAL_EXACT
 BASELINE: b9b55fc46fad88eb2ff1285e85bd9d8169d0289d

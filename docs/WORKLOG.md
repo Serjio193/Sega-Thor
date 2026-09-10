@@ -1,5 +1,49 @@
 # 2026-09-10 — M12.3 transactional ASM promotion — COMPLETE
 
+# 2026-09-10 — M12.4 ROM-start transactional ASM promotion — COMPLETE
+
+TASK: Execute M12.4 from baseline
+`3e667c304382c5bce81d2e5a4ff75751139db314` for the mixed
+`0x000000..0x0007C4` ROM-start region. Acceptance required explicit vector and
+header ownership, evidence-bounded startup code/data promotion, exact target
+and full-ROM round trips, classed remaining bytes, deterministic regressions,
+documentation, one recomputed M12.5 proposal, and no C++ migration or emulator
+expansion.
+
+RESULT: `M12_4_ROM_START_PROMOTION_PARTIAL_EXACT`. The transaction promotes
+512 `HEADER_VECTOR_ASM` bytes, 700 exact 68000 ASM bytes, 108 structured-data
+bytes, and 0 padding bytes. The target retains 668 blob-backed bytes:
+560 `POSSIBLE_CODE`, 104 `UNKNOWN_DATA`, and 4 `UNRESOLVED_BOUNDARY`.
+Remaining intervals and reasons are in
+`docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md`.
+
+EVIDENCE: The 64 vector longwords are structurally consumed and the reset
+target is `0x00020E`. The fixed Genesis header is emitted byte-for-byte with
+explicit `dc.b`. Startup CFG promotion closes at returns/terminal stubs, the
+unresolved indirect call at `0x00045A`, and the trusted ASM boundary at
+`0x0007C4`. The vasm USP spelling was independently checked; exact `dc.w` is
+used for `MOVE USP` because the spelling reverses the canonical `0x4E6x`
+encoding.
+
+METRICS: Whole-ROM after materialization is 244 ASM ranges / 15,858 ASM bytes,
+2 `HEADER_VECTOR_ASM` ranges / 512 bytes, 1 structured-data ASM range / 108
+bytes, 147 blob ranges / 3,129,250 blob bytes, 0 gaps and 0 overlaps. Canonical
+CRC32/SHA1/SHA256 remain `C4728225`,
+`2944910c07c02eace98c17d78d07bef7859d386a`, and
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+NEXT: The recomputed queue proposes exactly `0x003B3E..0x004A92` (3,924
+bytes, 12 observed PCs, 3 static xrefs) for M12.5; it was not started.
+
+VALIDATION: Debug CTest `78/78` passed; Release CTest `78/78` passed. Debug,
+Release, and GNU-equivalent MinGW builds linked successfully. Independent
+evidence audit reports full-ROM exactness with 239 ASM round-trip records and
+5 statically supported records; an independent manifest/source audit passed
+contiguous coverage, target partitioning, non-target preservation, explicit
+directives, and canonical rebuilt hash. `git diff --check`, source-size
+policy, and tracked-artifact hygiene passed. Commit/push and final CI result
+are recorded after delivery steps.
+
 TASK: Execute the single M12.3 transaction for P0
 `0x006516..0x0083D4` from baseline
 `b9b55fc46fad88eb2ff1285e85bd9d8169d0289d`. Acceptance required exact

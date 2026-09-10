@@ -32,7 +32,8 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
     const auto size = static_cast<unsigned>((op >> 6U) & 3U);
     const auto width = static_cast<std::uint8_t>(1U << (size & 3U));
     const auto dn = reg((op >> 9U) & 7U);
-    if (family == "rts" || family == "nop") {
+    if (family == "rts" || family == "rte" || family == "rtr" ||
+        family == "nop" || family == "move_usp") {
         result.operation = family;
     } else if (family == "move" && ea.size() == 2U) {
         result.operation = ea[1].kind == OperandKind::address_register ? "movea" : "move";

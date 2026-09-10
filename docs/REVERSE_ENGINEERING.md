@@ -43,6 +43,30 @@ reported separately. Full evidence:
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
 
+## M12.4 — ROM-start ownership — `M12_4_ROM_START_PROMOTION_PARTIAL_EXACT`
+
+Against baseline `3e667c304382c5bce81d2e5a4ff75751139db314`, the bounded
+`0x000000..0x0007C4` region is classified as mixed ROM structure. The fixed
+vector table `0x000000..0x000100` and fixed Genesis header
+`0x000100..0x000200` are explicit `dc.l`/`dc.b` source ownership; vector
+entries are not executable instructions. The reset vector is `0x00020E`.
+
+Closed code ownership is `0x000200..0x00020E`, `0x00020E..0x00029C`,
+`0x000308..0x00045A`, and `0x0006F6..0x0007C4`, materialized as eight exact
+ranges totaling 700 bytes. The startup table `0x00029C..0x000308` is
+`STRUCTURED_DATA_CONFIRMED` from the reset routine's PC-relative `MOVEM` and
+postincrement consumers. The range at `0x00045A` stops before unresolved
+indirect `JSR (A1)`; the remaining intervals are `0x00045A..0x00045E`
+UNRESOLVED_BOUNDARY, `0x00045E..0x0004C6` UNKNOWN_DATA, and
+`0x0004C6..0x0006F6` POSSIBLE_CODE.
+
+Per-range vasm (`-m68000 -no-opt -Fbin`) and full-ROM exactness passed. `MOVE
+USP` is represented by exact `dc.w` because this vasm build reverses the
+`0x4E6x` encoding for its USP operand spelling. Deterministic locks cover
+vector/header boundaries, startup ranges, target/full exactness, and manifest
+gaps/overlaps. Full report:
+`docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md`.
+
 ## M12.3 — P0 region `0x006516..0x0083D4` — PARTIAL EXACT
 
 The M12.3 transaction promotes 696 bytes in fourteen exact, non-overlapping

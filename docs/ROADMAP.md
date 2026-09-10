@@ -1,3 +1,13 @@
+# M12.4 — Transactional ASM promotion of P0 region 0x000000..0x0007C4 — DONE
+
+M12.4 completed as `M12_4_ROM_START_PROMOTION_PARTIAL_EXACT`. It promotes
+512 vector/header bytes, 700 exact 68000 ASM bytes, and 108 structured-data
+bytes, leaving 668 conservative bytes classified as POSSIBLE_CODE,
+UNKNOWN_DATA, or UNRESOLVED_BOUNDARY. Full-ROM materialization remains exact
+with 244 ASM ranges, 147 blob ranges, zero gaps, and zero overlaps. Exactly one
+M12.5 proposal is recorded: `0x003B3E..0x004A92`, not started. Full evidence is
+in `docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md`.
+
 # M12.3 — Transactional ASM promotion of P0 region 0x006516..0x0083D4 — DONE
 
 M12.3 completed an evidence-backed partial exact promotion against baseline

@@ -77,6 +77,10 @@ std::string exact_instruction_asm(const DecodedInstruction& instruction) {
     if (!instruction.supported || !instruction.exact)
         throw std::invalid_argument("no exact IR at 0x" + hex(instruction.address));
     const auto& exact = *instruction.exact;
+    if (exact.operation == "move_usp") {
+        // vasm's USP operand spelling emits the opposite 0x4E6x encoding.
+        return raw_words(instruction);
+    }
     if (exact.source && exact.source->kind == OperandKind::immediate &&
         exact.source->width_bytes == 1U && instruction.bytes.size() >= 4U &&
         instruction.bytes[2] == 0xFFU)

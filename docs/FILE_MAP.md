@@ -25,6 +25,13 @@ wiring for the bounded 0x061934 natural callee contract. The deterministic
 regression is `tests/hybrid_callee_61934_test.cpp`; the report is
 `docs/reports/CALLEE_061934_CONTRACT_M11_62.md`. No oasis_core file changed.
 # File Map
+M12.4 adds the developer-only ROM-start transaction
+`src/tools/re_m12_4_promote.py`, its deterministic helper regression
+`tests/re_m12_4_test.py`, and the report
+`docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md`. The exact reassembler now
+retains vasm-safe raw encoding for `MOVE USP`; full-split metrics and
+materialization recognize explicit vector/header/structured ASM ownership.
+
 M12.3 adds the developer-only transactional promoter
 `src/tools/re_m12_3_promote.py`, its deterministic helper regression
 `tests/re_m12_3_test.py`, the exact decoder/reassembler regression extensions,

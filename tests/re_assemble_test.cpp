@@ -116,6 +116,19 @@ void dynamic_bit_forms() {
     assert(absolute.instructions[0].exact);
     assert(exact_instruction_asm(absolute.instructions[0]) == "bset.b D0,($00FF0DBA).L");
 }
+void move_usp_form() {
+    const auto slice = decode({0x4E,0x66,0x4E,0x75});
+    assert(slice.instructions[0].exact);
+    assert(exact_instruction_asm(slice.instructions[0]) == "dc.w $4E66");
+}
+void return_forms() {
+    const auto rte = decode({0x4E,0x73});
+    const auto rtr = decode({0x4E,0x77});
+    assert(rte.instructions[0].exact);
+    assert(rtr.instructions[0].exact);
+    assert(exact_instruction_asm(rte.instructions[0]) == "rte");
+    assert(exact_instruction_asm(rtr.instructions[0]) == "rtr");
+}
 void ccr_immediate_encoding() {
     DecodedInstruction instruction{};
     instruction.address = 0xDA2AU;
@@ -173,6 +186,8 @@ int main() {
     status_register_moves();
     promoted_instruction_forms();
     dynamic_bit_forms();
+    move_usp_form();
+    return_forms();
     pc_relative_encoding();
     ccr_immediate_encoding();
     byte_immediate_preserves_extension();

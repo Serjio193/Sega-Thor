@@ -1,5 +1,27 @@
 # Project State
 
+CURRENT_MILESTONE: M12.4 complete — transactional ASM promotion of
+0x000000..0x0007C4
+CURRENT_TASK: exact ROM-start vector/header/startup ownership and census
+STATUS: COMPLETE — M12_4_ROM_START_PROMOTION_PARTIAL_EXACT
+BASELINE: 3e667c304382c5bce81d2e5a4ff75751139db314
+SCOPE_BOUNDARY: Developer-only reconstruction tooling and documentation;
+no native C++ gameplay/runtime migration, emulator expansion, M12.5 execution,
+or copyrighted ROM/assets committed.
+LAST_VERIFIED_RESULT: 512 HEADER_VECTOR_ASM bytes, 700 exact 68000 ASM bytes,
+108 structured-data bytes, and 0 padding bytes were promoted from the 1,988-byte
+target. The remaining 668 bytes are 560 POSSIBLE_CODE, 104 UNKNOWN_DATA, and
+4 UNRESOLVED_BOUNDARY. Whole-ROM materialization is exact with 244 ASM ranges,
+2 HEADER_VECTOR_ASM ranges, 1 STRUCTURED_DATA_ASM range, 147 blob ranges,
+0 gaps and 0 overlaps.
+BLOCKER: `0x00045A..0x00045E` has an unresolved indirect JSR boundary;
+`0x00045E..0x0004C6` is mixed indexed data/dispatch; `0x0004C6..0x0006F6`
+lacks trusted code-entry evidence.
+CPP_MIGRATION remains PAUSED_PENDING_ASM_COMPLETION.
+EVIDENCE: docs/reports/ASM_PROMOTION_000000_0007C4_M12_4.md
+NEXT ACTION: Propose exactly M12.5 at 0x003B3E..0x004A92 only; do not start it
+in this task. STOP after M12.4.
+
 CURRENT_MILESTONE: M12.3 complete — transactional ASM promotion of
 0x006516..0x0083D4
 CURRENT_TASK: exact promotion transaction and bounded remaining-gap census

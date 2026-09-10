@@ -159,7 +159,7 @@ def materialize(root, entries, rom, code_sources):
     (root / "blobs").mkdir()
     sources = {}
     for index, entry in enumerate(entries):
-        if entry["kind"] == "CODE_VERIFIED":
+        if entry.get("emitted_artifact_type") == "asm":
             source = code_sources[index]
             filename = f"sub_{entry['start']:06X}.asm"
             destination = root / "code" / filename
@@ -172,7 +172,7 @@ def materialize(root, entries, rom, code_sources):
             entry["artifact"] = f"blobs/{filename}"
     lines = ["; Generated transactional full-ROM promotion layout.", "    org $000000"]
     for entry in entries:
-        if entry["kind"] == "CODE_VERIFIED":
+        if entry.get("emitted_artifact_type") == "asm":
             lines.extend(line for line in (root / entry["artifact"]).read_text().splitlines()
                          if not line.startswith("    org ") and not line.startswith("sub_"))
         else:

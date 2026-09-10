@@ -183,6 +183,7 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_1_test.py)
     add_test(NAME oasis_re_m12_2_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_2_test.py)
     add_test(NAME oasis_re_m12_3_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_3_test.py)
+    add_test(NAME oasis_re_m12_4_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_4_test.py)
     add_test(NAME oasis_gpgx_persistent_coverage_semantics
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_persistent_coverage_test.py)
     add_test(NAME oasis_gpgx_unknown_priority_self_test
@@ -495,6 +496,5 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         PROPERTIES ENVIRONMENT "PATH=${oasis_compiler_bin}"
     )
 endif()
-
 # Optional external-emulator experiment; never linked into a production target.
 add_subdirectory(src/tools/hybrid)
