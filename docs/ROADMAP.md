@@ -33,6 +33,17 @@ classification in `docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`. No new
 ownership is inferred from runtime observation, and M13/ASM-to-C++ remains
 prohibited.
 
+# M12-CARVER-4 — Global static consumer recovery — COMPLETE / FIXED POINT
+
+The global static pass consumed existing non-runtime re-slice, xref, candidate,
+table and promotion evidence across the canonical ROM. It emitted 24,172 typed
+references and 136 consumer families for all 758 UNKNOWN ranges, but recovered
+no new exact boundary or ownership transaction. SOURCE_OWNED remains 1,427,873
+bytes; B/F/G remain 113/56/589 ranges and the 168 blocking conflicts remain
+explicit. The result is documented in
+`docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`. Stage 2,
+M13, and ASM-to-C++ migration remain prohibited.
+
 # M12-AUTO56 — Source-owned ROM map checkpoint — 45.3426678975% / BELOW-90 CONTINUING
 
 AUTO56 adds 24 bytes from the closed unknown prefix of the overlapping

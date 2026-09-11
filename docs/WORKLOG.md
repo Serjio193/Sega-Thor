@@ -6042,3 +6042,32 @@ migration was added. The full report is
 FINAL IMPLEMENTATION SHA: `5b59e88257b1283eaf51f49c3120a5c7765908f7`.
 Exact GitHub Actions CI run `34619527956` passed Configure, Build and Test for
 that SHA. The follow-up commit only records this CI result in documentation.
+
+# 2026-09-11 — M12-CARVER-4 global static consumer recovery
+
+TASK: continue from the pushed M12-CARVER-3 checkpoint and recover consumers,
+selectors, parser contracts, container boundaries and code/data evidence across
+the entire remaining UNKNOWN map using existing static artifacts only. Do not
+repeat the runtime sweep, begin M13, migrate ASM to C++, or create ownership
+from candidate/decoder/statistical evidence.
+
+IMPLEMENTATION: added the developer-only deterministic static recovery pass and
+CLI. It discovers 559 canonical-compatible non-runtime artifacts, parses all
+available re-slice memory references/control-flow edges, table fields, static
+consumer relationships, parser-boundary observations and candidate records,
+then attaches typed evidence and graph edges to the existing Carver IntervalDB.
+All 758 UNKNOWN ranges are clustered automatically into 136 consumer families
+and receive a complete blocker record. The existing M12 promotion system remains
+the only ownership writer.
+
+RESULT: 24,172 typed references were recovered: 21,618 CODE_TO_ROM_RANGE,
+259 CODE_TO_POINTER_TABLE, 405 TABLE_TO_ROM_RANGE and 1,890 CODE_XREF. There
+were 2,116 contract observations and 2,725 static candidates. No exact UNKNOWN
+boundary was recovered; no candidate or code byte was promoted. SOURCE_OWNED is
+unchanged at 1,427,873 bytes. B/F/G remain 113/56/589 ranges (623,036 /
+58,789 / 1,036,030 bytes), and the stored 168 blocking conflicts remain
+explicit with zero resolved. Carver reached fixed point with an empty queue.
+
+REPORT: `docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`.
+Machine-readable output remains ignored build data under
+`build/m12-carver-m12c4-static-recovery-e/`.

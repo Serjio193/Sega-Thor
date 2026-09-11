@@ -928,3 +928,14 @@ runtime, checkpoint, census and existing M12 promotion artifacts under an
 input root, normalize global ROM spans, and emit a whole-ROM blocker census
 without changing manifest ownership. `tests/re_m12_carver_global_sweep_test.py`
 covers deterministic span merging and exhaustive unobserved-gap classification.
+
+# M12-CARVER-4 adds global static consumer recovery
+
+`src/tools/m12_carver_static_recovery.py` and
+`src/tools/re_m12_carver_static_recovery.py` consume existing static reverse-
+engineering artifacts globally. They emit typed ROM-reference census edges,
+parser-contract observations, consumer families, container candidates and a
+complete blocker map without writing manifest ownership or repeating runtime
+capture. Regression coverage is in
+`tests/re_m12_carver_static_recovery_test.py`; the result is documented in
+`docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`.

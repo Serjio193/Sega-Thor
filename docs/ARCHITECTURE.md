@@ -360,6 +360,13 @@ UNKNOWN range. Runtime observation remains non-owning; only existing exact
 promotion contracts can change the manifest. Its report is
 `docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`.
 
+M12-CARVER-4 adds a developer-only static consumer recovery pass. It consumes
+existing re-slice, xref, candidate, table and M12 promotion artifacts globally,
+emits typed code/table/parser references and family-level blocker records, and
+reconciles them through the existing IntervalDB fixed point. It never writes
+manifest ownership, repeats runtime capture, or replaces an exact promoter.
+Its report is `docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`.
+
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
 The optional frontend loads an external instrumented libretro library and
 compares one naturally reached routine against existing C++ implementations.
