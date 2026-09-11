@@ -85,7 +85,7 @@ argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
 
 The separate machine report
 `build/m12-gfx-loader-census.json` (`oasis.m68k.m12-gfx-loader-census.v1`,
-SHA-256 `FCFF91F123FABE0330DCFD0CC364BBDA0C87CA214E74C7BD552235CD3BA9A233`)
+SHA-256 `3E9F5D9D11AA3B38500859E35449CCEE945CA0BDBA993C50A8F0D461CA40270E`)
 scans the canonical ROM for the exact six-byte `JSR abs.l,0x00D406` encoding.
 It finds 173 direct call sites. This is a different quantity from the 52
 `0x3820` call sites above: `0x00D406` is itself one of the shared loaders.
@@ -94,7 +94,7 @@ It finds 173 direct call sites. This is a different quantity from the 52
 | --- | ---: | --- |
 | screen descriptor uses | 167 | 163 unique descriptors |
 | descriptor `+0x1A` with exact direct `0x00D406` | 146 | direct screen-loader relation |
-| descriptor `+0x1A` without exact direct call | 17 unique expected sites | indirect/alternate continuation remains unresolved |
+| descriptor `+0x1A` without exact direct call | 17 unique expected sites | 15 verified continuations; 2 unresolved |
 | direct `0x00D406` not matched to a screen descriptor `+0x1A` | 27 | separate loader candidates; no ownership promotion |
 
 The 27 unmatched direct call sites are `0x02CF9C`, `0x02D402`, `0x02DB40`,
@@ -109,14 +109,28 @@ The 17 unique screen-descriptor expected sites without that direct encoding are
 The census is xref evidence only: it does not prove the caller's `A1`, a
 record boundary, a compressed stream boundary, or source ownership.
 
-The bounded follow-up relation pass adds two non-owning evidence classes to the
-same machine report. Fifteen of the 17 missing expected sites have a nearest
-exact direct call within 16 bytes: `0x02E99A`, `0x030080`, `0x031B78`,
+The bounded follow-up relation pass adds a closed, non-owning continuation
+verification to the same machine report. Fifteen of the 17 missing expected
+sites have a nearest exact direct call within 16 bytes: `0x02E99A`, `0x030080`, `0x031B78`,
 `0x031C78`, `0x031DE8`, `0x0320B8`, `0x032166`, `0x035680`, `0x03697E`,
 `0x036A08`, `0x036AC8`, `0x033516`, `0x037B62`, `0x039C18`, and `0x039FA0`.
 The two without such a bounded successor are `0x038FD6` and `0x03959A`.
-These are `BOUNDED_FORWARD_ADJACENCY_CANDIDATE` entries only: the bytes do not
-establish an unconditional path or preserve `A1`.
+The existing 68000 slice decoder and a closed verifier for the exact observed
+instruction forms establish that all 15 paths reach the exact direct call and
+none writes `A1` before it. `0x02E994` has a conditional branch directly to
+`0x02E99A`, with fall-through through `0x02E996`; the other 14 verified paths
+are straight fall-through. These are
+`VERIFIED_SCREEN_DESCRIPTOR_CONTINUATION` relations, not ownership ranges;
+they inherit the screen-root descriptor/A1 entry contract and do not promote
+bytes.
+
+The two unresolved entries are explicit blockers, not missing scan effort.
+`0x038FD6` begins with `MOVEM.L D0/D1/D2/D3/D4,-(A7)` and a long RAM-state
+routine with no bounded `0xD406` continuation; closing it requires a parent
+caller path or targeted runtime provenance. `0x03959A` also begins with a
+code-like `MOVEM.L`/`LEA.L $039DD2,A0` sequence and contains an unbounded sibling
+call at `0x0395D8`; separating that sibling call from the descriptor entry
+requires caller/A1 provenance. Neither site is promoted.
 
 Five unmatched direct calls have a 26-byte, screen-descriptor-shaped prefix at
 `call - 0x1A`, with a nonzero in-ROM pointer and four resource-id bytes below
@@ -166,24 +180,24 @@ Passed locally for the original root-closure transaction: Python compile,
 deterministic helper test, canonical ROM identity, full candidate
 materialization, byte-for-byte rebuilt-ROM comparison, and the previous
 Debug/Release CTest (143/143 each). The bounded `0x00D406` relation update
-passes Python compilation, focused tests (3/3), deterministic canonical-ROM
+passes Python compilation, focused tests (4/4), deterministic canonical-ROM
 JSON generation, Debug/Release builds, full Debug/Release CTest (144/144
 each), the GNU/Linux-equivalent WSL Release build with 143/143 non-size-gate
-tests, and `git diff --check`. The Linux `project_file_line_limit` test was
-stopped after more than ten minutes scanning the `/mnt/c` tree; the identical
-gate passed in Windows Debug and Release in 162.26 s and 161.14 s. No source
-violation was observed.
+tests, and `git diff --check`. A full Linux CTest attempt reached the
+`project_file_line_limit` test and was stopped after approximately 90 seconds
+of `/mnt/c` filesystem scanning; excluding that known slow gate, all 143 tests
+passed. The identical source-size gate passed in Windows Debug and Release in
+163.05 s and 161.59 s. No source violation was observed.
 The second full-layout `vasmm68k_mot` attempt was not
 successful because the existing generated baseline layout contains duplicate
 labels such as `loc_00B856`; the report records use of the independently
 byte-exact baseline rebuilt ROM as a verification fallback. This is not
 claimed as a fresh assembler round-trip.
 
-The next graphics step is to inspect the 15 bounded continuations with
-instruction-level control-flow/A1 evidence, then resolve the two remaining
-screen sites and the five descriptor-shaped records. The ten dynamic `0x3820`
-producers remain afterward. No candidate becomes owned without a proven source
-and exact boundary; M13 and ASM-to-C++ migration remain out of scope.
+The next graphics step is to resolve the two remaining screen sites and the
+five descriptor-shaped records, then return to the ten dynamic `0x3820`
+producers. No candidate becomes owned without a proven source and exact
+boundary; M13 and ASM-to-C++ migration remain out of scope.
 
 Implementation SHA: `641abc9bf0ca8a0e30254e551e8711f714de4f77`.
 Exact implementation CI: GitHub Actions run `34656525243` (success).

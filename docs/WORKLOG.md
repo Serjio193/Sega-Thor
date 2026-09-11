@@ -1,3 +1,39 @@
+# 2026-09-12 — M12-GFX-MAX verified 0x00D406 continuations — IN PROGRESS
+
+TASK: Close the bounded `0x00D406` screen continuation candidates with
+instruction-level 68000 control-flow and `A1` evidence. Keep the relation
+non-owning; do not promote ROM bytes from continuation proof alone.
+
+RESULT: The closed verifier confirms 15 of the 17 previously missing screen
+continuations. Every decoded path reaches the exact `JSR abs.l,0x00D406` and
+none writes `A1`; 14 are straight fall-through and `0x02E994` is a conditional
+branch whose taken and fall-through paths both reach `0x02E99A`. The only
+remaining screen continuation sites are `0x038FD6` and `0x03959A`. No ROM
+ownership changed.
+
+ARTIFACT: local ignored `build/m12-gfx-loader-census.json`, schema
+`oasis.m68k.m12-gfx-loader-census.v1`, SHA-256
+`3E9F5D9D11AA3B38500859E35449CCEE945CA0BDBA993C50A8F0D461CA40270E`.
+
+VALIDATION: Python compilation, direct harness and focused regression tests
+(`4 passed`), deterministic canonical-ROM census generation, Debug/Release
+builds, full Windows Debug/Release CTest (`144/144` each, including the source
+size gate), WSL Release build and CTest excluding only the slow Linux source
+size gate (`143/143`), `git diff --check`, and source files below 500 lines.
+The full Linux CTest attempt reached `project_file_line_limit` and was stopped
+after approximately 90 seconds of `/mnt/c` scanning; this is an environment
+limit, not a code failure.
+
+NEGATIVE EVIDENCE: `0x038FD6` is a code-like `MOVEM.L`/RAM-state entry with no
+bounded `0xD406` continuation. `0x03959A` is a code-like `MOVEM.L`/`LEA.L`
+entry with a separate unbounded `0x0395D8` sibling call. Both remain blocked
+on parent/caller `A1` provenance; neither is promoted. The machine census now
+stores these blocker reasons explicitly.
+
+NEXT: investigate `0x038FD6` and `0x03959A`, then independently close the five
+descriptor-shaped unmatched calls before returning to the ten dynamic `0x3820`
+producers.
+
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D406 relation census — IN PROGRESS
 
 TASK: Continue the M12-GFX-MAX graphics closure from the published exact

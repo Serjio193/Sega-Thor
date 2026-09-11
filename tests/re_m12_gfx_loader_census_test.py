@@ -59,6 +59,8 @@ def test_bounded_adjacency_and_descriptor_shape_are_candidates_only():
     }
     report = MODULE.build_report(bytes(rom), screen)
     assert report["screen_descriptor_missing_direct_calls"][0]["nearby_direct_call"]["distance"] == 6
+    assert report["screen_descriptor_missing_direct_calls"][0]["verified_continuation"] is None
+    assert report["screen_descriptor_unresolved_blockers"][0]["unresolved_blocker"]["reason"] == "NO_VERIFIED_CONTINUATION"
     assert report["unmatched_descriptor_shaped_candidates"] == []
 
     other = 0x40
@@ -71,7 +73,17 @@ def test_bounded_adjacency_and_descriptor_shape_are_candidates_only():
     assert report["unmatched_descriptor_shaped_candidates"][0]["promotion"] is False
 
 
+def test_known_continuation_decoder_requires_exact_call_and_preserves_a1():
+    call = MODULE.CALL_BYTES
+    rom = bytearray(b"\0" * 0x40)
+    rom[0x10:0x12] = bytes.fromhex("7400")
+    rom[0x12:0x12 + len(call)] = call
+    assert MODULE.verify_continuation(bytes(rom), 0x10, 0x12)["a1_written_before_call"] is False
+    assert MODULE.verify_continuation(bytes(rom), 0x10, 0x14) is None
+
+
 if __name__ == "__main__":
     test_exact_direct_call_scan_and_screen_split()
     test_screen_duplicate_use_is_retained_but_unique_count_is_exact()
     test_bounded_adjacency_and_descriptor_shape_are_candidates_only()
+    test_known_continuation_decoder_requires_exact_call_and_preserves_a1()

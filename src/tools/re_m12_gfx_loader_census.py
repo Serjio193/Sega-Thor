@@ -10,6 +10,19 @@ SCREEN_SCHEMA = "oasis.m68k.screen-resource-boundary.v1"
 ROM_SHA256 = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
 TARGET = 0x00D406
 CALL_BYTES = b"\x4E\xB9\x00\x00\xD4\x06"
+UNRESOLVED_NOTES = {
+    0x038FD6: {
+        "reason": "CODE_LIKE_ENTRY_WITHOUT_BOUNDED_D406_CONTINUATION",
+        "observed_prefix": "MOVEM.L D0/D1/D2/D3/D4,-(A7) followed by RAM state updates",
+        "requires": "closed parent/caller path or targeted runtime provenance",
+    },
+    0x03959A: {
+        "reason": "CODE_LIKE_ENTRY_WITH_UNBOUNDED_SIBLING_D406_CALL",
+        "observed_prefix": "MOVEM.L and LEA.L $039DD2,A0 followed by RAM state checks",
+        "sibling_d406_call": "0x0395D8",
+        "requires": "caller/A1 provenance separating the entry from the sibling call",
+    },
+}
 
 
 def direct_call_sites(rom: bytes) -> list[int]:
@@ -50,6 +63,66 @@ def nearby_call(expected: int, calls: list[int], window: int = 16) -> dict | Non
         "distance": site - expected,
         "classification": "BOUNDED_FORWARD_ADJACENCY_CANDIDATE",
         "proof_limit": "adjacency does not prove A1 provenance or unconditional control flow",
+    }
+
+
+def verify_continuation(rom: bytes, start: int, call: int) -> dict | None:
+    """Verify the known small 68000 bridge between a descriptor and D406.
+
+    This is deliberately a closed decoder for the exact instruction forms
+    present in the canonical ROM. Unknown opcodes fail closed.
+    """
+    pc = start
+    instructions = []
+    branches = []
+    writes_a1 = False
+    while pc < call:
+        opcode = int.from_bytes(rom[pc:pc + 2], "big")
+        if opcode == 0x7400 or opcode in (0x7200, 0x7208):
+            destination = 2 if opcode == 0x7400 else 1
+            instructions.append((pc, "moveq", destination))
+            pc += 2
+        elif opcode == 0x3401:
+            instructions.append((pc, "move.w", 2))
+            pc += 2
+        elif opcode in (0x0442, 0x0642):
+            instructions.append((pc, "immediate.w", 2))
+            pc += 4
+        elif opcode == 0x243C:
+            instructions.append((pc, "move.l", 2))
+            pc += 6
+        elif opcode == 0x223C:
+            instructions.append((pc, "move.l", 1))
+            pc += 6
+        elif opcode == 0x23FC:
+            address = int.from_bytes(rom[pc + 6:pc + 10], "big")
+            if address == 0x00FF17B2:
+                instructions.append((pc, "move.l.absolute", address))
+                pc += 10
+            else:
+                return None
+        elif opcode == 0x0281:
+            instructions.append((pc, "andi", 1))
+            pc += 6
+        elif opcode == 0x6A04:
+            target = pc + 2 + 4
+            if target != call:
+                return None
+            branches.append({"site": _hex(pc), "target": _hex(target),
+                             "kind": "conditional_to_call"})
+            pc += 2
+        else:
+            return None
+    if pc != call or rom[call:call + len(CALL_BYTES)] != CALL_BYTES:
+        return None
+    return {
+        "site": _hex(call),
+        "classification": "VERIFIED_SCREEN_DESCRIPTOR_CONTINUATION",
+        "instruction_count_before_call": len(instructions),
+        "branch_edges": branches,
+        "control_flow": "all decoded paths reach the exact D406 call",
+        "a1_written_before_call": writes_a1,
+        "proof_limit": "inherits the screen-root descriptor/A1 entry contract; no ROM ownership promotion",
     }
 
 
@@ -97,7 +170,21 @@ def build_report(rom: bytes, screen_report: dict) -> dict:
         item["descriptor"] = _hex(use["descriptor"])
         item["stream"] = _hex(use["stream"])
         item["nearby_direct_call"] = nearby_call(use["expected_call_site"], calls)
+        if item["nearby_direct_call"] is not None:
+            call = int(item["nearby_direct_call"]["site"], 16)
+            item["verified_continuation"] = verify_continuation(
+                rom, use["expected_call_site"], call)
+        else:
+            item["verified_continuation"] = None
+        if item["verified_continuation"] is None:
+            item["unresolved_blocker"] = UNRESOLVED_NOTES.get(
+                use["expected_call_site"], {
+                    "reason": "NO_VERIFIED_CONTINUATION",
+                    "requires": "new bounded control-flow evidence",
+                })
         missing_records.append(item)
+    verified = [item for item in missing_records
+                if item["verified_continuation"] is not None]
     return {
         "schema": SCHEMA,
         "rom_sha256": actual_sha,
@@ -116,6 +203,11 @@ def build_report(rom: bytes, screen_report: dict) -> dict:
         "unmatched_direct_call_sites": [_hex(site) for site in unmatched],
         "screen_descriptor_direct_call_sites": [_hex(site) for site in matched],
         "screen_descriptor_missing_direct_calls": missing_records,
+        "screen_descriptor_verified_continuation_count": len(verified),
+        "screen_descriptor_unresolved_continuation_count": len(missing) - len(verified),
+        "screen_descriptor_unresolved_blockers": [
+            item for item in missing_records
+            if item["verified_continuation"] is None],
         "unmatched_descriptor_shaped_candidates": descriptor_shaped_calls(
             rom, unmatched, set(matched)),
         "classification": {

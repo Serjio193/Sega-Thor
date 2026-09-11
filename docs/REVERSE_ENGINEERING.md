@@ -2773,6 +2773,28 @@ families, and 10 unresolved dynamic producers. The ten blockers remain
 inherited, helper-output, or sibling-call source values are not ROM-proven.
 No additional non-screen loader family gained a finite exact source boundary.
 
+### M12-GFX-MAX `0xD406` continuation verification — CONFIRMED
+
+The exact `0xD406` census finds 17 screen-descriptor positions without the
+direct `JSR` at `descriptor+0x1A`. For 15 of them, the existing 68000 slice
+decoder plus the closed verifier in
+`src/tools/re_m12_gfx_loader_census.py` decodes every intervening instruction
+and proves that all paths reach the exact `JSR abs.l,0x00D406` without writing
+`A1`: `0x02E98C`, `0x03007E`, `0x031B76`, `0x031C76`, `0x031DE6`, `0x0320B6`,
+`0x03215E`, `0x03567A`, `0x03697C`, `0x036A06`, `0x036AC6`, `0x033512`,
+`0x037B5E`, `0x039C0C`, and `0x039F9A`. The only branch is `BPL.S` at
+`0x02E994`, whose taken edge reaches `0x02E99A` and whose fall-through
+`ADDI.W` also reaches it. The remaining two screen sites, `0x038FD6` and
+`0x03959A`, remain unresolved because no bounded direct continuation was found.
+This confirms loader continuation relations only; it adds no ROM ownership.
+Negative evidence is recorded explicitly: `0x038FD6` is a code-like
+`MOVEM.L`/RAM-state entry with no bounded `0xD406` continuation, while
+`0x03959A` is a code-like `MOVEM.L`/`LEA.L` entry with a separate unbounded
+`0x0395D8` sibling call. Both remain blocked on parent/caller `A1` provenance;
+neither is promoted.
+Focused regression coverage is 4/4, and the canonical census output is
+`3E9F5D9D11AA3B38500859E35449CCEE945CA0BDBA993C50A8F0D461CA40270E`.
+
 ## M8 — player input and movement slice
 **Status:** IMPLEMENTED as a portable movement/state slice; full animation/entity callback semantics remain INVESTIGATING.
 
