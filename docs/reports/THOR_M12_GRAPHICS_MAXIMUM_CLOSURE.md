@@ -81,6 +81,15 @@ argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
 `0x03E61A` inherited caller argument.
 
+The bounded `0x00D54A` audit narrows, but does not close, its source blocker.
+The exact `0x00F80E` helper saves and restores all address registers, so it
+cannot produce `A4`. In the shared `0x00D406` body, `0x00D42E` sets
+`A4 = entry A1 + 4`; `0x00D542` then loads `A0 = (A4)` before the
+`0x00D54A` decompressor call. The consumed source is therefore a longword in
+the inherited entry record/RAM field. Without a closed caller or runtime
+register capture proving that field's ROM origin, this remains
+`INHERITED_A1_FIELD_NOT_ROM_PROVEN` and no bytes are promoted.
+
 ### Exact `0x00D406` direct-xref census
 
 The separate machine report

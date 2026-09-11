@@ -38,6 +38,7 @@ def test_all_static_callers_are_explicitly_represented():
     assert len(set(MODULE.CALLERS)) == 52
     assert set(MODULE.CALLERS) == set(MODULE.ROUTINES)
     assert set(MODULE.DYNAMIC).issubset(set(MODULE.CALLERS))
+    assert MODULE.DYNAMIC[0x00D54A][2] == "INHERITED_A1_FIELD_NOT_ROM_PROVEN"
 
 
 if __name__ == "__main__":

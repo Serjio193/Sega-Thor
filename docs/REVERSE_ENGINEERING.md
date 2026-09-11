@@ -3244,3 +3244,16 @@ artifact per candidate. AUTO60 consumes only entries whose audit status is
 `EXACT`, and records their caller lists plus artifact hashes in its promotion
 report. This is static source ownership, not a gameplay or C++ migration
 claim.
+
+# M12-GFX-MAX bounded 0x00D54A provenance audit
+
+The exact `0x00F80E` helper begins with `MOVEM.L` saving all address
+registers and restores the same set before `RTS`; it cannot produce a new
+`A4` value for the later `0x00D54A` call. In the shared `0x00D406` body,
+`0x00D42E` sets `A4` to `entry A1 + 4`, and `0x00D542` reads `A0` from the
+longword at `(A4)` before `JSR 0x00D54A`. This proves the dynamic producer's
+source relation as an inherited entry-record field, but not that the field
+contains a canonical ROM address on every caller path. The classification is
+therefore `INHERITED_A1_FIELD_NOT_ROM_PROVEN`; no executable or resource bytes
+are promoted. A caller-closed path or a targeted trace with `A1`/`A0` at the
+call is still required.

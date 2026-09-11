@@ -118,7 +118,7 @@ TABLE_CALLS = {
 }
 
 DYNAMIC = {
-    0x00D54A: ("A4 after helper 0x00F80E; RAM-mediated", "0x00FF3FA8", "HELPER_OUTPUT_NOT_ROM_PROVEN"),
+    0x00D54A: ("A4 = entry A1 + 4; helper 0x00F80E preserves A4; RAM-mediated field", "0x00FF3FA8", "INHERITED_A1_FIELD_NOT_ROM_PROVEN"),
     0x00D650: ("A4/A5 inherited from 0x00D406 record path", "A5 inherited", "REGISTER_VALUE_NOT_ROM_PROVEN"),
     0x02DB52: ("A0/A1 caller arguments; A0 post-state saved at 0x00FF17AA", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),
     0x02F6A0: ("A0 caller argument; A1 inherited", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),

@@ -6398,3 +6398,26 @@ metrics, classify tile/palette/tilemap evidence as candidates, enumerate
 static/runtime evidence, and publish
 `docs/reports/THOR_M12_GRAPHICS_DECOMPILER_SWEEP.md` with explicit unavailable
 runtime layers and SOURCE_OWNED before/after accounting.
+
+# 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
+
+TASK: Continue the graphics closure by narrowing the first unresolved dynamic
+`0x3820` producer without promoting RAM-mediated data. Inspect only the exact
+`0x00F80E` helper and the shared `0x00D406` path; preserve the canonical ROM,
+developer-only scope, and the no-M13/no-ASM-to-C++ boundary.
+
+RESULT: The helper at `0x00F80E` saves/restores all address registers and
+therefore cannot produce `A4`. In the shared loader, `0x00D42E` sets
+`A4 = entry A1 + 4`, then `0x00D542` loads `A0 = (A4)` before `0x00D54A`.
+The source relation is now narrowed to a longword in the inherited entry
+record/RAM field. The source is still not proven ROM-originated, so no bytes,
+descriptor, stream, or code range changed ownership.
+
+IMPLEMENTATION: updated the developer-only dynamic ledger, its regression
+assertion, the M12-GFX-2 caller report, the M12-GFX-MAX report, and the
+reverse-engineering record. The blocker is now named
+`INHERITED_A1_FIELD_NOT_ROM_PROVEN` rather than helper output.
+
+NEXT: continue with the remaining screen/descriptor blockers, then the other
+dynamic `0x3820` producers; a targeted trace capturing `A1`/`A0` at the call or
+a caller-closed source path is required before promotion.
