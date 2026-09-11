@@ -6117,3 +6117,64 @@ Exact GitHub Actions CI run `34637435506` passed Configure, Build and Test.
 The report records this exact implementation-SHA result; any later
 documentation-only publication does not alter the implementation or Carver
 hashes.
+# 2026-09-11 — M12-GFX-1 whole-ROM graphics decompiler sweep — COMPLETE / GLOBAL NEGATIVE
+
+RESULT: The independent Ancient parser validated the canonical vector at
+`0x16943C` (`1217` compressed bytes, `3072` output bytes,
+`65e99e74020fedbdcb97c8249a5ccfe540aca5bb5d29bfb260352cd6f388c31a`) and
+the malformed-stream safety tests. The byte-offset sweep tested `3,145,725`
+starts, `3,020,239` viable headers, and retained `7,577` strict-valid streams
+with `1,409,840` compressed and `4,411,088` decompressed bytes across unique
+records. It found `52` static absolute callers of `0x3820`.
+
+CLASSIFICATION: Strict candidates yielded 417 `GFX_TILE_CANDIDATE`, 1,192
+`PALETTE_CANDIDATE`, 1,931 `TILEMAP_CANDIDATE`, and 4,037
+`COMPRESSED_GENERIC` records. The raw tile, palette, and tilemap scans remain
+secondary heuristic evidence; no PNG or extracted asset was written.
+
+PROMOTION: `6,836` strict streams are wholly inside baseline UNKNOWN/BLOB
+ranges and were rejected because this pass has no independently closed
+consumer/container contract. `699` are already owned and `42` overlap a
+baseline-owned/unknown boundary. Promoted spans/bytes are `0`; SOURCE_OWNED
+remains `1,427,873 / 3,145,728 = 45.3908602397%`. Existing blocker totals B/F/G
+remain `623,036 / 58,789 / 1,036,030` bytes (113/56/589 ranges) before and
+after.
+
+PROVENANCE: Existing runtime artifacts confirm decoder PCs `0x3820`/`0x3830`
+and reader correlation over `0x152340..0x211F78` (75,969 unique ROM bytes),
+but no fresh graphics hook was available. The prior exact ID3 static control
+remains the only retained ROM→RAM→DMA/VRAM chain in this pass:
+`0x1AE1A8..0x1AE8AA` → `0xFF2FA8..0xFF3FA8` → VRAM `0x4000..0x4FFF`.
+CRAM line/source and SAT captures are unavailable; none were fabricated.
+
+IDENTITY: canonical CRC32/SHA-1/SHA-256 are `C4728225`,
+`2944910c07c02eace98c17d78d07bef7859d386a`, and
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+Local JSON output is `build/m12-gfx1-whole-rom/whole_rom_report.json` with
+SHA-256 `fdd0f9e2ded5a8fd000193b7ddfda1bf9873d3d4c086fe1b203da91213ba6fc1`.
+The full report is `docs/reports/THOR_M12_GRAPHICS_DECOMPILER_SWEEP.md`.
+
+VALIDATION: Python compilation and parser tests passed; Debug and Release
+MinGW graphics targets/reference checks passed; WSL Ubuntu GNU/Linux-equivalent
+graphics build, CTest, and reference checks passed; `git diff --check` and the
+source-size check passed. Visual Studio and Ninja were unavailable on this
+host. Final implementation SHA and exact final-SHA CI remain pending the
+focused commit/push; no M13 or ASM-to-C++ migration started.
+
+# 2026-09-11 — M12-GFX-1 whole-ROM graphics decompiler sweep — IN PROGRESS
+
+TASK: Run one graphics-focused whole-ROM reverse-engineering campaign from
+the `origin/main` baseline `afa3d1fc48386cfc710b32e22911d04b2c7eb6d0`,
+covering independent Ancient-format validation, strict global stream census,
+graphics heuristics, static `0x3820` caller enumeration, and available local
+runtime/provenance inputs. Preserve the canonical ROM and keep all tooling
+developer-only; no M13, ASM-to-C++ migration, ROM/assets, or visual-identity
+ownership claims are in scope.
+
+ACCEPTANCE CRITERIA: the independent parser must validate the known
+`0x16943C` vector, reject malformed streams safely, scan every ROM offset
+without decoder-only promotion, emit deterministic hashes and exact stream
+metrics, classify tile/palette/tilemap evidence as candidates, enumerate
+static/runtime evidence, and publish
+`docs/reports/THOR_M12_GRAPHICS_DECOMPILER_SWEEP.md` with explicit unavailable
+runtime layers and SOURCE_OWNED before/after accounting.
