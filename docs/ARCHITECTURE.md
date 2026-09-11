@@ -351,6 +351,15 @@ graphics census, creates typed pointer/resource nodes and candidate evidence,
 and records rejection reasons for unclosed raw-resource boundaries. It does
 not modify the manifest, replace promoters, or create a runtime dependency.
 
+M12-CARVER-3 adds a developer-only global sweep over the same IntervalDB. It
+discovers recognized canonical-ROM evidence, retains artifact repetitions while
+deduplicating identical payloads for ingestion, aggregates typed ROM
+read/execute spans, and records scenario/checkpoint coverage, parser/consumer
+clusters, destination statistics and one blocker class for every remaining
+UNKNOWN range. Runtime observation remains non-owning; only existing exact
+promotion contracts can change the manifest. Its report is
+`docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`.
+
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
 The optional frontend loads an external instrumented libretro library and
 compares one naturally reached routine against existing C++ implementations.

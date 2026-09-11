@@ -22,6 +22,17 @@ promoter transaction is run. The graph-guided result and deterministic output
 hashes are recorded in `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`. M13,
 ASM-to-C++ migration, and automatic detector expansion remain prohibited.
 
+# M12-CARVER-3 — Global runtime-evidence sweep — COMPLETE / GLOBAL NEGATIVE
+
+The complete local canonical-ROM evidence root was swept once through typed
+runtime-span aggregation and Carver fixed-point reconciliation. It covered
+every available stored runtime scenario and checkpoint artifact, but external
+BizHawk/MAME capture runners were unavailable on this host. SOURCE_OWNED stays
+`1,427,873` bytes; all 758 remaining UNKNOWN ranges have a global blocker
+classification in `docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`. No new
+ownership is inferred from runtime observation, and M13/ASM-to-C++ remains
+prohibited.
+
 # M12-AUTO56 — Source-owned ROM map checkpoint — 45.3426678975% / BELOW-90 CONTINUING
 
 AUTO56 adds 24 bytes from the closed unknown prefix of the overlapping

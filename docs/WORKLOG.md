@@ -6001,3 +6001,40 @@ VALIDATION: Carver tests, Python compilation, and `git diff --check` passed;
 Debug/Release/GNU-equivalent build and test gates remain to be rerun for the
 final commit. The canonical ROM hashes remain unchanged. Stage 2 stops at the
 stable fixed point; no detector expansion, M13, or ASM-to-C++ work started.
+
+# 2026-09-11 — M12-CARVER-3 global runtime-evidence sweep
+
+TASK: perform one global evidence-acquisition and fixed-point pass over every
+canonical-ROM-compatible deterministic runtime, census and checkpoint artifact
+under the local evidence root. Do not inspect or promote UNKNOWN intervals
+one-by-one; do not start M13 or ASM-to-C++ migration.
+
+IMPLEMENTATION: added `m12_carver_global_sweep.py` and its CLI wrapper. The
+tool discovers recognized existing producer schemas, validates ROM identity,
+deduplicates identical payloads for IntervalDB ingestion, retains artifact
+repetitions for scenario accounting, aggregates sequential/repeated runtime
+observations into typed ROM spans, and emits whole-ROM status plus blocker
+classification for every UNKNOWN. BizHawk and MAME binaries were checked and
+are unavailable on the current host; no tool was installed and no external
+capture was invented.
+
+RESULT: the global input root contained 859 compatible artifacts and 784 unique
+payloads, including 13 runtime scenario variants and 94 stored checkpoint
+summaries. The normalized runtime set contains 25,037 observations and 16,367
+spans covering 117,000 ROM bytes; 9,764 of those bytes intersect UNKNOWN
+manifest ranges. No exact `src_before`/`src_after` decoder boundary recovery
+was available in the stored captures. Carver reaches a fixed point with
+1,427,873 SOURCE_OWNED bytes unchanged, 18,004 non-owning candidates rejected,
+and 168 blocking conflicts remaining.
+
+GLOBAL BLOCKER CENSUS: all 758 remaining UNKNOWN ranges are classified: B
+runtime-observed with unknown consumer/parser (113 ranges, 623,036 bytes), F
+candidate/conflict overlap (56 ranges, 58,789 bytes), or G static evidence with
+no available scenario observation (589 ranges, 1,036,030 bytes). No source
+range is promoted by runtime observation alone.
+
+VALIDATION: global-sweep helper test, Python compilation, source-size review,
+and `git diff --check` are required final gates. The canonical ROM identity is
+unchanged; no ROM/assets, unknown `dc.b` ownership, M13 work, or ASM-to-C++
+migration was added. The full report is
+`docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`.

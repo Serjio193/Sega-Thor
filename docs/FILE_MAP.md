@@ -919,3 +919,12 @@ is documented in `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`; regression
 coverage remains in `tests/re_m12_carver_test.py`.
 Expansion helper contracts are covered by
 `tests/re_m12_carver_expansion_test.py`.
+
+# M12-CARVER-3 adds global runtime-evidence sweep orchestration
+
+`src/tools/m12_carver_global_sweep.py` and
+`src/tools/re_m12_carver_global_sweep.py` discover canonical-ROM-compatible
+runtime, checkpoint, census and existing M12 promotion artifacts under an
+input root, normalize global ROM spans, and emit a whole-ROM blocker census
+without changing manifest ownership. `tests/re_m12_carver_global_sweep_test.py`
+covers deterministic span merging and exhaustive unobserved-gap classification.
