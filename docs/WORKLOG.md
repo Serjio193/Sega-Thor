@@ -1,3 +1,155 @@
+# 2026-09-11 — M12-AUTO56 overlapping PC-relative word table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only bytes in a wholly UNKNOWN span when an exact
+PC-relative consumer closes the table base, selector mask, word stride, count,
+and overlap with an already confirmed table. Do not reclassify the existing
+overlap or infer semantics beyond the consumer contract.
+
+RESULT: AUTO56 promotes the unknown prefix `[0x062DA8,0x062DC0)` (24 bytes)
+of the exact 16-word table `[0x062DA8,0x062DC8)`. Consumer `0x061A22` has the
+exact PC-relative base, masks the selector to `0..15`, doubles it, and reads
+one word per selected entry. The final four words `[0x062DC0,0x062DC8)` overlap
+the already confirmed AUTO28 table and are therefore not re-promoted. The map
+reaches 1,426,357 / 3,145,728 bytes (`45.3426678975%`); 1,404,799 bytes remain
+to the integer 90% threshold.
+
+EXACTNESS: The transaction is
+`build/m12-auto56-pc-word-overlap-a/materialized/manifest.json`. Canonical
+CRC32 is `C4728225`, SHA-1 is
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The dedicated helper regression, Python compilation, contract and
+overlap checks, materialization, and full-ROM hash check passed. Debug and
+Release builds remain blocked by the pre-existing
+`src/core/ram_flag_routine.cpp` `std::to_string`/`std::runtime_error` errors;
+no C++ source was changed and no C++ migration began.
+
+# 2026-09-11 — M12-AUTO55 bounded 0x03B8DE descriptor table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only the wholly UNKNOWN suffix of a table whose
+PC-relative base, selector range, fixed stride, and record count are exact.
+Do not assign semantic field types or promote adjacent mixed data.
+
+RESULT: AUTO55 promotes `[0x03B8E2,0x03B95E)` (124 bytes), the unknown suffix
+of the eight-record, 16-byte table based at `0x03B8DE`. The exact consumers at
+`0x03A91C`, `0x03A9E2`, `0x03A9EE`, and `0x03AA18` close selector values `0..7`,
+record count `8`, and stride `0x10`. The map reaches 1,426,333 /
+3,145,728 bytes (45.3419049581%); 1,404,823 bytes remain to the integer 90%
+threshold. The unusual final record field is retained as raw structured data;
+no target semantics are inferred.
+
+EXACTNESS: The transaction is
+`build/m12-auto55-table-03b8de-a/materialized/manifest.json`.
+Canonical CRC32 is `C4728225`, SHA-1 is
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The dedicated helper, CTest registration, Python compilation,
+selector/record contract, materialization, and full-ROM hash check passed.
+Debug and Release builds still fail at the pre-existing
+`src/core/ram_flag_routine.cpp` `std::to_string`/`std::runtime_error` errors;
+no C++ source was changed and no C++ migration began.
+
+# 2026-09-11 — M12-AUTO52 direct loader graphics streams — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only graphics streams whose direct loader
+literal, exact ROM start, and decompressor terminator close a half-open
+boundary. Keep parser-only census candidates and adjacent unproven bytes
+UNKNOWN.
+
+RESULT: AUTO52 promotes three direct-loader graphics streams:
+`[0x1911EA,0x191F09)`, `[0x19911A,0x199CBA)`, and
+`[0x19D6A0,0x19EC4C)`, totaling 11,883 bytes. The loader literals at
+`0x03CA32`, `0x03CD46`, and `0x03DD62` identify the exact starts; the
+decompressor output contracts close the ends. The map reaches 1,425,633 /
+3,145,728 bytes (45.3196525574%); 1,405,522 bytes remain to the integer 90%
+threshold.
+
+EXACTNESS: The transaction is
+`build/m12-auto52-direct-loader-streams-a/materialized/manifest.json`.
+Canonical CRC32 is `C4728225`, SHA-1 is
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The dedicated helper regression, Python compilation, exact
+loader/table contracts, manifest conflict/gap checks, and full-ROM hash check
+passed. No C++ migration began.
+
+# 2026-09-11 — M12-AUTO51 static stream pointers — <90% / CONTINUING
+
+RESULT: AUTO51 promotes nine static-pointer graphics streams totaling 28,000
+bytes. The map reaches 1,413,750 bytes (44.9419021606%). The four table-backed
+and five direct/repeated pointer contracts are independently closed; adjacent
+unknown bytes remain unowned.
+
+# 2026-09-11 — M12-AUTO50 multi-resource families — <90% / CONTINUING
+
+RESULT: AUTO50 promotes 76,019 bytes from two repeated descriptor/table
+families plus three direct-loader streams. Exact pointer provenance and
+decompressor boundaries leave the `0x207595..0x207738` gap UNKNOWN. The map
+reaches 1,385,750 bytes (44.0518061320%).
+
+# 2026-09-11 — M12-AUTO49 descriptor-backed graphics streams — <90% / CONTINUING
+
+RESULT: AUTO49 promotes ten descriptor-backed graphics streams totaling
+72,284 bytes. Each repeated 22-byte descriptor supplies a ROM pointer and the
+exact decompressor terminator supplies the end. The adjacent
+`0x1F66A0..0x1F683C` candidate remains UNKNOWN because its descriptor/resource
+contract is not closed. The map reaches 1,309,731 bytes (41.6352272034%).
+
+# 2026-09-11 — M12-AUTO48 through AUTO46 exact dispatch families — <90% / CONTINUING
+
+RESULT: AUTO48 adds 36 bytes from a PC-relative eight-word dispatch table and
+closed branch/continuation code; AUTO47 adds 1,026 bytes from a multi-dispatch
+family; AUTO46 adds 246 bytes from a static dispatch family. Their cumulative
+map checkpoints are 1,237,447 bytes (39.3373807271%), 1,237,411 bytes
+(39.3362363180%), and 1,236,385 bytes (39.3036206563%), respectively. All
+three transactions preserve the canonical ROM hashes and leave unresolved
+targets/data outside the exact contracts UNKNOWN.
+
+# 2026-09-11 — M12-AUTO45 exact indexed offset table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN table whose PC-relative
+base, selector mask/shift, consumer instruction, and exact half-open boundary
+are independently closed. Do not infer ownership for the adjacent code at
+`0x00AD76` or for the dynamic ROM words read by the DMA queue at `0x002888`.
+
+RESULT: AUTO45 promotes `[0x00AD56,0x00AD76)` (32 bytes) as a 16-entry
+big-endian word offset table. `LEA.L ($FFFFFB7A,PC),A5` at `0x00B1DA`
+resolves to `0x00AD56`; `ANDI.W #$0F00,D4` plus `LSR.W #7,D4` at
+`0x00B242` closes offsets `0,2,...,30`; and `MOVE.W 0(A5,D4.W),D4` at
+`0x00B248` reads exactly the 16 words. The next decoded instruction begins
+at `0x00AD76`, so no neighboring bytes are assigned. The map reaches
+1,236,139 / 3,145,728 bytes (39.2958005269%); 1,595,017 bytes remain to the
+integer 90% threshold.
+
+EXACTNESS: The AUTO45 transaction is
+`build/m12-auto45-indexed-offset-table-transaction-c/materialized/manifest.json`.
+The canonical ROM is preserved exactly: CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+This data-only transaction reuses the canonical baseline rebuild; no new ASM
+was introduced and no C++ migration began.
+
+VALIDATION: The dedicated helper regression, Python compilation, canonical
+ROM identity check, table byte/value contract, selector closure, manifest
+materialization, and inherited full-ROM hash check passed. The current
+0x002888 DMA-queue path remains evidence-only because its A0 source is dynamic
+RAM state and does not close a ROM container boundary.
+
 # 2026-09-11 — M12-AUTO39 exact relative selector table — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
@@ -5628,3 +5780,133 @@ passed. Build gates remain blocked by the pre-existing
 
 STOP: The >=90% gate is not met. No guessed data, padding, or semantic
 payload ownership was added; M13/C++ migration remains out of scope.
+# 2026-09-11 — M12-AUTO54 PC-island tables — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only PC-relative tables/literals with exact
+consumer bytes, fixed record/lookup shape, and an independently checked
+half-open boundary. Keep mixed code/data islands and unclosed indexed regions
+UNKNOWN.
+
+RESULT: AUTO54 promotes 15 closed PC-relative island tables/literals totaling
+376 bytes, including the 4x16-byte tables at `0x01953C`, `0x025C24`, and
+`0x0288A2`, plus three repeated 6-byte status lookups. The map reaches
+1,426,209 / 3,145,728 bytes (45.3379631042%). The deliberately retained
+UNKNOWN candidates include `0x0108D0`, `0x01142C`, `0x0230A4`, `0x04BAE`,
+and `0x061588` because their indexed extent or mixed code/data boundary is
+not closed.
+
+EXACTNESS: The transaction is
+`build/m12-auto54-pc-island-tables-a/materialized/manifest.json`.
+Canonical CRC32 is `C4728225`, SHA-1 is
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The dedicated helper regression, Python compilation, exact
+consumer/boundary contracts, manifest materialization, and full-ROM hash
+check passed. No C++ migration began.
+
+# 2026-09-11 — M12-AUTO53 PC-relative lookup family — <90% / CONTINUING
+
+RESULT: AUTO53 promotes five fixed PC-relative lookup tables totaling 200
+bytes. The exact consumer families close 4x16-byte, 20-word, and 4x8-byte
+record shapes; the map reaches 1,425,833 bytes (45.3260103861%).
+# 2026-09-11 — M12-AUTO57 bounded word-transform table — <90% / CONTINUING
+
+TASK: continue the ASM-first M12 source-owned ROM map toward `>=90%` from the
+AUTO56 canonical manifest; preserve byte-exact ROM and do not begin C++
+migration. Acceptance: promote only a closed ROM interval with exact routine,
+caller, stride/count, provenance and materialization evidence; rebuild the
+canonical ROM byte-for-byte; update the M12 ledger and tests.
+
+RESULT: AUTO57 promotes `[0x03BD86,0x03BE06)` (128 bytes) as
+`BOUNDED_WORD_TRANSFORM_TABLE`. Exact decode of routine `0x03B7C0` shows one
+big-endian word read per iteration, post-increment by two, and `DBF D7` back to
+`0x03B7CC`. Direct callers at `0x03A7A6`/`0x03A854` and RAM-pointer callers at
+`0x03A9A8`/`0x03AA50` establish the same base; the pointer initializer at
+`0x03A87A` is exact. The largest caller sets `D7=0x3F`, closing 64 words and
+the interval end at `0x03BE06`; the smaller `D7=0x0F` caller is an independent
+bounded consumer. No neighboring UNKNOWN bytes were promoted.
+
+SOURCE_OWNED_BYTES: `1,426,485` / `3,145,728` = `45.346736907958984%`.
+The `>=90%` integer threshold is `2,831,156` bytes; remaining gap is
+`1,404,671` bytes. AUTO57 materialized from
+`build/m12-auto56-pc-word-overlap-a/materialized/manifest.json` into
+`build/m12-auto57-bounded-word-transform-a/materialized/manifest.json`.
+
+ROM identity remains exact: size `0x300000`, CRC32 `C4728225`, SHA1
+`2944910c07c02eace98c17d78d07bef7859d386a`, SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: `python tests/re_m12_bounded_word_transform_test.py` passed;
+`py_compile` passed; the full materializer passed and emitted the same ROM
+hashes. No C++ source was changed and no C++ migration was started. Existing
+Debug/Release project builds remain blocked by the pre-existing
+`src/core/ram_flag_routine.cpp` `std::to_string`/`std::runtime_error` errors.
+
+NEXT: continue with another exact bounded data/resource family; do not infer
+ownership from raw decodability, runtime reads without a closed extent, or
+neighboring bytes.
+# 2026-09-11 — M12-AUTO59 bounded word-copy tables — <90% / CONTINUING
+
+TASK: continue the ASM-first M12 source-owned ROM map from AUTO58 with exact
+bounded data consumers; preserve byte-exact ROM and do not begin C++ migration.
+
+RESULT: AUTO59 promotes `[0x000472,0x0004B4)` (66 bytes, 32 words) and
+`[0x0031FC,0x003218)` (28 bytes, 13 words) as
+`BOUNDED_WORD_COPY_TABLE`. Exact routine `0x002D66` consumes a two-byte header,
+uses the first byte as the RAM destination offset, the second as `D7`, and
+copies one word per `DBF D7` iteration. Callers at `0x0089C4` and `0x003260`
+establish the two ROM bases. Each end is computed from its own header and loop
+count; adjacent UNKNOWN bytes are excluded.
+
+SOURCE_OWNED_BYTES: `1,426,715` / `3,145,728` = `45.35404841105143%`.
+The integer `>=90%` threshold remains `2,831,156`; remaining gap is
+`1,404,441` bytes. Materialization is in
+`build/m12-auto59-bounded-word-copy-a/materialized/manifest.json`.
+
+VALIDATION: helper test, `py_compile`, and full materialization passed; the
+rebuilt ROM retains size `0x300000`, CRC32 `C4728225`, SHA1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+# 2026-09-11 — M12-AUTO58 exact static routine 0x003260 — <90% / CONTINUING
+
+TASK: promote a bounded exact-decode ASM island left UNKNOWN by the previous
+map, only after source round-trip and direct control-flow evidence.
+
+RESULT: AUTO58 promotes `[0x003260,0x0032E8)` (136 bytes) as
+`STATIC_EXACT_BOUNDED_ROUTINE`. The `0x003240` control-flow path reaches the
+routine; its exact ASM has supported instructions throughout and an explicit
+`RTS` at `0x0032E6`. The isolated vasm wrapper round-trips the slice exactly.
+The inherited full layout still has pre-existing duplicate labels elsewhere,
+so no green full-layout assembler claim is made for this checkpoint.
+
+SOURCE_OWNED_BYTES after AUTO58: `1,426,621` / `3,145,728` =
+`45.351060231526695%`; remaining gap to 90% was `1,404,535` bytes. No C++
+source changed and no migration started.
+# 2026-09-11 — M12-AUTO60 contiguous static islands — <90% / CONTINUING
+
+TASK: run the systematic direct-caller-to-RTS static-island family against the
+AUTO59 map; accept only exact range-tool + vasm slice round-trips wholly inside
+UNKNOWN entries, preserving the canonical ROM and avoiding C++ migration.
+
+RESULT: the audit examined 33 candidate runs. Fifteen exact slices passed both
+the range tool and vasm byte comparison, totaling 1,158 bytes; 18 were
+rejected with `RANGE_TOOL_FAIL`, `ASSEMBLER_FAIL`, or `SLICE_MISMATCH` and were
+not promoted. AUTO60 promotes only the 15 passing intervals as
+`STATIC_DIRECT_CALLER_RTS_ISLAND`, with per-slice caller and ASM/binary SHA256
+provenance recorded in `build/m12-auto60-contiguous-islands-a/promotion_report.json`.
+
+SOURCE_OWNED_BYTES: `1,427,873` / `3,145,728` = `45.39086023966471%`.
+The integer `>=90%` threshold is `2,831,156` bytes; remaining gap is
+`1,403,283` bytes. The materialized manifest is
+`build/m12-auto60-contiguous-islands-a/materialized/manifest.json`.
+
+VALIDATION: contiguous-island helper test, `py_compile`, audit range-tool +
+vasm slice checks, and full materialization passed. Canonical ROM identity is
+unchanged: CRC32 `C4728225`, SHA1
+`2944910c07c02eace98c17d78d07bef7859d386a`, SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.

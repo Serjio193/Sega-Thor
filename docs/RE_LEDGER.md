@@ -1,3 +1,37 @@
+# M12-AUTO57 current continuation checkpoint
+
+The latest valid materialized manifest is
+`build/m12-auto57-bounded-word-transform-a/materialized/manifest.json`.
+AUTO57 adds `[0x03BD86,0x03BE06)` (128 bytes) as
+`BOUNDED_WORD_TRANSFORM_TABLE`. Exact routine `0x03B7C0` reads one word per
+iteration and its largest `DBF D7` caller closes at 64 words; direct and
+RAM-pointer callers agree on the base. Source-owned coverage is
+`1,426,485 / 3,145,728 = 45.346736907958984%`; the 90% integer gap is
+`1,404,671` bytes. The canonical ROM rebuild remains byte-exact. Continue
+ASM-first provenance work; do not start C++ migration.
+
+# M12-AUTO56 current continuation checkpoint
+
+The current verified transaction is
+`build/m12-auto56-pc-word-overlap-a/materialized/manifest.json`. AUTO56 adds
+the wholly UNKNOWN prefix `[0x062DA8,0x062DC0)` (24 bytes) of a 16-word
+PC-relative lookup table. Consumer `0x061A22` closes the base, selector mask,
+double-word stride, and 16-entry count. The final four words overlap the
+already owned AUTO28 table `[0x062DC0,0x062DE0)` and remain under that existing
+provenance. The map reaches 1,426,357 / 3,145,728 bytes; canonical ROM identity
+remains exact and M13/C++ migration remains out of scope.
+
+# M12-AUTO55 current continuation checkpoint
+
+The current verified transaction is
+`build/m12-auto55-table-03b8de-a/materialized/manifest.json`. AUTO55 adds the
+wholly UNKNOWN suffix `[0x03B8E2,0x03B95E)` (124 bytes) of the eight-record
+table based at `0x03B8DE`; AUTO47 already owns `[0x03B8DE,0x03B8E2)`. Exact
+selector/count/stride consumers close the table, while all field semantics
+and neighboring bytes remain unclaimed. The map reaches 1,426,333 /
+3,145,728 bytes (45.3419049581%). Canonical ROM identity remains exact and
+M13/C++ migration remains out of scope.
+
 # M12-AUTO23 save-serialization provenance checkpoint
 
 AUTO23 is `build/m12-auto23-save-slots-transaction-b/materialized/manifest.json`.
@@ -331,3 +365,39 @@ A register/lifetime: parent-owned and exact on observed natural entries/returns.
 | Family | Exact source contract | Boundary proof | Result |
 |---|---|---|---|
 | table-selected graphics | `0x3F306..0x3FF66`, field1 `+4`, rows 15, 17, 23, 33-50, 53-57, 60-61, 63, 65, 67-69, 73-74, 77, 79, 89, 94-95 | Independent deterministic graphics census; every promoted range wholly UNKNOWN; full-ROM vasm equality | 35 streams, 115,011 bytes, `LOCAL_ROM_DERIVED_ASSET` |
+# M12-AUTO54 current continuation checkpoint
+
+The current verified transaction is
+`build/m12-auto54-pc-island-tables-a/materialized/manifest.json`. AUTO54 adds
+376 bytes from 15 exact PC-relative table/literal contracts and reaches
+1,426,209 / 3,145,728 bytes (45.3379631042%). The canonical ROM remains
+byte-exact. The mixed candidates `0x0108D0`, `0x01142C`, `0x0230A4`,
+`0x04BAE`, and `0x061588` remain UNKNOWN because indexed extents or code/data
+boundaries are not closed. AUTO53 immediately precedes this checkpoint with
+five lookup tables and 200 bytes. No C++ migration is part of M12.
+# M12-AUTO59 current continuation checkpoint
+
+The latest valid materialized manifest is
+`build/m12-auto59-bounded-word-copy-a/materialized/manifest.json`.
+AUTO59 adds `[0x000472,0x0004B4)` and `[0x0031FC,0x003218)` (94 bytes) from
+the exact header/count-closed word-copy routine `0x002D66`. Source-owned
+coverage is `1,426,715 / 3,145,728 = 45.35404841105143%`; the integer 90%
+gap is `1,404,441` bytes. Canonical ROM hashes remain exact. Continue
+ASM-first provenance work; do not start C++ migration.
+
+# M12-AUTO58 current continuation checkpoint
+
+AUTO58 precedes AUTO59 with the latest static-code slice
+`[0x003260,0x0032E8)` (136 bytes) and source-owned coverage
+`1,426,621 / 3,145,728 = 45.351060231526695%`. Its isolated vasm round-trip
+is exact; the inherited full layout has unrelated duplicate-label errors.
+# M12-AUTO60 current continuation checkpoint
+
+The latest valid materialized manifest is
+`build/m12-auto60-contiguous-islands-a/materialized/manifest.json`.
+AUTO60 adds 15 exact static direct-caller-to-RTS islands totaling 1,158 bytes;
+18 other candidates failed the slice/range/assembler gate and remain UNKNOWN.
+Source-owned coverage is `1,427,873 / 3,145,728 = 45.39086023966471%`; the
+integer 90% gap is `1,403,283` bytes. The canonical ROM rebuild remains
+byte-exact. Continue with bounded provenance families; do not start C++
+migration.

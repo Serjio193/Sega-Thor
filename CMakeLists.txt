@@ -113,19 +113,14 @@ add_executable(oasis_re_reachable_closure src/tools/re_reachable_closure_report.
 target_link_libraries(oasis_re_reachable_closure PRIVATE oasis_re_tooling oasis_core)
 add_executable(oasis_re_callee_effect src/tools/re_callee_effect_report.cpp)
 target_link_libraries(oasis_re_callee_effect PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_caller_stack src/tools/re_caller_stack_report.cpp)
 target_link_libraries(oasis_re_caller_stack PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_emulator_trace src/tools/re_emulator_trace_report.cpp)
 target_link_libraries(oasis_re_emulator_trace PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_candidate_map src/tools/re_candidate_map_report.cpp)
 target_link_libraries(oasis_re_candidate_map PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_mass_verify src/tools/re_mass_verify_report.cpp)
 target_link_libraries(oasis_re_mass_verify PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_explore src/tools/re_explore_report.cpp)
 target_link_libraries(oasis_re_explore PRIVATE oasis_re_tooling oasis_core)
 
@@ -134,7 +129,6 @@ target_link_libraries(oasis_re_ant PRIVATE oasis_re_tooling oasis_core)
 
 add_executable(oasis_re_ant_queue src/tools/re_ant_queue_report.cpp)
 target_link_libraries(oasis_re_ant_queue PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_static_translation src/tools/re_static_translation_report.cpp)
 target_link_libraries(oasis_re_static_translation PRIVATE oasis_re_tooling oasis_core)
 add_executable(oasis_gpgx_coverage_report src/tools/gpgx_coverage_report.cpp)

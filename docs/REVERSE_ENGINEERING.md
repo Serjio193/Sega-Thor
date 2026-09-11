@@ -1,3 +1,92 @@
+# M12-AUTO56 overlapping PC-relative word-table provenance
+
+AUTO56 promotes only the previously UNKNOWN prefix `[0x062DA8,0x062DC0)`
+(24 bytes) of the exact 16-word table `[0x062DA8,0x062DC8)`. The consumer at
+`0x061A22` resolves the base through `LEA ($1384,PC),A2`, masks the selector
+with `0x0F`, doubles it, and reads a word at `0(A2,D0.W)`, closing exactly
+16 two-byte entries. The final four entries overlap the already confirmed
+AUTO28 table `[0x062DC0,0x062DE0)`; AUTO56 records the overlap as evidence and
+does not re-promote or relabel those bytes. No semantic meaning is assigned to
+the word values or adjacent data.
+
+The deterministic developer-only helper is
+`src/tools/re_m12_pc_word_overlap_promote.py`, with regression coverage in
+`tests/re_m12_pc_word_overlap_test.py`. The materialized ROM remains
+byte-exact to the canonical hash; no C++ migration is started.
+
+# M12-AUTO55 bounded 0x03B8DE descriptor table
+
+AUTO55 promotes only `[0x03B8E2,0x03B95E)` because the preceding four bytes
+are already owned by AUTO47. The PC-relative `LEA` at `0x03A9EE` resolves to
+`0x03B8DE` using the 68000 PC base; `0x03A9F2` shifts the selector by four,
+and the exact control family bounds it to eight records (`0..7`, 16 bytes
+each). The table consumer contracts at `0x03A91C`, `0x03A9E2`, and `0x03AA18`
+independently confirm the selector/count family. All eight records remain raw
+structured data; no field semantics or adjacent bytes are inferred.
+
+The deterministic developer-only helper is
+`src/tools/re_m12_table_03b8de_promote.py`, with regression coverage in
+`tests/re_m12_table_03b8de_test.py`. The materialized ROM is byte-exact to the
+canonical hash; no C++ migration is started.
+
+# M12-AUTO52 direct loader graphics streams
+
+AUTO52 closes three direct loader chains. Literals at `0x03CA32`, `0x03CD46`,
+and `0x03DD62` identify starts `0x1911EA`, `0x19911A`, and `0x19D6A0`; the
+existing graphics decompressor contracts close the streams at `0x191F09`,
+`0x199CBA`, and `0x19EC4C`. The 11,883 promoted bytes are classified as
+`GRAPHICS_COMPRESSED_STREAM` and remain local ROM-derived assets, not portable
+C++ code. The transaction preserves the canonical ROM hash and has no gaps,
+overlaps, or conflicts.
+
+# M12-AUTO51 static stream pointers
+
+AUTO51 closes nine static-pointer graphics streams (28,000 bytes): four
+table-backed streams at `0x176340`, `0x1794CA`, `0x17C700`, and `0x17E610`,
+plus direct/repeated-pointer streams at `0x1698FE`, `0x196300`, `0x0541FE`,
+`0x163EB8`, and `0x165434`. Each pointer literal and decompressor end is
+recorded by `src/tools/re_m12_static_stream_pointer_promote.py`; candidates
+without a closed pointer/boundary contract remain UNKNOWN.
+
+# M12-AUTO50 multi-resource families
+
+AUTO50 closes a repeated 22-byte descriptor family near `0x02DAA4`, a
+13-record 16-byte table at `0x03DC22`, and three direct loader streams. It
+promotes 76,019 exact bytes. The gap `0x207595..0x207738` is deliberately not
+owned because the family evidence does not establish its boundary.
+
+# M12-AUTO49 descriptor-backed graphics streams
+
+AUTO49 promotes ten streams selected by repeated 22-byte descriptors near
+`0x02CBA2`, totaling 72,284 bytes. The descriptors' pointer field and the
+exact decompressor terminator independently close each half-open range. The
+nearby `0x1F66A0..0x1F683C` stream-like candidate remains UNKNOWN.
+
+# M12-AUTO48..46 dispatch families
+
+AUTO48 closes a PC-relative eight-word table at `0x00E2F2` with its exact
+selector and shared continuation, adding 36 bytes. AUTO47 closes a
+multi-dispatch family and table, adding 1,026 bytes. AUTO46 closes a static
+dispatch family, adding 246 bytes. These are exact ASM/structured-data
+promotions; unresolved indirect targets are not assigned ownership.
+
+# M12-AUTO45 exact indexed offset table
+
+AUTO45 promotes `[0x00AD56,0x00AD76)` (32 bytes) as
+`INDEXED_WORD_OFFSET_TABLE`. The exact consumer family is closed by
+`LEA.L ($FFFFFB7A,PC),A5` at `0x00B1DA`, which resolves to `0x00AD56`, and
+the selector sequence at `0x00B242`/`0x00B248`: `ANDI.W #$0F00,D4`,
+`LSR.W #7,D4`, then `MOVE.W 0(A5,D4.W),D4`. The resulting offsets are the
+sixteen even values `0..30`, so the table boundary is exactly 16 big-endian
+words. The next decoded instruction at `0x00AD76` is retained outside the
+promotion.
+
+The data-only transaction is
+`build/m12-auto45-indexed-offset-table-transaction-c/materialized/manifest.json`.
+It reuses the canonical baseline rebuild and therefore preserves the exact
+ROM hashes. No semantics are assigned to the table values beyond their
+consumer-defined word-offset role, and no C++ migration is started.
+
 # M12-AUTO44 runtime count-bounded record regions
 
 AUTO44 promotes 27 previously UNKNOWN regions totaling 1,732 bytes as
@@ -3035,3 +3124,75 @@ graphics streams totaling 115,011 bytes. The source contract is the exact
 independent deterministic graphics-census boundary with its recorded output
 size. Streams that overlap prior ownership remain unpromoted. The transaction
 reassembles the full canonical ROM byte-for-byte; no C++ migration is involved.
+# M12-AUTO54 PC-island tables
+
+AUTO54 closes 15 PC-relative table/literal ranges totaling 376 bytes. Exact
+consumer bytes, repeated record shapes, and the next code/data marker close
+each half-open boundary. The promoted objects include the 4x16-byte tables
+at `0x01953C`, `0x025C24`, and `0x0288A2`, and three repeated 6-byte status
+lookups at `0x03E430`, `0x03E492`, and `0x03E4F4`. Mixed candidates at
+`0x0108D0`, `0x01142C`, `0x0230A4`, `0x04BAE`, and `0x061588` remain UNKNOWN.
+
+# M12-AUTO53 PC-relative lookup family
+
+AUTO53 promotes five fixed PC-relative lookup tables totaling 200 bytes. The
+consumer contracts close the 4x16-byte records at `0x01E2A0`, the 20-word
+table at `0x01FC98`, and three 4x8-byte tables at `0x027DBA`, `0x02959A`, and
+`0x02A3E0`. No adjacent bytes are assigned.
+# M12-AUTO57 bounded word-transform table provenance
+
+AUTO57 promotes `[0x03BD86,0x03BE06)` (128 bytes) from the AUTO56 manifest as
+`BOUNDED_WORD_TRANSFORM_TABLE`. Routine `0x03B7C0` is exact-decode supported:
+it reads `(A6)+` once per iteration, transforms the word into the destination
+buffer, and closes on `DBF D7,0x03B7CC`. The direct callers at `0x03A7A6` and
+`0x03A854` load the table base (the latter resolves PC-relative `0x15DE` to
+`0x03BD86`); callers at `0x03A9A8` and `0x03AA50` use the RAM pointer written
+by the exact initializer at `0x03A87A`. The largest call sets `D7=0x3F`, so
+the exact input extent is 64 words / 128 bytes ending at `0x03BE06`; the
+second direct call sets `D7=0x0F`, independently confirming the same word
+stride and base. The next bytes are not included merely because they are
+adjacent or readable.
+
+Evidence artifacts: `build/gpgx-classified.json` instructions at
+`0x03B7C0..0x03B830`, the canonical ROM, and
+`src/tools/re_m12_bounded_word_transform_promote.py`. Full-ROM materialization
+is recorded in `build/m12-auto57-bounded-word-transform-a/`; the rebuilt ROM
+retains the canonical size, CRC32, SHA1 and SHA256. C++ migration remains out
+of scope.
+# M12-AUTO59 bounded word-copy table provenance
+
+AUTO59 promotes `[0x000472,0x0004B4)` and `[0x0031FC,0x003218)` (94 bytes
+total) as `BOUNDED_WORD_COPY_TABLE`. Exact routine `0x002D66` saves registers,
+reads one byte for the destination offset, one byte for `D7`, then copies one
+word from `(A6)+` per iteration through `DBF D7,0x002D78`. The callers at
+`0x0089C4` and `0x003260` load the two table bases directly. Their headers
+close the extents at 32 and 13 words respectively. The two tables were
+promoted independently from UNKNOWN ranges; no neighboring bytes were used as
+ownership evidence.
+
+# M12-AUTO58 exact static routine 0x003260 provenance
+
+AUTO58 promotes `[0x003260,0x0032E8)` (136 bytes) as
+`STATIC_EXACT_BOUNDED_ROUTINE`. The routine is exact supported 68000 ASM from
+the static probe `build/m12-probe-003260.json`, has a direct control-flow
+predecessor at `0x003240`, calls already-owned routines at `0x002D58`,
+`0x003820` and `0x002CBC`, and ends at the exact `RTS` at `0x0032E6`. The
+isolated wrapper `src/tools/re_m12_static_003260_roundtrip.asm` resolves the
+external call labels only for vasm verification; it does not alter the source
+artifact used by the ROM map. The inherited full layout has unrelated
+pre-existing duplicate labels, so its assembler failure remains recorded and
+is not presented as a successful full-layout build.
+# M12-AUTO60 contiguous static-island provenance
+
+The AUTO60 audit enumerated exact decoded instruction runs that (1) begin at a
+static direct caller target, (2) remain contiguous through supported decoded
+instructions, (3) end at an explicit `RTS`, and (4) lie wholly inside UNKNOWN
+manifest intervals. Of 33 candidates, 15 passed the range tool and vasm
+slice-level byte comparison. Those 15 intervals total 1,158 bytes and are
+promoted as `STATIC_DIRECT_CALLER_RTS_ISLAND`; the other 18 remain UNKNOWN.
+The complete positive and negative audit is
+`build/m12-auto60-island-audit/audit.json`, with one ASM and one binary
+artifact per candidate. AUTO60 consumes only entries whose audit status is
+`EXACT`, and records their caller lists plus artifact hashes in its promotion
+report. This is static source ownership, not a gameplay or C++ migration
+claim.

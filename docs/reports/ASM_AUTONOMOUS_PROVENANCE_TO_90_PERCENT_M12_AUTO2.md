@@ -1,3 +1,25 @@
+# M12-AUTO56 — overlapping PC-relative word-table provenance
+
+Status: `M12_AUTO56_BELOW_90_CONTINUING`.
+
+AUTO56 promotes 24 bytes, `[0x062DA8,0x062DC0)`, from the exact 16-word table
+`[0x062DA8,0x062DC8)`. Consumer `0x061A22` resolves the PC-relative base,
+masks the selector to `0..15`, doubles it, and reads 16 words. The final four
+words overlap the already confirmed AUTO28 table at `[0x062DC0,0x062DE0)` and
+are not re-promoted. The transaction is byte-exact to the canonical ROM and
+does not begin C++ migration.
+
+# M12-AUTO55 — bounded 0x03B8DE descriptor-table provenance
+
+Status: `M12_AUTO55_BELOW_90_CONTINUING`.
+
+AUTO55 promotes 124 bytes, `[0x03B8E2,0x03B95E)`, as the unknown suffix of the
+eight fixed 16-byte records based at `0x03B8DE`. The exact PC-relative base at
+`0x03A9EE`, selector/count controls, and 0x10-byte stride close the table.
+The existing AUTO47 prefix remains unchanged; the final record is retained as
+raw structured data without inferred field semantics. The transaction is
+byte-exact to the canonical ROM and does not begin C++ migration.
+
 # M12-AUTO44 — runtime count-bounded record regions
 
 Status: `M12_AUTO44_BELOW_90_CONTINUING`.
@@ -487,6 +509,18 @@ Edges:
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
 | Monotonic absolute-pointer scan | large unresolved intervals | no complete independent pointer graph |
 
+## Current AUTO60 blocker audit
+
+The current map is `1,427,873 / 3,145,728 = 45.39086023966471%`; the integer
+90% gap is `1,403,283` bytes. The systematic mass candidate gate over 534
+Ghidra candidates produced `eligible=0` under the current exact-boundary,
+unsupported-form, indirect-flow and data-overlap rules. A narrower audit then
+tested 33 contiguous direct-caller-to-RTS runs: 15 passed exact range-tool plus
+vasm slice round-trip and were promoted by AUTO60, while 18 failed with
+`RANGE_TOOL_FAIL`, `ASSEMBLER_FAIL`, or `SLICE_MISMATCH`. This is a negative
+result for the currently automatable code family, not permission to promote
+the remaining mixed bytes.
+
 ## Remaining blocker
 
 The largest remaining unknown intervals are:
@@ -638,3 +672,56 @@ The transaction reaches 1,225,890 bytes (38.9699935913%), leaving 1,605,266
 bytes to the integer 90% threshold. The full-ROM result remains CRC32
 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+# M12-AUTO54 — PC-island provenance continuation
+
+Status: `M12_AUTO54_BELOW_90_CONTINUING`.
+
+AUTO54 adds 15 exact PC-relative table/literal ranges totaling 376 bytes.
+Their consumer instruction bytes, repeated record shapes, and next
+code/data markers close the half-open boundaries. The transaction reaches
+1,426,209 / 3,145,728 bytes (45.3379631042%). The mixed candidates
+`0x0108D0`, `0x01142C`, `0x0230A4`, `0x04BAE`, and `0x061588` remain UNKNOWN;
+no C++ migration was started.
+
+# M12-AUTO53 — PC-relative lookup-family provenance
+
+Status: `M12_AUTO53_BELOW_90_CONTINUING`.
+
+AUTO53 adds five fixed PC-relative lookup tables totaling 200 bytes and
+reaches 1,425,833 / 3,145,728 bytes (45.3260103861%).
+# M12-AUTO57 — bounded word-transform table provenance
+
+Status: `M12_AUTO57_BELOW_90_CONTINUING`.
+
+AUTO57 promotes 128 bytes, `[0x03BD86,0x03BE06)`, from the exact bounded word
+table consumed by `0x03B7C0`. The routine reads one word from `(A6)+` per
+iteration and its `DBF D7` loop is closed by the largest caller's `D7=0x3F`.
+Two direct callers and two RAM-pointer callers use the same base; the pointer
+initializer is exact. The latest map is `1,426,485 / 3,145,728 =
+45.346736907958984%`; 1,404,671 bytes remain to the integer 90% threshold.
+Canonical ROM hashes remain unchanged and C++ migration remains out of scope.
+# M12-AUTO59 — bounded word-copy tables
+
+Status: `M12_AUTO59_BELOW_90_CONTINUING`.
+
+AUTO59 promotes 94 bytes from two exact header/count-closed consumers of
+`0x002D66`: `[0x000472,0x0004B4)` and `[0x0031FC,0x003218)`. The map is
+`1,426,715 / 3,145,728 = 45.35404841105143%`; 1,404,441 bytes remain to the
+integer 90% threshold.
+
+# M12-AUTO58 — exact static routine 0x003260
+
+Status: `M12_AUTO58_BELOW_90_CONTINUING`.
+
+AUTO58 promotes 136 bytes `[0x003260,0x0032E8)` as exact static ASM with a
+direct control-flow predecessor and isolated vasm round-trip. The inherited
+full-layout duplicate-label blocker is unchanged. C++ migration remains out
+of scope.
+# M12-AUTO60 — contiguous static islands
+
+Status: `M12_AUTO60_BELOW_90_CONTINUING`.
+
+The direct-caller-to-RTS census tested 33 candidate runs. Fifteen passed exact
+range-tool and vasm slice round-trips and were promoted for 1,158 bytes; 18
+were rejected and remain UNKNOWN. Coverage is now `1,427,873 / 3,145,728 =
+45.39086023966471%`; 1,403,283 bytes remain to the integer 90% threshold.

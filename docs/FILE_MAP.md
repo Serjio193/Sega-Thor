@@ -1,3 +1,60 @@
+# M12-AUTO56 adds the overlapping PC-relative word-table promoter
+
+`src/tools/re_m12_pc_word_overlap_promote.py` and
+`tests/re_m12_pc_word_overlap_test.py` record the exact 16-word table at
+`0x062DA8`, promoting only its unknown 24-byte prefix because the final four
+words overlap the existing AUTO28 table. Generated transaction output remains
+ignored/local.
+
+# M12-AUTO55 adds the bounded 0x03B8DE table promoter
+
+`src/tools/re_m12_table_03b8de_promote.py` and
+`tests/re_m12_table_03b8de_test.py` record the exact eight-record,
+16-byte-stride descriptor-table contract. Generated transaction output remains
+ignored/local.
+
+# M12-AUTO52 adds the exact direct-loader graphics-stream promoter
+
+`src/tools/re_m12_direct_loader_stream_promote.py` and
+`tests/re_m12_direct_loader_stream_test.py` record three direct-loader pointer
+contracts and their exact decompressor boundaries. Generated transaction output
+remains ignored/local.
+
+# M12-AUTO51 adds the exact static-stream-pointer promoter
+
+`src/tools/re_m12_static_stream_pointer_promote.py` and
+`tests/re_m12_static_stream_pointer_test.py` record nine closed static pointer
+stream contracts. Generated transaction output remains ignored/local.
+
+# M12-AUTO50 adds the exact multi-resource-family promoter
+
+`src/tools/re_m12_multi_resource_family_promote.py` and
+`tests/re_m12_multi_resource_family_test.py` record repeated descriptor/table
+families and direct loader streams. Generated transaction output remains
+ignored/local.
+
+# M12-AUTO49 adds the exact descriptor-stream promoter
+
+`src/tools/re_m12_descriptor_stream_promote.py` and
+`tests/re_m12_descriptor_stream_promote_test.py` record the ten closed
+descriptor-backed graphics streams. Generated transaction output remains
+ignored/local.
+
+# M12-AUTO48..46 add exact dispatch promoters
+
+`src/tools/re_m12_pc_relative_dispatch_promote.py`,
+`src/tools/re_m12_multi_dispatch_targets_promote.py`, and
+`src/tools/re_m12_static_dispatch_targets_promote.py`, with their paired tests,
+record the closed dispatch/table contracts. Generated transaction output
+remains ignored/local.
+
+# M12-AUTO45 adds the exact indexed offset-table promoter
+
+`src/tools/re_m12_indexed_offset_table_promote.py` and its deterministic
+`tests/re_m12_indexed_offset_table_promote_test.py` record the closed
+`0x00AD56..0x00AD76` table contract. Generated transaction output remains
+ignored/local.
+
 # M12-AUTO44 adds the runtime record-region promoter
 
 `src/tools/re_m12_runtime_record_regions_promote.py` and its deterministic
@@ -801,3 +858,41 @@ src/platform/       Window/input/render/audio platform integration
 - New top-level directories require an architecture decision.
 - Keep executable/source/build-code files at or below 500 lines; prose/reference documentation is exempt from the numeric limit.
 - When a source/build file approaches 400 lines, consider splitting before adding major functionality.
+# M12-AUTO54 adds the PC-island table promoter
+
+`src/tools/re_m12_pc_island_tables_promote.py` and
+`tests/re_m12_pc_island_tables_test.py` record 15 exact PC-relative table and
+text-literal contracts. Generated transaction output remains ignored/local.
+
+# M12-AUTO53 adds the PC-relative lookup-family promoter
+
+`src/tools/re_m12_pc_lookup_family_promote.py` and
+`tests/re_m12_pc_lookup_family_test.py` record five fixed lookup-table
+contracts. Generated transaction output remains ignored/local.
+# M12-AUTO57 adds the bounded word-transform promoter
+
+`src/tools/re_m12_bounded_word_transform_promote.py` materializes the exact
+128-byte `0x03BD86` word table closed by routine `0x03B7C0` and its four
+callers. `tests/re_m12_bounded_word_transform_test.py` checks the contract,
+closed word count and manifest split; CTest registration is in
+`cmake/m12_auto2.cmake`.
+# M12-AUTO59 adds bounded word-copy provenance tooling
+
+`src/tools/re_m12_bounded_word_copy_promote.py` materializes the two exact
+word-copy tables closed by `0x002D66`; its regression test is
+`tests/re_m12_bounded_word_copy_test.py`.
+
+# M12-AUTO58 adds an exact static ASM island
+
+`src/tools/re_m12_static_003260.asm` is the human-maintained exact source for
+`0x003260..0x0032E8`; `re_m12_static_003260_roundtrip.asm` supplies isolated
+external labels for vasm verification, and
+`re_m12_static_003260_promote.py` performs the transaction. The regression test
+is `tests/re_m12_static_003260_test.py`.
+# M12-AUTO60 adds the contiguous static-island promoter
+
+`src/tools/re_m12_contiguous_islands_promote.py` consumes the positive results
+of the generated direct-caller-to-RTS audit in
+`build/m12-auto60-island-audit/`; its regression test is
+`tests/re_m12_contiguous_islands_test.py`. CTest registration is in
+`cmake/m12_auto2.cmake`.

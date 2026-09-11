@@ -1,3 +1,57 @@
+# M12-AUTO56 — Source-owned ROM map checkpoint — 45.3426678975% / BELOW-90 CONTINUING
+
+AUTO56 adds 24 bytes from the closed unknown prefix of the overlapping
+PC-relative word table `[0x062DA8,0x062DC8)`. The exact consumer at `0x061A22`
+closes 16 masked, doubled word selectors; the final four words are already
+owned by AUTO28 and are not reclassified. The map reaches 1,426,357 / 3,145,728
+bytes, remains below the 90% gate, preserves the canonical ROM identity, and
+does not begin M13 or C++ migration.
+
+# M12-AUTO55 — Source-owned ROM map checkpoint — 45.3419049581% / BELOW-90 CONTINUING
+
+AUTO55 adds 124 bytes from the closed unknown suffix of the eight-record
+`0x03B8DE` descriptor table and reaches 1,426,333 / 3,145,728 bytes. The
+canonical ROM remains byte-exact. The 90% integer threshold is 2,831,156
+bytes; 1,404,823 bytes remain. No C++ migration is started.
+
+# M12-AUTO52 — Source-owned ROM map checkpoint — 45.3196525574% / BELOW-90 CONTINUING
+
+AUTO52 adds 11,883 exact bytes from three direct-loader graphics streams. The
+map reaches 1,425,633 / 3,145,728 bytes. Canonical ROM identity remains exact;
+M13/C++ migration remains prohibited.
+
+# M12-AUTO51 — Source-owned ROM map checkpoint — 44.9419021606% / BELOW-90 CONTINUING
+
+AUTO51 adds nine static-pointer graphics streams totaling 28,000 bytes and
+reaches 1,413,750 bytes. Unclosed parser-only or boundary-conflicting
+candidates remain UNKNOWN.
+
+# M12-AUTO50 — Source-owned ROM map checkpoint — 44.0518061320% / BELOW-90 CONTINUING
+
+AUTO50 adds 76,019 bytes from two multi-resource families and three direct
+loader streams. The proven family gap remains UNKNOWN; no ownership is inferred
+from adjacency.
+
+# M12-AUTO49 — Source-owned ROM map checkpoint — 41.6352272034% / BELOW-90 CONTINUING
+
+AUTO49 adds ten descriptor-backed graphics streams totaling 72,284 bytes. The
+unproven adjacent stream `0x1F66A0..0x1F683C` remains outside the map.
+
+# M12-AUTO48..46 — Source-owned ROM map checkpoints — BELOW-90 CONTINUING
+
+AUTO48 adds 36 bytes, AUTO47 adds 1,026 bytes, and AUTO46 adds 246 bytes from
+closed dispatch/table contracts. Their cumulative checkpoints reach 39.3373807271%,
+39.3362363180%, and 39.3036206563%, respectively. All preserve byte-exact ROM
+identity and do not start M13/C++ migration.
+
+# M12-AUTO45 — exact indexed offset table
+
+AUTO45 adds the 32-byte table `[0x00AD56,0x00AD76)` after closing its
+PC-relative base and 16-entry selector range. The map reaches
+1,236,139 / 3,145,728 bytes (39.2958005269%), remains below the 90% gate,
+and does not begin M13 or C++ migration. The adjacent `0x00AD76` code and the
+dynamic `0x002888` DMA-queue source remain UNKNOWN/evidence-only.
+
 # M12-AUTO44 — Source-owned ROM map checkpoint — 39.2947832743% / BELOW-90 CONTINUING
 
 AUTO44 adds 1,732 exact bytes from 27 runtime-correlated count-bounded
@@ -1194,3 +1248,39 @@ routine instructions, zero fallback/divergence. Result:
 SECOND_PORTABLE_NATIVE_ROUTINE_PROVEN. Evidence:
 reports/SECOND_PORTABLE_NATIVE_ROUTINE_M11_53.md.
 The shared block-hook continuation recorded one event yield and one resumption.
+# M12-AUTO54 — Source-owned ROM map checkpoint — 45.3379631042% / BELOW-90 CONTINUING
+
+AUTO54 adds 376 bytes from 15 closed PC-relative table/literal contracts and
+reaches 1,426,209 / 3,145,728 bytes. Mixed code/data candidates remain
+UNKNOWN; canonical ROM identity remains exact and M13/C++ migration remains
+prohibited.
+
+# M12-AUTO53 — Source-owned ROM map checkpoint — 45.3260103861% / BELOW-90 CONTINUING
+
+AUTO53 adds 200 bytes from five fixed PC-relative lookup-table contracts and
+reaches 1,425,833 bytes. No neighboring bytes are promoted from adjacency.
+# M12-AUTO57 — Source-owned ROM map checkpoint — 45.346736907958984% / BELOW-90 CONTINUING
+
+AUTO57 adds 128 bytes `[0x03BD86,0x03BE06)` from the exact bounded
+word-transform routine `0x03B7C0`. The source-owned map is now 1,426,485 of
+3,145,728 bytes. The integer `>=90%` threshold is 2,831,156 bytes; 1,404,671
+bytes remain. This is still ASM/data provenance work only; C++ migration has
+not started.
+# M12-AUTO59 — Source-owned ROM map checkpoint — 45.35404841105143% / BELOW-90 CONTINUING
+
+AUTO59 adds 94 bytes from two exact header/count-closed word-copy tables:
+`[0x000472,0x0004B4)` and `[0x0031FC,0x003218)`. The map is now 1,426,715 of
+3,145,728 bytes; 1,404,441 bytes remain to the integer 90% threshold. This is
+still ASM/data provenance only; C++ migration has not started.
+
+# M12-AUTO58 — Source-owned ROM map checkpoint — 45.351060231526695% / BELOW-90 CONTINUING
+
+AUTO58 adds the exact static ASM routine `[0x003260,0x0032E8)` (136 bytes).
+The isolated source round-trip is exact; the inherited full-layout duplicate
+label blocker remains unchanged. The map was 1,426,621 bytes at this step.
+# M12-AUTO60 — Source-owned ROM map checkpoint — 45.39086023966471% / BELOW-90 CONTINUING
+
+AUTO60 adds 1,158 bytes from 15 exact direct-caller-to-RTS static ASM islands.
+The systematic audit tested 33 candidates and rejected 18 non-exact cases. The
+map is now 1,427,873 of 3,145,728 bytes; 1,403,283 bytes remain to the integer
+90% threshold. C++ migration remains out of scope.
