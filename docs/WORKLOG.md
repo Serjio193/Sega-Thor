@@ -6316,3 +6316,8 @@ limit gate passed. No ROM or decoded payload was added.
 NEXT: bounded provenance analysis of the 27 unmatched direct calls and the 17
 missing direct screen continuations; do not promote until `A1`, record format,
 and exact source boundaries are independently proven.
+
+IMPLEMENTATION: focused commit
+`85131ce42619fd9318f59d09dfbb88a69ac33d0a` is on `origin/main`; exact GitHub
+Actions CI run `34653604741` passed build and test. A docs-only publication
+commit will record the final publication SHA and exact publication HEAD CI.

@@ -162,8 +162,7 @@ then return to the ten dynamic `0x3820` producers. No candidate becomes owned
 without a proven source and exact boundary; M13 and ASM-to-C++ migration remain
 out of scope.
 
-Implementation SHA: `a27175fe2269744d0497c3545d50bb59d0085849`.
-Exact implementation CI: GitHub Actions run `34651277101` (success).
-Final publication SHA: `dd5a23bde2ba936fc4536fb5048849b8da7c400f`.
-Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34651453898` (success).
+Implementation SHA: `85131ce42619fd9318f59d09dfbb88a69ac33d0a`.
+Exact implementation CI: GitHub Actions run `34653604741` (success).
+Final publication SHA and exact final publication HEAD CI are recorded by the
+following docs-only publication commit.
