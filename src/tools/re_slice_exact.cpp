@@ -158,17 +158,31 @@ void normalize_exact_instruction(DecodedInstruction& instruction) {
         result.width_bytes = ea[1].kind == OperandKind::data_register ? 4U : 1U;
         result.source = ea[0];
         result.destination = ea[1];
+    } else if (family == "binary" && ea.empty() &&
+               (op & 0xF1F0U) == 0x8100U) {
+        DecodedOperand source = reg(op & 7U);
+        DecodedOperand destination = reg((op >> 9U) & 7U);
+        source.width_bytes = destination.width_bytes = 1U;
+        if (op & 8U) {
+            source.kind = OperandKind::predecrement;
+            destination.kind = OperandKind::predecrement;
+        }
+        result.operation = "sbcd";
+        result.width_bytes = 1U;
+        result.source = source;
+        result.destination = destination;
     } else if (family == "binary" && ea.size() == 1U) {
         const auto group = op >> 12U;
         const auto mode = (op >> 6U) & 7U;
         if (mode == 3U || mode == 7U) {
-            if (group == 9U) result.operation = "suba";
+            if (group == 8U) result.operation = mode == 3U ? "divu" : "divs";
+            else if (group == 9U) result.operation = "suba";
             else if (group == 0xBU) result.operation = "cmpa";
             else if (group == 0xDU) result.operation = "adda";
             else return;
-            result.width_bytes = mode == 3U ? 2 : 4;
+            result.width_bytes = group == 8U ? 2U : mode == 3U ? 2U : 4U;
             result.source = ea[0];
-            result.destination = reg((op >> 9U) & 7U, true);
+            result.destination = group == 8U ? dn : reg((op >> 9U) & 7U, true);
         } else {
             if (group == 8U) result.operation = "or";
             else if (group == 9U) result.operation = "sub";

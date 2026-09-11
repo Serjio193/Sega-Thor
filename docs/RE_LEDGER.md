@@ -1,5 +1,34 @@
 # Bounded G0 reverse-engineering ledger
 
+## M12-AUTO13 BCEA field3 sentinel-list edge
+
+The M12-AUTO13 transaction reaches 986,634 bytes (31.364250183%) of the
+canonical ROM and preserves the exact ROM hashes. The exact BCEA selector
+transform produces offsets `-20`, `0`, `20`, and `40` from 30 field3 bases in
+the `0x58000..0x5D046` container. Signed relative pointers, 44-byte positive
+rows, and negative-key sentinels close 100 list views, merged into five ranges
+totalling 7,516 bytes. The rest of the container remains UNKNOWN; no semantic
+field names are asserted and no C++ migration is authorized.
+
+## M12-AUTO12 exact code continuation
+
+The M12-AUTO12 local transaction reaches 979,118 bytes (31.125322978%) after
+adding 1,092 exact ASM bytes to AUTO11. Twelve of twelve caller-backed Ghidra
+candidates were accepted after systemic DIVU/DIVS/SBCD decoder normalization;
+the canonical ROM hashes remain exact. No C++ migration is authorized.
+
+## M12-AUTO11 count-bounded record-stream family
+
+The M12-AUTO11 transaction reaches 978,026 bytes (31.090609233%) of the
+canonical ROM, preserving the exact ROM hashes. Exact selectors at `0x8D06` and
+`0x8DA4` use the `0x3F2FA` table base and the shared record consumers at
+`0xAB82`, `0xAF02`, `0xB15E`, and `0xB28E` read a leading count followed by
+six-byte records. This closes the 99-record table `[0x3F306,0x3FF66)` and 78
+unique count-bounded stream views; overlapping views are merged only across
+bytes covered by an accepted view. The additions are 3,168 table bytes and
+46,858 stream bytes. No stream semantics beyond the raw parser contract are
+asserted, and no C++ migration is authorized.
+
 ## M12-AUTO10 exact code continuation
 
 The M12-AUTO10 transaction reaches 928,000 bytes (29.500325521%) of the

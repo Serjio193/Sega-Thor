@@ -51,6 +51,18 @@ decoder-consumed streams selected by direct `0x3820` consumers and sequential
 
 # File Map
 
+M12-AUTO13 extends the developer-only record-stream promoter with the exact
+BCEA field3 sentinel-list edge. It records only the five merged ranges derived
+from 30 field3 bases and 100 terminated list views; generated transaction
+output remains ignored and no ROM or C++ gameplay/runtime source is tracked.
+
+M12-AUTO11 adds the developer-only count-bounded record-stream promoter
+`src/tools/re_m12_record_stream_promote.py` and deterministic regression
+`tests/re_m12_record_stream_promote_test.py`. It records the exact 99-record
+table `[0x3F306,0x3FF66)` and the merged count-bounded six-byte stream family;
+generated transaction output remains ignored and no ROM or C++ gameplay/runtime
+source is tracked.
+
 M12-AUTO5 adds the developer-only exact lookup-table promoter
 `src/tools/re_m12_lookup_table_promote.py` and its deterministic regression
 `tests/re_m12_lookup_table_promote_test.py`. It records the bounded

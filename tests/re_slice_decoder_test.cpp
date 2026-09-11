@@ -55,6 +55,22 @@ int main() {
     assert(memory_slice.unresolved_control_flow.front().kind == FlowKind::indirect_call);
     assert(memory_slice.unsupported_instruction_addresses.size() == 1U);
 
+    const std::vector<std::uint8_t> special_binary_case{
+        0x84, 0xC1,                         // DIVU.W D1,D2
+        0x83, 0xC4,                         // DIVS.W D4,D1
+        0x83, 0x04,                         // SBCD D4,D1
+        0x4E, 0x75,
+    };
+    const auto special_slice = decode_m68k_slice(
+        special_binary_case, {.entry = 0, .byte_budget = special_binary_case.size()});
+    assert(special_slice.unsupported_instruction_addresses.empty());
+    assert(special_slice.instructions[0].exact.has_value());
+    assert(special_slice.instructions[0].exact->operation == "divu");
+    assert(special_slice.instructions[1].exact.has_value());
+    assert(special_slice.instructions[1].exact->operation == "divs");
+    assert(special_slice.instructions[2].exact.has_value());
+    assert(special_slice.instructions[2].exact->operation == "sbcd");
+
     const auto json = slice_to_json(memory_slice);
     assert(json.find("oasis.m68k.re-slice.v1") != std::string::npos);
     assert(json.find("0x00ff0010") != std::string::npos);

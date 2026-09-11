@@ -1,3 +1,72 @@
+# 2026-09-11 — M12-AUTO13 BCEA field3 sentinel-list edge — <90% / BLOCKED
+
+**TASK:** Continue from M12-AUTO12 toward a >=90% SOURCE-OWNED ROM MAP while
+preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Promote only field3 list bytes selected by the exact
+BCEA selector transform, signed relative pointer, 44-byte row stride, and
+negative-key sentinel. Preserve the existing AUTO12 map, reject ambiguous
+container bytes, and require canonical full-ROM equality.
+
+**RESULT:** The developer-only promoter accepted 100 exact list views from 30
+field3 bases and merged them into five non-overlapping ranges:
+`0x058012..0x0580BE`, `0x058296..0x058348`, `0x05855C..0x05855E`,
+`0x05857A..0x058ABA`, and `0x058B76..0x05A232`. Only 7,516 bytes were added;
+the surrounding `0x58000..0x5D046` container remains UNKNOWN. The map reaches
+986,634 / 3,145,728 bytes (`31.364250183%`); 1,844,522 bytes remain to the
+integer 90% threshold. No C++ migration, ROM, BIOS, or extracted commercial
+asset was added.
+
+**EXACTNESS:** AUTO13 reconstructs the canonical ROM with CRC32 `C4728225`,
+SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The new helper regression and Python compilation passed. The
+transactional vasm round-trip passed with the canonical hashes. Full fresh
+Debug/Release/GNU-equivalent gates and remote CI remain the publication gate.
+
+**STATUS:** The >=90% gate remains unmet. The parser records the structural
+contract only; it does not assign semantic field names or promote the complete
+field3 container. Continue M12 from the next independently closed edge.
+
+# 2026-09-11 — M12-AUTO12 exact code continuation — <90% / BLOCKED
+
+**RESULT:** The systemic decoder/reassembler correction accepted 12/12
+caller-backed candidates. AUTO12 adds 1,092 exact ASM bytes to AUTO11 and
+reaches 979,118 / 3,145,728 bytes (`31.125322978%` before AUTO13). It preserves
+the canonical ROM and does not start C++ migration.
+
+# 2026-09-11 — M12-AUTO11 count-bounded record-stream family — <90% / BLOCKED
+
+**TASK:** Continue from M12-AUTO10 toward a >=90% SOURCE-OWNED ROM MAP while
+preserving byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Close only the exact fixed-stride record family selected
+through `0x3F2FA` and streams whose leading count plus the shared 68000 `DBF`
+consumer determines an exact six-byte-record boundary. Preserve existing ASM
+artifacts, reject ambiguous overlaps, and require canonical full-ROM equality.
+
+**RESULT:** The developer-only promoter verified the 99-record table
+`0x3F306..0x3FF66` and 78 unique count-bounded stream starts. Overlapping stream
+views were merged only where every byte remained covered by at least one exact
+count/stride view. The transaction promotes 3,168 table bytes and 46,858 stream
+bytes, adding 50,026 source-owned bytes. The map reaches 978,026 / 3,145,728
+bytes (`31.090609233%`); 1,853,130 bytes remain to the integer 90% threshold.
+No C++ migration, ROM, BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** AUTO11 reconstructs the canonical 3,145,728-byte ROM with CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The helper regression, Python compilation, parser contract audit,
+transactional vasm round-trip, independent manifest/hash audit, source file-limit
+check, and `git diff --check` passed. Fresh Debug/Release/GNU-equivalent builds,
+full CTest, push, and remote CI remain the publication gate.
+
+**STATUS:** The >=90% gate remains unmet. The new table/stream edge is recorded;
+remaining mixed code/data/resource spans stay conservative blobs. Continue M12
+from the next independently closed provenance edge.
+
 # 2026-09-11 — M12-AUTO10 exact code continuation — <90% / BLOCKED
 
 **TASK:** Continue from the published M12-AUTO9 checkpoint toward a >=90%

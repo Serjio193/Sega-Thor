@@ -1,3 +1,16 @@
+# M12-AUTO13 BCEA field3 list provenance checkpoint
+
+The AUTO13 transaction is `build/m12-auto13-field3-transaction-f/materialized/manifest.json`.
+It adds 7,516 bytes in five merged ranges from 100 list views selected by the
+exact routine at `0x00BCEA`. The routine transforms the field3 selector into
+offsets `-20`, `0`, `20`, and `40`, reads a signed relative pointer from each
+slot, advances positive rows by 44 bytes, and stops at a negative key sentinel.
+The 30 field3 bases come from the exact 99-record table at
+`0x03F306..0x03FF66`; the remaining `0x58000..0x5D046` container bytes remain
+UNKNOWN. This is a raw structural contract: semantic field names and adjacent
+records are not asserted. Full-ROM equality and canonical hashes remain exact;
+no C++ migration is started.
+
 # M12-AUTO10 exact code continuation checkpoint
 
 The AUTO10 transaction is `build/m12-auto10-code-transaction-b/manifest.json`.

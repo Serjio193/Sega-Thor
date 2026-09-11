@@ -1,3 +1,27 @@
+# M12-AUTO13 — Source-owned ROM map checkpoint — 31.3643% / BELOW-90 BLOCKER
+
+M12-AUTO13 extends the byte-exact source-owned map to 986,634 of 3,145,728
+bytes (31.364250183%). It adds 7,516 bytes from 100 BCEA-selected field3 list
+views, merged into five exact ranges using signed relative pointers, 44-byte
+rows, and negative-key sentinels. The surrounding container remains UNKNOWN;
+the canonical ROM is unchanged and M13/C++ migration remain prohibited.
+
+The 90% threshold is not reached. The remaining 1,844,522 bytes lack a
+complete independent code/data/resource provenance graph.
+
+# M12-AUTO11 — Source-owned ROM map checkpoint — 31.0906% / BELOW-90 BLOCKER
+
+M12-AUTO11 extends the byte-exact source-owned map to 978,026 of 3,145,728
+bytes (31.090609233%). It adds the 99-record table
+`[0x3F306,0x3FF66)` and 46,858 bytes of count-bounded six-byte record streams
+selected by exact 68000 consumers. The canonical ROM remains unchanged; M13 and
+ASM-to-C++ migration remain prohibited. Full evidence is in
+`docs/reports/ASM_AUTONOMOUS_PROVENANCE_TO_90_PERCENT_M12_AUTO2.md`.
+
+The 90% threshold is not reached. The remaining 1,853,130 bytes lack a
+complete independent code/data/resource provenance graph; unknown spans remain
+conservative blobs.
+
 # M12-AUTO10 — Source-owned ROM map checkpoint — 29.5003% / BELOW-90 BLOCKER
 
 M12-AUTO10 extends the byte-exact source-owned map to 928,000 of 3,145,728

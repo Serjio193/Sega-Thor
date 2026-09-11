@@ -152,7 +152,7 @@ bool is_immediate_group(std::uint16_t opcode) {
 bool is_dynamic_bit(std::uint16_t opcode) { const auto base = opcode & 0xF1C0U;
     return base == 0x0100U || base == 0x0140U || base == 0x0180U || base == 0x01C0U; }
 bool is_no_extension_binary(std::uint16_t opcode) {
-    if ((opcode & 0xF130U) == 0x8100U ||
+    if ((opcode & 0xF1F0U) == 0x8100U ||
         (((opcode & 0xF130U) == 0x9100U || (opcode & 0xF130U) == 0xD100U) &&
          (opcode & 0x00C0U) != 0x00C0U)) {
         return true;
