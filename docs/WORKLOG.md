@@ -6111,3 +6111,9 @@ VALIDATION: helper tests, Python compilation, local build/test/source-limit,
 `git diff --check`, and final SHA CI status must be recorded before publication.
 The known unrelated MSVC Debug issue in `src/core/ram_flag_routine.cpp` remains
 outside this task. M12-CARVER-5 stops at the global structural fixed point.
+
+IMPLEMENTATION PUBLICATION: commit `dcb1218` was pushed to `origin/main`.
+Exact GitHub Actions CI run `34637435506` passed Configure, Build and Test.
+The report records this exact implementation-SHA result; any later
+documentation-only publication does not alter the implementation or Carver
+hashes.

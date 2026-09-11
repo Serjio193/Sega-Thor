@@ -125,9 +125,10 @@ checks are recorded in the final publication entry below. A pre-existing
 MSVC Debug failure in `src/core/ram_flag_routine.cpp` remains unrelated and is
 not changed by this pass.
 
-Final implementation SHA: `TO_BE_RECORDED`
+Final implementation SHA: `dcb1218`
 
-Exact final-SHA CI: `TO_BE_RECORDED`
+Exact final-SHA CI: GitHub Actions `34637435506` — success (Configure, Build,
+Test, Post Checkout, Complete).
 
 M12-CARVER-5 stops at this fixed point. No Stage 2 detector expansion,
 semantic interpretation, M13, or ASM-to-C++ migration starts automatically.
