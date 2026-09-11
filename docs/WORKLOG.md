@@ -5970,3 +5970,27 @@ asset was committed. Stage 1 stops after the report.
 FINAL CI: commit `9b43a8c4cfe2309a67ebe5222a8bb31bae2ba360` was pushed and its
 exact GitHub Actions run `34602767835` passed Configure, Build, and Test.
 The run reported only the hosted-action Node.js 20 deprecation annotation.
+
+# 2026-09-11 — M12-CARVER-2 graph-guided evidence expansion
+
+TASK: continue from the pushed M12-CARVER-1/AUTO60 checkpoint using Carver as
+the orchestrator. Attempt provenance closure through the confirmed 99-row
+field1 table and existing graphics census; do not replace promoters, create
+SOURCE_OWNED bytes, start M13, or migrate ASM to C++.
+
+IMPLEMENTATION: added `m12_carver_expansion.py` and its CLI wrapper. The pass
+adds typed table pointer evidence, resource nodes, directed graph edges, and
+five CANDIDATE raw-size hypotheses from confirmed table parents. It leaves the
+manifest and all existing promoter transactions unchanged.
+
+RESULT: 68 field1 pointers matched existing graphics-census starts; 47 were
+already closed, 21 partially overlap confirmed data, and 28 had no decoder
+boundary. The five raw-size hypotheses total 17,408 bytes but lack an exact
+field6 raw-resource consumer/boundary contract and were rejected. SOURCE_OWNED
+remains 1,427,873 bytes; fixed point reached with no safe growth >=16 KiB.
+The deterministic report is `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`.
+
+VALIDATION: Carver tests, Python compilation, and `git diff --check` passed;
+Debug/Release/GNU-equivalent build and test gates remain to be rerun for the
+final commit. The canonical ROM hashes remain unchanged. Stage 2 stops at the
+stable fixed point; no detector expansion, M13, or ASM-to-C++ work started.

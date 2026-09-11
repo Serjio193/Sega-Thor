@@ -12,6 +12,16 @@ The reusable tooling is documented in
 `docs/reports/THOR_ROM_CARVER_M12_STAGE1.md`. Stage 1 stops after its report;
 detector expansion and any campaign execution require a separate authorization.
 
+# M12-CARVER-2 — Graph-guided evidence expansion — STOPPED AT STABLE FIXED POINT
+
+The analysis-only Stage 2 pass follows the confirmed 99-row table field1
+provenance into the existing graphics census and emits five non-owning raw
+size hypotheses totaling 17,408 bytes. No exact raw-resource consumer/boundary
+contract was available, so SOURCE_OWNED remains `1,427,873` bytes and no
+promoter transaction is run. The graph-guided result and deterministic output
+hashes are recorded in `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`. M13,
+ASM-to-C++ migration, and automatic detector expansion remain prohibited.
+
 # M12-AUTO56 — Source-owned ROM map checkpoint — 45.3426678975% / BELOW-90 CONTINUING
 
 AUTO56 adds 24 bytes from the closed unknown prefix of the overlapping

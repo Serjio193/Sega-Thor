@@ -345,6 +345,12 @@ not replace a promoter, reclassify a manifest range, create SOURCE_OWNED bytes,
 or enter `oasis_core`; conflicts are blocking review records and all ROM and
 generated evidence inputs remain external.
 
+M12-CARVER-2 adds `m12_carver_expansion.py` as a developer-only graph-guided
+evidence pass. It consumes the confirmed field1 table contract and existing
+graphics census, creates typed pointer/resource nodes and candidate evidence,
+and records rejection reasons for unclosed raw-resource boundaries. It does
+not modify the manifest, replace promoters, or create a runtime dependency.
+
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
 The optional frontend loads an external instrumented libretro library and
 compares one naturally reached routine against existing C++ implementations.

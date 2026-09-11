@@ -269,6 +269,7 @@ class IntervalDB:
 
     def fixed_point(self):
         added = 0
+        edges_before = len(self.edges)
         while self.expansion_queue:
             item = self.expansion_queue.pop(0)
             parent = item.get("parent")
@@ -281,7 +282,8 @@ class IntervalDB:
             added += 1
         return {"reached": not self.expansion_queue, "new_evidence": added,
                 "range_splits": 0, "range_reclassifications": 0,
-                "provenance_edges_added": len(self.edges), "expansion_queue": 0}
+                "provenance_edges_added": len(self.edges) - edges_before,
+                "expansion_queue": 0}
 
     def _related_evidence(self, gap):
         result = []

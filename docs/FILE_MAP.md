@@ -907,3 +907,15 @@ entry point is `src/tools/re_m12_carver.py`; its generated DB/report stay in
 ignored build output because they may reference an external user ROM and local
 evidence. `tests/re_m12_carver_test.py` covers manifest coverage, ownership
 preservation, conflict blocking, provenance cycles and deterministic output.
+
+# M12-CARVER-2 adds graph-guided evidence expansion
+
+`src/tools/m12_carver_expansion.py` and
+`src/tools/re_m12_carver_expand.py` add a deterministic, analysis-only pass
+over the confirmed 99-row field1 table and existing graphics census. It emits
+typed pointer/resource graph records and non-owning raw-size hypotheses while
+leaving existing promoters and the manifest unchanged. The expansion report
+is documented in `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`; regression
+coverage remains in `tests/re_m12_carver_test.py`.
+Expansion helper contracts are covered by
+`tests/re_m12_carver_expansion_test.py`.
