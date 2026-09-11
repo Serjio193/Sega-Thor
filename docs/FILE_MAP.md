@@ -1,3 +1,10 @@
+# M12-AUTO40 adds the developer-only runtime-code promoter
+
+`src/tools/re_m12_runtime_code_promote.py` and its deterministic
+`tests/re_m12_runtime_code_promote_test.py` record only the runtime-observed,
+byte-exact routine `[0x00B79A,0x00B852)`. Generated evidence and transaction
+output remain ignored/local.
+
 # M12-AUTO39 adds the developer-only relative-selector promoter
 
 `src/tools/re_m12_relative_selector_table_promote.py` and its deterministic

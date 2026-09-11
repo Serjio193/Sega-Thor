@@ -1,3 +1,13 @@
+# M12-AUTO40 runtime-observed exact routine
+
+AUTO40 promotes `[0x00B79A,0x00B852)` (184 bytes) as
+`RUNTIME_OBSERVED_EXACT_ASM_ROUNDTRIP`. The complete decoded 68000 routine
+ends at `RTS` `0x00B850`; its entry `0x00B79A` is present in the canonical
+`GPGX_MANUAL_REALTIME` execution evidence, with 52 observed instruction
+starts and no non-decoded runtime fact in the bounded interval. Independently
+assembled vasm output is byte-exact against the canonical ROM. The transaction
+is local-only evidence and does not begin C++ migration.
+
 # M12-AUTO39 exact relative selector table
 
 AUTO39 promotes `[0x15A9A6,0x15A9B0)` as

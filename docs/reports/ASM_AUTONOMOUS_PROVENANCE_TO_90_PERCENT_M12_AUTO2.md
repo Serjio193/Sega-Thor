@@ -1,3 +1,14 @@
+# M12-AUTO40 — runtime-observed exact routine
+
+Status: `M12_AUTO40_BELOW_90_CONTINUING`.
+
+AUTO40 adds the wholly UNKNOWN `[0x00B79A,0x00B852)` routine (184 bytes).
+The canonical runtime evidence observes its entry `0x00B79A` and 52
+instruction starts; the local 68000 decoder covers the complete interval and
+ends with `RTS` at `0x00B850`. Independently assembled ASM is byte-exact
+against the canonical ROM. The full-ROM transaction reaches 1,233,415 /
+3,145,728 bytes (39.2092068990%); no C++ migration was started.
+
 # M12-AUTO39 — exact relative selector table
 
 Status: `M12_AUTO39_BELOW_90_CONTINUING`.

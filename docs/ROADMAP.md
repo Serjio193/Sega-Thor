@@ -1,3 +1,11 @@
+# M12-AUTO40 — Source-owned ROM map checkpoint — 39.2092068990% / BELOW-90 CONTINUING
+
+AUTO40 adds the exact runtime-observed 68000 routine `[0x00B79A,0x00B852)`
+(184 bytes). The entry PC is present in canonical GPGX realtime evidence;
+the routine is fully decoded, terminates at `RTS` `0x00B850`, and an
+independent vasm round-trip matches every ROM byte. The map remains below
+90%; M13/C++ migration remains prohibited.
+
 # M12-AUTO39 — Source-owned ROM map checkpoint — 39.2033576965% / BELOW-90 CONTINUING
 
 AUTO39 adds the exact ten-byte relative selector table `[0x15A9A6,0x15A9B0)`;

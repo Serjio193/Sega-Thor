@@ -5482,3 +5482,34 @@ ASM-to-C++ migration was performed.
 is pushed and matches `origin/main`. GitHub Actions CI run `34528572561`
 completed successfully; build and test passed, with only the upstream Node.js
 20 deprecation annotation.
+
+# 2026-09-11 — M12-AUTO40 runtime-observed exact routine — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP with byte-exact canonical
+ROM preservation and no M13/C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only a bounded routine supported by independent
+runtime execution evidence, complete local decoding, an explicit terminator,
+and an exact assembler round-trip; preserve all unrelated UNKNOWN spans.
+
+RESULT: AUTO40 promotes `[0x00B79A,0x00B852)` (184 bytes) as
+`RUNTIME_OBSERVED_EXACT_ASM_ROUNDTRIP`. Runtime evidence observes entry
+`0x00B79A` and 52 instruction starts; all facts inside the interval are
+`DECODED`. The routine terminates at `RTS` `0x00B850`. vasm output matches
+the canonical ROM byte-for-byte. The transaction
+`build/m12-auto40-runtime-code-promotion-b/materialized/manifest.json`
+reaches 1,233,415 / 3,145,728 bytes (39.2092068990%); 1,597,741 bytes
+remain to the integer 90% threshold.
+
+EXACTNESS: Rebuilt ROM CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: AUTO40 helper test, Python compilation, promoter materialization,
+full-ROM hash audit, and vasm slice round-trip passed. The existing Debug
+`oasis_smoke` build remains blocked by pre-existing `src/core/ram_flag_routine.cpp`
+errors (`std::to_string` and default `std::runtime_error` construction); no
+C++ source was changed. Full Debug/Release gates and push remain pending.
+
+STOP: The >=90% gate is not met. No guessed data, padding, or semantic
+payload ownership was added; M13/C++ migration remains out of scope.
