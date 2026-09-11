@@ -18,10 +18,27 @@ SPEC.loader.exec_module(AUTO)
 
 ROM_SHA256 = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
 DECODER_PC = "0x003830"
-STREAMS = (
-    {"start": 0x15E052, "end": 0x160E19, "pointer_refs": (0x03F60A, 0x043880, 0x043B6A, 0x0461E6, 0x046224)},
-    {"start": 0x2119D2, "end": 0x211F79, "pointer_refs": (0x02E1DC,)},
+RUNTIME_STREAMS = (
+    {"start": 0x15E052, "end": 0x160E19, "pointer_refs": (0x03F60A, 0x043880, 0x043B6A, 0x0461E6, 0x046224),
+     "reason": "canonical runtime reader, local decoder boundary, and static pointer literals agree"},
+    {"start": 0x2119D2, "end": 0x211F79, "pointer_refs": (0x02E1DC,),
+     "reason": "canonical runtime reader, local decoder boundary, and static pointer literal agree"},
 )
+STATIC_STREAMS = (
+    {"start": 0x167E48, "end": 0x16821F, "pointer_refs": (0x02D446, 0x02E206, 0x03F58A),
+     "reason": "exact LEA consumers call D9A4, whose D9A4->37D2->3820 chain is byte-verified"},
+    {"start": 0x168442, "end": 0x168492, "pointer_refs": (0x02D418,),
+     "reason": "exact LEA consumer calls D9A4, whose D9A4->37D2->3820 chain is byte-verified"},
+)
+STREAMS = RUNTIME_STREAMS + STATIC_STREAMS
+NEW_STREAMS = STATIC_STREAMS
+STATIC_CONSUMERS = {
+    0x02D444: bytes.fromhex("4DF900167E48 3C3C50C0 4EB90000D9A4"),
+    0x02E204: bytes.fromhex("4DF900167E48 3C3C4000 4EB90000D9A4"),
+    0x02D416: bytes.fromhex("4DF900168442 3C3C5000 4EB90000D9A4"),
+    0x00D9B2: bytes.fromhex("4EB9000037D2"),
+    0x0037D8: bytes.fromhex("61000046"),
+}
 
 
 def renumber(entries):
@@ -45,12 +62,9 @@ def split_unknown(entries, stream):
                 "start": start, "end": end, "kind": "LOCAL_ROM_DERIVED_ASSET",
                 "source": "M12_AUTO17_runtime_graphics_decoder",
                 "confidence": "CONFIRMED",
-                "classification": "RUNTIME_CORRELATED_GRAPHICS_STREAM",
+                "classification": "EXACT_3820_GRAPHICS_STREAM",
                 "emitted_artifact_type": "rom_asset",
-                "ownership_reason": (
-                    "canonical runtime read region is sourced by the exact 0x3820 "
-                    "graphics decoder; local decoder consumes the same boundary "
-                    "and independent static pointer literals select the stream"),
+                "ownership_reason": stream["reason"],
             })
             if end < entry["end"]:
                 replacement.append({**entry, "start": end})
@@ -74,7 +88,7 @@ def validate_runtime(correlation, execution):
     if facts.get(DECODER_PC, {}).get("evidence_type") != "CODE_EXECUTED_AT_ADDRESS":
         raise ValueError("runtime evidence does not execute the exact decoder PC")
     result = []
-    for stream in STREAMS:
+    for stream in RUNTIME_STREAMS:
         region = regions.get(stream["start"])
         if region is None or int(region["region_end"], 16) + 1 != stream["end"]:
             raise ValueError(f"runtime boundary changed at 0x{stream['start']:06X}")
@@ -85,6 +99,14 @@ def validate_runtime(correlation, execution):
                        "observed_bytes": region["observed_bytes"],
                        "pointer_refs": list(stream["pointer_refs"])})
     return result
+
+
+def validate_static_consumers(rom):
+    for address, expected in STATIC_CONSUMERS.items():
+        if rom[address:address + len(expected)] != expected:
+            raise ValueError(f"static graphics consumer contract changed at 0x{address:06X}")
+    return [{"address": address, "bytes": expected.hex().upper()}
+            for address, expected in STATIC_CONSUMERS.items()]
 
 
 def validate_decoder(rom_path, decoder, output):
@@ -130,11 +152,12 @@ def run(args):
         json.loads(Path(args.runtime_correlation).read_text()),
         json.loads(Path(args.runtime_execution).read_text()))
     decoded = validate_decoder(rom_path, Path(args.decoder).resolve(), output / "decoder")
+    static_consumers = validate_static_consumers(rom)
     pointers = validate_pointers(rom)
     baseline_path = Path(args.manifest).resolve()
     baseline = json.loads(baseline_path.read_text())
     current = renumber(baseline["entries"])
-    for stream in STREAMS:
+    for stream in NEW_STREAMS:
         current = split_unknown(current, stream)
     materialized = output / "materialized"
     sources = {index: baseline_path.parent / entry["artifact"]
@@ -149,13 +172,14 @@ def run(args):
     manifest = AUTO.manifest_for(entries, len(rom))
     manifest["rom_sha256"] = ROM_SHA256
     manifest["metrics"].update(source_owned(entries, len(rom)))
-    manifest["transaction"] = "M12-AUTO17 runtime-correlated graphics streams"
+    manifest["transaction"] = "M12-AUTO18 exact 0x3820 graphics consumers"
     (materialized / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     rebuilt = (materialized / "rebuilt.rom").read_bytes()
-    report = {"schema": "oasis.m68k.m12-auto17-runtime-graphics.v1",
-              "streams": runtime, "decoder": decoded, "pointers": pointers,
+    report = {"schema": "oasis.m68k.m12-auto18-graphics-consumers.v1",
+              "streams": runtime, "static_consumers": static_consumers,
+              "decoder": decoded, "pointers": pointers,
               "metrics": manifest["metrics"],
-              "promoted_stream_bytes": sum(item["end"] - item["start"] for item in STREAMS),
+              "promoted_stream_bytes": sum(item["end"] - item["start"] for item in NEW_STREAMS),
               "full_rom": {"size": len(rebuilt), "crc32": f"{zlib.crc32(rebuilt) & 0xFFFFFFFF:08X}",
                            "sha1": hashlib.sha1(rebuilt).hexdigest(),
                            "sha256": hashlib.sha256(rebuilt).hexdigest()}}

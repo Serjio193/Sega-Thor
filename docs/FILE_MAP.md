@@ -1,3 +1,9 @@
+# M12-AUTO18 extends the developer-only graphics promoter
+`src/tools/re_m12_runtime_graphics_promote.py` and its deterministic
+regression `tests/re_m12_runtime_graphics_promote_test.py` with exact static
+`LEA → D9A4 → 37D2 → 0x3820` consumers. It records two decoder-bound streams;
+generated transaction output remains ignored.
+
 # M12-AUTO17 adds the developer-only runtime-correlated graphics promoter
 `src/tools/re_m12_runtime_graphics_promote.py` and its deterministic
 regression `tests/re_m12_runtime_graphics_promote_test.py`. It records only

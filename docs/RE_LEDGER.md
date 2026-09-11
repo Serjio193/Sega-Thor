@@ -1,3 +1,15 @@
+# M12-AUTO18 exact 0x3820 graphics consumers
+
+The AUTO18 transaction
+`build/m12-auto18-graphics-consumers-transaction-d/materialized/manifest.json`
+adds 1,063 `LOCAL_ROM_DERIVED_ASSET` bytes in
+`0x167E48..0x16821F` and `0x168442..0x168492`. Exact static consumers at
+`0x02D444`, `0x02E204`, and `0x02D416` load those sources and call `0x00D9A4`;
+`0x00D9A4` calls `0x0037D2`, and the `0x0037D8` direct branch reaches the exact
+graphics decoder `0x003820`. Local decoder source consumption is 983 and 80
+bytes. The AUTO17 runtime streams are revalidated; no decoder-only census
+candidate without this graph is promoted.
+
 # M12-AUTO17 runtime-correlated graphics streams
 
 The AUTO17 transaction

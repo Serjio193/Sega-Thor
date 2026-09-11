@@ -1,3 +1,16 @@
+# M12-AUTO18 exact 0x3820 graphics-consumer provenance checkpoint
+
+The AUTO18 transaction is
+`build/m12-auto18-graphics-consumers-transaction-d/materialized/manifest.json`.
+It adds two UNKNOWN streams, `0x167E48..0x16821F` (983 bytes) and
+`0x168442..0x168492` (80 bytes). The first is selected by exact consumers at
+`0x02D444` and `0x02E204`; the second is selected at `0x02D416`. Each calls
+`0x00D9A4`, whose exact helper calls `0x0037D2`, and `0x0037D8` has the exact
+direct branch to `0x003820`. The local graphics decoder consumes exactly 983
+and 80 bytes. AUTO17 runtime-correlated streams are revalidated in the same
+transaction. Surrounding payload remains UNKNOWN; canonical hashes are
+unchanged and no C++ migration is started.
+
 # M12-AUTO17 runtime-correlated graphics-stream provenance checkpoint
 
 The AUTO17 transaction is

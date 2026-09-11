@@ -1,3 +1,10 @@
+# M12-AUTO18 — Source-owned ROM map checkpoint — 31.8670590719% / BELOW-90 BLOCKER
+
+M12-AUTO18 adds two exact static-consumer graphics streams totaling 1,063
+bytes through `LEA → D9A4 → 37D2 → 0x3820` contracts and preserves the
+canonical ROM. The remaining payload and census-only candidates stay UNKNOWN;
+M13/C++ migration remain prohibited.
+
 # M12-AUTO17 — Source-owned ROM map checkpoint — 31.8332672119% / BELOW-90 BLOCKER
 
 M12-AUTO17 adds two exact runtime-correlated graphics streams totaling

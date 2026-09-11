@@ -1,3 +1,37 @@
+# 2026-09-11 — M12-AUTO18 exact 0x3820 graphics consumers — <90% / BLOCKED
+
+TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only UNKNOWN streams with a bounded local decoder
+boundary and an exact static `LEA → D9A4 → 37D2 → 0x3820` consumer chain.
+Revalidate the inherited AUTO17 runtime streams and preserve canonical
+full-ROM equality.
+
+RESULT: The developer-only transaction adds two static-consumer streams:
+`0x167E48..0x16821F` (983 bytes), selected by consumers at `0x02D444` and
+`0x02E204`, and `0x168442..0x168492` (80 bytes), selected at `0x02D416`.
+The shared `D9A4 → 37D2 → 0x3820` chain is byte-verified at `0x00D9B2` and
+`0x0037D8`; local decoding consumes exactly both boundaries. The map reaches
+1,002,451 / 3,145,728 bytes (31.8670590719%); 1,828,705 bytes remain to the
+integer 90% threshold. No surrounding census candidate, ROM, BIOS,
+commercial asset, or C++ migration was added.
+
+EXACTNESS: The inherited-baseline transaction reconstructs the canonical ROM
+with CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Runtime-correlation revalidation, static consumer contracts,
+pointer literals, local decoder boundaries, helper regression, Python
+compilation, CMake/CTest and source-limit gates passed. Full Debug/Release/GNU
+build status remains the inherited pre-existing MSVC `std::to_string` issue
+at `src/core/ram_flag_routine.cpp:181`; no unrelated source was modified.
+
+STATUS: The >=90% gate remains unmet. Remaining census candidates without a
+closed consumer/parser graph stay UNKNOWN; continue from the next bounded
+static or runtime graph.
+
 # 2026-09-11 — M12-AUTO17 runtime-correlated graphics streams — <90% / BLOCKED
 
 TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving

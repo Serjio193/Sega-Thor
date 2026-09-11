@@ -1,6 +1,14 @@
-# M12-AUTO17 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO18 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO17_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+Status: `M12_AUTO18_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+
+M12-AUTO18 adds two exact static-consumer graphics streams totaling 1,063
+bytes after AUTO17: `0x167E48..0x16821F` and `0x168442..0x168492`. Exact
+`LEA → D9A4 → 37D2 → 0x3820` contracts select both streams and local decoding
+consumes exactly their boundaries. AUTO17 runtime-correlated streams are
+revalidated in the same transaction. Surrounding tables and census-only
+candidates remain UNKNOWN. The canonical ROM remains byte-exact and M13/C++
+migration remain prohibited.
 
 M12-AUTO17 adds two exact runtime-correlated graphics streams totaling 13,166
 bytes after AUTO16: `0x15E052..0x160E19` and `0x2119D2..0x211F79`. Existing
@@ -25,7 +33,7 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
 | Baseline Git SHA | `b0cb5d94d9aff75c1ac1430a996006816b9bce7a` |
-| Final local transaction | `build/m12-auto17-runtime-graphics-transaction-d/materialized/manifest.json` |
+| Final local transaction | `build/m12-auto18-graphics-consumers-transaction-d/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -48,8 +56,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Constant-D0 CC-B0 selected relative-pointer slots | 986,792 | 31.3692728678% |
 | Exact runtime-correlated probe slices | 988,222 | 31.4147313436% |
 | Runtime-correlated graphics streams | 1,001,388 | 31.8332672119% |
+| Exact 0x3820 graphics consumers | 1,002,451 | 31.8670590719% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,829,768 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,828,705 bytes.
 
 ## Final ownership census
 
@@ -59,14 +68,15 @@ The 90% threshold is 2,831,156 bytes; the current gap is 1,829,768 bytes.
 | Header/vector ASM | 512 | 0.016276042% |
 | Confirmed structured data | 87,525 | 2.7823448181% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
-| Local ROM-derived assets | 729,024 | 23.1750488281% |
-| **SOURCE_OWNED** | **1,001,388** | **31.8332672119%** |
-| Remaining `UNKNOWN` blob | 2,144,340 | 68.1667327881% |
+| Local ROM-derived assets | 730,087 | 23.2088406881% |
+| **SOURCE_OWNED** | **1,002,451** | **31.8670590719%** |
+| Remaining `UNKNOWN` blob | 2,143,277 | 68.1329409281% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
 seven streams selected by the bounded `0x03B8DE` table, five direct chain
-continuations, and two runtime-correlated streams read by `0x3820`. The structured
+continuations, two runtime-correlated streams, and two exact static-consumer
+streams read by `0x3820`. The structured
 data total includes the existing exact ASM-backed data, eight fixed 1208-byte
 records, the 196-byte indexed table, and 98 exact streams totalling 11,210
 bytes, the 64-byte nested outer table, 492 bytes of count-bounded nested
@@ -228,6 +238,7 @@ Edges:
 | CC-B0 selected-slot proof | 16 exact constant-D0 callers of `0x00CA24` | 15 unique signed relative-pointer slots, 30 bytes; dynamic slots not promoted |
 | Exact runtime-correlated probe slices | `0x008F12..0x009330`, `0x03B1D0..0x03B358`, `0x060090..0x060286`, `0x061232..0x061328` | 9 canonical-equal ASM/binary slices, 1,430 bytes; PC-level corroboration only |
 | Runtime-correlated graphics streams | `0x15E052..0x160E19`, `0x2119D2..0x211F79` | 13,166 bytes; exact `0x3820` runtime reader, matching local decoder boundaries, and static pointer literals |
+| Exact static 0x3820 graphics consumers | `0x167E48..0x16821F`, `0x168442..0x168492` | 1,063 bytes; exact `LEA → D9A4 → 37D2 → 0x3820` chains and local decoder boundaries |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | two ranges closed only where runtime reader, local decoder boundary, and static pointer evidence agree |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
@@ -275,6 +286,6 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. AUTO17 helper compilation, regression, runtime-reader/pointer
+repository. AUTO18 helper compilation, regression, runtime-reader/static-chain/pointer
 validation and canonical hash checks passed; the full Debug/Release/GNU-equivalent build and
 CTest publication gate remains pending for this checkpoint.
