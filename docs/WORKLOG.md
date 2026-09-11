@@ -5571,3 +5571,31 @@ source was changed.
 
 STOP: The >=90% gate is not met. No guessed data, padding, or semantic
 payload ownership was added; M13/C++ migration remains out of scope.
+# 2026-09-11 — M12-AUTO43 small caller-backed runtime routine — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP with byte-exact canonical
+ROM preservation and no M13/C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN caller-backed routine with
+an exact BSR caller, complete runtime decoding, RTS boundaries, and an exact
+assembler round-trip.
+
+RESULT: AUTO43 promotes `[0x0083F8,0x00846C)` (116 bytes). Caller `0x006230`
+targets the entry immediately after `RTS` `0x0083F6`; all 33 instruction
+starts are runtime-observed and decoded, ending at `RTS` `0x00846A`. vasm
+output matches canonical ROM byte-for-byte. The transaction
+`build/m12-auto43-runtime-code-promotion-a/materialized/manifest.json`
+reaches 1,234,375 / 3,145,728 bytes (39.2397244771%); 1,596,781 bytes
+remain to the integer 90% threshold.
+
+EXACTNESS: Rebuilt ROM CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: AUTO43 helper test, Python compilation, promoter materialization,
+full-ROM hash audit, and vasm slice round-trip passed. Build gates remain
+blocked by the pre-existing `src/core/ram_flag_routine.cpp` errors; no C++
+source was changed.
+
+STOP: The >=90% gate is not met. No guessed data, padding, or semantic
+payload ownership was added; M13/C++ migration remains out of scope.

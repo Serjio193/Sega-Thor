@@ -1,3 +1,10 @@
+# M12-AUTO43 — Source-owned ROM map checkpoint — 39.2397244771% / BELOW-90 CONTINUING
+
+AUTO43 adds the exact small caller-backed routine `[0x0083F8,0x00846C)` (116
+bytes). Its exact `BSR` caller is `0x006230`; all 33 starts are runtime
+observed/decoded, the range is bracketed by RTS instructions, and vasm
+round-trip is byte-exact. M13/C++ migration remains prohibited.
+
 # M12-AUTO42 — Source-owned ROM map checkpoint — 39.2360369364% / BELOW-90 CONTINUING
 
 AUTO42 adds the exact caller-backed routine `[0x03B358,0x03B486)` (302

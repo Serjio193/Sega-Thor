@@ -1,3 +1,10 @@
+# M12-AUTO43 adds the small caller-backed runtime-code promoter
+
+`src/tools/re_m12_runtime_code_small_caller_promote.py` and its deterministic
+`tests/re_m12_runtime_code_small_caller_promote_test.py` record only the
+exact routine `[0x0083F8,0x00846C)`. Generated evidence and transaction
+output remain ignored/local.
+
 # M12-AUTO42 adds the caller-backed runtime-code promoter
 
 `src/tools/re_m12_runtime_code_caller_promote.py` and its deterministic

@@ -1,3 +1,13 @@
+# M12-AUTO43 — small caller-backed runtime-observed exact routine
+
+Status: `M12_AUTO43_BELOW_90_CONTINUING`.
+
+AUTO43 adds the wholly UNKNOWN `[0x0083F8,0x00846C)` routine (116 bytes).
+Exact `BSR` caller `0x006230` targets the entry after `RTS` `0x0083F6`; all
+33 starts are runtime-observed and decoded, with terminal `RTS` `0x00846A`.
+Independent vasm assembly is byte-exact. The full-ROM transaction reaches
+1,234,375 / 3,145,728 bytes (39.2397244771%); no C++ migration was started.
+
 # M12-AUTO42 — caller-backed runtime-observed exact routine
 
 Status: `M12_AUTO42_BELOW_90_CONTINUING`.
