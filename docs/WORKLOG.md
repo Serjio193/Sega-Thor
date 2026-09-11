@@ -34,7 +34,8 @@ descriptor-shaped records before returning to the ten dynamic `0x3820` sources.
 IMPLEMENTATION: focused commit
 `641abc9bf0ca8a0e30254e551e8711f714de4f77` is on `origin/main`; exact GitHub
 Actions CI run `34656525243` passed build and test. A final docs-only
-publication commit and its exact CI remain to be recorded below.
+publication commit `640a1d1266d305e99e9d7e51688a8fbbcace8cd1` is on
+`origin/main`; exact publication CI run `34656666017` passed build and test.
 
 # 2026-09-12 — M12-GFX-MAX exact 0x00D406 loader census — IN PROGRESS
 
