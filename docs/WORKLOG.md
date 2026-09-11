@@ -6158,8 +6158,9 @@ VALIDATION: Python compilation and parser tests passed; Debug and Release
 MinGW graphics targets/reference checks passed; WSL Ubuntu GNU/Linux-equivalent
 graphics build, CTest, and reference checks passed; `git diff --check` and the
 source-size check passed. Visual Studio and Ninja were unavailable on this
-host. Final implementation SHA and exact final-SHA CI remain pending the
-focused commit/push; no M13 or ASM-to-C++ migration started.
+host. Implementation SHA `06db09a741b9aae465cb9a6a8ea09604615c1fb3` exact
+final-SHA CI `34643596746` passed Build/Test/Complete; no M13 or ASM-to-C++
+migration started.
 
 # 2026-09-11 — M12-GFX-1 whole-ROM graphics decompiler sweep — IN PROGRESS
 

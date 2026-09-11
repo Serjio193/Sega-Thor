@@ -51,4 +51,4 @@ Tile, palette, and tilemap scans are heuristic secondary evidence. No visual sim
 - Raw tile candidates: `47365` tiles in `200` retained spans.
 - Palette candidates retained: `100`; tilemap candidates retained: `100`.
 - Parser unit tests, Python compilation, `git diff --check`, source-size check, and relevant project tests are recorded by the final worklog entry.
-- Final implementation SHA and exact final-SHA CI are pending the focused commit/push; they are intentionally not fabricated here.
+- Implementation SHA: `06db09a741b9aae465cb9a6a8ea09604615c1fb3`; exact final-SHA CI: GitHub Actions `34643596746` — success (Build, Test, Complete).
