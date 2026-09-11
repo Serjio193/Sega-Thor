@@ -85,7 +85,7 @@ argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
 
 The separate machine report
 `build/m12-gfx-loader-census.json` (`oasis.m68k.m12-gfx-loader-census.v1`,
-SHA-256 `69C5EF8C9DC2A1DA88F0058C1F8E7FC688901B4B1134A731874574034F969C39`)
+SHA-256 `FCFF91F123FABE0330DCFD0CC364BBDA0C87CA214E74C7BD552235CD3BA9A233`)
 scans the canonical ROM for the exact six-byte `JSR abs.l,0x00D406` encoding.
 It finds 173 direct call sites. This is a different quantity from the 52
 `0x3820` call sites above: `0x00D406` is itself one of the shared loaders.
@@ -108,6 +108,25 @@ The 17 unique screen-descriptor expected sites without that direct encoding are
 `0x037B5E`, `0x038FD6`, `0x03959A`, `0x039C0C`, and `0x039F9A`.
 The census is xref evidence only: it does not prove the caller's `A1`, a
 record boundary, a compressed stream boundary, or source ownership.
+
+The bounded follow-up relation pass adds two non-owning evidence classes to the
+same machine report. Fifteen of the 17 missing expected sites have a nearest
+exact direct call within 16 bytes: `0x02E99A`, `0x030080`, `0x031B78`,
+`0x031C78`, `0x031DE8`, `0x0320B8`, `0x032166`, `0x035680`, `0x03697E`,
+`0x036A08`, `0x036AC8`, `0x033516`, `0x037B62`, `0x039C18`, and `0x039FA0`.
+The two without such a bounded successor are `0x038FD6` and `0x03959A`.
+These are `BOUNDED_FORWARD_ADJACENCY_CANDIDATE` entries only: the bytes do not
+establish an unconditional path or preserve `A1`.
+
+Five unmatched direct calls have a 26-byte, screen-descriptor-shaped prefix at
+`call - 0x1A`, with a nonzero in-ROM pointer and four resource-id bytes below
+the closed `0..107` screen-resource domain:
+`0x02CF82 -> 0x1F4E64`, `0x02D3E8 -> 0x1FA32A`,
+`0x02DCD8 -> 0x208C44`, `0x02E0D4 -> 0x211518`, and
+`0x02E1D8 -> 0x2119D2`. The first four descriptor/stream relations are already
+owned by earlier bounded transactions; the fifth is a new candidate over an
+already-owned stream. None is promoted here: record-family boundaries and the
+caller's `A1` still require independent proof.
 
 ## Screen-root and resource closure
 
@@ -146,21 +165,25 @@ are still fail-closed.
 Passed locally for the original root-closure transaction: Python compile,
 deterministic helper test, canonical ROM identity, full candidate
 materialization, byte-for-byte rebuilt-ROM comparison, and the previous
-Debug/Release CTest (143/143 each). The follow-up `0x00D406` census also
-passes Python compilation, deterministic two-run JSON hashing, Debug/Release
-builds, full Debug/Release CTest (144/144 each), the GNU/Linux-equivalent WSL
-Release build with its census helper CTest, and `git diff --check`.
+Debug/Release CTest (143/143 each). The bounded `0x00D406` relation update
+passes Python compilation, focused tests (3/3), deterministic canonical-ROM
+JSON generation, Debug/Release builds, full Debug/Release CTest (144/144
+each), the GNU/Linux-equivalent WSL Release build with 143/143 non-size-gate
+tests, and `git diff --check`. The Linux `project_file_line_limit` test was
+stopped after more than ten minutes scanning the `/mnt/c` tree; the identical
+gate passed in Windows Debug and Release in 162.26 s and 161.14 s. No source
+violation was observed.
 The second full-layout `vasmm68k_mot` attempt was not
 successful because the existing generated baseline layout contains duplicate
 labels such as `loc_00B856`; the report records use of the independently
 byte-exact baseline rebuilt ROM as a verification fallback. This is not
 claimed as a fresh assembler round-trip.
 
-The next graphics step is to resolve the 27 unmatched `0x00D406` calls and
-the 17 missing direct screen continuations with bounded caller/record evidence,
-then return to the ten dynamic `0x3820` producers. No candidate becomes owned
-without a proven source and exact boundary; M13 and ASM-to-C++ migration remain
-out of scope.
+The next graphics step is to inspect the 15 bounded continuations with
+instruction-level control-flow/A1 evidence, then resolve the two remaining
+screen sites and the five descriptor-shaped records. The ten dynamic `0x3820`
+producers remain afterward. No candidate becomes owned without a proven source
+and exact boundary; M13 and ASM-to-C++ migration remain out of scope.
 
 Implementation SHA: `85131ce42619fd9318f59d09dfbb88a69ac33d0a`.
 Exact implementation CI: GitHub Actions run `34653604741` (success).

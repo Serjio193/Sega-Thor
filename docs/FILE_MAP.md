@@ -8,8 +8,9 @@ exact decompressor streams. The transaction output remains ignored/local.
 `src/tools/re_m12_gfx_loader_census.py` and
 `tests/re_m12_gfx_loader_census_test.py` build the exact direct-xref census for
 the `0x00D406` graphics loader and split screen-descriptor call sites from
-unmatched direct calls without promoting bytes. The generated census remains
-ignored/local.
+unmatched direct calls without promoting bytes. The census also records bounded
+forward-adjacency candidates and descriptor-shaped unmatched-call candidates;
+the generated census remains ignored/local.
 
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 

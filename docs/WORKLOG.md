@@ -1,3 +1,36 @@
+# 2026-09-12 — M12-GFX-MAX bounded 0x00D406 relation census — IN PROGRESS
+
+TASK: Continue the M12-GFX-MAX graphics closure from the published exact
+`0x00D406` census. Record bounded relations for missing screen continuations
+and descriptor-shaped unmatched calls, while preserving the fail-closed
+ownership boundary. Do not start M13, migrate ASM to C++, or promote bytes from
+adjacency alone.
+
+RESULT: The machine census now records 15 of 17 missing screen expected sites
+with a nearest exact direct call within 16 bytes, leaving `0x038FD6` and
+`0x03959A` without a bounded successor. It also records five unmatched calls
+whose `call - 0x1A` prefix is descriptor-shaped with a nonzero in-ROM pointer
+and four resource IDs in the closed screen domain: records at `0x02CF82`,
+`0x02D3E8`, `0x02DCD8`, `0x02E0D4`, and `0x02E1D8`. These are explicit
+`*_CANDIDATE` evidence only; no ROM ownership changed.
+
+ARTIFACT: local ignored `build/m12-gfx-loader-census-next.json`, schema
+`oasis.m68k.m12-gfx-loader-census.v1`, SHA-256
+`FCFF91F123FABE0330DCFD0CC364BBDA0C87CA214E74C7BD552235CD3BA9A233`.
+
+VALIDATION: Python compilation, focused regression tests (`3 passed`),
+canonical-ROM census generation, `git diff --check`, Debug/Release builds, and
+full Debug/Release CTest (`144/144` each) passed. The Linux Release build and
+the other 143 Linux CTest cases passed; the Linux `project_file_line_limit`
+case was stopped after more than ten minutes of `/mnt/c` filesystem scanning.
+The same size gate passed in both Windows configurations (`162.26 s` Debug,
+`161.14 s` Release), so this is an environment/runtime limitation, not a
+reported source violation.
+
+NEXT: inspect the 15 bounded continuations with instruction-level control-flow
+and `A1` evidence, then resolve the two remaining screen sites and five
+descriptor-shaped records before returning to the ten dynamic `0x3820` sources.
+
 # 2026-09-12 — M12-GFX-MAX exact 0x00D406 loader census — IN PROGRESS
 
 TASK: Continue the unfinished M12-GFX-MAX graphics closure by separating the

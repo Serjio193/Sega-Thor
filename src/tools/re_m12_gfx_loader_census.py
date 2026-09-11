@@ -39,6 +39,45 @@ def _hex(value: int) -> str:
     return f"0x{value:06X}"
 
 
+def nearby_call(expected: int, calls: list[int], window: int = 16) -> dict | None:
+    """Report bounded forward adjacency without proving control-flow or A1."""
+    candidates = [site for site in calls if expected < site <= expected + window]
+    if not candidates:
+        return None
+    site = min(candidates)
+    return {
+        "site": _hex(site),
+        "distance": site - expected,
+        "classification": "BOUNDED_FORWARD_ADJACENCY_CANDIDATE",
+        "proof_limit": "adjacency does not prove A1 provenance or unconditional control flow",
+    }
+
+
+def descriptor_shaped_calls(rom: bytes, calls: list[int], screen_calls: set[int]) -> list[dict]:
+    """Find unmatched calls whose preceding 26 bytes match the D406 record shape."""
+    result = []
+    for site in calls:
+        if site in screen_calls or site < 0x1A:
+            continue
+        record = site - 0x1A
+        pointer = int.from_bytes(rom[record + 4:record + 8], "big")
+        ids = tuple(rom[record + 8:record + 12])
+        if pointer == 0 or pointer >= len(rom) or any(value >= 108 for value in ids):
+            continue
+        result.append({
+            "call_site": _hex(site),
+            "record_start": _hex(record),
+            "record_end": _hex(site),
+            "record_size": 0x1A,
+            "rom_pointer": _hex(pointer),
+            "resource_ids": list(ids),
+            "classification": "D406_PRECEDING_DESCRIPTOR_SHAPED_CANDIDATE",
+            "promotion": False,
+            "proof_limit": "record shape and pointer do not prove caller A1 or exact family boundary",
+        })
+    return result
+
+
 def build_report(rom: bytes, screen_report: dict) -> dict:
     actual_sha = hashlib.sha256(rom).hexdigest()
     if actual_sha != ROM_SHA256:
@@ -51,6 +90,14 @@ def build_report(rom: bytes, screen_report: dict) -> dict:
     matched = sorted(call_set & expected_set)
     unmatched = sorted(call_set - expected_set)
     missing = [use for use in uses if use["expected_call_site"] not in call_set]
+    missing_records = []
+    for use in missing:
+        item = {**use}
+        item["expected_call_site"] = _hex(use["expected_call_site"])
+        item["descriptor"] = _hex(use["descriptor"])
+        item["stream"] = _hex(use["stream"])
+        item["nearby_direct_call"] = nearby_call(use["expected_call_site"], calls)
+        missing_records.append(item)
     return {
         "schema": SCHEMA,
         "rom_sha256": actual_sha,
@@ -68,11 +115,9 @@ def build_report(rom: bytes, screen_report: dict) -> dict:
         "unmatched_direct_call_count": len(unmatched),
         "unmatched_direct_call_sites": [_hex(site) for site in unmatched],
         "screen_descriptor_direct_call_sites": [_hex(site) for site in matched],
-        "screen_descriptor_missing_direct_calls": [
-            {**use, "expected_call_site": _hex(use["expected_call_site"]),
-             "descriptor": _hex(use["descriptor"]), "stream": _hex(use["stream"])}
-            for use in missing
-        ],
+        "screen_descriptor_missing_direct_calls": missing_records,
+        "unmatched_descriptor_shaped_candidates": descriptor_shaped_calls(
+            rom, unmatched, set(matched)),
         "classification": {
             "screen_descriptor_direct": len(matched),
             "screen_descriptor_missing_direct": len(missing),
