@@ -1,6 +1,15 @@
-# M12-AUTO16 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO17 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO16_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+Status: `M12_AUTO17_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+
+M12-AUTO17 adds two exact runtime-correlated graphics streams totaling 13,166
+bytes after AUTO16: `0x15E052..0x160E19` and `0x2119D2..0x211F79`. Existing
+canonical GPGX ROM-reader correlation identifies the executed `0x003830` PC,
+inside the exact `0x3820` decoder, as the first reader for both ranges. The
+local decoder consumes exactly the observed boundaries, and independent static
+pointer literals select each range. Surrounding tables and decoder-census-only
+candidates remain UNKNOWN. The canonical ROM remains byte-exact and M13/C++
+migration remain prohibited.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -16,7 +25,7 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
 | Baseline Git SHA | `b0cb5d94d9aff75c1ac1430a996006816b9bce7a` |
-| Final local transaction | `build/m12-auto16-exact-probe-transaction-b/materialized/manifest.json` |
+| Final local transaction | `build/m12-auto17-runtime-graphics-transaction-d/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -38,8 +47,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Physical CC-B0 group pointer table | 986,762 | 31.3683191935% |
 | Constant-D0 CC-B0 selected relative-pointer slots | 986,792 | 31.3692728678% |
 | Exact runtime-correlated probe slices | 988,222 | 31.4147313436% |
+| Runtime-correlated graphics streams | 1,001,388 | 31.8332672119% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,842,934 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,829,768 bytes.
 
 ## Final ownership census
 
@@ -49,14 +59,14 @@ The 90% threshold is 2,831,156 bytes; the current gap is 1,842,934 bytes.
 | Header/vector ASM | 512 | 0.016276042% |
 | Confirmed structured data | 87,525 | 2.7823448181% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
-| Local ROM-derived assets | 715,858 | 22.756512960% |
-| **SOURCE_OWNED** | **988,222** | **31.4147313436%** |
-| Remaining `UNKNOWN` blob | 2,157,506 | 68.5852686564% |
+| Local ROM-derived assets | 729,024 | 23.1750488281% |
+| **SOURCE_OWNED** | **1,001,388** | **31.8332672119%** |
+| Remaining `UNKNOWN` blob | 2,144,340 | 68.1667327881% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
-seven streams selected by the bounded `0x03B8DE` table, and five direct chain
-continuations. The structured
+seven streams selected by the bounded `0x03B8DE` table, five direct chain
+continuations, and two runtime-correlated streams read by `0x3820`. The structured
 data total includes the existing exact ASM-backed data, eight fixed 1208-byte
 records, the 196-byte indexed table, and 98 exact streams totalling 11,210
 bytes, the 64-byte nested outer table, 492 bytes of count-bounded nested
@@ -217,8 +227,9 @@ Edges:
 | CC-B0 group pointer-table proof | `0x00CCB0`, `0x04371E..0x04379E` | 32 validated longword slots, 128 bytes; nested subtables not promoted |
 | CC-B0 selected-slot proof | 16 exact constant-D0 callers of `0x00CA24` | 15 unique signed relative-pointer slots, 30 bytes; dynamic slots not promoted |
 | Exact runtime-correlated probe slices | `0x008F12..0x009330`, `0x03B1D0..0x03B358`, `0x060090..0x060286`, `0x061232..0x061328` | 9 canonical-equal ASM/binary slices, 1,430 bytes; PC-level corroboration only |
+| Runtime-correlated graphics streams | `0x15E052..0x160E19`, `0x2119D2..0x211F79` | 13,166 bytes; exact `0x3820` runtime reader, matching local decoder boundaries, and static pointer literals |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
-| Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
+| Runtime ROM-reader correlation | existing GPGX evidence | two ranges closed only where runtime reader, local decoder boundary, and static pointer evidence agree |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
 | Monotonic absolute-pointer scan | large unresolved intervals | no complete independent pointer graph |
 
@@ -233,7 +244,7 @@ The largest remaining unknown intervals are:
 | `0x03E7F4..0x051514` | 77,088 | mixed static code/data area with unresolved boundaries |
 | `0x0541FD..0x05D918` | 38,683 | mixed static code/data area with unresolved boundaries |
 | `0x1ED5EC..0x200009` | 76,317 | data family boundary and parser continuation not closed |
-| `0x2025C9..0x211F7A` | 63,921 | fixed-record tail/save continuation not independently closed |
+| `0x2025C9..0x2119D2` | 62,473 | fixed-record tail/save continuation not independently closed |
 | `0x143E76..0x15457A` | 67,332 | stream neighbors and mixed data/code boundary unresolved |
 
 The census found many valid decompressor outputs, but a valid decoder result
@@ -264,6 +275,6 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. AUTO16 helper compilation, regression, evidence validation and
-canonical hash checks passed; the full Debug/Release/GNU-equivalent build and
+repository. AUTO17 helper compilation, regression, runtime-reader/pointer
+validation and canonical hash checks passed; the full Debug/Release/GNU-equivalent build and
 CTest publication gate remains pending for this checkpoint.

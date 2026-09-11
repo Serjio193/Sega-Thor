@@ -1,3 +1,19 @@
+# M12-AUTO17 runtime-correlated graphics-stream provenance checkpoint
+
+The AUTO17 transaction is
+`build/m12-auto17-runtime-graphics-transaction-d/materialized/manifest.json`.
+It closes two UNKNOWN ranges, `0x15E052..0x160E19` and
+`0x2119D2..0x211F79`, totaling 13,166 bytes. Existing GPGX ROM-reader
+correlation records each range as first-read by PC `0x003830`, inside the
+already bounded exact graphics decoder at `0x3820`; the independent runtime
+execution evidence contains `CODE_EXECUTED_AT_ADDRESS` for that PC. The local
+graphics inspector consumes exactly 11,719 and 1,447 bytes respectively.
+The ROM also contains five independent pointer literals for the first range
+and one for the second. This closes source ownership of the exact compressed
+stream bytes only; the surrounding payload and descriptor/table semantics
+remain UNKNOWN. Canonical full-ROM hashes remain unchanged and no C++
+migration is started.
+
 # M12-AUTO16 exact runtime-correlated probe-slice provenance checkpoint
 
 The AUTO16 transaction is

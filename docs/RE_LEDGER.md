@@ -1,3 +1,17 @@
+# M12-AUTO17 runtime-correlated graphics streams
+
+The AUTO17 transaction
+`build/m12-auto17-runtime-graphics-transaction-d/materialized/manifest.json`
+adds 13,166 `LOCAL_ROM_DERIVED_ASSET` bytes in two exact ranges:
+`0x15E052..0x160E19` and `0x2119D2..0x211F79`. Canonical GPGX ROM-reader
+correlation identifies PC `0x003830` as the first reader for both ranges; the
+runtime execution evidence confirms that PC as executed code in the exact
+`0x3820` graphics decoder. The local decoder consumes the same boundaries,
+and static big-endian pointer literals occur at `0x03F60A`, `0x043880`,
+`0x043B6A`, `0x0461E6`, `0x046224`, and `0x02E1DC`. The surrounding records,
+tables, and adjacent payload remain UNKNOWN; no decoder-only census candidate
+was promoted.
+
 # M12-AUTO16 exact runtime-correlated probe slices
 
 The AUTO16 transaction reaches 988,222 bytes (31.4147313436%) by adding nine

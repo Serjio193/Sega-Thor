@@ -193,6 +193,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_ccb0_group_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_group_table_promote_test.py)
     add_test(NAME oasis_re_m12_ccb0_selected_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_selected_slots_promote_test.py)
     add_test(NAME oasis_re_m12_exact_probe_slices_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_exact_probe_slices_promote_test.py)
+    add_test(NAME oasis_re_m12_runtime_graphics_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_runtime_graphics_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)
@@ -496,5 +497,4 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         PROPERTIES ENVIRONMENT "PATH=${oasis_compiler_bin}"
     )
 endif()
-# Optional external-emulator experiment; never linked into a production target.
-add_subdirectory(src/tools/hybrid)
+add_subdirectory(src/tools/hybrid) # Optional external-emulator experiment.

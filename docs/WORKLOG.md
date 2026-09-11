@@ -1,3 +1,39 @@
+# 2026-09-11 — M12-AUTO17 runtime-correlated graphics streams — <90% / BLOCKED
+
+TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only UNKNOWN graphics ranges whose canonical
+runtime reader is the exact `0x3820` decoder, whose observed boundary equals
+the local decoder's `source_consumed` boundary, and which have independent
+static pointer literals. Preserve the inherited canonical full-ROM result.
+
+RESULT: The developer-only transaction closes two local-ROM-derived streams:
+`0x15E052..0x160E19` (11,719 bytes) and `0x2119D2..0x211F79` (1,447 bytes).
+The GPGX correlation records both ranges as first-read by PC `0x003830`, the
+runtime execution evidence confirms that decoder PC, the local inspector
+consumes exactly both ranges, and the ROM contains five plus one independent
+big-endian pointer literals. The map reaches 1,001,388 / 3,145,728 bytes
+(31.8332672119%); 1,829,768 bytes remain to the integer 90% threshold. No
+surrounding census candidate, ROM, BIOS, commercial asset, or C++ migration
+was added.
+
+EXACTNESS: The inherited-baseline transaction reconstructs the canonical ROM
+with CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The helper regression, Python compilation, runtime-reader,
+pointer, and local decoder gates passed. The new helper is
+`src/tools/re_m12_runtime_graphics_promote.py`; generated transaction and
+decoder images remain ignored build evidence. Fresh full Debug/Release/GNU
+build status remains the inherited pre-existing MSVC `std::to_string` issue
+at `src/core/ram_flag_routine.cpp:181`; no unrelated source was modified.
+
+STATUS: The >=90% gate remains unmet. The remaining decoder-census candidates
+still require a closed table/parser or independent runtime consumer edge;
+continue from the next independently closed graph.
+
 # 2026-09-11 — M12-AUTO16 exact runtime-correlated probe slices — <90% / BLOCKED
 
 TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving

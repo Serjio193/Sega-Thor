@@ -1,3 +1,11 @@
+# M12-AUTO17 — Source-owned ROM map checkpoint — 31.8332672119% / BELOW-90 BLOCKER
+
+M12-AUTO17 adds two exact runtime-correlated graphics streams totaling
+13,166 bytes. Both are read by the executed `0x3820` decoder, have matching
+local decoder boundaries and static pointer literals, and preserve the
+canonical ROM. The remaining payload and census-only candidates stay UNKNOWN;
+M13/C++ migration remain prohibited.
+
 # M12-AUTO16 — Source-owned ROM map checkpoint — 31.4147313436% / BELOW-90 BLOCKER
 
 M12-AUTO16 closes nine exact runtime-correlated 68000 probe slices totalling

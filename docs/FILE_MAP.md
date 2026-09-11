@@ -1,3 +1,9 @@
+# M12-AUTO17 adds the developer-only runtime-correlated graphics promoter
+`src/tools/re_m12_runtime_graphics_promote.py` and its deterministic
+regression `tests/re_m12_runtime_graphics_promote_test.py`. It records only
+two exact decoder-bound streams with canonical runtime reader and static
+pointer evidence; generated transaction output remains ignored.
+
 # M12-AUTO9 adds the developer-only erased-alignment padding promoter
 `src/tools/re_m12_padding_promote.py` and deterministic regression
 `tests/re_m12_padding_promote_test.py`. It records only complete UNKNOWN
