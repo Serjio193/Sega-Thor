@@ -1,3 +1,11 @@
+# M12-AUTO42 — Source-owned ROM map checkpoint — 39.2360369364% / BELOW-90 CONTINUING
+
+AUTO42 adds the exact caller-backed routine `[0x03B358,0x03B486)` (302
+bytes). Static `BSR` callers at `0x03A900` and `0x03AA2A`, complete runtime
+observation/decoding of 73 starts, closed conditional branches, and a
+byte-exact vasm round-trip establish its boundary. M13/C++ migration remains
+prohibited.
+
 # M12-AUTO41 — Source-owned ROM map checkpoint — 39.2264366150% / BELOW-90 CONTINUING
 
 AUTO41 adds the exact runtime-observed 68000 routine `[0x03AE74,0x03B092)`

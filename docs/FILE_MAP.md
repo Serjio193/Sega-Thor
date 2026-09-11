@@ -1,3 +1,10 @@
+# M12-AUTO42 adds the caller-backed runtime-code promoter
+
+`src/tools/re_m12_runtime_code_caller_promote.py` and its deterministic
+`tests/re_m12_runtime_code_caller_promote_test.py` record only the exact
+caller-backed routine `[0x03B358,0x03B486)`. Generated evidence and
+transaction output remain ignored/local.
+
 # M12-AUTO41 adds the developer-only bounded runtime-code promoter
 
 `src/tools/re_m12_runtime_code_range_promote.py` and its deterministic

@@ -1,3 +1,14 @@
+# M12-AUTO42 — caller-backed runtime-observed exact routine
+
+Status: `M12_AUTO42_BELOW_90_CONTINUING`.
+
+AUTO42 adds the wholly UNKNOWN `[0x03B358,0x03B486)` routine (302 bytes).
+Exact `BSR` callers at `0x03A900` and `0x03AA2A` target the entry; all 73
+instruction starts are runtime-observed and decoded, branches remain inside
+the range, and terminal `RTS` is at `0x03B484`. Independent vasm assembly is
+byte-exact. The full-ROM transaction reaches 1,234,259 / 3,145,728 bytes
+(39.2360369364%); no C++ migration was started.
+
 # M12-AUTO41 — runtime-observed exact routine range
 
 Status: `M12_AUTO41_BELOW_90_CONTINUING`.

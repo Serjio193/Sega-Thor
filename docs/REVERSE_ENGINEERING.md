@@ -1,3 +1,12 @@
+# M12-AUTO42 caller-backed runtime-observed exact routine
+
+AUTO42 promotes `[0x03B358,0x03B486)` (302 bytes) as
+`CALLER_BACKED_RUNTIME_EXACT_ASM_ROUNDTRIP`. Exact `BSR` callers at
+`0x03A900` and `0x03AA2A` target the entry; all 73 instruction starts in the
+bounded interval are runtime-observed and decoded, and conditional branches
+remain inside the interval before terminal `RTS` `0x03B484`. Independent
+vasm output matches every canonical-ROM byte.
+
 # M12-AUTO41 runtime-observed exact routine range
 
 AUTO41 promotes `[0x03AE74,0x03B092)` (542 bytes) as
