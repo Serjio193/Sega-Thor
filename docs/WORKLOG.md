@@ -6421,3 +6421,7 @@ reverse-engineering record. The blocker is now named
 NEXT: continue with the remaining screen/descriptor blockers, then the other
 dynamic `0x3820` producers; a targeted trace capturing `A1`/`A0` at the call or
 a caller-closed source path is required before promotion.
+
+PUBLICATION: focused commit
+`398be47fde617efbd847398cafd5e884eebeddd3` is on `origin/main`; exact
+GitHub Actions CI run `34659553539` passed Build, Test, and Complete.
