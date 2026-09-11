@@ -5856,6 +5856,10 @@ evidence inputs are unavailable, while retaining full assertions when those
 inputs exist. This preserves the no-copyrighted-ROM-in-CI rule and keeps the
 pure split/contract checks deterministic.
 
+VALIDATION: exact SHA `9c3587c704c719138847b78dbfdfe734bf18e3eb` passed GitHub
+Actions CI run `34600737417` (Configure, Build, Test). The local canonical ROM
+and generated census remain external and uncommitted.
+
 VALIDATION: `python tests/re_m12_bounded_word_transform_test.py` passed;
 `py_compile` passed; the full materializer passed and emitted the same ROM
 hashes. No C++ source was changed and no C++ migration was started. Existing
