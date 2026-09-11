@@ -164,5 +164,6 @@ out of scope.
 
 Implementation SHA: `85131ce42619fd9318f59d09dfbb88a69ac33d0a`.
 Exact implementation CI: GitHub Actions run `34653604741` (success).
-Final publication SHA and exact final publication HEAD CI are recorded by the
-following docs-only publication commit.
+Final publication SHA: `d153ee90fc843f184562f7a34243eec1b10abeed`.
+Exact final publication CI / publication HEAD CI: GitHub Actions run
+`34653772559` (success).

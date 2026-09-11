@@ -1,3 +1,46 @@
+# 2026-09-12 — M12-GFX-MAX exact 0x00D406 loader census — IN PROGRESS
+
+TASK: Continue the unfinished M12-GFX-MAX graphics closure by separating the
+complete direct `0x00D406` loader xref set from the already closed screen
+descriptor census. Do not repeat the whole-ROM Ancient detector sweep, promote
+decoder-validity candidates, add ROM/decoded graphics, start M13, or migrate
+ASM to C++.
+
+ACCEPTANCE CRITERIA: scan the canonical ROM with the exact `JSR abs.l` encoding;
+cross-check every direct call against every screen descriptor use; retain the
+unmatched direct calls and missing direct continuations as explicit evidence;
+make no ownership change from xrefs alone; provide deterministic JSON and a
+regression test.
+
+RESULT: `src/tools/re_m12_gfx_loader_census.py` records all 173 direct
+`0x00D406` call sites. 146 match a screen descriptor at `descriptor + 0x1A`.
+17 unique screen expected sites have no direct `0x00D406` encoding, and 27
+direct calls do not match a screen descriptor relation. The 27-call list and
+17-site missing list are published in
+`docs/reports/THOR_M12_GRAPHICS_MAXIMUM_CLOSURE.md`. The census performs no
+promotion and preserves the canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+ARTIFACT: ignored local `build/m12-gfx-loader-census.json`, schema
+`oasis.m68k.m12-gfx-loader-census.v1`, SHA-256
+`69C5EF8C9DC2A1DA88F0058C1F8E7FC688901B4B1134A731874574034F969C39`.
+
+VALIDATION: Python compilation, direct-census regression tests, canonical-ROM
+census generation, deterministic two-run JSON hashing, Debug/Release builds,
+full Debug/Release CTest (`144/144` each), GNU/Linux-equivalent WSL Release
+build, Linux census helper CTest, `git diff --check`, and the source-code line
+limit gate passed. No ROM or decoded payload was added.
+
+NEXT: bounded provenance analysis of the 27 unmatched direct calls and the 17
+missing direct screen continuations; do not promote until `A1`, record format,
+and exact source boundaries are independently proven.
+
+IMPLEMENTATION: focused commit
+`85131ce42619fd9318f59d09dfbb88a69ac33d0a` is on `origin/main`; exact GitHub
+Actions CI run `34653604741` passed build and test. A docs-only publication
+commit `d153ee90fc843f184562f7a34243eec1b10abeed` is on `origin/main`; exact
+publication CI run `34653772559` also passed build and test.
+
 # 2026-09-12 — M12-GFX-2 0x3820 caller-to-asset closure — COMPLETE
 
 TASK: Starting from the published `bdbbfada3dd5de3ffc042302afc2fb2770a68695`
@@ -6280,44 +6323,3 @@ metrics, classify tile/palette/tilemap evidence as candidates, enumerate
 static/runtime evidence, and publish
 `docs/reports/THOR_M12_GRAPHICS_DECOMPILER_SWEEP.md` with explicit unavailable
 runtime layers and SOURCE_OWNED before/after accounting.
-# 2026-09-12 — M12-GFX-MAX exact 0x00D406 loader census — IN PROGRESS
-
-TASK: Continue the unfinished M12-GFX-MAX graphics closure by separating the
-complete direct `0x00D406` loader xref set from the already closed screen
-descriptor census. Do not repeat the whole-ROM Ancient detector sweep, promote
-decoder-validity candidates, add ROM/decoded graphics, start M13, or migrate
-ASM to C++.
-
-ACCEPTANCE CRITERIA: scan the canonical ROM with the exact `JSR abs.l` encoding;
-cross-check every direct call against every screen descriptor use; retain the
-unmatched direct calls and missing direct continuations as explicit evidence;
-make no ownership change from xrefs alone; provide deterministic JSON and a
-regression test.
-
-RESULT: `src/tools/re_m12_gfx_loader_census.py` records all 173 direct
-`0x00D406` call sites. 146 match a screen descriptor at `descriptor + 0x1A`.
-17 unique screen expected sites have no direct `0x00D406` encoding, and 27
-direct calls do not match a screen descriptor relation. The 27-call list and
-17-site missing list are published in
-`docs/reports/THOR_M12_GRAPHICS_MAXIMUM_CLOSURE.md`. The census performs no
-promotion and preserves the canonical ROM SHA-256
-`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
-
-ARTIFACT: ignored local `build/m12-gfx-loader-census.json`, schema
-`oasis.m68k.m12-gfx-loader-census.v1`, SHA-256
-`69C5EF8C9DC2A1DA88F0058C1F8E7FC688901B4B1134A731874574034F969C39`.
-
-VALIDATION: Python compilation, direct-census regression tests, canonical-ROM
-census generation, deterministic two-run JSON hashing, Debug/Release builds,
-full Debug/Release CTest (`144/144` each), GNU/Linux-equivalent WSL Release
-build, Linux census helper CTest, `git diff --check`, and the source-code line
-limit gate passed. No ROM or decoded payload was added.
-
-NEXT: bounded provenance analysis of the 27 unmatched direct calls and the 17
-missing direct screen continuations; do not promote until `A1`, record format,
-and exact source boundaries are independently proven.
-
-IMPLEMENTATION: focused commit
-`85131ce42619fd9318f59d09dfbb88a69ac33d0a` is on `origin/main`; exact GitHub
-Actions CI run `34653604741` passed build and test. A docs-only publication
-commit will record the final publication SHA and exact publication HEAD CI.
