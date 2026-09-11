@@ -1,6 +1,19 @@
-# M12-AUTO23 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO24 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO23_BELOW_90_CONTINUING`.
+Status: `M12_AUTO24_BELOW_90_CONTINUING`.
+
+AUTO24 adds the caller-backed exact static island `[0x0167BE,0x01685A)`
+(156 bytes). Two Ghidra caller xrefs (`0x01672E`, `0x016742`) identify the
+function, the bounded decoder accepts the full range, and vasm reproduces it
+after normalizing the decoder's incorrect terminal `exg.w D4,A6` spelling to
+the independently verified `EXG A4,A6` opcode. No ROM bytes are changed.
+
+The read-only census evaluated 26 caller-backed Ghidra ranges wholly inside
+UNKNOWN; 25 were rejected for decoder boundary or unsupported-form failures.
+The absolute and signed-relative pointer-density scan found no candidate
+window meeting its minimum density threshold. The `0x80000` bank remains
+UNKNOWN because its dynamic object-base use does not close a parser or code
+container boundary.
 
 AUTO23 adds 296 exact save-serialization bytes after AUTO22. AUTO22 added 58
 exact small-table bytes; AUTO21 added 7,238
@@ -39,8 +52,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `6b8ca1ee676fc59fa8b587ecb137d42f6874fb9e` |
-| Final local transaction | `build/m12-auto23-save-slots-transaction-b/materialized/manifest.json` |
+| Baseline Git SHA | `732178432d9698ebff74d82a625633be9e23e71e` |
+| Final local transaction | `build/m12-auto24-static-code-transaction-d/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -68,20 +81,21 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | CC-B0 relative-target tables | 1,225,380 | 38.9537811279% |
 | Exact small tables | 1,225,438 | 38.9556248983% |
 | Save serialization slots | 1,225,734 | 38.9650344849% |
+| Exact static caller-backed island | 1,225,890 | 38.9699935913% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,605,422 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,605,266 bytes.
 
 ## Final ownership census
 
 | Class | Bytes | Percent |
 | --- | ---: | ---: |
-| 68000 `CODE_VERIFIED` | 51,650 | 1.6419092814% |
+| 68000 `CODE_VERIFIED` | 51,806 | 1.6468683879% |
 | Header/vector ASM | 512 | 0.016276042% |
 | Confirmed structured data | 95,117 | 3.0236879985% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
 | Local ROM-derived assets | 845,098 | 26.8649419149% |
-| **SOURCE_OWNED** | **1,225,734** | **38.9650344849%** |
-| Remaining `UNKNOWN` blob | 1,919,994 | 61.0349655151% |
+| **SOURCE_OWNED** | **1,225,890** | **38.9699935913%** |
+| Remaining `UNKNOWN` blob | 1,919,838 | 61.0300064087% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -97,7 +111,8 @@ also includes the 50-record table at `0x5D046`, the 64-entry `0x0EEE` word
 lookup table, the 512-byte bounded byte lookup table, and the 296-byte exact
 save-serialization ranges. The Z80 8192-byte
 image is included in the ASM total and is also
-recorded as `Z80_SOURCE_OWNED_BYTES=8192`.
+recorded as `Z80_SOURCE_OWNED_BYTES=8192`. The exact static island adds 156
+bytes to the ASM total.
 
 AUTO9 additionally owns 132,630 bytes as exact erased alignment padding in 16
 complete `0xFF` runs. The runs are accepted only when they are at least 256
@@ -395,3 +410,18 @@ save/SRAM tail remains UNKNOWN because no exact consumer closes its extent.
 The current map reaches 1,225,734 bytes (38.9650344849%); the integer 90%
 threshold still requires 1,605,422 additional bytes. Canonical full-ROM
 hashes remain unchanged.
+
+# M12-AUTO24 — Exact static caller-backed island
+
+AUTO24 promotes `[0x0167BE,0x01685A)` (156 bytes), wholly inside UNKNOWN in
+the AUTO23 manifest. The Ghidra function has caller xrefs at `0x01672E` and
+`0x016742`; the exact range decoder accepts the whole island, and vasm
+reproduces the ROM after correcting one decoder operand-class spelling. The
+terminal bytes `C9 4E` assemble as `EXG A4,A6`; the decoder's `exg.w D4,A6`
+text is therefore normalized only in generated ASM. This does not alter the
+canonical ROM or assert ownership of neighboring bytes.
+
+The transaction reaches 1,225,890 bytes (38.9699935913%), leaving 1,605,266
+bytes to the integer 90% threshold. The full-ROM result remains CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.

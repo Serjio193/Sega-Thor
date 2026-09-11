@@ -1,3 +1,41 @@
+# 2026-09-11 — M12-AUTO24 exact static caller-backed island — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only an UNKNOWN range that is wholly covered by
+a caller-backed Ghidra function, passes the bounded exact decoder, and passes
+a vasm round-trip without overlap or manifest gaps. Also record rejected
+pointer-table and candidate-census results.
+
+RESULT: AUTO24 promotes `[0x0167BE,0x01685A)` (156 bytes). The range has two
+Ghidra caller xrefs (`0x01672E` and `0x016742`), no decoder gap or unsupported
+form after the bounded operand check, and exact vasm output. A decoder caveat
+was found at the terminal `C9 4E`: the decoder emitted `exg.w D4,A6`, while
+the independently assembled 68000 opcode is `EXG A4,A6`; only this generated
+ASM spelling is normalized, and the ROM bytes remain unchanged.
+
+The read-only census tested 26 caller-backed Ghidra functions wholly inside
+UNKNOWN; 25 failed exact-boundary/unsupported-form checks. A dense absolute
+or signed-relative pointer-table scan produced no candidate window meeting
+the minimum density threshold. No 0x80000 bank or broad mixed range was
+promoted. The map reaches 1,225,890 / 3,145,728 bytes (38.9699935913%); the
+integer 90% threshold still requires 1,605,266 bytes.
+
+EXACTNESS: The AUTO24 transaction has zero manifest gaps and overlaps and
+rebuilds CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`,
+and SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Helper regression, Python compilation, exact island vasm
+round-trip, full-ROM equality, local diff check, file-limit check, and the
+remote CI build/test passed. The project Debug build remains blocked by the
+pre-existing MSVC `std::to_string` error in `src/core/ram_flag_routine.cpp`;
+this task did not modify that source. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; the large mixed payloads and save tails
+remain UNKNOWN pending independent parser/consumer boundaries.
+
 # 2026-09-11 — M12-AUTO23 save serialization slots — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the

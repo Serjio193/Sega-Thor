@@ -194,6 +194,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_exact_probe_slices_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_exact_probe_slices_promote_test.py)
     add_test(NAME oasis_re_m12_runtime_graphics_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_runtime_graphics_promote_test.py)
     add_test(NAME oasis_re_m12_save_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_save_slots_promote_test.py)
+    add_test(NAME oasis_re_m12_static_code_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_static_code_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)
@@ -214,7 +215,6 @@ add_test(
         -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src/core
         -P ${CMAKE_SOURCE_DIR}/tests/check_core_boundary.cmake
 )
-
 add_executable(oasis_rom_identity_test tests/rom_identity_test.cpp)
 target_link_libraries(oasis_rom_identity_test PRIVATE oasis_core)
 add_test(NAME oasis_rom_identity COMMAND oasis_rom_identity_test)

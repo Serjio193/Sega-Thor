@@ -1,3 +1,14 @@
+# M12-AUTO24 exact static caller-backed island
+
+AUTO24 closes `[0x0167BE,0x01685A)` as a 156-byte exact static code island.
+The Ghidra census records caller xrefs at `0x01672E` and `0x016742`; a bounded
+exact decoder accepts the complete range with no gap, overlap, unsupported
+form, or unresolved dispatch, and vasm reproduces the canonical bytes. The
+decoder currently prints the terminal `C9 4E` as `exg.w D4,A6`; independent
+68000 opcode assembly identifies the exact spelling as `EXG A4,A6`, so the
+developer-only promoter normalizes only that generated line before assembly.
+No ROM byte is changed and no wider neighboring range is inferred.
+
 # M12-AUTO23 save serialization slots
 
 AUTO23 closes two save-related ranges without treating the surrounding SRAM

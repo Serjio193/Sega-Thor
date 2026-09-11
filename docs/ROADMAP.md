@@ -1,3 +1,10 @@
+# M12-AUTO24 — Source-owned ROM map checkpoint — 38.9699935913% / BELOW-90 CONTINUING
+
+AUTO24 adds the exact caller-backed static island `[0x0167BE,0x01685A)`
+(156 bytes). Its bounded decoder and vasm round-trip pass after a generated
+ASM operand spelling correction for the terminal `C9 4E` (`EXG A4,A6`). The
+canonical ROM remains byte-exact; M13/C++ migration remains prohibited.
+
 # M12-AUTO23 — Source-owned ROM map checkpoint — 38.9650344849% / BELOW-90 CONTINUING
 
 AUTO23 adds 296 bytes from two exact save-serialization ranges and preserves

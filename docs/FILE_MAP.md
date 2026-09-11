@@ -1,3 +1,8 @@
+# M12-AUTO24 adds the developer-only exact static-code promoter
+`src/tools/re_m12_static_code_promote.py` and deterministic regression
+`tests/re_m12_static_code_promote_test.py`. It records only the caller-backed
+`[0x0167BE,0x01685A)` island; generated transaction output remains ignored.
+
 # M12-AUTO23 adds the developer-only save-slot promoter
 `src/tools/re_m12_save_slots_promote.py` and deterministic regression
 `tests/re_m12_save_slots_promote_test.py`. It records only the exact primary
