@@ -51,8 +51,11 @@ MinGW builds passed. Release CTest passed `142/142`; Debug CTest passed
 race. GNU/Linux CMake configure, build, and link passed; Linux CTest reached
 the workspace-wide file-limit test but was stopped after more than seven
 minutes of `/mnt/c` I/O after the same check had independently passed on
-Windows. Implementation and exact CI SHA fields remain to be filled after the
-focused commit and CI.
+Windows. IMPLEMENTATION: focused commit
+`28cceb2b17b15bc884124c63729d4d24e456668b` was pushed to `origin/main`; exact
+implementation-SHA GitHub Actions CI run `34647644049` completed successfully.
+The report now records both identities; the docs-only publication commit SHA
+is the final publication identity to be recorded after that commit is created.
 
 # 2026-09-11 — M12-AUTO56 overlapping PC-relative word table — <90% / CONTINUING
 

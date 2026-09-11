@@ -96,4 +96,4 @@ Unresolved callers are explicit: RAM-mediated A0/A1, inherited caller arguments,
 
 ## Gates and identity
 
-Canonical ROM: CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Reused M12-GFX-1 JSON: whole-ROM scan repeated = `False`. The machine-readable report is emitted as `caller_closure_report.json`; implementation and exact CI publication SHAs are recorded in the final worklog update after validation.
+Canonical ROM: CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Reused M12-GFX-1 JSON: whole-ROM scan repeated = `False`. The machine-readable report is emitted as `caller_closure_report.json`. Implementation SHA: `28cceb2b17b15bc884124c63729d4d24e456668b`; exact implementation-SHA CI: GitHub Actions run `34647644049` (success). Final publication SHA is recorded by the docs-only publication commit.
