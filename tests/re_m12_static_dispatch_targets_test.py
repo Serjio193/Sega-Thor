@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import tempfile
+from m12_local_inputs import optional_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,7 +14,10 @@ SPEC.loader.exec_module(MODULE)
 
 
 def test_contract_and_table_source():
-    rom = (ROOT / "build/reference/Beyond Oasis (USA).bin").read_bytes()
+    rom = optional_bytes(
+        ROOT / "build/reference/Beyond Oasis (USA).bin", "canonical ROM")
+    if rom is None:
+        return
     contract = MODULE.parse_contract(rom)
     assert contract["table_values"] == MODULE.TABLE_VALUES
     assert contract["targets"][-1]["end"] == 0x03B188

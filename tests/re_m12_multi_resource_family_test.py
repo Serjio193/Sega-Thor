@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+from m12_local_inputs import optional_bytes, optional_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,7 +13,10 @@ SPEC.loader.exec_module(MODULE)
 
 
 def test_resource_family_contracts():
-    rom = (ROOT / "build/reference/Beyond Oasis (USA).bin").read_bytes()
+    rom = optional_bytes(
+        ROOT / "build/reference/Beyond Oasis (USA).bin", "canonical ROM")
+    if rom is None:
+        return
     contract = MODULE.parse_contract(rom)
     assert contract["family_a"]["record_count"] == 10
     assert contract["family_b"]["record_count"] == 13
@@ -21,6 +25,9 @@ def test_resource_family_contracts():
 
 def test_census_matches_direct_streams():
     census = ROOT / "build/m12-auto50-full-graphics-census.json"
+    census = optional_path(census, "AUTO50 graphics census")
+    if census is None:
+        return
     rows = MODULE.verify_census(census, MODULE.DIRECT_STREAMS)
     assert rows[0]["end"] == 0x2F7D35
     assert rows[-1]["end"] == 0x2FC681

@@ -5840,6 +5840,22 @@ ROM identity remains exact: size `0x300000`, CRC32 `C4728225`, SHA1
 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 
+# 2026-09-11 — M12 AUTO29-AUTO60 baseline CI input boundary
+
+TASK: publish the complete local AUTO29..AUTO60 checkpoint before starting
+M12-CARVER-1, with no ROM or generated evidence artifacts committed.
+
+RESULT: checkpoint `57493a97cffad4d335ef64bcf186a5b84ea96bfa` was committed and
+pushed. Its GitHub Actions run `34600345849` built successfully but failed nine
+ROM-backed helper tests because CI correctly has no user-supplied
+`build/reference/Beyond Oasis (USA).bin`. The failure was not a code or
+canonical-ROM mismatch.
+
+REPAIR: ROM/census-backed helper tests now skip explicitly when their local
+evidence inputs are unavailable, while retaining full assertions when those
+inputs exist. This preserves the no-copyrighted-ROM-in-CI rule and keeps the
+pure split/contract checks deterministic.
+
 VALIDATION: `python tests/re_m12_bounded_word_transform_test.py` passed;
 `py_compile` passed; the full materializer passed and emitted the same ROM
 hashes. No C++ source was changed and no C++ migration was started. Existing
