@@ -1,3 +1,11 @@
+# M12-AUTO16 — Source-owned ROM map checkpoint — 31.4147313436% / BELOW-90 BLOCKER
+
+M12-AUTO16 closes nine exact runtime-correlated 68000 probe slices totalling
+1,430 bytes after AUTO15. The slices are bounded by local decoder metadata,
+canonical-equal probe binaries and PC-level runtime corroboration; adjacent
+mixed ranges remain UNKNOWN. The canonical ROM remains unchanged and M13/C++
+migration remain prohibited.
+
 # M12-AUTO15 — Source-owned ROM map checkpoint — 31.3692728678% / BELOW-90 BLOCKER
 
 M12-AUTO15 closes 15 unique constant-D0 caller-selected relative-pointer

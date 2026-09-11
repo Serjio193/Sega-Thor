@@ -49,6 +49,12 @@ M12-AUTO7 adds the developer-only direct-graphics promoter
 decoder-consumed streams selected by direct `0x3820` consumers and sequential
 `A0` continuation; generated transaction output remains ignored.
 
+# M12-AUTO16 adds the developer-only exact runtime-correlated probe-slice
+promoter src/tools/re_m12_exact_probe_slices_promote.py and deterministic
+regression tests/re_m12_exact_probe_slices_promote_test.py. It records nine
+bounded canonical-equal ASM slices totalling 1,430 bytes; generated transaction
+output and local probe evidence remain ignored.
+
 # M12-AUTO15 adds the developer-only constant-D0 CC-B0 selected-slot promoter
 `src/tools/re_m12_ccb0_selected_slots_promote.py` and its deterministic
 regression `tests/re_m12_ccb0_selected_slots_promote_test.py`. It records only

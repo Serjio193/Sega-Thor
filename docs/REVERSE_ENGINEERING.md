@@ -1,3 +1,17 @@
+# M12-AUTO16 exact runtime-correlated probe-slice provenance checkpoint
+
+The AUTO16 transaction is
+build/m12-auto16-exact-probe-transaction-b/materialized/manifest.json. It
+closes nine exact 68000 probe slices totalling 1,430 bytes:
+0x008F12..0x009330 in six bounded slices, 0x03B1D0..0x03B358,
+0x060090..0x060286, and 0x061232..0x061328. Each slice has a
+canonical-equal local binary, decoder-bounded ASM and at least one observed
+instruction start in the canonical runtime evidence. The map reaches 988,222
+source-owned bytes (31.4147313436%) with canonical full-ROM hashes unchanged.
+This is PC-level corroboration only; it does not assign gameplay semantics or
+close adjacent mixed ranges. The transaction uses inherited-baseline exactness
+because no external vasm executable is installed; no C++ migration is started.
+
 # M12-AUTO15 CC-B0 selected relative-pointer-slot provenance checkpoint
 
 The AUTO15 transaction is `build/m12-auto15-ccb0-selected-transaction-d/materialized/manifest.json`.

@@ -1,6 +1,6 @@
-# M12-AUTO15 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO16 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO15_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+Status: `M12_AUTO16_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -15,8 +15,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `9800dbb6d5809a700744b4cbb5896247c5fd02e4` |
-| Final local transaction | `build/m12-auto15-ccb0-selected-transaction-d/materialized/manifest.json` |
+| Baseline Git SHA | `b0cb5d94d9aff75c1ac1430a996006816b9bce7a` |
+| Final local transaction | `build/m12-auto16-exact-probe-transaction-b/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -37,20 +37,21 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Exact BCEA field3 sentinel lists | 986,634 | 31.364250183% |
 | Physical CC-B0 group pointer table | 986,762 | 31.3683191935% |
 | Constant-D0 CC-B0 selected relative-pointer slots | 986,792 | 31.3692728678% |
+| Exact runtime-correlated probe slices | 988,222 | 31.4147313436% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,844,364 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,842,934 bytes.
 
 ## Final ownership census
 
 | Class | Bytes | Percent |
 | --- | ---: | ---: |
-| 68000 `CODE_VERIFIED` | 50,220 | 1.596450806% |
+| 68000 `CODE_VERIFIED` | 51,650 | 1.6419092814% |
 | Header/vector ASM | 512 | 0.016276042% |
 | Confirmed structured data | 87,525 | 2.7823448181% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
 | Local ROM-derived assets | 715,858 | 22.756512960% |
-| **SOURCE_OWNED** | **986,792** | **31.3692728678%** |
-| Remaining `UNKNOWN` blob | 2,158,936 | 68.6307271322% |
+| **SOURCE_OWNED** | **988,222** | **31.4147313436%** |
+| Remaining `UNKNOWN` blob | 2,157,506 | 68.5852686564% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -106,6 +107,16 @@ vasm executable is installed; canonical full-ROM equality, inherited ASM/blob
 equality, and all 30 new canonical slices passed. A fresh assembler round-trip
 remains required when vasm is available.
 
+AUTO16 additionally owns nine exact runtime-correlated 68000 probe slices
+totalling 1,430 bytes. The local decoder metadata, ASM artifacts and binary
+artifacts agree on every slice, and each slice contains at least one observed
+instruction start in the canonical runtime evidence. This PC-level
+corroboration does not assign gameplay semantics or close adjacent mixed
+ranges. The local transaction uses `INHERITED_BASELINE_FULL_ROM` exactness
+because no external vasm executable is installed; canonical full-ROM equality
+and every new canonical slice passed. A fresh assembler round-trip remains
+required when vasm is available.
+
 ## Provenance graph
 
 Nodes:
@@ -141,7 +152,9 @@ Nodes:
 21. Exact `0x00CCB0` high-byte selector → physical 32-entry longword table
     `[0x04371E,0x04379E)`; nested target subtables remain UNKNOWN.
 22. Constant-D0 callers → exact CC-B0 group/index arithmetic → 15 unique
-    signed relative-pointer slots; dynamic callers remain UNKNOWN.
+   signed relative-pointer slots; dynamic callers remain UNKNOWN.
+23. Runtime-observed probe entries → decoder-bounded exact ASM/binary slices;
+   adjacent mixed code/data remains UNKNOWN.
 
 Edges:
 
@@ -176,13 +189,15 @@ Edges:
   group pointer table; nested target subtables remain UNKNOWN.
 - Exact constant-D0 callers and the closed CC-B0 arithmetic → 15 unique
   selected 16-bit relative-pointer slots; other low-byte slots remain UNKNOWN.
+- Runtime PC evidence plus canonical-equal probe ASM/binary artifacts →
+  bounded exact 68000 slices; no semantic behavior is inferred.
 - No edge was created from a decoder coincidence alone to an owned asset.
 
 ## Methods and outcomes
 
 | Method | Scope | Outcome |
 | --- | --- | --- |
-| Existing exact 68000 reassembly + caller gate | 508 bounded Ghidra intervals | 50,220 ASM bytes retained across the accumulated map |
+| Existing exact 68000 reassembly + caller gate | 508 bounded Ghidra intervals | 51,650 ASM bytes retained across the accumulated map, including AUTO16 exact probe slices |
 | Original pointer-table graphics parser | `0x05CE96..0x05D046` | 107 streams, already in baseline |
 | Screen descriptor parser + decoder | `0x00C92C` groups and 167 descriptors | 159 streams and exact 26-byte descriptors |
 | Exact Z80 upload proof | `0x06134E`, 0x2000-byte copy | 8,192 source-owned Z80 ASM bytes |
@@ -201,6 +216,7 @@ Edges:
 | BCEA field3 list proof | `0x00BCEA`, field3 bases, selector offsets `-20/0/20/40` | 100 views merged into five ranges, 7,516 bytes |
 | CC-B0 group pointer-table proof | `0x00CCB0`, `0x04371E..0x04379E` | 32 validated longword slots, 128 bytes; nested subtables not promoted |
 | CC-B0 selected-slot proof | 16 exact constant-D0 callers of `0x00CA24` | 15 unique signed relative-pointer slots, 30 bytes; dynamic slots not promoted |
+| Exact runtime-correlated probe slices | `0x008F12..0x009330`, `0x03B1D0..0x03B358`, `0x060090..0x060286`, `0x061232..0x061328` | 9 canonical-equal ASM/binary slices, 1,430 bytes; PC-level corroboration only |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
@@ -248,8 +264,6 @@ The local transaction has zero manifest gaps and overlaps and reconstructs the
 canonical ROM exactly. Generated ROMs, extracted assets, census JSON, and
 transaction directories remain local ignored build evidence. No ROM, BIOS,
 commercial asset, secret, or production C++ migration was added to the
-repository. Fresh Debug, Release, and GNU-equivalent builds passed; full CTest
-passed `90/90` in all three configurations at the AUTO9 publication gate.
-AUTO10's Python helper, transaction round trip, manifest/hash audit, source
-file limits, and `git diff --check` passed; its full build/CTest and remote CI
-publication gate remain pending.
+repository. AUTO16 helper compilation, regression, evidence validation and
+canonical hash checks passed; the full Debug/Release/GNU-equivalent build and
+CTest publication gate remains pending for this checkpoint.

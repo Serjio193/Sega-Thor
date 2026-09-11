@@ -1,3 +1,11 @@
+# M12-AUTO16 exact runtime-correlated probe slices
+
+The AUTO16 transaction reaches 988,222 bytes (31.4147313436%) by adding nine
+canonical-equal ASM probe slices totalling 1,430 bytes. The slices are
+runtime-correlated at PC level and remain bounded to their decoder-reported
+intervals; adjacent mixed code/data and semantic behavior remain UNKNOWN.
+Canonical full-ROM hashes remain exact and no C++ migration is authorized.
+
 # M12-AUTO15 CC-B0 selected relative-pointer slots
 
 The AUTO15 transaction closes 15 unique 16-bit slots (30 bytes) selected by

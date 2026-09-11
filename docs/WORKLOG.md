@@ -1,3 +1,44 @@
+# 2026-09-11 — M12-AUTO16 exact runtime-correlated probe slices — <90% / BLOCKED
+
+TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only bounded 68000 slices with canonical-equal
+probe ASM and binary artifacts, decoder-bound metadata, and runtime PC
+corroboration. Exclude surrounding mixed ranges and require canonical full-ROM
+equality.
+
+RESULT: The developer-only transaction closes nine exact probe slices totalling
+1,430 CODE_VERIFIED bytes: the shared movement/G0 slices at
+0x008F12..0x009330, the exact 0x03B1D0 graphics-consumer routine,
+0x060090..0x060286, and 0x061232..0x061328. Each slice has a local
+canonical-equal binary, decoder-bounded ASM, and at least one observed
+instruction start in the canonical runtime evidence. The map reaches
+988,222 / 3,145,728 bytes (31.4147313436%); 1,842,934 bytes remain to the
+integer 90% threshold. No surrounding mixed range, ROM, BIOS, commercial
+asset, or C++ migration was added.
+
+EXACTNESS: The inherited-baseline transaction reconstructs the canonical ROM
+with CRC32 C4728225, SHA-1
+2944910c07c02eace98c17d78d07bef7859d386a, and SHA-256
+eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+Fresh assembler round-trip remains unavailable because no external vasm
+executable is installed; every new binary slice was compared byte-for-byte.
+
+VALIDATION: The helper regression and Python compilation passed. The local
+transaction passed its nine-slice evidence/runtime gates and canonical full-ROM
+hash checks. The new AUTO16 helper, AUTO14 helper and AUTO15 helper passed in
+Debug, Release and GNU-labelled CTest configurations (3/3 each). The bounded
+source scan passed for 394 checked files with CMakeLists.txt at 500 lines.
+Full Debug/Release/GNU-labelled builds reached the existing MSVC failure at
+src/core/ram_flag_routine.cpp:181 because std::to_string is not visible in that
+translation unit; AUTO16 did not change that file, so this unrelated issue was
+not modified. Remote CI remains the clean publication gate.
+
+STATUS: The >=90% gate remains unmet. Dynamic/mixed code, nested subtables,
+and decoder-only resource candidates remain UNKNOWN; continue from the next
+independently closed edge.
+
 # 2026-09-11 — M12-AUTO15 CC-B0 selected relative-pointer slots — <90% / BLOCKED
 
 **TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
