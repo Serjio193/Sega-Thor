@@ -1,3 +1,304 @@
+# 2026-09-11 — M12-AUTO34 exact compressed-resource pointer table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN pointer container whose
+reader, entry width, sentinel, monotone targets, and following boundary are
+exact. Do not re-promote the already-owned target streams or infer their
+semantic names.
+
+RESULT: AUTO34 promotes `[0x05CE96,0x05D046)` (432 bytes) as a
+`COMPRESSED_RESOURCE_POINTER_TABLE`. Reader `0x00D3B2` shifts its 0-based
+resource ID by two, reads an absolute longword from the table, and calls the
+verified graphics decoder at `0x003820`. Entry 0 is zero; entries 1..107 are
+strictly increasing and span the already-owned stream starts
+`0x1AD000..0x1E6EDA`. The next independently confirmed table starts at
+`0x05D046`. The map reaches 1,227,770 / 3,145,728 bytes (39.0297571818%);
+1,603,386 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO34 transaction is
+`build/m12-auto34-resource-pointer-table-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, regression, and full-ROM vasm verification pass;
+the source line-limit gate remains required. The project Debug/Release MSVC
+build remains blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO33 exact 64-entry item label table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN fixed-record container
+whose consumer stride and physical boundary are exact, whose bytes satisfy
+the deterministic format contract, and whose neighboring payload remains
+unowned.
+
+RESULT: AUTO33 promotes `[0x05CC16,0x05CE16)` (512 bytes) as a
+`FIXED_WIDTH_ITEM_LABEL_TABLE`: 64 exact 8-byte printable records. Consumers
+`0x0041A6` and `0x0041CA` use the byte-selected index, double it, then shift
+left three for the 8-byte stride. The next byte at `0x05CE16` is outside the
+printable record container and remains UNKNOWN. The map reaches 1,227,338 /
+3,145,728 bytes (39.0160242716%); 1,603,818 bytes remain to the integer 90%
+threshold.
+
+EXACTNESS: The AUTO33 transaction is
+`build/m12-auto33-item-label-table-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, regression, and full-ROM vasm verification pass;
+the source line-limit gate remains required. The project Debug/Release MSVC
+build remains blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO32 exact fixed-width menu label table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN fixed-record table with an
+exact consumer, a statically closed selector range, deterministic extraction,
+and no neighboring format mixed into the range.
+
+RESULT: AUTO32 promotes `[0x05CBA6,0x05CBD6)` (48 bytes) as a
+`FIXED_WIDTH_MENU_LABEL_TABLE`: six exact 8-byte records. Consumer `0x003F8E`
+uses `FF1861 << 3`; the source switch at `0x003DCC` accepts five one-based
+cases and the alternate path explicitly writes `5`, closing the selector at
+`0..5`. The map reaches 1,226,826 / 3,145,728 bytes (38.9997482300%);
+1,604,330 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO32 transaction is
+`build/m12-auto32-label-table-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, regression, and full-ROM vasm verification pass;
+the source line-limit gate remains required. The project Debug/Release MSVC
+build remains blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO31 exact sentinel threshold table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN table whose exact consumer
+closes the entry stride and termination condition, with deterministic
+full-ROM materialization and no neighboring mixed payload.
+
+RESULT: AUTO31 promotes `[0x05D906,0x05D918)` (18 bytes) as a
+`SENTINEL_TERMINATED_THRESHOLD_TABLE`. Consumer `0x010666` compares each
+post-incremented word, returns on `BLS`, advances the result by 8, and reaches
+the exact `0xFFFF` sentinel at the ninth word. The next table begins at the
+already-owned `0x05D918`. The map reaches 1,226,778 / 3,145,728 bytes
+(38.9982223511%); 1,604,378 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO31 transaction is
+`build/m12-auto31-threshold-table-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, regression, and full-ROM vasm verification pass;
+the source line-limit gate remains required. The project Debug/Release MSVC
+build remains blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO30 exact state dispatch pointer table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN, exact structured-data
+container with a credible consumer contract, a closed byte range, no code
+ownership conflict, and deterministic full-ROM materialization. Do not infer
+ownership for the pointed-to handler bodies.
+
+RESULT: AUTO30 promotes `[0x00DF54,0x00E0B8)` (356 bytes) as an
+`ABSOLUTE_STATE_DISPATCH_POINTER_TABLE`. Three identical consumers at
+`0x00FD70`, `0x00FDF4`, and `0x00FF7E` form the table base, double the state
+selector, and read a longword through the exact `-44(A0,D6.W)` displacement
+before `JSR (A0)`. The table contains 89 canonical longwords for the physical
+container ending immediately before the already-owned `RTS` at `0x00E0B8`.
+No target handler range is promoted. The map reaches 1,226,760 / 3,145,728
+bytes (38.9976501465%); 1,604,396 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO30 transaction is
+`build/m12-auto30-dispatch-pointer-table-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, regression, full-ROM vasm verification, and source
+line-limit gate pass. The project Debug/Release MSVC build remains blocked by
+the pre-existing `std::to_string` error in `src/core/ram_flag_routine.cpp`.
+No ROM, BIOS, commercial asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO29 preserved candidate-map code census — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope. Exercise the
+preserved candidate-map/Ghidra provenance path before switching to data and
+parser contracts.
+
+ACCEPTANCE CRITERIA: Reconstruct only the preserved `ghidra_range` claims into
+a machine-readable developer-only map, then run the strict transactional
+auto-promoter without inventing new decompiler claims or weakening ownership,
+boundary, and exact-rebuild gates.
+
+RESULT: The converter reconstructs 496 bounded function ranges from the
+preserved candidate map. The strict auto-promoter discovers 534 candidates,
+but has 0 eligible, 0 attempted, and 0 accepted candidates against the
+AUTO28 map. This is a negative result for this specific preserved code-census
+method, not a global M12 blocker; it adds no ROM ownership and does not
+justify promoting mixed or unbounded code.
+
+EXACTNESS: The reconstructed map is
+`build/m12-ghidra-reconstructed-candidate-map-b.json`; the no-change
+transaction is `build/m12-auto29-code-census-transaction-a/materialized/manifest.json`.
+The current map remains 1,226,404 / 3,145,728 bytes (38.9863332113%), with
+1,604,752 bytes remaining to the integer 90% threshold. The canonical ROM
+hashes remain CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The converter regression and Python compilation pass; the
+transaction reports exact full-ROM identity and no ownership delta. The
+project Debug/Release MSVC build remains blocked by the pre-existing
+`std::to_string` error in `src/core/ram_flag_routine.cpp`. No ROM, BIOS,
+commercial asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet. The preserved automatic code-census
+method is exhausted for its current evidence set; investigation continues
+with exact data/parser/consumer contracts and additional bounded provenance.
+
+# 2026-09-11 — M12-AUTO28 exact 16-entry nibble lookup — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN table closed by an exact
+PC-relative consumer and a bounded selector, with deterministic full-ROM
+materialization.
+
+RESULT: AUTO28 promotes `[0x062DC0,0x062DE0)` (32 bytes). The consumer at
+`0x0624D2` forms the PC-relative base, masks `D3` with `0xF`, doubles it, and
+reads one of exactly 16 words. The map reaches 1,226,404 / 3,145,728 bytes
+(38.9863332113%); 1,604,752 bytes remain to the integer 90% threshold. The
+surrounding code and mixed region remain UNKNOWN.
+
+EXACTNESS: The AUTO28 transaction is
+`build/m12-auto28-nibble-lookup-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter and regression compile, the exact values are hash
+checked, and the transactional full-ROM vasm rebuild is exact. The CMake
+helper/file-limit gate is rerun after this checkpoint. No ROM, BIOS,
+commercial asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet; provenance investigation continues.
+
+# 2026-09-11 — M12-AUTO27 exact event dispatch table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN table closed by an exact
+68000 consumer selector, signed-relative target contract, and deterministic
+full-ROM materialization.
+
+RESULT: AUTO27 promotes `[0x00532C,0x005378)` (76 bytes) as a
+`SIGNED_RELATIVE_EVENT_DISPATCH_TABLE`. The owned dispatcher at `0x00530C`
+subtracts `0x1A`, doubles the bounded selector, and applies each signed word
+relative to its table entry; 38 entries resolve either to the bounded handler
+cluster or the owned `RTS` at `0x00532A`. The map reaches 1,226,372 /
+3,145,728 bytes (38.9853159587%); 1,604,784 bytes remain to the integer 90%
+threshold. No handler code or mixed payload was inferred.
+
+EXACTNESS: The AUTO27 transaction is
+`build/m12-auto27-event-dispatch-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter and regression compile, the transactional full-ROM
+vasm rebuild is exact, and the CTest helper/file-limit gate is rerun after
+this change. The project Debug/Release MSVC build remains blocked by the
+pre-existing `std::to_string` error in `src/core/ram_flag_routine.cpp`.
+No ROM, BIOS, commercial asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet; provenance investigation continues.
+
+# 2026-09-11 — M12-AUTO26 exact field-86 callback entrypoints — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only ROM entrypoints whose exact callback address
+is initialized by a bounded 68000 path, dispatched through `JSR (A0)`, and
+whose developer-only ASM reproduces the complete ROM range with vasm.
+
+RESULT: AUTO26 promotes `[0x010000,0x010034)` (52 bytes) and the `RTS` stub
+`[0x030000,0x030002)` (2 bytes). The dispatcher at `0x00E0BA` loads field
+`86(A6)` into `A0` and calls it; exact initializers set `0x10000` and `0x30000`.
+The candidate at `0x80000` remains UNKNOWN because its F-line/data-like bytes
+do not provide a closed code boundary. The map reaches 1,226,296 / 3,145,728
+bytes (38.9828999837%); 1,604,860 bytes remain to the integer 90% threshold.
+
+EXACTNESS: AUTO26 vasm round-trips both callbacks and the full transaction
+rebuilds CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`,
+and SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Python compilation, callback regression, vasm callback round-trip,
+full-ROM equality, and local diff checks passed. The project Debug/Release
+MSVC build remains blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`; no ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; mixed payloads and unresolved callback
+families remain under systematic provenance investigation.
+
+# 2026-09-11 — M12-AUTO25 exact PC-relative consumer tables — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+RESULT: AUTO25 promotes 352 bytes from 11 exact PC-relative consumer tables:
+two masked 16-byte lookups, two 9-record 8-byte tables, two bounded 3-byte
+tables, two copied 10-byte records, a masked 4-byte table, a 15-word VDP
+initialization table, and a 32-word VDP initialization table. Every range was
+wholly UNKNOWN, non-overlapping, and bounded by the consuming loop or copy.
+The full transaction remains byte-exact; no decoder-only graphics candidate
+was promoted.
+
 # 2026-09-11 — M12-AUTO24 exact static caller-backed island — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the

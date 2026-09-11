@@ -1,3 +1,76 @@
+# M12-AUTO34 — Source-owned ROM map checkpoint — 39.0297571818% / BELOW-90 CONTINUING
+
+AUTO34 adds the exact 108-entry compressed-resource pointer table
+`[0x05CE96,0x05D046)` (432 bytes), while leaving all already-owned target
+streams and unknown semantics unchanged. The canonical ROM remains
+byte-exact and M13/C++ migration remains prohibited.
+
+# M12-AUTO33 — Source-owned ROM map checkpoint — 39.0160242716% / BELOW-90 CONTINUING
+
+AUTO33 adds the exact 64-record item-label table `[0x05CC16,0x05CE16)`
+(512 bytes), with two fixed-stride consumers and a printable-record boundary.
+The canonical ROM remains byte-exact and M13/C++ migration remains
+prohibited.
+
+# M12-AUTO32 — Source-owned ROM map checkpoint — 38.9997482300% / BELOW-90 CONTINUING
+
+AUTO32 adds six exact 8-byte menu-label records in `[0x05CBA6,0x05CBD6)`;
+the selector is closed at `0..5` by the exact switch and fallback consumer
+path. The canonical ROM remains byte-exact and M13/C++ migration remains
+prohibited.
+
+# M12-AUTO31 — Source-owned ROM map checkpoint — 38.9982223511% / BELOW-90 CONTINUING
+
+AUTO31 adds the exact sentinel-terminated threshold table
+`[0x05D906,0x05D918)` (18 bytes). Its consumer has a closed word stride and
+the ninth-word `0xFFFF` sentinel; the canonical ROM remains byte-exact and
+M13/C++ migration remains prohibited.
+
+# M12-AUTO30 — Source-owned ROM map checkpoint — 38.9976501465% / BELOW-90 CONTINUING
+
+AUTO30 adds the exact wholly UNKNOWN pointer-table container
+`[0x00DF54,0x00E0B8)` (356 bytes): 89 absolute longwords consumed by three
+identical state dispatchers. The pointed-to handler bodies remain unowned;
+the canonical ROM remains byte-exact and M13/C++ migration remains
+prohibited.
+
+# M12-AUTO29 — Preserved code-census negative checkpoint — 38.9863332113% / BELOW-90 CONTINUING
+
+AUTO29 reconstructs 496 bounded function ranges from the preserved candidate
+map and exercises the strict transactional promoter. It discovers 534
+candidates but finds 0 eligible, 0 attempted, and 0 accepted candidates, so
+it adds no ownership. This exhausts only the current preserved automatic
+code-census evidence set; exact data/parser/consumer provenance remains in
+scope. The canonical ROM remains byte-exact and M13/C++ migration remains
+prohibited.
+
+# M12-AUTO28 — Source-owned ROM map checkpoint — 38.9863332113% / BELOW-90 CONTINUING
+
+AUTO28 adds the exact 16-entry word lookup `[0x062DC0,0x062DE0)` (32 bytes).
+Its consumer masks `D3` with `0xF` before indexed word access; the canonical
+ROM remains byte-exact and M13/C++ migration remains prohibited.
+
+# M12-AUTO27 — Source-owned ROM map checkpoint — 38.9853159587% / BELOW-90 CONTINUING
+
+AUTO27 adds the wholly UNKNOWN `[0x00532C,0x005378)` 38-entry signed-relative
+event dispatch table (76 bytes). The exact `0x00530C` selector contract and
+full-ROM rebuild preserve the canonical ROM; no handler code or mixed payload
+is inferred and M13/C++ migration remains prohibited.
+
+# M12-AUTO26 — Source-owned ROM map checkpoint — 38.9828999837% / BELOW-90 CONTINUING
+
+AUTO26 adds 54 bytes from two exact `86(A6)` callback entrypoints: the
+52-byte routine at `[0x010000,0x010034)` and the `RTS` stub at
+`[0x030000,0x030002)`. The canonical ROM remains byte-exact; the
+F-line/data-like candidate at `0x80000` stays UNKNOWN and M13/C++ migration
+remains prohibited.
+
+# M12-AUTO25 — Source-owned ROM map checkpoint — 38.9811833700% / BELOW-90 CONTINUING
+
+AUTO25 adds 352 bytes from exact PC-relative lookup, fixed-record, copied-record,
+and VDP initialization consumers. The canonical ROM remains byte-exact and
+M13/C++ migration remains prohibited.
+
 # M12-AUTO24 — Source-owned ROM map checkpoint — 38.9699935913% / BELOW-90 CONTINUING
 
 AUTO24 adds the exact caller-backed static island `[0x0167BE,0x01685A)`

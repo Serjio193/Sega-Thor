@@ -1,3 +1,113 @@
+# M12-AUTO34 — exact compressed-resource pointer table
+
+Status: `M12_AUTO34_BELOW_90_CONTINUING`.
+
+AUTO34 adds the wholly UNKNOWN `[0x05CE96,0x05D046)` 108-entry absolute
+resource-pointer table (432 bytes). The exact `0x00D3B2` reader uses a
+4-byte index and the verified `0x003820` decoder; entry 0 is a sentinel and
+entries 1..107 point monotonically to already-owned streams. The transaction
+rebuilds the canonical ROM exactly and the map reaches 1,227,770 / 3,145,728
+bytes (39.0297571818%).
+
+# M12-AUTO33 — exact 64-entry item label table
+
+Status: `M12_AUTO33_BELOW_90_CONTINUING`.
+
+AUTO33 adds the wholly UNKNOWN `[0x05CC16,0x05CE16)` 64-record item-label
+table (512 bytes). Two exact consumers use the byte-selected index and the
+8-byte fixed stride; all 512 bytes satisfy the printable-record contract and
+the following binary payload remains UNKNOWN. The transaction rebuilds the
+canonical ROM exactly and the map reaches 1,227,338 / 3,145,728 bytes
+(39.0160242716%).
+
+# M12-AUTO32 — exact fixed-width menu label table
+
+Status: `M12_AUTO32_BELOW_90_CONTINUING`.
+
+AUTO32 adds the wholly UNKNOWN `[0x05CBA6,0x05CBD6)` six-record menu-label
+table (48 bytes). The exact `FF185C` switch accepts five one-based cases,
+the fallback explicitly selects 5, and consumer `0x003F8E` indexes six
+8-byte records through `FF1861 << 3`. The transaction rebuilds the canonical
+ROM exactly and the map reaches 1,226,826 / 3,145,728 bytes (38.9997482300%).
+
+# M12-AUTO31 — exact sentinel threshold table
+
+Status: `M12_AUTO31_BELOW_90_CONTINUING`.
+
+AUTO31 adds the wholly UNKNOWN `[0x05D906,0x05D918)` nine-word threshold
+table (18 bytes). Consumer `0x010666` advances by the exact 8-byte result
+stride and terminates on the ninth-word `0xFFFF` sentinel immediately before
+the already-confirmed next table. The transaction rebuilds the canonical ROM
+exactly and the map reaches 1,226,778 / 3,145,728 bytes (38.9982223511%).
+
+# M12-AUTO30 — exact state dispatch pointer table
+
+Status: `M12_AUTO30_BELOW_90_CONTINUING`.
+
+AUTO30 adds the wholly UNKNOWN `[0x00DF54,0x00E0B8)` 89-entry absolute
+pointer table (356 bytes). Three exact consumers use the same `LEA`, doubled
+selector, `-44(A0,D6.W)` longword read, and indirect `JSR`; the table ends
+before the already-owned `RTS` at `0x00E0B8`. The pointed-to handler bodies
+remain unowned. The transaction rebuilds the canonical ROM exactly and the
+map reaches 1,226,760 / 3,145,728 bytes (38.9976501465%).
+
+# M12-AUTO29 — preserved candidate-map code census negative result
+
+Status: `M12_AUTO29_BELOW_90_CONTINUING`.
+
+AUTO29 reconstructs 496 bounded function ranges from the preserved candidate
+map and runs the strict transactional auto-promoter. It discovers 534
+candidates, but 0 are eligible, 0 are attempted, and 0 are accepted against
+the AUTO28 map. No ownership is added. This exhausts the current preserved
+automatic code-census evidence set only; it is not a global blocker and does
+not justify promoting mixed or unbounded code. The current map remains
+1,226,404 / 3,145,728 bytes (38.9863332113%), and the canonical ROM remains
+byte-exact.
+
+# M12-AUTO28 — exact 16-entry nibble lookup
+
+Status: `M12_AUTO28_BELOW_90_CONTINUING`.
+
+AUTO28 adds the wholly UNKNOWN `[0x062DC0,0x062DE0)` 16-word lookup (32
+bytes). The exact consumer at `0x0624D2` masks `D3` with `0xF`, doubles the
+index, and reads the table through a PC-relative base. The transaction is
+`build/m12-auto28-nibble-lookup-transaction-a/materialized/manifest.json` and
+rebuilds the canonical ROM exactly; neighboring code and mixed payload remain
+UNKNOWN.
+
+# M12-AUTO27 — exact event dispatch table
+
+Status: `M12_AUTO27_BELOW_90_CONTINUING`.
+
+AUTO27 adds the wholly UNKNOWN `[0x00532C,0x005378)` 38-entry signed-relative
+event dispatch table (76 bytes). The exact dispatcher at `0x00530C` subtracts
+`0x1A`, doubles the bounded selector, and applies each signed word relative to
+its table entry; selectors 17..37 resolve to the owned `RTS` at `0x00532A`.
+The transaction is
+`build/m12-auto27-event-dispatch-transaction-a/materialized/manifest.json`;
+the canonical ROM remains byte-exact. Surrounding handlers and mixed payload
+remain UNKNOWN.
+
+# M12-AUTO26 — exact field-86 callback entrypoints
+
+Status: `M12_AUTO26_BELOW_90_CONTINUING`.
+
+AUTO26 adds 54 bytes from the indirect callback family rooted at `0x00E0BA`.
+The dispatcher loads `86(A6)` into `A0` and executes `JSR (A0)`; exact
+initializers set `0x10000` and `0x30000`. The ranges
+`0x010000..0x010034` and `0x030000..0x030002` round-trip through vasm and the
+full transaction remains canonical. The F-line/data-like `0x80000` candidate
+is explicitly rejected because no closed code boundary was established.
+
+# M12-AUTO25 — exact PC-relative consumer tables
+
+AUTO25 adds 352 bytes from 11 wholly UNKNOWN ranges selected by exact
+PC-relative consumers. Masked byte lookups, sequential DBF record loops,
+bounded 3-byte selectors, fixed 10-byte copies, and exact VDP word-copy loops
+provide the parser/consumer and half-open boundaries. The transaction is
+`build/m12-auto25-pc-tables-transaction-b/materialized/manifest.json` and
+rebuilds the canonical ROM exactly.
+
 # M12-AUTO24 — bounded provenance toward a 90% source-owned ROM map
 
 Status: `M12_AUTO24_BELOW_90_CONTINUING`.

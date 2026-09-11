@@ -1,3 +1,62 @@
+# M12-AUTO34 adds the developer-only resource-pointer promoter
+`src/tools/re_m12_resource_pointer_table_promote.py` and its deterministic
+regression `tests/re_m12_resource_pointer_table_promote_test.py`. It records
+only the exact `0x05CE96..0x05D046` pointer table; generated transaction
+output remains ignored.
+
+# M12-AUTO33 adds the developer-only item-label promoter
+`src/tools/re_m12_item_label_table_promote.py` and its deterministic
+regression `tests/re_m12_item_label_table_promote_test.py`. It records only
+the exact `0x05CC16..0x05CE16` 64-record table; generated transaction output
+remains ignored.
+
+# M12-AUTO32 adds the developer-only menu-label promoter
+`src/tools/re_m12_label_table_promote.py` and its deterministic regression
+`tests/re_m12_label_table_promote_test.py`. It records only the exact
+`0x05CBA6..0x05CBD6` fixed-width label table; generated transaction output
+remains ignored.
+
+# M12-AUTO31 adds the developer-only threshold-table promoter
+`src/tools/re_m12_threshold_table_promote.py` and its deterministic
+regression `tests/re_m12_threshold_table_promote_test.py`. It records only
+the exact `0x05D906..0x05D918` sentinel table; generated transaction output
+remains ignored.
+
+# M12-AUTO30 adds the developer-only dispatch pointer-table promoter
+`src/tools/re_m12_dispatch_pointer_table_promote.py` and its deterministic
+regression `tests/re_m12_dispatch_pointer_table_promote_test.py`. It records
+only the exact `0x00DF54..0x00E0B8` pointer table; pointed-to handler code and
+generated transaction output remain outside this source change.
+
+# M12-AUTO29 adds the preserved candidate-map converter
+`src/tools/re_candidate_map_to_ghidra.py` reconstructs the bounded
+developer-only Ghidra map used to test the preserved code-census provenance
+path. `tests/re_candidate_map_to_ghidra_test.py` covers deterministic
+conversion; generated maps and transaction output remain ignored.
+
+# M12-AUTO28 adds the developer-only nibble-lookup promoter
+`src/tools/re_m12_nibble_lookup_promote.py` and its deterministic regression
+`tests/re_m12_nibble_lookup_promote_test.py`. It records only the exact
+`0x062DC0..0x062DE0` lookup; generated transaction output remains ignored.
+
+# M12-AUTO27 adds the developer-only event dispatch promoter
+`src/tools/re_m12_event_dispatch_promote.py` and its deterministic regression
+`tests/re_m12_event_dispatch_promote_test.py`. It records only the exact
+`0x00532C..0x005378` signed-relative event table; generated transaction output
+remains ignored.
+
+# M12-AUTO26 adds the developer-only field-86 callback promoter
+`src/tools/re_m12_callback_promote.py` and its deterministic regression
+`tests/re_m12_callback_promote_test.py`. It materializes only the exact
+`0x10000` callback and `0x30000` RTS entrypoint; transaction output remains
+ignored.
+
+# M12-AUTO25 adds the developer-only PC-relative table promoter
+`src/tools/re_m12_pc_tables_promote.py` and its deterministic regression
+`tests/re_m12_pc_tables_promote_test.py`. It records only closed lookup,
+fixed-record, copied-record, and VDP initialization tables; generated output
+remains ignored.
+
 # M12-AUTO24 adds the developer-only exact static-code promoter
 `src/tools/re_m12_static_code_promote.py` and deterministic regression
 `tests/re_m12_static_code_promote_test.py`. It records only the caller-backed

@@ -28,13 +28,11 @@ add_library(oasis_core
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
 )
-
 target_include_directories(oasis_core PUBLIC src)
 get_target_property(oasis_core_links oasis_core LINK_LIBRARIES)
 if(oasis_core_links)
     message(FATAL_ERROR "oasis_core must not link to developer-only or platform targets: ${oasis_core_links}")
 endif()
-
 add_executable(oasis src/main.cpp)
 add_library(oasis_platform src/platform/window.cpp)
 target_include_directories(oasis_platform PUBLIC src)
@@ -43,7 +41,6 @@ target_link_libraries(oasis PRIVATE oasis_core oasis_platform)
 if(WIN32)
     target_link_libraries(oasis PRIVATE user32 gdi32)
 endif()
-
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
@@ -96,19 +93,14 @@ add_library(oasis_re_tooling
     src/tools/re_static_translation.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
-
 add_executable(oasis_re_slice src/tools/re_slice_report.cpp)
 target_link_libraries(oasis_re_slice PRIVATE oasis_core oasis_re_tooling)
-
 add_executable(oasis_re_program src/tools/re_program_report.cpp)
 target_link_libraries(oasis_re_program PRIVATE oasis_core oasis_re_tooling)
-
 add_executable(oasis_re_trace src/tools/re_trace_report.cpp)
 target_link_libraries(oasis_re_trace PRIVATE oasis_core oasis_re_tooling)
-
 add_executable(oasis_re_diff src/tools/re_diff_report.cpp)
 target_link_libraries(oasis_re_diff PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_atlas src/tools/re_atlas_report.cpp)
 target_link_libraries(oasis_re_atlas PRIVATE oasis_re_tooling oasis_core)
 
@@ -195,6 +187,16 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_runtime_graphics_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_runtime_graphics_promote_test.py)
     add_test(NAME oasis_re_m12_save_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_save_slots_promote_test.py)
     add_test(NAME oasis_re_m12_static_code_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_static_code_promote_test.py)
+    add_test(NAME oasis_re_m12_pc_tables_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_pc_tables_promote_test.py)
+    add_test(NAME oasis_re_m12_callback_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_callback_promote_test.py)
+    add_test(NAME oasis_re_m12_event_dispatch_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_event_dispatch_promote_test.py)
+    add_test(NAME oasis_re_m12_nibble_lookup_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_nibble_lookup_promote_test.py)
+    add_test(NAME oasis_re_candidate_map_to_ghidra_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_candidate_map_to_ghidra_test.py)
+    add_test(NAME oasis_re_m12_dispatch_pointer_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_dispatch_pointer_table_promote_test.py)
+    add_test(NAME oasis_re_m12_threshold_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_threshold_table_promote_test.py)
+    add_test(NAME oasis_re_m12_label_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_label_table_promote_test.py)
+    add_test(NAME oasis_re_m12_item_label_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_item_label_table_promote_test.py)
+    add_test(NAME oasis_re_m12_resource_pointer_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_resource_pointer_table_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)
@@ -443,12 +445,10 @@ set(oasis_test_targets
 foreach(test_target IN LISTS oasis_test_targets)
     target_compile_options(${test_target} PRIVATE $<$<CONFIG:Release>:-UNDEBUG>)
 endforeach()
-
 add_test(
     NAME project_file_line_limit
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_file_limits.cmake
 )
-
 # LLVM-MinGW links the test executables to runtime DLLs. Keep CTest runnable
 # from a clean shell without requiring the user to edit PATH manually.
 if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

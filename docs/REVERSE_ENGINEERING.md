@@ -1,3 +1,101 @@
+# M12-AUTO34 exact compressed-resource pointer table
+
+AUTO34 promotes `[0x05CE96,0x05D046)` (432 bytes) as a
+`COMPRESSED_RESOURCE_POINTER_TABLE`. Reader `0x00D3B2` uses a 4-byte index,
+entry 0 is a zero sentinel, and entries 1..107 are strictly increasing
+absolute pointers from `0x1AD000` through `0x1E6EDA`, all targeting already
+owned decoder streams. The next confirmed table begins at `0x05D046`; no
+target-stream bytes or semantic names are inferred by this promotion.
+
+# M12-AUTO33 exact 64-entry item label table
+
+AUTO33 promotes `[0x05CC16,0x05CE16)` (512 bytes) as a
+`FIXED_WIDTH_ITEM_LABEL_TABLE` containing 64 printable 8-byte records.
+Consumers `0x0041A6` and `0x0041CA` double the selected byte and shift left
+three before indexing the table. The exact table hash and printable-record
+contract close the range; the following binary payload remains UNKNOWN.
+
+# M12-AUTO32 exact fixed-width menu label table
+
+AUTO32 promotes `[0x05CBA6,0x05CBD6)` (48 bytes) as a
+`FIXED_WIDTH_MENU_LABEL_TABLE` containing six 8-byte records. Consumer
+`0x003F8E` forms `FF1861 << 3` and indexes the table; the exact switch at
+`0x003DCC` accepts values 1..5 and the alternate path writes 5, closing the
+effective selector at 0..5. The neighboring `0x05CBD6` data uses a different
+format and remains the boundary.
+
+# M12-AUTO31 exact sentinel threshold table
+
+AUTO31 promotes `[0x05D906,0x05D918)` (18 bytes) as a
+`SENTINEL_TERMINATED_THRESHOLD_TABLE`. Consumer `0x010666` compares each
+post-incremented word, returns on `BLS`, increments its result by 8, and
+therefore terminates on the exact ninth-word `0xFFFF`; the next confirmed
+table begins at `0x05D918`. No neighboring mixed bytes are included and the
+full-ROM rebuild remains byte-exact.
+
+# M12-AUTO30 exact state dispatch pointer table
+
+AUTO30 promotes `[0x00DF54,0x00E0B8)` (356 bytes) as an
+`ABSOLUTE_STATE_DISPATCH_POINTER_TABLE`. Consumers at `0x00FD70`, `0x00FDF4`,
+and `0x00FF7E` perform `LEA 0x00DF54`, double `D6`, read
+`MOVEA.L -44(A0,D6.W),A0`, and execute `JSR (A0)`. The physical container is
+89 exact longwords and ends immediately before the already-owned `RTS` at
+`0x00E0B8`; the pointed-to handler bodies are not promoted. The canonical
+ROM hash and full-ROM rebuild remain exact.
+
+# M12-AUTO29 preserved candidate-map code census
+
+AUTO29 adds no ownership. `src/tools/re_candidate_map_to_ghidra.py` rebuilds a
+developer-only `oasis.m68k.ghidra-map.v1` from the preserved candidate-map
+`ghidra_range` fields, yielding 496 bounded function ranges. Running the
+strict transactional promoter against the AUTO28 manifest discovers 534
+candidates but finds 0 eligible, 0 attempted, and 0 accepted candidates.
+This is a negative result for the preserved code-census evidence set, not a
+global blocker: no mixed or unbounded code is promoted, and data/parser
+contracts remain the next provenance path.
+
+# M12-AUTO28 exact nibble lookup
+
+AUTO28 promotes `[0x062DC0,0x062DE0)` (32 bytes) as a
+`PC_RELATIVE_NIBBLE_LOOKUP_TABLE`. The consumer at `0x0624D2` forms the table
+base with `LEA 08EC(PC),A2`, masks `D3` with `0xF`, doubles the index, and
+executes `MOVE.W 0(A2,D3.W),D0`. The promoter hash-checks all 16 canonical
+word values, requires wholly UNKNOWN ownership, and verifies an exact full-ROM
+rebuild. The consumer's surrounding code and neighboring mixed payload remain
+UNKNOWN.
+
+# M12-AUTO27 exact event dispatch table
+
+AUTO27 promotes `[0x00532C,0x005378)` (76 bytes) as a
+`SIGNED_RELATIVE_EVENT_DISPATCH_TABLE`. The exact owned dispatcher at
+`0x00530C` clears `D0`, reads the event byte, subtracts `0x1A`, rejects the
+negative result, doubles the selector, forms the table base with
+`LEA 8(PC,D0.W),A0`, and performs `ADDA.W (A0),A0` before `JSR (A0)`. The
+table contains 38 signed words: selectors 0..16 resolve into the bounded
+handler cluster and selectors 17..37 resolve to the owned `RTS` at `0x00532A`.
+The promoter validates the canonical ROM hash, the complete signed-offset and
+target contract, wholly UNKNOWN ownership, zero gaps/overlaps, and a full-ROM
+vasm rebuild. Handler bodies and the surrounding mixed region remain UNKNOWN.
+
+# M12-AUTO26 exact field-86 callback entrypoints
+
+AUTO26 promotes `[0x010000,0x010034)` and `[0x030000,0x030002)` as exact
+callback code. `0x00E0BA` loads field `86(A6)` into `A0` and executes
+`JSR (A0)`; bounded initializers set `0x10000` and `0x30000`. The 52-byte
+callback and 2-byte `RTS` stub each reproduce the canonical bytes through
+developer-only vasm assembly. The data-like/F-line candidate at `0x80000`
+remains UNKNOWN because no closed code boundary was established.
+
+# M12-AUTO25 exact PC-relative consumer tables
+
+AUTO25 promotes 352 bytes from exact PC-relative consumers at `0x0086D6`,
+`0x009322/0x0093B0/0x0094FE/0x0095CC`, `0x00A354/0x00A360`,
+`0x00B48C/0x00B49E/0x00B524`, `0x01FBDC/0x01FBE8`, `0x0292BE`,
+`0x02ADE/0x03C0B0`, and their corresponding closed ranges. Masked lookup
+indices, exact sequential DBF loops, fixed copy counts, or terminal code
+boundaries establish each half-open range. No surrounding mixed payload or
+decoder-only candidate is included.
+
 # M12-AUTO24 exact static caller-backed island
 
 AUTO24 closes `[0x0167BE,0x01685A)` as a 156-byte exact static code island.
