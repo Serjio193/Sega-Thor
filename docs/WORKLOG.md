@@ -6071,3 +6071,8 @@ explicit with zero resolved. Carver reached fixed point with an empty queue.
 REPORT: `docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`.
 Machine-readable output remains ignored build data under
 `build/m12-carver-m12c4-static-recovery-e/`.
+
+IMPLEMENTATION PUBLICATION: commit `a2c58294cc994a0097899ae8103493bf4bad2aac`
+was pushed to `origin/main`. Exact GitHub Actions CI run `34633366873` passed
+Build and Test. The final docs-only publication SHA and its exact CI run remain
+to be recorded after this documentation update.

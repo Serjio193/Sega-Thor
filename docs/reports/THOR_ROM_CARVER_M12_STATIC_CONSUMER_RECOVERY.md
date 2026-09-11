@@ -107,8 +107,9 @@ known unrelated MSVC Debug blocker remains the pre-existing
 `src/core/ram_flag_routine.cpp:180-181` `std::to_string` failure (Debug build
 exit 1); no M12-CARVER-4 file is involved.
 
-Implementation SHA: `TO_BE_FILLED_AFTER_IMPLEMENTATION_COMMIT`.
-Exact implementation-SHA CI: `TO_BE_FILLED_AFTER_IMPLEMENTATION_CI`.
+Implementation SHA: `a2c58294cc994a0097899ae8103493bf4bad2aac`.
+Exact implementation-SHA CI: GitHub Actions run `34633366873` passed Build and
+Test.
 Final publication SHA and exact final-SHA CI are reported with the completed
 publication and are not used to alter the canonical ROM or this result.
 
