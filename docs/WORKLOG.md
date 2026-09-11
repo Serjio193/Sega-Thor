@@ -33,7 +33,9 @@ source scan passed for 394 checked files with CMakeLists.txt at 500 lines.
 Full Debug/Release/GNU-labelled builds reached the existing MSVC failure at
 src/core/ram_flag_routine.cpp:181 because std::to_string is not visible in that
 translation unit; AUTO16 did not change that file, so this unrelated issue was
-not modified. Remote CI remains the clean publication gate.
+not modified. Remote CI remains the clean publication gate. Commit 56f778e was
+published and GitHub Actions CI run 34550041954 completed successfully: build
+and test passed.
 
 STATUS: The >=90% gate remains unmet. Dynamic/mixed code, nested subtables,
 and decoder-only resource candidates remain UNKNOWN; continue from the next
