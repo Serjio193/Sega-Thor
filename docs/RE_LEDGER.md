@@ -1,3 +1,11 @@
+# M12-AUTO15 CC-B0 selected relative-pointer slots
+
+The AUTO15 transaction closes 15 unique 16-bit slots (30 bytes) selected by
+constant-D0 callers of `0x00CA24`. Each signed relative pointer resolves to an
+even canonical-ROM target after the closed group table. Dynamic callers and
+nested table extents remain UNKNOWN; the map reaches 986,792 bytes
+(31.3692728678%).
+
 # M12-AUTO14 CC-B0 group pointer table
 
 The exact consumer at `0x00CCB0` selects a 32-entry longword pointer table at

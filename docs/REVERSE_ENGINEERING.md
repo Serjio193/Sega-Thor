@@ -1,3 +1,14 @@
+# M12-AUTO15 CC-B0 selected relative-pointer-slot provenance checkpoint
+
+The AUTO15 transaction is `build/m12-auto15-ccb0-selected-transaction-d/materialized/manifest.json`.
+It closes 15 unique 16-bit slots (30 bytes) selected by exact constant-D0
+callers that jump to `0x00CA24`. Each slot is reached after the closed
+`0x04371E..0x04379E` group table and resolves as a signed relative pointer to
+an even canonical-ROM target. Dynamic callers and nested table extents remain
+UNKNOWN. The transaction reaches 986,792 source-owned bytes
+(`31.3692728678%`) with canonical full-ROM hashes unchanged. No C++ migration
+is started.
+
 # M12-AUTO14 CC-B0 group pointer-table provenance checkpoint
 
 The AUTO14 transaction is `build/m12-auto14-ccb0-transaction-c/materialized/manifest.json`.

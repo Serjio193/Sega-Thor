@@ -1,3 +1,10 @@
+# M12-AUTO15 — Source-owned ROM map checkpoint — 31.3692728678% / BELOW-90 BLOCKER
+
+M12-AUTO15 closes 15 unique constant-D0 caller-selected relative-pointer
+slots (30 bytes) after the AUTO14 CC-B0 group table. Dynamic callers and nested
+table extents remain UNKNOWN; the canonical ROM remains unchanged and M13/C++
+migration remain prohibited.
+
 # M12-AUTO14 — Source-owned ROM map checkpoint — 31.3683191935% / BELOW-90 BLOCKER
 
 M12-AUTO14 closes the 128-byte `0x00CCB0` group pointer table

@@ -49,7 +49,6 @@ add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
 target_link_libraries(oasis_resource_boundary_scan PRIVATE oasis_core)
-
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
     src/tools/gpgx_import_io.cpp
@@ -192,6 +191,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_gpgx_rom_reader_correlation
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gpgx_rom_reader_correlation_test.py)
     add_test(NAME oasis_re_m12_ccb0_group_table_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_group_table_promote_test.py)
+    add_test(NAME oasis_re_m12_ccb0_selected_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_selected_slots_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)

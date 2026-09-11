@@ -49,6 +49,12 @@ M12-AUTO7 adds the developer-only direct-graphics promoter
 decoder-consumed streams selected by direct `0x3820` consumers and sequential
 `A0` continuation; generated transaction output remains ignored.
 
+# M12-AUTO15 adds the developer-only constant-D0 CC-B0 selected-slot promoter
+`src/tools/re_m12_ccb0_selected_slots_promote.py` and its deterministic
+regression `tests/re_m12_ccb0_selected_slots_promote_test.py`. It records only
+15 unique 16-bit relative-pointer slots selected by exact constant-D0 callers;
+dynamic callers and nested table extents remain UNKNOWN.
+
 # M12-AUTO14 adds the developer-only CC-B0 group pointer-table promoter
 `src/tools/re_m12_ccb0_group_table_promote.py` and its deterministic regression
 `tests/re_m12_ccb0_group_table_promote_test.py`. It records only the exact

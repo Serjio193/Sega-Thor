@@ -1,3 +1,37 @@
+# 2026-09-11 — M12-AUTO15 CC-B0 selected relative-pointer slots — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Close only 16 statically constant-D0 caller-selected
+16-bit relative-pointer slots reached through the AUTO14 CC-B0 table. Exclude
+dynamic callers, unproven low-byte bounds, and nested table extents; require
+canonical full-ROM equality.
+
+**RESULT:** The developer-only transaction closes 15 unique slots / 30
+`STRUCTURED_DATA_CONFIRMED` bytes. Each slot is reached by an exact constant-D0
+caller, resolves through a closed CC-B0 group-table base, and contains a valid
+even canonical-ROM target. The map reaches 986,792 / 3,145,728 bytes
+(`31.3692728678%`); 1,844,364 bytes remain to the integer 90% threshold. No
+C++ migration, ROM, BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** The transaction reconstructs the canonical ROM with CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The selected-slot helper regression and Python compilation
+passed. The local transaction used explicit `INHERITED_BASELINE_FULL_ROM`
+verification because no external vasm executable is installed; the AUTO14
+canonical rebuilt ROM and inherited ASM/blob artifacts were verified unchanged,
+and all 30 new bytes were compared to their canonical slices. Fresh Debug,
+Release and GNU/Unix-equivalent builds plus CTest 91/91 passed locally. Remote
+CI for the prior AUTO14 publication passed as run `34547024445`; the current
+docs/code follow-up CI remains the final publication check.
+
+**STATUS:** The >=90% gate remains unmet. Dynamic CC-B0 callers, nested
+subtables, and other mixed code/data/resource spans remain UNKNOWN; continue
+from the next independently closed edge.
+
 # 2026-09-11 — M12-AUTO14 CC-B0 group pointer table — <90% / BLOCKED
 
 **TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
