@@ -5,6 +5,12 @@
 graphics root: the 21-entry group-pointer table, 167 descriptor uses and 159
 exact decompressor streams. The transaction output remains ignored/local.
 
+`src/tools/re_m12_gfx_loader_census.py` and
+`tests/re_m12_gfx_loader_census_test.py` build the exact direct-xref census for
+the `0x00D406` graphics loader and split screen-descriptor call sites from
+unmatched direct calls without promoting bytes. The generated census remains
+ignored/local.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and
@@ -589,6 +595,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── m12_gfx_ancient.py Independent Ancient graphics parser/classifier
 │       ├── m12_gfx_sweep.py Developer-only whole-ROM M12-GFX-1 campaign/report
 │       ├── m12_gfx_caller_closure.py Developer-only M12-GFX-2 0x3820 caller/source closure and promoter
+│       ├── re_m12_gfx_loader_census.py Developer-only exact 0x00D406 direct-xref census
 │       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
@@ -707,6 +714,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── m12_gfx_sweep_test.py             Independent Ancient parser safety/classifier tests
     ├── m12_gfx_caller_closure_test.py    M12-GFX-2 caller/source closure regression tests
+    ├── re_m12_gfx_loader_census_test.py  Exact 0x00D406 direct-xref census regression tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests

@@ -81,6 +81,34 @@ argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
 `0x03E61A` inherited caller argument.
 
+### Exact `0x00D406` direct-xref census
+
+The separate machine report
+`build/m12-gfx-loader-census.json` (`oasis.m68k.m12-gfx-loader-census.v1`,
+SHA-256 `69C5EF8C9DC2A1DA88F0058C1F8E7FC688901B4B1134A731874574034F969C39`)
+scans the canonical ROM for the exact six-byte `JSR abs.l,0x00D406` encoding.
+It finds 173 direct call sites. This is a different quantity from the 52
+`0x3820` call sites above: `0x00D406` is itself one of the shared loaders.
+
+| relation | uses/calls | result |
+| --- | ---: | --- |
+| screen descriptor uses | 167 | 163 unique descriptors |
+| descriptor `+0x1A` with exact direct `0x00D406` | 146 | direct screen-loader relation |
+| descriptor `+0x1A` without exact direct call | 17 unique expected sites | indirect/alternate continuation remains unresolved |
+| direct `0x00D406` not matched to a screen descriptor `+0x1A` | 27 | separate loader candidates; no ownership promotion |
+
+The 27 unmatched direct call sites are `0x02CF9C`, `0x02D402`, `0x02DB40`,
+`0x02DCF2`, `0x02DD8C`, `0x02DE58`, `0x02DFC2`, `0x02E084`, `0x02E0EE`,
+`0x02E1F2`, `0x02E99A`, `0x030080`, `0x031B78`, `0x031C78`, `0x031DE8`,
+`0x0320B8`, `0x032166`, `0x033516`, `0x035680`, `0x03697E`, `0x036A08`,
+`0x036AC8`, `0x037B62`, `0x0390A4`, `0x0395D8`, `0x039C18`, and `0x039FA0`.
+The 17 unique screen-descriptor expected sites without that direct encoding are
+`0x02E98C`, `0x03007E`, `0x031B76`, `0x031C76`, `0x031DE6`, `0x0320B6`,
+`0x03215E`, `0x03567A`, `0x03697C`, `0x036A06`, `0x036AC6`, `0x033512`,
+`0x037B5E`, `0x038FD6`, `0x03959A`, `0x039C0C`, and `0x039F9A`.
+The census is xref evidence only: it does not prove the caller's `A1`, a
+record boundary, a compressed stream boundary, or source ownership.
+
 ## Screen-root and resource closure
 
 The root table contains 21 longwords and points to the following finite group
@@ -115,20 +143,24 @@ are still fail-closed.
 
 ## Validation limits and next step
 
-Passed locally: Python compile, deterministic helper test, canonical ROM
-identity, full candidate materialization, byte-for-byte rebuilt-ROM comparison,
-Debug/Release builds, full Debug/Release CTest (143/143 each), the
-GNU/Linux-equivalent WSL Release build and helper CTest, and `git diff --check`.
+Passed locally for the original root-closure transaction: Python compile,
+deterministic helper test, canonical ROM identity, full candidate
+materialization, byte-for-byte rebuilt-ROM comparison, and the previous
+Debug/Release CTest (143/143 each). The follow-up `0x00D406` census also
+passes Python compilation, deterministic two-run JSON hashing, Debug/Release
+builds, full Debug/Release CTest (144/144 each), the GNU/Linux-equivalent WSL
+Release build with its census helper CTest, and `git diff --check`.
 The second full-layout `vasmm68k_mot` attempt was not
 successful because the existing generated baseline layout contains duplicate
 labels such as `loc_00B856`; the report records use of the independently
 byte-exact baseline rebuilt ROM as a verification fallback. This is not
 claimed as a fresh assembler round-trip.
 
-The next graphics step is to close one of the ten dynamic producers only when
-its upstream descriptor/register/RAM chain proves an exact ROM source. If all
-ten remain blocked after that bounded review, the next subsystem is the
-non-graphics UNKNOWN census; M13 and ASM-to-C++ migration remain out of scope.
+The next graphics step is to resolve the 27 unmatched `0x00D406` calls and
+the 17 missing direct screen continuations with bounded caller/record evidence,
+then return to the ten dynamic `0x3820` producers. No candidate becomes owned
+without a proven source and exact boundary; M13 and ASM-to-C++ migration remain
+out of scope.
 
 Implementation SHA: `a27175fe2269744d0497c3545d50bb59d0085849`.
 Exact implementation CI: GitHub Actions run `34651277101` (success).
