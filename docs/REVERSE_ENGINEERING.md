@@ -2747,6 +2747,32 @@ The same `0x5CE96` table is also indexed by four bytes from RAM `0xFF16FA`; each
 3. decompress representative table entries with native C++ and compare header/structure patterns;
 4. only after correlation, introduce a portable room/screen resource loader.
 
+### M12-GFX-MAX screen graphics root closure — CONFIRMED
+
+The screen dispatcher evidence closes the root table boundary
+`[0x00C92C,0x00C980)`: `0xC8F0` selects one of exactly 21 big-endian
+longword roots from this range, and every root points inside the canonical
+ROM. The table byte SHA-256 is
+`71889c183a0db91d0ec04d3e6ad40fdc6181fa034fec1c552fbfa007997ac895`.
+The raw table is classified as `SCREEN_GROUP_POINTER_TABLE`; no field names
+are assigned to the pointed-to descriptors beyond the already confirmed
+26-byte structural contract.
+
+The bounded screen-resource census has 167 descriptor uses, 163 unique
+descriptors, and 159 unique accepted graphics streams. Their exact compressed
+stream intervals cover 337,514 ROM bytes and all are already owned by the
+M12 manifest as `LOCAL_ROM_DERIVED_ASSET`; the 4,238 descriptor bytes are
+already `STRUCTURED_DATA_CONFIRMED`. This pass therefore adds only the 84-byte
+root table and does not duplicate or reclassify the streams.
+
+The complete known `0x3820` census remains 52 static callers: 17 direct ROM
+source sets, 2 finite-table-derived sets, 23 parameterized sequential
+families, and 10 unresolved dynamic producers. The ten blockers remain
+`0x00D54A`, `0x00D650`, `0x02DB52`, `0x02F6A0`, `0x03B236`, `0x03B28A`,
+`0x03B2FE`, `0x03C07C`, `0x03D5AE`, and `0x03E61A`; their RAM-mediated,
+inherited, helper-output, or sibling-call source values are not ROM-proven.
+No additional non-screen loader family gained a finite exact source boundary.
+
 ## M8 — player input and movement slice
 **Status:** IMPLEMENTED as a portable movement/state slice; full animation/entity callback semantics remain INVESTIGATING.
 

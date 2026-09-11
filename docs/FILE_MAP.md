@@ -1,3 +1,10 @@
+# M12-GFX-MAX closes the screen graphics root table
+
+`src/tools/re_m12_gfx_max_closure.py` and
+`tests/re_m12_gfx_max_closure_test.py` validate the complete known screen
+graphics root: the 21-entry group-pointer table, 167 descriptor uses and 159
+exact decompressor streams. The transaction output remains ignored/local.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and

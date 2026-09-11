@@ -13,6 +13,8 @@ target_link_libraries(oasis_graphics_stream_census PRIVATE oasis_core)
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_screen_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_promote_test.py)
+    add_test(NAME oasis_re_m12_gfx_max_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_gfx_max_closure_test.py)
     add_test(NAME oasis_re_m12_z80_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_z80_promote_test.py)
     add_test(NAME oasis_re_m12_sound_data_helpers

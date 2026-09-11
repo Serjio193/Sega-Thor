@@ -5310,6 +5310,38 @@ different interaction before adding semantic behavior.
 
 **Unresolved:** ROM-backed probes must be run locally or through a separately provisioned private CI mechanism.
 
+## 2026-09-12 — M12-GFX-MAX graphics root closure — IN PROGRESS
+
+TASK: Continue the graphics evidence sweep after the 0x3820 caller closure.
+Close the proven screen-resource root table, revalidate the complete known
+screen descriptor/stream census, and publish a bounded fixed-point report for
+the current graphics loader families. Do not add ROMs or decoded payloads, do
+not repeat a whole-ROM detector sweep, and do not start M13 or ASM-to-C++
+migration.
+
+ACCEPTANCE CRITERIA: the root table has an exact boundary and consumer;
+screen descriptors and decompressor streams are cross-checked against the
+canonical ROM and current M12 manifest; every known 0x3820 caller remains
+accounted for with its blocker; the candidate materialization is byte-exact;
+the report records the remaining dynamic/non-screen blockers and validation
+limits.
+
+RESULT SO FAR: the 21-entry table `[0x00C92C,0x00C980)` is confirmed by the
+`0x00C8F0` dispatcher and its 21 in-ROM longword roots, and is the only new
+range promoted. The existing screen census contains 167 descriptor uses, 163
+unique 26-byte descriptors, and 159 accepted compressed streams totaling
+337,514 bytes; all are already SOURCE_OWNED. The 52-call 0x3820 census and
+ten explicit dynamic blockers remain unchanged. Candidate SOURCE_OWNED is
+1,475,346 bytes (46.8999862671%), +84 bytes from the M12-GFX-2 closure.
+
+VALIDATION: helper compile/test passed; Debug and Release builds passed;
+full Debug and Release CTest passed 143/143; the GNU/Linux-equivalent WSL
+Release build and helper CTest passed; the candidate rebuilt ROM matches the
+canonical SHA-256. The existing full-layout assembler attempt is recorded as
+blocked by duplicate labels already present in the baseline layout; the
+byte-exact baseline rebuilt ROM was used only as an explicit verification
+fallback. Final CI remains pending for this change.
+
 ## 2026-09-03 — M7 world/map/collision foundations — DONE
 **Objective:** Establish a verified room/screen loading path and tested collision/world-grid primitives before player translation.
 
