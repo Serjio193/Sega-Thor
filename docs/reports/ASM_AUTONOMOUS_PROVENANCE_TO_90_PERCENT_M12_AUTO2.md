@@ -1,3 +1,14 @@
+# M12-AUTO41 — runtime-observed exact routine range
+
+Status: `M12_AUTO41_BELOW_90_CONTINUING`.
+
+AUTO41 adds the wholly UNKNOWN `[0x03AE74,0x03B092)` routine (542 bytes).
+Canonical runtime evidence observes all 100 decoded instruction starts; the
+preceding `0x03AE72` is `RTS`, and the routine terminates at `0x03B090`.
+Independent vasm assembly is byte-exact against the canonical ROM. The
+full-ROM transaction reaches 1,233,957 / 3,145,728 bytes (39.2264366150%);
+no C++ migration was started.
+
 # M12-AUTO40 — runtime-observed exact routine
 
 Status: `M12_AUTO40_BELOW_90_CONTINUING`.

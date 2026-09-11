@@ -1,3 +1,11 @@
+# M12-AUTO41 — Source-owned ROM map checkpoint — 39.2264366150% / BELOW-90 CONTINUING
+
+AUTO41 adds the exact runtime-observed 68000 routine `[0x03AE74,0x03B092)`
+(542 bytes). All 100 instruction starts are decoded and runtime-observed;
+the bounded interval is bracketed by an earlier `RTS` and its terminal
+`RTS` at `0x03B090`, with a byte-exact vasm round-trip. The map remains below
+90%; M13/C++ migration remains prohibited.
+
 # M12-AUTO40 — Source-owned ROM map checkpoint — 39.2092068990% / BELOW-90 CONTINUING
 
 AUTO40 adds the exact runtime-observed 68000 routine `[0x00B79A,0x00B852)`

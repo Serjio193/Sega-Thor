@@ -5513,3 +5513,32 @@ C++ source was changed. Full Debug/Release gates and push remain pending.
 
 STOP: The >=90% gate is not met. No guessed data, padding, or semantic
 payload ownership was added; M13/C++ migration remains out of scope.
+# 2026-09-11 — M12-AUTO41 runtime-observed exact routine range — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP with byte-exact canonical
+ROM preservation and no M13/C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN bounded range with a
+runtime-observed entry, complete decoded instruction coverage, explicit
+RTS boundaries, and an exact assembler round-trip.
+
+RESULT: AUTO41 promotes `[0x03AE74,0x03B092)` (542 bytes) as
+`RUNTIME_OBSERVED_EXACT_ASM_ROUNDTRIP`. Runtime evidence observes all 100
+instruction starts in the interval and marks them `DECODED`; `0x03AE72` is
+the preceding `RTS`, and `0x03B090` is the terminal `RTS`. vasm output
+matches canonical ROM byte-for-byte. The transaction
+`build/m12-auto41-runtime-code-promotion-a/materialized/manifest.json`
+reaches 1,233,957 / 3,145,728 bytes (39.2264366150%); 1,597,199 bytes
+remain to the integer 90% threshold.
+
+EXACTNESS: Rebuilt ROM CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: AUTO41 helper test, Python compilation, promoter materialization,
+full-ROM hash audit, and vasm slice round-trip passed. Debug/Release build
+gates remain blocked by the pre-existing `src/core/ram_flag_routine.cpp`
+errors; no C++ source was changed.
+
+STOP: The >=90% gate is not met. No guessed data, padding, or semantic
+payload ownership was added; M13/C++ migration remains out of scope.

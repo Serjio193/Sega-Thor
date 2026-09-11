@@ -1,3 +1,10 @@
+# M12-AUTO41 adds the developer-only bounded runtime-code promoter
+
+`src/tools/re_m12_runtime_code_range_promote.py` and its deterministic
+`tests/re_m12_runtime_code_range_promote_test.py` record only the exact
+runtime-observed routine `[0x03AE74,0x03B092)`. Generated evidence and
+transaction output remain ignored/local.
+
 # M12-AUTO40 adds the developer-only runtime-code promoter
 
 `src/tools/re_m12_runtime_code_promote.py` and its deterministic

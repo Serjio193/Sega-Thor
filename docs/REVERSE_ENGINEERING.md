@@ -1,3 +1,12 @@
+# M12-AUTO41 runtime-observed exact routine range
+
+AUTO41 promotes `[0x03AE74,0x03B092)` (542 bytes) as
+`RUNTIME_OBSERVED_EXACT_ASM_ROUNDTRIP`. The runtime evidence observes all
+100 decoded instruction starts in the bounded range; the previous instruction
+at `0x03AE72` is `RTS`, and the routine ends at `RTS` `0x03B090`.
+Independently assembled vasm output matches every canonical-ROM byte. The
+range remains developer-only provenance and does not begin C++ migration.
+
 # M12-AUTO40 runtime-observed exact routine
 
 AUTO40 promotes `[0x00B79A,0x00B852)` (184 bytes) as
