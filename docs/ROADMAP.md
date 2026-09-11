@@ -1,3 +1,17 @@
+# M12-CARVER-1 — Evidence/Gap Orchestration Baseline — STAGE 1 COMPLETE / STOPPED
+
+Stage 1 imports the latest pushed AUTO60 manifest into a deterministic
+`[0x000000,0x300000)` IntervalDB with zero coverage gaps and overlaps. It
+preserves the exact AUTO60 SOURCE_OWNED count of `1,427,873` bytes, adds typed
+evidence and a directed provenance graph, records blocking conflicts, and
+produces deterministic UNKNOWN-gap and ranked-campaign reports. Existing
+promoters remain authoritative; Carver does not create ownership, begin M13,
+or migrate ASM to C++.
+
+The reusable tooling is documented in
+`docs/reports/THOR_ROM_CARVER_M12_STAGE1.md`. Stage 1 stops after its report;
+detector expansion and any campaign execution require a separate authorization.
+
 # M12-AUTO56 — Source-owned ROM map checkpoint — 45.3426678975% / BELOW-90 CONTINUING
 
 AUTO56 adds 24 bytes from the closed unknown prefix of the overlapping

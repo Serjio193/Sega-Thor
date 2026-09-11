@@ -896,3 +896,14 @@ of the generated direct-caller-to-RTS audit in
 `build/m12-auto60-island-audit/`; its regression test is
 `tests/re_m12_contiguous_islands_test.py`. CTest registration is in
 `cmake/m12_auto2.cmake`.
+
+# M12-CARVER-1 adds Stage 1 evidence/gap orchestration
+
+`src/tools/m12_carver.py` owns the deterministic half-open IntervalDB,
+typed evidence, provenance graph, conflicts, fixed-point reconciliation, gap
+analysis and campaign ranking. `src/tools/m12_carver_adapters.py` adapts only
+the existing deterministic M12 evidence producer schemas. The command-line
+entry point is `src/tools/re_m12_carver.py`; its generated DB/report stay in
+ignored build output because they may reference an external user ROM and local
+evidence. `tests/re_m12_carver_test.py` covers manifest coverage, ownership
+preservation, conflict blocking, provenance cycles and deterministic output.

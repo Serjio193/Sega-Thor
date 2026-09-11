@@ -5930,3 +5930,39 @@ vasm slice checks, and full materialization passed. Canonical ROM identity is
 unchanged: CRC32 `C4728225`, SHA1
 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+# 2026-09-11 — M12-CARVER-1 Stage 1 evidence/gap orchestration
+
+TASK: after the pushed AUTO60 baseline gate, add the first minimal Thor ROM
+Carver layer without replacing promoters or starting C++ migration. Acceptance
+requires exact whole-ROM manifest coverage, unchanged confirmed ownership,
+typed evidence/provenance/conflict storage, deterministic UNKNOWN-gap and
+campaign reporting, adapters for existing evidence producers, regression tests,
+and a Stage 1 stop report.
+
+BASELINE: AUTO29..AUTO60 was committed and pushed at
+`8fa79225584cf0fbac76356d81c0b1c9adacfb85`; exact GitHub Actions run
+`34600920230` passed Configure, Build, and Test before Carver work began.
+
+IMPLEMENTATION: added the developer-only `m12_carver.py` IntervalDB and
+`m12_carver_adapters.py` existing-producer adapters, the `re_m12_carver.py`
+CLI, and deterministic synthetic regression tests. Import is half-open and
+coverage-preserving over `[0x000000,0x300000)`. Carver Stage 1 never changes
+manifest classification, never creates SOURCE_OWNED bytes, requires confirmed
+parents for candidate derivation, and treats conflicts as promotion blockers.
+
+LOCAL RESULT: AUTO60 materialization imported 2,448 manifest ranges, including
+758 UNKNOWN ranges and 1,690 confirmed ranges, with total bytes `3,145,728`,
+zero coverage gaps/overlaps, and `1,427,873` SOURCE_OWNED bytes unchanged.
+The existing evidence bundle produced 23,113 evidence records, 25,565 graph
+nodes, 46,341 directed edges, and zero conflicts. The report ranked 758
+deterministic campaigns; its recommended next campaign is the analysis-only
+UNKNOWN interval `[0x0C0000,0x11F360)` (389,984 bytes). No detector expansion
+or campaign promotion was started.
+
+ROM identity remained exact: size `0x300000`, CRC32 `C4728225`, SHA1
+`2944910c07c02eace98c17d78d07bef7859d386a`, SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+Generated IntervalDB/report files remain ignored build outputs because they
+reference the external user ROM and local evidence; no copyrighted ROM or
+asset was committed. Stage 1 stops after the report.

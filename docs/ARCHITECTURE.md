@@ -336,6 +336,15 @@ candidates, unresolved register-based memory, indirect CFG, decoder gaps and
 
 Tools must not require committing extracted assets.
 
+M12-CARVER-1 adds a developer-only orchestration layer under `src/tools`.
+`m12_carver.py` imports the existing complete ROM manifest into one exact
+half-open interval database, attaches typed evidence, maintains a directed
+provenance graph, and reports UNKNOWN gaps and deterministic campaigns. Its
+adapters consume existing evidence-producer reports only. Carver Stage 1 does
+not replace a promoter, reclassify a manifest range, create SOURCE_OWNED bytes,
+or enter `oasis_core`; conflicts are blocking review records and all ROM and
+generated evidence inputs remain external.
+
 M11.28 adds `src/tools/hybrid/`, a developer-only GPGX observation boundary.
 The optional frontend loads an external instrumented libretro library and
 compares one naturally reached routine against existing C++ implementations.
