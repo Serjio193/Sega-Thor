@@ -24,9 +24,11 @@ passed. The local transaction used explicit `INHERITED_BASELINE_FULL_ROM`
 verification because no external vasm executable is installed; the AUTO14
 canonical rebuilt ROM and inherited ASM/blob artifacts were verified unchanged,
 and all 30 new bytes were compared to their canonical slices. Fresh Debug,
-Release and GNU/Unix-equivalent builds plus CTest 91/91 passed locally. Remote
-CI for the prior AUTO14 publication passed as run `34547024445`; the current
-docs/code follow-up CI remains the final publication check.
+Release and GNU/Unix-equivalent builds plus CTest 92/92 passed locally; the
+untracked generated root evidence files were excluded from the bounded local
+source scan. Remote CI for this AUTO15 publication passed as run
+`34548261762`, including build, all tests, and the repository source-file-limit
+gate.
 
 **STATUS:** The >=90% gate remains unmet. Dynamic CC-B0 callers, nested
 subtables, and other mixed code/data/resource spans remain UNKNOWN; continue
