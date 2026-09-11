@@ -2798,3 +2798,12 @@ ends after the option-B decision; M12 is not started.
 **Status:** VERIFIED.
 
 Detector records byte size, Mega Drive header, Sega checksum, CRC32, SHA-1, SHA-256 and classification. Synthetic tests contain no original ROM bytes.
+# M12-AUTO20 — Exact table-selected graphics streams
+
+The developer-only `re_m12_table_graphics_promote.py` helper closes 35
+graphics streams totaling 115,011 bytes. The source contract is the exact
+99-row table `[0x3F306,0x3FF66)`, where field1 is the longword at row offset
+`+4`. Each promoted start equals a field1 pointer, and each end equals the
+independent deterministic graphics-census boundary with its recorded output
+size. Streams that overlap prior ownership remain unpromoted. The transaction
+reassembles the full canonical ROM byte-for-byte; no C++ migration is involved.

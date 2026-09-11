@@ -297,3 +297,8 @@ G0 is the parent-owned region addressed by `A5 = 0xFF001A`. M11.60 proves its ob
 A register/lifetime: parent-owned and exact on observed natural entries/returns. B call/effect: natural cluster substantially closed but whole-static debt remains. C hardware: VDP dependency proven at the source PCs, with no abstraction layer. D typed-data: overlapping/shared raw access and external-writer closure are absent, so typed promotion is blocked.
 
 `0x060286` would not change the architecture: `NO_ARCHITECTURAL_DECISION_CHANGE`. Keep all deferred edges and ownership questions explicit until new evidence is independently collected.
+# M12-AUTO20 — Table-selected graphics provenance
+
+| Family | Exact source contract | Boundary proof | Result |
+|---|---|---|---|
+| table-selected graphics | `0x3F306..0x3FF66`, field1 `+4`, rows 15, 17, 23, 33-50, 53-57, 60-61, 63, 65, 67-69, 73-74, 77, 79, 89, 94-95 | Independent deterministic graphics census; every promoted range wholly UNKNOWN; full-ROM vasm equality | 35 streams, 115,011 bytes, `LOCAL_ROM_DERIVED_ASSET` |

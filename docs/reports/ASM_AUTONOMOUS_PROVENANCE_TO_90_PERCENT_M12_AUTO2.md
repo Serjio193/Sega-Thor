@@ -307,3 +307,42 @@ Method-effectiveness update: the sound-table method is POSITIVE for one
 bounded 100,680-byte container, while raw pointer targets outside its exact
 terminal boundary remain NEGATIVE/REJECTED. Decoder-only census candidates,
 unbounded sound tables, and inactive tertiary targets remain UNKNOWN.
+# M12-AUTO20 — Table-selected graphics promotion
+
+## Scope
+
+M12 remains provenance-only: preserve the canonical byte-exact ROM, do not
+start M13 or C++ migration, and promote only ranges with an exact source
+contract and deterministic boundary. AUTO20 evaluates the 99-row resource
+table at `[0x3F306,0x3FF66)` and its field1 longwords at row offset `+4`.
+
+## Positive result
+
+Thirty-five unique field1 pointers match independent graphics-census records
+with exact compressed boundaries and recorded decompressed sizes. Only streams
+wholly inside UNKNOWN manifest entries were selected; the 22 matching census
+streams that overlap prior ownership remain excluded. The selected ranges are:
+
+`0x2DC334..0x2DC7F0`, `0x2B15DA..0x2B45D8`, `0x29EE9A..0x2A0922`,
+`0x1650DC..0x165433`, `0x1658DC..0x165E12`, `0x165E72..0x16610C`,
+`0x1665A0..0x166C3D`, `0x166CFC..0x1670C0`, `0x16722E..0x167707`,
+`0x167728..0x16779D`, `0x28D158..0x28EA71`, `0x16378E..0x1638CC`,
+`0x1638CC..0x163A69`, `0x163A6A..0x163BDA`, `0x163BDA..0x163D42`,
+`0x163D42..0x163EB7`, `0x164070..0x1641D0`, `0x164270..0x16460C`,
+`0x29D148..0x29E2D8`, `0x26DCDE..0x26E55C`, `0x26ECD0..0x270584`,
+`0x16785A..0x167A6D`, `0x164896..0x164D10`, `0x2DF6A4..0x2E0134`,
+`0x27AA2A..0x27B32A`, `0x2DD302..0x2DF25F`, `0x27C206..0x27E112`,
+`0x28003E..0x28161F`, `0x161364..0x1621B9`, `0x162470..0x163716`,
+`0x2E1870..0x2E2FE6`, `0x2E3AB6..0x2E5FCF`, `0x2EF4F4..0x2F125E`,
+`0x168D34..0x16943C`, `0x2F6986..0x2F784F`.
+
+The transaction promotes 115,011 bytes and reaches 1,218,142 / 3,145,728
+bytes, or 38.7236913045%. The canonical rebuilt ROM remains CRC32 `C4728225`,
+SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+## Negative boundary
+
+This transaction does not promote raw field1 pointers without a census
+boundary, non-graphics table fields, or any range overlapping existing code or
+data ownership. Those remain UNKNOWN for a later parser/consumer proof.

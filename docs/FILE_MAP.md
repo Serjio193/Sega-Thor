@@ -1,4 +1,10 @@
-# M12-AUTO18 extends the developer-only graphics promoter
+# M12-AUTO20 extends the developer-only graphics promoter
+`src/tools/re_m12_table_graphics_promote.py` and its deterministic regression
+`tests/re_m12_table_graphics_promote_test.py` promote only wholly UNKNOWN
+graphics streams selected by exact field1 pointers in the 99-row resource
+table and independently bounded by the graphics census.
+
+M12-AUTO19 extends the developer-only graphics promoter
 `src/tools/re_m12_sound_data_promote.py` and its deterministic regression
 `tests/re_m12_sound_data_promote_test.py` promote only the exact bounded
 Ancient Music Driver sound-data archive after table and terminal-boundary

@@ -1,3 +1,33 @@
+# 2026-09-11 — M12-AUTO20 table-selected graphics — <90% / CONTINUING
+
+TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only graphics streams selected by the exact
+99-row table field1 pointers, with independent deterministic decoder boundaries,
+zero overlap with existing ownership, and canonical full-ROM equality.
+
+RESULT: The developer-only AUTO20 transaction promotes 35 wholly UNKNOWN
+field1-selected graphics streams totaling 115,011 bytes. The table contract is
+`[0x3F306,0x3FF66)`, with field1 at offset `+4`; each selected row is checked
+against the independent graphics census boundary and decompressed byte count.
+The map reaches 1,218,142 / 3,145,728 bytes (38.7236913045%); 1,613,014
+bytes remain to the integer 90% threshold. Twenty-two table-selected census
+streams overlapping existing ownership remain unpromoted.
+
+EXACTNESS: The transaction has zero manifest gaps and overlaps and reconstructs
+the canonical ROM with CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Table-graphics helper regression, Python compilation, multi-file
+census boundary validation, vasm full-ROM round trip, and artifact byte
+comparison passed. The helper is provenance-only; no ROM, BIOS, commercial
+asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet but work continues. Raw pointer-only and
+decoder-only candidates remain UNKNOWN.
+
 # 2026-09-11 — M12-AUTO19 Ancient Music Driver data archive — <90% / CONTINUING
 
 TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving

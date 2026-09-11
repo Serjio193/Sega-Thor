@@ -33,6 +33,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_direct_graphics_chain_promote_test.py)
     add_test(NAME oasis_re_m12_padding_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_padding_promote_test.py)
-add_test(NAME oasis_re_m12_record_stream_helpers
+    add_test(NAME oasis_re_m12_record_stream_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_record_stream_promote_test.py)
+    add_test(NAME oasis_re_m12_table_graphics_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_table_graphics_promote_test.py)
 endif()

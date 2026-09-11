@@ -1,3 +1,10 @@
+# M12-AUTO20 — Source-owned ROM map checkpoint — 38.7236913045% / BELOW-90 CONTINUING
+
+M12-AUTO20 adds 115,011 bytes of wholly UNKNOWN graphics streams selected by
+exact `field1` pointers in the 99-row table `[0x3F306,0x3FF66)`. Independent
+decoder census boundaries and overlap checks pass; the canonical ROM remains
+byte-exact and M13/C++ migration remain prohibited.
+
 # M12-AUTO19 — Source-owned ROM map checkpoint — 35.0675900777% / BELOW-90 CONTINUING
 
 M12-AUTO19 adds the bounded Ancient Music Driver sound-data container
