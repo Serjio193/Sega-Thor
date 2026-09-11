@@ -5966,3 +5966,7 @@ ROM identity remained exact: size `0x300000`, CRC32 `C4728225`, SHA1
 Generated IntervalDB/report files remain ignored build outputs because they
 reference the external user ROM and local evidence; no copyrighted ROM or
 asset was committed. Stage 1 stops after the report.
+
+FINAL CI: commit `9b43a8c4cfe2309a67ebe5222a8bb31bae2ba360` was pushed and its
+exact GitHub Actions run `34602767835` passed Configure, Build, and Test.
+The run reported only the hosted-action Node.js 20 deprecation annotation.
