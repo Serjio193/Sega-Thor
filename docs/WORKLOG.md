@@ -25,7 +25,9 @@ the new table blob was compared to its canonical slice. A fresh assembler
 round-trip remains required when vasm is available. Debug, Release and
 GNU/Unix-equivalent builds passed; CTest passed 91/91 in each configuration,
 and the bounded source-limit check passed for 386 files. Publication and
-remote CI remain required before this checkpoint is published.
+the first remote CI run `34546697525` exposed `CMakeLists.txt` at 502 lines;
+commit `234bb5b` reduced it to exactly 500 lines. Remote CI run
+`34547024445` then passed build, all 92 tests, and the source-limit gate.
 
 **STATUS:** The >=90% gate remains unmet. Nested target subtables and other
 mixed code/data/resource spans remain UNKNOWN; continue from the next
