@@ -197,7 +197,9 @@ class IntervalDB:
             self.candidates[normalized["id"]] = normalized
         if start is not None and candidate:
             for target in related:
-                if target["source_owned"]:
+                fully_inside_confirmed = (target["source_owned"] and
+                                          target["start"] <= start and end <= target["end"])
+                if target["source_owned"] and not fully_inside_confirmed:
                     self.add_conflict("CANDIDATE_OVERLAPS_CONFIRMED", normalized, target,
                                       "candidate range overlaps confirmed ownership",
                                       [normalized["id"]])
@@ -309,7 +311,8 @@ class IntervalDB:
                         for item, targets in related if targets or
                         any(word in str(item.get("type", "")).lower() for word in ("pointer", "xref", "table"))]
             runtime = [summary for summary in summaries if item_is_runtime(self.evidence.get(summary["id"], {}))]
-            detectors = [summary for summary in summaries if "detector" in str(summary["type"]).lower()]
+            detectors = [summary for summary in summaries if item_is_detector(
+                self.evidence.get(summary["id"], {}))]
             consumers = sorted({str(item.get("consumer") or item.get("parser"))
                                 for item, _ in related if item.get("consumer") or item.get("parser")})
             output.append({"id": gap["id"], "start": gap["start"], "end": gap["end"],
@@ -429,3 +432,9 @@ class IntervalDB:
 def item_is_runtime(item):
     text = str(item.get("type", "")).lower()
     return bool(item.get("runtime") or "runtime" in text or "read" in text or "execut" in text)
+
+
+def item_is_detector(item):
+    text = str(item.get("type", "")).lower()
+    return bool(item.get("detector") or any(word in text for word in
+                                             ("detector", "census", "scan")))

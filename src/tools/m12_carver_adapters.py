@@ -46,10 +46,15 @@ def _adapt(payload, source, adapter):
                        "type": item.get("type") or item.get("evidence_type") or adapter,
                        "producer": item.get("producer") or producer,
                        "adapter": adapter, "source_ref": source})
+        if adapter == "graphics_decoder_resource_scan":
+            record.setdefault("structural_format", "graphics_decoder_candidate")
         if adapter == "runtime_pc_read":
             record["runtime"] = True
         if "confidence" not in record:
-            record["confidence"] = "OBSERVED" if adapter == "runtime_pc_read" else "EVIDENCE_ONLY"
+            if adapter == "graphics_decoder_resource_scan":
+                record["confidence"] = "CANDIDATE"
+            else:
+                record["confidence"] = "OBSERVED" if adapter == "runtime_pc_read" else "EVIDENCE_ONLY"
         records.append(record)
     return {"records": records, "edges": payload.get("edges", []),
             "nodes": payload.get("nodes", []), "adapter": adapter}

@@ -28,21 +28,25 @@ The CLI is `src/tools/re_m12_carver_expand.py`. Its output is intentionally
 ignored build output because it references the user-supplied ROM and local
 evidence:
 
-`build/m12-carver-m12c2-expansion-b/`
+`build/m12-carver-m12c2-expansion-d/`
 
 ## Deterministic result
 
 The pass imported 758 UNKNOWN ranges and retained all `1,427,873`
 SOURCE_OWNED bytes. Coverage remained `[0x000000,0x300000)`, with zero gaps
 and overlaps. It produced 23,214 evidence records, 25,749 provenance nodes,
-46,841 directed edges, zero conflicts, and five non-owning candidate ranges.
+46,841 directed edges, 91 blocking conflicts, and 3,876 non-owning candidate
+ranges.
 The fixed point was reached with zero further evidence, splits,
 reclassifications, or queued expansions.
 
 The table graph contained 96 non-zero field1 pointers. The graphics decoder
 closure matched 68 pointer starts: 47 were already wholly closed by existing
 ownership, 21 had a decoder span partially overlapping confirmed data, and 28
-had no decoder boundary. No new SOURCE_OWNED bytes were safe to add.
+had no decoder boundary. The complete existing graphics census is marked
+CANDIDATE (decoder validity alone is not ownership), yielding 3,871 graphics
+candidates and 91 explicit boundary conflicts. No new SOURCE_OWNED bytes were
+safe to add.
 
 Five rows produced raw-size hypotheses totaling `17,408` bytes:
 
@@ -63,6 +67,22 @@ gap mass; its graph reachability is useful, but it lacks a closed parser/resourc
 boundary. A future campaign requires a new exact consumer or runtime contract
 for that family. Detector expansion is not started automatically.
 
+## Campaign accounting
+
+| Campaign | Candidate/evidence result | SOURCE_OWNED gain | Decision |
+|---|---:|---:|---|
+| Confirmed-table provenance closure | 96 field1 pointers, 96 typed edges | 0 | evidence retained |
+| Resource reachability through graphics census | 68 matches; 47 closed, 21 boundary-overlapping, 28 without boundary | 0 | no new closure |
+| Raw field1 size hypotheses | 5 candidates / 17,408 bytes | 0 | rejected: no exact consumer |
+| Compression-family closure | 3,871 decoder candidates; 216,085 candidate span bytes | 0 | rejected: no confirmed consumer |
+
+The largest remaining UNKNOWN ranges, in descending size, are
+`[0x0C0000,0x11F360)` (389,984 bytes), `[0x11FD4C,0x13CDFC)` (118,960),
+`[0x2BFCCA,0x2CFA34)` (64,874), `[0x28F15E,0x29C674)` (54,550), and
+`[0x260638,0x26D624)` (53,228). The complete ranked map, pointer/xref hits,
+runtime evidence, detector hits, consumers, neighbors, and conflicts are in
+the machine-readable `gap_report.json`.
+
 ## Output hashes
 
 For the recorded local input set, SHA-256 is:
@@ -70,11 +90,14 @@ For the recorded local input set, SHA-256 is:
 | Output | SHA-256 |
 |---|---|
 | `interval_db.json` | `2c30aa561159b500155ef5d2bf5dc967c7333165171844316ec324928dea834c` |
-| `gap_report.json` | `a49863cd858eb41f2c6f718f8388a5e60e02dce978e4e5af248ac1a5ebd953f8` |
-| `expansion_report.json` | `8a92997ac852351096fe00f6f4269ec571e91003d94433a10a1677d208bfd529` |
+| `gap_report.json` | `6977eb7d87d68bb7b5138edc1d8f40392d6b436d8e82e9307ed2fe98cdc89c80` |
+| `expansion_report.json` | `33676476cafea5d6cee59a032666a99ce754b65d7839a56696bf47bcb97b35e1` |
 
 These hashes cover the deterministic local output for the exact manifest,
 ROM, evidence bundle, and graphics census named above.
+The canonical serialization hash stored in `expansion_report.json` for the
+IntervalDB is
+`389acdc8c7fa9cc1773c92474fa64497ae5caf5c5a5be6e96e57f001be70565c`.
 
 ## Validation
 

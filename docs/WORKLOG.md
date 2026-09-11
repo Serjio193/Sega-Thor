@@ -5985,9 +5985,16 @@ manifest and all existing promoter transactions unchanged.
 
 RESULT: 68 field1 pointers matched existing graphics-census starts; 47 were
 already closed, 21 partially overlap confirmed data, and 28 had no decoder
-boundary. The five raw-size hypotheses total 17,408 bytes but lack an exact
-field6 raw-resource consumer/boundary contract and were rejected. SOURCE_OWNED
-remains 1,427,873 bytes; fixed point reached with no safe growth >=16 KiB.
+boundary. Decoder-only hits are now CANDIDATE, yielding 3,871 graphics
+candidates and 91 blocking boundary conflicts. The five raw-size hypotheses
+total 17,408 bytes but lack an exact field6 raw-resource consumer/boundary
+contract and were rejected. SOURCE_OWNED remains 1,427,873 bytes; fixed point
+reached with no safe growth >=16 KiB.
+
+The decoder-only classification correction is intentionally non-owning:
+candidate spans wholly inside already confirmed ranges are not conflicts, while
+candidate spans crossing a confirmed/UNKNOWN boundary remain explicit blocking
+conflicts. The resulting graph contains 3,876 candidates and 91 conflicts.
 The deterministic report is `docs/reports/THOR_ROM_CARVER_M12_STAGE2.md`.
 
 VALIDATION: Carver tests, Python compilation, and `git diff --check` passed;

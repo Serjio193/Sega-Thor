@@ -10,6 +10,8 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+from collections import defaultdict
+import zlib
 
 from m12_carver import IntervalDB, canonical
 from re_m12_record_stream_promote import TABLE_COUNT, TABLE_START, TABLE_STRIDE
@@ -156,6 +158,49 @@ def graphics_closure(table, census, db):
             "blocked_by_partial_overlap": partial, "no_boundary": absent}
 
 
+def compression_family_report(report):
+    campaigns = []
+    for gap in report["gaps"]:
+        hits = [item for item in gap["evidence"]
+                if item["type"] == "graphics_decoder_resource_scan"]
+        if not hits:
+            continue
+        spans = [(max(gap["start"], item["start"]),
+                  min(gap["end"], item["end"])) for item in hits]
+        spans = [span for span in spans if span[0] < span[1]]
+        campaigns.append({
+            "gap_id": gap["id"],
+            "start": gap["start"],
+            "end": gap["end"],
+            "candidate_hits": len(hits),
+            "candidate_span_bytes": sum(end - start for start, end in spans),
+            "largest_candidate_bytes": max((end - start for start, end in spans),
+                                             default=0),
+            "promotion": "REJECTED",
+            "reason": "decoder validity lacks confirmed consumer/table boundary",
+        })
+    campaigns.sort(key=lambda item: (-item["candidate_span_bytes"],
+                                     -item["candidate_hits"], item["start"]))
+    return {"campaigns": campaigns,
+            "candidate_hits": sum(item["candidate_hits"] for item in campaigns),
+            "candidate_span_bytes": sum(item["candidate_span_bytes"] for item in campaigns),
+            "promotion": "REJECTED_NO_CONSUMER_PROVENANCE"}
+
+
+def ownership_totals(db):
+    totals = defaultdict(int)
+    for item in db.ranges:
+        if item["source_owned"]:
+            totals[item["classification"]] += item["end"] - item["start"]
+    return dict(sorted(totals.items()))
+
+
+def rom_identity(rom):
+    return {"size": len(rom), "crc32": f"{zlib.crc32(rom) & 0xFFFFFFFF:08X}",
+            "sha1": hashlib.sha1(rom).hexdigest(),
+            "sha256": hashlib.sha256(rom).hexdigest()}
+
+
 def expand(db, rom, census):
     table = parse_table(rom)
     parent = manifest_range(db, TABLE_START, TABLE_START + TABLE_STRIDE * TABLE_COUNT)
@@ -202,12 +247,22 @@ def run(manifest_path, rom_path, evidence_paths, census_paths, output):
     baseline_owned = db.source_owned_bytes()
     expansion = expand(db, rom, load_census(census_paths))
     report = db.report()
+    db_payload = db.interval_db()
+    compression = compression_family_report(report)
     expansion.update({
         "schema": EXPANSION_SCHEMA,
         "deterministic": True,
         "baseline_source_owned_bytes": baseline_owned,
         "final_source_owned_bytes": report["source_owned_bytes"],
         "gained_source_owned_bytes": report["source_owned_bytes"] - baseline_owned,
+        "baseline_source_owned_percent": 100.0 * baseline_owned / len(rom),
+        "final_source_owned_percent": 100.0 * report["source_owned_bytes"] / len(rom),
+        "ownership_by_classification": ownership_totals(db),
+        "canonical_rom": rom_identity(rom),
+        "deterministic_db_sha256": hashlib.sha256(canonical(db_payload).encode()).hexdigest(),
+        "remaining_unknown_ranked": sorted(
+            report["gaps"], key=lambda item: (-item["size"], item["start"])),
+        "compression_family_closure": compression,
         "fixed_point": report["fixed_point"],
         "campaigns_attempted": [
             {"method": "provenance_closure.field1", "gain_bytes": 0,
@@ -216,6 +271,9 @@ def run(manifest_path, rom_path, evidence_paths, census_paths, output):
              "status": "ALREADY_CLOSED_OR_PARTIAL_OVERLAP"},
             {"method": "raw_field1_size_hypothesis", "gain_bytes": 0,
              "status": "REJECTED_NO_EXACT_CONSUMER_BOUNDARY"},
+            {"method": "compression_family_closure", "gain_bytes": 0,
+             "candidate_span_bytes": compression["candidate_span_bytes"],
+             "status": "REJECTED_NO_CONSUMER_PROVENANCE"},
         ],
         "stop_reason": "stable_fixed_point_no_safe_growth_ge_16KiB",
         "gap_report": report,
