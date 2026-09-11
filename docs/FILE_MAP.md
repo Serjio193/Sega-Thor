@@ -581,6 +581,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── asset_inspector.cpp Local-only ROM graphics inspection CLI
 │       ├── m12_gfx_ancient.py Independent Ancient graphics parser/classifier
 │       ├── m12_gfx_sweep.py Developer-only whole-ROM M12-GFX-1 campaign/report
+│       ├── m12_gfx_caller_closure.py Developer-only M12-GFX-2 0x3820 caller/source closure and promoter
 │       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
@@ -698,6 +699,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── m12_gfx_sweep_test.py             Independent Ancient parser safety/classifier tests
+    ├── m12_gfx_caller_closure_test.py    M12-GFX-2 caller/source closure regression tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests

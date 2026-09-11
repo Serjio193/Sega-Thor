@@ -1,3 +1,59 @@
+# 2026-09-12 — M12-GFX-2 0x3820 caller-to-asset closure — READY FOR COMMIT
+
+TASK: Starting from the published `bdbbfada3dd5de3ffc042302afc2fb2770a68695`
+baseline, prove the existing 0x3820 ABI, classify all 52 static call sites,
+recover bounded direct/table/sequential source sets, canonicalize only caller-
+derived Ancient streams, and feed exact results into the existing M12
+materialization/Carver accounting. Do not repeat the M12-GFX-1 whole-ROM scan,
+require CRAM/SAT, add heuristic detector families, begin M13, or migrate ASM
+to C++.
+
+ACCEPTANCE CRITERIA: every call site has a containing bounded routine/family,
+source and destination origin, source-set kind, selector/table status,
+confidence, and explicit blocker when unresolved; exact table-derived and
+sequential resources have half-open boundaries, declared compressed sizes,
+decompressed sizes, output hashes, overlap status, and canonical ROM proof;
+only wholly UNKNOWN non-code spans meeting the caller-derived ownership
+contract are promoted; the final report records ABI, census, caller graph,
+resource/table accounting, Carver B/F/G before/after, sibling-loader result,
+all blockers, hashes, validation gates, implementation SHA, and exact CI.
+
+BASELINE: canonical USA ROM is 3,145,728 bytes with SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`;
+SOURCE_OWNED is `1,427,873` bytes (`45.3908602397%`).
+
+RESULT: Reused the published M12-GFX-1 census without repeating its whole-ROM
+scan. The 52 callers are cataloged in the machine report with bounded routine,
+source/destination origin, source-set kind, table/selector details, confidence,
+and explicit blockers. Exact direct, 107-entry table-derived, and sequential
+Ancient resources carry half-open boundaries, declared compressed/decompressed
+sizes, output SHA-256, overlap metadata, baseline owner, and canonical-ROM
+proof. Ten wholly UNKNOWN sequential spans totaling `47,389` bytes were
+promoted as `LOCAL_ROM_DERIVED_ASSET`; SOURCE_OWNED is now `1,475,262`
+(`46.8973159790%`). Carver B/F/G changed from `113/623,036`,
+`56/58,789`, `589/1,036,030` to `113/623,036`, `56/58,789`,
+`588/988,641`. All 107 table targets were already baseline-owned. The 64 KiB
+target remains intentionally unmet because ten dynamic source producers are
+not ROM-proven; no generic detector, visual inference, CRAM/SAT dependency,
+M13 work, or ASM-to-C++ migration was added.
+
+ARTIFACTS: `src/tools/m12_gfx_caller_closure.py` is 471 lines and
+`tests/m12_gfx_caller_closure_test.py` is 47 lines. The generated canonical
+machine report was `build/m12-gfx2-caller-closure-d/caller_closure_report.json`
+with SHA-256 `d2cecf6d34472505bac16f372d963f5f1b1fc43283d9307a87a3611269c96808`;
+its materialized rebuilt ROM matched the canonical ROM byte-for-byte. The
+tracked Markdown report contains no ROM or decoded payload.
+
+VALIDATION: Python compile, dedicated caller-closure regression, `git diff
+--check`, and the source-code limit check passed. Full Debug and Release
+MinGW builds passed. Release CTest passed `142/142`; Debug CTest passed
+`142/142` when rerun sequentially after the initial concurrent-run file-lock
+race. GNU/Linux CMake configure, build, and link passed; Linux CTest reached
+the workspace-wide file-limit test but was stopped after more than seven
+minutes of `/mnt/c` I/O after the same check had independently passed on
+Windows. Implementation and exact CI SHA fields remain to be filled after the
+focused commit and CI.
+
 # 2026-09-11 — M12-AUTO56 overlapping PC-relative word table — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
