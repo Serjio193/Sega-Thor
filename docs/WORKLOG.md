@@ -5346,6 +5346,11 @@ IMPLEMENTATION PUBLICATION: commit `a27175fe2269744d0497c3545d50bb59d0085849`;
 GitHub Actions CI run `34651277101` passed. A documentation publication
 commit and its final HEAD CI remain pending.
 
+PUBLICATION: documentation commit
+`dd5a23bde2ba936fc4536fb5048849b8da7c400f`; exact publication CI run
+`34651453898` passed. The final report identity is now fixed; only the
+post-publication documentation-check CI remains to be observed.
+
 ## 2026-09-03 — M7 world/map/collision foundations — DONE
 **Objective:** Establish a verified room/screen loading path and tested collision/world-grid primitives before player translation.
 
