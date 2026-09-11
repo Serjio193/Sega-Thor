@@ -1,3 +1,13 @@
+# M12-AUTO14 CC-B0 group pointer-table provenance checkpoint
+
+The AUTO14 transaction is `build/m12-auto14-ccb0-transaction-c/materialized/manifest.json`.
+It adds 128 bytes for the physical 32-entry longword table
+`[0x04371E,0x04379E)` selected by the exact consumer at `0x00CCB0`. All table
+entries are even valid canonical-ROM targets; nested target subtables and
+semantic selector bounds remain UNKNOWN. The transaction reaches 986,762
+source-owned bytes (`31.3683191935%`) with canonical full-ROM hashes
+unchanged. No C++ migration is started.
+
 # M12-AUTO13 BCEA field3 list provenance checkpoint
 
 The AUTO13 transaction is `build/m12-auto13-field3-transaction-f/materialized/manifest.json`.
@@ -1097,6 +1107,16 @@ the call, `0xD3B2` queues a bounded DMA descriptor: source word address
 No adjacent routine or resource meaning was promoted. The complete bounded
 contract, provenance and remaining semantic unknown are recorded in
 `docs/reports/RESOURCE_CONTRACT_ID3.md`.
+
+## M12-AUTO14 — CC-B0 group pointer table
+STATUS: `GROUP_POINTER_TABLE_04371E_CONFIRMED`.
+
+The exact consumer at `0x00CCB0` loads `0x04371E`, shifts the high-byte
+selector by two address bits, and reads a 32-entry longword pointer table
+through `[0x04371E,0x04379E)`. All 32 canonical values are even ROM targets.
+Only the table bytes are source-owned; nested target subtables and records are
+not promoted. The developer-only transaction preserves the canonical ROM
+identity and records the table contract in its promotion report.
 
 ## M11.22 — Bounded static classification for `0x060BB6-0x060BC4`
 STATUS: `BOUNDED_REGION_060BB6_STATIC_SUPPORTED`.

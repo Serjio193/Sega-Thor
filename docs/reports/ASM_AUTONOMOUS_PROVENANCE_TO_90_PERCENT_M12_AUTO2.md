@@ -1,6 +1,6 @@
-# M12-AUTO13 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO14 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO13_BLOCKED_BELOW_90_NO_COMPLETE_PROVENANCE_GRAPH`.
+Status: `M12_AUTO14_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
 
 This report records the strongest byte-exact M12 checkpoint reached without
 starting M13, native gameplay/runtime C++ migration, or emulator expansion.
@@ -15,8 +15,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `9bf5584695d3febe4d1101e5fcf68b23d546bf86` |
-| Final local transaction | `build/m12-auto13-field3-transaction-f/materialized/manifest.json` |
+| Baseline Git SHA | `1b0ac75fc33bf4a3b564d2ff30a4b925387c8f09` |
+| Final local transaction | `build/m12-auto14-ccb0-transaction-c/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -35,8 +35,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Count-bounded record streams | 978,026 | 31.090609233% |
 | Exact code continuation after record streams | 979,118 | 31.125322978% |
 | Exact BCEA field3 sentinel lists | 986,634 | 31.364250183% |
+| Physical CC-B0 group pointer table | 986,762 | 31.3683191935% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,844,522 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,844,394 bytes.
 
 ## Final ownership census
 
@@ -44,11 +45,11 @@ The 90% threshold is 2,831,156 bytes; the current gap is 1,844,522 bytes.
 | --- | ---: | ---: |
 | 68000 `CODE_VERIFIED` | 50,220 | 1.596450806% |
 | Header/vector ASM | 512 | 0.016276042% |
-| Confirmed structured data | 87,367 | 2.777252197% |
+| Confirmed structured data | 87,495 | 2.7813911438% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
 | Local ROM-derived assets | 715,858 | 22.756512960% |
-| **SOURCE_OWNED** | **986,634** | **31.364250183%** |
-| Remaining `UNKNOWN` blob | 2,159,094 | 68.635749817% |
+| **SOURCE_OWNED** | **986,762** | **31.3683191935%** |
+| Remaining `UNKNOWN` blob | 2,158,966 | 68.6316808065% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -88,6 +89,13 @@ follows a signed relative pointer, 44-byte positive rows, and a negative-key
 sentinel. Only the five merged ranges are promoted; the rest of the field3
 container remains UNKNOWN.
 
+AUTO14 additionally owns 128 bytes for the physical 32-entry longword pointer
+table at `0x04371E..0x04379E`, selected by the exact `0x00CCB0` high-byte
+shift. Nested target subtables remain UNKNOWN. The local transaction uses
+`INHERITED_BASELINE_FULL_ROM` exactness because no external vasm executable is
+installed; canonical full-ROM equality and inherited ASM/blob byte equality
+passed. A fresh assembler round-trip remains required when vasm is available.
+
 ## Provenance graph
 
 Nodes:
@@ -120,6 +128,8 @@ Nodes:
    count/DBF consumer → 78 stream views, merged only across covered bytes.
 20. BCEA field3 bases → exact selector transform → signed relative list pointer
     → 44-byte rows → negative-key sentinel; five merged list ranges.
+21. Exact `0x00CCB0` high-byte selector → physical 32-entry longword table
+    `[0x04371E,0x04379E)`; nested target subtables remain UNKNOWN.
 
 Edges:
 
@@ -150,6 +160,8 @@ Edges:
 - BCEA selector transform and field3 signed-relative list slots → exact
   sentinel-terminated 44-byte-row structured ranges; surrounding container
   bytes remain UNKNOWN.
+- Exact `0x00CCB0` selector and 32 validated longword slots → bounded physical
+  group pointer table; nested target subtables remain UNKNOWN.
 - No edge was created from a decoder coincidence alone to an owned asset.
 
 ## Methods and outcomes
@@ -173,6 +185,7 @@ Edges:
 | Automatic exact-code continuation | `0x00F0EC..0x00F10C`, `0x00B28E..0x00B34C` | 222 caller-backed ASM bytes; 12 unsupported candidates rejected |
 | Fixed record table and count-bounded streams | `0x3F2FA`, `0x3F306..0x3FF66`, `0xAB82`, `0xAF02`, `0xB15E`, `0xB28E` | 3,168 table bytes + 46,858 merged stream bytes |
 | BCEA field3 list proof | `0x00BCEA`, field3 bases, selector offsets `-20/0/20/40` | 100 views merged into five ranges, 7,516 bytes |
+| CC-B0 group pointer-table proof | `0x00CCB0`, `0x04371E..0x04379E` | 32 validated longword slots, 128 bytes; nested subtables not promoted |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
 | Runtime ROM-reader correlation | existing GPGX evidence | corroboration only; no destination/boundary proof for unknown spans |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |

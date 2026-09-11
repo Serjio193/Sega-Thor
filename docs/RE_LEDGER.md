@@ -1,3 +1,11 @@
+# M12-AUTO14 CC-B0 group pointer table
+
+The exact consumer at `0x00CCB0` selects a 32-entry longword pointer table at
+`0x04371E` with `high_byte << 2`. The closed table `[0x04371E,0x04379E)` adds
+128 source-owned bytes, bringing the map to 986,762 bytes (31.3683191935%).
+Nested target subtables remain UNKNOWN; no selector range beyond the physical
+32-entry table is asserted.
+
 # Bounded G0 reverse-engineering ledger
 
 ## M12-AUTO13 BCEA field3 sentinel-list edge

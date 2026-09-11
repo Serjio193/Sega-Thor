@@ -1,3 +1,36 @@
+# 2026-09-11 — M12-AUTO14 CC-B0 group pointer table — <90% / BLOCKED
+
+**TASK:** Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+**ACCEPTANCE CRITERIA:** Close only the physical 32-entry longword table at
+`0x04371E..0x04379E` selected by the exact `0x00CCB0` high-byte shift. Leave
+nested target subtables UNKNOWN and require canonical full-ROM equality.
+
+**RESULT:** The developer-only transaction closes 128 `STRUCTURED_DATA_CONFIRMED`
+bytes. All 32 entries are even canonical-ROM targets and the next byte begins
+the nested target-subtable area. The map reaches 986,762 / 3,145,728 bytes
+(`31.3683191935%`); 1,844,394 bytes remain to the integer 90% threshold. No
+C++ migration, ROM, BIOS, or extracted commercial asset was added.
+
+**EXACTNESS:** The transaction reconstructs the canonical ROM with CRC32
+`C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+**VALIDATION:** The helper regression and Python compilation passed. The local
+transaction used explicit `INHERITED_BASELINE_FULL_ROM` verification because
+no external vasm executable is installed: the previous AUTO13 rebuilt ROM is
+canonical, unchanged ASM artifacts were byte-compared with that baseline, and
+the new table blob was compared to its canonical slice. A fresh assembler
+round-trip remains required when vasm is available. Debug, Release and
+GNU/Unix-equivalent builds passed; CTest passed 91/91 in each configuration,
+and the bounded source-limit check passed for 386 files. Publication and
+remote CI remain required before this checkpoint is published.
+
+**STATUS:** The >=90% gate remains unmet. Nested target subtables and other
+mixed code/data/resource spans remain UNKNOWN; continue from the next
+independently closed edge.
+
 # 2026-09-11 — M12-AUTO13 BCEA field3 sentinel-list edge — <90% / BLOCKED
 
 **TASK:** Continue from M12-AUTO12 toward a >=90% SOURCE-OWNED ROM MAP while

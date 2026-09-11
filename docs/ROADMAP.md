@@ -1,3 +1,9 @@
+# M12-AUTO14 — Source-owned ROM map checkpoint — 31.3683191935% / BELOW-90 BLOCKER
+
+M12-AUTO14 closes the 128-byte `0x00CCB0` group pointer table
+`[0x04371E,0x04379E)`. The nested target subtables remain UNKNOWN; the
+canonical ROM remains unchanged and M13/C++ migration remain prohibited.
+
 # M12-AUTO13 — Source-owned ROM map checkpoint — 31.3643% / BELOW-90 BLOCKER
 
 M12-AUTO13 extends the byte-exact source-owned map to 986,634 of 3,145,728
