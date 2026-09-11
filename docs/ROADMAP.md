@@ -1,3 +1,15 @@
+# M12-AUTO22 — Source-owned ROM map checkpoint — 38.9556248983% / BELOW-90 CONTINUING
+
+AUTO22 adds 58 bytes from three exact fixed tables and preserves the canonical
+ROM. AUTO21's CC-B0 target-table contract is also retained; M13/C++ migration
+remains prohibited while bounded provenance work continues.
+
+# M12-AUTO21 — Source-owned ROM map checkpoint — 38.9537811279% / BELOW-90 CONTINUING
+
+AUTO21 adds 7,238 bytes from exact 256-slot signed-relative CC-B0 target
+tables. Existing selected slots remain intact, no nested records are inferred,
+and the canonical ROM remains byte-exact.
+
 # M12-AUTO20 — Source-owned ROM map checkpoint — 38.7236913045% / BELOW-90 CONTINUING
 
 M12-AUTO20 adds 115,011 bytes of wholly UNKNOWN graphics streams selected by

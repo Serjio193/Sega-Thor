@@ -1,3 +1,21 @@
+# M12-AUTO22 exact small-table provenance checkpoint
+
+AUTO22 is `build/m12-auto22-exact-small-tables-transaction-a/materialized/manifest.json`.
+It adds three exact fixed tables: `[0x3E0B8,0x3E0D8)` selected by the eight-
+longword copy at `0x03E516`, `[0x522E,0x5236)` selected by the fixed selector
+consumer at `0x0051CE`, and `[0x5CBD6,0x5CBE8)` consumed as six three-byte
+records from `0x005120`. No adjacent bytes are included; full-ROM hashes remain
+canonical.
+
+# M12-AUTO21 CC-B0 relative-target-table provenance checkpoint
+
+AUTO21 is `build/m12-auto21-ccb0-target-tables-transaction-b/materialized/manifest.json`.
+The exact selector contract at `0x00CCB0` masks the low selector byte, scales
+it by two, and adds a signed relative word to the selected group target. This
+closes 256 two-byte slots (`0x200` bytes) for each of the 20 unique target
+values. Overlapping windows are unioned and existing AUTO15 slots remain
+owned by their earlier contract. No nested records are inferred.
+
 # M12-AUTO19 Ancient Music Driver data archive
 
 The AUTO19 transaction

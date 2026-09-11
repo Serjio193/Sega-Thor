@@ -92,6 +92,16 @@ UNKNOWN and generated transaction output remains ignored.
 
 # File Map
 
+M12-AUTO22 adds the developer-only exact small-table promoter
+`src/tools/re_m12_exact_small_tables_promote.py` and deterministic regression
+`tests/re_m12_exact_small_tables_promote_test.py`. It records only three
+fixed consumer-bounded tables; generated transaction output remains ignored.
+
+M12-AUTO21 adds the developer-only CC-B0 nested target-table promoter
+`src/tools/re_m12_ccb0_target_tables_promote.py` and deterministic regression
+`tests/re_m12_ccb0_target_tables_promote_test.py`. It records only exact
+256-slot target windows; generated transaction output remains ignored.
+
 M12-AUTO13 extends the developer-only record-stream promoter with the exact
 BCEA field3 sentinel-list edge. It records only the five merged ranges derived
 from 30 field3 bases and 100 terminated list views; generated transaction

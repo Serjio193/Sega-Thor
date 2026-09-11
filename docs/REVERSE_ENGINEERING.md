@@ -1,3 +1,21 @@
+# M12-AUTO22 exact small tables
+
+The AUTO22 transaction closes three fixed data units from exact consumer
+contracts: `[0x3E0B8,0x3E0D8)` is copied as eight longwords by `0x03E516`,
+`[0x522E,0x5236)` is read as eight selector bytes by `0x0051CE`, and
+`[0x5CBD6,0x5CBE8)` is read as six three-byte records by `0x005120`. These
+are bounded table facts only; surrounding mixed regions remain UNKNOWN.
+
+# M12-AUTO21 nested CC-B0 target tables
+
+The exact consumer at `0x00CCB0` selects one of the 32 longword targets from
+`[0x04371E,0x04379E)`, masks the low selector byte, scales it by two, and
+reads a signed relative word before adding it to the entry address. Therefore
+each selected target has a closed 256-slot / `0x200`-byte table contract. AUTO21
+promotes only the union of the 20 unique windows, splitting around prior
+AUTO15 slot ownership. The target records reached by those relative words are
+not promoted.
+
 # M12-AUTO19 Ancient Music Driver data-archive provenance checkpoint
 
 The AUTO19 transaction is

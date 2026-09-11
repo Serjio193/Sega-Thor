@@ -37,4 +37,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_record_stream_promote_test.py)
     add_test(NAME oasis_re_m12_table_graphics_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_table_graphics_promote_test.py)
+    add_test(NAME oasis_re_m12_ccb0_target_table_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_target_tables_promote_test.py)
+    add_test(NAME oasis_re_m12_exact_small_table_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_exact_small_tables_promote_test.py)
 endif()

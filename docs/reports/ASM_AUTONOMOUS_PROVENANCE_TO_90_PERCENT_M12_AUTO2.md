@@ -1,6 +1,12 @@
-# M12-AUTO18 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO22 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO18_BLOCKED_BELOW_90_INHERITED_BASELINE_EXACTNESS`.
+Status: `M12_AUTO22_BELOW_90_CONTINUING`.
+
+AUTO22 adds 58 exact small-table bytes after AUTO21. AUTO21 added 7,238
+bytes from the exact CC-B0 relative-target-table contract; AUTO20 added
+115,011 table-selected graphics bytes. The current map owns 1,225,438 bytes
+(38.9556248983%), with 1,605,718 bytes remaining to the integer 90% threshold.
+Canonical ROM identity remains unchanged and no M13/C++ migration has begun.
 
 M12-AUTO18 adds two exact static-consumer graphics streams totaling 1,063
 bytes after AUTO17: `0x167E48..0x16821F` and `0x168442..0x168492`. Exact
@@ -32,8 +38,8 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical CRC32 | `C4728225` |
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
-| Baseline Git SHA | `b0cb5d94d9aff75c1ac1430a996006816b9bce7a` |
-| Final local transaction | `build/m12-auto18-graphics-consumers-transaction-d/materialized/manifest.json` |
+| Baseline Git SHA | `6b8ca1ee676fc59fa8b587ecb137d42f6874fb9e` |
+| Final local transaction | `build/m12-auto22-exact-small-tables-transaction-a/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -57,8 +63,11 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Exact runtime-correlated probe slices | 988,222 | 31.4147313436% |
 | Runtime-correlated graphics streams | 1,001,388 | 31.8332672119% |
 | Exact 0x3820 graphics consumers | 1,002,451 | 31.8670590719% |
+| Table-selected graphics | 1,218,142 | 38.7236913045% |
+| CC-B0 relative-target tables | 1,225,380 | 38.9537811279% |
+| Exact small tables | 1,225,438 | 38.9556248983% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,828,705 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,605,718 bytes.
 
 ## Final ownership census
 
@@ -66,11 +75,11 @@ The 90% threshold is 2,831,156 bytes; the current gap is 1,828,705 bytes.
 | --- | ---: | ---: |
 | 68000 `CODE_VERIFIED` | 51,650 | 1.6419092814% |
 | Header/vector ASM | 512 | 0.016276042% |
-| Confirmed structured data | 87,525 | 2.7823448181% |
+| Confirmed structured data | 94,821 | 3.0142784119% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
-| Local ROM-derived assets | 730,087 | 23.2088406881% |
-| **SOURCE_OWNED** | **1,002,451** | **31.8670590719%** |
-| Remaining `UNKNOWN` blob | 2,143,277 | 68.1329409281% |
+| Local ROM-derived assets | 845,098 | 26.8649419149% |
+| **SOURCE_OWNED** | **1,225,438** | **38.9556248983%** |
+| Remaining `UNKNOWN` blob | 1,920,290 | 61.0443751017% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -240,6 +249,9 @@ Edges:
 | Runtime-correlated graphics streams | `0x15E052..0x160E19`, `0x2119D2..0x211F79` | 13,166 bytes; exact `0x3820` runtime reader, matching local decoder boundaries, and static pointer literals |
 | Exact static 0x3820 graphics consumers | `0x167E48..0x16821F`, `0x168442..0x168492` | 1,063 bytes; exact `LEA → D9A4 → 37D2 → 0x3820` chains and local decoder boundaries |
 | Full unresolved-region graphics census | `0x064E38..0x141580`, `0x1AD000..0x1E7236`, `0x25FEC2..0x300000` | decoder-complete candidates; only closed consumer/table edges promoted |
+| Table-selected graphics | `0x3F306..0x3FF66`, field1 `+4` | 35 wholly UNKNOWN streams, 115,011 bytes; independent census boundary and decompressed-size checks |
+| CC-B0 relative-target tables | `0x00CCB0`, 20 unique target windows | 7,238 previously UNKNOWN bytes; exact one-byte selector, two-byte slots, and signed-relative consumer |
+| Exact small tables | `0x03E0B8..0x03E0D8`, `0x522E..0x5236`, `0x5CBD6..0x5CBE8` | 58 bytes; exact copy/selector/record loop contracts |
 | Runtime ROM-reader correlation | existing GPGX evidence | two ranges closed only where runtime reader, local decoder boundary, and static pointer evidence agree |
 | Beta-ROM differential | canonical vs beta | evidence only; not ownership proof |
 | Monotonic absolute-pointer scan | large unresolved intervals | no complete independent pointer graph |
@@ -346,3 +358,25 @@ SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
 This transaction does not promote raw field1 pointers without a census
 boundary, non-graphics table fields, or any range overlapping existing code or
 data ownership. Those remain UNKNOWN for a later parser/consumer proof.
+
+# M12-AUTO21 — CC-B0 relative-target tables
+
+AUTO21 promotes 7,238 previously UNKNOWN bytes from the nested tables selected
+by `0x00CCB0`. The exact consumer masks the low selector byte, scales it by two,
+and adds a signed relative word to the selected group target. This closes a
+fixed 256-slot / `0x200`-byte table for each of the 20 unique targets; overlapping
+windows are unioned and AUTO15's already-owned selected slots are preserved.
+No records reached by the relative pointers are inferred. The transaction
+rebuilds the canonical ROM exactly and reaches 1,225,380 bytes (38.9537811279%).
+
+# M12-AUTO22 — Exact small tables
+
+AUTO22 promotes 58 bytes from three exact fixed consumers:
+`[0x3E0B8,0x3E0D8)` is the eight-longword copy table selected at `0x03E516`,
+`[0x522E,0x5236)` is the eight-byte selector table selected at `0x0051CE`, and
+`[0x5CBD6,0x5CBE8)` is the six three-byte source-record table read at `0x005120`.
+No adjacent bytes are classified. The canonical ROM remains CRC32 `C4728225`,
+SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The current map reaches 1,225,438 bytes (38.9556248983%); the integer 90%
+threshold still requires 1,605,718 additional bytes.

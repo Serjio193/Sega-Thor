@@ -1,3 +1,48 @@
+# 2026-09-11 — M12-AUTO22 exact small tables — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only exact fixed tables with a byte contract,
+closed consumer loop/index shape, no overlap with existing ownership, and a
+full-ROM equality check.
+
+RESULT: AUTO22 promotes 58 bytes from three exact tables: the eight-longword
+copy table `[0x3E0B8,0x3E0D8)`, the eight-byte selector table
+`[0x522E,0x5236)`, and six three-byte source records `[0x5CBD6,0x5CBE8)`.
+The map reaches 1,225,438 / 3,145,728 bytes (38.9556248983%); 1,605,718
+bytes remain to the integer 90% threshold. No broad neighboring range is
+classified.
+
+EXACTNESS: The transaction has zero manifest gaps and overlaps and rebuilds
+CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and
+SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Helper regression, Python compilation, vasm full-ROM round trip,
+artifact byte comparison, and the two targeted CTest helpers passed. The
+project Debug build remains blocked by the pre-existing MSVC error in
+`src/core/ram_flag_routine.cpp` (`std::to_string` unavailable); this task did
+not modify that source. No ROM, BIOS, commercial asset, or C++ migration was
+added.
+
+STATUS: The >=90% gate remains unmet; unbounded pointer and decoder-only
+candidates remain UNKNOWN.
+
+# 2026-09-11 — M12-AUTO21 CC-B0 relative-target tables — <90% / CONTINUING
+
+TASK: Close only the nested CC-B0 tables whose consumer provides an exact
+selector-derived size.
+
+RESULT: AUTO21 promotes 7,238 previously UNKNOWN bytes covered by 20 unique
+target windows, merged into 14 non-overlapping intervals. The exact consumer
+at `0x00CCB0` masks the selector to one byte, scales it by two, and reads a
+signed relative word, closing 256 two-byte slots per target. The map reaches
+1,225,380 / 3,145,728 bytes (38.9537811279%) before AUTO22.
+
+EXACTNESS: The transaction preserved zero gaps/overlaps and the canonical
+ROM hashes. Target windows overlapping AUTO15 selected slots were split
+without replacing existing ownership.
+
 # 2026-09-11 — M12-AUTO20 table-selected graphics — <90% / CONTINUING
 
 TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
