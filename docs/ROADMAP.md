@@ -1,3 +1,16 @@
+# M12-AUTO36 — Source-owned ROM map checkpoint — 39.1934394836% / BELOW-90 CONTINUING
+
+AUTO36 adds three exact direct-consumer graphics streams totaling 5,085 bytes
+at `0x15BAC2..0x15C238`, `0x15C238..0x15CA9B`, and `0x15CA9C..0x15CEA0`.
+The one-byte `0xFF` separator remains UNKNOWN; M13/C++ migration remains
+prohibited.
+
+# M12-AUTO35 — Source-owned ROM map checkpoint — 39.0317916870% / BELOW-90 CONTINUING
+
+AUTO35 adds the exact 64-byte bit-7 lookup `[0x05CE16,0x05CE56)`. Its
+consumer masks the index to `0..63`; the adjacent payload remains UNKNOWN.
+The canonical ROM remains byte-exact and M13/C++ migration remains prohibited.
+
 # M12-AUTO34 — Source-owned ROM map checkpoint — 39.0297571818% / BELOW-90 CONTINUING
 
 AUTO34 adds the exact 108-entry compressed-resource pointer table

@@ -1,3 +1,62 @@
+# 2026-09-11 — M12-AUTO36 exact menu graphics streams — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only direct graphics streams with exact 68000
+consumer bytes, independently reproduced decoder boundaries, and no padding
+byte reassignment.
+
+RESULT: AUTO36 promotes `[0x15BAC2,0x15C238)` (1910 bytes),
+`[0x15C238,0x15CA9B)` (2147 bytes), and `[0x15CA9C,0x15CEA0)` (1028 bytes).
+The direct consumers are `0x004966`, `0x004974`, and `0x004982`; decoder output
+sizes are 3200, 3200, and 2656 bytes. The `0xFF` separator at `0x15CA9B`
+remains UNKNOWN. The map reaches 1,232,919 / 3,145,728 bytes
+(39.1934394836%); 1,598,237 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO36 transaction is
+`build/m12-auto36-menu-graphics-transaction-b/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, helper regression, external decoder boundaries,
+vasm round-trip, and full-ROM verification pass. Debug/Release MSVC builds
+remain blocked by the existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO35 exact bit-7 lookup table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN byte lookup whose reader
+closes the index range and whose neighboring payload remains unowned.
+
+RESULT: AUTO35 promotes `[0x05CE16,0x05CE56)` (64 bytes) as a
+`BYTE_BIT7_LOOKUP_TABLE`. Reader `0x00F61C` applies `ANDI.W #$3F` and tests
+bit 7 at the selected byte. The adjacent `[0x05CE56,0x05CE96)` payload is
+not promoted. The map reaches 1,227,834 / 3,145,728 bytes (39.0317916870%);
+1,603,322 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO35 transaction is
+`build/m12-auto35-bit7-transaction-a/materialized/manifest.json`. It has
+zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter and regression helper pass, and full-ROM vasm
+verification passes. Debug/Release MSVC builds remain blocked by the existing
+`std::to_string` error in `src/core/ram_flag_routine.cpp`. No ROM, BIOS,
+commercial asset, or C++ migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
 # 2026-09-11 — M12-AUTO34 exact compressed-resource pointer table — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the

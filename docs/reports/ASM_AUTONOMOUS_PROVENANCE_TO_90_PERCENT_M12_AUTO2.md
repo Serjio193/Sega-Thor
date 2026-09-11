@@ -1,3 +1,24 @@
+# M12-AUTO36 — exact menu graphics streams
+
+Status: `M12_AUTO36_BELOW_90_CONTINUING`.
+
+AUTO36 adds three direct-consumer graphics streams totaling 5,085 bytes:
+`0x15BAC2..0x15C238`, `0x15C238..0x15CA9B`, and `0x15CA9C..0x15CEA0`.
+Consumers `0x4966`, `0x4974`, and `0x4982` call the verified `0x3820` decoder;
+the standalone `0xFF` separator at `0x15CA9B` remains UNKNOWN. The
+transaction rebuilds the canonical ROM exactly and the map reaches
+1,232,919 / 3,145,728 bytes (39.1934394836%).
+
+# M12-AUTO35 — exact bit-7 lookup table
+
+Status: `M12_AUTO35_BELOW_90_CONTINUING`.
+
+AUTO35 adds the wholly UNKNOWN `[0x05CE16,0x05CE56)` 64-byte lookup. The
+exact `0x00F61C` consumer masks its byte index to `0..63` and tests bit 7;
+the following 64-byte payload remains UNKNOWN. The transaction rebuilds the
+canonical ROM exactly and the map reaches 1,227,834 / 3,145,728 bytes
+(39.0317916870%).
+
 # M12-AUTO34 — exact compressed-resource pointer table
 
 Status: `M12_AUTO34_BELOW_90_CONTINUING`.

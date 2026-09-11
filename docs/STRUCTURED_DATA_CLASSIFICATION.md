@@ -18,6 +18,10 @@ The accepted structures are deliberately small and evidence-backed:
 | `0x0096F8..0x009708` | 16 | 1 | 16 | `DATA_STRUCTURE_SUPPORTED` | `0x9AD6` behavior lookup |
 | `0x00C92C..0x00C980` | 84 | 4 | 21 | `DATA_STRUCTURE_SUPPORTED` | `0xC8F0`, `load_screen_descriptor()` |
 | `0x05CE96..0x05D046` | 432 | 4 | 108 | `DATA_STRUCTURE_SUPPORTED` | `0xD3B2` indexed reader and `0x3820` |
+| `0x05CE16..0x05CE56` | 64 | 1 | 64 | `DATA_STRUCTURE_SUPPORTED` | `0xF61C` masked byte index and bit-7 test |
+| `0x15BAC2..0x15C238` | 1910 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4966` and `0x3820` graphics decoder |
+| `0x15C238..0x15CA9B` | 2147 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4974` and `0x3820` graphics decoder |
+| `0x15CA9C..0x15CEA0` | 1028 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4982` and `0x3820` graphics decoder |
 | `0x02CF82..0x02CF9C` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x0009`, `0xC8F0` |
 | `0x02D3E8..0x02D402` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x000C`, `0xC8F0` |
 | `0x032144..0x03215E` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x0704`, `0xC8F0` |

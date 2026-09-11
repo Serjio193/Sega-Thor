@@ -1,3 +1,14 @@
+# M12-AUTO36 adds the developer-only menu-graphics stream promoter
+`src/tools/re_m12_menu_graphics_promote.py` and its deterministic regression
+`tests/re_m12_menu_graphics_promote_test.py`. It records only the three exact
+`0x15BAC2..0x15CEA0` stream intervals; the `0x15CA9B` separator and generated
+transaction output remain outside ownership.
+
+# M12-AUTO35 adds the developer-only bit-7 lookup promoter
+`src/tools/re_m12_bit7_lookup_promote.py` and its deterministic regression
+`tests/re_m12_bit7_lookup_promote_test.py`. It records only the exact
+`0x05CE16..0x05CE56` table; generated transaction output remains ignored.
+
 # M12-AUTO34 adds the developer-only resource-pointer promoter
 `src/tools/re_m12_resource_pointer_table_promote.py` and its deterministic
 regression `tests/re_m12_resource_pointer_table_promote_test.py`. It records

@@ -1,3 +1,20 @@
+# M12-AUTO36 exact menu graphics streams
+
+AUTO36 promotes three independent direct-consumer streams as
+`DIRECT_MENU_GRAPHICS_STREAM`: `[0x15BAC2,0x15C238)` (1910 bytes),
+`[0x15C238,0x15CA9B)` (2147 bytes), and `[0x15CA9C,0x15CEA0)` (1028 bytes).
+Consumers `0x004966`, `0x004974`, and `0x004982` each load the corresponding
+ROM address and call the verified decoder at `0x003820`; the local decoder
+reproduces 3200, 3200, and 2656 output bytes respectively. The standalone
+`0x15CA9B` byte is `0xFF` and remains UNKNOWN.
+
+# M12-AUTO35 exact bit-7 lookup table
+
+AUTO35 promotes `[0x05CE16,0x05CE56)` (64 bytes) as a
+`BYTE_BIT7_LOOKUP_TABLE`. Consumer `0x00F61C` masks the word at `50(A6)` to
+`0..63`, then tests bit 7 at the corresponding byte offset. The following
+64-byte payload remains UNKNOWN; no neighboring bytes are included.
+
 # M12-AUTO34 exact compressed-resource pointer table
 
 AUTO34 promotes `[0x05CE96,0x05D046)` (432 bytes) as a
