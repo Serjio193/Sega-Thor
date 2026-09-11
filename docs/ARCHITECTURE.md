@@ -475,6 +475,14 @@ Preferred test types:
 - `tools` may inspect all low-level data APIs but should not become a runtime dependency of the game.
 - cyclic dependencies are prohibited.
 
+M12-CARVER-5 keeps whole-ROM format/container reconstruction in developer-only
+tools. `m12_carver_format_reconstruction.py` consumes the canonical manifest,
+the local ROM, and previously recorded M12 evidence, then writes typed
+fingerprints, bounded grammar candidates, duplicate provenance, and fixed-point
+IntervalDB metadata. It never writes manifest ownership: existing exact
+promoters remain the only ownership writers, and decoder/entropy/structural
+heuristics cannot become SOURCE_OWNED without their exact contracts.
+
 ## File-size rule
 Every human-maintained source/build file must remain at or below **500 lines**.
 Prose documentation is exempt, as specified in `AGENTS.md`.

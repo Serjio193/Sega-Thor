@@ -6076,3 +6076,38 @@ IMPLEMENTATION PUBLICATION: commit `a2c58294cc994a0097899ae8103493bf4bad2aac`
 was pushed to `origin/main`. Exact GitHub Actions CI run `34633366873` passed
 Build and Test. The final docs-only publication SHA and its exact CI run remain
 to be recorded after this documentation update.
+
+# 2026-09-11 — M12-CARVER-5 whole-ROM format/container reconstruction
+
+TASK: perform one global, bottom-up structural reconstruction pass over every
+remaining UNKNOWN range using the post-Carver-4 manifest and recorded evidence.
+Do not repeat runtime/static sweeps, inspect gaps one-by-one, start M13, migrate
+ASM to C++, or claim ownership from decoder/statistical evidence.
+
+IMPLEMENTATION: added the developer-only deterministic format reconstruction
+core and CLI. It fingerprints all 758 UNKNOWN ranges, computes bounded global
+container/table candidates, performs duplicate-family comparison, scans the
+existing BO graphics grammar at every even candidate start, and attaches typed
+non-owning evidence to the existing IntervalDB. Candidate IDs include the full
+structural identity so alternate endian views do not create false conflicts.
+The current exact M12 promoters and manifest writer were not replaced.
+
+RESULT: 858,249 starts were checked; 1,454 valid BO grammar hits were found and
+722 deterministic spans retained. Structural candidates include 31 count/stride,
+32 monotonic pointer-family, 48 sentinel, and 182 uniform-padding observations;
+128 exact-duplicate provenance observations were recorded. None closed the
+required reusable grammar plus exact representation plus code/semantic
+exclusion contract. SOURCE_OWNED remains exactly 1,427,873 bytes; UNKNOWN
+remains 758 ranges / 1,717,855 bytes; B/F/G remain 113/56/589 ranges and
+623,036/58,789/1,036,030 bytes. Carver fixed point is reached with 4,494
+evidence records, 7,083 nodes, 10,148 edges, and zero conflicts.
+
+REPORT: `docs/reports/THOR_ROM_CARVER_M12_FORMAT_CONTAINER_RECONSTRUCTION.md`.
+Ignored machine output is under
+`build/m12-carver-m12c5-format-reconstruction-c/`. Canonical ROM SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: helper tests, Python compilation, local build/test/source-limit,
+`git diff --check`, and final SHA CI status must be recorded before publication.
+The known unrelated MSVC Debug issue in `src/core/ram_flag_routine.cpp` remains
+outside this task. M12-CARVER-5 stops at the global structural fixed point.

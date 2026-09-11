@@ -1330,3 +1330,13 @@ AUTO60 adds 1,158 bytes from 15 exact direct-caller-to-RTS static ASM islands.
 The systematic audit tested 33 candidates and rejected 18 non-exact cases. The
 map is now 1,427,873 of 3,145,728 bytes; 1,403,283 bytes remain to the integer
 90% threshold. C++ migration remains out of scope.
+
+# M12-CARVER-5 — Whole-ROM format/container reconstruction — DONE / BELOW-75
+
+The global structural pass fingerprinted all 758 remaining UNKNOWN ranges,
+checked 858,249 bounded BO-decoder candidate starts, and attached 4,494 typed
+evidence records to the IntervalDB. It found no independently closed reusable
+format/container contract, so SOURCE_OWNED remains 1,427,873 bytes (45.3908602397%).
+The complete B/F/G map is unchanged. No ROM/assets, unknown `dc.b`, M13, or
+ASM-to-C++ work was added. See
+`docs/reports/THOR_ROM_CARVER_M12_FORMAT_CONTAINER_RECONSTRUCTION.md`.

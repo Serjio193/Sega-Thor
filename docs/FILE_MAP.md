@@ -939,3 +939,14 @@ complete blocker map without writing manifest ownership or repeating runtime
 capture. Regression coverage is in
 `tests/re_m12_carver_static_recovery_test.py`; the result is documented in
 `docs/reports/THOR_ROM_CARVER_M12_STATIC_CONSUMER_RECOVERY.md`.
+
+# M12-CARVER-5 adds whole-ROM format/container reconstruction
+
+`src/tools/m12_carver_format_reconstruction.py` and
+`src/tools/re_m12_carver_format_reconstruction.py` fingerprint every UNKNOWN
+range, solve bounded structural candidates, scan the existing BO grammar, and
+attach non-owning typed evidence to the Carver IntervalDB. The regression test
+is `tests/re_m12_carver_format_reconstruction_test.py`. Machine-readable
+outputs remain ignored under `build/m12-carver-m12c5-format-reconstruction-c/`;
+the result is documented in
+`docs/reports/THOR_ROM_CARVER_M12_FORMAT_CONTAINER_RECONSTRUCTION.md`.
