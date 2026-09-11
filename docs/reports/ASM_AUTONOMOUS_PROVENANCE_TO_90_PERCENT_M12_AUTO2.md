@@ -1,3 +1,13 @@
+# M12-AUTO44 — runtime count-bounded record regions
+
+Status: `M12_AUTO44_BELOW_90_CONTINUING`.
+
+AUTO44 adds 27 previously UNKNOWN runtime-correlated regions totaling 1,732
+bytes. Readers `0x00AF16` and `0x00ABB4` close each interval as complete
+count-plus-six-byte-record streams; 24 additional matching regions were
+already owned by AUTO11. The transaction reaches 1,236,107 / 3,145,728
+bytes (39.2947832743%); no C++ migration was started.
+
 # M12-AUTO43 — small caller-backed runtime-observed exact routine
 
 Status: `M12_AUTO43_BELOW_90_CONTINUING`.

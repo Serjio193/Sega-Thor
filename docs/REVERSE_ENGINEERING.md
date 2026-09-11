@@ -1,3 +1,12 @@
+# M12-AUTO44 runtime count-bounded record regions
+
+AUTO44 promotes 27 previously UNKNOWN regions totaling 1,732 bytes as
+`RUNTIME_COUNT_BOUNDED_6BYTE_RECORD_STREAMS`. Readers `0x00AF16` and
+`0x00ABB4` load each region's count word and tile the complete interval as
+`2 + 6 * (count + 1)` bytes per stream; runtime correlation boundaries and
+reader execution evidence agree. The other 24 matching regions (1,346 bytes)
+were already owned by AUTO11 and are not double-counted.
+
 # M12-AUTO43 small caller-backed runtime-observed exact routine
 
 AUTO43 promotes `[0x0083F8,0x00846C)` (116 bytes) as

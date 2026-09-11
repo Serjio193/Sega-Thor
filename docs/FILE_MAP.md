@@ -1,3 +1,11 @@
+# M12-AUTO44 adds the runtime record-region promoter
+
+`src/tools/re_m12_runtime_record_regions_promote.py` and its deterministic
+`tests/re_m12_runtime_record_regions_promote_test.py` record the new exact
+count-bounded regions selected by readers `0x00AF16` and `0x00ABB4`.
+Generated transaction output remains ignored/local; already-owned AUTO11
+regions are explicitly excluded from the new byte count.
+
 # M12-AUTO43 adds the small caller-backed runtime-code promoter
 
 `src/tools/re_m12_runtime_code_small_caller_promote.py` and its deterministic

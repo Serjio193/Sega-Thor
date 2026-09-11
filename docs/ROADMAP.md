@@ -1,3 +1,10 @@
+# M12-AUTO44 — Source-owned ROM map checkpoint — 39.2947832743% / BELOW-90 CONTINUING
+
+AUTO44 adds 1,732 exact bytes from 27 runtime-correlated count-bounded
+6-byte record regions consumed by readers `0x00AF16` and `0x00ABB4`. Their
+count tiling closes every promoted boundary; already-owned AUTO11 regions
+are not double-counted. M13/C++ migration remains prohibited.
+
 # M12-AUTO43 — Source-owned ROM map checkpoint — 39.2397244771% / BELOW-90 CONTINUING
 
 AUTO43 adds the exact small caller-backed routine `[0x0083F8,0x00846C)` (116

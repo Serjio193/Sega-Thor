@@ -5599,3 +5599,32 @@ source was changed.
 
 STOP: The >=90% gate is not met. No guessed data, padding, or semantic
 payload ownership was added; M13/C++ migration remains out of scope.
+# 2026-09-11 — M12-AUTO44 runtime record-region provenance — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP with byte-exact canonical
+ROM preservation and no M13/C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only runtime-correlated regions whose reader
+contract and count-plus-six-byte parser tiling close the exact boundaries;
+exclude already-owned regions from the transaction count.
+
+RESULT: AUTO44 promotes 27 previously UNKNOWN regions totaling 1,732 bytes.
+Readers `0x00AF16` and `0x00ABB4` account for every promoted region; each
+region is fully tiled by `2 + 6 * (count + 1)` bytes. The other 24 matching
+regions totaling 1,346 bytes were already owned by AUTO11 and were not
+double-counted. The transaction
+`build/m12-auto44-runtime-record-regions-b/materialized/manifest.json`
+reaches 1,236,107 / 3,145,728 bytes (39.2947832743%); 1,595,049 bytes
+remain to the integer 90% threshold.
+
+EXACTNESS: Rebuilt ROM CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: AUTO44 helper test, Python compilation, runtime correlation
+validation, parser tiling, promoter materialization, and full-ROM hash audit
+passed. Build gates remain blocked by the pre-existing
+`src/core/ram_flag_routine.cpp` errors; no C++ source was changed.
+
+STOP: The >=90% gate is not met. No guessed data, padding, or semantic
+payload ownership was added; M13/C++ migration remains out of scope.
