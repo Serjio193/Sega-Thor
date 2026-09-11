@@ -1,3 +1,13 @@
+# M12-AUTO39 — exact relative selector table
+
+Status: `M12_AUTO39_BELOW_90_CONTINUING`.
+
+AUTO39 adds the wholly UNKNOWN `[0x15A9A6,0x15A9B0)` ten-byte table. The
+exact `0x003EFA` consumer closes five even selector offsets and applies each
+word relative to its field address; the five selected payloads remain UNKNOWN.
+The full-ROM round-trip passes and the map reaches 1,233,231 / 3,145,728 bytes
+(39.2033576965%).
+
 # M12-AUTO38 — exact menu offset table and record streams
 
 Status: `M12_AUTO38_BELOW_90_CONTINUING`.

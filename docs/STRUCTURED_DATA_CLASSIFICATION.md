@@ -20,6 +20,7 @@ The accepted structures are deliberately small and evidence-backed:
 | `0x05CE96..0x05D046` | 432 | 4 | 108 | `DATA_STRUCTURE_SUPPORTED` | `0xD3B2` indexed reader and `0x3820` |
 | `0x05CE16..0x05CE56` | 64 | 1 | 64 | `DATA_STRUCTURE_SUPPORTED` | `0xF61C` masked byte index and bit-7 test |
 | `0x05CE56..0x05CE96` | 64 | 1 | 64 | `DATA_STRUCTURE_SUPPORTED` | `0x7A6C` selector-indexed enum lookup, values 0..4 |
+| `0x15A9A6..0x15A9B0` | 10 | 2 | 5 | `DATA_STRUCTURE_SUPPORTED` | `0x3EFA` bounded selector and relative `ADDA.W` targets |
 | `0x15BAC2..0x15C238` | 1910 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4966` and `0x3820` graphics decoder |
 | `0x15C238..0x15CA9B` | 2147 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4974` and `0x3820` graphics decoder |
 | `0x15CA9C..0x15CEA0` | 1028 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4982` and `0x3820` graphics decoder |

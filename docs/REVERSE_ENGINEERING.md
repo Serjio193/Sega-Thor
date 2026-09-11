@@ -1,3 +1,12 @@
+# M12-AUTO39 exact relative selector table
+
+AUTO39 promotes `[0x15A9A6,0x15A9B0)` as
+`RELATIVE_SELECTOR_OFFSET_TABLE_5X16`. Consumer `0x003EFA` derives the only
+five selector offsets (`0,2,4,6,8`) from the bounded menu-state branches, then
+uses `ADDA.W (A0),A0` to resolve each word relative to its own table field.
+The exact values resolve to `0x15A9B0`, `0x15A9C4`, `0x15A9DE`, `0x15A9FE`,
+and `0x15AA24`; those payloads are not promoted by this table-only proof.
+
 # M12-AUTO38 exact menu offset table and record streams
 
 AUTO38 promotes `[0x15B9D4,0x15BAC2)` as

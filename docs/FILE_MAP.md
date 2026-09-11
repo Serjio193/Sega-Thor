@@ -1,3 +1,10 @@
+# M12-AUTO39 adds the developer-only relative-selector promoter
+
+`src/tools/re_m12_relative_selector_table_promote.py` and its deterministic
+`tests/re_m12_relative_selector_table_promote_test.py` record only the exact
+`0x15A9A6..0x15A9B0` selector table. Generated transaction output remains
+ignored; selected payloads remain outside ownership.
+
 # M12-AUTO38 adds the developer-only menu record-stream promoter
 
 `src/tools/re_m12_menu_record_stream_promote.py` and its deterministic

@@ -1,3 +1,9 @@
+# M12-AUTO39 — Source-owned ROM map checkpoint — 39.2033576965% / BELOW-90 CONTINUING
+
+AUTO39 adds the exact ten-byte relative selector table `[0x15A9A6,0x15A9B0)`;
+its five selected payloads remain UNKNOWN pending independent boundaries. The
+canonical ROM remains byte-exact and M13/C++ migration remains prohibited.
+
 # M12-AUTO38 — Source-owned ROM map checkpoint — 39.2030398051% / BELOW-90 CONTINUING
 
 AUTO38 adds the exact contiguous menu range `[0x15B9D4,0x15BAC2)` (238 bytes):

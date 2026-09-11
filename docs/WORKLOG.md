@@ -1,3 +1,31 @@
+# 2026-09-11 — M12-AUTO39 exact relative selector table — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only the selector table whose index set is closed
+by exact caller control flow; leave every selected payload UNKNOWN until its
+own parser boundary is proven.
+
+RESULT: AUTO39 promotes `[0x15A9A6,0x15A9B0)` (10 bytes) as five big-endian
+relative offsets. Consumer `0x003EFA` can select only byte offsets `0,2,4,6,8`
+and applies each word relative to the selected field address. The five targets
+are `0x15A9B0`, `0x15A9C4`, `0x15A9DE`, `0x15A9FE`, and `0x15AA24`; all target
+payloads remain UNKNOWN. The map reaches 1,233,231 / 3,145,728 bytes
+(39.2033576965%); 1,597,925 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO39 transaction is
+`build/m12-auto39-relative-selector-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, helper regression, exact consumer/table/hash
+contracts, vasm round-trip, and full-ROM verification pass. Debug/Release
+MSVC builds remain blocked by the existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
 # 2026-09-11 — M12-AUTO38 exact menu offset table and record streams — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
