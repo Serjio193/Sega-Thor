@@ -6038,3 +6038,7 @@ and `git diff --check` are required final gates. The canonical ROM identity is
 unchanged; no ROM/assets, unknown `dc.b` ownership, M13 work, or ASM-to-C++
 migration was added. The full report is
 `docs/reports/THOR_ROM_CARVER_M12_GLOBAL_SWEEP.md`.
+
+FINAL IMPLEMENTATION SHA: `5b59e88257b1283eaf51f49c3120a5c7765908f7`.
+Exact GitHub Actions CI run `34619527956` passed Configure, Build and Test for
+that SHA. The follow-up commit only records this CI result in documentation.

@@ -127,5 +127,11 @@ copyrighted ROM or extracted asset was committed.
 
 The global-sweep regression test, Python compilation, source-size review, and
 `git diff --check` are required final gates. Existing Release/GNU-equivalent
-CI gates remain authoritative; the final commit and exact CI run are recorded
-in the completion message and must match this report’s final SHA.
+CI gates remain authoritative.
+
+Final implementation SHA: `5b59e88257b1283eaf51f49c3120a5c7765908f7`
+
+Exact final-SHA CI: [run 34619527956](https://github.com/Serjio193/Sega-Thor/actions/runs/34619527956)
+completed successfully with Configure, Build and Test green. The later
+documentation-only record commit does not alter the implementation SHA or
+runtime/tooling result.
