@@ -1,3 +1,22 @@
+# M12-AUTO38 — exact menu offset table and record streams
+
+Status: `M12_AUTO38_BELOW_90_CONTINUING`.
+
+AUTO38 adds the wholly UNKNOWN `[0x15B9D4,0x15BAC2)` range (238 bytes). The
+8-byte relative offset table selects four contiguous streams with counts
+`0x21, 0, 0, 0`; the shared `0x00B730` parser consumes six-byte records and
+closes each boundary. The exact caller contracts and full-ROM round-trip pass;
+the map reaches 1,233,221 / 3,145,728 bytes (39.2030398051%).
+
+# M12-AUTO37 — exact enum lookup
+
+Status: `M12_AUTO37_BELOW_90_CONTINUING`.
+
+AUTO37 adds the wholly UNKNOWN `[0x05CE56,0x05CE96)` 64-byte enum lookup. The
+exact `0x007A6C` reader indexes it with the closed `0..0x3F` selector range and
+all bytes are enum values `0..4`. The full-ROM round-trip passes and the map
+reaches 1,232,983 / 3,145,728 bytes (39.1954739889%).
+
 # M12-AUTO36 — exact menu graphics streams
 
 Status: `M12_AUTO36_BELOW_90_CONTINUING`.

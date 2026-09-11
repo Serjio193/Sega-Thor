@@ -1,3 +1,16 @@
+# M12-AUTO38 — Source-owned ROM map checkpoint — 39.2030398051% / BELOW-90 CONTINUING
+
+AUTO38 adds the exact contiguous menu range `[0x15B9D4,0x15BAC2)` (238 bytes):
+an 8-byte relative offset table and four count-bounded six-byte record streams.
+The following AUTO36 graphics range remains unchanged; the canonical ROM stays
+byte-exact and M13/C++ migration remains prohibited.
+
+# M12-AUTO37 — Source-owned ROM map checkpoint — 39.1954739889% / BELOW-90 CONTINUING
+
+AUTO37 adds the exact 64-byte enum lookup `[0x05CE56,0x05CE96)` selected by
+`0x007A6C`; its `0..4` values and `0..0x3F` selector range are closed. The
+canonical ROM remains byte-exact and M13/C++ migration remains prohibited.
+
 # M12-AUTO36 — Source-owned ROM map checkpoint — 39.1934394836% / BELOW-90 CONTINUING
 
 AUTO36 adds three exact direct-consumer graphics streams totaling 5,085 bytes

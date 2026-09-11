@@ -1,3 +1,21 @@
+# M12-AUTO38 exact menu offset table and record streams
+
+AUTO38 promotes `[0x15B9D4,0x15BAC2)` as
+`MENU_OFFSET_TABLE_AND_COUNT_BOUNDED_RECORD_STREAMS`. The four relative
+offset words are `0x0008`, `0x00D4`, `0x00DA`, and `0x00E0`; they select streams
+starting at `0x15B9DC`, `0x15BAAA`, `0x15BAB2`, and `0x15BABA`. Their counts are
+`0x21`, `0`, `0`, and `0`, so the shared parser at `0x00B730` closes the
+contiguous range with `2 + 6 * (count + 1)` bytes per stream. Callers at
+`0x004AF2`, `0x004B08`, and `0x004B18` provide the exact selection contracts;
+the next byte at `0x15BAC2` remains the independent AUTO36 graphics boundary.
+
+# M12-AUTO37 exact 64-byte enum lookup
+
+AUTO37 promotes `[0x05CE56,0x05CE96)` as `BYTE_ENUM_LOOKUP_TABLE`. Reader
+`0x007A6C` loads the selector from `FF1976`, indexes all 64 bytes, and compares
+against enum values through `4`; the preceding branch closes the selector at
+`0..0x3F`, while `0x05CE96` is the next confirmed pointer table.
+
 # M12-AUTO36 exact menu graphics streams
 
 AUTO36 promotes three independent direct-consumer streams as

@@ -19,9 +19,11 @@ The accepted structures are deliberately small and evidence-backed:
 | `0x00C92C..0x00C980` | 84 | 4 | 21 | `DATA_STRUCTURE_SUPPORTED` | `0xC8F0`, `load_screen_descriptor()` |
 | `0x05CE96..0x05D046` | 432 | 4 | 108 | `DATA_STRUCTURE_SUPPORTED` | `0xD3B2` indexed reader and `0x3820` |
 | `0x05CE16..0x05CE56` | 64 | 1 | 64 | `DATA_STRUCTURE_SUPPORTED` | `0xF61C` masked byte index and bit-7 test |
+| `0x05CE56..0x05CE96` | 64 | 1 | 64 | `DATA_STRUCTURE_SUPPORTED` | `0x7A6C` selector-indexed enum lookup, values 0..4 |
 | `0x15BAC2..0x15C238` | 1910 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4966` and `0x3820` graphics decoder |
 | `0x15C238..0x15CA9B` | 2147 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4974` and `0x3820` graphics decoder |
 | `0x15CA9C..0x15CEA0` | 1028 | 1 | 1 | `DATA_STRUCTURE_SUPPORTED` | `0x4982` and `0x3820` graphics decoder |
+| `0x15B9D4..0x15BAC2` | 238 | 2/6 | 4 streams | `DATA_STRUCTURE_SUPPORTED` | `0x4AF2`, `0x4B08`, `0x4B18`, shared parser `0xB730` |
 | `0x02CF82..0x02CF9C` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x0009`, `0xC8F0` |
 | `0x02D3E8..0x02D402` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x000C`, `0xC8F0` |
 | `0x032144..0x03215E` | 26 | 26 | 1 | `DATA_STRUCTURE_SUPPORTED` | screen ID `0x0704`, `0xC8F0` |

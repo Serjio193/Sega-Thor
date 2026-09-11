@@ -1,3 +1,16 @@
+# M12-AUTO38 adds the developer-only menu record-stream promoter
+
+`src/tools/re_m12_menu_record_stream_promote.py` and its deterministic
+`tests/re_m12_menu_record_stream_promote_test.py` record only the exact
+`0x15B9D4..0x15BAC2` menu offset table and count-bounded streams. Generated
+transaction output remains ignored.
+
+# M12-AUTO37 adds the developer-only enum-lookup promoter
+
+`src/tools/re_m12_enum_lookup_promote.py` and its deterministic
+`tests/re_m12_enum_lookup_promote_test.py` record only the exact
+`0x05CE56..0x05CE96` table. Generated transaction output remains ignored.
+
 # M12-AUTO36 adds the developer-only menu-graphics stream promoter
 `src/tools/re_m12_menu_graphics_promote.py` and its deterministic regression
 `tests/re_m12_menu_graphics_promote_test.py`. It records only the three exact

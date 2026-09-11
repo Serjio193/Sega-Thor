@@ -1,3 +1,57 @@
+# 2026-09-11 — M12-AUTO38 exact menu offset table and record streams — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only a wholly UNKNOWN range whose relative offset
+table, bounded count streams, direct callers, and shared parser all close the
+same byte interval without assigning the neighboring graphics separator.
+
+RESULT: AUTO38 promotes `[0x15B9D4,0x15BAC2)` (238 bytes) as a menu offset
+table plus four contiguous count-bounded six-byte record streams. The exact
+callers at `0x004AF2`, `0x004B08`, and `0x004B18` select the streams through
+`ADDA.W`; the shared parser at `0x00B730` consumes the leading count and
+advances six bytes per record. The map reaches 1,233,221 / 3,145,728 bytes
+(39.2030398051%); 1,597,935 bytes remain to the integer 90% threshold.
+
+EXACTNESS: The AUTO38 transaction is
+`build/m12-auto38-menu-record-stream-transaction-a/materialized/manifest.json`.
+It has zero manifest gaps/overlaps and rebuilds CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The promoter, helper regression, exact consumer/parser contracts,
+vasm round-trip, and full-ROM verification pass. Debug/Release MSVC builds
+remain blocked by the existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`. No ROM, BIOS, commercial asset, or C++
+migration was added.
+
+STATUS: The >=90% gate remains unmet; exact data/parser/consumer provenance
+investigation continues.
+
+# 2026-09-11 — M12-AUTO37 exact enum lookup — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only the exact selector-indexed table closed by
+the caller range and neighboring table boundary.
+
+RESULT: AUTO37 promotes `[0x05CE56,0x05CE96)` (64 bytes) as a
+`BYTE_ENUM_LOOKUP_TABLE`. Reader `0x007A6C` indexes it from `FF1976`; the
+preceding guard closes the selector at `0..0x3F`, values are `0..4`, and the
+next confirmed pointer table begins exactly at `0x05CE96`. The map reaches
+1,232,983 / 3,145,728 bytes (39.1954739889%).
+
+EXACTNESS: The AUTO37 transaction is
+`build/m12-auto37-enum-lookup-transaction-b/materialized/manifest.json` and
+rebuilds the canonical ROM hashes exactly. The standalone AUTO37 helper and
+vasm full-ROM verification pass.
+
+VALIDATION: Debug/Release MSVC builds remain blocked by the existing
+`std::to_string` error in `src/core/ram_flag_routine.cpp`. No ROM, BIOS,
+commercial asset, or C++ migration was added.
+
 # 2026-09-11 — M12-AUTO36 exact menu graphics streams — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
