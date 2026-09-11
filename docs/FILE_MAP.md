@@ -1,3 +1,9 @@
+# M12-AUTO23 adds the developer-only save-slot promoter
+`src/tools/re_m12_save_slots_promote.py` and deterministic regression
+`tests/re_m12_save_slots_promote_test.py`. It records only the exact primary
+save slot and independently bounded secondary prefix; generated transaction
+output remains ignored and no C++ migration or ROM asset is tracked.
+
 # M12-AUTO20 extends the developer-only graphics promoter
 `src/tools/re_m12_table_graphics_promote.py` and its deterministic regression
 `tests/re_m12_table_graphics_promote_test.py` promote only wholly UNKNOWN

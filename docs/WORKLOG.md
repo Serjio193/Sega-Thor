@@ -1,3 +1,35 @@
+# 2026-09-11 — M12-AUTO23 save serialization slots — <90% / CONTINUING
+
+TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the
+byte-exact canonical ROM and keeping C++ migration out of scope.
+
+ACCEPTANCE CRITERIA: Promote only save ranges closed by exact serializer and
+checker contracts, preserve zero manifest gaps/overlaps, and require a
+full-ROM equality check.
+
+RESULT: AUTO23 promotes the primary save-slot range `[0x2025CD,0x2026E1)`
+(276 bytes) and the independently bounded secondary prefix
+`[0x2026E1,0x2026F5)` (20 bytes). The exact 68000 routines at `0x001DEC`,
+`0x001E46`, `0x001EDE`, and `0x001F26` establish the six stride-2 tag bytes,
+the 130-byte plus checksum primary payload, and the four-byte secondary value.
+The map reaches 1,225,734 / 3,145,728 bytes (38.9650344849%); 1,605,422
+bytes remain to the integer 90% threshold. The later save/SRAM area remains
+UNKNOWN because no bounded consumer closes it.
+
+EXACTNESS: The transaction has zero manifest gaps and overlaps and rebuilds
+CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and
+SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: The save-slot helper regression, Python compilation, vasm
+full-ROM round trip, artifact byte comparison, and targeted CTest helper
+passed. The project Debug build remains blocked by the pre-existing MSVC
+`std::to_string` error in `src/core/ram_flag_routine.cpp`; this task did not
+modify that source. No ROM, BIOS, commercial asset, or C++ migration was
+added.
+
+STATUS: The >=90% gate remains unmet; broad save tails and mixed payloads
+remain UNKNOWN pending independent boundaries.
+
 # 2026-09-11 — M12-AUTO22 exact small tables — <90% / CONTINUING
 
 TASK: Continue the M12 >=90% SOURCE-OWNED ROM MAP while preserving the

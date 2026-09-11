@@ -3,7 +3,6 @@ project(sega_thor LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
 add_library(oasis_core
     src/core/rom.cpp
     src/core/rom_identity.cpp
@@ -194,6 +193,7 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_ccb0_selected_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_ccb0_selected_slots_promote_test.py)
     add_test(NAME oasis_re_m12_exact_probe_slices_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_exact_probe_slices_promote_test.py)
     add_test(NAME oasis_re_m12_runtime_graphics_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_runtime_graphics_promote_test.py)
+    add_test(NAME oasis_re_m12_save_slots_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_save_slots_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)

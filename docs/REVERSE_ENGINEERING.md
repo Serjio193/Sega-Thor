@@ -1,3 +1,15 @@
+# M12-AUTO23 save serialization slots
+
+AUTO23 closes two save-related ranges without treating the surrounding SRAM
+image as owned data. The primary range `[0x2025CD,0x2026E1)` is exactly the
+stride-2 extent established by the six-byte tag loop, 130-iteration payload
+loop, and two-byte checksum in the routines at `0x001DDC` and `0x001E46`.
+The secondary range is limited to `[0x2026E1,0x2026F5)`: the checker at
+`0x001EDE` consumes six stride-2 tags and the writer at `0x001F26` emits four
+stride-2 value bytes. Bytes after `0x2026F5` remain UNKNOWN; a save/SRAM
+address alone is not a container boundary. The exact canonical ROM hashes
+remain unchanged.
+
 # M12-AUTO22 exact small tables
 
 The AUTO22 transaction closes three fixed data units from exact consumer

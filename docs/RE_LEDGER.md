@@ -1,3 +1,14 @@
+# M12-AUTO23 save-serialization provenance checkpoint
+
+AUTO23 is `build/m12-auto23-save-slots-transaction-b/materialized/manifest.json`.
+It promotes `[0x2025CD,0x2026E1)` as the primary save slot: six stride-2 tag
+bytes, 130 serialized bytes, and a two-byte checksum are closed by the exact
+reader/writer pair at `0x001DDC`/`0x001E46`. It promotes only the confirmed
+secondary prefix `[0x2026E1,0x2026F5)`, where `0x001EDE` checks six tags and
+`0x001F26` writes the four-byte value. The later save/SRAM tail remains
+UNKNOWN because no exact extent is established. Full-ROM hashes remain
+canonical and no C++ migration is involved.
+
 # M12-AUTO22 exact small-table provenance checkpoint
 
 AUTO22 is `build/m12-auto22-exact-small-tables-transaction-a/materialized/manifest.json`.

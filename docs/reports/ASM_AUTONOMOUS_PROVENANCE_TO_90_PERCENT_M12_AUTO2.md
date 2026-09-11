@@ -1,11 +1,12 @@
-# M12-AUTO22 — bounded provenance toward a 90% source-owned ROM map
+# M12-AUTO23 — bounded provenance toward a 90% source-owned ROM map
 
-Status: `M12_AUTO22_BELOW_90_CONTINUING`.
+Status: `M12_AUTO23_BELOW_90_CONTINUING`.
 
-AUTO22 adds 58 exact small-table bytes after AUTO21. AUTO21 added 7,238
+AUTO23 adds 296 exact save-serialization bytes after AUTO22. AUTO22 added 58
+exact small-table bytes; AUTO21 added 7,238
 bytes from the exact CC-B0 relative-target-table contract; AUTO20 added
-115,011 table-selected graphics bytes. The current map owns 1,225,438 bytes
-(38.9556248983%), with 1,605,718 bytes remaining to the integer 90% threshold.
+115,011 table-selected graphics bytes. The current map owns 1,225,734 bytes
+(38.9650344849%), with 1,605,422 bytes remaining to the integer 90% threshold.
 Canonical ROM identity remains unchanged and no M13/C++ migration has begun.
 
 M12-AUTO18 adds two exact static-consumer graphics streams totaling 1,063
@@ -39,7 +40,7 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Canonical SHA-1 | `2944910c07c02eace98c17d78d07bef7859d386a` |
 | Canonical SHA-256 | `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` |
 | Baseline Git SHA | `6b8ca1ee676fc59fa8b587ecb137d42f6874fb9e` |
-| Final local transaction | `build/m12-auto22-exact-small-tables-transaction-a/materialized/manifest.json` |
+| Final local transaction | `build/m12-auto23-save-slots-transaction-b/materialized/manifest.json` |
 
 | Checkpoint | Source-owned bytes | Percentage |
 | --- | ---: | ---: |
@@ -66,8 +67,9 @@ ROM bytes do not have independently closed code, data, or asset provenance.
 | Table-selected graphics | 1,218,142 | 38.7236913045% |
 | CC-B0 relative-target tables | 1,225,380 | 38.9537811279% |
 | Exact small tables | 1,225,438 | 38.9556248983% |
+| Save serialization slots | 1,225,734 | 38.9650344849% |
 
-The 90% threshold is 2,831,156 bytes; the current gap is 1,605,718 bytes.
+The 90% threshold is 2,831,156 bytes; the current gap is 1,605,422 bytes.
 
 ## Final ownership census
 
@@ -75,11 +77,11 @@ The 90% threshold is 2,831,156 bytes; the current gap is 1,605,718 bytes.
 | --- | ---: | ---: |
 | 68000 `CODE_VERIFIED` | 51,650 | 1.6419092814% |
 | Header/vector ASM | 512 | 0.016276042% |
-| Confirmed structured data | 94,821 | 3.0142784119% |
+| Confirmed structured data | 95,117 | 3.0236879985% |
 | Confirmed alignment padding | 132,677 | 4.217688243% |
 | Local ROM-derived assets | 845,098 | 26.8649419149% |
-| **SOURCE_OWNED** | **1,225,438** | **38.9556248983%** |
-| Remaining `UNKNOWN` blob | 1,920,290 | 61.0443751017% |
+| **SOURCE_OWNED** | **1,225,734** | **38.9650344849%** |
+| Remaining `UNKNOWN` blob | 1,919,994 | 61.0349655151% |
 
 The asset total consists of the original 107-entry compressed-resource graph,
 159 screen-descriptor primary streams, 29 direct 68000 graphics streams, the
@@ -92,7 +94,8 @@ bytes, the 64-byte nested outer table, 492 bytes of count-bounded nested
 groups, and 185 pointer-backed records totalling 1,613 bytes. The one
 8-byte unindexed record-shaped span remains UNKNOWN. The structured-data total
 also includes the 50-record table at `0x5D046`, the 64-entry `0x0EEE` word
-lookup table, and the 512-byte bounded byte lookup table. The Z80 8192-byte
+lookup table, the 512-byte bounded byte lookup table, and the 296-byte exact
+save-serialization ranges. The Z80 8192-byte
 image is included in the ASM total and is also
 recorded as `Z80_SOURCE_OWNED_BYTES=8192`.
 
@@ -380,3 +383,15 @@ SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 The current map reaches 1,225,438 bytes (38.9556248983%); the integer 90%
 threshold still requires 1,605,718 additional bytes.
+
+# M12-AUTO23 — Save serialization slots
+
+AUTO23 promotes 296 bytes from the exact save serializer/checker contract.
+The primary range `[0x2025CD,0x2026E1)` is bounded by six stride-2 tag
+positions, 130 serialized bytes, and a two-byte checksum. The secondary
+promotion is deliberately limited to `[0x2026E1,0x2026F5)`, where the exact
+checker and writer establish only six tags and a four-byte value. The later
+save/SRAM tail remains UNKNOWN because no exact consumer closes its extent.
+The current map reaches 1,225,734 bytes (38.9650344849%); the integer 90%
+threshold still requires 1,605,422 additional bytes. Canonical full-ROM
+hashes remain unchanged.

@@ -1,3 +1,10 @@
+# M12-AUTO23 — Source-owned ROM map checkpoint — 38.9650344849% / BELOW-90 CONTINUING
+
+AUTO23 adds 296 bytes from two exact save-serialization ranges and preserves
+the canonical ROM. The primary slot has a closed six-tag, 130-byte,
+checksum-bounded stride-2 layout; the secondary promotion stops after its
+confirmed six-tag/four-byte prefix. M13/C++ migration remains prohibited.
+
 # M12-AUTO22 — Source-owned ROM map checkpoint — 38.9556248983% / BELOW-90 CONTINUING
 
 AUTO22 adds 58 bytes from three exact fixed tables and preserves the canonical
