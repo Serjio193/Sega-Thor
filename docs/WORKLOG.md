@@ -5342,6 +5342,10 @@ blocked by duplicate labels already present in the baseline layout; the
 byte-exact baseline rebuilt ROM was used only as an explicit verification
 fallback. Final CI remains pending for this change.
 
+IMPLEMENTATION PUBLICATION: commit `a27175fe2269744d0497c3545d50bb59d0085849`;
+GitHub Actions CI run `34651277101` passed. A documentation publication
+commit and its final HEAD CI remain pending.
+
 ## 2026-09-03 — M7 world/map/collision foundations — DONE
 **Objective:** Establish a verified room/screen loading path and tested collision/world-grid primitives before player translation.
 

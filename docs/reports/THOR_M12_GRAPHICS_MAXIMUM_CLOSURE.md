@@ -130,5 +130,7 @@ its upstream descriptor/register/RAM chain proves an exact ROM source. If all
 ten remain blocked after that bounded review, the next subsystem is the
 non-graphics UNKNOWN census; M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA and exact final CI are added after the focused change is
-committed and published.
+Implementation SHA: `a27175fe2269744d0497c3545d50bb59d0085849`.
+Exact implementation CI: GitHub Actions run `34651277101` (success).
+The final publication SHA and final HEAD CI are added by the documentation
+publication commit below.
