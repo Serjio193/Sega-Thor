@@ -1,4 +1,4 @@
-# 2026-09-12 — M12-GFX-2 0x3820 caller-to-asset closure — READY FOR COMMIT
+# 2026-09-12 — M12-GFX-2 0x3820 caller-to-asset closure — COMPLETE
 
 TASK: Starting from the published `bdbbfada3dd5de3ffc042302afc2fb2770a68695`
 baseline, prove the existing 0x3820 ABI, classify all 52 static call sites,
@@ -54,8 +54,9 @@ minutes of `/mnt/c` I/O after the same check had independently passed on
 Windows. IMPLEMENTATION: focused commit
 `28cceb2b17b15bc884124c63729d4d24e456668b` was pushed to `origin/main`; exact
 implementation-SHA GitHub Actions CI run `34647644049` completed successfully.
-The report now records both identities; the docs-only publication commit SHA
-is the final publication identity to be recorded after that commit is created.
+The docs-only publication commit `70e2a8e6f09200f55798f9bfbb42f0da44f2ecf2`
+is the final publication SHA; its exact CI run `34647889523` also completed
+successfully. No ROM or decoded payload is tracked.
 
 # 2026-09-11 — M12-AUTO56 overlapping PC-relative word table — <90% / CONTINUING
 
