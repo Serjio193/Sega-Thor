@@ -1,3 +1,17 @@
+# M12-AUTO19 Ancient Music Driver data-archive provenance checkpoint
+
+The AUTO19 transaction is
+`build/m12-auto19-sound-data-transaction-a/materialized/manifest.json`. It
+promotes exactly `0x064E38..0x07D780` (100,680 bytes) as
+`SOUND_DATA_CONTAINER_CONFIRMED`. The exact 68000 consumer at `0x060B50`
+loads the offset table rooted at `0x0638D4`; the transaction validates the
+34-entry primary group, 126-entry secondary group, and 17-entry tertiary group
+with respectively 29, 126, and 4 targets inside the bounded data container.
+The remaining 13 tertiary targets are outside the container and are rejected.
+The next range `0x07D780..0x080000` is byte-exact `0xFF` fill, providing the
+terminal boundary. This is a raw sound-data ownership contract, not an audio
+semantic or C++ migration claim. The full-ROM hashes remain canonical.
+
 # M12-AUTO18 exact 0x3820 graphics-consumer provenance checkpoint
 
 The AUTO18 transaction is

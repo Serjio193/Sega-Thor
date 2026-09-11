@@ -1,3 +1,15 @@
+# M12-AUTO19 Ancient Music Driver data archive
+
+The AUTO19 transaction
+`build/m12-auto19-sound-data-transaction-a/materialized/manifest.json` adds
+100,680 `DATA_KNOWN` bytes in `0x064E38..0x07D780`. The exact consumer at
+`0x060B50` indexes the `0x0638D4` offset table. Machine-readable validation
+records 34 primary entries (29 active in the promoted range), 126 secondary
+entries, and 17 tertiary entries (4 active); targets outside the terminal
+boundary are not promoted. The following `0xFF` alignment run is independently
+preserved. The source-owned map reaches 1,103,131 bytes (35.0675900777%); the
+canonical ROM hashes and zero-gap/zero-overlap manifest remain exact.
+
 # M12-AUTO18 exact 0x3820 graphics consumers
 
 The AUTO18 transaction

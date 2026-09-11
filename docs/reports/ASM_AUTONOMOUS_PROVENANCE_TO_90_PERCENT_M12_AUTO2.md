@@ -289,3 +289,21 @@ commercial asset, secret, or production C++ migration was added to the
 repository. AUTO18 helper compilation, regression, runtime-reader/static-chain/pointer
 validation and canonical hash checks passed; the full Debug/Release/GNU-equivalent build and
 CTest publication gate remains pending for this checkpoint.
+## M12-AUTO19 — exact Ancient Music Driver data archive
+
+AUTO19 promotes `0x064E38..0x07D780` as a bounded sound-data container,
+adding 100,680 `DATA_KNOWN` bytes. The exact 68000 consumer at `0x060B50`
+indexes the table rooted at `0x0638D4`; the deterministic validator checks the
+34-entry primary group, 126-entry secondary group, and 17-entry tertiary group.
+Only 29/34, 126/126, and 4/17 entries respectively target the promoted data;
+the 13 tertiary targets outside the container are rejected. The immediate
+`0x07D780..0x080000` run is byte-exact `0xFF` fill and closes the container.
+The inherited transaction has zero gaps/overlaps and canonical full-ROM hashes;
+the map reaches 1,103,131 bytes (35.0675900777%). This method establishes raw
+sound-data ownership only; audio semantics and C++ migration remain outside
+M12.
+
+Method-effectiveness update: the sound-table method is POSITIVE for one
+bounded 100,680-byte container, while raw pointer targets outside its exact
+terminal boundary remain NEGATIVE/REJECTED. Decoder-only census candidates,
+unbounded sound tables, and inactive tertiary targets remain UNKNOWN.

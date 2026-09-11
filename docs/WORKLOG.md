@@ -1,4 +1,38 @@
-# 2026-09-11 — M12-AUTO18 exact 0x3820 graphics consumers — <90% / BLOCKED
+# 2026-09-11 — M12-AUTO19 Ancient Music Driver data archive — <90% / CONTINUING
+
+TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
+byte-exact ROM and not starting C++ migration.
+
+ACCEPTANCE CRITERIA: Promote only the bounded ROM data container supported by
+the exact 68000 sound consumer and deterministic offset-table checks. Preserve
+the canonical full-ROM identity and keep tertiary targets outside the terminal
+data boundary rejected rather than counted.
+
+RESULT: The developer-only AUTO19 transaction promotes
+`0x064E38..0x07D780` as `DATA_KNOWN`, totaling 100,680 bytes. The exact
+consumer at `0x060B50` indexes the driver table at `0x0638D4`; the validated
+primary, secondary, and tertiary offset groups contain 29, 126, and 4 active
+targets in the data range. The exact `0x07D780..0x080000` `0xFF` run closes the
+container boundary; 13 tertiary targets outside it remain rejected. The map
+reaches 1,103,131 / 3,145,728 bytes (35.0675900777%); 1,728,025 bytes remain
+to the integer 90% threshold. No ROM, BIOS, commercial asset, or C++ migration
+was added.
+
+EXACTNESS: The inherited-baseline transaction has zero manifest gaps and
+overlaps and reconstructs the canonical ROM with CRC32 `C4728225`, SHA-1
+`2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Sound-data helper regression, Python compilation, transaction
+table/boundary validation, artifact byte comparison, and source-file limit
+checks passed. Full Debug/Release/GNU-equivalent build status remains the
+inherited pre-existing MSVC `std::to_string` issue at
+`src/core/ram_flag_routine.cpp:181`; no unrelated source was modified.
+
+STATUS: The >=90% gate remains unmet but work continues. Decoder-only or raw
+pointer-only candidates remain UNKNOWN.
+
+# 2026-09-11 — M12-AUTO18 exact 0x3820 graphics consumers — <90% / CONTINUING
 
 TASK: Continue M12 toward a >=90% SOURCE-OWNED ROM MAP while preserving
 byte-exact ROM and not starting C++ migration.

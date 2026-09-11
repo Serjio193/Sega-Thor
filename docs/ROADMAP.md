@@ -1,4 +1,12 @@
-# M12-AUTO18 — Source-owned ROM map checkpoint — 31.8670590719% / BELOW-90 BLOCKER
+# M12-AUTO19 — Source-owned ROM map checkpoint — 35.0675900777% / BELOW-90 CONTINUING
+
+M12-AUTO19 adds the bounded Ancient Music Driver sound-data container
+`[0x064E38,0x07D780)` (100,680 `DATA_KNOWN` bytes) through the exact consumer
+`0x060B50` and validated offset-table groups. The next `0xFF` run supplies the
+terminal boundary; tertiary pointers outside it remain UNKNOWN. The canonical
+ROM is unchanged and M13/C++ migration remain prohibited.
+
+# M12-AUTO18 — Source-owned ROM map checkpoint — 31.8670590719% / BELOW-90
 
 M12-AUTO18 adds two exact static-consumer graphics streams totaling 1,063
 bytes through `LEA → D9A4 → 37D2 → 0x3820` contracts and preserves the

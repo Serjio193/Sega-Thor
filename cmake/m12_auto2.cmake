@@ -15,6 +15,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_promote_test.py)
     add_test(NAME oasis_re_m12_z80_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_z80_promote_test.py)
+    add_test(NAME oasis_re_m12_sound_data_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_sound_data_promote_test.py)
     add_test(NAME oasis_re_m12_consumer_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_consumer_promote_test.py)
     add_test(NAME oasis_re_m12_script_helpers
