@@ -152,3 +152,62 @@ closed routine `0x03AD66`, loads a table from `0x03B0AA` and executes
 call, and no target is guessed. The combined structural join remains
 `FF10AC -> dispatcher -> 0x03A748 -> selector -> descriptor/child relative
 pairs -> 0x03B448 -> 0x0000B730 -> SAT`; SOURCE_OWNED is unchanged.
+
+## M12 `0x03B092` indirect tail — FINITE TARGET CLOSURE
+
+The separate downstream tail is closed by the exact bounded slice at
+`0x03B092..0x03B0AA`:
+
+```text
+MOVE.W (0x00FFAFB0),D0
+ANDI.W #$0003,D0
+ADD.W D0,D0; ADD.W D0,D0
+LEA 0x03B0AA(PC),A0
+MOVEA.L (A0,D0.W),A0
+0x03B0A8: JMP (A0)
+```
+
+This proves an unsigned word RAM-state index masked to `0..3`, four-byte
+index scale, `A0` as the target register, and an absolute big-endian
+longword table at `0x03B0AA..0x03B0BA`. The only exact table-base loader is
+`0x03B0A0`; the direct caller is `0x03ADAC` from the already closed target
+routine `0x03AD66`. The four entries are:
+
+```text
+index  entry       target
+0      0x03B0AA    0x03B0BC
+1      0x03B0AE    0x03B0E8
+2      0x03B0B2    0x03B132
+3      0x03B0B6    0x03B0BA
+```
+
+All four targets are code and have RTS-closed boundaries:
+
+```text
+0x03B0BA..0x03B0BC
+0x03B0BC..0x03B0E8
+0x03B0E8..0x03B132
+0x03B132..0x03B188
+```
+
+The payload-free target census records static I/O. `0x03B0BC` reads the RAM
+source at `0x00FF316C` and performs a bounded register/stack transform.
+`0x03B0E8` and `0x03B132` read `0x00FF164E`, `0x00FF1892`, and
+`0x00FF316C`, update the `0x00FF1892`/A0-indirect destination, and loop on
+the flag. `0x03B0BA` is an immediate RTS. No target has a direct call, ROM
+data access, `0x3820` call, `0xB730` call, or static A6/selector/descriptor
+reference.
+
+The second-level selector is therefore proven as `0x00FFAFB0 & 3`, a RAM
+state word inherited by `0x03AD66`; `0x03AD66..0x03B092` does not assign it
+locally before the jump. This is not evidence for a command, state, frame, or
+animation interpreter: no command fetch, variable record advance, or opcode
+branch exists in the finite target family. The existing join reaches this
+tail as `FF10AC -> 0x03A748 -> body selector -> 0x03AD66 -> 0x03B092 ->
+0x03B0AA target table`; the previously proven relative-pair/B730/SAT path is
+unchanged and no new connection from this tail is claimed.
+
+The machine-readable validator is
+`src/tools/m12_b092_tail_dispatch.py`, with regression test
+`tests/m12_b092_tail_dispatch_test.py`. No runtime experiment was needed;
+selector-7 value `0xFFFF0017` remains unrelated and unresolved.

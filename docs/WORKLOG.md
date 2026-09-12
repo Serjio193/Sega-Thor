@@ -7425,3 +7425,44 @@ exact CI verification remain publication gates for this bounded result.
 BOUNDARY: Both requested indirect body calls are statically resolved. Stop
 here unless a materially different evidence class is explicitly authorized
 for `0x03B0A8` or unresolved semantic labels.
+
+# 2026-09-12 — M12 B092 indirect tail — FINITE TARGET CLOSURE
+
+TASK: Resolve only the second-level indirect tail rooted at `0x03B092` /
+`0x03B0A8`. No broad graphics pass, replay campaign, ROM scan, ROM/assets,
+M13, or C++ work.
+
+RESULT: Added `src/tools/m12_b092_tail_dispatch.py` and its focused test.
+The exact bounded routine is `MOVE.W (0x00FFAFB0),D0`, `ANDI.W #3`, two
+`ADD.W D0,D0`, `LEA 0x03B0AA(PC),A0`, `MOVEA.L (A0,D0.W),A0`, then
+`JMP (A0)` at `0x03B0A8`. Thus the index is an unsigned masked RAM-state
+word, scale 4, and table `0x03B0AA..0x03B0BA` has exactly four absolute
+big-endian longword entries: `0x03B0BC`, `0x03B0E8`, `0x03B132`, and
+`0x03B0BA`.
+
+All four target routines are RTS-closed: `03B0BA..03B0BC`,
+`03B0BC..03B0E8`, `03B0E8..03B132`, and `03B132..03B188`. Their static I/O
+and terminal behavior are recorded in the payload-free JSON contract. They
+have no direct calls, ROM accesses, `0x3820`/`0xB730` calls, or A6/
+selector/descriptor references. The family is RAM/flag transformation code,
+not a proven command/frame interpreter.
+
+SOURCE: `0x03AD66` calls `0x03B092` at `0x03ADAC`; the local path does not
+assign `0x00FFAFB0` before the call. The second-level index is therefore
+`0x00FFAFB0 & 3`, distinct from selector `0xFFAFAE`; no semantic state label
+is invented. Selector-7 `0xFFFF0017` remains unrelated and unresolved.
+
+JOIN: `FF10AC -> 0x03A748 -> body selector -> 0x03AD66 -> 0x03B092 ->
+0x03B0AA target table`; the existing relative-pair -> `0x03B448` ->
+`0xB730` -> SAT path remains unchanged. No runtime experiment was needed.
+
+OWNERSHIP: SOURCE_OWNED remains `1,475,368 / 3,145,728` bytes
+(`46.9006856283%`). No ROM, assets, captures, or production-runtime change.
+
+VALIDATION: Focused test, Python compilation, and canonical payload-free
+report generation pass. Full Debug/Release CTest, WSL build/link,
+`git diff --check`, source-size validation, commit/push, and exact CI remain
+publication gates.
+
+BOUNDARY: The `0x03B092` tail and all four finite targets are structurally
+exhausted. Stop here; do not start another indirect-dispatch pass.

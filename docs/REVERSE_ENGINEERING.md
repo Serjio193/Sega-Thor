@@ -3712,3 +3712,26 @@ The only remaining edge found in this bounded target census is
 separate downstream indirect tail and is explicitly not treated as a target
 of either body call. The existing structural join to `0x03B448 -> 0xB730 ->
 SAT` is unchanged. No runtime experiment was needed.
+
+## M12 `0x03B092` second-level tail
+
+The exact ROM contract at `0x03B092..0x03B0AA` proves a second-level
+selector: `MOVE.W (0x00FFAFB0),D0`, `ANDI.W #3`, two word doublings,
+PC-relative `LEA 0x03B0AA`, indexed longword load into `A0`, and
+`0x03B0A8: JMP (A0)`. The only table-base loader is `0x03B0A0`; the table
+is exactly `0x03B0AA..0x03B0BA`, four 4-byte absolute big-endian PCs, with
+domain `0..3` and values `0x03B0BC`, `0x03B0E8`, `0x03B132`, `0x03B0BA`.
+The caller is `0x03ADAC` from `0x03AD66`.
+
+The payload-free evidence tool is
+`src/tools/m12_b092_tail_dispatch.py`. It validates RTS boundaries
+`03B0BA..03B0BC`, `03B0BC..03B0E8`, `03B0E8..03B132`, and
+`03B132..03B188`, plus static target I/O. The targets have no direct calls,
+ROM table access, `0x3820`/`0xB730` calls, or A6/selector/descriptor
+references. Their observed behavior is bounded RAM/flag transformation, not
+a proven mini-ISA or frame interpreter.
+
+`0x00FFAFB0` is inherited RAM state and is not directly assigned in the
+`0x03AD66..0x03B092` path. This closes the requested tail without assigning
+semantic object/animation/frame labels. Selector-7 `0xFFFF0017` remains
+outside this evidence edge and unresolved. No runtime experiment was needed.

@@ -1051,6 +1051,14 @@ at its unresolved extent edge. Regression coverage is in
 ROM-derived evidence. The combined result is documented in
 `docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
 
+`src/tools/m12_b092_tail_dispatch.py` validates the finite second-level
+dispatch rooted at `0x03B092`/`0x03B0A8`, its four-entry table at `0x03B0AA`,
+all four RTS-closed targets, static I/O, and interpreter negative evidence.
+Its regression test is `tests/m12_b092_tail_dispatch_test.py`; CTest
+registration is in `cmake/m12_auto2.cmake`. Local JSON output is ignored
+ROM-derived evidence. The result is documented in
+`docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
+
 `src/tools/m12_indirect_body_dispatch.py` validates the two exact
 selector-masked indirect body calls at `0x03AA28` and `0x03AAA8`, enumerates
 their 15 unique targets, records static target I/O/call provenance, and

@@ -77,4 +77,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_relative_table_analysis_test.py)
     add_test(NAME oasis_re_m12_indirect_body_dispatch_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_indirect_body_dispatch_test.py)
+    add_test(NAME oasis_re_m12_b092_tail_dispatch_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_b092_tail_dispatch_test.py)
 endif()
