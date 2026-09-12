@@ -6496,8 +6496,8 @@ NEXT: continue with the remaining dynamic producers, beginning with
 these arms.
 
 PUBLICATION: focused commit
-`02ab402cb7ae438788b550610ebe18ae7486bb85` is on `origin/main`; exact
-GitHub Actions CI run `34661445505` passed Build, Test, and Complete.
+`7b638801d1e7b6f0abc721219da989b8d48e5e00` is on `origin/main`; exact
+GitHub Actions CI run `34661832137` passed Build, Test, and Complete.
 
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
 
