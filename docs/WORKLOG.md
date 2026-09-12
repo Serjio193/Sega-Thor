@@ -6920,3 +6920,364 @@ NEXT: obtain new caller-closed or targeted register evidence for the ten
 dynamic `0x3820` producers. Existing exact static slices are exhausted for
 those ten; no ownership promotion without a proven ROM source and exact
 boundary.
+# 2026-09-12 — M12 emulator sprite-system reconstruction — IN PROGRESS
+
+TASK: Recover the actual object/animation/frame/sprite path with bounded
+emulator evidence, beginning by measuring the installed BizHawk observables
+and adding a developer-only hardware-sprite reconstruction contract. Keep the
+canonical ROM external and byte-exact; do not start M13, ASM-to-C++ migration,
+manual full-game playthrough, or a whole-ROM graphics sweep.
+
+ACCEPTANCE CRITERIA: produce a machine-readable capability report from the
+installed BizHawk environment; record which register, ROM/RAM, callback,
+memory-domain, save-state, and VDP-related observables are actually exposed;
+add deterministic synthetic tests for Genesis SAT decoding, 4bpp tile
+decoding, CRAM palette decoding, flips, bounded piece composition, malformed
+input rejection, and provenance identity; keep all emulator and ROM-specific
+logic under `src/tools`; update the M12 report with PROVEN/OBSERVED/INFERRED/
+CANDIDATE/BLOCKED classifications and exact validation results.
+
+NON-GOALS: no production gameplay/rendering change, no ROM/assets/decoded
+copyrighted images in Git, no ownership promotion from visual similarity or
+decoder validity, and no claim that the complete object table is recovered
+until a running consumer relationship and finite enumeration are proven.
+
+RESULT: The previously working BizHawk installation was recovered at
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\EmuHawk.exe`, with working
+directory equal to that installation directory. The exact existing M12-GFX
+workflow was replayed once with the natural scenario and 1800 frames: exit 0,
+capture SHA-256 `D61150BD828DB22CA35A2E6C93A103BDC04ABE667883B94339FD05390924000B`,
+byte-identical to both published captures. The canonical ROM was present and
+matched the recorded 3,145,728-byte identity.
+
+LIVE EVIDENCE: BizHawk 2.11.1 exposed `M68K BUS`, `VRAM`, `CRAM`, `VSRAM`, and
+`MD CART`, plus register, execution/read/write callback, and frame APIs. The
+developer-only SAT probe observed VDP register 5 at PC `0x2AF4` selecting SAT
+base `0xD000`; 512 bounded DMA launches from RAM `0xFF13CC` to that base were
+issued by PC `0x27EC`. The bounded sprite-context probe then observed the
+exact `0x3B416..0x3B448` selector/table path: table base `0x3B8DE`, selector
+RAM `0xFFAFAE`, selected table-field pointer `0x3B95C` observed at `0x3B426`
+(`MOVEA.L (A0),A0`), and four ROM-backed source starts passed at `0x3B448`
+to `0xB730`. `0xB730` stores the SAT source record
+at `0xB752`, `0xB764`, `0xB76E`, and `0xB77A`; the BizHawk write callback's
+`0xB754` PC is the post-store callback for the first store. 43/43 same-frame
+DMA payload/SAT snapshot comparisons matched byte-for-byte; observed linked
+chains reached eight entries. No emulator state writes occurred.
+
+LIMITATION: An unrestricted or PC-filtered BizHawk `on_bus_read` backward trace
+was too expensive in this environment and was stopped before producing an
+artifact. The exact bounded selector/table/record edge is now observed, but
+the semantic object root, animation grammar, complete enumeration, and all
+frame/resource linkage remain unclaimed. No SOURCE_OWNED count changed; the
+checkpoint remains 1,475,368 / 3,145,728 (46.9006856283%).
+
+ARTIFACTS: `docs/reports/THOR_M12_BIZHAWK_CAPABILITY_REPORT.json`,
+`docs/reports/THOR_M12_EMULATOR_SPRITE_TABLE_RECONSTRUCTION.md`,
+`src/tools/re_bizhawk_m12_sat_provenance.lua`,
+`src/tools/re_bizhawk_m12_sprite_context.lua`, and the ignored runtime
+captures under `build/m12-gfx-runtime/`. The synthetic reconstruction test
+passed.
+
+VALIDATION: MinGW Debug and Release configure/build passed; Debug and Release
+CTest each passed 153/153, including the source file-limit check. Python
+synthetic tests, Python compilation, report/runtime consistency, and
+`git diff --check` passed. A GNU/Linux-equivalent check was not available:
+WSL was callable, but its shell exposed no `cmake`, `g++`, or `ninja`; no Linux
+claim is made.
+
+NEXT: use the now-closed `0x3B8DE`/`0xB730` edge to enumerate only the proven
+record count/stride and follow its runtime consumers toward animation/object
+roots; keep semantic assignment and SOURCE_OWNED promotion fail-closed until
+the complete graph is independently bounded. Keep all such work
+developer-only.
+
+# 2026-09-12 — M12 bounded live-context catalog — IN PROGRESS
+
+TASK: Turn the proven BizHawk selector/table/producer observation into a
+repeatable, payload-free catalog. Do not infer semantic object, animation, or
+frame names from addresses alone and do not modify SOURCE_OWNED.
+
+RESULT: Added `src/tools/m12_sprite_context_catalog.py`. Against the canonical
+ROM and `sprite-context-current-v5.json` it validates the ROM hash and
+read-only capture, enumerates the exact eight `0x10`-byte records at
+`0x03B8DE..0x03B95E`, and requires an ordered bounded execution edge through
+`0x3B41A`, `0x3B422`, `0x3B426`, `0x3B448`, `0xB730`, and all four SAT stores.
+The current capture closes that edge in 12 frames and records four observed
+ROM-backed source starts. The output contains addresses and provenance only;
+no ROM payload, graphics bytes, or decoded asset is emitted. Record semantics
+and complete object/animation/frame enumeration remain `UNRESOLVED`.
+
+ARTIFACT: ignored runtime catalog
+`build/m12-gfx-runtime/sprite-context-catalog-current.json`, SHA-256
+`0EC167EF498537D50796F9F4E1BA92D287BF4A7D0640728B3FE854C01AFA7F0C`.
+
+VALIDATION: focused catalog tests passed; Python compilation passed. Debug and
+Release CTest must be rerun after the new CTest registration. No C++,
+production runtime, ROM, asset, or ownership manifest change was made.
+
+NEXT: use the bounded catalog as the invariant for the next targeted live
+trace; recover an independently proven frame/animation consumer before any
+semantic naming or full enumeration claim.
+
+# 2026-09-12 — M12 exact-address ROM-read provenance — IN PROGRESS
+
+TASK: Strengthen the bounded selector/table/producer chain with direct ROM
+read events without repeating the prohibitively expensive global BizHawk
+`on_bus_read` trace.
+
+RESULT: Added `src/tools/re_bizhawk_m12_targeted_reads.lua`, watching only the
+confirmed table-field/pointer and observed source-start addresses. BizHawk
+2.11.1 completed a 730-frame replay with 270 read events and no state writes.
+The capture directly records `0x3B8EA -> 0x3B95C` 77 times, then
+`0x3B95C -> 0x00171832` 77 times, and reads all four observed source starts
+(`0x171864`, `0x17186C`, `0x171874`, `0x17187C`) in the `0xB730` body context.
+The payload-free catalog now validates these events in addition to the ordered
+execution edge and the exact eight-record table geometry.
+
+ARTIFACT: ignored local capture
+`build/m12-gfx-runtime/targeted-reads-current.json`, SHA-256
+`53D36B893E6CB22D8CE86BDC9329B157591384D4CB8B68177F2DB6DAD1F6DB65`.
+
+LIMITATION: This closes direct bounded ROM reads, not semantic pointer meaning
+or the complete object/animation/frame graph. No semantic name, asset
+extraction, SOURCE_OWNED promotion, C++, or M13 work was introduced.
+
+VALIDATION: focused catalog tests, Python compilation, catalog generation, and
+capture/report hash consistency passed. The prior full Debug/Release CTest
+result was `154/154`; the new Lua probe is developer-only and does not alter
+build targets beyond the documented source map.
+
+NEXT: use the exact read-PC evidence to target the next frame-descriptor or
+animation consumer, retaining the same bounded-address strategy and refusing
+full enumeration until a finite grammar is independently proven.
+
+# 2026-09-12 — M12 1800-frame targeted-read expansion — IN PROGRESS
+
+TASK: Extend the exact-address ROM-read probe across the already accepted
+1800-frame deterministic scenario, using only statically enumerated table
+fields/pointers and the previously observed source window.
+
+RESULT: `re_bizhawk_m12_targeted_reads.lua` completed with exit 0 and 2,836
+bounded read events. Runtime reads now cover table fields for records 0, 1,
+and 2: `0x3B8EA -> 0x3B95C` (734 events), `0x3B8FA -> 0x3B998` (1), and
+`0x3B90A -> 0x3B982` (474). Pointer reads directly reach `0x171832` (689)
+and `0x1742DC` (469). The four source starts observed in the prior context
+capture remain ROM-read in the `0xB730` body context. The payload-free catalog
+now reports observed table-field edges by record index while leaving all
+semantic names unresolved.
+
+ARTIFACT: ignored local capture
+`build/m12-gfx-runtime/targeted-reads-current-1800-v2.json`, SHA-256
+`D519BC1373D9F5BF5C0E45F115E86146C9D97FB48E6FD97AE7C0EDA30E2CACF5`; catalog
+SHA-256 `91B526D27411D574730F9E4AF56458B6AA2820D504A54EDECA7AADEF90FED0F3`.
+
+LIMITATION: Records 3 through 7 have not been observed on this scenario, and
+no pointer value is promoted to an object, animation, frame, or sprite name.
+The full graph and all-frame enumeration remain `UNRESOLVED`; no SOURCE_OWNED
+change was made.
+
+NEXT: use the newly observed record-2 pointer/read edge to add only its exact
+consumer PCs or bounded descriptor words, then seek an independently proven
+finite frame grammar.
+
+# 2026-09-12 — M12 bounded ROM source-start census — IN PROGRESS
+
+TASK: Re-run the exact-address probe with only the previously observed
+`0xB730` source starts and their four statically evidenced words, extending the
+live census without a range scan or manual gameplay search.
+
+RESULT: The deterministic 1800-frame replay completed with exit 0. The probe
+retained 4,096 bounded read events and observed 24 distinct first-word source
+starts from `0x171864` through `0x171A54` (including repeated starts at
+`0x171A04`, `0x171A14`, and `0x171A1C`), with corresponding `+2/+4/+6` reads
+at the `0xB74C`, `0xB76C`, and `0xB776` callback PCs where retained. Table
+fields for records 0, 1, and 2 and pointer targets `0x171832`/`0x1742DC`
+remain directly observed. The payload-free catalog now reports 24 observed
+source starts and marks the event-cap boundary.
+
+ARTIFACT: ignored local capture
+`build/m12-gfx-runtime/targeted-reads-current-1800-v3.json`, SHA-256
+`C48705F8900A489A97930C398CBD903FF1B02C9B6E75B68764552224D0FFCD8A`; catalog
+SHA-256 `907E1F484EDC95795F363BCFA40320CABC63019BB4E9C16A8BAAE5684A509DE6`.
+
+LIMITATION: The 4096-event cap means the census is not complete. Records 3–7,
+full pointer/descriptor grammar, semantic object/animation/frame names, and
+all-frame reconstruction remain unresolved. No ROM payload, asset, C++, or
+SOURCE_OWNED change was made.
+
+NEXT: target the exact consumers and continuation around the newly observed
+`0x1719xx/0x171Axx` source records, preserving bounded event caps and requiring
+an independently proven finite grammar before enumeration claims.
+
+# 2026-09-12 — M12 exact selector value and runtime record mapping — IN PROGRESS
+
+TASK: Add the exact RAM-selector read to the bounded ROM/source probe, while
+preventing the unrelated high-frequency selector consumer from exhausting the
+capture buffer.
+
+RESULT: BizHawk 2.11.1 completed the 1800-frame deterministic replay with
+6,334 events under a 16,384-event cap. At the known selector-read callback
+PCs, `0xFFAFAE` reads value 0 in 733 events and value 2 in 473 events. The
+bounded table-field mapping is directly observed as selector 0 -> record 0
+field `0x3B8EA` -> `0x3B95C`, and selector 2 -> record 2 field `0x3B90A`
+-> `0x3B982`; the subsequent pointer reads return `0x171832`/`0x1742DC`.
+The same capture retains 24 distinct first-word source starts read by the
+`0xB730` body. The catalog now validates selector values, table-field
+addresses, pointer values, and the source-start census without assigning
+semantics.
+
+ARTIFACT: ignored local capture
+`build/m12-gfx-runtime/targeted-reads-current-1800-v6.json`, SHA-256
+`17CD010F9535CAA5EE5823031F02E77A94EC0F6E865BF6BD34BD88268638201C`; catalog
+SHA-256 `8758355D33F85A9E6E27091F1BE8276206EA980638663601CEA9F7AA64FAAC3A`.
+
+LIMITATION: The live scenario selects only records 0 and 2; one unrelated
+field read observes record 1. Records 3-7 and the semantic object,
+animation, frame, and full sprite grammar remain unresolved. No SOURCE_OWNED,
+ROM payload, asset, C++, or M13 change was made.
+
+NEXT: follow the exact record-2 pointer consumer and the 24 source-start
+continuations with bounded read/exec evidence, then prove a finite frame
+descriptor grammar before any completeness claim.
+
+# 2026-09-12 — M12 selector-2 secondary word and source continuation — IN PROGRESS
+
+TASK: Follow the exact selector-2 pointer consumer only through the already
+observed call-context and source-start watch set; do not interpret raw words
+as semantic frame metadata without an independent contract.
+
+RESULT: The bounded 1800-frame read capture now observes selector 2 -> record
+2 field `0x3B90A` -> `0x3B982` -> `0x1742DC`. The secondary address
+`0x1742DC` returns `0x0000001C` in 320 events, and the subsequent `0xB730`
+first-word read is directly observed at `0x1742F8` in 160 events; its
+`+2/+4/+6` reads are also retained. The runtime source census is now 25
+distinct starts. The catalog records this as an address/value continuation,
+not as a frame count or semantic descriptor.
+
+ARTIFACT: ignored local capture
+`build/m12-gfx-runtime/targeted-reads-current-1800-v7.json`, SHA-256
+`3651A12DC22B02E88B994F32DF4A18946B87C06FCF11C8739589DB709970E808`; catalog
+SHA-256 `D624033CCBF10329D326040941C94513E2BCABEA573B1234C5948BC6736D160E`.
+
+LIMITATION: The scenario still selects only records 0 and 2 on the principal
+selector path; record 1 is seen only through an unrelated field read, and
+records 3–7 remain unobserved. Full object/animation/frame grammar and
+completeness remain unresolved. No SOURCE_OWNED or payload change was made.
+
+NEXT: target the exact record-2 continuation PCs around the `0x1742DC ->
+0x1742F8` transition and prove whether the 25 starts share a finite record
+grammar, using independent read and execution evidence.
+
+# 2026-09-12 — M12 exact-read v8 and independent B730 call context — IN PROGRESS
+
+TASK: Reconcile the latest bounded exact-address read capture with the
+payload-free catalog and add an independent register-context corroboration of
+the selector-to-B730 provenance edge. Preserve BizHawk instrumentation and do
+not infer frame/object semantics from raw words.
+
+RESULT: The known-good BizHawk 2.11.1 invocation remains reproducible with the
+canonical ROM and existing workflow. The v8 exact-address capture
+`build/m12-gfx-runtime/targeted-reads-current-1800-v8.json` contains 8,780
+read events below the 16,384 cap (SHA-256
+`833E8157A9B51C1BB57B11E9CAE7AA8AFC3B7FC98157B2640019C0E90149513E`). At
+the confirmed selector callback PCs, `0xFFAFAE` reads values 0 and 2;
+selector 0 maps to `0x3B8EA -> 0x3B95C -> 0x171832`, while selector 2 maps to
+`0x3B90A -> 0x3B982 -> 0x1742DC`. The same bounded read capture observes
+`0x1742DC=0x1C`, `0x1742E2=0x76`, following B730 starts `0x1742F8` and
+`0x174358`, and 26 distinct first-word source starts at callback PC
+`0xB73E`. These remain address/value observations, not semantic frame or
+descriptor assignments.
+
+INDEPENDENT EVIDENCE: The payload-free call-context capture
+`build/m12-gfx-runtime/b730-calls-current-v2.json` contains 15,870 events over
+1,800 frames (SHA-256
+`5CF7A6D708A1D252464893D61A8D0B764CD3407B8A5167518DA227D5073AE0CB`). At
+`0x3B426`, `A0=0x3B95C` occurs 689 times and `A0=0x3B982` 469 times; at
+`0x3B428`, the targets are `0x171832` and `0x1742DC`; at `0x3B448` and
+`0xB730`, the bounded context reaches `0x1742F8` and `0x174358` among the
+observed source starts. The new catalog wording records the distinction
+between four starts in the context stream and 26 starts in the paired
+exact-read census. Catalog SHA-256:
+`472082214FE195DD225C8224B2B68FE6E300B8D8B44540502DA5DC267C94233C`.
+
+LIMITATION: The scenario still selects only records 0 and 2 on the principal
+selector path; record 1 is seen only through an unrelated field read, and
+records 3–7 remain unobserved. The 26-start census is bounded by the watched
+address set, not a complete ROM enumeration. Full object/animation/frame
+grammar and all-frame reconstruction remain unresolved. No SOURCE_OWNED,
+ROM payload, asset, C++, or M13 change was made.
+
+VALIDATION: Python catalog and reconstruction tests, Python compilation,
+report/runtime hash consistency, `git diff --check`, and the source-size
+check passed. Full Debug and Release CTest each passed `154/154`; the focused
+catalog CTest also passed in both configurations. GNU/Linux-equivalent build
+validation remains unavailable because WSL exposes no `cmake`, `g++`, or
+`ninja`.
+
+NEXT: use the independent call/read evidence to target the finite continuation
+grammar for records 0 and 2, then obtain selector coverage for records 3–7
+without broad bus tracing or semantic overclaiming.
+
+# 2026-09-12 — M12 replay-expansion bound and evidence-class switch — IN PROGRESS
+
+TASK: Perform the one final replay-only expansion pass for records 3–7 using
+the existing bounded exact-address probe, then stop replay expansion regardless
+of outcome and switch to static consumer analysis if those records are not
+observed.
+
+RESULT: The already published positive evidence remains the authoritative
+runtime result: v8 is an 1800-frame, 8,780-event exact-read capture with
+selector values 0 and 2, direct table/pointer reads, 26 bounded source starts,
+and the independent 15,870-event B730 register-context corroboration. The
+final probe configuration added only the statically confirmed selector-reader
+callback PCs and all four longword fields for each of the eight records. The
+EmuHawk invocation accepted the command-line flags but produced no new capture
+file, so records 3–7 were not observed in this pass. This is recorded as
+`NO_NEW_CAPTURE`, not as negative runtime evidence.
+
+BOUNDARY: Replay-based expansion is now closed for this scenario. No fifth
+equivalent replay will be started. The current positive chain and all hashes
+remain published in the M12 reports; no ROM payload, asset, C++, M13, or
+SOURCE_OWNED change was made.
+
+NEXT: switch evidence class to static consumer analysis around
+`0x03A9EE..0x03AA18`, `0x03B8DE`, and the direct callers of `0x03B1D0`, then
+use controlled state forcing only if static contracts cannot close selector
+coverage without semantic invention.
+
+# 2026-09-12 — M12 static selector/dispatch consumer catalog — IN PROGRESS
+
+TASK: Replace replay expansion with bounded static consumer analysis after
+records 3–7 were not observed in the final replay-only pass. Preserve exact
+ROM identity and do not assign semantic object/animation/frame names from
+dispatch targets.
+
+RESULT: Added `src/tools/m12_static_sprite_dispatch_catalog.py` and regression
+coverage in `tests/m12_static_sprite_dispatch_catalog_test.py`. The canonical
+ROM validates the descriptor consumer at `0x03A9EE..0x03AA0E`: selector RAM
+`0xFFAFAE`, eight rows, `0x10`-byte stride, all four longword offsets
+`0/4/8/12`, and direct call `0x03AA0E -> 0x03B1D0`. Two finite selector-masked
+dispatch tables are enumerated: `0x03B8A6..0x03B8C6` and
+`0x03B8C2..0x03B8E2`, both eight entries with mask `0x0007` and stride `4`.
+They overlap at `0x03B8C2..0x03B8C6`; the second overlaps the descriptor table
+at `0x03B8DE..0x03B8E2`. The bounded static `0x03B1D0` slice observes direct
+calls to decompressor `0x00003820` at `0x03B236`, `0x03B28A`, and `0x03B2FE`.
+
+ARTIFACT: ignored static catalog
+`build/m12-gfx-runtime/static-sprite-dispatch-catalog-current.json`, SHA-256
+`79906506AE138318AAB9B8B0F1D581E5102B23CDCC2A2CCBF4CDC71A04728EC5`.
+
+LIMITATION: The target addresses are static dispatch targets only, not proven
+object, animation, frame, or sprite semantics. Live runtime coverage remains
+records 0 and 2 on the principal path; records 3–7 still need a materially
+different evidence source if their consumers must be observed. No ROM payload,
+asset, C++, M13, or SOURCE_OWNED change was made.
+
+VALIDATION: Static catalog test, Python compilation, and canonical-ROM catalog
+generation passed. Full Debug and Release CTest remain valid at `154/154`
+before this Python-only addition; the new focused CTest must be run after CMake
+reconfiguration.
+
+NEXT: inspect the eight static dispatch targets and their resource/decompressor
+call contracts, then decide whether controlled state forcing is necessary to
+obtain live records 3–7 evidence.

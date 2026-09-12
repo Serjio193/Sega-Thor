@@ -1,0 +1,262 @@
+{
+  "schema": "oasis.m68k.m12-bizhawk-capabilities.v1",
+  "status": "OBSERVED",
+  "host": "Windows",
+  "emulator": "BizHawk 2.11.1",
+  "emuhawk_path": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\EmuHawk.exe",
+  "working_directory": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64",
+  "rom_path": "C:\\Github\\Sega-Thor\\build\\reference\\Beyond Oasis (USA).bin",
+  "rom_size": 3145728,
+  "rom_crc32": "C4728225",
+  "rom_sha1": "2944910c07c02eace98c17d78d07bef7859d386a",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "known_good_launch": [
+    "--chromeless",
+    "--lua",
+    "C:\\Github\\Sega-Thor\\src\\tools\\re_bizhawk_m12_gfx_provenance.lua",
+    "C:\\Github\\Sega-Thor\\build\\reference\\Beyond Oasis (USA).bin"
+  ],
+  "known_good_result": {
+    "exit_code": 0,
+    "frames": 1800,
+    "capture": "build/m12-gfx-runtime/capture-current-exact.json",
+    "capture_bytes": 5610,
+    "capture_sha256": "D61150BD828DB22CA35A2E6C93A103BDC04ABE667883B94339FD05390924000B",
+    "byte_equal_to_published_capture_a_and_b": true,
+    "writes_emitted": false
+  },
+  "observed": true,
+  "capability_probe": {
+    "script": "src/tools/re_bizhawk_m12_capabilities.lua",
+    "capture": "build/m12-gfx-runtime/capabilities-current.json",
+    "memory_domains": [
+      "Z80 RAM", "MD CART", "SRAM", "CRAM", "VSRAM", "VRAM",
+      "M68K BUS", "Waterbox PageData", "CPU registers"
+    ],
+    "register_api": true,
+    "bus_exec_read_write_callbacks": true,
+    "frameadvance": true,
+    "state_writes_emitted": false
+  },
+  "live_sat_probe": {
+    "script": "src/tools/re_bizhawk_m12_sat_provenance.lua",
+    "capture": "build/m12-gfx-runtime/sat-provenance-current-v5.json",
+    "frames": 1800,
+    "sat_base": "0x0000D000",
+    "sat_register5_write": { "pc": "0x00002AF4", "value": "0x00008568", "frame": 2 },
+    "sat_dma": {
+      "producer_pc": "0x000027EC",
+      "destination": "0x0000D000",
+      "source_address": "0x00FF13CC",
+      "launch_records_capped_at": 512,
+      "payload_snapshot_matches": { "matched": 43, "compared": 43 },
+      "source_writer": {
+        "body_pc": "0x0000B730",
+        "store_pcs": ["0x0000B752", "0x0000B764", "0x0000B76E", "0x0000B77A"],
+        "bus_callback_pc_after_first_store": "0x0000B754",
+        "address": "0x00FF13CC",
+        "writes_retained": 103,
+        "capture_filter": "frame>=600 and 0xFF13CC<=address<0xFF1800"
+      }
+    },
+    "sat_snapshots": 48,
+    "state_writes_emitted": false
+  },
+  "sprite_context_probe": {
+    "script": "src/tools/re_bizhawk_m12_sprite_context.lua",
+    "capture": "build/m12-gfx-runtime/sprite-context-current-v5.json",
+    "capture_sha256": "B3CD789E03A83F668FE3D62B8E60F961D999EA129808EE937BDE1CA6F5ABC31F",
+    "frames": 730,
+    "execution_counts": {
+      "0x0003B41A_selector_read": 77,
+      "0x0003B422_table_field_read": 77,
+      "0x0003B426_selected_field_deref": 77,
+      "0x0003B448_producer_call": 12,
+      "0x0000B730_record_parser": 12,
+      "0x0000B752_first_store": 12,
+      "0x0000B764_second_store": 12,
+      "0x0000B76E_third_store": 12,
+      "0x0000B77A_fourth_store": 12
+    },
+    "table_base": "0x0003B8DE",
+    "selector_ram": "0x00FFAFAE",
+    "selected_table_field_pointer": "0x0003B95C",
+    "instruction_0x0003B426": "MOVEA.L (A0),A0",
+    "observed_source_starts": [
+      "0x00171864", "0x0017186C", "0x00171874", "0x0017187C"
+    ],
+    "sat_source_ram": "0x00FF13CC",
+    "state_writes_emitted": false,
+    "classification": "OBSERVED_RUNTIME_BOUNDED",
+    "semantic_object_animation_names": "UNRESOLVED"
+  },
+  "sprite_context_catalog": {
+    "script": "src/tools/m12_sprite_context_catalog.py",
+    "capture": "build/m12-gfx-runtime/sprite-context-catalog-current.json",
+    "capture_sha256": "472082214FE195DD225C8224B2B68FE6E300B8D8B44540502DA5DC267C94233C",
+    "record_count": 8,
+    "record_width": 16,
+    "ordered_edge_frames": 12,
+    "observed_source_start_count": 26,
+    "observed_table_field_record_indices": [0, 1, 2],
+    "observed_pointer_targets": ["0x00171832", "0x001742DC"],
+    "payload_emitted": false,
+    "semantic_names": "UNRESOLVED"
+  },
+  "targeted_rom_read_probe": {
+    "script": "src/tools/re_bizhawk_m12_targeted_reads.lua",
+    "capture": "build/m12-gfx-runtime/targeted-reads-current-1800-v8.json",
+    "capture_sha256": "833E8157A9B51C1BB57B11E9CAE7AA8AFC3B7FC98157B2640019C0E90149513E",
+    "frames": 1800,
+    "read_events": 8780,
+    "event_cap": 16384,
+    "event_cap_reached": false,
+    "selector_reads": {
+      "address": "0x00FFAFAE",
+      "values": [{"value": 0, "events": 733}, {"value": 2, "events": 473}],
+      "callback_pcs": ["0x0003B3BC", "0x0003B420"]
+    },
+    "selector_to_table_fields": [
+      {"selector_value": 0, "record_index": 0, "table_field_address": "0x0003B8EA", "events": 733},
+      {"selector_value": 2, "record_index": 2, "table_field_address": "0x0003B90A", "events": 473}
+    ],
+    "selector2_secondary_word": {
+      "address": "0x001742DC",
+      "value": "0x0000001C",
+      "callback_pcs": ["0x0003B432", "0x0003B438"],
+      "events": 320,
+      "following_observed_source_start": "0x001742F8"
+    },
+    "selector2_continuation_word": {
+      "address": "0x001742E2",
+      "value": "0x00000076",
+      "callback_pcs": ["0x0003B432", "0x0003B438"],
+      "events": 602,
+      "following_observed_source_start": "0x00174358"
+    },
+    "observed_table_fields": [
+      {"record_index": 0, "address": "0x0003B8EA", "value": "0x0003B95C", "events": 734},
+      {"record_index": 1, "address": "0x0003B8FA", "value": "0x0003B998", "events": 1},
+      {"record_index": 2, "address": "0x0003B90A", "value": "0x0003B982", "events": 474}
+    ],
+    "observed_pointer_reads": [
+      {"address": "0x0003B95C", "value": "0x00171832", "events": 689},
+      {"address": "0x0003B982", "value": "0x001742DC", "events": 469}
+    ],
+    "table_field_read": {
+      "address": "0x0003B8EA",
+      "value": "0x0003B95C",
+      "callback_pc": "0x0003B426",
+      "events": 77
+    },
+    "pointer_read": {
+      "address": "0x0003B95C",
+      "value": "0x00171832",
+      "callback_pc": "0x0003B428",
+      "events": 77
+    },
+    "source_start_reads": [
+      {"address": "0x00171864", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x0017186C", "callback_pc": "0x0000B73E", "events": 4},
+      {"address": "0x00171874", "callback_pc": "0x0000B73E", "events": 4},
+      {"address": "0x0017187C", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x00171884", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x00171892", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001718A6", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001718BA", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001718D4", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001718EE", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x0017190E", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x0017192E", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x00171954", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x0017197A", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001719A6", "callback_pc": "0x0000B73E", "events": 2},
+      {"address": "0x001719D2", "callback_pc": "0x0000B73E", "events": 12},
+      {"address": "0x00171A04", "callback_pc": "0x0000B73E", "events": 86},
+      {"address": "0x00171A0C", "callback_pc": "0x0000B73E", "events": 20},
+      {"address": "0x00171A14", "callback_pc": "0x0000B73E", "events": 163},
+      {"address": "0x00171A1C", "callback_pc": "0x0000B73E", "events": 221},
+      {"address": "0x00171A2A", "callback_pc": "0x0000B73E", "events": 18},
+      {"address": "0x00171A38", "callback_pc": "0x0000B73E", "events": 14},
+      {"address": "0x00171A46", "callback_pc": "0x0000B73E", "events": 6},
+      {"address": "0x00171A54", "callback_pc": "0x0000B73E", "events": 10},
+      {"address": "0x001742F8", "callback_pc": "0x0000B73E", "events": 160},
+      {"address": "0x00174358", "callback_pc": "0x0000B73E", "events": 301}
+    ],
+    "state_writes_emitted": false,
+    "semantic_assignment": "UNRESOLVED"
+  },
+  "b730_call_context_probe": {
+    "script": "src/tools/re_bizhawk_m12_b730_calls.lua",
+    "capture": "build/m12-gfx-runtime/b730-calls-current-v2.json",
+    "capture_sha256": "5CF7A6D708A1D252464893D61A8D0B764CD3407B8A5167518DA227D5073AE0CB",
+    "frames": 1800,
+    "register_context_events": 15870,
+    "payload_emitted": false,
+    "selector_table_a0": {
+      "callback_pc": "0x0003B426",
+      "values": [
+        {"value": "0x0003B95C", "events": 689},
+        {"value": "0x0003B982", "events": 469}
+      ]
+    },
+    "pointer_a0": {
+      "callback_pc": "0x0003B428",
+      "values": [
+        {"value": "0x00171832", "events": 689},
+        {"value": "0x001742DC", "events": 469}
+      ]
+    },
+    "following_source_starts": ["0x001742F8", "0x00174358"],
+    "semantic_assignment": "UNRESOLVED"
+  },
+  "static_dispatch_catalog": {
+    "script": "src/tools/m12_static_sprite_dispatch_catalog.py",
+    "capture": "build/m12-gfx-runtime/static-sprite-dispatch-catalog-current.json",
+    "capture_sha256": "79906506AE138318AAB9B8B0F1D581E5102B23CDCC2A2CCBF4CDC71A04728EC5",
+    "descriptor_consumer": {
+      "table": "0x0003B8DE..0x0003B95E",
+      "selector_ram": "0x00FFAFAE",
+      "index_stride": 16,
+      "field_offsets": [0, 4, 8, 12],
+      "consumer_pc": "0x0003AA0E",
+      "consumer_target": "0x0003B1D0"
+    },
+    "dispatch_tables": [
+      {
+        "name": "primary",
+        "range": "0x0003B8A6..0x0003B8C6",
+        "selector_mask": "0x0007",
+        "index_stride": 4,
+        "targets": ["0x0003AAAE", "0x0003AB98", "0x0003AC16", "0x0003AC6E", "0x0003ACA8", "0x0003AD0C", "0x0003ADB4", "0x0003AAEE"]
+      },
+      {
+        "name": "secondary",
+        "range": "0x0003B8C2..0x0003B8E2",
+        "selector_mask": "0x0007",
+        "index_stride": 4,
+        "targets": ["0x0003AAEE", "0x0003ABDA", "0x0003AC68", "0x0003AC92", "0x0003ACE4", "0x0003AD66", "0x0003AE74", "0x0003BA46"]
+      }
+    ],
+    "overlaps": [
+      "primary/secondary: 0x0003B8C2..0x0003B8C6",
+      "secondary/descriptor: 0x0003B8DE..0x0003B8E2"
+    ],
+    "decompressor_calls_in_0x03B1D0": [
+      "0x0003B236", "0x0003B28A", "0x0003B2FE"
+    ],
+    "semantic_assignment": "UNRESOLVED",
+    "payload_emitted": false
+  },
+  "replay_expansion_bound": {
+    "status": "NO_NEW_CAPTURE",
+    "records_not_observed": [3, 4, 5, 6, 7],
+    "replay_expansion_closed": true,
+    "next_evidence_class": "STATIC_CONSUMER_ANALYSIS",
+    "scope": ["0x0003A9EE..0x0003AA18", "0x0003B8DE", "0x0003B1D0"]
+  },
+  "blockers": [
+    "The BizHawk read callback is too expensive for an unrestricted all-ROM trace; complete object/animation enumeration and semantic field assignment remain FAIL_CLOSED.",
+    "No object/animation root or complete static enumeration is claimed from this bounded capture."
+  ]
+}

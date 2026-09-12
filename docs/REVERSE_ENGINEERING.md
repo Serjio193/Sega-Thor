@@ -3518,3 +3518,92 @@ from the unresolved set; seven remain (`0x00D54A`, `0x00D650`, `0x02DB52`,
 validated by `re_m12_gfx_runtime_provenance.py` under
 `oasis.m68k.m12-gfx-runtime-provenance-report.v1`. Unobserved register values,
 RAM-mediated source chains, and all other caller domains remain unresolved.
+# M12 live SAT/DMA provenance — 2026-09-12
+
+## `0x00FF13CC` source record and VDP SAT upload
+
+Status: `OBSERVED_RUNTIME`, not SOURCE_OWNED and not a semantic object or
+animation classification.
+
+- Backend: BizHawk 2.11.1 at
+  `C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\EmuHawk.exe`, natural-input
+  scenario, 1800 frames, canonical ROM SHA-256
+  `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+- VDP register 5 write: PC `0x00002AF4`, value `0x00008568`, frame 2. The
+  register value selects VRAM SAT base `0x0000D000`.
+- SAT DMA launch: PC `0x000027EC`, control value `0x50000083`, destination
+  `0x0000D000`, source VDP registers `[0xE6,0x89,0x7F]`, which resolve to
+  byte address `0x00FF13CC`; the launch length is taken from VDP registers
+  19/20 and is recorded in the capture.
+- Source producer: the bounded context capture reaches the exact body at
+  `0x0000B730`, called from `0x0003B448`. Its exact stores are at
+  `0x0000B752`, `0x0000B764`, `0x0000B76E`, and `0x0000B77A`; the BizHawk bus
+  callback reports the next fetch PC, so the `0x0000B754` write record is the
+  post-store callback for `0x0000B752`, not the store instruction itself. The
+  source bytes captured at DMA launch match the corresponding SAT bytes in 43
+  of 43 same-frame comparisons.
+- The same live context reaches `0x0003B416..0x0003B448`: `A0` is set to the
+  table base `0x0003B8DE`, the exact reader at `0x0003B41A` consumes RAM
+  selector state at `0x00FFAFAE`, and `0x0003B422` selects the table field,
+  with callback state showing `A0=0x0003B95C` at `0x0003B426`. The exact
+  static instruction at `0x0003B426` is `MOVEA.L (A0),A0`; the catalog records
+  the following ordered bounded event edge without inventing a further
+  pointer transformation. At `0x0003B448`, four context-stream ROM-backed
+  starts (`0x00171864`, `0x0017186C`, `0x00171874`, `0x0017187C`) are passed
+  to `0xB730` with `A1=0x00FF13CC`; the paired exact-address read capture
+  expands the bounded observed census to 26 starts.
+- SAT format: raw VRAM snapshots decode as four big-endian words per Genesis
+  sprite entry; observed link chains reach eight entries. This confirms the
+  hardware path only. It does not identify the preceding frame descriptor,
+  selector/index, object root, animation table, ROM resource, or palette.
+
+Evidence artifacts: ignored local
+`build/m12-gfx-runtime/sat-provenance-current-v5.json` and the bounded
+`build/m12-gfx-runtime/sprite-context-current-v5.json` (SHA-256
+`B3CD789E03A83F668FE3D62B8E60F961D999EA129808EE937BDE1CA6F5ABC31F`). The
+probes are `src/tools/re_bizhawk_m12_sat_provenance.lua` and
+`src/tools/re_bizhawk_m12_sprite_context.lua`. BizHawk bus-read tracing was
+tested but stopped because the callback cost became disproportionate; the
+exact table-reader/store path above is therefore established from bounded
+execution context plus exact static instruction contracts, while complete
+object/animation enumeration remains `UNRESOLVED` and no assumption is
+promoted.
+
+The follow-up exact-address read probe
+`src/tools/re_bizhawk_m12_targeted_reads.lua` avoids that global-trace cost.
+Its 1800-frame capture (`targeted-reads-current-1800-v8.json`, SHA-256
+`833E8157A9B51C1BB57B11E9CAE7AA8AFC3B7FC98157B2640019C0E90149513E`) retains
+8780 events below the 16384-event cap. It directly reads selector RAM
+`0xFFAFAE` as values 0 and 2, mapping to table records 0 and 2; the selected
+fields return `0x3B95C` and `0x3B982`, whose pointers return `0x171832` and
+`0x1742DC`. For selector 2, `0x1742DC` returns `0x1C` in 320 events and
+`0x1742E2` returns `0x76` in 602 events; the following `B730` first-word
+reads are at `0x1742F8` (160) and `0x174358` (301). It also observes 26
+distinct first-word source starts read at
+callback PC `0xB73E` in the `0xB730` body context. The source census is
+observed-but-not-complete; it does not assign the pointer chain a semantic
+object/frame/animation name.
+
+An independent payload-free register-context capture
+`build/m12-gfx-runtime/b730-calls-current-v2.json` (SHA-256
+`5CF7A6D708A1D252464893D61A8D0B764CD3407B8A5167518DA227D5073AE0CB`)
+contains 15,870 events over the same 1,800-frame replay. At callback context
+`0x3B426`, `A0=0x3B95C` occurs 689 times and `A0=0x3B982` 469 times; at
+`0x3B428` the corresponding targets are `0x171832` and `0x1742DC`. The
+same capture reaches `0x1742F8` and `0x174358` at `0x3B448`/`0xB730`.
+This is independent call-context corroboration of the exact-address read
+chain, not a semantic assignment or completeness claim.
+
+Replay expansion is now bounded. Static analysis then closed a second evidence
+class with `src/tools/m12_static_sprite_dispatch_catalog.py`: the descriptor
+setup at `0x03A9EE..0x03AA0E` consumes selector RAM `0x00FFAFAE`, indexes the
+eight `0x10`-byte descriptor rows, loads offsets `0/4/8/12`, and calls
+`0x03B1D0`. The selector-masked indirect tables are
+`0x03B8A6..0x03B8C6` and `0x03B8C2..0x03B8E2`, each with eight 4-byte entries;
+they overlap at `0x03B8C2..0x03B8C6`, while the latter overlaps the descriptor
+table at `0x03B8DE..0x03B8E2`. Their exact target lists are recorded in the
+machine-readable catalog. A bounded static slice of `0x03B1D0` observes direct
+calls to decompressor `0x00003820` at `0x03B236`, `0x03B28A`, and `0x03B2FE`.
+This is a finite static consumer contract,
+not live coverage or semantic naming; catalog SHA-256 is
+`79906506AE138318AAB9B8B0F1D581E5102B23CDCC2A2CCBF4CDC71A04728EC5`.

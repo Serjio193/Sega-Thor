@@ -743,6 +743,14 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller/state probe
 │       ├── re_bizhawk_m12_gfx_provenance.lua Developer-only targeted runtime source-register probe for unresolved 0x3820 callers
+│       ├── re_bizhawk_m12_capabilities.lua Developer-only one-frame BizHawk observable/API capability probe
+│       ├── re_bizhawk_m12_sat_provenance.lua Developer-only live VDP/SAT/DMA/source-RAM provenance probe
+│       ├── re_bizhawk_m12_sprite_context.lua Developer-only bounded sprite-table caller/producer context probe
+│       ├── re_bizhawk_m12_targeted_reads.lua Developer-only exact-address ROM-read provenance probe
+│       ├── re_bizhawk_m12_b730_calls.lua Developer-only bounded table-to-B730 register-context probe
+│       ├── m12_sprite_context_catalog.py Developer-only payload-free table/live provenance catalog validator
+│       ├── m12_static_sprite_dispatch_catalog.py Developer-only bounded static dispatch-table consumer catalog
+│       ├── m12_sprite_reconstruction.py Developer-only SAT/tile/CRAM/piece reconstruction and provenance validator
 │       ├── re_bizhawk_ant.lua            Developer-only one-frontier natural ant worker
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
 │       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
@@ -759,6 +767,9 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── byte_grid_test.cpp                Synthetic world-grid/footprint tests
     ├── graphics_decompress_test.cpp      Synthetic decompressor behavior tests
     ├── m12_gfx_sweep_test.py             Independent Ancient parser safety/classifier tests
+    ├── m12_sprite_reconstruction_test.py Synthetic hardware-sprite reconstruction and provenance tests
+    ├── m12_sprite_context_catalog_test.py Ordered live selector/producer catalog validation tests
+    ├── m12_static_sprite_dispatch_catalog_test.py Static M12 dispatch-table overlap and bounds tests
     ├── m12_gfx_caller_closure_test.py    M12-GFX-2 caller/source closure regression tests
     ├── re_m12_gfx_loader_census_test.py  Exact 0x00D406 direct-xref census regression tests
     ├── re_m12_gfx_37d2_census_test.py    Exact 0x37D2 wrapper-family census regression tests
