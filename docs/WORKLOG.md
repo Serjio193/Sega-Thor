@@ -1,3 +1,49 @@
+# 2026-09-12 — M12-GFX-MAX targeted runtime provenance for 0x03B1D0 — CHECKPOINT PUBLISHED
+
+TASK: Use only the existing frozen BizHawk natural-input scenario to resolve
+the three remaining `0x03B1D0` dynamic `0x3820` arms far enough to prove or
+reject ROM source provenance. Do not force PC/register/RAM state, decode or
+commit copyrighted payload, promote from decoder validity alone, or begin M13.
+
+ACCEPTANCE CRITERIA: observe the exact caller PCs and `0x3820` entry;
+capture `A0/A1` without emulator writes; repeat the 1,800-frame scenario;
+require byte-identical captures and canonical ROM identity; independently
+decode exact source ends; require current manifest ownership; and keep any
+non-ROM source fail-closed.
+
+IMPLEMENTATION: added the developer-only
+`src/tools/re_bizhawk_m12_gfx_provenance.lua` targeted register probe and the
+fail-closed `src/tools/re_m12_gfx_runtime_provenance.py` validator, with
+synthetic contract tests. The probe watches only the ten unresolved caller PCs
+and `0x3820`, uses the existing `m11_8_natural_reachability_v1` schedule, and
+emits metadata/source probes only; no decoded asset is written.
+
+PROVEN: BizHawk 2.11.1, canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, hardware
+reset, 1,800 frames, and two byte-identical captures with JSON SHA-256
+`D61150BD828DB22CA35A2E6C93A103BDC04ABE667883B94339FD05390924000B`.
+There are 13 `0x3820` target hits and nine caller-paired hits: `0x03B236=4`,
+`0x03B28A=4`, and `0x03B2FE=1`. Every paired target has `A1=0x00FF316C` and
+ROM `A0`; eight unique source spans terminate exactly and are already
+`LOCAL_ROM_DERIVED_ASSET`, totaling 25,636 compressed bytes. The runtime
+evidence therefore closes these three producer blockers without adding
+SOURCE_OWNED bytes, and leaves seven dynamic blockers.
+
+VALIDATION: focused Python probe/validator tests and the live validator pass.
+Both MinGW Debug and Release builds pass, and full Windows Debug/Release CTest
+passes `152/152` in each configuration, including the source-size gate. The
+GNU/Linux-equivalent Ubuntu 24.04 / GCC 13.3 build and link pass. A full WSL
+CTest attempt reached the same workspace-wide source-size scan but was stopped
+because the mounted `C:/` scan did not complete in bounded time; the required
+Linux build/link gate is green and the Windows source-size gate is green.
+`git diff --check` passes with only Git's LF/CRLF normalization warnings.
+
+CHECKPOINT: this bounded publication intentionally stops here. No additional
+graphics campaign, runtime scenario, detector, M13 work, or ASM-to-C++
+migration is authorized by this checkpoint. The seven remaining dynamic
+producers remain explicitly fail-closed for a future, separately authorized
+task.
+
 # 2026-09-12 — M12-GFX-MAX residual 0xD406 caller census — IN PROGRESS
 
 TASK: Classify the five exact direct `0x00D406` callers left after the screen

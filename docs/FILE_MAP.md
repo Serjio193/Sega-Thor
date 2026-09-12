@@ -44,6 +44,12 @@ non-screen direct `0x00D406` callers after screen continuations and descriptor
 families are removed. They verify exact bounded caller fingerprints and retain
 inherited/zero-source blockers without promoting bytes; output is ignored/local.
 
+`src/tools/re_bizhawk_m12_gfx_provenance.lua` captures only the ten unresolved
+`0x3820` caller PCs and decoder entry under an existing frozen natural scenario.
+`src/tools/re_m12_gfx_runtime_provenance.py` validates canonical identity,
+byte-identical replays, ROM `A0`, exact Ancient ends, and manifest ownership;
+runtime JSON and the provenance report remain ignored/local.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and
@@ -632,6 +638,9 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_m12_gfx_37d2_census.py Developer-only exact 0x37D2 wrapper-family census
 │       ├── re_m12_gfx_d3b2_census.py Developer-only exact 0xD3B2 indexed-loader census
 │       ├── re_m12_gfx_36d4_census.py Developer-only exact 0x36D4 wrapper census
+│       ├── re_m12_gfx_sibling_census.py Developer-only proven sibling-helper census
+│       ├── re_m12_gfx_d406_residual_census.py Developer-only residual 0x00D406 census
+│       ├── re_m12_gfx_runtime_provenance.py Developer-only runtime source-provenance validator
 │       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
@@ -733,6 +742,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_static_translation_report.cpp Local ROM-backed PoC report CLI
 │       ├── re_bizhawk_boot_trace.lua Developer-only BizHawk boot trace and bus-write probe
 │       ├── re_bizhawk_natural_reach.lua Developer-only bounded natural-input target/caller/state probe
+│       ├── re_bizhawk_m12_gfx_provenance.lua Developer-only targeted runtime source-register probe for unresolved 0x3820 callers
 │       ├── re_bizhawk_ant.lua            Developer-only one-frontier natural ant worker
 │       ├── re_bizhawk_stack_provenance.lua Developer-only bounded runtime stack-value/writer probe
 │       ├── re_bizhawk_natural_scenario.txt Frozen neutral-input reachability scenario
@@ -754,6 +764,10 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_m12_gfx_37d2_census_test.py    Exact 0x37D2 wrapper-family census regression tests
     ├── re_m12_gfx_d3b2_census_test.py    Exact 0xD3B2 indexed-loader census regression tests
     ├── re_m12_gfx_36d4_census_test.py    Exact 0x36D4 wrapper census regression tests
+    ├── re_m12_gfx_sibling_census_test.py Exact sibling-helper census regression tests
+    ├── re_m12_gfx_d406_residual_census_test.py Exact residual 0x00D406 census regression tests
+    ├── re_m12_gfx_runtime_provenance_test.py Static runtime-probe contract regression test
+    ├── re_m12_gfx_runtime_provenance_validator_test.py Fail-closed runtime-source validator test
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests

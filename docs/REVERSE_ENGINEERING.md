@@ -3460,3 +3460,42 @@ zeroing; neither defines a ROM source or destination. No residual caller can
 promote a table, descriptor, resource, or executable range. Machine evidence
 is emitted by `re_m12_gfx_d406_residual_census.py` under schema
 `oasis.m68k.m12-gfx-d406-residual-census.v1`.
+
+# M12-GFX-MAX targeted runtime source provenance for 0x03B1D0
+
+The developer-only `re_bizhawk_m12_gfx_provenance.lua` probe watches only the
+ten unresolved direct `0x003820` caller PCs and the decoder entry. It reuses
+the frozen `m11_8_natural_reachability_v1` hardware-reset input schedule and
+does not write emulator state or retain decoded payload. Two 1,800-frame
+BizHawk 2.11.1 captures are byte-identical, with capture JSON SHA-256
+`D61150BD828DB22CA35A2E6C93A103BDC04ABE667883B94339FD05390924000B` and
+canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+The run records 13 target hits and nine caller-paired hits across the three
+`0x03B1D0` arms: `0x03B236=4`, `0x03B28A=4`, and `0x03B2FE=1`. Each paired
+entry has `A1=0x00FF316C` and a ROM `A0`. The validator independently runs the
+canonical local Ancient decoder at every observed source, checks its exact
+self-terminating end, and requires one wholly covering
+`LOCAL_ROM_DERIVED_ASSET` manifest entry. The eight unique proven source
+spans are:
+
+| caller | source | end | compressed bytes | mode |
+| --- | ---: | ---: | ---: | --- |
+| `0x03B236` | `0x171A62` | `0x172168` | 1,798 | command |
+| `0x03B28A` | `0x170000` | `0x17093B` | 2,363 | bit |
+| `0x03B28A` | `0x17093C` | `0x1713F6` | 2,746 | bit |
+| `0x03B2FE` | `0x1713F6` | `0x171832` | 1,084 | bit |
+| `0x03B236` | `0x176340` | `0x1768C5` | 1,413 | command |
+| `0x03B236` | `0x1744EE` | `0x17502A` | 2,876 | command |
+| `0x03B28A` | `0x17502A` | `0x1762E2` | 4,792 | bit |
+| `0x03B28A` | `0x172168` | `0x1742DC` | 8,564 | bit |
+
+This is runtime source provenance for observed finite instances, not a new
+ownership promotion: all eight spans and 25,636 compressed bytes were already
+owned. The three previously blocked dynamic producers are therefore removed
+from the unresolved set; seven remain (`0x00D54A`, `0x00D650`, `0x02DB52`,
+`0x02F6A0`, `0x03C07C`, `0x03D5AE`, and `0x03E61A`). The machine report is
+validated by `re_m12_gfx_runtime_provenance.py` under
+`oasis.m68k.m12-gfx-runtime-provenance-report.v1`. Unobserved register values,
+RAM-mediated source chains, and all other caller domains remain unresolved.

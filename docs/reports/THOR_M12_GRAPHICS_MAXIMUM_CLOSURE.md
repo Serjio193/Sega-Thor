@@ -1,7 +1,7 @@
 # M12-GFX-MAX — Maximum Graphics Closure Checkpoint
 
 Status: bounded graphics fixed point for the currently proven loader graph;
-the overall graphics system is not claimed complete while ten dynamic
+the overall graphics system is not claimed complete while seven dynamic
 `0x3820` producers and remaining non-screen loader paths remain source-blocked.
 
 ## Result
@@ -56,7 +56,7 @@ root/descriptor scan. Counts are static call sites, not gameplay frequency.
 | `0x02DB24`, `0x02F662` resource families | 2 | 0 | 2 | 2 |
 | `0x03A748` screen initialization | 1 | 1 | 0 | 0 |
 | `0x03ACA8`, `0x03ADB4` tilemap loaders | 2 | 2 | 0 | 0 |
-| `0x03B1D0` resource family | 3 | 0 | 3 | 3 |
+| `0x03B1D0` resource family | 3 | 0 | 3 | 0 |
 | `0x03C04C` resource family | 1 | 0 | 1 | 1 |
 | `0x03C1E8` sequential family | 3 | 0 | 3 | 0 |
 | `0x03C59C` sequential family | 4 | 0 | 4 | 0 |
@@ -83,17 +83,20 @@ These 40 direct xrefs are fully accounted for by exact canonical call
 encodings and body fingerprints. They do not change the 52-caller resource
 accounting or SOURCE_OWNED totals.
 
-The source-set census is 17 `EXACT_ROM_ADDRESS`, 2
+The static source-set census is 17 `EXACT_ROM_ADDRESS`, 2
 `FINITE_TABLE_DERIVED_SET`, 23 `PARAMETERIZED_SEQUENTIAL_FAMILY`, and 10
 `UNRESOLVED_PARAMETERIZED_FAMILY`. The published closure contains 34 unique
 caller-derived resource starts, 82,861 unique resource bytes, and 47,389
-newly promoted bytes. Its ten blockers are unchanged:
+newly promoted bytes. Targeted runtime evidence independently closes three
+of those ten parameterized families as already-owned source spans; seven
+remain blocked:
 
 `0x00D54A` inherited entry field; `0x00D650` sequential first stream;
-`0x02DB52` D406 post-source; `0x02F6A0` D406 post-state; `0x03B236`
-`A5+4` field; `0x03B28A` `A3` argument; `0x03B2FE` `A4` argument;
-`0x03C07C` inherited `A1`; `0x03D5AE` RAM-mediated entity record; and
-`0x03E61A` inherited caller argument.
+`0x02DB52` D406 post-source; `0x02F6A0` D406 post-state; `0x03C07C`
+inherited `A1`; `0x03D5AE` RAM-mediated entity record; and `0x03E61A`
+inherited caller argument. The runtime-closed arms are `0x03B236` (`A5+4`),
+`0x03B28A` (`A3`), and `0x03B2FE` (`A4`); their source spans were already
+manifest-owned, so no bytes were promoted.
 
 The bounded `0x00D54A` audit narrows, but does not close, its source blocker.
 The exact `0x00F80E` helper saves and restores all address registers, so it
@@ -136,9 +139,11 @@ At `0x03B236`, `A0 = 4(A5)`; at `0x03B28A`, `A0 = A3`; and at `0x03B2FE`,
 `A0 = A4`; every arm sets `A1 = 0x00FF316C`. The sibling helpers before
 the third arm are also bounded: `0x002CBC` does not write `A4`, and
 `0x00D950` saves/restores data registers and `A2` while its `0x00D962` body
-does not write `A4`. The remaining blockers are therefore exactly
-`A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
-`A4_ARGUMENT_NOT_ROM_PROVEN`; no source bytes are promoted.
+does not write `A4`. The static blockers for these three arms were
+respectively `A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
+`A4_ARGUMENT_NOT_ROM_PROVEN`. The targeted runtime continuation below
+resolves their observed ROM-source instances without promoting bytes; any
+unobserved values remain outside the closed evidence set.
 
 The `0x03C07C` call is reached from the exact `0x03BF86` initialization path.
 At `0x03C074`, `A0` is loaded from the direct ROM literal `0x00172168`, then
@@ -238,6 +243,47 @@ flag `0x00FF17C2`. `0x02DFC2` has only local `MOVEQ #0,D0` before D406, and
 defines a ROM source or destination. This closes the residual xref set as
 non-owning wrapper/continuation evidence; promotion remains zero. The report
 SHA-256 is `544986B32D7B0917FDEC5FE35574BCAF004D6D65E763D15317C90BB2C6B1C881`.
+
+### Targeted runtime source provenance
+
+The existing developer-only BizHawk 2.11.1 path was run twice against the
+canonical ROM using the frozen `m11_8_natural_reachability_v1` input schedule,
+from hardware reset for 1,800 frames. The two captures are byte-identical;
+the retained local JSON hash is
+`D61150BD828DB22CA35A2E6C93A103BDC04ABE667883B94339FD05390924000B`.
+The capture has 13 `0x3820` target hits and nine caller-paired hits, all with
+`A1 = 0x00FF316C`, across the three previously dynamic `0x03B1D0` arms:
+`0x03B236` (4), `0x03B28A` (4), and `0x03B2FE` (1). It emits no emulator
+writes and carries the canonical ROM SHA-256 in its metadata.
+
+At the target entry, the runtime `A0` values are ROM addresses. The local
+Ancient decoder independently terminates each source and every half-open
+range is wholly `LOCAL_ROM_DERIVED_ASSET` in the current manifest:
+
+| caller | source | exact end | compressed bytes | mode |
+| --- | ---: | ---: | ---: | --- |
+| `0x03B236` | `0x171A62` | `0x172168` | 1,798 | command |
+| `0x03B28A` | `0x170000` | `0x17093B` | 2,363 | bit |
+| `0x03B28A` | `0x17093C` | `0x1713F6` | 2,746 | bit |
+| `0x03B2FE` | `0x1713F6` | `0x171832` | 1,084 | bit |
+| `0x03B236` | `0x176340` | `0x1768C5` | 1,413 | command |
+| `0x03B236` | `0x1744EE` | `0x17502A` | 2,876 | command |
+| `0x03B28A` | `0x17502A` | `0x1762E2` | 4,792 | bit |
+| `0x03B28A` | `0x172168` | `0x1742DC` | 8,564 | bit |
+
+There are eight unique source spans and 25,636 already-owned compressed bytes;
+the repeated `0x171A62` hit is counted once in that span total. This is a
+proven runtime source relation, not decoder-validity-only promotion: the
+validator rejects non-ROM `A0`, checks both replay files byte-for-byte, checks
+the canonical ROM identity, independently decodes the exact boundaries, and
+requires manifest ownership. `SOURCE_OWNED` therefore remains unchanged and
+promotion is zero, while the unresolved dynamic producer set decreases from
+ten to seven: `0x00D54A`, `0x00D650`, `0x02DB52`, `0x02F6A0`, `0x03C07C`,
+`0x03D5AE`, and `0x03E61A`. Machine evidence is emitted by
+`re_bizhawk_m12_gfx_provenance.lua` and validated by
+`re_m12_gfx_runtime_provenance.py` under schemas
+`oasis.m68k.m12-gfx-runtime-provenance.v1` and
+`oasis.m68k.m12-gfx-runtime-provenance-report.v1`.
 
 ### Exact `0x0037D2` wrapper-family census
 
@@ -362,8 +408,8 @@ while UNKNOWN bytes fall by 106. No ASM bytes or new resource bytes are added
 here. The M12-GFX-2 Carver checkpoint remains B `113/623,036`, F `56/58,789`, and G
 `588/988,641`; this typed-data split was not treated as a new static-consumer
 recovery sweep. The previous graphics closure already reduced G by 47,389
-bytes through exact caller-derived streams; the remaining ten dynamic sources
-are still fail-closed.
+bytes through exact caller-derived streams; runtime evidence now closes three
+source producers without changing ownership, leaving seven fail-closed.
 
 ## Validation limits and next step
 
@@ -373,18 +419,17 @@ materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
 (`6/6` existing graphics assertions plus `3/3` new sibling/helper assertions),
 deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`150/150` each, including the source-size
-gate), the WSL build with the eight relevant graphics CTest helpers (`8/8`), and
+full Windows Debug/Release CTest (`152/152` each, including the source-size
+gate), the GNU/Linux-equivalent Ubuntu 24.04 / GCC 13.3 build and link, and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
-A full Linux CTest attempt previously reached the
-`project_file_line_limit` test and was stopped after approximately 90 seconds
-of `/mnt/c` filesystem scanning; the current Linux build and three relevant
-graphics helpers pass. The Windows source-size gate passed in Debug and
-Release after the CMake registration was kept at the existing 500-line limit.
-No source violation was observed.
+A full WSL CTest attempt reached the `project_file_line_limit` test and was
+stopped because the `/mnt/c` workspace scan did not complete in bounded time;
+it is not claimed as a Linux CTest pass. The Windows source-size gate passed in
+Debug and Release after the CMake registration was kept at the existing
+500-line limit. No source violation was observed.
 The second full-layout `vasmm68k_mot` attempt was not
 successful because the existing generated baseline layout contains duplicate
 labels such as `loc_00B856`; the report records use of the independently
@@ -393,9 +438,12 @@ claimed as a fresh assembler round-trip.
 
 The screen continuation sites are now all closed, and the five descriptor-
 shaped records are accounted for: four were already owned and the fifth is
-promoted under the exact 22-byte contract above. The next graphics step is to
-obtain new caller-closed or targeted register evidence for the ten dynamic
-`0x3820` producers. The five residual non-screen `0x00D406` callers are now
+promoted under the exact 22-byte contract above. Targeted runtime evidence
+now closes the three `0x03B1D0` producers as already-owned source spans. The
+next graphics step, if separately authorized, would be to obtain new
+caller-closed or targeted register evidence for the seven remaining dynamic
+`0x3820` producers. The five residual
+non-screen `0x00D406` callers are now
 classified as inherited/zero-source wrappers and do not establish ownership.
 Existing exact static slices have reached evidence exhaustion for the ten
 dynamic producers; no candidate becomes owned without a proven source and
@@ -403,8 +451,7 @@ exact boundary. The directly reachable sibling helpers covered by the census
 are now classified and should not be reopened without new source evidence.
 M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: `761df67298c8e2214a38f747b6ef36f9a613f46b`.
-Exact implementation CI: GitHub Actions run `34668962782` (success).
-Final publication SHA: `761df67298c8e2214a38f747b6ef36f9a613f46b`.
-Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34668962782` (success).
+Implementation SHA: pending this bounded checkpoint commit.
+Exact implementation CI: pending publication.
+Final publication SHA: pending publication.
+Exact final publication CI / publication HEAD CI: pending publication.
