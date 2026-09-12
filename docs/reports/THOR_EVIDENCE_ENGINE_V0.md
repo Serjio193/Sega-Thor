@@ -2,8 +2,9 @@
 
 Status: COMPLETE (V0 only). Mandatory STOP after V0 publication; V1 is not authorized.
 BASELINE SHA: `b886d2507c9010caac2a75ccbb629b809399ffd0`.
-FINAL SHA: recorded after the publication commit; CI receipt is recorded in the
-final worklog entry.
+IMPLEMENTATION SHA: `897faf3c330b98e34802fe0cc8f67175133cfc29` (published to
+`origin/main`). The final documentation commit is reported in the delivery;
+CI receipt for this implementation is run `34716072864` (success).
 SOURCE_OWNED baseline: 1,475,368 / 3,145,728 = 46.9006856283%; expected delta 0.
 
 ## Frozen implementation contract
@@ -110,8 +111,11 @@ rewind rejection, malformed seal rejection, UNKNOWN relation guards and float
 identity rejection. A normalized BizHawk capture imported into SQLite with the
 same transaction path. Debug, Release and GNU/Linux-equivalent CMake/CTest
 checks, `git diff --check` and the repository source-size check are required
-before publication; their exact results, commit SHA, remote SHA and CI run are
-recorded in `docs/WORKLOG.md`.
+before publication. Release and GNU/Linux-equivalent builds plus the focused
+Debug/Release/Linux CTest passed. The full Debug multi-config build remains
+blocked by the pre-existing `std::to_string` error in
+`src/core/ram_flag_routine.cpp`; the V0 target itself passes in Debug. Exact
+results, commit SHA, remote SHA and CI run are recorded in `docs/WORKLOG.md`.
 
 ## Files and exclusions
 

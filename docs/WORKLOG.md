@@ -24,6 +24,32 @@ frame; at most one additional restore of that same window per probe. Initial
 batch: baseline/uninstrumented/minimal plus two identical probes and one reversed
 installation-order control. No guest RAM/register writes or new savestates.
 
+RESULT: V0 implementation and bounded capability matrix completed. Sealed JSONL
+transport, SQLite receipt/import, full-hash identity, epoch/event/value-version
+guards, UNKNOWN-only relations, synthetic fixtures and one developer-only Lua
+collector are tracked. The two cold probe raw streams and logical event streams
+were byte-identical; reversed hook installation changed the event stream as
+expected. Minimal/probe/reverse reached SAT `0088090187810088`, fields
+`00100080`, six EXEC hits and one FF13CC write per epoch. Uninstrumented reached
+the same oracle with zero execution/write callbacks. SOURCE_OWNED remained
+1,475,368 bytes (delta 0); process wall times were 3.29–4.18 seconds.
+
+VALIDATION: `python tests/thor_evidence_v0_test.py` passed 3/3. A normalized
+probe capture imported transactionally into SQLite. Tracked source-limit scan
+checked 554 files with zero violations; `git diff --check` passed. Focused V0
+CTest passed in Debug (`-C Debug`), Release and GNU/Linux-equivalent WSL.
+Release and WSL builds passed. The full Debug multi-config build was attempted
+and remains blocked by the existing `std::to_string` compile error in
+`src/core/ram_flag_routine.cpp`; this is outside V0 and the focused V0 target
+still passes. The project CMake source-limit script was attempted but exceeded
+the local runner timeout while walking the very large Windows workspace; the
+tracked-source equivalent check is the result above.
+
+PUBLICATION: implementation commit `897faf3c330b98e34802fe0cc8f67175133cfc29`
+was pushed to `origin/main`; `git ls-remote` matched it. GitHub CI run
+`34716072864` completed successfully. Final documentation publication follows
+as a small focused commit; no V1 or additional runtime work is authorized.
+
 # 2026-09-12 — THOR Evidence Engine architecture — DESIGN CONTRACT
 
 TASK: Critically design a developer-only M12 evidence/provenance engine around
