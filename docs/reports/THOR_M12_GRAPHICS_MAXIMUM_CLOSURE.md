@@ -77,8 +77,7 @@ newly promoted bytes. Its ten blockers are unchanged:
 
 `0x00D54A` inherited entry field; `0x00D650` sequential first stream;
 `0x02DB52` D406 post-source; `0x02F6A0` D406 post-state; `0x03B236`
-RAM-mediated source;
-`0x03B28A` RAM-mediated source; `0x03B2FE` sibling-call effect;
+`A5+4` field; `0x03B28A` `A3` argument; `0x03B2FE` `A4` argument;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
 `0x03E61A` inherited caller argument.
 
@@ -117,6 +116,15 @@ The adjacent `0x02F6A0` slice has the same bounded predecessor relation.
 fields written by `0x00D65A` and `0x00D660`, before `0x02F6A0` calls
 `0x003820`. The source entering `D406` and the exact stream boundary remain
 unproven, so this is `D406_POST_STATE_NOT_ROM_PROVEN`; no bytes are promoted.
+
+The `0x03B1D0` family has one shared output and three bounded source arms.
+At `0x03B236`, `A0 = 4(A5)`; at `0x03B28A`, `A0 = A3`; and at `0x03B2FE`,
+`A0 = A4`; every arm sets `A1 = 0x00FF316C`. The sibling helpers before
+the third arm are also bounded: `0x002CBC` does not write `A4`, and
+`0x00D950` saves/restores data registers and `A2` while its `0x00D962` body
+does not write `A4`. The remaining blockers are therefore exactly
+`A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
+`A4_ARGUMENT_NOT_ROM_PROVEN`; no source bytes are promoted.
 
 ### Exact `0x00D406` direct-xref census
 

@@ -6474,6 +6474,27 @@ blocker is now `D406_POST_STATE_NOT_ROM_PROVEN`.
 NEXT: continue with the `0x03B1D0` family and remaining dynamic producers;
 only a closed source path or targeted register trace can promote this chain.
 
+# 2026-09-12 — M12-GFX-MAX bounded 0x03B1D0 source-arm audit — IN PROGRESS
+
+TASK: Close the interprocedural relation around the three `0x03B1D0` family
+calls without treating the shared RAM destination as a ROM source.
+
+RESULT: The exact family uses one output buffer, `A1 = 0x00FF316C`, with
+three source arms: `A0 = 4(A5)` at `0x03B236`, `A0 = A3` at `0x03B28A`, and
+`A0 = A4` at `0x03B2FE`. The sibling helpers before the third arm do not write
+`A4`: `0x002CBC` writes `A5`/data registers, while `0x00D950` preserves data
+registers/`A2` and its `0x00D962` body does not write `A4`. The three source
+values remain inherited and not ROM-proven; no ownership changed.
+
+IMPLEMENTATION: narrowed the dynamic ledger, added three regression
+assertions, and updated the M12-GFX-2, M12-GFX-MAX, and reverse-engineering
+records. Blockers are now `A5_FIELD_NOT_ROM_PROVEN`,
+`A3_ARGUMENT_NOT_ROM_PROVEN`, and `A4_ARGUMENT_NOT_ROM_PROVEN`.
+
+NEXT: continue with the remaining dynamic producers, beginning with
+`0x03C07C`; only a closed source path or targeted register trace can promote
+these arms.
+
 PUBLICATION: focused commit
 `02ab402cb7ae438788b550610ebe18ae7486bb85` is on `origin/main`; exact
 GitHub Actions CI run `34661445505` passed Build, Test, and Complete.

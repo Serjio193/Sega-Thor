@@ -44,9 +44,9 @@ The exact table `[0x05CE96,0x05D046)` is 108 four-byte absolute ROM pointers con
 | `0x03A7FE` | 0x03A748 screen initialization family | `0x16943C..0x1698FD` | `0x00FF2FA8` | direct literal | CONFIRMED; exact parser end |
 | `0x03ACB4` | 0x03ACA8 tilemap loader | `0x17A750..0x17A78F` | `0x00FFB1AE` | direct literal | CONFIRMED; exact parser end |
 | `0x03ADC0` | 0x03ADB4 tilemap loader | `0x17E3BA..0x17E3E1` | `0x00FFB1AE` | direct literal | CONFIRMED; exact parser end |
-| `0x03B236` | 0x03B1D0 resource family | `A0/A1 inherited through 0x00FF316C family` | `0x00FF316C` | indirect/RAM | BLOCKED: RAM_MEDIATED_SOURCE_NOT_ROM_PROVEN |
-| `0x03B28A` | 0x03B1D0 resource family | `A0/A1 inherited through 0x00FF316C family` | `0x00FF316C` | indirect/RAM | BLOCKED: RAM_MEDIATED_SOURCE_NOT_ROM_PROVEN |
-| `0x03B2FE` | 0x03B1D0 resource family | `A0/A1 inherited after 0x00D950/0x002CBC calls` | `0x00FF316C` | indirect/RAM | BLOCKED: SIBLING_CALL_EFFECT_NOT_CLOSED |
+| `0x03B236` | 0x03B1D0 resource family | `A0 = 4(A5); A1 = 0x00FF316C shared output buffer` | `0x00FF316C` | indirect/RAM | BLOCKED: A5_FIELD_NOT_ROM_PROVEN |
+| `0x03B28A` | 0x03B1D0 resource family | `A0 = A3; A1 = 0x00FF316C shared output buffer` | `0x00FF316C` | indirect/RAM | BLOCKED: A3_ARGUMENT_NOT_ROM_PROVEN |
+| `0x03B2FE` | 0x03B1D0 resource family | `A0 = A4; 0x002CBC/0x00D950 preserve A4; A1 = 0x00FF316C` | `0x00FF316C` | indirect/RAM | BLOCKED: A4_ARGUMENT_NOT_ROM_PROVEN |
 | `0x03C07C` | 0x03C04C resource family | `A0/A1 inherited at shared family entry` | `A1 inherited` | indirect/RAM | BLOCKED: CALLER_ARGUMENT_NOT_ROM_PROVEN |
 | `0x03C276` | 0x03C1E8 resource family | `0x1894EA..0x18955A` | `0x00FF2FA8` | sequential A0 | CONFIRMED; exact parser end |
 | `0x03C27E` | 0x03C1E8 resource family | `0x18955A..0x18A4BE` | `0x00FF2FA8` | sequential A0 | CONFIRMED; exact parser end |

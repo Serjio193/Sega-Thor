@@ -3292,3 +3292,15 @@ The exact local slice begins with `JSR 0x00D406` at `0x02F67C`. It then loads
 independent caller argument. The incoming `D406` source and exact stream
 boundary remain unproven: `D406_POST_STATE_NOT_ROM_PROVEN`; no bytes are
 promoted.
+
+# M12-GFX-MAX bounded 0x03B1D0 source-arm audit
+
+The exact `0x03B1D0` family has three calls with a common destination buffer:
+`0x03B236` uses `A0 = 4(A5)`, `0x03B28A` uses `A0 = A3`, and `0x03B2FE`
+uses `A0 = A4`; all three set `A1 = 0x00FF316C`. The sibling calls before
+the third arm do not leave an unresolved `A4` write: `0x002CBC` writes `A5`
+and data registers only, while `0x00D950` saves/restores data registers and
+`A2`, and its `0x00D962` body does not write `A4`. The source values remain
+inherited and not ROM-proven, with classifications respectively
+`A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
+`A4_ARGUMENT_NOT_ROM_PROVEN`; no bytes are promoted.
