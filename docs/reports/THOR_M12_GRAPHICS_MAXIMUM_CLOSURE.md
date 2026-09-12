@@ -263,8 +263,8 @@ static slices have reached evidence exhaustion for those ten; no candidate
 becomes owned without a proven source and exact boundary. M13 and ASM-to-C++
 migration remain out of scope.
 
-Implementation SHA: `a016de2d42f45c9b4b93487b39bb0bcfd84c2816`.
-Exact implementation CI: GitHub Actions run `34662243757` (success).
-Final publication SHA: `a016de2d42f45c9b4b93487b39bb0bcfd84c2816`.
+Implementation SHA: `8b9ed0fbc07a4a7eec9e7241f770164c4e835a02`.
+Exact implementation CI: GitHub Actions run `34662639911` (success).
+Final publication SHA: `8b9ed0fbc07a4a7eec9e7241f770164c4e835a02`.
 Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34662243757` (success).
+`34662639911` (success).

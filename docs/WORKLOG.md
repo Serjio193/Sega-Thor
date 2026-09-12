@@ -6569,3 +6569,7 @@ promotion is justified.
 
 NEXT: close the two remaining screen sites and five descriptor-shaped records,
 then revisit dynamic producers only with new evidence.
+
+PUBLICATION: focused commit
+`8b9ed0fbc07a4a7eec9e7241f770164c4e835a02` is on `origin/main`; exact
+GitHub Actions CI run `34662639911` passed Build, Test, and Complete.
