@@ -76,8 +76,8 @@ caller-derived resource starts, 82,861 unique resource bytes, and 47,389
 newly promoted bytes. Its ten blockers are unchanged:
 
 `0x00D54A` inherited entry field; `0x00D650` sequential first stream;
-`0x02DB52` caller
-argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
+`0x02DB52` D406 post-source; `0x02F6A0` caller argument; `0x03B236`
+RAM-mediated source;
 `0x03B28A` RAM-mediated source; `0x03B2FE` sibling-call effect;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
 `0x03E61A` inherited caller argument.
@@ -101,6 +101,15 @@ decompression, not an independent selector. It does not prove the first
 source longword is a canonical ROM address, nor the exact compressed-stream
 boundary consumed by the continuation. The blocker is therefore
 `FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN`; no bytes are promoted.
+
+The local slice containing `0x02DB52` is also bounded. At `0x02DB40` it calls
+`0x00D406`; `0x02DB46` then loads `A0` from `0x00FF17AA`, the post-source
+field written by `0x00D65A`, and `0x02DB4C` sets `A1 = 0x00FF2FA8` before the
+`0x02DB52` call. This proves a `0x00D406` post-source continuation rather
+than an independent caller argument. The incoming `D0` copied to `A0` at
+`0x02DB3C` is still inherited, and the exact source/boundary remains
+unproven; the blocker is `D406_POST_SOURCE_NOT_ROM_PROVEN` and no bytes are
+promoted.
 
 ### Exact `0x00D406` direct-xref census
 

@@ -6429,6 +6429,26 @@ PUBLICATION: focused commit
 `6a773cae39dffefac82bdcff5b357a7122f032ba` is on `origin/main`; exact
 GitHub Actions CI run `34660611094` passed Build, Test, and Complete.
 
+# 2026-09-12 — M12-GFX-MAX bounded 0x02DB52 post-source audit — IN PROGRESS
+
+TASK: Continue the dynamic `0x3820` closure by tracing the exact local
+producer immediately before `0x02DB52`; preserve byte-exact ROM and do not
+promote a RAM post-state without its source and boundary proof.
+
+RESULT: The closed slice `0x02DB3C..0x02DBB6` calls `0x00D406` at `0x02DB40`,
+loads `A0` from `0x00FF17AA` at `0x02DB46`, and sets `A1 = 0x00FF2FA8` before
+`0x02DB52`. The shared loader writes `0x00FF17AA` from post-source `A4` at
+`0x00D65A`, so this is a `0x00D406` post-source continuation, not an
+independent caller argument. The incoming `D0` and exact stream boundary
+remain unproven; no ownership changed.
+
+IMPLEMENTATION: narrowed the dynamic ledger, added a regression assertion,
+and updated the M12-GFX-2, M12-GFX-MAX, and reverse-engineering records. The
+blocker is now `D406_POST_SOURCE_NOT_ROM_PROVEN`.
+
+NEXT: continue with `0x02F6A0` and the remaining dynamic producers; only a
+closed source path or targeted register trace can promote this continuation.
+
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
 
 TASK: Continue the graphics closure by narrowing the first unresolved dynamic

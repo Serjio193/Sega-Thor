@@ -3270,3 +3270,14 @@ interpretation, but it does not prove the first source longword is ROM-
 originated or establish the exact boundary of the sequential compressed
 stream. The classification is therefore
 `FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN`; no bytes are promoted.
+
+# M12-GFX-MAX bounded 0x02DB52 post-source audit
+
+The closed local slice `0x02DB3C..0x02DBB6` calls `0x00D406` at
+`0x02DB40`. It then loads `A0` from `0x00FF17AA` at `0x02DB46`, while the
+shared loader writes that field from its post-source `A4` at `0x00D65A`, and
+sets `A1 = 0x00FF2FA8` at `0x02DB4C` before `JSR 0x003820` at `0x02DB52`.
+This proves a post-source continuation of `0x00D406`, not an independent
+caller argument. The incoming `D0` copied to `A0` at `0x02DB3C` and the exact
+compressed-stream boundary remain unproven, so the classification is
+`D406_POST_SOURCE_NOT_ROM_PROVEN`; no bytes are promoted.
