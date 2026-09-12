@@ -1,8 +1,33 @@
 # M12-GFX-MAX — Maximum Graphics Closure Checkpoint
 
-Status: bounded graphics fixed point for the currently proven loader graph;
-the overall graphics system is not claimed complete while seven dynamic
+Status: bounded graphics checkpoint published for the currently proven loader
+graph; the overall graphics system is not claimed complete while seven dynamic
 `0x3820` producers and remaining non-screen loader paths remain source-blocked.
+
+## Checkpoint delta
+
+The final bounded static audit added no ownership. `SOURCE_OWNED` remains
+`1,475,368 / 46.9006856283%` before and after this audit, and the seven
+runtime-unclosed dynamic blockers remain seven. The new evidence only sharpens
+their negative provenance classifications:
+
+| site | exact result | ownership result |
+| --- | --- | --- |
+| `0x03D5AE` | entry begins with `JSR 0x003820`; subsequent writes are entity-state RAM fields `0x00FF19A2`, `0x00FF19A6`, `0x00FF19AA`, `0x00FF19AC` | `RAM_MEDIATED_ENTITY_SOURCE_NOT_ROM_PROVEN`; unchanged |
+| `0x03E61A` | first call precedes local `A0/A1` definitions; later `0x03E662`/`0x03E704` arms are already-owned `0x0016943C -> 0x00FF2FA8` | `CALLER_ARGUMENT_NOT_ROM_PROVEN`; unchanged |
+| `0x03C07C` parent path | `0x001432 -> 0x03BF86` does not define `A1`; `0x03C074` supplies only direct `A0=0x00172168` and inherits `A1` | `A1_INHERITED_NOT_ROM_PROVEN`; unchanged |
+
+The exact developer-only slice artifacts were not added to the repository:
+`m12-next-001432-slice.json` SHA-256
+`4A3A4635AD23AA543B9EE8AB93419F4E8A403A5766EAF2A4AB4553570FE295C5`,
+`m12-next-03bf86-slice.json` SHA-256
+`6DB0796FF68A274C3765DC7625075C030467ACA05A7F08029CB4C4542A736187`,
+`m12-next-03d59a-slice.json` SHA-256
+`A1E02CC631CEE655C5F15E92F4765C380DDA0B4D0E61B925CC20BCA083BF4EAF`, and
+`m12-next-03e61a-slice.json` SHA-256
+`577E705466D56A81CAC416148F3DC34BED1913348E5B0D0D3229E9E01647114B`.
+No new runtime scenario, detector, ownership promotion, M13 work, or
+ASM-to-C++ work was performed for this checkpoint.
 
 ## Result
 

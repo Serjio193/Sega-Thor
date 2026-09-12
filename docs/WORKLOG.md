@@ -1,3 +1,35 @@
+# 2026-09-12 — M12-GFX-MAX bounded checkpoint static provenance audit — CHECKPOINT PUBLISHED
+
+TASK: Stop the current M12-GFX-MAX run at the bounded publication checkpoint.
+Preserve the already obtained BizHawk evidence, record the final exact static
+negative evidence, and do not start another graphics campaign, detector,
+runtime scenario, M13, or ASM-to-C++ work.
+
+RESULT: The exact developer-only slices add no source-owned bytes. `0x001432`
+calls `0x03BF86` without defining `A1`; the path reaches `0x03C074`, where
+`A0=0x00172168` is direct but `A1` remains inherited. `0x03D59A`/`0x03D5AE`
+is a RAM-mediated entity record path with no local ROM-source proof.
+`0x03E61A` calls before local `A0/A1` definitions; only later arms are the
+already-owned `0x0016943C -> 0x00FF2FA8` calls.
+
+CHECKPOINT STATE: `SOURCE_OWNED` is `1,475,368 / 46.9006856283%` before and
+after this final static audit. The seven runtime-unclosed dynamic blockers are
+unchanged: `0x00D54A`, `0x00D650`, `0x02DB52`, `0x02F6A0`, `0x03C07C`,
+`0x03D5AE`, and `0x03E61A`. The prior BizHawk run remains the only runtime
+evidence: 1,800 frames, two byte-identical captures, 13 `0x3820` hits, nine
+caller-paired hits (`0x03B236=4`, `0x03B28A=4`, `0x03B2FE=1`), all paired
+`A1=0x00FF316C` with ROM `A0`, and eight already-owned source spans totaling
+25,636 compressed bytes.
+
+ARTIFACTS: ignored slice hashes and the full positive/negative evidence are
+recorded in the M12-GFX-MAX report and reverse-engineering log. No ROM,
+decoded asset, generated payload, or developer-only slice artifact is tracked.
+
+VALIDATION: run the focused M12 helper tests, relevant Debug/Release tests,
+`git diff --check`, source-size validation, and publication CI before push.
+
+PUBLICATION: pending validation and push of this docs-only checkpoint.
+
 # 2026-09-12 — M12-GFX-MAX targeted runtime provenance for 0x03B1D0 — CHECKPOINT PUBLISHED
 
 TASK: Use only the existing frozen BizHawk natural-input scenario to resolve

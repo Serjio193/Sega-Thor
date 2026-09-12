@@ -3326,6 +3326,25 @@ already closed direct stream `0x0016943C` to `0x00FF2FA8`. Thus the first
 `0x03E61A` call remains `CALLER_ARGUMENT_NOT_ROM_PROVEN`, and these two sites
 produce no new ownership evidence.
 
+# M12-GFX-MAX bounded checkpoint static provenance audit
+
+The final bounded audit preserves the seven dynamic blockers and adds no
+ownership. The exact `0x001432` slice calls `0x03BF86` without defining `A1`;
+the `0x03BF86` path reaches `0x03C074`, where `A0=0x00172168` is direct but
+`A1` remains inherited. The `0x03D59A` slice proves that `0x03D5AE` is a
+RAM-mediated entity path: it reads and writes the `0x00FF199E`/`0x00FF19AE`
+record and calls `0x003820` without a local ROM-source definition. The
+`0x03E61A` slice proves that its first call precedes local `A0/A1` definitions;
+only later calls use the already closed `0x0016943C -> 0x00FF2FA8` arm.
+
+The ignored developer-only slice hashes are, respectively,
+`001432=4A3A4635AD23AA543B9EE8AB93419F4E8A403A5766EAF2A4AB4553570FE295C5`,
+`03BF86=6DB0796FF68A274C3765DC7625075C030467ACA05A7F08029CB4C4542A736187`,
+`03D59A=A1E02CC631CEE655C5F15E92F4765C380DDA0B4D0E61B925CC20BCA083BF4EAF`,
+and `03E61A=577E705466D56A81CAC416148F3DC34BED1913348E5B0D0D3229E9E01647114B`.
+These are negative provenance evidence only; no source span, boundary, or
+`SOURCE_OWNED` byte count changes.
+
 # M12-GFX-MAX extended screen-continuation audit
 
 The exact developer-only `re_slice_decoder` reports close the two screen
