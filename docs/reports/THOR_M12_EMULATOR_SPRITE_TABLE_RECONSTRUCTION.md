@@ -1,8 +1,57 @@
 # M12 — Emulator sprite-table reconstruction
 
-Status: `IN PROGRESS`: the first real hardware sprite provenance chain is
-closed; object/frame/animation table closure and ROM-table backward linkage are
-still fail-closed.
+Status: `BOUNDED NEGATIVE RESULT`: the first real hardware sprite provenance
+chain remains closed, but the requested single controlled Ali transition could
+not be started because no local BizHawk gameplay state was available and the
+Windows UI-control backend was not configured. Object/frame/animation table
+closure and ROM-table backward linkage remain fail-closed.
+
+## Targeted Ali transition — bounded runtime setup result
+
+Baseline was `f6feb888f2a527d0f5cf5425586dcbcc0c266cd6`. The exact previously
+published installation is present at
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\EmuHawk.exe`, with working
+directory `C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64`. The canonical ROM is
+present at `C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin` and
+matches the recorded SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+The recovered exact argv was attempted once from that working directory:
+`--chromeless --lua C:\Github\Sega-Thor\src\tools\re_bizhawk_m12_gfx_provenance.lua C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin`.
+The process returned code 0 but emitted only `parsing command-line flags` and
+created no capture. This is an invocation/runtime integration failure, not
+evidence that BizHawk is absent. A separate GUI-only launch of the same
+pre-existing executable produced a responsive `BizHawk` window, confirming
+that the installation itself starts. It was stopped after the check.
+
+Read-only state search found no BizHawk state in the checked installation,
+including `Genesis\State`; no state was created or reused. The Computer Use
+backend required for GUI input returned `Trusted RPC service is not
+configured: sky`, so it could not be used to reach gameplay or create a local
+state. No ROM/register/RAM forcing, replay expansion, or equivalent second
+campaign was attempted.
+
+Therefore there is no State A, State B, transition frame, first causal value,
+writer PC, or new Ali table/root claim in this pass. The exact stop boundary is
+`ALI_TRANSITION_SETUP_BLOCKED`: restore a usable BizHawk UI-control/save-state
+path or authorize a materially different evidence class (controlled state
+forcing or static consumer analysis). Existing positive selector/descriptor,
+relative-child, `0x03B448 -> 0xB730`, RAM/SAT/DMA, and ROM-resource evidence is
+unchanged and remains the only claimed runtime result.
+
+## Publication validation
+
+The focused M12 helper set passed 5/5 in both existing Debug and Release
+CTest trees: runtime provenance, selector control, relative-table analysis,
+indirect body dispatch, and the `0x03B092` tail contract. Direct Python
+compilation and the three corresponding analyzer tests also passed. The
+existing full Debug/Release CTest evidence from the published baseline is
+preserved. A fresh Ubuntu 24.04 / GCC 13.3 WSL configure and Release build/link
+completed successfully; its five focused M12 tests passed. The WSL
+`project_file_line_limit` scan was stopped after its `/mnt/c` scan exceeded the
+bounded wait, while the native `cmake -P tests/check_file_limits.cmake` scan
+passed. `git diff --check` passed. No source structure changed, so
+`docs/FILE_MAP.md` requires no update.
 
 ## Identity and exact BizHawk replay
 

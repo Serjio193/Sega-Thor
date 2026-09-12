@@ -3735,3 +3735,29 @@ a proven mini-ISA or frame interpreter.
 `0x03AD66..0x03B092` path. This closes the requested tail without assigning
 semantic object/animation/frame labels. Selector-7 `0xFFFF0017` remains
 outside this evidence edge and unresolved. No runtime experiment was needed.
+
+## M12 targeted Ali frame-transition backtrace — bounded negative runtime result
+
+Baseline `origin/main` was `f6feb888f2a527d0f5cf5425586dcbcc0c266cd6`. The
+previously working BizHawk 2.11.1 executable was verified present at
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\EmuHawk.exe`; the canonical ROM
+and its recorded SHA-256 were also present. The exact published argv was
+attempted once from the installation directory. It returned code 0 but only
+reported command-line parsing and produced no capture. A separate GUI-only
+launch of the same executable produced a responsive `BizHawk` window, so this
+does not classify BizHawk as unavailable.
+
+No usable gameplay savestate was found in the checked BizHawk state locations,
+including `Genesis\State`, and none was created or committed. The required
+Windows UI-control backend returned `Trusted RPC service is not configured:
+sky`, preventing one-time gameplay navigation and state creation. No second
+replay campaign, state forcing, global RAM/read tracing, or equivalent
+animation experiment was run.
+
+Classification: `ALI_TRANSITION_SETUP_BLOCKED`. Consequently this pass has no
+State A/B frame numbers, Ali transition, first causal changed value, writer PC,
+or new frame-table/root claim. Existing positive runtime/static evidence from
+the selector/descriptor through `0x03B448 -> 0xB730 -> SAT` remains valid and
+unchanged. The exact next evidence boundary is either restoration of a usable
+BizHawk UI/save-state path or a materially different controlled-state/static
+consumer analysis; replay expansion is closed for this pass.

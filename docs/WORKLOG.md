@@ -1,3 +1,43 @@
+# 2026-09-12 — M12 targeted Ali frame-transition backtrace — BOUNDED NEGATIVE RESULT
+
+TASK: Attempt exactly one controlled Ali idle-to-first-movement transition
+from a reusable local BizHawk gameplay state, then backtrace only the bounded
+SAT/B730/selector path. Do not start another replay campaign, add generic
+tracing, force state, or begin M13/ASM-to-C++ work.
+
+RESULT: The known BizHawk 2.11.1 installation was verified at
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\EmuHawk.exe`, with the canonical
+ROM present and matching the recorded SHA-256. The published argv was attempted
+once from the installation directory. It returned code 0 but emitted only
+`parsing command-line flags` and created no capture. A GUI-only launch of the
+same pre-existing executable produced a responsive `BizHawk` window, proving
+the installation is present and starts; the GUI was stopped after this check.
+
+SETUP EVIDENCE: No BizHawk savestate was found in the checked local locations,
+including `Genesis\State`; no savestate was created or committed. The Windows
+UI-control backend returned `Trusted RPC service is not configured: sky`, so
+controlled navigation and one-time gameplay-state creation were unavailable.
+No equivalent replay, state forcing, global RAM/read trace, or unrelated
+animation experiment was attempted.
+
+CLASSIFICATION: `ALI_TRANSITION_SETUP_BLOCKED`. State A/B frames, first causal
+changed value, writer PC, and Ali frame-table/root are therefore unobserved.
+The existing proven selector/descriptor -> child/relative ->
+`0x03B448 -> 0xB730 -> SAT` chain remains unchanged. `SOURCE_OWNED` remains
+`1,475,368 / 3,145,728 = 46.9006856283%` before and after. This task stops at
+the exact evidence-class boundary; the next step requires either restoration
+of a usable BizHawk UI/save-state path or a separately authorized controlled
+state/static-consumer evidence class.
+
+VALIDATION: `git diff --check`, Python compilation, and direct analyzer tests
+passed. Focused M12 CTest passed 5/5 in both existing Debug and Release trees.
+The existing published full Debug/Release CTest evidence (152/152 each) is
+preserved. WSL Ubuntu 24.04 / GCC 13.3 configure and Release build/link passed;
+the five focused WSL M12 tests passed. The WSL source-size CTest was bounded
+and interrupted during its slow `/mnt/c` scan; the native
+`cmake -P tests/check_file_limits.cmake` scan then passed. No source structure
+changed, so FILE_MAP and ROADMAP remain unchanged.
+
 # 2026-09-12 — M12-GFX-MAX bounded checkpoint static provenance audit — CHECKPOINT PUBLISHED
 
 TASK: Stop the current M12-GFX-MAX run at the bounded publication checkpoint.
