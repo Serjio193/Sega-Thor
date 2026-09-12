@@ -13,6 +13,13 @@ forward-adjacency candidates, verifies the 15 known small 68000 continuation
 forms, and records descriptor-shaped unmatched-call candidates; the generated
 census remains ignored/local.
 
+`src/tools/re_m12_gfx_37d2_census.py` and
+`tests/re_m12_gfx_37d2_census_test.py` census the seven direct `0x37D2`
+graphics-wrapper calls. Five exact ROM-source setups are checked against their
+Ancient boundaries and existing manifest ownership; two inherited/post-state
+sites remain blocked. The generated census is ignored/local and never promotes
+bytes by itself.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and
@@ -598,6 +605,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── m12_gfx_sweep.py Developer-only whole-ROM M12-GFX-1 campaign/report
 │       ├── m12_gfx_caller_closure.py Developer-only M12-GFX-2 0x3820 caller/source closure and promoter
 │       ├── re_m12_gfx_loader_census.py Developer-only exact 0x00D406 direct-xref census
+│       ├── re_m12_gfx_37d2_census.py Developer-only exact 0x37D2 wrapper-family census
 │       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
@@ -717,6 +725,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── m12_gfx_sweep_test.py             Independent Ancient parser safety/classifier tests
     ├── m12_gfx_caller_closure_test.py    M12-GFX-2 caller/source closure regression tests
     ├── re_m12_gfx_loader_census_test.py  Exact 0x00D406 direct-xref census regression tests
+    ├── re_m12_gfx_37d2_census_test.py    Exact 0x37D2 wrapper-family census regression tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests

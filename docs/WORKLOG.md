@@ -1,3 +1,47 @@
+# 2026-09-12 — M12-GFX-MAX direct 0x37D2 wrapper-family closure — IN PROGRESS
+
+TASK: Extend the graphics loader census from the 52 absolute `0x3820` callers
+to the direct `0x37D2` wrapper family. Prove every direct wrapper call's local
+source setup where available, revalidate exact Ancient boundaries and current
+manifest ownership, and keep inherited/post-state paths fail-closed. Do not
+promote already-owned bytes, start M13, or migrate ASM to C++.
+
+ACCEPTANCE CRITERIA: the canonical ROM scan must find the complete direct
+`JSR 0x0037D2` set; each site must be classified as direct-ROM or inherited;
+direct-ROM sites must have exact `LEA source/A1`, immediate D0, deterministic
+Ancient end, destination, and ownership evidence; output must be deterministic
+and regression-tested.
+
+RESULT: The exact scan finds seven direct wrapper calls at `0x00D9B2`,
+`0x02F6B6`, `0x03C0DE`, `0x03C2BE`, `0x03C632`, `0x03CA40`, and `0x03CD54`.
+Five have exact direct-ROM setup and deterministic source spans:
+`0x1744EE..0x17502A`, `0x18CCD0..0x18CF97`, `0x18EC26..0x18F214`,
+`0x1911EA..0x191F09`, and `0x19911A..0x199CBA`. They total 11,440 bytes and
+are already `LOCAL_ROM_DERIVED_ASSET`, so promotion is zero. `0x00D9B2` remains
+an inherited-A6 source and `0x02F6B6` a `0x00D406` post-source continuation;
+both remain blocked.
+
+ARTIFACT: ignored local `build/m12-gfx-37d2-census.json`, schema
+`oasis.m68k.m12-gfx-37d2-census.v1`, SHA-256
+`EC247A5304BE12B458515CB7CE081A2FF54A1EA0C9DED51AEC7FBEC8F975068E`.
+The deterministic repeat has the identical SHA-256.
+
+VALIDATION: Python compilation, focused wrapper-census test (`2/2`), actual
+canonical-ROM census generation, deterministic repeat comparison, and source
+ownership checks passed. Debug and Release builds passed; full Windows Debug
+and Release CTest passed (`146/146` each, including the source-size gate);
+GNU/Linux build/link and the three relevant graphics CTest helpers passed
+(`3/3`); `git diff --check` and the source-size gate passed.
+
+NEGATIVE EVIDENCE: no new source range is promotable from this family because
+all five direct spans are already owned; the two inherited paths do not close a
+canonical ROM source. The wrapper census therefore changes loader coverage and
+blocker accounting, not SOURCE_OWNED totals.
+
+NEXT: continue the graphics graph from the ten unresolved dynamic `0x3820`
+producers and directly reachable non-screen `0x00D406` paths; do not use
+decoder validity or wrapper adjacency as ownership.
+
 # 2026-09-12 — M12-GFX-MAX verified 0x00D406 continuations — IN PROGRESS
 
 TASK: Close the bounded `0x00D406` screen continuation candidates with

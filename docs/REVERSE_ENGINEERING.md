@@ -3349,3 +3349,26 @@ closed screen domain, and the exact graphics census bounds that stream at
 `0x2119D2..0x211F79` with 18,712 decompressed bytes. Only
 `0x02E1D8..0x02E1EE` is promoted. The four-byte gap before the exact D406 call
 at `0x02E1F2` remains unknown; no caller-A1 claim is derived from adjacency.
+# M12-GFX-MAX direct 0x37D2 wrapper-family census
+
+The exact canonical-ROM scan finds seven direct absolute `JSR 0x0037D2` sites:
+`0x00D9B2`, `0x02F6B6`, `0x03C0DE`, `0x03C2BE`, `0x03C632`, `0x03CA40`, and
+`0x03CD54`. The wrapper at `0x0037D2` has a bounded internal `BSR 0x003820`
+at `0x0037D8`, so these edges are a sibling loader family of the 52 direct
+absolute `0x3820` callers.
+
+Five sites have exact local source setup: `LEA source,A0`, `LEA destination,A1`,
+`MOVE.W #value,D0`, followed by `JSR 0x0037D2`. The source starts and exact
+Ancient ends are `[0x1744EE,0x17502A)`, `[0x18CCD0,0x18CF97)`,
+`[0x18EC26,0x18F214)`, `[0x1911EA,0x191F09)`, and
+`[0x19911A,0x199CBA)`. Their compressed sizes are respectively 2,876, 711,
+1,518, 3,359, and 2,976 bytes; all five spans are already
+`LOCAL_ROM_DERIVED_ASSET` in the current byte-exact manifest. The direct setup
+values are `D0 = 0x4B00`, `0x7080`, `0x6A40`, `0x2580`, and `0x6400`, with the
+destination `0x00FF2FA8` in every case.
+
+The `0x00D9B2` site inherits its source through `A6` in `0x00D9A4`; the
+`0x02F6B6` site inherits the post-source state of the preceding `0x00D406`.
+Those two sites remain blocked and no bytes are promoted. The machine evidence
+is emitted by the developer-only `re_m12_gfx_37d2_census.py` helper under
+schema `oasis.m68k.m12-gfx-37d2-census.v1`.

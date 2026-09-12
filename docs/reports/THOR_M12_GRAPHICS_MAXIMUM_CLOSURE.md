@@ -2,7 +2,7 @@
 
 Status: bounded graphics fixed point for the currently proven loader graph;
 the overall graphics system is not claimed complete while ten dynamic
-`0x3820` producers and non-screen loader families remain source-blocked.
+`0x3820` producers and remaining non-screen loader paths remain source-blocked.
 
 ## Result
 
@@ -207,6 +207,35 @@ closes that stream at `0x211F79` with 18,712 decompressed bytes. The narrow
 candidate promotion adds only `0x02E1D8..0x02E1EE`; it does not promote the
 four-byte gap before the D406 call or infer caller `A1` from it.
 
+### Exact `0x0037D2` wrapper-family census
+
+The developer-only wrapper census
+`build/m12-gfx-37d2-census.json` (`oasis.m68k.m12-gfx-37d2-census.v1`)
+finds all seven direct absolute `JSR 0x0037D2` sites. The wrapper's exact
+internal `BSR 0x003820` at `0x0037D8` is therefore accounted for as a sibling
+loader edge rather than being hidden by the 52-site absolute `0x3820` census.
+Its SHA-256 is
+`EC247A5304BE12B458515CB7CE081A2FF54A1EA0C9DED51AEC7FBEC8F975068E`; a
+deterministic repeat produced the identical hash.
+
+Five sites have an exact local setup of `LEA source,A0`, `LEA destination,A1`,
+`MOVE.W #value,D0`, and `JSR 0x0037D2`. Their deterministic Ancient source
+spans are already wholly `LOCAL_ROM_DERIVED_ASSET`; this census adds no bytes:
+
+| wrapper call | source | end | compressed bytes | D0 | destination |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| `0x03C0DE` | `0x1744EE` | `0x17502A` | 2,876 | `0x4B00` | `0x00FF2FA8` |
+| `0x03C2BE` | `0x18CCD0` | `0x18CF97` | 711 | `0x7080` | `0x00FF2FA8` |
+| `0x03C632` | `0x18EC26` | `0x18F214` | 1,518 | `0x6A40` | `0x00FF2FA8` |
+| `0x03CA40` | `0x1911EA` | `0x191F09` | 3,359 | `0x2580` | `0x00FF2FA8` |
+| `0x03CD54` | `0x19911A` | `0x199CBA` | 2,976 | `0x6400` | `0x00FF2FA8` |
+
+The remaining direct calls are explicit negative evidence: `0x00D9B2`
+inherits its source through `A6` in `0x00D9A4`, while `0x02F6B6` inherits the
+post-source state of the preceding `0x00D406`. Neither creates a new exact ROM
+source set. The five direct spans total 11,440 already-owned bytes; promotion
+is zero and the canonical ROM remains unchanged.
+
 ## Screen-root and resource closure
 
 The root table contains 21 longwords and points to the following finite group
@@ -225,9 +254,10 @@ and no stream promotion in this transaction.
 The 108-entry resource pointer table `[0x05CE96,0x05D046)` and its 107 finite
 targets were already closed by M12-GFX-2. The adjacent known loader census
 was reviewed through `0x37D2`, `0x3820`, `0xD3B2`, `0xD406`, `0xD950`,
-`0x2CBC`, `0x2E1E`, and `0x36D4`; only the already closed `0x37D2`/`0xD3B2`
-relations produced a new finite Ancient source contract. No arbitrary selector
-domain, decoder-validity-only range, or visual inference was promoted.
+`0x2CBC`, `0x2E1E`, and `0x36D4`. The direct `0x37D2` census closes its
+seven-call evidence set: five exact source spans are already owned and two
+paths remain inherited/post-state blocked. No arbitrary selector domain,
+decoder-validity-only range, or visual inference was promoted.
 
 ## Accounting and ambiguity
 
@@ -247,18 +277,20 @@ Passed locally for the original root-closure transaction: Python compile,
 deterministic helper test, canonical ROM identity, full candidate
 materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
-(`6/6`), deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`145/145` each, including the source-size
-gate), the WSL Release build with both new CTest helpers (`2/2`), and
+(`6/6` existing graphics assertions plus `2/2` new wrapper-census assertions),
+deterministic canonical-ROM JSON generation, Debug/Release builds,
+full Windows Debug/Release CTest (`146/146` each, including the source-size
+gate), the WSL build with the three relevant graphics CTest helpers (`3/3`), and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
-A full Linux CTest attempt reached the
+A full Linux CTest attempt previously reached the
 `project_file_line_limit` test and was stopped after approximately 90 seconds
-of `/mnt/c` filesystem scanning; excluding that known slow gate, all 143 tests
-passed. The identical source-size gate passed in Windows Debug and Release in
-163.05 s and 161.59 s. No source violation was observed.
+of `/mnt/c` filesystem scanning; the current Linux build and three relevant
+graphics helpers pass. The Windows source-size gate passed in Debug and
+Release after the CMake registration was kept at the existing 500-line limit.
+No source violation was observed.
 The second full-layout `vasmm68k_mot` attempt was not
 successful because the existing generated baseline layout contains duplicate
 labels such as `loc_00B856`; the report records use of the independently

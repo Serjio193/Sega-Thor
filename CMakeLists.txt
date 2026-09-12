@@ -123,7 +123,6 @@ add_executable(oasis_re_mass_verify src/tools/re_mass_verify_report.cpp)
 target_link_libraries(oasis_re_mass_verify PRIVATE oasis_re_tooling oasis_core)
 add_executable(oasis_re_explore src/tools/re_explore_report.cpp)
 target_link_libraries(oasis_re_explore PRIVATE oasis_re_tooling oasis_core)
-
 add_executable(oasis_re_ant src/tools/re_ant_report.cpp)
 target_link_libraries(oasis_re_ant PRIVATE oasis_re_tooling oasis_core)
 
@@ -199,6 +198,7 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_gfx_caller_closure_test.py)
     add_test(NAME oasis_re_m12_screen_descriptor_candidate_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_descriptor_candidate_promote_test.py)
+    add_test(NAME oasis_re_m12_gfx_37d2_census_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_gfx_37d2_census_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)
