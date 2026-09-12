@@ -220,6 +220,25 @@ closes that stream at `0x211F79` with 18,712 decompressed bytes. The narrow
 candidate promotion adds only `0x02E1D8..0x02E1EE`; it does not promote the
 four-byte gap before the D406 call or infer caller `A1` from it.
 
+### Residual non-screen `0x00D406` caller census
+
+After the screen continuations and five descriptor-shaped candidates are
+accounted for, five direct `0x00D406` sites remain outside those closed
+relations: `0x02DB40`, `0x02DD8C`, `0x02DE58`, `0x02DFC2`, and `0x02E084`.
+The exact residual report is
+`build/m12-gfx-d406-residual-census.json`
+(`oasis.m68k.m12-gfx-d406-residual-census.v1`).
+
+`0x02DB40` is the known `0x00D406` post-source continuation; its bounded body
+`[0x02DB3C,0x02DBB6)` calls `0x003820` at `0x02DB52` and later `0x00D7C0`.
+`0x02DD8C` and `0x02DE58` have the identical 28-byte body, with
+`MOVEA.L A2,A0`, `MOVEQ #0,D0`, the D406 call, and a post-call clear of RAM
+flag `0x00FF17C2`. `0x02DFC2` has only local `MOVEQ #0,D0` before D406, and
+`0x02E084` sets `A0` from that zero D0 before D406. None of these four sites
+defines a ROM source or destination. This closes the residual xref set as
+non-owning wrapper/continuation evidence; promotion remains zero. The report
+SHA-256 is `544986B32D7B0917FDEC5FE35574BCAF004D6D65E763D15317C90BB2C6B1C881`.
+
 ### Exact `0x0037D2` wrapper-family census
 
 The developer-only wrapper census
@@ -354,8 +373,8 @@ materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
 (`6/6` existing graphics assertions plus `3/3` new sibling/helper assertions),
 deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`149/149` each, including the source-size
-gate), the WSL build with the seven relevant graphics CTest helpers (`7/7`), and
+full Windows Debug/Release CTest (`150/150` each, including the source-size
+gate), the WSL build with the eight relevant graphics CTest helpers (`8/8`), and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
@@ -376,7 +395,8 @@ The screen continuation sites are now all closed, and the five descriptor-
 shaped records are accounted for: four were already owned and the fifth is
 promoted under the exact 22-byte contract above. The next graphics step is to
 obtain new caller-closed or targeted register evidence for the ten dynamic
-`0x3820` producers and the 27 unmatched non-screen `0x00D406` candidates.
+`0x3820` producers. The five residual non-screen `0x00D406` callers are now
+classified as inherited/zero-source wrappers and do not establish ownership.
 Existing exact static slices have reached evidence exhaustion for the ten
 dynamic producers; no candidate becomes owned without a proven source and
 exact boundary. The directly reachable sibling helpers covered by the census

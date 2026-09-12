@@ -1,3 +1,42 @@
+# 2026-09-12 — M12-GFX-MAX residual 0xD406 caller census — IN PROGRESS
+
+TASK: Classify the five exact direct `0x00D406` callers left after the screen
+continuations, descriptor-shaped candidates, and proven sibling helpers were
+accounted for: `0x02DB40`, `0x02DD8C`, `0x02DE58`, `0x02DFC2`, and `0x02E084`.
+Do not infer ROM ownership from zero selectors or inherited registers.
+
+ACCEPTANCE CRITERIA: verify the canonical total of 173 direct `0x00D406` calls;
+verify all five residual sites and exact bounded body fingerprints; classify
+their local edges and source blockers; make no promotion; and provide a
+deterministic regression-tested artifact.
+
+RESULT: `0x02DB40` is the already-known `D406` post-source continuation into
+`0x003820` at `0x02DB52`, with later `0x00D7C0` cleanup. `0x02DD8C` and
+`0x02DE58` share the exact 28-byte `A2`-inherited/zero-selector body;
+`0x02DFC2` is a 10-byte zero-selector wrapper; and `0x02E084` is a 12-byte
+zero-D0-to-A0 wrapper. None defines a ROM source and no bytes are promoted.
+
+ARTIFACT: ignored local `build/m12-gfx-d406-residual-census.json`, schema
+`oasis.m68k.m12-gfx-d406-residual-census.v1`. Canonical ROM SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Python compilation, focused residual-census regression test,
+canonical-ROM generation, and deterministic repeat passed. Both JSON artifacts
+have SHA-256
+`544986B32D7B0917FDEC5FE35574BCAF004D6D65E763D15317C90BB2C6B1C881`.
+Debug/Release focused builds and full Windows CTest passed (`150/150` each,
+including source-size); the WSL GNU/Linux build/link and eight relevant
+graphics helpers passed (`8/8`); and `git diff --check` passed. Source files
+remain within the 500-line limit. Commit and publication remain pending.
+
+NEGATIVE EVIDENCE: the only residual dynamic source relation is the already
+recorded `0x02DB40 -> 0x02DB52` post-source continuation. The other four are
+inherited/zero-source wrappers and cannot establish a ROM resource boundary.
+
+NEXT: after publication, continue only if new evidence reaches the remaining
+dynamic `0x3820` producers; the five residual `0x00D406` sites are explicitly
+classified and should not be reopened without new source evidence.
+
 # 2026-09-12 — M12-GFX-MAX proven sibling-helper census — IN PROGRESS
 
 TASK: Classify the remaining directly reachable sibling helpers named by the

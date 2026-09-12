@@ -38,6 +38,12 @@ sets for the proven `0x00D950`, `0x002CBC`, and `0x002E1E` sibling helpers.
 They verify each bounded body fingerprint and record the non-owning VDP/RAM
 helper classification; generated output is ignored/local.
 
+`src/tools/re_m12_gfx_d406_residual_census.py` and
+`tests/re_m12_gfx_d406_residual_census_test.py` classify the five remaining
+non-screen direct `0x00D406` callers after screen continuations and descriptor
+families are removed. They verify exact bounded caller fingerprints and retain
+inherited/zero-source blockers without promoting bytes; output is ignored/local.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and

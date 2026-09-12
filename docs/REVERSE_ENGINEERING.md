@@ -3440,3 +3440,23 @@ classified and fully xref-accounted, but are not ROM-resource loaders and add
 zero SOURCE_OWNED bytes. Machine evidence is emitted by
 `re_m12_gfx_sibling_census.py` under schema
 `oasis.m68k.m12-gfx-sibling-census.v1`.
+
+# M12-GFX-MAX residual 0xD406 caller census
+
+After removing the 167 screen-descriptor relations, 17 verified continuations,
+and five descriptor-shaped candidates from the exact 173-call `0x00D406`
+census, five residual direct callers remain: `0x02DB40`, `0x02DD8C`,
+`0x02DE58`, `0x02DFC2`, and `0x02E084`. Their bounded bodies are respectively
+`[0x02DB3C,0x02DBB6)` (122 bytes), `[0x02DD80,0x02DD9C)` (28 bytes),
+`[0x02DE4C,0x02DE68)` (28 bytes), `[0x02DFC0,0x02DFCA)` (10 bytes), and
+`[0x02E080,0x02E08C)` (12 bytes).
+
+`0x02DB40` is a `0x00D406` post-source continuation that calls `0x003820` at
+`0x02DB52` and remains blocked by `D406_POST_SOURCE_NOT_ROM_PROVEN`.
+`0x02DD8C` and `0x02DE58` are byte-identical `A2`-inherited, zero-selector
+wrappers that only clear RAM flag `0x00FF17C2` after the call. `0x02DFC2` has
+only local `MOVEQ #0,D0`, and `0x02E084` performs `MOVEA.L D0,A0` after the same
+zeroing; neither defines a ROM source or destination. No residual caller can
+promote a table, descriptor, resource, or executable range. Machine evidence
+is emitted by `re_m12_gfx_d406_residual_census.py` under schema
+`oasis.m68k.m12-gfx-d406-residual-census.v1`.
