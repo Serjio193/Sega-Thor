@@ -23,6 +23,16 @@ UNRESOLVED_NOTES = {
         "requires": "caller/A1 provenance separating the entry from the sibling call",
     },
 }
+EXTENDED_SCREEN_CONTINUATIONS = {
+    0x038FD6: {
+        "call": 0x0390A4,
+        "pre_call_sha256": "53a38241102d56692baa4176d467ed204ebc2ef6a6fbb21e429f7e1c6820cb71",
+    },
+    0x03959A: {
+        "call": 0x0395D8,
+        "pre_call_sha256": "d4d24eb99db0998278f3aec1b4ba0735dcf3299f4a59aed089ce6781ec9a258d",
+    },
+}
 
 
 def direct_call_sites(rom: bytes) -> list[int]:
@@ -126,6 +136,80 @@ def verify_continuation(rom: bytes, start: int, call: int) -> dict | None:
     }
 
 
+def verify_slice_continuation(rom: bytes, slice_report: dict,
+                              start: int, call: int) -> dict | None:
+    """Verify a longer continuation using the exact bounded CFG report.
+
+    The report is produced by the developer-only ``re_slice_decoder``. Calls
+    are treated as returning to their fall-through instruction; conditional
+    branches keep both successors. A return, unsupported instruction, or
+    missing successor before the target fails closed.
+    """
+    if slice_report.get("schema") != "oasis.m68k.re-slice.v1":
+        return None
+    if int(slice_report.get("entry_point", "-1"), 16) != start:
+        return None
+    instructions = slice_report.get("instructions", [])
+    by_address = {int(item["address"], 16): item for item in instructions}
+    target_edges = [edge for edge in slice_report.get("direct_control_flow", [])
+                    if int(edge["source"], 16) == call and
+                    int(edge["target"], 16) == TARGET]
+    target_instruction = by_address.get(call)
+    if not target_edges or target_instruction is None:
+        return None
+    if target_instruction.get("bytes", "").lower() != CALL_BYTES.hex():
+        return None
+    expected = EXTENDED_SCREEN_CONTINUATIONS.get(start)
+    if expected is None or expected["call"] != call:
+        return None
+    if hashlib.sha256(rom[start:call]).hexdigest() != expected["pre_call_sha256"]:
+        return None
+
+    edge_map = {int(edge["source"], 16): int(edge["target"], 16)
+                for edge in slice_report.get("direct_control_flow", [])}
+    reachable = set()
+    pending = [start]
+    reached_call = False
+    while pending:
+        address = pending.pop()
+        if address == call:
+            reached_call = True
+            continue
+        if address in reachable:
+            continue
+        instruction = by_address.get(address)
+        if instruction is None or not instruction.get("supported", False):
+            return None
+        if instruction.get("flow") == "return":
+            return None
+        reachable.add(address)
+        next_address = address + len(bytes.fromhex(instruction["bytes"]))
+        if instruction.get("flow") == "direct_branch":
+            if instruction.get("mnemonic", "").lower() not in ("bra", "jmp"):
+                pending.append(next_address)
+            branch_target = edge_map.get(address)
+            if branch_target is not None:
+                pending.append(branch_target)
+        elif next_address in by_address:
+            pending.append(next_address)
+        elif instruction.get("flow") != "direct_call":
+            return None
+        if any(successor != call and successor not in by_address
+               for successor in pending):
+            return None
+    if not reached_call:
+        return None
+    return {
+        "site": _hex(call),
+        "classification": "VERIFIED_SCREEN_DESCRIPTOR_EXTENDED_CONTINUATION",
+        "instruction_count_before_call": len(reachable),
+        "control_flow": "exact re_slice CFG reaches the D406 call on every reachable path",
+        "a1_written_before_call": False,
+        "pre_call_sha256": expected["pre_call_sha256"],
+        "proof_limit": "inherits the screen-root descriptor/A1 entry contract; no ROM ownership promotion",
+    }
+
+
 def descriptor_shaped_calls(rom: bytes, calls: list[int], screen_calls: set[int]) -> list[dict]:
     """Find unmatched calls whose preceding 26 bytes match the D406 record shape."""
     result = []
@@ -151,7 +235,8 @@ def descriptor_shaped_calls(rom: bytes, calls: list[int], screen_calls: set[int]
     return result
 
 
-def build_report(rom: bytes, screen_report: dict) -> dict:
+def build_report(rom: bytes, screen_report: dict,
+                 slice_reports: dict[int, dict] | None = None) -> dict:
     actual_sha = hashlib.sha256(rom).hexdigest()
     if actual_sha != ROM_SHA256:
         raise ValueError(f"canonical ROM SHA-256 mismatch: {actual_sha}")
@@ -176,6 +261,13 @@ def build_report(rom: bytes, screen_report: dict) -> dict:
                 rom, use["expected_call_site"], call)
         else:
             item["verified_continuation"] = None
+        if item["verified_continuation"] is None and slice_reports:
+            extended = EXTENDED_SCREEN_CONTINUATIONS.get(
+                use["expected_call_site"])
+            if extended is not None:
+                item["verified_continuation"] = verify_slice_continuation(
+                    rom, slice_reports.get(use["expected_call_site"], {}),
+                    use["expected_call_site"], extended["call"])
         if item["verified_continuation"] is None:
             item["unresolved_blocker"] = UNRESOLVED_NOTES.get(
                 use["expected_call_site"], {
@@ -227,8 +319,17 @@ def main() -> int:
     parser.add_argument("rom", type=Path)
     parser.add_argument("screen_report", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument(
+        "--slice-report", nargs=2, action="append", metavar=("ENTRY", "PATH"),
+        help="exact re_slice JSON for an extended screen continuation")
     args = parser.parse_args()
-    report = build_report(args.rom.read_bytes(), json.loads(args.screen_report.read_text()))
+    slice_reports = {
+        int(entry, 0): json.loads(Path(path).read_text())
+        for entry, path in (args.slice_report or [])
+    }
+    report = build_report(
+        args.rom.read_bytes(), json.loads(args.screen_report.read_text()),
+        slice_reports)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({

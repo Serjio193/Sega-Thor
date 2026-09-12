@@ -197,6 +197,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_gfx_sweep_test.py)
     add_test(NAME oasis_re_m12_gfx_caller_closure_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_gfx_caller_closure_test.py)
+    add_test(NAME oasis_re_m12_screen_descriptor_candidate_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_descriptor_candidate_promote_test.py)
 endif()
 include(cmake/m12_auto2.cmake)
 add_executable(oasis_smoke tests/smoke.cpp)

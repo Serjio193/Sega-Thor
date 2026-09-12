@@ -82,6 +82,33 @@ def test_known_continuation_decoder_requires_exact_call_and_preserves_a1():
     assert MODULE.verify_continuation(bytes(rom), 0x10, 0x14) is None
 
 
+def test_extended_continuation_requires_exact_cfg_report_and_hash():
+    call = MODULE.CALL_BYTES
+    start = 0x20
+    target = start + 2
+    rom = bytearray(b"\0" * 0x80)
+    rom[start:start + 2] = bytes.fromhex("7400")
+    rom[target:target + len(call)] = call
+    MODULE.EXTENDED_SCREEN_CONTINUATIONS = {
+        start: {"call": target, "pre_call_sha256": hashlib.sha256(
+            bytes(rom[start:target])).hexdigest()}}
+    report = {
+        "schema": "oasis.m68k.re-slice.v1",
+        "entry_point": f"0x{start:08X}",
+        "instructions": [
+            {"address": f"0x{start:08X}", "bytes": "7400",
+             "supported": True, "flow": "none", "mnemonic": "moveq"},
+            {"address": f"0x{target:08X}", "bytes": call.hex(),
+             "supported": True, "flow": "direct_call", "mnemonic": "jsr"},
+        ],
+        "direct_control_flow": [{"source": f"0x{target:08X}",
+                                  "target": "0x0000D406"}],
+    }
+    result = MODULE.verify_slice_continuation(bytes(rom), report, start, target)
+    assert result["classification"] == "VERIFIED_SCREEN_DESCRIPTOR_EXTENDED_CONTINUATION"
+    assert result["a1_written_before_call"] is False
+
+
 if __name__ == "__main__":
     test_exact_direct_call_scan_and_screen_split()
     test_screen_duplicate_use_is_retained_but_unique_count_is_exact()

@@ -3325,3 +3325,27 @@ write entity-state fields at `0x00FF19A2`, `0x00FF19A6`, `0x00FF19AA`, and
 already closed direct stream `0x0016943C` to `0x00FF2FA8`. Thus the first
 `0x03E61A` call remains `CALLER_ARGUMENT_NOT_ROM_PROVEN`, and these two sites
 produce no new ownership evidence.
+
+# M12-GFX-MAX extended screen-continuation audit
+
+The exact developer-only `re_slice_decoder` reports close the two screen
+entries that were outside the earlier 16-byte adjacency window. Starting at
+`0x038FD6`, the bounded CFG reaches `JSR 0x00D406` at `0x0390A4` on every
+reachable path; starting at `0x03959A`, it reaches the exact call at
+`0x0395D8`. Neither path returns or encounters an unsupported instruction
+before its D406 target, and the exact pre-call byte hashes are respectively
+`53A38241102D56692BAA4176D467ED204EBC2EF6A6FBB21E429F7E1C6820CB71` and
+`D4D24EB99DB0998278F3AEC1B4BA0735DC3299F4A59AED089CE6781EC9A258D`.
+The reviewed paths write no `A1`, so both relations inherit the established
+screen-root descriptor/A1 entry contract. This closes 17/17 screen
+continuations but remains non-owning proof.
+
+# M12-GFX-MAX screen descriptor candidate closure
+
+The unmatched candidate at `0x02E1D8` is now independently closed as a
+22-byte member of the repeated graphics descriptor family. Its `+4` pointer
+is `0x2119D2`, its four resource IDs are `0x4E,0x4F,0x50,0x51` within the
+closed screen domain, and the exact graphics census bounds that stream at
+`0x2119D2..0x211F79` with 18,712 decompressed bytes. Only
+`0x02E1D8..0x02E1EE` is promoted. The four-byte gap before the exact D406 call
+at `0x02E1F2` remains unknown; no caller-A1 claim is derived from adjacency.

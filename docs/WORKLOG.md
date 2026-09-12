@@ -6573,3 +6573,42 @@ then revisit dynamic producers only with new evidence.
 PUBLICATION: focused commit
 `8b9ed0fbc07a4a7eec9e7241f770164c4e835a02` is on `origin/main`; exact
 GitHub Actions CI run `34662639911` passed Build, Test, and Complete.
+# 2026-09-12 — M12-GFX-MAX extended D406 closure and descriptor candidate — IN PROGRESS
+
+TASK: Continue the active M12-GFX-MAX graphics closure after the bounded
+0x00D406 census. Close the two long screen continuations with exact
+instruction-level CFG evidence and independently validate the remaining
+descriptor-shaped candidate. Keep continuation proof non-owning, preserve the
+canonical ROM, and do not start M13 or ASM-to-C++ migration.
+
+RESULT: The exact developer-only `re_slice_decoder` CFG reports close
+`0x038FD6 -> 0x0390A4` and `0x03959A -> 0x0395D8`; every reachable path reaches
+the exact `JSR abs.l,0x00D406`, no return or unsupported instruction occurs
+before the target, and the reviewed paths write no `A1`. The screen census is
+now 17/17 verified continuations with zero unresolved screen sites. The five
+descriptor-shaped records are accounted for: four were already owned, and
+`0x02E1D8..0x02E1EE` is promoted as a 22-byte repeated-family descriptor whose
+`+4` pointer selects the exact already-owned stream `0x2119D2..0x211F79`
+(18,712 decompressed bytes). The four-byte gap before the D406 call remains
+unpromoted.
+
+ARTIFACTS: ignored `build/m12-gfx-loader-census-extended.json`, SHA-256
+`55B7A55F6C67017996C859350E2A18841BAC8C7D9A84BF6128B965A84DAED479`; ignored
+`build/m12-gfxmax-screen-descriptor-candidate-a/promotion_report.json`, SHA-256
+`5C45C2873DC1A8850D8E1331C5D9E0A729EE3E9D74FD75C6F420ECAFC444155D`.
+
+OWNERSHIP: candidate manifest SOURCE_OWNED is 1,475,368 bytes / 46.9006856283%;
+UNKNOWN is 1,670,360 bytes. The materialized rebuilt ROM remains byte-exact:
+CRC32 `C4728225`, SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Python compilation; focused helper tests (`6 passed`); deterministic
+extended census; candidate promotion/materialization; and byte-for-byte ROM
+identity checks passed. Existing project Debug/Release and Linux validation
+status remains as recorded in the M12-GFX-MAX report; no C++ or ROM files were
+changed.
+
+NEXT: obtain new caller-closed or targeted register evidence for the ten
+dynamic `0x3820` producers. Existing exact static slices are exhausted for
+those ten; no ownership promotion without a proven ROM source and exact
+boundary.
