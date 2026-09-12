@@ -273,8 +273,8 @@ obtain new caller-closed or targeted register evidence for the ten dynamic
 exhaustion for those ten; no candidate becomes owned without a proven source
 and exact boundary. M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: `8b9ed0fbc07a4a7eec9e7241f770164c4e835a02`.
-Exact implementation CI: GitHub Actions run `34662639911` (success).
-Final publication SHA: `8b9ed0fbc07a4a7eec9e7241f770164c4e835a02`.
+Implementation SHA: `94ec32526ced201b6f985c77e80b52d52feaf67c`.
+Exact implementation CI: GitHub Actions run `34664076939` (success).
+Final publication SHA: `94ec32526ced201b6f985c77e80b52d52feaf67c`.
 Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34662639911` (success).
+`34664076939` (success).
