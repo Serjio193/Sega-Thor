@@ -1,3 +1,42 @@
+# 2026-09-12 — M12-GFX-MAX direct 0x36D4 wrapper classification — IN PROGRESS
+
+TASK: Classify the directly reachable `0x0036D4` graphics wrapper after the
+`0x37D2` and `0xD3B2` family closures. Prove its complete direct caller set,
+bounded body, decompressor/postprocessor edges, RAM destination, and exact
+source blocker. Do not convert inherited A0 into ROM ownership.
+
+ACCEPTANCE CRITERIA: the canonical ROM scan must find all direct
+`JSR 0x0036D4` sites; each caller must have exact local setup; the body must
+have exact start/end and proven `0x3820`/`0x2CBC` edges; source provenance must
+remain explicit and fail-closed; output must be deterministic and tested.
+
+RESULT: The exact scan finds six callers at `0x03D25E`, `0x03D2D8`,
+`0x03D512`, `0x03DD70`, `0x03DF14`, and `0x03E544`. Their exact D0 values are
+`0x20`, `0x4000`, `0x20`, `0x20`, `0x20`, and `0x20`, all with the reviewed
+`A5 = 0x60000003` setup. The bounded wrapper is `[0x36D4,0x372A)` (86 bytes),
+sets `A1 = 0x00FF2FA8`, calls `0x3820`, then `0x2CBC`; A0 remains inherited.
+Classification is `CALLER_A0_NOT_ROM_PROVEN`; promotion is zero.
+
+ARTIFACT: ignored local `build/m12-gfx-36d4-census.json`, schema
+`oasis.m68k.m12-gfx-36d4-census.v1`, SHA-256
+`57A39EE08090CCB233EAA61962E6742CA61491CF98A719E962B2004CB49E959A`.
+The deterministic repeat has the identical SHA-256.
+
+VALIDATION: Python compilation, focused wrapper-census test, canonical-ROM
+census generation, deterministic repeat comparison, exact body/caller checks,
+and negative source classification passed. Debug/Release builds and full
+Windows CTest passed (`148/148` each, including source-size); the WSL
+build/link and five relevant graphics helpers passed (`5/5`); `git diff --check`
+passed. Commit, push, and CI validation remain for this transaction.
+
+NEGATIVE EVIDENCE: the wrapper is a proven graphics-related RAM-mediated
+consumer, but no canonical ROM source or exact compressed boundary is proven
+at its inherited A0 input; no bytes are promoted.
+
+NEXT: validate and publish this classification, then continue with remaining
+dynamic `0x3820` producers and non-screen `0x00D406` paths. The other reviewed
+sibling helpers remain evidence-only until a bounded source contract exists.
+
 # 2026-09-12 — M12-GFX-MAX direct 0xD3B2 indexed-loader/root closure — IN PROGRESS
 
 TASK: Close the proven indexed `0x00D3B2` graphics-loader family after the

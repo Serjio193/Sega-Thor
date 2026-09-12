@@ -3398,3 +3398,25 @@ The loader ABI remains independently established as table lookup followed by
 as the destination word address. Machine evidence is emitted by the
 developer-only `re_m12_gfx_d3b2_census.py` helper under schema
 `oasis.m68k.m12-gfx-d3b2-census.v1`.
+
+# M12-GFX-MAX direct 0x36D4 wrapper census
+
+The exact canonical-ROM scan finds six direct absolute `JSR 0x0036D4` sites:
+`0x03D25E`, `0x03D2D8`, `0x03D512`, `0x03DD70`, `0x03DF14`, and `0x03E544`.
+Each has the exact local setup `MOVE.W #value,D0`,
+`MOVE.L #0x60000003,A5`, then the wrapper call. The D0 values are `0x20`,
+`0x4000`, `0x20`, `0x20`, `0x20`, and `0x20` respectively.
+
+The bounded wrapper body is `[0x0036D4,0x00372A)` (86 bytes), starts with
+`MOVEM.L`, ends at the exact `RTS` at `0x003728`, sets
+`A1 = 0x00FF2FA8` at `0x0036E2`, calls the proven decompressor `0x003820` at
+`0x0036EA`, and calls the existing `0x002CBC` helper at `0x003720`. No local
+source definition for `A0` occurs before the decompressor call; source
+provenance and the consumed Ancient boundary therefore remain
+`CALLER_A0_NOT_ROM_PROVEN`. No bytes are promoted.
+
+Machine evidence is emitted by the developer-only
+`re_m12_gfx_36d4_census.py` helper under schema
+`oasis.m68k.m12-gfx-36d4-census.v1`. The wrapper is classified as a proven
+graphics-related RAM-mediated consumer, not as an independent ROM resource
+source.

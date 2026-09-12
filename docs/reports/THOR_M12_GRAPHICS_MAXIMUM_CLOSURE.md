@@ -267,6 +267,23 @@ The selected indices resolve to five already-owned spans:
 adding ownership; table shape and selector validity were not used alone for
 promotion.
 
+### Exact `0x0036D4` wrapper census
+
+The developer-only wrapper census
+`build/m12-gfx-36d4-census.json` (`oasis.m68k.m12-gfx-36d4-census.v1`)
+finds all six direct absolute `JSR 0x0036D4` sites:
+`0x03D25E`, `0x03D2D8`, `0x03D512`, `0x03DD70`, `0x03DF14`, and `0x03E544`.
+Every caller has the exact local form `MOVE.W #value,D0`,
+`MOVE.L #0x60000003,A5`, then the wrapper call. The D0 values are `0x20`,
+`0x4000`, `0x20`, `0x20`, `0x20`, and `0x20`.
+
+The bounded body `[0x0036D4,0x00372A)` is 86 bytes. It sets the shared RAM
+destination `0x00FF2FA8`, calls `0x003820` at `0x0036EA`, then calls
+`0x002CBC` at `0x003720` before its exact `RTS`. Its source `A0` is inherited
+from the caller and is not ROM-proven; this closes the wrapper as a classified
+RAM-mediated graphics consumer with blocker `CALLER_A0_NOT_ROM_PROVEN`, not as
+a new source range. Promotion is zero.
+
 ## Screen-root and resource closure
 
 The root table contains 21 longwords and points to the following finite group
@@ -287,8 +304,9 @@ targets were already closed by M12-GFX-2. The adjacent known loader census
 was reviewed through `0x37D2`, `0x3820`, `0xD3B2`, `0xD406`, `0xD950`,
 `0x2CBC`, `0x2E1E`, and `0x36D4`. The direct `0x37D2` census closes its
 seven-call evidence set: five exact source spans are already owned and two
-paths remain inherited/post-state blocked. No arbitrary selector domain,
-decoder-validity-only range, or visual inference was promoted.
+paths remain inherited/post-state blocked. The new `0x36D4` census closes its
+six-call wrapper set as RAM-mediated with inherited-A0 source. No arbitrary
+selector domain, decoder-validity-only range, or visual inference was promoted.
 
 ## Accounting and ambiguity
 
@@ -310,8 +328,8 @@ materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
 (`6/6` existing graphics assertions plus `2/2` new wrapper-census assertions),
 deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`147/147` each, including the source-size
-gate), the WSL build with the four relevant graphics CTest helpers (`4/4`), and
+full Windows Debug/Release CTest (`148/148` each, including the source-size
+gate), the WSL build with the five relevant graphics CTest helpers (`5/5`), and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256

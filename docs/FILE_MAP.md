@@ -26,6 +26,12 @@ graphics-loader family: seven direct callers, the 108-entry root table, and
 all 107 finite child streams. The generated census is ignored/local and
 records already-owned bytes without promoting them.
 
+`src/tools/re_m12_gfx_36d4_census.py` and
+`tests/re_m12_gfx_36d4_census_test.py` census the six direct callers of the
+`0x0036D4` wrapper, verify its bounded `0x36D4..0x372A` body and
+`0x3820 -> 0x2CBC` edges, and retain its inherited-A0 source as an explicit
+non-owning blocker.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and
@@ -613,6 +619,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_m12_gfx_loader_census.py Developer-only exact 0x00D406 direct-xref census
 │       ├── re_m12_gfx_37d2_census.py Developer-only exact 0x37D2 wrapper-family census
 │       ├── re_m12_gfx_d3b2_census.py Developer-only exact 0xD3B2 indexed-loader census
+│       ├── re_m12_gfx_36d4_census.py Developer-only exact 0x36D4 wrapper census
 │       ├── re_resource_boundary_scan.cpp Developer-only pointer-table resource boundary scanner
 │       ├── ghidra/OasisGhidraMap.java Developer-only Ghidra map exporter; never production-linked
 │       ├── re_slice_decoder.cpp Developer-only bounded 68000 evidence decoder/reporter
@@ -734,6 +741,7 @@ This document is the canonical map of repository structure. Update it whenever s
     ├── re_m12_gfx_loader_census_test.py  Exact 0x00D406 direct-xref census regression tests
     ├── re_m12_gfx_37d2_census_test.py    Exact 0x37D2 wrapper-family census regression tests
     ├── re_m12_gfx_d3b2_census_test.py    Exact 0xD3B2 indexed-loader census regression tests
+    ├── re_m12_gfx_36d4_census_test.py    Exact 0x36D4 wrapper census regression tests
     ├── graphics_decompress_reference.cpp ROM-backed differential oracle verifier
     ├── resource_id3_reference.cpp Local USA-ROM resource/VRAM/atlas oracle verifier
     ├── genesis_graphics_test.cpp         Synthetic tile/palette conversion tests
