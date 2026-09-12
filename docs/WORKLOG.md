@@ -30,7 +30,9 @@ artifacts have SHA-256
 Debug/Release builds and full Windows CTest passed (`149/149` each, including
 source-size); the WSL GNU/Linux build/link and seven relevant graphics helpers
 passed (`7/7`); and `git diff --check` passed. Source files are within the
-500-line limit. Commit and publication remain pending for this transaction.
+500-line limit. Implementation commit `8a0d141418abc8f3214efb9b87131008c470c8ef`
+is pushed and exact CI run `34668227200` passed. This helper classification is
+published; no ROM or decoded asset was added.
 
 NEGATIVE EVIDENCE: these are VDP/RAM/state helpers, not independent ROM-source
 loaders. Their exact xrefs are now accounted for, but no resource boundary or

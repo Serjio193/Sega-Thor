@@ -383,8 +383,8 @@ exact boundary. The directly reachable sibling helpers covered by the census
 are now classified and should not be reopened without new source evidence.
 M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: `3fe64956be986bfe3e76f3d6a4251abba4525865`.
-Exact implementation CI: GitHub Actions run `34667380039` (success).
-Final publication SHA: `3fe64956be986bfe3e76f3d6a4251abba4525865`.
+Implementation SHA: `8a0d141418abc8f3214efb9b87131008c470c8ef`.
+Exact implementation CI: GitHub Actions run `34668227200` (success).
+Final publication SHA: `8a0d141418abc8f3214efb9b87131008c470c8ef`.
 Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34667380039` (success).
+`34668227200` (success).
