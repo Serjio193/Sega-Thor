@@ -1,3 +1,68 @@
+# 2026-09-12 — Independent BizHawk controlled harness diagnosis — WORKING
+
+TASK: Verify the installed BizHawk 2.11.1 CLI/Lua startup, canonical ROM and
+existing QuickSave1 load, Genesis readiness, exact one-frame P1 Right input,
+and only the known A372 execution / FF13CC four-byte oracle. Check process
+coexistence without CUA. No RE, new addresses, new savestate, RAM writes,
+manual gameplay or long replay. Local scripts/evidence stay in ignored
+`build/bizhawk-controlled-harness`; production and milestone scope are unchanged.
+
+ACCEPTANCE: Hash-verified original inputs, reproducible CLI/Lua launch with
+stage logs and bounded exit, observed state frame and controller input,
+one-frame delta plus A372 hit or known FF13CC transition; otherwise identify
+the exact failing stage and distinguish verified APIs from untested options.
+
+RESULT: CLI ROM/config/Lua startup, explicit Lua state load at frame 2117,
+three neutral settling frames, exact one-frame Right at 2120 -> 2121,
+A372 execution (six hits), register reads and FF13CC write hooks all passed.
+FF13CC changed 00000000 -> 00880901. Three successful Right logs, including a
+run alongside a held EmuHawk process, were byte-identical. Original ROM/state
+hashes remained exact; no native UI automation or new savestate was needed.
+
+DIAGNOSIS: The CUA error is not a runtime blocker. Existing mixed-prefix
+`joypad.set({ ["P1 Right"] = true }, 1)` fails to assert Right; the verified
+call is `joypad.set({ Right = true }, 1)`. Neutral input produces the same
+oracle: frame 2121 is lagged with zero input-poll callbacks, so no gameplay
+causality is claimed. CLI --load-state entered Lua at 2118; reload inside Lua
+is the reliable frame synchronization. Single-instance forwarding only loads
+args[0]; isolated configuration with that mode disabled worked with coexistence.
+
+EVIDENCE: `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md` and ignored
+`build/bizhawk-controlled-harness` contain the exact workflow, stage logs,
+early probe-assertion corrections, controls and version-specific sources.
+Production source and existing probes remain unchanged. No native build or CI
+execution was performed for this diagnostic/documentation task.
+
+POLICY UPDATE: The independent harness is now the required runtime entrypoint
+for future M12 work. The older `Right -> A372` wording is superseded: neutral
+input reaches the identical lag-frame transition and no input-poll callback;
+only controller installation and source-side reachability are proven.
+
+# 2026-09-12 — M12 controlled runtime root capture — NEUTRAL CAUSAL RESULT
+
+After a fresh baseline `run.ps1` returned `result=PASS`, a one-frame developer-
+only root probe compared Right and all-false control from exact QuickSave1.
+Both arms reached A196/A342 once and A372 six times at frame 2120 with identical
+D2/D5/A5 values, FF1858=00, and FF188A/FF188C updates to 0010/0080 at frame
+2121. Right was visible in the hook's controller state; the neutral arm was
+not. No FF1858 write occurred. The SAT source ended at 00 88 09 01 in both.
+
+RESULT: the restored runtime evidence confirms the controlled producer/root
+path but gives a negative causal control. Right -> A372/FF13CC remains
+unproven; no input-poll callback and the lag frame remain. No ROM ownership,
+semantic label, savestate or C++ change was made.
+
+RE-RANK: next autonomous M12 fork is static exact consumer closure for the 12
+direct FF1858 accesses plus FF188A/FF188C callers; second is the blocked
+03BDA6 consumer boundary; input causality is currently low-value/blocked until
+a separately validated input-polling state exists. Full values and limits are
+in `docs/reports/THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md`.
+
+VALIDATION: Live controlled/control/coexistence runs, final original hashes,
+`git diff --check`, PowerShell syntax and tracked-source size scan passed.
+Local Lua/PowerShell files are 106/81 lines. The stock recursive CMake size
+glob was stopped without a result; tracked sources were checked separately.
+
 # 2026-09-12 — M12 static 0xA372 shadow-SAT producer grammar — POSITIVE STRUCTURAL RESULT
 
 TASK: Close one producer family only, statically, around the existing runtime
@@ -59,7 +124,9 @@ through `savestate.loadslot(1, true)`. The exact ROM was
 `C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin`, SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 After three no-input settling frames, State A was emulator frame `2120`.
-Exactly one `P1 Right` produced first State B at frame `2121`.
+The Right arm reached first State B at frame `2121`; later neutral control
+testing produced the identical A372/FF13CC transition, so Right causality is
+not proven and this historical wording is superseded.
 
 PROVEN CHANGE: SAT shadow source `0xFF13CC..0xFF13CF` changed from
 `00 00 00 00` to `00 88 09 01`; SAT VRAM `0xD000`, selector/descriptor, and

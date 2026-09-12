@@ -1,3 +1,38 @@
+# M12 controlled BizHawk harness policy and causal correction (2026-09-12)
+
+The installed BizHawk 2.11.1 runtime is now independently verified through a
+non-UI process harness. The canonical launcher is
+`C:\Github\Sega-Thor\build\bizhawk-controlled-harness\run.ps1`; its Lua probe is
+`controlled.lua`. It hashes the external canonical ROM and existing QuickSave1
+before launch, uses an isolated config with `SingleInstanceMode=false`, passes
+the ROM/Lua paths as quoted command-line arguments, and records the child PID,
+stdout/stderr and exit code. No native Windows UI automation or CUA is part of
+this evidence class.
+
+The reliable order is: EmuHawk CLI ROM + Lua -> `GEN`/core and register check
+-> `savestate.load(EXACT_STATE_PATH, true)` -> hooks -> three neutral
+`emu.frameadvance()` calls -> frame `2120` -> one input override -> one
+`emu.frameadvance()` -> bounded capture -> `client.exitCode(0)`. The explicit
+Lua state load is required for frame-exact synchronization: CLI
+`--load-state` caused Lua to begin at frame `2118` in this installation. With a
+port argument, the installed 2.11.1 Joypad API requires
+`joypad.set({ Right = true }, 1)`; the mixed-prefix form
+`joypad.set({ ["P1 Right"] = true }, 1)` does not assert Right.
+
+The verified baseline reproduces QuickSave1 `2117 -> 2120 -> 2121`, six
+execution callbacks at `0xA372`, and one `0xFF13CC` write
+`00 00 00 00 -> 00 88 09 01`. The same result occurs with neutral input, and
+frame `2121` is lagged with no input-poll callback. Therefore the baseline
+proves controlled-state reachability, hook operation, and the reproducible
+source-side transition only. It does **not** prove that Right causes A372 or
+the FF13CC change. Future reports must use this neutral causal wording.
+
+An already-running EmuHawk is not a reason to use UI control. The harness uses
+an isolated config and disables single-instance forwarding; source inspection
+of the 2.11.1 forwarding path shows it only attempts `LoadRom(args[0])`, so it
+must not be used as the controlled workflow. Full evidence, exact paths,
+matrix and limits are in `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md`.
+
 # M12-AUTO56 overlapping PC-relative word-table provenance
 
 AUTO56 promotes only the previously UNKNOWN prefix `[0x062DA8,0x062DC0)`
@@ -3774,11 +3809,17 @@ SHA-256 is
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 
 The probe settled three no-input frames, captured State A at emulator frame
-`2120`, injected exactly one `P1 Right`, and stopped at the first bounded
-change in State B at frame `2121`. The selector read remained the same raw
-runtime value in both snapshots, as did the descriptor bytes, the bounded
+`2120`, ran one input arm requesting `P1 Right`, and stopped at the first
+bounded change in State B at frame `2121`. A neutral control arm produced the
+same A372/FF13CC result. The selector read remained the same raw runtime value
+in both snapshots, as did the descriptor bytes, the bounded
 `0x03BDA6` relative-root bytes, and SAT VRAM at `0xD000`. The first changed
 source range was `0xFF13CC..0xFF13CF`: `00 00 00 00` to `00 88 09 01`.
+
+The causal interpretation is corrected: the Right arm did not have an input
+poll callback on this lag frame, and the neutral arm reached the same writer
+and bytes. Right was present in the controller state observed by the A372 hook,
+but Right -> A372/FF13CC is **not proven** by this experiment.
 
 The last-writer callback was the exact bounded source-range watch at
 `0xFF13CC`, callback PC `0xA374`, value `0x00880901`, during the transition.

@@ -1,4 +1,11 @@
-# M12 A372 runtime register/root capture — bounded negative result
+# M12 A372 runtime register/root capture — bounded negative natural scenario
+
+This older report covers the 1,800-frame natural scenario and remains a
+bounded negative result for that scenario. It is superseded as the next-step
+decision by the later controlled QuickSave1 root capture in
+`THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md`; the restored harness does not
+make the natural-scenario target reachable and does not establish Right
+causality.
 
 Baseline: `origin/main = 67fec9592a9476a8a28d685a4dca6685c970d990`.
 

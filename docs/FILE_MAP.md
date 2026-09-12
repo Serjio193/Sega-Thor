@@ -1,3 +1,12 @@
+# Independent BizHawk infrastructure diagnosis
+
+`docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md` records the verified
+BizHawk 2.11.1 CLI/Lua controlled-state workflow, input API correction,
+process coexistence and lag-frame oracle limitation. Local diagnostic scripts
+and evidence remain ignored under `build/bizhawk-controlled-harness`.
+`docs/reports/THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md` records the bounded
+Right-versus-neutral register/root control and the re-ranked M12 forks.
+
 # M12-GFX-MAX closes the screen graphics root table
 
 `src/tools/re_m12_gfx_max_closure.py` and
@@ -1089,3 +1098,10 @@ payload-free validator is `src/tools/m12_a372_runtime_report.py`, tested by
 `tests/m12_a372_runtime_report_test.py`; CTest registration is in
 `cmake/m12_auto2.cmake`. The bounded negative result is documented in
 `docs/reports/THOR_M12_A372_RUNTIME_CAPTURE.md`.
+
+The independent non-UI BizHawk launcher and Lua baseline live in the ignored
+`build/bizhawk-controlled-harness` directory. Its verified policy and exact
+CLI/Lua sequence are documented in
+`docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md`; the controlled
+Right-versus-neutral register/root result and M12 fork ranking are documented
+in `docs/reports/THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md`.

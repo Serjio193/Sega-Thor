@@ -128,7 +128,7 @@ targeted M12 producer/join tests at `2/2`. `git diff --check` and canonical ROM
 size/hash identity checks passed. No ROM bytes, assets, savestates, or decoded
 payloads were added.
 
-## Best next directions
+## Best next directions (superseded by controlled root capture)
 
 1. Targeted runtime register/SAT capture at `A196 -> A342 -> A372`, recording
    `FF1858`, `FF188C`, root choice, and post-DMA publication. Highest expected
@@ -141,8 +141,16 @@ payloads were added.
    stream. Lower immediate gain for the A372 branch, but it is the strongest
    remaining static edge in the selector/descriptor branch.
 
-AUTONOMOUS SESSION STOP REASON: strategic fork reached after three bounded
-investigation cycles. Runtime register capture, wider static state closure,
-and relative-stream boundary work have materially different evidence classes
-and similar expected value; continuing one without choosing that fork would
-violate the bounded-session rule.
+The first runtime direction was executed after the verified harness was
+restored. Its Right-versus-neutral control reached the same A196/A342/A372
+events and FF13CC bytes, with FF188A/FF188C ending at 0010/0080. Right
+causality is therefore not proven. The updated ranking is recorded in
+`THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md`: static FF1858/FF188A/FF188C
+consumer closure is first, the unresolved 0x03BDA6 boundary is second, and
+another input-causality replay is blocked until a separately validated
+input-polling state exists.
+
+AUTONOMOUS SESSION STOP REASON: the controlled runtime fork produced bounded
+register values and a negative causal control. Continuing with another
+equivalent replay would violate the two-pass rule; the next session should
+take the first-ranked static consumer-closure fork.

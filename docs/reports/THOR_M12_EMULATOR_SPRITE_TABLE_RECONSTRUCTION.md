@@ -1,7 +1,7 @@
 # M12 — Emulator sprite-table reconstruction
 
 Status: `BOUNDED POSITIVE RUNTIME RESULT`: the existing BizHawk 2.11.1 F1
-QuickSave loaded the canonical ROM and one controlled `P1 Right` produced the
+QuickSave loaded the canonical ROM and one controlled Right arm reached the
 first changed Ali-side SAT shadow record. The change was in source RAM
 `0xFF13CC..0xFF13CF`; SAT VRAM at `0xD000` remained unchanged in that first
 transition frame. The finite object/frame/animation grammar remains fail-closed.
@@ -17,12 +17,16 @@ with SHA-256
 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
 
 After three no-input settling frames, State A was captured at emulator frame
-`2120`, then exactly one `P1 Right` frame was injected. State B was the first
+`2120`, then exactly one Right frame was requested. State B was the first
 structurally different bounded state at frame `2121`. Selector, descriptor,
 relative-root bytes, and the `0xD000` SAT VRAM snapshot were unchanged. The
 first changed source range was `0xFF13CC..0xFF13CF`, from
 `00 00 00 00` to `00 88 09 01`; the first changed byte is therefore
 `0xFF13CD: 0x00 -> 0x88`.
+
+Neutral control testing reached the same A372/FF13CC transition on this lag
+frame, so Right does not have a proven causal role here; the result is a
+source-side runtime observation only.
 
 The bounded bus-write callback reported `0xFF13CC` with callback PC `0xA374`
 and value `0x00880901` during the transition. Existing BizHawk callback
