@@ -3655,3 +3655,33 @@ share `0x03B8C2..0x03B8C6`; secondary index 7 begins at descriptor record 0
 field `+0` (`0x03B8DE..0x03B8E2`). Static target observations retain neutral
 descriptions. No controlled forcing was needed for this structural catalog,
 no fifth replay was run, and no SOURCE_OWNED bytes were added.
+
+# M12 upstream selector and downstream relative-pair closure
+
+The bounded static result is documented in
+`docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md` and emitted by the
+payload-free analyzers `src/tools/m12_selector_control_analysis.py` and
+`src/tools/m12_relative_table_analysis.py`.
+
+Upstream is proven through the reset/main dispatcher: vector `0x000004` points
+to `0x0000020E`; `0x0000042C..0x0000045C` latches `FF10AC`, masks `FF10AE` by
+`0x7C`, indexes the exact five-entry prefix at `0x0000045E`, and calls through
+`JSR (A1)` at `0x0000045A`. Table entry `0x10` is `0x03A748`. No direct
+absolute call, BSR, or branch targets `0x03A748`; the indirect source is
+therefore explicitly recorded rather than guessed. The handler's exact
+selector contracts at `0x03A8C4`, `0x03A916`, and `0x03A91C` prove the neutral
+domain `0..7`. `FF10AC` values that feed the dispatcher are recorded, but no
+object/animation/frame semantic label is assigned.
+
+Downstream static consumers prove that the `0x03BDA6` structure contains
+two-byte relative pointer words. Child record word `+0` supplies an unsigned
+word index, doubled before lookup from child `+8`; the selected word is a
+signed `ADDA.W` displacement. Each target is a 4-byte pair, with words copied
+to `A6+8` and `A6+6`; `A6+10` advances by four bytes. The countdown mask and
+`BTST.B #7` establish the word-bit15 marker grammar. Eleven pointer entries
+are consumed by the closed child records. One target, `0x03BDD8`, has no
+consumer marker before code boundary `0x03BF86`, so total logical extent stays
+unresolved. The structural continuation to `0x03B448 -> 0xB730 -> SAT` is
+closed, but semantic names and complete enumeration are not.
+
+No replay campaign or controlled state forcing was run for this result.

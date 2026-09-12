@@ -7335,3 +7335,50 @@ than seven minutes. The Windows Debug and sequential Release full CTest runs
 are the complete `156/156` evidence. Next action stops at the unresolved
 shared-table/semantic edge unless a materially different evidence class is
 explicitly authorized.
+
+# 2026-09-12 — M12 upstream selector source and relative pair grammar — BOUNDED RESULT
+
+TASK: Close the upstream source of the selector initialization/increment loop
+and the downstream consumer grammar rooted at `0x03BDA6` without another replay
+campaign, ROM/assets, M13, or ASM-to-C++ work.
+
+RESULT: Added the payload-free static analyzers
+`src/tools/m12_selector_control_analysis.py` and
+`src/tools/m12_relative_table_analysis.py`, with focused regression tests.
+The reset vector `0x000004 -> 0x0000020E` reaches the exact dispatcher latch
+`0x0000042C..0x0000045C`; its indirect `JSR (A1)` at `0x0000045A` selects the
+five-entry table prefix at `0x0000045E`, where masked state `0x10` targets
+`0x03A748`. No direct incoming edge to `0x03A748` was found. This proves the
+upstream control source and leaves the exact indirect edge as the only entry
+mechanism.
+
+The handler statically proves `0xFFAFAE := -1`, increment, compare with `7`,
+and a neutral finite loop over `0..7`. Direct `FF10AC` writers enumerate the
+higher-level state values `-1`, `4`, `8`, `0x0C`, and `0x10`; handler exit
+writes `4`. Semantic labels remain intentionally unresolved.
+
+The relative analyzer proves `0x03BDA6..0x03BDCA` as 18 two-byte pointer words,
+11 statically consumed pointer entries, signed `ADDA.W` offsets, and a 4-byte
+pair grammar whose words feed `A6+8` and `A6+6`; cursor stride is four bytes
+and the second word's bit 15 controls reset versus advance. Closed prefixes
+reach `0x03BF76`. Full extent remains fail-closed because the stream at
+`0x03BDD8` has no consumer marker before code boundary `0x03BF86`.
+
+JOIN: higher-level `FF10AC` state -> dispatcher -> `0x03A748` -> selector
+`0..7` -> descriptor `+12` -> child `+8` pair -> `A6+8` -> child `+0` table
+-> `0x03B448` -> `0x0000B730` -> SAT. No runtime replay or controlled state
+forcing was needed.
+
+OWNERSHIP: `SOURCE_OWNED` remains `1,475,368 / 3,145,728` bytes
+(`46.9006856283%`) before and after. No ROM, decoded asset, or generated
+capture was added.
+
+VALIDATION: Focused analyzer tests and Python compilation pass. CTest
+registration is in `cmake/m12_auto2.cmake`; full Debug/Release and GNU/Linux
+equivalent validation are required before publication. The detailed result is
+in `docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
+
+BOUNDARY: Upstream is structurally proven. Downstream grammar is proven but
+its total logical extent is blocked by one precise consumer-boundary edge;
+stop this static pass here and use a materially different evidence class if
+that edge is pursued later.

@@ -1041,3 +1041,12 @@ canonical ROM contracts without changing ownership. Its regression coverage is
 `tests/m12_selector_descriptor_grammar_test.py`; CTest registration is in
 `cmake/m12_auto2.cmake`. The generated JSON under `build/m12-gfx-runtime/` is
 local ignored evidence and is not repository data.
+
+`src/tools/m12_selector_control_analysis.py` proves the reset/main-dispatch
+source of the `0x03A748` selector handler. `src/tools/m12_relative_table_analysis.py`
+proves the bounded `0x03BDA6` relative-pair consumer grammar and fails closed
+at its unresolved extent edge. Regression coverage is in
+`tests/m12_selector_control_analysis_test.py` and
+`tests/m12_relative_table_analysis_test.py`; local JSON outputs remain ignored
+ROM-derived evidence. The combined result is documented in
+`docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
