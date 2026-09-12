@@ -1075,3 +1075,10 @@ ROM-derived evidence. The bounded result is documented in
 `tests/m12_a372_shadow_sat_producer_test.py`; CTest registration is in
 `cmake/m12_auto2.cmake`. The result is documented in
 `docs/reports/THOR_M12_A372_SHADOW_SAT_PRODUCER.md`.
+
+`src/tools/m12_a372_caller_join.py` validates the static scheduler-to-A372
+caller join, the `FF1858` writer context, and the bounded negative neighbor
+result without emitting payload. Its regression test is
+`tests/m12_a372_caller_join_test.py`; CTest registration is in
+`cmake/m12_auto2.cmake`. The result is documented in
+`docs/reports/THOR_M12_A372_CALLER_JOIN.md`.

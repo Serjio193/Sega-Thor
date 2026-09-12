@@ -7600,3 +7600,41 @@ publication gates.
 
 BOUNDARY: The `0x03B092` tail and all four finite targets are structurally
 exhausted. Stop here; do not start another indirect-dispatch pass.
+
+# 2026-09-12 — M12 static scheduler-to-A372 caller join — STRATEGIC FORK
+
+TASK: Continue M12 with a materially different static cross-subsystem join
+from the closed A372 shadow-SAT producer through its scheduler callers. Do not
+repeat indirect-dispatch closure or replay, promote ownership, add ROM/assets,
+start M13, or migrate ASM to C++.
+
+RESULT: Added the payload-free analyzer
+`src/tools/m12_a372_caller_join.py` and regression test. Exact 68000 contracts
+prove the main-loop order `0x008B2E -> 0x00557A`, `0x008B42 -> 0x008E90`,
+`0x008B86 -> 0x00A196`; `A196` executes `SF.B FF1651`, calls `A342` at
+`0xA19C`, then tests `FF1996`. The separate `A6A0` family remains closed by
+callers `0x0428A` and `0x04A5A`.
+
+The new cross-subsystem edge is `0x03C6E4 ST.B FF1858` immediately followed by
+`JSR 0x008E90` and `JSR 0x00A196`, thereby joining the local boolean root
+selector to the scheduler -> `A342..A438` -> `A372` -> `FF13CC` -> DMA/SAT
+path. The neighboring `0x03C262..0x03C454` range writes `FF1858` at `0xC328`
+but contains no opcode-level direct call to `A196`; indirect/local effects
+remain unresolved. Semantic object/animation/frame/piece labels remain
+unproven.
+
+OWNERSHIP: `SOURCE_OWNED` remains `1,475,368 / 3,145,728 = 46.9006856283%`;
+zero ROM bytes were added. Detailed cycles, evidence, negative result, and
+ranked next directions are in
+`docs/reports/THOR_M12_A372_CALLER_JOIN.md`.
+
+VALIDATION: focused Python test, canonical payload-free report generation,
+`py_compile`, Debug CTest `162/162`, Release CTest `162/162`, source-size scan,
+`git diff --check`, and canonical ROM identity checks passed. The GNU/Linux
+equivalent Release configure/build/link and targeted M12 CTest passed `2/2`.
+The exact final pushed SHA and matching GitHub Actions run are recorded in the
+publication handoff after push.
+
+DECISION: Stop after three bounded cycles at a strategic fork between targeted
+runtime register capture, wider FF1858 state closure, and the unresolved
+`0x03BDA6` consumer boundary. Do not run a fourth equivalent caller pass.
