@@ -90,6 +90,17 @@ the inherited entry record/RAM field. Without a closed caller or runtime
 register capture proving that field's ROM origin, this remains
 `INHERITED_A1_FIELD_NOT_ROM_PROVEN` and no bytes are promoted.
 
+The second shared-loader call at `0x00D650` is now bounded more precisely.
+The first `0x3820` returns its advanced source and destination in `A0/A1`,
+which `0x00D550` and `0x00D552` copy to `A4/A5`. When bit 2 of
+`0x00FF16F1` is set, `0x00D64C` and `0x00D64E` restore those post-states as
+the second call's `A0/A1`; `0x00D656` and `0x00D658` then retain its new
+post-state. This proves `0x00D650` is a sequential continuation of the first
+decompression, not an independent selector. It does not prove the first
+source longword is a canonical ROM address, nor the exact compressed-stream
+boundary consumed by the continuation. The blocker is therefore
+`FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN`; no bytes are promoted.
+
 ### Exact `0x00D406` direct-xref census
 
 The separate machine report

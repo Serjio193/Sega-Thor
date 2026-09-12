@@ -31,7 +31,7 @@ The exact table `[0x05CE96,0x05D046)` is 108 four-byte absolute ROM pointers con
 | `0x00D3C8` | 0x00D3B2 indexed-resource loader | `0x05CE96[1..107] (107 targets)` | `0x00FF2FA8` | indirect table | CONFIRMED; baseline-owned |
 | `0x00D4EE` | 0x00D406 shared resource loader | `0x05CE96[1..107] (107 targets)` | `0x00FF3FA8` | indirect table | CONFIRMED; baseline-owned |
 | `0x00D54A` | 0x00D406 shared resource loader | `A4 = entry A1 + 4; helper 0x00F80E preserves A4; RAM-mediated field` | `0x00FF3FA8` | indirect/RAM | BLOCKED: INHERITED_A1_FIELD_NOT_ROM_PROVEN |
-| `0x00D650` | 0x00D406 shared resource loader | `A4/A5 inherited from 0x00D406 record path` | `A5 inherited` | indirect/RAM | BLOCKED: REGISTER_VALUE_NOT_ROM_PROVEN |
+| `0x00D650` | 0x00D406 shared resource loader | `A4/A5 = post-state of first 0x3820 at 0x00D54A; FF16F1.bit2-gated sequential continuation` | `A5 after first call` | indirect/RAM | BLOCKED: FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN |
 | `0x014558` | 0x01454C menu graphics family | `0x141580..0x141A7E` | `0x00FF2FA8` | direct literal | CONFIRMED; exact parser end |
 | `0x01458E` | 0x01454C menu graphics family | `0x1425AE..0x142B69` | `0x00FF2FA8` | direct literal | CONFIRMED; exact parser end |
 | `0x0145C4` | 0x01454C menu graphics family | `0x143262..0x1432A6` | `0x00FF2FA8` | direct literal | CONFIRMED; exact parser end |

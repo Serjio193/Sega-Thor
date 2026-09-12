@@ -3257,3 +3257,16 @@ contains a canonical ROM address on every caller path. The classification is
 therefore `INHERITED_A1_FIELD_NOT_ROM_PROVEN`; no executable or resource bytes
 are promoted. A caller-closed path or a targeted trace with `A1`/`A0` at the
 call is still required.
+
+# M12-GFX-MAX bounded 0x00D650 continuation audit
+
+The second `0x3820` call in the shared `0x00D406` body is a bounded
+continuation of the first call. `0x00D550` and `0x00D552` copy the first
+decompressor's returned post-source/post-destination `A0/A1` into `A4/A5`.
+When bit 2 of `0x00FF16F1` is set, `0x00D64C` and `0x00D64E` restore those
+post-states as the `A0/A1` arguments at `0x00D650`; `0x00D656` and `0x00D658`
+capture the second post-state. This excludes an independent selector
+interpretation, but it does not prove the first source longword is ROM-
+originated or establish the exact boundary of the sequential compressed
+stream. The classification is therefore
+`FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN`; no bytes are promoted.

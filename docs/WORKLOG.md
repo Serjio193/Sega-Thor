@@ -6399,6 +6399,32 @@ static/runtime evidence, and publish
 `docs/reports/THOR_M12_GRAPHICS_DECOMPILER_SWEEP.md` with explicit unavailable
 runtime layers and SOURCE_OWNED before/after accounting.
 
+# 2026-09-12 — M12-GFX-MAX bounded 0x00D650 continuation audit — IN PROGRESS
+
+TASK: Continue the graphics closure inside the shared `0x00D406` loader by
+closing the register relation around its second `0x3820` call. Preserve the
+canonical ROM, developer-only scope, and the no-M13/no-ASM-to-C++ boundary;
+do not promote a stream from register propagation alone.
+
+RESULT: The exact body copies the first `0x3820` post-source/post-destination
+`A0/A1` into `A4/A5` at `0x00D550/0x00D552`. If bit 2 of `0x00FF16F1` is set,
+`0x00D64C/0x00D64E` pass those post-states to the second call at `0x00D650`,
+and `0x00D656/0x00D658` capture its post-state. The second call is therefore
+proven to be a sequential continuation, not an independent selector. The
+first source's ROM origin and exact continuation boundary remain unproven;
+no bytes, descriptors, streams, or code ranges changed ownership.
+
+IMPLEMENTATION: narrowed the developer-only dynamic ledger, added a
+regression assertion, and updated the M12-GFX-2, M12-GFX-MAX, and reverse-
+engineering records. The blocker is now
+`FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN` rather than a generic
+register-value description.
+
+NEXT: continue the remaining screen/descriptor blockers, then the other
+dynamic `0x3820` producers; a caller-closed source path or targeted trace
+capturing the first `A0` and the post-state boundary is required before
+promotion.
+
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
 
 TASK: Continue the graphics closure by narrowing the first unresolved dynamic

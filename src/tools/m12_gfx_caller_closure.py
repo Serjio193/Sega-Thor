@@ -119,7 +119,7 @@ TABLE_CALLS = {
 
 DYNAMIC = {
     0x00D54A: ("A4 = entry A1 + 4; helper 0x00F80E preserves A4; RAM-mediated field", "0x00FF3FA8", "INHERITED_A1_FIELD_NOT_ROM_PROVEN"),
-    0x00D650: ("A4/A5 inherited from 0x00D406 record path", "A5 inherited", "REGISTER_VALUE_NOT_ROM_PROVEN"),
+    0x00D650: ("A4/A5 are post-state of the first 0x3820 call at 0x00D54A; FF16F1.bit2 gates this sequential continuation", "A5 after first call", "FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN"),
     0x02DB52: ("A0/A1 caller arguments; A0 post-state saved at 0x00FF17AA", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),
     0x02F6A0: ("A0 caller argument; A1 inherited", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),
     0x03B236: ("A0/A1 inherited through 0x00FF316C family", "0x00FF316C", "RAM_MEDIATED_SOURCE_NOT_ROM_PROVEN"),
