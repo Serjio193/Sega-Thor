@@ -3685,3 +3685,30 @@ unresolved. The structural continuation to `0x03B448 -> 0xB730 -> SAT` is
 closed, but semantic names and complete enumeration are not.
 
 No replay campaign or controlled state forcing was run for this result.
+
+## M12 indirect body dispatch closure
+
+The exact byte contracts at `0x03AA12..0x03AA2A` and `0x03AA92..0x03AAAA`
+prove two selector-masked longword dispatches. Each reads `0x00FFAFAE` into
+`D0`, applies `ANDI.W #7`, doubles the word index twice, loads a PC-relative
+table base into `A0`, replaces `A0` with the indexed longword, and calls
+`JSR (A0)` at `0x03AA28` or `0x03AAA8`. The tables are
+`0x03B8A6..0x03B8C6` and `0x03B8C2..0x03B8E2`, so each target domain is
+exactly selectors `0..7`.
+
+The machine-readable evidence is emitted by
+`src/tools/m12_indirect_body_dispatch.py`. Its exact table census contains 15
+unique targets, with 14 RTS-closed routines and one data alias at `0x03BA46`.
+The routines and boundaries are `03AAAE..03AAEE`, `03AAEE..03AB98`,
+`03AB98..03ABDA`, `03ABDA..03AC16`, `03AC16..03AC68`, `03AC68..03AC6E`,
+`03AC6E..03AC92`, `03AC92..03ACA8`, `03ACA8..03ACE4`, `03ACE4..03AD0C`,
+`03AD0C..03AD66`, `03AD66..03ADB4`, `03ADB4..03AE74`, and
+`03AE74..03B092`. Exact direct calls, static RAM input/output sites, and
+ROM-source calls are included in the analyzer result; semantic labels remain
+neutral.
+
+The only remaining edge found in this bounded target census is
+`0x03B0A8: JMP (A0)` in callee `0x03B092`, reached from `0x03AD66`. It is a
+separate downstream indirect tail and is explicitly not treated as a target
+of either body call. The existing structural join to `0x03B448 -> 0xB730 ->
+SAT` is unchanged. No runtime experiment was needed.

@@ -7382,3 +7382,46 @@ BOUNDARY: Upstream is structurally proven. Downstream grammar is proven but
 its total logical extent is blocked by one precise consumer-boundary edge;
 stop this static pass here and use a materially different evidence class if
 that edge is pursued later.
+
+# 2026-09-12 — M12 two indirect body calls — FINITE TARGET CLOSURE
+
+TASK: Resolve only the two previously unresolved selector-masked body calls at
+`0x03AA28` and `0x03AAA8`, enumerate their proven finite targets and routine
+boundaries, and join the result to the existing descriptor/relative/B730/SAT
+graph. No equivalent replay campaign, ROM scan, ROM/assets, M13, or C++ work.
+
+RESULT: Added `src/tools/m12_indirect_body_dispatch.py` and its focused test.
+Exact static slices prove both call forms read selector RAM `0x00FFAFAE` into
+`D0`, mask with `0x0007`, scale by four, load a longword target into `A0`, and
+execute `JSR (A0)`. The primary source is `0x03AA12..0x03AA2A` with call
+`0x03AA28` and table `0x03B8A6..0x03B8C6`; the secondary source is
+`0x03AA92..0x03AAAA` with call `0x03AAA8` and table `0x03B8C2..0x03B8E2`.
+
+The two tables enumerate 15 unique targets. Fourteen routine entries are
+closed by exact RTS boundaries from `0x03AAAE..0x03B092`; secondary index 7
+targets `0x03BA46`, which is classified as data/descriptor overlap rather
+than code. Target direct calls, static RAM input/output sites, and ROM-source
+edges are recorded in the payload-free analyzer output. `0x03ACA8` and
+`0x03ADB4` statically call `0x3820` from ROM sources `0x17A750` and
+`0x17E3BA`, respectively.
+
+JOIN: The calls are now structurally integrated inside the already proven
+`FF10AC -> dispatcher -> 0x03A748 -> selector -> descriptor/child relative
+pairs -> 0x03B448 -> 0x0000B730 -> SAT` path. Semantic object/animation/
+frame/sprite labels remain unassigned. One separate downstream edge remains
+open at `0x03B0A8: JMP (A0)` in callee `0x03B092`, reached from target
+`0x03AD66`; it is outside the two requested body calls and is not guessed.
+
+OWNERSHIP: SOURCE_OWNED is unchanged at `1,475,368 / 3,145,728` bytes
+(`46.9006856283%`). No ROM, decoded assets, captures, or production-runtime
+changes were added.
+
+VALIDATION: Focused analyzer test, Python compilation, and canonical
+payload-free report generation pass. The new CTest registration is in
+`cmake/m12_auto2.cmake`; full Debug/Release CTest, GNU/Linux equivalent
+build/link, `git diff --check`, source-size validation, commit, push, and
+exact CI verification remain publication gates for this bounded result.
+
+BOUNDARY: Both requested indirect body calls are statically resolved. Stop
+here unless a materially different evidence class is explicitly authorized
+for `0x03B0A8` or unresolved semantic labels.

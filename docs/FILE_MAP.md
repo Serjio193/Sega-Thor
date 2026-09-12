@@ -1050,3 +1050,12 @@ at its unresolved extent edge. Regression coverage is in
 `tests/m12_relative_table_analysis_test.py`; local JSON outputs remain ignored
 ROM-derived evidence. The combined result is documented in
 `docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
+
+`src/tools/m12_indirect_body_dispatch.py` validates the two exact
+selector-masked indirect body calls at `0x03AA28` and `0x03AAA8`, enumerates
+their 15 unique targets, records static target I/O/call provenance, and
+closes 14 RTS routine boundaries while classifying `0x03BA46` as a data alias.
+Its regression test is `tests/m12_indirect_body_dispatch_test.py`; the CTest
+registration is in `cmake/m12_auto2.cmake`. Local JSON output is ignored
+ROM-derived evidence. The bounded result is documented in
+`docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.

@@ -92,3 +92,63 @@ This is the bounded stopping point for the static pass. No controlled-state
 experiment is needed to establish the proven upstream edge; any future work
 on the unresolved `0x03BDD8` boundary must use a materially different
 evidence class.
+
+## M12 indirect body calls — FINITE TARGET CLOSURE
+
+The two previously unresolved body calls are now closed by exact ROM slices;
+no replay experiment was used. Both have the same proven form:
+
+```text
+MOVE.W (0x00FFAFAE),D0
+ANDI.W #$0007,D0
+ADD.W D0,D0; ADD.W D0,D0
+LEA table(PC),A0
+MOVEA.L (A0,D0.W),A0
+JSR (A0)
+```
+
+The primary form is `0x03AA12..0x03AA2A`, calling indirectly at `0x03AA28`
+from table `0x03B8A6..0x03B8C6`. The secondary form is
+`0x03AA92..0x03AAAA`, calling indirectly at `0x03AAA8` from table
+`0x03B8C2..0x03B8E2`. Therefore `D0` is the selector/index source, `A0` is
+the loaded longword target, and both domains are statically closed to `0..7`.
+
+The exact selector-to-target mapping is:
+
+```text
+primary:   0->03AAAE  1->03AB98  2->03AC16  3->03AC6E
+           4->03ACA8  5->03AD0C  6->03ADB4  7->03AAEE
+secondary: 0->03AAEE  1->03ABDA  2->03AC68  3->03AC92
+           4->03ACE4  5->03AD66  6->03AE74  7->03BA46
+```
+
+There are 15 unique targets. Fourteen are routine entries with RTS-closed
+exclusive boundaries:
+
+```text
+03AAAE..03AAEE  03AAEE..03AB98  03AB98..03ABDA  03ABDA..03AC16
+03AC16..03AC68  03AC68..03AC6E  03AC6E..03AC92  03AC92..03ACA8
+03ACA8..03ACE4  03ACE4..03AD0C  03AD0C..03AD66  03AD66..03ADB4
+03ADB4..03AE74  03AE74..03B092
+```
+
+The remaining target `0x03BA46` is data, beginning `00000006 004C008A`,
+and is the secondary index-7 value stored at the descriptor field `+0`
+overlap. It is not decoded as code.
+
+The bounded target census records exact direct downstream calls and static RAM
+input/output sites in `src/tools/m12_indirect_body_dispatch.py` and its
+payload-free JSON output. Important resource edges include
+`0x03ACA8 -> 0x3820` from ROM source `0x17A750`,
+`0x03ADB4 -> 0x3820` from ROM source `0x17E3BA`, and the shared calls into
+`0x03C956`; other targets call `0x002EE2`, `0x002FDA`, `0x008E32`,
+`0x03B5E8`, `0x03B832`, or `0x03B092` as listed by exact call-byte contracts.
+The static result remains neutral: no target is named object, animation,
+frame, or sprite.
+
+One separate edge remains intentionally open: `0x03B092`, reached by the
+closed routine `0x03AD66`, loads a table from `0x03B0AA` and executes
+`0x03B0A8: JMP (A0)`. This is a downstream indirect tail, not either body
+call, and no target is guessed. The combined structural join remains
+`FF10AC -> dispatcher -> 0x03A748 -> selector -> descriptor/child relative
+pairs -> 0x03B448 -> 0x0000B730 -> SAT`; SOURCE_OWNED is unchanged.
