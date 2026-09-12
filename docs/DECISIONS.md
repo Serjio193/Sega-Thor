@@ -1026,6 +1026,35 @@ V1 implementation; no milestone completion or ownership change is implied.
 contains 1,475,368 SOURCE_OWNED bytes. ADR-0043 remains authoritative for the
 M12 ASM → M13 rebuilt parity → M14 systematic C++ sequence.
 
+# ADR-0045 — V0.1 raw completion and launch identity gate
+
+**Status:** Accepted bounded repair; V1 remains gated
+**Date:** 2026-09-12
+
+**Context:** The V0 gate review reproduced sealing of a raw prefix ending at a
+valid epoch, incorrect collector attribution, and capability conclusions that
+survived missing evidence. A sealed transport must not be mistaken for a
+complete execution or a causal proof.
+
+**Decision:** Require a strict `thor.evidence.raw.v0.1` header/footer envelope
+and a completed local launch receipt before normalization. The receipt binds
+the actual Lua collector, normalizer, harness, emulator/core/config, watch-plan
+order, mode/reverse flag, ROM/state and scenario. Report capabilities are
+derived from runtime witnesses or hashed BizHawk API source receipts; absent or
+contradictory evidence yields UNKNOWN/ERROR. Historical V0 captures remain
+valid only as historical evidence when their execution identity cannot be
+reconstructed.
+
+**Consequences:** V0.1 can establish a truthful capture boundary and a local
+FF13CC precondition matrix without implementing causal provenance. Generic bus
+width, overlap, IRQ, same-value completeness and input causality remain explicit
+frontiers. No ownership mutation, ROM discovery or production dependency is
+introduced.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V0_1.md`, the V0.1 receipt,
+raw-envelope and report tests, and the three repeated bounded captures under
+ignored `build/thor-evidence/v0`.
+
 # ADR-0043 — Complete ASM reconstruction before systematic C++ migration
 **Status:** Accepted for M12.0
 **Date:** 2026-09-10

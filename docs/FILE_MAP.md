@@ -13,7 +13,11 @@ introduced by these reports. See ADR-0044.
 `src/tools/thor_evidence/identity.py` defines full-hash environment/location/
 temporal identities. `events.py` validates the sealed JSONL transport,
 `normalize.py` converts one bounded local BizHawk observation into that format,
-and `report.py` emits the local capability matrix and source receipts.
+and `report.py` emits the evidence-backed capability matrix and source receipts.
+`receipt.py` creates/finalizes launch identity; `capture/run_v01.ps1` binds the
+existing launcher to that receipt for the bounded repeat. The V0.1 collector
+raw envelope is rejected before normalization when completion or identity is
+wrong.
 `store.py` and `schema.sql` provide the non-owning SQLite receipt, epoch, event,
 value-version and UNKNOWN relation store. The one bounded collector is
 `src/tools/thor_evidence/capture/capabilities.lua`; its raw output remains local

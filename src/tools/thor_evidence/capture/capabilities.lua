@@ -3,6 +3,7 @@ local output = assert(io.open(assert(os.getenv("BH_TEST_LOG")), "w"))
 local raw = assert(io.open(assert(os.getenv("TEE_RAW")), "w"))
 local mode = os.getenv("TEE_MODE") or "probe"
 local reverse = os.getenv("TEE_REVERSE") == "1"
+local raw_schema = "thor.evidence.raw.v0.1"
 local state_sha = "7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970"
 local seq, epoch, phase, peeking = 0, 0, "inactive", false
 local hits, writes, polls, reentries = 0, 0, 0, 0
@@ -30,6 +31,15 @@ local function emit(kind, data)
         frame = emu.framecount(), actor = "M68K", phase = "RAW"}
     raw:write(json(record), "\n")
     seq = seq + 1
+end
+
+local function emit_header()
+    raw:write(json({kind = "RAW_HEADER", schema = raw_schema,
+        receipt_sha256 = assert(os.getenv("TEE_RECEIPT_SHA256")),
+        capture_id = assert(os.getenv("TEE_CAPTURE_ID")),
+        rom_sha256 = assert(os.getenv("TEE_ROM_SHA256")), state_sha256 = state_sha,
+        mode = mode, reverse = reverse,
+        watch_plan_sha256 = assert(os.getenv("TEE_WATCH_PLAN_SHA256"))}), "\n")
 end
 
 local function reg(name) return emu.getregister("M68K " .. name) end
@@ -106,6 +116,7 @@ end
 local function run()
     assert(mode == "probe" or mode == "minimal" or mode == "uninstrumented", "bad mode")
     assert(emu.getsystemid() == "GEN", "Genesis not ready")
+    emit_header()
     for iteration = 1, 2 do
         active = false
         assert(savestate.load(assert(os.getenv("BH_TEST_STATE")), true), "state load failed")
@@ -144,7 +155,8 @@ local function run()
             lagged = emu.islagged(), exec_hits = hits, write_hits = writes, input_polls = polls})
         emit("EPOCH_END", {reason = "COMPLETE", reentries = reentries})
     end
-    raw:write(json({kind = "RAW_END", complete = true, events = seq}), "\n")
+    raw:write(json({kind = "RAW_END", schema = raw_schema, complete = true,
+        events = seq}), "\n")
     output:write("result=PASS\n")
 end
 local ok, err = xpcall(run, debug.traceback)

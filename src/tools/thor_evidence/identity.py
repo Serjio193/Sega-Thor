@@ -6,7 +6,8 @@ from m12_carver import canonical as _canonical
 
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
 ROM_SIZE = 3145728
-SCHEMA = "thor.evidence.capture.v0"
+STATE_SHA = "7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970"
+SCHEMA = "thor.evidence.capture.v0.1"
 STATUSES = {"OBSERVED", "UNKNOWN", "UNSUPPORTED", "CONFLICT"}
 
 

@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from .identity import (ROM_SHA, ROM_SIZE, SCHEMA, STATUSES, canonical, digest,
+from .identity import (ROM_SHA, ROM_SIZE, SCHEMA, STATE_SHA, STATUSES, canonical, digest,
                        location_key, require_hash)
 
 MAX_EVENTS = 1_000_000
@@ -32,7 +32,8 @@ def validate_header(header):
         raise ValueError("unknown capture schema/header")
     env = header["environment"]
     hashes = {"rom_sha256", "emulator_sha256", "core_sha256", "config_sha256",
-              "collector_sha256", "watch_sha256", "harness_sha256", "map_sha256"}
+              "collector_sha256", "normalizer_sha256", "watch_sha256", "harness_sha256",
+              "map_sha256", "receipt_sha256", "launch_sha256"}
     if set(env) != hashes | {"rom_size"}:
         raise ValueError("incomplete environment identity")
     for key in hashes:
@@ -43,6 +44,15 @@ def validate_header(header):
     if set(scenario) != {"state_sha256", "specification"} or not isinstance(scenario["specification"], dict):
         raise ValueError("incomplete scenario identity")
     require_hash(scenario["state_sha256"])
+    if scenario["state_sha256"] != STATE_SHA:
+        raise ValueError("scenario state identity mismatch")
+    spec = scenario["specification"]
+    if spec.get("rom_identity") != ROM_SHA or spec.get("state_identity") != STATE_SHA:
+        raise ValueError("scenario identity mismatch")
+    if spec.get("state_identity") != scenario["state_sha256"]:
+        raise ValueError("scenario state fields disagree")
+    if spec.get("raw_schema") != "thor.evidence.raw.v0.1":
+        raise ValueError("unsupported raw scenario schema")
     canonical(header)
 
 

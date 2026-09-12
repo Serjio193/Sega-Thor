@@ -1,4 +1,24 @@
-# 2026-09-12 — THOR Evidence Engine V0 — IN PROGRESS
+# 2026-09-12 — THOR Evidence Engine V0.1 — COMPLETE / V1 BLOCKED
+
+TASK: Repair the three P1 V0 foundation defects found by the independent gate
+review: strict raw completion, truthful execution identity, and evidence-backed
+capability reporting. V1, ROM reverse engineering and SOURCE_OWNED mutation are
+out of scope.
+BASELINE: 38e702cbae29e2b8f6d09c70b9ffd2e73db0d739.
+RESULT: Added `thor.evidence.raw.v0.1`, launch receipts, strict duplicate-key
+raw parsing, two-epoch completion validation, collector/normalizer separation,
+mode/reverse/watch-plan binding, and witness-backed capability claims. The old
+V0 captures are retained as `VALID_ONLY_FOR_V0_HISTORICAL_EVIDENCE`; three
+bounded corrected probe captures were produced with the same scenario. Probe A/B
+have identical raw event and normalized event streams; reverse order differs.
+SAT/fields remain `0088090187810088`/`00100080`, and SOURCE_OWNED delta is 0.
+V1 local preconditions remain blocked only for A372/write pairing, relevant
+writer completeness and interruption boundary; input causality remains allowed
+UNKNOWN.
+VALIDATION: focused Python tests pass 8/8; Release, Linux-equivalent and
+focused CTest are the applicable checks. Existing full Debug MSVC failure in
+`src/core/ram_flag_routine.cpp` (`std::to_string`) remains pre-existing.
+STOP: publish V0.1, verify exact CI and stop. Do not begin V1.
 
 TASK: V0 foundation/storage identity and bounded BizHawk capability contract.
 WHY: Establish reliable temporal observations before any causal provenance.
