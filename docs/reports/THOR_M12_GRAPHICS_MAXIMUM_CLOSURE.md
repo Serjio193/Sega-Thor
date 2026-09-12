@@ -338,6 +338,6 @@ and exact boundary. M13 and ASM-to-C++ migration remain out of scope.
 
 Implementation SHA: `bcbd3cdd89d1ef45e2864022fbf8e294af0d1b61`.
 Exact implementation CI: GitHub Actions run `34666468223` (success).
-Final publication SHA: pending metadata-only publication commit.
-Exact final publication CI / publication HEAD CI: pending metadata-only
-publication commit.
+Final publication SHA: `ad1ca215348874d0a69e07168a2dc1296aceedbe`.
+Exact final publication CI / publication HEAD CI: GitHub Actions run
+`34666594438` (success).
