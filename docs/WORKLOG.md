@@ -6474,6 +6474,10 @@ blocker is now `D406_POST_STATE_NOT_ROM_PROVEN`.
 NEXT: continue with the `0x03B1D0` family and remaining dynamic producers;
 only a closed source path or targeted register trace can promote this chain.
 
+PUBLICATION: focused commit
+`02ab402cb7ae438788b550610ebe18ae7486bb85` is on `origin/main`; exact
+GitHub Actions CI run `34661445505` passed Build, Test, and Complete.
+
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
 
 TASK: Continue the graphics closure by narrowing the first unresolved dynamic
