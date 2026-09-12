@@ -149,3 +149,37 @@ consumer structure, not live selector coverage or semantic object, animation,
 frame, or sprite names. Catalog SHA-256 is
 `79906506AE138318AAB9B8B0F1D581E5102B23CDCC2A2CCBF4CDC71A04728EC5`.
 No generic emulator framework, M13 work, or ASM-to-C++ migration is in scope.
+
+## Current static grammar result
+
+The bounded static phase after the closed replay campaign is represented by
+`src/tools/m12_selector_descriptor_grammar.py` and its CTest helper
+`tests/m12_selector_descriptor_grammar_test.py`. The generated local,
+payload-free catalog is
+`build/m12-gfx-runtime/selector-descriptor-grammar-current.json`, SHA-256
+`EF1055715FE4FD72A7125A899D796AB6437EAAC243C78A9094200E418288799F`.
+
+Result: `STATIC_FINITE_GRAPH_WITH_UNRESOLVED_SEMANTICS`. The canonical ROM
+proves the complete direct selector xref set (two writers plus eight
+read/control sites), selector domain `0..7`, descriptor table
+`0x03B8DE..0x03B95E` with 8 × `0x10`-byte records, and both independent
+8-entry dispatch contracts. The descriptor consumer is
+`0x03A9EE` → `0x03AA0E` → `0x03B1D0`; its `+4` and `+8` fields reach the direct
+`0x00003820` calls at `0x03B28A` and `0x03B2FE`, while child `+4` reaches the
+same decompressor at `0x03B236`.
+
+The seven ROM child tables selected from descriptor `+12` are all finite and
+sentinel-closed. Their exact boundaries are `[0x03B95C,0x03B982)`,
+`[0x03B998,0x03B9A6)`, `[0x03B982,0x03B998)`, `[0x03B9A6,0x03B9BC)`,
+`[0x03B9BC,0x03B9D2)`, `[0x03B9D2,0x03B9E8)`, and `[0x03B9E8,0x03BA46)`.
+The last boundary aliases the secondary dispatch index-7 target. The eighth
+descriptor child value `0xFFFF0017` is explicitly unresolved/non-ROM.
+
+The graph also proves the structural continuation
+`descriptor +12` → child `+0/+8` relative tables → `0x03B730` input path,
+including the exact `0x03B426` `MOVEA.L (A0),A0` context and `0x03B448`
+`JSR 0xB730`. This does not prove object/animation/frame names or complete
+resource payload enumeration. The shared relative-word candidate at
+`0x03BDA6` has 18 observed words but no complete consumer boundary, so its
+extent remains unresolved. SOURCE_OWNED remains `1,475,368` bytes before and
+after; no ROM, decoded asset, C++, M13, or new replay artifact is included.

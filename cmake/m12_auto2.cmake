@@ -69,4 +69,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_context_catalog_test.py)
     add_test(NAME oasis_re_m12_static_sprite_dispatch_catalog_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_static_sprite_dispatch_catalog_test.py)
+    add_test(NAME oasis_re_m12_selector_descriptor_grammar_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_selector_descriptor_grammar_test.py)
 endif()

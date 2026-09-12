@@ -1034,3 +1034,10 @@ is `tests/re_m12_carver_format_reconstruction_test.py`. Machine-readable
 outputs remain ignored under `build/m12-carver-m12c5-format-reconstruction-c/`;
 the result is documented in
 `docs/reports/THOR_ROM_CARVER_M12_FORMAT_CONTAINER_RECONSTRUCTION.md`.
+
+`src/tools/m12_selector_descriptor_grammar.py` emits the payload-free M12
+selector/descriptor/dispatch/child-table grammar catalog and validates the
+canonical ROM contracts without changing ownership. Its regression coverage is
+`tests/m12_selector_descriptor_grammar_test.py`; CTest registration is in
+`cmake/m12_auto2.cmake`. The generated JSON under `build/m12-gfx-runtime/` is
+local ignored evidence and is not repository data.

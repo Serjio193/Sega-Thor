@@ -3607,3 +3607,51 @@ calls to decompressor `0x00003820` at `0x03B236`, `0x03B28A`, and `0x03B2FE`.
 This is a finite static consumer contract,
 not live coverage or semantic naming; catalog SHA-256 is
 `79906506AE138318AAB9B8B0F1D581E5102B23CDCC2A2CCBF4CDC71A04728EC5`.
+
+## M12 static selector/descriptor grammar closure boundary
+
+The developer-only `src/tools/m12_selector_descriptor_grammar.py` validates
+the canonical USA ROM and emits the payload-free catalog
+`build/m12-gfx-runtime/selector-descriptor-grammar-current.json` (local
+SHA-256 `EF1055715FE4FD72A7125A899D796AB6437EAAC243C78A9094200E418288799F`).
+The catalog is a structural finite graph, not a semantic object/animation/
+frame/sprite naming claim.
+
+The direct absolute xref set for selector RAM `0x00FFAFAE` is closed by the
+ROM byte contracts at `0x03A8C4`, `0x03A916`, `0x03A91C`, `0x03A9AC`,
+`0x03A9F2`, `0x03AA12`, `0x03AA54`, `0x03AA92`, `0x03B3B6`, and `0x03B41A`.
+The first two are the only direct writers: initializer `MOVE.W #$FFFF` and
+increment `ADDQ.W #1`. The bound compare at `0x03A91C` closes the generated
+selector domain at `0..7`; its higher-level source and direct incoming caller
+remain `UNKNOWN_INDIRECT_OR_ENCLOSING`.
+
+The descriptor table remains exactly `0x03B8DE..0x03B95E`, eight records of
+stride `0x10`, with fields at `+0/+4/+8/+12`. The setup path is
+`0x03A9EE` → selector read `0x03A9F2` → field loads → `0x03AA0E` →
+`0x03B1D0`. Field-use classification is explicit and fail-closed: `+0` is
+only the `0xFFAFA8`/`0x03B7C0` path; `+4` and `+8` reach the direct decoder
+calls at `0x03B28A` and `0x03B2FE`; and `+12` is a child state-record,
+relative-table, and B730-input path, with child `+4` reaching `0x03B236`.
+
+For descriptor selectors `0..6`, child starts at `0x03B95C`, `0x03B998`,
+`0x03B982`, `0x03B9A6`, `0x03B9BC`, `0x03B9D2`, and `0x03B9E8` are each
+closed by the first high-bit sentinel word `0xFFFF`. They contain respectively
+3, 0, 1, 1, 1, 1, and 10 eight-byte records, with three longword headers
+(`child +0/+4/+8`). Child 6 ends exactly at `0x03BA46`, the secondary
+dispatch index-7 target. Selector 7 carries `0xFFFF0017` at descriptor `+12`;
+it is retained as `NON_ROM_LONGWORD_ADDRESS_UNRESOLVED`, not reinterpreted as
+a ROM pointer.
+
+The shared child `+8` pointers are in one relative-word structure at
+`0x03BDA6`; eighteen observed words are recorded, but no complete consumer
+boundary closes its total extent. The exact structural continuation is
+descriptor `+12` → child `+0` → relative table → `0x03B448` → `0x0000B730`
+→ the already published SAT stores. Its semantic frame/resource meaning
+remains unresolved.
+
+The two selector-masked dispatch tables are kept as separate logical
+contracts despite physical overlap: primary index 7 and secondary index 0
+share `0x03B8C2..0x03B8C6`; secondary index 7 begins at descriptor record 0
+field `+0` (`0x03B8DE..0x03B8E2`). Static target observations retain neutral
+descriptions. No controlled forcing was needed for this structural catalog,
+no fifth replay was run, and no SOURCE_OWNED bytes were added.

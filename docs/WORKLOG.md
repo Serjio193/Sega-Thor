@@ -7281,3 +7281,57 @@ reconfiguration.
 NEXT: inspect the eight static dispatch targets and their resource/decompressor
 call contracts, then decide whether controlled state forcing is necessary to
 obtain live records 3–7 evidence.
+
+# 2026-09-12 — M12 finite selector/descriptor grammar — STATIC BOUNDARY
+
+TASK: Replace the closed replay-expansion path with one bounded static evidence
+pass. Enumerate the complete selector/descriptor/dispatch graph, classify all
+four descriptor fields, recursively validate proven child tables, and stop at
+the first unresolved semantic/extent edge. Do not run another equivalent
+replay, add ROM/assets, promote ownership, or begin M13/C++ work.
+
+RESULT: Added the developer-only payload-free catalog
+`src/tools/m12_selector_descriptor_grammar.py`. It validates the canonical
+USA ROM hash, all ten direct `0x00FFAFAE` xrefs (two writers and eight
+read/control sites), selector domain `0..7`, the descriptor table
+`0x03B8DE..0x03B95E`, both eight-entry dispatch tables, the descriptor setup
+`0x03A9EE -> 0x03AA0E -> 0x03B1D0`, and direct decompressor calls at
+`0x03B236`, `0x03B28A`, and `0x03B2FE`. The catalog SHA-256 is
+`EF1055715FE4FD72A7125A899D796AB6437EAAC243C78A9094200E418288799F`.
+
+CHILD GRAPH: Descriptor `+12` rows 0–6 point to seven exact child tables,
+each closed by a high-bit `0xFFFF` sentinel. Boundaries are
+`[0x03B95C,0x03B982)`, `[0x03B998,0x03B9A6)`, `[0x03B982,0x03B998)`,
+`[0x03B9A6,0x03B9BC)`, `[0x03B9BC,0x03B9D2)`, `[0x03B9D2,0x03B9E8)`, and
+`[0x03B9E8,0x03BA46)`. Child 6 ends at the secondary dispatch index-7
+target, which is recorded as an alias. Selector 7 value `0xFFFF0017` stays
+`NON_ROM_LONGWORD_ADDRESS_UNRESOLVED`.
+
+PROVENANCE: Field `+4` and `+8` are ROM-source pointers to the bounded
+`0x3820` calls; `+12` is a child state-record/relative-table edge and reaches
+`0x03B448 -> 0x0000B730`, after which the already-published SAT producer chain
+continues. Field `+0` is classified only as the `0xFFAFA8 -> 0x03B7C0` path.
+The shared relative-word candidate at `0x03BDA6` has 18 observed words but
+no complete consumer boundary. Dispatch targets remain neutral static
+contracts; no object/animation/frame/sprite semantics are assigned.
+
+BOUNDARY: Status is `STATIC_FINITE_GRAPH_WITH_UNRESOLVED_SEMANTICS`. Static
+finite structure is proven, but complete semantic grammar and shared-table
+extent are not. No controlled forcing was needed for this catalog. Replay
+expansion remains closed; no fifth equivalent campaign was run.
+
+OWNERSHIP: SOURCE_OWNED is unchanged at `1,475,368 / 3,145,728` bytes
+(`46.9006856283%`) before and after. No ROM, decoded asset, ignored capture,
+C++, M13, or production runtime change was added.
+
+VALIDATION: Focused Python test, canonical catalog generation and `py_compile`
+pass. The new CTest is registered in `cmake/m12_auto2.cmake`; the previous
+`154/154` Debug/Release evidence remains the historical baseline, and the
+current sequential Windows Debug/Release runs are both `156/156`. GNU/Linux
+WSL configuration and
+full build/link completed with GCC 13.3.0; its full CTest reached the same
+slow `project_file_line_limit` scan on `/mnt/c` and was stopped after more
+than seven minutes. The Windows Debug and sequential Release full CTest runs
+are the complete `156/156` evidence. Next action stops at the unresolved
+shared-table/semantic edge unless a materially different evidence class is
+explicitly authorized.
