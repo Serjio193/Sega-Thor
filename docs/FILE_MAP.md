@@ -746,6 +746,7 @@ This document is the canonical map of repository structure. Update it whenever s
 │       ├── re_bizhawk_m12_capabilities.lua Developer-only one-frame BizHawk observable/API capability probe
 │       ├── re_bizhawk_m12_sat_provenance.lua Developer-only live VDP/SAT/DMA/source-RAM provenance probe
 │       ├── re_bizhawk_m12_sprite_context.lua Developer-only bounded sprite-table caller/producer context probe
+│       ├── re_bizhawk_m12_ali_transition.lua Developer-only one-shot F1 Ali transition provenance probe
 │       ├── re_bizhawk_m12_targeted_reads.lua Developer-only exact-address ROM-read provenance probe
 │       ├── re_bizhawk_m12_b730_calls.lua Developer-only bounded table-to-B730 register-context probe
 │       ├── m12_sprite_context_catalog.py Developer-only payload-free table/live provenance catalog validator

@@ -1,12 +1,54 @@
 # M12 — Emulator sprite-table reconstruction
 
-Status: `BOUNDED NEGATIVE RESULT`: the first real hardware sprite provenance
-chain remains closed, but the requested single controlled Ali transition could
-not be started because no local BizHawk gameplay state was available and the
-Windows UI-control backend was not configured. Object/frame/animation table
-closure and ROM-table backward linkage remain fail-closed.
+Status: `BOUNDED POSITIVE RUNTIME RESULT`: the existing BizHawk 2.11.1 F1
+QuickSave loaded the canonical ROM and one controlled `P1 Right` produced the
+first changed Ali-side SAT shadow record. The change was in source RAM
+`0xFF13CC..0xFF13CF`; SAT VRAM at `0xD000` remained unchanged in that first
+transition frame. The finite object/frame/animation grammar remains fail-closed.
 
-## Targeted Ali transition — bounded runtime setup result
+## Targeted Ali transition — resumed F1 result
+
+The manually created local state was found at
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\Genesis\State\Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State`.
+It is 175,228 bytes, remains outside the repository, and was loaded by
+`savestate.loadslot(1, true)` from BizHawk 2.11.1. The ROM opened by the exact
+quoted command was `C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin`
+with SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+After three no-input settling frames, State A was captured at emulator frame
+`2120`, then exactly one `P1 Right` frame was injected. State B was the first
+structurally different bounded state at frame `2121`. Selector, descriptor,
+relative-root bytes, and the `0xD000` SAT VRAM snapshot were unchanged. The
+first changed source range was `0xFF13CC..0xFF13CF`, from
+`00 00 00 00` to `00 88 09 01`; the first changed byte is therefore
+`0xFF13CD: 0x00 -> 0x88`.
+
+The bounded bus-write callback reported `0xFF13CC` with callback PC `0xA374`
+and value `0x00880901` during the transition. Existing BizHawk callback
+semantics report the next fetch PC for this write; the exact ROM store is
+`0xA372` (`MOVE.L D2,(A5)+`). Static context proves `0xA342` initializes A5
+from `0xFF13CC`, `0xA354` selects ROM root `0xA43A`, and the `0xFF1858` test
+can select alternate root `0xA482` at `0xA360`; `0xA364..0xA37E` copies six
+bounded records under a `DBF D0` loop. These are proven local table roots for
+the observed source writer, not semantic animation labels.
+
+The transition produced no observed `0x0000B730` execution, no new SAT DMA
+after State A, and no `0x3820` call. The capture did observe the bounded DMA
+contract around the state (`0x000027EC`, source `0xFF13CC`, destination
+`0xD000`, 64 words), while the SAT bytes themselves stayed equal between A
+and B. Therefore this one experiment proves a first source-side transition,
+not a rendered SAT change, resident-resource load, or finite frame sequence.
+The upstream selector/descriptor and downstream relative-table contracts
+remain the previously published structural chain; no frame-sequence grammar
+is promoted from this single transition.
+
+The local first-run JSON had a serialization-only counter bug (`b730_calls`
+was initialized as a table); the bounded evidence above is taken from the
+otherwise complete local record, and the developer-only probe now initializes
+that counter numerically. No replay was rerun after this tooling repair.
+
+## Historical setup attempt — superseded by resumed F1 state
 
 Baseline was `f6feb888f2a527d0f5cf5425586dcbcc0c266cd6`. The exact previously
 published installation is present at

@@ -1,3 +1,44 @@
+# 2026-09-12 — M12 resumed Ali frame transition from BizHawk F1 — POSITIVE SOURCE-SIDE RESULT
+
+TASK: Resume exactly one controlled Ali idle-to-first-movement transition from
+the manually created BizHawk F1/slot-1 state. Use the canonical ROM, bounded
+SAT/source/selector hooks only, and stop at the first structural change.
+
+RESULT: The state loaded successfully from
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\Genesis\State\Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State`
+through `savestate.loadslot(1, true)`. The exact ROM was
+`C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin`, SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+After three no-input settling frames, State A was emulator frame `2120`.
+Exactly one `P1 Right` produced first State B at frame `2121`.
+
+PROVEN CHANGE: SAT shadow source `0xFF13CC..0xFF13CF` changed from
+`00 00 00 00` to `00 88 09 01`; SAT VRAM `0xD000`, selector/descriptor, and
+bounded `0x03BDA6` relative bytes remained unchanged. The bounded write watch
+reported callback PC `0xA374`, value `0x00880901`; because BizHawk reports the
+next fetch PC, exact store is `0xA372` (`MOVE.L D2,(A5)+`). Static context
+closes the local writer inputs to default ROM root `0xA43A` and conditional
+alternate root `0xA482` (`0xFF1858` controls the choice), with a six-record
+`DBF D0=5` copy loop. Semantics stay neutral.
+
+RESOURCE/RENDER RESULT: No `0x3820` and no `0xB730` execution occurred in this
+first transition capture. The known DMA event contract around the state is
+`0x000027EC`, source `0xFF13CC`, destination `0xD000`, 64 words, but no new
+SAT VRAM change followed State A. This is a positive source-side transition,
+not proof of a rendered SAT change, resource load, or finite frame sequence.
+
+TOOLING NOTE: The first local JSON had a serialization-only `b730_calls`
+counter initialization defect; it was corrected in the developer-only probe
+without rerunning the one transition. No ROM, state, capture, decoded asset,
+or payload was added. `SOURCE_OWNED` remains
+`1,475,368 / 3,145,728 = 46.9006856283%`.
+
+NEXT/STOP: Stop this replay-only pass. Do not run another direction or
+animation. Any further attempt must use a materially different evidence class
+or a separately bounded static closure.
+
+VALIDATION: Pending final publication gates for this docs/tooling checkpoint.
+
 # 2026-09-12 — M12 targeted Ali frame-transition backtrace — BOUNDED NEGATIVE RESULT
 
 TASK: Attempt exactly one controlled Ali idle-to-first-movement transition

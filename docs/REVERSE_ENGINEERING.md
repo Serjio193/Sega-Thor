@@ -3761,3 +3761,45 @@ the selector/descriptor through `0x03B448 -> 0xB730 -> SAT` remains valid and
 unchanged. The exact next evidence boundary is either restoration of a usable
 BizHawk UI/save-state path or a materially different controlled-state/static
 consumer analysis; replay expansion is closed for this pass.
+
+# M12 resumed Ali frame transition from BizHawk F1 — bounded positive result
+
+The historical setup result immediately above is superseded for this bounded
+pass by the manually created local F1 state
+`C:\Dev\SegaThorTools\BizHawk-2.11.1-win-x64\Genesis\State\Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State`.
+The state loaded successfully through `savestate.loadslot(1, true)` in BizHawk
+2.11.1. The exact quoted ROM invocation used
+`C:\Github\Sega-Thor\build\reference\Beyond Oasis (USA).bin`, whose verified
+SHA-256 is
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+The probe settled three no-input frames, captured State A at emulator frame
+`2120`, injected exactly one `P1 Right`, and stopped at the first bounded
+change in State B at frame `2121`. The selector read remained the same raw
+runtime value in both snapshots, as did the descriptor bytes, the bounded
+`0x03BDA6` relative-root bytes, and SAT VRAM at `0xD000`. The first changed
+source range was `0xFF13CC..0xFF13CF`: `00 00 00 00` to `00 88 09 01`.
+
+The last-writer callback was the exact bounded source-range watch at
+`0xFF13CC`, callback PC `0xA374`, value `0x00880901`, during the transition.
+The callback PC is the next fetch PC; the exact store instruction is
+`0xA372`, `MOVE.L D2,(A5)+`. Static backward closure of this writer reaches
+`0xA342` (`A5 <- 0xFF13CC`), default ROM root `0xA43A` selected at `0xA354`,
+and alternate ROM root `0xA482` selected at `0xA360` when the `0xFF1858` test
+is nonzero. The copy loop at `0xA364..0xA37E` is bounded to six iterations
+by `D0=5`/`DBF`; role remains neutral because the transition does not prove
+object, animation, or frame semantics for either root.
+
+No `0x0000B730` execution, no post-A SAT DMA, and no `0x3820` execution was
+observed. A bounded DMA event around the state retained the known contract
+`0x000027EC: 0xFF13CC -> VRAM 0xD000`, length 64 words. Since VRAM was
+unchanged, the result is a source-side transition only: it does not prove a
+rendered SAT change, resource loading, or a finite frame sequence. The
+previously proven structural chain remains
+`selector -> descriptor -> child/relative -> 0x03B448 -> 0xB730 -> SAT`.
+
+The first local JSON had only a serialization defect in the numeric
+`b730_calls` field; the source probe was corrected without rerunning the
+transition. No ROM, state, capture, decoded asset, or payload was added to
+the repository. `SOURCE_OWNED` remains unchanged at
+`1,475,368 / 3,145,728 = 46.9006856283%`.
