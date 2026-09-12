@@ -27,7 +27,10 @@ have SHA-256
 Debug/Release focused builds and full Windows CTest passed (`150/150` each,
 including source-size); the WSL GNU/Linux build/link and eight relevant
 graphics helpers passed (`8/8`); and `git diff --check` passed. Source files
-remain within the 500-line limit. Commit and publication remain pending.
+remain within the 500-line limit. Implementation commit
+`761df67298c8e2214a38f747b6ef36f9a613f46b` is pushed and exact CI run
+`34668962782` passed. This residual caller classification is published; no ROM
+or decoded asset was added.
 
 NEGATIVE EVIDENCE: the only residual dynamic source relation is the already
 recorded `0x02DB40 -> 0x02DB52` post-source continuation. The other four are
