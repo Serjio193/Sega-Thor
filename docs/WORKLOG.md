@@ -38,6 +38,12 @@ because the mounted `C:/` scan did not complete in bounded time; the required
 Linux build/link gate is green and the Windows source-size gate is green.
 `git diff --check` passes with only Git's LF/CRLF normalization warnings.
 
+PUBLICATION: implementation commit
+`7012fd7861b5bd09164c46aa46152337dd4357fd` is on `origin/main`; exact
+GitHub Actions CI run `34670755667` passed Build, Test, and Complete. The
+following metadata-only commit records this result and is the final repository
+HEAD for this checkpoint.
+
 CHECKPOINT: this bounded publication intentionally stops here. No additional
 graphics campaign, runtime scenario, detector, M13 work, or ASM-to-C++
 migration is authorized by this checkpoint. The seven remaining dynamic

@@ -451,7 +451,10 @@ exact boundary. The directly reachable sibling helpers covered by the census
 are now classified and should not be reopened without new source evidence.
 M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: pending this bounded checkpoint commit.
-Exact implementation CI: pending publication.
-Final publication SHA: pending publication.
-Exact final publication CI / publication HEAD CI: pending publication.
+Implementation SHA: `7012fd7861b5bd09164c46aa46152337dd4357fd`.
+Exact implementation CI: GitHub Actions run `34670755667` (success).
+Final publication SHA: `7012fd7861b5bd09164c46aa46152337dd4357fd` (the
+implementation publication; the following metadata-only commit is the final
+repository HEAD).
+Exact implementation publication CI: GitHub Actions run `34670755667`
+(success).
