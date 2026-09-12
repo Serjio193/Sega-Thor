@@ -3281,3 +3281,14 @@ This proves a post-source continuation of `0x00D406`, not an independent
 caller argument. The incoming `D0` copied to `A0` at `0x02DB3C` and the exact
 compressed-stream boundary remain unproven, so the classification is
 `D406_POST_SOURCE_NOT_ROM_PROVEN`; no bytes are promoted.
+
+# M12-GFX-MAX bounded 0x02F6A0 post-state audit
+
+The exact local slice begins with `JSR 0x00D406` at `0x02F67C`. It then loads
+`A0` from `0x00FF17AA` at `0x02F692` and `A1` from `0x00FF17AE` at
+`0x02F698`; those fields are written from the shared loader's post-source
+`A4` and post-destination `A5` at `0x00D65A` and `0x00D660`. The call at
+`0x02F6A0` therefore consumes the preceding `D406` post-state, not an
+independent caller argument. The incoming `D406` source and exact stream
+boundary remain unproven: `D406_POST_STATE_NOT_ROM_PROVEN`; no bytes are
+promoted.

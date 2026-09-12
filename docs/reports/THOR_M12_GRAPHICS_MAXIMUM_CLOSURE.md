@@ -76,7 +76,7 @@ caller-derived resource starts, 82,861 unique resource bytes, and 47,389
 newly promoted bytes. Its ten blockers are unchanged:
 
 `0x00D54A` inherited entry field; `0x00D650` sequential first stream;
-`0x02DB52` D406 post-source; `0x02F6A0` caller argument; `0x03B236`
+`0x02DB52` D406 post-source; `0x02F6A0` D406 post-state; `0x03B236`
 RAM-mediated source;
 `0x03B28A` RAM-mediated source; `0x03B2FE` sibling-call effect;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
@@ -110,6 +110,13 @@ than an independent caller argument. The incoming `D0` copied to `A0` at
 `0x02DB3C` is still inherited, and the exact source/boundary remains
 unproven; the blocker is `D406_POST_SOURCE_NOT_ROM_PROVEN` and no bytes are
 promoted.
+
+The adjacent `0x02F6A0` slice has the same bounded predecessor relation.
+`0x02F67C` calls `0x00D406`; `0x02F692` and `0x02F698` then load `A0` and
+`A1` from `0x00FF17AA` and `0x00FF17AE`, the post-source/post-destination
+fields written by `0x00D65A` and `0x00D660`, before `0x02F6A0` calls
+`0x003820`. The source entering `D406` and the exact stream boundary remain
+unproven, so this is `D406_POST_STATE_NOT_ROM_PROVEN`; no bytes are promoted.
 
 ### Exact `0x00D406` direct-xref census
 

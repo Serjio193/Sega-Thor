@@ -40,7 +40,7 @@ The exact table `[0x05CE96,0x05D046)` is 108 four-byte absolute ROM pointers con
 | `0x02A67E` | 0x02A652 bounded graphics loader | `0x2E2FE6..0x2E304A` | `A1 inherited` | direct literal | CONFIRMED; exact parser end |
 | `0x02B1D0` | 0x02B194 bounded graphics loader | `0x2E5FD0..0x2E6000` | `A1 inherited` | direct literal | CONFIRMED; exact parser end |
 | `0x02DB52` | 0x02DB24 resource family | `A0 = 0x00FF17AA post-source saved by preceding 0x00D406; A1 = 0x00FF2FA8` | `0x00FF2FA8` | indirect/RAM | BLOCKED: D406_POST_SOURCE_NOT_ROM_PROVEN |
-| `0x02F6A0` | 0x02F662 resource family | `A0 caller argument; A1 inherited` | `A1 inherited` | indirect/RAM | BLOCKED: CALLER_ARGUMENT_NOT_ROM_PROVEN |
+| `0x02F6A0` | 0x02F662 resource family | `A0/A1 = 0x00FF17AA/0x00FF17AE post-state saved by preceding 0x00D406` | `0x00FF17AE after 0x00D406` | indirect/RAM | BLOCKED: D406_POST_STATE_NOT_ROM_PROVEN |
 | `0x03A7FE` | 0x03A748 screen initialization family | `0x16943C..0x1698FD` | `0x00FF2FA8` | direct literal | CONFIRMED; exact parser end |
 | `0x03ACB4` | 0x03ACA8 tilemap loader | `0x17A750..0x17A78F` | `0x00FFB1AE` | direct literal | CONFIRMED; exact parser end |
 | `0x03ADC0` | 0x03ADB4 tilemap loader | `0x17E3BA..0x17E3E1` | `0x00FFB1AE` | direct literal | CONFIRMED; exact parser end |

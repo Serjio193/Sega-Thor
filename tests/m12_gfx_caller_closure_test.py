@@ -41,6 +41,7 @@ def test_all_static_callers_are_explicitly_represented():
     assert MODULE.DYNAMIC[0x00D54A][2] == "INHERITED_A1_FIELD_NOT_ROM_PROVEN"
     assert MODULE.DYNAMIC[0x00D650][2] == "FIRST_STREAM_AND_CONTINUATION_NOT_ROM_PROVEN"
     assert MODULE.DYNAMIC[0x02DB52][2] == "D406_POST_SOURCE_NOT_ROM_PROVEN"
+    assert MODULE.DYNAMIC[0x02F6A0][2] == "D406_POST_STATE_NOT_ROM_PROVEN"
 
 
 if __name__ == "__main__":
