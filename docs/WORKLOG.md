@@ -69,6 +69,9 @@ manifest ownership matching passed. Debug/Release builds and full Windows
 CTest passed (`147/147` each, including source-size); the WSL build/link and
 four relevant graphics helpers passed (`4/4`); `git diff --check` passed.
 Commit, push, and CI validation remain for this transaction.
+Implementation commit `3fe64956be986bfe3e76f3d6a4251abba4525865` is pushed and
+its exact CI run `34667380039` passed; the current change only finalizes report
+publication identifiers.
 Implementation commit `bcbd3cdd89d1ef45e2864022fbf8e294af0d1b61` is pushed and
 its exact CI run `34666468223` passed. Publication commit
 `ad1ca215348874d0a69e07168a2dc1296aceedbe` and CI run `34666594438` also
