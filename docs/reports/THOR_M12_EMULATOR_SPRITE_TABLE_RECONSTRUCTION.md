@@ -47,6 +47,8 @@ The local first-run JSON had a serialization-only counter bug (`b730_calls`
 was initialized as a table); the bounded evidence above is taken from the
 otherwise complete local record, and the developer-only probe now initializes
 that counter numerically. No replay was rerun after this tooling repair.
+Publication predecessor `ff5a389062b9d96413e468650a3613fd57e28dd4` passed
+GitHub Actions CI run `34690039459` (Build, Test, Post Checkout, Complete).
 
 ## Historical setup attempt — superseded by resumed F1 state
 

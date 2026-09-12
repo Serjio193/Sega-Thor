@@ -37,7 +37,11 @@ NEXT/STOP: Stop this replay-only pass. Do not run another direction or
 animation. Any further attempt must use a materially different evidence class
 or a separately bounded static closure.
 
-VALIDATION: Pending final publication gates for this docs/tooling checkpoint.
+VALIDATION: `git diff --check` passed; focused M12 CTest passed 6/6 in both
+existing Debug and Release trees; manual source-limit scan passed with the
+new Lua probe at 288 lines. The pushed publication CI run `34690039459` for
+the predecessor commit completed successfully: Build, Test, Post Checkout,
+and Complete all passed.
 
 # 2026-09-12 — M12 targeted Ali frame-transition backtrace — BOUNDED NEGATIVE RESULT
 
