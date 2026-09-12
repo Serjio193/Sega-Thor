@@ -252,8 +252,8 @@ five descriptor-shaped records, then return to the ten dynamic `0x3820`
 producers. No candidate becomes owned without a proven source and exact
 boundary; M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: `7b638801d1e7b6f0abc721219da989b8d48e5e00`.
-Exact implementation CI: GitHub Actions run `34661832137` (success).
-Final publication SHA: `7b638801d1e7b6f0abc721219da989b8d48e5e00`.
+Implementation SHA: `a016de2d42f45c9b4b93487b39bb0bcfd84c2816`.
+Exact implementation CI: GitHub Actions run `34662243757` (success).
+Final publication SHA: `a016de2d42f45c9b4b93487b39bb0bcfd84c2816`.
 Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34661832137` (success).
+`34662243757` (success).

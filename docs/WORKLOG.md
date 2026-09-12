@@ -6545,3 +6545,7 @@ records with the exact static path.
 
 NEXT: continue the remaining dynamic producers; a closed `A1` source path or
 targeted register trace is required before any resource promotion.
+
+PUBLICATION: focused commit
+`a016de2d42f45c9b4b93487b39bb0bcfd84c2816` is on `origin/main`; exact
+GitHub Actions CI run `34662243757` passed Build, Test, and Complete.
