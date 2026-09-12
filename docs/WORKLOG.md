@@ -30,6 +30,8 @@ manifest ownership matching passed. Debug/Release builds and full Windows
 CTest passed (`147/147` each, including source-size); the WSL build/link and
 four relevant graphics helpers passed (`4/4`); `git diff --check` passed.
 Commit, push, and CI validation remain for this transaction.
+Implementation commit `bcbd3cdd89d1ef45e2864022fbf8e294af0d1b61` is pushed and
+its exact CI run `34666468223` passed; only final publication metadata remains.
 
 NEGATIVE EVIDENCE: all finite indexed resources were already owned by the
 existing resource-boundary closure; this step adds no SOURCE_OWNED bytes and
