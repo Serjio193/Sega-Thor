@@ -134,6 +134,15 @@ remaining blocker is therefore `A1_INHERITED_NOT_ROM_PROVEN`. The direct
 source literal is recorded, but no resource bytes are promoted because the
 destination and complete source-to-output contract remain unproven.
 
+The final two dynamic sites add no promotable source relation from the exact
+retained slices. `0x03D5AE` begins with `JSR 0x003820` and then writes only
+entity-state fields at `0x00FF19A2`, `0x00FF19A6`, `0x00FF19AA`, and
+`0x00FF19AC`; no local `A0`/`A1` definition closes the RAM-mediated entity
+source. `0x03E61A` likewise calls `0x003820` before any new `A0`/`A1`
+definition; its later `0x03E662` and `0x03E704` arms load the already closed
+`0x0016943C` stream into `0x00FF2FA8`. The first call remains
+`CALLER_ARGUMENT_NOT_ROM_PROVEN`, and no bytes are promoted.
+
 ### Exact `0x00D406` direct-xref census
 
 The separate machine report
@@ -248,9 +257,11 @@ byte-exact baseline rebuilt ROM as a verification fallback. This is not
 claimed as a fresh assembler round-trip.
 
 The next graphics step is to resolve the two remaining screen sites and the
-five descriptor-shaped records, then return to the ten dynamic `0x3820`
-producers. No candidate becomes owned without a proven source and exact
-boundary; M13 and ASM-to-C++ migration remain out of scope.
+five descriptor-shaped records, then obtain new caller-closed or targeted
+register evidence for the ten dynamic `0x3820` producers. Existing exact
+static slices have reached evidence exhaustion for those ten; no candidate
+becomes owned without a proven source and exact boundary. M13 and ASM-to-C++
+migration remain out of scope.
 
 Implementation SHA: `a016de2d42f45c9b4b93487b39bb0bcfd84c2816`.
 Exact implementation CI: GitHub Actions run `34662243757` (success).

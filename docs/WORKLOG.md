@@ -6549,3 +6549,23 @@ targeted register trace is required before any resource promotion.
 PUBLICATION: focused commit
 `a016de2d42f45c9b4b93487b39bb0bcfd84c2816` is on `origin/main`; exact
 GitHub Actions CI run `34662243757` passed Build, Test, and Complete.
+
+# 2026-09-12 — M12-GFX-MAX final dynamic static-site audit — IN PROGRESS
+
+TASK: Check the final two dynamic producers, `0x03D5AE` and `0x03E61A`, for a
+closed local source relation and record negative evidence where none exists.
+
+RESULT: `0x03D5AE` starts with `JSR 0x003820`, defines neither `A0` nor `A1`
+before the call, and then writes only entity-state RAM at `0x00FF19A2`,
+`0x00FF19A6`, `0x00FF19AA`, and `0x00FF19AC`. `0x03E61A` also calls before
+new `A0`/`A1` definitions; only its later `0x03E662` and `0x03E704` direct
+arms are already closed at `0x0016943C -> 0x00FF2FA8`. No ledger
+classification or ownership changed.
+
+CONCLUSION: Existing exact static slices are exhausted for all ten dynamic
+producers. Further progress requires a new caller-closed source path or a
+targeted runtime register capture; no heuristic or decoder-validity-only
+promotion is justified.
+
+NEXT: close the two remaining screen sites and five descriptor-shaped records,
+then revisit dynamic producers only with new evidence.

@@ -3314,3 +3314,14 @@ The exact `0x03BF86` path reaches `0x03C074` after the `0x03C956` helper.
 source literal is therefore ROM-proven, while the destination remains an
 inherited argument and the blocker is `A1_INHERITED_NOT_ROM_PROVEN`; no bytes
 are promoted.
+
+# M12-GFX-MAX final dynamic static-site audit
+
+The exact `0x03D5AE` slice starts with `JSR 0x003820` and has no local source
+or destination definition before the call; its remaining instructions only
+write entity-state fields at `0x00FF19A2`, `0x00FF19A6`, `0x00FF19AA`, and
+`0x00FF19AC`. The exact `0x03E61A` slice also calls `0x003820` before any new
+`A0`/`A1` definition. Its later arms at `0x03E662` and `0x03E704` load the
+already closed direct stream `0x0016943C` to `0x00FF2FA8`. Thus the first
+`0x03E61A` call remains `CALLER_ARGUMENT_NOT_ROM_PROVEN`, and these two sites
+produce no new ownership evidence.
