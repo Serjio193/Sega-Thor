@@ -1082,3 +1082,10 @@ result without emitting payload. Its regression test is
 `tests/m12_a372_caller_join_test.py`; CTest registration is in
 `cmake/m12_auto2.cmake`. The result is documented in
 `docs/reports/THOR_M12_A372_CALLER_JOIN.md`.
+
+`src/tools/re_bizhawk_m12_a372_runtime.lua` is a developer-only bounded
+BizHawk register/root probe for the `A196 -> A342 -> A372` path. Its
+payload-free validator is `src/tools/m12_a372_runtime_report.py`, tested by
+`tests/m12_a372_runtime_report_test.py`; CTest registration is in
+`cmake/m12_auto2.cmake`. The bounded negative result is documented in
+`docs/reports/THOR_M12_A372_RUNTIME_CAPTURE.md`.

@@ -7638,3 +7638,39 @@ publication handoff after push.
 DECISION: Stop after three bounded cycles at a strategic fork between targeted
 runtime register capture, wider FF1858 state closure, and the unresolved
 `0x03BDA6` consumer boundary. Do not run a fourth equivalent caller pass.
+
+# 2026-09-12 — M12 A372 runtime register/root capture — BOUNDED NEGATIVE
+
+TASK: Take the highest-information fork from the caller-join report: one
+developer-only BizHawk capture of `A196 -> A342 -> A372`, recording only
+bounded register/RAM context and source-write addresses. Preserve the frozen
+natural scenario, canonical ROM identity, no state writes, no payload, no
+manual gameplay search, no promotion, and no C++/M13 work.
+
+PASS 1: Revalidated canonical ROM identity and the exact static contracts
+`0x008B86 -> 0x00A196`, `0x00A19C -> 0x00A342`, and `0x00A372` as the source
+producer. The new Lua probe, Python summarizer, synthetic regression, and
+`py_compile` passed.
+
+PASS 2: BizHawk 2.11.1 ran the existing `m11_8_natural_reachability_v1`
+hardware-reset scenario for exactly 1,800 frames and exited 0. Execution hooks
+reported `A196=0`, `A342=0`, `A372=0`; no root/register sample was observed.
+The bounded source-write list reached its cap of 4,096 without a paired A372
+event, so it is explicitly non-diagnostic and no write semantics are inferred.
+Ignored capture: `build/m12-gfx-runtime/a372-runtime-pass2.json`, SHA-256
+`eeb8489191a3649a32237b701ced7b294d0f4edcab842a6f8019398e0af562e2`.
+
+RESULT: `NO_NEW_TARGET_RUNTIME_REACH` for this frozen scenario only. This is
+not a global reachability negative and does not weaken the static scheduler
+join. No runtime root-selection, same-frame SAT, object, animation, frame, or
+piece claim is made. `SOURCE_OWNED` remains `1,475,368 / 3,145,728 =
+46.9006856283%`; ROM bytes added: 0.
+
+VALIDATION: focused runtime summarizer test, Python compilation, canonical ROM
+hash/size, static join regression, and payload-free report generation passed.
+Full Debug/Release CTest, GNU/Linux build/link, `git diff --check`, source-size
+scan, commit/push, and exact CI remain publication gates.
+
+BOUNDARY: Two-pass rule complete. Do not repeat an equivalent 1,800-frame
+natural replay. Further progress requires a separately validated controlled
+state or a materially different static evidence class.
