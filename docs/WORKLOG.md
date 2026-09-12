@@ -1,3 +1,70 @@
+# 2026-09-12 — THOR Evidence Engine V0 — IN PROGRESS
+
+TASK: V0 foundation/storage identity and bounded BizHawk capability contract.
+WHY: Establish reliable temporal observations before any causal provenance.
+CURRENT MILESTONE: M12; V0 only, mandatory STOP after report/publication.
+MILESTONE UNDERSTANDING CONFIDENCE: partial; no production behavior is inferred.
+CURRENT SLICE UNDERSTANDING CONFIDENCE: storage contract high; callback semantics
+are experimental UNKNOWN until measured. No production C++ is authorized.
+SLICE CONFIDENCE EVIDENCE: ADR-0044, controlled harness and existing M12 tests.
+BASELINE: b886d2507c9010caac2a75ccbb629b809399ffd0, main == origin/main.
+The previous task's uncommitted architecture documents are retained and will
+be published with their bounded V0 implementation, not redesigned.
+ACCEPTANCE CRITERIA: sealed/idempotent/cross-ROM-safe temporal storage; synthetic
+fixtures A–K; measured PC/phase/width/overlap/restore capabilities; two identical
+cold-process logical streams; bounded non-interference and performance report;
+SOURCE_OWNED 1,475,368 unchanged; relevant Debug/Release/Linux-equivalent checks,
+source limit, exact final commit/push/CI. No V1+, promotions or gameplay search.
+EVIDENCE AVAILABLE: exact ROM/state, current descriptor-candidate manifest,
+build/bizhawk-controlled-harness/run.ps1 and controlled.lua.
+KNOWN UNKNOWNS: callback width/phase/filter semantics; IRQ completeness; MMIO
+peek effects. Every unresolved capability retains an explicit V1 consequence.
+EXPERIMENT BUDGET: each process <=30 s; fixed state with 3 settling +1 measured
+frame; at most one additional restore of that same window per probe. Initial
+batch: baseline/uninstrumented/minimal plus two identical probes and one reversed
+installation-order control. No guest RAM/register writes or new savestates.
+
+# 2026-09-12 — THOR Evidence Engine architecture — DESIGN CONTRACT
+
+TASK: Critically design a developer-only M12 evidence/provenance engine around
+the working controlled BizHawk harness and existing Carver tooling. Specify
+temporal identity, scoped proof rules, persistence, capture completeness,
+static integration, scheduling, a known canary and bounded implementation stages.
+Optional V0/V1 implementation is not claimed by this documentation task.
+
+ACCEPTANCE: Address all sixteen design questions and components A–N; give V0–V9
+goals, scope, artifacts, tests, budgets, STOP conditions and transition evidence.
+Ground the canary in current writer/selector evidence and preserve the exact
+manifest/reconstruction boundary. Validate the proposed SQL core and document
+the difference between a design check and a working capture/provenance engine.
+
+RESULT: Added THOR_EVIDENCE_ENGINE_ARCHITECTURE.md and
+THOR_EVIDENCE_ENGINE_STAGES.md, with ADR-0044 and architecture/file-map links.
+Decision: MODIFY IDEA, then BUILD in bounded stages. Separate immutable events,
+temporal byte/register versions and scoped relations; use demand-driven slicing,
+SQLite sidecar, coverage certificates and non-owning Carver export. Minimal
+RAM/register semantics move into V1 so the canary proves an actual chain.
+
+BASELINE: HEAD at inspection b886d2507c9010caac2a75ccbb629b809399ffd0. Original
+ROM SHA256 was checked live. The descriptor-candidate manifest hash is
+996ce8100ff8354d682d217b34b7c61bd7e5cad49ec5a4cb5373f69ef76be70b and records
+1,475,368 SOURCE_OWNED bytes; older screen-root-c has 1,475,346 and must not
+be silently reused. Runtime evidence was read from existing reports/scripts;
+no new emulator execution, ownership transaction or runtime change occurred.
+
+VALIDATION: The 24-table design DDL was executed in Python sqlite3 3.45.3;
+foreign keys, integrity and negative FK/hash-length/size constraints passed.
+Local report links and component/stage inventories were verified. Final
+diff/whitespace review and repeated ROM/manifest identity checks passed;
+no executable source was changed. This checks the relational design only,
+not an importer, semantic validator or emulator capability. Native builds/CTest and
+CI are not required or claimed for this documentation-only change. Existing
+untracked workspace artifacts remain outside this task's change set.
+
+NEXT: V0 synthetic storage/identity tests and measured capability validation;
+V1 and unknown-frontier expansion remain unimplemented. Roadmap milestone
+status is unchanged; M13/M14 are not started.
+
 # 2026-09-12 — Independent BizHawk controlled harness diagnosis — WORKING
 
 TASK: Verify the installed BizHawk 2.11.1 CLI/Lua startup, canonical ROM and

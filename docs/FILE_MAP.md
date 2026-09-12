@@ -1,3 +1,26 @@
+# THOR Evidence Engine design
+
+`docs/reports/THOR_EVIDENCE_ENGINE_ARCHITECTURE.md` specifies the proposed
+developer-only M12 capture/provenance sidecar, relational schema, temporal
+identity, proof obligations and non-owning Carver integration.
+`docs/reports/THOR_EVIDENCE_ENGINE_STAGES.md` defines bounded V0–V9 goals,
+acceptance tests, performance budgets, STOP gates and transition evidence.
+The listed future source modules are a plan; no engine implementation is
+introduced by these reports. See ADR-0044.
+
+# THOR Evidence Engine V0 foundation
+
+`src/tools/thor_evidence/identity.py` defines full-hash environment/location/
+temporal identities. `events.py` validates the sealed JSONL transport,
+`normalize.py` converts one bounded local BizHawk observation into that format,
+and `report.py` emits the local capability matrix and source receipts.
+`store.py` and `schema.sql` provide the non-owning SQLite receipt, epoch, event,
+value-version and UNKNOWN relation store. The one bounded collector is
+`src/tools/thor_evidence/capture/capabilities.lua`; its raw output remains local
+under ignored `build/thor-evidence/v0`. `tests/thor_evidence_v0_test.py` covers
+the storage and fail-closed transport contract; CTest registration is in
+`cmake/m12_auto2.cmake`.
+
 # Independent BizHawk infrastructure diagnosis
 
 `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md` records the verified

@@ -87,4 +87,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_a372_runtime_report_test.py)
     add_test(NAME oasis_re_m12_shadow_sat_access_graph_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_shadow_sat_access_graph_test.py)
+    add_test(NAME oasis_thor_evidence_v0_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v0_test.py)
 endif()

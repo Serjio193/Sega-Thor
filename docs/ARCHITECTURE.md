@@ -1,3 +1,15 @@
+## THOR Evidence Engine design boundary
+
+ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
+existing controlled BizHawk harness. Immutable capture events, temporal
+byte/register versions and scoped relations are distinct models. Python/SQLite
+analysis exports non-owning evidence into existing Carver IntervalDB views;
+the existing promoters and exact ROM reconstruction remain authoritative.
+No runtime/core dependency or executable engine is added by this design.
+See [architecture contract](reports/THOR_EVIDENCE_ENGINE_ARCHITECTURE.md) and
+[bounded stages](reports/THOR_EVIDENCE_ENGINE_STAGES.md). Milestone status and
+the M12 → M13 parity → M14 C++ sequence remain unchanged.
+
 ## M11.64 G0 boundary closure
 
 M11 closes the bounded G0 evidence line without creating a portable subsystem.

@@ -994,6 +994,38 @@ milestone if they are ever considered.
 `src/tools/hybrid/candidate_parent_suffix.*`, `tests/parent_suffix_test.cpp`,
 M11.57 report and hybrid accounting.
 
+# ADR-0044 — Scoped temporal provenance sidecar for M12
+
+**Status:** Accepted design contract; implementation stages not completed
+**Date:** 2026-09-12
+
+**Context:** Controlled BizHawk capture is working, but repeated manual
+RAM/register/ROM dependency reconstruction duplicates work. Existing Carver
+IntervalDB owns the ROM partition and non-owning evidence reports; its graph
+does not encode instruction instances, memory versions or capture completeness.
+Callback PC and lagged input observations already demonstrate false-proof risks.
+
+**Decision:** Design a developer-only Python/SQLite sidecar that separates
+immutable observations, temporal byte/register versions and scoped relations.
+Use demand-driven slicing, explicit data/address/control dependencies,
+coverage certificates and proof-obligation scheduling. Reuse the controlled
+harness and M12 static analyzers. Export non-owning ROM evidence to Carver;
+existing exact promoters alone may update ownership under their current gates.
+V1 must recover the known canary with minimal RAM/register semantics, not
+merely import an expected graph or log A372 followed by UNKNOWN.
+
+**Consequences:** No monolithic rewrite, new production dependency, graph
+server or general symbolic/emulator implementation. Repeats establish
+reproducibility rather than independent semantic proof. Savestate roots are
+scope boundaries, not invented reset provenance. Hardware visibility and
+static completeness have separate gates. V0 capability validation precedes
+V1 implementation; no milestone completion or ownership change is implied.
+
+**Evidence/design:** `docs/reports/THOR_EVIDENCE_ENGINE_ARCHITECTURE.md` and
+`docs/reports/THOR_EVIDENCE_ENGINE_STAGES.md`; verified baseline manifest
+contains 1,475,368 SOURCE_OWNED bytes. ADR-0043 remains authoritative for the
+M12 ASM → M13 rebuilt parity → M14 systematic C++ sequence.
+
 # ADR-0043 — Complete ASM reconstruction before systematic C++ migration
 **Status:** Accepted for M12.0
 **Date:** 2026-09-10
