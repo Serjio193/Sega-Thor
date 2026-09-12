@@ -25,10 +25,17 @@ ARTIFACTS: ignored slice hashes and the full positive/negative evidence are
 recorded in the M12-GFX-MAX report and reverse-engineering log. No ROM,
 decoded asset, generated payload, or developer-only slice artifact is tracked.
 
-VALIDATION: run the focused M12 helper tests, relevant Debug/Release tests,
-`git diff --check`, source-size validation, and publication CI before push.
+VALIDATION: focused M12 helper tests passed. The previously published
+implementation already passed MinGW Debug/Release builds and full Windows
+Debug/Release CTest (`152/152` each, including source-size); this docs-only
+diff passed `git diff --check`. A fresh local CTest rerun reached the common
+workspace-wide `project_file_line_limit` scan but was stopped after it did not
+complete in bounded time; no source files changed. GitHub Actions then passed
+Build, Test, and Complete for the pushed checkpoint.
 
-PUBLICATION: pending validation and push of this docs-only checkpoint.
+PUBLICATION: docs-only checkpoint commit
+`c11a7ee80b5720d38c68781d6e1ce580061cd21e` is on `origin/main`; exact
+GitHub Actions CI run `34671385113` passed Build, Test, and Complete.
 
 # 2026-09-12 — M12-GFX-MAX targeted runtime provenance for 0x03B1D0 — CHECKPOINT PUBLISHED
 

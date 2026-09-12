@@ -478,8 +478,7 @@ M13 and ASM-to-C++ migration remain out of scope.
 
 Implementation SHA: `7012fd7861b5bd09164c46aa46152337dd4357fd`.
 Exact implementation CI: GitHub Actions run `34670755667` (success).
-Final publication SHA: `7012fd7861b5bd09164c46aa46152337dd4357fd` (the
-implementation publication; the following metadata-only commit is the final
-repository HEAD).
-Exact implementation publication CI: GitHub Actions run `34670755667`
-(success).
+Final implementation SHA: `7012fd7861b5bd09164c46aa46152337dd4357fd`.
+Exact implementation CI: GitHub Actions run `34670755667` (success).
+Final docs-only checkpoint SHA: `c11a7ee80b5720d38c68781d6e1ce580061cd21e`.
+Exact final checkpoint CI: GitHub Actions run `34671385113` (success).
