@@ -21,7 +21,7 @@ EmuHawk/core, config, ordered watch plan, mode, reverse flag, ROM, state and
 scenario. Normalization requires the receipt, exact raw path and raw hash, and
 an exact raw-header identity match. The collector hash in the corrected
 captures is `05834fae...629d829`; the normalizer hash is a different
-`a071c12d...c502fb0`.
+`714cb4ca...ffba78e`.
 
 P1-C was fixed by making `report.py` derive claims from capture witnesses and
 hashed API source receipts. Empty evidence produces no `PROVEN` capability;
