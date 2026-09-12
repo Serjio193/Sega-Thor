@@ -1068,3 +1068,10 @@ Its regression test is `tests/m12_indirect_body_dispatch_test.py`; the CTest
 registration is in `cmake/m12_auto2.cmake`. Local JSON output is ignored
 ROM-derived evidence. The bounded result is documented in
 `docs/reports/THOR_M12_SELECTOR_RELATIVE_CLOSURE.md`.
+
+`src/tools/m12_a372_shadow_sat_producer.py` validates the bounded static
+`0xA342..0xA438` producer, its two 9x8 root tables, D2/A5 dataflow, and the
+`0xFF1858` root selector without emitting payload. Its regression test is
+`tests/m12_a372_shadow_sat_producer_test.py`; CTest registration is in
+`cmake/m12_auto2.cmake`. The result is documented in
+`docs/reports/THOR_M12_A372_SHADOW_SAT_PRODUCER.md`.

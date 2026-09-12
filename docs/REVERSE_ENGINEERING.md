@@ -3790,6 +3790,35 @@ is nonzero. The copy loop at `0xA364..0xA37E` is bounded to six iterations
 by `D0=5`/`DBF`; role remains neutral because the transition does not prove
 object, animation, or frame semantics for either root.
 
+## M12 static `0xA372` producer grammar (2026-09-12)
+
+The bounded static closure corrects the earlier root shorthand above. The exact
+68000 PC-relative `LEA` targets are `0xA438` and `0xA480`; `0xA43A` and
+`0xA482` are two bytes into the corresponding first records. The enclosing
+producer is one routine `0xA342..0xA438` (end exclusive), with direct callers
+`0xA19C` and `0xA6A0`, `RTS` at `0xA436`, and six-/three-record `DBF` loops at
+`0xA37C`/`0xA3A6`. A sibling routine `0xA4C8..0xA69C`, called at `0xA8B1E`,
+selects the same roots and copies their first longword at `0xA4FE`; it is not
+a caller of the A342 routine; no direct branch targets its entry.
+
+Both exact roots are nine records of eight bytes: longword `+0`, word `+4`,
+and word `+6`. `D2` is loaded from `+0`, then its low byte is replaced by the
+incremented `D5.B`, giving
+`(record[+0] & 0xFFFFFF00) | ((D5.B + 1) & 0xFF)`. The existing observed
+`0x00880901` is therefore record 0 at `0xA438` with low counter byte `1`.
+`A5` starts at `0x00FF13CC` plus the signed word at `0xFF188C`, advances eight
+bytes per output record, and writes its final offset/counter back at `0xA42A`
+and `0xA430`.
+
+`0xFF1858` is a local boolean root selector: zero selects `0xA438`, nonzero
+selects `0xA480`; the producer-family readers are `0xA358` and `0xA4F2`.
+No selector/descriptor edge or object/animation/frame/piece semantic label is
+claimed. The structural join is `A372 -> FF13CC -> DMA 0x27EC -> SAT VRAM
+0xD000`; the frame-2121 source-side write did not prove same-frame VRAM
+publication. Machine-readable evidence is emitted by
+`src/tools/m12_a372_shadow_sat_producer.py` and tested by
+`tests/m12_a372_shadow_sat_producer_test.py`.
+
 No `0x0000B730` execution, no post-A SAT DMA, and no `0x3820` execution was
 observed. A bounded DMA event around the state retained the known contract
 `0x000027EC: 0xFF13CC -> VRAM 0xD000`, length 64 words. Since VRAM was

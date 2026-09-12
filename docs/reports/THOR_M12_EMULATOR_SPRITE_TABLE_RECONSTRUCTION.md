@@ -28,8 +28,10 @@ The bounded bus-write callback reported `0xFF13CC` with callback PC `0xA374`
 and value `0x00880901` during the transition. Existing BizHawk callback
 semantics report the next fetch PC for this write; the exact ROM store is
 `0xA372` (`MOVE.L D2,(A5)+`). Static context proves `0xA342` initializes A5
-from `0xFF13CC`, `0xA354` selects ROM root `0xA43A`, and the `0xFF1858` test
-can select alternate root `0xA482` at `0xA360`; `0xA364..0xA37E` copies six
+from `0xFF13CC`, `0xA354` selects exact PC-relative root `0xA438` (the earlier
+`0xA43A` label is root+2), and the `0xFF1858` test can select alternate exact
+root `0xA480` (the earlier `0xA482` label is root+2) at `0xA360`;
+`0xA364..0xA37E` copies six
 bounded records under a `DBF D0` loop. These are proven local table roots for
 the observed source writer, not semantic animation labels.
 

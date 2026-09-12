@@ -1,3 +1,52 @@
+# 2026-09-12 — M12 static 0xA372 shadow-SAT producer grammar — POSITIVE STRUCTURAL RESULT
+
+TASK: Close one producer family only, statically, around the existing runtime
+write at `0xA372`. Do not replay, extend captures, chase B730/0x3820, scan
+graphics globally, or assign frame/object semantics without proof.
+
+RESULT: Exact Ghidra/raw-ROM cross-checks close the producer routine as
+`0xA342..0xA438` (end exclusive), with incoming callers `0xA19C` and
+`0xA6A0`, `RTS` at `0xA436`, and loop edges `0xA37C -> 0xA36C` (6 records) and
+`0xA3A6 -> 0xA396` (3 optional records). PC-relative LEA semantics correct the
+previous shorthand roots: exact targets are `0xA438` and `0xA480`; labels
+`0xA43A`/`0xA482` are root+2 aliases. This also explains the existing
+`0x00880901` observation: record 0 at `0xA438` supplies upper `0x008809`, and
+`D5.B=0x01` supplies the low byte.
+
+The two exact roots are finite 9-record tables, each stride `0x08`, ending at
+`0xA480` and `0xA4C8` respectively. Fields are `+0` longword, `+4` word, and
+`+6` word. D2 construction is
+`(record[+0] & 0xFFFFFF00) | ((D5.B + 1) & 0xFF)`. A5 starts at
+`0x00FF13CC + sign_extended_word(0x00FF188C)`, advances 8 bytes per record,
+and writes the updated offset/counter to `0xFF188C`/`0xFF188A`.
+
+`FF1858` is proven locally as a boolean root selector: zero selects `A438`,
+nonzero selects `A480`, with readers at `A358` and `A4F2`. The sibling routine
+`A4C8..A69C` has caller `A8B1E`, shares the root selection and writes the
+selected root longword at `A4FE`, but is not merged into the A342 boundary.
+The exact bounded join is producer -> `FF13CC` shadow SAT -> existing DMA
+`0x27EC` -> VRAM SAT `0xD000`; same-frame VRAM publication remains unclaimed.
+Frame/object/animation/piece semantics remain fail-closed.
+
+TOOLING: Added payload-free `src/tools/m12_a372_shadow_sat_producer.py`, its
+regression test, CTest registration, and report
+`docs/reports/THOR_M12_A372_SHADOW_SAT_PRODUCER.md`. No ROM, state, capture,
+decoded asset, or ownership promotion was added. `SOURCE_OWNED` remains
+`1,475,368 / 3,145,728 = 46.9006856283%`.
+
+VALIDATION: direct Python test and `py_compile` passed; Debug and Release
+focused M12 CTest passed 9/9; the fresh Ubuntu 24.04/GCC 13.3 GNU tree
+configured, built, linked, and passed its five static M12 tests. Release
+rebuild passed. The current MSVC 18.9 Debug rebuild remains blocked by the
+pre-existing `src/core/ram_flag_routine.cpp` `std::to_string` error, so the
+Debug full CTest tree could only run the available tests; no code in that
+routine was changed here. Tracked source-limit scan and `git diff --check`
+passed.
+
+NEXT/STOP: This bounded static producer family is closed. Stop; any selector
+join or semantic frame grammar requires a materially different, separately
+authorized evidence class.
+
 # 2026-09-12 — M12 resumed Ali frame transition from BizHawk F1 — POSITIVE SOURCE-SIDE RESULT
 
 TASK: Resume exactly one controlled Ali idle-to-first-movement transition from
