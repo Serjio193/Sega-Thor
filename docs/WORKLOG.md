@@ -1,3 +1,44 @@
+# 2026-09-12 — M12-GFX-MAX direct 0xD3B2 indexed-loader/root closure — IN PROGRESS
+
+TASK: Close the proven indexed `0x00D3B2` graphics-loader family after the
+`0x37D2` sibling census. Scan every exact direct caller, verify immediate
+selector/D1 setup, reconstruct the complete fixed-width root table, and match
+all finite children to existing manifest ownership. Do not promote already
+owned bytes or infer semantic roles from table shape alone.
+
+ACCEPTANCE CRITERIA: the canonical ROM scan must find the complete direct
+`JSR 0x00D3B2` set; every site must have exact immediate D0/D1 evidence; the
+108-entry table must verify entry 0 null and entries 1..107 finite; every child
+must match one exact owned manifest span; output must be deterministic and
+regression-tested.
+
+RESULT: The exact scan finds seven direct callers at `0x02CFAA`, `0x02CFB8`,
+`0x02D410`, `0x032174`, `0x032182`, `0x032884`, and `0x032892`. Their exact
+selectors are `3`, `4`, `0x57`, `0x23`, `0x24`, `0x23`, and `0x24`; D1 is
+`0x4000` or `0x5000`. The root `[0x05CE96,0x05D046)` has 108 entries, with
+entry 0 null and all 107 finite children matched to `LOCAL_ROM_DERIVED_ASSET`
+spans totaling 238,087 compressed bytes. Promotion is zero.
+
+ARTIFACT: ignored local `build/m12-gfx-d3b2-census.json`, schema
+`oasis.m68k.m12-gfx-d3b2-census.v1`, SHA-256
+`DDBA1EF1EC7D5B89830DA74A0835BC6506D8BBB7C2283440AD5BCE8B32653895`.
+The deterministic repeat has the identical SHA-256.
+
+VALIDATION: Python compilation, focused census test, canonical-ROM census
+generation, deterministic repeat comparison, exact selector/root checks, and
+manifest ownership matching passed. Debug/Release builds and full Windows
+CTest passed (`147/147` each, including source-size); the WSL build/link and
+four relevant graphics helpers passed (`4/4`); `git diff --check` passed.
+Commit, push, and CI validation remain for this transaction.
+
+NEGATIVE EVIDENCE: all finite indexed resources were already owned by the
+existing resource-boundary closure; this step adds no SOURCE_OWNED bytes and
+does not promote from selector or table shape alone.
+
+NEXT: after validation, continue from remaining dynamic `0x3820` producers
+and non-screen `0x00D406` paths; sibling helper xrefs remain evidence-only
+until their source contracts are independently bounded.
+
 # 2026-09-12 — M12-GFX-MAX direct 0x37D2 wrapper-family closure — IN PROGRESS
 
 TASK: Extend the graphics loader census from the 52 absolute `0x3820` callers

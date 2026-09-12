@@ -236,6 +236,37 @@ post-source state of the preceding `0x00D406`. Neither creates a new exact ROM
 source set. The five direct spans total 11,440 already-owned bytes; promotion
 is zero and the canonical ROM remains unchanged.
 
+### Exact `0x00D3B2` indexed-loader/root census
+
+The developer-only indexed-loader census
+`build/m12-gfx-d3b2-census.json` (`oasis.m68k.m12-gfx-d3b2-census.v1`)
+finds all seven direct absolute `JSR 0x00D3B2` sites. Every call has an exact
+`MOVE.W #selector,D0`, `MOVE.W #destination,D1` setup immediately before the
+call:
+
+| call site | selector | D1 VRAM word address |
+| ---: | ---: | ---: |
+| `0x02CFAA` | `3` | `0x4000` |
+| `0x02CFB8` | `4` | `0x5000` |
+| `0x02D410` | `0x57` | `0x4000` |
+| `0x032174` | `0x23` | `0x4000` |
+| `0x032182` | `0x24` | `0x5000` |
+| `0x032884` | `0x23` | `0x4000` |
+| `0x032892` | `0x24` | `0x5000` |
+
+The census hash is
+`DDBA1EF1EC7D5B89830DA74A0835BC6506D8BBB7C2283440AD5BCE8B32653895`; a
+deterministic repeat produced the identical hash. The proven root table is
+`[0x05CE96,0x05D046)`: 108 four-byte entries, entry 0 null, and finite child
+indices 1..107. All 107 child pointers match exact existing
+`LOCAL_ROM_DERIVED_ASSET` manifest spans totaling 238,087 compressed bytes.
+The selected indices resolve to five already-owned spans:
+`3: [0x1AE1A8,0x1AE8AA)`, `4: [0x1AE8AA,0x1AF033)`,
+`35: [0x1BF148,0x1BF953)`, `36: [0x1BF954,0x1BFFAA)`, and
+`87: [0x1DBD46,0x1DC4DE)`. This closes the indexed loader/root family without
+adding ownership; table shape and selector validity were not used alone for
+promotion.
+
 ## Screen-root and resource closure
 
 The root table contains 21 longwords and points to the following finite group
@@ -279,8 +310,8 @@ materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
 (`6/6` existing graphics assertions plus `2/2` new wrapper-census assertions),
 deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`146/146` each, including the source-size
-gate), the WSL build with the three relevant graphics CTest helpers (`3/3`), and
+full Windows Debug/Release CTest (`147/147` each, including the source-size
+gate), the WSL build with the four relevant graphics CTest helpers (`4/4`), and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256

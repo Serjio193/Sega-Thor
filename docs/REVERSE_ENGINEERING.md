@@ -3372,3 +3372,29 @@ The `0x00D9B2` site inherits its source through `A6` in `0x00D9A4`; the
 Those two sites remain blocked and no bytes are promoted. The machine evidence
 is emitted by the developer-only `re_m12_gfx_37d2_census.py` helper under
 schema `oasis.m68k.m12-gfx-37d2-census.v1`.
+
+# M12-GFX-MAX direct 0xD3B2 indexed-loader census
+
+The exact canonical-ROM scan finds seven direct absolute `JSR 0x00D3B2` sites:
+`0x02CFAA`, `0x02CFB8`, `0x02D410`, `0x032174`, `0x032182`, `0x032884`, and
+`0x032892`. Every site has the exact local form `MOVE.W #selector,D0`,
+`MOVE.W #destination,D1`, then `JSR 0x00D3B2`. The selectors are `3`, `4`,
+`0x57`, `0x23`, `0x24`, `0x23`, and `0x24`; the destinations are respectively
+`0x4000`, `0x5000`, `0x4000`, `0x4000`, `0x5000`, `0x4000`, and `0x5000` Genesis
+VRAM word addresses.
+
+The loader's exact root is the 108-entry four-byte table
+`[0x05CE96,0x05D046)`. Entry 0 is the proven null entry; entries 1..107 are
+the complete finite child domain. The exact manifest contains all 107 child
+spans as `LOCAL_ROM_DERIVED_ASSET`, totaling 238,087 compressed source bytes.
+The five selected caller indices resolve to already-owned spans:
+`3: [0x1AE1A8,0x1AE8AA)`, `4: [0x1AE8AA,0x1AF033)`,
+`35: [0x1BF148,0x1BF953)`, `36: [0x1BF954,0x1BFFAA)`, and
+`87: [0x1DBD46,0x1DC4DE)`. This census therefore adds zero ownership; it
+closes the indexed loader/root family without promoting from table shape alone.
+
+The loader ABI remains independently established as table lookup followed by
+`0x003820` decompression into `0x00FF2FA8`, with caller-supplied D1 retained
+as the destination word address. Machine evidence is emitted by the
+developer-only `re_m12_gfx_d3b2_census.py` helper under schema
+`oasis.m68k.m12-gfx-d3b2-census.v1`.
