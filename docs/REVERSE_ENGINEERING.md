@@ -3873,3 +3873,17 @@ The first local JSON had only a serialization defect in the numeric
 transition. No ROM, state, capture, decoded asset, or payload was added to
 the repository. `SOURCE_OWNED` remains unchanged at
 `1,475,368 / 3,145,728 = 46.9006856283%`.
+
+# M12 shadow-field direct-access closure
+
+`src/tools/m12_shadow_sat_access_graph.py` enumerates the direct absolute
+opcode-level readers and writers for `FF1858`, `FF188A` and `FF188C` from the
+payload-free decoded-instruction census. The complete decoded census contains
+6, 34 and 29 direct accesses respectively. Longword writes beginning at
+`FF188A` overlap the adjacent `FF188C` word; no direct absolute alias starts
+at `FF188C`. The exact A342 producer writes intermediate `0030/0006`, then
+the bounded later writers `B000/B006` write `0060/000C`, and `ACE6/ACEC` write
+the final controlled `0080/0010` values. The two-pass closure and its
+unresolved indirect/dispatcher boundaries are recorded in
+`docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`. No semantic label or
+`SOURCE_OWNED` promotion follows from this graph.

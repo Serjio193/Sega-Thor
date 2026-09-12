@@ -7741,3 +7741,35 @@ scan, commit/push, and exact CI remain publication gates.
 BOUNDARY: Two-pass rule complete. Do not repeat an equivalent 1,800-frame
 natural replay. Further progress requires a separately validated controlled
 state or a materially different static evidence class.
+
+# 2026-09-12 — M12 shadow-field direct-access closure — TWO-PASS STATIC RESULT
+
+TASK: After publishing the verified BizHawk checkpoint, close direct absolute
+accesses to `FF1858`, `FF188A` and `FF188C`. Keep semantic labels neutral,
+avoid another generic input replay, and stop after two materially different
+bounded passes.
+
+RESULT: Pass 1 enumerated the existing 14,621 decoded-instruction census with
+`src/tools/m12_shadow_sat_access_graph.py`: 6 direct accesses to `FF1858`, 34
+to `FF188A`, and 29 to `FF188C`. Operation types, widths, and the four
+longword `FF188A` writes overlapping `FF188C` are recorded. Pass 2 closed the
+bounded A342 producer/cursor path and ran one writer-only QuickSave1 probe for
+the specific static ambiguity. Both Right and neutral arms produced the same
+writer sequence: `A42A/A430 -> 0030/0006`, `B000/B006 -> 0060/000C`, and
+`ACE6/ACEC -> 0080/0010`. Thus `FF188C=0080` and `FF188A=0010` are accounted
+for by `ACE6` and `ACEC`; Right causality remains unproven.
+
+OWNERSHIP: `SOURCE_OWNED` remains `1,475,368 / 3,145,728 = 46.9006856283%`;
+delta `0`. No ROM, asset, savestate, or payload was added.
+
+VALIDATION: published baseline harness returned `result=PASS`; access graph
+synthetic and local-census tests passed; Python compilation passed. Debug and
+Release CTest passed 163/163 each with the pre-existing slow source-size test
+excluded; a fresh Ubuntu 24.04/GCC 13.3 Release tree passed 163/163 and built
+successfully. A tracked source-size scan and `git diff --check` passed.
+
+STOP: Direct absolute closure over the decoded census is complete. Remaining
+register aliases, unsupported/unexecuted bytes, and dispatcher/continuation
+caller edges are explicit unresolved edges in
+`docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`; a third equivalent xref
+sweep is prohibited. Next rank is the `0x03BDA6/0x03BDD8` consumer boundary.

@@ -1105,3 +1105,9 @@ CLI/Lua sequence are documented in
 `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md`; the controlled
 Right-versus-neutral register/root result and M12 fork ranking are documented
 in `docs/reports/THOR_M12_CONTROLLED_RUNTIME_ROOT_CAPTURE.md`.
+
+`src/tools/m12_shadow_sat_access_graph.py` is a payload-free direct-access
+census for `FF1858`, `FF188A` and `FF188C`; its regression test is
+`tests/m12_shadow_sat_access_graph_test.py`. The two-pass closure and writer
+accounting are documented in
+`docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`.
