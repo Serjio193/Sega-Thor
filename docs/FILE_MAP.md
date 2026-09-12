@@ -32,6 +32,12 @@ records already-owned bytes without promoting them.
 `0x3820 -> 0x2CBC` edges, and retain its inherited-A0 source as an explicit
 non-owning blocker.
 
+`src/tools/re_m12_gfx_sibling_census.py` and
+`tests/re_m12_gfx_sibling_census_test.py` classify the complete direct-xref
+sets for the proven `0x00D950`, `0x002CBC`, and `0x002E1E` sibling helpers.
+They verify each bounded body fingerprint and record the non-owning VDP/RAM
+helper classification; generated output is ignored/local.
+
 # M12-AUTO56 adds the overlapping PC-relative word-table promoter
 
 `src/tools/re_m12_pc_word_overlap_promote.py` and

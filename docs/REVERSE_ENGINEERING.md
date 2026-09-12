@@ -3420,3 +3420,23 @@ Machine evidence is emitted by the developer-only
 `oasis.m68k.m12-gfx-36d4-census.v1`. The wrapper is classified as a proven
 graphics-related RAM-mediated consumer, not as an independent ROM resource
 source.
+
+# M12-GFX-MAX sibling-helper census
+
+The exact canonical-ROM direct-xref census for the remaining proven sibling
+helpers finds 12 calls to `0x00D950`, four calls to `0x002CBC`, and 24 calls to
+`0x002E1E`. Their bounded bodies are respectively `[0x00D950,0x00D9A4)`
+(84 bytes), `[0x002CBC,0x002CE4)` (40 bytes), and `[0x002E1E,0x002E78)`
+(90 bytes). The body SHA-256 values are
+`F67208BA4CA7D67D5B1CBABD8104EE876F8444878A76F7DE9BD54BA228248F61`,
+`102FB54528C35D21E6C51D1F7A46735E972FA90EA6744D8BB0F75746190AA0DA`, and
+`2664FF395AA9C559EFDDECCD13D62D6736670A882F0BAB5D086A4F2C4D309806`.
+
+`0x00D950` is a bounded VDP-transfer helper with a local `BSR 0x00D962`;
+`0x002CBC` is a bounded VDP-fill helper; and `0x002E1E` is a bounded RAM/state
+helper with a local `BSR 0x002F6E`. None of the three bodies contains a ROM
+source operand or a `0x003820` decompressor edge. They are therefore directly
+classified and fully xref-accounted, but are not ROM-resource loaders and add
+zero SOURCE_OWNED bytes. Machine evidence is emitted by
+`re_m12_gfx_sibling_census.py` under schema
+`oasis.m68k.m12-gfx-sibling-census.v1`.

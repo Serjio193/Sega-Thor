@@ -1,3 +1,45 @@
+# 2026-09-12 — M12-GFX-MAX proven sibling-helper census — IN PROGRESS
+
+TASK: Classify the remaining directly reachable sibling helpers named by the
+graphics graph: `0x00D950`, `0x002CBC`, and `0x002E1E`. Prove their complete
+canonical direct-xref sets and bounded body contracts, distinguish VDP/RAM
+helpers from ROM-source loaders, and do not promote bytes from helper shape.
+
+ACCEPTANCE CRITERIA: the canonical scan must find the exact direct call set for
+each target; each bounded body must match its exact byte fingerprint and local
+edges; the report must explicitly state whether a ROM source/boundary exists;
+the result must be deterministic and regression-tested.
+
+RESULT: The census finds 12 direct calls to `0x00D950`, four to `0x002CBC`,
+and 24 to `0x002E1E`, for 40 direct sibling-helper xrefs. Exact bounded bodies
+are `[0x00D950,0x00D9A4)` (84 bytes), `[0x002CBC,0x002CE4)` (40 bytes), and
+`[0x002E1E,0x002E78)` (90 bytes). `0x00D950` is a VDP-transfer helper with
+local `0x00D962`; `0x002CBC` is a VDP-fill helper; and `0x002E1E` is a RAM/state
+helper with local `0x002F6E`. None contains a ROM source operand or a
+`0x003820` decompressor edge. Classification is complete for these three
+helpers; promotion is zero.
+
+ARTIFACT: ignored local `build/m12-gfx-sibling-census.json`, schema
+`oasis.m68k.m12-gfx-sibling-census.v1`. Canonical ROM identity is checked by
+SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+VALIDATION: Python compilation, focused sibling-census regression test,
+canonical-ROM census generation, and deterministic repeat passed. Both JSON
+artifacts have SHA-256
+`25A787BDF61088BCD18870AD3293FDDF78F0F5B4C1D8E0B55CCF87EB53E099FC`.
+Debug/Release builds and full Windows CTest passed (`149/149` each, including
+source-size); the WSL GNU/Linux build/link and seven relevant graphics helpers
+passed (`7/7`); and `git diff --check` passed. Source files are within the
+500-line limit. Commit and publication remain pending for this transaction.
+
+NEGATIVE EVIDENCE: these are VDP/RAM/state helpers, not independent ROM-source
+loaders. Their exact xrefs are now accounted for, but no resource boundary or
+SOURCE_OWNED bytes can be inferred from them.
+
+NEXT: continue from the ten unresolved `0x3820` producers and the 27 unmatched
+`0x00D406` screen/non-screen candidates; do not reopen these three classified
+helpers unless new caller/source evidence changes their contracts.
+
 # 2026-09-12 — M12-GFX-MAX direct 0x36D4 wrapper classification — IN PROGRESS
 
 TASK: Classify the directly reachable `0x0036D4` graphics wrapper after the

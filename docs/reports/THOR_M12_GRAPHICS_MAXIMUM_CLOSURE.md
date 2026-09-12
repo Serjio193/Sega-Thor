@@ -70,6 +70,19 @@ root/descriptor scan. Counts are static call sites, not gameplay frequency.
 | `0x03E4DC`, `0x03E7F4` graphics families | 4 | 3 | 1 | 1 |
 | **total** | **52** | **17** | **35** | **10** |
 
+The direct sibling-helper census is separate from the 52 `0x3820` caller
+count. It is complete for the three proven helper targets below:
+
+| helper | direct calls | bounded body | classification | ROM-source result |
+| --- | ---: | --- | --- | --- |
+| `0x00D950` | 12 | `[0x00D950,0x00D9A4)` / 84 bytes | VDP transfer, local `0x00D962` | none; helper-only |
+| `0x002CBC` | 4 | `[0x002CBC,0x002CE4)` / 40 bytes | VDP fill | none; helper-only |
+| `0x002E1E` | 24 | `[0x002E1E,0x002E78)` / 90 bytes | RAM/state, local `0x002F6E` | none; not a ROM loader |
+
+These 40 direct xrefs are fully accounted for by exact canonical call
+encodings and body fingerprints. They do not change the 52-caller resource
+accounting or SOURCE_OWNED totals.
+
 The source-set census is 17 `EXACT_ROM_ADDRESS`, 2
 `FINITE_TABLE_DERIVED_SET`, 23 `PARAMETERIZED_SEQUENTIAL_FAMILY`, and 10
 `UNRESOLVED_PARAMETERIZED_FAMILY`. The published closure contains 34 unique
@@ -308,6 +321,19 @@ paths remain inherited/post-state blocked. The new `0x36D4` census closes its
 six-call wrapper set as RAM-mediated with inherited-A0 source. No arbitrary
 selector domain, decoder-validity-only range, or visual inference was promoted.
 
+The remaining proven sibling-helper census is now also complete for the
+directly reachable `0x00D950`, `0x002CBC`, and `0x002E1E` targets. It finds 12,
+four, and 24 direct calls respectively, for 40 exact xrefs. Their bounded
+bodies are `[0x00D950,0x00D9A4)` (84 bytes), `[0x002CBC,0x002CE4)` (40 bytes),
+and `[0x002E1E,0x002E78)` (90 bytes), with deterministic body fingerprints in
+`build/m12-gfx-sibling-census.json` (`oasis.m68k.m12-gfx-sibling-census.v1`,
+SHA-256 `25A787BDF61088BCD18870AD3293FDDF78F0F5B4C1D8E0B55CCF87EB53E099FC`).
+`0x00D950` is a VDP-transfer helper with local `0x00D962`, `0x002CBC` is a
+VDP-fill helper, and `0x002E1E` is a RAM/state helper with local `0x002F6E`.
+None contains a ROM source operand or a `0x003820` decompressor edge. These
+three xref sets are therefore classified and closed as non-owning helpers;
+promotion remains zero.
+
 ## Accounting and ambiguity
 
 The table promotion adds 84 and the candidate promotion adds 22
@@ -326,10 +352,10 @@ Passed locally for the original root-closure transaction: Python compile,
 deterministic helper test, canonical ROM identity, full candidate
 materialization, and byte-for-byte rebuilt-ROM comparison. This continuation
 and descriptor-candidate update passes Python compilation, focused helpers
-(`6/6` existing graphics assertions plus `2/2` new wrapper-census assertions),
+(`6/6` existing graphics assertions plus `3/3` new sibling/helper assertions),
 deterministic canonical-ROM JSON generation, Debug/Release builds,
-full Windows Debug/Release CTest (`148/148` each, including the source-size
-gate), the WSL build with the five relevant graphics CTest helpers (`5/5`), and
+full Windows Debug/Release CTest (`149/149` each, including the source-size
+gate), the WSL build with the seven relevant graphics CTest helpers (`7/7`), and
 `git diff --check`. The candidate materialization rebuilt the canonical ROM
 byte-for-byte with CRC32 `C4728225`,
 SHA-1 `2944910c07c02eace98c17d78d07bef7859d386a`, and SHA-256
@@ -350,9 +376,12 @@ The screen continuation sites are now all closed, and the five descriptor-
 shaped records are accounted for: four were already owned and the fifth is
 promoted under the exact 22-byte contract above. The next graphics step is to
 obtain new caller-closed or targeted register evidence for the ten dynamic
-`0x3820` producers. Existing exact static slices have reached evidence
-exhaustion for those ten; no candidate becomes owned without a proven source
-and exact boundary. M13 and ASM-to-C++ migration remain out of scope.
+`0x3820` producers and the 27 unmatched non-screen `0x00D406` candidates.
+Existing exact static slices have reached evidence exhaustion for the ten
+dynamic producers; no candidate becomes owned without a proven source and
+exact boundary. The directly reachable sibling helpers covered by the census
+are now classified and should not be reopened without new source evidence.
+M13 and ASM-to-C++ migration remain out of scope.
 
 Implementation SHA: `3fe64956be986bfe3e76f3d6a4251abba4525865`.
 Exact implementation CI: GitHub Actions run `34667380039` (success).
