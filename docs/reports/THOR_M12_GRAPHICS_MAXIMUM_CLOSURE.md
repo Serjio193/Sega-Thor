@@ -78,7 +78,7 @@ newly promoted bytes. Its ten blockers are unchanged:
 `0x00D54A` inherited entry field; `0x00D650` sequential first stream;
 `0x02DB52` D406 post-source; `0x02F6A0` D406 post-state; `0x03B236`
 `A5+4` field; `0x03B28A` `A3` argument; `0x03B2FE` `A4` argument;
-`0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
+`0x03C07C` inherited `A1`; `0x03D5AE` RAM-mediated entity record; and
 `0x03E61A` inherited caller argument.
 
 The bounded `0x00D54A` audit narrows, but does not close, its source blocker.
@@ -125,6 +125,14 @@ the third arm are also bounded: `0x002CBC` does not write `A4`, and
 does not write `A4`. The remaining blockers are therefore exactly
 `A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
 `A4_ARGUMENT_NOT_ROM_PROVEN`; no source bytes are promoted.
+
+The `0x03C07C` call is reached from the exact `0x03BF86` initialization path.
+At `0x03C074`, `A0` is loaded from the direct ROM literal `0x00172168`, then
+`A1` is copied only to `A3` before `0x003820`; the preceding `0x03C956` helper
+does not write `A1`, and `0x03BF86` preserves all address registers. The
+remaining blocker is therefore `A1_INHERITED_NOT_ROM_PROVEN`. The direct
+source literal is recorded, but no resource bytes are promoted because the
+destination and complete source-to-output contract remain unproven.
 
 ### Exact `0x00D406` direct-xref census
 

@@ -6525,3 +6525,23 @@ a caller-closed source path is required before promotion.
 PUBLICATION: focused commit
 `398be47fde617efbd847398cafd5e884eebeddd3` is on `origin/main`; exact
 GitHub Actions CI run `34659553539` passed Build, Test, and Complete.
+
+# 2026-09-12 — M12-GFX-MAX bounded 0x03C07C source audit — IN PROGRESS
+
+TASK: Close the exact `0x03C07C` dynamic producer far enough to distinguish
+its ROM source from its inherited destination, without promoting a partial
+decompression contract.
+
+RESULT: The `0x03BF86` initialization path reaches `0x03C074` after the
+`0x03C956` helper. The helper does not write `A1`; `0x03C074` loads
+`A0 = 0x00172168` directly from ROM, copies inherited `A1` to `A3`, and calls
+`0x003820`. The parent preserves all address registers. The blocker is now
+`A1_INHERITED_NOT_ROM_PROVEN`; no source, destination, or resource bytes were
+promoted.
+
+IMPLEMENTATION: narrowed the developer-only dynamic ledger, added regression
+assertions, and updated the M12-GFX-2, M12-GFX-MAX, and reverse-engineering
+records with the exact static path.
+
+NEXT: continue the remaining dynamic producers; a closed `A1` source path or
+targeted register trace is required before any resource promotion.

@@ -3304,3 +3304,13 @@ and data registers only, while `0x00D950` saves/restores data registers and
 inherited and not ROM-proven, with classifications respectively
 `A5_FIELD_NOT_ROM_PROVEN`, `A3_ARGUMENT_NOT_ROM_PROVEN`, and
 `A4_ARGUMENT_NOT_ROM_PROVEN`; no bytes are promoted.
+
+# M12-GFX-MAX bounded 0x03C07C source audit
+
+The exact `0x03BF86` path reaches `0x03C074` after the `0x03C956` helper.
+`0x03C956` does not write `A1`; at `0x03C074`, the call site loads
+`A0 = 0x00172168` from a direct ROM literal, copies the inherited `A1` to
+`A3`, and calls `0x003820`. The parent preserves all address registers. The
+source literal is therefore ROM-proven, while the destination remains an
+inherited argument and the blocker is `A1_INHERITED_NOT_ROM_PROVEN`; no bytes
+are promoted.

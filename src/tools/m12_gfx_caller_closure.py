@@ -125,7 +125,7 @@ DYNAMIC = {
     0x03B236: ("A0 = 4(A5); A1 = 0x00FF316C shared output buffer", "0x00FF316C", "A5_FIELD_NOT_ROM_PROVEN"),
     0x03B28A: ("A0 = A3; A1 = 0x00FF316C shared output buffer", "0x00FF316C", "A3_ARGUMENT_NOT_ROM_PROVEN"),
     0x03B2FE: ("A0 = A4; 0x002CBC/0x00D950 preserve A4; A1 = 0x00FF316C", "0x00FF316C", "A4_ARGUMENT_NOT_ROM_PROVEN"),
-    0x03C07C: ("A0/A1 inherited at shared family entry", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),
+    0x03C07C: ("A0 = 0x00172168 direct ROM literal; A1 inherited at shared family entry", "0x00172168", "A1_INHERITED_NOT_ROM_PROVEN"),
     0x03D5AE: ("A0 loaded from RAM-mediated entity record at 0x00FF199E", "0x00FF19AE", "RAM_MEDIATED_SOURCE_NOT_ROM_PROVEN"),
     0x03E61A: ("A0/A1 inherited before later direct 0x16943C arm", "A1 inherited", "CALLER_ARGUMENT_NOT_ROM_PROVEN"),
 }
