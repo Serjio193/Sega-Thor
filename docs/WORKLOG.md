@@ -6425,6 +6425,10 @@ dynamic `0x3820` producers; a caller-closed source path or targeted trace
 capturing the first `A0` and the post-state boundary is required before
 promotion.
 
+PUBLICATION: focused commit
+`6a773cae39dffefac82bdcff5b357a7122f032ba` is on `origin/main`; exact
+GitHub Actions CI run `34660611094` passed Build, Test, and Complete.
+
 # 2026-09-12 — M12-GFX-MAX bounded 0x00D54A provenance audit — IN PROGRESS
 
 TASK: Continue the graphics closure by narrowing the first unresolved dynamic

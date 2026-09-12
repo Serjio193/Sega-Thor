@@ -75,7 +75,8 @@ The source-set census is 17 `EXACT_ROM_ADDRESS`, 2
 caller-derived resource starts, 82,861 unique resource bytes, and 47,389
 newly promoted bytes. Its ten blockers are unchanged:
 
-`0x00D54A` helper output; `0x00D650` register value; `0x02DB52` caller
+`0x00D54A` inherited entry field; `0x00D650` sequential first stream;
+`0x02DB52` caller
 argument; `0x02F6A0` caller argument; `0x03B236` RAM-mediated source;
 `0x03B28A` RAM-mediated source; `0x03B2FE` sibling-call effect;
 `0x03C07C` caller argument; `0x03D5AE` RAM-mediated entity record; and
@@ -219,8 +220,8 @@ five descriptor-shaped records, then return to the ten dynamic `0x3820`
 producers. No candidate becomes owned without a proven source and exact
 boundary; M13 and ASM-to-C++ migration remain out of scope.
 
-Implementation SHA: `398be47fde617efbd847398cafd5e884eebeddd3`.
-Exact implementation CI: GitHub Actions run `34659553539` (success).
-Final publication SHA: `398be47fde617efbd847398cafd5e884eebeddd3`.
+Implementation SHA: `6a773cae39dffefac82bdcff5b357a7122f032ba`.
+Exact implementation CI: GitHub Actions run `34660611094` (success).
+Final publication SHA: `6a773cae39dffefac82bdcff5b357a7122f032ba`.
 Exact final publication CI / publication HEAD CI: GitHub Actions run
-`34659553539` (success).
+`34660611094` (success).
