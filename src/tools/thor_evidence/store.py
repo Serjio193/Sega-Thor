@@ -6,7 +6,8 @@ from .events import read_capture
 from .identity import ROM_SHA, STATUSES, canonical, identity, location_key
 
 TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
-          "location", "value_version", "temporal_link", "relation", "witness")
+          "location", "value_version", "temporal_link", "relation", "witness",
+          "operation_instance", "provenance_dependency")
 
 
 class Store:
@@ -111,3 +112,25 @@ class Store:
             rows = [dict(row) for row in self.connection.execute(f"SELECT * FROM {table}")]
             result[table] = sorted(rows, key=canonical)
         return canonical(result) + "\n"
+
+    def import_provenance(self, result, trace_id):
+        """Persist an engine-derived certificate atomically and idempotently.
+
+        This table is deliberately separate from V0 candidate links.  A row can
+        only be re-imported when its complete canonical payload is identical.
+        """
+        operations = result.get("operations", [])
+        dependencies = result.get("dependencies", [])
+        with self.connection:
+            for item in operations:
+                row = {"id": item["id"], "trace_id": trace_id, "epoch_no": item["epoch"],
+                       "exec_seq": item["exec_seq"], "pc": item["pc"],
+                       "rule_id": item["rule_id"], "payload": canonical(item)}
+                self._put("operation_instance", row)
+            for item in dependencies:
+                row = {"id": item["id"], "trace_id": trace_id, "source_id": item["source"],
+                       "target_id": item["target"], "role": item["role"],
+                       "status": item["status"], "rule_id": item["rule_id"],
+                       "witness_event_id": None if item.get("witness_event_id") is None else str(item["witness_event_id"]),
+                       "payload": canonical(item)}
+                self._put("provenance_dependency", row)

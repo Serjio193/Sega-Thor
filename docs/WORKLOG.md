@@ -1,3 +1,36 @@
+# 2026-09-13 — THOR Evidence Engine V1 FF13CC CANARY — PASS
+
+TASK: Implement the first bounded engine-derived causal provenance slice for
+the already authorized FF13CC canary. Scope excludes V2, new ROM reverse
+engineering, and SOURCE_OWNED promotion. Baseline:
+`c74e68d4a9c8013ca42891e8a5aead865386f91f`.
+
+RESULT: The checked static producer and sealed two-epoch canary capture now
+produce a temporal SQLite-backed certificate. The query proves ROM high24 plus
+incremented D5.low8 to the first concrete FF13CC value-version, with explicit
+VALUE, ADDRESS and CONTROL roles. Epochs, execution instances and partial
+register slices remain distinct. The callback PC is retained only as a raw
+witness; no PC-2 heuristic is present.
+
+ARTIFACTS: `src/tools/thor_evidence/canary_engine.py`, the developer-only
+canary collector/launcher, schema/store extensions, the V1 canary test and
+negative fixture, and `docs/reports/THOR_EVIDENCE_ENGINE_V1_FF13CC_CANARY.md`.
+The capture raw SHA is
+`e69c73e6c71677066d6a711d5ab1052a27f112fb43f35d243a138b50f499b09`; the
+certificate SHA is `af8dafbf276a527df0e589ca876803c6ed3261d20de65b1a4b4229ae31f1b0e5`.
+
+FRONTIER: access width, overlap/range semantics, same-value writer
+completeness, IRQ/exception interaction and input-read causality remain
+explicit UNKNOWN. They do not block this exact canary. C10 emits no input
+causal edge; C11 remains a separate structural SAT/DMA join.
+
+VALIDATION: helper test passes; V0/V1-gate/dense-gate/V1-canary CTest tests
+pass; Release `oasis_smoke` builds; certificate derivation, SQLite import and
+idempotent re-import pass. Full Debug MSVC remains blocked by the pre-existing
+`std::to_string` error in `src/core/ram_flag_routine.cpp`; no unrelated fix was
+made. No Linux-equivalent build was available in this Windows session.
+SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta 0.
+
 # 2026-09-13 — THOR Evidence Engine V1-GATE-COVERAGE — PASS / V1 BLOCKED
 
 TASK: Close only dense execution, checked memory-effect classification and the

@@ -1132,3 +1132,26 @@ not establish global IRQ behavior, causal input provenance, a last-writer
 engine, a provenance graph, or V1 readiness by itself.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE_COVERAGE.md`.
+# ADR-0048 — First V1 provenance slice is engine-derived and canary-bounded
+**Status:** Accepted for V1 FF13CC canary
+**Date:** 2026-09-13
+
+**Context:** V0 and the local V1 gate established sealed transport, checked
+static forms, dense execution coverage and explicit capability frontiers. The
+next authorized step is one causal query for the existing FF13CC canary.
+
+**Decision:** Build provenance only from the checked ROM-bound static producer
+and sealed dynamic witnesses. Represent temporal value versions, register
+bit-slices, execution instances and dependencies with explicit VALUE, ADDRESS
+and CONTROL roles. Persist the derived certificate in a separate SQLite
+sidecar table. Reject unknown transforms, address-only edges, PC heuristics,
+ROM low-byte substitution and cross-epoch merges. Keep access width, overlap,
+same-value writer completeness, IRQ/exception and input-read capabilities
+explicitly UNKNOWN.
+
+**Consequences:** The engine can explain the first `FF13CC` value-version as
+ROM high24 plus incremented `D5.low8`, and can be re-imported idempotently. The
+certificate is not a general last-writer proof and does not authorize V2 or
+source ownership.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V1_FF13CC_CANARY.md`.

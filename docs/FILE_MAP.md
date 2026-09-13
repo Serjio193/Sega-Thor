@@ -1162,3 +1162,16 @@ census for `FF1858`, `FF188A` and `FF188C`; its regression test is
 `tests/m12_shadow_sat_access_graph_test.py`. The two-pass closure and writer
 accounting are documented in
 `docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`.
+# THOR Evidence Engine V1 FF13CC canary
+
+`src/tools/thor_evidence/canary_engine.py` derives and validates the bounded
+engine-derived provenance certificate from checked static JSON and sealed
+dynamic events. `src/tools/thor_evidence/capture/canary.lua` and
+`run_canary.ps1` are developer-only capture helpers. The existing
+`schema.sql`/`store.py` sidecar now has separate operation-instance and
+provenance-dependency tables. Regression and adversarial coverage is in
+`tests/thor_evidence_v1_canary_test.py` and
+`tests/fixtures/thor_evidence_v1_canary/negative_cases.json`; CTest registration
+is in `cmake/m12_auto2.cmake`. The bounded result is documented in
+`docs/reports/THOR_EVIDENCE_ENGINE_V1_FF13CC_CANARY.md` and governed by
+ADR-0048.

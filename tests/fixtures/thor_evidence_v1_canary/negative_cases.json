@@ -1,0 +1,13 @@
+{
+  "schema": "thor.evidence.v1.canary-negative.v1",
+  "cases": [
+    "rom_low8_dependency",
+    "missing_counter_slice",
+    "address_as_value",
+    "unknown_transform_promoted",
+    "cross_epoch_merge",
+    "same_value_no_version",
+    "manual_edge",
+    "pc2_heuristic"
+  ]
+}

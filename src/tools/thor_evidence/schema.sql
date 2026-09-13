@@ -40,6 +40,19 @@ CREATE TABLE IF NOT EXISTS witness (
   relation_id TEXT NOT NULL REFERENCES relation(id), event_id TEXT NOT NULL REFERENCES event(id),
   status TEXT NOT NULL, PRIMARY KEY(relation_id,event_id)
 );
+CREATE TABLE IF NOT EXISTS operation_instance (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  exec_seq INTEGER NOT NULL, pc INTEGER NOT NULL, rule_id TEXT NOT NULL, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,exec_seq)
+);
+CREATE TABLE IF NOT EXISTS provenance_dependency (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), source_id TEXT NOT NULL,
+  target_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('VALUE','ADDRESS','CONTROL','EXECUTION')),
+  status TEXT NOT NULL CHECK(status IN ('PROVEN','UNKNOWN_TRANSFORM','UNKNOWN_COMPLETENESS')),
+  rule_id TEXT NOT NULL, witness_event_id TEXT, payload TEXT NOT NULL,
+  UNIQUE(trace_id,source_id,target_id,role,rule_id)
+);
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
 CREATE INDEX IF NOT EXISTS incoming_link ON temporal_link(target);
+CREATE INDEX IF NOT EXISTS provenance_target ON provenance_dependency(target_id);
