@@ -1,5 +1,23 @@
 # THOR M12 — Autonomous ASM Reconstruction After Evidence Engine Baseline
 
+## AUTO63 — focused novelty investigation (2026-09-13)
+
+AUTO63 consumed the strongest persisted AUTO62 novelty candidate, `PC=0xAF22`,
+and generated a register-specific request instead of repeating the broad
+capture. Static evidence identified `0xAF06 MOVEA.L 0x1A(A6),A0` and the
+`0xAF20 MOVE.W (A0),D6` consumer. One exact BizHawk 2.11.1 focused capture
+observed the definition transition and 56 consumer reads, but it found
+`D3=512`, no direct RAM-source callback, and two `+8` gaps in the 18 unique
+addresses. The causal edge and exact six-byte enumeration therefore remain
+unproven; promotion was correctly blocked and SOURCE_OWNED stayed
+`1,475,600 / 3,145,728 = 46.9080607096%`.
+
+The machine-readable request, capture and fail-closed result are under the
+ignored `build/thor-evidence/auto63-followup/auto63-af22-a/` directory. Full
+details are in `docs/reports/THOR_M12_AUTO63_INVESTIGATION.md`. The next
+question is upstream A6 provenance plus the explanation for the observed
+`D3=512`/`+8` gaps; no typed data claim is made.
+
 ## Campaign gate
 
 - Baseline SHA: `4ab17d4a7854dab20661c03706d11f1eddf470d8`

@@ -1,3 +1,31 @@
+# 2026-09-13 — M12-AUTO63 focused novelty investigation — PASS / PROMOTION BLOCKED
+
+TASK: Consume one AUTO62 persisted novelty, derive a register-specific watch
+request, run one focused BizHawk capture, and promote only if the causal and
+structural contracts closed. No C++ implementation, M13, ROM or extracted
+asset work was done.
+
+RESULT: Selected `PC=0xAF22` from the persisted AUTO62 queue. The static slice
+confirmed `0xAF06 MOVEA.L 0x1A(A6),A0` and `0xAF20 MOVE.W (A0),D6`. The exact
+QuickSave1 capture completed and observed ten `AF06 -> AF0A` register
+transitions, 56 `AF20` consumer reads and 18 unique target addresses. It did
+not observe a direct `A6+0x1A` RAM-source callback; `D3` was `512`, not `17`,
+and two address gaps were `+8`, so the exact six-byte family was not proven.
+
+DECISION: `answered=NO`, `actually_new=YES`, causal edges `0`, static
+enumeration `INCONCLUSIVE`, promotion `BLOCKED`. SOURCE_OWNED remains
+`1,475,600 / 3,145,728 = 46.9080607096%` (delta `0`). The A6 caller/earlier
+definition and the reason for `D3=512` remain explicit frontiers. The harness
+foreground wait exceeded 30 seconds, but its live process completed with
+`result=PASS`; the raw receipt and analyzer report were validated afterward.
+
+PORTABILITY: Added explicit `<string>` includes where MSVC 18.9 exposed
+transitive-include dependence (`src/core/ram_flag_routine.cpp` and
+`tests/parent_suffix_test.cpp`). This is behavior-neutral and restored the
+Debug/Release build gate.
+
+Details: `docs/reports/THOR_M12_AUTO63_INVESTIGATION.md`.
+
 # 2026-09-13 — M12-AUTO62 full-layout repair and live discovery — PASS / NEW EVIDENCE, CAUSAL FOLLOW-UP OPEN
 
 TASK: Repair only the inherited full-layout duplicate-label materialization

@@ -1,5 +1,6 @@
 #include "core/ram_flag_routine.hpp"
 
+#include <string>
 #include <stdexcept>
 
 namespace oasis::core {

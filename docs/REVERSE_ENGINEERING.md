@@ -1,3 +1,18 @@
+# M12-AUTO63 `0xAF22` focused register-slice result (2026-09-13)
+
+The persisted AUTO62 novelty at `0xAF22` was statically bounded through the
+existing exact contract: `0xAF02 MOVE.W 0x18(A6),D3`, `0xAF06 MOVEA.L
+0x1A(A6),A0`, `0xAF20 MOVE.W (A0),D6`, and `0xAF22 MOVE.W D6,D4`. A focused
+BizHawk capture observed the `0xAF06` to `0xAF0A` A0 transition and 56 reads
+at the `0xAF20` consumer. It also observed `D3=512`, no direct RAM-source
+callback for `A6+0x1A`, and two `+8` gaps among 18 unique target addresses.
+
+Status is `REGISTER_DEFINITION_OBSERVED_BUT_SOURCE_AND_STRUCTURE_UNRESOLVED`.
+`A6` remains inherited at the static entry and its earlier definition/caller is
+unknown. The candidate is not a closed six-byte record stream and was not
+promoted. Evidence and raw receipt are recorded in
+`docs/reports/THOR_M12_AUTO63_INVESTIGATION.md` and the ignored AUTO63 output.
+
 # M12 controlled BizHawk harness policy and causal correction (2026-09-12)
 
 The installed BizHawk 2.11.1 runtime is now independently verified through a

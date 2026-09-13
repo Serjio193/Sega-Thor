@@ -1117,6 +1117,21 @@ ownership. Regression coverage is in
 in `docs/reports/THOR_M12_AUTO62_LIVE_DISCOVERY.md`. Raw captures and reports
 remain ignored under `build/thor-evidence/live-discovery/`.
 
+# M12-AUTO63 adds focused register-slice investigation
+
+`src/tools/thor_evidence/live_discovery_followup.py` ranks persisted AUTO62
+novelties and emits one narrow static/request plan. The developer-only
+`src/tools/thor_evidence/capture/focused_register_slice.lua` and
+`run_focused_register_slice.ps1` capture only the selected register dependency
+chain and target ROM reads. `src/tools/thor_evidence/live_discovery_followup_analyze.py`
+requires source/consumer ordering, active-count and exact stride evidence; it
+fails closed when any frontier is missing. `src/tools/re_m12_auto63_promote.py`
+reuses the existing record-stream materializer and cannot run on a blocked
+report. Regression coverage is in `tests/thor_evidence_followup_test.py` and
+the result is documented in `docs/reports/THOR_M12_AUTO63_INVESTIGATION.md`.
+Generated capture, static and promotion outputs remain ignored under
+`build/thor-evidence/auto63-followup/`.
+
 `src/tools/re_m12_child_tables_promote.py` applies the exact table promotion
 contract to the finite selector child-table streams at `0x03B95E..0x03BA46`,
 preserving the two-byte descriptor alias prefix. Its regression test is
