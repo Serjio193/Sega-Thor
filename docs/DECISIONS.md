@@ -1437,3 +1437,19 @@ input-causal edge or PC heuristic.
 the unclosed interrupt, input and broader memory frontiers.
 
 **Evidence:** `test_ram_target_requires_v1_v2_bridge` and the RAM validator.
+
+# ADR-0063 — held-out receipt type strictness
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** The held-out runtime join coerced arbitrary truthy values with
+`bool(...)`, so a malformed string such as `"false"` could become OBSERVED.
+
+**Decision:** Runtime receipts require exact boolean reachability, nonnegative
+frame/sequence integers, nonempty string addresses and backend/scenario fields.
+Malformed receipts fail before the UNKNOWN join is evaluated.
+
+**Consequences:** The 03BDD8 frontier remains UNKNOWN when the receipt is
+incomplete or malformed; no static extent or ownership promotion is inferred.
+
+**Evidence:** malformed-receipt cases in `tests/thor_evidence_v8_test.py`.

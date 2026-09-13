@@ -68,3 +68,4 @@ P0 checkpoint: commit 066a5d9c43062369984877ef48ec19adb924e7c3; CI run 347487500
 P3 checkpoint (local): root/output semantic separation and coverage shape checks are regression-covered; exact CI publication pending.
 
 P4 local result: FF13CC export retains both restore epochs and explicit UNKNOWN frontier; IRQ/exception and input-read capability remain intentionally open.
+P5 local result: malformed held-out receipts are rejected before the 03BDD8 UNKNOWN join; no ownership promotion.

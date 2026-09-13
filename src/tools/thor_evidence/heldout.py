@@ -44,6 +44,16 @@ class HeldOutEvaluation:
                     "target_addresses", "target_reached", "target_frame", "target_sequence"}
         if not required.issubset(report):
             raise ValueError("runtime discovery receipt is incomplete")
+        if not isinstance(report["scenario_id"], str) or not report["scenario_id"] or \
+                not isinstance(report["backend"], str) or not report["backend"] or \
+                type(report["frames_executed"]) is not int or report["frames_executed"] < 0 or \
+                type(report["target_reached"]) is not bool or not isinstance(report["target_addresses"], list) or \
+                not report["target_addresses"] or any(not isinstance(item, str) or not item
+                                                       for item in report["target_addresses"]):
+            raise ValueError("runtime discovery receipt shape is invalid")
+        for key in ("target_frame", "target_sequence"):
+            if report[key] is not None and (type(report[key]) is not int or report[key] < 0):
+                raise ValueError("runtime discovery temporal witness is invalid")
         canonical({key: report[key] for key in required})
         return {"class": "RUNTIME_DISCOVERY", "frontier_id": self.frontier_id,
                 "status": "OBSERVED" if report["target_reached"] else "UNKNOWN",

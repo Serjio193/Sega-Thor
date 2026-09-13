@@ -8144,3 +8144,6 @@ REPAIRED: SQLite RAM import now enforces root-versus-write origin semantics and 
 
 FF13CC audit found a publication gap: the RAM canary export omitted restore epoch 2 and the validator did not require the declared capability frontier. The export now preserves both epochs; validation binds all output bytes to the operation epoch and requires access width, overlap, same-value writers, IRQ/exception and input-read capabilities to remain explicit UNKNOWN. No interrupt or input causality was promoted.
 
+# 2026-09-13 — THOR Evidence Engine stabilization P5 — REPAIRS IN PROGRESS
+
+REPRODUCED: held-out runtime discovery coerced arbitrary truthy target_reached values, allowing malformed receipts such as the string "false" to become OBSERVED. REPAIRED: exact boolean, nonnegative temporal integer, nonempty address/backend/scenario type checks now fail closed; the 03BDD8 join remains UNKNOWN. Adversarial malformed-receipt tests are green.

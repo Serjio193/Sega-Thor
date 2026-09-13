@@ -32,6 +32,13 @@ def test_runtime_contract_and_unknown_join():
         pass
     else:
         raise AssertionError("incomplete runtime receipt must be rejected")
+    for mutation in ({"target_reached": "false"}, {"target_addresses": [0x1000]}):
+        try:
+            evaluation.runtime_discovery({**runtime_report(), **mutation})
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("malformed held-out runtime receipt must fail closed")
 
 
 def test_real_local_frontier_if_available():
