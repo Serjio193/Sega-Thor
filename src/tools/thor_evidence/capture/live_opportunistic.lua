@@ -1,4 +1,4 @@
--- AUTO67 developer-only live sampler.  The callback path only updates a fixed ring.
+-- AUTO67 developer-only sampler; burst mode trades coverage for responsiveness.
 
 local status_path = os.getenv("OASIS_LIVE_STATUS")
 local final_path = os.getenv("OASIS_LIVE_FINAL")
@@ -14,7 +14,15 @@ local observed = 0
 local overwritten = 0
 local capture_ticks = 0
 local capture_seconds = 0
-local write_stride = tonumber(os.getenv("OASIS_LIVE_WRITE_STRIDE") or "16") or 16
+local capture_mode = os.getenv("OASIS_LIVE_CAPTURE_MODE") or "continuous"
+assert(capture_mode == "continuous" or capture_mode == "burst", "invalid capture mode")
+local default_stride = capture_mode == "burst" and 1 or 16
+local write_stride = math.max(1, tonumber(os.getenv("OASIS_LIVE_WRITE_STRIDE")) or default_stride)
+local burst_period = math.max(1, tonumber(os.getenv("OASIS_LIVE_BURST_PERIOD")) or 30)
+local burst_budget = math.max(1, tonumber(os.getenv("OASIS_LIVE_BURST_BUDGET")) or 64)
+local burst_calls = 0
+local burst_count = 0
+local write_hook = nil
 local ring = {}
 local ring_start = 1
 local ring_count = 0
@@ -87,8 +95,13 @@ local function write_status(final)
     file:write('{"schema":"oasis.m12.auto67.live-capture.v1","frame":' .. frame .. ',"epoch":1' ..
         ',"events_observed":' .. observed .. ',"events_overwritten":' .. overwritten ..
         ',"callback_count":' .. callbacks .. ',"capture_enabled":' .. tostring(not disabled) ..
+        ',"sampling_policy":' .. json_string(capture_mode) ..
+        ',"causal_chain_complete":false,"burst_period_frames":' .. burst_period ..
+        ',"burst_callback_budget":' .. burst_budget .. ',"burst_count":' .. burst_count ..
+        ',"write_stride":' .. write_stride ..
         ',"rolling_window_capacity":' .. capacity .. ',"rolling_window_utilization":' .. ring_count ..
         ',"capture_seconds":' .. string.format("%.9f", capture_seconds) ..
+        ',"capture_timing_scope":"POST_FRAME_ONLY_EXCLUDES_BUS_CALLBACKS"' ..
         ',"capture_samples":' .. capture_ticks .. ',"events":' .. events_json() .. '}')
     file:close()
 end
@@ -99,39 +112,47 @@ local function capture_work(start)
     capture_seconds = capture_seconds + (os.clock() - start)
 end
 
-if not disabled then
-    event.on_bus_write(function(address)
-        callbacks = callbacks + 1
-        if callbacks % write_stride == 0 then
-            append_event("RAM_WRITE_SAMPLE", read_pc(), address)
-        end
-    end, "AUTO67 live writes", "M68K BUS")
+local function remove_write_hook()
+    if write_hook then
+        assert(event.unregisterbyid(write_hook), "AUTO67 could not remove write hook")
+        write_hook = nil
+    end
 end
 
-event.onframeend(function()
+local function on_write(address)
+    callbacks = callbacks + 1
+    burst_calls = burst_calls + 1
+    if burst_calls % write_stride == 0 then
+        append_event("RAM_WRITE_SAMPLE", read_pc(), address)
+    end
+    if capture_mode == "burst" and burst_calls >= burst_budget then remove_write_hook() end
+end
+
+while max_frames == 0 or frame < max_frames do
+    if stop_path then
+        local stop_file = io.open(stop_path, "r")
+        if stop_file then stop_file:close(); break end
+    end
+    local arm = capture_mode == "continuous" and not write_hook
+        or capture_mode == "burst" and frame % burst_period == 0
+    if not disabled and arm then
+        burst_calls = 0
+        burst_count = burst_count + 1
+        write_hook = event.on_bus_write(on_write, nil, "AUTO67 live writes", "M68K BUS")
+        assert(write_hook and write_hook ~= "00000000-0000-0000-0000-000000000000",
+            "AUTO67 write callbacks unavailable")
+    end
+    local buttons = inputs[frame]
+    if buttons then joypad.set(buttons, 1) end
+    emu.frameadvance()
+    if capture_mode == "burst" then remove_write_hook() end
     local start = os.clock()
     frame = frame + 1
     if not disabled then append_event("FRAME_PC", read_pc(), nil) end
     if frame % 15 == 0 then write_status(false) end
     capture_work(start)
-end)
-
-while max_frames == 0 or frame < max_frames do
-    if stop_path and io.open(stop_path, "r") then break end
-    local buttons = inputs[frame]
-    if buttons then joypad.set(buttons, 1) end
-    emu.frameadvance()
 end
 
+remove_write_hook()
 write_status(true)
-local file = io.open(final_path, "w")
-if file then
-    file:write('{"schema":"oasis.m12.auto67.live-capture.v1","frame":' .. frame .. ',"epoch":1' ..
-        ',"events_observed":' .. observed .. ',"events_overwritten":' .. overwritten ..
-        ',"callback_count":' .. callbacks .. ',"capture_enabled":' .. tostring(not disabled) ..
-        ',"rolling_window_capacity":' .. capacity .. ',"rolling_window_utilization":' .. ring_count ..
-        ',"capture_seconds":' .. string.format("%.9f", capture_seconds) ..
-        ',"capture_samples":' .. capture_ticks .. ',"events":' .. events_json() .. '}')
-    file:close()
-end
 client.exitCode(0)

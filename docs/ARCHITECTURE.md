@@ -49,6 +49,18 @@ operator dashboard, which reads snapshots without participating in claims,
 workers, or persistence. `live_opportunistic.lua` is developer-only and never
 promotes ownership or mutates guest state.
 
+Operator performance repair: `auto67_status.py` runs file publication in a
+separate daemon using one replaceable scalar-status slot and a nonblocking
+try-lock to copy at most 16 recent investigations plus 24 transitions per
+worker. HTTP reads an immutable byte snapshot. Slow UI/disk updates are dropped;
+full investigation records stay with the dispatcher and its final artifact.
+`--capture-mode burst` explicitly opts into sparse discovery (64 callback
+entries every 30 frames, removing the hook between bursts). The default
+`continuous` preserves the prior every-16th-write sampling policy. Neither
+policy proves causal completeness. Current AUTO67 workers record unresolved
+observations; the full provenance/static chain engine is not invoked by this
+worker path. Worker lifecycle proof must not be labelled chain closure.
+
 ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
 existing controlled BizHawk harness. Immutable capture events, temporal
 byte/register versions and scoped relations are distinct models. Python/SQLite

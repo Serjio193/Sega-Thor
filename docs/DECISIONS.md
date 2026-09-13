@@ -1534,3 +1534,14 @@ authoritative.
 
 Evidence: `tests/thor_evidence_auto67_test.py` and
 `docs/reports/THOR_M12_AUTO67_LIVE_OPPORTUNISTIC_RE.md`.
+
+2026-09-13 operator-test correction: the original implementation serialized
+all investigations and its dashboard displayed static transition examples.
+The performance repair limits UI publication to recent rows and real bounded
+worker history, with file/HTTP work in a separate publisher. Burst capture is
+opt-in because lost writes can break causal chains; continuous capture already
+samples every 16th write and is not a complete trace either. No task dispatch,
+observed-PC identity or worker return counter constitutes a causal proof.
+AUTO67's current worker path records unresolved observations rather than
+executing the full provenance engine. Completion of that integration is a
+separate outstanding task; this repair does not silently change the RE model.

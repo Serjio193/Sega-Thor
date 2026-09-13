@@ -8349,6 +8349,29 @@ OWNERSHIP: SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%`, delta
 
 # 2026-09-13 — M12-AUTO67 live opportunistic RE — validation in progress
 
+OPTIMIZATION TASK (operator slowdown): retain 16 workers, experimentally cap
+bus callback entry frequency using bounded bursts with hook removal between
+bursts, and publish a bounded operator snapshot. Compare the same 1800-frame
+reset run before/after and against capture-disabled; no synthetic resolutions
+or ownership promotion. Verify live observations and worker returns, source
+limits, targeted regressions and Debug/Release checks. Reduced sampling must
+remain explicit; measured process wall/CPU time must not be confused with
+worker elapsed time or a full manual-gameplay acceptance PASS.
+
+RESULT: original 1800-frame run took 63.453 s; bounded burst repeats took
+32.719--33.234 s versus 33.250 s capture-disabled. A 10.013 s window measured
+600 frames (59.92 FPS), EmuHawk 23.25% and Python 2.185% of one CPU core.
+The final burst CLI returned 556/556 leases with 16 concurrently WORKING;
+observed history proves three cycles each for W0--W3. UI payload is ~73 KB
+instead of 934 KB and its writer cannot hold claims while disk I/O blocks.
+Burst remains opt-in after the user's causal-chain concern: dropped writers
+can break chains; default continuous sampling already retained one in 16
+writes. Neither mode proves complete provenance, and the current worker path
+does not invoke the full chain engine. Earlier AUTO67 PASS claims were corrected.
+Debug/Release builds and 186/186 tests each passed; final focused checks and
+WSL Python's 8 AUTO67 tests passed. No toolchain-sensitive C++ change was made.
+See `docs/reports/THOR_M12_AUTO67_LIVE_OPERATOR_TEST.md` and its bounded JSON.
+
 TASK: Replace scenario/campaign-driven runtime dispatch with a developer-only
 live human-gameplay sampler. Preserve a bounded rolling context, prevent raw
 backlog growth, atomically lease fresh work to configurable workers, return

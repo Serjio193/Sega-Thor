@@ -1,10 +1,16 @@
 import importlib.util
 import time
+import sys
+import threading
+import tempfile
+import json
+from unittest.mock import patch
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src/tools/thor_evidence"))
 SPEC = importlib.util.spec_from_file_location(
     "auto67_live", ROOT / "src/tools/thor_evidence/auto67_live.py")
 AUTO67 = importlib.util.module_from_spec(SPEC)
@@ -90,6 +96,70 @@ class Auto67Test(unittest.TestCase):
             self.assertEqual(worker["state"], "IDLE")
             self.assertEqual(worker["last_result"], "PROVEN")
         finally:
+            dispatcher.stop()
+
+    def test_live_snapshot_is_bounded_and_detaches_history(self):
+        dispatcher = AUTO67.Dispatcher(16)
+        for i in range(5000):
+            investigation = {"id": str(i), "status": "BOUNDED_UNRESOLVED"}
+            dispatcher.investigations[str(i)] = investigation
+            dispatcher.recent_investigations.append(investigation)
+        info = dispatcher.worker_info[0]
+        for i in range(100):
+            info["chain_fingerprint"] = str(i)
+            dispatcher._transition(info, "LEASED", "KNOWN_CHECK")
+        snapshot = dispatcher.snapshot(lightweight=True)
+        self.assertEqual(len(snapshot["investigations"]), 16)
+        self.assertEqual(len(snapshot["workers"][0]["transitions"]), 24)
+        self.assertLess(len(json.dumps(snapshot)), 25000)
+        self.assertEqual(len(dispatcher.snapshot()["investigations"]), 5000)
+        dispatcher._transition(info, "WORKING", "CHAIN_BUILD")
+        self.assertEqual(snapshot["workers"][0]["transitions"][-1]["state"], "LEASED")
+        self.assertEqual(snapshot["workers"][0]["transitions"][-1]["chain"], "99")
+
+    def test_live_snapshot_drops_when_dispatcher_lock_is_busy(self):
+        dispatcher = AUTO67.Dispatcher(1)
+        result = []
+        with dispatcher.lock:
+            reader = threading.Thread(target=lambda: result.append(
+                dispatcher.snapshot(lightweight=True)))
+            reader.start()
+            reader.join(timeout=1)
+            blocked = reader.is_alive()
+        reader.join(timeout=1)
+        self.assertFalse(blocked)
+        self.assertEqual(result, [None])
+
+    def test_slow_status_disk_does_not_hold_worker_claims(self):
+        dispatcher = AUTO67.Dispatcher(1, processing_delay=0)
+        dispatcher.start()
+        entered, release = threading.Event(), threading.Event()
+
+        def slow_write(*_):
+            entered.set()
+            release.wait(3)
+            raise OSError("test unavailable disk")
+
+        publisher = None
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                with patch.object(Path, "write_bytes", slow_write):
+                    publisher = AUTO67.StatusPublisher(
+                        dispatcher, Path(directory) / "status.json", "")
+                    self.assertTrue(entered.wait(1))
+                    publisher.publish({"frame": 123, "events": [{"seq": 1}]})
+                    self.assertNotIn("events", publisher.latest)
+                    dispatcher.ingest(event(1))
+                    self.wait(dispatcher)
+                    self.assertEqual(dispatcher.snapshot()["metrics"]["workers_busy"], 0)
+                    self.assertFalse(release.is_set())
+                    release.set()
+                    publisher.stop()
+                    self.assertGreater(publisher.dropped, 0)
+        finally:
+            release.set()
+            if publisher:
+                publisher.stop()
             dispatcher.stop()
 
 

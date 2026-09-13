@@ -36,6 +36,13 @@ covers claims, known/active collision handling, worker return, bounded overwrite
 and 1/8/16 worker configuration. The validation and evidence are recorded in
 `docs/reports/THOR_M12_AUTO67_LIVE_OPPORTUNISTIC_RE.md`.
 
+`src/tools/thor_evidence/auto67_status.py` handles bounded, lossy status
+publication and HTTP serving for the existing launcher. The AUTO67 regression
+also exercises slow-disk isolation, nonblocking snapshot contention, and
+bounded/detached history. `THOR_M12_AUTO67_LIVE_OPERATOR_TEST.md` and its JSON
+under `docs/reports/` distinguish failed manual responsiveness from the
+subsequent sparse-capture performance experiment and its coverage limitation.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and

@@ -12,7 +12,7 @@ import time
 from collections import deque
 from pathlib import Path
 from typing import Any
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from auto67_status import StatusPublisher
 
 
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
@@ -72,13 +72,15 @@ class Dispatcher:
             "new_edges": 0, "investigations_created": 0,
             "proven": 0, "waiting_runtime": 0, "blocked": 0, "exhausted": 0,
             "worker_leases": 0, "worker_returns": 0, "peak_workers_busy": 0,
+            "peak_workers_working": 0,
             "capture_poll_count": 0, "worker_cpu_seconds": 0.0,
-            "seed_ages": [], "same_session_known_replay": False,
+            "seed_age_sum": 0.0, "max_seed_age": 0.0, "same_session_known_replay": False,
             "new_roots": 0, "new_consumers": 0, "new_writers": 0,
             "structures_enumerated": 0, "promotion_candidates": 0,
             "bytes_promoted": 0,
         }
         self.investigations: dict[str, dict[str, Any]] = {}
+        self.recent_investigations: deque[dict[str, Any]] = deque(maxlen=16)
         self.event_times: deque[float] = deque(maxlen=512)
         self.novelty_times: deque[float] = deque(maxlen=256)
         self.worker_info = [{"worker_id": i, "state": "STARTING",
@@ -153,7 +155,8 @@ class Dispatcher:
             self.metrics["worker_leases"] += 1
             busy = self.worker_count - len(free)
             self.metrics["peak_workers_busy"] = max(self.metrics["peak_workers_busy"], busy)
-            self.metrics["seed_ages"].append(age)
+            self.metrics["seed_age_sum"] += age
+            self.metrics["max_seed_age"] = max(self.metrics["max_seed_age"], age)
             return worker_id, task
         return None
 
@@ -190,9 +193,12 @@ class Dispatcher:
                         break
                     continue
                 self.worker_states[worker_id] = "WORKING"
+                self.metrics["peak_workers_working"] = max(
+                    self.metrics["peak_workers_working"], self.worker_states.count("WORKING"))
                 info = self.worker_info[worker_id]
                 self._transition(info, "WORKING", "CHAIN_BUILD")
             started = time.perf_counter()
+            cpu_started = time.thread_time()
             event = task["event"]
             if self.processing_delay:
                 time.sleep(self.processing_delay)
@@ -200,7 +206,6 @@ class Dispatcher:
             branch = task["branch"]
             inv_id = "INV-AUTO67-" + task["seed"]
             with self.lock:
-                self.metrics["worker_cpu_seconds"] += time.perf_counter() - started
                 investigation = {"id": inv_id, "branch": branch,
                                  "seed_sequence": event.get("seq"),
                                  "status": status, "evidence": [event]}
@@ -209,6 +214,7 @@ class Dispatcher:
                     investigation["status"] = status
                     self.metrics["known_found_during_work"] += 1
                 self.investigations[inv_id] = investigation
+                self.recent_investigations.append(investigation)
                 self.metrics["investigations_created"] += 1
                 if status == "PROVEN":
                     self.metrics["proven"] += 1
@@ -241,6 +247,7 @@ class Dispatcher:
                 self.metrics["worker_returns"] += 1
                 self.worker_states[worker_id] = "IDLE"
                 self._transition(info, "IDLE", status)
+                self.metrics["worker_cpu_seconds"] += time.thread_time() - cpu_started
             self._dispatch_current()
 
     @staticmethod
@@ -248,16 +255,19 @@ class Dispatcher:
         info["state"] = state
         info["stage"] = stage
         info["transitions"].append({"state": state, "stage": stage,
+                                     "chain": info["chain_fingerprint"],
+                                     "investigation_id": info["investigation_id"],
                                      "at": time.time()})
         if len(info["transitions"]) > 24:
             del info["transitions"][:-24]
 
-    def snapshot(self) -> dict[str, Any]:
-        with self.lock:
+    def snapshot(self, lightweight: bool = False) -> dict[str, Any] | None:
+        if not self.lock.acquire(blocking=not lightweight):
+            return None
+        try:
             metrics = dict(self.metrics)
-            ages = metrics.pop("seed_ages")
-            metrics["average_seed_age"] = sum(ages) / len(ages) if ages else 0.0
-            metrics["max_seed_age"] = max(ages, default=0.0)
+            total_age = metrics.pop("seed_age_sum")
+            metrics["average_seed_age"] = total_age / max(1, metrics["worker_leases"])
             now = time.monotonic()
             metrics["event_rate"] = sum(item >= now - 1.0 for item in self.event_times)
             metrics["recent_novelty_rate"] = sum(item >= now - 1.0 for item in self.novelty_times)
@@ -265,20 +275,17 @@ class Dispatcher:
                                            for state in self.worker_states)
             metrics["workers_configured"] = self.worker_count
             return {"metrics": metrics, "worker_states": list(self.worker_states),
-                    "workers": [dict(item) for item in self.worker_info],
+                    "workers": [dict(item, transitions=list(item["transitions"]))
+                                for item in self.worker_info],
                     "rolling_window": {"capacity": self.window.capacity,
                                         "utilization": len(self.window.items),
                                         "max_utilization": self.window.capacity,
                                         "overwrites": self.window.overwrites,
                                         "retained": self.window.retained},
-                    "transition_examples": [
-                        "IDLE -> LEASED -> WORKING",
-                        "WORKING -> KNOWN -> RETURNING -> IDLE",
-                        "WORKING -> PROVEN -> RETURNING -> IDLE",
-                        "WORKING -> WAITING_RUNTIME -> RETURNING -> IDLE",
-                        "WORKING -> MERGED -> RETURNING -> IDLE",
-                    ],
-                    "investigations": list(self.investigations.values())}
+                    "investigations": list(self.recent_investigations) if lightweight
+                    else list(self.investigations.values())}
+        finally:
+            self.lock.release()
 
 
 def run_live(args: argparse.Namespace) -> dict[str, Any]:
@@ -306,37 +313,16 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_LIVE_DEMO_INPUTS": args.demo_inputs,
         "OASIS_LIVE_WINDOW": str(args.window),
         "OASIS_LIVE_CAPTURE_DISABLED": "1" if args.capture_disabled else "0",
+        "OASIS_LIVE_CAPTURE_MODE": args.capture_mode,
     })
-    command = [str(emulator), "--chromeless", f"--lua={lua}", str(rom)]
+    command = [str(emulator), f"--lua={lua}", str(rom)]
     started = time.monotonic()
     seen_sequence = -1
     launcher_log = output.with_suffix(".launcher.log")
     view_path = output.with_suffix(".view.json")
-    view_server = None
-    view_url = None
-
-    if not args.no_view:
-        class Handler(BaseHTTPRequestHandler):
-            def do_GET(self):  # noqa: N802 - stdlib handler API
-                if self.path == "/api/status":
-                    payload = view_path.read_bytes() if view_path.exists() else b"{}"
-                    self.send_response(200)
-                    self.send_header("Content-Type", "application/json")
-                else:
-                    payload = DASHBOARD_HTML.encode("utf-8")
-                    self.send_response(200)
-                    self.send_header("Content-Type", "text/html; charset=utf-8")
-                self.send_header("Content-Length", str(len(payload)))
-                self.end_headers()
-                self.wfile.write(payload)
-
-            def log_message(self, *_):
-                return
-
-        view_server = ThreadingHTTPServer(("127.0.0.1", args.view_port), Handler)
-        threading.Thread(target=view_server.serve_forever, daemon=True,
-                         name="auto67-view").start()
-        view_url = f"http://127.0.0.1:{view_server.server_port}/"
+    publisher = StatusPublisher(dispatcher, view_path, DASHBOARD_HTML,
+                                None if args.no_view else args.view_port)
+    view_url = publisher.url
 
     with launcher_log.open("w", encoding="utf-8") as log:
         process = subprocess.Popen(command, cwd=emulator.parent, env=environment,
@@ -354,22 +340,17 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                     if int(event.get("seq", -1)) > seen_sequence:
                         seen_sequence = int(event["seq"])
                         dispatcher.ingest(event)
-            view_payload = {"schema": "oasis.m12.auto67.live-view.v1",
-                            "updated_at": time.time(), "frame": lua_status.get("frame", 0)
-                            if lua_status else 0, "lua": lua_status or {},
-                            "dispatcher": dispatcher.snapshot(),
-                            "raw_event_backlog": 0,
-                            "raw_event_backlog_structure": "NONEXISTENT"}
-            view_path.write_text(json.dumps(view_payload, sort_keys=True), encoding="utf-8")
+            if lua_status:
+                publisher.publish(lua_status)
             time.sleep(args.poll_interval)
         process.wait(timeout=10)
     if final_path.exists():
         lua_final = json.loads(final_path.read_text(encoding="utf-8"))
     else:
-        lua_final = {"frames": 0, "events_observed": 0, "capture_enabled": False}
+        lua_final = dict(publisher.latest, capture_complete=False)
+    publisher.publish(lua_final)
     dispatcher.stop()
-    if view_server:
-        view_server.shutdown()
+    publisher.stop()
     elapsed = time.monotonic() - started
     result = {"schema": "oasis.m12.auto67.live-session.v1", "baseline": BASELINE,
               "rom_sha256": ROM_SHA, "command": command, "returncode": process.returncode,
@@ -380,13 +361,13 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "capture_path": str(final_path), "capture_disabled": args.capture_disabled,
               "view_url": view_url, "view_snapshot": str(view_path),
               "visualization_proof": {"two_workers_working":
-                                       dispatcher.metrics["peak_workers_busy"] >= 2,
+                                       dispatcher.metrics["peak_workers_working"] >= 2,
                                        "worker_returned_idle": dispatcher.metrics["worker_returns"] > 0,
                                        "known_or_merge_visible":
                                        dispatcher.metrics["known_rejected_before_dispatch"] > 0 or
                                        dispatcher.metrics["investigation_merges"] > 0,
                                        "rolling_window_active":
-                                       dispatcher.window.capacity > 0}}
+                                       dispatcher.metrics["events_observed"] > 0}}
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return result
 
@@ -406,6 +387,8 @@ def main() -> int:
     parser.add_argument("--demo-inputs", default="",
                         help="optional validation-only frame:buttons list, not a scenario")
     parser.add_argument("--capture-disabled", action="store_true")
+    parser.add_argument("--capture-mode", choices=("continuous", "burst"), default="continuous",
+                        help="burst is lossy discovery only; neither mode proves complete chains")
     parser.add_argument("--view-port", type=int, default=0)
     parser.add_argument("--no-view", action="store_true")
     args = parser.parse_args()
@@ -419,16 +402,24 @@ def main() -> int:
 DASHBOARD_HTML = """<!doctype html>
 <meta charset="utf-8"><title>AUTO67 Live RE</title>
 <style>body{font:14px sans-serif;background:#101418;color:#e8eef2;margin:20px}h1{margin:0 0 8px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.card{background:#1b232b;padding:10px;border-radius:6px}.workers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}.worker{border:1px solid #42525f;padding:6px;border-radius:4px}.WORKING{border-color:#54d68a}.LEASED{border-color:#f6c85f}.IDLE{border-color:#71808c}pre{white-space:pre-wrap}</style>
-<h1>AUTO67 Live Opportunistic RE</h1><div id="summary">waiting for snapshot</div><div class="grid" id="cards"></div><h2>Workers</h2><div class="workers" id="workers"></div><h2>Transition examples</h2><pre id="transitions"></pre><h2>Investigations</h2><pre id="investigations"></pre>
+<h1>AUTO67 Live Opportunistic RE</h1><div id="summary">waiting for snapshot</div><div class="grid" id="cards"></div><h2>Workers</h2><div class="workers" id="workers"></div><h2>Observed history (last 24 transitions per worker)</h2><pre id="transitions"></pre><h2>Recent investigations (16)</h2><pre id="investigations"></pre>
 <script>
 async function refresh(){const s=await (await fetch('/api/status',{cache:'no-store'})).json();const d=s.dispatcher||{},m=d.metrics||{},l=s.lua||{};
 document.getElementById('summary').textContent=`frame ${s.frame||0} epoch ${l.epoch||1} | capture events ${l.events_observed||0} | window ${d.rolling_window?.utilization||0}/${d.rolling_window?.capacity||0} | raw backlog ${s.raw_event_backlog_structure||'unknown'}`;
-const fields=[['free workers',(m.workers_configured||0)-(m.workers_busy||0)],['busy workers',m.workers_busy||0],['event rate/s',m.event_rate||0],['novelty rate/s',m.recent_novelty_rate||0],['claims issued',m.worker_leases||0],['known rejected',m.known_rejected_before_dispatch||0],['collisions',m.active_collisions||0],['merges',m.investigation_merges||0],['new chains',m.new_chains||0],['new branches',m.new_branches||0],['new edges',m.new_edges||0]];
+const fields=[['free workers',(m.workers_configured||0)-(m.workers_busy||0)],
+['busy workers',m.workers_busy||0],['event rate/s',m.event_rate||0],
+['novelty rate/s',m.recent_novelty_rate||0],['leases',m.worker_leases||0],
+['returns',m.worker_returns||0],['known rejected',m.known_rejected_before_dispatch||0],
+['known by worker',m.known_found_during_work||0],['collision total',m.active_collisions||0],
+['merges before dispatch',m.investigation_merges||0],['new chains',m.new_chains||0],
+['new branches',m.new_branches||0],['new edges',m.new_edges||0],
+['window overwrites',l.events_overwritten||0],['avg seed age/s',m.average_seed_age||0],
+['max seed age/s',m.max_seed_age||0],['capture policy',l.sampling_policy||'unknown']];
 document.getElementById('cards').innerHTML=fields.map(x=>`<div class="card"><b>${x[0]}</b><br>${x[1]}</div>`).join('');
 document.getElementById('workers').innerHTML=(d.workers||[]).map(w=>`<div class="worker ${w.state}"><b>W${w.worker_id}</b> ${w.state}<br>${w.investigation_id||'-'}<br>stage ${w.stage}<br>age ${(w.seed_age||0).toFixed(3)}s<br>result ${w.last_result||'-'}</div>`).join('');
-document.getElementById('transitions').textContent=(d.transition_examples||[]).join('\\n');
+document.getElementById('transitions').textContent=(d.workers||[]).flatMap(w=>(w.transitions||[]).map(t=>({w:w.worker_id,...t}))).sort((a,b)=>b.at-a.at).map(t=>`${new Date(t.at*1000).toISOString().slice(11,23)} W${t.w} ${t.state} / ${t.stage} ${(t.chain||'-').slice(0,12)}`).join('\\n');
 document.getElementById('investigations').textContent=JSON.stringify((d.investigations||[]).slice(-16),null,2);}
-setInterval(refresh,250);refresh();
+async function poll(){try{await refresh();}catch(e){document.getElementById('summary').textContent='Snapshot unavailable / stale';}finally{setTimeout(poll,250);}}poll();
 </script>"""
 
 

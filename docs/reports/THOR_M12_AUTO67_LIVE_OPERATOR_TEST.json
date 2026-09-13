@@ -1,0 +1,570 @@
+{
+  "schema": "oasis.m12.auto67.operator-optimization.v1",
+  "baseline": "124c80c0a1c3cef95f7d646f3a2c35ceae472b74",
+  "manual_acceptance": "FAIL_RESPONSIVENESS",
+  "causal_chain_complete": false,
+  "manual_profile": {
+    "seconds": 122.36000000000058,
+    "last_snapshot_frame": 2250,
+    "workers": 16,
+    "leases": 4268,
+    "returns": 4268,
+    "raw_backlog": 0,
+    "emulator_responsive": "FAIL_USER_REPORTED",
+    "source": "build/thor-evidence/auto67-profile-live.view.json"
+  },
+  "benchmark_runs": [
+    {
+      "name": "optimization-before",
+      "source": "build/thor-evidence/auto67/optimization-before.json",
+      "sha256": "478AF6F3DB15B062BED0AC48391A1A26A49DA1E7DE154EFE504971836851519B",
+      "seconds": 63.45299999999406,
+      "frames": 1800,
+      "capture_disabled": false,
+      "policy": null,
+      "callback_count": 751620,
+      "events": 48776,
+      "overwrites": 48520,
+      "leases": 2281,
+      "returns": 2281,
+      "peak_busy": 16,
+      "peak_working": null,
+      "view_bytes": 933936,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-burst-probe",
+      "source": "build/thor-evidence/auto67/optimization-burst-probe.json",
+      "sha256": "98F11D9BEA184BF4D59A426B77CE717D4E12AC98519F8413C1C2E9A97F8A02E9",
+      "seconds": 33.234000000004016,
+      "frames": 1800,
+      "capture_disabled": false,
+      "policy": "BOUNDED_BURSTS",
+      "callback_count": 3648,
+      "events": 5448,
+      "overwrites": 5192,
+      "leases": 381,
+      "returns": 381,
+      "peak_busy": 16,
+      "peak_working": null,
+      "view_bytes": 202972,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-after",
+      "source": "build/thor-evidence/auto67/optimization-after.json",
+      "sha256": "08CAADB01109F4829C7AFEDE0FEAE90A57591ECB826F5EA308F5C26175F94D3E",
+      "seconds": 33.2190000000046,
+      "frames": 1800,
+      "capture_disabled": false,
+      "policy": "BOUNDED_BURSTS",
+      "callback_count": 3648,
+      "events": 5448,
+      "overwrites": 5192,
+      "leases": 381,
+      "returns": 381,
+      "peak_busy": 16,
+      "peak_working": null,
+      "view_bytes": 73368,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-control",
+      "source": "build/thor-evidence/auto67/optimization-control.json",
+      "sha256": "42B0DFABC71203D04388EFF4EDF26AE2F14872D094200D77F835821C725A4B4F",
+      "seconds": 33.25,
+      "frames": 1800,
+      "capture_disabled": true,
+      "policy": "BOUNDED_BURSTS",
+      "callback_count": 0,
+      "events": 0,
+      "overwrites": 0,
+      "leases": 0,
+      "returns": 0,
+      "peak_busy": 0,
+      "peak_working": null,
+      "view_bytes": 5749,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-verified",
+      "source": "build/thor-evidence/auto67/optimization-verified.json",
+      "sha256": "12BE9A8AF1079EBDBC981D37AED367AD7088EFE70194093F45B7B0BD407F4429",
+      "seconds": 32.7190000000046,
+      "frames": 1800,
+      "capture_disabled": false,
+      "policy": "BOUNDED_BURSTS",
+      "callback_count": 3648,
+      "events": 5448,
+      "overwrites": 5192,
+      "leases": 624,
+      "returns": 624,
+      "peak_busy": 16,
+      "peak_working": 16,
+      "view_bytes": 73320,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-opt-in",
+      "source": "build/thor-evidence/auto67/optimization-opt-in.json",
+      "sha256": "5A1D5FE5D8918E9EB791A23A9F0C26EFB3B2C2A90A6AAD68F394686BE64FBBD6",
+      "seconds": 32.765999999995984,
+      "frames": 1800,
+      "capture_disabled": false,
+      "policy": "burst",
+      "callback_count": 3648,
+      "events": 5448,
+      "overwrites": 5192,
+      "leases": 556,
+      "returns": 556,
+      "peak_busy": 16,
+      "peak_working": 16,
+      "view_bytes": 73376,
+      "returncode": 0
+    },
+    {
+      "name": "optimization-default-check",
+      "source": "build/thor-evidence/auto67/optimization-default-check.json",
+      "sha256": "F501F8D69C0AEB7D0D0AC42E6539B2D35B1100D94A6B1F6210B6059EAFB128E4",
+      "seconds": 19.93699999999808,
+      "frames": 600,
+      "capture_disabled": false,
+      "policy": "continuous",
+      "callback_count": 177663,
+      "events": 11703,
+      "overwrites": 11447,
+      "leases": 1180,
+      "returns": 1180,
+      "peak_busy": 16,
+      "peak_working": 16,
+      "view_bytes": 73452,
+      "returncode": 0
+    }
+  ],
+  "measured_10_second_interval": {
+    "source_run": "optimization-verified",
+    "wall_seconds": 10.0132434,
+    "frame_start": 465,
+    "frame_end": 1065,
+    "fps": 59.92064469340673,
+    "emulator_cpu_percent_of_one_core": 23.25045848780626,
+    "python_cpu_percent_of_one_core": 2.184606837780454
+  },
+  "experimental_burst": {
+    "workers": 16,
+    "period_frames": 30,
+    "max_bus_callbacks_per_burst": 64,
+    "raw_backlog": 0,
+    "known_returns": 0,
+    "merged_worker_returns": 0,
+    "pre_dispatch_merges": 109,
+    "known_rejected": 4783,
+    "average_seed_age_seconds": 0.0026708633094451686,
+    "max_seed_age_seconds": 0.01600000000325963,
+    "duplicate_active_claims": null,
+    "duplicate_claims_note": "No whole-session duplicate-claim counter was recorded; unit contract only.",
+    "emulator_responsive": "BENCHMARK_PASS_MANUAL_RETEST_PENDING",
+    "cycle_proof": [
+      {
+        "worker_id": 0,
+        "state": "IDLE",
+        "last_result": "BOUNDED_UNRESOLVED",
+        "transitions": [
+          {
+            "at": 1789315902.3849788,
+            "chain": "8238cb6fcbe8281e2b7beb74",
+            "investigation_id": "INV-AUTO67-42b6696d2b97662ad8b75c2f",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "96c359a1cd6ca3b1b38e849e",
+            "investigation_id": "INV-AUTO67-ad0eeeeacfb3e52f60dda0ed",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "96c359a1cd6ca3b1b38e849e",
+            "investigation_id": "INV-AUTO67-ad0eeeeacfb3e52f60dda0ed",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "96c359a1cd6ca3b1b38e849e",
+            "investigation_id": "INV-AUTO67-ad0eeeeacfb3e52f60dda0ed",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "96c359a1cd6ca3b1b38e849e",
+            "investigation_id": "INV-AUTO67-ad0eeeeacfb3e52f60dda0ed",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.8900874,
+            "chain": "0376f3a42f9396b8ad85e226",
+            "investigation_id": "INV-AUTO67-79e377369ba4f61c2d3c7c6e",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.8910925,
+            "chain": "0376f3a42f9396b8ad85e226",
+            "investigation_id": "INV-AUTO67-79e377369ba4f61c2d3c7c6e",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "0376f3a42f9396b8ad85e226",
+            "investigation_id": "INV-AUTO67-79e377369ba4f61c2d3c7c6e",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "0376f3a42f9396b8ad85e226",
+            "investigation_id": "INV-AUTO67-79e377369ba4f61c2d3c7c6e",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "a67213985c7c542909f067ea",
+            "investigation_id": "INV-AUTO67-e57e6825aec091bf9bf5b0dd",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "a67213985c7c542909f067ea",
+            "investigation_id": "INV-AUTO67-e57e6825aec091bf9bf5b0dd",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "a67213985c7c542909f067ea",
+            "investigation_id": "INV-AUTO67-e57e6825aec091bf9bf5b0dd",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "a67213985c7c542909f067ea",
+            "investigation_id": "INV-AUTO67-e57e6825aec091bf9bf5b0dd",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          }
+        ]
+      },
+      {
+        "worker_id": 1,
+        "state": "IDLE",
+        "last_result": "BOUNDED_UNRESOLVED",
+        "transitions": [
+          {
+            "at": 1789315902.3855329,
+            "chain": "dce3769d893f3ad1fb1d780e",
+            "investigation_id": "INV-AUTO67-8726d4a08e72df6141375d6e",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "ea6291c1774bbcc32196ed40",
+            "investigation_id": "INV-AUTO67-30aff11bf4bed9fc2e1b4e59",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "ea6291c1774bbcc32196ed40",
+            "investigation_id": "INV-AUTO67-30aff11bf4bed9fc2e1b4e59",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "ea6291c1774bbcc32196ed40",
+            "investigation_id": "INV-AUTO67-30aff11bf4bed9fc2e1b4e59",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "ea6291c1774bbcc32196ed40",
+            "investigation_id": "INV-AUTO67-30aff11bf4bed9fc2e1b4e59",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.8900874,
+            "chain": "275e7136c998242369fc4172",
+            "investigation_id": "INV-AUTO67-627d1ce21a14411f002cc7c7",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.8915267,
+            "chain": "275e7136c998242369fc4172",
+            "investigation_id": "INV-AUTO67-627d1ce21a14411f002cc7c7",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "275e7136c998242369fc4172",
+            "investigation_id": "INV-AUTO67-627d1ce21a14411f002cc7c7",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "275e7136c998242369fc4172",
+            "investigation_id": "INV-AUTO67-627d1ce21a14411f002cc7c7",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "d44d6cdb008acb95dce7a206",
+            "investigation_id": "INV-AUTO67-7267070cce977142ace9551d",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "d44d6cdb008acb95dce7a206",
+            "investigation_id": "INV-AUTO67-7267070cce977142ace9551d",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "d44d6cdb008acb95dce7a206",
+            "investigation_id": "INV-AUTO67-7267070cce977142ace9551d",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "d44d6cdb008acb95dce7a206",
+            "investigation_id": "INV-AUTO67-7267070cce977142ace9551d",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          }
+        ]
+      },
+      {
+        "worker_id": 2,
+        "state": "IDLE",
+        "last_result": "BOUNDED_UNRESOLVED",
+        "transitions": [
+          {
+            "at": 1789315902.3855329,
+            "chain": "075b7ccfd27a764ad10ea993",
+            "investigation_id": "INV-AUTO67-0e2af51d60223ed1c5137b68",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "d7ad435ecf8902adbd601d69",
+            "investigation_id": "INV-AUTO67-c93490d3ff5288cf8a57edb4",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "d7ad435ecf8902adbd601d69",
+            "investigation_id": "INV-AUTO67-c93490d3ff5288cf8a57edb4",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "d7ad435ecf8902adbd601d69",
+            "investigation_id": "INV-AUTO67-c93490d3ff5288cf8a57edb4",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "d7ad435ecf8902adbd601d69",
+            "investigation_id": "INV-AUTO67-c93490d3ff5288cf8a57edb4",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.8910925,
+            "chain": "ad1276a55511a0e2d81ff52b",
+            "investigation_id": "INV-AUTO67-af24d4eef825f1d7a2787e63",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.8915267,
+            "chain": "ad1276a55511a0e2d81ff52b",
+            "investigation_id": "INV-AUTO67-af24d4eef825f1d7a2787e63",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "ad1276a55511a0e2d81ff52b",
+            "investigation_id": "INV-AUTO67-af24d4eef825f1d7a2787e63",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.8948092,
+            "chain": "ad1276a55511a0e2d81ff52b",
+            "investigation_id": "INV-AUTO67-af24d4eef825f1d7a2787e63",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "0d724c2de4f23ea432413518",
+            "investigation_id": "INV-AUTO67-99b68443ec56e50710a1342e",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "0d724c2de4f23ea432413518",
+            "investigation_id": "INV-AUTO67-99b68443ec56e50710a1342e",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "0d724c2de4f23ea432413518",
+            "investigation_id": "INV-AUTO67-99b68443ec56e50710a1342e",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315903.8603156,
+            "chain": "0d724c2de4f23ea432413518",
+            "investigation_id": "INV-AUTO67-99b68443ec56e50710a1342e",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          }
+        ]
+      },
+      {
+        "worker_id": 3,
+        "state": "IDLE",
+        "last_result": "BOUNDED_UNRESOLVED",
+        "transitions": [
+          {
+            "at": 1789315901.3670802,
+            "chain": "2e2ff5a3b6735a45e5b99f5e",
+            "investigation_id": "INV-AUTO67-2998a28d5b6b821263647810",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.3804731,
+            "chain": "dc68f82782031bc093f738fe",
+            "investigation_id": "INV-AUTO67-e58b2d6393cb57c059d15c1f",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.381906,
+            "chain": "dc68f82782031bc093f738fe",
+            "investigation_id": "INV-AUTO67-e58b2d6393cb57c059d15c1f",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.3855329,
+            "chain": "dc68f82782031bc093f738fe",
+            "investigation_id": "INV-AUTO67-e58b2d6393cb57c059d15c1f",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.3855329,
+            "chain": "dc68f82782031bc093f738fe",
+            "investigation_id": "INV-AUTO67-e58b2d6393cb57c059d15c1f",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "1a82db37d02e11b6755e5473",
+            "investigation_id": "INV-AUTO67-640f33d97615ae5563836a5f",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315902.6359837,
+            "chain": "1a82db37d02e11b6755e5473",
+            "investigation_id": "INV-AUTO67-640f33d97615ae5563836a5f",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "1a82db37d02e11b6755e5473",
+            "investigation_id": "INV-AUTO67-640f33d97615ae5563836a5f",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315902.6395223,
+            "chain": "1a82db37d02e11b6755e5473",
+            "investigation_id": "INV-AUTO67-640f33d97615ae5563836a5f",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "a40622ef34e55d5328606200",
+            "investigation_id": "INV-AUTO67-a17f20f57bf810b24d9090f8",
+            "stage": "KNOWN_CHECK",
+            "state": "LEASED"
+          },
+          {
+            "at": 1789315903.8564148,
+            "chain": "a40622ef34e55d5328606200",
+            "investigation_id": "INV-AUTO67-a17f20f57bf810b24d9090f8",
+            "stage": "CHAIN_BUILD",
+            "state": "WORKING"
+          },
+          {
+            "at": 1789315903.8608267,
+            "chain": "a40622ef34e55d5328606200",
+            "investigation_id": "INV-AUTO67-a17f20f57bf810b24d9090f8",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "RETURNING"
+          },
+          {
+            "at": 1789315903.8608267,
+            "chain": "a40622ef34e55d5328606200",
+            "investigation_id": "INV-AUTO67-a17f20f57bf810b24d9090f8",
+            "stage": "BOUNDED_UNRESOLVED",
+            "state": "IDLE"
+          }
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Burst is sparse discovery and may miss causal writers.",
+    "Continuous default already samples one in 16 writes.",
+    "Live worker records unresolved observations; it does not run the full provenance engine.",
+    "Known and merged worker return paths were not observed in these real runs.",
+    "Seed age is dispatcher-side admission age, not full gameplay capture-to-lease latency.",
+    "Benchmark histories are real emulator observations, but are not a completed manual gameplay acceptance."
+  ]
+}

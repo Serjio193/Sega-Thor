@@ -1,7 +1,18 @@
 # THOR M12 AUTO67 — Live Opportunistic Reverse Engineering
 
 Date: 2026-09-13  
-Status: **PASS — SUCCESS LEVEL 4 / SUSTAINED LIVE RE**
+Status: **SUPERSEDED — manual responsiveness failed; causal-chain closure unproven**
+
+Operator retest correction (2026-09-13): the earlier PASS below overstated
+acceptance. A human reported severe slowdown. The old frame-only
+`capture_seconds` measurement excluded bus callback overhead; the old
+`worker_cpu_seconds` was elapsed time including sleep. Static dashboard
+transition examples were not recorded lifecycle evidence, and peak leases
+were not a measurement of simultaneous WORKING states. Current AUTO67 live
+workers record `BOUNDED_UNRESOLVED` observations and do not call the full
+provenance engine. Preserve the historical counts below as measurements of
+that bounded run, not proof of complete chains or responsive manual gameplay.
+See [operator retest and optimization](THOR_M12_AUTO67_LIVE_OPERATOR_TEST.md).
 
 ## Publication identity
 
