@@ -2,10 +2,12 @@
 
 Date: 2026-09-13. Baseline: `49875f51c2f3e818e7fdeba56fb430d07f3efaf2`.
 Status: PASS / Level 4. Level 5 promotion is not required.
+Publication implementation SHA: `1621546dc946a19e7640449c4fba34d20f639a19`.
 
 ## 1. Baseline/final SHA
 
-Baseline is the accepted AUTO64.1 commit above. Final SHA: filled after commit.
+Baseline is the accepted AUTO64.1 commit above. The implementation publication
+commit is `1621546dc946a19e7640449c4fba34d20f639a19`.
 
 ## 2. New gameplay scenario and why materially different
 

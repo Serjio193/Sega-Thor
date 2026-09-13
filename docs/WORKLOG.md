@@ -8321,7 +8321,8 @@ batch also demonstrated known-prefix/new-tail reuse after the first writer
 chain persisted its reset→writer prefix.
 
 OWNERSHIP: SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%`, delta
-`0`; no ROM, asset, savestate or payload was added. Two fresh full-layout runs
+`0`; no ROM, asset, savestate or payload was added. Implementation publication
+commit is `1621546dc946a19e7640449c4fba34d20f639a19`. Two fresh full-layout runs
 matched the canonical ROM byte-for-byte. Windows Debug/Release and WSL GNU
 each passed 184/184 CTest; the Python AUTO65 regression passed 4/4. The final
-commit SHA and remote CI result are appended after publication.
+remote CI result is checked after publication.
