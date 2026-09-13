@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 
 from thor_evidence.events import write_capture
 from thor_evidence.ram_versions import (CoverageCertificate, RamVersionEngine,
-                                         VerifiedCoverageCertificate)
+                                         VerifiedCoverageCertificate, attest_source_events)
 from thor_evidence.store import Store
 from thor_evidence_v0_test import header, events
 
@@ -27,10 +27,11 @@ def trace_id():
 
 
 def basis(start, end, epoch=1, execution=None, decoder="test-decoder", rule="MOVE.B"):
-    return [{"seq": seq, "epoch": epoch, "receipt_sha256": "b" * 64,
+    return attest_source_events([{"seq": seq, "epoch": epoch, "kind": "EXEC", "receipt_sha256": "b" * 64,
              "decoder_id": decoder, "rule_id": rule,
+             "data": {"pc": 0x1000 + seq},
              **({"execution_instance": execution(seq)} if execution else {})}
-            for seq in range(start, end + 1)]
+            for seq in range(start, end + 1)])
 
 
 def coverage(trace, end=100, addresses=range(0x100, 0x110)):
@@ -237,6 +238,74 @@ def test_duplicate_immutable_event_is_idempotent():
     assert len(engine.operations(1)) == 1
 
 
+def test_unattested_historical_tags_cannot_create_verified_coverage():
+    trace = "5" * 64
+    engine = RamVersionEngine(trace)
+    engine.begin_epoch(1, 0)
+    raw = [{"seq": seq, "epoch": 1, "receipt_sha256": "b" * 64,
+            "decoder_id": "test-decoder", "rule_id": "MOVE.B"} for seq in range(3)]
+    try:
+        VerifiedCoverageCertificate.from_capture(
+            CoverageCertificate("unattested", 0, 2, (0x900,), trace), trace=trace,
+            epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+            decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("1",),
+            source_events=raw)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("bare historical tags must not authorize coverage")
+
+
+def test_coverage_rejects_note_substitution_and_unknown_effect():
+    trace = "6" * 64
+    for mutation in ({"kind": "NOTE"}, {"effect_status": "UNKNOWN"}):
+        engine = RamVersionEngine(trace)
+        engine.begin_epoch(1, 0)
+        source = basis(0, 2)
+        source[1].update(mutation)
+        source = attest_source_events([{key: value for key, value in event.items()
+                                       if key not in {"event_sha256", "basis_sha256"}}
+                                      for event in source])
+        try:
+            VerifiedCoverageCertificate.from_capture(
+                CoverageCertificate("bad-effect", 0, 2, (0x910,), trace), trace=trace,
+                epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+                decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("1",),
+                source_events=source)
+        except ValueError:
+            continue
+        raise AssertionError("coverage must reject NOTE/unknown-effect substitution")
+
+
+def test_sqlite_rejects_wrong_producer_output_association():
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        capture = root / "capture.jsonl"
+        write_capture(capture, header(), events())
+        store = Store(root / "evidence.sqlite")
+        trace = store.import_capture(capture)
+        engine = RamVersionEngine(trace)
+        engine.begin_epoch(1, 0)
+        engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+            CoverageCertificate("semantic", 0, 3, (0x900, 0x901), trace),
+            trace=trace, epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+            decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("1", "2"),
+            source_events=basis(0, 3, rule="MOVE.B")))
+        engine.write(1, 1, "1", 0x10, "MOVE.B", 1, 0x900, 0x11)
+        engine.write(1, 2, "2", 0x10, "MOVE.B", 1, 0x901, 0x22)
+        bad = json.loads(json.dumps(engine.export()))
+        bad["epochs"]["1"]["operations"][0]["resulting_versions"] = [
+            bad["epochs"]["1"]["operations"][1]["resulting_versions"][0]]
+        try:
+            store.import_ram_engine(bad, trace)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("wrong producer/output association must fail")
+        assert store.connection.execute("SELECT COUNT(*) FROM ram_write_operation").fetchone()[0] == 0
+        store.close()
+
+
 def main():
     test_overlap_same_value_and_big_endian_versions()
     test_epoch_isolation_and_initial_frontier()
@@ -247,6 +316,9 @@ def main():
     test_adversarial_temporal_and_construction_guards()
     test_verified_certificate_rejects_gap_epoch_and_scope_expansion()
     test_duplicate_immutable_event_is_idempotent()
+    test_unattested_historical_tags_cannot_create_verified_coverage()
+    test_coverage_rejects_note_substitution_and_unknown_effect()
+    test_sqlite_rejects_wrong_producer_output_association()
     print("PASS thor evidence v2 ram")
 
 

@@ -71,10 +71,24 @@ def test_epoch_identity_is_not_value_identity():
     assert a["id"] != b["id"]
 
 
+def test_ram_branch_cannot_bypass_certificate_contract():
+    ids = [f"v{i}" for i in range(4)]
+    candidate = {"schema": "thor.evidence.provenance.v1", "status": "PROVEN",
+                 "raw_sha256": "a" * 64, "target": {"version_id": ids[0],
+                 "ram_version_ids": ids, "ram_operation_id": "op", "value_hex": "00880901"},
+                 "ram_engine": {"trace": "a" * 64, "epochs": {"1": {
+                     "versions": [{"id": item, "status": "OBSERVED", "operation_id": "op"}
+                                  for item in ids],
+                     "operations": [{"id": "op", "rule_id": "MOVE_LONG_D2_TO_RAM"}]} }},
+                 "v2_dependencies": [{"target": item} for item in ids]}
+    assert not validate_certificate(candidate)
+
+
 def main():
     test_certificate_accepts_slice_provenance()
     test_negative_cases_are_machine_readable_and_rejected()
     test_epoch_identity_is_not_value_identity()
+    test_ram_branch_cannot_bypass_certificate_contract()
     print("PASS thor evidence v1 canary")
 
 

@@ -51,3 +51,12 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V9 | Stabilization |
 |---|---|---|---|---|---|---|
 | V9-001 | Medium | `orchestrator.py` | One CLI invocation runs one bounded cycle and does not implement multi-cycle retry policy. | Cycle state is deterministic and explicit; callers must schedule subsequent cycles. | No | Post-V9 stabilization |
+
+## Stabilization lifecycle
+
+| ID | Status | Root cause | Repair / regression |
+|---|---|---|---|
+| V2.1-001 | REGRESSION_ADDED | Coverage accepted arbitrary tagged event dictionaries as a verified basis. | Content-attested event/basis hashes; `test_unattested_historical_tags_cannot_create_verified_coverage`. |
+| V2.1-003 | REGRESSION_ADDED | SQLite import checked identities but not producer, address, value or predecessor semantics. | Semantic output/predecessor checks and rollback regression in `test_sqlite_rejects_wrong_producer_output_association`. |
+| V2.1-005 | REGRESSION_ADDED | `ram_engine` branch returned before the legacy proof obligations. | Dedicated V2 certificate validator and `test_ram_branch_cannot_bypass_certificate_contract`. |
+| V2.1-006 | REGRESSION_ADDED | Forged RAM coverage could bypass the FF188A negative oracle. | V2 validator now requires trace-bound coverage over the target and rejects missing coverage. |

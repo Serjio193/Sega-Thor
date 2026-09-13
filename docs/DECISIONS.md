@@ -1343,3 +1343,24 @@ keep ownership delta at zero.
 Production UX, retries, causal soundness and stabilization remain post-V9 work.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V9_OPERATIONAL_INTEGRATION.md`.
+
+# ADR-0058 — stabilization P0 evidence and persistence trust boundary
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** The assembled V2/V3/V9 machine still allowed fabricated coverage
+tags, semantically inconsistent RAM output rows and an under-validated V2
+certificate branch to reach stronger trust states.
+
+**Decision:** Require content-attested coverage events with checked execution
+semantics; validate RAM output cardinality, producer/address/value/predecessor
+relationships before SQLite insertion; and route V2 canary validation through a
+dedicated identity and coverage validator. Missing or malformed evidence fails
+closed and SOURCE_OWNED remains unchanged.
+
+**Consequences:** P0 false-proof and persistence paths are bounded by explicit
+regressions. The attestation is a lineage contract for validated capture input;
+it does not authorize ownership promotion or resolve causal frontiers.
+
+**Evidence:** Stabilization P0 regressions in
+`tests/thor_evidence_v2_ram_test.py` and `tests/thor_evidence_v1_canary_test.py`.

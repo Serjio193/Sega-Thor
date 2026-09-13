@@ -12,7 +12,7 @@ from .events import read_capture
 from .identity import ROM_SHA, canonical, digest
 from .normalize import records
 from .ram_versions import (CoverageCertificate, RamVersionEngine,
-                            VerifiedCoverageCertificate)
+                            VerifiedCoverageCertificate, attest_source_events)
 
 TARGET = 0xFF13CC
 ROOT_ZERO = 0xA438
@@ -117,11 +117,11 @@ def _ram_canary_engine(raw_hash, events, static_map, receipt_sha256):
         claim = CoverageCertificate(f"a372-dense-epoch-{epoch}",
                                     min(e["seq"] for e in epoch_events), end,
                                     scope, raw_hash)
-        basis_events = [{**event, "receipt_sha256": receipt_sha,
+        basis_events = attest_source_events([{**event, "receipt_sha256": receipt_sha,
                          "decoder_id": hashlib.sha256(json.dumps(
                              static_map, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
                          "rule_id": "MOVE_LONG_D2_TO_RAM"}
-                        for event in epoch_events]
+                        for event in epoch_events])
         certificate = VerifiedCoverageCertificate.from_capture(
             claim, trace=raw_hash, epoch=epoch,
             raw_artifact_hash=raw_hash, receipt_sha256=receipt_sha,
@@ -331,24 +331,7 @@ def validate_certificate(result):
     if result.get("schema") != "thor.evidence.provenance.v1" or result.get("status") != "PROVEN":
         return False
     if result.get("ram_engine"):
-        target = result.get("target", {})
-        ids = target.get("ram_version_ids", [])
-        epochs = result["ram_engine"].get("epochs", {})
-        ram_versions = {item["id"]: item for payload in epochs.values()
-                        for item in payload.get("versions", [])}
-        operations = {item["id"]: item for payload in epochs.values()
-                      for item in payload.get("operations", [])}
-        if len(ids) != 4 or target.get("version_id") != ids[0] or any(item not in ram_versions for item in ids):
-            return False
-        if any(item.get("status") != "OBSERVED" or item.get("operation_id") != target.get("ram_operation_id")
-               for item in (ram_versions[item_id] for item_id in ids)):
-            return False
-        operation = operations.get(target.get("ram_operation_id"))
-        if operation is None or operation.get("rule_id") != "MOVE_LONG_D2_TO_RAM":
-            return False
-        if {item.get("target") for item in result.get("v2_dependencies", [])} != set(ids):
-            return False
-        return True
+        return _validate_ram_certificate(result)
     versions = {v["id"]: v for v in result.get("versions", [])}
     if len(versions) != len(result.get("versions", [])):
         return False
@@ -392,6 +375,89 @@ def validate_certificate(result):
     if result.get("checks", {}).get("pc2_inference") or result.get("checks", {}).get("address_only_edge"):
         return False
     return True
+
+
+def _validate_ram_certificate(result):
+    """Validate V2 output identities and semantics before accepting PROVEN."""
+    sealed = dict(result)
+    certificate_hash = sealed.pop("certificate_sha256", None)
+    if not isinstance(certificate_hash, str) or certificate_hash != digest(sealed):
+        return False
+    ram = result.get("ram_engine", {})
+    trace = ram.get("trace")
+    if not isinstance(trace, str) or trace != result.get("raw_sha256"):
+        return False
+    versions, operations = {}, {}
+    for epoch_text, payload in ram.get("epochs", {}).items():
+        try:
+            epoch = int(epoch_text)
+        except (TypeError, ValueError):
+            return False
+        for operation in payload.get("operations", []):
+            operation_payload = {key: operation.get(key) for key in (
+                "trace", "epoch", "temporal_seq", "execution_instance", "pc", "rule_id",
+                "width", "effective_address", "value", "raw_witnesses", "decoded_instruction")}
+            if operation.get("epoch") != epoch or operation.get("trace") != trace or \
+                    digest({"kind": "ram-write-operation-v2", "value": operation_payload}) != operation.get("id") or \
+                    operation.get("id") in operations:
+                return False
+            operations[operation["id"]] = operation
+        for version in payload.get("versions", []):
+            keys = ["trace", "epoch", "address", "version", "value", "origin"]
+            if version.get("operation_id") is not None:
+                keys += ["operation_id", "temporal_seq"]
+            version_payload = {key: version.get(key) for key in keys}
+            if version.get("epoch") != epoch or version.get("trace") != trace or \
+                    digest({"kind": "ram-byte-version-v2", "value": version_payload}) != version.get("id") or \
+                    version.get("id") in versions:
+                return False
+            versions[version["id"]] = version
+    target = result.get("target", {})
+    ids = target.get("ram_version_ids", [])
+    operation_id = target.get("ram_operation_id")
+    operation = operations.get(operation_id)
+    if len(ids) != 4 or target.get("version_id") != ids[0] or operation is None or \
+            operation.get("rule_id") != "MOVE_LONG_D2_TO_RAM" or operation.get("width") != 4 or \
+            operation.get("effective_address") != TARGET:
+        return False
+    coverage = [item for payload in ram.get("epochs", {}).values()
+                for item in payload.get("coverage", [])]
+    if not coverage:
+        return False
+    covered_target = False
+    for item in coverage:
+        if item.get("trace") != trace or item.get("completeness") != "PROVEN" or \
+                item.get("start_seq", -1) > operation.get("temporal_seq", -1) or \
+                item.get("end_seq", -1) < operation.get("temporal_seq", -1) or \
+                not set(range(TARGET, TARGET + 4)).issubset(set(item.get("addresses", []))) or \
+                not isinstance(item.get("basis_hash"), str) or len(item["basis_hash"]) != 64:
+            return False
+        covered_target = True
+    if not covered_target:
+        return False
+    value_hex = target.get("value_hex")
+    if not isinstance(value_hex, str) or len(value_hex) != 8 or operation.get("value") != int(value_hex, 16):
+        return False
+    previous = operation.get("previous_versions", [])
+    if operation.get("resulting_versions") != ids or len(previous) != 4:
+        return False
+    for offset, version_id in enumerate(ids):
+        version = versions.get(version_id)
+        prior = versions.get(previous[offset])
+        if version is None or prior is None or version.get("status") != "OBSERVED" or \
+                version.get("operation_id") != operation_id or version.get("origin") != "WRITE_OPERATION" or \
+                version.get("address") != TARGET + offset or \
+                version.get("value") != ((operation["value"] >> (8 * (3 - offset))) & 0xFF) or \
+                prior.get("address") != TARGET + offset or prior.get("epoch") != version.get("epoch") or \
+                prior.get("temporal_seq", -1) >= version.get("temporal_seq", -1):
+            return False
+    dependencies = result.get("v2_dependencies", [])
+    if len(dependencies) != 4 or {item.get("target") for item in dependencies} != set(ids) or \
+            any(item.get("source") != operation_id or item.get("role") != "RAM_BYTE_OUTPUT" or
+                item.get("status") != "PROVEN" for item in dependencies):
+        return False
+    checks = result.get("checks", {})
+    return not checks.get("pc2_inference") and not checks.get("address_only_edge")
 
 
 def main(argv=None):

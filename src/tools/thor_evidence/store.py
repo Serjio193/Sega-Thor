@@ -333,10 +333,29 @@ class Store:
                 for item in payload.get("versions", []) + payload.get("operations", []):
                     if item.get("trace") != ram_trace or item.get("epoch") != epoch:
                         raise ValueError("embedded RAM identity disagrees with envelope")
+                operations = payload.get("operations", [])
+                versions = payload.get("versions", [])
+                operation_ids = {item["id"] for item in operations}
+                versions_by_id = {item["id"]: item for item in versions}
+                if len(operation_ids) != len(operations) or len(versions_by_id) != len(versions):
+                    raise ValueError("duplicate RAM operation/version identity")
                 for operation in payload.get("operations", []):
+                    width = operation.get("width")
+                    address = operation.get("effective_address")
+                    value = operation.get("value")
+                    if width not in {1, 2, 4} or type(address) is not int or \
+                            type(value) is not int or not 0 <= address <= 0xFFFFFF or \
+                            address + width - 1 > 0xFFFFFF or not 0 <= value < (1 << (8 * width)):
+                        raise ValueError("RAM operation shape is invalid")
                     if operation["byte_range"] != [operation["effective_address"],
                                                     operation["effective_address"] + operation["width"] - 1]:
                         raise ValueError("RAM operation range identity mismatch")
+                    if len(operation.get("resulting_versions", [])) != width or \
+                            len(operation.get("previous_versions", [])) != width:
+                        raise ValueError("RAM operation output cardinality mismatch")
+                    if type(operation.get("temporal_seq")) is not int or operation["temporal_seq"] < 0 or \
+                            not operation.get("execution_instance") or not operation.get("rule_id"):
+                        raise ValueError("RAM operation execution identity is invalid")
                     operation_payload = {key: operation[key] for key in (
                         "trace", "epoch", "temporal_seq", "execution_instance", "pc",
                         "rule_id", "width", "effective_address", "value", "raw_witnesses",
@@ -362,6 +381,18 @@ class Store:
                     version_payload = {key: version[key] for key in version_keys}
                     if digest({"kind": "ram-byte-version-v2", "value": version_payload}) != version["id"]:
                         raise ValueError("RAM version identity digest mismatch")
+                    if type(version.get("address")) is not int or not 0 <= version["address"] <= 0xFFFFFF or \
+                            type(version.get("value")) is not int or not 0 <= version["value"] <= 0xFF:
+                        raise ValueError("RAM byte version shape is invalid")
+                    prior_id = version.get("previous_version_id")
+                    if prior_id is not None:
+                        prior = versions_by_id.get(prior_id)
+                        if prior is None or prior.get("trace") != ram_trace or prior.get("epoch") != epoch or \
+                                prior.get("address") != version["address"] or \
+                                prior.get("temporal_seq", -1) >= version.get("temporal_seq", -1):
+                            raise ValueError("RAM predecessor is missing, foreign or from the future")
+                    if version.get("operation_id") is None and version.get("origin") == "WRITE_OPERATION":
+                        raise ValueError("RAM write output is missing its producer")
                     row = {"id": version["id"], "trace_id": trace_id, "epoch_no": epoch,
                            "address": version["address"], "version_no": version["version"],
                            "temporal_seq": version["temporal_seq"], "value": version["value"],
@@ -372,10 +403,17 @@ class Store:
                     self._put("ram_byte_version", row)
                 for operation in payload.get("operations", []):
                     for offset, version_id in enumerate(operation["resulting_versions"]):
-                        version = next((item for item in payload.get("versions", [])
-                                        if item["id"] == version_id), None)
-                        if version is None or version.get("epoch") != epoch or version.get("trace") != ram_trace:
-                            raise ValueError("RAM output references an inconsistent version")
+                        version = versions_by_id.get(version_id)
+                        expected_value = (operation["value"] >>
+                                          (8 * (operation["width"] - offset - 1))) & 0xFF
+                        if version is None or version.get("epoch") != epoch or version.get("trace") != ram_trace or \
+                                version.get("operation_id") != operation["id"] or \
+                                version.get("origin") != "WRITE_OPERATION" or \
+                                version.get("address") != operation["effective_address"] + offset or \
+                                version.get("temporal_seq") != operation["temporal_seq"] or \
+                                version.get("value") != expected_value or \
+                                version.get("previous_version_id") != operation["previous_versions"][offset]:
+                            raise ValueError("RAM output references an inconsistent producer/address/value")
                         values = (operation["id"], version_id, operation["effective_address"] + offset,
                                   offset, operation["previous_versions"][offset])
                         prior = self.connection.execute(

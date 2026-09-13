@@ -8103,3 +8103,17 @@ RESULT: `orchestrator.py` and `cli.py` pass deterministic cycle, persistence,
 non-owning Carver merge and CLI tests. SOURCE_OWNED remains
 `1,475,368 / 3,145,728`, delta `0`. V9 is the final autonomous build stage;
 publication SHA and exact CI are recorded after the stage gate.
+
+# 2026-09-13 — THOR Evidence Engine stabilization P0 — REPAIRS IN PROGRESS
+
+REPRODUCED: V2.1-001 accepted fabricated tagged coverage; V2.1-003 accepted a
+wrong RAM producer/output association in SQLite; V2.1-005 accepted an
+under-validated `ram_engine` certificate branch; V2.1-006 allowed forged RAM
+coverage to bypass the FF188A negative oracle.
+
+REPAIRED: coverage bases now require content-attested event hashes and reject
+NOTE/unknown-effect substitutions; SQLite validates byte producer, address,
+big-endian value, predecessor and rollback semantics; the V2 canary validator
+checks certificate, operation/version identities, target outputs and coverage.
+Adversarial regressions are green. Lifecycle remains `REGRESSION_ADDED` until
+the stabilization checkpoint receives exact CI verification.

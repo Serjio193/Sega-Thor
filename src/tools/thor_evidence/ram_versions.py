@@ -17,6 +17,60 @@ def _check_hash(value):
     return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
+def _event_payload(event):
+    return {key: value for key, value in event.items()
+            if key not in {"event_sha256", "basis_sha256"}}
+
+
+def attest_source_events(source_events):
+    """Attach content hashes required by the coverage trust boundary.
+
+    The attestation is only useful when it is carried from a validated capture
+    reader; bare historical tags are deliberately rejected by the certificate
+    constructor below.
+    """
+    result = []
+    for event in source_events:
+        payload = _event_payload(dict(event))
+        item = dict(payload)
+        item["event_sha256"] = _hash(payload)
+        result.append(item)
+    basis = _hash([_event_payload(item) for item in result])
+    return [dict(item, basis_sha256=basis) for item in result]
+
+
+def _validate_attested_events(source_events, trace):
+    if not source_events:
+        raise ValueError("coverage basis requires attested source events")
+    basis_values = {event.get("basis_sha256") for event in source_events}
+    if len(basis_values) != 1 or not _check_hash(next(iter(basis_values))):
+        raise ValueError("coverage basis attestation is missing")
+    payloads = []
+    sequences = set()
+    for event in source_events:
+        if not isinstance(event, dict) or type(event.get("seq")) is not int or \
+                type(event.get("epoch")) is not int or event.get("seq") in sequences:
+            raise ValueError("coverage basis event identity is invalid")
+        if not _check_hash(event.get("event_sha256")) or \
+                event["event_sha256"] != _hash(_event_payload(event)):
+            raise ValueError("coverage basis event hash mismatch")
+        if event.get("kind") not in {"EPOCH_BEGIN", "EPOCH_END", "EXEC", "READ", "WRITE", "SNAPSHOT",
+                                      "NOTE", "INPUT", "PEEK", "ORACLE"}:
+            raise ValueError("coverage basis contains an unknown event kind")
+        effect = event.get("effect_status") or event.get("data", {}).get("effect_status")
+        if effect in {"UNKNOWN", "UNSUPPORTED", "INCOMPLETE"}:
+            raise ValueError("coverage basis contains an unknown instruction effect")
+        data = event.get("data", {})
+        if data.get("alias") or data.get("overlap") or data.get("overlap_range"):
+            raise ValueError("coverage basis contains an unclassified overlap/alias")
+        sequences.add(event["seq"])
+        payloads.append(_event_payload(event))
+    expected = _hash(payloads)
+    if expected != next(iter(basis_values)):
+        raise ValueError("coverage basis digest mismatch")
+    return expected
+
+
 @dataclass(frozen=True)
 class CoverageCertificate:
     """Untrusted metadata claim. It can never authorize a PROVEN result."""
@@ -58,6 +112,7 @@ class VerifiedCoverageCertificate:
             raise ValueError("coverage lineage hashes are required")
         if not decoder_id or not rule_id or not execution_instances:
             raise ValueError("coverage decoder and execution basis are required")
+        _validate_attested_events(source_events, trace)
         bounded = [event for event in source_events
                    if claim.start_seq <= event.get("seq", -1) <= claim.end_seq]
         sequences = [event.get("seq") for event in bounded]
@@ -71,16 +126,18 @@ class VerifiedCoverageCertificate:
         if receipts != {receipt_sha256} or decoders != {decoder_id} or rules != {rule_id}:
             raise ValueError("coverage basis is missing checked lineage metadata")
         expected = tuple(execution_instances)
-        available = {str(seq) for seq in sequences}
+        available = {str(event.get("seq")) for event in bounded if event.get("kind") == "EXEC"}
         available.update(str(event.get("execution_instance")) for event in bounded
-                         if event.get("execution_instance") is not None)
+                         if event.get("kind") == "EXEC" and event.get("execution_instance") is not None)
         if any(str(item) not in available for item in expected):
             raise ValueError("coverage execution basis is outside interval")
         basis = {"trace": trace, "epoch": epoch, "start": claim.start_seq,
                  "end": claim.end_seq, "addresses": list(claim.addresses),
                  "raw_artifact_hash": raw_artifact_hash, "receipt_sha256": receipt_sha256,
                  "decoder_id": decoder_id, "rule_id": rule_id,
-                 "execution_instances": list(expected), "events": bounded}
+                 "execution_instances": list(expected), "events": bounded,
+                 "attested_basis_sha256": next(iter({event["basis_sha256"]
+                                                      for event in source_events}))}
         return cls(claim.certificate_id, trace, epoch, claim.start_seq, claim.end_seq,
                    tuple(claim.addresses), raw_artifact_hash, receipt_sha256,
                    decoder_id, rule_id, expected, _hash(basis))
