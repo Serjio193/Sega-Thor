@@ -47,6 +47,7 @@ def _validate_attested_events(source_events, trace):
         raise ValueError("coverage basis attestation is missing")
     payloads = []
     sequences = set()
+    complete_epochs = set()
     for event in source_events:
         if not isinstance(event, dict) or type(event.get("seq")) is not int or \
                 type(event.get("epoch")) is not int or event.get("seq") in sequences:
@@ -61,10 +62,14 @@ def _validate_attested_events(source_events, trace):
         if effect in {"UNKNOWN", "UNSUPPORTED", "INCOMPLETE"}:
             raise ValueError("coverage basis contains an unknown instruction effect")
         data = event.get("data", {})
+        if event.get("kind") == "EPOCH_END" and data.get("reason") == "COMPLETE":
+            complete_epochs.add(event["epoch"])
         if data.get("alias") or data.get("overlap") or data.get("overlap_range"):
             raise ValueError("coverage basis contains an unclassified overlap/alias")
         sequences.add(event["seq"])
         payloads.append(_event_payload(event))
+    if not complete_epochs:
+        raise ValueError("coverage basis has no complete epoch boundary")
     expected = _hash(payloads)
     if expected != next(iter(basis_values)):
         raise ValueError("coverage basis digest mismatch")

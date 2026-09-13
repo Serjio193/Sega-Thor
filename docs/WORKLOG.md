@@ -8129,3 +8129,8 @@ REPRODUCED: the assembled canary retained a legacy V1 target graph beside V2 RAM
 
 REPAIRED: the derived certificate now emits a content-identified causal_bridge; validation requires the legacy target/value and its checked MOVE_LONG edge, the concrete RAM operation, all four byte outputs, and the same witness sequence. The adversarial bridge-detachment regression is green. This is a bounded integration contract; it does not promote unknown causal inputs or whole-program provenance.
 
+
+# 2026-09-13 — THOR Evidence Engine stabilization P2 — VERIFIED LOCALLY
+
+COVERAGE CLOSURE: attested bases now require a COMPLETE EPOCH_END marker, while retaining sequence, epoch, decoder, rule, event-hash, overlap and unknown-effect checks. An attested capture with the completion marker removed is rejected. V0–V9 direct tests remain green; exact CI publication follows the bounded checkpoint.
+

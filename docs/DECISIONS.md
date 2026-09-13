@@ -1384,3 +1384,21 @@ operation, or whole-program provenance.
 
 **Evidence:** `test_ram_target_requires_v1_v2_bridge` and the dedicated
 `canary_validation.py` validator.
+
+# ADR-0060 — completed epoch boundary is part of coverage attestation
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** Event hashes and contiguous sequence numbers alone could still
+describe a truncated prefix that had been relabeled as a complete coverage
+interval.
+
+**Decision:** A verified coverage basis must carry an attested `EPOCH_END` with
+`data.reason == COMPLETE`; missing completion, NOTE substitution, unknown
+effects, alias or overlap markers fail closed.
+
+**Consequences:** The coverage contract distinguishes a sealed complete epoch
+from a syntactically coherent fragment. The contract still does not claim
+global writer completeness or causal input provenance.
+
+**Evidence:** `test_coverage_rejects_note_substitution_and_unknown_effect`.

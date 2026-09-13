@@ -27,11 +27,15 @@ def trace_id():
 
 
 def basis(start, end, epoch=1, execution=None, decoder="test-decoder", rule="MOVE.B"):
-    return attest_source_events([{"seq": seq, "epoch": epoch, "kind": "EXEC", "receipt_sha256": "b" * 64,
+    events = [{"seq": seq, "epoch": epoch, "kind": "EXEC", "receipt_sha256": "b" * 64,
              "decoder_id": decoder, "rule_id": rule,
              "data": {"pc": 0x1000 + seq},
              **({"execution_instance": execution(seq)} if execution else {})}
-            for seq in range(start, end + 1)])
+            for seq in range(start, end + 1)]
+    events.append({"seq": end + 1, "epoch": epoch, "kind": "EPOCH_END",
+                   "receipt_sha256": "b" * 64, "decoder_id": decoder,
+                   "rule_id": rule, "data": {"reason": "COMPLETE"}})
+    return attest_source_events(events)
 
 
 def coverage(trace, end=100, addresses=range(0x100, 0x110)):
@@ -275,6 +279,20 @@ def test_coverage_rejects_note_substitution_and_unknown_effect():
         except ValueError:
             continue
         raise AssertionError("coverage must reject NOTE/unknown-effect substitution")
+    truncated = [event for event in basis(0, 2) if event["kind"] != "EPOCH_END"]
+    truncated = attest_source_events([{key: value for key, value in event.items()
+                                       if key not in {"event_sha256", "basis_sha256"}}
+                                      for event in truncated])
+    try:
+        VerifiedCoverageCertificate.from_capture(
+            CoverageCertificate("truncated", 0, 2, (0x910,), trace), trace=trace,
+            epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+            decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("1",),
+            source_events=truncated)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("attested truncated capture must fail closed")
 
 
 def test_sqlite_rejects_wrong_producer_output_association():

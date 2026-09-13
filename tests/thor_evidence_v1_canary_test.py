@@ -97,6 +97,10 @@ def _ram_candidate():
                                    "data": {"pc": 0xA372},
                                    **({"execution_instance": "exec"} if seq == 1 else {})}
                                   for seq in range(11)])
+    source.append({"seq": 11, "epoch": 1, "kind": "EPOCH_END",
+                   "receipt_sha256": "b" * 64, "decoder_id": "decoder",
+                   "rule_id": "MOVE_LONG_D2_TO_RAM", "data": {"reason": "COMPLETE"}})
+    source = attest_source_events(source)
     engine.add_coverage(VerifiedCoverageCertificate.from_capture(
         CoverageCertificate("bridge", 0, 10, tuple(range(TARGET, TARGET + 4)), trace),
         trace=trace, epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
