@@ -81,6 +81,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto65_test.py)
     add_test(NAME oasis_re_thor_evidence_auto66_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto66_test.py)
+    add_test(NAME oasis_re_thor_evidence_auto67_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_test.py)
     add_test(NAME oasis_re_m12_sprite_reconstruction_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_reconstruction_test.py)
     add_test(NAME oasis_re_m12_sprite_context_catalog_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_context_catalog_test.py)

@@ -23,6 +23,19 @@ chain engine. Its regression is
 `docs/reports/THOR_M12_AUTO66_MULTI_SCENARIO_CAMPAIGN.md` and ignored runtime
 evidence is under `build/thor-evidence/auto66`.
 
+# THOR M12 AUTO67 live opportunistic RE
+
+`src/tools/thor_evidence/auto67_live.py` launches the canonical ROM with the
+developer-only live sampler, owns the atomic Dispatcher, bounded rolling-window
+accounting, free worker pool, claims/merges, and snapshot-backed operator view.
+`src/tools/thor_evidence/capture/live_opportunistic.lua` performs only minimal
+frame/bus sampling and fixed-ring updates inside emulator callbacks. The view
+is served from the same launcher and reads `*.view.json`; it has no raw event
+backlog and cannot claim or process work. `tests/thor_evidence_auto67_test.py`
+covers claims, known/active collision handling, worker return, bounded overwrite,
+and 1/8/16 worker configuration. The validation and evidence are recorded in
+`docs/reports/THOR_M12_AUTO67_LIVE_OPPORTUNISTIC_RE.md`.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and

@@ -8346,3 +8346,18 @@ reuses. No focused runtime or ownership promotion was justified.
 OWNERSHIP: SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%`, delta
 `0`. No ROM/assets were added. See
 `docs/reports/THOR_M12_AUTO66_MULTI_SCENARIO_CAMPAIGN.md`.
+
+# 2026-09-13 — M12-AUTO67 live opportunistic RE — validation in progress
+
+TASK: Replace scenario/campaign-driven runtime dispatch with a developer-only
+live human-gameplay sampler. Preserve a bounded rolling context, prevent raw
+backlog growth, atomically lease fresh work to configurable workers, return
+workers on known/merged/waiting/proven/blocked results, and expose the same
+bounded state through an operator visualization.
+
+ACCEPTANCE: real BizHawk launcher; gameplay continues while workers operate;
+at least two workers receive distinct current work; same-session known/merge
+feedback is visible; rolling-window overwrite occurs with raw backlog zero;
+capture overhead and baseline are measured; AUTO65/AUTO66, full-layout,
+Windows Debug/Release, GNU build/link/tests, diff-check, and file-limit gates
+remain green. No ownership promotion is implied by live observation.

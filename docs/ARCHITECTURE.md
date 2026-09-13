@@ -35,6 +35,20 @@ metrics. It may consume a sealed report for deterministic receipt regeneration,
 but does not treat that replay as new runtime evidence. The tool remains
 developer-only and cannot write SOURCE_OWNED or production runtime state.
 
+## AUTO67 live opportunistic RE boundary
+
+`src/tools/thor_evidence/auto67_live.py` is the single developer-only live
+launcher and Dispatcher for human gameplay sampling. It owns a fixed rolling
+runtime window, one atomic claim authority, bounded per-worker mailboxes and
+configurable worker counts of 1/2/4/8/16/32/64. It intentionally has no raw
+event FIFO: when workers are busy, Lua overwrites unclaimed observations and
+the Dispatcher later chooses from the current window. Lua callbacks only
+normalize and append minimal events; static/provenance work remains outside
+BizHawk. The same launcher publishes a bounded status snapshot and serves the
+operator dashboard, which reads snapshots without participating in claims,
+workers, or persistence. `live_opportunistic.lua` is developer-only and never
+promotes ownership or mutates guest state.
+
 ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
 existing controlled BizHawk harness. Immutable capture events, temporal
 byte/register versions and scoped relations are distinct models. Python/SQLite

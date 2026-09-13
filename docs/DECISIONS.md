@@ -1511,3 +1511,26 @@ The first accepted campaign stops after the repository's two useful scenarios:
 the AUTO65 capture is the fixed-point starting point, and the scheduler selects
 the distinct idle scenario, which adds one bounded ROM-activity branch. A new
 savestate or gameplay state is required before further scenario coverage.
+
+# ADR-0067 — Live opportunistic RE machine and snapshot operator view
+
+Date: 2026-09-13
+
+Status: Accepted for M12 developer-only evidence tooling.
+
+AUTO67 replaces scenario-driven runtime dispatch with current human-gameplay
+sampling. The emulator publishes a fixed rolling window of minimal events;
+unclaimed observations are overwritten rather than placed in a persistent raw
+event queue. One Dispatcher atomically performs preliminary identity, known
+coverage and active-claim checks, then leases work through one mailbox per
+worker. Investigations and worker leases are separate, so WAITING_RUNTIME,
+KNOWN, MERGED, PROVEN, BLOCKED and EXHAUSTED work releases its worker.
+
+The operator view is served by the same launcher and reads bounded status
+snapshots only. UI publication is outside callbacks and does not hold the
+Dispatcher claim lock while workers run. Live observation remains non-owning;
+M12 promotion contracts and canonical byte-exact reconstruction remain
+authoritative.
+
+Evidence: `tests/thor_evidence_auto67_test.py` and
+`docs/reports/THOR_M12_AUTO67_LIVE_OPPORTUNISTIC_RE.md`.
