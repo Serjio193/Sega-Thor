@@ -134,6 +134,32 @@ CREATE TABLE IF NOT EXISTS v4_dependency (
   target_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('VALUE','ADDRESS','CONTROL','EXECUTION')),
   rule_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS live_session (
+  id TEXT PRIMARY KEY, rom_sha256 TEXT NOT NULL, scenario_key TEXT NOT NULL,
+  started_at TEXT NOT NULL, ended_at TEXT, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS live_context (
+  id TEXT PRIMARY KEY, session_id TEXT NOT NULL REFERENCES live_session(id),
+  context_key TEXT NOT NULL, first_frame INTEGER, payload TEXT NOT NULL,
+  UNIQUE(session_id,context_key)
+);
+CREATE TABLE IF NOT EXISTS live_observation (
+  id TEXT PRIMARY KEY, rom_sha256 TEXT NOT NULL, observation_key TEXT NOT NULL UNIQUE,
+  kind TEXT NOT NULL, pc TEXT, address TEXT, first_session_id TEXT NOT NULL REFERENCES live_session(id),
+  last_session_id TEXT NOT NULL REFERENCES live_session(id), hits INTEGER NOT NULL,
+  payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS live_investigation (
+  id TEXT PRIMARY KEY, observation_id TEXT NOT NULL REFERENCES live_observation(id),
+  durable_key TEXT NOT NULL UNIQUE, status TEXT NOT NULL, visits INTEGER NOT NULL,
+  payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS live_chain (
+  chain_hash TEXT PRIMARY KEY, rom_sha256 TEXT NOT NULL,
+  canonical_payload TEXT NOT NULL, first_session_id TEXT NOT NULL REFERENCES live_session(id),
+  last_session_id TEXT NOT NULL REFERENCES live_session(id), times_observed INTEGER NOT NULL,
+  last_seen_frame INTEGER, last_status TEXT NOT NULL, last_provenance TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
 CREATE INDEX IF NOT EXISTS incoming_link ON temporal_link(target);
@@ -144,3 +170,7 @@ CREATE INDEX IF NOT EXISTS v3_register_lookup ON v3_register_version(trace_id,ep
 CREATE INDEX IF NOT EXISTS v3_dependency_target ON v3_dependency(target_id);
 CREATE INDEX IF NOT EXISTS v4_domain_lookup ON v4_hardware_version(trace_id,epoch_no,domain,address);
 CREATE INDEX IF NOT EXISTS v4_dependency_target ON v4_dependency(target_id);
+CREATE INDEX IF NOT EXISTS live_context_session ON live_context(session_id);
+CREATE INDEX IF NOT EXISTS live_observation_kind ON live_observation(kind,pc,address);
+CREATE INDEX IF NOT EXISTS live_investigation_status ON live_investigation(status);
+CREATE INDEX IF NOT EXISTS live_chain_status ON live_chain(last_status);

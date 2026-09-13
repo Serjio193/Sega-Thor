@@ -28,6 +28,16 @@ evidence is under `build/thor-evidence/auto66`.
 `src/tools/thor_evidence/auto67_live.py` launches the canonical ROM with the
 developer-only live sampler, owns the atomic Dispatcher, bounded rolling-window
 accounting, free worker pool, claims/merges, and snapshot-backed operator view.
+`src/tools/thor_evidence/auto67_window.py` renders that replaceable snapshot in
+the parallel native operator window; it has no raw-event backlog or Dispatcher
+access. `auto67_status.py` retains file publication and explicit browser
+compatibility mode.
+`auto67_runner.py` contains launcher/process orchestration so the Dispatcher
+remains below the source-file limit; `auto67_profile.py` keeps bounded T0-T8
+dispatch and claim-lock timing samples. The live capsule Lua path records
+bounded frame spikes and filtered-hook installation timing.
+`capture/auto67_hook_metrics.lua` adds bounded hook registration, callback
+self-time, per-frame, and callback-budget diagnostics for AUTO67.2.
 `src/tools/thor_evidence/capture/live_opportunistic.lua` performs only minimal
 frame/bus sampling and fixed-ring updates inside emulator callbacks. The view
 is served from the same launcher and reads `*.view.json`; it has no raw event
@@ -35,6 +45,32 @@ backlog and cannot claim or process work. `tests/thor_evidence_auto67_test.py`
 covers claims, known/active collision handling, worker return, bounded overwrite,
 and 1/8/16 worker configuration. The validation and evidence are recorded in
 `docs/reports/THOR_M12_AUTO67_LIVE_OPPORTUNISTIC_RE.md`.
+The dispatch-only timing proof is recorded in
+`docs/reports/THOR_M12_AUTO67_DISPATCH_PROFILE.md` and its bounded JSON
+counterpart; raw runtime receipts remain under `build/`.
+AUTO67.2 hook scaling and hunt evidence are recorded in
+`docs/reports/THOR_M12_AUTO67_2_HOOK_DIAGNOSIS.md` and its JSON proof.
+`auto67_yield.py` is retained as historical AUTO67.2 code but is no longer
+imported by the AUTO67 acceptance path. Its session-only yield classifications
+and unresolved-context rejection are intentionally disabled. The native
+operator window does not show those classifications; regression coverage for
+the chain-store-first boundary remains in `tests/thor_evidence_auto67_1_test.py`.
+The measured AUTO67.2 yield proof is
+`docs/reports/THOR_M12_AUTO67_2_KNOWLEDGE_YIELD.md` and its bounded JSON
+counterpart; the full ignored runtime artifact is under `build/`.
+
+`auto67_persistence.py` is the optional single-writer bridge from completed
+worker chain descriptors to the existing `thor_evidence.store.Store` sidecar.
+It canonicalizes observed causal facts, computes exact SHA-256 chain hashes,
+and keeps a bounded nonblocking queue; it is not a raw-event backlog. The
+native window reports objective chain-store growth and no knowledge-yield
+classification. AUTO67.3 replay evidence and the idempotent sidecar regression are recorded by
+  `tests/thor_evidence_auto67_3_test.py` and the corresponding report under
+  `docs/reports/`. `tests/thor_evidence_auto67_3_identity_audit.py` performs
+  the read-only final canonical identity and `live_chain` database audit
+  against the real proof DB. The authoritative checkpoint is
+  `docs/reports/THOR_M12_AUTO67_3_FINAL_CANONICAL_CHAIN_IDENTITY_CHECKPOINT.md`
+  and its JSON counterpart; earlier AUTO67 iteration reports are historical.
 
 `src/tools/thor_evidence/auto67_status.py` handles bounded, lossy status
 publication and HTTP serving for the existing launcher. The AUTO67 regression
@@ -42,6 +78,15 @@ also exercises slow-disk isolation, nonblocking snapshot contention, and
 bounded/detached history. `THOR_M12_AUTO67_LIVE_OPERATOR_TEST.md` and its JSON
 under `docs/reports/` distinguish failed manual responsiveness from the
 subsequent sparse-capture performance experiment and its coverage limitation.
+
+`src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
+128 KiB capsule pool, bounded command publication, capture freeze/reuse
+metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`
+owns the discovery ring, targeted hooks, per-frame callback budget, and frozen
+capsule binary output. `tests/thor_evidence_auto67_1_test.py` covers exact pool
+shape, the four-capture limit, freeze/reuse, dispatcher release, and bounded
+control state. The experiment report is
+`docs/reports/THOR_M12_AUTO67_1_128K_CAPSULE.md` with its bounded JSON proof.
 
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`

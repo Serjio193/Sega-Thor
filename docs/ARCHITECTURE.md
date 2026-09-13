@@ -54,12 +54,50 @@ separate daemon using one replaceable scalar-status slot and a nonblocking
 try-lock to copy at most 16 recent investigations plus 24 transitions per
 worker. HTTP reads an immutable byte snapshot. Slow UI/disk updates are dropped;
 full investigation records stay with the dispatcher and its final artifact.
+The default operator view is now `auto67_window.py`, a separate native Tk child
+process consuming the same replaceable snapshot file. It renders metrics, workers and
+bounded transition history without HTTP, raw events, claims or persistence.
+Browser serving remains an explicit compatibility mode (`--view-mode browser`).
 `--capture-mode burst` explicitly opts into sparse discovery (64 callback
 entries every 30 frames, removing the hook between bursts). The default
 `continuous` preserves the prior every-16th-write sampling policy. Neither
-policy proves causal completeness. Current AUTO67 workers record unresolved
-observations; the full provenance/static chain engine is not invoked by this
-worker path. Worker lifecycle proof must not be labelled chain closure.
+policy proves causal completeness. Current AUTO67 workers persist bounded
+canonical chain records, which may remain unresolved; the full provenance/static
+chain engine is not invoked by this worker path. Worker lifecycle proof must
+not be labelled chain closure.
+
+AUTO67.2 separates continuous hunting from scarce focused capture. Free workers
+periodically scan the current rolling window and may claim fresh evidence
+without a capsule; a focused BizHawk capture is optional and bounded by the
+configured slot count (default one). Capture-slot exhaustion therefore does
+not block quick checks or analysis, and no old-event queue is introduced.
+Worker stages distinguish `HUNT`, `QUICK_CHECK`, `WAITING_CAPTURE_SLOT`,
+`CAPTURING`, and `ANALYZING`; a returned worker immediately hunts again.
+
+AUTO67.3 attaches `auto67_persistence.py` to the same existing SQLite evidence
+sidecar as a persistent worker-chain store. Worker completion submits one
+immutable bounded chain descriptor through `put_nowait`; one background writer
+transactionally inserts the SHA-256 of its canonical causal payload or updates
+exact-duplicate metadata. Frame, epoch, worker and lease are provenance only
+and cannot create a new chain hash. The live path does not infer relations,
+structure, ownership or SOURCE_OWNED from a seed; the former knowledge-yield
+analyzer is outside the acceptance path. The native view reports only runtime
+health plus objective chain-store growth (`unique`, `session new`, exact
+duplicates, writes, errors, unresolved and rooted). The sidecar is disabled
+unless `--chain-db` (legacy alias `--knowledge-db`) is supplied.
+
+## AUTO67.1 fixed capsule experiment
+
+`auto67_capsule.py` extends the same Dispatcher with exactly sixteen reusable
+128 KiB capsule slots and a maximum of four simultaneous targeted captures.
+`capture/live_capsule.lua` keeps only a 256-entry discovery ring and targeted
+capture metadata in replaceable status snapshots. Capsule commands are a
+bounded replaceable control stream; capsule records are frozen to binary only
+after capture and never enter the UI payload. Target hooks are budgeted per
+frame and removed until the next frame, so a hot PC cannot turn a capsule into
+an unbounded callback load. The capsule path remains developer-only and
+lossy/causal-incomplete by design; it does not write SOURCE_OWNED or invoke
+the production runtime.
 
 ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
 existing controlled BizHawk harness. Immutable capture events, temporal

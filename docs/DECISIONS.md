@@ -1545,3 +1545,70 @@ observed-PC identity or worker return counter constitutes a causal proof.
 AUTO67's current worker path records unresolved observations rather than
 executing the full provenance engine. Completion of that integration is a
 separate outstanding task; this repair does not silently change the RE model.
+
+## AUTO67.1 — Fixed frozen capsule experiment
+
+Date: 2026-09-13
+
+AUTO67.1 keeps the existing rolling-window and claim authority but adds a
+developer-only pool of exactly sixteen reusable 128 KiB capsules. At most four
+capsules can be live targeted captures at once. A capsule freezes before
+analysis, is released on every result including KNOWN/MERGED and unresolved
+outcomes, and returns to FREE for reuse. BizHawk receives bounded targeted
+hooks with a per-frame callback budget; discovery remains a replaceable ring,
+not a raw-event FIFO or per-event UI stream. Capsule records are immutable
+after freeze and are not part of dashboard payloads.
+
+This is an explicit lossy experiment: a 128 KiB capsule and callback budget
+cannot establish causal completeness or chain closure. The existing AUTO67
+dashboard is extended with capsule status and worker history rather than a
+second UI. No production runtime, SOURCE_OWNED bytes, or AUTO68 work is
+introduced.
+
+AUTO67.1 operator correction: the default view is a separate native
+`auto67_window.py` child process consuming the same replaceable status snapshot.
+It is kept outside callbacks, Dispatcher claims, workers and knowledge
+persistence. The prior HTTP dashboard remains available only when explicitly
+requested with `--view-mode browser`; this keeps the operator UI choice from
+changing the live RE data path.
+
+## AUTO67.2 — Continuous hunt with scarce focused capture
+
+The live worker pool must keep hunting current bounded rolling-window evidence
+while focused BizHawk capture slots are occupied. A capsule is optional for a
+lease: when the configured focused-capture limit is reached, the worker takes
+the fresh candidate through quick check and analysis instead of waiting behind
+the hook. The default focused-capture count is one; higher counts remain an
+explicit measurement setting. Sampling remains lossy and never proves absence;
+no raw-event backlog is permitted. The decision is based on the AUTO67.2 real
+run: 16 workers reached peak busy 16, recorded 169 hunt-success assignments
+after returns, and produced no frame over 33 ms with one focused slot.
+
+## AUTO67.3 — Persistent chain store first through the existing sidecar
+
+Date: 2026-09-13
+
+Status: Accepted for M12 developer-only evidence tooling.
+
+The AUTO67.2 in-memory yield ledger was not durable evidence: its generic
+observation/context/edge counters could increase once per lease, and the live
+worker completion path incremented `new_edges` unconditionally. It is disabled
+from the acceptance path. AUTO67.3 keeps the runtime, capsule and dispatcher
+architecture unchanged and establishes persistent completed-chain storage
+before any DB-growth or semantic-yield analysis.
+
+Completed workers hand a compact descriptor to one bounded nonblocking queue.
+Only its background writer opens the existing `Store` connection and extends
+the same SQLite sidecar with live session/context/observation/obligation rows.
+The AUTO67.3 acceptance path is now chain-store-first. The former
+knowledge-yield analyzer and seed/context durable classifications are disabled;
+before worker execution the Dispatcher rejects only an active claim (plus its
+normal already-dispatched window token). A completed worker result becomes an
+immutable canonical chain record. Its SHA-256 hash excludes frame, epoch,
+worker, lease and session identifiers, while those values remain provenance.
+Exact hashes update bounded observation metadata in `live_chain`; the chain body
+is never duplicated and similar chains are not semantically merged. Unresolved
+chains are valid records. The native window reports objective store growth only:
+unique chains, session new, exact duplicates, writes/errors, unresolved and
+rooted counts. No raw-event backlog, second database, dispatcher SQLite call,
+or SOURCE_OWNED promotion is introduced.

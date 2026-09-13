@@ -1,0 +1,59 @@
+{
+  "schema": "oasis.m12.auto67.2.hook-diagnosis.v1",
+  "baseline": "019fed68d7e906daabe184f3b74017c853b78ce3",
+  "filter_location": "native BizHawk registration argument for targeted hooks; discovery hook is global Lua capture",
+  "scale_runs_300_frames": [
+    {"focused_slots": 0, "max_frame_ms": 25, "over_33ms": 0, "over_50ms": 0, "over_100ms": 0, "frame_p95_ms": 17, "frame_p99_ms": 22, "callbacks_per_frame_p95": 0, "wall_seconds": 7.453},
+    {"focused_slots": 1, "max_frame_ms": 23, "over_33ms": 0, "over_50ms": 0, "over_100ms": 0, "frame_p95_ms": 17, "frame_p99_ms": 21, "callbacks_per_frame_p95": 65, "wall_seconds": 7.515},
+    {"focused_slots": 2, "max_frame_ms": 29, "over_33ms": 0, "over_50ms": 0, "over_100ms": 0, "frame_p95_ms": 18, "frame_p99_ms": 22, "callbacks_per_frame_p95": 130, "wall_seconds": 7.469},
+    {"focused_slots": 3, "max_frame_ms": 26, "over_33ms": 0, "over_50ms": 0, "over_100ms": 0, "frame_p95_ms": 18, "frame_p99_ms": 22, "callbacks_per_frame_p95": 195, "wall_seconds": 7.469},
+    {"focused_slots": 4, "max_frame_ms": 35, "over_33ms": 1, "over_50ms": 0, "over_100ms": 0, "frame_p95_ms": 18, "frame_p99_ms": 22, "callbacks_per_frame_p95": 195, "wall_seconds": 7.516}
+  ],
+  "final_real_run": {
+    "artifact": "build/auto67-hook-profile-hunt-1-600-v4.json",
+    "frames": 600,
+    "session_seconds": 12.797,
+    "workers": 16,
+    "worker_pool_prestarted": true,
+    "focused_slots": 1,
+    "leases": 323,
+    "returns": 323,
+    "peak_busy": 16,
+    "hunt_attempts": 1217,
+    "hunt_successes": 168,
+    "focused_capture_requested": 323,
+    "focused_capture_slot_waits": 286,
+    "focused_capture_completed": 1,
+    "callbacks": 4881,
+    "active_hooks_at_close": 0,
+    "raw_event_backlog": "NONEXISTENT",
+    "frame_spikes": {"over_33ms": 0, "over_50ms": 0, "over_100ms": 0, "largest_ms": 26, "largest_frame": 151},
+    "dispatcher": {"dispatch_t0_t8_p50_us": 94, "dispatch_t0_t8_p95_us": 824, "dispatch_t0_t8_max_us": 1176, "claim_lock_p95_us": 34, "claim_lock_max_us": 112},
+    "hook_registration_us": {
+      "discovery_bus_write": {"count": 18, "min": 0, "p50": 0, "p90": 1000, "p95": 7000, "p99": 7000, "max": 7000},
+      "targeted_bus_write": {"count": 9, "min": 0, "p50": 0, "p90": 0, "p95": 0, "p99": 0, "max": 0},
+      "targeted_bus_exec": {"count": 57, "min": 0, "p50": 0, "p90": 0, "p95": 0, "p99": 1000, "max": 1000}
+    },
+    "hook_unregistration_us": {
+      "discovery_bus_write": {"count": 18, "min": 0, "p50": 0, "p90": 0, "p95": 2000, "p99": 2000, "max": 2000},
+      "targeted_bus_write": {"count": 9, "min": 0, "p50": 0, "p90": 0, "p95": 0, "p99": 0, "max": 0},
+      "targeted_bus_exec": {"count": 57, "min": 0, "p50": 0, "p90": 0, "p95": 0, "p99": 1000, "max": 1000}
+    },
+    "callback_classes": {
+      "discovery_bus_write": {"calls": 1152, "total_self_us": 16000, "avg_self_us": 13.889, "self_p95_us": 0, "self_p99_us": 0, "self_max_us": 1000, "calls_per_frame_p95": 0, "calls_per_frame_max": 64},
+      "targeted_bus_write": {"calls": 144, "total_self_us": 7000, "avg_self_us": 48.611, "self_p95_us": 0, "self_p99_us": 1000, "self_max_us": 1000, "calls_per_frame_p95": 1, "calls_per_frame_max": 1},
+      "targeted_bus_exec": {"calls": 3585, "total_self_us": 2000, "avg_self_us": 0.558, "self_p95_us": 0, "self_p99_us": 0, "self_max_us": 0, "calls_per_frame_p95": 65, "calls_per_frame_max": 65}
+    },
+    "callback_metrics": {"callbacks_per_frame_p95": 68, "callbacks_per_frame_max": 132, "callback_self_time_per_frame_p95_us": 1000, "callback_self_time_per_frame_max_us": 1000},
+    "visualization_proof": {"native_operator_window": true, "two_workers_working": true, "worker_returned_idle": true, "known_or_merge_visible": true, "rolling_window_active": true}
+  },
+  "conclusion": {
+    "original_142ms_reproduced": false,
+    "individual_expensive_callback_proven": false,
+    "registration_hitch_proven": false,
+    "dispatcher_primary_cause": false,
+    "diagnostic_status": "142 ms event not reproduced; measured runs exclude dispatcher, claim lock, targeted callback self-time, and hook registration as the demonstrated cause",
+    "smooth_gameplay_observed_with_one_slot": true,
+    "sampling_is_not_absence_proof": true
+  }
+}

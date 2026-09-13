@@ -4,10 +4,11 @@ import json
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from auto67_window import LiveStatusWindow
 
 
 class StatusPublisher:
-    def __init__(self, dispatcher, path, html, port=None):
+    def __init__(self, dispatcher, path, html, port=None, window_enabled=False):
         self.dispatcher = dispatcher
         self.path = path
         self.latest = {}
@@ -16,6 +17,9 @@ class StatusPublisher:
         self.server = None
         self.url = None
         self.dropped = 0
+        self.window = LiveStatusWindow(path) if window_enabled else None
+        if self.window:
+            self.window.start()
         if port is not None:
             publisher = self
 
@@ -44,7 +48,8 @@ class StatusPublisher:
 
     def publish(self, lua_status):
         # One replaceable status slot, never a queue and never raw event rows.
-        self.latest = {key: value for key, value in lua_status.items() if key != "events"}
+        self.latest = {key: value for key, value in lua_status.items()
+                       if key not in {"events", "discovery"}}
 
     def _write(self):
         snapshot = self.dispatcher.snapshot(lightweight=True)
@@ -76,3 +81,5 @@ class StatusPublisher:
         if self.server:
             self.server.shutdown()
             self.server.server_close()
+        if self.window:
+            self.window.stop()

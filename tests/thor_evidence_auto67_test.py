@@ -32,6 +32,14 @@ class Auto67Test(unittest.TestCase):
             time.sleep(0.01)
         self.fail("worker did not return")
 
+    def wait_for_returns(self, dispatcher, count):
+        deadline = time.time() + 5
+        while time.time() < deadline:
+            if dispatcher.snapshot()["metrics"]["worker_returns"] >= count:
+                return
+            time.sleep(0.01)
+        self.fail("workers did not return the burst")
+
     def test_free_workers_claim_different_seeds(self):
         dispatcher = AUTO67.Dispatcher(2, capacity=8, processing_delay=0.01)
         dispatcher.start()
@@ -43,7 +51,7 @@ class Auto67Test(unittest.TestCase):
         finally:
             dispatcher.stop()
 
-    def test_known_replay_and_active_collision_do_not_lease(self):
+    def test_active_collision_is_only_preworker_rejection(self):
         dispatcher = AUTO67.Dispatcher(2, capacity=8, processing_delay=0.05)
         dispatcher.start()
         try:
@@ -54,9 +62,9 @@ class Auto67Test(unittest.TestCase):
             dispatcher.ingest(event(4, address="0x200"))
             time.sleep(0.05)
             metrics = dispatcher.snapshot()["metrics"]
-            self.assertEqual(metrics["worker_leases"], 1)
+            self.assertEqual(metrics["worker_leases"], 2)
             self.assertGreaterEqual(metrics["active_collisions"], 1)
-            self.assertTrue(metrics["same_session_known_replay"])
+            self.assertEqual(metrics["known_rejected_before_dispatch"], 0)
         finally:
             dispatcher.stop()
 
@@ -160,6 +168,23 @@ class Auto67Test(unittest.TestCase):
             release.set()
             if publisher:
                 publisher.stop()
+            dispatcher.stop()
+
+    def test_dispatch_profile_records_burst_without_large_dispatch_stall(self):
+        dispatcher = AUTO67.Dispatcher(16, capacity=512, processing_delay=0)
+        dispatcher.start()
+        try:
+            for index in range(512):
+                dispatcher.ingest(event(index, address=f"0x{index + 0x400:X}"))
+            self.wait_for_returns(dispatcher, 512)
+            profile = dispatcher.snapshot()["dispatch_profile"]
+            self.assertGreaterEqual(profile["sample_count"], 512)
+            for stats in profile["stages_us"].values():
+                self.assertEqual(set(stats), {"min", "p50", "p95", "p99", "max"})
+            self.assertLess(profile["stages_us"][
+                "T0_T8_dispatch_to_worker_start_us"]["p95"], 50000)
+            self.assertLess(profile["claim_lock_us"]["p95"], 50000)
+        finally:
             dispatcher.stop()
 
 

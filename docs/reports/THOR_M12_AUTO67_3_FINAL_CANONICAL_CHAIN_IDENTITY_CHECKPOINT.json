@@ -1,0 +1,61 @@
+{
+  "authoritative": true,
+  "schema": "oasis.m12.auto67.3.final-canonical-chain-identity-checkpoint.v1",
+  "date": "2026-09-14",
+  "requested_base_commit": "124c80c0a1c3cef95f7d646f3a2c35ceae472b74",
+  "pre_checkpoint_head": "f95cc7df1fba523527a53dfaf53dc886439bc50e",
+  "scope": "AUTO67.1/AUTO67.2/AUTO67.3 final checkpoint; no architecture change; no AUTO68",
+  "implementation": {
+    "database_schema_version": "oasis.m12.auto67.chain-session.v1",
+    "table": "live_chain",
+    "identity": "SHA-256 of canonical JSON containing only observed causal fields and explicit chain_steps/causal_facts/unresolved_frontier/terminal_root when present",
+    "provenance_excluded_from_identity": ["frame", "epoch", "worker_id", "lease_id", "session_id", "wall_clock", "sequence"],
+    "write_path": "worker -> bounded put_nowait descriptor -> background Store writer -> SQLite transaction",
+    "queue_capacity": 16384,
+    "raw_event_backlog": "NONEXISTENT",
+    "semantic_relations": 0,
+    "source_owned_delta": 0,
+    "auto68_started": false
+  },
+  "identity_audit": {
+    "positive": {
+      "canonical_serialization_identical": true,
+      "sha256_chain_hash_identical": true,
+      "provenance_changed_while_identity_held": true,
+      "varied_only": ["frame", "epoch", "worker_id", "lease_id", "session_id", "wall_clock"]
+    },
+    "negative": {
+      "representative_stored_hash": "0021b554ba740db3edc6327dbd7b0a5d8e5bee1ce04218f5eca8d36c6c1ea711",
+      "stored_observed_fields": ["address", "kind", "pc"],
+      "applicable_real_causal_fields": {
+        "pc": {"canonical_differs": true, "hash_differs": true},
+        "address": {"canonical_differs": true, "hash_differs": true}
+      },
+      "unavailable_fields_skipped": ["caller/predecessor PC", "reader/writer PC", "source/destination", "pointer target", "consumer/producer", "selector/value", "terminal/root state", "unresolved frontier"]
+    }
+  },
+  "database_inspection": {
+    "database": "build/thor-evidence/auto67-3/persistent-chain-proof-v3.sqlite",
+    "live_chain_records": 264,
+    "unique_hashes": 264,
+    "duplicate_hash_groups": 0,
+    "chain_body_bytes": {"min": 48, "median": 73, "max": 73},
+    "unresolved": 264,
+    "rooted": 0,
+    "top_repeated_observation_counts": [705, 642, 492, 467, 120, 120, 120, 120, 118, 118],
+    "unique_constraint": "live_chain.chain_hash PRIMARY KEY",
+    "orphan_chain_records_after_restart": 0
+  },
+  "real_bizhawk_replay_proof": {
+    "emulator": "BizHawk 2.11.1 / GenPlus-gx",
+    "workers_configured": 16,
+    "runs": [
+      {"savestate": "QuickSave1", "frames": 1200, "leases": 3368, "returns": 3368, "unique_chain_inserts": 214, "exact_duplicates": 3154, "queue_drops": 0, "db_errors": 0, "peak_busy": 16, "duplicate_active_claims": 0, "rolling_window_overwrites": 1184, "raw_backlog": "NONEXISTENT", "frame_max_ms": 32, "frame_over_50ms": 0, "avg_seed_age_ms": 6.658, "max_seed_age_ms": 16},
+      {"savestate": "QuickSave1", "same_database": true, "frames": 1200, "leases": 3353, "returns": 3353, "unique_chain_inserts": 39, "exact_duplicates": 3314, "queue_drops": 0, "db_errors": 0, "peak_busy": 16, "duplicate_active_claims": 0, "rolling_window_overwrites": 1184, "raw_backlog": "NONEXISTENT", "frame_max_ms": 32, "frame_over_50ms": 0, "avg_seed_age_ms": 5.807, "max_seed_age_ms": 16},
+      {"savestate": "QuickSave4", "same_database": true, "frames": 1200, "leases": 3346, "returns": 3346, "unique_chain_inserts": 11, "exact_duplicates": 3335, "queue_drops": 0, "db_errors": 0, "peak_busy": 16, "duplicate_active_claims": 0, "rolling_window_overwrites": 1184, "raw_backlog": "NONEXISTENT", "frame_max_ms": 37, "frame_over_50ms": 0, "avg_seed_age_ms": 5.935, "max_seed_age_ms": 31}
+    ],
+    "totals": {"unique_chains": 264, "historical_recoverable_chains": 0, "queue_drops": 0, "db_errors": 0, "duplicate_active_claims": 0, "raw_backlog": "NONEXISTENT", "frame_max_ms": 37, "frame_over_50ms": 0, "semantic_relations_witnessed": 0}
+  },
+  "validation": {"identity_audit": "PASS", "python_auto67_tests": "22/22 PASS", "legacy_evidence_tests": "v0/v1-gate/v2-ram/v3/v4/v9 PASS", "ctest_auto67_helpers": "3/3 PASS", "debug_build": "PASS", "release_build": "PASS", "source_file_limit": "PASS", "git_diff_check": "PASS", "emulator_responsive": "PASS"},
+  "supersedes": ["THOR_M12_AUTO67_PERSISTENT_CHAIN_STORE_FIRST", "THOR_M12_AUTO67_2_HOOK_DIAGNOSIS", "THOR_M12_AUTO67_2_KNOWLEDGE_YIELD", "THOR_M12_AUTO67_3_PERSISTENT_KNOWLEDGE_YIELD"]
+}

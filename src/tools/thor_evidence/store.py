@@ -2,6 +2,7 @@
 from pathlib import Path
 import sqlite3
 import json
+import hashlib
 from contextlib import nullcontext
 
 from .events import read_capture
@@ -14,7 +15,8 @@ TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "v3_execution_instance", "v3_register_version", "v3_register_operation",
           "v3_control_fact", "v3_execution_relation", "v3_dependency",
           "v4_root", "v4_resource_transform", "v4_hardware_version",
-          "v4_dma_transfer", "v4_dependency")
+          "v4_dma_transfer", "v4_dependency", "live_session", "live_context",
+          "live_observation", "live_investigation", "live_chain")
 
 
 class Store:
@@ -270,8 +272,53 @@ class Store:
             self.connection.execute("INSERT OR IGNORE INTO witness VALUES (?,?,?)", (relation_id,event_id,status))
         return relation_id
 
+    def begin_live_session(self, session_id, scenario_key, started_at, payload):
+        with self.connection:
+            self._put("live_session", {
+                "id": session_id, "rom_sha256": ROM_SHA, "scenario_key": scenario_key,
+                "started_at": started_at, "ended_at": None, "payload": payload})
+
+    def record_live_chain(self, session_id, chain_hash, canonical_payload, status,
+                          frame, provenance):
+        """Insert a chain or update exact-duplicate metadata atomically."""
+        expected = hashlib.sha256(canonical_payload.encode("utf-8")).hexdigest()
+        if chain_hash != expected:
+            raise ValueError("live chain hash does not match canonical payload")
+        with self.connection:
+            session = self.connection.execute(
+                "SELECT payload FROM live_session WHERE id=?", (session_id,)).fetchone()
+            if session is None:
+                raise ValueError("live session is missing")
+            prior = self.connection.execute(
+                "SELECT times_observed FROM live_chain WHERE chain_hash=?",
+                (chain_hash,)).fetchone()
+            is_new = prior is None
+            if is_new:
+                self.connection.execute(
+                    "INSERT INTO live_chain VALUES (?,?,?,?,?,?,?,?,?)",
+                    (chain_hash, ROM_SHA, canonical_payload, session_id, session_id,
+                     1, frame, status, provenance))
+            else:
+                self.connection.execute(
+                    "UPDATE live_chain SET last_session_id=?, times_observed=times_observed+1, "
+                    "last_seen_frame=?, last_status=?, last_provenance=? WHERE chain_hash=?",
+                    (session_id, frame, status, provenance, chain_hash))
+            metrics = json.loads(session["payload"])
+            metrics["completed_worker_chains"] = metrics.get(
+                "completed_worker_chains", 0) + 1
+            metrics["unique_chain_inserts"] = metrics.get(
+                "unique_chain_inserts", 0) + int(is_new)
+            metrics["exact_duplicate_observations"] = metrics.get(
+                "exact_duplicate_observations", 0) + int(not is_new)
+            metrics.setdefault("chain_status", {})[status] = \
+                metrics.setdefault("chain_status", {}).get(status, 0) + 1
+            self.connection.execute(
+                "UPDATE live_session SET payload=? WHERE id=?",
+                (json.dumps(metrics, sort_keys=True, separators=(",", ":")), session_id))
+            return {"chain_hash": chain_hash, "unique_new": is_new,
+                    "exact_duplicate": not is_new}
+
     def export(self):
-        # Physical import receipts are audit metadata, not logical observations.
         result = {"schema": "thor.evidence.export.v0"}
         for table in TABLES:
             rows = [dict(row) for row in self.connection.execute(f"SELECT * FROM {table}")]
@@ -279,11 +326,7 @@ class Store:
         return canonical(result) + "\n"
 
     def import_provenance(self, result, trace_id):
-        """Persist an engine-derived certificate atomically and idempotently.
-
-        This table is deliberately separate from V0 candidate links.  A row can
-        only be re-imported when its complete canonical payload is identical.
-        """
+        """Persist an engine-derived certificate atomically and idempotently."""
         operations = result.get("operations", [])
         dependencies = result.get("dependencies", [])
         with self.connection:

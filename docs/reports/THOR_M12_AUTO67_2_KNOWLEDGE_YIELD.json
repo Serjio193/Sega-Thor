@@ -1,0 +1,179 @@
+{
+  "schema": "oasis.m12.auto67.2.knowledge-yield.v1",
+  "baseline": "019fed68d7e906daabe184f3b74017c853b78ce3",
+  "working_tree_head": "f95cc7df1fba523527a53dfaf53dc886439bc50e",
+  "run": {
+    "artifact": "build/auto67-knowledge-yield-final.json",
+    "frames": 18000,
+    "session_seconds": 308.031,
+    "workers_configured": 16,
+    "worker_pool_prestarted": true,
+    "capture_mode": "capsule_mode_max_live_1",
+    "raw_event_backlog": 0,
+    "raw_event_backlog_structure": "NONEXISTENT"
+  },
+  "worker_lifecycle": {
+    "leases": 4356,
+    "returns": 4356,
+    "peak_busy": 16,
+    "peak_working": 16,
+    "final_busy": 0,
+    "duplicate_active_claims": 0,
+    "active_collision_rejections": 215,
+    "merge_rejections": 215,
+    "transition_history_retained": 500,
+    "cycles_proven_for_four_workers": 4,
+    "cycle_proof": [
+      {
+        "worker": "W00",
+        "cycles": [
+          {
+            "chain": "c413be6a1ac32d06a33f219d",
+            "states": ["LEASED", "WORKING", "RETURNING", "IDLE"],
+            "result": "BOUNDED_UNRESOLVED"
+          },
+          {
+            "chain": "9bb5a2352d7bb641259563c0",
+            "states": ["LEASED", "WORKING", "RETURNING", "IDLE"],
+            "result": "BOUNDED_UNRESOLVED"
+          }
+        ],
+        "fresh_chain_after_idle": true
+      },
+      {
+        "worker": "W01",
+        "cycles": [
+          {
+            "chain": "dc89dd24e2042e4a15d18995",
+            "states": ["LEASED", "WORKING", "RETURNING", "IDLE"],
+            "result": "BOUNDED_UNRESOLVED"
+          }
+        ],
+        "fresh_chain_after_idle": true
+      },
+      {
+        "worker": "W02",
+        "cycles": [
+          {
+            "chain": "6500b6ce1366c2bd896677f4",
+            "states": ["LEASED", "WORKING", "RETURNING", "IDLE"],
+            "result": "BOUNDED_UNRESOLVED"
+          }
+        ],
+        "fresh_chain_after_idle": true
+      },
+      {
+        "worker": "W03",
+        "cycles": [
+          {
+            "chain": "30cfef0041754e9cc3109616",
+            "states": ["LEASED", "WORKING", "RETURNING", "IDLE"],
+            "result": "BOUNDED_UNRESOLVED"
+          }
+        ],
+        "fresh_chain_after_idle": true
+      }
+    ]
+  },
+  "knowledge_yield": {
+    "classification": "PRODUCTIVE",
+    "useful_leases": 4356,
+    "no_gain_leases": 0,
+    "known_returns": 0,
+    "merged_returns": 0,
+    "bounded_unresolved_no_gain_returns": 0,
+    "exact_duplicate_rejects_before_worker": 51701,
+    "ratios": {
+      "last_100": {"leases": 100, "useful": 100, "no_gain": 0, "useful_percent": 100.0, "no_gain_percent": 0.0},
+      "last_1000": {"leases": 1000, "useful": 1000, "no_gain": 0, "useful_percent": 100.0, "no_gain_percent": 0.0},
+      "whole_session": {"leases": 4356, "useful": 4356, "no_gain": 0, "useful_percent": 100.0, "no_gain_percent": 0.0}
+    },
+    "knowledge_gain_totals": {
+      "observations": 4356,
+      "unique_contexts": 4356,
+      "edges": 4356,
+      "branches": 1016,
+      "roots": 1016,
+      "nodes": 0,
+      "relations": 0,
+      "claims": 0,
+      "conflicts": 0,
+      "advanced_investigations": 0,
+      "closed_investigations": 0,
+      "structures_advanced": 0,
+      "structures_closed": 0,
+      "promotion_candidates": 0,
+      "writers": 0,
+      "readers": 0,
+      "consumers": 0,
+      "producers": 0,
+      "pointer_targets": 0,
+      "selector_values": 0,
+      "domain_members": 0
+    },
+    "knowledge_gain_per_1000_leases": {
+      "observations": 1000.0,
+      "unique_contexts": 1000.0,
+      "edges": 1000.0,
+      "branches": 233.242,
+      "roots": 233.242
+    },
+    "yield_classes": {
+      "DUPLICATE_EXACT": 0,
+      "NEW_ROOT": 1016,
+      "NEW_CONTEXT": 3340,
+      "NEW_EDGE": 0,
+      "NEW_BRANCH": 0,
+      "NEW_WRITER": 0,
+      "NEW_READER": 0,
+      "NEW_CONSUMER": 0,
+      "NEW_PRODUCER": 0,
+      "NEW_POINTER_TARGET": 0,
+      "NEW_SELECTOR_VALUE": 0,
+      "NEW_DOMAIN_MEMBER": 0,
+      "NEW_STRUCTURE_FACT": 0,
+      "KNOWN_COMPLETE": 0,
+      "MERGED_NO_NEW_FACT": 0,
+      "INVESTIGATION_ADVANCED": 0,
+      "INVESTIGATION_CLOSED": 0,
+      "CONFLICT": 0,
+      "BOUNDED_UNRESOLVED_NO_GAIN": 0
+    },
+    "ledger": "bounded_session_in_memory; no persistent Knowledge DB is connected",
+    "persistent_db_delta_available": false
+  },
+  "runtime_health": {
+    "rolling_window_overwrites": 56016,
+    "rolling_window_active": true,
+    "average_seed_age_seconds": 0.004026,
+    "max_seed_age_seconds": 0.016,
+    "emulator_returncode": 0,
+    "emulator_responsive_observed": true,
+    "frame_spikes_over_16ms": 10324,
+    "frame_spikes_over_33ms": 32,
+    "frame_spikes_over_50ms": 4,
+    "largest_frame_spike_ms": 3683.0,
+    "largest_frame_spike_frame": 5686,
+    "largest_frame_spike_leases": []
+  },
+  "visualization_proof": {
+    "native_operator_window": true,
+    "two_workers_working": true,
+    "worker_returned_idle": true,
+    "merge_visible": true,
+    "rolling_window_active": true,
+    "raw_backlog_zero_or_nonexistent": true
+  },
+  "dispatch_profile_us": {
+    "T0_T1_knowledge_lookup": {"min": 3, "p50": 10, "p95": 29, "p99": 43, "max": 109},
+    "T1_T2_claim_acquire": {"min": 1, "p50": 4, "p95": 10, "p99": 16, "max": 66},
+    "T2_T3_capsule_allocate_reset": {"min": 2, "p50": 7, "p95": 47, "p99": 80, "max": 1006},
+    "T3_T4_pre_context_copy": {"min": 0, "p50": 0, "p95": 1, "p99": 2, "max": 94},
+    "T4_T5_filter_submit": {"min": 0, "p50": 0, "p95": 0, "p99": 0, "max": 7},
+    "T5_T6_worker_message_submit": {"min": 0, "p50": 1, "p95": 4, "p99": 7, "max": 27},
+    "T6_T7_claim_lock_release": {"min": 2, "p50": 8, "p95": 36, "p99": 72, "max": 3855},
+    "T7_T8_worker_start": {"min": 3, "p50": 42, "p95": 2038, "p99": 7606, "max": 10303},
+    "T0_T8_dispatch_to_worker_start": {"min": 18, "p50": 185, "p95": 2374, "p99": 7665, "max": 10438},
+    "claim_lock_hold": {"min": 0, "p50": 16, "p95": 76, "p99": 128, "max": 292}
+  }
+}

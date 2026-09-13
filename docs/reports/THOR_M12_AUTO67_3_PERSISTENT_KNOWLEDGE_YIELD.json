@@ -1,0 +1,149 @@
+{
+  "schema": "oasis.m12.auto67.3.persistent-knowledge-proof.v1",
+  "date": "2026-09-13",
+  "requested_base_commit": "124c80c0a1c3cef95f7d646f3a2c35ceae472b74",
+  "tested_head": "f95cc7df1fba523527a53dfaf53dc886439bc50e",
+  "branch": "main",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "audit": {
+    "prior_mechanical_paths": [
+      "AUTO67.2 session observations were keyed by event.seq plus branch/context, so each return could become a new observation.",
+      "AUTO67.2 added a generic branch/context/predecessor/successor edge for every non-MERGED return.",
+      "AUTO67.2 inferred a root from first-seen branch plus missing predecessor.",
+      "AUTO67.2 incremented dispatcher metrics.new_edges unconditionally on worker completion."
+    ],
+    "current_semantics": {
+      "durable_identity_fields": ["kind", "pc", "address", "caller/consumer/source/destination/selector fields when present"],
+      "provenance_only_fields": ["frame", "epoch", "seq"],
+      "relations_require_validated_endpoints_and_witness": true,
+      "source_owned_promotion": false
+    }
+  },
+  "proof_run": {
+    "artifact": "build/auto67-3-final-proof.json",
+    "view_snapshot": "build/auto67-3-final-proof.view.json",
+    "native_operator_window": true,
+    "emulator_command_returncode": 0,
+    "session_seconds": 82.781,
+    "frames": 4800,
+    "workers_configured": 16,
+    "workers_started": 16,
+    "peak_busy": 16,
+    "peak_working": 16,
+    "leases": 1162,
+    "returns": 1162,
+    "busy_at_end": 0,
+    "known_rejected_before_dispatch": 0,
+    "known_discovered_by_worker": 0,
+    "active_collisions": 50,
+    "merges_visible": 50,
+    "merged_returns": 0,
+    "known_returns": 0,
+    "duplicate_active_claims": 0,
+    "rolling_window": {
+      "capacity": 256,
+      "utilization_at_end": 256,
+      "overwrites": 14784
+    },
+    "raw_event_backlog": 0,
+    "raw_event_backlog_structure": "NONEXISTENT",
+    "average_seed_age_seconds": 0.004052,
+    "max_seed_age_seconds": 0.016,
+    "persistent_queue": {
+      "database": "build/thor-evidence/auto67-3/final-proof.sqlite",
+      "submitted": 1162,
+      "persisted": 1162,
+      "dropped": 0,
+      "queue_depth_at_end": 0,
+      "queue_capacity": 512
+    },
+    "knowledge_levels": {
+      "runtime_observations": 15040,
+      "session_contexts_new": 1162,
+      "persistent_observations_inserted": 374,
+      "persistent_observations_deduped": 788,
+      "new_proof_obligations": 374,
+      "investigations_advanced": 0,
+      "investigations_closed": 0,
+      "relations_added": 0,
+      "relations_strengthened": 0,
+      "structures_enumerated": 0,
+      "conflicts": 0,
+      "promotion_candidates": 0,
+      "new_roots": 0,
+      "new_consumers": 0,
+      "new_writers": 0
+    },
+    "outcomes": {
+      "UNRESOLVED": 374,
+      "NEW_CONTEXT_ONLY": 788,
+      "KNOWN_PARTIAL": 0,
+      "CONFLICT": 0
+    },
+    "frame_timing": {
+      "over_16ms": 2896,
+      "over_33ms": 1,
+      "over_50ms": 0,
+      "largest_ms": 35.0,
+      "largest_frame": 4261,
+      "largest_spike_active_leases": [],
+      "over_33ms_active_leases": [],
+      "over_16ms_spikes_with_active_leases": 112
+    },
+    "dispatch_latency_us": {
+      "T0_T1_knowledge_lookup": {"min": 3, "p50": 5, "p95": 15, "p99": 19, "max": 37},
+      "T1_T2_claim_acquire": {"min": 1, "p50": 2, "p95": 6, "p99": 8, "max": 73},
+      "T2_T3_capsule_allocate_reset": {"min": 2, "p50": 3, "p95": 26, "p99": 41, "max": 78},
+      "T3_T4_pre_context_copy": {"min": 0, "p50": 0, "p95": 0, "p99": 1, "max": 3},
+      "T4_T5_filter_submit": {"min": 0, "p50": 0, "p95": 0, "p99": 0, "max": 0},
+      "T5_T6_worker_message_submit": {"min": 0, "p50": 1, "p95": 2, "p99": 4, "max": 20},
+      "T6_T7_claim_lock_release": {"min": 2, "p50": 5, "p95": 25, "p99": 35, "max": 65},
+      "T7_T8_worker_start": {"min": 3, "p50": 9, "p95": 975, "p99": 1139, "max": 1918},
+      "T0_T8_dispatch_to_worker_start": {"min": 16, "p50": 46, "p95": 1016, "p99": 1167, "max": 2032},
+      "claim_lock_hold": {"min": 5, "p50": 9, "p95": 40, "p99": 69, "max": 114}
+    },
+    "worker_cycles": [
+      {"worker": "W00", "complete_cycles_in_bounded_history": 4, "chains": ["066d7ef4bed2ffc9541688f3", "47cc579347c47ca34203e81b", "214e3a4e99b9a8a837d4340f", "0189ae461fcc847cc1962925"]},
+      {"worker": "W01", "complete_cycles_in_bounded_history": 3, "chains": ["100a41939087f0edbb71873b", "c1ff6cf3fa8ff5d17ad287b1", "938f0f0ad2955193f45e99ab"]},
+      {"worker": "W02", "complete_cycles_in_bounded_history": 2, "chains": ["031ce652f714d80d3354a1d3", "bccf2dc843bcad6d58211521"]},
+      {"worker": "W03", "complete_cycles_in_bounded_history": 1, "chains": ["6897e4e148d7dac1bdb450c6"]},
+      {"required_sequence": ["IDLE", "LEASED", "WORKING", "RETURNING", "IDLE"], "result": "BOUNDED_UNRESOLVED"}
+    ]
+  },
+  "same_state_replay": {
+    "database": "build/thor-evidence/auto67-3/state-replay.sqlite",
+    "state": "Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State",
+    "run1": {"frames": 1200, "events": 3760, "leases": 301, "returns": 301, "persistent_new": 209, "persistent_deduped": 92, "queue_dropped": 0},
+    "run2": {"frames": 1200, "events": 3760, "leases": 233, "returns": 233, "persistent_new": 40, "persistent_deduped": 193, "queue_dropped": 0},
+    "interpretation": "Same exact savestate and frame budget; bounded lossy sampling selected some different observations, but the majority of returned descriptors were deduplicated and temporal fields did not create identity changes."
+  },
+  "different_state_replay": {
+    "artifact": "build/auto67-3-different-state.json",
+    "state": "Beyond Oasis (U) [!].Genplus-gx.QuickSave4.State",
+    "frames": 1200,
+    "leases": 141,
+    "returns": 141,
+    "persistent_new": 5,
+    "persistent_deduped": 136,
+    "new_session_contexts": 141,
+    "raw_event_backlog_structure": "NONEXISTENT"
+  },
+  "acceptance": {
+    "real_bizhawk": "PASS",
+    "native_operator_window": "PASS",
+    "workers_prestarted": "PASS",
+    "worker_recycling": "PASS",
+    "persistent_same_sidecar": "PASS",
+    "persistent_queue_nonblocking_and_drained": "PASS",
+    "duplicate_active_claims_zero": "PASS",
+    "raw_backlog_zero_or_nonexistent": "PASS",
+    "relations_not_fabricated": "PASS",
+    "source_owned_promotion": "NOT_PERFORMED",
+    "auto68_started": false
+  },
+  "notes": [
+    "The reported 374 persistent observations are real compact live observations, not 1162 synthetic edges.",
+    "Current live sparse events do not contain validated relation endpoints or witness samples; relation/structure/promotion values remain zero by design.",
+    "No commit or push was performed."
+  ]
+}

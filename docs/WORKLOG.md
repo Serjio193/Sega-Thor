@@ -1,3 +1,44 @@
+# 2026-09-14 — AUTO67.3 final canonical chain identity checkpoint — PASS
+
+TASK: Complete the final AUTO67.3 identity audit and consolidate one
+authoritative checkpoint without changing architecture, adding semantic merge,
+increasing SOURCE_OWNED, or starting AUTO68. Use the real BizHawk v3 proof DB
+and preserve unrelated user artifacts.
+
+RESULT: Positive provenance variation kept canonical serialization and SHA-256
+CHAIN_HASH identical. Negative changes to the stored record's actual `pc` and
+`address` changed both serialization and hash; unavailable causal fields were
+skipped. The reopened sidecar has 264 unique `live_chain` records, 0 duplicate
+hash groups, 48/73/73-byte min/median/max bodies, 264 unresolved, 0 rooted, and
+the `chain_hash` PRIMARY KEY. The authoritative report records 214 unique first
+QuickSave1, 39 unique/3314 duplicate second QuickSave1, 11 new QuickSave4,
+queue drops 0, DB errors 0, raw backlog NONEXISTENT, max frame 37 ms, and
+zero frames over 50 ms. Validation and final push follow this entry.
+
+# 2026-09-13 — AUTO67.1 native operator window — IN PROGRESS
+
+TASK: Replace the default browser operator view with a parallel native window
+over the existing bounded AUTO67 snapshot path. Preserve the live BizHawk,
+Dispatcher, worker and capsule architecture; do not add raw-event backlog or
+start AUTO68.
+
+IMPLEMENTATION: Added `auto67_window.py` as a dedicated Tk native child process
+reading the replaceable snapshot file. It renders the current frame/epoch,
+worker/lease/return metrics, rolling-window overwrite state, seed age, capsule
+state, every worker and bounded recent transitions. `auto67_status.py` publishes
+to the same window without holding worker claims; browser serving is retained as
+an explicit `--view-mode browser` compatibility mode. Default mode is `window`.
+
+CHECKS: Python compilation and AUTO67 regressions pass (`16/16`); source-size
+gate passes (`632` governed files, all <=500 lines); `git diff --check` passes.
+Real BizHawk smoke-test `build/auto67-window-check-4.json` passed with 180
+frames, 16 workers, peak busy 11, 219 leases/219 returns, 22 merges, 180
+rolling-window overwrites, raw backlog `NONEXISTENT`, and 16 free capsules at
+close. The native window process was observed with title `AUTO67 Live Operator`.
+The unbounded manual session is now running with the same native window mode;
+its live snapshot has 575 leases/571 returns, 4 workers busy, 118 merges, and
+raw backlog `NONEXISTENT` at the latest check.
+
 # 2026-09-13 — M12-AUTO64.1 invariant repair — PASS
 
 TASK: Restore the full-layout ASM byte-exact invariant and make the GNU/Linux
@@ -8384,3 +8425,202 @@ feedback is visible; rolling-window overwrite occurs with raw backlog zero;
 capture overhead and baseline are measured; AUTO65/AUTO66, full-layout,
 Windows Debug/Release, GNU build/link/tests, diff-check, and file-limit gates
 remain green. No ownership promotion is implied by live observation.
+
+# 2026-09-13 — M12-AUTO67.1 fixed 128 KiB capsule experiment — in progress
+
+TASK: Extend the existing AUTO67 live launcher and operator view with exactly
+16 reusable 128 KiB targeted-capture capsules, at most four simultaneous live
+captures, bounded per-frame callback budgets, and no raw-event FIFO. Measure
+clean/discovery/1/2/4-capsule BizHawk runs, then keep the launcher available for
+a real manual gameplay check. Do not change SOURCE_OWNED or start AUTO68.
+
+ACCEPTANCE: prove exact capsule shape, worker/capsule lifecycle, bounded
+discovery overwrite, raw backlog zero/nonexistent, callback and wall-time
+behavior, and human-session responsiveness without fabricating transitions.
+The final report and JSON proof are written only after the live session ends.
+
+AUTOMATED RESULT SO FAR: the 240-frame control completed in 6.388 s; discovery
+only in 6.281 s; capsule-1/2/4 in 6.438/6.297/6.297 s. Targeted callbacks per
+frame were 24.38/48.75/71.50 respectively, versus zero for discovery-only.
+The 4-capsule run recorded 26 leases and 26 returns, 26 capsule reuses, peak
+busy 8, and raw backlog zero. A first unbudgeted diagnostic reached 496,736
+callbacks by frame 240 and was stopped; the per-frame hook budget reduced this
+without changing the fixed capsule count. Manual BizHawk session remains open
+for operator gameplay acceptance.
+
+# 2026-09-13 — AUTO67.1 live dispatch stall diagnosis and repair
+
+STOP: Human acceptance was stopped after the operator reported moving through
+new rooms while every worker remained IDLE. The evidence was a live, advancing
+BizHawk (`Responding=True`), 220 leases and 220 returns, 24,206 historical
+`known_rejected` decisions, zero `known_by_worker`, 220 unresolved branches,
+and 16 capsules reported with no active captures.
+
+ROOT CAUSE: Dispatcher used one `covered` set as unconditional known state.
+Every `BOUNDED_UNRESOLVED` result was inserted into it, so later occurrences
+were labelled `KNOWN` even though no complete knowledge existed. The 24,206
+rejects in the stopped session therefore came from unresolved poisoning, not
+from `KNOWN_COMPLETE`. A second visibility issue was stale FROZEN capsule
+metadata after Python had already released the slot; the reusable pool itself
+needed explicit state counts.
+
+REPAIR: split complete knowledge from unresolved context history. Only PROVEN
+or explicit KNOWN results populate the complete fast index. Context fingerprints
+include epoch plus available scene/state/caller/consumer/selector/pointer and
+edge fields; a new context is dispatchable after an unresolved observation.
+Decision counters now classify every considered seed, capsule state counts
+expose `capsules_free`, and a bounded `DISPATCH_STARVED_NO_FREE_CAPSULE` alert
+is available. Callback-budget exhaustion remains unresolved and never creates
+complete knowledge.
+
+REPAIR CHECK: deterministic AUTO67.1 tests pass 16/16. A fresh 240-frame real
+BizHawk run recorded 221 dispatched/returned investigations, zero complete
+known rejects, 379 exact unresolved-context rejects, 24 active collisions, 417
+capture-limit deferrals, 221 capsule reuses, all 16 capsules FREE at end, peak
+busy 8, and raw backlog zero. No further human gameplay was requested before
+this diagnosis was recorded; acceptance remains pending a new real session.
+# 2026-09-13 — AUTO67 dispatch critical-path profile — DIAGNOSIS COMPLETE
+
+TASK: Stop development expansion and profile only the path correlated with the
+human-reported gameplay hitch. Measure T0 candidate selection through T8 worker
+start, claim-lock hold time, frame spikes, lease correlation, and bounded
+real-time invariants. Do not start AUTO68 or ask for a human acceptance run
+until an automated burst produces many NEW leases.
+
+IMPLEMENTATION: Kept the sixteen worker threads hot before BizHawk starts,
+kept the fixed 128 KiB capsule storage preallocated with logical reset, removed
+JSON from the compact dispatcher fingerprint path, and changed targeted Lua
+capture from one global per-write scan to bounded address-filtered hooks. Added
+bounded `DispatchProfiler` samples and bounded Lua frame/filter timing; no raw
+event backlog, file/SQLite/UI wait, or synchronous full-capsule clear was added.
+
+AUTOMATED GATE: A synthetic burst of 512 unique NEW events produced 512
+leases. Dispatcher T0-T8 p95 was 27 us with a 2,067 us maximum; claim-lock p95
+was 32 us with an 80 us maximum. The burst completed without a large
+dispatch-correlated stall.
+
+REAL BIZHAWK RUN: `build/auto67-dispatch-profile-600-v2.json` ran 600 frames
+for 12.844 s with the native operator window, 16 prestarted workers, 323
+leases and 323 returns, peak busy 11, rolling-window overwrites 1,496, and raw
+backlog `NONEXISTENT`. Dispatcher T0-T8 was p50/p95/max 94/824/1,176 us;
+claim-lock was 8/34/112 us; T7-T8 worker start was 9/760/1,105 us. The
+filtered-hook callback count fell from 91,348 in the prior run to 13,501.
+The run proved two workers working, a worker returning to idle, and a known or
+merge result visible in the operator proof.
+
+RESULT: The dispatcher critical path is not the source of the observed
+142-ms hitch: the largest real frame spike was frame 424, correlated with
+active leases `L0000022F`, `L00000227`, `L00000231`, and `L0000022A`, while the
+dispatcher path remained below 1.176 ms maximum. The no-capsule control
+`build/auto67-dispatch-control-600-v2.json` reached 600 frames with no >33 ms
+or >50 ms spike and a 23 ms maximum. Therefore smooth-gameplay acceptance is
+NOT PASS: the remaining stall is in the BizHawk-facing targeted capture/hook
+path, outside the measured Python claim/dispatch path. No user test is
+requested and no commit/push was made.
+# 2026-09-13 — AUTO67.2 hook diagnosis and continuous hunt — DIAGNOSIS COMPLETE
+
+TASK: Diagnose targeted BizHawk hook cost and correct the worker model so free
+workers keep hunting current rolling-window evidence while focused capture is
+scarce. Scope is limited to AUTO67.2; no AUTO68 and no raw-event backlog.
+
+IMPLEMENTATION: Added bounded hook inventory/registration/unregistration,
+callback self-time, per-frame callback totals, callback-budget, and worst-frame
+telemetry. Targeted capture filtering is measured as native BizHawk registration
+filtering; discovery remains a separate global burst hook. Free workers now
+enter HUNTING on timeout/return, re-scan current bounded state, and can receive
+leases without a focused capsule when the slot limit is occupied. Default
+focused capture count is one. The native operator view shows hunts, fresh
+candidates, focused slots, active hooks, callbacks/frame, and callback time.
+
+REAL VALIDATION: The comparable 300-frame scale runs used 0/1/2/3/4 focused
+slots. Their maximum frame times were 25/23/29/26/35 ms respectively; only the
+four-slot run crossed 33 ms (one frame), and none crossed 50 ms. The real
+post-change 600-frame run with one focused slot completed in 12.485 s with 16
+workers, peak busy 16, 323 leases, 323 returns, 1,208 hunt attempts, 169 hunt
+successes after returns, 286 slot waits, and no frame over 33/50/100 ms. Raw
+backlog remained `NONEXISTENT`. The native window was launched with BizHawk.
+
+DIAGNOSIS STATUS: The 142-ms spike was not reproduced in the instrumented
+600-frame run; its hook metrics show no expensive individual callback or hook
+registration (targeted register max 1 ms, discovery register max 8 ms), and the
+largest frame was 27 ms. The earlier 142-ms frame therefore remains
+unexplained by this evidence and must not be attributed speculatively. The
+bounded proof is recorded in `docs/reports/THOR_M12_AUTO67_2_HOOK_DIAGNOSIS.*`.
+No commit or push was made.
+
+# 2026-09-13 — AUTO67.2 knowledge yield / anti-churn live proof — COMPLETE
+
+TASK: Add bounded session-only accounting for knowledge yield and exact
+unresolved-context duplicate rejection, then validate it with a real BizHawk
+run. Do not redesign the runtime, capture path, or persistent Knowledge DB.
+
+IMPLEMENTATION: Added `auto67_yield.py` and connected it to existing lease
+returns and pre-dispatch exact-context rejection. Each completed lease now
+publishes `primary_result`, `facts_added_count`, bounded knowledge deltas and
+per-chain churn/productivity counters. The native operator window shows yield
+rates, useful/no-gain windows, exact duplicate rejects, gain/1000, and bounded
+global worker transitions. The ledger explicitly reports that no persistent
+Knowledge DB is connected.
+
+VALIDATION: The real canonical-ROM BizHawk run used 16 prestarted workers and
+the native operator window for 18,000 frames / 308.031 seconds. It recorded
+4,356 leases and 4,356 returns, peak busy 16, duplicate active claims 0,
+51,701 exact duplicate rejects before workers, 215 active-collision merges,
+56,016 rolling-window overwrites, raw backlog `NONEXISTENT`, and average/max
+seed age 4.026/16.000 ms. Four workers have real
+`LEASED -> WORKING -> RETURNING -> IDLE` cycles; W00 has two cycles on two
+fresh chains. Yield was PRODUCTIVE: 4,356 useful, zero no-gain, with 1,016
+NEW_ROOT and 3,340 NEW_CONTEXT results. No KNOWN or MERGED worker return was
+observed; merges were visible as pre-dispatch active-collision rejections.
+
+LIMITATION: The same run recorded four >50 ms frames and a 3,683 ms largest
+frame at frame 5,686 with no associated lease. The proof therefore establishes
+worker recycling and anti-churn behavior, but does not attribute that outlier
+to dispatch. AUTO67.2 yield proof is in
+`docs/reports/THOR_M12_AUTO67_2_KNOWLEDGE_YIELD.{md,json}`. 19/19 AUTO67 tests,
+Python compilation, and `git diff --check` passed. No commit or push was made.
+# 2026-09-13 — AUTO67.3 persistent knowledge integration — IN PROGRESS
+
+TASK: Audit AUTO67.2 yield tautologies and connect real live worker results to
+the existing Evidence Engine SQLite sidecar. Keep AUTO67 runtime, capsules,
+dispatcher and no-raw-backlog boundaries unchanged; do not start AUTO68 or
+promote SOURCE_OWNED.
+
+AUDIT: The prior ledger keyed observations by `(event.seq, branch, context)`,
+added a generic `(branch, context, predecessor, successor)` edge for every
+return, inferred roots from first-seen branches, and `auto67_live.py` raised
+`new_edges` on every completion. These are session bookkeeping, not durable
+relations. AUTO67.3 reports runtime/session novelty separately and persists
+only meaningful live observations plus unresolved obligations.
+
+IMPLEMENTATION: Added the same-sidecar live tables and a bounded, nonblocking
+single-writer bridge. No SQLite, JSON serialization, file write, static
+analysis or worker wait is added to the dispatcher path. Relations, structure,
+promotion and causal closure remain fail-closed when live evidence lacks
+validated endpoints/witnesses.
+# 2026-09-14 — M12 persistent chain store first — PASS
+
+TASK: Move AUTO67 acceptance away from the in-memory knowledge-yield analyzer
+and establish persistent canonical worker-chain storage first. Do not start
+AUTO68, optimize dispatch, or promote SOURCE_OWNED.
+
+IMPLEMENTATION: Added `live_chain` to the existing Evidence Engine SQLite
+sidecar. Worker completion now creates a canonical causal payload from facts
+actually present in the worker input, hashes it with SHA-256, and submits it to
+a bounded nonblocking single-writer queue. The writer performs one transaction:
+insert a new chain body or update exact-duplicate metadata. Frame, epoch,
+worker, lease and session values remain provenance. The dispatcher no longer
+rejects a seed because it was previously KNOWN or unresolved; only active claim
+collision and the normal window dispatch token apply before worker execution.
+The native operator view now shows runtime health and objective chain-store
+growth only; PRODUCTIVE, NEW_ROOT and NEW_CONTEXT are not acceptance metrics.
+
+CHECKS: Historical AUTO67/AUTO67.1/AUTO67.2 artifact audit recovered zero
+complete chain bodies. Three real BizHawk runs with QuickSave1, QuickSave1
+replay against the same DB, and QuickSave4 completed with 10,067 leases and
+returns, zero queue drops, zero DB write errors, zero duplicate active claims,
+and raw backlog `NONEXISTENT`. The same-scenario replay produced 39 unique
+inserts and 3,314 exact duplicates; QuickSave4 added 11 hashes. The final DB
+contains 264 unique unresolved chain records across three sessions and reopens
+cleanly after process exit. Maximum frame spike was 37 ms with zero frames over
+50 ms. AUTO67 tests pass (`22/22`). No commit or push was performed.
