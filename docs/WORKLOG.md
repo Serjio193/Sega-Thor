@@ -8039,3 +8039,13 @@ failed FFFFFF write, duplicate event, SQLite rollback/retry/reopen, and lookup
 timing. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`. V3 remains
 unauthorized; implementation commit `7b054d2bd8fc406eef04a0c62a5cb2b8484dbc4b`
 is complete; publication SHA and CI are recorded after the documentation amend.
+# 2026-09-13 — THOR Evidence Engine V4 ROM/RESOURCE/HARDWARE BRIDGE — PASS
+
+TASK: Build only V4 from the accepted V3 baseline. Add canonical ROM/resource
+roots, `0x3820`/Ancient transform interop, bounded VDP memory domains, DMA,
+cross-domain graph edges and existing-sidecar persistence. Do not start V5.
+
+RESULT: V4 skeleton and tests pass. SOURCE_OWNED remains
+`1,475,368 / 3,145,728`, delta `0`. Known V2.1/V3 defects remain carried and
+V4 timing/alias/IRQ frontiers are explicit. Publication SHA and exact CI are
+recorded in the final gate response.

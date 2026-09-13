@@ -1220,3 +1220,27 @@ engine is not a sound causal proof system. V2.1 defects remain in the known
 defect ledger and V4 is prohibited until the V3 build gate is published.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V3_REGISTER_CONTROL_BUILD.md`.
+
+# ADR-0052 — V4 ROM/resource/hardware cross-domain build bridge
+**Status:** Accepted for V4 BUILD
+**Date:** 2026-09-13
+
+**Context:** V3 provides temporal register/control structure but has no shared
+domain model for canonical ROM roots, resource transforms, DMA or video-memory
+targets. V5 needs a graph boundary that can consume these identities without
+turning bounded observations into ownership or causal proof.
+
+**Decision:** Extend the existing developer-only engine with typed ROM,
+constant, external, RAM/register and hardware roots; checked resource
+transform contracts including the existing `0x3820`/Ancient interop; bounded
+VRAM/CRAM/VSRAM/SAT and DMA nodes; role-preserving cross-domain edges; and
+transactional SQLite persistence in the existing sidecar. New relations remain
+OBSERVED/PROVISIONAL/UNKNOWN/CONFLICT by default and SOURCE_OWNED promotion is
+forbidden.
+
+**Consequences:** V4 can assemble ROM→resource→hardware and RAM/register→DMA
+paths for later static/differential scheduling. It does not establish DMA
+timing, same-frame VDP publication, complete aliases, IRQ causality or proof
+system soundness.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V4_ROM_RESOURCE_HARDWARE.md`.

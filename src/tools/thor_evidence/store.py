@@ -12,7 +12,9 @@ TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "operation_instance", "provenance_dependency", "ram_byte_version",
           "ram_write_operation", "ram_write_output", "ram_coverage",
           "v3_execution_instance", "v3_register_version", "v3_register_operation",
-          "v3_control_fact", "v3_execution_relation", "v3_dependency")
+          "v3_control_fact", "v3_execution_relation", "v3_dependency",
+          "v4_root", "v4_resource_transform", "v4_hardware_version",
+          "v4_dma_transfer", "v4_dependency")
 
 
 class Store:
@@ -123,6 +125,58 @@ class Store:
         rows = {}
         for table in ("v3_execution_instance", "v3_register_version", "v3_register_operation",
                       "v3_control_fact", "v3_execution_relation", "v3_dependency"):
+            rows[table] = [dict(row) for row in self.connection.execute(
+                f"SELECT * FROM {table} WHERE trace_id=? ORDER BY id", (trace_id,))]
+        return rows
+
+    def import_v4(self, payload, trace_id):
+        """Persist a V4 cross-domain graph in the same transactional sidecar."""
+        if payload.get("schema") != "thor.evidence.v4.graph" or payload.get("trace") != trace_id:
+            raise ValueError("V4 graph identity mismatch")
+        rom = payload.get("rom", {})
+        if rom.get("sha256") != ROM_SHA or rom.get("size") != 3145728:
+            raise ValueError("V4 ROM identity mismatch")
+        epochs = set(payload.get("epochs", []))
+        with self.connection:
+            for epoch in epochs:
+                if self.connection.execute("SELECT 1 FROM epoch WHERE trace_id=? AND number=?",
+                                           (trace_id, epoch)).fetchone() is None:
+                    raise ValueError("V4 epoch is not imported")
+            for root in payload.get("roots", []):
+                self._put("v4_root", {"id": root["id"], "trace_id": trace_id,
+                    "epoch_no": root["epoch"], "kind": root["kind"], "root_key": root["key"],
+                    "value": None if root["value"] is None else str(root["value"]),
+                    "status": root["status"], "payload": canonical(root)})
+            for transform in payload.get("transforms", []):
+                self._put("v4_resource_transform", {"id": transform["id"], "trace_id": trace_id,
+                    "epoch_no": transform["epoch"], "routine_pc": transform["routine_pc"],
+                    "decoder_id": transform["decoder_id"], "status": transform["status"],
+                    "payload": canonical(transform)})
+            for version in payload.get("hardware", []):
+                self._put("v4_hardware_version", {"id": version["id"], "trace_id": trace_id,
+                    "epoch_no": version["epoch"], "domain": version["domain"],
+                    "address": version["address"], "width": version["width"],
+                    "value": version["value"], "execution_instance": version["execution_instance"],
+                    "operation_id": version["operation_id"], "status": version["status"],
+                    "payload": canonical(version)})
+            for transfer in payload.get("dma", []):
+                self._put("v4_dma_transfer", {"id": transfer["id"], "trace_id": trace_id,
+                    "epoch_no": transfer["epoch"], "destination_domain": transfer["destination_domain"],
+                    "destination_address": transfer["destination_address"], "length": transfer["length"],
+                    "execution_instance": transfer["execution_instance"], "status": transfer["status"],
+                    "payload": canonical(transfer)})
+            for edge in payload.get("dependencies", []):
+                if edge["role"] not in {"VALUE", "ADDRESS", "CONTROL", "EXECUTION"}:
+                    raise ValueError("invalid V4 dependency role")
+                self._put("v4_dependency", {"id": edge["id"], "trace_id": trace_id,
+                    "source_id": edge["source"], "target_id": edge["target"],
+                    "role": edge["role"], "rule_id": edge["rule_id"],
+                    "status": edge["status"], "payload": canonical(edge)})
+
+    def export_v4(self, trace_id):
+        rows = {}
+        for table in ("v4_root", "v4_resource_transform", "v4_hardware_version",
+                      "v4_dma_transfer", "v4_dependency"):
             rows[table] = [dict(row) for row in self.connection.execute(
                 f"SELECT * FROM {table} WHERE trace_id=? ORDER BY id", (trace_id,))]
         return rows

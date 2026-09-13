@@ -13,4 +13,11 @@ sound evidence.
 | V2.1-005 | High | `canary_engine.py` | `validate_certificate()` has an early V2 branch that bypasses old causal checks. | V3 does not use it as a soundness gate. | No | V3 stabilization |
 | V2.1-006 | Critical | FF188A oracle | Fabricated verified-certificate paths can defeat the historical `INCOMPLETE_CAPTURE` oracle. | FF188A remains an explicit V3 frontier. | No | V3 stabilization |
 
-No SOURCE_OWNED transaction is allowed during V3 BUILD.
+No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
+
+## V4 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V4 | Stabilization |
+|---|---|---|---|---|---|---|
+| V4-001 | Medium | `v4_domains.py` | DMA timing and same-frame VDP publication are not represented by the bounded contract. | DMA remains `PROVISIONAL`; no publication claim is emitted. | No | V4/V9 stabilization |
+| V4-002 | Medium | `v4_domains.py` | Complete register-mapped hardware aliases and IRQ/exception effects are not enumerated. | Domains are explicit and unknown aliases fail closed. | No | V5–V9 evidence expansion |

@@ -109,6 +109,31 @@ CREATE TABLE IF NOT EXISTS v3_dependency (
   target_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('VALUE','ADDRESS','CONTROL','EXECUTION')),
   rule_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS v4_root (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  kind TEXT NOT NULL, root_key TEXT NOT NULL, value TEXT, status TEXT NOT NULL, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,kind,root_key,id)
+);
+CREATE TABLE IF NOT EXISTS v4_resource_transform (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  routine_pc INTEGER NOT NULL, decoder_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v4_hardware_version (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  domain TEXT NOT NULL, address INTEGER NOT NULL, width INTEGER NOT NULL,
+  value INTEGER, execution_instance TEXT, operation_id TEXT NOT NULL, status TEXT NOT NULL,
+  payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v4_dma_transfer (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  destination_domain TEXT NOT NULL, destination_address INTEGER NOT NULL, length INTEGER NOT NULL,
+  execution_instance TEXT, status TEXT NOT NULL, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v4_dependency (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), source_id TEXT NOT NULL,
+  target_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('VALUE','ADDRESS','CONTROL','EXECUTION')),
+  rule_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
 CREATE INDEX IF NOT EXISTS incoming_link ON temporal_link(target);
@@ -117,3 +142,5 @@ CREATE INDEX IF NOT EXISTS ram_version_lookup ON ram_byte_version(trace_id,epoch
 CREATE INDEX IF NOT EXISTS ram_operation_lookup ON ram_write_operation(trace_id,epoch_no,temporal_seq);
 CREATE INDEX IF NOT EXISTS v3_register_lookup ON v3_register_version(trace_id,epoch_no,register_name,temporal_seq);
 CREATE INDEX IF NOT EXISTS v3_dependency_target ON v3_dependency(target_id);
+CREATE INDEX IF NOT EXISTS v4_domain_lookup ON v4_hardware_version(trace_id,epoch_no,domain,address);
+CREATE INDEX IF NOT EXISTS v4_dependency_target ON v4_dependency(target_id);
