@@ -10,7 +10,9 @@ from .identity import ROM_SHA, STATUSES, canonical, digest, identity, location_k
 TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "location", "value_version", "temporal_link", "relation", "witness",
           "operation_instance", "provenance_dependency", "ram_byte_version",
-          "ram_write_operation", "ram_write_output", "ram_coverage")
+          "ram_write_operation", "ram_write_output", "ram_coverage",
+          "v3_execution_instance", "v3_register_version", "v3_register_operation",
+          "v3_control_fact", "v3_execution_relation", "v3_dependency")
 
 
 class Store:
@@ -25,6 +27,105 @@ class Store:
 
     def close(self):
         self.connection.close()
+
+    def import_v3(self, payload, trace_id):
+        """Persist one immutable V3 graph inside the existing sidecar transaction."""
+        if payload.get("schema") != "thor.evidence.v3.graph" or payload.get("trace") != trace_id:
+            raise ValueError("V3 graph identity mismatch")
+        execution = payload.get("execution", {})
+        register = payload.get("register", {})
+        if execution.get("trace") != trace_id or register.get("trace") != trace_id:
+            raise ValueError("V3 component identity mismatch")
+        instances = execution.get("instances", [])
+        epochs = register.get("epochs", {})
+        known = {item["id"] for item in instances}
+        with self.connection:
+            for item in instances:
+                expected = {"trace": item["trace"], "epoch": item["epoch"], "seq": item["seq"],
+                            "pc": item["pc"], "rule_id": item["rule_id"]}
+                if item["id"] != digest({"kind": "thor-v3-execution-instance", "value": expected}):
+                    raise ValueError("V3 execution identity digest mismatch")
+                epoch = int(item["epoch"])
+                self.connection.execute("SELECT 1 FROM epoch WHERE trace_id=? AND number=?",
+                                        (trace_id, epoch)).fetchone() or (_ for _ in ()).throw(
+                                            ValueError("V3 execution epoch is not imported"))
+                self._put("v3_execution_instance", {
+                    "id": item["id"], "trace_id": trace_id, "epoch_no": epoch,
+                    "exec_seq": item["seq"], "pc": item["pc"], "rule_id": item["rule_id"],
+                    "payload": canonical(item)})
+            for epoch_text, block in epochs.items():
+                epoch = int(epoch_text)
+                versions = block.get("versions", [])
+                operations = block.get("operations", [])
+                version_ids = {v["id"] for v in versions}
+                operation_ids = {o["id"] for o in operations}
+                for op in operations:
+                    if op["epoch"] != epoch or op["trace"] != trace_id:
+                        raise ValueError("V3 operation identity mismatch")
+                    if op["execution_instance"] not in known:
+                        raise ValueError("V3 operation execution is missing")
+                    op_value = {key: op[key] for key in (
+                        "trace", "epoch", "temporal_seq", "execution_instance", "pc", "rule_id",
+                        "destination", "bit_offset", "bit_width", "inputs", "dependency_roles",
+                        "status", "witness")}
+                    if op["id"] != digest({"kind": "thor-v3-register-operation", "value": op_value}):
+                        raise ValueError("V3 operation identity digest mismatch")
+                    self._put("v3_register_operation", {
+                        "id": op["id"], "trace_id": trace_id, "epoch_no": epoch,
+                        "temporal_seq": op["temporal_seq"], "execution_instance": op["execution_instance"],
+                        "pc": op["pc"], "rule_id": op["rule_id"], "destination": op["destination"],
+                        "bit_offset": op["bit_offset"], "bit_width": op["bit_width"],
+                        "status": op["status"], "payload": canonical(op)})
+                for version in versions:
+                    if version["epoch"] != epoch or version["trace"] != trace_id:
+                        raise ValueError("V3 version identity mismatch")
+                    if version.get("operation_id") not in operation_ids and version.get("operation_id") is not None:
+                        raise ValueError("V3 version operation is missing")
+                    if version.get("execution_instance") not in known and version.get("execution_instance") is not None:
+                        raise ValueError("V3 version execution is missing")
+                    version_value = {key: version[key] for key in (
+                        "trace", "epoch", "register", "bit_offset", "bit_width", "value", "version_no",
+                        "temporal_seq", "execution_instance", "operation_id", "status",
+                        "previous_version_id", "dependencies", "origin")}
+                    if version["id"] != digest({"kind": "thor-v3-register-version", "value": version_value}):
+                        raise ValueError("V3 version identity digest mismatch")
+                    self._put("v3_register_version", {
+                        "id": version["id"], "trace_id": trace_id, "epoch_no": epoch,
+                        "register_name": version["register"], "bit_offset": version["bit_offset"],
+                        "bit_width": version["bit_width"], "value": version["value"],
+                        "version_no": version["version_no"], "temporal_seq": version["temporal_seq"],
+                        "execution_instance": version.get("execution_instance"),
+                        "operation_id": version.get("operation_id"), "status": version["status"],
+                        "previous_version_id": version.get("previous_version_id"),
+                        "payload": canonical(version)})
+            for relation in execution.get("relations", []):
+                self._put("v3_execution_relation", {
+                    "id": relation["id"], "trace_id": trace_id, "kind": relation["kind"],
+                    "source_id": relation["source"], "target_id": relation["target"],
+                    "status": relation["status"], "payload": canonical(relation)})
+            for fact in execution.get("controls", []):
+                self._put("v3_control_fact", {
+                    "id": fact["id"], "trace_id": trace_id, "execution_id": fact["execution_id"],
+                    "condition_rule": fact["condition_rule"], "branch_execution_id": fact["branch_execution_id"],
+                    "taken": None if fact["taken"] is None else int(fact["taken"]),
+                    "status": fact["status"], "payload": canonical(fact)})
+            for edge in payload.get("dependencies", []):
+                if edge["role"] not in {"VALUE", "ADDRESS", "CONTROL", "EXECUTION"}:
+                    raise ValueError("invalid V3 dependency role")
+                self._put("v3_dependency", {
+                    "id": edge["id"], "trace_id": trace_id, "source_id": edge["source"],
+                    "target_id": edge["target"], "role": edge["role"],
+                    "rule_id": edge["rule_id"], "status": edge["status"],
+                    "payload": canonical(edge)})
+
+    def export_v3(self, trace_id):
+        """Return deterministic persisted rows for reopen/idempotence checks."""
+        rows = {}
+        for table in ("v3_execution_instance", "v3_register_version", "v3_register_operation",
+                      "v3_control_fact", "v3_execution_relation", "v3_dependency"):
+            rows[table] = [dict(row) for row in self.connection.execute(
+                f"SELECT * FROM {table} WHERE trace_id=? ORDER BY id", (trace_id,))]
+        return rows
 
     def _put(self, table, row, key="id"):
         # All table/column identifiers are internal constants, never CLI payload.

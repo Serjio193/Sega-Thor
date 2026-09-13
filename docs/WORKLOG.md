@@ -1,3 +1,20 @@
+# 2026-09-13 — THOR Evidence Engine V3 REGISTER/CONTROL BUILD — PASS
+
+TASK: Assemble the reusable temporal register, execution and local control
+provenance skeleton requested for V3 BUILD. Scope is developer-only and does
+not repair known V2.1 soundness defects, promote SOURCE_OWNED bytes, or begin
+V4.
+
+CHANGES: Added register slice semantics and local rules, execution/call/return
+and control facts, typed graph/export/explain, existing-sidecar SQLite tables,
+known-defect ledger, V3 report/ADR and CTest integration.
+
+SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`. Validation results and
+final SHA: publication commit (exact SHA in the final gate response). Windows Release build and 169/169 non-line-limit CTest
+tests passed; all six evidence helpers passed on Windows and GNU/Linux
+equivalent. The tracked source-size check reported zero violations. Exact
+publication CI is recorded with the final gate response.
+
 # 2026-09-13 — THOR Evidence Engine V2 RAM PROVENANCE — PASS
 
 TASK: Generalize only the proven temporal RAM mechanism into reusable byte

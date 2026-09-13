@@ -76,9 +76,44 @@ CREATE TABLE IF NOT EXISTS ram_coverage (
   start_seq INTEGER NOT NULL, end_seq INTEGER NOT NULL, addresses TEXT NOT NULL,
   evidence_hash TEXT NOT NULL, status TEXT NOT NULL, complete INTEGER NOT NULL, payload TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS v3_execution_instance (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  exec_seq INTEGER NOT NULL, pc INTEGER NOT NULL, rule_id TEXT NOT NULL, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,exec_seq)
+);
+CREATE TABLE IF NOT EXISTS v3_register_version (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  register_name TEXT NOT NULL, bit_offset INTEGER NOT NULL, bit_width INTEGER NOT NULL,
+  value INTEGER, version_no INTEGER NOT NULL, temporal_seq INTEGER NOT NULL,
+  execution_instance TEXT, operation_id TEXT, status TEXT NOT NULL,
+  previous_version_id TEXT, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,register_name,version_no)
+);
+CREATE TABLE IF NOT EXISTS v3_register_operation (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  temporal_seq INTEGER NOT NULL, execution_instance TEXT NOT NULL, pc INTEGER NOT NULL,
+  rule_id TEXT NOT NULL, destination TEXT NOT NULL, bit_offset INTEGER NOT NULL,
+  bit_width INTEGER NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v3_control_fact (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), execution_id TEXT NOT NULL,
+  condition_rule TEXT NOT NULL, branch_execution_id TEXT NOT NULL, taken INTEGER,
+  status TEXT NOT NULL, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v3_execution_relation (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), kind TEXT NOT NULL,
+  source_id TEXT NOT NULL, target_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS v3_dependency (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), source_id TEXT NOT NULL,
+  target_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('VALUE','ADDRESS','CONTROL','EXECUTION')),
+  rule_id TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
 CREATE INDEX IF NOT EXISTS incoming_link ON temporal_link(target);
 CREATE INDEX IF NOT EXISTS provenance_target ON provenance_dependency(target_id);
 CREATE INDEX IF NOT EXISTS ram_version_lookup ON ram_byte_version(trace_id,epoch_no,address,temporal_seq);
 CREATE INDEX IF NOT EXISTS ram_operation_lookup ON ram_write_operation(trace_id,epoch_no,temporal_seq);
+CREATE INDEX IF NOT EXISTS v3_register_lookup ON v3_register_version(trace_id,epoch_no,register_name,temporal_seq);
+CREATE INDEX IF NOT EXISTS v3_dependency_target ON v3_dependency(target_id);

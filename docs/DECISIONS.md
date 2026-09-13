@@ -1198,3 +1198,25 @@ The historical FF188A evidence remains a negative frontier. Global coverage,
 IRQ/input/DMA and V3 provenance remain outside this repair.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V2_1_SOUNDNESS_REPAIR.md`.
+
+# ADR-0051 — V3 register/control provenance build skeleton
+**Status:** Accepted for V3 BUILD
+**Date:** 2026-09-13
+
+**Context:** V2.1 re-audit left known soundness defects open, while the next
+authorized milestone requires reusable register, execution and local control
+structures before stabilization.
+
+**Decision:** Add a developer-only V3 skeleton with temporal D/A register
+slices, checked local M68K rules, explicit execution instances, bounded
+call/return and local control facts, typed dependency roles, RAM interop,
+canonical graph/export and explain APIs. Extend the existing SQLite sidecar;
+do not create a second database. New generalized claims default to
+OBSERVED/PROVISIONAL/UNKNOWN/CONFLICT and no V2 path is widened.
+
+**Consequences:** V3 can represent the FF13CC and one existing execution
+fixture, including partial register writes and address/control roles. The
+engine is not a sound causal proof system. V2.1 defects remain in the known
+defect ledger and V4 is prohibited until the V3 build gate is published.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V3_REGISTER_CONTROL_BUILD.md`.
