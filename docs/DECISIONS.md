@@ -1324,3 +1324,22 @@ the unresolved stream boundary. It does not authorize causal provenance,
 same-value writer completeness or semantic labeling.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V8_HELD_OUT_FRONTIER.md`.
+
+# ADR-0057 — V9 bounded operational M12 cycle
+**Status:** Accepted for V9 BUILD
+**Date:** 2026-09-13
+
+**Context:** V4–V8 provide domain, static, differential, scheduling and
+held-out-frontier components, but no single reproducible workflow persists and
+exports their state.
+
+**Decision:** Add a one-cycle orchestrator and small CLI that import a sealed
+capture into the existing SQLite sidecar, seed and request bounded frontiers,
+merge evidence through the non-owning static bridge, and emit deterministic
+manifests including persistent-store and Carver state. Reject trace splicing and
+keep ownership delta at zero.
+
+**Consequences:** The assembled machine can run and audit one bounded M12 cycle.
+Production UX, retries, causal soundness and stabilization remain post-V9 work.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V9_OPERATIONAL_INTEGRATION.md`.

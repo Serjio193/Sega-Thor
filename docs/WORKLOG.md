@@ -8092,3 +8092,14 @@ pointer entries and retained the unterminated `0x03BDD8` stream as UNKNOWN. The
 runtime observation did not close the static frontier; the join remains
 UNKNOWN/causal false. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`.
 Publication SHA and exact CI are recorded after the stage gate.
+
+# 2026-09-13 — THOR Evidence Engine V9 OPERATIONAL INTEGRATION — PASS
+
+TASK: Build only V9 after the published V8 gate. Assemble capture import,
+persistent SQLite state, bounded scheduler/static/Carver cycle, deterministic
+manifest export and a small CLI workflow. Do not begin stabilization.
+
+RESULT: `orchestrator.py` and `cli.py` pass deterministic cycle, persistence,
+non-owning Carver merge and CLI tests. SOURCE_OWNED remains
+`1,475,368 / 3,145,728`, delta `0`. V9 is the final autonomous build stage;
+publication SHA and exact CI are recorded after the stage gate.

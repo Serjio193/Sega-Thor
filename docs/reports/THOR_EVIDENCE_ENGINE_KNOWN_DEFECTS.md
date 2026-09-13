@@ -45,3 +45,9 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V8 | Stabilization |
 |---|---|---|---|---|---|---|
 | V8-001 | High | `heldout.py` / `03BDD8` | Existing runtime reachability does not close the static unterminated stream or prove its causal join. | Combined result remains UNKNOWN with `causal: false`; no ownership promotion. | No | V9/stabilization |
+
+## V9 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V9 | Stabilization |
+|---|---|---|---|---|---|---|
+| V9-001 | Medium | `orchestrator.py` | One CLI invocation runs one bounded cycle and does not implement multi-cycle retry policy. | Cycle state is deterministic and explicit; callers must schedule subsequent cycles. | No | Post-V9 stabilization |
