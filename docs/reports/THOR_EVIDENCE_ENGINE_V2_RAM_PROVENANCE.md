@@ -3,7 +3,7 @@
 V2 result: **PASS** for the bounded reusable RAM primitive.
 
 BASELINE SHA: `1cf1038fd7b9e09a86421de47b86430689cb525e`.
-FINAL SHA: populated by the publication commit.
+FINAL SHA (implementation commit): `48b3eab1584bfcc58b531dcc7a920a442d0e5bac`.
 
 The implementation is developer-only evidence tooling. It does not alter the
 native runtime, ROM ownership, reverse-engineering map, or SOURCE_OWNED bytes.
