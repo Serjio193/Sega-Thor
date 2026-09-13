@@ -7,6 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src/tools"))
 from thor_evidence.canary_engine import TARGET, validate_certificate
+from thor_evidence.identity import digest
+from thor_evidence.ram_versions import (CoverageCertificate, RamVersionEngine,
+                                         VerifiedCoverageCertificate, attest_source_events)
 
 
 def fixture():
@@ -84,11 +87,64 @@ def test_ram_branch_cannot_bypass_certificate_contract():
     assert not validate_certificate(candidate)
 
 
+def _ram_candidate():
+    trace = "a" * 64
+    engine = RamVersionEngine(trace)
+    engine.begin_epoch(1, 0)
+    source = attest_source_events([{"seq": seq, "epoch": 1, "kind": "EXEC",
+                                   "receipt_sha256": "b" * 64,
+                                   "decoder_id": "decoder", "rule_id": "MOVE_LONG_D2_TO_RAM",
+                                   "data": {"pc": 0xA372},
+                                   **({"execution_instance": "exec"} if seq == 1 else {})}
+                                  for seq in range(11)])
+    engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+        CoverageCertificate("bridge", 0, 10, tuple(range(TARGET, TARGET + 4)), trace),
+        trace=trace, epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+        decoder_id="decoder", rule_id="MOVE_LONG_D2_TO_RAM", execution_instances=("exec",),
+        source_events=source))
+    operation = engine.write(1, 1, "exec", 0xA372, "MOVE_LONG_D2_TO_RAM", 4,
+                             TARGET, 0x00880901)
+    ram = engine.export()
+    queries = [engine.last_writer(1, TARGET + offset, 1).as_dict() for offset in range(4)]
+    legacy = {"id": "legacy", "epoch": 1, "location": {"space": "RAM", "key": TARGET},
+              "value_hex": "00880901"}
+    legacy_edge = {"source": "d2", "target": "legacy", "role": "VALUE",
+                   "rule_id": "MOVE_LONG_D2_TO_RAM", "status": "PROVEN"}
+    target = {"version_id": queries[0]["version_id"], "legacy_version_id": "legacy",
+              "ram_version_ids": [item["version_id"] for item in queries],
+              "ram_operation_id": operation["id"], "value_hex": "00880901"}
+    bridge = {"source": "legacy", "operation": operation["id"],
+              "targets": target["ram_version_ids"], "role": "RAM_BYTE_OUTPUT",
+              "rule_id": "V1_V2_TARGET_BINDING", "status": "PROVEN", "witness_event_id": 1}
+    bridge["id"] = digest({"kind": "canary-causal-bridge", "value": bridge})
+    result = {"schema": "thor.evidence.provenance.v1", "status": "PROVEN",
+              "raw_sha256": trace, "versions": [legacy], "dependencies": [legacy_edge],
+              "target": target, "ram_engine": ram,
+              "v2_dependencies": [{"source": operation["id"], "target": item["version_id"],
+                                   "role": "RAM_BYTE_OUTPUT", "status": item["status"]}
+                                  for item in queries],
+              "causal_bridge": bridge,
+              "checks": {"pc2_inference": False, "address_only_edge": False}}
+    result["certificate_sha256"] = digest(result)
+    return result
+
+
+def test_ram_target_requires_v1_v2_bridge():
+    candidate = _ram_candidate()
+    assert validate_certificate(candidate)
+    broken = copy.deepcopy(candidate)
+    broken["causal_bridge"]["source"] = "detached-legacy"
+    broken["certificate_sha256"] = digest({key: value for key, value in broken.items()
+                                            if key != "certificate_sha256"})
+    assert not validate_certificate(broken)
+
+
 def main():
     test_certificate_accepts_slice_provenance()
     test_negative_cases_are_machine_readable_and_rejected()
     test_epoch_identity_is_not_value_identity()
     test_ram_branch_cannot_bypass_certificate_contract()
+    test_ram_target_requires_v1_v2_bridge()
     print("PASS thor evidence v1 canary")
 
 

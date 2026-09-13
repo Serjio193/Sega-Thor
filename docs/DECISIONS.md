@@ -1364,3 +1364,23 @@ it does not authorize ownership promotion or resolve causal frontiers.
 
 **Evidence:** Stabilization P0 regressions in
 `tests/thor_evidence_v2_ram_test.py` and `tests/thor_evidence_v1_canary_test.py`.
+
+# ADR-0059 — explicit V1/V2 target bridge during stabilization
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** The canary result carried the legacy V1 target graph and concrete
+V2 RAM byte outputs in separate namespaces. A validator that inspected only
+the V2 branch could accept a detached legacy explanation.
+
+**Decision:** Emit and validate one identity-checked `causal_bridge` that binds
+the legacy FF13CC value-version, the concrete MOVE_LONG RAM operation, all four
+byte-version outputs, and the shared write witness. Missing or detached bridge
+data fails closed.
+
+**Consequences:** The bounded canary has an explicit V1-to-V2 handoff. This
+does not infer input causality, access-width capabilities outside the checked
+operation, or whole-program provenance.
+
+**Evidence:** `test_ram_target_requires_v1_v2_bridge` and the dedicated
+`canary_validation.py` validator.
