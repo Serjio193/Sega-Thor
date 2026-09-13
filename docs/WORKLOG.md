@@ -8080,3 +8080,15 @@ RESULT: `frontier.py` and its helper test pass. Whole-ROM requests are rejected,
 non-progress frontiers exhaust after two passes, and scheduler exports remain
 non-owning. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`.
 Publication SHA and exact CI are recorded after the stage gate.
+
+# 2026-09-13 — THOR Evidence Engine V8 HELD-OUT FRONTIER — PASS
+
+TASK: Build only V8 after the published V7 gate. Evaluate one real unknown
+frontier through existing static enumeration plus a ROM-bound runtime receipt,
+preserving UNKNOWN/CONFLICT and forbidding ownership promotion.
+
+RESULT: The canonical `0x03BDA6/0x03BDD8` evaluation produced 11 consumed
+pointer entries and retained the unterminated `0x03BDD8` stream as UNKNOWN. The
+runtime observation did not close the static frontier; the join remains
+UNKNOWN/causal false. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`.
+Publication SHA and exact CI are recorded after the stage gate.

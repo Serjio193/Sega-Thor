@@ -39,3 +39,9 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V7 | Stabilization |
 |---|---|---|---|---|---|---|
 | V7-001 | Medium | `frontier.py` | Ranking scores are deterministic heuristics and are not measured information gain. | Scores are explicit, bounded and never interpreted as proof; each frontier has a two-pass cap. | No | V9/stabilization |
+
+## V8 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V8 | Stabilization |
+|---|---|---|---|---|---|---|
+| V8-001 | High | `heldout.py` / `03BDD8` | Existing runtime reachability does not close the static unterminated stream or prove its causal join. | Combined result remains UNKNOWN with `causal: false`; no ownership promotion. | No | V9/stabilization |

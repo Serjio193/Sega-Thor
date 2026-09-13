@@ -1305,3 +1305,22 @@ fixed points without conflating scheduling with proof. The scores remain a
 heuristic and must be evaluated against a real held-out frontier in V8.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V7_FRONTIER_SCHEDULER.md`.
+
+# ADR-0056 — V8 held-out frontier evaluation
+**Status:** Accepted for V8 BUILD
+**Date:** 2026-09-13
+
+**Context:** V7 scheduling needs a real unknown frontier evaluation to show that
+the assembled machine can obtain bounded static and runtime structure without
+silently resolving the capability.
+
+**Decision:** Evaluate the existing canonical `0x03BDA6/0x03BDD8` frontier using
+the existing static analyzer and a ROM-bound runtime receipt. Join results only
+through an explicit UNKNOWN relation when the runtime observation does not close
+the static termination condition; never promote ownership.
+
+**Consequences:** V8 demonstrates useful machine-derived structure and preserves
+the unresolved stream boundary. It does not authorize causal provenance,
+same-value writer completeness or semantic labeling.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V8_HELD_OUT_FRONTIER.md`.
