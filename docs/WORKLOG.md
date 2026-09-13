@@ -8069,3 +8069,14 @@ RESULT: `differential.py` and its helper test pass. Shared facts are explicitly
 observation-only and causal claims/cross-scenario edges are empty. SOURCE_OWNED
 remains `1,475,368 / 3,145,728`, delta `0`. Publication SHA and exact CI are
 recorded after the stage gate.
+
+# 2026-09-13 — THOR Evidence Engine V7 FRONTIER SCHEDULER — PASS
+
+TASK: Build only V7 after the published V6 gate. Add unresolved-frontier
+inventory, deterministic information/cost/risk ranking, bounded evidence
+requests, two-pass exhaustion and fixed-point reporting without whole-ROM trace.
+
+RESULT: `frontier.py` and its helper test pass. Whole-ROM requests are rejected,
+non-progress frontiers exhaust after two passes, and scheduler exports remain
+non-owning. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`.
+Publication SHA and exact CI are recorded after the stage gate.

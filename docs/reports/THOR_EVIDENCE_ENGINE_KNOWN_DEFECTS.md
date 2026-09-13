@@ -33,3 +33,9 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V6 | Stabilization |
 |---|---|---|---|---|---|---|
 | V6-001 | Medium | `differential.py` | Shared normalized facts do not establish causal equivalence or complete same-value writer sets. | Common results are tagged observation-only with empty causal claims; each graph remains scenario-local. | No | V7/V9 stabilization |
+
+## V7 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V7 | Stabilization |
+|---|---|---|---|---|---|---|
+| V7-001 | Medium | `frontier.py` | Ranking scores are deterministic heuristics and are not measured information gain. | Scores are explicit, bounded and never interpreted as proof; each frontier has a two-pass cap. | No | V9/stabilization |

@@ -1287,3 +1287,21 @@ Repeated address/value observations remain non-causal until a later bounded
 capability closes their writer and timing semantics.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V6_MULTI_SCENARIO_DIFFERENTIAL.md`.
+
+# ADR-0055 — V7 bounded automatic frontier scheduling
+**Status:** Accepted for V7 BUILD
+**Date:** 2026-09-13
+
+**Context:** V6 can compare isolated scenarios but has no deterministic way to
+select the next unresolved evidence request while preventing unbounded tracing.
+
+**Decision:** Add a frontier inventory ranked by information gain, confidence,
+cost and risk; generate only bounded requests with explicit evidence classes;
+and enforce a two-pass non-progress exhaustion policy. Whole-ROM trace requests
+are rejected and scheduler output never promotes ownership.
+
+**Consequences:** Later stages can drive bounded evidence acquisition and detect
+fixed points without conflating scheduling with proof. The scores remain a
+heuristic and must be evaluated against a real held-out frontier in V8.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V7_FRONTIER_SCHEDULER.md`.
