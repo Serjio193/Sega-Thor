@@ -21,3 +21,9 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 |---|---|---|---|---|---|---|
 | V4-001 | Medium | `v4_domains.py` | DMA timing and same-frame VDP publication are not represented by the bounded contract. | DMA remains `PROVISIONAL`; no publication claim is emitted. | No | V4/V9 stabilization |
 | V4-002 | Medium | `v4_domains.py` | Complete register-mapped hardware aliases and IRQ/exception effects are not enumerated. | Domains are explicit and unknown aliases fail closed. | No | V5–V9 evidence expansion |
+
+## V5 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V5 | Stabilization |
+|---|---|---|---|---|---|---|
+| V5-001 | Medium | `static_bridge.py` | Static records do not by themselves close indirect CFG or exact parser boundaries. | Requests are bounded; certificates remain EVIDENCE_ONLY and unresolved frontiers are retained. | No | V5/V9 stabilization |

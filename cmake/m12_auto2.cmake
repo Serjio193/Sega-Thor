@@ -101,4 +101,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v3_test.py)
     add_test(NAME oasis_thor_evidence_v4_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v4_test.py)
+    add_test(NAME oasis_thor_evidence_v5_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v5_test.py)
 endif()

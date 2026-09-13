@@ -1244,3 +1244,25 @@ timing, same-frame VDP publication, complete aliases, IRQ causality or proof
 system soundness.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V4_ROM_RESOURCE_HARDWARE.md`.
+
+# ADR-0053 — V5 bounded static request and non-owning Carver bridge
+**Status:** Accepted for V5 BUILD
+**Date:** 2026-09-13
+
+**Context:** V4 provides cross-domain runtime/resource identities, while the
+Carver already has deterministic static analyzers and an ownership-preserving
+IntervalDB. The next stage needs a machine-readable handoff without allowing
+static hints to become SOURCE_OWNED bytes.
+
+**Decision:** Add bounded trace/ROM/range-bound static requests, validated
+responses with structure/domain/boundary certificates, runtime-seeded query
+generation, typed static graph merge and Carver evidence export. Static output
+is always evidence-only; requests and responses retain unresolved frontiers and
+never carry automatic ownership or promotion transactions.
+
+**Consequences:** V5 can route runtime seeds into existing static analyzers and
+return deterministic Carver-compatible evidence while preserving the exact
+manifest ownership metric. Indirect-CFG completeness, parser closure and
+promotion remain separate gates.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V5_STATIC_CARVER_BRIDGE.md`.

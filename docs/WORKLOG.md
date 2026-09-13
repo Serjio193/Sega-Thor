@@ -8049,3 +8049,11 @@ RESULT: V4 skeleton and tests pass. SOURCE_OWNED remains
 `1,475,368 / 3,145,728`, delta `0`. Known V2.1/V3 defects remain carried and
 V4 timing/alias/IRQ frontiers are explicit. Publication SHA and exact CI are
 recorded in the final gate response.
+# 2026-09-13 — THOR Evidence Engine V5 STATIC/CARVER BRIDGE — IN PROGRESS
+
+TASK: Build only V5 after the published V4 gate. Add bounded static
+request/response identities, runtime-seeded query generation, typed static
+certificates, non-owning Carver merge/export and explicit unresolved frontiers.
+
+SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`. V5 validation and
+publication SHA/CI are recorded after the stage gate.
