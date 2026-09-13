@@ -7,7 +7,8 @@ from .identity import ROM_SHA, STATUSES, canonical, identity, location_key
 
 TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "location", "value_version", "temporal_link", "relation", "witness",
-          "operation_instance", "provenance_dependency")
+          "operation_instance", "provenance_dependency", "ram_byte_version",
+          "ram_write_operation", "ram_write_output", "ram_coverage")
 
 
 class Store:
@@ -134,3 +135,50 @@ class Store:
                        "witness_event_id": None if item.get("witness_event_id") is None else str(item["witness_event_id"]),
                        "payload": canonical(item)}
                 self._put("provenance_dependency", row)
+            if result.get("ram_engine") and result["ram_engine"].get("trace") == trace_id:
+                self.import_ram_engine(result["ram_engine"], trace_id)
+
+    def import_ram_engine(self, result, trace_id):
+        """Persist one V2 RAM engine export atomically and idempotently."""
+        if result.get("trace") != trace_id or result.get("schema") != "thor.evidence.ram-v2":
+            raise ValueError("RAM engine trace/schema mismatch")
+        with self.connection:
+            for epoch_text, payload in result.get("epochs", {}).items():
+                epoch = int(epoch_text)
+                for operation in payload.get("operations", []):
+                    row = {"id": operation["id"], "trace_id": trace_id, "epoch_no": epoch,
+                           "temporal_seq": operation["temporal_seq"],
+                           "execution_instance": operation["execution_instance"], "pc": operation["pc"],
+                           "rule_id": operation["rule_id"], "width": operation["width"],
+                           "effective_address": operation["effective_address"],
+                           "byte_start": operation["byte_range"][0], "byte_end": operation["byte_range"][1],
+                           "payload": canonical(operation)}
+                    self._put("ram_write_operation", row)
+                for version in payload.get("versions", []):
+                    row = {"id": version["id"], "trace_id": trace_id, "epoch_no": epoch,
+                           "address": version["address"], "version_no": version["version"],
+                           "temporal_seq": version["temporal_seq"], "value": version["value"],
+                           "status": version["status"], "origin": version["origin"],
+                           "operation_id": version.get("operation_id"),
+                           "previous_version_id": version.get("previous_version_id"),
+                           "payload": canonical(version)}
+                    self._put("ram_byte_version", row)
+                for operation in payload.get("operations", []):
+                    for offset, version_id in enumerate(operation["resulting_versions"]):
+                        values = (operation["id"], version_id, operation["effective_address"] + offset,
+                                  offset, operation["previous_versions"][offset])
+                        prior = self.connection.execute(
+                            "SELECT operation_id,version_id,address,byte_offset,previous_version_id "
+                            "FROM ram_write_output WHERE operation_id=? AND address=?",
+                            (operation["id"], operation["effective_address"] + offset)).fetchone()
+                        if prior is not None and tuple(prior) != values:
+                            raise ValueError("RAM output identity collision")
+                        if prior is None:
+                            self.connection.execute("INSERT INTO ram_write_output VALUES (?,?,?,?,?)", values)
+                for coverage in payload.get("coverage", []):
+                    row = {"certificate_id": coverage["certificate_id"], "trace_id": trace_id,
+                           "epoch_no": epoch, "start_seq": coverage["start_seq"],
+                           "end_seq": coverage["end_seq"], "addresses": canonical(coverage["addresses"]),
+                           "evidence_hash": coverage["evidence_hash"], "status": coverage["status"],
+                           "complete": int(coverage["complete"]), "payload": canonical(coverage)}
+                    self._put("ram_coverage", row, "certificate_id")

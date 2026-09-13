@@ -1,0 +1,19 @@
+{
+  "schema": "thor.evidence.v2.ram-negative.v1",
+  "cases": [
+    "same_address_value_different_epochs",
+    "same_value_overwrite",
+    "missing_intermediate_writer",
+    "one_byte_overlap_inside_long",
+    "word_overlap",
+    "reordered_write_events",
+    "duplicate_event_import",
+    "truncated_coverage",
+    "forged_coverage_certificate",
+    "query_before_writer",
+    "query_after_uncovered_interval",
+    "cross_epoch_writer_leakage",
+    "numeric_value_deduplication",
+    "address_only_provenance_merge"
+  ]
+}

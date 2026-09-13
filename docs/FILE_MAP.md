@@ -1175,3 +1175,14 @@ provenance-dependency tables. Regression and adversarial coverage is in
 is in `cmake/m12_auto2.cmake`. The bounded result is documented in
 `docs/reports/THOR_EVIDENCE_ENGINE_V1_FF13CC_CANARY.md` and governed by
 ADR-0048.
+# THOR Evidence Engine V2 RAM provenance
+
+`src/tools/thor_evidence/ram_versions.py` is the reusable byte-version,
+overlap, epoch and coverage-aware last-writer primitive. The existing
+`schema.sql`/`store.py` sidecar persists RAM versions, write operations,
+operation outputs and coverage certificates. `tests/thor_evidence_v2_ram_test.py`
+and `tests/fixtures/thor_evidence_v2_ram/negative_cases.json` cover the
+fail-closed V2 contract; CTest registration is in `cmake/m12_auto2.cmake`.
+The bounded result is documented in
+`docs/reports/THOR_EVIDENCE_ENGINE_V2_RAM_PROVENANCE.md` and governed by
+ADR-0049.

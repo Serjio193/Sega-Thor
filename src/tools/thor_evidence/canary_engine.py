@@ -11,6 +11,7 @@ from pathlib import Path
 from .events import read_capture
 from .identity import ROM_SHA, canonical, digest
 from .normalize import records
+from .ram_versions import CoverageCertificate, RamVersionEngine
 
 TARGET = 0xFF13CC
 ROOT_ZERO = 0xA438
@@ -96,6 +97,43 @@ def _writer_sequence(path):
                        "value": data.get("value"), "callback_pc": data.get("pc"),
                        "status": "OBSERVED"})
     return writes
+
+
+def _ram_canary_engine(raw_hash, events, static_map):
+    """Run the selected A372 writes through the reusable V2 byte engine."""
+    engine = RamVersionEngine(raw_hash)
+    engine.begin_epoch(1, start_seq=0)
+    engine.begin_epoch(2, start_seq=116)
+    scope = tuple(range(TARGET, TARGET + 4))
+    for epoch, end in ((1, 114), (2, 231)):
+        engine.add_coverage(CoverageCertificate(
+            certificate_id=f"a372-dense-epoch-{epoch}", start_seq=0 if epoch == 1 else 116,
+            end_seq=end, addresses=scope, evidence_hash=raw_hash), epoch=epoch)
+    for epoch in (1, 2):
+        epoch_events = _events_for_epoch(events, epoch)
+        exec_by_seq = {e["seq"]: e for e in epoch_events if e["kind"] == "EXEC"}
+        for event in epoch_events:
+            data = event["data"]
+            if event["kind"] != "WRITE" or data.get("address") != TARGET:
+                continue
+            exec_event = exec_by_seq.get(data.get("exec_seq"))
+            if exec_event is None:
+                raise ValueError("A372 write lacks explicit EXEC witness")
+            engine.write(epoch, event["seq"], f"epoch-{epoch}-exec-{data['exec_seq']}",
+                         0xA372, "MOVE_LONG_D2_TO_RAM", 4, TARGET, data["value"],
+                         raw_witnesses=[exec_event["seq"], event["seq"]],
+                         decoded_instruction=static_map.get(0xA372))
+    first_write = next(e for e in _events_for_epoch(events, 1)
+                       if e["kind"] == "WRITE" and e["data"].get("address") == TARGET)
+    queries = [engine.last_writer(1, TARGET + offset, first_write["seq"]).as_dict()
+               for offset in range(4)]
+    if any(item["status"] != "PROVEN" for item in queries):
+        raise ValueError("reusable RAM engine failed the V1 canary coverage query")
+    return {"schema": "thor.evidence.ram-v2", "trace": raw_hash,
+            "query_temporal_point": first_write["seq"], "queries": queries,
+            "epochs": {"1": {"versions": engine.versions(1),
+                               "operations": engine.operations(1),
+                               "coverage": engine.coverage(1)}}}
 
 
 def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):
@@ -214,6 +252,7 @@ def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):
               "checks": {"rom_low8_dependency": False, "pc2_inference": False,
                          "address_only_edge": False, "known_answer_graph_import": False,
                          "input_causal_edge": False}}
+    result["ram_engine"] = _ram_canary_engine(raw_hash, events, smap)
     result["certificate_sha256"] = digest(result)
     return result
 

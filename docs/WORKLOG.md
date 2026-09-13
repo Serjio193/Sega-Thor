@@ -1,3 +1,27 @@
+# 2026-09-13 — THOR Evidence Engine V2 RAM PROVENANCE — PASS
+
+TASK: Generalize only the proven temporal RAM mechanism into reusable byte
+versions and coverage-aware last-writer queries. Baseline:
+`1cf1038fd7b9e09a86421de47b86430689cb525e`.
+
+RESULT: `ram_versions.py` now models big-endian byte SSA across byte/word/long
+writes, partial overlap, same-value overwrite, explicit pre-capture roots and
+restore epochs. Last-writer results are PROVEN only under trace-bound complete
+coverage; otherwise the engine returns EXTERNAL_STATE, PRE_CAPTURE_ORIGIN,
+INCOMPLETE_CAPTURE, UNKNOWN_TRANSFORM or CONFLICT. Per-address indexes keep
+bounded queries out of the obvious quadratic path.
+
+V1 REGRESSION: FF13CC is rebuilt through the reusable engine. Four concrete
+byte queries prove `00 88 09 01` and retain the existing provenance branches.
+HELD-OUT: existing FF188A evidence is queried without new coverage and
+correctly returns INCOMPLETE_CAPTURE; no writer is promoted by observation
+alone. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta 0.
+
+VALIDATION: targeted V0/V1/V2 helpers pass; Release CTest and smoke build are
+required next. Debug MSVC retains the pre-existing `std::to_string` failure;
+no unrelated fix is made. No V3, register/control generalization, whole-game
+trace, ROM RE or ownership promotion.
+
 # 2026-09-13 — THOR Evidence Engine V1 FF13CC CANARY — PASS
 
 TASK: Implement the first bounded engine-derived causal provenance slice for

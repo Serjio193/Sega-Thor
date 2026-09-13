@@ -52,7 +52,33 @@ CREATE TABLE IF NOT EXISTS provenance_dependency (
   rule_id TEXT NOT NULL, witness_event_id TEXT, payload TEXT NOT NULL,
   UNIQUE(trace_id,source_id,target_id,role,rule_id)
 );
+CREATE TABLE IF NOT EXISTS ram_byte_version (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  address INTEGER NOT NULL, version_no INTEGER NOT NULL, temporal_seq INTEGER NOT NULL,
+  value INTEGER NOT NULL, status TEXT NOT NULL, origin TEXT NOT NULL, operation_id TEXT,
+  previous_version_id TEXT, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,address,version_no)
+);
+CREATE TABLE IF NOT EXISTS ram_write_operation (
+  id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  temporal_seq INTEGER NOT NULL, execution_instance TEXT NOT NULL, pc INTEGER NOT NULL,
+  rule_id TEXT NOT NULL, width INTEGER NOT NULL, effective_address INTEGER NOT NULL,
+  byte_start INTEGER NOT NULL, byte_end INTEGER NOT NULL, payload TEXT NOT NULL,
+  UNIQUE(trace_id,epoch_no,temporal_seq,id)
+);
+CREATE TABLE IF NOT EXISTS ram_write_output (
+  operation_id TEXT NOT NULL REFERENCES ram_write_operation(id), version_id TEXT NOT NULL REFERENCES ram_byte_version(id),
+  address INTEGER NOT NULL, byte_offset INTEGER NOT NULL, previous_version_id TEXT,
+  PRIMARY KEY(operation_id,address)
+);
+CREATE TABLE IF NOT EXISTS ram_coverage (
+  certificate_id TEXT PRIMARY KEY, trace_id TEXT NOT NULL REFERENCES trace(id), epoch_no INTEGER NOT NULL,
+  start_seq INTEGER NOT NULL, end_seq INTEGER NOT NULL, addresses TEXT NOT NULL,
+  evidence_hash TEXT NOT NULL, status TEXT NOT NULL, complete INTEGER NOT NULL, payload TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
 CREATE INDEX IF NOT EXISTS incoming_link ON temporal_link(target);
 CREATE INDEX IF NOT EXISTS provenance_target ON provenance_dependency(target_id);
+CREATE INDEX IF NOT EXISTS ram_version_lookup ON ram_byte_version(trace_id,epoch_no,address,temporal_seq);
+CREATE INDEX IF NOT EXISTS ram_operation_lookup ON ram_write_operation(trace_id,epoch_no,temporal_seq);

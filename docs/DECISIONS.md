@@ -1155,3 +1155,24 @@ certificate is not a general last-writer proof and does not authorize V2 or
 source ownership.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V1_FF13CC_CANARY.md`.
+# ADR-0049 — Reusable V2 RAM byte versions remain coverage-gated
+**Status:** Accepted for V2 RAM provenance
+**Date:** 2026-09-13
+
+**Context:** V1 proved one FF13CC output through a bounded engine-derived
+chain, but its RAM output versions were still local to the canary builder.
+
+**Decision:** Generalize only RAM byte temporal versions and write operations.
+Represent byte/word/long writes in big-endian physical order, preserve
+previous versions and explicit pre-capture roots, isolate restore epochs, and
+require a trace-bound complete coverage certificate for `PROVEN` last-writer
+results. Return explicit frontiers for gaps, unsupported transforms and
+conflicts. Extend the existing SQLite sidecar; do not create another store.
+Reuse the primitive for the V1 canary and leave the held-out FF188A query at
+`INCOMPLETE_CAPTURE` when existing coverage is insufficient.
+
+**Consequences:** V2 can answer bounded RAM byte last-writer queries without
+numeric-value or address-only identity collapse. Register/control provenance,
+global coverage, IRQ/input causality, ROM RE and V3 remain separate gates.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V2_RAM_PROVENANCE.md`.
