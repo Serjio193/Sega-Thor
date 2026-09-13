@@ -5,7 +5,7 @@ baseline for the first engine-derived provenance query. It does not promote
 ROM ownership, implement V2, or claim general causal completeness.
 
 BASELINE SHA: `c74e68d4a9c8013ca42891e8a5aead865386f91f`.
-FINAL SHA: `6822a57` (full SHA recorded after publication).
+FINAL SHA (implementation commit): `b940a2b017afb3d0147108635a1823866f0cf9ff`.
 The dynamic capture is the sealed two-restore canary run:
 
 | Artifact | Identity |
