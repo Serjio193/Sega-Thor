@@ -180,6 +180,8 @@ def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):
                                   destination, "adda-sign-extend-word"))
     output = addv(_version(epoch, {"space": "RAM", "key": TARGET}, (0, 32),
                           expected, "a372-write-output"))
+    execution_v = addv(_version(epoch, {"space": "REGISTER", "key": "PC"}, (0, 32),
+                                first["data"]["pc"], "execution-instance"))
     # Every operation has a dynamic EXEC witness and the checked static rule.
     for e in selected:
         if e["kind"] == "EXEC" and e["data"]["pc"] in smap:
@@ -196,7 +198,8 @@ def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):
              _edge(d2_high, d2_full, "VALUE", "MERGE_HIGH24", witness(0xA370)),
              _edge(d2_low, d2_full, "VALUE", "MERGE_LOW8", witness(0xA370)),
              _edge(d2_full, output, "VALUE", "MOVE_LONG_D2_TO_RAM", witness(0xA372)),
-             _edge(destination_v, output, "ADDRESS", "MOVE_LONG_A5_POSTINCREMENT", witness(0xA372))]
+             _edge(destination_v, output, "ADDRESS", "MOVE_LONG_A5_POSTINCREMENT", witness(0xA372)),
+             _edge(execution_v, output, "EXECUTION", "EXEC_WITNESS_A372", witness(0xA372))]
     deps.extend(_edge(b, d2_high, "VALUE", "ROM_HIGH24_BYTE", witness(0xA36C)) for b in rom_bytes)
     # The ROM low byte is intentionally absent from the dependency set.
     frontier = [{"capability": c, "status": "UNKNOWN"} for c in
@@ -246,7 +249,8 @@ def validate_certificate(result):
                      "MOVE_LONG_PRESERVE_HIGH24", "MOVE_BYTE_D5_TO_D2_LOW8",
                      "ROM_HIGH24_BYTE", "BEQ_ZERO_SELECTS_A438", "ADDA_BASE_A5",
                      "ADDA_SIGN_EXTEND_WORD", "ADDQ_BYTE_ONE",
-                     "MOVE_WORD_RAM_TO_D5_LOW16", "MOVE_LONG_A5_POSTINCREMENT"}
+                     "MOVE_WORD_RAM_TO_D5_LOW16", "MOVE_LONG_A5_POSTINCREMENT",
+                     "EXEC_WITNESS_A372"}
     if any(d.get("status") != "PROVEN" or d.get("role") not in {"VALUE", "ADDRESS", "CONTROL", "EXECUTION"}
            or d.get("source") not in versions or d.get("target") not in versions for d in deps):
         return False

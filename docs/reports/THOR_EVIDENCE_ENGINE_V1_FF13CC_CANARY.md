@@ -16,7 +16,7 @@ The dynamic capture is the sealed two-restore canary run:
 | raw SHA256 | `e69c73e6c71677066d6a711d5ab1052a27f112fb43f35d243a138b50f499b09` |
 | receipt SHA256 field | `155da3a3d112696805f3dc005d14dc2239ba9db50442697c210fea655abf6657` |
 | checked static producer SHA256 | `33ab59edbb3d9391f834e4848fabb6003dd7e7181cdaaa2182137d584de82e421` |
-| engine certificate SHA256 | `af8dafbf276a527df0e589ca876803c6ed3261d20de65b1a4b4229ae31f1b0e5` |
+| engine certificate SHA256 | `2d60d4986367f0a4b49c9f3f4e219944a78a9492ddfce53ff6bf9709e848b933` |
 
 The capture contains two complete restore epochs. In epoch 1 the selected
 call is bounded by EXEC `A342` through `A436`; six independent `A372` EXEC
