@@ -1,3 +1,31 @@
+# 2026-09-13 — M12-AUTO61 selector child-table streams — PASS WITH ASM BLOCKER
+
+TASK: Resume autonomous M12 ASM reconstruction after the stabilized Evidence
+Engine baseline. Baseline `4ab17d4a7854dab20661c03706d11f1eddf470d8`; acceptance
+was a bounded, evidence-backed ownership increase with no ROM/asset commit and
+no C++ or M13 work.
+
+RESULT: The existing selector/descriptor grammar closes the finite child
+streams for selectors `0..6`, with one `0xFFFF` sentinel per stream and an
+exact 8-byte record width. The first two bytes at `0x03B95C..0x03B95E` are an
+already-owned descriptor alias, so only `0x03B95E..0x03BA46` was promoted as
+`STRUCTURED_DATA_CONFIRMED` (`232` bytes). `SOURCE_OWNED` is now
+`1,475,600 / 3,145,728 = 46.9080607096%`, delta `+232`. The next range
+`0x03BA46..0x03BD86` remains `UNKNOWN`; no semantics were invented.
+
+RECONSTRUCTION: Canonical materialization is byte-exact (`CRC32 C4728225`,
+SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+The exact assembler command was attempted and failed closed on inherited
+duplicate labels `loc_00B856`, `loc_00B912`, `loc_00E2D4`, and `loc_00E7FC` in
+the full layout. This campaign is therefore `BLOCKED_INHERITED_FULL_LAYOUT`,
+not an assembler-pass claim.
+
+VALIDATION: focused helper test passed; Python compilation passed;
+`git diff --check` passed; the source-size check passed; full CTest `177/177`
+passed in Windows Debug, Windows Release, and GNU-equivalent Release. The
+repository CI gate is recorded only after it is actually queried. Generated
+ROM-derived outputs remain ignored.
+
 # 2026-09-13 — THOR Evidence Engine V3 REGISTER/CONTROL BUILD — PASS
 
 TASK: Assemble the reusable temporal register, execution and local control

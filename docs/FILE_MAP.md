@@ -1103,6 +1103,12 @@ canonical ROM contracts without changing ownership. Its regression coverage is
 `cmake/m12_auto2.cmake`. The generated JSON under `build/m12-gfx-runtime/` is
 local ignored evidence and is not repository data.
 
+`src/tools/re_m12_child_tables_promote.py` applies the exact table promotion
+contract to the finite selector child-table streams at `0x03B95E..0x03BA46`,
+preserving the two-byte descriptor alias prefix. Its regression test is
+`tests/re_m12_child_tables_promote_test.py`; generated transaction output
+remains ignored/local.
+
 `src/tools/m12_selector_control_analysis.py` proves the reset/main-dispatch
 source of the `0x03A748` selector handler. `src/tools/m12_relative_table_analysis.py`
 proves the bounded `0x03BDA6` relative-pair consumer grammar and fails closed
