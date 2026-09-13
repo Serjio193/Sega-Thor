@@ -8134,3 +8134,8 @@ REPAIRED: the derived certificate now emits a content-identified causal_bridge; 
 
 COVERAGE CLOSURE: attested bases now require a COMPLETE EPOCH_END marker, while retaining sequence, epoch, decoder, rule, event-hash, overlap and unknown-effect checks. An attested capture with the completion marker removed is rejected. V0–V9 direct tests remain green; exact CI publication follows the bounded checkpoint.
 
+
+# 2026-09-13 — THOR Evidence Engine stabilization P3 — REPAIRS IN PROGRESS
+
+REPAIRED: SQLite RAM import now enforces root-versus-write origin semantics and validates coverage sequence/address shape. A transaction-level regression attempts to reuse a root byte as a write output and confirms rejection with zero persisted operations. Remaining persistence adversarial cases are being audited before the next checkpoint.
+

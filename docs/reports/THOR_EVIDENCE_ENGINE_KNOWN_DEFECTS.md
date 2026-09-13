@@ -64,3 +64,5 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | V2.1-004 | VERIFIED | Legacy V1 target was not required to bind to concrete V2 byte outputs. | Identity-checked causal_bridge and adversarial detachment regression. |
 
 P0 checkpoint: commit 066a5d9c43062369984877ef48ec19adb924e7c3; CI run 34748750039 (success). Windows Release 176/176, GNU/Linux evidence 12/12, direct V0-V9 24/24, SQLite integrity_check=ok. SOURCE_OWNED unchanged (1,475,368 / 3,145,728; delta 0).
+
+P3 checkpoint (local): root/output semantic separation and coverage shape checks are regression-covered; exact CI publication pending.

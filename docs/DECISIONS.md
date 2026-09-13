@@ -1402,3 +1402,21 @@ from a syntactically coherent fragment. The contract still does not claim
 global writer completeness or causal input provenance.
 
 **Evidence:** `test_coverage_rejects_note_substitution_and_unknown_effect`.
+
+# ADR-0061 — RAM SQLite root/output semantic separation
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** RAM persistence validated hashes and output references but did not
+fully reject a root byte being repurposed as a write output.
+
+**Decision:** Import requires root versions to have an allowed root origin and
+no predecessor; operation-bound versions must be WRITE_OPERATION outputs at
+the operation temporal sequence. Coverage intervals and addresses are also
+shape-checked before insertion.
+
+**Consequences:** SQLite cannot silently reinterpret initial state as a writer
+or accept malformed coverage bounds. Transaction rollback remains the failure
+boundary.
+
+**Evidence:** `test_sqlite_rejects_root_as_write_output`.

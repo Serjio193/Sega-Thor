@@ -384,6 +384,18 @@ class Store:
                     if type(version.get("address")) is not int or not 0 <= version["address"] <= 0xFFFFFF or \
                             type(version.get("value")) is not int or not 0 <= version["value"] <= 0xFF:
                         raise ValueError("RAM byte version shape is invalid")
+                    operation_id = version.get("operation_id")
+                    if operation_id is None:
+                        if version.get("origin") not in {"PRE_CAPTURE_ORIGIN", "EXTERNAL_STATE",
+                                                          "RESET_INITIALIZATION"} or \
+                                version.get("previous_version_id") is not None:
+                            raise ValueError("RAM root version semantics are invalid")
+                    else:
+                        operation = next((item for item in payload.get("operations", [])
+                                          if item["id"] == operation_id), None)
+                        if version.get("origin") != "WRITE_OPERATION" or operation is None or \
+                                version.get("temporal_seq") != operation.get("temporal_seq"):
+                            raise ValueError("RAM output producer semantics are invalid")
                     prior_id = version.get("previous_version_id")
                     if prior_id is not None:
                         prior = versions_by_id.get(prior_id)
@@ -429,7 +441,11 @@ class Store:
                                 "addresses", "raw_artifact_hash", "receipt_sha256", "decoder_id",
                                 "rule_id", "execution_instances", "basis_hash", "completeness"}
                     if not required <= set(coverage) or coverage["trace"] != ram_trace or \
-                       coverage["epoch"] != epoch or coverage["completeness"] != "PROVEN":
+                       coverage["epoch"] != epoch or coverage["completeness"] != "PROVEN" or \
+                       type(coverage["start_seq"]) is not int or type(coverage["end_seq"]) is not int or \
+                       coverage["start_seq"] > coverage["end_seq"] or not coverage["addresses"] or \
+                       any(type(address) is not int or not 0 <= address <= 0xFFFFFF
+                           for address in coverage["addresses"]):
                         raise ValueError("unverified or inconsistent RAM coverage")
                     row = {"certificate_id": coverage["certificate_id"], "trace_id": trace_id,
                            "epoch_no": epoch, "start_seq": coverage["start_seq"],

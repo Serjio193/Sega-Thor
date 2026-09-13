@@ -324,6 +324,35 @@ def test_sqlite_rejects_wrong_producer_output_association():
         store.close()
 
 
+def test_sqlite_rejects_root_as_write_output():
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        capture = root / "capture.jsonl"
+        write_capture(capture, header(), events())
+        store = Store(root / "evidence.sqlite")
+        trace = store.import_capture(capture)
+        engine = RamVersionEngine(trace)
+        engine.begin_epoch(1, 0)
+        engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+            CoverageCertificate("root-output", 0, 3, (0x920,), trace),
+            trace=trace, epoch=1, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+            decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("1",),
+            source_events=basis(0, 3, rule="MOVE.B")))
+        engine.write(1, 1, "1", 0x10, "MOVE.B", 1, 0x920, 0x11)
+        bad = json.loads(json.dumps(engine.export()))
+        root_id = next(item["id"] for item in bad["epochs"]["1"]["versions"]
+                       if item.get("operation_id") is None)
+        bad["epochs"]["1"]["operations"][0]["resulting_versions"] = [root_id]
+        try:
+            store.import_ram_engine(bad, trace)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("RAM roots must not become write outputs")
+        assert store.connection.execute("SELECT COUNT(*) FROM ram_write_operation").fetchone()[0] == 0
+        store.close()
+
+
 def main():
     test_overlap_same_value_and_big_endian_versions()
     test_epoch_isolation_and_initial_frontier()
@@ -337,6 +366,7 @@ def main():
     test_unattested_historical_tags_cannot_create_verified_coverage()
     test_coverage_rejects_note_substitution_and_unknown_effect()
     test_sqlite_rejects_wrong_producer_output_association()
+    test_sqlite_rejects_root_as_write_output()
     print("PASS thor evidence v2 ram")
 
 
