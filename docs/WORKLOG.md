@@ -8057,3 +8057,15 @@ certificates, non-owning Carver merge/export and explicit unresolved frontiers.
 
 SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`. V5 validation and
 publication SHA/CI are recorded after the stage gate.
+
+# 2026-09-13 — THOR Evidence Engine V6 MULTI-SCENARIO DIFFERENTIAL — PASS
+
+TASK: Build only V6 after the published V5 gate. Add controlled scenario
+identities, isolated per-scenario graphs, neutral-repeat and motivated-alternate
+validation, and deterministic COMMON/scenario-specific manifests without
+cross-run temporal splicing.
+
+RESULT: `differential.py` and its helper test pass. Shared facts are explicitly
+observation-only and causal claims/cross-scenario edges are empty. SOURCE_OWNED
+remains `1,475,368 / 3,145,728`, delta `0`. Publication SHA and exact CI are
+recorded after the stage gate.

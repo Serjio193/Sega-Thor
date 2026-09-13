@@ -27,3 +27,9 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V5 | Stabilization |
 |---|---|---|---|---|---|---|
 | V5-001 | Medium | `static_bridge.py` | Static records do not by themselves close indirect CFG or exact parser boundaries. | Requests are bounded; certificates remain EVIDENCE_ONLY and unresolved frontiers are retained. | No | V5/V9 stabilization |
+
+## V6 frontier entries
+
+| ID | Severity | Module | Reproduced symptom | Temporary containment | Blocks V6 | Stabilization |
+|---|---|---|---|---|---|---|
+| V6-001 | Medium | `differential.py` | Shared normalized facts do not establish causal equivalence or complete same-value writer sets. | Common results are tagged observation-only with empty causal claims; each graph remains scenario-local. | No | V7/V9 stabilization |

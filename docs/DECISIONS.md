@@ -1266,3 +1266,24 @@ manifest ownership metric. Indirect-CFG completeness, parser closure and
 promotion remain separate gates.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V5_STATIC_CARVER_BRIDGE.md`.
+
+# ADR-0054 — V6 isolated multi-scenario differential
+**Status:** Accepted for V6 BUILD
+**Date:** 2026-09-13
+
+**Context:** V5 can route bounded static evidence but cannot compare controlled
+neutral repeats with motivated alternate arms without risking cross-capture
+temporal splicing.
+
+**Decision:** Add scenario identities bound to environment, trace and arm;
+retain an independent graph per scenario; classify exact normalized fact
+repetition as observation-only; and reject graph edges whose endpoints leave
+their scenario. Differential exports must contain no causal claims or automatic
+ownership changes.
+
+**Consequences:** V6 supplies deterministic COMMON and scenario-specific
+manifests while preserving event provenance references and scenario isolation.
+Repeated address/value observations remain non-causal until a later bounded
+capability closes their writer and timing semantics.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V6_MULTI_SCENARIO_DIFFERENTIAL.md`.
