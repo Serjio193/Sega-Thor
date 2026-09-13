@@ -11,7 +11,8 @@ from pathlib import Path
 from .events import read_capture
 from .identity import ROM_SHA, canonical, digest
 from .normalize import records
-from .ram_versions import CoverageCertificate, RamVersionEngine
+from .ram_versions import (CoverageCertificate, RamVersionEngine,
+                            VerifiedCoverageCertificate)
 
 TARGET = 0xFF13CC
 ROOT_ZERO = 0xA438
@@ -99,27 +100,49 @@ def _writer_sequence(path):
     return writes
 
 
-def _ram_canary_engine(raw_hash, events, static_map):
+def _ram_canary_engine(raw_hash, events, static_map, receipt_sha256):
     """Run the selected A372 writes through the reusable V2 byte engine."""
     engine = RamVersionEngine(raw_hash)
     engine.begin_epoch(1, start_seq=0)
     engine.begin_epoch(2, start_seq=116)
     scope = tuple(range(TARGET, TARGET + 4))
-    for epoch, end in ((1, 114), (2, 231)):
-        engine.add_coverage(CoverageCertificate(
-            certificate_id=f"a372-dense-epoch-{epoch}", start_seq=0 if epoch == 1 else 116,
-            end_seq=end, addresses=scope, evidence_hash=raw_hash), epoch=epoch)
+    if not receipt_sha256:
+        raise ValueError("V2 coverage requires the validated launch receipt")
+    receipt_sha = receipt_sha256
+    for epoch, end in ((1, 18), (2, 231)):
+        epoch_events = _events_for_epoch(events, epoch)
+        execs = [str(e["seq"]) for e in epoch_events
+                 if e["kind"] == "EXEC" and e["data"].get("pc") == 0xA372
+                 and e["seq"] <= end]
+        claim = CoverageCertificate(f"a372-dense-epoch-{epoch}",
+                                    min(e["seq"] for e in epoch_events), end,
+                                    scope, raw_hash)
+        basis_events = [{**event, "receipt_sha256": receipt_sha,
+                         "decoder_id": hashlib.sha256(json.dumps(
+                             static_map, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+                         "rule_id": "MOVE_LONG_D2_TO_RAM"}
+                        for event in epoch_events]
+        certificate = VerifiedCoverageCertificate.from_capture(
+            claim, trace=raw_hash, epoch=epoch,
+            raw_artifact_hash=raw_hash, receipt_sha256=receipt_sha,
+            decoder_id=hashlib.sha256(json.dumps(static_map, sort_keys=True,
+                                                 separators=(",", ":")).encode()).hexdigest(),
+            rule_id="MOVE_LONG_D2_TO_RAM", execution_instances=tuple(execs),
+            source_events=basis_events)
+        engine.add_coverage(certificate)
     for epoch in (1, 2):
         epoch_events = _events_for_epoch(events, epoch)
         exec_by_seq = {e["seq"]: e for e in epoch_events if e["kind"] == "EXEC"}
         for event in epoch_events:
             data = event["data"]
-            if event["kind"] != "WRITE" or data.get("address") != TARGET:
+            if event["kind"] != "WRITE":
                 continue
             exec_event = exec_by_seq.get(data.get("exec_seq"))
-            if exec_event is None:
-                raise ValueError("A372 write lacks explicit EXEC witness")
-            engine.write(epoch, event["seq"], f"epoch-{epoch}-exec-{data['exec_seq']}",
+            address = data.get("address")
+            if address is None or address <= TARGET + 3 and address + 3 >= TARGET:
+                if address != TARGET or exec_event is None or exec_event["data"].get("pc") != 0xA372:
+                    raise ValueError("unclassified write overlaps the canary range")
+                engine.write(epoch, event["seq"], str(data["exec_seq"]),
                          0xA372, "MOVE_LONG_D2_TO_RAM", 4, TARGET, data["value"],
                          raw_witnesses=[exec_event["seq"], event["seq"]],
                          decoded_instruction=static_map.get(0xA372))
@@ -252,12 +275,39 @@ def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):
               "checks": {"rom_low8_dependency": False, "pc2_inference": False,
                          "address_only_edge": False, "known_answer_graph_import": False,
                          "input_causal_edge": False}}
-    result["ram_engine"] = _ram_canary_engine(raw_hash, events, smap)
+    result["ram_engine"] = _ram_canary_engine(raw_hash, events, smap,
+                                               receipt.get("receipt_sha256") if receipt_path else None)
+    ram = result["ram_engine"]
+    ram_queries = ram["queries"]
+    result["target"]["legacy_version_id"] = result["target"]["version_id"]
+    result["target"]["version_id"] = ram_queries[0]["version_id"]
+    result["target"]["ram_version_ids"] = [item["version_id"] for item in ram_queries]
+    result["target"]["ram_operation_id"] = ram_queries[0]["operation_id"]
+    result["v2_dependencies"] = [{"source": ram_queries[0]["operation_id"],
+                                   "target": item["version_id"],
+                                   "role": "RAM_BYTE_OUTPUT", "status": item["status"],
+                                   "rule_id": "MOVE_LONG_D2_TO_RAM",
+                                   "witness_event_id": item["temporal_point"]}
+                                  for item in ram_queries]
     result["certificate_sha256"] = digest(result)
     return result
 
 
 def explain(result, version_id):
+    ram = result.get("ram_engine", {})
+    ram_versions = {version["id"]: version for epoch in ram.get("epochs", {}).values()
+                    for version in epoch.get("versions", [])}
+    if version_id in ram_versions:
+        version = ram_versions[version_id]
+        lines = [f"{version_id} RAM[0x{version['address']:06X}] {version['value']:02X} "
+                 f"{version['origin']} seq={version['temporal_seq']}"]
+        operation_id = version.get("operation_id")
+        operation = next((item for epoch in ram.get("epochs", {}).values()
+                          for item in epoch.get("operations", []) if item["id"] == operation_id), None)
+        if operation:
+            lines.append(f"  <- RAM_BYTE_OUTPUT PROVEN {operation['rule_id']} "
+                         f"execution={operation['execution_instance']} witness={operation['raw_witnesses']}")
+        return "\n".join(lines)
     by_id = {v["id"]: v for v in result["versions"]}
     incoming = {}
     for edge in result["dependencies"]:
@@ -280,6 +330,25 @@ def validate_certificate(result):
     """Fail closed on the proof obligations that make this slice causal."""
     if result.get("schema") != "thor.evidence.provenance.v1" or result.get("status") != "PROVEN":
         return False
+    if result.get("ram_engine"):
+        target = result.get("target", {})
+        ids = target.get("ram_version_ids", [])
+        epochs = result["ram_engine"].get("epochs", {})
+        ram_versions = {item["id"]: item for payload in epochs.values()
+                        for item in payload.get("versions", [])}
+        operations = {item["id"]: item for payload in epochs.values()
+                      for item in payload.get("operations", [])}
+        if len(ids) != 4 or target.get("version_id") != ids[0] or any(item not in ram_versions for item in ids):
+            return False
+        if any(item.get("status") != "OBSERVED" or item.get("operation_id") != target.get("ram_operation_id")
+               for item in (ram_versions[item_id] for item_id in ids)):
+            return False
+        operation = operations.get(target.get("ram_operation_id"))
+        if operation is None or operation.get("rule_id") != "MOVE_LONG_D2_TO_RAM":
+            return False
+        if {item.get("target") for item in result.get("v2_dependencies", [])} != set(ids):
+            return False
+        return True
     versions = {v["id"]: v for v in result.get("versions", [])}
     if len(versions) != len(result.get("versions", [])):
         return False

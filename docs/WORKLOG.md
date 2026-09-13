@@ -8003,3 +8003,22 @@ register aliases, unsupported/unexecuted bytes, and dispatcher/continuation
 caller edges are explicit unresolved edges in
 `docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`; a third equivalent xref
 sweep is prohibited. Next rank is the `0x03BDA6/0x03BDD8` consumer boundary.
+# 2026-09-13 — THOR Evidence Engine V2.1 SOUNDNESS REPAIR — READY FOR REAUDIT
+
+TASK: Repair only the reproduced V2 foundation defects from the independent
+gate audit: verified coverage trust, overlap retention, historical roots,
+atomic writes, SQLite identity integrity, and real V1-to-V2 RAM integration.
+
+RESULT: `CoverageCertificate` is now an untrusted claim and only a contiguous,
+receipt-bound `VerifiedCoverageCertificate` can authorize a proven writer.
+Initial roots no longer alias future writes; full write ranges validate before
+mutation; duplicate immutable events are idempotent; imported RAM payloads are
+checked by embedded identities and content digests. The FF13CC target now
+exposes four persisted V2 byte versions and its selected A372 operation.
+
+VALIDATION: all five Release evidence CTest helpers pass; V2 adversarial tests
+cover forged/truncated coverage, epoch boundary, temporal roots, overlap,
+failed FFFFFF write, duplicate event, SQLite rollback/retry/reopen, and lookup
+timing. SOURCE_OWNED remains `1,475,368 / 3,145,728`, delta `0`. V3 remains
+unauthorized; implementation commit `7b054d2bd8fc406eef04a0c62a5cb2b8484dbc4b`
+is complete; publication SHA and CI are recorded after the documentation amend.

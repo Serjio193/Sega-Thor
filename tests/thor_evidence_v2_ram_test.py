@@ -10,7 +10,8 @@ sys.path.insert(0, str(ROOT / "src/tools"))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from thor_evidence.events import write_capture
-from thor_evidence.ram_versions import CoverageCertificate, RamVersionEngine
+from thor_evidence.ram_versions import (CoverageCertificate, RamVersionEngine,
+                                         VerifiedCoverageCertificate)
 from thor_evidence.store import Store
 from thor_evidence_v0_test import header, events
 
@@ -25,8 +26,20 @@ def trace_id():
         return value
 
 
+def basis(start, end, epoch=1, execution=None, decoder="test-decoder", rule="MOVE.B"):
+    return [{"seq": seq, "epoch": epoch, "receipt_sha256": "b" * 64,
+             "decoder_id": decoder, "rule_id": rule,
+             **({"execution_instance": execution(seq)} if execution else {})}
+            for seq in range(start, end + 1)]
+
+
 def coverage(trace, end=100, addresses=range(0x100, 0x110)):
-    return CoverageCertificate("coverage-" + str(end), 0, end, tuple(addresses), trace)
+    claim = CoverageCertificate("coverage-" + str(end), 0, end, tuple(addresses), trace)
+    return VerifiedCoverageCertificate.from_capture(
+        claim, trace=trace, epoch=1, raw_artifact_hash=trace,
+        receipt_sha256="b" * 64, decoder_id="test-decoder", rule_id="*",
+        execution_instances=("1",),
+        source_events=basis(0, end, rule="*"))
 
 
 def populated():
@@ -58,8 +71,12 @@ def test_epoch_isolation_and_initial_frontier():
     engine = RamVersionEngine(trace)
     engine.begin_epoch(1, 0)
     engine.begin_epoch(2, 100)
-    engine.add_coverage(coverage(trace, 50), epoch=1)
-    engine.add_coverage(CoverageCertificate("c2", 100, 150, (0x200,), trace), epoch=2)
+    engine.add_coverage(coverage(trace, 50, range(0x200, 0x210)), epoch=1)
+    c2 = CoverageCertificate("c2", 100, 150, (0x200,), trace)
+    engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+        c2, trace=trace, epoch=2, raw_artifact_hash=trace, receipt_sha256="b" * 64,
+        decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("110",),
+        source_events=basis(100, 150, epoch=2)), epoch=2)
     first = engine.write(1, 10, "e1", 0x200, "MOVE.B", 1, 0x200, 7)
     second = engine.write(2, 110, "e2", 0x200, "MOVE.B", 1, 0x200, 7)
     assert first["resulting_versions"][0] != second["resulting_versions"][0]
@@ -72,17 +89,29 @@ def test_coverage_gap_unknown_transform_conflict_and_reordered_events():
     trace = "c" * 64
     engine = RamVersionEngine(trace)
     engine.begin_epoch(1, 0)
-    engine.add_coverage(CoverageCertificate("gap", 0, 5, (0x300,), trace))
+    engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+        CoverageCertificate("gap", 0, 5, (0x300,), trace), trace=trace, epoch=1,
+        raw_artifact_hash=trace, receipt_sha256="b" * 64, decoder_id="test-decoder",
+        rule_id="MOVE.B", execution_instances=("1",),
+        source_events=basis(0, 5)))
     engine.write(1, 10, "gap-write", 0x300, "MOVE.B", 1, 0x300, 1)
     assert engine.last_writer(1, 0x300, 10).status == "INCOMPLETE_CAPTURE"
     unknown = RamVersionEngine("d" * 64)
     unknown.begin_epoch(1, 0)
-    unknown.add_coverage(CoverageCertificate("unknown", 0, 10, (0x301,), "d" * 64))
+    unknown.add_coverage(VerifiedCoverageCertificate.from_capture(
+        CoverageCertificate("unknown", 0, 10, (0x301,), "d" * 64), trace="d" * 64,
+        epoch=1, raw_artifact_hash="d" * 64, receipt_sha256="b" * 64,
+        decoder_id="test-decoder", rule_id="UNKNOWN_TRANSFORM", execution_instances=("5",),
+        source_events=basis(0, 10, rule="UNKNOWN_TRANSFORM")))
     unknown.write(1, 5, "unknown", 0x301, "UNKNOWN_TRANSFORM", 1, 0x301, 1)
     assert unknown.last_writer(1, 0x301, 5).status == "UNKNOWN_TRANSFORM"
     conflict = RamVersionEngine("e" * 64)
     conflict.begin_epoch(1, 0)
-    conflict.add_coverage(CoverageCertificate("conflict", 0, 10, (0x302,), "e" * 64))
+    conflict.add_coverage(VerifiedCoverageCertificate.from_capture(
+        CoverageCertificate("conflict", 0, 10, (0x302,), "e" * 64), trace="e" * 64,
+        epoch=1, raw_artifact_hash="e" * 64, receipt_sha256="b" * 64,
+        decoder_id="test-decoder", rule_id="MOVE.B", execution_instances=("5",),
+        source_events=basis(0, 10)))
     conflict.write(1, 5, "c1", 0x302, "MOVE.B", 1, 0x302, 1)
     conflict.write(1, 5, "c2", 0x302, "MOVE.B", 1, 0x302, 2)
     assert conflict.last_writer(1, 0x302, 5).status == "CONFLICT"
@@ -101,7 +130,7 @@ def test_negative_fixture_names_and_forged_coverage():
     engine.begin_epoch(1, 0)
     try:
         engine.add_coverage(CoverageCertificate("forged", 0, 10, (0x400,), "0" * 64))
-    except ValueError:
+    except (TypeError, ValueError):
         pass
     else:
         raise AssertionError("coverage from another evidence identity must fail")
@@ -116,7 +145,11 @@ def test_sqlite_idempotence_and_deterministic_export():
         trace = store.import_capture(capture)
         engine = RamVersionEngine(trace)
         engine.begin_epoch(1, 0)
-        engine.add_coverage(CoverageCertificate("sqlite", 0, 10, (0xFF13CC,), trace))
+        engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+            CoverageCertificate("sqlite", 0, 10, (0xFF13CC,), trace), trace=trace, epoch=1,
+            raw_artifact_hash=trace, receipt_sha256="b" * 64, decoder_id="test-decoder",
+            rule_id="MOVE.L", execution_instances=("1",),
+            source_events=basis(0, 10, rule="MOVE.L")))
         engine.write(1, 1, "write-1", 0xA372, "MOVE.L", 4, 0xFF13CC, 0x00880901)
         result = engine.export()
         store.import_ram_engine(result, trace)
@@ -130,13 +163,78 @@ def test_bounded_lookup_is_not_obviously_quadratic():
     trace = "1" * 64
     engine = RamVersionEngine(trace)
     engine.begin_epoch(1, 0)
-    engine.add_coverage(CoverageCertificate("perf", 0, 2000, (0x500,), trace))
+    engine.add_coverage(VerifiedCoverageCertificate.from_capture(
+        CoverageCertificate("perf", 0, 2000, (0x500,), trace), trace=trace, epoch=1,
+        raw_artifact_hash=trace, receipt_sha256="b" * 64, decoder_id="test-decoder",
+        rule_id="MOVE.B", execution_instances=tuple(f"exec-{i}" for i in range(1, 2001)),
+        source_events=basis(0, 2000, execution=lambda seq: f"exec-{seq}")))
     for seq in range(1, 2001):
         engine.write(1, seq, f"exec-{seq}", 0x500, "MOVE.B", 1, 0x500, seq & 0xFF)
     started = time.perf_counter()
     for seq in range(1, 2001):
         assert engine.last_writer(1, 0x500, seq).status == "PROVEN"
     assert time.perf_counter() - started < 2.0
+
+
+def test_adversarial_temporal_and_construction_guards():
+    trace = "2" * 64
+    engine = RamVersionEngine(trace)
+    engine.begin_epoch(1, 10)
+    try:
+        engine.add_coverage(CoverageCertificate("forged", 10, 20, (0x600,), trace))
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("unverified claims must not enter the engine")
+    engine.write(1, 11, "exec-10", 0x100, "MOVE.B", 1, 0x600, 7)
+    root_query = engine.last_writer(1, 0x600, 9)
+    assert root_query.status == "PRE_CAPTURE_ORIGIN"
+    root_query = engine.last_writer(1, 0x600, 10)
+    assert root_query.status == "INCOMPLETE_CAPTURE"
+    assert root_query.version_id != engine.operations(1)[0]["resulting_versions"][0]
+    assert engine.last_writer(1, 0x601, 10).status == "INCOMPLETE_CAPTURE"
+    before = (len(engine.operations(1)), len(engine.versions(1)))
+    try:
+        engine.write(1, 12, "bad", 1, "MOVE.L", 4, 0xFFFFFF, 0x11223344)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("out-of-range long write must fail")
+    assert (len(engine.operations(1)), len(engine.versions(1))) == before
+
+
+def test_verified_certificate_rejects_gap_epoch_and_scope_expansion():
+    trace = "3" * 64
+    claim = CoverageCertificate("gap", 0, 4, (0x700,), trace)
+    try:
+        VerifiedCoverageCertificate.from_capture(
+            claim, trace=trace, epoch=2, raw_artifact_hash=trace,
+            receipt_sha256="4" * 64, decoder_id="decoder", rule_id="MOVE.B",
+            execution_instances=("3",),
+            source_events=[{"seq": 0, "epoch": 2}, {"seq": 1, "epoch": 2},
+                           {"seq": 3, "epoch": 2}, {"seq": 4, "epoch": 2}])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("truncated certificate basis must fail")
+    engine = RamVersionEngine(trace)
+    engine.begin_epoch(1, 0)
+    try:
+        engine.add_coverage(CoverageCertificate("wrong-epoch", 0, 4, (0x700,), trace), epoch=1)
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("wrong-epoch claim must not be trusted")
+
+
+def test_duplicate_immutable_event_is_idempotent():
+    trace = "4" * 64
+    engine = RamVersionEngine(trace)
+    engine.begin_epoch(1, 0)
+    operation = engine.write(1, 1, "exec-1", 1, "MOVE.B", 1, 0x800, 9)
+    duplicate = engine.write(1, 1, "exec-1", 1, "MOVE.B", 1, 0x800, 9)
+    assert duplicate["id"] == operation["id"]
+    assert len(engine.operations(1)) == 1
 
 
 def main():
@@ -146,6 +244,9 @@ def main():
     test_negative_fixture_names_and_forged_coverage()
     test_sqlite_idempotence_and_deterministic_export()
     test_bounded_lookup_is_not_obviously_quadratic()
+    test_adversarial_temporal_and_construction_guards()
+    test_verified_certificate_rejects_gap_epoch_and_scope_expansion()
+    test_duplicate_immutable_event_is_idempotent()
     print("PASS thor evidence v2 ram")
 
 

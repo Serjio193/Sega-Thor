@@ -1176,3 +1176,25 @@ numeric-value or address-only identity collapse. Register/control provenance,
 global coverage, IRQ/input causality, ROM RE and V3 remain separate gates.
 
 **Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V2_RAM_PROVENANCE.md`.
+
+# ADR-0050 — V2.1 verified coverage and V1 RAM identity repair
+**Status:** Accepted for V2.1 soundness repair
+**Date:** 2026-09-13
+
+**Context:** The independent V2 gate audit reproduced false promotion from
+metadata-only coverage, future-version temporal queries, partial-write ghosts,
+SQLite identity splicing and a V1 adapter path that discarded overlaps.
+
+**Decision:** Keep the V2 byte engine and SQLite sidecar, but separate
+unverified coverage claims from verified certificates. A certificate must be
+content-bound to a contiguous capture basis, receipt, epoch, byte scope,
+decoder/rule and execution instances. Keep immutable initial roots separate
+from current state, validate complete write ranges before mutation, reject
+inconsistent imported identities atomically, and expose the V1 target through
+the concrete V2 byte versions and operation.
+
+**Consequences:** The bounded FF13CC canary remains the only promoted query.
+The historical FF188A evidence remains a negative frontier. Global coverage,
+IRQ/input/DMA and V3 provenance remain outside this repair.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V2_1_SOUNDNESS_REPAIR.md`.
