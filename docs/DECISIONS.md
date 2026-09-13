@@ -1420,3 +1420,20 @@ or accept malformed coverage bounds. Transaction rollback remains the failure
 boundary.
 
 **Evidence:** `test_sqlite_rejects_root_as_write_output`.
+
+# ADR-0062 — preserve explicit FF13CC capability frontier
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** A `PROVEN` FF13CC target could lose its capability frontier if
+validation ignored the explicit UNKNOWN list.
+
+**Decision:** The bounded canary validator requires the five declared
+capabilities (`access_width`, `overlap_range`, `same_value_writers`,
+`irq_exception`, `input_reads`) to remain present and UNKNOWN, and rejects an
+input-causal edge or PC heuristic.
+
+**Consequences:** The canary can prove its checked byte write while retaining
+the unclosed interrupt, input and broader memory frontiers.
+
+**Evidence:** `test_ram_target_requires_v1_v2_bridge` and the RAM validator.

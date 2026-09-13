@@ -155,9 +155,10 @@ def _ram_canary_engine(raw_hash, events, static_map, receipt_sha256):
         raise ValueError("reusable RAM engine failed the V1 canary coverage query")
     return {"schema": "thor.evidence.ram-v2", "trace": raw_hash,
             "query_temporal_point": first_write["seq"], "queries": queries,
-            "epochs": {"1": {"versions": engine.versions(1),
-                               "operations": engine.operations(1),
-                               "coverage": engine.coverage(1)}}}
+            "epochs": {str(epoch): {"versions": engine.versions(epoch),
+                                     "operations": engine.operations(epoch),
+                                     "coverage": engine.coverage(epoch)}
+                       for epoch in (1, 2)}}
 
 
 def derive(raw_path, static_path, rom_path, receipt_path=None, writer_raw=None):

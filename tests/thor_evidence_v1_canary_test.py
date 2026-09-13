@@ -128,6 +128,9 @@ def _ram_candidate():
                                    "role": "RAM_BYTE_OUTPUT", "status": item["status"]}
                                   for item in queries],
               "causal_bridge": bridge,
+              "frontier": [{"capability": item, "status": "UNKNOWN"} for item in
+                            ("access_width", "overlap_range", "same_value_writers",
+                             "irq_exception", "input_reads")],
               "checks": {"pc2_inference": False, "address_only_edge": False}}
     result["certificate_sha256"] = digest(result)
     return result

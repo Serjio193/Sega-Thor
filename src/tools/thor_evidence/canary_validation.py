@@ -43,7 +43,7 @@ def validate_ram_certificate(result):
     ids = target.get("ram_version_ids", [])
     operation_id = target.get("ram_operation_id")
     operation = operations.get(operation_id)
-    if len(ids) != 4 or target.get("version_id") != ids[0] or operation is None or \
+    if len(ids) != 4 or len(set(ids)) != 4 or target.get("version_id") != ids[0] or operation is None or \
             operation.get("rule_id") != "MOVE_LONG_D2_TO_RAM" or operation.get("width") != 4 or \
             operation.get("effective_address") != TARGET:
         return False
@@ -69,7 +69,8 @@ def validate_ram_certificate(result):
     for offset, version_id in enumerate(ids):
         version = versions.get(version_id)
         prior = versions.get(previous[offset])
-        if version is None or prior is None or version.get("status") != "OBSERVED" or \
+        if version is None or prior is None or version.get("epoch") != operation.get("epoch") or \
+                version.get("status") != "OBSERVED" or \
                 version.get("operation_id") != operation_id or version.get("origin") != "WRITE_OPERATION" or \
                 version.get("address") != TARGET + offset or \
                 version.get("value") != ((operation["value"] >> (8 * (3 - offset))) & 0xFF) or \
@@ -82,7 +83,12 @@ def validate_ram_certificate(result):
                 item.get("status") != "PROVEN" for item in dependencies):
         return False
     checks = result.get("checks", {})
-    return not checks.get("pc2_inference") and not checks.get("address_only_edge")
+    required_frontier = {"access_width", "overlap_range", "same_value_writers",
+                         "irq_exception", "input_reads"}
+    frontier = {item.get("capability"): item.get("status") for item in result.get("frontier", [])}
+    return not checks.get("pc2_inference") and not checks.get("address_only_edge") and \
+        not checks.get("input_causal_edge") and all(frontier.get(item) == "UNKNOWN"
+                                                     for item in required_frontier)
 
 
 def _legacy_bridge_valid(result, target, operation_id, operation, ids):

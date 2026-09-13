@@ -8139,3 +8139,8 @@ COVERAGE CLOSURE: attested bases now require a COMPLETE EPOCH_END marker, while 
 
 REPAIRED: SQLite RAM import now enforces root-versus-write origin semantics and validates coverage sequence/address shape. A transaction-level regression attempts to reuse a root byte as a write output and confirms rejection with zero persisted operations. Remaining persistence adversarial cases are being audited before the next checkpoint.
 
+
+# 2026-09-13 — THOR Evidence Engine stabilization P4 — REPAIRS IN PROGRESS
+
+FF13CC audit found a publication gap: the RAM canary export omitted restore epoch 2 and the validator did not require the declared capability frontier. The export now preserves both epochs; validation binds all output bytes to the operation epoch and requires access width, overlap, same-value writers, IRQ/exception and input-read capabilities to remain explicit UNKNOWN. No interrupt or input causality was promoted.
+
