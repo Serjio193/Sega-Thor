@@ -1,0 +1,34 @@
+{
+  "schema": "oasis.m12.auto67.visualization-proof.v1",
+  "source": "build/thor-evidence/auto67/live-final.view.json",
+  "frame": 600,
+  "epoch": 1,
+  "rolling_window": {
+    "capacity": 64,
+    "max_utilization": 64,
+    "overwrites": 11639,
+    "raw_event_backlog": 0
+  },
+  "workers": {
+    "configured": 16,
+    "peak_busy": 16,
+    "leases": 519,
+    "returns": 519,
+    "all_workers_idle_at_close": true,
+    "two_workers_working": true
+  },
+  "dispatcher": {
+    "known_rejected_before_dispatch": 1681,
+    "active_collisions": 66,
+    "investigation_merges": 66,
+    "same_session_known_replay": true
+  },
+  "transition_examples": [
+    "IDLE -> LEASED -> WORKING",
+    "WORKING -> KNOWN -> RETURNING -> IDLE",
+    "WORKING -> PROVEN -> RETURNING -> IDLE",
+    "WORKING -> WAITING_RUNTIME -> RETURNING -> IDLE",
+    "WORKING -> MERGED -> RETURNING -> IDLE"
+  ],
+  "non_blocking_status_publication": true
+}
