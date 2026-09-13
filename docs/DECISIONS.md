@@ -1106,3 +1106,29 @@ tooling and explicit classification. M13 owns rebuilt-ROM boot/runtime parity
 and M14 owns systematic C++ migration.
 
 **Evidence:** docs/reports/ASM_COMPLETION_CENSUS_M12_0.md.
+# ADR-0047 — Close only local dense FF13CC coverage before V1
+
+**Status:** Accepted for V1-GATE-COVERAGE
+**Date:** 2026-09-13
+
+**Context:** The prior gate had a proven A372 pairing but exact-address hooks
+could not establish that every instruction in the local interval was observed.
+It also lacked a local interruption boundary. BizHawk 2.11.1 exposes
+`event.on_bus_exec_any`, so a bounded dense capture can answer those two
+questions without implementing provenance.
+
+**Decision:** Use one bounded dense capture (with one corrected retry only for
+capture serialization) from the proven `A370` pre-boundary through the `A374`
+post-fetch boundary. Decode every captured execution instance with the existing
+checked ROM decoder, compute concrete memory-write ranges from the pre-execution
+register snapshot, retain all target-overlapping and same-value writes, and
+fail closed on unknown effects or discontinuity. Treat `A374` as a boundary
+witness, not as an unobserved post-boundary instruction.
+
+**Consequences:** The selected interval has complete local execution coverage,
+one concrete `FF13CC..FF13CF` writer and a continuous `A370 -> A372 -> A374`
+control-flow boundary. This remains a local capability certificate. It does
+not establish global IRQ behavior, causal input provenance, a last-writer
+engine, a provenance graph, or V1 readiness by itself.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE_COVERAGE.md`.

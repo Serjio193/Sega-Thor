@@ -1,3 +1,37 @@
+# 2026-09-13 — THOR Evidence Engine V1-GATE-COVERAGE — PASS / V1 BLOCKED
+
+TASK: Close only dense execution, checked memory-effect classification and the
+local interruption boundary for the already selected FF13CC A372 instance.
+V1 provenance, graph construction, general last-writer logic, new ROM discovery
+and SOURCE_OWNED promotion remain out of scope.
+BASELINE: a5cc2d09dc2698127f9977b3bf942f3d8e845ee3.
+RESULT: The existing BizHawk 2.11.1 API `event.on_bus_exec_any` captured every
+instruction callback in the minimal interval from pre-boundary `A370` through
+the `A374` post-fetch boundary. The corrected second attempt produced two
+restore epochs with raw events `A370 -> A372 -> WRITE FF13CC -> A374`; the
+selected epoch-1 interval contains two executed instructions and one boundary
+witness. The target store is statically decoded as `MOVE.L D2,(A5)+`; runtime
+A5=`FF13CC`, width is four bytes, and the observed value is `00880901`.
+CLASSIFICATION: `NO_MEMORY_WRITE=1`, `WRITE_DISJOINT=0`,
+`WRITE_TARGET_OVERLAP=1`, `UNKNOWN_MEMORY_EFFECT=0`. The overlap writer's
+concrete range is `FF13CC..FF13CF`, with a raw WRITE witness. The checked
+ROM-derived decoder mapping is bound by ROM, static JSON and decoder hashes.
+INTERRUPTION: `NO_INTERRUPTION_IN_INTERVAL`; both next-PC edges are continuous
+(`A370 -> A372 -> A374`) and no vector/handler event appears in the dense
+interval. This is local evidence only, not a global IRQ model.
+ADVERSARIAL FIXTURES: persisted coverage cases reject removal, reordering,
+unknown effects, forged disjoint EA, lost one-byte overlap, lost same-value
+overwrite, discontinuity, incomplete handler body, duplicate-PC collapse and
+omitted loop iteration. Correct one-byte and same-value writers remain accepted
+only when explicitly represented.
+SOURCE_OWNED: 1,475,368 / 3,145,728, delta 0.
+VALIDATION: dense capture/receipt/normalization succeeded; dense-gate tests,
+V0 tests and V1-gate tests pass. Release and Linux-equivalent CTest remain the
+required build checks; the pre-existing full Debug MSVC `std::to_string`
+failure remains outside this bounded developer-only gate.
+STOP: dense coverage and local interruption closure are proven. Do not
+implement V1 without separate authorization.
+
 # 2026-09-12 — THOR Evidence Engine V0.1 — COMPLETE / V1 BLOCKED
 
 TASK: Repair the three P1 V0 foundation defects found by the independent gate

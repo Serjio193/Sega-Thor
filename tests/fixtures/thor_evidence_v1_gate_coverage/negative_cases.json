@@ -1,0 +1,31 @@
+{
+  "schema": "thor.evidence.v1-gate.coverage-negative-fixtures.v0.1",
+  "base": {
+    "dense": true,
+    "complete": true,
+    "target_range_complete": true,
+    "same_value_writes_included": true,
+    "no_dropped_events": true,
+    "instruction_count": 4,
+    "expected_pcs": [41840, 41842, 41842, 41844],
+    "instructions": [
+      {"exec_seq": 10, "pc": 41840, "classification": "NO_MEMORY_WRITE"},
+      {"exec_seq": 11, "pc": 41842, "classification": "WRITE_TARGET_OVERLAP", "range": [16716748, 16716752], "writes": [{"value": 8915201}]},
+      {"exec_seq": 12, "pc": 41842, "classification": "WRITE_TARGET_OVERLAP", "range": [16716751, 16716752], "writes": [{"value": 1}]},
+      {"exec_seq": 13, "pc": 41844, "classification": "NO_MEMORY_WRITE"}
+    ],
+    "interruption": {"status": "NO_INTERRUPTION_IN_INTERVAL", "control_flow_continuous": true}
+  },
+  "cases": [
+    {"id": "remove-one-executed-instruction", "mutations": [{"op": "remove", "index": 1}]},
+    {"id": "reorder-two-instructions", "mutations": [{"op": "swap", "left": 1, "right": 2}]},
+    {"id": "insert-unknown-effect", "mutations": [{"op": "classify", "index": 1, "value": "UNKNOWN_MEMORY_EFFECT"}]},
+    {"id": "fake-disjoint-ea", "mutations": [{"op": "classify", "index": 1, "value": "WRITE_DISJOINT"}, {"op": "classify", "index": 2, "value": "WRITE_DISJOINT"}]},
+    {"id": "one-byte-partial-overlap-forgotten", "mutations": [{"op": "classify", "index": 2, "value": "WRITE_DISJOINT"}, {"op": "classify", "index": 1, "value": "WRITE_DISJOINT"}]},
+    {"id": "same-value-overwrite-omitted", "mutations": [{"op": "remove", "index": 2}, {"op": "remove", "index": 1}]},
+    {"id": "unaccounted-control-flow-discontinuity", "mutations": [{"op": "interrupt", "value": "INTERRUPTION_UNKNOWN"}]},
+    {"id": "handler-vector-missing-body", "mutations": [{"op": "handler_incomplete"}]},
+    {"id": "duplicate-pc-collapsed", "mutations": [{"op": "remove", "index": 2}, {"op": "remove", "index": 1}]},
+    {"id": "loop-iteration-omitted", "mutations": [{"op": "remove", "index": 2}, {"op": "remove", "index": 1}]}
+  ]
+}

@@ -36,6 +36,19 @@ adversarial fail-closed cases; `cmake/m12_auto2.cmake` registers the test.
 The gate result is recorded in
 `docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE.md`.
 
+# THOR Evidence Engine V1-GATE-COVERAGE dense local closure
+
+`src/tools/thor_evidence/capture/dense.lua` and `run_dense.ps1` use the
+existing BizHawk receipt/raw envelope to capture the minimal A370..A374
+execution interval through `event.on_bus_exec_any`. `src/tools/thor_evidence/dense_gate.py`
+validates ROM-bound static decoding, concrete effective write ranges,
+interruption continuity and the machine-readable coverage certificate.
+`tests/thor_evidence_dense_gate_test.py` and
+`tests/fixtures/thor_evidence_v1_gate_coverage/negative_cases.json` cover
+incomplete, reordered, forged, duplicate-PC, loop and interruption cases.
+The result is recorded in
+`docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE_COVERAGE.md`.
+
 # Independent BizHawk infrastructure diagnosis
 
 `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md` records the verified
