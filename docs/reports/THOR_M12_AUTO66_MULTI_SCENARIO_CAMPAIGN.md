@@ -2,7 +2,8 @@
 
 Date: 2026-09-13. Baseline: `1942dfdbd1f0cdbcf5226a464c3e41abd16ebb1a`.
 Status: PASS for the bounded multi-scenario requirement; no promotion was
-eligible.
+eligible. Implementation publication SHA:
+`2def1d2f7e4221687b89420e03cbf71a7c30e3cb`.
 
 ## Scenario accounting
 
