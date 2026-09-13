@@ -23,8 +23,9 @@ not an assembler-pass claim.
 VALIDATION: focused helper test passed; Python compilation passed;
 `git diff --check` passed; the source-size check passed; full CTest `177/177`
 passed in Windows Debug, Windows Release, and GNU-equivalent Release. The
-repository CI gate is recorded only after it is actually queried. Generated
-ROM-derived outputs remain ignored.
+GitHub CI run `34750447524` for publication commit
+`e1e27e084d7beb600fdb47c2df0c0fb3462b4788` passed (`build-test` Build and
+Test). Generated ROM-derived outputs remain ignored.
 
 # 2026-09-13 — THOR Evidence Engine V3 REGISTER/CONTROL BUILD — PASS
 
