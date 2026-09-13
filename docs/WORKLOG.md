@@ -8293,3 +8293,35 @@ ROM/assets or game implementation changes were made. SOURCE_OWNED remains
 `1,475,600 / 3,145,728 = 46.9080607096%`.
 
 Details: `docs/reports/THOR_M12_AUTO64_KNOWLEDGE_COVERAGE.md`.
+# 2026-09-13 — M12-AUTO65 multi-chain autonomous campaign — LEVEL 4 / PASS
+
+TASK: Starting from AUTO64.1 baseline `49875f51c2f3e818e7fdeba56fb430d07f3efaf2`,
+build a bounded chain-primary campaign: scheduler-selected new scenario,
+broad cheap discovery, structural deduplication, known-prefix/new-tail reuse,
+shared dependency clustering, batched investigations, anti-repeat and replay.
+Do not repeat QuickSave1, fabricate candidates, promote ownership, or start
+M13/production work.
+
+RESULT: AUTO64's persisted graph was at fixed point, so the scheduler selected
+the existing materially different `m11_8_natural_reachability_v1` hardware-reset
+scenario (1,800 bounded frames, 25 normal input events). One real BizHawk 2.11.1
+broad run sealed a report with 39 raw observations: 32 reset-writer writes, five
+caller hits and two nonzero target-activity rows. The classifier derived 36
+structural chains, clustered them as 32/2/1/1 by shared prefix, created 36
+batched DAG investigations, and reused one bounded writer static proof across
+the writer children. 34 chains reached `PROVEN`; two target-activity chains
+remain `BOUNDED_UNRESOLVED` because the bounded static graph has no causal
+source. No equivalent focused runtime was launched: the broad watch set already
+covered the observed rows and AUTO65 anti-repeat rejected an equivalent capture.
+
+MANDATORY REPLAY: feeding the same normalized report back through the persisted
+state classified all 36 chains as `KNOWN_NEW_INSTANCE`, cancelled all 36
+investigations, and created no equivalent investigation. The first-pass writer
+batch also demonstrated known-prefix/new-tail reuse after the first writer
+chain persisted its reset→writer prefix.
+
+OWNERSHIP: SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%`, delta
+`0`; no ROM, asset, savestate or payload was added. Two fresh full-layout runs
+matched the canonical ROM byte-for-byte. Windows Debug/Release and WSL GNU
+each passed 184/184 CTest; the Python AUTO65 regression passed 4/4. The final
+commit SHA and remote CI result are appended after publication.

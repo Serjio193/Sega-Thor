@@ -1,5 +1,17 @@
 # THOR M12 AUTO64.1 invariant repair
 
+# THOR M12 AUTO65 multi-chain campaign
+
+`src/tools/thor_evidence/auto65_chain.py` owns normalized chain construction,
+structural equivalence, novelty classes, prefix reuse, conflict retention and
+shared-prefix clustering. `auto65_campaign.py` owns fixed-point scenario
+selection, anti-repeat fingerprints, static-before-runtime scheduling,
+investigation persistence and replay accounting. The regression contract is
+`tests/thor_evidence_auto65_test.py`, registered in `cmake/m12_auto2.cmake`.
+The real campaign receipt and ignored DAG are under
+`build/thor-evidence/auto65`; the published result is
+`docs/reports/THOR_M12_AUTO65_MULTI_CHAIN_CAMPAIGN.md`.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and

@@ -1,5 +1,28 @@
 ## THOR Evidence Engine design boundary
 
+## AUTO65 multi-chain campaign boundary
+
+`src/tools/thor_evidence/auto65_chain.py` makes a normalized causal chain the
+primary investigation unit. Nodes and typed edges are compared structurally;
+the SHA-256 fingerprint is only an index. `auto65_campaign.py` selects a new
+scenario only after the persisted AUTO64 graph reaches a fixed point, ingests
+one cheap broad discovery, and creates a bounded investigation DAG from the
+observed chains.
+
+The campaign reuses a known prefix and schedules only a new tail. Exact
+replays become `KNOWN_NEW_INSTANCE` and are cancelled before static/runtime
+work. Shared prefixes are clustered, their dependency proof is reused by all
+children, and one capture records every investigation that consumed it. Static
+evidence is queried before a focused capture; an equivalent capture is rejected
+by a fingerprint containing scenario, start state, input range, watch set,
+obligations, and evidence lineage. Closure is fail-closed: reset/init roots,
+bounded ROM/source facts, or explicit `BOUNDED_UNRESOLVED` frontiers are
+required; last-writer or equal-value observations are not sufficient.
+
+This is developer-only M12 tooling. It does not write SOURCE_OWNED, production
+runtime code, ROM/assets, or a general emulator, and it persists campaign state
+under ignored `build/thor-evidence/auto65`.
+
 ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
 existing controlled BizHawk harness. Immutable capture events, temporal
 byte/register versions and scoped relations are distinct models. Python/SQLite

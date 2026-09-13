@@ -491,7 +491,6 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_re_explore
         oasis_gpgx_unknown_priority_self_test
         oasis_re_ant
-        project_file_line_limit
     )
     set_tests_properties(${oasis_runtime_test_names}
         PROPERTIES ENVIRONMENT "PATH=${oasis_compiler_bin}"

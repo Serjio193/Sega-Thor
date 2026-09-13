@@ -1,3 +1,27 @@
+# ADR-0065 — chain-primary bounded AUTO65 campaign
+**Status:** Accepted for AUTO65
+**Date:** 2026-09-13
+
+**Context:** AUTO64 reaches a useful fixed point with one unresolved upstream
+queue. Repeating its QuickSave1 address-focused capture would not scale and
+would violate the M12 evidence boundary.
+
+**Decision:** Use one scheduler-selected, materially different bounded
+gameplay scenario for a cheap broad discovery. Normalize each observed chain
+into typed nodes and edges, compare structure before fingerprints, reuse known
+prefixes, cluster shared dependencies, and batch investigations. Static
+evidence precedes focused runtime; anti-repeat fingerprints reject equivalent
+captures. A second encounter is persisted as `KNOWN_NEW_INSTANCE` and is
+cancelled. Closure remains fail-closed and ownership promotion remains under
+the existing M12 contracts.
+
+**Consequences:** AUTO65 can support 100+ pending chains and process smaller
+batches without becoming a serial address queue. A single broad capture can
+serve many investigations, while unresolved activity remains an explicit
+frontier. The campaign remains developer-only and non-owning.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO65_MULTI_CHAIN_CAMPAIGN.md`.
+
 # ADR-0042 — Keep 0x062AE0 natural evidence developer-only
 **Status:** Accepted for M11.61
 **Date:** 2026-09-10
