@@ -35,6 +35,8 @@ def test_bounded_cycle_and_persistent_manifest():
         cycle = OperationalCycle(root / "evidence.sqlite", db)
         try:
             trace = cycle.capture(capture)
+            assert cycle.capture(capture) == trace
+            assert cycle.export()["captures"] == [trace]
             frontier = cycle.seed_frontier("FF13CC", 0x100, 0x140,
                                            information_gain=8, confidence=10, cost=1, risk=1,
                                            evidence_classes=("STATIC",))

@@ -1453,3 +1453,18 @@ Malformed receipts fail before the UNKNOWN join is evaluated.
 incomplete or malformed; no static extent or ownership promotion is inferred.
 
 **Evidence:** malformed-receipt cases in `tests/thor_evidence_v8_test.py`.
+
+# ADR-0064 — duplicate capture imports are idempotent in the manifest
+**Status:** Accepted for stabilization
+**Date:** 2026-09-13
+
+**Context:** SQLite import is idempotent, but the V9 operational manifest could
+list the same trace more than once after a repeated capture call.
+
+**Decision:** Keep one trace identity per operational cycle while allowing the
+underlying transactional import to remain idempotent.
+
+**Consequences:** Replays cannot look like independent captures in the
+manifest. A different trace is still rejected as a splice.
+
+**Evidence:** duplicate capture assertion in `tests/thor_evidence_v9_test.py`.

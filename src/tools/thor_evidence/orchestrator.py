@@ -31,7 +31,8 @@ class OperationalCycle:
             raise ValueError("one operational cycle cannot splice traces")
         self.trace = trace
         self.static = StaticBridge(trace, self.rom_sha256)
-        self.captures.append(trace)
+        if trace not in self.captures:
+            self.captures.append(trace)
         return trace
 
     def seed_frontier(self, kind, start, end, **scores):

@@ -69,3 +69,4 @@ P3 checkpoint (local): root/output semantic separation and coverage shape checks
 
 P4 local result: FF13CC export retains both restore epochs and explicit UNKNOWN frontier; IRQ/exception and input-read capability remain intentionally open.
 P5 local result: malformed held-out receipts are rejected before the 03BDD8 UNKNOWN join; no ownership promotion.
+P6 local result: duplicate capture replay is idempotent in the operational manifest; trace splicing remains rejected.

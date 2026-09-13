@@ -8147,3 +8147,6 @@ FF13CC audit found a publication gap: the RAM canary export omitted restore epoc
 # 2026-09-13 — THOR Evidence Engine stabilization P5 — REPAIRS IN PROGRESS
 
 REPRODUCED: held-out runtime discovery coerced arbitrary truthy target_reached values, allowing malformed receipts such as the string "false" to become OBSERVED. REPAIRED: exact boolean, nonnegative temporal integer, nonempty address/backend/scenario type checks now fail closed; the 03BDD8 join remains UNKNOWN. Adversarial malformed-receipt tests are green.
+# 2026-09-13 — THOR Evidence Engine stabilization P6 — REPAIRS IN PROGRESS
+
+REPRODUCED: repeated capture import was transactionally idempotent in SQLite but the operational manifest appended the same trace a second time. REPAIRED: OperationalCycle now keeps one capture identity per cycle while still allowing safe replay; a regression confirms duplicate capture calls do not create duplicate manifest entries. Different traces remain rejected.
