@@ -1,0 +1,13 @@
+{
+  "schema": "thor.evidence.v1-gate.synthetic.v0.1",
+  "epochs": [1, 2],
+  "cases": [
+    {"name": "omitted-overlapping-writer", "coverage": {"complete": false, "target_range_complete": false, "same_value_writes_included": true, "instruction_count": 2, "instructions": [{"pc": "0x00A372", "classification": "NO_MEMORY_WRITE"}, {"pc": "0x00A374", "classification": "NO_MEMORY_WRITE"}]}},
+    {"name": "forged-a372-ff13cc-pairing", "pairing": {"status": "PROVEN", "exec_pc": "0x00A372", "callback_pc": "0x00A374", "post_pc": "0x00A374", "destination": "0x00FF13CC", "exec_seq": 10, "write_seq": 12, "post_seq": 11, "value": "00880901", "pre": {"A5": "0x00FF13CC"}, "post": {"A5": "0x00FF13D0"}}},
+    {"name": "shifted-callback-without-pairing", "pairing": {"status": "PROVEN", "exec_pc": "0x00A372", "callback_pc": "0x00A376", "post_pc": "0x00A374", "destination": "0x00FF13CC", "exec_seq": 10, "write_seq": 11, "post_seq": 12, "value": "00880901", "pre": {"A5": "0x00FF13CC"}, "post": {"A5": "0x00FF13D0"}}},
+    {"name": "unknown-memory-effect", "coverage": {"complete": true, "target_range_complete": true, "same_value_writes_included": true, "instruction_count": 2, "instructions": [{"pc": "0x00A372", "classification": "WRITE_TARGET_OVERLAP"}, {"pc": "0x00A374", "classification": "UNKNOWN_MEMORY_EFFECT"}]}},
+    {"name": "interruption-without-coverage", "interruption": {"status": "UNKNOWN", "control_flow_continuous": false}},
+    {"name": "one-byte-overlap-is-a-writer", "coverage": {"complete": true, "target_range_complete": true, "same_value_writes_included": true, "instruction_count": 1, "instructions": [{"pc": "0x00A500", "classification": "WRITE_TARGET_OVERLAP", "range": ["0x00FF13CF", "0x00FF13D0"]}]}},
+    {"name": "same-value-overwrite-is-a-writer", "coverage": {"complete": true, "target_range_complete": true, "same_value_writes_included": true, "instruction_count": 1, "instructions": [{"pc": "0x00A500", "classification": "WRITE_TARGET_OVERLAP", "same_value": true, "range": ["0x00FF13CC", "0x00FF13D0"]}]}}
+  ]
+}

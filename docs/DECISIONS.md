@@ -1055,6 +1055,34 @@ introduced.
 raw-envelope and report tests, and the three repeated bounded captures under
 ignored `build/thor-evidence/v0`.
 
+# ADR-0046 — Local FF13CC V1-gate remains fail-closed
+
+**Status:** Accepted bounded gate; V1 remains blocked
+**Date:** 2026-09-13
+
+**Context:** The accepted V0.1 capture proves ordered exact-hook observations
+around one `A372` execution, but does not provide dense instruction coverage or
+an interruption boundary. Treating an exact hook miss as absence of an
+overlapping writer would create the causal false proof the V1 gate is intended
+to prevent.
+
+**Decision:** Add only a local gate certificate and adversarial validator. The
+checked static `MOVE.L D2,(A5)+` form, selected ordered pairing and four-byte
+temporal representation may be certified. Writer completeness requires an
+explicit dense instruction list with `NO_MEMORY_WRITE`, `WRITE_DISJOINT`, or
+`WRITE_TARGET_OVERLAP`; any `UNKNOWN_MEMORY_EFFECT`, omitted target coverage,
+or unresolved interruption blocks the gate. One-byte overlap and same-value
+writes remain writes. No provenance graph, general last-writer engine,
+register propagation or ownership action is introduced.
+
+**Consequences:** The local result is `PARTIAL / V1 BLOCKED`: pairing is
+closed, while dense writer coverage and interruption remain explicit frontier
+items. A future V1 authorization must supply those evidence classes before any
+causal claim.
+
+**Evidence:** `docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE.md`,
+`src/tools/thor_evidence/v1_gate.py`, and the persisted negative fixtures.
+
 # ADR-0043 — Complete ASM reconstruction before systematic C++ migration
 **Status:** Accepted for M12.0
 **Date:** 2026-09-10

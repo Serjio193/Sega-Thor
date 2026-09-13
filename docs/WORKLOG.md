@@ -20,6 +20,32 @@ focused CTest are the applicable checks. Existing full Debug MSVC failure in
 `src/core/ram_flag_routine.cpp` (`std::to_string`) remains pre-existing.
 STOP: publish V0.1, verify exact CI and stop. Do not begin V1.
 
+# 2026-09-13 — THOR Evidence Engine V1-GATE — PARTIAL / V1 BLOCKED
+
+TASK: Close only the local FF13CC capability obligations before V1. No
+provenance graph, general last-writer engine, register provenance, new ROM
+discovery, ownership promotion or M13/C++ work.
+BASELINE: 81f910415498f20702c790b3155985c57172375e.
+RESULT: Reused the checked A372 static producer/decoder evidence and corrected
+V0.1 capture. The exact form is `2A C2 = MOVE.L D2,(A5)+`, width 4, next PC
+`A374`. Selected runtime instance `epoch 1 / seq 117` pairs ordered
+`EXEC A372 -> WRITE FF13CC (callback PC A374) -> next EXEC A374`, with
+pre-A5=`FF13CC`, post-A5=`FF13D0`, D2/value=`00880901`. Four independent byte
+versions are represented with raw witnesses. The checker deliberately never
+uses a universal PC-2 rule.
+BLOCKERS: V0.1 exact-address hooks do not provide dense all-instruction
+coverage for interval seq 117..120; relevant overlapping-writer completeness
+is therefore BLOCKED. No interruption/vector/stack boundary certificate exists,
+so interruption is BLOCKED. Existing pairing evidence is not promoted to V1
+causal provenance.
+NEGATIVE FIXTURES: persisted synthetic cases reject omitted overlapping writer,
+forged pairing, shifted callback PC, unknown memory effect and insufficient
+interruption coverage; one-byte overlap and same-value writes remain explicit
+writers.
+SOURCE_OWNED: 1,475,368 / 3,145,728, delta 0.
+VALIDATION: focused V1 gate tests pass; CTest integration added beside V0.1.
+FINAL: PARTIAL / V1 BLOCKED. Hard stop after report, publication and exact CI.
+
 TASK: V0 foundation/storage identity and bounded BizHawk capability contract.
 WHY: Establish reliable temporal observations before any causal provenance.
 CURRENT MILESTONE: M12; V0 only, mandatory STOP after report/publication.

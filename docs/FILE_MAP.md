@@ -25,6 +25,17 @@ under ignored `build/thor-evidence/v0`. `tests/thor_evidence_v0_test.py` covers
 the storage and fail-closed transport contract; CTest registration is in
 `cmake/m12_auto2.cmake`.
 
+# THOR Evidence Engine V1-GATE local FF13CC closure
+
+`src/tools/thor_evidence/v1_gate.py` validates the bounded A372 static form,
+selected ordered runtime pairing, four-byte local versions, writer-coverage
+certificates and interruption certificates. It intentionally stops before a
+provenance graph or general last-writer engine. `tests/thor_evidence_v1_gate_test.py`
+and `tests/fixtures/thor_evidence_v1_gate/negative_cases.json` cover the
+adversarial fail-closed cases; `cmake/m12_auto2.cmake` registers the test.
+The gate result is recorded in
+`docs/reports/THOR_EVIDENCE_ENGINE_V1_GATE.md`.
+
 # Independent BizHawk infrastructure diagnosis
 
 `docs/reports/BIZHAWK_CONTROLLED_HARNESS_DIAGNOSIS.md` records the verified
