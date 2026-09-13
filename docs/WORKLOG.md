@@ -1,3 +1,30 @@
+# 2026-09-13 — M12-AUTO64.1 invariant repair — PASS
+
+TASK: Restore the full-layout ASM byte-exact invariant and make the GNU/Linux
+file-limit CTest deterministic. No AUTO64 scheduler redesign, new gameplay
+discovery, C++, M13, ROM or extracted-asset work was performed.
+
+RESULT: Reproduced the expanded-layout regression as four deterministic class-A
+same-address aliases (`loc_00B856`, `loc_00B912`, `loc_00E2D4`, `loc_00E7FC`).
+The expanded `re_full_split_run.write_layout()` path bypassed AUTO62's alias
+filter in `re_auto_promote.py`. The filter is now canonical in
+`re_full_split_run.py`; AUTO promotion delegates to it, conflicts fail closed,
+and clean generation is deterministic. Two clean full layouts assembled with
+vasm and matched the canonical ROM byte-for-byte: size `3,145,728`, CRC32
+`C4728225`, SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+
+The GNU hang was the workspace-wide recursive file glob traversing 60,301
+directories and 467,946 files, including ignored build/runtime trees. The
+file-limit test now uses Git's tracked/non-ignored inventory under explicit
+`CMakeLists.txt`, `cmake/`, `src/`, and `tests/` boundaries. It checks 617
+governed files from a 629-file inventory and completes in 3.47 seconds under
+GNU-equivalent WSL. Windows Debug and Release CTest passed 183/183 each;
+GNU CTest passed 183/183.
+
+SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%` with delta `0`.
+Detailed evidence: `docs/reports/THOR_M12_AUTO64_1_INVARIANT_REPAIR.md`.
+
 # 2026-09-13 — M12-AUTO63 focused novelty investigation — PASS / PROMOTION BLOCKED
 
 TASK: Consume one AUTO62 persisted novelty, derive a register-specific watch

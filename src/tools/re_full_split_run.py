@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -69,12 +70,36 @@ def materialize_entries(output, entries, corpus, original):
         entry["manifest_index"] = index
 
 
+def filter_redundant_layout_aliases(lines, defined_labels):
+    """Apply the single canonical AUTO62 alias contract to layout sources."""
+    for line_number, line in enumerate(lines, 1):
+        match = re.match(r"^(loc_[0-9A-Fa-f]+)\s+equ\s+\$([0-9A-Fa-f]+)\s*$", line)
+        if not match or match.group(1) not in defined_labels:
+            yield line
+            continue
+        label_value = int(match.group(1)[4:], 16)
+        alias_value = int(match.group(2), 16)
+        if label_value == alias_value:
+            continue
+        raise ValueError(
+            f"conflicting duplicate alias {match.group(1)} at source line "
+            f"{line_number}: alias=${alias_value:06X}, definition=${label_value:06X}")
+
+
 def write_layout(output, entries):
     lines = ["; Full-ROM split baseline; generated from the local canonical ROM.",
              "    org $000000"]
+    defined_labels = set()
     for entry in entries:
-        if entry["kind"] == "CODE_VERIFIED":
+        if entry.get("emitted_artifact_type") != "asm":
+            continue
+        source = output / entry["artifact"]
+        defined_labels.update(re.findall(
+            r"^(loc_[0-9A-Fa-f]+):\s*$", source.read_text(), re.MULTILINE))
+    for entry in entries:
+        if entry.get("emitted_artifact_type") == "asm":
             body = (output / entry["artifact"]).read_text().splitlines()
+            body = filter_redundant_layout_aliases(body, defined_labels)
             lines.extend(line for line in body
                          if not line.startswith("    org ") and not line.startswith("sub_"))
         else:

@@ -1,3 +1,15 @@
+# THOR M12 AUTO64.1 invariant repair
+
+`src/tools/re_full_split_run.py` owns the canonical generated-layout alias
+filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
+delegates to it. `tests/re_full_split_test.py` and
+`tests/re_auto_promote_test.py` cover equivalent/conflicting aliases and
+deterministic layout output. `tests/check_file_limits.cmake` checks the
+governed Git inventory under `cmake/`, `src/`, `tests/`, and root
+`CMakeLists.txt` without walking ignored runtime/build trees. Evidence and
+validation are recorded in
+`docs/reports/THOR_M12_AUTO64_1_INVARIANT_REPAIR.md`.
+
 # THOR Evidence Engine design
 
 # AUTO64 Knowledge Coverage and scheduler

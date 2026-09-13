@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+import tempfile
 
 
 MODULE = Path(__file__).parents[1] / "src" / "tools" / "re_full_split_run.py"
@@ -24,6 +25,38 @@ def main():
     summary = FULL.metrics(entries, 24)
     assert summary["TOTAL_ROM_BYTES"] == 24
     assert summary["ASM_BYTES"] == 8 and summary["BLOB_BYTES"] == 16
+    with tempfile.TemporaryDirectory() as temp:
+        first = Path(temp) / "first"
+        second = Path(temp) / "second"
+        for output in (first, second):
+            (output / "code").mkdir(parents=True)
+            (output / "blobs").mkdir()
+            (output / "code" / "a.asm").write_text(
+                "loc_000004 equ $000004\n    dc.w $4E71\n")
+            (output / "code" / "b.asm").write_text(
+                "loc_000004:\n    dc.w $4E75\n")
+            (output / "blobs" / "000008_00000C.bin").write_bytes(b"\0" * 4)
+            layout_entries = [
+                {"start": 0, "end": 4, "kind": "CODE_VERIFIED",
+                 "emitted_artifact_type": "asm", "artifact": "code/a.asm"},
+                {"start": 4, "end": 8, "kind": "CODE_VERIFIED",
+                 "emitted_artifact_type": "asm", "artifact": "code/b.asm"},
+                {"start": 8, "end": 12, "kind": "UNKNOWN",
+                 "emitted_artifact_type": "blob",
+                 "artifact": "blobs/000008_00000C.bin"},
+            ]
+            FULL.write_layout(output, layout_entries)
+        assert "loc_000004 equ" not in (first / "full_layout.asm").read_text()
+        assert (first / "full_layout.asm").read_bytes() == \
+            (second / "full_layout.asm").read_bytes()
+        conflict = first / "code" / "a.asm"
+        conflict.write_text("loc_000004 equ $000005\n")
+        try:
+            FULL.write_layout(first, layout_entries)
+        except ValueError as error:
+            assert "conflicting duplicate alias" in str(error)
+        else:
+            raise AssertionError("layout conflict must fail closed")
     print("full split helper tests passed")
 
 

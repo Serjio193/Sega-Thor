@@ -4,25 +4,38 @@
 set(ROOT "${CMAKE_CURRENT_LIST_DIR}/..")
 set(MAX_LINES 500)
 
-file(GLOB_RECURSE PROJECT_FILES
-    "${ROOT}/*.cpp"
-    "${ROOT}/*.hpp"
-    "${ROOT}/*.h"
-    "${ROOT}/*.c"
-    "${ROOT}/*.cc"
-    "${ROOT}/*.cxx"
-    "${ROOT}/*.hh"
-    "${ROOT}/*.hxx"
-    "${ROOT}/*.cmake"
-    "${ROOT}/*.py"
-    "${ROOT}/*.lua"
-    "${ROOT}/*.ps1"
-    "${ROOT}/*.sh"
-    "${ROOT}/*.java"
-    "${ROOT}/*.js"
-    "${ROOT}/*.ts"
-    "${ROOT}/CMakeLists.txt"
+# Keep inventory bounded to repository-owned implementation roots. The old
+# workspace-wide GLOB_RECURSE walked ignored build/runtime trees on /mnt/c and
+# could spend indefinitely in generated evidence and external tool artifacts.
+# Git lists tracked and non-ignored untracked files without recursively
+# stat-ing those excluded trees. The explicit pathspecs are the governed
+# source/build/test roots; generated output belongs outside them.
+set(GOVERNED_PATHS "cmake" "src" "tests")
+execute_process(
+    COMMAND git -C "${ROOT}" ls-files --cached --others --exclude-standard
+            --full-name -- "CMakeLists.txt" ${GOVERNED_PATHS}
+    RESULT_VARIABLE GIT_RESULT
+    OUTPUT_VARIABLE GIT_FILES_RAW
+    ERROR_VARIABLE GIT_ERROR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+if(NOT GIT_RESULT EQUAL 0)
+    message(FATAL_ERROR "Unable to enumerate governed files with git: ${GIT_ERROR}")
+endif()
+
+set(PROJECT_FILES)
+string(REPLACE "\r\n" "\n" GIT_FILES_RAW "${GIT_FILES_RAW}")
+string(REPLACE "\n" ";" GIT_FILES "${GIT_FILES_RAW}")
+foreach(relative IN LISTS GIT_FILES)
+    if(relative STREQUAL "CMakeLists.txt" OR
+       relative MATCHES "^(cmake|src|tests)/.*\\.(cpp|hpp|h|c|cc|cxx|hh|hxx|cmake|py|lua|ps1|sh|java|js|ts)$")
+        list(APPEND PROJECT_FILES "${ROOT}/${relative}")
+    endif()
+endforeach()
+list(LENGTH GIT_FILES GOVERNED_INVENTORY_COUNT)
+list(REMOVE_DUPLICATES PROJECT_FILES)
+list(SORT PROJECT_FILES)
+list(LENGTH PROJECT_FILES PROJECT_FILE_COUNT)
 
 set(violations "")
 
@@ -48,4 +61,4 @@ if(violations)
     message(FATAL_ERROR "Source-code files exceed ${MAX_LINES}-line project limit:\n${violations}")
 endif()
 
-message(STATUS "Source-code size rule passed: all checked files are <= ${MAX_LINES} lines; documentation is exempt")
+message(STATUS "Source-code size rule passed: ${PROJECT_FILE_COUNT} governed files <= ${MAX_LINES} lines; inventory=${GOVERNED_INVENTORY_COUNT}; documentation is exempt")

@@ -46,9 +46,16 @@ def main():
     assert not AUTO.trusted_data_overlap({"data_classifications": ["DATA_HYPOTHESIS"]})
     assert AUTO.trusted_data_ranges({"ranges": [{"start": "0x20", "end": "0x30",
         "classification": "DATA_REGION_SUPPORTED"}]}) == [(0x20, 0x30)]
-    assert list(AUTO.filter_redundant_layout_aliases(
+    assert list(AUTO.FULL.filter_redundant_layout_aliases(
         ["loc_000100 equ $100", "loc_000200 equ $100", "loc_000300:"],
         {"loc_000100", "loc_000300"})) == ["loc_000200 equ $100", "loc_000300:"]
+    try:
+        list(AUTO.FULL.filter_redundant_layout_aliases(
+            ["loc_000100 equ $101"], {"loc_000100"}))
+    except ValueError as error:
+        assert "conflicting duplicate alias" in str(error)
+    else:
+        raise AssertionError("conflicting same-name alias must fail closed")
     assert AUTO.reject_form({"reason": "UNSUPPORTED_FORM", "detail": "no exact IR"}) == \
         "unsupported exact IR"
     windows = AUTO.acceptance_windows([{"accepted": value} for value in
