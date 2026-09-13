@@ -8243,3 +8243,26 @@ REPRODUCED: held-out runtime discovery coerced arbitrary truthy target_reached v
 # 2026-09-13 — THOR Evidence Engine stabilization P6 — REPAIRS IN PROGRESS
 
 REPRODUCED: repeated capture import was transactionally idempotent in SQLite but the operational manifest appended the same trace a second time. REPAIRED: OperationalCycle now keeps one capture identity per cycle while still allowing safe replay; a regression confirms duplicate capture calls do not create duplicate manifest entries. Different traces remain rejected.
+# 2026-09-13 — M12-AUTO64 Knowledge Coverage and recursive queue — LEVEL 1 / PARTIAL
+
+TASK: Build the minimum persistent Knowledge Coverage and deterministic
+investigation scheduler over AUTO62/AUTO63 evidence, derive the A6 upstream
+obligation from machine state, execute one new focused BizHawk question, and
+continue the queue without ownership inflation.
+
+RESULT: Coverage imported 620 AUTO62 investigations and AUTO63's unresolved
+`A6_INHERITED_AT_ENTRY`; it automatically created `INV-AUTO64-A6`, then the
+static phase created the caller child. The focused capture completed on the
+exact ROM/state and produced 180 target contexts plus 10 same-frame bounded A6
+version candidates observed at `0xA22C`. `AF00` entry and a causal caller edge
+were not proven. The bounded `0xA22C` slice contains no A6 destination and was
+exhausted as an observation site. Scheduler-selected D3 and both +8 obligations
+remain `BOUNDED_UNRESOLVED`; no six-byte or ownership claim was made.
+
+VALIDATION: Corrected capture completed with `result=PASS`; the first
+instrumentation attempt was discarded after event-cap/serialization overhead,
+then the narrow in-memory watch reduced the raw result to 829,449 bytes. No
+ROM/assets or game implementation changes were made. SOURCE_OWNED remains
+`1,475,600 / 3,145,728 = 46.9080607096%`.
+
+Details: `docs/reports/THOR_M12_AUTO64_KNOWLEDGE_COVERAGE.md`.

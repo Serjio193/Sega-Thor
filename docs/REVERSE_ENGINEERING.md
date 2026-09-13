@@ -3902,3 +3902,17 @@ the final controlled `0080/0010` values. The two-pass closure and its
 unresolved indirect/dispatcher boundaries are recorded in
 `docs/reports/THOR_M12_SHADOW_SAT_ACCESS_CLOSURE.md`. No semantic label or
 `SOURCE_OWNED` promotion follows from this graph.
+# M12-AUTO64 upstream provenance result (2026-09-13)
+
+The AUTO63 AF22 frontier was imported into Knowledge Coverage. Static evidence
+found no direct BSR/JSR/JMP reference to `0xAF00..0xAF22` and no decoded A6
+destination in the bounded AF00 slice. The focused exact-state BizHawk capture
+observed AF02/AF06/AF20/AF22 contexts and same-frame A6-version changes observed
+at `0xA22C`, but did not observe AF00 entry or a return-compatible caller edge.
+A bounded slice at `0xA22C` (`MOVE.L #0xA1F8,-(A7)`, A6-based test/branch and
+`MOVEA.L 0x22(A6),A0`) contains no A6 write; it is therefore an observation
+site, not a proven definition. A6 source remains inherited/unresolved.
+
+D3=512 and the two +8 address gaps are separate bounded unresolved
+investigations. No structure or SOURCE_OWNED promotion follows from this
+evidence.

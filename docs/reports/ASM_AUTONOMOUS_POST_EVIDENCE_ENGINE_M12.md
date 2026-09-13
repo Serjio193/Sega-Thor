@@ -1,5 +1,21 @@
 # THOR M12 — Autonomous ASM Reconstruction After Evidence Engine Baseline
 
+## AUTO64 — Knowledge Coverage and autonomous queue (2026-09-13)
+
+AUTO64 added a non-owning Knowledge Coverage import over AUTO62/AUTO63 machine
+artifacts and a persistent dependency graph/scheduler. The canary was derived
+from AUTO63's `A6_INHERITED_AT_ENTRY` unresolved frontier: coverage created the
+A6 investigation, static analysis created the caller child, and the scheduler
+selected it before the focused BizHawk request. The run observed 180 target
+contexts and same-frame bounded A6-version candidates at observation PC
+`0xA22C`, but no `AF00` entry/caller edge. A bounded slice at `0xA22C` showed no
+A6 destination, so it was exhausted as an observation-site candidate. D3=512
+and both +8 gaps remain bounded unresolved hypotheses, not structure.
+
+AUTO64 result: `LEVEL 1 / PARTIAL`, SOURCE_OWNED delta `0`. Coverage state and
+the queue are in ignored `build/thor-evidence/auto64-provenance`; details are
+in `docs/reports/THOR_M12_AUTO64_KNOWLEDGE_COVERAGE.md`.
+
 ## AUTO63 — focused novelty investigation (2026-09-13)
 
 AUTO63 consumed the strongest persisted AUTO62 novelty candidate, `PC=0xAF22`,

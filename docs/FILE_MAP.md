@@ -1,5 +1,18 @@
 # THOR Evidence Engine design
 
+# AUTO64 Knowledge Coverage and scheduler
+
+`src/tools/thor_evidence/auto64_knowledge_coverage.py` imports existing AUTO62,
+AUTO63, runtime and bounded static artifacts into multidimensional fail-closed
+coverage without changing ownership. `auto64_provenance.py` persists the
+dependency graph and deterministic request, `auto64_provenance_analyze.py`
+updates it from the focused capture, and `auto64_static_queue.py` consumes the
+remaining bounded static obligations. Their focused developer-only capture is
+`capture/auto64_caller_provenance.lua` with its PowerShell runner. Tests are
+`tests/thor_evidence_auto64*_test.py`; ignored evidence is under
+`build/thor-evidence/auto64-provenance`. The result is recorded in
+`docs/reports/THOR_M12_AUTO64_KNOWLEDGE_COVERAGE.md`.
+
 `docs/reports/THOR_EVIDENCE_ENGINE_ARCHITECTURE.md` specifies the proposed
 developer-only M12 capture/provenance sidecar, relational schema, temporal
 identity, proof obligations and non-owning Carver integration.
