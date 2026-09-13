@@ -1492,3 +1492,22 @@ underlying transactional import to remain idempotent.
 manifest. A different trace is still rejected as a splice.
 
 **Evidence:** duplicate capture assertion in `tests/thor_evidence_v9_test.py`.
+# ADR-0066 — Repository-driven multi-scenario campaign
+
+Date: 2026-09-13
+
+Status: Accepted for M12 developer-only evidence tooling.
+
+AUTO66 reuses AUTO65's normalized chain, novelty, prefix and closure engine.
+The new layer owns only scenario-pool fingerprinting, fixed-point transition,
+equivalent-capture rejection, bounded discovery dispatch and per-scenario
+accounting. Scenario files are the authority for deterministic inputs and
+watch configuration; Luna does not provide an address or manually choose a
+chain. A sealed report may be replayed to repair a persisted receipt, but that
+operation is not counted as new runtime evidence. This preserves the
+ROM-loader/evidence/contract boundary and keeps knowledge non-owning.
+
+The first accepted campaign stops after the repository's two useful scenarios:
+the AUTO65 capture is the fixed-point starting point, and the scheduler selects
+the distinct idle scenario, which adds one bounded ROM-activity branch. A new
+savestate or gameplay state is required before further scenario coverage.

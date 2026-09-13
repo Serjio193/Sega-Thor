@@ -23,6 +23,18 @@ This is developer-only M12 tooling. It does not write SOURCE_OWNED, production
 runtime code, ROM/assets, or a general emulator, and it persists campaign state
 under ignored `build/thor-evidence/auto65`.
 
+## AUTO66 multi-scenario campaign boundary
+
+`src/tools/thor_evidence/auto66_campaign.py` reuses AUTO65 chain identity and
+investigation primitives while adding a repository-driven scenario planner.
+It fingerprints the complete deterministic scenario file, rejects equivalent
+captures before launching BizHawk, emits `NEED_NEW_SCENARIO` at AUTO64/AUTO65
+fixed point, ranks the remaining scenario pool from coverage/frontier and
+scenario metadata, and persists the automatic transition and per-scenario
+metrics. It may consume a sealed report for deterministic receipt regeneration,
+but does not treat that replay as new runtime evidence. The tool remains
+developer-only and cannot write SOURCE_OWNED or production runtime state.
+
 ADR-0044 specifies a proposed developer-only M12 evidence sidecar around the
 existing controlled BizHawk harness. Immutable capture events, temporal
 byte/register versions and scoped relations are distinct models. Python/SQLite

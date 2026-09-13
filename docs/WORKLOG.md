@@ -8326,3 +8326,23 @@ commit is `1621546dc946a19e7640449c4fba34d20f639a19`. Two fresh full-layout runs
 matched the canonical ROM byte-for-byte. Windows Debug/Release and WSL GNU
 each passed 184/184 CTest; the Python AUTO65 regression passed 4/4. The final
 remote CI result is checked after publication.
+
+# 2026-09-13 — M12-AUTO66 multi-scenario autonomous campaign — PASS
+
+TASK: Starting from AUTO65 publication `1942dfdbd1f0cdbcf5226a464c3e41abd16ebb1a`,
+reuse the chain engine across the repository's deterministic scenario pool.
+Reject equivalent captures before BizHawk, demonstrate an autonomous fixed
+point to `NEED_NEW_SCENARIO` transition, run the next materially different
+scenario, and persist per-scenario coverage without fabricating scale.
+
+RESULT: The scheduler represented AUTO65 scenario A at fixed point, rejected
+its equivalent fingerprint, and selected `natural_idle_to_6121a_v1` as scenario
+B. B supplied 35 raw observations, 34 candidates, 33 known instances and one
+new branch tail for ROM activity at `0x6121A`. The cumulative receipt contains
+70 candidate chains, 37 investigations, 34 closed chains, three bounded
+unresolved investigations, 63 shared-dependency reuses and 68 shared-capture
+reuses. No focused runtime or ownership promotion was justified.
+
+OWNERSHIP: SOURCE_OWNED remains `1,475,600 / 3,145,728 = 46.9080607096%`, delta
+`0`. No ROM/assets were added. See
+`docs/reports/THOR_M12_AUTO66_MULTI_SCENARIO_CAMPAIGN.md`.

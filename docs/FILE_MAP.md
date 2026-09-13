@@ -12,6 +12,17 @@ The real campaign receipt and ignored DAG are under
 `build/thor-evidence/auto65`; the published result is
 `docs/reports/THOR_M12_AUTO65_MULTI_CHAIN_CAMPAIGN.md`.
 
+# THOR M12 AUTO66 multi-scenario campaign
+
+`src/tools/thor_evidence/auto66_campaign.py` owns the repository scenario
+planner, equivalent-scenario rejection, bounded BizHawk discovery dispatch,
+multi-scenario receipts and cumulative campaign metrics while reusing AUTO65's
+chain engine. Its regression is
+`tests/thor_evidence_auto66_test.py`, registered in
+`cmake/m12_auto2.cmake`; the result is recorded in
+`docs/reports/THOR_M12_AUTO66_MULTI_SCENARIO_CAMPAIGN.md` and ignored runtime
+evidence is under `build/thor-evidence/auto66`.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and
