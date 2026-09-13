@@ -8117,3 +8117,8 @@ big-endian value, predecessor and rollback semantics; the V2 canary validator
 checks certificate, operation/version identities, target outputs and coverage.
 Adversarial regressions are green. Lifecycle remains `REGRESSION_ADDED` until
 the stabilization checkpoint receives exact CI verification.
+
+# 2026-09-13 — THOR Evidence Engine stabilization P0 — VERIFIED
+
+CHECKPOINT: commit 066a5d9c43062369984877ef48ec19adb924e7c3; exact CI run 34748750039 succeeded. Windows Release CTest 176/176, GNU/Linux evidence CTest 12/12, direct V0–V9 tests 24/24, SQLite integrity_check=ok. V2.1-001/003/005/006 lifecycle entries are VERIFIED. SOURCE_OWNED remains 1,475,368 / 3,145,728, delta 0.
+

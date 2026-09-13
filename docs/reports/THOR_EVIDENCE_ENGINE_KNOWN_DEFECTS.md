@@ -60,3 +60,5 @@ No SOURCE_OWNED transaction is allowed during V4-V9 BUILD.
 | V2.1-003 | REGRESSION_ADDED | SQLite import checked identities but not producer, address, value or predecessor semantics. | Semantic output/predecessor checks and rollback regression in `test_sqlite_rejects_wrong_producer_output_association`. |
 | V2.1-005 | REGRESSION_ADDED | `ram_engine` branch returned before the legacy proof obligations. | Dedicated V2 certificate validator and `test_ram_branch_cannot_bypass_certificate_contract`. |
 | V2.1-006 | REGRESSION_ADDED | Forged RAM coverage could bypass the FF188A negative oracle. | V2 validator now requires trace-bound coverage over the target and rejects missing coverage. |
+
+P0 checkpoint: commit 066a5d9c43062369984877ef48ec19adb924e7c3; CI run 34748750039 (success). Windows Release 176/176, GNU/Linux evidence 12/12, direct V0-V9 24/24, SQLite integrity_check=ok. SOURCE_OWNED unchanged (1,475,368 / 3,145,728; delta 0).
