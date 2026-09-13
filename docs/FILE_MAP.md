@@ -1103,6 +1103,20 @@ canonical ROM contracts without changing ownership. Its regression coverage is
 `cmake/m12_auto2.cmake`. The generated JSON under `build/m12-gfx-runtime/` is
 local ignored evidence and is not repository data.
 
+# M12-AUTO62 adds bounded live-discovery comparison
+
+`src/tools/thor_evidence/live_discovery_plan.py` creates a ROM-bound watch plan
+from the current ownership manifest, Evidence Engine SQLite sidecars and prior
+GPGX execution evidence. The developer-only Lua collector is
+`src/tools/thor_evidence/capture/live_discovery.lua`; its launcher is
+`src/tools/thor_evidence/capture/run_live_discovery.ps1`. The analyzer
+`src/tools/thor_evidence/live_discovery_analyze.py` persists novelty classes,
+deduplicated edges and fail-closed investigation records without changing
+ownership. Regression coverage is in
+`tests/thor_evidence_live_discovery_test.py`; the campaign result is documented
+in `docs/reports/THOR_M12_AUTO62_LIVE_DISCOVERY.md`. Raw captures and reports
+remain ignored under `build/thor-evidence/live-discovery/`.
+
 `src/tools/re_m12_child_tables_promote.py` applies the exact table promotion
 contract to the finite selector child-table streams at `0x03B95E..0x03BA46`,
 preserving the two-byte descriptor alias prefix. Its regression test is

@@ -65,6 +65,8 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_re_m12_carver_global_sweep_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_carver_global_sweep_test.py)
     add_test(NAME oasis_re_m12_carver_static_recovery_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_carver_static_recovery_test.py)
     add_test(NAME oasis_re_m12_carver_format_reconstruction_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_carver_format_reconstruction_test.py)
+    add_test(NAME oasis_re_thor_evidence_live_discovery_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_live_discovery_test.py)
     add_test(NAME oasis_re_m12_sprite_reconstruction_helpers COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_reconstruction_test.py)
     add_test(NAME oasis_re_m12_sprite_context_catalog_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_context_catalog_test.py)

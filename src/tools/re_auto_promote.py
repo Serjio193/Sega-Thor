@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -131,6 +132,15 @@ def source_map(entries, manifest_path):
             if entry.get("emitted_artifact_type") == "asm"}
 
 
+def filter_redundant_layout_aliases(lines, defined_labels):
+    for line in lines:
+        match = re.match(r"^(loc_[0-9A-Fa-f]+)\s+equ\s+\$([0-9A-Fa-f]+)\s*$", line)
+        if match and match.group(1) in defined_labels:
+            if int(match.group(1)[4:], 16) == int(match.group(2), 16):
+                continue
+        yield line
+
+
 def promote(entries, candidate):
     for index, entry in enumerate(entries):
         if entry["kind"] != "UNKNOWN" or not (entry["start"] <= candidate["start"] and
@@ -176,10 +186,15 @@ def materialize(root, entries, rom, code_sources):
             filename = f"{entry['start']:06X}_{entry['end']:06X}.bin"
             (root / "blobs" / filename).write_bytes(rom[entry["start"]:entry["end"]])
             entry["artifact"] = f"blobs/{filename}"
+    defined_labels = set()
+    for source in sources.values():
+        defined_labels.update(re.findall(r"^(loc_[0-9A-Fa-f]+):\s*$", source.read_text(), re.MULTILINE))
     lines = ["; Generated transactional full-ROM promotion layout.", "    org $000000"]
     for entry in entries:
         if entry.get("emitted_artifact_type") == "asm":
-            lines.extend(line for line in (root / entry["artifact"]).read_text().splitlines()
+            source_lines = filter_redundant_layout_aliases(
+                (root / entry["artifact"]).read_text().splitlines(), defined_labels)
+            lines.extend(line for line in source_lines
                          if not line.startswith("    org ") and not line.startswith("sub_"))
         else:
             lines.extend([f"data_{entry['start']:06X}:",

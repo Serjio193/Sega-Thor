@@ -1,3 +1,39 @@
+# 2026-09-13 — M12-AUTO62 full-layout repair and live discovery — PASS / NEW EVIDENCE, CAUSAL FOLLOW-UP OPEN
+
+TASK: Repair only the inherited full-layout duplicate-label materialization
+failure, then run one real BizHawk 2.11.1 QuickSave1 directional capture against
+the existing Evidence Engine knowledge. No C++, M13, ROM, extracted assets or
+ownership promotion was authorized.
+
+PHASE A: `src/tools/re_auto_promote.py` now removes only same-value aliases when
+the target label is defined by another generated slice; mismatched aliases stay
+fail-closed. The regression test covers both paths. AUTO62 materialization
+assembled with `vasmm68k_mot.exe` and matched the canonical ROM exactly
+(`C4728225`, SHA256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+SOURCE_OWNED remained `1,475,600 / 3,145,728`, delta `0`.
+
+PHASE B: Added a ROM-bound watch-plan generator, developer-only Lua collector,
+launcher and persistent analyzer. The real run loaded the canonical ROM and
+exact QuickSave1, verified frame `2117`, captured frames `2120..2240`, and
+ended with a complete raw receipt. The harness launcher timed out at 30 seconds
+because broad bus callbacks slowed EmuHawk; the live process remained healthy,
+later wrote `result=PASS`, and produced the complete capture.
+
+RESULT: Compared with the two read-only SQLite sidecars and prior GPGX execution
+set, the capture emitted 108 unknown-range ROM-read witnesses, 512 new RAM-write
+witnesses (writer cap reached), 83 already-owned structure reads, 0 new
+execution PCs, and 620 unique new `(PC,address,kind)` edges. This is genuinely
+new raw runtime evidence, but it proves no new root, consumer or domain
+expansion. SOURCE_OWNED delta remains `0`.
+
+FOLLOW-UP: Selected `INV-AUTO62-02D7B024766C880B` (`PC=0x2872`,
+`ROM=0x0CBC20`). The bounded 13-instruction static slice has no direct ROM
+reference; the address remains register-based. Status is
+`STATIC_SLICE_COMPLETE_INCONCLUSIVE`; no promotion or typed semantic claim was
+made. Full campaign evidence is in
+`docs/reports/THOR_M12_AUTO62_LIVE_DISCOVERY.md`.
+
 # 2026-09-13 — M12-AUTO61 selector child-table streams — PASS WITH ASM BLOCKER
 
 TASK: Resume autonomous M12 ASM reconstruction after the stabilized Evidence
