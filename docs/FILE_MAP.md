@@ -1390,3 +1390,10 @@ targets. `tests/thor_evidence_auto67_6r3c_test.py` covers its candidate and
 runtime-configuration gate. The negative generic result is documented in
 `docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md` and
 JSON.
+
+`src/tools/thor_evidence/cartographer.py` is the MAP-1 persistent generic
+provenance graph; `map_sources.py` imports bounded existing JSON evidence and
+`m12_map1.py` runs the deterministic proof gate. Focused regression coverage is
+`tests/thor_evidence_map1_test.py`. The authoritative checkpoint report is
+`docs/reports/THOR_M12_MAP_1_GLOBAL_PROVENANCE_CARTOGRAPHER.md` with its JSON
+counterpart; SQLite proof artifacts remain under ignored `build/`.

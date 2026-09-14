@@ -1783,3 +1783,18 @@ proof remains valid and is not replaced by an unsafe full-ROM run.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md`
 and its machine-readable JSON.
+
+## ADR-MAP-1 — Persistent global provenance cartographer
+
+**Decision:** Add a small generic SQLite graph beside (not inside) the historical
+AUTO67 persistence schema. Import only already-proven machine-readable evidence;
+canonicalize static ROM entities, retain runtime occurrence/value-version scope,
+and keep OBSERVED/PROVEN/UNRESOLVED/CONFLICT distinct.
+
+**Consequences:** CPU/register, SAT/DMA, graphics/resource, and selector/control
+evidence can share one deterministic persistent graph with lineage and frontiers.
+Legacy proof databases remain readable and untouched. No semantic merging,
+runtime capture, or SOURCE_OWNED promotion is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_MAP_1_GLOBAL_PROVENANCE_CARTOGRAPHER.md` and
+`tests/thor_evidence_map1_test.py`.

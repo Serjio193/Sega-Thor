@@ -1,0 +1,19 @@
+{
+  "schema": "oasis.m68k.m12-map1.report.v1",
+  "result": "PASS",
+  "baseline": "fec9574d35b098bb02c0a71c2e285496ab7ceb2a",
+  "database_schema": "m12.map1.v1",
+  "database": "build/thor-evidence/map-1/global-provenance-v3.sqlite",
+  "proof": "build/thor-evidence/map-1/map-1-proof-v3.json",
+  "before": {"nodes": 0, "edges": 0, "proven_nodes": 0, "proven_edges": 0, "conflicts": 0, "graph_hash": "afa9da796f4e68d27173278ea962cfe3dc266ca06fc3304de534860d5e99977c"},
+  "first_import": {"nodes": 39, "edges": 33, "proven_nodes": 39, "proven_edges": 33, "conflicts": 0, "components": 8, "open_frontiers": 0, "proven_rom_ranges": 11, "proven_rom_bytes": 8414, "graph_hash": "11324348b7da6c2e187c503e3b168ba67a09f464e62e4aa2943262f5794ae3f4"},
+  "second_import": {"new_nodes": 0, "new_edges": 0, "new_conflicts": 0, "graph_hash": "11324348b7da6c2e187c503e3b168ba67a09f464e62e4aa2943262f5794ae3f4"},
+  "synthetic": {"first_positive_new_nodes": 1, "first_positive_new_edges": 1, "replay_new_nodes": 0, "replay_new_edges": 0},
+  "sources": ["CPU/register AUTO67.6R3B", "SAT/DMA sat-provenance-current-v5", "graphics/resource AUTO60 manifest + AUTO64 static program", "selector/control AUTO60 manifest"],
+  "frontier_model": "implemented; real imported corpus had no unresolved frontier claim strong enough to import",
+  "conflict_model": "implemented; real corpus produced zero conflicts",
+  "source_owned_changed": false,
+  "new_runtime_campaign": false,
+  "raw_backlog": "NONEXISTENT",
+  "tests": "16 focused MAP-1 tests PASS"
+}

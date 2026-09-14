@@ -662,3 +662,19 @@ Temporary register-like translation is allowed when semantics are still unclear,
 
 ## Architecture change policy
 Any change that alters layer responsibilities, project direction, major dependencies, rendering strategy, audio strategy, ROM-data policy, or translation approach requires an entry in `docs/DECISIONS.md` before or with the code change.
+
+## M12 MAP-1 persistent provenance boundary
+
+`src/tools/thor_evidence/cartographer.py` is the first generic persistent global
+provenance graph. It is separate from the historical AUTO67 `live_chain` database
+and from the in-memory V3/V4 domain graphs. The bounded import path is
+`map_sources.py` -> `Cartographer.merge()` -> MAP-1 SQLite. Static entities use
+canonical kind/key/scope identities; runtime occurrences and value versions retain
+frame/epoch scope. Only explicit PROVEN edges contribute to map metrics. OBSERVED,
+unresolved frontiers, and conflicts remain separately stored.
+
+The importer consumes existing CPU/register, SAT/DMA, graphics/resource, and
+selector/control JSON evidence. It does not capture events, throttle sensors,
+infer causality from adjacency, or write `SOURCE_OWNED`. The map hash is derived
+from deterministic sorted graph rows, so replaying the same corpus is a zero-delta
+operation.

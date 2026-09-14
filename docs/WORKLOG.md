@@ -8849,3 +8849,25 @@ passed 189/189 each, the source-size gate passed, and `git diff --check`
 passed. Evidence is in
 `docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md` and
 JSON.
+
+## 2026-09-15 — M12-MAP-1 persistent global provenance cartographer
+
+TASK: Build the first persistent generic provenance graph from existing evidence
+only. Do not start AUTO68, add runtime capture, merge semantics, or change
+SOURCE_OWNED.
+
+RESULT: PASS for the bounded corpus. Added the deterministic SQLite cartographer,
+four machine-readable importers (CPU/register, SAT/DMA, graphics/resource, and
+selector/control), explicit frontiers/conflicts, lineage, canonical identities,
+and 16 focused tests. The real import produced 39 nodes, 33 PROVEN edges, 8
+components, 11 ROM ranges/8,414 bytes, zero conflicts, and no open frontiers.
+Replay produced zero new nodes/edges/conflicts and the same graph hash
+`11324348b7da6c2e187c503e3b168ba67a09f464e62e4aa2943262f5794ae3f4`.
+
+SOURCE_OWNED remained unchanged at 0 map bytes. No BizHawk campaign or raw-event
+backlog was created. The authoritative report is
+`docs/reports/THOR_M12_MAP_1_GLOBAL_PROVENANCE_CARTOGRAPHER.md` and its JSON
+counterpart; the ignored local proof DB is under `build/thor-evidence/map-1/`.
+
+CHECKS: MAP-1 focused tests passed; full Debug/Release build, CTest, source-size
+gate, and diff checks remain to be run before commit.
