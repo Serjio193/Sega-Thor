@@ -26,6 +26,7 @@ local function capsule_json(c, s)
         ',"freeze_reason":' .. (c.freeze_reason and json_string(c.freeze_reason) or "null") ..
         ',"full":' .. tostring(c.full) .. ',"truncated":' .. tostring(c.truncated) ..
         ',"predecessor_enabled":' .. tostring(c.predecessor_enabled) ..
+        ',"predecessor_id":' .. (c.predecessor_id or "null") ..
         ',"predecessor_path":' .. (c.predecessor_path and json_string(c.predecessor_path) or "null") ..
         ',"predecessor_record_count":' .. (c.predecessor_record_count or 0) ..
         ',"predecessor_complete":' .. tostring(c.predecessor_complete or false) ..
@@ -37,12 +38,41 @@ local function events_json(s)
     local values = {}
     for i = 0, s.discovery_count - 1 do
         local item = s.discovery[((s.discovery_start + i - 1) % s.discovery_capacity) + 1]
+        local prehistory = item.prehistory_id and s.prehistory.lookup(item.prehistory_id) or nil
+        local prehistory_path = prehistory and prehistory.path or
+            (item.prehistory_id and string.format("%s/prehistory-%08X.o67p",
+                                                   s.capsule_dir, item.prehistory_id) or nil)
         values[#values + 1] = '{"seq":' .. item.seq .. ',"frame":' .. item.frame ..
             ',"epoch":' .. item.epoch .. ',"kind":' .. json_string(item.kind) ..
             ',"pc":' .. json_string(s.hex(item.pc)) ..
-            ',"address":' .. (item.address and json_string(s.hex(item.address)) or "null") .. '}'
+            ',"address":' .. (item.address and json_string(s.hex(item.address)) or "null") ..
+            ',"exec_epoch":' .. (item.exec_epoch or "null") ..
+            ',"exec_sequence":' .. (item.exec_sequence or "null") ..
+            ',"exec_frame":' .. (item.exec_frame or "null") ..
+            ',"exec_pc":' .. (item.exec_pc and json_string(s.hex(item.exec_pc)) or "null") ..
+            ',"consumer_join":' .. (item.consumer_join and json_string(item.consumer_join) or "null") ..
+            ',"prehistory_id":' .. (item.prehistory_id or "null") ..
+            ',"prehistory_path":' .. (prehistory_path and json_string(prehistory_path) or "null") ..
+            ',"prehistory_first_sequence":' .. (prehistory and prehistory.first_sequence or "null") ..
+            ',"prehistory_last_sequence":' .. (prehistory and prehistory.last_sequence or "null") ..
+            ',"prehistory_record_count":' .. (prehistory and prehistory.record_count or "null") .. '}'
     end
     return "[" .. table.concat(values, ",") .. "]"
+end
+
+local function prehistory_json(item)
+    item = item or {}
+    return '{"ring_capacity":' .. (item.ring_capacity or 0) ..
+        ',"records_observed":' .. (item.records_observed or 0) ..
+        ',"ring_overwrites":' .. (item.ring_overwrites or 0) ..
+        ',"ring_wrapped":' .. tostring(item.ring_wrapped or false) ..
+        ',"frozen_slices":' .. (item.frozen_slices or 0) ..
+        ',"flushed_slices":' .. (item.flushed_slices or 0) ..
+        ',"consumer_joins":' .. (item.consumer_joins or 0) ..
+        ',"unjoined_consumers":' .. (item.unjoined_consumers or 0) ..
+        ',"pending_consumers":' .. (item.pending_consumers or 0) ..
+        ',"active_global_hook":' .. tostring(item.active_global_hook or false) ..
+        ',"target_pc_count":' .. (item.target_pc_count or 0) .. '}'
 end
 
 local function leases_json(items)
@@ -100,6 +130,7 @@ function M.write(path, final, s)
         s.discovery_count .. ',"capsules":[' .. table.concat(capsules, ",") ..
         '],"discovery":' .. events_json(s) .. ',"frame_timing":' .. timing ..
         ',"filter_install_samples":' .. filter_json(s) ..
+        ',"prehistory":' .. prehistory_json(s.prehistory_metrics) ..
         (s.hook_metrics and ',"hook_metrics":' .. s.hook_metrics.json(final) or '') .. '}')
     file:close()
 end

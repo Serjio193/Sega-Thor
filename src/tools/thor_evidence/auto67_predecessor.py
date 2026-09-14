@@ -9,8 +9,9 @@ from typing import Any
 
 
 MAGIC = b"O67P"
-VERSION = 1
-HEADER_BYTES = 56
+VERSION = 2
+V1_HEADER_BYTES = 56
+V2_HEADER_BYTES = 72
 RECORD_BYTES = 28
 REGISTER_MASKS = {"A4": 1, "A5": 2}
 
@@ -44,6 +45,11 @@ class PredecessorCapture:
     consumer_frame: int | None
     overwrites: int
     records: tuple[PredecessorRecord, ...]
+    format_version: int = 1
+    ring_capacity: int = 0
+    ring_wrapped: bool = False
+    consumer_pc: int | None = None
+    join_status: str = "LEGACY"
 
 
 def _read_u32(data: bytes, offset: int) -> int:
@@ -53,23 +59,34 @@ def _read_u32(data: bytes, offset: int) -> int:
 def decode(path: Path) -> PredecessorCapture:
     path = Path(path).resolve()
     data = path.read_bytes()
-    if len(data) < HEADER_BYTES or data[:4] != MAGIC:
+    if len(data) < V1_HEADER_BYTES or data[:4] != MAGIC:
         raise PredecessorFormatError("unknown predecessor evidence format")
-    (version, epoch, target_pc, register_mask, first_sequence, last_sequence,
-     record_count, complete, truncated, gap, consumer_sequence,
-     consumer_frame, overwrites) = struct.unpack_from("<13I", data, 4)
-    if version != VERSION:
+    version = _read_u32(data, 4)
+    if version == 1:
+        header_bytes = V1_HEADER_BYTES
+        (version, epoch, target_pc, register_mask, first_sequence, last_sequence,
+         record_count, complete, truncated, gap, consumer_sequence,
+         consumer_frame, overwrites) = struct.unpack_from("<13I", data, 4)
+        ring_capacity, ring_wrapped, consumer_pc, join_status = 0, 0, target_pc, "LEGACY"
+    elif version == VERSION:
+        header_bytes = V2_HEADER_BYTES
+        (version, epoch, target_pc, register_mask, first_sequence, last_sequence,
+         record_count, complete, truncated, gap, consumer_sequence,
+         consumer_frame, overwrites, ring_capacity, ring_wrapped, consumer_pc,
+         join_code) = struct.unpack_from("<17I", data, 4)
+        join_status = "EXACT" if join_code == 1 else "MISSING"
+    else:
         raise PredecessorFormatError(f"unsupported predecessor version {version}")
     if record_count > 4096:
         raise PredecessorFormatError("predecessor record count exceeds bound")
-    expected = HEADER_BYTES + record_count * RECORD_BYTES
+    expected = header_bytes + record_count * RECORD_BYTES
     if len(data) != expected:
         raise PredecessorFormatError(
             f"predecessor length mismatch: expected {expected}, got {len(data)}")
     requested = tuple(name for name, mask in REGISTER_MASKS.items()
                       if register_mask & mask)
     records = []
-    for offset in range(HEADER_BYTES, expected, RECORD_BYTES):
+    for offset in range(header_bytes, expected, RECORD_BYTES):
         values = struct.unpack_from("<7I", data, offset)
         registers = {}
         if "A4" in requested:
@@ -81,10 +98,13 @@ def decode(path: Path) -> PredecessorCapture:
         consumer_sequence = None
     if consumer_frame == 0xFFFFFFFF:
         consumer_frame = None
+    if consumer_pc == 0xFFFFFFFF:
+        consumer_pc = None
     return PredecessorCapture(
         str(path), epoch, target_pc, requested, first_sequence, last_sequence,
         bool(complete), bool(truncated), bool(gap), consumer_sequence,
-        consumer_frame, overwrites, tuple(records))
+        consumer_frame, overwrites, tuple(records), version, ring_capacity,
+        bool(ring_wrapped), consumer_pc, join_status)
 
 
 def _signed16(value: int) -> int:
@@ -110,12 +130,35 @@ def _operand(rom: bytes, cursor: int, mode: int, register: int,
         return {"kind": "MEMORY_REGISTER", "register": f"A{register}",
                 "mode": mode, "displacement": displacement,
                 "text": f"{displacement}(A{register})"}, cursor + 2
+    if mode == 6:
+        if cursor + 2 > len(rom):
+            return None
+        extension = int.from_bytes(rom[cursor:cursor + 2], "big")
+        index_kind = "A" if extension & 0x8000 else "D"
+        index = (extension >> 12) & 7
+        displacement = extension & 0xFF
+        if displacement & 0x80:
+            displacement -= 0x100
+        return {"kind": "MEMORY_REGISTER_INDEXED", "register": f"A{register}",
+                "mode": mode, "index_register": f"{index_kind}{index}",
+                "displacement": displacement,
+                "text": f"{displacement}(A{register},{index_kind}{index})"}, cursor + 2
     if mode == 7 and register == 1:
         if cursor + 4 > len(rom):
             return None
         address = int.from_bytes(rom[cursor:cursor + 4], "big")
         return {"kind": "ABSOLUTE_MEMORY", "address": address,
                 "text": f"${address:08X}.L"}, cursor + 4
+    if mode == 7 and register in {2, 3}:
+        if cursor + 2 > len(rom):
+            return None
+        extension = int.from_bytes(rom[cursor:cursor + 2], "big")
+        displacement = _signed16(extension) if register == 2 else extension & 0xFF
+        if register == 3 and displacement & 0x80:
+            displacement -= 0x100
+        text = f"{displacement}(PC)" if register == 2 else f"d8(PC)"
+        return {"kind": "PC_MEMORY", "register": "PC",
+                "displacement": displacement, "text": text}, cursor + 2
     if mode == 7 and register == 4:
         size = 4 if width == 4 else 2
         if cursor + size > len(rom):
@@ -159,6 +202,21 @@ def register_writes(rom: bytes, pc: int, opcode: int) -> dict[str, Any]:
         return {"status": "PROVEN", "mnemonic": "LEA",
                 "writes": [{"register": f"A{dest_reg}",
                              "semantics": f"LEA {source[0]['text']},A{dest_reg}"}]}
+    if (opcode & 0xFFC0) == 0x4840:
+        return {"status": "PROVEN", "mnemonic": "PEA", "writes": [
+            {"register": "A7", "semantics": "PEA stack update"}]}
+    if (opcode & 0xF1C0) == 0x40C0:
+        mode, dest_reg = (opcode >> 3) & 7, opcode & 7
+        writes = ([{"register": f"A{dest_reg}",
+                    "semantics": "MOVE status-register destination update"}]
+                  if mode in {3, 4} else [])
+        return {"status": "PROVEN", "mnemonic": "MOVE_STATUS", "writes": writes}
+    if (opcode >> 12) == 0 and (opcode & 0x0100) == 0:
+        mode, dest_reg = (opcode >> 3) & 7, opcode & 7
+        writes = ([{"register": f"A{dest_reg}",
+                    "semantics": "bit-operation address auto-update"}]
+                  if mode in {3, 4} else [])
+        return {"status": "PROVEN", "mnemonic": "BIT_IMMEDIATE", "writes": writes}
     if top == 5:
         mode, dest_reg = (opcode >> 3) & 7, opcode & 7
         if mode == 1:
@@ -186,18 +244,18 @@ def _contiguous(records: list[PredecessorRecord], start: int, end: int) -> bool:
 def resolve(capture: PredecessorCapture, rom: bytes,
             requested: list[str]) -> dict[str, Any]:
     records = list(capture.records)
-    if (not capture.complete or capture.truncated or capture.gap or
-            capture.overwrites):
-        reason = "PREDECESSOR_RING_OVERWRITE" if capture.overwrites else \
-            "INCOMPLETE_PREDECESSOR_CAPTURE"
+    if not capture.complete or capture.truncated or capture.gap:
         return {"steps": [], "unresolved": requested,
-                "reason": reason}
+                "reason": "INCOMPLETE_PREDECESSOR_CAPTURE"}
+    if capture.format_version >= 2 and capture.join_status != "EXACT":
+        return {"steps": [], "unresolved": requested,
+                "reason": "CONSUMER_JOIN_NOT_EXACT"}
     if capture.consumer_sequence is None:
         return {"steps": [], "unresolved": requested,
                 "reason": "CONSUMER_OCCURRENCE_MISSING"}
     consumer = next((item for item in records
                      if item.sequence == capture.consumer_sequence and
-                     item.pc == capture.target_pc), None)
+                     item.pc == (capture.consumer_pc or capture.target_pc)), None)
     if consumer is None or consumer.epoch != capture.epoch:
         return {"steps": [], "unresolved": requested,
                 "reason": "CONSUMER_OCCURRENCE_IDENTITY_MISMATCH"}
@@ -212,17 +270,27 @@ def resolve(capture: PredecessorCapture, rom: bytes,
         prior = [item for item in records if item.epoch == consumer.epoch and
                  item.sequence < consumer.sequence]
         for item in reversed(prior):
-            decoded = register_writes(rom, item.pc, item.opcode)
+            # BizHawk's bus-exec callback supplies a second bus value, not a
+            # reliable instruction opcode.  R2 therefore keeps the runtime
+            # PC/sequence as evidence and decodes the opcode from the
+            # canonical ROM when that callback value is zero.  A non-zero
+            # captured value remains available for legacy/test captures.
+            opcode = item.opcode
+            opcode_source = "RUNTIME_RECORD"
+            if capture.format_version >= 2 and item.pc >= 0 and item.pc + 2 <= len(rom):
+                opcode = int.from_bytes(rom[item.pc:item.pc + 2], "big")
+                opcode_source = "STATIC_ROM_PC"
+            decoded = register_writes(rom, item.pc, opcode)
             if decoded["status"] != "PROVEN":
                 failed_reason = decoded["reason"]
                 break
             if register in {write["register"] for write in decoded["writes"]}:
-                candidate = (item, decoded)
+                candidate = (item, decoded, opcode, opcode_source)
                 break
         if failed_reason or candidate is None:
             unresolved.append(register)
             continue
-        producer, decoded = candidate
+        producer, decoded, producer_opcode, opcode_source = candidate
         if not _contiguous(records, producer.sequence, consumer.sequence):
             unresolved.append(register)
             continue
@@ -239,11 +307,16 @@ def resolve(capture: PredecessorCapture, rom: bytes,
                                      "sequence": consumer.sequence,
                                      "frame": consumer.frame,
                                      "pc": f"0x{consumer.pc:06X}"},
-            "producer_opcode": f"0x{producer.opcode:04X}",
+            "producer_opcode": f"0x{producer_opcode:04X}",
+            "producer_opcode_source": opcode_source,
             "producer_semantics": [write["semantics"] for write in decoded["writes"]
                                    if write["register"] == register],
+            "instruction_distance": consumer.sequence - producer.sequence,
             "evidence": {"complete_interval": True,
                           "sequence_range": [producer.sequence, consumer.sequence],
+                          "ring_capacity": capture.ring_capacity,
+                          "ring_wrapped": capture.ring_wrapped,
+                          "ring_overwrites_before_snapshot": capture.overwrites,
                           "intervening_register_write": False,
                           "consumer_register_value": consumer.registers[register],
                           "post_state_available": False,

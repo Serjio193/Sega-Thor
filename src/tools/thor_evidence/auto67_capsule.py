@@ -51,6 +51,7 @@ class Capsule:
     predecessor_enabled: bool = False
     predecessor_registers: tuple[str, ...] = ()
     predecessor_target_pc: int = 0
+    predecessor_id: int | None = None
     predecessor_path: str | None = None
     predecessor_record_count: int = 0
     predecessor_complete: bool = False
@@ -75,9 +76,12 @@ class Capsule:
                                     else event.get("pc"))
         requested = tuple(str(item) for item in event.get(
             "register_provenance_registers", ()) if str(item) in {"A4", "A5"})
-        self.predecessor_enabled = bool(requested)
+        path = event.get("prehistory_path")
+        self.predecessor_enabled = bool(path and path != "null")
         self.predecessor_registers = requested
         self.predecessor_target_pc = _number(event.get("pc"))
+        self.predecessor_id = _number(event.get("prehistory_id"), 0) or None
+        self.predecessor_path = str(path) if self.predecessor_enabled else None
         self.start_frame = _number(event.get("frame"))
         self.last_frame = self.start_frame
         self.state = "CAPTURING"
@@ -101,7 +105,7 @@ class Capsule:
             if name in item:
                 setattr(self, name, item[name])
         for name in ("predecessor_enabled", "predecessor_registers",
-                     "predecessor_target_pc", "predecessor_path",
+                     "predecessor_target_pc", "predecessor_id", "predecessor_path",
                      "predecessor_record_count", "predecessor_complete",
                      "predecessor_truncated", "predecessor_gap"):
             if name in item:
@@ -125,6 +129,7 @@ class Capsule:
         self.predecessor_enabled = False
         self.predecessor_registers = ()
         self.predecessor_target_pc = 0
+        self.predecessor_id = None
         self.predecessor_path = None
         self.predecessor_record_count = 0
         self.predecessor_complete = self.predecessor_truncated = self.predecessor_gap = False
@@ -149,6 +154,7 @@ class Capsule:
             "predecessor_enabled": self.predecessor_enabled,
             "predecessor_registers": list(self.predecessor_registers),
             "predecessor_target_pc": self.predecessor_target_pc,
+            "predecessor_id": self.predecessor_id,
             "predecessor_path": self.predecessor_path,
             "predecessor_record_count": self.predecessor_record_count,
             "predecessor_complete": self.predecessor_complete,
@@ -212,6 +218,7 @@ class CapsulePool:
                         "capsules_reused": 0, "capsules_full": 0,
                         "capsules_truncated": 0, "known_early_release": 0,
                         "merge_early_release": 0, "frozen_samples": 0}
+        self.metrics["predecessor_decode_path_samples"] = []
 
     def _publish(self, op: str, capsule: Capsule) -> None:
         self.command_sequence += 1
@@ -221,7 +228,8 @@ class CapsulePool:
                   str(capsule.filter_value), "30",
                   "1" if capsule.predecessor_enabled else "0",
                   str(capsule.predecessor_target_pc),
-                  ",".join(capsule.predecessor_registers) or "-"]
+                  ",".join(capsule.predecessor_registers) or "-",
+                  str(capsule.predecessor_id or 0), capsule.predecessor_path or "-"]
         self.commands.append("|".join(fields))
         if self.publisher:
             self.publisher.publish("\n".join(self.commands) + "\n")
@@ -301,10 +309,12 @@ class CapsulePool:
             capsule = self.capsules[capsule_id]
             if capsule.lease_id != lease_id or capsule.investigation_id != investigation_id:
                 raise CapsuleFormatError("predecessor lease/investigation mismatch")
-            if not capsule.predecessor_enabled:
+            if len(self.metrics["predecessor_decode_path_samples"]) < 8:
+                self.metrics["predecessor_decode_path_samples"].append({
+                    "capsule_id": capsule_id, "enabled": capsule.predecessor_enabled,
+                    "path": capsule.predecessor_path})
+            if capsule.predecessor_path in {None, "", "-", "null"}:
                 return None
-            if not capsule.predecessor_path:
-                raise CapsuleFormatError("predecessor path is missing")
             path = Path(capsule.predecessor_path)
         return decode_predecessor(path)
 

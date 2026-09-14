@@ -97,7 +97,8 @@ def _operand(rom: bytes, cursor: int, mode: int, register: int,
     return None
 
 
-def _decode_move_write(rom: bytes, pc: int, observed_address: int) -> dict[str, Any]:
+def _decode_move_write(rom: bytes, pc: int,
+                       observed_address: int | None) -> dict[str, Any]:
     if pc < 0 or pc + 2 > len(rom):
         return {"status": "UNKNOWN", "missing": ["ROM_BYTES"],
                 "reason": "instruction PC is outside the ROM"}
@@ -124,7 +125,8 @@ def _decode_move_write(rom: bytes, pc: int, observed_address: int) -> dict[str, 
     if not memory_destination:
         return {"status": "UNKNOWN", "missing": ["MEMORY_WRITE_SEMANTICS"],
                 "reason": "decoded instruction does not write memory", "opcode": opcode}
-    if destination_data.get("kind") == "ABSOLUTE_MEMORY" and \
+    if observed_address is not None and \
+            destination_data.get("kind") == "ABSOLUTE_MEMORY" and \
             destination_data.get("address") != observed_address:
         return {"status": "UNKNOWN", "missing": ["OBSERVED_ADDRESS_MATCH"],
                 "reason": "absolute destination differs from observed address", "opcode": opcode}
@@ -190,6 +192,32 @@ def required_registers(seed: dict[str, Any], rom: bytes | None) -> list[str]:
     return names
 
 
+def register_provenance_targets(rom: bytes) -> dict[int, int]:
+    """Return statically supported memory-write PCs requiring A4/A5 capture."""
+    targets: dict[int, int] = {}
+    for pc in range(0, len(rom) - 1, 2):
+        decoded = _decode_move_write(rom, pc, None)
+        if decoded.get("status") != "PROVEN":
+            continue
+        names: list[str] = []
+        source = decoded["source"]
+        if source.get("kind") in {"DATA_REGISTER", "ADDRESS_REGISTER"}:
+            names.append(source["register"])
+        elif source.get("kind") in {"MEMORY_REGISTER", "MEMORY_REGISTER_INDEXED"}:
+            names.append(source["register"])
+        destination = decoded["destination"]
+        if "register" in destination:
+            names.append(destination["register"])
+        mask = 0
+        if "A4" in names:
+            mask |= 1
+        if "A5" in names:
+            mask |= 2
+        if mask:
+            targets[pc] = mask
+    return targets
+
+
 def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
                 rom: bytes | None = None,
                 predecessor: PredecessorCapture | None = None) -> dict[str, Any]:
@@ -228,6 +256,13 @@ def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
                                       "complete": predecessor.complete,
                                       "truncated": predecessor.truncated,
                                       "gap": predecessor.gap,
+                                      "format_version": predecessor.format_version,
+                                      "ring_capacity": predecessor.ring_capacity,
+                                      "ring_wrapped": predecessor.ring_wrapped,
+                                      "overwrites": predecessor.overwrites,
+                                      "consumer_pc": _hex(predecessor.consumer_pc)
+                                      if predecessor.consumer_pc is not None else None,
+                                      "join_status": predecessor.join_status,
                                       "consumer_sequence": predecessor.consumer_sequence,
                                       "consumer_frame": predecessor.consumer_frame}}
         if chain_steps:

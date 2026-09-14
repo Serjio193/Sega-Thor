@@ -8725,3 +8725,39 @@ confirmed the capture path but was not accepted as normal performance because
 CHECKS: AUTO67 regression matrix, AUTO67.4 regression, Python compilation,
 source-size gate, diff check, Debug/Release build and CTest results are recorded
 in `docs/reports/THOR_M12_AUTO67_6R_TARGETED_REGISTER_PREDECESSOR.md`.
+# 2026-09-14 — AUTO67.6R2 continuous prehistory ring — positive evidence / performance blocked
+
+TASK: Starting from `3890af1f2e76dcd2eda615018afecc92c14a9cce`, replace the
+late per-investigation predecessor capture with one bounded global execution
+ring. Do not start AUTO68, merge graphs or change SOURCE_OWNED. Run the real
+BizHawk proof after the repair.
+
+IMPLEMENTATION: O67P v2 uses one `event.on_bus_exec_any` registration, a
+4096-entry compact ring, exact discovery-to-execution joins, bounded frozen
+slices and exact consumer A4/A5 capture. The worker resolves v2 opcodes from
+canonical ROM bytes at runtime PCs because BizHawk's callback second argument
+is a bus value. Generic PEA, status-move, immediate-bit, indexed and PC-memory
+forms now fail closed correctly without address-specific producer cases.
+
+REAL RESULT: The 120-frame QuickSave1 BizHawk run returned 0 with the native
+operator window. It observed 1,126,282 execution records, 1,122,186 ring
+overwrites, 12 exact joins/slices, 24,576 frozen records, zero gaps and zero
+truncations. The canary `0x0027EC -> 0xC00004` produced two real
+`REGISTER_REACHING_DEFINITION` steps: A5 from `0x002234` (`LEA $00FF134C.L,A5`,
+distance 26) and A4 from `0x0027BE` (`LEA $00C00004.L,A4`, distance 15).
+Across the run, 7 steps were materialized, with 7 resolved and 4 unresolved
+register-provenance results.
+
+PERFORMANCE RESULT: The evidence path is positive, but the global Lua hook is
+not gameplay-safe in BizHawk 2.11.1: all 120 frames exceeded 50 ms and the
+maximum was 679 ms; the first frame already measured 662 ms with no leases.
+The bottleneck is callback frequency, not ring capacity, so the 4096 bound was
+not increased. Raw backlog remains nonexistent, duplicate active claims are
+zero, worker pool is prestarted, queue drops/errors are zero. This is a
+measured performance blocker for a future bounded runtime design, not a reason
+to fabricate or discard the proven chain steps.
+
+CHECKS: AUTO67.6R2 focused tests passed (17), AUTO67 tests passed (10), the
+full AUTO67 discovery passed (48), Debug and Release builds passed, Debug and
+Release CTest passed 189/189, the source-limit gate passed for 647 governed
+files, and `git diff --check` passed.

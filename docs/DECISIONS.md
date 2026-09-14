@@ -1680,3 +1680,29 @@ PC is inferred. The bounded negative result is authoritative until a later
 task changes capture scheduling explicitly.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_6R_TARGETED_REGISTER_PREDECESSOR.md`.
+# ADR-0067.6R2 — one global bounded prehistory ring
+**Status:** Accepted as AUTO67.6R2 checkpoint; performance follow-up required
+**Date:** 2026-09-14
+
+**Context:** AUTO67.6 targeted predecessor hooks started too late to recover
+the history before a BUS_WRITE consumer. A per-investigation execution-hook
+fan-out was already known to damage BizHawk responsiveness.
+
+**Decision:** Use one continuously active developer-only global
+`event.on_bus_exec_any` hook with a bounded 4096-record compact ring. At an
+exact discovery/execution join, freeze one bounded O67P v2 slice and read only
+the requested A4/A5 values at the consumer. Keep discovery sequence and
+execution sequence separate. Because BizHawk's second callback argument is a
+bus value, resolve v2 instruction semantics from canonical ROM bytes at the
+captured runtime PC; do not treat that callback value as an opcode.
+
+**Consequences:** AUTO67.6R2 can prove the first real generic reaching-
+definition steps without a per-worker hook or raw-event backlog. The canary
+proves A4/A5 reaching definitions. The real run also measures a hard negative:
+the global Lua callback produces 120/120 frames over 50 ms and a 679 ms maximum,
+so increasing ring capacity is not an optimization and smooth gameplay is not
+accepted by this checkpoint. No semantic merge, SOURCE_OWNED change or AUTO68
+work is implied.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_6R2_CONTINUOUS_PREHISTORY.md` and
+its machine-readable JSON proof.

@@ -14,6 +14,7 @@ from typing import Any
 from auto67_capsule import CapsulePool
 from auto67_dashboard import DASHBOARD_HTML
 from auto67_live import BASELINE, ROM_SHA, Dispatcher
+from auto67_materializer import register_provenance_targets
 from auto67_persistence import LivePersistenceSink
 from auto67_status import StatusPublisher
 
@@ -27,6 +28,11 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     if hashlib.sha256(rom_bytes).hexdigest() != ROM_SHA:
         raise SystemExit("canonical ROM identity mismatch")
     output.parent.mkdir(parents=True, exist_ok=True)
+    target_path = output.with_suffix(".register-targets.txt")
+    targets = register_provenance_targets(rom_bytes)
+    target_path.write_text("".join(f"{pc:06X}|{mask}\n"
+                                   for pc, mask in sorted(targets.items())),
+                           encoding="ascii")
     status_path = output.with_suffix(".status.json")
     final_path = output.with_suffix(".lua.json")
     stop_path = output.with_suffix(".stop")
@@ -62,6 +68,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_CAPSULE_COMMANDS": str(command_path),
         "OASIS_CAPSULE_DIR": str(capsule_dir),
         "OASIS_AUTO67_HOOK_METRICS": str(lua.parent / "auto67_hook_metrics.lua"),
+        "OASIS_AUTO67_REGISTER_TARGETS": str(target_path),
+        "OASIS_AUTO67_PREHISTORY_RING": "4096",
     })
     command = [str(emulator), f"--lua={lua}", str(rom)]
     started = time.monotonic()
@@ -117,6 +125,9 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "dispatcher": dispatcher.snapshot(), "lua": lua_final,
               "raw_event_backlog": 0, "raw_event_backlog_structure": "NONEXISTENT",
               "launcher_log": str(launcher_log), "status_path": str(status_path),
+              "prehistory_config": {"ring_capacity": 4096,
+                                     "target_path": str(target_path),
+                                     "target_pc_count": len(targets)},
               "capture_path": str(final_path), "capture_disabled": args.capture_disabled,
               "view_url": view_url, "view_snapshot": str(view_path),
               "view_mode": view_mode,

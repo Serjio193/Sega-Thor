@@ -105,16 +105,18 @@ tests and real proof are recorded in
 `tests/thor_evidence_auto67_4_test.py` and
 `docs/reports/THOR_M12_AUTO67_5_CAUSAL_INTEGRITY_GATE.md` with the JSON proof.
 
-AUTO67.6R adds `auto67_predecessor.py`, the bounded O67P v1 decoder and
-fail-closed reaching-definition resolver. `capture/predecessor_capture.lua`
-installs targeted A4/A5 predecessor capture only for investigations that need
-register provenance; `capture/live_capsule_status.lua` serializes the extended
-bounded status snapshot. `tests/thor_evidence_auto67_6_test.py` covers exact
-occurrence identity, latest reaching writes, gaps, truncation, overwrites,
-epoch mismatch, unsupported writers and generic register selection. The real
-positive-or-negative checkpoint is
-`docs/reports/THOR_M12_AUTO67_6R_TARGETED_REGISTER_PREDECESSOR.md` with its
-machine-readable JSON counterpart.
+AUTO67.6R2 extends `auto67_predecessor.py` with the O67P v2 bounded global
+prehistory decoder and fail-closed reaching-definition resolver.
+`capture/predecessor_capture.lua` owns one continuously active 4096-entry
+execution ring and exact BUS_WRITE joins; `capture/live_capsule.lua` exposes
+frozen slice metadata through the existing bounded status path.
+`tests/thor_evidence_auto67_6_test.py` covers exact occurrence identity, latest
+reaching writes, ROM-PC opcode recovery, generic indexed/PC operands, gaps,
+truncation, overwrites, epoch mismatch, unsupported writers and generic
+register selection. The R2 checkpoint is
+`docs/reports/THOR_M12_AUTO67_6R2_CONTINUOUS_PREHISTORY.md` with its JSON
+counterpart. The proof is positive for register evidence but records the
+measured global-hook frame-time limitation; it does not claim smooth gameplay.
 
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`

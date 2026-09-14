@@ -40,6 +40,18 @@ class Auto67Test(unittest.TestCase):
             time.sleep(0.01)
         self.fail("workers did not return the burst")
 
+    def test_predecessor_ready_seed_is_selected_before_ordinary_work(self):
+        dispatcher = AUTO67.Dispatcher(1)
+        dispatcher.worker_states = ["IDLE"]
+        ordinary = event(1, address="0x201")
+        ready = event(2, address="0x202")
+        ready["prehistory_path"] = "prehistory-00000001.o67p"
+        dispatcher.window.append(ordinary)
+        dispatcher.window.append(ready)
+        chosen = dispatcher._choose_current()
+        self.assertIsNotNone(chosen)
+        self.assertEqual(chosen[1]["event"]["seq"], 2)
+
     def test_free_workers_claim_different_seeds(self):
         dispatcher = AUTO67.Dispatcher(2, capacity=8, processing_delay=0.01)
         dispatcher.start()

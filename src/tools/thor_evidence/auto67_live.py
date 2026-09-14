@@ -101,6 +101,7 @@ class Dispatcher:
             "materialized_causal_facts": 0, "materialized_chain_steps": 0,
             "unsupported_causal_facts": 0,
             "predecessor_captures_installed": 0, "predecessor_records_captured": 0,
+            "predecessor_decode_attempts": 0, "predecessor_decode_none": 0,
             "predecessor_max_ring_utilization": 0, "predecessor_truncations": 0,
             "predecessor_gaps": 0, "register_provenance_resolved": 0,
             "register_provenance_unresolved": 0,
@@ -169,7 +170,10 @@ class Dispatcher:
                 if state in {"IDLE", "HUNTING"}]
         if not free:
             return None
-        for event in reversed(self.window.items):
+        current = list(reversed(self.window.items))
+        prehistory = [event for event in current if event.get("prehistory_path")]
+        ordinary = [event for event in current if not event.get("prehistory_path")]
+        for event in prehistory + ordinary:
             if event.get("dispatch_state"):
                 continue
             self.metrics["seeds_considered"] += 1
@@ -328,8 +332,11 @@ class Dispatcher:
                         capsule_evidence = self.capsule_pool.decode(
                             capsule_id, task["capsule_lease"], task["investigation_id"])
                         self.metrics["capsule_records_decoded"] += capsule_evidence.event_count
+                        self.metrics["predecessor_decode_attempts"] += 1
                         predecessor_evidence = self.capsule_pool.decode_predecessor(
                             capsule_id, task["capsule_lease"], task["investigation_id"])
+                        self.metrics["predecessor_decode_none"] += int(
+                            predecessor_evidence is None)
                         if predecessor_evidence is not None:
                             self.metrics["predecessor_records_captured"] += len(
                                 predecessor_evidence.records)
@@ -478,7 +485,6 @@ class Dispatcher:
                     "capsules": capsules}
         finally:
             self.lock.release()
-
 
 def run_live(args: argparse.Namespace) -> dict[str, Any]:
     from auto67_runner import run_live as runner

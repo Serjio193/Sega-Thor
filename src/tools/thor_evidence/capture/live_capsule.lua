@@ -3,6 +3,7 @@ local status_path = os.getenv("OASIS_LIVE_STATUS")
 local final_path = os.getenv("OASIS_LIVE_FINAL")
 local command_path = os.getenv("OASIS_CAPSULE_COMMANDS")
 local capsule_dir = os.getenv("OASIS_CAPSULE_DIR") or "."
+local predecessor_target_path = os.getenv("OASIS_AUTO67_REGISTER_TARGETS")
 local max_frames = tonumber(os.getenv("OASIS_LIVE_MAX_FRAMES") or "0") or 0
 local state_path = os.getenv("OASIS_LIVE_STATE")
 local hook_metrics_path = os.getenv("OASIS_AUTO67_HOOK_METRICS")
@@ -46,7 +47,7 @@ local frame_spike_counts = {over_16ms = 0, over_33ms = 0, over_50ms = 0}
 local largest_frame_spike = {frame = 0, duration_ms = 0, leases = {}}
 local filter_install_count = 0
 local filter_install_samples = {}
-local predecessor_capture = predecessor_module.create(function() return frame end)
+local predecessor_capture = nil
 local discovery_active = false
 local discovery_write_hook = nil
 local target_write_hooks = {}
@@ -55,6 +56,9 @@ if state_path and state_path ~= "" then
     assert(savestate.load(state_path, true), "AUTO67 state load failed")
     for _ = 1, 3 do emu.frameadvance() end
 end
+predecessor_capture = predecessor_module.create(function() return frame end,
+                                                 predecessor_target_path,
+                                                 hook_metrics)
 
 for i = 1, discovery_capacity do discovery[i] = {frame = 0, pc = 0} end
 local function json_string(value)
@@ -71,7 +75,7 @@ local function read_pc()
     return ok and tonumber(value or 0) or 0
 end
 
-local function append_discovery(kind, pc, address)
+local function append_discovery(kind, pc, address, join)
     local index
     if discovery_count < discovery_capacity then
         discovery_count = discovery_count + 1
@@ -82,8 +86,24 @@ local function append_discovery(kind, pc, address)
         discovery_overwrites = discovery_overwrites + 1
     end
     discovery[index] = {seq = sequence, frame = frame, epoch = math.floor(frame / 600), kind = kind,
-                        pc = pc, address = address}
+                        pc = pc, address = address, prehistory_id = join and join.id or nil,
+                        exec_epoch = join and join.exec_epoch or nil,
+                        exec_sequence = join and join.exec_sequence or nil,
+                        exec_frame = join and join.exec_frame or nil,
+                        exec_pc = join and join.exec_pc or nil,
+                        consumer_join = join and join.status or nil}
+    local item = discovery[index]
     sequence = sequence + 1
+    return item
+end
+
+local function update_discovery_join(item, join)
+    item.prehistory_id = join.id
+    item.exec_epoch = join.exec_epoch
+    item.exec_sequence = join.exec_sequence
+    item.exec_frame = join.exec_frame
+    item.exec_pc = join.exec_pc
+    item.consumer_join = join.status
 end
 
 local function new_capsule(id)
@@ -94,7 +114,7 @@ local function new_capsule(id)
             freeze_reason = nil, full = false, truncated = false, records = {},
             frame_records = 0, hook_paused = false, predecessor_enabled = false,
             predecessor_registers = {}, predecessor_target_pc = 0,
-            predecessor_ring = {}, predecessor_freeze_requested = false}
+            predecessor_path = nil, predecessor_id = nil}
 end
 for i = 0, capsule_count - 1 do capsules[i] = new_capsule(i) end
 
@@ -134,16 +154,6 @@ local function freeze(capsule, reason)
     capsule.frames_covered = math.max(0, frame - capsule.start_frame)
     local path = string.format("%s/capsule-%02d-%s.bin", capsule_dir,
                                capsule.id, capsule.lease or "unknown")
-    if capsule.predecessor_enabled then
-        local metadata = predecessor_capture.write(capsule, path .. ".pred")
-        capsule.predecessor_path = path .. ".pred"
-        if metadata then
-            capsule.predecessor_record_count = metadata.record_count
-            capsule.predecessor_complete = metadata.complete
-            capsule.predecessor_truncated = metadata.truncated
-            capsule.predecessor_gap = metadata.gap
-        end
-    end
     local file = io.open(path, "wb")
     if file then
         file:write(capsule_magic, string.pack("<I4I4I4I4I4", capsule_format_version,
@@ -199,7 +209,16 @@ local function refresh_write_hook()
             local started = hook_metrics and hook_metrics.callback_start("discovery_bus_write")
             callbacks = callbacks + 1
             discovery_burst_calls = discovery_burst_calls + 1
-            append_discovery("BUS_WRITE_PC", read_pc(), address)
+            local pc = read_pc()
+            local item = nil
+            local completed_join = nil
+            local join = predecessor_capture.join_write(pc, function(exact)
+                if item then update_discovery_join(item, exact)
+                else completed_join = exact end
+            end)
+            if completed_join then join = completed_join end
+            if join and join.status == "EXACT" then pc = join.exec_pc end
+            item = append_discovery("BUS_WRITE_PC", pc, address, join)
             if discovery_burst_calls >= discovery_burst_budget then
                 discovery_active = false
                 if discovery_write_hook then
@@ -239,7 +258,6 @@ local function refresh_write_hook()
                 local active = capsules[capsule_id]
                 if active.state == "CAPTURING" and not active.hook_paused then
                     append_capsule(active, 1, address, read_pc())
-                    predecessor_capture.on_write(active, read_pc())
                 end
                 if hook_metrics then hook_metrics.callback_end("targeted_bus_write", started) end
             end, capsule.filter_value, "AUTO67.1 targeted writes", "M68K BUS")
@@ -327,16 +345,18 @@ local function start_capsule(parts)
     capsule.filter_type, capsule.filter_value = parts[7], tonumber(parts[8]) or 0
     local requested = {}
     for item in (parts[12] or ""):gmatch("[^,]+") do requested[#requested + 1] = item end
-    if parts[10] == "1" then
-        predecessor_capture.start(capsule, tonumber(parts[11]) or 0, requested)
-    end
+    capsule.predecessor_enabled = parts[10] == "1" and (parts[14] or "") ~= "" and
+        parts[14] ~= "-"
+    capsule.predecessor_target_pc = tonumber(parts[11]) or 0
+    capsule.predecessor_registers = requested
+    capsule.predecessor_id = tonumber(parts[13])
+    capsule.predecessor_path = parts[14]
     capsule.start_frame, capsule.last_frame, capsule.capture_start = frame, frame, frame
     capsule.bytes_used, capsule.event_count, capsule.freeze_reason = 64, 0, nil
     capsule.capture_duration, capsule.frames_covered = 0, 0
     capsule.full, capsule.truncated = false, false
     capsule.frame_records, capsule.hook_paused = 0, false
     capsule.records = {}
-    capsule.predecessor_freeze_requested = false
     capsule.state = "CAPTURING"
     local install_started = os.clock()
     install_exec(capsule)
@@ -356,6 +376,7 @@ local function release_capsule(parts)
     capsule.bytes_used, capsule.event_count = 0, 0
     capsule.frame_records, capsule.hook_paused = 0, false
     capsule.predecessor_enabled = false
+    capsule.predecessor_path, capsule.predecessor_id = nil, nil
     refresh_write_hook()
 end
 
@@ -378,6 +399,8 @@ end
 
 local status_writer = dofile(source_dir .. "live_capsule_status.lua")
 local function write_status(path)
+    predecessor_capture.flush(capsule_dir)
+    local prehistory = predecessor_capture.snapshot()
     status_writer.write(path, path == final_path, {
         capsules = capsules, capsule_count = capsule_count, capsule_dir = capsule_dir,
         logical_header_bytes = logical_header_bytes, physical_header_bytes = physical_header_bytes,
@@ -393,10 +416,12 @@ local function write_status(path)
         frame_spike_count = frame_spike_count, frame_spikes = frame_spikes,
         frame_spike_start = frame_spike_start, frame_time_capacity = frame_time_capacity,
         filter_install_count = filter_install_count, filter_install_samples = filter_install_samples,
-        hook_metrics = hook_metrics})
+        hook_metrics = hook_metrics, prehistory = predecessor_capture,
+        prehistory_metrics = prehistory})
 end
 
 while max_frames == 0 or frame < max_frames do
+    predecessor_capture.set_frame(frame)
     if frame % command_poll_interval == 0 then read_commands() end
     if frame % discovery_burst_period == 0 then
         discovery_active = true
@@ -411,7 +436,6 @@ while max_frames == 0 or frame < max_frames do
         end
     end
     refresh_write_hook()
-    predecessor_capture.refresh(capsules)
     for i = 0, capsule_count - 1 do
         local capsule = capsules[i]
         if capsule.state == "CAPTURING" and (frame - capsule.start_frame >= 30 or
@@ -446,6 +470,7 @@ for i = 0, capsule_count - 1 do
     if capsule.state == "CAPTURING" then freeze(capsule, "SESSION_STOP") end
 end
 remove_write_hook()
-predecessor_capture.close(capsules)
+predecessor_capture.flush(capsule_dir)
+predecessor_capture.close()
 write_status(final_path)
 client.exitCode(0)

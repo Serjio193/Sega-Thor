@@ -110,27 +110,32 @@ kept in `unresolved_frontier`, and `chain_steps` remains empty until an
 ordered dependency is independently established. Historical AUTO67.4 rows
 remain readable and are not migrated or rewritten.
 
-## AUTO67.6R targeted register predecessor evidence
+## AUTO67.6R2 continuous prehistory and register provenance
 
-`auto67_predecessor.py` decodes the versioned O67P v1 predecessor sidecar and
-resolves only an exact register reaching definition. The Lua capture is
-installed per investigation only when the static AUTO67.5 facts require A4 or
-A5; it uses the existing `event.on_bus_exec_any` hook, captures a bounded
-256-record ring, and reads register values at the selected consumer occurrence.
-The O67P header records epoch, sequence bounds, completion, truncation, gaps,
-consumer identity and overwrites; each 28-byte record records epoch, sequence,
-frame, PC, opcode and requested A4/A5 values. The worker rejects incomplete,
-overwritten, gapped or identity-mismatched intervals and emits at most one
-`REGISTER_REACHING_DEFINITION` step per proven requested register. Unsupported
-static writers and missing register provenance remain explicit frontiers.
+`auto67_predecessor.py` decodes versioned O67P evidence and resolves only an
+exact epoch/sequence/PC register reaching definition. The R2 Lua side installs
+one continuously active global `event.on_bus_exec_any` hook, stores compact
+epoch/sequence/frame/PC records in a bounded 4096-entry ring, and freezes a
+bounded slice at the exact joined BUS_WRITE consumer. A4/A5 values are read
+only at that consumer occurrence. Discovery and execution sequence numbers are
+joined explicitly; they are not equated. O67P v2 adds ring capacity, wrap,
+consumer PC and exact-join metadata while retaining the 28-byte record shape.
 
-The first real BizHawk AUTO67.6R run installed targeted predecessor capture but
-did not produce a complete canary interval: the consumer occurrence was not
-available before the bounded ring was overwritten/session-stopped. The result
-is therefore a valid negative proof, not a fabricated producer. Normal bounded
-capture retained the existing performance boundary. This remains developer-only
-and introduces no semantic merging, SOURCE_OWNED change, graph expansion or
-AUTO68 dependency.
+BizHawk 2.11.1 supplies a bus value as the second global execution callback
+argument rather than a reliable opcode. Therefore R2 uses the runtime PC,
+epoch and sequence as execution evidence and decodes instruction bytes from
+the canonical ROM during worker resolution. This is recorded as
+`producer_opcode_source=STATIC_ROM_PC`; it does not invent a producer PC.
+Unsupported register writers, gaps, epoch mismatches and missing consumers
+remain fail-closed frontiers. The canary proved A5 from `LEA $00FF134C.L,A5`
+at `0x002234` and A4 from `LEA $00C00004.L,A4` at `0x0027BE` into consumer
+`0x0027EC`.
+
+The real R2 proof also exposed a runtime limitation: the global Lua hook makes
+all 120 sampled frames 50 ms or slower (maximum 679 ms), including frames
+before the first lease. Increasing the ring would not address this callback
+cost and would increase snapshot work. This remains developer-only and adds no
+semantic merging, SOURCE_OWNED change, graph expansion or AUTO68 dependency.
 
 ## AUTO67.1 fixed capsule experiment
 
