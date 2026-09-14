@@ -8,6 +8,8 @@ from collections import deque
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from auto67_capsule_codec import CapsuleFormatError, DecodedCapsule, decode_capsule
+
 
 CAPSULE_SIZE = 128 * 1024
 CAPSULE_COUNT = 16
@@ -40,6 +42,11 @@ class Capsule:
     freeze_reason: str | None = None
     full: bool = False
     truncated: bool = False
+    format_version: int = 2
+    logical_header_bytes: int = 64
+    physical_header_bytes: int = 24
+    record_size: int = 20
+    capsule_path: str | None = None
     known: bool = False
     merged: bool = False
     proven: bool = False
@@ -62,13 +69,21 @@ class Capsule:
         self.state = "CAPTURING"
 
     def sync(self, item: dict) -> bool:
+        item_lease = item.get("lease_id")
+        if self.lease_id is not None and "lease_id" in item:
+            if item_lease != self.lease_id:
+                return False
         if self.state == "FREE" and item.get("state") != "FREE":
+            return False
+        if self.lease_id is not None and item.get("state") == "FREE":
             return False
         previous = self.state
         for name in ("state", "worker_id", "investigation_id", "lease_id",
                      "filter_type", "filter_value", "start_frame", "last_frame", "bytes_used",
                      "event_count", "capture_duration", "frames_covered",
-                     "freeze_reason", "full", "truncated"):
+                     "freeze_reason", "full", "truncated", "format_version",
+                     "logical_header_bytes", "physical_header_bytes", "record_size",
+                     "capsule_path"):
             if name in item:
                 setattr(self, name, item[name])
         return previous != self.state
@@ -82,6 +97,11 @@ class Capsule:
         self.capture_duration = 0.0
         self.freeze_reason = None
         self.full = self.truncated = False
+        self.format_version = 2
+        self.logical_header_bytes = 64
+        self.physical_header_bytes = 24
+        self.record_size = 20
+        self.capsule_path = None
         self.known = self.merged = self.proven = self.bounded_unresolved = False
 
     def snapshot(self) -> dict:
@@ -94,7 +114,10 @@ class Capsule:
             "capacity": CAPSULE_SIZE, "utilization": self.bytes_used / CAPSULE_SIZE,
             "event_count": self.event_count, "capture_duration": self.capture_duration,
             "frames_covered": self.frames_covered, "freeze_reason": self.freeze_reason,
-            "full": self.full, "truncated": self.truncated, "known": self.known,
+            "format_version": self.format_version, "logical_header_bytes": self.logical_header_bytes,
+            "physical_header_bytes": self.physical_header_bytes, "record_size": self.record_size,
+            "capsule_path": self.capsule_path, "full": self.full, "truncated": self.truncated,
+            "known": self.known,
             "merged": self.merged, "proven": self.proven,
             "bounded_unresolved": self.bounded_unresolved,
         }
@@ -219,6 +242,21 @@ class CapsulePool:
         with self.lock:
             if self.capsules[capsule_id].state == "FROZEN":
                 self.capsules[capsule_id].state = "ANALYZING"
+
+    def decode(self, capsule_id: int, lease_id: str,
+               investigation_id: str) -> DecodedCapsule:
+        with self.lock:
+            capsule = self.capsules[capsule_id]
+            if capsule.lease_id != lease_id or capsule.investigation_id != investigation_id:
+                raise CapsuleFormatError("capsule metadata lease/investigation mismatch")
+            if not capsule.capsule_path:
+                raise CapsuleFormatError("frozen capsule path is missing")
+            path = Path(capsule.capsule_path)
+            expected_id = capsule.capsule_id
+        decoded = decode_capsule(path, expected_id, lease_id)
+        if decoded.format_version != 2:
+            raise CapsuleFormatError("worker materialization requires capsule format v2")
+        return decoded
 
     def release(self, capsule_id: int, result: str) -> None:
         with self.lock:

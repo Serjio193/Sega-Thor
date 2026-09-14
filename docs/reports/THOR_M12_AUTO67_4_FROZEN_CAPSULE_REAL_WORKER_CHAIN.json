@@ -1,0 +1,140 @@
+{
+  "schema": "oasis.m12.auto67.4.frozen-capsule-proof.v1",
+  "status": "PASS",
+  "scope": {
+    "architecture_changed": false,
+    "auto68_started": false,
+    "source_owned_changed": false,
+    "semantic_merging_added": false,
+    "raw_event_backlog": "NONEXISTENT"
+  },
+  "implementation": {
+    "capsule_magic": "O67V",
+    "capsule_format_version": 2,
+    "physical_header_bytes": 24,
+    "logical_header_bytes": 64,
+    "record_bytes": 20,
+    "record_layout": "sequence:u32, frame:u32, address:u32, pc:u32, kind_code:u32",
+    "kind_codes": {"1": "BUS_WRITE_PC", "2": "BUS_EXEC_PC"},
+    "legacy_decoder": "O67C v1 read-only compatibility",
+    "worker_materialization": [
+      "runtime_observations",
+      "causal_facts",
+      "unresolved_frontier"
+    ],
+    "persistence_classes": ["SEED_ONLY", "MATERIALIZED_CHAIN"],
+    "decoder_source": "src/tools/thor_evidence/auto67_capsule_codec.py",
+    "materializer_source": "src/tools/thor_evidence/auto67_materializer.py",
+    "stale_status_guard": "src/tools/thor_evidence/auto67_capsule.py"
+  },
+  "real_bizhawk_proof": {
+    "rom": "local-roms/Beyond Oasis (USA).md",
+    "state": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\Genesis\\State\\Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State",
+    "frames": 720,
+    "epoch": 1,
+    "workers_configured": 16,
+    "capsules_configured": 16,
+    "max_live_captures": 16,
+    "returncode": 0,
+    "output": "build/auto67-4-short-proof3.json",
+    "database": "build/thor-evidence/auto67-4/short-proof3.sqlite",
+    "capsule_directory": "build/auto67-4-short-proof3.capsules"
+  },
+  "metrics": {
+    "workers_configured": 16,
+    "peak_workers_busy": 16,
+    "peak_workers_working": 16,
+    "worker_leases": 336,
+    "worker_returns": 320,
+    "busy_at_final_snapshot": 16,
+    "active_claims_at_final_snapshot": 16,
+    "active_collisions": 331,
+    "investigation_merges": 331,
+    "duplicate_active_claims": 0,
+    "capsule_records_decoded": 49486,
+    "capsule_decode_errors": 0,
+    "materialized_worker_results": 304,
+    "materialized_causal_facts": 557,
+    "queue_drops": 0,
+    "db_errors": 0,
+    "persisted_results": 320,
+    "rolling_window_capacity": 256,
+    "rolling_window_utilization": 256,
+    "rolling_window_overwrites": 2000,
+    "avg_seed_age_seconds": 0.2070297619,
+    "max_seed_age_seconds": 0.7959999999998217,
+    "frame_max_ms": 33.0,
+    "frames_over_16ms": 363,
+    "frames_over_33ms": 0,
+    "frames_over_50ms": 0,
+    "raw_backlog": "NONEXISTENT"
+  },
+  "database_inspection": {
+    "unique_live_chain_rows": 167,
+    "record_classes": {
+      "MATERIALIZED_CHAIN": 151,
+      "SEED_ONLY": 16
+    },
+    "exact_duplicate_observations": 153,
+    "all_rows_unresolved": 167,
+    "rooted_rows": 0,
+    "unique_constraint": "live_chain.chain_hash PRIMARY KEY",
+    "five_actual_sqlite_payloads": [
+      {"chain_hash": "6a50b88ba4089c3432d898e35584c393fad0565e0b6d63b3d3801a0102eab5f4", "record_class": "SEED_ONLY", "last_status": "BOUNDED_UNRESOLVED", "canonical_payload": "{\"observed\":{\"kind\":\"FRAME_PC\",\"pc\":\"0x008AD0\"}}"},
+      {"chain_hash": "e6c0f612cf422e102aca1f333f4806eaf45c5782100513a7ed2fb3e1e4e6f74b", "record_class": "SEED_ONLY", "last_status": "BOUNDED_UNRESOLVED", "canonical_payload": "{\"observed\":{\"kind\":\"FRAME_PC\",\"pc\":\"0x008B7A\"}}"},
+      {"chain_hash": "f5b595ff56fe99cf25ee29f55c84870620bc3b6dc49bb5df86f752330cd4c8d7", "record_class": "SEED_ONLY", "last_status": "BOUNDED_UNRESOLVED", "canonical_payload": "{\"observed\":{\"kind\":\"FRAME_PC\",\"pc\":\"0x008ACA\"}}"},
+      {"chain_hash": "427194db9d42eb04439023d51afee238ac92c9f98e9c55e0671368ec4adc8bee", "record_class": "SEED_ONLY", "last_status": "BOUNDED_UNRESOLVED", "canonical_payload": "{\"observed\":{\"address\":\"0xFF0B88\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}}"},
+      {"chain_hash": "4df8b1196ddf2060e899dd4d81c134cb34d5434985232f3021fb83cf5a5221b2", "record_class": "SEED_ONLY", "last_status": "BOUNDED_UNRESOLVED", "canonical_payload": "{\"observed\":{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}}"}
+    ]
+  },
+  "canaries": {
+    "target": {"kind": "BUS_WRITE_PC", "pc": "0x0027EC", "address": "0xC00004"},
+    "chain_hash": "162bd4d300c3201edeade495edbfad78a775bc392527b63dab0708377aeb7af8",
+    "record_class": "MATERIALIZED_CHAIN",
+    "status": "BOUNDED_UNRESOLVED",
+    "runtime_observation_count": 208,
+    "causal_fact_count": 7,
+    "capsule": {
+      "path": "build/auto67-4-short-proof3.capsules/capsule-07-L000000AE.bin",
+      "format_version": 2,
+      "capsule_id": 7,
+      "lease_id": "L000000AE",
+      "event_count": 208,
+      "physical_bytes": 4184,
+      "start_frame": 188,
+      "first_record": {"sequence": 14405, "frame": 188, "address": "0xC00004", "pc": "0x0027D0", "kind": "BUS_WRITE_PC"},
+      "last_record": {"sequence": 18771, "frame": 217, "address": "0xC00004", "pc": "0x0027EC", "kind": "BUS_WRITE_PC"}
+    }
+  },
+  "generic_bus_write_canary": {
+    "target": {"kind": "BUS_WRITE_PC", "pc": "0x06009A", "address": "0xFF0B82"},
+    "chain_hash": "02e55c1d4c82d871cf906d12ab3fac61c486fa607650113a9b7edcbeab2465a5",
+    "record_class": "MATERIALIZED_CHAIN",
+    "runtime_observation_count": 30,
+    "causal_fact_count": 0,
+    "capsule_record_count": 30,
+    "status": "BOUNDED_UNRESOLVED"
+  },
+  "historical_database_read_only_check": {
+    "path": "build/thor-evidence/auto67-3/persistent-chain-proof-v3.sqlite",
+    "rows": 264,
+    "schema_columns": 9,
+    "file_sha256_at_check": "1c4fbe826c8defb8968bad7cfbc2ba692031ddf21bd79153e25691ac706e2bfb",
+    "opened_mode": "sqlite read-only URI",
+    "modified": false
+  },
+  "tests": {
+    "python": {
+      "tests/thor_evidence_auto67_4_test.py": "6 passed",
+      "tests/thor_evidence_auto67_3_test.py": "3 passed",
+      "tests/thor_evidence_auto67_1_test.py": "10 passed",
+      "tests/thor_evidence_auto67_test.py": "9 passed"
+    },
+    "py_compile": "PASS",
+    "ctest_auto67_helpers": "4 passed",
+    "source_file_limit": "PASS (643 governed files <= 500 lines)",
+    "debug_build": "PASS",
+    "release_build": "PASS",
+    "git_diff_check": "PASS"
+  }
+}

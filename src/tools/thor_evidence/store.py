@@ -4,9 +4,9 @@ import sqlite3
 import json
 import hashlib
 from contextlib import nullcontext
-
 from .events import read_capture
 from .identity import ROM_SHA, STATUSES, canonical, digest, identity, location_key
+from .live_chain_schema import ensure_live_chain_schema
 
 TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "location", "value_version", "temporal_link", "relation", "witness",
@@ -18,20 +18,19 @@ TABLES = ("metadata", "environment", "scenario", "trace", "epoch", "event",
           "v4_dma_transfer", "v4_dependency", "live_session", "live_context",
           "live_observation", "live_investigation", "live_chain")
 
-
 class Store:
     def __init__(self, path):
         self.connection = sqlite3.connect(path)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys=ON")
         self.connection.executescript(Path(__file__).with_name("schema.sql").read_text())
+        ensure_live_chain_schema(self.connection)
         with self.connection:
             self._put("metadata", {"key": "schema", "value": "thor.evidence.store.v0"}, "key")
             self._put("metadata", {"key": "rom", "value": ROM_SHA}, "key")
 
     def close(self):
         self.connection.close()
-
     def import_v3(self, payload, trace_id):
         """Persist one immutable V3 graph inside the existing sidecar transaction."""
         if payload.get("schema") != "thor.evidence.v3.graph" or payload.get("trace") != trace_id:
@@ -279,7 +278,7 @@ class Store:
                 "started_at": started_at, "ended_at": None, "payload": payload})
 
     def record_live_chain(self, session_id, chain_hash, canonical_payload, status,
-                          frame, provenance):
+                          frame, provenance, record_class="SEED_ONLY"):
         """Insert a chain or update exact-duplicate metadata atomically."""
         expected = hashlib.sha256(canonical_payload.encode("utf-8")).hexdigest()
         if chain_hash != expected:
@@ -294,10 +293,14 @@ class Store:
                 (chain_hash,)).fetchone()
             is_new = prior is None
             if is_new:
+                if record_class not in {"SEED_ONLY", "MATERIALIZED_CHAIN"}:
+                    raise ValueError("invalid live chain record class")
                 self.connection.execute(
-                    "INSERT INTO live_chain VALUES (?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO live_chain (chain_hash,rom_sha256,canonical_payload,"
+                    "first_session_id,last_session_id,times_observed,last_seen_frame,"
+                    "last_status,last_provenance,record_class) VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (chain_hash, ROM_SHA, canonical_payload, session_id, session_id,
-                     1, frame, status, provenance))
+                     1, frame, status, provenance, record_class))
             else:
                 self.connection.execute(
                     "UPDATE live_chain SET last_session_id=?, times_observed=times_observed+1, "
@@ -317,7 +320,6 @@ class Store:
                 (json.dumps(metrics, sort_keys=True, separators=(",", ":")), session_id))
             return {"chain_hash": chain_hash, "unique_new": is_new,
                     "exact_duplicate": not is_new}
-
     def export(self):
         result = {"schema": "thor.evidence.export.v0"}
         for table in TABLES:

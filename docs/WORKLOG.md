@@ -8624,3 +8624,26 @@ inserts and 3,314 exact duplicates; QuickSave4 added 11 hashes. The final DB
 contains 264 unique unresolved chain records across three sessions and reopens
 cleanly after process exit. Maximum frame spike was 37 ms with zero frames over
 50 ms. AUTO67 tests pass (`22/22`). No commit or push was performed.
+# 2026-09-14 — AUTO67.4 frozen capsule to real worker chain — PASS
+
+TASK: Repair the proven AUTO67.3 evidence-loss boundary without changing the
+dispatcher architecture, ownership, semantic merge policy or starting AUTO68.
+
+IMPLEMENTATION: Added O67V v2 frozen capsule output (legacy O67C remains
+readable), bounded decoder validation, stale lease/status protection, worker
+materialization into runtime observations/causal facts/unresolved frontier,
+and `SEED_ONLY` versus `MATERIALIZED_CHAIN` persistence classification. The
+worker now receives decoded capsule records rather than a seed-only result.
+
+PROOF: A real BizHawk QuickSave1 run at 720 frames with 16 workers and 16
+capsule slots decoded 49,486 records with zero decoder errors, materialized
+304 worker results, and produced the canary `BUS_WRITE_PC` `0x0027EC` to
+`0xC00004` with runtime observations and causal facts. The proof had 336
+leases, 320 completed returns, peak 16 working, 331 merges, zero duplicate
+active claims, zero queue drops, zero DB errors, 2,000 discovery overwrites,
+and no raw-event backlog. The pre-existing AUTO67.3 database was inspected
+read-only and still contains 264 rows with its original nine-column schema.
+
+CHECKS: AUTO67.4 (6), AUTO67.3 (3), AUTO67.1 (10), AUTO67 (9) Python tests
+pass; py_compile passes. The bounded proof is in
+`docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md` and JSON.

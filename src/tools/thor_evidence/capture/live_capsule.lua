@@ -14,7 +14,8 @@ if hook_metrics_path then
 end
 local discovery_capacity = 256
 local capsule_capacity = 131072
-local record_size = 16
+local capsule_magic, capsule_format_version = "O67V", 2
+local logical_header_bytes, physical_header_bytes, record_size = 64, 24, 20
 local callback_budget = 64
 local capsule_count = 16
 local frame = 0
@@ -46,14 +47,12 @@ local discovery_active = false
 local discovery_write_hook = nil
 local target_write_hooks = {}
 local exec_hooks = {}
-
 if state_path and state_path ~= "" then
     assert(savestate.load(state_path, true), "AUTO67 state load failed")
     for _ = 1, 3 do emu.frameadvance() end
 end
 
 for i = 1, discovery_capacity do discovery[i] = {frame = 0, pc = 0} end
-
 local function json_string(value)
     local text = tostring(value or "")
     text = text:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\n", "\\n")
@@ -63,7 +62,6 @@ end
 local function hex(value)
     return string.format("0x%06X", tonumber(value or 0) & 0xFFFFFF)
 end
-
 local function read_pc()
     local ok, value = pcall(emu.getregister, "M68K PC")
     return ok and tonumber(value or 0) or 0
@@ -95,7 +93,7 @@ end
 for i = 0, capsule_count - 1 do capsules[i] = new_capsule(i) end
 
 local function capsule_bytes(capsule)
-    return 64 + capsule.event_count * record_size
+    return logical_header_bytes + capsule.event_count * record_size
 end
 
 local function append_capsule(capsule, kind, address, pc)
@@ -132,11 +130,11 @@ local function freeze(capsule, reason)
                                capsule.id, capsule.lease or "unknown")
     local file = io.open(path, "wb")
     if file then
-        file:write("O67C", string.pack("<I4I4I4I4", capsule.id,
-                    capsule.start_frame, capsule.bytes_used, capsule.event_count))
+        file:write(capsule_magic, string.pack("<I4I4I4I4I4", capsule_format_version,
+                    capsule.id, capsule.start_frame, capsule.bytes_used, capsule.event_count))
         for i = 1, capsule.event_count do
             local item = capsule.records[i]
-            file:write(string.pack("<I4I4I4I4", item[1], item[2], item[3], item[4]))
+            file:write(string.pack("<I4I4I4I4I4", item[1], item[2], item[3], item[4], item[5]))
         end
         file:close()
     end
@@ -355,6 +353,8 @@ local function read_commands()
 end
 
 local function capsule_json(capsule)
+    local path = capsule.lease and string.format("%s/capsule-%02d-%s.bin", capsule_dir,
+                                                   capsule.id, capsule.lease) or nil
     return '{"capsule_id":' .. capsule.id .. ',"state":' .. json_string(capsule.state) ..
         ',"worker_id":' .. (capsule.worker or "null") ..
         ',"investigation_id":' .. (capsule.investigation and json_string(capsule.investigation) or "null") ..
@@ -362,6 +362,10 @@ local function capsule_json(capsule)
         ',"filter_type":' .. (capsule.filter_type and json_string(capsule.filter_type) or "null") ..
         ',"filter_value":' .. capsule.filter_value .. ',"start_frame":' .. capsule.start_frame ..
         ',"last_frame":' .. capsule.last_frame .. ',"bytes_used":' .. capsule.bytes_used ..
+        ',"logical_header_bytes":' .. logical_header_bytes ..
+        ',"physical_header_bytes":' .. physical_header_bytes ..
+        ',"record_size":' .. record_size .. ',"format_version":' .. capsule_format_version ..
+        ',"capsule_path":' .. (path and json_string(path) or "null") ..
         ',"capacity":' .. capsule_capacity .. ',"event_count":' .. capsule.event_count ..
         ',"capture_duration":' .. string.format("%.6f", capsule.capture_duration) ..
         ',"frames_covered":' .. capsule.frames_covered ..
@@ -429,7 +433,7 @@ local function write_status(path)
     for i = 0, capsule_count - 1 do values[#values + 1] = capsule_json(capsules[i]) end
     local file = io.open(path, "w")
     if not file then return end
-    file:write('{"schema":"oasis.m12.auto67.1.capsule.v1","frame":' .. frame ..
+    file:write('{"schema":"oasis.m12.auto67.1.capsule.v2","frame":' .. frame ..
         ',"epoch":1,"events_observed":' .. sequence .. ',"events_overwritten":' ..
         discovery_overwrites .. ',"callback_count":' .. callbacks ..
         ',"sampling_policy":"AUTO67.1_FIXED_16_CAPSULES_TARGETED_BUDGETED"' ..

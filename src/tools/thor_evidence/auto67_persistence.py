@@ -41,24 +41,58 @@ def canonical_chain(event: dict[str, Any]) -> str:
     for name in EXPLICIT_CHAIN_FIELDS:
         if event.get(name) is not None:
             record[name] = event[name]
+    materialized = event.get("materialized")
+    if materialized is not None:
+        record["seed"] = {name: materialized.get("seed", {}).get(name)
+                           for name in CAUSAL_FIELDS
+                           if materialized.get("seed", {}).get(name) is not None}
+        record["runtime_observations"] = [
+            {name: item[name] for name in ("kind", "pc", "address") if item.get(name) is not None}
+            for item in materialized.get("runtime_observations", [])]
+        record["causal_facts"] = [
+            {name: value for name, value in item.items() if name != "provenance"}
+            for item in materialized.get("causal_facts", [])]
+        if materialized.get("unresolved_frontier") is not None:
+            record["unresolved_frontier"] = {
+                name: materialized["unresolved_frontier"][name]
+                for name in ("status", "missing", "evidence")
+                if name in materialized["unresolved_frontier"]}
     return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
 def chain_descriptor(event: dict[str, Any], status: str, frame: int | None,
                      worker_id: int | None = None, lease_id: str | None = None,
-                     investigation_id: str | None = None) -> dict[str, Any]:
+                     investigation_id: str | None = None,
+                     materialization_provenance: dict[str, Any] | None = None) -> dict[str, Any]:
     canonical = canonical_chain(event)
     chain_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-    provenance = json.dumps({
+    provenance_data: dict[str, Any] = {
         "source": "AUTO67-live-worker",
         "status": status,
         "frame": frame,
         "worker_id": worker_id,
         "lease_id": lease_id,
         "investigation_id": investigation_id,
-    }, sort_keys=True, separators=(",", ":"))
+    }
+    if materialization_provenance:
+        provenance_data["capsule"] = materialization_provenance
+    record_class = "MATERIALIZED_CHAIN" if event.get("materialized") is not None else "SEED_ONLY"
+    provenance = json.dumps(provenance_data, sort_keys=True, separators=(",", ":"))
     return {"chain_hash": chain_hash, "canonical_payload": canonical,
-            "status": status, "frame": frame, "provenance": provenance}
+            "status": status, "frame": frame, "provenance": provenance,
+            "record_class": record_class}
+
+
+def materialized_descriptor(seed: dict[str, Any], materialized: dict[str, Any],
+                           status: str, frame: int | None,
+                           worker_id: int | None = None, lease_id: str | None = None,
+                           investigation_id: str | None = None) -> dict[str, Any]:
+    event = dict(seed)
+    event["materialized"] = materialized
+    capsule_provenance = {name: materialized[name] for name in (
+        "capsule_format_version", "capsule_record_count") if name in materialized}
+    return chain_descriptor(event, status, frame, worker_id, lease_id,
+                            investigation_id, capsule_provenance)
 
 
 def _store_monitor(store: Store, session_id: str) -> dict[str, Any]:
@@ -73,11 +107,16 @@ def _store_monitor(store: Store, session_id: str) -> dict[str, Any]:
         "SELECT COUNT(*) FROM live_chain WHERE last_status != 'PROVEN'").fetchone()[0]
     rooted = store.connection.execute(
         "SELECT COUNT(*) FROM live_chain WHERE last_status = 'PROVEN'").fetchone()[0]
+    seed_only = store.connection.execute(
+        "SELECT COUNT(*) FROM live_chain WHERE record_class='SEED_ONLY'").fetchone()[0]
+    materialized = store.connection.execute(
+        "SELECT COUNT(*) FROM live_chain WHERE record_class='MATERIALIZED_CHAIN'").fetchone()[0]
     return {"available": True, "total_unique_chains": total,
             "new_unique_chains_this_session": metrics.get("unique_chain_inserts", 0),
             "exact_duplicates_rejected": metrics.get("exact_duplicate_observations", 0),
             "completed_worker_chains": metrics.get("completed_worker_chains", 0),
-            "unresolved_chains": unresolved, "rooted_chains": rooted}
+            "unresolved_chains": unresolved, "rooted_chains": rooted,
+            "seed_only_chains": seed_only, "materialized_chains": materialized}
 
 
 class LivePersistenceSink:
@@ -105,6 +144,7 @@ class LivePersistenceSink:
             "new_unique_chains_this_session": 0,
             "exact_duplicates_rejected": 0, "completed_worker_chains": 0,
             "unresolved_chains": 0, "rooted_chains": 0,
+            "seed_only_chains": 0, "materialized_chains": 0,
         }
         self.statuses: Counter[str] = Counter()
 
@@ -152,7 +192,8 @@ class LivePersistenceSink:
                 try:
                     result = store.record_live_chain(
                         self.session_id, item["chain_hash"], item["canonical_payload"],
-                        item["status"], item["frame"], item["provenance"])
+                        item["status"], item["frame"], item["provenance"],
+                        item.get("record_class", "SEED_ONLY"))
                     processed += 1
                     with self.lock:
                         self.persisted += 1

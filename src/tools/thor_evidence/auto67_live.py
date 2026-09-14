@@ -10,8 +10,10 @@ from collections import deque
 from typing import Any
 from auto67_status import StatusPublisher
 from auto67_capsule import CapsulePool
+from auto67_capsule_codec import CapsuleFormatError
+from auto67_materializer import materialize
 from auto67_profile import DispatchProfiler
-from auto67_persistence import LivePersistenceSink, descriptor
+from auto67_persistence import LivePersistenceSink, descriptor, materialized_descriptor
 
 
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
@@ -92,6 +94,8 @@ class Dispatcher:
             "hunt_attempts": 0, "hunt_successes": 0,
             "focused_capture_requested": 0, "focused_capture_completed": 0,
             "focused_capture_slot_waits": 0,
+            "capsule_decode_errors": 0, "capsule_records_decoded": 0,
+            "materialized_chains": 0, "materialized_causal_facts": 0,
             "duplicate_active_claims": 0,
         }
         self.investigations: dict[str, dict[str, Any]] = {}
@@ -180,11 +184,12 @@ class Dispatcher:
                                                              "t2": 0},
                                         "frame": event.get("frame")}}
             task["dispatch_trace"]["timestamps_ns"]["t2"] = time.perf_counter_ns()
+            task["investigation_id"] = "INV-AUTO67-" + task["seed"]
             if self.capsule_pool is not None and self.capsule_pool.max_live > 0:
                 self.metrics["focused_capture_requested"] += 1
             if self.capsule_pool is not None:
                 capsule = self.capsule_pool.claim(
-                    worker_id, "INV-AUTO67-" + task["seed"], event)
+                    worker_id, task["investigation_id"], event)
                 if capsule is None:
                     live, free_capsules = self.capsule_pool.capacity_state()
                     if live >= self.capsule_pool.max_live or not free_capsules:
@@ -213,7 +218,7 @@ class Dispatcher:
             task["dispatch_trace"]["timestamps_ns"]["t6"] = time.perf_counter_ns()
             self.worker_states[worker_id] = "LEASED"
             info = self.worker_info[worker_id]
-            info.update({"investigation_id": "INV-AUTO67-" + task["seed"],
+            info.update({"investigation_id": task["investigation_id"],
                          "chain_fingerprint": branch, "stage": "KNOWN_CHECK",
                          "seed_age": age, "task_runtime": 0.0,
                          "last_result": None})
@@ -297,6 +302,7 @@ class Dispatcher:
             cpu_started = time.thread_time()
             event = task["event"]
             capsule_id = task.get("capsule_id")
+            capsule_evidence = None
             if capsule_id is not None:
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "CAPTURING")
@@ -304,6 +310,13 @@ class Dispatcher:
                     capsule_id, task["capsule_lease"], self.stop_event)
                 self.metrics["focused_capture_completed"] += int(completed)
                 self.capsule_pool.analyzing(capsule_id)
+                if completed:
+                    try:
+                        capsule_evidence = self.capsule_pool.decode(
+                            capsule_id, task["capsule_lease"], task["investigation_id"])
+                        self.metrics["capsule_records_decoded"] += capsule_evidence.event_count
+                    except CapsuleFormatError:
+                        self.metrics["capsule_decode_errors"] += 1
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "ANALYZING")
             else:
@@ -318,14 +331,31 @@ class Dispatcher:
             worker_status = "KNOWN" if event.get("known_during_work") else status
             branch = task["branch"]
             inv_id = "INV-AUTO67-" + task["seed"]
-            persistence_item = descriptor(
-                event, worker_status, event.get("frame"), worker_id,
-                task.get("lease_id"), inv_id)
+            if capsule_evidence is not None:
+                materialized = materialize(event, capsule_evidence)
+                persistence_item = materialized_descriptor(
+                    event, materialized, worker_status, event.get("frame"), worker_id,
+                    task.get("lease_id"), inv_id)
+            else:
+                materialized = None
+                persistence_item = descriptor(
+                    event, worker_status, event.get("frame"), worker_id,
+                    task.get("lease_id"), inv_id)
             with self.lock:
                 investigation = {"id": inv_id, "branch": branch,
                                  "context": task["context"],
                                  "seed_sequence": event.get("seq"),
                                  "status": status, "evidence": [event]}
+                if materialized is not None:
+                    investigation["materialization"] = {
+                        "capsule_format_version": materialized["capsule_format_version"],
+                        "capsule_record_count": materialized["capsule_record_count"],
+                        "runtime_observation_count": len(materialized["runtime_observations"]),
+                        "causal_fact_count": len(materialized["causal_facts"]),
+                    }
+                    self.metrics["materialized_chains"] += 1
+                    self.metrics["materialized_causal_facts"] += len(
+                        materialized["causal_facts"])
                 if worker_status == "KNOWN":
                     status = "KNOWN"
                     investigation["status"] = status

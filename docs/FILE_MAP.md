@@ -88,6 +88,17 @@ shape, the four-capture limit, freeze/reuse, dispatcher release, and bounded
 control state. The experiment report is
 `docs/reports/THOR_M12_AUTO67_1_128K_CAPSULE.md` with its bounded JSON proof.
 
+AUTO67.4 adds `auto67_capsule_codec.py`, a bounded O67V v2 decoder with
+legacy O67C compatibility and lease/capsule validation, and
+`auto67_materializer.py`, the worker-side conversion of decoded runtime
+observations into explicitly unresolved evidence fields. `auto67_capsule.py`
+exposes frozen capsule metadata and rejects stale status snapshots; new
+materialized results are persisted as `MATERIALIZED_CHAIN` while historical
+seed-only rows remain `SEED_ONLY`. Regression coverage is in
+`tests/thor_evidence_auto67_4_test.py`; the real short proof is recorded in
+`docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md` and its
+bounded JSON counterpart.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and

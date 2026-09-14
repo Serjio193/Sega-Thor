@@ -1612,3 +1612,22 @@ chains are valid records. The native window reports objective store growth only:
 unique chains, session new, exact duplicates, writes/errors, unresolved and
 rooted counts. No raw-event backlog, second database, dispatcher SQLite call,
 or SOURCE_OWNED promotion is introduced.
+# ADR-0067.4 — bounded frozen capsule materialization
+**Status:** Accepted for AUTO67.4
+**Date:** 2026-09-14
+
+**Context:** AUTO67.3 proved that the focused Lua capsule contained richer
+runtime records than the seed-only worker descriptor, but the authoritative
+worker path did not read the frozen body.
+
+**Decision:** Version the existing capsule file as O67V v2, retain a bounded
+O67C decoder for historical files, validate capsule/lease identity in the
+worker, and materialize only observed runtime records into separate evidence
+fields. Persist new descriptors as `MATERIALIZED_CHAIN`; preserve historical
+rows as `SEED_ONLY`. The unresolved frontier remains explicit.
+
+**Consequences:** The existing dispatcher, hot workers, bounded queue and
+SQLite sidecar remain in place. No semantic merging, ownership promotion,
+SOURCE_OWNED change, raw-event backlog or AUTO68 work is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md`.

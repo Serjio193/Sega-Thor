@@ -86,6 +86,19 @@ health plus objective chain-store growth (`unique`, `session new`, exact
 duplicates, writes, errors, unresolved and rooted). The sidecar is disabled
 unless `--chain-db` (legacy alias `--knowledge-db`) is supplied.
 
+## AUTO67.4 frozen capsule worker materialization
+
+`capture/live_capsule.lua` writes versioned O67V v2 capsules with a 24-byte
+physical header and 20-byte records that preserve the observed event kind;
+the older O67C format remains decoder-readable for historical evidence. The
+bounded worker decoder validates magic, version, capsule id, lease id, count,
+logical length, physical boundaries and truncation before materialization.
+Workers receive separate `runtime_observations`, `causal_facts` and an
+explicit unresolved frontier. Only the materialized result is sent to the
+existing bounded persistence queue, while old rows remain `SEED_ONLY` and new
+rows are marked `MATERIALIZED_CHAIN`. No semantic merge, ownership promotion,
+SOURCE_OWNED change, raw-event backlog or AUTO68 dependency is introduced.
+
 ## AUTO67.1 fixed capsule experiment
 
 `auto67_capsule.py` extends the same Dispatcher with exactly sixteen reusable

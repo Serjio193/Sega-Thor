@@ -158,7 +158,8 @@ CREATE TABLE IF NOT EXISTS live_chain (
   chain_hash TEXT PRIMARY KEY, rom_sha256 TEXT NOT NULL,
   canonical_payload TEXT NOT NULL, first_session_id TEXT NOT NULL REFERENCES live_session(id),
   last_session_id TEXT NOT NULL REFERENCES live_session(id), times_observed INTEGER NOT NULL,
-  last_seen_frame INTEGER, last_status TEXT NOT NULL, last_provenance TEXT NOT NULL
+  last_seen_frame INTEGER, last_status TEXT NOT NULL, last_provenance TEXT NOT NULL,
+  record_class TEXT NOT NULL DEFAULT 'SEED_ONLY'
 );
 CREATE INDEX IF NOT EXISTS event_order ON event(trace_id,epoch_no,seq);
 CREATE INDEX IF NOT EXISTS version_location ON value_version(location_id,event_id);
@@ -174,3 +175,4 @@ CREATE INDEX IF NOT EXISTS live_context_session ON live_context(session_id);
 CREATE INDEX IF NOT EXISTS live_observation_kind ON live_observation(kind,pc,address);
 CREATE INDEX IF NOT EXISTS live_investigation_status ON live_investigation(status);
 CREATE INDEX IF NOT EXISTS live_chain_status ON live_chain(last_status);
+CREATE INDEX IF NOT EXISTS live_chain_class ON live_chain(record_class);
