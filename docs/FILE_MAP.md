@@ -1368,3 +1368,9 @@ ADR-0049.
 counterpart record the negative register-version evidence gate: the current
 O67V v2 capsules lack register values and bounded predecessor execution needed
 to prove an A4/A5 reaching definition. No runtime code change was made.
+
+`docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md` and its JSON
+counterpart record the negative low-overhead source audit: BizHawk TraceLogger
+has no bounded machine-readable stream, the global Lua hook fails the real
+performance gate, and the existing external GPGX block hook is not connected
+to authoritative BizHawk QuickSave1 execution.

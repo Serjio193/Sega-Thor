@@ -1,0 +1,68 @@
+{
+  "schema": "oasis.m12.auto67.6r3.low_overhead_audit.v1",
+  "baseline": "b13a14add1f574f8ea6e5f1a6dae103cf999257c",
+  "result": "NEGATIVE_NO_EXISTING_BIZHAWK_SOURCE_ACCEPTED",
+  "scope": {
+    "auto68_started": false,
+    "source_owned_changed": false,
+    "chain_depth_expanded": false,
+    "semantic_merging_added": false,
+    "ring_capacity_increased": false,
+    "raw_event_backlog": "NONEXISTENT"
+  },
+  "r2_contract": {
+    "preserved": true,
+    "consumer_identity": "exact occurrence",
+    "epoch_identity": true,
+    "contiguous_interval_required": true,
+    "intervening_register_write_rejected": true,
+    "unsupported_or_incomplete_fail_closed": true,
+    "canary_a5_producer": "0x002234",
+    "canary_a4_producer": "0x0027BE",
+    "canary_consumer": "0x0027EC"
+  },
+  "candidate_audit": [
+    {"source":"BizHawk event.on_bus_exec_any","records":1126282,"average_records_per_frame":9385.683333333334,"frames":120,"p50_frame_ms":623.0,"max_frame_ms":679.0,"frames_over_50ms":120,"decision":"REJECT_GAMEPLAY_PERFORMANCE"},
+    {"source":"BizHawk targeted event.on_bus_exec","diagnostic":"six simultaneous predecessor hooks","max_frame_ms":778.0,"frames_over_50ms":59,"decision":"REJECT_STALLS_OR_NO_COMPLETE_INTERVAL"},
+    {"source":"BizHawk TraceLogger","available_api":"client.opentracelogger only","machine_readable_stream":false,"decision":"REJECT_NO_BOUND_EVIDENCE_STREAM"},
+    {"source":"existing Evidence Engine capsule path","complete_block_or_instruction_order":false,"decision":"REJECT_INSUFFICIENT_INTERVAL_EVIDENCE"},
+    {"source":"external GPGX HOOK_CPU block hook","native_hook_present":true,"bizhawk_quicksave1_integration":false,"decision":"REJECT_NOT_AUTHORITATIVE_LIVE_PATH"},
+    {"source":"existing hybrid basic-block translation","generic_executed_block_order":false,"decision":"REJECT_INSUFFICIENT_GENERIC_EVIDENCE"},
+    {"source":"BizHawk native helper/plugin","existing_integration":false,"decision":"REJECT_NEW_ARCHITECTURE_REQUIRED"}
+  ],
+  "r2_real_run": {
+    "artifact":"build/auto67-6r2-rerun.json",
+    "frames":120,
+    "workers":16,
+    "bizhawk_returncode":0,
+    "ring_capacity":4096,
+    "ring_overwrites":1122186,
+    "exact_joins":12,
+    "frozen_records":24576,
+    "leases":80,
+    "returns":64,
+    "queue_drops":0,
+    "db_errors":0,
+    "raw_backlog":"NONEXISTENT",
+    "frame_p50_ms":623.0,
+    "frame_max_ms":679.0,
+    "frames_over_16ms":120,
+    "frames_over_33ms":120,
+    "frames_over_50ms":120,
+    "smooth_gameplay":false
+  },
+  "validation": {
+    "auto67_python_tests": "48 passed",
+    "direct_source_limit": "PASS: 647 governed files <= 500 lines",
+    "release_ctest_executable_set": "67/67 passed with stale project_file_line_limit excluded",
+    "debug_ctest": "NOT_ACCEPTED: stale build missing 46 Debug executables",
+    "git_diff_check": "PASS"
+  },
+  "artifacts": {
+    "report_md":"docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md",
+    "report_json":"docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.json",
+    "code_modified":false,
+    "database_modified":false,
+    "user_artifacts_modified":false
+  }
+}

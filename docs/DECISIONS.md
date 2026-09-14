@@ -1706,3 +1706,29 @@ work is implied.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_6R2_CONTINUOUS_PREHISTORY.md` and
 its machine-readable JSON proof.
+
+## ADR-0067.6R3 — existing low-overhead source audit
+**Status:** Negative checkpoint; no source accepted
+**Date:** 2026-09-14
+
+**Context:** AUTO67.6R2 proves the A4/A5 reaching-definition contract through a
+bounded global Lua execution ring, but its real QuickSave1 run is not
+gameplay-safe. Before adding capture machinery, existing BizHawk TraceLogger,
+native GPGX hooks, hybrid block translation and helper/plugin paths were
+audited.
+
+**Decision:** Do not increase the ring and do not add a new source in R3. The
+only connected complete source is `event.on_bus_exec_any`, and it fails the
+performance gate. BizHawk TraceLogger exposes no machine-readable bounded
+stream. The existing GPGX `HOOK_CPU`/block hook is a separate developer-only
+libretro path without BizHawk QuickSave1 integration; existing hybrid blocks
+are fixed translation proofs, not a generic ordered runtime history. A native
+BizHawk helper/plugin would be new architecture and is outside this checkpoint.
+
+**Consequences:** R2 semantic correctness remains accepted, while normal
+gameplay performance remains blocked. No AUTO68, semantic merging,
+`SOURCE_OWNED`, chain depth, database schema, or runtime architecture changes
+are introduced. The next source must attach to the authoritative BizHawk path
+and preserve exact block/order/branch/interrupt fail-closed evidence.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md`.

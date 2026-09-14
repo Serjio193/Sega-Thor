@@ -1,3 +1,28 @@
+# 2026-09-14 — AUTO67.6R3 low-overhead prehistory source audit — NEGATIVE / STOP
+
+TASK: Starting from `b13a14add1f574f8ea6e5f1a6dae103cf999257c`, audit existing
+native, block-level, TraceLogger and helper paths before adding any new
+prehistory source. Preserve AUTO67.6R2 reaching-definition correctness; do not
+start AUTO68, expand chain depth, change SOURCE_OWNED or increase the ring.
+
+RESULT: No existing low-overhead source is both connected to the authoritative
+BizHawk QuickSave1 path and able to provide the exact ordered interval required
+by the R2 contract. The global BizHawk `event.on_bus_exec_any` path remains
+semantically positive but measured 1,126,282 callbacks, p50 frame 623 ms, max
+679 ms and 120/120 frames over 50 ms. Targeted six-hook capture reached 778 ms
+max and 59 frames over 50 ms. BizHawk TraceLogger exposes only a UI opener;
+the external GPGX `HOOK_CPU` block hook is real but belongs to a separate
+developer-only libretro harness and has no BizHawk QuickSave1 integration.
+
+DECISION: Stop negative. No code, database, emulator, ROM or user artifact was
+modified. Increasing the Lua ring would not reduce callback cost. A future
+implementation needs a separately authorized native source attached to the
+actual BizHawk execution path with explicit block/order/branch/interrupt
+fail-closed contracts.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md` and
+its JSON counterpart.
+
 # 2026-09-14 — AUTO67.5 observed/causal integrity gate — PASS
 
 TASK: Audit AUTO67.4 materialized semantics and stop runtime observations from
