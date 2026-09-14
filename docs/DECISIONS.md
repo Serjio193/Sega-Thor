@@ -1655,3 +1655,28 @@ not a supported memory-writing MOVE. No semantic merging, SOURCE_OWNED change,
 ownership promotion or AUTO68 work is introduced.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_5_CAUSAL_INTEGRITY_GATE.md`.
+
+## ADR-0067.6R — Targeted register predecessor evidence
+
+**Status:** Accepted for AUTO67.6R
+
+**Context:** AUTO67.5 proved generic instruction source and destination
+semantics but intentionally left A4/A5 register provenance unresolved. The
+existing focused BizHawk hooks already provide the minimum mechanism for a
+bounded predecessor slice.
+
+**Decision:** Add a versioned O67P v1 sidecar only for investigations whose
+static facts require A4/A5. Reuse `event.on_bus_exec_any` and targeted
+`emu.getregister` reads, retain only a bounded predecessor ring, and resolve a
+register only when epoch, sequence, consumer occurrence, interval completeness
+and static producer semantics all agree. Reject overwrite, gap, truncation,
+unsupported decode and identity mismatch. Do not migrate historical AUTO67.4
+data, merge graphs, change SOURCE_OWNED or begin AUTO68.
+
+**Consequences:** The worker can emit the first register reaching-definition
+step when a complete real interval exists. The AUTO67.6R real run currently
+fails closed because the canary predecessor interval is incomplete; no producer
+PC is inferred. The bounded negative result is authoritative until a later
+task changes capture scheduling explicitly.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_6R_TARGETED_REGISTER_PREDECESSOR.md`.

@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from auto67_capsule_codec import DecodedCapsule
+from auto67_predecessor import PredecessorCapture, resolve as resolve_predecessor
 
 
 MATERIALIZED_SCHEMA_VERSION = 2
@@ -160,8 +161,11 @@ def _derive(seed: dict[str, Any], rom: bytes | None) -> tuple[list[dict[str, Any
                       **common})
     elif source["kind"] in {"ABSOLUTE_MEMORY", "PC_MEMORY", "PC_MEMORY_INDEXED",
                              "MEMORY_REGISTER", "MEMORY_REGISTER_INDEXED"}:
-        facts.append({"kind": "INSTRUCTION_SOURCE_MEMORY", "source_operand": source["text"],
-                      **common})
+        memory_fact = {"kind": "INSTRUCTION_SOURCE_MEMORY",
+                       "source_operand": source["text"], **common}
+        if source["kind"] in {"MEMORY_REGISTER", "MEMORY_REGISTER_INDEXED"}:
+            memory_fact["source_register"] = source["register"]
+        facts.append(memory_fact)
     elif source["kind"] == "IMMEDIATE":
         facts.append({"kind": "INSTRUCTION_SOURCE_IMMEDIATE", "source_operand": source["text"],
                       **common})
@@ -176,8 +180,19 @@ def _derive(seed: dict[str, Any], rom: bytes | None) -> tuple[list[dict[str, Any
     return facts, frontier
 
 
+def required_registers(seed: dict[str, Any], rom: bytes | None) -> list[str]:
+    facts, _ = _derive(seed, rom)
+    names = []
+    for fact in facts:
+        name = fact.get("source_register") or fact.get("address_register")
+        if name and name not in names:
+            names.append(name)
+    return names
+
+
 def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
-                rom: bytes | None = None) -> dict[str, Any]:
+                rom: bytes | None = None,
+                predecessor: PredecessorCapture | None = None) -> dict[str, Any]:
     """Materialize bounded evidence without temporal adjacency as causality."""
     observations = []
     observed_facts = []
@@ -193,11 +208,46 @@ def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
                                    "evidence": "RUNTIME_CAPSULE"})
             seen_observations.add(key)
     causal_facts, frontier = _derive(seed, rom)
+    requested = required_registers(seed, rom)
+    if requested:
+        if predecessor is None:
+            provenance = {"status": "UNRESOLVED", "requested": requested,
+                          "reason": "PREDECESSOR_CAPTURE_MISSING"}
+            chain_steps = []
+        else:
+            resolved = resolve_predecessor(predecessor, rom or b"", requested)
+            chain_steps = resolved["steps"]
+            provenance = {"status": "PROVEN" if not resolved["unresolved"] else "UNRESOLVED",
+                          "requested": requested, "resolved": [item["register"] for item in chain_steps],
+                          "unresolved": resolved["unresolved"], "reason": resolved["reason"],
+                          "capture": {"path": predecessor.path, "epoch": predecessor.epoch,
+                                      "target_pc": _hex(predecessor.target_pc),
+                                      "first_sequence": predecessor.first_sequence,
+                                      "last_sequence": predecessor.last_sequence,
+                                      "record_count": len(predecessor.records),
+                                      "complete": predecessor.complete,
+                                      "truncated": predecessor.truncated,
+                                      "gap": predecessor.gap,
+                                      "consumer_sequence": predecessor.consumer_sequence,
+                                      "consumer_frame": predecessor.consumer_frame}}
+        if chain_steps:
+            frontier = {"status": "PROVEN" if not provenance["unresolved"] else "UNKNOWN",
+                        "missing": provenance["unresolved"],
+                        "next": "resolve remaining register provenance" if provenance["unresolved"] else
+                        "resolve RAM version producer", "evidence": "AUTO67.6R_PREDECESSOR"}
+        else:
+            frontier["missing"] = ["REGISTER_PROVENANCE"]
+            frontier["next"] = "capture complete predecessor interval for A4/A5"
+    else:
+        provenance = {"status": "NOT_REQUIRED", "requested": [], "resolved": [],
+                      "unresolved": [], "reason": None}
+        chain_steps = []
     return {
         "materialized_schema_version": MATERIALIZED_SCHEMA_VERSION,
         "seed": _seed_fields(seed), "runtime_observations": observations,
         "observed_facts": observed_facts, "causal_facts": causal_facts,
-        "chain_steps": [], "unresolved_frontier": frontier,
+        "chain_steps": chain_steps, "register_provenance": provenance,
+        "unresolved_frontier": frontier,
         "capsule_format_version": capsule.format_version,
         "capsule_record_count": capsule.event_count,
     }

@@ -11,7 +11,7 @@ from typing import Any
 from auto67_status import StatusPublisher
 from auto67_capsule import CapsulePool
 from auto67_capsule_codec import CapsuleFormatError
-from auto67_materializer import materialize
+from auto67_materializer import materialize, required_registers
 from auto67_profile import DispatchProfiler
 from auto67_persistence import LivePersistenceSink, descriptor, materialized_descriptor
 
@@ -100,6 +100,10 @@ class Dispatcher:
             "materialized_chains": 0, "materialized_observed_facts": 0,
             "materialized_causal_facts": 0, "materialized_chain_steps": 0,
             "unsupported_causal_facts": 0,
+            "predecessor_captures_installed": 0, "predecessor_records_captured": 0,
+            "predecessor_max_ring_utilization": 0, "predecessor_truncations": 0,
+            "predecessor_gaps": 0, "register_provenance_resolved": 0,
+            "register_provenance_unresolved": 0,
             "duplicate_active_claims": 0,
         }
         self.investigations: dict[str, dict[str, Any]] = {}
@@ -209,6 +213,8 @@ class Dispatcher:
                 else:
                     task["capsule_id"] = capsule.capsule_id
                     task["capsule_lease"] = capsule.lease_id
+                    self.metrics["predecessor_captures_installed"] += int(
+                        capsule.predecessor_enabled)
             task["dispatch_trace"]["timestamps_ns"]["t3"] = time.perf_counter_ns()
             task["event"] = dict(event)
             task["dispatch_trace"]["timestamps_ns"]["t4"] = time.perf_counter_ns()
@@ -266,6 +272,8 @@ class Dispatcher:
     def ingest(self, event: dict[str, Any]) -> None:
         event = dict(event)
         event.setdefault("captured_monotonic", time.monotonic())
+        if self.capsule_pool is not None and self.rom is not None:
+            event["register_provenance_registers"] = required_registers(event, self.rom)
         with self.lock:
             self.window.append(event)
             self.metrics["events_observed"] += 1
@@ -307,6 +315,7 @@ class Dispatcher:
             event = task["event"]
             capsule_id = task.get("capsule_id")
             capsule_evidence = None
+            predecessor_evidence = None
             if capsule_id is not None:
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "CAPTURING")
@@ -319,6 +328,17 @@ class Dispatcher:
                         capsule_evidence = self.capsule_pool.decode(
                             capsule_id, task["capsule_lease"], task["investigation_id"])
                         self.metrics["capsule_records_decoded"] += capsule_evidence.event_count
+                        predecessor_evidence = self.capsule_pool.decode_predecessor(
+                            capsule_id, task["capsule_lease"], task["investigation_id"])
+                        if predecessor_evidence is not None:
+                            self.metrics["predecessor_records_captured"] += len(
+                                predecessor_evidence.records)
+                            self.metrics["predecessor_max_ring_utilization"] = max(
+                                self.metrics["predecessor_max_ring_utilization"],
+                                len(predecessor_evidence.records))
+                            self.metrics["predecessor_truncations"] += int(
+                                predecessor_evidence.truncated)
+                            self.metrics["predecessor_gaps"] += int(predecessor_evidence.gap)
                     except CapsuleFormatError:
                         self.metrics["capsule_decode_errors"] += 1
                 with self.lock:
@@ -336,7 +356,8 @@ class Dispatcher:
             branch = task["branch"]
             inv_id = "INV-AUTO67-" + task["seed"]
             if capsule_evidence is not None:
-                materialized = materialize(event, capsule_evidence, self.rom)
+                materialized = materialize(event, capsule_evidence, self.rom,
+                                           predecessor_evidence)
                 persistence_item = materialized_descriptor(
                     event, materialized, worker_status, event.get("frame"), worker_id,
                     task.get("lease_id"), inv_id)
@@ -366,6 +387,11 @@ class Dispatcher:
                         materialized["causal_facts"])
                     self.metrics["materialized_chain_steps"] += len(
                         materialized["chain_steps"])
+                    provenance = materialized.get("register_provenance", {})
+                    self.metrics["register_provenance_resolved"] += len(
+                        provenance.get("resolved", []))
+                    self.metrics["register_provenance_unresolved"] += len(
+                        provenance.get("unresolved", []))
                 if worker_status == "KNOWN":
                     status = "KNOWN"
                     investigation["status"] = status

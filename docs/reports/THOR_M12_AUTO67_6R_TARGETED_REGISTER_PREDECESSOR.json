@@ -1,0 +1,134 @@
+{
+  "schema": "oasis.m12.auto67.6r.targeted-register-predecessor.v1",
+  "status": "NEGATIVE_FAIL_CLOSED",
+  "baseline": "4ad091e1fe92f6682f1445a8e92b462609544c41",
+  "implementation": {
+    "o67p_version": 1,
+    "header_bytes": 56,
+    "record_bytes": 28,
+    "ring_limit_records": 256,
+    "targeted_registers": ["A4", "A5"],
+    "reuses_existing_bizhawk_hooks": true,
+    "architecture_changed": false,
+    "auto68_started": false,
+    "graph_merging": false,
+    "source_owned_changed": false,
+    "historical_auto67_4_database_modified": false
+  },
+  "primary_canary": {
+    "kind": "BUS_WRITE_PC",
+    "pc": "0x0027EC",
+    "address": "0xC00004",
+    "opcode": "0x3955",
+    "decoded": "MOVE.W (A5),-4(A4)",
+    "requested_registers": ["A5", "A4"],
+    "observations": {
+      "finalproof": [
+        {"epoch": 0, "sequence": 5552, "frame": 90},
+        {"epoch": 0, "sequence": 8453, "frame": 120}
+      ],
+      "focused1": [
+        {"epoch": 0, "sequence": 1955, "frame": 90},
+        {"epoch": 0, "sequence": 2876, "frame": 120}
+      ]
+    }
+  },
+  "real_runs": {
+    "normal": {
+      "artifact": "build/auto67-6r-finalproof.json",
+      "frames": 180,
+      "seconds": 5.796999999998661,
+      "workers": 16,
+      "leases": 427,
+      "returns": 427,
+      "peak_busy": 16,
+      "peak_working": 7,
+      "predecessor_captures_installed": 0,
+      "predecessor_records_captured": 0,
+      "predecessor_truncations": 0,
+      "predecessor_gaps": 0,
+      "register_provenance_resolved": 0,
+      "register_provenance_unresolved": 0,
+      "chain_steps": 0,
+      "duplicate_active_claims": 0,
+      "known_rejected_before_dispatch": 0,
+      "merges": 137,
+      "queue_drops": 0,
+      "db_errors": 0,
+      "raw_backlog": "NONEXISTENT",
+      "rolling_window_overwrites": 308,
+      "frame_max_ms": 25.0,
+      "frames_over_16ms": 103,
+      "frames_over_33ms": 0,
+      "frames_over_50ms": 0,
+      "worker_pool_prestarted": true,
+      "returncode": 0
+    },
+    "targeted_diagnostic": {
+      "artifact": "build/auto67-6r-optimized180.json",
+      "frames": 180,
+      "workers": 16,
+      "predecessor_captures_installed": 6,
+      "predecessor_records_captured": 256,
+      "predecessor_max_ring_utilization": 256,
+      "predecessor_truncations": 1,
+      "predecessor_gaps": 0,
+      "register_provenance_resolved": 0,
+      "register_provenance_unresolved": 2,
+      "chain_steps": 0,
+      "duplicate_active_claims": 0,
+      "queue_drops": 0,
+      "db_errors": 0,
+      "raw_backlog": "NONEXISTENT",
+      "frame_max_ms": 778.0,
+      "frames_over_33ms": 59,
+      "frames_over_50ms": 59,
+      "representative_sidecar": "build/auto67-6r-optimized180.capsules/capsule-00-L00000070.bin.pred",
+      "sidecar_metadata": {
+        "record_count": 256,
+        "complete": false,
+        "truncated": true,
+        "gap": false,
+        "consumer_sequence": null,
+        "resolver_reason": "INCOMPLETE_PREDECESSOR_CAPTURE"
+      },
+      "accepted_as_normal_performance": false,
+      "returncode": 0
+    },
+    "focused_slot_confirmation": {
+      "artifact": "build/auto67-6r-focused1.json",
+      "frames": 180,
+      "workers": 16,
+      "leases": 489,
+      "returns": 489,
+      "predecessor_captures_installed": 0,
+      "focused_capture_slot_waits": 484,
+      "frame_max_ms": 25.0,
+      "frames_over_33ms": 0,
+      "frames_over_50ms": 0,
+      "returncode": 0
+    }
+  },
+  "result": {
+    "observed_facts": 182,
+    "causal_facts": 2,
+    "chain_steps": 0,
+    "register_provenance_resolved": 0,
+    "register_provenance_unresolved": 2,
+    "unsupported_facts": 0,
+    "frontier": "REGISTER_PROVENANCE / INCOMPLETE_PREDECESSOR_CAPTURE",
+    "producer_occurrence": null,
+    "consumer_occurrence": null,
+    "no_intervening_write_proof": false,
+    "fail_closed": true
+  },
+  "tests": {
+    "auto67_6": "12 passed",
+    "auto67_4": "8 passed",
+    "full_auto67_matrix": "passed",
+    "python_compile": "passed",
+    "source_file_limit": "passed",
+    "diff_check": "passed",
+    "debug_release_build_ctest": "passed"
+  }
+}

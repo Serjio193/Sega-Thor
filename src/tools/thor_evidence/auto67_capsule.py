@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from auto67_capsule_codec import CapsuleFormatError, DecodedCapsule, decode_capsule
+from auto67_predecessor import PredecessorCapture, decode as decode_predecessor
 
 
 CAPSULE_SIZE = 128 * 1024
@@ -47,6 +48,14 @@ class Capsule:
     physical_header_bytes: int = 24
     record_size: int = 20
     capsule_path: str | None = None
+    predecessor_enabled: bool = False
+    predecessor_registers: tuple[str, ...] = ()
+    predecessor_target_pc: int = 0
+    predecessor_path: str | None = None
+    predecessor_record_count: int = 0
+    predecessor_complete: bool = False
+    predecessor_truncated: bool = False
+    predecessor_gap: bool = False
     known: bool = False
     merged: bool = False
     proven: bool = False
@@ -64,6 +73,11 @@ class Capsule:
         self.filter_type = "address" if address not in (None, "", "null") else "pc"
         self.filter_value = _number(address if self.filter_type == "address"
                                     else event.get("pc"))
+        requested = tuple(str(item) for item in event.get(
+            "register_provenance_registers", ()) if str(item) in {"A4", "A5"})
+        self.predecessor_enabled = bool(requested)
+        self.predecessor_registers = requested
+        self.predecessor_target_pc = _number(event.get("pc"))
         self.start_frame = _number(event.get("frame"))
         self.last_frame = self.start_frame
         self.state = "CAPTURING"
@@ -86,6 +100,12 @@ class Capsule:
                      "capsule_path"):
             if name in item:
                 setattr(self, name, item[name])
+        for name in ("predecessor_enabled", "predecessor_registers",
+                     "predecessor_target_pc", "predecessor_path",
+                     "predecessor_record_count", "predecessor_complete",
+                     "predecessor_truncated", "predecessor_gap"):
+            if name in item:
+                setattr(self, name, item[name])
         return previous != self.state
 
     def reset(self) -> None:
@@ -102,6 +122,12 @@ class Capsule:
         self.physical_header_bytes = 24
         self.record_size = 20
         self.capsule_path = None
+        self.predecessor_enabled = False
+        self.predecessor_registers = ()
+        self.predecessor_target_pc = 0
+        self.predecessor_path = None
+        self.predecessor_record_count = 0
+        self.predecessor_complete = self.predecessor_truncated = self.predecessor_gap = False
         self.known = self.merged = self.proven = self.bounded_unresolved = False
 
     def snapshot(self) -> dict:
@@ -120,6 +146,14 @@ class Capsule:
             "known": self.known,
             "merged": self.merged, "proven": self.proven,
             "bounded_unresolved": self.bounded_unresolved,
+            "predecessor_enabled": self.predecessor_enabled,
+            "predecessor_registers": list(self.predecessor_registers),
+            "predecessor_target_pc": self.predecessor_target_pc,
+            "predecessor_path": self.predecessor_path,
+            "predecessor_record_count": self.predecessor_record_count,
+            "predecessor_complete": self.predecessor_complete,
+            "predecessor_truncated": self.predecessor_truncated,
+            "predecessor_gap": self.predecessor_gap,
         }
 
 
@@ -184,7 +218,10 @@ class CapsulePool:
         fields = [op, str(self.command_sequence), str(capsule.capsule_id),
                   capsule.lease_id or "-", str(capsule.worker_id or 0),
                   capsule.investigation_id or "-", capsule.filter_type or "-",
-                  str(capsule.filter_value), "30"]
+                  str(capsule.filter_value), "30",
+                  "1" if capsule.predecessor_enabled else "0",
+                  str(capsule.predecessor_target_pc),
+                  ",".join(capsule.predecessor_registers) or "-"]
         self.commands.append("|".join(fields))
         if self.publisher:
             self.publisher.publish("\n".join(self.commands) + "\n")
@@ -257,6 +294,19 @@ class CapsulePool:
         if decoded.format_version != 2:
             raise CapsuleFormatError("worker materialization requires capsule format v2")
         return decoded
+
+    def decode_predecessor(self, capsule_id: int, lease_id: str,
+                           investigation_id: str) -> PredecessorCapture | None:
+        with self.lock:
+            capsule = self.capsules[capsule_id]
+            if capsule.lease_id != lease_id or capsule.investigation_id != investigation_id:
+                raise CapsuleFormatError("predecessor lease/investigation mismatch")
+            if not capsule.predecessor_enabled:
+                return None
+            if not capsule.predecessor_path:
+                raise CapsuleFormatError("predecessor path is missing")
+            path = Path(capsule.predecessor_path)
+        return decode_predecessor(path)
 
     def release(self, capsule_id: int, result: str) -> None:
         with self.lock:

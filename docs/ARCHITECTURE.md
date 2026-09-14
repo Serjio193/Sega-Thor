@@ -110,6 +110,28 @@ kept in `unresolved_frontier`, and `chain_steps` remains empty until an
 ordered dependency is independently established. Historical AUTO67.4 rows
 remain readable and are not migrated or rewritten.
 
+## AUTO67.6R targeted register predecessor evidence
+
+`auto67_predecessor.py` decodes the versioned O67P v1 predecessor sidecar and
+resolves only an exact register reaching definition. The Lua capture is
+installed per investigation only when the static AUTO67.5 facts require A4 or
+A5; it uses the existing `event.on_bus_exec_any` hook, captures a bounded
+256-record ring, and reads register values at the selected consumer occurrence.
+The O67P header records epoch, sequence bounds, completion, truncation, gaps,
+consumer identity and overwrites; each 28-byte record records epoch, sequence,
+frame, PC, opcode and requested A4/A5 values. The worker rejects incomplete,
+overwritten, gapped or identity-mismatched intervals and emits at most one
+`REGISTER_REACHING_DEFINITION` step per proven requested register. Unsupported
+static writers and missing register provenance remain explicit frontiers.
+
+The first real BizHawk AUTO67.6R run installed targeted predecessor capture but
+did not produce a complete canary interval: the consumer occurrence was not
+available before the bounded ring was overwritten/session-stopped. The result
+is therefore a valid negative proof, not a fabricated producer. Normal bounded
+capture retained the existing performance boundary. This remains developer-only
+and introduces no semantic merging, SOURCE_OWNED change, graph expansion or
+AUTO68 dependency.
+
 ## AUTO67.1 fixed capsule experiment
 
 `auto67_capsule.py` extends the same Dispatcher with exactly sixteen reusable

@@ -58,6 +58,12 @@ def canonical_chain(event: dict[str, Any]) -> str:
             {name: value for name, value in item.items() if name != "provenance"}
             for item in materialized.get("causal_facts", [])]
         record["chain_steps"] = materialized.get("chain_steps", [])
+        provenance = materialized.get("register_provenance")
+        if provenance is not None:
+            record["register_provenance"] = {
+                name: provenance[name] for name in
+                ("status", "requested", "resolved", "unresolved", "reason")
+                if name in provenance}
         if materialized.get("unresolved_frontier") is not None:
             record["unresolved_frontier"] = {
                 name: materialized["unresolved_frontier"][name]

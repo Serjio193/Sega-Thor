@@ -12,6 +12,9 @@ if hook_metrics_path then
     assert(loader, load_error)
     hook_metrics = loader()
 end
+local source_path = debug.getinfo(1, "S").source:sub(2)
+local source_dir = source_path:match("^(.*[\\/])") or ""
+local predecessor_module = dofile(source_dir .. "predecessor_capture.lua")
 local discovery_capacity = 256
 local capsule_capacity = 131072
 local capsule_magic, capsule_format_version = "O67V", 2
@@ -43,6 +46,7 @@ local frame_spike_counts = {over_16ms = 0, over_33ms = 0, over_50ms = 0}
 local largest_frame_spike = {frame = 0, duration_ms = 0, leases = {}}
 local filter_install_count = 0
 local filter_install_samples = {}
+local predecessor_capture = predecessor_module.create(function() return frame end)
 local discovery_active = false
 local discovery_write_hook = nil
 local target_write_hooks = {}
@@ -88,7 +92,9 @@ local function new_capsule(id)
             last_frame = 0, bytes_used = 0, event_count = 0,
             capture_start = 0, capture_duration = 0, frames_covered = 0,
             freeze_reason = nil, full = false, truncated = false, records = {},
-            frame_records = 0, hook_paused = false}
+            frame_records = 0, hook_paused = false, predecessor_enabled = false,
+            predecessor_registers = {}, predecessor_target_pc = 0,
+            predecessor_ring = {}, predecessor_freeze_requested = false}
 end
 for i = 0, capsule_count - 1 do capsules[i] = new_capsule(i) end
 
@@ -128,6 +134,16 @@ local function freeze(capsule, reason)
     capsule.frames_covered = math.max(0, frame - capsule.start_frame)
     local path = string.format("%s/capsule-%02d-%s.bin", capsule_dir,
                                capsule.id, capsule.lease or "unknown")
+    if capsule.predecessor_enabled then
+        local metadata = predecessor_capture.write(capsule, path .. ".pred")
+        capsule.predecessor_path = path .. ".pred"
+        if metadata then
+            capsule.predecessor_record_count = metadata.record_count
+            capsule.predecessor_complete = metadata.complete
+            capsule.predecessor_truncated = metadata.truncated
+            capsule.predecessor_gap = metadata.gap
+        end
+    end
     local file = io.open(path, "wb")
     if file then
         file:write(capsule_magic, string.pack("<I4I4I4I4I4", capsule_format_version,
@@ -223,6 +239,7 @@ local function refresh_write_hook()
                 local active = capsules[capsule_id]
                 if active.state == "CAPTURING" and not active.hook_paused then
                     append_capsule(active, 1, address, read_pc())
+                    predecessor_capture.on_write(active, read_pc())
                 end
                 if hook_metrics then hook_metrics.callback_end("targeted_bus_write", started) end
             end, capsule.filter_value, "AUTO67.1 targeted writes", "M68K BUS")
@@ -308,12 +325,18 @@ local function start_capsule(parts)
     capsule.state = "CLAIMED"
     capsule.lease, capsule.worker, capsule.investigation = parts[4], tonumber(parts[5]), parts[6]
     capsule.filter_type, capsule.filter_value = parts[7], tonumber(parts[8]) or 0
+    local requested = {}
+    for item in (parts[12] or ""):gmatch("[^,]+") do requested[#requested + 1] = item end
+    if parts[10] == "1" then
+        predecessor_capture.start(capsule, tonumber(parts[11]) or 0, requested)
+    end
     capsule.start_frame, capsule.last_frame, capsule.capture_start = frame, frame, frame
     capsule.bytes_used, capsule.event_count, capsule.freeze_reason = 64, 0, nil
     capsule.capture_duration, capsule.frames_covered = 0, 0
     capsule.full, capsule.truncated = false, false
     capsule.frame_records, capsule.hook_paused = 0, false
     capsule.records = {}
+    capsule.predecessor_freeze_requested = false
     capsule.state = "CAPTURING"
     local install_started = os.clock()
     install_exec(capsule)
@@ -332,6 +355,7 @@ local function release_capsule(parts)
     capsule.lease, capsule.worker, capsule.investigation = nil, nil, nil
     capsule.bytes_used, capsule.event_count = 0, 0
     capsule.frame_records, capsule.hook_paused = 0, false
+    capsule.predecessor_enabled = false
     refresh_write_hook()
 end
 
@@ -352,100 +376,24 @@ local function read_commands()
     file:close()
 end
 
-local function capsule_json(capsule)
-    local path = capsule.lease and string.format("%s/capsule-%02d-%s.bin", capsule_dir,
-                                                   capsule.id, capsule.lease) or nil
-    return '{"capsule_id":' .. capsule.id .. ',"state":' .. json_string(capsule.state) ..
-        ',"worker_id":' .. (capsule.worker or "null") ..
-        ',"investigation_id":' .. (capsule.investigation and json_string(capsule.investigation) or "null") ..
-        ',"lease_id":' .. (capsule.lease and json_string(capsule.lease) or "null") ..
-        ',"filter_type":' .. (capsule.filter_type and json_string(capsule.filter_type) or "null") ..
-        ',"filter_value":' .. capsule.filter_value .. ',"start_frame":' .. capsule.start_frame ..
-        ',"last_frame":' .. capsule.last_frame .. ',"bytes_used":' .. capsule.bytes_used ..
-        ',"logical_header_bytes":' .. logical_header_bytes ..
-        ',"physical_header_bytes":' .. physical_header_bytes ..
-        ',"record_size":' .. record_size .. ',"format_version":' .. capsule_format_version ..
-        ',"capsule_path":' .. (path and json_string(path) or "null") ..
-        ',"capacity":' .. capsule_capacity .. ',"event_count":' .. capsule.event_count ..
-        ',"capture_duration":' .. string.format("%.6f", capsule.capture_duration) ..
-        ',"frames_covered":' .. capsule.frames_covered ..
-        ',"freeze_reason":' .. (capsule.freeze_reason and json_string(capsule.freeze_reason) or "null") ..
-        ',"full":' .. tostring(capsule.full) .. ',"truncated":' .. tostring(capsule.truncated) .. '}'
-end
-
-local function events_json()
-    local values = {}
-    for i = 0, discovery_count - 1 do
-        local item = discovery[((discovery_start + i - 1) % discovery_capacity) + 1]
-        values[#values + 1] = '{"seq":' .. item.seq .. ',"frame":' .. item.frame ..
-            ',"epoch":' .. item.epoch ..
-            ',"kind":' .. json_string(item.kind) .. ',"pc":' .. json_string(hex(item.pc)) ..
-            ',"address":' .. (item.address and json_string(hex(item.address)) or "null") .. '}'
-    end
-    return "[" .. table.concat(values, ",") .. "]"
-end
-
-local function leases_json(items)
-    local values = {}
-    for _, item in ipairs(items or {}) do
-        values[#values + 1] = '{"lease_id":' .. json_string(item.lease_id) ..
-            ',"investigation_id":' .. json_string(item.investigation_id) .. '}'
-    end
-    return "[" .. table.concat(values, ",") .. "]"
-end
-
-local function frame_spikes_json()
-    local values = {}
-    for i = 0, frame_spike_count - 1 do
-        local item = frame_spikes[((frame_spike_start + i - 1) % frame_time_capacity) + 1]
-        values[#values + 1] = '{"frame":' .. item.frame .. ',"duration_ms":' ..
-            string.format("%.6f", item.duration_ms) .. ',"leases":' .. leases_json(item.leases) .. '}'
-    end
-    return "[" .. table.concat(values, ",") .. "]"
-end
-
-local function filter_installs_json()
-    local values = {}
-    local first = math.max(1, filter_install_count - frame_time_capacity + 1)
-    for sequence_number = first, filter_install_count do
-        local item = filter_install_samples[((sequence_number - 1) % frame_time_capacity) + 1]
-        values[#values + 1] = '{"frame":' .. item.frame .. ',"duration_ms":' ..
-            string.format("%.6f", item.duration_ms) .. ',"lease_id":' ..
-            json_string(item.lease_id) .. ',"investigation_id":' ..
-            json_string(item.investigation_id) .. '}'
-    end
-    return "[" .. table.concat(values, ",") .. "]"
-end
-
-local function frame_timing_json()
-    return '{"sample_count":' .. frame_time_count ..
-        ',"over_16ms":' .. frame_spike_counts.over_16ms ..
-        ',"over_33ms":' .. frame_spike_counts.over_33ms ..
-        ',"over_50ms":' .. frame_spike_counts.over_50ms ..
-        ',"largest":{"frame":' .. largest_frame_spike.frame ..
-        ',"duration_ms":' .. string.format("%.6f", largest_frame_spike.duration_ms) ..
-        ',"leases":' .. leases_json(largest_frame_spike.leases) .. '},"spikes":' ..
-        frame_spikes_json() .. '}'
-end
-
+local status_writer = dofile(source_dir .. "live_capsule_status.lua")
 local function write_status(path)
-    local values = {}
-    for i = 0, capsule_count - 1 do values[#values + 1] = capsule_json(capsules[i]) end
-    local file = io.open(path, "w")
-    if not file then return end
-    file:write('{"schema":"oasis.m12.auto67.1.capsule.v2","frame":' .. frame ..
-        ',"epoch":1,"events_observed":' .. sequence .. ',"events_overwritten":' ..
-        discovery_overwrites .. ',"callback_count":' .. callbacks ..
-        ',"sampling_policy":"AUTO67.1_FIXED_16_CAPSULES_TARGETED_BUDGETED"' ..
-        ',"discovery_burst_period_frames":' .. discovery_burst_period ..
-        ',"discovery_burst_callback_budget":' .. discovery_burst_budget ..
-        ',"discovery_burst_count":' .. discovery_burst_count ..
-        ',"discovery_capacity":' .. discovery_capacity .. ',"discovery_utilization":' ..
-        discovery_count .. ',"capsules":[' .. table.concat(values, ",") ..
-        '],"discovery":' .. events_json() .. ',"frame_timing":' .. frame_timing_json() ..
-        ',"filter_install_samples":' .. filter_installs_json() ..
-        (hook_metrics and ',"hook_metrics":' .. hook_metrics.json(path == final_path) or '') .. '}')
-    file:close()
+    status_writer.write(path, path == final_path, {
+        capsules = capsules, capsule_count = capsule_count, capsule_dir = capsule_dir,
+        logical_header_bytes = logical_header_bytes, physical_header_bytes = physical_header_bytes,
+        record_size = record_size, format_version = capsule_format_version,
+        capsule_capacity = capsule_capacity, frame = frame, sequence = sequence,
+        discovery_overwrites = discovery_overwrites, callbacks = callbacks,
+        discovery_burst_period = discovery_burst_period,
+        discovery_burst_budget = discovery_burst_budget,
+        discovery_burst_count = discovery_burst_count, discovery_capacity = discovery_capacity,
+        discovery_count = discovery_count, discovery = discovery, discovery_start = discovery_start,
+        hex = hex, frame_time_count = frame_time_count,
+        frame_spike_counts = frame_spike_counts, largest_frame_spike = largest_frame_spike,
+        frame_spike_count = frame_spike_count, frame_spikes = frame_spikes,
+        frame_spike_start = frame_spike_start, frame_time_capacity = frame_time_capacity,
+        filter_install_count = filter_install_count, filter_install_samples = filter_install_samples,
+        hook_metrics = hook_metrics})
 end
 
 while max_frames == 0 or frame < max_frames do
@@ -463,9 +411,11 @@ while max_frames == 0 or frame < max_frames do
         end
     end
     refresh_write_hook()
+    predecessor_capture.refresh(capsules)
     for i = 0, capsule_count - 1 do
         local capsule = capsules[i]
-        if capsule.state == "CAPTURING" and frame - capsule.start_frame >= 30 then
+        if capsule.state == "CAPTURING" and (frame - capsule.start_frame >= 30 or
+                capsule.predecessor_freeze_requested) then
             freeze(capsule, capsule.freeze_reason or
                    (capsule.full and "CAPACITY" or "FRAME_BUDGET"))
             unregister_exec(i)
@@ -496,5 +446,6 @@ for i = 0, capsule_count - 1 do
     if capsule.state == "CAPTURING" then freeze(capsule, "SESSION_STOP") end
 end
 remove_write_hook()
+predecessor_capture.close(capsules)
 write_status(final_path)
 client.exitCode(0)

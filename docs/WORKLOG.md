@@ -8697,3 +8697,31 @@ and its JSON counterpart.
 CHECKS: AUTO67.4 8/8, AUTO67.3 3/3, Python compilation, and the short real
 BizHawk proof passed. No long gameplay, graph merging, AUTO68 or ownership
 promotion was performed.
+# 2026-09-14 — AUTO67.6R targeted register predecessor capture — NEGATIVE / FAIL CLOSED
+
+TASK: Add only the minimum targeted O67P predecessor evidence needed to resolve
+one A4/A5 reaching definition after AUTO67.5. Reuse the existing BizHawk
+execution hook and register API. Do not start AUTO68, graph merging or
+SOURCE_OWNED promotion.
+
+IMPLEMENTATION: Added bounded per-investigation predecessor capture with a
+256-record O67P v1 ring, exact epoch/sequence/consumer identity, overwrite and
+truncation metadata, targeted A4/A5 values, worker-side static M68K register
+write decoding, and fail-closed `REGISTER_REACHING_DEFINITION` resolution.
+The materializer requests A5/A4 for `MOVE.W (A5),-4(A4)` generically; no
+0x27EC special case was added. Historical AUTO67.4 data is untouched.
+
+RESULT: Synthetic resolver coverage proves the positive contract and all
+negative gates. Real BizHawk observed the primary canary at frames 90 and 120,
+but the targeted predecessor capture ended with a 256-record incomplete ring
+and no consumer occurrence. Therefore real `chain_steps=0`, register
+provenance remains unresolved, and no producer PC is claimed. The normal
+bounded 16-worker run completed 427 leases/returns in 180 frames with 25 ms
+maximum frame time and zero frames over 33/50 ms; raw backlog was nonexistent,
+queue drops and DB errors were zero. A diagnostic six-target predecessor run
+confirmed the capture path but was not accepted as normal performance because
+16 simultaneous address hooks reached a 778 ms maximum frame.
+
+CHECKS: AUTO67 regression matrix, AUTO67.4 regression, Python compilation,
+source-size gate, diff check, Debug/Release build and CTest results are recorded
+in `docs/reports/THOR_M12_AUTO67_6R_TARGETED_REGISTER_PREDECESSOR.md`.
