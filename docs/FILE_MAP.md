@@ -1351,3 +1351,7 @@ fail-closed V2 contract; CTest registration is in `cmake/m12_auto2.cmake`.
 The bounded result is documented in
 `docs/reports/THOR_EVIDENCE_ENGINE_V2_RAM_PROVENANCE.md` and governed by
 ADR-0049.
+`docs/reports/THOR_M12_AUTO67_6_REGISTER_PROVENANCE_GATE.md` and its JSON
+counterpart record the negative register-version evidence gate: the current
+O67V v2 capsules lack register values and bounded predecessor execution needed
+to prove an A4/A5 reaching definition. No runtime code change was made.

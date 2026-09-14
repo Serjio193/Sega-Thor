@@ -1,0 +1,112 @@
+{
+  "schema": "oasis.m12.auto67.6.register-provenance-gate.v1",
+  "status": "NEGATIVE_FAIL_CLOSED",
+  "baseline": "44a627ead299348f701e4e25f5bf17cb496776a8",
+  "implementation": {
+    "code_changed": false,
+    "architecture_changed": false,
+    "source_owned_changed": false,
+    "graph_merging_started": false,
+    "auto68_started": false
+  },
+  "current_capsule_schema": {
+    "magic": "O67V",
+    "format_version": 2,
+    "physical_header_bytes": 24,
+    "logical_header_bytes": 64,
+    "record_bytes": 20,
+    "record_layout": [
+      {"field": "sequence", "type": "uint32_le", "bytes": 4},
+      {"field": "frame", "type": "uint32_le", "bytes": 4},
+      {"field": "address", "type": "uint32_le", "bytes": 4},
+      {"field": "pc", "type": "uint32_le", "bytes": 4},
+      {"field": "kind_code", "type": "uint32_le", "bytes": 4}
+    ],
+    "register_values": false,
+    "instruction_opcode": false,
+    "execution_epoch": false,
+    "complete_predecessor_trace": false
+  },
+  "primary_canary": {
+    "seed": {"kind": "BUS_WRITE_PC", "pc": "0x0027EC", "address": "0xC00004"},
+    "static_semantics_from_auto67_5": "MOVE.W (A5),-4(A4)",
+    "static_register_dependencies": ["A5", "A4"],
+    "real_bizhawk_discovery_observations": [
+      {"frame": 90, "epoch": 0, "pc": "0x0027EC", "address": "0xC00004", "seq": 5552},
+      {"frame": 120, "epoch": 0, "pc": "0x0027EC", "address": "0xC00004", "seq": 8453}
+    ],
+    "capsule_evidence": {
+      "format": "O67V v2",
+      "register_context_records": 0,
+      "producer_instruction_records": 0,
+      "reaching_definition": null,
+      "chain_steps": 0,
+      "frontier": "REGISTER_PROVENANCE"
+    }
+  },
+  "full_auto67_5_canary_payload": {
+    "chain_hash": "edcd19b44eab937ec2255a384af2e1d75ca7b6ed5e4c399d5d448cf1522905d1",
+    "seed": {"kind": "BUS_WRITE_PC", "pc": "0x0027EC", "address": "0xC00004"},
+    "observed_facts": [
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027D0", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027D2", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027D4", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027D6", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027E0", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027E2", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027E8", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"},
+      {"kind": "BUS_WRITE_PC", "pc": "0x0027EC", "address": "0xC00004", "evidence": "RUNTIME_CAPSULE"}
+    ],
+    "causal_facts": [
+      {"kind": "INSTRUCTION_SOURCE_MEMORY", "instruction_pc": "0x0027EC", "opcode": "0x3955", "source_operand": "(A5)", "destination": "-4(A4)", "observed_address": "0xC00004", "derivation_rule": "M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS", "evidence": "STATIC_ROM_DECODER"},
+      {"kind": "ADDRESS_DEPENDENCY", "instruction_pc": "0x0027EC", "opcode": "0x3955", "address_register": "A4", "destination": "-4(A4)", "observed_address": "0xC00004", "derivation_rule": "M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS", "evidence": "STATIC_ROM_DECODER"}
+    ],
+    "chain_steps": [],
+    "unresolved_frontier": {"status": "UNKNOWN", "missing": ["REGISTER_PROVENANCE"], "next": "resolve source/address register provenance", "evidence": "AUTO67.5_STATIC_DECODER"}
+  },
+  "short_real_bizhawk_proof": {
+    "artifact": "build/auto67-6-negative-proof.json",
+    "frames": 180,
+    "workers_configured": 16,
+    "leases": 425,
+    "returns": 425,
+    "materialized_chains": 16,
+    "observed_facts": 54,
+    "causal_facts": 0,
+    "chain_steps": 0,
+    "register_provenance_resolved": 0,
+    "register_provenance_unresolved": 1,
+    "unsupported_facts": 0,
+    "capsule_records_decoded": 12231,
+    "duplicate_active_claims": 0,
+    "queue_drops": 0,
+    "db_errors": 0,
+    "raw_backlog": "NONEXISTENT",
+    "returncode": 0
+  },
+  "missing_evidence": [
+    "A4/A5 register values at the 0x0027EC consumer occurrence",
+    "instruction execution records for candidate A4/A5 producers",
+    "opcode and decoded semantics for each candidate producer",
+    "execution epoch and instruction occurrence identity for register versions",
+    "complete bounded predecessor interval proving no intervening register write"
+  ],
+  "reusable_existing_mechanism": {
+    "api": "BizHawk event.on_bus_exec_any plus emu.getregister",
+    "existing_scripts": [
+      "src/tools/thor_evidence/capture/focused_register_slice.lua",
+      "src/tools/thor_evidence/capture/dense.lua"
+    ],
+    "boundary": "These are separate raw capture paths and are not consumed by the AUTO67 capsule worker path. They are evidence for the smallest repair, not a production chain step."
+  },
+  "smallest_proposed_repair": {
+    "status": "NOT_IMPLEMENTED",
+    "description": "Add a versioned targeted capsule record for a bounded predecessor ring using the existing on_bus_exec_any hook, carrying epoch, sequence, PC, opcode, and only A4/A5 values; resolve definitions in the existing worker materialization path and fail closed on truncation or gaps."
+  },
+  "tests": {
+    "auto67_4": "8 passed",
+    "auto67_3": "3 passed",
+    "py_compile": "passed",
+    "register_version_resolver_tests": "not applicable: no resolver was implemented after the input-contract negative gate"
+  }
+}

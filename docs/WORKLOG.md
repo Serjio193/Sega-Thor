@@ -8674,3 +8674,26 @@ read-only and still contains 264 rows with its original nine-column schema.
 CHECKS: AUTO67.4 (6), AUTO67.3 (3), AUTO67.1 (10), AUTO67 (9) Python tests
 pass; py_compile passes. The bounded proof is in
 `docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md` and JSON.
+# 2026-09-14 — AUTO67.6 register provenance gate — NEGATIVE / FAIL CLOSED
+
+TASK: Determine whether the current AUTO67.5 frozen capsules can resolve the
+reaching definition of A4/A5 for `0x0027EC -> 0xC00004`, without starting
+AUTO68, graph merging or changing SOURCE_OWNED.
+
+RESULT: The current O67V v2 capsule has a 24-byte header and 20-byte records
+`sequence/frame/address/pc/kind_code`. It contains no register values, opcode,
+execution epoch or complete predecessor interval. A real 180-frame BizHawk
+run observed the canary twice, but could not prove any producer or register
+version. `chain_steps=0` and `REGISTER_PROVENANCE` remains the explicit
+frontier. No code or database was modified.
+
+EVIDENCE: Existing `focused_register_slice.lua` and `dense.lua` demonstrate
+the reusable `event.on_bus_exec_any` plus `emu.getregister` mechanism. The
+smallest future repair is a versioned bounded predecessor-ring capsule with
+epoch/sequence/PC/opcode and A4/A5 values, with fail-closed gap/truncation
+handling. Full details: `docs/reports/THOR_M12_AUTO67_6_REGISTER_PROVENANCE_GATE.md`
+and its JSON counterpart.
+
+CHECKS: AUTO67.4 8/8, AUTO67.3 3/3, Python compilation, and the short real
+BizHawk proof passed. No long gameplay, graph merging, AUTO68 or ownership
+promotion was performed.
