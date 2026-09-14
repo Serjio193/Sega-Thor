@@ -1,3 +1,30 @@
+# 2026-09-14 — AUTO67.5 observed/causal integrity gate — PASS
+
+TASK: Audit AUTO67.4 materialized semantics and stop runtime observations from
+being labeled as causal dependencies. Do not start AUTO68, change SOURCE_OWNED,
+merge chains or rewrite the historical AUTO67.4 database.
+
+IMPLEMENTATION: Materialized schema version 2 now stores
+`runtime_observations`, direct `observed_facts`, genuinely derived
+`causal_facts`, empty-until-proven `chain_steps`, and an explicit unresolved
+frontier. A bounded generic M68K MOVE memory-write decoder derives instruction
+source and destination-address dependencies from the canonical ROM. It fails
+closed for unsupported/non-writing instructions and does not infer register or
+RAM provenance.
+
+RESULT: The real 720-frame BizHawk proof produced 606 observed facts, 30 static
+causal facts, 0 chain steps, 147 unresolved records, 0 rooted records, and 0
+unsupported causal facts. The 0x0027EC canary derived source `(A5)` and
+destination address base `A4` from opcode `0x3955`; register provenance remains
+the next frontier. The unrelated `0x06009A -> 0xFF0B82` seed remained
+unresolved because opcode `0x4A39` is outside the supported MOVE-write decoder.
+Queue drops and DB errors were both zero; raw backlog was nonexistent.
+
+CHECKS: AUTO67.4/AUTO67.3/AUTO67 tests, Python compilation, source-size gate,
+and the short real BizHawk run passed. The historical AUTO67.4 database was
+read-only; its sampled old causal facts classify as `OBSERVATION_ONLY`.
+Evidence: `docs/reports/THOR_M12_AUTO67_5_CAUSAL_INTEGRITY_GATE.md` and JSON.
+
 # 2026-09-14 — AUTO67.3 final canonical chain identity checkpoint — PASS
 
 TASK: Complete the final AUTO67.3 identity audit and consolidate one

@@ -87,18 +87,65 @@ class Auto674CapsuleTest(unittest.TestCase):
             write_v2(path, [(1, 600, 0xC00004, 0x27EC, 1),
                             (2, 601, 0xC00006, 0x2800, 1)])
             capsule = decode_capsule(path, 0, "L00000001")
-            seed = {"kind": "BUS_WRITE_PC", "pc": "0x0027EC",
+            rom = bytearray(0x200)
+            rom[0x100:0x104] = bytes.fromhex("3955FFFC")
+            seed = {"kind": "BUS_WRITE_PC", "pc": "0x000100",
                     "address": "0xC00004"}
-            result = materialize(seed, capsule)
+            result = materialize(seed, capsule, bytes(rom))
             self.assertEqual(len(result["runtime_observations"]), 2)
-            self.assertEqual(result["causal_facts"][0]["writer_pc"], "0x002800")
-            self.assertEqual(result["causal_facts"][0]["evidence"],
-                             "RUNTIME_CAPSULE")
+            self.assertEqual(result["observed_facts"][0]["pc"], "0x0027EC")
+            self.assertEqual(result["causal_facts"][0]["kind"],
+                             "INSTRUCTION_SOURCE_MEMORY")
+            self.assertEqual(result["causal_facts"][0]["source_operand"], "(A5)")
+            self.assertEqual(result["chain_steps"], [])
 
             write_v2(path, [(1, 600, 0xC00004, 0x27EC, 1),
                             (2, 601, 0xC00006, 0x2800, 2)])
-            exec_only = materialize(seed, decode_capsule(path, 0, "L00000001"))
-            self.assertEqual(exec_only["causal_facts"], [])
+            exec_only = materialize(seed, decode_capsule(path, 0, "L00000001"), bytes(rom))
+            self.assertEqual(len(exec_only["observed_facts"]), 1)
+            self.assertEqual(exec_only["causal_facts"], result["causal_facts"])
+
+    def test_temporal_adjacency_and_order_do_not_create_causality(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capsule-00-L00000001.bin"
+            records = [(1, 600, 0xC00004, 0x0100, 1),
+                       (2, 600, 0xC00004, 0x0110, 1),
+                       (3, 601, 0xC00004, 0x0120, 1)]
+            write_v2(path, records)
+            rom = bytearray(0x200)
+            rom[0x100:0x104] = bytes.fromhex("3955FFFC")
+            result = materialize({"kind": "BUS_WRITE_PC", "pc": "0x000100",
+                                  "address": "0xC00004"},
+                                 decode_capsule(path, 0, "L00000001"), bytes(rom))
+            self.assertEqual(len(result["observed_facts"]), 3)
+            self.assertEqual(len(result["causal_facts"]), 2)
+            self.assertEqual(result["chain_steps"], [])
+            self.assertFalse(any(fact.get("writer_pc") == "0x000110"
+                                 for fact in result["causal_facts"]))
+
+    def test_unsupported_decode_and_missing_provenance_fail_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capsule-00-L00000001.bin"
+            write_v2(path, [(1, 600, 0xC00004, 0x0100, 1)])
+            unsupported_rom = bytes.fromhex("4A3900FF0010")
+            result = materialize({"kind": "BUS_WRITE_PC", "pc": "0x000000",
+                                  "address": "0xC00004"},
+                                 decode_capsule(path, 0, "L00000001"), unsupported_rom)
+            self.assertEqual(result["causal_facts"], [])
+            self.assertIn("STATIC_DECODE", result["unresolved_frontier"]["missing"])
+
+            branch = materialize({"kind": "BUS_WRITE_PC", "pc": "0x000000",
+                                 "address": "0xC00004"},
+                                decode_capsule(path, 0, "L00000001"), bytes.fromhex("67000000"))
+            self.assertEqual(branch["causal_facts"], [])
+
+            rom = bytearray(0x200)
+            rom[0x100:0x104] = bytes.fromhex("3955FFFC")
+            proven = materialize({"kind": "BUS_WRITE_PC", "pc": "0x000100",
+                                  "address": "0xC00004"},
+                                 decode_capsule(path, 0, "L00000001"), bytes(rom))
+            self.assertEqual(proven["chain_steps"], [])
+            self.assertIn("REGISTER_PROVENANCE", proven["unresolved_frontier"]["missing"])
 
     def test_materialized_identity_excludes_provenance_but_keeps_causal_fact(self):
         materialized = {
@@ -106,8 +153,13 @@ class Auto674CapsuleTest(unittest.TestCase):
                      "address": "0xC00004"},
             "runtime_observations": [{"kind": "BUS_WRITE_PC",
                                        "pc": "0x002800", "address": "0xC00006"}],
-            "causal_facts": [{"kind": "BUS_WRITE_PC", "writer_pc": "0x002800",
-                               "address": "0xC00006", "evidence": "RUNTIME_CAPSULE"}],
+            "observed_facts": [{"kind": "BUS_WRITE_PC", "pc": "0x002800",
+                                "address": "0xC00006", "evidence": "RUNTIME_CAPSULE"}],
+            "causal_facts": [{"kind": "INSTRUCTION_SOURCE_MEMORY",
+                               "instruction_pc": "0x0027EC", "source_operand": "(A5)",
+                               "derivation_rule": "M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS",
+                               "evidence": "STATIC_ROM_DECODER"}],
+            "chain_steps": [],
             "unresolved_frontier": {"status": "UNKNOWN", "missing": ["STATIC_DECODE"],
                                      "evidence": "RUNTIME_CAPSULE"},
             "capsule_format_version": 2,
@@ -123,7 +175,7 @@ class Auto674CapsuleTest(unittest.TestCase):
             "PROVEN", 9000, 9, "L9", "INV-Z")
         self.assertEqual(first["chain_hash"], replay["chain_hash"])
         altered = json.loads(json.dumps(materialized))
-        altered["causal_facts"][0]["writer_pc"] = "0x002801"
+        altered["causal_facts"][0]["source_operand"] = "(A6)"
         changed = materialized_descriptor(
             {"kind": "BUS_WRITE_PC", "pc": "0x0027EC", "address": "0xC00004"},
             altered, "BOUNDED_UNRESOLVED", 600, 1, "L1", "INV-A")

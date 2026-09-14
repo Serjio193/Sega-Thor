@@ -99,6 +99,17 @@ existing bounded persistence queue, while old rows remain `SEED_ONLY` and new
 rows are marked `MATERIALIZED_CHAIN`. No semantic merge, ownership promotion,
 SOURCE_OWNED change, raw-event backlog or AUTO68 dependency is introduced.
 
+## AUTO67.5 observed/causal integrity gate
+
+Materialized schema version 2 separates direct `observed_facts` from
+`causal_facts`. Capsule BUS_WRITE_PC records are observation-only; temporal
+adjacency, shared addresses and record ordering never create a dependency.
+The worker may emit a causal fact only when the bounded static M68K decoder
+proves instruction operand/destination semantics. Register/RAM provenance is
+kept in `unresolved_frontier`, and `chain_steps` remains empty until an
+ordered dependency is independently established. Historical AUTO67.4 rows
+remain readable and are not migrated or rewritten.
+
 ## AUTO67.1 fixed capsule experiment
 
 `auto67_capsule.py` extends the same Dispatcher with exactly sixteen reusable

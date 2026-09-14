@@ -1631,3 +1631,27 @@ SQLite sidecar remain in place. No semantic merging, ownership promotion,
 SOURCE_OWNED change, raw-event backlog or AUTO68 work is introduced.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md`.
+
+## ADR-0067.5 — Separate observed runtime facts from causal dependencies
+
+**Status:** Accepted for AUTO67.5
+
+**Context:** AUTO67.4 placed additional BUS_WRITE_PC capsule observations in a
+field named `causal_facts`. Those records establish that a PC/address pair was
+observed, but do not establish a producer, register, RAM-version or control
+dependency.
+
+**Decision:** Version new materialized payloads as schema 2. Store capsule
+observations in `runtime_observations` and direct witnessed pairs in
+`observed_facts`. Emit `causal_facts` only from generic, fail-closed static
+M68K instruction semantics. Do not create `chain_steps` without an ordered
+dependency proof; leave register/RAM provenance in `unresolved_frontier`.
+Historical AUTO67.4 databases remain read-only and interpretable.
+
+**Consequences:** The 0x0027EC canary proves a MOVE memory-write source and
+destination-address dependency from the ROM opcode, but not the A4/A5 register
+origins. The unrelated 0x06009A seed remains unresolved because its opcode is
+not a supported memory-writing MOVE. No semantic merging, SOURCE_OWNED change,
+ownership promotion or AUTO68 work is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_5_CAUSAL_INTEGRITY_GATE.md`.

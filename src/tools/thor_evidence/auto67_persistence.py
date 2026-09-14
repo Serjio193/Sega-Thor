@@ -43,19 +43,25 @@ def canonical_chain(event: dict[str, Any]) -> str:
             record[name] = event[name]
     materialized = event.get("materialized")
     if materialized is not None:
+        record["materialized_schema_version"] = materialized.get(
+            "materialized_schema_version", 1)
         record["seed"] = {name: materialized.get("seed", {}).get(name)
                            for name in CAUSAL_FIELDS
                            if materialized.get("seed", {}).get(name) is not None}
         record["runtime_observations"] = [
             {name: item[name] for name in ("kind", "pc", "address") if item.get(name) is not None}
             for item in materialized.get("runtime_observations", [])]
+        record["observed_facts"] = [
+            {name: value for name, value in item.items() if name != "provenance"}
+            for item in materialized.get("observed_facts", [])]
         record["causal_facts"] = [
             {name: value for name, value in item.items() if name != "provenance"}
             for item in materialized.get("causal_facts", [])]
+        record["chain_steps"] = materialized.get("chain_steps", [])
         if materialized.get("unresolved_frontier") is not None:
             record["unresolved_frontier"] = {
                 name: materialized["unresolved_frontier"][name]
-                for name in ("status", "missing", "evidence")
+                for name in ("status", "missing", "next", "reason", "evidence")
                 if name in materialized["unresolved_frontier"]}
     return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 

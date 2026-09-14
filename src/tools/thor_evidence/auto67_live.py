@@ -56,7 +56,8 @@ class Dispatcher:
     def __init__(self, worker_count: int = 16, capacity: int = 256,
                  processing_delay: float = 0.003,
                  capsule_pool: CapsulePool | None = None,
-                 chain_sink: LivePersistenceSink | None = None):
+                 chain_sink: LivePersistenceSink | None = None,
+                 rom: bytes | None = None):
         if worker_count not in {1, 2, 4, 8, 16, 32, 64}:
             raise ValueError("worker count must be one of 1,2,4,8,16,32,64")
         self.window = RollingWindow(capacity)
@@ -64,6 +65,7 @@ class Dispatcher:
         self.processing_delay = processing_delay
         self.capsule_pool = capsule_pool
         self.chain_sink = chain_sink
+        self.rom = rom
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
         self.wake = [threading.Event() for _ in range(worker_count)]
@@ -95,7 +97,9 @@ class Dispatcher:
             "focused_capture_requested": 0, "focused_capture_completed": 0,
             "focused_capture_slot_waits": 0,
             "capsule_decode_errors": 0, "capsule_records_decoded": 0,
-            "materialized_chains": 0, "materialized_causal_facts": 0,
+            "materialized_chains": 0, "materialized_observed_facts": 0,
+            "materialized_causal_facts": 0, "materialized_chain_steps": 0,
+            "unsupported_causal_facts": 0,
             "duplicate_active_claims": 0,
         }
         self.investigations: dict[str, dict[str, Any]] = {}
@@ -332,7 +336,7 @@ class Dispatcher:
             branch = task["branch"]
             inv_id = "INV-AUTO67-" + task["seed"]
             if capsule_evidence is not None:
-                materialized = materialize(event, capsule_evidence)
+                materialized = materialize(event, capsule_evidence, self.rom)
                 persistence_item = materialized_descriptor(
                     event, materialized, worker_status, event.get("frame"), worker_id,
                     task.get("lease_id"), inv_id)
@@ -351,11 +355,17 @@ class Dispatcher:
                         "capsule_format_version": materialized["capsule_format_version"],
                         "capsule_record_count": materialized["capsule_record_count"],
                         "runtime_observation_count": len(materialized["runtime_observations"]),
+                        "observed_fact_count": len(materialized["observed_facts"]),
                         "causal_fact_count": len(materialized["causal_facts"]),
+                        "chain_step_count": len(materialized["chain_steps"]),
                     }
                     self.metrics["materialized_chains"] += 1
+                    self.metrics["materialized_observed_facts"] += len(
+                        materialized["observed_facts"])
                     self.metrics["materialized_causal_facts"] += len(
                         materialized["causal_facts"])
+                    self.metrics["materialized_chain_steps"] += len(
+                        materialized["chain_steps"])
                 if worker_status == "KNOWN":
                     status = "KNOWN"
                     investigation["status"] = status

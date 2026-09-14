@@ -23,7 +23,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     emulator = Path(args.emulator).resolve()
     lua = Path(args.lua).resolve()
     output = Path(args.output).resolve()
-    if hashlib.sha256(rom.read_bytes()).hexdigest() != ROM_SHA:
+    rom_bytes = rom.read_bytes()
+    if hashlib.sha256(rom_bytes).hexdigest() != ROM_SHA:
         raise SystemExit("canonical ROM identity mismatch")
     output.parent.mkdir(parents=True, exist_ok=True)
     status_path = output.with_suffix(".status.json")
@@ -45,7 +46,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     if chain_sink is not None:
         chain_sink.start()
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
-                            chain_sink)
+                            chain_sink, rom_bytes)
     dispatcher.start()
     environment = os.environ.copy()
     environment.update({

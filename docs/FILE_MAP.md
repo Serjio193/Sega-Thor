@@ -96,8 +96,14 @@ exposes frozen capsule metadata and rejects stale status snapshots; new
 materialized results are persisted as `MATERIALIZED_CHAIN` while historical
 seed-only rows remain `SEED_ONLY`. Regression coverage is in
 `tests/thor_evidence_auto67_4_test.py`; the real short proof is recorded in
-`docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md` and its
-bounded JSON counterpart.
+  `docs/reports/THOR_M12_AUTO67_4_FROZEN_CAPSULE_REAL_WORKER_CHAIN.md` and its
+  bounded JSON counterpart.
+
+AUTO67.5 extends `auto67_materializer.py` with schema-2 observed/causal
+separation and a bounded generic M68K MOVE memory-write decoder. Its integrity
+tests and real proof are recorded in
+`tests/thor_evidence_auto67_4_test.py` and
+`docs/reports/THOR_M12_AUTO67_5_CAUSAL_INTEGRITY_GATE.md` with the JSON proof.
 
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`

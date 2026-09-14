@@ -1,0 +1,1356 @@
+{
+  "baseline": "02791979f004dccafb6aad410bb730e7ec62c718",
+  "canary": {
+    "causal_facts": [
+      {
+        "derivation_rule": "M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS",
+        "destination": "-4(A4)",
+        "evidence": "STATIC_ROM_DECODER",
+        "instruction_pc": "0x0027EC",
+        "kind": "INSTRUCTION_SOURCE_MEMORY",
+        "observed_address": "0xC00004",
+        "opcode": "0x3955",
+        "source_operand": "(A5)"
+      },
+      {
+        "address_register": "A4",
+        "derivation_rule": "M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS",
+        "destination": "-4(A4)",
+        "evidence": "STATIC_ROM_DECODER",
+        "instruction_pc": "0x0027EC",
+        "kind": "ADDRESS_DEPENDENCY",
+        "observed_address": "0xC00004",
+        "opcode": "0x3955"
+      }
+    ],
+    "chain_hash": "edcd19b44eab937ec2255a384af2e1d75ca7b6ed5e4c399d5d448cf1522905d1",
+    "chain_steps": [],
+    "observed_facts": [
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027D0"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027D2"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027D4"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027D6"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027E0"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027E2"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027E8"
+      },
+      {
+        "address": "0xC00004",
+        "evidence": "RUNTIME_CAPSULE",
+        "kind": "BUS_WRITE_PC",
+        "pc": "0x0027EC"
+      }
+    ],
+    "seed": {
+      "address": "0xC00004",
+      "kind": "BUS_WRITE_PC",
+      "pc": "0x0027EC"
+    },
+    "unresolved_frontier": {
+      "evidence": "AUTO67.5_STATIC_DECODER",
+      "missing": [
+        "REGISTER_PROVENANCE"
+      ],
+      "next": "resolve source/address register provenance",
+      "status": "UNKNOWN"
+    }
+  },
+  "five_actual_materialized_payloads": [
+    {
+      "canonical_payload": "{\"causal_facts\":[{\"derivation_rule\":\"M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS\",\"destination\":\"-4(A4)\",\"evidence\":\"STATIC_ROM_DECODER\",\"instruction_pc\":\"0x0027EC\",\"kind\":\"INSTRUCTION_SOURCE_MEMORY\",\"observed_address\":\"0xC00004\",\"opcode\":\"0x3955\",\"source_operand\":\"(A5)\"},{\"address_register\":\"A4\",\"derivation_rule\":\"M68K_MOVE_MEMORY_WRITE_STATIC_SEMANTICS\",\"destination\":\"-4(A4)\",\"evidence\":\"STATIC_ROM_DECODER\",\"instruction_pc\":\"0x0027EC\",\"kind\":\"ADDRESS_DEPENDENCY\",\"observed_address\":\"0xC00004\",\"opcode\":\"0x3955\"}],\"chain_steps\":[],\"materialized_schema_version\":2,\"observed\":{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},\"observed_facts\":[{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"}],\"runtime_observations\":[{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D4\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027D6\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E0\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E2\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027E8\"},{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"}],\"seed\":{\"address\":\"0xC00004\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027EC\"},\"unresolved_frontier\":{\"evidence\":\"AUTO67.5_STATIC_DECODER\",\"missing\":[\"REGISTER_PROVENANCE\"],\"next\":\"resolve source/address register provenance\",\"status\":\"UNKNOWN\"}}",
+      "chain_hash": "edcd19b44eab937ec2255a384af2e1d75ca7b6ed5e4c399d5d448cf1522905d1"
+    },
+    {
+      "canonical_payload": "{\"causal_facts\":[],\"chain_steps\":[],\"materialized_schema_version\":2,\"observed\":{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"observed_facts\":[{\"address\":\"0xFF0B82\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"runtime_observations\":[{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"seed\":{\"address\":\"0xFF0B82\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"unresolved_frontier\":{\"evidence\":\"AUTO67.5_STATIC_DECODER\",\"missing\":[\"STATIC_DECODE\"],\"reason\":\"unsupported opcode 0x4A39\",\"status\":\"UNKNOWN\"}}",
+      "chain_hash": "a3d0bd797d0b08377e1f30f26ee5d50207c4107ed59809ee39071e9119fb97bc"
+    },
+    {
+      "canonical_payload": "{\"causal_facts\":[],\"chain_steps\":[],\"materialized_schema_version\":2,\"observed\":{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"observed_facts\":[{\"address\":\"0xFF0B96\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"runtime_observations\":[{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"seed\":{\"address\":\"0xFF0B96\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"unresolved_frontier\":{\"evidence\":\"AUTO67.5_STATIC_DECODER\",\"missing\":[\"STATIC_DECODE\"],\"reason\":\"unsupported opcode 0x4A39\",\"status\":\"UNKNOWN\"}}",
+      "chain_hash": "04d87a127fa6894d9271b8da919d4bcc4cee1ca7e64b3c1208eeb2590df3e398"
+    },
+    {
+      "canonical_payload": "{\"causal_facts\":[],\"chain_steps\":[],\"materialized_schema_version\":2,\"observed\":{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},\"observed_facts\":[{\"address\":\"0xC00000\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"}],\"runtime_observations\":[{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"}],\"seed\":{\"address\":\"0xC00000\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x0027F0\"},\"unresolved_frontier\":{\"evidence\":\"AUTO67.5_STATIC_DECODER\",\"missing\":[\"OBSERVED_ADDRESS_MATCH\"],\"reason\":\"absolute destination differs from observed address\",\"status\":\"UNKNOWN\"}}",
+      "chain_hash": "0608b8be7d947abcf60c14043a77defaf5395515dd9be1176140d8eecbc1e29e"
+    },
+    {
+      "canonical_payload": "{\"causal_facts\":[],\"chain_steps\":[],\"materialized_schema_version\":2,\"observed\":{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"observed_facts\":[{\"address\":\"0xFF0B84\",\"evidence\":\"RUNTIME_CAPSULE\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"runtime_observations\":[{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"}],\"seed\":{\"address\":\"0xFF0B84\",\"kind\":\"BUS_WRITE_PC\",\"pc\":\"0x06009A\"},\"unresolved_frontier\":{\"evidence\":\"AUTO67.5_STATIC_DECODER\",\"missing\":[\"STATIC_DECODE\"],\"reason\":\"unsupported opcode 0x4A39\",\"status\":\"UNKNOWN\"}}",
+      "chain_hash": "06f6f2552a018ca0489585766a59d9c7b04cca4c0103ab0ecab7779a43278cb4"
+    }
+  ],
+  "generic_second_seed": {
+    "causal_facts": [],
+    "chain_hash": "a3d0bd797d0b08377e1f30f26ee5d50207c4107ed59809ee39071e9119fb97bc",
+    "seed": {
+      "address": "0xFF0B82",
+      "kind": "BUS_WRITE_PC",
+      "pc": "0x06009A"
+    },
+    "unresolved_frontier": {
+      "evidence": "AUTO67.5_STATIC_DECODER",
+      "missing": [
+        "STATIC_DECODE"
+      ],
+      "reason": "unsupported opcode 0x4A39",
+      "status": "UNKNOWN"
+    }
+  },
+  "implementation": {
+    "causal_fields": [
+      "causal_facts",
+      "chain_steps"
+    ],
+    "decoder": "bounded generic M68K MOVE memory-write semantics; unsupported/non-writing instructions fail closed",
+    "materialized_schema_version": 2,
+    "observation_fields": [
+      "runtime_observations",
+      "observed_facts"
+    ],
+    "provenance_policy": "register/RAM provenance remains unresolved until independently witnessed"
+  },
+  "new_proof_counts": {
+    "causal_facts": 30,
+    "chain_steps": 0,
+    "materialized_records": 147,
+    "observed_facts": 606,
+    "rooted": 0,
+    "unresolved": 147,
+    "unsupported_causal_facts": 0
+  },
+  "new_proof_database": "C:\\Github\\Sega-Thor\\build\\thor-evidence\\auto67-5\\short-proof2.sqlite",
+  "old_auto67_4_audit": {
+    "causal_proven": 0,
+    "observation_only": 28,
+    "records": [
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-07-L000000AE.bin",
+        "causal_fact_count": 7,
+        "chain_hash": "162bd4d300c3201edeade495edbfad78a775bc392527b63dab0708377aeb7af8",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027D0"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 0,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D0",
+                "sequence": 14405
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 8,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D0",
+                "sequence": 14582
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 16,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D0",
+                "sequence": 14705
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027D2"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 1,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D2",
+                "sequence": 14407
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 9,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D2",
+                "sequence": 14584
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 17,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D2",
+                "sequence": 14707
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027D4"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 2,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D4",
+                "sequence": 14409
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 10,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D4",
+                "sequence": 14586
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 18,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D4",
+                "sequence": 14709
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027D6"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 3,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D6",
+                "sequence": 14411
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D6",
+                "sequence": 14588
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 19,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027D6",
+                "sequence": 14711
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027E0"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E0",
+                "sequence": 14414
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 12,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E0",
+                "sequence": 14591
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 20,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E0",
+                "sequence": 14714
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027E2"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 5,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E2",
+                "sequence": 14416
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 13,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E2",
+                "sequence": 14593
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 21,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E2",
+                "sequence": 14716
+              }
+            ],
+            "supporting_record_count": 26
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xC00004",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027E8"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xC00004",
+                "frame": 188,
+                "index": 6,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E8",
+                "sequence": 14418
+              },
+              {
+                "address": "0xC00004",
+                "frame": 189,
+                "index": 14,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E8",
+                "sequence": 14595
+              },
+              {
+                "address": "0xC00004",
+                "frame": 190,
+                "index": 22,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027E8",
+                "sequence": 14718
+              }
+            ],
+            "supporting_record_count": 26
+          }
+        ],
+        "lease_id": "L000000AE",
+        "seed": {
+          "address": "0xC00004",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x0027EC"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-10-L00000232.bin",
+        "causal_fact_count": 0,
+        "chain_hash": "02e55c1d4c82d871cf906d12ab3fac61c486fa607650113a9b7edcbeab2465a5",
+        "facts": [],
+        "lease_id": "L00000232",
+        "seed": {
+          "address": "0xFF0B82",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x06009A"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-11-L00000134.bin",
+        "causal_fact_count": 0,
+        "chain_hash": "042903c5514774da1a8342643fe0706148e9a9151167a8963d63430c99bd7c47",
+        "facts": [],
+        "lease_id": "L00000134",
+        "seed": {
+          "kind": "FRAME_PC",
+          "pc": "0x0038A0"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-14-L0000007C.bin",
+        "causal_fact_count": 2,
+        "chain_hash": "05777dbf9df1ca4f2afe1d6f2eb5a9955d6a0bddcd2e2bb92ae4fb24f5aba537",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF165A",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x001F82"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF165A",
+                "frame": 152,
+                "index": 0,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001F82",
+                "sequence": 11438
+              },
+              {
+                "address": "0xFF165A",
+                "frame": 153,
+                "index": 2,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001F82",
+                "sequence": 11578
+              },
+              {
+                "address": "0xFF165A",
+                "frame": 154,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001F82",
+                "sequence": 11649
+              }
+            ],
+            "supporting_record_count": 30
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF165A",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x001FDE"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF165A",
+                "frame": 153,
+                "index": 3,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FDE",
+                "sequence": 11638
+              },
+              {
+                "address": "0xFF165A",
+                "frame": 155,
+                "index": 7,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FDE",
+                "sequence": 11791
+              },
+              {
+                "address": "0xFF165A",
+                "frame": 157,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FDE",
+                "sequence": 12003
+              }
+            ],
+            "supporting_record_count": 15
+          }
+        ],
+        "lease_id": "L0000007C",
+        "seed": {
+          "address": "0xFF165A",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x00263A"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-11-L00000062.bin",
+        "causal_fact_count": 3,
+        "chain_hash": "05e060d6e4ba578414c8194d031e7107490f5457b6595b9deef027edd1ded12e",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA4",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x001FC8"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA4",
+                "frame": 117,
+                "index": 1,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FC8",
+                "sequence": 7188
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 119,
+                "index": 5,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FC8",
+                "sequence": 7459
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 121,
+                "index": 10,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x001FC8",
+                "sequence": 7812
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA4",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x00218C"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA4",
+                "frame": 117,
+                "index": 2,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00218C",
+                "sequence": 7206
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 119,
+                "index": 6,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00218C",
+                "sequence": 7477
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 121,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00218C",
+                "sequence": 7830
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA4",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x002256"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA4",
+                "frame": 120,
+                "index": 8,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002256",
+                "sequence": 7681
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 124,
+                "index": 17,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002256",
+                "sequence": 8266
+              },
+              {
+                "address": "0xFF0BA4",
+                "frame": 128,
+                "index": 26,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002256",
+                "sequence": 8823
+              }
+            ],
+            "supporting_record_count": 9
+          }
+        ],
+        "lease_id": "L00000062",
+        "seed": {
+          "address": "0xFF0BA4",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x002386"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-09-L000001D2.bin",
+        "causal_fact_count": 0,
+        "chain_hash": "082ceb32627e4b10847e4a6af39348939d84c788561001465e72cc4200936d49",
+        "facts": [],
+        "lease_id": "L000001D2",
+        "seed": {
+          "kind": "FRAME_PC",
+          "pc": "0x008B7A"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-00-L0000002E.bin",
+        "causal_fact_count": 5,
+        "chain_hash": "082d9a0b8146f84a294f96023557c342992cfb3f0f8f07c0f167fc57e75cebd6",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xA11100",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027B4"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xA11100",
+                "frame": 44,
+                "index": 0,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027B4",
+                "sequence": 1405
+              },
+              {
+                "address": "0xA11100",
+                "frame": 45,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027B4",
+                "sequence": 1504
+              },
+              {
+                "address": "0xA11100",
+                "frame": 47,
+                "index": 12,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027B4",
+                "sequence": 1769
+              }
+            ],
+            "supporting_record_count": 22
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xA11100",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x06028E"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xA11100",
+                "frame": 44,
+                "index": 2,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x06028E",
+                "sequence": 1426
+              },
+              {
+                "address": "0xA11100",
+                "frame": 45,
+                "index": 8,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x06028E",
+                "sequence": 1522
+              },
+              {
+                "address": "0xA11100",
+                "frame": 46,
+                "index": 10,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x06028E",
+                "sequence": 1692
+              }
+            ],
+            "supporting_record_count": 30
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xA11100",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x060326"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xA11100",
+                "frame": 44,
+                "index": 3,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x060326",
+                "sequence": 1427
+              },
+              {
+                "address": "0xA11100",
+                "frame": 45,
+                "index": 9,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x060326",
+                "sequence": 1523
+              },
+              {
+                "address": "0xA11100",
+                "frame": 46,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x060326",
+                "sequence": 1693
+              }
+            ],
+            "supporting_record_count": 30
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xA11100",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x00299A"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xA11100",
+                "frame": 45,
+                "index": 6,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00299A",
+                "sequence": 1513
+              },
+              {
+                "address": "0xA11100",
+                "frame": 47,
+                "index": 14,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00299A",
+                "sequence": 1778
+              },
+              {
+                "address": "0xA11100",
+                "frame": 49,
+                "index": 22,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00299A",
+                "sequence": 2044
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xA11100",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x002AAC"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xA11100",
+                "frame": 45,
+                "index": 7,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002AAC",
+                "sequence": 1514
+              },
+              {
+                "address": "0xA11100",
+                "frame": 47,
+                "index": 15,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002AAC",
+                "sequence": 1779
+              },
+              {
+                "address": "0xA11100",
+                "frame": 49,
+                "index": 23,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002AAC",
+                "sequence": 2045
+              }
+            ],
+            "supporting_record_count": 15
+          }
+        ],
+        "lease_id": "L0000002E",
+        "seed": {
+          "address": "0xA11100",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x0027F8"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-06-L00000240.bin",
+        "causal_fact_count": 2,
+        "chain_hash": "08fae0cd66b1a32a2539b964f875c188bf4902dc6b2a816f3b83ec84a4dd7b07",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA0",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027DC"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA0",
+                "frame": 665,
+                "index": 1,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027DC",
+                "sequence": 50628
+              },
+              {
+                "address": "0xFF0BA0",
+                "frame": 667,
+                "index": 10,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027DC",
+                "sequence": 50712
+              },
+              {
+                "address": "0xFF0BA0",
+                "frame": 669,
+                "index": 13,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027DC",
+                "sequence": 50779
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA0",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x002872"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA0",
+                "frame": 665,
+                "index": 2,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002872",
+                "sequence": 50632
+              },
+              {
+                "address": "0xFF0BA0",
+                "frame": 665,
+                "index": 3,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002872",
+                "sequence": 50635
+              },
+              {
+                "address": "0xFF0BA0",
+                "frame": 665,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002872",
+                "sequence": 50638
+              }
+            ],
+            "supporting_record_count": 22
+          }
+        ],
+        "lease_id": "L00000240",
+        "seed": {
+          "address": "0xFF0BA0",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x06009A"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-11-L000000EA.bin",
+        "causal_fact_count": 7,
+        "chain_hash": "0f4ee77828d9598acc76a0cbb99099c67c9adaeb44105f428a36823c5d9b4a1c",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x002178"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 264,
+                "index": 0,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002178",
+                "sequence": 20460
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 265,
+                "index": 5,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002178",
+                "sequence": 20653
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 266,
+                "index": 8,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002178",
+                "sequence": 20746
+              }
+            ],
+            "supporting_record_count": 30
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x002224"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 264,
+                "index": 1,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002224",
+                "sequence": 20463
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 266,
+                "index": 9,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002224",
+                "sequence": 20749
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 268,
+                "index": 18,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x002224",
+                "sequence": 21117
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x00227C"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 264,
+                "index": 3,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00227C",
+                "sequence": 20483
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 266,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00227C",
+                "sequence": 20755
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 268,
+                "index": 20,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00227C",
+                "sequence": 21137
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x00229A"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 264,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00229A",
+                "sequence": 20486
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 266,
+                "index": 12,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00229A",
+                "sequence": 20758
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 268,
+                "index": 21,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x00229A",
+                "sequence": 21140
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x008ADA"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 265,
+                "index": 6,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008ADA",
+                "sequence": 20670
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 267,
+                "index": 14,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008ADA",
+                "sequence": 21035
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 269,
+                "index": 23,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008ADA",
+                "sequence": 21324
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x008B52"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 265,
+                "index": 7,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008B52",
+                "sequence": 20673
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 267,
+                "index": 16,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008B52",
+                "sequence": 21041
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 269,
+                "index": 24,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008B52",
+                "sequence": 21327
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF164D",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x008E8E"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF164D",
+                "frame": 267,
+                "index": 15,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008E8E",
+                "sequence": 21038
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 275,
+                "index": 48,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008E8E",
+                "sequence": 22299
+              },
+              {
+                "address": "0xFF164D",
+                "frame": 277,
+                "index": 57,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x008E8E",
+                "sequence": 22588
+              }
+            ],
+            "supporting_record_count": 8
+          }
+        ],
+        "lease_id": "L000000EA",
+        "seed": {
+          "address": "0xFF164D",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x00225E"
+        }
+      },
+      {
+        "capsule_path": "build\\auto67-4-short-proof3.capsules\\capsule-04-L00000182.bin",
+        "causal_fact_count": 2,
+        "chain_hash": "0ffafd843b452dab0113fcb1a395e7724013a1dfea8435f6e2893b741b04318d",
+        "facts": [
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA2",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027A8"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA2",
+                "frame": 445,
+                "index": 1,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027A8",
+                "sequence": 33349
+              },
+              {
+                "address": "0xFF0BA2",
+                "frame": 447,
+                "index": 4,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027A8",
+                "sequence": 33414
+              },
+              {
+                "address": "0xFF0BA2",
+                "frame": 449,
+                "index": 7,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027A8",
+                "sequence": 33479
+              }
+            ],
+            "supporting_record_count": 15
+          },
+          {
+            "classification": "OBSERVATION_ONLY",
+            "derivation_rule": "AUTO67.4 direct RUNTIME_CAPSULE observation; no causal derivation",
+            "fact": {
+              "address": "0xFF0BA2",
+              "evidence": "RUNTIME_CAPSULE",
+              "kind": "BUS_WRITE_PC",
+              "writer_pc": "0x0027FE"
+            },
+            "supporting_capsule_records": [
+              {
+                "address": "0xFF0BA2",
+                "frame": 451,
+                "index": 11,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027FE",
+                "sequence": 33612
+              },
+              {
+                "address": "0xFF0BA2",
+                "frame": 451,
+                "index": 12,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027FE",
+                "sequence": 33615
+              },
+              {
+                "address": "0xFF0BA2",
+                "frame": 451,
+                "index": 13,
+                "kind": "BUS_WRITE_PC",
+                "pc": "0x0027FE",
+                "sequence": 33618
+              }
+            ],
+            "supporting_record_count": 14
+          }
+        ],
+        "lease_id": "L00000182",
+        "seed": {
+          "address": "0xFF0BA2",
+          "kind": "BUS_WRITE_PC",
+          "pc": "0x060092"
+        }
+      }
+    ],
+    "sampled_causal_facts": 28,
+    "sampled_records": 10,
+    "unsupported": 0
+  },
+  "real_proof": {
+    "artifact": "build/auto67-5-short-proof2.json",
+    "capsule_decode_errors": 0,
+    "causal_facts": 38,
+    "chain_steps": 0,
+    "db_errors": 0,
+    "frames": 720,
+    "materialized_chains": 304,
+    "observed_facts": 801,
+    "queue_drops": 0,
+    "raw_backlog": "NONEXISTENT",
+    "session_seconds": 15.561999999999898,
+    "unsupported_causal_facts": 0,
+    "worker_leases": 336,
+    "worker_returns": 320,
+    "workers_configured": 16
+  },
+  "schema": "oasis.m12.auto67.5.causal-integrity.v1",
+  "scope": {
+    "historical_db_modified": false,
+    "no_auto68": true,
+    "semantic_merging": false,
+    "source_owned_delta": 0
+  },
+  "validation": {
+    "auto67_3_test": "PASS (3)",
+    "auto67_4_test": "PASS (8)",
+    "auto67_test": "PASS (9)",
+    "file_limit": "PASS (643 governed files <=500 lines)",
+    "py_compile": "PASS",
+    "real_bizhawk": "PASS"
+  }
+}
