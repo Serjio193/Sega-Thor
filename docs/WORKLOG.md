@@ -8786,3 +8786,35 @@ CHECKS: AUTO67.6R2 focused tests passed (17), AUTO67 tests passed (10), the
 full AUTO67 discovery passed (48), Debug and Release builds passed, Debug and
 Release CTest passed 189/189, the source-limit gate passed for 647 governed
 files, and `git diff --check` passed.
+
+# 2026-09-14 — AUTO67.6R3B targeted burst feasibility — PASS
+
+TASK: Test the bounded targeted-burst hypothesis from baseline
+`02227960a0ac3c5f028ac5655c981774911ec7d5`: targeted producer hooks are idle
+most of the time; one global execution hook is installed only after a target
+producer, stops at `0x0027EC` or after 64 records, and never exceeds one active
+global hook. No AUTO68, ring increase, graph merge, SOURCE_OWNED change or
+worker redesign was allowed.
+
+IMPLEMENTATION: Added the developer-only `predecessor_burst.lua` source and a
+disabled source selector. The runner now creates the bounded prehistory
+sidecar directory when that mode is active. Status serialization reports a
+path only after its sidecar is actually flushed, so evicted bounded slices do
+not become false evidence. Frame timing and bounded burst metrics are exposed
+in the existing status path.
+
+REAL RESULT: Three 120-frame BizHawk QuickSave1 runs (disabled, targeted idle,
+targeted burst64) used 16 prestarted workers. The burst run started/completed
+97/97 bursts, observed 1,862 global callbacks, had 0 budget failures, 0
+boundary gaps, 0 duplicate active claims, 340 leases and 340 returns, and
+retained/flushed 16 bounded sidecars. Frame timing was p50/p95/p99/max
+16/18/23/23 ms with 0 frames over 33 ms and 0 over 50 ms. The canary sidecar
+proved A5 from `0x002234` at distance 26 and A4 from `0x0027BE` at distance 15
+into `0x0027EC`; the generic static ROM resolver returned no unresolved
+registers for that exact slice. Raw backlog was `0 / NONEXISTENT`.
+
+CHECKS: AUTO67.6 predecessor regression plus R3B test passed 19/19, Python
+compilation passed, Debug and Release builds passed, Debug and Release CTest
+passed 189/189 each, the source-limit gate passed for 650 governed files, and
+`git diff --check` passed. Evidence is in
+`docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md` and JSON.

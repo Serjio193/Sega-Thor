@@ -1732,3 +1732,29 @@ are introduced. The next source must attach to the authoritative BizHawk path
 and preserve exact block/order/branch/interrupt fail-closed evidence.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md`.
+
+## ADR-0067.6R3B — targeted producer-triggered execution burst
+**Status:** Accepted as a positive bounded feasibility checkpoint
+**Date:** 2026-09-14
+
+**Context:** AUTO67.6R2 proved the reaching-definition contract with a global
+execution ring, but its always-on Lua callback was not gameplay-safe. The
+targeted-burst hypothesis keeps the global hook absent during idle periods and
+opens it only around the two known static producer PCs.
+
+**Decision:** Add a developer-only bounded burst source with two targeted
+producer hooks, one active global hook slot, a 64-record maximum, exact stop at
+consumer `0x0027EC`, and fail-closed budget exhaustion. Retain at most 16
+flushed O67P v2 slices. Do not increase the continuous ring, merge graphs,
+change SOURCE_OWNED, redesign workers, or begin AUTO68. Do not expose a path
+for a bounded slice unless the sidecar was actually flushed.
+
+**Consequences:** The real QuickSave1 gate proved both generic reaching
+definitions for the canary while reducing frame maximum from the R2 679 ms
+failure to 23 ms, with zero frames over 50 ms. The bounded proof retains only
+16 sidecars; exact joins beyond that retention are not advertised as persisted
+paths. The targeted source is accepted for this feasibility checkpoint and is
+not a claim of full-ROM capture coverage.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md`
+and its machine-readable JSON proof.

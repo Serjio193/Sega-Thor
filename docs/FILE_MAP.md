@@ -1374,3 +1374,12 @@ counterpart record the negative low-overhead source audit: BizHawk TraceLogger
 has no bounded machine-readable stream, the global Lua hook fails the real
 performance gate, and the existing external GPGX block hook is not connected
 to authoritative BizHawk QuickSave1 execution.
+
+`src/tools/thor_evidence/capture/predecessor_burst.lua` is the developer-only
+AUTO67.6R3B targeted producer-triggered, 64-record execution burst source;
+`predecessor_disabled.lua` is its no-hook matrix control. The existing
+`live_capsule.lua` selector, `live_capsule_status.lua` bounded status output,
+and `auto67_runner.py` launcher expose the mode without changing the
+authoritative runtime architecture. Regression coverage is in
+`tests/thor_evidence_auto67_6r3b_test.py`; the real gate is documented in
+`docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md` and JSON.

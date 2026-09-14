@@ -39,9 +39,9 @@ local function events_json(s)
     for i = 0, s.discovery_count - 1 do
         local item = s.discovery[((s.discovery_start + i - 1) % s.discovery_capacity) + 1]
         local prehistory = item.prehistory_id and s.prehistory.lookup(item.prehistory_id) or nil
-        local prehistory_path = prehistory and prehistory.path or
-            (item.prehistory_id and string.format("%s/prehistory-%08X.o67p",
-                                                   s.capsule_dir, item.prehistory_id) or nil)
+        -- Do not advertise a guessed path for an evicted bounded slice.  A
+        -- path is evidence only after the sidecar was actually flushed.
+        local prehistory_path = prehistory and prehistory.path or nil
         values[#values + 1] = '{"seq":' .. item.seq .. ',"frame":' .. item.frame ..
             ',"epoch":' .. item.epoch .. ',"kind":' .. json_string(item.kind) ..
             ',"pc":' .. json_string(s.hex(item.pc)) ..
@@ -62,7 +62,13 @@ end
 
 local function prehistory_json(item)
     item = item or {}
-    return '{"ring_capacity":' .. (item.ring_capacity or 0) ..
+    local hits = item.producer_hits or {}
+    local hit_json = '{"0x002234":' .. (hits[0x002234] or 0) ..
+        ',"0x0027BE":' .. (hits[0x0027BE] or 0) .. '}'
+    local first_pcs = {}
+    for _, pc in ipairs(item.first_burst_pcs or {}) do first_pcs[#first_pcs + 1] = pc end
+    return '{"mode":' .. json_string(item.mode or "continuous") ..
+        ',"ring_capacity":' .. (item.ring_capacity or 0) ..
         ',"records_observed":' .. (item.records_observed or 0) ..
         ',"ring_overwrites":' .. (item.ring_overwrites or 0) ..
         ',"ring_wrapped":' .. tostring(item.ring_wrapped or false) ..
@@ -72,7 +78,24 @@ local function prehistory_json(item)
         ',"unjoined_consumers":' .. (item.unjoined_consumers or 0) ..
         ',"pending_consumers":' .. (item.pending_consumers or 0) ..
         ',"active_global_hook":' .. tostring(item.active_global_hook or false) ..
-        ',"target_pc_count":' .. (item.target_pc_count or 0) .. '}'
+        ',"target_pc_count":' .. (item.target_pc_count or 0) ..
+        ',"burst_budget":' .. (item.burst_budget or 0) ..
+        ',"targeted_callback_count":' .. (item.targeted_callback_count or 0) ..
+        ',"producer_hits":' .. hit_json ..
+        ',"bursts_started":' .. (item.bursts_started or 0) ..
+        ',"bursts_completed":' .. (item.bursts_completed or 0) ..
+        ',"bursts_budget_exhausted":' .. (item.bursts_budget_exhausted or 0) ..
+        ',"bursts_overlapping":' .. (item.bursts_overlapping or 0) ..
+        ',"consumer_hits":' .. (item.consumer_hits or 0) ..
+        ',"global_exec_callbacks":' .. (item.global_exec_callbacks or 0) ..
+        ',"max_callbacks_in_burst":' .. (item.max_callbacks_in_burst or 0) ..
+        ',"mean_callbacks_per_completed_burst":' ..
+        string.format("%.6f", item.mean_callbacks_per_completed_burst or 0) ..
+        ',"global_active_us":' .. string.format("%.3f", item.global_active_us or 0) ..
+        ',"global_duty_cycle":' .. string.format("%.9f", item.global_duty_cycle or 0) ..
+        ',"first_burst_pc":' .. (item.first_burst_pc or 0) ..
+        ',"first_burst_pcs":[' .. table.concat(first_pcs, ",") .. ']' ..
+        ',"boundary_gap":' .. tostring(item.boundary_gap or false) .. '}'
 end
 
 local function leases_json(items)
@@ -109,7 +132,19 @@ end
 function M.write(path, final, s)
     local capsules = {}
     for i = 0, s.capsule_count - 1 do capsules[#capsules + 1] = capsule_json(s.capsules[i], s) end
+    local ordered = {}
+    for i = 0, s.frame_time_count - 1 do
+        ordered[#ordered + 1] = s.frame_times[((s.frame_time_start + i - 1) % s.frame_time_capacity) + 1]
+    end
+    table.sort(ordered)
+    local function percentile(fraction)
+        if #ordered == 0 then return 0 end
+        return ordered[math.max(1, math.ceil(#ordered * fraction))]
+    end
     local timing = '{"sample_count":' .. s.frame_time_count ..
+        ',"min_ms":' .. (ordered[1] or 0) ..
+        ',"p50_ms":' .. percentile(.50) .. ',"p95_ms":' .. percentile(.95) ..
+        ',"p99_ms":' .. percentile(.99) .. ',"max_ms":' .. (ordered[#ordered] or 0) ..
         ',"over_16ms":' .. s.frame_spike_counts.over_16ms ..
         ',"over_33ms":' .. s.frame_spike_counts.over_33ms ..
         ',"over_50ms":' .. s.frame_spike_counts.over_50ms ..

@@ -42,8 +42,9 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
             path.unlink()
     capsule_pool = None
     capsule_dir = output.parent / (output.stem + ".capsules")
-    if args.capsule_mode:
+    if args.capsule_mode or args.prehistory_mode in {"continuous", "targeted_idle", "targeted_burst"}:
         capsule_dir.mkdir(parents=True, exist_ok=True)
+    if args.capsule_mode:
         capsule_pool = CapsulePool(
             count=args.capsule_count, max_live=args.max_live_captures,
             command_path=command_path)
@@ -70,6 +71,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_AUTO67_HOOK_METRICS": str(lua.parent / "auto67_hook_metrics.lua"),
         "OASIS_AUTO67_REGISTER_TARGETS": str(target_path),
         "OASIS_AUTO67_PREHISTORY_RING": "4096",
+        "OASIS_AUTO67_PREHISTORY_MODE": args.prehistory_mode,
+        "OASIS_AUTO67_BURST_BUDGET": str(args.burst_budget),
     })
     command = [str(emulator), f"--lua={lua}", str(rom)]
     started = time.monotonic()
@@ -126,6 +129,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "raw_event_backlog": 0, "raw_event_backlog_structure": "NONEXISTENT",
               "launcher_log": str(launcher_log), "status_path": str(status_path),
               "prehistory_config": {"ring_capacity": 4096,
+                                     "mode": args.prehistory_mode,
+                                     "burst_budget": args.burst_budget,
                                      "target_path": str(target_path),
                                      "target_pc_count": len(targets)},
               "capture_path": str(final_path), "capture_disabled": args.capture_disabled,
@@ -168,6 +173,10 @@ def main() -> int:
     parser.add_argument("--capture-disabled", action="store_true")
     parser.add_argument("--capture-mode", choices=("continuous", "burst"), default="continuous",
                         help="burst is lossy discovery only; neither mode proves complete chains")
+    parser.add_argument("--prehistory-mode", choices=("disabled", "targeted_idle",
+                                                       "targeted_burst", "continuous"),
+                        default="continuous", help="AUTO67.6 prehistory source mode")
+    parser.add_argument("--burst-budget", type=int, choices=(32, 64, 128), default=64)
     parser.add_argument("--capsule-mode", action="store_true",
                         help="AUTO67.1 fixed 16-capsule path; no raw event FIFO")
     parser.add_argument("--capsule-count", type=int, default=16)

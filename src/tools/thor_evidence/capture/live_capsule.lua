@@ -15,7 +15,14 @@ if hook_metrics_path then
 end
 local source_path = debug.getinfo(1, "S").source:sub(2)
 local source_dir = source_path:match("^(.*[\\/])") or ""
-local predecessor_module = dofile(source_dir .. "predecessor_capture.lua")
+local prehistory_mode = os.getenv("OASIS_AUTO67_PREHISTORY_MODE") or "continuous"
+local predecessor_file = "predecessor_capture.lua"
+if prehistory_mode == "targeted_burst" or prehistory_mode == "targeted_idle" then
+    predecessor_file = "predecessor_burst.lua"
+elseif prehistory_mode == "disabled" then
+    predecessor_file = "predecessor_disabled.lua"
+end
+local predecessor_module = dofile(source_dir .. predecessor_file)
 local discovery_capacity = 256
 local capsule_capacity = 131072
 local capsule_magic, capsule_format_version = "O67V", 2
@@ -411,7 +418,8 @@ local function write_status(path)
         discovery_burst_budget = discovery_burst_budget,
         discovery_burst_count = discovery_burst_count, discovery_capacity = discovery_capacity,
         discovery_count = discovery_count, discovery = discovery, discovery_start = discovery_start,
-        hex = hex, frame_time_count = frame_time_count,
+        hex = hex, frame_time_count = frame_time_count, frame_times = frame_times,
+        frame_time_start = frame_time_start,
         frame_spike_counts = frame_spike_counts, largest_frame_spike = largest_frame_spike,
         frame_spike_count = frame_spike_count, frame_spikes = frame_spikes,
         frame_spike_start = frame_spike_start, frame_time_capacity = frame_time_capacity,
