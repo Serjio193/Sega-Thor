@@ -15,6 +15,7 @@ from auto67_capsule import CapsulePool
 from auto67_dashboard import DASHBOARD_HTML
 from auto67_live import BASELINE, ROM_SHA, Dispatcher
 from auto67_materializer import register_provenance_targets
+from auto67_predecessor import register_writer_candidate_report
 from auto67_persistence import LivePersistenceSink
 from auto67_status import StatusPublisher
 
@@ -33,6 +34,16 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     target_path.write_text("".join(f"{pc:06X}|{mask}\n"
                                    for pc, mask in sorted(targets.items())),
                            encoding="ascii")
+    writer_target_path = output.with_suffix(".register-writer-targets.txt")
+    writer_report = register_writer_candidate_report(rom_bytes)
+    writer_candidates = writer_report["candidates"]
+    writer_limit = max(0, int(args.writer_hook_limit))
+    writer_items = sorted(writer_candidates.items())
+    if writer_limit:
+        writer_items = writer_items[:writer_limit]
+    writer_target_path.write_text("".join(f"{pc:06X}|{mask}\n"
+                                          for pc, mask in writer_items),
+                                  encoding="ascii")
     status_path = output.with_suffix(".status.json")
     final_path = output.with_suffix(".lua.json")
     stop_path = output.with_suffix(".stop")
@@ -70,9 +81,12 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_CAPSULE_DIR": str(capsule_dir),
         "OASIS_AUTO67_HOOK_METRICS": str(lua.parent / "auto67_hook_metrics.lua"),
         "OASIS_AUTO67_REGISTER_TARGETS": str(target_path),
+        "OASIS_AUTO67_REGISTER_WRITER_TARGETS": str(writer_target_path),
         "OASIS_AUTO67_PREHISTORY_RING": "4096",
         "OASIS_AUTO67_PREHISTORY_MODE": args.prehistory_mode,
         "OASIS_AUTO67_BURST_BUDGET": str(args.burst_budget),
+        "OASIS_AUTO67_WRITER_HOOK_LIMIT": str(writer_limit),
+        "OASIS_AUTO67_WRITER_CANDIDATE_COUNT": str(writer_report["unique_count"]),
     })
     command = [str(emulator), f"--lua={lua}", str(rom)]
     started = time.monotonic()
@@ -132,7 +146,16 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                                      "mode": args.prehistory_mode,
                                      "burst_budget": args.burst_budget,
                                      "target_path": str(target_path),
-                                     "target_pc_count": len(targets)},
+                                     "target_pc_count": len(targets),
+                                     "writer_target_path": str(writer_target_path),
+                                     "writer_candidate_count": writer_report["unique_count"],
+                                     "writer_a4_count": writer_report["a4_count"],
+                                     "writer_a5_count": writer_report["a5_count"],
+                                     "writer_installed_count": len(writer_items),
+                                     "writer_hook_limit": writer_limit,
+                                     "writer_distribution": writer_report["distribution"],
+                                     "writer_unsupported": writer_report["unsupported"],
+                                     "writer_duplicate_pcs": writer_report["duplicate_pcs"]},
               "capture_path": str(final_path), "capture_disabled": args.capture_disabled,
               "view_url": view_url, "view_snapshot": str(view_path),
               "view_mode": view_mode,
@@ -177,6 +200,8 @@ def main() -> int:
                                                        "targeted_burst", "continuous"),
                         default="continuous", help="AUTO67.6 prehistory source mode")
     parser.add_argument("--burst-budget", type=int, choices=(32, 64, 128), default=64)
+    parser.add_argument("--writer-hook-limit", type=int, default=0,
+                        help="bounded generic writer-hook prefix for scale tests; zero means all")
     parser.add_argument("--capsule-mode", action="store_true",
                         help="AUTO67.1 fixed 16-capsule path; no raw event FIFO")
     parser.add_argument("--capsule-count", type=int, default=16)

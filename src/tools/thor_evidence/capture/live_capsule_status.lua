@@ -63,8 +63,14 @@ end
 local function prehistory_json(item)
     item = item or {}
     local hits = item.producer_hits or {}
-    local hit_json = '{"0x002234":' .. (hits[0x002234] or 0) ..
-        ',"0x0027BE":' .. (hits[0x0027BE] or 0) .. '}'
+    local hit_pcs = {}
+    for pc in pairs(hits) do hit_pcs[#hit_pcs + 1] = pc end
+    table.sort(hit_pcs)
+    local hit_values = {}
+    for _, pc in ipairs(hit_pcs) do
+        hit_values[#hit_values + 1] = string.format('"0x%06X":%d', pc, hits[pc] or 0)
+    end
+    local hit_json = "{" .. table.concat(hit_values, ",") .. "}"
     local first_pcs = {}
     for _, pc in ipairs(item.first_burst_pcs or {}) do first_pcs[#first_pcs + 1] = pc end
     return '{"mode":' .. json_string(item.mode or "continuous") ..
@@ -79,6 +85,13 @@ local function prehistory_json(item)
         ',"pending_consumers":' .. (item.pending_consumers or 0) ..
         ',"active_global_hook":' .. tostring(item.active_global_hook or false) ..
         ',"target_pc_count":' .. (item.target_pc_count or 0) ..
+        ',"source_candidate_count":' .. (item.source_candidate_count or 0) ..
+        ',"installed_hook_count":' .. (item.installed_hook_count or 0) ..
+        ',"hot_candidate_count":' .. (item.hot_candidate_count or 0) ..
+        ',"writer_hook_limit":' .. (item.writer_hook_limit or 0) ..
+        ',"hook_install_errors":' .. (item.hook_install_errors or 0) ..
+        ',"frames_with_burst":' .. (item.frames_with_burst or 0) ..
+        ',"burst_frame_percent":' .. string.format("%.6f", item.burst_frame_percent or 0) ..
         ',"burst_budget":' .. (item.burst_budget or 0) ..
         ',"targeted_callback_count":' .. (item.targeted_callback_count or 0) ..
         ',"producer_hits":' .. hit_json ..

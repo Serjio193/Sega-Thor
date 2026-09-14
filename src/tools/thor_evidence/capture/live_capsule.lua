@@ -16,6 +16,7 @@ end
 local source_path = debug.getinfo(1, "S").source:sub(2)
 local source_dir = source_path:match("^(.*[\\/])") or ""
 local prehistory_mode = os.getenv("OASIS_AUTO67_PREHISTORY_MODE") or "continuous"
+local predecessor_writer_target_path = os.getenv("OASIS_AUTO67_REGISTER_WRITER_TARGETS")
 local predecessor_file = "predecessor_capture.lua"
 if prehistory_mode == "targeted_burst" or prehistory_mode == "targeted_idle" then
     predecessor_file = "predecessor_burst.lua"
@@ -63,8 +64,12 @@ if state_path and state_path ~= "" then
     assert(savestate.load(state_path, true), "AUTO67 state load failed")
     for _ = 1, 3 do emu.frameadvance() end
 end
+local predecessor_targets = predecessor_target_path
+if prehistory_mode == "targeted_burst" or prehistory_mode == "targeted_idle" then
+    predecessor_targets = predecessor_writer_target_path
+end
 predecessor_capture = predecessor_module.create(function() return frame end,
-                                                 predecessor_target_path,
+                                                 predecessor_targets,
                                                  hook_metrics)
 
 for i = 1, discovery_capacity do discovery[i] = {frame = 0, pc = 0} end

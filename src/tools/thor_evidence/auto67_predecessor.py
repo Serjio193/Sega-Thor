@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections import Counter
 from pathlib import Path
 import struct
 from typing import Any
@@ -232,6 +233,39 @@ def register_writes(rom: bytes, pc: int, opcode: int) -> dict[str, Any]:
     if top == 6 or opcode in {0x4E71, 0x4E75, 0x4E73}:
         return {"status": "PROVEN", "mnemonic": "CONTROL_OR_NOP", "writes": []}
     return {"status": "UNKNOWN", "reason": f"unsupported opcode 0x{opcode:04X}"}
+
+
+def register_writer_candidate_report(rom: bytes) -> dict[str, Any]:
+    """Enumerate statically proven A4/A5 writer PCs without runtime oracles."""
+    candidates: dict[int, int] = {}
+    distribution: Counter[str] = Counter()
+    unsupported: Counter[str] = Counter()
+    for pc in range(0, len(rom) - 1, 2):
+        opcode = int.from_bytes(rom[pc:pc + 2], "big")
+        decoded = register_writes(rom, pc, opcode)
+        if decoded.get("status") != "PROVEN":
+            if (opcode >> 12) in {0, 1, 2, 3, 4, 5, 6}:
+                reason = decoded.get("reason", "UNKNOWN")
+                if reason.startswith("unsupported opcode"):
+                    reason = f"UNSUPPORTED_FORM_TOP_{opcode >> 12:X}"
+                unsupported[reason] += 1
+            continue
+        names = {item["register"] for item in decoded.get("writes", [])}
+        mask = (1 if "A4" in names else 0) | (2 if "A5" in names else 0)
+        if not mask:
+            continue
+        candidates[pc] = mask
+        registers = "+".join(name for name in ("A4", "A5") if mask & (1 if name == "A4" else 2))
+        distribution[f"{decoded.get('mnemonic', 'UNKNOWN')}:{registers}"] += 1
+    return {
+        "candidates": candidates,
+        "a4_count": sum(bool(mask & 1) for mask in candidates.values()),
+        "a5_count": sum(bool(mask & 2) for mask in candidates.values()),
+        "unique_count": len(candidates),
+        "distribution": dict(sorted(distribution.items())),
+        "unsupported": dict(sorted(unsupported.items())),
+        "duplicate_pcs": 0,
+    }
 
 
 def _contiguous(records: list[PredecessorRecord], start: int, end: int) -> bool:

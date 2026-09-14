@@ -1383,3 +1383,10 @@ and `auto67_runner.py` launcher expose the mode without changing the
 authoritative runtime architecture. Regression coverage is in
 `tests/thor_evidence_auto67_6r3b_test.py`; the real gate is documented in
 `docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md` and JSON.
+
+`auto67_predecessor.py` now also exposes the reusable static
+`register_writer_candidate_report()` used to generate generic A4/A5 writer
+targets. `tests/thor_evidence_auto67_6r3c_test.py` covers its candidate and
+runtime-configuration gate. The negative generic result is documented in
+`docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md` and
+JSON.

@@ -1,0 +1,103 @@
+{
+  "schema": "oasis.m12.auto67.6r3c.generic-writer-targeting.v1",
+  "baseline": "8a67698dc6cbe9914addbf61aaf973df07a693bb",
+  "result": "NEGATIVE_GENERIC_TARGETING_PERFORMANCE",
+  "scope": {
+    "consumer_pc": "0x0027EC",
+    "consumer_is_runtime_config_oracle": true,
+    "producer_pcs_in_runtime_config": "none",
+    "architecture_changed": false,
+    "auto68_started": false,
+    "source_owned_changed": false,
+    "graph_merge_added": false
+  },
+  "static_candidates": {
+    "a4_count": 16732,
+    "a5_count": 13590,
+    "unique_count": 30042,
+    "duplicate_pcs": 0,
+    "canary_candidates": {
+      "0x002234": {"mask": 2, "registers": ["A5"]},
+      "0x0027BE": {"mask": 1, "registers": ["A4"]}
+    },
+    "distribution": {
+      "ADDQ:A4": 293,
+      "ADDQ:A5": 225,
+      "BIT_IMMEDIATE:A4": 4273,
+      "BIT_IMMEDIATE:A5": 2846,
+      "LEA:A4": 564,
+      "LEA:A5": 559,
+      "MOVE.L:A4": 2850,
+      "MOVE.L:A4+A5": 80,
+      "MOVE.L:A5": 2092,
+      "MOVE.W:A4": 6487,
+      "MOVE.W:A4+A5": 200,
+      "MOVE.W:A5": 4836,
+      "MOVE_STATUS:A4": 310,
+      "MOVE_STATUS:A5": 445,
+      "SCC_OR_QUICK:A4": 1352,
+      "SCC_OR_QUICK:A5": 2056,
+      "SUBQ:A4": 323,
+      "SUBQ:A5": 251
+    },
+    "unsupported_or_truncated": {
+      "UNSUPPORTED_FORM_TOP_0": 77130,
+      "UNSUPPORTED_FORM_TOP_4": 73174,
+      "truncated LEA source": 1225,
+      "truncated MOVE source": 7632
+    }
+  },
+  "performance_matrix": [
+    {"name": "disabled", "frames": 120, "installed_hooks": 0, "p50_ms": 16.0, "p95_ms": 17.0, "p99_ms": 22.0, "max_ms": 23.0, "over_16ms": 94, "over_33ms": 0, "over_50ms": 0},
+    {"name": "R3B targeted idle", "frames": 120, "installed_hooks": 2, "p50_ms": 16.0, "p95_ms": 17.0, "p99_ms": 22.0, "max_ms": 23.0, "over_16ms": 89, "over_33ms": 0, "over_50ms": 0},
+    {"name": "generic prefix", "frames": 60, "installed_hooks": 50, "p50_ms": 16.0, "p95_ms": 19.0, "p99_ms": 34.0, "max_ms": 34.0, "over_16ms": 36, "over_33ms": 1, "over_50ms": 0},
+    {"name": "generic prefix", "frames": 30, "installed_hooks": 200, "p50_ms": 17.0, "p95_ms": 20.0, "p99_ms": 39.0, "max_ms": 39.0, "over_16ms": 29, "over_33ms": 1, "over_50ms": 0},
+    {"name": "generic prefix", "frames": 30, "installed_hooks": 500, "p50_ms": 41.0, "p95_ms": 46.0, "p99_ms": 63.0, "max_ms": 63.0, "over_16ms": 30, "over_33ms": 30, "over_50ms": 1}
+  ],
+  "real_run": {
+    "artifact": "build/auto67-6r3c-targeted-idle-500.json",
+    "frames": 30,
+    "workers_configured": 16,
+    "workers_started": 16,
+    "workers_peak_busy": 16,
+    "leases": 81,
+    "returns": 81,
+    "active_collisions": 11,
+    "duplicate_active_claims": 0,
+    "raw_event_backlog": 0,
+    "raw_event_backlog_structure": "NONEXISTENT",
+    "queue_drops": 0,
+    "db_errors": 0,
+    "installed_hooks": 500,
+    "full_static_candidate_count": 30042,
+    "targeted_callbacks": 215,
+    "hook_install_errors": 0,
+    "hot_candidates": 10,
+    "bursts_started": 0,
+    "bursts_completed": 0,
+    "burst_budget_failures": 0,
+    "frame_max_ms": 63.0,
+    "frames_over_50ms": 1,
+    "avg_seed_age_seconds": 0.0011851851848876794,
+    "max_seed_age_seconds": 0.01599999999598367,
+    "canary_writer_hits_in_prefix": ["0x002234", "0x0027BE"],
+    "semantic_canary_resolution": "NOT_RUN_AFTER_PERFORMANCE_STOP"
+  },
+  "decision": {
+    "full_30042_hook_run": "NOT_RUN_AFTER_500_HOOK_GATE_FAILURE",
+    "reason": "500 statically generated writer hooks already produced a real frame over 50 ms; enabling all 30042 hooks would be an unsafe redundant escalation",
+    "generic_runtime_config": "generated from static candidate file; no producer PC literals in predecessor_burst.lua",
+    "retention_truthfulness": "bounded sidecar paths are advertised only after flush",
+    "next_step": "stop at R3C negative checkpoint; no AUTO68"
+  },
+  "validation": {
+    "focused_python_tests": "5/5 PASS",
+    "python_compile": "PASS",
+    "debug_build": "PASS",
+    "debug_ctest": "189/189 PASS",
+    "release_build": "PASS",
+    "release_ctest": "189/189 PASS",
+    "source_file_limit": "PASS",
+    "git_diff_check": "PASS"
+  }
+}

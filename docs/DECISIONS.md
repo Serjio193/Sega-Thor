@@ -1758,3 +1758,28 @@ not a claim of full-ROM capture coverage.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md`
 and its machine-readable JSON proof.
+
+## ADR-0067.6R3C — generic static register-writer targeting
+**Status:** Negative checkpoint; generic full-ROM targeting rejected by the
+performance gate
+**Date:** 2026-09-14
+
+**Context:** R3B proved the bounded burst semantics around two producer PCs,
+but its runtime target list was not yet generated from the full existing
+static writer set. R3C required removing those runtime literals and measuring
+the generic static candidate set before accepting a broader hook installation.
+
+**Decision:** Reuse `register_writes()` to enumerate statically proven A4/A5
+writer candidates and generate the bounded runtime target file. Keep the Lua
+burst source fail-closed and producer-agnostic. Stop the generic acceptance
+gate after a real 500-hook prefix reached 63 ms maximum frame time and one
+frame over 50 ms. Do not install the remaining 30,042 hooks, redesign the
+capture path, increase SOURCE_OWNED, merge graphs, or begin AUTO68.
+
+**Consequences:** The generic configuration path is proven to be generated and
+contains both canary writer PCs without Lua hard-coding. Generic gameplay
+acceptance is negative at the measured bounded scale. The earlier R3B semantic
+proof remains valid and is not replaced by an unsafe full-ROM run.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md`
+and its machine-readable JSON.

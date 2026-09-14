@@ -3,9 +3,8 @@ local M = {}
 local MAGIC, VERSION, RECORD_BYTES = "O67P", 2, 28
 local HEADER_FORMAT = "<I4I4I4I4I4I4I4I4I4I4I4I4I4I4I4I4I4"
 local RECORD_FORMAT = "<I4I4I4I4I4I4I4"
-local PRODUCERS = {[0x002234] = 2, [0x0027BE] = 1}
 local CONSUMER = 0x0027EC
-local DEFAULT_BUDGET, MAX_SLICES = 64, 16
+local DEFAULT_BUDGET, MAX_SLICES, MAX_DIAGNOSTIC_SAMPLES = 64, 16, 64
 
 local function register(name)
     local ok, value = pcall(emu.getregister, "M68K " .. name)
@@ -18,20 +17,48 @@ local function unregister(id, metrics, name)
     if metrics then metrics.unregister(name, remove) else remove() end
 end
 
-function M.create(frame_reader, _, hook_metrics)
+local function read_targets(path)
+    local targets, pcs, total = {}, {}, 0
+    if not path or path == "" then return targets, pcs, total end
+    local file = io.open(path, "r")
+    if not file then return targets, pcs, total end
+    for line in file:lines() do
+        local pc, mask = line:match("^([%x]+)|(%d+)$")
+        if pc and mask then
+            total = total + 1
+            targets[tonumber(pc, 16)] = tonumber(mask)
+        end
+    end
+    file:close()
+    for pc in pairs(targets) do pcs[#pcs + 1] = pc end
+    table.sort(pcs)
+    return targets, pcs, total
+end
+
+function M.create(frame_reader, target_path, hook_metrics)
     local state = {}
     local frame, epoch, next_id = 0, 0, 1
     local budget = tonumber(os.getenv("OASIS_AUTO67_BURST_BUDGET") or DEFAULT_BUDGET)
         or DEFAULT_BUDGET
     budget = math.max(1, math.min(DEFAULT_BUDGET, budget))
     local allow_burst = os.getenv("OASIS_AUTO67_PREHISTORY_MODE") ~= "targeted_idle"
+    local targets, producer_pcs, file_candidate_count = read_targets(target_path)
+    local source_candidate_count = tonumber(
+        os.getenv("OASIS_AUTO67_WRITER_CANDIDATE_COUNT") or "0") or 0
+    if source_candidate_count <= 0 then source_candidate_count = file_candidate_count end
+    local writer_hook_limit = tonumber(os.getenv("OASIS_AUTO67_WRITER_HOOK_LIMIT") or "0") or 0
     local producer_hooks, global_hook, active = {}, nil, nil
     local slices, completed_by_pc = {}, {}
-    local hits = {[0x002234] = 0, [0x0027BE] = 0}
+    local hits, hot_candidates = {}, {}
     local first_pcs, max_records, completed_records = {}, 0, 0
+    local frame_burst_seen, frames_with_burst, hook_install_errors = false, 0, 0
+    local installed_hook_count = 0
     local metrics = {mode = allow_burst and "targeted_burst" or "targeted_idle", burst_budget = budget,
         targeted_callback_count = 0, global_exec_callbacks = 0,
-        producer_hits = hits, bursts_started = 0, bursts_completed = 0,
+        producer_hits = hits, hot_candidates = hot_candidates,
+        candidate_pc_count = #producer_pcs, source_candidate_count = source_candidate_count,
+        installed_hook_count = 0, writer_hook_limit = writer_hook_limit,
+        hook_install_errors = 0, bursts_started = 0, bursts_completed = 0,
         bursts_budget_exhausted = 0, bursts_overlapping = 0,
         consumer_hits = 0, max_callbacks_in_burst = 0,
         mean_callbacks_per_completed_burst = 0, global_active_us = 0,
@@ -99,7 +126,7 @@ function M.create(frame_reader, _, hook_metrics)
         metrics.global_exec_callbacks = metrics.global_exec_callbacks + 1
         burst.callbacks = burst.callbacks + 1
         if burst.callbacks == 1 then
-            first_pcs[#first_pcs + 1] = address or 0
+            if #first_pcs < MAX_DIAGNOSTIC_SAMPLES then first_pcs[#first_pcs + 1] = address or 0 end
             if address == burst.producer_pc then metrics.boundary_gap = true end
         end
         append(burst, address)
@@ -117,36 +144,57 @@ function M.create(frame_reader, _, hook_metrics)
         if not allow_burst then return end
         if active then
             metrics.bursts_overlapping = metrics.bursts_overlapping + 1
-            active.mask = active.mask | PRODUCERS[producer_pc]
+            active.mask = active.mask | (targets[producer_pc] or 0)
             return
         end
         local burst = {id = next_id, epoch = epoch, producer_pc = producer_pc,
-            mask = PRODUCERS[producer_pc], callbacks = 0, next_sequence = 1,
+            mask = targets[producer_pc], callbacks = 0, next_sequence = 1,
             records = {}, started_clock = os.clock()}
         next_id = next_id + 1
         append(burst, producer_pc)
-        active = burst
-        metrics.bursts_started = metrics.bursts_started + 1
         local function install() return event.on_bus_exec_any(global_callback,
             "AUTO67.6R3B burst", "M68K BUS") end
-        global_hook = hook_metrics and hook_metrics.register("burst_global_exec", install) or install()
+        local ok, id = pcall(function()
+            return hook_metrics and hook_metrics.register("burst_global_exec", install) or install()
+        end)
+        if not ok or not id then
+            hook_install_errors = hook_install_errors + 1
+            metrics.hook_install_errors = hook_install_errors
+            return
+        end
+        active = burst
+        frame_burst_seen = true
+        metrics.bursts_started = metrics.bursts_started + 1
+        global_hook = id
         metrics.active_global_hook = true
     end
 
     local function install_producer(pc)
         local function callback()
             metrics.targeted_callback_count = metrics.targeted_callback_count + 1
-            hits[pc] = hits[pc] + 1
+            hits[pc] = (hits[pc] or 0) + 1
+            hot_candidates[pc] = true
             start(pc)
         end
         local function install() return event.on_bus_exec(callback, pc,
             "AUTO67.6R3B producer", "M68K BUS") end
-        producer_hooks[pc] = hook_metrics and hook_metrics.register("burst_targeted_exec", install) or install()
+        local ok, id = pcall(function()
+            return hook_metrics and hook_metrics.register("burst_targeted_exec", install) or install()
+        end)
+        if ok and id then
+            producer_hooks[pc] = id
+            installed_hook_count = installed_hook_count + 1
+        else
+            hook_install_errors = hook_install_errors + 1
+        end
     end
-    install_producer(0x002234)
-    install_producer(0x0027BE)
+    for _, pc in ipairs(producer_pcs) do install_producer(pc) end
+    metrics.installed_hook_count = installed_hook_count
+    metrics.hook_install_errors = hook_install_errors
 
     function state.set_frame(value)
+        if value ~= frame and frame > 0 and frame_burst_seen then frames_with_burst = frames_with_burst + 1 end
+        if value ~= frame then frame_burst_seen = false end
         frame = value or frame
         epoch = math.floor(frame / 600)
     end
@@ -190,13 +238,20 @@ function M.create(frame_reader, _, hook_metrics)
     function state.snapshot()
         local first = first_pcs[#first_pcs] or 0
         local duty = frame > 0 and metrics.global_active_us / (frame * 16666.667) or 0
+        local frame_count = frames_with_burst + (frame_burst_seen and 1 or 0)
+        local hot_count = 0
+        for _ in pairs(hot_candidates) do hot_count = hot_count + 1 end
         metrics.global_duty_cycle = duty
         return {mode = metrics.mode, ring_capacity = budget,
             records_observed = metrics.global_exec_callbacks, ring_overwrites = 0,
             ring_wrapped = false, frozen_slices = #slices, flushed_slices = state.lookup_count(),
             consumer_joins = metrics.bursts_completed, unjoined_consumers = metrics.bursts_budget_exhausted,
             pending_consumers = 0, active_global_hook = metrics.active_global_hook,
-            target_pc_count = 2, burst_budget = budget,
+            target_pc_count = #producer_pcs, source_candidate_count = source_candidate_count,
+            installed_hook_count = installed_hook_count, hot_candidate_count = hot_count,
+            writer_hook_limit = writer_hook_limit, hook_install_errors = hook_install_errors,
+            frames_with_burst = frame_count,
+            burst_frame_percent = frame > 0 and (frame_count * 100.0 / frame) or 0,
             targeted_callback_count = metrics.targeted_callback_count, producer_hits = hits,
             bursts_started = metrics.bursts_started, bursts_completed = metrics.bursts_completed,
             bursts_budget_exhausted = metrics.bursts_budget_exhausted,

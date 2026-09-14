@@ -8818,3 +8818,34 @@ compilation passed, Debug and Release builds passed, Debug and Release CTest
 passed 189/189 each, the source-limit gate passed for 650 governed files, and
 `git diff --check` passed. Evidence is in
 `docs/reports/THOR_M12_AUTO67_6R3B_TARGETED_BURST_FEASIBILITY.md` and JSON.
+
+# 2026-09-14 — AUTO67.6R3C generic register-writer targeting — NEGATIVE
+
+TASK: Starting from `8a67698dc6cbe9914addbf61aaf973df07a693bb`, generate
+register-writer hooks from the existing static M68K register-definition
+decoder. Do not hard-code the two R3B producer PCs, change architecture,
+SOURCE_OWNED, worker/DB design, graph merging, or start AUTO68.
+
+IMPLEMENTATION: Added the bounded static writer report and generated target
+file. `predecessor_burst.lua` now reads the generated target set, exposes the
+full static candidate count separately from the installed bounded prefix, and
+serializes dynamic hit/installation metrics without producer literals. Added
+focused regression coverage for candidate de-duplication, canary inclusion,
+hard-coded-producer absence, and truthful real-run metrics.
+
+REAL RESULT: The canonical QuickSave1 BizHawk run with 16 prestarted workers
+and 500 generated writer hooks returned 0. Static candidates were A4 16,732,
+A5 13,590, unique 30,042, duplicate PCs 0; both canary writers were present.
+All 500 hooks installed, 215 callbacks fired and 10 candidates were hot. The
+run had 81 leases/returns, peak busy 16, 11 active collisions, zero duplicate
+active claims, raw backlog `0 / NONEXISTENT`, queue drops 0 and DB errors 0.
+Frame p50/p95/p99/max was 41/46/63/63 ms, with 30 frames over 33 ms and one
+over 50 ms. This crosses the gameplay gate, so the full 30,042-hook set and a
+generic burst semantic run were not started. Result is NEGATIVE, not PASS.
+
+CHECKS: R3C focused tests plus the existing R3B regression passed 5/5, Python
+compilation passed, Debug and Release builds passed, Debug and Release CTest
+passed 189/189 each, the source-size gate passed, and `git diff --check`
+passed. Evidence is in
+`docs/reports/THOR_M12_AUTO67_6R3C_GENERIC_REGISTER_WRITER_TARGETING.md` and
+JSON.
