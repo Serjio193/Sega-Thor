@@ -18,6 +18,7 @@ from auto67_materializer import register_provenance_targets
 from auto67_predecessor import register_writer_candidate_report
 from auto67_persistence import LivePersistenceSink
 from auto67_status import StatusPublisher
+from auto67_transport import PreDispatchTransport
 
 
 def run_live(args: argparse.Namespace) -> dict[str, Any]:
@@ -90,7 +91,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     })
     command = [str(emulator), f"--lua={lua}", str(rom)]
     started = time.monotonic()
-    seen_sequence = -1
+    transport = PreDispatchTransport()
     launcher_log = output.with_suffix(".launcher.log")
     view_path = output.with_suffix(".view.json")
     view_mode = "none" if args.no_view else args.view_mode
@@ -114,10 +115,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                 dispatcher.metrics["capture_poll_count"] += 1
                 if dispatcher.capsule_pool is not None:
                     dispatcher.capsule_pool.sync(lua_status.get("capsules", []))
-                for event in lua_status.get("discovery", lua_status.get("events", [])):
-                    if int(event.get("seq", -1)) > seen_sequence:
-                        seen_sequence = int(event["seq"])
-                        dispatcher.ingest(event)
+                for event in transport.consume(lua_status):
+                    dispatcher.ingest(event)
             if lua_status:
                 publisher.publish(lua_status)
             time.sleep(args.poll_interval)
@@ -141,6 +140,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "session_seconds": elapsed, "workers_configured": args.workers,
               "dispatcher": dispatcher.snapshot(), "lua": lua_final,
               "raw_event_backlog": 0, "raw_event_backlog_structure": "NONEXISTENT",
+              "predispatch_transport": transport.snapshot(),
               "launcher_log": str(launcher_log), "status_path": str(status_path),
               "prehistory_config": {"ring_capacity": 4096,
                                      "mode": args.prehistory_mode,

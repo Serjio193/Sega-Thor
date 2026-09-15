@@ -1439,3 +1439,10 @@ bounded transport ring across the status poll boundary and preserves event
 order and occurrence identity. The two rings are not merged and neither is a
 backlog. `tests/thor_evidence_auto67_ring_clean_test.py` is the deterministic
 Python/Lua-contract fixture for this checkpoint.
+
+`src/tools/thor_evidence/auto67_transport.py` owns the bounded pre-dispatch
+status cursor. It deduplicates replaceable Lua snapshots by epoch/sequence/
+occurrence identity and passes current records directly to the Dispatcher;
+`tests/thor_evidence_auto67_predispatch_transport_clean_test.py` covers epoch
+rollover, duplicate/stale rejection, legacy key compatibility, and the
+no-backlog boundary.

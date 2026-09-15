@@ -125,6 +125,17 @@ file/poll boundary. It owns `ring_start`, `ring_count`, `capacity` and
 pending-event FIFO or an unbounded backlog. The predecessor/prehistory ring is
 outside this boundary.
 
+### AUTO67 pre-dispatch transport boundary
+
+`auto67_transport.py::PreDispatchTransport` consumes the replaceable Lua
+status snapshot before Python calls `Dispatcher.ingest`. It keeps one identity
+cursor `(epoch, seq, occurrence_id)`, synthesizes the occurrence identifier
+only for legacy records that omit it, and returns unseen records directly to
+the caller. Duplicate, stale, or malformed records are counted and dropped;
+raw events are never retained in a transport queue. The legacy `events` and
+`discovery` keys are input aliases only. Transport validation does not inspect
+known/proven/frontier state and does not choose or claim work.
+
 ## AUTO67.4 frozen capsule worker materialization
 
 `capture/live_capsule.lua` writes versioned O67V v2 capsules with a 24-byte

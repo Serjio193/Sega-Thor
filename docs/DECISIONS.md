@@ -1887,3 +1887,24 @@ CapsulePool, Cartographer, MAP-1, Walker-1, AUTO68, SOURCE_OWNED and C++ are
 unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_RING_CLEAN_1.md`.
+
+# ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1 — Identity cursor at the status boundary
+**Status:** Accepted for M12 AUTO67
+**Date:** 2026-09-15
+
+**Context:** The launcher previously tracked only one process-local `seq` while
+reading replaceable Lua snapshots. That left epoch rollover implicit and made
+the pre-dispatch transport contract depend on ad-hoc runner code.
+
+**Decision:** Put snapshot consumption in `PreDispatchTransport`. Keep one
+identity cursor `(epoch, seq, occurrence_id)`, accept only unseen monotonic
+records, and drop duplicate, stale, or malformed records. Support `events` and
+legacy `discovery` as input aliases. Return records immediately to Dispatcher;
+do not retain raw events, perform semantic lookup, or claim work in transport.
+
+**Consequences:** Epoch changes cannot be lost when sequence numbers restart,
+and replaceable snapshot loss remains intentional and bounded. Dispatcher,
+Lua rings, predecessor capture, Worker, CapsulePool, Cartographer, MAP-1,
+SOURCE_OWNED and production runtime behavior remain unchanged.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.

@@ -8972,3 +8972,24 @@ unchanged.
 
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_RING_CLEAN_1.md` and its JSON
 counterpart.
+
+# 2026-09-15 — M12 AUTO67 pre-dispatch transport cleanup — PASS (bounded)
+
+TASK: Starting from `466736e6ee1a4a45f957b423ff08f3499cdc3a04`, make the
+replaceable Lua-status-to-Dispatcher boundary explicit without changing the
+Dispatcher, either live ring, predecessor capture, Worker, or persistence
+semantics.
+
+IMPLEMENTATION: Added `PreDispatchTransport`, which keeps only one
+`(epoch, seq, occurrence_id)` cursor, accepts unseen records from the bounded
+`events`/legacy `discovery` snapshot aliases, and drops duplicate, stale, or
+malformed records. The runner no longer uses a sequence-only `seen_sequence`
+gate. No raw event queue or semantic state is introduced.
+
+VALIDATION: Focused pre-dispatch transport, Ring-clean, Worker-clean, AUTO67
+and DISPATCHER-1 tests pass. Build, CTest, source-limit and diff-check results
+are recorded in the published report. SOURCE_OWNED and all prohibited M12
+runtime/graph paths remain unchanged.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md` and
+its JSON counterpart.
