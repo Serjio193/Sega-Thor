@@ -1,0 +1,50 @@
+{
+  "schema": "oasis.m12.auto67.predispatch-transport-clean.v1",
+  "date": "2026-09-15",
+  "baseline": "466736e6ee1a4a45f957b423ff08f3499cdc3a04",
+  "implementation_sha": "e54bf12",
+  "result": "PASS",
+  "transport": {
+    "class": "PreDispatchTransport",
+    "cursor": ["epoch", "seq", "occurrence_id"],
+    "input_keys": ["events", "discovery"],
+    "retains_raw_events": false,
+    "raw_event_backlog": 0,
+    "semantic_lookup": false,
+    "dispatch_claim": false,
+    "sequence_only_gate_removed": true
+  },
+  "scope_unchanged": [
+    "Lua transport ring", "Python RollingWindow", "Dispatcher",
+    "Worker", "predecessor capture", "CapsulePool", "persistence",
+    "Cartographer", "MAP-1", "Walker-1", "AUTO68", "C++", "SOURCE_OWNED"
+  ],
+  "proof": {
+    "focused_tests": 55,
+    "epoch_rollover": "PASS",
+    "duplicate_stale_malformed_rejection": "PASS",
+    "legacy_discovery_alias": "PASS",
+    "no_backlog_or_semantic_state": "PASS"
+  },
+  "source_owned": {
+    "before": 1475600,
+    "after": 1475600,
+    "delta": 0,
+    "rom_size": 3145728
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "release_build": "PASS",
+    "debug_ctest": "193/193 PASS",
+    "release_ctest": "193/193 PASS",
+    "source_limit": "PASS",
+    "git_diff_check": "PASS",
+    "github_ci": "UNAVAILABLE",
+    "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY"
+  },
+  "publication": {
+    "head_equals_origin_main": true,
+    "implementation_sha": "e54bf12",
+    "report_commit": "SUBSEQUENT_PUBLICATION_COMMIT"
+  }
+}
