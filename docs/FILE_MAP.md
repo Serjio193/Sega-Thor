@@ -1471,3 +1471,5 @@ it with `--chain-db` supports compatibility mode. Regression coverage is in
 the writer-thread ownership, all-step canonicalization and drop metrics in
 `tests/thor_evidence_auto67_cartographer_seam_test.py` and the report
 `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` plus JSON.
+The follow-up removes live-chain output and is recorded in
+`docs/reports/THOR_M12_AUTO67_LEGACY_CHAIN_CLEAN_1.md` plus JSON.

@@ -13,9 +13,11 @@ try:
     from .cartographer import Cartographer
     from .identity import ROM_SHA
 except ImportError:
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from auto67_cartographer import candidate_bundle, import_ref
     from cartographer import Cartographer
-    from identity import ROM_SHA
+    from thor_evidence.identity import ROM_SHA
 
 
 MAP_QUEUE_CAPACITY = 16384

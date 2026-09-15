@@ -1,3 +1,17 @@
+# 2026-09-15 — M12 AUTO67 legacy-chain clean — PASS (bounded)
+
+TASK: Remove the legacy `live_chain`/`--chain-db` output from the AUTO67 live
+path, starting at `59cc7c311d8391d7f2c06eb00af5c8cd16243fa3`.
+
+RESULT: PASS. Worker submits the local-chain object directly to `LiveMapSink`.
+The active path has one bounded map queue and one Cartographer writer; no Store,
+live-chain database, legacy throughput accounting or chain-store result field
+remains. The historical descriptor bridge is isolated as
+`auto67_legacy_persistence.py` for offline AUTO67.3/AUTO67.4 consumers.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_LEGACY_CHAIN_CLEAN_1.md` and its JSON
+counterpart.
+
 # 2026-09-15 — M12 AUTO67 Cartographer seam 1R1 — PASS (bounded)
 
 TASK: Repair complete local-chain ingest and single-thread MAP-1 ownership from
