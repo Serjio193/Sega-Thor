@@ -1,3 +1,19 @@
+# 2026-09-15 — M12 AUTO67 Cartographer seam 1R1 — PASS (bounded)
+
+TASK: Repair complete local-chain ingest and single-thread MAP-1 ownership from
+baseline `335bb289fecd773740555f11c4b0a6a0a8554fe9`.
+
+RESULT: PASS. The adapter scans every local-chain step, emits the complete
+canonical accepted set with deterministic stable identity, retains invalid
+siblings locally, and deduplicates ROM instruction nodes. No-proof chains are
+processed without incrementing `map_fragments_dropped`; only bounded queue loss
+increments that metric. LivePersistenceSink now creates, uses and closes
+Cartographer on its one writer thread, while snapshots return cached metrics.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` and its JSON
+counterpart. Implementation commit:
+`509d815a2f087a6d8560481013f5ebbe5837189b`.
+
 # 2026-09-15 — M12 AUTO67 Cartographer seam — PASS (bounded)
 
 TASK: Connect the clean AUTO67 Worker output to the existing MAP-1 Cartographer

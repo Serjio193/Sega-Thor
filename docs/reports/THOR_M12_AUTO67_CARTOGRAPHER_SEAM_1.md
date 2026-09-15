@@ -1,69 +1,76 @@
-# M12-AUTO67-CARTOGRAPHER-SEAM-1
+# M12-AUTO67-CARTOGRAPHER-SEAM-1R1
 
 **Date:** 2026-09-15
-**Baseline:** `199c8d43454d761a2000026a83c20a06f7c4d00d`
+**Baseline:** `335bb289fecd773740555f11c4b0a6a0a8554fe9`
 **Classification:** `PASS_AUTO67_CARTOGRAPHER_SEAM`
 
-## Scope and boundary
+## Scope
 
-This checkpoint connects the existing AUTO67 worker result to the existing MAP-1
-Cartographer. The upstream path remains `CPU → Lua ring → PreDispatchTransport →
-RollingWindow → Dispatcher → one mailbox → Worker`; no Worker global lookup or
-classification was added. The Worker now emits one bounded
-`oasis.m12.auto67.local-chain.v1` result. The downstream proof gate is the only
-place that can create a MAP-1 bundle.
+This revision repairs only the remaining seam correctness issues. The upstream
+`CPU → Lua ring → PreDispatchTransport → RollingWindow → Dispatcher → mailbox →
+Worker` path, local-chain Worker role, proof contract type, CapsulePool,
+predecessor resolver, MAP-1 identity semantics, Walker-1 and SOURCE_OWNED are
+unchanged.
 
-The Worker result contains the occurrence, bounded chain steps, observations,
-causal facts, register provenance and capture diagnostics, plus the existing
-`investigation_id` and `lease_id`. It contains no `PROVEN`, `NEW`, `DUPLICATE`,
-`KNOWN`, `CONFLICT` or `MAP_DELTA` decision.
+## Complete local-chain ingest
 
-## Proof gate and durable identity
+`candidate_bundle()` scans every `chain_steps` entry, retains every valid
+`REGISTER_REACHING_DEFINITION_V1` step, deduplicates nodes and emits all stable
+edges in deterministic order. Invalid steps remain in the Worker local-chain
+diagnostics and do not block valid siblings.
 
-Only `REGISTER_REACHING_DEFINITION` is supported. A step is accepted only when
-producer and consumer PCs are valid, the register is `A4` or `A5`, both
-producer/consumer occurrences are present in the same epoch, and
-`evidence.complete_interval == true` with
-`evidence.intervening_register_write == false`. Temporal adjacency and runtime
-observations cannot promote a node.
+The two-step proof contains:
 
-An accepted step emits two global `ROM_INSTRUCTION` nodes and one
-`REGISTER_REACHING_DEFINITION:<register>` edge, all `PROVEN`. Node and edge IDs
-are content-addressed from stable ROM PCs/register/scope. Runtime occurrence,
-frame, lease, worker and investigation IDs are absent from durable identity.
-Lineage is `AUTO67_LOCAL_CHAIN` plus the proof contract/schema and stable
-fingerprint. The import identity is `auto67-live:<stable_bundle_hash>`.
-Bundles contain no frontiers and do not create live frontiers.
+- `0x2234 --A5--> 0x27EC`
+- `0x27BE --A4--> 0x27EC`
 
-## Merge evidence
+The candidate contains **3 unique `ROM_INSTRUCTION` nodes** and **2 `PROVEN`
+edges**, with relations `REGISTER_REACHING_DEFINITION:A4` and
+`REGISTER_REACHING_DEFINITION:A5`.
 
-The synthetic MAP-1 probe and seam tests produced the following deterministic
-results:
+The stable hash covers the complete sorted accepted dependency set. Runtime
+occurrence, frame, lease, worker and investigation metadata are excluded. The
+same A4+A5 set in reversed step order and a different runtime occurrence yields
+the same bundle, hash and `auto67-live:<stable_bundle_hash>` import reference.
+Exact replay has all durable delta fields zero, unchanged graph hash and one
+`map_import` row; the different occurrence also has zero durable delta.
 
-| case | delta | graph hash / import |
-|---|---|---|
-| first valid A5 (`0x002234 → 0x0027EC`) | `new_nodes=2`, `new_edges=1`, promotions/conflicts/frontiers `0` | `fd3dd919d1100c9168706eedd6b3a19a768948f31c2356ffb930956ba52dc896`; `auto67-live:deaaffd8f44ce13ce90a2f87abb41beb3ab45ba3362b65465690f4e55bb42683` |
-| exact replay | all delta counts `0` | same graph hash |
-| same chain, different occurrence | stable hash/bundle unchanged; zero map delta | no occurrence bloat |
-| distinct A4 relation | `new_nodes=0`, `new_edges=1` | `fcb90c7ed1ed1620b04c7ed70d394ab2c750a0e25e45f32850a2788164cc491a` |
-| incomplete/intervening/malformed/unresolved | no candidate; no promotion | no frontiers |
+## Drop semantics and thread ownership
 
-Ten repeated occurrences of one stable chain leave exactly two nodes, one edge
-and one `map_import` row. Map-only operation (`--map-db` without `--chain-db`) and
-map-plus-legacy compatibility both pass. The existing `LivePersistenceSink`
-remains the single bounded queue and single `auto67-chain-writer` thread; map
-merge and legacy `live_chain` persistence share that writer.
+A no-proof local chain increments `chains_without_accepted_proof` and leaves
+`map_fragments_dropped` at zero. Only actual bounded queue loss increments
+`map_fragments_dropped`; the queue-full regression produces one local-chain drop
+without adding overflow storage. Normal acceptance runs report zero dropped map
+fragments.
+
+`LivePersistenceSink` now receives only `map_db` and ROM SHA. Its sole writer
+thread creates, uses, merges and closes Cartographer. Cartographer uses normal
+SQLite thread checks. `snapshot()` returns cached graph hash and map metrics
+under the existing sink lock and performs no Cartographer or SQLite query. There
+is still exactly one bounded queue and one writer thread. Map-only and
+map-plus-legacy-chain modes both pass.
+
+## Reported proof fields
+
+- `final_snapshot_ingested: true`
+- `final_only_occurrences_proven: true`
+- `shutdown_after_final_ingest: PASS`
+- `state_option_audit: REMOVED`
+- `explicit_occurrence_id_consistency: PASS`
 
 ## Tests and validation
 
-- New Cartographer seam tests: **11/11 PASS** (local Worker result, proof accept/reject, first merge/replay, occurrence stability, distinct knowledge, unproven retention, no bloat/frontiers, map-only/compatibility, Worker boundary and one queue/thread).
-- Focused AUTO67/MAP-1 regressions: **94/94 PASS**, including mailbox, Dispatcher-1, Worker, Ring, PreDispatchTransport and Walker-1 coverage.
+- Cartographer seam tests: **18/18 PASS**.
+- Focused AUTO67/MAP-1 regressions: **101/101 PASS**.
 - Windows Debug CTest: **195/195 PASS**.
 - Windows Release CTest: **195/195 PASS**.
 - Source-limit: PASS; **666** governed files, all at or below 500 lines.
 - `git diff --check`: PASS.
 - SOURCE_OWNED: `1,475,600 / 3,145,728`, delta `0`; unchanged.
-- GNU/Linux-equivalent build/link: **NOT_REQUIRED_PYTHON_ONLY**; no CMake target, link order or portability-sensitive native code changed.
-- GitHub CI: **success** (`34965258507`) for final HEAD.
+- GNU/Linux-equivalent build/link: **NOT_REQUIRED_PYTHON_ONLY**.
+- GitHub CI in this committed report: **PENDING_EXTERNAL_VERIFICATION**; the
+  prior receipt is intentionally not rewritten into a new SHA. The previous
+  SEAM-1 receipt `34965486208` belongs to baseline SHA
+  `335bb289fecd773740555f11c4b0a6a0a8554fe9`.
 
-Implementation commit: `a5134a6`.
+Implementation commit: `509d815a2f087a6d8560481013f5ebbe5837189b`.

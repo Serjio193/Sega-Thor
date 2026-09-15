@@ -1,68 +1,29 @@
 {
-  "schema": "oasis.m12.auto67.cartographer-seam-report.v1",
-  "checkpoint": "M12-AUTO67-CARTOGRAPHER-SEAM-1",
-  "baseline": "199c8d43454d761a2000026a83c20a06f7c4d00d",
+  "schema": "oasis.m12.auto67.cartographer-seam-report.v2",
+  "checkpoint": "M12-AUTO67-CARTOGRAPHER-SEAM-1R1",
+  "baseline": "335bb289fecd773740555f11c4b0a6a0a8554fe9",
   "classification": "PASS_AUTO67_CARTOGRAPHER_SEAM",
-  "implementation_sha": "a5134a68c395d9e44eacfffde91f40e8d4dce368",
-  "local_chain_schema": "oasis.m12.auto67.local-chain.v1",
-  "proof_contract": "REGISTER_REACHING_DEFINITION_V1",
+  "implementation_sha": "509d815a2f087a6d8560481013f5ebbe5837189b",
   "final_snapshot_ingested": true,
   "final_only_occurrences_proven": true,
   "shutdown_after_final_ingest": "PASS",
   "state_option_audit": "REMOVED",
   "explicit_occurrence_id_consistency": "PASS",
-  "worker_global_classification": false,
-  "worker_map_queries": false,
-  "durable_nodes": ["ROM_INSTRUCTION"],
-  "durable_relation": "REGISTER_REACHING_DEFINITION:<register>",
-  "runtime_identity_excluded": ["occurrence", "frame", "lease", "worker", "investigation"],
-  "lineage": "AUTO67_LOCAL_CHAIN + proof contract/schema + stable dependency fingerprint",
-  "import_ref_prefix": "auto67-live:",
+  "proof_contract": "REGISTER_REACHING_DEFINITION_V1",
+  "all_valid_steps_survive": true,
+  "invalid_steps_block_valid": false,
+  "multi_step_bundle": {
+    "unique_rom_instruction_nodes": 3,
+    "proven_edges": 2,
+    "relations": ["REGISTER_REACHING_DEFINITION:A4", "REGISTER_REACHING_DEFINITION:A5"]
+  },
+  "mixed_validity": {"durable_edges": 1, "frontiers": 0, "local_steps_retained": 2},
+  "order_independent_identity": {"same_bundle": true, "same_hash": true, "same_import_ref": true},
+  "multi_step_replay": {"positive_first_delta": true, "replay_delta_all_zero": true, "different_occurrence_delta_all_zero": true, "graph_hash_unchanged": true, "map_import_count_unchanged": true},
+  "drop_metrics": {"no_proof_chains_without_accepted_proof": 1, "no_proof_map_fragments_dropped": 0, "queue_full_map_fragments_dropped": 1, "normal_acceptance_map_fragments_dropped": 0},
+  "writer_thread_ownership": {"cartographer_constructed_in_writer": true, "merge_in_writer": true, "close_in_writer": true, "snapshot_queries_cartographer": false, "sqlite_check_same_thread_default": true},
+  "persistence": {"one_bounded_queue": true, "one_writer_thread": true, "map_only": true, "legacy_chain_compatibility": true},
   "frontiers_created": 0,
-  "first_merge": {
-    "new_nodes": 2,
-    "new_edges": 1,
-    "promoted_nodes": 0,
-    "promoted_edges": 0,
-    "new_frontiers": 0,
-    "resolved_frontiers": 0,
-    "new_conflicts": 0,
-    "component_joins": 0,
-    "import_ref": "auto67-live:deaaffd8f44ce13ce90a2f87abb41beb3ab45ba3362b65465690f4e55bb42683",
-    "graph_hash": "fd3dd919d1100c9168706eedd6b3a19a768948f31c2356ffb930956ba52dc896"
-  },
-  "exact_replay": {
-    "delta_all_zero": true,
-    "graph_hash": "fd3dd919d1100c9168706eedd6b3a19a768948f31c2356ffb930956ba52dc896"
-  },
-  "different_occurrence_same_chain": {
-    "stable_bundle_unchanged": true,
-    "occurrence_bloat": false
-  },
-  "distinct_chain": {
-    "new_nodes": 0,
-    "new_edges": 1,
-    "graph_hash": "fcb90c7ed1ed1620b04c7ed70d394ab2c750a0e25e45f32850a2788164cc491a"
-  },
-  "unproven_chain": {
-    "promotion": false,
-    "frontier_created": false
-  },
-  "persistence": {
-    "one_bounded_queue": true,
-    "one_writer_thread": true,
-    "map_only": true,
-    "legacy_chain_compatibility": true
-  },
-  "tests": {
-    "new_seam": "11/11 PASS",
-    "focused_auto67_map1": "94/94 PASS",
-    "debug_ctest": "195/195 PASS",
-    "release_ctest": "195/195 PASS",
-    "source_limit": "666 governed files <= 500 lines",
-    "git_diff_check": "PASS",
-    "source_owned": {"bytes": 1475600, "capacity": 3145728, "delta": 0},
-    "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY",
-    "github_ci": {"status": "completed", "conclusion": "success", "run_id": 34965258507}
-  }
+  "source_owned": {"bytes": 1475600, "capacity": 3145728, "delta": 0},
+  "tests": {"seam": "18/18 PASS", "focused_auto67_map1": "101/101 PASS", "debug_ctest": "195/195 PASS", "release_ctest": "195/195 PASS", "source_limit": "666 governed files <= 500 lines", "git_diff_check": "PASS", "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY", "github_ci": "PENDING_EXTERNAL_VERIFICATION", "prior_seam1_ci": {"run_id": 34965486208, "head_sha": "335bb289fecd773740555f11c4b0a6a0a8554fe9", "conclusion": "success"}}
 }
