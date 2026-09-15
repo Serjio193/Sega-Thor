@@ -1,3 +1,26 @@
+# 2026-09-15 — M12 AUTO67 LIVE-MAP-1 — PASS (real runtime)
+
+TASK: Prove the completed AUTO67 live path against the canonical USA ROM and
+QuickSave1 BizHawk runtime without changing production architecture.
+
+RESULT: PASS_LIVE_RUNTIME_MAP_GROWTH. A fresh MAP-1 SQLite database received
+real Lua observations through PreDispatchTransport, RollingWindow, Dispatcher,
+Worker local chains and the single LiveMapSink writer. PASS A produced 16
+accepted proof candidates and durable growth of 8 ROM instruction nodes and 7
+PROVEN register-reaching-definition edges, with zero queue drops, write errors,
+conflicts or ownership changes. PASS B replayed the same state against the same
+database with six accepted candidates and zero durable delta; the known
+0x0027D2/C00004 event remained observable.
+
+BOTTLENECK: BizHawk/Lua targeted hook dispatch dominates runtime cost. PASS A
+frameadvance was 690 ms p50 versus 16 ms in the no-capture control, with
+159,210 targeted execution callbacks over 24,007 target PCs. Python dispatch
+and SQLite were not the stall (38 us dispatch p50; 1.36 s total Worker CPU).
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_LIVE_MAP_1.md` and its JSON counterpart;
+runtime artifacts remain ignored under `build/`. No production source,
+SOURCE_OWNED bytes, or architecture boundary changed.
+
 # 2026-09-15 — M12 AUTO67 legacy-chain clean — PASS (bounded)
 
 TASK: Remove the legacy `live_chain`/`--chain-db` output from the AUTO67 live
