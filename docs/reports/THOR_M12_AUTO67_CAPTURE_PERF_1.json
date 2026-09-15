@@ -1,0 +1,297 @@
+{
+  "baseline_sha": "67a49df5fc49de11e416852a70ccf93580447180",
+  "bizhawk": {
+    "executable": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\EmuHawk.exe",
+    "frames_per_run": 60,
+    "lua": "src/tools/thor_evidence/capture/live_capsule.lua",
+    "savestate": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\Genesis\\State\\Beyond Oasis (U) [!].Genplus-gx.QuickSave1.State",
+    "version": "2.11.1 / GenPlus-gx"
+  },
+  "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "capsule_scaling_followup": {
+    "reason": "C is near A; max-live-captures 1/4/16 matrix not required by checkpoint",
+    "required": false
+  },
+  "classification": "PASS_GLOBAL_EXEC_ANY_BOTTLENECK",
+  "classification_evidence": {
+    "A_p50_us": 17000.0,
+    "B_over_D_p50": 0.9568567026194145,
+    "B_p50_us": 621000.0,
+    "C_over_A_p50": 1.0,
+    "C_p50_us": 17000.0,
+    "D_p50_us": 649000.0,
+    "conclusion": "B reproduces most of D while C remains near A; continuous event.on_bus_exec_any is dominant.",
+    "global_records_per_frame_B": 9386.516666666666,
+    "global_records_per_frame_D": 9386.516666666666
+  },
+  "common_command": "python src/tools/thor_evidence/auto67_runner.py --rom \"C:\\Github\\Sega-Thor\\local-roms\\Beyond Oasis (USA).md\" --emulator \"C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\EmuHawk.exe\" --lua \"C:\\Github\\Sega-Thor\\src\\tools\\thor_evidence\\capture\\live_capsule.lua\" --workers 16 --window 256 --worker-delay 0.003 --poll-interval 0.05 --max-frames 60 --capture-mode continuous --view-mode none",
+  "comparison_table": [
+    {
+      "frame_max_us": 26000.0,
+      "frame_p50_us": 17000.0,
+      "frame_p95_us": 17000.0,
+      "frame_p99_us": 26000.0,
+      "global_exec_callbacks": 0,
+      "mode": "A",
+      "target_exec": 0,
+      "target_write": 0
+    },
+    {
+      "frame_max_us": 715000.0,
+      "frame_p50_us": 621000.0,
+      "frame_p95_us": 707000.0,
+      "frame_p99_us": 715000.0,
+      "global_exec_callbacks": 563191,
+      "mode": "B",
+      "target_exec": 0,
+      "target_write": 0
+    },
+    {
+      "frame_max_us": 42000.0,
+      "frame_p50_us": 17000.0,
+      "frame_p95_us": 28000.0,
+      "frame_p99_us": 42000.0,
+      "global_exec_callbacks": 0,
+      "mode": "C",
+      "target_exec": 5645,
+      "target_write": 1335
+    },
+    {
+      "frame_max_us": 733000.0,
+      "frame_p50_us": 649000.0,
+      "frame_p95_us": 723000.0,
+      "frame_p99_us": 733000.0,
+      "global_exec_callbacks": 563191,
+      "mode": "D",
+      "target_exec": 5645,
+      "target_write": 1791
+    }
+  ],
+  "interpretation_correction": {
+    "hook_metrics_predecessor_global_exec_calls": "not used; predecessor.records_observed is the actual global execution-hook count",
+    "meaning": "lookup candidates used by continuous predecessor join_write(), not 24007 targeted_bus_exec registrations",
+    "target_pc_count": 24007
+  },
+  "live_map_context": {
+    "final_sha": "67a49df5fc49de11e416852a70ccf93580447180",
+    "github_actions": {
+      "conclusion": "success",
+      "run": 35006780426,
+      "status": "completed"
+    }
+  },
+  "runs": {
+    "A_minimal_live_capture": {
+      "callback_self_time_us_per_frame": {
+        "count": 60,
+        "max": 3000.0,
+        "min": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 3000.0
+      },
+      "callbacks_per_frame": {
+        "count": 60,
+        "max": 64,
+        "min": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 64
+      },
+      "discovery_bus_write_calls": 128,
+      "frameadvance_us": {
+        "count": 60,
+        "max": 26000.0,
+        "min": 6000.0,
+        "p50": 17000.0,
+        "p90": 17000.0,
+        "p95": 17000.0,
+        "p99": 26000.0
+      },
+      "frames": 60,
+      "predecessor": {
+        "active_global_hook": false,
+        "hook_active_count": 0,
+        "mode": "disabled",
+        "records_observed": 0,
+        "records_per_frame": 0.0,
+        "target_pc_count": 0
+      },
+      "session_seconds": 3.514999999984866,
+      "targeted_bus_exec": {
+        "calls": 0,
+        "registrations": 0,
+        "unregistrations": 0
+      },
+      "targeted_bus_write": {
+        "calls": 0,
+        "registrations": 0,
+        "unregistrations": 0
+      }
+    },
+    "B_global_prehistory_only": {
+      "callback_self_time_us_per_frame": {
+        "count": 60,
+        "max": 3000.0,
+        "min": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 3000.0
+      },
+      "callbacks_per_frame": {
+        "count": 60,
+        "max": 64,
+        "min": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 64
+      },
+      "discovery_bus_write_calls": 128,
+      "frameadvance_us": {
+        "count": 60,
+        "max": 715000.0,
+        "min": 596000.0,
+        "p50": 621000.0,
+        "p90": 703000.0,
+        "p95": 707000.0,
+        "p99": 715000.0
+      },
+      "frames": 60,
+      "predecessor": {
+        "active_global_hook": false,
+        "hook_active_count": 0,
+        "mode": "continuous",
+        "records_observed": 563191,
+        "records_per_frame": 9386.516666666666,
+        "target_pc_count": 24007
+      },
+      "session_seconds": 41.75,
+      "targeted_bus_exec": {
+        "calls": 0,
+        "registrations": 0,
+        "unregistrations": 0
+      },
+      "targeted_bus_write": {
+        "calls": 0,
+        "registrations": 0,
+        "unregistrations": 0
+      }
+    },
+    "C_capsule_hooks_only": {
+      "callback_self_time_us_per_frame": {
+        "count": 60,
+        "max": 4000.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p90": 2000.0,
+        "p95": 3000.0,
+        "p99": 4000.0
+      },
+      "callbacks_per_frame": {
+        "count": 60,
+        "max": 363,
+        "min": 0,
+        "p50": 45,
+        "p90": 362,
+        "p95": 363,
+        "p99": 363
+      },
+      "discovery_bus_write_calls": 128,
+      "frameadvance_us": {
+        "count": 60,
+        "max": 42000.0,
+        "min": 7000.0,
+        "p50": 17000.0,
+        "p90": 28000.0,
+        "p95": 28000.0,
+        "p99": 42000.0
+      },
+      "frames": 60,
+      "predecessor": {
+        "active_global_hook": false,
+        "hook_active_count": 0,
+        "mode": "disabled",
+        "records_observed": 0,
+        "records_per_frame": 0.0,
+        "target_pc_count": 0
+      },
+      "session_seconds": 3.687999999994645,
+      "targeted_bus_exec": {
+        "calls": 5645,
+        "registrations": 85,
+        "unregistrations": 85
+      },
+      "targeted_bus_write": {
+        "calls": 1335,
+        "registrations": 22,
+        "unregistrations": 22
+      }
+    },
+    "D_combined_current": {
+      "callback_self_time_us_per_frame": {
+        "count": 60,
+        "max": 5000.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p90": 1999.9999999989,
+        "p95": 2000.0000000024,
+        "p99": 5000.0
+      },
+      "callbacks_per_frame": {
+        "count": 60,
+        "max": 403,
+        "min": 0,
+        "p50": 45,
+        "p90": 402,
+        "p95": 403,
+        "p99": 403
+      },
+      "discovery_bus_write_calls": 128,
+      "frameadvance_us": {
+        "count": 60,
+        "max": 733000.0,
+        "min": 601000.0,
+        "p50": 649000.0,
+        "p90": 719000.0,
+        "p95": 723000.0,
+        "p99": 733000.0
+      },
+      "frames": 60,
+      "predecessor": {
+        "active_global_hook": false,
+        "hook_active_count": 0,
+        "mode": "continuous",
+        "records_observed": 563191,
+        "records_per_frame": 9386.516666666666,
+        "target_pc_count": 24007
+      },
+      "session_seconds": 42.25,
+      "targeted_bus_exec": {
+        "calls": 5645,
+        "registrations": 85,
+        "unregistrations": 85
+      },
+      "targeted_bus_write": {
+        "calls": 1791,
+        "registrations": 22,
+        "unregistrations": 22
+      }
+    }
+  },
+  "schema": "oasis.m12.auto67.capture-perf-1.v1",
+  "source_owned": {
+    "after": 1475600,
+    "before": 1475600,
+    "delta": 0
+  },
+  "validation": {
+    "debug_release_ctest": "NOT RERUN; documentation-only checkpoint",
+    "focused_auto67_regressions": "109 passed",
+    "git_diff_check": "PENDING REPORT COMMIT",
+    "production_code_changed": false
+  }
+}

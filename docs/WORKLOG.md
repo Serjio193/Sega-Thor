@@ -1,3 +1,23 @@
+# 2026-09-15 — M12 AUTO67 capture performance isolation — PASS (bounded)
+
+TASK: Isolate global `event.on_bus_exec_any` overhead from targeted capsule
+hooks using four 60-frame BizHawk/QuickSave1 ablations without optimization.
+
+RESULT: `PASS_GLOBAL_EXEC_ANY_BOTTLENECK`. Global-prehistory-only (B) measured
+563,191 predecessor callbacks (9,386/frame) and 621 ms frameadvance p50,
+reproducing 95.7% of the combined configuration (D, 649 ms). Capsule-hooks-only
+(C) stayed at 17 ms p50, equal to minimal capture (A), despite 5,645 targeted
+exec and 1,335 targeted write callbacks. The earlier interpretation is
+corrected: 24,007 PCs are `join_write()` lookup candidates, not targeted hook
+registrations; `predecessor.records_observed` is the global callback count.
+
+BOUNDARY: No optimization, scheduler, capture, map, Dispatcher, Worker,
+Cartographer or SOURCE_OWNED change. Capsule scaling was not required because C
+was near A.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_CAPTURE_PERF_1.md` and its JSON
+counterpart. Focused AUTO67/Dispatcher regressions: 109 passed.
+
 # 2026-09-15 — M12 AUTO67 LIVE-MAP-1 — PASS (real runtime)
 
 TASK: Prove the completed AUTO67 live path against the canonical USA ROM and
