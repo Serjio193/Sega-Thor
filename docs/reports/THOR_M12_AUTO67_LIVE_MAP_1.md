@@ -31,6 +31,6 @@ The stall is in BizHawk/Lua capture during `frameadvance`, not in Python dispatc
 - `SOURCE_OWNED`: `1,475,600 → 1,475,600` (delta `0`); graph references did not promote bytes.
 - Focused AUTO67/Dispatcher regressions: **109 passed**.
 - Source-limit: **PASS** (`667` governed files, inventory `679`); the focused Debug CTest source-limit test passed. Debug/Release full CTest was not rerun because production files were unchanged; prior baseline validation remains authoritative.
-- `git diff --check` passed; exact final GitHub Actions SHA is recorded after publication.
+- `git diff --check` passed. GitHub Actions: **UNAVAILABLE** (`gh run list` returned no run for publication SHA `116bb566f69d2b3d2f82c0eb6c6fce15fdd9c5e5`).
 
 The one limitation is operational: PASS A was externally stopped at frame 496 after the measured callback stall; the runner still performed final status drain, `dispatcher.stop`, and `LiveMapSink.stop` and retained all runtime/map evidence. PASS B and the no-capture control exited cleanly with return code 0.

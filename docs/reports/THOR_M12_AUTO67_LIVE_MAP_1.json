@@ -573,6 +573,7 @@
       "worker_cpu_seconds_pass_a": 1.359375
     }
   },
+  "publication_sha": "116bb566f69d2b3d2f82c0eb6c6fce15fdd9c5e5",
   "queue_health": {
     "capacity": 16384,
     "pass_a_depth": 0,
@@ -1713,7 +1714,7 @@
     "debug_release_ctest": "NOT RERUN; no production files changed",
     "focused_tests": "109 passed",
     "git_diff_check": "PASS",
-    "github_actions": "PENDING FINAL SHA",
+    "github_actions": "UNAVAILABLE (gh run list returned no run for publication SHA 116bb566f69d2b3d2f82c0eb6c6fce15fdd9c5e5)",
     "source_limit": "PASS (667 governed files <=500 lines; inventory=679)",
     "source_owned_unchanged": true
   }
