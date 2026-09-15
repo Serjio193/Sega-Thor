@@ -47,3 +47,5 @@ The deterministic 64-merge microbenchmark (`build/m12-ram-session-map-benchmark.
 ## Publication
 
 Final report JSON: `docs/reports/THOR_M12_AUTO67_RAM_SESSION_MAP_1.json`.
+
+GitHub Actions: workflow `CI`, run `35011497168`, status `queued` at publication time.

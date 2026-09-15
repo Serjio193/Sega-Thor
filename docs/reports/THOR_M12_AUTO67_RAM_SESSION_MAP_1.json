@@ -14,5 +14,5 @@
   "microbenchmark": {"merges": 64, "ram_total_ms": 29.2974, "ram_p50_ms": 0.4824, "disk_total_ms": 378.3424, "disk_p50_ms": 5.9456, "ram_speedup": 12.9139},
   "source_owned": {"bytes": 1475368, "rom_bytes": 3145728, "delta": 0},
   "source_owned_unchanged": true,
-  "github_ci": "UNAVAILABLE"
+  "github_ci": {"workflow": "CI", "run_id": 35011497168, "status": "queued", "conclusion": null}
 }
