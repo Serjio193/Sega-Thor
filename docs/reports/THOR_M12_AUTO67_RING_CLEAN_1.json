@@ -1,0 +1,67 @@
+{
+  "schema": "oasis.m12.auto67.ring-clean.v1",
+  "date": "2026-09-15",
+  "checkpoint_implementation_sha": "e562ab4",
+  "baseline": "f0101b754421915c996d982bed6b60e713c98477",
+  "result": "PASS",
+  "python_ring_before": {
+    "fields": ["capacity", "items", "overwrites", "retained"],
+    "snapshot_fields": ["capacity", "utilization", "max_utilization", "overwrites", "retained"],
+    "dead_method": "current()"
+  },
+  "python_ring_after": {
+    "fields": ["capacity", "items", "overwrites"],
+    "snapshot_fields": ["capacity", "utilization", "overwrites"],
+    "dead_method": null,
+    "deque_maxlen": "capacity",
+    "semantic_state": false
+  },
+  "lua_ring": {
+    "role": "bounded transport window across file/poll boundary",
+    "implementation": "unchanged",
+    "fields": ["ring_start", "ring_count", "capacity", "overwritten"],
+    "preserves": ["order", "epoch", "seq", "occurrence_id"],
+    "backlog": false,
+    "predecessor_ring_in_scope": false
+  },
+  "removed": ["RollingWindow.retained", "rolling_window.retained", "rolling_window.max_utilization", "RollingWindow.current()"],
+  "retained_compatibility": {
+    "dispatch_state_LEASED": "Dispatcher exact stored-item redispatch guard",
+    "epoch_seq_occurrence_id": "Lua/Python occurrence identity and provenance",
+    "window_item_id": "Dispatcher exact current-window item identity",
+    "capacity_utilization_overwrites": "bounded status/dashboard and tests"
+  },
+  "proof": {
+    "A_bounded_eviction": {"capacity": 4, "input": [0, 1, 2, 3, 4, 5], "final": [2, 3, 4, 5], "overwrites": 2, "result": "PASS"},
+    "B_exact_event_lease": "PASS",
+    "C_same_branch_occurrences": {"count": 16, "independent": true, "result": "PASS"},
+    "D_no_semantic_state": "PASS",
+    "E_lua_transport_ring": "PASS",
+    "F_double_ring_contract": "PASS",
+    "no_backlog": true
+  },
+  "regressions": {
+    "focused_total": 50,
+    "worker_clean": "PASS",
+    "dispatcher_1": "PASS",
+    "auto67": "PASS",
+    "capsule_materializer_persistence": "PASS"
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "release_build": "PASS",
+    "debug_ctest": "192/192 PASS",
+    "release_ctest": "192/192 PASS",
+    "source_limit": "PASS: 661 governed files <= 500 lines; inventory 673",
+    "git_diff_check": "PASS",
+    "source_owned_changed": false,
+    "forbidden_data_or_runtime_added": false,
+    "github_ci": "UNAVAILABLE",
+    "gnu_linux_equivalent": "NOT_REQUIRED: Python-only ring cleanup; no CMake target/link/portability change",
+    "cartographer_map1_walker_auto68_cpp_changed": false
+  },
+  "publication": {
+    "head_equals_origin_main": true,
+    "report_commit": "subsequent publication commit"
+  }
+}
