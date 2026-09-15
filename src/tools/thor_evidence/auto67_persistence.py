@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import sqlite3
 from pathlib import Path
 import queue
 import threading
@@ -26,8 +28,11 @@ MAP_QUEUE_CAPACITY = 16384
 class LiveMapSink:
     """One bounded local-chain queue and one Cartographer writer thread."""
 
-    def __init__(self, map_db: Path, source_sha256: str = ""):
-        self.map_db = Path(map_db).resolve()
+    def __init__(self, map_db: Path, source_sha256: str = "", session_map: Path | None = None):
+        self.global_map = Path(map_db).resolve()
+        self.map_db = self.global_map
+        self.session_map = Path(session_map).resolve() if session_map else self.global_map.with_name(
+            self.global_map.stem + ".session-map.sqlite")
         self.source_sha256 = source_sha256 or ROM_SHA
         self.items: queue.Queue[dict[str, Any] | None] = queue.Queue(
             maxsize=MAP_QUEUE_CAPACITY)
@@ -52,9 +57,12 @@ class LiveMapSink:
         self.last_map_delta: dict[str, Any] = {}
         self.cached_graph_hash = ""
         self.last_map_error: str | None = None
+        self.session_save_status = "PENDING"
+        self.session_save_error: str | None = None
+        self.session_graph_hash = ""
 
     def start(self) -> None:
-        self.map_db.parent.mkdir(parents=True, exist_ok=True)
+        self.session_map.parent.mkdir(parents=True, exist_ok=True)
         self.thread = threading.Thread(target=self._run, name="auto67-map-writer",
                                        daemon=True)
         self.thread.start()
@@ -76,7 +84,7 @@ class LiveMapSink:
     def _run(self) -> None:
         cartographer = None
         try:
-            cartographer = Cartographer(self.map_db, self.source_sha256)
+            cartographer = Cartographer.in_memory(self.source_sha256)
             self.cached_graph_hash = cartographer.graph_hash()
             self.ready.set()
             while not self.stop_requested.is_set() or not self.items.empty():
@@ -114,9 +122,12 @@ class LiveMapSink:
         except Exception as error:
             with self.lock:
                 self.last_map_error = f"{type(error).__name__}: {error}"
+                self.session_save_status = "ERROR"
+                self.session_save_error = f"{type(error).__name__}: {error}"
             self.ready.set()
         finally:
             if cartographer is not None:
+                self._save_session(cartographer)
                 try:
                     cartographer.close()
                 except Exception as error:
@@ -138,11 +149,48 @@ class LiveMapSink:
             with self.lock:
                 self.last_map_error = self.last_map_error or "writer did not drain before timeout"
 
+    def _save_session(self, cartographer: Cartographer) -> None:
+        temp_path = self.session_map.with_name(self.session_map.name + ".tmp")
+        try:
+            if temp_path.exists():
+                temp_path.unlink()
+            target = sqlite3.connect(temp_path)
+            try:
+                cartographer.db.backup(target)
+                target.commit()
+            finally:
+                target.close()
+            with temp_path.open("r+b") as stream:
+                os.fsync(stream.fileno())
+            os.replace(temp_path, self.session_map)
+            with self.lock:
+                self.session_graph_hash = cartographer.graph_hash()
+                self.session_save_status = "PASS"
+        except Exception as error:
+            with self.lock:
+                self.session_save_status = "ERROR"
+                self.session_save_error = f"{type(error).__name__}: {error}"
+            if temp_path.exists():
+                try:
+                    temp_path.unlink()
+                except OSError:
+                    pass
+
+    def set_global_merge_result(self, result: dict[str, Any]) -> None:
+        with self.lock:
+            self.global_merge_result = dict(result)
+
     def snapshot(self) -> dict[str, Any]:
         with self.lock:
             return {
                 "available": True,
-                "database": str(self.map_db),
+                "database": str(self.session_map),
+                "global_map": str(self.global_map),
+                "session_map": str(self.session_map),
+                "session_graph_hash": self.session_graph_hash,
+                "session_save_status": self.session_save_status,
+                "session_save_error": self.session_save_error,
+                "global_merge": dict(getattr(self, "global_merge_result", {})),
                 "queue_depth": self.items.qsize(),
                 "queue_capacity": self.items.maxsize,
                 "submitted": self.submitted,

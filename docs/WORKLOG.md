@@ -9124,3 +9124,14 @@ runtime/graph paths remain unchanged.
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md` and
 its JSON counterpart.
 
+# 2026-09-15 — M12 AUTO67 RAM session map — implementation in progress
+
+TASK: Keep `--map-db` GLOBAL closed during gameplay, persist the single writer's
+RAM SQLite Cartographer to a retained session map at shutdown, then perform a
+deterministic idempotent offline merge through a validated atomic temporary
+GLOBAL replacement. Acceptance includes empty/duplicate/mixed merges,
+byte-preserving failed replace, RAM/disk parity and bounded shutdown tests.
+
+SCOPE: `auto67_persistence.py`, `cartographer.py`, `map_merge.py`, runner wiring,
+focused tests and checkpoint documentation only; capture, Worker, Dispatcher,
+Cartographer identity and SOURCE_OWNED remain unchanged.

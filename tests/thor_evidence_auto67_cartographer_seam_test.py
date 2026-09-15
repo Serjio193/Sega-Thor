@@ -236,8 +236,9 @@ class Auto67CartographerSeamTest(unittest.TestCase):
         run_start = source.index("    def _run(self)")
         run_end = source.index("    def stop(self)")
         run_source = source[run_start:run_end]
-        self.assertIn("cartographer = Cartographer(self.map_db", run_source)
+        self.assertIn("cartographer = Cartographer.in_memory(self.source_sha256)", run_source)
         self.assertIn("cartographer.merge(", run_source)
+        self.assertIn("self._save_session(cartographer)", run_source)
         self.assertIn("cartographer.close()", run_source)
         runner = (ROOT / "src/tools/thor_evidence/auto67_runner.py").read_text(
             encoding="utf-8")

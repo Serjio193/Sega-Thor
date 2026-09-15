@@ -60,7 +60,9 @@ The measured AUTO67.2 yield proof is
 counterpart; the full ignored runtime artifact is under `build/`.
 
 `auto67_persistence.py` contains `LiveMapSink`, the AUTO67-only single bounded
-local-chain queue and Cartographer writer. The historical descriptor/Store
+local-chain queue and RAM SQLite Cartographer writer. `map_merge.py` performs
+the post-shutdown deterministic session-to-GLOBAL merge with an atomic replace.
+The historical descriptor/Store
 bridge is isolated in `auto67_legacy_persistence.py`; its consumers are
 `tests/thor_evidence_auto67_3_test.py`,
 `tests/thor_evidence_auto67_3_identity_audit.py` and

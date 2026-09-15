@@ -135,9 +135,15 @@ and a `REGISTER_REACHING_DEFINITION:<register>` edge, then calls the existing
 MAP-1 `Cartographer.merge()`; runtime occurrence and lease identities remain
 local provenance only. All accepted steps in one chain are canonicalized into
 one stable bundle before merge. Unproven chains stay diagnostics and produce no
-map frontier. The `LiveMapSink` writer thread creates, uses and closes
-Cartographer; snapshots return cached graph metrics and never query its SQLite
-connection. Cartographer is the sole durable AUTO67 live knowledge store.
+map frontier. The `LiveMapSink` writer thread creates an explicit in-memory
+SQLite Cartographer, consumes the bounded local-chain queue, and snapshots
+only cached metrics. On shutdown it backs up that RAM graph to the retained
+session-map SQLite file; the canonical GLOBAL map is not opened during
+gameplay. After the writer stops, `auto67_runner.py` invokes the deterministic
+offline merger, which copies GLOBAL to `*.merge.tmp.sqlite`, imports the session
+under `session-map:<session_graph_hash>`, validates the graph hash, fsyncs and
+atomically replaces GLOBAL. A failed merge leaves the original GLOBAL bytes
+untouched.
 
 ### AUTO67 current-event ring boundary
 

@@ -23,6 +23,24 @@ isolated for offline AUTO67.3/AUTO67.4 consumers. No frontiers, scheduler or
 upstream capture changes are introduced.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md`.
+# ADR-AUTO67-RAM-SESSION-MAP-1 — RAM session map and offline GLOBAL merge
+**Status:** Accepted for AUTO67
+**Date:** 2026-09-15
+
+**Decision:** Keep the canonical GLOBAL SQLite unopened during runtime. The
+existing bounded queue and single writer use an in-memory SQLite Cartographer;
+clean shutdown backs it up to a retained session file. A deterministic offline
+merge imports that session into a temporary GLOBAL copy under
+`session-map:<session_graph_hash>`, validates, fsyncs and atomically replaces
+GLOBAL. Replace or validation failure preserves the original GLOBAL bytes.
+
+**Consequences:** Runtime map writes cannot stall on GLOBAL I/O, repeated
+session imports are idempotent, and shutdown remains bounded by the existing
+writer join and Dispatcher stop event. No new queue, capture path or Cartographer
+identity is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_RAM_SESSION_MAP_1.md`.
+
 # ADR-AUTO67-MAILBOX-CLEAN-1 — minimal Dispatcher-to-Worker lease message
 **Status:** Accepted for AUTO67
 **Date:** 2026-09-15

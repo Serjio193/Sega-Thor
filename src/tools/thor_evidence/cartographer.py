@@ -46,6 +46,18 @@ class Cartographer:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(self.path)
+        self._initialize(rom_sha256, source_owned_bytes)
+
+    @classmethod
+    def in_memory(cls, rom_sha256: str, source_owned_bytes: int = 0) -> "Cartographer":
+        """Construct the same graph engine on an explicit SQLite RAM database."""
+        graph = cls.__new__(cls)
+        graph.path = None
+        graph.db = sqlite3.connect(":memory:")
+        graph._initialize(rom_sha256, source_owned_bytes)
+        return graph
+
+    def _initialize(self, rom_sha256: str, source_owned_bytes: int) -> None:
         self.db.row_factory = sqlite3.Row
         self.db.executescript(
             """CREATE TABLE IF NOT EXISTS map_meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -72,6 +84,36 @@ class Cartographer:
         self._put_meta("rom_sha256", rom_sha256)
         self._put_meta("source_owned_bytes", str(source_owned_bytes))
         self.db.commit()
+
+    def export_bundle(self) -> dict[str, list[dict[str, Any]]]:
+        """Export admitted graph rows through the stable Cartographer shape."""
+        conflicts = self.db.execute("SELECT COUNT(*) FROM map_conflict").fetchone()[0]
+        if conflicts:
+            raise ValueError("STOP_SESSION_MAP_CONFLICT_EXPORT_UNSUPPORTED")
+        nodes = []
+        for row in self.db.execute("SELECT * FROM map_node ORDER BY node_id"):
+            body = json.loads(row["body"])
+            nodes.append({"kind": row["kind"], "key": row["node_key"],
+                          "scope": row["scope"], "status": row["status"],
+                          "attributes": body.get("attributes", {}),
+                          "lineage": json.loads(row["lineage"])})
+        edges = []
+        for row in self.db.execute("SELECT * FROM map_edge ORDER BY edge_id"):
+            body = json.loads(row["body"])
+            edges.append({"source": row["source_id"], "target": row["target_id"],
+                          "relation": row["relation"], "scope": row["scope"],
+                          "status": row["status"], "rule": body.get("rule", ""),
+                          "assumptions": body.get("assumptions", []),
+                          "lineage": json.loads(row["lineage"])})
+        frontiers = []
+        for row in self.db.execute("SELECT * FROM map_frontier ORDER BY frontier_id"):
+            body = json.loads(row["body"])
+            frontiers.append({"anchor": row["anchor"], "role": row["role"],
+                              "reason": row["reason"], "target": row["target"],
+                              "status": row["status"], "evidence": body.get("evidence", []),
+                              "lineage": json.loads(row["lineage"])})
+        return {"nodes": nodes, "edges": edges, "frontiers": frontiers,
+                "resolves_frontiers": []}
 
     def _put_meta(self, key: str, value: str) -> None:
         self.db.execute("INSERT OR IGNORE INTO map_meta VALUES (?, ?)", (key, value))

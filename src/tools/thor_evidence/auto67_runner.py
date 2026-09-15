@@ -17,6 +17,7 @@ from auto67_live import BASELINE, ROM_SHA, Dispatcher
 from auto67_materializer import register_provenance_targets
 from auto67_predecessor import register_writer_candidate_report
 from auto67_persistence import LiveMapSink
+from map_merge import merge_session_map
 from auto67_status import StatusPublisher
 from auto67_transport import PreDispatchTransport
 
@@ -61,7 +62,10 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
             count=args.capsule_count, max_live=args.max_live_captures,
             command_path=command_path)
     map_db = getattr(args, "map_db", None)
-    map_sink = LiveMapSink(map_db, source_sha256=ROM_SHA) if map_db else None
+    session_map = getattr(args, "session_map_out", None)
+    if map_db and session_map is None:
+        session_map = output.with_name(output.stem + ".session-map.sqlite")
+    map_sink = LiveMapSink(map_db, source_sha256=ROM_SHA, session_map=session_map) if map_db else None
     if map_sink is not None:
         map_sink.start()
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
@@ -99,6 +103,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         args.view_port if view_mode == "browser" else None,
         window_enabled=view_mode == "window")
     view_url = publisher.url
+    global_before = _global_file_state(Path(map_db)) if map_db else _global_file_state(None)
 
     with launcher_log.open("w", encoding="utf-8") as log:
         process = subprocess.Popen(command, cwd=emulator.parent, env=environment,
@@ -120,6 +125,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                 publisher.publish(lua_status)
             time.sleep(args.poll_interval)
         process.wait(timeout=10)
+    global_after_runtime = _global_file_state(Path(map_db)) if map_db else _global_file_state(None)
     if final_path.exists():
         lua_final = json.loads(final_path.read_text(encoding="utf-8"))
     else:
@@ -132,6 +138,13 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     publisher.publish(lua_final)
     if map_sink is not None:
         map_sink.stop()
+        try:
+            merge_result = merge_session_map(Path(map_db), Path(session_map))
+        except Exception as error:
+            merge_result = {"status": "ERROR", "error": f"{type(error).__name__}: {error}"}
+        map_sink.set_global_merge_result(merge_result)
+    else:
+        merge_result = {"status": "DISABLED"}
     if capsule_pool is not None:
         capsule_pool.stop()
     publisher.stop()
@@ -163,6 +176,11 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "map_sink": map_sink.snapshot() if map_sink else {
                    "available": False},
               "map_db": str(map_db) if map_db else None,
+              "session_map": str(session_map) if session_map else None,
+              "global_map": {"path": str(map_db) if map_db else None,
+                              "before_runtime": global_before,
+                              "after_runtime": global_after_runtime,
+                              "merge": merge_result},
               "capsule_mode": args.capsule_mode,
               "capsule_config": {"count": args.capsule_count,
                                   "capacity": 128 * 1024,
@@ -172,8 +190,27 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                                        "worker_returned_idle": dispatcher.metrics["worker_returns"] > 0,
                                        "rolling_window_active":
                                        dispatcher.metrics["events_observed"] > 0}}
+    sink_snapshot = result["map_sink"]
+    result.update({"session_graph_hash": sink_snapshot.get("session_graph_hash", ""),
+                   "global_graph_hash_before": merge_result.get("global_graph_hash_before"),
+                   "global_graph_hash_after": merge_result.get("global_graph_hash_after"),
+                   "session_delta": sink_snapshot.get("last_map_delta", {}),
+                   "global_merge_delta": merge_result.get("global_merge_delta", {}),
+                   "session_save_status": sink_snapshot.get("session_save_status", "DISABLED"),
+                   "global_merge_status": merge_result.get("status", "DISABLED")})
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return result
+
+
+def _global_file_state(path: Path | None) -> dict[str, Any]:
+    if path is None or not path.exists():
+        return {"exists": False, "sha256": None, "mtime_ns": None}
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return {"exists": True, "sha256": digest.hexdigest(),
+            "mtime_ns": path.stat().st_mtime_ns}
 
 
 def main() -> int:
@@ -208,7 +245,9 @@ def main() -> int:
                         help="native operator window by default; browser is explicit fallback")
     parser.add_argument("--no-view", action="store_true")
     parser.add_argument("--map-db", type=Path, default=None,
-                        help="MAP-1 Cartographer SQLite database for live map output")
+                        help="canonical GLOBAL MAP destination; merged only after runtime")
+    parser.add_argument("--session-map-out", type=Path, default=None,
+                        help="optional durable session-map artifact path")
     args = parser.parse_args()
     result = run_live(args)
     print(json.dumps({"returncode": result["returncode"],
