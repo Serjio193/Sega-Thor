@@ -87,6 +87,7 @@ def chain_descriptor(event: dict[str, Any], status: str, frame: int | None,
         "investigation_id": investigation_id,
         "occurrence_id": event.get("occurrence_id"),
         "window_item_id": event.get("window_item_id"),
+        "worker_outcome": event.get("worker_outcome"),
     }
     if materialization_provenance:
         provenance_data["capsule"] = materialization_provenance

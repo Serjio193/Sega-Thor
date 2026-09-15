@@ -220,7 +220,8 @@ def register_provenance_targets(rom: bytes) -> dict[int, int]:
 
 def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
                 rom: bytes | None = None,
-                predecessor: PredecessorCapture | None = None) -> dict[str, Any]:
+                predecessor: PredecessorCapture | None = None,
+                live_worker: bool = False) -> dict[str, Any]:
     """Materialize bounded evidence without temporal adjacency as causality."""
     observations = []
     observed_facts = []
@@ -277,12 +278,19 @@ def materialize(seed: dict[str, Any], capsule: DecodedCapsule,
         provenance = {"status": "NOT_REQUIRED", "requested": [], "resolved": [],
                       "unresolved": [], "reason": None}
         chain_steps = []
-    return {
+    result = {
         "materialized_schema_version": MATERIALIZED_SCHEMA_VERSION,
         "seed": _seed_fields(seed), "runtime_observations": observations,
         "observed_facts": observed_facts, "causal_facts": causal_facts,
         "chain_steps": chain_steps, "register_provenance": provenance,
-        "unresolved_frontier": frontier,
         "capsule_format_version": capsule.format_version,
         "capsule_record_count": capsule.event_count,
     }
+    if live_worker:
+        result["capture_diagnostics"] = {
+            "unresolved_reason": provenance.get("reason") or frontier.get("reason"),
+            "missing_evidence": list(provenance.get("unresolved") or frontier.get("missing", [])),
+        }
+    else:
+        result["unresolved_frontier"] = frontier
+    return result

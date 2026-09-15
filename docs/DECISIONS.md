@@ -1839,3 +1839,28 @@ pre-dispatch merges remain present but obsolete and are no longer incremented.
 
 **Evidence:** `docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md`, its JSON
 counterpart, and `tests/thor_evidence_dispatcher1_test.py`.
+# ADR-AUTO67-WORKER-CLEAN-1 — Keep Worker factual and bounded
+**Status:** Accepted for M12 AUTO67
+**Date:** 2026-09-15
+
+**Context:** AUTO67.occurrence-only leasing already made the Dispatcher the
+single claim authority, but the Worker still retained an unbounded investigation
+map and assigned semantic novelty/status during processing. That mixed evidence
+collection with downstream interpretation and allowed live materialization to
+emit prescriptive unresolved frontiers.
+
+**Decision:** Keep only the bounded 16-entry `recent_investigations` deque.
+Worker outcomes are factual capture/decode/materialization observations;
+`known_during_work` and Worker global KNOWN/PROVEN/DUPLICATE/MERGED decisions
+are removed. Capsules are temporary resource containers released by id and no
+longer carry semantic flags. Live materialization retains observed and proven
+causal facts plus bounded register/capture diagnostics, while omitting
+`unresolved_frontier` and `next`. Persistence remains an optional downstream
+sink and occurrence provenance is preserved in descriptors.
+
+**Consequences:** Worker completion and capsule release are independent of
+persistence availability. Existing Dispatcher occurrence identity, exact-item
+LEASED guard, rolling window, mailbox shape, and capsule limits remain unchanged.
+Semantic deduplication and any future frontier scheduling stay downstream.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md`.

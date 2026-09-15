@@ -8926,3 +8926,28 @@ counterpart; the ignored local proof DB is under `build/thor-evidence/map-1/`.
 
 CHECKS: MAP-1 focused tests passed; full Debug/Release build, CTest, source-size
 gate, and diff checks remain to be run before commit.
+# 2026-09-15 — M12 AUTO67 Worker-clean baseline — PASS (bounded)
+
+TASK: Starting from `3ee9bc807165aee54f90ff9f7575209713e40204`, simplify only
+the AUTO67 Worker while preserving DISPATCHER-1 occurrence leasing, exact-item
+`dispatch_state=LEASED`, one mailbox per worker, rolling-window behavior, and
+the 16/4 capsule limits.
+
+IMPLEMENTATION: Removed the unbounded `investigations` map and Worker novelty
+status logic; retained a 16-entry factual `recent_investigations` history.
+Capsules now carry resource/capture metadata only and release by capsule id.
+Live materialization keeps observed/proven causal facts and bounded provenance
+diagnostics while omitting `unresolved_frontier` and prescriptive `next` data.
+Persistence remains downstream-only; failures are counted and cannot prevent a
+Worker from returning to `IDLE` or releasing its capsule. SOURCE_OWNED,
+Dispatcher identity/guard, Cartographer, MAP-1, Walker-1, AUTO68, C++, hooks,
+queues, and raw-event backlog structure were not changed.
+
+VALIDATION: Worker-clean tests A-G and existing AUTO67/Dispatcher/capsule,
+materializer, and persistence regressions pass locally. Debug/Release CTest,
+source-limit, and diff-check results are recorded in the published report.
+CI exact status is recorded there as `UNAVAILABLE` when no remote CI receipt is
+available.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md` and its JSON
+counterpart.

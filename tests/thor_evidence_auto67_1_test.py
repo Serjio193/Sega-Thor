@@ -55,7 +55,7 @@ class Auto671CapsuleTest(unittest.TestCase):
                         "bytes_used": 320, "event_count": 16}])
             self.assertTrue(pool.wait_frozen(first.capsule_id, first.lease_id,
                                              threading.Event()))
-            pool.release(first.capsule_id, "KNOWN")
+            pool.release(first.capsule_id)
             replacement = pool.claim(9, "INV-9", seed(9))
             self.assertIsNotNone(replacement)
             self.assertEqual(pool.snapshot()["metrics"]["capsules_reused"], 1)
@@ -98,7 +98,7 @@ class Auto671CapsuleTest(unittest.TestCase):
                 for i in range(80):
                     item = pool.claim(0, f"INV-{i}", seed(i))
                     if item is not None:
-                        pool.release(item.capsule_id, "BOUNDED_UNRESOLVED")
+                        pool.release(item.capsule_id)
                 self.assertLessEqual(len(pool.commands), 64)
                 self.assertNotIn("events", "\n".join(pool.commands))
             finally:
@@ -195,7 +195,7 @@ class Auto671CapsuleTest(unittest.TestCase):
                 self.assertIsNotNone(item)
                 assert item is not None
                 ids.append(item.capsule_id)
-                pool.release(item.capsule_id, "BOUNDED_UNRESOLVED")
+                pool.release(item.capsule_id)
             self.assertEqual(ids, [0] * 16)
             self.assertEqual(pool.snapshot()["capsules_free"], 16)
             self.assertEqual(pool.snapshot()["metrics"]["capsules_reused"], 16)

@@ -61,10 +61,13 @@ Browser serving remains an explicit compatibility mode (`--view-mode browser`).
 `--capture-mode burst` explicitly opts into sparse discovery (64 callback
 entries every 30 frames, removing the hook between bursts). The default
 `continuous` preserves the prior every-16th-write sampling policy. Neither
-policy proves causal completeness. Current AUTO67 workers persist bounded
-canonical chain records, which may remain unresolved; the full provenance/static
-chain engine is not invoked by this worker path. Worker lifecycle proof must
-not be labelled chain closure.
+policy proves causal completeness. The Worker keeps only the bounded
+`recent_investigations` deque (16 entries); it does not retain an unbounded
+investigation history or decide global novelty, known, proven, duplicate, merge,
+or reject status. Worker results are factual outcomes such as
+`EVIDENCE_OBSERVED`, `CAPTURE_UNAVAILABLE`, `DECODE_FAILED`, and
+`EVIDENCE_MATERIALIZED`. Persistence status is a compatibility value only and
+the downstream sink cannot block return to `IDLE`.
 
 AUTO67.2 separates continuous hunting from scarce focused capture. Free workers
 periodically scan the current rolling window and may claim fresh evidence
@@ -113,11 +116,15 @@ physical header and 20-byte records that preserve the observed event kind;
 the older O67C format remains decoder-readable for historical evidence. The
 bounded worker decoder validates magic, version, capsule id, lease id, count,
 logical length, physical boundaries and truncation before materialization.
-Workers receive separate `runtime_observations`, `causal_facts` and an
-explicit unresolved frontier. Only the materialized result is sent to the
-existing bounded persistence queue, while old rows remain `SEED_ONLY` and new
-rows are marked `MATERIALIZED_CHAIN`. No semantic merge, ownership promotion,
-SOURCE_OWNED change, raw-event backlog or AUTO68 dependency is introduced.
+Workers receive separate `runtime_observations`, `causal_facts` and bounded
+register/capture diagnostics. Live Worker materialization deliberately omits
+`unresolved_frontier` and any prescriptive `next` action; unresolved evidence
+is represented by factual `register_provenance.status`, `reason`, `unresolved`,
+and `capture_diagnostics`. The existing bounded persistence queue receives only
+completed descriptors and preserves occurrence provenance (`epoch + seq`,
+`window_item_id`, lease and worker) while downstream canonicalization remains
+the only semantic deduplication point. No ownership promotion, SOURCE_OWNED
+change, raw-event backlog or AUTO68 dependency is introduced.
 
 ## AUTO67.5 observed/causal integrity gate
 
@@ -126,7 +133,7 @@ Materialized schema version 2 separates direct `observed_facts` from
 adjacency, shared addresses and record ordering never create a dependency.
 The worker may emit a causal fact only when the bounded static M68K decoder
 proves instruction operand/destination semantics. Register/RAM provenance is
-kept in `unresolved_frontier`, and `chain_steps` remains empty until an
+kept in factual diagnostics, and `chain_steps` remains empty until an
 ordered dependency is independently established. Historical AUTO67.4 rows
 remain readable and are not migrated or rewritten.
 

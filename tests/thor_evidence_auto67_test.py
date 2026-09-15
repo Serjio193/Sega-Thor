@@ -112,25 +112,25 @@ class Auto67Test(unittest.TestCase):
             self.assertIn("WORKING", states)
             self.assertIn("RETURNING", states)
             self.assertEqual(worker["state"], "IDLE")
-            self.assertEqual(worker["last_result"], "PROVEN")
+            self.assertEqual(worker["last_result"], "EVIDENCE_OBSERVED")
         finally:
             dispatcher.stop()
 
     def test_live_snapshot_is_bounded_and_detaches_history(self):
         dispatcher = AUTO67.Dispatcher(16)
         for i in range(5000):
-            investigation = {"id": str(i), "status": "BOUNDED_UNRESOLVED"}
-            dispatcher.investigations[str(i)] = investigation
+            investigation = {"id": str(i), "outcome": "EVIDENCE_OBSERVED"}
             dispatcher.recent_investigations.append(investigation)
+        self.assertFalse(hasattr(dispatcher, "investigations"))
         info = dispatcher.worker_info[0]
         for i in range(100):
             info["chain_fingerprint"] = str(i)
-            dispatcher._transition(info, "LEASED", "KNOWN_CHECK")
+            dispatcher._transition(info, "LEASED", "DISPATCH")
         snapshot = dispatcher.snapshot(lightweight=True)
         self.assertEqual(len(snapshot["investigations"]), 16)
         self.assertEqual(len(snapshot["workers"][0]["transitions"]), 24)
         self.assertLess(len(json.dumps(snapshot)), 25000)
-        self.assertEqual(len(dispatcher.snapshot()["investigations"]), 5000)
+        self.assertEqual(len(dispatcher.snapshot()["investigations"]), 16)
         dispatcher._transition(info, "WORKING", "CHAIN_BUILD")
         self.assertEqual(snapshot["workers"][0]["transitions"][-1]["state"], "LEASED")
         self.assertEqual(snapshot["workers"][0]["transitions"][-1]["chain"], "99")

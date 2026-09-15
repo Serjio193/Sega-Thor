@@ -57,10 +57,6 @@ class Capsule:
     predecessor_complete: bool = False
     predecessor_truncated: bool = False
     predecessor_gap: bool = False
-    known: bool = False
-    merged: bool = False
-    proven: bool = False
-    bounded_unresolved: bool = False
     buffer: bytearray = field(default_factory=lambda: bytearray(CAPSULE_SIZE),
                               repr=False)
 
@@ -133,7 +129,6 @@ class Capsule:
         self.predecessor_path = None
         self.predecessor_record_count = 0
         self.predecessor_complete = self.predecessor_truncated = self.predecessor_gap = False
-        self.known = self.merged = self.proven = self.bounded_unresolved = False
 
     def snapshot(self) -> dict:
         return {
@@ -148,9 +143,6 @@ class Capsule:
             "format_version": self.format_version, "logical_header_bytes": self.logical_header_bytes,
             "physical_header_bytes": self.physical_header_bytes, "record_size": self.record_size,
             "capsule_path": self.capsule_path, "full": self.full, "truncated": self.truncated,
-            "known": self.known,
-            "merged": self.merged, "proven": self.proven,
-            "bounded_unresolved": self.bounded_unresolved,
             "predecessor_enabled": self.predecessor_enabled,
             "predecessor_registers": list(self.predecessor_registers),
             "predecessor_target_pc": self.predecessor_target_pc,
@@ -216,8 +208,7 @@ class CapsulePool:
         self.samples: deque[int] = deque(maxlen=4096)
         self.metrics = {"capsules_created": 0, "capsules_frozen": 0,
                         "capsules_reused": 0, "capsules_full": 0,
-                        "capsules_truncated": 0, "known_early_release": 0,
-                        "merge_early_release": 0, "frozen_samples": 0}
+                        "capsules_truncated": 0, "frozen_samples": 0}
         self.metrics["predecessor_decode_path_samples"] = []
 
     def _publish(self, op: str, capsule: Capsule) -> None:
@@ -318,18 +309,12 @@ class CapsulePool:
             path = Path(capsule.predecessor_path)
         return decode_predecessor(path)
 
-    def release(self, capsule_id: int, result: str) -> None:
+    def release(self, capsule_id: int) -> None:
         with self.lock:
             capsule = self.capsules[capsule_id]
-            capsule.bounded_unresolved = result == "BOUNDED_UNRESOLVED"
-            capsule.known = result == "KNOWN"
-            capsule.merged = result == "MERGED"
-            capsule.proven = result == "PROVEN"
             capsule.state = "DONE"
             self._publish("RELEASE", capsule)
             self.metrics["capsules_reused"] += 1
-            self.metrics["known_early_release"] += int(result == "KNOWN")
-            self.metrics["merge_early_release"] += int(result == "MERGED")
             self.ready.notify_all()
             capsule.reset()
 

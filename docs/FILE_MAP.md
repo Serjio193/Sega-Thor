@@ -1417,3 +1417,15 @@ in worker provenance. Regression coverage is in
 `tests/thor_evidence_auto67_test.py`. The checkpoint is documented in
 `docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md` and its JSON
 counterpart.
+# M12 AUTO67 Worker-clean boundary (2026-09-15)
+
+`src/tools/thor_evidence/auto67_live.py` owns occurrence-only leasing and a
+bounded factual Worker history (`recent_investigations`, 16 entries). It has no
+unbounded investigation map or Worker novelty classifier. `auto67_capsule.py`
+owns temporary 16-slot evidence resources and id-based release without semantic
+flags. `auto67_materializer.py` keeps static causal facts and bounded
+register/capture diagnostics; live Worker calls omit prescriptive frontiers.
+`auto67_persistence.py` remains a downstream optional writer and preserves
+occurrence provenance. `tests/thor_evidence_auto67_worker_clean_test.py`
+covers the A-G Worker-clean and Dispatcher regression contract. The published
+checkpoint is `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md` plus JSON.

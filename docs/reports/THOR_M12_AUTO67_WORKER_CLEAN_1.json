@@ -1,0 +1,84 @@
+{
+  "schema": "oasis.m12.auto67.worker-clean.v1",
+  "date": "2026-09-15",
+  "baseline": "3ee9bc807165aee54f90ff9f7575209713e40204",
+  "result": "PASS",
+  "scope": "AUTO67 Worker only",
+  "before_graph": "Lua -> RollingWindow -> Dispatcher -> mailbox -> Worker -> unbounded investigations + semantic status -> materializer unresolved_frontier/next -> persistence -> release(result semantic flags)",
+  "after_graph": "Lua -> bounded current RollingWindow -> occurrence lease -> one mailbox -> factual Worker outcome -> recent_investigations[16] + factual diagnostics -> optional downstream persistence -> release(capsule_id)",
+  "removed": [
+    "unbounded Dispatcher.investigations",
+    "known_during_work Worker override",
+    "Worker global KNOWN/PROVEN/DUPLICATE/MERGED/blocked/exhausted decisions",
+    "Capsule known/merged/proven/bounded_unresolved fields",
+    "known_early_release and merge_early_release metrics",
+    "live unresolved_frontier and prescriptive next from newly materialized payloads"
+  ],
+  "retained": [
+    "recent_investigations deque maxlen 16",
+    "epoch + seq occurrence identity and window_item_id",
+    "dispatch_state=LEASED exact-item guard",
+    "one mailbox per worker",
+    "CAPSULE_COUNT=16 and MAX_LIVE_CAPTURES=4",
+    "O67V decode, predecessor decode, static M68K decode, required_registers",
+    "observed/causal separation, fail-closed behavior, proven chain_steps",
+    "downstream SQLite semantic deduplication with occurrence provenance"
+  ],
+  "worker_outcomes": [
+    "EVIDENCE_OBSERVED",
+    "EVIDENCE_CAPTURED",
+    "CAPTURE_UNAVAILABLE",
+    "DECODE_FAILED",
+    "EVIDENCE_MATERIALIZED"
+  ],
+  "compatibility_persistence_status": "BOUNDED_UNRESOLVED",
+  "live_unresolved_representation": {
+    "fields": ["register_provenance.status", "register_provenance.reason", "register_provenance.unresolved", "capture_diagnostics.missing_evidence"],
+    "frontier_emitted": false,
+    "prescriptive_next_emitted": false,
+    "future_task_created": false
+  },
+  "capsule_audit": {
+    "configured": 16,
+    "max_simultaneous_live": 4,
+    "release_api": "release(capsule_id)",
+    "semantic_fields_present": false
+  },
+  "memory": {
+    "before": "O(completions) retained investigation map",
+    "after": "O(16 + bounded transitions/window/capsule metadata)",
+    "after_measurement": {
+      "completions": 40,
+      "retained_investigations": 16,
+      "snapshot_json_bytes": 72266,
+      "python_tracemalloc_current_bytes": 150348,
+      "python_tracemalloc_peak_bytes": 150692
+    }
+  },
+  "tests": {
+    "A_history_bounded": "PASS",
+    "B_no_known_override": "PASS",
+    "C_capsule_resource_release": "PASS",
+    "D_no_live_frontier": "PASS",
+    "E_causal_facts_survive": "PASS",
+    "F_dispatcher_regression": "PASS",
+    "G_persistence_downstream_only": "PASS",
+    "focused_total": 38,
+    "debug_ctest": "191/191 PASS",
+    "release_ctest": "191/191 PASS"
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "release_build": "PASS",
+    "source_limit": "PASS: 660 governed files <= 500 lines; inventory 672",
+    "git_diff_check": "PASS",
+    "auto67_live_lines": 496,
+    "worker_clean_test_lines": 163,
+    "source_owned_changed": false,
+    "forbidden_runtime_or_rom_data_added": false,
+    "gnu_linux_equivalent": "NOT_REQUIRED: Python-only behavior change; no CMake target/link change",
+    "exact_ci": "UNAVAILABLE",
+    "cartographer_connected": false,
+    "map1_connected": false
+  }
+}

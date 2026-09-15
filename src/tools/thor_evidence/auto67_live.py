@@ -74,16 +74,16 @@ class Dispatcher:
         self.threads: list[threading.Thread] = []
         self._window_item_sequence = 0
         self.metrics: dict[str, Any] = {
-            "events_observed": 0, "events_retained_as_proof": 0,
+            "events_observed": 0,
             "seeds_considered": 0, "seeds_dispatched": 0,
             "known_rejected_before_dispatch": 0,
-            "known_found_during_work": 0, "active_collisions": 0,
+            "active_collisions": 0,
             "investigation_merges": 0, "new_chains": 0, "new_branches": 0,
             "new_edges": 0, "investigations_created": 0,
-            "proven": 0, "waiting_runtime": 0, "blocked": 0, "exhausted": 0,
             "worker_leases": 0, "worker_returns": 0, "peak_workers_busy": 0,
             "peak_workers_working": 0,
             "capture_poll_count": 0, "worker_cpu_seconds": 0.0,
+            "persistence_submit_errors": 0,
             "seed_age_sum": 0.0, "max_seed_age": 0.0, "same_session_known_replay": False,
             "new_roots": 0, "new_consumers": 0, "new_writers": 0,
             "structures_enumerated": 0, "promotion_candidates": 0,
@@ -107,13 +107,12 @@ class Dispatcher:
             "register_provenance_unresolved": 0,
             "duplicate_active_claims": 0,
         }
-        self.investigations: dict[str, dict[str, Any]] = {}
         self.recent_investigations: deque[dict[str, Any]] = deque(maxlen=16)
         self.dispatch_profiler = DispatchProfiler()
         self.event_times: deque[float] = deque(maxlen=512)
         self.worker_info = [{"worker_id": i, "state": "STARTING",
                              "investigation_id": None, "chain_fingerprint": None,
-                             "stage": "KNOWN_CHECK", "seed_age": 0.0,
+                             "stage": "DISPATCH", "seed_age": 0.0,
                              "task_runtime": 0.0, "last_result": None,
                              "transitions": []} for i in range(worker_count)]
         self.transition_history: deque[dict[str, Any]] = deque(maxlen=500)
@@ -165,7 +164,7 @@ class Dispatcher:
             self.metrics["workers_started"] = len(self.threads)
             self.worker_states = ["IDLE"] * self.worker_count
             for item in self.worker_info:
-                self._transition(item, "IDLE", "KNOWN_CHECK")
+                self._transition(item, "IDLE", "DISPATCH")
 
     def stop(self) -> None:
         self.stop_event.set()
@@ -238,12 +237,15 @@ class Dispatcher:
             self.worker_states[worker_id] = "LEASED"
             info = self.worker_info[worker_id]
             info.update({"investigation_id": task["investigation_id"], "chain_fingerprint": branch,
-                         "stage": "KNOWN_CHECK", "seed_age": age, "task_runtime": 0.0, "last_result": None})
-            self._transition(info, "LEASED", "KNOWN_CHECK")
+                         "stage": "DISPATCH", "seed_age": age, "task_runtime": 0.0, "last_result": None})
+            self._transition(info, "LEASED", "DISPATCH")
             self.metrics["seeds_dispatched"] += 1
             self.metrics["worker_leases"] += 1
             if self.chain_sink is not None:
-                self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
+                try:
+                    self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
+                except Exception:
+                    self.metrics["persistence_submit_errors"] += 1
             self.metrics["dispatch_starved_no_free_capsule"] = False
             self.metrics["dispatch_reasons"]["DISPATCHED"] += 1
             self.metrics["latest_assignment"] = {"worker_id": worker_id, "chain": branch,
@@ -286,7 +288,6 @@ class Dispatcher:
             self.window.append(event)
             self.metrics["events_observed"] += 1
             self.event_times.append(time.monotonic())
-            self.metrics["events_retained_as_proof"] = self.window.retained
         self._dispatch_current()
 
     def _worker(self, worker_id: int) -> None:
@@ -305,15 +306,14 @@ class Dispatcher:
                 self._dispatch_current(hunting=True)
                 with self.lock:
                     if self.mailboxes[worker_id] is None:
-                        self._transition(self.worker_info[worker_id], "IDLE", "KNOWN_CHECK")
+                        self._transition(self.worker_info[worker_id], "IDLE", "DISPATCH")
                 continue
             with self.lock:
                 self.worker_states[worker_id] = "WORKING"
                 self.metrics["peak_workers_working"] = max(
                     self.metrics["peak_workers_working"], self.worker_states.count("WORKING"))
                 info = self.worker_info[worker_id]
-                self._transition(info, "WORKING", "WAITING_RUNTIME" if
-                                 "capsule_id" in task else "CHAIN_BUILD")
+                self._transition(info, "WORKING", "CAPTURE" if "capsule_id" in task else "MATERIALIZE")
                 task["dispatch_trace"]["timestamps_ns"]["t8"] = time.perf_counter_ns()
                 task["dispatch_trace"]["lease_id"] = task.get("lease_id")
                 task["dispatch_trace"]["investigation_id"] = info["investigation_id"]
@@ -324,14 +324,16 @@ class Dispatcher:
             capsule_id = task.get("capsule_id")
             capsule_evidence = None
             predecessor_evidence = None
+            capture_completed = False
+            decode_failed = False
             if capsule_id is not None:
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "CAPTURING")
-                completed = self.capsule_pool.wait_frozen(
+                capture_completed = self.capsule_pool.wait_frozen(
                     capsule_id, task["capsule_lease"], self.stop_event)
-                self.metrics["focused_capture_completed"] += int(completed)
+                self.metrics["focused_capture_completed"] += int(capture_completed)
                 self.capsule_pool.analyzing(capsule_id)
-                if completed:
+                if capture_completed:
                     try:
                         capsule_evidence = self.capsule_pool.decode(
                             capsule_id, task["capsule_lease"], task["investigation_id"])
@@ -351,6 +353,7 @@ class Dispatcher:
                                 predecessor_evidence.truncated)
                             self.metrics["predecessor_gaps"] += int(predecessor_evidence.gap)
                     except CapsuleFormatError:
+                        decode_failed = True
                         self.metrics["capsule_decode_errors"] += 1
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "ANALYZING")
@@ -362,28 +365,34 @@ class Dispatcher:
                     self._transition(self.worker_info[worker_id], "WORKING", "QUICK_CHECK")
             if self.processing_delay:
                 time.sleep(self.processing_delay)
-            status = str(event.get("resolution", "BOUNDED_UNRESOLVED"))
-            worker_status = "KNOWN" if event.get("known_during_work") else status
             branch = task["branch"]
             inv_id = "INV-AUTO67-" + task["seed"]
+            worker_outcome = ("EVIDENCE_MATERIALIZED" if capsule_evidence is not None
+                              else "DECODE_FAILED" if decode_failed
+                              else "CAPTURE_UNAVAILABLE" if capsule_id is not None and not capture_completed
+                              else "EVIDENCE_CAPTURED" if capsule_id is not None
+                              else "EVIDENCE_OBSERVED")
+            persistence_status = "BOUNDED_UNRESOLVED"
+            persistence_event = dict(event, worker_outcome=worker_outcome)
             if capsule_evidence is not None:
                 materialized = materialize(event, capsule_evidence, self.rom,
-                                           predecessor_evidence)
+                                           predecessor_evidence, live_worker=True)
                 persistence_item = materialized_descriptor(
-                    event, materialized, worker_status, event.get("frame"), worker_id,
+                    persistence_event, materialized, persistence_status, event.get("frame"), worker_id,
                     task.get("lease_id"), inv_id)
             else:
                 materialized = None
                 persistence_item = descriptor(
-                    event, worker_status, event.get("frame"), worker_id,
+                    persistence_event, persistence_status, event.get("frame"), worker_id,
                     task.get("lease_id"), inv_id)
             with self.lock:
                 investigation = {"id": inv_id, "branch": branch,
                                  "context": task["context"],
                                  "occurrence_id": task["occurrence_id"],
+                                 "window_item_id": event.get("window_item_id"),
                                  "lease_id": task.get("lease_id"),
                                  "seed_sequence": event.get("seq"),
-                                 "status": status, "evidence": [event]}
+                                 "outcome": worker_outcome, "evidence": [event]}
                 if materialized is not None:
                     investigation["materialization"] = {
                         "capsule_format_version": materialized["capsule_format_version"],
@@ -405,36 +414,25 @@ class Dispatcher:
                         provenance.get("resolved", []))
                     self.metrics["register_provenance_unresolved"] += len(
                         provenance.get("unresolved", []))
-                if worker_status == "KNOWN":
-                    status = "KNOWN"
-                    investigation["status"] = status
-                    self.metrics["known_found_during_work"] += 1
-                self.investigations[inv_id] = investigation
                 self.recent_investigations.append(investigation)
                 self.metrics["investigations_created"] += 1
-                if status == "PROVEN":
-                    self.metrics["proven"] += 1
-                    self.window.retained += 1
-                elif status == "WAITING_RUNTIME":
-                    self.metrics["waiting_runtime"] += 1
-                elif status == "BLOCKED":
-                    self.metrics["blocked"] += 1
-                elif status == "EXHAUSTED":
-                    self.metrics["exhausted"] += 1
                 self.worker_states[worker_id] = "RETURNING"
                 info = self.worker_info[worker_id]
                 info["task_runtime"] = time.perf_counter() - started
-                info["last_result"] = status
-                self._transition(info, "RETURNING", status)
+                info["last_result"] = worker_outcome
+                self._transition(info, "RETURNING", worker_outcome)
                 self.metrics["worker_returns"] += 1
                 self.worker_states[worker_id] = "IDLE"
-                self._transition(info, "IDLE", status)
+                self._transition(info, "IDLE", worker_outcome)
                 self.metrics["worker_cpu_seconds"] += time.thread_time() - cpu_started
                 if capsule_id is not None:
-                    self.capsule_pool.release(capsule_id, status)
+                    self.capsule_pool.release(capsule_id)
             if self.chain_sink is not None:
-                self.chain_sink.submit(persistence_item)
-                self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
+                try:
+                    self.chain_sink.submit(persistence_item)
+                    self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
+                except Exception:
+                    self.metrics["persistence_submit_errors"] += 1
             self._dispatch_current(hunting=True)
 
     def _transition(self, info: dict[str, Any], state: str, stage: str) -> None:
@@ -482,8 +480,7 @@ class Dispatcher:
                                         "max_utilization": self.window.capacity,
                                         "overwrites": self.window.overwrites,
                                         "retained": self.window.retained},
-                    "investigations": list(self.recent_investigations) if lightweight
-                    else list(self.investigations.values()),
+                    "investigations": list(self.recent_investigations),
                     "chain_store": persistence,
                     "dispatch_profile": self.dispatch_profiler.snapshot(),
                     "capsules": capsules}
