@@ -1,0 +1,69 @@
+{
+  "schema": "oasis.m12.auto67.cartographer-seam-report.v1",
+  "checkpoint": "M12-AUTO67-CARTOGRAPHER-SEAM-1",
+  "baseline": "199c8d43454d761a2000026a83c20a06f7c4d00d",
+  "classification": "PASS_AUTO67_CARTOGRAPHER_SEAM",
+  "implementation_sha": "a5134a68c395d9e44eacfffde91f40e8d4dce368",
+  "local_chain_schema": "oasis.m12.auto67.local-chain.v1",
+  "proof_contract": "REGISTER_REACHING_DEFINITION_V1",
+  "final_snapshot_ingested": true,
+  "final_only_occurrences_proven": true,
+  "shutdown_after_final_ingest": "PASS",
+  "state_option_audit": "REMOVED",
+  "explicit_occurrence_id_consistency": "PASS",
+  "worker_global_classification": false,
+  "worker_map_queries": false,
+  "durable_nodes": ["ROM_INSTRUCTION"],
+  "durable_relation": "REGISTER_REACHING_DEFINITION:<register>",
+  "runtime_identity_excluded": ["occurrence", "frame", "lease", "worker", "investigation"],
+  "lineage": "AUTO67_LOCAL_CHAIN + proof contract/schema + stable dependency fingerprint",
+  "import_ref_prefix": "auto67-live:",
+  "frontiers_created": 0,
+  "first_merge": {
+    "new_nodes": 2,
+    "new_edges": 1,
+    "promoted_nodes": 0,
+    "promoted_edges": 0,
+    "new_frontiers": 0,
+    "resolved_frontiers": 0,
+    "new_conflicts": 0,
+    "component_joins": 0,
+    "import_ref": "auto67-live:deaaffd8f44ce13ce90a2f87abb41beb3ab45ba3362b65465690f4e55bb42683",
+    "graph_hash": "fd3dd919d1100c9168706eedd6b3a19a768948f31c2356ffb930956ba52dc896"
+  },
+  "exact_replay": {
+    "delta_all_zero": true,
+    "graph_hash": "fd3dd919d1100c9168706eedd6b3a19a768948f31c2356ffb930956ba52dc896"
+  },
+  "different_occurrence_same_chain": {
+    "stable_bundle_unchanged": true,
+    "occurrence_bloat": false
+  },
+  "distinct_chain": {
+    "new_nodes": 0,
+    "new_edges": 1,
+    "graph_hash": "fcb90c7ed1ed1620b04c7ed70d394ab2c750a0e25e45f32850a2788164cc491a"
+  },
+  "unproven_chain": {
+    "promotion": false,
+    "frontier_created": false
+  },
+  "persistence": {
+    "one_bounded_queue": true,
+    "one_writer_thread": true,
+    "map_only": true,
+    "legacy_chain_compatibility": true
+  },
+  "tests": {
+    "new_seam": "11/11 PASS",
+    "focused_auto67_map1": "94/94 PASS",
+    "debug_ctest": "195/195 PASS",
+    "release_ctest": "195/195 PASS",
+    "source_limit": "666 governed files <= 500 lines",
+    "git_diff_check": "PASS",
+    "source_owned": {"bytes": 1475600, "capacity": 3145728, "delta": 0},
+    "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY",
+    "github_ci": "UNAVAILABLE"
+  }
+}
+
