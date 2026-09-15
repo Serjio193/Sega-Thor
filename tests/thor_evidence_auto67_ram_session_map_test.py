@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "src/tools/thor_evidence"))
 import map_merge
 from auto67_cartographer import candidate_bundle, local_chain
 from auto67_persistence import LiveMapSink
+from auto67_transport import PreDispatchTransport
 from cartographer import Cartographer
 
 
@@ -111,6 +112,11 @@ class RamSessionMapTest(unittest.TestCase):
             self.assertEqual(second["global_merge_delta"]["new_nodes"], 0)
             self.assertEqual(second["global_merge_delta"]["new_edges"], 0)
             self.assertEqual(first["global_graph_hash_after"], second["global_graph_hash_after"])
+            graph = Cartographer(global_path, "rom")
+            try:
+                self.assertEqual(graph.db.execute("SELECT COUNT(*) FROM map_import").fetchone()[0], 1)
+            finally:
+                graph.close()
 
     def test_d_failed_replace_leaves_global_byte_exact(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -170,6 +176,17 @@ class RamSessionMapTest(unittest.TestCase):
             encoding="utf-8")
         self.assertIn("Cartographer.in_memory(self.source_sha256)", sink_source)
         self.assertNotIn("Cartographer(self.map_db", sink_source)
+
+    def test_i_final_only_transport_events_are_ingested_once(self):
+        transport = PreDispatchTransport()
+        ingested = []
+        periodic = {"epoch": 1, "events": [{"epoch": 1, "seq": n,
+                   "occurrence_id": f"epoch=1:seq={n}"} for n in (18, 19, 20)]}
+        final = {"epoch": 1, "events": [{"epoch": 1, "seq": n,
+                "occurrence_id": f"epoch=1:seq={n}"} for n in (19, 20, 21, 22)]}
+        ingested.extend(event["seq"] for event in transport.consume(periodic))
+        ingested.extend(event["seq"] for event in transport.consume(final))
+        self.assertEqual(ingested, [18, 19, 20, 21, 22])
 
 
 if __name__ == "__main__":
