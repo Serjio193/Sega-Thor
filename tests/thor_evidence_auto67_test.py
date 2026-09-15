@@ -124,7 +124,7 @@ class Auto67Test(unittest.TestCase):
         self.assertFalse(hasattr(dispatcher, "investigations"))
         info = dispatcher.worker_info[0]
         for i in range(100):
-            info["chain_fingerprint"] = str(i)
+            info["occurrence_id"] = str(i)
             dispatcher._transition(info, "LEASED", "DISPATCH")
         snapshot = dispatcher.snapshot(lightweight=True)
         self.assertEqual(len(snapshot["investigations"]), 16)
@@ -133,7 +133,7 @@ class Auto67Test(unittest.TestCase):
         self.assertEqual(len(dispatcher.snapshot()["investigations"]), 16)
         dispatcher._transition(info, "WORKING", "CHAIN_BUILD")
         self.assertEqual(snapshot["workers"][0]["transitions"][-1]["state"], "LEASED")
-        self.assertEqual(snapshot["workers"][0]["transitions"][-1]["chain"], "99")
+        self.assertEqual(snapshot["workers"][0]["transitions"][-1]["occurrence_id"], "99")
 
     def test_live_snapshot_drops_when_dispatcher_lock_is_busy(self):
         dispatcher = AUTO67.Dispatcher(1)

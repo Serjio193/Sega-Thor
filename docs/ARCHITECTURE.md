@@ -92,8 +92,8 @@ unless `--chain-db` (legacy alias `--knowledge-db`) is supplied.
 ### AUTO67.occurrence-only Dispatcher semantics
 
 The Dispatcher leases only current, unleased `RollingWindow` items to free
-workers. `branch_fingerprint` remains diagnostic metadata and context input,
-but it is never a scheduling gate; `REJECT_ACTIVE_CLAIM`, `active_collisions`,
+workers. Branch and context fingerprints are not mailbox or Worker semantics;
+`REJECT_ACTIVE_CLAIM`, `active_collisions`,
 and `investigation_merges` remain obsolete compatibility fields and stay zero
 on this path. The exact stored item is protected by its
 `dispatch_state=LEASED` marker, and each worker has one mailbox and one
@@ -108,6 +108,18 @@ perform that merge. Capsule limits remain `CAPSULE_COUNT=16` and
 `MAX_LIVE_CAPTURES=4`; exhaustion produces the existing
 `WAITING_CAPTURE_SLOT` path, not branch suppression. There is no raw-event
 backlog or per-worker queue.
+
+### AUTO67 minimal Worker mailbox
+
+Each worker mailbox contains one detached message with `event`,
+`investigation_id`, `lease_id`, optional `capsule_id`/`capture_status`, and a
+bounded `dispatch_trace`. The event copy is authoritative for
+`epoch`, `seq`, `occurrence_id` and `window_item_id`; mailbox-level duplicates,
+worker IDs, seeds, branch/context values and capsule lease aliases are absent.
+`investigation_id` is derived only from occurrence and window-item identity.
+The same `lease_id` is used for capsule wait, decode, predecessor decode and
+persistence provenance. Worker diagnostics retain factual worker and
+occurrence IDs plus bounded materialization counts.
 
 ### AUTO67 current-event ring boundary
 

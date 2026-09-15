@@ -7,10 +7,10 @@ from collections import deque
 
 TIMESTAMP_KEYS = tuple(f"t{i}" for i in range(9))
 STAGES = {
-    "T0_T1_knowledge_lookup_us": ("t0", "t1"),
+    "T0_T1_candidate_identity_us": ("t0", "t1"),
     "T1_T2_claim_acquire_us": ("t1", "t2"),
     "T2_T3_capsule_allocate_reset_us": ("t2", "t3"),
-    "T3_T4_pre_context_copy_us": ("t3", "t4"),
+    "T3_T4_event_copy_us": ("t3", "t4"),
     "T4_T5_filter_submit_us": ("t4", "t5"),
     "T5_T6_worker_message_submit_us": ("t5", "t6"),
     "T6_T7_claim_lock_release_us": ("t6", "t7"),

@@ -14,7 +14,7 @@ document.getElementById('cards').innerHTML=fields.map(x=>`<div class="card"><b>$
 document.getElementById('workers').innerHTML=(d.workers||[]).map(w=>`<div class="worker ${w.state}"><b>W${w.worker_id}</b> ${w.state}<br>${w.investigation_id||'-'}<br>stage ${w.stage}<br>age ${(w.seed_age||0).toFixed(3)}s<br>result ${w.last_result||'-'}</div>`).join('');
 document.getElementById('capsules').textContent=(d.capsules?.items||[]).map(c=>`C${String(c.capsule_id).padStart(2,'0')} ${c.state} W${c.worker_id??'-'} ${(c.bytes_used/1024).toFixed(1)}KiB/${(c.capacity/1024).toFixed(0)} result ${c.freeze_reason||'-'}`).join('\n');
 document.getElementById('decisions').textContent=JSON.stringify(m.dispatch_reasons||{},null,2)+(m.dispatch_starved_no_free_capsule?'\nDISPATCH_STARVED_NO_FREE_CAPSULE':'');
-document.getElementById('transitions').textContent=(d.workers||[]).flatMap(w=>(w.transitions||[]).map(t=>({w:w.worker_id,...t}))).sort((a,b)=>b.at-a.at).map(t=>`${new Date(t.at*1000).toISOString().slice(11,23)} W${t.w} ${t.state} / ${t.stage} ${(t.chain||'-').slice(0,12)}`).join('\n');
+document.getElementById('transitions').textContent=(d.workers||[]).flatMap(w=>(w.transitions||[]).map(t=>({w:w.worker_id,...t}))).sort((a,b)=>b.at-a.at).map(t=>`${new Date(t.at*1000).toISOString().slice(11,23)} W${t.w} ${t.state} / ${t.stage} ${(t.occurrence_id||'-').slice(0,24)}`).join('\n');
 document.getElementById('investigations').textContent=JSON.stringify((d.investigations||[]).slice(-16),null,2);}
 async function poll(){try{await refresh();}catch(e){document.getElementById('summary').textContent='Snapshot unavailable / stale';}finally{setTimeout(poll,250);}}poll();
 </script>"""

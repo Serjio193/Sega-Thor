@@ -1931,3 +1931,25 @@ ring, Dispatcher, Worker, capture, persistence, graph, ownership, or C++ path
 is redesigned.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
+# ADR-AUTO67-MAILBOX-CLEAN-1 — minimal Dispatcher-to-Worker lease message
+**Status:** Accepted for AUTO67
+**Date:** 2026-09-15
+
+**Context:** The occurrence-only Dispatcher still copied branch, context,
+seed, worker and duplicate lease identity into each mailbox task. Those fields
+were not consumed by the Worker boundary and made the lease contract appear
+to carry scheduling semantics.
+
+**Decision:** Keep one detached `event` copy, one occurrence/window-derived
+`investigation_id`, one `lease_id`, optional capsule/capture fields and the
+bounded dispatch trace. The Worker consumes those IDs directly; CapsulePool
+metadata and persistence retain their factual worker/lease provenance. Remove
+mailbox branch/context/seed/worker/occurrence aliases and legacy profiler names
+without changing selection order, capsule limits, or shutdown mechanisms.
+
+**Consequences:** Final-only and same-branch occurrences remain independently
+leasable, capsule identity mismatches fail closed, and shutdown can release a
+worker waiting on a stopped emulator through the existing stop event. No queue
+or backlog is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_MAILBOX_CLEAN_1.md`.

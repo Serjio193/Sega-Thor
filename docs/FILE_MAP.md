@@ -1451,3 +1451,13 @@ R1 keeps final-snapshot consumption on the same cursor: the launcher consumes
 `lua_final` after the emulator exits, ingests those records, then stops the
 Dispatcher. The live-opportunistic runner has no state option or
 `OASIS_LIVE_STATE` export; savestate-aware capture scripts are separate.
+
+# M12 AUTO67 minimal mailbox boundary (2026-09-15)
+
+`auto67_live.py::Dispatcher` sends one detached event message per worker. The
+message carries one occurrence-derived `investigation_id` and one `lease_id`
+through CapsulePool and persistence; branch/context, seed, duplicate
+occurrence, worker and capsule-lease mailbox fields are removed. Worker
+history remains bounded and factual. The contract is covered by
+`tests/thor_evidence_auto67_mailbox_clean_test.py` and the checkpoint report
+`docs/reports/THOR_M12_AUTO67_MAILBOX_CLEAN_1.md` plus JSON.

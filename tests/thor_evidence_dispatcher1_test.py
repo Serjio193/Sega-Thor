@@ -31,8 +31,8 @@ class DispatcherOneTest(unittest.TestCase):
         dispatcher._dispatch_current()
         tasks = [task for task in dispatcher.mailboxes if task is not None]
         self.assertEqual(len(tasks), 2)
-        self.assertEqual({task["worker_id"] for task in tasks}, {0, 1})
-        self.assertEqual({task["occurrence_id"] for task in tasks},
+        self.assertEqual({dispatcher.mailboxes.index(task) for task in tasks}, {0, 1})
+        self.assertEqual({task["event"]["occurrence_id"] for task in tasks},
                          {"epoch=1:seq=100", "epoch=1:seq=101"})
         self.assertEqual(len({task["investigation_id"] for task in tasks}), 2)
         self.assertEqual(len({task["lease_id"] for task in tasks}), 2)
@@ -78,12 +78,13 @@ class DispatcherOneTest(unittest.TestCase):
         dispatcher.window.append(event(11))
         dispatcher._dispatch_current()
         tasks = [task for task in dispatcher.mailboxes if task is not None]
-        self.assertEqual(len({task["occurrence_id"] for task in tasks}), 2)
+        self.assertEqual(len({task["event"]["occurrence_id"] for task in tasks}), 2)
         self.assertEqual(len({task["investigation_id"] for task in tasks}), 2)
         self.assertEqual(len({task["lease_id"] for task in tasks}), 2)
         records = [descriptor(task["event"], "BOUNDED_UNRESOLVED", task["event"]["frame"],
-                              task["worker_id"], task["lease_id"], task["investigation_id"])
-                   for task in tasks]
+                              dispatcher.mailboxes.index(task), task["lease_id"],
+                              task["investigation_id"])
+                    for task in tasks]
         self.assertNotEqual(records[0]["provenance"], records[1]["provenance"])
 
     def test_capsule_limits_remain_resource_limits(self):

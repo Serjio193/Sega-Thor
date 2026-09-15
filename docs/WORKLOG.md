@@ -9014,3 +9014,21 @@ runtime/graph paths remain unchanged.
 
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md` and
 its JSON counterpart.
+# 2026-09-15 — M12 AUTO67 mailbox-clean lease message — PASS (bounded)
+
+TASK: Starting from the pre-dispatch transport checkpoint, reduce the exact
+`RollingWindow → Dispatcher → mailbox → Worker` message to detached event,
+occurrence-derived investigation identity, one lease identity, optional
+capsule/capture fields and dispatch trace. Preserve current selection,
+`dispatch_state=LEASED`, one mailbox per worker, fixed capsule limits and
+bounded stop behavior.
+
+RESULT: PASS. Worker consumes the task investigation and lease IDs directly;
+branch/context, seed, duplicate occurrence, worker and capsule-lease mailbox
+aliases are gone. Factual occurrence/worker IDs remain in diagnostics and
+persistence provenance. Final-only ingest shutdown, detached event copying,
+same-branch leasing, capsule mismatch rejection and runner state-option audit
+are covered by the new mailbox-clean tests.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_MAILBOX_CLEAN_1.md` and its JSON
+counterpart.

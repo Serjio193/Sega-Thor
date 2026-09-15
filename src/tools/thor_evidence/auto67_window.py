@@ -75,7 +75,7 @@ def _metric_text(payload: dict[str, Any]) -> str:
             f"{_value(worker.get('state'), 'STARTING'):<9} "
             f"stage={_value(worker.get('stage')):<22} "
             f"result={_value(worker.get('last_result')):<20} "
-            f"chain={_value(worker.get('chain_fingerprint'))[:12]} "
+            f"occurrence={_value(worker.get('occurrence_id'))[:24]} "
             f"age={worker.get('seed_age', 0):.3f}s"
         )
     transitions = dispatcher.get("transition_history", [])
@@ -87,10 +87,10 @@ def _metric_text(payload: dict[str, Any]) -> str:
     for item in sorted(transitions, key=lambda entry: (
             entry.get("at", 0), entry.get("worker_id", 0)), reverse=True)[:80]:
         worker_id = item.get("worker_id", 0)
-        chain = (item.get("chain") or "-")[:12]
+        occurrence = (item.get("occurrence_id") or "-")[:24]
         lines.append(
             f"W{int(worker_id):02d} {item.get('state', '-'):<9} "
-            f"{_value(item.get('stage')):<20} {chain}"
+            f"{_value(item.get('stage')):<20} {occurrence}"
         )
     return "\n".join(lines)
 

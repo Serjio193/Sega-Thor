@@ -106,32 +106,11 @@ class Dispatcher:
         self.dispatch_profiler = DispatchProfiler()
         self.event_times: deque[float] = deque(maxlen=512)
         self.worker_info = [{"worker_id": i, "state": "STARTING",
-                             "investigation_id": None, "chain_fingerprint": None,
+                             "investigation_id": None, "occurrence_id": None,
                              "stage": "DISPATCH", "seed_age": 0.0,
                              "task_runtime": 0.0, "last_result": None,
                              "transitions": []} for i in range(worker_count)]
         self.transition_history: deque[dict[str, Any]] = deque(maxlen=500)
-
-    @staticmethod
-    def _branch(event: dict[str, Any]) -> str:
-        return digest({"kind": event.get("kind"), "address": event.get("address"),
-                       "pc": event.get("pc")})
-
-    @staticmethod
-    def _seed(event: dict[str, Any], branch: str | None = None) -> str:
-        return digest({"branch": branch or Dispatcher._branch(event),
-                       "occurrence_id": event.get("occurrence_id"),
-                       "window_item_id": event.get("window_item_id")})
-
-    @staticmethod
-    def _context(event: dict[str, Any], branch: str) -> str:
-        fields = ("epoch", "scene", "state", "caller_pc", "consumer_pc",
-                  "source_address", "destination_address", "selector", "index",
-                  "branch_suffix", "pointer_target", "rom_target", "ram_target",
-                  "predecessor", "successor")
-        context = {name: event.get(name) for name in fields if event.get(name) is not None}
-        context["branch"] = branch
-        return digest(context)
 
     def _ensure_occurrence_identity(self, event: dict[str, Any]) -> None:
         if "window_item_id" not in event:
@@ -182,21 +161,20 @@ class Dispatcher:
             self._ensure_occurrence_identity(event)
             self.metrics["seeds_considered"] += 1
             t0 = time.perf_counter_ns()
-            branch = self._branch(event)
-            context = self._context(event, branch)
-            event["branch_fingerprint"] = branch
-            event["context_fingerprint"] = context
             t1 = time.perf_counter_ns()
             worker_id = free.pop(0)
             age = max(0.0, time.monotonic() - float(event.get("captured_monotonic", time.monotonic())))
             occurrence_id = event["occurrence_id"]
-            task = {"branch": branch, "context": context, "occurrence_id": occurrence_id,
-                    "worker_id": worker_id, "seed": self._seed(event, branch),
-                    "assigned_ns": time.time_ns(), "dispatch_trace": {
+            event_copy = dict(event)
+            investigation_id = "INV-AUTO67-" + digest({
+                "occurrence_id": occurrence_id,
+                "window_item_id": event["window_item_id"],
+            })
+            task = {"event": event_copy, "investigation_id": investigation_id,
+                    "dispatch_trace": {
                         "timestamps_ns": {"t0": t0, "t1": t1, "t2": 0},
                         "frame": event.get("frame")}}
             task["dispatch_trace"]["timestamps_ns"]["t2"] = time.perf_counter_ns()
-            task["investigation_id"] = "INV-AUTO67-" + task["seed"]
             if self.capsule_pool is not None and self.capsule_pool.max_live > 0:
                 self.metrics["focused_capture_requested"] += 1
             if self.capsule_pool is not None:
@@ -216,14 +194,12 @@ class Dispatcher:
                         return None
                 else:
                     task["capsule_id"] = capsule.capsule_id
-                    task["capsule_lease"] = capsule.lease_id
                     self.metrics["predecessor_captures_installed"] += int(
                         capsule.predecessor_enabled)
             task["dispatch_trace"]["timestamps_ns"]["t3"] = time.perf_counter_ns()
-            task["event"] = dict(event)
             task["dispatch_trace"]["timestamps_ns"]["t4"] = time.perf_counter_ns()
             task["dispatch_trace"]["timestamps_ns"]["t5"] = time.perf_counter_ns()
-            task["lease_id"] = task.get("capsule_lease") or (
+            task["lease_id"] = capsule.lease_id if "capsule_id" in task else (
                 f"L{self.metrics['worker_leases'] + 1:08X}-{digest(occurrence_id)}")
             event["dispatch_state"] = "LEASED"
             event["lease_worker"] = worker_id
@@ -231,7 +207,7 @@ class Dispatcher:
             task["dispatch_trace"]["timestamps_ns"]["t6"] = time.perf_counter_ns()
             self.worker_states[worker_id] = "LEASED"
             info = self.worker_info[worker_id]
-            info.update({"investigation_id": task["investigation_id"], "chain_fingerprint": branch,
+            info.update({"investigation_id": task["investigation_id"], "occurrence_id": occurrence_id,
                          "stage": "DISPATCH", "seed_age": age, "task_runtime": 0.0, "last_result": None})
             self._transition(info, "LEASED", "DISPATCH")
             self.metrics["seeds_dispatched"] += 1
@@ -243,8 +219,8 @@ class Dispatcher:
                     self.metrics["persistence_submit_errors"] += 1
             self.metrics["dispatch_starved_no_free_capsule"] = False
             self.metrics["dispatch_reasons"]["DISPATCHED"] += 1
-            self.metrics["latest_assignment"] = {"worker_id": worker_id, "chain": branch,
-                "context": context, "occurrence_id": occurrence_id,
+            self.metrics["latest_assignment"] = {"worker_id": worker_id,
+                "occurrence_id": occurrence_id,
                 "investigation_id": info["investigation_id"], "lease_id": task["lease_id"]}
             busy = self.worker_count - len(free)
             self.metrics["peak_workers_busy"] = max(self.metrics["peak_workers_busy"], busy)
@@ -310,7 +286,7 @@ class Dispatcher:
                 info = self.worker_info[worker_id]
                 self._transition(info, "WORKING", "CAPTURE" if "capsule_id" in task else "MATERIALIZE")
                 task["dispatch_trace"]["timestamps_ns"]["t8"] = time.perf_counter_ns()
-                task["dispatch_trace"]["lease_id"] = task.get("lease_id")
+                task["dispatch_trace"]["lease_id"] = task["lease_id"]
                 task["dispatch_trace"]["investigation_id"] = info["investigation_id"]
                 self.dispatch_profiler.record(task["dispatch_trace"])
             started = time.perf_counter()
@@ -325,17 +301,17 @@ class Dispatcher:
                 with self.lock:
                     self._transition(self.worker_info[worker_id], "WORKING", "CAPTURING")
                 capture_completed = self.capsule_pool.wait_frozen(
-                    capsule_id, task["capsule_lease"], self.stop_event)
+                    capsule_id, task["lease_id"], self.stop_event)
                 self.metrics["focused_capture_completed"] += int(capture_completed)
                 self.capsule_pool.analyzing(capsule_id)
                 if capture_completed:
                     try:
                         capsule_evidence = self.capsule_pool.decode(
-                            capsule_id, task["capsule_lease"], task["investigation_id"])
+                            capsule_id, task["lease_id"], task["investigation_id"])
                         self.metrics["capsule_records_decoded"] += capsule_evidence.event_count
                         self.metrics["predecessor_decode_attempts"] += 1
                         predecessor_evidence = self.capsule_pool.decode_predecessor(
-                            capsule_id, task["capsule_lease"], task["investigation_id"])
+                            capsule_id, task["lease_id"], task["investigation_id"])
                         self.metrics["predecessor_decode_none"] += int(
                             predecessor_evidence is None)
                         if predecessor_evidence is not None:
@@ -360,8 +336,7 @@ class Dispatcher:
                     self._transition(self.worker_info[worker_id], "WORKING", "QUICK_CHECK")
             if self.processing_delay:
                 time.sleep(self.processing_delay)
-            branch = task["branch"]
-            inv_id = "INV-AUTO67-" + task["seed"]
+            inv_id = task["investigation_id"]
             worker_outcome = ("EVIDENCE_MATERIALIZED" if capsule_evidence is not None
                               else "DECODE_FAILED" if decode_failed
                               else "CAPTURE_UNAVAILABLE" if capsule_id is not None and not capture_completed
@@ -374,19 +349,18 @@ class Dispatcher:
                                            predecessor_evidence, live_worker=True)
                 persistence_item = materialized_descriptor(
                     persistence_event, materialized, persistence_status, event.get("frame"), worker_id,
-                    task.get("lease_id"), inv_id)
+                    task["lease_id"], inv_id)
             else:
                 materialized = None
                 persistence_item = descriptor(
                     persistence_event, persistence_status, event.get("frame"), worker_id,
-                    task.get("lease_id"), inv_id)
+                    task["lease_id"], inv_id)
             with self.lock:
-                investigation = {"id": inv_id, "branch": branch,
-                                 "context": task["context"],
-                                 "occurrence_id": task["occurrence_id"],
+                investigation = {"investigation_id": inv_id,
+                                 "occurrence_id": event.get("occurrence_id"),
                                  "window_item_id": event.get("window_item_id"),
-                                 "lease_id": task.get("lease_id"),
-                                 "seed_sequence": event.get("seq"),
+                                 "lease_id": task["lease_id"],
+                                 "worker_id": worker_id,
                                  "outcome": worker_outcome, "evidence": [event]}
                 if materialized is not None:
                     investigation["materialization"] = {
@@ -434,7 +408,7 @@ class Dispatcher:
         info["state"] = state
         info["stage"] = stage
         transition = {"worker_id": info["worker_id"], "state": state,
-                      "stage": stage, "chain": info["chain_fingerprint"],
+                      "stage": stage, "occurrence_id": info["occurrence_id"],
                       "investigation_id": info["investigation_id"],
                       "at": time.time()}
         info["transitions"].append(transition)
