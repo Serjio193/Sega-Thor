@@ -1,7 +1,7 @@
 # M12-AUTO67-CARTOGRAPHER-SEAM-1
 
-**Date:** 2026-09-15  
-**Baseline:** `199c8d43454d761a2000026a83c20a06f7c4d00d`  
+**Date:** 2026-09-15
+**Baseline:** `199c8d43454d761a2000026a83c20a06f7c4d00d`
 **Classification:** `PASS_AUTO67_CARTOGRAPHER_SEAM`
 
 ## Scope and boundary
