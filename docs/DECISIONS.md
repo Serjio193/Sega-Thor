@@ -1864,3 +1864,26 @@ LEASED guard, rolling window, mailbox shape, and capsule limits remain unchanged
 Semantic deduplication and any future frontier scheduling stay downstream.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md`.
+# ADR-AUTO67-RING-CLEAN-1 — Current-event rings have no semantic state
+**Status:** Accepted for M12 AUTO67
+**Date:** 2026-09-15
+
+**Context:** After Worker cleanup, the Python `RollingWindow` still exposed a
+`retained` counter and a misleading `max_utilization` snapshot field. The
+current-event ring must remain a temporary bounded scheduling window, separate
+from the Lua transport ring and from the predecessor ring.
+
+**Decision:** Remove `RollingWindow.retained`, `rolling_window.retained`,
+`max_utilization`, and the unused `current()` method. Keep only capacity,
+items and overwrite count, while preserving exact-item `dispatch_state=LEASED`
+and all occurrence identity fields. Leave the Lua ring implementation intact
+because its bounded overwrite-oldest/order/identity contract already passes the
+focused fixture audit.
+
+**Consequences:** The Python ring cannot be mistaken for proof retention or a
+backlog. Lua remains the transport window and Python remains the Dispatcher
+current-event window; neither ring is merged or enlarged. Dispatcher, Worker,
+CapsulePool, Cartographer, MAP-1, Walker-1, AUTO68, SOURCE_OWNED and C++ are
+unchanged.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_RING_CLEAN_1.md`.

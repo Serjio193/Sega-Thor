@@ -39,16 +39,11 @@ class RollingWindow:
         self.capacity = capacity
         self.items: deque[dict[str, Any]] = deque(maxlen=capacity)
         self.overwrites = 0
-        self.retained = 0
 
     def append(self, event: dict[str, Any]) -> None:
         if len(self.items) == self.capacity:
             self.overwrites += 1
         self.items.append(event)
-
-    def current(self) -> list[dict[str, Any]]:
-        return list(self.items)
-
 
 class Dispatcher:
     """Single claim authority with one mailbox per worker and no raw-event FIFO."""
@@ -477,9 +472,7 @@ class Dispatcher:
                     else list(self.transition_history)[-32:],
                     "rolling_window": {"capacity": self.window.capacity,
                                         "utilization": len(self.window.items),
-                                        "max_utilization": self.window.capacity,
-                                        "overwrites": self.window.overwrites,
-                                        "retained": self.window.retained},
+                                        "overwrites": self.window.overwrites},
                     "investigations": list(self.recent_investigations),
                     "chain_store": persistence,
                     "dispatch_profile": self.dispatch_profiler.snapshot(),

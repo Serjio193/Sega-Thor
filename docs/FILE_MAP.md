@@ -1429,3 +1429,13 @@ register/capture diagnostics; live Worker calls omit prescriptive frontiers.
 occurrence provenance. `tests/thor_evidence_auto67_worker_clean_test.py`
 covers the A-G Worker-clean and Dispatcher regression contract. The published
 checkpoint is `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md` plus JSON.
+# M12 AUTO67 current-event ring boundary (2026-09-15)
+
+`src/tools/thor_evidence/auto67_live.py::RollingWindow` is the bounded Python
+current-event window for Dispatcher leasing. It owns only `capacity`,
+`items` and `overwrites`; the exact item still carries `dispatch_state=LEASED`.
+`src/tools/thor_evidence/capture/live_opportunistic.lua` remains the separate
+bounded transport ring across the status poll boundary and preserves event
+order and occurrence identity. The two rings are not merged and neither is a
+backlog. `tests/thor_evidence_auto67_ring_clean_test.py` is the deterministic
+Python/Lua-contract fixture for this checkpoint.

@@ -109,6 +109,22 @@ perform that merge. Capsule limits remain `CAPSULE_COUNT=16` and
 `WAITING_CAPTURE_SLOT` path, not branch suppression. There is no raw-event
 backlog or per-worker queue.
 
+### AUTO67 current-event ring boundary
+
+The Python `RollingWindow` is a current-event container only: it owns
+`capacity`, a `deque(maxlen=capacity)` and an `overwrites` count. It does not
+track proof, semantic retention, Worker results, novelty, Cartographer state or
+frontiers, and it exposes no dead convenience API. Its snapshot reports only
+`capacity`, `utilization` and `overwrites`; `dispatch_state=LEASED` remains on
+the exact stored item as the DISPATCHER-1 redispatch guard.
+
+The Lua `live_opportunistic.lua` ring is a separate transport window across the
+file/poll boundary. It owns `ring_start`, `ring_count`, `capacity` and
+`overwritten`, emits current events in order, and preserves `epoch`, `seq` and
+`occurrence_id`. The two rings are intentionally separate and neither is a
+pending-event FIFO or an unbounded backlog. The predecessor/prehistory ring is
+outside this boundary.
+
 ## AUTO67.4 frozen capsule worker materialization
 
 `capture/live_capsule.lua` writes versioned O67V v2 capsules with a 24-byte

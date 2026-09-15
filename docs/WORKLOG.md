@@ -8951,3 +8951,24 @@ available.
 
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_WORKER_CLEAN_1.md` and its JSON
 counterpart.
+# 2026-09-15 — M12 AUTO67 current-event ring cleanup — PASS (bounded)
+
+TASK: Starting from `f0101b754421915c996d982bed6b60e713c98477`, remove only
+semantic baggage from Python `RollingWindow`. Preserve the separate Lua
+transport ring, Python current-event ring, no-backlog path, DISPATCHER-1 exact
+LEASED guard, occurrence identities, and Worker-clean behavior.
+
+IMPLEMENTATION: Removed `RollingWindow.retained`, snapshot `retained` and
+`max_utilization`, and the unused `current()` method. The Python ring now owns
+only `capacity`, bounded deque items, and `overwrites`. Lua ring code was audited
+and left unchanged: ring_start/ring_count/capacity/overwritten provide bounded
+overwrite-oldest order-preserving transport with epoch/seq/occurrence identity.
+
+VALIDATION: Focused Ring tests A-F, Worker-clean regressions and DISPATCHER-1
+regressions pass. Full Debug/Release CTest, source-limit and diff-check results
+are recorded in the published report. SOURCE_OWNED and all prohibited runtime,
+queue, capsule, Cartographer, MAP-1, Walker-1, AUTO68 and C++ paths are
+unchanged.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_RING_CLEAN_1.md` and its JSON
+counterpart.
