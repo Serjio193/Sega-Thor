@@ -1,0 +1,124 @@
+{
+  "schema": "oasis.m12.auto67.bizhawk-native-ring-1.v1",
+  "baseline_sha": "3654f5220ea83ea60c4b991f5e6659fb7a14390c",
+  "classification": "STOP_CUSTOM_BIZHAWK_BUILD_FAILURE",
+  "source": {
+    "bizhawk_tag": "2.11.1",
+    "bizhawk_commit": "bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5",
+    "genesis_plus_gx_commit": "051d430d3d1b54625f9900c8f152d7f232e06daf",
+    "patched_files": [
+      "src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs",
+      "waterbox/gpgx/Makefile",
+      "waterbox/gpgx/cinterface/cinterface.c",
+      "waterbox/gpgx/Genesis-Plus-GX/core/m68k/m68kcpu.c",
+      "waterbox/gpgx/Genesis-Plus-GX/core/debug/trace_ring.h",
+      "waterbox/gpgx/Genesis-Plus-GX/core/debug/trace_ring.c"
+    ],
+    "patch_sha256": {
+      "bizhawk-2.11.1-native-ring.patch": "A6E303140D5A85E11C604A0CFDFAD42413395C49E4A70B1415C1AA8A627609E5",
+      "genesis-plus-gx-native-ring.patch": "139C2A15D27DDDED659BED964349076A3E2EFC91B8B43BDFBD350AA8200D85EB"
+    },
+    "custom_binary_sha256": "UNAVAILABLE"
+  },
+  "rom": {
+    "path": "local-roms/Beyond Oasis (USA).md",
+    "sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "savestate": "BizHawk GenPlus-gx QuickSave1"
+  },
+  "ring": {
+    "capacity": 4096,
+    "record_layout": [
+      "uint64_t sequence",
+      "uint32_t pc",
+      "uint16_t opcode",
+      "uint16_t reserved"
+    ],
+    "hot_path": [
+      "save pre-fetch PC",
+      "fetch 16-bit opcode",
+      "increment monotonic sequence",
+      "write one ring slot"
+    ],
+    "observer_only": true,
+    "bulk_api": [
+      "gpgx_native_trace_ring_latest()",
+      "gpgx_native_trace_ring_count()",
+      "gpgx_native_trace_ring_copy(start_sequence, destination, capacity)",
+      "gpgx_native_trace_ring_reset()"
+    ],
+    "per_instruction_lua_callback": false,
+    "text_trace": false,
+    "allocation_per_instruction": false
+  },
+  "modes": [
+    {
+      "mode": "A",
+      "description": "stock BizHawk, no global prehistory",
+      "per_instruction_lua_callback": false,
+      "records_per_frame": 0,
+      "bulk_copies": 0,
+      "p50_ms": 17,
+      "p95_ms": 17,
+      "p99_ms": 26,
+      "max_ms": 26,
+      "slice_hash": null,
+      "proof": "prior 60-frame control"
+    },
+    {
+      "mode": "B",
+      "description": "stock BizHawk, continuous event.on_bus_exec_any",
+      "per_instruction_lua_callback": true,
+      "records_per_frame": 9386.5166666667,
+      "bulk_copies": 0,
+      "p50_ms": 621,
+      "p95_ms": 707,
+      "p99_ms": 715,
+      "max_ms": 715,
+      "slice_hash": "available in prior control receipt",
+      "proof": "prior 60-frame control"
+    },
+    {
+      "mode": "C",
+      "description": "patched BizHawk, native continuous ring",
+      "per_instruction_lua_callback": false,
+      "records_per_frame": null,
+      "bulk_copies": null,
+      "p50_ms": null,
+      "p95_ms": null,
+      "p99_ms": null,
+      "max_ms": null,
+      "slice_hash": null,
+      "proof": "not run; custom build blocked"
+    }
+  ],
+  "parity": {
+    "stock_lua_slice_hash": null,
+    "native_ring_slice_hash": null,
+    "equal": null,
+    "interval": null,
+    "consumer_pc": null,
+    "reaching_definition": "NOT_RUN",
+    "intervening_writer": "NOT_RUN",
+    "status": "NOT_PROVEN",
+    "divergence_asserted": false
+  },
+  "validation": {
+    "ring_standalone_compile_and_wrap_test": "PASS",
+    "parent_patch_clean_apply": "PASS",
+    "nested_patch_clean_apply": "PASS",
+    "bizhawk_native_build": "BLOCKED: waterbox/sysroot/bin/musl-clang and musl-gcc absent",
+    "bizhawk_csharp_build": "BLOCKED: .NET Framework 4.8 reference assemblies absent",
+    "focused_auto67_regressions": "NOT RERUN; no production code changed",
+    "debug_release_ctest": "NOT RERUN; no production code changed",
+    "source_limit": "PASS; only docs/patch/recipe files changed in Sega-Thor",
+    "source_owned": {
+      "before": 1475600,
+      "after": 1475600,
+      "delta": 0
+    },
+    "git_diff_check": "PASS",
+    "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+    "production_integration": false,
+    "final_sha": "publication commit returned with this receipt"
+  }
+}

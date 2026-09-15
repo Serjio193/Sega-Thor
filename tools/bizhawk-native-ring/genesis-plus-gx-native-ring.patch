@@ -1,0 +1,125 @@
+diff --git a/core/m68k/m68kcpu.c b/core/m68k/m68kcpu.c
+index 999638d..73c1601 100644
+--- a/core/m68k/m68kcpu.c
++++ b/core/m68k/m68kcpu.c
+@@ -19,6 +19,7 @@ extern int vdp_68k_irq_ack(int int_level);
+ #include "m68kcpu.h"
+ #include "m68kops.h"
+ #include "../shared.h"
++#include "../debug/trace_ring.h"
+ 
+ #ifdef USE_RAM_DEEPFREEZE
+ int deepfreeze_list_size;
+@@ -290,6 +291,8 @@ void m68k_run(unsigned int cycles)
+ 
+   while (m68k.cycles < cycles)
+   {
++    uint32_t trace_pc = REG_PC;
++
+     /* Set tracing accodring to T1. */
+     m68ki_trace_t1() /* auto-disable (see m68kcpu.h) */
+ 
+@@ -304,6 +307,9 @@ void m68k_run(unsigned int cycles)
+ 
+     /* Decode next instruction */
+     REG_IR = m68ki_read_imm_16();
++#ifdef BIZHAWK_NATIVE_TRACE_RING
++    gpgx_trace_ring_record(trace_pc, (uint16_t)REG_IR);
++#endif
+ 
+     /* 68K bus access refresh delay (Mega Drive / Genesis specific) */
+     if (m68k.cycles >= m68k.refresh_cycles)
+diff --git a/core/debug/trace_ring.h b/core/debug/trace_ring.h
+new file mode 100644
+index 0000000..98a2be0
+--- /dev/null
++++ b/core/debug/trace_ring.h
+@@ -0,0 +1,24 @@
++#ifndef GPGX_TRACE_RING_H
++#define GPGX_TRACE_RING_H
++
++#include <stdint.h>
++
++#define GPGX_TRACE_RING_CAPACITY 4096u
++
++typedef struct
++{
++  uint64_t sequence;
++  uint32_t pc;
++  uint16_t opcode;
++  uint16_t reserved;
++} gpgx_trace_record;
++
++void gpgx_trace_ring_record(uint32_t pc, uint16_t opcode);
++uint64_t gpgx_trace_ring_latest(void);
++uint32_t gpgx_trace_ring_count(void);
++uint32_t gpgx_trace_ring_copy(uint64_t start_sequence,
++                              gpgx_trace_record *destination,
++                              uint32_t capacity);
++void gpgx_trace_ring_reset(void);
++
++#endif
+diff --git a/core/debug/trace_ring.c b/core/debug/trace_ring.c
+new file mode 100644
+index 0000000..6ea7b38
+--- /dev/null
++++ b/core/debug/trace_ring.c
+@@ -0,0 +1,58 @@
++#include "trace_ring.h"
++
++static gpgx_trace_record records[GPGX_TRACE_RING_CAPACITY];
++static uint64_t latest_sequence;
++static uint32_t record_count;
++
++void gpgx_trace_ring_record(uint32_t pc, uint16_t opcode)
++{
++  uint32_t slot = (uint32_t)(latest_sequence % GPGX_TRACE_RING_CAPACITY);
++  latest_sequence++;
++  records[slot].sequence = latest_sequence;
++  records[slot].pc = pc;
++  records[slot].opcode = opcode;
++  records[slot].reserved = 0;
++  if (record_count < GPGX_TRACE_RING_CAPACITY)
++    record_count++;
++}
++
++uint64_t gpgx_trace_ring_latest(void)
++{
++  return latest_sequence;
++}
++
++uint32_t gpgx_trace_ring_count(void)
++{
++  return record_count;
++}
++
++uint32_t gpgx_trace_ring_copy(uint64_t start_sequence,
++                              gpgx_trace_record *destination,
++                              uint32_t capacity)
++{
++  uint64_t first_sequence;
++  uint32_t copied = 0;
++
++  if (!destination || capacity == 0 || record_count == 0)
++    return 0;
++
++  first_sequence = latest_sequence - record_count + 1;
++  if (start_sequence < first_sequence)
++    start_sequence = first_sequence;
++  if (start_sequence > latest_sequence)
++    return 0;
++
++  while (start_sequence <= latest_sequence && copied < capacity)
++  {
++    uint32_t slot = (uint32_t)((start_sequence - 1) % GPGX_TRACE_RING_CAPACITY);
++    destination[copied++] = records[slot];
++    start_sequence++;
++  }
++  return copied;
++}
++
++void gpgx_trace_ring_reset(void)
++{
++  latest_sequence = 0;
++  record_count = 0;
++}
