@@ -1,0 +1,131 @@
+{
+  "schema": "oasis.m12.auto67.native-trace-probe-1.v1",
+  "baseline_sha": "aa93307723cfdfce8957d8a9f9adc6ba17b842fe",
+  "classification": "STOP_NO_LOW_OVERHEAD_NATIVE_TRACE",
+  "canonical_rom": {
+    "path": "local-roms/Beyond Oasis (USA).md",
+    "sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+  },
+  "acceptance": {
+    "evidence_semantics": [
+      "ordered executed M68K PCs",
+      "opcode for each occurrence",
+      "occurrence ordering",
+      "enough register state for reaching definition",
+      "consumer occurrence",
+      "no intervening writer"
+    ],
+    "production_integration": false,
+    "source_owned": {
+      "before": 1475600,
+      "after": 1475600,
+      "delta": 0
+    },
+    "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+    "final_sha": "publication commit returned with this receipt"
+  },
+  "backends": [
+    {
+      "backend": "BizHawk 2.11.1 / GenPlus-gx current Lua control",
+      "version": "2.11.1 / GenPlus-gx",
+      "executable": "C:\\Dev\\SegaThorTools\\BizHawk-2.11.1-win-x64\\EmuHawk.exe",
+      "baseline_ms_per_frame": 17.0,
+      "trace_ms_per_frame": 621.0,
+      "overhead_ratio": 36.5294117647,
+      "records_per_frame": 9386.5166666667,
+      "records_per_sec": 13489.6047904192,
+      "pc": true,
+      "opcode": true,
+      "registers": "selected A4/A5 at joins",
+      "parity": "NOT_PROVEN",
+      "run_frames": 60,
+      "throttle_vsync": "headless view-mode none; no throttle/vsync requirement",
+      "trace_mechanism": "event.on_bus_exec_any Lua predecessor capture",
+      "native": false,
+      "output_format": "bounded JSON slices with ordered PC/opcode and selected register snapshots"
+    },
+    {
+      "backend": "BizHawk 2.11.1 GPGXTraceBuffer candidate",
+      "version": "2.11.1 / GenPlus-gx",
+      "baseline_ms_per_frame": null,
+      "trace_ms_per_frame": null,
+      "overhead_ratio": null,
+      "records_per_frame": null,
+      "records_per_sec": null,
+      "pc": true,
+      "opcode": true,
+      "registers": true,
+      "parity": "NOT_PROVEN",
+      "run_frames": null,
+      "throttle_vsync": "not run",
+      "trace_mechanism": "C# CallbackBasedTraceBuffer; managed execute callback; List<TraceInfo>; formatter/disassembler/register reads per callback",
+      "native": false,
+      "output_format": "text TraceInfo sink",
+      "disqualified_reason": "not a native/batched trace; source explicitly documents callback approach as significantly slower"
+    },
+    {
+      "backend": "MAME 0.289 Genesis native debugger trace",
+      "version": "0.289 / genesis driver",
+      "executable": "C:\\Dev\\SegaThorTools\\Mame-0.289\\mame.exe",
+      "baseline_ms_per_frame": 17.8077783333,
+      "trace_ms_per_frame": 79.9712916667,
+      "overhead_ratio": 4.49080677947,
+      "records_per_frame": 15569.45,
+      "records_per_sec": 934167,
+      "pc": true,
+      "opcode": "PARTIAL",
+      "registers": false,
+      "parity": "NOT_PROVEN",
+      "run_frames": 60,
+      "throttle_vsync": "-nothrottle; -video none; -sound none; no vsync",
+      "trace_mechanism": "native C++ debugger trace action (trace ...; go)",
+      "native": true,
+      "output_format": "text log",
+      "trace_records": 934167,
+      "trace_bytes": 25153240,
+      "notes": "default trace emits ordered PC/disassembly; no register snapshot or raw opcode column; tracelog field action probe aborted for runaway overhead"
+    },
+    {
+      "backend": "BlastEm",
+      "version": "unavailable",
+      "baseline_ms_per_frame": null,
+      "trace_ms_per_frame": null,
+      "overhead_ratio": null,
+      "records_per_frame": null,
+      "records_per_sec": null,
+      "pc": "UNKNOWN",
+      "opcode": "UNKNOWN",
+      "registers": "UNKNOWN",
+      "parity": "NOT_RUN",
+      "run_frames": null,
+      "trace_mechanism": "not installed; no bounded build attempted",
+      "native": null,
+      "output_format": null
+    }
+  ],
+  "bizhawk_inspection": {
+    "source_tag": "2.11.1",
+    "source_commit": "bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5",
+    "source_root": "build/bizhawk-2.11.1-src",
+    "findings": [
+      "GPGX.ITraceable.cs GPGXTraceBuffer.TraceFromCallback reads M68K PC, disassembles, formats M68K registers, and calls Put.",
+      "CallbackBasedTraceBuffer.cs Sink setter installs TracingMemoryCallback with MemoryCallbackType.Execute and stores a managed List<TraceInfo>.",
+      "CallbackBasedTraceBuffer.cs documents callback technique as significantly slower than direct implementation.",
+      "GPGX.IDebuggable.cs exposes managed execute memory callbacks and register reads."
+    ],
+    "conclusion": "No native/batched GenPlus-gx trace facility was found."
+  },
+  "parity": {
+    "interval": null,
+    "mismatches": [],
+    "status": "NOT_PROVEN",
+    "reason": "BizHawk savestate is emulator-specific; no shared cold-reset interval reaching the preferred dependency was established."
+  },
+  "validation": {
+    "focused_tests": "not rerun; report-only probe and prior bounded BizHawk control receipt reused",
+    "debug_release_ctest": "NOT RERUN; no production code changed",
+    "source_limit": "PASS; no governed source files changed (inventory not rerun)",
+    "git_diff_check": "PASS after report-only publication diff",
+    "production_code_changed": false
+  }
+}
