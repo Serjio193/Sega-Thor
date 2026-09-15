@@ -50,8 +50,9 @@
   },
   "publication": {
     "implementation_sha": "0e07a8d",
-    "final_sha": "PENDING",
-    "head_equals_origin_main": false
+    "final_sha": "fbc687a",
+    "head_equals_origin_main": true
   }
 }
+
 
