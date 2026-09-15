@@ -91,6 +91,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_predispatch_transport_clean_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_mailbox_clean_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_mailbox_clean_test.py)
+    add_test(NAME oasis_re_thor_evidence_auto67_cartographer_seam_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_cartographer_seam_test.py)
     add_test(NAME oasis_re_thor_evidence_dispatcher1_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_dispatcher1_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_1_helpers

@@ -12,6 +12,7 @@ from auto67_status import StatusPublisher
 from auto67_capsule import CapsulePool
 from auto67_capsule_codec import CapsuleFormatError
 from auto67_materializer import materialize, required_registers
+from auto67_cartographer import local_chain
 from auto67_profile import DispatchProfiler
 from auto67_persistence import LivePersistenceSink, descriptor, materialized_descriptor
 
@@ -355,13 +356,17 @@ class Dispatcher:
                 persistence_item = descriptor(
                     persistence_event, persistence_status, event.get("frame"), worker_id,
                     task["lease_id"], inv_id)
+            worker_chain = local_chain(event, materialized, inv_id, task["lease_id"])
+            persistence_item["local_chain"] = worker_chain
             with self.lock:
                 investigation = {"investigation_id": inv_id,
                                  "occurrence_id": event.get("occurrence_id"),
                                  "window_item_id": event.get("window_item_id"),
                                  "lease_id": task["lease_id"],
                                  "worker_id": worker_id,
-                                 "outcome": worker_outcome, "evidence": [event]}
+                                 "outcome": worker_outcome, "evidence": [event],
+                                 "local_chain_schema": worker_chain["local_chain_schema"],
+                                 "chain_step_count": len(worker_chain["chain_steps"])}
                 if materialized is not None:
                     investigation["materialization"] = {
                         "capsule_format_version": materialized["capsule_format_version"],
@@ -439,6 +444,14 @@ class Dispatcher:
                 metrics["focused_capture_completed"] = capsules["metrics"]["capsules_frozen"]
             persistence = self.chain_sink.snapshot() if self.chain_sink else {
                 "available": False}
+            for name in ("local_chains_submitted", "local_chains_processed",
+                         "chains_with_accepted_proof", "chains_without_accepted_proof",
+                         "map_new_nodes", "map_new_edges", "map_promoted_nodes",
+                         "map_promoted_edges", "map_conflicts", "map_component_joins",
+                         "map_fragments_dropped", "map_write_errors", "last_map_delta",
+                         "graph_hash"):
+                if name in persistence:
+                    metrics[name] = persistence[name]
             return {"metrics": metrics, "worker_states": list(self.worker_states),
                     "workers": [dict(item, transitions=list(item["transitions"]))
                                 for item in self.worker_info],

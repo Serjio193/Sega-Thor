@@ -20,6 +20,12 @@ except ImportError:  # direct AUTO67 launcher/tests put this directory on sys.pa
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from thor_evidence.identity import ROM_SHA
     from thor_evidence.store import Store
+try:
+    from .auto67_cartographer import candidate_bundle, import_ref
+    from .cartographer import Cartographer
+except ImportError:
+    from auto67_cartographer import candidate_bundle, import_ref
+    from cartographer import Cartographer
 
 
 CAUSAL_FIELDS = (
@@ -137,9 +143,12 @@ def _store_monitor(store: Store, session_id: str) -> dict[str, Any]:
 class LivePersistenceSink:
     """One bounded non-BizHawk queue and one transactional SQLite writer."""
 
-    def __init__(self, path: Path, scenario_key: str = "AUTO67-live"):
-        self.path = Path(path).resolve()
+    def __init__(self, path: Path | None, scenario_key: str = "AUTO67-live",
+                 cartographer: Cartographer | None = None, source_sha256: str = ""):
+        self.path = Path(path).resolve() if path is not None else None
         self.scenario_key = scenario_key
+        self.cartographer = cartographer
+        self.source_sha256 = source_sha256
         self.session_id = "auto67-session-" + uuid.uuid4().hex
         self.items: queue.Queue[dict[str, Any] | None] = queue.Queue(
             maxsize=CHAIN_QUEUE_CAPACITY)
@@ -154,6 +163,20 @@ class LivePersistenceSink:
         self.last_error: str | None = None
         self.last_result: dict[str, Any] | None = None
         self.runtime_leases = 0
+        self.local_chains_submitted = 0
+        self.local_chains_processed = 0
+        self.chains_with_accepted_proof = 0
+        self.chains_without_accepted_proof = 0
+        self.map_new_nodes = 0
+        self.map_new_edges = 0
+        self.map_promoted_nodes = 0
+        self.map_promoted_edges = 0
+        self.map_conflicts = 0
+        self.map_component_joins = 0
+        self.map_fragments_dropped = 0
+        self.map_write_errors = 0
+        self.last_map_delta: dict[str, Any] = {}
+        self.last_map_error: str | None = None
         self.monitor: dict[str, Any] = {
             "available": False, "total_unique_chains": 0,
             "new_unique_chains_this_session": 0,
@@ -164,7 +187,8 @@ class LivePersistenceSink:
         self.statuses: Counter[str] = Counter()
 
     def start(self) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.path is not None:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
         self.thread = threading.Thread(target=self._run, name="auto67-chain-writer",
                                        daemon=True)
         self.thread.start()
@@ -183,18 +207,21 @@ class LivePersistenceSink:
             return False
         with self.lock:
             self.submitted += 1
+            self.local_chains_submitted += int("local_chain" in item)
         return True
 
     def _run(self) -> None:
         store = None
         try:
-            store = Store(self.path)
-            store.begin_live_session(
-                self.session_id, self.scenario_key, str(time.time()),
-                json.dumps({"schema": "oasis.m12.auto67.chain-session.v1",
-                            "chain_status": {}}, sort_keys=True,
-                           separators=(",", ":")))
-            self.monitor = _store_monitor(store, self.session_id)
+            if self.path is not None:
+                store = Store(self.path)
+                store.begin_live_session(
+                    self.session_id, self.scenario_key, str(time.time()),
+                    json.dumps({"schema": "oasis.m12.auto67.chain-session.v1",
+                                "chain_status": {}}, sort_keys=True,
+                               separators=(",", ":")))
+            self.monitor = (_store_monitor(store, self.session_id) if store is not None
+                            else {"available": False})
             self.ready.set()
             processed = 0
             while not self.stop_requested.is_set() or not self.items.empty():
@@ -204,17 +231,47 @@ class LivePersistenceSink:
                     continue
                 if item is None:
                     continue
+                local = item.get("local_chain")
+                with self.lock:
+                    self.local_chains_processed += int(local is not None)
+                if self.cartographer is not None:
+                    candidate = candidate_bundle(local) if local is not None else None
+                    if candidate is None:
+                        with self.lock:
+                            self.chains_without_accepted_proof += int(local is not None)
+                            self.map_fragments_dropped += int(local is not None)
+                    else:
+                        bundle, stable_hash = candidate
+                        try:
+                            delta = self.cartographer.merge(
+                                bundle, import_ref(stable_hash), self.source_sha256)
+                            values = delta.as_dict()
+                            with self.lock:
+                                self.chains_with_accepted_proof += 1
+                                self.map_new_nodes += delta.new_nodes
+                                self.map_new_edges += delta.new_edges
+                                self.map_promoted_nodes += delta.promoted_nodes
+                                self.map_promoted_edges += delta.promoted_edges
+                                self.map_conflicts += delta.new_conflicts
+                                self.map_component_joins += delta.component_joins
+                                self.last_map_delta = values
+                        except Exception as error:
+                            with self.lock:
+                                self.map_write_errors += 1
+                                self.last_map_error = f"{type(error).__name__}: {error}"
                 try:
-                    result = store.record_live_chain(
-                        self.session_id, item["chain_hash"], item["canonical_payload"],
-                        item["status"], item["frame"], item["provenance"],
-                        item.get("record_class", "SEED_ONLY"))
+                    result = None
+                    if store is not None:
+                        result = store.record_live_chain(
+                            self.session_id, item["chain_hash"], item["canonical_payload"],
+                            item["status"], item["frame"], item["provenance"],
+                            item.get("record_class", "SEED_ONLY"))
                     processed += 1
                     with self.lock:
-                        self.persisted += 1
-                        self.last_result = result
+                        self.persisted += int(store is not None)
+                        self.last_result = result or dict(self.last_map_delta)
                         self.statuses[item["status"]] += 1
-                    if processed % 64 == 0:
+                    if store is not None and processed % 64 == 0:
                         self.monitor = _store_monitor(store, self.session_id)
                 except Exception as error:
                     with self.lock:
@@ -258,15 +315,28 @@ class LivePersistenceSink:
             completed = monitor.get("completed_worker_chains", 0)
             monitor["chains_per_1000_leases"] = (
                 completed * 1000.0 / leases if leases else 0.0)
-            monitor["db_size_bytes"] = self.path.stat().st_size if self.path.exists() else 0
+            monitor["db_size_bytes"] = self.path.stat().st_size if self.path and self.path.exists() else 0
             return {"available": monitor.get("available", False),
-                    "database": str(self.path), "session_id": self.session_id,
+                    "database": str(self.path) if self.path else None, "session_id": self.session_id,
                     "queue_depth": self.items.qsize(),
                     "queue_capacity": self.items.maxsize, "submitted": self.submitted,
                     "dropped": self.dropped, "persisted": self.persisted,
                     "write_errors": self.write_errors, "monitor": monitor,
-                    "statuses": dict(self.statuses), "last_result": dict(self.last_result or {}),
-                    "error": self.last_error}
+                     "statuses": dict(self.statuses), "last_result": dict(self.last_result or {}),
+                     "error": self.last_error, "local_chains_submitted": self.local_chains_submitted,
+                     "local_chains_processed": self.local_chains_processed,
+                     "chains_with_accepted_proof": self.chains_with_accepted_proof,
+                     "chains_without_accepted_proof": self.chains_without_accepted_proof,
+                     "map_new_nodes": self.map_new_nodes, "map_new_edges": self.map_new_edges,
+                     "map_promoted_nodes": self.map_promoted_nodes,
+                     "map_promoted_edges": self.map_promoted_edges,
+                     "map_conflicts": self.map_conflicts,
+                     "map_component_joins": self.map_component_joins,
+                     "map_fragments_dropped": self.map_fragments_dropped,
+                     "map_write_errors": self.map_write_errors,
+                     "last_map_delta": dict(self.last_map_delta),
+                     "graph_hash": self.cartographer.graph_hash() if self.cartographer else "",
+                     "last_map_error": self.last_map_error}
 
 
 # Compatibility name for callers that imported the old bridge directly.

@@ -121,6 +121,20 @@ The same `lease_id` is used for capsule wait, decode, predecessor decode and
 persistence provenance. Worker diagnostics retain factual worker and
 occurrence IDs plus bounded materialization counts.
 
+### AUTO67 Cartographer seam
+
+The Worker materializes capture data into an explicit local-chain result and
+submits it through the existing bounded `LivePersistenceSink` queue. The
+downstream `auto67_cartographer.py` adapter accepts only the existing
+predecessor-produced `REGISTER_REACHING_DEFINITION` step when its producer and
+consumer PCs, A4/A5 register, occurrence epochs and complete/non-intervening
+interval evidence are valid. It emits stable global `ROM_INSTRUCTION` nodes
+and a `REGISTER_REACHING_DEFINITION:<register>` edge, then calls the existing
+MAP-1 `Cartographer.merge()`; runtime occurrence and lease identities remain
+local provenance only. Unproven chains stay diagnostics and produce no map
+frontier. `--map-db` enables this downstream graph independently of the legacy
+`--chain-db`; supplying both keeps the compatibility live-chain write.
+
 ### AUTO67 current-event ring boundary
 
 The Python `RollingWindow` is a current-event container only: it owns

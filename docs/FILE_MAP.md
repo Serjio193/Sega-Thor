@@ -1461,3 +1461,15 @@ occurrence, worker and capsule-lease mailbox fields are removed. Worker
 history remains bounded and factual. The contract is covered by
 `tests/thor_evidence_auto67_mailbox_clean_test.py` and the checkpoint report
 `docs/reports/THOR_M12_AUTO67_MAILBOX_CLEAN_1.md` plus JSON.
+
+# M12 AUTO67 Cartographer seam (2026-09-15)
+
+`auto67_cartographer.py` converts Worker local-chain results into a stable
+MAP-1 bundle only for the predecessor-produced
+`REGISTER_REACHING_DEFINITION` proof contract. The existing Cartographer owns
+PROVEN, duplicate, conflict and component decisions. `LivePersistenceSink`
+feeds the adapter through its single bounded queue and retains the temporary
+`live_chain` compatibility write. `--map-db` supports map-only mode; combining
+it with `--chain-db` supports compatibility mode. Regression coverage is in
+`tests/thor_evidence_auto67_cartographer_seam_test.py` and the report
+`docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` plus JSON.

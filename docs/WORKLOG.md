@@ -1,3 +1,20 @@
+# 2026-09-15 — M12 AUTO67 Cartographer seam — PASS (bounded)
+
+TASK: Connect the clean AUTO67 Worker output to the existing MAP-1 Cartographer
+without changing upstream capture, transport, RollingWindow, Dispatcher,
+mailbox, Worker scheduling or CapsulePool limits.
+
+RESULT: PASS. Worker now emits an explicit bounded local-chain result. A
+single downstream adapter validates only predecessor-produced
+`REGISTER_REACHING_DEFINITION` steps and submits stable ROM instruction nodes
+and register-specific edges to Cartographer. Existing LivePersistenceSink
+queue/writer behavior remains the only output path and legacy `live_chain`
+compatibility is retained. Map-only and map-plus-chain-db modes are covered;
+occurrence identities do not enter durable graph identity and unproven chains
+remain local diagnostics.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` and its JSON
+counterpart.
 # 2026-09-15 — M12 AUTO67 mailbox-clean lease message — PASS (bounded)
 
 TASK: Starting from the pre-dispatch transport checkpoint, reduce the exact

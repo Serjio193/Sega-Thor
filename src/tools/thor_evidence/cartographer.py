@@ -45,7 +45,9 @@ class Cartographer:
     def __init__(self, path: str | Path, rom_sha256: str, source_owned_bytes: int = 0):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(self.path)
+        # AUTO67's single bounded writer thread owns merges; the handle is
+        # created by the launcher thread before that writer starts.
+        self.db = sqlite3.connect(self.path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(
             """CREATE TABLE IF NOT EXISTS map_meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
