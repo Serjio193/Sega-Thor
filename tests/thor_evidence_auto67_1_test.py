@@ -141,7 +141,7 @@ class Auto671CapsuleTest(unittest.TestCase):
         try:
             snapshot = dispatcher.snapshot()
             self.assertNotIn("knowledge_yield", snapshot)
-            self.assertIn("chain_store", snapshot)
+            self.assertIn("map_sink", snapshot)
         finally:
             dispatcher.stop()
 

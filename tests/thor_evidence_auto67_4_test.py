@@ -15,7 +15,7 @@ from auto67_capsule_codec import (  # noqa: E402
     decode_capsule,
 )
 from auto67_materializer import materialize  # noqa: E402
-from auto67_persistence import materialized_descriptor  # noqa: E402
+from auto67_legacy_persistence import materialized_descriptor  # noqa: E402
 from thor_evidence.store import Store  # noqa: E402
 from auto67_capsule import CapsulePool  # noqa: E402
 

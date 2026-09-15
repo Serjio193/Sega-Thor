@@ -14,7 +14,7 @@ DEFAULT_DB = ROOT / "build/thor-evidence/auto67-3/persistent-chain-proof-v3.sqli
 import sys
 
 sys.path.insert(0, str(ROOT / "src/tools"))
-from thor_evidence.auto67_persistence import canonical_chain, chain_descriptor
+from thor_evidence.auto67_legacy_persistence import canonical_chain, chain_descriptor
 
 
 CAUSAL_AUDIT_FIELDS = {

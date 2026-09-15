@@ -16,7 +16,7 @@ from auto67_dashboard import DASHBOARD_HTML
 from auto67_live import BASELINE, ROM_SHA, Dispatcher
 from auto67_materializer import register_provenance_targets
 from auto67_predecessor import register_writer_candidate_report
-from auto67_persistence import LivePersistenceSink
+from auto67_persistence import LiveMapSink
 from auto67_status import StatusPublisher
 from auto67_transport import PreDispatchTransport
 
@@ -60,15 +60,12 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         capsule_pool = CapsulePool(
             count=args.capsule_count, max_live=args.max_live_captures,
             command_path=command_path)
-    chain_db = getattr(args, "chain_db", None) or getattr(args, "knowledge_db", None)
     map_db = getattr(args, "map_db", None)
-    chain_sink = (LivePersistenceSink(chain_db, map_db=map_db,
-                                       source_sha256=ROM_SHA)
-                  if chain_db or map_db else None)
-    if chain_sink is not None:
-        chain_sink.start()
+    map_sink = LiveMapSink(map_db, source_sha256=ROM_SHA) if map_db else None
+    if map_sink is not None:
+        map_sink.start()
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
-                            chain_sink, rom_bytes)
+                            map_sink, rom_bytes)
     dispatcher.start()
     environment = os.environ.copy()
     environment.update({
@@ -133,8 +130,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         dispatcher.ingest(event)
     dispatcher.stop()
     publisher.publish(lua_final)
-    if chain_sink is not None:
-        chain_sink.stop()
+    if map_sink is not None:
+        map_sink.stop()
     if capsule_pool is not None:
         capsule_pool.stop()
     publisher.stop()
@@ -163,7 +160,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "capture_path": str(final_path), "capture_disabled": args.capture_disabled,
               "view_url": view_url, "view_snapshot": str(view_path),
               "view_mode": view_mode,
-              "chain_store": chain_sink.snapshot() if chain_sink else {
+              "map_sink": map_sink.snapshot() if map_sink else {
                    "available": False},
               "map_db": str(map_db) if map_db else None,
               "capsule_mode": args.capsule_mode,
@@ -173,9 +170,6 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
               "visualization_proof": {"two_workers_working":
                                        dispatcher.metrics["peak_workers_working"] >= 2,
                                        "worker_returned_idle": dispatcher.metrics["worker_returns"] > 0,
-                                       "known_or_merge_visible":
-                                       dispatcher.metrics["known_rejected_before_dispatch"] > 0 or
-                                       dispatcher.metrics["investigation_merges"] > 0,
                                        "rolling_window_active":
                                        dispatcher.metrics["events_observed"] > 0}}
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -213,10 +207,8 @@ def main() -> int:
     parser.add_argument("--view-mode", choices=("window", "browser", "none"), default="window",
                         help="native operator window by default; browser is explicit fallback")
     parser.add_argument("--no-view", action="store_true")
-    parser.add_argument("--chain-db", "--knowledge-db", dest="chain_db", type=Path,
-                        default=None, help="existing SQLite evidence sidecar for worker chains")
     parser.add_argument("--map-db", type=Path, default=None,
-                        help="MAP-1 Cartographer SQLite database; independent of --chain-db")
+                        help="MAP-1 Cartographer SQLite database for live map output")
     args = parser.parse_args()
     result = run_live(args)
     print(json.dumps({"returncode": result["returncode"],

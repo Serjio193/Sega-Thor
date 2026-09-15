@@ -20,8 +20,7 @@ def _metric_text(payload: dict[str, Any]) -> str:
     lua = payload.get("lua", {})
     rolling = dispatcher.get("rolling_window", {})
     profile = dispatcher.get("dispatch_profile", {})
-    chain_store = dispatcher.get("chain_store", {})
-    monitor = chain_store.get("monitor", {})
+    map_sink = dispatcher.get("map_sink", {})
     total_dispatch = profile.get("stages_us", {}).get(
         "T0_T8_dispatch_to_worker_start_us", {})
     frame_timing = lua.get("frame_timing", {})
@@ -52,14 +51,15 @@ def _metric_text(payload: dict[str, Any]) -> str:
         f"HUNT attempts/success {metrics.get('hunt_attempts', 0)}/"
         f"{metrics.get('hunt_successes', 0)}  FRESH {metrics.get('fresh_candidates_available', 0)}  "
         f"FOCUSED {capsules.get('active_live', 0)}/{capsules.get('max_simultaneous_live', 0)}",
-        f"CHAIN DB unique {monitor.get('total_unique_chains', 0)}  "
-        f"SESSION NEW {monitor.get('new_unique_chains_this_session', 0)}  "
-        f"EXACT DUP {monitor.get('exact_duplicates_rejected', 0)}  "
-        f"WRITES {chain_store.get('persisted', 0)}  ERRORS {chain_store.get('write_errors', 0)}",
-        f"UNRESOLVED {monitor.get('unresolved_chains', 0)}  "
-        f"ROOTED {monitor.get('rooted_chains', 0)}  "
-        f"CHAINS/1000 LEASES {monitor.get('chains_per_1000_leases', 0):.1f}  "
-        f"DB {monitor.get('db_size_bytes', 0)} bytes",
+        f"MAP CHAINS submitted/processed {map_sink.get('local_chains_submitted', 0)}/"
+        f"{map_sink.get('local_chains_processed', 0)}  "
+        f"PROOF accepted/rejected {map_sink.get('chains_with_accepted_proof', 0)}/"
+        f"{map_sink.get('chains_without_accepted_proof', 0)}",
+        f"MAP nodes/edges {map_sink.get('map_new_nodes', 0)}/{map_sink.get('map_new_edges', 0)}  "
+        f"PROMOTED {map_sink.get('map_promoted_nodes', 0)}/{map_sink.get('map_promoted_edges', 0)}  "
+        f"CONFLICTS {map_sink.get('map_conflicts', 0)}  "
+        f"ERRORS {map_sink.get('map_write_errors', 0)}  "
+        f"DROPPED {map_sink.get('map_fragments_dropped', 0)}",
         f"HOOKS {hooks.get('active_hooks', 0)}  CALLBACKS/frame p95/max "
         f"{hook_frames.get('callbacks_per_frame', {}).get('p95', 0)}/"
         f"{hook_frames.get('callbacks_per_frame', {}).get('max', 0)}  "

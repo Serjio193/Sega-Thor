@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src/tools"))
-from thor_evidence.auto67_persistence import LivePersistenceSink, chain_descriptor
+from thor_evidence.auto67_legacy_persistence import LivePersistenceSink, chain_descriptor
 from thor_evidence.store import Store
 
 

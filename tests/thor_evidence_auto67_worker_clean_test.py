@@ -34,9 +34,6 @@ class FailingSink:
     def submit(self, _item):
         raise OSError("persistence unavailable")
 
-    def set_runtime_leases(self, _count):
-        raise OSError("persistence unavailable")
-
     def snapshot(self):
         return {"available": False}
 
@@ -146,7 +143,7 @@ class Auto67WorkerCleanTest(unittest.TestCase):
 
     def test_g_persistence_failure_cannot_block_worker_return_or_release(self):
         sink = FailingSink()
-        dispatcher = Dispatcher(1, processing_delay=0, chain_sink=sink)
+        dispatcher = Dispatcher(1, processing_delay=0, map_sink=sink)
         dispatcher.start()
         try:
             dispatcher.ingest(seed(1))

@@ -59,16 +59,13 @@ The measured AUTO67.2 yield proof is
 `docs/reports/THOR_M12_AUTO67_2_KNOWLEDGE_YIELD.md` and its bounded JSON
 counterpart; the full ignored runtime artifact is under `build/`.
 
-`auto67_persistence.py` is the optional single-writer bridge from completed
-worker chain descriptors to the existing `thor_evidence.store.Store` sidecar.
-It canonicalizes observed causal facts, computes exact SHA-256 chain hashes,
-and keeps a bounded nonblocking queue; it is not a raw-event backlog. The
-native window reports objective chain-store growth and no knowledge-yield
-classification. AUTO67.3 replay evidence and the idempotent sidecar regression are recorded by
-  `tests/thor_evidence_auto67_3_test.py` and the corresponding report under
-  `docs/reports/`. `tests/thor_evidence_auto67_3_identity_audit.py` performs
-  the read-only final canonical identity and `live_chain` database audit
-  against the real proof DB. The authoritative checkpoint is
+`auto67_persistence.py` contains `LiveMapSink`, the AUTO67-only single bounded
+local-chain queue and Cartographer writer. The historical descriptor/Store
+bridge is isolated in `auto67_legacy_persistence.py`; its consumers are
+`tests/thor_evidence_auto67_3_test.py`,
+`tests/thor_evidence_auto67_3_identity_audit.py` and
+`tests/thor_evidence_auto67_4_test.py`. The live runner never imports that
+module. The authoritative AUTO67.3 checkpoint is
   `docs/reports/THOR_M12_AUTO67_3_FINAL_CANONICAL_CHAIN_IDENTITY_CHECKPOINT.md`
   and its JSON counterpart; earlier AUTO67 iteration reports are historical.
 

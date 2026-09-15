@@ -13,7 +13,7 @@ assert SPEC.loader
 SPEC.loader.exec_module(AUTO67)
 
 from auto67_capsule import CAPSULE_COUNT, MAX_LIVE_CAPTURES, CapsulePool
-from auto67_persistence import descriptor
+from auto67_legacy_persistence import descriptor
 
 
 def event(seq: int) -> dict:

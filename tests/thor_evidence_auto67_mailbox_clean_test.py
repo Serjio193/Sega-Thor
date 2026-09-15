@@ -1,4 +1,3 @@
-import json
 import sys
 import time
 import unittest
@@ -53,9 +52,6 @@ class RecordingSink:
         self.items.append(item)
         return True
 
-    def set_runtime_leases(self, _count):
-        return None
-
     def snapshot(self):
         return {"available": False}
 
@@ -91,7 +87,7 @@ class Auto67MailboxCleanTest(unittest.TestCase):
 
     def test_c_investigation_and_lease_ids_are_single_threaded_to_persistence(self):
         pool, sink = RecordingPool(), RecordingSink()
-        dispatcher = Dispatcher(1, capsule_pool=pool, chain_sink=sink, processing_delay=0)
+        dispatcher = Dispatcher(1, capsule_pool=pool, map_sink=sink, processing_delay=0)
         dispatcher.start()
         try:
             dispatcher.ingest(event(3))
@@ -100,9 +96,11 @@ class Auto67MailboxCleanTest(unittest.TestCase):
                 time.sleep(0.01)
             self.assertTrue(sink.items)
             investigation_id = pool.claims[0][1]
-            provenance = json.loads(sink.items[0]["provenance"])
-            self.assertEqual(provenance["investigation_id"], investigation_id)
-            self.assertEqual(provenance["lease_id"], "LEASE-1")
+            local_chain = sink.items[0]
+            self.assertEqual(local_chain["investigation_id"], investigation_id)
+            self.assertEqual(local_chain["lease_id"], "LEASE-1")
+            self.assertNotIn("chain_hash", local_chain)
+            self.assertNotIn("canonical_payload", local_chain)
             self.assertEqual(pool.waits, [(0, "LEASE-1")])
             self.assertEqual(dispatcher.recent_investigations[-1]["investigation_id"],
                              investigation_id)

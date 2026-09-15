@@ -14,7 +14,7 @@ from auto67_capsule_codec import CapsuleFormatError
 from auto67_materializer import materialize, required_registers
 from auto67_cartographer import local_chain
 from auto67_profile import DispatchProfiler
-from auto67_persistence import LivePersistenceSink, descriptor, materialized_descriptor
+from auto67_persistence import LiveMapSink
 
 
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
@@ -52,7 +52,7 @@ class Dispatcher:
     def __init__(self, worker_count: int = 16, capacity: int = 256,
                  processing_delay: float = 0.003,
                  capsule_pool: CapsulePool | None = None,
-                 chain_sink: LivePersistenceSink | None = None,
+                 map_sink: LiveMapSink | None = None,
                  rom: bytes | None = None):
         if worker_count not in {1, 2, 4, 8, 16, 32, 64}:
             raise ValueError("worker count must be one of 1,2,4,8,16,32,64")
@@ -60,7 +60,7 @@ class Dispatcher:
         self.worker_count = worker_count
         self.processing_delay = processing_delay
         self.capsule_pool = capsule_pool
-        self.chain_sink = chain_sink
+        self.map_sink = map_sink
         self.rom = rom
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
@@ -213,11 +213,6 @@ class Dispatcher:
             self._transition(info, "LEASED", "DISPATCH")
             self.metrics["seeds_dispatched"] += 1
             self.metrics["worker_leases"] += 1
-            if self.chain_sink is not None:
-                try:
-                    self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
-                except Exception:
-                    self.metrics["persistence_submit_errors"] += 1
             self.metrics["dispatch_starved_no_free_capsule"] = False
             self.metrics["dispatch_reasons"]["DISPATCHED"] += 1
             self.metrics["latest_assignment"] = {"worker_id": worker_id,
@@ -343,21 +338,12 @@ class Dispatcher:
                               else "CAPTURE_UNAVAILABLE" if capsule_id is not None and not capture_completed
                               else "EVIDENCE_CAPTURED" if capsule_id is not None
                               else "EVIDENCE_OBSERVED")
-            persistence_status = "BOUNDED_UNRESOLVED"
-            persistence_event = dict(event, worker_outcome=worker_outcome)
             if capsule_evidence is not None:
                 materialized = materialize(event, capsule_evidence, self.rom,
                                            predecessor_evidence, live_worker=True)
-                persistence_item = materialized_descriptor(
-                    persistence_event, materialized, persistence_status, event.get("frame"), worker_id,
-                    task["lease_id"], inv_id)
             else:
                 materialized = None
-                persistence_item = descriptor(
-                    persistence_event, persistence_status, event.get("frame"), worker_id,
-                    task["lease_id"], inv_id)
             worker_chain = local_chain(event, materialized, inv_id, task["lease_id"])
-            persistence_item["local_chain"] = worker_chain
             with self.lock:
                 investigation = {"investigation_id": inv_id,
                                  "occurrence_id": event.get("occurrence_id"),
@@ -401,10 +387,9 @@ class Dispatcher:
                 self.metrics["worker_cpu_seconds"] += time.thread_time() - cpu_started
                 if capsule_id is not None:
                     self.capsule_pool.release(capsule_id)
-            if self.chain_sink is not None:
+            if self.map_sink is not None:
                 try:
-                    self.chain_sink.submit(persistence_item)
-                    self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
+                    self.map_sink.submit(worker_chain)
                 except Exception:
                     self.metrics["persistence_submit_errors"] += 1
             self._dispatch_current(hunting=True)
@@ -442,7 +427,7 @@ class Dispatcher:
             if capsules:
                 metrics["capsules_free"] = capsules["capsules_free"]
                 metrics["focused_capture_completed"] = capsules["metrics"]["capsules_frozen"]
-            persistence = self.chain_sink.snapshot() if self.chain_sink else {
+            persistence = self.map_sink.snapshot() if self.map_sink else {
                 "available": False}
             for name in ("local_chains_submitted", "local_chains_processed",
                          "chains_with_accepted_proof", "chains_without_accepted_proof",
@@ -461,7 +446,7 @@ class Dispatcher:
                                         "utilization": len(self.window.items),
                                         "overwrites": self.window.overwrites},
                     "investigations": list(self.recent_investigations),
-                    "chain_store": persistence,
+                    "map_sink": persistence,
                     "dispatch_profile": self.dispatch_profiler.snapshot(),
                     "capsules": capsules}
         finally:

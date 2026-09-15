@@ -1,5 +1,7 @@
 import json
+import os
 import queue
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -11,7 +13,7 @@ sys.path.insert(0, str(ROOT / "src/tools"))
 sys.path.insert(0, str(ROOT / "src/tools/thor_evidence"))
 from auto67_cartographer import (LOCAL_CHAIN_SCHEMA, PROOF_CONTRACT,
                                  candidate_bundle, local_chain)
-from auto67_persistence import LivePersistenceSink, chain_descriptor
+from auto67_persistence import LiveMapSink
 from cartographer import Cartographer
 
 
@@ -170,12 +172,9 @@ class Auto67CartographerSeamTest(unittest.TestCase):
                 graph.close()
 
     def test_i_sink_supports_map_only_and_compatibility_modes(self):
-        item = chain_descriptor({"kind": "RAM_WRITE", "pc": "0x100", "address": "0x200"},
-                                "BOUNDED_UNRESOLVED", 8, 0, "L-1", "INV-1")
-        item["local_chain"] = chain("epoch=1:seq=8")
+        item = chain("epoch=1:seq=8")
         with tempfile.TemporaryDirectory() as directory:
-            sink = LivePersistenceSink(None, map_db=Path(directory) / "map-only.sqlite",
-                                       source_sha256="rom")
+            sink = LiveMapSink(Path(directory) / "map-only.sqlite", source_sha256="rom")
             sink.start()
             self.assertTrue(sink.submit(item))
             sink.stop()
@@ -184,24 +183,19 @@ class Auto67CartographerSeamTest(unittest.TestCase):
             self.assertEqual(sink.snapshot()["map_write_errors"], 0)
             self.assertTrue(snapshot["graph_hash"])
 
-            legacy = LivePersistenceSink(Path(directory) / "legacy.sqlite",
-                                         map_db=Path(directory) / "compatible-map.sqlite",
-                                         source_sha256="rom")
+            legacy = LiveMapSink(Path(directory) / "compatible-map.sqlite",
+                                 source_sha256="rom")
             legacy.start()
             self.assertTrue(legacy.submit(item))
             legacy.stop()
             self.assertEqual(legacy.snapshot()["map_new_edges"], 1)
-            self.assertGreaterEqual(legacy.snapshot()["persisted"], 1)
 
     def test_i_no_proof_is_not_counted_as_map_drop(self):
-        item = chain_descriptor({"kind": "RAM_WRITE", "pc": "0x100"},
-                                "BOUNDED_UNRESOLVED", 8)
-        item["local_chain"] = local_chain(
+        item = local_chain(
             {"epoch": 1, "seq": 8, "occurrence_id": "epoch=1:seq=8"},
             {"chain_steps": [step(complete=False)]}, "INV-1", "L-1")
         with tempfile.TemporaryDirectory() as directory:
-            sink = LivePersistenceSink(None, map_db=Path(directory) / "map.sqlite",
-                                        source_sha256="rom")
+            sink = LiveMapSink(Path(directory) / "map.sqlite", source_sha256="rom")
             sink.start()
             self.assertTrue(sink.submit(item))
             sink.stop()
@@ -210,10 +204,8 @@ class Auto67CartographerSeamTest(unittest.TestCase):
             self.assertEqual(snapshot["map_fragments_dropped"], 0)
 
     def test_j_full_queue_counts_local_chain_drop_without_backlog(self):
-        item = chain_descriptor({"kind": "RAM_WRITE", "pc": "0x100"},
-                                "BOUNDED_UNRESOLVED", 8)
-        item["local_chain"] = chain("epoch=1:seq=8")
-        sink = LivePersistenceSink(None)
+        item = chain("epoch=1:seq=8")
+        sink = LiveMapSink(Path("unused-map.sqlite"))
         sink.items = queue.Queue(maxsize=1)
         self.assertTrue(sink.submit(item))
         self.assertFalse(sink.submit(item))
@@ -229,9 +221,12 @@ class Auto67CartographerSeamTest(unittest.TestCase):
         source = (ROOT / "src/tools/thor_evidence/auto67_persistence.py").read_text(
             encoding="utf-8")
         self.assertEqual(source.count("queue.Queue("), 1)
-        self.assertEqual(source.count('name="auto67-chain-writer"'), 1)
+        self.assertEqual(source.count('name="auto67-map-writer"'), 1)
         self.assertNotIn("check_same_thread=False", source)
         self.assertNotIn("self.cartographer", source)
+        for forbidden in ("Store", "live_chain", "live_session", "record_live_chain",
+                          "begin_live_session", "canonical_payload", "chain_hash"):
+            self.assertNotIn(forbidden, source)
         snapshot_start = source.index("    def snapshot(self)")
         self.assertNotIn("cartographer.graph_hash()", source[snapshot_start:])
 
@@ -247,6 +242,32 @@ class Auto67CartographerSeamTest(unittest.TestCase):
         runner = (ROOT / "src/tools/thor_evidence/auto67_runner.py").read_text(
             encoding="utf-8")
         self.assertNotIn("Cartographer(", runner)
+
+    def test_n_cli_removes_legacy_database_options(self):
+        runner = ROOT / "src/tools/thor_evidence/auto67_runner.py"
+        environment = dict(os.environ)
+        environment["PYTHONPATH"] = str(ROOT / "src/tools") + os.pathsep + str(
+            ROOT / "src/tools/thor_evidence")
+        help_result = subprocess.run([sys.executable, str(runner), "--help"],
+                                     capture_output=True, text=True, check=False,
+                                     env=environment)
+        self.assertEqual(help_result.returncode, 0)
+        self.assertNotIn("--chain-db", help_result.stdout)
+        self.assertNotIn("--knowledge-db", help_result.stdout)
+        for option in ("--chain-db", "--knowledge-db"):
+            result = subprocess.run([sys.executable, str(runner), option, "x"],
+                                    capture_output=True, text=True, check=False,
+                                    env=environment)
+            self.assertNotEqual(result.returncode, 0)
+
+    def test_o_active_live_path_has_no_legacy_store_semantics(self):
+        paths = ("auto67_live.py", "auto67_runner.py", "auto67_persistence.py",
+                 "auto67_window.py")
+        for name in paths:
+            source = (ROOT / "src/tools/thor_evidence" / name).read_text(encoding="utf-8")
+            for forbidden in ("Store", "live_chain", "live_session", "record_live_chain",
+                              "begin_live_session", "chain_store", "chain_sink"):
+                self.assertNotIn(forbidden, source, msg=name)
 
 
 if __name__ == "__main__":
