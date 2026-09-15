@@ -62,7 +62,7 @@ created.
   predecessor/materializer/Walker-1 tests: **103/103 PASS**.
 - Debug CTest: **195/195 PASS**.
 - Release CTest: **195/195 PASS**.
-- Source-limit: PASS; **666** governed files, all ≤500 lines.
+- Source-limit: PASS; **667** governed files, all ≤500 lines.
 - `git diff --check`: PASS.
 - SOURCE_OWNED: `1,475,600 / 3,145,728`, delta `0`; unchanged.
 - GNU/Linux-equivalent build/link: **NOT_REQUIRED_PYTHON_ONLY**.

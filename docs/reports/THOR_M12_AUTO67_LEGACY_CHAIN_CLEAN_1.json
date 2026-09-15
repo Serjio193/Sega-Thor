@@ -25,5 +25,5 @@
   "r1_replay": {"positive_first_delta": true, "replay_zero_delta": true, "different_occurrence_zero_delta": true, "reversed_order_same_identity": true, "occurrence_bloat": false},
   "no_proof": {"processed": true, "chains_without_accepted_proof": 1, "map_fragments_dropped": 0, "map_edges": 0, "frontiers": 0},
   "queue_overflow": {"submission_failed": true, "map_fragments_dropped": 1, "backlog": false},
-  "tests": {"focused": "103/103 PASS", "debug_ctest": "195/195 PASS", "release_ctest": "195/195 PASS", "source_limit": "666 governed files <= 500 lines", "git_diff_check": "PASS", "source_owned": {"before": 1475600, "after": 1475600, "delta": 0}, "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY", "committed_report_ci": "PENDING_EXTERNAL_VERIFICATION"}
+  "tests": {"focused": "103/103 PASS", "debug_ctest": "195/195 PASS", "release_ctest": "195/195 PASS", "source_limit": "667 governed files <= 500 lines", "git_diff_check": "PASS", "source_owned": {"before": 1475600, "after": 1475600, "delta": 0}, "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY", "committed_report_ci": "PENDING_EXTERNAL_VERIFICATION"}
 }
