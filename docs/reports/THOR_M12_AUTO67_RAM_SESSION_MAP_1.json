@@ -12,7 +12,8 @@
   "focused_tests": {"pytest_auto67_dispatcher": "115 passed", "debug_ctest": "196/196 passed", "release_ctest": "196/196 passed", "source_limit": "PASS", "git_diff_check": "PASS"},
   "runtime": {"scenario": "canonical Beyond Oasis USA QuickSave1 BizHawk 60 frames", "returncode": 0, "session_seconds": 70.187, "session_save_status": "PASS", "global_merge_status": "PASS", "accepted_proof_candidates": 0, "global_before_exists": false, "global_after_runtime_exists": false},
   "microbenchmark": {"merges": 64, "ram_total_ms": 29.2974, "ram_p50_ms": 0.4824, "disk_total_ms": 378.3424, "disk_p50_ms": 5.9456, "ram_speedup": 12.9139},
-  "source_owned": {"bytes": 1475368, "rom_bytes": 3145728, "delta": 0},
+  "source_owned": {"bytes": 1475600, "rom_bytes": 3145728, "delta": 0},
   "source_owned_unchanged": true,
-  "github_ci": {"workflow": "CI", "run_id": 35011497168, "status": "queued", "conclusion": null}
+  "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+  "verified_external_receipt": {"baseline_final_sha": "4c85200d0f773573908291b2d6244f3f3d20da19", "run_id": 35011527112, "status": "completed", "conclusion": "success"}
 }

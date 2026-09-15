@@ -30,7 +30,7 @@ Debug CTest: `196/196 passed`.
 Release CTest: `196/196 passed`.
 `git diff --check`: PASS.
 Source-code line-limit CTest: PASS.
-SOURCE_OWNED: unchanged at `1,475,368 / 3,145,728` (delta 0).
+SOURCE_OWNED: unchanged at `1,475,600 / 3,145,728` (delta 0).
 
 ## Runtime and performance
 
@@ -48,4 +48,7 @@ The deterministic 64-merge microbenchmark (`build/m12-ram-session-map-benchmark.
 
 Final report JSON: `docs/reports/THOR_M12_AUTO67_RAM_SESSION_MAP_1.json`.
 
-GitHub Actions: workflow `CI`, run `35011497168`, status `queued` at publication time.
+github_ci: `PENDING_EXTERNAL_VERIFICATION`.
+The verified external receipt for baseline final
+`4c85200d0f773573908291b2d6244f3f3d20da19` is run `35011527112`,
+`completed / success`.
