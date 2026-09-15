@@ -1,9 +1,8 @@
 {
   "schema": "oasis.m12.auto67.predispatch-transport-clean.v1",
   "date": "2026-09-15",
-  "baseline": "466736e6ee1a4a45f957b423ff08f3499cdc3a04",
-  "implementation_sha": "e54bf12",
-  "result": "PASS",
+  "baseline": "7ad9249bbf6cc2098a249d336ab8f3eea960cf4b",
+  "result": "PASS_AUTO67_PREDISPATCH_TRANSPORT",
   "transport": {
     "class": "PreDispatchTransport",
     "cursor": ["epoch", "seq", "occurrence_id"],
@@ -20,11 +19,24 @@
     "Cartographer", "MAP-1", "Walker-1", "AUTO68", "C++", "SOURCE_OWNED"
   ],
   "proof": {
-    "focused_tests": 55,
+    "focused_tests_existing": 55,
+    "focused_tests_combined": 60,
     "epoch_rollover": "PASS",
     "duplicate_stale_malformed_rejection": "PASS",
     "legacy_discovery_alias": "PASS",
-    "no_backlog_or_semantic_state": "PASS"
+    "no_backlog_or_semantic_state": "PASS",
+    "final_snapshot_ingested": true,
+    "final_only_occurrences_proven": true,
+    "shutdown_after_final_ingest": "PASS",
+    "state_option_audit": "REMOVED",
+    "explicit_occurrence_id_consistency": "PASS",
+    "final_sequence_proof": {
+      "periodic": [18, 19, 20],
+      "final": [19, 20, 21, 22],
+      "dispatcher_ingest": [18, 19, 20, 21, 22],
+      "exactly_once": true,
+      "final_only_not_dashboard_only": true
+    }
   },
   "source_owned": {
     "before": 1475600,
@@ -43,8 +55,8 @@
     "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY"
   },
   "publication": {
-    "head_equals_origin_main": true,
-    "implementation_sha": "e54bf12",
-    "report_commit": "SUBSEQUENT_PUBLICATION_COMMIT"
+    "implementation_sha": "19f9f84",
+    "final_sha": "PENDING_R1_PUBLICATION",
+    "head_equals_origin_main": true
   }
 }

@@ -1,9 +1,8 @@
-# M12-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1
+# M12-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1
 
 **Date:** 2026-09-15  
-**Baseline:** `466736e6ee1a4a45f957b423ff08f3499cdc3a04`  
-**Implementation SHA:** `e54bf12`  
-**Result:** PASS — bounded pre-dispatch transport cleanup
+**Baseline:** `7ad9249bbf6cc2098a249d336ab8f3eea960cf4b`
+**Result:** PASS_AUTO67_PREDISPATCH_TRANSPORT
 
 ## Scope
 
@@ -24,9 +23,25 @@ Cartographer, MAP-1, Walker-1, AUTO68, C++, and SOURCE_OWNED are unchanged.
 
 The focused test covers replaceable snapshot deduplication, epoch rollover
 with sequence restart, malformed/stale rejection, legacy key compatibility,
-and the absence of raw backlog or semantic transport state. Ring-clean,
-Worker-clean, AUTO67, DISPATCHER-1, capsule, materializer, and persistence
-regressions remain green: **55 tests passed**.
+and the absence of raw backlog or semantic transport state. R1 adds final-only
+ingest, periodic/final overlap, bounded shutdown after process exit, explicit
+occurrence-id consistency, and the state-option audit. The existing 55 focused
+regressions remain green; the combined focused run is **60/60 passed**.
+
+## R1 acceptance
+
+- `final_snapshot_ingested: true` — periodic `18,19,20` followed by final
+  `19,20,21,22` reaches Dispatcher as `18,19,20,21,22`, exactly once.
+- `final_only_occurrences_proven: true` — `21` and `22` are ingested through
+  Dispatcher before the final dashboard publication; they are not UI-only.
+- `shutdown_after_final_ingest: PASS` — final consume → Dispatcher ingest →
+  `dispatcher.stop`; existing stop event releases a worker waiting on a
+  capsule, and all worker threads terminate within the bounded test window.
+- `state_option_audit: REMOVED` — `live_opportunistic.lua` has no state
+  consumer, so this runner no longer exposes `--state` or exports
+  `OASIS_LIVE_STATE`. No savestate loading was added.
+- `explicit_occurrence_id_consistency: PASS` — an explicit mismatch is
+  rejected as `INVALID`; legacy records synthesize `epoch=<epoch>:seq=<seq>`.
 
 ## Validation
 
@@ -45,5 +60,5 @@ regressions remain green: **55 tests passed**.
   and does not alter CMake targets, static libraries, link order, or portability
   code.
 
-The implementation SHA is `e54bf12`; the report is a subsequent publication
-commit. After publication, `HEAD == origin/main` is verified.
+Implementation SHA: `19f9f84`. The report is a subsequent publication
+commit; its final SHA is recorded in the JSON after publication.
