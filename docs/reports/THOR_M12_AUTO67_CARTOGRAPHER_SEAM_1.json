@@ -63,6 +63,6 @@
     "git_diff_check": "PASS",
     "source_owned": {"bytes": 1475600, "capacity": 3145728, "delta": 0},
     "gnu_linux_equivalent": "NOT_REQUIRED_PYTHON_ONLY",
-    "github_ci": "UNAVAILABLE"
+    "github_ci": {"status": "completed", "conclusion": "success", "run_id": 34965258507}
   }
 }

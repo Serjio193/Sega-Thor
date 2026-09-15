@@ -64,6 +64,6 @@ merge and legacy `live_chain` persistence share that writer.
 - `git diff --check`: PASS.
 - SOURCE_OWNED: `1,475,600 / 3,145,728`, delta `0`; unchanged.
 - GNU/Linux-equivalent build/link: **NOT_REQUIRED_PYTHON_ONLY**; no CMake target, link order or portability-sensitive native code changed.
-- GitHub CI receipt: **UNAVAILABLE**.
+- GitHub CI: **success** (`34965258507`) for final HEAD.
 
 Implementation commit: `a5134a6`.
