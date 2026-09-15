@@ -84,6 +84,28 @@ class Auto67CartographerSeamTest(unittest.TestCase):
             finally:
                 graph.close()
 
+    def test_d_multi_step_replay_and_different_occurrence_are_zero(self):
+        steps = [step(producer="0x2234", consumer="0x27EC", register="A5"),
+                 step(producer="0x27BE", consumer="0x27EC", register="A4")]
+        with tempfile.TemporaryDirectory() as directory:
+            graph = Cartographer(Path(directory) / "map.sqlite", "rom")
+            try:
+                first_bundle, stable_hash = candidate_bundle(
+                    chain("epoch=1:seq=8", steps=steps))
+                first = graph.merge(first_bundle, "auto67-live:" + stable_hash, "rom")
+                before = graph.graph_hash()
+                replay = graph.merge(first_bundle, "auto67-live:" + stable_hash, "rom")
+                second_bundle, second_hash = candidate_bundle(
+                    chain("epoch=9:seq=88", steps=list(reversed(steps))))
+                different = graph.merge(second_bundle, "auto67-live:" + second_hash, "rom")
+                self.assertEqual((first.new_nodes, first.new_edges), (3, 2))
+                self.assertEqual(replay.new_nodes + replay.new_edges, 0)
+                self.assertEqual(different.new_nodes + different.new_edges, 0)
+                self.assertEqual(before, replay.graph_hash)
+                self.assertEqual(graph.db.execute("SELECT COUNT(*) FROM map_import").fetchone()[0], 1)
+            finally:
+                graph.close()
+
     def test_e_different_occurrence_same_chain_has_zero_delta(self):
         first, first_hash = candidate_bundle(chain("epoch=1:seq=8", "INV-1", "L-1"))
         second, second_hash = candidate_bundle(chain("epoch=1:seq=80", "INV-2", "L-2"))
