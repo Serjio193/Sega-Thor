@@ -74,7 +74,6 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_LIVE_STOP": str(stop_path),
         "OASIS_LIVE_MAX_FRAMES": str(args.max_frames),
         "OASIS_LIVE_DEMO_INPUTS": args.demo_inputs,
-        "OASIS_LIVE_STATE": str(args.state) if getattr(args, "state", None) else "",
         "OASIS_LIVE_WINDOW": str(args.window),
         "OASIS_LIVE_CAPTURE_DISABLED": "1" if args.capture_disabled else "0",
         "OASIS_LIVE_CAPTURE_MODE": args.capture_mode,
@@ -127,8 +126,10 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         lua_final = dict(publisher.latest, capture_complete=False)
     if capsule_pool is not None:
         capsule_pool.sync(lua_final.get("capsules", []))
-    publisher.publish(lua_final)
+    for event in transport.consume(lua_final):
+        dispatcher.ingest(event)
     dispatcher.stop()
+    publisher.publish(lua_final)
     if chain_sink is not None:
         chain_sink.stop()
     if capsule_pool is not None:
@@ -191,8 +192,6 @@ def main() -> int:
                         help="bounded validation limit; zero means play until emulator closes")
     parser.add_argument("--demo-inputs", default="",
                         help="optional validation-only frame:buttons list, not a scenario")
-    parser.add_argument("--state", type=Path, default=None,
-                        help="optional exact developer savestate for deterministic replay")
     parser.add_argument("--capture-disabled", action="store_true")
     parser.add_argument("--capture-mode", choices=("continuous", "burst"), default="continuous",
                         help="burst is lossy discovery only; neither mode proves complete chains")

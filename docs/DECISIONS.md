@@ -1908,3 +1908,26 @@ Lua rings, predecessor capture, Worker, CapsulePool, Cartographer, MAP-1,
 SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
+
+# ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
+**Status:** Accepted for M12 AUTO67
+**Date:** 2026-09-15
+
+**Context:** The initial transport cleanup consumed periodic status snapshots
+but left the final replaceable Lua snapshot outside the transport cursor. It
+also retained a sequence-only state option on the live-opportunistic runner,
+and accepted mismatched explicit occurrence identifiers.
+
+**Decision:** Consume `lua_final` with the same `PreDispatchTransport` instance
+after emulator exit and before `Dispatcher.stop()`. Validate explicit
+`occurrence_id` as exactly `epoch=<epoch>:seq=<seq>`; synthesize it only for
+legacy records. Remove `--state` and `OASIS_LIVE_STATE` from this runner path
+because `live_opportunistic.lua` has no such consumer. Keep shutdown on the
+existing stop event and bounded capsule wait.
+
+**Consequences:** Final-only records reach Dispatcher exactly once, shutdown
+does not wait for new emulator data, and identity mismatches fail closed. No
+ring, Dispatcher, Worker, capture, persistence, graph, ownership, or C++ path
+is redesigned.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.

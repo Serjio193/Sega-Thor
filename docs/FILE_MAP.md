@@ -1446,3 +1446,8 @@ occurrence identity and passes current records directly to the Dispatcher;
 `tests/thor_evidence_auto67_predispatch_transport_clean_test.py` covers epoch
 rollover, duplicate/stale rejection, legacy key compatibility, and the
 no-backlog boundary.
+
+R1 keeps final-snapshot consumption on the same cursor: the launcher consumes
+`lua_final` after the emulator exits, ingests those records, then stops the
+Dispatcher. The live-opportunistic runner has no state option or
+`OASIS_LIVE_STATE` export; savestate-aware capture scripts are separate.

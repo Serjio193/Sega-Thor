@@ -136,6 +136,16 @@ raw events are never retained in a transport queue. The legacy `events` and
 `discovery` keys are input aliases only. Transport validation does not inspect
 known/proven/frontier state and does not choose or claim work.
 
+The same transport cursor consumes the final Lua snapshot after the emulator
+process exits and before `Dispatcher.stop()`. This preserves final-only events
+while keeping shutdown bounded by the existing worker stop event and capsule
+wait timeout.
+
+The live-opportunistic launcher path has no `--state` consumer: its Lua source
+does not load a savestate or read `OASIS_LIVE_STATE`, so the dead runner option
+and export were removed. Other capture scripts with their own state contracts
+remain independent of this path.
+
 ## AUTO67.4 frozen capsule worker materialization
 
 `capture/live_capsule.lua` writes versioned O67V v2 capsules with a 24-byte

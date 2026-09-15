@@ -77,6 +77,27 @@ fail-closed contracts.
 
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_6R3_LOW_OVERHEAD_PREHISTORY.md` and
 its JSON counterpart.
+# 2026-09-15 — M12 AUTO67 pre-dispatch transport R1 — PASS (final snapshot)
+
+TASK: Starting from `7ad9249bbf6cc2098a249d336ab8f3eea960cf4b`, repair only
+the missing final-snapshot ingest, shutdown, state-option, and occurrence-id
+acceptance items.
+
+IMPLEMENTATION: The runner now consumes `lua_final` through the same transport
+cursor after process exit and before `dispatcher.stop()`. Explicit occurrence
+identifiers must match `epoch=<epoch>:seq=<seq>`; legacy records synthesize the
+value. The dead live-opportunistic `--state` option and `OASIS_LIVE_STATE`
+export were removed. Existing bounded stop/capsule wait behavior is unchanged.
+
+VALIDATION: New A-E tests prove final-only delivery, overlap deduplication,
+bounded shutdown, identity mismatch rejection, and state-option removal. The
+existing 55 focused regressions remain green; the combined focused run is
+60/60. Full Debug/Release CTest, source-limit, and diff-check results are
+recorded in the updated checkpoint report. SOURCE_OWNED and all prohibited M12
+paths remain unchanged.
+
+EVIDENCE: `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md` and
+its JSON counterpart.
 
 # 2026-09-14 — AUTO67.5 observed/causal integrity gate — PASS
 

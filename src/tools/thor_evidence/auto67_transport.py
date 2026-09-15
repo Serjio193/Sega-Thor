@@ -36,8 +36,11 @@ class PreDispatchTransport:
             return None
         if epoch < 0 or sequence < 0:
             return None
-        occurrence = str(event.get("occurrence_id") or
-                         f"epoch={epoch}:seq={sequence}")
+        expected = f"epoch={epoch}:seq={sequence}"
+        explicit = event.get("occurrence_id")
+        if explicit is not None and str(explicit) != expected:
+            return None
+        occurrence = str(explicit or expected)
         if not occurrence:
             return None
         return epoch, sequence, occurrence
@@ -68,7 +71,7 @@ class PreDispatchTransport:
                     self._stats.epoch_changes)
                 continue
             if self._last_identity is not None:
-                previous_epoch, previous_seq, previous_occurrence = self._last_identity
+                previous_epoch, previous_seq, _ = self._last_identity
                 if identity == self._last_identity:
                     self._stats = self._stats.__class__(
                         self._stats.accepted, self._stats.duplicate + 1,
