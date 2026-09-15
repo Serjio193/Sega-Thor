@@ -8,6 +8,7 @@ local capacity = tonumber(os.getenv("OASIS_LIVE_WINDOW") or "256") or 256
 local disabled = os.getenv("OASIS_LIVE_CAPTURE_DISABLED") == "1"
 local demo_inputs = os.getenv("OASIS_LIVE_DEMO_INPUTS") or ""
 local frame = 0
+local epoch = 1
 local sequence = 0
 local callbacks = 0
 local observed = 0
@@ -44,7 +45,9 @@ end
 
 local function append_event(kind, pc, address)
     if disabled then return end
-    local event = {seq = sequence, frame = frame, kind = kind, pc = pc, address = address}
+    local event = {epoch = epoch, seq = sequence, frame = frame, kind = kind,
+                   pc = pc, address = address,
+                   occurrence_id = "epoch=" .. epoch .. ":seq=" .. sequence}
     sequence = sequence + 1
     observed = observed + 1
     if ring_count < capacity then
@@ -58,7 +61,9 @@ local function append_event(kind, pc, address)
 end
 
 local function event_json(event)
-    return '{"seq":' .. event.seq .. ',"frame":' .. event.frame ..
+    return '{"epoch":' .. event.epoch .. ',"seq":' .. event.seq ..
+        ',"occurrence_id":' .. json_string(event.occurrence_id) ..
+        ',"frame":' .. event.frame ..
         ',"kind":' .. json_string(event.kind) .. ',"pc":' .. json_string(hex(event.pc)) ..
         ',"address":' .. (event.address and json_string(hex(event.address)) or "null") .. '}'
 end

@@ -1406,3 +1406,14 @@ validates runtime identity, fail-closed joins, and stable Cartographer replay;
 documented in `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md`
 and its JSON counterpart; runtime SQLite and emulator artifacts remain under
 ignored `build/`.
+
+`src/tools/thor_evidence/auto67_live.py` owns occurrence-only Dispatcher
+leasing: branch fingerprints are diagnostic, exact window items use
+`dispatch_state`, and runtime occurrence identity is carried into worker
+investigations and leases. `src/tools/thor_evidence/capture/live_opportunistic.lua`
+publishes the source `epoch + seq` identity; `auto67_persistence.py` retains it
+in worker provenance. Regression coverage is in
+`tests/thor_evidence_dispatcher1_test.py` plus the updated
+`tests/thor_evidence_auto67_test.py`. The checkpoint is documented in
+`docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md` and its JSON
+counterpart.

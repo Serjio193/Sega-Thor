@@ -63,19 +63,17 @@ class Auto67Test(unittest.TestCase):
         finally:
             dispatcher.stop()
 
-    def test_active_collision_is_only_preworker_rejection(self):
+    def test_identical_branch_occurrences_are_not_suppressed(self):
         dispatcher = AUTO67.Dispatcher(2, capacity=8, processing_delay=0.05)
         dispatcher.start()
         try:
             dispatcher.ingest(event(1, address="0x200"))
             dispatcher.ingest(event(2, address="0x200"))
-            dispatcher.ingest(event(3, address="0x200"))
-            self.wait(dispatcher)
-            dispatcher.ingest(event(4, address="0x200"))
-            time.sleep(0.05)
+            self.wait_for_returns(dispatcher, 2)
             metrics = dispatcher.snapshot()["metrics"]
             self.assertEqual(metrics["worker_leases"], 2)
-            self.assertGreaterEqual(metrics["active_collisions"], 1)
+            self.assertEqual(metrics["active_collisions"], 0)
+            self.assertEqual(metrics["investigation_merges"], 0)
             self.assertEqual(metrics["known_rejected_before_dispatch"], 0)
         finally:
             dispatcher.stop()

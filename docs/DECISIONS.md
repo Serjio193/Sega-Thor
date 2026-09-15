@@ -1816,3 +1816,26 @@ its own static contract and remain bounded; a missing contract is a frontier.
 
 **Evidence:** `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md`,
 its JSON proof, and `tests/thor_evidence_walker1_test.py`.
+
+## ADR-DISPATCHER-1 — Occurrence-only AUTO67 leasing
+
+**Decision:** Remove branch-level active suppression from the AUTO67
+Dispatcher. A `branch_fingerprint` remains diagnostic metadata, while
+`dispatch_state=LEASED` on the exact current `RollingWindow` item is the only
+event-level redispatch guard. Free workers may therefore lease simultaneous
+runtime occurrences with identical kind/address/PC.
+
+**Identity:** `live_opportunistic.lua` supplies monotonic `epoch + seq` as the
+runtime occurrence identity. The Dispatcher adds a bounded `window_item_id`
+for the exact stored window item; investigation and lease identifiers include
+both identities. This is runtime occurrence identity only and does not assert
+causal sameness or semantic novelty.
+
+**Consequences:** The existing one-mailbox-per-worker model and capsule limits
+(`16` total, `4` live) remain unchanged. Capture-slot exhaustion still uses
+`WAITING_CAPTURE_SLOT`; no raw-event backlog or per-worker queue is added.
+Compatibility metrics for active collisions, duplicate active claims, and
+pre-dispatch merges remain present but obsolete and are no longer incremented.
+
+**Evidence:** `docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md`, its JSON
+counterpart, and `tests/thor_evidence_dispatcher1_test.py`.

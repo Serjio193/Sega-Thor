@@ -22,6 +22,37 @@ ROM-wide scaling or exact data-writer attribution.
 EVIDENCE: `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md` and
 its JSON counterpart; runtime artifacts are ignored under `build/`.
 
+# 2026-09-15 — M12 DISPATCHER-1 occurrence-only leasing — PASS
+
+TASK: Starting from `92a33c4f71a125a09cc26fc31ae2c14cf07a74a8`, remove
+AUTO67 branch-level active suppression while preserving exact current-window
+leasing, one mailbox per worker, and the existing capsule resource limits.
+
+IMPLEMENTATION: `Dispatcher._choose_current` no longer rejects an event when
+another event has the same branch fingerprint. The source now carries its
+monotonic `epoch + seq` occurrence identity; Dispatcher adds a bounded
+`window_item_id`, and investigation/lease identifiers include the runtime
+occurrence. `dispatch_state=LEASED` remains the exact stored-event guard.
+Obsolete collision/merge metrics remain compatibility fields and are no longer
+incremented. No Cartographer, MAP-1, Walker-1, AUTO68, SOURCE_OWNED, C++, raw
+backlog, or capsule-limit change was introduced.
+
+RESULT: Focused deterministic tests A-E pass. Two same-branch occurrences
+lease to different workers; a stored event leases once; a busy worker keeps
+its mailbox; sixteen same-branch occurrences lease to sixteen workers; and
+investigation, lease, mailbox, and persistence descriptor identities remain
+distinct. Capsule tests retain `CAPSULE_COUNT=16` and `MAX_LIVE_CAPTURES=4`
+with `WAITING_CAPTURE_SLOT` as the bounded fallback.
+
+EVIDENCE: `docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md` and its JSON
+counterpart. Raw-event backlog remains `NONEXISTENT`.
+
+CHECKS: Focused AUTO67 plus Dispatcher-1 tests `16/16` PASS; Debug and Release
+builds PASS; Debug and Release CTest `190/190` PASS; source-size and
+`git diff --check` PASS. One concurrent CTest attempt exposed the known flaky
+`oasis_re_import_gpgx_coverage_self_test`, but isolated and sequential reruns
+passed in both configurations.
+
 # 2026-09-14 — AUTO67.6R3 low-overhead prehistory source audit — NEGATIVE / STOP
 
 TASK: Starting from `b13a14add1f574f8ea6e5f1a6dae103cf999257c`, audit existing

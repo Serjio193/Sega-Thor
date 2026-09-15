@@ -1,0 +1,71 @@
+{
+  "schema": "oasis.m12.dispatcher1.occurrence-only.v1",
+  "baseline": "92a33c4f71a125a09cc26fc31ae2c14cf07a74a8",
+  "classification": "PASS_DISPATCHER_OCCURRENCE_ONLY",
+  "before": "same branch fingerprint -> one active investigation; later occurrences suppressed",
+  "after": "same branch fingerprint + different runtime occurrence -> independent worker investigations",
+  "code_path": {
+    "module": "src/tools/thor_evidence/auto67_live.py",
+    "changed": [
+      "Dispatcher._choose_current removed self.active[branch] / REJECT_ACTIVE_CLAIM gate",
+      "Dispatcher.ingest and _choose_current retain exact event dispatch_state=LEASED guard",
+      "Dispatcher.snapshot derives active_claims from worker occupancy"
+    ],
+    "source_identity": "src/tools/thor_evidence/capture/live_opportunistic.lua emits epoch + monotonic seq"
+  },
+  "occurrence_identity": {
+    "source": "epoch + seq",
+    "dispatcher_exact_window_item": "window_item_id",
+    "used_by": ["investigation_id", "lease_id", "worker_mailbox", "persistence_provenance"],
+    "causal_identity_invented": false
+  },
+  "tests": {
+    "A_same_branch_different_occurrences": {"status": "PASS", "workers": [0, 1]},
+    "B_same_stored_event_once": {"status": "PASS", "guard": "dispatch_state=LEASED"},
+    "C_busy_worker": {"status": "PASS", "second_assignment": false},
+    "D_sixteen_workers": {"status": "PASS", "same_branch_leases": 16},
+    "E_identity": {"status": "PASS", "distinct": ["occurrence", "investigation", "lease", "mailbox", "persistence_descriptor"]}
+  },
+  "worker_behavior": {
+    "one_mailbox_per_worker": true,
+    "working_worker_receives_second_task": false,
+    "raw_event_backlog": "NONEXISTENT",
+    "pending_raw_event_queue": false
+  },
+  "capsules": {
+    "CAPSULE_COUNT": 16,
+    "MAX_LIVE_CAPTURES": 4,
+    "same_branch_blocked_by_capsule_exhaustion": false,
+    "fallback": "WAITING_CAPTURE_SLOT"
+  },
+  "metrics": {
+    "REJECT_ACTIVE_CLAIM": "OBSOLETE_COMPATIBILITY_FIELD_ZERO",
+    "active_collisions": "OBSOLETE_COMPATIBILITY_FIELD_ZERO",
+    "duplicate_active_claims": "OBSOLETE_COMPATIBILITY_FIELD_ZERO",
+    "investigation_merges": "OBSOLETE_COMPATIBILITY_FIELD_ZERO"
+  },
+  "regression": {
+    "existing_auto67_focused_tests": "PASS",
+    "new_test_file": "tests/thor_evidence_dispatcher1_test.py",
+    "cmake_test": "oasis_re_thor_evidence_dispatcher1_helpers"
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "release_build": "PASS",
+    "debug_ctest": "190/190 PASS",
+    "release_ctest": "190/190 PASS",
+    "source_limit": "PASS",
+    "git_diff_check": "PASS",
+    "github_ci": "UNAVAILABLE"
+  },
+  "scope": {
+    "cartographer_changed": false,
+    "map1_changed": false,
+    "walker1_changed": false,
+    "auto68_started": false,
+    "source_owned_changed": false,
+    "cpp_migration": false,
+    "capsule_limits_changed": false,
+    "new_emulator_hooks": false
+  }
+}

@@ -72,7 +72,7 @@ class Dispatcher:
         self.mailboxes: list[dict[str, Any] | None] = [None] * worker_count
         self.worker_states = ["STARTING"] * worker_count
         self.threads: list[threading.Thread] = []
-        self.active: dict[str, int] = {}
+        self._window_item_sequence = 0
         self.metrics: dict[str, Any] = {
             "events_observed": 0, "events_retained_as_proof": 0,
             "seeds_considered": 0, "seeds_dispatched": 0,
@@ -126,7 +126,8 @@ class Dispatcher:
     @staticmethod
     def _seed(event: dict[str, Any], branch: str | None = None) -> str:
         return digest({"branch": branch or Dispatcher._branch(event),
-                       "seq": event.get("seq")})
+                       "occurrence_id": event.get("occurrence_id"),
+                       "window_item_id": event.get("window_item_id")})
 
     @staticmethod
     def _context(event: dict[str, Any], branch: str) -> str:
@@ -137,6 +138,14 @@ class Dispatcher:
         context = {name: event.get(name) for name in fields if event.get(name) is not None}
         context["branch"] = branch
         return digest(context)
+
+    def _ensure_occurrence_identity(self, event: dict[str, Any]) -> None:
+        if "window_item_id" not in event:
+            self._window_item_sequence += 1
+            event["window_item_id"] = self._window_item_sequence
+        event.setdefault("epoch", 1)
+        event["occurrence_id"] = str(event.get("occurrence_id") or
+                                      f"epoch={event['epoch']}:seq={event.get('seq')}")
 
     def _decision(self, event: dict[str, Any], reason: str,
                   state: str | None = None) -> None:
@@ -176,25 +185,22 @@ class Dispatcher:
         for event in prehistory + ordinary:
             if event.get("dispatch_state"):
                 continue
+            self._ensure_occurrence_identity(event)
             self.metrics["seeds_considered"] += 1
             t0 = time.perf_counter_ns()
             branch = self._branch(event)
             context = self._context(event, branch)
             event["branch_fingerprint"] = branch
             event["context_fingerprint"] = context
-            if branch in self.active:
-                self._decision(event, "REJECT_ACTIVE_CLAIM", "MERGED")
-                self.metrics["active_collisions"] += 1
-                self.metrics["investigation_merges"] += 1
-                continue
             t1 = time.perf_counter_ns()
             worker_id = free.pop(0)
             age = max(0.0, time.monotonic() - float(event.get("captured_monotonic", time.monotonic())))
-            task = {"branch": branch, "context": context, "seed": self._seed(event, branch),
-                    "assigned_ns": time.time_ns(),
-                    "dispatch_trace": {"timestamps_ns": {"t0": t0, "t1": t1,
-                                                             "t2": 0},
-                                        "frame": event.get("frame")}}
+            occurrence_id = event["occurrence_id"]
+            task = {"branch": branch, "context": context, "occurrence_id": occurrence_id,
+                    "worker_id": worker_id, "seed": self._seed(event, branch),
+                    "assigned_ns": time.time_ns(), "dispatch_trace": {
+                        "timestamps_ns": {"t0": t0, "t1": t1, "t2": 0},
+                        "frame": event.get("frame")}}
             task["dispatch_trace"]["timestamps_ns"]["t2"] = time.perf_counter_ns()
             task["investigation_id"] = "INV-AUTO67-" + task["seed"]
             if self.capsule_pool is not None and self.capsule_pool.max_live > 0:
@@ -224,18 +230,15 @@ class Dispatcher:
             task["dispatch_trace"]["timestamps_ns"]["t4"] = time.perf_counter_ns()
             task["dispatch_trace"]["timestamps_ns"]["t5"] = time.perf_counter_ns()
             task["lease_id"] = task.get("capsule_lease") or (
-                f"L{self.metrics['worker_leases'] + 1:08X}")
+                f"L{self.metrics['worker_leases'] + 1:08X}-{digest(occurrence_id)}")
             event["dispatch_state"] = "LEASED"
             event["lease_worker"] = worker_id
-            self.active[branch] = worker_id
             self.mailboxes[worker_id] = task
             task["dispatch_trace"]["timestamps_ns"]["t6"] = time.perf_counter_ns()
             self.worker_states[worker_id] = "LEASED"
             info = self.worker_info[worker_id]
-            info.update({"investigation_id": task["investigation_id"],
-                         "chain_fingerprint": branch, "stage": "KNOWN_CHECK",
-                         "seed_age": age, "task_runtime": 0.0,
-                         "last_result": None})
+            info.update({"investigation_id": task["investigation_id"], "chain_fingerprint": branch,
+                         "stage": "KNOWN_CHECK", "seed_age": age, "task_runtime": 0.0, "last_result": None})
             self._transition(info, "LEASED", "KNOWN_CHECK")
             self.metrics["seeds_dispatched"] += 1
             self.metrics["worker_leases"] += 1
@@ -243,9 +246,9 @@ class Dispatcher:
                 self.chain_sink.set_runtime_leases(self.metrics["worker_leases"])
             self.metrics["dispatch_starved_no_free_capsule"] = False
             self.metrics["dispatch_reasons"]["DISPATCHED"] += 1
-            self.metrics["latest_assignment"] = {
-                "worker_id": worker_id, "chain": branch,
-                "context": context, "investigation_id": info["investigation_id"]}
+            self.metrics["latest_assignment"] = {"worker_id": worker_id, "chain": branch,
+                "context": context, "occurrence_id": occurrence_id,
+                "investigation_id": info["investigation_id"], "lease_id": task["lease_id"]}
             busy = self.worker_count - len(free)
             self.metrics["peak_workers_busy"] = max(self.metrics["peak_workers_busy"], busy)
             self.metrics["seed_age_sum"] += age
@@ -279,6 +282,7 @@ class Dispatcher:
         if self.capsule_pool is not None and self.rom is not None:
             event["register_provenance_registers"] = required_registers(event, self.rom)
         with self.lock:
+            self._ensure_occurrence_identity(event)
             self.window.append(event)
             self.metrics["events_observed"] += 1
             self.event_times.append(time.monotonic())
@@ -376,6 +380,8 @@ class Dispatcher:
             with self.lock:
                 investigation = {"id": inv_id, "branch": branch,
                                  "context": task["context"],
+                                 "occurrence_id": task["occurrence_id"],
+                                 "lease_id": task.get("lease_id"),
                                  "seed_sequence": event.get("seq"),
                                  "status": status, "evidence": [event]}
                 if materialized is not None:
@@ -415,7 +421,6 @@ class Dispatcher:
                     self.metrics["blocked"] += 1
                 elif status == "EXHAUSTED":
                     self.metrics["exhausted"] += 1
-                self.active.pop(branch, None)
                 self.worker_states[worker_id] = "RETURNING"
                 info = self.worker_info[worker_id]
                 info["task_runtime"] = time.perf_counter() - started
@@ -456,10 +461,9 @@ class Dispatcher:
             metrics["workers_busy"] = sum(state in {"LEASED", "WORKING", "RETURNING"}
                                            for state in self.worker_states)
             metrics["workers_configured"] = self.worker_count
-            active_workers = list(self.active.values())
-            metrics["active_claims"] = len(self.active)
-            metrics["duplicate_active_claims"] = max(
-                0, len(active_workers) - len(set(active_workers)))
+            metrics["active_claims"] = sum(state in {"LEASED", "WORKING", "RETURNING"} for state in self.worker_states)
+            metrics["duplicate_active_claims"] = 0
+            metrics["branch_suppression_policy"] = "OBSOLETE_NO_SCHEDULING"
             metrics["fresh_candidates_available"] = sum(
                 not item.get("dispatch_state") for item in self.window.items)
             capsules = self.capsule_pool.snapshot() if self.capsule_pool else None
@@ -485,16 +489,11 @@ class Dispatcher:
                     "capsules": capsules}
         finally:
             self.lock.release()
-
 def run_live(args: argparse.Namespace) -> dict[str, Any]:
     from auto67_runner import run_live as runner
     return runner(args)
-
-
 def main() -> int:
     from auto67_runner import main as runner_main
     return runner_main()
-
-
 if __name__ == "__main__":
     raise SystemExit(main())

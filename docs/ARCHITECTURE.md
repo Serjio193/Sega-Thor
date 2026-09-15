@@ -86,6 +86,26 @@ health plus objective chain-store growth (`unique`, `session new`, exact
 duplicates, writes, errors, unresolved and rooted). The sidecar is disabled
 unless `--chain-db` (legacy alias `--knowledge-db`) is supplied.
 
+### AUTO67.occurrence-only Dispatcher semantics
+
+The Dispatcher leases only current, unleased `RollingWindow` items to free
+workers. `branch_fingerprint` remains diagnostic metadata and context input,
+but it is never a scheduling gate; `REJECT_ACTIVE_CLAIM`, `active_collisions`,
+and `investigation_merges` remain obsolete compatibility fields and stay zero
+on this path. The exact stored item is protected by its
+`dispatch_state=LEASED` marker, and each worker has one mailbox and one
+`LEASED`/`WORKING` task at a time.
+
+Runtime occurrence identity comes from the capture source's monotonic
+`epoch + seq` pair (`live_opportunistic.lua`). The Dispatcher adds a bounded
+`window_item_id` for the exact current-window object. Investigation and lease
+identities include that runtime occurrence identity, while persistence may
+still aggregate identical semantic chain hashes later; the Dispatcher does not
+perform that merge. Capsule limits remain `CAPSULE_COUNT=16` and
+`MAX_LIVE_CAPTURES=4`; exhaustion produces the existing
+`WAITING_CAPTURE_SLOT` path, not branch suppression. There is no raw-event
+backlog or per-worker queue.
+
 ## AUTO67.4 frozen capsule worker materialization
 
 `capture/live_capsule.lua` writes versioned O67V v2 capsules with a 24-byte
