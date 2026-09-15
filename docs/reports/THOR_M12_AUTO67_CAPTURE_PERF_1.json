@@ -80,6 +80,7 @@
       "status": "completed"
     }
   },
+  "publication_sha": "627889143f2666d80c2ac8e590269aeb14e6d9ba",
   "runs": {
     "A_minimal_live_capture": {
       "callback_self_time_us_per_frame": {
@@ -291,7 +292,7 @@
   "validation": {
     "debug_release_ctest": "NOT RERUN; documentation-only checkpoint",
     "focused_auto67_regressions": "109 passed",
-    "git_diff_check": "PENDING REPORT COMMIT",
+    "git_diff_check": "PASS",
     "production_code_changed": false
   }
 }
