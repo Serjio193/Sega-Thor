@@ -1471,5 +1471,6 @@ PROVEN, duplicate, conflict and component decisions. `LivePersistenceSink`
 feeds the adapter through its single bounded queue and retains the temporary
 `live_chain` compatibility write. `--map-db` supports map-only mode; combining
 it with `--chain-db` supports compatibility mode. Regression coverage is in
+the writer-thread ownership, all-step canonicalization and drop metrics in
 `tests/thor_evidence_auto67_cartographer_seam_test.py` and the report
 `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` plus JSON.

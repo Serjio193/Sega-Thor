@@ -83,32 +83,50 @@ def _node_id(node: dict[str, Any]) -> str:
                    "scope": node.get("scope", "global")})
 
 
-def _stable_bundle(step: dict[str, Any]) -> tuple[dict[str, Any], str]:
-    producer, consumer, register = (str(step["producer_pc"]),
-                                    str(step["consumer_pc"]), str(step["register"]))
-    stable = {"producer_pc": producer, "consumer_pc": consumer, "register": register,
-              "proof_contract": PROOF_CONTRACT}
-    stable_hash = digest(stable)
+def _pc_text(value: Any) -> str:
+    return f"0x{int(str(value), 0):06X}"
+
+
+def _stable_bundle(steps: list[dict[str, Any]]) -> tuple[dict[str, Any], str]:
+    unique_dependencies = {
+        (_pc_text(step["producer_pc"]), _pc_text(step["consumer_pc"]),
+         str(step["register"])): {"producer_pc": _pc_text(step["producer_pc"]),
+                                   "consumer_pc": _pc_text(step["consumer_pc"]),
+                                   "register": str(step["register"]),
+                                   "proof_contract": PROOF_CONTRACT}
+        for step in steps
+    }
+    dependencies = sorted(
+        unique_dependencies.values(),
+        key=lambda item: (int(item["producer_pc"], 0), int(item["consumer_pc"], 0),
+                          item["register"]))
+    stable_hash = digest({"dependencies": dependencies})
     lineage = [{"source": "AUTO67_LOCAL_CHAIN",
                 "proof_contract": PROOF_CONTRACT,
                 "schema": LOCAL_CHAIN_SCHEMA,
                 "stable_dependency_fingerprint": stable_hash}]
-    source = _node("ROM_INSTRUCTION", producer, lineage)
-    target = _node("ROM_INSTRUCTION", consumer, lineage)
-    edge = {"source": _node_id(source), "target": _node_id(target),
-            "relation": f"REGISTER_REACHING_DEFINITION:{register}",
-            "scope": "global", "status": "PROVEN", "rule": PROOF_CONTRACT,
-            "assumptions": [], "lineage": lineage}
-    return {"nodes": [source, target], "edges": [edge],
+    nodes_by_key: dict[str, dict[str, Any]] = {}
+    edges_by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for dependency in dependencies:
+        source = _node("ROM_INSTRUCTION", dependency["producer_pc"], lineage)
+        target = _node("ROM_INSTRUCTION", dependency["consumer_pc"], lineage)
+        nodes_by_key[source["key"]] = source
+        nodes_by_key[target["key"]] = target
+        edge = {"source": _node_id(source), "target": _node_id(target),
+                "relation": f"REGISTER_REACHING_DEFINITION:{dependency['register']}",
+                "scope": "global", "status": "PROVEN", "rule": PROOF_CONTRACT,
+                "assumptions": [], "lineage": lineage}
+        edges_by_key[(edge["source"], edge["target"], edge["relation"])] = edge
+    nodes = [nodes_by_key[key] for key in sorted(nodes_by_key, key=lambda item: int(item, 0))]
+    edges = [edges_by_key[key] for key in sorted(edges_by_key)]
+    return {"nodes": nodes, "edges": edges,
             "frontiers": [], "resolves_frontiers": []}, stable_hash
 
 
 def candidate_bundle(chain: dict[str, Any]) -> tuple[dict[str, Any], str] | None:
     """Return one stable MAP-1 bundle only when the local proof contract holds."""
-    for step in chain.get("chain_steps", []):
-        if _valid_step(step):
-            return _stable_bundle(step)
-    return None
+    accepted = [step for step in chain.get("chain_steps", []) if _valid_step(step)]
+    return _stable_bundle(accepted) if accepted else None
 
 
 def import_ref(stable_hash: str) -> str:

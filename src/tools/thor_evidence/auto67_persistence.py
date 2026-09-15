@@ -144,10 +144,10 @@ class LivePersistenceSink:
     """One bounded non-BizHawk queue and one transactional SQLite writer."""
 
     def __init__(self, path: Path | None, scenario_key: str = "AUTO67-live",
-                 cartographer: Cartographer | None = None, source_sha256: str = ""):
+                 map_db: Path | None = None, source_sha256: str = ""):
         self.path = Path(path).resolve() if path is not None else None
         self.scenario_key = scenario_key
-        self.cartographer = cartographer
+        self.map_db = Path(map_db).resolve() if map_db is not None else None
         self.source_sha256 = source_sha256
         self.session_id = "auto67-session-" + uuid.uuid4().hex
         self.items: queue.Queue[dict[str, Any] | None] = queue.Queue(
@@ -176,6 +176,7 @@ class LivePersistenceSink:
         self.map_fragments_dropped = 0
         self.map_write_errors = 0
         self.last_map_delta: dict[str, Any] = {}
+        self.cached_graph_hash = ""
         self.last_map_error: str | None = None
         self.monitor: dict[str, Any] = {
             "available": False, "total_unique_chains": 0,
@@ -189,6 +190,8 @@ class LivePersistenceSink:
     def start(self) -> None:
         if self.path is not None:
             self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self.map_db is not None:
+            self.map_db.parent.mkdir(parents=True, exist_ok=True)
         self.thread = threading.Thread(target=self._run, name="auto67-chain-writer",
                                        daemon=True)
         self.thread.start()
@@ -204,6 +207,7 @@ class LivePersistenceSink:
         except queue.Full:
             with self.lock:
                 self.dropped += 1
+                self.map_fragments_dropped += int("local_chain" in item)
             return False
         with self.lock:
             self.submitted += 1
@@ -212,6 +216,7 @@ class LivePersistenceSink:
 
     def _run(self) -> None:
         store = None
+        cartographer = None
         try:
             if self.path is not None:
                 store = Store(self.path)
@@ -220,6 +225,9 @@ class LivePersistenceSink:
                     json.dumps({"schema": "oasis.m12.auto67.chain-session.v1",
                                 "chain_status": {}}, sort_keys=True,
                                separators=(",", ":")))
+            if self.map_db is not None:
+                cartographer = Cartographer(self.map_db, self.source_sha256 or ROM_SHA)
+                self.cached_graph_hash = cartographer.graph_hash()
             self.monitor = (_store_monitor(store, self.session_id) if store is not None
                             else {"available": False})
             self.ready.set()
@@ -234,16 +242,15 @@ class LivePersistenceSink:
                 local = item.get("local_chain")
                 with self.lock:
                     self.local_chains_processed += int(local is not None)
-                if self.cartographer is not None:
+                if cartographer is not None:
                     candidate = candidate_bundle(local) if local is not None else None
                     if candidate is None:
                         with self.lock:
                             self.chains_without_accepted_proof += int(local is not None)
-                            self.map_fragments_dropped += int(local is not None)
                     else:
                         bundle, stable_hash = candidate
                         try:
-                            delta = self.cartographer.merge(
+                            delta = cartographer.merge(
                                 bundle, import_ref(stable_hash), self.source_sha256)
                             values = delta.as_dict()
                             with self.lock:
@@ -255,6 +262,7 @@ class LivePersistenceSink:
                                 self.map_conflicts += delta.new_conflicts
                                 self.map_component_joins += delta.component_joins
                                 self.last_map_delta = values
+                                self.cached_graph_hash = delta.graph_hash
                         except Exception as error:
                             with self.lock:
                                 self.map_write_errors += 1
@@ -282,6 +290,12 @@ class LivePersistenceSink:
                 self.last_error = f"{type(error).__name__}: {error}"
             self.ready.set()
         finally:
+            if cartographer is not None:
+                try:
+                    cartographer.close()
+                except Exception as error:
+                    with self.lock:
+                        self.last_map_error = f"{type(error).__name__}: {error}"
             if store is not None:
                 try:
                     self.monitor = _store_monitor(store, self.session_id)
@@ -335,7 +349,7 @@ class LivePersistenceSink:
                      "map_fragments_dropped": self.map_fragments_dropped,
                      "map_write_errors": self.map_write_errors,
                      "last_map_delta": dict(self.last_map_delta),
-                     "graph_hash": self.cartographer.graph_hash() if self.cartographer else "",
+                     "graph_hash": self.cached_graph_hash,
                      "last_map_error": self.last_map_error}
 
 

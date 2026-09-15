@@ -6,18 +6,21 @@
 was written only to the legacy live-chain sidecar. MAP-1 already owns stable
 provenance graph identity and merge authority.
 
-**Decision:** Add one downstream local-chain adapter and proof gate. Accept only
+**Decision:** Add one downstream local-chain adapter and proof gate. Accept all
 valid predecessor-produced `REGISTER_REACHING_DEFINITION` steps, construct
 stable `ROM_INSTRUCTION` nodes and register-specific edges, and call the
 existing Cartographer merge. Keep one LivePersistenceSink queue/writer and the
-legacy compatibility write. Runtime occurrence, lease, frame and worker IDs
-remain local evidence and never define global graph identity.
+legacy compatibility write. Cartographer is created, used and closed by that
+writer thread; snapshots return cached graph metrics. Runtime occurrence, lease,
+frame and worker IDs remain local evidence and never define global graph
+identity.
 
 **Consequences:** Worker never sees map state or novelty results. Exact stable
-replays and different occurrences share an import identity; incomplete chains
-produce no map delta. `--map-db` enables map-only operation, while `--chain-db`
-plus `--map-db` retains compatibility output. No frontiers, scheduler or
-upstream capture changes are introduced.
+replays and different occurrences share an import identity; incomplete steps do
+not discard valid siblings and no-proof chains are not counted as map drops.
+`--map-db` enables map-only operation, while `--chain-db` plus `--map-db` retains
+compatibility output. No frontiers, scheduler or upstream capture changes are
+introduced.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md`.
 # ADR-AUTO67-MAILBOX-CLEAN-1 — minimal Dispatcher-to-Worker lease message

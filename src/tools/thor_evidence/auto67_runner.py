@@ -12,10 +12,6 @@ from pathlib import Path
 from typing import Any
 
 from auto67_capsule import CapsulePool
-try:
-    from .cartographer import Cartographer
-except ImportError:
-    from cartographer import Cartographer
 from auto67_dashboard import DASHBOARD_HTML
 from auto67_live import BASELINE, ROM_SHA, Dispatcher
 from auto67_materializer import register_provenance_targets
@@ -66,10 +62,9 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
             command_path=command_path)
     chain_db = getattr(args, "chain_db", None) or getattr(args, "knowledge_db", None)
     map_db = getattr(args, "map_db", None)
-    cartographer = Cartographer(map_db, ROM_SHA) if map_db else None
-    chain_sink = (LivePersistenceSink(chain_db, cartographer=cartographer,
+    chain_sink = (LivePersistenceSink(chain_db, map_db=map_db,
                                        source_sha256=ROM_SHA)
-                  if chain_db or cartographer else None)
+                  if chain_db or map_db else None)
     if chain_sink is not None:
         chain_sink.start()
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
@@ -184,8 +179,6 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                                        "rolling_window_active":
                                        dispatcher.metrics["events_observed"] > 0}}
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    if cartographer is not None:
-        cartographer.close()
     return result
 
 
