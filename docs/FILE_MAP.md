@@ -1397,3 +1397,12 @@ provenance graph; `map_sources.py` imports bounded existing JSON evidence and
 `tests/thor_evidence_map1_test.py`. The authoritative checkpoint report is
 `docs/reports/THOR_M12_MAP_1_GLOBAL_PROVENANCE_CARTOGRAPHER.md` with its JSON
 counterpart; SQLite proof artifacts remain under ignored `build/`.
+
+`src/tools/thor_evidence/capture/walker_two_window.lua` is the developer-only
+WALKER-1 transport experiment: one bounded W1 window, a guarded global-hook-off
+straight-line body, and one bounded W2 window. `src/tools/thor_evidence/walker1.py`
+validates runtime identity, fail-closed joins, and stable Cartographer replay;
+`tests/thor_evidence_walker1_test.py` covers the focused gate. The result is
+documented in `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md`
+and its JSON counterpart; runtime SQLite and emulator artifacts remain under
+ignored `build/`.

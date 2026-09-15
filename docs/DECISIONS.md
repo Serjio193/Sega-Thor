@@ -1798,3 +1798,21 @@ runtime capture, or SOURCE_OWNED promotion is introduced.
 
 **Evidence:** `docs/reports/THOR_M12_MAP_1_GLOBAL_PROVENANCE_CARTOGRAPHER.md` and
 `tests/thor_evidence_map1_test.py`.
+
+## ADR-WALKER-1 — Bounded two-window sparse advancement
+
+**Decision:** Accept ASM Walker only as a bounded developer-only transport for
+validated blocks. The first experiment uses boundary guards around one
+straight-line body, disables `event.on_bus_exec_any` while that body executes,
+and re-enables it for one bounded successor window. Cartographer receives
+stable static identities; run, restore, capture, and fragment identities remain
+in the runtime evidence and are required by join validation.
+
+**Consequences:** The QuickSave1 checkpoint proved one real off-body interval,
+one non-oracle W2 dependency, positive first merge, zero-growth identical
+replay, and fail-closed rejection of five false joins. This does not establish
+ROM-wide scaling or exact data-writer attribution. Any future block must supply
+its own static contract and remain bounded; a missing contract is a frontier.
+
+**Evidence:** `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md`,
+its JSON proof, and `tests/thor_evidence_walker1_test.py`.

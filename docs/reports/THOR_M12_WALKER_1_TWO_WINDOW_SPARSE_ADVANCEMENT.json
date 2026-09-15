@@ -1,0 +1,363 @@
+{
+  "baseline": "6ee8ac7d599003c35cb48184831d9cc7dcc02a05",
+  "callback_off_interval": {
+    "body": "0x0027CE..0x0027E2",
+    "global_callbacks": 0,
+    "off_pcs": [],
+    "proven": true
+  },
+  "cartographer": {
+    "database": "C:\\Github\\Sega-Thor\\build\\thor-evidence\\walker-1\\global-provenance-3fac84fb08.sqlite",
+    "first_map_delta": {
+      "component_joins": 0,
+      "graph_hash": "f0bedf7218f2c27977c736be834d811a6bf736932b6e13e0810891124e0f5f74",
+      "import_ref": "walker1-contract-bounded",
+      "new_conflicts": 0,
+      "new_edges": 1,
+      "new_frontiers": 0,
+      "new_nodes": 2,
+      "promoted_edges": 0,
+      "promoted_nodes": 0,
+      "resolved_frontiers": 0
+    },
+    "graph_hash": "f0bedf7218f2c27977c736be834d811a6bf736932b6e13e0810891124e0f5f74",
+    "replay_map_delta": {
+      "component_joins": 0,
+      "graph_hash": "f0bedf7218f2c27977c736be834d811a6bf736932b6e13e0810891124e0f5f74",
+      "import_ref": "walker1-contract-bounded",
+      "new_conflicts": 0,
+      "new_edges": 0,
+      "new_frontiers": 0,
+      "new_nodes": 0,
+      "promoted_edges": 0,
+      "promoted_nodes": 0,
+      "resolved_frontiers": 0
+    }
+  },
+  "ci": "UNAVAILABLE \u2014 this checkpoint has no new CMake registration; focused Python test and required build gates remain to be run",
+  "classification": "PASS_ASM_WALKER_SPARSE_ADVANCEMENT",
+  "contract": "straight-line 0x0027CE..0x0027E2; A4/A5/control-flow unchanged; selected VDP writes recorded",
+  "negative_join_results": {
+    "different_restore_epoch": true,
+    "different_run_id": true,
+    "marked_gap": true,
+    "same_value_different_version": true,
+    "violated_guard": true
+  },
+  "new_dependency": {
+    "pc": "0x0027E8",
+    "producer_oracle_supplied": false,
+    "source": "W2_EXECUTED_PC"
+  },
+  "performance": {
+    "callbacks_during_b_off": 0,
+    "contract_skips": 1,
+    "data_callbacks": 2,
+    "failed_guard_skips": 0,
+    "frame_max_ms": 21.0,
+    "frame_p50_ms": 17.0,
+    "frame_p95_ms": 18.0,
+    "frame_p99_ms": 19.0,
+    "frames_over_33ms": 0,
+    "frames_over_50ms": 0,
+    "global_active_frames": 1,
+    "global_active_ms": 3.9999999999999,
+    "global_callbacks": 5,
+    "global_off_body_executions": 1,
+    "guard_callbacks": 3,
+    "hook_install_errors": 0,
+    "max_w1_records": 1,
+    "max_w2_records": 2,
+    "targeted_callbacks": 1,
+    "w1_callbacks": 1,
+    "w1_completed": 1,
+    "w1_count": 1,
+    "w1_started": 1,
+    "w2_callbacks": 2,
+    "w2_completed": 1,
+    "w2_count": 1,
+    "w2_started": 1
+  },
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "runs": [
+    {
+      "launch": {
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Github\\Sega-Thor\\build\\bizhawk-controlled-harness\\run.ps1",
+          "-RunName",
+          "walker1-authoritative-3fac84fb08",
+          "-InputMode",
+          "neutral",
+          "-LuaScript",
+          "C:\\Github\\Sega-Thor\\src\\tools\\thor_evidence\\capture\\walker_two_window.lua"
+        ],
+        "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+        "state_sha256": "7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970"
+      },
+      "runtime": {
+        "b_entry": {
+          "frame": 2121,
+          "guard_pc": "0x0027CA",
+          "pc": "0x0027CE",
+          "w1_sequence": 1
+        },
+        "b_exit": {
+          "callbacks_during_b_off": 0,
+          "frame": 2121,
+          "pc": "0x0027E2",
+          "w1_sequence": 1
+        },
+        "block": {
+          "contract": "straight-line 0x0027CE..0x0027E2; A4/A5/control-flow unchanged; selected VDP writes recorded",
+          "entry": "0x0027CE",
+          "exit": "0x0027E2",
+          "guard": "0x0027CA"
+        },
+        "capture_id": "capture-1",
+        "data_accesses": [
+          {
+            "address": "0x00C00004",
+            "frame": 2121,
+            "kind": "BUS_WRITE",
+            "pc": "0x0027E8"
+          },
+          {
+            "address": "0x00C00004",
+            "frame": 2121,
+            "kind": "BUS_WRITE",
+            "pc": "0x0027EC"
+          }
+        ],
+        "fragment_id": "fragment-1",
+        "launcher": {
+          "output": "result=PASS\nphase=DONE\nEmuHawk exited \nAt C:\\Github\\Sega-Thor\\build\\bizhawk-controlled-harness\\run.ps1:79 char:32\n+ ... ocess.ExitCode -ne 0) { throw \"EmuHawk exited $($process.ExitCode)\" }\n+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : OperationStopped: (EmuHawk exited :String) [], RuntimeException\n    + FullyQualifiedErrorId : EmuHawk exited \n \n",
+          "returncode": 1
+        },
+        "metrics": {
+          "callbacks_during_b_off": 0,
+          "contract_skips": 1,
+          "data_callbacks": 2,
+          "failed_guard_skips": 0,
+          "frame_max_ms": 21.0,
+          "frame_p50_ms": 17.0,
+          "frame_p95_ms": 18.0,
+          "frame_p99_ms": 19.0,
+          "frames_over_33ms": 0,
+          "frames_over_50ms": 0,
+          "global_active_frames": 1,
+          "global_active_ms": 3.9999999999999,
+          "global_callbacks": 5,
+          "global_off_body_executions": 1,
+          "guard_callbacks": 3,
+          "hook_install_errors": 0,
+          "max_w1_records": 1,
+          "max_w2_records": 2,
+          "targeted_callbacks": 1,
+          "w1_callbacks": 1,
+          "w1_completed": 1,
+          "w1_count": 1,
+          "w1_started": 1,
+          "w2_callbacks": 2,
+          "w2_completed": 1,
+          "w2_count": 1,
+          "w2_started": 1
+        },
+        "off_pcs": [],
+        "phase": "DONE",
+        "restore_epoch": 1,
+        "run_id": "walker1-run-3fac84fb08",
+        "schema": "oasis.m12.walker1.runtime.v1",
+        "w1": [
+          {
+            "frame": 2121,
+            "pc": "0x0027C4",
+            "sequence": 1
+          }
+        ],
+        "w2": [
+          {
+            "frame": 2121,
+            "pc": "0x0027E8",
+            "sequence": 1
+          },
+          {
+            "frame": 2121,
+            "pc": "0x0027EA",
+            "sequence": 2
+          }
+        ],
+        "w2_end": {
+          "frame": 2121,
+          "pc": "0x0027EC",
+          "w2_sequence": 2
+        }
+      },
+      "validation": {
+        "checks": {
+          "bounded_windows": true,
+          "contract_skip": true,
+          "guards": true,
+          "identity": true,
+          "no_body_callbacks": true,
+          "one_w1_and_w2": true,
+          "performance": true,
+          "phase_done": true,
+          "schema": true,
+          "w2_dependency": true
+        },
+        "passed": true
+      }
+    },
+    {
+      "launch": {
+        "command": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Github\\Sega-Thor\\build\\bizhawk-controlled-harness\\run.ps1",
+          "-RunName",
+          "walker1-replay-3fac84fb08",
+          "-InputMode",
+          "neutral",
+          "-LuaScript",
+          "C:\\Github\\Sega-Thor\\src\\tools\\thor_evidence\\capture\\walker_two_window.lua"
+        ],
+        "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+        "state_sha256": "7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970"
+      },
+      "runtime": {
+        "b_entry": {
+          "frame": 2121,
+          "guard_pc": "0x0027CA",
+          "pc": "0x0027CE",
+          "w1_sequence": 1
+        },
+        "b_exit": {
+          "callbacks_during_b_off": 0,
+          "frame": 2121,
+          "pc": "0x0027E2",
+          "w1_sequence": 1
+        },
+        "block": {
+          "contract": "straight-line 0x0027CE..0x0027E2; A4/A5/control-flow unchanged; selected VDP writes recorded",
+          "entry": "0x0027CE",
+          "exit": "0x0027E2",
+          "guard": "0x0027CA"
+        },
+        "capture_id": "capture-1",
+        "data_accesses": [
+          {
+            "address": "0x00C00004",
+            "frame": 2121,
+            "kind": "BUS_WRITE",
+            "pc": "0x0027E8"
+          },
+          {
+            "address": "0x00C00004",
+            "frame": 2121,
+            "kind": "BUS_WRITE",
+            "pc": "0x0027EC"
+          }
+        ],
+        "fragment_id": "fragment-1",
+        "launcher": {
+          "output": "result=PASS\nphase=DONE\nEmuHawk exited \nAt C:\\Github\\Sega-Thor\\build\\bizhawk-controlled-harness\\run.ps1:79 char:32\n+ ... ocess.ExitCode -ne 0) { throw \"EmuHawk exited $($process.ExitCode)\" }\n+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : OperationStopped: (EmuHawk exited :String) [], RuntimeException\n    + FullyQualifiedErrorId : EmuHawk exited \n \n",
+          "returncode": 1
+        },
+        "metrics": {
+          "callbacks_during_b_off": 0,
+          "contract_skips": 1,
+          "data_callbacks": 2,
+          "failed_guard_skips": 0,
+          "frame_max_ms": 20.0,
+          "frame_p50_ms": 17.0,
+          "frame_p95_ms": 18.0,
+          "frame_p99_ms": 19.0,
+          "frames_over_33ms": 0,
+          "frames_over_50ms": 0,
+          "global_active_frames": 1,
+          "global_active_ms": 3.0,
+          "global_callbacks": 5,
+          "global_off_body_executions": 1,
+          "guard_callbacks": 3,
+          "hook_install_errors": 0,
+          "max_w1_records": 1,
+          "max_w2_records": 2,
+          "targeted_callbacks": 1,
+          "w1_callbacks": 1,
+          "w1_completed": 1,
+          "w1_count": 1,
+          "w1_started": 1,
+          "w2_callbacks": 2,
+          "w2_completed": 1,
+          "w2_count": 1,
+          "w2_started": 1
+        },
+        "off_pcs": [],
+        "phase": "DONE",
+        "restore_epoch": 1,
+        "run_id": "walker1-replay-3fac84fb08",
+        "schema": "oasis.m12.walker1.runtime.v1",
+        "w1": [
+          {
+            "frame": 2121,
+            "pc": "0x0027C4",
+            "sequence": 1
+          }
+        ],
+        "w2": [
+          {
+            "frame": 2121,
+            "pc": "0x0027E8",
+            "sequence": 1
+          },
+          {
+            "frame": 2121,
+            "pc": "0x0027EA",
+            "sequence": 2
+          }
+        ],
+        "w2_end": {
+          "frame": 2121,
+          "pc": "0x0027EC",
+          "w2_sequence": 2
+        }
+      },
+      "validation": {
+        "checks": {
+          "bounded_windows": true,
+          "contract_skip": true,
+          "guards": true,
+          "identity": true,
+          "no_body_callbacks": true,
+          "one_w1_and_w2": true,
+          "performance": true,
+          "phase_done": true,
+          "schema": true,
+          "w2_dependency": true
+        },
+        "passed": true
+      }
+    }
+  ],
+  "schema": "oasis.m12.walker1.proof.v1",
+  "selected_block": {
+    "contract": "straight-line 0x0027CE..0x0027E2; A4/A5/control-flow unchanged; selected VDP writes recorded",
+    "entry": "0x0027CE",
+    "exit": "0x0027E2",
+    "guard": "0x0027CA"
+  },
+  "source_owned_changed": false,
+  "state_sha256": "7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970",
+  "tests": {
+    "negative_joins": true,
+    "runtime_validation": true
+  }
+}

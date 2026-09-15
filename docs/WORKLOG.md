@@ -1,3 +1,27 @@
+# 2026-09-15 — M12 WALKER-1 two-window sparse advancement — PASS (bounded)
+
+TASK: Prove or reject ASM Walker with one authoritative QuickSave1 experiment.
+The experiment used one targeted entry guard, one bounded W1 capture, a
+global-hook-off straight-line body `0x0027CE..0x0027E2`, an exit guard, and one
+bounded W2 capture. No general walker, AUTO68, SOURCE_OWNED change, or C++
+migration was allowed.
+
+RESULT: PASS for sparse advancement of this block. Two 120-frame runs loaded
+the canonical ROM and QuickSave1 (`EB19BDA4...` / `7FDE4783...`). W1/W2 were
+1/1, records 1/2, body global callbacks 0, successful skips 1, W2 discovered
+executed PC `0x0027E8` without a producer oracle, and selected VDP callbacks
+were 2. Frame timing was p50/p95/p99/max `17/18/19/21 ms`, with zero frames
+over 33 or 50 ms. MAP-1 first merge was `2` nodes / `1` edge; identical replay
+was `0` / `0` with unchanged graph hash. Five negative join cases rejected.
+
+LIMITATION: the existing PowerShell wrapper emitted a valid Lua PASS artifact
+but a null process exit code after `client.exitCode(0)`; this remains recorded
+as harness limitation. The result is bounded to one block and does not prove
+ROM-wide scaling or exact data-writer attribution.
+
+EVIDENCE: `docs/reports/THOR_M12_WALKER_1_TWO_WINDOW_SPARSE_ADVANCEMENT.md` and
+its JSON counterpart; runtime artifacts are ignored under `build/`.
+
 # 2026-09-14 — AUTO67.6R3 low-overhead prehistory source audit — NEGATIVE / STOP
 
 TASK: Starting from `b13a14add1f574f8ea6e5f1a6dae103cf999257c`, audit existing
