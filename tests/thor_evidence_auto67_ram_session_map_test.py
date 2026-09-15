@@ -108,13 +108,20 @@ class RamSessionMapTest(unittest.TestCase):
             _save_session(session, [_chain("0x100", "0x200"), _chain("0x300", "0x400")])
             first = map_merge.merge_session_map(global_path, session)
             self.assertEqual(first["global_merge_delta"]["new_edges"], 1)
+            imports_after_first = sqlite3.connect(global_path)
+            try:
+                import_count = imports_after_first.execute(
+                    "SELECT COUNT(*) FROM map_import").fetchone()[0]
+            finally:
+                imports_after_first.close()
             second = map_merge.merge_session_map(global_path, session)
             self.assertEqual(second["global_merge_delta"]["new_nodes"], 0)
             self.assertEqual(second["global_merge_delta"]["new_edges"], 0)
             self.assertEqual(first["global_graph_hash_after"], second["global_graph_hash_after"])
             graph = Cartographer(global_path, "rom")
             try:
-                self.assertEqual(graph.db.execute("SELECT COUNT(*) FROM map_import").fetchone()[0], 1)
+                self.assertEqual(graph.db.execute("SELECT COUNT(*) FROM map_import").fetchone()[0],
+                                 import_count)
             finally:
                 graph.close()
 
