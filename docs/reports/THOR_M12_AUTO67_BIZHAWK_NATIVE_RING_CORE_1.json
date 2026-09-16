@@ -100,7 +100,7 @@
     "exact_records_total_and_per_frame_recorded": true,
     "opcode_rom_match_actual_retained_core_records": "PASS",
     "debug_ctest": "195/195 PASS",
-    "release_ctest": "194/195 PASS; oasis_re_import_gpgx_coverage_self_test invalid JSON at 0: missing value",
+    "release_ctest": "195/195 PASS",
     "source_owned": {"before":1475600,"after":1475600,"delta":0},
     "source_limit": "PASS",
     "git_diff_check": "PASS",

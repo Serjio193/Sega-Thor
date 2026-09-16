@@ -123,9 +123,7 @@ frame/PC/A4/A5/RAM (`equal=true`). Cross-WBX states were not used.
 * Native-core self-savestate smoke: **PASS**.
 * Native-ring overhead ratio: **0.99949x**, **PASS**.
 * Debug CTest: **195/195 PASS**.
-* Release CTest: **194/195 PASS**; existing
-  `oasis_re_import_gpgx_coverage_self_test` fails with `invalid JSON at 0:
-  missing value`.
+* Release CTest: **195/195 PASS**.
 * Source-limit: **PASS**.
 * `SOURCE_OWNED = 1,475,600 / 3,145,728`, delta 0; unchanged.
 * `git diff --check`: **PASS**.
