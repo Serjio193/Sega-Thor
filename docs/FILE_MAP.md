@@ -1424,6 +1424,18 @@ flow, and exposes occupancy, ownership and fail-visible pool-full metrics
 without switching production AUTO67 or adding a queue. Its contract is tested
 by `tests/thor_evidence_auto67_snapshot_admission_test.py` and documented in
 `docs/reports/THOR_M12_AUTO67_NATIVE_RING_BRIDGE_1A_ADMISSION_1X.md`.
+
+`src/tools/thor_evidence/auto67_native_snapshot.py` freezes and validates
+actual experimental GPGX native-ring records at the existing occurrence
+boundary, leases the exact immutable tuple through the fixed snapshot pool,
+adapts it to the existing predecessor resolver input, and releases its slot
+after the matching Worker returns. `capture/native_trace_snapshot.lua` invokes
+the test-only BizHawk API synchronously; `tools/bizhawk-native-ring/bizhawk-native-snapshot-freeze.patch`
+adds that API to the isolated managed host build. The experiment is opt-in in
+`auto67_runner.py` and does not change production scheduling. Its native record,
+identity, resolver and slot-lifecycle checks are in
+`tests/thor_evidence_auto67_native_snapshot_test.py`; the runtime receipt is in
+`docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1B_FREEZE_WORKER_1.md`.
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 
 `src/tools/thor_evidence/auto67_live.py` owns occurrence-only leasing and a

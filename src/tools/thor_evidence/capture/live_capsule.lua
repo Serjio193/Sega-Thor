@@ -15,6 +15,8 @@ if hook_metrics_path then
 end
 local source_path = debug.getinfo(1, "S").source:sub(2)
 local source_dir = source_path:match("^(.*[\\/])") or ""
+local native_snapshot = os.getenv("OASIS_AUTO67_NATIVE_SNAPSHOT") == "1"
+    and dofile(source_dir .. "native_trace_snapshot.lua") or nil
 local prehistory_mode = os.getenv("OASIS_AUTO67_PREHISTORY_MODE") or "continuous"
 local predecessor_writer_target_path = os.getenv("OASIS_AUTO67_REGISTER_WRITER_TARGETS")
 local predecessor_file = "predecessor_capture.lua"
@@ -105,6 +107,10 @@ local function append_discovery(kind, pc, address, join)
                         exec_pc = join and join.exec_pc or nil,
                         consumer_join = join and join.status or nil}
     local item = discovery[index]
+    if native_snapshot then
+        item.native_snapshot_json, item.native_snapshot_registers, item.native_snapshot_error =
+            native_snapshot.capture(item.epoch, item.seq)
+    end
     sequence = sequence + 1
     return item
 end

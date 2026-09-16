@@ -74,3 +74,22 @@ resolver, Dispatcher, Worker, Cartographer, MAP-1, Session Map, and SOURCE_OWNED
 remain unchanged. The custom build and required matched-slice parity test must
 be completed in a toolchain-equipped environment before any integration
 decision.
+
+`bizhawk-native-snapshot-freeze.patch` is an additional experimental managed
+host patch for the 1B freeze-to-Worker proof. It exposes one synchronous Lua
+call that copies the native ring after an ordinary discovery occurrence; it
+does not add an instruction callback or change the ring recorder. Apply and
+build it only in the same isolated native-ring source checkout/install.
+
+## 1B synchronous freeze-to-Worker managed bridge
+
+The additional `bizhawk-native-snapshot-freeze.patch` SHA-256 used for the 1B
+runtime proof is `328b87d7ba61ceae5836a85d96d85d81e1141f9c1b9f0a6643def0aa6d45e5cc`.
+It changes only `BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs`:
+the diagnostic Lua method resolves the existing native latest/count/copy
+exports through the Waterbox departure-only adapter, copies one ordered ring
+snapshot synchronously, and returns a compressed record payload plus bounds and
+timing metadata. It adds no per-instruction Lua callback and does not alter the
+native ring or production capture path. The exact isolated Release host build
+passed; the resulting runtime did not enter the existing register resolver,
+which is recorded as `STOP_NATIVE_RESOLVER_OUTPUT_MISSING` in the 1B receipt.

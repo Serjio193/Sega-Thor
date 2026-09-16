@@ -57,6 +57,15 @@ class Capsule:
     predecessor_complete: bool = False
     predecessor_truncated: bool = False
     predecessor_gap: bool = False
+    native_snapshot_mode: bool = False
+    native_snapshot_identity: str | None = None
+    native_snapshot_occurrence: tuple[int, int] | None = None
+    native_snapshot_epoch: int = 0
+    native_snapshot_first_sequence: int = 0
+    native_snapshot_latest_sequence: int = 0
+    native_snapshot_count: int = 0
+    native_snapshot_pc: int = 0
+    native_snapshot_registers: tuple[tuple[str, int], ...] = ()
     buffer: bytearray = field(default_factory=lambda: bytearray(CAPSULE_SIZE),
                               repr=False)
 
@@ -73,11 +82,24 @@ class Capsule:
         requested = tuple(str(item) for item in event.get(
             "register_provenance_registers", ()) if str(item) in {"A4", "A5"})
         path = event.get("prehistory_path")
-        self.predecessor_enabled = bool(path and path != "null")
+        self.native_snapshot_mode = bool(event.get("native_snapshot_mode"))
+        self.native_snapshot_identity = event.get("snapshot_identity")
+        self.native_snapshot_occurrence = (
+            _number(event.get("epoch", 1)), _number(event.get("seq")))
+        self.native_snapshot_epoch = _number(event.get("snapshot_epoch"))
+        self.native_snapshot_first_sequence = _number(event.get("first_sequence"))
+        self.native_snapshot_latest_sequence = _number(event.get("latest_sequence"))
+        self.native_snapshot_count = _number(event.get("count"))
+        self.native_snapshot_pc = _number(event.get("pc"))
+        registers = event.get("native_snapshot_registers") or {}
+        self.native_snapshot_registers = tuple(sorted(
+            (name, _number(value)) for name, value in registers.items()
+            if name in {"A4", "A5"} and value is not None))
+        self.predecessor_enabled = bool(path and path != "null") or self.native_snapshot_mode
         self.predecessor_registers = requested
         self.predecessor_target_pc = _number(event.get("pc"))
         self.predecessor_id = _number(event.get("prehistory_id"), 0) or None
-        self.predecessor_path = str(path) if self.predecessor_enabled else None
+        self.predecessor_path = str(path) if path and path != "null" else None
         self.start_frame = _number(event.get("frame"))
         self.last_frame = self.start_frame
         self.state = "CAPTURING"
@@ -129,6 +151,15 @@ class Capsule:
         self.predecessor_path = None
         self.predecessor_record_count = 0
         self.predecessor_complete = self.predecessor_truncated = self.predecessor_gap = False
+        self.native_snapshot_mode = False
+        self.native_snapshot_identity = None
+        self.native_snapshot_occurrence = None
+        self.native_snapshot_epoch = 0
+        self.native_snapshot_first_sequence = 0
+        self.native_snapshot_latest_sequence = 0
+        self.native_snapshot_count = 0
+        self.native_snapshot_pc = 0
+        self.native_snapshot_registers = ()
 
     def snapshot(self) -> dict:
         return {
@@ -193,7 +224,8 @@ class CommandPublisher:
 class CapsulePool:
     def __init__(self, count: int = CAPSULE_COUNT,
                  max_live: int = MAX_LIVE_CAPTURES,
-                 command_path: Path | None = None):
+                 command_path: Path | None = None,
+                 native_snapshot_pool: Any | None = None):
         if count != CAPSULE_COUNT:
             raise ValueError("AUTO67.1 requires exactly 16 capsules")
         if max_live < 0 or max_live > count:
@@ -205,6 +237,7 @@ class CapsulePool:
         self.commands: deque[str] = deque(maxlen=64)
         self.command_sequence = 0
         self.publisher = CommandPublisher(command_path) if command_path else None
+        self.native_snapshot_pool = native_snapshot_pool
         self.samples: deque[int] = deque(maxlen=4096)
         self.metrics = {"capsules_created": 0, "capsules_frozen": 0,
                         "capsules_reused": 0, "capsules_full": 0,
@@ -227,6 +260,8 @@ class CapsulePool:
 
     def claim(self, worker_id: int, investigation_id: str, event: dict) -> Capsule | None:
         with self.lock:
+            if event.get("native_snapshot_mode") and event.get("snapshot_identity"):
+                self._validate_native_snapshot_event(event)
             live = sum(item.state in {"CLAIMED", "CAPTURING"} for item in self.capsules)
             if live >= self.max_live:
                 return None
@@ -238,6 +273,22 @@ class CapsulePool:
             self.metrics["capsules_created"] += 1
             self._publish("START", capsule)
             return capsule
+
+    def _validate_native_snapshot_event(self, event: dict[str, Any]) -> None:
+        if self.native_snapshot_pool is None:
+            raise CapsuleFormatError("native snapshot pool is unavailable")
+        try:
+            occurrence = (_number(event.get("epoch", 1)), _number(event.get("seq")))
+            snapshot = self.native_snapshot_pool.get(
+                str(event["snapshot_identity"]), occurrence)
+            if (snapshot.snapshot_epoch != _number(event.get("snapshot_epoch"))
+                    or snapshot.first_sequence != _number(event.get("first_sequence"))
+                    or snapshot.latest_sequence != _number(event.get("latest_sequence"))
+                    or snapshot.count != _number(event.get("count"))):
+                raise ValueError("native snapshot metadata mismatch")
+        except (KeyError, ValueError) as error:
+            raise CapsuleFormatError(
+                f"native snapshot occurrence mismatch: {error}") from error
 
     def capacity_state(self) -> tuple[int, int]:
         with self.lock:
@@ -302,8 +353,40 @@ class CapsulePool:
                 raise CapsuleFormatError("predecessor lease/investigation mismatch")
             if len(self.metrics["predecessor_decode_path_samples"]) < 8:
                 self.metrics["predecessor_decode_path_samples"].append({
-                    "capsule_id": capsule_id, "enabled": capsule.predecessor_enabled,
-                    "path": capsule.predecessor_path})
+                    "capsule_id": capsule_id,
+                    "enabled": capsule.predecessor_enabled or capsule.native_snapshot_mode,
+                    "path": capsule.predecessor_path,
+                    "native_snapshot_identity": capsule.native_snapshot_identity})
+            if capsule.native_snapshot_mode:
+                if not capsule.native_snapshot_identity or self.native_snapshot_pool is None:
+                    self.metrics.setdefault("native_snapshot_missing", 0)
+                    self.metrics["native_snapshot_missing"] += 1
+                    return None
+                try:
+                    occurrence = capsule.native_snapshot_occurrence
+                    if occurrence is None:
+                        raise ValueError("native snapshot occurrence identity missing")
+                    snapshot = self.native_snapshot_pool.get(
+                        capsule.native_snapshot_identity, occurrence)
+                    event = {
+                        "epoch": occurrence[0], "seq": occurrence[1],
+                        "occurrence_id": f"epoch={occurrence[0]}:seq={occurrence[1]}",
+                        "frame": capsule.start_frame, "pc": capsule.native_snapshot_pc,
+                        "snapshot_identity": capsule.native_snapshot_identity,
+                        "snapshot_epoch": capsule.native_snapshot_epoch,
+                        "first_sequence": capsule.native_snapshot_first_sequence,
+                        "latest_sequence": capsule.native_snapshot_latest_sequence,
+                        "count": capsule.native_snapshot_count,
+                    }
+                    from auto67_native_snapshot import to_predecessor_capture
+                    capture = to_predecessor_capture(
+                        snapshot, event, capsule.predecessor_registers)
+                except (KeyError, ValueError) as error:
+                    raise CapsuleFormatError(
+                        f"native snapshot identity/range mismatch: {error}") from error
+                self.metrics.setdefault("native_snapshot_resolver_inputs", 0)
+                self.metrics["native_snapshot_resolver_inputs"] += 1
+                return capture
             if capsule.predecessor_path in {None, "", "-", "null"}:
                 return None
             path = Path(capsule.predecessor_path)

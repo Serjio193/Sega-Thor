@@ -9159,3 +9159,48 @@ byte-preserving failed replace, RAM/disk parity and bounded shutdown tests.
 SCOPE: `auto67_persistence.py`, `cartographer.py`, `map_merge.py`, runner wiring,
 focused tests and checkpoint documentation only; capture, Worker, Dispatcher,
 Cartographer identity and SOURCE_OWNED remain unchanged.
+# 2026-09-16 — M12 AUTO67 native freeze-to-Worker bridge (1B)
+
+TASK: From baseline `d13a0b028a3991212f2d29dddda70fb182a05554`, connect a
+real immutable native GPGX history snapshot to one ordinary AUTO67 runtime
+occurrence, the existing 16-slot admission, the leased Worker, and the existing
+predecessor resolver. Keep production scheduling, Worker/Cartographer, maps,
+resolver semantics, ring capacity, and SOURCE_OWNED unchanged; add no queue.
+
+ACCEPTANCE: Record one complete factual occurrence → synchronous native freeze
+→ immutable ordered records → exact leased Worker → existing resolver → factual
+output or explicit fail-closed result. Verify occurrence/snapshot/epoch/range
+identity before decode, native-record sanity, live-ring progression, snapshot
+immutability, exact slot release after Worker completion, relevant tests,
+Debug/Release CTest, source limit, `git diff --check`, zero SOURCE_OWNED delta,
+and exact-SHA GitHub CI. Do not claim PASS until the real runtime receipt exists.
+
+RESULT: `STOP_NATIVE_RESOLVER_OUTPUT_MISSING`. The opt-in native snapshot path
+froze 3,496 actual occurrences and dispatched/completed all 3,496 through the
+existing 16-slot pool. Sixteen capsule-backed Worker receipts each received
+the exact immutable native record tuple; all passed Worker-start hash equality,
+showed later ring advancement, and released the slot after Worker completion.
+The bounded 1,800-frame no-input run had 16 materialized Worker results but
+zero existing resolver calls: every result had `register_provenance.status =
+NOT_REQUIRED`. The captured BUS_WRITE consumer PC could not be joined to the
+last native ring PC for the representative occurrence (`0x00026C` versus
+`0x00026A`); ROM decode at the event PC was unsupported (`0x51CE`). This is a
+real missing resolver output, so this checkpoint does not pass its main gate.
+
+RUNTIME: Custom GPGX ring artifact SHA-256
+`f6bb758083d1c88873a067ebcdf047a7fedc18d4a3a427b37f6c60693c64e2b8`; canonical
+ROM SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+The 16-slot pool peaked at 5/16, with zero invalid, missing, or pool-full
+snapshots and zero slots left occupied. No savestate or input was used. A
+bounded attempt with the existing continuous prehistory join reached frame 184
+in about 120 seconds and produced no exact join in the retained 192 bus-write
+events; it was stopped and is not counted as a completed test.
+
+EVIDENCE AND VALIDATION: See
+`docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1B_FREEZE_WORKER_1.md`
+and its JSON receipt. Focused native-snapshot tests: 6/6 PASS; snapshot
+admission regressions: 10/10 PASS. SOURCE_OWNED remains
+1,475,600 / 3,145,728 (delta 0). Debug and Release CTest each passed 198/198;
+the project source-limit test and `git diff --check` passed. GitHub CI is
+pending the pushed exact commit SHA; the receipt records
+`PENDING_EXTERNAL_VERIFICATION`.

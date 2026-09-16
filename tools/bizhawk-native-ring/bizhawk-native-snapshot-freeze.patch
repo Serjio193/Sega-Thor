@@ -1,0 +1,150 @@
+diff --git a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+index 7e5c8231f6..0bf8a3dbb1 100644
+--- a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
++++ b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+@@ -1,5 +1,12 @@
+-using System.ComponentModel;
+-
++using System.ComponentModel;
++using System.Diagnostics;
++using System.Globalization;
++using System.IO;
++using System.IO.Compression;
++using System.Reflection;
++using System.Runtime.InteropServices;
++
++using BizHawk.BizInvoke;
+ using BizHawk.Emulation.Common;
+ using BizHawk.Emulation.Cores;
+ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+@@ -18,10 +25,126 @@ namespace BizHawk.Client.Common
+ 
+ 		public override string Name => "genesis";
+ 
+-		[RequiredService]
+-		private IEmulator Emulator { get; set; }
+-
+-		private GPGX.GPGXSettings Settings
++		[RequiredService]
++		private IEmulator Emulator { get; set; }
++
++		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
++		private delegate ulong NativeTraceLatest();
++
++		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
++		private delegate uint NativeTraceCount();
++
++		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
++		private delegate uint NativeTraceCopy(ulong startSequence, IntPtr destination, uint capacity);
++
++		private NativeTraceLatest _nativeTraceLatest;
++		private NativeTraceCount _nativeTraceCount;
++		private NativeTraceCopy _nativeTraceCopy;
++
++		[LuaMethod("freeze_native_trace_snapshot", "Synchronously copies the experimental native GPGX trace ring.")]
++		public string FreezeNativeTraceSnapshot(int epoch, int occurrenceSequence)
++		{
++			if (Emulator is not GPGX gpgx)
++			{
++				throw new InvalidOperationException("native trace snapshots require the GPGX Genesis core");
++			}
++			return FreezeNativeTraceSnapshotJson(gpgx, epoch, occurrenceSequence);
++		}
++
++		private string FreezeNativeTraceSnapshotJson(GPGX gpgx, int epoch,
++			int occurrenceSequence)
++		{
++			if (epoch < 0 || occurrenceSequence < 0)
++			{
++				throw new ArgumentOutOfRangeException(nameof(occurrenceSequence));
++			}
++			EnsureNativeTraceExports(gpgx);
++
++			var freezeStarted = Stopwatch.GetTimestamp();
++			var readStarted = Stopwatch.GetTimestamp();
++			var latest = _nativeTraceLatest();
++			var count = _nativeTraceCount();
++			var readNanoseconds = ElapsedNanoseconds(readStarted, Stopwatch.GetTimestamp());
++			if (count == 0 || count > 4096 || count > latest || !BitConverter.IsLittleEndian)
++			{
++				throw new InvalidDataException("native trace ring bounds or layout are invalid");
++			}
++
++			var raw = new byte[checked((int)count * 16)];
++			var memory = Marshal.AllocHGlobal(raw.Length);
++			var copyStarted = Stopwatch.GetTimestamp();
++			try
++			{
++				var copied = _nativeTraceCopy(latest - count + 1, memory, count);
++				if (copied != count || _nativeTraceLatest() != latest ||
++					_nativeTraceCount() != count)
++				{
++					throw new InvalidDataException("native trace ring changed during freeze");
++				}
++				Marshal.Copy(memory, raw, 0, raw.Length);
++			}
++			finally
++			{
++				Marshal.FreeHGlobal(memory);
++			}
++			var copyNanoseconds = ElapsedNanoseconds(copyStarted, Stopwatch.GetTimestamp());
++
++			var compressionStarted = Stopwatch.GetTimestamp();
++			byte[] compressed;
++			using (var output = new MemoryStream())
++			{
++				using (var deflate = new DeflateStream(output, CompressionLevel.Fastest, true))
++				{
++					deflate.Write(raw, 0, raw.Length);
++				}
++				compressed = output.ToArray();
++			}
++			var compressionNanoseconds = ElapsedNanoseconds(compressionStarted, Stopwatch.GetTimestamp());
++			var first = latest - count + 1;
++			var occurrence = "epoch=" + epoch.ToString(CultureInfo.InvariantCulture)
++				+ ":seq=" + occurrenceSequence.ToString(CultureInfo.InvariantCulture);
++			var snapshotIdentity = "NR-" + epoch.ToString("D4", CultureInfo.InvariantCulture)
++				+ "-" + occurrenceSequence.ToString("D10", CultureInfo.InvariantCulture)
++				+ "-" + latest.ToString("D16", CultureInfo.InvariantCulture);
++			var freezeNanoseconds = ElapsedNanoseconds(freezeStarted, Stopwatch.GetTimestamp());
++			return "{\"schema\":\"oasis.auto67.native-snapshot.v1\",\"snapshot_identity\":\""
++				+ snapshotIdentity + "\",\"occurrence_id\":\"" + occurrence
++				+ "\",\"snapshot_epoch\":" + epoch.ToString(CultureInfo.InvariantCulture)
++				+ ",\"first_sequence\":" + first.ToString(CultureInfo.InvariantCulture)
++				+ ",\"latest_sequence\":" + latest.ToString(CultureInfo.InvariantCulture)
++				+ ",\"count\":" + count.ToString(CultureInfo.InvariantCulture)
++				+ ",\"consumer_sequence\":" + latest.ToString(CultureInfo.InvariantCulture)
++				+ ",\"record_bytes\":16,\"records_codec\":\"deflate-base64\""
++				+ ",\"records_b64\":\"" + Convert.ToBase64String(compressed) + "\""
++				+ ",\"read_duration_ns\":" + readNanoseconds.ToString(CultureInfo.InvariantCulture)
++				+ ",\"copy_duration_ns\":" + copyNanoseconds.ToString(CultureInfo.InvariantCulture)
++				+ ",\"compression_duration_ns\":" + compressionNanoseconds.ToString(CultureInfo.InvariantCulture)
++				+ ",\"freeze_duration_ns\":" + freezeNanoseconds.ToString(CultureInfo.InvariantCulture) + "}";
++		}
++
++		private void EnsureNativeTraceExports(GPGX gpgx)
++		{
++			if (_nativeTraceLatest != null) return;
++			var elfField = typeof(GPGX).GetField("_elf", BindingFlags.Instance | BindingFlags.NonPublic)
++				?? throw new InvalidOperationException("GPGX Waterbox host field is unavailable");
++			var elf = elfField.GetValue(gpgx) as ICallbackAdjuster
++				?? throw new InvalidOperationException("GPGX Waterbox host is unavailable");
++			var getProc = elf.GetType().GetMethod("GetProcAddrOrThrow", BindingFlags.Instance | BindingFlags.Public)
++				?? throw new InvalidOperationException("Waterbox export resolver is unavailable");
++			IntPtr Address(string name) => (IntPtr)getProc.Invoke(elf, new object[] { name });
++			var adapter = CallingConventionAdapters.MakeWaterboxDepartureOnly(elf);
++			_nativeTraceLatest = adapter.GetDelegateForFunctionPointer<NativeTraceLatest>(
++				Address("gpgx_native_trace_ring_latest"));
++			_nativeTraceCount = adapter.GetDelegateForFunctionPointer<NativeTraceCount>(
++				Address("gpgx_native_trace_ring_count"));
++			_nativeTraceCopy = adapter.GetDelegateForFunctionPointer<NativeTraceCopy>(
++				Address("gpgx_native_trace_ring_copy"));
++		}
++
++		private static long ElapsedNanoseconds(long started, long ended)
++			=> (long)((ended - started) * (1_000_000_000.0 / Stopwatch.Frequency));
++
++		private GPGX.GPGXSettings Settings
+ 		{
+ 			get => APIs.Emulation.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
+ 			set => APIs.Emulation.PutSettings(value);

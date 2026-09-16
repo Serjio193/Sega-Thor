@@ -55,7 +55,11 @@ local function events_json(s)
             ',"prehistory_path":' .. (prehistory_path and json_string(prehistory_path) or "null") ..
             ',"prehistory_first_sequence":' .. (prehistory and prehistory.first_sequence or "null") ..
             ',"prehistory_last_sequence":' .. (prehistory and prehistory.last_sequence or "null") ..
-            ',"prehistory_record_count":' .. (prehistory and prehistory.record_count or "null") .. '}'
+            ',"prehistory_record_count":' .. (prehistory and prehistory.record_count or "null") ..
+            ',"native_snapshot":' .. (item.native_snapshot_json or "null") ..
+            ',"native_snapshot_registers":' .. (item.native_snapshot_registers or "null") ..
+            ',"native_snapshot_error":' .. (item.native_snapshot_error and
+                json_string(item.native_snapshot_error) or "null") .. '}'
     end
     return "[" .. table.concat(values, ",") .. "]"
 end

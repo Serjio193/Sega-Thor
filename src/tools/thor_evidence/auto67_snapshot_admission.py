@@ -16,6 +16,14 @@ SNAPSHOT_POOL_CAPACITY = 16
 
 
 @dataclass(frozen=True)
+class NativeTraceRecord:
+    sequence: int
+    pc: int
+    opcode: int
+    reserved: int = 0
+
+
+@dataclass(frozen=True)
 class FrozenSnapshot:
     snapshot_identity: str
     occurrence_identity: tuple[int, int]
@@ -24,6 +32,14 @@ class FrozenSnapshot:
     latest_sequence: int
     count: int
     frozen_at: float
+    native_records: tuple[NativeTraceRecord, ...] = ()
+    consumer_sequence: int | None = None
+    consumer_pc: int | None = None
+    consumer_registers: tuple[tuple[str, int], ...] = ()
+    read_duration_ns: int = 0
+    copy_duration_ns: int = 0
+    compression_duration_ns: int = 0
+    freeze_duration_ns: int = 0
 
 
 class SnapshotPool:
@@ -46,6 +62,8 @@ class SnapshotPool:
             "snapshots_dispatched": 0, "snapshots_completed": 0,
             "snapshot_pool_full_count": 0,
             "occurrences_without_snapshot": 0,
+            "invalid_native_snapshot_count": 0,
+            "native_records_frozen": 0,
         }
 
     @staticmethod
@@ -66,7 +84,15 @@ class SnapshotPool:
                                         "at": time.monotonic()})
 
     def freeze(self, event: dict[str, Any], snapshot_epoch: int,
-               first_sequence: int, latest_sequence: int, count: int
+               first_sequence: int, latest_sequence: int, count: int,
+               *, snapshot_identity: str | None = None,
+               native_records: tuple[NativeTraceRecord, ...] = (),
+               consumer_sequence: int | None = None,
+               consumer_pc: int | None = None,
+               consumer_registers: tuple[tuple[str, int], ...] = (),
+               read_duration_ns: int = 0, copy_duration_ns: int = 0,
+               compression_duration_ns: int = 0,
+               freeze_duration_ns: int = 0
                ) -> FrozenSnapshot | None:
         """Freeze every occurrence at admission; only identity/slot checks run."""
         with self.lock:
@@ -74,6 +100,11 @@ class SnapshotPool:
             epoch, seq = self._identity(event)
             if snapshot_epoch != epoch or first_sequence > latest_sequence:
                 raise ValueError("invalid snapshot identity metadata")
+            if native_records and (len(native_records) != count or count > 4096):
+                raise ValueError("native snapshot record count mismatch")
+            if snapshot_identity and any(item and item.snapshot_identity == snapshot_identity
+                                         for item in self.slots):
+                raise ValueError("native snapshot identity is already owned")
             slot = next((index for index, item in enumerate(self.slots)
                          if item is None), None)
             if slot is None:
@@ -86,14 +117,31 @@ class SnapshotPool:
                 return None
             self._sequence += 1
             frozen = FrozenSnapshot(
-                snapshot_identity=f"SNAP-{self._sequence:08X}",
+                snapshot_identity=snapshot_identity or f"SNAP-{self._sequence:08X}",
                 occurrence_identity=(epoch, seq), snapshot_epoch=snapshot_epoch,
                 first_sequence=first_sequence, latest_sequence=latest_sequence,
-                count=count, frozen_at=time.time())
+                count=count, frozen_at=time.time(), native_records=native_records,
+                consumer_sequence=consumer_sequence, consumer_pc=consumer_pc,
+                consumer_registers=consumer_registers,
+                read_duration_ns=read_duration_ns, copy_duration_ns=copy_duration_ns,
+                compression_duration_ns=compression_duration_ns,
+                freeze_duration_ns=freeze_duration_ns)
             self.slots[slot] = frozen
             self.metrics["occurrences_frozen"] += 1
+            self.metrics["native_records_frozen"] += len(native_records)
             self._sample("FREEZE")
             return frozen
+
+    def note_invalid_native_snapshot(self) -> None:
+        with self.lock:
+            self.metrics["occurrences_seen"] += 1
+            self.metrics["occurrences_without_snapshot"] += 1
+            self.metrics["invalid_native_snapshot_count"] += 1
+
+    def note_missing_native_snapshot(self) -> None:
+        with self.lock:
+            self.metrics["occurrences_seen"] += 1
+            self.metrics["occurrences_without_snapshot"] += 1
 
     def mark_dispatched(self, snapshot_identity: str) -> None:
         with self.lock:
@@ -141,6 +189,7 @@ class SnapshotPool:
                 "snapshot_pool_capacity": self.capacity,
                 "current_snapshot_depth": sum(item is not None for item in self.slots),
                 "peak_snapshot_depth": self._occupancy_peak,
+                "native_records_frozen": self.metrics["native_records_frozen"],
                 "snapshot_pool_full_duration": full_duration,
                 "occupancy_histogram": {str(k): v for k, v in
                                          sorted(self._occupancy_histogram.items())},
@@ -291,7 +340,8 @@ def admission_static_audit() -> dict[str, Any]:
             "existing_order_is_preserved": "prehistory" in source,
             "obsolete_active_claim_counter_in_admission": "REJECT_ACTIVE_CLAIM" in source,
             "snapshot_freeze_reads_only_identity_and_slot": not any(
-                token in module_source for token in ("kind", "address", "pc")),
+                token in module_source for token in
+                ('event.get("kind")', 'event.get("address")', 'event.get("pc")')),
             "global_map_or_cartographer_in_admission": any(
                 token in source.lower() for token in ("global_map", "cartographer")),
             "semantic_filter_absent": not found}

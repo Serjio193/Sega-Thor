@@ -97,6 +97,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_ram_session_map_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_snapshot_admission_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_snapshot_admission_test.py)
+    add_test(NAME oasis_re_thor_evidence_auto67_native_snapshot_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_native_snapshot_test.py)
     add_test(NAME oasis_re_thor_evidence_dispatcher1_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_dispatcher1_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_1_helpers

@@ -7,10 +7,13 @@ import hashlib
 import json
 import os
 import subprocess
+import threading
 import time
+from collections import deque
 from pathlib import Path
 from typing import Any
 
+import auto67_live as auto67_live_module
 from auto67_capsule import CapsulePool
 from auto67_dashboard import DASHBOARD_HTML
 from auto67_live import BASELINE, ROM_SHA, Dispatcher
@@ -50,9 +53,17 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     final_path = output.with_suffix(".lua.json")
     stop_path = output.with_suffix(".stop")
     command_path = output.with_suffix(".capsule.commands")
+    native_experiment = bool(getattr(args, "native_snapshot_experiment", False))
+    if native_experiment and (not args.capsule_mode or args.max_live_captures < 1
+                              or lua.name.lower() != "live_capsule.lua"):
+        raise SystemExit("native snapshot experiment requires live capsule capture")
     for path in (status_path, final_path, stop_path, command_path):
         if path.exists():
             path.unlink()
+    native_snapshot_pool = None
+    if native_experiment:
+        from auto67_snapshot_admission import SnapshotPool
+        native_snapshot_pool = SnapshotPool()
     capsule_pool = None
     capsule_dir = output.parent / (output.stem + ".capsules")
     if args.capsule_mode or args.prehistory_mode in {"continuous", "targeted_idle", "targeted_burst"}:
@@ -60,7 +71,8 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     if args.capsule_mode:
         capsule_pool = CapsulePool(
             count=args.capsule_count, max_live=args.max_live_captures,
-            command_path=command_path)
+            command_path=command_path,
+            native_snapshot_pool=native_snapshot_pool)
     map_db = getattr(args, "map_db", None)
     session_map = getattr(args, "session_map_out", None)
     if map_db and session_map is None:
@@ -71,6 +83,116 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
                             map_sink, rom_bytes)
     dispatcher.start()
+    native_admission = None
+    worker_chain_receipts: deque[dict[str, Any]] = deque(maxlen=64)
+    receipt_lock = threading.Lock()
+    original_local_chain = auto67_live_module.local_chain
+    original_materialize = auto67_live_module.materialize
+    worker_materialization_durations: dict[str, int] = {}
+    if native_experiment:
+        from auto67_native_snapshot import NATIVE_RECORD, NativeSnapshotAdmission
+        native_admission = NativeSnapshotAdmission(dispatcher, native_snapshot_pool,
+                                                   rom_bytes)
+
+        def time_worker_materialize(seed: dict[str, Any], *values: Any,
+                                    **options: Any) -> dict[str, Any]:
+            started_ns = time.perf_counter_ns()
+            result = original_materialize(seed, *values, **options)
+            if seed.get("native_snapshot_mode"):
+                with receipt_lock:
+                    worker_materialization_durations[
+                        str(seed.get("occurrence_id"))] = time.perf_counter_ns() - started_ns
+            return result
+
+        auto67_live_module.materialize = time_worker_materialize
+
+        def observe_worker_chain(event: dict[str, Any], materialized: dict[str, Any] | None,
+                                 investigation_id: str, lease_id: str) -> dict[str, Any]:
+            chain = original_local_chain(event, materialized, investigation_id, lease_id)
+            if event.get("native_snapshot_mode") and materialized is not None:
+                materialized_provenance = materialized.get("register_provenance", {})
+                output_type = ("REGISTER_REACHING_DEFINITION" if chain["chain_steps"]
+                               else "FAIL_CLOSED:" + str(materialized_provenance.get(
+                                   "reason", "NO_REGISTER_PROVENANCE"))
+                               if materialized_provenance.get("status") != "NOT_REQUIRED"
+                               else "RESOLVER_NOT_REQUIRED")
+                worker_id = next((item["worker_id"] for item in dispatcher.worker_info
+                                  if item.get("occurrence_id") == event.get("occurrence_id")), None)
+                producer_records = []
+                occurrence = (int(event.get("epoch", 1)), int(event["seq"]))
+                snapshot_id = native_admission.by_occurrence.get(occurrence)
+                snapshot_receipt = None
+                if snapshot_id is not None:
+                    snapshot = native_snapshot_pool.get(snapshot_id, occurrence)
+                    digest = hashlib.sha256(b"".join(
+                        NATIVE_RECORD.pack(record.sequence, record.pc,
+                                           record.opcode, record.reserved)
+                        for record in snapshot.native_records)).hexdigest()
+                    snapshot_receipt = {
+                        "epoch": snapshot.snapshot_epoch,
+                        "first_sequence": snapshot.first_sequence,
+                        "latest_sequence": snapshot.latest_sequence,
+                        "count": snapshot.count,
+                        "consumer_sequence": snapshot.consumer_sequence,
+                        "consumer_pc": f"0x{snapshot.consumer_pc:06X}",
+                        "last_record_pc": f"0x{snapshot.native_records[-1].pc:06X}",
+                        "last_record_opcode": f"0x{snapshot.native_records[-1].opcode:04X}",
+                        "records_sha256_at_worker_start": digest,
+                        "frozen_snapshot_read_identical_at_worker_start":
+                            digest == event.get("native_records_sha256"),
+                        "live_ring_latest_seen": native_admission.latest_native_sequence,
+                        "live_ring_advanced_after_freeze":
+                            native_admission.latest_native_sequence > snapshot.latest_sequence,
+                        "read_duration_ns": snapshot.read_duration_ns,
+                        "copy_duration_ns": snapshot.copy_duration_ns,
+                        "compression_duration_ns": snapshot.compression_duration_ns,
+                        "freeze_duration_ns": snapshot.freeze_duration_ns,
+                    }
+                    for step in chain["chain_steps"]:
+                        producer = step["producer_occurrence"]
+                        sequence = int(producer["sequence"])
+                        pc = int(producer["pc"], 16)
+                        record = next((item for item in snapshot.native_records
+                                       if item.sequence == sequence and item.pc == pc), None)
+                        producer_records.append({
+                            "register": step["register"],
+                            "sequence": sequence,
+                            "pc": producer["pc"],
+                            "opcode": f"0x{record.opcode:04X}" if record else None,
+                            "present_in_frozen_snapshot": record is not None,
+                            "intervening_register_write": step["evidence"][
+                                "intervening_register_write"],
+                        })
+                receipt = {"occurrence_id": event.get("occurrence_id"),
+                           "snapshot_identity": event.get("snapshot_identity"),
+                           "consumer_pc": event.get("pc"),
+                           "event_kind": event.get("kind"),
+                           "event_address": event.get("address"),
+                           "worker_id": worker_id,
+                           "lease_id": lease_id,
+                           "investigation_id": investigation_id,
+                           "output_evidence_type": output_type,
+                           "occurrence_identity": occurrence,
+                           "resolver_executed": (bool(materialized_provenance.get("requested"))
+                                                  and materialized_provenance.get("capture")
+                                                  is not None),
+                           "resolver_status": materialized_provenance.get("status"),
+                           "resolver_reason": materialized_provenance.get("reason"),
+                           "resolver_requested_registers": materialized_provenance.get(
+                               "requested", []),
+                           "resolver_capture": materialized_provenance.get("capture"),
+                           "capture_diagnostics": materialized.get("capture_diagnostics"),
+                           "worker_materialize_duration_ns":
+                               worker_materialization_durations.pop(
+                                   str(event.get("occurrence_id")), None),
+                           "native_snapshot": snapshot_receipt,
+                           "producer_records_in_frozen_snapshot": producer_records,
+                           "worker_chain": chain}
+                with receipt_lock:
+                    worker_chain_receipts.append(receipt)
+            return chain
+
+        auto67_live_module.local_chain = observe_worker_chain
     environment = os.environ.copy()
     environment.update({
         "OASIS_LIVE_STATUS": str(status_path),
@@ -92,7 +214,14 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
         "OASIS_AUTO67_WRITER_HOOK_LIMIT": str(writer_limit),
         "OASIS_AUTO67_WRITER_CANDIDATE_COUNT": str(writer_report["unique_count"]),
     })
-    command = [str(emulator), f"--lua={lua}", str(rom)]
+    if native_experiment:
+        environment["OASIS_AUTO67_NATIVE_SNAPSHOT"] = "1"
+        environment["OASIS_AUTO67_PREHISTORY_MODE"] = "disabled"
+    command = [str(emulator)]
+    emulator_config = getattr(args, "emulator_config", None)
+    if emulator_config:
+        command.append(f"--config={Path(emulator_config).resolve()}")
+    command.extend((f"--lua={lua}", str(rom)))
     started = time.monotonic()
     transport = PreDispatchTransport()
     launcher_log = output.with_suffix(".launcher.log")
@@ -120,7 +249,10 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                 if dispatcher.capsule_pool is not None:
                     dispatcher.capsule_pool.sync(lua_status.get("capsules", []))
                 for event in transport.consume(lua_status):
-                    dispatcher.ingest(event)
+                    if native_admission is None:
+                        dispatcher.ingest(event)
+                    else:
+                        native_admission.ingest(event)
             if lua_status:
                 publisher.publish(lua_status)
             time.sleep(args.poll_interval)
@@ -133,8 +265,22 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     if capsule_pool is not None:
         capsule_pool.sync(lua_final.get("capsules", []))
     for event in transport.consume(lua_final):
-        dispatcher.ingest(event)
+        if native_admission is None:
+            dispatcher.ingest(event)
+        else:
+            native_admission.ingest(event)
+    if native_admission is not None:
+        native_admission.reconcile()
     dispatcher.stop()
+    native_snapshot_result = native_admission.snapshot() if native_admission else None
+    if native_experiment:
+        for receipt in worker_chain_receipts:
+            occurrence = receipt.get("occurrence_identity")
+            receipt["snapshot_slot_released_after_worker_completion"] = (
+                isinstance(occurrence, tuple) and
+                occurrence not in native_admission.by_occurrence)
+        auto67_live_module.local_chain = original_local_chain
+        auto67_live_module.materialize = original_materialize
     publisher.publish(lua_final)
     if map_sink is not None:
         map_sink.stop()
@@ -182,6 +328,17 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                               "after_runtime": global_after_runtime,
                               "merge": merge_result},
               "capsule_mode": args.capsule_mode,
+              "native_snapshot_experiment": ({
+                  "enabled": True,
+                  "prehistory_mode": "disabled",
+                  "savestate_used": False,
+                  "snapshot_admission": native_snapshot_result,
+                  "worker_chain_receipts": list(worker_chain_receipts),
+                  "worker_id_by_occurrence": {
+                      item["occurrence_id"]: item["worker_id"]
+                      for item in dispatcher.snapshot()["investigations"]
+                      if item.get("occurrence_id") is not None},
+              } if native_experiment else None),
               "capsule_config": {"count": args.capsule_count,
                                   "capacity": 128 * 1024,
                                   "max_live": args.max_live_captures},
@@ -217,6 +374,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="AUTO67 live opportunistic RE launcher")
     parser.add_argument("--rom", type=Path, required=True)
     parser.add_argument("--emulator", type=Path, required=True)
+    parser.add_argument("--emulator-config", type=Path, default=None,
+                        help="optional isolated BizHawk configuration")
     parser.add_argument("--lua", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--workers", type=int, choices=(1, 2, 4, 8, 16, 32, 64), default=16)
@@ -238,6 +397,8 @@ def main() -> int:
                         help="bounded generic writer-hook prefix for scale tests; zero means all")
     parser.add_argument("--capsule-mode", action="store_true",
                         help="AUTO67.1 fixed 16-capsule path; no raw event FIFO")
+    parser.add_argument("--native-snapshot-experiment", action="store_true",
+                        help="developer-only native-ring freeze-to-Worker proof")
     parser.add_argument("--capsule-count", type=int, default=16)
     parser.add_argument("--max-live-captures", type=int, choices=range(0, 17), default=1)
     parser.add_argument("--view-port", type=int, default=0)

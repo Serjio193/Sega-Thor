@@ -130,9 +130,9 @@ class SnapshotAdmissionTest(unittest.TestCase):
         self.assertIn('append_event("FRAME_PC"', lua)
         self.assertIn('sampling_policy', lua)
         source = inspect.getsource(SnapshotPool.freeze)
-        self.assertNotIn("kind", source)
-        self.assertNotIn("address", source)
-        self.assertNotIn("pc", source)
+        self.assertNotIn('event.get("kind")', source)
+        self.assertNotIn('event.get("address")', source)
+        self.assertNotIn('event.get("pc")', source)
 
     def test_pool_shape_is_fixed_and_no_pending_fifo_exists(self):
         self.assertEqual(SNAPSHOT_POOL_CAPACITY, 16)
