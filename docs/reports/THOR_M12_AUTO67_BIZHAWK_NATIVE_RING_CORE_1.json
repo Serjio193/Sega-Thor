@@ -1,12 +1,16 @@
 {
-  "schema": "oasis.m12.auto67.bizhawk.native-ring-core-1.v1",
-  "baseline_sha": "5856063d0b95a82822aaec30ceca863dab18fb74",
+  "schema": "oasis.m12.auto67.bizhawk.native-ring-core-1.v2",
+  "baseline_sha": "e4d1c0f2b452134367e3c34a11f091c3ade1cc6f",
   "classification": "PASS_NATIVE_RING_CORE",
   "scope": {
     "auto67_integrated": false,
-    "freeze_read_managed_transport": false,
+    "bridge_1_started": false,
+    "freeze_read_transport": false,
     "cross_wbx_state_used": false,
-    "global_exec_callback_in_ring_mode": false
+    "global_exec_callback_in_ring_mode": false,
+    "production_auto67_changed": false,
+    "worker_cartographer_architecture_changed": false,
+    "source_owned_changed": false
   },
   "source": {
     "bizhawk_commit": "bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5",
@@ -22,7 +26,14 @@
     "capacity": 4096,
     "record_bytes": 16,
     "record_layout": ["uint64_t sequence", "uint32_t pc", "uint16_t opcode", "uint16_t reserved"],
-    "define": "BIZHAWK_NATIVE_TRACE_RING",
+    "exports_used": [
+      "gpgx_native_trace_ring_latest",
+      "gpgx_native_trace_ring_count",
+      "gpgx_native_trace_ring_copy",
+      "gpgx_native_trace_ring_reset"
+    ],
+    "diagnostic_is_existing_live_copy_api": true,
+    "diagnostic_read_after_timing": true,
     "hot_path_managed_or_lua_callback": false,
     "hot_path_allocation": false,
     "hot_path_io": false,
@@ -34,9 +45,10 @@
   },
   "cold_reset": {
     "schedule": "steps 1-30 neutral; 31-60 Right; 61-300 neutral",
-    "checkpoints": [1,10,30,60,120,300],
+    "checkpoints": [1, 10, 30, 60, 120, 300],
     "first_divergence": null,
     "checkpoint_records_equal": true,
+    "status": "PASS",
     "record": [
       {"step":1,"frame":2,"pc":618,"a4":12582916,"a5":760,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":0,"dma_writes":0},
       {"step":10,"frame":11,"pc":906,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
@@ -44,39 +56,55 @@
       {"step":60,"frame":61,"pc":920,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
       {"step":120,"frame":121,"pc":13038,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":92,"dma_writes":92},
       {"step":300,"frame":301,"pc":13044,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":260,"dma_writes":260}
-    ],
-    "status": "PASS"
+    ]
   },
-  "ring_sanity": {
-    "diagnostic": "standalone native trace_ring.c host harness",
-    "records_submitted": 8192,
+  "actual_core_ring": {
+    "reset_before_run": true,
+    "controlled_frames": 60,
+    "event_on_bus_exec_any": false,
+    "latest_sequence": 920003,
     "count": 4096,
-    "latest": 8192,
-    "ordered": "PASS",
-    "wrap": "PASS",
-    "pc_valid": "PASS",
-    "opcode_rom_match": "PASS",
-    "reset": "PASS",
-    "core_run_retained_lower_bound_records_per_frame": 68.2666666667,
-    "exact_core_latest_sequence": "NOT_EXPOSED_WITHOUT_MANAGED_BRIDGE"
+    "copied": 4096,
+    "records_total": 920003,
+    "records_per_frame": 15333.3833333333,
+    "expected_count": 4096,
+    "count_rule": "count == min(records_total, 4096)",
+    "count_rule_pass": true,
+    "retained_first_sequence": 915908,
+    "retained_last_sequence": 920003,
+    "sequences_strictly_monotonic": true,
+    "sequences_contiguous": true,
+    "wrap_semantics": true,
+    "valid_m68k_pcs": true,
+    "rom_resident_records_checked": 4096,
+    "rom_opcode_mismatches": 0,
+    "rom_opcode_match": true,
+    "actual_core_ring_proof": "PASS",
+    "synthetic_standalone_harness_used_as_core_proof": false,
+    "timing_ms": 973.104,
+    "read_copy_after_timing": true
   },
   "performance": {
     "sample_count": 12,
-    "timing": "in-process os.clock duration of 60-frame loop",
-    "A_rebuilt_stock": {"ring": false,"lua_exec_callback": false,"p50_ms":981,"p95_ms":982,"p99_ms":982,"max_ms":982},
-    "B_rebuilt_native_ring": {"ring": true,"lua_exec_callback": false,"p50_ms":981,"p95_ms":983,"p99_ms":983,"max_ms":983},
-    "C_authoritative_lua_reference": {"ring": false,"lua_exec_callback": true,"p50_ms":621,"p95_ms":707,"p99_ms":715,"max_ms":715,"records_per_frame":9386.5166666667,"source":"prior CAPTURE-PERF receipt"},
-    "native_overhead_ratio": 1.0,
+    "measurement": "in-process os.clock milliseconds for the current exact 60-frame loop",
+    "A_rebuilt_stock": {"ring": false, "lua_exec_callback": false, "p50_ms": 982.0, "p95_ms": 982.45, "p99_ms": 982.89, "max_ms": 983.0},
+    "B_rebuilt_native_ring": {"ring": true, "lua_exec_callback": false, "p50_ms": 981.5, "p95_ms": 982.45, "p99_ms": 982.89, "max_ms": 983.0},
+    "historical_lua_reference": {"measurement": "prior CAPTURE-PERF runner", "p50_ms": 621, "p95_ms": 707, "p99_ms": 715, "max_ms": 715, "records_per_frame": 9386.5166666667, "units_separate_from_current_loop": true},
+    "native_overhead_ratio": 0.99949,
     "gate": "PASS"
   },
   "self_savestate": {"save":"PASS","load":"PASS","replay_equal":true},
   "validation": {
+    "previous_exact_emulation_parity": "PASS",
+    "actual_core_ring_proof": "PASS",
+    "exact_records_total_and_per_frame_recorded": true,
+    "opcode_rom_match_actual_retained_core_records": "PASS",
     "debug_ctest": "195/195 PASS",
     "release_ctest": "194/195 PASS; oasis_re_import_gpgx_coverage_self_test invalid JSON at 0: missing value",
     "source_owned": {"before":1475600,"after":1475600,"delta":0},
     "source_limit": "PASS",
     "git_diff_check": "PASS",
     "github_ci": "PENDING_EXTERNAL_VERIFICATION",
-    "final_sha": "publication commit returned with this receipt"
+    "final_sha": "publication commit SHA; exact CI must be checked after push"
   }
 }
