@@ -1,0 +1,56 @@
+{
+  "schema": "oasis.m12.auto67.bizhawk.waterbox.phase-0a-r1.v1",
+  "baseline_sha": "6109e6bbc15b6d6d87493fb5d6e2357b68f48f7f",
+  "classification": "PASS_STOCK_REBUILD",
+  "source": {
+    "bizhawk_commit": "bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5",
+    "genesis_plus_gx_commit": "051d430d3d1b54625f9900c8f152d7f232e06daf",
+    "native_wsl_checkout": "/home/serji/bizhawk-2.11.1",
+    "native_ring_patch_applied": false,
+    "waterbox_consistency_checks_disabled": false,
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+  },
+  "scenario": {
+    "boot": "clean power-on, no savestate",
+    "schedule": "steps 1-30 neutral; 31-60 Right; 61-300 neutral",
+    "checkpoints": [1, 10, 30, 60, 120, 300],
+    "global_execution_tracing": false,
+    "official_and_rebuilt_records_equal": true,
+    "first_divergence": null,
+    "status": "PASS"
+  },
+  "checkpoint_record": [
+    {"step":1,"frame":2,"pc":618,"a4":12582916,"a5":760,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":0,"dma_writes":0},
+    {"step":10,"frame":11,"pc":906,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+    {"step":30,"frame":31,"pc":912,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+    {"step":60,"frame":61,"pc":920,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+    {"step":120,"frame":121,"pc":13038,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":92,"dma_writes":92},
+    {"step":300,"frame":301,"pc":13044,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":260,"dma_writes":260}
+  ],
+  "rebuilt_core_self_savestate": {
+    "run_to_frame": 120,
+    "advance_frames": 20,
+    "save": "PASS",
+    "load": "PASS",
+    "after20": "frame=141 pc=13044 a4=12582916 a5=12582912 ram_ff188a=0 ram_ff188c=0",
+    "replay20": "frame=141 pc=13044 a4=12582916 a5=12582912 ram_ff188a=0 ram_ff188c=0",
+    "equal": true,
+    "status": "PASS"
+  },
+  "cross_wbx_quicksave1": {
+    "status": "CROSS_WBX_STATE_INCOMPATIBLE",
+    "official_loaded_frame": 2118,
+    "rebuilt_loaded_frame": 1,
+    "parity_oracle": false,
+    "consistency_checks_bypassed": false
+  },
+  "validation": {
+    "debug_ctest": "195/195 PASS",
+    "release_ctest": "194/195 PASS; oasis_re_import_gpgx_coverage_self_test invalid JSON at 0: missing value",
+    "source_owned": {"before":1475600,"after":1475600,"delta":0},
+    "source_limit": "PASS",
+    "git_diff_check": "PASS",
+    "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+    "final_sha": "publication commit returned with this receipt"
+  }
+}
