@@ -1,0 +1,87 @@
+{
+  "schema": "oasis.m12.auto67.native-ring-bridge-1a-admission-1x.v1",
+  "baseline_sha": "9937f291132fd59cccc3eaf5571a0c30ba07e968",
+  "classification": "PASS_NATIVE_SNAPSHOT_ADMISSION_1X",
+  "scope": {
+    "production_auto67_switched": false,
+    "native_ring_capacity_changed": false,
+    "worker_architecture_changed": false,
+    "cartographer_changed": false,
+    "global_map_changed": false,
+    "source_owned_changed": false,
+    "pending_event_fifo_added": false,
+    "bridge_1_native_transport_started": false
+  },
+  "architecture_audit": {
+    "dispatcher_admission_forbidden_tokens": [],
+    "existing_order_is_preserved": true,
+    "obsolete_active_claim_counter_in_admission": false,
+    "snapshot_freeze_reads_only_identity_and_slot": true,
+    "global_map_or_cartographer_in_admission": false,
+    "semantic_filter_absent": true,
+    "status": "PASS"
+  },
+  "cpu_history_ring": {
+    "capacity_records": 4096,
+    "continuous_recording": true,
+    "status": "UNCHANGED"
+  },
+  "snapshot_pool": {
+    "workers": 16,
+    "slots": 16,
+    "ratio": 1.0,
+    "occurrences_seen": 16,
+    "occurrences_frozen": 16,
+    "snapshots_dispatched": 16,
+    "snapshots_completed": 16,
+    "snapshot_pool_capacity": 16,
+    "current_snapshot_depth": 0,
+    "peak_snapshot_depth": 16,
+    "snapshot_pool_full_count": 0,
+    "snapshot_pool_full_duration_seconds": 0.0,
+    "occurrences_without_snapshot": 0,
+    "workers_busy_current": 0,
+    "workers_busy_peak": 16,
+    "workers_idle_current": 16,
+    "workers_idle_min": 0,
+    "worker_leases": 16,
+    "worker_returns": 16,
+    "rolling_window_overwrites": 8,
+    "occupancy_histogram": {"0": 1, "1": 3, "2": 3, "3": 3, "4": 3, "5": 3, "6": 3, "7": 3, "8": 3, "9": 3, "10": 3, "11": 3, "12": 3, "13": 3, "14": 3, "15": 3, "16": 2},
+    "occupancy_trace_depths_reached": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "snapshot_identity_immutable": true,
+    "freeze_before_dispatch": true,
+    "release_after_worker_completion": true,
+    "pool_full_fail_visible": true
+  },
+  "occurrence_contract": {
+    "identity": "(epoch, seq)",
+    "fields": ["occurrence_id", "snapshot_identity", "snapshot_epoch", "first_sequence", "latest_sequence", "count"],
+    "snapshot_unchanged_after_live_ring_recording": true,
+    "snapshot_pool_full_marker": "SNAPSHOT_POOL_FULL"
+  },
+  "age_metrics_seconds": {
+    "occurrence_at_worker_lease": {"count": 16, "p50": 0.0, "max": 0.000999},
+    "occurrence_at_worker_start": {"count": 16, "p50": 0.006742, "max": 0.006742},
+    "frozen_snapshot_at_worker_start": {"count": 16, "p50": 0.001369, "max": 0.001369}
+  },
+  "sampling_audit": {
+    "lua_path": "src/tools/thor_evidence/capture/live_opportunistic.lua",
+    "continuous_write_stride": 16,
+    "burst_default_write_stride": 1,
+    "emitted_classes": ["RAM_WRITE_SAMPLE", "FRAME_PC"],
+    "semantic_classifier": false,
+    "status": "PASS"
+  },
+  "validation": {
+    "focused_snapshot_admission_tests": "10/10 PASS",
+    "debug_ctest": "197/197 PASS",
+    "release_ctest": "197/197 PASS",
+    "source_limit": "PASS; 674 governed files, all <=500 lines",
+    "git_diff_check": "PASS",
+    "source_owned": {"before": 1475600, "after": 1475600, "delta": 0},
+    "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+    "final_sha": "PENDING_PUBLICATION"
+  }
+}
+

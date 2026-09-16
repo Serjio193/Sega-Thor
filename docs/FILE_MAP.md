@@ -1416,6 +1416,14 @@ in worker provenance. Regression coverage is in
 `tests/thor_evidence_auto67_test.py`. The checkpoint is documented in
 `docs/reports/THOR_M12_DISPATCHER_1_OCCURRENCE_ONLY.md` and its JSON
 counterpart.
+
+`src/tools/thor_evidence/auto67_snapshot_admission.py` is a developer-only
+1:1 snapshot admission probe. It freezes immutable occurrence-scoped snapshot
+metadata into a fixed 16-slot pool, observes the existing Dispatcher/Worker
+flow, and exposes occupancy, ownership and fail-visible pool-full metrics
+without switching production AUTO67 or adding a queue. Its contract is tested
+by `tests/thor_evidence_auto67_snapshot_admission_test.py` and documented in
+`docs/reports/THOR_M12_AUTO67_NATIVE_RING_BRIDGE_1A_ADMISSION_1X.md`.
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 
 `src/tools/thor_evidence/auto67_live.py` owns occurrence-only leasing and a

@@ -9124,6 +9124,30 @@ runtime/graph paths remain unchanged.
 EVIDENCE: `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md` and
 its JSON counterpart.
 
+# 2026-09-16 — M12 AUTO67 native ring bridge admission 1:1 — bounded experiment
+
+TASK: Starting from `9937f291132fd59cccc3eaf5571a0c30ba07e968`, prove a
+developer-only immutable snapshot pool with exactly 16 slots for 16 existing
+Workers. Freeze occurrence metadata synchronously at occurrence admission,
+observe the existing Dispatcher/Worker flow, and audit that global map,
+Cartographer results and semantic classification do not participate in
+pre-worker admission. Keep the native history ring at 4096, do not add a queue,
+do not switch production AUTO67, and keep SOURCE_OWNED unchanged.
+
+IMPLEMENTATION: Added `auto67_snapshot_admission.py`, a fixed 16-slot
+occurrence-identity pool and probe around the existing Dispatcher. It records
+immutable snapshot identity/epoch/sequence bounds, ownership, occupancy,
+worker ages, RollingWindow overwrites and fail-visible `SNAPSHOT_POOL_FULL`.
+Added focused mechanical tests and CTest registration; the existing Lua source
+sampling policy remains continuous stride 16 with `RAM_WRITE_SAMPLE` and
+`FRAME_PC` emissions.
+
+VALIDATION: The bounded 16-occurrence burst reached peak snapshot depth 16,
+completed all 16 snapshots, had zero pool-full events, 16 worker leases and
+returns, peak busy 16, minimum idle 0, and 8 RollingWindow overwrites. Static
+admission audit found no forbidden semantic selector and confirmed obsolete
+`REJECT_ACTIVE_CLAIM` does not influence admission. Focused tests: 10/10 PASS.
+
 # 2026-09-15 — M12 AUTO67 RAM session map — implementation in progress
 
 TASK: Keep `--map-db` GLOBAL closed during gameplay, persist the single writer's
