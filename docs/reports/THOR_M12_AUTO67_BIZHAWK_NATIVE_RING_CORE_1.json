@@ -1,0 +1,82 @@
+{
+  "schema": "oasis.m12.auto67.bizhawk.native-ring-core-1.v1",
+  "baseline_sha": "5856063d0b95a82822aaec30ceca863dab18fb74",
+  "classification": "PASS_NATIVE_RING_CORE",
+  "scope": {
+    "auto67_integrated": false,
+    "freeze_read_managed_transport": false,
+    "cross_wbx_state_used": false,
+    "global_exec_callback_in_ring_mode": false
+  },
+  "source": {
+    "bizhawk_commit": "bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5",
+    "genesis_plus_gx_commit": "051d430d3d1b54625f9900c8f152d7f232e06daf",
+    "bizhawk_patch_sha256": "a6e303140d5a85e11c604a0cfdfad42413395c49e4a70b1415c1aa8a627609e5",
+    "genesis_plus_gx_patch_sha256": "139c2a15d27ddded659bed964349076a3e2efc91b8b43bdfbd350aa8200d85eb",
+    "custom_artifact_size": 4026624,
+    "custom_artifact_sha256": "f6bb758083d1c88873a067ebcdf047a7fedc18d4a3a427b37f6c60693c64e2b8",
+    "custom_test_install": "C:/Dev/SegaThorTools/BizHawk-2.11.1-native-ring-core-test",
+    "authoritative_install_overwritten": false
+  },
+  "ring_contract": {
+    "capacity": 4096,
+    "record_bytes": 16,
+    "record_layout": ["uint64_t sequence", "uint32_t pc", "uint16_t opcode", "uint16_t reserved"],
+    "define": "BIZHAWK_NATIVE_TRACE_RING",
+    "hot_path_managed_or_lua_callback": false,
+    "hot_path_allocation": false,
+    "hot_path_io": false,
+    "hot_path_state_mutation": false
+  },
+  "rom": {
+    "path": "local-roms/Beyond Oasis (USA).md",
+    "sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+  },
+  "cold_reset": {
+    "schedule": "steps 1-30 neutral; 31-60 Right; 61-300 neutral",
+    "checkpoints": [1,10,30,60,120,300],
+    "first_divergence": null,
+    "checkpoint_records_equal": true,
+    "record": [
+      {"step":1,"frame":2,"pc":618,"a4":12582916,"a5":760,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":0,"dma_writes":0},
+      {"step":10,"frame":11,"pc":906,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+      {"step":30,"frame":31,"pc":912,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+      {"step":60,"frame":61,"pc":920,"a4":12582916,"a5":0,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":43,"dma_writes":43},
+      {"step":120,"frame":121,"pc":13038,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":92,"dma_writes":92},
+      {"step":300,"frame":301,"pc":13044,"a4":12582916,"a5":12582912,"ram_ff188a":0,"ram_ff188c":0,"vdp_writes":260,"dma_writes":260}
+    ],
+    "status": "PASS"
+  },
+  "ring_sanity": {
+    "diagnostic": "standalone native trace_ring.c host harness",
+    "records_submitted": 8192,
+    "count": 4096,
+    "latest": 8192,
+    "ordered": "PASS",
+    "wrap": "PASS",
+    "pc_valid": "PASS",
+    "opcode_rom_match": "PASS",
+    "reset": "PASS",
+    "core_run_retained_lower_bound_records_per_frame": 68.2666666667,
+    "exact_core_latest_sequence": "NOT_EXPOSED_WITHOUT_MANAGED_BRIDGE"
+  },
+  "performance": {
+    "sample_count": 12,
+    "timing": "in-process os.clock duration of 60-frame loop",
+    "A_rebuilt_stock": {"ring": false,"lua_exec_callback": false,"p50_ms":981,"p95_ms":982,"p99_ms":982,"max_ms":982},
+    "B_rebuilt_native_ring": {"ring": true,"lua_exec_callback": false,"p50_ms":981,"p95_ms":983,"p99_ms":983,"max_ms":983},
+    "C_authoritative_lua_reference": {"ring": false,"lua_exec_callback": true,"p50_ms":621,"p95_ms":707,"p99_ms":715,"max_ms":715,"records_per_frame":9386.5166666667,"source":"prior CAPTURE-PERF receipt"},
+    "native_overhead_ratio": 1.0,
+    "gate": "PASS"
+  },
+  "self_savestate": {"save":"PASS","load":"PASS","replay_equal":true},
+  "validation": {
+    "debug_ctest": "195/195 PASS",
+    "release_ctest": "194/195 PASS; oasis_re_import_gpgx_coverage_self_test invalid JSON at 0: missing value",
+    "source_owned": {"before":1475600,"after":1475600,"delta":0},
+    "source_limit": "PASS",
+    "git_diff_check": "PASS",
+    "github_ci": "PENDING_EXTERNAL_VERIFICATION",
+    "final_sha": "publication commit returned with this receipt"
+  }
+}
