@@ -1436,6 +1436,16 @@ adds that API to the isolated managed host build. The experiment is opt-in in
 identity, resolver and slot-lifecycle checks are in
 `tests/thor_evidence_auto67_native_snapshot_test.py`; the runtime receipt is in
 `docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1B_FREEZE_WORKER_1.md`.
+
+`src/tools/thor_evidence/auto67_worker_input_trace.py` provides a bounded,
+opt-in equality trace for native-snapshot `BUS_WRITE_PC` events at Dispatcher
+mailbox write, Worker mailbox read, and immediately before materialization. It
+hashes the complete normalized event and recomputes the immutable frozen-record
+SHA-256 at every point. The 1C regression in
+`tests/thor_evidence_auto67_native_snapshot_test.py` exercises the real
+Dispatcher/Worker mailbox path and reports per-field equality. The runtime
+receipt is in
+`docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1C_WORKER_INPUT_TRACE.md`.
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 
 `src/tools/thor_evidence/auto67_live.py` owns occurrence-only leasing and a

@@ -1,5 +1,8 @@
 import base64
+import hashlib
+import struct
 import sys
+import tempfile
 import time
 import unittest
 import zlib
@@ -20,6 +23,7 @@ from auto67_native_snapshot import (  # noqa: E402
 )
 from auto67_predecessor import resolve  # noqa: E402
 from auto67_snapshot_admission import SnapshotPool  # noqa: E402
+from auto67_worker_input_trace import WorkerInputTrace  # noqa: E402
 
 
 def fixture(occurrence_sequence=7, latest=3):
@@ -62,6 +66,80 @@ def fixture(occurrence_sequence=7, latest=3):
 
 
 class NativeSnapshotTest(unittest.TestCase):
+    def test_dispatch_mailbox_and_materializer_input_are_identical(self):
+        rom, event = fixture(occurrence_sequence=42)
+        rom = bytearray(0x400)
+        rom[0x100:0x102] = bytes.fromhex("2840")
+        rom[0x102:0x106] = bytes.fromhex("4e714e71")
+        rom[0x26C:0x26E] = bytes.fromhex("4e71")
+        event["pc"] = "0x00026C"
+        event["address"] = "0xFFF62A"
+        event["kind"] = "BUS_WRITE_PC"
+
+        snapshot_pool = SnapshotPool()
+        capsule_pool = CapsulePool(max_live=1,
+                                   native_snapshot_pool=snapshot_pool)
+        trace = WorkerInputTrace(snapshot_pool)
+        dispatcher = Dispatcher(worker_count=1, capacity=8, processing_delay=0,
+                                capsule_pool=capsule_pool, rom=bytes(rom),
+                                worker_input_trace=trace)
+        admission = NativeSnapshotAdmission(dispatcher, snapshot_pool, bytes(rom))
+        with tempfile.TemporaryDirectory() as directory:
+            dispatcher.start()
+            try:
+                admission.ingest(event)
+                capsule = next(item for item in capsule_pool.capsules
+                               if item.state == "CAPTURING")
+                path = Path(directory) / (
+                    f"capsule-{capsule.capsule_id:02d}-{capsule.lease_id}.bin")
+                record = struct.pack("<IIIII", 1, 10, 0xFFF62A, 0x26C, 1)
+                header = b"O67V" + struct.pack(
+                    "<IIIII", 2, capsule.capsule_id, 10, 84, 1)
+                path.write_bytes(header + record)
+                capsule_pool.sync([{
+                    "capsule_id": capsule.capsule_id,
+                    "lease_id": capsule.lease_id,
+                    "state": "FROZEN",
+                    "capsule_path": str(path),
+                    "format_version": 2,
+                    "event_count": 1,
+                }])
+
+                deadline = time.monotonic() + 3
+                while time.monotonic() < deadline:
+                    if dispatcher.metrics["worker_returns"] == 1:
+                        break
+                    time.sleep(0.005)
+                self.assertEqual(dispatcher.metrics["worker_returns"], 1)
+                self.assertEqual(dispatcher.recent_investigations[0]["outcome"],
+                                 "EVIDENCE_MATERIALIZED")
+                admission.reconcile()
+
+                result = trace.snapshot()
+                self.assertEqual(result["classification"],
+                                 "PASS_WORKER_INPUT_PRESERVED")
+                selected = result["selected_trace"]
+                self.assertEqual(selected["occurrence_id"], "epoch=1:seq=42")
+                self.assertTrue(selected["preferred_pc_match"])
+                self.assertTrue(selected["comparisons"]["all_fields_equal"])
+                points = selected["points"]
+                self.assertEqual(set(points), {
+                    "DISPATCH_INPUT", "WORKER_RECEIVED", "MATERIALIZER_INPUT"})
+                point = points["MATERIALIZER_INPUT"]
+                self.assertEqual(point["event_pc"], "0x00026C")
+                self.assertEqual(point["event_address"], "0xFFF62A")
+                expected_identity = "NR-0001-0000000042-0000000000000003"
+                self.assertEqual(point["snapshot_identity"], expected_identity)
+                raw_records = zlib.decompress(base64.b64decode(
+                    event["native_snapshot"]["records_b64"]), -zlib.MAX_WBITS)
+                expected_records_hash = hashlib.sha256(raw_records).hexdigest()
+                self.assertEqual(point["frozen_records_sha256"],
+                                 expected_records_hash)
+                self.assertTrue(point["normalized_event_sha256"])
+            finally:
+                dispatcher.stop()
+                capsule_pool.stop()
+
     def test_actual_record_adapter_reaches_existing_resolver(self):
         rom, event = fixture()
         decoded = decode_native_snapshot(event, rom)

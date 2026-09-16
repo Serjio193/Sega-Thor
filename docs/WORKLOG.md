@@ -9204,3 +9204,39 @@ admission regressions: 10/10 PASS. SOURCE_OWNED remains
 the project source-limit test and `git diff --check` passed. GitHub CI is
 pending the pushed exact commit SHA; the receipt records
 `PENDING_EXTERNAL_VERIFICATION`.
+
+# 2026-09-16 — M12 AUTO67 native-ring Worker input trace (1C)
+
+TASK: From baseline `a22bef0a3445a0d1cbdc347023a25ee7737bd32f`, determine
+whether one concrete native-snapshot `BUS_WRITE_PC` event is preserved across
+Dispatcher mailbox write, Worker mailbox read, and the actual materializer
+call. Record exact occurrence/event/snapshot fields, frozen-record SHA-256,
+and canonical normalized `task[\"event\"]` SHA-256 at all three points.
+
+ACCEPTANCE: Prefer event PC `0x00026C`; otherwise trace the first completed
+BUS_WRITE occurrence. Add an opt-in diagnostic observer and a regression test
+using the real Dispatcher/Worker mailbox path. Compare every requested field
+exactly. Do not change event PC, decoder, resolver, scheduling, map, snapshot
+pool, ring, or SOURCE_OWNED. Record Debug/Release CTest, source limit, diff
+check, exact-SHA GitHub CI, and a factual report; commit and push, then STOP.
+
+RESULT: `PASS_WORKER_INPUT_PRESERVED`. The bounded 1,800-frame native runtime
+selected the same `epoch=0:seq=0` / `BUS_WRITE_PC` at event PC `0x00026C` as
+1B. `DISPATCH_INPUT`, `WORKER_RECEIVED`, and `MATERIALIZER_INPUT` had exact
+field equality, the same frozen-record SHA-256, and the same normalized full
+event SHA-256. `NATIVE_LAST_PC_AT_FREEZE` was `0x00026A`; 1C records both PCs
+without deciding which is correct. No event, decoder, resolver, Worker
+semantics, Dispatcher scheduling, ring, pool, or ownership behavior was fixed.
+
+RUNTIME: Native GPGX artifact SHA-256
+`f6bb758083d1c88873a067ebcdf047a7fedc18d4a3a427b37f6c60693c64e2b8`; 1,800
+frames, 4,976/4,976 native snapshots frozen and completed, no state load or
+game input. The trace and complete values are in
+`docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1C_WORKER_INPUT_TRACE.md`
+and the JSON receipt.
+
+VALIDATION: Focused native-snapshot tests: 7/7 PASS. Debug and Release builds
+and CTest each passed; CTest 198/198 in each configuration, including the
+project source-limit check. `SOURCE_OWNED` remains 1,475,600 / 3,145,728 (delta
+0). `git diff --check` passed. Exact-SHA GitHub CI is checked after push and
+reported in the publication response.

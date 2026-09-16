@@ -53,7 +53,8 @@ class Dispatcher:
                  processing_delay: float = 0.003,
                  capsule_pool: CapsulePool | None = None,
                  map_sink: LiveMapSink | None = None,
-                 rom: bytes | None = None):
+                 rom: bytes | None = None,
+                 worker_input_trace: Any | None = None):
         if worker_count not in {1, 2, 4, 8, 16, 32, 64}:
             raise ValueError("worker count must be one of 1,2,4,8,16,32,64")
         self.window = RollingWindow(capacity)
@@ -62,6 +63,7 @@ class Dispatcher:
         self.capsule_pool = capsule_pool
         self.map_sink = map_sink
         self.rom = rom
+        self.worker_input_trace = worker_input_trace
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
         self.wake = [threading.Event() for _ in range(worker_count)]
@@ -204,6 +206,8 @@ class Dispatcher:
                 f"L{self.metrics['worker_leases'] + 1:08X}-{digest(occurrence_id)}")
             event["dispatch_state"] = "LEASED"
             event["lease_worker"] = worker_id
+            if self.worker_input_trace is not None:
+                self.worker_input_trace.record("DISPATCH_INPUT", worker_id, task)
             self.mailboxes[worker_id] = task
             task["dispatch_trace"]["timestamps_ns"]["t6"] = time.perf_counter_ns()
             self.worker_states[worker_id] = "LEASED"
@@ -263,6 +267,8 @@ class Dispatcher:
             self.wake[worker_id].clear()
             with self.lock:
                 task = self.mailboxes[worker_id]
+                if task is not None and self.worker_input_trace is not None:
+                    self.worker_input_trace.record("WORKER_RECEIVED", worker_id, task)
                 self.mailboxes[worker_id] = None
                 if task is None:
                     if self.stop_event.is_set():
@@ -339,6 +345,8 @@ class Dispatcher:
                               else "EVIDENCE_CAPTURED" if capsule_id is not None
                               else "EVIDENCE_OBSERVED")
             if capsule_evidence is not None:
+                if self.worker_input_trace is not None:
+                    self.worker_input_trace.record("MATERIALIZER_INPUT", worker_id, task)
                 materialized = materialize(event, capsule_evidence, self.rom,
                                            predecessor_evidence, live_worker=True)
             else:

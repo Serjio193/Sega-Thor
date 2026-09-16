@@ -73,6 +73,10 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
             count=args.capsule_count, max_live=args.max_live_captures,
             command_path=command_path,
             native_snapshot_pool=native_snapshot_pool)
+    worker_input_trace = None
+    if native_experiment:
+        from auto67_worker_input_trace import WorkerInputTrace
+        worker_input_trace = WorkerInputTrace(native_snapshot_pool)
     map_db = getattr(args, "map_db", None)
     session_map = getattr(args, "session_map_out", None)
     if map_db and session_map is None:
@@ -81,7 +85,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
     if map_sink is not None:
         map_sink.start()
     dispatcher = Dispatcher(args.workers, args.window, args.worker_delay, capsule_pool,
-                            map_sink, rom_bytes)
+                            map_sink, rom_bytes, worker_input_trace)
     dispatcher.start()
     native_admission = None
     worker_chain_receipts: deque[dict[str, Any]] = deque(maxlen=64)
@@ -333,6 +337,7 @@ def run_live(args: argparse.Namespace) -> dict[str, Any]:
                   "prehistory_mode": "disabled",
                   "savestate_used": False,
                   "snapshot_admission": native_snapshot_result,
+                  "worker_input_trace": worker_input_trace.snapshot(),
                   "worker_chain_receipts": list(worker_chain_receipts),
                   "worker_id_by_occurrence": {
                       item["occurrence_id"]: item["worker_id"]
