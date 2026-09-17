@@ -1,3 +1,13 @@
+# M12 Runtime Control Provenance 2C — STOP_NO_RUNTIME_PROVENANCE_GAP
+
+Phase 0 classified the saved, accepted 2B runtime trace: 199,630 instructions,
+zero indirect JMP/JSR occurrences, and 290 direct absolute-long JSRs. The
+observed indirect-control provenance gap required to justify a sensor was not
+present in this bounded execution. No native hooks or runtime campaign were
+added. This is not a whole-game negative; any follow-up must begin from a real
+runtime indirect transfer that existing evidence cannot resolve. See
+`docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2C.md`.
+
 # M12-CARVER-1 — Evidence/Gap Orchestration Baseline — STAGE 1 COMPLETE / STOPPED
 
 Stage 1 imports the latest pushed AUTO60 manifest into a deterministic

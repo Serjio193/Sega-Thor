@@ -874,3 +874,20 @@ records. It independently decodes every captured PC, checks all linked ranges
 against canonical ROM bytes and persisted MAP-1 identities, and verifies that
 repeated occurrences share one stable range identity. This is an
 executed-instruction interval layer, not a full ROM classification map.
+
+## M12 runtime control provenance 2C — Phase 0 stop
+
+Phase 0 examined the saved, independently audited 2B FLOW_V1 runtime evidence
+before considering any register-provenance instrumentation. Its 199,630
+instruction occurrences contain 29,087 branch-family events, 290 direct
+absolute-long JSRs, 1,760 returns, and no indirect JMP or JSR. The 290 JSRs
+encode their destination in the instruction itself; they do not demonstrate a
+pointer loaded from ROM or another memory region. The run also contains 863
+asynchronous vector-30 exception-event records.
+
+Result: `STOP_NO_RUNTIME_PROVENANCE_GAP` for this bounded saved execution.
+No native provenance state, transport record, Lua hook, runtime campaign, or
+canonical graph relation was added. This is a run-local negative result, not a
+claim that all game scenarios lack indirect transfers. Reconsider a sensor only
+after accepted runtime evidence contains an actual indirect JMP/JSR whose
+memory origin the current evidence pipeline cannot resolve.

@@ -9584,3 +9584,46 @@ Focused Debug/Release tests passed 1/1 each, and the full saved-result audit was
 rerun against all 1,600 local segments on Windows and WSL/Linux.
 
 FINAL STATUS: `PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE`.
+
+# 2026-09-18 — M12 Runtime Control Provenance 2C — Phase 0 STOP
+
+TASK / ACCEPTANCE: Starting from accepted 2B checkpoint
+`6bac80aa93a3a6cb1c22d1416147c525223946d2`, classify actual control-flow
+instructions and exception events in the saved, independently audited FLOW_V1
+evidence. Only consider Phase 1 instrumentation if an actual indirect JMP/JSR
+has a target whose memory origin the existing pipeline cannot resolve. Keep
+Worker 1B, FLOW_V1, 2B linkage, Cartographer, Archivist, AUTO67, predecessor
+logic and SOURCE_OWNED unchanged.
+
+RESULT: `STOP_NO_RUNTIME_PROVENANCE_GAP` for this saved execution. The accepted
+2B audit covers all 1,600 segments and 199,630 instruction occurrences. The
+control classification is: BRA 1,148; conditional Bcc 25,388 (12,181 taken,
+13,207 not taken); DBcc 44 (all taken); BSR 2,507; direct JSR 290; direct JMP
+0; indirect JSR 0; indirect JMP 0; returns 1,760; other instructions 168,493.
+There are 863 additional exception-event records, all asynchronous vector 30.
+The 290 direct JSR occurrences are all `JSR abs.l` at `0x002380`, bytes
+`4EB900060000`, with actual FLOW `next_pc=0x00060000`; their target is encoded
+in the instruction, not loaded from a memory-origin pointer.
+With zero actual indirect consumers, the source-resolution categories are not
+applicable and there is no observed `SOURCE_UNRESOLVED` case. This negative is
+limited to the saved 2B execution, not a whole-game claim.
+
+EVIDENCE: canonical ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`; raw
+FLOW_V1 SHA-256 `f4913e04f2cf4d43697d2908a2914a88dccde220d5a5c6367c7b9788daaad4fe`;
+segment index SHA-256
+`e472c747181b791ed4058343d597baa369503b7878e2a557a8a4a401ef34bc1f`; exact
+range export SHA-256
+`aac3faec7cd6fa3208bc3ca40246bf14a6259e29f8ea8fef67000b23fe4b0c39`. The
+persisted independent 2B audit remains `PASS_INDEPENDENT_ROM_RANGE_AUDIT`, with
+1,600/1,600 segments, 199,630/199,630 linked instructions, and 1,600 terminal
+facts. Session `SOURCE_OWNED` before/after/delta is `0/0/0`.
+
+SCOPE / VALIDATION: no native core, Lua, runtime capture, graph, ownership, or
+Worker/FLOW semantics changed; no new BizHawk campaign was run. This is a
+documentation-only STOP result, so Debug/Release builds and CTest were not
+rerun. A read-only reconciliation rehashed the ROM/FLOW/index/range inputs,
+recomputed all categories, checked all 290 direct-JSR targets, and confirmed
+the session ownership count; it passed. The compact report and receipt contain
+the hashes and reconciled counts; multi-megabyte FLOW and session evidence
+remain local under ignored `build/`.

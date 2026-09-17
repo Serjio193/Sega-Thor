@@ -1,0 +1,89 @@
+{
+  "schema": "oasis.m12.runtime-control-provenance-phase0.v1",
+  "checkpoint": "M12-RUNTIME-CONTROL-PROVENANCE-2C",
+  "baseline_sha": "6bac80aa93a3a6cb1c22d1416147c525223946d2",
+  "parent_checkpoint": "M12-ROM-RANGE-LINKAGE-2B",
+  "status": "STOP_NO_RUNTIME_PROVENANCE_GAP",
+  "scope": "bounded saved 2B runtime execution only; not a whole-game negative",
+  "runtime_campaign_rerun": false,
+  "native_provenance_sensor_added": false,
+  "evidence": {
+    "run_id": 1789714283,
+    "worker_count": 16,
+    "cycles_per_worker": 100,
+    "depth": 20,
+    "memory_bytes_per_worker": 65536,
+    "audited_segments": 1600,
+    "instruction_occurrences": 199630,
+    "terminal_next_pc_facts": 1600,
+    "canonical_rom_size": 3145728,
+    "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "raw_flow_path": "build/thor-evidence/live-forward-rom-link-2b/recovered-runtime/rom-link-evidence/flow-v1-records.bin",
+    "raw_flow_size": 6415776,
+    "raw_flow_sha256": "f4913e04f2cf4d43697d2908a2914a88dccde220d5a5c6367c7b9788daaad4fe",
+    "segment_index_sha256": "e472c747181b791ed4058343d597baa369503b7878e2a557a8a4a401ef34bc1f",
+    "exact_range_export_sha256": "aac3faec7cd6fa3208bc3ca40246bf14a6259e29f8ea8fef67000b23fe4b0c39",
+    "segment_audit_sha256": "0812f898a6f2b2e0f7903309e2ca45fa52989616ce7045546d7a9c80e1be0a72",
+    "parent_audit_status": "PASS_INDEPENDENT_ROM_RANGE_AUDIT",
+    "parent_audit_segments": 1600,
+    "parent_audit_instructions_linked": 199630,
+    "parent_audit_terminal_facts": 1600,
+    "parent_audit_receipts": {
+      "windows_sha256": "380d475f0f433742c8b958ab92bd99c2c9583dbc7c0f190d2d2cb9c6b805715d",
+      "wsl_sha256": "07279e375895daa1feaac04d3d560fd4ab57c06373e1073c6913bdd2fd300041"
+    }
+  },
+  "classification": {
+    "instruction_occurrences": 199630,
+    "control_flow_instruction_occurrences": 31137,
+    "direct_branch_bra": 1148,
+    "conditional_bcc": 25388,
+    "conditional_bcc_taken": 12181,
+    "conditional_bcc_not_taken": 13207,
+    "conditional_dbcc": 44,
+    "conditional_dbcc_taken": 44,
+    "conditional_dbcc_not_taken": 0,
+    "direct_bsr": 2507,
+    "direct_jsr": 290,
+    "direct_jmp": 0,
+    "indirect_jsr": 0,
+    "indirect_jmp": 0,
+    "returns": 1760,
+    "other_instructions": 168493,
+    "asynchronous_exception_events": 863,
+    "synchronous_exception_events": 0,
+    "exception_vector_30_events": 863
+  },
+  "direct_jsr_sample": {
+    "occurrences": 290,
+    "pc": "0x002380",
+    "bytes_hex": "4EB900060000",
+    "decoded": "JSR abs.l",
+    "actual_next_pc": "0x00060000",
+    "target_origin": "instruction_encoded_absolute_address"
+  },
+  "gap_test": {
+    "indirect_control_occurrences": 0,
+    "provenance_resolved": 0,
+    "provenance_unresolved": 0,
+    "provenance_transformed": 0,
+    "provenance_non_memory": 0,
+    "provenance_unknown": 0,
+    "result": "NOT_APPLICABLE_NO_INDIRECT_CONSUMER"
+  },
+  "source_owned": {
+    "before_bytes": 0,
+    "after_bytes": 0,
+    "delta_bytes": 0
+  },
+  "runtime_architecture_changed": false,
+  "raw_evidence_committed": false,
+  "validation": {
+    "saved_parent_2b_independent_audit": "PASS_1600_SEGMENTS_199630_INSTRUCTIONS_1600_TERMINAL_FACTS",
+    "phase0_input_hash_and_category_reconciliation": "PASS",
+    "flow_category_counts_reconcile": true,
+    "direct_jsr_actual_next_pc_matches_encoded_absolute_target": "PASS_290_OF_290",
+    "debug_release_builds_and_tests": "NOT_RERUN_DOCUMENTATION_ONLY_STOP",
+    "source_owned_delta": "0"
+  }
+}

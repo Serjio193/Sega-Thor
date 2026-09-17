@@ -112,6 +112,11 @@ under the ignored `build/thor-evidence/live-forward-rom-link-2b/` directory.
 Implementation, runtime evidence and final audit are recorded in
 `docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.md` and its compact JSON receipt.
 
+`docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2C.md` and its compact JSON
+receipt record the Phase 0 classification of the saved 2B FLOW_V1 evidence.
+The bounded result is `STOP_NO_RUNTIME_PROVENANCE_GAP`; no native runtime
+sensor or per-memory-access trace was added.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`
