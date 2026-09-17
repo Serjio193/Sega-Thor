@@ -9240,3 +9240,57 @@ and CTest each passed; CTest 198/198 in each configuration, including the
 project source-limit check. `SOURCE_OWNED` remains 1,475,600 / 3,145,728 (delta
 0). `git diff --check` passed. Exact-SHA GitHub CI is checked after push and
 reported in the publication response.
+
+# 2026-09-17 — M12 AUTO67 live-forward Worker 1A
+
+TASK: Complete the developer-only `M12-AUTO67-LIVE-FORWARD-WORKER-1A`
+prototype from baseline `e49c1c405e55e707080f2d6581cd74b753e583fe`. Audit
+native M68K execution paths, build one shared execution stream and one live-
+forward Worker, and validate exact FLOW_V1 segments without changing
+Cartographer, predecessor requirements, production AUTO67, or SOURCE_OWNED.
+
+ACCEPTANCE: Prove bounded native BizHawk runtime execution, depth-20 sealing,
+immutable reread, CPU continuation, exact ACK/reconnect to later execution,
+resource termination, and baseline/recorder/Worker timings. Run focused, Debug,
+Release, source-limit, diff, ownership and exact-SHA CI gates. Publish a factual
+report and JSON receipt; do not classify PASS without the runtime evidence.
+
+RESULT: `PASS_LIVE_FORWARD_SINGLE_WORKER_FLOW_V1`. The source audit covers both
+main-M68K instruction dispatch sites (`m68k_run` and the direct-handler
+`m68k_set_irq_delay` path), records synchronous and asynchronous exception
+boundaries, invalidates on reset/state load, and closes on CPU halt. The runtime
+used the canonical Beyond Oasis cartridge path, not the separate Sega CD
+sub-CPU. Two depth-20 captures sealed and remained immutable after ring wrap;
+both exact ACKs succeeded, the next capture began at later native execution,
+and a separate 512-byte Worker budget ended with MEMORY_LIMIT. The CPU advanced
+to frame 452 after capture work.
+
+RUNTIME: FLOW_V1 receipt run id `1789633798`; ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`; matching
+raw Waterbox artifact SHA-256
+`21b14e22e08107a2b3d9f0e30582f6bca7621f303483713ec8eed84065eff570`. First
+segment identity is Worker 0 / capture 1 / generation 1 / epoch 5, stream
+`1..125`, instruction `1..124`, control flow `0..20`, 123 instruction records
+plus one async vector-`0x1E` event, and content hash
+`6122f173be5e7bb7d08a27c12e0a871be4d9e6e3e4b6defd4a2cd61dfd2f3239`. The
+later capture is `649310..649441` and hash
+`e4cd0deba53292075e276a4e3af52bd23560f14afbe2e1d80b12da6a488099ac`. The
+512-byte resource capture consumed 480 bytes, ended after 3 control-flow
+transitions, and hashes to
+`6d26aa72e2c5c593867ff42707fe18e0966e48d81c0597fd2fcda8d2ca1066a5`. All
+three before/after immutable hashes matched. Native copy duration remained
+reported as zero by the Waterbox clock and is treated as unmeasured; host frame
+and bulk-export timings are recorded in the report.
+
+VALIDATION: Focused native test, Debug CTest 199/199, Release CTest 199/199,
+GNU/Linux focused CTest, Waterbox Release build, targeted EmuHawk Release build,
+source-limit and diff checks passed. A first Debug run had one transient
+`oasis_smoke` `0xc0000409`; that test passed alone and the complete Debug rerun
+passed. The full BizHawk solution could not build four unrelated .NET Framework
+4.8 test/tools projects because the targeting pack is absent; the EmuHawk
+target itself built with zero errors. `SOURCE_OWNED` remains 1,475,600 /
+3,145,728 (delta 0). Cartographer, predecessor prerequisites, production
+AUTO67, and roadmap status remain unchanged. Exact-patch hashes, all 20 first
+segment control-flow transitions, unsupported paths, and evidence are in
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` and its JSON receipt.
+The exact final SHA's GitHub Actions result is recorded after publication.

@@ -778,3 +778,23 @@ selector/control JSON evidence. It does not capture events, throttle sensors,
 infer causality from adjacency, or write `SOURCE_OWNED`. The map hash is derived
 from deterministic sorted graph rows, so replaying the same corpus is a zero-delta
 operation.
+
+## M12 AUTO67 live-forward Worker 1A boundary
+
+`tools/bizhawk-native-ring/live_forward_trace.c` and
+`live_forward_worker.c` implement a developer-only shared native M68K execution
+stream and a single live-forward capture descriptor. `live_forward_flow.c`
+classifies the supported 68000 control-flow outcomes. One 4096-record ring is
+written from the main M68K execution hooks; a Worker attaches at the next
+instruction boundary, snapshots ENTRY state, and copies its exact range into a
+preallocated immutable result when it ends. Lua reads completed results in bulk;
+there is no per-instruction Lua, managed, or Python callback.
+
+The prototype applies to the BizHawk 2.11.1/GPGX main M68K cartridge path. It
+does not instrument the separate Sega CD sub-CPU, does not call Cartographer,
+does not require predecessor resolution, and is not linked into `oasis_core` or
+the production AUTO67 runner. A checked FLOW_V1 result means only that the
+recorded ENTRY, execution range, EXIT, identity, and termination are factual;
+it creates no reaching-definition or global provenance claim. The source
+patches and acceptance evidence are recorded in
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md`.

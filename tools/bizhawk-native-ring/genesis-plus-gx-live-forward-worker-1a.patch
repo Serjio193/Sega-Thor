@@ -1,0 +1,1293 @@
+diff --git a/core/debug/live_forward_flow.c b/core/debug/live_forward_flow.c
+new file mode 100644
+index 0000000..8df69df
+--- /dev/null
++++ b/core/debug/live_forward_flow.c
+@@ -0,0 +1,63 @@
++#include "live_forward_trace.h"
++
++static uint32_t condition_true(uint32_t cc, uint32_t ccr)
++{
++  uint32_t c = ccr & 1u;
++  uint32_t v = (ccr >> 1) & 1u;
++  uint32_t z = (ccr >> 2) & 1u;
++  uint32_t n = (ccr >> 3) & 1u;
++  switch (cc & 15u)
++  {
++    case 0: return 1;
++    case 1: return 0;
++    case 2: return !c && !z;
++    case 3: return c || z;
++    case 4: return !c;
++    case 5: return c;
++    case 6: return !z;
++    case 7: return z;
++    case 8: return !v;
++    case 9: return v;
++    case 10: return !n;
++    case 11: return n;
++    case 12: return n == v;
++    case 13: return n != v;
++    case 14: return !z && n == v;
++    default: return z || n != v;
++  }
++}
++
++uint32_t oasis_lf_flow_flags(uint16_t opcode, uint16_t ccr,
++                             uint32_t dreg_value, uint32_t after_execution,
++                             uint16_t *flags)
++{
++  uint32_t condition;
++  if (!flags)
++    return 0;
++  if ((opcode & 0xf000u) == 0x6000u)
++  {
++    condition = (opcode & 0x0f00u) <= 0x0100u ? 1u :
++      condition_true((opcode >> 8) & 15u, ccr);
++    *flags |= condition ? OASIS_LF_BRANCH_TAKEN : OASIS_LF_BRANCH_NOT_TAKEN;
++    return 1;
++  }
++  if ((opcode & 0xf0f8u) == 0x50c8u)
++  {
++    *flags |= OASIS_LF_CONTROL_FLOW;
++    if (after_execution)
++    {
++      condition = condition_true((opcode >> 8) & 15u, ccr);
++      condition = !condition && (dreg_value & 0xffffu) != 0xffffu;
++      *flags |= condition ? OASIS_LF_BRANCH_TAKEN : OASIS_LF_BRANCH_NOT_TAKEN;
++    }
++    return 1;
++  }
++  if ((opcode & 0xffc0u) == 0x4ec0u ||
++      (opcode & 0xffc0u) == 0x4e80u || opcode == 0x4e75u ||
++      opcode == 0x4e73u || opcode == 0x4e77u)
++  {
++    *flags |= OASIS_LF_CONTROL_FLOW;
++    return 1;
++  }
++  return 0;
++}
+diff --git a/core/debug/live_forward_internal.h b/core/debug/live_forward_internal.h
+new file mode 100644
+index 0000000..c0d9256
+--- /dev/null
++++ b/core/debug/live_forward_internal.h
+@@ -0,0 +1,59 @@
++#ifndef OASIS_LIVE_FORWARD_INTERNAL_H
++#define OASIS_LIVE_FORWARD_INTERNAL_H
++
++#include "live_forward_trace.h"
++
++#include <stdint.h>
++
++#define LF_FREE 0u
++#define LF_PENDING 1u
++#define LF_CAPTURING 2u
++#define LF_COMPLETE 3u
++#define LF_ANALYZING 4u
++
++typedef struct
++{
++  uint32_t state;
++  uint64_t capture_id;
++  uint64_t generation;
++  uint64_t last_generation;
++  uint64_t epoch;
++  uint64_t run_id;
++  uint64_t first_record;
++  uint64_t entry_flow;
++  uint32_t configured_depth;
++  uint32_t configured_memory_bytes;
++  uint32_t record_count;
++  uint32_t invalid;
++  uint32_t pending_end;
++  oasis_lf_result result;
++  oasis_lf_record *records;
++} lf_worker;
++
++typedef struct
++{
++  uint64_t sequence;
++  uint32_t valid;
++  oasis_lf_record record;
++} lf_ring_slot;
++
++extern lf_worker workers[OASIS_LF_MAX_WORKERS];
++extern lf_ring_slot ring_storage[OASIS_LF_RING_CAPACITY];
++extern uint32_t worker_count;
++extern uint32_t depth_limit;
++extern uint32_t memory_bytes;
++extern uint32_t record_capacity;
++extern uint32_t next_worker;
++extern uint32_t active_worker;
++extern uint32_t instruction_nesting;
++extern uint64_t stream_sequence;
++extern uint64_t instruction_sequence;
++extern uint64_t control_flow_sequence;
++extern uint64_t runtime_epoch;
++extern uint32_t oasis_lf_recording_enabled;
++
++void lf_append_record(oasis_lf_record record);
++void lf_seal_worker(uint32_t index, uint32_t reason,
++                    const oasis_lf_cpu_state *exit_state);
++
++#endif
+diff --git a/core/debug/live_forward_trace.c b/core/debug/live_forward_trace.c
+new file mode 100644
+index 0000000..9262507
+--- /dev/null
++++ b/core/debug/live_forward_trace.c
+@@ -0,0 +1,257 @@
++#include "live_forward_internal.h"
++
++#include <string.h>
++
++typedef struct
++{
++  uint64_t sequence;
++  uint32_t pc;
++  uint16_t opcode;
++  uint16_t ccr;
++  uint32_t dreg;
++  uint32_t is_control_flow;
++  uint32_t fetched;
++  uint16_t flow_flags;
++  uint32_t exception_seen;
++  uint32_t exception_async;
++  uint32_t exception_source_pc;
++  uint32_t exception_target_pc;
++  uint16_t exception_vector;
++} lf_instruction;
++
++lf_worker workers[OASIS_LF_MAX_WORKERS];
++lf_ring_slot ring_storage[OASIS_LF_RING_CAPACITY];
++uint32_t worker_count;
++uint32_t depth_limit;
++uint32_t memory_bytes;
++uint32_t record_capacity;
++uint32_t next_worker;
++uint32_t active_worker = UINT32_MAX;
++uint32_t instruction_nesting;
++uint64_t stream_sequence;
++uint64_t instruction_sequence;
++uint64_t control_flow_sequence;
++uint64_t runtime_epoch = 1;
++uint32_t oasis_lf_recording_enabled = 0;
++
++static lf_instruction instruction_stack[16];
++
++typedef char oasis_lf_record_must_be_32_bytes[
++    sizeof(oasis_lf_record) == 32u ? 1 : -1];
++
++void lf_append_record(oasis_lf_record record)
++{
++  uint64_t sequence = ++stream_sequence;
++  lf_ring_slot *slot = &ring_storage[(sequence - 1u) % OASIS_LF_RING_CAPACITY];
++  record.stream_sequence = sequence;
++  slot->record = record;
++  slot->valid = 1;
++  slot->sequence = sequence;
++  if (active_worker != UINT32_MAX &&
++      workers[active_worker].state == LF_CAPTURING)
++    workers[active_worker].record_count++;
++}
++
++void oasis_lf_instruction_begin(uint32_t pc,
++                                const oasis_lf_cpu_state *state)
++{
++  lf_instruction *instruction;
++  if (!oasis_lf_recording_enabled)
++    return;
++  oasis_lf_boundary(state);
++  if (instruction_nesting >= 16u)
++  {
++    if (active_worker != UINT32_MAX)
++    {
++      workers[active_worker].invalid = 1;
++      workers[active_worker].pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
++    }
++    return;
++  }
++  if (instruction_nesting && active_worker != UINT32_MAX)
++  {
++    workers[active_worker].invalid = 1;
++    workers[active_worker].pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
++  }
++  instruction = &instruction_stack[instruction_nesting++];
++  memset(instruction, 0, sizeof(*instruction));
++  instruction->sequence = ++instruction_sequence;
++  instruction->pc = pc;
++  instruction->ccr = state ? (uint16_t)state->sr : 0;
++}
++
++void oasis_lf_instruction_set_opcode(uint16_t opcode,
++                                     const oasis_lf_cpu_state *state)
++{
++  lf_instruction *instruction;
++  uint16_t flags = 0;
++  if (!oasis_lf_recording_enabled || !instruction_nesting)
++    return;
++  instruction = &instruction_stack[instruction_nesting - 1u];
++  instruction->opcode = opcode;
++  instruction->fetched = 1;
++  instruction->ccr = state ? (uint16_t)state->sr : 0;
++  instruction->dreg = state ? state->d[opcode & 7u] : 0;
++  instruction->is_control_flow = oasis_lf_flow_flags(opcode,
++    instruction->ccr, instruction->dreg, 0, &flags);
++  instruction->flow_flags = flags;
++}
++
++void oasis_lf_instruction_end(uint32_t next_pc,
++                              const oasis_lf_cpu_state *state,
++                              uint32_t stopped)
++{
++  lf_instruction instruction;
++  oasis_lf_record record;
++  lf_worker *worker = active_worker == UINT32_MAX ? NULL : &workers[active_worker];
++  uint32_t reason = OASIS_LF_END_NONE;
++  if (!oasis_lf_recording_enabled)
++    return;
++  if (!instruction_nesting)
++  {
++    if (worker)
++      lf_seal_worker(active_worker, OASIS_LF_END_CAPTURE_ERROR, state);
++    return;
++  }
++  instruction = instruction_stack[--instruction_nesting];
++  memset(&record, 0, sizeof(record));
++  record.instruction_sequence = instruction.sequence;
++  record.pc = instruction.pc;
++  record.next_pc = next_pc;
++  record.opcode_or_vector = instruction.opcode;
++  record.kind_flags = OASIS_LF_INSTRUCTION;
++  if (instruction.fetched)
++    record.kind_flags |= OASIS_LF_FETCHED;
++  if (instruction.exception_seen)
++  {
++    record.kind_flags |= OASIS_LF_EXCEPTION | OASIS_LF_CONTROL_FLOW;
++    record.kind_flags |= instruction.exception_async ?
++      OASIS_LF_ASYNCHRONOUS | OASIS_LF_COMPLETE : OASIS_LF_FAULTED;
++    record.auxiliary = (instruction.exception_source_pc & 0x00ffffffu) |
++      ((uint32_t)(instruction.exception_vector & 0xffu) << 24);
++  }
++  else
++  {
++    record.kind_flags |= OASIS_LF_COMPLETE | instruction.flow_flags;
++    if (instruction.is_control_flow)
++    {
++      if ((instruction.opcode & 0xf0f8u) == 0x50c8u && state)
++      {
++        record.kind_flags &= ~(OASIS_LF_BRANCH_TAKEN |
++                               OASIS_LF_BRANCH_NOT_TAKEN);
++        oasis_lf_flow_flags(instruction.opcode, instruction.ccr,
++          state->d[instruction.opcode & 7u], 1, &record.kind_flags);
++      }
++      record.kind_flags |= OASIS_LF_CONTROL_FLOW;
++      control_flow_sequence++;
++    }
++  }
++  if (instruction.exception_seen)
++    record.kind_flags |= OASIS_LF_CONTROL_FLOW;
++  lf_append_record(record);
++  if (worker && instruction_nesting == 0)
++  {
++    uint64_t consumed = control_flow_sequence - worker->entry_flow;
++    if (worker->pending_end != OASIS_LF_END_NONE)
++      reason = worker->pending_end;
++    else if (consumed > depth_limit)
++    {
++      worker->invalid = 1;
++      reason = OASIS_LF_END_CAPTURE_ERROR;
++    }
++    else if (consumed == depth_limit)
++      reason = OASIS_LF_END_DEPTH_LIMIT;
++    else if (stopped)
++      reason = OASIS_LF_END_CPU_STOP;
++    if (reason != OASIS_LF_END_NONE)
++      lf_seal_worker(active_worker, reason, state);
++  }
++}
++
++void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
++                        uint32_t target_pc, uint32_t asynchronous,
++                        const oasis_lf_cpu_state *state)
++{
++  lf_worker *worker = active_worker == UINT32_MAX ? NULL : &workers[active_worker];
++  if (!oasis_lf_recording_enabled)
++    return;
++  control_flow_sequence++;
++  if (worker && instruction_nesting)
++  {
++    worker->invalid = 1;
++    worker->pending_end = OASIS_LF_END_CAPTURE_ERROR;
++  }
++  if (instruction_nesting)
++  {
++    lf_instruction *instruction = &instruction_stack[instruction_nesting - 1u];
++    instruction->exception_seen = 1;
++    instruction->exception_async = asynchronous;
++    instruction->exception_source_pc = source_pc;
++    instruction->exception_target_pc = target_pc;
++    instruction->exception_vector = vector;
++  }
++  else
++  {
++    oasis_lf_record record;
++    memset(&record, 0, sizeof(record));
++    record.instruction_sequence = instruction_sequence;
++    record.pc = source_pc;
++    record.next_pc = target_pc;
++    record.opcode_or_vector = vector;
++    record.kind_flags = OASIS_LF_EXCEPTION | OASIS_LF_EXCEPTION_EVENT |
++      OASIS_LF_CONTROL_FLOW |
++      (asynchronous ? OASIS_LF_ASYNCHRONOUS : 0);
++    record.auxiliary = (source_pc & 0x00ffffffu) |
++      ((uint32_t)(vector & 0xffu) << 24);
++    lf_append_record(record);
++  }
++  if (!instruction_nesting)
++    oasis_lf_boundary(state);
++}
++
++void oasis_lf_unwind(void)
++{
++  if (!oasis_lf_recording_enabled)
++    return;
++  while (instruction_nesting)
++  {
++    lf_instruction *instruction = &instruction_stack[--instruction_nesting];
++    oasis_lf_record record;
++    memset(&record, 0, sizeof(record));
++    record.instruction_sequence = instruction->sequence;
++    record.pc = instruction->pc;
++    record.next_pc = instruction->exception_target_pc;
++    record.opcode_or_vector = instruction->opcode;
++    record.kind_flags = OASIS_LF_INSTRUCTION | OASIS_LF_EXCEPTION |
++                       OASIS_LF_CONTROL_FLOW |
++                       OASIS_LF_FAULTED;
++    if (instruction->fetched)
++      record.kind_flags |= OASIS_LF_FETCHED;
++    record.auxiliary = (instruction->exception_source_pc & 0x00ffffffu) |
++      ((uint32_t)(instruction->exception_vector & 0xffu) << 24);
++    lf_append_record(record);
++  }
++  if (active_worker != UINT32_MAX)
++  {
++    workers[active_worker].invalid = 1;
++    workers[active_worker].pending_end = OASIS_LF_END_CAPTURE_ERROR;
++  }
++}
++
++int oasis_lf_ring_record(uint64_t sequence, oasis_lf_record *record)
++{
++  lf_ring_slot *slot;
++  if (!oasis_lf_recording_enabled || !record || sequence == 0 || sequence > stream_sequence ||
++      stream_sequence - sequence >= OASIS_LF_RING_CAPACITY)
++    return 0;
++  slot = &ring_storage[(sequence - 1u) % OASIS_LF_RING_CAPACITY];
++  if (!slot->valid || slot->sequence != sequence)
++    return 0;
++  *record = slot->record;
++  return 1;
++}
++
++uint64_t oasis_lf_stream_sequence(void) { return stream_sequence; }
++uint64_t oasis_lf_instruction_sequence(void) { return instruction_sequence; }
++uint64_t oasis_lf_control_flow_sequence(void) { return control_flow_sequence; }
++uint64_t oasis_lf_epoch(void) { return runtime_epoch; }
+diff --git a/core/debug/live_forward_trace.h b/core/debug/live_forward_trace.h
+new file mode 100644
+index 0000000..b51d1be
+--- /dev/null
++++ b/core/debug/live_forward_trace.h
+@@ -0,0 +1,127 @@
++#ifndef OASIS_LIVE_FORWARD_TRACE_H
++#define OASIS_LIVE_FORWARD_TRACE_H
++
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define OASIS_LF_RING_CAPACITY 4096u
++#define OASIS_LF_MAX_WORKERS 64u
++
++extern uint32_t oasis_lf_recording_enabled;
++
++typedef struct
++{
++  uint32_t d[8];
++  uint32_t a[8];
++  uint32_t pc;
++  uint32_t sr;
++  uint32_t usp;
++  uint32_t isp;
++} oasis_lf_cpu_state;
++
++typedef struct
++{
++  uint64_t stream_sequence;
++  uint64_t instruction_sequence;
++  uint32_t pc;
++  uint32_t next_pc;
++  uint16_t opcode_or_vector;
++  uint16_t kind_flags;
++  uint32_t auxiliary;
++} oasis_lf_record;
++
++typedef struct
++{
++  uint64_t capture_id;
++  uint64_t generation;
++  uint64_t run_id;
++  uint64_t epoch;
++  uint64_t entry_stream_sequence;
++  uint64_t exit_stream_sequence;
++  uint64_t entry_instruction_sequence;
++  uint64_t exit_instruction_sequence;
++  uint64_t entry_control_flow_sequence;
++  uint64_t exit_control_flow_sequence;
++  uint32_t worker_id;
++  uint32_t termination_reason;
++  uint32_t configured_depth;
++  uint32_t configured_memory_bytes;
++  uint32_t consumed_depth;
++  uint32_t consumed_memory_bytes;
++  uint32_t record_count;
++  uint32_t records_bytes;
++  uint32_t valid;
++  oasis_lf_cpu_state entry_state;
++  oasis_lf_cpu_state exit_state;
++  uint64_t copy_duration_ns;
++} oasis_lf_result;
++
++enum oasis_lf_record_flags
++{
++  OASIS_LF_INSTRUCTION = 1,
++  OASIS_LF_COMPLETE = 2,
++  OASIS_LF_FAULTED = 4,
++  OASIS_LF_CONTROL_FLOW = 8,
++  OASIS_LF_BRANCH_TAKEN = 16,
++  OASIS_LF_BRANCH_NOT_TAKEN = 32,
++  OASIS_LF_EXCEPTION = 64,
++  OASIS_LF_ASYNCHRONOUS = 128,
++  OASIS_LF_EXCEPTION_EVENT = 256,
++  OASIS_LF_FETCHED = 512,
++  OASIS_LF_CPU_STOP_EVENT = 1024
++};
++
++enum oasis_lf_end_reason
++{
++  OASIS_LF_END_NONE = 0,
++  OASIS_LF_END_DEPTH_LIMIT = 1,
++  OASIS_LF_END_MEMORY_LIMIT = 2,
++  OASIS_LF_END_RETENTION_LIMIT = 3,
++  OASIS_LF_END_CPU_STOP = 4,
++  OASIS_LF_END_CAPTURE_ERROR = 5,
++  OASIS_LF_END_UNSUPPORTED_PATH = 6
++};
++
++int oasis_lf_configure(uint32_t worker_count, uint32_t depth,
++                       uint32_t memory_bytes);
++int oasis_lf_set_enabled(uint32_t enabled);
++int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
++                     uint64_t generation, uint64_t run_id, uint64_t epoch);
++void oasis_lf_boundary(const oasis_lf_cpu_state *state);
++void oasis_lf_instruction_begin(uint32_t pc,
++                                const oasis_lf_cpu_state *state);
++void oasis_lf_instruction_set_opcode(uint16_t opcode,
++                                     const oasis_lf_cpu_state *state);
++void oasis_lf_instruction_end(uint32_t next_pc,
++                              const oasis_lf_cpu_state *state,
++                              uint32_t stopped);
++void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
++                        uint32_t target_pc, uint32_t asynchronous,
++                        const oasis_lf_cpu_state *state);
++void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state);
++void oasis_lf_unwind(void);
++void oasis_lf_epoch_break(const oasis_lf_cpu_state *state);
++uint32_t oasis_lf_result_state(uint32_t worker_id);
++int oasis_lf_result_info(uint32_t worker_id, oasis_lf_result *result);
++uint32_t oasis_lf_result_copy(uint32_t worker_id, uint64_t generation,
++                              uint32_t offset, oasis_lf_record *output,
++                              uint32_t capacity);
++int oasis_lf_ack(uint32_t worker_id, uint64_t capture_id,
++                 uint64_t generation, uint64_t run_id, uint64_t epoch);
++uint64_t oasis_lf_stream_sequence(void);
++uint64_t oasis_lf_instruction_sequence(void);
++uint64_t oasis_lf_control_flow_sequence(void);
++uint64_t oasis_lf_epoch(void);
++int oasis_lf_ring_record(uint64_t sequence, oasis_lf_record *record);
++uint32_t oasis_lf_flow_flags(uint16_t opcode, uint16_t ccr,
++                             uint32_t dreg_value, uint32_t after_execution,
++                             uint16_t *flags);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+diff --git a/core/debug/live_forward_worker.c b/core/debug/live_forward_worker.c
+new file mode 100644
+index 0000000..38a865f
+--- /dev/null
++++ b/core/debug/live_forward_worker.c
+@@ -0,0 +1,353 @@
++#ifndef _WIN32
++#define _POSIX_C_SOURCE 200809L
++#endif
++
++#include "live_forward_internal.h"
++
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#ifdef _WIN32
++#include <windows.h>
++#endif
++
++#define LF_DEPTH_MAX 1000000u
++#define LF_MEMORY_MAX (1024u * 1024u)
++
++static uint64_t lf_now_ns(void)
++{
++#ifdef _WIN32
++  LARGE_INTEGER counter;
++  LARGE_INTEGER frequency;
++  if (QueryPerformanceCounter(&counter) &&
++      QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0)
++  {
++    uint64_t ticks = (uint64_t)counter.QuadPart;
++    uint64_t ticks_per_second = (uint64_t)frequency.QuadPart;
++    return (ticks / ticks_per_second) * 1000000000u +
++      ((ticks % ticks_per_second) * 1000000000u) / ticks_per_second;
++  }
++#endif
++#if !defined(_WIN32) && defined(CLOCK_MONOTONIC)
++  struct timespec now;
++  if (clock_gettime(CLOCK_MONOTONIC, &now) == 0)
++    return (uint64_t)now.tv_sec * 1000000000u +
++      (uint64_t)now.tv_nsec;
++#endif
++  clock_t ticks = clock();
++  if (ticks != (clock_t)-1)
++    return ((uint64_t)ticks * 1000000000u) / CLOCKS_PER_SEC;
++  return UINT64_MAX;
++}
++
++void lf_seal_worker(uint32_t index, uint32_t reason,
++                    const oasis_lf_cpu_state *exit_state)
++{
++  lf_worker *worker = &workers[index];
++  uint64_t end = stream_sequence + 1u;
++  uint32_t count = (uint32_t)(end - worker->first_record);
++  uint32_t i;
++  uint64_t copy_started = lf_now_ns();
++  if (worker->state == LF_PENDING)
++  {
++    worker->first_record = end;
++    worker->result.entry_stream_sequence = end;
++    worker->result.entry_instruction_sequence = instruction_sequence + 1u;
++    worker->result.entry_control_flow_sequence = control_flow_sequence;
++    count = 0;
++  }
++  worker->result.exit_stream_sequence = end;
++  worker->result.exit_instruction_sequence = instruction_sequence + 1u;
++  worker->result.exit_control_flow_sequence = control_flow_sequence;
++  worker->result.termination_reason = reason;
++  worker->result.configured_depth = worker->configured_depth;
++  worker->result.configured_memory_bytes = worker->configured_memory_bytes;
++  worker->result.consumed_depth =
++    (uint32_t)(control_flow_sequence - worker->entry_flow);
++  worker->result.record_count = count;
++  worker->result.records_bytes = count * (uint32_t)sizeof(oasis_lf_record);
++  worker->result.consumed_memory_bytes =
++    (uint32_t)sizeof(oasis_lf_result) + worker->result.records_bytes;
++  worker->result.valid = !worker->invalid &&
++    reason != OASIS_LF_END_CAPTURE_ERROR &&
++    reason != OASIS_LF_END_UNSUPPORTED_PATH &&
++    reason != OASIS_LF_END_NONE &&
++    worker->result.consumed_memory_bytes <= worker->configured_memory_bytes;
++  if (exit_state)
++    worker->result.exit_state = *exit_state;
++  if (count != worker->record_count || count > record_capacity ||
++      count > OASIS_LF_RING_CAPACITY)
++    worker->result.valid = 0;
++  for (i = 0; i < count && count <= record_capacity &&
++       count <= OASIS_LF_RING_CAPACITY; ++i)
++  {
++    uint64_t seq = worker->first_record + i;
++    lf_ring_slot *slot = &ring_storage[(seq - 1u) % OASIS_LF_RING_CAPACITY];
++    if (!slot->valid || slot->sequence != seq)
++    {
++      worker->result.valid = 0;
++      break;
++    }
++    worker->records[i] = slot->record;
++  }
++  {
++    uint64_t copy_finished = lf_now_ns();
++    if (copy_started != UINT64_MAX && copy_finished != UINT64_MAX &&
++        copy_finished >= copy_started)
++    {
++      worker->result.copy_duration_ns = copy_finished - copy_started;
++    }
++  }
++  if (active_worker == index)
++    active_worker = UINT32_MAX;
++  worker->state = LF_COMPLETE;
++}
++
++int oasis_lf_configure(uint32_t count, uint32_t depth, uint32_t bytes)
++{
++  uint32_t i;
++  uint32_t capacity;
++  if (count == 0 || count > OASIS_LF_MAX_WORKERS || depth == 0 ||
++      depth > LF_DEPTH_MAX ||
++      bytes <= sizeof(oasis_lf_result) + sizeof(oasis_lf_record) ||
++      bytes > LF_MEMORY_MAX)
++    return 0;
++  for (i = 0; i < worker_count; ++i)
++    if (workers[i].state != LF_FREE)
++      return 0;
++  capacity = (bytes - (uint32_t)sizeof(oasis_lf_result)) /
++             (uint32_t)sizeof(oasis_lf_record);
++  for (i = 0; i < OASIS_LF_MAX_WORKERS; ++i)
++  {
++    free(workers[i].records);
++    memset(&workers[i], 0, sizeof(workers[i]));
++  }
++  memset(ring_storage, 0, sizeof(ring_storage));
++  worker_count = count;
++  depth_limit = depth;
++  memory_bytes = bytes;
++  record_capacity = capacity;
++  next_worker = 0;
++  active_worker = UINT32_MAX;
++  instruction_nesting = 0;
++  stream_sequence = 0;
++  instruction_sequence = 0;
++  control_flow_sequence = 0;
++  oasis_lf_recording_enabled = 0;
++  if (++runtime_epoch == 0)
++    runtime_epoch = 1;
++  for (i = 0; i < count; ++i)
++  {
++    workers[i].records = (oasis_lf_record *)calloc(capacity,
++                                                   sizeof(oasis_lf_record));
++    if (!workers[i].records)
++    {
++      while (i > 0)
++        free(workers[--i].records);
++      worker_count = 0;
++      return 0;
++    }
++  }
++  oasis_lf_recording_enabled = 1;
++  return 1;
++}
++
++int oasis_lf_set_enabled(uint32_t enabled)
++{
++  uint32_t i;
++  enabled = enabled != 0;
++  if (active_worker != UINT32_MAX || instruction_nesting != 0)
++    return 0;
++  for (i = 0; i < worker_count; ++i)
++    if (workers[i].state != LF_FREE)
++      return 0;
++  if (oasis_lf_recording_enabled == enabled)
++    return 1;
++  oasis_lf_epoch_break(0);
++  oasis_lf_recording_enabled = enabled;
++  return 1;
++}
++
++int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
++                     uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++  lf_worker *worker;
++  if (worker_id >= worker_count || capture_id == 0 || generation == 0 ||
++      run_id == 0 || epoch == 0 || epoch != runtime_epoch)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_FREE || generation <= worker->last_generation)
++    return 0;
++  worker->capture_id = capture_id;
++  worker->generation = generation;
++  worker->last_generation = generation;
++  worker->run_id = run_id;
++  worker->epoch = epoch;
++  worker->state = LF_PENDING;
++  return 1;
++}
++
++void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state)
++{
++  oasis_lf_record record;
++  lf_worker *worker;
++  if (!oasis_lf_recording_enabled || !state || active_worker == UINT32_MAX)
++    return;
++  worker = &workers[active_worker];
++  if (instruction_nesting)
++  {
++    worker->pending_end = OASIS_LF_END_CPU_STOP;
++    return;
++  }
++  memset(&record, 0, sizeof(record));
++  record.instruction_sequence = instruction_sequence;
++  record.pc = state->pc;
++  record.next_pc = state->pc;
++  record.kind_flags = OASIS_LF_CPU_STOP_EVENT;
++  lf_append_record(record);
++  lf_seal_worker(active_worker, OASIS_LF_END_CPU_STOP, state);
++}
++
++void oasis_lf_boundary(const oasis_lf_cpu_state *state)
++{
++  uint32_t offset;
++  if (!oasis_lf_recording_enabled || !state || instruction_nesting != 0)
++    return;
++  if (active_worker != UINT32_MAX)
++  {
++    lf_worker *active = &workers[active_worker];
++    uint64_t used = stream_sequence + 1u - active->first_record;
++    uint64_t consumed = control_flow_sequence - active->entry_flow;
++    if (active->pending_end != OASIS_LF_END_NONE)
++      lf_seal_worker(active_worker, active->pending_end, state);
++    else if (consumed == depth_limit)
++      lf_seal_worker(active_worker, OASIS_LF_END_DEPTH_LIMIT, state);
++    else if (consumed > depth_limit)
++    {
++      active->invalid = 1;
++      lf_seal_worker(active_worker, OASIS_LF_END_CAPTURE_ERROR, state);
++    }
++    else if (used + 2u > record_capacity)
++      lf_seal_worker(active_worker, OASIS_LF_END_MEMORY_LIMIT, state);
++    else if (used + 2u > OASIS_LF_RING_CAPACITY)
++      lf_seal_worker(active_worker, OASIS_LF_END_RETENTION_LIMIT, state);
++    else
++      return;
++  }
++  for (offset = 0; offset < worker_count; ++offset)
++  {
++    uint32_t index = (next_worker + offset) % worker_count;
++    lf_worker *worker = &workers[index];
++    if (worker->state != LF_PENDING)
++      continue;
++    memset(&worker->result, 0, sizeof(worker->result));
++    worker->result.capture_id = worker->capture_id;
++    worker->result.generation = worker->generation;
++    worker->result.run_id = worker->run_id;
++    worker->result.epoch = worker->epoch;
++    worker->result.worker_id = index;
++    worker->result.entry_stream_sequence = stream_sequence + 1u;
++    worker->result.entry_instruction_sequence = instruction_sequence + 1u;
++    worker->result.entry_control_flow_sequence = control_flow_sequence;
++    worker->result.entry_state = *state;
++    worker->first_record = stream_sequence + 1u;
++    worker->entry_flow = control_flow_sequence;
++    worker->configured_depth = depth_limit;
++    worker->configured_memory_bytes = memory_bytes;
++    worker->record_count = 0;
++    worker->invalid = 0;
++    worker->pending_end = OASIS_LF_END_NONE;
++    worker->state = LF_CAPTURING;
++    active_worker = index;
++    next_worker = (index + 1u) % worker_count;
++    break;
++  }
++}
++
++void oasis_lf_epoch_break(const oasis_lf_cpu_state *state)
++{
++  uint32_t i;
++  for (i = 0; i < worker_count; ++i)
++  {
++    lf_worker *worker = &workers[i];
++    if (worker->state != LF_CAPTURING && worker->state != LF_PENDING)
++      continue;
++    if (worker->state == LF_PENDING)
++    {
++      memset(&worker->result, 0, sizeof(worker->result));
++      worker->result.capture_id = worker->capture_id;
++      worker->result.generation = worker->generation;
++      worker->result.run_id = worker->run_id;
++      worker->result.epoch = worker->epoch;
++      worker->result.worker_id = i;
++      worker->result.configured_depth = depth_limit;
++      worker->result.configured_memory_bytes = memory_bytes;
++    }
++    worker->invalid = 1;
++    lf_seal_worker(i, OASIS_LF_END_CAPTURE_ERROR, state);
++  }
++  active_worker = UINT32_MAX;
++  instruction_nesting = 0;
++  stream_sequence = 0;
++  instruction_sequence = 0;
++  control_flow_sequence = 0;
++  memset(ring_storage, 0, sizeof(ring_storage));
++  if (++runtime_epoch == 0)
++    runtime_epoch = 1;
++}
++
++uint32_t oasis_lf_result_state(uint32_t worker_id)
++{
++  return worker_id < worker_count ? workers[worker_id].state : LF_FREE;
++}
++
++int oasis_lf_result_info(uint32_t worker_id, oasis_lf_result *result)
++{
++  if (!result || worker_id >= worker_count || workers[worker_id].state < LF_COMPLETE)
++    return 0;
++  *result = workers[worker_id].result;
++  workers[worker_id].state = LF_ANALYZING;
++  return 1;
++}
++
++uint32_t oasis_lf_result_copy(uint32_t worker_id, uint64_t generation,
++                              uint32_t offset, oasis_lf_record *output,
++                              uint32_t capacity)
++{
++  lf_worker *worker;
++  uint32_t count;
++  if (!output || worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_ANALYZING || worker->generation != generation ||
++      offset > worker->result.record_count)
++    return 0;
++  count = worker->result.record_count - offset;
++  if (count > capacity)
++    count = capacity;
++  if (offset + count > record_capacity)
++    return 0;
++  memcpy(output, worker->records + offset, count * sizeof(*output));
++  return count;
++}
++
++int oasis_lf_ack(uint32_t worker_id, uint64_t capture_id,
++                 uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++  lf_worker *worker;
++  if (worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_ANALYZING || worker->capture_id != capture_id ||
++      worker->generation != generation || worker->run_id != run_id ||
++      worker->epoch != epoch)
++    return 0;
++  memset(&worker->result, 0, sizeof(worker->result));
++  worker->capture_id = 0;
++  worker->generation = 0;
++  worker->run_id = 0;
++  worker->epoch = 0;
++  worker->record_count = 0;
++  worker->state = LF_FREE;
++  return 1;
++}
+diff --git a/core/debug/trace_ring.c b/core/debug/trace_ring.c
+new file mode 100644
+index 0000000..e17dd3b
+--- /dev/null
++++ b/core/debug/trace_ring.c
+@@ -0,0 +1,79 @@
++#include "trace_ring.h"
++#include "live_forward_trace.h"
++
++static uint64_t first_retained_stream(void)
++{
++  uint64_t latest = oasis_lf_stream_sequence();
++  return latest > GPGX_TRACE_RING_CAPACITY
++    ? latest - GPGX_TRACE_RING_CAPACITY + 1u
++    : (latest ? 1u : 0u);
++}
++
++static uint32_t scan_instructions(uint64_t start_instruction,
++                                  gpgx_trace_record *destination,
++                                  uint32_t capacity,
++                                  uint64_t *latest_instruction)
++{
++  uint64_t stream = first_retained_stream();
++  uint64_t latest_stream = oasis_lf_stream_sequence();
++  uint32_t count = 0;
++
++  if (latest_instruction)
++    *latest_instruction = 0;
++  for (; stream && stream <= latest_stream; ++stream)
++  {
++    oasis_lf_record native_record;
++    if (!oasis_lf_ring_record(stream, &native_record) ||
++        !(native_record.kind_flags & OASIS_LF_INSTRUCTION))
++      continue;
++    if (latest_instruction)
++      *latest_instruction = native_record.instruction_sequence;
++    if (!destination)
++    {
++      ++count;
++      continue;
++    }
++    if (native_record.instruction_sequence < start_instruction)
++      continue;
++    if (count == capacity)
++      break;
++    destination[count].sequence = native_record.instruction_sequence;
++    destination[count].pc = native_record.pc;
++    destination[count].opcode = native_record.opcode_or_vector;
++    destination[count].reserved = 0;
++    ++count;
++  }
++  return count;
++}
++
++void gpgx_trace_ring_record(uint32_t pc, uint16_t opcode)
++{
++  (void)pc;
++  (void)opcode;
++}
++
++uint64_t gpgx_trace_ring_latest(void)
++{
++  uint64_t latest;
++  scan_instructions(UINT64_MAX, 0, 0, &latest);
++  return latest;
++}
++
++uint32_t gpgx_trace_ring_count(void)
++{
++  return scan_instructions(UINT64_MAX, 0, 0, 0);
++}
++
++uint32_t gpgx_trace_ring_copy(uint64_t start_sequence,
++                              gpgx_trace_record *destination,
++                              uint32_t capacity)
++{
++  if (!destination || !capacity || !start_sequence)
++    return 0;
++  return scan_instructions(start_sequence, destination, capacity, 0);
++}
++
++void gpgx_trace_ring_reset(void)
++{
++  oasis_lf_epoch_break(0);
++}
+diff --git a/core/debug/trace_ring.h b/core/debug/trace_ring.h
+new file mode 100644
+index 0000000..98a2be0
+--- /dev/null
++++ b/core/debug/trace_ring.h
+@@ -0,0 +1,24 @@
++#ifndef GPGX_TRACE_RING_H
++#define GPGX_TRACE_RING_H
++
++#include <stdint.h>
++
++#define GPGX_TRACE_RING_CAPACITY 4096u
++
++typedef struct
++{
++  uint64_t sequence;
++  uint32_t pc;
++  uint16_t opcode;
++  uint16_t reserved;
++} gpgx_trace_record;
++
++void gpgx_trace_ring_record(uint32_t pc, uint16_t opcode);
++uint64_t gpgx_trace_ring_latest(void);
++uint32_t gpgx_trace_ring_count(void);
++uint32_t gpgx_trace_ring_copy(uint64_t start_sequence,
++                              gpgx_trace_record *destination,
++                              uint32_t capacity);
++void gpgx_trace_ring_reset(void);
++
++#endif
+diff --git a/core/m68k/m68kcpu.c b/core/m68k/m68kcpu.c
+index 999638d..4b1ad1e 100644
+--- a/core/m68k/m68kcpu.c
++++ b/core/m68k/m68kcpu.c
+@@ -16,9 +16,37 @@ extern int vdp_68k_irq_ack(int int_level);
+ #endif
+ 
+ #include "m68kconf.h"
+-#include "m68kcpu.h"
+-#include "m68kops.h"
+-#include "../shared.h"
++#include "m68kcpu.h"
++#include "m68kops.h"
++#include "../shared.h"
++
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++static oasis_lf_cpu_state gpgx_lf_snapshot(void)
++{
++  oasis_lf_cpu_state state;
++  unsigned int i;
++  for (i = 0; i < 8; ++i)
++  {
++    state.d[i] = REG_D[i];
++    state.a[i] = REG_A[i];
++  }
++  state.pc = REG_PC;
++  state.sr = m68ki_get_sr();
++  state.usp = REG_USP;
++  state.isp = REG_ISP;
++  return state;
++}
++
++void gpgx_lf_record_exception(unsigned int vector, unsigned int source_pc,
++                              unsigned int target_pc, unsigned int asynchronous)
++{
++	if (!oasis_lf_recording_enabled)
++		return;
++  oasis_lf_cpu_state state = gpgx_lf_snapshot();
++  oasis_lf_exception((uint16_t)vector, source_pc, target_pc, asynchronous,
++                     &state);
++}
++#endif
+ 
+ #ifdef USE_RAM_DEEPFREEZE
+ int deepfreeze_list_size;
+@@ -225,7 +253,7 @@ void m68k_set_irq(unsigned int int_level)
+ }
+ 
+ /* IRQ latency (Fatal Rewind, Sesame's Street Counting Cafe)*/
+-void m68k_set_irq_delay(unsigned int int_level)
++void m68k_set_irq_delay(unsigned int int_level)
+ {
+   /* Prevent reentrance */
+   if (!irq_latency)
+@@ -238,13 +266,34 @@ void m68k_set_irq_delay(unsigned int int_level)
+       /* Finish executing current instruction */
+       USE_CYCLES(CYC_INSTRUCTION[REG_IR]);
+ 
+-      /* One instruction delay before interrupt */
+-      irq_latency = 1;
+-      m68ki_trace_t1() /* auto-disable (see m68kcpu.h) */
+-      m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
+-      REG_IR = m68ki_read_imm_16();
+-      m68ki_instruction_jump_table[REG_IR]();
+-      m68ki_exception_if_trace() /* auto-disable (see m68kcpu.h) */
++      /* One instruction delay before interrupt */
++      irq_latency = 1;
++      m68ki_trace_t1() /* auto-disable (see m68kcpu.h) */
++      m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      if (oasis_lf_recording_enabled)
++      {
++        oasis_lf_cpu_state state = gpgx_lf_snapshot();
++        oasis_lf_instruction_begin(REG_PC, &state);
++      }
++#endif
++      REG_IR = m68ki_read_imm_16();
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      if (oasis_lf_recording_enabled)
++      {
++        oasis_lf_cpu_state state = gpgx_lf_snapshot();
++        oasis_lf_instruction_set_opcode((uint16_t)REG_IR, &state);
++      }
++#endif
++      m68ki_instruction_jump_table[REG_IR]();
++      m68ki_exception_if_trace() /* auto-disable (see m68kcpu.h) */
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      if (oasis_lf_recording_enabled)
++      {
++        oasis_lf_cpu_state state = gpgx_lf_snapshot();
++        oasis_lf_instruction_end(REG_PC, &state, CPU_STOPPED != 0);
++      }
++#endif
+       irq_latency = 0;
+     }
+ 
+@@ -260,7 +309,7 @@ void m68k_set_irq_delay(unsigned int int_level)
+   m68ki_check_interrupts(); /* Level triggered (IRQ) */
+ }
+ 
+-void m68k_run(unsigned int cycles) 
++void m68k_run(unsigned int cycles) 
+ {
+   /* Make sure CPU is not already ahead */
+   if (m68k.cycles >= cycles)
+@@ -288,8 +337,19 @@ void m68k_run(unsigned int cycles)
+   error("[%d][%d] m68k run to %d cycles (%x), irq mask = %x (%x)\n", v_counter, m68k.cycles, cycles, m68k.pc,FLAG_INT_MASK, CPU_INT_LEVEL);
+ #endif
+ 
+-  while (m68k.cycles < cycles)
+-  {
++  while (m68k.cycles < cycles)
++  {
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++    uint32_t trace_enabled = oasis_lf_recording_enabled;
++    oasis_lf_cpu_state trace_state;
++    if (trace_enabled)
++    {
++      uint32_t trace_pc = REG_PC;
++      trace_state = gpgx_lf_snapshot();
++      oasis_lf_instruction_begin(trace_pc, &trace_state);
++    }
++#endif
++
+     /* Set tracing accodring to T1. */
+     m68ki_trace_t1() /* auto-disable (see m68kcpu.h) */
+ 
+@@ -302,8 +362,15 @@ void m68k_run(unsigned int cycles)
+       cpu_hook(HOOK_M68K_E, 0, REG_PC, 0);
+ #endif
+ 
+-    /* Decode next instruction */
+-    REG_IR = m68ki_read_imm_16();
++    /* Decode next instruction */
++    REG_IR = m68ki_read_imm_16();
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++    if (trace_enabled)
++    {
++      trace_state = gpgx_lf_snapshot();
++      oasis_lf_instruction_set_opcode((uint16_t)REG_IR, &trace_state);
++    }
++#endif
+ 
+     /* 68K bus access refresh delay (Mega Drive / Genesis specific) */
+     if (m68k.cycles >= m68k.refresh_cycles)
+@@ -316,8 +383,15 @@ void m68k_run(unsigned int cycles)
+     m68ki_instruction_jump_table[REG_IR]();
+     USE_CYCLES(CYC_INSTRUCTION[REG_IR]);
+ 
+-    /* Trace m68k_exception, if necessary */
+-    m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
++    /* Trace m68k_exception, if necessary */
++    m68ki_exception_if_trace(); /* auto-disable (see m68kcpu.h) */
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++    if (trace_enabled)
++    {
++      trace_state = gpgx_lf_snapshot();
++      oasis_lf_instruction_end(REG_PC, &trace_state, CPU_STOPPED != 0);
++    }
++#endif
+   }
+ }
+ 
+@@ -358,8 +432,12 @@ void m68k_init(void)
+ }
+ 
+ /* Pulse the RESET line on the CPU */
+-void m68k_pulse_reset(void)
+-{
++void m68k_pulse_reset(void)
++{
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  oasis_lf_cpu_state state = gpgx_lf_snapshot();
++  oasis_lf_epoch_break(&state);
++#endif
+   /* Clear all stop levels */
+   CPU_STOPPED = 0;
+ #if M68K_EMULATE_ADDRESS_ERROR
+@@ -400,11 +478,18 @@ void m68k_pulse_reset(void)
+   m68k.refresh_cycles = ((m68k.cycles / (128*7)) * (128*7)) + 128*7;
+ }
+ 
+-void m68k_pulse_halt(void)
+-{
+-  /* Pulse the HALT line on the CPU */
+-  CPU_STOPPED |= STOP_LEVEL_HALT;
+-}
++void m68k_pulse_halt(void)
++{
++  /* Pulse the HALT line on the CPU */
++  CPU_STOPPED |= STOP_LEVEL_HALT;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++  {
++    oasis_lf_cpu_state state = gpgx_lf_snapshot();
++    oasis_lf_cpu_stop(&state);
++  }
++#endif
++}
+ 
+ void m68k_clear_halt(void)
+ {
+diff --git a/core/m68k/m68kcpu.h b/core/m68k/m68kcpu.h
+index da20b21..4bc2d17 100644
+--- a/core/m68k/m68kcpu.h
++++ b/core/m68k/m68kcpu.h
+@@ -13,7 +13,16 @@
+ #include <setjmp.h>
+ #endif /* M68K_EMULATE_ADDRESS_ERROR */
+ 
+-#include "m68k.h"
++#include "m68k.h"
++
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++#include "../debug/live_forward_trace.h"
++void gpgx_lf_record_exception(unsigned int vector, unsigned int source_pc,
++                              unsigned int target_pc, unsigned int asynchronous);
++#define m68ki_live_forward_unwind() oasis_lf_unwind()
++#else
++#define m68ki_live_forward_unwind()
++#endif
+ 
+ 
+ /* ======================================================================== */
+@@ -313,11 +322,12 @@
+ 
+ /* Enable or disable Address error emulation */
+ #if M68K_EMULATE_ADDRESS_ERROR
+-  #define m68ki_set_address_error_trap() \
+-    if(setjmp(m68ki_cpu.aerr_trap) != 0) \
+-    { \
+-      m68ki_exception_address_error(); \
+-    }
++  #define m68ki_set_address_error_trap() \
++    if(setjmp(m68ki_cpu.aerr_trap) != 0) \
++    { \
++      m68ki_live_forward_unwind(); \
++      m68ki_exception_address_error(); \
++    }
+ 
+   #define m68ki_check_address_error(ADDR, WRITE_MODE, FC) \
+     if(UNLIKELY((ADDR)&1)) \
+@@ -1157,11 +1167,15 @@ INLINE void m68ki_jump(uint new_pc)
+   REG_PC = new_pc;
+ }
+ 
+-INLINE void m68ki_jump_vector(uint vector)
+-{
+-  m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
+-  REG_PC = m68ki_read_32(vector<<2);
+-}
++INLINE void m68ki_jump_vector(uint vector)
++{
++  uint source_pc = REG_PC;
++  m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
++  REG_PC = m68ki_read_32(vector<<2);
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  gpgx_lf_record_exception(vector, source_pc, REG_PC, 0);
++#endif
++}
+ 
+ 
+ /* Branch to a new memory location.
+@@ -1405,9 +1419,9 @@ INLINE void m68ki_exception_address_error(void)
+ static uint m68ki_cycle_interrupts[10] = {50*MUL, 59*MUL, 58*MUL, 57*MUL, 56*MUL, 55*MUL, 54*MUL, 53*MUL, 52*MUL, 51*MUL};
+ 
+ /* Service an interrupt request and start exception processing */
+-INLINE void m68ki_exception_interrupt(uint int_level)
+-{
+-  uint vector, sr, new_pc;
++INLINE void m68ki_exception_interrupt(uint int_level)
++{
++  uint vector, sr, new_pc, source_pc = REG_PC;
+ 
+   #if M68K_EMULATE_ADDRESS_ERROR == OPT_ON
+   CPU_INSTR_MODE = INSTRUCTION_NO;
+@@ -1443,7 +1457,11 @@ INLINE void m68ki_exception_interrupt(uint int_level)
+   /* Generate a stack frame */
+   m68ki_stack_frame_3word(REG_PC, sr);
+ 
+-  m68ki_jump(new_pc);
++  m68ki_jump(new_pc);
++
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  gpgx_lf_record_exception(vector, source_pc, new_pc, 1);
++#endif
+ 
+   /* Update cycle count now */
+   USE_CYCLES(m68ki_cycle_interrupts[(m68ki_cpu.cycles / MUL) % 10]);

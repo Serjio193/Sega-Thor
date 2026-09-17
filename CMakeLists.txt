@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(sega_thor LANGUAGES CXX)
+project(sega_thor LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -45,6 +45,7 @@ add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
 target_link_libraries(oasis_resource_boundary_scan PRIVATE oasis_core)
+include(tools/bizhawk-native-ring/live_forward.cmake)
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
     src/tools/gpgx_import_io.cpp

@@ -1,0 +1,471 @@
+diff --git a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+index 7e5c823..85a1b68 100644
+--- a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
++++ b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+@@ -1,4 +1,6 @@
+-using System.ComponentModel;
++using System.ComponentModel;
++using System.Globalization;
++using System.Linq;
+ 
+ using BizHawk.Emulation.Common;
+ using BizHawk.Emulation.Cores;
+@@ -83,14 +85,96 @@ namespace BizHawk.Client.Common
+ 
+ 		[LuaMethodExample("genesis.clear_deepfreeze_list();")]
+ 		[LuaMethod("clear_deepfreeze_list", "Clears the list of deep frozen variables")]
+-		public void ClearDeepFreezeList()
++		public void ClearDeepFreezeList()
+ 		{
+ 			if (Emulator is not GPGX gpgx)
+ 			{
+ 				Log(ERR_MSG_UNSUPPORTED_CORE);
+ 				return;
+ 			}
+-			gpgx.ClearDeepFreezeList();
+-		}
+-	}
+-}
++			gpgx.ClearDeepFreezeList();
++		}
++
++		[LuaMethod("live_forward_configure", "Configures the developer-only native live-forward Worker pool")]
++		public bool LiveForwardConfigure(int workerCount, int depth, int memoryBytes)
++		{
++			if (Emulator is not GPGX gpgx) return false;
++			return gpgx.LiveForwardConfigure((uint)workerCount, (uint)depth,
++				(uint)memoryBytes) != 0;
++		}
++
++		[LuaMethod("live_forward_enable", "Enables or disables the opt-in native instruction recorder when all Workers are free")]
++		public bool LiveForwardEnable(bool enabled)
++			=> Emulator is GPGX gpgx && gpgx.LiveForwardSetEnabled(enabled) != 0;
++
++		[LuaMethod("live_forward_epoch", "Returns the current native execution epoch")]
++		public ulong LiveForwardEpoch()
++			=> Emulator is GPGX gpgx ? gpgx.LiveForwardEpoch() : 0;
++
++		[LuaMethod("live_forward_stream_sequence", "Returns the shared native stream cursor")]
++		public ulong LiveForwardStreamSequence()
++			=> Emulator is GPGX gpgx ? gpgx.LiveForwardStreamSequence() : 0;
++
++		[LuaMethod("live_forward_instruction_sequence", "Returns the completed native instruction cursor")]
++		public ulong LiveForwardInstructionSequence()
++			=> Emulator is GPGX gpgx ? gpgx.LiveForwardInstructionSequence() : 0;
++
++		[LuaMethod("live_forward_request", "Connects a free Worker at the next native instruction boundary")]
++		public bool LiveForwardRequest(int workerId, long captureId, long generation,
++			long runId, long epoch)
++		{
++			if (Emulator is not GPGX gpgx || workerId < 0 || captureId <= 0 ||
++				generation <= 0 || runId <= 0 || epoch <= 0) return false;
++			return gpgx.LiveForwardRequest((uint)workerId, (ulong)captureId,
++				(ulong)generation, (ulong)runId, (ulong)epoch) != 0;
++		}
++
++		[LuaMethod("live_forward_status", "Returns native Worker lifecycle state: FREE, CAPTURING, COMPLETE, or ANALYZING")]
++		public uint LiveForwardStatus(int workerId)
++			=> Emulator is GPGX gpgx && workerId >= 0
++				? gpgx.LiveForwardWorkerState((uint)workerId)
++				: 0;
++
++		[LuaMethod("live_forward_result_info", "Returns completed FLOW_V1 metadata as comma-separated integers")]
++		public string LiveForwardResultInfo(int workerId)
++			=> Emulator is GPGX gpgx && workerId >= 0
++				? string.Join(",", gpgx.LiveForwardResultInfo((uint)workerId)
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
++		[LuaMethod("live_forward_result_state", "Returns ENTRY or EXIT D/A/PC/SR/SP values as comma-separated integers")]
++		public string LiveForwardResultState(int workerId, bool exitState)
++			=> Emulator is GPGX gpgx && workerId >= 0
++				? string.Join(",", gpgx.LiveForwardResultCpuState((uint)workerId, exitState)
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
++		[LuaMethod("live_forward_result_records", "Copies one bounded page of immutable completed FLOW_V1 records")]
++		public string LiveForwardResultRecords(int workerId, long generation,
++			int offset, int capacity)
++		{
++			if (Emulator is not GPGX gpgx || workerId < 0 || generation <= 0 ||
++				offset < 0 || capacity < 1 || capacity > 512) return string.Empty;
++			var records = gpgx.LiveForwardResultCopy((uint)workerId,
++				(ulong)generation, (uint)offset, (uint)capacity);
++			return string.Join(";", records.Select(record => string.Join(",",
++				record.StreamSequence.ToString(CultureInfo.InvariantCulture),
++				record.InstructionSequence.ToString(CultureInfo.InvariantCulture),
++				record.PC.ToString(CultureInfo.InvariantCulture),
++				record.NextPC.ToString(CultureInfo.InvariantCulture),
++				record.OpcodeOrVector.ToString(CultureInfo.InvariantCulture),
++				record.KindFlags.ToString(CultureInfo.InvariantCulture),
++				record.Auxiliary.ToString(CultureInfo.InvariantCulture))));
++		}
++
++		[LuaMethod("live_forward_ack", "Releases the exact completed capture identity after host analysis")]
++		public bool LiveForwardAck(int workerId, long captureId, long generation,
++			long runId, long epoch)
++		{
++			if (Emulator is not GPGX gpgx || workerId < 0 || captureId <= 0 ||
++				generation <= 0 || runId <= 0 || epoch <= 0) return false;
++			return gpgx.LiveForwardAck((uint)workerId, (ulong)captureId,
++				(ulong)generation, (ulong)runId, (ulong)epoch) != 0;
++		}
++	}
++}
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.IStatable.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.IStatable.cs
+index dea8a5c..f81da5b 100644
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.IStatable.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.IStatable.cs
+@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 		public void LoadStateBinary(BinaryReader reader)
+ 		{
+ 			_elf.LoadStateBinary(reader);
++			Core.gpgx_live_forward_epoch_break();
+ 			// other variables
+ 			Frame = reader.ReadInt32();
+ 			LagCount = reader.ReadInt32();
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+new file mode 100644
+index 0000000..74dcfab
+--- /dev/null
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+@@ -0,0 +1,65 @@
++namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
++{
++	public partial class GPGX
++	{
++		public int LiveForwardConfigure(uint workerCount, uint depth, uint memoryBytes)
++			=> Core.gpgx_live_forward_configure(workerCount, depth, memoryBytes);
++
++		public int LiveForwardSetEnabled(bool enabled)
++			=> Core.gpgx_live_forward_set_enabled(enabled ? 1u : 0u);
++
++		public int LiveForwardRequest(uint workerId, ulong captureId,
++			ulong generation, ulong runId, ulong epoch)
++			=> Core.gpgx_live_forward_request(workerId, captureId, generation, runId, epoch);
++
++		public uint LiveForwardWorkerState(uint workerId)
++			=> Core.gpgx_live_forward_worker_state(workerId);
++
++		public ulong LiveForwardEpoch()
++			=> Core.gpgx_live_forward_epoch();
++
++		public ulong LiveForwardStreamSequence()
++			=> Core.gpgx_live_forward_stream_sequence();
++
++		public ulong LiveForwardInstructionSequence()
++			=> Core.gpgx_live_forward_instruction_sequence();
++
++		public void LiveForwardEpochBreak()
++			=> Core.gpgx_live_forward_epoch_break();
++
++		public ulong[] LiveForwardResultInfo(uint workerId)
++		{
++			var result = new ulong[20];
++			return Core.gpgx_live_forward_result_info(workerId, result, (uint)result.Length) == result.Length
++				? result
++				: Array.Empty<ulong>();
++		}
++
++		public uint[] LiveForwardResultCpuState(uint workerId, bool exitState)
++		{
++			var result = new uint[20];
++			return Core.gpgx_live_forward_result_cpu_state(workerId, exitState ? 1u : 0u,
++				result, (uint)result.Length) == result.Length
++				? result
++				: Array.Empty<uint>();
++		}
++
++		public LibGPGX.LiveForwardRecord[] LiveForwardResultCopy(uint workerId,
++			ulong generation, uint offset, uint capacity)
++		{
++			if (capacity == 0 || capacity > 8192)
++				return Array.Empty<LibGPGX.LiveForwardRecord>();
++			var result = new LibGPGX.LiveForwardRecord[(int)capacity];
++			uint copied = Core.gpgx_live_forward_result_copy(workerId, generation,
++				offset, result, capacity);
++			if (copied > result.Length) return Array.Empty<LibGPGX.LiveForwardRecord>();
++			Array.Resize(ref result, (int)copied);
++			return result;
++		}
++
++		public int LiveForwardAck(uint workerId, ulong captureId, ulong generation,
++			ulong runId, ulong epoch)
++			=> Core.gpgx_live_forward_ack(workerId, captureId, generation,
++				runId, epoch);
++	}
++}
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+index 663a9ae..9eb2793 100644
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+@@ -403,8 +403,80 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract int gpgx_getmaxnumregs();
+ 
+-		[BizImport(CallingConvention.Cdecl)]
+-		public abstract int gpgx_getregs(RegisterInfo[] regs);
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_getregs(RegisterInfo[] regs);
++
++		[StructLayout(LayoutKind.Sequential)]
++		public struct NativeTraceRecord
++		{
++			public ulong Sequence;
++			public uint PC;
++			public ushort Opcode;
++			public ushort Reserved;
++		}
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract ulong gpgx_native_trace_ring_latest();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_native_trace_ring_count();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_native_trace_ring_copy(
++			ulong startSequence,
++			[Out] NativeTraceRecord[] destination,
++			uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract void gpgx_native_trace_ring_reset();
++
++		[StructLayout(LayoutKind.Sequential)]
++		public struct LiveForwardRecord
++		{
++			public ulong StreamSequence;
++			public ulong InstructionSequence;
++			public uint PC;
++			public uint NextPC;
++			public ushort OpcodeOrVector;
++			public ushort KindFlags;
++			public uint Auxiliary;
++		}
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_configure(uint workerCount, uint depth, uint memoryBytes);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_set_enabled(uint enabled);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_request(uint workerId, ulong captureId, ulong generation, ulong runId, ulong epoch);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_worker_state(uint workerId);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract ulong gpgx_live_forward_epoch();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract ulong gpgx_live_forward_stream_sequence();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract ulong gpgx_live_forward_instruction_sequence();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract void gpgx_live_forward_epoch_break();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_result_info(uint workerId, [Out] ulong[] output, uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_result_cpu_state(uint workerId, uint exitState, [Out] uint[] output, uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_result_copy(uint workerId, ulong generation, uint offset, [Out] LiveForwardRecord[] output, uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_ack(uint workerId, ulong captureId, ulong generation, ulong runId, ulong epoch);
+ 
+ 		[Flags]
+ 		public enum DrawMask : int
+diff --git a/waterbox/gpgx/Makefile b/waterbox/gpgx/Makefile
+index 32e2f20..021b49c 100644
+--- a/waterbox/gpgx/Makefile
++++ b/waterbox/gpgx/Makefile
+@@ -23,7 +23,9 @@ CCFLAGS := \
+ 	-DUSE_RAM_DEEPFREEZE \
+ 	-DLSB_FIRST \
+ 	-DUSE_32BPP_RENDERING \
+-	-DHOOK_CPU \
++	-DHOOK_CPU \
++	-DBIZHAWK_NATIVE_TRACE_RING \
++	-DBIZHAWK_LIVE_FORWARD_WORKER \
+ 	-DINLINE=static\ __inline__ \
+ 	-DcdStream=cdStream \
+ 	-DMAXROMSIZE=33554432 \
+@@ -33,7 +35,12 @@ LDFLAGS :=
+ 
+ TARGET := gpgx.wbx
+ 
+-SRCS = \
++SRCS = \
++	$(GPGX_DIR)/core/debug/trace_ring.c \
++	$(GPGX_DIR)/core/debug/live_forward_trace.c \
++	$(GPGX_DIR)/core/debug/live_forward_worker.c \
++	$(GPGX_DIR)/core/debug/live_forward_flow.c \
++	cinterface/live_forward_api.c \
+ 	$(GPGX_DIR)/core/cart_hw/areplay.c \
+ 	$(GPGX_DIR)/core/cart_hw/eeprom_93c.c \
+ 	$(GPGX_DIR)/core/cart_hw/eeprom_i2c.c \
+diff --git a/waterbox/gpgx/cinterface/cinterface.c b/waterbox/gpgx/cinterface/cinterface.c
+index 296a18d..b48567c 100644
+--- a/waterbox/gpgx/cinterface/cinterface.c
++++ b/waterbox/gpgx/cinterface/cinterface.c
+@@ -9,8 +9,9 @@
+ #include <md_ntsc.h>
+ #include <sms_ntsc.h>
+ #include <eeprom_i2c.h>
+-#include <vdp_render.h>
+-#include <debug/cpuhook.h>
++#include <vdp_render.h>
++#include <debug/cpuhook.h>
++#include <debug/trace_ring.h>
+ 
+ // Functions added by us to peek at static structs
+ // (this is much less invasive than not making them static FYI)
+@@ -1035,7 +1036,27 @@ GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY unsigned (*read)(unsigned, unsigned
+ 	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
+ }
+ 
+-GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
++GPGX_EX uint64_t gpgx_native_trace_ring_latest(void)
++{
++	return gpgx_trace_ring_latest();
++}
++
++GPGX_EX uint32_t gpgx_native_trace_ring_count(void)
++{
++	return gpgx_trace_ring_count();
++}
++
++GPGX_EX uint32_t gpgx_native_trace_ring_copy(uint64_t start_sequence, gpgx_trace_record *destination, uint32_t capacity)
++{
++	return gpgx_trace_ring_copy(start_sequence, destination, capacity);
++}
++
++GPGX_EX void gpgx_native_trace_ring_reset(void)
++{
++	gpgx_trace_ring_reset();
++}
++
++GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)
+ {
+ 	biz_cdcb = cdcallback;
+ 	set_cpu_hook((biz_readcb || biz_writecb || biz_execcb || biz_cdcb) ? bk_cpu_hook : NULL);
+diff --git a/waterbox/gpgx/cinterface/live_forward_api.c b/waterbox/gpgx/cinterface/live_forward_api.c
+new file mode 100644
+index 0000000..7ddd4a0
+--- /dev/null
++++ b/waterbox/gpgx/cinterface/live_forward_api.c
+@@ -0,0 +1,107 @@
++#include <stdint.h>
++#include <emulibc.h>
++#include <debug/live_forward_trace.h>
++
++#define GPGX_EX ECL_EXPORT
++
++GPGX_EX int gpgx_live_forward_configure(uint32_t worker_count, uint32_t depth,
++	uint32_t memory_bytes)
++{
++	return oasis_lf_configure(worker_count, depth, memory_bytes);
++}
++
++GPGX_EX int gpgx_live_forward_set_enabled(uint32_t enabled)
++{
++	return oasis_lf_set_enabled(enabled);
++}
++
++GPGX_EX int gpgx_live_forward_request(uint32_t worker_id, uint64_t capture_id,
++	uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++	return oasis_lf_request(worker_id, capture_id, generation, run_id, epoch);
++}
++
++GPGX_EX uint32_t gpgx_live_forward_worker_state(uint32_t worker_id)
++{
++	return oasis_lf_result_state(worker_id);
++}
++
++GPGX_EX uint64_t gpgx_live_forward_epoch(void)
++{
++	return oasis_lf_epoch();
++}
++
++GPGX_EX uint64_t gpgx_live_forward_stream_sequence(void)
++{
++	return oasis_lf_stream_sequence();
++}
++
++GPGX_EX uint64_t gpgx_live_forward_instruction_sequence(void)
++{
++	return oasis_lf_instruction_sequence();
++}
++
++GPGX_EX void gpgx_live_forward_epoch_break(void)
++{
++	oasis_lf_epoch_break(0);
++}
++
++GPGX_EX uint32_t gpgx_live_forward_result_info(uint32_t worker_id,
++	uint64_t *output, uint32_t capacity)
++{
++	oasis_lf_result result;
++	if (!output || capacity < 20 || !oasis_lf_result_info(worker_id, &result))
++		return 0;
++	output[0] = result.capture_id;
++	output[1] = result.generation;
++	output[2] = result.run_id;
++	output[3] = result.epoch;
++	output[4] = result.entry_stream_sequence;
++	output[5] = result.exit_stream_sequence;
++	output[6] = result.entry_instruction_sequence;
++	output[7] = result.exit_instruction_sequence;
++	output[8] = result.entry_control_flow_sequence;
++	output[9] = result.exit_control_flow_sequence;
++	output[10] = result.worker_id;
++	output[11] = result.termination_reason;
++	output[12] = result.configured_depth;
++	output[13] = result.configured_memory_bytes;
++	output[14] = result.consumed_depth;
++	output[15] = result.consumed_memory_bytes;
++	output[16] = result.record_count;
++	output[17] = result.records_bytes;
++	output[18] = result.valid;
++	output[19] = result.copy_duration_ns;
++	return 20;
++}
++
++GPGX_EX uint32_t gpgx_live_forward_result_cpu_state(uint32_t worker_id,
++	uint32_t exit_state, uint32_t *output, uint32_t capacity)
++{
++	oasis_lf_result result;
++	uint32_t i;
++	if (!output || capacity < 20 || !oasis_lf_result_info(worker_id, &result))
++		return 0;
++	for (i = 0; i < 8; ++i)
++		output[i] = exit_state ? result.exit_state.d[i] : result.entry_state.d[i];
++	for (i = 0; i < 8; ++i)
++		output[i + 8] = exit_state ? result.exit_state.a[i] : result.entry_state.a[i];
++	output[16] = exit_state ? result.exit_state.pc : result.entry_state.pc;
++	output[17] = exit_state ? result.exit_state.sr : result.entry_state.sr;
++	output[18] = exit_state ? result.exit_state.usp : result.entry_state.usp;
++	output[19] = exit_state ? result.exit_state.isp : result.entry_state.isp;
++	return 20;
++}
++
++GPGX_EX uint32_t gpgx_live_forward_result_copy(uint32_t worker_id,
++	uint64_t generation, uint32_t offset, oasis_lf_record *output,
++	uint32_t capacity)
++{
++	return oasis_lf_result_copy(worker_id, generation, offset, output, capacity);
++}
++
++GPGX_EX int gpgx_live_forward_ack(uint32_t worker_id, uint64_t capture_id,
++	uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++	return oasis_lf_ack(worker_id, capture_id, generation, run_id, epoch);
++}

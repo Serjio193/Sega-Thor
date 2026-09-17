@@ -10,7 +10,7 @@ set(MAX_LINES 500)
 # Git lists tracked and non-ignored untracked files without recursively
 # stat-ing those excluded trees. The explicit pathspecs are the governed
 # source/build/test roots; generated output belongs outside them.
-set(GOVERNED_PATHS "cmake" "src" "tests")
+set(GOVERNED_PATHS "cmake" "src" "tests" "tools/bizhawk-native-ring")
 execute_process(
     COMMAND git -C "${ROOT}" ls-files --cached --others --exclude-standard
             --full-name -- "CMakeLists.txt" ${GOVERNED_PATHS}
@@ -28,7 +28,7 @@ string(REPLACE "\r\n" "\n" GIT_FILES_RAW "${GIT_FILES_RAW}")
 string(REPLACE "\n" ";" GIT_FILES "${GIT_FILES_RAW}")
 foreach(relative IN LISTS GIT_FILES)
     if(relative STREQUAL "CMakeLists.txt" OR
-       relative MATCHES "^(cmake|src|tests)/.*\\.(cpp|hpp|h|c|cc|cxx|hh|hxx|cmake|py|lua|ps1|sh|java|js|ts)$")
+       relative MATCHES "^(cmake|src|tests|tools/bizhawk-native-ring)/.*\\.(cpp|hpp|h|c|cc|cxx|hh|hxx|cmake|py|lua|ps1|sh|java|js|ts)$")
         list(APPEND PROJECT_FILES "${ROOT}/${relative}")
     endif()
 endforeach()

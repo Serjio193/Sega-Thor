@@ -1446,6 +1446,18 @@ SHA-256 at every point. The 1C regression in
 Dispatcher/Worker mailbox path and reports per-field equality. The runtime
 receipt is in
 `docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1C_WORKER_INPUT_TRACE.md`.
+
+`tools/bizhawk-native-ring/live_forward_trace.[ch]` records one shared native
+execution stream; `live_forward_worker.c` owns the single Worker lifecycle,
+bounded memory/retention termination, exact-range sealing, and immutable ACK
+contract; `live_forward_flow.c` classifies M68K control flow. `live_forward.cmake`
+builds a developer-only native library/test, while `live_forward_runtime.lua`
+and `live_forward_runtime.py` run and verify the isolated BizHawk proof. The
+exact BizHawk/GPGX source patches and final runtime/boundary evidence are in
+`tools/bizhawk-native-ring/*live-forward-worker-1a.patch` and
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` plus JSON. This path
+does not alter the live AUTO67 runner or Cartographer.
+
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 
 `src/tools/thor_evidence/auto67_live.py` owns occurrence-only leasing and a

@@ -1975,6 +1975,33 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M12-AUTO67-LIVE-FORWARD-WORKER-1A — One shared stream, one live Worker
+**Status:** Accepted for the bounded developer-only 1A prototype
+**Date:** 2026-09-17
+
+**Context:** The existing AUTO67 native snapshot freezes an earlier execution
+window and its Worker input can lack a later native instruction stream. The
+first live-forward proof must start at the CPU's current instruction boundary
+without waiting for predecessor resolution or adding callbacks to each
+instruction.
+
+**Decision:** In the isolated BizHawk 2.11.1/GPGX developer build, record the
+main M68K stream once into a bounded native ring. A single Worker attaches at a
+future instruction boundary, stores full ENTRY/EXIT CPU state, counts observed
+control-flow transitions, and seals an exact copied range on depth, memory,
+retention, CPU-stop, or capture-error conditions. The result is immutable and
+is validated outside the instruction hot path before it is called
+`READY_FOR_CARTOGRAPHER`.
+
+**Consequences:** This proves a local factual FLOW_V1 segment only. The separate
+Sega CD sub-CPU remains unsupported; predecessor resolution, Cartographer,
+production AUTO67, `SOURCE_OWNED`, and the project roadmap do not change. A
+multi-Worker or Cartographer-adapter design needs a later explicit checkpoint;
+1A stops here.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` and its
+JSON receipt.
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15
