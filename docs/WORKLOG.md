@@ -9293,4 +9293,6 @@ target itself built with zero errors. `SOURCE_OWNED` remains 1,475,600 /
 AUTO67, and roadmap status remain unchanged. Exact-patch hashes, all 20 first
 segment control-flow transitions, unsupported paths, and evidence are in
 `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` and its JSON receipt.
-The exact final SHA's GitHub Actions result is recorded after publication.
+Implementation commit `321a4f173797ab13887cf6549cb701fd07e8620c` was pushed to
+`main`; GitHub Actions run `35201139430` passed for that exact SHA. The final
+publication change only records this result and does not change runtime code.

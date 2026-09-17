@@ -199,3 +199,12 @@ is synchronous but bounded by the configured segment/ring budget.
 overlapping Workers, Sega CD execution, Cartographer ingestion, memory access
 provenance, or performance below millisecond frame timing. Stop here; do not
 start the multi-Worker checkpoint automatically.
+
+## Publication
+
+Implementation commit `321a4f173797ab13887cf6549cb701fd07e8620c` was pushed to
+`main`. GitHub Actions CI run
+[35201139430](https://github.com/Serjio193/Sega-Thor/actions/runs/35201139430)
+completed with `success` for that exact SHA. The final documentation commit's
+source and runtime changes are identical; the documentation update is a
+separate commit.

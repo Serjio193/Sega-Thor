@@ -2682,5 +2682,12 @@
     "genesis_plus_gx": "dd13782ce2dc2261fe8cd61561367c240aa06f9e3f8c6422b5d08ddb8bf974ca"
   },
   "native_copy_timing_note": "copy_duration_ns is 0 in Waterbox for all captures and is treated as unmeasured, not zero cost; separately reported frame and host bulk-copy/export timings are coarse.",
-  "next_action": "STOP after Worker 1A; do not start a multi-Worker checkpoint automatically."
+  "next_action": "STOP after Worker 1A; do not start a multi-Worker checkpoint automatically.",
+  "github_actions": {
+    "commit_sha": "321a4f173797ab13887cf6549cb701fd07e8620c",
+    "run_id": 35201139430,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Serjio193/Sega-Thor/actions/runs/35201139430"
+  }
 }
