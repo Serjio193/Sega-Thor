@@ -78,6 +78,23 @@ bounded/detached history. `THOR_M12_AUTO67_LIVE_OPERATOR_TEST.md` and its JSON
 under `docs/reports/` distinguish failed manual responsiveness from the
 subsequent sparse-capture performance experiment and its coverage limitation.
 
+# M12 AUTO67 live-forward RAM Cartographer 2A
+
+`src/tools/thor_evidence/live_forward_cartographer.py` adapts only completed,
+host-validated FLOW_V1 segments into a fresh RAM MAP-1 observed execution graph
+and saves a closed SQLite session by backup. `live_forward_archivist.py`
+validates and atomically seeds or merges those saved sessions using
+`map_merge.py`. `tools/bizhawk-native-ring/live_forward_cartographer_runtime.py`
+coordinates two isolated EmuHawk sessions and invokes the Archivist only after
+each process exits; the optional callback in `live_forward_scaling_runtime.py`
+is downstream of full segment validation and immediately before ACK.
+`tests/live_forward_cartographer_test.py` covers observed edges, overlap,
+branches, lineage, session round-trip, status preservation, merge idempotency
+and fail-closed archive behavior. `tools/bizhawk-native-ring/live_forward_cartographer_audit.py`
+independently reconciles every segment receipt against both session databases
+and the merged master. Evidence and real BizHawk receipts belong in the ignored
+`build/thor-evidence/live-forward-worker-2a/` campaign directory.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`

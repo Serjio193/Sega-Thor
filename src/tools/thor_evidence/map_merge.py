@@ -36,7 +36,8 @@ def _rom_sha(path: Path) -> str:
     return str(row[0])
 
 
-def merge_session_map(global_path: Path, session_path: Path) -> dict[str, Any]:
+def merge_session_map(global_path: Path, session_path: Path,
+                      reject_conflicts: bool = False) -> dict[str, Any]:
     """Merge a closed session graph into a temporary global copy atomically."""
     global_path = Path(global_path).resolve()
     session_path = Path(session_path).resolve()
@@ -47,6 +48,7 @@ def merge_session_map(global_path: Path, session_path: Path) -> dict[str, Any]:
     temp_path = global_path.with_name(global_path.stem + ".merge.tmp.sqlite")
     global_before_hash = _file_hash(global_path)
     global_before_graph = None
+    conflicts_before = 0
     target = None
     try:
         if global_path.exists():
@@ -61,6 +63,8 @@ def merge_session_map(global_path: Path, session_path: Path) -> dict[str, Any]:
             shutil.copy2(global_path, temp_path)
             target = Cartographer(temp_path, session_rom)
             global_before_graph = target.graph_hash()
+            conflicts_before = int(target.db.execute(
+                "SELECT COUNT(*) FROM map_conflict").fetchone()[0])
         else:
             target = Cartographer(temp_path, session_rom)
             global_before_graph = target.graph_hash()
@@ -68,6 +72,8 @@ def merge_session_map(global_path: Path, session_path: Path) -> dict[str, Any]:
         metrics = target.metrics()
         if metrics["graph_hash"] != delta.graph_hash:
             raise ValueError("global graph hash validation failed")
+        if reject_conflicts and int(metrics["conflicts"]) > conflicts_before:
+            raise ValueError("STOP_ARCHIVIST_MERGE_CONFLICT")
         target.close()
         target = None
         with temp_path.open("r+b") as stream:

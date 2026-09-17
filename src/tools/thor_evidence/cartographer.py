@@ -277,10 +277,15 @@ class Cartographer:
                 "source_owned_bytes": int(self.db.execute("SELECT value FROM map_meta WHERE key='source_owned_bytes'").fetchone()[0]),
                 "graph_hash": self.graph_hash()}
 
-    def merge(self, bundle: dict[str, Any], import_ref: str, source_sha256: str = "") -> MapDelta:
+    def merge(self, bundle: dict[str, Any], import_ref: str, source_sha256: str = "",
+              compute_graph_hash: bool = True, compute_components: bool = True) -> MapDelta:
+        """Merge a stable bundle, optionally deferring whole-graph metrics work.
+
+        Deferred callers must compute and validate the graph hash before saving.
+        """
         existing = self.db.execute("SELECT 1 FROM map_import WHERE import_ref=?", (import_ref,)).fetchone()
         delta = MapDelta(import_ref=import_ref)
-        before = self._components()
+        before = self._components() if compute_components else 0
         self.db.execute("BEGIN")
         try:
             self._merge_nodes(bundle, delta)
@@ -288,9 +293,9 @@ class Cartographer:
             self._merge_frontiers(bundle, delta)
             if not existing:
                 self.db.execute("INSERT INTO map_import VALUES (?, ?, ?)", (import_ref, source_sha256, canonical({"import_ref": import_ref})))
-            after = self._components()
+            after = self._components() if compute_components else 0
             delta.component_joins = max(0, before - after) if not existing else 0
-            delta.graph_hash = self.graph_hash()
+            delta.graph_hash = self.graph_hash() if compute_graph_hash else ""
             self.db.commit()
         except Exception:
             self.db.rollback()

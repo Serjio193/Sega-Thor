@@ -819,3 +819,29 @@ counters prove capture start, completion, first analysis transition and exact
 release. The host compares both binary exports and ENTRY/EXIT states after the
 CPU stream advances, before it accepts the segment. This remains developer-only
 and does not feed Cartographer or production AUTO67.
+
+## M12 AUTO67 live-forward RAM Cartographer 2A boundary
+
+The developer-only `live_forward_cartographer_runtime.py` reuses the Worker
+1B runner's completed-segment callback. The callback runs after the independent
+host audit has compared immutable metadata and both record exports, and before
+the exact ACK is written. The runner independently audits per-Worker lifecycle
+receipts. It translates only those
+validated FLOW_V1 records into `OBSERVED` M68K instruction/event nodes and
+ordered `EXECUTED_NEXT` edges. Stable ROM-scoped structure deduplicates overlap;
+per-segment lineage retains run, epoch, Worker, capture, generation, segment
+hash, stream/instruction bounds, profile and control-flow outcomes, plus the
+occurrence count and bounds for repeated structure. To keep ACK latency bounded,
+lineage rows are staged in the same RAM SQLite during runtime, then folded into
+MAP-1 rows and hashed once after EmuHawk closes. No dependency,
+reaching-definition or SOURCE_OWNED claim is derived.
+
+Each EmuHawk run owns a new SQLite `:memory:` Cartographer and never loads the
+master. After EmuHawk exits, SQLite backup writes a retained session file and
+the runner checks the saved graph hash against the RAM graph. The separate
+`live_forward_archivist.py` validates MAP-1/session schema, ROM identity and
+closed-session graph hash, then reuses the atomic session merger. A missing
+master is seeded without warning; incompatible sessions or newly created
+conflicts fail before replacement. This bridge is independent of the existing
+AUTO67 REGISTER_REACHING_DEFINITION adapter and is not part of production
+scheduling.

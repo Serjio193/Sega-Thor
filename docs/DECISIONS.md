@@ -2043,6 +2043,36 @@ natural saturation or forced/resource/correctness limit.
 **Evidence:** `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md`
 and its JSON receipt.
 
+# ADR-M12-AUTO67-LIVE-FORWARD-CARTOGRAPHER-2A — RAM execution map and Archivist
+**Status:** Accepted for the developer-only 2A checkpoint
+**Date:** 2026-09-17
+
+**Context:** Worker 1B proves immutable FLOW_V1 execution windows and lifecycle
+identity, but does not persist observed execution structure. MAP-1 already owns
+stable node/edge identity, lineage union and proof-status ordering.
+
+**Decision:** Add a separate live-forward adapter after the 1B host audit and
+before its exact ACK. It accepts only validated FLOW_V1 record sequences,
+creates ROM-scoped instruction/event nodes and `OBSERVED` `EXECUTED_NEXT` edges,
+and records each execution's run/epoch/Worker/capture/generation/hash/bounds
+lineage. The RAM Cartographer stages per-segment lineage in its in-memory SQLite
+and folds it into MAP-1 rows once after emulator exit, before graph hashing and
+backup; no full-graph hash or proof-component scan runs before each ACK. Each
+runtime starts with a fresh RAM Cartographer and never reads the master. After
+EmuHawk exits, SQLite backup saves a retained session; a separate
+Archivist validates MAP-1/session identity and uses the existing atomic merger
+to seed a missing master or merge a compatible session. New merge conflicts
+fail before atomic replacement.
+
+**Consequences:** Repeated structure and overlapping Worker windows merge into
+one graph while each observation remains in lineage; distinct targets remain
+branch alternatives. Runtime facts remain `OBSERVED`, cannot self-promote to
+`PROVEN`, and do not change SOURCE_OWNED. The proof adapter and production AUTO67
+path remain independent. Worker/native/Lua instruction hooks are unchanged.
+
+**Evidence:** `tests/live_forward_cartographer_test.py` and the two-run
+`M12-AUTO67-LIVE-FORWARD-CARTOGRAPHER-2A` receipt.
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15

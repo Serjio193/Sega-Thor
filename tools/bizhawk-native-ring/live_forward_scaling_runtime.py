@@ -12,8 +12,11 @@ from pathlib import Path
 import shutil
 import subprocess
 import time
+from typing import Callable
 
-from live_forward_scaling_audit import RECORD, integer_list, overlap_peak, validate_segment
+from live_forward_scaling_audit import (
+    RECORD, integer_list, overlap_peak, read_record_slice, validate_segment,
+)
 
 
 METRICS_NAMES = (
@@ -137,7 +140,9 @@ def configure_install(install: Path, output_dir: Path) -> Path:
     return path
 
 
-def run_one(args: argparse.Namespace, phase: str, count: int, depth: int) -> dict[str, object]:
+def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
+    on_segment: Callable[[dict[str, object], list[tuple[int, ...]], bytes], None] | None = None
+            ) -> dict[str, object]:
     output_dir = args.output_dir / phase / f"count-{count}"
     output_dir.mkdir(parents=True, exist_ok=True)
     raw, ack = output_dir / "live-forward-runtime.txt", output_dir / "live-forward-ack.txt"
@@ -215,6 +220,11 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int) -> dic
                 segment = validate_segment(key, value, records1, count, depth,
                     args.memory_bytes, header_bytes, run_id, previous_exit,
                     global_entry, cycle_counts, records2)
+                if on_segment is not None:
+                    offset = int(value.split("|")[4])
+                    data = read_record_slice(records1, offset, int(segment["record_count"]), worker)
+                    ready_segment = {**segment, "ready_for_cartographer": True}
+                    on_segment(ready_segment, list(RECORD.iter_unpack(data)), data)
                 current = round_workers.setdefault(cycle, [])
                 if current and int(segment["entry_stream_sequence"]) <= int(
                         current[-1]["entry_stream_sequence"]):

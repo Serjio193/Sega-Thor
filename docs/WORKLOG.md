@@ -9356,3 +9356,76 @@ gate passed for 693 governed files (all <=500 lines), `git diff --check` passed,
 and a final receipt/JSONL audit verified all 54,996 segments across the 16
 tested counts. Exact-SHA GitHub CI runs after publication and is recorded in the
 publication response.
+
+# 2026-09-17 — M12 AUTO67 live-forward RAM Cartographer + Archivist 2A — PASS
+
+TASK: Connect only fully validated host-side FLOW_V1 Worker segments from the
+developer-only 1B runner to a fresh SQLite `:memory:` MAP-1 Cartographer.
+Persist a closed session through SQLite backup after EmuHawk exits, then invoke
+an independent Archivist that validates session schema, ROM and graph identity
+before seeding or atomically merging the existing master map.
+
+ACCEPTANCE: Keep the raw Worker/native/Lua instruction path and existing
+REGISTER_REACHING_DEFINITION adapter unchanged. Admit only verified records;
+store instruction/event nodes and ordered `OBSERVED` `EXECUTED_NEXT` edges with
+complete run/epoch/worker/capture/generation/hash/bounds/profile lineage; merge
+overlaps without structural duplication and preserve branch alternatives.
+Prove fresh RAM state, RAM-to-SQLite graph-hash equality, silent first-master
+seed, deterministic second-session merge, idempotency, no status promotion or
+downgrade, ROM/schema rejection, and old-master preservation on failure.
+Run two independent real BizHawk 16-Worker × 100-cycle sessions and audit all
+3,200 segments through session persistence and Archivist merge. Preserve
+`SOURCE_OWNED` (delta 0), Worker 1B stop findings and roadmap status.
+
+IMPLEMENTATION: The Worker 1B host callback marks a segment
+`READY_FOR_CARTOGRAPHER` only after the immutable FLOW_V1 audit; the RAM-only
+adapter admits it before exact ACK. MAP-1 structure is merged per result while
+lineage is held in a temporary table in that same in-memory SQLite. At emulator
+shutdown the adapter folds sorted, per-segment lineage into MAP-1 and computes
+the final hash once before SQLite backup. The temporary table is dropped and is
+not present in saved sessions. The separate Archivist validates closed session
+identity and rejects newly introduced merge conflicts before atomic replace.
+
+RETRY NOTE: The first real 16 × 100 attempt stopped after 902 audited/ACKed
+segments when Lua's host-audit ACK wait expired at round 57. It exposed the
+per-segment full-graph hash and repeated JSON-lineage union costs. Its raw logs
+and STOP receipt remain under `build/thor-evidence/live-forward-worker-2a/`;
+no partial session map was saved. The implementation now skips optional global
+component/hash scans before ACK, stages complete per-segment lineage in RAM and
+folds it once after runtime. A 300-segment synthetic throughput check completed
+in 4.2 seconds; the architecture and Worker/native/Lua capture path are
+unchanged.
+
+RUNTIME: Two independent EmuHawk processes passed with WORKER_COUNT=16,
+DEPTH=20, MEMORY=65,536 bytes and exactly 100 cycles per Worker. Run IDs were
+1789689193 and 1789689268. Each run validated, admitted and ACKed 1,600
+segments; all 16 Workers completed 100 unique capture IDs/generations. The
+first Archivist seeded an absent master with no warning/stderr. The second
+started from an empty RAM map and merged 1,600 new segments; replaying the same
+session preserved the final graph hash. Session hashes were
+`0a71ec149fa18d0afc000fdcbe23c3b7600b937e0f4677ab58bfef2bc7d39bfa` and
+`713abc53b57debc5fcee777452374eed8cfa06b92077b4d23a8509d40a5374c6`; final
+master hash is
+`d20c67773beecb238c01f48e5ff7d7bfa57a19203aa2cdcdd0c84bf1bec317cb`. The
+master contains 369 nodes/406 edges versus 357/388 after the first seed; old
+facts were preserved, overlaps merged, alternate targets remained, and
+`SOURCE_OWNED` delta is zero. The retained sessions are approximately 807 MB
+and 797 MB; the master is approximately 661 MB.
+
+AUDIT: `live_forward_cartographer_audit.py` independently reconciled all 3,200
+JSONL segments with both SQLite sessions and the master. It verified exactly
+100 cycles and unique identities on each of 16 Workers per run, complete
+segment lineage coverage, both independent run IDs in the master, SQLite
+integrity, seed/merge/idempotency and preservation of the first session's
+node/edge IDs. The audit recorded 397,382 and 392,577 lineage rows in the
+sessions and 789,959 in the merged master. Full campaign and independent audit
+receipts are in the ignored
+`build/thor-evidence/live-forward-worker-2a/retry1/` directory.
+
+VALIDATION: Windows Debug and Release builds passed; final Debug CTest passed
+202/202 and Release CTest passed 202/202. Focused 2A tests passed 10/10,
+existing AUTO67 RAM-session tests 9/9, MAP-1 tests 16/16 and live-forward audit
+tests 4/4. Python compilation, the independent 3,200-segment audit, source
+limit (`698` governed files, all <=500 lines) and `git diff --check` passed.
+No Worker 1B scaling count or limit changed; production AUTO67, predecessor
+handling and roadmap status remain unchanged.
