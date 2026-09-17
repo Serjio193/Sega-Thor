@@ -93,3 +93,69 @@ timing metadata. It adds no per-instruction Lua callback and does not alter the
 native ring or production capture path. The exact isolated Release host build
 passed; the resulting runtime did not enter the existing register resolver,
 which is recorded as `STOP_NATIVE_RESOLVER_OUTPUT_MISSING` in the 1B receipt.
+
+## Live-forward Worker 1B scaling
+
+Use a clean BizHawk 2.11.1 checkout at the pinned commit above, with
+`core.autocrlf=false`, and apply the cumulative Worker 1A patch pair first.
+Those two `*live-forward-worker-1a.patch` files include the earlier ring work
+from the clean baseline. Then apply the incremental Worker 1B patches below;
+the first targets the BizHawk repository and the second its GPGX submodule.
+Run these commands from WSL/Linux, replacing `/mnt/c/Github/Sega-Thor` with the
+workspace mount path if needed:
+
+```sh
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-live-forward-worker-1a.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-live-forward-worker-1a.patch
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-live-forward-worker-1b.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-live-forward-worker-1b.patch
+```
+
+The incremental BizHawk patch SHA-256 is
+`6C7C92F9FA75D8A1D28F5C08A3787F1B550C43C483181FA7584EFCF79CE383BA`; the
+GPGX submodule patch SHA-256 is
+`1C4F8D33CDD46613685E1909E39A5056E6C8A23303BE68BA67B60DFB9E55797B`.
+The first patch adds managed budget, metrics and lifecycle APIs; the second
+adds dynamic native Worker pool and per-slot transition counters. The host
+patch deliberately does not change the submodule gitlink.
+
+`live_forward_scaling.lua` drives one hundred serialized capture cycles for
+every configured Worker slot. The Python host validates each FLOW_V1 segment,
+compares a second binary export and ENTRY/EXIT metadata after CPU execution
+advances, writes the exact identity ACK, and requires per-slot native
+start/completion/analysis/release counters to match the generation before the
+next cycle. Each geometric Worker-count step has bounded native-memory and
+two-pass host-disk preflight. Natural depth-20 scaling and forced
+depth-at-least-count concurrency remain separate measurements.
+
+The runtime requires the 1B BizHawk/GPGX patches and an installed Waterbox
+sysroot. Run it against the isolated 2.11.1 install and canonical ROM:
+
+```powershell
+python tools/bizhawk-native-ring/live_forward_scaling_runtime.py `
+  --install build/thor-evidence/live-forward-worker-1b/coherent-bizhawk `
+  --rom "build/reference/Beyond Oasis (USA).bin" `
+  --script tools/bizhawk-native-ring/live_forward_scaling.lua `
+  --output-dir build/thor-evidence/live-forward-worker-1b
+```
+
+The runner requires 100 cycles per slot and stops before allocation when the
+native budget or available disk space cannot hold the pool and one two-pass
+result wave. A pool startup or a single capture cannot produce PASS. On
+2026-09-17 the recovered musl sysroot built WBX SHA-256
+`4AC692A115CB5543BB3C2260FC04FDACD2CF5D963DF59C17D87A12A30ADD3CD4`. The
+tested coherent install preserves the old `gpgx.wbx.zst` sidecar under a
+backup name: BizHawk prefers that compressed file over an adjacent
+`gpgx.wbx`, so do not restore the stale sidecar as `gpgx.wbx.zst` during this
+campaign.
+
+The real 100-cycle campaign verified natural counts 1 through 64 and forced
+counts 2 through 128. Natural 128 and forced 256 stopped because CPU execution
+stalled before immutable reread; neither failed count passed and no larger
+count was attempted. This is a runtime correctness stop, not a measured RAM
+ceiling. Per-count receipts and audit JSONL files are under
+`build/thor-evidence/live-forward-worker-1b/campaign-100cycles-proven/` and
+`campaign-forced-100cycles-proven/`. The result and remaining CI publication
+status are in
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md` and its JSON
+receipt.

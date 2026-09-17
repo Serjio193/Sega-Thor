@@ -1,0 +1,275 @@
+diff --git a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+index 85a1b68..0c594a7 100644
+--- a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
++++ b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+@@ -103,6 +103,39 @@ namespace BizHawk.Client.Common
+ 				(uint)memoryBytes) != 0;
+ 		}
+ 
++		[LuaMethod("live_forward_configure_bounded", "Configures the developer-only native Worker pool within an explicit allocation budget")]
++		public bool LiveForwardConfigureBounded(int workerCount, int depth,
++			int memoryBytes, long allocationBudgetBytes)
++		{
++			if (Emulator is not GPGX gpgx || workerCount <= 0 || depth <= 0 ||
++				memoryBytes <= 0 || allocationBudgetBytes <= 0) return false;
++			return gpgx.LiveForwardConfigureBounded((uint)workerCount,
++				(uint)depth, (uint)memoryBytes, (ulong)allocationBudgetBytes) != 0;
++		}
++
++		[LuaMethod("live_forward_memory_plan", "Returns checked native allocation plan for the requested Worker pool")]
++		public string LiveForwardMemoryPlan(int workerCount, int depth,
++			int memoryBytes)
++			=> Emulator is GPGX gpgx && workerCount > 0 && depth > 0 && memoryBytes > 0
++				? string.Join(",", gpgx.LiveForwardMemoryPlan((uint)workerCount,
++					(uint)depth, (uint)memoryBytes)
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
++		[LuaMethod("live_forward_metrics", "Returns native live-forward lifecycle and runtime metrics")]
++		public string LiveForwardMetrics()
++			=> Emulator is GPGX gpgx
++				? string.Join(",", gpgx.LiveForwardMetrics()
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
++		[LuaMethod("live_forward_worker_lifecycle", "Returns per-Worker capture, completion, analysis, and release counters")]
++		public string LiveForwardWorkerLifecycle(int workerId)
++			=> Emulator is GPGX gpgx && workerId >= 0
++				? string.Join(",", gpgx.LiveForwardWorkerLifecycle((uint)workerId)
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
+ 		[LuaMethod("live_forward_enable", "Enables or disables the opt-in native instruction recorder when all Workers are free")]
+ 		public bool LiveForwardEnable(bool enabled)
+ 			=> Emulator is GPGX gpgx && gpgx.LiveForwardSetEnabled(enabled) != 0;
+@@ -164,7 +197,18 @@ namespace BizHawk.Client.Common
+ 				record.NextPC.ToString(CultureInfo.InvariantCulture),
+ 				record.OpcodeOrVector.ToString(CultureInfo.InvariantCulture),
+ 				record.KindFlags.ToString(CultureInfo.InvariantCulture),
+-				record.Auxiliary.ToString(CultureInfo.InvariantCulture))));
++					record.Auxiliary.ToString(CultureInfo.InvariantCulture))));
++		}
++
++		[LuaMethod("live_forward_export_records", "Streams immutable FLOW_V1 records to a bounded binary host file")]
++		public bool LiveForwardExportRecords(string path, int workerId,
++			long generation, int recordCount, bool append)
++		{
++			if (Emulator is not GPGX gpgx || string.IsNullOrWhiteSpace(path) ||
++				workerId < 0 || generation <= 0 || recordCount < 1 ||
++				recordCount > 4096) return false;
++			return gpgx.LiveForwardExportRecords(path, (uint)workerId,
++				(ulong)generation, (uint)recordCount, append) == (uint)recordCount;
+ 		}
+ 
+ 		[LuaMethod("live_forward_ack", "Releases the exact completed capture identity after host analysis")]
+@@ -176,5 +220,12 @@ namespace BizHawk.Client.Common
+ 			return gpgx.LiveForwardAck((uint)workerId, (ulong)captureId,
+ 				(ulong)generation, (ulong)runId, (ulong)epoch) != 0;
+ 		}
++
++		[LuaMethod("live_forward_mark_audited", "Allows an exact Worker ACK after host-side segment audit")]
++		public bool LiveForwardMarkAudited(int workerId, long generation,
++			bool accepted)
++			=> Emulator is GPGX gpgx && workerId >= 0 && generation > 0 &&
++				gpgx.LiveForwardMarkAudited((uint)workerId, (ulong)generation,
++					accepted) != 0;
+ 	}
+ }
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+index 74dcfab..d795e9e 100644
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+@@ -1,3 +1,6 @@
++using System.IO;
++using System.Runtime.InteropServices;
++
+ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ {
+ 	public partial class GPGX
+@@ -5,6 +8,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 		public int LiveForwardConfigure(uint workerCount, uint depth, uint memoryBytes)
+ 			=> Core.gpgx_live_forward_configure(workerCount, depth, memoryBytes);
+ 
++		public int LiveForwardConfigureBounded(uint workerCount, uint depth,
++			uint memoryBytes, ulong allocationBudgetBytes)
++			=> Core.gpgx_live_forward_configure_bounded(workerCount, depth,
++				memoryBytes, allocationBudgetBytes);
++
++		public ulong[] LiveForwardMemoryPlan(uint workerCount, uint depth,
++			uint memoryBytes)
++		{
++			var plan = new ulong[16];
++			return Core.gpgx_live_forward_memory_plan(workerCount, depth,
++				memoryBytes, plan, (uint)plan.Length) == plan.Length
++				? plan : Array.Empty<ulong>();
++		}
++
++		public ulong[] LiveForwardMetrics()
++		{
++			var metrics = new ulong[30];
++			return Core.gpgx_live_forward_metrics(metrics, (uint)metrics.Length) == metrics.Length
++				? metrics : Array.Empty<ulong>();
++		}
++
++		public ulong[] LiveForwardWorkerLifecycle(uint workerId)
++		{
++			var counts = new ulong[4];
++			return Core.gpgx_live_forward_worker_lifecycle(workerId, counts,
++				(uint)counts.Length) == counts.Length ? counts : Array.Empty<ulong>();
++		}
++
+ 		public int LiveForwardSetEnabled(bool enabled)
+ 			=> Core.gpgx_live_forward_set_enabled(enabled ? 1u : 0u);
+ 
+@@ -57,9 +88,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 			return result;
+ 		}
+ 
++		public uint LiveForwardExportRecords(string path, uint workerId,
++			ulong generation, uint recordCount, bool append)
++		{
++			const uint pageCapacity = 512;
++			var records = new LibGPGX.LiveForwardRecord[pageCapacity];
++			using var stream = new FileStream(path,
++				append ? FileMode.Append : FileMode.Create, FileAccess.Write,
++				FileShare.ReadWrite);
++			for (uint offset = 0; offset < recordCount;)
++			{
++				uint capacity = Math.Min(pageCapacity, recordCount - offset);
++				uint copied = Core.gpgx_live_forward_result_copy(workerId,
++					generation, offset, records, capacity);
++				if (copied != capacity) return offset;
++				stream.Write(MemoryMarshal.AsBytes(records.AsSpan(0, (int)copied)));
++				offset += copied;
++			}
++			return recordCount;
++		}
++
+ 		public int LiveForwardAck(uint workerId, ulong captureId, ulong generation,
+ 			ulong runId, ulong epoch)
+ 			=> Core.gpgx_live_forward_ack(workerId, captureId, generation,
+ 				runId, epoch);
++
++		public int LiveForwardMarkAudited(uint workerId, ulong generation,
++			bool accepted)
++			=> Core.gpgx_live_forward_mark_audited(workerId, generation,
++				accepted ? 1u : 0u);
+ 	}
+ }
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.cs
+index 284a2b2..fcf70fb 100644
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.cs
+@@ -64,11 +64,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 			{
+ 				Path = PathUtils.DllDirectoryPath,
+ 				Filename = "gpgx.wbx",
+-				SbrkHeapSizeKB = 512,
++				// Developer-only live-forward Worker scaling needs bounded native
++				// result pools larger than the historical 512 KiB core heap.
++				SbrkHeapSizeKB = 256 * 1024,
+ 				SealedHeapSizeKB = 4 * 1024,
+ 				InvisibleHeapSizeKB = 4 * 1024,
+ 				PlainHeapSizeKB = 4 * 1024,
+-				MmapHeapSizeKB = 1 * 1024,
++				MmapHeapSizeKB = 256 * 1024,
+ 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+ 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+ 			});
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+index 9eb2793..23f6b92 100644
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+@@ -445,6 +445,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract int gpgx_live_forward_configure(uint workerCount, uint depth, uint memoryBytes);
+ 
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_configure_bounded(uint workerCount,
++			uint depth, uint memoryBytes, ulong allocationBudgetBytes);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_memory_plan(uint workerCount,
++			uint depth, uint memoryBytes, [Out] ulong[] output, uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_metrics([Out] ulong[] output,
++			uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_worker_lifecycle(uint workerId,
++			[Out] ulong[] output, uint capacity);
++
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract int gpgx_live_forward_set_enabled(uint enabled);
+ 
+@@ -477,6 +493,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+ 
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract int gpgx_live_forward_ack(uint workerId, ulong captureId, ulong generation, ulong runId, ulong epoch);
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract int gpgx_live_forward_mark_audited(uint workerId,
++			ulong generation, uint accepted);
+ 
+ 		[Flags]
+ 		public enum DrawMask : int
+diff --git a/waterbox/gpgx/Makefile b/waterbox/gpgx/Makefile
+index 021b49c..2f61e9d 100644
+--- a/waterbox/gpgx/Makefile
++++ b/waterbox/gpgx/Makefile
+@@ -39,6 +39,8 @@ SRCS = \
+ 	$(GPGX_DIR)/core/debug/trace_ring.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_trace.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_worker.c \
++	$(GPGX_DIR)/core/debug/live_forward_pool.c \
++	$(GPGX_DIR)/core/debug/live_forward_metrics.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_flow.c \
+ 	cinterface/live_forward_api.c \
+ 	$(GPGX_DIR)/core/cart_hw/areplay.c \
+diff --git a/waterbox/gpgx/cinterface/live_forward_api.c b/waterbox/gpgx/cinterface/live_forward_api.c
+index 7ddd4a0..c3fbc3c 100644
+--- a/waterbox/gpgx/cinterface/live_forward_api.c
++++ b/waterbox/gpgx/cinterface/live_forward_api.c
+@@ -10,6 +10,31 @@ GPGX_EX int gpgx_live_forward_configure(uint32_t worker_count, uint32_t depth,
+ 	return oasis_lf_configure(worker_count, depth, memory_bytes);
+ }
+ 
++GPGX_EX int gpgx_live_forward_configure_bounded(uint32_t worker_count,
++	uint32_t depth, uint32_t memory_bytes, uint64_t allocation_budget_bytes)
++{
++	return oasis_lf_configure_bounded(worker_count, depth, memory_bytes,
++		allocation_budget_bytes);
++}
++
++GPGX_EX uint32_t gpgx_live_forward_memory_plan(uint32_t worker_count,
++	uint32_t depth, uint32_t memory_bytes, uint64_t *output, uint32_t capacity)
++{
++	return oasis_lf_memory_plan_values(worker_count, depth, memory_bytes,
++		output, capacity);
++}
++
++GPGX_EX uint32_t gpgx_live_forward_metrics(uint64_t *output, uint32_t capacity)
++{
++	return oasis_lf_metrics_get(output, capacity);
++}
++
++GPGX_EX uint32_t gpgx_live_forward_worker_lifecycle(uint32_t worker_id,
++	uint64_t *output, uint32_t capacity)
++{
++	return oasis_lf_worker_lifecycle(worker_id, output, capacity);
++}
++
+ GPGX_EX int gpgx_live_forward_set_enabled(uint32_t enabled)
+ {
+ 	return oasis_lf_set_enabled(enabled);
+@@ -105,3 +130,9 @@ GPGX_EX int gpgx_live_forward_ack(uint32_t worker_id, uint64_t capture_id,
+ {
+ 	return oasis_lf_ack(worker_id, capture_id, generation, run_id, epoch);
+ }
++
++GPGX_EX int gpgx_live_forward_mark_audited(uint32_t worker_id,
++	uint64_t generation, uint32_t accepted)
++{
++	return oasis_lf_mark_audited(worker_id, generation, accepted);
++}

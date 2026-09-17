@@ -8,7 +8,10 @@ extern "C" {
 #endif
 
 #define OASIS_LF_RING_CAPACITY 4096u
-#define OASIS_LF_MAX_WORKERS 64u
+#define OASIS_LF_MAX_WORKERS 100000u
+#define OASIS_LF_METRICS_COUNT 30u
+#define OASIS_LF_PLAN_COUNT 16u
+#define OASIS_LF_LIFECYCLE_COUNT 4u
 
 extern uint32_t oasis_lf_recording_enabled;
 
@@ -59,6 +62,27 @@ typedef struct
   uint64_t copy_duration_ns;
 } oasis_lf_result;
 
+typedef struct
+{
+  uint32_t worker_count;
+  uint32_t depth;
+  uint32_t memory_bytes;
+  uint32_t record_capacity;
+  uint32_t identity_capacity;
+  uint32_t reserved;
+  uint64_t descriptor_bytes_each;
+  uint64_t descriptor_bytes_total;
+  uint64_t result_bytes_each;
+  uint64_t result_buffers_bytes_total;
+  uint64_t pending_queue_bytes;
+  uint64_t active_queue_bytes;
+  uint64_t identity_table_bytes;
+  uint64_t shared_ring_bytes;
+  uint64_t instruction_stack_bytes;
+  uint64_t dynamic_bytes;
+  uint64_t total_native_bytes;
+} oasis_lf_memory_plan;
+
 enum oasis_lf_record_flags
 {
   OASIS_LF_INSTRUCTION = 1,
@@ -87,6 +111,21 @@ enum oasis_lf_end_reason
 
 int oasis_lf_configure(uint32_t worker_count, uint32_t depth,
                        uint32_t memory_bytes);
+int oasis_lf_configure_bounded(uint32_t worker_count, uint32_t depth,
+                               uint32_t memory_bytes,
+                               uint64_t allocation_budget_bytes);
+int oasis_lf_memory_plan_get(uint32_t worker_count, uint32_t depth,
+                             uint32_t memory_bytes,
+                             oasis_lf_memory_plan *plan);
+int oasis_lf_memory_plan_values(uint32_t worker_count, uint32_t depth,
+                                uint32_t memory_bytes, uint64_t *output,
+                                uint32_t capacity);
+int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity);
+int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
+                              uint32_t capacity);
+int oasis_lf_mark_audited(uint32_t worker_id, uint64_t generation,
+                          uint32_t accepted);
+void oasis_lf_cancel_pending(void);
 int oasis_lf_set_enabled(uint32_t enabled);
 int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
                      uint64_t generation, uint64_t run_id, uint64_t epoch);

@@ -2002,6 +2002,47 @@ multi-Worker or Cartographer-adapter design needs a later explicit checkpoint;
 **Evidence:** `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` and its
 JSON receipt.
 
+# ADR-M12-AUTO67-LIVE-FORWARD-WORKER-1B — Bounded multi-Worker scaling
+**Status:** Accepted for the developer-only 1B scaling checkpoint
+**Date:** 2026-09-17
+
+**Context:** Worker 1A proves one capture descriptor against a shared M68K
+stream. Capacity measurements require several different overlapping windows,
+while keeping the CPU-side instruction recorder single-copy and the configured
+result budget bounded.
+
+**Decision:** Replace the fixed 64-entry singleton lifecycle with a dynamically
+allocated, preflighted descriptor/result pool and ordered pending/active queues.
+At most one pending descriptor attaches at each confirmed instruction
+boundary. Instructions continue to be recorded once in the same shared ring;
+each result is copied only into its own bounded slot at completion. Use the
+same 64-KiB result budget in both phases and vary depth only for forced
+concurrency. Reject a request before allocation when the checked native,
+Waterbox, host-transport or process memory budget does not fit. The experiment
+is scoped to the explicitly requested counts through 100,000; that scope ceiling
+is not reported as a measured capacity limit.
+
+**Consequences:** Phase A reports natural `CAPTURING`, completed and occupied
+peaks independently. Phase B reports forced simultaneous capacity separately.
+Every tested `WORKER_COUNT` must complete 100 serialized lifecycle cycles on
+each Worker. Each segment requires a fresh capture ID and generation, a live
+execution epoch, COMPLETE and ANALYZING states, full host validation of the
+binary record segment, an exact ACK, and a verified return to FREE before the
+next cycle. The gate is `WORKER_COUNT * 100` completed and validated segments;
+a pool startup or one successful capture is never a PASS. Depth/memory
+terminations remain visible bounded results; a slot is never reused before its
+exact ACK. Per-slot native counters prove capture start, completion, first
+ANALYZING transition and release across every generation. The host exports each
+segment twice while CPU execution advances and compares metadata, ENTRY/EXIT
+state and every binary record before accepting it. The single shared M68K stream
+remains the only per-instruction trace.
+Production AUTO67, predecessor handling, Cartographer, `SOURCE_OWNED` and the
+project roadmap remain unchanged. Stop after recording the first factual
+natural saturation or forced/resource/correctness limit.
+
+**Evidence:** `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md`
+and its JSON receipt.
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15

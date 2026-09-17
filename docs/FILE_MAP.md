@@ -1448,15 +1448,31 @@ receipt is in
 `docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1C_WORKER_INPUT_TRACE.md`.
 
 `tools/bizhawk-native-ring/live_forward_trace.[ch]` records one shared native
-execution stream; `live_forward_worker.c` owns the single Worker lifecycle,
+execution stream; `live_forward_pool.c` owns checked dynamic pool allocation,
+identity tables and memory plans; `live_forward_metrics.c` exports aggregate
+and per-slot transition counters; `live_forward_worker.c` owns the Worker lifecycle,
 bounded memory/retention termination, exact-range sealing, and immutable ACK
 contract; `live_forward_flow.c` classifies M68K control flow. `live_forward.cmake`
-builds a developer-only native library/test, while `live_forward_runtime.lua`
-and `live_forward_runtime.py` run and verify the isolated BizHawk proof. The
+builds developer-only native tests, including a 100-cycle-per-slot regression;
+`live_forward_scaling.lua` and `live_forward_scaling_runtime.py` run progressive
+scaling rounds and require two identical binary audits, per-slot transition
+counters and exact ACK before slot reuse. `live_forward_scaling_audit.py`
+checks IDs, stream sequence, depth, bounds and immutable copies.
+`live_forward_runtime.lua` and `live_forward_runtime.py` run and verify the
+single-Worker 1A proof. The
 exact BizHawk/GPGX source patches and final runtime/boundary evidence are in
 `tools/bizhawk-native-ring/*live-forward-worker-1a.patch` and
-`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` plus JSON. This path
-does not alter the live AUTO67 runner or Cartographer.
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md` plus JSON. Incremental
+BizHawk and GPGX patches are in
+`tools/bizhawk-native-ring/*live-forward-worker-1b.patch`; the 1B runtime gate
+and runtime stop are recorded in
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md` and its JSON
+receipt. The BizHawk runtime campaign proves natural counts 1-64 and forced
+counts 2-128 with 100 cycles and N*100 audited segments at each PASS count;
+natural 128 and forced 256 stop before immutable reread when CPU execution
+stalls. Per-count logs and audit JSONL files remain under the ignored
+`build/thor-evidence/live-forward-worker-1b/` directory. This path does not
+alter the live AUTO67 runner or Cartographer.
 
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 

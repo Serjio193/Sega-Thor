@@ -1,0 +1,1501 @@
+diff --git a/core/debug/live_forward_internal.h b/core/debug/live_forward_internal.h
+index c0d9256..db4e5db 100644
+--- a/core/debug/live_forward_internal.h
++++ b/core/debug/live_forward_internal.h
+@@ -10,10 +10,25 @@
+ #define LF_CAPTURING 2u
+ #define LF_COMPLETE 3u
+ #define LF_ANALYZING 4u
++#define LF_ID_EMPTY 0u
++#define LF_ID_USED 1u
++#define LF_ID_TOMBSTONE 2u
+ 
+ typedef struct
+ {
+   uint32_t state;
++  uint32_t ever_used;
++  uint32_t host_audited;
++  uint32_t invalid;
++  uint32_t pending_end;
++  uint32_t configured_depth;
++  uint32_t configured_memory_bytes;
++  uint32_t record_count;
++  uint32_t reserved;
++  uint64_t capture_start_count;
++  uint64_t capture_complete_count;
++  uint64_t analysis_count;
++  uint64_t release_count;
+   uint64_t capture_id;
+   uint64_t generation;
+   uint64_t last_generation;
+@@ -21,15 +36,17 @@ typedef struct
+   uint64_t run_id;
+   uint64_t first_record;
+   uint64_t entry_flow;
+-  uint32_t configured_depth;
+-  uint32_t configured_memory_bytes;
+-  uint32_t record_count;
+-  uint32_t invalid;
+-  uint32_t pending_end;
+   oasis_lf_result result;
+   oasis_lf_record *records;
+ } lf_worker;
+ 
++typedef struct
++{
++  uint64_t capture_id;
++  uint32_t worker_id;
++  uint32_t state;
++} lf_identity_entry;
++
+ typedef struct
+ {
+   uint64_t sequence;
+@@ -37,23 +54,71 @@ typedef struct
+   oasis_lf_record record;
+ } lf_ring_slot;
+ 
+-extern lf_worker workers[OASIS_LF_MAX_WORKERS];
+-extern lf_ring_slot ring_storage[OASIS_LF_RING_CAPACITY];
++typedef struct
++{
++  uint64_t captures_started;
++  uint64_t captures_completed;
++  uint64_t captures_validated;
++  uint64_t captures_invalid;
++  uint64_t captures_dropped;
++  uint64_t stale_ack_count;
++  uint64_t identity_collisions;
++  uint64_t ring_retention_failures;
++  uint64_t memory_limit_endings;
++  uint64_t depth_limit_endings;
++  uint64_t unsupported_path_endings;
++  uint64_t unique_entry_stream_sequences;
++  uint64_t duplicate_entry_stream_sequences;
++  uint64_t total_segment_bytes;
++  uint64_t shared_ring_wraps;
++  uint32_t workers_ever_used;
++  uint32_t pending_count;
++  uint32_t capturing_count;
++  uint32_t complete_count;
++  uint32_t occupied_count;
++  uint32_t peak_capturing;
++  uint32_t peak_complete;
++  uint32_t peak_occupied;
++} lf_metrics;
++
++extern lf_worker *workers;
++extern oasis_lf_record *record_storage;
++extern uint32_t *pending_queue;
++extern uint32_t *active_queue;
++extern lf_identity_entry *identity_table;
++extern lf_ring_slot *ring_storage;
+ extern uint32_t worker_count;
+ extern uint32_t depth_limit;
+ extern uint32_t memory_bytes;
+ extern uint32_t record_capacity;
+-extern uint32_t next_worker;
+-extern uint32_t active_worker;
++extern uint32_t identity_capacity;
++extern uint32_t pending_head;
++extern uint32_t pending_tail;
++extern uint32_t active_head;
++extern uint32_t active_tail;
++extern uint32_t active_count;
++extern uint64_t last_started_instruction;
+ extern uint32_t instruction_nesting;
+ extern uint64_t stream_sequence;
++extern uint64_t last_entry_stream_sequence;
+ extern uint64_t instruction_sequence;
+ extern uint64_t control_flow_sequence;
+ extern uint64_t runtime_epoch;
+ extern uint32_t oasis_lf_recording_enabled;
++extern lf_metrics metrics;
+ 
+ void lf_append_record(oasis_lf_record record);
++void lf_boundary(const oasis_lf_cpu_state *state);
++void lf_finish_due(const oasis_lf_cpu_state *state, uint32_t stopped);
+ void lf_seal_worker(uint32_t index, uint32_t reason,
+                     const oasis_lf_cpu_state *exit_state);
++void lf_cancel_pending(void);
++void lf_cancel_all_active(uint32_t reason,
++                          const oasis_lf_cpu_state *exit_state);
++void lf_update_peaks(void);
++void lf_set_state(lf_worker *worker, uint32_t state);
++int lf_identity_insert(uint64_t capture_id, uint32_t worker_id);
++void lf_identity_remove(uint64_t capture_id);
++uint64_t lf_instruction_stack_size(void);
+ 
+ #endif
+diff --git a/core/debug/live_forward_pool.c b/core/debug/live_forward_pool.c
+new file mode 100644
+index 0000000..1f828e2
+--- /dev/null
++++ b/core/debug/live_forward_pool.c
+@@ -0,0 +1,442 @@
++#include "live_forward_internal.h"
++
++#include <limits.h>
++#include <stdlib.h>
++#include <string.h>
++
++#define LF_DEPTH_MAX 1000000u
++#define LF_MEMORY_MAX (1024u * 1024u)
++
++lf_worker *workers;
++oasis_lf_record *record_storage;
++uint32_t *pending_queue;
++uint32_t *active_queue;
++lf_identity_entry *identity_table;
++lf_ring_slot *ring_storage;
++uint32_t worker_count;
++uint32_t depth_limit;
++uint32_t memory_bytes;
++uint32_t record_capacity;
++uint32_t identity_capacity;
++uint32_t pending_head;
++uint32_t pending_tail;
++uint32_t active_head;
++uint32_t active_tail;
++uint32_t active_count;
++uint64_t last_started_instruction = UINT64_MAX;
++uint64_t stream_sequence;
++uint64_t last_entry_stream_sequence;
++uint64_t instruction_sequence;
++uint64_t control_flow_sequence;
++uint64_t runtime_epoch = 1;
++uint32_t oasis_lf_recording_enabled;
++lf_metrics metrics;
++
++static int checked_add(uint64_t left, uint64_t right, uint64_t *result)
++{
++  if (UINT64_MAX - left < right)
++    return 0;
++  *result = left + right;
++  return 1;
++}
++
++static int checked_mul(uint64_t left, uint64_t right, uint64_t *result)
++{
++  if (left && right > UINT64_MAX / left)
++    return 0;
++  *result = left * right;
++  return 1;
++}
++
++static uint32_t next_power_of_two(uint32_t value)
++{
++  uint32_t result = 1;
++  while (result < value && result <= UINT32_MAX / 2u)
++    result <<= 1;
++  return result >= value ? result : 0;
++}
++
++int oasis_lf_memory_plan_get(uint32_t count, uint32_t depth,
++                             uint32_t bytes, oasis_lf_memory_plan *plan)
++{
++  uint64_t total = 0;
++  uint64_t term = 0;
++  uint32_t identity_slots;
++  uint32_t capacity;
++  if (!plan)
++    return 0;
++  memset(plan, 0, sizeof(*plan));
++  if (count == 0 || count > OASIS_LF_MAX_WORKERS || depth == 0 ||
++      depth > LF_DEPTH_MAX || bytes <= sizeof(oasis_lf_result) +
++      sizeof(oasis_lf_record) || bytes > LF_MEMORY_MAX)
++    return 0;
++  capacity = (bytes - (uint32_t)sizeof(oasis_lf_result)) /
++             (uint32_t)sizeof(oasis_lf_record);
++  if (count > UINT32_MAX / 2u)
++    return 0;
++  identity_slots = next_power_of_two(count * 2u);
++  if (!identity_slots)
++    return 0;
++
++  plan->worker_count = count;
++  plan->depth = depth;
++  plan->memory_bytes = bytes;
++  plan->record_capacity = capacity;
++  plan->identity_capacity = identity_slots;
++  plan->descriptor_bytes_each = sizeof(lf_worker);
++  plan->result_bytes_each = sizeof(oasis_lf_result) +
++    (uint64_t)capacity * sizeof(oasis_lf_record);
++  if (!checked_mul(count, sizeof(lf_worker), &plan->descriptor_bytes_total) ||
++      !checked_mul(count, capacity, &term) ||
++      !checked_mul(term, sizeof(oasis_lf_record),
++                   &plan->result_buffers_bytes_total) ||
++      !checked_mul(count, sizeof(uint32_t), &plan->pending_queue_bytes) ||
++      !checked_mul(count, sizeof(uint32_t), &plan->active_queue_bytes) ||
++      !checked_mul(identity_slots, sizeof(lf_identity_entry),
++                   &plan->identity_table_bytes) ||
++      !checked_mul(OASIS_LF_RING_CAPACITY, sizeof(lf_ring_slot),
++                   &plan->shared_ring_bytes))
++    return 0;
++  if (!checked_add(plan->descriptor_bytes_total,
++                   plan->result_buffers_bytes_total, &total) ||
++      !checked_add(total, plan->pending_queue_bytes, &total) ||
++      !checked_add(total, plan->active_queue_bytes, &total) ||
++      !checked_add(total, plan->identity_table_bytes, &total))
++    return 0;
++  plan->dynamic_bytes = total;
++  if (!checked_add(total, plan->shared_ring_bytes, &total) ||
++      !checked_add(total, lf_instruction_stack_size(), &total))
++    return 0;
++  plan->instruction_stack_bytes = lf_instruction_stack_size();
++  plan->total_native_bytes = total;
++  return 1;
++}
++
++int oasis_lf_memory_plan_values(uint32_t count, uint32_t depth,
++                                uint32_t bytes, uint64_t *output,
++                                uint32_t capacity)
++{
++  oasis_lf_memory_plan plan;
++  uint64_t values[OASIS_LF_PLAN_COUNT];
++  uint32_t i;
++  if (!output || capacity < OASIS_LF_PLAN_COUNT ||
++      !oasis_lf_memory_plan_get(count, depth, bytes, &plan))
++    return 0;
++  values[0] = plan.worker_count;
++  values[1] = plan.depth;
++  values[2] = plan.memory_bytes;
++  values[3] = plan.record_capacity;
++  values[4] = plan.identity_capacity;
++  values[5] = plan.descriptor_bytes_each;
++  values[6] = plan.descriptor_bytes_total;
++  values[7] = plan.result_bytes_each;
++  values[8] = plan.result_buffers_bytes_total;
++  values[9] = plan.pending_queue_bytes;
++  values[10] = plan.active_queue_bytes;
++  values[11] = plan.identity_table_bytes;
++  values[12] = plan.shared_ring_bytes;
++  values[13] = plan.instruction_stack_bytes;
++  values[14] = plan.dynamic_bytes;
++  values[15] = plan.total_native_bytes;
++  for (i = 0; i < OASIS_LF_PLAN_COUNT; ++i)
++    output[i] = values[i];
++  return (int)OASIS_LF_PLAN_COUNT;
++}
++
++static void free_pool(void)
++{
++  free(workers);
++  free(record_storage);
++  free(pending_queue);
++  free(active_queue);
++  free(identity_table);
++  free(ring_storage);
++  workers = 0;
++  record_storage = 0;
++  pending_queue = 0;
++  active_queue = 0;
++  identity_table = 0;
++  ring_storage = 0;
++  worker_count = 0;
++  depth_limit = 0;
++  memory_bytes = 0;
++  record_capacity = 0;
++  identity_capacity = 0;
++  pending_head = 0;
++  pending_tail = 0;
++  active_head = 0;
++  active_tail = 0;
++  active_count = 0;
++}
++
++int oasis_lf_configure_bounded(uint32_t count, uint32_t depth,
++                               uint32_t bytes, uint64_t budget)
++{
++  oasis_lf_memory_plan plan;
++  uint64_t record_count;
++  uint64_t record_bytes;
++  uint32_t i;
++  if (!oasis_lf_memory_plan_get(count, depth, bytes, &plan) ||
++      plan.total_native_bytes > budget ||
++      plan.descriptor_bytes_total > SIZE_MAX ||
++      plan.result_buffers_bytes_total > SIZE_MAX ||
++      plan.pending_queue_bytes > SIZE_MAX ||
++      plan.active_queue_bytes > SIZE_MAX ||
++      plan.identity_table_bytes > SIZE_MAX ||
++      plan.shared_ring_bytes > SIZE_MAX)
++    return 0;
++  if (active_count || instruction_nesting)
++    return 0;
++  for (i = 0; i < worker_count; ++i)
++    if (workers[i].state != LF_FREE)
++      return 0;
++  oasis_lf_recording_enabled = 0;
++  free_pool();
++  memset(&metrics, 0, sizeof(metrics));
++
++  record_count = (uint64_t)count * plan.record_capacity;
++  if (!checked_mul(record_count, sizeof(oasis_lf_record), &record_bytes) ||
++      record_bytes > SIZE_MAX)
++    return 0;
++  workers = (lf_worker *)calloc(count, sizeof(*workers));
++  record_storage = (oasis_lf_record *)calloc(1, (size_t)record_bytes);
++  pending_queue = (uint32_t *)calloc(count, sizeof(*pending_queue));
++  active_queue = (uint32_t *)calloc(count, sizeof(*active_queue));
++  identity_table = (lf_identity_entry *)calloc(plan.identity_capacity,
++                                                sizeof(*identity_table));
++  ring_storage = (lf_ring_slot *)calloc(OASIS_LF_RING_CAPACITY,
++                                         sizeof(*ring_storage));
++  if (!workers || !record_storage || !pending_queue || !active_queue ||
++      !identity_table || !ring_storage)
++  {
++    free_pool();
++    return 0;
++  }
++  worker_count = count;
++  depth_limit = depth;
++  memory_bytes = bytes;
++  record_capacity = plan.record_capacity;
++  identity_capacity = plan.identity_capacity;
++  for (i = 0; i < count; ++i)
++    workers[i].records = record_storage + (size_t)i * record_capacity;
++  stream_sequence = 0;
++  last_entry_stream_sequence = 0;
++  instruction_sequence = 0;
++  control_flow_sequence = 0;
++  instruction_nesting = 0;
++  last_started_instruction = UINT64_MAX;
++  pending_head = 0;
++  pending_tail = 0;
++  active_head = 0;
++  active_tail = 0;
++  active_count = 0;
++  if (++runtime_epoch == 0)
++    runtime_epoch = 1;
++  oasis_lf_recording_enabled = 1;
++  return 1;
++}
++
++int oasis_lf_configure(uint32_t count, uint32_t depth, uint32_t bytes)
++{
++  oasis_lf_memory_plan plan;
++  if (!oasis_lf_memory_plan_get(count, depth, bytes, &plan))
++    return 0;
++  return oasis_lf_configure_bounded(count, depth, bytes,
++                                    plan.total_native_bytes);
++}
++
++static uint32_t hash_id(uint64_t capture_id)
++{
++  capture_id ^= capture_id >> 33;
++  capture_id *= UINT64_C(0xff51afd7ed558ccd);
++  capture_id ^= capture_id >> 33;
++  capture_id *= UINT64_C(0xc4ceb9fe1a85ec53);
++  capture_id ^= capture_id >> 33;
++  return (uint32_t)capture_id & (identity_capacity - 1u);
++}
++
++int lf_identity_insert(uint64_t capture_id, uint32_t worker_id)
++{
++  uint32_t index;
++  uint32_t first_tombstone = UINT32_MAX;
++  uint32_t probes;
++  if (!identity_table || !identity_capacity || !capture_id)
++    return 0;
++  index = hash_id(capture_id);
++  for (probes = 0; probes < identity_capacity; ++probes)
++  {
++    lf_identity_entry *entry = &identity_table[index];
++    if (entry->state == LF_ID_EMPTY)
++    {
++      if (first_tombstone != UINT32_MAX)
++        entry = &identity_table[first_tombstone];
++      entry->capture_id = capture_id;
++      entry->worker_id = worker_id;
++      entry->state = LF_ID_USED;
++      return 1;
++    }
++    if (entry->state == LF_ID_TOMBSTONE && first_tombstone == UINT32_MAX)
++      first_tombstone = index;
++    else if (entry->state == LF_ID_USED && entry->capture_id == capture_id)
++    {
++      metrics.identity_collisions++;
++      return 0;
++    }
++    index = (index + 1u) & (identity_capacity - 1u);
++  }
++  if (first_tombstone != UINT32_MAX)
++  {
++    lf_identity_entry *entry = &identity_table[first_tombstone];
++    entry->capture_id = capture_id;
++    entry->worker_id = worker_id;
++    entry->state = LF_ID_USED;
++    return 1;
++  }
++  return 0;
++}
++
++void lf_identity_remove(uint64_t capture_id)
++{
++  uint32_t index;
++  uint32_t probes;
++  if (!identity_table || !identity_capacity || !capture_id)
++    return;
++  index = hash_id(capture_id);
++  for (probes = 0; probes < identity_capacity; ++probes)
++  {
++    lf_identity_entry *entry = &identity_table[index];
++    if (entry->state == LF_ID_EMPTY)
++      return;
++    if (entry->state == LF_ID_USED && entry->capture_id == capture_id)
++    {
++      entry->capture_id = 0;
++      entry->worker_id = 0;
++      entry->state = LF_ID_TOMBSTONE;
++      return;
++    }
++    index = (index + 1u) & (identity_capacity - 1u);
++  }
++}
++
++int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
++                     uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++  lf_worker *worker;
++  if (worker_id >= worker_count || !capture_id || !generation || !run_id ||
++      !epoch || epoch != runtime_epoch)
++  {
++    metrics.captures_dropped++;
++    return 0;
++  }
++  worker = &workers[worker_id];
++  if (worker->state != LF_FREE || generation <= worker->last_generation)
++  {
++    metrics.captures_dropped++;
++    return 0;
++  }
++  if (!lf_identity_insert(capture_id, worker_id))
++  {
++    metrics.captures_dropped++;
++    return 0;
++  }
++  worker->capture_id = capture_id;
++  worker->generation = generation;
++  worker->last_generation = generation;
++  worker->run_id = run_id;
++  worker->epoch = epoch;
++  worker->host_audited = 0;
++  worker->state = LF_PENDING;
++  pending_queue[pending_tail] = worker_id;
++  pending_tail = (pending_tail + 1u) % worker_count;
++  metrics.pending_count++;
++  metrics.occupied_count++;
++  lf_update_peaks();
++  return 1;
++}
++
++uint32_t oasis_lf_result_state(uint32_t worker_id)
++{
++  return worker_id < worker_count ? workers[worker_id].state : LF_FREE;
++}
++
++int oasis_lf_result_info(uint32_t worker_id, oasis_lf_result *result)
++{
++  lf_worker *worker;
++  if (!result || worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_COMPLETE && worker->state != LF_ANALYZING)
++    return 0;
++  if (worker->state == LF_COMPLETE)
++    worker->analysis_count++;
++  *result = worker->result;
++  lf_set_state(worker, LF_ANALYZING);
++  return 1;
++}
++
++uint32_t oasis_lf_result_copy(uint32_t worker_id, uint64_t generation,
++                              uint32_t offset, oasis_lf_record *output,
++                              uint32_t capacity)
++{
++  lf_worker *worker;
++  uint32_t count;
++  if (!output || worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_ANALYZING || worker->generation != generation ||
++      offset > worker->result.record_count)
++    return 0;
++  count = worker->result.record_count - offset;
++  if (count > capacity)
++    count = capacity;
++  if (offset + count > record_capacity)
++    return 0;
++  memcpy(output, worker->records + offset, count * sizeof(*output));
++  return count;
++}
++
++int oasis_lf_mark_audited(uint32_t worker_id, uint64_t generation,
++                          uint32_t accepted)
++{
++  lf_worker *worker;
++  if (worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state != LF_ANALYZING || worker->generation != generation ||
++      worker->host_audited || (accepted && !worker->result.valid))
++    return 0;
++  worker->host_audited = 1;
++  if (accepted)
++    metrics.captures_validated++;
++  return 1;
++}
++
++int oasis_lf_ack(uint32_t worker_id, uint64_t capture_id,
++                 uint64_t generation, uint64_t run_id, uint64_t epoch)
++{
++  lf_worker *worker;
++  if (worker_id >= worker_count)
++  {
++    metrics.stale_ack_count++;
++    return 0;
++  }
++  worker = &workers[worker_id];
++  if (worker->state != LF_ANALYZING || !worker->host_audited ||
++      worker->capture_id != capture_id || worker->generation != generation ||
++      worker->run_id != run_id || worker->epoch != epoch)
++  {
++    metrics.stale_ack_count++;
++    return 0;
++  }
++  worker->release_count++;
++  lf_identity_remove(worker->capture_id);
++  memset(&worker->result, 0, sizeof(worker->result));
++  worker->capture_id = 0;
++  worker->generation = 0;
++  worker->run_id = 0;
++  worker->epoch = 0;
++  worker->record_count = 0;
++  worker->host_audited = 0;
++  lf_set_state(worker, LF_FREE);
++  return 1;
++}
+diff --git a/core/debug/live_forward_metrics.c b/core/debug/live_forward_metrics.c
+new file mode 100644
+index 0000000..093d73e
+--- /dev/null
++++ b/core/debug/live_forward_metrics.c
+@@ -0,0 +1,57 @@
++#include "live_forward_internal.h"
++
++int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity)
++{
++  uint32_t i;
++  uint64_t values[OASIS_LF_METRICS_COUNT];
++  if (!output || capacity < OASIS_LF_METRICS_COUNT)
++    return 0;
++  values[0] = worker_count;
++  values[1] = metrics.workers_ever_used;
++  values[2] = metrics.pending_count;
++  values[3] = metrics.capturing_count;
++  values[4] = metrics.complete_count;
++  values[5] = metrics.occupied_count;
++  values[6] = metrics.peak_capturing;
++  values[7] = metrics.peak_complete;
++  values[8] = metrics.peak_occupied;
++  values[9] = metrics.captures_started;
++  values[10] = metrics.captures_completed;
++  values[11] = metrics.captures_validated;
++  values[12] = metrics.captures_invalid;
++  values[13] = metrics.captures_dropped;
++  values[14] = metrics.stale_ack_count;
++  values[15] = metrics.identity_collisions;
++  values[16] = metrics.ring_retention_failures;
++  values[17] = metrics.memory_limit_endings;
++  values[18] = metrics.depth_limit_endings;
++  values[19] = metrics.unsupported_path_endings;
++  values[20] = stream_sequence;
++  values[21] = instruction_sequence;
++  values[22] = control_flow_sequence;
++  values[23] = metrics.unique_entry_stream_sequences;
++  values[24] = metrics.duplicate_entry_stream_sequences;
++  values[25] = metrics.total_segment_bytes;
++  values[26] = metrics.shared_ring_wraps;
++  values[27] = OASIS_LF_RING_CAPACITY;
++  values[28] = worker_count ? sizeof(lf_worker) : 0;
++  values[29] = worker_count ? memory_bytes : 0;
++  for (i = 0; i < OASIS_LF_METRICS_COUNT; ++i)
++    output[i] = values[i];
++  return (int)OASIS_LF_METRICS_COUNT;
++}
++
++int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
++                              uint32_t capacity)
++{
++  lf_worker *worker;
++  if (!output || capacity < OASIS_LF_LIFECYCLE_COUNT ||
++      worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  output[0] = worker->capture_start_count;
++  output[1] = worker->capture_complete_count;
++  output[2] = worker->analysis_count;
++  output[3] = worker->release_count;
++  return (int)OASIS_LF_LIFECYCLE_COUNT;
++}
+diff --git a/core/debug/live_forward_trace.c b/core/debug/live_forward_trace.c
+index 9262507..68324fb 100644
+--- a/core/debug/live_forward_trace.c
++++ b/core/debug/live_forward_trace.c
+@@ -19,26 +19,17 @@ typedef struct
+   uint16_t exception_vector;
+ } lf_instruction;
+ 
+-lf_worker workers[OASIS_LF_MAX_WORKERS];
+-lf_ring_slot ring_storage[OASIS_LF_RING_CAPACITY];
+-uint32_t worker_count;
+-uint32_t depth_limit;
+-uint32_t memory_bytes;
+-uint32_t record_capacity;
+-uint32_t next_worker;
+-uint32_t active_worker = UINT32_MAX;
+ uint32_t instruction_nesting;
+-uint64_t stream_sequence;
+-uint64_t instruction_sequence;
+-uint64_t control_flow_sequence;
+-uint64_t runtime_epoch = 1;
+-uint32_t oasis_lf_recording_enabled = 0;
+-
+ static lf_instruction instruction_stack[16];
+ 
+ typedef char oasis_lf_record_must_be_32_bytes[
+     sizeof(oasis_lf_record) == 32u ? 1 : -1];
+ 
++uint64_t lf_instruction_stack_size(void)
++{
++  return sizeof(instruction_stack);
++}
++
+ void lf_append_record(oasis_lf_record record)
+ {
+   uint64_t sequence = ++stream_sequence;
+@@ -47,9 +38,20 @@ void lf_append_record(oasis_lf_record record)
+   slot->record = record;
+   slot->valid = 1;
+   slot->sequence = sequence;
+-  if (active_worker != UINT32_MAX &&
+-      workers[active_worker].state == LF_CAPTURING)
+-    workers[active_worker].record_count++;
++  if (sequence % OASIS_LF_RING_CAPACITY == 0)
++    metrics.shared_ring_wraps++;
++}
++
++static void flag_all_active(uint32_t reason)
++{
++  uint32_t offset;
++  for (offset = 0; offset < active_count; ++offset)
++  {
++    uint32_t slot = (active_head + offset) % worker_count;
++    lf_worker *worker = &workers[active_queue[slot]];
++    worker->invalid = 1;
++    worker->pending_end = reason;
++  }
+ }
+ 
+ void oasis_lf_instruction_begin(uint32_t pc,
+@@ -58,21 +60,14 @@ void oasis_lf_instruction_begin(uint32_t pc,
+   lf_instruction *instruction;
+   if (!oasis_lf_recording_enabled)
+     return;
+-  oasis_lf_boundary(state);
++  lf_boundary(state);
+   if (instruction_nesting >= 16u)
+   {
+-    if (active_worker != UINT32_MAX)
+-    {
+-      workers[active_worker].invalid = 1;
+-      workers[active_worker].pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
+-    }
++    flag_all_active(OASIS_LF_END_UNSUPPORTED_PATH);
+     return;
+   }
+-  if (instruction_nesting && active_worker != UINT32_MAX)
+-  {
+-    workers[active_worker].invalid = 1;
+-    workers[active_worker].pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
+-  }
++  if (instruction_nesting)
++    flag_all_active(OASIS_LF_END_UNSUPPORTED_PATH);
+   instruction = &instruction_stack[instruction_nesting++];
+   memset(instruction, 0, sizeof(*instruction));
+   instruction->sequence = ++instruction_sequence;
+@@ -103,14 +98,12 @@ void oasis_lf_instruction_end(uint32_t next_pc,
+ {
+   lf_instruction instruction;
+   oasis_lf_record record;
+-  lf_worker *worker = active_worker == UINT32_MAX ? NULL : &workers[active_worker];
+-  uint32_t reason = OASIS_LF_END_NONE;
+   if (!oasis_lf_recording_enabled)
+     return;
+   if (!instruction_nesting)
+   {
+-    if (worker)
+-      lf_seal_worker(active_worker, OASIS_LF_END_CAPTURE_ERROR, state);
++    flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
++    lf_finish_due(state, stopped);
+     return;
+   }
+   instruction = instruction_stack[--instruction_nesting];
+@@ -149,38 +142,16 @@ void oasis_lf_instruction_end(uint32_t next_pc,
+   if (instruction.exception_seen)
+     record.kind_flags |= OASIS_LF_CONTROL_FLOW;
+   lf_append_record(record);
+-  if (worker && instruction_nesting == 0)
+-  {
+-    uint64_t consumed = control_flow_sequence - worker->entry_flow;
+-    if (worker->pending_end != OASIS_LF_END_NONE)
+-      reason = worker->pending_end;
+-    else if (consumed > depth_limit)
+-    {
+-      worker->invalid = 1;
+-      reason = OASIS_LF_END_CAPTURE_ERROR;
+-    }
+-    else if (consumed == depth_limit)
+-      reason = OASIS_LF_END_DEPTH_LIMIT;
+-    else if (stopped)
+-      reason = OASIS_LF_END_CPU_STOP;
+-    if (reason != OASIS_LF_END_NONE)
+-      lf_seal_worker(active_worker, reason, state);
+-  }
++  lf_finish_due(state, stopped);
+ }
+ 
+ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
+                         uint32_t target_pc, uint32_t asynchronous,
+                         const oasis_lf_cpu_state *state)
+ {
+-  lf_worker *worker = active_worker == UINT32_MAX ? NULL : &workers[active_worker];
+   if (!oasis_lf_recording_enabled)
+     return;
+   control_flow_sequence++;
+-  if (worker && instruction_nesting)
+-  {
+-    worker->invalid = 1;
+-    worker->pending_end = OASIS_LF_END_CAPTURE_ERROR;
+-  }
+   if (instruction_nesting)
+   {
+     lf_instruction *instruction = &instruction_stack[instruction_nesting - 1u];
+@@ -189,8 +160,10 @@ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
+     instruction->exception_source_pc = source_pc;
+     instruction->exception_target_pc = target_pc;
+     instruction->exception_vector = vector;
++    if (!asynchronous)
++      flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
++    return;
+   }
+-  else
+   {
+     oasis_lf_record record;
+     memset(&record, 0, sizeof(record));
+@@ -205,8 +178,10 @@ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
+       ((uint32_t)(vector & 0xffu) << 24);
+     lf_append_record(record);
+   }
+-  if (!instruction_nesting)
+-    oasis_lf_boundary(state);
++  if (!asynchronous)
++    flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
++  lf_finish_due(state, 0);
++  lf_boundary(state);
+ }
+ 
+ void oasis_lf_unwind(void)
+@@ -223,25 +198,21 @@ void oasis_lf_unwind(void)
+     record.next_pc = instruction->exception_target_pc;
+     record.opcode_or_vector = instruction->opcode;
+     record.kind_flags = OASIS_LF_INSTRUCTION | OASIS_LF_EXCEPTION |
+-                       OASIS_LF_CONTROL_FLOW |
+-                       OASIS_LF_FAULTED;
++      OASIS_LF_CONTROL_FLOW | OASIS_LF_FAULTED;
+     if (instruction->fetched)
+       record.kind_flags |= OASIS_LF_FETCHED;
+     record.auxiliary = (instruction->exception_source_pc & 0x00ffffffu) |
+       ((uint32_t)(instruction->exception_vector & 0xffu) << 24);
+     lf_append_record(record);
+   }
+-  if (active_worker != UINT32_MAX)
+-  {
+-    workers[active_worker].invalid = 1;
+-    workers[active_worker].pending_end = OASIS_LF_END_CAPTURE_ERROR;
+-  }
++  flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
+ }
+ 
+ int oasis_lf_ring_record(uint64_t sequence, oasis_lf_record *record)
+ {
+   lf_ring_slot *slot;
+-  if (!oasis_lf_recording_enabled || !record || sequence == 0 || sequence > stream_sequence ||
++  if (!oasis_lf_recording_enabled || !ring_storage || !record ||
++      sequence == 0 || sequence > stream_sequence ||
+       stream_sequence - sequence >= OASIS_LF_RING_CAPACITY)
+     return 0;
+   slot = &ring_storage[(sequence - 1u) % OASIS_LF_RING_CAPACITY];
+diff --git a/core/debug/live_forward_trace.h b/core/debug/live_forward_trace.h
+index b51d1be..50490ed 100644
+--- a/core/debug/live_forward_trace.h
++++ b/core/debug/live_forward_trace.h
+@@ -8,7 +8,10 @@ extern "C" {
+ #endif
+ 
+ #define OASIS_LF_RING_CAPACITY 4096u
+-#define OASIS_LF_MAX_WORKERS 64u
++#define OASIS_LF_MAX_WORKERS 100000u
++#define OASIS_LF_METRICS_COUNT 30u
++#define OASIS_LF_PLAN_COUNT 16u
++#define OASIS_LF_LIFECYCLE_COUNT 4u
+ 
+ extern uint32_t oasis_lf_recording_enabled;
+ 
+@@ -59,6 +62,27 @@ typedef struct
+   uint64_t copy_duration_ns;
+ } oasis_lf_result;
+ 
++typedef struct
++{
++  uint32_t worker_count;
++  uint32_t depth;
++  uint32_t memory_bytes;
++  uint32_t record_capacity;
++  uint32_t identity_capacity;
++  uint32_t reserved;
++  uint64_t descriptor_bytes_each;
++  uint64_t descriptor_bytes_total;
++  uint64_t result_bytes_each;
++  uint64_t result_buffers_bytes_total;
++  uint64_t pending_queue_bytes;
++  uint64_t active_queue_bytes;
++  uint64_t identity_table_bytes;
++  uint64_t shared_ring_bytes;
++  uint64_t instruction_stack_bytes;
++  uint64_t dynamic_bytes;
++  uint64_t total_native_bytes;
++} oasis_lf_memory_plan;
++
+ enum oasis_lf_record_flags
+ {
+   OASIS_LF_INSTRUCTION = 1,
+@@ -87,6 +111,21 @@ enum oasis_lf_end_reason
+ 
+ int oasis_lf_configure(uint32_t worker_count, uint32_t depth,
+                        uint32_t memory_bytes);
++int oasis_lf_configure_bounded(uint32_t worker_count, uint32_t depth,
++                               uint32_t memory_bytes,
++                               uint64_t allocation_budget_bytes);
++int oasis_lf_memory_plan_get(uint32_t worker_count, uint32_t depth,
++                             uint32_t memory_bytes,
++                             oasis_lf_memory_plan *plan);
++int oasis_lf_memory_plan_values(uint32_t worker_count, uint32_t depth,
++                                uint32_t memory_bytes, uint64_t *output,
++                                uint32_t capacity);
++int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity);
++int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
++                              uint32_t capacity);
++int oasis_lf_mark_audited(uint32_t worker_id, uint64_t generation,
++                          uint32_t accepted);
++void oasis_lf_cancel_pending(void);
+ int oasis_lf_set_enabled(uint32_t enabled);
+ int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
+                      uint64_t generation, uint64_t run_id, uint64_t epoch);
+diff --git a/core/debug/live_forward_worker.c b/core/debug/live_forward_worker.c
+index 38a865f..445001a 100644
+--- a/core/debug/live_forward_worker.c
++++ b/core/debug/live_forward_worker.c
+@@ -4,16 +4,12 @@
+ 
+ #include "live_forward_internal.h"
+ 
+-#include <stdlib.h>
+ #include <string.h>
+ #include <time.h>
+ #ifdef _WIN32
+ #include <windows.h>
+ #endif
+ 
+-#define LF_DEPTH_MAX 1000000u
+-#define LF_MEMORY_MAX (1024u * 1024u)
+-
+ static uint64_t lf_now_ns(void)
+ {
+ #ifdef _WIN32
+@@ -23,39 +19,116 @@ static uint64_t lf_now_ns(void)
+       QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0)
+   {
+     uint64_t ticks = (uint64_t)counter.QuadPart;
+-    uint64_t ticks_per_second = (uint64_t)frequency.QuadPart;
+-    return (ticks / ticks_per_second) * 1000000000u +
+-      ((ticks % ticks_per_second) * 1000000000u) / ticks_per_second;
++    uint64_t rate = (uint64_t)frequency.QuadPart;
++    return (ticks / rate) * 1000000000u +
++      ((ticks % rate) * 1000000000u) / rate;
+   }
+ #endif
+ #if !defined(_WIN32) && defined(CLOCK_MONOTONIC)
+-  struct timespec now;
+-  if (clock_gettime(CLOCK_MONOTONIC, &now) == 0)
+-    return (uint64_t)now.tv_sec * 1000000000u +
+-      (uint64_t)now.tv_nsec;
++  {
++    struct timespec now;
++    if (clock_gettime(CLOCK_MONOTONIC, &now) == 0)
++      return (uint64_t)now.tv_sec * 1000000000u + (uint64_t)now.tv_nsec;
++  }
+ #endif
+-  clock_t ticks = clock();
+-  if (ticks != (clock_t)-1)
+-    return ((uint64_t)ticks * 1000000000u) / CLOCKS_PER_SEC;
++  {
++    clock_t ticks = clock();
++    if (ticks != (clock_t)-1)
++      return ((uint64_t)ticks * 1000000000u) / CLOCKS_PER_SEC;
++  }
+   return UINT64_MAX;
+ }
+ 
++static uint32_t complete_state(uint32_t state)
++{
++  return state == LF_COMPLETE || state == LF_ANALYZING;
++}
++
++void lf_update_peaks(void)
++{
++  if (metrics.capturing_count > metrics.peak_capturing)
++    metrics.peak_capturing = metrics.capturing_count;
++  if (metrics.complete_count > metrics.peak_complete)
++    metrics.peak_complete = metrics.complete_count;
++  if (metrics.occupied_count > metrics.peak_occupied)
++    metrics.peak_occupied = metrics.occupied_count;
++}
++
++void lf_set_state(lf_worker *worker, uint32_t state)
++{
++  uint32_t old = worker->state;
++  if (old == state)
++    return;
++  if (old == LF_PENDING)
++    metrics.pending_count--;
++  else if (old == LF_CAPTURING)
++    metrics.capturing_count--;
++  else if (complete_state(old))
++    metrics.complete_count--;
++  if (old != LF_FREE)
++    metrics.occupied_count--;
++  worker->state = state;
++  if (state == LF_PENDING)
++    metrics.pending_count++;
++  else if (state == LF_CAPTURING)
++    metrics.capturing_count++;
++  else if (complete_state(state))
++    metrics.complete_count++;
++  if (state != LF_FREE)
++    metrics.occupied_count++;
++  lf_update_peaks();
++}
++
++static void active_push(uint32_t worker_id)
++{
++  active_queue[active_tail] = worker_id;
++  active_tail = (active_tail + 1u) % worker_count;
++  active_count++;
++}
++
++static uint32_t active_front(void)
++{
++  return active_count ? active_queue[active_head] : UINT32_MAX;
++}
++
++static void active_pop(void)
++{
++  if (!active_count)
++    return;
++  active_head = (active_head + 1u) % worker_count;
++  active_count--;
++}
++
++static uint32_t pending_pop(void)
++{
++  while (metrics.pending_count)
++  {
++    uint32_t index = pending_queue[pending_head];
++    lf_worker *worker = &workers[index];
++    pending_head = (pending_head + 1u) % worker_count;
++    if (worker->state == LF_PENDING)
++      return index;
++  }
++  return UINT32_MAX;
++}
++
+ void lf_seal_worker(uint32_t index, uint32_t reason,
+                     const oasis_lf_cpu_state *exit_state)
+ {
+-  lf_worker *worker = &workers[index];
+-  uint64_t end = stream_sequence + 1u;
+-  uint32_t count = (uint32_t)(end - worker->first_record);
++  lf_worker *worker;
++  uint64_t end;
++  uint32_t count;
+   uint32_t i;
+-  uint64_t copy_started = lf_now_ns();
+-  if (worker->state == LF_PENDING)
+-  {
+-    worker->first_record = end;
+-    worker->result.entry_stream_sequence = end;
+-    worker->result.entry_instruction_sequence = instruction_sequence + 1u;
+-    worker->result.entry_control_flow_sequence = control_flow_sequence;
+-    count = 0;
+-  }
++  uint64_t copy_started;
++  uint64_t copy_finished;
++  if (index >= worker_count)
++    return;
++  worker = &workers[index];
++  if (worker->state != LF_CAPTURING)
++    return;
++  end = stream_sequence + 1u;
++  count = (uint32_t)(end - worker->first_record);
++  copy_started = lf_now_ns();
+   worker->result.exit_stream_sequence = end;
+   worker->result.exit_instruction_sequence = instruction_sequence + 1u;
+   worker->result.exit_control_flow_sequence = control_flow_sequence;
+@@ -75,8 +148,7 @@ void lf_seal_worker(uint32_t index, uint32_t reason,
+     worker->result.consumed_memory_bytes <= worker->configured_memory_bytes;
+   if (exit_state)
+     worker->result.exit_state = *exit_state;
+-  if (count != worker->record_count || count > record_capacity ||
+-      count > OASIS_LF_RING_CAPACITY)
++  if (count > record_capacity || count > OASIS_LF_RING_CAPACITY)
+     worker->result.valid = 0;
+   for (i = 0; i < count && count <= record_capacity &&
+        count <= OASIS_LF_RING_CAPACITY; ++i)
+@@ -90,113 +162,187 @@ void lf_seal_worker(uint32_t index, uint32_t reason,
+     }
+     worker->records[i] = slot->record;
+   }
++  copy_finished = lf_now_ns();
++  if (copy_started != UINT64_MAX && copy_finished != UINT64_MAX &&
++      copy_finished >= copy_started)
++    worker->result.copy_duration_ns = copy_finished - copy_started;
++
++  metrics.captures_completed++;
++  worker->capture_complete_count++;
++  metrics.total_segment_bytes += worker->result.consumed_memory_bytes;
++  if (!worker->result.valid)
++    metrics.captures_invalid++;
++  if (reason == OASIS_LF_END_DEPTH_LIMIT)
++    metrics.depth_limit_endings++;
++  else if (reason == OASIS_LF_END_MEMORY_LIMIT)
++    metrics.memory_limit_endings++;
++  else if (reason == OASIS_LF_END_RETENTION_LIMIT)
++    metrics.ring_retention_failures++;
++  else if (reason == OASIS_LF_END_UNSUPPORTED_PATH)
++    metrics.unsupported_path_endings++;
++  lf_set_state(worker, LF_COMPLETE);
++}
++
++void lf_finish_due(const oasis_lf_cpu_state *state, uint32_t stopped)
++{
++  if (!oasis_lf_recording_enabled || instruction_nesting != 0)
++    return;
++  while (active_count)
+   {
+-    uint64_t copy_finished = lf_now_ns();
+-    if (copy_started != UINT64_MAX && copy_finished != UINT64_MAX &&
+-        copy_finished >= copy_started)
++    uint32_t index = active_front();
++    lf_worker *worker = &workers[index];
++    uint64_t used = stream_sequence + 1u - worker->first_record;
++    uint64_t consumed = control_flow_sequence - worker->entry_flow;
++    uint32_t reason = OASIS_LF_END_NONE;
++    if (worker->pending_end != OASIS_LF_END_NONE)
++      reason = worker->pending_end;
++    else if (consumed >= worker->configured_depth)
++      reason = OASIS_LF_END_DEPTH_LIMIT;
++    else if (used + 2u > record_capacity)
++      reason = OASIS_LF_END_MEMORY_LIMIT;
++    else if (used + 2u > OASIS_LF_RING_CAPACITY)
++      reason = OASIS_LF_END_RETENTION_LIMIT;
++    else if (stopped)
++      reason = OASIS_LF_END_CPU_STOP;
++    if (reason == OASIS_LF_END_NONE)
++      break;
++    lf_seal_worker(index, reason, state);
++    active_pop();
++  }
++}
++
++void lf_boundary(const oasis_lf_cpu_state *state)
++{
++  uint64_t next_instruction;
++  uint32_t index;
++  lf_finish_due(state, 0);
++  if (!oasis_lf_recording_enabled || instruction_nesting != 0 ||
++      !state || !metrics.pending_count)
++    return;
++  next_instruction = instruction_sequence + 1u;
++  if (last_started_instruction == next_instruction)
++    return;
++  index = pending_pop();
++  if (index == UINT32_MAX)
++    return;
++  {
++    lf_worker *worker = &workers[index];
++    uint64_t entry_stream = stream_sequence + 1u;
++    memset(&worker->result, 0, sizeof(worker->result));
++    worker->result.capture_id = worker->capture_id;
++    worker->result.generation = worker->generation;
++    worker->result.run_id = worker->run_id;
++    worker->result.epoch = worker->epoch;
++    worker->result.worker_id = index;
++    worker->result.entry_stream_sequence = entry_stream;
++    worker->result.entry_instruction_sequence = next_instruction;
++    worker->result.entry_control_flow_sequence = control_flow_sequence;
++    worker->result.entry_state = *state;
++    worker->first_record = entry_stream;
++    worker->entry_flow = control_flow_sequence;
++    worker->configured_depth = depth_limit;
++    worker->configured_memory_bytes = memory_bytes;
++    worker->record_count = 0;
++    worker->invalid = 0;
++    worker->pending_end = OASIS_LF_END_NONE;
++    worker->host_audited = 0;
++    if (worker->ever_used == 0)
+     {
+-      worker->result.copy_duration_ns = copy_finished - copy_started;
++      worker->ever_used = 1;
++      metrics.workers_ever_used++;
+     }
++    if (last_entry_stream_sequence &&
++        entry_stream <= last_entry_stream_sequence)
++      metrics.duplicate_entry_stream_sequences++;
++    else
++      metrics.unique_entry_stream_sequences++;
++    last_entry_stream_sequence = entry_stream;
++    last_started_instruction = next_instruction;
++    metrics.captures_started++;
++    worker->capture_start_count++;
++    lf_set_state(worker, LF_CAPTURING);
++    active_push(index);
+   }
+-  if (active_worker == index)
+-    active_worker = UINT32_MAX;
+-  worker->state = LF_COMPLETE;
+ }
+ 
+-int oasis_lf_configure(uint32_t count, uint32_t depth, uint32_t bytes)
++void oasis_lf_boundary(const oasis_lf_cpu_state *state)
+ {
+-  uint32_t i;
+-  uint32_t capacity;
+-  if (count == 0 || count > OASIS_LF_MAX_WORKERS || depth == 0 ||
+-      depth > LF_DEPTH_MAX ||
+-      bytes <= sizeof(oasis_lf_result) + sizeof(oasis_lf_record) ||
+-      bytes > LF_MEMORY_MAX)
+-    return 0;
+-  for (i = 0; i < worker_count; ++i)
+-    if (workers[i].state != LF_FREE)
+-      return 0;
+-  capacity = (bytes - (uint32_t)sizeof(oasis_lf_result)) /
+-             (uint32_t)sizeof(oasis_lf_record);
+-  for (i = 0; i < OASIS_LF_MAX_WORKERS; ++i)
++  lf_boundary(state);
++}
++
++void lf_cancel_pending(void)
++{
++  uint32_t remaining = metrics.pending_count;
++  while (remaining--)
+   {
+-    free(workers[i].records);
+-    memset(&workers[i], 0, sizeof(workers[i]));
++    uint32_t index = pending_queue[pending_head];
++    lf_worker *worker = &workers[index];
++    pending_head = (pending_head + 1u) % worker_count;
++    if (worker->state != LF_PENDING)
++      continue;
++    lf_identity_remove(worker->capture_id);
++    worker->capture_id = 0;
++    worker->generation = 0;
++    worker->run_id = 0;
++    worker->epoch = 0;
++    worker->host_audited = 0;
++    metrics.captures_dropped++;
++    lf_set_state(worker, LF_FREE);
+   }
+-  memset(ring_storage, 0, sizeof(ring_storage));
+-  worker_count = count;
+-  depth_limit = depth;
+-  memory_bytes = bytes;
+-  record_capacity = capacity;
+-  next_worker = 0;
+-  active_worker = UINT32_MAX;
+-  instruction_nesting = 0;
+-  stream_sequence = 0;
+-  instruction_sequence = 0;
+-  control_flow_sequence = 0;
+-  oasis_lf_recording_enabled = 0;
+-  if (++runtime_epoch == 0)
+-    runtime_epoch = 1;
+-  for (i = 0; i < count; ++i)
++  pending_tail = pending_head;
++}
++
++void oasis_lf_cancel_pending(void)
++{
++  lf_cancel_pending();
++}
++
++void lf_cancel_all_active(uint32_t reason,
++                          const oasis_lf_cpu_state *exit_state)
++{
++  while (active_count)
+   {
+-    workers[i].records = (oasis_lf_record *)calloc(capacity,
+-                                                   sizeof(oasis_lf_record));
+-    if (!workers[i].records)
+-    {
+-      while (i > 0)
+-        free(workers[--i].records);
+-      worker_count = 0;
+-      return 0;
+-    }
++    uint32_t index = active_front();
++    if (reason == OASIS_LF_END_CAPTURE_ERROR ||
++        reason == OASIS_LF_END_UNSUPPORTED_PATH)
++      workers[index].invalid = 1;
++    lf_seal_worker(index, reason, exit_state);
++    active_pop();
+   }
+-  oasis_lf_recording_enabled = 1;
+-  return 1;
+ }
+ 
+ int oasis_lf_set_enabled(uint32_t enabled)
+ {
+   uint32_t i;
+   enabled = enabled != 0;
+-  if (active_worker != UINT32_MAX || instruction_nesting != 0)
++  if (enabled && (!workers || !ring_storage))
++    return 0;
++  if (active_count || metrics.pending_count || instruction_nesting ||
++      metrics.occupied_count)
+     return 0;
+-  for (i = 0; i < worker_count; ++i)
+-    if (workers[i].state != LF_FREE)
+-      return 0;
+   if (oasis_lf_recording_enabled == enabled)
+     return 1;
+   oasis_lf_epoch_break(0);
+   oasis_lf_recording_enabled = enabled;
+-  return 1;
+-}
+-
+-int oasis_lf_request(uint32_t worker_id, uint64_t capture_id,
+-                     uint64_t generation, uint64_t run_id, uint64_t epoch)
+-{
+-  lf_worker *worker;
+-  if (worker_id >= worker_count || capture_id == 0 || generation == 0 ||
+-      run_id == 0 || epoch == 0 || epoch != runtime_epoch)
+-    return 0;
+-  worker = &workers[worker_id];
+-  if (worker->state != LF_FREE || generation <= worker->last_generation)
+-    return 0;
+-  worker->capture_id = capture_id;
+-  worker->generation = generation;
+-  worker->last_generation = generation;
+-  worker->run_id = run_id;
+-  worker->epoch = epoch;
+-  worker->state = LF_PENDING;
++  if (ring_storage)
++    for (i = 0; i < OASIS_LF_RING_CAPACITY; ++i)
++      ring_storage[i].valid = 0;
+   return 1;
+ }
+ 
+ void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state)
+ {
++  uint32_t offset;
+   oasis_lf_record record;
+-  lf_worker *worker;
+-  if (!oasis_lf_recording_enabled || !state || active_worker == UINT32_MAX)
++  if (!oasis_lf_recording_enabled || !state)
+     return;
+-  worker = &workers[active_worker];
+   if (instruction_nesting)
+   {
+-    worker->pending_end = OASIS_LF_END_CPU_STOP;
++    for (offset = 0; offset < active_count; ++offset)
++    {
++      uint32_t slot = (active_head + offset) % worker_count;
++      workers[active_queue[slot]].pending_end = OASIS_LF_END_CPU_STOP;
++    }
+     return;
+   }
+   memset(&record, 0, sizeof(record));
+@@ -205,149 +351,29 @@ void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state)
+   record.next_pc = state->pc;
+   record.kind_flags = OASIS_LF_CPU_STOP_EVENT;
+   lf_append_record(record);
+-  lf_seal_worker(active_worker, OASIS_LF_END_CPU_STOP, state);
+-}
+-
+-void oasis_lf_boundary(const oasis_lf_cpu_state *state)
+-{
+-  uint32_t offset;
+-  if (!oasis_lf_recording_enabled || !state || instruction_nesting != 0)
+-    return;
+-  if (active_worker != UINT32_MAX)
+-  {
+-    lf_worker *active = &workers[active_worker];
+-    uint64_t used = stream_sequence + 1u - active->first_record;
+-    uint64_t consumed = control_flow_sequence - active->entry_flow;
+-    if (active->pending_end != OASIS_LF_END_NONE)
+-      lf_seal_worker(active_worker, active->pending_end, state);
+-    else if (consumed == depth_limit)
+-      lf_seal_worker(active_worker, OASIS_LF_END_DEPTH_LIMIT, state);
+-    else if (consumed > depth_limit)
+-    {
+-      active->invalid = 1;
+-      lf_seal_worker(active_worker, OASIS_LF_END_CAPTURE_ERROR, state);
+-    }
+-    else if (used + 2u > record_capacity)
+-      lf_seal_worker(active_worker, OASIS_LF_END_MEMORY_LIMIT, state);
+-    else if (used + 2u > OASIS_LF_RING_CAPACITY)
+-      lf_seal_worker(active_worker, OASIS_LF_END_RETENTION_LIMIT, state);
+-    else
+-      return;
+-  }
+-  for (offset = 0; offset < worker_count; ++offset)
+-  {
+-    uint32_t index = (next_worker + offset) % worker_count;
+-    lf_worker *worker = &workers[index];
+-    if (worker->state != LF_PENDING)
+-      continue;
+-    memset(&worker->result, 0, sizeof(worker->result));
+-    worker->result.capture_id = worker->capture_id;
+-    worker->result.generation = worker->generation;
+-    worker->result.run_id = worker->run_id;
+-    worker->result.epoch = worker->epoch;
+-    worker->result.worker_id = index;
+-    worker->result.entry_stream_sequence = stream_sequence + 1u;
+-    worker->result.entry_instruction_sequence = instruction_sequence + 1u;
+-    worker->result.entry_control_flow_sequence = control_flow_sequence;
+-    worker->result.entry_state = *state;
+-    worker->first_record = stream_sequence + 1u;
+-    worker->entry_flow = control_flow_sequence;
+-    worker->configured_depth = depth_limit;
+-    worker->configured_memory_bytes = memory_bytes;
+-    worker->record_count = 0;
+-    worker->invalid = 0;
+-    worker->pending_end = OASIS_LF_END_NONE;
+-    worker->state = LF_CAPTURING;
+-    active_worker = index;
+-    next_worker = (index + 1u) % worker_count;
+-    break;
+-  }
++  lf_cancel_all_active(OASIS_LF_END_CPU_STOP, state);
++  lf_cancel_pending();
+ }
+ 
+ void oasis_lf_epoch_break(const oasis_lf_cpu_state *state)
+ {
+-  uint32_t i;
+-  for (i = 0; i < worker_count; ++i)
++  uint32_t offset;
++  for (offset = 0; offset < active_count; ++offset)
+   {
+-    lf_worker *worker = &workers[i];
+-    if (worker->state != LF_CAPTURING && worker->state != LF_PENDING)
+-      continue;
+-    if (worker->state == LF_PENDING)
+-    {
+-      memset(&worker->result, 0, sizeof(worker->result));
+-      worker->result.capture_id = worker->capture_id;
+-      worker->result.generation = worker->generation;
+-      worker->result.run_id = worker->run_id;
+-      worker->result.epoch = worker->epoch;
+-      worker->result.worker_id = i;
+-      worker->result.configured_depth = depth_limit;
+-      worker->result.configured_memory_bytes = memory_bytes;
+-    }
+-    worker->invalid = 1;
+-    lf_seal_worker(i, OASIS_LF_END_CAPTURE_ERROR, state);
++    uint32_t slot = (active_head + offset) % worker_count;
++    workers[active_queue[slot]].invalid = 1;
+   }
+-  active_worker = UINT32_MAX;
++  lf_cancel_all_active(OASIS_LF_END_CAPTURE_ERROR, state);
++  lf_cancel_pending();
+   instruction_nesting = 0;
+   stream_sequence = 0;
++  last_entry_stream_sequence = 0;
+   instruction_sequence = 0;
+   control_flow_sequence = 0;
+-  memset(ring_storage, 0, sizeof(ring_storage));
++  last_started_instruction = UINT64_MAX;
++  if (ring_storage)
++    memset(ring_storage, 0,
++           OASIS_LF_RING_CAPACITY * sizeof(*ring_storage));
+   if (++runtime_epoch == 0)
+     runtime_epoch = 1;
+ }
+-
+-uint32_t oasis_lf_result_state(uint32_t worker_id)
+-{
+-  return worker_id < worker_count ? workers[worker_id].state : LF_FREE;
+-}
+-
+-int oasis_lf_result_info(uint32_t worker_id, oasis_lf_result *result)
+-{
+-  if (!result || worker_id >= worker_count || workers[worker_id].state < LF_COMPLETE)
+-    return 0;
+-  *result = workers[worker_id].result;
+-  workers[worker_id].state = LF_ANALYZING;
+-  return 1;
+-}
+-
+-uint32_t oasis_lf_result_copy(uint32_t worker_id, uint64_t generation,
+-                              uint32_t offset, oasis_lf_record *output,
+-                              uint32_t capacity)
+-{
+-  lf_worker *worker;
+-  uint32_t count;
+-  if (!output || worker_id >= worker_count)
+-    return 0;
+-  worker = &workers[worker_id];
+-  if (worker->state != LF_ANALYZING || worker->generation != generation ||
+-      offset > worker->result.record_count)
+-    return 0;
+-  count = worker->result.record_count - offset;
+-  if (count > capacity)
+-    count = capacity;
+-  if (offset + count > record_capacity)
+-    return 0;
+-  memcpy(output, worker->records + offset, count * sizeof(*output));
+-  return count;
+-}
+-
+-int oasis_lf_ack(uint32_t worker_id, uint64_t capture_id,
+-                 uint64_t generation, uint64_t run_id, uint64_t epoch)
+-{
+-  lf_worker *worker;
+-  if (worker_id >= worker_count)
+-    return 0;
+-  worker = &workers[worker_id];
+-  if (worker->state != LF_ANALYZING || worker->capture_id != capture_id ||
+-      worker->generation != generation || worker->run_id != run_id ||
+-      worker->epoch != epoch)
+-    return 0;
+-  memset(&worker->result, 0, sizeof(worker->result));
+-  worker->capture_id = 0;
+-  worker->generation = 0;
+-  worker->run_id = 0;
+-  worker->epoch = 0;
+-  worker->record_count = 0;
+-  worker->state = LF_FREE;
+-  return 1;
+-}

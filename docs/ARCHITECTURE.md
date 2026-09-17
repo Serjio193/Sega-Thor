@@ -798,3 +798,24 @@ recorded ENTRY, execution range, EXIT, identity, and termination are factual;
 it creates no reaching-definition or global provenance claim. The source
 patches and acceptance evidence are recorded in
 `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1A.md`.
+
+## M12 AUTO67 live-forward Worker 1B measurement boundary
+
+Worker 1B scales capture descriptors around the same single native M68K
+stream. A bounded pending queue admits at most one new capture at a confirmed
+instruction boundary, and an ordered active queue retires completed windows;
+the instruction hook never writes a separate stream per Worker. A checked
+allocation plan accounts for descriptors, private result slots, queues, the
+shared ring and a two-pass result wave before the test runtime configures its
+Waterbox heap. Natural depth-20 measurements and forced-concurrency depth
+measurements are reported separately. Each tested `WORKER_COUNT` must finish
+100 serialized lifecycle rounds for every slot. A round is accepted only after
+each Worker enters the current epoch, emits a fresh capture ID and generation,
+reaches COMPLETE and ANALYZING, passes a complete host-side FLOW_V1 byte audit,
+receives its exact ACK, and returns to FREE before the next request. The gate
+requires `WORKER_COUNT * 100` completed and validated segments; starting the
+pool or observing one successful round is insufficient. Per-slot native
+counters prove capture start, completion, first analysis transition and exact
+release. The host compares both binary exports and ENTRY/EXIT states after the
+CPU stream advances, before it accepts the segment. This remains developer-only
+and does not feed Cartographer or production AUTO67.

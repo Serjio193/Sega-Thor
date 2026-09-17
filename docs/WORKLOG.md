@@ -9296,3 +9296,63 @@ segment control-flow transitions, unsupported paths, and evidence are in
 Implementation commit `321a4f173797ab13887cf6549cb701fd07e8620c` was pushed to
 `main`; GitHub Actions run `35201139430` passed for that exact SHA. The final
 publication change only records this result and does not change runtime code.
+
+# 2026-09-17 — M12 AUTO67 live-forward Worker 1B scaling
+
+TASK: Starting from `17780138a6e3d9c67c2bc83c76350c482c6a8140`, extend the
+developer-only single-Worker FLOW_V1 prototype to progressive multi-Worker
+scaling while preserving one shared native execution stream. Measure natural
+depth-20/64-KiB workloads separately from forced simultaneous capture. Stop at
+the first measured saturation or resource/correctness limit; do not optimize it
+in this checkpoint.
+
+ACCEPTANCE: Prove unique per-boundary ENTRY sequences, overlapping independent
+capture lifecycles, exact immutable results, ACK isolation and generation reuse,
+CPU progress, and bounded allocation preflight. For every tested WORKER_COUNT,
+run at least 100 full FREE -> CAPTURING -> COMPLETE -> ANALYZING -> FREE cycles
+on every Worker, with a fresh capture_id/generation each cycle and a host audit
+of every completed segment before exact ACK; require at least N*100 completed
+and validated segments. A one-time pool startup is not PASS. Measure the
+requested geometric COUNT progression in both phases until the factual stop
+rule applies. Record all requested runtime, lifecycle, memory, retention,
+host-export and timing metrics;
+preserve FLOW_V1/1A regressions, run Debug/Release CTest, Linux focused checks,
+Waterbox and targeted EmuHawk builds, source-limit/diff checks, zero
+SOURCE_OWNED delta and exact-final-SHA GitHub CI. Keep production AUTO67,
+predecessor handling, Cartographer and SOURCE_OWNED untouched.
+
+RESULT: `STOP_RUNTIME_CPU_EXECUTION_STREAM_STALL`. The 1B implementation adds
+a dynamic, budgeted native Worker pool, per-slot lifecycle counters, host-side
+two-copy FLOW_V1 auditing and progressive scaling runners. The recovered musl
+Waterbox sysroot/toolchain built the matching GPGX WBX and a coherent Release
+BizHawk install passed startup smoke. The stale compressed
+`gpgx.wbx.zst` sidecar was preserved under a backup name so BizHawk loaded the
+new WBX rather than the old stock core.
+
+RUNTIME: Natural counts 1, 2, 4, 8, 16, 32 and 64 each passed exactly 100
+cycles per Worker and audited 12,700 FLOW_V1 segments in total. Natural 128
+stopped before immutable reread after 8,448 segments (66 completed cycles per
+Worker); the required 12,800 segments were not reached. Forced counts 2, 4, 8,
+16, 32, 64 and 128 passed 100 cycles per Worker and audited 25,400 segments in
+total, with all Workers simultaneously capturing at the corresponding count.
+Forced 256 stopped before immutable reread after 8,448 segments (33 cycles per
+Worker); the required 25,600 were not reached. Both first failures report
+`CPU execution stream stopped before immutable result reread`. No larger count
+was run and no optimization was attempted. These are CPU-progress correctness
+stops, not proven RAM allocation ceilings. All per-count receipts, raw logs and
+segment JSONL audits are in the two ignored campaign directories documented in
+`docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md`.
+
+VALIDATION: Windows Debug and Release CTest 201/201 each pass; GNU/Linux
+focused CTest 3/3 passes; scaling audit unit tests 4/4 and Python compilation
+pass. The targeted EmuHawk Release build completed with zero errors and one
+existing SharpCompress NU1902 warning; the clean Emulation.Cores Release
+rebuild passed with zero warnings. The recovered Waterbox GPGX Release build
+passed and produced WBX SHA-256
+`4AC692A115CB5543BB3C2260FC04FDACD2CF5D963DF59C17D87A12A30ADD3CD4`.
+`SOURCE_OWNED` remains untouched (delta 0); production AUTO67, predecessor
+handling, Cartographer and roadmap status remain unchanged. The source-limit
+gate passed for 693 governed files (all <=500 lines), `git diff --check` passed,
+and a final receipt/JSONL audit verified all 54,996 segments across the 16
+tested counts. Exact-SHA GitHub CI runs after publication and is recorded in the
+publication response.
