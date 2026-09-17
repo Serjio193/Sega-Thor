@@ -10,9 +10,18 @@ add_executable(oasis_graphics_stream_census
                ${CMAKE_SOURCE_DIR}/src/tools/re_graphics_stream_census.cpp)
 target_link_libraries(oasis_graphics_stream_census PRIVATE oasis_core)
 
+add_executable(oasis_re_rom_range_decode
+               ${CMAKE_SOURCE_DIR}/src/tools/re_rom_range_decode.cpp
+               ${CMAKE_SOURCE_DIR}/src/tools/hybrid/address_provenance.cpp)
+target_link_libraries(oasis_re_rom_range_decode PRIVATE oasis_re_tooling oasis_core)
+add_test(NAME oasis_re_rom_range_decode_self_test
+         COMMAND oasis_re_rom_range_decode --self-test)
+
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_live_forward_cartographer
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_cartographer_test.py)
+    add_test(NAME oasis_live_forward_rom_link
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_rom_link_test.py)
     add_test(NAME oasis_re_m12_screen_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_promote_test.py)
     add_test(NAME oasis_re_m12_gfx_max_helpers

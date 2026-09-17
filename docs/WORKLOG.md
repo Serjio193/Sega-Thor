@@ -9429,3 +9429,158 @@ tests 4/4. Python compilation, the independent 3,200-segment audit, source
 limit (`698` governed files, all <=500 lines) and `git diff --check` passed.
 No Worker 1B scaling count or limit changed; production AUTO67, predecessor
 handling and roadmap status remain unchanged.
+
+# 2026-09-17 — M12-ROM-RANGE-LINKAGE-2B — INITIAL DIAGNOSTIC STOP (SUPERSEDED)
+
+TASK: Build a developer-only, post-audit projection from immutable FLOW_V1
+instruction occurrences and the 2A MAP-1 session graph to exact canonical USA
+ROM instruction byte ranges. Reuse the shared bounded M68K decoder and explicit
+24-bit bus memory classifier; do not add native/Lua/Worker runtime hooks.
+
+ACCEPTANCE: Verify the local ROM is exactly 3,145,728 bytes with the required
+SHA-256. For each captured instruction occurrence, preserve raw CPU PC and
+occurrence identity; resolve CPU address, memory region and ROM offset
+explicitly; decode the complete instruction from canonical bytes; compare its
+first word with FLOW opcode; hash and link supported instructions to stable
+ROM-SHA/start/end/bytes-identity `ROM_INSTRUCTION_RANGE` objects using OBSERVED
+`EXECUTED_FROM_ROM` claims. Opcode mismatch fails closed, unsupported and
+non-ROM addresses remain unresolved, and source ownership stays unchanged.
+Preserve terminal instruction `next_pc` as an OBSERVED_NEXT_PC address fact,
+without asserting the target instruction was captured. Deduplicate canonical
+ranges while retaining per-occurrence lineage, report runtime and unique-byte
+coverage separately, emit a deterministic interval export, and independently
+audit representative saved claims against raw captured records and ROM bytes.
+Prove persistence through one bounded real BizHawk run at 16 Workers, depth 20,
+and 65,536 bytes. Update architecture, decision, file map and worklog; leave the
+roadmap, Worker/native/Lua hot path, 1B scaling, production AUTO67,
+predecessor logic and SOURCE_OWNED unchanged.
+
+INITIAL RESULT (SUPERSEDED): Implemented the developer-only resolver,
+projection, deterministic interval export, saved-claim audit and synthetic
+fail-closed/idempotency tests. The first runtime attempt did not start and this
+was initially reported as STOP pending baseline diagnosis.
+
+RUNTIME STOP: The two original 16-Worker launches (100 cycles required) did
+not create a main window, Lua log or runtime stream and admitted 0/1,600
+segments. Their receipts/logs remain in ignored `run1/` and `run2/` evidence.
+The diagnostic harness ran B first, then A and C, and reproduced the same
+boundary on the unchanged 2A baseline path (16 Workers, one diagnostic cycle;
+0 segments), on EmuHawk plus ROM with no Lua, and on the known-good 2A Lua path (one Worker, one diagnostic
+cycle; 0 segments). All mapped the same canonical ROM and WBX, printed
+`Calling _start()`, then stalled before a visible top-level window. The first
+missing milestone is `MAIN_WINDOW_CREATED`; Lua and FLOW output never started.
+No matching Application Error, .NET Runtime or Windows Error Reporting event
+was found in the inspected 15-minute window. The exact internal cause remains
+unresolved, but the failure is on the baseline EmuHawk/GPGX startup path, not
+specific to the 2B projection. A D launch-delta probe was started after A/B/C established the baseline
+failure, then aborted before any segment; it is not acceptance evidence. No
+full 2B runtime was run. Per-run receipts are in ignored
+`build/thor-evidence/live-forward-rom-link-2b/startup-diagnostics/`; the compact
+summary is in `docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.json`.
+
+VALIDATION: Windows Debug and Release full builds passed; Debug CTest passed
+204/204 and Release CTest passed 204/204. GNU/Linux WSL built and linked
+`oasis_re_rom_range_decode`; its CTest self-test passed. The focused 2B Python
+fixture and Python compilation passed. The decoder self-test covered two-byte
+and extension-word encodings, 24-bit resolution, unsupported decode, RAM and
+unmapped addresses. The synthetic projection test covered opcode mismatch,
+false mapping, range bounds, overlap deduplication, per-occurrence evidence,
+terminal `next_pc`, idempotent replay, deterministic export and unchanged
+`SOURCE_OWNED`. Final affected-test rerun passed in Debug and Release (2/2
+each); GNU/Linux WSL CTest passed the native decoder, 2B fixture and source
+limit checks (3/3). `git diff --check` passed. No real captured FLOW record or
+saved 2B session exists to audit. Worker 1B semantics, production AUTO67,
+predecessor logic and roadmap status remain unchanged.
+
+TASK FOLLOW-UP: Complete the 2B saved-result acceptance audit after recovering
+the accepted runtime. The current independent auditor checks only a deterministic
+sample of linked FLOW claims against raw records; expand it to reconcile every
+instruction occurrence, ROM range, unresolved non-ROM occurrence and terminal
+`next_pc` across the saved 1,600 segments. Keep the runtime capture, Worker,
+FLOW_V1, projection, and SOURCE_OWNED semantics unchanged.
+
+ACCEPTANCE: Independently decode every unique captured PC, verify all 199,630
+instruction occurrence lineages against their raw FLOW record and exact
+canonical ROM bytes/range identity, reconcile all segment and terminal facts,
+report extension-length and coverage totals, and fail on any missing, duplicate
+or inconsistent claim. Re-audit the already saved runtime; do not rerun the
+campaign solely for this post-run auditor correction. Add a negative fixture
+that corrupts a formerly unsampled claim and confirm the auditor rejects it.
+
+CORRECTION AND FINAL RESULT: The initial STOP attribution was invalid because
+its probes used `C:\Dev\SegaThorTools\BizHawk-live-forward-worker-1b`, a
+different mixed install, rather than the accepted 2A runtime at
+`build/thor-evidence/live-forward-worker-1b/coherent-bizhawk`. The accepted
+install's 488-file manifest has `EmuHawk.exe` SHA-256
+`0830DE4306ADEB5DC0906555C5B2A7DEC709302C54BF484F2DD1918AD04DADBE`,
+`BizHawk.Emulation.Cores.dll` SHA-256
+`ED6B1D2FE597EE25E5BF17752C38CA8EE9F0A4BCF381AD8762BDACA0048736C2`, and
+active raw `gpgx.wbx` SHA-256
+`4AC692A115CB5543BB3C2260FC04FDACD2CF5D963DF59C17D87A12A30ADD3CD4`; its
+old compressed sidecar remains preserved under a backup name. The prior probe
+install had a different Cores DLL and active `gpgx.wbx.zst` SHA-256
+`23A05F32CEB790F21AC7550E388401861E7A5333731AFE69A351E86D916D5845`.
+A matched direct ROM-only pair held the prior install's executable, Cores DLL,
+raw WBX, ROM, working directory and launch mode constant: with that compressed
+sidecar active, no window appeared within 15 seconds; renaming only the
+sidecar to an inactive preserved name produced the Beyond Oasis BizHawk window
+in about 2 seconds. The accepted install also passed a fresh no-argument GUI
+launch, direct ROM-only launch without Lua or `--config`, and an unchanged 2A
+Python/Lua launcher smoke with isolated config and stdout/stderr redirection.
+Stock BizHawk 2.11.1/GPGX also loaded the canonical ROM. No WBX rebuild was
+needed. This corrects the earlier claim that the accepted 2A baseline itself
+was failing.
+
+RUNTIME: The recovered 2B run used accepted `coherent-bizhawk`, canonical ROM
+SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`,
+and accepted WBX SHA-256 `4AC692A115CB5543BB3C2260FC04FDACD2CF5D963DF59C17D87A12A30ADD3CD4`.
+Run ID `1789714283` completed 100 cycles on each of 16 Workers. Every Worker
+had 100 captures, 100 starts/completions/analysis transitions/releases, and
+distinct capture IDs/generations. The runtime host audit accepted all 1,600
+segments; all 16 Workers overlapped in the live execution window. The
+projection linked 199,630 instruction occurrences to 330 canonical ranges,
+covering 1,244 unique ROM bytes (704,234 occurrence-bytes), and retained 1,600
+terminal `next_pc` address facts. No occurrence was unresolved or unsupported.
+
+FULL SAVED-RESULT AUDIT: `live_forward_rom_link_audit.py` now reconciles every
+instruction lineage with its saved segment and raw FLOW record, independently
+decodes every captured PC, validates every range identity and exact byte slice
+against the canonical ROM, and checks every terminal fact. Windows and WSL/Linux
+independent audits both passed: 1,600/1,600 segments, 199,630/199,630
+instruction occurrences linked, 0 non-ROM or unresolved occurrences, 330
+unique ranges, 1,244 unique executed bytes, and 1,600/1,600 terminal facts.
+Length counts are 106,539 two-byte instructions, 93,091 extended instructions,
+and 39,855 instructions with multiple extension bytes. Identity conflicts,
+opcode mismatches, and unsupported decodes are all zero. All 1,600 capture IDs
+are unique; each Worker has 100 distinct generations. The audit intentionally
+does not assert that terminal target instructions were captured.
+
+CHAIN SAMPLE: Worker 0, capture `1789714283000001`, demonstrates repeated range
+identity within one FLOW chain: `0x32EE -> [0x32EE,0x32F4)` bytes
+`4A7900FF1658` (6 bytes, node
+`56252f828111a9462239d2d14522fc8b58d73faa5bb24b18c7ac4b5af0a5a364`), then
+`0x32F4 -> [0x32F4,0x32F6)` bytes `66F8` (2 bytes), then `0x32EE` maps to the
+same first range node. The first range is a real multiple-extension instruction.
+The corpus also includes 4-, 8- and 10-byte instructions. An independently
+audited terminal example records `next_pc=0x21B2` as `M68K_TARGET_ADDRESS` only.
+
+VALIDATION: Debug and Release builds passed; full Debug and Release CTest each
+passed 204/204. After the final audit-code edits, the focused `live_forward_rom_link`
+CTest passed 1/1 in both configurations, and the negative fixture rejected a
+corrupted previously unsampled claim. GNU/Linux WSL built and linked the native
+decoder; its self-test and the Python fixture passed. The full saved-result
+audit passed under Windows and WSL/Linux. Python compilation, source size
+checks (auditor 458 lines, test 268 lines), project file-limit CTest, and
+`git diff --check` passed. `SOURCE_OWNED` stayed at 0 bytes (delta 0); no
+production AUTO67, predecessor, Worker/native/Lua capture path, FLOW_V1 format,
+1B scaling semantics, or Cartographer/Archivist behavior changed. The campaign
+and its multi-gigabyte raw/session evidence remain under ignored `build/`; only
+the compact report and receipt belong in Git.
+
+FINAL AUDIT REVIEW: the independent auditor also validates every compact export
+range row and aggregate metric against its audited SQLite graph. A negative
+fixture changes an exported `bytes_hex` value and confirms fail-closed rejection.
+Focused Debug/Release tests passed 1/1 each, and the full saved-result audit was
+rerun against all 1,600 local segments on Windows and WSL/Linux.
+
+FINAL STATUS: `PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE`.

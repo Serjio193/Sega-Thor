@@ -1,0 +1,193 @@
+{
+  "baseline": "1adff64d45353f6a73b1e177ebc2090e9d7b3731",
+  "checkpoint": "M12-ROM-RANGE-LINKAGE-2B",
+  "status": "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE",
+  "startup_recovery": {
+    "status": "PASS_ACCEPTED_2A_RUNTIME_RECOVERED",
+    "initial_stop_attribution_corrected": true,
+    "accepted_install": "build/thor-evidence/live-forward-worker-1b/coherent-bizhawk",
+    "accepted_install_file_count": 488,
+    "emuhawk_sha256": "0830de4306adeb5dc0906555c5b2a7dec709302c54bf484f2dd1918ad04dadbe",
+    "cores_dll_sha256": "ed6b1d2fe597ee25e5bf17752c38ca8ee9f0a4bcf381ad8762bdaca0048736c2",
+    "accepted_raw_wbx_sha256": "4ac692a115cb5543bb3c2260fc04fdacd2cf5d963df59c17d87a12a30add3cd4",
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "prior_wrong_install": "C:\\Dev\\SegaThorTools\\BizHawk-live-forward-worker-1b",
+    "prior_install_active_wbx_zst_sha256": "23a05f32ceb790f21ac7550e388401861e7a5333731afe69a351e86d916d5845",
+    "matched_sidecar_probe": {
+      "control": "STOP_NO_WINDOW_WITH_ACTIVE_COMPRESSED_SIDECAR",
+      "treatment": "PASS_ROM_WINDOW_WITH_ONLY_SIDECAR_DISABLED",
+      "same_raw_wbx_sha256": "4ac692a115cb5543bb3c2260fc04fdacd2cf5d963df59c17d87a12a30add3cd4"
+    },
+    "accepted_direct_rom_only": {
+      "status": "PASS_ROM_TITLE_WINDOW",
+      "config_argument": false,
+      "stdout_redirected": false,
+      "stderr_redirected": false,
+      "rom_title": "Beyond Oasis (U) [!] [Genesis] - BizHawk (interim)",
+      "fresh_config_sha256_before": "9a53fcfb8a6e9ba2ae08349f2f69b033e64a71ec203d0b601eea1b4590000806",
+      "config_sha256_after": "2dc31035adc1f45ce6d0742315f2b641edf09a3c401ad3e3f6a10efb7ca0c594"
+    },
+    "python_2a_first_segment": {
+      "status": "PASS_2A_PYTHON_LAUNCHER_FIRST_FLOW_SEGMENT",
+      "worker_count": 1,
+      "audited_segments": 1,
+      "isolated_config": true,
+      "stdout_redirected": true,
+      "source_owned_delta": 0
+    },
+    "stock_bizhawk_2_11_1": "PASS_ROM_TITLE_WINDOW",
+    "rebuild_needed": false
+  },
+  "runtime": {
+    "run_id": 1789714283,
+    "worker_count": 16,
+    "cycles_per_worker": 100,
+    "depth": 20,
+    "memory_bytes_per_worker": 65536,
+    "audited_segments": 1600,
+    "required_segments": 1600,
+    "unique_capture_ids": 1600,
+    "unique_generations_per_worker": 100,
+    "all_worker_lifecycle_counters_per_cycle": 100,
+    "host_audit_cpu_progress_rounds": 100,
+    "native_wbx_sha256": "4ac692a115cb5543bb3c2260fc04fdacd2cf5d963df59c17d87a12a30add3cd4",
+    "segment_audit_sha256": "0812f898a6f2b2e0f7903309e2ca45fa52989616ce7045546d7a9c80e1be0a72",
+    "projection_sha256": "2ada30bb7000da4c1bdb738a36d08ac6a38d9f924450199946d37971a777b495"
+  },
+  "rom_projection": {
+    "status": "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE",
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "instruction_occurrences": 199630,
+    "rom_linked_occurrences": 199630,
+    "unresolved_occurrences": 0,
+    "unsupported_decode_occurrences": 0,
+    "unique_instruction_ranges": 330,
+    "unique_executed_rom_bytes": 1244,
+    "observed_executed_rom_bytes": 704234,
+    "terminal_next_pc_facts": 1600,
+    "source_owned_before_bytes": 0,
+    "source_owned_after_bytes": 0,
+    "source_owned_delta": 0
+  },
+  "independent_audit": {
+    "status": "PASS_INDEPENDENT_ROM_RANGE_AUDIT",
+    "segments_audited": 1600,
+    "instruction_occurrences_inspected": 199630,
+    "rom_linked_occurrences": 199630,
+    "nonrom_occurrences": 0,
+    "unique_instruction_ranges": 330,
+    "unique_executed_rom_bytes": 1244,
+    "instruction_length_counts": {
+      "2": 106539,
+      "4": 53236,
+      "6": 22104,
+      "8": 15961,
+      "10": 1790
+    },
+    "two_byte_instructions": 106539,
+    "extended_instructions": 93091,
+    "multiple_extension_byte_instructions": 39855,
+    "terminal_next_pc_facts": 1600,
+    "unique_capture_ids": 1600,
+    "worker_segment_counts": {
+      "0": 100,
+      "1": 100,
+      "2": 100,
+      "3": 100,
+      "4": 100,
+      "5": 100,
+      "6": 100,
+      "7": 100,
+      "8": 100,
+      "9": 100,
+      "10": 100,
+      "11": 100,
+      "12": 100,
+      "13": 100,
+      "14": 100,
+      "15": 100
+    },
+    "identity_conflicts": 0,
+    "opcode_mismatches": 0,
+    "decode_unsupported_occurrences": 0,
+    "source_owned_bytes": 0,
+    "platform_audits": [
+      {
+        "platform": "Windows Debug decoder",
+        "decoder_sha256": "0441bc283c45c7d08855e5ffe849198fb4a2a8c832a5a7aa7c49720cd90158ae",
+        "audit_receipt_sha256": "380d475f0f433742c8b958ab92bd99c2c9583dbc7c0f190d2d2cb9c6b805715d"
+      },
+      {
+        "platform": "WSL GNU/Linux decoder",
+        "decoder_sha256": "ab240dea2a2c5ff4c523ffcc0378ba9e88172f7b27db4137ba8c3e152e24f77b",
+        "audit_receipt_sha256": "07279e375895daa1feaac04d3d560fd4ab57c06373e1073c6913bdd2fd300041"
+      }
+    ],
+    "chain_sample": [
+      {
+        "worker_id": 0,
+        "capture_id": 1789714283000001,
+        "pc": "0x32EE",
+        "next_pc": "0x32F4",
+        "rom_range": "[0x32EE,0x32F4)",
+        "length": 6,
+        "bytes_hex": "4A7900FF1658",
+        "range_node_id": "56252f828111a9462239d2d14522fc8b58d73faa5bb24b18c7ac4b5af0a5a364"
+      },
+      {
+        "worker_id": 0,
+        "capture_id": 1789714283000001,
+        "pc": "0x32F4",
+        "next_pc": "0x32EE",
+        "rom_range": "[0x32F4,0x32F6)",
+        "length": 2,
+        "bytes_hex": "66F8",
+        "range_node_id": "97aefac4364733f21b65d72c2ead17669f2f05cbe40ed0d66f2e833c782ebbf0"
+      },
+      {
+        "worker_id": 0,
+        "capture_id": 1789714283000001,
+        "pc": "0x32EE",
+        "next_pc": "0x32F4",
+        "rom_range": "[0x32EE,0x32F4)",
+        "length": 6,
+        "bytes_hex": "4A7900FF1658",
+        "range_node_id": "56252f828111a9462239d2d14522fc8b58d73faa5bb24b18c7ac4b5af0a5a364"
+      }
+    ],
+    "terminal_sample": {
+      "worker_id": 0,
+      "capture_id": 1789714283000017,
+      "next_pc": "0x21B2",
+      "target_kind": "M68K_TARGET_ADDRESS"
+    }
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "debug_ctest": "204/204 PASS",
+    "release_build": "PASS",
+    "release_ctest": "204/204 PASS",
+    "final_focused_debug_ctest": "1/1 PASS",
+    "final_focused_release_ctest": "1/1 PASS",
+    "negative_unsampled_claim_fixture": "PASS_REJECTED_CORRUPTION",
+    "negative_export_row_fixture": "PASS_REJECTED_CORRUPTION",
+    "wsl_native_decoder_build_and_link": "PASS",
+    "wsl_decoder_self_test": "PASS",
+    "wsl_python_fixture": "PASS",
+    "wsl_full_runtime_audit": "PASS",
+    "python_compile": "PASS",
+    "source_file_limit": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "unchanged_boundaries": {
+    "production_auto67": true,
+    "predecessor_logic": true,
+    "worker_native_lua_hot_path": true,
+    "flow_v1_format": true,
+    "worker_1b_scaling_semantics": true,
+    "cartographer_archivist_semantics": true,
+    "roadmap": true,
+    "source_owned": true
+  },
+  "raw_evidence_git_policy": "Runtime logs, FLOW streams, SQLite session, startup copies, and audit outputs remain ignored under build/thor-evidence/live-forward-rom-link-2b/; only this compact receipt and report are intended for Git."
+}

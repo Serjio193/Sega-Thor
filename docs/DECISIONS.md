@@ -2073,6 +2073,39 @@ path remain independent. Worker/native/Lua instruction hooks are unchanged.
 **Evidence:** `tests/live_forward_cartographer_test.py` and the two-run
 `M12-AUTO67-LIVE-FORWARD-CARTOGRAPHER-2A` receipt.
 
+# ADR-M12-ROM-RANGE-LINKAGE-2B — Exact executed ROM instruction ranges
+**Status:** Accepted for the developer-only 2B checkpoint
+**Date:** 2026-09-17
+
+**Context:** Worker 1B FLOW_V1 records preserve the runtime PC and opcode, while
+Cartographer 2A preserves the observed execution graph. Neither currently
+proves which canonical ROM bytes encode each captured instruction or records
+the terminal `next_pc` as an address-only fact.
+
+**Decision:** Reuse the existing bounded M68K decoder and explicit 24-bit
+memory-region resolver in a developer-only native batch helper. After one
+bounded 1B run completes, project supported records into stable,
+ROM-SHA/start/end/full-bytes `ROM_INSTRUCTION_RANGE` nodes and
+`OBSERVED` `EXECUTED_FROM_ROM` edges. Preserve run/epoch/Worker/capture/
+generation/record identity in edge lineage, and represent each segment's
+terminal `next_pc` through an `OBSERVED_NEXT_PC` edge to an address node only.
+Non-ROM locations remain unlinked; unsupported exact lengths remain unresolved
+and prevent a PASS result. Export observed and unique byte coverage separately
+from source ownership, and independently reconcile every saved instruction
+occurrence and terminal fact against raw records, canonical bytes, a fresh
+bounded decode and persisted MAP-1 identities.
+
+**Consequences:** Runtime evidence can identify exact executed instruction
+encodings without claiming complete ROM classification, `SOURCE_OWNED`, or
+`PROVEN` source knowledge. FLOW_V1 raw records and 2A graph facts remain
+unchanged. No Worker/native/Lua hot-path instrumentation, 1B scaling semantics,
+production AUTO67, predecessor logic or roadmap status changes.
+
+**Evidence:** `tests/live_forward_rom_link_test.py`,
+`tools/bizhawk-native-ring/live_forward_rom_link_audit.py`, and
+`docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.md` (full runtime and saved-result
+acceptance passed).
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15

@@ -95,6 +95,23 @@ independently reconciles every segment receipt against both session databases
 and the merged master. Evidence and real BizHawk receipts belong in the ignored
 `build/thor-evidence/live-forward-worker-2a/` campaign directory.
 
+# M12 FLOW_V1 exact ROM range linkage 2B
+
+`src/tools/re_rom_range_decode.cpp` is a developer-only batch adapter over the
+existing bounded M68K decoder and explicit memory-address classifier.
+`src/tools/thor_evidence/live_forward_rom_link.py` stages already-audited
+FLOW_V1 bytes and, after EmuHawk exits, adds stable `ROM_INSTRUCTION_RANGE`
+nodes, occurrence-lineaged `EXECUTED_FROM_ROM` claims and terminal
+`OBSERVED_NEXT_PC` address facts to the 2A MAP-1 session. The one-run driver is
+`tools/bizhawk-native-ring/live_forward_rom_link_runtime.py`; its independent
+saved-result verifier checks every instruction occurrence and terminal fact
+against raw segments, a fresh decode and canonical ROM bytes. Deterministic
+fixtures are in `tests/live_forward_rom_link_test.py`, registered by
+`cmake/m12_auto2.cmake`. Interval output and raw FLOW_V1 evidence belong only
+under the ignored `build/thor-evidence/live-forward-rom-link-2b/` directory.
+Implementation, runtime evidence and final audit are recorded in
+`docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.md` and its compact JSON receipt.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`

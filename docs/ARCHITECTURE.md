@@ -845,3 +845,32 @@ master is seeded without warning; incompatible sessions or newly created
 conflicts fail before replacement. This bridge is independent of the existing
 AUTO67 REGISTER_REACHING_DEFINITION adapter and is not part of production
 scheduling.
+
+## M12 FLOW_V1 exact ROM range linkage 2B
+
+`live_forward_rom_link_runtime.py` runs one bounded 16-Worker, depth-20,
+64-KiB Worker-1B session. Its callback stages only the immutable bytes from
+segments already accepted by the host audit and RAM Cartographer. After
+EmuHawk exits, `live_forward_rom_link.py` invokes the developer-only
+`oasis_re_rom_range_decode` helper, which reuses the bounded M68K decoder and
+the explicit 24-bit memory-region resolver. It checks the canonical USA ROM
+identity, FLOW opcode, exact decoded instruction bytes and ROM bounds before
+adding any range claim. RAM, hardware, unknown and unsupported addresses do
+not become ROM ranges; an unsupported ROM decode remains unresolved and stops
+the checkpoint from claiming PASS.
+
+One ROM-SHA-scoped `ROM_INSTRUCTION_RANGE` represents each canonical start,
+exclusive end and full byte encoding. `OBSERVED` `EXECUTED_FROM_ROM` edges
+retain each run/epoch/Worker/capture/generation/record occurrence in edge
+lineage, so repeated execution adds evidence without copying the canonical
+range node. A segment's terminal instruction also has an
+`OBSERVED_NEXT_PC` edge to an address-only node; that edge records the raw
+target address and does not assert that the target instruction was captured.
+`rom_execution_ranges.json` reports observed execution-byte volume separately
+from unique ranges and unique covered bytes. These runtime metrics never alter
+`SOURCE_OWNED`. `live_forward_rom_link_audit.py` reconciles every saved
+instruction occurrence and terminal `next_pc` against the raw FLOW_V1 segment
+records. It independently decodes every captured PC, checks all linked ranges
+against canonical ROM bytes and persisted MAP-1 identities, and verifies that
+repeated occurrences share one stable range identity. This is an
+executed-instruction interval layer, not a full ROM classification map.
