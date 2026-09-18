@@ -165,4 +165,6 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v8_test.py)
     add_test(NAME oasis_thor_evidence_v9_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_v9_test.py)
+    add_test(NAME oasis_m12_rom_knowledge_map_2d
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_test.py)
 endif()

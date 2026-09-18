@@ -1,3 +1,17 @@
+# M12 Canonical ROM Knowledge Map 2D — PASS_CANONICAL_ROM_KNOWLEDGE_MAP_V1
+
+The accepted AUTO61 `SOURCE_OWNED` manifest was reconciled to the earlier
+AUTO60 base through the intervening GFX-2, GFX-MAX and AUTO61 checkpoints. The
+compact SQLite map now covers the full canonical ROM with an exact disjoint
+ASM/DATA/ASSET/INCBIN emission partition, typed static/runtime objects,
+evidence-backed claims and only evidence-supported relations. It imports the
+330 exact 2B instruction ranges and 199,630 instruction occurrence references;
+`SOURCE_OWNED` remains 1,475,600 bytes. No new runtime campaign or hooks were
+used. This completes the 2D checkpoint; the broader M12 reconstruction
+milestone remains active. See
+`docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.md` and its compact
+deterministic JSON receipt.
+
 # M12 Runtime Control Provenance 2C — STOP_NO_RUNTIME_PROVENANCE_GAP
 
 Phase 0 classified the saved, accepted 2B runtime trace: 199,630 instructions,

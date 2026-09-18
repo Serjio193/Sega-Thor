@@ -1975,6 +1975,39 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D — Separate ranges, facts and emission
+**Status:** Accepted for the 2D checkpoint
+**Date:** 2026-09-18
+
+**Context:** Accepted M12 reconstruction classifications, exact emission
+intervals, Carver hypotheses and 2B runtime linkage existed in separate
+artifacts. AUTO60/Carver reported 1,427,873 `SOURCE_OWNED` bytes while the
+accepted current manifest reported 1,475,600 bytes; runtime occurrence
+lineage also must remain out of canonical object identity.
+
+**Decision:** Build a deterministic, ROM-SHA-scoped SQLite knowledge layer
+with separate emission intervals, canonical ROM ranges/objects, claims,
+relations and evidence references. Reconcile AUTO60 to AUTO61 through the
+accepted GFX-2/GFX-MAX/AUTO61 manifests before importing current ownership.
+Keep Carver findings as `HYPOTHESIS`; import each of the 330 exact 2B
+instruction ranges once and reference its occurrence lineage through saved
+artifact hashes. An `EXECUTED_NEXT` relation requires captured M68K instruction
+objects at both endpoints; exception-event edges remain in source evidence but
+are not miscast as instruction adjacency. Preserve terminal `next_pc` facts
+as address-only `OBSERVED_NEXT_PC`. No runtime campaign, hook, ownership
+promotion, or Worker/FLOW/AUTO67 change is part of this checkpoint.
+
+**Consequences:** The map covers all 3,145,728 ROM bytes with a disjoint exact
+emission partition, while UNKNOWN remains explicit. Stable object identity
+depends on ROM hash, byte bounds and type, not run/Worker/capture identity.
+Raw session/FLOW data and the working SQLite database remain local; the
+committed receipt provides deterministic structure, evidence references,
+metrics and hashes for independent review. This checkpoint does not complete
+the broader M12 reconstruction milestone or begin M13.
+
+**Evidence:** `docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.md`, its
+JSON receipt and `tests/rom_knowledge_map_test.py`.
+
 # ADR-M12-AUTO67-LIVE-FORWARD-WORKER-1A — One shared stream, one live Worker
 **Status:** Accepted for the bounded developer-only 1A prototype
 **Date:** 2026-09-17

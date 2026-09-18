@@ -9627,3 +9627,56 @@ recomputed all categories, checked all 290 direct-JSR targets, and confirmed
 the session ownership count; it passed. The compact report and receipt contain
 the hashes and reconciled counts; multi-megabyte FLOW and session evidence
 remain local under ignored `build/`.
+
+# 2026-09-18 — M12 Canonical ROM Knowledge Map 2D — PASS_CANONICAL_ROM_KNOWLEDGE_MAP_V1
+
+TASK / ACCEPTANCE: Starting from `665996b2f73d51e6bd772195ce73c56e0df0c3a7`,
+reconcile the authoritative SOURCE_OWNED history before building one
+deterministic, complete-ROM knowledge model. Preserve UNKNOWN and hypothesis
+claims, import current owned classifications and accepted 2B instruction
+linkage, keep raw lineage local, provide reproducible queries and an independent
+audit, then publish the compact report/receipt with exact-SHA CI. Runtime,
+Worker/FLOW, production AUTO67, predecessor behavior, and SOURCE_OWNED mutation
+are outside scope.
+
+PHASE 0: Reconciliation is supported by four canonical-US-ROM manifests: AUTO60
+`1,427,873`, GFX-2 `1,475,262`, GFX-MAX descriptor candidate `1,475,368`, and
+AUTO61 `1,475,600` bytes. AUTO60→AUTO61 adds exactly 47,727 bytes in eight
+nonoverlapping ranges: five GFX-2 ranges (+47,389), two GFX-MAX ranges (+106),
+and the AUTO61 child-table range `[0x03B95E,0x03BA46)` (+232). There are no
+AUTO60-only owned bytes, no shared owned-byte classification differences, and
+both endpoints report zero conflicts. The older GFX-MAX screen-root-c manifest
+is also identified as stale: it has 22 fewer bytes than the descriptor-candidate
+checkpoint and omits `[0x02E1D8,0x02E1EE)`. Detailed input hashes and full
+reconciliation ranges are recorded in `docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.md`.
+
+RESULT: The canonical ROM is fully represented by 2,461 contiguous, disjoint
+emission intervals over `[0x000000,0x300000)`: 56,134 ASM, 233,676 DATA,
+1,085,110 ASSET and 1,770,808 INCBIN bytes. There are 3,794 canonical objects,
+1,670,128 UNKNOWN bytes and exactly 1,475,600 SOURCE_OWNED bytes
+(46.9080607096%). The final SQLite map reports no conflicts. Its deterministic
+hashes are structure `7f9c95f8f05e29db54991e3f6abee94e4fd80d5013fbd0675f5abe9defdc18fe`,
+evidence index `cb43a5fdfa5a1f592a8f1fac30cdab6a88052ac1719ae872ba25058eb4a69364`,
+emission `d76325cfa6d6312f28333f0633f74260214e5ae8a92fc2984fcc565872cbda8f`,
+and combined map `589e97fe2e070ab7f9a71a3439e19f3b965a01d24ce82b2bd42cffc9f129232a`.
+
+2B IMPORT: All 330 exact ROM instruction ranges and 199,630 occurrence
+references reconcile to canonical bytes. There are 1,244 unique executed ROM
+bytes and 1,600 address-only terminal `OBSERVED_NEXT_PC` facts. Only 338 of 385
+saved `EXECUTED_NEXT` links have M68K instruction records at both endpoints
+(195,794 references); 47 links involving exception-event records, totaling
+1,726 references, remain in the referenced source artifact but are not
+mislabelled as instruction adjacency. Runtime claims did not promote ownership.
+The map also preserves 1,007 deduplicated Carver hypotheses without promoting
+bytes. Reimport leaves table counts and hashes unchanged; the independent
+auditor passes ROM identity, partition, ownership history/claims, stable IDs,
+2B bytes and lineage, evidence artifact hashes, and idempotence.
+
+VALIDATION: Debug build PASS; Release build PASS; Debug CTest 205/205;
+Release CTest 205/205; focused knowledge-map tests 2/2; Python compilation
+PASS; project file-limit check PASS; `git diff --check` PASS. No BizHawk/GPGX
+campaign or new instrumentation ran. `SOURCE_OWNED`, production AUTO67,
+predecessor behavior, Worker/FLOW semantics and existing runtime evidence were
+not changed. The generated knowledge SQLite, prior in-progress local SQLite,
+raw FLOW/session evidence and ROM remain under ignored `build/`; only code,
+tests, docs and the 7.46 MB deterministic JSON receipt are publication inputs.

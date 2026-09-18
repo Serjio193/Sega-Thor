@@ -117,6 +117,21 @@ receipt record the Phase 0 classification of the saved 2B FLOW_V1 evidence.
 The bounded result is `STOP_NO_RUNTIME_PROVENANCE_GAP`; no native runtime
 sensor or per-memory-access trace was added.
 
+# M12 canonical ROM knowledge map 2D
+
+`src/tools/thor_evidence/rom_knowledge_map.py` owns the deterministic SQLite
+schema, stable ROM-range/object identities, queries, metrics, hashes and
+compact export. `rom_knowledge_sources.py` imports the accepted AUTO61
+manifest, reconciles its ownership history, preserves Carver candidates as
+hypotheses and imports qualified 2B facts. `rom_knowledge_import.py` builds
+the ignored `build/thor-evidence/canonical-rom-knowledge-2d/knowledge.sqlite`
+and the tracked JSON/Markdown checkpoint reports. The independent read-only
+auditor is split between `rom_knowledge_audit.py` and
+`rom_knowledge_audit_records.py`; focused deterministic query/idempotence tests
+are in `tests/rom_knowledge_map_test.py`, registered by
+`cmake/m12_auto2.cmake`. Runtime sessions, raw FLOW and the generated SQLite
+map remain local under ignored `build/`.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`
