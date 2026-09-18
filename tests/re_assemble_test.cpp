@@ -37,6 +37,8 @@ void operands_and_encoding() {
     assert(json == exact_slice_json(slice));
     assert(json.find("\"kind\":\"postincrement\"") != std::string::npos);
     assert(json.find("\"raw_words\":[14017]") != std::string::npos);
+    assert(json.find("\"flow\":\"return\"") != std::string::npos);
+    assert(json.find("\"supported\":true") != std::string::npos);
 }
 void branch_widths() {
     const auto short_branch = decode({0x66,0x02, 0x4E,0x71, 0x4E,0x75});

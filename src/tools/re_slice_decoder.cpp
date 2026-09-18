@@ -1,4 +1,5 @@
 #include "tools/re_slice_decoder.hpp"
+#include "tools/re_slice_flow_target.hpp"
 
 #include <algorithm>
 #include <map>
@@ -224,21 +225,14 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
         const auto mode = static_cast<unsigned>((opcode >> 3U) & 7U);
         const auto reg = static_cast<unsigned>(opcode & 7U);
         instruction.mnemonic = is_call ? "jsr" : "jmp";
-        if (mode == 7U && reg == 1U && pc + 6U <= rom.size() && pc + 6U <= range_end) {
+        if (mode == 7U && reg == 1U &&
+            set_absolute_long_control_target(rom, pc, range_end, is_call, instruction)) {
             set_length(6U);
-            instruction.direct_target = read32(rom, pc + 2U);
-            instruction.flow = is_call ? FlowKind::direct_call : FlowKind::direct_jump;
-            add_memory_reference(instruction, *instruction.direct_target, 0U, MemoryAccess::address);
-            DecodedOperand operand{};
-            operand.kind = OperandKind::absolute_long;
-            operand.width_bytes = 4;
-            operand.extension_bytes = 4;
-            operand.value = *instruction.direct_target;
-            operand.extension_address = pc + 2U;
-            instruction.effective_operands.push_back(operand);
         } else {
-            instruction.flow = is_call ? FlowKind::indirect_call : FlowKind::indirect_jump;
             parse_single(mode, reg, 4U, MemoryAccess::address);
+            if (!set_direct_target_from_effective_address(instruction, mode, reg, is_call)) {
+                instruction.flow = is_call ? FlowKind::indirect_call : FlowKind::indirect_jump;
+            }
         }
     } else if ((opcode & 0xF100U) == 0x7000U) {
         instruction.mnemonic = "moveq";

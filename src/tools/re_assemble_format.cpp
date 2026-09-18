@@ -39,7 +39,9 @@ std::string exact_slice_json(const DecodedSlice& slice) {
         }
         out << "],\"operation\":\"" << exact.operation << "\",\"width_bytes\":"
             << unsigned(exact.width_bytes) << ",\"branch_width_bytes\":"
-            << unsigned(exact.branch_width_bytes) << ",\"branch_target\":";
+            << unsigned(exact.branch_width_bytes) << ",\"flow\":\""
+            << flow_kind_name(instruction.flow) << "\",\"supported\":"
+            << (instruction.supported ? "true" : "false") << ",\"branch_target\":";
         if (instruction.direct_target) out << *instruction.direct_target;
         else out << "null";
         out << ",\"source\":";
