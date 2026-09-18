@@ -55,3 +55,26 @@ int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
   output[3] = worker->release_count;
   return (int)OASIS_LF_LIFECYCLE_COUNT;
 }
+
+int oasis_lf_worker_status_get(uint32_t worker_id, uint64_t *output,
+                               uint32_t capacity)
+{
+  lf_worker *worker;
+  uint64_t progress = 0;
+  if (!output || capacity < OASIS_LF_WORKER_STATUS_COUNT ||
+      worker_id >= worker_count)
+    return 0;
+  worker = &workers[worker_id];
+  if (worker->state == LF_CAPTURING)
+    progress = control_flow_sequence - worker->entry_flow;
+  else if (worker->state == LF_COMPLETE || worker->state == LF_ANALYZING)
+    progress = worker->result.consumed_depth;
+  output[0] = worker->state;
+  output[1] = progress;
+  output[2] = worker->configured_depth;
+  output[3] = worker->capture_start_count;
+  output[4] = worker->capture_complete_count;
+  output[5] = worker->analysis_count;
+  output[6] = worker->release_count;
+  return (int)OASIS_LF_WORKER_STATUS_COUNT;
+}

@@ -1,0 +1,322 @@
+{
+  "baseline_sha": "36dc7e6acc61eb534e4c5269ed30c3b875d54d75",
+  "campaigns": [
+    {
+      "captures_dropped": 0,
+      "captures_invalid": 0,
+      "chain_depth": 20,
+      "control_window_enabled": false,
+      "cpu_stream_records": 10530746,
+      "frame_timing": {
+        "PERF_BASELINE": "frames=120,p50_ms=17.000000,max_ms=17.000000",
+        "PERF_RECORDER": "frames=120,p50_ms=17.000000,max_ms=18.000000",
+        "PERF_WORKER": "frames=120,p50_ms=16.000000,max_ms=17.000000"
+      },
+      "generation_range_per_worker": [
+        1,
+        100
+      ],
+      "identity_collisions": 0,
+      "independent_identity_conflicts": 0,
+      "independently_audited_segments": 1600,
+      "name": "campaign-no-window",
+      "native_worker_bytes": 1248896,
+      "nonrom_occurrences": 0,
+      "opcode_mismatches": 0,
+      "outcome": "PASS",
+      "receipt_path": "build/thor-evidence/live-worker-control-2h/campaign-no-window/rom-link/count-16/receipt.json",
+      "required_cycles_per_worker": 100,
+      "ring_retention_failures": 0,
+      "runtime_errors": 0,
+      "segment_audit_path": "build/thor-evidence/live-worker-control-2h/campaign-no-window/rom-link/count-16/segment-audits.jsonl",
+      "segment_audit_sha256": "498b70a80573811e6b4bf120b822fa01f9ee43c71764121ca5f7a18e4326c5f8",
+      "segments": 1600,
+      "source_owned_delta": 0,
+      "stale_ack": 0,
+      "unique_capture_ids": 1600,
+      "unsupported_decode_occurrences": 0,
+      "worker_count": 16,
+      "worker_cycles_max": 100,
+      "worker_cycles_min": 100,
+      "worker_run_wall_seconds": 21.377,
+      "worker_transition_counts_each": [
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    {
+      "captures_dropped": 0,
+      "captures_invalid": 0,
+      "chain_depth": 20,
+      "control_window_enabled": true,
+      "cpu_stream_records": 9270659,
+      "frame_timing": {
+        "PERF_BASELINE": "frames=120,p50_ms=17.000000,max_ms=19.000000",
+        "PERF_RECORDER": "frames=120,p50_ms=17.000000,max_ms=18.000000",
+        "PERF_WORKER": "frames=120,p50_ms=16.000000,max_ms=17.000000"
+      },
+      "generation_range_per_worker": [
+        1,
+        100
+      ],
+      "identity_collisions": 0,
+      "independent_identity_conflicts": 0,
+      "independently_audited_segments": 1600,
+      "name": "campaign-window",
+      "native_worker_bytes": 1248896,
+      "nonrom_occurrences": 0,
+      "opcode_mismatches": 0,
+      "outcome": "PASS",
+      "receipt_path": "build/thor-evidence/live-worker-control-2h/campaign-window/rom-link/count-16/receipt.json",
+      "required_cycles_per_worker": 100,
+      "ring_retention_failures": 0,
+      "runtime_errors": 0,
+      "segment_audit_path": "build/thor-evidence/live-worker-control-2h/campaign-window/rom-link/count-16/segment-audits.jsonl",
+      "segment_audit_sha256": "815927fed0bf5b597cfef34d0563a785b894a55b0c5a50546ccaa2dcdd5927cf",
+      "segments": 1600,
+      "source_owned_delta": 0,
+      "stale_ack": 0,
+      "unique_capture_ids": 1600,
+      "unsupported_decode_occurrences": 0,
+      "worker_count": 16,
+      "worker_cycles_max": 100,
+      "worker_cycles_min": 100,
+      "worker_run_wall_seconds": 19.191,
+      "worker_transition_counts_each": [
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    {
+      "captures_dropped": 0,
+      "captures_invalid": 0,
+      "chain_depth": 20,
+      "control_window_enabled": true,
+      "cpu_stream_records": 9601718,
+      "frame_timing": {
+        "PERF_BASELINE": "frames=120,p50_ms=17.000000,max_ms=20.000000",
+        "PERF_RECORDER": "frames=120,p50_ms=17.000000,max_ms=21.000000",
+        "PERF_WORKER": "frames=120,p50_ms=16.000000,max_ms=20.000000"
+      },
+      "generation_range_per_worker": [
+        1,
+        100
+      ],
+      "identity_collisions": 0,
+      "independent_identity_conflicts": 0,
+      "independently_audited_segments": 1600,
+      "name": "campaign-live-save-16x20",
+      "native_worker_bytes": 1248896,
+      "nonrom_occurrences": 0,
+      "opcode_mismatches": 0,
+      "outcome": "PASS",
+      "receipt_path": "build/thor-evidence/live-worker-control-2h/campaign-live-save-16x20/rom-link/count-16/receipt.json",
+      "required_cycles_per_worker": 100,
+      "ring_retention_failures": 0,
+      "runtime_errors": 0,
+      "segment_audit_path": "build/thor-evidence/live-worker-control-2h/campaign-live-save-16x20/rom-link/count-16/segment-audits.jsonl",
+      "segment_audit_sha256": "66afdaeb741ab879c8c23b9f7c14feaa8febb901381b6fc12df63175879553ec",
+      "segments": 1600,
+      "source_owned_delta": 0,
+      "stale_ack": 0,
+      "unique_capture_ids": 1600,
+      "unsupported_decode_occurrences": 0,
+      "worker_count": 16,
+      "worker_cycles_max": 100,
+      "worker_cycles_min": 100,
+      "worker_run_wall_seconds": 19.809,
+      "worker_transition_counts_each": [
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    {
+      "captures_dropped": 0,
+      "captures_invalid": 0,
+      "chain_depth": 21,
+      "control_window_enabled": true,
+      "cpu_stream_records": 4616404,
+      "frame_timing": {
+        "PERF_BASELINE": "frames=120,p50_ms=17.000000,max_ms=20.000000",
+        "PERF_RECORDER": "frames=120,p50_ms=17.000000,max_ms=18.000000",
+        "PERF_WORKER": "frames=120,p50_ms=16.000000,max_ms=17.000000"
+      },
+      "generation_range_per_worker": [
+        1,
+        100
+      ],
+      "identity_collisions": 0,
+      "independent_identity_conflicts": 0,
+      "independently_audited_segments": 800,
+      "name": "campaign-next-run-8x21",
+      "native_worker_bytes": 723200,
+      "nonrom_occurrences": 0,
+      "opcode_mismatches": 0,
+      "outcome": "PASS",
+      "receipt_path": "build/thor-evidence/live-worker-control-2h/campaign-next-run-8x21/rom-link/count-8/receipt.json",
+      "required_cycles_per_worker": 100,
+      "ring_retention_failures": 0,
+      "runtime_errors": 0,
+      "segment_audit_path": "build/thor-evidence/live-worker-control-2h/campaign-next-run-8x21/rom-link/count-8/segment-audits.jsonl",
+      "segment_audit_sha256": "fd5243319cfd94a96c883124f3cdd90a9729d375f32f04e231ccbd7fef070a52",
+      "segments": 800,
+      "source_owned_delta": 0,
+      "stale_ack": 0,
+      "unique_capture_ids": 800,
+      "unsupported_decode_occurrences": 0,
+      "worker_count": 8,
+      "worker_cycles_max": 100,
+      "worker_cycles_min": 100,
+      "worker_run_wall_seconds": 11.265,
+      "worker_transition_counts_each": [
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    {
+      "captures_dropped": 0,
+      "captures_invalid": 0,
+      "chain_depth": 21,
+      "control_window_enabled": true,
+      "cpu_stream_records": 4768790,
+      "frame_timing": {
+        "PERF_BASELINE": "frames=120,p50_ms=17.000000,max_ms=20.000000",
+        "PERF_RECORDER": "frames=120,p50_ms=17.000000,max_ms=18.000000",
+        "PERF_WORKER": "frames=120,p50_ms=16.000000,max_ms=17.000000"
+      },
+      "generation_range_per_worker": [
+        1,
+        100
+      ],
+      "identity_collisions": 0,
+      "independent_identity_conflicts": 0,
+      "independently_audited_segments": 800,
+      "name": "campaign-live-restart-8x21",
+      "native_worker_bytes": 723200,
+      "nonrom_occurrences": 0,
+      "opcode_mismatches": 0,
+      "outcome": "PASS",
+      "receipt_path": "build/thor-evidence/live-worker-control-2h/campaign-live-restart-8x21/rom-link/count-8/receipt.json",
+      "required_cycles_per_worker": 100,
+      "ring_retention_failures": 0,
+      "runtime_errors": 0,
+      "segment_audit_path": "build/thor-evidence/live-worker-control-2h/campaign-live-restart-8x21/rom-link/count-8/segment-audits.jsonl",
+      "segment_audit_sha256": "e6e790d69935210f2a66274178a1bc870fa420281e668f471388db8823f73657",
+      "segments": 800,
+      "source_owned_delta": 0,
+      "stale_ack": 0,
+      "unique_capture_ids": 800,
+      "unsupported_decode_occurrences": 0,
+      "worker_count": 8,
+      "worker_cycles_max": 100,
+      "worker_cycles_min": 100,
+      "worker_run_wall_seconds": 11.532,
+      "worker_transition_counts_each": [
+        100,
+        100,
+        100,
+        100
+      ]
+    }
+  ],
+  "checkpoint": "M12-AUTO67-LIVE-WORKER-CONTROL-WINDOW-2H",
+  "incremental_patch_sha256": {
+    "bizhawk-2.11.1-live-worker-control-2h.patch": "4AE13A12682BEF5B2C002DFE084784809EDFB1CC20F2A6AC8A777DAD2BED13F3",
+    "genesis-plus-gx-live-forward-worker-control-2h.patch": "09D3BB6780FCF6C03BAEE63A0BD75215E7236CAC5A29BEE51C9C74776AD065F8"
+  },
+  "live_metrics_snapshot": {
+    "current_depth": 21,
+    "current_native_worker_bytes": 723200,
+    "current_worker_count": 8,
+    "evidence_bytes": 1477014,
+    "evidence_projected_gib_per_hour": 0.2748709664970186,
+    "evidence_rate_bytes_per_second": 81983.45914754212,
+    "projected_next_run_allocation": 723200,
+    "projected_next_run_free_ram": 13316695808,
+    "retention_failures": 0,
+    "runtime_errors": 0,
+    "saved_next_depth": 21,
+    "saved_next_worker_count": 8,
+    "segments": 800,
+    "system_available_ram": 13351038976,
+    "system_total_ram": 34121834496,
+    "thor_process_memory": 336490496,
+    "ui_process_memory": 33669120,
+    "ui_update_frequency_hz": 3.909465020587369,
+    "worker_captures_completed": 800,
+    "worker_captures_started": 800
+  },
+  "live_metrics_snapshot_source": "build/thor-evidence/live-worker-control-2h/campaign-live-restart-8x21/live-worker-control-status.json",
+  "live_save_proof": {
+    "current_during_save": {
+      "depth": 20,
+      "worker_count": 16
+    },
+    "restart_loaded": {
+      "depth": 21,
+      "worker_count": 8
+    },
+    "saved_for_next_run": {
+      "depth": 21,
+      "worker_count": 8
+    }
+  },
+  "native_wbx_sha256": "C8309FFAFA5545BA6CC4C5A4F41420F15F222F6F4275302D648F1EDFF02AD1F7",
+  "performance_comparison": {
+    "interpretation": "No measured Worker timing regression at 1 ms sample resolution; run-total CPU stream records are not a comparable throughput metric.",
+    "sample_frames": 120,
+    "window_disabled": {
+      "baseline": "frames=120,p50_ms=17,max_ms=17",
+      "cpu_stream_records": 10530746,
+      "recorder": "frames=120,p50_ms=17,max_ms=18",
+      "worker": "frames=120,p50_ms=16,max_ms=17"
+    },
+    "window_enabled": {
+      "baseline": "frames=120,p50_ms=17,max_ms=19",
+      "cpu_stream_records": 9270659,
+      "recorder": "frames=120,p50_ms=17,max_ms=18",
+      "worker": "frames=120,p50_ms=16,max_ms=17"
+    }
+  },
+  "production_architecture_changed": false,
+  "publication_artifact_policy": {
+    "evidence_root": "build/thor-evidence/live-worker-control-2h/",
+    "raw_sqlite_maps_logs_and_segment_audits_committed": false
+  },
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "source_owned": {
+    "after_bytes": 1475600,
+    "before_bytes": 1475600,
+    "delta_bytes": 0
+  },
+  "status": "PASS_LIVE_WORKER_CONTROL_WINDOW_V1",
+  "totals": {
+    "campaign_count": 5,
+    "independently_audited_segments": 6400,
+    "retention_failures": 0,
+    "runtime_errors": 0,
+    "segments": 6400,
+    "worker_cycles_each_per_run": 100
+  },
+  "validation": {
+    "bizhawk_release_host_build": "PASS_WITH_2_EXISTING_NU1902_ADVISORIES",
+    "debug_build": "PASS",
+    "debug_ctest": "208/208 PASS",
+    "focused_2h_tests": "17/17 PASS",
+    "git_diff_check": "PASS",
+    "gnu_build": "PASS",
+    "gnu_ctest": "208/208 PASS",
+    "python_compile": "PASS",
+    "release_build": "PASS",
+    "release_ctest": "208/208 PASS",
+    "source_file_limit": "PASS"
+  }
+}

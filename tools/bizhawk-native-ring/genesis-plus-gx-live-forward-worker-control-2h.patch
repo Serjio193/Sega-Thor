@@ -1,0 +1,47 @@
+--- a/core/debug/live_forward_trace.h
++++ b/core/debug/live_forward_trace.h
+@@ -12,6 +12,7 @@
+ #define OASIS_LF_METRICS_COUNT 30u
+ #define OASIS_LF_PLAN_COUNT 16u
+ #define OASIS_LF_LIFECYCLE_COUNT 4u
++#define OASIS_LF_WORKER_STATUS_COUNT 7u
+ 
+ extern uint32_t oasis_lf_recording_enabled;
+ 
+@@ -123,6 +124,8 @@
+ int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity);
+ int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
+                               uint32_t capacity);
++int oasis_lf_worker_status_get(uint32_t worker_id, uint64_t *output,
++                               uint32_t capacity);
+ int oasis_lf_mark_audited(uint32_t worker_id, uint64_t generation,
+                           uint32_t accepted);
+ void oasis_lf_cancel_pending(void);
+--- a/core/debug/live_forward_metrics.c
++++ b/core/debug/live_forward_metrics.c
+@@ -56,3 +56,25 @@
+   return (int)OASIS_LF_LIFECYCLE_COUNT;
+ }
+ 
++int oasis_lf_worker_status_get(uint32_t worker_id, uint64_t *output,
++                               uint32_t capacity)
++{
++  lf_worker *worker;
++  uint64_t progress = 0;
++  if (!output || capacity < OASIS_LF_WORKER_STATUS_COUNT ||
++      worker_id >= worker_count)
++    return 0;
++  worker = &workers[worker_id];
++  if (worker->state == LF_CAPTURING)
++    progress = control_flow_sequence - worker->entry_flow;
++  else if (worker->state == LF_COMPLETE || worker->state == LF_ANALYZING)
++    progress = worker->result.consumed_depth;
++  output[0] = worker->state;
++  output[1] = progress;
++  output[2] = worker->configured_depth;
++  output[3] = worker->capture_start_count;
++  output[4] = worker->capture_complete_count;
++  output[5] = worker->analysis_count;
++  output[6] = worker->release_count;
++  return (int)OASIS_LF_WORKER_STATUS_COUNT;
++}

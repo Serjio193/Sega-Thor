@@ -17,6 +17,7 @@ from typing import Callable
 from live_forward_scaling_audit import (
     RECORD, integer_list, overlap_peak, read_record_slice, validate_segment,
 )
+from live_forward_worker_control_model import calculate_resource_budget
 
 
 METRICS_NAMES = (
@@ -141,7 +142,8 @@ def configure_install(install: Path, output_dir: Path) -> Path:
 
 
 def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
-    on_segment: Callable[[dict[str, object], list[tuple[int, ...]], bytes], None] | None = None
+    on_segment: Callable[[dict[str, object], list[tuple[int, ...]], bytes], None] | None = None,
+    on_status: Callable[[dict[str, str], subprocess.Popen[bytes], float, int], None] | None = None
             ) -> dict[str, object]:
     output_dir = args.output_dir / phase / f"count-{count}"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -159,15 +161,19 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
     artifact_sha = hashlib.sha256(artifact.read_bytes()).hexdigest()
     memory = available_memory()
     available = memory["available_physical_bytes"]
-    process_budget = min(args.process_budget_bytes,
-        max(0, int(available or args.process_budget_bytes) - args.system_reserve_bytes))
-    transport_budget = args.memory_bytes + 1024 * 1024
+    budget = calculate_resource_budget(available,
+        native_budget_cap=args.native_budget_bytes,
+        process_budget_cap=args.process_budget_bytes,
+        core_reserve_cap=args.core_reserve_bytes,
+        system_reserve=args.system_reserve_bytes,
+        memory_bytes_each=args.memory_bytes)
+    process_budget = budget["process_budget_bytes"]
+    transport_budget = budget["host_transport_budget_bytes"]
     disk_transport_budget = (2 * count * args.memory_bytes +
         count * args.rounds * 1536 + count * 256 + 4 * 1024 * 1024)
     free_disk = shutil.disk_usage(output_dir).free
-    core_reserve = min(args.core_reserve_bytes, process_budget)
-    native_budget = min(args.native_budget_bytes,
-        max(0, process_budget - core_reserve - transport_budget))
+    core_reserve = budget["core_reserve_bytes"]
+    native_budget = budget["native_budget_bytes"]
     global LAST_RUN_ID
     run_id = max(int(time.time()) + os.getpid() % 100000, LAST_RUN_ID + 1)
     LAST_RUN_ID = run_id
@@ -184,20 +190,23 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
     if startup:
         startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         startup.wShowWindow = SW_SHOWNORMAL
+    if on_status:
+        env.update({"LF_CONTROL_ENABLE": "1",
+                    "LF_CONTROL_PREVIEW": str(output_dir / "live-worker-control-preview.txt")})
+        env["LF_NEXT_WORKERS"] = str(count)
+        env["LF_NEXT_DEPTH"] = str(depth)
     console_stream = console_log.open("wb")
     process = subprocess.Popen(command, cwd=args.install, env=env, startupinfo=startup,
                                stdout=console_stream, stderr=subprocess.STDOUT)
     tail = TailLines(raw)
-    previous_exit, cycle_counts, lifecycle_counts = [0] * count, [0] * count, [0] * count
+    previous_exit = cycle_counts = lifecycle_counts = workers_summary = None
     global_entry, round_workers, overlap_by_round = [0], {}, {}
     audit_stream_deltas: dict[int, int] = {}
-    workers_summary = [{"worker_id": worker, "capture_count": 0, "first_capture_id": None,
-        "last_capture_id": None, "first_entry_stream": None, "last_exit_stream": None,
-        "segment_chain_sha256": hashlib.sha256(b"").hexdigest()} for worker in range(count)]
     audit_hash, audit_count, peak_ws = hashlib.sha256(), 0, 0
     started, failure = time.monotonic(), None
     process_exit_at: float | None = None
     pending_changes: dict[str, str] = {}
+    last_status_publish = 0.0
     try:
         while time.monotonic() - started < args.timeout:
             changed = pending_changes or tail.poll()
@@ -205,6 +214,10 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
             ws = working_set(process)
             if ws is not None:
                 peak_ws = max(peak_ws, ws)
+            now = time.monotonic()
+            if on_status and now - last_status_publish >= 0.25:
+                on_status(dict(tail.values), process, started, audit_count)
+                last_status_publish = now
             for key, value in changed.items():
                 if not key.startswith("SEG_"):
                     continue
@@ -212,6 +225,13 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
                 if len(piece) != 3:
                     raise ValueError(f"malformed segment key: {key}")
                 cycle, worker = int(piece[1]), int(piece[2])
+                if cycle_counts is None:
+                    previous_exit, cycle_counts, lifecycle_counts = [0] * count, [0] * count, [0] * count
+                    workers_summary = [{"worker_id": index, "capture_count": 0,
+                        "first_capture_id": None, "last_capture_id": None,
+                        "first_entry_stream": None, "last_exit_stream": None,
+                        "segment_chain_sha256": hashlib.sha256(b"").hexdigest()}
+                        for index in range(count)]
                 identity = (cycle, worker)
                 if worker not in range(count) or cycle_counts[worker] + 1 != cycle:
                     raise ValueError(f"duplicate, skipped, or out-of-range segment {identity}")
@@ -304,8 +324,11 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
         if return_code:
             raise RuntimeError(f"EmuHawk exited with code {return_code}")
         values = tail.values
-        plan = integer_list(values["PLAN"], len(PLAN_NAMES), "native allocation plan")
-        outcome = values["RESULT"]
+        if on_status:
+            on_status(dict(values), process, started, audit_count)
+        plan = integer_list(values["PLAN"], len(PLAN_NAMES), "native allocation plan") \
+            if values.get("PLAN") else []
+        outcome = values.get("RESULT", "UNKNOWN")
         if outcome == "PASS":
             if audit_count != count * args.rounds:
                 raise ValueError(f"audited {audit_count} segments, expected {count * args.rounds}")
@@ -325,7 +348,9 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
             "phase": phase, "configured_count": count, "depth": depth,
             "memory_bytes_each": args.memory_bytes, "required_cycles_per_worker": args.rounds,
             "required_completed_segments": count * args.rounds, "outcome": outcome,
-            "plan": dict(zip(PLAN_NAMES, plan)), "allocation_budget_bytes": native_budget,
+            "plan": dict(zip(PLAN_NAMES, plan)) if plan else None,
+            "preflight_reason": values.get("PREFLIGHT_REASON"),
+            "allocation_budget_bytes": native_budget,
             "process_budget_bytes": process_budget, "host_transport_budget_bytes": transport_budget,
             "host_disk_transport_worst_case_bytes": disk_transport_budget,
             "available_host_disk_bytes": free_disk,
@@ -333,7 +358,7 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
             "peak_working_set_bytes": peak_ws or None, "rom_sha256": rom_sha,
             "native_artifact_sha256": artifact_sha, "run_id": run_id,
             "audited_segments": audit_count, "segment_audit_jsonl": str(audit_path.resolve()),
-            "segment_audit_sha256": audit_hash.hexdigest(), "workers": workers_summary,
+            "segment_audit_sha256": audit_hash.hexdigest(), "workers": workers_summary or [],
             "execution_window_overlap_by_round": overlap_by_round,
             "max_execution_window_overlap": max(overlap_by_round.values(), default=0),
             "host_audit_cpu_progress": {"rounds": len(audit_stream_deltas),

@@ -2171,6 +2171,40 @@ from the canonical Beyond Oasis map.
 `docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md`, and its compact JSON
 receipt.
 
+# ADR-M12-LIVE-WORKER-CONTROL-WINDOW-2H — Snapshot-only operator window
+**Status:** Accepted for the developer-only 2H checkpoint
+**Date:** 2026-09-18
+
+**Context:** The accepted 1B runtime already owns exact Worker transitions,
+per-Worker lifecycle counters, and the authoritative native allocation
+planner, while the accepted 2G launch provides canonical Beyond Oasis
+execution. Operators need live, legible status and a way to persist a future
+configuration without changing a running pool.
+
+**Decision:** Keep the operator window in a separate process. It reads one
+replaceable, bounded status snapshot and writes only a deterministic next-run
+configuration plus a replaceable preview request. The current launcher
+captures its configuration once before EmuHawk starts. During execution Lua
+may call only the existing native memory planner and a new read-only Worker
+status query at a bounded rate; it may not resize, reallocate, switch
+generations, or wait for settings. The launcher remains responsible for
+system/process memory sampling and measured evidence-size rate, and uses the
+same resource-budget calculation for preview and startup rejection.
+
+**Consequences:** Closing or slowing the window cannot back-pressure the
+runtime; Worker presentation uses native lifecycle state and current
+control-flow depth instead of a guessed progress value. Arbitrarily large
+positive decimal requests can be saved without UI clamping, then fail closed
+at exact native representability, allocation-plan, or process-budget checks.
+No CPU hook, Worker/FLOW semantics, production AUTO67, predecessor behavior,
+Cartographer/Archivist/2D/2E semantics, SOURCE_OWNED, or emission changes.
+
+**Evidence:** `tests/live_worker_control_test.py` and
+`docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` with its compact JSON
+receipt. Five real canonical-ROM campaigns completed 6,400 independently
+audited segments; window-off/on timing, current-run configuration immutability,
+and next-launch application are recorded in the report.
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15

@@ -12,6 +12,7 @@ extern "C" {
 #define OASIS_LF_METRICS_COUNT 30u
 #define OASIS_LF_PLAN_COUNT 16u
 #define OASIS_LF_LIFECYCLE_COUNT 4u
+#define OASIS_LF_WORKER_STATUS_COUNT 7u
 
 extern uint32_t oasis_lf_recording_enabled;
 
@@ -123,6 +124,8 @@ int oasis_lf_memory_plan_values(uint32_t worker_count, uint32_t depth,
 int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity);
 int oasis_lf_worker_lifecycle(uint32_t worker_id, uint64_t *output,
                               uint32_t capacity);
+int oasis_lf_worker_status_get(uint32_t worker_id, uint64_t *output,
+                               uint32_t capacity);
 int oasis_lf_mark_audited(uint32_t worker_id, uint64_t generation,
                           uint32_t accepted);
 void oasis_lf_cancel_pending(void);

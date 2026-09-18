@@ -9,11 +9,16 @@ local allocation_budget = assert(tonumber(os.getenv("LF_BUDGET_BYTES")), "LF_BUD
 local free_disk_bytes = assert(tonumber(os.getenv("LF_FREE_DISK_BYTES")), "LF_FREE_DISK_BYTES missing")
 local rounds = tonumber(os.getenv("LF_ROUNDS")) or 100
 local max_frames = tonumber(os.getenv("LF_MAX_FRAMES")) or 1800
+local control_enabled = os.getenv("LF_CONTROL_ENABLE") == "1"
+local control_preview_path = os.getenv("LF_CONTROL_PREVIEW")
+local saved_next_workers = tonumber(os.getenv("LF_NEXT_WORKERS")) or worker_count
+local saved_next_depth = tonumber(os.getenv("LF_NEXT_DEPTH")) or depth
 local raw = assert(io.open(raw_path, "w"))
 local log = assert(io.open(assert(os.getenv("BH_TEST_LOG")), "w"))
 local frame_count, ack_offset = 0, 0
 local completion_wait_frames, ack_wait_frames = 0, 0
 local worker_frame_times, worker_frame_enabled = {}, false
+local publish_control
 
 local function output(key, value)
     raw:write(key, "=", tostring(value), "\n")
@@ -26,6 +31,9 @@ local function advance(count, measure_worker)
         emu.frameadvance()
         frame_count = frame_count + 1
         if start then worker_frame_times[#worker_frame_times + 1] = (os.clock() - start) * 1000 end
+        if control_enabled and frame_count % 15 == 0 and publish_control then
+            publish_control()
+        end
     end
     if worker_frame_enabled and #worker_frame_times >= 120 then
         worker_frame_enabled = false
@@ -48,7 +56,9 @@ local function pipe_fields(value)
     return result
 end
 
-local function finish(code, result)
+local function finish(code, result, preflight_reason)
+    if control_enabled and publish_control then pcall(publish_control) end
+    if preflight_reason then output("PREFLIGHT_REASON", preflight_reason) end
     output("RESULT", result)
     raw:close()
     log:write("result=", result, "\n")
@@ -60,6 +70,57 @@ local function metric_snapshot()
     local value = genesis.live_forward_metrics()
     if value == "" then error("native lifecycle metrics missing") end
     return value
+end
+
+local function control_preview()
+    local next_workers, next_depth, worker_offset = saved_next_workers, saved_next_depth, 0
+    if control_preview_path then
+        local file = io.open(control_preview_path, "r")
+        if file then
+            local body = file:read("*a") or ""
+            file:close()
+            local status = body:match("status=(%u+)")
+            worker_offset = tonumber(body:match("worker_offset=(%d+)")) or 0
+            if status == "UNREPRESENTABLE" then
+                return 0, 0, "UNREPRESENTABLE", worker_offset
+            end
+            next_workers = tonumber(body:match("worker_count=(%d+)")) or next_workers
+            next_depth = tonumber(body:match("chain_depth=(%d+)")) or next_depth
+        end
+    end
+    if worker_offset >= worker_count then worker_offset = math.max(0, worker_count - 1) end
+    local plan = genesis.live_forward_memory_plan(next_workers, next_depth, memory_bytes)
+    if plan == "" then plan = "REJECTED" end
+    return next_workers, next_depth, plan, worker_offset
+end
+
+publish_control = function()
+    local metrics = fields(metric_snapshot())
+    if #metrics ~= 30 then error("native control metrics width mismatch") end
+    local pool_active = tonumber(metrics[1]) == worker_count and 1 or 0
+    local next_workers, next_depth, next_plan, worker_offset = control_preview()
+    local header = {frame_count, worker_count, depth, pool_active}
+    for _, value in ipairs(metrics) do header[#header + 1] = value end
+    local rows = {}
+    local stop = math.min(worker_count, worker_offset + 64)
+    for worker = worker_offset, stop - 1 do
+        local values
+        if pool_active == 1 then
+            values = fields(genesis.live_forward_worker_status(worker))
+        else
+            values = {}
+        end
+        if #values == 7 then
+            rows[#rows + 1] = table.concat({worker, values[1], values[2],
+                tonumber(values[3]) > 0 and values[3] or depth, values[4],
+                values[5], values[6], values[7]}, ",")
+        else
+            rows[#rows + 1] = table.concat({worker, 5, 0, depth, 0, 0, 0, 0}, ",")
+        end
+    end
+    output("LIVE_CONTROL", table.concat(header, ",") .. "|" ..
+        table.concat({next_workers, next_depth, next_plan}, ",") .. "|" ..
+        worker_offset .. "|" .. table.concat(rows, ";"))
 end
 
 local function benchmark(name, frames)
@@ -132,26 +193,29 @@ local function run()
     if not genesis.live_forward_enable(false) then error("cannot disable recorder for baseline") end
     benchmark("BASELINE", 120)
     local plan = genesis.live_forward_memory_plan(worker_count, depth, memory_bytes)
-    if plan == "" then error("native allocation plan rejected the requested Worker count") end
+    if plan == "" then
+        finish(0, "RESOURCE_PREFLIGHT_REJECTED", "NATIVE_PLANNER_REJECTED")
+        return
+    end
     output("PLAN", plan)
     local plan_values = fields(plan)
     local required_bytes = assert(tonumber(plan_values[16]), "native total allocation missing")
     if required_bytes > allocation_budget then
         output("REQUIRED_NATIVE_BYTES", required_bytes)
         output("ALLOCATION_BUDGET_BYTES", allocation_budget)
-        finish(0, "RESOURCE_PREFLIGHT_REJECTED")
+        finish(0, "RESOURCE_PREFLIGHT_REJECTED", "NATIVE_BUDGET_SHORTFALL")
         return
     end
     local required_disk_bytes = worker_count * (memory_bytes * 2 + rounds * 1536 + 256) + 4 * 1024 * 1024
     output("HOST_DISK_TRANSPORT_REQUIRED_BYTES", required_disk_bytes)
     output("HOST_DISK_AVAILABLE_BYTES", free_disk_bytes)
     if required_disk_bytes > free_disk_bytes then
-        finish(0, "HOST_TRANSPORT_PREFLIGHT_REJECTED")
+        finish(0, "HOST_TRANSPORT_PREFLIGHT_REJECTED", "HOST_DISK_BUDGET_SHORTFALL")
         return
     end
     if not genesis.live_forward_configure_bounded(worker_count, depth,
         memory_bytes, allocation_budget) then
-        finish(0, "NATIVE_ALLOCATION_REJECTED")
+        finish(0, "NATIVE_ALLOCATION_REJECTED", "NATIVE_ALLOCATION_FAILED")
         return
     end
     if not genesis.live_forward_enable(true) then error("cannot enable recorder after bounded configure") end

@@ -9806,3 +9806,59 @@ evidence remain local under ignored `build/`; only compact code, tests, docs,
 and deterministic receipts are publication inputs. No production AUTO67,
 Worker/FLOW runtime, predecessor logic, ownership, or emission semantics were
 changed. The broader M12 reconstruction milestone remains active.
+
+# 2026-09-18 — M12 Live Worker Control Window 2H — PASS_LIVE_WORKER_CONTROL_WINDOW_V1
+
+TASK / ACCEPTANCE: Continue from accepted 2G checkpoint
+`36dc7e6acc61eb534e4c5269ed30c3b875d54d75`. Add a separate compact native
+window fed only by a bounded replaceable status snapshot. Display exact current
+Worker states/depth, system and Thor process memory, exact native allocation
+plan for saved next-run settings, projected free memory, and measured evidence
+growth. Persist positive unbounded decimal Workers/depth for the next launch
+only; preserve the immutable current run and let the existing native planner
+and startup resource preflight accept or reject the exact request without
+clamping. Keep the production AUTO67 path, FLOW_V1 semantics, Worker lifecycle,
+Cartographer/Archivist/2D/2E semantics, SOURCE_OWNED and emission unchanged.
+
+ACCEPTANCE / RESULT: deterministic tests A–O for config save/load, current-run
+immutability, next-run application, unbounded positive integers, invalid
+syntax, exact preflight rejection, no clamp, worker/progress reconciliation,
+RAM accounting, measured/stationary evidence growth, closed and slow UI, and
+missing snapshots. Run one bounded canonical Beyond Oasis proof at 16 Workers
+× depth 20 with the window enabled and disabled, compare frame timing and
+runtime/retention metrics, save a different next-run configuration and verify
+it is active after restart. Produce compact Markdown/JSON reports with exact
+memory, evidence, UI cadence/process, Worker, segment, error, and source
+ownership metrics. Run Debug/Release builds and CTest, file-limit and diff
+checks, then publish and verify exact-SHA CI.
+
+RESULT: `PASS_LIVE_WORKER_CONTROL_WINDOW_V1`. Five real canonical-ROM
+campaigns passed: window-off 16×20 (1,600 segments), window-on 16×20 (1,600),
+save-while-running 16×20 while persisting 8×21 for next run (1,600), then
+8×21 (800) and a separate saved-config restart 8×21 (800). Every Worker
+completed 100 cycles per run. Independent audit JSONL SHA-256 matched each
+receipt; 6,400/6,400 segments were valid with unique capture IDs, generations
+1–100 per Worker, zero identity conflicts, zero unsupported/non-ROM decode
+occurrences, zero retention failures, and zero runtime errors. Mid-run SAVE
+left current 16×20 intact and the restart loaded exactly 8×21. In the paired
+120-frame performance sample, `PERF_WORKER` was 16 ms p50 / 17 ms max with
+the window both disabled and enabled; this shows no measured regression at
+the sample's millisecond resolution, not a claim of zero overhead. The live
+restart snapshot reported 8×21, native plan 723,200 bytes, 34,121,834,496
+bytes total RAM, 13,351,038,976 available, 336,490,496 Thor process bytes,
+723,200 projected next-run bytes, 13,316,695,808 projected free bytes,
+1,477,014 evidence bytes at 81,983.459 bytes/s (0.275 GiB/hour), 3.91 Hz
+snapshot cadence, and 33,669,120 UI process bytes. UI growth is measured
+evidence-tree growth over the observed sample, not a steady-state guarantee.
+
+VALIDATION: Debug and Release builds PASS; Debug and Release CTest 208/208;
+GNU build and CTest 208/208; focused 2H tests 17/17; Python compile PASS;
+source file limit PASS; `git diff --check` PASS. The restored musl toolchain
+built the 2H GPGX WBX and the isolated BizHawk Release host build succeeded
+(two existing NU1902 SharpCompress advisories). `SOURCE_OWNED` remains
+1,475,600 bytes, delta 0. Production AUTO67, predecessor logic, Worker 1B
+scaling semantics, FLOW_V1, Cartographer/Archivist/2D/2E, and emission are
+unchanged. Compact report/receipt are in `docs/reports/`; all SQLite/session
+maps, raw logs and segment audit data remain local under ignored
+`build/thor-evidence/live-worker-control-2h/`. The broader M12 milestone
+remains active. Exact-SHA CI publication follows this local validation.

@@ -22,6 +22,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_cartographer_test.py)
     add_test(NAME oasis_live_forward_rom_link
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_rom_link_test.py)
+    add_test(NAME oasis_live_worker_control
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_worker_control_test.py)
     add_test(NAME oasis_re_m12_screen_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/re_m12_screen_promote_test.py)
     add_test(NAME oasis_re_m12_gfx_max_helpers

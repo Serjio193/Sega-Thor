@@ -11,6 +11,20 @@ are in `docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and its JSON
 receipt. This 2G checkpoint is complete; the broader M12 reconstruction
 milestone remains active.
 
+# M12 Live Worker Control Window 2H — PASS_LIVE_WORKER_CONTROL_WINDOW_V1
+
+The separate snapshot-only Worker dashboard and next-run-only configuration
+are validated against five canonical BizHawk runs. Window-off and window-on
+16×20 runs each completed and independently audited 1,600/1,600 segments; a
+live save kept the active 16×20 pool unchanged and the subsequent 8×21 run
+loaded the exact saved configuration. Across the five runs, 6,400/6,400
+segments passed independent audit, each configured Worker completed 100
+cycles, and retention/runtime errors remained zero. `SOURCE_OWNED` remains
+1,475,600 bytes (delta 0); no Worker/FLOW, AUTO67, Cartographer/Archivist,
+2D/2E, or emission semantics changed. Report and compact receipt:
+`docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and `.json`. The
+broader M12 reconstruction milestone remains active.
+
 # M12 Canonical ROM Knowledge Map 2D — PASS_CANONICAL_ROM_KNOWLEDGE_MAP_V1
 
 The accepted AUTO61 `SOURCE_OWNED` manifest was reconciled to the earlier

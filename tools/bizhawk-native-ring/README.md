@@ -159,3 +159,55 @@ ceiling. Per-count receipts and audit JSONL files are under
 status are in
 `docs/reports/THOR_M12_AUTO67_LIVE_FORWARD_WORKER_1B_SCALING.md` and its JSON
 receipt.
+
+## M12 Live Worker Control Window 2H
+
+This incremental developer-only layer adds a separate `THOR WORKER CONTROL`
+Tk process. The host publisher writes one atomic replaceable status snapshot
+at a bounded 250 ms interval; the UI consumes only that file and saves a small
+deterministic next-run config. It cannot resize or reallocate the active pool.
+The preview calls the same native plan and host budget arithmetic as startup;
+requested positive decimal values are preserved and physical/API limits reject
+them explicitly without clamping. Evidence-tree bytes are sampled every two
+seconds and growth remains `CALCULATING` until at least five seconds of sample
+time exist.
+
+Apply these incremental patches after the accepted 1A and 1B patch pairs in
+the same isolated BizHawk 2.11.1 checkout and GPGX submodule:
+
+```sh
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-live-worker-control-2h.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-live-forward-worker-control-2h.patch
+```
+
+The BizHawk patch SHA-256 is
+`4AE13A12682BEF5B2C002DFE084784809EDFB1CC20F2A6AC8A777DAD2BED13F3`; the
+GPGX patch SHA-256 is
+`09D3BB6780FCF6C03BAEE63A0BD75215E7236CAC5A29BEE51C9C74776AD065F8`.
+The new native `oasis_lf_worker_status_get` query returns only state,
+depth-bounded progress, configured depth and the four lifecycle counts. It is
+read-only and follows the existing bounded Lua status request; it adds no CPU
+instruction callback. The launcher owns OS memory and evidence measurements.
+The Worker list is scrollable and reuses visible rows for large configured
+counts; closing or delaying the UI cannot block emulator work.
+
+Run the accepted canonical ROM campaign with the separate window enabled by
+adding `--control-window` to the existing 2B runtime command, for example:
+
+```powershell
+python tools/bizhawk-native-ring/live_forward_rom_link_runtime.py `
+  --install build/thor-evidence/live-worker-control-2h/coherent-bizhawk-2h `
+  --rom "C:/Github/gpgx-test-roms/Beyond Oasis (USA).md" `
+  --script tools/bizhawk-native-ring/live_forward_scaling.lua `
+  --output-dir build/thor-evidence/live-worker-control-2h/campaign `
+  --control-window
+```
+
+Without `--control-window`, the existing runtime starts without the dashboard.
+Persistent next-run values are stored at
+`build/thor-evidence/live-worker-control/next-run.json`; absence selects the
+accepted 16×20 defaults. The completed 2H campaigns, performance comparison,
+snapshot metrics and validation are in
+`docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and its compact JSON
+receipt. Raw/session SQLite, per-segment audits and runtime logs stay in the
+ignored `build/thor-evidence/live-worker-control-2h/` tree.

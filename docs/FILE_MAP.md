@@ -1616,3 +1616,23 @@ The A–O contract plus unsupported-fact stop are in
 `cmake/m12_auto2.cmake`; the canonical result is in
 `docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and its compact JSON
 receipt. Runtime databases and raw evidence remain ignored under `build/`.
+
+# M12 Live Worker Control Window 2H
+
+`tools/bizhawk-native-ring/live_forward_worker_control_model.py` validates
+unbounded positive next-run values, shares the launcher's resource-budget
+arithmetic, and decodes bounded Worker/status records. The host-only
+`live_forward_worker_control.py` publishes a replaceable 4 Hz snapshot and
+measured evidence growth; `live_forward_worker_control_window.py` renders it
+in a separate Tk process and writes only next-run configuration. The Lua
+status read uses the native read-only `oasis_lf_worker_status_get` API declared
+in `live_forward_trace.h` and implemented in `live_forward_metrics.c`.
+Regression coverage is in `tests/live_worker_control_test.py` and the native
+status assertions in `tests/live_forward_scaling_test.cpp`. Incremental
+BizHawk/GPGX integration patches are
+`tools/bizhawk-native-ring/bizhawk-2.11.1-live-worker-control-2h.patch` and
+`tools/bizhawk-native-ring/genesis-plus-gx-live-forward-worker-control-2h.patch`.
+The runtime proof and compact receipt are
+`docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and its JSON
+counterpart. Runtime/session databases and segment evidence remain ignored
+under `build/thor-evidence/`.

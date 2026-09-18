@@ -1,0 +1,45 @@
+--- a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
++++ b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+@@ -145,1 +145,8 @@
++		[LuaMethod("live_forward_worker_status", "Returns bounded read-only live Worker state and chain progress")]
++		public string LiveForwardWorkerStatus(int workerId)
++			=> Emulator is GPGX gpgx && workerId >= 0
++				? string.Join(",", gpgx.LiveForwardWorkerStatus((uint)workerId)
++					.Select(value => value.ToString(CultureInfo.InvariantCulture)))
++				: string.Empty;
++
+ 		[LuaMethod("live_forward_enable", "Enables or disables the opt-in native instruction recorder when all Workers are free")]
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+@@ -462,6 +462,10 @@
+ 			[Out] ulong[] output, uint capacity);
+ 
+ 		[BizImport(CallingConvention.Cdecl)]
++		public abstract uint gpgx_live_forward_worker_status(uint workerId,
++			[Out] ulong[] output, uint capacity);
++
++		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract int gpgx_live_forward_set_enabled(uint enabled);
+ 
+ 		[BizImport(CallingConvention.Cdecl)]
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+@@ -40,1 +40,8 @@
++		public ulong[] LiveForwardWorkerStatus(uint workerId)
++		{
++			var status = new ulong[7];
++			return Core.gpgx_live_forward_worker_status(workerId, status,
++				(uint)status.Length) == status.Length ? status : Array.Empty<ulong>();
++		}
++
+ 		public int LiveForwardSetEnabled(bool enabled)
+--- a/waterbox/gpgx/cinterface/live_forward_api.c
++++ b/waterbox/gpgx/cinterface/live_forward_api.c
+@@ -44,1 +44,7 @@
++GPGX_EX uint32_t gpgx_live_forward_worker_status(uint32_t worker_id,
++	uint64_t *output, uint32_t capacity)
++{
++	return oasis_lf_worker_status_get(worker_id, output, capacity);
++}
++
+ GPGX_EX int gpgx_live_forward_set_enabled(uint32_t enabled)
