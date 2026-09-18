@@ -171,6 +171,19 @@ register selection. The R2 checkpoint is
 counterpart. The proof is positive for register evidence but records the
 measured global-hook frame-time limitation; it does not claim smooth gameplay.
 
+AUTO67.6R2's `auto67_predecessor.py` also validates continuous, complete,
+audited FLOW_V1 intervals for runtime control provenance. The bounded
+post-run replay is in `auto67_control_provenance.py`; exact 68000 EA/register
+semantics are isolated in `auto67_control_provenance_decode.py`. The
+independent occurrence/source/target auditor and BizHawk campaign driver are
+`tools/bizhawk-native-ring/control_provenance_audit.py` and
+`control_provenance_campaign.py`. `tests/thor_evidence_control_provenance_test.py`
+covers exact pointer, offset, copy, selected-entry, generic-register and
+fail-closed cases; CTest runs it. The checkpoint distinguishes the emulator
+capability proof from the canonical-game witness in
+`docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2E.md` and its JSON receipt.
+Raw captures and per-segment outputs remain under ignored `build/`.
+
 `src/tools/re_full_split_run.py` owns the canonical generated-layout alias
 filter and deterministic full-layout writer; `src/tools/re_auto_promote.py`
 delegates to it. `tests/re_full_split_test.py` and

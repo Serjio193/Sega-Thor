@@ -15,6 +15,11 @@ V1_HEADER_BYTES = 56
 V2_HEADER_BYTES = 72
 RECORD_BYTES = 28
 REGISTER_MASKS = {"A4": 1, "A5": 2}
+SUPPORTED_REGISTERS = frozenset(
+    [f"D{index}" for index in range(8)] + [f"A{index}" for index in range(8)])
+FLOW_INSTRUCTION = 1
+FLOW_COMPLETE = 2
+FLOW_FAULTED = 4
 
 
 class PredecessorFormatError(ValueError):
@@ -184,7 +189,11 @@ def register_writes(rom: bytes, pc: int, opcode: int) -> dict[str, Any]:
         if source_mode in {3, 4}:
             writes.append({"register": f"A{source_reg}",
                            "semantics": f"MOVE source auto-update {source[0]['text']}"})
-        if dest_mode == 1:
+        if dest_mode == 0:
+            writes.append({"register": f"D{dest_reg}",
+                           "semantics": f"MOVE.{('L' if width == 4 else 'W' if width == 2 else 'B')} "
+                                         f"destination D{dest_reg}"})
+        elif dest_mode == 1:
             name = "MOVEA" if top in {2, 3} else "MOVE"
             writes.append({"register": f"A{dest_reg}",
                            "semantics": f"{name}.{('L' if width == 4 else 'W')} "
@@ -203,9 +212,17 @@ def register_writes(rom: bytes, pc: int, opcode: int) -> dict[str, Any]:
         return {"status": "PROVEN", "mnemonic": "LEA",
                 "writes": [{"register": f"A{dest_reg}",
                              "semantics": f"LEA {source[0]['text']},A{dest_reg}"}]}
+    if (opcode & 0xFFF8) == 0x4840:
+        register = opcode & 7
+        return {"status": "PROVEN", "mnemonic": "SWAP", "writes": [
+            {"register": f"D{register}", "semantics": f"SWAP D{register}"}]}
     if (opcode & 0xFFC0) == 0x4840:
         return {"status": "PROVEN", "mnemonic": "PEA", "writes": [
             {"register": "A7", "semantics": "PEA stack update"}]}
+    if (opcode & 0xFFF8) == 0x48C0:
+        register = opcode & 7
+        return {"status": "PROVEN", "mnemonic": "EXT.L", "writes": [
+            {"register": f"D{register}", "semantics": f"EXT.L D{register}"}]}
     if (opcode & 0xF1C0) == 0x40C0:
         mode, dest_reg = (opcode >> 3) & 7, opcode & 7
         writes = ([{"register": f"A{dest_reg}",
@@ -225,14 +242,60 @@ def register_writes(rom: bytes, pc: int, opcode: int) -> dict[str, Any]:
             return {"status": "PROVEN", "mnemonic": operation,
                     "writes": [{"register": f"A{dest_reg}",
                                  "semantics": f"{operation} address-register definition"}]}
+        if mode == 0:
+            operation = "SUBQ" if opcode & 0x0100 else "ADDQ"
+            return {"status": "PROVEN", "mnemonic": operation,
+                    "writes": [{"register": f"D{dest_reg}",
+                                "semantics": f"{operation} data-register definition"}]}
         if mode in {0, 2, 3, 4, 5, 6, 7}:
             return {"status": "PROVEN", "mnemonic": "SCC_OR_QUICK",
                     "writes": ([{"register": f"A{dest_reg}",
                                    "semantics": "address auto-update"}]
                                   if mode in {3, 4} else [])}
-    if top == 6 or opcode in {0x4E71, 0x4E75, 0x4E73}:
+    if top in {9, 13} and ((opcode >> 6) & 7) in {3, 7}:
+        destination = (opcode >> 9) & 7
+        operation = "SUBA" if top == 9 else "ADDA"
+        size = "L" if ((opcode >> 6) & 7) == 7 else "W"
+        return {"status": "PROVEN", "mnemonic": f"{operation}.{size}",
+                "writes": [{"register": f"A{destination}",
+                            "semantics": f"{operation}.{size} address-register definition"}]}
+    if (opcode & 0xFFF8) == 0x4E70 or opcode in {0x4E71, 0x4E75, 0x4E73}:
         return {"status": "PROVEN", "mnemonic": "CONTROL_OR_NOP", "writes": []}
+    if (opcode & 0xF100) == 0x7000:
+        register, immediate = (opcode >> 9) & 7, opcode & 0xFF
+        if immediate & 0x80:
+            immediate -= 0x100
+        return {"status": "PROVEN", "mnemonic": "MOVEQ", "writes": [
+            {"register": f"D{register}", "semantics": f"MOVEQ #{immediate},D{register}"}]}
+    if top == 6:
+        writes = ([{"register": "A7", "semantics": "BSR stack update"}]
+                  if (opcode >> 8) == 0x61 else [])
+        return {"status": "PROVEN", "mnemonic": "BRANCH", "writes": writes}
     return {"status": "UNKNOWN", "reason": f"unsupported opcode 0x{opcode:04X}"}
+
+
+def validate_flow_predecessor(segment: dict[str, Any],
+                              rows: list[tuple[int, ...]]) -> dict[str, Any]:
+    """Apply the predecessor interval identity, continuity and truncation gates."""
+    if not segment.get("valid") or not segment.get("ready_for_cartographer"):
+        return {"status": "STOP_CONTROL_PROVENANCE_SEGMENT_NOT_AUDITED"}
+    identity_keys = ("run_id", "epoch", "worker_id", "capture_id", "generation")
+    try:
+        identity = tuple(int(segment[key]) for key in identity_keys)
+    except (KeyError, TypeError, ValueError):
+        return {"status": "STOP_CONSUMER_OCCURRENCE_IDENTITY_MISMATCH"}
+    instructions = [(index, row) for index, row in enumerate(rows)
+                    if row[5] & FLOW_INSTRUCTION]
+    if any(row[5] & FLOW_FAULTED or not row[5] & FLOW_COMPLETE
+           for _, row in instructions):
+        return {"status": "STOP_PREDECESSOR_TRUNCATED",
+                "segment_identity": identity, "instructions": []}
+    for (_, previous), (_, current) in zip(instructions, instructions[1:]):
+        if current[1] != previous[1] + 1:
+            return {"status": "STOP_PREDECESSOR_GAP",
+                    "segment_identity": identity, "instructions": []}
+    return {"status": "PASS_BOUNDED_FLOW_PREDECESSOR_V1",
+            "segment_identity": identity, "instructions": instructions}
 
 
 def register_writer_candidate_report(rom: bytes) -> dict[str, Any]:
@@ -296,7 +359,7 @@ def resolve(capture: PredecessorCapture, rom: bytes,
     steps = []
     unresolved = []
     for register in requested:
-        if register not in REGISTER_MASKS or register not in consumer.registers:
+        if register not in SUPPORTED_REGISTERS or register not in consumer.registers:
             unresolved.append(register)
             continue
         candidate = None

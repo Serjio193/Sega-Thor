@@ -94,6 +94,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto66_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_test.py)
+    add_test(NAME oasis_re_thor_evidence_control_provenance_helpers
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_control_provenance_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_worker_clean_helpers
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/thor_evidence_auto67_worker_clean_test.py)
     add_test(NAME oasis_re_thor_evidence_auto67_ring_clean_helpers

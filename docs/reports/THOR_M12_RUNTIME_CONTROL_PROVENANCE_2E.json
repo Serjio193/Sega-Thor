@@ -1,0 +1,175 @@
+{
+  "schema": "oasis.m12.runtime-control-provenance.2e.v1",
+  "checkpoint": "M12-AUTO67-RUNTIME-CONTROL-PROVENANCE-2E",
+  "parent_sha": "f06256bb9e72ecc7fa14e9836ea7e007fc77a0ec",
+  "status": "PASS_RUNTIME_CONTROL_PROVENANCE_CAPABILITY_V1",
+  "canonical_game_runtime_witness": "NONE",
+  "implementation": {
+    "mode": "bounded post-run FLOW_V1 predecessor replay",
+    "uses_existing_predecessor": true,
+    "bounded_interval_gate": "PASS_BOUNDED_FLOW_PREDECESSOR_V1",
+    "registers": ["D0-D7", "A0-A7"],
+    "capabilities": [
+      "ROM memory read to register to executed indirect JMP/JSR",
+      "UNMODIFIED_FROM_MEMORY_READ direct-pointer gate",
+      "only actually selected indexed ROM entries",
+      "pointer versus transformed offset distinction"
+    ],
+    "fail_closed": [
+      "predecessor gap or truncation",
+      "unknown or overwritten register definition",
+      "unresolved historical RAM source",
+      "unsupported transform",
+      "FLOW next_pc mismatch",
+      "unmapped exact target instruction range"
+    ],
+    "FLOW_V1_changed": false,
+    "Worker_semantics_changed": false,
+    "production_AUTO67_changed": false,
+    "native_hot_path_hook_added": false,
+    "global_taint_or_memory_tracer_added": false,
+    "automatic_SOURCE_OWNED_promotion": false
+  },
+  "static_candidate_census": {
+    "status": "STATIC_CANDIDATE_ONLY",
+    "total": 671,
+    "indirect_jsr": 113,
+    "indirect_jmp": 558,
+    "runtime_or_code_claim": false
+  },
+  "capability_validation": {
+    "status": "PASS_CONTROL_PROVENANCE_MICRO",
+    "emulator": "BizHawk/GPGX isolated known-good install",
+    "run_id": 1789750665,
+    "worker_count": 1,
+    "cycles_per_worker": 100,
+    "completed_segments": 100,
+    "lifecycle_counts_per_worker": [100, 100, 100, 100],
+    "micro_rom_sha256": "517fd0167a848c7890726757b24f4a2636f88967396887779ef2d62682563216",
+    "gpgx_wbx_sha256": "4ac692a115cb5543bb3c2260fc04fdacd2cf5d963df59c17d87a12a30add3cd4",
+    "runtime_consumers": {
+      "total": 1000,
+      "indirect_jsr": 500,
+      "indirect_jmp": 500
+    },
+    "facts": {
+      "audited": 945,
+      "direct_unmodified_pointer_chains": 482,
+      "register_copy_pointer_chains_in_run": 0,
+      "transformed_offset_chains": 463,
+      "unsupported_transform_chains": 13,
+      "unresolved_chains": 42,
+      "unresolved_status_counts": {
+        "SOURCE_PREDECESSOR_UNRESOLVED": 17,
+        "SOURCE_UNRESOLVED": 25
+      },
+      "selected_jump_table_entries": 0,
+      "unique_source_rom_entries": 2,
+      "unique_pointer_relations": 1,
+      "unique_offset_relations": 1,
+      "unique_jump_table_relations": 0,
+      "unique_target_rom_instructions": 2,
+      "unique_source_ranges": [
+        {"start": 1280, "end": 1284, "meaning": "ROM longword pointer"},
+        {"start": 1296, "end": 1298, "meaning": "signed ROM word offset"}
+      ],
+      "unique_target_ranges": [
+        {"start": 768, "end": 770, "type": "M68K_RTS"},
+        {"start": 1408, "end": 1414, "type": "M68K_JMP_ABSOLUTE_LONG"}
+      ],
+      "canonical_relation_count": 0,
+      "synthetic_evidence_occurrence_count": 945,
+      "false_provenance_detections": 0,
+      "flow_mismatches": 0,
+      "identity_conflicts": 0
+    },
+    "independent_audit": {
+      "segments": 100,
+      "consumer_occurrences_reconciled": 1000,
+      "facts_reconciled": 945,
+      "audit_jsonl_sha256": "c6935ea48758cd3aa23a6b785cfbb338354cbaf6fef3c2f35a4b203e16c6cf84",
+      "analysis_jsonl_sha256": "e16c85f164ffe21eea4426d7128190de9eb062981fb9934d7c9fa105ef3e9970"
+    },
+    "worker_chain_sha256": "360cf53f08984d0f14ad523f0396e85e2d2c5a8d994ef9e5d8de340d12251f65",
+    "segment_audit_sha256": "eba3fb70bc28e33c2e89255e6afdf5fa25c41009eb83e47efae37c9b5375b2b2"
+  },
+  "canonical_beyond_oasis_proof": {
+    "status": "PASS_CONTROL_PROVENANCE_CANONICAL_WITNESS_NONE",
+    "run_id": 1789749577,
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "gpgx_wbx_sha256": "4ac692a115cb5543bb3c2260fc04fdacd2cf5d963df59c17d87a12a30add3cd4",
+    "worker_count": 1,
+    "cycles_per_worker": 100,
+    "completed_segments": 100,
+    "lifecycle_counts_per_worker": [100, 100, 100, 100],
+    "indirect_consumers": {
+      "total": 0,
+      "indirect_jsr": 0,
+      "indirect_jmp": 0
+    },
+    "pointer_relations": 0,
+    "offset_relations": 0,
+    "selected_jump_table_entries": 0,
+    "canonical_relation_count": 0,
+    "evidence_occurrence_count": 0,
+    "independent_audit_segments": 100,
+    "false_provenance_detections": 0,
+    "flow_mismatches": 0,
+    "identity_conflicts": 0,
+    "minimum_cpu_stream_records_per_round": 6725,
+    "total_cpu_stream_records_during_host_audit": 974412,
+    "capture_invalid": 0,
+    "capture_dropped": 0,
+    "ring_retention_failures": 0,
+    "segment_audit_sha256": "be1c8a223f33d92620e8e06fefd8188d5fed7e325e958fca3fca5ad24ccf5cf1"
+  },
+  "knowledge_map_effects": {
+    "canonical_objects_added": 0,
+    "canonical_relations_added": 0,
+    "canonical_evidence_occurrences_added": 0,
+    "accepted_2d_map_modified": false,
+    "reason": "canonical_game_runtime_witness is NONE; synthetic facts remain capability evidence"
+  },
+  "performance": {
+    "feature_location": "post-run host callback before existing ACK; no CPU hot-path instrumentation",
+    "micro_frame_timing": {
+      "recorder_disabled": {"frames": 120, "p50_ms": 17, "max_ms": 17},
+      "recorder_enabled": {"frames": 120, "p50_ms": 17, "max_ms": 18},
+      "worker_active": {"frames": 120, "p50_ms": 16, "max_ms": 19}
+    },
+    "canonical_frame_timing": {
+      "recorder_disabled": {"frames": 120, "p50_ms": 17, "max_ms": 19},
+      "recorder_enabled": {"frames": 120, "p50_ms": 17, "max_ms": 18},
+      "worker_active": {"frames": 120, "p50_ms": 16, "max_ms": 19}
+    },
+    "micro_worker_run_wall_seconds": 5.006,
+    "canonical_worker_run_wall_seconds": 5.005,
+    "micro_cpu_ring_wraps_expected": 1039,
+    "canonical_cpu_ring_wraps_expected": 996,
+    "new_side_event_count": 0,
+    "new_side_ring_overwrites": null,
+    "new_side_ring_overwrites_note": "not applicable; no supplemental side ring was added"
+  },
+  "ownership": {
+    "source_owned_before_bytes": 1475600,
+    "source_owned_after_bytes": 1475600,
+    "source_owned_delta": 0
+  },
+  "validation": {
+    "focused_control_provenance_tests": "22/22 PASS",
+    "existing_auto67_predecessor_tests": "17/17 PASS",
+    "python_compile": "PASS",
+    "debug_build": "PASS",
+    "debug_ctest": "206/206 PASS",
+    "release_build": "PASS",
+    "release_ctest": "206/206 PASS",
+    "source_file_limit": "PASS (included in both CTest runs)",
+    "git_diff_check": "PASS",
+    "exact_sha_ci": "Verified after push against the final commit SHA; CI details are returned with the publication result"
+  },
+  "evidence_retention": {
+    "raw_runtime_and_session_data_committed": false,
+    "runtime_evidence_root": "build/thor-evidence/runtime-control-provenance-2e-final-checked/",
+    "only_compact_reports_and_source_tests_are_publication_inputs": true
+  }
+}

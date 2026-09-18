@@ -9680,3 +9680,69 @@ predecessor behavior, Worker/FLOW semantics and existing runtime evidence were
 not changed. The generated knowledge SQLite, prior in-progress local SQLite,
 raw FLOW/session evidence and ROM remain under ignored `build/`; only code,
 tests, docs and the 7.46 MB deterministic JSON receipt are publication inputs.
+
+# 2026-09-18 — M12 Runtime Control Provenance 2E — COMPLETE
+
+TASK: Continue from `f06256bb9e72ecc7fa14e9836ea7e007fc77a0ec`. Extend the
+existing bounded AUTO67 predecessor/reaching-definition path to classify only
+executed indirect JMP/JSR occurrences from exact FLOW_V1 segments. Preserve
+producer/consumer occurrence identity, exact canonical source bytes, the
+actual `next_pc`, generic D0-D7/A0-A7 register semantics, and fail-closed gap,
+epoch, overwrite, unsupported-writer and transform behavior. Distinguish
+unmodified ROM pointers from transformed offsets and emit only selected table
+entries. No predicted targets, unused entries, ownership promotion, FLOW_V1
+change, Worker change, production runtime change or global memory/instruction
+hook is in scope. `SOURCE_OWNED` must remain 1,475,600 bytes (delta 0).
+
+ACCEPTANCE: deterministic tests for the required A-P cases; a synthetic
+BizHawk/GPGX M68K micro-program capture where the existing bounded native
+FLOW_V1 path permits it; a bounded canonical-ROM natural capture after tests;
+an independent audit; separate capability and Beyond Oasis witness results;
+Debug/Release build and CTest; source file limit and `git diff --check`; compact
+2E report/receipt. Existing 2B evidence is the baseline input, not a reason to
+repeat its campaign. Add no native hot-path hook unless the emulator-level
+proof demonstrates that FLOW_V1 plus bounded predecessor is insufficient.
+
+INITIAL EVIDENCE: HEAD and `origin/main` both equal the accepted 2D SHA above;
+tracked tree is clean. The saved 2B run has 199,630 instructions and zero
+indirect JMP/JSR occurrences. A syntax-only scan of the canonical ROM finds
+671 possible indirect encodings (STATIC_CANDIDATE only); this is not a code or
+runtime assertion.
+
+RESULT: `PASS_RUNTIME_CONTROL_PROVENANCE_CAPABILITY_V1`; canonical
+Beyond Oasis witness is explicitly `NONE`. The final synthetic BizHawk/GPGX
+run (`1789750665`) completed 100/100 Worker cycles and independently audited
+1,000 actual indirect consumers: 500 JSR and 500 JMP. It accepted 945 facts
+(482 unmodified pointers and 463 transformed offsets), with 13 unsupported
+transforms and 42 unresolved predecessor cases left as non-facts. Deduplication
+produced two synthetic relations and two exact target ranges. The final
+canonical natural run (`1789749577`) completed 100/100 cycles with all four
+lifecycle counters at 100, positive CPU stream progress in every audited
+round, zero invalid/dropped/retention-failed captures, and zero indirect
+consumers. The accepted 2D map received no objects, relations, or evidence;
+`SOURCE_OWNED` stayed 1,475,600 bytes (delta 0).
+
+The first micro-ROM launch used a `.bin` suffix; BizHawk did not select GPGX
+for the unknown CRC and did not start Lua. That isolated harness startup probe
+was stopped before any runtime segment existed. Giving the same synthetic ROM
+the registered `.md` suffix selected the existing GPGX core; no emulator,
+WBX, Worker, or FLOW code was changed. The final 100-cycle run and complete
+independent audit then passed.
+
+PERFORMANCE: both final runs measured recorder-disabled/enabled p50 at
+17/17 ms; Worker-active p50 was 16 ms. Worker-active maximum was 19 ms in both
+runs versus recorder-disabled maxima of 17 ms (micro) and 19 ms (canonical).
+Each measurement covered 120 frames. The existing CPU ring wrapped 1,039 and
+996 times respectively with zero retention failures; no supplemental side
+event ring or hot-path hook was added. This records the observed sample without
+claiming a statistical tail-latency proof.
+
+VALIDATION: Debug build PASS; Debug CTest 206/206; Release build PASS; Release
+CTest 206/206; focused 2E tests 22/22; existing AUTO67.6 predecessor tests
+17/17; Python compilation PASS; project file-limit CTest PASS in both
+configurations. Exact runtime proof and hashes are in
+`docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2E.md` and its JSON receipt.
+The final pre-publication `git diff --check` and exact-SHA GitHub Actions check
+are recorded in the publication result. Raw ROM, micro ROM, runtime FLOW,
+campaign receipts and segment audit JSONL stay under ignored `build/` and are
+not intended for Git.
