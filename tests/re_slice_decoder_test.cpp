@@ -40,6 +40,29 @@ int main() {
     assert(jump_slice.control_flow.front().target == 8U);
     assert(jump_slice.control_flow.front().kind == FlowKind::direct_jump);
 
+    std::vector<std::uint8_t> absolute_word_rom(0x12, 0x4E);
+    absolute_word_rom[0] = 0x4E; absolute_word_rom[1] = 0xB8;
+    absolute_word_rom[2] = 0x00; absolute_word_rom[3] = 0x10;
+    absolute_word_rom[4] = 0x4E; absolute_word_rom[5] = 0x75;
+    absolute_word_rom[0x10] = 0x4E; absolute_word_rom[0x11] = 0x75;
+    const auto absw_call = decode_m68k_slice(absolute_word_rom,
+        {.entry = 0, .byte_budget = absolute_word_rom.size()});
+    assert(absw_call.control_flow.size() == 1U);
+    assert(absw_call.control_flow.front().target == 0x10U);
+    assert(absw_call.control_flow.front().kind == FlowKind::direct_call);
+
+    std::vector<std::uint8_t> pc_relative_rom{
+        0x4E, 0xBA, 0x00, 0x06, // jsr 6(pc), target 8
+        0x4E, 0x75,
+        0x4E, 0x71,
+        0x4E, 0x75,
+    };
+    const auto pc_call = decode_m68k_slice(pc_relative_rom,
+        {.entry = 0, .byte_budget = pc_relative_rom.size()});
+    assert(pc_call.control_flow.size() == 1U);
+    assert(pc_call.control_flow.front().target == 8U);
+    assert(pc_call.control_flow.front().kind == FlowKind::direct_call);
+
     std::vector<std::uint8_t> memory_case{
         0x33, 0xFC, 0x12, 0x34, 0x00, 0xFF, 0x00, 0x10, // move.w #$1234,$FF0010
         0x4E, 0x91,                                     // jsr (a1)
