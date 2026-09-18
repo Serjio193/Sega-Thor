@@ -1600,3 +1600,19 @@ the writer-thread ownership, all-step canonicalization and drop metrics in
 `docs/reports/THOR_M12_AUTO67_CARTOGRAPHER_SEAM_1.md` plus JSON.
 The follow-up removes live-chain output and is recorded in
 `docs/reports/THOR_M12_AUTO67_LEGACY_CHAIN_CLEAN_1.md` plus JSON.
+
+# M12 Archivist → Canonical Knowledge Pipeline 2G
+
+`src/tools/thor_evidence/live_forward_archivist.py` emits a compact
+content-addressed merge receipt. `rom_knowledge_live_import.py` validates the
+MAP-1/Archivist chain and relation vocabulary; `rom_knowledge_live_delta.py`
+translates one accepted session into stable 2D objects, claims, relations and
+evidence. `rom_knowledge_pipeline.py` builds an ignored versioned pair of
+master/knowledge SQLite databases, independently audits it, then atomically
+selects the pair through `current.json`. `rom_knowledge_pipeline_audit.py`
+recomputes graph and canonical evidence without using importer calculations.
+The A–O contract plus unsupported-fact stop are in
+`tests/rom_knowledge_pipeline_test.py`, registered in
+`cmake/m12_auto2.cmake`; the canonical result is in
+`docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and its compact JSON
+receipt. Runtime databases and raw evidence remain ignored under `build/`.

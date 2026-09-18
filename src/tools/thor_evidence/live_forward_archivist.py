@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sqlite3
@@ -48,6 +49,40 @@ def _inspect(path: Path) -> tuple[dict[str, str], dict[str, Any]]:
     if expected and expected != actual_graph_hash:
         raise ValueError("STOP_ARCHIVIST_GRAPH_MISMATCH")
     return metadata, {**metrics, "graph_hash": actual_graph_hash}
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _merge_receipt(rom_sha256: str, session_meta: dict[str, str],
+                   session_metrics: dict[str, Any], master_before: dict[str, Any] | None,
+                   master_after: dict[str, Any], mode: str, source_sha256: str) -> dict[str, Any]:
+    receipt = {
+        "schema": "oasis.m12.archivist-merge-receipt.v1",
+        "rom_sha256": rom_sha256,
+        "session_id": session_meta["live_forward_session_id"],
+        "session_graph_hash": session_metrics["graph_hash"],
+        "master_graph_hash_before": master_before["graph_hash"] if master_before else None,
+        "master_graph_hash_after": master_after["graph_hash"],
+        "merge_mode": mode,
+        "session_node_count": session_metrics["nodes"],
+        "session_edge_count": session_metrics["edges"],
+        "master_node_count_before": master_before["nodes"] if master_before else 0,
+        "master_edge_count_before": master_before["edges"] if master_before else 0,
+        "master_node_count_after": master_after["nodes"],
+        "master_edge_count_after": master_after["edges"],
+        "conflict_count": master_after["conflicts"],
+        "source_artifact_sha256": source_sha256,
+    }
+    receipt["receipt_sha256"] = hashlib.sha256(json.dumps(
+        receipt, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")).hexdigest()
+    return receipt
 
 
 def archive_session(master_path: Path, session_path: Path,
@@ -97,13 +132,16 @@ def archive_session(master_path: Path, session_path: Path,
             final_metrics["nodes"] < master_graph_before["nodes"] or
             final_metrics["edges"] < master_graph_before["edges"]):
         raise ValueError("STOP_ARCHIVIST_MERGE_LOSS")
-    return {"status": "PASS", "mode": "MERGE" if master_existed else "SEED",
+    mode = "MERGE" if master_existed else "SEED"
+    receipt = _merge_receipt(session_meta["rom_sha256"], session_meta,
+        session_metrics, master_graph_before, final_metrics, mode, _file_sha256(session_path))
+    return {"status": "PASS", "mode": mode,
             "warning": None, "session_id": session_meta["live_forward_session_id"],
             "session_graph_hash": session_metrics["graph_hash"],
             "master_graph_hash_before": master_hash_before,
             "master_graph_hash_after": final_metrics["graph_hash"],
             "master_nodes": final_metrics["nodes"], "master_edges": final_metrics["edges"],
-            "global_merge": result}
+            "global_merge": result, "merge_receipt": receipt}
 
 
 def main() -> int:

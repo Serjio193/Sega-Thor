@@ -2139,6 +2139,38 @@ production AUTO67, predecessor logic or roadmap status changes.
 `docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.md` (full runtime and saved-result
 acceptance passed).
 
+# ADR-M12-ARCHIVIST-CANONICAL-KNOWLEDGE-PIPELINE-2G — Atomic post-run bridge
+**Status:** Accepted for the developer-only 2G checkpoint
+**Date:** 2026-09-18
+
+**Context:** Accepted closed MAP-1 sessions could be merged by Archivist and
+canonicalized by 2D, but the handoff was manual. Updating the Archivist master
+and canonical knowledge DB separately could expose a half-published checkpoint.
+
+**Decision:** Keep Cartographer, Archivist, and 2D responsibilities separate.
+Archivist returns a hash-bound merge receipt without inline lineage. A
+delta-oriented adapter validates the session/master graph chain and translates
+only supported factual MAP-1 records to stable ROM-SHA/range/type identities;
+runtime coordinates and occurrences remain evidence locators. Build the
+master and knowledge databases as one ignored immutable generation, replay the
+import to prove idempotence, independently audit it, then atomically publish a
+single `current.json` pointer to the pair. A failed import or audit leaves the
+previous pointer and generation untouched. Unsupported factual types stop with
+`UNMAPPED_FACT_TYPE`; runtime observations cannot change SOURCE_OWNED or the
+emission partition. 2E pointer, offset, and selected table relations are
+accepted only from exact-byte synthetic fixtures until a canonical witness
+exists.
+
+**Consequences:** Canonical knowledge can be refreshed automatically after a
+closed session with rollback-safe publication. No CPU/runtime callback,
+Worker/FLOW behavior, production AUTO67, predecessor semantics, ownership, or
+emission classification changes. Synthetic relation fixtures remain isolated
+from the canonical Beyond Oasis map.
+
+**Evidence:** `tests/rom_knowledge_pipeline_test.py`,
+`docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md`, and its compact JSON
+receipt.
+
 # ADR-AUTO67-PREDISPATCH-TRANSPORT-CLEAN-1R1 — Final snapshot closes the cursor
 **Status:** Accepted for M12 AUTO67
 **Date:** 2026-09-15

@@ -1,3 +1,16 @@
+# M12 Archivist → Canonical Knowledge Pipeline 2G — PASS_ARCHIVIST_CANONICAL_KNOWLEDGE_PIPELINE_V1
+
+The post-run pipeline now carries a closed exact-ROM Cartographer MAP-1
+session through Archivist merge, delta canonical import, atomic paired map
+publication, independent audit, and a compact receipt. A bounded canonical
+BizHawk/GPGX campaign completed 100 repeated captures for each of 16 Workers
+(1,600/1,600 segments audited). Idempotent replay, stable identities,
+evidence accumulation, fail-closed unsupported facts, and unchanged
+`SOURCE_OWNED` (1,475,600 bytes; delta 0) and emission are verified. Details
+are in `docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and its JSON
+receipt. This 2G checkpoint is complete; the broader M12 reconstruction
+milestone remains active.
+
 # M12 Canonical ROM Knowledge Map 2D — PASS_CANONICAL_ROM_KNOWLEDGE_MAP_V1
 
 The accepted AUTO61 `SOURCE_OWNED` manifest was reconciled to the earlier

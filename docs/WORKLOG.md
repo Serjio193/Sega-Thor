@@ -9746,3 +9746,63 @@ The final pre-publication `git diff --check` and exact-SHA GitHub Actions check
 are recorded in the publication result. Raw ROM, micro ROM, runtime FLOW,
 campaign receipts and segment audit JSONL stay under ignored `build/` and are
 not intended for Git.
+
+# 2026-09-18 — M12 Archivist → Canonical Knowledge Pipeline 2G — PASS_ARCHIVIST_CANONICAL_KNOWLEDGE_PIPELINE_V1
+
+TASK / ACCEPTANCE: Continue from accepted 2E checkpoint
+`6b5b31c45900ef0065d2f326119dfb15d796fa1a`. Connect a closed, exact-ROM MAP-1
+runtime session through Archivist merge, delta-oriented canonical knowledge
+import, atomic map publication, independent end-to-end audit, and compact
+receipt. Preserve the separate responsibilities and fail-closed boundaries of
+Cartographer, Archivist, and the 2D map. Prove seed, merge, idempotent replay,
+overlapping execution/evidence accumulation, instruction and address-only
+terminal relations, exception exclusion, the three 2E relation types, ROM and
+session conflicts, audit rollback, SOURCE_OWNED protection, and emission
+immutability. Run one bounded canonical capture with the accepted Worker/FLOW
+and exact ROM-link tooling; do not search for special gameplay or alter
+production runtime, Worker/FLOW semantics, predecessor logic, ownership, or
+emission classifications.
+
+ACCEPTANCE GATES: independent reconciliation from session graph through the
+accepted Archivist master into stable canonical identities/evidence refs;
+repeat import adds zero rows and preserves all map hashes; a new overlapping
+session adds evidence without duplicating objects/relations; unsupported
+factual MAP-1 types stop with `UNMAPPED_FACT_TYPE`; the previous accepted
+master/knowledge generation remains selected after any failed audit; runtime
+SOURCE_OWNED remains 1,475,600 bytes (delta 0); emission hash and byte totals
+remain unchanged; Debug/Release build and CTest, file-limit, and diff checks
+pass; publish only compact source/tests/docs/receipts and verify exact-SHA CI.
+
+RESULT: `PASS_ARCHIVIST_CANONICAL_KNOWLEDGE_PIPELINE_V1`, generation
+`gen-ad80876f1056ff52-9f6502c9`. Archivist merged the closed 2A session into
+the accepted master (369 → 718 nodes; 406 → 762 edges; zero conflicts). The
+canonical map gained 30 objects, 30 claims, 36 relations, and 1,508 evidence
+references; replay was idempotent. Independent audit passed. The final
+canonical map has 3,824 objects, 6,289 claims, 400 relations, and 9,476
+evidence references. `SOURCE_OWNED` stayed 1,475,600 bytes (delta 0), and
+emission bytes/hash stayed unchanged. Exact hashes, relation counts, and
+before/after map hashes are in the compact report and JSON receipt at
+`docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and
+`docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.json`.
+
+RUNTIME EVIDENCE: one bounded canonical BizHawk/GPGX run completed 16 Workers
+× 100 repeated captures each: 1,600/1,600 segments independently audited,
+1,600 unique capture IDs, 195,547 instruction occurrences, and 1,600 terminal
+address facts. Every Worker passed all 100 lifecycle cycles. The runtime
+receipt reports zero identity conflicts, opcode mismatches, unresolved facts,
+unsupported decodes, or SOURCE_OWNED delta. A preceding probe stopped at 902
+segments because of ACK timeout: Cartographer recomputed the full accumulated
+lineage/map before each ACK. The fix accumulates lineage in RAM SQLite and
+defers expensive folding until post-run. This probe is recorded as a
+superseded tooling failure, not a final runtime failure. Worker/native/Lua
+hot-path code and the accepted 1B scaling architecture were not changed.
+
+VALIDATION: Python compilation and focused 2G tests 18/18 PASS; Debug and
+Release builds PASS; Debug and Release CTest 207/207 PASS; source file limit
+PASS; `git diff --check` PASS. The campaign was run once against the canonical
+ROM and its closed session was reused for final post-run publication checks.
+Approximately 2.1 GiB of SQLite maps, raw segment logs, and runtime/session
+evidence remain local under ignored `build/`; only compact code, tests, docs,
+and deterministic receipts are publication inputs. No production AUTO67,
+Worker/FLOW runtime, predecessor logic, ownership, or emission semantics were
+changed. The broader M12 reconstruction milestone remains active.
