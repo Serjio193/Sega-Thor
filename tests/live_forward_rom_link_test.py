@@ -21,7 +21,7 @@ import live_forward_rom_link_audit as independent_audit
 from live_forward_cartographer import LiveForwardCartographer
 
 
-PACK = struct.Struct("<QQIIHHI")
+PACK = independent_audit.RECORD
 
 
 def _require(value: bool, message: str) -> None:
@@ -81,8 +81,9 @@ def main() -> None:
             rom_path, decoder = root / "rom.bin", root / "decoder.exe"
             rom_path.write_bytes(rom)
             decoder.write_bytes(b"synthetic decoder identity")
-            rows_a = [(1, 1, 0, 2, 0x4E71, 1, 0), (2, 2, 2, 0x20, 0x48E7, 1, 0)]
-            rows_b = [(3, 3, 0, 2, 0x4E71, 1, 0)]
+            rows_a = [(1, 1, 0, 0, 2, 0x4E71, 1, 0, 0, 0, 0, 0),
+                      (2, 2, 0, 2, 0x20, 0x48E7, 1, 0, 0, 0, 0, 0)]
+            rows_b = [(3, 3, 0, 0, 2, 0x4E71, 1, 0, 0, 0, 0, 0)]
             session, linker = _graph([(0, rows_a), (1, rows_b)])
             result = linker.project(session.graph, rom_path, decoder, root / "first")
             _require(result["status"] == "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE",
@@ -185,7 +186,7 @@ def main() -> None:
             else:
                 raise AssertionError("independent auditor accepted a corrupted unsampled FLOW lineage")
 
-            ram_row = [(1, 1, 0xFF0000, 0x100, 0x4E71, 1, 0)]
+            ram_row = [(1, 1, 0, 0xFF0000, 0x100, 0x4E71, 1, 0, 0, 0, 0, 0)]
             ram_session, ram_linker = _graph([(0, ram_row)])
             ram_result = ram_linker.project(ram_session.graph, rom_path, decoder, root / "ram")
             _require(ram_result["unique_instruction_ranges"] == 0 and
@@ -208,7 +209,7 @@ def main() -> None:
                 raise AssertionError("RAM address falsely resolved to ROM")
             false_session.close()
 
-            unsupported_row = [(1, 1, 6, 8, 0xF000, 1, 0)]
+            unsupported_row = [(1, 1, 0, 6, 8, 0xF000, 1, 0, 0, 0, 0, 0)]
             linkage.LiveForwardRomLinker._decode_batch = staticmethod(
                 lambda decoder, rom_path, pcs, output: {pc: decode_table[pc] for pc in pcs})
             unsupported_session, unsupported_linker = _graph([(0, unsupported_row)])
@@ -223,7 +224,7 @@ def main() -> None:
             mismatch_table[0] = _resolution(0, "ROM", 0, "DECODED", 0x48E7, rom[:2])
             linkage.LiveForwardRomLinker._decode_batch = staticmethod(
                 lambda decoder, rom_path, pcs, output: {pc: mismatch_table[pc] for pc in pcs})
-            mismatch_session, mismatch_linker = _graph([(0, [(1, 1, 0, 2, 0x4E71, 1, 0)])])
+            mismatch_session, mismatch_linker = _graph([(0, [(1, 1, 0, 0, 2, 0x4E71, 1, 0, 0, 0, 0, 0)])])
             try:
                 mismatch_linker.project(mismatch_session.graph, rom_path, decoder, root / "mismatch")
             except ValueError as error:
@@ -237,7 +238,7 @@ def main() -> None:
             oob_table[6] = _resolution(6, "ROM", 7, "DECODED", 0xF000, bytes.fromhex("f0004e71"))
             linkage.LiveForwardRomLinker._decode_batch = staticmethod(
                 lambda decoder, rom_path, pcs, output: {pc: oob_table[pc] for pc in pcs})
-            oob_session, oob_linker = _graph([(0, [(1, 1, 6, 8, 0xF000, 1, 0)])])
+            oob_session, oob_linker = _graph([(0, [(1, 1, 0, 6, 8, 0xF000, 1, 0, 0, 0, 0, 0)])])
             try:
                 oob_linker.project(oob_session.graph, rom_path, decoder, root / "oob")
             except ValueError as error:
@@ -253,7 +254,7 @@ def main() -> None:
                 _require("STOP_ROM_IDENTITY_MISMATCH" in str(error), "ROM SHA mismatch stop code changed")
             else:
                 raise AssertionError("unexpected ROM SHA was accepted")
-            _require(linker._instruction_rows(PACK.pack(*rows_a[0]))[0][1][4] == 0x4E71,
+            _require(linker._instruction_rows(PACK.pack(*rows_a[0]))[0][1][5] == 0x4E71,
                      "FLOW_V1 first opcode word was not read exactly")
             session.close()
     finally:

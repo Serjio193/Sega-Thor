@@ -13,8 +13,8 @@ sys.path.insert(0, str(ROOT / "tools/bizhawk-native-ring"))
 
 from cartographer import Cartographer
 from live_forward_archivist import archive_session
-from live_forward_cartographer import LiveForwardCartographer
-from live_forward_scaling_audit import EVENT_SUBTYPE_SHIFT, FLAG_EVENT, RECORD
+from live_forward_cartographer import EVENT_SHIFT, FLAG_EVENT, LiveForwardCartographer
+from live_forward_rom_link_audit import RECORD
 
 
 ROM = "a" * 64
@@ -122,8 +122,8 @@ class LiveForwardCartographerTests(unittest.TestCase):
             session.close()
 
     def test_same_numeric_bus_address_on_m68k_and_z80_has_distinct_occurrences(self):
-        # EVENT_SUBTYPE_SHIFT is the bit position; subtype BUS_READ is 1.
-        read_flags = FLAG_EVENT | (1 << EVENT_SUBTYPE_SHIFT)
+        # EVENT_SHIFT is the bit position; subtype BUS_READ is 1.
+        read_flags = FLAG_EVENT | (1 << EVENT_SHIFT)
         rows = [
             (10, 1, 0, 0x20, 0x1234, 0x5A, read_flags, 0, 1, 1, 0, 0),
             (11, 1, 0, 0x20, 0x1234, 0x5A, read_flags, 1, 1, 7, 0, 0),
@@ -145,7 +145,7 @@ class LiveForwardCartographerTests(unittest.TestCase):
         rows = [
             (100, 50, 0, 0x100, 0x102, 0x4E71, 3, 0, 0, 0, 0, 0),
             (101, 50, 0, 0x100, 0x00F00010, 0x1234,
-             FLAG_EVENT | (1 << EVENT_SUBTYPE_SHIFT), 0, 0, 0, 0, 0),
+             FLAG_EVENT | (1 << EVENT_SHIFT), 0, 0, 0, 0, 0),
             (102, 51, 0, 0x102, 0x104, 0x4E71, 3, 0, 0, 0, 0, 0),
         ]
         segment, records = _segment(rows)

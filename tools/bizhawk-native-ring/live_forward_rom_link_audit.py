@@ -13,7 +13,7 @@ import subprocess
 
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
 ROM_SIZE = 3_145_728
-RECORD = struct.Struct("<QQIIHHI")
+RECORD = struct.Struct("<QQQIIIHBBHHI")
 INSTRUCTION = 1
 
 
@@ -93,7 +93,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
         raw_spans.append((start, start + length))
         last_instruction = None
         for record_index, row in enumerate(RECORD.iter_unpack(blob)):
-            if row[5] & INSTRUCTION:
+            if row[6] & INSTRUCTION and row[7] == 0:
                 occurrence = key + (record_index,)
                 if occurrence in expected_instructions:
                     raise ValueError("STOP_ROM_LINK_AUDIT_DUPLICATE_RAW_INSTRUCTION")
@@ -172,10 +172,10 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
             if record_index < 0 or record_index >= int(item["segment"]["record_count"]):
                 raise ValueError("STOP_ROM_LINK_AUDIT_RECORD_INDEX_INVALID")
             row = RECORD.unpack_from(blob, record_index * RECORD.size)
-            if not row[5] & INSTRUCTION:
+            if not row[6] & INSTRUCTION or row[7] != 0:
                 raise ValueError("STOP_ROM_LINK_AUDIT_NON_INSTRUCTION_LINEAGE")
             expected = {"stream_sequence": row[0], "instruction_sequence": row[1],
-                "raw_cpu_pc": row[2], "flow_opcode": row[4], "run_id": identity[0],
+                "raw_cpu_pc": row[3], "flow_opcode": row[5], "run_id": identity[0],
                 "epoch": identity[1], "worker_id": identity[2], "capture_id": identity[3],
                 "generation": identity[4], "segment_sha256": identity[5],
                 "record_index": record_index,
@@ -184,7 +184,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
                 if lineage.get(field) != value:
                     raise ValueError("STOP_ROM_LINK_AUDIT_FLOW_RECORD_MISMATCH")
             for field, value in (("records_sha256", item["raw_sha256"]),
-                                 ("flags", row[5]), ("auxiliary", row[6])):
+                                 ("flags", row[6]), ("auxiliary", row[11])):
                 if field in lineage and lineage[field] != value:
                     raise ValueError("STOP_ROM_LINK_AUDIT_FLOW_RECORD_METADATA_MISMATCH")
             return identity, item, row
@@ -196,7 +196,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
                 if occurrence in claimed_instructions:
                     raise ValueError("STOP_ROM_LINK_AUDIT_DUPLICATE_INSTRUCTION_LINEAGE")
                 claimed_instructions.add(occurrence)
-                pcs.add(row[2])
+                pcs.add(row[3])
         if claimed_instructions != expected_instructions:
             raise ValueError("STOP_ROM_LINK_AUDIT_INSTRUCTION_COVERAGE_MISMATCH")
         independently_decoded = _decode(decoder, rom_path, pcs, output.parent)
@@ -218,7 +218,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
         opcode_mismatches = identity_conflicts = unsupported = 0
         for edge_id, source_id, target_id, lineage in range_edges:
             identity, _, row = raw_occurrence(lineage)
-            stream, instruction, pc, next_pc, opcode, _, _ = row
+            stream, instruction, _, pc, next_pc, opcode = row[:6]
             worker = int(lineage["worker_id"])
             by_worker.setdefault(worker, []).append((int(lineage["capture_id"]), stream,
                 edge_id, source_id, target_id, lineage))
@@ -279,7 +279,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
         nonrom_occurrences = unresolved_rom_occurrences = 0
         for _, source_id, target_id, lineage in unresolved_edges:
             identity, _, row = raw_occurrence(lineage)
-            pc, opcode = row[2], row[4]
+            pc, opcode = row[3], row[5]
             decoded = independently_decoded[pc]
             target = node(target_id)
             if not target or target[0] != "ROM_LINK_UNRESOLVED" or target[2] != ROM_SHA or \
@@ -312,7 +312,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
             record_index = int(lineage["record_index"])
             occurrence = identity + (record_index,)
             if not terminal or terminal[0] != record_index or \
-                    record_index != terminal[0] or row[3] != lineage.get("raw_next_pc"):
+                    record_index != terminal[0] or row[4] != lineage.get("raw_next_pc"):
                 raise ValueError("STOP_ROM_LINK_AUDIT_TERMINAL_NEXT_PC_MISMATCH")
             if occurrence in next_seen:
                 raise ValueError("STOP_ROM_LINK_AUDIT_DUPLICATE_TERMINAL_NEXT_PC")
@@ -321,13 +321,13 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
             source = node(source_id)
             if not target or target[0] != "M68K_TARGET_ADDRESS" or \
                     target[2] != "rom:" + ROM_SHA or target[3] != "OBSERVED" or \
-                    json.loads(target[4])["attributes"].get("raw_next_pc") != row[3] or \
+                    json.loads(target[4])["attributes"].get("raw_next_pc") != row[4] or \
                     not source or source[0] != "M68K_INSTRUCTION" or \
-                    source[1] != f"{row[2]:08X}:{row[4]:04X}" or source[2] != "rom:" + ROM_SHA:
+                    source[1] != f"{row[3]:08X}:{row[5]:04X}" or source[2] != "rom:" + ROM_SHA:
                 raise ValueError("STOP_ROM_LINK_AUDIT_TERMINAL_NEXT_PC_TARGET_INVALID")
             terminal_by_worker.setdefault(int(lineage["worker_id"]), {
                 "worker_id": int(lineage["worker_id"]), "capture_id": int(lineage["capture_id"]),
-                "raw_next_pc": row[3], "target_kind": target[0]})
+                "raw_next_pc": row[4], "target_kind": target[0]})
         expected_terminal_occurrences = {key + (index,) for key, (index, _) in expected_terminals.items()}
         if next_seen != expected_terminal_occurrences:
             raise ValueError("STOP_ROM_LINK_AUDIT_TERMINAL_NEXT_PC_COVERAGE")
@@ -381,7 +381,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
                 "worker_id": int(lineage["worker_id"]), "capture_id": int(lineage["capture_id"]),
                 "generation": int(lineage["generation"]), "segment_sha256": lineage["segment_sha256"],
                 "record_index": int(lineage["record_index"]), "instruction_sequence": row[1],
-                "pc": row[2], "next_pc": row[3], "opcode": row[4], "rom_offset": offset,
+                "pc": row[3], "next_pc": row[4], "opcode": row[5], "rom_offset": offset,
                 "rom_start": offset, "rom_end_exclusive": offset + length, "length": length,
                 "bytes_hex": bytecode.hex().upper(), "bytes_sha256": hashlib.sha256(bytecode).hexdigest(),
                 "range_node_id": target_id, "edge_id": edge_id}
@@ -395,7 +395,7 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
             for _, _, edge_id, _, target_id, lineage in chosen:
                 _, _, row = raw_occurrence(lineage)
                 checked.append(sample(edge_id, target_id, lineage, row,
-                                      independently_decoded[row[2]]))
+                                      independently_decoded[row[3]]))
         chain_identity = next((key for key in sorted(chain_by_segment)
                                if len(chain_by_segment[key]) == 3), None)
         chain_sample = None

@@ -17,7 +17,7 @@ except ImportError:
     from identity import ROM_SHA, ROM_SIZE
 
 
-RECORD_SIZE = 32
+RECORD_SIZE = 48
 FLAG_INSTRUCTION = 1
 SCHEMA = "oasis.m12.live-forward-rom-ranges.v1"
 
@@ -86,9 +86,9 @@ class LiveForwardRomLinker:
     @staticmethod
     def _instruction_rows(records_blob: bytes) -> list[tuple[int, tuple[int, ...]]]:
         import struct
-        record = struct.Struct("<QQIIHHI")
+        record = struct.Struct("<QQQIIIHBBHHI")
         return [(index, row) for index, row in enumerate(record.iter_unpack(records_blob))
-                if row[5] & FLAG_INSTRUCTION]
+                if row[6] & FLAG_INSTRUCTION]
 
     def project(self, graph: Any, rom_path: Path, decoder: Path,
                 evidence_dir: Path) -> dict[str, Any]:
@@ -116,7 +116,7 @@ class LiveForwardRomLinker:
                 offsets.append((segment, blob, raw_offset))
                 raw_offset += len(blob)
 
-        pc_values = {row[2] for _, blob, _ in offsets
+        pc_values = {row[3] for _, blob, _ in offsets
                      for _, row in self._instruction_rows(blob)}
         decoded = self._decode_batch(decoder, rom_path, pc_values, evidence_dir / "rom-decode")
         decoder_identity = _sha(decoder.read_bytes())
@@ -144,7 +144,8 @@ class LiveForwardRomLinker:
         for segment, blob, raw_offset in offsets:
             instructions = self._instruction_rows(blob)
             for record_index, row in instructions:
-                stream_seq, instruction_seq, raw_pc, next_pc, flow_opcode, flags, auxiliary = row
+                (stream_seq, instruction_seq, _, raw_pc, next_pc, flow_opcode,
+                 flags, _, _, _, _, auxiliary) = row
                 resolution = decoded[raw_pc]
                 if resolution["memory_region"] == "ROM":
                     if resolution["rom_sha256"] != ROM_SHA:
@@ -230,15 +231,15 @@ class LiveForwardRomLinker:
 
             if instructions:
                 record_index, row = instructions[-1]
-                target = {"kind": "M68K_TARGET_ADDRESS", "key": f"{row[3]:08X}",
+                target = {"kind": "M68K_TARGET_ADDRESS", "key": f"{row[4]:08X}",
                     "scope": "rom:" + ROM_SHA, "status": "OBSERVED",
-                    "attributes": {"cpu": "M68K", "raw_next_pc": row[3],
+                    "attributes": {"cpu": "M68K", "raw_next_pc": row[4],
                                    "meaning": "observed terminal FLOW_V1 next_pc only"},
                     "lineage": []}
                 target_id = graph._node_id(target)
                 range_nodes[target_id] = target
                 source_id = graph._node_id({"kind": "M68K_INSTRUCTION",
-                    "key": f"{row[2]:08X}:{row[4]:04X}", "scope": "rom:" + ROM_SHA})
+                    "key": f"{row[3]:08X}:{row[5]:04X}", "scope": "rom:" + ROM_SHA})
                 edge = {"source": source_id, "target": target_id,
                     "relation": "OBSERVED_NEXT_PC", "scope": ROM_SHA, "status": "OBSERVED",
                     "rule": "terminal instruction next_pc address fact; target execution is not asserted",
@@ -247,8 +248,8 @@ class LiveForwardRomLinker:
                     "worker_id": int(segment["worker_id"]), "capture_id": int(segment["capture_id"]),
                     "generation": int(segment["generation"]), "segment_sha256": str(segment["segment_sha256"]),
                     "record_index": record_index, "stream_sequence": row[0],
-                    "instruction_sequence": row[1], "raw_cpu_pc": row[2], "flow_opcode": row[4],
-                    "raw_next_pc": row[3], "raw_records_offset": raw_offset + record_index * RECORD_SIZE}
+                    "instruction_sequence": row[1], "raw_cpu_pc": row[3], "flow_opcode": row[5],
+                    "raw_next_pc": row[4], "raw_records_offset": raw_offset + record_index * RECORD_SIZE}
                 add_lineage(edge, terminal_lineage)
                 terminal_count += 1
 

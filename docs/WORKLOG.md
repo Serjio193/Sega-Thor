@@ -9906,14 +9906,31 @@ bytes, 0 gaps/overlaps, SOURCE_OWNED 1,487,672 (delta 0), and emission hash
 
 **Validation:** Focused fusion tests PASS (3/3); Python compilation PASS; Debug
 and Release configure/build PASS; the registered fusion test PASS in both
-configurations; source-file-limit check PASS; `git diff --check` PASS. Release
-CTest completed 207/209 tests. The two unchanged baseline failures are
-`oasis_live_forward_cartographer` (test imports constants absent from the
-checked-in audit module) and `oasis_live_forward_rom_link` (fixture record
-size is 32 bytes while the checked-in cartographer expects 48). Debug had the
-same two failures; a third initial Debug failure was an environment prerequisite
-that passed after creating the ignored build directory. These unrelated FLOW
-failures block push under the project pre-push rule. Final diff review and
-commit recorded after this validation. All generated databases and acceptance outputs remain in ignored
+configurations; source-file-limit check PASS; `git diff --check` PASS. The
+full suites initially exposed stale 32-byte record assumptions in the FLOW
+test/linker contract; see the follow-up pre-push repair entry below. All
+generated databases and acceptance outputs remain in ignored
 `build/thor-evidence/`; the source worktree starts from
 `7e0117a7e6c0693bc87f265504db505c28a44b6e`.
+
+# 2026-09-24 — M14.2B pre-push FLOW record contract repair — PASS
+
+Corrected the Cartographer regression to import the active event constants
+and 48-byte FLOW record contract rather than the separate scaling-audit
+32-byte contract. Aligned the ROM linker and its independent auditor to the
+Cartographer's 48-byte tuple layout, including CPU, PC, next-PC, opcode, flags,
+and auxiliary-field indexes. Both retain exact record-size validation; the
+linker does not accept 32-byte records.
+
+Validation: Cartographer test PASS (13); ROM-link test PASS; M14.2A acceptance
+PASS (3); fusion unit test PASS (3); ROM knowledge pipeline PASS (18); Debug
+build PASS and full CTest PASS (209/209); Release build PASS and full CTest
+PASS (209/209). M14.2B two-capture acceptance PASS, order-independent graph
+hash `2f612d1d8ea92e66897e587e1a70b303bd646ff59f3c520038596e96902b0a87`,
+2,489 ranges, zero gaps/overlaps, and SOURCE_OWNED 1,487,672 (delta 0).
+MASTER V2 shadow/canonical materialization could not be run from this clean
+accepted commit: its test imports `master_canonical_view`, and
+`tests/master_canonical_view_test.py` is absent here; those files exist only
+as untracked content in the separate dirty checkout and were excluded. Do not
+claim the complete requested focused matrix until that baseline test material
+is available on this branch. `SOURCE_OWNED` and fusion semantics are unchanged.
