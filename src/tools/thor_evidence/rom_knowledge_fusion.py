@@ -37,6 +37,11 @@ def _sha(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _implementation_sha(path: Path) -> str:
+    """Hash code identity independently of Git's Windows newline conversion."""
+    return sha256_bytes(path.read_bytes().replace(b"\r\n", b"\n"))
+
+
 def _addr(value: Any) -> int:
     return int(value, 0) if isinstance(value, str) else int(value)
 
@@ -256,7 +261,7 @@ def import_capture(store: KnowledgeStore, paths: dict[str, Path], run_id: int) -
             existing = store.db.execute("SELECT derivation_id FROM derivation WHERE output_id=?",
                                         (output_id,)).fetchone()
             derivation_id = str(existing[0]) if existing else store.record_derivation(
-                RULE, RULE_VERSION, _sha(Path(__file__)),
+                RULE, RULE_VERSION, _implementation_sha(Path(__file__)),
                 sha256_bytes(canonical(params).encode()), join_inputs,
                 "relation_path", output_id,
                 {"relations": [ram_relation["relation_id"], dma_relation["relation_id"]],

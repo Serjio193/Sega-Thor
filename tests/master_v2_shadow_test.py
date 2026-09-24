@@ -61,11 +61,29 @@ class MasterV2Tests(unittest.TestCase):
         knowledge = KnowledgeStore(knowledge_path, v2.ROM_SHA, v2.ROM_SIZE)
         try:
             knowledge.set_generation_identity("gen-1", "master-parent")
+            range_key = "range-fixture"
+            object_key = "object-1"
+            knowledge.insert_rows("rom_range", [{"range_id": range_key, "rom_sha256": v2.ROM_SHA,
+                "start": 8, "end": 12}])
+            knowledge.insert_rows("rom_object", [{"object_id": object_key, "range_id": range_key,
+                "object_type": "ROM_DATA", "attributes_json": "{}"}])
+            knowledge.insert_rows("claim", [{"claim_id": "claim-fixture", "object_id": object_key,
+                "claim_type": "FIXTURE_FACT", "value_json": "true", "status": "OBSERVED_RUNTIME"}])
+            knowledge.insert_rows("relation", [{"relation_id": "relation-fixture",
+                "relation_type": "FIXTURE_LINK", "source_object_id": object_key,
+                "target_object_id": object_key, "target_address": None,
+                "status": "OBSERVED_RUNTIME", "attributes_json": "{}"}])
+            knowledge.insert_rows("conflict", [{"conflict_id": "conflict-fixture", "start": 8,
+                "end": 12, "conflict_type": "FIXTURE_CONFLICT", "detail_json": "{}"}])
             knowledge.db.execute("INSERT INTO emission VALUES (?,?,?,?,?,?,?,?)",
                 (0, 4, "INCBIN", "UNKNOWN", "UNKNOWN", 0, "blob", "fixture.bin"))
             source = "a" * 64
             knowledge.db.execute("INSERT INTO source_artifact VALUES (?,?,?,?)",
                 (source, "fixture", "fixture.json", "json"))
+            knowledge.insert_rows("evidence_ref", [{"ref_id": "evidence-fixture",
+                "subject_type": "rom_object", "subject_id": object_key, "source_sha256": source,
+                "fact_kind": "FIXTURE_FACT", "fact_count": 1, "locator_json": "{}"}])
+            knowledge.insert_rows("map_import", [{"import_key": "fixture-import", "input_hash": "f" * 64}])
             derivation = knowledge.record_derivation("fixture-rule", "1", "b" * 64,
                 "c" * 64, [{"subject_type": "rom_object", "subject_id": "object-1", "role": "input"}],
                 "claim", "claim-1", {"exact": True})
@@ -103,6 +121,9 @@ class MasterV2Tests(unittest.TestCase):
         self.assertEqual(len(table_rows["derivation_input"]), 1)
         self.assertEqual(len(table_rows["map_proposal"]), 1)
         self.assertEqual(len(table_rows["map_proposal_operation"]), 1)
+        for table in ("rom_range", "rom_object", "claim", "relation", "source_artifact",
+                      "evidence_ref", "conflict", "map_import", "emission"):
+            self.assertTrue(table_rows[table], f"{table} must survive the MASTER V2 round trip")
         materialized = canonical_view.MasterCanonicalView(first).materialize(
             Path(self.temp.name) / "roundtrip")
         graph_db = sqlite3.connect(materialized / "master.sqlite")
@@ -118,6 +139,9 @@ class MasterV2Tests(unittest.TestCase):
             self.assertEqual(len(reopened.db.execute("SELECT * FROM derivation_input").fetchall()), 1)
             self.assertEqual(len(reopened.db.execute("SELECT * FROM map_proposal").fetchall()), 1)
             self.assertEqual(len(reopened.db.execute("SELECT * FROM map_proposal_operation").fetchall()), 1)
+            for table in ("rom_range", "rom_object", "claim", "relation", "source_artifact",
+                          "evidence_ref", "conflict", "map_import", "emission"):
+                self.assertEqual(reopened.db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0], 1)
         finally:
             reopened.close()
 

@@ -9,10 +9,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src/tools"), str(ROOT / "src/tools/thor_evidence")]
 from rom_knowledge_map import KnowledgeStore, runtime_occurrence_id
 from rom_knowledge_fusion_conflicts import eligible_exact_operations, record_conflict
+from rom_knowledge_fusion import _implementation_sha
 from rom_knowledge_fusion_stream import iter_json_arrays
 
 
 class RomKnowledgeFusionTest(unittest.TestCase):
+    def test_implementation_fingerprint_ignores_checkout_newlines(self):
+        with tempfile.TemporaryDirectory() as directory:
+            lf = Path(directory) / "lf.py"
+            crlf = Path(directory) / "crlf.py"
+            lf.write_bytes(b"first\nsecond\n")
+            crlf.write_bytes(b"first\r\nsecond\r\n")
+            self.assertEqual(_implementation_sha(lf), _implementation_sha(crlf))
+
     def test_streaming_selected_arrays_preserves_nested_json(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "corpus.json"

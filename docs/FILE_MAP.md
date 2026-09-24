@@ -1627,6 +1627,15 @@ The A–O contract plus unsupported-fact stop are in
 `docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md` and its compact JSON
 receipt. Runtime databases and raw evidence remain ignored under `build/`.
 
+# MASTER V2 canonical read and materialization
+
+`tools/bizhawk-native-ring/master_canonical_view.py` reads the authenticated
+MASTER V2 canonical sections and materializes stage-local SQLite through the
+existing ROM knowledge schema. `tests/master_canonical_view_test.py` covers
+the R2 read and materialization contract; `tests/master_v2_shadow_test.py`
+covers serialization, corruption rejection, and nonempty canonical table
+round-trip.
+
 # M12 Live Worker Control Window 2H
 
 `tools/bizhawk-native-ring/live_forward_worker_control_model.py` validates
