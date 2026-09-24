@@ -34,8 +34,10 @@ def global_object_view(store: KnowledgeStore, address_or_object: int | str) -> d
     claims = [dict(r) for r in store.db.execute("SELECT * FROM claim WHERE object_id=? ORDER BY claim_id", (object_id,))]
     evidence = [dict(r) for r in store.db.execute("""SELECT e.*,s.artifact_name,s.artifact_type,s.checkpoint
         FROM evidence_ref e JOIN source_artifact s USING(source_sha256)
-        WHERE e.subject_id=? OR e.subject_id IN (SELECT relation_id FROM relation WHERE source_object_id=? OR target_object_id=?)
-        ORDER BY e.ref_id""", (object_id, object_id, object_id))]
+        WHERE e.subject_id=?
+        OR e.subject_id IN (SELECT claim_id FROM claim WHERE object_id=?)
+        OR e.subject_id IN (SELECT relation_id FROM relation WHERE source_object_id=? OR target_object_id=?)
+        ORDER BY e.ref_id""", (object_id, object_id, object_id, object_id))]
     for item in evidence:
         item["locator"] = json.loads(item.pop("locator_json"))
     derivations = [dict(r) for r in store.db.execute("""SELECT d.* FROM derivation d
@@ -53,8 +55,9 @@ def global_object_view(store: KnowledgeStore, address_or_object: int | str) -> d
         "supporting_artifacts": sorted({e["artifact_name"] for e in evidence}),
         "supporting_analyzers": sorted({e["locator"].get("analyzer", e["artifact_type"])
                                          for e in evidence}),
-        "supporting_captures": sorted({e["locator"]["capture_id"] for e in evidence
-                                        if e["locator"].get("capture_id")}),
+        "supporting_captures": sorted({capture for e in evidence
+            for capture in ([e["locator"]["capture_id"]] if e["locator"].get("capture_id")
+                            else e["locator"].get("capture_ids", [])) if capture}),
         "hypotheses": [c for c in claims if c["status"] == "HYPOTHESIS"],
         "conflicts": [dict(r) for r in store.db.execute("SELECT * FROM conflict WHERE start<? AND ?<end",
             (int(obj["end"]), int(obj["start"]))) ]}

@@ -1975,6 +1975,27 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M14.2C — Fused evidence projects as canonical object references
+**Status:** Accepted for M14.2C
+**Date:** 2026-09-25
+
+**Context:** The persisted M14.2B graph contains exact independent gameplay
+and Sprite/SAT evidence joined on an existing canonical ROM instruction
+object. The path proves a runtime DMA-emitter reference but supplies no new
+ROM data boundary or class.
+
+**Decision:** Store the projection as a `GLOBAL_EVIDENCE_REFERENCE` claim and
+its source refs in the existing canonical knowledge SQLite child generation.
+Bind each proposal to its generation, map hash, emission hash, graph hash,
+exact relations, fusion derivation, object/range, and emission owner. Do not
+change range partition, classifications, emission, or SOURCE_OWNED. Hypothesis
+and unresolved evidence cannot create canonical claims.
+
+**Consequences:** Global object queries show the graph's source evidence and
+the canonical map owner together. M14.2C records multi-source map progress
+without inventing resource semantics or ownership. A future boundary or class
+promotion still needs its own exact proof and normal promotion path.
+
 ## ADR-M14.2B — Reuse canonical SQLite for cross-source evidence fusion
 **Status:** Accepted for M14.2B
 **Date:** 2026-09-24

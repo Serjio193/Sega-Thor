@@ -173,6 +173,8 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_test.py)
     add_test(NAME oasis_m14_2b_global_evidence_fusion
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_fusion_test.py)
+    add_test(NAME oasis_m14_2c_global_map_closure
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_closure_test.py)
     add_test(NAME oasis_m12_archivist_knowledge_pipeline_2g
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_test.py)
 endif()

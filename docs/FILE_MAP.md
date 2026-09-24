@@ -1655,3 +1655,13 @@ The runtime proof and compact receipt are
 `docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and its JSON
 counterpart. Runtime/session databases and segment evidence remain ignored
 under `build/thor-evidence/`.
+
+# M14.2C global graph to canonical map closure
+
+`src/tools/thor_evidence/rom_knowledge_map_closure.py` projects exact,
+independent multi-source fusion paths into parent-bound `ADD_REFERENCE`
+proposals in the existing canonical knowledge SQLite schema. It clones the
+parent generation for validation and leaves emission ranges and ownership
+unchanged. `tests/rom_knowledge_map_closure_test.py` covers exact admission,
+hypothesis rejection, source-reference persistence, and the combined global
+object view.
