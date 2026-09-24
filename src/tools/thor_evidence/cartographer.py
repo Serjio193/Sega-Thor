@@ -53,7 +53,9 @@ class Cartographer:
         """Construct the same graph engine on an explicit SQLite RAM database."""
         graph = cls.__new__(cls)
         graph.path = None
-        graph.db = sqlite3.connect(":memory:")
+        # R7 builds the RAM graph in the producer/consumer boundary and
+        # finalizes it in the post-run coordinator thread after the queue drains.
+        graph.db = sqlite3.connect(":memory:", check_same_thread=False)
         graph._initialize(rom_sha256, source_owned_bytes)
         return graph
 
@@ -83,6 +85,7 @@ class Cartographer:
         self._put_meta("schema", "m12.map1.v1")
         self._put_meta("rom_sha256", rom_sha256)
         self._put_meta("source_owned_bytes", str(source_owned_bytes))
+        self.db.commit()
         self.db.commit()
 
     def export_bundle(self) -> dict[str, list[dict[str, Any]]]:
@@ -146,6 +149,8 @@ class Cartographer:
                        "reason": item["reason"], "target": item.get("target", "")})
 
     def _record_conflict(self, object_type: str, object_id: str, claims: list[Any], lineage: list[Any]) -> bool:
+        claims = sorted(claims, key=canonical)
+        lineage = json.loads(self._union("", lineage))
         conflict_id = digest({"type": object_type, "id": object_id, "claims": claims})
         before = self.db.execute("SELECT 1 FROM map_conflict WHERE conflict_id=?", (conflict_id,)).fetchone()
         self.db.execute(
@@ -178,16 +183,19 @@ class Cartographer:
                 delta.new_nodes += 1
                 continue
             old_body = json.loads(row["body"])
-            if old_body != body and not self._compatible(old_body, body):
-                if self._record_conflict("node", node_id, [old_body, body], lineages):
+            incompatible = old_body != body and not self._compatible(old_body, body)
+            if incompatible:
+                all_lineages = json.loads(self._union(row["lineage"], lineages))
+                if self._record_conflict("node", node_id, [old_body, body], all_lineages):
                     delta.new_conflicts += 1
-                self.db.execute("UPDATE map_node SET status='CONFLICT' WHERE node_id=?", (node_id,))
+                # Keep the conflict in the admitted status after this merge.
+                # Using row["status"] below would restore the stale status.
             elif old_body != body:
                 attrs = dict(old_body.get("attributes", {}))
                 attrs.update(body.get("attributes", {}))
                 old_body["attributes"] = attrs
                 self.db.execute("UPDATE map_node SET body=? WHERE node_id=?", (canonical(old_body), node_id))
-            new_status = self._status(row["status"], item["status"])
+            new_status = "CONFLICT" if incompatible else self._status(row["status"], item["status"])
             if new_status != row["status"] and new_status == "PROVEN":
                 delta.promoted_nodes += 1
             self.db.execute("UPDATE map_node SET status=?, lineage=? WHERE node_id=?",
@@ -210,11 +218,12 @@ class Cartographer:
                 delta.new_edges += 1
                 continue
             old_body = json.loads(row["body"])
-            if old_body != body:
-                if self._record_conflict("edge", edge_id, [old_body, body], lineages):
+            incompatible = old_body != body
+            if incompatible:
+                all_lineages = json.loads(self._union(row["lineage"], lineages))
+                if self._record_conflict("edge", edge_id, [old_body, body], all_lineages):
                     delta.new_conflicts += 1
-                self.db.execute("UPDATE map_edge SET status='CONFLICT' WHERE edge_id=?", (edge_id,))
-            new_status = self._status(row["status"], item["status"])
+            new_status = "CONFLICT" if incompatible else self._status(row["status"], item["status"])
             if new_status != row["status"] and new_status == "PROVEN":
                 delta.promoted_edges += 1
             self.db.execute("UPDATE map_edge SET status=?, lineage=? WHERE edge_id=?",

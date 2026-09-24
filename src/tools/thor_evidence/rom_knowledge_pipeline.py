@@ -85,14 +85,15 @@ def _copy_database(source: Path, target: Path) -> None:
 
 
 def _metrics(path: Path, rom_sha: str, rom_size: int) -> tuple[dict[str, int], dict[str, str], dict[str, Any]]:
-    store = KnowledgeStore(path, rom_sha, rom_size)
+    store = KnowledgeStore(path, rom_sha, rom_size, read_only=True)
     try:
         return store.counts(), store.hashes(), store.metrics()
     finally:
         store.close()
 
 
-def _current_inputs(root: Path) -> tuple[Path | None, Path | None, dict[str, Any] | None]:
+def _current_inputs(root: Path, expected_rom_sha256: str = ROM_SHA,
+                    expected_rom_size: int = ROM_SIZE) -> tuple[Path | None, Path | None, dict[str, Any] | None]:
     pointer = root / "current.json"
     if not pointer.is_file():
         return None, None, None
@@ -107,6 +108,22 @@ def _current_inputs(root: Path) -> tuple[Path | None, Path | None, dict[str, Any
                 sha256_file(master) != data.get("master_sha256") or \
                 sha256_file(knowledge) != data.get("knowledge_sha256"):
             raise ValueError
+        store = KnowledgeStore(knowledge, expected_rom_sha256, expected_rom_size, read_only=True)
+        try:
+            logical_hashes = store.hashes()
+            meta = store.meta()
+            if data.get("knowledge_map_hash") != logical_hashes["map_hash"] or \
+                    (meta.get("generation_id") and meta["generation_id"] != data.get("generation_id")) or \
+                    (meta.get("parent_generation_id", "") !=
+                     str(data.get("parent_generation_id") or "")):
+                raise ValueError
+            expected_logical = data.get("logical_hashes")
+            if expected_logical and any(expected_logical.get(key) != logical_hashes.get(key)
+                                         for key in ("structure_hash", "evidence_index_hash",
+                                                     "emission_hash", "map_hash")):
+                raise ValueError
+        finally:
+            store.close()
         return master, knowledge, data
     except (KeyError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError("STOP_KNOWLEDGE_AUDIT_FAILED:invalid current generation pointer") from exc
@@ -202,7 +219,8 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     rom = rom_path.read_bytes()
     if len(rom) != expected_rom_size or _hash_bytes(rom) != expected_rom_sha256:
         raise ValueError("STOP_ARCHIVIST_TO_KNOWLEDGE_ROM_MISMATCH")
-    current_master, current_knowledge, current_pointer = _current_inputs(output_root)
+    current_master, current_knowledge, current_pointer = _current_inputs(
+        output_root, expected_rom_sha256, expected_rom_size)
     if current_master and current_knowledge:
         base_master, base_knowledge = current_master, current_knowledge
         current_metrics = _metrics(base_knowledge, expected_rom_sha256, expected_rom_size)
@@ -236,6 +254,7 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     staged_master, staged_knowledge = staging / "master.sqlite", staging / "knowledge.sqlite"
     _copy_database(base_master, staged_master)
     _copy_database(base_knowledge, staged_knowledge)
+    parent_generation = current_pointer.get("generation_id") if current_pointer else None
     campaign_summary = None
     if campaign_receipt_path:
         campaign = json.loads(Path(campaign_receipt_path).read_text(encoding="utf-8"))
@@ -307,6 +326,12 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
         raise ValueError("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH:" + text) from exc
     archive_seconds = time.perf_counter() - archive_started
     merge_receipt = archived["merge_receipt"]
+    generation_id = "gen-" + merge_receipt["source_artifact_sha256"][:16] + "-" + uuid.uuid4().hex[:8]
+    staged_store = KnowledgeStore(staged_knowledge, expected_rom_sha256, expected_rom_size)
+    try:
+        staged_store.set_generation_identity(generation_id, parent_generation)
+    finally:
+        staged_store.close()
     import_started = time.perf_counter()
     try:
         import_report = import_archivist_session(session_path, staged_master,
@@ -373,7 +398,6 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
                          "after": after_metrics["source_owned_bytes"], "delta": 0},
         "emission_unchanged": True, "performance": performance,
         "campaign_receipt_sha256": sha256_file(campaign_receipt_path) if campaign_receipt_path else None}
-    generation_id = "gen-" + merge_receipt["source_artifact_sha256"][:16] + "-" + uuid.uuid4().hex[:8]
     receipt["generation_id"] = generation_id
     _write_json(staging / "merge-receipt.json", merge_receipt)
     _write_json(staging / "import-report.json", import_report)
@@ -383,11 +407,13 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     os.replace(staging, final_generation)
     pointer = {"schema": POINTER_SCHEMA, "generation_id": generation_id,
         "generation_dir": "generations/" + generation_id,
+        "parent_generation_id": parent_generation,
         "master_sha256": sha256_file(final_generation / "master.sqlite"),
         "knowledge_sha256": sha256_file(final_generation / "knowledge.sqlite"),
         "last_session_source_sha256": merge_receipt["source_artifact_sha256"],
         "merge_receipt_sha256": merge_receipt["receipt_sha256"],
         "knowledge_map_hash": after_hashes["map_hash"]}
+    pointer["logical_hashes"] = after_hashes
     _write_json(output_root / "current.json", pointer)
     receipt["generation_dir"] = str(final_generation)
     if receipt_path:

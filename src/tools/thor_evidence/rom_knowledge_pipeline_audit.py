@@ -8,6 +8,11 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+try:
+    from .rom_knowledge_map import runtime_occurrence_id
+except ImportError:
+    from rom_knowledge_map import runtime_occurrence_id
+
 CONTROL_RELATIONS = {
     "OBSERVED_CODE_POINTER_TO": "RUNTIME_CODE_POINTER_PROVENANCE",
     "OBSERVED_CODE_OFFSET_TO": "RUNTIME_CODE_OFFSET_PROVENANCE",
@@ -29,6 +34,10 @@ TABLES = {
     "source_artifact": "source_sha256,checkpoint,artifact_name,artifact_type",
     "evidence_ref": "ref_id,subject_type,subject_id,source_sha256,fact_kind,fact_count,locator_json",
     "emission": "start,end,emission_type,classification,source_kind,source_owned,artifact_type,artifact",
+    "derivation": "derivation_id,rule_id,rule_version,implementation_hash,parameters_hash,output_type,output_id,result_json,assumptions_json",
+    "derivation_input": "derivation_id,ordinal,subject_type,subject_id,role",
+    "map_proposal": "proposal_id,base_generation,base_map_hash,graph_hash,validator_version,status,proposal_set_hash",
+    "map_proposal_operation": "proposal_id,ordinal,operation_json",
 }
 
 
@@ -73,14 +82,23 @@ def _map1_hash(db: sqlite3.Connection) -> str:
 def _database_hashes(db: sqlite3.Connection) -> dict[str, str]:
     rows = lambda table: [tuple(row) for row in db.execute(
         f"SELECT {TABLES[table]} FROM {table} ORDER BY {TABLES[table]}")]
-    structure = {table: rows(table) for table in ("rom_range", "rom_object", "claim", "relation", "conflict")}
+    legacy = not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='derivation'").fetchone()
+    structure_tables = ("rom_range", "rom_object", "claim", "relation", "conflict")
+    if not legacy:
+        structure_tables += ("derivation", "derivation_input")
+    structure = {table: rows(table) for table in structure_tables}
     evidence = {table: rows(table) for table in ("source_artifact", "evidence_ref")}
     emission = rows("emission")
     structure_hash, evidence_hash, emission_hash = map(_hash_json,
         (structure, evidence, emission))
-    return {"structure_hash": structure_hash, "evidence_index_hash": evidence_hash,
+    result = {"structure_hash": structure_hash, "evidence_index_hash": evidence_hash,
             "emission_hash": emission_hash,
             "map_hash": _hash_bytes((structure_hash + evidence_hash + emission_hash).encode())}
+    if not legacy:
+        proposals = {table: rows(table) for table in ("map_proposal", "map_proposal_operation")}
+        result.update({"graph_structure_hash": structure_hash,
+                       "proposal_set_hash": _hash_json(proposals)})
+    return result
 
 
 def _meta(db: sqlite3.Connection) -> dict[str, str]:
@@ -143,6 +161,20 @@ def _evidence_id(subject_type: str, subject_id: str, source_sha: str,
         "fact_count": count, "locator": locator})
 
 
+def _expect_runtime_evidence(evidence: dict[str, tuple[str, str, str, str, int, str]],
+                             event: dict[str, Any],
+                             subject_type: str, subject_id: str,
+                             session_sha: str) -> None:
+    stable_content = {key: value for key, value in event.items()
+                      if key not in {"capture_ids", "windows"}}
+    source_sha = _hash_bytes(_json(stable_content).encode())
+    locator = {**event, "session_source_sha256s": [session_sha]}
+    ref_id = _id("runtime-evidence", {"occurrence_id": event["occurrence_id"],
+        "subject_type": subject_type, "subject_id": subject_id})
+    fact_kind = "RUNTIME_OCCURRENCE:" + event["event_kind"]
+    evidence[ref_id] = (subject_type, subject_id, source_sha, fact_kind, 1, _json(locator))
+
+
 def _lineage_count(edge: sqlite3.Row, run_id: int) -> int:
     values = json.loads(str(edge["lineage"]))
     if not isinstance(values, list) or not values:
@@ -166,6 +198,8 @@ def _expected_import(session: sqlite3.Connection, knowledge: sqlite3.Connection,
     claims: dict[str, tuple[str, str, str, str]] = {}
     relations: dict[str, tuple[str, str, str | None, int | None, str, str]] = {}
     evidence: dict[str, tuple[str, str, str, str, int, str]] = {}
+    relation_ids: dict[str, str] = {}
+    relation_sources: dict[str, tuple[str, str, str]] = {}
 
     def expect_evidence(subject_type: str, subject_id: str, source_sha: str,
                         fact_kind: str, count: int, locator: dict[str, Any]) -> None:
@@ -199,20 +233,11 @@ def _expected_import(session: sqlite3.Connection, knowledge: sqlite3.Connection,
         claim_id = _id("claim", {"object_id": oid, "claim_type": "EXECUTED_FROM_ROM",
             "value": True, "status": "OBSERVED_RUNTIME"})
         claims[claim_id] = (oid, "EXECUTED_FROM_ROM", "true", "OBSERVED_RUNTIME")
-        count = _lineage_count(edge, run_id)
         loc = {"session_id": session_id, "session_graph_sha256": merge["session_graph_hash"],
             "master_graph_sha256": merge["master_graph_hash_after"], "run_id": run_id,
             "table": "map_edge", "edge_id": edge_id, "range_node_id": target,
             "start": start, "end": end}
         expect_evidence("CLAIM", claim_id, session_sha, "RUNTIME_INSTRUCTION_RANGE", 1, loc)
-        expect_evidence("CLAIM", claim_id, session_sha,
-                        "RUNTIME_INSTRUCTION_OCCURRENCE", count, loc)
-        master_loc = {"session_id": session_id, "session_graph_sha256": merge["session_graph_hash"],
-            "master_graph_sha256": merge["master_graph_hash_after"], "run_id": run_id,
-            "archivist_receipt_sha256": merge["receipt_sha256"],
-            "table": "map_edge", "edge_id": edge_id}
-        expect_evidence("CLAIM", claim_id, master_sha,
-                        "ARCHIVIST_ACCEPTED_RUNTIME_OCCURRENCE", count, master_loc)
 
     for edge_id, edge in edges.items():
         source, target, relation, scope, status = _edge(edge)
@@ -278,17 +303,55 @@ def _expected_import(session: sqlite3.Connection, knowledge: sqlite3.Connection,
         relation_id = _relation_id(relation, kind_id, target_obj, address)
         relations[relation_id] = (relation, kind_id, target_obj, address,
                                   "OBSERVED_RUNTIME", "{}")
-        count = _lineage_count(edge, run_id)
-        loc = {"session_id": session_id, "session_graph_sha256": merge["session_graph_hash"],
-            "master_graph_sha256": merge["master_graph_hash_after"], "run_id": run_id,
-            "table": "map_edge", "edge_id": edge_id, "relation": relation}
-        expect_evidence("RELATION", relation_id, session_sha, fact_kind, count, loc)
-        master_loc = {"session_id": session_id, "session_graph_sha256": merge["session_graph_hash"],
-            "master_graph_sha256": merge["master_graph_hash_after"], "run_id": run_id,
-            "archivist_receipt_sha256": merge["receipt_sha256"],
-            "table": "map_edge", "edge_id": edge_id}
-        expect_evidence("RELATION", relation_id, master_sha,
-                        "ARCHIVIST_ACCEPTED_" + fact_kind, count, master_loc)
+        relation_ids[edge_id] = relation_id
+        relation_sources[edge_id] = (source, target, relation)
+
+    occurrence_table = session.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
+        "AND name='live_forward_runtime_occurrence'").fetchone()
+    if not occurrence_table:
+        raise ValueError("STOP_RUNTIME_OCCURRENCE_TABLE_MISSING")
+    occurrence_rows = [json.loads(row[0]) for row in session.execute(
+        "SELECT event_json FROM live_forward_runtime_occurrence ORDER BY occurrence_id")]
+    by_node: dict[str, list[dict[str, Any]]] = {}
+    for event in occurrence_rows:
+        expected_id = runtime_occurrence_id(capture_id=event["capture_id"],
+            epoch=int(event["epoch"]), cpu=event["cpu_id"],
+            address_space=event["address_space"],
+            native_sequence=int(event["native_sequence"]),
+            event_kind=event["event_kind"], run_id=int(event["run_id"]),
+            instruction_sequence=int(event["instruction_sequence"]))
+        if event.get("occurrence_id") != expected_id or int(event["run_id"]) != run_id:
+            raise ValueError("STOP_RUNTIME_OCCURRENCE_IDENTITY_INVALID")
+        if event.get("instruction_node_id"):
+            by_node.setdefault(event["instruction_node_id"], []).append(event)
+        subjects = [("RUNTIME_OCCURRENCE", event["occurrence_id"])]
+        if event.get("instruction_node_id") in instruction_obj:
+            node = event["instruction_node_id"]
+            subjects.append(("CLAIM", _id("claim", {"object_id": instruction_obj[node],
+                "claim_type": "EXECUTED_FROM_ROM", "value": True,
+                "status": "OBSERVED_RUNTIME"})))
+        for subject_type, subject_id in subjects:
+            _expect_runtime_evidence(evidence, event, subject_type,
+                                     subject_id, session_sha)
+        if event.get("event_kind") == "EXECUTED_NEXT" and event.get("edge_id") in relation_ids:
+            _expect_runtime_evidence(evidence, event, "RELATION",
+                relation_ids[event["edge_id"]], session_sha)
+    for edge_id, relation_id in relation_ids.items():
+        source, target, relation = relation_sources[edge_id]
+        if relation == "EXECUTED_NEXT":
+            supporting = [event for event in occurrence_rows if
+                event.get("event_kind") == "EXECUTED_NEXT" and event.get("edge_id") == edge_id]
+        else:
+            supporting = by_node.get(source, [])
+            if not supporting and relation in CONTROL_RELATIONS:
+                attrs = _node(nodes[target])[4]
+                start = int(attrs.get("start_offset", -1))
+                supporting = [event for event in occurrence_rows if
+                    event.get("event_kind") == "INSTRUCTION" and int(event.get("pc", -2)) == start]
+        if not supporting:
+            raise ValueError("STOP_RUNTIME_RELATION_OCCURRENCE_MISSING")
+        for event in supporting:
+            _expect_runtime_evidence(evidence, event, "RELATION", relation_id, session_sha)
 
     for oid, (kind, start, end, attrs) in objects.items():
         found = knowledge.execute("SELECT r.rom_sha256,r.start,r.end,o.object_type,o.attributes_json "
@@ -366,8 +429,9 @@ def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: P
                 if not { _json(v) for v in json.loads(base_row["lineage"]) } <= \
                         { _json(v) for v in json.loads(merged_row["lineage"]) }:
                     raise ValueError("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
-        if _meta(base).get("schema") != "oasis.m12.canonical-rom-knowledge.v1" or \
-                _meta(final).get("schema") != "oasis.m12.canonical-rom-knowledge.v1" or \
+        if _meta(base).get("schema") not in {"oasis.m12.canonical-rom-knowledge.v1",
+                "oasis.m14.canonical-rom-knowledge.v2"} or \
+                _meta(final).get("schema") != "oasis.m14.canonical-rom-knowledge.v2" or \
                 _meta(final).get("rom_sha256") != rom_sha256:
             raise ValueError("STOP_ARCHIVIST_TO_KNOWLEDGE_ROM_MISMATCH")
         base_hashes, final_hashes = _database_hashes(base), _database_hashes(final)
@@ -380,8 +444,14 @@ def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: P
         if final_emission != base_emission or base_hashes["emission_hash"] != final_hashes["emission_hash"]:
             raise ValueError("STOP_RUNTIME_EMISSION_MUTATION")
         for table in ("rom_range", "rom_object", "claim", "relation", "conflict",
-                      "source_artifact", "evidence_ref", "emission"):
+                      "source_artifact", "evidence_ref", "emission", "derivation",
+                      "derivation_input", "map_proposal", "map_proposal_operation"):
             cols = TABLES[table]
+            if not base.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                                (table,)).fetchone():
+                if final.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]:
+                    raise ValueError("STOP_KNOWLEDGE_AUDIT_FAILED")
+                continue
             before = {tuple(row) for row in base.execute(f"SELECT {cols} FROM {table}")}
             after = {tuple(row) for row in final.execute(f"SELECT {cols} FROM {table}")}
             if not before <= after:

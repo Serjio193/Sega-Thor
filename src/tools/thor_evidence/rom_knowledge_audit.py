@@ -221,7 +221,8 @@ def audit_database(db_path: Path, rom_path: Path, manifest_path: Path,
     if db.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
         raise ValueError("STOP_KNOWLEDGE_DATABASE_INTEGRITY")
     meta = {r[0]: r[1] for r in db.execute("SELECT key,value FROM map_meta")}
-    if meta.get("schema") != "oasis.m12.canonical-rom-knowledge.v1" or \
+    if meta.get("schema") not in {"oasis.m12.canonical-rom-knowledge.v1",
+                                   "oasis.m14.canonical-rom-knowledge.v2"} or \
             meta.get("rom_sha256") != ROM_SHA or int(meta.get("rom_size", -1)) != ROM_SIZE:
         raise ValueError("STOP_KNOWLEDGE_DATABASE_IDENTITY")
     emission = [tuple(r) for r in db.execute("""SELECT start,end,emission_type,classification,
@@ -496,5 +497,4 @@ def _database_hashes(db: sqlite3.Connection) -> dict[str, str]:
     sh = _hash_bytes(_canonical(structure).encode())
     eh = _hash_bytes(_canonical(evidence).encode())
     mh = _hash_bytes(_canonical(emission).encode())
-    return {"structure_hash": sh, "evidence_index_hash": eh, "emission_hash": mh,
-            "map_hash": _hash_bytes((sh + eh + mh).encode())}
+    return {"structure_hash": sh, "evidence_index_hash": eh, "emission_hash": mh, "map_hash": _hash_bytes((sh + eh + mh).encode())}

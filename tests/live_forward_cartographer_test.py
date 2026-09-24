@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / "tools/bizhawk-native-ring"))
 from cartographer import Cartographer
 from live_forward_archivist import archive_session
 from live_forward_cartographer import LiveForwardCartographer
-from live_forward_scaling_audit import RECORD
+from live_forward_scaling_audit import EVENT_SUBTYPE_SHIFT, FLAG_EVENT, RECORD
 
 
 ROM = "a" * 64
@@ -24,8 +24,8 @@ INSTRUMENTATION = "b" * 64
 def _rows(instructions, stream_start=100, instruction_start=50):
     rows = []
     for index, (pc, opcode, flags, next_pc) in enumerate(instructions):
-        rows.append((stream_start + index, instruction_start + index, pc, next_pc,
-                     opcode, flags, 0))
+        rows.append((stream_start + index, instruction_start + index, 0, pc, next_pc,
+                     opcode, flags, 0, 0, 0, 0, 0))
     return rows
 
 
@@ -100,6 +100,66 @@ class LiveForwardCartographerTests(unittest.TestCase):
                     for outcome in item["control_flow_outcomes"]}
                 self.assertIn("branch_taken", outcomes)
                 self.assertIn("return", outcomes)
+        finally:
+            session.close()
+
+    def test_occurrences_keep_native_identity_and_deduplicate_overlapping_windows(self):
+        rows = _rows([(0x100, 0x4E71, 3, 0x102), (0x102, 0x4E75, 3, 0x200)])
+        first, first_blob = _segment(rows, worker=0, capture=1, generation=1)
+        overlap, overlap_blob = _segment(rows, worker=1, capture=2, generation=1)
+        session = LiveForwardCartographer(ROM, INSTRUMENTATION, "overlap-occurrences")
+        try:
+            session.admit(first, rows, first_blob)
+            session.admit(overlap, rows, overlap_blob)
+            events = [json.loads(row[0]) for row in session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence ORDER BY occurrence_id")]
+            self.assertEqual(len(events), 3)  # two instructions plus their transition
+            instruction = [event for event in events if event["event_kind"] == "INSTRUCTION"]
+            self.assertEqual(len(instruction), 2)
+            self.assertTrue(all(event["capture_ids"] == [1, 2] for event in instruction))
+            self.assertEqual(session.graph.db.execute("SELECT COUNT(*) FROM map_node").fetchone()[0], 2)
+        finally:
+            session.close()
+
+    def test_same_numeric_bus_address_on_m68k_and_z80_has_distinct_occurrences(self):
+        # EVENT_SUBTYPE_SHIFT is the bit position; subtype BUS_READ is 1.
+        read_flags = FLAG_EVENT | (1 << EVENT_SUBTYPE_SHIFT)
+        rows = [
+            (10, 1, 0, 0x20, 0x1234, 0x5A, read_flags, 0, 1, 1, 0, 0),
+            (11, 1, 0, 0x20, 0x1234, 0x5A, read_flags, 1, 1, 7, 0, 0),
+        ]
+        segment, blob = _segment(rows)
+        session = LiveForwardCartographer(ROM, INSTRUMENTATION, "cross-cpu-occurrences")
+        try:
+            session.admit(segment, rows, blob)
+            events = [json.loads(row[0]) for row in session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence ORDER BY occurrence_id")]
+            self.assertEqual(len(events), 2)
+            self.assertEqual({event["address"] for event in events}, {0x1234})
+            self.assertEqual({event["cpu_id"] for event in events}, {"M68K", "Z80"})
+            self.assertEqual(len({event["occurrence_id"] for event in events}), 2)
+        finally:
+            session.close()
+
+    def test_sideband_is_preserved_in_raw_input_but_skipped_from_graph_edges(self):
+        rows = [
+            (100, 50, 0, 0x100, 0x102, 0x4E71, 3, 0, 0, 0, 0, 0),
+            (101, 50, 0, 0x100, 0x00F00010, 0x1234,
+             FLAG_EVENT | (1 << EVENT_SUBTYPE_SHIFT), 0, 0, 0, 0, 0),
+            (102, 51, 0, 0x102, 0x104, 0x4E71, 3, 0, 0, 0, 0, 0),
+        ]
+        segment, records = _segment(rows)
+        session = LiveForwardCartographer(ROM, INSTRUMENTATION)
+        try:
+            session.admit(segment, rows, records)
+            self.assertEqual((session.metrics()["nodes"], session.metrics()["edges"]),
+                             (2, 1))
+            lineage = session.graph.db.execute(
+                "SELECT lineage_json FROM live_forward_pending_lineage "
+                "WHERE object_type='edge' LIMIT 1").fetchone()[0]
+            lineage = json.loads(lineage)
+            self.assertEqual(lineage["first_stream_sequence"], 100)
+            self.assertEqual(lineage["next_stream_sequence_first"], 102)
         finally:
             session.close()
 

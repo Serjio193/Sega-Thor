@@ -14,13 +14,15 @@ from itertools import groupby
 
 try:
     from .cartographer import Cartographer, canonical
+    from .rom_knowledge_map import runtime_occurrence_id
 except ImportError:
     from cartographer import Cartographer, canonical
+    from rom_knowledge_map import runtime_occurrence_id
 
 
 SESSION_SCHEMA = "oasis.m12.live-forward-session.v1"
 FLOW_PROFILE = "FLOW_V1"
-RECORD_SIZE = 32
+RECORD_SIZE = 48
 FLAG_INSTRUCTION = 1
 FLAG_FAULTED = 4
 FLAG_CONTROL_FLOW = 8
@@ -30,6 +32,8 @@ FLAG_EXCEPTION_EVENT = 256
 FLAG_EXCEPTION = 64
 FLAG_ASYNCHRONOUS = 128
 FLAG_CPU_STOP_EVENT = 1024
+FLAG_EVENT = 0x8000
+EVENT_SHIFT, EVENT_MASK = 11, 0x3800
 
 
 def _utc_now() -> str:
@@ -44,7 +48,7 @@ def _sha256(value: str, label: str) -> str:
 
 
 def _instruction_kind(row: tuple[int, ...]) -> tuple[str, str, dict[str, Any]]:
-    _, _, pc, next_pc, opcode, flags, auxiliary = row
+    stream_sequence, instruction_sequence, master_time, pc, next_pc, opcode, flags, cpu_id, length_or_width, domain, reserved, auxiliary = row
     if flags & FLAG_FAULTED:
         raise ValueError("faulted FLOW_V1 record rejected by Cartographer")
     if flags & FLAG_INSTRUCTION:
@@ -65,7 +69,7 @@ def _instruction_kind(row: tuple[int, ...]) -> tuple[str, str, dict[str, Any]]:
 
 
 def _outcome(row: tuple[int, ...]) -> str:
-    _, _, _, _, opcode, flags, _ = row
+    _, _, _, _, _, opcode, flags, _, _, _, _, _ = row
     if flags & FLAG_EXCEPTION_EVENT:
         return "exception_interrupt"
     if flags & FLAG_CPU_STOP_EVENT:
@@ -102,6 +106,9 @@ class LiveForwardCartographer:
             "CREATE TABLE live_forward_pending_lineage("
             "object_type TEXT NOT NULL, object_id TEXT NOT NULL, lineage_key TEXT NOT NULL, "
             "lineage_json TEXT NOT NULL, PRIMARY KEY(object_type, object_id, lineage_key))")
+        self.graph.db.execute(
+            "CREATE TABLE live_forward_runtime_occurrence("
+            "occurrence_id TEXT PRIMARY KEY, event_json TEXT NOT NULL)")
         self.graph.db.commit()
         self._lineage_finalized = False
         self._meta("live_forward_session_schema", SESSION_SCHEMA)
@@ -154,7 +161,7 @@ class LiveForwardCartographer:
         if rows[0][0] != values["entry_stream_sequence"] or \
                 rows[-1][0] + 1 != values["exit_stream_sequence"]:
             raise ValueError("FLOW_V1 segment bounds differ from ordered records")
-        if any(len(row) != 7 for row in rows) or any(
+        if any(len(row) != 12 for row in rows) or any(
                 right[0] != left[0] + 1 for left, right in zip(rows, rows[1:])):
             raise ValueError("FLOW_V1 segment records are not an ordered stream")
         run_id = int(values["run_id"])
@@ -178,7 +185,10 @@ class LiveForwardCartographer:
         node_items: dict[str, dict[str, Any]] = {}
         node_lineages: dict[str, dict[str, Any]] = {}
         node_ids: list[str] = []
+        semantic_rows: list[tuple[int, ...]] = []
         for index, row in enumerate(rows):
+            if row[6] & FLAG_EVENT:
+                continue
             kind, key, attributes = _instruction_kind(row)
             item = {"kind": kind, "key": key, "scope": scope, "status": "OBSERVED",
                     "attributes": attributes, "lineage": []}
@@ -187,6 +197,7 @@ class LiveForwardCartographer:
                 raise ValueError("incompatible FLOW_V1 node identity within segment")
             node_items[node_id] = item
             node_ids.append(node_id)
+            semantic_rows.append(row)
             summary = node_lineages.setdefault(node_id, {**common,
                 "first_record_index": index, "last_record_index": index,
                 "first_stream_sequence": row[0], "last_stream_sequence": row[0],
@@ -209,19 +220,34 @@ class LiveForwardCartographer:
             edge_items[edge_id] = edge
             summary = edge_lineages.setdefault(edge_id, {**common,
                 "first_record_index": index, "last_record_index": index,
-                "first_stream_sequence": rows[index][0],
-                "last_stream_sequence": rows[index][0],
-                "next_stream_sequence_first": rows[index + 1][0],
-                "next_stream_sequence_last": rows[index + 1][0],
+                "first_stream_sequence": semantic_rows[index][0],
+                "last_stream_sequence": semantic_rows[index][0],
+                "next_stream_sequence_first": semantic_rows[index + 1][0],
+                "next_stream_sequence_last": semantic_rows[index + 1][0],
                 "occurrence_count": 0, "kind_flags_or": 0})
             summary["last_record_index"] = index
-            summary["last_stream_sequence"] = rows[index][0]
-            summary["next_stream_sequence_last"] = rows[index + 1][0]
+            summary["last_stream_sequence"] = semantic_rows[index][0]
+            summary["next_stream_sequence_last"] = semantic_rows[index + 1][0]
             summary["occurrence_count"] += 1
-            summary["kind_flags_or"] |= rows[index][5]
-            edge_outcomes.setdefault(edge_id, set()).add(_outcome(rows[index]))
+            summary["kind_flags_or"] |= semantic_rows[index][5]
+            edge_outcomes.setdefault(edge_id, set()).add(_outcome(semantic_rows[index]))
         for edge_id, summary in edge_lineages.items():
             summary["control_flow_outcomes"] = sorted(edge_outcomes[edge_id])
+        instruction_nodes = {int(row[1]): node_id for row, node_id in
+            zip(semantic_rows, node_ids) if row[6] & FLAG_INSTRUCTION}
+        window = {"worker_id": int(values["worker_id"]),
+            "capture_id": int(values["capture_id"]),
+            "generation": int(values["generation"]), "segment_sha256": segment_hash}
+        for row in rows:
+            self._record_runtime_occurrence(row, values, window, instruction_nodes)
+        for index, (source_id, target_id) in enumerate(zip(node_ids, node_ids[1:])):
+            source = semantic_rows[index]
+            edge = {"source": source_id, "target": target_id,
+                    "relation": "EXECUTED_NEXT", "scope": scope}
+            self._record_runtime_occurrence(source, values, window, instruction_nodes,
+                event_kind="EXECUTED_NEXT", edge_id=self.graph._edge_id(edge),
+                target_node_id=target_id)
+        self.graph.db.commit()
         import_ref = (f"live-forward:{run_id}:{values['worker_id']}:{values['capture_id']}:"
                       f"{values['generation']}:{segment_hash}")
         delta = self.graph.merge({"nodes": list(node_items.values()),
@@ -241,10 +267,70 @@ class LiveForwardCartographer:
             "INSERT OR IGNORE INTO live_forward_pending_lineage VALUES (?, ?, ?, ?)", encoded)
         self.graph.db.commit()
         self.segments_admitted += 1
-        self.duplicate_structural_edges += max(0, len(rows) - 1 - delta.new_edges)
+        self.duplicate_structural_edges += max(0, len(semantic_rows) - 1 - delta.new_edges)
         return {"import_ref": import_ref, "new_nodes": delta.new_nodes,
                 "new_edges": delta.new_edges, "observed_edges": len(rows) - 1,
                 "graph_hash": None}
+
+    def _record_runtime_occurrence(self, row: tuple[int, ...], values: dict[str, int],
+                                   window: dict[str, Any],
+                                   instruction_nodes: dict[int, str],
+                                   event_kind: str | None = None,
+                                   edge_id: str | None = None,
+                                   target_node_id: str | None = None) -> None:
+        stream_seq, instruction_seq, _, pc, address, value, flags, cpu_id, width, domain, _, auxiliary = row
+        subtype = (flags & EVENT_MASK) >> EVENT_SHIFT
+        if event_kind is None:
+            if flags & FLAG_INSTRUCTION:
+                event_kind = "INSTRUCTION"
+            elif flags & FLAG_EVENT:
+                event_kind = {1: "BUS_READ", 2: "BUS_WRITE"}.get(
+                    subtype, f"FLOW_EVENT_{subtype}")
+            elif flags & FLAG_EXCEPTION_EVENT:
+                event_kind = "EXCEPTION_EVENT"
+            elif flags & FLAG_CPU_STOP_EVENT:
+                event_kind = "CPU_STOP_EVENT"
+            else:
+                return
+        cpu = {0: "M68K", 1: "Z80"}.get(cpu_id)
+        if cpu is None:
+            raise ValueError("STOP_RUNTIME_OCCURRENCE_CPU_ID_INVALID")
+        run_id, epoch = int(values["run_id"]), int(values["epoch"])
+        # Worker capture IDs identify windows. The native run/epoch is the
+        # canonical capture scope so the same sequence in overlapping windows
+        # resolves to one occurrence while each window remains in provenance.
+        capture_scope = f"native-run:{run_id}:epoch:{epoch}"
+        address_space = f"FLOW_DOMAIN_{domain}"
+        occurrence_id = runtime_occurrence_id(capture_id=capture_scope,
+            epoch=epoch, cpu=cpu, address_space=address_space,
+            native_sequence=stream_seq, event_kind=event_kind,
+            run_id=run_id, instruction_sequence=instruction_seq)
+        payload = {"occurrence_id": occurrence_id, "capture_id": capture_scope,
+            "capture_ids": [int(window["capture_id"])], "run_id": run_id,
+            "epoch": epoch, "cpu_id": cpu, "address_space": address_space,
+            "native_sequence": int(stream_seq),
+            "instruction_sequence": int(instruction_seq), "event_kind": event_kind,
+            "pc": int(pc), "address": int(address), "value": int(value),
+            "width": int(width), "flags": int(flags),
+            "instruction_node_id": instruction_nodes.get(int(instruction_seq)),
+            "edge_id": edge_id, "target_node_id": target_node_id,
+            "windows": [window]}
+        existing = self.graph.db.execute(
+            "SELECT event_json FROM live_forward_runtime_occurrence WHERE occurrence_id=?",
+            (occurrence_id,)).fetchone()
+        if existing:
+            prior = json.loads(existing[0])
+            for key in ("capture_ids", "windows"):
+                payload[key] = sorted({canonical(item): item
+                    for item in prior[key] + payload[key]}.values(), key=canonical)
+            prior_core = {key: value for key, value in prior.items()
+                          if key not in {"capture_ids", "windows"}}
+            payload_core = {key: value for key, value in payload.items()
+                            if key not in {"capture_ids", "windows"}}
+            if prior_core != payload_core:
+                raise ValueError("STOP_RUNTIME_OCCURRENCE_IDENTITY_CONFLICT")
+        self.graph.db.execute("INSERT OR REPLACE INTO live_forward_runtime_occurrence "
+            "VALUES (?,?)", (occurrence_id, canonical(payload)))
 
     def metrics(self) -> dict[str, Any]:
         count = lambda table, where="": int(self.graph.db.execute(

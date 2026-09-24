@@ -101,6 +101,16 @@ def _lineage(row: dict[str, Any], run_id: int) -> list[dict[str, Any]]:
     return values
 
 
+def _lineage_count(row: dict[str, Any], run_id: int) -> int:
+    """Read compact occurrence summaries as counts without expanding witnesses."""
+    values = _lineage(row, run_id)
+    count = sum(max(1, int(item.get("occurrence_count", 1))) for item in values)
+    if count <= 0:
+        raise KnowledgeImportStop("STOP_KNOWLEDGE_IMPORT_EVIDENCE_MISSING",
+                                  edge_id=row.get("edge_id"))
+    return count
+
+
 def _lineages_contained(session_value: str, master_value: str) -> bool:
     try:
         session_items, master_items = json.loads(session_value), json.loads(master_value)
@@ -225,6 +235,55 @@ def _check_archivist_chain(session_path: Path, master_path: Path, rom_sha256: st
         raise
 
 
+def _check_archivist_chain_graph(session_graph: Any, master_path: Path, rom_sha256: str,
+                                 merge_receipt: dict[str, Any], session_sha: str) -> tuple[
+                                 sqlite3.Connection, sqlite3.Connection, dict[str, dict[str, Any]],
+                                 dict[str, dict[str, Any]], str, str, int]:
+    """Validate a closed Cartographer held entirely in SQLite :memory:."""
+    receipt = _receipt_fields(merge_receipt)
+    if receipt["rom_sha256"] != rom_sha256 or session_sha != receipt["source_artifact_sha256"]:
+        raise KnowledgeImportStop("STOP_KNOWLEDGE_IMPORT_EVIDENCE_MISSING")
+    source, master = session_graph.db, _readonly(master_path)
+    try:
+        smeta, mmeta = _metadata(source), _metadata(master)
+        if smeta.get("schema") != "m12.map1.v1" or mmeta.get("schema") != "m12.map1.v1" or \
+                smeta.get("rom_sha256") != rom_sha256 or mmeta.get("rom_sha256") != rom_sha256:
+            raise KnowledgeImportStop("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
+        if smeta.get("live_forward_session_state") != "CLOSED" or \
+                int(smeta.get("source_owned_bytes", "-1")) != 0:
+            raise KnowledgeImportStop("STOP_RUNTIME_SOURCE_OWNED_MUTATION")
+        if int(source.execute("SELECT COUNT(*) FROM map_conflict").fetchone()[0]) or \
+                int(master.execute("SELECT COUNT(*) FROM map_conflict").fetchone()[0]) or \
+                int(source.execute("SELECT COUNT(*) FROM map_frontier").fetchone()[0]):
+            raise KnowledgeImportStop("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
+        session_hash, master_hash = _map1_hash(source), _map1_hash(master)
+        if session_hash != smeta.get("live_forward_graph_sha256") or \
+                session_hash != receipt["session_graph_hash"] or master_hash != receipt["master_graph_hash_after"]:
+            raise KnowledgeImportStop("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
+        run_id = int(smeta.get("live_forward_run_id", "0"))
+        if run_id <= 0 or smeta.get("live_forward_session_id") != receipt["session_id"]:
+            raise KnowledgeImportStop("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
+        nodes, edges = _node_rows(source), _edge_rows(source)
+        master_nodes, master_edges = _node_rows(master), _edge_rows(master)
+        for node_id, node in nodes.items():
+            merged = master_nodes.get(node_id)
+            if merged is None:
+                raise KnowledgeImportStop("STOP_ARCHIVIST_TO_KNOWLEDGE_GRAPH_MISMATCH")
+            if any(node[field] != merged[field] for field in ("kind", "node_key", "scope", "body")) or \
+                    not _lineages_contained(node["lineage"], merged["lineage"]):
+                raise KnowledgeImportStop("STOP_KNOWLEDGE_IMPORT_IDENTITY_CONFLICT")
+        for edge_id, edge in edges.items():
+            merged = master_edges.get(edge_id)
+            if merged is None or any(edge[field] != merged[field]
+                                     for field in ("source_id", "target_id", "relation", "scope", "body")) or \
+                    not _lineages_contained(edge["lineage"], merged["lineage"]):
+                raise KnowledgeImportStop("STOP_KNOWLEDGE_IMPORT_IDENTITY_CONFLICT")
+        return source, master, nodes, edges, session_hash, session_sha, run_id
+    except Exception:
+        master.close()
+        raise
+
+
 def _table_rows() -> dict[str, list[dict[str, Any]]]:
     return {name: [] for name in ("rom_range", "rom_object", "claim", "relation",
         "source_artifact", "evidence_ref", "map_import")}
@@ -328,9 +387,8 @@ def _instruction_data(nodes: dict[str, dict[str, Any]], edges: dict[str, dict[st
         if current and current != (start, end, data):
             raise KnowledgeImportStop("STOP_KNOWLEDGE_IMPORT_IDENTITY_CONFLICT")
         instruction_ranges[source] = (start, end, data)
-        lineage = _lineage(edge, run_id)
         executed.append({"edge_id": edge_id, "source_node_id": source,
-                         "range_node_id": target, "occurrences": len(lineage)})
+                         "range_node_id": target, "occurrences": _lineage_count(edge, run_id)})
     return instruction_ranges, executed
 
 
@@ -374,7 +432,7 @@ def _import_control_relation(edge_id: str, edge: dict[str, Any],
         {"bytes_sha256": _sha_bytes(source_bytes), "length": end - start,
          "source_owned_bytes": _owned_bytes(emission_db, start, end)})
     relation_id = _add_relation(bundle, relation, source_object, target_object, None)
-    evidence_count = len(_lineage(edge, run_id))
+    evidence_count = _lineage_count(edge, run_id)
     return relation_id, CONTROL_RELATIONS[relation], evidence_count
 
 

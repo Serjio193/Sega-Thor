@@ -15,10 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src/tools"), str(ROOT / "src/tools/thor_evidence")]
 
 import rom_knowledge_pipeline as pipeline
-from cartographer import Cartographer, digest
+from cartographer import Cartographer, canonical, digest
 from live_forward_archivist import archive_session
 from rom_knowledge_live_import import KnowledgeImportStop, import_archivist_session
-from rom_knowledge_map import KnowledgeStore
+from rom_knowledge_map import KnowledgeStore, runtime_occurrence_id
 
 
 ROM = bytearray(0x100)
@@ -132,6 +132,46 @@ def _make_session(path: Path, session_id: str, run_id: int,
                            "UNSUPPORTED_RUNTIME_FACT", run_id))
     graph.merge({"nodes": nodes, "edges": edges, "frontiers": [],
                  "resolves_frontiers": []}, "fixture:" + session_id, ROM_SHA)
+    graph.db.execute("CREATE TABLE live_forward_runtime_occurrence("
+        "occurrence_id TEXT PRIMARY KEY,event_json TEXT NOT NULL)")
+    capture_scope = f"native-run:{run_id}:epoch:1"
+    runtime_events = []
+    for index, offset in enumerate(instructions):
+        node_id = graph._node_id(instruction_nodes[offset])
+        event = {"capture_id": capture_scope, "capture_ids": [1], "run_id": run_id,
+            "epoch": 1, "cpu_id": "M68K", "address_space": "FLOW_DOMAIN_0",
+            "native_sequence": 100 + index, "instruction_sequence": 50 + index,
+            "event_kind": "INSTRUCTION", "pc": offset,
+            "address": instructions[index + 1] if index + 1 < len(instructions) else
+                (terminal if terminal is not None else offset + 2),
+            "value": int.from_bytes(ROM_BYTES[offset:offset + 2], "big"), "width": 2,
+            "flags": 1, "instruction_node_id": node_id, "edge_id": None,
+            "target_node_id": None, "windows": [{"worker_id": 0, "capture_id": 1,
+                "generation": 1, "segment_sha256": "c" * 64}]}
+        event["occurrence_id"] = runtime_occurrence_id(capture_id=capture_scope,
+            epoch=1, cpu="M68K", address_space="FLOW_DOMAIN_0",
+            native_sequence=100 + index, event_kind="INSTRUCTION", run_id=run_id,
+            instruction_sequence=50 + index)
+        runtime_events.append(event)
+    for index, (left, right) in enumerate(zip(instructions, instructions[1:])):
+        source, target = graph._node_id(instruction_nodes[left]), graph._node_id(instruction_nodes[right])
+        edge_id = graph.db.execute("SELECT edge_id FROM map_edge WHERE source_id=? "
+            "AND target_id=? AND relation='EXECUTED_NEXT'", (source, target)).fetchone()[0]
+        event = {"capture_id": capture_scope, "capture_ids": [1], "run_id": run_id,
+            "epoch": 1, "cpu_id": "M68K", "address_space": "FLOW_DOMAIN_0",
+            "native_sequence": 100 + index, "instruction_sequence": 50 + index,
+            "event_kind": "EXECUTED_NEXT", "pc": left, "address": right,
+            "value": int.from_bytes(ROM_BYTES[left:left + 2], "big"), "width": 2,
+            "flags": 1, "instruction_node_id": source, "edge_id": edge_id,
+            "target_node_id": target, "windows": [{"worker_id": 0, "capture_id": 1,
+                "generation": 1, "segment_sha256": "c" * 64}]}
+        event["occurrence_id"] = runtime_occurrence_id(capture_id=capture_scope,
+            epoch=1, cpu="M68K", address_space="FLOW_DOMAIN_0",
+            native_sequence=100 + index, event_kind="EXECUTED_NEXT", run_id=run_id,
+            instruction_sequence=50 + index)
+        runtime_events.append(event)
+    graph.db.executemany("INSERT INTO live_forward_runtime_occurrence VALUES (?,?)",
+        [(event["occurrence_id"], canonical(event)) for event in runtime_events])
     if conflict:
         graph._record_conflict("node", "fixture-conflict", ["left", "right"], [lineage])
     now = "2026-09-18T00:00:00Z"
