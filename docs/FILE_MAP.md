@@ -132,6 +132,16 @@ are in `tests/rom_knowledge_map_test.py`, registered by
 `cmake/m12_auto2.cmake`. Runtime sessions, raw FLOW and the generated SQLite
 map remain local under ignored `build/`.
 
+M14.2B adds `rom_knowledge_fusion.py` for accepted FLOW/gameplay/Sprite/VDP
+artifact admission into canonical objects and derivations;
+`rom_knowledge_fusion_stream.py` for bounded selected-event reads from large
+normalized FLOW JSON; `rom_knowledge_fusion_query.py` for global object/path/
+WHY queries; `rom_knowledge_fusion_conflicts.py` for localized exact proposal
+filtering; and `rom_knowledge_fusion_run.py` for generation, replay-order,
+idempotence, and persistence acceptance. Regression tests are in
+`tests/rom_knowledge_fusion_test.py`. Generated evidence remains ignored under
+`build/thor-evidence/`.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`

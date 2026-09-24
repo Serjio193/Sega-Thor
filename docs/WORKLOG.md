@@ -9862,3 +9862,58 @@ unchanged. Compact report/receipt are in `docs/reports/`; all SQLite/session
 maps, raw logs and segment audit data remain local under ignored
 `build/thor-evidence/live-worker-control-2h/`. The broader M12 milestone
 remains active. Exact-SHA CI publication follows this local validation.
+
+# 2026-09-24 — M14.2B-R global evidence fusion — PASS
+
+**Objective:** Fuse the strongest currently accepted independent RAM-shadow,
+DMA, and SAT evidence into the existing canonical `knowledge.sqlite`, expose a
+global object/WHY query, and keep canonical map emission and SOURCE_OWNED fixed.
+
+**Implementation:** Added thin gameplay, Sprite/SAT, VDP/DMA, and normalized
+FLOW adapters. Exact gameplay facts map explicitly to `DERIVED_EXACT` and
+connect a canonical RAM shadow writer object to its DMA emitter; exact
+Sprite/SAT facts map to `DERIVED_EXACT` and connect that same canonical DMA
+emitter to the VRAM SAT destination and entries. Matching exact VDP/DMA sample
+facts attach as additional provenance. Original analyzer truth, artifact hash,
+capture/run, and fact locator are retained. Normalized FLOW contributes the
+earliest instruction occurrence per exact DMA-emitter PC, with full M14.2A
+capture, epoch, CPU, domain, native-sequence, and instruction-sequence identity.
+This is deliberately a bounded occurrence view of the source corpus.
+
+**Acceptance evidence:** Preserved captures `run-1790240077` and
+`run-1790220032` each fuse one RAM-shadow→DMA→hardware-SAT path through the same
+static ROM object; source evidence is independently supplied by gameplay and
+Sprite/SAT analyzers, with VDP/DMA evidence also retained. Across witness
+components, 4 became 1; 2 cross-source connections and 2 multi-source objects
+were recorded. Static objects remain 5,393; total canonical relations become
+2,287; derivations become 2. Forward and reversed capture order have identical
+logical graph hash `2f612d1d8ea92e66897e587e1a70b303bd646ff59f3c520038596e96902b0a87`.
+Repeated import preserved the graph and all table hashes; each child SQLite
+database reopened with identical logical graph and emission hashes. `GLOBAL
+OBJECT VIEW` returned combined gameplay, Sprite, VDP/DMA, FLOW and existing map
+evidence; `WHY` returned both persisted input relations and the fusion rule.
+The localized conflict regression persisted one conflicting interval,
+suppressed its exact proposal, and retained an unrelated exact reference.
+
+**Limits and invariants:** Capture `run-1790220032` has normalized corpus v1
+with an empty native-instruction array, so the imported scoped runtime count is
+1 from `run-1790240077`; the v1 static graphics facts remain valid and were not
+treated as runtime occurrences. The historical selector→ROM-table→renderer
+chain remains unavailable. No map proposals were justified, so the dry-run
+proposal count is 0. The canonical map retains 2,489 ranges, 3,145,728 ROM
+bytes, 0 gaps/overlaps, SOURCE_OWNED 1,487,672 (delta 0), and emission hash
+`44a2332b0b433c635e33767886ffff35985ad31131e3dc3b4dea5e6984b17d92`.
+
+**Validation:** Focused fusion tests PASS (3/3); Python compilation PASS; Debug
+and Release configure/build PASS; the registered fusion test PASS in both
+configurations; source-file-limit check PASS; `git diff --check` PASS. Release
+CTest completed 207/209 tests. The two unchanged baseline failures are
+`oasis_live_forward_cartographer` (test imports constants absent from the
+checked-in audit module) and `oasis_live_forward_rom_link` (fixture record
+size is 32 bytes while the checked-in cartographer expects 48). Debug had the
+same two failures; a third initial Debug failure was an environment prerequisite
+that passed after creating the ignored build directory. These unrelated FLOW
+failures block push under the project pre-push rule. Final diff review and
+commit recorded after this validation. All generated databases and acceptance outputs remain in ignored
+`build/thor-evidence/`; the source worktree starts from
+`7e0117a7e6c0693bc87f265504db505c28a44b6e`.

@@ -1975,6 +1975,34 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+## ADR-M14.2B — Reuse canonical SQLite for cross-source evidence fusion
+**Status:** Accepted for M14.2B
+**Date:** 2026-09-24
+
+**Context:** Accepted gameplay RAM/SAT, Sprite/SAT, VDP/DMA, and normalized FLOW
+artifacts describe different views of the same execution, but the canonical
+ROM map already owns stable ROM object identities, evidence references, typed
+relations, derivations, conflicts, and map proposals.
+
+**Decision:** Add thin adapters and global queries over the existing canonical
+`knowledge.sqlite`. Resolve each ROM PC to an existing canonical object;
+connect exact RAM-shadow→DMA and DMA→hardware-SAT relations through their
+shared DMA-emitter object; preserve RAM/VRAM addresses as typed relation
+attributes; and retain source artifact hashes, analyzer/version, capture, and
+original truth in the existing evidence tables. Keep map proposals dry-run
+only and require emission and SOURCE_OWNED invariance.
+
+**Consequences:** Multiple analyzers and captures can attach evidence to one
+static ROM object, while normalized FLOW occurrences remain M14.2A-scoped.
+The persisted graph and `WHY` query can expose a path that no one subsystem
+report contains alone. The historical selector→ROM-table→renderer chain stays
+deferred where current accepted artifacts lack exact rows. No new database,
+map application, promotion, or ownership change is introduced.
+
+**Evidence:** M14.2B-R acceptance receipt under ignored
+`build/thor-evidence/m14-2b-final-forward/` and its order-independent reverse
+rebuild.
+
 # ADR-M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D — Separate ranges, facts and emission
 **Status:** Accepted for the 2D checkpoint
 **Date:** 2026-09-18
