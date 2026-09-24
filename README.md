@@ -121,6 +121,20 @@ five targets recorded in `TASK.md`. It writes deterministic
 structural, changed-block and unmatched correspondence. It does not assign
 semantic names or imply behavioral equivalence.
 
+## License and non-commercial use
+
+Original Sega-Thor code, tooling, documentation, reverse-engineering notes, and
+analysis for which the project contributors have licensing authority are
+licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Commercial
+use is not permitted under that license. Commercial use requires a separate
+written license from the relevant copyright holder(s).
+
+This project studies and reimplements behavior of **Beyond Oasis / The Story of
+Thor**. The Sega-Thor license does **not** grant rights in the original game,
+ROM, code, graphics, music, assets, trademarks, or other third-party material.
+Earlier repository versions already released under the MIT License retain the
+rights previously granted for those versions.
+
 ## ROM policy
 
 Do not commit ROM files or extracted commercial assets. The runtime/tooling operates on a locally supplied, legally obtained ROM dump.
