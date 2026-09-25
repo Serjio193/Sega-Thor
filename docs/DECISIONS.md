@@ -2356,3 +2356,30 @@ promotion path, or ownership accounting rule is introduced.
 **Evidence:** `src/tools/thor_evidence/rom_knowledge_stage7_closure.py` and
 `docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.json`.
 
+# ADR-M14.7-STATIC-ENTRY-PROOF — Record exact fallthrough entry evidence without widening Stage7
+**Status:** Accepted for M14.7
+**Date:** 2026-09-25
+
+**Context:** Five exact, non-owning M14.5 ASM components had runtime entry
+observations but no static entry or caller facts. The accepted M68K decoder
+treated absolute-word JSR/JMP operands as indirect even though the encoding
+provides an exact sign-extended target. Static references must be grounded in
+canonical ROM bytes and exact instruction boundaries, while Stage7 retains its
+existing direct-caller selector.
+
+**Decision:** Correct absolute-word JSR/JMP target decoding and scan only
+accepted source-owned 68K ASM emission intervals, anchored at their map
+boundaries. Admit a `STATIC_VERIFIED_ENTRY` claim only when decoded direct
+control flow or semantics-proven fallthrough reaches the exact accepted entry
+object. Store proof edges, canonical-ROM evidence refs and derivation inputs in
+the existing SQLite generation. Do not reinterpret fallthrough as a direct
+caller for the Stage7 selector; construct no full-ROM manifest unless that
+selector admits a component.
+
+**Consequences:** Static entry truth is independently queryable from runtime
+observations. Exact entry facts that do not satisfy Stage7's caller gate remain
+non-owning, and no unknown bytes are classified or promoted by this decision.
+
+**Evidence:** `src/tools/re_static_xref_scan.cpp`,
+`src/tools/thor_evidence/rom_knowledge_static_entry.py`, and the M14.7 report.
+

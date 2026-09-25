@@ -239,6 +239,7 @@ DecodedInstruction decode_one(Bytes rom, std::uint32_t pc,
         } else {
             instruction.flow = is_call ? FlowKind::indirect_call : FlowKind::indirect_jump;
             parse_single(mode, reg, 4U, MemoryAccess::address);
+            if (mode == 7U && reg == 0U) set_absolute_word_control_target(instruction, rom, pc, range_end);
         }
     } else if ((opcode & 0xF100U) == 0x7000U) {
         instruction.mnemonic = "moveq";

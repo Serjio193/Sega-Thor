@@ -40,6 +40,16 @@ int main() {
     assert(jump_slice.control_flow.front().target == 8U);
     assert(jump_slice.control_flow.front().kind == FlowKind::direct_jump);
 
+    const std::vector<std::uint8_t> absolute_word_call{
+        0x4E, 0xB8, 0x04, 0x5A, // jsr $045A
+        0x4E, 0x75,
+    };
+    const auto absolute_word_slice = decode_m68k_slice(absolute_word_call,
+        {.entry = 0, .byte_budget = absolute_word_call.size()});
+    assert(absolute_word_slice.control_flow.size() == 1U);
+    assert(absolute_word_slice.control_flow.front().target == 0x45AU);
+    assert(absolute_word_slice.control_flow.front().kind == FlowKind::direct_call);
+
     std::vector<std::uint8_t> memory_case{
         0x33, 0xFC, 0x12, 0x34, 0x00, 0xFF, 0x00, 0x10, // move.w #$1234,$FF0010
         0x4E, 0x91,                                     // jsr (a1)

@@ -151,6 +151,15 @@ the component-scoped proof/relation records to `GLOBAL_OBJECT_VIEW`. Contract
 tests are in `tests/rom_knowledge_map_adoption_test.py`, registered from
 `cmake/m14_4.cmake`; generated child databases remain under ignored `build/`.
 
+M14.7 adds the absolute-word control-target helper `re_slice_decoder_absolute.cpp`,
+`re_static_xref_scan.*` and the
+`oasis_re_m14_7_static_xrefs` CLI to scan canonical-byte 68K instructions
+within verified source-owned ASM emissions; `rom_knowledge_static_entry.py`
+admits exact entry proofs into a deterministic child of the accepted M14
+SQLite generation. Tests cover exact-entry provenance and the unchanged
+Stage7 selector. The audit receipt is
+`docs/reports/THOR_M14_7_STATIC_ENTRY_STAGE7_READINESS.md` and `.json`.
+
 M14.3 adds `src/tools/thor_evidence/rom_unknown_range_campaign.py` to rank all
 UNKNOWN canonical emission ranges using existing graph provenance and produce
 a blocker-aware, non-classifying campaign report. Its deterministic ranking,

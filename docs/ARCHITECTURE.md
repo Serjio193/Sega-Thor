@@ -1019,3 +1019,23 @@ source artifacts. No promotion is attempted and `SOURCE_OWNED` remains
 unchanged. Regression coverage is
 `tests/rom_knowledge_stage7_closure_test.py`; receipts are under
 `docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.*`.
+
+## M14.7 static entry proof
+
+M14.7 scans canonical ROM bytes only within accepted source-owned 68K ASM
+emissions, anchored at each emission boundary and decoded instruction by
+instruction with the existing M68K decoder. Header vectors, structured data,
+and Z80 emissions are excluded. Direct call/branch/jump targets and
+semantics-preserving fallthroughs are retained only when they land within one
+of the five exact M14.5 ASM components; an entry claim additionally requires
+the target to equal that component's accepted instruction start in the global
+SQLite graph. Runtime edges remain `OBSERVED_RUNTIME`.
+
+Exact static fallthrough proofs use the existing `STATIC_VERIFIED` truth
+status and retain canonical ROM identity, predecessor/entry objects, byte
+hashes, evidence references, and derivation inputs in the M14 knowledge
+generation. The existing Stage7 selector remains authoritative and still
+requires an incoming `STATIC_VERIFIED` direct-call relation. Consequently
+entry proofs that do not satisfy that selector do not trigger manifest
+reconstruction or promotion. `SOURCE_OWNED` remains an emission-derived map
+fact and is not changed by entry evidence.

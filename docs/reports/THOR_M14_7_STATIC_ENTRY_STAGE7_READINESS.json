@@ -1,0 +1,4135 @@
+{
+  "accepted": [
+    {
+      "call_type": "SEQUENTIAL_FALLTHROUGH",
+      "caller_bytes_sha256": "33fd4b50d6d1238bcf0e3ee5ab5950cb94e8e20e74694e89242937da73506bd3",
+      "caller_end": 1114,
+      "caller_object_id": "object:91ef88f6af92bc04818795f42879d5b58c76f8b2a5266225bfc9d377747010f3",
+      "caller_pc": 1110,
+      "caller_range": [
+        1110,
+        1114
+      ],
+      "caller_truth": "STATIC_VERIFIED_SOURCE_OWNED_ASM",
+      "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "claim_id": "claim:e36508dcb87d84fda44ba125dc8d878c7e1d605a86a1206fa18614445489522c",
+      "component_end": 1116,
+      "decoder": "existing M68K decoder; exact instruction boundaries",
+      "decoder_source_sha256": "7f0dfb4c9e2b6b442b615d426cf9078724c906b9a2728ea02986b0ea399f1f7d",
+      "derivation_ids": [
+        "derivation:73b9722183fc07e2ee95c5a6286214fcae2fe64f85e40458b0adcc69628a8feb",
+        "derivation:a73d2c7f407206e87efef58fd34cce31c6e43c76d08c2dbfa83eb8abb3334f60"
+      ],
+      "evidence_refs": [
+        "evidence:2f856fc70b5df0ed2d879485401d8d63ec46ffa16471bb99ade2c160ecf27932",
+        "evidence:bef3a6db07f05b4c61f91c6c208ded65e20b7474c900a8390f5102faf1e97fcb"
+      ],
+      "fallthrough_semantics": "instruction_returns_or_continues",
+      "flow": "none",
+      "instruction_bytes_sha256": "33fd4b50d6d1238bcf0e3ee5ab5950cb94e8e20e74694e89242937da73506bd3",
+      "mnemonic": "move",
+      "opcode": 8817,
+      "relation_id": "relation:2cacba1e1d89c76b5d873685fa653691461319cda2396a0f473a489e81975dc0",
+      "source_span": [
+        776,
+        1114
+      ],
+      "target_object_id": "object:0efd0cdefa0a936c2ab460687b5294a7b0a6258ff5e03dff7af1adada9242b92",
+      "target_pc": 1114,
+      "truth": "STATIC_VERIFIED"
+    },
+    {
+      "call_type": "SEQUENTIAL_FALLTHROUGH",
+      "caller_bytes_sha256": "8b454bc965a82eefb79f3e3a8552573ab66c2ba20f548c242248820ad9546d0c",
+      "caller_end": 7422,
+      "caller_object_id": "object:6c049c578100bf6409a4da9aff2758d234ea6c9bcb00f4718864bab14f402d7e",
+      "caller_pc": 7416,
+      "caller_range": [
+        7416,
+        7422
+      ],
+      "caller_truth": "STATIC_VERIFIED_SOURCE_OWNED_ASM",
+      "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "claim_id": "claim:2e484d76c8008b70dc02c67b6c8b060ee2007789706bb412b9e04861ea56a0fc",
+      "component_end": 7472,
+      "decoder": "existing M68K decoder; exact instruction boundaries",
+      "decoder_source_sha256": "7f0dfb4c9e2b6b442b615d426cf9078724c906b9a2728ea02986b0ea399f1f7d",
+      "derivation_ids": [
+        "derivation:9c424304b30330e35f416e749cae415f5b38d21116a497578a177b21ba3ab87a",
+        "derivation:bbf304388187952613a562f29626f10746384f1a62236b976e10e9f82cd1c068"
+      ],
+      "evidence_refs": [
+        "evidence:0fbb447e13878812aa5c09bd820a38b5d851515918e41965d9ac8a617f7d2655",
+        "evidence:2820cf2d015164c8628101d112d6e98f8152d822f3b3c4cf3dd570c517e95ffb"
+      ],
+      "fallthrough_semantics": "instruction_returns_or_continues",
+      "flow": "none",
+      "instruction_bytes_sha256": "8b454bc965a82eefb79f3e3a8552573ab66c2ba20f548c242248820ad9546d0c",
+      "mnemonic": "move",
+      "opcode": 15609,
+      "relation_id": "relation:54c7688b63465820965611a73f2a17410b2e03482dd63ecd38b2ba941569c409",
+      "source_span": [
+        7240,
+        7422
+      ],
+      "target_object_id": "object:94aa9bef9a79911bec9884c71a7eff3af47544688a978c78f0cb124e1b467d6d",
+      "target_pc": 7422,
+      "truth": "STATIC_VERIFIED"
+    },
+    {
+      "call_type": "CALL_RETURN_FALLTHROUGH",
+      "caller_bytes_sha256": "4038d1f5da0d257e64c081a59983a1177783878d5b221aa99b29964ac41af057",
+      "caller_end": 246966,
+      "caller_object_id": "object:65851a02bbb6ccee9a35e49027045bdf4b6b5f1e4c033d0259838e8c04082e53",
+      "caller_pc": 246960,
+      "caller_range": [
+        246960,
+        246966
+      ],
+      "caller_truth": "STATIC_VERIFIED_SOURCE_OWNED_ASM",
+      "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "claim_id": "claim:fc5887728b2503864bf979472cca8606d2d84d225731bbc972641e939246340c",
+      "component_end": 247086,
+      "decoder": "existing M68K decoder; exact instruction boundaries",
+      "decoder_source_sha256": "7f0dfb4c9e2b6b442b615d426cf9078724c906b9a2728ea02986b0ea399f1f7d",
+      "derivation_ids": [
+        "derivation:c65ebf0ea710e676d53a03809cd3ed1e7cd1c4e94849b07bdebc3f59ad242853",
+        "derivation:37cb90723dffd73dbaa32eb314638dca17ef6e0e7ae2b9c1f52fe2c570342ccc"
+      ],
+      "evidence_refs": [
+        "evidence:44f076c9eca1d19a377aea82a395ff0418e55c290c0603d201baf95287c5cd01",
+        "evidence:f4b9eac863b907c670f333d0faf72c66d4cec002d7c5ab62d04cf56f21f45c4d"
+      ],
+      "fallthrough_semantics": "instruction_returns_or_continues",
+      "flow": "direct_call",
+      "instruction_bytes_sha256": "4038d1f5da0d257e64c081a59983a1177783878d5b221aa99b29964ac41af057",
+      "mnemonic": "jsr",
+      "opcode": 20153,
+      "relation_id": "relation:47200500de390e4e13265475a80305edeec610b3f3e073692448140e89ea92ef",
+      "source_span": [
+        246912,
+        246966
+      ],
+      "target_object_id": "object:fc22097807f73bde5a55372faff04fffb873524a7bac4df5e5e97347022964b5",
+      "target_pc": 246966,
+      "truth": "STATIC_VERIFIED"
+    }
+  ],
+  "bytes_audited": 260,
+  "candidates": [
+    {
+      "caller_end": "1114",
+      "caller_pc": "1110",
+      "component_end": "1116",
+      "component_start": "1114",
+      "condition": "255",
+      "flow": "none",
+      "kind": "VERIFIED_FALLTHROUGH",
+      "mnemonic": "move",
+      "opcode": "8817",
+      "source_end": "1114",
+      "source_start": "776",
+      "target_is_entry": "true",
+      "target_pc": "1114"
+    },
+    {
+      "caller_end": "7422",
+      "caller_pc": "7416",
+      "component_end": "7472",
+      "component_start": "7422",
+      "condition": "255",
+      "flow": "none",
+      "kind": "VERIFIED_FALLTHROUGH",
+      "mnemonic": "move",
+      "opcode": "15609",
+      "source_end": "7422",
+      "source_start": "7240",
+      "target_is_entry": "true",
+      "target_pc": "7422"
+    },
+    {
+      "caller_end": "246966",
+      "caller_pc": "246960",
+      "component_end": "247086",
+      "component_start": "246966",
+      "condition": "255",
+      "flow": "direct_call",
+      "kind": "VERIFIED_FALLTHROUGH",
+      "mnemonic": "jsr",
+      "opcode": "20153",
+      "source_end": "246966",
+      "source_start": "246912",
+      "target_is_entry": "true",
+      "target_pc": "246966"
+    }
+  ],
+  "components": [
+    {
+      "blocker": "NO_STATIC_VERIFIED_DIRECT_CALL_TARGET_OR_CALLER_FOR_EXISTING_SELECTOR",
+      "cfg_sha256": "abc6580bb85a49517b859740b1e4786cf41de9e27785975d182b4bea8355bd95",
+      "end": 1116,
+      "existing_claims": [
+        {
+          "claim_type": "CANONICAL_ASM_EXTENT",
+          "status": "DERIVED_EXACT"
+        },
+        {
+          "claim_type": "EXECUTED_FROM_ROM",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "incoming_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:91ef88f6af92bc04818795f42879d5b58c76f8b2a5266225bfc9d377747010f3",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "outgoing_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "status": "OBSERVED_RUNTIME",
+          "target_address": null,
+          "target_object_id": "object:122f22c3ada7fb3d88466e001a6b3167629037c2c462d3c36448d362f884ca05"
+        }
+      ],
+      "roundtrip_sha256": "a2171d058b274b6d84d6a27d3d14287be828ed81502ef920986c4fe48ce5592e",
+      "runtime_entry_observations": 1,
+      "selector_after": false,
+      "selector_before": false,
+      "size": 2,
+      "start": 1114,
+      "static_entry_after": true,
+      "static_entry_before": false
+    },
+    {
+      "blocker": "NO_STATIC_VERIFIED_DIRECT_CALL_TARGET_OR_CALLER_FOR_EXISTING_SELECTOR",
+      "cfg_sha256": "bd5dd077f0e2babab27a34dd4658b59fcae8d49467bd6810e865df6b3cb71598",
+      "end": 7472,
+      "existing_claims": [
+        {
+          "claim_type": "CANONICAL_ASM_EXTENT",
+          "status": "DERIVED_EXACT"
+        },
+        {
+          "claim_type": "EXECUTED_FROM_ROM",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "incoming_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:6c049c578100bf6409a4da9aff2758d234ea6c9bcb00f4718864bab14f402d7e",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "outgoing_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "status": "OBSERVED_RUNTIME",
+          "target_address": null,
+          "target_object_id": "object:736b17cd44a59821aff3de37edfea8adbcc65e666c470ebda5b378521c6c11e4"
+        }
+      ],
+      "roundtrip_sha256": "bc439b3aded2283fa3f437a6dad062de1dd8fe62fa8cc8b03c8b0823007a025e",
+      "runtime_entry_observations": 1,
+      "selector_after": false,
+      "selector_before": false,
+      "size": 50,
+      "start": 7422,
+      "static_entry_after": true,
+      "static_entry_before": false
+    },
+    {
+      "blocker": "NO_STATIC_VERIFIED_DIRECT_CALL_TARGET_OR_CALLER_FOR_EXISTING_SELECTOR",
+      "cfg_sha256": "54d54204703fd4978d7692d8f6483933dacd4ce137ae28dedba5b9331c25b132",
+      "end": 247086,
+      "existing_claims": [
+        {
+          "claim_type": "CANONICAL_ASM_EXTENT",
+          "status": "DERIVED_EXACT"
+        },
+        {
+          "claim_type": "EXECUTED_FROM_ROM",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "incoming_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:f2c7a3490d83f209c4b368aa391dc5e3f5255897f2290ce79c765d1df3a0074a",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "outgoing_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "status": "OBSERVED_RUNTIME",
+          "target_address": null,
+          "target_object_id": "object:07da442582406e20271d5e812e65891d6ac68ad5a126c9ba0a51fefcde9aff11"
+        }
+      ],
+      "roundtrip_sha256": "0e6c53a1d875f9b8d8124772567a0ca9e255ad5bbebd7b93b16b2c795006a8c1",
+      "runtime_entry_observations": 1,
+      "selector_after": false,
+      "selector_before": false,
+      "size": 120,
+      "start": 246966,
+      "static_entry_after": true,
+      "static_entry_before": false
+    },
+    {
+      "blocker": "NO_STATIC_VERIFIED_DIRECT_CALL_TARGET_OR_CALLER_FOR_EXISTING_SELECTOR",
+      "cfg_sha256": "224313a989d7093afebb1103d3bf31ce59c1eb1fa6ddb32b857d8a179d2042f4",
+      "end": 401994,
+      "existing_claims": [
+        {
+          "claim_type": "CANONICAL_ASM_EXTENT",
+          "status": "DERIVED_EXACT"
+        },
+        {
+          "claim_type": "EXECUTED_FROM_ROM",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "incoming_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:c24ede18c365c183f887891db90d6147761789372655f2cdca09f1d95c5fc5f4",
+          "status": "OBSERVED_RUNTIME"
+        },
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:2f1eb3bf0c908c452afb468e48848422ec58616d6760cc6f46c500450ddb683c",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "outgoing_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "status": "OBSERVED_RUNTIME",
+          "target_address": null,
+          "target_object_id": "object:208e4e606a71db67fef01a4ef2aace9abcbe4b2647b344f54fa90fef7242503d"
+        }
+      ],
+      "roundtrip_sha256": "3d3504414073a65d248eef89951e89508507c276a9a1ba2db681e9e3967a0822",
+      "runtime_entry_observations": 2,
+      "selector_after": false,
+      "selector_before": false,
+      "size": 50,
+      "start": 401944,
+      "static_entry_after": false,
+      "static_entry_before": false
+    },
+    {
+      "blocker": "NO_STATIC_VERIFIED_DIRECT_CALL_TARGET_OR_CALLER_FOR_EXISTING_SELECTOR",
+      "cfg_sha256": "d598dea8284714d4ed3bce0909784137665ea43d9c9f72f3427c49a17e9bd808",
+      "end": 403884,
+      "existing_claims": [
+        {
+          "claim_type": "CANONICAL_ASM_EXTENT",
+          "status": "DERIVED_EXACT"
+        },
+        {
+          "claim_type": "EXECUTED_FROM_ROM",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "incoming_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "source_object_id": "object:c24ede18c365c183f887891db90d6147761789372655f2cdca09f1d95c5fc5f4",
+          "status": "OBSERVED_RUNTIME"
+        }
+      ],
+      "outgoing_references": [
+        {
+          "relation_type": "EXECUTED_NEXT",
+          "status": "OBSERVED_RUNTIME",
+          "target_address": null,
+          "target_object_id": "object:1e230530742aa4e6ce7fd45d1fd3cf96b9b50dd9d85eff7993daa16fc5b920f7"
+        }
+      ],
+      "roundtrip_sha256": "a154ea52b6c2c1ca34c4c75e119f4485ec92eed9fb921c42c93d6310ec58aba5",
+      "runtime_entry_observations": 1,
+      "selector_after": false,
+      "selector_before": false,
+      "size": 38,
+      "start": 403846,
+      "static_entry_after": false,
+      "static_entry_before": false
+    }
+  ],
+  "components_audited": 5,
+  "decoded_bytes": 47606,
+  "decoded_instructions": 12603,
+  "deterministic_replay": true,
+  "generation_id": "gen-m14-7-29314da7a34a38e6",
+  "logical_graph_replay_identical": true,
+  "manifest_regenerated": false,
+  "map_gaps": 0,
+  "map_overlaps": 0,
+  "map_ranges": 2490,
+  "new_static_verified_callers": 0,
+  "new_static_verified_entries": 3,
+  "parent_generation": "gen-m14-6-dcb2596abccf9612",
+  "pointer_refs": "NOT_SCANNED_NO_TYPED_TABLE_ENTRY_OBJECTS",
+  "promoted_bytes": 0,
+  "promoted_components": 0,
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "rom_size": 3145728,
+  "scan": {
+    "candidate_count": 3,
+    "decoded_byte_count": 47606,
+    "decoded_instruction_count": 12603,
+    "ranges": [
+      {
+        "decoded_end": 516,
+        "end": 516,
+        "instruction_count": 2,
+        "start": 512,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 518,
+        "end": 518,
+        "instruction_count": 1,
+        "start": 516,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 522,
+        "end": 522,
+        "instruction_count": 2,
+        "start": 518,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 524,
+        "end": 524,
+        "instruction_count": 1,
+        "start": 522,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 526,
+        "end": 526,
+        "instruction_count": 1,
+        "start": 524,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 668,
+        "end": 668,
+        "instruction_count": 50,
+        "start": 526,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 1114,
+        "end": 1114,
+        "instruction_count": 79,
+        "start": 776,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 1118,
+        "end": 1118,
+        "instruction_count": 1,
+        "start": 1116,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 1528,
+        "end": 1528,
+        "instruction_count": 80,
+        "start": 1222,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 1988,
+        "end": 1988,
+        "instruction_count": 52,
+        "start": 1782,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2018,
+        "end": 2018,
+        "instruction_count": 9,
+        "start": 1988,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2162,
+        "end": 2162,
+        "instruction_count": 12,
+        "start": 2112,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2210,
+        "end": 2210,
+        "instruction_count": 12,
+        "start": 2162,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2230,
+        "end": 2230,
+        "instruction_count": 6,
+        "start": 2210,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2282,
+        "end": 2282,
+        "instruction_count": 17,
+        "start": 2230,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2296,
+        "end": 2296,
+        "instruction_count": 4,
+        "start": 2282,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2446,
+        "end": 2446,
+        "instruction_count": 30,
+        "start": 2332,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2558,
+        "end": 2558,
+        "instruction_count": 35,
+        "start": 2446,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2612,
+        "end": 2612,
+        "instruction_count": 2,
+        "start": 2604,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2638,
+        "end": 2638,
+        "instruction_count": 8,
+        "start": 2612,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 2672,
+        "end": 2672,
+        "instruction_count": 10,
+        "start": 2638,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3422,
+        "end": 3422,
+        "instruction_count": 9,
+        "start": 3384,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3458,
+        "end": 3458,
+        "instruction_count": 7,
+        "start": 3422,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3532,
+        "end": 3532,
+        "instruction_count": 21,
+        "start": 3458,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3568,
+        "end": 3568,
+        "instruction_count": 9,
+        "start": 3532,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3648,
+        "end": 3648,
+        "instruction_count": 19,
+        "start": 3584,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3778,
+        "end": 3778,
+        "instruction_count": 17,
+        "start": 3712,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3874,
+        "end": 3874,
+        "instruction_count": 27,
+        "start": 3778,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 3966,
+        "end": 3966,
+        "instruction_count": 23,
+        "start": 3890,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4086,
+        "end": 4086,
+        "instruction_count": 28,
+        "start": 3966,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4370,
+        "end": 4370,
+        "instruction_count": 4,
+        "start": 4360,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4426,
+        "end": 4426,
+        "instruction_count": 13,
+        "start": 4370,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4482,
+        "end": 4482,
+        "instruction_count": 13,
+        "start": 4426,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4840,
+        "end": 4840,
+        "instruction_count": 28,
+        "start": 4762,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 4864,
+        "end": 4864,
+        "instruction_count": 8,
+        "start": 4840,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 5224,
+        "end": 5224,
+        "instruction_count": 4,
+        "start": 5200,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 6016,
+        "end": 6016,
+        "instruction_count": 21,
+        "start": 5926,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 6106,
+        "end": 6106,
+        "instruction_count": 28,
+        "start": 6016,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 6184,
+        "end": 6184,
+        "instruction_count": 20,
+        "start": 6106,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7208,
+        "end": 7208,
+        "instruction_count": 184,
+        "start": 6462,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7422,
+        "end": 7422,
+        "instruction_count": 48,
+        "start": 7240,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7514,
+        "end": 7514,
+        "instruction_count": 11,
+        "start": 7472,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7750,
+        "end": 7750,
+        "instruction_count": 35,
+        "start": 7644,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7832,
+        "end": 7832,
+        "instruction_count": 26,
+        "start": 7750,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7886,
+        "end": 7886,
+        "instruction_count": 13,
+        "start": 7832,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 7974,
+        "end": 7974,
+        "instruction_count": 29,
+        "start": 7886,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 8050,
+        "end": 8050,
+        "instruction_count": 26,
+        "start": 7974,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 9164,
+        "end": 9164,
+        "instruction_count": 2,
+        "start": 9158,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10150,
+        "end": 10150,
+        "instruction_count": 48,
+        "start": 10012,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10236,
+        "end": 10236,
+        "instruction_count": 24,
+        "start": 10150,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10392,
+        "end": 10392,
+        "instruction_count": 45,
+        "start": 10236,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10620,
+        "end": 10620,
+        "instruction_count": 15,
+        "start": 10548,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10642,
+        "end": 10642,
+        "instruction_count": 5,
+        "start": 10620,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 10958,
+        "end": 10958,
+        "instruction_count": 14,
+        "start": 10916,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11018,
+        "end": 11018,
+        "instruction_count": 13,
+        "start": 10974,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11088,
+        "end": 11088,
+        "instruction_count": 9,
+        "start": 11048,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11118,
+        "end": 11118,
+        "instruction_count": 7,
+        "start": 11088,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11146,
+        "end": 11146,
+        "instruction_count": 4,
+        "start": 11118,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11168,
+        "end": 11168,
+        "instruction_count": 3,
+        "start": 11146,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11196,
+        "end": 11196,
+        "instruction_count": 7,
+        "start": 11168,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11208,
+        "end": 11208,
+        "instruction_count": 3,
+        "start": 11196,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11218,
+        "end": 11218,
+        "instruction_count": 2,
+        "start": 11208,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11304,
+        "end": 11304,
+        "instruction_count": 25,
+        "start": 11218,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11492,
+        "end": 11492,
+        "instruction_count": 11,
+        "start": 11452,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11578,
+        "end": 11578,
+        "instruction_count": 24,
+        "start": 11492,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11608,
+        "end": 11608,
+        "instruction_count": 6,
+        "start": 11578,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11622,
+        "end": 11622,
+        "instruction_count": 3,
+        "start": 11608,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11652,
+        "end": 11652,
+        "instruction_count": 10,
+        "start": 11622,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11702,
+        "end": 11702,
+        "instruction_count": 14,
+        "start": 11652,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11806,
+        "end": 11806,
+        "instruction_count": 19,
+        "start": 11702,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 11896,
+        "end": 11896,
+        "instruction_count": 22,
+        "start": 11806,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12002,
+        "end": 12002,
+        "instruction_count": 19,
+        "start": 11896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12142,
+        "end": 12142,
+        "instruction_count": 25,
+        "start": 12002,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12250,
+        "end": 12250,
+        "instruction_count": 19,
+        "start": 12142,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12334,
+        "end": 12334,
+        "instruction_count": 26,
+        "start": 12250,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12388,
+        "end": 12388,
+        "instruction_count": 15,
+        "start": 12334,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12410,
+        "end": 12410,
+        "instruction_count": 11,
+        "start": 12388,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 12796,
+        "end": 12796,
+        "instruction_count": 18,
+        "start": 12716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13032,
+        "end": 13032,
+        "instruction_count": 29,
+        "start": 12896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13048,
+        "end": 13048,
+        "instruction_count": 4,
+        "start": 13032,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13502,
+        "end": 13502,
+        "instruction_count": 19,
+        "start": 13412,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13620,
+        "end": 13620,
+        "instruction_count": 9,
+        "start": 13582,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13740,
+        "end": 13740,
+        "instruction_count": 8,
+        "start": 13702,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13854,
+        "end": 13854,
+        "instruction_count": 23,
+        "start": 13740,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 13992,
+        "end": 13992,
+        "instruction_count": 28,
+        "start": 13916,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 14122,
+        "end": 14122,
+        "instruction_count": 23,
+        "start": 14036,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 14186,
+        "end": 14186,
+        "instruction_count": 13,
+        "start": 14122,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 14270,
+        "end": 14270,
+        "instruction_count": 21,
+        "start": 14186,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 14290,
+        "end": 14290,
+        "instruction_count": 4,
+        "start": 14270,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 14368,
+        "end": 14368,
+        "instruction_count": 21,
+        "start": 14290,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 15166,
+        "end": 15166,
+        "instruction_count": 306,
+        "start": 14368,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 15570,
+        "end": 15570,
+        "instruction_count": 13,
+        "start": 15520,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 15692,
+        "end": 15692,
+        "instruction_count": 12,
+        "start": 15622,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 15978,
+        "end": 15978,
+        "instruction_count": 17,
+        "start": 15896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16260,
+        "end": 16260,
+        "instruction_count": 73,
+        "start": 15978,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16422,
+        "end": 16422,
+        "instruction_count": 5,
+        "start": 16396,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16478,
+        "end": 16478,
+        "instruction_count": 23,
+        "start": 16422,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16486,
+        "end": 16486,
+        "instruction_count": 2,
+        "start": 16478,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16550,
+        "end": 16550,
+        "instruction_count": 24,
+        "start": 16486,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16590,
+        "end": 16590,
+        "instruction_count": 16,
+        "start": 16550,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16618,
+        "end": 16618,
+        "instruction_count": 3,
+        "start": 16606,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16728,
+        "end": 16728,
+        "instruction_count": 36,
+        "start": 16618,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16764,
+        "end": 16764,
+        "instruction_count": 7,
+        "start": 16728,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16794,
+        "end": 16794,
+        "instruction_count": 8,
+        "start": 16764,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16830,
+        "end": 16830,
+        "instruction_count": 11,
+        "start": 16794,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16866,
+        "end": 16866,
+        "instruction_count": 11,
+        "start": 16830,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16930,
+        "end": 16930,
+        "instruction_count": 18,
+        "start": 16866,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 16976,
+        "end": 16976,
+        "instruction_count": 10,
+        "start": 16930,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17004,
+        "end": 17004,
+        "instruction_count": 5,
+        "start": 16976,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17046,
+        "end": 17046,
+        "instruction_count": 8,
+        "start": 17004,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17062,
+        "end": 17062,
+        "instruction_count": 3,
+        "start": 17046,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17106,
+        "end": 17106,
+        "instruction_count": 16,
+        "start": 17062,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17128,
+        "end": 17128,
+        "instruction_count": 4,
+        "start": 17106,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17288,
+        "end": 17288,
+        "instruction_count": 40,
+        "start": 17128,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17406,
+        "end": 17406,
+        "instruction_count": 29,
+        "start": 17288,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17430,
+        "end": 17430,
+        "instruction_count": 9,
+        "start": 17406,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 17758,
+        "end": 17758,
+        "instruction_count": 9,
+        "start": 17720,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 18474,
+        "end": 18474,
+        "instruction_count": 10,
+        "start": 18432,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19080,
+        "end": 19080,
+        "instruction_count": 23,
+        "start": 18970,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19152,
+        "end": 19152,
+        "instruction_count": 13,
+        "start": 19090,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19266,
+        "end": 19266,
+        "instruction_count": 26,
+        "start": 19152,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19278,
+        "end": 19278,
+        "instruction_count": 4,
+        "start": 19266,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19374,
+        "end": 19374,
+        "instruction_count": 31,
+        "start": 19278,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19560,
+        "end": 19560,
+        "instruction_count": 23,
+        "start": 19496,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 19790,
+        "end": 19790,
+        "instruction_count": 11,
+        "start": 19742,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 20296,
+        "end": 20296,
+        "instruction_count": 144,
+        "start": 19790,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 20488,
+        "end": 20488,
+        "instruction_count": 50,
+        "start": 20296,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 20596,
+        "end": 20596,
+        "instruction_count": 34,
+        "start": 20488,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 21038,
+        "end": 21038,
+        "instruction_count": 89,
+        "start": 20764,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 21260,
+        "end": 21260,
+        "instruction_count": 47,
+        "start": 21046,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 21292,
+        "end": 21292,
+        "instruction_count": 10,
+        "start": 21260,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 22128,
+        "end": 22128,
+        "instruction_count": 57,
+        "start": 21882,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 25316,
+        "end": 25316,
+        "instruction_count": 6,
+        "start": 25292,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 25878,
+        "end": 25878,
+        "instruction_count": 21,
+        "start": 25796,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 26424,
+        "end": 26424,
+        "instruction_count": 8,
+        "start": 26392,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 28378,
+        "end": 28378,
+        "instruction_count": 19,
+        "start": 28282,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 30670,
+        "end": 30670,
+        "instruction_count": 6,
+        "start": 30638,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31530,
+        "end": 31530,
+        "instruction_count": 61,
+        "start": 31272,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31606,
+        "end": 31606,
+        "instruction_count": 6,
+        "start": 31588,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31610,
+        "end": 31610,
+        "instruction_count": 1,
+        "start": 31606,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31620,
+        "end": 31620,
+        "instruction_count": 2,
+        "start": 31610,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31642,
+        "end": 31642,
+        "instruction_count": 7,
+        "start": 31620,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31652,
+        "end": 31652,
+        "instruction_count": 2,
+        "start": 31642,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31700,
+        "end": 31700,
+        "instruction_count": 11,
+        "start": 31652,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31716,
+        "end": 31716,
+        "instruction_count": 4,
+        "start": 31700,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31720,
+        "end": 31720,
+        "instruction_count": 1,
+        "start": 31716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31734,
+        "end": 31734,
+        "instruction_count": 3,
+        "start": 31720,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31776,
+        "end": 31776,
+        "instruction_count": 10,
+        "start": 31734,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 31804,
+        "end": 31804,
+        "instruction_count": 5,
+        "start": 31776,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 32036,
+        "end": 32036,
+        "instruction_count": 16,
+        "start": 31942,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 32828,
+        "end": 32828,
+        "instruction_count": 26,
+        "start": 32716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 33528,
+        "end": 33528,
+        "instruction_count": 21,
+        "start": 33454,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 33676,
+        "end": 33676,
+        "instruction_count": 51,
+        "start": 33528,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 33784,
+        "end": 33784,
+        "instruction_count": 14,
+        "start": 33748,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 33900,
+        "end": 33900,
+        "instruction_count": 33,
+        "start": 33784,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34096,
+        "end": 34096,
+        "instruction_count": 10,
+        "start": 34052,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34244,
+        "end": 34244,
+        "instruction_count": 31,
+        "start": 34096,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34274,
+        "end": 34274,
+        "instruction_count": 6,
+        "start": 34244,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34340,
+        "end": 34340,
+        "instruction_count": 4,
+        "start": 34330,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34664,
+        "end": 34664,
+        "instruction_count": 60,
+        "start": 34484,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 34804,
+        "end": 34804,
+        "instruction_count": 35,
+        "start": 34680,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35088,
+        "end": 35088,
+        "instruction_count": 82,
+        "start": 34836,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35152,
+        "end": 35152,
+        "instruction_count": 18,
+        "start": 35088,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35250,
+        "end": 35250,
+        "instruction_count": 28,
+        "start": 35152,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35726,
+        "end": 35726,
+        "instruction_count": 47,
+        "start": 35494,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35756,
+        "end": 35756,
+        "instruction_count": 7,
+        "start": 35726,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 35930,
+        "end": 35930,
+        "instruction_count": 35,
+        "start": 35756,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36012,
+        "end": 36012,
+        "instruction_count": 21,
+        "start": 35930,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36048,
+        "end": 36048,
+        "instruction_count": 9,
+        "start": 36012,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36060,
+        "end": 36060,
+        "instruction_count": 4,
+        "start": 36048,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36102,
+        "end": 36102,
+        "instruction_count": 10,
+        "start": 36060,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36260,
+        "end": 36260,
+        "instruction_count": 40,
+        "start": 36102,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36308,
+        "end": 36308,
+        "instruction_count": 13,
+        "start": 36260,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36386,
+        "end": 36386,
+        "instruction_count": 23,
+        "start": 36308,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36402,
+        "end": 36402,
+        "instruction_count": 3,
+        "start": 36386,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36496,
+        "end": 36496,
+        "instruction_count": 27,
+        "start": 36402,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36626,
+        "end": 36626,
+        "instruction_count": 6,
+        "start": 36600,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36642,
+        "end": 36642,
+        "instruction_count": 4,
+        "start": 36626,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36666,
+        "end": 36666,
+        "instruction_count": 8,
+        "start": 36642,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 36722,
+        "end": 36722,
+        "instruction_count": 13,
+        "start": 36666,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 37428,
+        "end": 37428,
+        "instruction_count": 19,
+        "start": 37362,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 37620,
+        "end": 37620,
+        "instruction_count": 23,
+        "start": 37552,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 37680,
+        "end": 37680,
+        "instruction_count": 16,
+        "start": 37620,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 37984,
+        "end": 37984,
+        "instruction_count": 55,
+        "start": 37774,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38050,
+        "end": 38050,
+        "instruction_count": 20,
+        "start": 37984,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38098,
+        "end": 38098,
+        "instruction_count": 20,
+        "start": 38050,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38314,
+        "end": 38314,
+        "instruction_count": 58,
+        "start": 38098,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38520,
+        "end": 38520,
+        "instruction_count": 54,
+        "start": 38314,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38586,
+        "end": 38586,
+        "instruction_count": 20,
+        "start": 38520,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 38632,
+        "end": 38632,
+        "instruction_count": 20,
+        "start": 38586,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 39352,
+        "end": 39352,
+        "instruction_count": 40,
+        "start": 39236,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 39382,
+        "end": 39382,
+        "instruction_count": 11,
+        "start": 39352,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 39408,
+        "end": 39408,
+        "instruction_count": 10,
+        "start": 39382,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 39638,
+        "end": 39638,
+        "instruction_count": 2,
+        "start": 39632,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 39874,
+        "end": 39874,
+        "instruction_count": 72,
+        "start": 39638,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40000,
+        "end": 40000,
+        "instruction_count": 32,
+        "start": 39922,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40060,
+        "end": 40060,
+        "instruction_count": 16,
+        "start": 40000,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40192,
+        "end": 40192,
+        "instruction_count": 38,
+        "start": 40060,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40270,
+        "end": 40270,
+        "instruction_count": 18,
+        "start": 40192,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40304,
+        "end": 40304,
+        "instruction_count": 12,
+        "start": 40270,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40338,
+        "end": 40338,
+        "instruction_count": 11,
+        "start": 40304,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40372,
+        "end": 40372,
+        "instruction_count": 12,
+        "start": 40338,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40406,
+        "end": 40406,
+        "instruction_count": 11,
+        "start": 40372,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40634,
+        "end": 40634,
+        "instruction_count": 62,
+        "start": 40406,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 40864,
+        "end": 40864,
+        "instruction_count": 63,
+        "start": 40634,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 41114,
+        "end": 41114,
+        "instruction_count": 68,
+        "start": 40864,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 41366,
+        "end": 41366,
+        "instruction_count": 69,
+        "start": 41114,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 42040,
+        "end": 42040,
+        "instruction_count": 69,
+        "start": 41794,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 43226,
+        "end": 43226,
+        "instruction_count": 51,
+        "start": 42982,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 43248,
+        "end": 43248,
+        "instruction_count": 10,
+        "start": 43226,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 45406,
+        "end": 45406,
+        "instruction_count": 86,
+        "start": 45090,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 45710,
+        "end": 45710,
+        "instruction_count": 100,
+        "start": 45406,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 45900,
+        "end": 45900,
+        "instruction_count": 63,
+        "start": 45710,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46002,
+        "end": 46002,
+        "instruction_count": 25,
+        "start": 45900,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46034,
+        "end": 46034,
+        "instruction_count": 8,
+        "start": 46002,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46124,
+        "end": 46124,
+        "instruction_count": 33,
+        "start": 46034,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46280,
+        "end": 46280,
+        "instruction_count": 38,
+        "start": 46172,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46422,
+        "end": 46422,
+        "instruction_count": 31,
+        "start": 46334,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46544,
+        "end": 46544,
+        "instruction_count": 34,
+        "start": 46446,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46688,
+        "end": 46688,
+        "instruction_count": 26,
+        "start": 46608,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46758,
+        "end": 46758,
+        "instruction_count": 19,
+        "start": 46698,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 46896,
+        "end": 46896,
+        "instruction_count": 45,
+        "start": 46758,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47002,
+        "end": 47002,
+        "instruction_count": 34,
+        "start": 46896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47186,
+        "end": 47186,
+        "instruction_count": 52,
+        "start": 47002,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47378,
+        "end": 47378,
+        "instruction_count": 60,
+        "start": 47186,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47394,
+        "end": 47394,
+        "instruction_count": 4,
+        "start": 47378,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47398,
+        "end": 47398,
+        "instruction_count": 2,
+        "start": 47394,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47562,
+        "end": 47562,
+        "instruction_count": 52,
+        "start": 47398,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47596,
+        "end": 47596,
+        "instruction_count": 3,
+        "start": 47582,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 47772,
+        "end": 47772,
+        "instruction_count": 54,
+        "start": 47596,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 48050,
+        "end": 48050,
+        "instruction_count": 3,
+        "start": 48040,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 48280,
+        "end": 48280,
+        "instruction_count": 1,
+        "start": 48270,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 48292,
+        "end": 48292,
+        "instruction_count": 3,
+        "start": 48280,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 48344,
+        "end": 48344,
+        "instruction_count": 4,
+        "start": 48324,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 48792,
+        "end": 48792,
+        "instruction_count": 137,
+        "start": 48362,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49208,
+        "end": 49208,
+        "instruction_count": 13,
+        "start": 49170,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49342,
+        "end": 49342,
+        "instruction_count": 52,
+        "start": 49208,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49428,
+        "end": 49428,
+        "instruction_count": 27,
+        "start": 49342,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49530,
+        "end": 49530,
+        "instruction_count": 31,
+        "start": 49428,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49614,
+        "end": 49614,
+        "instruction_count": 31,
+        "start": 49530,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49698,
+        "end": 49698,
+        "instruction_count": 31,
+        "start": 49614,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 49958,
+        "end": 49958,
+        "instruction_count": 16,
+        "start": 49900,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 50486,
+        "end": 50486,
+        "instruction_count": 117,
+        "start": 49958,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 50534,
+        "end": 50534,
+        "instruction_count": 10,
+        "start": 50486,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 50562,
+        "end": 50562,
+        "instruction_count": 7,
+        "start": 50534,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 50878,
+        "end": 50878,
+        "instruction_count": 26,
+        "start": 50794,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 50996,
+        "end": 50996,
+        "instruction_count": 30,
+        "start": 50878,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51030,
+        "end": 51030,
+        "instruction_count": 8,
+        "start": 50996,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51256,
+        "end": 51256,
+        "instruction_count": 8,
+        "start": 51228,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51278,
+        "end": 51278,
+        "instruction_count": 10,
+        "start": 51256,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51340,
+        "end": 51340,
+        "instruction_count": 14,
+        "start": 51278,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51370,
+        "end": 51370,
+        "instruction_count": 7,
+        "start": 51340,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51500,
+        "end": 51500,
+        "instruction_count": 11,
+        "start": 51470,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51692,
+        "end": 51692,
+        "instruction_count": 15,
+        "start": 51634,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 51728,
+        "end": 51728,
+        "instruction_count": 11,
+        "start": 51692,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 52850,
+        "end": 52850,
+        "instruction_count": 245,
+        "start": 51748,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 52940,
+        "end": 52940,
+        "instruction_count": 19,
+        "start": 52850,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 52970,
+        "end": 52970,
+        "instruction_count": 8,
+        "start": 52940,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 53528,
+        "end": 53528,
+        "instruction_count": 152,
+        "start": 52970,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 53686,
+        "end": 53686,
+        "instruction_count": 15,
+        "start": 53640,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 54084,
+        "end": 54084,
+        "instruction_count": 39,
+        "start": 53940,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 54168,
+        "end": 54168,
+        "instruction_count": 21,
+        "start": 54084,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 54194,
+        "end": 54194,
+        "instruction_count": 5,
+        "start": 54168,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 54278,
+        "end": 54278,
+        "instruction_count": 18,
+        "start": 54194,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55216,
+        "end": 55216,
+        "instruction_count": 233,
+        "start": 54278,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55232,
+        "end": 55232,
+        "instruction_count": 8,
+        "start": 55216,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55234,
+        "end": 55234,
+        "instruction_count": 1,
+        "start": 55232,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55646,
+        "end": 55646,
+        "instruction_count": 4,
+        "start": 55632,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55716,
+        "end": 55716,
+        "instruction_count": 20,
+        "start": 55650,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55742,
+        "end": 55742,
+        "instruction_count": 7,
+        "start": 55716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55792,
+        "end": 55792,
+        "instruction_count": 14,
+        "start": 55742,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55834,
+        "end": 55834,
+        "instruction_count": 12,
+        "start": 55792,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 55906,
+        "end": 55906,
+        "instruction_count": 15,
+        "start": 55850,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56002,
+        "end": 56002,
+        "instruction_count": 20,
+        "start": 55922,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56014,
+        "end": 56014,
+        "instruction_count": 2,
+        "start": 56002,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56064,
+        "end": 56064,
+        "instruction_count": 6,
+        "start": 56038,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56164,
+        "end": 56164,
+        "instruction_count": 21,
+        "start": 56090,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56168,
+        "end": 56168,
+        "instruction_count": 1,
+        "start": 56164,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56266,
+        "end": 56266,
+        "instruction_count": 32,
+        "start": 56168,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56358,
+        "end": 56358,
+        "instruction_count": 28,
+        "start": 56266,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56738,
+        "end": 56738,
+        "instruction_count": 127,
+        "start": 56358,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 56832,
+        "end": 56832,
+        "instruction_count": 30,
+        "start": 56738,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57170,
+        "end": 57170,
+        "instruction_count": 29,
+        "start": 57068,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57172,
+        "end": 57172,
+        "instruction_count": 1,
+        "start": 57170,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57530,
+        "end": 57530,
+        "instruction_count": 1,
+        "start": 57528,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57588,
+        "end": 57588,
+        "instruction_count": 15,
+        "start": 57530,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57598,
+        "end": 57598,
+        "instruction_count": 2,
+        "start": 57588,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 57664,
+        "end": 57664,
+        "instruction_count": 15,
+        "start": 57606,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58018,
+        "end": 58018,
+        "instruction_count": 25,
+        "start": 57960,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58042,
+        "end": 58042,
+        "instruction_count": 10,
+        "start": 58018,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58096,
+        "end": 58096,
+        "instruction_count": 11,
+        "start": 58068,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58098,
+        "end": 58098,
+        "instruction_count": 1,
+        "start": 58096,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58120,
+        "end": 58120,
+        "instruction_count": 3,
+        "start": 58114,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58124,
+        "end": 58124,
+        "instruction_count": 2,
+        "start": 58120,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58128,
+        "end": 58128,
+        "instruction_count": 2,
+        "start": 58124,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58134,
+        "end": 58134,
+        "instruction_count": 3,
+        "start": 58128,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58138,
+        "end": 58138,
+        "instruction_count": 1,
+        "start": 58136,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58162,
+        "end": 58162,
+        "instruction_count": 8,
+        "start": 58146,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58168,
+        "end": 58168,
+        "instruction_count": 2,
+        "start": 58162,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58222,
+        "end": 58222,
+        "instruction_count": 20,
+        "start": 58168,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58264,
+        "end": 58264,
+        "instruction_count": 11,
+        "start": 58222,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58344,
+        "end": 58344,
+        "instruction_count": 26,
+        "start": 58264,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58462,
+        "end": 58462,
+        "instruction_count": 36,
+        "start": 58344,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58576,
+        "end": 58576,
+        "instruction_count": 45,
+        "start": 58462,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58626,
+        "end": 58626,
+        "instruction_count": 13,
+        "start": 58576,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58896,
+        "end": 58896,
+        "instruction_count": 28,
+        "start": 58798,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 58990,
+        "end": 58990,
+        "instruction_count": 27,
+        "start": 58896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59010,
+        "end": 59010,
+        "instruction_count": 6,
+        "start": 58990,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59066,
+        "end": 59066,
+        "instruction_count": 16,
+        "start": 59010,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59120,
+        "end": 59120,
+        "instruction_count": 18,
+        "start": 59066,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59152,
+        "end": 59152,
+        "instruction_count": 2,
+        "start": 59142,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59240,
+        "end": 59240,
+        "instruction_count": 27,
+        "start": 59152,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59278,
+        "end": 59278,
+        "instruction_count": 13,
+        "start": 59240,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59368,
+        "end": 59368,
+        "instruction_count": 18,
+        "start": 59302,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59388,
+        "end": 59388,
+        "instruction_count": 5,
+        "start": 59368,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59662,
+        "end": 59662,
+        "instruction_count": 85,
+        "start": 59388,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59706,
+        "end": 59706,
+        "instruction_count": 15,
+        "start": 59662,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59756,
+        "end": 59756,
+        "instruction_count": 16,
+        "start": 59706,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 59780,
+        "end": 59780,
+        "instruction_count": 6,
+        "start": 59756,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 61676,
+        "end": 61676,
+        "instruction_count": 10,
+        "start": 61650,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 61708,
+        "end": 61708,
+        "instruction_count": 13,
+        "start": 61676,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 61792,
+        "end": 61792,
+        "instruction_count": 38,
+        "start": 61708,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 61874,
+        "end": 61874,
+        "instruction_count": 34,
+        "start": 61792,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 62040,
+        "end": 62040,
+        "instruction_count": 10,
+        "start": 62004,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 62780,
+        "end": 62780,
+        "instruction_count": 49,
+        "start": 62582,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 63296,
+        "end": 63296,
+        "instruction_count": 23,
+        "start": 63202,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 63368,
+        "end": 63368,
+        "instruction_count": 16,
+        "start": 63296,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 63572,
+        "end": 63572,
+        "instruction_count": 20,
+        "start": 63502,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 64044,
+        "end": 64044,
+        "instruction_count": 2,
+        "start": 64040,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 65588,
+        "end": 65588,
+        "instruction_count": 15,
+        "start": 65536,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 66660,
+        "end": 66660,
+        "instruction_count": 12,
+        "start": 66624,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 67366,
+        "end": 67366,
+        "instruction_count": 55,
+        "start": 67204,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 67402,
+        "end": 67402,
+        "instruction_count": 13,
+        "start": 67366,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 67878,
+        "end": 67878,
+        "instruction_count": 2,
+        "start": 67872,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 67888,
+        "end": 67888,
+        "instruction_count": 3,
+        "start": 67878,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 69524,
+        "end": 69524,
+        "instruction_count": 3,
+        "start": 69508,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 69890,
+        "end": 69890,
+        "instruction_count": 40,
+        "start": 69772,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 69928,
+        "end": 69928,
+        "instruction_count": 13,
+        "start": 69890,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70150,
+        "end": 70150,
+        "instruction_count": 11,
+        "start": 70112,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70262,
+        "end": 70262,
+        "instruction_count": 33,
+        "start": 70150,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70390,
+        "end": 70390,
+        "instruction_count": 13,
+        "start": 70348,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70442,
+        "end": 70442,
+        "instruction_count": 6,
+        "start": 70416,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70468,
+        "end": 70468,
+        "instruction_count": 6,
+        "start": 70442,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70494,
+        "end": 70494,
+        "instruction_count": 6,
+        "start": 70468,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70520,
+        "end": 70520,
+        "instruction_count": 6,
+        "start": 70494,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 70604,
+        "end": 70604,
+        "instruction_count": 26,
+        "start": 70532,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 72142,
+        "end": 72142,
+        "instruction_count": 2,
+        "start": 72136,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 72250,
+        "end": 72250,
+        "instruction_count": 31,
+        "start": 72172,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 72488,
+        "end": 72488,
+        "instruction_count": 47,
+        "start": 72268,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 79754,
+        "end": 79754,
+        "instruction_count": 8,
+        "start": 79716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 79982,
+        "end": 79982,
+        "instruction_count": 56,
+        "start": 79754,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 79996,
+        "end": 79996,
+        "instruction_count": 7,
+        "start": 79982,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82268,
+        "end": 82268,
+        "instruction_count": 13,
+        "start": 82214,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82322,
+        "end": 82322,
+        "instruction_count": 12,
+        "start": 82268,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82378,
+        "end": 82378,
+        "instruction_count": 12,
+        "start": 82322,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82432,
+        "end": 82432,
+        "instruction_count": 18,
+        "start": 82378,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82498,
+        "end": 82498,
+        "instruction_count": 18,
+        "start": 82432,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 82888,
+        "end": 82888,
+        "instruction_count": 130,
+        "start": 82498,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 83496,
+        "end": 83496,
+        "instruction_count": 56,
+        "start": 83234,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 83790,
+        "end": 83790,
+        "instruction_count": 62,
+        "start": 83496,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 83936,
+        "end": 83936,
+        "instruction_count": 15,
+        "start": 83864,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 83948,
+        "end": 83948,
+        "instruction_count": 2,
+        "start": 83936,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 87710,
+        "end": 87710,
+        "instruction_count": 17,
+        "start": 87624,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 87868,
+        "end": 87868,
+        "instruction_count": 8,
+        "start": 87834,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 88802,
+        "end": 88802,
+        "instruction_count": 17,
+        "start": 88716,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 89270,
+        "end": 89270,
+        "instruction_count": 26,
+        "start": 89162,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 90052,
+        "end": 90052,
+        "instruction_count": 13,
+        "start": 89980,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 90772,
+        "end": 90772,
+        "instruction_count": 55,
+        "start": 90618,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 92250,
+        "end": 92250,
+        "instruction_count": 31,
+        "start": 92094,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 92772,
+        "end": 92772,
+        "instruction_count": 10,
+        "start": 92742,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 95190,
+        "end": 95190,
+        "instruction_count": 38,
+        "start": 95044,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 96520,
+        "end": 96520,
+        "instruction_count": 6,
+        "start": 96498,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 97554,
+        "end": 97554,
+        "instruction_count": 4,
+        "start": 97542,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 98352,
+        "end": 98352,
+        "instruction_count": 19,
+        "start": 98290,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 98418,
+        "end": 98418,
+        "instruction_count": 20,
+        "start": 98352,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 102862,
+        "end": 102862,
+        "instruction_count": 8,
+        "start": 102818,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 103230,
+        "end": 103230,
+        "instruction_count": 5,
+        "start": 103210,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 103400,
+        "end": 103400,
+        "instruction_count": 2,
+        "start": 103392,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 103444,
+        "end": 103444,
+        "instruction_count": 8,
+        "start": 103400,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 103598,
+        "end": 103598,
+        "instruction_count": 27,
+        "start": 103472,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 103986,
+        "end": 103986,
+        "instruction_count": 9,
+        "start": 103948,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 104200,
+        "end": 104200,
+        "instruction_count": 15,
+        "start": 104146,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 106966,
+        "end": 106966,
+        "instruction_count": 8,
+        "start": 106934,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 107068,
+        "end": 107068,
+        "instruction_count": 7,
+        "start": 107038,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 107144,
+        "end": 107144,
+        "instruction_count": 17,
+        "start": 107076,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 107164,
+        "end": 107164,
+        "instruction_count": 6,
+        "start": 107144,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 107298,
+        "end": 107298,
+        "instruction_count": 30,
+        "start": 107180,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 107822,
+        "end": 107822,
+        "instruction_count": 24,
+        "start": 107722,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 109712,
+        "end": 109712,
+        "instruction_count": 24,
+        "start": 109564,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 112074,
+        "end": 112074,
+        "instruction_count": 21,
+        "start": 112000,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 117580,
+        "end": 117580,
+        "instruction_count": 12,
+        "start": 117526,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 118182,
+        "end": 118182,
+        "instruction_count": 5,
+        "start": 118162,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 122818,
+        "end": 122818,
+        "instruction_count": 7,
+        "start": 122788,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 122910,
+        "end": 122910,
+        "instruction_count": 21,
+        "start": 122826,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 122980,
+        "end": 122980,
+        "instruction_count": 20,
+        "start": 122910,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 123032,
+        "end": 123032,
+        "instruction_count": 9,
+        "start": 122996,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 123552,
+        "end": 123552,
+        "instruction_count": 54,
+        "start": 123308,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 125158,
+        "end": 125158,
+        "instruction_count": 1,
+        "start": 125152,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 128696,
+        "end": 128696,
+        "instruction_count": 17,
+        "start": 128632,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 129972,
+        "end": 129972,
+        "instruction_count": 32,
+        "start": 129836,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 130050,
+        "end": 130050,
+        "instruction_count": 14,
+        "start": 129996,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 130104,
+        "end": 130104,
+        "instruction_count": 6,
+        "start": 130080,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 130200,
+        "end": 130200,
+        "instruction_count": 21,
+        "start": 130104,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 132910,
+        "end": 132910,
+        "instruction_count": 9,
+        "start": 132872,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 133178,
+        "end": 133178,
+        "instruction_count": 9,
+        "start": 133122,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 134366,
+        "end": 134366,
+        "instruction_count": 3,
+        "start": 134352,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 138176,
+        "end": 138176,
+        "instruction_count": 10,
+        "start": 138130,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 138266,
+        "end": 138266,
+        "instruction_count": 12,
+        "start": 138216,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 139458,
+        "end": 139458,
+        "instruction_count": 5,
+        "start": 139440,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 140136,
+        "end": 140136,
+        "instruction_count": 10,
+        "start": 140092,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 143524,
+        "end": 143524,
+        "instruction_count": 22,
+        "start": 143452,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 154576,
+        "end": 154576,
+        "instruction_count": 7,
+        "start": 154546,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 154622,
+        "end": 154622,
+        "instruction_count": 9,
+        "start": 154584,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 154928,
+        "end": 154928,
+        "instruction_count": 25,
+        "start": 154814,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 158434,
+        "end": 158434,
+        "instruction_count": 5,
+        "start": 158414,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 159384,
+        "end": 159384,
+        "instruction_count": 6,
+        "start": 159362,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 163216,
+        "end": 163216,
+        "instruction_count": 4,
+        "start": 163198,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 163258,
+        "end": 163258,
+        "instruction_count": 12,
+        "start": 163216,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 164830,
+        "end": 164830,
+        "instruction_count": 18,
+        "start": 164762,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 165896,
+        "end": 165896,
+        "instruction_count": 18,
+        "start": 165828,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 166050,
+        "end": 166050,
+        "instruction_count": 12,
+        "start": 166008,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 168708,
+        "end": 168708,
+        "instruction_count": 33,
+        "start": 168556,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 168994,
+        "end": 168994,
+        "instruction_count": 13,
+        "start": 168940,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 169042,
+        "end": 169042,
+        "instruction_count": 11,
+        "start": 168994,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 169328,
+        "end": 169328,
+        "instruction_count": 8,
+        "start": 169292,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 169370,
+        "end": 169370,
+        "instruction_count": 12,
+        "start": 169328,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 173024,
+        "end": 173024,
+        "instruction_count": 12,
+        "start": 172982,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 181906,
+        "end": 181906,
+        "instruction_count": 8,
+        "start": 181872,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 191946,
+        "end": 191946,
+        "instruction_count": 55,
+        "start": 191776,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 191974,
+        "end": 191974,
+        "instruction_count": 7,
+        "start": 191946,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 192196,
+        "end": 192196,
+        "instruction_count": 11,
+        "start": 192160,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 196610,
+        "end": 196610,
+        "instruction_count": 1,
+        "start": 196608,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 197144,
+        "end": 197144,
+        "instruction_count": 8,
+        "start": 197120,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 197412,
+        "end": 197412,
+        "instruction_count": 11,
+        "start": 197364,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 204910,
+        "end": 204910,
+        "instruction_count": 19,
+        "start": 204832,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 234876,
+        "end": 234876,
+        "instruction_count": 10,
+        "start": 234854,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 238956,
+        "end": 238956,
+        "instruction_count": 33,
+        "start": 238864,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240366,
+        "end": 240366,
+        "instruction_count": 10,
+        "start": 240302,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240536,
+        "end": 240536,
+        "instruction_count": 32,
+        "start": 240366,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240602,
+        "end": 240602,
+        "instruction_count": 10,
+        "start": 240536,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240662,
+        "end": 240662,
+        "instruction_count": 11,
+        "start": 240602,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240744,
+        "end": 240744,
+        "instruction_count": 12,
+        "start": 240662,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240750,
+        "end": 240750,
+        "instruction_count": 2,
+        "start": 240744,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240786,
+        "end": 240786,
+        "instruction_count": 6,
+        "start": 240750,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240808,
+        "end": 240808,
+        "instruction_count": 3,
+        "start": 240786,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240868,
+        "end": 240868,
+        "instruction_count": 10,
+        "start": 240808,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240908,
+        "end": 240908,
+        "instruction_count": 7,
+        "start": 240868,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 240998,
+        "end": 240998,
+        "instruction_count": 13,
+        "start": 240908,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241076,
+        "end": 241076,
+        "instruction_count": 14,
+        "start": 240998,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241268,
+        "end": 241268,
+        "instruction_count": 29,
+        "start": 241076,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241810,
+        "end": 241810,
+        "instruction_count": 100,
+        "start": 241268,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241834,
+        "end": 241834,
+        "instruction_count": 7,
+        "start": 241810,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241852,
+        "end": 241852,
+        "instruction_count": 1,
+        "start": 241850,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241896,
+        "end": 241896,
+        "instruction_count": 14,
+        "start": 241852,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 241970,
+        "end": 241970,
+        "instruction_count": 15,
+        "start": 241896,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 242056,
+        "end": 242056,
+        "instruction_count": 20,
+        "start": 241970,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 242520,
+        "end": 242520,
+        "instruction_count": 90,
+        "start": 242128,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 242822,
+        "end": 242822,
+        "instruction_count": 73,
+        "start": 242520,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 243428,
+        "end": 243428,
+        "instruction_count": 5,
+        "start": 243402,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 243436,
+        "end": 243436,
+        "instruction_count": 2,
+        "start": 243428,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 243648,
+        "end": 243648,
+        "instruction_count": 23,
+        "start": 243570,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 245752,
+        "end": 245752,
+        "instruction_count": 23,
+        "start": 245638,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 245824,
+        "end": 245824,
+        "instruction_count": 14,
+        "start": 245752,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 245876,
+        "end": 245876,
+        "instruction_count": 9,
+        "start": 245824,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 246006,
+        "end": 246006,
+        "instruction_count": 27,
+        "start": 245876,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 246246,
+        "end": 246246,
+        "instruction_count": 1,
+        "start": 246244,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 246868,
+        "end": 246868,
+        "instruction_count": 99,
+        "start": 246370,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 246912,
+        "end": 246912,
+        "instruction_count": 12,
+        "start": 246868,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 246966,
+        "end": 246966,
+        "instruction_count": 13,
+        "start": 246912,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247094,
+        "end": 247094,
+        "instruction_count": 2,
+        "start": 247086,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247108,
+        "end": 247108,
+        "instruction_count": 4,
+        "start": 247094,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247124,
+        "end": 247124,
+        "instruction_count": 4,
+        "start": 247108,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247222,
+        "end": 247222,
+        "instruction_count": 14,
+        "start": 247172,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247646,
+        "end": 247646,
+        "instruction_count": 83,
+        "start": 247222,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247708,
+        "end": 247708,
+        "instruction_count": 14,
+        "start": 247646,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247840,
+        "end": 247840,
+        "instruction_count": 30,
+        "start": 247708,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247926,
+        "end": 247926,
+        "instruction_count": 7,
+        "start": 247900,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 247938,
+        "end": 247938,
+        "instruction_count": 2,
+        "start": 247926,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 248202,
+        "end": 248202,
+        "instruction_count": 9,
+        "start": 248150,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 248268,
+        "end": 248268,
+        "instruction_count": 20,
+        "start": 248202,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 249496,
+        "end": 249496,
+        "instruction_count": 11,
+        "start": 249448,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 254652,
+        "end": 254652,
+        "instruction_count": 21,
+        "start": 254558,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 254716,
+        "end": 254716,
+        "instruction_count": 16,
+        "start": 254652,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 254910,
+        "end": 254910,
+        "instruction_count": 6,
+        "start": 254888,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 254932,
+        "end": 254932,
+        "instruction_count": 6,
+        "start": 254910,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255024,
+        "end": 255024,
+        "instruction_count": 27,
+        "start": 254932,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255122,
+        "end": 255122,
+        "instruction_count": 27,
+        "start": 255030,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255220,
+        "end": 255220,
+        "instruction_count": 27,
+        "start": 255128,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255502,
+        "end": 255502,
+        "instruction_count": 56,
+        "start": 255226,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255900,
+        "end": 255900,
+        "instruction_count": 90,
+        "start": 255502,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 255988,
+        "end": 255988,
+        "instruction_count": 18,
+        "start": 255900,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 393220,
+        "end": 393220,
+        "instruction_count": 1,
+        "start": 393216,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 393224,
+        "end": 393224,
+        "instruction_count": 1,
+        "start": 393220,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 393228,
+        "end": 393228,
+        "instruction_count": 1,
+        "start": 393224,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 393862,
+        "end": 393862,
+        "instruction_count": 113,
+        "start": 393360,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 394066,
+        "end": 394066,
+        "instruction_count": 42,
+        "start": 393862,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 394282,
+        "end": 394282,
+        "instruction_count": 44,
+        "start": 394066,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 394372,
+        "end": 394372,
+        "instruction_count": 24,
+        "start": 394282,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 394416,
+        "end": 394416,
+        "instruction_count": 8,
+        "start": 394384,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 394470,
+        "end": 394470,
+        "instruction_count": 10,
+        "start": 394428,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 396506,
+        "end": 396506,
+        "instruction_count": 111,
+        "start": 396112,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397234,
+        "end": 397234,
+        "instruction_count": 13,
+        "start": 397196,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397362,
+        "end": 397362,
+        "instruction_count": 31,
+        "start": 397234,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397396,
+        "end": 397396,
+        "instruction_count": 12,
+        "start": 397362,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397512,
+        "end": 397512,
+        "instruction_count": 28,
+        "start": 397396,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397614,
+        "end": 397614,
+        "instruction_count": 29,
+        "start": 397512,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397792,
+        "end": 397792,
+        "instruction_count": 4,
+        "start": 397782,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397802,
+        "end": 397802,
+        "instruction_count": 4,
+        "start": 397792,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397812,
+        "end": 397812,
+        "instruction_count": 3,
+        "start": 397802,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397850,
+        "end": 397850,
+        "instruction_count": 6,
+        "start": 397812,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 397874,
+        "end": 397874,
+        "instruction_count": 6,
+        "start": 397850,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398120,
+        "end": 398120,
+        "instruction_count": 57,
+        "start": 397874,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398222,
+        "end": 398222,
+        "instruction_count": 23,
+        "start": 398120,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398258,
+        "end": 398258,
+        "instruction_count": 8,
+        "start": 398222,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398328,
+        "end": 398328,
+        "instruction_count": 17,
+        "start": 398258,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398394,
+        "end": 398394,
+        "instruction_count": 15,
+        "start": 398328,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398462,
+        "end": 398462,
+        "instruction_count": 17,
+        "start": 398394,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 398728,
+        "end": 398728,
+        "instruction_count": 70,
+        "start": 398462,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 400622,
+        "end": 400622,
+        "instruction_count": 10,
+        "start": 400594,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 401120,
+        "end": 401120,
+        "instruction_count": 40,
+        "start": 400968,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 401238,
+        "end": 401238,
+        "instruction_count": 29,
+        "start": 401140,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 401864,
+        "end": 401864,
+        "instruction_count": 26,
+        "start": 401750,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 401944,
+        "end": 401944,
+        "instruction_count": 10,
+        "start": 401912,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 402008,
+        "end": 402008,
+        "instruction_count": 4,
+        "start": 401994,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 402016,
+        "end": 402016,
+        "instruction_count": 3,
+        "start": 402008,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 403604,
+        "end": 403604,
+        "instruction_count": 327,
+        "start": 402348,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 403898,
+        "end": 403898,
+        "instruction_count": 4,
+        "start": 403884,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 403980,
+        "end": 403980,
+        "instruction_count": 9,
+        "start": 403950,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 404192,
+        "end": 404192,
+        "instruction_count": 25,
+        "start": 404088,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 404748,
+        "end": 404748,
+        "instruction_count": 136,
+        "start": 404192,
+        "stop_reason": "COMPLETE"
+      },
+      {
+        "decoded_end": 404844,
+        "end": 404844,
+        "instruction_count": 8,
+        "start": 404812,
+        "stop_reason": "COMPLETE"
+      }
+    ],
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "rom_size": 3145728,
+    "schema": "oasis.m14.7.static-xref-scan.v1"
+  },
+  "schema": "oasis.m14.7.static-entry-proof.v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "stage7_eligible_bytes": 0,
+  "stage7_eligible_components": 0,
+  "stage7_selector_after": [
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "stage7_selector_before": [
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "static_verified_bytes": 172,
+  "static_verified_components": 3,
+  "static_xref_candidates": 3,
+  "static_xrefs_accepted": 3,
+  "status": "PASS_STATIC_ENTRY_STAGE7_READINESS_V1",
+  "unknown_bytes": 1657796,
+  "unknown_ranges": 764
+}
