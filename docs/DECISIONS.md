@@ -2329,3 +2329,30 @@ absent.
 
 **Evidence:** M14.5 implementation and `THOR_M14_5_EXACT_ASM_MAP_ADOPTION` report.
 
+# ADR-M14.6-RECONCILE-EXACT-ASM-REFERENCES — Keep Stage7 as the ownership authority
+**Status:** Accepted for M14.6
+**Date:** 2026-09-25
+
+**Context:** M14.5 correctly rejected six M14.4 exact CFG references because
+their source instruction objects were absent from the proposal's parent
+generation. The accepted M14.5 child now contains those exact instructions,
+but remains non-owning. Rejected graph links must not be confused with
+caller evidence or used to bypass Stage7.
+
+**Decision:** Reconcile each reference into a deterministic child of the same
+canonical SQLite generation only after resolving its original proposal proof
+references, matching the M14.5 component CFG and roundtrip proofs, and checking
+both endpoint instruction bytes against the canonical ROM. Reuse the existing
+Stage7 selector and split predicate for eligibility reporting. Never derive a
+caller relation from an intra-component CFG edge; change ownership only after
+the complete existing Stage7 and full-ROM audit path succeeds.
+
+**Consequences:** The six previously missing references become auditable
+canonical graph edges across two components / 158 bytes. Five exact components
+remain ineligible without static caller evidence; the missing Stage7
+reconstruction artifact set is independently reported. No parallel database,
+promotion path, or ownership accounting rule is introduced.
+
+**Evidence:** `src/tools/thor_evidence/rom_knowledge_stage7_closure.py` and
+`docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.json`.
+

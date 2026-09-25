@@ -1693,3 +1693,12 @@ emits exact contiguous extents and CFG receipts;
 provenance, runs vasm roundtrip, and stores parent-bound proposals in a
 proposal-only SQLite copy. Regressions are in `tests/re_cfg_closure_test.cpp`
 and `tests/rom_generic_asm_closure_test.py`.
+
+# M14.6 exact ASM source ownership closure
+
+`src/tools/thor_evidence/rom_knowledge_stage7_closure.py` reconciles exact
+M14.4 CFG references with M14.5 child instructions in the existing SQLite
+graph, then audits (without bypassing) Stage7 eligibility. Its contract test
+is `tests/rom_knowledge_stage7_closure_test.py`; CTest registration is in
+`cmake/m14_4.cmake`. The deterministic campaign receipt is
+`docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.md` and `.json`.

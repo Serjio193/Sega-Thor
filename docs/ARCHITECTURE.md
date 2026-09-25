@@ -997,3 +997,25 @@ canonical derivations and proposal-operation rows. The ASM classification is
 non-owning (`source_owned=0`). `GLOBAL_OBJECT_VIEW` includes proof evidence,
 CFG relations and derivations scoped to the exact component. Stage7 remains the
 only ownership path and is evaluated independently after classification.
+
+## M14.6 exact ASM Stage7 closure
+
+`src/tools/thor_evidence/rom_knowledge_stage7_closure.py` reconciles the
+exact M14.4 CFG reference operations against the accepted M14.5 child
+generation. It admits an edge only when the source is inside one exact
+roundtripped component, both endpoint instruction objects reproduce
+canonical ROM bytes, the M14.4 CFG and roundtrip hashes match, and every stored
+proof reference resolves. Relations, evidence references, and derivations are
+written into deterministic copies of the existing canonical knowledge
+SQLite database. This closes six missing reference edges across two
+components / 158 bytes; it does not infer static callers or change emissions.
+
+The tool invokes the existing `re_m12_auto_promote.selected` predicate and
+`split` contract when reporting eligibility. Exact ASM classification and
+successful local reassembly remain separate from ownership. In this
+generation all five entries have zero `STATIC_VERIFIED` callers, while the
+accepted child artifact set lacks the full-ROM Stage7 manifest and parent
+source artifacts. No promotion is attempted and `SOURCE_OWNED` remains
+unchanged. Regression coverage is
+`tests/rom_knowledge_stage7_closure_test.py`; receipts are under
+`docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.*`.

@@ -12,4 +12,6 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_generic_asm_closure_test.py)
     add_test(NAME oasis_m14_5_exact_asm_map_adoption
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_adoption_test.py)
+    add_test(NAME oasis_m14_6_stage7_source_ownership_closure
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_stage7_closure_test.py)
 endif()
