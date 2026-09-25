@@ -66,6 +66,22 @@ requires exact extent proof through existing closure and promotion gates; the
 campaign report records blocker fingerprints and unchanged map/ownership
 metrics when no such proof is available.
 
+## M14.4 canonical ROM generic ASM closure
+
+`rom_generic_asm_closure.py` supplies verified canonical ROM bytes to the
+existing `re_slice_decoder` using exact runtime/reconstruction claims and typed
+canonical-reference or ASM-CFG relation targets with their evidence references
+as roots. `re_cfg_closure` merges recursive seed decodes, checks instruction
+overlaps and control-flow exits, and accepts
+external exits only at existing canonical ASM instruction starts. The existing
+`slice_asm` emitter and vasm executable must reproduce each byte of every
+contiguous extent before a parent-bound proposal containing splits, exact
+boundaries, ASM classifications, and decoded control-flow references is
+persisted in a proposal-only SQLite copy. The accepted canonical
+generation and SOURCE_OWNED remain unchanged; Stage7 remains the only ownership
+promotion path. Captures merge by stable ROM instruction identity while each
+capture claim and evidence reference remains independently queryable.
+
 ## MASTER V2 canonical persistence boundary
 
 `master_v2_shadow.py` serializes the accepted rolling and canonical SQLite

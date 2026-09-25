@@ -1673,3 +1673,14 @@ parent generation for validation and leaves emission ranges and ownership
 unchanged. `tests/rom_knowledge_map_closure_test.py` covers exact admission,
 hypothesis rejection, source-reference persistence, and the combined global
 object view.
+# M14.4 generic canonical ASM closure
+
+`cmake/m14_4.cmake` registers the milestone tool and regression tests.
+`src/tools/re_canonical_rom_bytes.*` verifies canonical ROM identity and
+provides bounded read-only byte spans. `src/tools/re_cfg_closure.*` reuses the
+accepted decoder to close merged exact-seed CFGs. The `oasis_re_m14_4_cfg` CLI
+emits exact contiguous extents and CFG receipts;
+`src/tools/thor_evidence/rom_generic_asm_closure.py` joins SQLite seed
+provenance, runs vasm roundtrip, and stores parent-bound proposals in a
+proposal-only SQLite copy. Regressions are in `tests/re_cfg_closure_test.cpp`
+and `tests/rom_generic_asm_closure_test.py`.

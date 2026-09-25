@@ -180,3 +180,4 @@ if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_m12_archivist_knowledge_pipeline_2g
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_test.py)
 endif()
+include(${CMAKE_SOURCE_DIR}/cmake/m14_4.cmake)

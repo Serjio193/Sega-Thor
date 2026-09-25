@@ -2277,3 +2277,30 @@ is redesigned.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M14.4-CANONICAL-ROM-GENERIC-ASM-CLOSURE — Reuse decoder and SQLite authority
+**Status:** Accepted for the M14.4 evidence campaign
+**Date:** 2026-09-25
+
+**Context:** M14.3 ranked 27 UNKNOWN intervals with exact executed-instruction
+evidence but lacked canonical-byte CFG closure and assembler roundtrip. The
+project already owns the M68K decoder/emitter and canonical `knowledge.sqlite`
+schema; an additional evidence database would duplicate authority.
+
+**Decision:** Verify the canonical ROM size and SHA before bounded byte reads.
+Use exact runtime and reconstruction instruction claims plus typed exact
+canonical-reference/ASM-CFG relation targets, with their source evidence
+references, to seed the existing decoder. Merge recursive CFG results with overlap/exit checks,
+and require the existing ASM emitter plus vasm to reproduce each contiguous
+extent. Persist exact results only as parent-bound map proposals in an isolated
+copy of the authoritative SQLite generation. Apply no map operation and do not
+change SOURCE_OWNED in this campaign. Any later ownership change must continue
+through the existing Stage7 promotion path.
+
+**Consequences:** Global evidence, provenance, and proposal identities remain
+in the existing canonical SQLite schema. UNKNOWN extents that remain open,
+unsupported, or non-roundtripping remain unclassified; proposal rows do not
+change canonical emission or ownership.
+
+**Evidence:** `src/tools/re_cfg_closure.*`,
+`src/tools/thor_evidence/rom_generic_asm_closure.py`, and the M14.4 report.
+
