@@ -142,6 +142,14 @@ idempotence, and persistence acceptance. Regression tests are in
 `tests/rom_knowledge_fusion_test.py`. Generated evidence remains ignored under
 `build/thor-evidence/`.
 
+M14.3 adds `src/tools/thor_evidence/rom_unknown_range_campaign.py` to rank all
+UNKNOWN canonical emission ranges using existing graph provenance and produce
+a blocker-aware, non-classifying campaign report. Its deterministic ranking,
+hypothesis separation, and ownership invariance regression is
+`tests/rom_unknown_range_campaign_test.py`, registered in
+`cmake/m12_auto2.cmake`. The result and compact machine-readable receipt are
+`docs/reports/THOR_M14_3_UNKNOWN_ROM_RANGE_CLOSURE_CAMPAIGN.md` and `.json`.
+
 `src/tools/thor_evidence/auto67_capsule.py` owns the fixed sixteen-slot,
 128 KiB capsule pool, bounded command publication, capture freeze/reuse
 metrics, and capsule status snapshots. `src/tools/thor_evidence/capture/live_capsule.lua`

@@ -54,6 +54,18 @@ are unchanged. The child keeps graph evidence and map lineage queryable while
 attached to the new reference claim. Ranked UNKNOWN intervals are scheduling
 output, not map truth.
 
+## M14.3 UNKNOWN range campaign
+
+`rom_unknown_range_campaign.py` ranks every UNKNOWN emission interval from the
+same canonical SQLite generation. It reports observed executed-instruction
+objects, address-target references, pointer-shaped ROM address attributes,
+DMA/SAT consumers, evidence-source diversity, graph degree, adjacent map
+classes, and candidate boundaries. Carver format claims remain labeled as
+hypotheses. Ranking does not generate map operations. Classification still
+requires exact extent proof through existing closure and promotion gates; the
+campaign report records blocker fingerprints and unchanged map/ownership
+metrics when no such proof is available.
+
 ## MASTER V2 canonical persistence boundary
 
 `master_v2_shadow.py` serializes the accepted rolling and canonical SQLite
