@@ -36,6 +36,11 @@ def chain(item, investigation="INV-1", lease="L-1", steps=None):
                        investigation, lease)
 
 
+def structure(bundle):
+    return {key: [{k: v for k, v in row.items() if k != "lineage"}
+                  for row in rows] for key, rows in bundle.items()}
+
+
 class Auto67CartographerSeamTest(unittest.TestCase):
     def test_a_worker_result_is_local_chain_without_global_classification(self):
         result = chain("epoch=1:seq=8")
@@ -112,8 +117,8 @@ class Auto67CartographerSeamTest(unittest.TestCase):
         first, first_hash = candidate_bundle(chain("epoch=1:seq=8", "INV-1", "L-1"))
         second, second_hash = candidate_bundle(chain("epoch=1:seq=80", "INV-2", "L-2"))
         self.assertEqual(first_hash, second_hash)
-        self.assertEqual(first["nodes"], second["nodes"])
-        self.assertEqual(first["edges"], second["edges"])
+        self.assertEqual(structure(first), structure(second))
+        self.assertNotEqual(first["edges"][0]["lineage"], second["edges"][0]["lineage"])
 
     def test_f_distinct_register_or_pc_is_new_knowledge(self):
         first = chain("epoch=1:seq=8")
@@ -151,7 +156,8 @@ class Auto67CartographerSeamTest(unittest.TestCase):
         a5 = step(producer="0x2234", consumer="0x27EC", register="A5")
         first, first_hash = candidate_bundle(chain("epoch=1:seq=8", steps=[a4, a5]))
         second, second_hash = candidate_bundle(chain("epoch=9:seq=88", steps=[a5, a4]))
-        self.assertEqual(first, second)
+        self.assertEqual(structure(first), structure(second))
+        self.assertNotEqual(first["edges"][0]["lineage"], second["edges"][0]["lineage"])
         self.assertEqual(first_hash, second_hash)
         self.assertEqual("auto67-live:" + first_hash, "auto67-live:" + second_hash)
 

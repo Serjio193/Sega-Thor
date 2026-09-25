@@ -1039,3 +1039,16 @@ requires an incoming `STATIC_VERIFIED` direct-call relation. Consequently
 entry proofs that do not satisfy that selector do not trigger manifest
 reconstruction or promotion. `SOURCE_OWNED` remains an emission-derived map
 fact and is not changed by entry evidence.
+
+## M14.7A full runtime chain fusion
+
+MAP-1 session merge now preserves the existing native occurrence table with a
+streaming, idempotent identity union and fail-closed core-payload validation.
+New sessions seal exact evidence separately from historical structural hashes.
+AUTO67 dependency bundles preserve local occurrence witnesses while reusing
+structural nodes/edges. Dispatcher session UUID is provenance, not structure.
+`runtime_path_view.py` derives ordered bounded capture-window paths from either
+MAP-1 native events or canonical evidence_ref rows. Prefix reuse never suppresses
+a tail; paths never bridge capture gaps. Canonical authority, truth and emission
+are unchanged. See `reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md` for identity,
+retention and scaling limits.

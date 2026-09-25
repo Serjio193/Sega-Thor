@@ -1391,3 +1391,11 @@ format/container contract, so SOURCE_OWNED remains 1,427,873 bytes (45.390860239
 The complete B/F/G map is unchanged. No ROM/assets, unknown `dc.b`, M13, or
 ASM-to-C++ work was added. See
 `docs/reports/THOR_ROM_CARVER_M12_FORMAT_CONTAINER_RECONSTRUCTION.md`.
+
+# M14.7A — Full runtime chain fusion — PASS_CHAIN_FUSION_REWORK
+
+Validated capture paths preserve alternate targets and exact native occurrence
+lineage through MAP-1 merge; AUTO67 retains local dependency witnesses while
+reusing structure. Same start/prefix is never full execution identity. Derived
+ordered path views reuse existing stores. Canonical ownership and truth rules
+are unchanged. See `reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md`.

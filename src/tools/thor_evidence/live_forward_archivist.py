@@ -13,10 +13,12 @@ try:
     from .cartographer import Cartographer
     from .live_forward_cartographer import SESSION_SCHEMA, _read_meta, _sha256
     from .map_merge import merge_session_map
+    from .runtime_occurrence_merge import occurrence_hash
 except ImportError:
     from cartographer import Cartographer
     from live_forward_cartographer import SESSION_SCHEMA, _read_meta, _sha256
     from map_merge import merge_session_map
+    from runtime_occurrence_merge import occurrence_hash
 
 
 def _inspect(path: Path) -> tuple[dict[str, str], dict[str, Any]]:
@@ -42,6 +44,9 @@ def _inspect(path: Path) -> tuple[dict[str, str], dict[str, Any]]:
     graph = Cartographer(path, rom_sha)
     try:
         actual_graph_hash = graph.graph_hash()
+        expected_occurrences = metadata.get("live_forward_occurrence_sha256")
+        if expected_occurrences and occurrence_hash(graph.db) != expected_occurrences:
+            raise ValueError("STOP_ARCHIVIST_OCCURRENCE_HASH_MISMATCH")
         metrics = graph.metrics()
     finally:
         graph.close()

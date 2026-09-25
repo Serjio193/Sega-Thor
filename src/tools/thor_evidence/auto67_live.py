@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import threading
 import time
+import uuid
 from collections import deque
 from typing import Any
 from auto67_status import StatusPublisher
@@ -58,6 +59,7 @@ class Dispatcher:
         if worker_count not in {1, 2, 4, 8, 16, 32, 64}:
             raise ValueError("worker count must be one of 1,2,4,8,16,32,64")
         self.window = RollingWindow(capacity)
+        self.session_id = str(uuid.uuid4())
         self.worker_count = worker_count
         self.processing_delay = processing_delay
         self.capsule_pool = capsule_pool
@@ -120,6 +122,7 @@ class Dispatcher:
             self._window_item_sequence += 1
             event["window_item_id"] = self._window_item_sequence
         event.setdefault("epoch", 1)
+        event.setdefault("session_id", self.session_id)
         event["occurrence_id"] = str(event.get("occurrence_id") or
                                       f"epoch={event['epoch']}:seq={event.get('seq')}")
 

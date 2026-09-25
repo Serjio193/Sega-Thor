@@ -15,9 +15,11 @@ from itertools import groupby
 try:
     from .cartographer import Cartographer, canonical
     from .rom_knowledge_map import runtime_occurrence_id
+    from .runtime_occurrence_merge import occurrence_hash
 except ImportError:
     from cartographer import Cartographer, canonical
     from rom_knowledge_map import runtime_occurrence_id
+    from runtime_occurrence_merge import occurrence_hash
 
 
 SESSION_SCHEMA = "oasis.m12.live-forward-session.v1"
@@ -207,7 +209,7 @@ class LiveForwardCartographer:
             summary["last_stream_sequence"] = row[0]
             summary["last_instruction_sequence"] = row[1]
             summary["occurrence_count"] += 1
-            summary["kind_flags_or"] |= row[5]
+            summary["kind_flags_or"] |= row[6]
         edge_items: dict[str, dict[str, Any]] = {}
         edge_lineages: dict[str, dict[str, Any]] = {}
         edge_outcomes: dict[str, set[str]] = {}
@@ -229,7 +231,7 @@ class LiveForwardCartographer:
             summary["last_stream_sequence"] = semantic_rows[index][0]
             summary["next_stream_sequence_last"] = semantic_rows[index + 1][0]
             summary["occurrence_count"] += 1
-            summary["kind_flags_or"] |= semantic_rows[index][5]
+            summary["kind_flags_or"] |= semantic_rows[index][6]
             edge_outcomes.setdefault(edge_id, set()).add(_outcome(semantic_rows[index]))
         for edge_id, summary in edge_lineages.items():
             summary["control_flow_outcomes"] = sorted(edge_outcomes[edge_id])
@@ -387,6 +389,7 @@ class LiveForwardCartographer:
         self._meta("live_forward_session_state", "CLOSED")
         self._meta("live_forward_closed_utc", closed_utc)
         self._meta("live_forward_graph_sha256", graph_hash)
+        self._meta("live_forward_occurrence_sha256", occurrence_hash(self.graph.db))
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_name(path.name + ".tmp")
         if temporary.exists():

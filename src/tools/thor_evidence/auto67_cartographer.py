@@ -20,7 +20,7 @@ def local_chain(event: dict[str, Any], materialized: dict[str, Any] | None,
     """Build a bounded worker result; it contains no global classification."""
     data = materialized or {}
     occurrence = {name: event.get(name) for name in
-                  ("epoch", "seq", "occurrence_id", "window_item_id", "frame")}
+                  ("session_id", "run_id", "epoch", "seq", "occurrence_id", "window_item_id", "frame")}
     return {
         "local_chain_schema": LOCAL_CHAIN_SCHEMA,
         "investigation_id": investigation_id,
@@ -126,7 +126,19 @@ def _stable_bundle(steps: list[dict[str, Any]]) -> tuple[dict[str, Any], str]:
 def candidate_bundle(chain: dict[str, Any]) -> tuple[dict[str, Any], str] | None:
     """Return one stable MAP-1 bundle only when the local proof contract holds."""
     accepted = [step for step in chain.get("chain_steps", []) if _valid_step(step)]
-    return _stable_bundle(accepted) if accepted else None
+    if not accepted:
+        return None
+    bundle, stable_hash = _stable_bundle(accepted)
+    # Structure remains independent of witnesses. Never use this dependency-set
+    # hash as ordered execution-path identity (this adapter proves dependencies).
+    witness = {"source": "AUTO67_LOCAL_CHAIN_OCCURRENCE",
+        "occurrence": chain.get("occurrence", {}),
+        "investigation_id": chain.get("investigation_id"),
+        "lease_id": chain.get("lease_id"),
+        "steps": accepted}
+    for item in bundle["nodes"] + bundle["edges"]:
+        item["lineage"] = [*item["lineage"], witness]
+    return bundle, stable_hash
 
 
 def import_ref(stable_hash: str) -> str:

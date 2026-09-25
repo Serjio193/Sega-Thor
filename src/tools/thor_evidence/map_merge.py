@@ -11,8 +11,10 @@ from typing import Any
 
 try:
     from .cartographer import Cartographer
+    from .runtime_occurrence_merge import merge_occurrences
 except ImportError:
     from cartographer import Cartographer
+    from runtime_occurrence_merge import merge_occurrences
 
 
 def _file_hash(path: Path) -> str | None:
@@ -69,6 +71,7 @@ def merge_session_map(global_path: Path, session_path: Path,
             target = Cartographer(temp_path, session_rom)
             global_before_graph = target.graph_hash()
         delta = target.merge(bundle, "session-map:" + session_hash, session_rom)
+        occurrence_delta = merge_occurrences(session_graph.db, target.db)
         metrics = target.metrics()
         if metrics["graph_hash"] != delta.graph_hash:
             raise ValueError("global graph hash validation failed")
@@ -83,6 +86,7 @@ def merge_session_map(global_path: Path, session_path: Path,
                 "global_graph_hash_before": global_before_graph,
                 "global_graph_hash_after": metrics["graph_hash"],
                 "global_merge_delta": delta.as_dict(),
+                "runtime_occurrence_delta": occurrence_delta,
                 "global_before_file_hash": global_before_hash,
                 "global_after_file_hash": _file_hash(global_path),
                 "import_ref": "session-map:" + session_hash}

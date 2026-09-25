@@ -2383,3 +2383,22 @@ non-owning, and no unknown bytes are classified or promoted by this decision.
 **Evidence:** `src/tools/re_static_xref_scan.cpp`,
 `src/tools/thor_evidence/rom_knowledge_static_entry.py`, and the M14.7 report.
 
+
+# ADR-M14.7A — Preserve execution witnesses independently of structure
+
+**Status:** Accepted for bounded developer-side session fusion.
+
+**Context:** MAP-1 exported structure but omitted its existing exact session
+occurrence table; AUTO67 dependency bundles discarded local occurrence lineage.
+
+**Decision:** Reuse the existing optional native-event table in MAP-1 master,
+union by accepted scoped native identity, reject core-payload contradictions
+before atomic publication, and seal new session event evidence independently.
+Keep AUTO67 dependency hashes structural and add occurrence witnesses. Derive
+ordered paths from existing witnesses; do not create a second canonical store,
+trie authority or ownership path. same prefix is not same full chain.
+
+**Consequences:** Replay preserves exact counts; historical maps without exact
+events remain readable but cannot supply fabricated trajectories. Capture
+windows remain bounded; retained evidence grows with observations. Canonical
+knowledge schema and all truth/ownership rules remain unchanged.

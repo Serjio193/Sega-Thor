@@ -18,6 +18,8 @@ add_test(NAME oasis_re_rom_range_decode_self_test
          COMMAND oasis_re_rom_range_decode --self-test)
 
 if(Python3_Interpreter_FOUND)
+    add_test(NAME oasis_runtime_chain_fusion
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/runtime_chain_fusion_test.py)
     add_test(NAME oasis_live_forward_cartographer
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_cartographer_test.py)
     add_test(NAME oasis_live_forward_rom_link

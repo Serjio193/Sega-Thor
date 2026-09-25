@@ -1711,3 +1711,14 @@ graph, then audits (without bypassing) Stage7 eligibility. Its contract test
 is `tests/rom_knowledge_stage7_closure_test.py`; CTest registration is in
 `cmake/m14_4.cmake`. The deterministic campaign receipt is
 `docs/reports/THOR_M14_6_EXACT_ASM_SOURCE_OWNERSHIP_CLOSURE.md` and `.json`.
+
+## M14.7A full runtime chain fusion
+
+- `src/tools/thor_evidence/runtime_occurrence_merge.py`: streamed native-ID
+  witness union and separate evidence seal in existing MAP-1 artifacts.
+- `src/tools/thor_evidence/runtime_path_view.py`: read-only ordered window/path
+  iterator over MAP-1 or canonical evidence, with explicit size guard.
+- `tests/runtime_chain_fusion_test.py`: divergence, branch/return/loop diversity,
+  occurrence/replay/overlap and canonical bridge acceptance.
+- `docs/reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md`: identity audit,
+  before/after fixtures, query contract and bounded representation assessment.

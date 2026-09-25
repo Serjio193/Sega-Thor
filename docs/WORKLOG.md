@@ -10022,3 +10022,56 @@ is available on this branch. `SOURCE_OWNED` and fusion semantics are unchanged.
 **Result:** `PASS_STATIC_ENTRY_STAGE7_READINESS_V1`. The canonical ROM scan decoded 12,603 instructions / 47,606 bytes across 531 source-owned 68K ASM spans and found three exact fallthrough references to component entry instructions. All three were admitted as `STATIC_VERIFIED_ENTRY` claims with canonical-ROM evidence references and derivations in child generation `gen-m14-7-29314da7a34a38e6`; two are sequential MOVE fallthroughs and one is the return fallthrough after JSR. There were no direct-call, branch, or jump targets to the five entries and no typed `TABLE_ENTRY` objects for pointer-based proof. The actual Stage7 selector remains unchanged and admits zero; no promotion manifest was reconstructed and no promotion was attempted. All five components remain exact non-owning ASM. The child replay is logically identical. Canonical map is still 2,490 contiguous ranges with no gaps/overlaps, 764 UNKNOWN ranges / 1,657,796 bytes, and `SOURCE_OWNED=1,487,672` (delta 0).
 
 **Validation:** Debug build and full CTest PASS (217/217); Release build and full CTest PASS (217/217), including the 500-line source limit. Focused M14.2A acceptance PASS (3/3); M14.2B through M14.7 and decoder/xref tests PASS (10/10); MASTER V2 PASS (3/3); canonical view/materialization PASS (3/3). Static xref and graph admission replay are deterministic. Fresh detached worktree configured, built the scanner/decoder/xref targets, and passed focused smoke CTest (4/4); `git diff --check` passes.
+
+# M14.7A — Full runtime chain fusion
+
+**Task / acceptance:** Audit accepted fb489969 before changing code; preserve
+canonical structure, alternative tails and exact occurrence lineage through
+session merge. Cover the ten requested diversity/idempotence regressions,
+AUTO65 full-structure comparison and AUTO67 occurrence dispatch. Keep runtime
+truth and SOURCE_OWNED unchanged, use the existing stores, and validate focused
+suites, Debug/Release CTest, source limits and fresh-worktree smoke before push.
+
+**Read-only audit result:** Full source/target structural keys preserve alternate
+edges. AUTO65 compares entire represented structures, not start PC; its reports
+represent writer/caller facts rather than complete traces. Two fixtures expose
+lineage loss: map_merge omits live_forward_runtime_occurrence (3 source rows,
+no destination table); AUTO67 candidate_bundle emits identical lineage for two
+distinct occurrences. The canonical live-delta bridge already reads the source
+session occurrence table independently. M14.2B selected DMA-emitter evidence is
+explicitly bounded and is not a complete trace adapter. See the M14.7A report
+for the identity inventory and bounded representation contract.
+
+**Result:** PASS_CHAIN_FUSION_REWORK. Audited 22 identity/merge sites; no
+start-PC-only execution dedup gate found. Repaired two lineage losses (MAP-1
+master dropped the exact event table; AUTO67 erased local occurrence witnesses)
+and the live-forward outcome-mask opcode/flags indexing error. Structural
+identity and canonical truth/ownership are unchanged. New sessions seal exact
+events; legacy optional-table artifacts remain readable without fabricated
+lineage. Read-only ordered path views work on both stores.
+
+**Validation:** New runtime_chain_fusion suite 18/18; existing AUTO67 seam
+20/20, live-forward Cartographer 13/13 and canonical pipeline 18/18. Focused
+CTest 20/20. Full MSVC Debug build/CTest PASS 218/218; full Release build/CTest
+PASS 218/218, rerun after final integrity/test edits. GNU/Linux WSL Ubuntu
+24.04 GCC 13.3 configured and linked oasis_re_cfg_closure_test; focused Linux
+CTest PASS 3/3 (fusion, CFG closure, source limit). This is a Linux-equivalent
+link/smoke check, not a full Linux CI build. WSL required explicit Linux
+GIT_DIR/GIT_WORK_TREE because the shared Windows worktree pointer uses a Windows
+absolute path; no Git metadata was changed to work around it.
+
+Fresh detached worktree from the base received an exact byte-checked snapshot
+of the implementation, configured, built/linked the CFG target and passed
+21/21 focused CTests. Source limit PASS (764 governed files <=500 lines);
+git diff --check PASS. Final diff reviewed: only the documented tooling, tests
+and documentation; no assets, dependencies, ownership update or native runtime
+change. Accepted M14.7 branch is clean at fb489969 and the original dirty
+C:/Github/Sega-Thor checkout was untouched.
+
+Read-only accepted publish-a m14-7-generation.sqlite audit: 2490 emission rows,
+SOURCE_OWNED=1487672; SHA-256 of ordered compact JSON emission rows
+4c8a1951a65a5683012f25cd037c918dcbeaad2b3806a5deaa6d8b5d8e9e317a.
+The canonical bridge regression independently compares before/after emission
+rows and runtime truth. No authoritative SQLite was modified or new gameplay
+capture performed. Next step: use the derived paged path view for visualization;
+keep sparse/legacy evidence limitations explicit and retain unique-branch proof.
