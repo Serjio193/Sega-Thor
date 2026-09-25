@@ -22,36 +22,52 @@ def global_object_view(store: KnowledgeStore, address_or_object: int | str) -> d
         object_id = str(row[0]) if row else None
     else:
         object_id = address_or_object
-        emission = None
+        emission = store.db.execute("""SELECT e.* FROM emission e JOIN rom_object o
+            ON o.object_id=? JOIN rom_range r ON r.range_id=o.range_id
+            WHERE e.start<=r.start AND r.start<e.end""", (object_id,)).fetchone()
     if object_id is None:
         raise ValueError("STOP_GLOBAL_OBJECT_NOT_FOUND")
     obj = store.db.execute("""SELECT o.*,r.start,r.end FROM rom_object o JOIN rom_range r USING(range_id)
         WHERE o.object_id=?""", (object_id,)).fetchone()
-    relations = [dict(r) for r in store.db.execute("SELECT * FROM relation WHERE source_object_id=? OR target_object_id=? ORDER BY relation_id",
-        (object_id, object_id))]
+    relations = [dict(r) for r in store.db.execute("""SELECT * FROM relation
+        WHERE source_object_id=? OR target_object_id=? OR
+        (CAST(json_extract(attributes_json,'$.component[0]') AS INTEGER)<=? AND
+         ?<CAST(json_extract(attributes_json,'$.component[1]') AS INTEGER))
+        ORDER BY relation_id""", (object_id, object_id, int(obj["start"]), int(obj["start"])))]
     for relation in relations:
         relation["attributes"] = json.loads(relation.pop("attributes_json"))
     claims = [dict(r) for r in store.db.execute("SELECT * FROM claim WHERE object_id=? ORDER BY claim_id", (object_id,))]
-    evidence = [dict(r) for r in store.db.execute("""SELECT e.*,s.artifact_name,s.artifact_type,s.checkpoint
+    relation_ids = [item["relation_id"] for item in relations]
+    evidence_sql = """SELECT e.*,s.artifact_name,s.artifact_type,s.checkpoint
         FROM evidence_ref e JOIN source_artifact s USING(source_sha256)
         WHERE e.subject_id=?
-        OR e.subject_id IN (SELECT claim_id FROM claim WHERE object_id=?)
-        OR e.subject_id IN (SELECT relation_id FROM relation WHERE source_object_id=? OR target_object_id=?)
-        ORDER BY e.ref_id""", (object_id, object_id, object_id, object_id))]
+        OR e.subject_id IN (SELECT claim_id FROM claim WHERE object_id=?)"""
+    evidence_args: tuple[Any, ...] = (object_id, object_id)
+    if relation_ids:
+        evidence_sql += " OR e.subject_id IN (" + ",".join("?" for _ in relation_ids) + ")"
+        evidence_args += tuple(relation_ids)
+    evidence_sql += " ORDER BY e.ref_id"
+    evidence = [dict(r) for r in store.db.execute(evidence_sql, evidence_args)]
     for item in evidence:
         item["locator"] = json.loads(item.pop("locator_json"))
-    derivations = [dict(r) for r in store.db.execute("""SELECT d.* FROM derivation d
-        JOIN derivation_input i USING(derivation_id) WHERE i.subject_id IN
-        (SELECT relation_id FROM relation WHERE source_object_id=? OR target_object_id=?) OR d.output_id IN
-        (SELECT relation_id FROM relation WHERE source_object_id=? OR target_object_id=?) ORDER BY d.derivation_id""",
-        (object_id, object_id, object_id, object_id))]
+    derivation_sql = """SELECT DISTINCT d.* FROM derivation d
+        LEFT JOIN derivation_input i USING(derivation_id) WHERE d.output_id=?"""
+    derivation_args: tuple[Any, ...] = (object_id,)
+    if relation_ids:
+        placeholders = ",".join("?" for _ in relation_ids)
+        derivation_sql += f" OR d.output_id IN ({placeholders}) OR i.subject_id IN ({placeholders})"
+        derivation_args += tuple(relation_ids) + tuple(relation_ids)
+    derivation_sql += " ORDER BY d.derivation_id"
+    derivations = [dict(r) for r in store.db.execute(derivation_sql, derivation_args)]
     owned = store.db.execute("SELECT COALESCE(SUM(end-start),0) FROM emission WHERE source_owned=1").fetchone()[0]
     return {"object": dict(obj), "canonical_map_owner": dict(emission) if emission else None,
         "source_owned_total": int(owned), "claims": claims, "relations": relations,
         "evidence": evidence, "derivations": derivations,
         "incoming_relations": [r for r in relations if r["target_object_id"] == object_id],
         "outgoing_relations": [r for r in relations if r["source_object_id"] == object_id],
-        "runtime_occurrences": [e for e in evidence if e["fact_kind"].startswith("RUNTIME_OCCURRENCE:")],
+        "runtime_occurrences": [e for e in evidence if
+            e["fact_kind"].startswith("RUNTIME_OCCURRENCE:") or
+            e["fact_kind"] == "RUNTIME_INSTRUCTION_OCCURRENCE"],
         "supporting_artifacts": sorted({e["artifact_name"] for e in evidence}),
         "supporting_analyzers": sorted({e["locator"].get("analyzer", e["artifact_type"])
                                          for e in evidence}),

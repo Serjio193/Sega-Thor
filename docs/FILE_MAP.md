@@ -142,6 +142,15 @@ idempotence, and persistence acceptance. Regression tests are in
 `tests/rom_knowledge_fusion_test.py`. Generated evidence remains ignored under
 `build/thor-evidence/`.
 
+M14.5 uses `rom_knowledge_map_adoption.py` to reproduce and orchestrate exact
+ASM proposal adoption; `rom_knowledge_map_adoption_validation.py` independently
+checks M14.4 proposal operations, CFG/bytes/roundtrip and existing Stage7
+eligibility; `rom_knowledge_map_adoption_apply.py` creates deterministic
+non-owning canonical child generations with split lineage. The map query adds
+the component-scoped proof/relation records to `GLOBAL_OBJECT_VIEW`. Contract
+tests are in `tests/rom_knowledge_map_adoption_test.py`, registered from
+`cmake/m14_4.cmake`; generated child databases remain under ignored `build/`.
+
 M14.3 adds `src/tools/thor_evidence/rom_unknown_range_campaign.py` to rank all
 UNKNOWN canonical emission ranges using existing graph provenance and produce
 a blocker-aware, non-classifying campaign report. Its deterministic ranking,

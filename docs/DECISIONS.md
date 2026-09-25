@@ -2304,3 +2304,28 @@ change canonical emission or ownership.
 **Evidence:** `src/tools/re_cfg_closure.*`,
 `src/tools/thor_evidence/rom_generic_asm_closure.py`, and the M14.4 report.
 
+# ADR-M14.5-EXACT-ASM-MAP-ADOPTION — Apply validated classification in canonical SQLite
+**Status:** Accepted for M14.5
+**Date:** 2026-09-25
+
+**Context:** M14.4 persisted its exact ASM closure as a parent-bound proposal.
+The project already has an authoritative canonical ROM SQLite generation and
+Stage7 ownership promotion contract. A parallel map/evidence store would split
+truth and complicate graph-to-map reconciliation.
+
+**Decision:** Reproduce the tracked M14.4 proposal, independently validate its
+operations and component proofs, then apply accepted classification operations
+to deterministic child copies of the same SQLite generation. Preserve prior
+range/evidence identities and record split lineage through existing proposal,
+evidence and derivation tables. Expose component-scoped proofs in the existing
+global object view. ASM classification remains non-owning; ownership can change
+only through the existing Stage7 path.
+
+**Consequences:** Exact proven extents may become canonical ASM while the
+enclosing UNKNOWN ranges remain conservatively split. Unsupported references
+stay rejected independently. Graph and map continue to share the established
+SQLite authority, and `SOURCE_OWNED` is unchanged when Stage7 prerequisites are
+absent.
+
+**Evidence:** M14.5 implementation and `THOR_M14_5_EXACT_ASM_MAP_ADOPTION` report.
+

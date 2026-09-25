@@ -10,4 +10,6 @@ add_test(NAME oasis_re_cfg_closure COMMAND oasis_re_cfg_closure_test)
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_m14_4_generic_asm_closure
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_generic_asm_closure_test.py)
+    add_test(NAME oasis_m14_5_exact_asm_map_adoption
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_adoption_test.py)
 endif()

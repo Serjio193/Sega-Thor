@@ -985,3 +985,15 @@ canonical graph relation was added. This is a run-local negative result, not a
 claim that all game scenarios lack indirect transfers. Reconsider a sensor only
 after accepted runtime evidence contains an actual indirect JMP/JSR whose
 memory origin the current evidence pipeline cannot resolve.
+
+## M14.5 exact ASM map adoption
+
+M14.5 reproduces the tracked M14.4 proposal from its exact parent and applies
+only operations whose proof is independently accepted. Accepted ASM extents
+split the existing emission partition in child copies of the canonical SQLite
+generation. Old evidence references remain attached to their original
+identities; split relationships and the M14.4 proof are recorded through
+canonical derivations and proposal-operation rows. The ASM classification is
+non-owning (`source_owned=0`). `GLOBAL_OBJECT_VIEW` includes proof evidence,
+CFG relations and derivations scoped to the exact component. Stage7 remains the
+only ownership path and is evaluated independently after classification.
