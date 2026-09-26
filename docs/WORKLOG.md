@@ -9862,3 +9862,50 @@ unchanged. Compact report/receipt are in `docs/reports/`; all SQLite/session
 maps, raw logs and segment audit data remain local under ignored
 `build/thor-evidence/live-worker-control-2h/`. The broader M12 milestone
 remains active. Exact-SHA CI publication follows this local validation.
+# 2026-09-19 — M12 map-driven executed ASM closure 2F — PASS_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_V1
+
+TASK / ACCEPTANCE: Continue from accepted `311338b823f98f17065882387361ed2c636e7f82`
+using the canonical 2G map and its executed-but-not-fully-owned backlog. Derive
+candidate code islands only from exact mapped instruction boundaries, observed
+`EXECUTED_NEXT` lineage, and decoder-proven fallthrough/direct targets. Reject
+data overlap, incomplete/unsupported decodes, unresolved required control
+flow, and any exact-assembly or byte-round-trip mismatch. Do not start a new
+runtime campaign, infer indirect targets, or modify production AUTO67, Worker
+1B/2H semantics, predecessor logic, or accepted runtime evidence. Promote
+ownership only after an isolated exact ASM and whole-ROM transaction passes
+the independent audit; otherwise publish a deterministic STOP report with
+exact blockers. Keep raw/runtime evidence ignored and local.
+
+RESULT: `PASS_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_V1`. The accepted map reconciled
+at 360 executed instruction objects, 225 executed-but-not-fully-owned objects,
+1,475,600 `SOURCE_OWNED` bytes, and zero conflicts. Deterministic grouping
+produced 25 disjoint candidate islands spanning 884 previously unowned bytes;
+all 225 candidate instructions are listed with exact ranges, ownership bytes,
+observed-edge counts, and outcome in the compact JSON report. One interval,
+`[0x002AA4,0x002ACE)`, closed: 14 exact instructions, 14 executed objects, 13
+adjacent observed edges, and 42 bytes. The other 24 islands remain blocked by
+`STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED`; no target was inferred to be runtime
+observed. The isolated vasm round-trip and independent whole-ROM rebuild
+matched the canonical 3 MiB ROM SHA-256.
+
+The refreshed canonical map has 360 executed instruction objects and 211
+remaining not-fully-owned objects. Ownership is 1,475,642 bytes, exactly +42;
+all previous ownership remains, emission is contiguous/disjoint over
+3,145,728 bytes, and conflicts remain zero. It has 3,826 canonical objects,
+6,293 claims, 400 relations, and 9,480 evidence references. The Archivist
+reimport is an idempotent no-op. Two independent producer runs produced the
+same manifest, promotion-report, and audit hashes. No new BizHawk/runtime
+campaign was run and accepted runtime observations were not altered.
+
+VALIDATION: Debug and Release builds PASS; Debug CTest 209/209 PASS; Release
+CTest 209/209 PASS; GNU/Linux Debug build and CTest 209/209 PASS; focused 2F
+A–T checks PASS; 2G pipeline tests 18/18 PASS; file-size limit PASS; Python
+compile PASS; `git diff --check` PASS. The RE source list moved to
+`cmake/re_tooling_sources.cmake` and direct JSR/JMP target decoding moved to
+`re_slice_flow_target.*` to keep every modified source/build file at or below
+500 lines. WSL CTest used explicit `GIT_DIR`/`GIT_WORK_TREE` because this
+Windows-linked worktree stores a Windows absolute gitdir path. Full metrics,
+candidate rows, hashes, and validation are recorded in
+`docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md/.json`. Raw map,
+SQLite, runtime, and segment evidence remain local under ignored
+`build/thor-evidence/`; none is included in the checkpoint.

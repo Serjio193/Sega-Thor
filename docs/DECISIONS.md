@@ -1975,6 +1975,34 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F — Audited static ownership promotion
+**Status:** Accepted for the developer-only 2F checkpoint
+**Date:** 2026-09-19
+
+**Context:** The canonical 2G knowledge map contains runtime-executed M68K
+instruction objects whose ROM bytes remain unowned. Runtime execution proves
+that an instruction ran, but does not by itself prove an ASM ownership range,
+its boundaries, or closed control flow.
+
+**Decision:** Derive candidate islands only from exact mapped instruction
+ranges and observed adjacent `EXECUTED_NEXT` relations. Promote a range only
+after the bounded decoder exactly matches every mapped instruction, all
+control-flow exits are closed by the interval or existing verified code, the
+generated 68000 ASM round-trips byte-exactly in vasm, and an independent audit
+reconstructs both the ownership delta and full canonical ROM. Candidate-to-
+candidate control-flow dependencies must also close; unresolved candidates
+remain blockers. Canonical map refresh uses the existing 2D importer and 2G
+Archivist pipeline, with `SOURCE_OWNED` treated as an explicit expected base.
+
+**Consequences:** 2F promoted only `[0x002AA4,0x002ACE)` (42 bytes, 14
+instructions) and left 24 of 25 candidate islands blocked by unresolved
+control-flow. New ownership is `STATIC_VERIFIED`; existing runtime claims and
+relations remain unchanged. No CPU hooks, runtime campaigns, Worker/FLOW,
+AUTO67, predecessor logic, or scaling semantics are changed.
+
+**Evidence:** `docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md` and
+its compact JSON receipt.
+
 # ADR-M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D — Separate ranges, facts and emission
 **Status:** Accepted for the 2D checkpoint
 **Date:** 2026-09-18

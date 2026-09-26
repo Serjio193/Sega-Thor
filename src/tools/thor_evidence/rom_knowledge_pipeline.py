@@ -410,6 +410,8 @@ def main() -> int:
                         default=Path("docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json"))
     parser.add_argument("--campaign-receipt", type=Path,
                         help="optional exact ROM-link campaign receipt to reconcile")
+    parser.add_argument("--expected-source-owned", type=int, default=1_475_600,
+                        help="expected source-owned bytes for the accepted base map")
     parser.add_argument("--rom", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path,
                         default=Path("build/thor-evidence/archivist-knowledge-pipeline-2g"))
@@ -420,6 +422,7 @@ def main() -> int:
     args = parser.parse_args()
     result = archive_and_refresh_knowledge(args.session, args.master, args.knowledge_db,
         args.rom, args.output_dir, args.base_receipt, args.campaign_receipt,
+        expected_source_owned=args.expected_source_owned,
         report_path=args.report, receipt_path=args.receipt)
     print(json.dumps({"status": result["status"], "generation_id": result["generation_id"],
         "merge_receipt_sha256": result["archivist_merge"]["receipt_sha256"],

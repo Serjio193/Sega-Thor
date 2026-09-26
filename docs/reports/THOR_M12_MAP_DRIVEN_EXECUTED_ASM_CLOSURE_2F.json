@@ -1,0 +1,561 @@
+{
+  "accepted_runtime_evidence_comparison": {
+    "after": {
+      "executed_instruction_objects": 360,
+      "relations": {
+        "EXECUTED_NEXT": 369,
+        "OBSERVED_NEXT_PC": 31
+      },
+      "runtime_evidence_refs": 1921
+    },
+    "before": {
+      "executed_instruction_objects": 360,
+      "relations": {
+        "EXECUTED_NEXT": 369,
+        "OBSERVED_NEXT_PC": 31
+      },
+      "runtime_evidence_refs": 1921
+    },
+    "changed_or_lost_facts": 0
+  },
+  "base_commit": "311338b823f98f17065882387361ed2c636e7f82",
+  "baseline": {
+    "canonical_objects": 3824,
+    "claims": 6289,
+    "conflicts": 0,
+    "emission_bytes": {
+      "ASM": 56134,
+      "ASSET": 1085110,
+      "DATA": 233676,
+      "INCBIN": 1770808
+    },
+    "emission_hash": "d76325cfa6d6312f28333f0633f74260214e5ae8a92fc2984fcc565872cbda8f",
+    "emission_ranges": 2461,
+    "evidence_hash": "2436fc163aec5959ac6f0e57aa39a2fe0daa063d9a26528b4192ee895a5b2677",
+    "evidence_refs": 9476,
+    "executed_instruction_objects": 360,
+    "executed_not_fully_owned_objects": 225,
+    "map_hash": "80828f5c178b5e7373e6530c11f98c02578aff43ab4661eb7c15b1724ff23d1f",
+    "relations": 400,
+    "source_owned_bytes": 1475600,
+    "structure_hash": "cf2cba9073b51d0822d96648f647086c5d0544da29efde080aec3085af6a02de"
+  },
+  "candidate_analysis": {
+    "blocked_islands": 24,
+    "blocker_counts": {
+      "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED": 24
+    },
+    "candidate_islands": 25,
+    "candidate_span_bytes_total": 884,
+    "closed_islands": 1,
+    "islands": [
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:648421af7817c1da5d7e3fd05ac0c0932e209f0e0de6bcfdc877ede3cc98f3d0",
+        "decoded_instruction_count": 51,
+        "end": 10860,
+        "executed_instruction_count": 51,
+        "instruction_count": 51,
+        "observed_edge_count": 50,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 124,
+        "start": 10736,
+        "unowned_bytes_before": 124
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:885555393704daa78ed86a1eebac84cb1d1a3f3d127b5ddb81ca9a2dd1b9bed0",
+        "decoded_instruction_count": 32,
+        "end": 10734,
+        "executed_instruction_count": 32,
+        "instruction_count": 32,
+        "observed_edge_count": 31,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 92,
+        "start": 10642,
+        "unowned_bytes_before": 92
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:804c341d230279afc7fd5fc70b47055d823a5facf210fb2febe7c784a1d81a47",
+        "decoded_instruction_count": 28,
+        "end": 8756,
+        "executed_instruction_count": 28,
+        "instruction_count": 28,
+        "observed_edge_count": 27,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 140,
+        "start": 8616,
+        "unowned_bytes_before": 140
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:df94bc9501cb86a7214360d6e579c70517f7e9c4bdea4011588551ac78e2f051",
+        "decoded_instruction_count": 17,
+        "end": 8120,
+        "executed_instruction_count": 17,
+        "instruction_count": 17,
+        "observed_edge_count": 16,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 66,
+        "start": 8054,
+        "unowned_bytes_before": 66
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:7cd676d7845615c1a9fc7c51aba498b2992d3593b5f2a74344f351990858ebfa",
+        "decoded_instruction_count": 17,
+        "end": 8538,
+        "executed_instruction_count": 17,
+        "instruction_count": 17,
+        "observed_edge_count": 16,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 72,
+        "start": 8466,
+        "unowned_bytes_before": 72
+      },
+      {
+        "blockers": [],
+        "candidate_id": "m12-2f:c1c31db04d997afd6a1123c3175f6d87c9cffc98e32daff38ffb4d081b5eeea9",
+        "decoded_instruction_count": 14,
+        "end": 10958,
+        "executed_instruction_count": 14,
+        "instruction_count": 14,
+        "observed_edge_count": 13,
+        "outcome": "PASS_CLOSED_ASM_RANGE",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 42,
+        "start": 10916,
+        "unowned_bytes_before": 42
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:fc9ca5cd83c40371b214547a17edeaf409dca18547013c75f9598e1a63394143",
+        "decoded_instruction_count": 8,
+        "end": 8180,
+        "executed_instruction_count": 8,
+        "instruction_count": 8,
+        "observed_edge_count": 7,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 44,
+        "start": 8136,
+        "unowned_bytes_before": 44
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:4512bac981e88773cf9e1739f85d06a58be8197e7125cb7cf075f32479eac124",
+        "decoded_instruction_count": 6,
+        "end": 8268,
+        "executed_instruction_count": 6,
+        "instruction_count": 6,
+        "observed_edge_count": 5,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 42,
+        "start": 8226,
+        "unowned_bytes_before": 42
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:ed00aed9acdfc468dd2280747f8b8b5b2e8011b68c636e63418d5b7428b22f54",
+        "decoded_instruction_count": 6,
+        "end": 8588,
+        "executed_instruction_count": 6,
+        "instruction_count": 6,
+        "observed_edge_count": 5,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 34,
+        "start": 8554,
+        "unowned_bytes_before": 34
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:ddb182c552fe5f65039633d42909f06b56792a795bdacb40d77e4ba8c52f7f13",
+        "decoded_instruction_count": 5,
+        "end": 8348,
+        "executed_instruction_count": 5,
+        "instruction_count": 5,
+        "observed_edge_count": 4,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 34,
+        "start": 8314,
+        "unowned_bytes_before": 34
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:6fb6a861072eae22dfc0e3c6ffad0a575f8a00cb65b71678debf87432370a9d1",
+        "decoded_instruction_count": 5,
+        "end": 240084,
+        "executed_instruction_count": 5,
+        "instruction_count": 5,
+        "observed_edge_count": 4,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 24,
+        "start": 240060,
+        "unowned_bytes_before": 24
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:7812071a2628cf30dc5cc7c41eb8e03484c06673545ec1946325df46f5b22a2a",
+        "decoded_instruction_count": 5,
+        "end": 240252,
+        "executed_instruction_count": 5,
+        "instruction_count": 5,
+        "observed_edge_count": 4,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 24,
+        "start": 240228,
+        "unowned_bytes_before": 24
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:da786d50c52daf469457a322733f82fe68edf676832c32ad657793d8985e18ae",
+        "decoded_instruction_count": 4,
+        "end": 240060,
+        "executed_instruction_count": 4,
+        "instruction_count": 4,
+        "observed_edge_count": 3,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 16,
+        "start": 240044,
+        "unowned_bytes_before": 16
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:9fc057311208e32b66d7781446ff653efa8259beb21302f060274bb6801e4fd0",
+        "decoded_instruction_count": 4,
+        "end": 240228,
+        "executed_instruction_count": 4,
+        "instruction_count": 4,
+        "observed_edge_count": 3,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 16,
+        "start": 240212,
+        "unowned_bytes_before": 16
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:8f3f9f5d40e6e66239f42e90648300e41d838bd86e48f0163604c13a2cfc60a9",
+        "decoded_instruction_count": 3,
+        "end": 8414,
+        "executed_instruction_count": 3,
+        "instruction_count": 3,
+        "observed_edge_count": 2,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 14,
+        "start": 8400,
+        "unowned_bytes_before": 14
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:582e533cb81beb7f69416b3e62f168f4c88039ff6ade0f4cbc2ef46fd20119a6",
+        "decoded_instruction_count": 3,
+        "end": 8548,
+        "executed_instruction_count": 3,
+        "instruction_count": 3,
+        "observed_edge_count": 2,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 8538,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:a5762ad18270480fdae8a480f40c8137bb760c297cca95d527d9d1ce97081e1d",
+        "decoded_instruction_count": 2,
+        "end": 8136,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 8126,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:c4adc400960c4d54641d191b8cedd71e0c359020c5f7b59b2631205b00d829ea",
+        "decoded_instruction_count": 2,
+        "end": 8600,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 12,
+        "start": 8588,
+        "unowned_bytes_before": 12
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:ce4c714cac0f2c34a019a230c3eaf976563a5b9cbf2a72d90b149d8f101cf9e5",
+        "decoded_instruction_count": 2,
+        "end": 239544,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 239534,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:1c9d2fbc57e9b793795261f6521e030e9baf8196b5a7375372c460ee4e223007",
+        "decoded_instruction_count": 2,
+        "end": 239720,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 239710,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:006c9060fe592af3e43258466ae31d2635bee98e33d9a65b28ea0354e85eea97",
+        "decoded_instruction_count": 2,
+        "end": 239766,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 239756,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:a34508795f47ace014d4e81ba3511d85414f9aa6c3208253833794f0d9367b0e",
+        "decoded_instruction_count": 2,
+        "end": 239792,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 12,
+        "start": 239780,
+        "unowned_bytes_before": 12
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:dd8ea5ba96e7aac2deb3b7f9a1e0b4c8c4fee9a3290a2e97c91aaec46183f776",
+        "decoded_instruction_count": 2,
+        "end": 239812,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 239802,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:0f8b0cd796e8e98a4df2390758c53d0e758f36a4940991f419fd3bb6b84163e8",
+        "decoded_instruction_count": 2,
+        "end": 239858,
+        "executed_instruction_count": 2,
+        "instruction_count": 2,
+        "observed_edge_count": 1,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 10,
+        "start": 239848,
+        "unowned_bytes_before": 10
+      },
+      {
+        "blockers": [
+          "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED"
+        ],
+        "candidate_id": "m12-2f:2174edf6685af73d78d41b0522c1242dc9f2140a897a90c15dbc68110cfbf053",
+        "decoded_instruction_count": 1,
+        "end": 9094,
+        "executed_instruction_count": 1,
+        "instruction_count": 1,
+        "observed_edge_count": 0,
+        "outcome": "STOP_CONTROL_FLOW_ESCAPE_UNRESOLVED",
+        "source_owned_bytes_before": 0,
+        "span_bytes": 6,
+        "start": 9088,
+        "unowned_bytes_before": 6
+      }
+    ],
+    "source_owned_bytes_before_total": 0,
+    "unowned_bytes_before_total": 884
+  },
+  "canonical_rom": {
+    "bytes": 3145728,
+    "name": "Beyond Oasis (USA)",
+    "sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+  },
+  "checkpoint": "M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F",
+  "final_map": {
+    "canonical_objects": 3826,
+    "claims": 6293,
+    "conflicts": 0,
+    "emission_bytes": {
+      "ASM": 56176,
+      "ASSET": 1085110,
+      "DATA": 233676,
+      "INCBIN": 1770766
+    },
+    "emission_hash": "bca395e9ae222c6c35acdf17e09f3b1562284a29a4da99d6d0349fba07f56e81",
+    "emission_ranges": 2463,
+    "evidence_hash": "0508c8404172d6ee892553abcebb5b7fcaa76392b06b093324daf8dd9c043e94",
+    "evidence_refs": 9480,
+    "executed_instruction_objects": 360,
+    "executed_not_fully_owned_objects": 211,
+    "map_hash": "858d609ce6be75841251e7adafd4bd3460d345d2e719ec754d1833d4211b210c",
+    "reimport": "PASS_IDEMPOTENT_NOOP",
+    "relations": 400,
+    "runtime_evidence_preserved": true,
+    "runtime_instruction_objects": 360,
+    "runtime_relations": {
+      "EXECUTED_NEXT": 369,
+      "OBSERVED_NEXT_PC": 31
+    },
+    "source_owned_bytes": 1475642,
+    "source_owned_delta": 42,
+    "status": "PASS_INDEPENDENT_ARCHIVIST_CANONICAL_AUDIT_V1",
+    "structure_hash": "70cdd9ef1fc134bc2318b17590cc4df1f3cbda2536eb4d5f88cf13dce58e499a"
+  },
+  "independent_audit": {
+    "archivist_status": "PASS_INDEPENDENT_ARCHIVIST_CANONICAL_AUDIT_V1",
+    "audited_promoted_intervals": 1,
+    "producer_idempotence": {
+      "r4": {
+        "independent_audit_sha256": "78637be599ab38a0b797e74900850b3bae605d9e35fdd8845962e3ed51f2c1da",
+        "manifest_sha256": "bdce17b462924825a7b20acc5718eb6cffa027f0c2fca11c0bcbfff49d0020ff",
+        "promotion_report_sha256": "e1adfe12212f23c78c9d8ae1cef6abc144d9f3e5e58cc60a3ecdaaa80383efac"
+      },
+      "r5": {
+        "independent_audit_sha256": "78637be599ab38a0b797e74900850b3bae605d9e35fdd8845962e3ed51f2c1da",
+        "manifest_sha256": "bdce17b462924825a7b20acc5718eb6cffa027f0c2fca11c0bcbfff49d0020ff",
+        "promotion_report_sha256": "e1adfe12212f23c78c9d8ae1cef6abc144d9f3e5e58cc60a3ecdaaa80383efac"
+      }
+    },
+    "redecode_vasm_and_full_rom": "PASS",
+    "status": "PASS_INDEPENDENT_MAP_DRIVEN_ASM_CLOSURE_AUDIT"
+  },
+  "local_evidence_paths": [
+    "build/thor-evidence/map-driven-executed-asm-closure-2f/",
+    "build/thor-evidence/archivist-knowledge-pipeline-2g-canonical-verified-20260918/"
+  ],
+  "promotion": {
+    "full_rom_exact": true,
+    "full_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "interval": {
+      "asm_path": "src/tools/m12_2f_asm/sub_002AA4.asm",
+      "asm_sha256": "5dd894a11263b78952c4dd8bc74dac44137bca7c177d4ba2dd68c76e1b1dfd9b",
+      "bytes": 42,
+      "candidate_id": "m12-2f:c1c31db04d997afd6a1123c3175f6d87c9cffc98e32daff38ffb4d081b5eeea9",
+      "canonical_bytes_sha256": "a6da8b569b140e7e9729c9602ee8a67b632ea22e73a605392ab97f8f1b8f9aea",
+      "end": 10958,
+      "executed_instruction_count": 14,
+      "instruction_count": 14,
+      "observed_edge_count": 13,
+      "start": 10916,
+      "status": "PASS_INDEPENDENT_INTERVAL_AUDIT"
+    },
+    "partition_bytes": 3145728,
+    "preserved_prior_owned_bytes": true,
+    "promoted_bytes": 42,
+    "promoted_executed_instruction_objects": 14,
+    "promoted_instruction_objects": 14,
+    "promoted_islands": 1
+  },
+  "result": "PASS_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_V1",
+  "runtime": {
+    "accepted_runtime_evidence_reused": true,
+    "new_campaign_run": false,
+    "runtime_claims_fabricated": false,
+    "runtime_instrumentation_added": 0
+  },
+  "schema": "oasis.m12.map-driven-executed-asm-closure.2f.report.v1",
+  "scope": {
+    "predecessor_logic_changed": false,
+    "production_auto67_changed": false,
+    "raw_runtime_or_sqlite_evidence_committed": false,
+    "worker_1b_scaling_changed": false,
+    "worker_flow_runtime_changed": false
+  },
+  "validation": {
+    "debug_build": "PASS",
+    "debug_ctest": "209/209 PASS",
+    "focused_2f_test": "PASS_A_TO_T",
+    "git_diff_check": "PASS",
+    "gnu_linux_build": "PASS",
+    "gnu_linux_ctest": "209/209 PASS",
+    "release_build": "PASS",
+    "release_ctest": "209/209 PASS",
+    "source_file_limit": "PASS"
+  }
+}
