@@ -1,6 +1,7 @@
 import hashlib
 import json
 import sqlite3
+import struct
 import sys
 import tempfile
 import unittest
@@ -141,14 +142,36 @@ class LiveForwardCartographerTests(unittest.TestCase):
         finally:
             session.close()
 
+    def test_z80_instructions_remain_occurrences_without_m68k_rom_nodes(self):
+        rows = [
+            (10, 101, 7, 0x20, 0x22, 0x1234, 3, 1, 2, 7, 0, 0),
+            (11, 102, 9, 0x22, 0x24, 0x5678, 3, 1, 2, 7, 0, 0),
+        ]
+        segment, blob = _segment(rows)
+        session = LiveForwardCartographer(ROM, INSTRUMENTATION, "z80-occurrences-only")
+        try:
+            session.admit(segment, rows, blob)
+            self.assertEqual(session.metrics()["nodes"], 0)
+            self.assertEqual(session.metrics()["edges"], 0)
+            events = [json.loads(row[0]) for row in session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence")]
+            self.assertEqual(len(events), 2)
+            self.assertEqual({event["cpu_id"] for event in events}, {"Z80"})
+            self.assertEqual([event["native_sequence"] for event in sorted(
+                events, key=lambda item: item["native_sequence"])], [10, 11])
+        finally:
+            session.close()
+
     def test_sideband_is_preserved_in_raw_input_but_skipped_from_graph_edges(self):
         rows = [
             (100, 50, 0, 0x100, 0x102, 0x4E71, 3, 0, 0, 0, 0, 0),
-            (101, 50, 0, 0x100, 0x00F00010, 0x1234,
-             FLAG_EVENT | (1 << EVENT_SHIFT), 0, 0, 0, 0, 0),
+            (101, 50, 77, 0x100, 0x00F00010, 0x1234,
+             FLAG_EVENT | (1 << EVENT_SHIFT), 0, 0, 0, 9, 0xABC),
             (102, 51, 0, 0x102, 0x104, 0x4E71, 3, 0, 0, 0, 0, 0),
         ]
         segment, records = _segment(rows)
+        segment.update({"source_raw_sha256": "c" * 64,
+                        "source_index_sha256": "d" * 64, "raw_offset": 1000})
         session = LiveForwardCartographer(ROM, INSTRUMENTATION)
         try:
             session.admit(segment, rows, records)
@@ -160,6 +183,23 @@ class LiveForwardCartographerTests(unittest.TestCase):
             lineage = json.loads(lineage)
             self.assertEqual(lineage["first_stream_sequence"], 100)
             self.assertEqual(lineage["next_stream_sequence_first"], 102)
+            event = next(json.loads(item[0]) for item in session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence")
+                if json.loads(item[0])["event_kind"] == "BUS_READ")
+            self.assertEqual((event["master_time"], event["reserved"], event["auxiliary"]),
+                             (77, 9, 0xABC))
+            self.assertEqual(event["record_hex"], struct.pack(
+                "<QQQIIIHBBHHI", *rows[1]).hex())
+            self.assertEqual(event["windows"][0]["source_offset"], 1000 + 48)
+            self.assertEqual(event["windows"][0]["source_raw_sha256"], "c" * 64)
+            self.assertEqual(event["windows"][0]["source_index_sha256"], "d" * 64)
+            self.assertEqual((event["windows"][0]["entry_stream_sequence"],
+                              event["windows"][0]["exit_stream_sequence"],
+                              event["windows"][0]["record_count"]), (100, 103, 3))
+            transition = next(json.loads(item[0]) for item in session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence")
+                if json.loads(item[0])["event_kind"] == "EXECUTED_NEXT")
+            self.assertEqual(transition["windows"][0]["source_offset"], 1000)
         finally:
             session.close()
 

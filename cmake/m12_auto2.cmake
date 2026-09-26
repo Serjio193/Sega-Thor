@@ -20,6 +20,14 @@ add_test(NAME oasis_re_rom_range_decode_self_test
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_runtime_chain_fusion
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/runtime_chain_fusion_test.py)
+    add_test(NAME oasis_experiment_lifecycle
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/experiment_lifecycle_test.py)
+    add_test(NAME oasis_raw_elimination
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/raw_elimination_test.py)
+    add_test(NAME oasis_raw_event_envelope
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/raw_event_envelope_test.py)
+    add_test(NAME oasis_runtime_path_view
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/runtime_path_view_test.py)
     add_test(NAME oasis_live_forward_cartographer
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_cartographer_test.py)
     add_test(NAME oasis_live_forward_rom_link

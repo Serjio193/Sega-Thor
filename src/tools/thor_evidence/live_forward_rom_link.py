@@ -88,7 +88,7 @@ class LiveForwardRomLinker:
         import struct
         record = struct.Struct("<QQQIIIHBBHHI")
         return [(index, row) for index, row in enumerate(record.iter_unpack(records_blob))
-                if row[6] & FLAG_INSTRUCTION]
+                if row[6] & FLAG_INSTRUCTION and row[7] == 0]
 
     def project(self, graph: Any, rom_path: Path, decoder: Path,
                 evidence_dir: Path) -> dict[str, Any]:

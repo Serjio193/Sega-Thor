@@ -1722,3 +1722,27 @@ is `tests/rom_knowledge_stage7_closure_test.py`; CTest registration is in
   occurrence/replay/overlap and canonical bridge acceptance.
 - `docs/reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md`: identity audit,
   before/after fixtures, query contract and bounded representation assessment.
+
+## M14.7B raw elimination audit
+
+- `src/tools/thor_evidence/raw_elimination.py`: streamed inventory and
+  fail-closed, two-level delete-safe seal evaluator; no delete operation.
+- `src/tools/thor_evidence/raw_event_envelope.py`: lossless fixed-record FLOW/W3
+  and AUTO67 capsule JSONL-gzip envelopes, complete event accounting and
+  raw-free byte replay.
+- `tests/raw_elimination_test.py`: accounting, version/hash, replay, branch,
+  unresolved/rejected, duplicate-window and capture-gap policy regressions.
+- `tests/raw_event_envelope_test.py`: all-field roundtrip, raw-unavailable replay,
+  duplicate-window accounting and capture-boundary preservation.
+- `docs/reports/THOR_M14_7B_RAW_ELIMINATION_AUDIT.md`: raw-format audit,
+  measured inventory and explicit limits of this first report-only pass.
+- `src/tools/thor_evidence/experiment_lifecycle.py`: compact closed-experiment
+  receipts and explicit hash-verified `cleanup --closed-only` for exact audited
+  roots, including receipt-listed temporary artifacts; does not ingest or
+  publish map generations itself.
+- `tests/experiment_lifecycle_test.py`: receipt/accounting gates, open and
+  tampered cleanup refusal, raw removal, and divergent path queries after removal.
+- `tests/runtime_path_view_test.py`: confirms per-event raw offsets do not split
+  one stable indexed capture window into unrelated one-event paths.
+- `docs/reports/THOR_M14_7B_REAL_CAPTURE_CLOSURE.md`: one real FLOW_V1 ingestion,
+  closed receipt, exact cleanup and corpus dry-run acceptance evidence.

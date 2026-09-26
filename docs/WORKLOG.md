@@ -10075,3 +10075,172 @@ The canonical bridge regression independently compares before/after emission
 rows and runtime truth. No authoritative SQLite was modified or new gameplay
 capture performed. Next step: use the derived paged path view for visualization;
 keep sparse/legacy evidence limitations explicit and retain unique-branch proof.
+# 2026-09-26 — M14.7B raw elimination / self-contained evidence — IN PROGRESS
+
+CONTINUATION TASK: Implement the one-map / consumable-capture lifecycle on the
+existing M14.7B foundation. A capture may be deleted only after a validated
+closed receipt binds its identity, exhaustive event accounting, canonical map
+generation/hash transition and map self-check. Provide an explicit
+`cleanup --closed-only` that refuses open, malformed, stale or out-of-root
+inputs. Prove the lifecycle in a temporary fixture; never run cleanup against
+the historical corpus before each experiment has a real successful ingestion
+and closed receipt. Preserve existing M14.7/M14.7A truth and ownership.
+
+ACCEPTANCE: Tests cover merged/no-new/invalid receipts, accounting closure,
+transaction failure without a committed generation, divergent/rare/unresolved
+map witnesses, cleanup refusal for open experiments, closed cleanup, and map
+queries after raw removal. Existing canonical pipeline remains the sole map
+publisher. Re-inventory the real root and report actual remaining artifacts;
+do not claim M14.7B PASS until corpus ingestion and full acceptance are proven.
+
+TASK: Add a report-only raw evidence inventory and a fail-closed deletion-seal
+evaluator. Preserve every accepted, unresolved, rejected and duplicate input;
+prove replay from retained artifacts before either raw or normalized evidence
+can be marked disposable. No evidence deletion, emulator capture, canonical
+knowledge write, or SOURCE_OWNED change is authorized in this milestone.
+
+ACCEPTANCE: Stream-hash supported runtime artifacts; identify format and
+producer; keep unknown or unproven files; require full event accounting,
+current format/extractor/normalizer/validator and session/canonical generation
+identities, exact retained-artifact
+hashes, replay without raw, path/occurrence/unresolved identity matches, unique
+branch witnesses and explicit capture gaps. Report-only `--audit` and separate
+`--mark-delete-safe` output. Add regressions for accounting loss, rare and
+indirect/return witnesses, unresolved/rejected rows, overlap duplicates,
+capture gaps, replay, tampered artifacts and stale versions. Never auto-delete.
+
+INITIAL AUDIT (read-only): `live_forward_cartographer.py` stores MAP-1 runtime
+occurrences but does not retain all source fields (for example `master_time`);
+faulted or untyped FLOW records fail segment admission without a per-event
+rejection ledger. FLOW_V1 raw and index are therefore not replaceable by the
+current session/map. W3 discovery chunks use a separate 48-byte record schema
+and are not proven losslessly normalized into MAP-1. AUTO67 O67C/O67V capsules
+are bounded BUS/PC observations, not general traces. Existing MAP-1 occurrence
+merge/path views preserve native identity, alternative tails and capture gaps,
+but do not close the raw event accounting/replay contract. No current artifact
+is presumed DELETE_SAFE based on an older pipeline PASS.
+
+IMPLEMENTATION: Added `src/tools/thor_evidence/raw_elimination.py` for
+streaming-hash inventory and a separate seal evaluator. It defaults to KEEP,
+checks exact file and version hashes, and distinguishes binary raw deletion
+from normalized evidence deletion. It has no deletion command.
+`raw_event_envelope.py` retains all 12 fields and exact source bytes for
+fixed-width FLOW_V1/W3 V2 records and complete O67C/O67V capsule headers,
+lease/frame identity and records. It accounts duplicate native IDs across
+indexed windows and replays raw byte hashes from compressed evidence. A
+read-only inventory scanned 109,936 files beneath
+`C:\Github\Sega-Thor\build` and SHA-256 audited 1,335 matching raw/support
+artifacts (31,833,758,339 bytes): 104 FLOW_V1 binaries / 23,139,010,416 bytes
+and 1,161 W3 chunks / 8,576,681,184 bytes require lossless normalization;
+70 segment/audit indexes / 118,066,739 bytes remain processing dependencies.
+No delete-safe artifact was proven. 139 duplicate-hash groups contain 247
+redundant same-byte copies (17,200,841,040 bytes); no paths were removed.
+
+VERIFICATION: `python tests/raw_elimination_test.py` passed 16/16 and
+`python tests/raw_event_envelope_test.py` passed 12/12; `py_compile` and
+`git diff --check` passed. A current-campaign interactive receipt was evaluated
+with `--mark-delete-safe` and correctly returned `KEEP` for missing event
+accounting, complete field inventory, normalized artifact, raw-free replay,
+branch and gap proofs. No C++ source, CMake target, canonical database, ROM
+ownership, or runtime capture behavior changed.
+Debug/Release CTest and Linux smoke are not applicable to this Python-only
+audit tool and have not been run. No data were deleted, committed or pushed.
+
+CONTINUATION IMPLEMENTATION: Added `experiment_lifecycle.py`. A closure receipt
+is accepted only with exhaustive MERGED/ALREADY_KNOWN/UNRESOLVED/REJECTED
+accounting, raw hash/size, exact before/after map generation/hash, map
+self-check, explicit final classification and unchanged `SOURCE_OWNED`.
+`MERGED` requires a changed map identity; `NO_NEW_KNOWLEDGE` and `INVALID`
+require no map mutation. Added explicit plan-first `cleanup --closed-only`
+which verifies all receipts and raw identities, binds to an exact audited root,
+and deletes only listed files with `--execute`. It refuses open, malformed,
+tampered, duplicate-target and out-of-root receipts. It does not ingest evidence
+or publish map generations; the existing Archivist pipeline remains the one
+publisher. Added CTest registration and architecture/decision/file-map/roadmap
+documentation. Synthetic acceptance removed one test raw plus a temporary
+envelope and queried two divergent MAP-1 paths afterwards; the test validates
+the supplied map-check attestation schema and does not itself perform the full
+canonical database self-check. Tests
+`experiment_lifecycle_test.py` 7/7,
+`raw_elimination_test.py` 16/16, `raw_event_envelope_test.py` 12/12 and
+`rom_knowledge_pipeline_test.py` 18/18 passed. Refreshed full source-build
+inventory matched baseline: 1,265 raw / 31,715,691,600 bytes; a second
+hash aggregation confirmed 139 duplicate groups, 247 redundant paths and
+17,200,841,040 duplicate bytes. No historical artifact gained a closed
+receipt and none was deleted. Full MSVC Debug and Release CTest each passed
+219/219; the updated lifecycle test was rerun in each configuration. Linux
+GCC/CTest lifecycle and CFG link smoke passed 2/2. The source limit passed
+(770 governed files, all <=500 lines); `git diff --check` passed. Fresh-worktree
+acceptance remains unrun. M14.7B stays IN_PROGRESS until actual corpus readers
+and canonical ingestion are proven.
+
+# 2026-09-26 — M14.7B real capture end-to-end closure
+
+**Task:** Prove one real indexed FLOW_V1 capture can be fully accounted,
+merged into the single canonical knowledge map, closed with an exact receipt,
+deleted through `cleanup --closed-only`, and queried after deletion. Preserve
+the active M14.7B branch and its accepted base; do not ingest or delete other
+historical captures.
+
+**Selection and source audit:** A deterministic minimum-size selection over
+valid supported captures chose the 1,196,400-byte FLOW_V1 bundle from campaign
+`campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7`, run 1790235047. It had a
+valid 128-segment index, 24,925 records, real M68K/Z80 execution events and an
+existing exact ROM-link path. Its SHA-256 was
+`88270c71eadadd291060663d8ea082f9600e3d3a4a2b9fb42ef405bd306b7e01`; the
+segment index SHA-256 was
+`6dccb9192120accbb61b34328778f9a464ca0542ad7a9ea366f0f799022b1602`. Two
+same-byte pass1/pass2 paths remain with distinct path provenance in the same
+campaign; only the selected continuous capture was eligible for this receipt.
+The campaign's original outcome is `STOPPED_FRAME_LIMIT` with
+`MAX_TOTAL_FRAMES`; this acceptance closes the bounded evidence bundle and
+does not recast the campaign outcome as a runtime PASS.
+
+**Implementation and evidence:** FLOW subtype flags are now normalized
+without dropping the event; overlapping-window copies are accounted as
+already-known duplicates. M68K and Z80 instruction occurrences are both
+retained, while exact ROM linking only interprets M68K rows. Canonical
+`SOURCE_OWNED` is read from the current base generation instead of a hardcoded
+constant. Runtime path view groups stable capture windows rather than splitting
+each event by its distinct raw offset. The map merged into generation
+`gen-e10dd56fe8b68d0b-5c2d1b47`: 1,979 merged, 22,946 already known, zero
+unresolved/rejected/unaccounted; 2,490 emission ranges, zero gaps/overlaps,
+and `SOURCE_OWNED=1,487,672` before/after. Full pre-cleanup map audit retained
+2,921 occurrences (1,979 direct plus 942 derived), 256 paths, 122 repeated-PC
+paths and 124 canonical branch alternatives. All 37,719 referenced raw offsets
+were byte-checked; ROM and all 128 segment audits passed.
+
+**Closure:** The closure record is
+`docs/reports/m14-7b-closure-receipts/real-capture.experiment.json`; the exact
+plan is `build/thor-evidence/m14-7b-real-capture/cleanup-plan.json`. The
+closed-only transaction deleted the selected raw plus its 11 receipt-listed
+staging artifacts: 12 files / 104,552,852 bytes. The index and both byte-equal
+historical pass copies remain. Post-delete checks reopened the canonical map,
+confirmed unchanged map hash, re-queried 1,979 direct plus 942 derived
+occurrences, recovered all 256 paths and provenance, and found zero unresolved
+records for this capture. The post-delete report is
+`build/thor-evidence/m14-7b-real-capture/post-delete-self-check.json`.
+
+**Corpus dry-run:** After removing task-generated staging attempts, the
+read-only format/hash scan found 1,264 raw candidates / 31,714,495,200 bytes;
+139 SHA groups with 246 redundant same-byte copies / 17,199,644,640 bytes;
+and 70 support indexes / 118,066,739 bytes. All 1,264 candidates have known
+readers, but none is pre-labeled `NO_NEW_KNOWLEDGE`; the unique-content queue
+contains 1,018 blobs requiring ingestion. This is a format/hash dry run, not
+full decoding of all 31.7 GB. Report:
+`docs/reports/THOR_M14_7B_REAL_CAPTURE_CLOSURE.md` and generated details at
+`build/thor-evidence/m14-7b-real-capture/corpus-dry-run.json`.
+
+**Focused validation:** `experiment_lifecycle_test.py` 7/7,
+`raw_elimination_test.py` 16/16, `raw_event_envelope_test.py` 12/12 and the
+runtime/cartographer/pipeline/path focused group 47/47 passed. A clean detached
+worktree at the accepted base was populated with the exact 24-file change set;
+Debug and Release builds and full CTest passed 222/222 in both configurations.
+Focused M14.7A/M14.7B tests passed 37/37. WSL Ubuntu 24.04 GCC 13.3 configured,
+linked `oasis_re_cfg_closure_test`, and passed the relevant Linux CTest smoke
+9/9. Canonical map checks passed before and after raw removal; cleanup lifecycle
+smoke passed. The source-file limit passed (771 governed source files, all at
+or below 500 lines); `git diff --check` passed in both the branch and fresh
+worktree. The scoped iteration meets
+`PASS_REAL_CAPTURE_CANONICAL_CLOSURE_V1`; M14.7B remains IN_PROGRESS for the
+remaining corpus. Commit/push follows only after final staged-diff review.

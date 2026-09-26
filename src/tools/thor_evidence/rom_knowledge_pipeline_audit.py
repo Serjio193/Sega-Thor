@@ -382,7 +382,7 @@ def _expected_import(session: sqlite3.Connection, knowledge: sqlite3.Connection,
 def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: Path,
                    final_knowledge_path: Path, rom_path: Path, rom_sha256: str,
                    merge_receipt: dict[str, Any], import_report: dict[str, Any],
-                   expected_source_owned: int = 1_475_600) -> dict[str, Any]:
+                   expected_source_owned: int | None = None) -> dict[str, Any]:
     """Recompute MAP-1/master lineage and check every newly canonicalized fact."""
     rom = Path(rom_path).read_bytes()
     if _hash_bytes(rom) != rom_sha256:
@@ -439,7 +439,8 @@ def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: P
         final_emission = [tuple(row) for row in final.execute(f"SELECT {TABLES['emission']} FROM emission ORDER BY start,end")]
         owned = int(final.execute("SELECT COALESCE(SUM(end-start),0) FROM emission WHERE source_owned=1").fetchone()[0])
         old_owned = int(base.execute("SELECT COALESCE(SUM(end-start),0) FROM emission WHERE source_owned=1").fetchone()[0])
-        if owned != old_owned or owned != expected_source_owned:
+        if owned != old_owned or (expected_source_owned is not None and
+                                  owned != expected_source_owned):
             raise ValueError("STOP_RUNTIME_SOURCE_OWNED_MUTATION")
         if final_emission != base_emission or base_hashes["emission_hash"] != final_hashes["emission_hash"]:
             raise ValueError("STOP_RUNTIME_EMISSION_MUTATION")
@@ -477,7 +478,7 @@ def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: P
             "SELECT relation_type,COUNT(*) FROM relation GROUP BY relation_type")}
         emission_bytes = {str(row[0]): int(row[1]) for row in final.execute(
             "SELECT emission_type,SUM(end-start) FROM emission GROUP BY emission_type")}
-        if owned != 1_475_600 and len(rom) == 3_145_728:
+        if expected_source_owned is not None and owned != expected_source_owned:
             raise ValueError("STOP_RUNTIME_SOURCE_OWNED_MUTATION")
         return {"status": "PASS_INDEPENDENT_ARCHIVIST_CANONICAL_AUDIT_V1",
             "rom_sha256": rom_sha256, "session_graph_hash": session_graph_hash,

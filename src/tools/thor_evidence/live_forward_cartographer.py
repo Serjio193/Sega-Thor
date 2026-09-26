@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import sqlite3
+import struct
 from typing import Any
 import uuid
 from itertools import groupby
@@ -150,6 +151,20 @@ class LiveForwardCartographer:
             raise ValueError("FLOW_V1 segment has invalid identity or bounds")
         segment_hash = _sha256(str(segment.get("segment_sha256", "")), "segment")
         records_hash = _sha256(str(segment.get("records_sha256", "")), "records")
+        source_raw_sha256 = segment.get("source_raw_sha256")
+        source_index_sha256 = segment.get("source_index_sha256")
+        raw_offset = segment.get("raw_offset")
+        if source_raw_sha256 is not None:
+            source_raw_sha256 = _sha256(str(source_raw_sha256), "raw source")
+        if source_index_sha256 is not None:
+            source_index_sha256 = _sha256(str(source_index_sha256), "index source")
+        if raw_offset is not None and (not isinstance(raw_offset, int) or raw_offset < 0):
+            raise ValueError("FLOW_V1 segment has invalid raw source offset")
+        if any(value is not None for value in
+               (source_raw_sha256, source_index_sha256, raw_offset)) and \
+                any(value is None for value in
+                    (source_raw_sha256, source_index_sha256, raw_offset)):
+            raise ValueError("FLOW_V1 raw provenance is incomplete")
         if hashlib.sha256(records_blob).hexdigest() != records_hash:
             raise ValueError("FLOW_V1 segment record bytes changed after validation")
         record_count = int(values["record_count"])
@@ -183,13 +198,22 @@ class LiveForwardCartographer:
                   "exit_stream_sequence": int(values["exit_stream_sequence"]),
                   "entry_instruction_sequence": int(values["entry_instruction_sequence"]),
                   "exit_instruction_sequence": int(values["exit_instruction_sequence"]),
-                  "configured_depth": int(values["configured_depth"])}
+                  "configured_depth": int(values["configured_depth"]),
+                  "source_raw_sha256": source_raw_sha256,
+                  "source_index_sha256": source_index_sha256,
+                  "raw_offset": raw_offset}
         node_items: dict[str, dict[str, Any]] = {}
         node_lineages: dict[str, dict[str, Any]] = {}
         node_ids: list[str] = []
         semantic_rows: list[tuple[int, ...]] = []
         for index, row in enumerate(rows):
+            if row[7] not in (0, 1, 255):
+                raise ValueError("STOP_RUNTIME_OCCURRENCE_CPU_ID_INVALID")
             if row[6] & FLAG_EVENT:
+                continue
+            # Z80 instruction records remain scoped runtime occurrences. This
+            # MAP-1 graph currently models M68K ROM instruction nodes only.
+            if row[7] != 0:
                 continue
             kind, key, attributes = _instruction_kind(row)
             item = {"kind": kind, "key": key, "scope": scope, "status": "OBSERVED",
@@ -236,17 +260,31 @@ class LiveForwardCartographer:
         for edge_id, summary in edge_lineages.items():
             summary["control_flow_outcomes"] = sorted(edge_outcomes[edge_id])
         instruction_nodes = {int(row[1]): node_id for row, node_id in
-            zip(semantic_rows, node_ids) if row[6] & FLAG_INSTRUCTION}
+            zip(semantic_rows, node_ids) if row[6] & FLAG_INSTRUCTION and row[7] == 0}
         window = {"worker_id": int(values["worker_id"]),
             "capture_id": int(values["capture_id"]),
-            "generation": int(values["generation"]), "segment_sha256": segment_hash}
+            "generation": int(values["generation"]), "segment_sha256": segment_hash,
+            "source_raw_sha256": source_raw_sha256,
+            "source_index_sha256": source_index_sha256,
+            "raw_offset": raw_offset,
+            "entry_stream_sequence": int(values["entry_stream_sequence"]),
+            "exit_stream_sequence": int(values["exit_stream_sequence"]),
+            "record_count": int(values["record_count"])}
+        def occurrence_window(row: tuple[int, ...]) -> dict[str, Any]:
+            row_window = dict(window)
+            if raw_offset is not None:
+                row_window["source_offset"] = raw_offset + (
+                    int(row[0]) - int(values["entry_stream_sequence"])) * RECORD_SIZE
+            return row_window
+
         for row in rows:
-            self._record_runtime_occurrence(row, values, window, instruction_nodes)
+            self._record_runtime_occurrence(
+                row, values, occurrence_window(row), instruction_nodes)
         for index, (source_id, target_id) in enumerate(zip(node_ids, node_ids[1:])):
             source = semantic_rows[index]
             edge = {"source": source_id, "target": target_id,
                     "relation": "EXECUTED_NEXT", "scope": scope}
-            self._record_runtime_occurrence(source, values, window, instruction_nodes,
+            self._record_runtime_occurrence(source, values, occurrence_window(source), instruction_nodes,
                 event_kind="EXECUTED_NEXT", edge_id=self.graph._edge_id(edge),
                 target_node_id=target_id)
         self.graph.db.commit()
@@ -280,7 +318,7 @@ class LiveForwardCartographer:
                                    event_kind: str | None = None,
                                    edge_id: str | None = None,
                                    target_node_id: str | None = None) -> None:
-        stream_seq, instruction_seq, _, pc, address, value, flags, cpu_id, width, domain, _, auxiliary = row
+        stream_seq, instruction_seq, master_time, pc, address, value, flags, cpu_id, width, domain, reserved, auxiliary = row
         subtype = (flags & EVENT_MASK) >> EVENT_SHIFT
         if event_kind is None:
             if flags & FLAG_INSTRUCTION:
@@ -311,9 +349,12 @@ class LiveForwardCartographer:
             "capture_ids": [int(window["capture_id"])], "run_id": run_id,
             "epoch": epoch, "cpu_id": cpu, "address_space": address_space,
             "native_sequence": int(stream_seq),
-            "instruction_sequence": int(instruction_seq), "event_kind": event_kind,
+            "instruction_sequence": int(instruction_seq), "master_time": int(master_time),
+            "event_kind": event_kind,
             "pc": int(pc), "address": int(address), "value": int(value),
-            "width": int(width), "flags": int(flags),
+            "width": int(width), "flags": int(flags), "reserved": int(reserved),
+            "auxiliary": int(auxiliary),
+            "record_hex": struct.pack("<QQQIIIHBBHHI", *row).hex(),
             "instruction_node_id": instruction_nodes.get(int(instruction_seq)),
             "edge_id": edge_id, "target_node_id": target_node_id,
             "windows": [window]}

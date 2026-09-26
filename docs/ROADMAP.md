@@ -1399,3 +1399,21 @@ lineage through MAP-1 merge; AUTO67 retains local dependency witnesses while
 reusing structure. Same start/prefix is never full execution identity. Derived
 ordered path views reuse existing stores. Canonical ownership and truth rules
 are unchanged. See `reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md`.
+
+# M14.7B — Raw elimination / self-contained evidence — IN PROGRESS
+
+The implementation adds a report-only inventory, fail-closed seal evaluator,
+lossless fixed-record FLOW_V1/W3 envelope, raw-free envelope replay, compact
+experiment closure receipts and explicit closed-only cleanup. The existing
+Archivist pipeline remains the one canonical map publisher. Synthetic tests
+cover adversarial closure and divergence. One real indexed FLOW_V1 bundle is
+now fully accounted and merged into generation
+`gen-e10dd56fe8b68d0b-5c2d1b47`; its exact closure receipt authorized deletion
+of that selected raw and its temporary staging files. The canonical map still
+opens and answers occurrence, path, provenance and unresolved queries after
+deletion with unchanged hash and `SOURCE_OWNED`. The campaign's runtime result
+remains `STOPPED_FRAME_LIMIT`. A post-deletion format/hash dry-run leaves 1,264
+raw candidates / 31.714 GB and queues 1,018 unique blobs for ingestion; the
+other captures remain open and untouched. The broader corpus and full
+M14.7B acceptance gates remain in progress. Truth labels and `SOURCE_OWNED`
+remain unchanged.

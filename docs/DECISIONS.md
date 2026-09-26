@@ -2402,3 +2402,92 @@ trie authority or ownership path. same prefix is not same full chain.
 events remain readable but cannot supply fabricated trajectories. Capture
 windows remain bounded; retained evidence grows with observations. Canonical
 knowledge schema and all truth/ownership rules remain unchanged.
+
+
+# ADR-M14.7B — Fail-closed raw retention and evidence completeness
+
+**Status:** Accepted for report-only audit and seal evaluation; complete
+lossless normalization and replay integration remain open.
+
+**Context:** M14.7A preserves native runtime occurrences and path lineage, but
+the current MAP-1 event projection omits raw-format fields and does not account
+for each rejected or unresolved input event. Existing pipeline receipts prove
+their own analysis stages, not semantic completeness of the raw capture.
+
+**Decision:** Treat each raw format separately. Fixed-width FLOW_V1/W3 V2
+records use a lossless field envelope that retains every source record and
+locator, with accepted/unresolved/rejected/duplicate accounting and original
+byte-hash replay. A raw binary can be marked disposable only when a
+format-, extractor-, validator- and generation-bound normalized artifact and complete accounting exist and an
+independent replay without raw matches graph, path, occurrence and unresolved
+identities while preserving rare branch witnesses and capture gaps. Normalized
+evidence has a separate gate requiring equivalent replay from the sealed
+session store. Missing or stale proof means KEEP with a machine-readable
+reason. The implementation audits and writes separate artifacts; it never
+deletes files.
+
+**Consequences:** Existing PASS receipts do not imply delete safety, and no
+current raw file is automatically reclaimed. Canonical knowledge, MAP-1
+schemas, truth labels, SOURCE_OWNED and capture behavior remain unchanged. A
+future deletion command requires a separate milestone and fresh seal check.
+
+## M14.7B continuation — one canonical map and consumable captures
+
+**Status:** Accepted policy; implementation and historical corpus ingestion
+remain in progress.
+
+**Context:** A permanent raw or normalized archive would duplicate knowledge
+authority. The existing Archivist pipeline already publishes one validated
+canonical generation through an atomic current-generation pointer.
+
+**Decision:** Keep that existing map as the sole long-term knowledge store.
+Each experiment closes with a compact receipt binding raw identity, complete
+event accounting, map generation/hash before and after, map self-check and
+unchanged `SOURCE_OWNED`. `MERGED` requires a new generation;
+`NO_NEW_KNOWLEDGE` and `INVALID` require the map to remain unchanged, with an
+explicit invalid reason for the latter. Only closed receipts may authorize
+deletion. Cleanup is explicit, verifies receipt and raw identity, and accepts
+only paths contained in the exact audited root. Temporary envelopes and
+session artifacts share the consumable lifecycle; they do not become a second
+evidence authority.
+
+**Consequences:** Old captures without a reader remain open until bounded
+investigation classifies them. Receipt tooling does not itself imply that a
+capture was ingested. No historical artifact may be removed until its own
+validated receipt exists. Runtime observations remain observations and do not
+promote truth or ownership.
+
+## M14.7B real capture closure — bounded evidence accepted
+
+**Status:** Accepted for one indexed FLOW_V1 evidence bundle; the remaining
+corpus stays open for per-experiment ingestion.
+
+**Context:** Synthetic lifecycle tests established receipt and cleanup policy,
+but did not prove real format ingestion, full canonical lineage, or queries
+after real raw deletion. The first selected bundle contained both M68K and Z80
+events, overlapping worker windows, terminal address facts and exact raw byte
+locators.
+
+**Decision:** Preserve every accepted CPU-specific runtime occurrence in the
+existing canonical evidence architecture. Link only M68K instructions to the
+M68K ROM; keep Z80 instructions as runtime observations. Treat indexed
+overlap duplicates as already-known event accounting while retaining their
+window provenance. Define runtime paths by stable capture-window identity and
+retain per-event source offsets separately. Use the canonical pipeline's
+staged generation and atomic current-pointer replacement, and calculate
+`SOURCE_OWNED` from the parent map rather than a constant. Issue an exact
+closed receipt only after independent segment/ROM checks, full map integrity
+and path queries, complete accounting and unchanged ownership. Delete only
+the receipt's selected raw and named temporary staging files; retain the
+segment index and byte-identical historical pass copies.
+
+**Consequences:** This proves one real bounded `CAPTURE → ONE MAP → RAW
+DELETED` lifecycle. It does not change the source campaign's
+`STOPPED_FRAME_LIMIT` result, prove whole-game reachability, or classify other
+captures as `NO_NEW_KNOWLEDGE`. Remaining content-identical files remain
+separate physical paths until their experiment identities are reconciled.
+Runtime evidence stays non-owning.
+
+**Evidence:** `docs/reports/THOR_M14_7B_REAL_CAPTURE_CLOSURE.md`, its exact
+receipt under `docs/reports/m14-7b-closure-receipts/`, and generated
+pre/post-cleanup map checks under `build/thor-evidence/m14-7b-real-capture/`.

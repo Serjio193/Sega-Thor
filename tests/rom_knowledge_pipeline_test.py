@@ -246,6 +246,27 @@ class ArchivistCanonicalPipelineTests(unittest.TestCase):
         self.assertEqual(result["independent_audit"]["status"],
                          "PASS_INDEPENDENT_ARCHIVIST_CANONICAL_AUDIT_V1")
 
+    def test_a1_bootstrap_generation_is_preserved_as_parent_lineage(self):
+        db = sqlite3.connect(self.knowledge)
+        try:
+            db.execute("INSERT INTO map_meta VALUES ('generation_id','gen-fixture-base')")
+            db.commit()
+        finally:
+            db.close()
+        result = self.run_pipeline(self.session("lineage", 111))
+        self.assertEqual(result["status"], pipeline.PASS)
+        self.assertEqual(result["generation_id"], json.loads(
+            (self.output / "current.json").read_text())["generation_id"])
+        self.assertEqual(result["independent_audit"]["status"],
+                         "PASS_INDEPENDENT_ARCHIVIST_CANONICAL_AUDIT_V1")
+        child = self.output / "generations" / result["generation_id"] / "knowledge.sqlite"
+        child_db = sqlite3.connect(child)
+        try:
+            meta = dict(child_db.execute("SELECT key,value FROM map_meta"))
+        finally:
+            child_db.close()
+        self.assertEqual(meta["parent_generation_id"], "gen-fixture-base")
+
     def test_b_new_session_merges_only_new_canonical_facts(self):
         first = self.run_pipeline(self.session("first", 102, instructions=(0x10,)))
         before = first["knowledge_after"]["counts"]["rom_object"]

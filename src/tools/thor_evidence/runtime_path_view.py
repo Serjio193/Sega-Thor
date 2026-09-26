@@ -39,28 +39,45 @@ def iter_runtime_paths(db: sqlite3.Connection, prefix: tuple[int, ...] = (),
         raise ValueError("STOP_RUNTIME_PATH_EXACT_LINEAGE_UNAVAILABLE")
     sql = f"""WITH events AS ({source})
         SELECT json_extract(event,'$.run_id'),json_extract(event,'$.epoch'),
-               json_extract(event,'$.cpu_id'),w.value,event
+               json_extract(event,'$.cpu_id'),
+               json_object('worker_id',json_extract(w.value,'$.worker_id'),
+                   'capture_id',json_extract(w.value,'$.capture_id'),
+                   'generation',json_extract(w.value,'$.generation'),
+                   'segment_sha256',json_extract(w.value,'$.segment_sha256'),
+                   'source_raw_sha256',json_extract(w.value,'$.source_raw_sha256'),
+                   'source_index_sha256',json_extract(w.value,'$.source_index_sha256'),
+                   'raw_offset',json_extract(w.value,'$.raw_offset'),
+                   'entry_stream_sequence',json_extract(w.value,'$.entry_stream_sequence'),
+                   'exit_stream_sequence',json_extract(w.value,'$.exit_stream_sequence'),
+                   'record_count',json_extract(w.value,'$.record_count')) AS window,
+               event
         FROM events,json_each(event,'$.windows') AS w
         WHERE json_extract(event,'$.event_kind') IN
               ('INSTRUCTION','EXCEPTION_EVENT','CPU_STOP_EVENT')
         ORDER BY 1,2,3,4,json_extract(event,'$.native_sequence')"""
-    for key, rows in groupby(db.execute(sql), key=lambda row: tuple(row[:4])):
-        events = []
-        for row in rows:
-            if len(events) >= max_window_events:
-                raise ValueError("STOP_RUNTIME_PATH_WINDOW_LIMIT")
-            events.append(json.loads(row[4]))
-        pcs = tuple(event["pc"] for event in events)
-        if pcs[:len(prefix)] != prefix:
-            continue
-        structure = [{k: event.get(k) for k in
-            ("event_kind", "cpu_id", "address_space", "pc", "value", "address", "flags")}
-            for event in events]
-        yield {"structural_path_id": digest(structure), "pcs": list(pcs),
-            "structure": structure, "run_id": key[0], "epoch": key[1],
-            "cpu": key[2], "window": json.loads(key[3]),
-            "occurrence_ids": [event["occurrence_id"] for event in events],
-            "native_sequences": [event["native_sequence"] for event in events],
-            "terminal_next_pc": events[-1]["address"],
-            "terminal_target_execution_proven": False,
-            "coverage": "RETAINED_CAPTURE_WINDOW_ONLY"}
+    cursor = db.execute(sql)
+    try:
+        for key, rows in groupby(cursor, key=lambda row: tuple(row[:4])):
+            events = []
+            for row in rows:
+                if len(events) >= max_window_events:
+                    raise ValueError("STOP_RUNTIME_PATH_WINDOW_LIMIT")
+                events.append(json.loads(row[4]))
+            pcs = tuple(event["pc"] for event in events)
+            if pcs[:len(prefix)] != prefix:
+                continue
+            structure = [{k: event.get(k) for k in
+                ("event_kind", "cpu_id", "address_space", "pc", "value", "address", "flags")}
+                for event in events]
+            yield {"structural_path_id": digest(structure), "pcs": list(pcs),
+                "structure": structure, "run_id": key[0], "epoch": key[1],
+                "cpu": key[2], "window": json.loads(key[3]),
+                "occurrence_ids": [event["occurrence_id"] for event in events],
+                "instruction_sequences": [event.get("instruction_sequence")
+                                           for event in events],
+                "native_sequences": [event["native_sequence"] for event in events],
+                "terminal_next_pc": events[-1]["address"],
+                "terminal_target_execution_proven": False,
+                "coverage": "RETAINED_CAPTURE_WINDOW_ONLY"}
+    finally:
+        cursor.close()

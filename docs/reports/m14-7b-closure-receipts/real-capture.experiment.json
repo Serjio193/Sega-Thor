@@ -1,0 +1,183 @@
+{
+  "accounted_events": 24925,
+  "closure_evidence": {
+    "campaign_outcome": "STOPPED_FRAME_LIMIT",
+    "campaign_preflight_reason": "MAX_TOTAL_FRAMES",
+    "canonical_branch_alternatives": 124,
+    "cartographer": {
+      "edges": 474,
+      "graph_sha256": "46ca9ae7019482297f63bab01b8214960d63bff6c5ab3202cd0ce57d47a4ea7d",
+      "nodes": 463,
+      "observed_edges": 235,
+      "raw_map1_branch_alternatives": 11,
+      "rejected": 0
+    },
+    "conflicts": 0,
+    "deletion_scope": "selected continuous-runtime-evidence raw only; same-byte pass1/pass2 historical captures and segment index remain retained",
+    "derived_executed_next": 942,
+    "direct_raw_events": 1979,
+    "envelope_accounting": {
+      "accepted": 1979,
+      "overlap_duplicates": 22946,
+      "physical_records": 24925,
+      "rejected": 0,
+      "unresolved": 0
+    },
+    "m68k_rows": 2511,
+    "map_graph_structure_sha256": "5cc2963dbb0daf6ce9747b930bb9d2be2e21d483c0b2ded03cfbe6b6b81d9f7c",
+    "map_self_check_report": "C:\\Github\\Sega-Thor-M14-7B\\build\\thor-evidence\\m14-7b-real-capture\\full-map-self-check.json",
+    "max_path_events": 142,
+    "occurrence_rows": 2921,
+    "paths_with_repeated_pc": 122,
+    "processing_scope": "bounded capture bundle fully consumed and independently audited; campaign runtime outcome remains STOPPED_FRAME_LIMIT",
+    "raw_bytes": 1196400,
+    "raw_offsets_verified_bytewise_before_cleanup": 37719,
+    "raw_sha256": "88270c71eadadd291060663d8ea082f9600e3d3a4a2b9fb42ef405bd306b7e01",
+    "rom": {
+      "bytes": 3145728,
+      "path": "C:\\Github\\Sega-Thor\\local-roms\\Beyond Oasis (USA).md",
+      "sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
+    },
+    "rom_link_audit": {
+      "exact_ranges": 218,
+      "identity_mismatches": 0,
+      "independent_segments": 128,
+      "instruction_occurrences": 12848,
+      "observed_rom_bytes": 42782,
+      "status": "PASS",
+      "terminal_next_pc_facts": 128,
+      "unique_bytes": 788,
+      "unresolved": 0,
+      "unsupported": 0
+    },
+    "runtime_path_digest": "1d5f728b6e02205bf4b5599d131b5e25c625e04b98951756dacae333e49382d2",
+    "runtime_paths": 256,
+    "same_blob_sha256": "88270c71eadadd291060663d8ea082f9600e3d3a4a2b9fb42ef405bd306b7e01",
+    "same_campaign_same_blob_paths_retained": [
+      "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control\\campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7\\continuous-runtime-evidence\\flow-v1-records.bin",
+      "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control\\campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7\\interactive\\count-16\\live-forward-wave-records-pass1.bin",
+      "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control\\campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7\\interactive\\count-16\\live-forward-wave-records-pass2.bin"
+    ],
+    "segment_index_path": "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control\\campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7\\continuous-runtime-evidence\\flow-v1-segments.jsonl",
+    "segment_index_sha256": "6dccb9192120accbb61b34328778f9a464ca0542ad7a9ea366f0f799022b1602",
+    "segment_validation": "PASS_ALL_128",
+    "segments": 128,
+    "unresolved_rows": 0,
+    "z80_rows": 410,
+    "selection_rationale": "Deterministic minimum-size supported valid capture with an indexed segment bundle, parseable physical records, real instruction occurrences, and a compatible existing canonical ingestion path; no hardcoded game address was used.",
+    "transaction_atomicity": "PASS_EXISTING_CANONICAL_PUBLISHER_STAGED_GENERATION_AND_ATOMICALLY_REPLACED_CURRENT_POINTER",
+    "raw_disposable_authorization": "Receipt created only after complete accounting, independent ROM/segment audits, full canonical self-check, unchanged SOURCE_OWNED, and bytewise raw-offset validation.",
+    "post_cleanup_query_report": "C:\\Github\\Sega-Thor-M14-7B\\build\\thor-evidence\\m14-7b-real-capture\\post-delete-self-check.json"
+  },
+  "event_counts": {
+    "already_known_events": 22946,
+    "input_events": 24925,
+    "merged_events": 1979,
+    "rejected_events": 0,
+    "unresolved_events": 0
+  },
+  "experiment_closed": true,
+  "experiment_id": "m14-7b-campaign-1790235047-flow-v1-bcf466003fcf46d7b6a9802a5d5efcf7",
+  "final_status": "MERGED",
+  "format": "FLOW_V1",
+  "invalid_reason": null,
+  "map_generation_after": {
+    "generation": "gen-e10dd56fe8b68d0b-5c2d1b47",
+    "map_sha256": "12a45d63a5287408d03f1e49ce61d89a24ccd6d6279d83029291291a0f5a45a5"
+  },
+  "map_generation_before": {
+    "generation": "gen-m14-7-29314da7a34a38e6",
+    "map_sha256": "515f551f21a1ffed8f2cc283dbfb8c7d34d76b1933c6936ca4e1d22901558cac"
+  },
+  "map_self_check": {
+    "alternate_tails_preserved": true,
+    "capture_boundaries_valid": true,
+    "conflicts_preserved": true,
+    "edge_endpoints_valid": true,
+    "loop_multiplicity_preserved": true,
+    "map_sha256": "12a45d63a5287408d03f1e49ce61d89a24ccd6d6279d83029291291a0f5a45a5",
+    "objects_valid": true,
+    "occurrences_valid": true,
+    "ordering_valid": true,
+    "paths_reference_occurrences": true,
+    "rom_identities_valid": true,
+    "status": "PASS",
+    "unresolved_preserved": true
+  },
+  "new_edges": 221,
+  "new_nodes": 0,
+  "new_occurrences": 1979,
+  "new_paths": 256,
+  "new_unresolved": 0,
+  "producer": "LIVE_FORWARD_WORKER",
+  "raw_disposable": true,
+  "raw_file": {
+    "bytes": 1196400,
+    "path": "thor-evidence/live-worker-control/campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7/continuous-runtime-evidence/flow-v1-records.bin",
+    "sha256": "88270c71eadadd291060663d8ea082f9600e3d3a4a2b9fb42ef405bd306b7e01"
+  },
+  "raw_root": "C:\\Github\\Sega-Thor\\build",
+  "schema": "oasis.experiment-closure.v1",
+  "schema_version": "48-byte FLOW_V1 / segment-index-v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "temporary_artifacts": [
+    {
+      "bytes": 27737,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/audit-decode.tsv",
+      "sha256": "760d670db9cfaf4f270e5b768dc7cd553e5ba65a19b18216c72696856bccae9e"
+    },
+    {
+      "bytes": 2616,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/audit-pcs.txt",
+      "sha256": "3eb8f7864182d1cb842c161d30be0394229be9392c4648ed6175d2dc95eaed54"
+    },
+    {
+      "bytes": 1234,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/envelope-receipt.json",
+      "sha256": "b6d2b9afa8aced68065f058c95569cc45072f17cbc59cb3f26c8cd4a2353c7a5"
+    },
+    {
+      "bytes": 2269389,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/event-envelope.jsonl.gz",
+      "sha256": "e79f7a22be480e4fa9c46ebce0f808c4578492416ade294d1e7e490e4a38a76e"
+    },
+    {
+      "bytes": 44803,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/independent-rom-audit.json",
+      "sha256": "398829d3a6b95d302729c5fa110a760e8b44485d9077d0259dbf5fbe16f6a72a"
+    },
+    {
+      "bytes": 99459072,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/live-forward-session.sqlite",
+      "sha256": "e10dd56fe8b68d0baf35c8bc29763d890b93e68c7c40a9c802bdec1e79f6c4e1"
+    },
+    {
+      "bytes": 1196400,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/rom-link/flow-v1-records.bin",
+      "sha256": "88270c71eadadd291060663d8ea082f9600e3d3a4a2b9fb42ef405bd306b7e01"
+    },
+    {
+      "bytes": 224474,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/rom-link/flow-v1-segments.jsonl",
+      "sha256": "20445ea093394f8d3fddb23bc5f2023818cfcb12781b9bd1682e11ad8d2d9336"
+    },
+    {
+      "bytes": 2616,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/rom-link/rom-decode.pcs.txt",
+      "sha256": "3eb8f7864182d1cb842c161d30be0394229be9392c4648ed6175d2dc95eaed54"
+    },
+    {
+      "bytes": 27737,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/rom-link/rom-decode.tsv",
+      "sha256": "760d670db9cfaf4f270e5b768dc7cd553e5ba65a19b18216c72696856bccae9e"
+    },
+    {
+      "bytes": 100374,
+      "path": "thor-evidence/m14-7b-real-capture-stage4/rom-link/rom_execution_ranges.json",
+      "sha256": "03c32c77d778f9459723488273e0036aaa49757f2a8c2101dcd1509fe0f626da"
+    }
+  ],
+  "unaccounted_events": 0
+}

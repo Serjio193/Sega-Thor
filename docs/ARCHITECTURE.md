@@ -1,5 +1,26 @@
 ## THOR Evidence Engine design boundary
 
+## M14.7B — canonical map and consumable capture lifecycle
+
+The existing `rom_knowledge_pipeline.py` remains the only canonical-map
+publisher: it stages and audits a child generation, then atomically replaces
+the `current.json` pointer. `experiment_lifecycle.py` writes compact,
+experiment-scoped closure receipts and provides explicit closed-only cleanup.
+It validates event accounting, map generation/hash transition, self-check,
+ownership stability, raw hash and exact audited-root containment before any
+unlink of raw or explicitly listed temporary envelopes/session artifacts.
+`raw_event_envelope.py` is temporary ingestion transport; the envelope is not a
+durable evidence store. A receipt cannot stand in for ingestion or map
+verification, and an unreceipted experiment remains open.
+
+The first real FLOW_V1 closure retains both M68K and Z80 runtime events in the
+existing occurrence evidence. Only M68K instruction rows are linked to the
+canonical M68K ROM; Z80 instruction rows remain runtime occurrences without
+fabricated ROM targets. Capture-window path identity uses stable window fields,
+while per-event byte offsets remain occurrence provenance. The byte offsets
+are independently checked before raw cleanup; canonical paths then remain
+queryable from the map alone. Runtime evidence does not change SOURCE_OWNED.
+
 ## M14.2B shared canonical evidence fusion
 
 `rom_knowledge_fusion.py` adds thin accepted-artifact adapters over the
@@ -1052,3 +1073,23 @@ MAP-1 native events or canonical evidence_ref rows. Prefix reuse never suppresse
 a tail; paths never bridge capture gaps. Canonical authority, truth and emission
 are unchanged. See `reports/THOR_M14_7A_FULL_RUNTIME_CHAIN_FUSION.md` for identity,
 retention and scaling limits.
+
+## M14.7B raw evidence retention gate
+
+`src/tools/thor_evidence/raw_elimination.py` inventories known runtime raw
+artifacts using streamed SHA-256 and evaluates a proposed completeness receipt.
+`raw_event_envelope.py` losslessly stores every field and original 48-byte
+record for fixed-width FLOW_V1/W3 V2 inputs, and retains O67C/O67V capsule
+headers, lease/frame identity and observation bytes. It accounts
+accepted/unresolved/rejected/duplicate records and can replay original byte
+hashes from compressed envelopes. It never deletes data. These formats remain
+distinct; a MAP-1 graph or canonical knowledge database is not a substitute
+for the complete source event envelope. Raw and normalized evidence have separate
+deletion gates. The first gate requires a hash-bound normalized semantic
+artifact; the second requires a hash-bound session store. Both require complete
+event accounting, current format/extractor/normalizer/validator and
+session/canonical generation hashes, a successful
+replay without raw, path and occurrence identity equality, unresolved identity
+retention, branch witnesses and explicit capture gaps. Unknown formats fail
+closed. `--audit` writes an inventory; `--mark-delete-safe` writes a separate
+seal decision. No deletion operation exists in this milestone.

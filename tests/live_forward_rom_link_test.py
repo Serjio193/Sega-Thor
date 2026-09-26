@@ -256,6 +256,9 @@ def main() -> None:
                 raise AssertionError("unexpected ROM SHA was accepted")
             _require(linker._instruction_rows(PACK.pack(*rows_a[0]))[0][1][5] == 0x4E71,
                      "FLOW_V1 first opcode word was not read exactly")
+            z80_instruction = (*rows_a[0][:7], 1, *rows_a[0][8:])
+            _require(linker._instruction_rows(PACK.pack(*z80_instruction)) == [],
+                     "Z80 instruction was promoted through the M68K ROM decoder")
             session.close()
     finally:
         linkage.ROM_SHA, linkage.ROM_SIZE = old_sha, old_size

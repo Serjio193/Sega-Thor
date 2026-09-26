@@ -209,7 +209,7 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
                                   bootstrap_knowledge: Path, rom_path: Path,
                                   output_root: Path, base_receipt_path: Path | None = None,
                                   campaign_receipt_path: Path | None = None,
-                                  expected_source_owned: int = 1_475_600,
+                                  expected_source_owned: int | None = None,
                                   expected_rom_sha256: str = ROM_SHA,
                                   expected_rom_size: int = ROM_SIZE,
                                   report_path: Path | None = None,
@@ -237,6 +237,8 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
             base_snapshot_master = None
         base_snapshot = _verify_base_receipt(base_knowledge, base_receipt_path,
                                              expected_rom_sha256, expected_rom_size)
+    if expected_source_owned is None:
+        expected_source_owned = int(base_snapshot["metrics"]["source_owned_bytes"])
     session_sha = sha256_file(session_path)
     if current_pointer and current_pointer.get("last_session_source_sha256") == session_sha:
         prior_receipt = output_root / current_pointer["generation_dir"] / "receipt.json"
@@ -254,7 +256,15 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     staged_master, staged_knowledge = staging / "master.sqlite", staging / "knowledge.sqlite"
     _copy_database(base_master, staged_master)
     _copy_database(base_knowledge, staged_knowledge)
-    parent_generation = current_pointer.get("generation_id") if current_pointer else None
+    if current_pointer:
+        parent_generation = current_pointer.get("generation_id")
+    else:
+        base_store = KnowledgeStore(base_knowledge, expected_rom_sha256,
+                                    expected_rom_size, read_only=True)
+        try:
+            parent_generation = base_store.meta().get("generation_id")
+        finally:
+            base_store.close()
     campaign_summary = None
     if campaign_receipt_path:
         campaign = json.loads(Path(campaign_receipt_path).read_text(encoding="utf-8"))
