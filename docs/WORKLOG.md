@@ -14640,7 +14640,7 @@ startup, so clean-baseline instrumentation and total overhead remain unknown.
 No optimization or same-scenario duration extension was made. Full identities,
 remaining ranges, parity, timing, and the next evidence gap are recorded in
 `docs/reports/THOR_ROM_PROPERTY_GRAPHICS_CONSUMER_20260927.md`.
-# 2026-09-28 — Consolidate development and ROM evidence branches — PASS (LOCAL)
+# 2026-09-28 — Consolidate development and ROM evidence branches — PASS
 
 TASK: Reconcile accepted committed changes and meaningful dirty WIP from the
 local M12/M14 branches into one tested mainline. Preserve original worktrees
@@ -14675,9 +14675,15 @@ GIT_DIR/GIT_WORK_TREE because this Windows worktree's `.git` pointer contains
 a Windows absolute path. The governed source limit passed for 973 files, and
 `git diff --check` passed. No live BizHawk run or 30-FPS measurement was made.
 
-The fetched `origin/main` gained a non-commercial license update during this
-task; that commit is merged into the consolidated line. The parallel license
-branch contains identical tree content and will be joined as history. The old
-M11.19 experiment branch contains only a stale `TASK.md` and no implementation;
-its history will be joined without making that stale task current. Publication
-and removal of merged local/remote feature refs remain pending.
+The fetched `origin/main` non-commercial license update is part of the
+consolidated line. The parallel license branch had identical file content and
+was joined as history. The M11.19 experiment branch contained only a stale
+`TASK.md` and no implementation; its history was joined without making that
+task current.
+
+Published the consolidated `main` and created/published
+`evidence/rom-coverage-map` from that same HEAD. Removed eight obsolete local
+M12/M14 task refs and 18 merged or superseded remote refs after verifying their
+history was included. Exactly two persistent branches remain on each side:
+`main` and `evidence/rom-coverage-map`. Original worktrees were detached at
+their original commits with their contents and prior dirty states preserved.
