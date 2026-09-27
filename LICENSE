@@ -1,9 +1,30 @@
-MIT License
+Sega-Thor Non-Commercial License Notice
 
-Copyright (c) 2026 Sega Thor contributors
+The original Sega-Thor software, tooling, documentation, reverse-engineering
+notes, analyses, schemas, and other project material for which the applicable
+Sega-Thor contributor/licensor has authority to grant a license are offered
+under the PolyForm Noncommercial License 1.0.0:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+https://polyformproject.org/licenses/noncommercial/1.0.0
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Required Notice: Copyright (c) 2026 Serjio193. Commercial use is not permitted
+under this license. A separate written license from the relevant copyright
+holder(s) is required for commercial use of material covered by this notice.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Scope and third-party material
+
+1. This notice applies only to material for which the relevant Sega-Thor
+   contributor or licensor has the legal right to grant these terms.
+2. It does not grant any rights in Beyond Oasis / The Story of Thor, Sega,
+   Ancient, any original ROM image, original game code, graphics, music,
+   assets, trademarks, or other third-party material.
+3. This repository must not be treated as granting permission to commercially
+   exploit any third-party game content.
+4. Earlier repository versions or material that were already distributed under
+   the MIT License remain subject to those prior grants. This notice does not
+   revoke rights that were already granted for those versions.
+5. Material contributed under separate third-party license terms remains under
+   those terms.
+
+For commercial licensing of Sega-Thor material controlled by the project
+licensor, contact the repository owner through GitHub.
