@@ -1,3 +1,18 @@
+# M14.7B reproducible build cleanup handoff
+
+- tools/cleanup_m14_7b_safe_build_artifacts.ps1 — user-run, fail-closed
+  cleanup runner. Its frozen manifest is the sole file deletion authority;
+  default mode is DryRun and Execute requires an exact successful dry-run.
+- docs/reports/THOR_M14_7B_BUILD_CLEANUP_FROZEN_2026-09-26.jsonl — immutable
+  SHA-bound file manifest derived from the previously audited cleanup plan.
+- docs/reports/THOR_M14_7B_BUILD_CLEANUP_README.md — exact user commands,
+  protection boundaries, and post-cleanup audit sequence.
+- docs/reports/THOR_M14_7B_BUILD_CLEANUP_DRY_RUN_RESULT.jsonl — completed
+  read-only per-file validation result; no files were deleted.
+- docs/reports/THOR_M14_7B_HEAVY_EVIDENCE_PREFLIGHT_2026-09-26.md — read-only
+  audit of post-cleanup state and the three largest normalized corpora; records
+  the accounting blocker and confirms no ingestion or evidence deletion.
+
 # THOR M12 AUTO64.1 invariant repair
 
 # THOR M12 AUTO65 multi-chain campaign
@@ -1788,3 +1803,73 @@ knowledge/runtime evidence stays under ignored `build/thor-evidence/`.
 - `docs/reports/THOR_ROM_EVIDENCE_GLOBAL_SCHEME.md`: read-only synthesis of
   Worker/Cartographer, Archivist/canonical knowledge, property bitmap, Carver
   gap planning, and GUI layers with identity and trust boundaries.
+- `src/tools/thor_evidence/w3_lineage_bridge.py` reconstructs legacy W3 worker
+  windows only from the deterministic round/worker producer order and exact
+  segment-audit byte hashes; it validates lossless coverage before Cartographer.
+- `tools/bizhawk-native-ring/w3_lineage_runtime.py` publishes hash-bound W3
+  sidecars after a capture closes; `tests/w3_lineage_bridge_test.py` covers
+  reconstruction, tampering, ambiguity, multiplicity, and sidecar output.
+- `src/tools/thor_evidence/rom_knowledge_pipeline_audit.py` validates monotonic
+  evidence-reference locator enrichment when repeated runtime captures add
+  exact windows to an already-known occurrence. The locator-union rules are in
+  `src/tools/thor_evidence/rom_knowledge_evidence_preservation.py`; regression
+  cases live in `tests/rom_knowledge_pipeline_audit_test.py`.
+- `src/tools/thor_evidence/rom_knowledge_pipeline_cli.py` owns the command-line
+  parser for canonical map publication.
+- `docs/reports/THOR_M14_7B_W3_LINEAGE_BRIDGE.md` records the first W3 bridge
+  acceptance, exact closure receipt, and post-delete check.
+- `docs/reports/THOR_M14_7B_BATCH_1_REPORT.md` records the first ten unique
+  W3 blob closures, accounting totals, canonical lineage, and cleanup evidence.
+- `docs/reports/THOR_M14_7B_BATCH_25_REPORT.md` records the next 25 unique W3
+  blob closures, accounting totals, canonical lineage, and cleanup evidence.
+- `docs/reports/THOR_M14_7B_BATCH_50_PROGRESS.md` records the completed 50-blob
+  map checkpoint, per-blob receipts, storage regression, and pause before item 51.
+- `docs/reports/THOR_M14_7B_BATCH_50_STAGING_AUDIT.json` records the periodic
+  closed-receipt and empty-staging-directory leak audit.
+- `docs/reports/THOR_M14_7B_CLOSED_CLEANUP_PLAN.json` records exact closed
+  receipt targets and hash manifests for closed task staging directories.
+- `docs/reports/THOR_M14_7B_CLEANUP_REPORT_2026-09-26.md` records the cleanup
+  result, post-cleanup canonical self-check, free-space measurements, and the
+  preserved blob 47 identity.
+- `src/tools/thor_evidence/knowledge_generation_gc.py` plans fail-closed
+  canonical-generation compaction and removes only verified ancestor SQLite
+  pairs while preserving transaction and lineage receipts.
+- `tools/bizhawk-native-ring/master_v2_shadow.py` holds the canonical
+  generation transaction lock while snapshotting the current map so GC cannot
+  retire a generation during that supported reader operation.
+- `tests/rom_knowledge_pipeline_test.py` covers G0→G3 query preservation,
+  orphan refusal, and one full DB pair across ten sequential transactions.
+- `docs/reports/THOR_M14_7B_GENERATION_COMPACTION.json` records exact removed
+  generation/database paths, receipt references, map hashes, self-check and
+  measured C: free-space change.
+## Blob 51 continuation checkpoint — CLOSED / MERGED
+
+The raw SHA and 16-worker W3 lineage index passed; all 2,462 input records were
+accounted (242 accepted, 2,220 duplicates, zero unresolved/rejected/unaccounted).
+The first import failed closed because the saved session had skipped the exact
+ROM linker. Replaying the same audited segments through the existing
+`LiveForwardRomLinker` linked all 56 M68K instruction nodes to exact ROM ranges
+from 705 instruction occurrences. The two `EXECUTED_NEXT` edges adjacent to an
+exception event were excluded by the importer contract. Canonical import and
+independent audit then passed, adding 56 evidence refs and one import row with
+no new ROM objects/relations or unresolved facts; `SOURCE_OWNED` stayed
+1,487,672.
+
+The current generation is `gen-6f8777084fd64470-ece7acab` with map hash
+`2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91`. GC plan
+PASS confirms one full generation pair. Canonical self-check, integrity/FK,
+ROM, object/edge, occurrence, 2,984 path, order, capture-window, loop and
+alternate-tail checks passed. Receipt-authorized `cleanup --closed-only`
+deleted the exact raw plus 10 temporary artifacts (11 files / 12,727,391
+bytes); every target is absent afterward. The ROM SHA and map hash remained
+stable during cleanup. Final sampled C: free space is 123,232,952,320 bytes;
+there was no immediate pre-cleanup sample. The six unsealed canonical staging
+directories remain blocked and untouched. Full evidence is in
+`docs/reports/m14-7b-closure-receipts/w3-wave-000007-849d416a/`.
+
+**Next safe action:** preflight the next queued unique blob under the same
+closed-only cleanup lifecycle; blob 51 is now closed and consumed.
+- `tools/consume_normalized_v2.py` binds one historical normalized-v2 artifact to
+  the existing staged canonical publisher, runs self-checks and idempotent
+  replay, writes an experiment-closure receipt, and deletes only that receipt's
+  exact source path through `cleanup --closed-only`.

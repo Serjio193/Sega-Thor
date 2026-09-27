@@ -250,31 +250,27 @@ class KnowledgeStore:
                 else 0 for table in TABLE_COLUMNS}
 
     def hashes(self) -> dict[str, str]:
-        rows = lambda table: [tuple(r) for r in self.db.execute(
-            f"SELECT {','.join(TABLE_COLUMNS[table])} FROM {table} ORDER BY {','.join(TABLE_COLUMNS[table])}")]
+        try:
+            from .rom_knowledge_hash_stream import grouped_rows_hash, ordered_rows_hash
+        except ImportError:
+            from rom_knowledge_hash_stream import grouped_rows_hash, ordered_rows_hash
         exists = lambda table: self.db.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
-        read_rows = lambda table: rows(table) if exists(table) else []
         if self._legacy:
-            structure = {t: read_rows(t) for t in
-                         ("rom_range", "rom_object", "claim", "relation", "conflict")}
-            evidence = {t: read_rows(t) for t in ("source_artifact", "evidence_ref")}
+            structure_tables = ("rom_range", "rom_object", "claim", "relation", "conflict")
         else:
-            structure = {t: read_rows(t) for t in
-                         ("rom_range", "rom_object", "claim", "relation", "conflict",
-                          "derivation", "derivation_input")}
-            evidence = {t: read_rows(t) for t in ("source_artifact", "evidence_ref")}
-        emission = read_rows("emission")
-        structure_hash = sha256_bytes(canonical(structure).encode("utf-8"))
-        evidence_hash = sha256_bytes(canonical(evidence).encode("utf-8"))
-        emission_hash = sha256_bytes(canonical(emission).encode("utf-8"))
+            structure_tables = ("rom_range", "rom_object", "claim", "relation", "conflict",
+                                "derivation", "derivation_input")
+        structure_hash = grouped_rows_hash(self.db, structure_tables, TABLE_COLUMNS)
+        evidence_hash = grouped_rows_hash(self.db, ("source_artifact", "evidence_ref"), TABLE_COLUMNS)
+        emission_hash = ordered_rows_hash(self.db, "emission", TABLE_COLUMNS)
         hashes = {"structure_hash": structure_hash, "evidence_index_hash": evidence_hash,
                   "emission_hash": emission_hash,
                   "map_hash": sha256_bytes((structure_hash + evidence_hash + emission_hash).encode())}
         if not self._legacy:
-            proposal = {t: read_rows(t) for t in ("map_proposal", "map_proposal_operation")}
             hashes.update({"graph_structure_hash": structure_hash,
-                "proposal_set_hash": sha256_bytes(canonical(proposal).encode("utf-8"))})
+                "proposal_set_hash": grouped_rows_hash(self.db,
+                    ("map_proposal", "map_proposal_operation"), TABLE_COLUMNS)})
         return hashes
 
     @staticmethod

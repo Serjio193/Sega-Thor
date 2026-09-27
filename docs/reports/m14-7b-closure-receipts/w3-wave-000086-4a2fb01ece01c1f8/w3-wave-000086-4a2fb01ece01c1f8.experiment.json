@@ -1,0 +1,124 @@
+{
+  "accounted_events": 1672,
+  "event_counts": {
+    "already_known_events": 1533,
+    "input_events": 1672,
+    "merged_events": 139,
+    "rejected_events": 0,
+    "unresolved_events": 0
+  },
+  "experiment_closed": true,
+  "experiment_id": "w3:1790210678:wave:86:4a2fb01ece01c1f836c53f5ebfb293c6429429adc455dc7fe48d3c4138deb91c",
+  "final_status": "MERGED",
+  "format": "W3_V2_RECORD_CHUNK",
+  "invalid_reason": null,
+  "map_generation_after": {
+    "generation": "gen-4ff82a4a7f961885-7e543348",
+    "map_sha256": "7c25d29ef7d9a05acb2a7bc79edb1315266f947abeb73178a6ac50dcbb2879ff"
+  },
+  "map_generation_before": {
+    "generation": "gen-72bcd2b286b2fe77-2c69c349",
+    "map_sha256": "307d17c0cd09cef99c88dbb1330e757a17cc82d249422f6aab034df833426cb1"
+  },
+  "map_self_check": {
+    "alternate_tails_preserved": true,
+    "capture_boundaries_valid": true,
+    "conflicts_preserved": true,
+    "edge_endpoints_valid": true,
+    "loop_multiplicity_preserved": true,
+    "map_sha256": "7c25d29ef7d9a05acb2a7bc79edb1315266f947abeb73178a6ac50dcbb2879ff",
+    "objects_valid": true,
+    "occurrences_valid": true,
+    "ordering_valid": true,
+    "paths_reference_occurrences": true,
+    "rom_identities_valid": true,
+    "status": "PASS",
+    "unresolved_preserved": true
+  },
+  "new_edges": 0,
+  "new_nodes": 0,
+  "new_occurrences": 0,
+  "new_paths": 0,
+  "new_unresolved": 0,
+  "producer": "W6_DISCOVERY/live-forward-scaling",
+  "raw_disposable": true,
+  "raw_file": {
+    "bytes": 80256,
+    "path": "m13-first-real-generic-closure-v1-coordinator-final/rom-link/count-16/live-discovery-wave-000086.bin",
+    "sha256": "4a2fb01ece01c1f836c53f5ebfb293c6429429adc455dc7fe48d3c4138deb91c"
+  },
+  "raw_root": "C:\\Github\\Sega-Thor\\build",
+  "schema": "oasis.experiment-closure.v1",
+  "schema_version": "W3_V2+oasis.m14.w3-lineage-index.v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "temporary_artifacts": [
+    {
+      "bytes": 22004,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/canonical-receipt.json",
+      "sha256": "60e13d9506f6f3cfb664fbcd41028b3132bff95964a8cb2f66632f1856a335b2"
+    },
+    {
+      "bytes": 2677,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/canonical-report.md",
+      "sha256": "649a0290ebdc51cfea57fbacd8e2bff9f98c084785d74593d35fab34718fb1c3"
+    },
+    {
+      "bytes": 1228,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/envelope-receipt.json",
+      "sha256": "52f09fd7ad1c148400d34b398662cacf5964d445c0e227929af3d9fd35ef28cb"
+    },
+    {
+      "bytes": 143544,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/events.jsonl.gz",
+      "sha256": "24cc7f7a77521c5d9dc147ba5c7e343bc3a9fa0c5ce7ddd7a334ef1e22419459"
+    },
+    {
+      "bytes": 3600384,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/live-forward-session-rom.sqlite",
+      "sha256": "4ff82a4a7f961885e3b1f3030337e4a13914583b41841f5095ccc1c29b267c8b"
+    },
+    {
+      "bytes": 80256,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/rom-link/flow-v1-records.bin",
+      "sha256": "4a2fb01ece01c1f836c53f5ebfb293c6429429adc455dc7fe48d3c4138deb91c"
+    },
+    {
+      "bytes": 20036,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/rom-link/flow-v1-segments.jsonl",
+      "sha256": "1dff5088f5bf39ff14f67107cc636cc684481001db35061c983f1d29e67184ad"
+    },
+    {
+      "bytes": 276,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/rom-link/rom-decode.pcs.txt",
+      "sha256": "c2303a45694fbbd896af8b3dfadeca2e2a36766014fa9cdfe20776e968338794"
+    },
+    {
+      "bytes": 3008,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/rom-link/rom-decode.tsv",
+      "sha256": "077fc5a49bdb8dd5b66dbf402f2cf0a528f98760737126f6c1f89c357a50f38f"
+    },
+    {
+      "bytes": 11243,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/rom-link/rom_execution_ranges.json",
+      "sha256": "615a9899182e354472d389dace9bb9d0b23598bb1d438ab565fcd0519e7b9f60"
+    },
+    {
+      "bytes": 318,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/source-provenance.json",
+      "sha256": "b8357e3c843fd0d0fc8f0f2e93543bf4a3fc32aa033b829de1f44c1a3fb6a45a"
+    },
+    {
+      "bytes": 15940,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/wave.event-index.jsonl",
+      "sha256": "9952dfff89e2ab05c9d7eabb132636efd268597119c1cdbad96b712660e3cd5b"
+    },
+    {
+      "bytes": 15588,
+      "path": "thor-evidence/m14-7b-batch-1/sha-4a2fb01ece01c1f8/wave.lineage.json",
+      "sha256": "7547ecd313bb162079fbc19fe99470f83458ad70d609b4fe80e842cb0fb64d5f"
+    }
+  ],
+  "unaccounted_events": 0
+}

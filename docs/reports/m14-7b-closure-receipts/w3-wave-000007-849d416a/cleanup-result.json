@@ -1,0 +1,91 @@
+{
+  "all_exact_targets_absent_after_cleanup": true,
+  "automatic_wildcard_delete": false,
+  "canonical_self_check": "PASS",
+  "current_generation": "gen-6f8777084fd64470-ece7acab",
+  "empty_directory_removal_note": "All directories were verified to contain no files after receipt cleanup. The shell command removing only those exact empty directories was rejected by execution policy; file cleanup remains complete.",
+  "empty_directory_removal_status": "BLOCKED_BY_COMMAND_POLICY",
+  "empty_task_directories_remaining": [
+    "C:\\Github\\Sega-Thor\\build\\thor-evidence\\m14-7b-batch-51\\sha-849d416a",
+    "C:\\Github\\Sega-Thor\\build\\thor-evidence\\m14-7b-batch-51\\sha-849d416a\\rom-linked-replay-2",
+    "C:\\Github\\Sega-Thor\\build\\thor-evidence\\m14-7b-batch-51\\sha-849d416a\\rom-linked-replay-2\\rom-link-evidence",
+    "C:\\Github\\Sega-Thor\\build\\thor-evidence\\m14-7b-batch-51"
+  ],
+  "experiment_receipt": "w3-wave-000007-849d416a.experiment.json",
+  "free_space_after_cleanup_bytes": 123232952320,
+  "free_space_before_cleanup_bytes": null,
+  "free_space_before_cleanup_note": "No immediate pre-cleanup sample was recorded.",
+  "full_generation_count": 1,
+  "generation_plan_status": "PASS",
+  "map_hash_after_cleanup": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91",
+  "map_hash_before_cleanup": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91",
+  "open_blob_51_cleanup_status": "CLOSED_MERGED",
+  "policy": "EXPERIMENT_CLOSED=TRUE -> cleanup --closed-only",
+  "raw_bytes_deleted": 118176,
+  "raw_files_deleted": 1,
+  "raw_path": "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control\\campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7\\interactive\\count-16\\live-discovery-wave-000007.bin",
+  "raw_sha256": "849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "rom_sha_match": true,
+  "schema": "oasis.m14.7b.closed-only-cleanup-result.v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "status": "DELETED",
+  "temporary_artifacts": [
+    {
+      "bytes": 23993,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/event-windows.jsonl",
+      "sha256": "8de66fcd63aa7b3100b23ab640efc6ff688c28d0716152c9787f091934bdbc42"
+    },
+    {
+      "bytes": 232248,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/events.jsonl.gz",
+      "sha256": "0a6fbb53e667f08241b651bb35cd5177b1fcf456563ea23de81309cbbf536b59"
+    },
+    {
+      "bytes": 23639,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-discovery-wave-000007.bin.lineage.json",
+      "sha256": "f4f1051a1d566d6d12d9c80bf348d187949248ce2acc38fcfd7143727efd6ca2"
+    },
+    {
+      "bytes": 5672960,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-forward-session-rom.sqlite",
+      "sha256": "f44c4922398f26761e5d91e40367069e945ab5ab3542506745a3eea1621d96e6"
+    },
+    {
+      "bytes": 118176,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/flow-v1-records.bin",
+      "sha256": "849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39"
+    },
+    {
+      "bytes": 28089,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/flow-v1-segments.jsonl",
+      "sha256": "80c29dd4d45bb073f8b51e95be8091f60ce49d56292656ec91c3e371ea3dc714"
+    },
+    {
+      "bytes": 672,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom-decode.pcs.txt",
+      "sha256": "26d6e4433e520f30761149aa8c742b5f0f527d4597e20e956a606521a318f03e"
+    },
+    {
+      "bytes": 7280,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom-decode.tsv",
+      "sha256": "10510c49765cd9b525c69971b1cb8b4b48eba077094c36348280e393384f65d3"
+    },
+    {
+      "bytes": 26382,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom_execution_ranges.json",
+      "sha256": "70159ff62b6e64119f044e47397bf28cee3308e27c3332d1960c1ead7256eab5"
+    },
+    {
+      "bytes": 6475776,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/session-rom-link.sqlite",
+      "sha256": "6f8777084fd64470b9d94a57165da460dcc098099633683754d505d27ffadb52"
+    }
+  ],
+  "temporary_bytes_deleted": 12609215,
+  "temporary_files_deleted": 10,
+  "total_bytes_unlinked": 12727391,
+  "total_files_deleted": 11
+}

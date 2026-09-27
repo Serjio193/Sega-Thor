@@ -20,6 +20,14 @@ add_test(NAME oasis_re_rom_range_decode_self_test
 if(Python3_Interpreter_FOUND)
     add_test(NAME oasis_runtime_chain_fusion
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/runtime_chain_fusion_test.py)
+    add_test(NAME oasis_normalized_v2_canonical_adapter
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/normalized_v2_canonical_adapter_test.py)
+    add_test(NAME oasis_rom_knowledge_fusion_stream
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_fusion_stream_test.py)
+    add_test(NAME oasis_rom_knowledge_pipeline_audit
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_audit_test.py)
+    add_test(NAME oasis_w3_lineage_bridge
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w3_lineage_bridge_test.py)
     add_test(NAME oasis_experiment_lifecycle
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/experiment_lifecycle_test.py)
     add_test(NAME oasis_raw_elimination

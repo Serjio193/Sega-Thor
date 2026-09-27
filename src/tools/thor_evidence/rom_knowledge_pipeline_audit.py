@@ -9,6 +9,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from .rom_knowledge_evidence_preservation import locator_preserved, verify_database_superset
+except ImportError:
+    from rom_knowledge_evidence_preservation import locator_preserved, verify_database_superset
+
+try:
     from .rom_knowledge_map import runtime_occurrence_id
 except ImportError:
     from rom_knowledge_map import runtime_occurrence_id
@@ -80,24 +85,25 @@ def _map1_hash(db: sqlite3.Connection) -> str:
 
 
 def _database_hashes(db: sqlite3.Connection) -> dict[str, str]:
-    rows = lambda table: [tuple(row) for row in db.execute(
-        f"SELECT {TABLES[table]} FROM {table} ORDER BY {TABLES[table]}")]
+    try:
+        from .rom_knowledge_hash_stream import grouped_rows_hash, ordered_rows_hash
+    except ImportError:
+        from rom_knowledge_hash_stream import grouped_rows_hash, ordered_rows_hash
+    columns = {table: tuple(value.split(",")) for table, value in TABLES.items()}
     legacy = not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='derivation'").fetchone()
     structure_tables = ("rom_range", "rom_object", "claim", "relation", "conflict")
     if not legacy:
         structure_tables += ("derivation", "derivation_input")
-    structure = {table: rows(table) for table in structure_tables}
-    evidence = {table: rows(table) for table in ("source_artifact", "evidence_ref")}
-    emission = rows("emission")
-    structure_hash, evidence_hash, emission_hash = map(_hash_json,
-        (structure, evidence, emission))
+    structure_hash = grouped_rows_hash(db, structure_tables, columns)
+    evidence_hash = grouped_rows_hash(db, ("source_artifact", "evidence_ref"), columns)
+    emission_hash = ordered_rows_hash(db, "emission", columns)
     result = {"structure_hash": structure_hash, "evidence_index_hash": evidence_hash,
             "emission_hash": emission_hash,
             "map_hash": _hash_bytes((structure_hash + evidence_hash + emission_hash).encode())}
     if not legacy:
-        proposals = {table: rows(table) for table in ("map_proposal", "map_proposal_operation")}
         result.update({"graph_structure_hash": structure_hash,
-                       "proposal_set_hash": _hash_json(proposals)})
+            "proposal_set_hash": grouped_rows_hash(db,
+                ("map_proposal", "map_proposal_operation"), columns)})
     return result
 
 
@@ -372,7 +378,8 @@ def _expected_import(session: sqlite3.Connection, knowledge: sqlite3.Connection,
     for ref_id, expected in evidence.items():
         row = knowledge.execute("SELECT subject_type,subject_id,source_sha256,fact_kind,fact_count,locator_json "
                                 "FROM evidence_ref WHERE ref_id=?", (ref_id,)).fetchone()
-        if row is None or tuple(row) != expected:
+        if row is None or tuple(row[:5]) != expected[:5] or not locator_preserved(
+                json.loads(expected[5]), json.loads(row[5])):
             raise ValueError("STOP_KNOWLEDGE_AUDIT_EVIDENCE_MISSING")
     return {"expected_instruction_objects": len(instruction_obj),
         "expected_claims": len(claims), "expected_relations": len(relations),
@@ -453,9 +460,7 @@ def audit_pipeline(session_path: Path, master_path: Path, base_knowledge_path: P
                 if final.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]:
                     raise ValueError("STOP_KNOWLEDGE_AUDIT_FAILED")
                 continue
-            before = {tuple(row) for row in base.execute(f"SELECT {cols} FROM {table}")}
-            after = {tuple(row) for row in final.execute(f"SELECT {cols} FROM {table}")}
-            if not before <= after:
+            if not verify_database_superset(base, final, table, tuple(cols.split(","))):
                 raise ValueError("STOP_KNOWLEDGE_AUDIT_FAILED")
         if int(final.execute("SELECT COUNT(*) FROM conflict").fetchone()[0]) != 0:
             raise ValueError("STOP_KNOWLEDGE_AUDIT_FAILED")

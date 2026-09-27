@@ -1429,4 +1429,12 @@ remains `STOPPED_FRAME_LIMIT`. A post-deletion format/hash dry-run leaves 1,264
 raw candidates / 31.714 GB and queues 1,018 unique blobs for ingestion; the
 other captures remain open and untouched. The broader corpus and full
 M14.7B acceptance gates remain in progress. Truth labels and `SOURCE_OWNED`
-remain unchanged.
+remain unchanged. The resumed 50-blob batch is receipt-closed. Canonical
+storage compaction now retains one full current SQLite pair and receipt-only
+logical lineage; a verified audit reduced 86 full generations to one without
+changing the current map hash. Blob 51's lineage preflight passed, but canonical
+import remains OPEN at `STOP_KNOWLEDGE_IMPORT_EVIDENCE_MISSING`; its raw and
+unsealed retry artifacts remain preserved. Five older unsealed staging
+directories plus the open blob-51 staging pair remain blocked. See
+`reports/THOR_M14_7B_GENERATION_COMPACTION.json` and the blob-51 checkpoint
+under `reports/m14-7b-closure-receipts/`. M14.7B remains IN PROGRESS.

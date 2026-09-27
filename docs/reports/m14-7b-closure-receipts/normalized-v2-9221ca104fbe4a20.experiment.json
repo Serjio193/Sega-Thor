@@ -1,0 +1,66 @@
+{
+  "accounted_events": 3514482,
+  "event_counts": {
+    "already_known_events": 1213333,
+    "input_events": 3514482,
+    "merged_events": 0,
+    "rejected_events": 0,
+    "unresolved_events": 2301149
+  },
+  "experiment_closed": true,
+  "experiment_id": "normalized-v2:run-1790246422-1952eeb1ade6c3ff:9221ca104fbe4a20",
+  "final_status": "MERGED",
+  "format": "NORMALIZED_GENERIC_CORPUS_V2",
+  "invalid_reason": null,
+  "map_generation_after": {
+    "generation": "gen-9221ca104fbe4a20-6d4a7e2d",
+    "map_sha256": "982fd36d18df8f98012402b15e67ead22c1b9af05ad83771508e74bcf6cc4165"
+  },
+  "map_generation_before": {
+    "generation": "gen-6f8777084fd64470-ece7acab",
+    "map_sha256": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91"
+  },
+  "map_self_check": {
+    "alternate_tails_preserved": true,
+    "capture_boundaries_valid": true,
+    "conflicts_preserved": true,
+    "edge_endpoints_valid": true,
+    "loop_multiplicity_preserved": true,
+    "map_sha256": "982fd36d18df8f98012402b15e67ead22c1b9af05ad83771508e74bcf6cc4165",
+    "objects_valid": true,
+    "occurrences_valid": true,
+    "ordering_valid": true,
+    "paths_reference_occurrences": true,
+    "rom_identities_valid": true,
+    "status": "PASS",
+    "unresolved_preserved": true
+  },
+  "new_edges": 0,
+  "new_nodes": 0,
+  "new_occurrences": 0,
+  "new_paths": 0,
+  "new_unresolved": 2301149,
+  "producer": "generic_flow_normalizer.py; live_forward_generic_closure_stage.py",
+  "producer_reconciliation": {
+    "deduplication_rule": "closure_rows['records'].setdefault((kind,cpu_id,pc,opcode,address,opcode_verification), row)",
+    "historical_receipt_raw_records": 3514546,
+    "primary_records_accounted": 3514482,
+    "producer_deduplicated_records": 64,
+    "producer_record_count": 3514546,
+    "status": "PASS"
+  },
+  "raw_disposable": true,
+  "raw_file": {
+    "bytes": 2395075150,
+    "path": "live-worker-control/campaign-desktop-20260924-101406-764/master-v2-work/post-run-analysis/run-1790246422-651749c647713967/generic-recursive-closure/normalized_generic_corpus.json",
+    "sha256": "9221ca104fbe4a20d4c01a475c2b5f7b66db5b3e9d07785b03d9b7b3a6726ca8"
+  },
+  "raw_root": "C:\\Github\\Sega-Thor\\build\\thor-evidence",
+  "schema": "oasis.experiment-closure.v1",
+  "schema_version": "oasis.m13.normalized-generic-corpus.v2",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "temporary_artifacts": [],
+  "unaccounted_events": 0
+}

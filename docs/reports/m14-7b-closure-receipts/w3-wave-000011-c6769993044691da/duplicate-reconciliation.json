@@ -1,0 +1,178 @@
+{
+  "bytes": 81408,
+  "disposition": "SECOND_PHYSICAL_COPY_NO_NEW_KNOWLEDGE",
+  "distinct_run_ids": [
+    1790209450,
+    1790210678
+  ],
+  "duplicate_experiment_id": "w3:1790210678:wave:11:c6769993044691da84a60450cd0c8c49ed8a6c4a84f4e6e1a7dd258e31632210",
+  "identical_raw_bytes": true,
+  "map_identity_held_for_duplicate": {
+    "generation": "gen-8f63fcd9a150b215-9de95e25",
+    "map_sha256": "81b81b2affb72effcb056506a85762c875253785311cf67c9d588cb78bd048e6"
+  },
+  "primary_experiment_id": "w3:1790209450:wave:11:c6769993044691da84a60450cd0c8c49ed8a6c4a84f4e6e1a7dd258e31632210",
+  "schema": "oasis.m14-7b-duplicate-capture-reconciliation.v1",
+  "semantic_ingest_count": 1,
+  "sha256": "c6769993044691da84a60450cd0c8c49ed8a6c4a84f4e6e1a7dd258e31632210",
+  "source_receipts": [
+    {
+      "path": "C:\\Github\\Sega-Thor\\build\\m13-first-real-generic-closure-v1-campaign\\rom-link\\count-16",
+      "receipt_sha256": "6e0f2ffb29cf9e83b0d8b2dac8fffcb1f86f9b4cad52511701b97385ee478709",
+      "run_id": 1790209450,
+      "segment_audit_sha256": "890770196519bdcf1526c9e13585e97ff00320bb3b1e638ed4839ffaca72c5c7"
+    },
+    {
+      "path": "C:\\Github\\Sega-Thor\\build\\m13-first-real-generic-closure-v1-coordinator-final\\rom-link\\count-16",
+      "receipt_sha256": "5cece30f280a7866c78d6d166b935fc2701c59b14e274b5d7a83d3772afe3c24",
+      "run_id": 1790210678,
+      "segment_audit_sha256": "7f525aad4402ed7ddb3689792ffd8ca1408a526c6f770fad7b9f5fe974c63304"
+    }
+  ],
+  "worker_lineage_equivalence": [
+    {
+      "campaign_capture_id": 1790209450000161,
+      "campaign_segment_sha256": "e6f93329377b513120bde84f1de2b9977197e25322c1393e66d8afd51b51e562",
+      "coordinator_capture_id": 1790210678000161,
+      "coordinator_segment_sha256": "a2f3d2a636b17662f62b7073487a4e2b2ec3c47d4d29b96e1f4db44362a0d938",
+      "record_count": 133,
+      "records_sha256": "1b7f94601c6201839f2767c35c025ce0d4948d49fa509f7ccf7cc0f04a28dd8c",
+      "worker_id": 0
+    },
+    {
+      "campaign_capture_id": 1790209450000162,
+      "campaign_segment_sha256": "33fb6c80208cbf9dd1fd19582fe9376d9dbd49d4f782d0c69275f35e18df629f",
+      "coordinator_capture_id": 1790210678000162,
+      "coordinator_segment_sha256": "f93f7e26263199311b9362174819bca14190e9c265d35f599a981bf8e4ea3394",
+      "record_count": 133,
+      "records_sha256": "b9c3ca8f57c9f998489f976c5c46c3e30924541123a78a39907b4d8e9a677369",
+      "worker_id": 1
+    },
+    {
+      "campaign_capture_id": 1790209450000163,
+      "campaign_segment_sha256": "5589e2b1a8e6bf1967c6f476914ae38f690baa69d93c36145cff98de9da752a9",
+      "coordinator_capture_id": 1790210678000163,
+      "coordinator_segment_sha256": "40834dba8e9bf09ee548f4d24db2d262b6f97bcfe6c5127e33411fd3c82fae1e",
+      "record_count": 131,
+      "records_sha256": "c617d34ed2de7cf0ee5f1bd6c0413d46c8f831f6ecc6667f2edb33e7090e9e5e",
+      "worker_id": 2
+    },
+    {
+      "campaign_capture_id": 1790209450000164,
+      "campaign_segment_sha256": "f42f8ff36e08d9d34239400aadc26e617d487beb9148aa92fe8925103cb9a416",
+      "coordinator_capture_id": 1790210678000164,
+      "coordinator_segment_sha256": "2ff05c51ba2ef135cdcf908aa7e26c4b0fd14b617de35bb1ffdbd3f9e638a554",
+      "record_count": 131,
+      "records_sha256": "f8266f2cea47bd3bd4de9fce8ba1f1cccdd190b12c2496bb6b2e8b0cc82aa34f",
+      "worker_id": 3
+    },
+    {
+      "campaign_capture_id": 1790209450000165,
+      "campaign_segment_sha256": "b647f6f612080c6abd124d741871708d583dffdb3d1c3ed168f02385e7310182",
+      "coordinator_capture_id": 1790210678000165,
+      "coordinator_segment_sha256": "52d372409b08cd5cdb452550bf683b6793dd20f010dc8a9f240167e43975e9b3",
+      "record_count": 129,
+      "records_sha256": "69f45a0d0afe75d8656666a1f39ce66ee72786c9b302edfbc7857b3d0058299f",
+      "worker_id": 4
+    },
+    {
+      "campaign_capture_id": 1790209450000166,
+      "campaign_segment_sha256": "8df8f7d651d4bed0f4e227ae5863059ed9caa44fa9d7773cb982ac50e04372ff",
+      "coordinator_capture_id": 1790210678000166,
+      "coordinator_segment_sha256": "3d8b8464cf12a176c37914cfc5e5de0a2b65d8023137093eab9755443a479c3b",
+      "record_count": 129,
+      "records_sha256": "8bfabdef9d870b7616a57f2bedf77d62134104b2960bf409e9f0688975f72a50",
+      "worker_id": 5
+    },
+    {
+      "campaign_capture_id": 1790209450000167,
+      "campaign_segment_sha256": "91530f5b5d8b29874e61d7c401371ee111872e223cf9d89b82aa258b75807d13",
+      "coordinator_capture_id": 1790210678000167,
+      "coordinator_segment_sha256": "56985ec3336ddf0f5c4cbc4abfc14798aa7dd76d8379a25ea3289d6f46aff265",
+      "record_count": 127,
+      "records_sha256": "398f5706df6cb6d29c542f306b2109d9d6766ee3848d6f8a04a4a054e83a1e8b",
+      "worker_id": 6
+    },
+    {
+      "campaign_capture_id": 1790209450000168,
+      "campaign_segment_sha256": "f7b54593c927f1ac50913f94dd17ffb8e3fd3ca654577a420cbb75d6fba89278",
+      "coordinator_capture_id": 1790210678000168,
+      "coordinator_segment_sha256": "70565688a84adec8aa96c7e349605102d6f812329a9d4dc4794f6ddee3e4a2e2",
+      "record_count": 127,
+      "records_sha256": "86aa98234ca0487fa37f50184bb6d6348b3b2bfd4c8b2eb547958a7fb4e2e98c",
+      "worker_id": 7
+    },
+    {
+      "campaign_capture_id": 1790209450000169,
+      "campaign_segment_sha256": "0ee3d6884b952a38b4bcaf953fcaf405ec5895cad00816513c780b74037d21ab",
+      "coordinator_capture_id": 1790210678000169,
+      "coordinator_segment_sha256": "5d3b4391bb93adc297c5b0f779beb98d11c6d6e20e0e97429b09ed7f83d88ef6",
+      "record_count": 114,
+      "records_sha256": "53d416144a8438bd291f41e7858291da698e161f1b066f4901f943606433f164",
+      "worker_id": 8
+    },
+    {
+      "campaign_capture_id": 1790209450000170,
+      "campaign_segment_sha256": "bed4aacd75b996a3ac83dfe60b921764887d310b807ccccef26592cb4800a299",
+      "coordinator_capture_id": 1790210678000170,
+      "coordinator_segment_sha256": "d28bfa9726713ed124b027d1071fc686ee00952a5363c6509d74aacd36f5cd7e",
+      "record_count": 83,
+      "records_sha256": "f4371f2432e7c6deaa7b9ba09ef81037d3364bae917ff23c1948c329927db6b3",
+      "worker_id": 9
+    },
+    {
+      "campaign_capture_id": 1790209450000171,
+      "campaign_segment_sha256": "12aa5e9d153cd485e784d128828ccd1b4494b77b55b4f8af2bd84bc5b8da1375",
+      "coordinator_capture_id": 1790210678000171,
+      "coordinator_segment_sha256": "d9c76b5f31f88733e2c9060bfd1ef71de72fb4a45dc720d5f8a641f98d98194a",
+      "record_count": 81,
+      "records_sha256": "89f78206cfea5093284de28c304d4c069539c7a0133b66c6a22283979259957f",
+      "worker_id": 10
+    },
+    {
+      "campaign_capture_id": 1790209450000172,
+      "campaign_segment_sha256": "dd75ebcbf0143f8ab77b03cbe349300bd3abdd48b518dad57ee91d80dcf699ca",
+      "coordinator_capture_id": 1790210678000172,
+      "coordinator_segment_sha256": "ea0623b53514bb0f7ed2f2ca7f938e8ded4b97ea339be89cca7b676984cd2152",
+      "record_count": 78,
+      "records_sha256": "3b7516a3c76f23cd9ec7acfe705101d16d204000862205adb839962e4e2f7880",
+      "worker_id": 11
+    },
+    {
+      "campaign_capture_id": 1790209450000173,
+      "campaign_segment_sha256": "6e36c464a76184765569c2073e004ae79f3130b28ef7f942ab7047c3130e52e1",
+      "coordinator_capture_id": 1790210678000173,
+      "coordinator_segment_sha256": "61e505bfc53507ac3ebd0bce8cc30c815965596d59649f55dc599abd3f92a01b",
+      "record_count": 78,
+      "records_sha256": "b6f75c8184a9608ad44c4b8250f3d7218b9d42733659ea895918798b74ad6882",
+      "worker_id": 12
+    },
+    {
+      "campaign_capture_id": 1790209450000174,
+      "campaign_segment_sha256": "b2d4013172faa34b33b53bcbb9512d977b630f1397de01616bf8cc860c6d11e8",
+      "coordinator_capture_id": 1790210678000174,
+      "coordinator_segment_sha256": "5d7578e01f570d198a8e2e27a12cf213a0e7beb259218ef6014ba1e85da26442",
+      "record_count": 75,
+      "records_sha256": "4dd0d07bca74c6140d014fae3bfc4e6b8bef22b96061f47ae04b6ee4ee21ad40",
+      "worker_id": 13
+    },
+    {
+      "campaign_capture_id": 1790209450000175,
+      "campaign_segment_sha256": "98a5fd43c2d0889d8d5ba62698fdad40d0aab58511cbf3b07d6c75013e0da6bd",
+      "coordinator_capture_id": 1790210678000175,
+      "coordinator_segment_sha256": "b667647dfb30d8b19e5342c55463a8f1736a3973fa099039a9a41b44f1a81ebe",
+      "record_count": 75,
+      "records_sha256": "3e5df92ba0020538002588e89f4aa88030e046bb4da948140033ff384138bc3b",
+      "worker_id": 14
+    },
+    {
+      "campaign_capture_id": 1790209450000176,
+      "campaign_segment_sha256": "090fc373a7dafe1146bfeb4bdc88f3b0830aee7cb4dcf837ea01d3da4586abd2",
+      "coordinator_capture_id": 1790210678000176,
+      "coordinator_segment_sha256": "0841b3dfe638b04d2f2bec2abea565d7dab8f9fc7d306676ca88854ffbc0ffa5",
+      "record_count": 72,
+      "records_sha256": "3f8b7d4f174930d57687f98eff1c82a8994965bf19e0a2d63a2a422bfc4f1557",
+      "worker_id": 15
+    }
+  ]
+}

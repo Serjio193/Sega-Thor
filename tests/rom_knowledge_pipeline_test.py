@@ -15,10 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src/tools"), str(ROOT / "src/tools/thor_evidence")]
 
 import rom_knowledge_pipeline as pipeline
+from knowledge_generation_gc import build_plan, compact_verified
 from cartographer import Cartographer, canonical, digest
 from live_forward_archivist import archive_session
 from rom_knowledge_live_import import KnowledgeImportStop, import_archivist_session
 from rom_knowledge_map import KnowledgeStore, runtime_occurrence_id
+from runtime_path_view import iter_runtime_paths
 
 
 ROM = bytearray(0x100)
@@ -435,6 +437,63 @@ class ArchivistCanonicalPipelineTests(unittest.TestCase):
         self.assertEqual(failure["unmapped_facts"], [
             {"status": "UNMAPPED_FACT_TYPE", "type": "UNSUPPORTED_RUNTIME_FACT"}])
         self.assertFalse((self.output / "current.json").exists())
+
+    def test_generation_compaction_keeps_one_database_pair_and_ten_receipt_links(self):
+        with mock.patch("knowledge_generation_gc.compact_verified", return_value={"status": "PASS"}):
+            results = [self.run_pipeline(self.session(f"compact-{i}", 200 + i,
+                instructions=(0x10 if i % 2 else 0x12,))) for i in range(4)]
+        latest = Path(results[-1]["generation_dir"])
+
+        def query_signature(db_path: Path) -> tuple:
+            con = sqlite3.connect(db_path)
+            try:
+                tables = ("rom_object", "relation", "evidence_ref", "rom_range",
+                    "source_artifact", "derivation_input", "conflict", "map_proposal_operation")
+                counts = tuple(con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                               for table in tables)
+                path_count = sum(1 for _ in iter_runtime_paths(con))
+                store = KnowledgeStore(db_path, ROM_SHA, len(ROM_BYTES), read_only=True)
+                source_owned = store.metrics()["source_owned_bytes"]
+                store.close()
+                return counts, path_count, source_owned
+            finally:
+                con.close()
+
+        before = query_signature(latest / "knowledge.sqlite")
+        dry_run = build_plan(self.output)
+        self.assertEqual(dry_run["status"], "PASS")
+        self.assertEqual(dry_run["full_generation_count_before"], 4)
+        self.assertTrue(all((self.output / "generations" / item["generation_id"] /
+            "knowledge.sqlite").is_file() for item in dry_run["generations"]
+            if item["status"] == "DISPOSABLE_VERIFIED"))
+        orphan = self.output / "generations" / "gen-orphan"
+        orphan.mkdir()
+        blocked = build_plan(self.output)
+        self.assertEqual(blocked["status"], "BLOCKED_VERIFICATION")
+        self.assertTrue(all((self.output / "generations" / item["generation_id"] /
+            "knowledge.sqlite").is_file() for item in dry_run["generations"]
+            if item["status"] == "DISPOSABLE_VERIFIED"))
+        orphan.rmdir()
+        plan = compact_verified(self.output)
+        self.assertEqual(plan["status"], "PASS")
+        self.assertEqual(plan["removed_database_files"], 6)
+        self.assertEqual(plan["full_generation_count_after"], 1)
+        self.assertEqual(sum((p / "lineage.json").is_file() for p in
+            (self.output / "generations").iterdir() if p.name.startswith("gen-")), 4)
+        self.assertEqual(query_signature(latest / "knowledge.sqlite"), before)
+        self.assertEqual(json.loads((self.output / "current.json").read_text())["generation_id"], latest.name)
+
+        for i in range(4, 10):
+            result = self.run_pipeline(self.session(f"compact-{i}", 200 + i,
+                instructions=(0x10 if i % 2 else 0x12,)))
+            full = [p for p in (self.output / "generations").iterdir()
+                    if p.is_dir() and (p / "master.sqlite").is_file() and
+                    (p / "knowledge.sqlite").is_file()]
+            self.assertEqual(len(full), 1)
+            self.assertTrue((Path(result["generation_dir"]) / "lineage.json").is_file())
+        final_plan = compact_verified(self.output)
+        self.assertEqual((final_plan["status"], final_plan["full_generation_count_before"],
+                          final_plan["reclaim_bytes"]), ("PASS", 1, 0))
 
 
 if __name__ == "__main__":

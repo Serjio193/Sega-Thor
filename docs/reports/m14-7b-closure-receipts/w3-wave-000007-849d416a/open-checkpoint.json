@@ -1,0 +1,228 @@
+{
+  "canonical_import": {
+    "detail": "Initial unlinked session failed closed; exact ROM-link replay of the same 16 audited W3 segments passed independent canonical audit.",
+    "status": "PASS_ARCHIVIST_CANONICAL_KNOWLEDGE_PIPELINE_V1",
+    "stop_code": null
+  },
+  "canonical_open_staging_preserved": [
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-1f57a5acd75340768728e8b801cb47a5",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-63db3f3b78a94026a2d6746b67f622d7",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-8a2d8f45b7d744ebac28cd368f416300",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 582688768,
+      "generation_id": ".staging-8f8a7d48eb3a43ca8d99d91b63b5e55c",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 150188032,
+      "generation_id": ".staging-cda066b790e84d25bf55cf62ec1d5218",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 561983488,
+      "generation_id": ".staging-e84456c7eb914e589a63ee1eafd31793",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    }
+  ],
+  "canonical_self_check_after_closed_import": {
+    "dangling_relation_endpoints": 0,
+    "foreign_key_violations": 0,
+    "generation_plan_status": "PASS",
+    "integrity_check": "ok",
+    "invalid_rom_objects": 0,
+    "map_hash": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91",
+    "path_events": 92430,
+    "raw_sha_referenced_by_occurrences": 3158,
+    "repeated_structural_paths": 245,
+    "runtime_evidence_refs": 18147,
+    "runtime_paths": 2984,
+    "shared_prefixes_with_multiple_tails": 57,
+    "source_owned_bytes": 1487672,
+    "status": "PASS"
+  },
+  "canonical_self_check_after_failed_import": "PASS",
+  "canonical_staging_added_by_open_attempt": [
+    {
+      "bytes": 582688768,
+      "generation_id": ".staging-8f8a7d48eb3a43ca8d99d91b63b5e55c",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    }
+  ],
+  "cleanup_allowed": true,
+  "cleanup_receipt": "docs/reports/m14-7b-closure-receipts/w3-wave-000007-849d416a/cleanup-result.json",
+  "cleanup_status": "DELETED",
+  "committed_full_generation_count": 1,
+  "current_pointer_sha256_after": "48feee582f3289c1c707026151348f54a79e143188a72d60710d92902179d06c",
+  "current_pointer_sha256_before": "783961e85a4837c79f20b16a45fd4b9f2e8032eaf729b5848ed78eac47edec77",
+  "current_pointer_unchanged": false,
+  "event_accounting": {
+    "accepted_events": 242,
+    "already_known_or_duplicate_events": 2220,
+    "input_events": 2462,
+    "rejected_events": 0,
+    "unaccounted_events": 0,
+    "unresolved_events": 0
+  },
+  "experiment_closed": true,
+  "experiment_id": "w3:1790235047:wave:7:849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39",
+  "final_source_owned": 1487672,
+  "format": "W3_V2_RECORD_CHUNK",
+  "free_space_after_cleanup_bytes": 123232952320,
+  "free_space_after_open_attempt_bytes": 123242815488,
+  "free_space_before_preflight_bytes": 123835600896,
+  "lineage_preflight": {
+    "lineage_index_sha256": "f4f1051a1d566d6d12d9c80bf348d187949248ce2acc38fcfd7143727efd6ca2",
+    "records": 2462,
+    "segment_audit_sha256": "6471590d9edcd50286bee830e02c9ef86f172c7ba6379c2e5f953953f60c0508",
+    "segments": 16,
+    "status": "PASS_W3_LINEAGE_INDEX",
+    "window_index_sha256": "8de66fcd63aa7b3100b23ab640efc6ff688c28d0716152c9787f091934bdbc42"
+  },
+  "map_generation_after": "gen-6f8777084fd64470-ece7acab",
+  "map_generation_before": "gen-b39c0e9c75ea375e-4135d7db",
+  "map_hash_after": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91",
+  "map_hash_before": "aae5653373ec6ea3ba61851ca3ef342018e258904e84e53bb1076b69042706b1",
+  "next_action": "Preflight and ingest the next unique queued blob using the closed-only cleanup lifecycle.",
+  "producer": "W6_DISCOVERY/live-forward-scaling",
+  "raw_deleted_after_close": true,
+  "raw_disposable": false,
+  "raw_file": {
+    "bytes": 118176,
+    "path": "thor-evidence/live-worker-control/campaign-fix-20s-bcf466003fcf46d7b6a9802a5d5efcf7/interactive/count-16/live-discovery-wave-000007.bin",
+    "root": "C:\\Github\\Sega-Thor\\build",
+    "sha256": "849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39"
+  },
+  "raw_file_touched": true,
+  "run_id": 1790235047,
+  "schema": "oasis.m14.7b.open-experiment-checkpoint.v1",
+  "session": {
+    "graph_sha256": "39bae907382fbb2122b2b60b0906e958d24facaf8e4c6c14729d32f69720c576",
+    "session_id": "m14-7b-w3-849d416a1d563de2",
+    "session_sha256": "f44c4922398f26761e5d91e40367069e945ab5ab3542506745a3eea1621d96e6",
+    "status": "CLOSED_SESSION_ARTIFACT_ONLY"
+  },
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "status": "CLOSED_MERGED",
+  "temporary_artifacts_before_closure": [
+    {
+      "bytes": 23639,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-discovery-wave-000007.bin.lineage.json",
+      "sha256": "f4f1051a1d566d6d12d9c80bf348d187949248ce2acc38fcfd7143727efd6ca2"
+    },
+    {
+      "bytes": 23993,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/event-windows.jsonl",
+      "sha256": "8de66fcd63aa7b3100b23ab640efc6ff688c28d0716152c9787f091934bdbc42"
+    },
+    {
+      "bytes": 232248,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/events.jsonl.gz",
+      "sha256": "0a6fbb53e667f08241b651bb35cd5177b1fcf456563ea23de81309cbbf536b59"
+    },
+    {
+      "bytes": 5672960,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-forward-session-rom.sqlite",
+      "sha256": "f44c4922398f26761e5d91e40367069e945ab5ab3542506745a3eea1621d96e6"
+    }
+  ],
+  "temporary_artifacts_deleted": [
+    {
+      "bytes": 23993,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/event-windows.jsonl",
+      "sha256": "8de66fcd63aa7b3100b23ab640efc6ff688c28d0716152c9787f091934bdbc42"
+    },
+    {
+      "bytes": 232248,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/events.jsonl.gz",
+      "sha256": "0a6fbb53e667f08241b651bb35cd5177b1fcf456563ea23de81309cbbf536b59"
+    },
+    {
+      "bytes": 23639,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-discovery-wave-000007.bin.lineage.json",
+      "sha256": "f4f1051a1d566d6d12d9c80bf348d187949248ce2acc38fcfd7143727efd6ca2"
+    },
+    {
+      "bytes": 5672960,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/live-forward-session-rom.sqlite",
+      "sha256": "f44c4922398f26761e5d91e40367069e945ab5ab3542506745a3eea1621d96e6"
+    },
+    {
+      "bytes": 118176,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/flow-v1-records.bin",
+      "sha256": "849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39"
+    },
+    {
+      "bytes": 28089,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/flow-v1-segments.jsonl",
+      "sha256": "80c29dd4d45bb073f8b51e95be8091f60ce49d56292656ec91c3e371ea3dc714"
+    },
+    {
+      "bytes": 672,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom-decode.pcs.txt",
+      "sha256": "26d6e4433e520f30761149aa8c742b5f0f527d4597e20e956a606521a318f03e"
+    },
+    {
+      "bytes": 7280,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom-decode.tsv",
+      "sha256": "10510c49765cd9b525c69971b1cb8b4b48eba077094c36348280e393384f65d3"
+    },
+    {
+      "bytes": 26382,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/rom-link-evidence/rom_execution_ranges.json",
+      "sha256": "70159ff62b6e64119f044e47397bf28cee3308e27c3332d1960c1ead7256eab5"
+    },
+    {
+      "bytes": 6475776,
+      "path": "thor-evidence/m14-7b-batch-51/sha-849d416a/rom-linked-replay-2/session-rom-link.sqlite",
+      "sha256": "6f8777084fd64470b9d94a57165da460dcc098099633683754d505d27ffadb52"
+    }
+  ],
+  "unsealed_staging_remaining": [
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-1f57a5acd75340768728e8b801cb47a5",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-63db3f3b78a94026a2d6746b67f622d7",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 148340736,
+      "generation_id": ".staging-8a2d8f45b7d744ebac28cd368f416300",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 582688768,
+      "generation_id": ".staging-8f8a7d48eb3a43ca8d99d91b63b5e55c",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 150188032,
+      "generation_id": ".staging-cda066b790e84d25bf55cf62ec1d5218",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    },
+    {
+      "bytes": 561983488,
+      "generation_id": ".staging-e84456c7eb914e589a63ee1eafd31793",
+      "reason_code": "STAGING_HAS_NO_SEALED_COMMIT_RECEIPT"
+    }
+  ],
+  "wave_index": 7,
+  "worker_count": 16
+}

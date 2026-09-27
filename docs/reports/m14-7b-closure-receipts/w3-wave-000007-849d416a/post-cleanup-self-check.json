@@ -1,0 +1,16 @@
+{
+  "dangling_relation_endpoints": 0,
+  "foreign_key_violations": 0,
+  "generation_plan_status": "PASS",
+  "integrity_check": "ok",
+  "invalid_rom_objects": 0,
+  "map_hash": "2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91",
+  "path_events": 92430,
+  "raw_sha_referenced_by_occurrences": 3158,
+  "repeated_structural_paths": 245,
+  "runtime_evidence_refs": 18147,
+  "runtime_paths": 2984,
+  "shared_prefixes_with_multiple_tails": 57,
+  "source_owned_bytes": 1487672,
+  "status": "PASS"
+}

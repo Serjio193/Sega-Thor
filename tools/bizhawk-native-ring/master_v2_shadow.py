@@ -470,20 +470,26 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
-    state = discover(args.rolling_root, args.canonical_root, args.campaign_root, args.run_id)
-    result = write_master_v2(state, args.output)
-    decoded = decode_master_v2(args.output)
-    expected = legacy_section_hashes(
-        state, _meta_payload(state, _file_manifest(state), result["generation_id"]))
-    actual = {item["name"]: {key: item[key] for key in ("sha256", "bytes")}
-              for item in decoded["sections"]}
-    if expected != actual:
-        raise SystemExit("STOP_MASTER_V2_SEMANTIC_SECTION_MISMATCH")
-    result.update({"semantic_equivalence": "PASS", "decoded_overall_sha256": decoded["overall_sha256"],
-                   "section_hashes_match_legacy": True,
-                   "ratio_v2_to_legacy": result["bytes"] / result["legacy_persistent_bytes"],
-                   "section_sizes_mib": {item["name"]: item["bytes"] / 1048576
-                                         for item in result["sections"]}})
-    args.report.parent.mkdir(parents=True, exist_ok=True)
-    args.report.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps(result, indent=2, sort_keys=True))
+    evidence_tools = Path(__file__).resolve().parents[2] / "src" / "tools" / "thor_evidence"
+    sys.path.insert(0, str(evidence_tools))
+    from knowledge_generation_gc import transaction_lock
+    with transaction_lock(args.canonical_root, blocking=True) as acquired:
+        if not acquired:
+            raise SystemExit("STOP_CANONICAL_GENERATION_TRANSACTION_LOCK_FAILED")
+        state = discover(args.rolling_root, args.canonical_root, args.campaign_root, args.run_id)
+        result = write_master_v2(state, args.output)
+        decoded = decode_master_v2(args.output)
+        expected = legacy_section_hashes(
+            state, _meta_payload(state, _file_manifest(state), result["generation_id"]))
+        actual = {item["name"]: {key: item[key] for key in ("sha256", "bytes")}
+                  for item in decoded["sections"]}
+        if expected != actual:
+            raise SystemExit("STOP_MASTER_V2_SEMANTIC_SECTION_MISMATCH")
+        result.update({"semantic_equivalence": "PASS", "decoded_overall_sha256": decoded["overall_sha256"],
+                       "section_hashes_match_legacy": True,
+                       "ratio_v2_to_legacy": result["bytes"] / result["legacy_persistent_bytes"],
+                       "section_sizes_mib": {item["name"]: item["bytes"] / 1048576
+                                             for item in result["sections"]}})
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(json.dumps(result, indent=2, sort_keys=True))

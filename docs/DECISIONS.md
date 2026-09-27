@@ -1,3 +1,37 @@
+# ADR-M14.7B-GENERATION-COMPACTION — One current canonical database pair
+**Status:** Accepted for M14.7B canonical-generation storage.
+**Date:** 2026-09-26
+
+**Context:** Every accepted capture published a complete `master.sqlite` and
+`knowledge.sqlite` pair while retaining all ancestors. After 50 unique W3
+blobs, 86 committed generations occupied 30,811,365,376 bytes, so each new
+capture reduced free space despite receipt-bound raw cleanup.
+
+**Decision:** Keep `current.json` as the sole authoritative pointer to one full
+database pair. Preserve each committed generation's existing receipts and add
+a sealed `lineage.json` containing exact parent identity, before/after logical
+hashes, source/session identity and experiment-receipt references. Serialize
+publishers, the canonical MASTER V2 snapshot reader, and GC with one process
+lock. `generation-gc --plan` is read-only;
+`--verified-only` revalidates the current pair, SQLite integrity/FK checks,
+receipt chain and map-hash transitions, then unlinks only the exact two known
+database paths in verified current-lineage ancestors. Keep unsealed staging,
+orphan generations, ROMs, raw captures and all non-database generation files.
+Do not add a second full-map database or map-history store.
+
+**Consequences:** Queries use the one current aggregate map; transaction and
+experiment receipts preserve logical lineage and replay references. Historical
+full databases are no longer immediate rollback targets; recovery to a prior
+state requires replay from its source capture/accepted bootstrap. Current-map
+publication remains atomic, and compaction runs only after pointer commit and
+current-map reopen/self-check. The fixture verifies G0→G3 compaction, unchanged
+canonical query signatures and one full database pair through ten sequential
+transactions.
+
+**Evidence:** `src/tools/thor_evidence/knowledge_generation_gc.py`,
+`tests/rom_knowledge_pipeline_test.py`, and
+`docs/reports/THOR_M14_7B_GENERATION_COMPACTION.json`.
+
 # ADR-AUTO67-CARTOGRAPHER-SEAM-1 — Worker local chain to MAP-1
 **Status:** Accepted for AUTO67
 **Date:** 2026-09-15
@@ -2558,3 +2592,57 @@ reading a changing SQLite database or adding work to emulator callbacks.
 Malformed, stale, failed, or mismatched sidecars remain visibly rejected or
 waiting. The canonical generation, property bitmap, and ownership publisher
 remain unchanged.
+
+## M14.7B W3 lineage bridge
+
+**Status:** Accepted for deterministic producer-contract reconstruction only.
+
+**Context:** W3 V2 record bytes contain event fields but omit run, epoch, Worker,
+capture, and segment identity. Historical waves can still have a complete
+companion `segment-audits.jsonl` and run receipt. The producer writes one wave
+per round and appends each Worker export in ascending worker order.
+
+**Decision:** Reconstruct boundaries from the receipt-bound audit rows and the
+deterministic producer order only when all expected Worker IDs occur once,
+record counts cover the raw wave exactly, every contiguous raw window hash
+matches its audited segment hash, and the event stream bounds match. Persist
+this reconstruction as a temporary, raw-hash and audit-hash-bound sidecar for
+new captures. Reject incomplete, ambiguous, missing, or tampered evidence; do
+not infer from timestamps, sequence proximity, filenames alone, or partial
+byte matches. Keep W3 payload format and existing readers unchanged.
+
+**Consequences:** A legacy wave with complete audited companion evidence can
+retain the existing MAP-1 occurrence and path lineage through the existing
+Cartographer. A wave without that evidence remains OPEN until independently
+classified; it is never assigned guessed capture identity. SOURCE_OWNED and
+truth classes remain unchanged.
+
+## ADR-M14.7B-NORMALIZED-V2 — One-map record accounting
+
+**Status:** Accepted for the first historical normalized-generic v2 artifact.
+
+**Context:** The producer emits `records[]` as its primary normalized event
+stream plus several secondary arrays containing projections of those same
+events. Counting every array would duplicate input accounting. The existing
+canonical publisher accepts MAP-1 sessions and owns the staged generation
+transaction, while normalized v2 lacks capture-window identity needed to
+invent MAP-1 runtime paths.
+
+**Decision:** Stream only primary `records[]`. Preserve one durable
+`evidence_ref` per source ordinal in the existing canonical map, with an exact
+artifact SHA, run/epoch/sequence identity, record type, outcome, and original
+fields. Attach only exact M68K instruction facts to already-existing canonical
+instruction objects after validating the opcode against the accepted ROM.
+Records without a supported canonical representation remain queryable as
+`UNRESOLVED`; malformed records are `REJECTED`. Apply evidence only to the
+publisher's staged child database through `KnowledgeStore`, then use the normal
+independent audit, atomic pointer replacement, and generation GC. Stream the
+existing canonical logical-hash encoding to keep memory bounded.
+
+**Consequences:** `SOURCE_OWNED`, emission, object boundaries, and accepted ROM
+identity remain unchanged. Source stream order and record provenance survive
+deletion of the normalized JSON. The adapter does not claim capture-window or
+runtime-path reconstruction because v2 records omit that identity. The first
+artifact is not disposable until complete accounting, map self-check,
+provenance queries, replay, and the existing closed-only cleanup lifecycle all
+pass.

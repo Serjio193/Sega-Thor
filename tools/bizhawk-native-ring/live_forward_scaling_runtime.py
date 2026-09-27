@@ -18,6 +18,7 @@ from live_forward_scaling_audit import (
     RECORD, integer_list, overlap_peak, read_record_slice, validate_segment,
 )
 from live_forward_worker_control_model import calculate_resource_budget
+from w3_lineage_runtime import publish_indexes_if_configured
 
 
 METRICS_NAMES = (
@@ -331,6 +332,8 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
         plan = integer_list(values["PLAN"], len(PLAN_NAMES), "native allocation plan") \
             if values.get("PLAN") else []
         outcome = values.get("RESULT", "UNKNOWN")
+        lineage_indexes = publish_indexes_if_configured(output_dir, audit_path,
+            run_id, count, audit_hash.hexdigest())
         if outcome == "PASS":
             if audit_count != count * args.rounds:
                 raise ValueError(f"audited {audit_count} segments, expected {count * args.rounds}")
@@ -361,6 +364,7 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
             "native_artifact_sha256": artifact_sha, "run_id": run_id,
             "audited_segments": audit_count, "segment_audit_jsonl": str(audit_path.resolve()),
             "segment_audit_sha256": audit_hash.hexdigest(), "workers": workers_summary or [],
+            "w3_lineage_indexes": lineage_indexes,
             "execution_window_overlap_by_round": overlap_by_round,
             "max_execution_window_overlap": max(overlap_by_round.values(), default=0),
             "host_audit_cpu_progress": {"rounds": len(audit_stream_deltas),

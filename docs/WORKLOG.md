@@ -1,3 +1,58 @@
+# 2026-09-26 — M14.7B user-executed reproducible build cleanup — PASS (AUDITED)
+
+TASK: Prepare a fail-closed PowerShell handoff for the audited build-output
+manifest. Do not execute deletion; preserve all evidence and the current map.
+
+RESULT: Added a PowerShell runner with DryRun as its default, a SHA-pinned
+frozen manifest, per-file path/root/reparse/Git/category/size/SHA checks,
+current-map and ROM guards, and a deny-root covering the entire M14.7B build
+tree, including the next OPEN corpus input. Execute requires an exact clean
+DryRun result. Only empty directories may be removed after file deletion.
+
+BASELINE: 51,653 files / 17,973,234,988 bytes. The source plan did not contain
+SHA-256 fields; the frozen manifest was built from its exact safe entries and
+the current SHA-256 of each file. No source plan path or byte size changed.
+
+VALIDATION: Renamed the parsed dry-run summary to `$dryRunResult` to avoid
+PowerShell's case-insensitive collision with the `[switch]$DryRun` parameter.
+Execute authorization now uses a named validation helper; each deletion calls
+the shared pre-delete validation/removal helper. Parser reports zero errors;
+runner is 464 lines, with a separate 57-line fixture test. `-SelfTest` passes
+the Execute authorization gate and production removal helper using only a
+synthetic temporary build file; its protected synthetic ROM hash is unchanged.
+Real manifest DryRun status `READY_FOR_USER_EXECUTION`: 51,653 files /
+17,973,234,988 bytes matched, zero skipped, zero deleted. Frozen manifest SHA
+matched before/after. Current map pointer/hash, both database hashes, and ROM
+SHA matched before/after. Real `-Execute` was not run. No build, CTest, or
+ingestion was run.
+
+OBSERVATION: Free space moved from 128,533,536,768 to 122,044,612,608 bytes
+during the read-only scan (delta -6,488,924,160 bytes) despite zero deletions.
+This was unrelated concurrent disk activity. The later user execution and
+post-cleanup audit are recorded in the next task entry.
+
+# 2026-09-26 — M14.7B heavy evidence preflight — BLOCKED_SYSTEMATIC_ACCOUNTING_GAP
+
+TASK: Audit post-cleanup integrity and the three largest historical normalized
+corpora before heavy-evidence ingestion. Ordinary queue remains stopped.
+
+RESULT: User-run cleanup log reconciled 51,653 deleted entries / 17,973,234,988
+bytes, zero skips, and zero listed paths remaining. The canonical generation
+GC plan/self-check passed with one full generation; map hash, database hashes,
+ROM hash, and SOURCE_OWNED remained unchanged. Audited the 13.16 GB, 4.03 GB,
+and 2.40 GB normalized corpora, exact file hashes, run identities, historical
+closure receipts, and current-map references. All three remain OPEN: the first
+SHA is indexed in the current map but only one event evidence reference exists;
+the other two SHAs are absent. Historical receipts report 26,499,506 records
+and NO_DELTA for ownership, but also thousands of new facts and no destination
+per-record accounting. Current importer only imports selected instructions
+and cannot close these complete normalized-v2 artifacts losslessly.
+
+DISPOSITION: No ingestion, deletion, session/raw cleanup, generation GC
+deletion, build, or CTest was run. Systematic destination-accounting gap stops
+the phase. Detailed evidence is in
+docs/reports/THOR_M14_7B_HEAVY_EVIDENCE_PREFLIGHT_2026-09-26.md.
+
 # 2026-09-15 — M12 AUTO67 capture performance isolation — PASS (bounded)
 
 TASK: Isolate global `event.on_bus_exec_any` overhead from targeted capsule
@@ -10618,4 +10673,283 @@ PERFORMANCE EVIDENCE: The source worktree records a concurrent GUI/Worker run
 with Worker p50/max 17/20 ms; a baseline sample had one 72 ms frame. Therefore
 that run does not prove every frame stayed below 33.3 ms. A separate 300-frame
 emulator-only probe measured 60 FPS, but does not establish GUI+Worker gameplay
-performance. Full CTest/build validation for this combined source follows.
+performance.
+
+VERIFICATION: Combined Debug and Release builds succeeded; CTest passed 227/227
+in each configuration. The GNU/Linux build succeeded and CTest passed 227/227,
+including the source-file line-limit check with the worktree's Git metadata
+provided. Diff whitespace checks pass. No GUI+Worker end-to-end FPS claim is
+made beyond the captured evidence above.
+# 2026-09-26 — M14.7B W3 → canonical lineage bridge
+
+**Task and acceptance:** Continue the existing M14.7B branch without changing
+the canonical map or deleting raw until the exact first 1,304-record W3 wave
+has lossless accounting, deterministic capture-window identity, byte-bound
+segment provenance, preserved ordered multiplicity and a passing canonical
+transaction. Add future-run lineage sidecars without changing W3 record bytes
+or legacy readers. A failed or incomplete bridge leaves the blob OPEN.
+
+**Initial producer audit:** `live_forward_scaling.lua` writes one
+`live-discovery-wave-NNNNNN.bin` per round. For each round it exports Workers
+in ascending order, truncating for Worker 0 and appending Workers 1..N-1.
+`live_forward_scaling_runtime.py` independently audits and persists each
+segment's identity, count, stream bounds, and `records_sha256`; the run receipt
+binds the full audit file SHA. The W3 records themselves retain stream and
+instruction sequence, master time, PC/address/value/flags, CPU, width/domain,
+reserved, and auxiliary fields, but omit capture identity. They are byte-layout
+compatible with the audited FLOW segments.
+
+**Bridge implementation:** Added `w3_lineage_bridge.py` to reconstruct a wave
+only from the exact run/cycle/Worker audit rows, ordered record counts, full
+coverage, segment hashes, and stream bounds. It rejects incomplete or duplicate
+Worker metadata, malformed coverage, byte/hash/bounds mismatch, raw or index
+tampering, and cannot use a partial match. Added post-run sidecar publication
+to the existing runtime path and tests for legacy readability, multiplicity,
+separate windows, tampering, missing data, ambiguity, and future sidecar output.
+
+**Real first-wave check:** The target SHA-256
+`502b2b370abd7c113604e63ac7070b04a1c1375295fad1f0d98903c451d1c235` maps to
+four exact windows from run `1790206461`, cycle 15, Workers 0..3. Offsets are
+0, 15,696, 31,392, and 46,992 bytes; lengths are 15,696, 15,696, 15,600, and
+15,600 bytes. Their sum covers 62,592 bytes / 1,304 records and every window
+hash matches its corresponding segment audit. Canonical ingestion passed with
+1,215 evidence references added and no graph nodes/claims/relations added; 570
+M68K instruction occurrences linked exactly. Event accounting is 1,304 = 329
+merged + 975 already known + 0 unresolved + 0 rejected. The canonical
+generation changed to `gen-9d10ca77e8b40c7c-9fa7ac7c` (map SHA
+`bc4a15f15cdb75e268ddd8c5ce8c72725a81be747ca5f77feb154de8adbea36c`), while
+structure/emission hashes stayed unchanged and `SOURCE_OWNED` remained
+1,487,672 (delta 0). The receipt-listed cleanup removed exactly 12 files /
+3,877,900 bytes. Post-delete validation confirms all 12 absent, same
+generation/hash, SQLite integrity `ok`, and no foreign-key violations. The
+historical W3 lacks embedded window identity; the original instrumentation
+script hash was not persisted. Window identities were reconstructed only from
+run-receipt-bound complete audit rows and exact Worker-order chunk hashes.
+Future runs publish a hash-bound sidecar without altering W3 bytes. Acceptance
+is `PASS_MERGED`; batch resume is allowed. Debug and Release builds succeeded;
+full CTest passed 223/223 in both; source limit and `git diff --check` passed.
+Linux smoke and fresh-worktree acceptance were not run for this checkpoint.
+
+**Batch 1 checkpoint — blob 2 of 10:** The next unique SHA,
+`2117996d92a43712c5928af0798658dca8e726d5f3236515dcc99ba219988cb6`, was
+bound to 16 complete W3 windows using the run-receipt-bound segment audit.
+All 1,422 records were accounted: 125 accepted, 1,297 exact duplicates, and
+zero unresolved/rejected/unaccounted. The canonical transaction added 23
+evidence references and no nodes, claims, or relations; independent audit and
+idempotent replay passed. Map hash advanced from
+`bc4a15f15cdb75e268ddd8c5ce8c72725a81be747ca5f77feb154de8adbea36c` to
+`b7f710d592836d44588f7a25656dedbae0456ccdba21fe1b1804798917a01240`, while
+structure/emission hashes and `SOURCE_OWNED=1,487,672` stayed unchanged.
+Historical instrumentation identity is synthesized and remains UNVERIFIED;
+the persisted segment/window identities themselves are receipt-bound and
+fully hash-verified. The closed-only receipt then removed exactly the raw
+capture and 15 temporary artifacts (16 files / 3,725,961 bytes). The batch
+remains IN_PROGRESS at 2/10; the corpus dry-run is now stale because it still
+lists the two consumed blobs, so it must be refreshed before subsequent queue
+selection. No 25-blob batch has started.
+
+**Batch 1 checkpoint — blob 3 of 10:** SHA
+`88ffcc2879666a944091f5e0dc85419d4daa8ecd4b9e37179866081874c408a4` came
+from run `1790192955`, cycle 73, with all 16 Workers proven by the complete
+receipt-bound segment audit. The lineage index covers 1,447/1,447 W3 records;
+the envelope counts 129 accepted, 1,318 duplicates, and zero unresolved,
+rejected, or unaccounted. Exact ROM linkage passed for 485 instruction
+occurrences over 23 ranges and 16 terminal facts, with zero unsupported or
+unresolved. The canonical import added 394 evidence references and no nodes,
+claims, or relations; idempotent replay passed. Map hash advanced from
+`b7f710d592836d44588f7a25656dedbae0456ccdba21fe1b1804798917a01240` to
+`d8a3d1906ee67d784fe1b64f6753cc1d34037ae0116668d7ccd631f89d9c302f` while
+structure/emission stayed unchanged and `SOURCE_OWNED` delta was zero. The
+closed-only cleanup removed the raw plus 18 exact temporary files (19 files /
+6,782,607 bytes); post-delete checks confirm both SQLite databases intact,
+zero FK violations, unchanged canonical pointer, and absent targets. As with
+blob 2, the historical instrumentation script identity is not independently
+verified. Batch 1 is 3/10; refresh the corpus scan before the next selection.
+
+**Batch 1 acceptance — 10/10:** All first ten unique W3 blobs are `MERGED`
+and receipt-closed. Total accounting is 14,549 records = 1,493 accepted +
+13,056 exact duplicates, zero unresolved/rejected/unaccounted; 144 capture
+windows and 4,908 exact ROM instruction occurrences passed. Canonical imports
+added 4,415 evidence references without changing graph structure or ROM
+emissions. The generation advanced to
+`gen-4cdadcafda3f91ba-83038f5d`, map SHA
+`4a38ead9d790c4044cd7fd25f7effdceeb36a36a9fbe6c5fa40eb0e6cb936375`; every
+step held `SOURCE_OWNED=1,487,672` (delta 0). Exact cleanup removed 141 raw
+and temporary files / 40,741,189 bytes, including 698,352 bytes of unique
+raw captures; all ten post-delete checks passed. One historical campaign has
+no standalone run receipt; the runtime log and full audit uniquely prove its
+cycle-94 windows, while its later campaign outcome remains `RESULT=FAIL`.
+The [batch report](reports/THOR_M14_7B_BATCH_1_REPORT.md) records all ten
+receipts. An incremental receipt reconciliation refreshed the queue to 1,008
+unique blobs / 1,254 raw candidates; the next 25-blob batch is authorized.
+
+**Batch 50 checkpoint — stopped at item 47/50:** 46 of the next 50 unique W3
+blobs each completed canonical import, receipt-bound cleanup, and post-delete
+checks. They account for 73,912 records (6,253 accepted, 67,659 known
+duplicates), 18,625 added evidence references, and 3,547,776 bytes of raw
+captures deleted. The 598 receipt-listed temporary artifacts totaled
+176,244,086 bytes. Canonical map advanced from `gen-6cceb7a8183ee315-4544b2c7`
+to `gen-4fe06dd3069a9d50-f59bf6d4`; graph/emission and
+`SOURCE_OWNED=1,487,672` remained unchanged. Item 47 stopped during staging
+with Windows `WinError 112` (disk full). It has no closure receipt, its raw
+file still exists with the exact queued SHA, and the canonical pointer remains
+at item 46's generation. Items 48–50 remain unprocessed. No further cleanup
+was attempted without receipts. See
+`docs/reports/THOR_M14_7B_BATCH_50_PROGRESS.md`; M14.7B and batch 50 remain
+IN_PROGRESS pending available disk space and a receipt-reconciled queue refresh.
+
+# 2026-09-26 — M14.7B closed-only cleanup
+
+**Task and acceptance:** Stop ingestion. Clean only paths authorized by
+`EXPERIMENT_CLOSED=TRUE` receipts; remove task-generated staging duplicates
+only when bound to a closed raw SHA and successful canonical import. Preserve
+open blob 47, the canonical map, and the ROM; run a read-only canonical
+self-check after deletion and measure C: free space.
+
+**Result:** Found 82 closed receipts. Their 1,147 receipt-listed raw and
+temporary targets (420,481,285 bytes) were already absent from the audited
+root, so this cleanup deleted zero additional raw files. A hash-bound plan
+identified 80 closed staging directories (1,043 files / 306,039,589 bytes),
+each tied to its raw SHA, successful import generation/map hash and closure
+receipt. Removed those exact directories by literal paths, leaving the sole
+unclosed stage for blob 47 untouched. The canonical current pointer, map
+logical hashes, both SQLite integrity/FK checks, ROM SHA, and blob 47 SHA all
+passed after cleanup. C: free space increased from 95,613,534,208 to
+95,920,328,704 bytes at the final before/after samples; exact staging payload
+removed was 306,039,589 bytes. Full exact plan and
+result: `docs/reports/THOR_M14_7B_CLOSED_CLEANUP_PLAN.json` and
+`docs/reports/THOR_M14_7B_CLEANUP_REPORT_2026-09-26.md`. Ingestion remains
+stopped; next safe action is resume at blob 47.
+
+
+# 2026-09-26 — M14.7B batch 50 resumed and closed
+
+**Task and acceptance:** Resume the existing interrupted unique-W3 batch at
+blob 47, close each capture with a canonical import receipt and immediate exact
+cleanup, reconcile duplicate SHA copies, run the batch audit, and continue only
+while the 10 GiB disk floor and storage objective remain supportable.
+
+**Result:** Closed 50 unique blob identities as `MERGED`; closed blob 48's
+second physical/run identity as `NO_NEW_KNOWLEDGE` after matching raw bytes and
+all 16 worker record hashes. Across unique blobs: 81,390 input/accounted events,
+6,913 merged, 74,477 already known, zero unresolved/rejected/unaccounted.
+`SOURCE_OWNED` remained 1,487,672. Final canonical self-check, occurrence/path/
+provenance queries, unresolved check, ROM identity, and knowledge/master SQLite
+integrity/FK checks passed. All 51 experiment receipts and their targets were
+audited; 82 verified-empty staging directories were removed and the follow-up
+leak scan found none.
+
+Storage did not meet the batch target. Batch raw deletion was 3,988,128 bytes;
+receipt-bound and local task staging deletion totaled 390,430,966 bytes. The
+four immutable canonical generations created while resuming items 47–50 occupy
+2,301,565,042 bytes. From the recorded pre-resume sample to the immediate
+post-item-50 sample, C: free space fell from 95,920,517,120 to 93,621,678,080
+bytes, a measured 2,298,839,040-byte increase in used space. Ingestion is
+paused before queue item 51 (SHA
+`849d416a1d563de2a24de62de78e0ce3167dc17f3e4a99e927327a84fc183d39`) until an
+immutable-generation storage strategy satisfies both the 10 GiB floor and
+negative net-storage target. See
+`docs/reports/THOR_M14_7B_BATCH_50_PROGRESS.md` and
+`docs/reports/THOR_M14_7B_BATCH_50_STAGING_AUDIT.json`.
+
+Per-blob `FREE_SPACE_AFTER_INGEST` and peak-staging samples were not persisted
+by the interrupted runner; the report marks them unsampled rather than
+reconstructing them. No build, CTest, commit, or push was run.
+
+# 2026-09-26 — M14.7B canonical generation compaction
+
+**Task and acceptance:** Keep one authoritative current canonical map, preserve
+small generation/experiment lineage receipts, and reclaim only verified full
+database copies. The cleanup plan must fail closed, retain unsealed staging,
+orphan generations, ROM, raw captures and the current map, and prove query
+equivalence in a G0→G3 fixture and ten sequential synthetic transactions.
+
+**Implementation:** Added `knowledge_generation_gc.py` with a serialized
+publisher/GC lock, read-only `--plan`, exact `--verified-only` cleanup, receipt
+transition validation, SQLite integrity/FK checks, sealed `lineage.json`, and
+literal unlink paths for only ancestor `master.sqlite`/`knowledge.sqlite`.
+The canonical pipeline runs compaction only after generation commit, current
+pointer advance, external receipt/report write, and current-map reopen check.
+The supported canonical MASTER V2 snapshot reader shares the process lock.
+No second database or map-history store was added. Historical full-map
+rollback now requires replay from retained capture/bootstrap evidence.
+
+**Verification and real result:** `python tests/rom_knowledge_pipeline_test.py`
+passed 20 tests, including four generations compacted to one with unchanged
+object/relation/evidence/path/provenance/unresolved/SOURCE_OWNED query results,
+an orphan-generation fail-closed check, and ten sequential transactions that
+kept one full database pair. The exact live plan passed for 86 committed
+generations; verified-only removed 170 database files / 30,228,676,608 bytes
+from 85 ancestors. Full generations fell from 86 / 30,811,365,376 bytes to
+one / 582,688,768 bytes. C: free space rose from 93,611,290,624 to
+123,839,533,056 bytes (+30,228,242,432). Current map hash remained
+`aae5653373ec6ea3ba61851ca3ef342018e258904e84e53bb1076b69042706b1` and the
+canonical self-check passed. Blob 51 still exists with its queued SHA. Five
+unsealed staging directories (1,157,193,728 bytes) remain blocked and untouched;
+they have no committed receipts. Full exact deletion identities and receipt
+references: `docs/reports/THOR_M14_7B_GENERATION_COMPACTION.json`. The open
+blob 51 is now the next safe queue item; M14.7B remains IN PROGRESS.
+
+Read-only post-compaction queries reopened 5,433 objects, 2,320 relations,
+18,147 runtime-occurrence evidence rows and 2,952 bounded paths; provenance
+queries found 18,364 source artifacts and 242 derivation inputs. Unresolved
+conflicts remained zero and `SOURCE_OWNED` remained 1,487,672 bytes.
+
+**Blob 51 continuation — closed:** The first import failed closed because the
+session artifact had not passed through the existing exact `LiveForwardRomLinker`
+stage. Replayed the same 16 audited W3 segments from the SHA-verified raw file,
+without running BizHawk, and produced 56 exact ROM instruction ranges from 705
+M68K instruction occurrences. All 56 instruction nodes were linked; the two
+`EXECUTED_NEXT` edges adjacent to an exception event were excluded by the
+existing importer contract. Canonical import and independent audit passed:
+56 evidence references and one map-import receipt were added, no new ROM
+objects/relations or unresolved facts, and `SOURCE_OWNED` remained 1,487,672.
+
+The current generation advanced to `gen-6f8777084fd64470-ece7acab`, map hash
+`2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91`.
+Generation GC reports PASS with one full generation pair; current SQLite
+integrity/FK checks, ROM identity, object/edge checks, 2,984 runtime paths,
+ordering, capture windows, repeated paths, and alternate tails all passed.
+The exact closed-only receipt deleted the raw blob and 10 hash-listed temporary
+artifacts: 11 files / 12,727,391 bytes. All receipt targets are absent after
+cleanup; the ROM SHA and current map hash still match. Final observed C: free
+space was 123,232,952,320 bytes; an immediate pre-cleanup free-space sample was
+not recorded. Six unsealed canonical staging directories remain blocked by
+the GC plan and were left untouched. Only empty task-created directories remain;
+their literal removal was blocked by command policy after confirming zero files.
+At the time of this source-worktree entry no C++ build, CTest, commit, or push
+was run; `python tests/rom_knowledge_pipeline_test.py` passed 20 tests. Reports and receipt are in
+`docs/reports/m14-7b-closure-receipts/w3-wave-000007-849d416a/`.
+
+# 2026-09-26 — M14.7B normalized-generic v2 canonical adapter
+
+**Task and acceptance:** Consume only the smallest OPEN normalized-v2 artifact through the existing canonical generation publisher. Stream its producer-defined primary `records[]`, account for each record once as MERGED/ALREADY_KNOWN/UNRESOLVED/REJECTED, preserve artifact/run/ordinal/type provenance, reconcile all records with the historical closure receipt, verify replay and canonical integrity, then close and remove only the exact normalized artifact through `cleanup --closed-only`.
+
+**Scope:** No other normalized corpus, raw capture, ROM, canonical map outside the staged publisher transaction, or ingestion batch. The full artifact is not deleted unless every closure gate passes.
+
+**Normalized-v2 result:** Consumed the OPEN corpus `normalized_generic_corpus.json` (SHA-256 `9221ca104fbe4a20d4c01a475c2b5f7b66db5b3e9d07785b03d9b7b3a6726ca8`, 2,395,075,150 bytes) through the streaming adapter and canonical publisher. The producer receipt reports 3,514,546 records; the producer-defined primary `records[]` contains 3,514,482 because its upstream closure stage deduplicates that projection by `(kind,cpu_id,pc,opcode,address,opcode_verification)`, accounting for the 64-row difference. Every primary row received an outcome and artifact/run/ordinal provenance: 1,213,333 `ALREADY_KNOWN`, 2,301,149 `UNRESOLVED`, zero `MERGED`, `REJECTED`, or `UNACCOUNTED`. Replay accounted for all 3,514,482 rows as `ALREADY_KNOWN`; no new runtime paths were introduced (2,984 paths and path hash unchanged), and `SOURCE_OWNED` remained 1,487,672 bytes.
+
+The generation advanced from `gen-6f8777084fd64470-ece7acab` / map hash `2a9dd405b6670404df7b93f955f18e741fb3edb3a8c10507afa3e7d4f6c40e91` to `gen-9221ca104fbe4a20-6d4a7e2d` / map hash `982fd36d18df8f98012402b15e67ead22c1b9af05ad83771508e74bcf6cc4165`. Current pointer database SHAs match the on-disk `knowledge.sqlite` and `master.sqlite`; canonical self-check, independent audit, SQLite integrity and foreign-key checks passed. ROM SHA remained `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. The closed-only receipt deleted only this exact corpus. C: free space increased from 120,735,895,552 to 123,130,904,576 bytes (+2,395,009,024 observed; 2,395,075,150 logical bytes removed).
+
+The prior interrupted attempts left unsealed staging directories; generation GC classifies them as blocked and the current generation remains valid. Exact cleanup of a staging directory was rejected by the execution policy, so no alternate deletion method was used. No other corpus was processed. Python tests passed: fusion stream 2, normalized adapter 4, pipeline 20; changed Python modules compile, and `git diff --check` reports no whitespace errors (only existing LF/CRLF warnings).
+
+# 2026-09-28 — M14.7B evidence integration — VERIFIED
+
+Integrated the normalized-v2 adapter, streaming map hashes, generation
+compaction, W3 lineage bridge, safe build-cleanup handoff and their receipts
+from the M14.7B worktree. Copied 190 additional small closure receipts while
+preserving the original evidence worktree. The build-cleanup self-test used
+synthetic temporary files only and reported `REAL_PROJECT_FILES_DELETED=0`.
+
+The generation compactor removes historical SQLite pairs only after exact
+current-generation, lineage and integrity checks; the current generation and
+its receipts remain. Runtime-chain fusion now snapshots emission before a
+subsequent publish, because verified compaction is allowed to remove the
+historical database pair. The publication CLI and W3 optional-index wrapper
+were split into focused modules to keep source files under 500 lines.
+
+VERIFICATION: Direct normalized-v2 adapter, fusion-stream, audit, W3 bridge,
+pipeline and runtime-chain tests passed. The file-limit check reports 805
+governed files within the 500-line rule. Consolidated Debug and Release CTest
+passed 231/231 each. GNU/Linux build and CTest also passed 231/231; its slowest
+2G pipeline test took about 149 seconds under WSL.

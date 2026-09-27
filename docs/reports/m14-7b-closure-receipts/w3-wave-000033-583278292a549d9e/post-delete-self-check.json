@@ -1,0 +1,24 @@
+{
+  "canonical_generation_unchanged": {
+    "generation": "gen-c9d26ffca4d9ff7d-0d199d52",
+    "map_sha256": "96c3308b02085b9c3dcbd2d69d2b777624f065127a12353303d2e48057e8c30e"
+  },
+  "database_checks": {
+    "knowledge.sqlite": {
+      "foreign_key_violations": 0,
+      "integrity": "ok"
+    },
+    "master.sqlite": {
+      "foreign_key_violations": 0,
+      "integrity": "ok"
+    }
+  },
+  "deleted_file_count": 14,
+  "deleted_paths_absent": true,
+  "experiment_id": "w3:1790210678:wave:33:583278292a549d9ea6559099d37b648870db0960b2008d47dd9edd6a83ddd8d0",
+  "receipt_sha256": "a612d9191e544d492d252b2bdf88a372b98d1be94565027035760ece7e7aa907",
+  "schema": "oasis.m14-7b-post-delete-check.v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0
+}

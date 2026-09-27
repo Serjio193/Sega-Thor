@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import os
@@ -205,15 +204,17 @@ def _markdown(receipt: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
-                                  bootstrap_knowledge: Path, rom_path: Path,
-                                  output_root: Path, base_receipt_path: Path | None = None,
-                                  campaign_receipt_path: Path | None = None,
-                                  expected_source_owned: int | None = None,
-                                  expected_rom_sha256: str = ROM_SHA,
-                                  expected_rom_size: int = ROM_SIZE,
-                                  report_path: Path | None = None,
-                                  receipt_path: Path | None = None) -> dict[str, Any]:
+def _archive_and_refresh_locked(session_path: Path, bootstrap_master: Path,
+                                bootstrap_knowledge: Path, rom_path: Path,
+                                output_root: Path, base_receipt_path: Path | None = None,
+                                campaign_receipt_path: Path | None = None,
+                                expected_source_owned: int | None = None,
+                                expected_rom_sha256: str = ROM_SHA,
+                                expected_rom_size: int = ROM_SIZE,
+                                report_path: Path | None = None,
+                                receipt_path: Path | None = None,
+                                post_import_hook: Any | None = None,
+                                expected_parent_map_hash: str | None = None) -> dict[str, Any]:
     """Build, audit, then atomically select one paired master/knowledge generation."""
     session_path, rom_path, output_root = map(Path, (session_path, rom_path, output_root))
     rom = rom_path.read_bytes()
@@ -221,6 +222,9 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
         raise ValueError("STOP_ARCHIVIST_TO_KNOWLEDGE_ROM_MISMATCH")
     current_master, current_knowledge, current_pointer = _current_inputs(
         output_root, expected_rom_sha256, expected_rom_size)
+    if expected_parent_map_hash is not None and (not current_pointer or
+            current_pointer.get("knowledge_map_hash") != expected_parent_map_hash):
+        raise ValueError("STOP_CANONICAL_PARENT_CHANGED_BEFORE_NORMALIZED_V2_PUBLISH")
     if current_master and current_knowledge:
         base_master, base_knowledge = current_master, current_knowledge
         current_metrics = _metrics(base_knowledge, expected_rom_sha256, expected_rom_size)
@@ -240,7 +244,7 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     if expected_source_owned is None:
         expected_source_owned = int(base_snapshot["metrics"]["source_owned_bytes"])
     session_sha = sha256_file(session_path)
-    if current_pointer and current_pointer.get("last_session_source_sha256") == session_sha:
+    if post_import_hook is None and current_pointer and current_pointer.get("last_session_source_sha256") == session_sha:
         prior_receipt = output_root / current_pointer["generation_dir"] / "receipt.json"
         if prior_receipt.is_file():
             value = json.loads(prior_receipt.read_text(encoding="utf-8"))
@@ -360,6 +364,8 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
             "relations_added": replay["relations_added"],
             "evidence_refs_added": replay["evidence_refs_added"],
             "hashes_unchanged": hashes_first == hashes_replay}
+        if post_import_hook is not None:
+            import_report["supplemental_evidence"] = post_import_hook(staged_knowledge)
     except KnowledgeImportStop as exc:
         _record_failure(output_root, exc.code, str(exc),
                         list(exc.report.get("unmapped_fact_types", [])))
@@ -431,41 +437,39 @@ def archive_and_refresh_knowledge(session_path: Path, bootstrap_master: Path,
     if report_path:
         Path(report_path).parent.mkdir(parents=True, exist_ok=True)
         Path(report_path).write_text(_markdown(receipt), encoding="utf-8", newline="\n")
+    try:
+        from .knowledge_generation_gc import compact_verified
+    except ImportError:
+        from knowledge_generation_gc import compact_verified
+    compaction = compact_verified(output_root, lock_held=True)
+    if compaction.get("status") != "PASS":
+        raise RuntimeError("STOP_CANONICAL_GENERATION_COMPACTION_FAILED:" +
+                           "; ".join(compaction.get("blocked", [])))
+    receipt["generation_compaction"] = {key: compaction.get(key) for key in (
+        "removed_database_files", "removed_database_bytes", "full_generation_count_before",
+        "full_generation_bytes_before", "full_generation_count_after",
+        "full_generation_bytes_after", "current_map_hash")}
     return receipt
 
 
+def archive_and_refresh_knowledge(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    try:
+        from .knowledge_generation_gc import serialize_publish
+    except ImportError:
+        from knowledge_generation_gc import serialize_publish
+    return serialize_publish(_archive_and_refresh_locked, *args, **kwargs)
+
+def publish_normalized_v2_evidence(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    from rom_knowledge_normalized_publish import publish_normalized_v2
+    return publish_normalized_v2(*args, **kwargs)
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--session", type=Path, required=True,
-                        help="closed exact-ROM Cartographer MAP-1 session")
-    parser.add_argument("--master", type=Path, required=True,
-                        help="accepted Archivist master used to seed the first generation")
-    parser.add_argument("--knowledge-db", type=Path, required=True,
-                        help="accepted 2D knowledge DB used to seed the first generation")
-    parser.add_argument("--base-receipt", type=Path,
-                        default=Path("docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json"))
-    parser.add_argument("--campaign-receipt", type=Path,
-                        help="optional exact ROM-link campaign receipt to reconcile")
-    parser.add_argument("--expected-source-owned", type=int, default=1_475_600,
-                        help="expected source-owned bytes for the accepted base map")
-    parser.add_argument("--rom", type=Path, required=True)
-    parser.add_argument("--output-dir", type=Path,
-                        default=Path("build/thor-evidence/archivist-knowledge-pipeline-2g"))
-    parser.add_argument("--report", type=Path,
-                        default=Path("docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.md"))
-    parser.add_argument("--receipt", type=Path,
-                        default=Path("docs/reports/THOR_M12_ARCHIVIST_KNOWLEDGE_PIPELINE_2G.json"))
-    args = parser.parse_args()
-    result = archive_and_refresh_knowledge(args.session, args.master, args.knowledge_db,
-        args.rom, args.output_dir, args.base_receipt, args.campaign_receipt,
-        expected_source_owned=args.expected_source_owned,
-        report_path=args.report, receipt_path=args.receipt)
-    print(json.dumps({"status": result["status"], "generation_id": result["generation_id"],
-        "merge_receipt_sha256": result["archivist_merge"]["receipt_sha256"],
-        "hashes": result["knowledge_after"]["hashes"],
-        "report": str(args.report.resolve()), "receipt": str(args.receipt.resolve())},
-        sort_keys=True, indent=2))
-    return 0
+    try:
+        from .rom_knowledge_pipeline_cli import main as cli_main
+    except ImportError:
+        from rom_knowledge_pipeline_cli import main as cli_main
+    return cli_main()
 
 
 if __name__ == "__main__":

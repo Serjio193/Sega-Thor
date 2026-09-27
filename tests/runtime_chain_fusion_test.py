@@ -212,9 +212,9 @@ class RuntimeChainFusionTest(unittest.TestCase):
             a = fixture.session("path-a", 501, instructions=(0x10, 0x12, 0x14))
             b = fixture.session("path-b", 502, instructions=(0x10, 0x12, 0x16))
             first = fixture.run_pipeline(a)
-            second = fixture.run_pipeline(b)
             with closing(sqlite3.connect(Path(first["generation_dir"]) / "knowledge.sqlite")) as db:
                 emission = db.execute("SELECT * FROM emission ORDER BY start").fetchall()
+            second = fixture.run_pipeline(b)
             with closing(sqlite3.connect(Path(second["generation_dir"]) / "knowledge.sqlite")) as db:
                 paths = list(iter_runtime_paths(db, (0x10, 0x12)))
                 self.assertEqual({tuple(p["pcs"]) for p in paths},

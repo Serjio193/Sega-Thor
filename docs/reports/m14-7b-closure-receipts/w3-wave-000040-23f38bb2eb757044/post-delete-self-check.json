@@ -1,0 +1,46 @@
+{
+  "canonical_after_cleanup": {
+    "database_checks": {
+      "knowledge.sqlite": {
+        "foreign_key_violations": 0,
+        "integrity": "ok"
+      },
+      "master.sqlite": {
+        "foreign_key_violations": 0,
+        "integrity": "ok"
+      }
+    },
+    "generation": "gen-f41f2078c2f7bfcd-cda86f5a",
+    "map_sha256": "22131fd7b90bdb9d0cc6f9f97114fda6b69743e2cb32b66831fcb89a42d655d7",
+    "self_check": "PASS",
+    "source_owned_bytes": 1487672
+  },
+  "canonical_generation_unchanged": {
+    "generation": "gen-f41f2078c2f7bfcd-cda86f5a",
+    "map_sha256": "22131fd7b90bdb9d0cc6f9f97114fda6b69743e2cb32b66831fcb89a42d655d7"
+  },
+  "database_checks": {
+    "knowledge.sqlite": {
+      "foreign_key_violations": 0,
+      "integrity": "ok"
+    },
+    "master.sqlite": {
+      "foreign_key_violations": 0,
+      "integrity": "ok"
+    }
+  },
+  "deleted_file_count": 14,
+  "deleted_paths_absent": true,
+  "experiment_id": "w3:1790209450:wave:40:23f38bb2eb75704459ab308e98404b61d30ead5e3e677cf4b626578b0cfa4ff9",
+  "receipt_sha256": "d9cb64ff7a0b9496eecaee195858153c182ac49f0649ad60d76da5f47cf0e98c",
+  "schema": "oasis.m14-7b-post-delete-check.v1",
+  "source_owned_after": 1487672,
+  "source_owned_before": 1487672,
+  "source_owned_delta": 0,
+  "task_staging_cleanup": {
+    "bytes": 3934227,
+    "file_count": 13,
+    "status": "DELETED_EXACT_HASH_VERIFIED",
+    "unmanifested_files": 0
+  }
+}

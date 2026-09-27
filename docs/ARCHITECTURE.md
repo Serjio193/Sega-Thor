@@ -13,6 +13,16 @@ unlink of raw or explicitly listed temporary envelopes/session artifacts.
 durable evidence store. A receipt cannot stand in for ingestion or map
 verification, and an unreceipted experiment remains open.
 
+W3 V2 waves are emitted by round, appending one full Worker segment at a time
+in ascending `worker_id`. `w3_lineage_bridge.py` reconstructs legacy boundaries
+only when the run receipt binds the complete segment-audit hash, every expected
+Worker occurs exactly once, the record counts cover the wave exactly, each
+ordered window hash matches the audited FLOW segment, and stream bounds match.
+It never selects a source by partial or first-match search. New runs persist a
+sidecar binding the wave SHA, segment-audit SHA, and those exact windows. A
+missing audit, mismatch, or incomplete round stays open. The existing
+Cartographer and canonical publisher remain the only knowledge path.
+
 The first real FLOW_V1 closure retains both M68K and Z80 runtime events in the
 existing occurrence evidence. Only M68K instruction rows are linked to the
 canonical M68K ROM; Z80 instruction rows remain runtime occurrences without
@@ -1127,3 +1137,47 @@ The existing layers and their boundaries are summarized in
 Worker/session occurrences, canonical range/object claims, Carver gap ranking,
 and the read-only GUI remain distinct inputs linked by exact ROM and generation
 identity.
+seal decision. Actual raw cleanup is a separate explicit
+`experiment_lifecycle.cleanup --closed-only` operation that verifies the
+closed receipt and exact audited roots before removing only its named targets.
+
+## M14.7B canonical generation compaction
+
+`rom_knowledge_pipeline.py` remains the sole canonical publisher. It serializes
+publication with `knowledge_generation_gc.transaction_lock`, commits the
+staged generation, advances `current.json`, reopens and self-checks the current
+pair, then invokes verified compaction. The canonical `master_v2_shadow.py`
+snapshot reader holds the same lock while it consumes the selected generation.
+`knowledge_generation_gc.py` provides
+a read-only `--plan` and exact `--verified-only` removal path. Every committed
+generation retains its existing transaction receipts plus a sealed
+`lineage.json` with parent identity, logical hashes, session/source identity
+and matching experiment-receipt paths. Historical full SQLite pairs are
+removed only when the current chain and each receipt transition validate; only
+`master.sqlite` and `knowledge.sqlite` in those exact ancestor directories are
+eligible. The current pair, unsealed `.staging-*`, orphan directories, raw
+captures, ROM and other evidence files are outside deletion scope. This is a
+single-map policy: historical queries use the current aggregate map, while
+historical rollback requires replay from retained source evidence.
+
+## M14.7B normalized-generic v2 evidence adapter
+
+`normalized_v2_canonical_adapter.py` consumes only producer-defined primary
+`records[]`; `instructions[]`, `memory[]`, `rom_reads[]`, and the remaining
+arrays are secondary projections and are not counted as additional input
+events. The bounded reader retains one JSON record at a time, assigns its
+source ordinal, and emits exactly one terminal outcome. Exact M68K instruction
+records can attach evidence to an existing exact canonical `M68K_INSTRUCTION`
+object after checking the opcode against the accepted ROM. Bus, frame-boundary,
+Z80, unsupported, and unmapped records remain queryable unresolved evidence;
+the adapter does not infer an object, ownership boundary, capture window, or
+runtime path absent from the normalized source.
+
+The adapter runs only against the staged child `knowledge.sqlite` supplied by
+`rom_knowledge_pipeline.py`, using `KnowledgeStore.insert_rows`. The ordinary
+Archivist publisher still owns generation identity, audit, atomic pointer
+advance, and generation GC. Each evidence locator binds normalized artifact
+SHA, run identity, ordinal, record kind, available stream/instruction identity,
+and original record fields. Canonical logical hashes are calculated by ordered
+SQLite row streaming so a large evidence index remains bounded in memory while
+preserving the existing hash encoding.
