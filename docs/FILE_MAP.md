@@ -1746,3 +1746,22 @@ is `tests/rom_knowledge_stage7_closure_test.py`; CTest registration is in
   one stable indexed capture window into unrelated one-event paths.
 - `docs/reports/THOR_M14_7B_REAL_CAPTURE_CLOSURE.md`: one real FLOW_V1 ingestion,
   closed receipt, exact cleanup and corpus dry-run acceptance evidence.
+
+# THOR M12 map-driven executed ASM closure 2F
+
+`src/tools/thor_evidence/map_driven_asm_closure.py` contains deterministic
+candidate, control-flow, partition, promotion and ownership-delta rules.
+`map_driven_asm_run.py` reads the accepted 2G map, stages candidate ASM, and
+materializes an isolated ownership transaction. `map_driven_asm_audit.py`
+independently re-decodes promoted intervals, checks 2G lineage and vasm bytes,
+and rebuilds the complete ROM in a fresh linker directory. The accepted
+generated leaf is `src/tools/m12_2f_asm/sub_002AA4.asm`. The 2F extension to
+`rom_knowledge_import.py` requires the independent audit receipt before using
+the final manifest; `rom_knowledge_pipeline.py` passes the expected
+`SOURCE_OWNED` baseline into its independent Archivist audit. A–T focused
+coverage is in `tests/map_driven_executed_asm_closure_test.py`, registered in
+`cmake/m12_auto2.cmake`. `re_slice_flow_target.*` isolates exact direct JSR/JMP
+target decoding; `cmake/re_tooling_sources.cmake` owns the developer-only RE
+tool source list. The compact result is in
+`docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md/.json`; raw
+knowledge/runtime evidence stays under ignored `build/thor-evidence/`.

@@ -6,7 +6,7 @@ import argparse
 import hashlib
 import json
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 _TOOL_ROOT = str(Path(__file__).resolve().parents[1])
@@ -57,6 +57,10 @@ def _args() -> argparse.Namespace:
     parser.add_argument("--db", type=Path)
     parser.add_argument("--receipt", type=Path)
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--map-closure-2f-manifest", type=Path,
+                        help="optional independently audited 2F ownership manifest")
+    parser.add_argument("--map-closure-2f-audit", type=Path,
+                        help="independent 2F audit receipt; required with the manifest")
     source_args = [("AUTO60", "auto60"), ("GFX2", "gfx2"), ("GFXMAX", "gfxmax"),
         ("AUTO61", "auto61"), ("GFXMAX_ROOT_C", "gfxmax_root_c"),
         ("2B_REPORT", "two_b_report"), ("2B_EXPORT", "two_b_export"),
@@ -95,6 +99,49 @@ def _import(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
         raise ValueError("STOP_ROM_IDENTITY_MISMATCH")
     reconciliation, manifests = reconcile_manifests(source_paths, rom)
     final_manifest, final_manifest_sha = manifests["AUTO61"]
+    map_manifest_path = args.auto61
+    promotion_artifacts: list[Path] = []
+    if args.map_closure_2f_manifest:
+        if not args.map_closure_2f_audit:
+            raise ValueError("STOP_2F_INDEPENDENT_AUDIT_REQUIRED")
+        map_manifest_path = args.map_closure_2f_manifest.resolve()
+        final_manifest = json.loads(map_manifest_path.read_text(encoding="utf-8"))
+        final_manifest_sha = sha256_file(map_manifest_path)
+        audit_receipt = json.loads(args.map_closure_2f_audit.read_text(encoding="utf-8"))
+        promotions = final_manifest.get("promotions", [])
+        promoted_entries = [entry for entry in final_manifest.get("entries", [])
+                            if entry.get("source") == "M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F"]
+        delta = sum(int(item["end"]) - int(item["start"]) for item in promoted_entries)
+        if final_manifest.get("promotion_checkpoint") != \
+                "M12-AUTO67-LIVE-FORWARD-WORKER-1B-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F" or \
+                final_manifest.get("rom_sha256") != ROM_SHA or final_manifest.get("full_match") is not True or \
+                audit_receipt.get("status") != "PASS_INDEPENDENT_MAP_DRIVEN_ASM_CLOSURE_AUDIT" or \
+                audit_receipt.get("rom_sha256") != ROM_SHA or audit_receipt.get("full_rom_exact") is not True or \
+                audit_receipt.get("baseline_map_hash") != \
+                    "80828f5c178b5e7373e6530c11f98c02578aff43ab4661eb7c15b1724ff23d1f" or \
+                not promotions or len(promotions) != len(promoted_entries) or delta <= 0 or \
+                int(final_manifest.get("metrics", {}).get("SOURCE_OWNED_BYTES", -1)) != 1475600 + delta or \
+                int(audit_receipt.get("ownership_delta", -1)) != delta or \
+                int(audit_receipt.get("after_ownership_bytes", -1)) != 1475600 + delta or \
+                sorted((int(item["start"]), int(item["end"])) for item in promotions) != \
+                sorted((int(item["start"]), int(item["end"]))
+                       for item in audit_receipt.get("promoted_intervals", [])):
+            raise ValueError("STOP_2F_PROMOTION_MANIFEST_INVALID")
+        for promotion in promotions:
+            entry = next((item for item in promoted_entries
+                          if int(item["start"]) == int(promotion["start"]) and
+                          int(item["end"]) == int(promotion["end"])), None)
+            if entry is None or entry.get("emitted_artifact_type") != "asm" or \
+                    PurePosixPath(str(entry.get("artifact", ""))).is_absolute():
+                raise ValueError("STOP_2F_PROMOTION_MANIFEST_INVALID")
+            artifact_path = (map_manifest_path.parent / Path(*PurePosixPath(entry["artifact"]).parts)).resolve()
+            try:
+                artifact_path.relative_to(map_manifest_path.parent.resolve())
+            except ValueError as exc:
+                raise ValueError("STOP_EMISSION_ARTIFACT_PATH_INVALID") from exc
+            if not artifact_path.is_file():
+                raise FileNotFoundError("STOP_EMISSION_ARTIFACT_MISSING")
+            promotion_artifacts.append(artifact_path)
     report2b = json.loads(args.two_b_report.read_text(encoding="utf-8"))
     execution, export_sha = (json.loads(args.two_b_export.read_text(encoding="utf-8")),
                              sha256_file(args.two_b_export))
@@ -132,6 +179,16 @@ def _import(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
                                                "format_reconstruction_report.json", "HYPOTHESIS_REPORT")
     source_shas["carver_interval"] = _artifact(bundle, args.carver_interval, "M12-CARVER-5",
                                                 "interval_db.json", "LOCAL_EVIDENCE_DATABASE_EXPORT")
+    if args.map_closure_2f_manifest:
+        source_shas["map_closure_2f_manifest"] = _artifact(bundle, map_manifest_path,
+            "M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F", "materialized/manifest.json",
+            "SOURCE_OWNERSHIP_MANIFEST")
+        for index, artifact_path in enumerate(promotion_artifacts):
+            source_shas[f"map_closure_2f_asm_{index}"] = _artifact(bundle, artifact_path,
+                "M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F", artifact_path.name, "ASM_SOURCE")
+        source_shas["map_closure_2f_audit"] = _artifact(bundle, args.map_closure_2f_audit,
+            "M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F", "independent_audit.json",
+            "INDEPENDENT_AUDIT_RECEIPT")
 
     manifest_rows(bundle, final_manifest, final_manifest_sha)
     ownership_runs = [(int(e["start"]), int(e["end"])) for e in final_manifest["entries"] if
@@ -145,14 +202,20 @@ def _import(args: argparse.Namespace) -> tuple[dict[str, Any], dict[str, Any]]:
                    "2b_export_sha256": source_shas["2b_export"],
                    "2b_session_sha256": source_shas["2b_session"],
                    "carver_report_sha256": source_shas["carver_report"]}
+    if args.map_closure_2f_manifest:
+        source_keys["map_closure_2f_audit_sha256"] = source_shas["map_closure_2f_audit"]
     input_hash = sha256_bytes(canonical({"source_keys": source_keys,
         "reconciliation": reconciliation,
         "records": {k: len(v) for k, v in bundle.items()}}).encode("utf-8"))
-    bundle["map_import"].append({"import_key": "M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D",
+    bundle["map_import"].append({"import_key": "M12-MAP-DRIVEN-EXECUTED-ASM-CLOSURE-2F"
+                                  if args.map_closure_2f_manifest else
+                                  "M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D",
                                   "input_hash": input_hash})
     return {"bundle": bundle, "reconciliation": reconciliation, "runtime": runtime,
             "hypothesis_count": hypothesis_count, "source_keys": source_keys,
-            "input_hash": input_hash, "rom": rom, "manifest_path": args.auto61,
+            "input_hash": input_hash, "rom": rom, "manifest_path": map_manifest_path,
+            "manifest_paths": source_paths,
+            "promotion_artifacts": promotion_artifacts,
             "execution_path": args.two_b_export, "session_path": args.two_b_session,
             "carver_report_path": args.carver_report, "carver_interval_path": args.carver_interval}, source_keys
 
@@ -246,7 +309,10 @@ def main() -> int:
     args = _args()
     for path in (args.rom, args.auto60, args.gfx2, args.gfxmax, args.auto61,
                  args.gfxmax_root_c, args.two_b_report, args.two_b_export, args.two_b_session,
-                 args.carver_report, args.carver_interval):
+                 args.carver_report, args.carver_interval, args.map_closure_2f_manifest,
+                 args.map_closure_2f_audit):
+        if path is None:
+            continue
         if not path.is_file():
             raise FileNotFoundError(f"STOP_REQUIRED_SOURCE_MISSING:{path.name}")
     prepared, _ = _import(args)
@@ -271,15 +337,16 @@ def main() -> int:
         raise ValueError(idempotence["status"])
     raw_flow = args.two_b_session.parent / "rom-link-evidence/flow-v1-records.bin"
     segment_index = args.two_b_session.parent / "rom-link-evidence/flow-v1-segments.jsonl"
-    audit = audit_database(args.db, args.rom, args.auto61, args.two_b_export,
+    audit = audit_database(args.db, args.rom, prepared["manifest_path"], args.two_b_export,
         args.two_b_session, args.carver_report, args.carver_interval,
         prepared["reconciliation"], idempotence,
-        {name: getattr(args, attr) for name, attr in (("AUTO60", "auto60"),
-          ("GFX2", "gfx2"), ("GFXMAX", "gfxmax"), ("AUTO61", "auto61"),
-          ("GFXMAX_ROOT_C", "gfxmax_root_c"))},
+        prepared["manifest_paths"],
         [args.rom, args.auto60, args.gfx2, args.gfxmax, args.auto61, args.gfxmax_root_c,
          args.two_b_report, args.two_b_export, args.two_b_session, raw_flow, segment_index,
-         args.carver_report, args.carver_interval])
+         args.carver_report, args.carver_interval] +
+         ([prepared["manifest_path"]] + prepared["promotion_artifacts"] +
+          [args.map_closure_2f_audit]
+          if args.map_closure_2f_manifest else []))
     receipt = store.export(prepared["reconciliation"], audit, idempotence)
     receipt["status"] = "PASS_CANONICAL_ROM_KNOWLEDGE_MAP_V1"
     receipt["runtime_import"] = prepared["runtime"]

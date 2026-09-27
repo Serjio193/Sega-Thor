@@ -33,6 +33,9 @@ def main():
     assert [(x["start"], x["end"]) for x in selected] == [(0x100, 0x180)]
     assert not assets
     assert ranges == [(0x100, 0x180)]
+    known_data = [{"start": 0, "end": 4, "size": 4, "kind": "DATA_KNOWN"},
+                  {"start": 4, "end": 8, "size": 4, "kind": "UNKNOWN"}]
+    assert MODULE.metrics(known_data, 8)["SOURCE_OWNED_BYTES"] == 4
     print("M12-AUTO helper tests passed")
 
 

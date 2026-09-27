@@ -47,52 +47,8 @@ add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.
 target_link_libraries(oasis_resource_boundary_scan PRIVATE oasis_core)
 include(tools/bizhawk-native-ring/live_forward.cmake)
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
-add_library(oasis_re_tooling
-    src/tools/gpgx_import_io.cpp
-    src/tools/gpgx_json.cpp
-    src/tools/re_slice_decoder.cpp
-    src/tools/re_slice_exact.cpp
-    src/tools/re_assemble.cpp
-    src/tools/re_assemble_format.cpp
-    src/tools/re_slice_format.cpp
-    src/tools/re_program.cpp
-    src/tools/re_program_format.cpp
-    src/tools/re_trace.cpp
-    src/tools/re_trace_format.cpp
-    src/tools/re_diff.cpp
-    src/tools/re_diff_detail.cpp
-    src/tools/re_diff_format.cpp
-    src/tools/re_atlas.cpp
-    src/tools/re_atlas_format.cpp
-    src/tools/re_atlas_ranking.cpp
-    src/tools/re_resolution.cpp
-    src/tools/re_resolution_format.cpp
-    src/tools/re_cfg_audit.cpp
-    src/tools/re_cfg_audit_format.cpp
-    src/tools/re_reachable_closure.cpp
-    src/tools/re_reachable_closure_format.cpp
-    src/tools/re_reachable_stack.cpp
-    src/tools/re_callee_effect.cpp
-    src/tools/re_callee_effect_format.cpp
-    src/tools/re_caller_stack.cpp
-    src/tools/re_caller_stack_format.cpp
-    src/tools/re_emulator_trace.cpp
-    src/tools/re_emulator_trace_format.cpp
-    src/tools/re_scenario.cpp
-    src/tools/re_candidate_map.cpp
-    src/tools/re_candidate_map_parse.cpp
-    src/tools/re_candidate_map_format.cpp
-    src/tools/re_mass_verify.cpp
-    src/tools/re_mass_verify_format.cpp
-    src/tools/re_explore.cpp
-    src/tools/re_explore_format.cpp
-    src/tools/re_explore_dynamic.cpp
-    src/tools/re_ant.cpp
-    src/tools/re_ant_format.cpp
-    src/tools/re_ant_queue.cpp
-    src/tools/re_ant_queue_format.cpp
-    src/tools/re_static_translation.cpp
-)
+include(cmake/re_tooling_sources.cmake)
+add_library(oasis_re_tooling ${OASIS_RE_TOOLING_SOURCES})
 target_include_directories(oasis_re_tooling PUBLIC src)
 add_executable(oasis_re_slice src/tools/re_slice_report.cpp)
 target_link_libraries(oasis_re_slice PRIVATE oasis_core oasis_re_tooling)

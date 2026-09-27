@@ -189,5 +189,7 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_unknown_range_campaign_test.py)
     add_test(NAME oasis_m12_archivist_knowledge_pipeline_2g
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_test.py)
+    add_test(NAME oasis_m12_map_driven_executed_asm_closure_2f
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_executed_asm_closure_test.py)
 endif()
 include(${CMAKE_SOURCE_DIR}/cmake/m14_4.cmake)

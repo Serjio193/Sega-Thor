@@ -39,6 +39,19 @@ milestone remains active. See
 `docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.md` and its compact
 deterministic JSON receipt.
 
+# M12 Map-driven executed ASM closure 2F — PASS_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_V1
+
+The accepted 2G map drove 25 candidate islands from the 225 executed-but-
+not-fully-owned instruction backlog. One closed island `[0x002AA4,0x002ACE)`
+passed exact M68K decode, 13 adjacent observed runtime edges, byte-exact vasm,
+full-ROM rebuild, canonical map refresh and independent audit. It promotes 42
+bytes as `STATIC_VERIFIED`, reducing the final backlog to 211; 24 other islands
+remain blocked by unresolved control-flow. `SOURCE_OWNED` is 1,475,642 bytes,
+with no prior ownership loss or conflict. No new runtime campaign was run.
+Details and the exact receipts are in
+`docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md/.json`. The wider
+M12 reconstruction milestone remains active.
+
 # M12 Runtime Control Provenance 2C — STOP_NO_RUNTIME_PROVENANCE_GAP
 
 Phase 0 classified the saved, accepted 2B runtime trace: 199,630 instructions,

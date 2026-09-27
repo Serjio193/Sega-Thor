@@ -92,6 +92,7 @@ def metrics(entries, rom_size):
     result = auto.FULL.metrics(entries, rom_size)
     result["SOURCE_OWNED_BYTES"] = sum(entry["size"] for entry in entries
                                        if entry["kind"] in ("CODE_VERIFIED", "HEADER_VECTOR_ASM",
+                                                             "DATA_KNOWN",
                                                              "STRUCTURED_DATA_CONFIRMED",
                                                              "PADDING_ALIGNMENT_CONFIRMED",
                                                              "LOCAL_ROM_DERIVED_ASSET"))
