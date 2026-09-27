@@ -14651,8 +14651,8 @@ branch cleanup.
 ACCEPTANCE: Consolidated sources and evidence are present without ROM/build
 outputs in Git; Debug and Release builds and the available CTest suite pass;
 source limit and diff checks pass; branch ancestry is verified; project docs
-record the branch policy; only `main` and the evidence branch remain as local
-persistent refs. Remote refs are retained pending publication.
+record the branch policy; only `main` and the evidence branch remain locally
+and remotely after publication.
 
 RESULT: Imported the meaningful code, tests, and reports from the dirty main
 worktree into the integration checkout, resolving stale GUI/model collisions

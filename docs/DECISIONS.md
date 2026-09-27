@@ -3576,18 +3576,19 @@ hard to tell which runtime, map, and test changes represented the current
 project state.
 
 **Decision:** Keep `main` as the consolidated project line and
-`evidence/rom-coverage-map` as the only persistent evidence-focused branch.
-Short-lived task branches may be created for isolated work, but after review
-their accepted changes merge into `main` and the task branch is removed. The
-evidence branch carries only future ROM coverage capture, proof, and map
-publication work; implementation changes return to `main` through review.
-Publish `main` and the evidence branch before deleting merged remote feature
-refs. Merge stale task-branch history without reactivating superseded task
-instructions when that history contains no accepted implementation.
+`evidence/rom-coverage-map` as the only second branch. Do implementation and
+game behavior changes directly on `main`. Use the evidence branch only for new
+ROM coverage observations, proof artifacts, and the minimal reproducible
+checks needed to validate those findings; do not develop gameplay or runtime
+features there. After review, merge accepted evidence into `main`, advance the
+evidence branch to the new `main` commit, and publish both. Do not create other
+development branches. When old branch history is superseded, preserve useful
+commits in `main` without reactivating stale task instructions.
 
 **Consequences:** Existing local M12/M14 implementation and evidence histories
 are reconciled before obsolete branch references are removed. Existing
 evidence artifacts and dirty worktree contents remain preserved during
-consolidation. Only `main` and `evidence/rom-coverage-map` remain as persistent
-local and remote branches after publication; unrelated unmerged branches are
-kept for separate review.
+consolidation. Only `main` and `evidence/rom-coverage-map` remain locally and
+on the remote. Evidence returns to the consolidated mainline after each
+accepted finding, so the second branch is ready for the next evidence-only
+change.
