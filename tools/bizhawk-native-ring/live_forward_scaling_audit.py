@@ -7,10 +7,15 @@ from pathlib import Path
 import struct
 
 
-RECORD = struct.Struct("<QQIIHHI")
+RECORD = struct.Struct("<QQQIIIHBBHHI")
 REASON_DEPTH, REASON_MEMORY, REASON_RETENTION = 1, 2, 3
 FLAG_INSTRUCTION, FLAG_COMPLETE, FLAG_FAULTED = 1, 2, 4
 FLAG_EXCEPTION_EVENT, FLAG_CPU_STOP_EVENT = 256, 1024
+FLAG_EVENT = 0x8000
+EVENT_SUBTYPE_SHIFT, EVENT_SUBTYPE_MASK = 11, 0x3800
+EVENT_BUS_READ, EVENT_BUS_WRITE, EVENT_FRAME_BOUNDARY = 1, 2, 3
+EVENT_BANK_REGISTER_CHANGE = 4
+CPU_Z80 = 1
 
 
 def integer_list(value: str, width: int, label: str) -> list[int]:
@@ -18,6 +23,15 @@ def integer_list(value: str, width: int, label: str) -> list[int]:
     if len(result) != width:
         raise ValueError(f"{label}: expected {width} values, got {len(result)}")
     return result
+
+
+def result_metadata(value: str, label: str) -> tuple[list[int], int | None, int | None]:
+    values = [int(item, 10) for item in value.split(",")]
+    if len(values) == 20:
+        return values, None, None
+    if len(values) == 22:
+        return values, values[10], values[11]
+    raise ValueError(f"{label}: expected 20 or 22 values, got {len(values)}")
 
 
 def read_record_slice(path: Path, offset: int, count: int, worker: int) -> bytes:
@@ -29,11 +43,17 @@ def read_record_slice(path: Path, offset: int, count: int, worker: int) -> bytes
     return data
 
 
+def _register_values(state: list[int]) -> dict[str, int]:
+    return {**{f"D{index}": state[index] for index in range(8)},
+            **{f"A{index}": state[index + 8] for index in range(8)},
+            "PC": state[16], "SR": state[17], "USP": state[18], "ISP": state[19]}
+
+
 def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
                      expected_depth: int, memory_bytes: int, result_header_bytes: int,
                      run_id: int, previous_exit: list[int], global_entry: list[int],
                      cycle_counts: list[int], second_record_path: Path,
-                     expected_rounds: int = 100) -> dict[str, object]:
+                     cycle_limit: int | None = 100) -> dict[str, object]:
     pieces = value.split("|")
     if len(pieces) != 13:
         raise ValueError(f"{key}: malformed segment announcement")
@@ -42,27 +62,35 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
      immutable_before_text, immutable_after_text) = pieces
     cycle, offset, offset2 = int(cycle_text), int(offset_text), int(offset2_text)
     export_ms1, export_ms2 = float(export1_text), float(export2_text)
-    meta = integer_list(meta_text, 20, f"{key} metadata")
+    meta, entry_frame, exit_frame = result_metadata(meta_text, f"{key} metadata")
     entry = integer_list(entry_text, 20, f"{key} ENTRY")
     exit_state = integer_list(exit_text, 20, f"{key} EXIT")
-    meta2 = integer_list(meta2_text, 20, f"{key} reread metadata")
+    meta2, entry_frame2, exit_frame2 = result_metadata(meta2_text, f"{key} reread metadata")
     entry2 = integer_list(entry2_text, 20, f"{key} reread ENTRY")
     exit2 = integer_list(exit2_text, 20, f"{key} reread EXIT")
     immutable_delta = int(immutable_after_text) - int(immutable_before_text)
     if meta != meta2 or entry != entry2 or exit_state != exit2 or immutable_delta <= 0:
         raise ValueError(f"{key}: result changed during CPU execution after completion")
-    (capture, generation, run, epoch, first_stream, end_stream, first_instruction,
-     end_instruction, first_flow, end_flow, worker, reason, configured_depth,
-     configured_memory, consumed_depth, consumed_memory, record_count, record_bytes,
-     valid, copy_ns) = meta
-    if not 1 <= cycle <= expected_rounds or not 0 <= worker < worker_count:
+    if len(meta) == 22:
+        (capture, generation, run, epoch, first_stream, end_stream, first_instruction,
+         end_instruction, first_flow, end_flow, entry_frame, exit_frame, worker, reason,
+         configured_depth, configured_memory, consumed_depth, consumed_memory,
+         record_count, record_bytes, valid, copy_ns) = meta
+    else:
+        (capture, generation, run, epoch, first_stream, end_stream, first_instruction,
+         end_instruction, first_flow, end_flow, worker, reason, configured_depth,
+         configured_memory, consumed_depth, consumed_memory, record_count, record_bytes,
+         valid, copy_ns) = meta
+    if cycle < 1 or (cycle_limit is not None and cycle > cycle_limit) or \
+            not 0 <= worker < worker_count:
         raise ValueError(f"{key}: worker or cycle is outside the requested range")
     expected_capture = run_id * 1_000_000 + (cycle - 1) * worker_count + worker + 1
     if capture != expected_capture or generation != cycle or run != run_id or epoch <= 0:
         raise ValueError(f"{key}: capture_id/generation/run/epoch mismatch")
     if configured_depth != expected_depth or configured_memory != memory_bytes:
         raise ValueError(f"{key}: configured resource bounds mismatch")
-    if not valid or record_count < 1 or record_count > 4096 or record_bytes != record_count * RECORD.size:
+    capacity = (memory_bytes - result_header_bytes) // RECORD.size
+    if not valid or record_count < 1 or record_count > capacity or record_bytes != record_count * RECORD.size:
         raise ValueError(f"{key}: native result is invalid or outside fixed record bounds")
     if consumed_memory != result_header_bytes + record_bytes or consumed_memory > memory_bytes:
         raise ValueError(f"{key}: bounded memory accounting mismatch")
@@ -72,7 +100,6 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
         raise ValueError(f"{key}: depth termination was not exact")
     if reason not in (REASON_DEPTH, REASON_MEMORY, REASON_RETENTION):
         raise ValueError(f"{key}: unsupported termination reason {reason}")
-    capacity = (memory_bytes - result_header_bytes) // RECORD.size
     if reason == REASON_MEMORY and record_count + 2 <= capacity:
         raise ValueError(f"{key}: memory termination occurred before result capacity")
     if reason == REASON_RETENTION:
@@ -87,27 +114,55 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
         raise ValueError(f"{key}: binary stream endpoints differ from FLOW_V1 metadata")
     if any(right[0] != left[0] + 1 for left, right in zip(rows, rows[1:])):
         raise ValueError(f"{key}: stream records are not contiguous")
-    instructions = [row for row in rows if row[5] & FLAG_INSTRUCTION]
-    if end_instruction - first_instruction != len(instructions):
-        raise ValueError(f"{key}: instruction range does not reconcile with records")
-    if any(row[1] != first_instruction + index for index, row in enumerate(instructions)):
+    instructions = [row for row in rows if row[6] & FLAG_INSTRUCTION]
+    instruction_sequences = {row[1] for row in instructions}
+    instruction_identity_positions = {(row[1], row[7]): index
+                                      for index, row in enumerate(rows)
+                                      if row[6] & FLAG_INSTRUCTION}
+    m68k_instructions = [r for r in instructions if r[7] == 0]
+    first_instruction_row = m68k_instructions[0] if m68k_instructions else None
+    if end_instruction - first_instruction != len(m68k_instructions):
+        raise ValueError(f"{key}: instruction range does not reconcile")
+    if any(row[1] != first_instruction + index for index, row in enumerate(m68k_instructions)):
         raise ValueError(f"{key}: instruction sequence contains a gap")
-    control_rows = sum(bool(row[5] & 8) for row in rows)
+    control_rows = sum(bool(row[6] & 8) for row in rows)
     if end_flow - first_flow != consumed_depth or control_rows != consumed_depth:
         raise ValueError(f"{key}: control-flow depth accounting mismatch")
-    if any(not row[5] & (FLAG_INSTRUCTION | FLAG_EXCEPTION_EVENT | FLAG_CPU_STOP_EVENT)
+    if any(not row[6] & (FLAG_INSTRUCTION | FLAG_EXCEPTION_EVENT |
+                          FLAG_CPU_STOP_EVENT | FLAG_EVENT)
            for row in rows):
         raise ValueError(f"{key}: untyped native record")
-    if any(row[5] & FLAG_FAULTED for row in rows):
+    for row_index, row in enumerate(rows):
+        if not row[6] & FLAG_EVENT:
+            continue
+        subtype = (row[6] & EVENT_SUBTYPE_MASK) >> EVENT_SUBTYPE_SHIFT
+        if subtype not in (EVENT_BUS_READ, EVENT_BUS_WRITE,
+                           EVENT_FRAME_BOUNDARY, EVENT_BANK_REGISTER_CHANGE):
+            raise ValueError(f"{key}: unknown sideband event subtype {subtype}")
+        if subtype in (EVENT_BUS_READ, EVENT_BUS_WRITE):
+            if row[1] == 0 or (row[7] == 0 and row[1] not in instruction_sequences):
+                raise ValueError(f"{key}: bus event lacks instruction identity: seq={row[1]} cpu={row[7]}")
+        elif subtype == EVENT_FRAME_BOUNDARY and row[1] != 0:
+            raise ValueError(f"{key}: frame boundary has instruction identity")
+        elif subtype == EVENT_BANK_REGISTER_CHANGE:
+            identity = (row[1], row[7])
+            if row[7] != CPU_Z80 or row[1] == 0 or \
+                    identity not in instruction_identity_positions or \
+                    instruction_identity_positions[identity] >= row_index:
+                raise ValueError(
+                    f"{key}: bank-register change lacks preceding Z80 instruction identity: "
+                    f"seq={row[1]} cpu={row[7]}")
+    if any(row[6] & FLAG_FAULTED for row in rows):
         raise ValueError(f"{key}: faulted instruction appears in a valid result")
-    if any(row[5] & FLAG_INSTRUCTION and not row[5] & FLAG_COMPLETE for row in rows):
+    if any(row[6] & FLAG_INSTRUCTION and not row[6] & FLAG_COMPLETE for row in rows):
         raise ValueError(f"{key}: incomplete instruction appears in a valid result")
     if reason == REASON_DEPTH:
-        first_instruction_row = next((row for row in rows if row[5] & FLAG_INSTRUCTION), None)
-        if first_instruction_row is None or entry[16] != first_instruction_row[2]:
-            raise ValueError(f"{key}: ENTRY PC differs from first instruction")
-        if exit_state[16] != rows[-1][3]:
-            raise ValueError(f"{key}: EXIT PC differs from final record")
+        first_m68k = next((row for row in rows if (row[6] & FLAG_INSTRUCTION) and row[7] == 0), None)
+        if first_m68k is None or entry[16] != first_m68k[3]:
+            raise ValueError(f"{key}: ENTRY PC differs from first M68K instruction: {entry[16]} != {first_m68k[3] if first_m68k else None}")
+        last_m68k = [row for row in rows if (row[6] & FLAG_INSTRUCTION) and row[7] == 0][-1] if m68k_instructions else None
+        if last_m68k is None or exit_state[16] != last_m68k[4]:
+            raise ValueError(f"{key}: EXIT PC differs from final M68K record: {exit_state[16]} != {last_m68k[4] if last_m68k else None}")
     if first_stream < previous_exit[worker]:
         raise ValueError(f"{key}: Worker result overlaps its prior ACKed capture")
     if cycle == 1 and worker == 0:
@@ -126,7 +181,10 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
         "entry_stream_sequence": first_stream, "exit_stream_sequence": end_stream,
         "entry_instruction_sequence": first_instruction,
         "exit_instruction_sequence": end_instruction,
+        "entry_registers": _register_values(entry),
+        "exit_registers": _register_values(exit_state),
         "entry_control_flow_sequence": first_flow, "exit_control_flow_sequence": end_flow,
+        "entry_frame": entry_frame, "exit_frame": exit_frame,
         "termination_reason": reason, "configured_depth": configured_depth,
         "consumed_depth": consumed_depth, "configured_memory_bytes": configured_memory,
         "consumed_memory_bytes": consumed_memory, "record_count": record_count,
@@ -135,6 +193,22 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
         "immutable_cpu_stream_delta": immutable_delta,
         "host_export_ms_pass1": export_ms1, "host_export_ms_pass2": export_ms2,
         "records_sha256": hashlib.sha256(data).hexdigest(), "segment_sha256": digest,
+        "bus_read_count": sum(bool(row[6] & FLAG_EVENT) and
+                               ((row[6] & EVENT_SUBTYPE_MASK) >>
+                                EVENT_SUBTYPE_SHIFT) == EVENT_BUS_READ
+                               for row in rows),
+        "bus_write_count": sum(bool(row[6] & FLAG_EVENT) and
+                                ((row[6] & EVENT_SUBTYPE_MASK) >>
+                                 EVENT_SUBTYPE_SHIFT) == EVENT_BUS_WRITE
+                                for row in rows),
+        "bank_register_change_count": sum(bool(row[6] & FLAG_EVENT) and
+                                            ((row[6] & EVENT_SUBTYPE_MASK) >>
+                                             EVENT_SUBTYPE_SHIFT) == EVENT_BANK_REGISTER_CHANGE
+                                            for row in rows),
+        "frame_boundary_count": sum(bool(row[6] & FLAG_EVENT) and
+                                     ((row[6] & EVENT_SUBTYPE_MASK) >>
+                                      EVENT_SUBTYPE_SHIFT) == EVENT_FRAME_BOUNDARY
+                                     for row in rows),
     }
 
 

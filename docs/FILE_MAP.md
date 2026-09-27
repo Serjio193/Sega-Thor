@@ -12,6 +12,263 @@
 - docs/reports/THOR_M14_7B_HEAVY_EVIDENCE_PREFLIGHT_2026-09-26.md — read-only
   audit of post-cleanup state and the three largest normalized corpora; records
   the accounting blocker and confirms no ingestion or evidence deletion.
+# M12 Controlled Entity / Player Provenance V1
+
+## M14 canonical full-ROM address map V1
+
+`src/tools/thor_evidence/canonical_full_rom_map.py` is the semantic-neutral
+full-ROM interval map API. It imports the existing emission partition, enforces
+canonical ROM identity and exact ownership accounting, supports byte lookup,
+boundaries, deterministic map operations, promotion gates, map deltas, and
+unknown-range ranking.
+
+`tests/canonical_full_rom_map_test.py` covers lookup, coverage-preserving
+closure operations, promotion rejection, and fail-closed baseline import.
+
+`src/tools/thor_evidence/m14_reconcile_ownership.py` locates an accepted
+post-Stage7 generation, verifies the exact ownership transition and byte
+roundtrips, and regenerates the canonical report from authoritative SQLite
+emission rows. It rejects stale Stage7/full-ROM receipts and ownership
+accounting mismatches.
+
+`src/tools/thor_evidence/m14_runtime_validation.py` validates sealed M14.1
+runtime receipts, computing ownership and coverage from the authoritative
+SQLite emission table.
+
+`src/tools/thor_evidence/knowledge_generation.py` records deterministic
+derivations, proposal operations, and generation lineage in the canonical
+knowledge SQLite schema.
+
+## M12 generic recursive ROM closure V1
+
+- `src/tools/thor_evidence/generic_recursive_closure.py` — normalized
+  post-run, subsystem-neutral provenance graph, register/memory backtrace,
+  call/table discovery, fail-closed queue, exact range round-trip promotion,
+  and deterministic artifact emission.
+- `tests/generic_recursive_closure_test.py` — synthetic generic regression for
+  RAM selector → indexed ROM table → ROM value → A0 → renderer/SAT tail and
+  unresolved-evidence queue behavior.
+
+## M13 generic recursive closure live integration V1
+
+- `tools/bizhawk-native-ring/generic_flow_normalizer.py` — converts native
+  FLOW V2 records into versioned, subsystem-neutral instruction, memory,
+  ROM-read, control-flow, call, return and indirect-target collections while
+  reporting evidence fields absent from the native ABI.
+- `tools/bizhawk-native-ring/live_forward_generic_closure_stage.py` — seals a
+  normalized FLOW corpus, checks canonical ROM identity, runs closure, emits
+  the M13 receipt and deterministic capture-gap ranking.
+- `tools/bizhawk-native-ring/generic_closure_handoff.py` — coordinator handoff
+  that continues to ASM closure on PASS/NO_DELTA/SKIPPED results and stops on
+  integrity failure.
+- `tools/bizhawk-native-ring/pipeline_outcomes.py` — typed stage result and
+  scheduling-effect policy; preserves semantic unresolved reasons separately
+  from fatal failures.
+- `tools/bizhawk-native-ring/semantic_stage_scheduler.py` — executes ordered
+  semantic stages, continues recognized unresolved outcomes into generic
+  closure, and returns fatal stops without downstream scheduling.
+- `tools/bizhawk-native-ring/live_forward_cleanup_acceptance.py` — verifies
+  generic-closure deterministic replay and gap-ranking receipts before raw-FLOW
+  reclaim is allowed.
+- `tests/live_forward_generic_closure_stage_test.py` — sealed-corpus identity,
+  missing-corpus and zero-promotion gap-plan regressions.
+- `tests/generic_flow_normalizer_test.py` — FLOW V2 identity, CPU/domain,
+  opcode verification, memory linkage, control-flow and explicit missing
+  register-snapshot coverage.
+- `docs/reports/THOR_M13_3_GENERIC_EVIDENCE_CONTRACT_V2_V1.md` — live V2
+  coverage, closure metrics, retained evidence identity, and unresolved
+  acceptance gaps.
+- `tests/live_forward_controlled_entity_stage_test.py` — semantic unresolved
+  continuation through generic/ASM/full audit/cleanup and fatal-stop boundary.
+- `tests/live_forward_postrun_progress_test.py` — distinct unresolved terminal
+  UI state and truthful final pipeline labeling.
+- `tests/live_forward_absorption_cleanup_test.py` — requires validated generic
+  closure, ranked-gap and deterministic-replay artifacts before deletion.
+- `docs/reports/THOR_M13_2_GENERIC_CLOSURE_GAP_DRIVEN_IMPROVEMENT_V1.md` —
+  artifact-derived baseline, replay metrics, blocker ranking, and next-capture
+  plus raw-retention contract.
+
+`src/tools/m12_dynamic_sat_shadow_discovery.py` is the bounded, payload-free
+M12 analyzer for distinguishing fixed/template writes to the accepted
+`0x00FF13CC` SAT shadow from post-template dynamic patches and for inventorying
+alternative SAT DMA groups. It emits the five `postrun_*` JSON artifacts under
+ignored `build/thor-evidence/` output directories.
+`tests/m12_dynamic_sat_shadow_discovery_test.py` covers writer-contract and
+callback-alias fail-closed behavior. The result report is
+`docs/reports/THOR_M12_DYNAMIC_SAT_SHADOW_MUTATION_DISCOVERY_V1.md`.
+
+`docs/reports/THOR_M12_UPSTREAM_CONTROLLED_OBJECT_DISCOVERY_V1.md` records the
+fail-closed upstream classification of `0xFF13CC` as a SAT shadow buffer. It
+separates the exact fixed ROM render-record producer and DMA/SAT relation from
+the still-unproven gameplay RAM object, X/Y source, and input provenance.
+
+`src/tools/re_bizhawk_m12_targeted_controlled_entity.lua` is the bounded,
+developer-only real BizHawk observer for the targeted controller/entity capture;
+it records deliberate input transitions, frame-end events, PC-window register
+snapshots, and selected bus events while keeping Worker capture disabled.
+`tools/bizhawk-native-ring/run_targeted_controlled_entity_capture.py` launches
+it in an isolated install, and
+`tools/bizhawk-native-ring/analyze_targeted_controlled_entity_capture.py`
+performs the fail-closed post-run acceptance audit. Raw capture artifacts remain
+under ignored `build/thor-evidence/` directories.
+
+`tools/bizhawk-native-ring/live_forward_controlled_entity_stage.py` is the
+developer-only fail-closed stage after `GAMEPLAY RAM / ENTITY CANDIDATES` and
+before `ASM CLOSURE`. It consumes accepted gameplay candidate/SAT artifacts and
+preserved FLOW records, identifies exact controller-port and input-RAM events,
+requires same-control-flow input consumers before accepting an entity update,
+recovers only evidence-backed fields, joins proven RAM→SAT→DMA/hardware pieces,
+and gates `CONTROLLED_ENTITY`/`PLAYER` labels. It emits
+`postrun_controlled_entity_analysis.json`, `postrun_controlled_entity_fields.json`,
+`postrun_input_entity_chains.json`, `postrun_controlled_entity_sat_chain.json`,
+and `postrun_controlled_entity_receipt.json`; it never changes SOURCE_OWNED.
+`tests/live_forward_controlled_entity_stage_test.py` covers event identity,
+exact input consumers, field/SAT continuation, slot-reuse fail-closed behavior,
+the PLAYER gate, deterministic analysis, zero ownership delta, and automatic
+stage ordering.
+
+# M12 Post-Run Gameplay RAM / Entity Candidates V1
+
+`tools/bizhawk-native-ring/live_forward_gameplay_stage.py` consumes preserved
+FLOW V2 M68K RAM bus evidence plus accepted Sprite/SAT provenance to discover
+fail-closed RAM structure candidates, exact or hypothesized strides, runtime
+slot lifetimes, update-loop witnesses, RAM-to-SAT field chains, and
+candidate-to-hardware-sprite relations. It emits six deterministic post-run
+artifacts and keeps SOURCE_OWNED unchanged.
+`tests/live_forward_gameplay_stage_test.py` covers stride proof, slot iteration,
+lifetime/reuse, exact and partial RAM-to-SAT provenance, one-to-many ownership,
+overlap deduplication, label exclusion, deterministic receipts, zero ownership
+delta, and automatic coordinator ordering.
+
+# M12 Post-Run Sprite / SAT Analysis Stage V1
+
+`tools/bizhawk-native-ring/live_forward_sprite_stage.py` implements the repository-native post-run sprite and SAT analysis stage (placed between Stage 8 `VDP / DMA ANALYSIS` and Stage 10 `ASM CLOSURE`), consuming preserved W3 V2 FLOW records, decoding Genesis Sprite Attribute Table (SAT) entries and link lists, handling H40/H32 mode base addresses, tracking scanline raster limits (20 sprites / 320 pixels per line, X=0 masking, clipping), tracking exact DMA-to-SAT provenance, verifying regression against contract and durable real oracle `sprite_oracle_v1_f779` (frame 779) with 0 conflicts, enforcing zero SOURCE_OWNED delta, and emitting the 6 authoritative artifacts (`postrun_sprite_analysis.json`, `postrun_sat_state.json`, `postrun_sprite_frames.json`, `postrun_sprite_provenance.json`, `postrun_sprite_candidates.json`, `postrun_sprite_receipt.json`).
+`tools/bizhawk-native-ring/capture_real_sprite_oracle.py` provides standalone capture and verification tooling for the durable real sprite oracle, extracting hardware VRAM/CRAM/VSRAM/SAT state from BizHawk and generating oracle manifests and receipts.
+`tests/live_forward_sprite_stage_test.py` covers 19 comprehensive unit tests (Tests A–S) verifying exact SAT base decode, entry decode, link traversal, termination, cycle detection, partial SAT handling, direct vs persisted provenance, DMA-to-SAT linkage, worker deduplication, sprite geometry, flip, palette, clipping, scanline raster limits, no logical entity naming, deterministic receipts, zero source-owned delta, automatic pipeline progression, and durable real sprite oracle regression.
+
+# M12 Post-Run VDP / DMA Analysis Stage V1
+
+`tools/bizhawk-native-ring/live_forward_vdp_stage.py` implements the repository-native post-run VDP and DMA analysis stage (placed between Stage 7 `AUDIO ANALYSIS` and Stage 9 `ASM CLOSURE`), consuming preserved W3 V2 FLOW records, decoding Genesis VDP control commands, register state, DMA operations (68K_BUS, FILL, COPY), memory-to-VDP producer provenance, candidate ROM graphics ranges, verifying S8 frame-779 regression with zero conflicts, and emitting the 6 authoritative artifacts (`postrun_vdp_analysis.json`, `postrun_vdp_registers.json`, `postrun_vdp_dma.json`, `postrun_vdp_provenance.json`, `postrun_vdp_candidates.json`, `postrun_vdp_receipt.json`).
+`tests/live_forward_vdp_stage_test.py` covers 14 comprehensive tests (Tests A–N) verifying W3 V2 record consumption, complete two-word VDP command decoding, incomplete command fail-closed handling, register write decoding, VRAM/CRAM/VSRAM target distinction, exact DMA parameter derivation, non-exact DMA classification, equality-only causality rejection, frame/segment identity enforcement, S8 frame-779 regression with 0 conflicts, candidate ROM range clustering without promotion, source-owned invariance, idempotent deterministic receipt emission, automatic pipeline progression, and the 500-line limit across all governed files.
+
+# M12 Post-Run Audio Analysis Stage V1
+
+`tools/bizhawk-native-ring/live_forward_audio_stage.py` implements the repository-native post-run audio analysis stage (placed between Stage 6 `CONTROL PROVENANCE` and Stage 8 `ASM CLOSURE`), consuming preserved W3 V2 FLOW records, performing exact resource recognition and W5 roundtrip decode/encode verification for accepted resources (Resource 1 `0x0BD540..0x0BF768` and Resource 2 `0x0BC95C..0x0BD540`), verifying Level 3 strict causal chains with provenance tags, clustering newly discovered banked ROM reads into non-promoted candidate ranges, and emitting the 4 authoritative artifacts (`postrun_audio_analysis.json`, `postrun_audio_candidates.json`, `postrun_audio_provenance.json`, `postrun_audio_receipt.json`).
+`tests/live_forward_audio_stage_test.py` covers 11 comprehensive tests (Tests A–K) verifying clean execution, exact resource recognition, byte-exact W5 roundtrip, Level 3 strict causal provenance, candidate clustering without promotion, source-owned invariance, zero fallback defaults, deterministic receipts generation, pipeline progression, schema validity, and the 500-line limit across all governed files.
+
+# M12 Post-Run Pipeline Modernization V1 receipts architecture
+
+`tools/bizhawk-native-ring/live_forward_postrun_receipts.py` generates all eight authoritative post-run receipts (`postrun_map_refresh_receipt.json`, `postrun_control_provenance_receipt.json`, `postrun_audio_receipt.json`, `postrun_vdp_receipt.json`, `postrun_asm_closure_receipt.json`, `postrun_full_rom_audit.json`, `postrun_cleanup_receipt.json`, `postrun_final_receipt.json`) deterministically from pipeline artifacts without fallback defaults, authoritatively deriving Stage 7 promotion deltas and pipeline deltas.
+`tests/live_forward_postrun_receipts_test.py` covers unit tests verifying deterministic generation, schema conformance, fail-closed validation, non-zero Stage 7 promotion derivation, and synthetic zero-promotion fail-closed semantics.
+
+# M12 W5d functional audio validation and listening test V1
+
+`src/tools/thor_evidence/w5_audio_functional.py` implements the functional audio validation and listening pipeline, including raw PCM and WAV preview export, timing analysis, checksum-conserved semantic mutation within the early-boot witness window, emulator execution, standalone prediction vs hardware DAC verification, and report generation.
+`tests/w5_audio_functional_test.py` covers 11 focused functional tests (Tests A–K) verifying header rejection, exact stream boundaries, deterministic PCM SHA, isolation, WAV format fidelity, timing classification, semantic mutation encoding, temp ROM checksum conservation, modified emulator DAC stream prediction with 0 mismatches, and canonical ROM immutability.
+
+# M12 W5c exact audio resource ownership and canonical promotion V1
+
+`src/tools/thor_evidence/w5_audio_promote.py` implements the canonical promotion engine for reconstructed audio resources `AUDIO_RESOURCE_FORMAT_A_0001` and `AUDIO_RESOURCE_FORMAT_A_0002` into the canonical ROM knowledge map, handling set-theoretic overlap reconciliation, parent emission tri-split, KnowledgeStore insertion, idempotence validation, and map/report re-export.
+`src/tools/thor_evidence/w5_audio_ownership_receipt.py` generates the 7 required W5c acceptance artifacts in `build/m12-w5-acceptance/`.
+`tests/w5_audio_ownership_test.py` covers 20 unit and integration tests (Tests A–T) verifying ownership eligibility, overlap reconciliation, partition split, dry-run invariants, canonical tooling execution, idempotence, diff accuracy, fail-closed boundaries, and ADR compliance.
+
+# M12 W5 exact audio resource format and round-trip V1
+
+`src/tools/thor_evidence/w5_audio_format.py` provides the data model, delta lookup tables, bank base mapping, descriptor parsing, and canonical Intermediate Representation (IR) for Beyond Oasis non-linear delta-PCM audio (Format A).
+`src/tools/thor_evidence/w5_audio_decode.py` implements pure deterministic decoding of compressed audio data into canonical IR tokens and PCM sample streams for both Mode 0 (standard) and Mode 1 (hold/interpolate).
+`src/tools/thor_evidence/w5_audio_encode.py` implements pure deterministic encoding from canonical IR tokens back to byte-identical original ROM binary streams without reading original ROM bytes.
+`src/tools/thor_evidence/w5_audio_pipeline.py` orchestrates bank descriptor discovery, resource selection, decode, encode, byte-identical round-trip verification, witness alignment, and emission of the 9 acceptance artifacts in `build/m12-w5-acceptance/`.
+`tests/w5_audio_format_test.py` covers 18 unit and integration tests (Tests A–R) verifying format semantics, bank parsing, boundary proof, witness alignment, byte-identical round-trip, multi-bank generality, and gate audit.
+
+# M12 W4 active audio resource analysis V1
+
+`src/tools/thor_evidence/w4_audio_sink.py` tracks hardware audio ports (YM2612 ports 0x4000-0x4003, PSG port 0x7F11), enforces port-local address latch pairing (0x4000->0x4001, 0x4002->0x4003) without cross-port leakage, and identifies DAC data (reg 0x2A) and enable (reg 0x2B) registers.
+`src/tools/thor_evidence/w4_z80_dataflow.py` tracks exact Z80 register, stack, and memory dataflow provenance, supporting instruction transfers with conservative termination on unsupported opcodes.
+`src/tools/thor_evidence/w4_audio_provenance.py` implements the 4 causal levels (Level 0 Temporal, Level 1 Memory last-writer, Level 2 Dataflow, Level 3 Strict Causal Chain), driver hotspot analysis, ROM clustering, candidate resource classifications, and directed provenance graph generation.
+`src/tools/thor_evidence/w4_audio_pipeline.py` provides the end-to-end pipeline generating the 9 canonical acceptance artifacts in `build/m12-w4-acceptance/`.
+`tests/w4_audio_analysis_test.py` covers unit tests for port-local pairing, DAC/PSG identification, last-writer verification, Z80 dataflow provenance, and artifact generation.
+
+# M12 W3 Z80 co-capture + cross-CPU timeline
+
+`tools/bizhawk-native-ring/live_forward_z80_trace.c` implements native Z80 instruction
+capture and Z80 bus event sidebands (RAM, banked ROM, YM2612, PSG, bank register).
+`tools/bizhawk-native-ring/genesis-plus-gx-z80-cocapture-v1.patch` and
+`tools/bizhawk-native-ring/bizhawk-2.11.1-z80-cocapture-v1.patch` contain the external
+GPGX and BizHawk patch chains for Z80 execution loop, memory, and bank hooks.
+`tests/live_forward_z80_test.cpp` provides the 22 required C tests A–V for Z80 capture,
+banked ROM physical resolution, cross-CPU master_time ordering, and M68K regression.
+`src/tools/thor_evidence/w3_z80_evidence.py` provides lossless V2 48-byte record decoding,
+stream iteration, and Genesis Z80 bank register tracking.
+`src/tools/thor_evidence/w3_cross_cpu_timeline.py` builds the cross-CPU common master_time
+timeline and validates exact causal interactions across 68K and Z80.
+`src/tools/thor_evidence/w3_z80_classification.py` classifies low-level primitive facts
+(Z80 RAM, Banked ROM, YM2612, PSG, 68K Z80-window writes) without song/instrument semantics.
+`tests/w3_z80_evidence_test.py` validates the Python analysis layer with 13 unit tests.
+
+# M12 S8 proven logical VDP frame
+
+`src/tools/re_bizhawk_m12_vdp_frame.lua` is a read-only BizHawk capture for
+one coherent frame's ordered VDP register writes and complete VRAM/CRAM/VSRAM.
+`src/tools/m12_vdp_frame_artifact.py` reuses the S1 tile/attribute decoder,
+renders Plane A, Plane B, Window and backdrop, and composes the S7 sprite
+raster with per-pixel provenance. `tests/m12_vdp_frame_artifact_test.py`
+covers the A–U S8 contract. Generated capture and frame JSON remain ignored
+runtime artifacts under `build/m12-gfx-runtime`.
+
+# M12 S7 proven sprite scanline raster
+
+`src/tools/m12_sprite_scanline_raster.py` reads the unchanged S6 frame and
+observed VDP mode evidence, derives H32/H40 limits, evaluates each scanline
+in SAT-link order, and emits `hardware-sprite-raster-v1` with logical and
+hardware-filtered matrices plus per-pixel suppression provenance.
+`tests/m12_sprite_scanline_raster_test.py` covers synthetic count, dot-budget,
+transparency, offscreen, masking, flip, mode, determinism, and fail-closed
+boundaries. The generated raster and mode-derived evidence remain ignored
+runtime artifacts under `build/m12-gfx-runtime`.
+
+# M12 S6 proven hardware sprite frame
+
+`src/tools/m12_sprite_frame_artifact.py` consumes the S5 piece catalog,
+validates a complete SAT-link traversal, and emits the deterministic
+`hardware-sprite-frame-v1` JSON proof with exact tile/CRAM records, sprite-only
+composition matrices, and pixel-level provenance. `tests/m12_sprite_frame_artifact_test.py`
+covers the A–N fail-closed frame contract. The generated frame artifact is an
+ignored runtime file under `build/m12-gfx-runtime`.
+
+# M12 S5 SAT persistence and causality
+
+`src/tools/m12_sprite_piece_catalog.py` now distinguishes
+`DIRECT_PUBLICATION` from `PERSISTED_FROM_PUBLICATION`, proves SAT and shadow
+persistence only under complete supported mutation coverage, and retains
+entry-specific causal status. `tests/m12_sprite_persistence_test.py` covers
+the A–L persistence contract. S5 mutation receipts are emitted by the
+developer-only BizHawk capture and remain under `build/m12-gfx-runtime`.
+
+# M12 S4 sprite evidence gap closure
+
+`src/tools/m12_sprite_evidence_gap.py` produces the exact reason histogram,
+frame/SAT-entry and shape distributions, before/after classification counts,
+and measured capture-cost report. `tests/m12_sprite_evidence_gap_test.py`
+covers the A–L gap-closure contract. The expanded S3/S4 capture records
+bounded SAT-window DMA segments with source offsets and event sequences.
+
+# M12 S3 hardware sprite piece catalog
+
+`src/tools/m12_sprite_piece_catalog.py` classifies each `(run_id, frame,
+SAT-entry)` observation as PROVEN, INCOMPLETE, OBSERVED_LINKAGE_ONLY, or
+CONFLICT, preserving exact multi-tile/CRAM evidence and deterministic semantic
+fingerprints. `tests/m12_sprite_piece_catalog_test.py` covers the A–L
+fail-closed catalog contract. The generated catalog and capture remain ignored
+runtime artifacts under `build/m12-gfx-runtime`.
+
+# M12 S2 hardware sprite piece
+
+`src/tools/re_bizhawk_m12_sprite_piece.lua` is a developer-only, read-only
+BizHawk witness capture for one same-frame producer → shadow SAT → VRAM SAT →
+VRAM tile → CRAM chain. `src/tools/m12_sprite_piece_artifact.py` validates the
+capture and emits the compact `hardware-sprite-piece-v1` JSON proof using the
+S1 Genesis decoder. `tests/m12_sprite_piece_artifact_test.py` covers the A–K
+fail-closed contract.
 
 # THOR M12 AUTO64.1 invariant repair
 
@@ -130,6 +387,10 @@ Implementation, runtime evidence and final audit are recorded in
 adapter for current 48-byte and legacy 32-byte Worker rows; missing legacy
 fields remain explicitly unavailable and the session audit retains exact raw
 bytes and width-aware offsets.
+
+`live_forward_rom_link_runtime.py` gates post-run analysis on a sealed
+interactive stop outcome; `tests/live_forward_rom_link_runtime_test.py` keeps
+preflight rejection from opening a misleading analyzer failure window.
 
 `docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2C.md` and its compact JSON
 receipt record the Phase 0 classification of the saved 2B FLOW_V1 evidence.
@@ -1570,7 +1831,12 @@ receipt is in
 `docs/reports/THOR_M12_AUTO67_BIZHAWK_NATIVE_RING_BRIDGE_1C_WORKER_INPUT_TRACE.md`.
 
 `tools/bizhawk-native-ring/live_forward_trace.[ch]` records one shared native
-execution stream; `live_forward_pool.c` owns checked dynamic pool allocation,
+execution stream; its W1 sideband API preserves the fixed record ABI for bus
+and frame events. The isolated GPGX checkout adds
+`core/debug/live_forward_bus.c` for memory-map domain resolution and hooks
+top-level 68K data accesses in `core/m68k/m68kcpu.h`; `cinterface.c` marks
+authoritative frame advancement. `tests/live_forward_sideband_test.cpp`
+covers ordered native event encoding. `live_forward_pool.c` owns checked dynamic pool allocation,
 identity tables and memory plans; `live_forward_metrics.c` exports aggregate
 and per-slot transition counters; `live_forward_worker.c` owns the Worker lifecycle,
 bounded memory/retention termination, exact-range sealing, and immutable ACK
@@ -1578,7 +1844,10 @@ contract; `live_forward_flow.c` classifies M68K control flow. `live_forward.cmak
 builds developer-only native tests, including a 100-cycle-per-slot regression;
 `live_forward_scaling.lua` and `live_forward_scaling_runtime.py` run progressive
 scaling rounds and require two identical binary audits, per-slot transition
-counters and exact ACK before slot reuse. `live_forward_scaling_audit.py`
+counters and exact ACK before slot reuse. `live_forward_scaling_stream.py`
+tails the replaceable status stream without retaining cycle history, while
+`live_forward_scaling_campaign.py` owns progressive count selection and its
+CLI. `live_forward_scaling_audit.py`
 checks IDs, stream sequence, depth, bounds and immutable copies.
 `live_forward_runtime.lua` and `live_forward_runtime.py` run and verify the
 single-Worker 1A proof. The
@@ -1595,6 +1864,44 @@ natural 128 and forced 256 stop before immutable reread when CPU execution
 stalls. Per-count logs and audit JSONL files remain under the ignored
 `build/thor-evidence/live-forward-worker-1b/` directory. This path does not
 alter the live AUTO67 runner or Cartographer.
+
+W1 native bus-event acceptance extends that developer-only path with the
+canonical `*native-bus-event-sideband-v1.patch` pair and the
+`*native-bus-event-sideband-v1-observability.patch` pair. The isolated GPGX
+source owns bus hooks, map-domain resolution, event schema and frame emission;
+the managed patch exposes only the frame-boundary witness API. The
+`live_forward_sideband_probe.lua` and `run_sideband_probe.py` files run the
+real micro probe; `run_counted_w1_acceptance.py` owns the exact final 128-Worker
+record-count receipt. Exact source, build, 128-Worker, control-flow A/B,
+witness and measured-cost evidence is recorded in
+`docs/reports/THOR_M12_NATIVE_BUS_EVENT_SIDEBAND_V1.md`; raw receipts remain
+under the ignored `build/m12-w1-acceptance/` tree.
+
+W2 active-resource classification is worker-side only. `w2_resource_classification.py`
+preserves copied W1 event fields, classifies only mapped primitive bus facts,
+groups events by exact instruction sequence, emits bounded deterministic
+candidates and conservative shadow-SAT/Z80 reports. `w2_vdp_decoder.py`
+decodes observed VDP register/control writes and exact CPU DMA programming
+fields without claiming internal DMA bytes. `run_w2_active_resource_classification.py`
+reuses the audited scaling callback for a fresh short real-runtime receipt;
+`tests/w2_active_resource_classification_test.py` covers the A–Q W2 contract.
+The report is `docs/reports/THOR_M12_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1.md`
+with ignored raw output under `build/m12-w2-acceptance/`. This path does not
+modify W1 capture, Worker scheduling, S1–S8 artifacts, or `SOURCE_OWNED`.
+
+W2.1 frame-coherent evidence adds only segment-level `entry_frame` and
+`exit_frame` snapshots to the accepted GPGX result metadata. The incremental
+source-of-truth patches are
+`tools/bizhawk-native-ring/*worker-frame-coherent-v1.patch`; the authoritative
+counter remains W1's `frame_number`. `w2_frame_coherence.py` partitions only
+when contained FRAME_BOUNDARY markers prove the transition, otherwise it emits
+`MULTI_FRAME_UNRESOLVED`. `run_w2_frame_coherent_evidence.py` records exact
+`(run_id, epoch, frame)` identity in W2 facts and keeps S1–S8 bridging
+read-only. Its focused tests are in
+`tests/w2_frame_coherent_evidence_test.py`; the acceptance report is
+`docs/reports/THOR_M12_WORKER_FRAME_COHERENT_EVIDENCE_V1.md` with ignored raw
+output under `build/m12-w2-1-acceptance/`. This adds no graphics semantics or
+Z80 implementation and keeps `SOURCE_OWNED` unchanged.
 
 # M12 AUTO67 Worker-clean boundary (2026-09-15)
 
@@ -1873,3 +2180,385 @@ closed-only cleanup lifecycle; blob 51 is now closed and consumed.
   the existing staged canonical publisher, runs self-checks and idempotent
   replay, writes an experiment-closure receipt, and deletes only that receipt's
   exact source path through `cleanup --closed-only`.
+under `build/thor-evidence/`. The optional desktop `--until-closed` mode keeps
+the same Worker/1B lifecycle and bounded 2H window active until EmuHawk exits;
+`live_forward_segment_spool.py` appends individually host-audited FLOW_V1 bytes
+and segment indexes with constant-memory bookkeeping. It stops cleanly at a
+1 GiB free-disk reserve, labeled separately from RAM in the status window, and
+does not run Cartographer/Archivist or claim a bounded campaign PASS. The
+normal bounded 2B proof path remains unchanged.
+`live_forward_scaling_stream.py` tails the append-only Lua status stream and
+preserves SEG, LIFECYCLE, and round-ACK ordering during host validation so a
+single read spanning adjacent rounds cannot validate an older lifecycle receipt
+against already-advanced counters.
+The 2H Worker rows show per-Worker start, completion, ACK, host-audited capture,
+and latest/cumulative FLOW_V1 record counts; the host publisher copies these
+summaries only for the currently visible status page.
+Its operating limits and verification record are in
+`docs/reports/THOR_M12_LIVE_WORKER_INTERACTIVE_MODE.md`.
+# M12 2I post-run orchestration
+
+The developer-only live-forward tools now include `live_forward_rolling_master.py`
+for compact, hash-bound FLOW_V1 rolling generations and
+`live_forward_postrun_window.py` for the post-run stage/result window. The
+existing Worker Control window publishes a single idempotent `END GAME`
+request; Lua consumes it only between complete rounds and closes EmuHawk
+through the supported exit path.
+
+`live_forward_progress.py` owns the atomic post-run heartbeat/status contract;
+`live_forward_postrun_window.py` renders determinate or indeterminate stage
+progress, heartbeat age, partial/full terminal state, and a separate DETAILS
+view. `live_forward_rolling_master.py` publishes snapshots while auditing and
+compacting the sealed FLOW run.
+# M12 end-game post-run stages 5–9 (2I.2)
+
+`tools/bizhawk-native-ring/live_forward_complete_pipeline.py` is the single
+post-run coordinator after rolling-master compaction. It builds a closed
+session only from sealed ordered FLOW, performs an atomic canonical generation
+refresh when accepted inputs exist, checks ordered control provenance, and
+stops before unsupported reconstruction or destructive cleanup. It reuses the
+2I.1 `live_forward_progress.py` status contract. Regression coverage is in
+`tests/live_forward_complete_pipeline_test.py`.
+# M12 2I.2a terminal post-run state
+
+`tools/bizhawk-native-ring/live_forward_progress.py` owns the single terminal
+finalizer and status invariants. It distinguishes RUNNING/UNRESPONSIVE from
+terminal COMPLETE, PARTIAL_COMPLETE, STOPPED and FAILED states, and records
+BLOCKED stages after a mandatory STOP/ERROR. The post-run window maps terminal
+states to backend-complete or backend-stopped text without a false heartbeat
+warning. Deterministic coverage is in
+`tests/live_forward_postrun_progress_test.py`.
+### M12 Stage 5 refresh additions
+
+`tools/bizhawk-native-ring/live_forward_complete_pipeline.py` owns the
+run-scoped compact FLOW session, exact ROM-range linkage, canonical ownership
+audit, and atomic post-run generation publication. The Stage 5 regression
+coverage is in `tests/live_forward_stage5_test.py`.
+* `src/tools/thor_evidence/map_driven_asm_closure.py` — pure 2F/2I.3 closure
+  gates and deterministic ownership partition rules.
+* `src/tools/thor_evidence/map_driven_asm_stage7.py` — current canonical
+  generation Stage 7 coordinator; Stage 8 is invoked by the post-run
+  coordinator after the atomic Stage 7 terminal receipt.
+* `src/tools/thor_evidence/stage7_subprocess.py` — bounded Stage 7/8 external
+  tool runner with heartbeat-safe output tails and separate fail-closed
+  Stage 7/Stage 8 timeout codes.
+* `tests/map_driven_executed_asm_closure_test.py` — historical synthetic 2F
+  proof gates; `tests/map_driven_stage7_test.py` — Stage 7 artifact split
+  regression; `tests/stage7_subprocess_test.py` — event-driven wait, pipe
+  draining, timeout, crash and kill-fallback regressions.
+
+* `tools/bizhawk-native-ring/live_forward_control_provenance_stage.py` — receipt-bound Stage 6 ordered-FLOW scan and structured lifecycle result.
+* `tests/live_forward_control_provenance_stage_test.py` — Stage 6 NO_DELTA and fail-closed consumer contract tests.
+
+* `src/tools/thor_evidence/map_driven_stage7_preflight.py` — lineage-bound
+  Stage 7 canonical map versus emission-manifest authority resolution and
+  diagnostic receipt generation.
+* `tests/map_driven_stage7_preflight_test.py` — matching and fail-closed
+  emission-partition preflight regressions.
+* `tests/live_stage7_stage8_stage9_contract_test.py` — structural handoff
+  contract ensuring Stage 7 returns before Stage 8 and Stage 9 cleanup.
+
+* `tools/bizhawk-native-ring/live_forward_control_provenance_stage.py` —
+  Stage 6 diagnostic receipt, integrity-stop classification, and unresolved
+  consumer NO_DELTA contract.
+* `tools/bizhawk-native-ring/live_forward_postrun_window.py` — exact STOP/ERROR
+  code rendering in the current-stage and stage-list UI.
+* `tests/live_forward_control_provenance_stage_test.py` — unresolved-consumer
+  NO_DELTA and FLOW-corruption STOP regressions.
+
+# M12 Stage 9 absorbed raw permanent reclaim 2I.5
+
+`tools/bizhawk-native-ring/live_forward_absorption_cleanup.py` owns the
+fail-closed absorption proof, semantic-equivalence audit, atomic delete
+manifest/receipt publication, bounded WinError 32 retry and direct permanent
+deletion of only run-scoped redundant artifacts. The accepted rolling master,
+canonical map, Stage 5–8 receipts, final report/status and ROM remain protected.
+`tests/live_forward_absorption_cleanup_test.py` covers lineage/stage gates,
+semantic failure, permanent deletion, lock retry/stop, replay idempotence,
+protected paths and post-delete integrity. Cleanup UI details are rendered by
+`tools/bizhawk-native-ring/live_forward_postrun_window.py`.
+
+## M12 RAM migration R1 shadow representation
+
+`tools/bizhawk-native-ring/master_v2_shadow.py` is a read-only shadow encoder
+for the accepted rolling master and canonical map. It produces a deterministic
+self-contained container with streamed sections for rolling facts, canonical
+map, canonical knowledge/ownership/emission and normalized Stage 5–9 outcomes.
+The footer verifies section hashes and the overall logical content hash. It
+never writes `current.json`, deletes legacy artifacts, or changes runtime
+capture and cleanup authority. `tests/master_v2_shadow_test.py` covers
+round-trip equality, deterministic bytes, corruption/missing-section rejection
+and legacy pointer preservation.
+
+## M12 RAM migration R2 — MASTER V2 canonical read authority
+
+- `tools/bizhawk-native-ring/master_canonical_view.py` — single canonical
+  access layer backed by verified MASTER V2 sections; provides map objects,
+  ranges, instruction facts, runtime relations, ownership/emission partition,
+  lineage and legacy-pointer shadow verification, plus stage-local SQLite
+  materialization.
+- `tests/master_canonical_view_test.py` — API, relation, ownership,
+  materialization and legacy-shadow contract tests.
+- `build/thor-evidence/master-v2-shadow-r2/` — ignored R2 shadow and current
+  pointer evidence; legacy canonical files remain the comparison authority.
+
+## M12 RAM migration R3 — provenance and outcomes authority
+
+- `tools/bizhawk-native-ring/master_outcome_view.py` — verified read API for
+  MASTER V2 provenance, Stage 5–9 outcomes and absorbed-run history; missing or
+  corrupt sections fail closed without a legacy fallback.
+- `tests/master_outcome_view_test.py` — projection, corruption and authority
+  contract tests.
+- `build/thor-evidence/master-v2-shadow-r3/` — ignored R3 shadow container,
+  deterministic acceptance report and authority pointer; legacy receipts stay
+  present for shadow comparison.
+
+## M12 RAM migration R4 — MASTER V2 startup authority
+
+- `tools/bizhawk-native-ring/master_startup_authority.py` — fail-closed
+  MASTER V2 plus canonical ROM startup validator, explicit legacy shadow mode,
+  startup IO metrics and deterministic N+1 candidate boundary.
+- `tools/bizhawk-native-ring/live_forward_rom_link_runtime.py` — optional
+  `--master-startup` preflight used by the desktop launcher before BizHawk.
+- `tests/master_startup_authority_test.py` — MASTER-only startup, integrity,
+  no-legacy-read and continuation regressions.
+- `build/thor-evidence/master-v2/current.json` — ignored atomic startup pointer;
+  it references the accepted R3 MASTER without replacing legacy artifacts.
+
+## M12 R5 in-process post-run
+
+- `tools/bizhawk-native-ring/live_forward_postrun_coordinator.py` — explicit
+  Stage 1–9 in-process coordinator, context/result objects, and event sink.
+- `tests/live_forward_postrun_coordinator_test.py` — event, background lifetime,
+  STOP/ERROR, and diagnostic snapshot contracts.
+- `tools/bizhawk-native-ring/live_forward_rom_link_runtime.py` — selects the
+  in-process coordinator for MASTER-authorized interactive runs while retaining
+  the old subprocess path.
+
+## M12 V2 run contribution reconciliation
+
+- `tools/bizhawk-native-ring/master_v2_contribution_boundary.py` — run-scoped
+  contribution hashes, apply-once/NO_DELTA/conflict handling, VERIFY_ONLY,
+  forensic no-write replay, and streaming publication of the hashed
+  `run_contributions` MASTER V2 section.
+- `tests/master_v2_contribution_boundary_test.py` — occurrence-safe idempotent
+  replay, conflict, forensic, absorption-gate and SOURCE_OWNED regressions.
+- `build/thor-evidence/historical-run-contribution-ledger.json` — ignored
+  forensic ledger for all historical entries; raw evidence remains external.
+
+## M12 V2 runtime authority
+
+- `tools/bizhawk-native-ring/master_v2_runtime_bridge.py` — materializes a
+  campaign-local rolling scratch from V2 and atomically promotes a sealed
+  post-run contribution back into the current MASTER V2.
+- `build/thor-evidence/master-v2/current.json` and its resolved binary — the
+  single persistent canonical/provenance/outcome read and write authority.
+
+## M12 RAM migration R6 — Stage 5 in-memory Cartographer
+
+- `tools/bizhawk-native-ring/stage5_session_memory.py` — production Stage 5
+  RAM session, exact FLOW aggregation, semantic witnesses, and ephemeral exact
+  decoder adapter.
+- `tools/bizhawk-native-ring/stage5_disk_legacy.py` — retained disk-backed
+  Stage 5 implementation for explicit shadow/regression comparison only.
+- `tools/bizhawk-native-ring/live_forward_complete_pipeline.py` — selects the
+  RAM Stage 5 path while keeping canonical candidate/master publication on
+  disk and releasing the session before Stage 6.
+
+## M12 RAM migration R7 — in-memory FLOW handoff
+
+- `tools/bizhawk-native-ring/flow_stream.py` — bounded ordered FLOW chunks,
+  backpressure, hashes and zero-disk accounting.
+- `tools/bizhawk-native-ring/stage5_stream.py` — incremental Stage 5 RAM
+  consumer that builds the existing `Stage5SessionMemory` contract.
+- `tools/bizhawk-native-ring/flow_handoff_runtime.py` — runtime owner and
+  consumer thread that fans chunks to Stage 5 and control provenance.
+- `tools/bizhawk-native-ring/live_forward_control_provenance_stage.py` —
+  incremental control-provenance consumer with the legacy disk comparator
+  retained.
+- `tests/flow_stream_test.py` — queue ordering, backpressure, hash and failure
+  propagation regressions.
+
+## M12 RAM migration R8 — analysis performance
+
+- `src/tools/thor_evidence/stage7_decode.py` — bounded parallel external
+  candidate decoder with stable ordinal results and fail-closed error capture.
+- `src/tools/thor_evidence/map_driven_asm_stage7.py` — uses the bounded decode
+  batch while retaining ordered proof, promotion and merge.
+- `tools/bizhawk-native-ring/live_forward_postrun_coordinator.py` — publishes
+  post-run timing, throughput, queue/RAM peaks and R7 invariant counters.
+- `tests/stage7_decode_test.py` — stable ordering and decode-error regressions.
+- `tests/stage7_decoder_contract_test.py` — Stage 7 range-tool capability,
+  fail-closed classification, and canonical-ROM decode fixtures.
+- `tests/live_forward_postrun_coordinator_test.py` — performance report and
+  invariant accounting regression.
+
+## M12 R9 — measured decode deduplication and Stage 7 snapshot reuse
+
+- `src/tools/thor_evidence/stage7_decode.py` — complete decode request-key telemetry, duplicate accounting, bounded pool metrics and cross-iteration metric summarization; no persistent cache.
+- `src/tools/thor_evidence/map_driven_asm_stage7.py` — reuses unchanged SQLite snapshots while preserving fresh reads after promotion.
+- `tests/stage7_decode_test.py` — key distinction, duplicate measurement, cross-iteration summary and stable failure/order regressions.
+
+## M12 Worker W6 — sustained live game discovery run and analysis
+
+- `src/tools/thor_evidence/w6_live_discovery.py` — long-run live discovery session orchestrator and wave chunk manager for 128 Workers at depth 512.
+- `src/tools/thor_evidence/w6_discovery_analysis.py` — post-run discovery and novelty analysis engine classifying execution, memory, I/O, VDP, and audio activity against accepted Thor Brain with zero SOURCE_OWNED promotion.
+- `tests/w6_live_discovery_test.py` — unit and integration test suite covering canonical constants, ROM verification, chunk scanning, interval merging, novelty classification, schema verification, and SOURCE_OWNED conservation.
+- `build/m12-w6-live-discovery/` — directory containing 106 raw wave chunks and all 13 canonical discovery artifacts.
+
+## Desktop Worker Control launcher update (W6/W3 coherent runtime)
+
+- `tools/bizhawk-native-ring/live_forward_worker_control_launcher.py` — dedicated desktop launcher script running with zero mandatory arguments, defaulting to 128 workers, depth 512, 512 KiB memory, verified BizHawk install, canonical ROM, and scaling Lua script.
+- `tools/bizhawk-native-ring/live_forward_worker_control.py` — host-side status publisher with updated 512 KiB memory configuration and direct CLI launcher entry point.
+- `tools/bizhawk-native-ring/live_forward_worker_control_model.py` — resource budget and next-run configuration model with defaults updated to 128 workers and depth 512.
+- `tools/bizhawk-native-ring/live_forward_rom_link_runtime.py` — runtime coordinator with modular `build_parser()`, legacy disassembler prerequisites removed/optional, and 48-byte segment spooling for interactive sessions.
+- `tools/bizhawk-native-ring/thor_worker_control_desktop.ps1` — repository PowerShell launcher script backing the Windows desktop shortcut for W6/W3 coherent runtime.
+- `tests/live_forward_worker_control_launcher_test.py` — regression tests for parser defaults, custom parameter overrides, fallback configuration, and launcher callability.
+
+## M12 VDP / DMA Analysis and Durable Real VDP Oracle V2
+
+- `tools/bizhawk-native-ring/live_forward_vdp_stage.py` — fail-closed VDP and DMA analysis stage for M12 post-run pipeline, decoding control commands, registers, DMA operations, and verifying against Durable Real VDP Oracle V2.
+- `tools/bizhawk-native-ring/capture_real_vdp_oracle.py` — capture script using real BizHawk runtime to freeze Durable Real VDP Oracle V2 (`vdp_oracle_v2_f200`) with raw event capture, logical frame artifact, manifest, and receipt.
+- `docs/reports/THOR_M12_VDP_ORACLE_V2_RECEIPT.json` — non-copyrighted checked-in receipt for Durable Real VDP Oracle V2 with SHA256 hashes, metadata, and zero SOURCE_OWNED delta.
+- `tests/live_forward_vdp_stage_test.py` — unit and regression test suite verifying VDP/DMA decoding, register matching, destination domains, DMA classification, and Durable Real VDP Oracle V2 validation.
+# M12 targeted dynamic sprite capture
+
+- `src/tools/re_bizhawk_m12_targeted_dynamic_sprite.lua` — developer-only
+  natural-input BizHawk collector; snapshots the SAT window and accepted
+  `0xFF13CC` shadow range every frame and records shadow write PCs.
+- `src/tools/m12_targeted_dynamic_sat_capture.py` — fail-closed entry-level
+  SAT/shadow diff and writer-window analyzer; does not promote ownership or
+  gameplay semantics.
+- `tests/m12_targeted_dynamic_sat_capture_test.py` — focused analyzer
+  regression tests.
+# M12 dynamic SAT producer backtrace
+
+- `src/tools/re_bizhawk_m12_dynamic_sat_backtrace.lua` — developer-only
+  runtime register/source capture for the bounded `0xB74E..0xB78C` producer.
+- `src/tools/m12_dynamic_sat_producer_backtrace.py` — static decode, exact
+  ROM-source transform, multi-frame validation, and four-artifact receipt.
+- `tests/m12_dynamic_sat_producer_backtrace_test.py` — writer mapping and
+  transform regression tests.
+- `docs/reports/THOR_M12_DYNAMIC_SAT_PRODUCER_BACKTRACE_V1.md` — checkpoint
+  report and evidence boundary.
+
+# M12 dynamic SAT ROM index / A0 provenance
+
+- `src/tools/m12_dynamic_sat_rom_index_provenance.py` — fail-closed analyzer
+  for A0 reaching definitions, ROM-index decomposition, caller candidates,
+  and multi-frame provenance receipt.
+- `docs/reports/THOR_M12_DYNAMIC_SAT_ROM_INDEX_A0_PROVENANCE_V1.md` — STOP
+  report preserving the unresolved B730-entry caller boundary.
+
+# M12 dynamic SAT caller-side A0 provenance
+
+- `src/tools/m12_dynamic_sat_caller_a0_provenance.py` — caller-side A0
+  backtrace analyzer and multi-frame receipt.
+- `docs/reports/THOR_M12_DYNAMIC_SAT_CALLER_A0_PROVENANCE_V1.md` — accepted
+  caller/control-transfer and A0 reaching-definition report.
+
+# M12 dynamic SAT selector / A6 provenance
+
+- `src/tools/m12_dynamic_sat_selector_a6_provenance.py` — A6 field writer,
+  selector-to-ROM mapping, and multi-frame provenance analyzer.
+- `docs/reports/THOR_M12_DYNAMIC_SAT_SELECTOR_A6_PROVENANCE_V1.md` — accepted
+  selector/A6 provenance report.
+
+# M14.7B normalized-generic v2 adapter
+
+- `src/tools/thor_evidence/normalized_v2_canonical_adapter.py` streams only
+  producer-defined primary `records[]`, maps exact existing M68K instructions,
+  preserves per-ordinal evidence provenance, and accounts unresolved/rejected
+  records without skipping.
+- `src/tools/thor_evidence/rom_knowledge_hash_stream.py` computes existing
+  canonical logical hashes directly from ordered SQLite rows with bounded
+  memory.
+- `src/tools/thor_evidence/rom_knowledge_fusion_stream.py` provides the shared
+  large-JSON reader and bounded structural skipping used by the normalized-v2
+  adapter.
+- `tests/normalized_v2_canonical_adapter_test.py` covers primary-array
+  accounting, exact instruction linking, unresolved/rejected preservation,
+  replay idempotence, hash compatibility, and staged canonical publisher
+  integration.
+# Runtime ROM property map v1
+
+- `src/tools/thor_evidence/runtime_rom_properties.hpp/.cpp` implement the
+  dense observed-property map, dirty pages, range conversion, identity checks,
+  versioned checkpoint codec, atomic checkpoint persistence, and rebuildable
+  compatible-run unions.
+- `src/tools/thor_evidence/runtime_rom_observation.hpp/.cpp` validate supported
+  M68K decoder spans, exact physical-offset data reads, captured Z80 byte
+  spans, exact-copy RAM origins, and consumed VDP source bytes.
+- `src/tools/thor_evidence/runtime_rom_properties_contract.json` is the pinned
+  bit-level proof and rejection contract. Its exact SHA-256 is embedded in the
+  checkpoint schema.
+- `src/tools/thor_evidence/runtime_rom_properties_tool.cpp` exports complete
+  `[start,end)` property ranges and merges per-run checkpoint contributions
+  with identity checks and a source-file checksum manifest.
+- `src/tools/thor_evidence/runtime_rom_map_integration.py` validates range
+  exports and overlays their property masks on canonical boundaries while
+  preserving canonical ownership.
+- `tools/bizhawk-native-ring/rom_properties_core.c/.h` provide the native
+  property bitmap, counters, dirty pages, and exact-span collector used by
+  instrumented GPGX.
+- `tools/bizhawk-native-ring/rom_properties_runtime.c/.h` adapt pinned M68K,
+  Z80, direct VDP DMA, completed same-instruction ROM `MOVE.W` data-port
+  writes, and exact Format-A decoder reads to fail-closed physical ROM offsets.
+- `tools/bizhawk-native-ring/apply_runtime_rom_properties_v1.py` applies the
+  pinned BizHawk/GPGX integration; `GPGX.LiveRomProperties.cs` and
+  `runtime_rom_properties_capture.lua` expose bounded post-run map export.
+  `runtime_rom_properties_parity.lua` records per-frame M68K/Z80 registers,
+  deterministic RAM markers, and RAM hashes; `runtime_rom_properties_acceptance.py`
+  runs matched parity and performance samples while restoring the corrected
+  core afterward. `runtime_rom_properties_scenario_capture.lua` runs a bounded,
+  deterministic input schedule and exports an independently identified map.
+  `runtime_rom_properties_parity.lua` records bounded per-frame M68K/Z80
+  registers, deterministic RAM markers, and RAM hashes for parity runs.
+- `cmake/runtime_rom_properties_core.cmake` and
+  `tests/runtime_rom_properties_core_test.c` build and test the native C map.
+- `cmake/project_tests.cmake` holds test and test-tool target declarations
+  separated from the root build file to keep each CMake source below 500 lines.
+- `tests/runtime_rom_properties_tool_test.py` also tests strict live hex import
+  into a ROM/core-identified checkpoint.
+- `tests/runtime_rom_properties_z80_arg16_test.py` guards two operand-byte
+  reads, exact Z80 PC advancement by two, and following-opcode alignment.
+- `tests/runtime_rom_properties_vdp_hook_test.py` guards the Mode 5 CPU data
+  port hook and its same-instruction source gate.
+- `tests/runtime_rom_properties_audio_hook_test.py` guards the existing Z80
+  banked-read hook, exact decoder PCs, and Format-A source bounds.
+- `tests/runtime_rom_properties_graphics_hook_test.py` guards the completed
+  `0x3820` input-span contract, exact ROM continuity checks, and compressed
+  graphics property declaration.
+- `tests/runtime_rom_properties_z80_arg16_test.py` guards the patched Z80
+  two-byte operand read, exact PC advance, and following-opcode alignment.
+- `tests/runtime_rom_properties_test.cpp` and
+  `tests/runtime_rom_map_integration_test.py` cover maps, checkpoint integrity,
+  merge algebra, supported instruction spans, origins, range coverage, and
+  canonical ownership invariance.
+- `tests/runtime_rom_properties_fixture.cpp` and
+  `tests/runtime_rom_properties_tool_test.py` exercise checkpoint merge,
+  source manifest checksums, CLI range export, duplicate-run rejection, and
+  incompatibility rejection end-to-end.
+- `docs/ROM_PROPERTY_MAP.md` defines proof contracts and implementation
+  boundaries.
+- `docs/reports/THOR_RUNTIME_ROM_PROPERTIES_RESEAL_20260927.md` records the
+  corrected runtime manifest/checkpoint identity, exact replay results,
+  bounded parity, repeated A/B/C performance measurements, and M2–M9 status.
+- `docs/reports/THOR_RUNTIME_ROM_PROPERTIES_EXPANSION_20260927.md` records the
+  longer corrected-runtime capture, exact range replay and read-only canonical
+  overlay, expanded direct-class coverage, and remaining proof gaps.
+- `docs/reports/THOR_ROM_PROPERTY_CONSUMER_CLASSIFICATION_20260927.md` records
+  the bounded direct-VDP and audio consumer iterations, fresh audio checkpoint
+  replay, classified-coverage delta, parity, and benchmark limitations.
+- `docs/reports/THOR_ROM_PROPERTY_GRAPHICS_CONSUMER_20260927.md` records the
+  live `0x3820` compressed-source property, sealed checkpoint, exact replay,
+  bounded parity, and map-off/map-on timing.
+- `tools/bizhawk-native-ring/rom_coverage_gui.py` displays sealed property
+  checkpoints in a read-only address-ordered Defraggler-style grid, with
+  separate observed-only and proven-class coverage, baseline-gated coverage
+  and class deltas, responsive legend wrapping, and exact hover details;
+  `rom_coverage_model.py` validates checkpoint/overlay identities and computes
+  byte-accurate cell states, coverage summaries, and filters.
+- `tests/rom_coverage_model_test.py` covers checkpoint integrity, overlay
+  pairing, exact cell partitioning, overlapping properties, coverage deltas,
+  and property filters.

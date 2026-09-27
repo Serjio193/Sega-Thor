@@ -1,0 +1,170 @@
+{
+  "schema": "thor.rom-properties.v1",
+  "offset_model": "physical-ROM-byte-offset; half-open spans; exact ROM SHA-256 required",
+  "unknown": "property mask zero means not proven; never means unused",
+  "merge": "bitwise OR only after exact ROM, schema, contract, core, capability, and validation compatibility",
+  "properties": [
+    {
+      "bit": 0,
+      "name": "M68K_EXECUTED_ENCODING",
+      "positive": "completed instruction; decoder-exact encoding span; every byte resolves to this physical ROM",
+      "reject": [
+        "PC-only",
+        "opcode-only",
+        "prefetch-only",
+        "next_pc_minus_pc",
+        "exception without completed instruction",
+        "unknown backing",
+        "incomplete decode"
+      ]
+    },
+    {
+      "bit": 1,
+      "name": "Z80_EXECUTED_ENCODING",
+      "positive": "completed instruction; every prefix/opcode/operand byte has byte-exact ROM origin",
+      "reject": [
+        "PC delta",
+        "untracked RAM fetch",
+        "prefix overflow",
+        "ambiguous bank",
+        "incomplete fetch"
+      ]
+    },
+    {
+      "bit": 2,
+      "name": "M68K_DATA_READ",
+      "positive": "completed data read resolved byte-by-byte to physical ROM",
+      "reject": [
+        "instruction fetch",
+        "I/O",
+        "unmapped",
+        "unknown backing",
+        "width or wrap ambiguity"
+      ]
+    },
+    {
+      "bit": 3,
+      "name": "Z80_DATA_READ",
+      "positive": "completed data read resolved through current bank mapping to physical ROM",
+      "reject": [
+        "logical address alone",
+        "RAM",
+        "I/O",
+        "non-ROM handler result"
+      ]
+    },
+    {
+      "bit": 4,
+      "name": "VDP_VRAM_SOURCE",
+      "positive": "exact ROM source bytes consumed by a successful transfer or by a completed same-instruction memory-source MOVE.W with exactly one byte-verified contiguous ROM-word read forwarded unchanged to an accepted Mode 5 VRAM data-port write",
+      "reject": [
+        "command alone",
+        "fill",
+        "VRAM copy",
+        "transformed, register, or immediate source",
+        "multiple or unresolved data reads",
+        "mismatched word",
+        "incomplete instruction",
+        "old-value equality shortcut",
+        "unconsumed partial-transfer bytes",
+        "rounded or masked source extent"
+      ]
+    },
+    {
+      "bit": 5,
+      "name": "VDP_CRAM_SOURCE",
+      "positive": "exact ROM source bytes consumed by a successful transfer or by a completed same-instruction memory-source MOVE.W with exactly one byte-verified contiguous ROM-word read forwarded unchanged to an accepted Mode 5 CRAM data-port write",
+      "reject": [
+        "command alone",
+        "inferred color-bit meaning",
+        "transformed, register, or immediate source",
+        "multiple or unresolved data reads",
+        "mismatched word",
+        "incomplete instruction",
+        "unconsumed bytes"
+      ]
+    },
+    {
+      "bit": 6,
+      "name": "VDP_VSRAM_SOURCE",
+      "positive": "exact ROM source bytes consumed by a successful transfer or by a completed same-instruction memory-source MOVE.W with exactly one byte-verified contiguous ROM-word read forwarded unchanged to an accepted Mode 5 VSRAM data-port write",
+      "reject": [
+        "incomplete command",
+        "unresolved source",
+        "transformed, register, or immediate source",
+        "multiple or unresolved data reads",
+        "mismatched word",
+        "incomplete instruction",
+        "unconsumed bytes"
+      ]
+    },
+    {
+      "bit": 7,
+      "name": "AUDIO_PAYLOAD_PROVEN",
+      "positive": "a byte-exact banked-ROM read at verified Z80 Format-A mode-0 sample decoder sites 0x080E or 0x0855 inside the statically closed resources [0x0BC95C,0x0BD540) or [0x0BD540,0x0BF768); mark only the exact consumed byte",
+      "reject": [
+        "sound-bank membership",
+        "arbitrary Z80 read",
+        "descriptor or control parameter",
+        "driver execution",
+        "temporal proximity to audio sink",
+        "other decoder sites",
+        "reads outside the verified resource spans"
+      ]
+    },
+    {
+      "bit": 8,
+      "name": "COMPRESSED_GRAPHICS_SOURCE",
+      "positive": "completed live call to exact M68K decoder entry 0x3820 with a ROM-backed A0 input; classify exactly the physical ROM bytes in [A0_entry,A0_return) after its RTS",
+      "reject": [
+        "different decoder entry",
+        "incomplete call or exception",
+        "empty or over-64-KiB source span",
+        "non-ROM input",
+        "non-contiguous physical origin",
+        "direct VRAM semantics inferred from compressed bytes"
+      ]
+    }
+  ],
+  "resolver": "resolve every byte against active mapping; split at mapping changes; reject arithmetic overflow, handlers, and out-of-ROM spans",
+  "audio_consumer_contract": {
+    "format": "AUDIO_FORMAT_A_MODE0",
+    "resources": [
+      [
+        "0x0BC95C",
+        "0x0BD540"
+      ],
+      [
+        "0x0BD540",
+        "0x0BF768"
+      ]
+    ],
+    "z80_read_sites": [
+      "0x080E",
+      "0x0855"
+    ],
+    "evidence_sha256": {
+      "w4_live_dac_receipt": "07c2e1e30dcdb30128f2af24cd28309ab80c206e6fd27843dc8076c78d903b04",
+      "w5_primary_resource_ir": "81f8ab3871bd843a7bdaafcdd4478aef35af6737de23a3618afae5a69a39bceb",
+      "w5_secondary_resource_ir": "52424d41266bf493feca37a315c5ed2756a96964f8ed422f7c74db0359a81b0f",
+      "w5_roundtrip_receipt": "01484983b93835f134410e898b9e2ffbf59f63704352de0104e7db61b632499b"
+    },
+    "evidence": "W5 deterministic decoder/inverse-encoder byte-identical round-trip and W4 live YM2612 DAC witness; only the exact runtime-read byte is classified"
+  },
+  "copy_origin": "preserve origin only for explicitly supported byte-copy operations; unsupported writes or transformations clear origin",
+  "execution_origin": "instruction fetch or prefetch alone does not prove execution; only completed decode contract may mark encoding",
+  "graphics_consumer_contract": {
+    "decoder_entry_pc": "0x003820",
+    "decoder_exact_range": [
+      "0x003820",
+      "0x003B3E"
+    ],
+    "source_register": "A0",
+    "extent": "A0 at entry through A0 at successful RTS; exact consumed compressed input",
+    "evidence": "REVERSE_ENGINEERING.md verified decoder boundary and source-pointer postcondition; decoder has no nested call",
+    "evidence_sha256": {
+      "reverse_engineering": "65c14bbb9fd6140fcf72a5ab3eb911866c8a71059a477ecf0752cb54913f1ea1",
+      "native_decoder": "c31d25e7c9a35afba507d643141b1f581b196111303bed8d7fae3d17d8a3118f"
+    }
+  }
+}

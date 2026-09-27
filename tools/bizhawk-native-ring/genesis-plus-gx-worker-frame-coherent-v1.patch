@@ -1,0 +1,23 @@
+diff --git a/core/debug/live_forward_trace.h b/core/debug/live_forward_trace.h
+--- a/core/debug/live_forward_trace.h
++++ b/core/debug/live_forward_trace.h
+@@ -46,5 +46,7 @@
+   uint64_t entry_instruction_sequence;
+   uint64_t exit_instruction_sequence;
+   uint64_t entry_control_flow_sequence;
+   uint64_t exit_control_flow_sequence;
++  uint64_t entry_frame;
++  uint64_t exit_frame;
+   uint32_t worker_id;
+diff --git a/core/debug/live_forward_worker.c b/core/debug/live_forward_worker.c
+--- a/core/debug/live_forward_worker.c
++++ b/core/debug/live_forward_worker.c
+@@ -132,3 +132,4 @@
+   worker->result.exit_stream_sequence = end;
+   worker->result.exit_instruction_sequence = instruction_sequence + 1u;
+   worker->result.exit_control_flow_sequence = control_flow_sequence;
++  worker->result.exit_frame = frame_number;
+@@ -239,2 +239,3 @@
+     worker->result.entry_instruction_sequence = next_instruction;
+     worker->result.entry_control_flow_sequence = control_flow_sequence;
++    worker->result.entry_frame = frame_number;

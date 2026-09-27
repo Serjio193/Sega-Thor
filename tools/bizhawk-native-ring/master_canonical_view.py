@@ -275,13 +275,26 @@ class MasterCanonicalView:
 
 
 def resolve_master_canonical_view(project_root: Path) -> MasterCanonicalView | None:
-    """Resolve the accepted R2 MASTER V2 pointer, verifying its legacy shadow."""
+    """Prefer current MASTER V2, with verified shadow formats as fallback."""
     project_root = Path(project_root).resolve()
     configured = os.environ.get("THOR_MASTER_V2_PATH")
+    current_pointer_path = project_root / "build" / "thor-evidence" / "master-v2" / "current.json"
+    r3_pointer_path = project_root / "build" / "thor-evidence" / \
+        "master-v2-shadow-r3" / "shadow-current.json"
     shadow_root = project_root / "build" / "thor-evidence" / "master-v2-shadow-r2"
     pointer_path = shadow_root / "shadow-current.json"
+    current_authority = False
     if configured:
         candidates = [Path(configured)]
+        current_authority = True
+    elif current_pointer_path.is_file():
+        candidates = [_pointer_target(current_pointer_path)]
+        current_authority = True
+    elif r3_pointer_path.is_file():
+        candidate = _pointer_target(r3_pointer_path)
+        from master_outcome_view import open_outcome_authority
+        open_outcome_authority(candidate)
+        candidates = [candidate]
     elif pointer_path.is_file():
         pointer = json.loads(pointer_path.read_text(encoding="utf-8"))
         candidates = [shadow_root / pointer["path"]]
@@ -294,12 +307,29 @@ def resolve_master_canonical_view(project_root: Path) -> MasterCanonicalView | N
             continue
         try:
             view = MasterCanonicalView(candidate)
-            if not configured:
+            from canonical_map_fallback import CANONICAL_SOURCE_OWNED
+            if view.source_owned_bytes != CANONICAL_SOURCE_OWNED:
+                continue
+            if not current_authority:
                 view.verify_legacy_shadow(legacy_root)
             return view
         except (KeyError, OSError, ValueError, json.JSONDecodeError):
             continue
     return None
+
+
+def _pointer_target(pointer_path: Path) -> Path:
+    pointer = json.loads(pointer_path.read_text(encoding="utf-8"))
+    relative = pointer.get("path")
+    if not isinstance(relative, str) or not relative:
+        raise ValueError("STOP_MASTER_V2_POINTER_PATH_MISSING")
+    root = pointer_path.parent.resolve()
+    candidate = (root / relative).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as error:
+        raise ValueError("STOP_MASTER_V2_POINTER_PATH_ESCAPES_ROOT") from error
+    return candidate
 
 
 __all__ = ["MasterCanonicalView", "resolve_master_canonical_view"]

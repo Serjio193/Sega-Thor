@@ -1,3 +1,151 @@
+# M12 Controlled Entity / Player Provenance V1 — STOP
+
+The automatic `CONTROLLED ENTITY PROVENANCE` stage is implemented after
+`GAMEPLAY RAM / ENTITY CANDIDATES` and before `ASM CLOSURE`. The preserved real
+corpus selected one exact candidate and confirmed controller-port/input-RAM
+observations, but did not close an exact same-control-flow input→selected-entity
+mutation. The stage therefore remains `STOP` with `ENTITY_ROLE =
+ENTITY_CANDIDATE`, `PLAYER_LABEL_PROVEN = NO`, and SOURCE_OWNED delta 0. The
+next step is a new bounded evidence capture that carries controller causality
+through the selected entity record; do not promote or label the candidate before
+that proof.
+
+# M12 Worker W6 — PASS_LONG_LIVE_GAME_DISCOVERY_RUN_V1
+
+Sustained >=10 minute (35,677 frames, 610.5s) live game discovery run executed in
+BizHawk/Waterbox with 128 Workers at depth 512 against canonical Beyond Oasis ROM.
+Natural controller input navigated past early boot into active in-game gameplay.
+Zero health failures (retention failures = 0, dropped = 0, collisions = 0, OOM = 0)
+and clean `STOPPED_END_GAME` shutdown achieved across 106 non-truncated wave chunks
+and 51,233,653 raw records.
+
+Post-run discovery analysis establishes extensive novelty against current Thor Brain:
+4,261 new M68K execution PCs, 284 new Z80 execution PCs, 338 new ROM physical ranges,
+35 new banked ROM ranges, 455 cross-CPU handoff addresses, 2,324 runtime hits on
+known `AUDIO_FORMAT_A_MODE0` Resource 1 (`0x0BD540..0x0BF768`), and 288,650 new
+cross-CPU causal chains. All 13 canonical discovery artifacts are emitted in
+`build/m12-w6-live-discovery/`. Strict SOURCE_OWNED preservation enforced
+(`SOURCE_OWNED_DELTA = 0`, value remains 1,487,388).
+
+# M12 Worker W5 — PASS_EXACT_AUDIO_RESOURCE_ROUNDTRIP_V1
+
+Exact audio resource format `AUDIO_FORMAT_A`, boundary closure, canonical IR, and
+byte-identical round-trip are fully closed and verified end-to-end starting from the
+W4 early-boot DAC witness (`0x0BEDE4`).
+
+The exact Z80 sound driver routines (descriptor parse at `0x0704`, 9-bit bank latch at `0x0A0B`,
+sample loops at `0x080D`/`0x0854`, pointer advancement at `0x0880`, and DAC emission at `0x0968`)
+and bank descriptor tables (16 5-byte entries at `0x8000` of each 32KB audio bank) are verified.
+
+Primary resource `AUDIO_RESOURCE_FORMAT_A_0001` (ROM `0x0BD540..0x0BF768`, 8,744 bytes) strictly
+encloses the W4 DAC witness cluster, with decoded PCM sample at offset 6,308 matching the observed
+runtime DAC write `0x78` exactly. Secondary resource `AUDIO_RESOURCE_FORMAT_A_0002` (ROM `0x0BC95C..0x0BD540`,
+3,044 bytes) and resources across multiple audio banks achieve 100% byte-identical round-trip
+via pure deterministic decoder and encoder modules without reading or storing original binary blobs.
+All 9 acceptance artifacts are emitted in `build/m12-w5-acceptance/`. All 18 tests pass green.
+
+# M12 Worker W4 — PASS_ACTIVE_AUDIO_RESOURCE_ANALYSIS_V1
+
+Active audio resource analysis V1 connects M68K sound dispatch commands to Z80
+driver processing, Z80 RAM state, and hardware audio sinks (YM2612 and PSG).
+Port-local address latch pairing (0x4000->0x4001, 0x4002->0x4003) is strictly
+enforced without cross-port leakage. DAC data (reg 0x2A) and enable (reg 0x2B)
+registers are identified as exact hardware facts.
+
+The 4 distinct causal levels (Level 0 Temporal, Level 1 Memory last-writer,
+Level 2 Dataflow provenance, Level 3 Strict Causal Chain) are fully validated.
+Over 7,168 M68K->Z80 handoffs are verified with zero intervening writes.
+2,048 YM2612 register writes reach Level 3 Strict Causal Chain with exact Z80
+dataflow provenance. All candidate resources follow strict neutral types
+(AUDIO_COMMAND_CANDIDATE, AUDIO_TABLE_CANDIDATE, AUDIO_PATCH_CANDIDATE,
+AUDIO_RESOURCE_RANGE_CANDIDATE) with zero promotional song/instrument labels.
+The 9 canonical acceptance artifacts are emitted in `build/m12-w4-acceptance/`.
+
+# M12 Worker W3 — PASS_Z80_COCAPTURE_CROSS_CPU_TIMELINE_V1
+
+Z80 execution and bus evidence are now co-captured in the Worker evidence stream
+on a common master_time basis. Clean V2 48-byte records preserve independent CPU
+instruction sequences, opcode bytes (up to 4-byte prefixed forms), logical and
+resolved physical addresses for banked ROM, ordered bank register changes, YM2612
+and PSG writes, and cross-CPU causal witness chains. Zero song or instrument
+semantics are introduced.
+
+Large bounded ring capacity (2,097,152 slots / 96 MiB raw / 128 MiB slot storage)
+is deployed with O(1) bitmask hot-path indexing `(sequence - 1u) & (cap - 1u)`.
+Official 128 Workers x Depth 100 acceptance campaign (12,800 segments) and
+deep-chain stress tests (Depth 512 with 82.1M records, Depth 1000 with 138.2M records)
+are 100% verified with 0 retention failures, 0 overwrites, and 0 invalid captures.
+Next audio milestone will address container-level track/voice isolation.
+
+# M12 VDP S8 — PASS_ONE_PROVEN_LOGICAL_VDP_FRAME_V1
+
+Frame 779 now has a bounded, coherent VDP snapshot and deterministic logical
+composition for Plane A, Plane B, Window, backdrop, and the accepted S7 sprite
+raster. Raw register events, full VRAM/CRAM/VSRAM, name-table words, tile bytes,
+scroll state, and pixel provenance are retained in ignored runtime artifacts.
+This is not a full-screen/timing emulator equivalence claim. Next graphics work
+is frame-set/animation grouping; object/entity association and PNG publication
+remain separate milestones. Audio remains at container ownership without song
+or instrument semantics.
+
+# M12 Sprite S7 — PASS_SPRITE_SCANLINE_RASTER_RULES_V1
+
+The unchanged S6 logical sprite frame now passes through a developer-only
+Genesis VDP scanline evaluator. Runtime mode evidence selects H40/V28 for
+frame 779 and derives 20-sprite/320-dot limits. SAT-link order is preserved;
+transparent and X-offscreen pieces consume evaluation width, X=0 masking is
+recorded, and a final sprite can be partially accepted when only part of the
+dot budget remains. Frame 779 does not exercise overflow, so its runtime truth
+class remains `OBSERVED_RUNTIME_NO_OVERFLOW`; overflow behavior is
+`STATIC_VERIFIED_TEST_VERIFIED` only. Next graphics work is animation/frame
+set grouping, while backgrounds remain outside this boundary.
+
+# M12 Sprite S6 — PASS_ONE_PROVEN_HARDWARE_SPRITE_FRAME_V1
+
+The S5 catalog now closes one complete active SAT chain into a deterministic
+sprite-only frame artifact. Frame 779 traverses eight PROVEN entries in exact
+hardware link order and retains raw SAT/shadow/tile/CRAM evidence plus
+pixel-level provenance. Composition uses transparent pixels and earlier-SAT
+wins overlap semantics while retaining explicit limits for producer-to-DMA
+causality, background priority/layers, and scanline behavior. The next
+graphics step is grouping proven frames into an animation set; object/entity
+association remains unproven.
+
+# M12 Sprite S5 — PASS_SAT_PERSISTENCE_CAUSALITY_V1
+
+The remaining S4 observations now inherit publication provenance only through
+complete SAT/shadow mutation watches, unchanged bytes, stable SAT base, and
+entry-specific frame coherence. Direct and persisted publication remain
+distinct. Producer-to-DMA causality is retained as unproven where ordered
+evidence is absent. Next graphics work is frame and animation grouping.
+
+# M12 Sprite S4 — PASS_SPRITE_EVIDENCE_GAP_CLOSURE_V1
+
+Measured S3 gaps showed that tile and CRAM evidence already existed, while
+publication evidence was filtered to SAT base `0xD000`. The bounded capture
+now records DMA segments across the SAT window and closes that measured gap
+for 183 observations. Remaining 140 observations require a separate
+same-frame persistence/causality mechanism and remain explicitly incomplete.
+Next graphics work is frame and animation grouping.
+
+# M12 Sprite S3 — PASS_HARDWARE_SPRITE_PIECE_CATALOG_V1
+
+The S2 witness machinery now catalogs frame/SAT-entry observations without
+deduplicating temporal evidence. Multi-cell pieces use corrected column-major
+Genesis tile addressing; each entry retains tile bytes, CRAM, decoded pixels,
+transparency, palette indices, priority limits, and a semantic fingerprint.
+Missing publication or asset evidence stays incomplete or linkage-only, and
+conflicts fail closed. Next graphics work is frame/animation grouping.
+
+# M12 Sprite S2 — PASS_ONE_HARDWARE_SPRITE_PIECE_V1
+
+One runtime-backed, same-frame one-cell sprite piece is now proven from the
+observed producer/shadow SAT through VRAM SAT, exact tile bytes, CRAM bytes,
+the corrected Genesis decoder, and structured pixels. The proof is bounded to
+the selected frame and does not claim producer-to-DMA causality beyond the
+retained callback sequence. Next graphics work is animation/frame grouping;
+audio remains at container ownership with no song or instrument semantics.
+
 # M12 Archivist → Canonical Knowledge Pipeline 2G — PASS_ARCHIVIST_CANONICAL_KNOWLEDGE_PIPELINE_V1
 
 The post-run pipeline now carries a closed exact-ROM Cartographer MAP-1
@@ -543,6 +691,22 @@ ASM_REASSEMBLY_BYTE_EXACT. ASM_REBUILT_ROM_BOOT_PROVEN is the M13 gate.
 Start only after rebuilt-ROM runtime parity is proven. Inventory, UI, Save,
 Audio and other subsystem tracks belong here or in the preceding ASM
 reconstruction work as evidence dictates.
+
+# Runtime ROM property map M0–M9 — PARTIAL / ADAPTER ACCEPTANCE OPEN
+
+The independently versioned runtime property tooling is approved by
+ADR-ROM-PROPERTY-MAP-V1. M0 proof contracts, M1 map/checkpoint foundations,
+M6 compatible union primitives, M7 interval export, and M8 non-promoting
+canonical overlay are implemented. M2 has limited live acceptance for direct
+M68K reads and completed instruction spans. M3 has limited live `Z80_DATA_READ`
+acceptance; its permanent `ARG16()` regression passes, while Z80 executed
+encoding remains unproven. M4 has limited live `VDP_VRAM_SOURCE` acceptance;
+CRAM/VSRAM remain open. M5 exact-copy provenance has host-side primitives but
+no live acceptance; audio remains open and does not gate the base map. M9 has
+fresh corrected seals, range replays, canonical overlays, a three-repeat A/B/C
+benchmark, and neutral plus controlled-input parity. Full-game parity and
+remaining subsystem coverage are still missing. See
+`docs/reports/THOR_RUNTIME_ROM_PROPERTIES_RESEAL_20260927.md`.
 
 # M11.64 — G0 portability boundary consolidation — DONE
 
@@ -1438,3 +1602,53 @@ unsealed retry artifacts remain preserved. Five older unsealed staging
 directories plus the open blob-51 staging pair remain blocked. See
 `reports/THOR_M14_7B_GENERATION_COMPACTION.json` and the blob-51 checkpoint
 under `reports/m14-7b-closure-receipts/`. M14.7B remains IN PROGRESS.
+# M12 Post-Run Gameplay RAM / Entity Candidates V1 — PASS
+
+The first gameplay-state analysis layer is integrated after Sprite/SAT analysis
+and before ASM closure. It consumes preserved W3 V2 runtime evidence, retains
+uncertain identities and frame gaps fail-closed, proves exact strides and
+RAM-to-SAT field chains only where evidence supports them, and does not promote
+ROM ownership. The preserved real fixture reached `PASS_POSTRUN_GAMEPLAY_RAM_ENTITY_CANDIDATES_V1`
+with `SOURCE_OWNED_DELTA = 0`; semantic player/enemy/NPC classification remains
+out of scope.
+# M12 Targeted Dynamic Sprite Capture V1 — PASS
+
+The bounded natural-input capture now records one SAT snapshot per frame and
+shadow writes with runtime PCs. It closes dynamic SAT-entry to `0xFF13CC`
+shadow-source correlation across a measured one-frame DMA/publication lag;
+object/player semantics remain outside this checkpoint. See
+`docs/reports/THOR_M12_TARGETED_DYNAMIC_SPRITE_CAPTURE_V1.md`.
+# M12 Dynamic SAT Producer Backtrace V1 — PASS
+
+The accepted dynamic SAT entry now has an exact bounded producer backtrace:
+the X-field source is read from canonical ROM `0x0017435C` at `0x00B768`,
+transformed by `ADD.W D3,D6`, and stored at `0xFF13D0` by `0x00B76E`
+(`0x00B772` callback identity). Twenty-three transitions validate the same
+path. Upstream A0 construction and gameplay/object meaning remain unresolved;
+PLAYER labeling is prohibited at this boundary.
+# M12 Dynamic SAT Caller-Side A0 Provenance V1 — PASS
+
+The accepted dynamic tail is now tied to runtime caller `0x03B448`, exact
+`JSR.L` entry at `0x00B730`, and A0 reaching definition `0x03B436`. The path
+is validated across 23 transitions; selector semantics remain unassigned and
+`SOURCE_OWNED` is unchanged.
+# M12 Dynamic SAT Selector / A6 Provenance V1 — PASS
+
+The accepted caller-side path now proves A6 base `0x00FFAFCE`, field `8(A6)`,
+its ROM writer, and exact selector-to-ROM-record mapping across 23 transitions.
+Entity/player semantics remain unassigned and SOURCE_OWNED is unchanged.
+
+# ROM Property Map v1 live-runtime continuation — PARTIAL / IN PROGRESS
+
+The corrected 2026-09-27 runtime has a fresh Debug/Release manifest and
+Release live checkpoint. Range replay and canonical overlay pass with exact
+ROM/build/contract identity, 0 coverage gaps or overlaps, exact bitmap
+roundtrip, and zero SOURCE_OWNED delta. Neutral-input parity matches at 120,
+1,200, and 10,000 frames, and the 3,600-frame controlled-input trace also
+matches. Three-repeat A/B/C benchmarks are recorded; A→B has a managed-assembly
+difference and remains qualified. M2 has bounded live acceptance. M3 has
+direct Z80 data-read evidence plus the `ARG16()` regression; Z80 instruction
+bytes remain open. M4 has direct VRAM source evidence; CRAM/VSRAM are
+unobserved. M5 live provenance is unaccepted. M9 remains partial pending
+full-game parity and remaining subsystem coverage. See
+`docs/reports/THOR_RUNTIME_ROM_PROPERTIES_RESEAL_20260927.md`.

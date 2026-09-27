@@ -1,0 +1,36 @@
+diff --git a/core/debug/live_forward_trace.c b/core/debug/live_forward_trace.c
+--- a/core/debug/live_forward_trace.c
++++ b/core/debug/live_forward_trace.c
+@@ -271,3 +271,24 @@
+ uint64_t oasis_lf_stream_sequence(void) { return stream_sequence; }
+ uint64_t oasis_lf_instruction_sequence(void) { return instruction_sequence; }
++uint64_t oasis_lf_latest_frame_boundary_record(void)
++{
++  uint64_t first;
++  uint64_t sequence;
++  oasis_lf_record record;
++  if (!ring_storage || !stream_sequence)
++    return 0;
++  first = stream_sequence > OASIS_LF_RING_CAPACITY
++    ? stream_sequence - OASIS_LF_RING_CAPACITY + 1u : 1u;
++  for (sequence = stream_sequence;; --sequence)
++  {
++    if (oasis_lf_ring_record(sequence, &record) &&
++        (record.kind_flags & OASIS_LF_EVENT) &&
++        ((record.kind_flags & OASIS_LF_EVENT_SUBTYPE_MASK) >>
++         OASIS_LF_EVENT_SUBTYPE_SHIFT) == OASIS_LF_EVENT_FRAME_BOUNDARY)
++      return sequence;
++    if (sequence == first)
++      break;
++  }
++  return 0;
++}
+ uint64_t oasis_lf_control_flow_sequence(void) { return control_flow_sequence; }
+diff --git a/core/debug/live_forward_trace.h b/core/debug/live_forward_trace.h
+--- a/core/debug/live_forward_trace.h
++++ b/core/debug/live_forward_trace.h
+@@ -216,3 +216,4 @@
+ uint64_t oasis_lf_stream_sequence(void);
+ uint64_t oasis_lf_instruction_sequence(void);
++uint64_t oasis_lf_latest_frame_boundary_record(void);
+ uint64_t oasis_lf_control_flow_sequence(void);

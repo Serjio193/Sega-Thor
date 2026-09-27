@@ -1,3 +1,217 @@
+# M12 runtime audio payload consumer contract — Format A mode 0
+
+The runtime adapter uses the already documented W4/W5 evidence: decoder data
+reads at Z80 PCs `0x080E` (high nibble) and `0x0855` (low nibble), exact
+bank-resolved bytes in the two statically closed mode-0 resources
+`0x0BC95C..0x0BD540` and `0x0BD540..0x0BF768`, and the W4 DAC witness plus W5
+byte-identical decoder/inverse-encoder verification. The hook tags only the
+specific byte read at those consumer sites. It does not infer payload class
+from other audio-bank reads or from downstream timing. Runtime acceptance for
+this new adapter is recorded in `docs/WORKLOG.md` and the ROM property report.
+
+# M12 W6 Long Live Game Discovery Run (2026-09-21)
+
+Sustained 10-minute in-game discovery run in BizHawk/Waterbox (128 Workers, depth 512, cadence 300 frames):
+
+1. Execution & Health Metrics:
+   - ROM: Beyond Oasis (USA) `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` (3,145,728 bytes).
+   - Total Frames: 35,677 (> 34,000 frames).
+   - Play Time: 610.5 seconds (>= 600s).
+   - Wave Chunks: 106 non-truncated wave chunks (`live-discovery-wave-000001.bin` .. `000106.bin`).
+   - Total Raw Records: 51,233,653 W3 V2 48-byte records.
+   - Health Status: retention_failures = 0, captures_dropped = 0, stale_ack = 0, identity_collisions = 0, oom = 0.
+   - Clean Shutdown: `STOPPED_END_GAME` triggered at 610.2s elapsed.
+
+2. Novelty Discoveries Against Thor Brain:
+   - `NEW_M68K_EXEC_PCS`: 4,261 novel M68K execution PCs (e.g. gameplay loop at `0x00042C`, player action handling, collision detection, sprite dispatcher).
+   - `NEW_Z80_EXEC_PCS`: 284 novel Z80 execution PCs (e.g. driver processing loop `0x04BE..0x04D9`, FM voice register handlers).
+   - `NEW_ROM_PHYSICAL_RANGES`: 338 novel ROM physical execution and data intervals.
+   - `NEW_BANKED_ROM_PHYSICAL_RANGES`: 35 novel banked ROM ranges accessed by Z80 driver (e.g. `0x082190..0x08219B`, `0x084C41..0x084C4D`, `0x08807F..0x08808C`).
+   - `NEW_M68K_Z80_HANDOFF_ADDRESSES`: 455 shared RAM communication addresses between M68K and Z80.
+   - `KNOWN_AUDIO_FORMAT_A_MODE0_HITS`: 2,324 runtime accesses to Resource 1 (`0x0BD540..0x0BF768`) confirmed active during gameplay.
+   - `NEW_CROSS_CPU_CAUSAL_CHAINS`: 288,650 exact cross-CPU causal chains witnessed.
+   - VDP Activity: 407,235 VDP writes recorded during active rendering.
+   - Audio Activity: 149,957 YM2612 writes (including 99,003 DAC samples) recorded during live playback.
+
+3. SOURCE_OWNED Preservation:
+   - `SOURCE_OWNED_BEFORE`: 1,487,388 bytes (47.2827911377%).
+   - `SOURCE_OWNED_AFTER`: 1,487,388 bytes (47.2827911377%).
+   - `SOURCE_OWNED_DELTA`: 0 bytes (discovery only; no unverified claims promoted).
+
+# M12 W5d Functional Audio Validation & Listening Test (2026-09-21)
+
+Practical end-to-end functional validation of reconstructed audio resources:
+
+1. Forensic Check on Purported 3-Byte Header (`STATIC_VERIFIED`):
+   - Proven: There is NO resource-local header within audio resources.
+   - For Resource 1 (`0x0BD540..0x0BF768`) and Resource 2 (`0x0BC95C..0x0BD540`), `HEADER_SIZE = 0`.
+   - The 3 bytes previously observed (`00 22 28` and `00 0B E4`) are external Bank 7 descriptor table entries at ROM `0x0B8000..0x0B8050`:
+     * PC `0x0734`: `LD C, (HL)` (reads length low byte from descriptor byte 2: `0x28` / `0xE4`).
+     * PC `0x0736`: `LD B, (HL)` (reads length high byte from descriptor byte 3: `0x22` / `0x0B`).
+     * PC `0x0738`: `LD A, (HL)` (reads mode byte from descriptor byte 4: `0x00`).
+     * PC `0x073E`: `JR NZ, +6` (branches to Mode 1 handler at `0x0746` if mode != 0; otherwise falls through to Mode 0 at PC `0x0740`).
+   - Streams start directly at byte 0 of each resource (`0x0BD540` and `0x0BC95C`).
+
+2. Playback Timing & Sample Rate Evidence:
+   - Z80 playback uses software polling / interleaving: `CALL 0x0783` interspersed throughout sound sequence interpretation and the main idle loop `0x04C4..0x04D9`.
+   - Nominal idle loop period: 5,265 Genesis master cycles (~351 Z80 cycles) -> ~10,198 Hz.
+   - Mean period observed across early-boot runtime witness: 5,553.5 master cycles (~370.2 Z80 cycles) -> ~9,668 Hz.
+   - Hardware rate status: `VARIABLE_SOFTWARE_TIMED` / `UNKNOWN` (no fixed crystal timer). Preview WAV rate: 10,198 Hz (marked `PREVIEW_RATE`).
+
+3. 68K Startup ROM Checksum Mechanism:
+   - Unrolled loop at ROM `0x000380..0x0003A6` adds 16-bit big-endian words across ROM (`ADD.W (A0)+, D0`) from 0x000200 to end.
+   - Compares against `($018E).L`: if equal, boots; if not equal, displays red screen and hangs at `0x03B2..0x03C4`.
+   - Semantic mutations within audio resources can be paired to conserve the 16-bit word sum (`0x98ED`), allowing modified ROMs to boot without editing the header.
+
+4. Controlled Semantic Mutation & Emulator Verification:
+   - Mutated tokens 12622, 12623 (byte 6311) to DELTA 0, and tokens 12626, 12627 (byte 6313) to DELTA -12 and +96.
+   - Encoded via `w5_audio_encode.py`: byte 6311 (`0x0BEDE7`) became `0x11`, byte 6313 (`0x0BEDE9`) became `0xC8`.
+   - Word sum across ROM conserved (`0x98ED`), `OUTSIDE_RESOURCE_DIFFS = 0`.
+   - Coherent emulator run executed cleanly; observed DAC writes matched standalone mathematical predictions:
+     `PREDICTED_DAC_VALUES = [120, 132, 156, 132, 126, 126, 126, 127, 115, 103, 199, 151, 199, 223, 199, 151, 199, 175]`
+     `OBSERVED_DAC_VALUES  = [120, 132, 156, 132, 126, 126, 126, 127, 115, 103, 199, 151, 199, 223, 199, 151, 199, 175]`
+     18/18 matches, 0 mismatches.
+
+# M12 W5c Exact Audio Resource Ownership & Canonical Promotion (2026-09-21)
+
+Exact ownership qualification and canonical promotion for Beyond Oasis audio resources:
+
+1. Primary Resource Ownership (`AUDIO_RESOURCE_FORMAT_A_0001`):
+   - Physical ROM Bounds: `[0x0BD540, 0x0BF768)` (8,744 bytes).
+   - Bank: 0x17, Entry 7 (Logical 0xD540, Mode 0).
+   - Status: STATIC_VERIFIED, RECONSTRUCTION_VERIFIED.
+   - Proof: Deterministic decode, semantic inverse encode (no original nibbles), byte-identical SHA-256 (`4496000b2d8efed59d75ea80f32b0aa1591d880dc982b2d1bb97b4d49297e606`), runtime DAC overlap 18/18 match enclosing W4 witness cluster `0x0BEDE4..0x0BEDED`.
+
+2. Secondary Resource Ownership (`AUDIO_RESOURCE_FORMAT_A_0002`):
+   - Physical ROM Bounds: `[0x0BC95C, 0x0BD540)` (3,044 bytes).
+   - Bank: 0x17, Entry 6 (Logical 0xC95C, Mode 0).
+   - Status: STATIC_VERIFIED, RECONSTRUCTION_VERIFIED.
+   - Proof: Deterministic decode, semantic inverse encode (no original nibbles), byte-identical SHA-256 (`2f58bf29c09d8a5ff9cb8866718b81f069f38081bb518e05073cab06642a1370`), contiguous predecessor witness in Bank 0x17.
+
+3. Canonical Partition Reconciliation:
+   - Target candidate interval: `[0x0BC95C, 0x0BF768)` (11,788 bytes).
+   - Pre-promotion emission: `[0x0B8000, 0x0BF768)` (30,568 bytes, UNKNOWN, source_owned = 0).
+   - Tri-split:
+     * `[0x0B8000, 0x0BC95C)`: 18,780 bytes, UNKNOWN, source_owned = 0.
+     * `[0x0BC95C, 0x0BD540)`: 3,044 bytes, SOUND_DATA_CONTAINER_CONFIRMED, source_owned = 1.
+     * `[0x0BD540, 0x0BF768)`: 8,744 bytes, SOUND_DATA_CONTAINER_CONFIRMED, source_owned = 1.
+   - SOURCE_OWNED: 1,475,600 -> 1,487,388 (+11,788 bytes).
+   - Prohibited from promotion: Bank 0x17 descriptor table, padding, Mode 1 resources, neighbouring candidate resources, whole audio banks.
+
+# M12 W5 Exact Audio Resource Format & Boundary Closure (2026-09-21)
+
+End-to-end reverse-engineering of Beyond Oasis audio resource format `AUDIO_FORMAT_A`:
+
+1. Z80 Sound Driver Image:
+   - ROM Address: 0x062E38 - 0x064E38 (exact size: 8,192 bytes = 0x2000 bytes).
+   - Loaded to Z80 RAM 0x0000 - 0x1FFF by M68K boot loader at ROM 0x06134E.
+   - Driver signature: offset +0x20 contains ASCII "Ancient Music   Driver -MD-     ".
+   - Truth Class: STATIC_VERIFIED.
+
+2. Audio Bank Descriptor Tables:
+   - Base Addresses in ROM: 0x080000, 0x088000, 0x090000, 0x098000, 0x0A0000, 0x0A8000, 0x0B0000, 0x0B8000 (Banks 0x10..0x17).
+   - Layout: First 80 bytes (0x8000..0x804F) of each 32 KiB bank contain 16 5-byte descriptors.
+   - Descriptor fields:
+     * Byte 0..1: 16-bit logical start address in banked ROM window [0x8000..0xFFFF] (little-endian).
+     * Byte 2..3: 16-bit compressed byte length (little-endian).
+     * Byte 4: Playback mode (0 = standard, 1 = hold/interpolate via 0x0999).
+   - Contiguous tiling: Sample data begins at 0x8050 immediately after the table. Resources pack without gaps. Unused bank space is padded with 0xFF.
+   - Truth Class: STATIC_VERIFIED.
+
+3. Bank Switching Engine:
+   - Z80 PC: 0x0704 - 0x0725 computes bank from global sound index: `bank_offset = 0x0800 + (index // 16) * 0x0080`.
+   - Z80 PC: 0x0A0B - 0x0A40 writes 9 sequential bits to Genesis bank latch port 0x6000 (`LD (0x6000), A; RRCA`).
+   - Truth Class: STATIC_VERIFIED and OBSERVED.
+
+4. Delta-PCM Sample Decoder (AUDIO_FORMAT_A):
+   - Z80 PC Range: 0x080D - 0x0880 (Mode 0).
+   - Initial accumulator in register D: 0x80 (128 decimal, unsigned 8-bit PCM silence midpoint).
+   - Non-linear delta lookup table at Z80 RAM 0x0008 - 0x0016:
+     Nibbles 1..15: [0, +1, +2, +6, +12, +24, +48, +96, -96, -48, -24, -12, -6, -2, -1].
+   - Nibble 0 (Repeat Code): Re-emits previous delta E for 3 consecutive sample ticks.
+   - DAC output: Routine 0x0968..0x0980 executes `LD (IY+0), 0x2A; ADD A, D; LD D, A; LD (IY+1), A` writing to YM2612 port 0 data (port 0x4001).
+   - Loop traversal: Routine 0x0880 executes `INC HL; DEC BC; LD A, B; OR C; JP Z, 0x0892` advancing byte pointer and decrementing byte counter.
+   - Truth Class: STATIC_VERIFIED and OBSERVED.
+
+5. Exact Primary Resource Boundaries:
+   - Resource ID: `AUDIO_RESOURCE_FORMAT_A_0001`
+   - Location: Bank 0x17, Entry 7 (ROM 0x0BD540 - 0x0BF768).
+   - Exact size: 8,744 bytes (0x2228). Mode: 0.
+   - Boundary proof: Preceded contiguously by Entry 6 (0x0BC95C..0x0BD540). Followed at 0x0BF768 by 2,200 bytes of 0xFF bank padding.
+   - Encloses W4 witness cluster (0x0BEDE4..0x0BEDED) at byte offset 6,308. Decoded sample at 0x0BEDE4 matches observed W4 DAC write 0x78 exactly.
+   - Truth Class: STATIC_VERIFIED and OBSERVED.
+
+6. Exact Secondary Resource Boundaries:
+   - Resource ID: `AUDIO_RESOURCE_FORMAT_A_0002`
+   - Location: Bank 0x17, Entry 6 (ROM 0x0BC95C - 0x0BD540).
+   - Exact size: 3,044 bytes (0x0BE4). Mode: 0.
+   - Truth Class: STATIC_VERIFIED.
+
+# M12 W4 Active Audio Driver Architecture & Provenance (2026-09-21)
+
+Reverse-engineered audio subsystem routines and hardware interfaces:
+
+1. M68K Sound Driver Loader:
+   - ROM Address: 0x0006134E
+   - Function: Halts Z80 via 0x00A11100, asserts reset via 0x00A11200, and copies 8,192 bytes
+     from ROM 0x062E38 into Z80 RAM 0x00A00000 (`MOVE.W #$1FFF, D0; MOVE.B (A1)+, (A2)+`).
+   - Truth Class: STATIC_VERIFIED.
+
+2. M68K Sound Command Dispatcher:
+   - ROM Address: 0x00060286
+   - Function: Requests Z80 bus via 0x00A11100, waits for bus grant, checks mailbox idle status
+     at 0x00A00004-0x00A00006, writes command buffer to Z80 RAM 0x00A00017+ (`MOVE.B (A0)+, (A1)+`),
+     triggers mailbox bit at 0x00A00004 (`BSET #0`), and releases Z80 bus.
+   - Truth Class: STATIC_VERIFIED and OBSERVED (7,168 verified last-writer handoffs).
+
+3. Z80 FM Synthesizer Dispatch Engine:
+   - Z80 PC Range: 0x05B9 - 0x05CF
+   - Function: Reads command bytes from Z80 RAM buffer (`LD A, (HL)` at 0x05B9), polls YM2612 busy flag
+     (`BIT 7, (IY+0)` at 0x05BB, `JR NZ`), selects register via port 0x4000 (`LD (IX+0), A` at 0x05C4),
+     reads data byte (`LD A, (HL)` at 0x05C5), writes register data via port 0x4001 (`LD (IX+1), A` at 0x05CF).
+   - Truth Class: OBSERVED (Level 3 Strict Causal Chain established for 2,048 writes).
+
+4. Z80 DAC Sample Player:
+   - Z80 PC Range: 0x0968 - 0x097D
+   - Function: Selects DAC register 0x2A via port 0x4000 (`LD (IY+0), 0x2A`), streams PCM samples
+     to port 0x4001 (`LD (IY+1), A` at 0x097D). Register 0x2B controls DAC output enable.
+   - Truth Class: STATIC_VERIFIED.
+
+5. Z80 Banked ROM Readers:
+   - Z80 PC Addresses: 0x078E, 0x07D4, 0x080D, 0x0854
+   - Function: Decodes audio stream data from 32 KiB window [0x8000..0xFFFF] using `LD A, (HL)` and
+     nibble extraction (`AND 0xF0`, `RRA`, `RRCA`), indexing into sound parameter tables.
+   - Truth Class: STATIC_VERIFIED and WITNESS_CANDIDATE (stream_sequence 3019544).
+
+# M12 W3 Z80 Banked ROM Read and YM2612 Write Witnesses (2026-09-21)
+
+Cross-CPU co-capture runtime evidence in M12 W3 captured exact hardware witnesses:
+
+1. Z80 Banked ROM Read Witness:
+   During audio sound driver initialization, the Z80 CPU reads data from the Mega Drive ROM
+   through the 32 KiB banked ROM window [0x8000..0xFFFF]:
+   - Record stream_sequence: 3019544
+   - CPU: Z80 (cpu_id = 1)
+   - PC: 0x0855 (Z80 instruction fetching sound data)
+   - Logical address: 0xEDE4 (within [0x8000..0xFFFF])
+   - Physical address: 0xBEDE4 (resolved via bank register base 0xB0000)
+   - Value: 0xCD
+   - Domain: OASIS_LF_BUS_BANKED_ROM (8)
+   - Flags: 0x8800 (OASIS_LF_EVENT | EVENT_BUS_READ)
+   - Master time: 2160 cycles into scanline/frame
+
+2. YM2612 Register Select -> Data Write Sequence:
+   The Z80 sound driver programs the Yamaha YM2612 FM synthesizer via port pairs:
+   - Witness pair 1 (Channel 1 frequency MSB / block):
+     Port 0x4000 (register select): stream_seq = 81392526, PC = 0x05C4, val = 0xA4, master_time = 91950.
+     Port 0x4001 (register data):   stream_seq = 81392582, PC = 0x05CF, val = 0x0B, master_time = 92835.
+   - Witness pair 2 (Channel 1 frequency LSB):
+     Port 0x4000 (register select): stream_seq = 81392599, PC = 0x05C4, val = 0xA0, master_time = 94770.
+     Port 0x4001 (register data):   stream_seq = 81392606, PC = 0x05CF, val = 0x8F, master_time = 95655.
+   - Witness pair 3 (Key ON/OFF control):
+     Port 0x4000 (register select): stream_seq = 81392855, PC = 0x05A2, val = 0x28, master_time = 105270.
+     Port 0x4001 (register data):   stream_seq = 81392907, PC = 0x05AD, val = 0x01, master_time = 106155.
+
 # M12-AUTO63 `0xAF22` focused register-slice result (2026-09-13)
 
 The persisted AUTO62 novelty at `0xAF22` was statically bounded through the
@@ -600,6 +814,16 @@ reported separately. Full evidence:
 `reports/CALLEE_061934_CONTRACT_M11_62.md`.
 # Reverse-Engineering Ledger
 This file records what is known about the original Beyond Oasis binary. Do not promote guesses to facts without evidence.
+
+## M12 dynamic SAT ROM index / A0 provenance V1
+
+The accepted dynamic SAT producer reads `MOVE.W 2(A0),D6` at `0x00B768` and
+writes the transformed X field at `0x00B76E`. The observed frame-1500 A0 is
+`0x0017435A`, so the exact ROM source is `0x0017435C`. A separate bounded
+setup entry at `0x00B6AA` statically defines A0 from absolute `0x0003F326`
+and applies D0/D5/index transforms, but the accepted dynamic tail enters at
+`0x00B730` with A0 already supplied. Caller-side reaching definitions and ROM
+record selection remain unresolved; no PLAYER/entity label is assigned.
 
 ## M12.4 — ROM-start ownership — `M12_4_ROM_START_PROMOTION_PARTIAL_EXACT`
 
@@ -3570,6 +3794,20 @@ validated by `re_m12_gfx_runtime_provenance.py` under
 RAM-mediated source chains, and all other caller domains remain unresolved.
 # M12 live SAT/DMA provenance — 2026-09-12
 
+## M12 upstream controlled-object discovery — 2026-09-22
+
+The former candidate `ram-FF13CC-pc-00A372` is now classified as
+`SAT_SHADOW_BUFFER`, not as a gameplay entity. The accepted exact relation is
+`FF13CC` -> 184-byte 68K-bus DMA -> SAT VRAM `0xD000`; the historical candidate
+links entries `0..4`. Static analysis of `0x00A342..0x00A438` shows that this
+buffer is populated from one of two fixed nine-record ROM tables at
+`0x00A438`/`0x00A480`, with eight-byte record geometry and selector/counter RAM
+controls. No gameplay RAM object source, X/Y field, object lifetime, or input
+edge is proven. The allowed semantic boundary is therefore the renderer-side
+shadow buffer/render-record producer; `CONTROLLED_ENTITY` and `PLAYER` remain
+forbidden. See
+`docs/reports/THOR_M12_UPSTREAM_CONTROLLED_OBJECT_DISCOVERY_V1.md`.
+
 ## `0x00FF13CC` source record and VDP SAT upload
 
 Status: `OBSERVED_RUNTIME`, not SOURCE_OWNED and not a semantic object or
@@ -3916,3 +4154,57 @@ site, not a proven definition. A6 source remains inherited/unresolved.
 D3=512 and the two +8 address gaps are separate bounded unresolved
 investigations. No structure or SOURCE_OWNED promotion follows from this
 evidence.
+
+# M12 VDP/DMA runtime provenance and hardware interface semantics (2026-09-22)
+
+Evidence from the preserved human campaign (`run_id = 1790026341`) processed
+via the native post-run VDP/DMA analyzer establishes concrete Genesis VDP
+interface semantics at routines `0x0027DE` and `0x0027EC`.
+
+## 1. DMA register sequence and bus protocol at `0x0027DE`
+Subroutine PC `0x0027DE` sets up and triggers DMA transfers to VDP memory.
+Observed runtime execution in segment 256 programs a 68K-bus DMA transfer to
+VRAM:
+- Register 19 (`0x13` / `$93`): DMA length low byte = `0x0C`.
+- Register 20 (`0x14` / `$94`): DMA length high byte = `0x00`.
+  Computed transfer length: `12 words` (`24 bytes`).
+- Register 21 (`0x15` / `$95`): DMA source address low byte = `0xE6`.
+- Register 22 (`0x16` / `$96`): DMA source address mid byte = `0x89`.
+- Register 23 (`0x17` / `$97`): DMA source address high byte / type = `0x7F`.
+  Bit 7 and bit 6 (`0x7F & 0xC0 == 0x40`) select 68K memory space (ROM or RAM).
+  Source 24-bit address: `(0x7F << 17) | (0x89 << 9) | (0xE6 << 1) = 0xFF13CC`.
+  Domain: 68K RAM.
+- DMA command words: `0x5000` followed by `0x0083` to control port `0xC00004`.
+  Target address bits: `0xD000` (VRAM SAT base table).
+  Operation: `DMA_68K_BUS` write to VRAM.
+
+## 2. Direct VDP data port write provenance at `0x0027EC`
+At PC `0x0027EC`, opcode `3955 FFFC` (`MOVE.W (A5)+, (0xFFFC, A4)`):
+- Register `A4` holds `0x00C00004` (VDP Control Port).
+- Effective address `(0xFFFC, A4)` computes `0x00C00004 - 4 = 0x00C00000` (VDP Data Port).
+- Register `A5` points to `0x00FF13CC` (68K RAM).
+- Bus event stream sequence confirms exact same-instruction causality:
+  - `inst_seq = 7604220`, `stream_seq = 20172916`: `BUS_READ` at `0xFF13CC`, val = `0x00F8`, width = 16 (`68K_RAM`).
+  - `inst_seq = 7604220`, `stream_seq = 20172917`: `BUS_WRITE` at `0xC00000`, val = `0x00F8`, width = 16 (`VDP Data`).
+This independently proves that `0x0027EC` is a CPU-driven data pump transferring
+values from shadow RAM buffer `0xFF13CC` directly to the VDP data port.
+
+## M12 caller-side A0 provenance V1
+
+The dynamic tail entry at `0x00B730` is reached at runtime by
+`0x03B448 JSR.L ($0000B730).L`. The exact reaching A0 definition is
+`0x03B436 ADDA.W (A0),A0`, preceded by the bounded caller chain
+`0x03B416`, `0x03B422`, `0x03B426`, and `0x03B42E`. `0x00B73C MOVE.W
+(A0)+,D5` is the only in-tail A0 change before the accepted read at
+`0x00B768`. This path was validated over 23 transitions and did not assign
+PLAYER or entity semantics.
+
+## M12 selector / A6 provenance V1
+
+`0x03B376 LEA.L ($00FFAFCE).L,A6` proves the RAM base used by the caller
+block. `0x03B428 MOVE.W 8(A6),D0` reads `0x00FFAFD6`; its observed writer is
+`0x03B3D8 MOVE.W 0(A0,D0.W),8(A6)`, with an exact ROM source on the captured
+path. The value is doubled at `0x03B42C`, added to A0 at `0x03B42E`, and the
+ROM relative word at `0x03B436` completes the A0 selection. This selector-to-
+ROM chain is validated over 23 transitions without assigning PLAYER or any
+entity semantics.

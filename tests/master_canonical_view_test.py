@@ -76,6 +76,19 @@ class CanonicalViewTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "SHADOW_MISMATCH"):
             canonical.verify_legacy_shadow(legacy)
 
+    def test_current_pointer_precedes_legacy_shadow(self) -> None:
+        root = Path(self.temp.name)
+        current_root = root / "build/thor-evidence/master-v2"
+        candidate = current_root / "generations/current.masterv2"
+        candidate.parent.mkdir(parents=True)
+        candidate.write_bytes(b"synthetic verified MASTER V2")
+        (current_root / "current.json").write_text(
+            json.dumps({"path": "generations/current.masterv2"}), encoding="utf-8")
+        with mock.patch("canonical_map_fallback.CANONICAL_SOURCE_OWNED", 4):
+            resolved = view.resolve_master_canonical_view(root)
+        self.assertIsNotNone(resolved)
+        self.assertEqual(resolved.path, candidate.resolve())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -17,18 +17,20 @@ except ImportError:
     ttk = None
 
 from live_forward_worker_control_model import (
-    INT32_MAX, format_bytes, load_next_run_config,
+    EVIDENCE_DISK_STOP_RESERVE_BYTES, INT32_MAX, format_bytes, load_next_run_config,
     positive_integer, save_next_run_config,
 )
 
 
 POLL_MS = 250
 PAGE_ROWS = 64
-ROW_HEIGHT = 26
+ROW_HEIGHT = 42
 STATE_COLORS = {"FREE": "#78848b", "PENDING": "#9aabb4",
                 "CAPTURING": "#3398db", "COMPLETE": "#42b883",
                 "ANALYZING": "#e0aa3e", "STARTING": "#8b9ca5",
                 "DETAIL API MISSING": "#d18b47"}
+EVIDENCE_GROWTH_PLACEHOLDER = ("Evidence disk growth: CALCULATING…; auto-stop at "
+                               f"{format_bytes(EVIDENCE_DISK_STOP_RESERVE_BYTES)} free")
 
 
 def _write_preview(path: Path, worker_text: str, depth_text: str, offset: int) -> None:
@@ -61,6 +63,34 @@ def snapshot_for_display(snapshot: dict | None) -> dict:
     return snapshot if snapshot is not None else {}
 
 
+def _count_text(value: object) -> str:
+    return "—" if value is None else f"{int(value):,}"
+
+
+def worker_activity_text(item: dict | None) -> str:
+    row = item or {}
+    return (f"start {_count_text(row.get('capture_starts'))}  ·  "
+            f"done {_count_text(row.get('capture_completions'))}  ·  "
+            f"ACK {_count_text(row.get('releases'))}  ·  "
+            f"audited {_count_text(row.get('audited_captures'))}  ·  "
+            f"FLOW last {_count_text(row.get('last_flow_records'))} / "
+            f"total {_count_text(row.get('total_flow_records'))}")
+
+
+def request_end_game(path: Path) -> bool:
+    """Publish one idempotent graceful shutdown request for the runtime."""
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            return False
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text("END_GAME\n", encoding="ascii", newline="\n")
+        os.replace(temporary, path)
+        return True
+    except OSError:
+        return False
+
+
 def close_window(preview_path: Path, destroy: object) -> None:
     """Close only this UI process; it has no handle to the emulator runtime."""
     preview_path.unlink(missing_ok=True)
@@ -69,12 +99,14 @@ def close_window(preview_path: Path, destroy: object) -> None:
 
 class WorkerControlWindow:
     def __init__(self, snapshot_path: Path, config_path: Path,
-                 preview_path: Path) -> None:
+                 preview_path: Path, end_game_path: Path) -> None:
         if tk is None or ttk is None:
             raise RuntimeError("THOR WORKER CONTROL requires a Tk-enabled Python runtime")
         self.snapshot_path = snapshot_path
         self.config_path = config_path
         self.preview_path = preview_path
+        self.end_game_path = end_game_path
+        self.ending = False
         self.snapshot: dict = {}
         self.worker_offset = 0
         self.saved_config, _ = load_next_run_config(config_path)
@@ -101,6 +133,10 @@ class WorkerControlWindow:
                          foreground="#83c7e8")
         style.configure("Status.TLabel", foreground="#a8bac4")
         style.configure("TButton", padding=(12, 5))
+        style.configure("End.TButton", foreground="#ffffff", background="#b73737",
+                        padding=(12, 5))
+        style.map("End.TButton", background=[("active", "#d24b4b"),
+                                                ("disabled", "#6b4444")])
 
         root_frame = ttk.Frame(self.root, padding=(16, 12))
         root_frame.pack(fill="both", expand=True)
@@ -126,7 +162,7 @@ class WorkerControlWindow:
             value.pack(side="right")
             self.bars[key] = (bar, value)
 
-        self.evidence = ttk.Label(root_frame, text="Evidence growth: CALCULATING…")
+        self.evidence = ttk.Label(root_frame, text=EVIDENCE_GROWTH_PLACEHOLDER)
         self.evidence.pack(anchor="w", pady=(7, 10))
 
         worker_header = ttk.Frame(root_frame)
@@ -159,6 +195,9 @@ class WorkerControlWindow:
         self.depth_entry.pack(side="left", padx=6)
         self.save_button = ttk.Button(config_line, text="SAVE", command=self.save)
         self.save_button.pack(side="right")
+        self.end_button = ttk.Button(config_line, text="END GAME",
+                                     command=self.end_game, style="End.TButton")
+        self.end_button.pack(side="right", padx=(0, 8))
         self.save_state = ttk.Label(root_frame, text="", style="Status.TLabel")
         self.save_state.pack(anchor="w")
         buttons = ttk.Frame(root_frame)
@@ -198,6 +237,8 @@ class WorkerControlWindow:
             self.projection.configure(text="Allocation preview updates from the live native planner")
 
     def save(self) -> None:
+        if self.ending:
+            return
         try:
             config = save_next_run_config(self.config_path,
                 self.worker_var.get(), self.depth_var.get())
@@ -206,6 +247,19 @@ class WorkerControlWindow:
             return
         self.saved_config = config
         self.save_state.configure(text="SAVED FOR NEXT RUN")
+
+    def end_game(self) -> None:
+        if self.ending:
+            return
+        if not request_end_game(self.end_game_path):
+            self.save_state.configure(text="END GAME request already published")
+        self.ending = True
+        self.end_button.configure(text="ENDING…")
+        self.end_button.state(["disabled"])
+        self.save_button.state(["disabled"])
+        self.worker_entry.state(["disabled"])
+        self.depth_entry.state(["disabled"])
+        self.save_state.configure(text="Ending game… Finalizing runtime evidence…")
 
     def _scroll(self, *args: str) -> None:
         self.worker_canvas.yview(*args)
@@ -221,7 +275,10 @@ class WorkerControlWindow:
         return "break"
 
     def _update_worker_offset(self) -> None:
-        total = int(self.snapshot.get("current_worker_count", 0))
+        try:
+            total = max(0, int(self.snapshot.get("current_worker_count") or 0))
+        except (TypeError, ValueError):
+            total = 0
         if not total:
             return
         top = float(self.worker_canvas.yview()[0])
@@ -234,7 +291,10 @@ class WorkerControlWindow:
     def _draw_workers(self) -> None:
         canvas = self.worker_canvas
         canvas.delete("all")
-        total = int(self.snapshot.get("current_worker_count", 0))
+        try:
+            total = max(0, int(self.snapshot.get("current_worker_count") or 0))
+        except (TypeError, ValueError):
+            total = 0
         rows = {int(item["worker_id"]): item
                 for item in self.snapshot.get("workers", [])}
         canvas.configure(scrollregion=(0, 0, max(500, canvas.winfo_width()),
@@ -244,23 +304,25 @@ class WorkerControlWindow:
         for worker_id in range(top, min(total, top + visible)):
             y = worker_id * ROW_HEIGHT
             item = rows.get(worker_id)
-            canvas.create_text(12, y + 13, text=f"W{worker_id:04d}", anchor="w",
+            canvas.create_text(12, y + 9, text=f"W{worker_id:04d}", anchor="w",
                                fill="#d9e4e9", font=("Segoe UI", 9))
             state = item["state"] if item else "WAITING"
             color = STATE_COLORS.get(state, "#52636c")
-            canvas.create_text(92, y + 13, text=state, anchor="w",
+            canvas.create_text(92, y + 9, text=state, anchor="w",
                                fill=color, font=("Segoe UI Semibold", 9))
             progress = int(item["progress"]) if item else 0
             depth = int(item["depth"]) if item else int(self.snapshot.get("current_depth", 0))
             left, right = 205, max(260, canvas.winfo_width() - 120)
-            canvas.create_rectangle(left, y + 6, right, y + 20,
+            canvas.create_rectangle(left, y + 2, right, y + 16,
                                     outline="#41525b", fill="#24343c")
             filled = int((right - left) * min(1.0, progress / depth)) if depth else 0
             if filled:
-                canvas.create_rectangle(left, y + 6, left + filled, y + 20,
+                canvas.create_rectangle(left, y + 2, left + filled, y + 16,
                     outline="", fill=color)
-            canvas.create_text(right + 8, y + 13, text=f"{progress}/{depth}" if depth else "—",
+            canvas.create_text(right + 8, y + 9, text=f"{progress}/{depth}" if depth else "—",
                                anchor="w", fill="#d9e4e9", font=("Segoe UI", 9))
+            canvas.create_text(12, y + 31, text=worker_activity_text(item), anchor="w",
+                               fill="#a8bac4", font=("Segoe UI", 8))
         self.worker_page.configure(text=f"{total:,} total · showing {top:,}–"
             f"{min(total, top + visible):,}")
 
@@ -286,8 +348,10 @@ class WorkerControlWindow:
         connected = s.get("runtime_state") == "RUNNING"
         self.connection.configure(text=("LIVE · bounded snapshot" if connected else
                                         s.get("runtime_state", "DISCONNECTED")))
-        self.current.configure(text=f"CURRENT RUN   Workers {s.get('current_worker_count', '—')}"
-            f"      Depth {s.get('current_depth', '—')}"
+        worker_count = s.get("current_worker_count")
+        depth = s.get("current_depth")
+        self.current.configure(text=f"CURRENT RUN   Workers {worker_count if worker_count is not None else '—'}"
+            f"      Depth {depth if depth is not None else '—'}"
             f"      Captures {s.get('worker_captures_started', 0):,}"
             f"      Segments {s.get('segments', 0):,}")
         total = s.get("system_total_ram_bytes")
@@ -307,7 +371,8 @@ class WorkerControlWindow:
         next_total = s.get("projected_next_run_total_thor_bytes")
         projected_free = s.get("projected_next_run_free_ram_bytes")
         self._draw_bar("next", next_total, total, color, format_bytes(next_total))
-        self.evidence.configure(text=s.get("evidence_growth_display", "Evidence growth: CALCULATING…"))
+        self.evidence.configure(text=s.get("evidence_growth_display",
+                                            EVIDENCE_GROWTH_PLACEHOLDER))
         plan = s.get("next_native_plan")
         if plan:
             self.projection.configure(text=f"Projected free after launch: {format_bytes(projected_free)}")
@@ -343,8 +408,9 @@ def main() -> int:
     parser.add_argument("--snapshot", type=Path, required=True)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--preview", type=Path, required=True)
+    parser.add_argument("--end-game", type=Path, required=True)
     args = parser.parse_args()
-    WorkerControlWindow(args.snapshot, args.config, args.preview).run()
+    WorkerControlWindow(args.snapshot, args.config, args.preview, args.end_game).run()
     return 0
 
 

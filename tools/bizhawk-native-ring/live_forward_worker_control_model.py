@@ -10,11 +10,12 @@ import tempfile
 from typing import Any
 
 
-DEFAULT_WORKER_COUNT = 16
-DEFAULT_CHAIN_DEPTH = 20
+DEFAULT_WORKER_COUNT = 128
+DEFAULT_CHAIN_DEPTH = 512
 INT32_MAX = 2**31 - 1
+EVIDENCE_DISK_STOP_RESERVE_BYTES = 1024**3
 STATUS_SCHEMA = "oasis.m12.live-worker-control.v1"
-METRIC_NAMES = (
+METRIC_NAMES_30 = (
     "configured_workers", "workers_ever_used", "pending", "capturing",
     "complete", "occupied", "peak_capturing", "peak_complete",
     "peak_occupied", "captures_started", "captures_completed",
@@ -25,6 +26,7 @@ METRIC_NAMES = (
     "duplicate_entries", "total_segment_bytes", "ring_wraps", "ring_capacity",
     "descriptor_bytes_each", "memory_bytes_each",
 )
+METRIC_NAMES = METRIC_NAMES_30 + ("z80_instructions", "record_bytes_each")
 PLAN_NAMES = (
     "worker_count", "depth", "memory_bytes", "record_capacity",
     "identity_capacity", "descriptor_bytes_each", "descriptor_bytes_total",
@@ -156,8 +158,16 @@ def parse_live_control(value: str) -> dict[str, Any]:
     if len(parts) != 4:
         raise ValueError("LIVE_CONTROL snapshot framing is malformed")
     header = [int(item, 10) for item in parts[0].split(",")]
-    if len(header) != 4 + len(METRIC_NAMES):
-        raise ValueError("LIVE_CONTROL metrics field count mismatch")
+    metrics_count = len(header) - 4
+    if metrics_count == len(METRIC_NAMES):
+        metric_keys = METRIC_NAMES
+    elif metrics_count == len(METRIC_NAMES_30):
+        metric_keys = METRIC_NAMES_30
+    else:
+        raise ValueError(
+            f"LIVE_CONTROL metrics field count mismatch: expected {len(METRIC_NAMES)} or "
+            f"{len(METRIC_NAMES_30)}, got {metrics_count}"
+        )
     next_fields = parts[1].split(",", 2)
     if len(next_fields) != 3:
         raise ValueError("LIVE_CONTROL next-run planner fields are malformed")
@@ -185,7 +195,7 @@ def parse_live_control(value: str) -> dict[str, Any]:
     frame, worker_count, depth, pool_active = header[:4]
     return {"frame": frame, "worker_count": worker_count, "depth": depth,
             "pool_active": bool(pool_active),
-            "metrics": dict(zip(METRIC_NAMES, header[4:], strict=True)),
+            "metrics": dict(zip(metric_keys, header[4:], strict=True)),
             "next_run": next_config, "next_plan": next_plan,
             "next_plan_status": next_plan_status,
             "worker_offset": offset, "workers": rows}

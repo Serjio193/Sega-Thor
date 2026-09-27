@@ -1,6 +1,8 @@
 set(OASIS_RE_TOOLING_SOURCES
     src/tools/gpgx_import_io.cpp
     src/tools/gpgx_json.cpp
+    src/tools/thor_evidence/runtime_rom_properties.cpp
+    src/tools/thor_evidence/runtime_rom_observation.cpp
     src/tools/re_slice_decoder.cpp
     src/tools/re_slice_flow_target.cpp
     src/tools/re_slice_exact.cpp

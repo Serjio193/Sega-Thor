@@ -199,6 +199,22 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_test.py)
     add_test(NAME oasis_m12_map_driven_executed_asm_closure_2f
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_executed_asm_closure_test.py)
+    add_test(NAME oasis_m12_map_driven_stage7
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_stage7_test.py)
+    add_test(NAME oasis_m12_control_provenance_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_control_provenance_stage_test.py)
+    add_test(NAME oasis_m12_stage7_preflight
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_stage7_preflight_test.py)
+    add_test(NAME oasis_m12_absorption_cleanup
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_absorption_cleanup_test.py)
+    add_test(NAME oasis_m12_master_v2_shadow
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_v2_shadow_test.py)
+    add_test(NAME oasis_m12_master_canonical_view
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_canonical_view_test.py)
+    add_test(NAME oasis_m12_w2_active_resource_classification
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w2_active_resource_classification_test.py)
+    add_test(NAME oasis_m12_w2_frame_coherent_evidence
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w2_frame_coherent_evidence_test.py)
 
 add_test(NAME oasis_rom_coverage_model
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_coverage_model_test.py)
@@ -208,5 +224,107 @@ add_test(NAME oasis_rom_coverage_model
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_coverage_gui_live_test.py)
     add_test(NAME oasis_live_session_progress
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_session_progress_test.py)
+    add_test(NAME oasis_evidence_canonical_full_rom_map
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/canonical_full_rom_map_test.py)
+    add_test(NAME oasis_evidence_flow_stream
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/flow_stream_test.py)
+    add_test(NAME oasis_evidence_generic_flow_normalizer
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/generic_flow_normalizer_test.py)
+    add_test(NAME oasis_evidence_generic_recursive_closure
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/generic_recursive_closure_test.py)
+    add_test(NAME oasis_evidence_live_forward_audio_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_audio_stage_test.py)
+    add_test(NAME oasis_evidence_live_forward_complete_pipeline
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_complete_pipeline_test.py)
+    add_test(NAME oasis_evidence_live_forward_controlled_entity_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_controlled_entity_stage_test.py)
+    add_test(NAME oasis_evidence_live_forward_gameplay_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_gameplay_stage_test.py)
+    add_test(NAME oasis_evidence_live_forward_generic_closure_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_generic_closure_stage_test.py)
+    add_test(NAME oasis_evidence_live_forward_postrun_coordinator
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_postrun_coordinator_test.py)
+    add_test(NAME oasis_evidence_live_forward_postrun_progress
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_postrun_progress_test.py)
+    add_test(NAME oasis_evidence_live_forward_postrun_receipts
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_postrun_receipts_test.py)
+    add_test(NAME oasis_evidence_live_forward_rolling_master
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_rolling_master_test.py)
+    add_test(NAME oasis_evidence_live_forward_rom_link_runtime
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_rom_link_runtime_test.py)
+    add_test(NAME oasis_evidence_live_forward_sprite_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_sprite_stage_test.py)
+    add_test(NAME oasis_evidence_live_forward_stage5
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_stage5_test.py)
+    add_test(NAME oasis_evidence_live_forward_worker_control_launcher
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_worker_control_launcher_test.py)
+    add_test(NAME oasis_evidence_live_stage7_stage8_stage9_contract
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_stage7_stage8_stage9_contract_test.py)
+    add_test(NAME oasis_evidence_m12_dynamic_sat_shadow_discovery
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_dynamic_sat_shadow_discovery_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_evidence_gap
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_evidence_gap_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_persistence
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_persistence_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_piece_artifact
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_piece_artifact_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_piece_catalog
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_piece_catalog_test.py)
+    add_test(NAME oasis_evidence_m12_targeted_dynamic_sat_capture
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_targeted_dynamic_sat_capture_test.py)
+    add_test(NAME oasis_evidence_master_outcome_view
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_outcome_view_test.py)
+    add_test(NAME oasis_evidence_master_startup_authority
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_startup_authority_test.py)
+    add_test(NAME oasis_evidence_master_v2_contribution_boundary
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_v2_contribution_boundary_test.py)
+    add_test(NAME oasis_evidence_master_v2_forensic_reconciliation
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_v2_forensic_reconciliation_test.py)
+    add_test(NAME oasis_evidence_stage5_in_memory
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/stage5_in_memory_test.py)
+    add_test(NAME oasis_evidence_stage7_decode
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/stage7_decode_test.py)
+    add_test(NAME oasis_evidence_stage7_decoder_contract
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/stage7_decoder_contract_test.py)
+    add_test(NAME oasis_evidence_stage7_subprocess
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/stage7_subprocess_test.py)
+    add_test(NAME oasis_evidence_w3_z80_evidence
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w3_z80_evidence_test.py)
+    add_test(NAME oasis_evidence_w4_audio_analysis
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w4_audio_analysis_test.py)
 endif()
+
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "import pytest"
+                RESULT_VARIABLE OASIS_PYTEST_IMPORT_RESULT
+                OUTPUT_QUIET ERROR_QUIET)
+if(OASIS_PYTEST_IMPORT_RESULT EQUAL 0)
+    add_test(NAME oasis_evidence_live_forward_vdp_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_vdp_stage_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_frame_artifact
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_frame_artifact_test.py)
+    add_test(NAME oasis_evidence_m12_sprite_scanline_raster
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_sprite_scanline_raster_test.py)
+    add_test(NAME oasis_evidence_m12_vdp_frame_artifact
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_vdp_frame_artifact_test.py)
+    add_test(NAME oasis_evidence_w5_audio_format
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w5_audio_format_test.py)
+    add_test(NAME oasis_evidence_w5_audio_functional
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w5_audio_functional_test.py)
+    add_test(NAME oasis_evidence_w5_audio_ownership
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w5_audio_ownership_test.py)
+endif()
+
+set(OASIS_RUNTIME_ROM "$ENV{BEYOND_OASIS_ROM}")
+if(NOT OASIS_RUNTIME_ROM OR NOT EXISTS "${OASIS_RUNTIME_ROM}")
+    set(OASIS_RUNTIME_ROM "${CMAKE_SOURCE_DIR}/local-roms/Beyond Oasis (USA).md")
+endif()
+if(EXISTS "${OASIS_RUNTIME_ROM}")
+    add_test(NAME oasis_evidence_m12_dynamic_sat_producer_backtrace
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/m12_dynamic_sat_producer_backtrace_test.py)
+endif()
+
+add_test(NAME oasis_evidence_w6_live_discovery
+         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w6_live_discovery_test.py)
+set_tests_properties(oasis_evidence_w6_live_discovery
+                     PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 include(${CMAKE_SOURCE_DIR}/cmake/m14_4.cmake)

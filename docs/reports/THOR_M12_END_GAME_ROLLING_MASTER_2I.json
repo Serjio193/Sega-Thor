@@ -1,0 +1,86 @@
+{
+  "accepted_runtime_occurrences": 94685407,
+  "asm_closure": "NOT_RUN",
+  "canonical_refresh": "NOT_APPLIED_COMPACT_MASTER_ONLY",
+  "checkpoint": "M12-END-GAME-ROLLING-MASTER-2I",
+  "cleanup": {
+    "deleted": [],
+    "retained": [
+      "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control-2h\\campaign-desktop-20260919-082704-348\\continuous-runtime-evidence\\flow-v1-records.bin",
+      "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control-2h\\campaign-desktop-20260919-082704-348\\continuous-runtime-evidence\\flow-v1-segments.jsonl"
+    ],
+    "status": "RAW_RETAINED_REQUIRED_BY_2I_ROLLBACK_POLICY"
+  },
+  "cleanup_policy": "RAW_RETAINED_REQUIRED_BY_2I_ROLLBACK_POLICY",
+  "conflicts": 0,
+  "current_pointer": "C:\\Github\\Sega-Thor\\build\\thor-evidence\\live-worker-control-2h\\rolling-master-2i\\current.json",
+  "current_pointer_sha256": "46f63a8009bd859b1de2c52b95d5ec5518d6194597b6f7a9ab1c0cac5792bec8",
+  "exact_progress_stages": [
+    "FINALIZING RUN",
+    "AUDITING FLOW",
+    "MERGING MASTER",
+    "COMPACTING EVIDENCE"
+  ],
+  "full_pipeline_status": "STOP_UNSUPPORTED_STAGE_IS_FAIL_CLOSED",
+  "generation_id": "master-0ad568aeb80644b0",
+  "head": "311338b823f98f17065882387361ed2c636e7f82",
+  "heartbeat_frequency_hz": 4.0,
+  "indeterminate_progress_stages": [
+    "CONTROL PROVENANCE",
+    "ASM CLOSURE",
+    "FULL ROM AUDIT",
+    "CLEANUP"
+  ],
+  "input_index_sha256": "1eb1d3771cac02579d282b2f026f46aaf03fc31a89df68871f87b0297f5c1eb3",
+  "input_raw_sha256": "3824a40869c8098cd18b80daeea35c6bd540ecd8e60ad2b199ae2359bfaf1bcf",
+  "input_receipt_sha256": "6e59c8a5d0420a0bfcd11c1013cbd897b40e2868abebfe9e82188f74903d4af3",
+  "master_bytes": 495616,
+  "master_sha256": "e7fce6553c298142d25180c1816bfe0445a5297460b0f1ce8d252d06204af7a8",
+  "max_heartbeat_age_during_successful_run_seconds": null,
+  "new_edges": 2175,
+  "new_instructions": 1580,
+  "occurrence_totals": 94685407,
+  "parent": "36dc7e6acc61eb534e4c5269ed30c3b875d54d75",
+  "pipeline_state": "PARTIAL ANALYSIS COMPLETE \u26a0",
+  "postrun_stage_contract": {
+    "production_runtime_changed": false,
+    "raw_delete_policy": "NEVER_ON_STOP",
+    "source_owned_runtime_delta": 0,
+    "stage_5": "AUTOMATIC_ATOMIC_MAP_REFRESH_OR_STOP_POSTRUN_MAP_FACT_MISSING",
+    "stage_6": "ORDERED_FLOW_CONTROL_PROVENANCE_OR_NO_DELTA",
+    "stage_7": "STOP_RECONSTRUCTION_UNAVAILABLE_UNTIL_ACCEPTED_2F_RUNNER",
+    "stage_8": "PENDING_UNTIL_STAGE_7_PASS",
+    "stage_9": "RAW_RETAINED_UNTIL_STAGE_8_PASS"
+  },
+  "progress_checkpoint": "PASS_POSTRUN_PROGRESS_HEARTBEAT_UI_V1",
+  "progress_semantics": {
+    "backend_failure_state": "ANALYSIS FAILED \u2717",
+    "compact_only_remaining_stages": "HISTORICAL_RECEIPT_ONLY; CURRENT_COORDINATOR_FAILS_CLOSED",
+    "exact_totals_use_real_N_over_M": true,
+    "raw_json_location": "DETAILS",
+    "unknown_totals_use_indeterminate_animation": true
+  },
+  "raw_records_read": 94703572,
+  "rejected_facts": 0,
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "run_id": 1789830432,
+  "schema": "oasis.m12.rolling-master.v1",
+  "source_owned_after": 1475600,
+  "source_owned_before": 1475600,
+  "source_owned_delta": 0,
+  "stage_durations": "available in status.json stages.*.duration_seconds",
+  "status": "PASS_END_GAME_ROLLING_MASTER_COMPACT_V1",
+  "terminal_facts": 287744,
+  "terminal_state_invariants": {
+    "heartbeat_stale_live_pid": "UNRESPONSIVE_NON_TERMINAL",
+    "partial_later_stages": "SKIPPED_NOT_APPLICABLE",
+    "raw_evidence_on_stop_or_error": "RETAINED",
+    "stop_or_error_later_stages": "BLOCKED",
+    "terminal_active_stage": null
+  },
+  "terminalization": "PASS_POSTRUN_TERMINALIZATION_STATE_MACHINE_V1",
+  "ui_refresh_frequency_hz": 4.0,
+  "unique_control_edges": 2528,
+  "unique_instruction_ranges": 1908,
+  "witness_totals": 1
+}

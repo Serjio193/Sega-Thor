@@ -24,6 +24,10 @@ void write_file(const char* path, const std::string& text) {
 } // namespace
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--capabilities") {
+        std::cout << "oasis.stage7.range.v1\n";
+        return 0;
+    }
     if (argc != 6) {
         std::cerr << "usage: oasis_re_assemble_range <rom> <start> <end> <asm> <json>\n";
         return 2;

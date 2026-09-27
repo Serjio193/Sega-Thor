@@ -1,7 +1,8 @@
-"""Deterministic A–O checks for the snapshot-only 2H Worker window."""
+"""Deterministic A–R checks for the 2H window and interactive Worker spool."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -13,7 +14,9 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools" / "bizhawk-native-ring"))
 
-from live_forward_worker_control import LiveWorkerControlPublisher  # noqa: E402
+from live_forward_worker_control import (  # noqa: E402
+    LiveWorkerControlPublisher, evidence_growth_display, visible_worker_activity,
+)
 from live_forward_worker_control_model import (  # noqa: E402
     DEFAULT_CHAIN_DEPTH, DEFAULT_WORKER_COUNT, METRIC_NAMES, PLAN_NAMES,
     EvidenceGrowthMeter, allocation_preflight, calculate_resource_budget,
@@ -21,8 +24,12 @@ from live_forward_worker_control_model import (  # noqa: E402
     save_next_run_config, system_memory_values, validate_config,
 )
 from live_forward_worker_control_window import (  # noqa: E402
-    close_window, read_snapshot, snapshot_for_display,
+    close_window, read_snapshot, request_end_game, snapshot_for_display,
+    worker_activity_text,
 )
+from live_forward_scaling_audit import RECORD  # noqa: E402
+from live_forward_scaling_stream import TailLines, ordered_runtime_events  # noqa: E402
+from live_forward_segment_spool import LiveForwardSegmentSpool  # noqa: E402
 
 
 def live_control_line(state: int = 2, progress: int = 4) -> str:
@@ -114,6 +121,23 @@ class LiveWorkerControlTests(unittest.TestCase):
         unavailable = parse_live_control(live_control_line(state=6, progress=0))
         self.assertEqual(unavailable["workers"][0]["state"], "DETAIL API MISSING")
 
+    def test_h2_activity_snapshot_is_limited_to_workers_in_the_visible_page(self) -> None:
+        activity = [{"worker_id": index, "audited_captures": 7,
+                     "last_flow_records": 18, "total_flow_records": 126}
+                    for index in range(1000)]
+        visible = visible_worker_activity({"LIVE_CONTROL": live_control_line()}, activity)
+        self.assertEqual(visible, [{"worker_id": 0, "audited_captures": 7,
+                                    "last_flow_records": 18, "total_flow_records": 126}])
+
+    def test_h3_worker_row_shows_lifecycle_and_flow_yield(self) -> None:
+        text = worker_activity_text({"capture_starts": 3064,
+            "capture_completions": 3064, "releases": 3063,
+            "audited_captures": 3063, "last_flow_records": 42,
+            "total_flow_records": 128646})
+        self.assertEqual(text,
+            "start 3,064  ·  done 3,064  ·  ACK 3,063  ·  audited 3,063  ·  "
+            "FLOW last 42 / total 128,646")
+
     def test_i_system_ram_used_and_available_reconcile(self) -> None:
         values = system_memory_values(64 * 1024, 24 * 1024)
         self.assertEqual(values["used_bytes"] + values["available_bytes"],
@@ -155,6 +179,13 @@ class LiveWorkerControlTests(unittest.TestCase):
             runtime.terminate()
             runtime.wait(timeout=2)
 
+    def test_m2_end_game_is_one_idempotent_graceful_request(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "end-game-request.txt"
+            self.assertTrue(request_end_game(path))
+            self.assertFalse(request_end_game(path))
+            self.assertEqual(path.read_text(encoding="ascii"), "END_GAME\n")
+
     def test_n_slow_window_is_not_on_the_host_update_path(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             process = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(1)"])
@@ -188,6 +219,68 @@ class LiveWorkerControlTests(unittest.TestCase):
             memory_bytes_each=64)
         self.assertEqual(budget["available_physical_bytes"], 0)
         self.assertEqual(budget["native_budget_bytes"], 0)
+
+    def test_desktop_reserve_allows_small_plan_with_three_gib_free(self) -> None:
+        budget = calculate_resource_budget(3 * 1024 ** 3,
+            native_budget_cap=256 * 1024 ** 2,
+            process_budget_cap=512 * 1024 ** 2,
+            core_reserve_cap=128 * 1024 ** 2,
+            system_reserve=1024 ** 3, memory_bytes_each=64 * 1024)
+        self.assertGreaterEqual(budget["native_budget_bytes"], 8 * 1024 ** 2)
+
+    def test_p_live_stream_reader_retains_only_latest_round_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runtime.txt"
+            path.write_text("PLAN=plan\nSEG_000001_000=segment\n"
+                            "LIFECYCLE_000001_000=1,1,1,1\n"
+                            "ROUND_000001_AUDIT_STREAM_DELTA=15\n"
+                            "ROUND_000001_ACKED=8\nROUND_000001_METRICS=metrics\n",
+                            encoding="ascii")
+            tail = TailLines(path)
+            first = tail.poll()
+            self.assertIn("SEG_000001_000", first)
+            self.assertEqual(tail.values["ROUND_AUDIT_STREAM_DELTA"], "15")
+            with path.open("a", encoding="ascii") as target:
+                target.write("ROUND_000002_AUDIT_STREAM_DELTA=17\n"
+                             "ROUND_000002_ACKED=8\nROUND_000002_METRICS=metrics\n")
+            tail.poll()
+            self.assertEqual(tail.values["ROUND_AUDIT_STREAM_DELTA"], "17")
+            self.assertEqual(tail.values["ROUND_ACKED"], "8")
+            self.assertEqual(len(tail.values), 4)
+            self.assertNotIn("ROUND_000001_METRICS", tail.values)
+
+    def test_s_mixed_runtime_batch_preserves_segment_lifecycle_ack_order(self) -> None:
+        changed = {
+            "SEG_000128_000000": "segment-128",
+            "LIFECYCLE_000128_000000": "128,128,128,128",
+            "ROUND_000128_ACKED": "8",
+            "SEG_000129_000000": "segment-129",
+        }
+        self.assertEqual([key for key, _ in ordered_runtime_events(changed)],
+            list(changed))
+
+    def test_q_continuous_segment_spool_streams_exact_records_to_disk(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            data = RECORD.pack(1, 1, 0, 0x100, 0x102, 0x4E71, 1, 0, 0, 0, 0, 0)
+            segment = {"valid": True, "ready_for_cartographer": True,
+                "run_id": 7, "epoch": 1, "worker_id": 0, "capture_id": 7_000_001,
+                "generation": 1, "record_count": 1,
+                "records_sha256": hashlib.sha256(data).hexdigest(),
+                "segment_sha256": hashlib.sha256(b"segment-1").hexdigest()}
+            spool = LiveForwardSegmentSpool(Path(directory) / "spool")
+            spool.admit(segment, list(RECORD.iter_unpack(data)), data)
+            receipt = spool.close()
+            raw = Path(receipt["raw_path"]).read_bytes()
+            index = json.loads(Path(receipt["index_path"]).read_text(encoding="utf-8"))
+            self.assertEqual(receipt["segments"], 1)
+            self.assertEqual(raw, data)
+            self.assertEqual(index["raw_offset"], 0)
+            self.assertEqual(index["raw_length"], len(data))
+            self.assertEqual(index["raw_sha256"], segment["records_sha256"])
+
+    def test_r_evidence_growth_label_names_disk_reserve(self) -> None:
+        self.assertEqual(evidence_growth_display("CALCULATING…"),
+            "Evidence disk growth: CALCULATING…; auto-stop at 1.0 GiB free")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,40 @@
+diff --git a/waterbox/gpgx/cinterface/live_forward_api.c b/waterbox/gpgx/cinterface/live_forward_api.c
+--- a/waterbox/gpgx/cinterface/live_forward_api.c
++++ b/waterbox/gpgx/cinterface/live_forward_api.c
+@@ -80,2 +80,2 @@
+ 	oasis_lf_result result;
+-	if (!output || capacity < 20 || !oasis_lf_result_info(worker_id, &result))
++	if (!output || capacity < 22 || !oasis_lf_result_info(worker_id, &result))
+@@ -90,13 +90,15 @@
+ 	output[8] = result.entry_control_flow_sequence;
+ 	output[9] = result.exit_control_flow_sequence;
+-	output[10] = result.worker_id;
+-	output[11] = result.termination_reason;
+-	output[12] = result.configured_depth;
+-	output[13] = result.configured_memory_bytes;
+-	output[14] = result.consumed_depth;
+-	output[15] = result.consumed_memory_bytes;
+-	output[16] = result.record_count;
+-	output[17] = result.records_bytes;
+-	output[18] = result.valid;
+-	output[19] = result.copy_duration_ns;
+-	return 20;
++	output[10] = result.entry_frame;
++	output[11] = result.exit_frame;
++	output[12] = result.worker_id;
++	output[13] = result.termination_reason;
++	output[14] = result.configured_depth;
++	output[15] = result.configured_memory_bytes;
++	output[16] = result.consumed_depth;
++	output[17] = result.consumed_memory_bytes;
++	output[18] = result.record_count;
++	output[19] = result.records_bytes;
++	output[20] = result.valid;
++	output[21] = result.copy_duration_ns;
++	return 22;
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+@@ -63,1 +63,1 @@
+-			var result = new ulong[20];
++			var result = new ulong[22];

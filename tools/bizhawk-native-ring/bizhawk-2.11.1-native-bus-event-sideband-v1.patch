@@ -1,0 +1,32 @@
+diff --git a/waterbox/gpgx/Makefile b/waterbox/gpgx/Makefile
+index b1d2a1a..e8408d6 100644
+--- a/waterbox/gpgx/Makefile
++++ b/waterbox/gpgx/Makefile
+@@ -38,6 +38,7 @@ TARGET := gpgx.wbx
+ SRCS = \
+ 	$(GPGX_DIR)/core/debug/trace_ring.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_trace.c \
++	$(GPGX_DIR)/core/debug/live_forward_bus.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_worker.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_pool.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_metrics.c \
+diff --git a/waterbox/gpgx/cinterface/cinterface.c b/waterbox/gpgx/cinterface/cinterface.c
+index 61d3e81..0d46b25 100644
+--- a/waterbox/gpgx/cinterface/cinterface.c
++++ b/waterbox/gpgx/cinterface/cinterface.c
+@@ -12,6 +12,7 @@
+ #include <vdp_render.h>
+ #include <debug/cpuhook.h>
+ #include <debug/trace_ring.h>
++#include <debug/live_forward_trace.h>
+ 
+ // Functions added by us to peek at static structs
+ // (this is much less invasive than not making them static FYI)
+@@ -194,6 +195,7 @@ GPGX_EX void gpgx_advance(void)
+ 	}
+ 
+ 	nsamples = audio_update(soundbuffer);
++	oasis_lf_frame_boundary();
+ }
+ 
+ extern toc_t pending_toc;

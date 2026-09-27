@@ -121,6 +121,8 @@ void lf_seal_worker(uint32_t index, uint32_t reason,
   uint32_t i;
   uint64_t copy_started;
   uint64_t copy_finished;
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
   if (index >= worker_count)
     return;
   worker = &workers[index];
@@ -148,13 +150,13 @@ void lf_seal_worker(uint32_t index, uint32_t reason,
     worker->result.consumed_memory_bytes <= worker->configured_memory_bytes;
   if (exit_state)
     worker->result.exit_state = *exit_state;
-  if (count > record_capacity || count > OASIS_LF_RING_CAPACITY)
+  if (count > record_capacity || count > cap)
     worker->result.valid = 0;
   for (i = 0; i < count && count <= record_capacity &&
-       count <= OASIS_LF_RING_CAPACITY; ++i)
+       count <= cap; ++i)
   {
     uint64_t seq = worker->first_record + i;
-    lf_ring_slot *slot = &ring_storage[(seq - 1u) % OASIS_LF_RING_CAPACITY];
+    lf_ring_slot *slot = &ring_storage[(seq - 1u) % cap];
     if (!slot->valid || slot->sequence != seq)
     {
       worker->result.valid = 0;
@@ -185,8 +187,11 @@ void lf_seal_worker(uint32_t index, uint32_t reason,
 
 void lf_finish_due(const oasis_lf_cpu_state *state, uint32_t stopped)
 {
+  uint32_t cap;
   if (!oasis_lf_recording_enabled || instruction_nesting != 0)
     return;
+  cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                               : OASIS_LF_RING_CAPACITY_DEFAULT;
   while (active_count)
   {
     uint32_t index = active_front();
@@ -200,7 +205,7 @@ void lf_finish_due(const oasis_lf_cpu_state *state, uint32_t stopped)
       reason = OASIS_LF_END_DEPTH_LIMIT;
     else if (used + 2u > record_capacity)
       reason = OASIS_LF_END_MEMORY_LIMIT;
-    else if (used + 2u > OASIS_LF_RING_CAPACITY)
+    else if (used + 2u > cap)
       reason = OASIS_LF_END_RETENTION_LIMIT;
     else if (stopped)
       reason = OASIS_LF_END_CPU_STOP;
@@ -314,6 +319,8 @@ void lf_cancel_all_active(uint32_t reason,
 int oasis_lf_set_enabled(uint32_t enabled)
 {
   uint32_t i;
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
   enabled = enabled != 0;
   if (enabled && (!workers || !ring_storage))
     return 0;
@@ -325,7 +332,7 @@ int oasis_lf_set_enabled(uint32_t enabled)
   oasis_lf_epoch_break(0);
   oasis_lf_recording_enabled = enabled;
   if (ring_storage)
-    for (i = 0; i < OASIS_LF_RING_CAPACITY; ++i)
+    for (i = 0; i < cap; ++i)
       ring_storage[i].valid = 0;
   return 1;
 }
@@ -347,8 +354,10 @@ void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state)
   }
   memset(&record, 0, sizeof(record));
   record.instruction_sequence = instruction_sequence;
+  record.master_time = current_master_time;
   record.pc = state->pc;
-  record.next_pc = state->pc;
+  record.address = state->pc;
+  record.cpu_id = OASIS_LF_CPU_68K;
   record.kind_flags = OASIS_LF_CPU_STOP_EVENT;
   lf_append_record(record);
   lf_cancel_all_active(OASIS_LF_END_CPU_STOP, state);
@@ -358,6 +367,8 @@ void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state)
 void oasis_lf_epoch_break(const oasis_lf_cpu_state *state)
 {
   uint32_t offset;
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
   for (offset = 0; offset < active_count; ++offset)
   {
     uint32_t slot = (active_head + offset) % worker_count;
@@ -369,11 +380,13 @@ void oasis_lf_epoch_break(const oasis_lf_cpu_state *state)
   stream_sequence = 0;
   last_entry_stream_sequence = 0;
   instruction_sequence = 0;
+  z80_instruction_sequence = 0;
   control_flow_sequence = 0;
+  frame_number = 0;
+  current_master_time = 0;
   last_started_instruction = UINT64_MAX;
   if (ring_storage)
-    memset(ring_storage, 0,
-           OASIS_LF_RING_CAPACITY * sizeof(*ring_storage));
+    memset(ring_storage, 0, cap * sizeof(*ring_storage));
   if (++runtime_epoch == 0)
     runtime_epoch = 1;
 }

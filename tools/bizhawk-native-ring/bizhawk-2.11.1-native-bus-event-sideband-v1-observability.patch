@@ -1,0 +1,52 @@
+diff --git a/waterbox/gpgx/cinterface/live_forward_api.c b/waterbox/gpgx/cinterface/live_forward_api.c
+--- a/waterbox/gpgx/cinterface/live_forward_api.c
++++ b/waterbox/gpgx/cinterface/live_forward_api.c
+@@ -64,7 +64,12 @@
+ GPGX_EX uint64_t gpgx_live_forward_instruction_sequence(void)
+ {
+ 	return oasis_lf_instruction_sequence();
+ }
++
++GPGX_EX uint64_t gpgx_live_forward_latest_frame_boundary_record(void)
++{
++	return oasis_lf_latest_frame_boundary_record();
++}
+ 
+ GPGX_EX void gpgx_live_forward_epoch_break(void)
+ {
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/LibGPGX.cs
+@@ -480,5 +480,8 @@
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract ulong gpgx_live_forward_instruction_sequence();
++
++		[BizImport(CallingConvention.Cdecl)]
++		public abstract ulong gpgx_live_forward_latest_frame_boundary_record();
+ 
+ 		[BizImport(CallingConvention.Cdecl)]
+ 		public abstract void gpgx_live_forward_epoch_break();
+diff --git a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+--- a/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
++++ b/src/BizHawk.Emulation.Cores/Consoles/Sega/gpgx64/GPGX.LiveForward.cs
+@@ -55,5 +55,8 @@
+ 		public ulong LiveForwardInstructionSequence()
+ 			=> Core.gpgx_live_forward_instruction_sequence();
++
++		public ulong LiveForwardLatestFrameBoundaryRecord()
++			=> Core.gpgx_live_forward_latest_frame_boundary_record();
+ 
+ 		public void LiveForwardEpochBreak()
+ 			=> Core.gpgx_live_forward_epoch_break();
+diff --git a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+--- a/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
++++ b/src/BizHawk.Client.Common/lua/LuaHelperLibs/GenesisLuaLibrary.cs
+@@ -151,4 +151,8 @@
+ 		public ulong LiveForwardInstructionSequence()
+ 			=> Emulator is GPGX gpgx ? gpgx.LiveForwardInstructionSequence() : 0;
++
++		[LuaMethod("live_forward_latest_frame_boundary_record", "Returns the latest recorded native FRAME_BOUNDARY stream sequence")]
++		public ulong LiveForwardLatestFrameBoundaryRecord()
++			=> Emulator is GPGX gpgx ? gpgx.LiveForwardLatestFrameBoundaryRecord() : 0;
+ 
+ 		[LuaMethod("live_forward_request", "Connects a free Worker at the next native instruction boundary")]

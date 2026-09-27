@@ -31,6 +31,315 @@ transactions.
 **Evidence:** `src/tools/thor_evidence/knowledge_generation_gc.py`,
 `tests/rom_knowledge_pipeline_test.py`, and
 `docs/reports/THOR_M14_7B_GENERATION_COMPACTION.json`.
+# ADR-M12-W5C-EXACT-AUDIO-RESOURCE-OWNERSHIP-PROMOTION-V1 — Exact Audio Resource Ownership, Partition Split, and Canonical Promotion
+**Status:** Accepted for M12 W5c
+**Date:** 2026-09-21
+
+**Context:**
+Following W5 round-trip verification, two Mode 0 audio resources (`AUDIO_RESOURCE_FORMAT_A_0001` at `0x0BD540..0x0BF768`, 8,744 bytes, and `AUDIO_RESOURCE_FORMAT_A_0002` at `0x0BC95C..0x0BD540`, 3,044 bytes, combined 11,788 bytes) were proven byte-identical to canonical ROM without original nibble/byte dependence in the encoder. The pre-promotion canonical ROM knowledge map holds emission range `0x0B8000..0x0BF768` (30,568 bytes) as unowned `UNKNOWN` (`source_owned = 0`). Under ADR-0044, exact promoters alone may update ownership under their current gates.
+
+**Decision:**
+1. **Ownership Eligibility Qualification**:
+   - Qualify exact ownership eligibility for `AUDIO_RESOURCE_FORMAT_A_0001` (8,744 bytes) and `AUDIO_RESOURCE_FORMAT_A_0002` (3,044 bytes) under claim type `RECONSTRUCTION_VERIFIED` (`STATIC_VERIFIED`).
+   - Confirm boundaries, format, deterministic decode, semantic inverse encode, byte-identical round-trip, encoder independence, and canonical ROM identity.
+2. **Canonical Emission Partition Split**:
+   - Authorize canonical knowledge tooling (`w5_audio_promote.py`) to split canonical emission range `0x0B8000..0x0BF768` into three exact disjoint intervals:
+     * `[0x0B8000, 0x0BC95C)` (18,780 bytes): unpromoted `UNKNOWN`, `source_owned = 0`, artifact `blobs/0B8000_0BC95C.bin`.
+     * `[0x0BC95C, 0x0BD540)` (3,044 bytes): `AUDIO_RESOURCE_FORMAT_A_0002`, `SOUND_DATA_CONTAINER_CONFIRMED`, `DATA_KNOWN`, `source_owned = 1`, `DATA`, artifact `data/audio_0BC95C.bin`.
+     * `[0x0BD540, 0x0BF768)` (8,744 bytes): `AUDIO_RESOURCE_FORMAT_A_0001`, `SOUND_DATA_CONTAINER_CONFIRMED`, `DATA_KNOWN`, `source_owned = 1`, `DATA`, artifact `data/audio_0BD540.bin`.
+3. **Canonical Claims and Proof Evidence**:
+   - Create `rom_object` entries (`AUDIO_DATA`), `claim` entries (`SOURCE_OWNED = true, STATIC_VERIFIED`, `SOURCE_CLASS`, `FORMAT_SPEC`), and `evidence_ref` entries linking W5 acceptance proofs (`w5_audio_format_spec.json`, `w5_audio_resources.json`, `w5_roundtrip_receipt.json`, `w5_witness_alignment.json`).
+4. **Idempotence and Non-Duplication**:
+   - Re-running promotion on an already-promoted map produces `NEW_SOURCE_OWNED_BYTES = 0` and leaves hashes and partitions byte-for-byte identical.
+5. **Strict Scope Prohibition**:
+   - Descriptor tables (`0x0B8000..0x0B8050`), bank padding (`0x0BF768..0x0C0000`), Mode 1 resources, unverified neighbouring candidate resources, and whole audio banks remain strictly unpromoted as `UNKNOWN` or pre-existing padding until covered by independent reconstruction proof.
+6. **SOURCE_OWNED Accounting**:
+   - Increment `SOURCE_OWNED` from `1,475,600` to `1,487,388` bytes (`+11,788` bytes, 47.2827911377% of ROM).
+
+**Consequences:**
+1. Canonical knowledge map `docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json` and its report are regenerated with updated hashes and metrics.
+2. Partition coverage remains complete across all 3,145,728 bytes with 0 gaps, 0 overlaps, and 0 out-of-bounds rows.
+3. Checkpoint emitted: `PASS_EXACT_AUDIO_RESOURCE_OWNERSHIP_V1`.
+
+# ADR-M12-W5-EXACT-AUDIO-RESOURCE-FORMAT-ROUNDTRIP-V1 — Non-Linear Delta-PCM (Format A), Bank Descriptor Tables, Canonical IR, and Byte-Identical Round-Trip
+**Status:** Accepted for M12 W5
+**Date:** 2026-09-21
+
+**Context:**
+Following the W4 Level-3 causal witness from early-boot banked ROM reads (`0x0BEDE4..0x0BEDED`) to YM2612 DAC writes (`0x4001`), the exact audio resource format, true resource boundaries, decoding logic, encoding logic, and hardware alignment must be proven end-to-end without guesswork or promotional semantics.
+
+**Decision:**
+1. **Exact Consumer & Decoder Routines**:
+   - The Z80 sound driver is located at ROM `0x062E38..0x064E38` (copied to Z80 RAM `0x0000..0x1FFF` during M68K boot).
+   - Sound command `0x11` at `0x064F` invokes descriptor parser and bank switcher at `0x0704..0x076D`.
+   - Bank switching writes 9 bits sequentially into Genesis bank latch `0x6000` via routine `0x0A0B..0x0A40`.
+   - Mode 0 sample loop resides at `0x080D` (high nibble) and `0x0854` (low nibble), with loop advancement at `0x0880` (`INC HL; DEC BC`) and termination check (`OR B, C; JP Z, 0x0892`).
+   - Hardware DAC emitter resides at `0x0968..0x0980`, writing to YM2612 port 0 register 0x2A (`(IY+0)=0x2A; ADD A, D; LD D, A; LD (IY+1), A`).
+2. **Exact Descriptor Table Layout**:
+   - Each of the 8 32KB audio banks (ROM `0x080000..0x0B8000`) begins with an 80-byte table (`0x8000..0x804F`) containing 16 5-byte entries.
+   - Entry structure: bytes 0..1 = 16-bit logical start address (`0x8000..0xFFFF`); bytes 2..3 = 16-bit compressed byte length; byte 4 = playback mode (0 = standard, 1 = hold/interpolate via `0x0999`).
+   - Compressed audio data starts immediately following the table at offset `0x8050` and packs contiguously until the end of the last resource, followed by `0xFF` bank padding.
+3. **Format Semantics (AUDIO_FORMAT_A)**:
+   - Initial accumulator `D = 0x80` (128 decimal, unsigned 8-bit PCM midpoint / silence).
+   - Lookup table at Z80 RAM `0x0008..0x0016`:
+     `[0, +1, +2, +6, +12, +24, +48, +96, -96, -48, -24, -12, -6, -2, -1]`.
+   - Nibble 0: repeat previous delta `E` for 3 consecutive sample ticks.
+   - Non-zero nibbles: load delta from table, add to accumulator `D`, emit sample.
+4. **Exact Boundaries for Primary Resource**:
+   - `AUDIO_RESOURCE_FORMAT_A_0001`: Bank 0x17, Entry 7 (`0x0BD540..0x0BF768`, 8,744 bytes, mode 0).
+   - Strictly encloses W4 witness cluster `0x0BEDE4..0x0BEDED` at byte offset 6,308.
+   - Decoded sample at byte offset 6,308 low nibble matches observed W4 DAC write `0x78` exactly.
+5. **Canonical IR & Byte-Identical Round-Trip**:
+   - Pure Intermediate Representation (`AudioResourceIR` / `AudioToken`) represents tokenized delta events and decoded PCM samples without storing original binary blobs.
+   - Deterministic encoder reconstructs original byte stream with 100% byte-identical SHA-256 match for primary resource (`AUDIO_RESOURCE_FORMAT_A_0001`), secondary resource (`AUDIO_RESOURCE_FORMAT_A_0002`), and across multiple audio banks.
+6. **SOURCE_OWNED Reconciliation**:
+   - All Gates A through J verified green.
+   - Manifest promotion delta deferred (`SOURCE_OWNED_DELTA = 0`) to preserve ADR-0044 manifest invariants until a full audio bank re-partitioning manifest is formally authorized.
+   - Checkpoint emitted: `PASS_EXACT_AUDIO_RESOURCE_ROUNDTRIP_V1`.
+
+**Consequences:**
+1. Complete deterministic codec implemented in `src/tools/thor_evidence/w5_audio_decode.py` and `w5_audio_encode.py`.
+2. All 9 required W5 acceptance artifacts emitted in `build/m12-w5-acceptance/`.
+3. 18 comprehensive tests pass in `tests/w5_audio_format_test.py`.
+4. Zero promotional or musical names used.
+
+# ADR-M12-W4-ACTIVE-AUDIO-RESOURCE-ANALYSIS-V1 — Four Causal Levels, Last-Writer Memory Handoff, Port-Local Audio Sinks, and Neutral Audio Resource Classification
+**Status:** Accepted for M12 W4
+**Date:** 2026-09-21
+
+**Context:**
+Connecting M68K sound commands to Z80 sound driver execution, Z80 RAM state, and physical audio outputs (YM2612 FM synthesis and PSG) requires strict evidentiary separation between temporal coincidence, memory dependencies, instruction dataflow, and strict end-to-end causal chains. Hardware audio interfaces require port-local latching semantics (YM2612 Part 1: 0x4000->0x4001; Part 2: 0x4002->0x4003) and exact hardware register recognition (DAC data 0x2A, enable 0x2B; PSG 0x7F11). Candidate audio resources in canonical ROM must be classified strictly with neutral taxonomy (AUDIO_COMMAND_CANDIDATE, AUDIO_TABLE_CANDIDATE, AUDIO_PATCH_CANDIDATE, AUDIO_RESOURCE_RANGE_CANDIDATE) without premature promotional music semantics (SONG, TRACK, INSTRUMENT).
+
+**Decision:**
+1. **Four Causal Levels**:
+   - Level 0 (`TEMPORAL_ASSOCIATION`): Temporal ordering ($T_1 < T_2$) within same execution context `(run_id, epoch)`. Necessary but not sufficient for causality.
+   - Level 1 (`MEMORY_DEPENDENCY`): Exact last-writer rule. M68K writes to Z80 window ($A00000..$A01FFF), Z80 reads matching value at $T_{read} > T_{write}$, and no intervening write occurs. Yields `OBSERVED_HANDOFF` (`DERIVED_EXACT`).
+   - Level 2 (`DATAFLOW_DEPENDENCY`): Exact Z80 instruction dataflow tracking across registers (A, B, C, D, E, H, L, IX, IY), memory, stack, and shadow registers. Unsupported opcodes terminate tracking conservatively without speculation.
+   - Level 3 (`STRICT_CAUSAL_CHAIN`): Provenance chain connecting verified source (M68K handoff or banked ROM read) to hardware audio sink through unbroken Level 2 dataflow (`DERIVED_EXACT`).
+2. **Port-Local YM2612 Latching Semantics**:
+   - Part 1: Port 0x4000 latches register address for Port 0x4001.
+   - Part 2: Port 0x4002 latches register address for Port 0x4003.
+   - Cross-port pairing (e.g. 0x4000 pairing with 0x4003) is strictly prohibited. An address write overwrites any previous unconsumed latch on that port.
+   - YM2612 register 0x2A is DAC data, 0x2B is DAC enable. Port 0x7F11 is PSG.
+3. **Input Evidence Authenticity**:
+   - Evidence records must exist in raw binary input files processed by the active pipeline run to be classified as `OBSERVED`. Historical records or prior run references absent from the active binary stream remain `WITNESS_CANDIDATE` (`HYPOTHESIS`).
+4. **Spatial Cluster Span vs. Resource Boundary**:
+   - Spatial span `[min_addr..max_addr]` of observed ROM reads defines an `OBSERVED_ROM_CLUSTER`, not an exact resource boundary. Resource ranges remain `HYPOTHESIS` until bounded by static or runtime closure proofs.
+5. **Neutral Resource Taxonomy**:
+   - All candidate audio structures must use strictly neutral types (`AUDIO_COMMAND_CANDIDATE`, `AUDIO_TABLE_CANDIDATE`, `AUDIO_PATCH_CANDIDATE`, `AUDIO_RESOURCE_RANGE_CANDIDATE`). Promotional labels (`SONG`, `TRACK`, `INSTRUMENT`, `VOICE`, `SAMPLE`) are strictly forbidden until behavioral parity is established.
+
+**Consequences:**
+1. Analysis pipeline (`w4_audio_pipeline.py`) emits 9 verified acceptance artifacts under `build/m12-w4-acceptance/`.
+2. Over 7,168 M68K->Z80 handoffs verified with exact last-writer matching and 0 intervening writes.
+3. 2,048 YM2612 register writes reach Level 3 Strict Causal Chain with exact Z80 dataflow provenance.
+4. Zero promotional or unverified music semantics introduced into the repository.
+
+# ADR-M12-W3-CANONICAL-CROSS-CPU-TIMELINE-V1 — Canonical Cross-CPU Temporal Identity and Causal Closure
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Dual-CPU co-capture records concurrent execution of M68000 and Z80 processors.
+To guarantee sound, non-speculative cross-CPU timeline analysis and causal relations
+(such as 68K writes to Z80 RAM followed by Z80 reads and YM2612 audio register writes),
+the exact semantics, source, units, frame reset behavior, and tie-breaking rules of
+`master_time` across both CPU cores must be mathematically verified and strictly enforced.
+
+**Decision:**
+1. **Master Time Source and Units**:
+   - `m68k.cycles` (`core/m68k/m68kcpu.c`) scales instruction cycles by `MUL = 7` (Genesis Master Clock / 7 = 7.67 MHz M68K clock).
+   - `Z80.cycles` (`core/z80/z80.c`) scales instruction cycles by `15` in `cc_op` tables (Genesis Master Clock / 15 = 3.58 MHz Z80 clock).
+   - Both cycle counters are directly expressed in the exact same physical unit: **Genesis Master Clock cycles** (3420 mcycles per scanline, 896,040 mcycles per standard NTSC frame). The conversion ratio is 1:1.
+2. **Temporal Semantics and Canonical Identity**:
+   - At every frame boundary, `core/system.c` executes `m68k.cycles -= mcycles_vdp` and `Z80.cycles -= mcycles_vdp`.
+   - Therefore, `master_time` is strictly `FRAME_RELATIVE` (rebasing to ~0 each frame).
+   - The canonical timeline key is defined as `(run_id, epoch, frame, master_time)`. Comparing `master_time` alone across different frames is strictly prohibited.
+3. **Cross-CPU Tie-Breaking Rule**:
+   - If M68K and Z80 share `(frame, master_time)`, the relation is defined as `SAME_MASTER_TIME_UNORDERED`.
+   - `stream_sequence` reflects host thread scheduling slices and CANNOT be used to prove causal precedence between same-timestamp events.
+   - Causal interactions require `STRICT_BEFORE` temporal precedence (`T_write < T_read`).
+4. **Timeline Integrity and Isolation**:
+   - Cross-run and cross-epoch events are strictly disjoint; joining or comparing events across differing `run_id` or `epoch` raises an error.
+5. **Retained Segment Metric**:
+   - `retained_segment_data` is defined as `CUMULATIVE_BYTES_PROCESSED` (cumulative audit throughput streamed to disk), not resident live memory. Live heap remains strictly bounded at 160 MiB.
+
+**Consequences:**
+1. Authoritative cross-CPU sorting in `w3_cross_cpu_timeline.py` respects frame precedence first, followed by master cycles.
+2. Tests A–G pass with 100% verification, preventing speculative causality, timestamp collisions, and cross-run contamination.
+3. Memory behavior remains proven `BOUNDED_OSCILLATING` under sustained gameplay.
+
+# ADR-M12-W3-SUSTAINED-10MIN-PROFILE-V1 — 10-Minute Sustained Gameplay Memory Stability and Safety Verification
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Following the configuration of the 2,097,152-slot default ring buffer (128 MiB slot storage, 96 MiB raw),
+it was necessary to prove that the default ring capacity is safe under prolonged, real gameplay emulation
+rather than brief, open-and-immediately-close acceptance campaigns. The system was subjected to a sustained
+Beyond Oasis emulation session for at least 10 minutes with 128 Workers and depth 100, sampling process
+working set, private bytes, native heap, ring allocation, worker counts, and record throughput every 5 seconds.
+
+**Decision:**
+1. Maintain the startup default ring capacity at 2,097,152 slots.
+2. Formally evaluate memory behavior using linear regression slope over sustained emulation (minutes 1 to 10).
+3. Require 0 retention failures, 0 dropped captures, 0 identity collisions, 0 stale ACKs, and 0 runtime errors
+   under full 128-Worker continuous turnover.
+4. Verify graceful END GAME shutdown via IPC and confirm post-cleanup return to steady-state.
+
+**Consequences:**
+1. Under 610.5 seconds of continuous Beyond Oasis gameplay (283,648 audited segments, 828,506,454 records produced,
+   395 ring wraps), Private Bytes remained strictly bounded between 301.35 MB and 306.72 MB with a slope of
+   -0.3350 MB/min, and Working Set remained bounded between 466.85 MB and 470.18 MB with a slope of +0.2237 MB/min.
+2. Memory behavior was classified as `BOUNDED_OSCILLATING`, proving the absence of memory leaks, unbounded queues,
+   or growth runaway.
+3. Retention failures remained exactly 0 throughout all 395 wraps.
+4. Upon triggering END GAME, final analysis completed without spikes (peak Private Bytes 303.93 MB), and the emulator
+   process terminated cleanly with code 0, releasing all resources.
+5. The 2,097,152-slot default capacity is verified as safe, robust, and permanent for the W3 architecture.
+
+# ADR-M12-W3-LARGE-BOUNDED-RING-ACCEPTANCE-V1 — Large Bounded Ring and Final W3 Acceptance
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Dual-CPU co-capture (M68K + Z80) at scale increases stream record throughput.
+Under 128 active workers and deep chains (depth 100, 512, 1000), the initial 16,384-slot
+transport ring required frequent wraps (1,783 wraps per 100 rounds at depth 20).
+To ensure robust retention without dynamic reallocation or converting the ring into an
+unbounded log, a bounded large ring with constant-time hot-path indexing was needed.
+
+**Decision:**
+1. Set the default startup ring capacity to 2,097,152 slots (48-byte records, 96 MiB raw,
+   128 MiB slot storage). Keep capacity startup-configurable via `oasis_lf_set_ring_capacity()`
+   and command-line flag `--ring-capacity`.
+2. Prohibit dynamic resizing during emulation: the ring remains strictly bounded cyclic transport.
+3. Optimize hot-path record append with power-of-two bitmask indexing:
+   `(sequence - 1u) & (cap - 1u)` replaces division/modulo operations on the hot path.
+4. Scale worker result buffers with capture depth: 256 KiB for depth 100, 512 KiB for depth 512,
+   and 1024 KiB for depth 1000, ensuring `depth_limit_endings` are achieved without premature
+   buffer exhaustion.
+5. Invariant preservation: ring expansion does NOT alter Worker admission or capture-depth semantics.
+   Cross-CPU ordering strictly uses `(run_id, epoch, frame, master_time)`.
+
+**Consequences:**
+1. Ring turnover dropped by 137x (from 1,783 wraps to 13 wraps per 100 rounds at depth 20).
+2. Official acceptance at 128 Workers x Depth 100 passed 12,800/12,800 segments with 0 retention
+   failures and 0 overwrites.
+3. Deep-chain stress tests at Depth 512 (82.1M records) and Depth 1000 (138.2M records) passed
+   with 100% depth-limit completion, 0 retention failures, and 0 invalid captures.
+4. Frame timing under dual-CPU recording remained within normal emulation latency (p50 = 16-17 ms).
+
+# ADR-M12-W3-Z80-COCAPTURE-CROSS-CPU-TIMELINE-V1 — Z80 Co-Capture and Cross-CPU Timeline
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+M12 Workers had M68K instruction and bus capture (W1), resource classification (W2),
+and frame coherence (W2.1), but lacked Z80 co-capture. Cross-CPU interactions
+(e.g., M68K writing to Z80 RAM, Z80 reading and writing to YM2612/PSG) could not
+be ordered on a common timeline, and Z80 banked ROM accesses could not resolve
+to physical addresses without external context. The 32-byte record was insufficient
+to losslessly represent common emulated time and multi-byte Z80 instructions.
+
+**Decision:**
+1. Upgrade `oasis_lf_record` to 48 bytes with explicit lossless fields:
+   `stream_sequence`, `instruction_sequence`, `master_time`, `pc`, `address`,
+   `value`, `kind_flags`, `cpu_id`, `length_or_width`, `domain`, `reserved`,
+   and `auxiliary`.
+2. Keep M68K and Z80 `instruction_sequence` strictly independent monotonic counters.
+3. Use frame-relative master cycles (`master_time`) as the authoritative common
+   timing basis across M68K and Z80.
+4. Make ring capacity configurable at initialization (default 16,384 slots).
+5. Capture ordered `BANK_REGISTER_CHANGE` events and resolve physical Genesis/ROM
+   addresses directly into the record `auxiliary` field for all banked ROM reads.
+6. Prohibit higher-level audio semantics (no SONG, TRACK, INSTRUMENT, VOICE,
+   SAMPLE, NOTE, MUSIC_RESOURCE).
+7. Validate cross-CPU causal relations only under strict temporal precedence
+   (T1 < T2 < T3) and matching addresses/values without speculative inference.
+
+**Consequences:**
+Native trace hooks cleanly capture both M68K and Z80 instruction and bus events.
+Cross-CPU timeline sorting by `master_time` produces deterministic temporal ordering.
+The C test suite (`oasis_live_forward_z80_test`) covers all 22 required test cases
+A–V. Python tools provide lossless decoding, bank tracking, physical address
+resolution, timeline construction, and primitive event classification.
+
+# ADR-M12-R11-EVENT-DRIVEN-SUBPROCESS-WAIT-1 — Event-driven Stage 7 waits
+**Status:** Accepted for M12 R11
+**Date:** 2026-09-20
+
+**Context:** Stage 7 and Stage 8 external tools were launched through a
+bounded runner that checked `Popen.poll()` only after a 250 ms sleep. The
+retained R10 workload showed 400 external decoder invocations, so the polling
+quantization was material to short child processes even though decoder
+semantics were correct.
+
+**Decision:** Replace process-completion polling with a blocking
+`Popen.wait()` waiter thread and completion event. Keep dedicated stdout and
+stderr drain threads, bounded joins, the existing timeout classifications,
+and terminate-then-kill shutdown. A separate heartbeat thread may publish
+progress but cannot determine child completion; callback failures are returned
+to the caller after bounded cleanup.
+
+**Consequences:** Fast children return at process-exit latency instead of a
+250 ms quantum. The Stage 7 worker pool, candidate ordering, proof,
+promotion, decoder contract, and temporary-output boundaries are unchanged.
+The checkout exposes no public cancellation API, so no cancellation contract
+was altered. The same sealed input produced identical request, unsupported,
+promotion, and SOURCE_OWNED results while reducing Stage 7 wall time.
+
+**Evidence:** `src/tools/thor_evidence/stage7_subprocess.py`,
+`tests/stage7_subprocess_test.py`, the R10 sealed receipt, and the three R11
+same-input optimized receipts under `build/thor-evidence/r11-event-wait-stage7`.
+
+# ADR-M12-R5-IN-PROCESS-POSTRUN-COORDINATOR-1 — In-process Stage 1–9
+**Status:** Accepted for M12 R5
+**Date:** 2026-09-19
+
+**Context:** R4 established ROM + MASTER V2 as the fail-closed startup
+authority, but post-run still crossed a runtime/subprocess/status-file boundary.
+
+**Decision:** Add `PostRunCoordinator` with explicit `PostRunContext`,
+`PostRunResult`, and in-memory stage events. Normal Stage 1–9 execution runs in
+one non-UI background thread owned by the runtime process. JSON status/report files
+are derived diagnostics only; the legacy subprocess launcher remains available
+for shadow/regression comparison. Disk-backed FLOW and Stage 5/6/7/8 truth
+semantics are unchanged. Atomic diagnostic snapshots retry transient Windows
+reader locks.
+
+**Consequences:** Closing the analysis window cannot terminate coordinator work;
+UI consumers may resubscribe to the event stream. Stage 7/8 external tools remain
+bounded subprocesses. A replay of an already-absorbed run remains fail-closed
+with `STOP_KNOWLEDGE_IMPORT_NONIDEMPOTENT`.
+
+**Evidence:** `tools/bizhawk-native-ring/live_forward_postrun_coordinator.py`,
+`tests/live_forward_postrun_coordinator_test.py`, and fresh runtime campaign
+`build/thor-evidence/live-worker-control-2h/campaign-desktop-20260919-231221-978`.
+
+# ADR-M12-R4-MASTER-STARTUP-AUTHORITY-1 — MASTER-only initialization
+**Status:** Accepted for M12 R4
+**Date:** 2026-09-19
+
+**Context:** R3 made MASTER V2 the read authority for canonical, provenance and
+outcome state, but normal startup still had no explicit fail-closed contract.
+
+**Decision:** Add `master_startup_authority.py` as the sole startup validator.
+It resolves one atomic pointer, verifies the MASTER file/logical/section hashes,
+ROM identity, lineage, canonical emission partition, SOURCE_OWNED, provenance,
+outcomes and absorption history, then exposes the existing canonical and outcome
+views in memory. Legacy state is never opened on the production path. The
+`--legacy-shadow-compare` flag is the explicit comparison boundary. Missing or
+invalid authority stops with `STOP_MASTER_STARTUP_UNAVAILABLE` or
+`STOP_MASTER_STARTUP_INTEGRITY` and never falls back to legacy files.
+
+**Consequences:** A MASTER-only environment can initialize and prepare a
+deterministic N+1 candidate descriptor without legacy persistent files. The
+current runtime transport and Stage 5–9 semantics remain unchanged; deletion of
+legacy artifacts is deferred.
+
+**Evidence:** `build/thor-evidence/master-v2/current.json`,
+`build/thor-evidence/master-v2/r4-startup-report.json`, and
+`tests/master_startup_authority_test.py`.
 
 # ADR-AUTO67-CARTOGRAPHER-SEAM-1 — Worker local chain to MAP-1
 **Status:** Accepted for AUTO67
@@ -2085,6 +2394,51 @@ AUTO67, predecessor logic, or scaling semantics are changed.
 
 **Evidence:** `docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md` and
 its compact JSON receipt.
+# ADR-M12-POSTRUN-PROGRESS-HEARTBEAT-2I1 — Truthful post-run completion
+**Status:** Accepted for M12 2I.1
+**Date:** 2026-09-19
+
+**Context:** The compact 2I analyzer wrote only a stage name and the post-run
+window treated every `PASS...` report as full completion. Long SQLite/FLOW
+work therefore looked frozen and could display `ANALYSIS COMPLETE` while
+later pipeline stages had not run.
+
+**Decision:** Publish an atomically replaced JSON snapshot at a bounded 4 Hz
+heartbeat. Each of the nine existing stages has an explicit state and factual
+N/M counters when a denominator exists; unknown totals use indeterminate UI
+animation. The UI derives heartbeat age and progress age independently,
+keeps raw JSON behind DETAILS, and reports compact-master-only output as
+`PARTIAL ANALYSIS COMPLETE`. Backend failure is terminal and does not kill or
+depend on the UI process.
+
+**Consequences:** A reopened window can restore the latest stage and counters
+from disk, closing the window does not stop the analyzer, and a stale backend
+is visible instead of an endless spinner. FLOW_V1, Worker lifecycle/scaling,
+END GAME boundary behavior, rolling-master semantics, canonical truth, 2E/2F
+promotion rules, and SOURCE_OWNED are unchanged.
+
+**Evidence:** `tests/live_forward_postrun_progress_test.py` and
+`docs/reports/THOR_M12_END_GAME_ROLLING_MASTER_2I.md`.
+
+# ADR-M12-END-GAME-ROLLING-MASTER-2I — Graceful close and compact post-run master
+**Status:** Accepted for the developer-only 2I compact orchestration pass
+**Date:** 2026-09-19
+
+**Decision:** The separate Worker Control window writes one atomic `END_GAME`
+sentinel. Lua consumes it only between complete Worker rounds and exits through
+the supported EmuHawk client path. After the sealed receipt, a background
+post-run process validates the raw/index hashes and writes a compact SQLite
+rolling generation containing deduplicated instruction-PC facts, control edges,
+terminal facts, occurrence counts and run provenance. A hash-bound `current.json`
+pointer is replaced only after SQLite integrity validation.
+
+The compact pass keeps raw FLOW and the segment index until the canonical
+Cartographer/Archivist/decoder refresh is independently available. It does not
+change FLOW_V1, Worker lifecycle/scaling semantics, SOURCE_OWNED or production
+AUTO67.
+
+**Evidence:** `docs/reports/THOR_M12_END_GAME_ROLLING_MASTER_2I.md` and the
+ignored rolling generation under `build/thor-evidence/`.
 
 # ADR-M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D — Separate ranges, facts and emission
 **Status:** Accepted for the 2D checkpoint
@@ -2646,3 +3000,592 @@ runtime-path reconstruction because v2 records omit that identity. The first
 artifact is not disposable until complete accounting, map self-check,
 provenance queries, replay, and the existing closed-only cleanup lifecycle all
 pass.
+# ADR-M12-END-GAME-POSTRUN-2I.2 — fail-closed stages 5–9
+
+**Status:** Accepted for developer-only post-run orchestration.
+
+**Decision:** Reuse the existing 2I.1 progress publisher and invoke one
+post-run coordinator after rolling-master compaction. The coordinator may
+construct a closed MAP-1 session only from a sealed, hash-checked ordered FLOW
+spool, and may publish a new canonical generation only through an atomic staged
+master/knowledge pair with idempotent replay and unchanged SOURCE_OWNED and
+emission hashes. Control provenance inspects ordered FLOW; aggregate rolling
+counts cannot supply predecessor evidence. ASM closure, full ROM audit, and
+cleanup remain fail-closed until an accepted runner and all required inputs are
+present. A STOP retains raw evidence and leaves later stages pending.
+
+**Consequences:** Normal END GAME now enters the real stage 5–9 path and shows
+an exact STOP reason when the current tree lacks a required accepted input.
+The UI does not claim completion from a displayed stage list. Worker/Lua/FLOW
+runtime semantics and production ownership remain unchanged.
+# ADR-M12-END-GAME-POSTRUN-2I.2a — terminal state coherence
+
+**Status:** Accepted for developer-only post-run orchestration.
+
+**Decision:** All terminal transitions use one progress finalizer. It clears
+the active stage, terminalizes the current stage, blocks later mandatory
+stages after STOP/ERROR, persists backend and exception metadata, and writes a
+single atomic snapshot. Heartbeat staleness remains non-terminal while the
+backend PID is alive. Malformed terminal snapshots are repaired before reuse.
+
+**Consequences:** `COMPLETE`, `PARTIAL_COMPLETE`, `STOPPED` and `FAILED` can
+never coexist with an ACTIVE stage. Raw evidence and accepted generations are
+retained on STOP/ERROR. This change affects status orchestration and UI display
+only; Worker/FLOW/Lua semantics and 2F reconstruction remain unchanged.
+
+# ADR-M12-INTERACTIVE-PREFLIGHT-POSTRUN-GATE — unsealed runs do not analyze
+
+**Status:** Accepted for developer-only interactive orchestration.
+
+**Decision:** Launch the post-run analyzer only after an interactive runtime
+has emitted a sealed terminal stop outcome. A resource, native-allocation, or
+host-transport preflight rejection is a visible Worker Control result, but it
+does not create a Stage 1/9 analyzer window. The rejection receipt records the
+exact reason and `RUN_NOT_SEALED`.
+
+**Consequences:** A failed start cannot be misreported as a post-run analysis
+failure. The resource reserve and fail-closed allocation policy are unchanged;
+only the secondary UI orchestration is gated. Worker, Lua, FLOW, and production
+runtime semantics remain unchanged.
+
+# ADR-M12-DESKTOP-MEMORY-FLOOR — one GiB host reserve
+
+**Status:** Accepted for developer-only Worker Control launch preflight.
+
+**Decision:** Reserve one GiB of currently available physical RAM for the host
+when calculating the desktop Worker Control native allocation budget. Keep the
+existing native/process/core caps and reject when the measured remainder cannot
+hold the requested plan. The evidence disk reserve remains independent.
+
+**Consequences:** A 32/64 GiB desktop with a few GiB currently free can start
+a small or medium requested Worker plan; severe host pressure still fails
+closed before EmuHawk starts. No Worker, Lua, FLOW, or production semantics
+change.
+# ADR-M12-STAGE5-COMPACT-SESSION — deterministic post-run MAP-1 refresh
+
+**Status:** Accepted for developer-only post-run analysis.
+
+**Decision:** Build one closed MAP-1 session from ordered FLOW in a run-specific
+analysis directory. Use compact lineage occurrence summaries, exact ROM-range
+decoding, and atomic canonical generations. Validate the accepted rolling-master
+proof separately; preserve the canonical emission partition and `SOURCE_OWNED`
+bytes exactly, failing closed on identity, ROM, count, or ownership conflicts.
+
+**Consequences:** Repeated observations remain auditable without materializing
+millions of duplicate lineage entries. `EXECUTED_NEXT` is emitted only for
+adjacent instruction records; terminal next-PC observations remain separate.
+Worker/Lua/native scaling semantics are unchanged.
+# ADR-M12-STAGE7 — Current-generation MAP-driven executed ASM closure
+
+Date: 2026-09-19
+
+The post-run pipeline consumes the accepted canonical generation directly and
+recomputes executed, not-fully-owned M68K candidate islands from current map
+objects and observed runtime relations. A candidate is promotable only after
+exact range decoding, complete control-flow closure, vasm byte round-trip, and
+an independent full-ROM rebuild. Dependency closure is fail-closed; unresolved
+islands remain blocked records. Promotion publishes a new immutable generation
+and updates the canonical pointer atomically. Stage 8 starts automatically and
+rebuilds the resulting split independently. No runtime campaign or production
+Worker/FLOW semantics are part of this decision.
+
+# ADR-M12-STAGE6-HANDOFF — receipt-bound control provenance lifecycle
+
+Date: 2026-09-19
+
+Stage 6 must consume the exact sealed receipt and ordered FLOW artifact already accepted by Stage 5. Its result is structured as PASS, NO_DELTA, STOP, or ERROR, including run identity, raw FLOW hashes, relation counters, generation, and failure details. NO_DELTA completes Stage 6 and immediately starts Stage 7; it is not a pipeline terminal state. The existing terminal finalizer handles STOP/ERROR so no terminal snapshot may retain an ACTIVE Stage 6. The Worker, Lua, native pool, and Stage 7 semantics remain unchanged.
+
+# ADR-M12-STAGE7-PREFLIGHT — lineage-bound emission partition handoff
+
+Date: 2026-09-19
+
+Stage 7 preflight must compare the current canonical map with a materialized
+emission/ownership manifest selected from the explicit generation parent chain.
+A historical path or latest/glob selection is not an authority. The preflight
+records both authority hashes and exact category totals, fails closed on any
+range, ROM, generation, or ownership mismatch, and keeps UNKNOWN fields outside
+the emission partition. This preserves the Stage 7 gate while allowing a
+post-2F canonical generation to reuse its own coherent materialized split.
+Worker, Lua, native scaling, predecessor, and FLOW semantics are unchanged.
+
+# ADR-M12-STAGE6-STOP — unresolved provenance is not an integrity failure
+
+Date: 2026-09-19
+
+Stage 6 may observe real indirect consumers whose register predecessor or
+transform cannot be resolved within bounded evidence. Those events remain in
+the diagnostic receipt and count as unresolved/unsupported; they do not stop
+the pipeline globally. Global STOP is reserved for ROM identity, FLOW
+continuity, impossible occurrence identity, or equivalent evidence-integrity
+failures. The result contract remains PASS/NO_DELTA/STOP/ERROR and the exact
+receipt is published before terminalization.
+
+# ADR-M12-STAGE9-ABSORPTION — permanent reclaim only after semantic proof
+
+Date: 2026-09-19
+
+Stage 9 may permanently delete run-scoped raw FLOW and reconstruction artifacts
+only after the exact run is present in the accepted rolling master, all prior
+stages and ROM identities pass, and a streaming semantic-equivalence audit
+reconciles every instruction, relation and terminal fact against compact
+master rows. Preparation writes an explicit delete manifest and an atomic
+absorption receipt before deletion; deletion uses direct filesystem unlink with
+bounded WinError 32 retry and no recycle-bin path. Replay consumes the durable
+manifest/receipt idempotently, while any missing protected state or failed
+post-delete integrity check stops closed and never reports cleanup PASS.
+
+The rolling master, canonical map, ownership/emission state, Stage 5–8
+receipts, final report/status and ROM are protected. Worker/FLOW runtime
+semantics and SOURCE_OWNED truth are unchanged.
+
+# ADR-M12-R1 — Shadow self-contained MASTER V2
+
+**Status:** Accepted for shadow validation only.
+
+**Decision:** Encode the accepted rolling master, canonical map/knowledge and
+Stage 5–9 semantic outcomes into a deterministic, section-hashed MASTER V2
+container while leaving all legacy pointers and artifacts authoritative. The
+container is independently decoded and compared against a streamed semantic
+projection of the legacy inputs. No runtime or cleanup path reads MASTER V2.
+
+**Reason:** R2–R10 require a self-contained authority before replacing the
+legacy split state. R1 proves the representation, deterministic size and
+corruption detection without changing runtime truth semantics or risking the
+accepted `PASS_ABSORBED_RAW_PERMANENT_RECLAIM_V1` path.
+
+**Consequences:** The current accepted master remains the only authority. The
+shadow currently measures `1,272,891,699` bytes for run `1789872670`; later
+migration stages must account for this size before changing authority.
+
+## ADR-M12-R2 — MASTER V2 canonical read authority (2026-09-19)
+
+**Decision:** Use one `MasterCanonicalView` access layer as the canonical read
+source for map, ownership and emission data. The R2 pointer selects a verified,
+deterministic MASTER V2 shadow generated from the accepted legacy state. Stage 5
+materializes a local scratch generation through the API; Stages 6–8 keep their
+existing consumers and semantics. Legacy canonical files remain present and
+unchanged for hash comparison only.
+
+**Rationale:** This changes exactly one authority boundary while avoiding a
+representation rewrite, runtime capture change, or independent MASTER V2
+parsers in individual stages. Fail-closed pointer verification prevents a stale
+shadow from becoming canonical. The R2 shadow is not itself committed as a
+GiB-scale artifact.
+
+**Validation:** Two real generations were byte-identical and semantically equal
+to the current legacy state; API counts, `SOURCE_OWNED`, ownership/emission,
+materialized SQLite integrity and targeted Stage 5–9 regressions passed.
+# ADR-M12-R3-MASTER-OUTCOME-AUTHORITY-1 — durable provenance and outcomes
+**Status:** Accepted for M12 R3
+**Date:** 2026-09-19
+
+**Context:** R2 made MASTER V2 the canonical map/ownership/emission read
+authority, but Stage 6 provenance, Stage 5–9 receipts and absorbed-run proof
+still lived in external JSON/SQLite artifacts.
+
+**Decision:** Add independently hashed MASTER V2 `provenance`, `outcomes` and
+`absorption_history` sections and expose them through `MasterOutcomeView` and
+`MasterProvenanceView`. Legacy receipts remain shadow comparison inputs. A
+missing or corrupt section raises `STOP_MASTER_OUTCOME_UNAVAILABLE`; the read
+layer never falls back silently to legacy JSON.
+
+**Consequences:** Accepted provenance, terminal stage outcomes, lineage,
+semantic-equivalence proof, deleted-byte totals and deletion mode remain
+available after raw FLOW deletion. Runtime capture, Stage 5–9 execution and
+SOURCE_OWNED semantics are unchanged. Legacy receipt removal is deferred to a
+later checkpoint.
+
+**Evidence:** `build/thor-evidence/master-v2-shadow-r3/r3-acceptance.json`.
+
+## ADR-M12-RUN-CONTRIBUTION-RECONCILIATION — run-scoped V2 idempotency
+
+Date: 2026-09-20
+
+**Decision:** Add a hashed `run_contributions` section to MASTER V2 and a
+run-scoped contribution boundary. A contribution is applied once by `run_id`
+and its logical hash; an identical replay returns `NO_DELTA_ALREADY_APPLIED`,
+while a differing contribution stops with `STOP_RUN_CONTRIBUTION_CONFLICT`.
+Occurrence deltas are retained even when a fact already exists globally.
+`VERIFY_ONLY` and forensic replay do not mutate counters, legacy generations,
+or raw evidence. Historical lineage membership alone remains ambiguous.
+
+**Consequences:** The current V2 startup pointer now verifies 54 ledger entries
+without changing canonical, provenance, Stage 5–9, Worker/FLOW or
+`SOURCE_OWNED` semantics. Six sealed runs are classified `NOT_COMMITTED` and
+are eligible only for a later single-run replay; 28 runs remain `AMBIGUOUS`.
+No historical raw/session data is deleted and no mass replay is started.
+
+## ADR-M12-SINGLE-V2-RUNTIME-WRITE-AUTHORITY — emulator post-run promotion
+
+Date: 2026-09-20
+
+**Decision:** Interactive Worker runs launched with the desktop control flow
+must use MASTER V2 startup and the in-process post-run coordinator. Stage 5–9
+may create only a campaign-local rolling scratch materialized from V2. The
+sealed contribution is calculated before cleanup, then the completed Stage 9
+result is written through an atomic V2 candidate/pointer replacement. The
+legacy persistent `rolling-master-2i` tree is not a write authority.
+
+**Consequences:** Future emulator runs append to the single V2 authority while
+preserving Stage 5–9 truth semantics and cleanup behavior. The old subprocess
+post-run mode is rejected for interactive runs so it cannot recreate a legacy
+rolling master. Legacy canonical shadow verification remains available only
+for explicit historical fixtures; current V2 startup does not require those
+files.
+
+## ADR-M12-R6-STAGE5-IN-MEMORY-CARTOGRAPHER — Stage 5 RAM session boundary
+
+Date: 2026-09-20
+
+**Decision:** Production Stage 5 uses an explicit `Stage5SessionMemory` backed
+by SQLite `:memory:` for semantic FLOW aggregation and MAP-1 construction.
+The sealed FLOW spool remains the input authority. Exact decoder exchange files
+are OS-managed ephemeral inputs/outputs only; they are not persistent Stage 5
+evidence. Canonical candidate/master files remain the durable outputs.
+
+**Consequences:** Normal R6 runs report zero Stage 5 SQLite bytes and zero
+persistent Stage 5 temporary files, release the in-memory session before Stage
+6–9 continues, and preserve the accepted MASTER V2, ownership/emission,
+provenance and cleanup semantics. The old disk session path remains available
+only in a named legacy shadow module for comparison and regression.
+
+## ADR-M12-R7-FLOW-IN-MEMORY-HANDOFF — Ordered FLOW without persistent spool
+
+Date: 2026-09-20
+
+**Decision:** The interactive R7 path transfers sealed ordered FLOW segments
+through a bounded in-memory queue. One runtime owns the handoff; a consumer
+feeds Stage 5 and control-provenance streaming consumers, and the coordinator
+closes the RAM session only after the queue drains. The existing disk FLOW
+implementation remains available as an explicit legacy/shadow path.
+
+**Consequences:** R7 reports explicit segment/record/hash accounting,
+backpressure, and zero FLOW disk reads/writes. Stage 5–9 truth semantics,
+canonical refresh, MASTER V2 promotion, ownership, emission and cleanup rules
+remain unchanged. The in-memory Cartographer connection is safe across the
+runtime consumer and post-run coordinator thread boundary.
+
+## ADR-M12-R8-BOUNDED-STAGE7-DECODE — profile-first analysis optimization
+
+Date: 2026-09-20
+
+**Decision:** Parallelize only the independent external Stage 7 candidate
+decodes with a bounded four-worker executor. Keep candidate proof, round-trip
+validation, promotion and graph/master merge sequential and ordered exactly as
+before. Publish timing and R7 handoff counters in `analysis_performance`.
+
+**Consequences:** The accepted R7 truth boundary is unchanged: Stage 5/6/7/8
+meaning, candidate ordering, fail-closed errors, `SOURCE_OWNED`, emission,
+cleanup and MASTER V2 authority remain the same. The measured median post-run
+wall time fell from `85.656 s` to `60.407 s` (`29.48%`), while Stage 7 fell
+from `51.906 s` to a `25.141 s` median (`51.57%`). Runtime coverage can still
+produce new facts; the second optimized campaign added 57 instructions and 66
+relations with zero source-owned delta.
+
+**Evidence:** R8 baseline and optimized campaign reports under
+`build/thor-evidence/live-worker-control-2h/`, plus the focused decode and
+post-run coordinator regression tests.
+
+## ADR-M12-R9-MEASURED-DECODE-DEDUP — no cache when requests are unique
+
+Date: 2026-09-20
+
+**Decision:** Measure complete Stage 7 external decode request identity before introducing memoization. The measured accepted workload had 139 unique keys for 139 requests (0% duplication), so no completed-result cache, in-flight coalescing table, eviction policy or persistent cache is added. Instead, reuse the immutable initial/final SQLite snapshot when no promotion can have changed it; retain fresh scans after every promotion.
+
+**Consequences:** Decoder key telemetry remains available in the Stage 7 receipt, including request counts, unique keys, duplicate rate, external wall, pool occupancy and key construction cost. Snapshot reuse preserves candidate ordering, proof, promotion, Stage 8, ownership and MASTER semantics while reducing fresh full-run median Stage 7 wall from `28.906 s` to `16.711 s`. R7/R8 in-memory FLOW and zero-disk guarantees remain unchanged.
+
+**Evidence:** R9 reference and optimized campaigns under `build/thor-evidence/live-worker-control-2h/`, direct sealed-generation profile, and `tests/stage7_decode_test.py` metric/key regressions.
+
+## ADR-M12-R10-STAGE7-DECODER-CONTRACT — explicit range decoder role
+
+Date: 2026-09-20
+
+**Decision:** Keep the Stage 5 PC-list decoder and Stage 7 bounded-range
+decoder as separate executable roles. Stage 7 requires the existing
+`oasis_re_assemble_range.exe` contract
+`ROM START END ASM_OUTPUT JSON_OUTPUT`; startup validation requires its exact
+`oasis.stage7.range.v1` capability marker. The PC-list helper remains the
+Stage 5 `PCS_INPUT TSV_OUTPUT` tool and cannot be substituted silently.
+
+**Consequences:** Invocation/configuration failures are fail-closed with a
+decoder-contract, input, output or tool classification and are no longer
+reported as unsupported M68K instructions. Stage 7 still owns bounded decode,
+candidate ordering and proof handoff; Stage 8 retains independent full-ROM
+assembly/round-trip validation. Cleanup validates both the pre-closure input
+generation and the promoted current generation when Stage 7 advances canonical
+ownership.
+
+**Evidence:** R10 canonical-ROM fixtures, capability probes, the sealed
+`campaign-r10-contract-20260920-1` report, and
+`tests/stage7_decoder_contract_test.py`.
+
+## ADR-M12-W1-NATIVE-BUS-EVENT-SIDEBAND
+
+Date: 2026-09-20
+
+**Decision:** Extend the existing 32-byte native ordered ring with explicit
+`EVENT` records for 68K data reads, data writes and frame boundaries. The event
+subtype occupies otherwise unused kind-flag bits. Bus events use the existing
+record fields for address/value and pack value high bits, width, mapped domain
+and CPU into `auxiliary`. Opcode and extension fetch helpers are excluded;
+32-bit top-level accesses produce one event. Frame events use instruction
+sequence zero and carry a monotonic per-epoch frame number.
+
+**Consequences:** Existing instruction/exception records and FLOW projection
+remain binary-compatible. Host consumers must preserve raw event records but
+filter them when deriving instruction-only control-flow, ROM-link and
+Cartographer facts. Domains are emulator memory-map facts only; no sprite,
+music, DMA or other semantic resource classification is introduced. The
+instrumentation remains developer-only and does not change `SOURCE_OWNED`.
+
+**Evidence boundary:** Native unit/parser tests and source-level GPGX syntax
+checks pass. Real WBX build, gameplay counts, retention measurements and
+`PASS_NATIVE_BUS_EVENT_SIDEBAND_V1` remain pending until the Waterbox sysroot
+and isolated runtime campaign are available.
+
+## ADR-M12-W2-ACTIVE-RESOURCE-CLASSIFICATION
+
+Date: 2026-09-20
+
+**Decision:** Interpret immutable W1 bus events in a separate bounded Worker
+analysis layer. Primitive labels are mapped-memory facts only. Instruction
+relations require exact ordered event association and a closed decoded
+instruction rule; equal values alone are insufficient. VDP register/control
+and CPU DMA programming are decoded from observed writes, while internal DMA
+payload, resource ownership, sprite identity, song and instrument semantics
+remain explicitly unclaimed. S1–S8 inputs are read-only and cross-links require
+coherent run/frame/range identity.
+
+**Consequences:** W2 produces deterministic analysis artifacts, bounded
+candidates and fail-closed gaps without modifying the native capture path,
+ring ABI, Worker scheduling, FLOW semantics, S1–S8 artifacts or
+`SOURCE_OWNED`. `OBSERVED` and `DERIVED_EXACT` remain distinct, and
+`HYPOTHESIS` is not emitted by this checkpoint.
+
+**Evidence:** `docs/reports/THOR_M12_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1.md`
+and `build/m12-w2-acceptance/w2-active-resource-classification.json`.
+
+## ADR-M12-W2.1-FRAME-COHERENT-WORKER-EVIDENCE
+
+Date: 2026-09-20
+
+**Decision:** Anchor each accepted Worker segment with `entry_frame` and
+`exit_frame` snapshots of the already-authoritative W1 `frame_number`. Equal
+snapshots are single-frame only when no contained boundary contradicts them;
+changed snapshots require contained FRAME_BOUNDARY markers for exact
+partitioning and otherwise remain unresolved. Frame identity is the tuple
+`(run_id, epoch, frame)`.
+
+**Consequences:** The fixed 32-byte raw record and native bus semantics remain
+unchanged. W2 events, relations, VDP/DMA facts and candidates carry exact
+frame identity when the segment proof permits it, otherwise `UNRESOLVED`.
+S1–S8 inputs remain read-only and cross-run links are explicitly forbidden.
+No graphics meaning, Z80 implementation, Worker scheduling change or
+`SOURCE_OWNED` change is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_WORKER_FRAME_COHERENT_EVIDENCE_V1.md`
+and `build/m12-w2-1-acceptance/w2-frame-coherent-evidence.json`.
+
+# ADR-M13.2-GENERIC-OBSERVED-CFG-AND-RAW-RETENTION
+
+**Date:** 2026-09-23
+
+**Status:** Accepted for the M13.2 developer-only closure pipeline.
+
+**Context:** The M13.1 closure received millions of normalized FLOW rows but no
+decoded instructions, memory facts, or exact range inputs. It emitted no graph
+facts, and raw FLOW was deleted before method gaps could be independently
+replayed. Existing normalized rows preserve a PC/opcode/next-PC subset, but omit
+CPU/domain identity and register snapshots.
+
+**Decision:** The generic closure core may materialize an observed PC-to-next-PC
+edge when and only when the source opcode matches canonical ROM bytes. It must
+retain an explicit observed-edge truth label; it must not infer static branch
+semantics, candidate extents, subsystem meaning, or SOURCE_OWNED changes from
+that edge. The live stage must run twice deterministically and emit a hashed
+gap ranking. Permanent raw-FLOW reclamation must require successful generic
+closure, the ranking artifact, and deterministic replay acceptance.
+
+**Consequences:** Missing instruction identity, CPU/domain, registers, bus
+width/value/order, and byte-round-trip boundaries remain unresolved. Observed
+CFG recovery can improve evidence navigation but by itself has no measurable
+ROM ownership payoff. A failed or missing acceptance artifact prevents cleanup.
+
+**Evidence:** `docs/reports/THOR_M13_2_GENERIC_CLOSURE_GAP_DRIVEN_IMPROVEMENT_V1.md`
+and the replay artifacts beneath `build/thor-evidence/live-worker-control/`.
+
+# ADR-M13.3-VERSIONED-GENERIC-FLOW-NORMALIZATION
+
+**Date:** 2026-09-23
+
+**Status:** Accepted as an additive, partial normalization contract; M13.3
+capture acceptance remains open.
+
+**Context:** M13.2 showed that the closure adapter discarded fields already
+present in native FLOW V2, including CPU ID, bus width/domain, stream and
+instruction sequence, and next-PC. The fixed 48-byte record does not carry a
+per-instruction register snapshot or complete M68K instruction bytes/width.
+
+**Decision:** Preserve all available fields through `oasis.m13.normalized-
+generic-corpus.v2`, materialize generic instruction, memory, ROM-read,
+control-flow, call, return, and indirect-target collections, and classify
+captured M68K opcodes against the canonical ROM without dropping mismatches.
+Use only native `cpu_id` for CPU identity. Carry the exact Worker segment
+entry/exit register snapshots from host-audited metadata and link them to the
+first/last instruction identities; never imply they describe intervening
+instructions. Missing per-instruction snapshots, decode, width, and
+address-space classifications remain explicit unresolved fields. Generic
+closure consumes normalized memory, ROM-read, call, and return facts while
+maintaining compatibility with v1 synthetic fixtures.
+
+**Consequences:** Available evidence is no longer lost at normalization, but
+the register reaching-definition contract is incomplete until native
+per-instruction bounded snapshots and references are captured. V2 status alone
+does not pass M13.3 acceptance and cannot release raw FLOW/index files. No
+ownership promotion or production runtime change is implied.
+
+**Evidence:** M13.3 normalizer tests, live generic-stage tests, and the
+preserved validation capture receipt (when emitted).
+# ADR-M14.2A — Canonical Global Evidence Graph Persistence
+**Status:** Proposed; safe-admission acceptance remains incomplete
+**Date:** 2026-09-24
+
+**Decision:** Add derivation and map-proposal records to the existing canonical
+ROM knowledge SQLite database. Keep `emission` as the sole ROM partition and
+`SOURCE_OWNED` authority. Runtime captures remain scoped evidence; proposals
+are bound to exact parent/map/graph/validator identities and are not canonical
+facts. MASTER V2 must preserve all added rows. This decision does not authorize
+graph fusion or ownership changes.
+
+**Acceptance limitation:** Runtime evidence import has not yet been migrated
+to admit individual scoped occurrence identities; therefore M14.2A safe
+admission is not complete.
+
+**M14.2A safe-admission completion:** The live importer now validates the
+existing scoped runtime occurrence identity and creates one evidence reference
+per occurrence, with individual claim/relation support references. The session
+occurrence log remains source-session evidence; canonical `knowledge.sqlite`
+retains the references. Focused replay, overlap-window, CPU/domain, persistence,
+and emission invariance acceptance passed. This does not fuse subsystems or
+change emission ownership.
+# ADR-ROM-PROPERTY-MAP-V1 — Direct observed-property map
+
+**Status:** Accepted for developer tooling; emulator runtime acceptance open
+**Date:** 2026-09-27
+
+**Context:** Required raw FLOW retention makes direct facts expensive to use
+for bounded ROM classification. The canonical emission map also records a
+different concern: reconstructed/source-owned partitioning.
+
+**Decision:** Add an independent dense `uint16_t` runtime property map. Its
+bits represent only evidence-backed use of exact physical ROM bytes. Zero is
+UNKNOWN. Checkpoints bind the map and per-run contributions to exact ROM,
+schema, proof-contract, core/build, run, generation, capability, and validation
+identity. Compatible contributions may be OR-merged and can be excluded and
+replayed. Ranges are exported as a full-ROM interval partition and may be
+overlaid on the existing canonical map without changing canonical class,
+truth, or ownership. No GPU, raw event archive, or semantic promotion is
+required for these direct facts.
+
+The byte-exact property and rejection contracts live in
+`src/tools/thor_evidence/runtime_rom_properties_contract.json`; the checkpoint
+identity pins its SHA-256. Emulator callbacks must prove backing and completion
+before calling low-level map operations. Unsupported cases stay zero.
+
+**Consequences:** Checkpoint, merge, exporter, M68K decoder-backed span
+primitive, Z80 fetched-byte validation, exact-copy RAM origins, and a
+canonical overlay are implemented as developer tooling. The tools do not yet
+establish that the emulator calls these primitives. Audio payload promotion,
+live callback acceptance, behavioral parity, and runtime performance remain
+unproven. This ADR does not change ROM reconstruction, emission authority, or
+`SOURCE_OWNED` gates.
+
+## ADR-ROM-PROPERTY-VDP-DIRECT-MOVE — Same-instruction VDP source
+
+**Status:** Accepted for implementation; live acceptance pending
+**Date:** 2026-09-27
+
+**Context:** The direct DMA adapter identifies physical ROM sources but cannot
+cover a CPU data-port write where one instruction reads a ROM word and forwards
+it directly to VRAM, CRAM, or VSRAM. General register tracking is not required
+for this bounded case.
+
+**Decision:** Reuse the existing VDP source bits. On Mode 5 CPU data-port
+writes, retain at most one exact ROM-backed 16-bit data read in the current
+M68K instruction. Set the matching VDP bit only after the write reaches the
+accepted hardware data path and the instruction completes as a memory-source
+`MOVE.W` whose value is unchanged. Reject other opcodes, address-register and
+data-register sources, immediate sources, extra reads, mismatches, incomplete
+instructions, and DMA-fill trigger writes. The contract hash changes so old
+and new contributions cannot be merged without an explicit migration.
+
+**Consequences:** This adds no property bit, canonical-map mutation, or generic
+CPU taint engine. It covers only a direct same-instruction ROM-to-port path.
+Register-mediated paths, RAM copies, graphics decompression, and audio remain
+separate proof contracts. Live capture, parity, and performance results are
+required before runtime acceptance.
+
+## ADR-ROM-PROPERTY-W5-AUDIO-CONSUMER — Exact Format-A Decoder Read Classification
+
+**Status:** Accepted; fresh 3600-frame runtime capture and exact replay passed
+**Date:** 2026-09-27
+
+**Context:** W4 established a live banked-ROM → Z80 decoder → YM2612 DAC chain.
+W5 independently closed two Format-A mode-0 resource ranges with a
+byte-identical decode/inverse-encode roundtrip. Generic Z80 data reads and
+sound-bank membership alone do not prove audio payload use.
+
+**Decision:** Reuse `AUDIO_PAYLOAD_PROVEN` only for byte-verified banked-ROM
+reads at decoder PCs `0x080E` and `0x0855` whose physical ROM offsets lie in
+`[0x0BC95C,0x0BD540)` or `[0x0BD540,0x0BF768)`. Mark only the exact byte read.
+Reject descriptors, other PCs, and all other banked ROM addresses. Bind these
+fixed inputs to the proof-contract hash.
+
+**Consequences:** This adds no property bit, whole-resource promotion, generic
+register taint, or canonical ownership change. Existing checkpoints use the
+prior proof contract and cannot be merged with contributions under this rule.
+
+## ADR-ROM-PROPERTY-3820-COMPRESSED-GRAPHICS — Completed decoder input span
+
+**Status:** Implemented; fresh runtime replay passed, coverage gain is bounded
+**Date:** 2026-09-27
+
+**Context:** The ROM has a verified `0x3820` graphics decompressor. Its `A0`
+argument is the compressed input pointer and returns immediately after consumed
+input. The routine has no nested call. Direct VDP source bits cannot describe
+compressed input without overstating what the hardware consumed.
+
+**Decision:** Add `COMPRESSED_GRAPHICS_SOURCE`. Capture `A0` only when the live
+M68K instruction stream enters exactly `0x3820`. At its completed `RTS`, accept
+only a nonempty span of at most 64 KiB whose every byte resolves to contiguous
+physical ROM offsets. Mark exactly `[A0_entry,A0_return)`. Exceptions,
+unsupported mappings, other entry points, and incomplete calls fail closed.
+
+**Consequences:** This adds one independent property bit and changes the proof
+contract identity. It does not imply direct VRAM use, change canonical
+ownership, track transformed RAM output, or promote all statically known
+resources. Older checkpoints remain valid only under their own contract hash.
+# DEV-BRANCH-CONSOLIDATION-2026-09 — Persistent branch policy
+
+**Status:** Accepted
+**Date:** 2026-09-28
+
+**Context:** Parallel M12/M14 implementation and evidence work had accumulated
+multiple local branches and worktrees with overlapping changes. That made it
+hard to tell which runtime, map, and test changes represented the current
+project state.
+
+**Decision:** Keep `main` as the consolidated project line and
+`evidence/rom-coverage-map` as the only persistent evidence-focused branch.
+Short-lived task branches may be created for isolated work, but after review
+their accepted changes merge into `main` and the task branch is removed. The
+evidence branch carries only future ROM coverage capture, proof, and map
+publication work; implementation changes return to `main` through review.
+Keep remote references until their corresponding mainline state is published
+and verified.
+
+**Consequences:** Existing local M12/M14 implementation and evidence histories
+are reconciled before obsolete local branch references are removed. Existing
+evidence artifacts and dirty worktree contents remain preserved during
+consolidation. Remote branch references are not removed as part of local
+consolidation.

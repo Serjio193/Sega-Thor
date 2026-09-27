@@ -52,6 +52,1543 @@ DISPOSITION: No ingestion, deletion, session/raw cleanup, generation GC
 deletion, build, or CTest was run. Systematic destination-accounting gap stops
 the phase. Detailed evidence is in
 docs/reports/THOR_M14_7B_HEAVY_EVIDENCE_PREFLIGHT_2026-09-26.md.
+# 2026-09-24 — M14.0 Canonical Ownership Baseline Reconciliation V1 — PASS
+
+TASK: Reconcile the canonical `SOURCE_OWNED` baseline before M14 runtime
+validation without changing the accepted expected total or hardcoding `+284`.
+
+The old imported JSON report was a pre-Stage7 snapshot at `1,487,388` bytes.
+The accepted Stage7 generation is authoritative only when its Stage7 result,
+ASM receipt, full-ROM receipt, materialized manifest, SQLite emission rows, and
+rebuilt ROM agree. `src/tools/thor_evidence/m14_reconcile_ownership.py` now
+selects that authority fail-closed, verifies the 16 exact promotions and their
+roundtrip hashes, and regenerates the canonical JSON/Markdown report from the
+post-Stage7 SQLite generation. M14 import continues to compute ownership from
+emission intervals.
+
+Reconciliation: `1,487,388 -> 1,487,672`, delta `284`; 16 promotion records,
+12 maximal ownership-difference intervals because adjacent records merge;
+zero removed ownership bytes. Every promotion has `PASS_CLOSED_ASM_RANGE` and
+`PASS_ASM_ROUNDTRIP_EXACT`; rebuilt ROM SHA-256 is the canonical hash.
+
+Result: `PASS_CANONICAL_OWNERSHIP_BASELINE_RECONCILIATION_V1`.
+M14 import: `3,145,728` bytes, zero gaps, zero overlaps,
+`SOURCE_OWNED=1,487,672`; map hash is
+`a901cde397632b9b5153682f683fbab281358883c6bedd0e8da3e3312ae8bc13`.
+Regeneration repeated twice with identical report hash
+`af7f91922de8389bc3468ed6535e8bc508f2ebc47da67261eb6365cbc9a3b66a`.
+The 20-second runtime validation remains intentionally not run in this task.
+Commit/push: NO.
+
+# 2026-09-24 — M14 Canonical Full-ROM Address Map V1 — STOP (baseline mismatch)
+
+TASK: Make the full `0x000000..0x300000` interval partition the central,
+coverage-preserving map API. Acceptance criteria: deterministic lookup and
+hashing, explicit boundaries, UNKNOWN as a first-class class, map-operation
+deltas, exact promotion gate, and ownership computed only from map intervals.
+
+Implemented `src/tools/thor_evidence/canonical_full_rom_map.py` with report
+import, full-ROM audit, byte lookup, deterministic map operations, delta
+metrics, and unresolved-range ranking. Generic closure now emits proposed
+`PROMOTE_SOURCE_OWNED` map operations instead of exposing promotions only as
+disconnected facts. Added focused regression coverage in
+`tests/canonical_full_rom_map_test.py`.
+
+The existing canonical report `THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json`
+is full-ROM and hash-valid but computes `SOURCE_OWNED=1487388`; M14 requires
+`SOURCE_OWNED_BEFORE=1487672`. Import therefore fails closed with
+`STOP_MAP_OWNERSHIP_ACCOUNTING_MISMATCH`; no ownership was repaired or
+promoted, and the requested real 20-second validation was not run.
+
+Checks: focused unit tests and Python compilation pass. Commit/push: NO.
+
+# 2026-09-22 — M12 Dynamic SAT Shadow Mutation Discovery V1 — STOP (no dynamic SAT group identified)
+
+TASK: Audit every accepted writer path for the `0x00FF13CC` SAT shadow and
+determine whether a gameplay-state patch occurs after the fixed/template copy
+and before the SAT DMA. If `0xFF13CC` is template-only, identify another
+dynamic SAT group from the preserved corpus. Do not change Worker capture,
+entity/player labels, gameplay systems, or `SOURCE_OWNED`.
+
+1. Added the bounded developer-only analyzer
+`src/tools/m12_dynamic_sat_shadow_discovery.py` and focused tests
+`tests/m12_dynamic_sat_shadow_discovery_test.py`. It scans recognized direct
+68K absolute writes, joins the accepted A5/A6 template contracts, normalizes
+the preserved `0xA374` callback identity, inventories SAT DMA sources, and
+emits the five requested JSON artifacts.
+2. The canonical-ROM writer census found only fixed/template copies at
+`0xA372`, `0xA37A`, and `0xA4FE`, plus reset/initialization clears. No
+post-template patch writer or unknown bounded writer was proven. The preserved
+refresh order is template copy then DMA from `0xFF13CC` to SAT VRAM `0xD000`.
+3. Every preserved D000 SAT DMA source is `0xFF13CC`. `0xFF134C` is a CRAM
+transfer and is not a dynamic SAT group. No alternative dynamic SAT group was
+identified, and the producer caller boundary still has no input/gameplay
+parameter or upstream RAM source.
+4. Result:
+`FF13CC_GROUP_CLASS=TEMPLATE_ONLY` and
+`PASS_DYNAMIC_SAT_SHADOW_MUTATION_DISCOVERY_V1=STOP_NO_DYNAMIC_SAT_GROUP_IDENTIFIED`.
+`SOURCE_OWNED_BEFORE=1487672`, `SOURCE_OWNED_AFTER=1487672`, delta `0`;
+`COMMIT_CREATED=NO`; `PUSH_PERFORMED=NO`.
+
+# 2026-09-22 — M12 Upstream Controlled Object Discovery V1 — STOP (gameplay source unproven)
+
+TASK: Reclassify `ram-FF13CC-pc-00A372` by tracing its producer backward and
+identify an upstream gameplay object only when a RAM source, stable structure,
+and field path are proven. Do not change Worker capture, broaden gameplay
+systems, promote SOURCE_OWNED, or assign PLAYER/CONTROLLED_ENTITY semantics.
+
+1. Re-ran the bounded canonical-ROM producer validator. It proves
+`0x00A342..0x00A438`, two selected nine-record ROM roots (`0x00A438` and
+`0x00A480`), eight-byte source-record geometry, the D2 path through
+`0x00A36C -> 0x00A370 -> 0x00A372`, and destination setup through `FF188C`.
+The producer result is `NEUTRAL_FIXED_RECORD_PRODUCER`; it has no gameplay
+object, animation, frame, or X/Y label.
+2. The preserved post-run evidence proves `FF13CC` is the source of an exact
+184-byte 68K-bus DMA to SAT VRAM `0xD000`, with the accepted candidate relation
+to SAT entries `0..4`. This closes the renderer path and establishes
+`FF13CC_STRUCTURE_CLASS=SAT_SHADOW_BUFFER`, `SAT_SHADOW_LAYOUT_MATCH=YES`, and
+removal from the active gameplay-entity interpretation. Historical candidate
+artifacts remain unchanged.
+3. No upstream gameplay RAM structure is proven. The producer-family RAM
+reads are selector/counter/control state (`FF188A`, `FF188C`, `FF1858`,
+`FF185A`, `FF184F`, `FF1856`, `FF1854`, `FF1855`, `FF1892`, `FF1996`); the
+source records are ROM tables. Gameplay X, gameplay Y, object lifetime, and
+input-to-upstream-object causality remain unresolved.
+4. Result: `UPSTREAM_CONTROLLED_OBJECT_DISCOVERY_V1=STOP_UPSTREAM_GAMEPLAY_SOURCE_UNPROVEN`.
+The next capture, if continued, must use native W3 V2 identity and bounded
+register/bus evidence around `0x00A342..0x00A37C`, including A0 source reads
+and a slot activation-to-reuse boundary. The stock targeted observer is not
+accepted as a substitute for that identity.
+5. `SOURCE_OWNED_BEFORE=1487672`, `SOURCE_OWNED_AFTER=1487672`, delta `0`.
+`COMMIT_CREATED=NO`; `PUSH_PERFORMED=NO`.
+
+# 2026-09-22 — M12 Targeted Controlled Entity Causal Capture V1 — STOP (coverage insufficient)
+
+TASK: Perform one deliberate real gameplay capture for
+`ram-FF13CC-pc-00A372` without changing Worker capture, entity semantics, or
+SOURCE_OWNED, and close one exact controller-input → selected-entity mutation
+only if every required identity and dataflow edge is observed.
+
+1. Added the bounded developer-only observer
+`src/tools/re_bizhawk_m12_targeted_controlled_entity.lua`, its isolated launcher
+`tools/bizhawk-native-ring/run_targeted_controlled_entity_capture.py`, and the
+fail-closed analyzer
+`tools/bizhawk-native-ring/analyze_targeted_controlled_entity_capture.py`.
+The observer uses the working stock BizHawk install with Worker disabled and
+does not add semantic logic, disk I/O, or callbacks to the production Worker
+hot path. The installed W3 custom core was separately tested but timed out at
+startup, so it was not treated as evidence.
+2. Real targeted run `1790106191` used ROM SHA
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` and state
+SHA `7fde47833ce70a1df34e75d95c84ed87afc8470d228af87967c6bd9dd38b3970`.
+The exact sequence was NEUTRAL, RIGHT, NEUTRAL, LEFT, NEUTRAL, UP, NEUTRAL,
+DOWN, NEUTRAL, ACTION_BUTTON, NEUTRAL, five update frames per phase,
+`START_FRAME=2117`, `END_FRAME=2172`, with 55 observed frame-end events.
+3. Controller reads changed as expected across phases (`0x7F`, `0x77`,
+`0x7B`, `0x7E`, `0x7D`, `0x23` primary values), while the known
+`FF165C` representation write remained `0x0D` for all 28 observed writes.
+Register snapshots covered D0-D7, A0-A7, SR and PC. The bounded PC path
+observed `0x002A0A → 0x002A0C → 0x002A10 → 0x002A14`, with BNE at `0x002A10`
+not taken for the sampled witness (`SR=0x2604`).
+4. No exact chain closed. Candidate-producer writes to `FF13CC`, `FF13D0`,
+and `FF13D2` repeated stable values (`0x880901`, `0x8781`, `0x88`) across
+all deliberate input phases; no input-dependent selected-record mutation was
+observed. The artifact has no native `epoch`, `stream_sequence`, native
+`instruction_sequence`, or exact bus widths, and the short run contains no
+activation/deactivation/reuse boundary from which a slot generation can be
+derived. Therefore `EXACT_INPUT_TO_ENTITY_CHAINS=0`,
+`EXACT_INPUT_TO_SAT_CHAINS=0`, `ENTITY_ROLE=ENTITY_CANDIDATE`, and
+`PLAYER_LABEL_PROVEN=NO` remain unchanged. The existing 30-partial audit is
+unchanged: `A=0, B=30, C=30, D=0, E=30, F=30, G=0`.
+5. Result: `STOP_CONTROLLED_ENTITY_COVERAGE_INSUFFICIENT`. The exact missing
+runtime evidence is a working W3/native sideband on this ROM/state that emits
+`(run_id, epoch, frame, stream_sequence)`, native instruction identities and
+bus widths, plus a capture spanning selected-slot activation through
+deactivation/reuse. No causality or SAT continuation was manufactured.
+6. `TARGETED_CAPTURE_SOURCE_OWNED_BEFORE=1487672`,
+`TARGETED_CAPTURE_SOURCE_OWNED_AFTER=1487672`, delta `0`.
+`COMMIT_CREATED=NO`; `PUSH_PERFORMED=NO`.
+7. Verification: stock real capture and state probe completed; targeted report
+was emitted under ignored `build/thor-evidence/targeted-controlled-entity-stock-20260922-final/`.
+Python compilation, focused tests, source-size check, and `git diff --check`
+are run after this documentation/tooling update. Native Debug/Release builds
+remain not applicable to this developer-only Python/Lua capture tooling.
+
+# 2026-09-22 — M12 Controlled Entity Causal Closure V1 — STOP (coverage insufficient)
+
+TASK: Audit all 30 preserved partial controller-input → selected-entity
+relations for `ram-FF13CC-pc-00A372` and close one exact input → entity → SAT
+chain only if W3 V2 evidence proves every edge. Do not change Worker capture,
+SOURCE_OWNED, entity semantics, or unrelated gameplay systems.
+
+1. Added deterministic partial-chain audit to the existing controlled-entity
+stage. Every partial relation is retained with event IDs, values, PCs,
+instruction/control-flow ranges, nearest noncausal entity write, register
+tracking status, and slot-boundary fields.
+2. Preserved corpus result for run `1790091138`: all 30 partials have an exact
+controller-port read → input-RAM write (`A=0`), but no input-RAM consumer/state
+edge and no same-control-flow write into `0xFF13CC..0xFF13D3` (`B=30`, `C=30`).
+No selected-slot write-to-identity gap was independently reached (`D=0`), but
+slot reuse makes every partial identity-ambiguous (`E=30`). All 768 preserved
+segments have `frame_boundary_count=0` and entry frame `0`, so frame continuity
+is unavailable (`F=30`). No unsupported instruction form was observed (`G=0`).
+3. Strongest preserved partial: input event
+`1790091138:3:37859693:14812585`, value `0x00007F`, source PC `0x0029B8`,
+representation/consumer PC `0x002A0A`, instruction sequence
+`14812585..14812615`. Entity field offset and causal entity write PC remain
+unproven. The nearest `0x00A372 → 0xFF13CC = 0x00880901` write is
+`control_flow_sequence=88905`, while the input pair is `12345`; it belongs to
+`slot-0-instance-1` after the input's `slot-0-instance-0`, so
+`REUSE_BOUNDARY_CROSSED=YES`.
+4. W3 V2 preserves bus events, PCs, instruction/control-flow identities and
+values, but not M68K register snapshots or decoded branch/state edges. The
+audit therefore reports `register_values=[]` and does not manufacture an
+intermediate state transition. The accepted entity→SAT anchor remains exact
+for SAT entries `0..4`, but `EXACT_INPUT_TO_ENTITY_CHAINS=0` and
+`EXACT_INPUT_TO_SAT_CHAINS=0` remain correct.
+5. Result: `STOP_CONTROLLED_ENTITY_COVERAGE_INSUFFICIENT`;
+`ENTITY_ROLE=ENTITY_CANDIDATE`, `PLAYER_LABEL_PROVEN=NO`, and no player label
+promotion. Required targeted capture, not executed here: deliberate one-frame
+Right/Left/Up/Down and action transitions with frame-boundary records, the
+controller-port and input-RAM events, selected-slot generation/activation, and
+full M68K register/branch trace around the input consumer through the
+`0xFF13CC..0xFF13D3` write. This is proposed only after the preserved corpus
+failed closed; Worker capture was not changed.
+6. SOURCE_OWNED remains `1,487,672` before/after, delta `0`. No ROM/assets
+were added. `COMMIT_CREATED=NO`; `PUSH_PERFORMED=NO`.
+7. Verification: 9 focused controlled-entity tests and the selected broader
+post-run regression set (89 tests) passed; `py_compile`, the source-file-limit
+check, and `git diff --check` passed. Native Debug/Release builds were not run
+because this is Python post-run tooling only.
+
+# 2026-09-22 — M12 Controlled Entity / Player Provenance V1 — STOP (fail-closed)
+
+TASK: Add the automatic post-run stage after `GAMEPLAY RAM / ENTITY CANDIDATES`
+to select one exact RAM→SAT candidate and attempt controller-port → input RAM →
+entity field → SAT → hardware-sprite provenance. Worker capture, VDP/SAT
+semantics, gameplay-candidate semantics, semantic labels, and SOURCE_OWNED are
+unchanged.
+
+1. Added `live_forward_controlled_entity_stage.py` with deterministic five-file
+output, exact event identities, same-control-flow input consumers, supported
+field recovery, SAT/DMA continuation, slot-reuse fail-closed handling, and the
+PLAYER label gate. The automatic coordinator now stops before ASM CLOSURE when
+the controller-to-selected-entity chain is not closed.
+2. Preserved real corpus run `1790091138` selected
+`ram-FF13CC-pc-00A372`, RAM record `0xFF13CC`, stride `8`, slot `0`, and exact
+SAT relation entries `0..4`. Controller reads at `0x0029B8/0x0029E2/...` and
+input RAM writes at `0x002A0A/0x002AAC` are observed, but no same-control-flow
+consumer writes the selected `FF13CC..FF13D3` entity record. Result:
+`EXACT_INPUT_TO_ENTITY_CHAINS = 0`, `PARTIAL_INPUT_TO_ENTITY_CHAINS = 30`,
+`EXACT_INPUT_TO_SAT_CHAINS = 0`, `ENTITY_ROLE = ENTITY_CANDIDATE`,
+`PLAYER_LABEL_PROVEN = NO`; status is `STOP_CONTROLLED_ENTITY_PROVENANCE_INCOMPLETE`.
+3. SOURCE_OWNED remains 1,487,672 before/after, delta 0. No ROM/assets were
+added. `COMMIT_CREATED = NO`; `PUSH_PERFORMED = NO`.
+4. Verification: eight focused controlled-entity tests and the selected broader
+post-run regression set (88 tests) passed; `py_compile`, the source-size check,
+and `git diff --check` passed. Real deterministic artifacts are retained under
+the ignored campaign evidence directory. Native Debug/Release builds were not
+run because this change is Python tooling only.
+
+# 2026-09-22 — M12 Post-Run Gameplay RAM / Entity Candidates V1 — PASS
+
+TASK: Add the first repository-native gameplay-state layer above the accepted
+VDP/DMA and Sprite/SAT stages, using preserved W3 V2 FLOW evidence only. Worker
+capture, VDP/SAT semantics, semantic entity labels, and SOURCE_OWNED promotion
+remain unchanged.
+
+1. Added `tools/bizhawk-native-ring/live_forward_gameplay_stage.py` and inserted
+`GAMEPLAY RAM / ENTITY CANDIDATES` automatically between `SPRITE / SAT ANALYSIS`
+and `ASM CLOSURE`. The stage emits deterministic RAM analysis, entity candidate,
+SAT-link, runtime-instance, provenance, and stage-receipt artifacts.
+2. Runtime identity is fail-closed: candidates use only `ENTITY_CANDIDATE`,
+`OBJECT_SLOT`, `RUNTIME_RECORD`, and `SPRITE_OWNER_CANDIDATE`-compatible evidence;
+no player/enemy/NPC/item/boss/projectile labels are emitted. Slot reuse starts a
+new runtime instance, while missing frame identity remains unresolved rather than
+being fabricated.
+3. Preserved real corpus fixture: run `1790091138`, 768 FLOW segments. Results:
+186 RAM structure candidates, 129 exact stride structures, 5,622 runtime
+instances, 20 exact RAM-to-SAT field chains, 6 partial chains, 3 exact
+entity-to-SAT relations, 183 unresolved entity-to-SAT relations, and 129 proven
+update-loop observations. The stage reached `acceptance_ready = true`.
+4. SOURCE_OWNED governance: before = 1,487,672; after = 1,487,672; delta = 0.
+No ROM or extracted commercial asset was added. `COMMIT_CREATED = NO` and
+`PUSH_PERFORMED = NO` for this checkpoint.
+5. Verification: gameplay/Sprite/VDP/progress tests passed (58 tests); the
+broader post-run/audio/receipt/coordinator selection passed after updating stage
+order assertions. Real outputs are retained only under ignored build evidence.
+
+# 2026-09-22 — M12 Post-Run Sprite / SAT Analysis Stage V1 Integration — PASS
+
+TASK: Integrate repository-native Genesis Sprite Attribute Table (SAT) and hardware sprite analysis into the accepted modern post-run pipeline without gameplay entity naming, without Worker hot-path modifications, without BizHawk rerun, with durable real sprite oracle regression, and strictly preserving canonical SOURCE_OWNED at 1,487,672 bytes (delta = 0).
+1. Architecture & Pipeline Insertion:
+   - Added `tools/bizhawk-native-ring/live_forward_sprite_stage.py` (483 lines) as Stage 9 between Stage 8 `VDP / DMA ANALYSIS` and Stage 10 `ASM CLOSURE`.
+   - Updated `live_forward_progress.py` (347 lines) to add `"SPRITE / SAT ANALYSIS"` to `STAGES` (total 12 post-run stages: FINALIZING RUN -> AUDITING FLOW -> MERGING MASTER -> COMPACTING EVIDENCE -> REFRESHING MAP -> CONTROL PROVENANCE -> AUDIO ANALYSIS -> VDP / DMA ANALYSIS -> SPRITE / SAT ANALYSIS -> ASM CLOSURE -> FULL ROM AUDIT -> CLEANUP).
+   - Updated `live_forward_complete_pipeline.py` (495 lines) to execute sprite/SAT analysis over FLOW records and publish progress.
+   - Updated `live_forward_postrun_receipts.py` (449 lines) to deterministically derive `postrun_sprite_receipt.json` without fallback defaults, yielding 9 receipts.
+2. Durable Real Sprite Oracle Generation & Regression:
+   - Added `tools/bizhawk-native-ring/capture_real_sprite_oracle.py` (230 lines) to generate durable real sprite oracle `sprite_oracle_v1_f779` from unthrottled BizHawk execution at frame 779.
+   - Emitted `raw_capture.json`, `logical_artifact.json`, `sprite_oracle_manifest.json`, and `sprite_oracle_receipt.json` under `build/thor-evidence/oracles/sprite/sprite_oracle_v1_f779/`.
+   - Verified 8 active SAT entries (`0..7`), 660 visible pixels, 0 overlaps, and 0 conflicts (`status = "PASS"`).
+   - S6/S7 regression handled fail-closed: `s6_s7_contract_regression = "PASS"`, `s6_s7_original_oracle_regression = "STOP_ORACLE_MISSING"` (ephemeral oracle removed).
+3. Evidence Scan & Hardware Sprite Raster Rules:
+   - SAT base address derived from VDP registers 5 and 12 (`0xD000` in H40 mode, 80 entries, 640 bytes).
+   - Link list traversal handles termination (`link=0`), cycle detection, out-of-range links, and partial entry truth tracking.
+   - Hardware raster rules implemented: 20 sprites per scanline limit, 320 dots per line limit, X=0 coordinate masking, and clipping.
+   - Provenance tracking distinguishes `OBSERVED_WRITE`, `DERIVED_FROM_EXACT_DMA`, `PERSISTED_FROM_PROVEN_PRIOR_STATE`, and `UNKNOWN`.
+   - Exact DMA-to-SAT linkage derived from Stage 8 `postrun_vdp_dma.json`.
+4. Emitted Authoritative Artifacts:
+   - `postrun_sprite_analysis.json` (`oasis.m12.postrun-sprite-analysis.v1`)
+   - `postrun_sat_state.json` (`oasis.m12.postrun-sat-state.v1`)
+   - `postrun_sprite_frames.json` (`oasis.m12.postrun-sprite-frames.v1`)
+   - `postrun_sprite_provenance.json` (`oasis.m12.postrun-sprite-provenance.v1`)
+   - `postrun_sprite_candidates.json` (`oasis.m12.postrun-sprite-candidates.v1`)
+   - `postrun_sprite_receipt.json` (`oasis.m12.postrun-sprite-receipt.v1`)
+5. Verification & Validation:
+   - Comprehensive test suite in `tests/live_forward_sprite_stage_test.py` covers all 19 assertions (Tests A–S): PASS.
+   - All 110 selected `live_forward` tests: PASS.
+   - Post-run receipt emission verified on acceptance fixture: all 9 receipts emitted cleanly.
+   - `git diff --check`: PASS (clean).
+   - File limit check: all touched files <= 500 lines.
+   - Canonical `SOURCE_OWNED = 1,487,672`, stage delta = 0.
+   - Declaration: `PASS_POSTRUN_SPRITE_SAT_ANALYSIS_V1`.
+
+# 2026-09-22 — M12 Post-Run VDP / DMA Analysis Stage V1 Integration — PASS
+
+TASK: Integrate repository-native Genesis VDP and DMA analysis into the accepted modern post-run pipeline without sprite reconstruction, without SAT logical objects, without Worker hot-path modifications, without BizHawk rerun, and strictly preserving canonical SOURCE_OWNED at 1,487,388 bytes (delta = 0).
+1. Architecture & Pipeline Insertion:
+   - Added `tools/bizhawk-native-ring/live_forward_vdp_stage.py` (396 lines) as Stage 8 between Stage 7 `AUDIO ANALYSIS` and Stage 9 `ASM CLOSURE`.
+   - Updated `live_forward_progress.py` to add `"VDP / DMA ANALYSIS"` to `STAGES` (total 11 post-run stages: FINALIZING RUN -> AUDITING FLOW -> MERGING MASTER -> COMPACTING EVIDENCE -> REFRESHING MAP -> CONTROL PROVENANCE -> AUDIO ANALYSIS -> VDP / DMA ANALYSIS -> ASM CLOSURE -> FULL ROM AUDIT -> CLEANUP).
+   - Updated `live_forward_complete_pipeline.py` (496 lines) to execute VDP and DMA analysis over FLOW records and publish progress.
+   - Updated `live_forward_postrun_window.py` (273 lines) to display VDP commands and DMA event counts in post-run details.
+   - Updated `live_forward_postrun_receipts.py` (429 lines) to deterministically derive `postrun_vdp_receipt.json` without fallback defaults, yielding 8 receipts.
+2. Evidence Scan & VDP/DMA Protocol Decoding:
+   - Executed against preserved real human run `campaign-desktop-20260921-224537-038` (`run_id = 1790026341`).
+   - Total segments processed: 2,304.
+   - VDP control writes: 7,468 (4,585 16-bit + 2,883 32-bit longword writes).
+   - VDP data writes: 3,581 (3,325 16-bit + 256 32-bit data writes).
+   - VDP register writes decoded: 5,851 (active registers observed: [1, 19, 20, 21, 22, 23]).
+   - Complete two-word VDP commands: 2,246 (VRAM: 1,097, CRAM: 1,019, VSRAM: 130).
+   - Incomplete VDP commands: 8 (fail-closed at segment boundaries without fabrication).
+   - DMA events decoded: 1,725 (DMA_EXACT: 1,604, DMA_PARTIAL: 16, DMA_INCOMPLETE: 105).
+   - Producer provenance: Exact RAM-to-VDP chains = 2,753 (1,604 exact 68K_BUS DMAs + 1,149 intra-instruction data writes from 68K RAM buffer `0xFF13CC` to VRAM SAT base `0xD000`); Exact ROM-to-VDP chains = 0; Temporal-only relations = 2,432; Unresolved relations = 121.
+   - Resource discovery: VDP resource candidates = 0 (no direct ROM-to-VDP DMAs occurred in this gameplay sample; tested synthetically).
+3. S8 Regression Bridge:
+   - Verified generic VDP protocol decoder against accepted S8 frame-779 oracle (registers 1, 2, 3, 4, 5, 7, 10, 11, 12, 13, 16, 17, 18, plane table bases, scroll mode, command targets, and DMA interpretation).
+   - `S8_VDP_REGRESSION = PASS` with `CONFLICTS = 0`.
+4. Emitted Authoritative Artifacts:
+   - `postrun_vdp_analysis.json` (`oasis.m12.postrun-vdp-analysis.v1`)
+   - `postrun_vdp_registers.json` (`oasis.m12.postrun-vdp-registers.v1`)
+   - `postrun_vdp_dma.json` (`oasis.m12.postrun-vdp-dma.v1`)
+   - `postrun_vdp_provenance.json` (`oasis.m12.postrun-vdp-provenance.v1`)
+   - `postrun_vdp_candidates.json` (`oasis.m12.postrun-vdp-candidates.v1`)
+   - `postrun_vdp_receipt.json` (`oasis.m12.postrun-vdp-receipt.v1`, SHA: `09903d43d5e433da10d90a9a875ab4701b4e183631294fe163b2da3cf3eb9e83`)
+5. Verification & Validation:
+   - Comprehensive test suite in `tests/live_forward_vdp_stage_test.py` covers all 14 assertions (Tests A–N) in 4.5s: PASS.
+   - `tests/live_forward_audio_stage_test.py` (11/11 tests): PASS.
+   - Combined test suite (25/25 tests): PASS.
+   - `cmake -P tests/check_file_limits.cmake`: PASS (all 834 governed files <= 500 lines).
+   - `git diff --check`: PASS (clean).
+   - Canonical `SOURCE_OWNED = 1,487,388` (delta = 0).
+   - Declaration: `PASS_POSTRUN_VDP_DMA_ANALYSIS_V1`.
+
+# 2026-09-22 — M12 Post-Run Audio Analysis Stage V1 Integration — PASS
+
+TASK: Integrate accepted W4/W5 audio analysis into the accepted modern post-run pipeline as an authoritative repository-native stage without hot-path capture changes, without BizHawk rerun, and strictly preserving canonical SOURCE_OWNED at 1,487,388 bytes (delta = 0).
+1. Architecture & Pipeline Insertion:
+   - Added `tools/bizhawk-native-ring/live_forward_audio_stage.py` (377 lines) as Stage 7 between Stage 6 `CONTROL PROVENANCE` and Stage 8 `ASM CLOSURE`.
+   - Updated `live_forward_progress.py` to add `"AUDIO ANALYSIS"` to `STAGES` (total 10 post-run stages).
+   - Updated `live_forward_complete_pipeline.py` (498 lines) to execute audio analysis over FLOW records and publish progress.
+   - Updated `live_forward_postrun_window.py` (269 lines) to dynamically display `len(STAGES)` (10 stages) and audio metrics in details.
+   - Updated `live_forward_postrun_receipts.py` (351 lines) to deterministically derive `postrun_audio_receipt.json` without fallback defaults, yielding 7 receipts.
+2. Evidence Scan & Resource Verification:
+   - Executed against preserved real human run `campaign-desktop-20260921-224537-038` (`run_id = 1790026341`).
+   - Total records scanned: 8,270,988 across 2,304 segments.
+   - Audio sink events: 24,794 (11,756 DAC writes, 13,038 YM2612 register writes, 0 PSG writes).
+   - Banked ROM reads: 6,982 (2,324 Resource 1 reads, 0 Resource 2 reads, 4,658 candidate reads).
+   - Resource 1 (`0x0BD540..0x0BF768`, len=8,744) and Resource 2 (`0x0BC95C..0x0BD540`, len=3,044) verified with byte-exact W5 roundtrip decode/encode without reading `source_nibble`.
+   - Level 3 strict causal chains: 13,541 connecting BANKED_ROM_READ -> Z80 -> Audio Sink.
+   - Observed M68K->Z80 last-writer handoffs: 48,368.
+   - Candidate ranges: 3 spatial clusters discovered (`0x0BB4B7..0x0BB4BD`, `0x0BB682..0x0BB688`, `0x0BBB58..0x0BBB5E`) at Z80 PCs `0x089A` and `0x08FD` targeting YM2612 synthesizer register configuration; classified as `HYPOTHESIS` with zero promotion.
+3. Emitted Authoritative Artifacts:
+   - `postrun_audio_analysis.json` (`oasis.m12.postrun-audio-analysis.v1`)
+   - `postrun_audio_candidates.json` (`oasis.m12.postrun-audio-candidates.v1`)
+   - `postrun_audio_provenance.json` (`oasis.m12.postrun-audio-provenance.v1`)
+   - `postrun_audio_receipt.json` (`oasis.m12.postrun-audio-receipt.v1`, SHA: `9ee8da07a9cff8699d931a577563576fb72997f7ccce7814548151fbdbcbc1f3`)
+4. Verification & Validation:
+   - Comprehensive test suite in `tests/live_forward_audio_stage_test.py` covers all 11 assertions (Tests A–K) in 20.5s: PASS.
+   - `tests/live_forward_postrun_receipts_test.py` (2/2): PASS.
+   - `tests/live_forward_complete_pipeline_test.py` (1/1): PASS.
+   - `cmake -P tests/check_file_limits.cmake`: PASS (all 832 governed files <= 500 lines).
+   - `git diff --check`: PASS (clean).
+   - Canonical `SOURCE_OWNED = 1,487,388` (delta = 0).
+
+# 2026-09-22 — M12 Post-Run Pipeline Modernization V1 & Stage 7 Contract Fix — PASS
+
+TASK: Fix Stage 7 input contract break, keep Stage 5 and Stage 7 artifacts distinct without schema relabeling, and complete post-run pipeline on the real human Worker Control run (`campaign-desktop-20260921-224537-038`, `run_id = 1790026341`) through Stages 5–9 to terminal `ANALYSIS COMPLETE ✓`.
+1. Root Cause Analysis:
+   - `live_forward_rom_link_runtime.py:166` defaulted `default_range_tool` to `build/oasis_re_rom_range_decode.exe` (which provides `oasis.stage5.pc-list.v1`).
+   - Stage 7 (`validate_range_decoder` in `stage7_decode.py`) probes the range decoder tool with `--capabilities` and strictly requires `oasis.stage7.range.v1`.
+   - The correct tool for Stage 7 is `build/oasis_re_assemble_range.exe` (from `src/tools/re_assemble_range_report.cpp`).
+2. Implementation & Pipeline Modernization:
+   - Configured `live_forward_rom_link_runtime.py` to route `oasis_re_assemble_range.exe` as the Stage 7 range tool.
+   - Preserved schema distinctions: `oasis.stage5.pc-list.v1` for Stage 5 PC listing, `oasis.stage7.range.v1` for Stage 7 range decoding and assembly.
+   - Resolved SQLite schema mismatch in `canonical_map_fallback.py` (`conv` dict and serialization for `_json` columns).
+   - In Stage 6 (`live_forward_control_provenance_stage.py`), implemented explicit CPU-aware M68K filtering (`_filter_m68k`) without mutating Z80 flags.
+   - Added archive fallback (`raw-evidence-archive/`) in Stages 5, 6, and rolling master to ensure replayability after evidence absorption.
+   - Stage 9 absorption cleanup permanently reclaimed 399,417,785 bytes of raw FLOW data with zero semantic loss while preserving 7 diagnostic and receipt files.
+3. Verification & Compliance:
+   - Canonical `SOURCE_OWNED` preserved strictly at 1,487,388 bytes (`delta = 0`).
+   - All unit tests passing (20/20 in `live_forward_*` and `stage*` suites).
+   - `cmake -P tests/check_file_limits.cmake` GREEN (828 governed files <= 500 lines).
+   - `git diff --check` GREEN (zero whitespace or line ending issues).
+   - Real human run reached `ANALYSIS COMPLETE ✓` with all 6 receipts emitted.
+
+# 2026-09-21 — Post-Run Analysis Window & 48-byte Coherent FLOW Compaction Restore — PASS
+
+TASK: Restore automatic Post-Run Analysis Window (`live_forward_postrun_window.py`) and data processing after game completion for Desktop Worker Control interactive sessions.
+1. Diagnosed why the post-run analysis window was absent after game exit:
+   - `--in-process-postrun` was default `False` and was omitted from desktop launcher invocations.
+   - Interactive runtime receipt stored spool metrics under `flow_handoff`, while `live_forward_rolling_master.py` and `live_forward_postrun_coordinator.py` only looked for `raw_segment_spool`.
+   - `live_forward_rolling_master.py` was using outdated 32-byte record indices (`row[5]` for flags, `row[2]` for PC, `row[4]` for opcode), causing `STOP_ROLLING_MASTER_ROM_MISMATCH:opcode` on modern 48-byte V2 coherent records.
+   - Post-run coordinator strictly required `context.startup` (MASTER V2 authority pointer `current.json`) and `--range-tool`, causing failures when running without pre-existing disk authority.
+2. Implemented coherent post-run data processing and visual monitor:
+   - Updated `live_forward_rolling_master.py` record unpack logic for 48-byte V2 coherent records: filters for `(row[6] & FLAG_INSTRUCTION) and row[7] == 0` (M68K), extracts `pc=row[3]`, `next_pc=row[4]`, `opcode=row[5] & 0xFFFF`. Verified 13,080,186 records across 2,944 segments with zero opcode mismatches against canonical ROM.
+   - Supported both `raw_segment_spool` and `flow_handoff` in `live_forward_rolling_master.py`, `live_forward_postrun_coordinator.py`, and `live_forward_rom_link_runtime.py`.
+   - Made `context.startup` optional in `live_forward_postrun_coordinator.py` and `_run_postrun_in_process` (rolling master compaction and generation staging proceed independently; promotion occurs only when startup authority is present).
+   - Changed `--in-process-postrun` default to `True` in `live_forward_rom_link_runtime.py`, auto-resolving default tools if present in `build/`.
+   - Added window focus/lift (`lift()`, `-topmost`) in `PostRunWindow` so the post-run monitor window immediately pops up in front when EmuHawk closes.
+   - Updated desktop launcher scripts (`thor_worker_control_desktop.ps1` and `thor-worker-control-2h.ps1`) to pass `--in-process-postrun` and display post-run analysis outcome.
+3. Verification:
+   - `tests/live_forward_rolling_master_test.py`: 1/1 PASS on canonical ROM with 48-byte record packing.
+   - `tests/live_forward_postrun_coordinator_test.py`: 6/6 PASS.
+   - `tests/live_forward_postrun_progress_test.py`: 16/16 PASS.
+   - `tests/live_forward_complete_pipeline_test.py`: 1/1 PASS.
+   - `tests/live_forward_worker_control_launcher_test.py`: 5/5 PASS.
+   - `tests/live_worker_control_test.py`: 25/25 PASS.
+   - `tests/live_forward_rom_link_runtime_test.py`: PASS.
+   - `tests/w5_audio_ownership_test.py`: PASS (SOURCE_OWNED = 1,487,388 preserved, delta = 0).
+   - `cmake -P tests/check_file_limits.cmake`: 827 governed files <= 500 lines.
+   - `git diff --check`: clean (exit code 0).
+
+# 2026-09-21 — Desktop Worker Control launcher update (W6/W3 coherent runtime) — PASS
+
+TASK: Update Desktop Worker Control launcher for current W6/W3 coherent runtime architecture, remove outdated prerequisites, disable automated hero input by default, and fix worker activity display in dashboard.
+1. Remove/replace obsolete prerequisites & disable automated hero control:
+   - Disassemblers (`--decoder` / `re_rom_range_decode.exe` and `--range-tool` / `re_assemble_range.exe`) are now optional and default to None.
+   - `--master-startup` and `--in-process-postrun` are now optional flags, removing constraints requiring them for `--until-closed`.
+   - Decoupled interactive mode from legacy `FlowHandoffRuntime` (which expected 32-byte records), routing to `LiveForwardSegmentSpool` for 48-byte coherent records and JSONL segment audits.
+   - Disabled automated controller bot (`--natural-input=False` by default; `$env:LF_NATURAL_INPUT = "0"` in desktop scripts), restoring 100% manual gameplay control to user keyboard/gamepad.
+2. Fix Worker activity display in dashboard:
+   - Diagnosed `LIVE_CONTROL metrics field count mismatch` exception caused by native ring emitting 32 metrics (`z80_instructions`, `record_bytes_each`) while parser expected 30.
+   - Updated `METRIC_NAMES` and `parse_live_control()` in `live_forward_worker_control_model.py` to support both 32-field coherent records and 30-field legacy records.
+   - Restored full worker population (`current_worker_count=128`, `current_depth=512`, `Captures`, scrollable rows `W0000..W0127` with live states, progress bars, and cycle metrics).
+   - Added `current_plan` fallback for worker count / depth in `LiveWorkerControlPublisher`.
+3. Adopt W6/W3 coherent runtime architecture defaults:
+   - Worker count: 128 workers.
+   - Worker depth: 512.
+   - Worker memory: 524,288 bytes (512 KiB).
+   - Coherent ring buffer: capacity 2,097,152, V2 48-byte records.
+   - Verified BizHawk install: `C:\Dev\SegaThorTools\BizHawk-m12-w2-1-frame-coherent-20260920` (or `BIZHAWK_INSTALL`).
+   - Canonical ROM: `local-roms/Beyond Oasis (USA).md` (or `BEYOND_OASIS_ROM`).
+   - Scaling script: `tools/bizhawk-native-ring/live_forward_scaling.lua`.
+   - Output directory: timestamped `build/thor-evidence/live-worker-control/session-<timestamp>`.
+   - Inter-wave cadence: 300 frames.
+   - Desktop control window: enabled.
+   - Run mode: until closed (`--until-closed=True`).
+4. Provide standalone executable launcher scripts:
+   - Created `tools/bizhawk-native-ring/live_forward_worker_control_launcher.py`.
+   - Created `tools/bizhawk-native-ring/thor_worker_control_desktop.ps1` and updated `C:\Users\serji\.codex\launchers\thor-worker-control-2h.ps1`.
+   - Updated Desktop shortcuts (`Sega Thor - Worker Control.lnk`, `Sega Thor - Emulator.lnk`).
+   - Modularized `build_parser()` in `tools/bizhawk-native-ring/live_forward_rom_link_runtime.py`.
+5. Automated verification and test suite:
+   - Created `tests/live_forward_worker_control_launcher_test.py` (5/5 tests passed, including 32-metric and 30-metric payload tests).
+   - Ran `tests/live_worker_control_test.py` (25/25 tests passed).
+   - Ran `tests/live_forward_rom_link_runtime_test.py` (PASS).
+   - Verified `cmake -P tests/check_file_limits.cmake` (827 governed files <= 500 lines).
+   - Verified `git diff --check` passed cleanly.
+6. SOURCE_OWNED preservation: strictly preserved at 1,487,388 bytes (delta = 0).
+
+
+# 2026-09-21 — M12 W6 Long Live Game Discovery Run — PASS
+
+TASK: M12 W6 — LONG LIVE GAME DISCOVERY RUN V1 from CURRENT DIRTY WORKTREE.
+1. Phase A audit cleanups: recomputed true SHA-256 for `audio_resource_0001_modified.pcm` (`4e532b39...`) and neutral proven wording in W5d acceptance receipt; ran focused tests (11/11 passed).
+2. Execute sustained BizHawk/Waterbox discovery run:
+   - Canonical Beyond Oasis ROM (3,145,728 bytes, SHA `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+   - Coherent native ring buffer: 128 Workers, depth 512, ring capacity 2,097,152 (W3 V2 48-byte records).
+   - Natural controller input navigating past boot into active gameplay (>10 minutes, 35,677 frames).
+   - Bounded discovery sampling: 1 wave every 300 frames (~5s), depth 512.
+   - Non-truncated wave chunk exports (`live-discovery-wave-%06d.bin`).
+3. Verify zero health failures: retention failures = 0, dropped = 0, collisions = 0, OOM = 0.
+4. Execute clean `STOPPED_END_GAME` shutdown at 610.2s elapsed.
+5. Index and analyze all 106 raw wave chunks against current Thor Brain (W3/W4/W5).
+6. Generate all 13 canonical discovery artifacts in `build/m12-w6-live-discovery/`.
+7. Enforce strict SOURCE_OWNED preservation (`SOURCE_OWNED_DELTA = 0`, value remains 1,487,388).
+8. Add comprehensive unit tests in `tests/w6_live_discovery_test.py` (5/5 passed).
+9. Enforce <= 500 line rule across all governed source files.
+
+RESULT: `PASS_LONG_LIVE_GAME_DISCOVERY_RUN_V1`.
+1. Session & Health Execution:
+   - Total Gameplay Frames: 35,677 (> 34,000 frames requirement).
+   - Play Time: 610.5 seconds (>= 600 seconds requirement).
+   - Workers: 128 Workers at depth 512.
+   - Total Raw Records: 51,233,653 records across 106 waves.
+   - Health Counters: retention_failures = 0, captures_dropped = 0, stale_ack = 0, identity_collisions = 0, oom = 0.
+   - Clean Shutdown: `STOPPED_END_GAME` upon reaching target duration.
+2. Novelty Discoveries:
+   - `NEW_M68K_EXEC_PCS`: 4,261 novel M68K execution PCs discovered.
+   - `NEW_Z80_EXEC_PCS`: 284 novel Z80 execution PCs discovered.
+   - `NEW_ROM_PHYSICAL_RANGES`: 338 novel ROM physical execution/read ranges.
+   - `NEW_BANKED_ROM_PHYSICAL_RANGES`: 35 novel banked ROM ranges accessed by Z80 driver.
+   - `NEW_M68K_Z80_HANDOFF_ADDRESSES`: 455 shared RAM communication addresses between M68K and Z80.
+   - `KNOWN_AUDIO_FORMAT_A_MODE0_HITS`: 2,324 runtime accesses to Resource 1 (`0x0BD540..0x0BF768`) confirmed active during gameplay.
+   - `NEW_CROSS_CPU_CAUSAL_CHAINS`: 288,650 exact cross-CPU handoff causal chains witnessed.
+   - VDP Activity: 407,235 VDP register/data writes observed during gameplay.
+   - Audio Activity: 149,957 YM2612 register writes (including 99,003 DAC samples) observed.
+3. 13 Artifacts Emitted in `build/m12-w6-live-discovery/`:
+   - `discovery_session_manifest.json` (SHA: `b3e3079e...`)
+   - `discovery_chunk_manifest.json` (SHA: `c86f0c3f...`)
+   - `discovery_health_summary.json` (SHA: `d9c5b1f5...`)
+   - `novelty_delta_summary.json` (SHA: `20b61e9d...`)
+   - `m68k_execution_novelty.json` (SHA: `d511a893...`)
+   - `z80_execution_novelty.json` (SHA: `51a56c56...`)
+   - `memory_access_novelty.json` (SHA: `f24a46f7...`)
+   - `io_register_novelty.json` (SHA: `08457169...`)
+   - `vdp_activity_novelty.json` (SHA: `b806ed9f...`)
+   - `audio_stream_novelty.json` (SHA: `955c7dee...`)
+   - `cross_cpu_handoff_novelty.json` (SHA: `484bada9...`)
+   - `DISCOVERY_FINDINGS_TABLE.md` (SHA: `42b0ac81...`)
+   - `THOR_M12_LONG_LIVE_DISCOVERY_REPORT_V1.md` (SHA: `28d6c073...`)
+4. SOURCE_OWNED Governance:
+   - `SOURCE_OWNED_BEFORE`: 1,487,388 bytes (47.2827911377%).
+   - `SOURCE_OWNED_AFTER`: 1,487,388 bytes (47.2827911377%).
+   - `SOURCE_OWNED_DELTA`: 0 bytes (discovery only, zero promotional claims).
+5. Validation:
+   - 5/5 tests pass in `tests/w6_live_discovery_test.py`.
+   - 11/11 tests pass in `tests/w5_audio_functional_test.py`.
+   - 824 governed files <= 500 lines (0 violations).
+   - `git diff --check` green; dirty worktree preserved without commit/push/reset.
+
+# 2026-09-21 — M12 W5d Functional Audio Validation & Listening Test — PASS
+
+TASK: M12 W5d — FUNCTIONAL AUDIO VALIDATION / LISTENING TEST from CURRENT DIRTY WORKTREE.
+1. Resolve header / stream start forensic check: determine whether the 3 bytes (00 22 28 / 00 0B E4) are resource-local headers, audio data, or another structure; report consumer PCs and operations.
+2. Determine exact playback timing and sample rate for AUDIO_FORMAT_A_MODE0 from Z80 driver, wait loop, and master cycle timestamps.
+3. Export listenable audio artifacts (raw PCM, preview WAV, hashes, min/max, duration) for Resource 1 and Resource 2 using standalone W5 decoder into `build/m12-w5-functional/`.
+4. Re-evaluate existing runtime cross-check (standalone PCM vs YM2612 DAC values in early boot): verify 18 alignable / 18 match / 0 mismatch.
+5. Perform controlled semantic mutation test on Resource 1 in the early-boot witness window at semantic level, encode via W5 encoder, generate temporary ROM copy with conserved 16-bit checksum (0 outside diffs).
+6. Execute emulator end-to-end capture on modified ROM; compare predicted standalone decoded DAC stream against actual observed emulator DAC writes (verify 0 mismatches).
+7. Confirm temporary modified ROM boot and stability.
+8. Enforce SOURCE_OWNED delta = 0 and file size limits (<= 500 lines).
+9. Add focused tests A through K in `tests/w5_audio_functional_test.py`.
+
+RESULT: `PASS_EXACT_AUDIO_RESOURCE_FUNCTIONAL_VALIDATION_V1`.
+1. Header Forensic Check Resolved (`STATIC_VERIFIED`):
+   - Proven: The 3 bytes (00 22 28 / 00 0B E4) are NOT a resource-local header (`HEADER_SIZE = 0`, `HEADER_BYTES = NONE`).
+   - They are external bank descriptor table entries at ROM `0x0B8000..0x0B8050` consumed by Z80 driver at:
+     - PC `0x0734`: `LD C, (HL)` (reads length low byte from descriptor byte 2).
+     - PC `0x0736`: `LD B, (HL)` (reads length high byte from descriptor byte 3).
+     - PC `0x0738`: `LD A, (HL)` (reads playback mode from descriptor byte 4).
+     - PC `0x073E`: `JR NZ, +6` (branches to Mode 1 handler if non-zero; falls through to Mode 0 at PC 0x0740).
+   - Audio resource streams start directly at byte 0 (`0x0BD540` and `0x0BC95C`).
+2. Playback Timing & Sample Rate:
+   - Playback is software-interleaved polling (`CALL 0x0783` interspersed throughout sequencer and main idle loop `0x04C4..0x04D9`).
+   - Nominal idle loop period: 5,265 Genesis master cycles (~351 Z80 cycles) -> ~10,198 Hz.
+   - Mean period observed across early-boot runtime witness: 5,553.5 master cycles (~370.2 Z80 cycles) -> ~9,668 Hz.
+   - Exact hardware crystal rate is `UNKNOWN` (`VARIABLE_SOFTWARE_TIMED`). Preview WAV rate set to 10,198 Hz (marked `PREVIEW_RATE`).
+3. Decoded Audio Artifacts Exported (`build/m12-w5-functional/`):
+   - `audio_resource_0001.pcm` / `.wav`: 8,744 encoded bytes, 17,488 tokens, 17,830 PCM samples, SHA `4d6c5245...`, preview duration 1.7484s.
+   - `audio_resource_0002.pcm` / `.wav`: 3,044 encoded bytes, 6,088 tokens, 6,196 PCM samples, SHA `9a269b71...`, preview duration 0.6076s.
+   - `audio_resource_0001_modified.pcm` / `.wav`: 8,744 encoded bytes, 17,830 PCM samples, preview duration 1.7484s.
+4. Original Runtime Cross-Check:
+   - 18 runtime DAC events align at sample index 12697 of Resource 1 (byte 6308, physical ROM 0x0BEDE4).
+   - 18 alignable / 18 match / 0 mismatch.
+5. Controlled Semantic Mutation & Checksum Conservation:
+   - Mutated tokens 12622, 12623 (byte 6311) to DELTA 0, and tokens 12626, 12627 (byte 6313) to DELTA -12 and +96.
+   - Re-encoded through `w5_audio_encode.py`: byte 6311 (`0x0BEDE7`) became `0x11` (was `0x7D`), byte 6313 (`0x0BEDE9`) became `0xC8` (was `0x5C`).
+   - Mathematical word sum across ROM conserved (`0x98ED`), ensuring 68K startup checksum check at `0x0003A0` passes.
+   - `DIFF_BYTE_COUNT = 2`, `FIRST_DIFF = 0x0BEDE7`, `LAST_DIFF = 0x0BEDE9`, `OUTSIDE_RESOURCE_DIFFS = 0`.
+6. Emulator End-to-End Test:
+   - Executed coherent BizHawk capture on modified temporary ROM.
+   - 68K and Z80 booted cleanly; sound driver fetched modified bytes from banked ROM and streamed 18 DAC writes to YM2612 port 0x4001.
+   - Standalone decoded predicted DAC stream vs observed emulator DAC writes:
+     `PREDICTED_DAC_VALUES = [120, 132, 156, 132, 126, 126, 126, 127, 115, 103, 199, 151, 199, 223, 199, 151, 199, 175]`
+     `OBSERVED_DAC_VALUES  = [120, 132, 156, 132, 126, 126, 126, 127, 115, 103, 199, 151, 199, 223, 199, 151, 199, 175]`
+     `MATCHES = 18`, `MISMATCHES = 0`.
+7. Stability & Source-Owned Governance:
+   - `TEMP_ROM_BOOT = PASS` (clean execution, no crash, normal early-boot capture).
+   - `SOURCE_OWNED_BEFORE = 1,487,388`, `SOURCE_OWNED_AFTER = 1,487,388`, `SOURCE_OWNED_DELTA = 0`.
+8. Test & Verification Coverage:
+   - 11/11 tests pass in `tests/w5_audio_functional_test.py` (Tests A–K).
+   - 109/109 tests pass across full test regression suite.
+   - 821 governed files <= 500 lines (0 violations).
+   - `git diff --check` green; dirty worktree preserved without commit/push/reset.
+
+# 2026-09-21 — M12 W5c Exact Audio Resource Ownership & Canonical Promotion — PASS
+
+TASK: M12 W5c — EXACT AUDIO RESOURCE OWNERSHIP + CANONICAL PROMOTION V1 from CURRENT DIRTY WORKTREE.
+1. Preflight metadata corrections: disambiguate IR wording (`IR_CONTAINS_SOURCE_NIBBLE_PROVENANCE = YES`, `ENCODER_DEPENDS_ON_SOURCE_NIBBLE = NO`) and verify runtime witness frame identity from raw W3 binary (Frame 0, stream seq 3019727).
+2. Qualify exact ownership eligibility for `AUDIO_RESOURCE_FORMAT_A_0001` (8,744 bytes) and `AUDIO_RESOURCE_FORMAT_A_0002` (3,044 bytes) under claim type `RECONSTRUCTION_VERIFIED` (`STATIC_VERIFIED`).
+3. Audit canonical partition: `SOURCE_OWNED_BEFORE = 1,475,600` bytes; target interval `[0x0BC95C, 0x0BF768)` intersects unowned emission `[0x0B8000, 0x0BF768)` (30,568 bytes, UNKNOWN).
+4. Set-theoretic overlap reconciliation: $E = 11,788$, $O = 0$, $\text{NEW} = 11,788$ bytes.
+5. Record `ADR-M12-W5C-EXACT-AUDIO-RESOURCE-OWNERSHIP-PROMOTION-V1` authorizing canonical promotion of proven audio resources into 2D map.
+6. Build and execute canonical promotion engine (`w5_audio_promote.py`) using `KnowledgeStore`:
+   - Split parent emission range `[0x0B8000, 0x0BF768)` into unowned remainder `[0x0B8000, 0x0BC95C)` (18,780 bytes), Resource 2 `[0x0BC95C, 0x0BD540)` (3,044 bytes, owned), and Resource 1 `[0x0BD540, 0x0BF768)` (8,744 bytes, owned).
+   - Insert `rom_range`, `rom_object` (`AUDIO_DATA`), `claim` (`STATIC_VERIFIED`, `SOURCE_OWNED = true`), and `evidence_ref` entries linking W5 acceptance proofs.
+   - Regenerate all canonical hashes and metrics; recompute `SOURCE_OWNED_AFTER = 1,487,388` (+11,788 bytes).
+   - Verify idempotence (second run yields `new_source_owned_bytes = 0` and identical hashes).
+   - Validate partition coverage: 3,145,728 bytes, 0 gaps, 0 overlaps.
+7. Generate all 7 W5c acceptance artifacts in `build/m12-w5-acceptance/`.
+8. Implement 20 acceptance tests (Tests A–T) in `tests/w5_audio_ownership_test.py`.
+
+RESULT: `PASS_EXACT_AUDIO_RESOURCE_OWNERSHIP_V1`.
+1. Ownership Eligibility Qualified:
+   - Primary (`AUDIO_RESOURCE_FORMAT_A_0001`): `[0x0BD540, 0x0BF768)`, 8,744 bytes, Mode 0. Verified byte-identical round-trip (`4496000b...`), runtime DAC overlap 18/18 match enclosing W4 witness (`0x0BEDE4..0x0BEDED`).
+   - Secondary (`AUDIO_RESOURCE_FORMAT_A_0002`): `[0x0BC95C, 0x0BD540)`, 3,044 bytes, Mode 0. Verified byte-identical round-trip (`2f58bf29...`), contiguous predecessor in Bank 0x17.
+   - Strictly excluded: Descriptor table, padding, Mode 1 resources, neighbouring candidate resources, and whole audio banks.
+2. Canonical Partition Split & Regeneration:
+   - Parent `[0x0B8000, 0x0BF768)` cleanly tri-split with 0 gaps and 0 overlaps.
+   - Emission count: 2,461 -> 2,463 (+2).
+   - Objects count: 3,794 -> 3,797 (+3: 1 UNKNOWN remainder, 2 AUDIO_DATA).
+   - Audio objects count: 1 -> 3.
+3. SOURCE_OWNED Accounting:
+   - SOURCE_OWNED_BEFORE = 1,475,600 bytes (46.9080607096%).
+   - SOURCE_OWNED_AFTER = 1,487,388 bytes (47.2827911377%).
+   - SOURCE_OWNED_DELTA = +11,788 bytes.
+4. Validation:
+   - 20/20 tests pass in `tests/w5_audio_ownership_test.py`.
+   - 98/98 tests pass across full related regression suite.
+   - 819 governed files <= 500 lines (0 violations).
+   - `git diff --check` green; dirty worktree preserved without commit/push/reset.
+
+# 2026-09-21 — M12 W5 Exact Audio Resource Format, Boundary Closure & Round-Trip — PASS
+
+TASK: M12 W5 — EXACT AUDIO RESOURCE FORMAT + BOUNDARY CLOSURE + ROUND-TRIP V1 from CURRENT DIRTY WORKTREE.
+1. Trace exact consumer/decoder routines in Z80 sound driver from ROM `0x062E38..0x064E38`.
+2. Discover audio descriptor table format and locate all audio banks in canonical ROM.
+3. Prove exact true boundaries for primary resource `AUDIO_RESOURCE_FORMAT_A_0001` enclosing the W4 DAC witness (`0x0BEDE4..0x0BEDED`).
+4. Reconstruct exact encoding semantics: non-linear delta-PCM with initial accumulator 0x80, 15-entry lookup table at Z80 `0x0008..0x0016`, and repeat-3 code for nibble 0.
+5. Implement pure deterministic decoder (`w5_audio_decode.py`) and encoder (`w5_audio_encode.py`).
+6. Prove byte-identical round-trip for primary resource, secondary resource (`AUDIO_RESOURCE_FORMAT_A_0002`), and across multiple audio banks without reading or storing original binary blobs.
+7. Verify runtime DAC sample alignment against W4 witness (sample 0x78 at 0x0BEDE4).
+8. Audit canonical map overlap and SOURCE_OWNED authority; verify all gates A through J.
+9. Emit all 9 acceptance artifacts in `build/m12-w5-acceptance/` and run 18 tests.
+
+RESULT: `PASS_EXACT_AUDIO_RESOURCE_ROUNDTRIP_V1`.
+1. Exact Consumer & Decoder Reverse-Engineered:
+   - Z80 sound driver binary resides at ROM `0x062E38..0x064E38` (8,192 bytes, copied to Z80 RAM `0x0000..0x1FFF` by M68K boot loader at `0x06134E`).
+   - Sound command dispatcher at Z80 `0x0644..0x06A1` (command `0x11` at `0x064F` triggers descriptor parser at `0x0704`).
+   - Bank switching routine at `0x0704..0x0725` + `0x0A0B..0x0A40` writes 9 sequential bits to Genesis bank latch `0x6000`.
+   - Sample loop at `0x080D` (high nibble) and `0x0854` (low nibble), advancing pointer at `0x0880` (`INC HL; DEC BC; JP Z, 0x0892`).
+   - Hardware DAC emitter at `0x0968..0x0980` writes to YM2612 port 0 register 0x2A (`(IY+0)=0x2A; ADD A, D; LD D, A; LD (IY+1), A`).
+2. Descriptor Tables Discovered:
+   - 8 consecutive 32KB audio banks in ROM: `0x080000`, `0x088000`, `0x090000`, `0x098000`, `0x0A0000`, `0x0A8000`, `0x0B0000`, `0x0B8000` (Banks 0x10..0x17).
+   - Each bank begins with 16 5-byte descriptors (`0x8000..0x804F`, 80 bytes).
+   - Format: bytes 0..1 = 16-bit logical start address; bytes 2..3 = 16-bit length; byte 4 = mode (0 = standard, 1 = hold/interpolate via `0x0999`).
+   - Contiguous packing: sample streams begin at `0x8050` and tile contiguously without gaps; bank tails are padded with `0xFF`.
+3. Boundary Closure for Primary & Secondary Resources:
+   - Primary: `AUDIO_RESOURCE_FORMAT_A_0001` = Bank 0x17, Entry 7 (`0x0BD540..0x0BF768`, 8,744 bytes, mode 0).
+   - Preceded contiguously by Entry 6 (`0x0BC95C..0x0BD540`); followed at `0x0BF768` by 2,200 bytes of `0xFF` bank padding.
+   - Encloses W4 witness cluster `0x0BEDE4..0x0BEDED` at byte offset 6,308.
+   - Secondary: `AUDIO_RESOURCE_FORMAT_A_0002` = Bank 0x17, Entry 6 (`0x0BC95C..0x0BD540`, 3,044 bytes, mode 0).
+4. Deterministic Codec & Byte-Identical Round-Trip:
+   - Canonical IR (`AudioResourceIR` / `AudioToken`) represents tokenized delta events without original binary blobs.
+   - Non-linear delta lookup table at Z80 `0x0008..0x0016`:
+     `[0, +1, +2, +6, +12, +24, +48, +96, -96, -48, -24, -12, -6, -2, -1]`.
+   - Nibble 0: repeats previous delta for 3 sample ticks.
+   - Reconstructed bytes match original ROM bytes 100% byte-for-byte:
+     * Primary (`AUDIO_RESOURCE_FORMAT_A_0001`): SHA-256 `4496000b2d8efed59d75ea80f32b0aa1591d880dc982b2d1bb97b4d49297e606` (MATCH).
+     * Secondary (`AUDIO_RESOURCE_FORMAT_A_0002`): SHA-256 `2f58bf29c09d8a5fd3f6b92150965e69bf0094fb4e0ec9a4897f2596be73df01` (MATCH).
+     * Generality verified across Banks 0x10, 0x11, 0x12, 0x16, 0x17.
+5. Witness Alignment Proof:
+   - Byte offset 6,308 low nibble decoded sample = `0x78`.
+   - Matches observed W4 Level-3 DAC witness write `0x78` to port 0x4001 at sequence 3019727.
+6. SOURCE_OWNED Reconciliation:
+   - Baseline authority: `src/tools/thor_evidence/rom_knowledge_sources.py:reconcile_manifests()` + `THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json`.
+   - Baseline: 1,475,368 bytes (GFXMAX) / 1,475,600 bytes (canonical 2D map).
+   - All Gates A through J verified green.
+   - Manifest delta deferred (`SOURCE_OWNED_DELTA = 0`) to preserve ADR-0044 manifest invariants until a full audio bank re-partitioning manifest is formally authorized.
+7. Acceptance Suite:
+   - 18/18 tests pass in `tests/w5_audio_format_test.py`.
+   - 25/25 regression tests pass in `tests/w4_audio_analysis_test.py` and `tests/live_forward_scaling_audit_test.py`.
+   - 9 acceptance artifacts emitted in `build/m12-w5-acceptance/`.
+   - File limits: 816 governed files <= 500 lines (0 violations).
+   - Git hygiene: `git diff --check` green; dirty worktree preserved without commit/push/reset.
+
+# 2026-09-21 — M12 W4 Final Receipt & Provenance Closure — PASS
+
+TASK: Complete M12 W4 "Final Receipt / Provenance Closure" from CURRENT DIRTY WORKTREE.
+1. Run and report the authoritative tool/command computing SOURCE_OWNED; explain why 1,475,368 is the baseline under ADR-0043/ADR-0044, reconcile with 2D canonical map (1,475,600), require delta = 0.
+2. Recompute and include both raw inputs in w4_receipt.json (early boot SHA256: 1b0710ecce6c5bd2b6b4ccb7ab2806b9d99a46053e767f5963bbf846a1b99aab; steady state SHA256: 5956e8e61b2da16ddc47cca7758edaabf0800fffadf4f2a659750585f9f8e598) with record counts and stream sequences.
+3. Multi-input dataflow semantics: disambiguate LEVEL3_ROOT_BANKED_ROM as proven causal dependency in complete dependency set; implement multi-root provenance tracking in ProvenanceTag and merge_binary_provenance; ensure neither dependency is discarded on binary operations (ADD A, D); add Test R regression.
+4. Record host exporter bug (worker 0 + append=false -> FileMode.Create truncating previous rounds); fix host exporter append policy via (round > 1) or (worker ~= 0); add regression test proving round N+1 cannot silently erase round N.
+5. Verify git diff --check, SOURCE_OWNED delta = 0, source file limits <= 500 lines, and declare PASS_ACTIVE_AUDIO_RESOURCE_ANALYSIS_V1.
+
+RESULT: `PASS_ACTIVE_AUDIO_RESOURCE_ANALYSIS_V1`.
+1. SOURCE_OWNED Authority:
+   - Evaluated via `python -c "import json; data = json.load(open('docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json')); print('emission_sum:', sum(e['end']-e['start'] for e in data['emission'] if e.get('source_owned') == 1))"`
+     and `src/tools/thor_evidence/rom_knowledge_sources.py:reconcile_manifests()`.
+   - Verified baseline manifest accepted under ADR-0043 / ADR-0044: `GFXMAX` with 1,475,368 bytes (46.9006856283%).
+   - 2D Canonical Knowledge Map (`AUTO61` import): 1,475,600 bytes (+232 bytes child tables at 0x03B95E, whose full-layout ASM round-trip was gated under BLOCKED_INHERITED_FULL_LAYOUT).
+   - SOURCE_OWNED_BEFORE = 1,475,368 (baseline) / 1,475,600 (canonical emission).
+   - SOURCE_OWNED_AFTER = 1,475,368 (baseline) / 1,475,600 (canonical emission).
+   - SOURCE_OWNED_DELTA = 0.
+2. Dual Raw Input Hashing in w4_receipt.json:
+   - EARLY_BOOT_INPUT: `scaling-output-w4-earlyboot/natural/count-1/live-forward-wave-records-pass1.bin`
+     SHA-256: `1b0710ecce6c5bd2b6b4ccb7ab2806b9d99a46053e767f5963bbf846a1b99aab`
+     Record Count: 2,931
+     Stream Sequence: 3,019,456 .. 3,022,386
+   - STEADY_STATE_INPUT: `scaling-output-w3-depth512/natural/count-128/live-forward-wave-records-pass1.bin`
+     SHA-256: `5956e8e61b2da16ddc47cca7758edaabf0800fffadf4f2a659750585f9f8e598`
+     Record Count: 773,895
+     Stream Sequence: 81,389,763 .. 81,396,106
+   - All 9 output artifact hashes and code hashes updated in `build/m12-w4-acceptance/w4_receipt.json`.
+3. Multi-Input Dataflow Semantics:
+   - LEVEL3_ROOT_BANKED_ROM is defined as: "the hardware sink has a proven causal dependency on BANKED_ROM_READ within its complete dependency set."
+   - Upgraded `ProvenanceTag` with `dependencies`, `all_roots()`, and `has_origin_type()`.
+   - Replaced lossy `or` with `merge_binary_provenance()` for binary instructions (`ADD A, r`, `LD A, (nn)` with modified operand).
+   - When `ADD A, D` executes, both ROM-derived delta (`A`) and accumulator history (`D`) are retained in the complete dependency set; neither is silently discarded.
+   - Verified 17 multi-root Level-3 chains in active dataset (`CHAIN-L3-3019859`).
+   - Added Test R (`test_r_multi_input_binary_provenance_preserves_both_roots`) in `tests/w4_audio_analysis_test.py`.
+4. Host Exporter Evidence-Preservation Bug & Fix:
+   - Discovered: Worker 0 export passed `worker ~= 0` as append flag to `genesis.live_forward_export_records()`, resulting in `append = false` on every cycle/round and truncating previous rounds via `FileMode.Create`.
+   - Fixed in `tools/bizhawk-native-ring/live_forward_scaling.lua` lines 322 and 344 by setting `append = (round > 1) or (worker ~= 0)`.
+   - Added regression test `test_multi_round_host_export_preservation_policy` in `tests/live_forward_scaling_audit_test.py` proving round N+1 cannot silently erase round N.
+5. Acceptance Verification:
+   - PyTest: 42/42 passed in `w4_audio_analysis_test.py`, `w3_z80_evidence_test.py`, `live_forward_scaling_audit_test.py`.
+   - CTest: 220/220 passed (100%).
+   - File limits: 811 governed files <= 500 lines (0 violations).
+   - Git hygiene: `git diff --check` green; dirty worktree preserved without commit/push/reset.
+
+# 2026-09-21 — M12 W4 Early-Boot Banked-ROM Evidence Recovery — PASS
+
+TASK: Complete M12 W4 "Early-Boot Banked-ROM Evidence Recovery" from CURRENT DIRTY WORKTREE.
+Resolve blocker LEVEL3_ROOT_BANKED_ROM = 0. Prove root cause of absence in steady-state depth512 file.
+Run targeted early-boot real capture using frozen W3 capture machinery.
+Verify raw input with direct Python scan: BANKED_ROM_READS > 0, unique physical ROM addresses, unique Z80 consumer PCs,
+first/last reads, stream range, frame range, downstream audio writes.
+Execute W4 pipeline without lowered requirements to achieve LEVEL3_ROOT_BANKED_ROM >= 1.
+Account for Witnesses A through E connecting physical banked ROM reads to audio hardware sinks (YM2612 DAC).
+Re-anchor static follow-up to real runtime witness. Enforce SOURCE_OWNED delta = 0 and file size limits.
+
+RESULT: `PASS_ACTIVE_AUDIO_RESOURCE_ANALYSIS_V1`.
+1. Root Cause Classification:
+   - Classification: `C. HOST_EXPORT_ONLY_INCLUDED_SELECTED_WAVES` (compounded by A and B).
+   - In `tools/bizhawk-native-ring/live_forward_scaling.lua` line 322:
+     `genesis.live_forward_export_records(record_file_1, worker, identity.generation, count, worker ~= 0)`
+     passes `append = (worker ~= 0)`. At every new cycle/round, Worker 0 truncates and recreates `record_file_1` (`FileMode.Create`).
+     In the 100-round depth512 campaign, cycles 1..99 were overwritten, retaining only cycle 100 (stream 81,389,763..81,396,106).
+   - Cycle 1 (stream 3,019,456..3,022,479) captured early boot and sound startup, where the Z80 sound driver initialized
+     and streamed DAC samples from banked ROM.
+2. Targeted Real Capture:
+   - Executed frozen W3 machinery (`live_forward_scaling_runtime.py`) with `rounds=1, count=1, depth=512`.
+   - Output path: `scaling-output-w4-earlyboot/natural/count-1/live-forward-wave-records-pass1.bin`.
+   - SHA-256: `1b0710ecce6c5bd2b6b4ccb7ab2806b9d99a46053e767f5963bbf846a1b99aab`.
+   - Records: 2,931 contiguous events covering frame 0 (stream sequence 3,019,456 .. 3,022,386).
+   - Banked ROM reads: 19 reads across 10 unique physical addresses (`0x0BEDE4`..`0x0BEDED`).
+   - Consumer PCs: `0x0855` (low nibble decoder), `0x080E` (high nibble decoder).
+   - Audio sink writes: 36 YM2612 writes (18 register select writes to port `0x4000=0x2A`, 18 sample writes to port `0x4001`).
+3. Z80 Dataflow Enhancements & Strict-Before Enforcement:
+   - Implemented exact arithmetic/logic tracking in `src/tools/thor_evidence/w4_z80_dataflow.py`:
+     `AND n` (`0xE6`), `ADD A, n` (`0xC6`), `ADD A, r` (`0x80..0x85`), `RRCA` (`0x0F`), `RLCA` (`0x07`),
+     self-modifying operand tracking for `LD A, (nn)` (`0x3A`), and `LD (nn), A` (`0x32`).
+   - Enforced `STRICT_BEFORE` prerequisite (`prov.origin_stream_seq < sink_rec.stream_sequence`) in
+     `src/tools/thor_evidence/w4_audio_provenance.py`.
+4. Witnesses A through E Full Accounting:
+   - A. Banked ROM Read Witness: stream=3019544, master_time=2160, PC=0x0855, log_addr=0xEDE4, phys_addr=0x0BEDE4, val=0xCD.
+   - B. Z80 Instruction Sequence:
+        `0x0854`: `LD A, (HL)` -> reads 0xCD from banked ROM.
+        `0x0855`: `AND $0F` -> extracts low nibble 0x0D.
+        `0x0857`: `JR NZ, +$1B` -> branches to 0x0874.
+        `0x0874`: `ADD A, $07` -> computes delta index 0x14.
+        `0x0876`: `LD ($087A), A` -> self-modifies table lookup operand at 0x087A.
+        `0x0879`: `LD A, ($0014)` -> loads delta entry 0xFA from driver table.
+        `0x087C`: `LD E, A` -> stores delta in E.
+        `0x087D`: `CALL $0969` -> enters DAC synthesizer.
+        `0x0969`: `LD (IY+0), $2A` -> selects DAC data register via port 0x4000.
+        `0x096D`: `ADD A, D` -> accumulates PCM sample.
+        `0x096E`: `LD D, A` -> updates accumulator D.
+        `0x096F`: `EX AF, AF'` -> preserves accumulator in shadow register.
+        `0x097C`: `EX AF, AF'` -> restores accumulator.
+        `0x097D`: `LD (IY+1), A` -> writes sample 0x78 to port 0x4001.
+   - C. Dataflow Path: Unbroken register/memory/ALU transfer chain.
+   - D. Audio Sink Write: YM2612 port 0x4000 = 0x2A (time 7035, stream 3019716); port 0x4001 = 0x78 (time 8205, stream 3019727).
+   - E. Provenance Certificate: `CHAIN-L3-3019727` verified DERIVED_EXACT with STRICT_BEFORE (2160 < 8205).
+5. Canonical Acceptance Pipeline Results:
+   - Combined evidence: early-boot (2,931 records) + depth512 steady-state (773,895 records) = 776,826 records.
+   - Total Audio Sink Events: 2,066.
+   - Level 3 Strict Causal Chains: 2,066 (100% of sink events).
+   - `LEVEL3_ROOT_BANKED_ROM`: 18.
+   - `LEVEL3_ROOT_M68K_HANDOFF`: 2,048.
+   - `LEVEL_0_TEMPORAL`: 0.
+   - Canonical ROM: 3,145,728 bytes, SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+   - `SOURCE_OWNED`: before 1475368, after 1475368, delta = 0.
+   - Tests: CTest 220/220 passed (100%), PyTest 35/35 passed (100%).
+   - Source-code size rule: 811 governed files <= 500 lines (0 violations).
+
+# 2026-09-21 — M12 W4 Active Audio Resource Analysis V1 — PASS
+
+TASK: Implement M12 W4 "Active Audio Resource Analysis V1" from CURRENT DIRTY WORKTREE
+without reset, clean, stash, revert, commit, or push. Connect M68K sound dispatch ->
+Z80 driver processing -> Z80 RAM state -> Banked physical ROM reads -> Hardware audio
+sinks (YM2612, PSG, DAC) -> Candidate audio resource structures in canonical ROM.
+Enforce the 6 required review corrections:
+1. STRICT_BEFORE is necessary but not sufficient: implement 4 distinct causal levels
+   (Level 0 Temporal, Level 1 Memory last-writer, Level 2 Dataflow, Level 3 Strict Causal Chain).
+2. Exact last-writer rule for M68K->Z80 handoffs with intervening write invalidation.
+3. Port-local YM2612 latch pairing (0x4000->0x4001, 0x4002->0x4003) without cross-port leakage.
+4. Input evidence authenticity: only raw records in active dataset receive OBSERVED truth class.
+5. Spatial cluster span does not define an exact resource boundary without closure proof.
+6. Neutral candidate resource taxonomy with zero promotional song/instrument labels.
+
+RESULT: `PASS_ACTIVE_AUDIO_RESOURCE_ANALYSIS_V1`.
+1. Implementation Modules:
+   - `src/tools/thor_evidence/w4_audio_sink.py` (190 lines): Port-local YM2612 latch pairing,
+     independent Part 1 (0x4000/0x4001) and Part 2 (0x4002/0x4003) latches, unlatched write
+     detection, address overwrite tracking, DAC data (0x2A) and enable (0x2B) detection, PSG (0x7F11).
+   - `src/tools/thor_evidence/w4_z80_dataflow.py` (228 lines): Exact Z80 dataflow provenance
+     tracking across registers (A, B, C, D, E, H, L, IX, IY), memory, stack, and shadow registers
+     (EXX, EX AF, AF'). Conservative termination on unsupported opcodes without speculation.
+   - `src/tools/thor_evidence/w4_audio_provenance.py` (377 lines): 4 causal levels, LastWriterTracker
+     with intervening write invalidation, driver hotspot aggregator, ROM cluster builder with explicit
+     caveats, neutral candidate resource generator, and directed provenance graph builder.
+   - `src/tools/thor_evidence/w4_audio_pipeline.py` (215 lines): Pipeline orchestrator ingesting raw V2
+     records and generating the 9 canonical acceptance artifacts.
+   - `tests/w4_audio_analysis_test.py` (340 lines): 13 comprehensive unit tests covering Tests A–P.
+2. Analysis Results on Accepted Evidence (`scaling-output-w3-depth512`):
+   - Input Records Processed: 773,895 records.
+   - Audio Sink Events Observed: 2,048 paired YM2612 register writes (1,536 Part 1, 512 Part 2).
+   - Last-Writer Verified Handoffs: 7,168 M68K->Z80 RAM handoffs verified with 0 intervening writes.
+   - Level 3 Strict Causal Chains: 2,048 chains with unbroken Z80 instruction dataflow provenance.
+   - Z80 Driver Execution: 214,930 instructions across 95 unique PCs.
+   - Hotspots: Sound engine dispatch loop at PC 0x0783-0x078C (20,864 execs), FM synth dispatch
+     loop at PC 0x05B9-0x05CF (2,816 execs), DAC streamer at PC 0x0968-0x097D.
+3. Artifacts Generated in `build/m12-w4-acceptance/`:
+   - `audio_sink_events.jsonl` (2,048 records)
+   - `audio_rom_reads.jsonl` (raw banked reads)
+   - `audio_causal_chains.jsonl` (2,048 Level 3 chains)
+   - `audio_driver_hotspots.json` (PC and port counts)
+   - `audio_rom_clusters.json` (spatial clusters)
+   - `audio_resource_candidates.json` (neutral candidate taxonomy)
+   - `audio_provenance_graph.json` (directed DAG)
+   - `w4_active_audio_report.md` (audit report)
+   - `w4_receipt.json` (reproducibility receipt with SHA256 hashes)
+4. Verification & Hygiene:
+   - Full test suites pass: CTest (220/220, 100%), PyTest (30/30, 100%).
+   - Source-code size rule: 811 governed files <= 500 lines (0 violations).
+   - `git diff --check` green; zero ROM or copyrighted data added; `SOURCE_OWNED delta = 0`.
+
+# 2026-09-21 — M12 W3 Final Cross-CPU Timeline Closure — PASS
+
+TASK: Complete M12 W3 "Final Cross-CPU Timeline Closure" from CURRENT DIRTY WORKTREE.
+Audit master_time sources for M68K (m68k.cycles) and Z80 (Z80.cycles).
+Determine exact semantics, source files, and clock conversion ratios.
+Trace frame reset and monotonicity behavior with source and real runtime evidence.
+Formally define Canonical Temporal Identity: MASTER_TIME_SEMANTICS, MASTER_TIME_UNIT, and CANONICAL_TIMELINE_KEY.
+Audit all timeline consumers and enforce that frame ordering takes precedence over master_time.
+Enforce SAME_MASTER_TIME_UNORDERED tie-breaking rule and require STRICT_BEFORE for cross-CPU causality.
+Implement and pass comprehensive test suite (Tests A–G) covering chronological ordering, frame transitions,
+same-timestamp isolation, run_id/epoch boundaries, strict causal precedence, and non-causal value matches.
+Clarify exact definition and leak-invariance proof for retained_segment_data (CUMULATIVE_BYTES_PROCESSED).
+Preserve dirty worktree, 0 SOURCE_OWNED delta, and <= 500 line limit on all source files.
+
+RESULT: `PASS_CROSS_CPU_TIMELINE_CLOSURE_V1`.
+1. Master Time Source Audit:
+   - M68K: `m68k.cycles` in `core/m68k/m68kcpu.c` (hooked via `oasis_lf_set_master_time((uint64_t)m68k.cycles)`).
+     Scaled by `#define MUL (7)` via `USE_CYCLES()` (M68K clock = Master Clock / 7 = 7.67 MHz; 1 M68K cycle = 7 mcycles).
+   - Z80: `Z80.cycles` in `core/z80/z80.c` (hooked via `oasis_lf_set_master_time(Z80.cycles)` in `z80_run()`).
+     Scaled by 15 in opcode tables `cc_op[0x100]` and `USE_CYCLES(11*15)` (Z80 clock = Master Clock / 15 = 3.58 MHz; 1 Z80 cycle = 15 mcycles).
+   - Clock Ratio: Exactly 1:1! Both accumulators are expressed directly in the SAME unit: Genesis Master Clock cycles (3420 mcycles/line).
+2. Frame Reset & Monotonicity:
+   - In `core/system.c` lines 688-689 (`system_frame_gen`), both `m68k.cycles` and `Z80.cycles` have `mcycles_vdp` subtracted at each frame boundary.
+   - `master_time` is strictly `FRAME_RELATIVE` (rebasing to ~0 each frame; $0 \le master\_time < 896,040$).
+   - Real runtime sample from `live-forward-wave-records-pass1.bin`:
+     - Frame N last event: stream_seq = 828221950, CPU = M68K, master_time = 896010, PC = 0x03B12C.
+     - Frame N+1 first event: stream_seq = 828221951, CPU = Z80, master_time = 30, PC = 0x000786.
+3. Canonical Temporal Identity:
+   - `MASTER_TIME_SEMANTICS = "FRAME_RELATIVE"`
+   - `MASTER_TIME_UNIT = "Genesis master clock cycles"`
+   - `CANONICAL_TIMELINE_KEY = ("run_id", "epoch", "frame", "master_time")`
+4. Cross-CPU Tie-Breaking Rule:
+   - Events sharing `(frame, master_time)` are classified as `SAME_MASTER_TIME_UNORDERED`.
+   - Host thread execution slice order (`stream_sequence`) cannot prove hardware causality.
+   - Cross-CPU causal relations strictly require `STRICT_BEFORE` (`T_write < T_read`).
+5. Timeline Consumer Audit & Tests A–G:
+   - Updated `w3_cross_cpu_timeline.py` to enforce canonical key sorting and disjoint run/epoch isolation.
+   - Tests A–G in `tests/w3_z80_evidence_test.py` pass 17/17 (100%); full python test suite 389/389 passes (100%).
+6. Retained Segment Metric:
+   - `retained_segment_data` is `CUMULATIVE_BYTES_PROCESSED` (streaming throughput counter to disk), not live RAM.
+   - Live memory remains strictly bounded at 160 MiB native heap; memory is verified `BOUNDED_OSCILLATING`.
+7. Repository Health:
+   - CTest Debug: 205/205 passed (100%); CTest Release: 205/205 passed (100%).
+   - `git diff --check` green; all touched files <= 500 lines; 0 SOURCE_OWNED delta; dirty worktree preserved.
+
+# 2026-09-21 — M12 W3 Sustained 10-Minute Gameplay Memory Stability Profiling — PASS
+
+TASK: Execute sustained real Beyond Oasis emulation session for at least 10 minutes with
+128 Workers and depth = 100 on default ring capacity = 2,097,152 slots. Sample every 5 seconds:
+process working set, private bytes, Waterbox/native heap usage, ring allocation, active worker count,
+retained segment bytes, temporary host buffers, record throughput.
+Report: startup memory, 1-minute memory, 5-minute memory, 10-minute memory, peak memory,
+memory trend / slope. Trigger END GAME and measure peak during final analysis, memory after cleanup,
+and whether memory returns near steady-state.
+Determine whether memory is STABLE, BOUNDED_OSCILLATING, or CONTINUOUSLY_GROWING.
+Require: no OOM, no allocation failure, no retention failure, no runtime error.
+Prove safety of 2,097,152-slot default under sustained gameplay.
+
+RESULT: `PASS_SUSTAINED_10MIN_GAMEPLAY_MEMORY_STABILITY`.
+1. Session Execution:
+   - Duration: 610.5 seconds (10 minutes 10.5 seconds) continuous Beyond Oasis emulation.
+   - Workers: 128 configured, oscillating between active capturing and host audit/free.
+   - Depth: 100 instructions per worker cycle.
+   - Outcome: `STOPPED_END_GAME` triggered cleanly via external IPC at t = 610.0s.
+   - Audited Segments: 283,648 segments (100% verified sequentially, 0 invalid).
+   - Records Produced: 828,506,454 records (~828.5 million records).
+   - Ring Wraps: 395 wraps.
+   - Ring Retention Failures: 0 (ZERO).
+   - Identity Collisions: 0, Stale ACKs: 0, Captures Dropped: 0.
+   - Allocation Failures: 0, Runtime Errors: 0, OOM: 0.
+2. Memory Telemetry (119 samples at 5.0s intervals):
+   - Startup (Launch): Working Set = 1.93 MB, Private Bytes = 0.37 MB.
+   - Startup (Steady Core initialized, t = 5.0s): Working Set = 382.61 MB, Private Bytes = 301.35 MB.
+   - 1-Minute Memory (t = 62.2s): Working Set = 466.85 MB, Private Bytes = 305.32 MB.
+   - 5-Minute Memory (t = 299.2s): Working Set = 468.53 MB, Private Bytes = 306.36 MB.
+   - 10-Minute Memory (t = 598.3s): Working Set = 469.61 MB, Private Bytes = 303.41 MB.
+   - Peak Memory (Session): Working Set = 470.18 MB, Private Bytes = 306.72 MB.
+   - Slopes (Linear regression across minutes 1 to 10):
+     - Private Bytes slope: -0.3350 MB/min (flat / slightly negative; ZERO monotonic growth).
+     - Working Set slope: +0.2237 MB/min (paging / system cache fluctuation).
+3. Allocations & Throughput:
+   - Ring Buffer Allocation: Constant 128.0 MiB (134,217,728 bytes = 2,097,152 slots x 64 bytes).
+   - Waterbox Native Heap: Constant 160.0 MiB (167,793,536 bytes static allocation plan).
+   - Record Throughput: Sustained between 817,605 and 1,673,566 rec/s (average 1,357,095 rec/s).
+   - Retained Segment Bytes: 10,673.2 MB (~10.7 GB record bytes processed and streamed to disk).
+   - Temporary Host Buffers: 519.2 MB on host disk (streaming audit files).
+4. END GAME & Post-Cleanup:
+   - Peak During Final Analysis: Working Set = 470.18 MB, Private Bytes = 303.93 MB.
+   - Post-Cleanup Steady-State (Python host): Working Set = 24.07 MB (+4.58 MB delta from start),
+     Private Bytes = 16.03 MB. Emulator process terminated cleanly with code 0, releasing all 470 MB.
+5. Behavior Classification & Safety Verdict:
+   - Classification: `BOUNDED_OSCILLATING` (Private bytes strictly bounded between 301.35 MB and
+     306.72 MB with -0.3350 MB/min slope).
+   - Safety Verdict: The 2,097,152-slot ring buffer default is PROVEN SAFE, bounded, non-leaking,
+     and robust under sustained long-duration gameplay at 128 Workers x depth 100.
+6. Test Suite & Invariants:
+   - Full test suites pass: CTest Debug (220/220), CTest Release (220/220), PyTest evidence (68/68).
+   - All source/test files adhere to <= 500 lines rule; `git diff --check` green; 0 SOURCE_OWNED delta.
+
+# 2026-09-21 — M12 W3 Large Bounded Ring + Final Acceptance — PASS
+
+TASK: Complete M12 W3 "Large Bounded Ring + Final Acceptance" from CURRENT DIRTY WORKTREE.
+Set default startup ring capacity to 2,097,152 slots (48-byte records, 96 MiB raw / 128 MiB slot storage).
+Verify O(1) hot-path append with power-of-two bitmask indexing.
+Measure initialization time (<3 ms) and runtime footprint delta (~128 MiB working set).
+Compare 16,384 vs 2,097,152 slots across wraps, retention, and frame timing.
+Execute official 128 Workers x depth 100 acceptance campaign (100 rounds = 12,800 segments).
+Execute deep-chain stress tests: 128 Workers x depth 512 and 128 Workers x depth 1000.
+Capture real witnesses for Z80 banked ROM read and YM2612 address->data write sequences.
+Preserve all invariants: no alteration of Worker admission or capture-depth semantics,
+cross-CPU ordering using (run_id, epoch, frame, master_time), all files <= 500 lines, 0 SOURCE_OWNED delta.
+
+RESULT: `PASS_Z80_COCAPTURE_CROSS_CPU_TIMELINE_V1`.
+1. Ring Capacity & O(1) Hot Path:
+   - Configured startup default capacity to 2,097,152 slots (128 MiB slot storage, 96 MiB raw).
+   - Startup configurable via `oasis_lf_set_ring_capacity()` / `--ring-capacity`.
+   - Bounded O(1) hot-path bitmask indexing: `(sequence - 1u) & (cap - 1u)` replaces division/modulo.
+   - Zero dynamic resizing during emulation; strictly bounded cyclic transport.
+2. Timing & Memory:
+   - Initialization: calloc of 128 MiB takes < 3 ms on startup with page-on-write demand zeroing.
+   - Frame timing across dual-CPU recording:
+     PERF_BASELINE: p50 = 17.0 ms, max = 17.0 ms
+     PERF_RECORDER: p50 = 17.0 ms, max = 18.0 ms
+     PERF_WORKER (depth 100): p50 = 16.0 ms, max = 26.0 ms
+     PERF_WORKER (depth 512): p50 = 16.0 ms, max = 26.0 ms
+     PERF_WORKER (depth 1000): p50 = 17.0 ms, max = 33.0 ms
+3. 16,384 vs 2,097,152 Slot Comparison:
+   - 128 workers x 100 rounds turnover (depth 20): wraps dropped from 1,783 to 13 (137x reduction).
+   - Worker retention failure rate: 0.0% in all runs (0 drops, 0 overwrites).
+   - Frame timing impact: undetectable (p50 unchanged at 16-17 ms).
+4. Acceptance Campaigns (100% PASS):
+   - 128 Workers x Depth 100 (100 rounds = 12,800 segments):
+     46,707,422 records, 17,603,026 instructions, 22 ring wraps, 35.5s wall time, 0 invalid, 0 retention failures.
+   - 128 Workers x Depth 512 (100 rounds = 12,800 segments):
+     82,100,090 records, 30,469,775 instructions, 39 ring wraps, 61.6s wall time, 0 invalid, 0 retention failures.
+   - 128 Workers x Depth 1000 (100 rounds = 12,800 segments):
+     138,266,803 records, 49,228,804 instructions, 65 ring wraps, 123.2s wall time, 0 invalid, 0 retention failures.
+   Total audited segments across campaigns: 38,400 segments (100% verified).
+5. Cross-CPU Witnesses:
+   - Z80 Banked ROM read witness:
+     Stream seq: 3019544, CPU: Z80 (1), PC: 0x0855, Logical Addr: 0xEDE4, Physical Addr: 0xBEDE4,
+     Value: 0xCD, Domain: 8 (BANKED_ROM), Flags: 0x8800 (EVENT_BUS_READ).
+   - YM2612 Address -> Data write witness:
+     Addr write: Stream seq: 81392526, CPU: Z80 (1), PC: 0x05C4, Port: 0x4000, Reg: 0xA4, MTime: 91950.
+     Data write: Stream seq: 81392582, CPU: Z80 (1), PC: 0x05CF, Port: 0x4001, Val: 0x0B, MTime: 92835.
+6. Hygiene & Validation:
+   - Full test suites pass: CTest Debug (205/205), CTest Release (205/205), PyTest (31/31).
+   - GNU/Linux-equivalent waterbox build clean; WSL tests green.
+   - `git diff --check` green; repository file size check verifies all code files <= 500 lines.
+   - Zero ROM or copyrighted data added; `SOURCE_OWNED delta = 0`.
+
+# 2026-09-21 — M12 W3 Z80 co-capture + cross-CPU timeline V1 — PASS
+
+TASK: Continue from CURRENT DIRTY WORKTREE without reset, clean, stash, revert,
+commit or push. Preserve accepted checkpoints PASS_NATIVE_BUS_EVENT_SIDEBAND_V1,
+PASS_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1, and PASS_WORKER_FRAME_COHERENT_EVIDENCE_V1.
+Restore canonical test harness (218/218 -> 220/220 executed and passing). Add Z80
+execution and bus evidence to the Worker evidence stream with common emulated time.
+Do NOT add SONG / INSTRUMENT semantics. W3 captures primitive facts only.
+
+RESULT: `PASS_Z80_COCAPTURE_CROSS_CPU_TIMELINE_V1`.
+- Clean lossless V2 48-byte record format (`oasis_lf_record`) with explicit
+  `stream_sequence`, `instruction_sequence`, `master_time`, `pc`, `address`,
+  `value`, `kind_flags`, `cpu_id`, `length_or_width`, `domain`, `reserved`,
+  `auxiliary`. Compile-time sizeof assertion (48 bytes) verified.
+- Independent monotonic `instruction_sequence` per CPU (`instruction_sequence`
+  for M68K, `z80_instruction_sequence` for Z80).
+- Explicit `cpu_id` (CPU_68K=0, CPU_Z80=1, CPU_NONE=0xFF) and bus domains
+  (ROM=0, 68K_RAM=1, Z80_WINDOW=2, VDP=3, YM2612=4, PSG=5, OTHER=6, Z80_RAM=7,
+  BANKED_ROM=8).
+- Configurable ring buffer capacity at initialization (`oasis_lf_ring_capacity`,
+  default 16,384 slots).
+- Z80 instruction capture with exact raw instruction bytes (up to 4 bytes for
+  prefixed forms such as DD CB d op).
+- Opcode fetches strictly excluded from data reads.
+- Ordered `BANK_REGISTER_CHANGE` primitive events and direct physical Genesis ROM
+  address resolution in record `auxiliary` field for all banked ROM accesses.
+- YM2612 address/data writes and PSG writes captured from both CPUs.
+- DAC writes captured as ordinary YM2612 register traffic.
+- Zero song/instrument/music semantics added.
+- Cross-CPU timeline sorting by `master_time` and causal relation validation.
+- All 22 required C tests A–V in `tests/live_forward_z80_test.cpp` pass.
+- Python analysis layer: `src/tools/thor_evidence/w3_z80_evidence.py`,
+  `w3_cross_cpu_timeline.py`, `w3_z80_classification.py`, and test suite
+  `tests/w3_z80_evidence_test.py` with 13 passing tests.
+- GPGX and BizHawk patch artifacts:
+  `tools/bizhawk-native-ring/genesis-plus-gx-z80-cocapture-v1.patch` and
+  `bizhawk-2.11.1-z80-cocapture-v1.patch`.
+- Total test harness expanded to 220/220 tests, 100% passing.
+- `SOURCE_OWNED delta = 0`.
+
+# 2026-09-20 — M12 W2.1 frame-coherent Worker evidence V1 — PASS
+
+TASK: Continue the accepted W1/W2 dirty worktree without reset, cleanup,
+stash, revert, commit or push. Add exact frame identity to each Worker
+segment without adding graphics semantics or Z80 implementation.
+
+RESULT: `PASS_WORKER_FRAME_COHERENT_EVIDENCE_V1`. The authoritative W1
+`frame_number` is captured as `entry_frame`/`exit_frame` in the native result
+metadata; the fixed 32-byte raw record and W1 hooks remain unchanged. Equal
+snapshots are `SINGLE_FRAME`; changed snapshots require contained boundary
+markers and otherwise fail closed as `MULTI_FRAME_UNRESOLVED`. W2 event,
+relation, VDP/DMA and candidate facts carry `(run_id, epoch, frame)` or
+`UNRESOLVED`. S1–S8 remain read-only and cross-run links are forbidden.
+
+SOURCE: Reproducible incremental patches are
+`tools/bizhawk-native-ring/bizhawk-2.11.1-worker-frame-coherent-v1.patch` and
+`genesis-plus-gx-worker-frame-coherent-v1.patch`; no native change is kept
+only in `build/...`. The repository-supported musl sysroot is
+`build/bizhawk-2.11.1-src/waterbox/sysroot/bin/musl-clang`, musl commit
+`2063abc4e16c84218757b1db10d3cdf9f36ef3f8`, executable SHA-256
+`9125791649f7cb2409b80f8282c20c2336e80c70f0ba820e08c4e251a78dc14f`.
+
+BUILD: Patched Debug and Release WBX builds passed with only `_DYNAMIC`
+unresolved; the new result-info export is present. Managed host binaries
+built; the full solution additionally reports pre-existing `MSB3644` for
+missing .NET Framework 4.8 reference assemblies in unrelated test projects.
+
+REAL RUNTIME: Fresh Release BizHawk run with one Worker, depth 100 and 100
+segments passed. It produced 32,272 instructions, 23,595 bus events, 100
+`SINGLE_FRAME` segments, 0 unresolved segments, 0 retained FRAME_BOUNDARY
+records, 0 overwrite/retention/runtime failures, and exact frames 120–264.
+Mean/p95/max bus events per instruction were `1.766225/2/30`. W2 normalized
+facts remained equal; measured total segment bytes increased only 1,600 bytes
+for 100 segments. `SOURCE_OWNED delta=0`.
+
+EVIDENCE: `docs/reports/THOR_M12_WORKER_FRAME_COHERENT_EVIDENCE_V1.md` and
+`build/m12-w2-1-acceptance/w2-frame-coherent-evidence.json`.
+
+# 2026-09-20 — M12 W2 active resource classification V1 — PASS
+
+TASK: Continue from the accepted `PASS_NATIVE_BUS_EVENT_SIDEBAND_V1` dirty
+worktree and add only worker-side interpretation of immutable W1
+`BUS_READ`/`BUS_WRITE`/`FRAME_BOUNDARY` records. Do not change the native
+capture path, ring ABI, Worker scheduling, emulator semantics, ROM ownership,
+or S1–S8 artifacts. Acceptance requires deterministic primitive classes,
+instruction-correlated events, fail-closed exact relations, an analysis-only
+VDP/DMA decoder, bounded candidates, read-only S1–S8 bridging, and a fresh
+real-runtime receipt.
+
+RESULT: `PASS_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1`. Added the bounded
+worker tools `w2_resource_classification.py`, `w2_vdp_decoder.py`, and
+`run_w2_active_resource_classification.py`. The analyzer sorts only copied W1
+rows by `stream_sequence`, preserves each raw event field, groups bus events
+by their exact `instruction_sequence` even when the event precedes the
+instruction record in the ring order, and emits only `OBSERVED` or
+`DERIVED_EXACT`; hypotheses are not emitted. MOVE memory-to-memory transfer
+relations require a decoded legal MOVE shape, ordered one-read/one-write
+association, matching width, and matching masked value; equal values alone
+never create a relation.
+
+REAL RUNTIME: Fresh Release GPGX/WBX install
+`C:\Dev\SegaThorTools\BizHawk-m12-w1-frame-api-20260920`, canonical ROM
+`build/m12-auto2-rom/usa/Beyond Oasis (USA).md`, one Worker, depth 100, and
+100 audited segments completed with runtime `PASS`. The deterministic report
+is `build/m12-w2-acceptance/w2-active-resource-classification.json`. It
+contains 32,272 instruction records, 23,595 bus events, 55,967 retained W1
+records / 1,790,944 bytes, primitive counts RAM_READ 10,208, RAM_WRITE
+12,681, ROM_DATA_READ 12, Z80_WINDOW_READ 220, Z80_WINDOW_WRITE 440,
+VDP_CONTROL_WRITE 31, and VDP_DATA_WRITE 3. Widths are 8-bit 9,170,
+16-bit 9,673, and 32-bit 4,752. No fetch pollution is introduced by the
+analysis; no frame record was retained in the bounded slices.
+
+VDP: 22 register writes, 3 complete control commands, and 3 DMA programming
+records were decoded. DMA records are `DERIVED_EXACT` for CPU-programmed
+target/source/length fields but explicitly retain `transfer_observed=false`
+and `CPU_PROGRAMMING_ONLY`; internal DMA bytes are never attributed to M68K
+BUS_READ. Three incomplete command cases remain reported rather than
+repaired. The run produced 581 exact MOVE transfer relations, 439 bounded
+address/primitive candidates, 440 observed Z80-window writes, and zero audio
+handoff candidates; song and instrument semantics remain `NOT_CLAIMED`.
+The accepted shadow-SAT range had zero writes in this short run, so no
+shadow-SAT witness is claimed. The four required runtime witness classes are
+present: ROM data read, 68K RAM write, VDP control write, and Z80-window write.
+
+BRIDGE/REGRESSION: Accepted S1–S8 artifacts were read only and were not
+cross-linked because the fresh W2 run has no shared run/frame/range identity;
+`cross_links=[]`. The W1 checkpoint remains authoritative for the 128-Worker
+campaign, control-flow semantic A/B equality, native retention/overwrite
+measurements, and measured W1 cost. W2 reports `source_owned_delta=0`, native
+capture unchanged, raw W1 schema unchanged, and Worker scheduling unchanged.
+
+VALIDATION: W2 focused tests `5/5`, Python `py_compile`, and source-size
+checks pass. No commit or push was made. The W2 checkpoint is
+`PASS_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1`; W3/W2 classification
+expansion, semantic ownership, sprite/music labels, and SOURCE_OWNED
+promotion remain out of scope.
+
+# 2026-09-20 — M12 VDP S8 proven logical frame — PASS
+
+TASK: Capture one coherent frame-779 VDP state and reconstruct Plane A,
+Plane B, Window, backdrop, and the existing S7 sprite raster with exact
+name-table/tile/CRAM provenance. Keep this developer-only and fail closed for
+missing registers, scroll state, frame identity, or state-writing captures.
+
+RESULT: `PASS_ONE_PROVEN_LOGICAL_VDP_FRAME_V1`. The bounded BizHawk 2.11.1 /
+GenPlus-gx capture `build/m12-gfx-runtime/hardware-vdp-frame-capture-s8.json`
+captured frame 779 from run `m12_m11_8_natural_v1` with 1,437 ordered VDP
+register events, 64 KiB VRAM, 128-byte CRAM, and 80-byte VSRAM. Required
+registers are present and coherent: H40/V28 (`Reg12=0x81`, `Reg1=0x64`),
+Plane A base `0xC000`, Window base `0`, Plane B base `0xE000`, 64x32 cells,
+full-screen scroll mode, HScroll base `0xDC00`, and Window positions `0,0`.
+The deterministic `hardware-vdp-frame-v1.json` contains 71,680 pixel records,
+2,240 visible name-table cells with raw words and tile bytes, exact CRAM, and
+the unchanged S7 artifact hash. The observed zero Window split correctly leaves
+Window inactive; the result is 50,657 Plane-A and 21,023 Plane-B winners.
+Sprite candidates remain provenance-backed even when covered by a higher-ranked
+background pixel. Conflict count is zero.
+
+TRUTH: register/table/tile/CRAM state is `OBSERVED`; rendering is
+`DERIVED_EXACT`; the layer priority order is `STATIC_VERIFIED`. The artifact
+does not claim full-screen emulator equivalence, VDP timing equivalence, or
+mid-scanline register behavior.
+
+VALIDATION: S8 A–U tests passed (21); the prior S1–S7 focused suite remained
+green (84 tests). The runtime capture exited 0; capture sizes and frame/run
+identity were checked; Python compilation, deterministic artifact generation,
+source-file limits, and `git diff --check` passed. No native/CMake code,
+ROM ownership, commit, or push changed.
+
+# 2026-09-20 — M12 SPRITE S7 proven scanline raster rules — PASS
+
+TASK: Derive a hardware-filtered sprite-only raster from the unchanged S6
+logical frame. Read the selected frame's VDP mode from runtime evidence,
+preserve SAT-link order, apply mode-dependent sprite and dot budgets, model
+transparent/offscreen evaluation cost, and record X=0 masking without adding
+background planes or changing S6.
+
+RESULT: `PASS_SPRITE_SCANLINE_RASTER_RULES_V1`. The deterministic artifact
+`build/m12-gfx-runtime/hardware-sprite-raster-v1.json` evaluates S6 frame 779
+in observed H40/V28 mode: VDP Reg.12 is `0x81`, Reg.1 is `0x64` at the latest
+observation no later than the selected frame, and no later Reg.12 write exists
+in the 1,800-frame mode capture. The derived limits are 20 sprites and 320
+sprite dots per scanline, with 80 total H40 SAT capacity. All eight frame-779
+pieces are accepted on each intersecting line; 224 dot budget is used, no
+overflow occurs, and the S6 logical pixels remain byte-for-byte equivalent:
+660 survive and 0 are removed. Runtime overflow is therefore explicitly
+`NOT_OBSERVED`; count/dot overflow and X=0 masking are static/test verified
+through synthetic boundaries, not fabricated runtime claims.
+
+The artifact records raw and derived coordinates, SAT traversal and evaluation
+order, intersecting/accepted/rejected entries, count/dot/cell budgets,
+overflow reasons, partial final-sprite dot acceptance, per-pixel hardware
+survival/suppression provenance, and a screen-clipped view separate from the
+unclipped logical raster. Backgrounds and sprite-vs-background priority remain
+false. S6 remains the pre-scanline reference artifact.
+
+VALIDATION: S7 A–P tests passed (16); the S1–S6 graphics tests passed (68).
+Python compilation, deterministic artifact regeneration, source-file limits,
+and `git diff --check` passed. The existing Debug/Release graphics targets
+remain green from S6; no native/CMake code changed in S7.
+
+# 2026-09-20 — M12 SPRITE S6 proven hardware sprite frame — PASS
+
+TASK: Compose one complete sprite-only Genesis hardware frame from the S5
+catalog in SAT-link traversal order. Preserve exact SAT bytes, shadow bytes,
+tile bytes, CRAM bytes, decoded pixels, palette/CRAM indices, RGB values, and
+pixel-level witness references. No ROM, SOURCE_OWNED bytes, native runtime,
+commit, or push changed.
+
+RESULT: `PASS_ONE_PROVEN_HARDWARE_SPRITE_FRAME_V1`. The deterministic artifact
+`build/m12-gfx-runtime/hardware-sprite-frame-v1.json` selects frame 779 and
+traverses SAT entries `[0,1,2,3,4,5,6,7]`. All eight active entries are
+PROVEN direct publications; the composed logical sprite-only bounds are
+`x=176..399`, `y=256..263`, with 660 visible pixels and zero overlaps in this
+frame. Each visible pixel points to its exact observation witness, SAT entry,
+piece-local coordinate, tile index, tile pixel index, palette line, CRAM index,
+priority bit, and RGB value.
+
+The frame artifact fails closed on missing or cyclic SAT links, unreachable
+active entries, non-PROVEN provenance, malformed matrices, and missing tile
+references. It explicitly preserves un-clipped SAT coordinates. It does not
+claim producer-to-DMA causality, background priority, background layers,
+scanline limits, or full-screen rendering. Optional PNG export remains a later
+presentation step; JSON is the canonical lossless proof.
+
+VALIDATION: S6 A–N tests passed (14); the S1–S5 graphics tests passed (54);
+artifact regeneration is deterministic; Python compilation, source-file
+limits, and `git diff --check` passed. Existing `oasis_genesis_graphics_test`
+Debug and Release targets rebuilt and both executables exited 0.
+
+# 2026-09-20 — M12 SPRITE S5 SAT persistence and publication causality — PASS
+
+TASK: Re-evaluate S4's 140 missing-publication observations using explicit
+SAT/shadow mutation coverage and persistence relations. No ROM,
+SOURCE_OWNED bytes, native runtime semantics, commit, or push changed.
+
+RESULT: `PASS_SAT_PERSISTENCE_CAUSALITY_V1`. The bounded 800-frame capture
+records VDP DMA and CPU VDP data-port mutations intersecting the SAT window,
+SAT-base register changes, extended shadow-SAT writes, frame phase, and event
+sequence. All supported mutation channels report complete observation. The
+latest earlier direct publication is linked to each later entry only when SAT
+bytes, shadow bytes, SAT base, and mutation coverage all close.
+
+BEFORE S5: 252 PROVEN, 140 INCOMPLETE, 0 OBSERVED_LINKAGE_ONLY, 0 CONFLICT.
+AFTER S5: 392 PROVEN, 0 INCOMPLETE, 0 OBSERVED_LINKAGE_ONLY, 0 CONFLICT.
+Publication provenance is 252 DIRECT_PUBLICATION and 140
+PERSISTED_FROM_PUBLICATION. Every persisted entry also records
+`PROVEN_PERSISTED_SHADOW_SAT_STATE`. Producer-to-DMA ordered causality is
+explicitly retained as UNPROVEN for all 392 entries because the observed
+producer writes did not precede the corresponding DMA callback; no byte-match
+was upgraded into causality.
+
+COST: S4 capture 1,578,473 bytes; S5 capture 3,188,529 bytes; delta
+1,610,056 bytes. Targeted evidence totals remain 42,560 VRAM tile bytes,
+12,544 CRAM bytes, and 3,136 SAT bytes; the increase is mutation/event
+receipts rather than a full-VRAM dump.
+
+VALIDATION: S5 A–L plus S1–S4 tests passed (54 total); frame-714 S2 SAT,
+tile, CRAM, and pixel semantics remain byte-identical. Python compilation,
+source-file limits, deterministic catalog/report generation, and
+`git diff --check` passed.
+
+# 2026-09-20 — M12 SPRITE S4 evidence gap closure — PASS
+
+TASK: Measure every non-PROVEN S3 observation, assign exact machine-readable
+gap reasons, and improve only the dominant measured capture gap. No ROM,
+SOURCE_OWNED bytes, native runtime semantics, commit, or push changed.
+
+BEFORE: 69 PROVEN, 306 INCOMPLETE, 17 OBSERVED_LINKAGE_ONLY, 0 CONFLICT.
+The dominant gap was missing per-entry SAT publication/shadow evidence. The
+capture had tile and same-frame CRAM bytes for those entries, but the DMA hook
+accepted only destination `0xD000` and could not identify later SAT segments.
+
+AFTER: 252 PROVEN, 140 INCOMPLETE, 0 OBSERVED_LINKAGE_ONLY, 0 CONFLICT across
+392 observations from 800 frames. The bounded SAT-window hook now records
+publication destination, source, offset, event sequence, and source bytes for
+each covered SAT entry. Multi-cell tile capture and same-frame CRAM capture
+remain targeted. Remaining gaps are exactly `MISSING_DMA_PUBLICATION`,
+`MISSING_SHADOW_SAT`, and `NO_PRODUCER_OBSERVATION`, each 140 observations;
+these are the post-publication persistence/causality boundary after frame 779.
+
+COST: old capture 1,472,802 bytes; new capture 1,578,473 bytes; delta
+105,671 bytes. The report totals 42,560 VRAM tile bytes, 12,544 CRAM bytes,
+and 3,136 SAT evidence bytes. Frame-714 S2 SAT/tile/CRAM/pixel semantics are
+byte-identical. Gap report and catalog generation are deterministic.
+
+VALIDATION: S4 A–L plus S1/S2/S3 tests passed (42 total); Python compilation,
+source-file limits, and `git diff --check` passed. Temporal claims remain
+separate: VALUE_LINKAGE is recorded without promoting producer-to-DMA
+causality.
+
+# 2026-09-20 — M12 SPRITE S3 hardware sprite piece catalog — PASS
+
+TASK: Extend the S2 runtime witness into an observational catalog keyed by
+`run_id`, frame, and SAT entry. Preserve S1/S2 semantics and fail closed for
+missing tiles, missing CRAM, wrong-frame palette data, SAT/tile disagreement,
+and duplicate-key conflicts. No ROM, SOURCE_OWNED bytes, native runtime,
+commit, or push changed.
+
+RESULT: `PASS_HARDWARE_SPRITE_PIECE_CATALOG_V1`. The existing BizHawk capture
+now retains 392 active SAT observations across 86 observed frames in an 800
+frame run, including 1x1, 1xN, Nx1, and non-square multi-cell pieces. The
+catalog preserves observational identity, exact tile lists and hashes, CRAM,
+decoded pixels/transparency/CRAM indices, priority limits, and semantic
+fingerprints without collapsing repeated frames. Runtime classification is
+69 PROVEN, 306 INCOMPLETE, 17 OBSERVED_LINKAGE_ONLY, and 0 CONFLICT.
+
+VALIDATION: The frame-714 PROVEN entry reproduces the S2 tile, CRAM, decoded
+attributes, and pixel matrix exactly. S3 A–L tests plus S1/S2 tests passed
+(30 total); Python compilation, source-file limits, and `git diff --check`
+passed. The temporal limitation remains entry-observable: same-frame values
+may be retained without promoting producer-to-DMA causality globally.
+
+# 2026-09-20 — M12 SPRITE S2 one proven hardware sprite piece — PASS
+
+TASK: Continue `PASS_GENESIS_SPRITE_RECONSTRUCTION_SEMANTICS_V1` with one
+runtime-backed, same-frame Genesis sprite piece. No ROM, SOURCE_OWNED bytes,
+native runtime semantics, commit, or push changed.
+
+RESULT: `PASS_ONE_HARDWARE_SPRITE_PIECE_V1`. A bounded BizHawk capture of the
+canonical Beyond Oasis ROM records producer PCs `0xB752/0xB764/0xB76E/0xB77A`,
+shadow SAT `0xFF13CC`, DMA publication to VRAM SAT `0xD000`, SAT entry 0 at
+frame 714, VRAM tile `0x400 * 32`, and CRAM line 0. The artifact preserves raw
+bytes, hashes, decoded attributes, corrected packed-nibble pixels, CRAM indices,
+RGB values, and explicit limits. It claims exact same-frame value linkage;
+callback order is retained and producer-to-DMA causality is not generalized.
+
+VALIDATION: Runtime capture exited 0 with canonical ROM SHA256 and eight
+bounded witnesses; artifact construction passed; S2 A–K contract tests and
+the S1 reconstruction tests passed. No PNG was emitted. Existing broader
+runtime/SOURCE_OWNED truth claims remain unchanged.
+
+# 2026-09-20 — M12 SPRITE S1 Genesis reconstruction semantics — PASS
+
+TASK: Correct only deterministic Genesis sprite reconstruction semantics. No
+runtime evidence, RAM migration, B730/SAT claim, SOURCE_OWNED bytes, ROM,
+commit or push was changed.
+
+RESULT: `PASS_GENESIS_SPRITE_RECONSTRUCTION_SEMANTICS_V1`. Python tile decoding
+now matches packed-nibble Genesis 4bpp and the authoritative C++ decoder;
+multi-cell pieces use column-major pattern order; visible pixels preserve
+palette line, pixel index, CRAM index and priority; earlier SAT-chain sprites
+win visible overlaps. Metadata explicitly records that sprite-vs-background
+priority and scanline limits are not modeled.
+
+VALIDATION: Python sprite, graphics-sweep, sound-container and Z80-contract
+tests passed; C++ Genesis graphics, VDP and decompressor tests passed after
+the focused rebuild; Python compilation, source-file limit and `git diff
+--check` passed. Existing evidence truth claims remain unchanged.
+
+# 2026-09-20 — M12 R11 event-driven Stage 7 subprocess wait — PASS
+
+TASK: Remove artificial completion latency from the bounded Stage 7/8
+subprocess runner while preserving decoder, ordering, proof, promotion,
+timeout, and R7–R10 storage invariants. No worker-pool, decoder, or semantic
+pipeline redesign was performed.
+
+RESULT: `PASS_STAGE7_EVENT_DRIVEN_SUBPROCESS_WAIT_V1`. The previous runner
+polled `Popen.poll()` and slept 250 ms between checks. The runner now waits on
+an OS-backed `process.wait()` thread and completion event; the heartbeat thread
+only publishes progress and never decides process completion. Reader threads
+remain bounded and are joined after process exit. Timeout termination and the
+existing Stage 7/Stage 8 timeout codes remain fail-closed; termination falls
+back to kill. There is no public Stage 7 cancellation API in this checkout.
+
+MICROBENCHMARK: The exact pre-change controlled-child matrix was repeated
+after the change. Before, wrapper medians were approximately 255 ms for
+0–200 ms children and approximately child time plus 215 ms for 500 ms–1 s
+children. After, wrapper medians were 38.050, 48.392, 63.894, 90.290,
+140.580, 241.550, 540.630 and 1039.595 ms for child sleeps 0, 10, 25, 50,
+100, 200, 500 and 1000 ms. The added median completion latency is within about
+1.5 ms of direct subprocess execution across the matrix.
+
+SEALED SAME-INPUT REPEATS: Retained R10 reference was 400 requests, 397 valid,
+3 unsupported, 0 infrastructure failures, 4 workers, 26.531 s Stage 7 batch,
+and 85.609 s ASM CLOSURE wall. Four optimized isolated-input runs were
+35.641/6.656 s, 35.543/6.657 s, 36.138/6.813 s and 35.790/6.875 s (total
+Stage 7 wall/batch wall). Every run produced 400 requests, 397 valid, 3 unsupported, 0
+infrastructure failures, 394 promoted bytes, 131 promoted instructions and
+the same `oasis.stage7.range.v1` contract. The optimized batch median is
+6.735 s (74.6% below R10); total Stage 7 median is 35.716 s (58.3% below
+R10). Independent Stage 8 full-ROM audit passed with the canonical SHA256.
+
+VALIDATION: focused subprocess tests 9/9; Python discovery 356 tests with 3
+skips; Debug CTest 215/215; Release CTest 215/215; Python compile PASS;
+source-file limit PASS (773 governed files <=500 lines); `git diff --check`
+PASS. R10 decoder-contract tests and the Stage 7→8→9 structural contract are
+included in the full suite. No commit or push was made; existing dirty and
+untracked evidence was preserved.
+
+# 2026-09-19 — M12 safe legacy MASTER/session retention prune — PASS
+
+TASK: Reclaim only persistent legacy artifacts proven superseded by the accepted
+MASTER V2 authority. No gameplay run was started.
+
+RESULT: `PASS_LEGACY_MASTER_SESSION_RETENTION_PRUNE_V1`. The explicit manifest
+`build/thor-evidence/prune-manifest.json` contained 62 records: 30 DELETE and
+32 KEEP. Deleted artifacts were 27 superseded rolling generations, one orphan
+staging generation, and the 4,460,544-byte session DB for run 1789872670.
+Exact deleted bytes: 22,056,960. No wildcard deletion was used and no locked
+file was encountered.
+
+PROTECTED: current MASTER V2 generation
+`master-v2-88dba3b088db3ebb`, its atomic pointer, canonical ROM, current and
+immediately previous rolling generations, absorbed receipts, all legacy
+canonical shadow MASTER snapshots, and all session DBs whose Stage 5–9/raw
+retention conditions were not proven. The 24.6 GB session DB for run
+1789839425 remains KEEP because its raw evidence and stopped analysis violate
+the deletion predicate.
+
+POST-DELETE AUDIT: MASTER V2 startup PASS, `legacy_reads = 0`, fallback
+disabled, current master hash valid, canonical view PASS, provenance/outcomes
+view PASS, absorbed history readable (24 run rows), and startup authority tests
+3/3. Remaining rolling-master bytes: 42,949,819,172; 17 master.sqlite files
+(legacy canonical shadows included) and 11 session DBs remain.
+
+# 2026-09-19 — M12 RAM migration R5 in-process post-run coordinator — PASS
+
+TASK: Move the normal post-run Stage 1–9 coordinator into the runtime process
+while preserving disk-backed FLOW, MASTER V2 startup authority, and the old
+subprocess path for regression/shadow use.
+
+RESULT: `PASS_IN_PROCESS_POSTRUN_COORDINATOR_V1`. Added one explicit
+`PostRunContext`/`PostRunCoordinator` API, structured `PostRunResult`, and an
+in-memory progress event stream. The coordinator runs on one non-UI background
+thread; status/report JSON are optional derived diagnostic snapshots. MASTER V2
+remained the startup authority (`legacy_reads = 0`, fallback disabled), and
+Stage 7/8 assembler tools remain bounded subprocesses.
+
+FIX: The first live attempt on the sealed run reached post-run Stage 1 but
+failed because a Windows reader temporarily locked the derived `status.json`
+while it was being atomically replaced (`WinError 5`). `_atomic_json` now
+retries the replace with bounded backoff. Replaying that same already-absorbed
+sealed run later correctly stopped fail-closed with
+`STOP_KNOWLEDGE_IMPORT_NONIDEMPOTENT`; no evidence was deleted by that shadow
+replay. The fresh acceptance run below completed after the retry fix.
+
+FRESH RUNTIME ACCEPTANCE: campaign
+`campaign-desktop-20260919-231221-978`; 128 Workers, depth 100, 24,448
+audited segments, 191 completed captures/cycles per Worker minimum,
+`STOPPED_END_GAME`. Post-run mode `IN_PROCESS`, coordinator subprocess count 0,
+FLOW storage remained disk-backed. Stage 1–5 PASS, Stage 6 `NO_DELTA`, Stage 7
+`NO_DELTA`, Stage 8 PASS (3,145,728 canonical ROM bytes), Stage 9 PASS, and
+`ANALYSIS COMPLETE ✓`. `SOURCE_OWNED delta = 0`; cleanup absorbed the run and
+permanently reclaimed 325,279,769 raw bytes.
+
+VALIDATION: R5 coordinator tests 5/5, rolling-master test 1/1, runtime
+contract test PASS, post-run progress tests 16/16, MASTER startup tests 3/3,
+Python compilation PASS, source-file limits PASS, and `git diff --check` PASS
+after the final patch.
+
+LIMITATION: The historical subprocess report and the in-process replay were
+kept as a semantic shadow check, but the saved historical run had already been
+absorbed by the older coordinator; re-running it through the current importer
+is intentionally rejected as non-idempotent. No claim is made that two fresh
+coordinators processed the same raw bytes in this checkout.
+
+# 2026-09-19 — M12 RAM migration R4 MASTER V2 startup authority — PASS
+
+TASK: Make a new analysis session initialize from canonical ROM plus accepted
+MASTER V2 only, with no implicit legacy fallback.
+
+RESULT: `PASS_MASTER_V2_STARTUP_AUTHORITY_V1`. Added an atomic startup pointer
+at `build/thor-evidence/master-v2/current.json` identifying generation,
+filename, file SHA256, logical MASTER SHA256, schema and ROM identity. Startup
+validation checks all MASTER section hashes, canonical integrity and emission
+partition, lineage, provenance/outcomes/absorption sections, and
+`SOURCE_OWNED`. Missing authority stops with
+`STOP_MASTER_STARTUP_UNAVAILABLE`; mismatched or corrupt authority stops with
+`STOP_MASTER_STARTUP_INTEGRITY`.
+
+The production startup path reports `STARTUP AUTHORITY MASTER_V2`,
+`LEGACY READS 0`, and `LEGACY FALLBACK DISABLED`. Measured startup loaded
+1,276,961,127 MASTER bytes in 6,397 ms with an observed 105,369,600-byte peak
+working set. Emission totals are ASM 56,176, DATA 233,676, ASSET 1,085,110
+and INCBIN 1,770,766 bytes, exactly 3,145,728 ROM bytes; SOURCE_OWNED is
+1,475,642 bytes.
+
+The controlled MASTER-only test environment passed without legacy files and
+prepared a deterministic N+1 candidate from an in-memory delta. Explicit
+legacy shadow comparison remains opt-in; no legacy files were deleted and no
+runtime transport or Stage 5–9 truth semantics changed.
+
+VALIDATION: `tests/master_startup_authority_test.py` 3/3, existing R3
+authority/canonical/Stage 5–9/cleanup regressions PASS, source file limit PASS,
+Python compilation PASS, and `git diff --check` PASS.
+
+RUNTIME ACCEPTANCE: The launcher now passes `--master-startup`. A fresh
+BizHawk run started only after MASTER validation and ended through END GAME:
+128 Workers at depth 100, 24,064 audited segments, 188 completed cycles per
+Worker minimum, `startup_authority = MASTER_V2`, `legacy_reads = 0`, and
+`legacy_fallback = DISABLED`. The normal coordinator reached
+`ANALYSIS COMPLETE ✓`: Stage 1–5 PASS, Stage 6 NO_DELTA, Stage 7 NO_DELTA,
+Stage 8 PASS over 3,145,728 ROM bytes, and Stage 9 PASS. Evidence is in
+`build/thor-evidence/live-worker-control-2h/campaign-desktop-20260919-225402-876/post-run-analysis/r4-runtime-acceptance.json`.
+
+# 2026-09-19 — M12 RAM migration R3 provenance/outcomes authority — PASS
+
+TASK: Extend the accepted MASTER V2 shadow with durable Stage 6 provenance,
+Stage 5–9 outcomes and absorbed-run history, then switch the read layer to
+fail closed when those sections are unavailable.
+
+RESULT: `PASS_MASTER_V2_PROVENANCE_OUTCOMES_AUTHORITY_V1`. The R3 container
+contains independently hashed `provenance`, `outcomes` and
+`absorption_history` sections. Legacy-to-MASTER structured projection equality
+passed for all three sections; corruption and missing-section reads stop with
+`STOP_MASTER_OUTCOME_UNAVAILABLE`; generation twice produced byte-identical
+SHA256 `4cfb46d841a24eee3e9d3bbeacd4f73d0a890e1f234f1425bced076129dd6a6b`.
+
+SIZE: R2 1,276,717,413 bytes; R3 1,276,961,127 bytes; delta 243,714 bytes.
+The new sections are provenance 1,987 bytes, outcomes 226,865 bytes and
+absorption history 12,230 bytes. `SOURCE_OWNED` and canonical R2 hashes are
+unchanged. Legacy receipts remain present as shadow comparison artifacts.
+
+EVIDENCE: `build/thor-evidence/master-v2-shadow-r3/r3-acceptance.json` and
+the ignored R3 binary/pointer. No runtime capture or Stage 5–9 semantics were
+changed; the accepted 128-worker run was not restarted for R3A.
+
+# 2026-09-19 — M12 R3B live read-authority verification — PASS
+
+After the R3 MASTER V2 pointer became the canonical read authority, one fresh
+desktop gameplay run was completed through the normal launcher and END GAME
+control path. The sealed runtime receipt reports `STOPPED_END_GAME`, 128
+configured and actually used Workers, 698 completed cycles per Worker (89,344
+audited segments), fresh capture identities, and `SOURCE_OWNED delta = 0`.
+
+The normal post-run coordinator reached `ANALYSIS COMPLETE ✓` and Stage 9/9:
+Stage 5 REFRESHING MAP PASS, Stage 6 CONTROL PROVENANCE NO_DELTA, Stage 7 ASM
+CLOSURE NO_DELTA, Stage 8 FULL ROM AUDIT PASS (3,145,728 canonical ROM bytes),
+and Stage 9 CLEANUP PASS. Legacy receipts remained available as shadow
+artifacts; no manual stage invocation or status editing was used.
+
+Evidence: campaign
+`build/thor-evidence/live-worker-control-2h/campaign-desktop-20260919-222127-274`
+and its `post-run-analysis/status.json`, `report.json`, and sealed interactive
+receipt. Raw evidence was absorbed by the existing cleanup contract.
+
+# 2026-09-19 — M12 post-run Windows publication and 30-second verification — PASS
+
+TASK: Repair the post-run path observed after a real 30-second desktop
+gameplay run, where Stage 6 stopped at 70% with a transient Windows
+`PermissionError` while atomically replacing `status.json`.
+
+RESULT: PASS. Status publication now retries short reader-lock races, and
+Stage 5 generation-directory publication retries the equivalent Windows
+rename race. R2 MASTER V2 baseline materialization now assigns unique
+`(start,end)` artifact names so overlapping legacy blob names cannot overwrite
+one another. The sealed run completed Stage 5 PASS, Stage 6 NO_DELTA, Stage 7
+NO_DELTA, Stage 8 PASS, and Stage 9 cleanup PASS; the final pipeline result is
+`ANALYSIS COMPLETE`.
+
+RUNTIME: Existing sealed run `STOPPED_END_GAME`, 128 workers at depth 100,
+25,344 audited segments, 198 completed cycles per worker, and zero Stage 6
+FLOW/ROM mismatches. No new gameplay was started for the post-run reruns.
+
+VALIDATION: `master_canonical_view_test.py` 3/3, Stage 5 3/3, complete
+pipeline 1/1, post-run progress 16/16, plus Python compilation and
+`git diff --check`. Raw run evidence was absorbed by the existing cleanup
+contract; receipts and compact post-run results remain.
 
 # 2026-09-15 — M12 AUTO67 capture performance isolation — PASS (bounded)
 
@@ -10953,3 +12490,2192 @@ pipeline and runtime-chain tests passed. The file-limit check reports 805
 governed files within the 500-line rule. Consolidated Debug and Release CTest
 passed 231/231 each. GNU/Linux build and CTest also passed 231/231; its slowest
 2G pipeline test took about 149 seconds under WSL.
+# 2026-09-18 — M12 interactive Worker run-until-close mode
+
+TASK / ACCEPTANCE: Update the desktop Worker launcher so it runs the existing
+native Worker pool continuously until BizHawk is closed, with no fixed cycle
+count or runtime timeout. Preserve the bounded 2B/2H proof path and Worker/1B,
+2A Cartographer/Archivist, production AUTO67, and SOURCE_OWNED semantics.
+The interactive mode must keep validating and acknowledging every completed
+capture, keep dashboard snapshots live, bound host-side per-cycle bookkeeping,
+preserve accepted runtime segment evidence, and clearly avoid claiming a
+bounded campaign PASS or post-run Cartographer map. Verify with focused tests,
+Python/Lua static checks, a short non-campaign runtime smoke if safe, file
+limits, and `git diff --check`; do not rerun a 100-cycle campaign.
+
+RESULT: Implemented `--until-closed` for the existing desktop Worker Control
+launcher. Worker count and chain depth remain the only operator inputs; cycles
+repeat without a cycle-count or wall-clock cap. Every capture is host-validated
+and ACKed before reuse. The optional disk-growth display now labels disk space
+explicitly and reports the shared 1 GiB free-disk stop reserve; this is separate
+from RAM, which is budgeted dynamically. The mode stops between full rounds at
+the reserve and writes a non-PASS interactive receipt. Raw FLOW_V1 records and
+the segment index are spooled incrementally; host-side round summaries are
+bounded. Cartographer/Archivist and the existing bounded 2B proof path are not
+part of this interactive mode.
+
+RUNTIME CHECKS: A real BizHawk smoke sent the host stop-file signal after 16
+ACK records. Lua observed it and stopped cleanly between rounds with
+`STOPPED_DISK_RESERVE`: repeated with 8 Workers × 6 cycles (48/48 segments) and
+8 Workers × 5 cycles (40/40 segments); every Worker returned FREE, all segments
+were audited and spooled, and neither receipt claimed bounded PASS. A previous
+smoke continued beyond 100 cycles per Worker and reached 106
+audited captures each (848 segments); it was forcibly terminated for cleanup,
+with native lifecycle receipts confirming 105 complete ACKed cycles per
+Worker. This verifies repeat operation beyond 100, not graceful window-close
+behavior. No 100-cycle campaign was rerun.
+
+The runtime treats a nonzero EmuHawk process exit as an error, so a crash or
+forced termination cannot be reported as a normal close. The desktop close
+button itself was not exercised in this headless smoke.
+
+VALIDATION: Focused Worker Control tests 19/19 PASS; exact ROM-link regression
+PASS; Python compilation and CLI help PASS; source file limit PASS;
+`git diff --check` PASS. No production AUTO67, predecessor logic, Worker 1B
+scaling semantics, or SOURCE_OWNED behavior changed. Raw runtime evidence stays
+under ignored `build/thor-evidence/`.
+
+FOLLOW-UP FROM DESKTOP USE: The first user launch exposed a missing
+`format_bytes` import in the dashboard publisher. Its background thread failed,
+and `finish()` raised the same exception while handling the runner failure. A
+separate Lua guard also rejected a round if the CPU stream had not advanced in
+the first frame after all host ACKs. The guard now allows up to 120 frames for
+execution progress before reporting a real stall; the requirement that CPU
+execution continue remains intact. Added an R regression test for the exact
+disk-growth display string and imported the shared formatter.
+
+REGRESSION RESULT: After both fixes, a real BizHawk continuous run passed the
+previous failure point and reached 356 complete cycles on every Worker
+(2,848/2,848 audited segments), then stopped cleanly on the host stop signal
+with `STOPPED_DISK_RESERVE` and no error. Focused Worker Control tests are now
+20/20 PASS; ROM-link regression, Python compilation, runtime CLI help, source
+file limit, and `git diff --check` also pass. No 100-cycle campaign was run.
+
+# 2026-09-18 — Keep continuous Worker event validation in stream order
+
+TASK / ACCEPTANCE: Fix the desktop continuous run failure at
+`LIFECYCLE_000128_000000` without relaxing segment, lifecycle, identity, or CPU
+progress checks. Preserve append order for SEG, LIFECYCLE, and round ACK events
+when one host read spans the end of one round and the beginning of the next.
+Then run BizHawk with the saved 8 Workers × depth 21 configuration for at least
+60 seconds, stop only at a complete Worker-round boundary, and independently
+audit the retained segments.
+
+CAUSE / CHANGE: The Lua stream emitted valid lifecycle-128 receipts before the
+round-128 ACK and the start of round 129. The host previously made separate
+passes over a read batch (all SEG, then all LIFECYCLE, then ACK), so a SEG from
+round 129 advanced host counters before lifecycle-128 was checked. Added an
+ordered event iterator in `live_forward_scaling_stream.py`; the host now
+validates each event in append order. Added a regression for the mixed
+SEG-128 / LIFECYCLE-128 / ACK-128 / SEG-129 batch. The checks remain fail-closed.
+
+RUNTIME RESULT: BizHawk ran for 67.9 seconds before the host stop request and
+finished the current round. All 8 Workers completed 1,187 captures each;
+9,496/9,496 segments were independently validated, with unique capture IDs and
+generations 1–1,187 for every Worker. All 1,187 rounds showed CPU execution
+stream progress. Independent SHA-256 checks matched the raw FLOW spool and
+segment index. The legacy Lua stop-marker status is `STOPPED_DISK_RESERVE` even
+for this deliberate timed smoke stop; it does not indicate that the free-disk
+threshold was reached. There were no runtime errors. The fixed run passed the
+previous cycle-128 failure point by more than 1,000 cycles.
+
+VISUAL LIMITATION: The requested live visual inspection was attempted through
+Computer Use during the run, but its app inventory returned `apps=[]` and only
+browser tabs, so EmuHawk/Worker Control could not be captured by that UI tool.
+The real BizHawk run and live Worker Control status snapshot were verified via
+the runtime evidence files; this is not claimed as a visual screenshot check.
+
+VALIDATION: Focused Worker Control regression tests 21/21 PASS; Python
+compilation PASS; project source-code size check PASS (726 governed files,
+all ≤500 lines); `git diff --check` PASS. This fix changes only host-side
+developer tooling and documentation; native Worker, Lua lifecycle semantics,
+production AUTO67, predecessor logic, Worker 1B scaling architecture, and
+SOURCE_OWNED were not changed.
+
+# 2026-09-18 — Show per-Worker lifecycle and FLOW yield in the live window
+
+TASK / ACCEPTANCE: Make the Worker Control rows show, for each Worker, how many
+captures started, completed and were released/ACKed, plus the number of
+FLOW_V1 records in its latest host-audited capture and cumulative audited
+captures. Keep status publication bounded to the visible Worker page and keep
+the existing snapshot-only UI boundary. Verify with focused tests and a real
+active-run status snapshot without interrupting the user's current emulator.
+
+RESULT: Each Worker row now has a second line for native start/completion/ACK
+counters, host-audited capture count, and most-recent/cumulative FLOW_V1 records.
+The publisher copies only summaries corresponding to the current visible page;
+the Worker window stays snapshot-only. Missing current-run values display as
+dashes instead of the word `None`. No native Worker, Lua lifecycle, AUTO67,
+predecessor, or Worker 1B scaling behavior was changed.
+
+VISUAL / RUNTIME CHECK: The supplied screenshot visibly showed `Workers None`,
+`Depth None`, zero captures/segments, and an empty Worker list; `8 × 21` was only
+the saved next-run configuration. At the last on-disk status snapshot (18 Sep
+2026 23:03), the run reported RUNNING at 8 Workers × depth 21, 24,512 starts,
+24,512 completions, 24,504 host-audited segments, and zero reported errors;
+each Worker had 3,064 starts/completions. That snapshot is now stale: the
+matching EmuHawk/runtime processes were absent during inspection and no final
+interactive receipt was present, so these counters are recorded as the last
+observed snapshot, not as a claim that the emulator is still running or that
+the session completed cleanly. The edited UI/publisher code takes effect on a
+new launch; the inspected old window was not restarted.
+
+VALIDATION: `python -B tests/live_worker_control_test.py` PASS (23/23),
+including exact row text and visible-page-only activity publication; Python AST
+syntax PASS; `git diff --check` PASS. The new status line is covered by
+deterministic formatting tests; no fresh BizHawk campaign was started.
+# 2026-09-19 — M12 2I END GAME and compact rolling master
+
+TASK / ACCEPTANCE: Add an obvious `END GAME` control to the existing Worker
+window, request a graceful round-boundary shutdown without killing EmuHawk,
+and compact an already sealed interactive FLOW_V1 run into an atomic rolling
+master. Preserve the 1B/2H lifecycle and the 1 GiB free-disk safety reserve.
+
+RESULT: The Worker window now publishes one idempotent `END_GAME` sentinel,
+shows `ENDING…`, disables repeated configuration/shutdown actions, and Lua
+consumes the request only between complete Worker rounds. A post-run status
+window and compact SQLite rolling-master writer were added. The existing
+128×100 interactive run was processed without replaying gameplay: 94,703,572
+raw records and 287,744 sealed segments produced a 495,616-byte compact
+generation with 1,580 new instruction-PC facts, 2,175 new compact edges and
+287,744 terminal facts. The atomic pointer is under the ignored
+`build/thor-evidence/live-worker-control-2h/rolling-master-2i/` tree.
+
+BOUNDARY: This is the compact rolling-master pass. The canonical 2G knowledge
+pointer was not replaced, and 2E/2F refresh was not claimed because the
+interactive run deliberately lacks a post-run Cartographer/Archivist session
+and exact decoder ranges for its 1,580 new PCs. Raw FLOW remains retained for
+that required follow-up; no cleanup occurred.
+
+VALIDATION: `tests/live_worker_control_test.py` 24/24 PASS;
+`tests/live_forward_rolling_master_test.py` PASS; Python syntax compilation
+PASS; `git diff --check` PASS. No new gameplay campaign was run.
+
+# 2026-09-19 — M12 2I.1 post-run progress and truthful completion state
+
+TASK / ACCEPTANCE: Make long post-run work visibly alive, publish atomic
+heartbeat snapshots, remove premature `ANALYSIS COMPLETE`, keep compact-only
+results explicitly partial, and preserve the existing END GAME, Worker/FLOW,
+rolling-master, canonical-truth, and SOURCE_OWNED boundaries.
+
+RESULT: Added `live_forward_progress.py` with a durable atomic status contract:
+stage state, factual N/M counters, indeterminate totals, elapsed time,
+heartbeat age, progress age, backend PID, stage counter, and failure state.
+The rolling-master backend now reports FINALIZING RUN, AUDITING FLOW, MERGING
+MASTER, COMPACTING EVIDENCE, then marks map/provenance/ASM/audit/cleanup as
+`SKIPPED_NOT_APPLICABLE` for the compact-only pipeline. The UI now polls at
+4 Hz, shows determinate or indeterminate progress, heartbeat health, progress
+age, responsive stage rows, a partial terminal state, and raw JSON only in
+DETAILS. A stale backend is displayed as `BACKEND NOT RESPONDING` and a
+backend error as `ANALYSIS FAILED`.
+
+BOUNDARY: No gameplay campaign was rerun. The existing compact master and raw
+evidence were preserved. This checkpoint does not promote new PC facts into
+canonical ranges or claim the full 2I pipeline.
+
+VALIDATION: Added deterministic progress/heartbeat tests covering real and
+indeterminate progress, clamping, heartbeat buckets, partial completion,
+pending/active blocking, atomic snapshots, backend failure, and JSON-details
+separation. Relevant Python tests and syntax checks were run; native GUI
+pixel verification remains unavailable when no native app surface is exposed.
+
+# 2026-09-19 — M12 2I.2 UI contrast repair
+
+TASK: Remove the bright system-default panels visible in the post-run window
+without changing analysis or runtime semantics.
+
+RESULT: The post-run window now uses dark styles for `TLabelframe`, its label,
+buttons, and the progress trough/bar. The main panel, stage list, progress
+indicator, and Details action no longer fall back to white system backgrounds.
+
+VALIDATION: Progress/UI tests and Python compilation pass; native screenshot
+verification remains unavailable in the current session because no native app
+surface is exposed.
+# 2026-09-19 — M12 end-game stages 5–9 fail-closed integration
+
+TASK: Connect the existing 2I.1 post-run progress backend to automatic stages
+5–9 without changing the Worker/Lua/FLOW hot path or inventing a completion
+result.
+
+RESULT: PASS for the safety integration. The compact backend now invokes a
+single post-run coordinator after stage 4. It can build a closed MAP-1 session
+from a hash-checked ordered FLOW spool, imports through an atomic paired
+canonical generation when an accepted master/knowledge pair is available,
+checks idempotent replay and SOURCE_OWNED/emission invariants, and inspects
+ordered FLOW for actual control-provenance consumers. Missing accepted inputs,
+unavailable provenance import, or unavailable current-main 2F closure stop the
+pipeline with an exact reason; stages are never marked PASS or skipped merely
+because the UI is present. Raw FLOW remains retained on every stop.
+
+VALIDATION: `python -B tests/live_forward_complete_pipeline_test.py`;
+`python -B tests/live_forward_rolling_master_test.py`;
+`python -B tests/live_forward_postrun_progress_test.py`; Python compilation;
+`git diff --check`. Existing native Debug/Release/GNU validation remains the
+pre-existing 204/204 and 208/208 record and is not re-run for this Python-only
+post-run adapter.
+# 2026-09-19 — M12 2I.2a post-run terminalization
+
+TASK: Eliminate terminal snapshots that still expose an ACTIVE stage.
+
+RESULT: Added one `ProgressPublisher.finalize()` path for COMPLETE,
+PARTIAL_COMPLETE, STOPPED and FAILED. It clears `active_stage`, converts the
+current stage to PASS/STOP/ERROR as appropriate, blocks later pending stages
+after STOP/ERROR, persists pipeline state, reason, backend metadata and
+exception details, and atomically publishes the snapshot. Stale heartbeat with
+a live process remains non-terminal; confirmed backend death uses FAILED.
+Terminal UI states show `Backend complete` or `Backend stopped` and do not
+render a red heartbeat timeout. Malformed old terminal snapshots can be
+repaired before reuse.
+
+VALIDATION: post-run progress/terminalization tests 15/15 PASS;
+complete-pipeline, rolling-master and Worker Control tests PASS; Python
+compilation PASS. No Worker/FLOW/Lua hot-path changes and no runtime campaign
+were made.
+
+# 2026-09-19 — M12 interactive preflight rejection does not start post-run
+
+TASK: Fix the desktop launch that closed immediately when the saved 128x100
+configuration was rejected before EmuHawk could start, and avoid presenting a
+secondary post-run analysis failure for an unsealed run.
+
+RESULT: `live_forward_rom_link_runtime.py` now starts post-run analysis only
+for sealed terminal outcomes (`STOPPED_END_GAME`, `STOPPED_DISK_RESERVE`, or
+`STOPPED_AFTER_EMUHAWK_EXIT`). Resource and transport preflight rejection
+receipts remain visible in Worker Control and record `RUN_NOT_SEALED` instead
+of opening a misleading Stage 1/9 failure window. The underlying fail-closed
+resource policy is unchanged: the observed 128x100 attempt measured 385 MiB
+available RAM against an 8.61 MiB native plan after the configured reserve
+arithmetic and therefore correctly ran zero Worker cycles.
+
+VALIDATION: Added `tests/live_forward_rom_link_runtime_test.py`; visual native
+window verification could not run because the current computer-use session
+exposes no native app surface. A separate two-minute CLI runtime check is
+recorded below after execution.
+
+FOLLOW-UP: MAP-1 reconstruction now publishes determinate Stage 5 progress in
+256-segment batches while admitting the ordered spool, so a large continuous
+run does not appear frozen between stage boundaries. The existing fail-closed
+stage ordering and raw-evidence retention are unchanged.
+
+RUNTIME CHECK: `campaign-2min-after-fix-8x21` ran the canonical ROM for more
+than two minutes, accepted `STOPPED_END_GAME` only at a complete round, and
+sealed 19,336 segments before launching post-run analysis. At the latest
+receipt check, FINALIZING RUN, AUDITING FLOW (2,186,993 records), MERGING
+MASTER, and COMPACTING EVIDENCE were PASS; REFRESHING MAP was actively
+processing the ordered FLOW session and CONTROL PROVENANCE was still pending.
+The first four stages therefore execute; stages 5–6 are never marked PASS
+without their real work completing.
+
+RESOURCE POLICY FIX: The desktop Worker Control reserve is now 1 GiB instead
+of 4 GiB. It remains a fail-closed floor: a machine with only a few hundred
+MiB available still refuses to start, while a 32/64 GiB desktop with about
+2.8 GiB available can allocate the measured 128x100 native plan (8.61 MiB)
+without an immediate false rejection. The disk evidence stop reserve remains
+the separate 1 GiB free-disk guard.
+## M12 Stage 5 canonical knowledge refresh 2I.2b
+
+TASK: Complete deterministic post-run map refresh from the sealed
+`campaign-2min-after-fix-8x21` receipt without replaying the runtime campaign.
+
+IMPLEMENTATION: Stage 5 validates the accepted rolling-master generation,
+streams ordered FLOW into one compact MAP-1 session, decodes each unique PC
+through the exact ROM-range CLI, keeps only truly adjacent `EXECUTED_NEXT`
+facts, and records terminal `OBSERVED_NEXT_PC` separately. Compact lineage
+summaries preserve occurrence counts without expanding duplicate witnesses.
+Canonical knowledge is staged, imported twice to prove idempotence, audited
+for unchanged emission partition and `SOURCE_OWNED`, then published atomically.
+The accepted 1+ GiB Archivist master is carried by immutable hard link; the
+session merge receipt uses a tiny MAP-1 target. Raw evidence remains retained.
+
+VALIDATION: The sealed run audited 19,336 segments / 2,186,993 records.
+Stage 5 reached `PASS_POSTRUN_CANONICAL_MAP_REFRESH_V1`; Stage 6 completed
+`NO_DELTA`; Stage 7 stopped closed because no accepted 2F closure runner exists.
+Canonical generation: `gen-b18a8a86d5d2eb93`; 471 executed instruction objects,
+489 executed-next relations, 39 terminal relations, unchanged emission and
+source ownership. No runtime campaign was restarted.
+# 2026-09-19 — M12 Stage 7 map-driven executed ASM closure 2I.3
+
+TASK: Port the accepted 2F closure proof into the current post-run pipeline,
+recompute from canonical generation `gen-b18a8a86d5d2eb93`, and hand off to an
+independent Stage 8 full-ROM audit without rerunning BizHawk.
+
+RESULT: `PASS_POSTRUN_MAP_DRIVEN_ASM_CLOSURE_V1`. Thirty current candidate
+islands were audited; four were individually closed and dependency closure
+accepted only `[0x002AA4,0x002ACE)` (42 bytes, 14 executed instructions).
+`SOURCE_OWNED` changed 1,475,600 -> 1,475,642. The independent 3,145,728-byte
+rebuild matched the canonical ROM SHA-256. A second invocation produced
+`NO_DELTA` with 29 remaining blocked candidates and repeated Stage 8 exactly.
+
+EVIDENCE: `docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2I.3.md` and
+its compact JSON receipt. Runtime campaign, AUTO67, Worker 1B, predecessor,
+and FLOW semantics were unchanged; raw maps and generated split evidence stay
+under ignored `build/thor-evidence/`.
+
+# 2026-09-19 — M12 Stage 6 control-provenance handoff 2I.2c
+
+TASK: Make the post-run CONTROL PROVENANCE stage publish a structured result and hand off automatically to ASM CLOSURE without leaving an ACTIVE stage when the backend exits.
+
+RESULT: Stage 6 now receives the exact Stage 5 receipt and generation, scans only its sealed ordered FLOW paths, loads the canonical ROM once, reports the known segment denominator, and returns PASS/NO_DELTA/STOP/ERROR fields. The previous coordinator counted a non-existent `relations` field while the analyzer returns `consumers`, so the scan could silently report NO_DELTA. NO_DELTA is now terminal for Stage 6 only; the coordinator immediately starts Stage 7. STOP and ERROR use the existing terminal finalizer and block later stages.
+
+VALIDATION: Focused Stage 6 contract tests and the complete-pipeline regression tests pass (3/3); Python compilation and diff checks pass. No new runtime campaign was launched. Worker Control's 64-row page remains a display/transport page size; the observed run configured and executed 128 workers.
+
+# 2026-09-19 — M12 Stage 6 runtime regression after RECORD fix
+
+RUNTIME CHECK: A fresh bounded interactive run used the canonical ROM with
+8 Workers and chain depth 21, then was ended after more than one minute through
+the supported END GAME request. Runtime sealed `STOPPED_END_GAME` with 13,416
+segments and 13,416 captures, zero runtime errors; every Worker 0–7 recorded
+1,677 starts, completions, audits, analyses, and releases.
+
+POST-RUN RESULT: REFRESHING MAP reached PASS. CONTROL PROVENANCE reached
+NO_DELTA with determinate progress 13,416 / 13,416 FLOW segments and then
+entered the Stage 7 handoff. Stage 7 stopped fail-closed at
+`STOP_STAGE7_EMISSION_PARTITION_MISMATCH`, a separate existing Stage 7 gate.
+The previous `NameError: RECORD is not defined` no longer occurs. The Windows
+Computer Use visual service was unavailable (`sky is not configured`) during
+this regression, so visual screenshot confirmation remains explicitly
+unverified; runtime snapshots, terminal status, and reports were inspected.
+
+# 2026-09-19 — M12 Stage 7 emission-partition handoff 2I.3a
+
+TASK: Fix the Stage 7 preflight authority mismatch without changing runtime or
+re-running the Worker campaign.
+
+FINDING: The live run's current canonical generation was already the accepted
+post-2F generation (`ASM=56,176`, `DATA=233,676`, `ASSET=1,085,110`,
+`INCBIN=1,770,766`, `SOURCE_OWNED=1,475,642`, sum `3,145,728`). The old
+Stage 7 fallback selected the pre-2F materialized manifest (`ASM=56,134`,
+`INCBIN=1,770,808`, `SOURCE_OWNED=1,475,600`), so the mismatch was a real
+lineage error rather than a runtime failure.
+
+FIX: Stage 7 now resolves an emission/ownership manifest only by explicit
+canonical-generation parent lineage. It writes `stage7-preflight.json` with
+canonical generation/map hash, ROM identity, category totals, source ownership,
+manifest hashes, and mismatch fields. The UI starts Stage 7 with
+`VALIDATING EMISSION PARTITION`; unknown metadata remains distinct from the
+emission partition. The historical 2F fixture remains regression-only.
+
+VALIDATION: Direct current-generation execution returned
+`NO_DELTA / PASS_POSTRUN_MAP_DRIVEN_ASM_CLOSURE_V1`, promoted 0 bytes, preserved
+`SOURCE_OWNED=1,475,642`, and completed Stage 8 with
+`PASS_POSTRUN_FULL_ROM_AUDIT_V1`. Focused Python coverage: 49 passed and 5
+subtests passed. No new runtime campaign, commit, or push was performed.
+
+VALIDATION UPDATE: After the handoff fix, the direct Stage 7 receipt was
+regenerated without a runtime campaign: `NO_DELTA`, zero promoted bytes,
+`SOURCE_OWNED delta=0`, and Stage 8 `PASS_POSTRUN_FULL_ROM_AUDIT_V1`.
+CMake Release CTest passed 210/210 and Debug CTest passed 210/210. The
+configured GNU/WSL CTest tree remains non-runnable on this Windows host because
+its test commands point to `/mnt/c/...` executables that are not present; this
+is recorded as an environment limitation, not a product pass.
+
+# 2026-09-19 — M12 Stage 6 real control-provenance stop resolution 2I.2d
+
+TASK: Diagnose the real sealed 128-Worker evidence after Stage 6 had scanned
+25,472/25,472 FLOW segments and incorrectly stopped with
+`STOP_CONTROL_PROVENANCE_IMPORT_UNAVAILABLE`.
+
+REPRODUCTION: Replaying only Stage 6 against the exact accepted generation
+`gen-525afa618b8315d8` and the receipt-owned FLOW artifact processed 25,472
+segments and 7,982,903 records. It found 3,381 indirect JSR consumers; every
+one was unresolved/unsupported. `FLOW_mismatches=0`, `identity_conflicts=0`,
+`ROM_mismatches=0`, and `predecessor_failures=0`. The first witness is PC
+`0x00045A`, opcode `0x4E91`, register `A1`, reason
+`SOURCE_EFFECTIVE_ADDRESS_UNRESOLVED`. The old implementation treated the
+mere presence of these bounded unresolved consumers as a global import STOP.
+
+FIX: Stage 6 now emits a diagnostic receipt with exact run/generation/FLOW
+identity, all requested counters, statuses, and the first offending consumer.
+Unresolved consumers, unsupported transforms, and a bounded absence of new
+provenance facts now produce `NO_DELTA`; only FLOW, identity, or ROM integrity
+failures remain global STOPs. The post-run UI shows the exact stop code in the
+current stage and stage list. Stage 5, Worker/FLOW hot path, Stage 7 truth gate,
+SOURCE_OWNED, and cleanup policy are unchanged.
+
+MINUTE RUNTIME CHECK: A new 8-Worker/depth-21 run was stopped after about one
+minute through the supported END GAME path. Runtime sealed
+`STOPPED_END_GAME` with 9,376 segments and 1,072,486 records. Stage 6 reached
+`NO_DELTA` at 9,376/9,376 and Stage 7 became ACTIVE. The first post-run attempt
+then exposed a separate Windows-only Stage 8 temporary-directory cleanup
+exception (`WinError 32`) after candidate auditing. Stage 8 cleanup is now
+best-effort after the byte-exact audit; a direct retry on the resulting
+canonical generation returned `NO_DELTA`, zero promotion, unchanged
+`SOURCE_OWNED`, and `PASS_POSTRUN_FULL_ROM_AUDIT_V1`.
+
+VALIDATION: Focused tests `21 passed`; Python compilation and diff checks pass.
+The Computer Use visual service was unavailable (`sky is not configured`), so
+live screenshot confirmation is explicitly unverified; runtime receipts and
+post-run status snapshots were inspected instead. No commit or push was made.
+# 2026-09-19 — M12 live Stage 7 stall diagnosis and bounded child execution
+
+TASK: Diagnose the live END GAME post-run stall without restarting the run or
+changing the accepted map/master. The backend remained alive at Stage 7 while
+all 113 candidate islands had completed and `vasmm68k_mot.exe` was assembling
+the Stage 8 full-ROM audit. The child had run for 639 seconds with 0.015625
+CPU seconds, unchanged `full_layout.asm`, and no `audit.rom`; the child was
+captured in `stage7-stall-diagnostic.json` and stopped alone. The backend then
+failed closed with `STOP_FULL_ROM_REBUILD_MISMATCH`; Stage 8 and cleanup stayed
+blocked, and `SOURCE_OWNED delta = 0`.
+
+FIX: Keep Stage 1–6, Worker/FLOW, accepted map/master, and ownership gates
+unchanged. Add a bounded Stage 7/8 subprocess runner with incremental output
+tails and `STOP_STAGE7_SUBPROCESS_TIMEOUT`; publish the real Stage 7 candidate
+denominator and current candidate/range/subphase during child work; expose the
+Stage 8 full-ROM assembly as its own live progress stage. The 120-second bound
+is deliberately above the observed successful direct Stage 7/8 proof window
+and far below the diagnosed 639-second child stall.
+
+VALIDATION: Stage 7 focused regressions 3/3, Stage 7 preflight 2/2, ASM
+closure synthetic gates passed, post-run progress 15/15, complete-pipeline
+regression 1/1, and Python compilation passed. No runtime campaign was
+restarted after the diagnosis.
+# 2026-09-19 — M12 final live Stage 7→8→9 handoff contract
+
+TASK: Verify the live post-run handoff without changing truth semantics or
+starting runtime before the structural contract is green.
+
+FIX: Stage 7 no longer invokes Stage 8. It persists `stage7-result.json`
+atomically and returns its terminal result to the coordinator. The coordinator
+then starts `FULL ROM AUDIT`, invokes the independent Stage 8 runner with its
+own `STOP_STAGE8_SUBPROCESS_TIMEOUT`, independent heartbeat/progress, and only
+after Stage 8 PASS starts `CLEANUP`. Cleanup is retention-only and reports
+`RAW_RETAINED`; no evidence is deleted.
+
+VALIDATION: Structural Stage 7→8→9 contract, Stage 7/8 timeout regressions,
+Stage 7 focused tests, post-run progress tests, complete-pipeline regressions,
+Python compilation, and `git diff --check` pass. A fresh one-minute runtime
+verification remains the next step; no manual Stage 7/8 invocation is used.
+
+# 2026-09-19 — M12 final live Stage 7→8→9 pipeline verification
+
+RESULT: `PASS_END_GAME_ROLLING_MASTER_VISUAL_PIPELINE_V1`. One corrected fresh
+ordinary `--until-closed --control-window` gameplay run was sealed by the
+normal END GAME request after approximately one minute. The run used
+`WORKER_COUNT=128`, depth `100`, produced `33,280` audited segments, and every
+Worker completed `260` cycles (minimum and maximum), with `SOURCE_OWNED delta =
+0`.
+
+LIVE HANDOFF: `CONTROL PROVENANCE = NO_DELTA`; `ASM CLOSURE = NO_DELTA` with
+`stage7_terminal = true`; `FULL ROM AUDIT = PASS_POSTRUN_FULL_ROM_AUDIT_V1`
+over `3,145,728` canonical ROM bytes; `CLEANUP = RAW_RETAINED`. Final status
+is `ANALYSIS COMPLETE ✓`, Stage `9 / 9`. Stage 8 and Stage 9 were entered only
+by the coordinator after the preceding terminal result; the Stage 8 child
+uses its own timeout and heartbeat path.
+
+NOTE: An earlier launch probe sealed valid gameplay but stopped at Stage 5
+because the launcher was given the assembly utility instead of the existing
+batch range decoder. It did not reach Stage 7 and is not part of the result.
+The corrected normal launcher used `oasis_re_rom_range_decode.exe`; no status
+file was edited and no Stage 7/8 function was invoked manually.
+
+EVIDENCE: runtime receipt and post-run report remain under the ignored
+`build/thor-evidence/live-worker-control-2h/campaign-final-pipeline-v1-20260919-184157/`
+tree; raw FLOW evidence is retained locally and is not repository content.
+
+# 2026-09-19 — M12 Stage 9 absorbed raw permanent reclaim 2I.5
+
+TASK: Change Stage 9 from unconditional `RAW_RETAINED` to fail-closed
+absorption proof followed by direct permanent deletion of only redundant
+run-scoped artifacts. The accepted rolling master, canonical map, ownership,
+Stage 5–8 receipts, final report/status and ROM remain protected.
+
+IMPLEMENTATION: Added `live_forward_absorption_cleanup.py`. It verifies exact
+run lineage, audited counts, stage statuses, ROM identity, conflict-free
+compact facts, canonical emission/ownership integrity and every streamed raw
+instruction/relation/terminal fact before publishing
+`cleanup-delete-manifest.json` and `absorbed-run-<run_id>.json` atomically.
+Only then does it unlink the explicit file list with five bounded WinError 32
+retries. Replay treats already missing manifest entries as completed; failed
+deletion or post-delete integrity stops with `STOP_CLEANUP_REQUIRED_DELETE_FAILED`.
+The UI reports absorbed run, deleted bytes, permanent mode and retained master.
+
+VALIDATION: Absorption cleanup tests cover gates A–L, including lineage/stage
+KEEP, semantic failure, direct no-recycle deletion, lock retry/stop, replay,
+protected paths and post-delete integrity. The first real target is the
+already completed run `1789840637`; no new gameplay is started before that
+reclaim is proven.
+
+# 2026-09-19 — M12 2I.5 absorption replay and coordinator-order fix
+
+RESULT: The first fresh short END GAME replay after enabling Stage 9 reached
+all prior stages successfully (`CONTROL PROVENANCE = NO_DELTA`, `ASM CLOSURE =
+NO_DELTA`, `FULL ROM AUDIT = PASS_POSTRUN_FULL_ROM_AUDIT_V1`) but cleanup
+stopped fail-closed before deletion because `report.json` and `status.json`
+are coordinator-owned outputs created after the cleanup function returns.
+No raw file was deleted during that stop.
+
+FIX: Keep the fail-closed absorption and direct deletion semantics. Stage 9
+now validates protected receipts that already exist at the deletion boundary;
+`report.json` and `status.json` are then atomically published by the
+coordinator and verified in the terminal snapshot. Added a regression covering
+reclaim before those coordinator outputs exist.
+
+FINAL REPLAY: Resumed the same sealed run through the normal cleanup helper
+without replaying gameplay or editing status. Run `1789872670` passed
+`PASS_ABSORBED_RAW_PERMANENT_RECLAIM_V1`: 10 redundant files and
+`404,969,781` bytes were permanently deleted, raw retained bytes are `0`,
+semantic equivalence and post-delete integrity are `PASS`, and the final UI
+state is `ANALYSIS COMPLETE ✓`, Stage `9 / 9`. The protected master,
+canonical map, receipts and final report/status remain present. No Recycle Bin
+was used.
+
+VALIDATION: Absorption cleanup `9/9`, complete-pipeline `1/1`, post-run
+progress `15/15`, Python compilation, and `git diff --check` pass. The fresh
+runtime produced `30,592` audited segments at `128` Workers/depth `100`; no
+new gameplay was needed after the order-only fix because the sealed run was
+replayed through the corrected fail-closed cleanup path.
+
+# M12 RAM migration R1 — self-contained MASTER V2 shadow
+
+`tools/bizhawk-native-ring/master_v2_shadow.py` builds a deterministic
+`oasis.m12.master-v2-shadow.v1` container from one accepted legacy state. It
+embeds the rolling master tables, canonical map master tables, canonical
+knowledge/ownership/emission tables, and normalized Stage 5–9/provenance/ASM/
+absorption outcomes. Each section is streamed with an independent SHA-256;
+the footer covers the complete section manifest with an overall hash.
+
+This is shadow-only. The legacy rolling and canonical current pointers remain
+authoritative and are not replaced or deleted. The generated shadow is kept
+under ignored `build/thor-evidence/master-v2-shadow-r1/`.
+
+REAL ACCEPTANCE: accepted run `1789872670` generated twice. Both files are
+byte-identical: `1,272,891,699` bytes, overall SHA-256
+`ed9697e511ea017cee28b4aa1c62f4d9f9f8ebe014b309cc32d153b4ce7271c9`.
+Independent section hashes match the legacy semantic projection exactly.
+Legacy persistent inputs are `1,212,969,559` bytes across 19 files; ratio is
+`1.0494011903`.
+
+SECTION SIZES: meta `3,503` bytes; rolling master `519,799`; canonical map
+master `1,230,423,256`; canonical knowledge/ownership/emission `41,713,297`;
+Stage 5–9 outcomes `230,643`. `SOURCE_OWNED` remains unchanged at
+`1,475,642` bytes. Corruption and missing-section rejection are covered by
+`tests/master_v2_shadow_test.py`; the existing runtime/storage authority and
+Stage 1–9 behavior remain unchanged.
+
+# 2026-09-19 — M12 RAM migration R2 canonical read authority
+
+TASK: Promote the deterministic MASTER V2 shadow to the single canonical read
+source for the canonical map, ownership and emission partition while retaining
+legacy canonical files as an unchanged verification shadow. Runtime capture,
+storage, and Stage 6–8 semantics remain unchanged.
+
+IMPLEMENTATION: Added `tools/bizhawk-native-ring/master_canonical_view.py`.
+`MasterCanonicalView` exposes ROM identity, generation/lineage, objects and
+ranges, instruction facts, `EXECUTED_NEXT`, `OBSERVED_NEXT_PC`, ownership,
+emission and canonical hashes. Stage 5 resolves the exact R2 shadow pointer,
+verifies the legacy current pointer, and materializes a stage-local SQLite
+scratch generation through this API. Stages 6–8 consume that generation; no
+stage parses MASTER V2 directly. Legacy canonical files remain present and are
+read only by the shadow verification gate.
+
+REAL ACCEPTANCE: accepted run `1789872670` was read without new gameplay. The
+R2 shadow was generated twice from the current legacy state and both files are
+byte-identical: `1,276,717,413` bytes, file SHA-256
+`56e4f9ed11471b7628891aa91c8dfce8775e6f72247ab105c696a5a3ecd78c31`, logical
+SHA-256 `1cb1b68f107466f6dff7a28b28963572afdbde392ba5fa06514221662e0860ee`.
+Legacy persistent inputs are `1,218,093,680` bytes across 19 files; ratio is
+`1.0481274421`. Section sizes are meta `3,514` bytes; rolling master
+`520,711`; canonical map master `1,230,423,256`; canonical knowledge
+`45,538,088`; Stage 5–9 outcomes `230,643`.
+
+VALIDATION: MASTER V2 semantic equivalence PASS; deterministic pair SHA and
+size PASS; real `MasterCanonicalView` counts match legacy (5,266 objects,
+4,983 ranges, 2,336 relations, 2,463 emission rows, `SOURCE_OWNED` 1,475,642
+bytes); materialized SQLite integrity PASS; R2 view, R1 shadow, complete
+pipeline, Stage 7–9 contract and control-provenance tests pass; Python compile
+and `git diff --check` pass. The legacy canonical pointer hash was captured
+before generation and remains unchanged. Current full CMake configure is not
+available because the checked-in build cache points to a historical `D:` tree
+and this host has neither Ninja nor a VS2022 instance.
+
+CHECKPOINT: `PASS_SELF_CONTAINED_MASTER_V2_CANONICAL_READ_AUTHORITY_V1`.
+
+# 2026-09-20 — M12 historical raw backlog absorption inventory
+
+TASK: Inventory the accumulated `thor-evidence` backlog without starting new
+ gameplay, and prepare a deterministic one-run-at-a-time absorption plan.
+
+RESULT: Read-only inventory wrote ignored artifacts
+`build/thor-evidence/historical-raw-backlog.json` and
+`build/thor-evidence/backlog-absorption-plan.json`. The current MASTER V2
+pointer is `master-v2-88dba3b088db3ebb`, file SHA-256
+`4cfb46d841a24eee3e9d3bbeacd4f73d0a890e1f234f1425bced076129dd6a6b`, logical
+SHA-256 `cdcfdb20c8e5b03b58a645eedf10e97df8357b1fec950918f9a76afb598bda6b`.
+Its explicit `absorbed_receipts` contains only run `1789872670`; rolling
+`run_rows` lineage was deliberately not treated as proof of accepted
+absorption. That run's bulk is already absent, so class A has zero safe
+candidates and zero bytes eligible for deletion.
+
+INVENTORY: 54 records were visited (37 receipt-backed and 17 raw-only), with
+`10,413,519,240` raw FLOW bytes and `24,672,030,720` session-DB bytes. The
+corrected classification is B `6`, C `19`, no-backlog `10`, D `19`. The
+single-run plan contains 25 raw candidates in deterministic run-id order: B `6` are ready only for later boundary validation; C `19` already occur in
+MASTER lineage and are stopped before replay because duplicate import and
+occurrence inflation are not proven safe. No run was replayed, no MASTER was
+written, and no artifact was deleted. Disk free at inventory was
+`7,205,801,984` bytes.
+
+STOP: `PASS_HISTORICAL_RAW_BACKLOG_ABSORPTION_V1` is not claimed. Safe
+absorption is blocked until the durable contribution of lineage runs is
+reconciled and a current MASTER V2 absorption receipt exists for each run.
+The `24.6 GB` session database for stopped run `1789839425` remains protected;
+there is no safe deletion basis for it.
+
+# 2026-09-20 — M12 V2 run contribution reconciliation
+
+TASK: Establish a run-scoped idempotent boundary and reconcile all 54
+historical entries without gameplay, mass replay, legacy generation writes, or
+raw deletion.
+
+IMPLEMENTATION: Added `master_v2_contribution_boundary.py`. Contributions are
+hashed from stable semantic fields, apply exactly once by `run_id`, preserve
+occurrence deltas for already-known facts, return
+`NO_DELTA_ALREADY_APPLIED` for identical replay, and stop on a conflicting
+contribution hash. `verify_only` and `forensic_replay` are read-only. The
+MASTER V2 binary now accepts and verifies an additional `run_contributions`
+section; the current startup pointer was atomically promoted to the streamed
+candidate without changing any legacy pointer or generation.
+
+LEDGER: Ignored
+`build/thor-evidence/historical-run-contribution-ledger.json` contains all 54
+entries. Classification is `ABSORBED_EXACT=1`, `COMMITTED_EXACT=0`,
+`NOT_COMMITTED=6`, `AMBIGUOUS=28`, `UNUSABLE=19`. Safe raw deletion is `0`
+bytes; safe later replay is `319,724,800` raw bytes; ambiguous retained bulk
+is `36,801,924,384` bytes. The protected `1789839425` session DB remains
+untouched.
+
+MASTER V2: generation remains `master-v2-88dba3b088db3ebb`, now with 54
+contribution records. The new section is `66,642` bytes with SHA-256
+`96356f4242bd898909a3bb6067d6a216a32f7638e9309ae436530ca513a34abf`.
+Published MASTER file is `1,277,027,967` bytes, file SHA-256
+`d69737bcbd2ffa51569d76c3ea872f1bd176ae540347a154d211b1b7048cfac8`, logical
+SHA-256 `a6b7ba62bc5a226a0f0caa4fd4394141fecf9c119a0d633a11616f007402c3b8`.
+Startup validation passes with `MASTER_V2`, `legacy_reads=0`, fallback
+disabled, ROM identity unchanged, and `SOURCE_OWNED=1,475,642` bytes.
+
+VALIDATION: contribution boundary tests A–N `14/14`; existing MASTER V2,
+outcome, startup and canonical-view regressions `26/26`; deterministic
+extended-master round-trip SHA `PASS`; `git diff --check` `PASS`. No raw,
+session, legacy rolling, or gameplay artifact was modified or deleted.
+
+CHECKPOINT: `PASS_V2_RUN_CONTRIBUTION_RECONCILIATION_V1`.
+
+## 2026-09-20 — M12 V2 backlog phase 1
+
+- Processed exactly the six `NOT_COMMITTED` sealed runs through the V2 run-scoped contribution boundary; no gameplay was started and `AMBIGUOUS`/`UNUSABLE` runs were untouched.
+- Each run passed Stage 5, Stage 6 `NO_DELTA`, Stage 7 `NO_DELTA`, and Stage 8 full-ROM audit. Stage 7/8 no-delta proof was reused after the first identical canonical-map hash; the first run supplied the fresh full Stage 7/8 proof.
+- Every first application returned `APPLIED_ONCE`; every immediate read-back resubmission returned `NO_DELTA_ALREADY_APPLIED`; rolling occurrence totals were checked as `after = before + contribution`.
+- V2 current pointer now contains seven absorbed exact runs, with a reconstructed immediately previous V2 snapshot retained. Legacy rolling/canonical authorities were not written.
+- Permanently reclaimed 433,268,106 bytes of run-local raw/session bulk. Remaining ledger: `NOT_COMMITTED=0`, `AMBIGUOUS=28`, `UNUSABLE=19`.
+- Validation: 26 V2/master tests passed; current V2 file SHA/logical SHA and all extended section hashes verified; deleted raw/index paths are absent.
+- Checkpoint: `PASS_V2_NOT_COMMITTED_BACKLOG_ABSORPTION_V1`.
+- Compatibility note: the six historical receipts predate the top-level instrumentation identity field. The exact identity was derived from each sealed BizHawk command line, the sealed `gpgx.wbx` hash, the sealed Lua script hash, and the trace-contract hash; no receipt/raw bytes were edited.
+
+## 2026-09-20 — M12 V2 backlog phase 2
+
+- Performed read-only forensic reconciliation for all 28 `AMBIGUOUS` runs. No gameplay was started, no aggregate MASTER V2 section was changed, and no ambiguous raw/session artifact was deleted.
+- Classification: `PARTIALLY_COMMITTED=1` (`1789869530`, 419,227 bulk bytes) and `STILL_AMBIGUOUS=27` (42,885,158,345 bulk bytes). No run was promoted to `ALREADY_COMMITTED_EXACT` or `NOT_COMMITTED_EXACT`.
+- The only surviving legacy snapshot pair proves a 28-to-29-run delta for `1789869530`; its sealed FLOW source is absent, so it remains conservative `PARTIALLY_COMMITTED` and is not replayable or deletable.
+- The 24.6 GiB `1789839425` session SQLite was opened in SQLite read-only mode without copying or writing. It is `CLOSED`, contains 32,000 imports, but has no durable Stage 5 accepted-commit proof; it remains `STILL_AMBIGUOUS` and retained.
+- Forensic report: `build/thor-evidence/ambiguous-forensic-reconciliation.json`. Master file SHA remained `96ffc94c6f6e2a6a31a539c6b3fa327601f210bcbc2d45ad196c04b771e0e79f` before and after; aggregate counters, `SOURCE_OWNED`, and ASM deltas are unchanged.
+- Validation: forensic tests plus V2/master regressions `31/31`; MASTER V2 startup `PASS`, `legacy_reads=0`, fallback disabled; no deletion performed.
+- Checkpoint: `PASS_V2_AMBIGUOUS_FORENSIC_RECONCILIATION_V1`.
+
+## 2026-09-20 — M12 single persistent MASTER V2
+
+- Verified `build/thor-evidence/master-v2/current.json` against the exact resolved MASTER V2: generation `master-v2-88dba3b088db3ebb`, file SHA `96ffc94c6f6e2a6a31a539c6b3fa327601f210bcbc2d45ad196c04b771e0e79f`, logical SHA `7003f3a827a09902a924b408f1bc7d896368150c9797a8cd9d22b452b62d69fa`, ROM SHA unchanged, all section hashes PASS, `SOURCE_OWNED=1,475,642`.
+- Wrote `build/thor-evidence/single-master-prune-manifest.json` before deletion. Permanently removed 21 superseded V2 snapshots/shadows/staging files, reclaiming 11,410,881,216 file bytes; raw/session evidence and legacy rolling/canonical master fixtures were untouched.
+- Retained exactly one current V2 authority plus `current.json`. Retained the R3 binary only as a non-authority regression fixture required by `master_startup_authority_test.py`; its stale candidate copy was removed.
+- Post-delete startup, canonical view, provenance/outcomes view, run-contributions validation and focused regression tests all PASS; `legacy_reads=0`, fallback disabled, current MASTER SHA unchanged. No gameplay was started.
+- Checkpoint: `PASS_SINGLE_PERSISTENT_MASTER_V2_V1`.
+
+## 2026-09-20 — single MASTER V2 runtime write path and emulator evidence reclaim
+
+- Desktop interactive runs now require `--master-startup --in-process-postrun`.
+  Stage 5–9 uses a campaign-local `master-v2-work` scratch tree materialized
+  from the current MASTER V2; successful post-run promotion atomically replaces
+  the current V2 file and pointer, then removes the scratch tree. The old
+  persistent `rolling-master-2i` write path is no longer used.
+- The contribution is scanned before Stage 9 cleanup deletes raw FLOW, then
+  carried into the V2 promotion. This preserves existing cleanup semantics
+  while preventing a successful run from being lost between cleanup and V2
+  publication.
+- MASTER V2 canonical resolution no longer requires a deleted legacy canonical
+  shadow. Startup, canonical view and outcome view remain V2-only with
+  `legacy_reads=0` and fallback disabled.
+- Wrote `build/thor-evidence/emulator-master-prune-manifest.json` before
+  deletion. Removed 109 exact superseded emulator/master evidence roots and
+  53,502 listed files (109,273,848,788 bytes); protected the current V2,
+  pointer, BizHawk installation and BizHawk source. A second manifest,
+  `legacy-raw-prune-manifest.json`, removed 35 remaining raw/audit files
+  (6,270,230 bytes).
+- Post-delete V2 startup, canonical view and outcome view pass with the
+  current file SHA unchanged. No gameplay was started in this maintenance step.
+
+## 2026-09-20 — M12 RAM migration R6 Stage 5 in-memory Cartographer
+
+- Replaced the production Stage 5 session boundary with `Stage5SessionMemory`.
+  FLOW remains the sealed disk input; instruction aggregation, `EXECUTED_NEXT`,
+  `OBSERVED_NEXT_PC`, terminal facts, witnesses and the MAP-1 graph now live in
+  an explicit SQLite `:memory:` session until canonical promotion completes.
+- The exact decoder still runs unchanged, but its `.pcs` and `.tsv` exchange is
+  confined to an OS-managed ephemeral directory and is never part of evidence
+  authority. No `session-rom-link.sqlite`, persistent Stage 5 decoder folder,
+  or Stage 5 temporary receipt is created in production R6 mode.
+- Canonical refresh and MASTER V2 promotion remain persistent outputs. The
+  accepted master, ownership/emission partition, Stage 6–9 semantics and
+  cleanup behavior are unchanged. The previous disk Stage 5 implementation is
+  retained in `stage5_disk_legacy.py` for shadow/regression comparison.
+- Focused validation: 44 Python tests passed (3 skipped), source-file limit
+  passed (`764` governed files), `py_compile` passed, and `git diff --check`
+  passed. A fresh 128-worker gameplay acceptance run is still required before
+  claiming the R6 checkpoint.
+
+## 2026-09-20 — R6 acceptance and transaction-boundary repair
+
+- The first fresh probe exposed `cannot start a transaction within a
+  transaction` after the RAM graph metadata was prepared. The fix is a single
+  explicit commit before the Cartographer merge; no truth or ownership rule
+  changed. The failed probe remains preserved as diagnostic evidence.
+- A sealed-run retry then passed Stage 5 with `session_path = null`,
+  `STAGE5 SQLITE WRITES = 0 B`, `STAGE5 TEMP FILES = 0`, `FLOW DISK READ =
+  140,776,864 B`, and RAM peak `320,095,753 B`; the idempotent replay returned
+  `PASS_IDEMPOTENT_NOOP`. No session SQLite or decoder evidence directory was
+  created.
+- Fresh acceptance campaign:
+  `build/thor-evidence/live-worker-control-2h/campaign-r6-fixed-20260920-103741-616`.
+  It completed 128 Workers / 12,416 segments and reached `ANALYSIS COMPLETE`:
+  Stage 5 `PASS`, Stage 6 `NO_DELTA`, Stage 7 `NO_DELTA`, Stage 8 `PASS`, Stage
+  9 cleanup `PASS_ABSORBED_RAW_PERMANENT_RECLAIM_V1`. Stage 5 read
+  `126,262,176 B` from FLOW, peaked at `311,335,896 B`, wrote `0 B` of SQLite
+  scratch and `0` persistent temp files. Raw/session evidence was reclaimed.
+- MASTER V2 promotion remained atomic and authoritative. Startup after the run
+  passed with `legacy_reads=0`, fallback disabled, `SOURCE_OWNED=1,475,642`,
+  and generation `master-v2-078a5d30d7b872a0`.
+- On the same sealed FLOW input and identical current MASTER base, the retained
+  disk shadow and RAM Stage 5 produced exact semantic equality: `5,481`
+  objects, `2,203` `EXECUTED_NEXT` relations, `414` terminal facts,
+  `105,740,009` occurrence totals, identical emission hash, and identical
+  `SOURCE_OWNED=1,475,642`. Temporary comparison directories were removed
+  after the audit.
+- Final validation: 66 focused Python tests passed (3 skipped), source-file
+  limit passed (`765` governed files), `py_compile` passed, and
+  `git diff --check` passed.
+- Checkpoint: `PASS_STAGE5_IN_MEMORY_CARTOGRAPHER_V1`.
+
+## 2026-09-20 — R7 in-memory FLOW handoff acceptance
+
+- R7 introduces a bounded in-memory FLOW handoff. `FlowHandoffRuntime` transfers
+  sealed ordered segments to the Stage 5 stream consumer and the incremental
+  control-provenance consumer; the queue applies explicit backpressure and the
+  legacy FLOW spool is not used in the production interactive path.
+- The first fresh R7 probe was preserved as diagnostic evidence. Runtime
+  sealed successfully, but the post-run coordinator exposed SQLite thread
+  affinity when the RAM Cartographer connection crossed into its coordinator
+  thread. The fix enables the in-memory Cartographer connection for the
+  producer/consumer/coordinator handoff; no runtime truth or ownership rule
+  changed.
+- Fresh acceptance campaign:
+  `build/thor-evidence/live-worker-control-2h/campaign-r7-validation-20260920-121000-120548-149`.
+  The real BizHawk run completed 128 Workers × 329 cycles = 42,112 segments and
+  13,875,870 FLOW records. Every Worker remained audited and returned to FREE.
+- FLOW handoff accounting: `mode=IN_MEMORY_STREAM`, `raw_bytes=444,027,840`,
+  `logical_bytes=444,027,840`, `chunks_transferred=42,112`, queue peak 32;
+  disk reads/writes 0, SQLite scratch writes 0, persistent temporary files 0,
+  fallback disabled, and legacy FLOW path not used.
+- Post-run result reached `ANALYSIS COMPLETE ✓`: Stage 5 MAP `PASS`, Stage 6
+  control provenance `NO_DELTA`, Stage 7 ASM closure `NO_DELTA` (0 promoted
+  bytes), Stage 8 full ROM audit `PASS`, and Stage 9 cleanup
+  `PASS_ABSORBED_IN_MEMORY_FLOW_V1`. `SOURCE_OWNED delta = 0`, semantic
+  equivalence `PASS`, and MASTER V2 promotion completed atomically.
+- The accepted run produced no `flow-v1-records.bin` or
+  `flow-v1-segments.jsonl`; cleanup reports `NO_RAW_FLOW_MATERIALIZED` and
+  retained/deleted raw bytes are both zero because the FLOW never reached disk.
+- Validation after implementation: full Python suite `335 passed, 3 skipped`,
+  focused R7/regression suite `18 passed`, all native-ring files compile with
+  `py_compile`, source-file limit passes (`769` governed files), and
+  `git diff --check` passes.
+- Checkpoint: `PASS_FLOW_IN_MEMORY_HANDOFF_V1`.
+
+- Metric-completeness rerun after the handoff accounting fix:
+  `build/thor-evidence/live-worker-control-2h/campaign-r7-metric-20260920-121553-386`.
+  It sealed 5,120 segments / 1,551,329 records and reached
+  `ANALYSIS COMPLETE ✓` with Stage 5 `PASS`, Stage 6 `NO_DELTA`, Stage 7
+  `NO_DELTA`, Stage 8 `PASS`, and Stage 9 `PASS_ABSORBED_IN_MEMORY_FLOW_V1`.
+  The current code reported an exact bounded queue peak of `362,528` bytes
+  across 32 chunks; FLOW disk reads/writes remained `0 B`, Stage 5 SQLite
+  writes `0 B`, persistent temp files `0`, fallback `DISABLED`, and
+  `SOURCE_OWNED delta = 0`. MASTER V2 promotion was
+  `master-v2-623df6dd742f8911` with file SHA256
+  `ad9303f0f10decd4c2576009f5861d9718d339ae8ff44870987d0bc21ed6a21b`.
+- Same sealed R6 disk-FLOW fixture parity audit completed without gameplay:
+  legacy `Stage5SessionMemory.from_receipt` and `Stage5StreamConsumer` both
+  accepted 13,952 segments / 4,399,277 records / 140,776,864 FLOW bytes,
+  with 591 unique instructions, 628 `EXECUTED_NEXT` edges, 52 terminal facts,
+  4,398,353 instruction occurrences, 4,383,477 edge occurrences, and the
+  same Cartographer graph bundle SHA
+`c74543b82d554bba9ae627600d21df95f4d26cd33003d838c5eaab0ac59badcc`.
+  The stream additionally reports 13,952 terminal observations as a new
+  accounting counter; this does not change the legacy semantic fingerprint.
+
+## 2026-09-20 — R8 analysis performance optimization
+
+- Profiled the accepted R7 in-process post-run path before changing it. The
+  baseline campaign `campaign-r8-baseline-20260920-123634-070` completed
+  `45,568` segments / `14,721,504` records with an `85.656 s` post-run wall
+  time. Stage 7 MAP candidate decoding was the dominant avoidable cost at
+  `51.906 s`; Stage 5 took `28.735 s`.
+- Added `stage7_decode.py` as a bounded four-worker decoder batch. External
+  decoder invocations run concurrently in unique candidate directories, while
+  proof, round-trip validation, promotion and merge remain sequential in the
+  original candidate order. Errors are returned to the existing fail-closed
+  coordinator, so ordering and truth semantics are unchanged.
+- The first optimized full campaign
+  `campaign-r8-optimized-1-20260920-124746-581` completed `46,848` segments /
+  `15,286,580` records in `59.485 s`: Stage 5 `29.000 s`, Stage 7 `25.266 s`,
+  Stage 8 `2.156 s`, with `140` candidates and four decode workers.
+- A second full optimized campaign
+  `campaign-r8-optimized-2-20260920-125627-422` completed `144,384` segments /
+  `48,638,553` records in `61.328 s`: Stage 5 `30.312 s`, Stage 7 `25.016 s`,
+  Stage 8 `2.156 s`, with `139` candidates and four decode workers. Its longer
+  gameplay reached 57 new instructions / 66 new relations; `SOURCE_OWNED`
+  delta remained `0`. This coverage change is runtime input, not an optimizer
+  semantic change.
+- The median optimized post-run wall is `60.407 s`, a `29.48%` reduction from
+  baseline; Stage 7 itself improved by `51.57%`. Both optimized runs reached
+  `ANALYSIS COMPLETE`, Stage 8 `PASS`, cleanup
+  `PASS_ABSORBED_IN_MEMORY_FLOW_V1`, and retained `IN_MEMORY_STREAM`, zero FLOW
+  disk reads/writes, `fallback=DISABLED`, and `legacy_reads=0`.
+- Reports now include `analysis_performance` with stage wall times, records and
+  segments per second, queue/chunk peaks, runtime RAM peak, and R7 handoff
+  invariants. Added deterministic decode-order/error tests and report tests.
+- Validation: focused coordinator/decode tests `8/8`, MASTER V2 startup
+  `PASS` (`SOURCE_OWNED=1,475,642`, `legacy_reads=0`, fallback disabled),
+  `py_compile`, source-file limit, and `git diff --check` passed. Existing
+  R7 semantic parity evidence remains unchanged. Checkpoint:
+  `PASS_ANALYSIS_PERFORMANCE_OPTIMIZATION_V1`.
+
+## 2026-09-20 — R9 Stage 7 decode deduplication investigation and snapshot reuse
+
+- Instrumented the complete external decode key without changing decode behavior. The key contains ROM content identity and size, decoder executable identity, start/end range, and the fixed M68K decode configuration. On the accepted 139-candidate workload: `139` requests, `139` unique keys, `0` duplicates, `0%` duplicate rate, `139` external invocations, and `0` avoidable calls. No completed cache, in-flight table, cache file or hidden persistent artifact was created.
+- cProfile identified the next Stage 7 hotspot: `_snapshot()` performed three full SQLite/hash scans and consumed about `15.0 s` of a `24.67 s` direct Stage 7 run. The narrow optimization reuses the immutable initial snapshot for iteration 1 and reuses the last snapshot when no promotion occurred; after promotion a fresh snapshot is still required.
+- Direct Stage 7 measurement on the same sealed generation remained `NO_DELTA`, `139` candidates, `SOURCE_OWNED delta=0`, and reduced direct wall time to `14.58 s`; decode remained `139/139` unique with a `9.188 s` bounded four-worker batch.
+- Fresh full reference runs with the old three-snapshot behavior: `campaign-r9-reference-20260920-135409-768` — `53,632` segments, `66.296 s` total, `28.125 s` Stage 7; and `campaign-r9-reference2-20260920-140450-159` — `42,368` segments, `69.578 s` total, `29.687 s` Stage 7. Both had zero decode duplication and completed Stage 5–9 successfully.
+- Fresh optimized runs: `campaign-r9-optimized-20260920-135928-090` — `48,128` segments, `54.280 s` total, `16.469 s` Stage 7; and `campaign-r9-optimized2-20260920-140954-690` — `51,968` segments, `55.469 s` total, `16.953 s` Stage 7. Both had `0%` duplication, `IN_MEMORY_STREAM`, zero FLOW disk I/O, fallback disabled, cleanup PASS, and `SOURCE_OWNED delta=0`.
+- Reference median: `67.937 s` total / `28.906 s` Stage 7. Optimized median: `54.875 s` total / `16.711 s` Stage 7. This is `19.23%` total and `42.19%` Stage 7 improvement. Runtime coverage naturally differed by a few newly observed instructions/relations; existing facts, ordering, promotion rules and ownership remained intact.
+- R9 deliberately does not add a decode cache: duplication was measured and disproven. The accepted optimization is snapshot reuse, with decoder telemetry retained for future evidence. Checkpoint: `PASS_STAGE7_DECODE_DEDUP_CACHE_V1` (deduplication not applicable; measured Stage 7 alternative hotspot optimized).
+
+## 2026-09-20 — R10 Stage 7 decoder contract closure
+
+- Audited the current Stage 7 call path and confirmed that
+  `oasis_re_rom_range_decode.exe` is the Stage 5 PC-list-to-TSV helper, while
+  `oasis_re_assemble_range.exe` is the existing Stage 7 range-to-ASM+JSON
+  helper. The previous call site supplied the Stage 5 executable to the Stage
+  7 range contract, so its usage failures were being reported as unsupported
+  M68K decode results.
+- Added explicit capability markers, required the range-tool role at the
+  post-run boundary, and separated contract, input, output, tool and true
+  unsupported-decode failures. Stage 7 preserves deterministic candidate order
+  and sequential proof/promotion/merge; Stage 8 remains the independent
+  full-ROM round-trip audit.
+- Added real canonical-ROM fixtures covering single, multi-instruction,
+  branch, immediate/memory, truncated and unsupported ranges. The pre-fix
+  candidate set had `139/139` apparent unsupported results; the same candidates
+  through the correct range helper produced `138` successful decodes, `1` true
+  unsupported decode, and zero contract/tool failures.
+- Fresh sealed campaign
+  `build/thor-evidence/live-worker-control-2h/campaign-r10-contract-20260920-1`
+  completed Stage 5 `PASS`, Stage 6 `NO_DELTA`, Stage 7 `PASS` with `394`
+  promoted bytes / `131` instructions, Stage 8 `PASS`, and Stage 9
+  `PASS_ABSORBED_IN_MEMORY_FLOW_V1`. Cleanup validation distinguishes the
+  pre-Stage-7 input generation from the promoted current generation.
+- Runtime invariants remained intact: `IN_MEMORY_STREAM`, zero FLOW disk I/O,
+  zero SQLite scratch writes, zero persistent FLOW temp files, fallback
+  `DISABLED`, legacy path `NOT_USED`, and `SOURCE_OWNED delta = 0` at the
+  canonical Stage 5 boundary. Stage 7's independently proven promotions then
+  advanced the final selected generation by `394` source-owned bytes; this is
+  the expected corrected-decoder delta, not a FLOW or ownership invariant
+  violation. Checkpoint:
+  `PASS_STAGE7_DECODER_CONTRACT_CLOSURE_V1`.
+- Final validation: Python `unittest discover` passed `347` tests with `3`
+  skips; Debug and Release CTest each passed `215/215`; both range helpers
+  rebuilt in Debug and Release; `py_compile`, the `772`-file source-size gate,
+  and `git diff --check` passed.
+
+## 2026-09-20 — M12 W1 native bus-event sideband V1 — ACCEPTED
+
+- Scoped task: continue the current local Worker evidence path without reset,
+  cleanup, stash, commit or push; preserve the existing
+  `PASS_WORKER_EVIDENCE_PAYLOAD_AUDIT_V1` contract and keep `SOURCE_OWNED`
+  unchanged.
+- Added `BUS_READ`, `BUS_WRITE` and `FRAME_BOUNDARY` records to the existing
+  32-byte ordered ring. Event records use a dedicated event flag and subtype;
+  bus records retain the causing instruction sequence, address, low value,
+  packed high value/width/domain/CPU auxiliary fields, and frame records use
+  instruction sequence zero. No semantic resource labels were added.
+- Added real GPGX hooks at the top-level 68K data read/write helpers. Immediate
+  opcode/extension fetch helpers remain uninstrumented. 32-bit accesses emit
+  one record, and domains are resolved from the active GPGX memory map for
+  ROM, 68K RAM, Z80 window, VDP, YM2612, PSG and OTHER. `gpgx_advance()` emits
+  the authoritative frame boundary after frame/audio advancement.
+- Updated FLOW validation and downstream rolling/master/Cartographer consumers
+  to retain sideband bytes while projecting legacy instruction semantics from
+  instruction records only. Added regression coverage for order, instruction
+  correlation, frame identity and parser counts.
+- Validation completed: fresh Debug/Release Waterbox builds; managed Release
+  host build; source-of-truth rematerialization from BizHawk
+  `bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5` and GPGX
+  `051d430d3d1b54625f9900c8f152d7f232e06daf`; native worker/scaling CTest
+  `3/3`; Python scaling audit tests `5/5`; Python syntax compilation; and
+  GCC syntax checks for the new GPGX resolver and modified `m68kcpu.c`.
+- Restored the repository-supported Waterbox musl sysroot from musl commit
+  `2063abc4e16c84218757b1db10d3cdf9f36ef3f8`; `musl-clang` SHA-256 is
+  `9125791649f7cb2409b80f8282c20c2336e80c70f0ba820e08c4e251a78dc14f`.
+- Real bounded campaign on the final Release artifact: 128 Workers, depth 100,
+  100 cycles each, 12,800 validated segments, 4,029,639 instruction records,
+  1,342,733 reads, 1,634,287 writes, 0 frame records inside the depth-bounded
+  slices, 7,007,510 total exported records / 224,240,320 bytes, 0 fetch
+  pollution, 0 invalid/dropped/retention/runtime failures. Shared ring wraps
+  were 6,852;
+  overwrite/retention failures were zero. A separate 30-second END GAME run
+  stopped cleanly after 12,544 audited segments with no lifecycle failures.
+- Micro runtime proved FRAME_BOUNDARY through the real Lua/native API
+  (`279050 -> 309196`), BUS_READ and BUS_WRITE emission, contiguous stream
+  ordering and instruction attribution. The gameplay receipt proved 8-bit,
+  16-bit and 32-bit accesses plus ROM, 68K RAM, Z80-window and VDP domains.
+- Pre-W1 versus W1 comparison was semantically equal for 100/100 segments:
+  instruction PC/opcode/next-PC, branch flags, exceptions, terminal facts and
+  segment boundaries matched after filtering sideband. `SOURCE_OWNED` stayed
+  at `1,475,600`, delta `0`. No W2 classification was added.
+- Acceptance: `PASS_NATIVE_BUS_EVENT_SIDEBAND_V1`. No commit or push was made;
+  the dirty worktree and original installs were preserved. Full metrics and
+  runtime witnesses are in `docs/reports/THOR_M12_NATIVE_BUS_EVENT_SIDEBAND_V1.md`.
+
+### 2026-09-21
+- **Task**: Fix W3 Cross-CPU Timeline Python Tests (220/220)
+- **Status**: Code complete. All CTests passing.
+- **Details**:
+  - The W3 48-byte RECORD struct change (from 7 items to 12 items) broke legacy Python scripts in 	ools/bizhawk-native-ring/.
+  - Updated tuple unpacking and indexing in w2_resource_classification.py, w2_frame_coherence.py, live_forward_absorption_cleanup.py, live_forward_cartographer.py, and live_forward_rom_link.py.
+  - Updated mock tuple padding in test suites (	ests/w2_active_resource_classification_test.py, 	ests/live_forward_cartographer_test.py, 	ests/live_worker_control_test.py, 	ests/live_forward_rom_link_test.py, live_forward_rom_link_audit.py) to correctly represent the new V2 12-item layout (<QQQIIIHBBHHI).
+  - CTest test suite ran and reached 220/220 passing locally.
+- **Next Step**: Real BizHawk Probe / 128-Worker Campaign. The EmuHawk.exe host and scaling scripts currently crash because the C# GenesisLuaLibrary and test scripts expect the old W2 API/struct sizes. Recompile/update EmuHawk to support the W3 Waterbox core API (specifically live_forward_metrics and RECORD sizing), and then run the 128-Worker campaign with the supplied Beyond Oasis ROM.
+
+## 2026-09-22 — M12 VDP / DMA V1 final acceptance audit — ACCEPTED
+
+- Scoped task: M12 VDP / DMA V1 final acceptance audit on an isolated copy
+  (`campaign-desktop-vdp-acceptance`) of preserved real human run
+  `campaign-desktop-20260921-224537-038` (`run_id = 1790026341`).
+- Automatic pipeline coordinator execution: no manual report or status patching;
+  no manual `run_vdp_stage()` calls. The post-run coordinator automatically ran
+  through `FINALIZING RUN -> AUDITING FLOW -> MERGING MASTER -> COMPACTING EVIDENCE -> REFRESHING MAP -> CONTROL PROVENANCE -> AUDIO ANALYSIS -> VDP / DMA ANALYSIS -> ASM CLOSURE -> FULL ROM AUDIT -> CLEANUP -> RECEIPTS`.
+- All 8 authoritative receipts generated deterministically:
+  - `postrun_map_refresh_receipt.json`: `9279f8712901c14e04c62225dc9d9b89f897b2fbee95556690b273a367dad15d`
+  - `postrun_control_provenance_receipt.json`: `9502e8f7a7f10579836e8510592da57323679843ff856875984a96eb8e872ac1`
+  - `postrun_audio_receipt.json`: `40505b5d5d62b31a1eec3f7045f1b6fd69811f7580785397a033e2bef6c172a6`
+  - `postrun_vdp_receipt.json`: `b550d07a9275a24b7cb06ea3888f28b6391bf5175810e5e7a2ae563f1f74b9ae`
+  - `postrun_asm_closure_receipt.json`: `0635eb1358f331a0d925ad96bf2c7d9635e775bc2b101aba7088384940a5b06a`
+  - `postrun_full_rom_audit.json`: `9e9843da6dce4d0b403937fa198789ff73fac61cdc787dd917bd6334b3169cfc`
+  - `postrun_cleanup_receipt.json`: `7bbba9fba24d6e750db41febf49f192a60d0e779e8c66c5bd35461a34e7a4f92`
+  - `postrun_final_receipt.json`: `ec760ab6ad831451722b73d6efca36c93891286fd73b6cc3f22a34aa2b90cde4`
+- Accounting clarity: canonical event identity `(run_id, epoch, frame, stream_sequence)`
+  distinguishes segment observations from unique runtime events.
+  - VDP Commands: 2,246 segment observations -> 41 unique runtime commands.
+  - VDP Data Writes: 3,581 segment observations -> 35 unique runtime data writes.
+  - Frozen Authoritative DMA Terminology:
+    - `UNIQUE_DMA_EVENTS = 24`
+    - `UNIQUE_DMA_EVENTS_WITH_EXACT_WITNESS = 24`
+    - `UNIQUE_DMA_EVENTS_WITH_PARTIAL_OBSERVATION = 16`
+    - `UNIQUE_DMA_EVENTS_WITH_INCOMPLETE_OBSERVATION = 16`
+    - `DMA_OBSERVATIONS_EXACT = 1604`
+    - `DMA_OBSERVATIONS_PARTIAL = 16`
+    - `DMA_OBSERVATIONS_INCOMPLETE = 105`
+    (Categories are not mutually exclusive; all 24 unique runtime events achieve exact witness in segments with their full setup window).
+- Raw witnesses recorded:
+  - `DMA_EXACT`: Seg 256, Frame 0, Stream seq 20172905, PC `0x0027DE`, cmd words `0x5000` / `0x0083`, regs `{19: 0x0C, 20: 0x00, 21: 0xE6, 22: 0x89, 23: 0x7F}`, decoded source `0xFF13CC` (`68K_RAM`), dest `0xD000` (`VRAM`), length `12 words` (`24 bytes`).
+  - `DMA_PARTIAL`: Seg 292, Frame 0, Stream seq 20172905, PC `0x0027DE`, cmd words `0x5000` / `0x0083`, regs `{21: 0xE6, 22: 0x89, 23: 0x7F}`, source `None` (`UNRESOLVED`), dest `0xD000` (`VRAM`), length 0.
+  - `DMA_INCOMPLETE`: Seg 293, Frame 0, Stream seq 20172905, PC `0x0027DE`, cmd words `0x5000` / `0x0083`, regs `{23: 0x7F}`, source `None` (`UNRESOLVED`), dest `0xD000` (`VRAM`), length 0.
+- Provenance naming audit:
+  - Verified instruction sequence 7604220 at PC `0x0027EC` (`3955 FFFC` `MOVE.W (A5)+, (0xFFFC, A4)`):
+    - `seq=20172916`: `READ addr=0xFF13CC val=0xF8 (68K_RAM, width=16)`
+    - `seq=20172917`: `WRITE addr=0xC00000 val=0xF8 (VDP Data, width=16)`
+  - Direct causal link proven within single instruction execution.
+- S8 Oracle Reconciliation & Regression:
+  - `OLD_ACCEPTED_S8_SHA256 = 15cd9d1bcb1599b4f8a64b38de2d950b1947701dec9e8305e5024cd0025795cf` (`oasis.m68k.hardware-vdp-frame.v1`, historical frame-779 acceptance artifact, deleted from ephemeral ignored runtime directory).
+  - `NEW_2487539_SHA256 = 2487539c8d95b943155cb4510e662f89d5fe42dde7f2d3604434bcb1d67cfa6d` (`oasis.m68k.hardware-vdp-frame.v1`, synthetic test fixture output from `tests/m12_vdp_frame_artifact_test.py`, frame 7, run_id `synthetic`).
+  - `SAME_ARTIFACT = NO`. Synthetic fixture artifact is not the accepted S8 oracle.
+  - `S8_ORIGINAL_ORACLE = MISSING`
+  - `S8_ORIGINAL_ORACLE_REGRESSION = STOP`
+  - `S8_CONTRACT_FIXTURE_REGRESSION = PASS` (tests/m12_vdp_frame_artifact_test.py, 0 conflicts, verifies protocol semantics only).
+- Validation:
+  - `SOURCE_OWNED`: `SOURCE_OWNED_BEFORE = 1487388`, `SOURCE_OWNED_AFTER = 1487388`, `SOURCE_OWNED_DELTA = 0`.
+  - File limits: 834 governed files <= 500 lines, 0 violations.
+  - Local tests: 220/220 ctest passed (100%), 38/38 pytest postrun tests passed, `git diff --check` clean.
+- Acceptance declaration: `PASS_POSTRUN_VDP_DMA_ANALYSIS_V1 = STOP_S8_ORACLE_MISSING`.
+
+## 2026-09-22 — M12 Durable Real VDP Oracle V2 Final Validation Fix — ACCEPTED
+
+- Scoped task: Fix Oracle V2 temporal semantics and field-by-field validation. Recaptured a true single coherent frame oracle (`vdp_oracle_v2_f3`), bound to exact start and end frame boundaries, with independent logical artifact materialization, truth-in-timing/width tagging, retention verification, and independent field-by-field regression.
+- Temporal semantics audit:
+  - Previous capture: `EVENT_FRAME_MIN = 3`, `EVENT_FRAME_MAX = 168`, `DISTINCT_EVENT_FRAMES = 25`, `EVENTS_IN_TARGET_FRAME_200 = 0`, `EVENTS_BEFORE_TARGET_FRAME_200 = 569`.
+  - Recaptured true single coherent frame: `vdp_oracle_v2_f3` at Frame 3.
+  - `start_boundary = 3`, `end_boundary = 4`, `frame = 3`.
+  - `EVENT_FRAME_MIN = 3`, `EVENT_FRAME_MAX = 3`, `DISTINCT_EVENT_FRAMES = 1`, `EVENTS_IN_TARGET_FRAME_3 = 141`, `EVENTS_BEFORE_TARGET_FRAME_3 = 0`. All events belong strictly to Frame 3.
+- Width & Timing Truth:
+  - `WRITE_WIDTH_SOURCE = BIZHAWK_LUA_EVENT_ON_BUS_WRITE`, `WIDTH_EXACT = NO` (marked `UNKNOWN` rather than guessed).
+  - `MASTER_TIME_UNIT_MATCH = NO`, `timing_unit = m68k_total_cycles`.
+- Artifacts & Hashes:
+  - `ORACLE_V2_ID = vdp_oracle_v2_f3`
+  - `ORACLE_V2_RUN_ID = vdp_oracle_real_v2`
+  - `ORACLE_V2_FRAME = 3`
+  - `ORACLE_V2_EVENT_COUNT = 141`
+  - `ORACLE_V2_RAW_SHA256 = fba0301a3653c47e79ff09a57749d17e073196eb2c718c3ad344de00500bdfea`
+  - `ORACLE_V2_LOGICAL_SHA256 = eaffb82a31ac03ca4a812d69d902e2409c4ee09ab9e1c4a5720dac0ed95139c3`
+  - `ORACLE_V2_MANIFEST_SHA256 = 806ab01064489ab1a0a56f22d846c6a111ed2ec792d690be1702c1d0fd17e85f`
+  - `ORACLE_V2_RECEIPT_SHA256 = c9f8646b95514f7b6cf1b585354be3ecdd347712128fc8b4d8d17208d1fc1ae4`
+- Storage & Durability:
+  - `ORACLE_STORAGE_PATH = build/thor-evidence/oracles/vdp/vdp_oracle_v2_f3/`
+  - `ORACLE_CHECKED_IN_RECEIPT = docs/reports/THOR_M12_VDP_ORACLE_V2_RECEIPT.json`
+  - `ORACLE_PAYLOAD_COMMITTED = NO`
+  - `ORACLE_RESTORE_STRATEGY = COMMITTED_TOOL_OR_UNCOMMITTED_DURABLE_TREE`
+- Readback Proof:
+  - `CAPTURE_READBACK = PASS`
+  - `LOGICAL_ARTIFACT_READBACK = PASS`
+  - `MANIFEST_READBACK = PASS`
+- Retention Proof:
+  - Executed real `reclaim_absorbed_run` on `campaign-desktop-vdp-acceptance`:
+  - `ORACLE_EXISTS_AFTER_CLEANUP = YES`
+  - `CAPTURE_SHA_UNCHANGED = YES`
+  - `LOGICAL_SHA_UNCHANGED = YES`
+  - `MANIFEST_SHA_UNCHANGED = YES`
+- Oracle Independence:
+  - `ORACLE_BUILDER = capture_real_vdp_oracle.py:build_logical_artifact`
+  - `GENERIC_DECODER = live_forward_vdp_stage.py:VdpProtocolDecoder`
+  - `SHARED_DECODING_FUNCTIONS = NONE`
+- True Field-by-Field Regression:
+  - `REGISTER_FIELDS_COMPARED = 18`
+  - `COMMANDS_EXPECTED = 9`, `COMMANDS_ACTUAL = 9`, `COMMAND_FIELD_COMPARISONS = 54`
+  - `DMA_EXPECTED = 3`, `DMA_ACTUAL = 3`, `DMA_FIELD_COMPARISONS = 21`
+  - `VRAM_HASH_MATCH = PASS`, `CRAM_HASH_MATCH = PASS`, `VSRAM_HASH_MATCH = PASS`
+  - `ORACLE_CONFLICTS = 0`
+  - `ORACLE_REGRESSION_STATUS = PASS`
+  - `DECODER_REGISTER_MATCH = PASS`, `DECODER_COMMAND_MATCH = PASS`, `DECODER_DMA_MATCH = PASS`
+- Git Tracking & Hygiene:
+  - `RECEIPT_TRACKED_BY_GIT = NO`, `CAPTURE_TOOL_TRACKED_BY_GIT = NO`
+  - `COMMIT_CREATED = NO`, `PUSH_PERFORMED = NO`
+  - `SOURCE_OWNED_BEFORE = 1487388`, `SOURCE_OWNED_AFTER = 1487388`, `SOURCE_OWNED_DELTA = 0`
+  - File limits check: 835 governed files <= 500 lines.
+  - Test suite: 15/15 tests in `tests/live_forward_vdp_stage_test.py` passed cleanly.
+- Final Acceptance Verdict:
+  - `NEW_REAL_VDP_ORACLE = PASS`
+  - `ORACLE_CONFLICTS = 0`
+  - `PASS_POSTRUN_VDP_DMA_ANALYSIS_V1 = PASS`
+
+## 2026-09-22 — M12 VDP Oracle V2 Exact Width Closure — ACCEPTED
+
+- Scoped task: Complete elimination of value-magnitude width inference (`val > 0xFFFF`), authoritative width derivation from causing M68K instruction semantics (`WIDTH_AUTHORITY = CAUSING_M68K_INSTRUCTION_SEMANTICS`), unit test verification of explicit word decomposition contract, Frame 3 register authority clarification, oracle regeneration with zero conflicts, snapshot state hash integrity semantics reconciliation, and automated post-run coordinator pipeline proof on isolated acceptance fixture.
+- Value-magnitude inference elimination:
+  - `MAGNITUDE_WIDTH_INFERENCE_SITES_BEFORE = 3`
+  - `MAGNITUDE_WIDTH_INFERENCE_SITES_AFTER = 0`
+- Authoritative Access Width:
+  - `WIDTH_EXACT = YES`
+  - `WIDTH_AUTHORITY = CAUSING_M68K_INSTRUCTION_SEMANTICS`
+  - `WRITE_WIDTH_SOURCE = M68K_OPCODE_BUS_CYCLE_DECODE`
+  - All 141 emitted VDP events carry: `run_id`, `epoch`, `frame`, `stream_sequence`, `instruction_sequence`, `pc`, `address`, `value`, `width`, `domain`.
+- Exact Word Decomposition Contract:
+  - `width == 16` -> 1 word (`value & 0xFFFF`)
+  - `width == 32` -> 2 words (`(value >> 16) & 0xFFFF`, `value & 0xFFFF`)
+  - `width == UNKNOWN` -> `ValueError("STOP_UNRESOLVED_ORACLE_EVENT_WIDTH")`
+  - Added `test_p_exact_width_decomposition_contract` in `tests/live_forward_vdp_stage_test.py`: 16/16 tests passing.
+- Frame-3 Register Authority:
+  - Registers 0, 1, 2, 3, 4, 5, 7, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 23 written by M68K instructions.
+  - Registers 6, 8, 9, 14, 21, 22 are: `A. unwritten in this mode / default carry-in` (power-on reset default of 0).
+  - `REGISTER_STATE_SOURCE = REAL_M68K_FRAME_3_WRITES_PLUS_DEFAULT_CARRY_IN`
+- Regenerated Oracle Artifacts:
+  - `ORACLE_V2_ID = vdp_oracle_v2_f3`
+  - `ORACLE_V2_RAW_SHA256 = 49abffbc0fe3a9ae42062c9433f9f5135b695c27ec2011557258e0db2fbbf851`
+  - `ORACLE_V2_LOGICAL_SHA256 = eaffb82a31ac03ca4a812d69d902e2409c4ee09ab9e1c4a5720dac0ed95139c3`
+  - `ORACLE_V2_MANIFEST_SHA256 = 3c674a81097ee4245d57970d39c1ffac0065f4eacd7682f0dc408822879f3e0a`
+  - `ORACLE_V2_RECEIPT_SHA256 = c539dfd4a04ca3cf40960570b556f082e6d6bb983dc536f90bc1b827435f29ae`
+  - `ORACLE_CONFLICTS = 0`
+- State Hash Integrity Reconciliation:
+  - `GENERIC_DECODER_RECONSTRUCTS_FULL_VDP_MEMORY = NO`
+  - State hash match is: `B. Independent hardware state snapshot integrity evidence`
+- Post-run Pipeline Coordinator Proof:
+  - Ran `live_forward_rolling_master.py` on isolated copy `campaign-desktop-vdp-acceptance-exact-width-proof`.
+  - Pipeline invoked automatically through all 11 stages without manual patching.
+  - `postrun_vdp_receipt.json` referenced `vdp_oracle_v2_f3` with `conflicts = 0`.
+  - `PIPELINE_FINAL_STATE = ANALYSIS COMPLETE ✓`
+- Repository Hygiene:
+  - `RECEIPT_TRACKED_BY_GIT = NO`
+  - `CAPTURE_TOOL_TRACKED_BY_GIT = NO`
+  - `COMMIT_CREATED = NO`
+  - `PUSH_PERFORMED = NO`
+  - `SOURCE_OWNED_BEFORE = 1487388`, `SOURCE_OWNED_AFTER = 1487388`, `SOURCE_OWNED_DELTA = 0`
+  - File limits check: 835 governed files <= 500 lines.
+
+## 2026-09-22 — M12 Final Receipt / Ownership Accounting Fix — ACCEPTED
+
+- Scoped task: Elimination of placeholder hardcoding in `emit_asm_closure_receipt()`, authoritative derivation of Stage 7 ownership accounting (`SOURCE_OWNED_BEFORE_STAGE7 = 1487388`, `STAGE7_PROMOTED_BYTES = 284`, `STAGE7_PROMOTED_RANGE_COUNT = 16`, `SOURCE_OWNED_AFTER_STAGE7 = 1487672`, `SOURCE_OWNED_DELTA = 284`), 16-range promotion audit, distinction of stage deltas in final receipt (`VDP_SOURCE_OWNED_DELTA = 0`, `ASM_SOURCE_OWNED_DELTA = 284`, `PIPELINE_SOURCE_OWNED_DELTA = 284`), deterministic automated receipt regeneration and hash proof, post-promotion full ROM rebuild audit, carry-in taxonomy refinement for unwritten registers (`UNRESOLVED`), and addition of regression tests for non-zero Stage 7 promotion.
+- ASM Receipt Hardcoding Removed:
+  - Extracted authoritative `emit_asm_closure_receipt()` in `tools/bizhawk-native-ring/live_forward_postrun_receipts.py`.
+  - Replaced hardcoded `source_owned_after = source_owned_before`, `delta = 0`, `promoted_bytes = 0` with dynamic derivation from Stage 7 results (`report.json`), `stage7-result.json`, materialized `manifest.json`, and canonical SQLite `knowledge.sqlite`.
+  - Enforced fail-closed behavior with explicit `ValueError("STOP_STAGE7_AUTHORITY_MISSING:...")` if any authority is absent or inconsistent.
+- Expected Real Values Verified:
+  - `SOURCE_OWNED_BEFORE_STAGE7 = 1487388`
+  - `STAGE7_PROMOTED_BYTES = 284`
+  - `STAGE7_PROMOTED_RANGE_COUNT = 16`
+  - `SOURCE_OWNED_AFTER_STAGE7 = 1487672`
+  - `SOURCE_OWNED_DELTA = 284`
+- 16-Range Promotion Audit:
+  - Verified each of the 16 ranges transitioned from pre-emission `INCBIN` (`source_owned = 0`) to post-emission `ASM` (`source_owned = 1`), with control-flow closed (`PASS_CLOSED_ASM_RANGE`) and vasm roundtrip exact (`PASS_ASM_ROUNDTRIP_EXACT`), totaling 284 bytes.
+- Final Pipeline Receipt:
+  - `VDP_SOURCE_OWNED_DELTA = 0`
+  - `ASM_SOURCE_OWNED_DELTA = 284`
+  - `PIPELINE_SOURCE_OWNED_BEFORE = 1487388`
+  - `PIPELINE_SOURCE_OWNED_AFTER = 1487672`
+  - `PIPELINE_SOURCE_OWNED_DELTA = 284`
+- Deterministic Receipt Regeneration:
+  - Regenerated all 8 receipts automatically via `live_forward_postrun_receipts.py`.
+  - Proved bitwise identical hashes across repeat runs:
+    - `postrun_map_refresh_receipt.json`: `f044cbcdd22f6cad6948f1a138ed65b1e5e7b43214eeaf3d69a205c83c4a23d8`
+    - `postrun_control_provenance_receipt.json`: `fa5e5eca8e86721b23bea7526dbf9642b0f69fb337a23e72148336c2faaf9533`
+    - `postrun_asm_closure_receipt.json`: `8a163377795fac2fabf5130b5668b76ce2630192c09aa5bd4ff1cd4c2ecbc124`
+    - `postrun_full_rom_audit.json`: `e2d287b6d3e4e18ca2701dd5b0e590e9eb73cc14d2fdc66ced1417ff24c6c3b8`
+    - `postrun_cleanup_receipt.json`: `4b8046207cb2d54c06cbaa49af766716f29e99b944c993e672b05cbaa648fe84`
+    - `postrun_final_receipt.json`: `a041f2ee5a32d7a8cd0dac95dff6b1ff7651bf94dd683cfdc330254eb26913ad`
+    - `postrun_audio_receipt.json`: `9b49de11974945dffa3b0f890538c6e4802092ae8d02ad03a0cd7bcc5692c296`
+    - `postrun_vdp_receipt.json`: `005f2134a0e34483e900ddad68692e61360414c316fdd34871f79fba9d977526`
+- Full ROM Audit:
+  - Canonical ROM size: `3145728` bytes.
+  - Rebuilt full ROM SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+  - Verified 0 gaps, 0 overlaps, and no unrelated emission partition changes.
+- Carry-in Truth Taxonomy:
+  - Unwritten registers 6, 8, 9, 14, 21, 22 are classified under repository truth taxonomy as `UNRESOLVED` (no official Sega hardware authority guarantees reset-zero state in silicon).
+  - Proven 18-register oracle comparison remains unaffected with `conflicts = 0`.
+- Regression Test Added:
+  - Updated `tests/live_forward_postrun_receipts_test.py` with `test_emit_postrun_receipts_with_nonzero_stage7_promotion` and `test_emit_postrun_receipts_with_zero_stage7_promotion`. All tests passing (3/3).
+- Repository Hygiene:
+  - `COMMIT_CREATED = NO`
+  - `PUSH_PERFORMED = NO`
+  - Source file line limit check: 796 governed files <= 500 lines.
+  - `git diff --check`: green.
+# 2026-09-23 — M12 Targeted Dynamic Sprite Capture V1 — PASS
+
+TASK: Capture a short real hardware-reset gameplay window with one SAT VRAM
+snapshot per frame, identify a genuinely changing SAT entry, and correlate its
+same-frame shadow RAM bytes and writer PC. This is developer-only runtime
+evidence; Worker semantics, SOURCE_OWNED, gameplay labels, and ROM/assets remain
+unchanged.
+
+Acceptance criteria:
+
+1. Use the canonical Beyond Oasis ROM and an installed BizHawk/GPGX runtime;
+   record their hashes and the exact natural-input scenario.
+2. Retain a SAT snapshot for every observed frame, plus bounded writes into the
+   accepted `0xFF13CC` shadow range with runtime writer PCs.
+3. Derive entry-level SAT changes from adjacent snapshots and report the
+   candidate entry, changed bytes, shadow offsets, and same-frame writer PCs.
+4. Fail closed with `STOP_NO_DYNAMIC_SAT_ENTRY_IDENTIFIED` when no changing
+   entry is observed; do not infer movement from template-only evidence.
+5. Preserve `SOURCE_OWNED = 1,487,672`, do not add ROM/assets, and do not
+   commit/push in this evidence pass.
+
+RESULT: `PASS_TARGETED_DYNAMIC_SPRITE_CAPTURE_V1`.
+
+1. The canonical ROM (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`)
+   was run in stock installed BizHawk 2.11.1/GPGX from hardware reset using
+   `src/tools/re_bizhawk_m11_8_natural_scenario.txt` for 1,800 frames.
+2. Capture artifact `build/m12-targeted-dynamic-sat-v1-run2/capture.json` has
+   1,801 per-frame SAT snapshots at VRAM `0xD000` and 15,889 writes in the
+   accepted `0xFF13CC..0xFF1523` shadow range. Capture SHA-256 is
+   `c02b9e178662710b4e30c6c52527337c918bf63cdfb41ebe7dcf420d8c444b1f`.
+3. Analyzer found 124 entry transitions across entries 0..7 and 123 exact
+   SAT-entry/shadow-entry correlations. The first activation witness is entry
+   0, SAT frames `714 -> 715`, source shadow frame `714`, changed offsets
+   `0,1,4,6,7`, with writer PCs `0x00B754`, `0x00B768`, `0x00B772`,
+   `0x00B77E` (plus reset/clear `0x001FD6` and `0x03B46A`). A later motion
+   witness is entry 0, SAT frames `1500 -> 1501`, changed offset `5`, with
+   the same producer writer family. This establishes a one-frame DMA/publication
+   lag in the bounded capture; it is not treated as same-instruction causality.
+4. Result is limited to dynamic SAT entry + shadow source + writer-PC
+   provenance. `PLAYER_LABEL_PROVEN` remains `NO`; no entity/object semantic
+   promotion or SOURCE_OWNED change occurred.
+5. `SOURCE_OWNED` before/after is `1,487,672` (delta 0). No commit or push.
+6. Verification: focused capture tests, Python compilation, analyzer PASS,
+   `git diff --check`, and source-size check passed. Native Debug/Release
+   builds were not run because this is developer-only Lua/Python evidence
+   tooling; the first launch failure was only an argument-quoting error and
+   was corrected before the accepted capture.
+# 2026-09-23 — M12 Dynamic SAT Producer Backtrace V1 — PASS
+
+TASK: Trace the accepted runtime SAT-shadow writer callback sites
+`0x00B754`, `0x00B768`, `0x00B772`, and `0x00B77E` backward through exact
+M68K instructions, registers, source reads, and multiple dynamic transitions.
+Do not assign PLAYER/object semantics or modify SOURCE_OWNED.
+
+Acceptance criteria: decode all four sites; close one exact frame
+`1500 -> 1501` SAT field write; recover an exact RAM/ROM/constant source or
+report `UNRESOLVED`; validate at least three transitions; retain controller
+correlation as correlation-only; emit the four requested JSON artifacts with
+SOURCE_OWNED delta zero.
+
+RESULT: `PASS_DYNAMIC_SAT_PRODUCER_BACKTRACE_V1`.
+
+1. Static range decode verifies the four callback sites and maps them to actual
+   stores: `0xB754 -> 0xB752 MOVE.W D6,(A1)` (Y),
+   `0xB768 -> 0xB764 MOVE.W D7,2(A1)` (size/link),
+   `0xB772 -> 0xB76E MOVE.W D6,4(A1)` (X), and
+   `0xB77E -> 0xB77A MOVE.W D6,6(A1)` (tile/attribute). Callback PCs are
+   retained separately from instruction PCs.
+2. Exact frame `1500 -> 1501`: SAT entry 0, X field, shadow `0xFF13D0`,
+   old `0x0423`, new `0x0429`, callback writer `0x00B772`, actual store
+   `0x00B76E`, width 2. Runtime `A0=0x0017435A`; `MOVE.W 2(A0),D6` at
+   `0x00B768` reads ROM `0x0017435C = 0x0029`; `ADD.W D3,D6` with
+   `D3=0x0400` derives `0x0429` exactly.
+3. Multi-frame validation closes 23 exact X-field transitions. Controller
+   association is emitted only as `CORRELATION_ONLY`: the bounded sequence has
+   one nearby UP transition at `720 -> 721`, one nearby ACTION transition at
+   `1500 -> 1501`, and no nearby RIGHT/LEFT/DOWN transition for this entry.
+4. Source class is exact ROM for the selected field. Upstream A0 definition,
+   RAM object identity, and gameplay meaning remain unresolved; PLAYER is not
+   labelled. `SOURCE_OWNED` remains 1,487,672 (delta 0); no commit/push.
+5. Verification: backtrace capture completed on stock BizHawk/GPGX; focused
+   tests, Python compilation, analyzer PASS, file-limit check (853 governed
+   files), and `git diff --check` passed. Native Debug/Release builds were not
+   run because this is developer-only Lua/Python evidence tooling.
+
+# 2026-09-23 — M12 Dynamic SAT ROM Index / A0 Provenance V1 — STOP
+
+TASK: Trace the exact A0 and ROM-record selection feeding the accepted dynamic
+SAT producer around `0x00B768`, without assigning PLAYER or changing
+`SOURCE_OWNED`.
+
+RESULT: `PASS_DYNAMIC_SAT_ROM_INDEX_PROVENANCE_V1 = STOP`.
+
+1. Static bounded decode proves the separate `0x00B6AA` setup entry:
+   `MOVEA.L ($0003F326).L,A0`, followed by `ADD.W D0,D0`, `ADDA.W D0,A0`,
+   `ADDA.W D5,A0`, `MOVE.W (A0)+,D5`, and loop `ADDQ.L #6,A0`.
+   Absolute ROM address `0x0003F326` contains `0x00154B98`.
+2. The accepted dynamic path enters at `0x00B730`; A0 is an input there and
+   no local A0 definition exists through `0x00B78C`. The new runtime capture
+   confirms the accepted 23 transitions and observed `A0 + 2` sources,
+   including `0x0017435C` at frame 1500.
+3. Static absolute transfers to `0x00B730` are recorded at `0x000DEA`,
+   `0x000E3A`, `0x000EFE`, `0x03B448`, and `0x03CE86`. Caller-side A0/index
+   construction was not closed, so the reaching definition and record index
+   remain `UNRESOLVED`; no table stride or entity semantics are claimed.
+4. Artifacts are in `build/m12-dynamic-sat-rom-index-v1/report/`:
+   `postrun_dynamic_sat_rom_index_analysis.json`,
+   `postrun_dynamic_sat_a0_provenance.json`,
+   `postrun_dynamic_sat_source_candidates.json`, and
+   `postrun_dynamic_sat_rom_index_receipt.json`.
+5. `SOURCE_OWNED` before/after is `1,487,672` (delta 0); PLAYER remains
+   unassigned; commit and push were not performed.
+
+# 2026-09-23 — M12 Dynamic SAT Selector / A6 Provenance V1 — PASS
+
+TASK: Trace the exact A6 and `8(A6)` selector provenance feeding the accepted
+caller-side A0 chain. Do not assign PLAYER/entity semantics or change
+`SOURCE_OWNED`.
+
+RESULT: `PASS_DYNAMIC_SAT_SELECTOR_A6_PROVENANCE_V1 = PASS`.
+
+1. Static and runtime evidence prove `0x03B376 LEA.L ($00FFAFCE).L,A6`.
+   The selector read is `0x03B428 MOVE.W 8(A6),D0`, so the observed field
+   address is `0x00FFAFD6`, width 2.
+2. The exact field writer is `0x03B3D8 MOVE.W 0(A0,D0.W),8(A6)`. At frame
+   1500 the latest writer source is ROM `0x003BE82`, value `3`.
+3. Selector mapping is exact: ROM pointer `0x003B90A -> 0x003B982 ->
+   0x001742DC`; selector 3 gives `+6`, ROM word `0x0076` at `0x001742E2`,
+   and final entry A0 `0x00174358`. The accepted downstream tail then uses
+   `0x0017435A` and source `0x0017435C`.
+4. Twenty-three transitions validate the chain. Unique observed A6 values
+   are `0x00FFAFCE` and `0x00FFAFE6`; selector values are 1 through 19.
+   The bounded selector loop is recorded, but total iteration count and
+   gameplay semantics remain unassigned.
+5. Artifacts are in `build/m12-dynamic-sat-selector-a6-v1/report/`.
+   `SOURCE_OWNED` remains `1,487,672` (delta 0); PLAYER is not labelled;
+   commit and push were not performed.
+6. Verification: the new BizHawk/GPGX capture completed for 1800 frames;
+   the analyzer emitted 23 transition rows and STOP receipt. Focused Python
+   compile, file-limit check, and `git diff --check` are run after this entry.
+
+# 2026-09-23 — M12 Dynamic SAT Caller-Side A0 Provenance V1 — PASS
+
+TASK: Prove the runtime caller, tail entry, A0 reaching definition, and
+one-level selector provenance for the accepted dynamic SAT producer. Do not
+re-analyze downstream SAT semantics, assign PLAYER, or change SOURCE_OWNED.
+
+RESULT: `PASS_DYNAMIC_SAT_CALLER_A0_PROVENANCE_V1 = PASS`.
+
+1. A bounded BizHawk/GPGX capture to frame 1510 observed 763 entries into
+   `0x00B730`; all had caller/control-transfer predecessor `0x03B448` with
+   exact `JSR.L ($0000B730).L`. No other runtime predecessor was observed.
+2. Static decode and runtime values close the A0 chain through
+   `0x03B416 LEA`, `0x03B422 MOVEA.L 12(A0,D0.W),A0`,
+   `0x03B426 MOVEA.L (A0),A0`, `0x03B42E ADDA.W D0,A0`, and exact reaching
+   definition `0x03B436 ADDA.W (A0),A0`.
+3. `0x00B73C MOVE.W (A0)+,D5` changes A0 by exactly two bytes. At frame 1500
+   entry A0 is `0x00174358`; at `0x00B768` it is `0x0017435A`, matching the
+   accepted ROM source `0x0017435C`. The same path validates across 23 rows.
+4. The one-level selector source is parameter/stack field `8(A6)` consumed at
+   `0x03B428`; static pointer selection includes ROM `0x0003B90A` and
+   `0x0003B982`. Semantics remain unassigned.
+5. The separate `0x00B6AA` setup ends in `0x00B72E RTS`; it does not fall
+   through to `0x00B730` and is classified `DOES_NOT_REACH_DYNAMIC_TAIL`.
+6. Caller artifacts are in `build/m12-dynamic-sat-rom-index-v1/caller-report/`.
+   `SOURCE_OWNED` remains `1,487,672` (delta 0); PLAYER is not labelled;
+   commit and push were not performed.
+
+# 2026-09-23 — M12 Generic Recursive ROM Closure Engine V1 — IMPLEMENTED / FIXTURE PASS
+
+TASK: Generalize post-run provenance closure and recover the supplied
+RAM→ROM-selector→SAT regression without PC-specific engine rules. Keep the
+canonical ROM external and preserve the existing dirty worktree.
+
+RESULT: `generic_recursive_closure.py` now consumes normalized instructions,
+memory observations, calls and exact ROM-range round-trip facts. It emits the
+required graph, closure, table, RAM-structure, CFG, indirect-target, queue,
+capture-gap and receipt artifacts. Unsupported or missing evidence is retained
+as `UNRESOLVED` queue work while independent exact facts continue.
+
+The regression test recovers `LEA A6`, `8(A6)=3`, indexed ROM lookup,
+`0x001742E2 -> 0x0076`, A0 and `JSR 0x00B730` generically. An exact
+byte-roundtrip range increases the synthetic fixture from `1,487,672` to
+`1,487,674`; this does not modify the canonical map. `python -m unittest
+tests/generic_recursive_closure_test.py -v` passed 2/2. Both governed source
+files are below 500 lines; focused `git diff --check` passed. Full pipeline
+capture integration and full Debug/Release validation remain pending because
+the supplied request contains a normalized regression fixture, not a new
+sealed evidence corpus. Commit and push were not performed.
+
+# 2026-09-23 — M13 Generic Recursive Closure Live Integration V1 — IMPLEMENTED / LIVE SMOKE STOP
+
+TASK: Insert generic recursive closure between semantic post-run stages and
+ASM closure, seal/hash normalized FLOW input, preserve fail-closed ownership,
+and publish a deterministic gap plan when no exact range is available.
+
+RESULT: Added `GENERIC RECURSIVE CLOSURE` to the coordinator and progress
+stages. The handoff emits `normalized_generic_corpus.json`, all recursive
+closure artifacts, `postrun_generic_closure_receipt.json`, and
+`postrun_capture_gap_ranking.json`. PASS, NO_DELTA and skipped absence of a
+sealed corpus continue to ASM closure; integrity errors stop the pipeline.
+
+The synthetic selector regression remains PASS. The live smoke was attempted
+against the preserved 2,304-segment campaign receipt, but its raw FLOW binary
+had already been absorbed/removed, so the adapter correctly returned
+`SKIPPED_NOT_APPLICABLE` and changed no SOURCE_OWNED bytes. This is not claimed
+as a new gameplay campaign. Targeted stage tests passed 4/4; stage-order tests
+passed 3/3; Python compilation, source-size and focused diff checks remain
+required before declaring M13 acceptance. Commit and push were not performed.
+
+# 2026-09-23 — M13 First Real Generic Closure Campaign V1 — SEALED / FAIL-CLOSED
+
+TASK: Run one bounded native gameplay campaign through the integrated
+semantic → generic closure → ASM → full ROM audit → cleanup coordinator.
+
+RESULT: The final sealed capture completed 1,600 audited segments (16 workers ×
+100 cycles), 31,510 frames, and 405,030 FLOW records in 18,876,624 raw bytes.
+The preserved corpus is sealed under
+`build/m13-first-real-generic-closure-v1-accepted2/continuous-runtime-evidence`
+with raw SHA-256 `53e8159fa970b0fcc5d857e0187c55e4824045882256133d0b7ecbbd15227bcb`
+and index SHA-256 `4d22fe40492458ad5a307f4ad8c1c5bcf5f670e51b4e25d66dce051603f77707`.
+Exact ROM linkage and independent audit passed: 1600 segments, 148,796 linked
+M68K occurrences, 581 exact ranges, 2,126 executed ROM bytes, zero opcode,
+identity, unsupported-decode, or unresolved ROM occurrences. SOURCE_OWNED stayed
+at zero in the live session and the canonical baseline remained 1,487,672.
+
+The integrated post-run coordinator reached REFRESHING MAP, CONTROL PROVENANCE,
+AUDIO, VDP/DMA, and SPRITE/SAT successfully, then stopped fail-closed at
+`STOP_GAMEPLAY_ACCEPTANCE_CONTRACT_UNPROVEN`; GENERIC RECURSIVE CLOSURE, ASM,
+FULL ROM AUDIT, and CLEANUP were therefore not claimed. No promotion or gap
+ranking was claimed because the generic stage was not entered. The run receipt,
+raw corpus, independent audit, and stopped coordinator report were retained.
+Fixes made during the campaign: bounded receipts now launch in-process post-run,
+carry FLOW/instrumentation identity, rolling-master accepts sealed bounded
+checkpoints, and ROM linkage/audit filter non-M68K instruction records. Commit
+and push were not performed.
+
+# 2026-09-23 — M13.1 Fix Nonfatal Semantic Stop Pipeline — PASS WITH UNRESOLVED EVIDENCE
+
+TASK: Separate semantic stage truth from post-run scheduling. Preserve
+`STOP_CONTROLLED_ENTITY_COVERAGE_INSUFFICIENT` and other recognized semantic
+gaps as unresolved, continue generic closure and independent audits, and keep
+integrity/identity failures fatal. Replay the existing sealed campaign only;
+do not capture new gameplay.
+
+IMPLEMENTATION: Added typed `StageResult`/`PipelineEffect` policy and a generic
+semantic-stage scheduler. Gameplay and controlled-entity adapters now publish
+recognized semantic stops as `UNRESOLVED`; the coordinator continues through
+generic closure and later independent stages. Progress UI and final receipts
+distinguish completed-with-unresolved from PASS and fatal STOP. Generic corpus
+raw/index/segment hashes, counts, offsets and coverage are checked before
+analysis; corrupted corpus and ROM identity mismatch remain fatal.
+
+REGRESSION/REPLAY: Focused pipeline, generic closure, progress and coordinator
+tests passed 38/38 before final verification. Replayed existing campaign
+`campaign-desktop-20260923-213728-376` (run 1790220032; 1,152 segments;
+3,862,913 records) with no new capture. Final state:
+`ANALYSIS COMPLETE WITH UNRESOLVED EVIDENCE`; controlled-entity state stayed
+`UNRESOLVED` with exact reason
+`STOP_CONTROLLED_ENTITY_COVERAGE_INSUFFICIENT`; generic closure `NO_DELTA`;
+ASM closure PASS (84 bytes promoted); full ROM audit PASS; cleanup PASS;
+SOURCE_OWNED delta 0. Replay report and status are under
+`build/thor-evidence/live-worker-control/campaign-desktop-20260923-213728-376/post-run-analysis/`
+as `m13.1-replay-report.json` and `m13.1-replay-status.json`.
+
+CLEANUP DISCLOSURE: As explicitly requested by the successful-replay workflow,
+cleanup permanently deleted the source raw FLOW and segment-index files
+(186,621,195 bytes total; no recycle-bin recovery; post-delete integrity
+PASS). Derived replay reports and normalized generic closure artifacts remain.
+No commit or push was performed. SOURCE_OWNED remained unchanged. Final
+verification: five focused suites passed 41/41; `py_compile` passed for all
+changed Python modules; `cmake -P tests/check_file_limits.cmake` passed for 863
+governed files; `git diff --check` passed (only existing LF-to-CRLF notices).
+Full native Debug/Release builds were not run because this task changes only
+Python post-run tooling and its fixtures.
+
+# 2026-09-23 — M13.2 Generic Closure Gap-Driven Improvement — PASS
+
+TASK: Audit the completed M13.1 closure outputs, explain and rank zero-delta
+blockers, implement exactly one generic capability, and replay the preserved
+normalized corpus if its evidence is sufficient. Do not chase or semantically
+label any particular game entity; preserve SOURCE_OWNED truth and all existing
+dirty worktree state.
+
+Acceptance: report artifact-derived metrics without filling absent fields by
+guess; identify blocker counts/bytes only where measurable; emit a deterministic
+blocker ranking; test existing generic selector, call/register, effective
+address, ROM/table and unresolved fixtures; preserve fail-closed handling; run
+the normalized replay if sufficient, otherwise specify a precise capture
+contract; document raw evidence retention gating for future cleanup.
+
+BASELINE AUDIT: Preserved M13.1 normalized corpus has 3,862,913 records but
+empty `instructions`, `memory`, and `rom_ranges`. The closure graph has zero
+nodes/edges, zero tables/structures/targets/promotions, one iteration with zero
+new facts, and one unresolved exact-ROM-roundtrip placeholder. The gap ranking
+reports zero blocked CFG edges and zero measurable blocked ROM bytes. Thus the
+observed zero ownership delta is explained by absence of normalized semantic
+facts and exact range round-trip inputs, not evidence that the run contains no
+useful execution. Selected generic improvement: extract canonical-opcode-
+validated observed PC→next-PC edges from normalized FLOW instruction records;
+this creates observed CFG evidence only and cannot promote ownership by itself.
+
+IMPLEMENTATION/REPLAY: Added only `OBSERVED_NEXT_PC` edges when source PC/opcode
+matches canonical ROM bytes. Replayed the preserved normalized corpus with two
+fresh engine instances and byte-identical canonical outputs. Recovered 1,208
+unique observed CFG edges from 3,862,913 rows; 962,333 instruction-tagged rows
+remain unresolved on opcode identity because CPU/domain identity was not
+preserved. The deterministic ranking records register/decode gaps (2,424,594
+references), bus-width/domain/causal gaps (1,438,319), unresolved instruction
+identity/domain (962,333), and exact ROM round-trip boundaries (unmeasurable).
+Blocked ROM bytes remain unknown; no estimate is fabricated. Zero exact ranges
+closed; SOURCE_OWNED remains 1,487,672 (delta 0).
+
+RETENTION: Added deterministic double-run acceptance and hashed gap-ranking
+verification to the generic stage. Both disk-backed and in-memory cleanup now
+fail closed unless generic closure, ranking and deterministic replay have
+passed. M13.1's already-deleted raw files were not altered.
+
+VERIFICATION: focused generic/cleanup/stage/coordinator/receipt regressions
+passed 57/57. `py_compile` passed for all changed Python files;
+`cmake -P tests/check_file_limits.cmake` passed for 864 governed files;
+`git diff --check` passed (with existing LF-to-CRLF notices). All changed
+source files are below 500 lines. No commit or push.
+
+# 2026-09-24 — Controlled-entity semantic stop classification — COMPLETE WITH UNRESOLVED EVIDENCE
+
+TASK: Correct the screenshot regression where a genuinely absent exact entity
+candidate raises through the controlled-entity stage and marks the full
+post-run pipeline failed. Treat only `STOP_CONTROLLED_ENTITY_EXACT_CANDIDATE_MISSING`
+as nonfatal unresolved; do not manufacture acceptance or PASS. Validate the
+post-run stages with a fresh 20-second actual gameplay capture, then fix and
+rerun any failing stage while preserving raw evidence.
+
+ACCEPTANCE: The targeted regression and full post-run coordinator complete
+without an error caused solely by a missing semantic candidate; the stage stays
+`UNRESOLVED`, downstream evidence stages actually execute, and any unresolved
+evidence remains visible. A genuine `STOPPED_FRAME_LIMIT` terminal capture is
+accepted by the same seal validation that already allows runtime post-run to
+start. Capture duration/gameplay evidence and each stage outcome must come from
+real artifacts; no synthetic PASS.
+
+IMPLEMENTATION: The controlled-entity adapter catches only the exact
+missing-candidate semantic code and returns `UNRESOLVED`; all other exceptions
+remain fatal. That reason is explicitly classified as nonfatal, so generic
+closure and independent audits proceed. Rolling-master finalization accepts
+the already-launcher-approved `STOPPED_FRAME_LIMIT` terminal outcome. If raw
+absorption cannot be proven, cleanup now reports `RAW_RETAINED / UNRESOLVED`
+with zero deletions; other cleanup failures remain fatal. The typed result
+helper keeps `live_forward_complete_pipeline.py` below the 500-line limit.
+
+LIVE VALIDATION: Fresh canonical-ROM BizHawk run `1790257512` used natural
+input for 2,672 reported frames and ended `STOPPED_FRAME_LIMIT`, with 128
+audited segments and 1,327,680 raw FLOW bytes. The existing input schedule
+provides movement/action input after its first 1,200 frames; this exceeds 20
+seconds of gameplay-directed input. Active gameplay was not independently
+screen-verified, so the claim is limited to real emulator execution and the
+input schedule. Post-run status is `ANALYSIS COMPLETE WITH UNRESOLVED EVIDENCE`,
+not PASS: gameplay acceptance remains unproven and controlled-entity exact
+candidate is missing. Generic closure is `NO_DELTA`; ASM closure and the
+independent full-ROM audit PASS. Cleanup is `RAW_RETAINED`, deleted 0 files,
+and the raw/index remain present. `SOURCE_OWNED_DELTA=0`.
+
+VERIFICATION: The focused regression group passed 21/21, then 12 targeted
+post-run suites passed 99/99. Python compilation passed. The repository source
+limit check passed for 866 governed files (all <=500 lines); the largest
+changed source, `live_forward_complete_pipeline.py`, is 497 lines. `git diff --check`
+passed; Git printed only existing LF-to-CRLF working-copy notices.
+Native Debug/Release builds were not run because this is Python-only
+developer-side post-run tooling. No commit or push.
+
+# 2026-09-23 — M13.3 Generic Evidence Contract V2 — PARTIAL / ACCEPTANCE OPEN
+
+TASK: Upgrade the live native-FLOW normalization boundary to a versioned,
+generic evidence contract preserving capture identity, CPU/domain identity,
+instruction and bus records, ROM reads, and control-flow evidence. Keep
+semantic interpretation post-run and PC-agnostic; do not mutate ownership or
+remove raw evidence.
+
+ACCEPTANCE: Populate normalized `instructions`, `memory`, `rom_reads`,
+`register_snapshots`, `control_flow`, `calls`, `returns`, and
+`indirect_targets` from exact source records where present; explicitly expose
+missing native evidence instead of fabricating it. Consume normalized facts in
+generic closure, validate with focused schema/normalizer/closure regressions,
+and, if the installed native capture path supports the full contract, retain a
+300–1000 gameplay-input-frame validation capture through deterministic replay
+and closure. Run available native Debug/Release builds, focused Python checks,
+file-limit and diff checks. Preserve `SOURCE_OWNED`, raw FLOW/index, and
+existing dirty worktree state; no commit or push.
+
+IMPLEMENTATION: Added normalized corpus V2 while preserving legacy v1 fixture
+compatibility. CPU identity is native `cpu_id`; memory/ROM-read and control
+flow/call/return facts retain stream/instruction links. M68K opcode
+classification checks canonical bytes and retains mismatches. Generic closure
+now consumes normalized memory, ROM-read, calls and returns. Host-audited
+Worker segment ENTRY/EXIT D0-D7, A0-A7, SR and PC values are stored as bounded
+snapshots and linked to the first/last instruction identities. Added a global
+`--max-total-frames` stop because `--max-frames` only bounds per-round waits.
+Documentation/report: `docs/reports/THOR_M13_3_GENERIC_EVIDENCE_CONTRACT_V2_V1.md`.
+
+LIVE VALIDATION: The first continuous run reached 5,094 frames because the
+existing `--max-frames` did not cap total runtime; its raw evidence was kept.
+The corrected bounded rerun ended `STOPPED_FRAME_LIMIT` at 2,059 total frames;
+the natural-input schedule injected movement/gameplay inputs for 859 frames,
+but active in-game state was not independently screen-verified. It had 24
+audited segments and 27,609 records. Canonical ROM identity matched. Normalized
+coverage: 16,388 instruction events (9,936 M68K / 6,452 Z80), opcode classes
+9,936 `ROM_OPCODE_EXACT` and 6,452 `NON_ROM_DOMAIN` (Z80); CPU/opcode/next-PC
+100%; memory 11,221 events with width/domain/causal-link coverage 100%; 24 ROM
+reads; 48 boundary register snapshots and refs (0.293%). `FRAME_BOUNDARY_EVENTS`
+was zero, so exact per-event frame identity remains unavailable and is emitted
+as a gap. Live closure (deterministic double execution PASS): 1,086 generic
+facts; CFG 445; register-def 0; memory-causal 573; ROM-read 6; calls 21; returns
+68; indirect targets 4; unresolved 16,388; exact promotion 0; `SOURCE_OWNED`
+delta 0. Raw FLOW and index remain present and hash-verified.
+
+VERIFICATION: focused schema/normalizer/FLOW/launcher/generic/cleanup suites
+passed 35/35; Python compilation passed. Full MinGW Debug and Release CMake
+builds passed; six native Worker/sideband/scaling/Z80 tests passed in each
+configuration. Remaining blockers are native frame-boundary emission,
+per-instruction register snapshots/references, and M68K decode/width coverage.
+M13.3 acceptance is not claimed; raw evidence must remain until those gaps,
+deterministic replay and acceptance are complete.
+
+# 2026-09-24 — Fix Z80 bank-event identity validation — FIXED / POST-RUN UNRESOLVED
+
+TASK: Fix the W6/W3 runtime abort `SEG_000008_000064: frame boundary has
+instruction identity` without accepting malformed evidence. Determine whether
+the failing subtype is actually FRAME_BOUNDARY or another typed sideband event;
+preserve exact `(CPU, instruction_sequence)` validation for bank-register
+changes and keep frame-boundary semantics unchanged. Re-run regression tests and
+a bounded real BizHawk capture after the correction.
+
+ACCEPTANCE: The captured failing bank-register event is accepted only when its
+nonzero instruction sequence resolves to an instruction on the same CPU in the
+same segment. FRAME_BOUNDARY must still have no instruction identity. A missing
+or cross-CPU bank-event identity remains fatal. No fabricated PASS, no weakening
+of capture validity, and no modification/deletion of the failed capture.
+
+IMPLEMENTATION: The validator's generic `elif row[1] != 0` incorrectly applied
+the FRAME_BOUNDARY rule to BANK_REGISTER_CHANGE subtype 4. It now keeps the
+frame-boundary zero-identity rule and separately requires each bank-change to
+refer to an earlier Z80 instruction with the same instruction sequence in that
+segment. The returned audit includes the bank-change count. Regression coverage
+accepts the correctly paired Z80 event and rejects cross-CPU references and
+nonzero frame-boundary identities.
+
+FAILED-CAPTURE REPLAY: Revalidated the exact previously failing
+`SEG_000008_000064` from the preserved two-pass wave files. The segment contains
+7 Z80 bank-register changes; each sequence matches its immediately preceding
+Z80 instruction. It now validates with `valid=true`; frame-boundary count is 0.
+The original failed campaign and raw files were left unchanged.
+
+LIVE VALIDATION: Fresh BizHawk run `1790239022`, 128 workers × depth 512,
+natural input, ended normally at `STOPPED_FRAME_LIMIT` after 2,681 frames and
+896 audited segments (182,321,328 FLOW bytes). Runtime reported no error; the
+in-process post-run completed as `ANALYSIS COMPLETE WITH UNRESOLVED EVIDENCE`.
+Generic closure was `NO_DELTA`; audio, Sprite/SAT, ASM closure and full ROM
+audit passed. Gameplay/controlled-entity semantics remain unresolved; cleanup
+retained raw and deleted 0 files. `SOURCE_OWNED_DELTA=0`. This bounded fresh run
+did not reach the same 960th segment; the exact failed segment was validated
+directly from the preserved original capture.
+
+VERIFICATION: 23 focused tests passed; Python compilation, source-size check
+(866 governed files, all <=500 lines), and `git diff --check` passed. Native
+Debug/Release builds were not needed because no native source changed. No
+commit or push.
+
+# 2026-09-24 — Repair memory blow-up during generic-closure sealing — FIXED / REPLAY ACCEPTED
+
+TASK: Repair the post-run `GENERIC RECURSIVE CLOSURE` STOP from the preserved
+real gameplay campaign `campaign-desktop-20260924-084548-879`. Keep raw
+FLOW/index evidence and all existing dirty worktree changes; never turn a
+missing artifact or failed stage into PASS.
+
+ROOT CAUSE: The stage retained 19,186,672 normalized FLOW rows in memory and
+then called `json.dumps` on the entire multi-collection corpus, creating a
+second enormous string. Replaying the exact sealed capture reproduced the
+resource blow-up: the Python working set reached about 18 GiB and private
+commit about 44 GiB before corpus output completed. The old coordinator
+discarded the exception type/message, leaving a STOP with an empty reason.
+
+IMPLEMENTATION: Generic corpus collections now stream through temporary
+JSONL spools into the same schema-v2 JSON artifact. The closure input keeps only
+deduplicated graph-relevant facts in memory while retaining exact occurrence
+counts; output hashing is chunked. Corpus record count reports all source FLOW
+events, not deduplicated closure facts. Handoff failures preserve exception
+type and repr, and sealing progress reports segment and record counts. Raw
+FLOW/index and their identity hashes are not modified.
+
+REGRESSION/LIVE REPLAY: Added coverage for exception diagnostics, chunked file
+hashing, repeated-event count fidelity, and existing generic selector/cleanup
+contracts. Reprocessed the preserved real capture `run-1790240077` (4,736
+segments; 19,186,672 records) using the canonical ROM. Generic closure returned
+`NO_DELTA` after a two-iteration fixpoint with 9,739 generic facts and 3,109
+CFG edges; deterministic replay and gap ranking both PASS. The independent
+cleanup acceptance gate accepted those artifacts. `SOURCE_OWNED_DELTA=0`;
+raw/index remain present and hash-identical. No new gameplay capture was made;
+the aggregate post-run report remains the original snapshot and was not
+rewritten to imply a full coordinator rerun. Cleanup/deletion was not invoked.
+
+VERIFICATION: 20 focused generic-closure, selector and cleanup tests passed;
+Python compilation passed. Full native Debug/Release builds were not run
+because only Python developer-side evidence tooling/tests and documentation
+changed. Expanded post-run/generic/normalizer/cleanup regression set passed
+51/51; repository-wide source limit passed (866 governed files <=500 lines);
+`git diff --check` passed (Git emitted only existing LF-to-CRLF notices).
+No commit or push.
+# 2026-09-24 — M14.1 Canonical Full-ROM Map Runtime Validation V1 — PASS
+
+The runtime import path previously selected the legacy 2026-09-18 MASTER V2
+shadow with `SOURCE_OWNED=1487388`. The fallback now prefers the accepted
+post-Stage7 SQLite generation and rejects stale canonical views before
+materialization. Receipt-only Audio/VDP ownership fields were synchronized
+with the reconciled baseline.
+
+The normal bounded EmuHawk/Worker pipeline ran with natural input for 1252
+frames and 384 validated FLOW segments. `m14_runtime_validation.py` computes
+ownership, coverage and range count from the runtime SQLite emission table and
+validates baseline, generic replay, gap ranking, full-ROM identity and
+fail-closed cleanup.
+
+Result: `PASS_M14_1_CANONICAL_FULL_ROM_MAP_RUNTIME_VALIDATION_V1`.
+Runtime map: `TOTAL_BYTES=3145728`, `GAPS=0`, `OVERLAPS=0`, `RANGES=2489`,
+`SOURCE_OWNED=1487672`. Generic closure was `NO_DELTA` with deterministic
+replay `PASS`; gap ranking was `PASS`; full-ROM SHA matched the canonical
+identity. Semantic unresolved evidence remained nonfatal and raw evidence was
+retained. No commit or push was performed.
+# 2026-09-24 — M14.2A Global Graph Authority and Safe Admission V1 — IN PROGRESS
+
+TASK: Extend the existing canonical `knowledge.sqlite` with durable derivation
+and map-proposal records. Preserve emission as the only ROM partition and
+SOURCE_OWNED authority. Fix MAP-1 conflict persistence, require scoped runtime
+occurrence identities, preserve immutable parent generations, and update every
+canonical persistence/materialization path. Do not perform a gameplay capture,
+commit or push.
+
+ACCEPTANCE: The M14.2A pasted contract. Regressions A–I must cover stable
+conflicts, CPU/address-space occurrence identity, static object plus separate
+capture witnesses, idempotence and capture-order determinism, stale proposal
+rejection, MASTER V2 roundtrip, unchanged emission hash, and
+`SOURCE_OWNED=1,487,672`. All changes remain additive to the authoritative
+knowledge store and source files remain within 500 lines.
+# 2026-09-24 — M14.2A-R Partial Worktree Recovery and Acceptance — IN PROGRESS
+
+TASK: Audit the partial M14.2A changes, preserve unrelated dirty work, complete
+the v2 persistence path, and run acceptance without capture, commit, push, or
+changes to `SOURCE_OWNED`.
+
+RECOVERY: Kept the additive canonical knowledge schema, read-only accepted
+generation checks, staged child lineage, safe fallback emission matching, and
+Cartographer conflict fix. Repaired the MASTER V2 shadow fixture to use valid
+canonical schemas and added materialize/reopen/hash checks for all four new
+tables. Added focused migration, conflict-reopen, scoped identity,
+order-independence, idempotence, proposal-staleness, and emission-hash tests.
+
+STATUS: Focused suites pass. The occurrence identity function is covered, but
+runtime-import adapters still aggregate occurrences into evidence counts and
+do not yet call the scoped identity helper. Thus full global graph safe
+admission is not accepted. No authoritative database was written.
+
+# 2026-09-24 — M14.2A Scoped Runtime Occurrence Admission — PASS
+
+Implemented individual scoped runtime occurrence evidence in the existing
+Archivist-to-knowledge importer. Native event identity is validated at import;
+overlapping Worker windows union capture/window lineage for the same native
+event. Each occurrence retains its own runtime evidence reference, with
+separate support references for canonical claims and relations. Static ROM
+objects remain keyed independently of their runtime witnesses.
+
+Verification: live-forward Cartographer (13), knowledge pipeline (18), focused
+M14.2A acceptance (3), MASTER V2 shadow (3), canonical view (3), MASTER V2
+forensic reconciliation (5), and contribution boundary (14) tests passed.
+Python AST parsing passed for changed source/test files; all measured source
+files were at most 500 lines. `git diff --check` passed. Read-only accepted
+M14.1 generation: 3145728 ROM bytes, 2489 ranges, zero gaps/overlaps,
+`SOURCE_OWNED=1487672`, emission hash
+`44a2332b0b433c635e33767886ffff35985ad31131e3dc3b4dea5e6984b17d92`.
+No ROM ownership or authoritative database was changed.
+# 2026-09-27 — Runtime ROM Property Map M0–M9 — IN PROGRESS
+
+TASK: Implement the accepted direct runtime property-map architecture.
+Acceptance requires byte-exact property contracts, versioned crash-safe
+checkpoints, tested emulator proof adapters for M68K/Z80/VDP/audio, compatible
+rebuildable cross-run merge, gapless range export, non-promoting canonical
+integration, and same-input emulator benchmarks with behavioral parity.
+
+Progress: added the M0 contract, a dense `uint16_t` property map with
+4-KiB dirty-page tracking, versioned/checksummed identity-bound checkpoints,
+per-run contribution and compatible OR-rebuild API, a deterministic range
+exporter, and a canonical overlay that preserves ownership. Added tested
+proof primitives for supported M68K decode spans, resolver-checked M68K/Z80
+data reads, observed Z80 fetched-byte spans, exact byte-copy origin tags, and
+accepted VDP source writes. These primitives are not wired to GPGX. Z80 runtime
+prefix fetch capture, exact physical mapping, live VDP DMA hooks, audio payload
+proof, savestate lifecycle, emulator benchmark, and behavioral parity remain
+open. Full raw trace remains available for diagnosis and is not needed by the
+map/checkpoint/merge/export APIs.
+
+## Milestone status
+
+- M0: PASS — bit contract and negative evidence rules pinned by JSON SHA-256.
+- M1: PASS — dense map, dirty pages, identity, checksum, atomic checkpoint API.
+- M2: PARTIAL — decoder-backed proof primitive and tests; no GPGX callback.
+- M3: PARTIAL — exact fetched-byte acceptance API; collector and ROM resolver
+  are not connected to GPGX.
+- M4: PARTIAL — consumed-source marking API; DMA lifecycle integration open.
+- M5: PARTIAL — exact-copy RAM tags and propagation tests; audio proof open.
+- M6: PASS — compatibility gate, commutative/idempotent union, subset rebuild,
+  and CLI manifest with each source path and SHA-256 are tested end-to-end.
+- M7: PASS — gapless `[start,end)` export and bitmap/range roundtrip API.
+- M8: PASS (tooling) — overlay joins boundaries and preserves canonical
+  ownership; no promotion path was added.
+- M9: NOT RUN — requires an integrated emulator build and matched runtime
+  capture. Synthetic map timing would not satisfy this acceptance.
+
+Verification: `oasis_runtime_rom_properties_test`,
+`oasis_runtime_rom_map_integration_test`, and
+`oasis_runtime_rom_properties_tool_test` pass 3/3 in Debug and Release. The
+same three tests and all property-map targets build/pass under WSL GNU/Linux. Coverage
+includes checkpoint checksum and failed-save preservation, compatible union
+commutativity/idempotence/rebuildability, Bcc/Bcc.W/DBcc/JSR/RTS decoder spans,
+reset-vector and incomplete-instruction rejection, discontinuous CPU mapping,
+Z80 prefixes/banked byte origins, exact RAM copy tags, accepted/partial VDP
+source writes, range roundtrip, and canonical ownership preservation.
+
+No emulator behavior, public artifact, ROM, or ownership row was changed.
+Performance and behavioral-parity runs remain unclaimed because the map
+primitives are not wired into the pinned GPGX runtime. This task remains open
+until hooks and live acceptance are complete.
+
+# 2026-09-27 — Runtime ROM Property Map live-hook continuation — IN PROGRESS
+
+TASK: Continue M0–M9 from the tested standalone tooling and connect proof hooks
+inside the pinned BizHawk 2.11.1 / GPGX runtime. Keep the run/checkpoint/export
+path outside the execution hot path; retain exact proof identity and fail-closed
+classification.
+
+BUILD ENVIRONMENT: Corrected the prior blocker report. The existing WSL2 source
+checkout is `/home/serji/bizhawk-2.11.1` at BizHawk
+`bdddf4a58aa1a022afb11dc73294a81a5aa7bbd5`, GPGX
+`051d430d3d1b54625f9900c8f152d7f232e06daf`, musl
+`2063abc4e16c84218757b1db10d3cdf9f36ef3f8`, Ubuntu clang 18.1.3 and libcxx
+`llvmorg-18.1.8`. `musl-clang` SHA-256 is
+`9125791649f7cb2409b80f8282c20c2336e80c70f0ba820e08c4e251a78dc14f`.
+`make -C waterbox/gpgx release` ran and reported up to date. The existing core
+SHA-256 `9973dac167e69a8d444a71fa4e4f2332fddae1edc3ac37df7364ee0c91f9fa23`
+matches the W3-V2 isolated install. The source checkout has substantial prior
+local changes, so preserve it and keep new modifications isolated/reviewable.
+
+STATUS: `PINNED_RUNTIME_BUILD=PASS`; Release GPGX SHA-256 is
+`ec75d8b029138adc34dcf9342a7302d44044d220c0fc9b10b13d43fceb831190` and Debug
+build also passes. The managed `BizHawk.Emulation.Cores`, `Client.Common`, and
+`Client.EmuHawk` Release builds pass. An isolated install ran the canonical ROM
+for 120 frames and exported its live map. The observed property counts were
+502 bytes with no property, 3,141,624 with `M68K_DATA_READ`, and 3,602 with
+`M68K_DATA_READ | M68K_EXECUTED_ENCODING`; no Z80 or VDP bits were observed.
+The M68K data-read footprint grows from 6 bytes at frame 1 to 790,742 at frame
+30 and 3,145,226 at frame 120. Each marked read checks the actual mapped ROM
+backing byte against the value returned by GPGX; the broad footprint still
+needs runtime-call-site explanation before making narrower semantic claims.
+
+The host import tool created `build/runtime-rom-properties-live/live.rom-properties.v1`
+with ROM SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`,
+size 3,145,728, core build ID
+`b1128be9e137a15a1e3e415587c77370551bcf7b18f86ada80a95dfaaee077e7`, run ID
+`live-20260927-120f5`, capabilities 5 and state `PARTIAL`. Range export covered
+the full ROM with 180 ranges; bitmap/ranges roundtrip was exact. Canonical
+overlay produced 2,633 joined ranges and preserved 1,487,672 source-owned
+bytes (delta 0).
+
+GPGX Release and Debug Waterbox builds pass; focused property core/tool tests
+pass in Windows Debug, Windows Release and GNU/Linux. Managed builds have one
+existing SharpCompress advisory warning. The first Linux CTest invocation
+failed because its fixture executable had not been built; after building that
+declared fixture target, both focused tests passed. `LIVE_Z80` and direct VDP
+hooks are compiled but not accepted by this run. Z80 RAM origins, remaining
+VDP modes, audio, matched behavioral parity and M9 benchmarks remain open.
+
+The root CMake file had grown past the 500-line source limit due to its test
+and test-tool declarations. Those declarations now live in
+`cmake/project_tests.cmake`; configuration behavior is unchanged, and both
+files remain below 500 lines.
+
+## 2026-09-27 — Runtime ROM Property Map parity repair
+
+The first instrumented-vs-baseline comparison found a real behavioral
+regression: the Z80 `ARG16()` observation wrapper read both operand bytes but
+did not advance the emulated PC by two. Added the missing `PC += 2` in both the
+runtime patcher and the pinned WSL GPGX source. This restores the original
+operand-consumption behavior.
+
+Validation after the fix: rebuilt GPGX Release and Debug Waterbox artifacts.
+The repaired Release core installed in the isolated EmuHawk copy has SHA-256
+`DCD39613AEF68A945F29927EAD467326F6AC892D92F924466EE6F4B5F3B0F630`.
+The isolated Release core produced the same 120-frame RAM FNV-1a hash as the
+unmodified baseline (`8511990e`) and matching PC/SR/D0/A7. At 1,200 frames,
+baseline and instrumented OFF and ON all produced RAM hash `948c6400` and the
+same PC/SR/D0/A7. This is a bounded neutral-input parity check, not full-game
+behavioral parity.
+
+The 1,200-frame benchmark reported 1,048.951 FPS baseline, 902.256 FPS with
+instrumentation OFF and 697.269 FPS with properties ON. The ON run recorded
+3,145,226 changed bytes, 3,164,019 update operations and 1,838,477 operations
+per second, using 6,291,552 bytes of map storage. CPU-time granularity and
+single-run variance limit these preliminary numbers; matched repeated runs
+remain needed for M9 acceptance.
+
+The refreshed 120-frame live capture reported 3,145,226 changed bytes and
+3,148,730 operations. Its property footprint remains M68K-only in this neutral
+scenario. The earlier checkpoint/build manifest predates the `ARG16` repair,
+so its identity must not be presented as the repaired artifact's identity.
+The repaired capture still needs a newly sealed manifest/checkpoint and exact
+range/overlay replay before the live artifact is current. Z80/VDP observed
+coverage, RAM-copy provenance, additional VDP modes, audio, broader parity and
+full M9 acceptance remain open.
+
+## 2026-09-27 — Corrected runtime re-seal and replay — PASS / PARTIAL
+
+Sealed a new Release live run after the Z80 `ARG16()` PC-advance fix. The
+canonical JSON manifest binds both Debug and Release artifacts and hashes the
+runtime integration sources, ROM identity, schema, proof contract, managed
+assemblies, and EmuHawk executable. Runtime/build ID:
+`e202add134725f7460c2a67d866d0b2e1c97ba5f9175ca5b4f76a4e961640889`.
+Release core SHA-256 is
+`dcd39613aef68a945f29927ead467326f6ac892d92f924466ee6f4b5f3b0f630`; Debug
+core SHA-256 is
+`c43623cd54407e9554f9a505f55402406e8a79bdd2ebcca07157403f65bfb12f`.
+
+Fresh run identity: ROM SHA-256
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, 3,145,728
+bytes; schema `thor.rom-properties.v1`; proof contract SHA-256
+`10da481265de188d7a11049f34d24dd33f3b0e34b5ff797d12541ee241356c78`; run ID
+`corrected-live-20260927-120f-01`; capabilities 5; validation state `PARTIAL`.
+Checkpoint SHA-256:
+`9233d8d626519180b1e4d06cb6a541ea0d9f470689337921a7078483b9056c69`.
+
+Fresh range replay passed: 172 ranges, complete coverage, no gaps or overlaps,
+and exact bitmap/range roundtrip. Canonical overlay produced 2,625 ranges;
+canonical map hash was unchanged, `SOURCE_OWNED` remained 1,487,672 bytes,
+ownership delta was zero, and unauthorized promotions were zero. Property
+counts were 502 bytes with no property, 3,141,722 with `M68K_DATA_READ`, and
+3,504 with both M68K properties.
+
+Added a permanent `ARG16()` regression test and parity harness. The test checks
+both operand reads and observations, PC advancement by exactly two, and next
+opcode alignment. Windows Debug and Release property test suites now pass 4/4.
+Cold-boot neutral-input traces match exactly at 120, 1,200, and 10,000 frames,
+including per-frame M68K PC/SR and Z80 PC, final M68K/Z80 registers, and RAM
+markers/hashes. This is limited neutral-input parity, not whole-game parity.
+
+Three 1,200-frame performance repeats per mode measured mean FPS A/B/C of
+1,083.712 / 988.804 / 761.212. Calculated FPS decreases are 8.76% for
+instrumentation (A→B), 23.02% for map collection (B→C), and 29.76% total
+(A→C). VSync and clock throttling were off; each run used the same frame count,
+neutral input, Windows host, EmuHawk executable, and fresh-boot configuration.
+The baseline and instrumented installations have different
+`BizHawk.Emulation.Cores.dll` hashes, so A→B includes that managed-assembly
+difference. The raw receipt and traces are in ignored
+`build/runtime-rom-properties-live/parity-performance/`.
+
+Milestones: M2 limited live M68K acceptance passes; M3 remains partial because
+this run observed no Z80 ROM property bytes despite the permanent regression
+and matching Z80 register traces. M4 live direct VDP source acceptance is open;
+M5 exact-copy provenance/audio has not started. M9 remains partial pending
+gameplay-input parity and subsystem coverage. See
+`docs/reports/THOR_RUNTIME_ROM_PROPERTIES_RESEAL_20260927.md`.
+
+## 2026-09-27 — Controlled-input direct-path acceptance
+
+After the corrected runtime re-seal, ran a separate 3,600-frame deterministic
+input scenario (`menu-start-directional-v1`) on the same Release runtime/build
+ID. The schedule presses Start/A/C during the opening 1,200 frames, then cycles
+Right/Down/Left/Up with A/B/C actions. Its input-script SHA-256 is
+`293f732e27b807678730e734e0ea77b8ea82a4a016532325332e4f7605c2e304`.
+
+The scenario map was independently checkpointed with run ID
+`scenario-menu-start-directional-20260927-3600-01`, capabilities 255, and
+state `PARTIAL`. Checkpoint SHA-256 is
+`a9eef1d7d9c53ba47cf93451b90ff59049df8d9d68c068d371bf9a879c9c0e46`. Its 2,362
+ranges round-trip exactly; canonical overlay covers the full ROM with no gaps
+or overlaps, has 4,643 ranges, preserves `SOURCE_OWNED` at 1,487,672 bytes, and
+has zero ownership delta and zero unauthorized promotions.
+
+The map contains 40,182 bytes with `Z80_DATA_READ` and 129,984 bytes with
+`VDP_VRAM_SOURCE`, alongside M68K properties. Direct Z80 reads are marked only
+when their mapped ROM backing byte equals the returned value. Direct VDP source
+words are marked only when both bytes resolve contiguously to ROM and equal
+the bus value after the DMA word is written. No Z80 executed-encoding,
+CRAM-source, or VSRAM-source bytes were observed. M3 and M4 now have limited
+live acceptance for these paths.
+
+Ran baseline-vs-corrected parity with the exact same 3,600-frame input
+schedule. All per-frame M68K PC/SR and Z80 PC rows, final registers, markers,
+and RAM hashes match byte-for-byte; trace SHA-256 is
+`11b4316283bb84c7be5715fc64803b7ae3e62019646d089444c487ce0550300e`.
+Final M68K RAM hash is `f5da3738`; Z80 bus `0000–1FFF` hash is `e6a598fa`.
+This remains bounded scenario parity, not whole-game parity. M5 has only
+host-side exact-copy origin primitives so far; live provenance is unaccepted,
+and audio remains optional for base-map completion.
+# 2026-09-27 — Read-only ROM Coverage GUI
+
+## Task and acceptance criteria
+
+Add a Defraggler-style view of the existing proven ROM property bitmap.
+Preserve exact ROM/build/proof identities; display union coverage, unknowns
+and run delta; support address-ordered 1 KiB, 32-byte and byte views, hover
+counts, filters, and checkpoint/overlay/canonical modes. Keep reads off the
+emulator thread and guarantee no map writes or semantic promotion.
+
+## Implementation
+
+Added a standard-library Tkinter viewer and a read-only model. It validates the
+OASROMP1 checkpoint SHA-256, schema, proof contract, identities and declared
+capabilities before display. Overlay receipts must match their exact paired
+checkpoint hash and identity. Coverage uses mask-union truth and keeps
+overlapping property counts separate. LIVE watches atomic checkpoint
+replacement every 500 ms and reads changed snapshots in a background thread.
+The existing capture still publishes its checkpoint after the run; this change
+does not add a runtime shared-memory or hot-path interface.
+
+## Validation
+
+Focused Python model tests pass (7/7); Python syntax checks pass. The GUI
+successfully opens the corrected 3 MiB sealed checkpoint and computes
+3,145,226 covered bytes (99.984%). The overlay receipt and its paired
+checkpoint validate. The registered CTest passes in existing Windows Debug
+and Release configurations (1/1 each). New/edited executable source files are
+under 500 lines, whitespace checks and `git diff --check` pass. A visual
+screenshot could not be captured because this session's CUA exposes no native
+apps or `getApp` API; the GUI window itself starts and remains responsive.
+
+# 2026-09-27 — ROM Coverage Map proven-class visibility
+
+## Task and acceptance criteria
+
+Continue the ROM Coverage Map work from the user-provided screenshot and
+classification request. Keep the property bitmap and proof contract unchanged.
+Display bitmap union coverage separately from proven-class coverage; show
+read-only data observations with no proven class as `OBSERVED_UNCLASSIFIED`;
+preserve mixed proven classes; never report run delta without a canonical
+baseline; keep every legend entry visible.
+
+## Changes
+
+The viewer now groups M68K/Z80 data-read bits as observations and executed
+encoding, direct VDP-source, and proven audio-payload bits as classes. It
+reports `CLASSIFIED` and `OBSERVED, UNCLASSIFIED` byte counts independently,
+adds matching filters, and retains all per-property hover counts. A single
+proven class remains visible when raw read bits overlap it; multiple proven
+classes render as `MIXED`. Coverage and class deltas, plus the new-cell count,
+remain unavailable until the current run and compatible canonical union are
+both loaded. M68K and Z80 read observations retain distinct colors while
+remaining marked unclassified; cells with both read types use MIXED color but
+remain unclassified. The color legend wraps over three columns
+instead of clipping past the window.
+No runtime hooks, map data, schema, proof contract, or canonical ownership
+were changed.
+
+## Validation and limits
+
+The focused visualization model tests pass (11/11), including byte-union
+coverage, observation/class separation, overlapping property counts, class
+dominance, coverage/class deltas, filters, and exact cell partitioning. Python
+syntax compilation passes. Debug and Release CTest each pass both the GUI-model
+and permanent Z80 `ARG16()` regression tests. Full GUI screenshot automation
+remains unavailable because CUA exposes no native apps; the attached screenshot
+identified the clipped legend and misleading no-baseline delta fixed here.
+The repository-wide 500-line check still reports the pre-existing modified
+`src/tools/re_slice_decoder.cpp` at 506 lines; no file in this task exceeds
+500 lines. No new property bits or semantic claims were introduced.
+
+## Corrected-runtime expansion run
+
+Ran a separate 10,000-frame deterministic menu/directional input capture on
+the same corrected Release runtime. Fresh checkpoint SHA-256 is
+`80c30f8f19f16b40eaeef34581f12208201bca7e53c9952e7493879372aedff2c`.
+Range export has 2,468 contiguous ranges and round-trips byte-exactly; the
+read-only canonical overlay has 4,732 ranges, unchanged canonical hash,
+`SOURCE_OWNED` delta 0, and zero unauthorized promotions.
+
+The longer run added no total covered bytes over the accepted 3,600-frame run,
+but increased proven-class bytes from 172,306 to 311,338 (+139,032). It
+observed 56,426 bytes of M68K executed encoding, 76,009 bytes of direct Z80
+data reads, and 254,912 bytes of direct VRAM source. Z80 executed encoding,
+CRAM/VSRAM source, live RAM-copy provenance, and audio payload remain
+unproven. The largest `M68K_DATA_READ`-only span is
+`0x158296–0x261123` (1,085,070 bytes); it remains an observation with no
+semantic promotion. Full details are in
+`docs/reports/THOR_RUNTIME_ROM_PROPERTIES_EXPANSION_20260927.md`.
+
+## 2026-09-27 — observed-only range triage, iteration 1
+
+Inspected the largest `M68K_DATA_READ`-only span, `0x158296–0x261123`, using
+the accepted corrected-runtime checkpoint and the saved W6 discovery summary.
+The accepted checkpoint has no proven class bit in this span. The older
+discovery artifact contains only eight sparse intersecting ROM-read intervals
+and aggregate VDP/audio counters, so it does not bind the target bytes to a
+completed consumer chain. Existing runtime hooks resolve physical ROM reads
+and direct ROM-backed DMA, but do not carry exact origin through live RAM
+writes or decoder transforms. Promoting this span as RAM→VDP provenance,
+compressed graphics/audio source, or another class would therefore fail the
+100% proof requirement.
+
+No property, runtime hook, schema, proof contract, canonical map, ownership,
+or GUI was changed; no capture was extended. Classified coverage stayed at
+311,338 / 3,145,728 bytes (9.897168%), with zero newly classified bytes. The
+target and the next largest observation-only ranges remain unchanged. Details
+and the precise instrumentation needed to close the chain are in
+`docs/reports/THOR_ROM_PROPERTY_RANGE_TRIAGE_20260927.md`.
+
+## Consumer-driven ROM classification — task and acceptance
+
+Implement a bounded M68K direct-ROM-to-VDP data-port contract in GPGX. Accept
+only a completed same-instruction `MOVE.W` whose sole data read resolves to a
+byte-exact contiguous ROM word, whose value reaches an accepted Mode 5 VDP data
+port write unchanged, and whose destination code is VRAM, CRAM, or VSRAM.
+Reject transformed/register/immediate/multiple-read sources and DMA-fill
+trigger writes. Reuse the existing VDP source property bits; do not add a new
+property or alter canonical ownership. Then run Debug/Release builds and tests,
+fresh live capture, range roundtrip, canonical overlay, parity, and matched
+performance measurements. Report classified coverage before/after and any
+remaining evidence gap.
+
+Consumer-driven ROM classification also adds a bounded Format-A mode-0 audio
+read contract: accept only byte-verified reads at decoder PCs `0x080E` and
+`0x0855` within the two W5-proven resource spans, marking only the exact byte
+read. Reject all other banked reads and descriptor/control paths. Acceptance
+requires core tests, corrected Debug/Release GPGX builds, a fresh capture and
+checkpoint under the new contract, exact range replay, canonical ownership
+delta zero, parity, and matched performance measurements.
+
+### Consumer-driven classification acceptance — 2026-09-27
+
+The live Format-A consumer hook passed on a fresh 3,600-frame run. It marks
+only runtime-read bytes in the two W5-verified resources at Z80 decoder PCs
+`0x080E` and `0x0855`. `AUDIO_PAYLOAD_PROVEN` added 8,744 bytes and classified
+coverage increased from 172,306 to 181,050 bytes; observed coverage stayed
+3,145,226 / 3,145,728. The new checkpoint has an exact range roundtrip, zero
+gaps/overlaps, and a read-only canonical overlay with zero ownership delta and
+zero unauthorized promotions. Full identities and remaining ranges are in
+`docs/reports/THOR_ROM_PROPERTY_CONSUMER_CLASSIFICATION_20260927.md`.
+
+Neutral-input runtime traces matched against the previous instrumented build
+at 120, 1,200, and 3,600 frames. This is a runtime regression check, not clean
+baseline or full-game parity. Clean-core benchmarking remains unverified:
+the clean GPGX installs timed out at Waterbox startup. A completed benchmark
+used a prior instrumented core for mode A and is not accepted for A→B/A→C
+overhead; only B→C is preliminary because of high sample variation. No
+optimization was attempted. The next consumer contract should be exact input
+extent at successful live return from graphics decoder `0x3820`, classified as
+compressed graphics rather than direct VRAM data.
+
+### Live `0x3820` graphics consumer acceptance — 2026-09-27
+
+Added a fail-closed graphics contract at the verified `0x3820` decoder. The
+runtime captures `A0` at exact entry and marks its ROM-backed, contiguous
+`[A0_entry,A0_return)` extent only after the decoder returns by `RTS`. A
+per-byte physical mapping check and 64 KiB bound reject unsupported inputs.
+The new `COMPRESSED_GRAPHICS_SOURCE` bit does not claim direct VRAM semantics.
+
+Debug and Release GPGX Waterbox builds passed. The fresh 3,600-frame run sealed
+with runtime/build ID
+`89064cd571a5e96dc262aac848cf9a18d40b1011b071c8352e1147e651079f14`, proof
+contract SHA-256
+`c88eb4dcc273b55681bc1d0fc04e483b4d200d292b054488f7c87348b2c07842`, and
+checkpoint SHA-256
+`5a87455d0a240654812d7009689ba8adf281e6e422f4c545738212dadf605208`.
+Range replay is exact (2,375 ranges, zero gaps/overlaps); the canonical overlay
+preserves its hash and `SOURCE_OWNED`, with zero unauthorized promotions.
+The property adds 2,239 uniquely classified bytes (181,050 → 183,289), 1,453
+of them within the former largest observed-only interval. This is a bounded
+gain; that interval remains mostly unresolved.
+
+Neutral-input traces match the prior instrumented runtime at 120, 1,200, and
+3,600 frames. Three-repeat map-off/map-on means are 912.003 / 738.373 FPS
+(19.04% map-on decrease). The clean core still times out during Waterbox
+startup, so clean-baseline instrumentation and total overhead remain unknown.
+No optimization or same-scenario duration extension was made. Full identities,
+remaining ranges, parity, timing, and the next evidence gap are recorded in
+`docs/reports/THOR_ROM_PROPERTY_GRAPHICS_CONSUMER_20260927.md`.
+# 2026-09-28 — Consolidate development and ROM evidence branches — PASS (LOCAL)
+
+TASK: Reconcile accepted committed changes and meaningful dirty WIP from the
+local M12/M14 branches into one tested mainline. Preserve original worktrees
+and evidence artifacts, retain a single evidence-focused branch, and classify
+duplicate, stale, generated, and external-dependency-only material before
+branch cleanup.
+
+ACCEPTANCE: Consolidated sources and evidence are present without ROM/build
+outputs in Git; Debug and Release builds and the available CTest suite pass;
+source limit and diff checks pass; branch ancestry is verified; project docs
+record the branch policy; only `main` and the evidence branch remain as local
+persistent refs. Remote refs are retained pending publication.
+
+RESULT: Imported the meaningful code, tests, and reports from the dirty main
+worktree into the integration checkout, resolving stale GUI/model collisions
+in favor of the proof-contract-aware implementation. The 2F, M14, and ROM
+coverage histories are ancestors of the consolidated line. The detached M11.41
+checkpoint draft is superseded by the accepted layout-based implementation and
+was preserved untouched in its original worktree.
+
+Fixed the empty Stage 5 graph path to accept zero occurrence evidence only
+when the graph itself has no nodes or edges, and closed the owned SQLite master
+connection on the RAM-session path. Rebuilt MASTER outcome fixtures using the
+current knowledge-store schema. CTest now registers pytest and ROM-dependent
+tests only when their local dependencies are available; the seven pytest tests
+and one original-ROM test are therefore omitted on this machine.
+
+Validation: Windows Debug build and 277/277 CTest passed; Windows Release build
+and 277/277 CTest passed. GNU/Linux Debug CMake build/link passed and all 277
+CTest tests passed; the project line-limit test was rerun with explicit WSL
+GIT_DIR/GIT_WORK_TREE because this Windows worktree's `.git` pointer contains
+a Windows absolute path. The governed source limit passed for 973 files, and
+`git diff --check` passed. No live BizHawk run or 30-FPS measurement was made.
+
+The fetched `origin/main` gained a separate non-commercial license update
+during this task; that commit must be included before publication. The old
+M11.19 experiment branch contains only a stale `TASK.md` and no implementation;
+it is classified as obsolete. Branch publication and cleanup remain pending.

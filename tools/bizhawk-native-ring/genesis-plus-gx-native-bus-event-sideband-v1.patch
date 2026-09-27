@@ -1,0 +1,350 @@
+diff --git a/core/debug/live_forward_bus.c b/core/debug/live_forward_bus.c
+new file mode 100644
+index 0000000..bc395eb
+--- /dev/null
++++ b/core/debug/live_forward_bus.c
+@@ -0,0 +1,43 @@
++#include <stdint.h>
++
++#include "../shared.h"
++#include "live_forward_trace.h"
++
++static int is_vdp_map(const cpu_memory_map *map)
++{
++  return map->read8 == vdp_read_byte || map->read16 == vdp_read_word ||
++    map->write8 == vdp_write_byte || map->write16 == vdp_write_word;
++}
++
++static int is_z80_map(const cpu_memory_map *map)
++{
++  return map->read8 == z80_read_byte || map->read16 == z80_read_word ||
++    map->write8 == z80_write_byte || map->write16 == z80_write_word;
++}
++
++uint16_t oasis_lf_resolve_domain(const void *opaque_map, uint32_t address)
++{
++  const cpu_memory_map *map = (const cpu_memory_map *)opaque_map;
++  uintptr_t base = (uintptr_t)map->base;
++  uintptr_t ram = (uintptr_t)work_ram;
++  uintptr_t boot = (uintptr_t)boot_rom;
++  uintptr_t rom = (uintptr_t)cart.rom;
++
++  if (is_vdp_map(map))
++  {
++    uint32_t port = address & 0x1fu;
++    if (port == 0x10u || port == 0x14u)
++      return OASIS_LF_BUS_PSG;
++    return OASIS_LF_BUS_VDP;
++  }
++  if (is_z80_map(map))
++    return ((address >> 13u) & 3u) == 2u ?
++      OASIS_LF_BUS_YM2612 : OASIS_LF_BUS_Z80_WINDOW;
++  if (base >= ram && base < ram + sizeof(work_ram))
++    return OASIS_LF_BUS_68K_RAM;
++  if (base >= boot && base < boot + sizeof(boot_rom))
++    return OASIS_LF_BUS_ROM;
++  if (base >= rom && base < rom + MAXROMSIZE)
++    return OASIS_LF_BUS_ROM;
++  return OASIS_LF_BUS_OTHER;
++}
+diff --git a/core/debug/live_forward_internal.h b/core/debug/live_forward_internal.h
+index db4e5db..794bafe 100644
+--- a/core/debug/live_forward_internal.h
++++ b/core/debug/live_forward_internal.h
+@@ -103,6 +103,7 @@ extern uint64_t stream_sequence;
+ extern uint64_t last_entry_stream_sequence;
+ extern uint64_t instruction_sequence;
+ extern uint64_t control_flow_sequence;
++extern uint64_t frame_number;
+ extern uint64_t runtime_epoch;
+ extern uint32_t oasis_lf_recording_enabled;
+ extern lf_metrics metrics;
+diff --git a/core/debug/live_forward_trace.c b/core/debug/live_forward_trace.c
+index 68324fb..51d8330 100644
+--- a/core/debug/live_forward_trace.c
++++ b/core/debug/live_forward_trace.c
+@@ -21,6 +21,7 @@ typedef struct
+ 
+ uint32_t instruction_nesting;
+ static lf_instruction instruction_stack[16];
++uint64_t frame_number;
+ 
+ typedef char oasis_lf_record_must_be_32_bytes[
+     sizeof(oasis_lf_record) == 32u ? 1 : -1];
+@@ -92,6 +93,51 @@ void oasis_lf_instruction_set_opcode(uint16_t opcode,
+   instruction->flow_flags = flags;
+ }
+ 
++static void append_bus_event(uint16_t subtype, uint32_t address,
++                             uint32_t value, uint32_t width,
++                             uint32_t domain)
++{
++  lf_instruction *instruction;
++  oasis_lf_record record;
++  if (!oasis_lf_recording_enabled || !instruction_nesting)
++    return;
++  instruction = &instruction_stack[instruction_nesting - 1u];
++  memset(&record, 0, sizeof(record));
++  record.instruction_sequence = instruction->sequence;
++  record.pc = instruction->pc;
++  record.next_pc = address;
++  record.opcode_or_vector = (uint16_t)value;
++  record.kind_flags = OASIS_LF_EVENT_KIND(subtype);
++  record.auxiliary = oasis_lf_bus_auxiliary(value, width, domain,
++                                            OASIS_LF_CPU_68K);
++  lf_append_record(record);
++}
++
++void oasis_lf_bus_read(uint32_t address, uint32_t value, uint32_t width,
++                       uint32_t domain)
++{
++  append_bus_event(OASIS_LF_EVENT_BUS_READ, address, value, width, domain);
++}
++
++void oasis_lf_bus_write(uint32_t address, uint32_t value, uint32_t width,
++                        uint32_t domain)
++{
++  append_bus_event(OASIS_LF_EVENT_BUS_WRITE, address, value, width, domain);
++}
++
++void oasis_lf_frame_boundary(void)
++{
++  oasis_lf_record record;
++  if (!oasis_lf_recording_enabled)
++    return;
++  memset(&record, 0, sizeof(record));
++  frame_number++;
++  record.pc = (uint32_t)frame_number;
++  record.next_pc = (uint32_t)(frame_number >> 32u);
++  record.kind_flags = OASIS_LF_EVENT_KIND(OASIS_LF_EVENT_FRAME_BOUNDARY);
++  lf_append_record(record);
++}
++
+ void oasis_lf_instruction_end(uint32_t next_pc,
+                               const oasis_lf_cpu_state *state,
+                               uint32_t stopped)
+diff --git a/core/debug/live_forward_trace.h b/core/debug/live_forward_trace.h
+index 50490ed..e2d88c3 100644
+--- a/core/debug/live_forward_trace.h
++++ b/core/debug/live_forward_trace.h
+@@ -98,6 +98,63 @@ enum oasis_lf_record_flags
+   OASIS_LF_CPU_STOP_EVENT = 1024
+ };
+ 
++/* Event records reuse the fixed 32-byte record without changing its layout.
++ * Event records set OASIS_LF_EVENT and encode their subtype in bits 11..13;
++ * those bits are outside the existing instruction/exception flag set. */
++#define OASIS_LF_EVENT 0x8000u
++#define OASIS_LF_EVENT_SUBTYPE_SHIFT 11u
++#define OASIS_LF_EVENT_SUBTYPE_MASK 0x3800u
++#define OASIS_LF_EVENT_KIND(subtype) \
++  ((uint16_t)(OASIS_LF_EVENT | \
++    (((uint16_t)(subtype) << OASIS_LF_EVENT_SUBTYPE_SHIFT) & \
++     OASIS_LF_EVENT_SUBTYPE_MASK)))
++
++enum oasis_lf_event_subtype
++{
++  OASIS_LF_EVENT_NONE = 0,
++  OASIS_LF_EVENT_BUS_READ = 1,
++  OASIS_LF_EVENT_BUS_WRITE = 2,
++  OASIS_LF_EVENT_FRAME_BOUNDARY = 3
++};
++
++enum oasis_lf_bus_domain
++{
++  OASIS_LF_BUS_ROM = 0,
++  OASIS_LF_BUS_68K_RAM = 1,
++  OASIS_LF_BUS_Z80_WINDOW = 2,
++  OASIS_LF_BUS_VDP = 3,
++  OASIS_LF_BUS_YM2612 = 4,
++  OASIS_LF_BUS_PSG = 5,
++  OASIS_LF_BUS_OTHER = 6
++};
++
++enum oasis_lf_bus_cpu
++{
++  OASIS_LF_CPU_68K = 0,
++  OASIS_LF_CPU_Z80 = 1
++};
++
++#define OASIS_LF_BUS_WIDTH_SHIFT 16u
++#define OASIS_LF_BUS_DOMAIN_SHIFT 18u
++#define OASIS_LF_BUS_CPU_SHIFT 21u
++#define OASIS_LF_BUS_WIDTH_MASK 0x00030000u
++#define OASIS_LF_BUS_DOMAIN_MASK 0x001c0000u
++#define OASIS_LF_BUS_CPU_MASK 0x00600000u
++#define OASIS_LF_BUS_VALUE_HI_MASK 0x0000ffffu
++
++static inline uint32_t oasis_lf_bus_auxiliary(uint32_t value,
++                                               uint32_t width,
++                                               uint32_t domain,
++                                               uint32_t cpu)
++{
++  uint32_t width_code = width == 8u ? 1u : width == 16u ? 2u :
++                        width == 32u ? 3u : 0u;
++  return ((value >> 16u) & OASIS_LF_BUS_VALUE_HI_MASK) |
++    ((width_code << OASIS_LF_BUS_WIDTH_SHIFT) & OASIS_LF_BUS_WIDTH_MASK) |
++    ((domain << OASIS_LF_BUS_DOMAIN_SHIFT) & OASIS_LF_BUS_DOMAIN_MASK) |
++    ((cpu << OASIS_LF_BUS_CPU_SHIFT) & OASIS_LF_BUS_CPU_MASK);
++}
++
+ enum oasis_lf_end_reason
+ {
+   OASIS_LF_END_NONE = 0,
+@@ -143,6 +200,12 @@ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
+ void oasis_lf_cpu_stop(const oasis_lf_cpu_state *state);
+ void oasis_lf_unwind(void);
+ void oasis_lf_epoch_break(const oasis_lf_cpu_state *state);
++void oasis_lf_bus_read(uint32_t address, uint32_t value, uint32_t width,
++                       uint32_t domain);
++void oasis_lf_bus_write(uint32_t address, uint32_t value, uint32_t width,
++                        uint32_t domain);
++void oasis_lf_frame_boundary(void);
++uint16_t oasis_lf_resolve_domain(const void *memory_map, uint32_t address);
+ uint32_t oasis_lf_result_state(uint32_t worker_id);
+ int oasis_lf_result_info(uint32_t worker_id, oasis_lf_result *result);
+ uint32_t oasis_lf_result_copy(uint32_t worker_id, uint64_t generation,
+diff --git a/core/debug/live_forward_worker.c b/core/debug/live_forward_worker.c
+index 445001a..ca784ae 100644
+--- a/core/debug/live_forward_worker.c
++++ b/core/debug/live_forward_worker.c
+@@ -370,6 +370,7 @@ void oasis_lf_epoch_break(const oasis_lf_cpu_state *state)
+   last_entry_stream_sequence = 0;
+   instruction_sequence = 0;
+   control_flow_sequence = 0;
++  frame_number = 0;
+   last_started_instruction = UINT64_MAX;
+   if (ring_storage)
+     memset(ring_storage, 0,
+diff --git a/core/m68k/m68kcpu.h b/core/m68k/m68kcpu.h
+index d61ea6a..376fba5 100644
+--- a/core/m68k/m68kcpu.h
++++ b/core/m68k/m68kcpu.h
+@@ -876,6 +876,12 @@ INLINE uint m68ki_read_8(uint address)
+     val = cpu_hook(HOOK_M68K_R, 1, address, val);
+ #endif
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_read(address, val, 8,
++      oasis_lf_resolve_domain(temp, address));
++#endif
++
+   return val;
+ }
+ 
+@@ -896,6 +902,12 @@ INLINE uint m68ki_read_16(uint address)
+     val = cpu_hook(HOOK_M68K_R, 2, address, val);
+ #endif
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_read(address, val, 16,
++      oasis_lf_resolve_domain(temp, address));
++#endif
++
+   return val;
+ }
+ 
+@@ -903,15 +915,25 @@ INLINE uint m68ki_read_32(uint address)
+ {
+   cpu_memory_map *temp;
+   uint val;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  uint16_t domain0;
++  uint16_t domain1;
++#endif
+ 
+   m68ki_set_fc(FLAG_S | m68ki_get_address_space()) /* auto-disable (see m68kcpu.h) */
+   m68ki_check_address_error(address, MODE_READ, FLAG_S | m68ki_get_address_space()) /* auto-disable (see m68kcpu.h) */
+ 
+   temp = &m68ki_cpu.memory_map[((address)>>16)&0xff];
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  domain0 = oasis_lf_resolve_domain(temp, address);
++#endif
+   if (temp->read16) val = (*temp->read16)(ADDRESS_68K(address)) << 16;
+   else val = m68k_read_immediate_16(address) << 16;
+ 
+   temp = &m68ki_cpu.memory_map[((address+2)>>16)&0xff];
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  domain1 = oasis_lf_resolve_domain(temp, address + 2u);
++#endif
+   if (temp->read16) val |= (*temp->read16)(ADDRESS_68K(address+2));
+   else val |= m68k_read_immediate_16(address+2);
+ 
+@@ -920,6 +942,12 @@ INLINE uint m68ki_read_32(uint address)
+     val = cpu_hook(HOOK_M68K_R, 4, address, val);
+ #endif
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_read(address, val, 32,
++      domain0 == domain1 ? domain0 : OASIS_LF_BUS_OTHER);
++#endif
++
+   return val;
+ }
+ 
+@@ -938,6 +966,12 @@ INLINE void m68ki_write_8(uint address, uint value)
+   if (temp->write8) (*temp->write8)(ADDRESS_68K(address),value);
+   else WRITE_BYTE(temp->base, (address) & 0xffff, value);
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_write(address, value, 8,
++      oasis_lf_resolve_domain(temp, address));
++#endif
++
+ #ifdef USE_RAM_DEEPFREEZE
+   if (UNLIKELY(deepfreeze_list_size))
+     for (int i = 0; i < deepfreeze_list_size; i++)
+@@ -961,6 +995,12 @@ INLINE void m68ki_write_16(uint address, uint value)
+   if (temp->write16) (*temp->write16)(ADDRESS_68K(address),value);
+   else *(uint16 *)(temp->base + ((address) & 0xffff)) = value;
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_write(address, value, 16,
++      oasis_lf_resolve_domain(temp, address));
++#endif
++
+ #ifdef USE_RAM_DEEPFREEZE
+   if (UNLIKELY(deepfreeze_list_size))
+     for (int i = 0; i < deepfreeze_list_size; i++)
+@@ -971,6 +1011,10 @@ INLINE void m68ki_write_16(uint address, uint value)
+ INLINE void m68ki_write_32(uint address, uint value)
+ {
+   cpu_memory_map *temp;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  uint16_t domain0;
++  uint16_t domain1;
++#endif
+ 
+   m68ki_set_fc(FLAG_S | FUNCTION_CODE_USER_DATA) /* auto-disable (see m68kcpu.h) */
+   m68ki_check_address_error(address, MODE_WRITE, FLAG_S | FUNCTION_CODE_USER_DATA) /* auto-disable (see m68kcpu.h) */
+@@ -981,13 +1025,25 @@ INLINE void m68ki_write_32(uint address, uint value)
+ #endif
+ 
+   temp = &m68ki_cpu.memory_map[((address)>>16)&0xff];
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  domain0 = oasis_lf_resolve_domain(temp, address);
++#endif
+   if (temp->write16) (*temp->write16)(ADDRESS_68K(address),value>>16);
+   else *(uint16 *)(temp->base + ((address) & 0xffff)) = value >> 16;
+ 
+   temp = &m68ki_cpu.memory_map[((address + 2)>>16)&0xff];
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  domain1 = oasis_lf_resolve_domain(temp, address + 2u);
++#endif
+   if (temp->write16) (*temp->write16)(ADDRESS_68K(address+2),value&0xffff);
+   else *(uint16 *)(temp->base + ((address + 2) & 0xffff)) = value;
+ 
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  if (oasis_lf_recording_enabled)
++    oasis_lf_bus_write(address, value, 32,
++      domain0 == domain1 ? domain0 : OASIS_LF_BUS_OTHER);
++#endif
++
+ #ifdef USE_RAM_DEEPFREEZE
+   if (UNLIKELY(deepfreeze_list_size))
+     for (int i = 0; i < deepfreeze_list_size; i++)

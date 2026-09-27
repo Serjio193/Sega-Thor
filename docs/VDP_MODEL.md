@@ -78,9 +78,22 @@ The following are intentionally outside the current code until Beyond Oasis evid
 - window plane behavior;
 - sprite-link traversal and per-scanline limits;
 - shadow/highlight mode;
+
+## Developer-only S8 evidence
+
+`src/tools/re_bizhawk_m12_vdp_frame.lua` captures one coherent frame's raw
+register events and VRAM/CRAM/VSRAM. `src/tools/m12_vdp_frame_artifact.py`
+derives exact Plane A, Plane B, Window, backdrop, and S7 sprite composition
+from that snapshot. This closes one observed logical frame only; it does not
+promote the native model to a full VDP emulator and does not claim raster
+timing or mid-scanline register behavior.
 - interlace modes;
 - pixel-perfect hardware contention;
 - SDL/OpenGL/Vulkan/Metal/console rendering APIs.
+
+S7's `m12_sprite_scanline_raster.py` is a developer-only, provenance-backed
+proof tool. It does not promote scanline limits into the portable native VDP
+model; the native list above remains intentionally narrow.
 
 ## Next evidence targets
 

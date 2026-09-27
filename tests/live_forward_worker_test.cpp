@@ -128,7 +128,7 @@ static void test_depth_copy_immutability_and_reconnect()
   assert(first.run_id == 77 && first.epoch == epoch);
   assert(first.configured_depth == 20 && first.consumed_depth == 20);
   assert(first.termination_reason == OASIS_LF_END_DEPTH_LIMIT);
-  assert(first.record_count == 20 && first.records_bytes == 20u * 32u);
+  assert(first.record_count == 20 && first.records_bytes == 20u * 48u);
   assert(first.exit_stream_sequence - first.entry_stream_sequence == 20);
   assert(first.exit_instruction_sequence - first.entry_instruction_sequence == 20);
   std::vector<oasis_lf_record> before = copy_records(0, first);
@@ -177,7 +177,7 @@ static void test_exception_boundary_and_epoch_fail_closed()
   std::vector<oasis_lf_record> records = copy_records(0, result);
   assert((records[0].kind_flags & OASIS_LF_EXCEPTION_EVENT) != 0);
   assert((records[0].kind_flags & OASIS_LF_ASYNCHRONOUS) != 0);
-  assert(records[0].pc == 0x200u && records[0].next_pc == 0x400u);
+  assert(records[0].pc == 0x200u && records[0].address == 0x400u);
   assert(result.exit_state.pc == 0x400u);
   audit_and_ack(0, 2001, 1, 88, epoch);
 
@@ -230,17 +230,19 @@ static void test_memory_retention_and_unsupported_paths()
   assert(memory.consumed_memory_bytes <= memory.configured_memory_bytes);
   audit_and_ack(0, 3001, 1, 99, epoch);
 
+  assert(oasis_lf_set_ring_capacity(4096u));
   assert(oasis_lf_configure(1, 100000, 1024u * 1024u));
   epoch = oasis_lf_epoch();
   current_pc = 0x2000u;
   assert(oasis_lf_request(0, 3002, 1, 99, epoch));
-  for (uint32_t i = 0; i < OASIS_LF_RING_CAPACITY + 4u; ++i)
+  for (uint32_t i = 0; i < 4096u + 4u; ++i)
     execute(0x4e71u, current_pc + 2u);
   oasis_lf_result retention = result_for(0);
   assert(retention.valid == 1);
   assert(retention.termination_reason == OASIS_LF_END_RETENTION_LIMIT);
-  assert(retention.record_count == OASIS_LF_RING_CAPACITY - 1u);
+  assert(retention.record_count == 4096u - 1u);
   audit_and_ack(0, 3002, 1, 99, epoch);
+  assert(oasis_lf_set_ring_capacity(0));
 
   assert(oasis_lf_configure(1, 100, 16u * 1024u));
   epoch = oasis_lf_epoch();
@@ -293,7 +295,7 @@ static void test_cpu_stop_boundary()
   assert(stopped.record_count == 1);
   std::vector<oasis_lf_record> records = copy_records(0, stopped);
   assert(records[0].kind_flags == OASIS_LF_CPU_STOP_EVENT);
-  assert(records[0].pc == 0x7010u && records[0].next_pc == 0x7010u);
+  assert(records[0].pc == 0x7010u && records[0].address == 0x7010u);
   audit_and_ack(0, 5001, 1, 123, epoch);
 
   assert(oasis_lf_configure(1, 20, 4096));
@@ -398,7 +400,7 @@ static void test_overlapping_pool_lifecycle_and_isolation()
     before.push_back(copy_records(worker, result));
   }
   for (uint32_t instruction = 0;
-       instruction < OASIS_LF_RING_CAPACITY + 16u; ++instruction)
+       instruction < OASIS_LF_RING_CAPACITY_DEFAULT + 16u; ++instruction)
     execute(0x4e71u, current_pc + 2u);
   for (uint32_t worker = 0; worker < count; ++worker)
   {

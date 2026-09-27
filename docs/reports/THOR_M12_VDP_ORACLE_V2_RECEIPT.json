@@ -1,0 +1,37 @@
+{
+  "artifact_sizes": {
+    "logical_artifact_bytes": 82862417,
+    "manifest_bytes": 1171,
+    "raw_capture_bytes": 179658
+  },
+  "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "capture_sha256": "49abffbc0fe3a9ae42062c9433f9f5135b695c27ec2011557258e0db2fbbf851",
+  "conflict_count": 0,
+  "creation_contract": "REAL_BIZHAWK_SINGLE_FRAME_BOOT_TRACE_V2",
+  "end_boundary": 4,
+  "epoch": 1,
+  "event_count": 141,
+  "frame": 3,
+  "logical_artifact_sha256": "eaffb82a31ac03ca4a812d69d902e2409c4ee09ab9e1c4a5720dac0ed95139c3",
+  "manifest_sha256": "3c674a81097ee4245d57970d39c1ffac0065f4eacd7682f0dc408822879f3e0a",
+  "master_time_unit_match": false,
+  "oracle_id": "vdp_oracle_v2_f3",
+  "oracle_type": "SINGLE_COHERENT_FRAME",
+  "register_event_count": 34,
+  "run_id": "vdp_oracle_real_v2",
+  "schema": "oasis.m12.vdp-oracle-receipt.v2",
+  "source_owned_after": 1487388,
+  "source_owned_before": 1487388,
+  "source_owned_delta": 0,
+  "start_boundary": 3,
+  "storage_locator": "build/thor-evidence/oracles/vdp/vdp_oracle_v2_f3/",
+  "timing_unit": "m68k_total_cycles",
+  "tool_versions": {
+    "emulator": "bizhawk-2.11.1-win-x64",
+    "vdp_builder": "m12_vdp_frame_artifact.v2",
+    "vdp_decoder": "VdpProtocolDecoder.v1"
+  },
+  "width_authority": "CAUSING_M68K_INSTRUCTION_SEMANTICS",
+  "width_exact": true,
+  "write_width_source": "M68K_OPCODE_BUS_CYCLE_DECODE"
+}

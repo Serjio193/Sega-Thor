@@ -1,0 +1,12 @@
+diff --git a/waterbox/gpgx/Makefile b/waterbox/gpgx/Makefile
+index e8408d6..a754129 100644
+--- a/waterbox/gpgx/Makefile
++++ b/waterbox/gpgx/Makefile
+@@ -39,6 +39,7 @@ SRCS = \
+ 	$(GPGX_DIR)/core/debug/trace_ring.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_trace.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_bus.c \
++	$(GPGX_DIR)/core/debug/live_forward_z80_trace.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_worker.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_pool.c \
+ 	$(GPGX_DIR)/core/debug/live_forward_metrics.c \

@@ -490,4 +490,11 @@ DecodedSlice decode_m68k_slice(Bytes rom, const DecodeOptions& options) {
     return slice;
 }
 
+DecodedInstruction decode_m68k_instruction(Bytes rom, std::uint32_t physical_offset) {
+    if (physical_offset >= rom.size() || (physical_offset & 1U) != 0U) {
+        throw std::invalid_argument("invalid M68K instruction ROM offset");
+    }
+    return decode_one(rom, physical_offset, static_cast<std::uint32_t>(rom.size()));
+}
+
 } // namespace oasis::tools

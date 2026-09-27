@@ -24,6 +24,9 @@ FLAG_FAULTED = 4
 FLAG_CONTROL_FLOW = 8
 FLAG_EXCEPTION_EVENT = 256
 FLAG_CPU_STOP_EVENT = 1024
+FLAG_EVENT = 0x8000
+EVENT_SUBTYPE_SHIFT, EVENT_SUBTYPE_MASK = 11, 0x3800
+EVENT_BUS_READ, EVENT_BUS_WRITE, EVENT_FRAME_BOUNDARY = 1, 2, 3
 SW_SHOWNORMAL = 1
 
 
@@ -107,6 +110,7 @@ def verify_segment(values: dict[str, str], prefix: str,
         raise ValueError(f"{prefix}: stream records are not contiguous")
     instruction_records = [record for record in records
                            if record[5] & FLAG_INSTRUCTION]
+    instruction_sequences = {record[1] for record in instruction_records}
     if exit_instruction - entry_instruction != len(instruction_records):
         raise ValueError(f"{prefix}: instruction sequence bounds disagree")
     if any(record[1] != entry_instruction + offset
@@ -115,9 +119,21 @@ def verify_segment(values: dict[str, str], prefix: str,
     if exit_flow - entry_flow != consumed_depth:
         raise ValueError(f"{prefix}: control-flow cursor disagrees with depth")
     if any(not (record[5] & (FLAG_INSTRUCTION | FLAG_EXCEPTION_EVENT |
-                             FLAG_CPU_STOP_EVENT))
+                             FLAG_CPU_STOP_EVENT | FLAG_EVENT))
            for record in records):
         raise ValueError(f"{prefix}: untyped execution record")
+    for record in records:
+        if not record[5] & FLAG_EVENT:
+            continue
+        subtype = (record[5] & EVENT_SUBTYPE_MASK) >> EVENT_SUBTYPE_SHIFT
+        if subtype not in (EVENT_BUS_READ, EVENT_BUS_WRITE,
+                           EVENT_FRAME_BOUNDARY):
+            raise ValueError(f"{prefix}: unknown sideband event subtype {subtype}")
+        if subtype in (EVENT_BUS_READ, EVENT_BUS_WRITE):
+            if record[1] == 0 or record[1] not in instruction_sequences:
+                raise ValueError(f"{prefix}: bus event lacks instruction identity")
+        elif record[1] != 0:
+            raise ValueError(f"{prefix}: frame boundary has instruction identity")
     if any(record[5] & FLAG_FAULTED for record in records):
         raise ValueError(f"{prefix}: faulted instruction cannot enter a valid segment")
     if any(record[5] & FLAG_INSTRUCTION and not record[5] & FLAG_COMPLETE
@@ -126,7 +142,8 @@ def verify_segment(values: dict[str, str], prefix: str,
     if reason == REASON_DEPTH:
         if configured_depth != 20 or consumed_depth != 20:
             raise ValueError(f"{prefix}: DEPTH=20 was not exactly reached")
-        if exit_state[16] != records[-1][3]:
+        last_instruction = instruction_records[-1] if instruction_records else None
+        if last_instruction is None or exit_state[16] != last_instruction[3]:
             raise ValueError(f"{prefix}: EXIT PC disagrees with the final record")
         first_instruction = next(
             (record for record in records if record[5] & FLAG_INSTRUCTION), None)
@@ -152,6 +169,18 @@ def verify_segment(values: dict[str, str], prefix: str,
         "entry_state_sha256": state_hash(entry),
         "exit_state_sha256": state_hash(exit_state),
         "instruction_count": sum(bool(row[5] & FLAG_INSTRUCTION) for row in records),
+        "bus_read_count": sum(bool(row[5] & FLAG_EVENT) and
+                               ((row[5] & EVENT_SUBTYPE_MASK) >>
+                                EVENT_SUBTYPE_SHIFT) == EVENT_BUS_READ
+                               for row in records),
+        "bus_write_count": sum(bool(row[5] & FLAG_EVENT) and
+                                ((row[5] & EVENT_SUBTYPE_MASK) >>
+                                 EVENT_SUBTYPE_SHIFT) == EVENT_BUS_WRITE
+                                for row in records),
+        "frame_boundary_count": sum(bool(row[5] & FLAG_EVENT) and
+                                     ((row[5] & EVENT_SUBTYPE_MASK) >>
+                                      EVENT_SUBTYPE_SHIFT) == EVENT_FRAME_BOUNDARY
+                                     for row in records),
         "record_count": record_count,
         "result_bytes": consumed_memory,
         "record_bytes": records_bytes,

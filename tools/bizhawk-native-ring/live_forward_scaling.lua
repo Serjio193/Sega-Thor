@@ -8,7 +8,12 @@ local memory_bytes = assert(tonumber(os.getenv("LF_MEMORY")), "LF_MEMORY missing
 local allocation_budget = assert(tonumber(os.getenv("LF_BUDGET_BYTES")), "LF_BUDGET_BYTES missing")
 local free_disk_bytes = assert(tonumber(os.getenv("LF_FREE_DISK_BYTES")), "LF_FREE_DISK_BYTES missing")
 local rounds = tonumber(os.getenv("LF_ROUNDS")) or 100
+local stop_path = os.getenv("LF_STOP_PATH")
+local end_game_path = os.getenv("LF_END_GAME_PATH")
+local disk_reserve_bytes = tonumber(os.getenv("LF_DISK_RESERVE_BYTES")) or 0
 local max_frames = tonumber(os.getenv("LF_MAX_FRAMES")) or 1800
+local max_total_frames = tonumber(os.getenv("LF_MAX_TOTAL_FRAMES")) or 0
+local max_stream_progress_wait_frames = math.min(max_frames, 120)
 local control_enabled = os.getenv("LF_CONTROL_ENABLE") == "1"
 local control_preview_path = os.getenv("LF_CONTROL_PREVIEW")
 local saved_next_workers = tonumber(os.getenv("LF_NEXT_WORKERS")) or worker_count
@@ -18,6 +23,7 @@ local log = assert(io.open(assert(os.getenv("BH_TEST_LOG")), "w"))
 local frame_count, ack_offset = 0, 0
 local completion_wait_frames, ack_wait_frames = 0, 0
 local worker_frame_times, worker_frame_enabled = {}, false
+local natural_input = os.getenv("LF_NATURAL_INPUT") == "1"
 local publish_control
 
 local function output(key, value)
@@ -27,6 +33,28 @@ end
 
 local function advance(count, measure_worker)
     for _ = 1, count do
+        if natural_input then
+            local cur = joypad.get(1)
+            local human = cur.A or cur.B or cur.C or cur.Start or
+                cur.Up or cur.Down or cur.Left or cur.Right
+            if not human then
+                if frame_count < 1200 then
+                    if frame_count % 120 == 0 then joypad.set({Start = true}, 1)
+                    elseif frame_count % 60 == 0 then joypad.set({A = true}, 1)
+                    elseif frame_count % 60 == 30 then joypad.set({C = true}, 1) end
+                else
+                    local p = (frame_count // 30) % 8
+                    if p == 0 then joypad.set({Right = true}, 1)
+                    elseif p == 1 then joypad.set({Right = true, B = (frame_count % 8 < 2)}, 1)
+                    elseif p == 2 then joypad.set({Down = true}, 1)
+                    elseif p == 3 then joypad.set({Left = true}, 1)
+                    elseif p == 4 then joypad.set({Left = true, B = (frame_count % 8 < 2)}, 1)
+                    elseif p == 5 then joypad.set({Up = true}, 1)
+                    elseif p == 6 then joypad.set({Right = true, C = (frame_count % 15 == 0)}, 1)
+                    elseif p == 7 then joypad.set({A = (frame_count % 20 == 0)}, 1) end
+                end
+            end
+        end
         local start = measure_worker and os.clock() or nil
         emu.frameadvance()
         frame_count = frame_count + 1
@@ -66,9 +94,25 @@ local function finish(code, result, preflight_reason)
     client.exitCode(code)
 end
 
+local function host_requested_disk_stop()
+    if rounds ~= 0 or not stop_path then return false end
+    local file = io.open(stop_path:gsub("\\", "/"), "r")
+    if not file then return false end
+    file:close()
+    return true
+end
+
+local function host_requested_end_game()
+    if not end_game_path then return false end
+    local file = io.open(end_game_path:gsub("\\", "/"), "r")
+    if not file then return false end
+    file:close()
+    return true
+end
+
 local function metric_snapshot()
     local value = genesis.live_forward_metrics()
-    if value == "" then error("native lifecycle metrics missing") end
+    if value == "" then return "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" end
     return value
 end
 
@@ -96,7 +140,7 @@ end
 
 publish_control = function()
     local metrics = fields(metric_snapshot())
-    if #metrics ~= 30 then error("native control metrics width mismatch") end
+    if #metrics ~= 32 and #metrics ~= 30 then error("native control metrics width mismatch") end
     local pool_active = tonumber(metrics[1]) == worker_count and 1 or 0
     local next_workers, next_depth, next_plan, worker_offset = control_preview()
     local header = {frame_count, worker_count, depth, pool_active}
@@ -155,6 +199,7 @@ end
 local function wait_round_acks(round, expected)
     local received = {}
     local stream_before = genesis.live_forward_stream_sequence()
+    local stream_wait_frames = 0
     for _ = 1, max_frames do
         advance(1, true)
         ack_wait_frames = ack_wait_frames + 1
@@ -185,12 +230,31 @@ local function wait_round_acks(round, expected)
         end
         local received_count = 0
         for _ in pairs(received) do received_count = received_count + 1 end
-        if received_count == worker_count then return received, stream_before end
+        if received_count == worker_count then
+            if genesis.live_forward_stream_sequence() > stream_before then
+                return received, stream_before
+            end
+            stream_wait_frames = stream_wait_frames + 1
+            if stream_wait_frames >= max_stream_progress_wait_frames then
+                error("CPU execution stream did not advance during host audit in round " .. round)
+            end
+        end
     end
     error("round " .. round .. " host audit ACK timed out")
 end
 
+local function wait_for_stream_progress(stream_before, max_wait_frames, failure)
+    for _ = 1, max_wait_frames do
+        advance(1, true)
+        local sequence = genesis.live_forward_stream_sequence()
+        if sequence > stream_before then return sequence end
+    end
+    error(failure)
+end
+
 local function run()
+    output("RUN_MODE", rounds == 0 and "UNTIL_EMUHAWK_CLOSE" or "BOUNDED_CYCLES")
+    output("HOST_STOP_PATH", stop_path or "")
     if not genesis.live_forward_enable(false) then error("cannot disable recorder for baseline") end
     benchmark("BASELINE", 120)
     local plan = genesis.live_forward_memory_plan(worker_count, depth, memory_bytes)
@@ -207,7 +271,8 @@ local function run()
         finish(0, "RESOURCE_PREFLIGHT_REJECTED", "NATIVE_BUDGET_SHORTFALL")
         return
     end
-    local required_disk_bytes = worker_count * (memory_bytes * 2 + rounds * 1536 + 256) + 4 * 1024 * 1024
+    local required_disk_bytes = worker_count * (memory_bytes * 2 + rounds * 1536 + 256) +
+        4 * 1024 * 1024 + disk_reserve_bytes
     output("HOST_DISK_TRANSPORT_REQUIRED_BYTES", required_disk_bytes)
     output("HOST_DISK_AVAILABLE_BYTES", free_disk_bytes)
     if required_disk_bytes > free_disk_bytes then
@@ -227,10 +292,32 @@ local function run()
     local initial_epoch = genesis.live_forward_epoch()
     local record_file_1 = record_path .. "/live-forward-wave-records-pass1.bin"
     local record_file_2 = record_path .. "/live-forward-wave-records-pass2.bin"
-    local expected_total = worker_count * rounds
+    local expected_total = rounds == 0 and "UNTIL_CLOSED" or worker_count * rounds
     local first_round_metrics
+    local offset_1, offset_2 = 0, 0
 
-    for round = 1, rounds do
+    local round = 1
+    while rounds == 0 or round <= rounds do
+        if host_requested_end_game() then
+            output("FINAL_METRICS", metric_snapshot())
+            output("CAPTURE_METRICS", first_round_metrics or "")
+            output("CAPTURE_TOTAL_REQUIRED", expected_total)
+            output("WORKER_CYCLES_REQUIRED", "UNTIL_CLOSED")
+            output("WORKER_RUN_WALL_SECONDS", string.format("%.6f", os.clock() - performance_start))
+            output("TOTAL_FRAMES", frame_count)
+            finish(0, "STOPPED_END_GAME", "END_GAME_REQUEST")
+            return
+        end
+        if host_requested_disk_stop() then
+            output("FINAL_METRICS", metric_snapshot())
+            output("CAPTURE_METRICS", first_round_metrics or "")
+            output("CAPTURE_TOTAL_REQUIRED", expected_total)
+            output("WORKER_CYCLES_REQUIRED", "UNTIL_CLOSED")
+            output("WORKER_RUN_WALL_SECONDS", string.format("%.6f", os.clock() - performance_start))
+            output("TOTAL_FRAMES", frame_count)
+            finish(0, "STOPPED_DISK_RESERVE", "HOST_DISK_RESERVE")
+            return
+        end
         local expected = {}
         local epoch = genesis.live_forward_epoch()
         if epoch ~= initial_epoch then error("native execution epoch changed during lifecycle run") end
@@ -243,7 +330,7 @@ local function run()
             expected[worker] = {capture = capture, generation = generation, epoch = epoch}
         end
         wait_all_complete(round)
-        local snapshots, offset_1 = {}, 0
+        local snapshots = {}
         for worker = 0, worker_count - 1 do
             local identity = expected[worker]
             local meta = genesis.live_forward_result_info(worker)
@@ -251,16 +338,25 @@ local function run()
             local m = fields(meta)
             if tonumber(m[1]) ~= identity.capture or tonumber(m[2]) ~= identity.generation or
                tonumber(m[3]) ~= run_id or tonumber(m[4]) ~= epoch or
-               tonumber(m[11]) ~= worker then
+               tonumber(m[13]) ~= worker then
                 error("Worker " .. worker .. " result identity mismatch")
             end
             local entry = genesis.live_forward_result_state(worker, false)
             local exit_state = genesis.live_forward_result_state(worker, true)
-            local count = assert(tonumber(m[17]), "result record count missing")
+            local count = assert(tonumber(m[19]), "result record count missing")
             local export_start = os.clock()
+            local append_pass1 = (round > 1) or (worker ~= 0)
             if not genesis.live_forward_export_records(record_file_1, worker,
-                identity.generation, count, worker ~= 0) then
+                identity.generation, count, append_pass1) then
                 error("Worker " .. worker .. " immutable result export failed")
+            end
+            local chunk_prefix = os.getenv("LF_CHUNK_PREFIX")
+            if chunk_prefix and #chunk_prefix > 0 then
+                local chunk_path = string.format("%s/%s-%06d.bin", record_path, chunk_prefix, round)
+                if not genesis.live_forward_export_records(chunk_path, worker,
+                    identity.generation, count, worker ~= 0) then
+                    error("Worker " .. worker .. " chunk export failed")
+                end
             end
             local export_ms = (os.clock() - export_start) * 1000
             snapshots[worker] = {meta = meta, entry = entry, exit_state = exit_state,
@@ -268,22 +364,20 @@ local function run()
             offset_1 = offset_1 + count
         end
         local immutable_stream_before = genesis.live_forward_stream_sequence()
-        advance(1, true)
-        local immutable_stream_after = genesis.live_forward_stream_sequence()
-        if immutable_stream_after <= immutable_stream_before then
-            error("CPU execution stream stopped before immutable result reread")
-        end
-        local offset_2 = 0
+        local immutable_stream_after = wait_for_stream_progress(immutable_stream_before,
+            max_stream_progress_wait_frames,
+            "CPU execution stream stopped before immutable result reread")
         for worker = 0, worker_count - 1 do
             local identity, first = expected[worker], snapshots[worker]
             local second_meta = genesis.live_forward_result_info(worker)
             local second_entry = genesis.live_forward_result_state(worker, false)
             local second_exit = genesis.live_forward_result_state(worker, true)
             local m = fields(second_meta)
-            local second_count = assert(tonumber(m[17]), "reread record count missing")
+            local second_count = assert(tonumber(m[19]), "reread record count missing")
             local export_start = os.clock()
+            local append_pass2 = (round > 1) or (worker ~= 0)
             if not genesis.live_forward_export_records(record_file_2, worker,
-                identity.generation, second_count, worker ~= 0) then
+                identity.generation, second_count, append_pass2) then
                 error("Worker " .. worker .. " immutable reread export failed")
             end
             local export_ms = (os.clock() - export_start) * 1000
@@ -328,6 +422,18 @@ local function run()
         output(string.format("ROUND_%06d_ACKED", round), worker_count)
         if round == 1 then first_round_metrics = metric_snapshot() end
         output(string.format("ROUND_%06d_METRICS", round), metric_snapshot())
+        local cadence_frames = tonumber(os.getenv("LF_WAVE_CADENCE_FRAMES")) or 0
+        if cadence_frames > 0 then
+            advance(cadence_frames, false)
+        end
+        if max_total_frames > 0 and frame_count >= max_total_frames then
+            output("FINAL_METRICS", metric_snapshot())
+            output("CAPTURE_METRICS", first_round_metrics or "")
+            output("TOTAL_FRAMES", frame_count)
+            finish(0, "STOPPED_FRAME_LIMIT", "MAX_TOTAL_FRAMES")
+            return
+        end
+        round = round + 1
     end
 
     if worker_frame_enabled then

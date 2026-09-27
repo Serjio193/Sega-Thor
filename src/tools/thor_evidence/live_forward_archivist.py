@@ -7,6 +7,8 @@ import hashlib
 import json
 from pathlib import Path
 import sqlite3
+import os
+import shutil
 from typing import Any
 
 try:
@@ -147,6 +149,61 @@ def archive_session(master_path: Path, session_path: Path,
             "master_graph_hash_after": final_metrics["graph_hash"],
             "master_nodes": final_metrics["nodes"], "master_edges": final_metrics["edges"],
             "global_merge": result, "merge_receipt": receipt}
+
+
+def archive_session_graph(master_path: Path, session_graph: Cartographer,
+                          expected_rom_sha256: str | None = None,
+                          source_sha256: str | None = None) -> dict[str, Any]:
+    """Merge an in-memory Stage 5 graph without creating a session SQLite file."""
+    metadata = _read_meta(session_graph.db)
+    if metadata.get("schema") != "m12.map1.v1" or metadata.get("live_forward_session_state") != "CLOSED":
+        raise ValueError("STOP_ARCHIVIST_SESSION_SCHEMA_MISMATCH")
+    if expected_rom_sha256 and metadata.get("rom_sha256") != expected_rom_sha256:
+        raise ValueError("STOP_ARCHIVIST_ROM_MISMATCH")
+    metrics = session_graph.metrics()
+    if metrics["conflicts"] or metrics["proven_nodes"] or metrics["proven_edges"] or metrics["source_owned_bytes"]:
+        raise ValueError("STOP_ARCHIVIST_FALSE_PROVEN_OR_OWNERSHIP")
+    session_hash = session_graph.graph_hash()
+    source_sha256 = source_sha256 or hashlib.sha256(json.dumps(
+        {"session_graph_hash": session_hash, "session_id": metadata["live_forward_session_id"]},
+        sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    master_path = Path(master_path).resolve()
+    temp_path = master_path.with_name(master_path.stem + ".merge.tmp.sqlite")
+    before = None
+    master_existed = master_path.exists()
+    target = None
+    try:
+        if master_path.exists():
+            shutil.copy2(master_path, temp_path)
+            target = Cartographer(temp_path, expected_rom_sha256 or str(metadata["rom_sha256"]))
+            before = target.metrics()
+        else:
+            target = Cartographer(temp_path, expected_rom_sha256 or str(metadata["rom_sha256"]))
+            before = target.metrics()
+        delta = target.merge(session_graph.export_bundle(), "session-map:" + session_hash,
+                             source_sha256, compute_graph_hash=True, compute_components=False)
+        after = target.metrics()
+        if after["graph_hash"] != delta.graph_hash:
+            raise ValueError("global graph hash validation failed")
+        target.close()
+        target = None
+        with temp_path.open("r+b") as stream:
+            os.fsync(stream.fileno())
+        os.replace(temp_path, master_path)
+        receipt = _merge_receipt(str(metadata["rom_sha256"]), metadata, metrics,
+            before, after, "MERGE" if master_existed else "SEED", source_sha256)
+        return {"status": "PASS", "mode": "MERGE", "warning": None,
+                "session_id": metadata["live_forward_session_id"],
+                "session_graph_hash": session_hash,
+                "master_graph_hash_before": before["graph_hash"] if before else None,
+                "master_graph_hash_after": after["graph_hash"], "master_nodes": after["nodes"],
+                "master_edges": after["edges"], "global_merge": delta.as_dict(),
+                "merge_receipt": receipt}
+    except Exception:
+        if target is not None:
+            target.close()
+        temp_path.unlink(missing_ok=True)
+        raise
 
 
 def main() -> int:

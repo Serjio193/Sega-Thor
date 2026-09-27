@@ -137,6 +137,9 @@ struct DecodeOptions {
     std::span<const std::uint8_t> rom, const DecodeOptions& options = {});
 void set_absolute_word_control_target(DecodedInstruction& instruction,
     std::span<const std::uint8_t> rom, std::uint32_t pc, std::uint32_t range_end);
+// Decode one encoding at a physical ROM offset. Unsupported encodings fail closed.
+[[nodiscard]] DecodedInstruction decode_m68k_instruction(
+    std::span<const std::uint8_t> rom, std::uint32_t physical_offset);
 
 [[nodiscard]] std::string flow_kind_name(FlowKind kind);
 [[nodiscard]] std::string memory_kind_name(MemoryKind kind);

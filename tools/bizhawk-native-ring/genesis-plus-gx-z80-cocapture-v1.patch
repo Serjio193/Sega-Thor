@@ -1,0 +1,144 @@
+diff --git a/core/genesis.c b/core/genesis.c
+index 9bf3c39..9771120 100644
+--- a/core/genesis.c
++++ b/core/genesis.c
+@@ -32,6 +32,9 @@
+ #include "loadrom.h"
+ #include "hvc.h"
+ #include "sn76489.h"
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++#include "debug/live_forward_trace.h"
++#endif
+ 
+ #if defined(USE_DYNAMIC_ALLOC)
+ uint8 *work_ram;
+@@ -561,6 +564,9 @@ int z80_irq_callback (int param)
+ void gen_zbank_w (unsigned int data)
+ {
+   zbank = ((zbank >> 1) | ((data & 1) << 23)) & 0xFF8000;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++  oasis_lf_z80_bank_register_change(Z80.pc.w.l, data & 1, zbank);
++#endif
+ }
+ 
+ 
+diff --git a/core/memz80.c b/core/memz80.c
+index 5849800..c78326e 100644
+--- a/core/memz80.c
++++ b/core/memz80.c
+@@ -23,6 +23,9 @@
+ ****************************************************************************************/
+ 
+ #include "shared.h"
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++#include "debug/live_forward_trace.h"
++#endif
+ 
+ 
+ /*--------------------------------------------------------------------------*/
+@@ -107,7 +110,13 @@ unsigned char z80_memory_r(unsigned int address)
+     case 0: /* $0000-$3FFF: Z80 RAM (8K mirrored) */
+     case 1: 
+     {
+-      return zram[address & 0x1FFF];
++      unsigned char val = zram[address & 0x1FFF];
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      oasis_lf_z80_bus_read(Z80.pc.w.l, (uint16_t)address, val, 8,
++                            OASIS_LF_BUS_Z80_RAM, address & 0x1FFFu);
++#endif
++      return val;
+     }
+ 
+     case 2: /* $4000-$5FFF: YM2612 */
+@@ -154,8 +163,16 @@ unsigned char z80_memory_r(unsigned int address)
+       address = zbank | (address & 0x7FFF);
+      if (zbank_memory_map[address >> 16].read)
+      {
+-        return (*zbank_memory_map[address >> 16].read)(address);
++        unsigned char val = (*zbank_memory_map[address >> 16].read)(address);
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++        oasis_lf_z80_bus_read(Z80.pc.w.l, (uint16_t)(address & 0x7FFFu) | 0x8000u,
++                              val, 8, OASIS_LF_BUS_BANKED_ROM, address);
++#endif
++        return val;
+       }
+-      return READ_BYTE(m68k.memory_map[address >> 16].base, address & 0xFFFF);
++      unsigned char val = READ_BYTE(m68k.memory_map[address >> 16].base, address & 0xFFFF);
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      oasis_lf_z80_bus_read(Z80.pc.w.l, (uint16_t)(address & 0x7FFFu) | 0x8000u,
++                            val, 8, OASIS_LF_BUS_BANKED_ROM, address);
++#endif
++      return val;
+     }
+   }
+ }
+@@ -167,6 +184,10 @@ void z80_memory_w(unsigned int address, unsigned char data)
+     case 1: 
+     {
+       zram[address & 0x1FFF] = data;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      oasis_lf_z80_bus_write(Z80.pc.w.l, (uint16_t)address, data, 8,
++                             OASIS_LF_BUS_Z80_RAM, address & 0x1FFFu);
++#endif
+       return;
+     }
+ 
+@@ -174,6 +195,10 @@ void z80_memory_w(unsigned int address, unsigned char data)
+     {
+       fm_write(Z80.cycles, address & 3, data);
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++      oasis_lf_z80_bus_write(Z80.pc.w.l, (uint16_t)address, data, 8,
++                             OASIS_LF_BUS_YM2612, address & 3u);
++#endif
+       return;
+     }
+ 
+@@ -201,6 +226,11 @@ void z80_memory_w(unsigned int address, unsigned char data)
+           /* write to $C00000-$C0FFFF area */
+           (*zbank_memory_map[0xc0].write)(address, data);
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++          uint16_t domain = ((address & 0x1fu) == 0x11u) ?
++            OASIS_LF_BUS_PSG : OASIS_LF_BUS_VDP;
++          oasis_lf_z80_bus_write(Z80.pc.w.l, (uint16_t)address, data, 8,
++                                 domain, address);
++#endif
+           return;
+         }
+ 
+diff --git a/core/z80/z80.c b/core/z80/z80.c
+index a8e2a1b..4b3831d 100644
+--- a/core/z80/z80.c
++++ b/core/z80/z80.c
+@@ -27,6 +27,9 @@
+ #include "osd_cpu.h"
+ #include "z80.h"
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++#include "../debug/live_forward_trace.h"
++#endif
+ 
+ #define LOG(x)
+ 
+@@ -3430,6 +3433,26 @@ void z80_run(unsigned int cycles)
+     Z80.after_ei = FALSE;
+     R++;
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++    uint16_t trace_pc = PC;
++    oasis_lf_set_master_time(Z80.cycles);
++#endif
+     EXEC_INLINE(op,ROP());
++#ifdef BIZHAWK_LIVE_FORWARD_WORKER
++    if (oasis_lf_recording_enabled)
++    {
++      uint16_t next_pc = PC;
++      uint8_t bytes[4] = {0};
++      uint8_t len = (uint8_t)((next_pc - trace_pc) & 0xFFFFu);
++      if (len > 4u) len = 4u;
++      for (uint8_t bi = 0; bi < len; ++bi)
++      {
++        bytes[bi] = cpu_readop((trace_pc + bi) & 0xFFFFu);
++      }
++      oasis_lf_z80_instruction(trace_pc, next_pc, bytes, len);
++    }
++#endif
+   }
+ } 

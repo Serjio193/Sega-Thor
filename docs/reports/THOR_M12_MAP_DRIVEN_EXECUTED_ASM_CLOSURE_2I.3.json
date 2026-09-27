@@ -1,0 +1,23 @@
+{
+  "schema": "oasis.m12.map-driven-executed-asm-closure.2i.3.v1",
+  "status": "PASS_POSTRUN_MAP_DRIVEN_ASM_CLOSURE_V1",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "baseline_generation": "gen-b18a8a86d5d2eb93",
+  "accepted_generation": "gen-d2f971f0afc879c4",
+  "executed_instruction_objects_before": 471,
+  "executed_not_fully_owned_before": 244,
+  "candidate_count": 30,
+  "individually_closed_count": 4,
+  "dependency_closed_count": 1,
+  "promoted_intervals": [{"start": 10916, "end": 10958, "bytes": 42, "instructions": 14}],
+  "source_owned_before": 1475600,
+  "source_owned_after": 1475642,
+  "ownership_delta": 42,
+  "map_hash_after": "bbd0eebe3cf7a1dcacf528394852e6f9471700c47e6055c020669643cfcdbeec",
+  "stage8": {"status": "PASS_POSTRUN_FULL_ROM_AUDIT_V1", "bytes": 3145728,
+             "full_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"},
+  "idempotent_replay": {"state": "NO_DELTA", "remaining_candidate_count": 29,
+                        "promoted_bytes": 0},
+  "runtime_campaign_rerun": false,
+  "production_runtime_changed": false
+}

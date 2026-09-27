@@ -124,6 +124,17 @@ must match the complete hash set recorded in MASTER V2. The R2 pointer may
 verify the legacy shadow's file identities, but does not read it as canonical
 content. Stage7 baseline output remains a derived materialization of canonical
 emission rows and a ROM whose SHA-256 and size match the canonical identity.
+## M14.2 canonical global evidence authority
+
+The canonical `knowledge.sqlite` generation remains the only knowledge-map
+store. Its `emission` table is the ROM partition and `SOURCE_OWNED` authority;
+`rom_range`, `rom_object`, `claim`, `relation`, `evidence_ref`, and `conflict`
+hold evidence. M14.2 adds derivation/input and map-proposal/operation tables to
+that schema. Proposals bind to a parent generation, base map hash, graph hash,
+and validator version, but do not directly alter emission or establish
+ownership. Runtime occurrence identity must retain capture, epoch, CPU,
+address-space/domain, native sequence, and event kind. MASTER V2 preserves the
+added tables when serializing and materializing canonical knowledge.
 
 ## AUTO65 multi-chain campaign boundary
 
@@ -1019,6 +1030,74 @@ than inferred. Record width is fixed per session and included in segment
 offset/audit accounting. The live Worker UI also labels an absent optional
 per-worker detail API as `DETAIL API MISSING`; aggregate audited segment counts
 remain available, but per-worker instruction progress is not claimed.
+## M12 generic recursive ROM closure V1
+
+`src/tools/thor_evidence/generic_recursive_closure.py` is the subsystem-neutral
+post-run closure core. It consumes normalized instruction, memory, call and
+exact-range facts; derives register and effective-address provenance; emits
+typed graph edges, table candidates, call relations, closure queue and capture
+gaps; and promotes only caller-supplied byte-identical ranges. Missing facts
+are `UNRESOLVED` and remain queued, so an incomplete chain cannot stop
+unrelated exact closure. The module has no game-PC rules. Its command-line
+entrypoint emits the nine `postrun_*` artifacts; the dynamic SAT selector chain
+is a regression fixture, not an engine special case.
+
+## M13 generic recursive closure live integration V1
+
+`live_forward_generic_closure_stage.py` is the post-run adapter between the
+semantic stages and ASM closure. It accepts only the sealed FLOW paths owned by
+the receipt, materializes a hash-bound normalized corpus, checks the canonical
+ROM identity, runs the generic core, and emits closure/gap artifacts. A zero
+promotion result is `NO_DELTA` with a deterministic capture-gap ranking and
+continues to ASM closure; missing or corrupted corpus/ROM identity is
+fail-closed. `generic_closure_handoff.py` keeps this policy out of the core
+graph engine and the coordinator owns the stage ordering.
+
+## M13.1 semantic unresolved scheduling
+
+`pipeline_outcomes.py` separates a stage's semantic result from its scheduling
+effect. Allowlisted semantic coverage/provenance/acceptance gaps remain
+`UNRESOLVED` with their original stop reason, while the scheduler continues to
+generic closure and independent downstream analysis. Integrity, identity, and
+other non-allowlisted stops remain fatal. The final pipeline can therefore
+complete its audits and cleanup while reporting unresolved evidence; the
+progress UI and final receipt preserve that distinction rather than relabeling
+the semantic gap as PASS.
+
+## M13.2 generic closure gap-driven improvement
+
+The closure engine may add `OBSERVED_NEXT_PC` edges only from normalized
+instruction events whose source opcode exactly matches canonical ROM bytes.
+These edges record observed transitions, not statically proven branch/call
+semantics, and do not establish candidate boundaries or ownership. The live
+stage runs closure twice and requires deterministic equality plus a hashed gap
+ranking before acceptance. Permanent raw-FLOW reclaim is gated on those
+artifacts; absent or altered generic acceptance evidence leaves raw inputs
+intact. Missing CPU/domain, register, memory-width and round-trip evidence
+remains unresolved and is reported for a future capture.
+
+## M13.3 normalized FLOW evidence contract V2
+
+`generic_flow_normalizer.py` maps every fixed-width native FLOW record into a
+versioned event identity and generic collections. CPU identity is taken only
+from the captured `cpu_id`; bus width/domain and the causal instruction
+sequence are retained, ROM bus reads are made explicit, and M68K opcode bytes
+are compared to the canonical ROM without dropping mismatches. Runtime
+next-PCs are kept as observed flow facts; JSR/BSR, returns, and indirect JMP
+targets are represented only when their encoded opcode family and captured
+transition support that relation. The closure core consumes normalized memory,
+ROM-read, call, and return facts directly while retaining the legacy v1 input
+path for fixtures.
+
+The current native 48-byte record ABI has no per-instruction register payload,
+snapshot reference, or complete M68K instruction byte width. Host-audited
+Worker segment metadata does preserve exact entry/exit D0-D7, A0-A7, SR and PC
+snapshots; V2 links these bounded snapshots to the segment's first/last
+instruction identities without pretending they describe intervening
+instructions. Missing per-instruction snapshots and decode/width fields stay
+explicit capture gaps. This is a partial schema migration only: it does not
+establish the M13.3 live acceptance gate or authorize raw evidence
+reclamation.
 
 ## M12 runtime control provenance 2C — Phase 0 stop
 
@@ -1181,3 +1260,68 @@ SHA, run identity, ordinal, record kind, available stream/instruction identity,
 and original record fields. Canonical logical hashes are calculated by ordered
 SQLite row streaming so a large evidence index remains bounded in memory while
 preserving the existing hash encoding.
+## Runtime ROM property map v1 — developer tooling
+
+`uint16_t[rom_size]` stores additive observed-use bits, with zero reserved for
+UNKNOWN. It is separate from the canonical emission partition and
+`SOURCE_OWNED`. The versioned checkpoint binds the payload to ROM, schema,
+proof-contract, core/build, run, generation, capabilities, and validation
+identities. Runtime updates touch memory only; checkpoints and compact range
+exports are explicit operations.
+
+The developer library implements dirty-page tracking, supported M68K decoder
+span marking, byte-resolved data reads, Z80 fetched-byte validation, exact-copy
+RAM origin tags, consumed VDP source marking, cross-run union/rebuild, range
+export, and canonical-map overlay without changing existing classes or
+ownership. Pinned GPGX hooks now feed the live bitmap for accepted M68K, Z80,
+and direct VDP paths. Mode 5 CPU data-port writes additionally qualify only
+when one exact physical ROM word is read and a completed same-instruction
+`MOVE.W` forwards that value unchanged to the accepted VRAM, CRAM, or VSRAM
+port; fills and unsupported source modes fail closed. Their limits and
+acceptance evidence are in
+`docs/ROM_PROPERTY_MAP.md`.
+
+The Format-A mode-0 audio hook uses the existing Z80 banked-ROM read resolver.
+It adds `AUDIO_PAYLOAD_PROVEN` only for an exact byte read at verified decoder
+PC `0x080E` or `0x0855` inside either statically closed Format-A resource. It
+does not taint registers or promote a whole resource from one read.
+
+The graphics contract records `A0` at entry to verified M68K decompressor
+`0x3820` and classifies its exact ROM-backed input interval only after a
+successful `RTS`. The new `COMPRESSED_GRAPHICS_SOURCE` bit describes consumed
+compressed input; it does not assert direct VRAM provenance. The hook validates
+every byte's physical ROM mapping and rejects discontinuity, incomplete calls,
+and spans over 64 KiB.
+
+### ROM Coverage GUI — read-only visualization
+
+`tools/bizhawk-native-ring/rom_coverage_gui.py` is a Tkinter view over the
+existing versioned bitmap checkpoint. `rom_coverage_model.py` verifies the
+checkpoint checksum, ROM/schema/proof-contract/build identity and property
+capabilities before aggregation. An overlay receipt is accepted only with the
+exact paired checkpoint hash and identity. The GUI has no path to runtime
+hooks, property mutation, canonical map writes, or semantic promotion.
+
+The view keeps bitmap union coverage (`mask != 0`) separate from classification
+coverage. M68K/Z80 data-read bits are observations; by themselves their cell
+status is `OBSERVED_UNCLASSIFIED`, with separate colors for each read source.
+Executed-encoding, direct VDP-source, and proven
+audio-payload bits count as classified. The direct VDP-source bits include the
+same-instruction ROM-to-port path after its proof-contract extension. Multiple
+proven classes render as
+`MIXED`, while raw read observations overlapping one proven class do not hide
+that class. A run delta is unavailable until a compatible canonical union is
+loaded, preventing a missing baseline from being presented as new discovery.
+The view also reports newly classified bytes separately from newly covered
+bytes, so property refinement remains visible after union coverage plateaus.
+This grouping is local to the read-only view and does not alter the property
+contract or runtime bitmap.
+
+The LIVE mode polls the selected checkpoint's atomic replacement timestamp
+every 500 ms and reads changed snapshots on a separate reader thread. It never
+shares the emulator's in-memory property array or blocks its observation
+thread. The current capture script writes its bitmap at the end of a capture;
+LIVE refresh therefore occurs when an existing publisher replaces the
+checkpoint, and does not add a new live publisher to GPGX. Whole-ROM cells are
+1 KiB, with click-through 32-byte and 1-byte views. All levels use exact
+half-open byte ranges and compute total coverage from `mask != 0`.

@@ -195,12 +195,18 @@ Run the accepted canonical ROM campaign with the separate window enabled by
 adding `--control-window` to the existing 2B runtime command, for example:
 
 ```powershell
+python tools/bizhawk-native-ring/live_forward_worker_control_launcher.py
+```
+
+or with explicit arguments:
+
+```powershell
 python tools/bizhawk-native-ring/live_forward_rom_link_runtime.py `
-  --install build/thor-evidence/live-worker-control-2h/coherent-bizhawk-2h `
-  --rom "C:/Github/gpgx-test-roms/Beyond Oasis (USA).md" `
+  --install "C:\Dev\SegaThorTools\BizHawk-m12-w2-1-frame-coherent-20260920" `
+  --rom "local-roms/Beyond Oasis (USA).md" `
   --script tools/bizhawk-native-ring/live_forward_scaling.lua `
-  --output-dir build/thor-evidence/live-worker-control-2h/campaign `
-  --control-window
+  --output-dir build/thor-evidence/live-worker-control/session `
+  --control-window --until-closed
 ```
 
 Without `--control-window`, the existing runtime starts without the dashboard.
@@ -237,3 +243,124 @@ python tools/bizhawk-native-ring/rom_coverage_gui.py `
 ```
 
 The GUI can also open the checkpoint first and use **Evidence map…** to select the canonical pointer later. See the ROM Coverage integration ADR in `docs/DECISIONS.md` for the data boundary.
+## M12 Native bus-event sideband W1
+
+W1 keeps the `oasis_lf_record` binary layout at 32 bytes and adds explicit
+`EVENT` subtypes for `BUS_READ`, `BUS_WRITE` and `FRAME_BOUNDARY`. A bus event
+is correlated with its causing instruction sequence; a frame event uses
+instruction sequence zero. Address, value, width, mapped domain and CPU are
+encoded in the existing fields. GPGX instruments only top-level 68K data
+accesses, so opcode/extension/immediate fetches do not become resource-data
+reads and one 32-bit access produces one event.
+
+The developer-only GPGX changes are in the current isolated checkout under
+`build/bizhawk-2.11.1-src/waterbox/gpgx`; the resolver is
+`Genesis-Plus-GX/core/debug/live_forward_bus.c`, and the memory hooks are in
+`Genesis-Plus-GX/core/m68k/m68kcpu.h`. Host consumers preserve raw records and
+filter only when constructing legacy instruction/control-flow projections.
+
+The W1 source-of-truth chain is reproducible from the pinned BizHawk/GPGX
+commits. Apply the cumulative 1A/1B patches first, then the W1 patches and
+the small frame-observability bridge:
+
+```sh
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-native-bus-event-sideband-v1.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-native-bus-event-sideband-v1.patch
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-native-bus-event-sideband-v1-observability.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-native-bus-event-sideband-v1-observability.patch
+```
+
+The W1 patch hashes are `9EB859A9F62BAB8A9ACEBAE4F006766457E2A96358392DC261EDB587EDDAC798`
+(BizHawk) and `20EF5DB5C50273FF5E7AD35170E5C56333CE7951E975A89AE305326277F62FE5`
+(GPGX). The observability patch hashes are
+`F7E18BB57DC33A37614BBF4B695D70D3F43403E6A394B07153245B90AFC4166E` and
+`6AD14DF6AEDC183EF5672BE9AB0E61AEA23B4E548458C58736FAE8BC068C293B`.
+
+The repository-supported Waterbox toolchain was restored from the pinned musl
+submodule commit `2063abc4e16c84218757b1db10d3cdf9f36ef3f8` into
+`waterbox/sysroot`; it is Ubuntu-24.04 WSL2 clang 18.1.3 with libcxx tag
+`llvmorg-18.1.8`. The restored `musl-clang` SHA-256 is
+`9125791649F7CB2409B80F8282C20C2336E80C70F0BA820E08C4E251A78DC14F`.
+
+Debug and Release WBX builds passed with no unresolved symbols. The resulting
+artifacts are 4,040,568 bytes / SHA-256
+`D383E01B6E4C59D0C119414F45EB8C42806EBB36E6AEC8F40B867C5766DF6FC7` and
+5,678,048 bytes / SHA-256
+`9CDBC48EA4FD410924E9E5E1A82BA441DDCD87B9DD3F8E6E97C397F042EE31E2`.
+The managed Release host build passed with one pre-existing SharpCompress
+NU1902 warning.
+
+`run_sideband_probe.py` and `live_forward_sideband_probe.lua` are the
+developer-only micro probe. Its retained witness is under
+`build/m12-w1-acceptance/sideband-probe-frame-api-100-preroll10-1mb/`:
+`FRAME_BEFORE=279050`, `FRAME_AFTER=309196` after 10-frame preroll and one
+capture advance, with 1,595 BUS_READ records, contiguous stream order,
+instruction binding, zero fetch-flagged events, and a PASS exit. The initial
+no-preroll probe separately captured 198 BUS_WRITE records, so both event
+directions are proven before relying on the gameplay campaign for domain and
+32-bit coverage.
+
+The complete acceptance receipt and exact witnesses are recorded in
+`docs/reports/THOR_M12_NATIVE_BUS_EVENT_SIDEBAND_V1.md`.
+Checkpoint: `PASS_NATIVE_BUS_EVENT_SIDEBAND_V1`.
+
+## M12 Active resource classification W2
+
+W2 is analysis-only. It consumes immutable records delivered through the
+existing audited `run_one` segment callback and never changes the W1 native
+capture, ring ABI, Worker scheduling, emulator state, S1–S8 artifacts, or
+`SOURCE_OWNED`. The classifier emits mapped primitive classes, exact
+instruction-bound relations, bounded candidates, observed shadow-SAT/Z80
+facts, and a fail-closed VDP register/control/DMA decoder. Internal DMA bytes,
+sprite identity, song and instrument semantics remain unclaimed.
+
+Run a fresh short real-runtime receipt with the accepted W1 install:
+
+```powershell
+python tools/bizhawk-native-ring/run_w2_active_resource_classification.py `
+  --install C:/Dev/SegaThorTools/BizHawk-m12-w1-frame-api-20260920 `
+  --rom "C:/Github/Sega-Thor/build/m12-auto2-rom/usa/Beyond Oasis (USA).md" `
+  --script tools/bizhawk-native-ring/live_forward_scaling.lua `
+  --output-dir build/m12-w2-acceptance
+```
+
+The deterministic report is
+`build/m12-w2-acceptance/w2-active-resource-classification.json`; the
+checkpoint report is
+`docs/reports/THOR_M12_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1.md`.
+Focused coverage is in `tests/w2_active_resource_classification_test.py`.
+Checkpoint: `PASS_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1`.
+
+## M12 frame-coherent Worker evidence W2.1
+
+W2.1 extends only the completed Worker result metadata with authoritative
+GPGX `entry_frame` and `exit_frame` snapshots. It does not change the 32-byte
+ring record, bus hooks, scheduling, or W2 primitive/VDP semantics. Apply the
+incremental source patches after the accepted 1A/1B and W1 patch pairs:
+
+```sh
+git apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/bizhawk-2.11.1-worker-frame-coherent-v1.patch
+git -C waterbox/gpgx/Genesis-Plus-GX apply --ignore-whitespace /mnt/c/Github/Sega-Thor/tools/bizhawk-native-ring/genesis-plus-gx-worker-frame-coherent-v1.patch
+```
+
+The GPGX counter is `frame_number` in `core/debug/live_forward_trace.c`.
+`oasis_lf_frame_boundary()` increments it and stores the same value in the
+existing FRAME_BOUNDARY record; `oasis_lf_epoch_break()` resets it before
+incrementing `runtime_epoch`. A segment with equal entry/exit snapshots is
+`SINGLE_FRAME`; a changed pair is partitioned only by contained boundary
+records, otherwise it is `MULTI_FRAME_UNRESOLVED`. All joins use
+`(run_id, epoch, frame)` and cross-run S1–S8 links are forbidden.
+
+Run the fresh real-runtime receipt with the rebuilt isolated install:
+
+```powershell
+python tools/bizhawk-native-ring/run_w2_frame_coherent_evidence.py `
+  --install C:/Dev/SegaThorTools/BizHawk-m12-w2-1-frame-coherent-20260920 `
+  --rom "C:/Github/Sega-Thor/build/m12-auto2-rom/usa/Beyond Oasis (USA).md" `
+  --script tools/bizhawk-native-ring/live_forward_scaling.lua `
+  --output-dir build/m12-w2-1-acceptance
+```
+
+The focused contract is `tests/w2_frame_coherent_evidence_test.py`; the
+acceptance report is
+`docs/reports/THOR_M12_WORKER_FRAME_COHERENT_EVIDENCE_V1.md`.
