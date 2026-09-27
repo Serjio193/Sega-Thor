@@ -239,7 +239,7 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
                 header_bytes = plan[7] - plan[3] * RECORD.size
                 segment = validate_segment(key, value, records1, count, depth,
                     args.memory_bytes, header_bytes, run_id, previous_exit,
-                    global_entry, cycle_counts, records2)
+                    global_entry, cycle_counts, records2, args.rounds)
                 if on_segment is not None:
                     offset = int(value.split("|")[4])
                     data = read_record_slice(records1, offset, int(segment["record_count"]), worker)
@@ -318,7 +318,9 @@ def run_one(args: argparse.Namespace, phase: str, count: int, depth: int,
                 raise RuntimeError(f"EmuHawk exited early with code {process.returncode}")
             time.sleep(0.01)
         else:
-            raise TimeoutError(f"100-cycle Worker scaling run exceeded {args.timeout}s")
+            raise TimeoutError(
+                f"Worker scaling run ({args.rounds} rounds) exceeded {args.timeout}s"
+            )
         return_code = process.wait(timeout=15)
         console_stream.close()
         if return_code:

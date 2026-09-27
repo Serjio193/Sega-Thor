@@ -16,6 +16,7 @@ sys.path.insert(0, str(EVIDENCE_DIR.parent))
 from live_forward_cartographer import LiveForwardCartographer
 from live_forward_rom_link import LiveForwardRomLinker
 from live_forward_rom_link_audit import audit as audit_rom_link
+from live_session_progress import LiveSessionProgressPublisher
 from live_forward_scaling_runtime import resolve_runtime_paths, run_one
 from identity import ROM_SHA, ROM_SIZE
 from live_forward_worker_control import (
@@ -57,13 +58,17 @@ def main() -> int:
     parser.add_argument("--system-reserve-bytes", type=int, default=4 * 1024 * 1024 * 1024)
     parser.add_argument("--max-frames", type=int, default=1800)
     parser.add_argument("--timeout", type=int, default=1800)
+    parser.add_argument("--rounds", type=int, default=CYCLES_PER_WORKER,
+                        help="audited capture cycles per Worker (default: 100)")
     parser.add_argument("--control-window", action="store_true",
                         help="open the separate 2H Worker Control window")
     parser.add_argument("--next-run-config", type=Path,
         default=Path(__file__).parents[2] / "build" / "thor-evidence" /
                 "live-worker-control" / "next-run.json")
     args = parser.parse_args()
-    args.memory_bytes, args.rounds = WORKER_MEMORY, CYCLES_PER_WORKER
+    if args.rounds <= 0:
+        parser.error("--rounds must be positive")
+    args.memory_bytes = WORKER_MEMORY
     resolve_runtime_paths(args)
     args.decoder = args.decoder.resolve()
     args.next_run_config = args.next_run_config.resolve()
@@ -110,10 +115,22 @@ def main() -> int:
         return 2
     session = LiveForwardCartographer(rom_sha, _instrumentation_identity(args.install, args.script))
     linker = LiveForwardRomLinker(rom_sha)
+    expected_segments = worker_count * args.rounds
+    progress = LiveSessionProgressPublisher(
+        args.output_dir / "live-session-progress.json", session.session_id,
+        rom_sha, expected_segments)
+    progress_counts = {"nodes": 0, "edges": 0}
 
     def on_segment(segment: dict[str, object], rows: list[tuple[int, ...]], data: bytes) -> None:
-        session.admit(segment, rows, data)
+        delta = session.admit(segment, rows, data)
+        progress_counts["nodes"] += int(delta["new_nodes"])
+        progress_counts["edges"] += int(delta["new_edges"])
         linker.stage(segment, rows, data)
+
+    def publish_progress(state: str, error: str | None = None) -> None:
+        progress.publish(state, session.segments_admitted, session.segments_rejected,
+                         progress_counts["nodes"], progress_counts["edges"],
+                         source_owned_bytes=0, error=error)
 
     report_path = args.output_dir / "live-forward-rom-link-2b-receipt.json"
     runtime = projection = saved = None
@@ -121,6 +138,7 @@ def main() -> int:
     session_saved = False
     control = None
     try:
+        publish_progress("STARTING")
         on_status = None
         if args.control_window:
             control = LiveWorkerControlPublisher(
@@ -129,9 +147,15 @@ def main() -> int:
                 args.output_dir / "live-worker-control-preview.txt",
                 args.output_dir)
             control.start()
-            on_status = control.update
+        def on_runtime_status(values, process, started, audited_segments):
+            if control:
+                control.update(values, process, started, audited_segments)
+            publish_progress("RUNNING")
+
+        on_status = on_runtime_status
         runtime = run_one(args, "rom-link", worker_count, worker_depth,
                           on_segment, on_status)
+        publish_progress("FINALIZING")
         if control:
             control.finish(None, int(runtime.get("audited_segments", 0)))
         preflight = allocation_preflight(next_config, runtime.get("plan"),
@@ -141,20 +165,22 @@ def main() -> int:
         preflight["system_available_ram_bytes"] = available
         preflight["config_origin"] = config_origin
         if runtime.get("outcome") != "PASS" or runtime.get("audited_segments") != \
-                worker_count * CYCLES_PER_WORKER:
+                worker_count * args.rounds:
             raise RuntimeError("STOP_ROM_LINK_RUNTIME_SEGMENT_AUDIT")
-        if session.segments_admitted != worker_count * CYCLES_PER_WORKER or \
+        if session.segments_admitted != worker_count * args.rounds or \
                 session.segments_rejected or session.metrics()["source_owned_bytes"] != 0:
             raise RuntimeError("STOP_ROM_LINK_CARTOGRAPHER_SEGMENT_RECONCILIATION")
         projection = linker.project(session.graph, args.rom, args.decoder,
                                     args.output_dir / "rom-link-evidence")
-        saved = session.save_closed(session_path, worker_count * CYCLES_PER_WORKER)
+        saved = session.save_closed(session_path, worker_count * args.rounds)
         session_saved = True
         audit_report = audit_rom_link(session_path, args.rom,
             Path(projection["flow_records_path"]), Path(projection["flow_segments_path"]),
             Path(projection["ranges_path"]), args.decoder,
             args.output_dir / "independent-rom-link-audit.json")
         status = projection["status"]
+        publish_progress("CLOSED" if status == "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE"
+                         else "FAILED")
         report = {"checkpoint": "M12-ROM-RANGE-LINKAGE-2B", "status": status,
             "runtime": runtime, "rom_projection": projection, "saved_session": saved,
             "independent_audit": audit_report, "preflight": preflight,
@@ -167,6 +193,10 @@ def main() -> int:
                           "session": str(session_path.resolve())}, indent=2))
         return 0 if status == "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE" else 2
     except Exception as error:
+        try:
+            publish_progress("FAILED", str(error))
+        except Exception:
+            pass
         if control:
             control.finish(None, session.segments_admitted, str(error))
         status = (projection or {}).get("status")

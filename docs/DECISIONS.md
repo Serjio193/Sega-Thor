@@ -2519,3 +2519,42 @@ Runtime evidence stays non-owning.
 **Evidence:** `docs/reports/THOR_M14_7B_REAL_CAPTURE_CLOSURE.md`, its exact
 receipt under `docs/reports/m14-7b-closure-receipts/`, and generated
 pre/post-cleanup map checks under `build/thor-evidence/m14-7b-real-capture/`.
+## ROM Coverage and canonical evidence map integration
+
+**Status:** Accepted for a read-only visualization integration.
+
+**Context:** The ROM Coverage Map reports byte-level property masks from accepted runtime checkpoints. The persistent M14 knowledge map stores ROM-addressed objects, claims, relations, evidence references and conflicts. These answer different questions and can overlap: a byte can have observed coverage while its semantic evidence remains unresolved, and a knowledge-map claim must not silently become a byte-property proof.
+
+**Decision:** Present both maps in one GUI as independent layers bound to the same exact ROM SHA-256 and size. Preserve the property bitmap as the cell fill; show canonical evidence status as a separate outline and expose its supporting objects/claims in the range detail. Read the atomically published canonical `current.json` pointer and its SQLite generation using read-only access. In LIVE mode, refresh on pointer replacement from a background loader. Count bytes as a union within each evidence status; statuses may overlap, and these counts do not alter property coverage. The viewer must never write the canonical generation, change proof status, or promote `SOURCE_OWNED`.
+
+The evidence loader prefers the promoted `oasis.m12.master-v2-startup.current.v1` pointer at the project runtime path and resolves the M14 Archivist pointer only when the MASTER pointer is absent. An explicit pointer argument overrides discovery. MASTER V2 is checked against the exact ROM identity, file and logical hashes, section hashes, generation ID, and a contained relative master path before any claims are shown. Claim statuses absent from the viewer's known status vocabulary remain in a separate unmapped-status overlay; they are not translated into `OBSERVED_RUNTIME` or another known class.
+
+**Consequences:** Accumulation remains the canonical pipeline's responsibility; the GUI shows the latest accepted generation when it is published. A different ROM identity, invalid generation path, or database hash mismatch fails closed. The two layers can be compared spatially without conflating observed coverage with semantic classification.
+
+The LIVE view also reports checkpoint read state and property-byte growth since the viewer began watching. Lack of a checkpoint change is presented as waiting, not as proof that an emulator or Worker has stalled. Polling and checkpoint parsing remain outside emulator callbacks; this display adds no per-frame capture work.
+
+At byte-level view, an explicit click opens a bounded read-only provenance trace. It follows exact object, claim, relation, evidence-reference, source-artifact and derivation identities; an execution-path segment is displayed only when the linked relation has retained runtime evidence. A derivation output is labeled as a recorded extraction reference only when it includes both a path and SHA-256; the GUI does not validate the external file. Missing provenance remains visible. Trace indexes are built by the background loader, while expensive detail expansion is excluded from redraw and hover.
+
+## Live-forward session progress sidecar
+
+**Status:** Accepted for display-only live progress.
+
+**Context:** The 2A/2B driver admits host-audited FLOW segments to an in-memory
+Cartographer as the Worker runs but writes the closed MAP-1 session database
+after emulator shutdown. The ROM Coverage GUI previously had no way to show
+that accepted-segment growth while the session remained open.
+
+**Decision:** Publish a small atomic sidecar at a bounded host polling cadence.
+It carries session/ROM identity, lifecycle state, admitted/expected/rejected
+segment counts, MAP-1 node/edge counts, and the session's unchanged
+`SOURCE_OWNED` value. The GUI reads the sidecar read-only and displays it only
+when its loaded ROM identity matches exactly. Progress is explicitly the
+fraction of configured run segments admitted, never a percentage of ROM
+coverage. The sidecar is telemetry, not a map generation or proof; final MAP-1
+serialization and ROM-link audit remain post-run gates.
+
+**Consequences:** The GUI can show that the session map is growing without
+reading a changing SQLite database or adding work to emulator callbacks.
+Malformed, stale, failed, or mismatched sidecars remain visibly rejected or
+waiting. The canonical generation, property bitmap, and ownership publisher
+remain unchanged.

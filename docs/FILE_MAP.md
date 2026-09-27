@@ -111,6 +111,10 @@ fixtures are in `tests/live_forward_rom_link_test.py`, registered by
 under the ignored `build/thor-evidence/live-forward-rom-link-2b/` directory.
 Implementation, runtime evidence and final audit are recorded in
 `docs/reports/THOR_M12_ROM_RANGE_LINKAGE_2B.md` and its compact JSON receipt.
+`src/tools/thor_evidence/flow_v1_record_codec.py` is the strict record-layout
+adapter for current 48-byte and legacy 32-byte Worker rows; missing legacy
+fields remain explicitly unavailable and the session audit retains exact raw
+bytes and width-aware offsets.
 
 `docs/reports/THOR_M12_RUNTIME_CONTROL_PROVENANCE_2C.md` and its compact JSON
 receipt record the Phase 0 classification of the saved 2B FLOW_V1 evidence.
@@ -1765,3 +1769,22 @@ target decoding; `cmake/re_tooling_sources.cmake` owns the developer-only RE
 tool source list. The compact result is in
 `docs/reports/THOR_M12_MAP_DRIVEN_EXECUTED_ASM_CLOSURE_2F.md/.json`; raw
 knowledge/runtime evidence stays under ignored `build/thor-evidence/`.
+
+## ROM Coverage and evidence map viewer
+
+- `tools/bizhawk-native-ring/rom_coverage_model.py`: read-only property bitmap model and deterministic ROM range/cell aggregation.
+- `tools/bizhawk-native-ring/rom_coverage_evidence.py`: read-only M14 fallback and MASTER V2 startup-pointer loaders with exact-identity range summaries.
+- `tools/bizhawk-native-ring/rom_coverage_trace.py`: exact-ID joins from ROM ranges through claims, runtime-backed relations, source artifacts, derivations and emitted artifacts; bounded range trace formatting.
+- `tools/bizhawk-native-ring/rom_coverage_gui.py`: ROM Coverage GUI coordinator and command-line entry point.
+- `tools/bizhawk-native-ring/rom_coverage_gui_map.py`: property/evidence map cell drawing, zoom and cell interaction.
+- `tools/bizhawk-native-ring/rom_coverage_gui_evidence.py`: evidence legend, range tooltip, receipt-bound overlay selection and explicit byte-level provenance trace dialog.
+- `tools/bizhawk-native-ring/rom_coverage_gui_live.py`: LIVE checkpoint refresh and session-progress status model.
+- `tools/bizhawk-native-ring/live_session_progress.py`: bounded atomic progress sidecar writer and ROM-identity-checked read model for one open MAP-1 session.
+- `tools/bizhawk-native-ring/rom_coverage_gui_session.py`: live session progress selection and status presentation in the coverage viewer.
+- `tests/rom_coverage_model_test.py` and `tests/rom_coverage_evidence_test.py`: mapping and M14/MASTER V2 evidence-overlay tests.
+- `tests/rom_coverage_gui_live_test.py`: checkpoint freshness, growth and error-status checks.
+- `tests/live_session_progress_test.py`: atomic publication, identity, stale status, failure and bounded-count regressions.
+
+- `docs/reports/THOR_ROM_EVIDENCE_GLOBAL_SCHEME.md`: read-only synthesis of
+  Worker/Cartographer, Archivist/canonical knowledge, property bitmap, Carver
+  gap planning, and GUI layers with identity and trust boundaries.

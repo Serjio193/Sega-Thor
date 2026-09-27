@@ -11,13 +11,14 @@ from typing import Any
 
 try:
     from .cartographer import canonical
+    from .flow_v1_record_codec import decode_flow_records
     from .identity import ROM_SHA, ROM_SIZE
 except ImportError:
     from cartographer import canonical
+    from flow_v1_record_codec import decode_flow_records
     from identity import ROM_SHA, ROM_SIZE
 
 
-RECORD_SIZE = 48
 FLAG_INSTRUCTION = 1
 SCHEMA = "oasis.m12.live-forward-rom-ranges.v1"
 
@@ -39,6 +40,7 @@ class LiveForwardRomLinker:
         self.rom_sha256 = rom_sha256
         self._segments: list[tuple[dict[str, Any], bytes]] = []
         self._identities: set[tuple[int, int, int, int]] = set()
+        self.record_format: str | None = None
 
     def stage(self, segment: dict[str, object], rows: list[tuple[int, ...]],
               records_blob: bytes) -> None:
@@ -46,8 +48,12 @@ class LiveForwardRomLinker:
         if segment.get("valid") is not True or segment.get("ready_for_cartographer") is not True:
             raise ValueError("ROM linker accepts only host-audited FLOW_V1 segments")
         count = int(segment["record_count"])
-        if count != len(rows) or len(records_blob) != count * RECORD_SIZE:
+        raw_rows, _, _, record_format = decode_flow_records(records_blob, count)
+        if count != len(rows) or list(rows) != raw_rows:
             raise ValueError("FLOW_V1 callback bytes and rows do not reconcile")
+        if self.record_format is not None and self.record_format != record_format:
+            raise ValueError("FLOW_V1 record format changed within one ROM-link run")
+        self.record_format = record_format
         identity = tuple(int(segment[key]) for key in
                          ("run_id", "worker_id", "capture_id", "generation"))
         if identity in self._identities:
@@ -84,10 +90,10 @@ class LiveForwardRomLinker:
         return results
 
     @staticmethod
-    def _instruction_rows(records_blob: bytes) -> list[tuple[int, tuple[int, ...]]]:
-        import struct
-        record = struct.Struct("<QQQIIIHBBHHI")
-        return [(index, row) for index, row in enumerate(record.iter_unpack(records_blob))
+    def _instruction_rows(records_blob: bytes, expected_count: int
+                          ) -> list[tuple[int, tuple[int | None, ...]]]:
+        _, rows, _, _ = decode_flow_records(records_blob, expected_count)
+        return [(index, row) for index, row in enumerate(rows)
                 if row[6] & FLAG_INSTRUCTION and row[7] == 0]
 
     def project(self, graph: Any, rom_path: Path, decoder: Path,
@@ -116,8 +122,9 @@ class LiveForwardRomLinker:
                 offsets.append((segment, blob, raw_offset))
                 raw_offset += len(blob)
 
-        pc_values = {row[3] for _, blob, _ in offsets
-                     for _, row in self._instruction_rows(blob)}
+        pc_values = {row[3] for segment, blob, _ in offsets
+                     for _, row in self._instruction_rows(blob,
+                         int(segment["record_count"]))}
         decoded = self._decode_batch(decoder, rom_path, pc_values, evidence_dir / "rom-decode")
         decoder_identity = _sha(decoder.read_bytes())
         source_owned_before = int(graph.db.execute(
@@ -142,7 +149,9 @@ class LiveForwardRomLinker:
                 (edge_id, _sha(encoded.encode("utf-8")), encoded))
 
         for segment, blob, raw_offset in offsets:
-            instructions = self._instruction_rows(blob)
+            record_count = int(segment["record_count"])
+            _, _, record_size, record_format = decode_flow_records(blob, record_count)
+            instructions = self._instruction_rows(blob, record_count)
             for record_index, row in instructions:
                 (stream_seq, instruction_seq, _, raw_pc, next_pc, flow_opcode,
                  flags, _, _, _, _, auxiliary) = row
@@ -171,7 +180,9 @@ class LiveForwardRomLinker:
                     "record_index": record_index, "stream_sequence": stream_seq,
                     "instruction_sequence": instruction_seq, "raw_cpu_pc": raw_pc,
                     "flow_opcode": flow_opcode, "flags": flags, "auxiliary": auxiliary,
-                    "raw_records_offset": raw_offset + record_index * RECORD_SIZE,
+                    "raw_records_offset": raw_offset + record_index * record_size,
+                    "record_format": record_format,
+                    "record_width_bytes": record_size,
                     "decoder_sha256": decoder_identity, "rom_sha256": ROM_SHA}
                 if resolution["memory_region"] == "ROM" and resolution["decode_status"] == "DECODED":
                     bytecode = resolution["bytes"]
@@ -249,7 +260,10 @@ class LiveForwardRomLinker:
                     "generation": int(segment["generation"]), "segment_sha256": str(segment["segment_sha256"]),
                     "record_index": record_index, "stream_sequence": row[0],
                     "instruction_sequence": row[1], "raw_cpu_pc": row[3], "flow_opcode": row[5],
-                    "raw_next_pc": row[4], "raw_records_offset": raw_offset + record_index * RECORD_SIZE}
+                    "raw_next_pc": row[4],
+                    "raw_records_offset": raw_offset + record_index * record_size,
+                    "record_format": record_format,
+                    "record_width_bytes": record_size}
                 add_lineage(edge, terminal_lineage)
                 terminal_count += 1
 

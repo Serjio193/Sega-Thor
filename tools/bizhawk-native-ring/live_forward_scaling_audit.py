@@ -32,7 +32,8 @@ def read_record_slice(path: Path, offset: int, count: int, worker: int) -> bytes
 def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
                      expected_depth: int, memory_bytes: int, result_header_bytes: int,
                      run_id: int, previous_exit: list[int], global_entry: list[int],
-                     cycle_counts: list[int], second_record_path: Path) -> dict[str, object]:
+                     cycle_counts: list[int], second_record_path: Path,
+                     expected_rounds: int = 100) -> dict[str, object]:
     pieces = value.split("|")
     if len(pieces) != 13:
         raise ValueError(f"{key}: malformed segment announcement")
@@ -54,7 +55,7 @@ def validate_segment(key: str, value: str, record_path: Path, worker_count: int,
      end_instruction, first_flow, end_flow, worker, reason, configured_depth,
      configured_memory, consumed_depth, consumed_memory, record_count, record_bytes,
      valid, copy_ns) = meta
-    if not 1 <= cycle <= 100 or not 0 <= worker < worker_count:
+    if not 1 <= cycle <= expected_rounds or not 0 <= worker < worker_count:
         raise ValueError(f"{key}: worker or cycle is outside the requested range")
     expected_capture = run_id * 1_000_000 + (cycle - 1) * worker_count + worker + 1
     if capture != expected_capture or generation != cycle or run != run_id or epoch <= 0:

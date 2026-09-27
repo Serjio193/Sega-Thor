@@ -14,7 +14,20 @@ import subprocess
 ROM_SHA = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263"
 ROM_SIZE = 3_145_728
 RECORD = struct.Struct("<QQQIIIHBBHHI")
+LEGACY_RECORD = struct.Struct("<QQIIHHI")
 INSTRUCTION = 1
+
+
+def _decode_records(blob: bytes, count: int):
+    if len(blob) == count * RECORD.size:
+        raw = list(RECORD.iter_unpack(blob))
+        return raw, raw, RECORD.size, "FLOW_V1_NATIVE48"
+    if len(blob) == count * LEGACY_RECORD.size:
+        raw = list(LEGACY_RECORD.iter_unpack(blob))
+        rows = [(row[0], row[1], None, row[2], row[3], row[4], row[5],
+                 0, None, None, None, row[6]) for row in raw]
+        return raw, rows, LEGACY_RECORD.size, "FLOW_V1_NATIVE32_LEGACY"
+    raise ValueError("STOP_ROM_LINK_AUDIT_RAW_SEGMENT_WIDTH_INVALID")
 
 
 def _canonical(value: object) -> str:
@@ -82,17 +95,18 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
         start, length = int(item["raw_offset"]), int(item["raw_length"])
         blob = raw[start:start + length]
         if len(blob) != length or hashlib.sha256(blob).hexdigest() != item["raw_sha256"] or \
-                item["raw_sha256"] != segment["records_sha256"] or \
-                len(blob) != int(segment["record_count"]) * RECORD.size:
+                item["raw_sha256"] != segment["records_sha256"]:
             raise ValueError("STOP_ROM_LINK_AUDIT_RAW_SEGMENT_MISMATCH")
-        segments[key] = (item, blob)
+        raw_rows, rows, record_size, record_format = _decode_records(
+            blob, int(segment["record_count"]))
+        segments[key] = (item, blob, record_size, raw_rows, rows, record_format)
         segment_slots.add(slot)
         capture_ids.add(capture_id)
         worker_generations.add(generation_key)
         worker_segment_counts[key[2]] = worker_segment_counts.get(key[2], 0) + 1
         raw_spans.append((start, start + length))
         last_instruction = None
-        for record_index, row in enumerate(RECORD.iter_unpack(blob)):
+        for record_index, row in enumerate(rows):
             if row[6] & INSTRUCTION and row[7] == 0:
                 occurrence = key + (record_index,)
                 if occurrence in expected_instructions:
@@ -168,10 +182,10 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
             record_index = int(lineage["record_index"])
             if identity not in segments or identity + (record_index,) not in expected_instructions:
                 raise ValueError("STOP_ROM_LINK_AUDIT_LINEAGE_SEGMENT_OR_RECORD_MISSING")
-            item, blob = segments[identity]
+            item, blob, record_size, _, rows, record_format = segments[identity]
             if record_index < 0 or record_index >= int(item["segment"]["record_count"]):
                 raise ValueError("STOP_ROM_LINK_AUDIT_RECORD_INDEX_INVALID")
-            row = RECORD.unpack_from(blob, record_index * RECORD.size)
+            row = rows[record_index]
             if not row[6] & INSTRUCTION or row[7] != 0:
                 raise ValueError("STOP_ROM_LINK_AUDIT_NON_INSTRUCTION_LINEAGE")
             expected = {"stream_sequence": row[0], "instruction_sequence": row[1],
@@ -179,7 +193,8 @@ def audit(session: Path, rom_path: Path, raw_path: Path, index_path: Path,
                 "epoch": identity[1], "worker_id": identity[2], "capture_id": identity[3],
                 "generation": identity[4], "segment_sha256": identity[5],
                 "record_index": record_index,
-                "raw_records_offset": int(item["raw_offset"]) + record_index * RECORD.size}
+                "raw_records_offset": int(item["raw_offset"]) + record_index * record_size,
+                "record_format": record_format, "record_width_bytes": record_size}
             for field, value in expected.items():
                 if lineage.get(field) != value:
                     raise ValueError("STOP_ROM_LINK_AUDIT_FLOW_RECORD_MISMATCH")

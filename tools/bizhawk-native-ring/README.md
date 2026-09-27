@@ -211,3 +211,29 @@ snapshot metrics and validation are in
 `docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and its compact JSON
 receipt. Raw/session SQLite, per-segment audits and runtime logs stay in the
 ignored `build/thor-evidence/live-worker-control-2h/` tree.
+
+# ROM Coverage Map with canonical evidence overlay
+
+The read-only GUI combines two independent views of the same ROM:
+
+- Cell fill shows ROM property bits from a property checkpoint.
+- Cell outline and range details show canonical evidence statuses (`STATIC_VERIFIED`, `DERIVED_EXACT`, `OBSERVED_RUNTIME`, `HYPOTHESIS`, and `CONFLICT`).
+
+Both inputs must identify the same ROM SHA-256 and size. The evidence map defaults to the promoted MASTER V2 `current.json` pointer (`oasis.m12.master-v2-startup.current.v1`) and uses the M14 Archivist pointer as an explicitly labeled fallback when MASTER V2 is absent. `--knowledge-pointer` selects a specific pointer. MASTER V2 file, logical-container and section hashes are checked before its canonical knowledge rows are read. In LIVE mode the GUI polls the selected pointer and reloads it in a background worker. It does not write or promote canonical knowledge. Evidence byte counts are unions within each status, so overlapping statuses can make their counts sum to more than the ROM size.
+
+LIVE mode also shows checkpoint freshness, background-read or error state, and property-byte growth observed during this viewer session. It reports changes visible in the checkpoint; it does not claim that capture is active when the checkpoint stays unchanged. The watcher adds no emulator callbacks or per-frame work. Claim statuses that have no viewer mapping appear as `UNMAPPED MASTER CLAIM` and retain their original status text in range details.
+
+The live-forward 2B runner also publishes `live-session-progress.json` while it admits host-audited segments to the RAM Cartographer. Select that file with **Session progress…** or pass `--live-session-progress path/to/live-session-progress.json`. The GUI checks its ROM SHA against the loaded checkpoint before showing state, admitted/configured segment counts, and unique session nodes/edges. This percentage is only completion of the configured capture run; it is not ROM coverage. The MAP-1 database and exact ROM-link audit are finalized after capture closes.
+
+Click through to byte-level view, then click a byte to open its provenance trace. The trace follows canonical object, claim, relation, evidence-reference, source-artifact and derivation IDs. Runtime path segments are shown only for execution relations with linked runtime evidence references. A recorded extraction output requires both a linked derivation path and SHA-256; the viewer displays the reference but does not check whether the file still exists. Missing links stay explicit and are never inferred from nearby addresses. Trace expansion is on byte selection; map redraw and hover do not build the trace.
+
+Example:
+
+```powershell
+python tools/bizhawk-native-ring/rom_coverage_gui.py `
+  --checkpoint path/to/live.rom-properties.v1 `
+  --knowledge-pointer path/to/canonical-map/current.json `
+  --live-session-progress path/to/live-session-progress.json
+```
+
+The GUI can also open the checkpoint first and use **Evidence map…** to select the canonical pointer later. See the ROM Coverage integration ADR in `docs/DECISIONS.md` for the data boundary.

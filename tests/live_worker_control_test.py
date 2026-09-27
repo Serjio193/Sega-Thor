@@ -111,6 +111,8 @@ class LiveWorkerControlTests(unittest.TestCase):
             "analyses": 2, "releases": 1}])
         with self.assertRaises(ValueError):
             parse_live_control(live_control_line(state=2, progress=21))
+        unavailable = parse_live_control(live_control_line(state=6, progress=0))
+        self.assertEqual(unavailable["workers"][0]["state"], "DETAIL API MISSING")
 
     def test_i_system_ram_used_and_available_reconcile(self) -> None:
         values = system_memory_values(64 * 1024, 24 * 1024)

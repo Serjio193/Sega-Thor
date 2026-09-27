@@ -10321,3 +10321,301 @@ passed. MSVC emitted existing warnings in `re_atlas.cpp` and test projects.
 No runtime campaign was needed for this source merge. The result is a local
 integration branch only; dirty source/evidence worktrees and remote branch
 refs have not been altered.
+
+# 2026-09-27 — ROM Coverage + canonical evidence map visualization
+
+TASK: Unite the read-only ROM property coverage viewer with the persisted M14
+canonical knowledge map. Show property coverage and canonical evidence status
+as separate visual layers, bind both to exact ROM SHA/ranges, and refresh from
+the accepted canonical `current.json` generation when LIVE mode is active.
+
+ACCEPTANCE: (1) mismatched ROM identities fail closed; (2) byte-property masks
+and canonical claims remain distinct; (3) canonical status overlays count
+unioned bytes per status without adding percentages across overlapping claims;
+(4) GUI opens canonical databases read-only and never mutates map generations;
+(5) a published generation change is picked up asynchronously in LIVE mode;
+(6) regression tests, source-size and diff checks pass. No worker scheduling,
+capture, property-class proof contract, canonical schema, or SOURCE_OWNED rules
+change in this task.
+
+RESULTS: Added `rom_coverage_evidence.py` as a read-only, ROM-SHA-bound adapter
+for the M14 canonical `current.json` generation. Property cell fill remains the
+checkpoint property bitmap; evidence status is a separate outline and hover
+detail. LIVE refresh checks the pointer at a bounded interval and loads the
+SQLite snapshot in a background executor. Added regression coverage for
+identity mismatch, pointer escape, database hash mismatch, generation update,
+and overlapping status unions. Added CTest registration and documented the
+separation in the architecture, decision, file map, and tool README.
+
+VERIFICATION: 18 Python model/evidence unit tests passed; `py_compile` passed.
+Debug and Release `oasis` builds passed; the two focused CTest cases passed in
+both configurations. The real property checkpoint (`eb19bda…c263`, 3,145,728
+bytes) and M14 `canonical-map-final/current.json` loaded successfully together;
+the exact identity matched. Real map evidence unions: STATIC_VERIFIED 1,487,686
+bytes, DERIVED_EXACT 1,670,130, OBSERVED_RUNTIME 7,606, HYPOTHESIS 1,133,212,
+CONFLICT 0; these overlap by design and are not additive coverage. The
+`0x158296–0x261123` range resolves to MIXED evidence with three distinct
+statuses. The GUI was started with this checkpoint and pointer. `git diff
+--check` and source line limit passed; no ROM or asset was added.
+
+# 2026-09-27 — Global ROM evidence architecture synthesis
+
+TASK: Inspect the property bitmap, multi-Worker capture/Cartographer, Archivist
+canonical generation, M14.7A/B retention/path work, and M12 Carver reports, then
+connect them into one architecture with exact identity and evidence boundaries.
+
+RESULT: Added `docs/reports/THOR_ROM_EVIDENCE_GLOBAL_SCHEME.md` with a current
+component inventory, data-flow diagram, identity envelope, existing integration
+points, stale-baseline reconciliation, and bounded next steps. The scheme keeps
+property bits, runtime occurrences, canonical claims, source ownership and
+Carver proposals separate. No code, proof contract, classifier, canonical data,
+raw capture, or dirty checkout was changed.
+
+FINDINGS: The GUI's canonical property-union checkpoint is distinct from the
+M14 canonical knowledge `current.json` generation. Both can be shown together
+only when ROM identity matches; their generation/build/proof identities remain
+separate. The M12 global Map-1 importer, live-forward session Cartographer, and
+M14 knowledge DB are related through imports but have different schemas and
+roles. Existing Carver reports use an older ownership baseline and must be
+reconciled before their blocker ranks are called current.
+
+FOLLOW-UP FINDING: Read-only review of the separate dirty runtime-occurrence
+worktree found a complete post-run chain: session graph import → run-local
+postrun generation → gated MASTER V2 N+1 promotion. That branch also has
+receipt-bound Audio, VDP/DMA, Sprite/SAT and Gameplay RAM stages. The promoted
+MASTER V2 pointer is a different schema from the M14 Archivist pointer currently
+read by the ROM Coverage GUI, so a read-only adapter is needed before the GUI can
+follow that branch's newest accepted generation. No content from that dirty
+worktree was changed or merged.
+
+# 2026-09-27 — ROM Coverage LIVE progress status
+
+TASK: Make it clear whether the read-only LIVE coverage view is receiving
+checkpoint updates and whether those updates increase covered or classified
+bytes. Keep the emulator frame/capture path unchanged; preserve the 30 FPS
+runtime floor as a validation requirement for later in-process changes.
+
+RESULT: Added `LiveProgress` and a persistent LIVE status row showing waiting,
+background read, refresh error, time since the last checkpoint, cumulative
+covered/classified bytes added during this viewer session, and time since the
+last increase. Repeated unchanged checkpoints refresh the last-read time while
+preserving the last positive progress delta. Extracted the ROM-range tooltip
+into the existing presentation helper so `rom_coverage_gui.py` remains under
+the 500-line project limit. Updated the architecture, decision, file map and
+tool README. No emulator callbacks or frame-advance code changed.
+
+VERIFICATION: The four new LIVE status tests and the existing model/evidence
+tests passed (22 tests total); `py_compile` passed. CMake configure passed for
+Debug and Release. The three focused CTest cases passed in both configurations.
+Full native C++ builds were interrupted because this iteration changes only
+Python viewer code and test registration; their generated build load was not
+needed for these checks. `git diff --check` passed, and changed executable and
+source files are within 500 lines.
+
+FPS: No BizHawk process was running, and this worktree has no local game ROM or
+property checkpoint, so a same-run 30 FPS measurement could not be made. The
+new status display performs checkpoint polling in the existing background
+viewer path and adds no work to the emulator frame loop. Runtime FPS remains
+unverified and is required before accepting any later change that runs inside
+the emulator or materially increases capture/render load.
+
+# 2026-09-27 — MASTER V2 evidence pointer in ROM Coverage
+
+TASK: Extend the read-only evidence overlay to consume the promoted
+`oasis.m12.master-v2-startup.current.v1` pointer while retaining the M14
+Archivist reader as an explicitly labeled fallback.
+
+ACCEPTANCE: Verify the pointer schema, target path containment, master file
+SHA/size, logical container checksum and all section hashes, generation ID,
+and exact ROM SHA/size before showing evidence. Read range/object/claim/conflict
+rows without materializing a SQLite generation. Keep unrecognized MASTER claim
+statuses visibly separate from known evidence statuses. Load/reload in the
+existing background worker and show the authority in the UI. Add mismatch,
+escape, checksum and overlay regression tests. Do not add emulator callbacks.
+
+VERIFICATION: All 32 direct Python tests passed across the coverage model, MASTER/M14 evidence adapter, LIVE progress state, canonical view and MASTER V2 container suites. The focused CTest group passed 3/3 in Debug and 3/3 in Release. Python compilation and GUI `--help` passed. `git diff --check` and the 500-line source-file check passed. No emulator callbacks or native build targets changed in this iteration.
+
+FPS: No BizHawk/EmuHawk process is running and the configured MASTER V2 pointer is absent from this worktree; there is no active game session against which to measure FPS. The MASTER V2 integration remains in the host-side read-only viewer worker. The 30 FPS runtime acceptance criterion remains unverified; do not treat this as runtime performance approval.
+
+# 2026-09-27 — ROM Coverage redraw query cost
+
+TASK: Remove the per-cell linear scan across all canonical facts from the map
+redraw path while preserving the exact evidence-state colors and full facts in
+range details.
+
+ACCEPTANCE: Add a status-only range query that does not iterate canonical facts;
+use it only for map cell coloring. Keep detailed range summaries unchanged.
+Test parity across overlapping/unknown/conflicting statuses and measure query
+scaling with a large synthetic facts list. No emulator callbacks or capture
+path changes. Report game FPS as unverified unless an active game session is
+available for direct measurement.
+
+RESULT: Map-cell redraw now uses `state_for_range`, which counts status bytes directly and does not traverse canonical object/claim facts. Full `summarize` remains the tooltip/detail path. A parity test checks NONE, MIXED and CONFLICT precedence against full summaries and proves the redraw query does not iterate facts.
+
+PERFORMANCE CHECK: Synthetic 1 MiB ROM, 10,000 evidence facts, 1,024 map cells: the previous full-detail query path took 0.326 s; status-only redraw queries took 0.002 s (135.7x faster in this bounded microbenchmark). This measures viewer query work only, not GUI frame cadence or emulator FPS.
+
+VERIFICATION: Evidence/model/LIVE Python tests passed (27 tests total for this focused run); CTest coverage passed 3/3 in Debug and 3/3 in Release; Python compilation passed. No emulator callbacks, game runtime code, or capture path changed. A subsequent broader installation check found BizHawk and enabled a bounded 300-frame emulator-only probe at 60 FPS; concurrent map/Worker gameplay performance remains unverified.
+
+# 2026-09-27 — ROM range-to-runtime and extraction provenance
+
+TASK: Extend selected ROM range details through exact canonical object/claim,
+relation, evidence reference, runtime witness, derivation and emitted/exported
+artifact records.
+
+ACCEPTANCE: Join only by canonical object/claim/relation IDs, source hashes and
+explicit range/address intersections. Show bounded runtime-path edges only when
+backed by retained runtime evidence references; preserve gaps and alternatives.
+Show an extraction result only when a linked derivation contains explicit
+artifact identity/path and output hash. Keep the map and GUI read-only, build
+trace indexes in the existing background loader, and expand bounded details
+only on explicit byte selection, never during map redraw or hover. Never infer
+links by adjacency. Add synthetic end-to-end tests for a linked chain and for
+missing provenance. No emulator callbacks; report game FPS as unverified unless
+directly measured in an active game session.
+
+RESULT: Added a bounded, on-demand trace from selected ROM range through exact
+canonical objects/claims/relations and retained evidence references to runtime
+locators, derivation inputs, and explicit extraction output identity. Runtime
+edges require a linked runtime evidence reference; absent links are displayed
+as gaps. Trace indexing is part of the background evidence loader. Startup
+summary, redraw and hover use status-only summaries; only an explicit byte click
+opens the provenance dialog.
+
+VERIFICATION: Evidence/model/LIVE tests passed (27 Python tests); focused CTest
+passed 3/3 in Debug and 3/3 in Release; Python compilation, GUI `--help`,
+`git diff --check`, and the changed-source 500-line check passed. A 10,000-object
+synthetic runtime chain indexed in 0.144 s and a selected-range trace query took
+0.0001 s in the bounded local microbenchmark. This is query latency, not FPS.
+
+FPS: Directly launched the installed BizHawk against the locally supplied ROM
+whose SHA-256 matches the canonical identity; a fixed 300-frame reset/boot probe
+completed in 5 seconds (60 FPS by the probe's elapsed-time measurement). It ran
+without Worker hooks and without the map GUI, so it verifies the emulator-only
+baseline clears 30 FPS in this bounded scenario. Concurrent GUI/Worker gameplay
+FPS and sustained gameplay-scene performance remain unverified; this feature
+adds no emulator callbacks or per-frame work.
+
+LIMITATIONS: Extraction output paths/hashes are references from linked
+derivation records; the read-only viewer does not open or validate the referenced
+files. It does not synthesize assets or claim semantic ownership from runtime
+adjacency. Those remain separate proof and conversion steps.
+
+# 2026-09-27 — End-to-end Worker, ROM-link and map run
+
+TASK: Exercise the installed emulator through the live Worker → FLOW segment
+audit → RAM Cartographer → exact ROM range linker → saved session map chain.
+Capture live progress near one minute, investigate failures, and keep emulator
+frame time within the 30 FPS floor. Use the exact canonical ROM and isolate the
+emulator configuration/output from the existing install.
+
+ACCEPTANCE: Complete a 16-Worker, depth-20, 360-round run; audit every segment
+and linked ROM instruction; observe live progress/errors and FPS; preserve
+unknown fields from older FLOW rows; retain a deterministic session map and
+receipt. Report what the map proves and what remains outside this run.
+
+RESULT: The installed M12-pre-W1 Worker did not expose the optional per-worker
+detail API and emitted the exact legacy 32-byte FLOW row while the current
+adapter expected 48 bytes. Added an explicit `DETAIL API MISSING` UI state and a
+strict shared 32/48-byte codec that retains original row bytes, width-aware
+offsets and unavailable legacy fields without guessing them. The first 360
+round attempt hit a 240-second cap at 312 rounds; corrected the stale timeout
+diagnostic and reran with a sufficient cap. The completed run produced 5,760
+audited segments and a closed 4.60 GB session MAP-1 database, exact range export
+and PASS receipt.
+
+ONE-MINUTE OBSERVATION: The first readable live snapshot arrived at 75.8 seconds
+after launch and showed 1,344 audited segments (84 per Worker), 2,720,689 bytes
+of retained evidence, zero runtime errors and zero retention failures. The
+runtime's 120-frame samples were baseline p50/max 17/19 ms, recorder 17/18 ms,
+and Worker 17/17 ms. The completed run took 312.98 seconds over 18,583 frames
+(59.4 FPS overall); final sampled p50/max were baseline 17/21 ms, recorder
+17/19 ms and Worker 17/18 ms. EmuHawk exited after the run.
+
+MAP RESULT: All 16 Workers completed 360 captures each. Host validation accepted
+all 5,760 captures; invalid/dropped captures, stale acknowledgements, identity
+collisions, retention failures and unsupported endings were all zero. The ROM
+link audit reports 648,904 instruction occurrences, 627 unique exact ROM
+instruction ranges covering 2,326 unique bytes, 2,436,886 observed executed ROM
+bytes, and 5,760 terminal next-PC facts, with zero unresolved or unsupported
+decodes. This is run-specific executable evidence, not full-ROM ownership or a
+100% asset/file reconstruction. The generated session MAP-1 is saved after
+capture closes; the existing ROM property coverage GUI does not display this
+live session database while emulation is running.
+
+VERIFICATION: Direct Worker/link/cartographer/control/property-map Python
+checks passed, including the ROM-link regression and 14 Cartographer, 4 scaling
+audit, 17 worker-control, and 14 coverage-model tests. Focused CTest passed 7/7
+in Debug and 7/7 in Release, including the 500-line source limit. The first
+line-limit pass exposed `rom_coverage_gui.py` at 506 lines; receipt selection
+was moved into the evidence-presentation helper, leaving the coordinator at
+488 lines. Python compilation, GUI `--help`, `git diff --check` and both Debug
+and Release builds of the Worker and scaling test targets passed. The fixed
+installation copy had matching accepted ROM/core hashes; no copyrighted ROM or
+assets were added to the repository.
+
+# 2026-09-28 — Live session-map progress in ROM Coverage GUI
+
+TASK: Show the current live-forward Cartographer session making progress in the
+ROM Coverage GUI while the emulator is still running.
+
+ACCEPTANCE: Publish an atomic, bounded sidecar snapshot from already host-audited
+and Cartographer-admitted segments; show RUNNING/finalizing/closed/failed state,
+accepted-segment progress and MAP-1 node/edge counts in the GUI; require an exact
+ROM SHA match; do not present run-completion percent as ROM coverage or modify
+property masks, canonical generations, or SOURCE_OWNED. Keep GUI polling off the
+emulator callback/frame path. Test malformed/stale/mismatched snapshots and
+measure active-run frame performance against 30 FPS.
+
+RESULT: Added `live-session-progress.json`, atomically published on the
+host-side 4 Hz status poll using exact Cartographer segment-merge deltas. The
+ROM Coverage GUI can follow that sidecar via `--live-session-progress` or the
+Session Progress picker. It reports session lifecycle, accepted/configured
+segments, unique nodes/edges and the session's zero SOURCE_OWNED value, and
+rejects malformed, stale or wrong-ROM input. The MAP cell renderer was moved
+into `rom_coverage_gui_map.py`, keeping the GUI coordinator at 402 lines.
+
+RUNTIME CHECK: With the GUI already open, the 80-round test run completed and
+the sidecar advanced from 64/1,280 to 1,280/1,280, then CLOSED after the ROM-link
+audit. Final counts were 366 unique nodes and 397 edges; all 1,280 captures
+were validated with zero rejected segments. The GUI process remained responsive
+and displayed CLOSED against the exact matching ROM. The receipt is
+`C:\Temp\thor-rom-coverage-e2e-20260927\run-live-ui\live-forward-rom-link-2b-receipt.json`.
+
+PERFORMANCE: In the concurrent GUI/Worker run, the 120-frame Worker sample was
+p50 17 ms / max 20 ms (about 59 FPS median, 50 FPS at the slowest sampled
+Worker frame). The baseline sample had one 72 ms frame; its p50 was 17 ms. This
+isolated baseline spike exceeds the strict 33.3 ms frame-time floor, so this
+run does not establish that every single frame stays above 30 FPS. A separate
+successful 360-round run without the coverage GUI measured baseline/recorder/
+Worker p50 17 ms and maxima 21/19/18 ms. A later attempt was safely rejected
+before Worker capture because available RAM fell to 708 MB against the
+configured 4 GB reserve; no reserve override was used.
+
+VERIFICATION: Sidecar tests passed 4/4, covering atomic output, exact ROM
+identity, stale/malformed/failure states, existing-output refusal and invalid
+counts. Direct ROM-link, Cartographer, scaling audit, Worker control and ROM
+coverage model tests passed. Focused CTest passed 6/6 in Debug and 6/6 in
+Release, including the source-file line limit; Python compilation, GUI `--help`
+and `git diff --check` passed. No canonical map, property mask or ownership
+generation was modified.
+
+# 2026-09-28 — ROM Coverage and live session evidence integration — IN PROGRESS
+
+TASK / ACCEPTANCE: Bring the ROM Coverage and live-session progress worktree
+into the consolidated M12/M14 branch without changing its evidence worktree.
+Keep the GUI read-only, bind every overlay to exact ROM/generation identity,
+show live MAP-1 progress outside emulator callbacks, and preserve separate
+property, canonical-claim, runtime-occurrence and SOURCE_OWNED semantics.
+
+RESULT: Integrated the documented M14/MASTER V2 evidence reader, bounded
+range-to-runtime trace, read-only GUI views, LIVE checkpoint status and atomic
+session-progress sidecar. The sidecar reports audited segment/node/edge counts
+and lifecycle while checking exact ROM identity. No ownership, property mask,
+canonical generation or emulator callback is modified. Four focused regression
+suites plus ROM-link, Worker Control and Cartographer seam tests pass.
+
+PERFORMANCE EVIDENCE: The source worktree records a concurrent GUI/Worker run
+with Worker p50/max 17/20 ms; a baseline sample had one 72 ms frame. Therefore
+that run does not prove every frame stayed below 33.3 ms. A separate 300-frame
+emulator-only probe measured 60 FPS, but does not establish GUI+Worker gameplay
+performance. Full CTest/build validation for this combined source follows.

@@ -33,7 +33,7 @@ PLAN_NAMES = (
     "instruction_stack_bytes", "dynamic_bytes", "total_native_bytes",
 )
 STATE_NAMES = {0: "FREE", 1: "PENDING", 2: "CAPTURING", 3: "COMPLETE",
-               4: "ANALYZING", 5: "STARTING"}
+               4: "ANALYZING", 5: "STARTING", 6: "DETAIL API MISSING"}
 _DECIMAL = re.compile(r"[0-9]+\Z", re.ASCII)
 
 

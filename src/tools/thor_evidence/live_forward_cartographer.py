@@ -15,17 +15,18 @@ from itertools import groupby
 
 try:
     from .cartographer import Cartographer, canonical
+    from .flow_v1_record_codec import decode_flow_records
     from .rom_knowledge_map import runtime_occurrence_id
     from .runtime_occurrence_merge import occurrence_hash
 except ImportError:
     from cartographer import Cartographer, canonical
+    from flow_v1_record_codec import decode_flow_records
     from rom_knowledge_map import runtime_occurrence_id
     from runtime_occurrence_merge import occurrence_hash
 
 
 SESSION_SCHEMA = "oasis.m12.live-forward-session.v1"
 FLOW_PROFILE = "FLOW_V1"
-RECORD_SIZE = 48
 FLAG_INSTRUCTION = 1
 FLAG_FAULTED = 4
 FLAG_CONTROL_FLOW = 8
@@ -123,6 +124,7 @@ class LiveForwardCartographer:
         self.segments_rejected = 0
         self.duplicate_structural_edges = 0
         self.run_id: int | None = None
+        self.record_format: str | None = None
 
     def _meta(self, key: str, value: str) -> None:
         self.graph.db.execute("INSERT OR REPLACE INTO map_meta VALUES (?, ?)", (key, value))
@@ -168,8 +170,14 @@ class LiveForwardCartographer:
         if hashlib.sha256(records_blob).hexdigest() != records_hash:
             raise ValueError("FLOW_V1 segment record bytes changed after validation")
         record_count = int(values["record_count"])
-        if record_count != len(rows) or len(records_blob) != record_count * RECORD_SIZE or not rows:
+        raw_rows, semantic_rows, record_size, record_format = decode_flow_records(
+            records_blob, record_count)
+        if record_count != len(rows) or list(rows) != raw_rows:
             raise ValueError("FLOW_V1 segment record count or byte length mismatch")
+        if self.record_format is not None and self.record_format != record_format:
+            raise ValueError("FLOW_V1 record format changed within one Cartographer session")
+        self.record_format = record_format
+        self._meta("live_forward_record_format", record_format)
         if int(values["run_id"]) <= 0 or int(values["epoch"]) <= 0 or \
                 int(values["capture_id"]) <= 0 or int(values["generation"]) <= 0:
             raise ValueError("FLOW_V1 segment identity must be positive")
@@ -178,8 +186,8 @@ class LiveForwardCartographer:
         if rows[0][0] != values["entry_stream_sequence"] or \
                 rows[-1][0] + 1 != values["exit_stream_sequence"]:
             raise ValueError("FLOW_V1 segment bounds differ from ordered records")
-        if any(len(row) != 12 for row in rows) or any(
-                right[0] != left[0] + 1 for left, right in zip(rows, rows[1:])):
+        rows = semantic_rows
+        if any(right[0] != left[0] + 1 for left, right in zip(rows, rows[1:])):
             raise ValueError("FLOW_V1 segment records are not an ordered stream")
         run_id = int(values["run_id"])
         if self.run_id is not None and self.run_id != run_id:
@@ -189,6 +197,7 @@ class LiveForwardCartographer:
             self._meta("live_forward_run_id", str(run_id))
         scope = "rom:" + self.rom_sha256
         common = {"profile": FLOW_PROFILE, "run_id": run_id, "epoch": int(values["epoch"]),
+                  "record_format": record_format, "record_width_bytes": record_size,
                   "worker_id": int(values["worker_id"]), "capture_id": int(values["capture_id"]),
                   "generation": int(values["generation"]), "segment_sha256": segment_hash,
                   "session_id": self.session_id,
@@ -270,11 +279,15 @@ class LiveForwardCartographer:
             "entry_stream_sequence": int(values["entry_stream_sequence"]),
             "exit_stream_sequence": int(values["exit_stream_sequence"]),
             "record_count": int(values["record_count"])}
+        window["record_format"] = record_format
+        window["record_width_bytes"] = record_size
         def occurrence_window(row: tuple[int, ...]) -> dict[str, Any]:
             row_window = dict(window)
+            record_index = int(row[0]) - int(values["entry_stream_sequence"])
             if raw_offset is not None:
-                row_window["source_offset"] = raw_offset + (
-                    int(row[0]) - int(values["entry_stream_sequence"])) * RECORD_SIZE
+                row_window["source_offset"] = raw_offset + record_index * record_size
+            start = record_index * record_size
+            row_window["record_hex"] = records_blob[start:start + record_size].hex()
             return row_window
 
         for row in rows:
@@ -340,7 +353,8 @@ class LiveForwardCartographer:
         # canonical capture scope so the same sequence in overlapping windows
         # resolves to one occurrence while each window remains in provenance.
         capture_scope = f"native-run:{run_id}:epoch:{epoch}"
-        address_space = f"FLOW_DOMAIN_{domain}"
+        address_space = (f"FLOW_DOMAIN_{domain}" if domain is not None else
+                         "FLOW_DOMAIN_UNSPECIFIED_LEGACY32")
         occurrence_id = runtime_occurrence_id(capture_id=capture_scope,
             epoch=epoch, cpu=cpu, address_space=address_space,
             native_sequence=stream_seq, event_kind=event_kind,
@@ -349,12 +363,17 @@ class LiveForwardCartographer:
             "capture_ids": [int(window["capture_id"])], "run_id": run_id,
             "epoch": epoch, "cpu_id": cpu, "address_space": address_space,
             "native_sequence": int(stream_seq),
-            "instruction_sequence": int(instruction_seq), "master_time": int(master_time),
+            "instruction_sequence": int(instruction_seq),
+            "master_time": int(master_time) if master_time is not None else None,
             "event_kind": event_kind,
             "pc": int(pc), "address": int(address), "value": int(value),
-            "width": int(width), "flags": int(flags), "reserved": int(reserved),
+            "width": int(width) if width is not None else None,
+            "flags": int(flags), "reserved": int(reserved) if reserved is not None else None,
             "auxiliary": int(auxiliary),
-            "record_hex": struct.pack("<QQQIIIHBBHHI", *row).hex(),
+            "record_format": str(window["record_format"]),
+            "unavailable_fields": (["master_time", "width", "domain", "reserved"]
+                if window["record_format"] == "FLOW_V1_NATIVE32_LEGACY" else []),
+            "record_hex": str(window["record_hex"]),
             "instruction_node_id": instruction_nodes.get(int(instruction_seq)),
             "edge_id": edge_id, "target_node_id": target_node_id,
             "windows": [window]}

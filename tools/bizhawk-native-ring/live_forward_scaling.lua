@@ -105,7 +105,7 @@ publish_control = function()
     local stop = math.min(worker_count, worker_offset + 64)
     for worker = worker_offset, stop - 1 do
         local values
-        if pool_active == 1 then
+        if pool_active == 1 and type(genesis.live_forward_worker_status) == "function" then
             values = fields(genesis.live_forward_worker_status(worker))
         else
             values = {}
@@ -115,7 +115,8 @@ publish_control = function()
                 tonumber(values[3]) > 0 and values[3] or depth, values[4],
                 values[5], values[6], values[7]}, ",")
         else
-            rows[#rows + 1] = table.concat({worker, 5, 0, depth, 0, 0, 0, 0}, ",")
+            local state = pool_active == 1 and 6 or 5
+            rows[#rows + 1] = table.concat({worker, state, 0, depth, 0, 0, 0, 0}, ",")
         end
     end
     output("LIVE_CONTROL", table.concat(header, ",") .. "|" ..

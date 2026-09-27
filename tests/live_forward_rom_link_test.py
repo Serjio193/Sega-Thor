@@ -22,6 +22,7 @@ from live_forward_cartographer import LiveForwardCartographer
 
 
 PACK = independent_audit.RECORD
+LEGACY_PACK = struct.Struct("<QQIIHHI")
 
 
 def _require(value: bool, message: str) -> None:
@@ -47,6 +48,18 @@ def _segment(rows: list[tuple[int, ...]], worker: int = 0, capture: int = 1) -> 
         "record_count": len(rows), "configured_depth": 20,
         "segment_sha256": segment_sha, "records_sha256": records_sha}
     return segment, data
+
+
+def _legacy_segment(rows: list[tuple[int, ...]], worker: int = 0,
+                    capture: int = 1) -> tuple[dict, list[tuple[int, ...]], bytes]:
+    raw_rows = [(row[0], row[1], row[3], row[4], row[5], row[6], row[11])
+                for row in rows]
+    data = b"".join(LEGACY_PACK.pack(*row) for row in raw_rows)
+    segment, _ = _segment(rows, worker, capture)
+    segment["records_sha256"] = hashlib.sha256(data).hexdigest()
+    segment["segment_sha256"] = hashlib.sha256(
+        f"{worker}:{capture}:".encode() + data).hexdigest()
+    return segment, raw_rows, data
 
 
 def _graph(rows_by_worker: list[tuple[int, list[tuple[int, ...]]]]) -> tuple[LiveForwardCartographer,
@@ -143,6 +156,32 @@ def main() -> None:
                      audited["worker_generation_counts"] == {"0": 1, "1": 1} and
                      audited["audited_terminal_next_pc_facts"] == 2,
                      "independent saved-claim audit failed to reconcile all records and Workers")
+            legacy_session = LiveForwardCartographer(linkage.ROM_SHA, "d" * 64)
+            legacy_linker = linkage.LiveForwardRomLinker(linkage.ROM_SHA)
+            legacy_segment, legacy_rows, legacy_blob = _legacy_segment(rows_a[:1])
+            legacy_session.admit(legacy_segment, legacy_rows, legacy_blob)
+            legacy_linker.stage(legacy_segment, legacy_rows, legacy_blob)
+            legacy_result = legacy_linker.project(legacy_session.graph, rom_path,
+                decoder, root / "legacy")
+            _require(legacy_result["status"] == "PASS_FLOW_V1_EXACT_ROM_RANGE_LINKAGE",
+                     "legacy 32-byte Worker records failed exact ROM projection")
+            legacy_session_path = root / "legacy-session.sqlite"
+            legacy_session.save_closed(legacy_session_path, 1)
+            legacy_audit = independent_audit.audit(legacy_session_path, rom_path,
+                Path(legacy_result["flow_records_path"]),
+                Path(legacy_result["flow_segments_path"]),
+                Path(legacy_result["ranges_path"]), decoder, root / "legacy-audit.json")
+            _require(legacy_audit["status"] == "PASS_INDEPENDENT_ROM_RANGE_AUDIT" and
+                     legacy_audit["instruction_occurrences_inspected"] == 1,
+                     "independent audit did not reconcile exact 32-byte source records")
+            legacy_event = json.loads(legacy_session.graph.db.execute(
+                "SELECT event_json FROM live_forward_runtime_occurrence LIMIT 1").fetchone()[0])
+            _require(legacy_event["master_time"] is None and legacy_event["width"] is None and
+                     legacy_event["address_space"] == "FLOW_DOMAIN_UNSPECIFIED_LEGACY32" and
+                     legacy_event["unavailable_fields"] ==
+                     ["master_time", "width", "domain", "reserved"],
+                     "unavailable legacy fields were silently fabricated")
+            legacy_session.close()
             tampered_export = root / "tampered-ranges.json"
             tampered_payload = json.loads(export_path.read_text(encoding="utf-8"))
             tampered_payload["ranges"][0]["bytes_hex"] = "0000"
@@ -254,10 +293,10 @@ def main() -> None:
                 _require("STOP_ROM_IDENTITY_MISMATCH" in str(error), "ROM SHA mismatch stop code changed")
             else:
                 raise AssertionError("unexpected ROM SHA was accepted")
-            _require(linker._instruction_rows(PACK.pack(*rows_a[0]))[0][1][5] == 0x4E71,
+            _require(linker._instruction_rows(PACK.pack(*rows_a[0]), 1)[0][1][5] == 0x4E71,
                      "FLOW_V1 first opcode word was not read exactly")
             z80_instruction = (*rows_a[0][:7], 1, *rows_a[0][8:])
-            _require(linker._instruction_rows(PACK.pack(*z80_instruction)) == [],
+            _require(linker._instruction_rows(PACK.pack(*z80_instruction), 1) == [],
                      "Z80 instruction was promoted through the M68K ROM decoder")
             session.close()
     finally:

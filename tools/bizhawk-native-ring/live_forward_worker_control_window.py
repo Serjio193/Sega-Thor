@@ -27,7 +27,8 @@ PAGE_ROWS = 64
 ROW_HEIGHT = 26
 STATE_COLORS = {"FREE": "#78848b", "PENDING": "#9aabb4",
                 "CAPTURING": "#3398db", "COMPLETE": "#42b883",
-                "ANALYZING": "#e0aa3e", "STARTING": "#8b9ca5"}
+                "ANALYZING": "#e0aa3e", "STARTING": "#8b9ca5",
+                "DETAIL API MISSING": "#d18b47"}
 
 
 def _write_preview(path: Path, worker_text: str, depth_text: str, offset: int) -> None:

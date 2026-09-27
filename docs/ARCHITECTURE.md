@@ -990,6 +990,26 @@ against canonical ROM bytes and persisted MAP-1 identities, and verifies that
 repeated occurrences share one stable range identity. This is an
 executed-instruction interval layer, not a full ROM classification map.
 
+While the 2B driver is running, it atomically updates a small
+`live-session-progress.json` sidecar from segments admitted to the RAM
+Cartographer after host audit. The ROM Coverage GUI reads this sidecar
+read-only and displays admitted/configured segment progress plus unique MAP-1
+node/edge counts only when the sidecar ROM SHA matches the loaded checkpoint.
+This is progress toward the configured capture count, not ROM coverage. It does
+not read the changing MAP-1 database, classify property bytes, or update
+`SOURCE_OWNED`; final session serialization and independent ROM-link audit
+remain post-run checks. Publication is on the host status-poll path, not an
+emulator callback.
+
+The host-side `flow_v1_record_codec.py` accepts the current 48-byte FLOW_V1
+record and the exact legacy 32-byte Worker record emitted by the retained
+M12-pre-W1 install. Legacy rows keep the original bytes and leave fields that
+were never recorded explicitly unavailable; the domain remains unknown rather
+than inferred. Record width is fixed per session and included in segment
+offset/audit accounting. The live Worker UI also labels an absent optional
+per-worker detail API as `DETAIL API MISSING`; aggregate audited segment counts
+remain available, but per-worker instruction progress is not claimed.
+
 ## M12 runtime control provenance 2C — Phase 0 stop
 
 Phase 0 examined the saved, independently audited 2B FLOW_V1 runtime evidence
@@ -1093,3 +1113,17 @@ replay without raw, path and occurrence identity equality, unresolved identity
 retention, branch witnesses and explicit capture gaps. Unknown formats fail
 closed. `--audit` writes an inventory; `--mark-delete-safe` writes a separate
 seal decision. No deletion operation exists in this milestone.
+
+## ROM coverage and canonical evidence view
+
+The developer-only ROM Coverage GUI reads property checkpoints and prefers the promoted MASTER V2 startup pointer, using the M14 Archivist pointer only when no MASTER pointer exists. `rom_coverage_model.py` keeps property masks and exact byte ranges; `rom_coverage_evidence.py` verifies the selected authority's pointer and ROM identity, then supplies a separate evidence-status index. `rom_coverage_trace.py` joins selected ranges to canonical objects, claims, explicitly linked runtime relations and witnesses, source artifacts, derivations, and emission records by stable IDs and exact interval overlap. A derivation is shown as an extraction output reference only when it records both a path and SHA-256; the GUI does not claim that the file exists or validate it. The GUI uses property classes as cell fills and evidence status as a separate outline/detail layer. Trace indexes load in the existing background worker; detailed trace expansion occurs only after byte selection, not during redraw or hover. In LIVE mode, pointer polling and validation run outside the Tk event loop; only completed snapshots are applied to the view. The viewer is read-only and does not promote classifications. See ADR “ROM Coverage and canonical evidence map integration” in `docs/DECISIONS.md`.
+
+The LIVE checkpoint watcher reports the last successful checkpoint read, whether a refresh is pending or failed, and the accumulated property-byte increase observed by this GUI session. These are checkpoint deltas, not proof that a Worker is currently capturing or processing. Refresh reads remain on the background executor; no code is added to emulator callbacks or frame advancement.
+
+## Global ROM evidence scheme
+
+The existing layers and their boundaries are summarized in
+`docs/reports/THOR_ROM_EVIDENCE_GLOBAL_SCHEME.md`: per-byte properties,
+Worker/session occurrences, canonical range/object claims, Carver gap ranking,
+and the read-only GUI remain distinct inputs linked by exact ROM and generation
+identity.
