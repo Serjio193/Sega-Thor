@@ -14675,7 +14675,9 @@ GIT_DIR/GIT_WORK_TREE because this Windows worktree's `.git` pointer contains
 a Windows absolute path. The governed source limit passed for 973 files, and
 `git diff --check` passed. No live BizHawk run or 30-FPS measurement was made.
 
-The fetched `origin/main` gained a separate non-commercial license update
-during this task; that commit must be included before publication. The old
+The fetched `origin/main` gained a non-commercial license update during this
+task; that commit is merged into the consolidated line. The parallel license
+branch contains identical tree content and will be joined as history. The old
 M11.19 experiment branch contains only a stale `TASK.md` and no implementation;
-it is classified as obsolete. Branch publication and cleanup remain pending.
+its history will be joined without making that stale task current. Publication
+and removal of merged local/remote feature refs remain pending.

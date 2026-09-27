@@ -3581,11 +3581,13 @@ Short-lived task branches may be created for isolated work, but after review
 their accepted changes merge into `main` and the task branch is removed. The
 evidence branch carries only future ROM coverage capture, proof, and map
 publication work; implementation changes return to `main` through review.
-Keep remote references until their corresponding mainline state is published
-and verified.
+Publish `main` and the evidence branch before deleting merged remote feature
+refs. Merge stale task-branch history without reactivating superseded task
+instructions when that history contains no accepted implementation.
 
 **Consequences:** Existing local M12/M14 implementation and evidence histories
-are reconciled before obsolete local branch references are removed. Existing
+are reconciled before obsolete branch references are removed. Existing
 evidence artifacts and dirty worktree contents remain preserved during
-consolidation. Remote branch references are not removed as part of local
-consolidation.
+consolidation. Only `main` and `evidence/rom-coverage-map` remain as persistent
+local and remote branches after publication; unrelated unmerged branches are
+kept for separate review.
