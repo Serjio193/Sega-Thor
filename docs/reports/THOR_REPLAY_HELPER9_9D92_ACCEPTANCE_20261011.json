@@ -1,0 +1,124 @@
+{
+  "schema": "oasis.m68k.9d92.path-specific-acceptance.v1",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "routine": {
+    "entry": "0x009D92",
+    "end_exclusive": "0x009DB4",
+    "byte_length": 34,
+    "instruction_count": 12,
+    "rts_exits": [
+      "0x009DB2"
+    ],
+    "nested_calls": 0,
+    "indirect_control": "NO",
+    "stack": "RTS only; no internal scratch"
+  },
+  "caller_census": {
+    "static_direct_bsrw_callers": [
+      "0x009226",
+      "0x009812"
+    ],
+    "scan_method": "ROM-wide aligned BSR.W opcode/target scan; both call instructions independently decoded",
+    "indirect_callers": "NOT_CLOSED"
+  },
+  "path_scope": {
+    "source_pc": "0x009812",
+    "transfer_kind": "BSR.W",
+    "target_pc": "0x009D92",
+    "return_pc": "0x009816",
+    "next_instruction": "BSR.W 0x009D4E",
+    "excluded_direct_caller": "0x009226"
+  },
+  "natural_corpus": {
+    "count": 24,
+    "capture_file": "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl",
+    "capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
+    "distinct_coordinate_pairs": 12,
+    "distinct_D0_inputs": 3,
+    "distinct_D0_outputs": 3,
+    "distinct_D3_outputs": 12,
+    "distinct_D7_outputs": 12,
+    "control_paths": 1,
+    "inputs_observed": "D0.low; D2.low; word [A6+0x46]=6; word [A0+6]=64",
+    "natural_ram_writes": 0,
+    "all_24_native_model_match": true
+  },
+  "abi": {
+    "INPUT": [
+      "D0.low coordinate",
+      "D2.low axis value",
+      "word [A6+0x46] offset",
+      "word [A0+6] dimension units",
+      "byte [A6+0x41] initial value for conditional OR"
+    ],
+    "OUTPUT": [
+      "D0.low clamped coordinate",
+      "D3.low maximum",
+      "D7.low coordinate sum",
+      "CCR.X borrow from (dimension_units*8-1)-coordinate_sum",
+      "conditional [A6+0x41] |= 0x48"
+    ],
+    "PRESERVED": [
+      "all other D/A registers; upper halves of D0/D3/D7; A7 restored by RTS"
+    ],
+    "INTERNAL": [
+      "NZVC used for local BMI/BLS/BNE logic; caller does not consume CCR before next BSR"
+    ],
+    "UNKNOWN": [
+      "caller path from 0x009226; other computed/indirect entry paths"
+    ]
+  },
+  "caller_liveness": {
+    "D0": "LIVE; passed to 0x009D4E at return PC 0x009816",
+    "D3": "overwritten by 0x009D4E before caller-path read",
+    "D7": "overwritten by 0x009D4E before caller-path read",
+    "CCR": "dead; next operation is BSR.W, and 0x009D4E overwrites condition state before any condition consumer",
+    "A7": "RTS restores stack",
+    "RAM": "conditional byte [A6+0x41] effect modeled; no natural calls write it"
+  },
+  "branch_coverage": {
+    "natural": [
+      "BLS taken (coordinate <= maximum)"
+    ],
+    "synthetic": [
+      "BLS taken",
+      "BLS not taken + BNE (nonzero clamp)",
+      "BLS not taken + BEQ (zero clamp and flag write)",
+      "16-bit wrapped limit with X borrow"
+    ]
+  },
+  "native_differential": {
+    "natural_captured_vectors": "24/24",
+    "debug_rom_oracle_cases": 4,
+    "debug_all_match": true,
+    "release_rom_oracle_cases": 4,
+    "release_all_match": true,
+    "debug_receipt_sha256": "4aa173a82059590d6455bacfc7da8b0ffbfd7af8dfa3013a430d239247ab900a",
+    "release_receipt_sha256": "4aa173a82059590d6455bacfc7da8b0ffbfd7af8dfa3013a430d239247ab900a",
+    "debug_unit_test": "PASS",
+    "release_unit_test": "PASS",
+    "linux_unit_test": "PASS",
+    "linux_runner_compiled": true,
+    "linux_rom_oracle": "NOT_RUN (configured capture core is Windows-only)"
+  },
+  "replacement_status": {
+    "CPP_REPLACEMENT_CANDIDATE": "YES",
+    "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC": "YES",
+    "PATH_SCOPE": "direct BSR.W caller 0x009812",
+    "CPP_REPLACEMENT_VERIFIED_GLOBAL": "NO",
+    "RUNTIME_REPLACEMENT_ACTIVE": "NO"
+  },
+  "authority_deltas": {
+    "RUNTIME_TOTAL_PROVEN": 0,
+    "STRUCTURAL_PROVEN": 0,
+    "SOURCE_OWNED": 0,
+    "canonical_sqlite": "UNCHANGED",
+    "new_bytes_classified": 0
+  },
+  "current_totals": {
+    "ROM": 3145728,
+    "RUNTIME_TOTAL_PROVEN": 440425,
+    "STRUCTURAL_PROVEN": 1266667,
+    "SOURCE_OWNED": 1487672
+  }
+}

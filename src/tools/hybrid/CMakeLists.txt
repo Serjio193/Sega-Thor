@@ -23,6 +23,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp runner_support.cpp
     coordinate_bound_model.cpp
     negative_bound_model.cpp
+    positive_bound_model.cpp
     caller_attribution.cpp caller_continuation.cpp a5_lifetime_observer.cpp callee_62ae0_observer.cpp callee_61934_observer.cpp callee_623ac_observer.cpp a5_lifetime_runtime.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
@@ -45,6 +46,9 @@ add_test(NAME oasis_hybrid_coordinate_bound COMMAND oasis_hybrid_coordinate_boun
 add_executable(oasis_hybrid_negative_bound_test ${PROJECT_SOURCE_DIR}/tests/negative_bound_model_test.cpp)
 target_link_libraries(oasis_hybrid_negative_bound_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_negative_bound COMMAND oasis_hybrid_negative_bound_test)
+add_executable(oasis_hybrid_positive_bound_test ${PROJECT_SOURCE_DIR}/tests/positive_bound_model_test.cpp)
+target_link_libraries(oasis_hybrid_positive_bound_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_positive_bound COMMAND oasis_hybrid_positive_bound_test)
 add_executable(oasis_hybrid_replacement_test ${PROJECT_SOURCE_DIR}/tests/hybrid_replacement_test.cpp)
 target_link_libraries(oasis_hybrid_replacement_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_replacement COMMAND oasis_hybrid_replacement_test)
@@ -130,6 +134,7 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         coordinate_bound_oracle.cpp
         coordinate_bound_model.cpp
         negative_bound_model.cpp
+        positive_bound_model.cpp
         grid_query_micro_oracle.cpp)
     target_include_directories(oasis_coordinate_bound_oracle PRIVATE
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)

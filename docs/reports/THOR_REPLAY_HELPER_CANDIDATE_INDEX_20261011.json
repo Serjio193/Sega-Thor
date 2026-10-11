@@ -153,10 +153,18 @@
     {
       "path": "build/negative-bound-9db4-release.json",
       "sha256": "78e37b4841b3fc0440f081919a0001742f4a6bca19d0ae665273540ebd23b95e"
+    },
+    {
+      "path": "docs/reports/THOR_REPLAY_HELPER9_9D92_ACCEPTANCE_20261011.json",
+      "sha256": "eb3b52b430a816f6a0dbf49acbe17adf073f593daf4047987effce657b910fed"
+    },
+    {
+      "path": "docs/reports/THOR_NATIVE_ISLAND_DESIGN_8_HELPERS_20261011.json",
+      "sha256": "2393866cbda9402a383f0900fa06027aef2c665e489711014ea5dc3b8b27d050"
     }
   ],
-  "index_size": 13,
-  "strong_intersection_count": 2,
+  "index_size": 15,
+  "strong_intersection_count": 3,
   "strong_intersection_definition": [
     "not mission-excluded or already verified",
     "exact end, callable direct callers, runtime entry PC observed",
@@ -1027,21 +1035,167 @@
         "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl"
       ],
       "EXACT_BOUNDARY_STATUS": "EXACT [0x009DB4,0x009DD6)"
+    },
+    {
+      "ENTRY_PC": "0x00A7E6",
+      "END_PC": "0x00A87A",
+      "INSTRUCTION_COUNT": 31,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x00A336",
+        "0x00A694 (raw BSR.W opcode/target; surrounding decode unresolved)"
+      ],
+      "CALL_KINDS": [
+        "BSR.W"
+      ],
+      "RUNTIME_ENTRY_HITS": 24,
+      "RUNTIME_INTERNAL_HITS": 48,
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "0x00a7e6#1",
+        "0x00a7e6#2",
+        "0x00a7e6#3",
+        "0x00a7e6#4",
+        "0x00a7e6#5",
+        "0x00a7e6#6",
+        "0x00a7e6#7",
+        "0x00a7e6#8",
+        "0x00a7e6#9",
+        "0x00a7e6#10",
+        "0x00a7e6#11",
+        "0x00a7e6#12",
+        "0x00a7e6#13",
+        "0x00a7e6#14",
+        "0x00a7e6#15",
+        "0x00a7e6#16",
+        "0x00a7e6#17",
+        "0x00a7e6#18",
+        "0x00a7e6#19",
+        "0x00a7e6#20",
+        "0x00a7e6#21",
+        "0x00a7e6#22",
+        "0x00a7e6#23",
+        "0x00a7e6#24"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "RTS only on observed branch; whole-body stack contract not closed",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 3,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "FF1656",
+        "FF188C",
+        "FF188A",
+        "FF17C0",
+        "FF1892",
+        "A5 write cursor"
+      ],
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED; all natural captures take early BNE to RTS",
+      "KNOWN_NATIVE_MODEL": "NONE",
+      "CURRENT_REPLACEMENT_STATUS": "REJECTED_FOR_HELPER_SELECTION",
+      "ORACLE_QUALITY": "24 captures of one early exit; body behavior not captured",
+      "REPLACEMENT_SCORE": -20,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "YES",
+      "NATURAL_CALL_COUNT": 24,
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "NOT_RUN",
+      "FINAL_REPLACEMENT_STATUS": "NOT_VERIFIED",
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNRESOLVED",
+      "SELECTION_EXCLUSION": "stateful setup routine with three nested calls; observed branch is degenerate",
+      "EVIDENCE_SOURCES": [
+        "build/helper9-a7e6.json",
+        "docs/reports/THOR_REPLAY_HELPER9_9D92_20261011.md"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x009D92",
+      "END_PC": "0x009DB4",
+      "INSTRUCTION_COUNT": 12,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x009226",
+        "0x009812"
+      ],
+      "CALL_KINDS": [
+        "BSR.W"
+      ],
+      "RUNTIME_ENTRY_HITS": 24,
+      "RUNTIME_INTERNAL_HITS": 168,
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "0x009d92#1",
+        "0x009d92#2",
+        "0x009d92#3",
+        "0x009d92#4",
+        "0x009d92#5",
+        "0x009d92#6",
+        "0x009d92#7",
+        "0x009d92#8",
+        "0x009d92#9",
+        "0x009d92#10",
+        "0x009d92#11",
+        "0x009d92#12",
+        "0x009d92#13",
+        "0x009d92#14",
+        "0x009d92#15",
+        "0x009d92#16",
+        "0x009d92#17",
+        "0x009d92#18",
+        "0x009d92#19",
+        "0x009d92#20",
+        "0x009d92#21",
+        "0x009d92#22",
+        "0x009d92#23",
+        "0x009d92#24"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "RTS only; no internal scratch",
+      "RAM_WRITE_COUNT": 0,
+      "ROM_READ_COUNT": 0,
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "word [A6+0x46]",
+        "word [A0+6]",
+        "conditional byte [A6+0x41]"
+      ],
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC for 0x009812; D0 live, D3/D7 overwritten, CCR dead",
+      "KNOWN_NATIVE_MODEL": "positive 16-bit bound helper",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "24 natural native matches; 4 canonical-ROM synthetic cases in Debug/Release",
+      "REPLACEMENT_SCORE": 58,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "YES",
+      "NATURAL_CALL_COUNT": 24,
+      "STACK_OBSERVABILITY": "NO_INTERNAL_STACK_TRAFFIC",
+      "NATIVE_DIFFERENTIAL_STATUS": "NATURAL 24/24; ROM synthetic 4/4 Debug and Release",
+      "FINAL_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "PATH_SPECIFIC_CALLER_LIVENESS": {
+        "caller_pc": "0x009812",
+        "transfer": "BSR.W",
+        "return_pc": "0x009816",
+        "D0": "consumed by following 0x009D4E call",
+        "D3_D7": "overwritten by 0x009D4E before caller-path read",
+        "CCR": "no conditional read before the next call",
+        "A7": "RTS restores stack",
+        "RAM": "conditional [A6+0x41] OR modeled"
+      },
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "docs/reports/THOR_REPLAY_HELPER9_9D92_ACCEPTANCE_20261011.json",
+        "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl"
+      ]
     }
   ],
   "top_10": [
-    {
-      "entry": "0x00a7e6",
-      "score": 47.0,
-      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
-      "excluded": null
-    },
-    {
-      "entry": "0x009d92",
-      "score": 37.3,
-      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 12 distinct output(s).",
-      "excluded": null
-    },
     {
       "entry": "0x0099d6",
       "score": 34.8,
@@ -1089,11 +1243,23 @@
       "score": 26.1,
       "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
       "excluded": null
+    },
+    {
+      "entry": "0x00c998",
+      "score": 26.1,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x01b102",
+      "score": 26.1,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
+      "excluded": null
     }
   ],
   "selected_helper": {
-    "entry": "0x009DB4",
-    "caller_scope": "0x0092CC",
+    "entry": "0x009D92",
+    "caller_scope": "0x009812",
     "status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC"
   },
   "authority_changes": 0,
@@ -1104,17 +1270,17 @@
     "SOURCE_OWNED": 1487672
   },
   "latest_attempt": {
-    "mission": "helper-8 replay-census top-ranked bounded verification",
-    "selected_target": "0x009DB4",
-    "path_scope": "0x0092CC BSR.W -> 0x009DB4 -> RTS -> 0x0092D0",
+    "mission": "helper #9 reranked after A7E6 bounded rejection; path-specific 9D92 verification",
+    "selected_target": "0x009D92",
+    "path_scope": "0x009812 BSR.W -> 0x009D92 -> RTS -> 0x009816",
     "natural_calls": 24,
     "natural_path_count": 1,
-    "debug_synthetic_cases": 5,
-    "release_synthetic_cases": 5,
+    "debug_synthetic_cases": 4,
+    "release_synthetic_cases": 4,
     "final_status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
     "global_status": "NO",
     "runtime_replacement_active": "NO",
-    "fallback_candidate": "NOT_REQUIRED; ranked candidates remain available",
+    "fallback_candidate": "0x0099d6",
     "new_verified_helpers": 1,
     "new_bytes_classified": 0,
     "authority_deltas": 0,
@@ -1124,9 +1290,9 @@
       "STRUCTURAL_PROVEN": 1266667,
       "SOURCE_OWNED": 1487672
     },
-    "next_priority": "0x00a7e6",
+    "acceptance_receipt_sha256": "dc338b21e1c6594cfe018e013875df8f3d9c05cbdecf1f6d2bd3745a4056f561",
     "natural_capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
-    "acceptance_receipt_sha256": "9a1cdbbf42d6c0c623ec383b14eda24e55a29595e69c442b5a4ae1b1dc26f770"
+    "native_island_design": "DESIGN_ONLY; NOT_ACTIVATED"
   },
   "replay_rerank": {
     "method": "replay full-call corpus v1; rank uses caller/path count, changed-output diversity, median executed instructions, write count, memory-read address cardinality and exact-boundary evidence; unknown metadata remains UNKNOWN",
@@ -1144,52 +1310,11 @@
       "0x008dd4": "FROZEN_DEFAULT_ONLY_PATH",
       "0x00a342": "FROZEN_CAPTURE_QUALITY_BLOCKER",
       "0x00a196": "EXCLUDED_CALLBACK_STATEFUL_PATH",
-      "0x009db4": "ALREADY_VERIFIED_PATH_SPECIFIC"
+      "0x009db4": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x00a7e6": "REJECTED_STATEFUL_SETUP_ROUTINE",
+      "0x009d92": "ALREADY_VERIFIED_PATH_SPECIFIC"
     },
     "top10": [
-      {
-        "ENTRY_PC": "0x00a7e6",
-        "NATURAL_FULL_CALLS": 24,
-        "OBSERVED_DIRECT_CALLERS": {
-          "0x00a336": 24
-        },
-        "OBSERVED_PATH_COUNT": 1,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
-        "CHANGED_REGISTERS": [
-          "D0"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 24,
-        "DISTINCT_ENTRY_STATES": 16,
-        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
-        "ORDERED_RAM_WRITE_EVENTS": 0,
-        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
-        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
-        "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 47.0
-      },
-      {
-        "ENTRY_PC": "0x009d92",
-        "NATURAL_FULL_CALLS": 24,
-        "OBSERVED_DIRECT_CALLERS": {
-          "0x009812": 24
-        },
-        "OBSERVED_PATH_COUNT": 1,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
-        "CHANGED_REGISTERS": [
-          "D3",
-          "D7"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 12,
-        "DISTINCT_ENTRY_STATES": 24,
-        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
-        "ORDERED_RAM_WRITE_EVENTS": 0,
-        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
-        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
-        "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 37.3
-      },
       {
         "ENTRY_PC": "0x0099d6",
         "NATURAL_FULL_CALLS": 24,
@@ -1360,52 +1485,47 @@
         "EXISTING_STACK_STATUS": "UNKNOWN",
         "PRIOR_DISPOSITION": "UNASSESSED",
         "RANK_SCORE": 26.1
-      }
-    ],
-    "all_remaining_targets": [
+      },
       {
-        "ENTRY_PC": "0x00a7e6",
+        "ENTRY_PC": "0x00c998",
         "NATURAL_FULL_CALLS": 24,
         "OBSERVED_DIRECT_CALLERS": {
-          "0x00a336": 24
+          "0x008b52": 24
         },
         "OBSERVED_PATH_COUNT": 1,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
-        "CHANGED_REGISTERS": [
-          "D0"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 24,
-        "DISTINCT_ENTRY_STATES": 16,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 14,
         "DISTINCT_MEMORY_READ_ADDRESSES": 1,
         "ORDERED_RAM_WRITE_EVENTS": 0,
         "EXACT_BOUNDARY_STATUS": "UNKNOWN",
         "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
         "EXISTING_STACK_STATUS": "UNKNOWN",
         "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 47.0
+        "RANK_SCORE": 26.1
       },
       {
-        "ENTRY_PC": "0x009d92",
+        "ENTRY_PC": "0x01b102",
         "NATURAL_FULL_CALLS": 24,
         "OBSERVED_DIRECT_CALLERS": {
-          "0x009812": 24
+          "0x01c4e2": 24
         },
         "OBSERVED_PATH_COUNT": 1,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
-        "CHANGED_REGISTERS": [
-          "D3",
-          "D7"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 12,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
         "DISTINCT_ENTRY_STATES": 24,
-        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
         "ORDERED_RAM_WRITE_EVENTS": 0,
         "EXACT_BOUNDARY_STATUS": "UNKNOWN",
         "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
         "EXISTING_STACK_STATUS": "UNKNOWN",
         "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 37.3
-      },
+        "RANK_SCORE": 26.1
+      }
+    ],
+    "all_remaining_targets": [
       {
         "ENTRY_PC": "0x0099d6",
         "NATURAL_FULL_CALLS": 24,
@@ -4894,6 +5014,6 @@
       }
     ],
     "all_replay_targets_count": 165,
-    "remaining_candidate_count": 156
+    "remaining_candidate_count": 154
   }
 }

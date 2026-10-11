@@ -1651,3 +1651,8 @@ under `build/thor-evidence/`.
 - `docs/reports/THOR_REPLAY_HELPER8_9DB4_20261011.md` — candidate ranking, path-specific ABI/liveness, oracle results, and evidence limits.
 - `docs/reports/THOR_REPLAY_HELPER8_9DB4_ACCEPTANCE_20261011.json` — machine-readable acceptance receipt.
 - `docs/reports/THOR_REPLAY_HELPER_CANDIDATE_INDEX_20261011.json` — updated replay helper index and remaining candidate ranking.
+
+- `src/tools/hybrid/positive_bound_model.hpp/.cpp` — typed 16-bit bound model for the path-specific M68K helper at `0x9D92`.
+- `tests/positive_bound_model_test.cpp` — 24 replay vectors and clamp/flag/wrap checks for `0x9D92`.
+- `docs/reports/THOR_REPLAY_HELPER9_9D92_20261011.md` — `0xA7E6` bounded rejection and `0x9D92` verification evidence.
+- `docs/reports/THOR_REPLAY_HELPER9_9D92_ACCEPTANCE_20261011.json` — machine-readable path-specific acceptance receipt.

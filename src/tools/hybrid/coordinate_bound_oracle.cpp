@@ -4,6 +4,7 @@
 #include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/grid_query_micro_oracle.hpp"
 #include "tools/hybrid/negative_bound_model.hpp"
+#include "tools/hybrid/positive_bound_model.hpp"
 
 #include <libretro.h>
 
@@ -187,6 +188,48 @@ bool matches_negative(const NegativeCase& scenario, const Observation& observati
         pass = pass && observation.rts.a[i] == observation.entry.a[i];
     return pass;
 }
+
+struct PositiveCase {
+    const char* name;
+    unsigned coordinate, axis_value, record_offset, dimension;
+    std::uint8_t flags;
+};
+
+bool matches_positive(const PositiveCase& scenario, const Observation& observation) {
+    const auto model = oasis::hybrid::apply_positive_bound({
+        static_cast<std::uint16_t>(scenario.coordinate),
+        static_cast<std::uint16_t>(scenario.axis_value),
+        static_cast<std::uint16_t>(scenario.record_offset),
+        static_cast<std::uint16_t>(scenario.dimension), scenario.flags});
+    const auto low = [](unsigned value) { return value & 0xFFFFU; };
+    const int actual_flag = peek(object + 0x41U);
+    bool pass = observation.complete && observation.rts.pc == 0x9DB2U &&
+        low(observation.rts.d[0]) == model.coordinate &&
+        low(observation.rts.d[3]) == model.maximum &&
+        low(observation.rts.d[7]) == model.coordinate_sum &&
+        actual_flag >= 0 && static_cast<unsigned>(actual_flag) == model.flags &&
+        (observation.rts.d[0] & 0xFFFF0000U) ==
+            (observation.entry.d[0] & 0xFFFF0000U) &&
+        (observation.rts.d[3] & 0xFFFF0000U) ==
+            (observation.entry.d[3] & 0xFFFF0000U) &&
+        (observation.rts.d[7] & 0xFFFF0000U) ==
+            (observation.entry.d[7] & 0xFFFF0000U) &&
+        observation.rts.a[7] == observation.entry.a[7] &&
+        ((observation.rts.sr & 0x10U) != 0U) == model.extend_flag &&
+        observation.writes.size() == (model.flags_written ? 1U : 0U);
+    if (model.flags_written && !observation.writes.empty()) {
+        const auto& write = observation.writes.front();
+        pass = pass && write[1] == object + 0x41U && write[2] == 1U &&
+            (write[3] & 0xFFU) == model.flags;
+    }
+    for (unsigned i = 0; i < 8; ++i) {
+        if (i == 0U || i == 3U || i == 7U) continue;
+        pass = pass && observation.rts.d[i] == observation.entry.d[i];
+    }
+    for (unsigned i = 0; i < 7; ++i)
+        pass = pass && observation.rts.a[i] == observation.entry.a[i];
+    return pass;
+}
 } // namespace
 
 int main(int argc, char** argv) {
@@ -294,10 +337,46 @@ int main(int argc, char** argv) {
                 throw std::runtime_error(std::string("ROM/native 0x9DB4 mismatch: ") +
                                          scenario.name);
         }
+        entry_pc = 0x9D92U;
+        rts_pcs = {0x9DB2U};
+        constexpr std::array positive_cases{
+            PositiveCase{"in_range", 10U, 20U, 2U, 64U, 0x05U},
+            PositiveCase{"clamp_nonzero", 500U, 20U, 2U, 64U, 0x05U},
+            PositiveCase{"clamp_zero", 1U, 7U, 0U, 1U, 0x21U},
+            PositiveCase{"wrapped_limit", 0xFFFFU, 0x8000U, 0U, 1U, 0x10U},
+        };
+        for (const auto& scenario : positive_cases) {
+            write_value(object + 0x46U, 2, scenario.record_offset);
+            write_value(object + 0x41U, 1, scenario.flags);
+            write_value(descriptor + 6U, 2, scenario.dimension);
+            write_value(stack, 4, sentinel_pc);
+            for (unsigned i = 0; i < 8; ++i) {
+                set_reg(i, 0xA0B00000U + i * 0x010101U);
+                set_reg(8U + i, 0xFF1000U + i * 0x100U);
+            }
+            set_reg(0, 0x11220000U | scenario.coordinate);
+            set_reg(2, 0x33440000U | scenario.axis_value);
+            set_reg(3, 0x55667788U);
+            set_reg(7, 0x99AABBCCU);
+            set_reg(8, descriptor);
+            set_reg(14, object);
+            set_reg(15, stack);
+            set_reg(16, entry_pc);
+            set_reg(17, 0x2000U);
+            const auto prior = observations.size();
+            run_cpu(10000U);
+            if (active != nullptr || observations.size() != prior + 1U ||
+                !observations.back().complete)
+                throw std::runtime_error(std::string("synthetic 0x9D92 execution failed: ") +
+                                         scenario.name);
+            if (!matches_positive(scenario, observations.back()))
+                throw std::runtime_error(std::string("ROM/native 0x9D92 mismatch: ") +
+                                         scenario.name);
+        }
         install(nullptr);
         std::ofstream out(output);
         out.exceptions(std::ios::failbit | std::ios::badbit);
-        out << "{\"schema\":\"oasis.m68k.9d4e-9db4-native-oracle.v2\",\"rom_sha256\":\""
+        out << "{\"schema\":\"oasis.m68k.coordinate-bound-native-oracle.v3\",\"rom_sha256\":\""
             << rom_sha << "\",\"routine_range\":\"[0x009D4E,0x009D70)\",\"caller\":\"0x00909E BSR.W\","
             << "\"harness_validated\":true,\"rts_micro_oracle\":\"PASS\",\"case_count\":" << observations.size()
             << ",\"cases\":[";
@@ -318,7 +397,18 @@ int main(int argc, char** argv) {
                 << "\",\"matched\":true,\"rts_pc\":" << observation.rts.pc
                 << ",\"write_count\":" << observation.writes.size() << '}';
         }
-        out << "],\"all_match\":true},\"all_match\":true,\"runtime_replacement_active\":false,"
+        out << "],\"all_match\":true},\"tertiary_routine\":{\"entry\":\"0x009D92\","
+            << "\"range\":\"[0x009D92,0x009DB4)\",\"caller\":\"0x009812 BSR.W\","
+            << "\"case_count\":" << positive_cases.size() << ",\"cases\":[";
+        for (std::size_t i = 0; i < positive_cases.size(); ++i) {
+            if (i != 0U) out << ',';
+            const auto& observation = observations[cases.size() + negative_cases.size() + i];
+            out << "{\"id\":\"" << positive_cases[i].name
+                << "\",\"matched\":true,\"rts_pc\":" << observation.rts.pc
+                << ",\"write_count\":" << observation.writes.size() << '}';
+        }
+        out
+            << ",\"all_match\":true},\"all_match\":true,\"runtime_replacement_active\":false,"
             << "\"authority_deltas\":0}\n";
         lib.get<void(*)()>("retro_unload_game")();
         lib.get<void(*)()>("retro_deinit")();
