@@ -1,0 +1,413 @@
+{
+  "schema": "oasis.m68k.9db4.path-specific-acceptance.v1",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "routine": {
+    "entry": "0x009DB4",
+    "end_exclusive": "0x009DD6",
+    "byte_length": 34,
+    "instruction_count": 11,
+    "rts_exits": [
+      "0x009DCA",
+      "0x009DD4"
+    ],
+    "nested_calls": 0,
+    "indirect_control": "NO",
+    "stack": "RTS only; no internal scratch"
+  },
+  "path_scope": {
+    "source_pc": "0x0092CC",
+    "transfer_kind": "BSR.W",
+    "transfer_opcode": "0x6100 plus displacement",
+    "target_pc": "0x009DB4",
+    "return_pc": "0x0092D0",
+    "observed_direct_caller_count": 1,
+    "global_caller_exhaustiveness": "UNRESOLVED"
+  },
+  "natural_corpus": {
+    "count": 24,
+    "capture_file": "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl",
+    "capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
+    "distinct_coordinate_pairs": 24,
+    "distinct_D0_outputs": 5,
+    "distinct_D3_outputs": 24,
+    "control_paths": 1,
+    "natural_path_pcs": [
+      "0x009DB4",
+      "0x009DB6",
+      "0x009DBA",
+      "0x009DBE",
+      "0x009DC0",
+      "0x009DCA"
+    ],
+    "memory_reads": "one word at A6+0x46; value 10 in all 24 calls",
+    "natural_ram_writes": 0,
+    "cases": [
+      {
+        "capture_id": "0x009db4#1",
+        "frame": 2017,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x0128",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x011E",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#2",
+        "frame": 2019,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x0125",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x011B",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#3",
+        "frame": 2025,
+        "D0_IN": "0x0005",
+        "D2_IN": "0x0122",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0005",
+        "D3_RTS": "0x0118",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#4",
+        "frame": 2027,
+        "D0_IN": "0x0004",
+        "D2_IN": "0x011D",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0004",
+        "D3_RTS": "0x0113",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#5",
+        "frame": 2029,
+        "D0_IN": "0x0005",
+        "D2_IN": "0x0119",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0005",
+        "D3_RTS": "0x010F",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#6",
+        "frame": 2031,
+        "D0_IN": "0x0004",
+        "D2_IN": "0x0114",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0004",
+        "D3_RTS": "0x010A",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#7",
+        "frame": 2035,
+        "D0_IN": "0x0004",
+        "D2_IN": "0x0110",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0004",
+        "D3_RTS": "0x0106",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#8",
+        "frame": 2037,
+        "D0_IN": "0x0004",
+        "D2_IN": "0x010C",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0004",
+        "D3_RTS": "0x0102",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#9",
+        "frame": 2039,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x0108",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00FE",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#10",
+        "frame": 2041,
+        "D0_IN": "0x0002",
+        "D2_IN": "0x0105",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0002",
+        "D3_RTS": "0x00FB",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#11",
+        "frame": 2043,
+        "D0_IN": "0x0002",
+        "D2_IN": "0x0103",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0002",
+        "D3_RTS": "0x00F9",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#12",
+        "frame": 2045,
+        "D0_IN": "0x0002",
+        "D2_IN": "0x0101",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0002",
+        "D3_RTS": "0x00F7",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#13",
+        "frame": 2047,
+        "D0_IN": "0x0001",
+        "D2_IN": "0x00FF",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0001",
+        "D3_RTS": "0x00F5",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#14",
+        "frame": 2087,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00FE",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00F4",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#15",
+        "frame": 2089,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00FB",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00F1",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#16",
+        "frame": 2091,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00F8",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00EE",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#17",
+        "frame": 2093,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00F5",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00EB",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#18",
+        "frame": 2095,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00F2",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00E8",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#19",
+        "frame": 2097,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00EF",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00E5",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#20",
+        "frame": 2099,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00EC",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00E2",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#21",
+        "frame": 2101,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00E9",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00DF",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#22",
+        "frame": 2103,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00E6",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00DC",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#23",
+        "frame": 2105,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00E3",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00D9",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      },
+      {
+        "capture_id": "0x009db4#24",
+        "frame": 2129,
+        "D0_IN": "0x0003",
+        "D2_IN": "0x00E0",
+        "A6_PLUS_46_ADDRESS": "0xFF1A2E",
+        "A6_PLUS_46_WORD": 10,
+        "D0_RTS": "0x0003",
+        "D3_RTS": "0x00D6",
+        "ENTRY_SR": "0x2111",
+        "RTS_SR": "0x2109"
+      }
+    ]
+  },
+  "abi": {
+    "INPUT": [
+      "D0.low coordinate",
+      "D2.low axis value",
+      "word [A6+0x46]",
+      "byte [A6+0x41] initial value for conditional OR"
+    ],
+    "OUTPUT": [
+      "D0.low result",
+      "D3.low signed-difference word",
+      "CCR.X (borrow from D2.low - word[A6+0x46])",
+      "conditional byte [A6+0x41] |= 0x48"
+    ],
+    "PRESERVED": [
+      "all other D/A register values; A7 restored before RTS"
+    ],
+    "INTERNAL": [
+      "routine NZVC used for BMI/BLS/BEQ control; caller NZVC overwritten by ORI.B at 0x00A09C before a conditional read"
+    ],
+    "UNKNOWN": [
+      "caller paths other than 0x0092CC; other entry mechanisms"
+    ]
+  },
+  "caller_liveness": {
+    "D0": "passed to next BSR at 0x0092D0; modeled exactly",
+    "D3": "next callee first writes D3 at 0x00A0A8; no earlier D3 read in exact prefix; native also matches",
+    "CCR_NZVC": "first next-callee instruction at 0x00A09C is ORI.B; overwrites N/Z/V/C before any conditional consumer",
+    "CCR_X": "ORI.B preserves X; native model reproduces SUB.W borrow result",
+    "A7": "restored by RTS; no internal stack save",
+    "RAM": "conditional output byte effect compared directly"
+  },
+  "branch_coverage": {
+    "natural": [
+      "BMI not taken",
+      "BLS taken"
+    ],
+    "synthetic": [
+      "BMI not taken + BLS taken",
+      "BMI not taken + BLS not taken + BEQ not taken",
+      "BMI not taken + BLS not taken + BEQ taken",
+      "BMI taken with borrow/X=1",
+      "BMI taken with signed-negative result but no borrow/X=0"
+    ]
+  },
+  "native_differential": {
+    "natural_captured_vectors": "24/24",
+    "debug_rom_oracle_cases": 5,
+    "debug_all_match": true,
+    "release_rom_oracle_cases": 5,
+    "release_all_match": true,
+    "debug_receipt_sha256": "78e37b4841b3fc0440f081919a0001742f4a6bca19d0ae665273540ebd23b95e",
+    "release_receipt_sha256": "78e37b4841b3fc0440f081919a0001742f4a6bca19d0ae665273540ebd23b95e",
+    "debug_unit_test": "PASS",
+    "release_unit_test": "PASS",
+    "linux_unit_test": "PASS",
+    "linux_runner_compiled": true,
+    "linux_rom_oracle": "NOT_RUN (configured capture core is Windows-only)"
+  },
+  "replacement_status": {
+    "CPP_REPLACEMENT_CANDIDATE": "YES",
+    "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC": "YES",
+    "PATH_SCOPE": "direct BSR.W caller 0x0092CC",
+    "CPP_REPLACEMENT_VERIFIED_GLOBAL": "NO",
+    "RUNTIME_REPLACEMENT_ACTIVE": "NO"
+  },
+  "authority_deltas": {
+    "RUNTIME_TOTAL_PROVEN": 0,
+    "STRUCTURAL_PROVEN": 0,
+    "SOURCE_OWNED": 0,
+    "canonical_sqlite": "UNCHANGED",
+    "new_bytes_classified": 0
+  },
+  "current_totals": {
+    "ROM": 3145728,
+    "RUNTIME_TOTAL_PROVEN": 440425,
+    "STRUCTURAL_PROVEN": 1266667,
+    "SOURCE_OWNED": 1487672
+  }
+}

@@ -1645,3 +1645,9 @@ under `build/thor-evidence/`.
   arithmetic/branch tests for the coordinate-bound model.
 - `docs/reports/THOR_REPLAY_HELPER7_9D4E_20261011.md` — exact boundary, caller
   ABI, natural read patterns, native differential, and limits.
+
+- `src/tools/hybrid/negative_bound_model.hpp/.cpp` — bounded native scalar model for the path-specific M68K helper at `0x9DB4`.
+- `tests/negative_bound_model_test.cpp` — 24 captured replay vectors and branch/CCR-X arithmetic checks for `0x9DB4`.
+- `docs/reports/THOR_REPLAY_HELPER8_9DB4_20261011.md` — candidate ranking, path-specific ABI/liveness, oracle results, and evidence limits.
+- `docs/reports/THOR_REPLAY_HELPER8_9DB4_ACCEPTANCE_20261011.json` — machine-readable acceptance receipt.
+- `docs/reports/THOR_REPLAY_HELPER_CANDIDATE_INDEX_20261011.json` — updated replay helper index and remaining candidate ranking.

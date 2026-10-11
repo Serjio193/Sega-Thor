@@ -3939,3 +3939,10 @@ build/test passed; canonical runtime oracle was not run on Linux due to its
 Windows-only runtime core. Status is verified path-specific for caller
 `0x00909E`; global verification and runtime activation remain NO. No authority
 or coverage totals changed.
+
+
+## M68K `0x9DB4` — negative-difference bound helper (2026-10-11)
+
+Canonical ROM SHA-256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact routine `[0x009DB4,0x009DD6)`, 11 instructions, RTS exits `0x009DCA` and `0x009DD4`. The path-specific entry is direct `0x0092CC BSR.W`, returning to `0x0092D0`. Inputs are D0.low, D2.low, word `[A6+0x46]`, and byte `[A6+0x41]`; outputs are D0.low, D3.low, subtraction X, and conditional OR of `0x48` into the flag byte. No nested calls, indirect control or stack scratch.
+
+The 24 replay calls follow one path with 24 distinct coordinate pairs and D3 results. The native model matches all 24 vectors. Five ABI-local synthetic canonical-ROM cases cover both RTS exits and the clamp/write predicates, matching in Debug and Release. Caller liveness is closed only for `0x0092CC`: D0 is passed to the next callee; D3 is overwritten before read; the next callee overwrites NZVC before conditional use. X is conservatively modeled. Status is verified path-specific, not global; runtime replacement inactive. No resource bytes or authority totals changed.

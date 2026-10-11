@@ -1,0 +1,4899 @@
+{
+  "schema": "oasis.m68k.helper-candidate-index.v1",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "sources": [
+    {
+      "path": "build/16a46-path-specific-acceptance.json",
+      "sha256": "75d0598c72ec64e6bfe245c292e356503b0c23456b01ac42717bfce77c483bef"
+    },
+    {
+      "path": "build/94a2-path-specific-acceptance.json",
+      "sha256": "edd49cbc0a57146e3045594be43a997f1adc85b19e3ce7830ad6aed973894de8"
+    },
+    {
+      "path": "build/9bf2-contract-scout.json",
+      "sha256": "56cb1ee882fdc5961a11e53dc2bba59c361875aac4288dbd13af2ab40bbb9c0c"
+    },
+    {
+      "path": "build/9c40-caller-13028.json",
+      "sha256": "d0156a0bef4d41c2dc36dfd0beaae319c217990eceff56dfcab4017b00d55065"
+    },
+    {
+      "path": "build/9c40-caller-139aa.json",
+      "sha256": "5234bb1e8edc6706240fa656ae003a1405f6c59fa721713edbe371a66f1921a7"
+    },
+    {
+      "path": "build/9c40-caller-32a82.json",
+      "sha256": "70bab89753b76bd655ea8a5c8b7d41ef92836f07ea0f759a10f43c2a65adb20c"
+    },
+    {
+      "path": "build/9c40-caller-468a.json",
+      "sha256": "cc119ded52de151c6a4c03542bb2bb4abf61e57805c3af21b0a2fc1ccd54ae3c"
+    },
+    {
+      "path": "build/9c40-caller-489c.json",
+      "sha256": "b9feacc41e1606bca1b7db42b2fd258d138246ace4e92180e0a5712b0d2bf53e"
+    },
+    {
+      "path": "build/9c40-caller-5a72.json",
+      "sha256": "f29c00fae0ae7852cccd74d40e41c57922c3535a521e77e0e1c0690a0457e893"
+    },
+    {
+      "path": "build/9c40-caller-5e82.json",
+      "sha256": "f912d90f1ff7cc345b97a0b223ea21b7cad6518ec7ad5d5061e5b91c69d02019"
+    },
+    {
+      "path": "build/9c40-caller-6838.json",
+      "sha256": "ecc333aeb0efdc709aaeee2f6044dfc25e9f6ba93c6bbd6e46021468e757fad4"
+    },
+    {
+      "path": "build/9c40-caller-685e.json",
+      "sha256": "e993dbe4d967a7a0fff5ae845500530097165ebef0b2a297c35683aae2981a66"
+    },
+    {
+      "path": "build/9c40-caller-6b9c.json",
+      "sha256": "fae50c3a37b683417aee79ac4098b4a5c92ff87e9ce28e6554bbd1d326a075eb"
+    },
+    {
+      "path": "build/9c40-caller-e376.json",
+      "sha256": "4b3e0682b506a58ec71eefbb76fa5897b28e2976a6aeae84f6da77c5f92eaa8f"
+    },
+    {
+      "path": "build/9c40-e376-path-specific-acceptance-20261011.json",
+      "sha256": "e2d071b76a94ce6013daf453480d579d3132cb77e2b4713988b72d2efaf952e0"
+    },
+    {
+      "path": "build/9c40-state-capture/natural-e376-1800.json",
+      "sha256": "ef7c40ef9213e6287f85a1f6473d5d4b1cf05a9831fa7785d6cc3dc7e67a8fcf"
+    },
+    {
+      "path": "build/9c40-state-capture/natural-e376-3600.json",
+      "sha256": "1aca962e09955f03e6fdda93cad5fbc7f9ebb1f143585b9af0032bb2effc8f35"
+    },
+    {
+      "path": "build/9c40-state-capture/natural-e376-diagnostic.json",
+      "sha256": "bb33ae30c9056c82f9c1f70b5d5f97390bff48890bb07801dd13d9a00fe81085"
+    },
+    {
+      "path": "build/byte-grid-9c40-stateful-capture.json",
+      "sha256": "c0e3404fca478f41fd85d1205271016eb0327cc7a489e553ad5875f13dc76d54"
+    },
+    {
+      "path": "build/e45e-bounded.json",
+      "sha256": "74fce3fb541c3072327849a115fcd70bb52c0ed03d0388c4f942f529b235e396"
+    },
+    {
+      "path": "build/grid-movement-candidate-census.json",
+      "sha256": "598fc921bb5d2c3abefc514acf40dbf2a7dd273fa83acb3df718d52cad318d07"
+    },
+    {
+      "path": "build/m12-a372-producer-analysis-20261011.json",
+      "sha256": "bf828051b4403c56d180cbf60ddd63576b30e96f6686ffd52ed83869ab1de8e3"
+    },
+    {
+      "path": "build/m12-b730-full-call-analysis-20261011.json",
+      "sha256": "811d504c771a39dbf1a9a52aec5c5790b988f6266b5bd85c8a56b2a0ae55e302"
+    },
+    {
+      "path": "build/m12-w6-live-discovery/discovery_session_manifest.json",
+      "sha256": "da14bf209446beb66187320a65577d139dcd5eacf55f378fa1565b89fca399bd"
+    },
+    {
+      "path": "build/m12-w6-live-discovery/m68k_execution_novelty.json",
+      "sha256": "bc1a4554a7a3660183247c35773125b4a3499984bc27d1e0a41206adc6cb546f"
+    },
+    {
+      "path": "build/raw-record-8ef8-acceptance.json",
+      "sha256": "37368159e9f72ffa7ce4032a0967c44367e559890a9a775ca230bee8b4b5e30b"
+    },
+    {
+      "path": "build/raw-record-8ef8-debug.json",
+      "sha256": "4bc9ae4278f1bb4678f04c5348241dcb30670afec685628a2f416840363f57e4"
+    },
+    {
+      "path": "build/raw-record-8ef8-release.json",
+      "sha256": "4bc9ae4278f1bb4678f04c5348241dcb30670afec685628a2f416840363f57e4"
+    },
+    {
+      "path": "docs/reports/THOR_M12_A372_CALLER_JOIN.md",
+      "sha256": "4b4b160996306022ab91378698ed243f505de1c0e640acc3f9a1d073297bacb9"
+    },
+    {
+      "path": "build/gameplay-session-helper6-final-20261011/replay-run/call-census.json",
+      "sha256": "4dbb2d5cee520243bc52c644cafd7c0455f4377182b506888e0535d28069c63a"
+    },
+    {
+      "path": "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl",
+      "sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d"
+    },
+    {
+      "path": "build/gameplay-session-helper6-final-20261011/session.manifest",
+      "sha256": "862a541cdddb02b118c071204f476bdf9e899d5c6130d08e0cd3bba90da89b9a"
+    },
+    {
+      "path": "build/coordinate-bound-9d4e-path-specific-acceptance-20261011.json",
+      "sha256": "a47e2f03f85f114f8a5136a0c724a42a88b04cd80ce87e2cf122049bf84e75ff"
+    },
+    {
+      "path": "build/coordinate-bound-9d4e-debug.json",
+      "sha256": "cda4b82a2e7d4bfb296ba8b849c0b2ee53c0684529dc935b401467fde7287451"
+    },
+    {
+      "path": "build/coordinate-bound-9d4e-release.json",
+      "sha256": "cda4b82a2e7d4bfb296ba8b849c0b2ee53c0684529dc935b401467fde7287451"
+    },
+    {
+      "path": "build/negative-bound-9db4-path-specific-acceptance-20261011.json",
+      "sha256": "9a1cdbbf42d6c0c623ec383b14eda24e55a29595e69c442b5a4ae1b1dc26f770"
+    },
+    {
+      "path": "build/negative-bound-9db4-debug.json",
+      "sha256": "78e37b4841b3fc0440f081919a0001742f4a6bca19d0ae665273540ebd23b95e"
+    },
+    {
+      "path": "build/negative-bound-9db4-release.json",
+      "sha256": "78e37b4841b3fc0440f081919a0001742f4a6bca19d0ae665273540ebd23b95e"
+    }
+  ],
+  "index_size": 13,
+  "strong_intersection_count": 2,
+  "strong_intersection_definition": [
+    "not mission-excluded or already verified",
+    "exact end, callable direct callers, runtime entry PC observed",
+    "full call capture with entry/exit registers, SR, ordered reads and writes",
+    "caller liveness closed, no unresolved indirect control or stack effect"
+  ],
+  "runtime_artifact_limit": "new_m68k_pcs is a novelty set; it provides neither hit counts nor event ordering",
+  "rows": [
+    {
+      "ENTRY_PC": "0x009BF2",
+      "END_PC": "0x009C40",
+      "INSTRUCTION_COUNT": 32,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x0090E8",
+        "0x00918A",
+        "0x0091D4",
+        "0x009270",
+        "0x009312",
+        "0x00935C",
+        "0x0098D4",
+        "0x009BE8",
+        "0x009D26"
+      ],
+      "CALL_KINDS": "BSR.W",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "screen_0100_single",
+        "screen_0100_footprint",
+        "screen_0101_single",
+        "screen_0101_edge_footprint",
+        "zero_grid",
+        "mixed_grid"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "16-byte MOVEM save; caller observability unresolved",
+      "RAM_WRITE_COUNT": 8,
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "UNRESOLVED_INDIRECT_ENTRY_RISK",
+      "GLOBAL_RAM_DEPENDENCIES": [],
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED",
+      "KNOWN_NATIVE_MODEL": "ByteGridView OR/AND aggregate candidate",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_CANDIDATE",
+      "ORACLE_QUALITY": "STATIC_CANDIDATE_CENSUS; SYNTHETIC_ROM_HOOK_CPU_DEBUG_RELEASE_6_CASES",
+      "REPLACEMENT_SCORE": 52,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x0090E8": "NO_IN_THIS_NOVELTY_SET",
+        "0x00918A": "NO_IN_THIS_NOVELTY_SET",
+        "0x0091D4": "NO_IN_THIS_NOVELTY_SET",
+        "0x009270": "NO_IN_THIS_NOVELTY_SET",
+        "0x009312": "NO_IN_THIS_NOVELTY_SET",
+        "0x00935C": "NO_IN_THIS_NOVELTY_SET",
+        "0x0098D4": "NO_IN_THIS_NOVELTY_SET",
+        "0x009BE8": "NO_IN_THIS_NOVELTY_SET",
+        "0x009D26": "YES"
+      },
+      "DIRECT_CALLER_COUNT": 9,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/9bf2-contract-scout.json",
+        "build/grid-movement-candidate-census.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x009C40",
+      "END_PC": "0x009C7C",
+      "INSTRUCTION_COUNT": 16,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x0000468a",
+        "0x0000489c",
+        "0x00005a72",
+        "0x00005e82",
+        "0x00006838",
+        "0x0000685e",
+        "0x00006b9c",
+        "0x0000e376",
+        "0x00013028",
+        "0x000139aa",
+        "0x00032a82"
+      ],
+      "CALL_KINDS": [
+        "BSR",
+        "JSR"
+      ],
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "0xE376@call_001_frame_2269",
+        "0xE376@call_002_frame_2269",
+        "0xE376@call_003_frame_2271",
+        "0xE376@call_004_frame_2271",
+        "0xE376@call_005_frame_2273",
+        "0xE376@call_006_frame_2273",
+        "0xE376@call_007_frame_2275",
+        "0xE376@call_008_frame_2275",
+        "0xE376@call_009_frame_2277",
+        "0xE376@call_010_frame_2277",
+        "0xE376@call_011_frame_2279",
+        "0xE376@call_012_frame_2279",
+        "0xE376@call_013_frame_2281",
+        "0xE376@call_014_frame_2281",
+        "0xE376@call_015_frame_2283",
+        "0xE376@call_016_frame_2283",
+        "0xE376@call_017_frame_2285",
+        "0xE376@call_018_frame_2285",
+        "0xE376@call_019_frame_2287",
+        "0xE376@call_020_frame_2287",
+        "0xE376@call_021_frame_2289",
+        "0xE376@call_022_frame_2289",
+        "0xE376@call_023_frame_2291",
+        "0xE376@call_024_frame_2291"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "16-byte MOVEM writes; restored; scoped continuation reads none",
+      "RAM_WRITE_COUNT": 8,
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "UNRESOLVED_INDIRECT_ENTRY_RISK",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "0xFF16F0",
+        "0xFF1766",
+        "0xFF1770"
+      ],
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC",
+      "KNOWN_NATIVE_MODEL": "ByteGridView single-cell query candidate",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "STATIC_CANDIDATE_CENSUS; SYNTHETIC_PRESTATE_HOOK_CPU_5_CASES; REPLAYABLE_NATURAL_24_CALLS; DEBUG_RELEASE_DIFF; SYNTHETIC_6_CASES; CALLER_LIVENESS_CLOSED_PATH_SPECIFIC",
+      "REPLACEMENT_SCORE": 34,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "YES",
+      "NATURAL_CALL_COUNT": 24,
+      "STACK_OBSERVABILITY": "STACK_SCRATCH_INTERNAL_NOT_REQUIRED",
+      "NATIVE_DIFFERENTIAL_STATUS": "DEBUG 24/24; RELEASE 24/24; SYNTHETIC 6/6 DEBUG AND 6/6 RELEASE",
+      "FINAL_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [
+        {
+          "execution_kind": "NATURAL_LIBRETRO_RUN",
+          "frames_run": 1800,
+          "source_pc_hits": "UNKNOWN",
+          "target_pc_hits": "UNKNOWN",
+          "paired_calls": "UNKNOWN",
+          "captured": false
+        },
+        {
+          "execution_kind": "NATURAL_LIBRETRO_RUN",
+          "frames_run": 3600,
+          "source_pc_hits": 0,
+          "target_pc_hits": 0,
+          "paired_calls": 0,
+          "captured": false
+        },
+        {
+          "execution_kind": "NATURAL_LIBRETRO_RUN",
+          "frames_run": 600,
+          "source_pc_hits": 0,
+          "target_pc_hits": 0,
+          "paired_calls": 0,
+          "captured": false
+        }
+      ],
+      "PATH_SPECIFIC_CALLER_LIVENESS": {
+        "caller_pc": "0x0000E376",
+        "transfer": "BSR.W",
+        "return_pc": "0x0000E37A",
+        "D5": "READ_BEFORE_WRITE_AT_0xE37A; LIVE; NATIVE_MATCH_24_OF_24_IN_DEBUG_AND_RELEASE",
+        "CCR_FROM_0x9C40": "OVERWRITTEN_AT_0xE37A_BEFORE_CMPI.B_AND_BNE",
+        "other_registers": "NO_CALLEE_CHANGES_OBSERVED; RESTORED_AT_0x9C7A",
+        "stack_scratch": "STACK_SCRATCH_INTERNAL_NOT_REQUIRED_FOR_0xE376_CONTINUATION",
+        "evidence_level": "REPLAYABLE_NATURAL_FULL_CALLS_PLUS_SYNTHETIC_EDGE_ORACLES"
+      },
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x0000468a": "NO_IN_THIS_NOVELTY_SET",
+        "0x0000489c": "NO_IN_THIS_NOVELTY_SET",
+        "0x00005a72": "NO_IN_THIS_NOVELTY_SET",
+        "0x00005e82": "NO_IN_THIS_NOVELTY_SET",
+        "0x00006838": "NO_IN_THIS_NOVELTY_SET",
+        "0x0000685e": "NO_IN_THIS_NOVELTY_SET",
+        "0x00006b9c": "NO_IN_THIS_NOVELTY_SET",
+        "0x0000e376": "YES",
+        "0x00013028": "NO_IN_THIS_NOVELTY_SET",
+        "0x000139aa": "NO_IN_THIS_NOVELTY_SET",
+        "0x00032a82": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": 11,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/9c40-e376-path-specific-acceptance-20261011.json",
+        "build/9c40-state-capture/natural-e376-1800.json",
+        "build/9c40-state-capture/natural-e376-3600.json",
+        "build/9c40-state-capture/natural-e376-diagnostic.json",
+        "build/byte-grid-9c40-stateful-capture.json",
+        "build/grid-movement-candidate-census.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x008EF8",
+      "END_PC": "0x008F12",
+      "INSTRUCTION_COUNT": 6,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x0058FA",
+        "0x005928",
+        "0x005A6A",
+        "0x005ABA",
+        "0x005B9A",
+        "0x00662E"
+      ],
+      "CALL_KINDS": "BSR.W",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "debug",
+        "release"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "NO",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "NONE",
+      "RAM_WRITE_COUNT": 5,
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [],
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC",
+      "KNOWN_NATIVE_MODEL": "fixed record field store",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "SYNTHETIC_HOOK_CPU_DEBUG_RELEASE",
+      "REPLACEMENT_SCORE": 27,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x0058FA": "NO_IN_THIS_NOVELTY_SET",
+        "0x005928": "NO_IN_THIS_NOVELTY_SET",
+        "0x005A6A": "NO_IN_THIS_NOVELTY_SET",
+        "0x005ABA": "NO_IN_THIS_NOVELTY_SET",
+        "0x005B9A": "NO_IN_THIS_NOVELTY_SET",
+        "0x00662E": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "acceptance receipt"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x0094A2",
+      "END_PC": "0x0094D2",
+      "INSTRUCTION_COUNT": 20,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x009468 / return 0x00946C",
+        "0x009480 / return 0x009484",
+        "0x00949A / return 0x00949E"
+      ],
+      "CALL_KINDS": "BSR.W",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "grid0100_single",
+        "grid0100_three_rows",
+        "grid0101_three_rows",
+        "grid0101_boundary",
+        "grid0100_zero_cell",
+        "grid0101_high_bit_cell",
+        "grid0100_last_column",
+        "grid0101_top_boundary"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "NO",
+      "STACK_EFFECTS": "NONE",
+      "RAM_WRITE_COUNT": 0,
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "UNRESOLVED_GLOBAL_ENTRY_RISK",
+      "GLOBAL_RAM_DEPENDENCIES": [],
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC",
+      "KNOWN_NATIVE_MODEL": "ByteGridView column aggregate",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "STATIC_CANDIDATE_CENSUS; SYNTHETIC_ROM_EXECUTION_DEBUG_RELEASE_DIFFERENTIAL",
+      "REPLACEMENT_SCORE": 24,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x009468 / return 0x00946C": "NO_IN_THIS_NOVELTY_SET",
+        "0x009480 / return 0x009484": "NO_IN_THIS_NOVELTY_SET",
+        "0x00949A / return 0x00949E": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": 3,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "acceptance receipt",
+        "build/grid-movement-candidate-census.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x016A46",
+      "END_PC": "0x016A64",
+      "INSTRUCTION_COUNT": 10,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x165A8",
+        "0x165BE",
+        "0x165FA",
+        "0x1667A",
+        "0x166F0",
+        "0x1675E",
+        "0x1685E",
+        "0x1696A",
+        "0x169EC",
+        "0x16A14"
+      ],
+      "CALL_KINDS": "BSR",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "debug",
+        "release"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "NO",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "0",
+      "RAM_WRITE_COUNT": 4,
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": 0,
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC",
+      "KNOWN_NATIVE_MODEL": "sparse word store",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "SYNTHETIC_HOOK_CPU_DEBUG_RELEASE_LINUX",
+      "REPLACEMENT_SCORE": 22,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x165A8": "NO_IN_THIS_NOVELTY_SET",
+        "0x165BE": "NO_IN_THIS_NOVELTY_SET",
+        "0x165FA": "NO_IN_THIS_NOVELTY_SET",
+        "0x1667A": "NO_IN_THIS_NOVELTY_SET",
+        "0x166F0": "NO_IN_THIS_NOVELTY_SET",
+        "0x1675E": "NO_IN_THIS_NOVELTY_SET",
+        "0x1685E": "NO_IN_THIS_NOVELTY_SET",
+        "0x1696A": "NO_IN_THIS_NOVELTY_SET",
+        "0x169EC": "NO_IN_THIS_NOVELTY_SET",
+        "0x16A14": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "acceptance receipt"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x009AD6",
+      "END_PC": "0x009BC2",
+      "INSTRUCTION_COUNT": 72,
+      "RTS_COUNT": "UNKNOWN",
+      "DIRECT_CALLERS": "UNKNOWN",
+      "CALL_KINDS": "UNKNOWN; direct caller PCs unavailable",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "UNKNOWN",
+      "FULL_CALL_CAPTURE_IDS": [],
+      "HAS_ENTRY_REGS": "UNKNOWN",
+      "HAS_EXIT_REGS": "UNKNOWN",
+      "HAS_SR": "UNKNOWN",
+      "HAS_ORDERED_READS": "UNKNOWN",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "PRESENT_UNMEASURED",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "0x00FF16F0",
+        "0x00FF1766",
+        "0x00FF1770",
+        "0x00FF1706"
+      ],
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED",
+      "KNOWN_NATIVE_MODEL": "NO_KNOWN_MODEL",
+      "CURRENT_REPLACEMENT_STATUS": "UNKNOWN",
+      "ORACLE_QUALITY": "STATIC_CANDIDATE_CENSUS",
+      "REPLACEMENT_SCORE": 16,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": "UNKNOWN",
+      "DIRECT_CALLER_COUNT": 14,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/grid-movement-candidate-census.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00E45E",
+      "END_PC": "0x0000e65e",
+      "INSTRUCTION_COUNT": 45,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": "UNKNOWN",
+      "CALL_KINDS": "UNKNOWN; prior report cites BSR encodings without closed caller list",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "UNKNOWN",
+      "FULL_CALL_CAPTURE_IDS": [],
+      "HAS_ENTRY_REGS": "UNKNOWN",
+      "HAS_EXIT_REGS": "UNKNOWN",
+      "HAS_SR": "UNKNOWN",
+      "HAS_ORDERED_READS": "UNKNOWN",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "UNRESOLVED",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": "UNKNOWN",
+      "INDIRECT_CONTROL": "UNRESOLVED",
+      "GLOBAL_RAM_DEPENDENCIES": "UNKNOWN",
+      "CALLER_LIVENESS_STATUS": "UNKNOWN",
+      "KNOWN_NATIVE_MODEL": "NO_KNOWN_MODEL",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_CANDIDATE_REJECTED_FOR_NOW",
+      "ORACLE_QUALITY": "STATIC_CFG_ONLY; PRIOR CALLER_AND_STACK_BLOCKERS",
+      "REPLACEMENT_SCORE": 6,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": "UNKNOWN",
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/e45e-bounded.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00938E",
+      "END_PC": "UNKNOWN",
+      "INSTRUCTION_COUNT": 95,
+      "RTS_COUNT": "UNKNOWN",
+      "DIRECT_CALLERS": "UNKNOWN",
+      "CALL_KINDS": "UNKNOWN; direct caller PCs unavailable",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "UNKNOWN",
+      "FULL_CALL_CAPTURE_IDS": [],
+      "HAS_ENTRY_REGS": "UNKNOWN",
+      "HAS_EXIT_REGS": "UNKNOWN",
+      "HAS_SR": "UNKNOWN",
+      "HAS_ORDERED_READS": "UNKNOWN",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "MOVEM_FRAME_PRESENT",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 4,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "0x00FF16F0",
+        "0x00FF1706",
+        "0x00FF196E"
+      ],
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED",
+      "KNOWN_NATIVE_MODEL": "NO_KNOWN_MODEL",
+      "CURRENT_REPLACEMENT_STATUS": "UNKNOWN",
+      "ORACLE_QUALITY": "STATIC_CANDIDATE_CENSUS",
+      "REPLACEMENT_SCORE": -1,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": "UNKNOWN",
+      "DIRECT_CALLER_COUNT": 2,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/grid-movement-candidate-census.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00A342",
+      "END_PC": "0x00A438",
+      "INSTRUCTION_COUNT": "UNKNOWN",
+      "RTS_COUNT": "UNKNOWN",
+      "DIRECT_CALLERS": [
+        "0x00A19C",
+        "0x00A6A0"
+      ],
+      "CALL_KINDS": "BSR",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "UNKNOWN",
+      "FULL_CALL_CAPTURE_IDS": [],
+      "HAS_ENTRY_REGS": "UNKNOWN",
+      "HAS_EXIT_REGS": "UNKNOWN",
+      "HAS_SR": "UNKNOWN",
+      "HAS_ORDERED_READS": "UNKNOWN",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "no stack scratch reported in exact body",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": "UNKNOWN",
+      "INDIRECT_CONTROL": "none reported",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "0xFF188C signed output offset",
+        "0xFF188A counter",
+        "0xFF1858 root selector",
+        "0xFF185A word adjustment",
+        "0xFF184F optional three-record loop",
+        "0xFF1856 optional path",
+        "0xFF1854/0xFF1855 bounded change path"
+      ],
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED",
+      "KNOWN_NATIVE_MODEL": "NO_KNOWN_MODEL",
+      "CURRENT_REPLACEMENT_STATUS": "NO_CURRENT",
+      "ORACLE_QUALITY": "PARTIAL: no all-register entry/return snapshot, CCR snapshot, or retained full bus-write sequence for all record fields",
+      "REPLACEMENT_SCORE": -77,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x00A19C": "YES",
+        "0x00A6A0": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": "explicitly excluded by mission; runtime capture is partial",
+      "EVIDENCE_SOURCES": [
+        "build/m12-a372-producer-analysis-20261011.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00B730",
+      "END_PC": "0x00B79A",
+      "INSTRUCTION_COUNT": 34,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x000DEA",
+        "0x000E3A",
+        "0x000EFE",
+        "0x003B448",
+        "0x03CE86"
+      ],
+      "CALL_KINDS": "mixed direct transfers",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "build/m12-b730-full-call-20261011.json"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "UNKNOWN",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": "UNKNOWN",
+      "INDIRECT_CONTROL": "UNKNOWN",
+      "GLOBAL_RAM_DEPENDENCIES": "UNKNOWN",
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC",
+      "KNOWN_NATIVE_MODEL": "bounded SAT shadow record writer",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "NATURAL_AND_SYNTHETIC_BRANCH_COMPLETE_PATH_CAPTURE",
+      "REPLACEMENT_SCORE": -79,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "NO_IN_THIS_NOVELTY_SET",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x000DEA": "NO_IN_THIS_NOVELTY_SET",
+        "0x000E3A": "NO_IN_THIS_NOVELTY_SET",
+        "0x000EFE": "NO_IN_THIS_NOVELTY_SET",
+        "0x003B448": "NO_IN_THIS_NOVELTY_SET",
+        "0x03CE86": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": "explicitly excluded by mission; already verified helper #4",
+      "EVIDENCE_SOURCES": [
+        "build/m12-b730-full-call-analysis-20261011.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00A196",
+      "END_PC": "UNKNOWN",
+      "INSTRUCTION_COUNT": "UNKNOWN",
+      "RTS_COUNT": "UNKNOWN",
+      "DIRECT_CALLERS": [
+        "0x008B86",
+        "0x03C6F0"
+      ],
+      "CALL_KINDS": "JSR (prior caller-join report)",
+      "RUNTIME_ENTRY_HITS": "UNKNOWN",
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": "UNKNOWN",
+      "FULL_CALL_CAPTURE_IDS": [],
+      "HAS_ENTRY_REGS": "UNKNOWN",
+      "HAS_EXIT_REGS": "UNKNOWN",
+      "HAS_SR": "UNKNOWN",
+      "HAS_ORDERED_READS": "UNKNOWN",
+      "HAS_ORDERED_WRITES": "UNKNOWN",
+      "STACK_EFFECTS": "UNKNOWN",
+      "RAM_WRITE_COUNT": "UNKNOWN",
+      "ROM_READ_COUNT": "UNKNOWN",
+      "NESTED_CALLS": 1,
+      "INDIRECT_CONTROL": "YES; descriptor callback path",
+      "GLOBAL_RAM_DEPENDENCIES": "UNKNOWN",
+      "CALLER_LIVENESS_STATUS": "UNRESOLVED",
+      "KNOWN_NATIVE_MODEL": "NO_KNOWN_MODEL",
+      "CURRENT_REPLACEMENT_STATUS": "UNKNOWN",
+      "ORACLE_QUALITY": "RUNTIME_PC_SET_AND_STATIC_CALLER_JOIN; FULL_CALL_UNKNOWN",
+      "REPLACEMENT_SCORE": -87,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "UNKNOWN",
+      "NATURAL_CALL_COUNT": "UNKNOWN",
+      "STACK_OBSERVABILITY": "UNKNOWN",
+      "NATIVE_DIFFERENTIAL_STATUS": "UNKNOWN",
+      "FINAL_REPLACEMENT_STATUS": "UNKNOWN",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "UNKNOWN",
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x008B86": "YES",
+        "0x03C6F0": "NO_IN_THIS_NOVELTY_SET"
+      },
+      "DIRECT_CALLER_COUNT": "UNKNOWN",
+      "SELECTION_EXCLUSION": "explicitly excluded by mission; stateful scan with callback flow",
+      "EVIDENCE_SOURCES": [
+        "docs/reports/THOR_M12_A372_CALLER_JOIN.md"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x00E268",
+      "END_PC": "0x00E2A2",
+      "INSTRUCTION_COUNT": 25,
+      "RTS_COUNT": 1,
+      "DIRECT_CALLERS": [
+        "0x0033e2",
+        "0x00340e",
+        "0x00359a",
+        "0x00e2ac",
+        "0x00f49e",
+        "0x00f4b6",
+        "0x00f60c",
+        "0x00fd00",
+        "0x01a404",
+        "0x01a4d2",
+        "0x01b276",
+        "0x01b79c",
+        "0x01bba2",
+        "0x01bf2e"
+      ],
+      "CALL_KINDS": "BSR.W, JSR_ABS.L",
+      "RUNTIME_ENTRY_HITS": 455656,
+      "RUNTIME_INTERNAL_HITS": "UNKNOWN",
+      "HAS_FULL_CALL_CAPTURE": true,
+      "FULL_CALL_CAPTURE_IDS": [
+        "0x00e268#1",
+        "0x00e268#2",
+        "0x00e268#3",
+        "0x00e268#4",
+        "0x00e268#5",
+        "0x00e268#6",
+        "0x00e268#7",
+        "0x00e268#8",
+        "0x00e268#9",
+        "0x00e268#10",
+        "0x00e268#11",
+        "0x00e268#12",
+        "0x00e268#13",
+        "0x00e268#14",
+        "0x00e268#15",
+        "0x00e268#16",
+        "0x00e268#17",
+        "0x00e268#18",
+        "0x00e268#19",
+        "0x00e268#20",
+        "0x00e268#21",
+        "0x00e268#22",
+        "0x00e268#23",
+        "0x00e268#24"
+      ],
+      "HAS_ENTRY_REGS": true,
+      "HAS_EXIT_REGS": true,
+      "HAS_SR": true,
+      "HAS_ORDERED_READS": true,
+      "HAS_ORDERED_WRITES": true,
+      "STACK_EFFECTS": "D1 word push/pop; A7 restored before RTS in 24 captures",
+      "RAM_WRITE_COUNT": "24 captures: FF1928 output plus stack save each",
+      "ROM_READ_COUNT": 0,
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "0xFF1928 read/write"
+      ],
+      "CALLER_LIVENESS_STATUS": "CCR overwritten at 0x0035A0 before BNE 0x0035A8; D0 and FF1928 effects modeled",
+      "KNOWN_NATIVE_MODEL": "e268_state_transform.cpp",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "24 replayable natural calls from exact caller 0x00359A; Debug/Release/Linux differential tests",
+      "REPLACEMENT_SCORE": "verified path-specific only",
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": true,
+      "NATURAL_CALL_COUNT": 24,
+      "STACK_OBSERVABILITY": "A7 restored; temporary D1 stack slot not read in accepted continuation",
+      "NATIVE_DIFFERENTIAL_STATUS": "24/24 D0.low and FF1928 output",
+      "FINAL_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC; path scope 0x00359A",
+      "NATURAL_TARGETED_CAPTURE_ATTEMPTS": [
+        {
+          "session": "build\\gameplay-session-helper6-final-20261011",
+          "frames": 3600,
+          "calls": 24
+        }
+      ],
+      "PATH_SPECIFIC_CALLER_LIVENESS": "CCR dead; D0.low and FF1928 persistent state output",
+      "RUNTIME_PC_SET_MEMBERSHIP": "YES",
+      "RUNTIME_DIRECT_CALLER_PC_SET_MEMBERSHIP": {
+        "0x00359A": "YES"
+      },
+      "DIRECT_CALLER_COUNT": 14,
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "docs/reports/THOR_REPLAY_HELPER6_E268_20261011.md",
+        "build/e268-replay-differential-20261011.json"
+      ]
+    },
+    {
+      "ENTRY_PC": "0x009DB4",
+      "END_PC": "0x009DD6",
+      "INSTRUCTION_COUNT": 11,
+      "RTS_COUNT": 2,
+      "DIRECT_CALLERS": [
+        "0x0092CC"
+      ],
+      "CALL_KINDS": [
+        "BSR.W"
+      ],
+      "RUNTIME_ENTRY_HITS": 24,
+      "RUNTIME_INTERNAL_HITS": 120,
+      "HAS_FULL_CALL_CAPTURE": "YES",
+      "FULL_CALL_CAPTURE_IDS": [
+        "0x009db4#1",
+        "0x009db4#2",
+        "0x009db4#3",
+        "0x009db4#4",
+        "0x009db4#5",
+        "0x009db4#6",
+        "0x009db4#7",
+        "0x009db4#8",
+        "0x009db4#9",
+        "0x009db4#10",
+        "0x009db4#11",
+        "0x009db4#12",
+        "0x009db4#13",
+        "0x009db4#14",
+        "0x009db4#15",
+        "0x009db4#16",
+        "0x009db4#17",
+        "0x009db4#18",
+        "0x009db4#19",
+        "0x009db4#20",
+        "0x009db4#21",
+        "0x009db4#22",
+        "0x009db4#23",
+        "0x009db4#24"
+      ],
+      "HAS_ENTRY_REGS": "YES",
+      "HAS_EXIT_REGS": "YES",
+      "HAS_SR": "YES",
+      "HAS_ORDERED_READS": "YES",
+      "HAS_ORDERED_WRITES": "YES",
+      "STACK_EFFECTS": "RTS only; no internal save area",
+      "RAM_WRITE_COUNT": 0,
+      "ROM_READ_COUNT": 0,
+      "NESTED_CALLS": 0,
+      "INDIRECT_CONTROL": "NO",
+      "GLOBAL_RAM_DEPENDENCIES": [
+        "[A6+0x46]",
+        "conditional [A6+0x41]"
+      ],
+      "CALLER_LIVENESS_STATUS": "CLOSED_PATH_SPECIFIC for 0x0092CC; D0/D3/X and flag-byte effect modeled",
+      "KNOWN_NATIVE_MODEL": "negative-difference coordinate bound",
+      "CURRENT_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "ORACLE_QUALITY": "24 replayable natural calls; native model 24/24; canonical ROM oracle 5/5 in Debug and Release",
+      "REPLACEMENT_SCORE": 61,
+      "HAS_REPLAYABLE_FULL_CALL_CAPTURE": "YES",
+      "NATURAL_CALL_COUNT": 24,
+      "STACK_OBSERVABILITY": "NO_INTERNAL_STACK_TRAFFIC",
+      "NATIVE_DIFFERENTIAL_STATUS": "NATURAL 24/24; SYNTHETIC DEBUG/RELEASE 5/5",
+      "FINAL_REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "PATH_SPECIFIC_CALLER_LIVENESS": {
+        "caller_pc": "0x0092CC",
+        "transfer": "BSR.W",
+        "return_pc": "0x0092D0",
+        "D0": "modeled output passed into next direct callee",
+        "D3": "overwritten at 0x00A0A8 before first read",
+        "CCR_NZVC": "overwritten by ORI.B at 0x00A09C before conditional use",
+        "CCR_X": "modeled borrow output; preserved by ORI.B",
+        "A7": "restored by RTS",
+        "RAM": "conditional byte [A6+0x41] OR effect modeled"
+      },
+      "SELECTION_EXCLUSION": null,
+      "EVIDENCE_SOURCES": [
+        "build/negative-bound-9db4-path-specific-acceptance-20261011.json",
+        "build/gameplay-session-helper6-final-20261011/replay-run/auto-full-calls.jsonl"
+      ],
+      "EXACT_BOUNDARY_STATUS": "EXACT [0x009DB4,0x009DD6)"
+    }
+  ],
+  "top_10": [
+    {
+      "entry": "0x00a7e6",
+      "score": 47.0,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x009d92",
+      "score": 37.3,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 12 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x0099d6",
+      "score": 34.8,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x00f788",
+      "score": 34.1,
+      "reason": "24 natural full calls; 2 path(s); boundary UNKNOWN; 15 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x009d70",
+      "score": 31.2,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x00d344",
+      "score": 30.3,
+      "reason": "24 natural full calls; 2 path(s); boundary UNKNOWN; 10 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x00b3b2",
+      "score": 29.8,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 4 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x010a74",
+      "score": 28.3,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 1 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x010930",
+      "score": 28.1,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 2 distinct output(s).",
+      "excluded": null
+    },
+    {
+      "entry": "0x00c980",
+      "score": 26.1,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
+      "excluded": null
+    }
+  ],
+  "selected_helper": {
+    "entry": "0x009DB4",
+    "caller_scope": "0x0092CC",
+    "status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC"
+  },
+  "authority_changes": 0,
+  "current_totals": {
+    "ROM": 3145728,
+    "RUNTIME_TOTAL_PROVEN": 440425,
+    "STRUCTURAL_PROVEN": 1266667,
+    "SOURCE_OWNED": 1487672
+  },
+  "latest_attempt": {
+    "mission": "helper-8 replay-census top-ranked bounded verification",
+    "selected_target": "0x009DB4",
+    "path_scope": "0x0092CC BSR.W -> 0x009DB4 -> RTS -> 0x0092D0",
+    "natural_calls": 24,
+    "natural_path_count": 1,
+    "debug_synthetic_cases": 5,
+    "release_synthetic_cases": 5,
+    "final_status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+    "global_status": "NO",
+    "runtime_replacement_active": "NO",
+    "fallback_candidate": "NOT_REQUIRED; ranked candidates remain available",
+    "new_verified_helpers": 1,
+    "new_bytes_classified": 0,
+    "authority_deltas": 0,
+    "current_totals": {
+      "ROM": 3145728,
+      "RUNTIME_TOTAL_PROVEN": 440425,
+      "STRUCTURAL_PROVEN": 1266667,
+      "SOURCE_OWNED": 1487672
+    },
+    "next_priority": "0x00a7e6",
+    "natural_capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
+    "acceptance_receipt_sha256": "9a1cdbbf42d6c0c623ec383b14eda24e55a29595e69c442b5a4ae1b1dc26f770"
+  },
+  "replay_rerank": {
+    "method": "replay full-call corpus v1; rank uses caller/path count, changed-output diversity, median executed instructions, write count, memory-read address cardinality and exact-boundary evidence; unknown metadata remains UNKNOWN",
+    "capture_count": 2640,
+    "target_count": 165,
+    "excluded_statuses": {
+      "0x0094a2": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x008ef8": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x016a46": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x00b730": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x009c40": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x00e268": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x009d4e": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x008b8e": "FROZEN_DEFAULT_ONLY_PATH",
+      "0x008dd4": "FROZEN_DEFAULT_ONLY_PATH",
+      "0x00a342": "FROZEN_CAPTURE_QUALITY_BLOCKER",
+      "0x00a196": "EXCLUDED_CALLBACK_STATEFUL_PATH",
+      "0x009db4": "ALREADY_VERIFIED_PATH_SPECIFIC"
+    },
+    "top10": [
+      {
+        "ENTRY_PC": "0x00a7e6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00a336": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 47.0
+      },
+      {
+        "ENTRY_PC": "0x009d92",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009812": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [
+          "D3",
+          "D7"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 12,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 37.3
+      },
+      {
+        "ENTRY_PC": "0x0099d6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009932": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
+        "CHANGED_REGISTERS": [
+          "D3",
+          "D4",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 26,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 34.8
+      },
+      {
+        "ENTRY_PC": "0x00f788",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b2a": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 7.0,
+        "CHANGED_REGISTERS": [
+          "D1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 15,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 14,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 34.1
+      },
+      {
+        "ENTRY_PC": "0x009d70",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00979e": 2,
+          "0x009144": 22
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 31.2
+      },
+      {
+        "ENTRY_PC": "0x00d344",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00d2b4": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 10,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 26,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 30.3
+      },
+      {
+        "ENTRY_PC": "0x00b3b2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ad4e": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 29.8
+      },
+      {
+        "ENTRY_PC": "0x010a74",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bcb4": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 28.3
+      },
+      {
+        "ENTRY_PC": "0x010930",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b5a4": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 5,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 28.1
+      },
+      {
+        "ENTRY_PC": "0x00c980",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b60": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 26.1
+      }
+    ],
+    "all_remaining_targets": [
+      {
+        "ENTRY_PC": "0x00a7e6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00a336": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 47.0
+      },
+      {
+        "ENTRY_PC": "0x009d92",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009812": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [
+          "D3",
+          "D7"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 12,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 37.3
+      },
+      {
+        "ENTRY_PC": "0x0099d6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009932": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
+        "CHANGED_REGISTERS": [
+          "D3",
+          "D4",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 26,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 34.8
+      },
+      {
+        "ENTRY_PC": "0x00f788",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b2a": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 7.0,
+        "CHANGED_REGISTERS": [
+          "D1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 15,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 14,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 34.1
+      },
+      {
+        "ENTRY_PC": "0x009d70",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00979e": 2,
+          "0x009144": 22
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 31.2
+      },
+      {
+        "ENTRY_PC": "0x00d344",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00d2b4": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 10,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 26,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 30.3
+      },
+      {
+        "ENTRY_PC": "0x00b3b2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ad4e": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 29.8
+      },
+      {
+        "ENTRY_PC": "0x010a74",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bcb4": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 28.3
+      },
+      {
+        "ENTRY_PC": "0x010930",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b5a4": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 5,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 28.1
+      },
+      {
+        "ENTRY_PC": "0x00c980",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b60": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 26.1
+      },
+      {
+        "ENTRY_PC": "0x00c998",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b52": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 26.1
+      },
+      {
+        "ENTRY_PC": "0x01b102",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01c4e2": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 26.1
+      },
+      {
+        "ENTRY_PC": "0x01b580",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bc40": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 25.8
+      },
+      {
+        "ENTRY_PC": "0x00e192",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00e130": 24
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 15.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 69,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 25.3
+      },
+      {
+        "ENTRY_PC": "0x00e5ae",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01c5f0": 2,
+          "0x00ec02": 22
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 25.0,
+        "CHANGED_REGISTERS": [
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D7",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 15,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 24.9
+      },
+      {
+        "ENTRY_PC": "0x061e48",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061964": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 13,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 5,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 24.3
+      },
+      {
+        "ENTRY_PC": "0x062732",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0623cc": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 23.8
+      },
+      {
+        "ENTRY_PC": "0x062ae0",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0601e2": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "A4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 23.2
+      },
+      {
+        "ENTRY_PC": "0x0622d0",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0622a8": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 22.6
+      },
+      {
+        "ENTRY_PC": "0x00e398",
+        "NATURAL_FULL_CALLS": 20,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b91c": 15,
+          "0x01a2d0": 5
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 18.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 19,
+        "DISTINCT_ENTRY_STATES": 19,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 22.4
+      },
+      {
+        "ENTRY_PC": "0x06273a",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x062862": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 22.2
+      },
+      {
+        "ENTRY_PC": "0x06230e",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0622b4": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 22.0
+      },
+      {
+        "ENTRY_PC": "0x00e502",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b1e8": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 7.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 8,
+        "ORDERED_RAM_WRITE_EVENTS": 16,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 21.7
+      },
+      {
+        "ENTRY_PC": "0x00e25c",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00df1a": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 21.3
+      },
+      {
+        "ENTRY_PC": "0x010660",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0105b8": 12,
+          "0x0105da": 12
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 33.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 22,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 8,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 21.1
+      },
+      {
+        "ENTRY_PC": "0x0035ac",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x003596": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 20.7
+      },
+      {
+        "ENTRY_PC": "0x00c9b2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x02e5b0": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 13.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 20.7
+      },
+      {
+        "ENTRY_PC": "0x0622dc",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0622ac": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 20.6
+      },
+      {
+        "ENTRY_PC": "0x00e682",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0057d0": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 26,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 20.4
+      },
+      {
+        "ENTRY_PC": "0x00d398",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x02e60a": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 19.5
+      },
+      {
+        "ENTRY_PC": "0x006e7a",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007178": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 13,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 20,
+        "ORDERED_RAM_WRITE_EVENTS": 37,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 18.3
+      },
+      {
+        "ENTRY_PC": "0x00d188",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00d0bc": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 11.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 7,
+        "DISTINCT_ENTRY_STATES": 22,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 5,
+        "ORDERED_RAM_WRITE_EVENTS": 77,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 18.1
+      },
+      {
+        "ENTRY_PC": "0x00e0ba",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b36": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 29.0,
+        "CHANGED_REGISTERS": [
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 7,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 18.1
+      },
+      {
+        "ENTRY_PC": "0x061cd2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061d28": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 25.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "A4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 12,
+        "DISTINCT_ENTRY_STATES": 15,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 288,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 15.1
+      },
+      {
+        "ENTRY_PC": "0x00e0f4",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b3a": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 39.0,
+        "CHANGED_REGISTERS": [
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 10,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 13.3
+      },
+      {
+        "ENTRY_PC": "0x00e0b8",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff88": 1,
+          "0x00df1a": 23
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 1.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 12.7
+      },
+      {
+        "ENTRY_PC": "0x06231e",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x062092": 10,
+          "0x062300": 14
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 12.1
+      },
+      {
+        "ENTRY_PC": "0x0626bc",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061aba": 10,
+          "0x062544": 14
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 18,
+        "DISTINCT_ENTRY_STATES": 20,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 23,
+        "ORDERED_RAM_WRITE_EVENTS": 6,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 12.1
+      },
+      {
+        "ENTRY_PC": "0x00e150",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00e130": 24
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 43,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 11.4
+      },
+      {
+        "ENTRY_PC": "0x0031ac",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x003086": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 15,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 20,
+        "ORDERED_RAM_WRITE_EVENTS": 122,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 11.3
+      },
+      {
+        "ENTRY_PC": "0x0083d4",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x006524": 22,
+          "0x005b70": 1,
+          "0x006346": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "D1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 11.3
+      },
+      {
+        "ENTRY_PC": "0x062722",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x062418": 10,
+          "0x062526": 14
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 10.8
+      },
+      {
+        "ENTRY_PC": "0x0107aa",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01a47e": 1,
+          "0x01a4b2": 1,
+          "0x01a6fa": 22
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8.0,
+        "CHANGED_REGISTERS": [
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 10.4
+      },
+      {
+        "ENTRY_PC": "0x007198",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007120": 15,
+          "0x006ef4": 9
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 19.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 10.1
+      },
+      {
+        "ENTRY_PC": "0x00b56e",
+        "NATURAL_FULL_CALLS": 14,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00b38c": 14
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 12.0,
+        "CHANGED_REGISTERS": [
+          "D6",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 13,
+        "ORDERED_RAM_WRITE_EVENTS": 28,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 10.0
+      },
+      {
+        "ENTRY_PC": "0x008bac",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b22": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 21.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 9,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 9.7
+      },
+      {
+        "ENTRY_PC": "0x0064c4",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0062fc": 1,
+          "0x00653a": 3,
+          "0x006720": 20
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 11.0,
+        "CHANGED_REGISTERS": [
+          "D6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 9.1
+      },
+      {
+        "ENTRY_PC": "0x016ebc",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff88": 2,
+          "0x00df1a": 22
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 8,
+        "ORDERED_RAM_WRITE_EVENTS": 6,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 9.1
+      },
+      {
+        "ENTRY_PC": "0x0178ea",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff88": 1,
+          "0x00df1a": 23
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 3,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.9
+      },
+      {
+        "ENTRY_PC": "0x01a288",
+        "NATURAL_FULL_CALLS": 5,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01a568": 5
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 5,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 5,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.8
+      },
+      {
+        "ENTRY_PC": "0x0613b2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061ac2": 15,
+          "0x062576": 9
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 17,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 8,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.5
+      },
+      {
+        "ENTRY_PC": "0x010170",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 12,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 1,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.4
+      },
+      {
+        "ENTRY_PC": "0x0008ea",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0007f4": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 13.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 8,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.3
+      },
+      {
+        "ENTRY_PC": "0x002b8a",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002b40": 10
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 20,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.1
+      },
+      {
+        "ENTRY_PC": "0x0101e4",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 2.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.0
+      },
+      {
+        "ENTRY_PC": "0x01a2ac",
+        "NATURAL_FULL_CALLS": 5,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01a4ca": 5
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 5,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 8.0
+      },
+      {
+        "ENTRY_PC": "0x0101d0",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f844": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 2,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 6.6
+      },
+      {
+        "ENTRY_PC": "0x03aaee",
+        "NATURAL_FULL_CALLS": 5,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x03aaa8": 5
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 6.5
+      },
+      {
+        "ENTRY_PC": "0x001040",
+        "NATURAL_FULL_CALLS": 8,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00098e": 8
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 16,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 6.0
+      },
+      {
+        "ENTRY_PC": "0x002b6e",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002b5e": 10
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 30,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 5.8
+      },
+      {
+        "ENTRY_PC": "0x00fcc4",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 1,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 5.7
+      },
+      {
+        "ENTRY_PC": "0x00638c",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x006378": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 5.6
+      },
+      {
+        "ENTRY_PC": "0x00e338",
+        "NATURAL_FULL_CALLS": 6,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008348": 6
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 13.0,
+        "CHANGED_REGISTERS": [
+          "D3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 6,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 5.5
+      },
+      {
+        "ENTRY_PC": "0x00297c",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00040e": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5,
+        "CHANGED_REGISTERS": [
+          "D7"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 3,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.7
+      },
+      {
+        "ENTRY_PC": "0x01ae7e",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01ae1a": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 2,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.6
+      },
+      {
+        "ENTRY_PC": "0x01af3a",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01aebc": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 2,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.6
+      },
+      {
+        "ENTRY_PC": "0x008cd0",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008c92": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 13,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.5
+      },
+      {
+        "ENTRY_PC": "0x00ea04",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00df1a": 10
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 15.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 10,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 8,
+        "ORDERED_RAM_WRITE_EVENTS": 10,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.5
+      },
+      {
+        "ENTRY_PC": "0x060fb2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0600fa": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 30.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 9,
+        "DISTINCT_ENTRY_STATES": 22,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 10,
+        "ORDERED_RAM_WRITE_EVENTS": 600,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.4
+      },
+      {
+        "ENTRY_PC": "0x009eba",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0097a2": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 3.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 4.1
+      },
+      {
+        "ENTRY_PC": "0x0085c4",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x005890": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 2.8
+      },
+      {
+        "ENTRY_PC": "0x0063da",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00633e": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 21,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 7,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 2.5
+      },
+      {
+        "ENTRY_PC": "0x017d12",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff88": 1,
+          "0x00df1a": 23
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 11.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 4,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 2.5
+      },
+      {
+        "ENTRY_PC": "0x00c90e",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ca48": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 11,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 6,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 2.3
+      },
+      {
+        "ENTRY_PC": "0x0611f4",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0611ea": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 6,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 2.0
+      },
+      {
+        "ENTRY_PC": "0x0062cc",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007ac2": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 1.8
+      },
+      {
+        "ENTRY_PC": "0x01a21e",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01a1a6": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 2,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 1.8
+      },
+      {
+        "ENTRY_PC": "0x00a8da",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00a886": 12,
+          "0x00a896": 12
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D5",
+          "A5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 96,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 1.6
+      },
+      {
+        "ENTRY_PC": "0x0623ac",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x060234": 6,
+          "0x060242": 6,
+          "0x060250": 6,
+          "0x060276": 6
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 6,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 1.1
+      },
+      {
+        "ENTRY_PC": "0x0027a6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002252": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 24.0,
+        "CHANGED_REGISTERS": [
+          "D4",
+          "D5",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 13,
+        "ORDERED_RAM_WRITE_EVENTS": 312,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 0.8
+      },
+      {
+        "ENTRY_PC": "0x00c114",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x000a50": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 31.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 168,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 0.5
+      },
+      {
+        "ENTRY_PC": "0x017908",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff88": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 3,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 0.4
+      },
+      {
+        "ENTRY_PC": "0x00e4d0",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b170": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 0.2
+      },
+      {
+        "ENTRY_PC": "0x060286",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x06027a": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 35.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0",
+          "A1",
+          "A4",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 12,
+        "ORDERED_RAM_WRITE_EVENTS": 264,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -0.7
+      },
+      {
+        "ENTRY_PC": "0x00deec",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008b32": 24
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 85.0,
+        "CHANGED_REGISTERS": [
+          "D6",
+          "D7",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 22,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 21,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -1.1
+      },
+      {
+        "ENTRY_PC": "0x010086",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 25.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "A0",
+          "A1",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 10,
+        "ORDERED_RAM_WRITE_EVENTS": 18,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -1.3
+      },
+      {
+        "ENTRY_PC": "0x061934",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0601ee": 4,
+          "0x0601fa": 4,
+          "0x060206": 4,
+          "0x060212": 4,
+          "0x06021e": 4,
+          "0x060260": 4
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6.0,
+        "CHANGED_REGISTERS": [
+          "A4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 28,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -1.6
+      },
+      {
+        "ENTRY_PC": "0x007dc8",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0061f6": 9,
+          "0x0062e4": 12,
+          "0x006516": 3
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 42.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D4",
+          "D5",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 20,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 40,
+        "ORDERED_RAM_WRITE_EVENTS": 9,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -2.0
+      },
+      {
+        "ENTRY_PC": "0x061ef4",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061ee4": 24
+        },
+        "OBSERVED_PATH_COUNT": 4,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 46.0,
+        "CHANGED_REGISTERS": [
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "A1",
+          "A4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 20,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 35,
+        "ORDERED_RAM_WRITE_EVENTS": 87,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -2.8
+      },
+      {
+        "ENTRY_PC": "0x00b3d2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00b384": 24
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 24.0,
+        "CHANGED_REGISTERS": [
+          "D6",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 12,
+        "ORDERED_RAM_WRITE_EVENTS": 168,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -3.0
+      },
+      {
+        "ENTRY_PC": "0x00b856",
+        "NATURAL_FULL_CALLS": 17,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00b7ca": 17
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 53,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 15,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 14,
+        "ORDERED_RAM_WRITE_EVENTS": 340,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -3.1
+      },
+      {
+        "ENTRY_PC": "0x00bcba",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0066ac": 23,
+          "0x007854": 1
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 39.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D7",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 9,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 9,
+        "ORDERED_RAM_WRITE_EVENTS": 70,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -3.7
+      },
+      {
+        "ENTRY_PC": "0x06147e",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061ac6": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 13,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 16,
+        "ORDERED_RAM_WRITE_EVENTS": 240,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -4.1
+      },
+      {
+        "ENTRY_PC": "0x00bcc4",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0070b0": 14,
+          "0x0070e8": 7,
+          "0x007956": 3
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 38.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D7",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 9,
+        "DISTINCT_ENTRY_STATES": 22,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 13,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -4.4
+      },
+      {
+        "ENTRY_PC": "0x0613f8",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061a16": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 18,
+        "ORDERED_RAM_WRITE_EVENTS": 144,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -5.3
+      },
+      {
+        "ENTRY_PC": "0x0005ec",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0004ec": 2,
+          "0x0004f6": 2,
+          "0x000500": 2,
+          "0x00050e": 2,
+          "0x00051e": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 5.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 5,
+        "DISTINCT_ENTRY_STATES": 10,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -5.5
+      },
+      {
+        "ENTRY_PC": "0x00d9be",
+        "NATURAL_FULL_CALLS": 9,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f548": 5,
+          "0x00f48e": 4
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 18,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -6.3
+      },
+      {
+        "ENTRY_PC": "0x00271c",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0026a6": 2,
+          "0x0026ca": 1
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 13,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 5,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -6.5
+      },
+      {
+        "ENTRY_PC": "0x00c1ce",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x02e796": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 29.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 11,
+        "ORDERED_RAM_WRITE_EVENTS": 384,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.1
+      },
+      {
+        "ENTRY_PC": "0x00d7b0",
+        "NATURAL_FULL_CALLS": 6,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00d582": 3,
+          "0x00d5e8": 3
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 19.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 6,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.1
+      },
+      {
+        "ENTRY_PC": "0x01a244",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01a4e2": 4,
+          "0x01a51c": 5,
+          "0x01a5d2": 1,
+          "0x01a606": 1,
+          "0x01a96e": 13
+        },
+        "OBSERVED_PATH_COUNT": 4,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 6,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.2
+      },
+      {
+        "ENTRY_PC": "0x00f920",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 2
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 43.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 11,
+        "ORDERED_RAM_WRITE_EVENTS": 9,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.5
+      },
+      {
+        "ENTRY_PC": "0x0103b0",
+        "NATURAL_FULL_CALLS": 7,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00fdcc": 5,
+          "0x00fd20": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 7,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 14,
+        "ORDERED_RAM_WRITE_EVENTS": 14,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.6
+      },
+      {
+        "ENTRY_PC": "0x06121a",
+        "NATURAL_FULL_CALLS": 11,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0611ee": 2,
+          "0x060b8c": 9
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 6,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 44,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.8
+      },
+      {
+        "ENTRY_PC": "0x007074",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x006fe4": 2,
+          "0x00701a": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 7,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 3,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -7.9
+      },
+      {
+        "ENTRY_PC": "0x002bd2",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002b5a": 10
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 34.0,
+        "CHANGED_REGISTERS": [
+          "D4",
+          "D5",
+          "A4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 90,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -8.0
+      },
+      {
+        "ENTRY_PC": "0x00f740",
+        "NATURAL_FULL_CALLS": 7,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f476": 7
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 11,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 23,
+        "ORDERED_RAM_WRITE_EVENTS": 7,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -9.3
+      },
+      {
+        "ENTRY_PC": "0x008e22",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0007b8": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 66.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "D5",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 14,
+        "ORDERED_RAM_WRITE_EVENTS": 144,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -9.6
+      },
+      {
+        "ENTRY_PC": "0x00bcd8",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01c0fc": 10,
+          "0x01ba08": 2,
+          "0x01bd76": 12
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 37.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D7",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 7,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 24,
+        "ORDERED_RAM_WRITE_EVENTS": 48,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -10.3
+      },
+      {
+        "ENTRY_PC": "0x0096ba",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0094f2": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 32.0,
+        "CHANGED_REGISTERS": [
+          "D1",
+          "D4",
+          "D5",
+          "D6",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 94,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -10.6
+      },
+      {
+        "ENTRY_PC": "0x0007c4",
+        "NATURAL_FULL_CALLS": 8,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x000556": 2,
+          "0x000568": 2,
+          "0x000578": 2,
+          "0x000586": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 32,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -10.9
+      },
+      {
+        "ENTRY_PC": "0x0604bc",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0604f6": 1,
+          "0x060bcc": 9
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
+        "CHANGED_REGISTERS": [
+          "A0",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 6,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 60,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -11.2
+      },
+      {
+        "ENTRY_PC": "0x01b024",
+        "NATURAL_FULL_CALLS": 4,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b00e": 2,
+          "0x01afe0": 1,
+          "0x01af78": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 7.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 4,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 4,
+        "ORDERED_RAM_WRITE_EVENTS": 8,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -12.1
+      },
+      {
+        "ENTRY_PC": "0x002ade",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x000342": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 40,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 15,
+        "ORDERED_RAM_WRITE_EVENTS": 18,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -12.6
+      },
+      {
+        "ENTRY_PC": "0x009ad0",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0098fa": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 21.0,
+        "CHANGED_REGISTERS": [
+          "D4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 31,
+        "ORDERED_RAM_WRITE_EVENTS": 144,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -13.1
+      },
+      {
+        "ENTRY_PC": "0x061054",
+        "NATURAL_FULL_CALLS": 7,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x06015a": 7
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 27,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
+        "ORDERED_RAM_WRITE_EVENTS": 154,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -13.3
+      },
+      {
+        "ENTRY_PC": "0x008814",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007660": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 71,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D5",
+          "D7",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 11,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -13.9
+      },
+      {
+        "ENTRY_PC": "0x0610c8",
+        "NATURAL_FULL_CALLS": 9,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x060cd2": 9
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 27,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 5,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 14,
+        "ORDERED_RAM_WRITE_EVENTS": 126,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -14.1
+      },
+      {
+        "ENTRY_PC": "0x03c956",
+        "NATURAL_FULL_CALLS": 4,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x03aaca": 1,
+          "0x003342": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 24,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -14.5
+      },
+      {
+        "ENTRY_PC": "0x002992",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002188": 2
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 74.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 23,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -14.8
+      },
+      {
+        "ENTRY_PC": "0x009ad6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009d40": 5,
+          "0x009376": 14,
+          "0x009330": 5
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 25.0,
+        "CHANGED_REGISTERS": [
+          "D4"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 28,
+        "ORDERED_RAM_WRITE_EVENTS": 144,
+        "EXACT_BOUNDARY_STATUS": "EXACT",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNRESOLVED",
+        "EXISTING_STACK_STATUS": "PRESENT_UNMEASURED",
+        "PRIOR_DISPOSITION": "UNKNOWN",
+        "RANK_SCORE": -14.9
+      },
+      {
+        "ENTRY_PC": "0x008778",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007674": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 75,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D5",
+          "D7",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 11,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -15.1
+      },
+      {
+        "ENTRY_PC": "0x00b912",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00b848": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 70,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D7",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 19,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -15.6
+      },
+      {
+        "ENTRY_PC": "0x00e3e8",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bfe2": 1,
+          "0x01b8a8": 1,
+          "0x01bc4e": 1
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 24,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 10,
+        "ORDERED_RAM_WRITE_EVENTS": 12,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -17.0
+      },
+      {
+        "ENTRY_PC": "0x06138e",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x061a12": 7,
+          "0x0624a0": 17
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 8.0,
+        "CHANGED_REGISTERS": [
+          "D6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 28,
+        "ORDERED_RAM_WRITE_EVENTS": 120,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -21.4
+      },
+      {
+        "ENTRY_PC": "0x008950",
+        "NATURAL_FULL_CALLS": 2,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007688": 2
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 72.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D2",
+          "D3",
+          "D5",
+          "D7",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 23,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -21.6
+      },
+      {
+        "ENTRY_PC": "0x0100e4",
+        "NATURAL_FULL_CALLS": 1,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00f7c6": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 38,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 19,
+        "ORDERED_RAM_WRITE_EVENTS": 34,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -21.6
+      },
+      {
+        "ENTRY_PC": "0x0027fc",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002156": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 45.0,
+        "CHANGED_REGISTERS": [
+          "D4",
+          "D5",
+          "A4",
+          "A5"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 16,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 62,
+        "ORDERED_RAM_WRITE_EVENTS": 360,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -21.7
+      },
+      {
+        "ENTRY_PC": "0x00b6a6",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00b5be": 18,
+          "0x00b422": 6
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 44.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "D4",
+          "D6",
+          "A0",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 15,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 41,
+        "ORDERED_RAM_WRITE_EVENTS": 240,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -23.6
+      },
+      {
+        "ENTRY_PC": "0x03b358",
+        "NATURAL_FULL_CALLS": 5,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x03a900": 5
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 62,
+        "CHANGED_REGISTERS": [
+          "A0",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 2,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 19,
+        "ORDERED_RAM_WRITE_EVENTS": 45,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -25.0
+      },
+      {
+        "ENTRY_PC": "0x0101ec",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00fd8c": 2,
+          "0x00f9a6": 17,
+          "0x017988": 5
+        },
+        "OBSERVED_PATH_COUNT": 4,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 88.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D3",
+          "A1"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 5,
+        "DISTINCT_ENTRY_STATES": 22,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 24,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -25.6
+      },
+      {
+        "ENTRY_PC": "0x002ba0",
+        "NATURAL_FULL_CALLS": 10,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002b44": 10
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 85.0,
+        "CHANGED_REGISTERS": [
+          "D5",
+          "D6",
+          "D7"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 410,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -25.7
+      },
+      {
+        "ENTRY_PC": "0x017ff2",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0064b0": 1,
+          "0x017d0c": 1,
+          "0x017dc8": 1
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 16,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 12,
+        "ORDERED_RAM_WRITE_EVENTS": 21,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -26.0
+      },
+      {
+        "ENTRY_PC": "0x061032",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x060c5a": 8,
+          "0x060c70": 8,
+          "0x060c86": 8
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 39.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 9,
+        "DISTINCT_ENTRY_STATES": 12,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 30,
+        "ORDERED_RAM_WRITE_EVENTS": 591,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -27.3
+      },
+      {
+        "ENTRY_PC": "0x00b9ec",
+        "NATURAL_FULL_CALLS": 11,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0082ba": 11
+        },
+        "OBSERVED_PATH_COUNT": 6,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 54,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 11,
+        "DISTINCT_ENTRY_STATES": 11,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 32,
+        "ORDERED_RAM_WRITE_EVENTS": 74,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -28.2
+      },
+      {
+        "ENTRY_PC": "0x00da2a",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ff1a": 12,
+          "0x00f6e8": 5,
+          "0x00fd9a": 5,
+          "0x00fcdc": 2
+        },
+        "OBSERVED_PATH_COUNT": 12,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 22.0,
+        "CHANGED_REGISTERS": [
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 11,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 15,
+        "ORDERED_RAM_WRITE_EVENTS": 49,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -28.4
+      },
+      {
+        "ENTRY_PC": "0x000f32",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x000a02": 3,
+          "0x000a6a": 21
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 44.0,
+        "CHANGED_REGISTERS": [
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 17,
+        "ORDERED_RAM_WRITE_EVENTS": 249,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -29.6
+      },
+      {
+        "ENTRY_PC": "0x01ad14",
+        "NATURAL_FULL_CALLS": 11,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01b012": 2,
+          "0x01afe4": 1,
+          "0x01ae1e": 1,
+          "0x01af7c": 1,
+          "0x01aec0": 1,
+          "0x01b7da": 1,
+          "0x01bf6c": 2,
+          "0x01bbe0": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 4,
+        "DISTINCT_ENTRY_STATES": 11,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 18,
+        "ORDERED_RAM_WRITE_EVENTS": 33,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -29.7
+      },
+      {
+        "ENTRY_PC": "0x0083f8",
+        "NATURAL_FULL_CALLS": 8,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x006230": 8
+        },
+        "OBSERVED_PATH_COUNT": 4,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 90.5,
+        "CHANGED_REGISTERS": [
+          "D4",
+          "D5",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 8,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 38,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -31.35
+      },
+      {
+        "ENTRY_PC": "0x010382",
+        "NATURAL_FULL_CALLS": 14,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0102e2": 7,
+          "0x0102a0": 7
+        },
+        "OBSERVED_PATH_COUNT": 8,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 66.0,
+        "CHANGED_REGISTERS": [
+          "D3",
+          "D4",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 7,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 27,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -34.2
+      },
+      {
+        "ENTRY_PC": "0x00b15e",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00ab7a": 17,
+          "0x00ac74": 7
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 79.0,
+        "CHANGED_REGISTERS": [
+          "D2",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "A0",
+          "A1",
+          "A2",
+          "A3",
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 17,
+        "DISTINCT_ENTRY_STATES": 21,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 45,
+        "ORDERED_RAM_WRITE_EVENTS": 386,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -36.9
+      },
+      {
+        "ENTRY_PC": "0x008cac",
+        "NATURAL_FULL_CALLS": 9,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x008c6a": 3,
+          "0x008c76": 3,
+          "0x008c82": 3
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 49,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 9,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 0,
+        "ORDERED_RAM_WRITE_EVENTS": 324,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -37.3
+      },
+      {
+        "ENTRY_PC": "0x060f8c",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x060c18": 5,
+          "0x060c2e": 5,
+          "0x060c44": 5,
+          "0x060ca4": 5,
+          "0x060cba": 4
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 41.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D2",
+          "A0",
+          "A3"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 14,
+        "DISTINCT_ENTRY_STATES": 14,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 47,
+        "ORDERED_RAM_WRITE_EVENTS": 681,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -38.1
+      },
+      {
+        "ENTRY_PC": "0x007d8a",
+        "NATURAL_FULL_CALLS": 8,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007864": 4,
+          "0x006fec": 2,
+          "0x007022": 1,
+          "0x005f2e": 1
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 47.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D4",
+          "D5",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 8,
+        "DISTINCT_ENTRY_STATES": 8,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 51,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -40.1
+      },
+      {
+        "ENTRY_PC": "0x00baac",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bf04": 3,
+          "0x01c038": 8,
+          "0x01bc96": 4,
+          "0x01bca6": 4,
+          "0x01bfc2": 1,
+          "0x01b83e": 1,
+          "0x01b900": 3
+        },
+        "OBSERVED_PATH_COUNT": 5,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 58.0,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "A0",
+          "A1",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 22,
+        "DISTINCT_ENTRY_STATES": 20,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 66,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -40.2
+      },
+      {
+        "ENTRY_PC": "0x00129a",
+        "NATURAL_FULL_CALLS": 16,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00119a": 2,
+          "0x0011b0": 2,
+          "0x0011ce": 2,
+          "0x0011e4": 2,
+          "0x001202": 2,
+          "0x001218": 2,
+          "0x001236": 2,
+          "0x00124c": 2
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 9.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 14,
+        "ORDERED_RAM_WRITE_EVENTS": 160,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -42.9
+      },
+      {
+        "ENTRY_PC": "0x009bf2",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x009d26": 4,
+          "0x00935c": 18,
+          "0x009312": 2
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 84.0,
+        "CHANGED_REGISTERS": [
+          "D4",
+          "D5",
+          "A1",
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 20,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 94,
+        "ORDERED_RAM_WRITE_EVENTS": 192,
+        "EXACT_BOUNDARY_STATUS": "EXACT",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNRESOLVED",
+        "EXISTING_STACK_STATUS": "16-byte MOVEM save; caller observability unresolved",
+        "PRIOR_DISPOSITION": "CPP_REPLACEMENT_CANDIDATE",
+        "RANK_SCORE": -55.4
+      },
+      {
+        "ENTRY_PC": "0x00cecc",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00d744": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 70,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 37,
+        "ORDERED_RAM_WRITE_EVENTS": 114,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -56.0
+      },
+      {
+        "ENTRY_PC": "0x008910",
+        "NATURAL_FULL_CALLS": 17,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x007ff8": 8,
+          "0x00767e": 6,
+          "0x005f58": 1,
+          "0x007962": 2
+        },
+        "OBSERVED_PATH_COUNT": 10,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 87,
+        "CHANGED_REGISTERS": [
+          "D0",
+          "D1",
+          "D5",
+          "D7",
+          "A0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 17,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 65,
+        "ORDERED_RAM_WRITE_EVENTS": 2,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -60.7
+      },
+      {
+        "ENTRY_PC": "0x002d66",
+        "NATURAL_FULL_CALLS": 4,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x002d58": 4
+        },
+        "OBSERVED_PATH_COUNT": 2,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 72.0,
+        "CHANGED_REGISTERS": [
+          "A6"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 4,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 51,
+        "ORDERED_RAM_WRITE_EVENTS": 125,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -62.4
+      },
+      {
+        "ENTRY_PC": "0x002db6",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x003586": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 81,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 1,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 50,
+        "ORDERED_RAM_WRITE_EVENTS": 210,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -67.1
+      },
+      {
+        "ENTRY_PC": "0x002e78",
+        "NATURAL_FULL_CALLS": 3,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00cb5a": 3
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 81,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 3,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 51,
+        "ORDERED_RAM_WRITE_EVENTS": 210,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -67.7
+      },
+      {
+        "ENTRY_PC": "0x00e7fc",
+        "NATURAL_FULL_CALLS": 17,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00bf10": 13,
+          "0x017db2": 2,
+          "0x017d78": 1,
+          "0x00b820": 1
+        },
+        "OBSERVED_PATH_COUNT": 8,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 66,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 1,
+        "DISTINCT_ENTRY_STATES": 17,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 41,
+        "ORDERED_RAM_WRITE_EVENTS": 624,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -74.4
+      },
+      {
+        "ENTRY_PC": "0x00c012",
+        "NATURAL_FULL_CALLS": 18,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00befe": 18
+        },
+        "OBSERVED_PATH_COUNT": 13,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 52.0,
+        "CHANGED_REGISTERS": [
+          "A2"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 18,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 77,
+        "ORDERED_RAM_WRITE_EVENTS": 396,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -80.0
+      },
+      {
+        "ENTRY_PC": "0x060004",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x0031da": 1,
+          "0x00daf4": 4,
+          "0x00347e": 2,
+          "0x00ca92": 2,
+          "0x0062c4": 3,
+          "0x0066c8": 3,
+          "0x0066e4": 1,
+          "0x007aa6": 1,
+          "0x0065ec": 2,
+          "0x0064bc": 1,
+          "0x007142": 1,
+          "0x006656": 3
+        },
+        "OBSERVED_PATH_COUNT": 5,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 33.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 2,
+        "DISTINCT_ENTRY_STATES": 23,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 52,
+        "ORDERED_RAM_WRITE_EVENTS": 1065,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -81.3
+      },
+      {
+        "ENTRY_PC": "0x00e7e8",
+        "NATURAL_FULL_CALLS": 16,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01c55e": 2,
+          "0x01c5b0": 2,
+          "0x01a8b0": 7,
+          "0x01bd58": 2,
+          "0x01a9cc": 3
+        },
+        "OBSERVED_PATH_COUNT": 11,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 72.5,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 3,
+        "DISTINCT_ENTRY_STATES": 16,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 36,
+        "ORDERED_RAM_WRITE_EVENTS": 552,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": -81.75
+      }
+    ],
+    "all_replay_targets_count": 165,
+    "remaining_candidate_count": 156
+  }
+}

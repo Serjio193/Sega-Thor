@@ -9879,3 +9879,10 @@ status remains NO and runtime replacement remains inactive. No new bytes or
 evidence-authority deltas. Report and machine receipt:
 `docs/reports/THOR_REPLAY_HELPER7_9D4E_20261011.md` and
 `build/coordinate-bound-9d4e-path-specific-acceptance-20261011.json`.
+
+
+## 2026-10-11 — replay-driven helper #8 (`0x9DB4`)
+
+Reranked remaining replay-census candidates after excluding verified/frozen entries; `0x9DB4` was TOP-1. Closed exact range `[0x009DB4,0x009DD6)` and direct caller `0x0092CC BSR.W` only. A bounded typed model matched 24 natural replay vectors, and five ABI-local canonical-ROM cases passed in Debug and Release. The model covers D0.low, D3.low, the conditional `[A6+0x41]` OR, preserved state, and X from the subtraction borrow. The direct caller consumes D0, overwrites D3 before read, and overwrites NZVC before conditional use; X is conservatively preserved by the next callee and remains modeled. No internal stack scratch, calls, indirect control, or RAM writes occurred on the natural path.
+
+Promoted `0x9DB4` to `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC` for caller `0x0092CC`; global verification NO, runtime replacement inactive. Focused Debug/Release and GNU/Linux native tests passed; Linux ROM-oracle execution was unavailable because the configured runtime core is Windows-only. No bytes were classified and authority deltas are zero. Totals remain ROM 3,145,728 B; runtime 440,425 B; structural 1,266,667 B; SOURCE_OWNED 1,487,672 B. See `docs/reports/THOR_REPLAY_HELPER8_9DB4_20261011.md`.

@@ -3,10 +3,12 @@
 #include "tools/hybrid/coordinate_bound_model.hpp"
 #include "tools/hybrid/external_library.hpp"
 #include "tools/hybrid/grid_query_micro_oracle.hpp"
+#include "tools/hybrid/negative_bound_model.hpp"
 
 #include <libretro.h>
 
 #include <array>
+#include <algorithm>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -16,7 +18,8 @@
 #include <vector>
 
 namespace {
-constexpr unsigned entry_pc = 0x9D4EU, rts_pc = 0x9D6EU;
+unsigned entry_pc = 0x9D4EU;
+std::vector<unsigned> rts_pcs{0x9D6EU};
 constexpr unsigned sentinel_pc = 0xFF6300U, object = 0xFF2000U;
 constexpr unsigned descriptor = 0xFF3000U, stack = 0xFF20F0U;
 constexpr int execute = 1, memory_write = 4;
@@ -69,7 +72,8 @@ unsigned int hook(int type, int width, unsigned address, unsigned value) {
     } else if (active != nullptr && (type & memory_write) != 0) {
         active->writes.push_back({read_reg(16U), address,
             width > 0 ? static_cast<unsigned>(width) : 0U, value});
-    } else if (active != nullptr && (type & execute) != 0 && address == rts_pc) {
+    } else if (active != nullptr && (type & execute) != 0 &&
+               std::find(rts_pcs.begin(), rts_pcs.end(), address) != rts_pcs.end()) {
         active->rts = snapshot();
         active->path.push_back(address);
     } else if (active != nullptr && (type & execute) != 0 && address == sentinel_pc) {
@@ -138,6 +142,45 @@ bool matches(const Case& scenario, const Observation& observation) {
     }
     for (unsigned i = 0; i < 8; ++i) {
         if (i == 0 || i == 3 || i == 7) continue;
+        pass = pass && observation.rts.d[i] == observation.entry.d[i];
+    }
+    for (unsigned i = 0; i < 7; ++i)
+        pass = pass && observation.rts.a[i] == observation.entry.a[i];
+    return pass;
+}
+
+struct NegativeCase {
+    const char* name;
+    unsigned coordinate, axis_value, record_offset;
+    std::uint8_t flags;
+    unsigned expected_exit;
+};
+
+bool matches_negative(const NegativeCase& scenario, const Observation& observation) {
+    const auto model = oasis::hybrid::apply_negative_bound({
+        static_cast<std::uint16_t>(scenario.coordinate),
+        static_cast<std::uint16_t>(scenario.axis_value),
+        static_cast<std::uint16_t>(scenario.record_offset), scenario.flags});
+    const auto low = [](unsigned value) { return value & 0xFFFFU; };
+    const int actual_flag = peek(object + 0x41U);
+    bool pass = observation.complete && observation.rts.pc == scenario.expected_exit &&
+        low(observation.rts.d[0]) == model.coordinate &&
+        low(observation.rts.d[3]) == model.relative_value &&
+        actual_flag >= 0 && static_cast<unsigned>(actual_flag) == model.flags &&
+        (observation.rts.d[0] & 0xFFFF0000U) ==
+            (observation.entry.d[0] & 0xFFFF0000U) &&
+        (observation.rts.d[3] & 0xFFFF0000U) ==
+            (observation.entry.d[3] & 0xFFFF0000U) &&
+        observation.rts.a[7] == observation.entry.a[7] &&
+        ((observation.rts.sr & 0x10U) != 0U) == model.extend_flag &&
+        observation.writes.size() == (model.flags_written ? 1U : 0U);
+    if (model.flags_written && !observation.writes.empty()) {
+        const auto& write = observation.writes.front();
+        pass = pass && write[1] == object + 0x41U && write[2] == 1U &&
+            (write[3] & 0xFFU) == model.flags;
+    }
+    for (unsigned i = 0; i < 8; ++i) {
+        if (i == 0U || i == 3U) continue;
         pass = pass && observation.rts.d[i] == observation.entry.d[i];
     }
     for (unsigned i = 0; i < 7; ++i)
@@ -217,10 +260,44 @@ int main(int argc, char** argv) {
             if (!matches(scenario, observations.back()))
                 throw std::runtime_error(std::string("ROM/native mismatch: ") + scenario.name);
         }
+        entry_pc = 0x9DB4U;
+        rts_pcs = {0x9DCAU, 0x9DD4U};
+        constexpr std::array negative_cases{
+            NegativeCase{"in_range", 7U, 20U, 10U, 0x05U, 0x9DCAU},
+            NegativeCase{"clamp_nonzero", 30U, 20U, 10U, 0x05U, 0x9DCAU},
+            NegativeCase{"clamp_zero", 1U, 10U, 10U, 0x21U, 0x9DD4U},
+            NegativeCase{"negative_difference", 5U, 3U, 10U, 0x21U, 0x9DD4U},
+            NegativeCase{"negative_without_borrow", 5U, 0xFFFFU, 1U, 0x21U, 0x9DD4U},
+        };
+        for (const auto& scenario : negative_cases) {
+            write_value(object + 0x46U, 2, scenario.record_offset);
+            write_value(object + 0x41U, 1, scenario.flags);
+            write_value(stack, 4, sentinel_pc);
+            for (unsigned i = 0; i < 8; ++i) {
+                set_reg(i, 0xA0B00000U + i * 0x010101U);
+                set_reg(8U + i, 0xFF1000U + i * 0x100U);
+            }
+            set_reg(0, 0x11220000U | scenario.coordinate);
+            set_reg(2, 0x33440000U | scenario.axis_value);
+            set_reg(3, 0x55667788U);
+            set_reg(14, object);
+            set_reg(15, stack);
+            set_reg(16, entry_pc);
+            set_reg(17, 0x2000U);
+            const auto prior = observations.size();
+            run_cpu(10000U);
+            if (active != nullptr || observations.size() != prior + 1U ||
+                !observations.back().complete)
+                throw std::runtime_error(std::string("synthetic 0x9DB4 execution failed: ") +
+                                         scenario.name);
+            if (!matches_negative(scenario, observations.back()))
+                throw std::runtime_error(std::string("ROM/native 0x9DB4 mismatch: ") +
+                                         scenario.name);
+        }
         install(nullptr);
         std::ofstream out(output);
         out.exceptions(std::ios::failbit | std::ios::badbit);
-        out << "{\"schema\":\"oasis.m68k.9d4e-native-oracle.v1\",\"rom_sha256\":\""
+        out << "{\"schema\":\"oasis.m68k.9d4e-9db4-native-oracle.v2\",\"rom_sha256\":\""
             << rom_sha << "\",\"routine_range\":\"[0x009D4E,0x009D70)\",\"caller\":\"0x00909E BSR.W\","
             << "\"harness_validated\":true,\"rts_micro_oracle\":\"PASS\",\"case_count\":" << observations.size()
             << ",\"cases\":[";
@@ -231,7 +308,17 @@ int main(int argc, char** argv) {
                 out << (n ? "," : "") << observations[i].path[n];
             out << "],\"write_count\":" << observations[i].writes.size() << '}';
         }
-        out << "],\"all_match\":true,\"runtime_replacement_active\":false,"
+        out << "],\"secondary_routine\":{\"entry\":\"0x009DB4\","
+            << "\"range\":\"[0x009DB4,0x009DD6)\",\"caller\":\"0x0092CC BSR.W\","
+            << "\"cases\":[";
+        for (std::size_t i = 0; i < negative_cases.size(); ++i) {
+            if (i != 0U) out << ',';
+            const auto& observation = observations[cases.size() + i];
+            out << "{\"id\":\"" << negative_cases[i].name
+                << "\",\"matched\":true,\"rts_pc\":" << observation.rts.pc
+                << ",\"write_count\":" << observation.writes.size() << '}';
+        }
+        out << "],\"all_match\":true},\"all_match\":true,\"runtime_replacement_active\":false,"
             << "\"authority_deltas\":0}\n";
         lib.get<void(*)()>("retro_unload_game")();
         lib.get<void(*)()>("retro_deinit")();
