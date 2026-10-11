@@ -1636,3 +1636,12 @@ The runtime proof and compact receipt are
 `docs/reports/THOR_M12_LIVE_WORKER_CONTROL_WINDOW_2H.md` and its JSON
 counterpart. Runtime/session databases and segment evidence remain ignored
 under `build/thor-evidence/`.
+
+- `src/tools/hybrid/coordinate_bound_model.hpp/.cpp` — typed 16-bit model for
+  the path-specific M68K bound helper at `0x9D4E`.
+- `src/tools/hybrid/coordinate_bound_oracle.cpp` — developer-only canonical
+  ROM HOOK_CPU oracle for bounded `0x9D4E` cases.
+- `tests/coordinate_bound_model_test.cpp` — natural-capture vectors and
+  arithmetic/branch tests for the coordinate-bound model.
+- `docs/reports/THOR_REPLAY_HELPER7_9D4E_20261011.md` — exact boundary, caller
+  ABI, natural read patterns, native differential, and limits.

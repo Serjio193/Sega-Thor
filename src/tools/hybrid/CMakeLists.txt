@@ -21,6 +21,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     generated_blocks_m1145_registry_2.cpp generated_blocks_m1145_registry_3.cpp
     generated_block_registry.cpp
     recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp runner_support.cpp
+    coordinate_bound_model.cpp
     caller_attribution.cpp caller_continuation.cpp a5_lifetime_observer.cpp callee_62ae0_observer.cpp callee_61934_observer.cpp callee_623ac_observer.cpp a5_lifetime_runtime.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
@@ -37,6 +38,9 @@ add_test(NAME oasis_hybrid_candidate_2d66 COMMAND oasis_hybrid_candidate_2d66_te
 add_executable(oasis_hybrid_candidate_604bc_test ${PROJECT_SOURCE_DIR}/tests/hybrid_candidate_604bc_test.cpp)
 target_link_libraries(oasis_hybrid_candidate_604bc_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_candidate_604bc COMMAND oasis_hybrid_candidate_604bc_test)
+add_executable(oasis_hybrid_coordinate_bound_test ${PROJECT_SOURCE_DIR}/tests/coordinate_bound_model_test.cpp)
+target_link_libraries(oasis_hybrid_coordinate_bound_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_coordinate_bound COMMAND oasis_hybrid_coordinate_bound_test)
 add_executable(oasis_hybrid_replacement_test ${PROJECT_SOURCE_DIR}/tests/hybrid_replacement_test.cpp)
 target_link_libraries(oasis_hybrid_replacement_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_replacement COMMAND oasis_hybrid_replacement_test)
@@ -117,4 +121,12 @@ if(OASIS_HYBRID_GPGX_SOURCE)
     target_include_directories(oasis_hybrid_poc PRIVATE
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
     target_link_libraries(oasis_hybrid_poc PRIVATE oasis_hybrid_contract ${CMAKE_DL_LIBS})
+
+    add_executable(oasis_coordinate_bound_oracle
+        coordinate_bound_oracle.cpp
+        coordinate_bound_model.cpp
+        grid_query_micro_oracle.cpp)
+    target_include_directories(oasis_coordinate_bound_oracle PRIVATE
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    target_link_libraries(oasis_coordinate_bound_oracle PRIVATE oasis_core ${CMAKE_DL_LIBS})
 endif()

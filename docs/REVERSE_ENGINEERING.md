@@ -3916,3 +3916,26 @@ site, not a proven definition. A6 source remains inherited/unresolved.
 D3=512 and the two +8 address gaps are separate bounded unresolved
 investigations. No structure or SOURCE_OWNED promotion follows from this
 evidence.
+
+## M68K `0x9D4E` — path-specific coordinate bound helper (2026-10-11)
+
+Canonical ROM SHA-256 is pinned to
+`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact
+range `[0x009D4E,0x009D70)` has 12 instructions and one RTS. The direct caller
+is `0x00909E BSR.W`, return `0x0090A2`. It computes 16-bit
+`D1.low + word[A6+0x46]`, then the unsigned maximum
+`word[A0+4] * 8 - 1 - sum`; clamps D0.low when above the maximum; returns the
+maximum in D3.low and sum in D7.low; and when clamped maximum is zero, ORs
+`0x48` into byte `[A6+0x40]`.
+
+Twenty-four replay captures from this caller all follow one path. Three read
+patterns correspond to record bases `0xFF1A2E`, `0xFF2242`, `0xFF23BA`, with
+`[A6+0x46]` values 10, 9, 9; `[A0+4]` is 64 in each. No selector/table-index
+interpretation is established. Caller continuation `0x0090A2` calls `0x009DD6`,
+whose BTST overwrites condition state before the BNE; CCR is dead for this
+path. Native and canonical ROM matched all 24 natural output vectors plus three
+bounded synthetic branch cases in Debug and Release. GNU/Linux focused native
+build/test passed; canonical runtime oracle was not run on Linux due to its
+Windows-only runtime core. Status is verified path-specific for caller
+`0x00909E`; global verification and runtime activation remain NO. No authority
+or coverage totals changed.

@@ -9862,3 +9862,20 @@ unchanged. Compact report/receipt are in `docs/reports/`; all SQLite/session
 maps, raw logs and segment audit data remain local under ignored
 `build/thor-evidence/live-worker-control-2h/`. The broader M12 milestone
 remains active. Exact-SHA CI publication follows this local validation.
+
+## 2026-10-11 — replay-driven helper #7 (`0x9D4E`)
+
+Closed `[0x009D4E,0x009D70)` as a 34-byte, 12-instruction routine with one RTS,
+no nested calls, indirect flow, or stack traffic. Verified only the direct
+`0x00909E BSR.W` caller path. Twenty-four natural calls expose three record
+base/read-value patterns (`[A6+0x46]` = 9 or 10; `[A0+4]` = 64), but all take
+the same BLS path; these do not establish a selector domain. A typed 16-bit
+coordinate-bound model matched all 24 captured output vectors. Three synthetic
+ABI-local canonical-ROM cases covered in-range, nonzero clamp, and zero clamp
+with the conditional `[A6+0x40]` flags-byte OR. Debug/Release and focused
+GNU/Linux native tests passed. Promoted to
+`CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC` for caller `0x00909E` only; global
+status remains NO and runtime replacement remains inactive. No new bytes or
+evidence-authority deltas. Report and machine receipt:
+`docs/reports/THOR_REPLAY_HELPER7_9D4E_20261011.md` and
+`build/coordinate-bound-9d4e-path-specific-acceptance-20261011.json`.
