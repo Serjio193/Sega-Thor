@@ -32,6 +32,12 @@ target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
 add_executable(oasis_hybrid_contract_test ${PROJECT_SOURCE_DIR}/tests/hybrid_contract_test.cpp)
 target_link_libraries(oasis_hybrid_contract_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_contract COMMAND oasis_hybrid_contract_test)
+add_executable(oasis_gameplay_session_test gameplay_session.cpp gameplay_session_identity.cpp
+    gameplay_session_receipts.cpp grid_query_native_model.cpp m68k_call_census.cpp
+    ${PROJECT_SOURCE_DIR}/tests/gameplay_session_test.cpp)
+target_include_directories(oasis_gameplay_session_test PRIVATE ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(oasis_gameplay_session_test PRIVATE oasis_core)
+add_test(NAME oasis_gameplay_session COMMAND oasis_gameplay_session_test)
 add_executable(oasis_hybrid_dispatch_test ${PROJECT_SOURCE_DIR}/tests/hybrid_dispatch_test.cpp)
 target_link_libraries(oasis_hybrid_dispatch_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_dispatch COMMAND oasis_hybrid_dispatch_test)
@@ -136,6 +142,27 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         ${OASIS_HYBRID_GPGX_SOURCE}/core/debug
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
     target_link_libraries(oasis_hybrid_scheduler_fixture PRIVATE oasis_core ${CMAKE_DL_LIBS})
+    add_executable(oasis_gameplay_session
+        gameplay_session.cpp gameplay_session_identity.cpp gameplay_session_receipts.cpp
+        gameplay_session_landmarks.cpp gameplay_session_input_sources.cpp
+        gameplay_session_call_capture.cpp m68k_9d70_instruction_step.cpp
+        gameplay_session_cpu.cpp gameplay_session_replay_diagnostic.cpp replay_equivalence_trace.cpp
+        grid_query_native_model.cpp m68k_call_census.cpp native_island_runtime.cpp
+        subtraction_bound_model.cpp gameplay_session_runner.cpp)
+    target_include_directories(oasis_gameplay_session PRIVATE
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    target_link_libraries(oasis_gameplay_session PRIVATE oasis_core ${CMAKE_DL_LIBS})
+    add_executable(oasis_gameplay_session_input_sources_test gameplay_session_input_sources.cpp
+        ${PROJECT_SOURCE_DIR}/tests/gameplay_session_input_sources_test.cpp)
+    target_include_directories(oasis_gameplay_session_input_sources_test PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    add_test(NAME oasis_gameplay_session_input_sources COMMAND oasis_gameplay_session_input_sources_test)
+    add_executable(oasis_gameplay_session_replay_diagnostic_test gameplay_session_replay_diagnostic.cpp
+        ${PROJECT_SOURCE_DIR}/tests/gameplay_session_replay_diagnostic_test.cpp)
+    target_include_directories(oasis_gameplay_session_replay_diagnostic_test PRIVATE ${PROJECT_SOURCE_DIR}/src)
+    target_link_libraries(oasis_gameplay_session_replay_diagnostic_test PRIVATE oasis_core)
+    add_test(NAME oasis_gameplay_session_replay_diagnostic COMMAND oasis_gameplay_session_replay_diagnostic_test)
     add_executable(oasis_hybrid_poc runner.cpp)
     target_include_directories(oasis_hybrid_poc PRIVATE
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)

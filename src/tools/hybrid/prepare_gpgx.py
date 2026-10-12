@@ -34,11 +34,19 @@ void m68k_hybrid_write(unsigned int address, int width, unsigned int value);
 void m68k_hybrid_begin_instruction(unsigned int opcode);
 void m68k_hybrid_finish_instruction(unsigned int opcode);
 unsigned int m68k_hybrid_instruction_cycles(unsigned int opcode);
+int m68k_hybrid_bcc_not_taken_word_adjustment(void);
 unsigned int m68k_hybrid_cpu_field(unsigned int field);
 unsigned int m68k_hybrid_refresh_period(void);
 unsigned int m68k_hybrid_refresh_penalty(void);"""
     if "m68k_hybrid_fetch16" not in hook_text:
         hook_header.write_text(hook_text.replace("void set_cpu_block_hook(cpu_block_hook_t hook);", "void set_cpu_block_hook(cpu_block_hook_t hook);\n" + helper_decl), encoding="utf-8")
+    hook_text = hook_header.read_text(encoding="utf-8")
+    word_adjust_decl = "int m68k_hybrid_bcc_not_taken_word_adjustment(void);"
+    if word_adjust_decl not in hook_text:
+        anchor = "unsigned int m68k_hybrid_instruction_cycles(unsigned int opcode);"
+        if hook_text.count(anchor) != 1:
+            raise ValueError("unsupported word-branch timing declaration anchor")
+        hook_header.write_text(hook_text.replace(anchor, anchor + "\n" + word_adjust_decl), encoding="utf-8")
     hook_source = root / "core/debug/cpuhook.c"
     source_text = hook_source.read_text(encoding="utf-8")
     source_anchors = (
@@ -117,6 +125,11 @@ unsigned int m68k_hybrid_instruction_cycles(unsigned int opcode)
   return cycles;
 }
 
+int m68k_hybrid_bcc_not_taken_word_adjustment(void)
+{
+  return CYC_BCC_NOTAKE_W;
+}
+
 unsigned int m68k_hybrid_cpu_field(unsigned int field)
 {
   switch (field)
@@ -141,6 +154,14 @@ unsigned int m68k_hybrid_refresh_penalty(void) { return 2 * 7; }
         if cpu_text.count(helper_anchor) != 1:
             raise ValueError("unsupported external m68k halt helper anchor")
         cpu_source.write_text(cpu_text.replace(helper_anchor, helper_anchor + "\n\n" + helper_code), encoding="utf-8")
+    cpu_text = cpu_source.read_text(encoding="utf-8")
+    word_adjust_fn = "int m68k_hybrid_bcc_not_taken_word_adjustment(void)"
+    if word_adjust_fn not in cpu_text:
+        anchor = "unsigned int m68k_hybrid_cpu_field(unsigned int field)"
+        if cpu_text.count(anchor) != 1:
+            raise ValueError("unsupported word-branch timing function anchor")
+        cpu_source.write_text(cpu_text.replace(anchor,
+            "int m68k_hybrid_bcc_not_taken_word_adjustment(void)\n{\n  return CYC_BCC_NOTAKE_W;\n}\n\n" + anchor), encoding="utf-8")
     shutil.copyfile(Path(__file__).with_name("gpgx_bridge.c"), root / "core/debug/gpgx_bridge.c")
 
 

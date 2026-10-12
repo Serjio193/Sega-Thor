@@ -42,6 +42,11 @@ RETRO_API int retro_hybrid_bcc_not_taken_adjustment(void)
     return m68k_hybrid_bcc_not_taken_adjustment();
 }
 
+RETRO_API int retro_hybrid_bcc_not_taken_word_adjustment(void)
+{
+    return m68k_hybrid_bcc_not_taken_word_adjustment();
+}
+
 /* Read the scheduler's native GPGX fields; no derived timing aliases. */
 RETRO_API int retro_hybrid_scheduler_field(unsigned int field)
 {

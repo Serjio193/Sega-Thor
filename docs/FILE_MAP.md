@@ -1679,3 +1679,11 @@ under `build/thor-evidence/`.
   instrumentation, limitations, build identities, and acceptance result.
 - Full paired traces and JSON receipts are generated under ignored
   `build/scheduler-fixture-20261013/`.
+
+## 2026-10-13 — instruction-step replay additions
+
+- `src/tools/hybrid/m68k_9d70_instruction_step.{hpp,cpp}` — developer-only, caller-gated, resumable instruction-step substitute for the exact `0x9D70` body; production dispatch is not connected.
+- `src/tools/hybrid/gameplay_session_call_capture.{hpp,cpp}` — isolated full call-capture serialization used by the replay runner.
+- `src/tools/hybrid/replay_equivalence_trace.{hpp,cpp}` — per-call and per-frame CPU/scheduler/observable-memory trace for the selected `0x9D70` replay experiment.
+- `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}` — natural-call timing, full-replay comparison, and disclosed serializer-hash instability.
+- Paired replay traces are generated under ignored `build/9d70-step-diagnostic-20261013/post-marker3/`.

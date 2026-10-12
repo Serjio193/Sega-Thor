@@ -1,0 +1,97 @@
+{
+  "schema": "oasis.m68k.instruction_step_replay.v1",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "95358845357104e31949310b7ea63156da8804e390ef4dccc924e1f7c7ed9a8b",
+  "runner_sha256": {
+    "linux_debug": "aa8a9e82d60db2091e5a4afa9e6a73deec1bbc2e3c76b9acdea6db5e1a590cb1",
+    "linux_release": "98a5e146b00c6995f7f7699b1d89d19e7d3ee9527b59dd00abe6fdb23ed0b562",
+    "windows_debug": "a1c9a36f3f7693764189dba603aef61f1044ffe00454086cb6831916711aa327",
+    "windows_release": "7c271af12c62519b9331f8030b032e4b98e709bc1427b37a27f8a23a932c6383"
+  },
+  "runner_sha256": {
+    "linux_debug": "aa8a9e82d60db2091e5a4afa9e6a73deec1bbc2e3c76b9acdea6db5e1a590cb1",
+    "linux_release": "98a5e146b00c6995f7f7699b1d89d19e7d3ee9527b59dd00abe6fdb23ed0b562",
+    "windows_debug": "a1c9a36f3f7693764189dba603aef61f1044ffe00454086cb6831916711aa327",
+    "windows_release": "7c271af12c62519b9331f8030b032e4b98e709bc1427b37a27f8a23a932c6383"
+  },
+  "contract": "M68K_009D70_CALLER_009144_V1",
+  "path_scope": {
+    "caller_pc": "0x009144",
+    "transfer_kind": "BSR.W",
+    "entry_pc": "0x009D70",
+    "return_pc": "0x009148",
+    "unsupported_caller_pc": "0x00979E"
+  },
+  "scheduler_fixture": {
+    "status": "VERIFIED_TESTED_MICRO_CASE_SCOPE",
+    "cases_passed": 10,
+    "cases_total": 10,
+    "refresh_equivalence": true,
+    "line_budget_equivalence": true,
+    "z80_vdp_interleave_equivalence": true,
+    "irq_boundary_equivalence": true
+  },
+  "natural_call": {
+    "frame": 2655,
+    "native_instruction_step_count": 1,
+    "entry_cycle_rom": 690457,
+    "entry_cycle_step": 690457,
+    "return_cycle_rom": 690877,
+    "return_cycle_step": 690877,
+    "helper_cycle_cost_rom": 420,
+    "helper_cycle_cost_step": 420,
+    "caller_source_to_return_cost": 546,
+    "cycle_end_at_entry": 690840,
+    "overshoot": 37,
+    "call_boundary_trace_identical": true,
+    "post_return_instruction_window": 128,
+    "post_return_architecture_identical": true,
+    "post_return_scheduler_identical": true
+  },
+  "replay": {
+    "frames": 3600,
+    "rom_only_completed": true,
+    "instruction_step_completed": true,
+    "normalized_call_count": 184,
+    "native_call_count": 1,
+    "rom_fallback_for_other_calls": true,
+    "full_frame_cpu_scheduler_memory_hashes_identical": true,
+    "call_boundaries_identical": true,
+    "architectural_sync_identical": true,
+    "scheduler_sync_identical": true,
+    "external_events_identical": true,
+    "normalized_helper_events_identical": true,
+    "z80_ram_sync_identical": true,
+    "helper_timing_identical_except_native_annotation": true,
+    "strict_landmark_divergence": {
+      "status": "REPRODUCED_IN_ROM_ONLY_RUNS",
+      "field": "state_sha256",
+      "checkpoint_count": 60,
+      "other_landmark_fields_match": true
+    }
+  },
+  "status": {
+    "timing_primitive": "VERIFIED_TESTED_MICRO_CASE_SCOPE",
+    "path_specific_replay_observable_equivalence": "YES_FOR_SELECTED_CALL_AND_3600_FRAME_SESSION",
+    "global_helper_verification": false,
+    "production_runtime_replacement_active": false,
+    "authority_deltas": 0,
+    "new_rom_bytes_classified": 0
+  },
+  "totals": {
+    "rom_size": 3145728,
+    "runtime_total_proven": 440425,
+    "structural_proven": 1266667,
+    "source_owned": 1487672
+  },
+  "raw_trace_sha256": {
+    "full-frame-state.jsonl": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+    "call-boundaries.jsonl": "5e3878ae3cdbfd7718075d3844c2ae5d9f80deb5e74ac2b634edc1be2caf6e98",
+    "architectural-sync.jsonl": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+    "scheduler-sync.jsonl": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+    "external-events.jsonl": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+    "normalized-events.jsonl": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+    "z80-ram-sync.bin": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a"
+  },
+  "raw_trace_directory": "build/9d70-step-diagnostic-20261013/post-marker3/"
+}

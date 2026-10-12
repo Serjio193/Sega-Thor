@@ -9946,3 +9946,13 @@ ROM SHA, and core/runner hashes are recorded in the report. The Linux core was
 not loaded by Windows binaries. New/modified source files are below 500 lines;
 `git diff --check` passed (only existing LF/CRLF conversion warnings). Final
 review found no ROM/assets or authority files changed.
+
+## 2026-10-13 — `0x9D70` instruction-step natural path and replay
+
+TASK: After the scheduler microfixture passed, apply the instruction-step substitute to one natural `0x009144 → 0x009D70 → 0x009148` call, then compare the full recorded 3,600-frame replay against ROM-only. Keep production routing, helper verification status, and evidence authorities unchanged.
+
+ACCEPTANCE: exact natural call timing and continuation parity; one selected step only; identical frame CPU/scheduler/observable-memory hashes, call boundaries, post-return sync windows, external events, normalized helper events, and Z80 RAM sync. Report serializer-hash instability separately rather than silently accepting it as state equivalence.
+
+RESULT: The selected frame-2655 call entered at cycle 690457 and returned at 690877 in both paths (420 helper cycles, 37 cycles beyond `cycle_end=690840`). The instruction-step trace was marked on exactly one call among 184 accepted caller invocations. ROM and step runs match byte-for-byte for full-frame observable CPU/scheduler/memory snapshots, call boundaries, 128-instruction architectural/scheduler sync, external events, normalized helper events, and sampled Z80 RAM. The replay completed 3,600 frames. The legacy strict landmark validator still reports 60 `state_sha256` mismatches; two ROM-only restores from the same session show the same mismatch pattern with all other landmark fields equal. Therefore route parity is scoped to the explicit captured surface and replay, and serialized savestate equality is not claimed. The diagnostic step route remains non-production; helper status and all totals are unchanged. Report/receipt: `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}`.
+
+VALIDATION: Windows and GNU/Linux Debug/Release runner builds passed. The three focused gameplay-session tests passed in all four configurations. The 10-case scheduler microfixture remains green in its documented tested scope. `gameplay_session_runner.cpp` is 499 lines. No ROM/assets, canonical SQLite, or evidence authority files were changed.
