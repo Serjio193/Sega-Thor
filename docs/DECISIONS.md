@@ -1,3 +1,32 @@
+# ADR-M13-SCHEDULER-INSTRUCTION-STEP-FIXTURE-1 — Isolated GPGX Scheduler Oracle
+**Status:** Accepted for the tested synthetic instruction subset only
+**Date:** 2026-10-13
+
+**Context:** The regular M68K hook can make a native helper return before or
+after the ROM routine's line-budget crossing. Comparing only routine outputs
+cannot establish whether Z80, VDP, refresh, or IRQ ordering remains equivalent.
+
+**Decision:** Keep timing experiments in a dedicated copy of the external
+GPGX source with `HOOK_CPU=1`. The fixture invokes GPGX's actual
+`system_frame_gen()` scheduler and records core-native M68K cycle/cycle_end/
+refresh state, Z80 cycles/state, VDP line timing, IRQ transitions, ordered
+instruction markers, and writes. Its test block hook replaces one instruction
+at a time only for the supported synthetic opcodes, charges the core cycle
+table, and returns to the normal core loop after each step. The observation
+hook must return the original hooked read value unchanged. The installed helper
+and all production runtime paths remain untouched.
+
+**Consequences:** Ten synthetic ROM-versus-step cases pass in GNU/Linux Debug
+and Release, including refresh, line-budget crossings, active Z80/VDP
+interleave, IRQ entry/RTE, and resumed execution. This verifies the primitive
+only for the tested instruction subset and fixture scheduler configuration; it
+does not verify routine `0x9D70`, arbitrary instruction sequences, global
+replacement, or production routing. All ROM evidence authorities remain
+unchanged.
+
+**Evidence:** `docs/reports/THOR_SCHEDULER_FIXTURE_20261013.md` and machine
+receipts under ignored `build/scheduler-fixture-20261013/`.
+
 # ADR-AUTO67-CARTOGRAPHER-SEAM-1 — Worker local chain to MAP-1
 **Status:** Accepted for AUTO67
 **Date:** 2026-09-15

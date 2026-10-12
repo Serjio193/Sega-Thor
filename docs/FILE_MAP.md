@@ -1664,3 +1664,18 @@ under `build/thor-evidence/`.
 - `src/tools/hybrid/grid_query_micro_oracle.{hpp,cpp}` — deterministic HOOK_CPU RTS harness fixture used by developer oracles; `src/tools/hybrid/subtraction_bound_model.{hpp,cpp}` — typed native model for M68K `0x9D70` word subtraction/clamp and exact flag/write effects; `tests/subtraction_bound_model_test.cpp` — 22 replay vectors plus branch vectors; `src/tools/hybrid/subtraction_bound_oracle.cpp` — developer-only canonical-ROM HOOK_CPU differential oracle. Evidence: `docs/reports/THOR_REPLAY_HELPER10_9D70_20261012.{md,json}`.
 
 - `docs/reports/THOR_NATIVE_ISLAND_REGISTRY_10_HELPERS_20261012.{md,json}` — metadata-only tenth helper extension; dispatch gates and activation status unchanged.
+
+# 2026-10-13 scheduler fixture additions
+
+- `src/tools/hybrid/prepare_scheduler_fixture.py` — creates a dedicated,
+  isolated external GPGX copy with scheduler/IRQ instrumentation and
+  `HOOK_CPU=1`; does not modify the normal capture core.
+- `src/tools/hybrid/scheduler_fixture_runner.cpp` — developer-only paired
+  ROM/instruction-step micro-case runner using GPGX's frame scheduler.
+- `src/tools/hybrid/scheduler_fixture_acceptance.py` — validates canonical ROM
+  and hook configuration, compares ordered traces and final states, and emits
+  a machine receipt.
+- `docs/reports/THOR_SCHEDULER_FIXTURE_20261013.md/.json` — scope,
+  instrumentation, limitations, build identities, and acceptance result.
+- Full paired traces and JSON receipts are generated under ignored
+  `build/scheduler-fixture-20261013/`.

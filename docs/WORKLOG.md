@@ -9908,3 +9908,41 @@ Closed `[0x009D70,0x009D92)` (11 instructions, two RTS exits); aligned canonical
 ## 2026-10-12 — native-island registry metadata extension
 
 Added a new ten-helper registry receipt with `0x9D70` scoped to caller `0x009144`, default-disabled and without runtime routing. The previously committed nine-helper snapshot remains unchanged. No authorities or coverage totals changed.
+
+## 2026-10-13 — dedicated scheduler-capable hybrid fixture
+
+TASK: Build an isolated developer fixture around the existing GPGX frame scheduler to test instruction-stepped M68K substitution across M68K line budgets, Z80/VDP advancement, refresh deadlines, and IRQ handling. Do not route gameplay helpers or change evidence authorities.
+
+ACCEPTANCE: a separate HOOK_CPU=1 core build; exact scheduler/boundary observability sourced from core fields; ROM and instruction-step fixture runs for bounded micro-cases; no production behavior or ROM authority changes. If the current callback architecture cannot preserve the observed scheduler ordering, report the exact blocker and retain timing status as unverified/unsafe as warranted.
+
+SCOPE: developer tooling and an isolated external GPGX build only. Existing worktree modifications are pre-existing and must remain untouched outside the specific fixture/tooling and append-only task records.
+
+RESULT: The dedicated HOOK_CPU=1 core and fixture runner now pass all ten
+ROM-versus-instruction-step cases in GNU/Linux Debug and Release. Full ordered
+traces match for scheduler events, M68K instruction entry/exit and boundary
+reason, writes, final D/A/SR, scheduler fields, Z80, VDP, and WRAM hash. The
+cases cover before/exact/near/cross line budget, taken/not-taken branch costs,
+refresh without/with line crossing, IRQ pending→entry→handler/RTE, and
+instruction-step resume after scheduler re-entry. Active Z80/VDP interleave is
+present: the IRQ case records 262 Z80 slices and 262 VDP advances.
+
+Instrumentation review found and fixed a bridge bug before acceptance: the
+observation callback had returned zero for hooked reads, changing guest reads.
+It now returns the original bus value. The IRQ test also writes its synthetic
+autovector through the internal core map used by exception reads. Results from
+pre-fix runs are discarded. The supported instruction-step subset is
+MOVEQ/NOP/selected short branches; this does not establish arbitrary opcode or
+0x9D70 equivalence. `TIMING_PRIMITIVE_STATUS` is VERIFIED only for these
+synthetic cases; `9D70_REPLAY_NATIVE_ROUTE_EQUIVALENT=NO`, production runtime
+replacement remains inactive, and all evidence authorities/totals are
+unchanged. Report and identities:
+`docs/reports/THOR_SCHEDULER_FIXTURE_20261013.md`; paired machine receipts are
+under ignored `build/scheduler-fixture-20261013/`.
+
+VALIDATION: MSVC Debug and Release runner builds passed. GNU/Linux Debug and
+Release runner builds passed, and each executed all ten paired cases with zero
+mismatches. Fixture core was rebuilt with `HOOK_CPU=1`; source config identity,
+ROM SHA, and core/runner hashes are recorded in the report. The Linux core was
+not loaded by Windows binaries. New/modified source files are below 500 lines;
+`git diff --check` passed (only existing LF/CRLF conversion warnings). Final
+review found no ROM/assets or authority files changed.

@@ -129,6 +129,13 @@ endif()
 
 set(OASIS_HYBRID_GPGX_SOURCE "" CACHE PATH "External GPGX source for developer-only PoC")
 if(OASIS_HYBRID_GPGX_SOURCE)
+    add_executable(oasis_hybrid_scheduler_fixture scheduler_fixture_runner.cpp)
+    target_include_directories(oasis_hybrid_scheduler_fixture PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        ${OASIS_HYBRID_GPGX_SOURCE}/core
+        ${OASIS_HYBRID_GPGX_SOURCE}/core/debug
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    target_link_libraries(oasis_hybrid_scheduler_fixture PRIVATE oasis_core ${CMAKE_DL_LIBS})
     add_executable(oasis_hybrid_poc runner.cpp)
     target_include_directories(oasis_hybrid_poc PRIVATE
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)

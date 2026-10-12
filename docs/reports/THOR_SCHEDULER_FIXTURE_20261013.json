@@ -1,0 +1,70 @@
+{
+  "schema": "thor.scheduler_instruction_step_fixture.v1",
+  "status": "SCHEDULER_FIXTURE_VERIFIED_TESTED_MICROCASE_SCOPE",
+  "canonical_rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "gpgx_source_revision": "784e5580cb43103b98272a7349fcf927da67d0b9",
+  "core_build": {
+    "configuration": "isolated GPGX copy; HOOK_CPU=1",
+    "sha256": "926fbcc5228c0a08c143e62388184bad230ee91001af2344f6fd04961f60387f"
+  },
+  "runners": {
+    "gnu_linux_debug_sha256": "e884f4935e95f4e11f1fcd418acdcc8e1e130425b4131cadcdc12f2eea44b226",
+    "gnu_linux_release_sha256": "1ab311f30326c83badf6d8ed4db62f196b26684d4d816b46401d8caea4a0b9dc",
+    "msvc_debug_build": "PASS",
+    "msvc_release_build": "PASS"
+  },
+  "comparison_fields": [
+    "ordered_scheduler_cpu_events",
+    "instruction_entry_exit_cycles_refresh_sr_boundary_reason",
+    "ordered_bus_writes",
+    "final_m68k_d_a_sr",
+    "final_scheduler_state",
+    "final_z80_state",
+    "final_vdp_state",
+    "work_ram_sha256"
+  ],
+  "cases": [
+    {"id": "A_BEFORE", "coverage": "before_line_budget", "debug": "PASS", "release": "PASS"},
+    {"id": "B_EXACT", "coverage": "at_line_budget", "debug": "PASS", "release": "PASS"},
+    {"id": "B_NEAR", "coverage": "just_before_line_budget", "debug": "PASS", "release": "PASS"},
+    {"id": "C_CROSS", "coverage": "cross_line_budget", "debug": "PASS", "release": "PASS"},
+    {"id": "D_TAKEN", "coverage": "conditional_branch_taken", "debug": "PASS", "release": "PASS"},
+    {"id": "D_NOT_TAKEN", "coverage": "conditional_branch_not_taken", "debug": "PASS", "release": "PASS"},
+    {"id": "E_REFRESH", "coverage": "refresh_without_line_crossing", "debug": "PASS", "release": "PASS"},
+    {"id": "F_REFRESH_CROSS", "coverage": "refresh_with_line_crossing", "debug": "PASS", "release": "PASS"},
+    {"id": "G_IRQ", "coverage": "level4_pending_entry_handler_rte", "debug": "PASS", "release": "PASS"},
+    {"id": "H_RESUME", "coverage": "substitute_resume_after_scheduler_turn", "debug": "PASS", "release": "PASS"}
+  ],
+  "irq_case": {
+    "autovector_target": "0x00FF1200",
+    "irq_pending_events": 1,
+    "irq_entry_events": 1,
+    "irq_exit_events": 1,
+    "z80_scheduler_slices": 262,
+    "vdp_advances": 262
+  },
+  "capture_maxima": {
+    "events": 28451,
+    "instructions": 12611,
+    "writes": 2,
+    "capture_limits": {"events": 32768, "instructions": 20000, "writes": 4096}
+  },
+  "statuses": {
+    "block_hook_instruction_step": "VERIFIED_TESTED_SUBSET_MOVEQ_NOP_SELECTED_SHORT_BRANCHES",
+    "refresh_equivalence": "YES_TESTED_CASES",
+    "line_budget_equivalence": "YES_TESTED_CASES",
+    "z80_vdp_interleave_equivalence": "YES_TESTED_CASES",
+    "irq_boundary_equivalence": "YES_TESTED_CASES",
+    "timing_primitive": "VERIFIED_TESTED_MICROCASE_SCOPE",
+    "9d70_replay_native_route_equivalent": "NO",
+    "production_runtime_replacement_active": false
+  },
+  "bridge_correction": "The observer now returns the original hooked bus read value; earlier runs with zero-return behavior were discarded.",
+  "authority_deltas": 0,
+  "totals_unchanged": {
+    "runtime_total_proven": 440425,
+    "structural_proven": 1266667,
+    "source_owned": 1487672
+  },
+  "trace_directory": "build/scheduler-fixture-20261013/acceptance-transparent-hook and acceptance-linux-release (ignored build artifacts)"
+}

@@ -7,19 +7,24 @@ import shutil
 def prepare(root):
     root = root.resolve()
     coverage = root / "core/debug/coverage.c"
-    text = coverage.read_text(encoding="utf-8")
-    anchor = '  const char *directory = getenv("GPGX_COVERAGE_DIR");'
-    guard = '  if (getenv("GPGX_HYBRID_ONLY")) return; /* M11.28: no coverage/UI */'
-    if guard not in text:
-        if text.count(anchor) != 1:
-            raise ValueError("unsupported external coverage initialization")
-        coverage.write_text(text.replace(anchor, anchor + "\n" + guard), encoding="utf-8")
+    if coverage.exists():
+        text = coverage.read_text(encoding="utf-8")
+        anchor = '  const char *directory = getenv("GPGX_COVERAGE_DIR");'
+        guard = '  if (getenv("GPGX_HYBRID_ONLY")) return; /* M11.28: no coverage/UI */'
+        if guard not in text:
+            if text.count(anchor) != 1:
+                raise ValueError("unsupported external coverage initialization")
+            coverage.write_text(text.replace(anchor, anchor + "\n" + guard), encoding="utf-8")
     hook_header = root / "core/debug/cpuhook.h"
     hook_text = hook_header.read_text(encoding="utf-8")
-    hook_anchor = "void set_cpu_hook(void(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value));"
+    hook_anchors = (
+        "void set_cpu_hook(void(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value));",
+        "void set_cpu_hook(unsigned int(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value));",
+    )
     hook_decl = "typedef int (*cpu_block_hook_t)(unsigned int pc);\nextern cpu_block_hook_t cpu_block_hook;\nvoid set_cpu_block_hook(cpu_block_hook_t hook);\n#define HOOK_M68K_POST ((hook_type_t)(1 << 14))"
     if "cpu_block_hook_t" not in hook_text:
-        if hook_text.count(hook_anchor) != 1:
+        hook_anchor = next((anchor for anchor in hook_anchors if hook_text.count(anchor) == 1), None)
+        if hook_anchor is None:
             raise ValueError("unsupported external CPU hook header")
         hook_header.write_text(hook_text.replace(hook_anchor, hook_anchor + "\n" + hook_decl), encoding="utf-8")
     hook_text = hook_header.read_text(encoding="utf-8")
@@ -36,10 +41,14 @@ unsigned int m68k_hybrid_refresh_penalty(void);"""
         hook_header.write_text(hook_text.replace("void set_cpu_block_hook(cpu_block_hook_t hook);", "void set_cpu_block_hook(cpu_block_hook_t hook);\n" + helper_decl), encoding="utf-8")
     hook_source = root / "core/debug/cpuhook.c"
     source_text = hook_source.read_text(encoding="utf-8")
-    source_anchor = "void set_cpu_hook(void(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value))\n{\n\tcpu_hook = hook;\n}"
+    source_anchors = (
+        "void set_cpu_hook(void(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value))\n{\n\tcpu_hook = hook;\n}",
+        "void set_cpu_hook(unsigned int(*hook)(hook_type_t type, int width, unsigned int address, unsigned int value))\n{\n\tcpu_hook = hook;\n}",
+    )
     block_source = "cpu_block_hook_t cpu_block_hook = NULL;\n\nvoid set_cpu_block_hook(cpu_block_hook_t hook)\n{\n\tcpu_block_hook = hook;\n}"
     if "cpu_block_hook_t cpu_block_hook" not in source_text:
-        if source_text.count(source_anchor) != 1:
+        source_anchor = next((anchor for anchor in source_anchors if source_text.count(anchor) == 1), None)
+        if source_anchor is None:
             raise ValueError("unsupported external CPU hook source")
         hook_source.write_text(source_text.replace(source_anchor, source_anchor + "\n\n" + block_source), encoding="utf-8")
     cpu_source = root / "core/m68k/m68kcpu.c"
