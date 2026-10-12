@@ -9903,3 +9903,8 @@ Updated the machine candidate ranking and prepared a nine-helper native-island r
 ## 2026-10-12 — helper #10 `0x9D70` verified for caller `0x009144`
 
 Closed `[0x009D70,0x009D92)` (11 instructions, two RTS exits); aligned canonical-ROM scan finds direct BSR.W callers `0x009144` and `0x00979E`. Verified the `0x009144` scope only: 22 replay calls with 22 distinct D1.low and D3.low results, all matching the native model, plus four canonical-ROM synthetic branch cases matching full D/A, SR, conditional marker write and return. Caller analysis closes D0 as live, D3 as overwritten before later use, and CCR/X before relevant conditions. Added `subtraction_bound_model` and a developer-only HOOK_CPU oracle; also tracked the reusable RTS micro-oracle sources already referenced by the existing oracle target. No runtime route. Helper #10 is path-specific; global verification and runtime activation remain NO. New bytes and authority deltas are 0; totals unchanged. Debug and Release native tests/oracles passed; GNU/Linux native build and test passed. Details: `docs/reports/THOR_REPLAY_HELPER10_9D70_20261012.md` and `.json`.
+
+
+## 2026-10-12 — native-island registry metadata extension
+
+Added a new ten-helper registry receipt with `0x9D70` scoped to caller `0x009144`, default-disabled and without runtime routing. The previously committed nine-helper snapshot remains unchanged. No authorities or coverage totals changed.

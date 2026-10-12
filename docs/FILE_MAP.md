@@ -1662,3 +1662,5 @@ under `build/thor-evidence/`.
 
 
 - `src/tools/hybrid/grid_query_micro_oracle.{hpp,cpp}` — deterministic HOOK_CPU RTS harness fixture used by developer oracles; `src/tools/hybrid/subtraction_bound_model.{hpp,cpp}` — typed native model for M68K `0x9D70` word subtraction/clamp and exact flag/write effects; `tests/subtraction_bound_model_test.cpp` — 22 replay vectors plus branch vectors; `src/tools/hybrid/subtraction_bound_oracle.cpp` — developer-only canonical-ROM HOOK_CPU differential oracle. Evidence: `docs/reports/THOR_REPLAY_HELPER10_9D70_20261012.{md,json}`.
+
+- `docs/reports/THOR_NATIVE_ISLAND_REGISTRY_10_HELPERS_20261012.{md,json}` — metadata-only tenth helper extension; dispatch gates and activation status unchanged.
