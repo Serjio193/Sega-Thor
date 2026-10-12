@@ -24,6 +24,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     coordinate_bound_model.cpp
     negative_bound_model.cpp
     positive_bound_model.cpp
+    subtraction_bound_model.cpp
     caller_attribution.cpp caller_continuation.cpp a5_lifetime_observer.cpp callee_62ae0_observer.cpp callee_61934_observer.cpp callee_623ac_observer.cpp a5_lifetime_runtime.cpp candidate_2d66.cpp candidate_604bc.cpp candidate_parent_suffix.cpp candidate_61032.cpp)
 target_include_directories(oasis_hybrid_contract PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(oasis_hybrid_contract PUBLIC oasis_re_tooling oasis_core)
@@ -49,6 +50,9 @@ add_test(NAME oasis_hybrid_negative_bound COMMAND oasis_hybrid_negative_bound_te
 add_executable(oasis_hybrid_positive_bound_test ${PROJECT_SOURCE_DIR}/tests/positive_bound_model_test.cpp)
 target_link_libraries(oasis_hybrid_positive_bound_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_positive_bound COMMAND oasis_hybrid_positive_bound_test)
+add_executable(oasis_hybrid_subtraction_bound_test ${PROJECT_SOURCE_DIR}/tests/subtraction_bound_model_test.cpp)
+target_link_libraries(oasis_hybrid_subtraction_bound_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_hybrid_subtraction_bound COMMAND oasis_hybrid_subtraction_bound_test)
 add_executable(oasis_hybrid_replacement_test ${PROJECT_SOURCE_DIR}/tests/hybrid_replacement_test.cpp)
 target_link_libraries(oasis_hybrid_replacement_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_hybrid_replacement COMMAND oasis_hybrid_replacement_test)
@@ -139,4 +143,11 @@ if(OASIS_HYBRID_GPGX_SOURCE)
     target_include_directories(oasis_coordinate_bound_oracle PRIVATE
         ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
     target_link_libraries(oasis_coordinate_bound_oracle PRIVATE oasis_core ${CMAKE_DL_LIBS})
+
+    add_executable(oasis_subtraction_bound_oracle
+        subtraction_bound_oracle.cpp
+        subtraction_bound_model.cpp)
+    target_include_directories(oasis_subtraction_bound_oracle PRIVATE
+        ${OASIS_HYBRID_GPGX_SOURCE}/libretro/libretro-common/include)
+    target_link_libraries(oasis_subtraction_bound_oracle PRIVATE oasis_core ${CMAKE_DL_LIBS})
 endif()

@@ -1,0 +1,171 @@
+{
+  "schema": "oasis.m68k.helper-path-verification.v1",
+  "helper_id": "M68K_009D70",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "routine": {
+    "start": "0x009D70",
+    "end_exclusive": "0x009D92",
+    "bytes": 34,
+    "instructions": 11,
+    "rts_exits": [
+      "0x009D86",
+      "0x009D90"
+    ],
+    "nested_calls": 0,
+    "indirect_control": false,
+    "loops": 0
+  },
+  "direct_callers": [
+    {
+      "source": "0x009144",
+      "kind": "BSR.W",
+      "return_pc": "0x009148",
+      "natural_capture_count": 22,
+      "verification_scope": "SELECTED"
+    },
+    {
+      "source": "0x00979E",
+      "kind": "BSR.W",
+      "return_pc": "0x0097A2",
+      "natural_capture_count": 2,
+      "verification_scope": "OUT_OF_SCOPE"
+    }
+  ],
+  "static_callsite_scan": {
+    "method": "aligned canonical-ROM BSR.W opcode and signed displacement decode; absolute JSR/JMP long target scans",
+    "bsr_w_callers": [
+      "0x009144",
+      "0x00979E"
+    ],
+    "absolute_jsr_long_hits": 0,
+    "absolute_jmp_long_hits": 0
+  },
+  "natural_corpus": {
+    "path": "build/gameplay-session-helper6-census-24-20261011/replay-run/auto-full-calls.jsonl",
+    "sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
+    "selected_call_count": 22,
+    "all_natural_target_calls": 24,
+    "selected_path_pc_sequence": [
+      "0x009D70",
+      "0x009D72",
+      "0x009D76",
+      "0x009D7A",
+      "0x009D7C",
+      "0x009D86"
+    ],
+    "distinct_D1_low": 22,
+    "distinct_D3_low_output": 22,
+    "natural_return_pc": "0x009148",
+    "native_differential": "22/22",
+    "full_registers_and_SR": "MATCH"
+  },
+  "abi": {
+    "input": [
+      "D0.low",
+      "D1.low",
+      "word [A6+0x46]",
+      "byte [A6+0x40] only if write path",
+      "incoming SR upper bits"
+    ],
+    "output": [
+      "D0.low",
+      "D3.low",
+      "conditional byte OR 0x48 at [A6+0x40]",
+      "exact SR/CCR"
+    ],
+    "preserved": [
+      "D0/D3 upper words",
+      "all other D/A registers",
+      "normal A7 after RTS"
+    ],
+    "internal": [
+      "temporary flags before final branch/update"
+    ],
+    "unknown": []
+  },
+  "boundedness": {
+    "fixed_A6_offsets": [
+      "+0x40 byte read/modify/write",
+      "+0x46 word read"
+    ],
+    "variable_pointer_or_index": false,
+    "tables": false,
+    "loops": false,
+    "indirect_dispatch": false,
+    "routine_owned_write_span": "one byte at [A6+0x40]"
+  },
+  "caller_liveness": {
+    "path": "0x009144 -> 0x009D70 -> 0x009148 -> 0x009EBA",
+    "D0": "READ_BEFORE_WRITE at caller compare 0x009158; live and reproduced",
+    "D3": "overwritten at 0x00914C after 0x009EBA return; on fallthrough 0x009EBA overwrites at 0x009ED0 before use; reproduced regardless",
+    "NZVC": "BTST at 0x009EBA overwrites before BNE; later caller SUB overwrites before BLE at 0x00915A",
+    "X": "overwritten by SUB before caller condition uses flags",
+    "stack": "no scratch; RTS consumes one four-byte call return"
+  },
+  "canonical_rom_oracle": {
+    "debug": {
+      "cases": 4,
+      "all_match": true
+    },
+    "release": {
+      "cases": 4,
+      "all_match": true
+    },
+    "cases": [
+      "in-range-keep",
+      "clamp-nonzero",
+      "clamp-zero-write",
+      "negative-write"
+    ],
+    "bridge_abi": 1
+  },
+  "status": {
+    "CPP_REPLACEMENT_CANDIDATE": true,
+    "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC": true,
+    "PATH_SCOPE": "0x009144 BSR.W",
+    "CPP_REPLACEMENT_VERIFIED_GLOBAL": false,
+    "RUNTIME_REPLACEMENT_ACTIVE": false
+  },
+  "registry_metadata_delta": {
+    "entry": "0x009D70",
+    "allowed_caller": "0x009144",
+    "transfer_kind": "BSR.W",
+    "contract_id": "M68K_009D70_BOUNDED_WORD_SUBTRACTION_V1",
+    "native_adapter": "apply_subtraction_bound",
+    "natural_capture_count": 22,
+    "branch_complete": true,
+    "live_route_status": "NO"
+  },
+  "authority_deltas": {
+    "RUNTIME_TOTAL_PROVEN": 0,
+    "STRUCTURAL_PROVEN": 0,
+    "SOURCE_OWNED": 0,
+    "canonical_sqlite": 0,
+    "new_bytes_classified": 0
+  },
+  "current_totals": {
+    "rom_bytes": 3145728,
+    "runtime_total_proven_bytes": 440425,
+    "structural_proven_bytes": 1266667,
+    "source_owned_bytes": 1487672
+  },
+  "builds": {
+    "windows_debug": "PASS",
+    "windows_release": "PASS",
+    "linux_equivalent": "PASS",
+    "source_limit_check": "PASS_CLEAN_COMMIT_SNAPSHOT",
+    "source_limit_blockers": {
+      "src/tools/re_slice_decoder.cpp": 506,
+      "src/tools/thor_evidence/audio_mode1_structural_closure.py": 519,
+      "src/tools/thor_evidence/helper_candidate_index.py": 518
+    },
+    "changed_source_files_below_500_lines": true,
+    "source_limit_governed_files": 743,
+    "dirty_worktree_source_limit_check": "BLOCKED_BY_UNRELATED_MODIFIED_FILES",
+    "dirty_worktree_blockers": {
+      "src/tools/re_slice_decoder.cpp": 506,
+      "src/tools/thor_evidence/audio_mode1_structural_closure.py": 519,
+      "src/tools/thor_evidence/helper_candidate_index.py": 518
+    }
+  }
+}
