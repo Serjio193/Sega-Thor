@@ -1,0 +1,280 @@
+{
+  "schema": "oasis.m68k.native-island-registry-prep.v1",
+  "date": "2026-10-12",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "design_only": true,
+  "production_dispatch_implemented": false,
+  "runtime_replacement_active": false,
+  "verified_path_specific_helper_count": 9,
+  "dispatch_replay_equivalence": "NOT_TESTED; no helper newly enabled in this task",
+  "helpers": [
+    {
+      "ENTRY_PC": "0x0094A2",
+      "ALLOWED_CALLER_PC": [
+        "0x009468",
+        "0x009480",
+        "0x00949A"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_0094A2_CALLSET_9468_9480_949A_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/94a2-path-specific-acceptance.json",
+          "sha256": "edd49cbc0a57146e3045594be43a997f1adc85b19e3ce7830ad6aed973894de8"
+        }
+      ],
+      "REPLAY_EVIDENCE": "8 canonical-ROM oracle cases matched in Debug and Release; path-specific direct caller set",
+      "NATIVE_ADAPTER": "ByteGridView::aggregate_cell_column_world_y -> stage D4.low/D5.low",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": null,
+      "BRANCH_COMPLETENESS": "8 bounded ByteGridView oracle cases; arbitrary caller inputs not claimed",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x008EF8",
+      "ALLOWED_CALLER_PC": [
+        "0x0058FA",
+        "0x005928",
+        "0x005A6A",
+        "0x005ABA",
+        "0x005B9A",
+        "0x00662E"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_008EF8_CALLSET_58FA_5928_5A6A_5ABA_5B9A_662E_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/raw-record-8ef8-acceptance.json",
+          "sha256": "37368159e9f72ffa7ce4032a0967c44367e559890a9a775ca230bee8b4b5e30b"
+        }
+      ],
+      "REPLAY_EVIDENCE": "4 canonical-ROM hook cases matched in Debug and Release; six accepted direct callers",
+      "NATIVE_ADAPTER": "initialize_raw_record_fields(bounded record span, D0.low) -> stage five field writes",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 0,
+      "BRANCH_COMPLETENESS": "six direct callsite probes; no natural gameplay call claimed",
+      "LIVE_ROUTE_STATUS": "DEV_OPT_IN_ONLY",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x016A46",
+      "ALLOWED_CALLER_PC": [
+        "0x0165A8",
+        "0x0165BE",
+        "0x0165FA",
+        "0x01667A",
+        "0x0166F0",
+        "0x01675E",
+        "0x01685E",
+        "0x01696A",
+        "0x0169EC",
+        "0x016A14"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_016A46_CALLSET_10_BSRW_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/16a46-path-specific-acceptance.json",
+          "sha256": "75d0598c72ec64e6bfe245c292e356503b0c23456b01ac42717bfce77c483bef"
+        }
+      ],
+      "REPLAY_EVIDENCE": "4 full-register/CCR and memory cases matched in Debug and Release; Linux native test passed",
+      "NATIVE_ADAPTER": "store_sparse_raw_words(bounded writable span, base offset, D0.low, incoming D1/SR) -> stage four words, A0/D1/SR",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": null,
+      "BRANCH_COMPLETENESS": "straight-line body; four oracle effect cases; no branch paths",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x00B730",
+      "ALLOWED_CALLER_PC": [
+        "0x003B448"
+      ],
+      "TRANSFER_KIND": "JSR.L",
+      "CONTRACT_ID": "M68K_00B730_CALLER_003B448_V1",
+      "EVIDENCE": [
+        {
+          "path": "docs/reports/THOR_B730_FULL_CALL_CAPTURE_20261011.md",
+          "sha256": "b4a1e5a4742d5cde59f55cfc118514ada915e528f6b5094e3fc2fa88c9a25938"
+        },
+        {
+          "path": "build/m12-b730-native-differential-20261011.json",
+          "sha256": "5086301d90f02629510b682ebd1d865b46744c6c54b90021fa3f19c52f93e3e5"
+        },
+        {
+          "path": "build/b730-branch-oracle-20261011.json",
+          "sha256": "f9b88f620394f18b6a8859fb569c01988c1b8cfcf11be24c68ab8afe8a3494b4"
+        }
+      ],
+      "REPLAY_EVIDENCE": "15 natural calls matched; count 0/1/2; synthetic coordinate-cull and D2-limit branches and ordered SAT writes covered",
+      "NATIVE_ADAPTER": "build_sat_shadow_records(bounded count+record input, explicit SAT capacity, D2/A1 state) -> staged ordered shadow words",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 15,
+      "BRANCH_COMPLETENESS": "YES; bounded ABI branches complete, including both culls and D2 limit",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x009C40",
+      "ALLOWED_CALLER_PC": [
+        "0x00E376"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_009C40_CALLER_00E376_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/9c40-e376-path-specific-acceptance-20261011.json",
+          "sha256": "e2d071b76a94ce6013daf453480d579d3132cb77e2b4713988b72d2efaf952e0"
+        }
+      ],
+      "REPLAY_EVIDENCE": "24 replayable natural calls and six synthetic edge cases matched in Debug and Release",
+      "NATIVE_ADAPTER": "ByteGridView::sample_world(typed view, proven coordinates) -> stage D5 result",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 24,
+      "BRANCH_COMPLETENESS": "24 natural plus 6 synthetic path-scoped grid/coordinate cases",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x00E268",
+      "ALLOWED_CALLER_PC": [
+        "0x00359A"
+      ],
+      "TRANSFER_KIND": "JSR.L",
+      "CONTRACT_ID": "M68K_00E268_CALLER_00359A_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/e268-replay-differential-20261011.json",
+          "sha256": "d73f07e6fac1ad54485c53854baa3674ee91fe558266ab426eac30fd8d3645c9"
+        },
+        {
+          "path": "docs/reports/THOR_REPLAY_HELPER6_E268_20261011.md",
+          "sha256": "d1438fb31c92b0f570f60541cbac1dda36350421677c81bf02e5e1a399fde73a"
+        }
+      ],
+      "REPLAY_EVIDENCE": "24 natural state-word transitions matched for caller 0x00359A; 14 other callers remain unsupported",
+      "NATIVE_ADAPTER": "e268_state_transform(entry D0, state word) -> staged D0.low and [FF1928] word",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 24,
+      "BRANCH_COMPLETENESS": "24 natural state-word transitions; no broader branch-domain claim",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x009D4E",
+      "ALLOWED_CALLER_PC": [
+        "0x00909E"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_009D4E_CALLER_00909E_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/coordinate-bound-9d4e-path-specific-acceptance-20261011.json",
+          "sha256": "a47e2f03f85f114f8a5136a0c724a42a88b04cd80ce87e2cf122049bf84e75ff"
+        }
+      ],
+      "REPLAY_EVIDENCE": "24 natural vectors plus three synthetic canonical-ROM cases matched in Debug and Release",
+      "NATIVE_ADAPTER": "apply_coordinate_bound(typed 16-bit bounds inputs) -> D0/D3/D7 and optional flag-byte effect",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 24,
+      "BRANCH_COMPLETENESS": "24 natural plus 3 synthetic bounded cases",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x009DB4",
+      "ALLOWED_CALLER_PC": [
+        "0x0092CC"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_009DB4_CALLER_0092CC_V1",
+      "EVIDENCE": [
+        {
+          "path": "build/negative-bound-9db4-path-specific-acceptance-20261011.json",
+          "sha256": "9a1cdbbf42d6c0c623ec383b14eda24e55a29595e69c442b5a4ae1b1dc26f770"
+        }
+      ],
+      "REPLAY_EVIDENCE": "24 natural vectors plus five synthetic canonical-ROM cases matched in Debug and Release",
+      "NATIVE_ADAPTER": "apply_negative_bound(typed 16-bit difference inputs) -> D0/D3/X and optional flag-byte effect",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 24,
+      "BRANCH_COMPLETENESS": "24 natural plus 5 synthetic covering both exits and clamp predicates",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    },
+    {
+      "ENTRY_PC": "0x009D92",
+      "ALLOWED_CALLER_PC": [
+        "0x009812"
+      ],
+      "TRANSFER_KIND": "BSR.W",
+      "CONTRACT_ID": "M68K_009D92_CALLER_009812_V1",
+      "EVIDENCE": [
+        {
+          "path": "docs/reports/THOR_REPLAY_HELPER9_9D92_ACCEPTANCE_20261011.json",
+          "sha256": "eb3b52b430a816f6a0dbf49acbe17adf073f593daf4047987effce657b910fed"
+        }
+      ],
+      "REPLAY_EVIDENCE": "24 natural replay vectors plus 4 canonical-ROM synthetic cases matched Debug/Release",
+      "NATIVE_ADAPTER": "apply_positive_bound(typed 16-bit coordinate/axis/descriptor inputs) -> staged D0/D3/D7 and optional flags-byte effect",
+      "REPLACEMENT_STATUS": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
+      "GLOBAL": "NO",
+      "ENABLED_DEFAULT": false,
+      "REPLAY_CAPTURE_COUNT": 24,
+      "BRANCH_COMPLETENESS": "24 natural plus 4 synthetic covering clamp/flag/wrap cases",
+      "LIVE_ROUTE_STATUS": "NO_ROUTE",
+      "PRODUCTION_RUNTIME_REPLACEMENT_ACTIVE": false
+    }
+  ],
+  "common_gate": {},
+  "failure_policy": "Any identity, caller, transfer, contract, or input rejection occurs before guest mutation and falls back to untouched ROM. All enable flags default false. Verification labels do not change on enablement.",
+  "metrics_to_collect": [
+    "native_helper_calls",
+    "rom_helper_calls",
+    "fallback_count_by_reason",
+    "mismatch_count"
+  ],
+  "notes": [
+    "Eight-helper design from 2026-10-11 is retained as its historical snapshot.",
+    "This preparation extends the registry with 0x9D92; it does not implement dispatch.",
+    "Natural replay capture count is null where the helper acceptance artifacts do not report a replay corpus count; oracle case counts remain in REPLAY_EVIDENCE."
+  ],
+  "registry_shape": {
+    "entry_pc": "ROM routine entry",
+    "allowed_caller_pc": "exact BSR/JSR transfer source set",
+    "transfer_kind": "exact captured call kind",
+    "contract_id": "versioned caller-scoped ABI identifier",
+    "replay_evidence": "receipt-bound evidence and capture counts",
+    "native_adapter": "per-helper typed adapter; no shared gameplay raw-register ABI",
+    "replacement_status": "path-specific verification only",
+    "per_helper_enable_flag": "default false"
+  },
+  "common_gate_order": [
+    "helper entry matches",
+    "canonical ROM SHA-256 matches",
+    "fresh transfer source PC and kind match",
+    "island and helper enable flags are true",
+    "contract ID/version and receipt hashes match",
+    "typed adapter validates bounded inputs and stages a complete effect plan",
+    "commit atomically or decline before mutation",
+    "otherwise execute original ROM path"
+  ]
+}

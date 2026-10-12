@@ -161,6 +161,14 @@
     {
       "path": "docs/reports/THOR_NATIVE_ISLAND_DESIGN_8_HELPERS_20261011.json",
       "sha256": "2393866cbda9402a383f0900fa06027aef2c665e489711014ea5dc3b8b27d050"
+    },
+    {
+      "path": "docs/reports/THOR_REPLAY_HELPER10_99D6_BOUNDARY_20261012.json",
+      "sha256": "ffb87b966a0fe2a90a421fe930b21ebf8e54b8bf216e1f75cdb86ced8b9cd2b5"
+    },
+    {
+      "path": "docs/reports/THOR_NATIVE_ISLAND_REGISTRY_PREP_9_HELPERS_20261012.json",
+      "sha256": "3e42941a147665b2957c8806cf4e47685c5dab4b0501f973eb3b5783226f38ff"
     }
   ],
   "index_size": 15,
@@ -1197,12 +1205,6 @@
   ],
   "top_10": [
     {
-      "entry": "0x0099d6",
-      "score": 34.8,
-      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
-      "excluded": null
-    },
-    {
       "entry": "0x00f788",
       "score": 34.1,
       "reason": "24 natural full calls; 2 path(s); boundary UNKNOWN; 15 distinct output(s).",
@@ -1255,12 +1257,18 @@
       "score": 26.1,
       "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
       "excluded": null
+    },
+    {
+      "entry": "0x01b580",
+      "score": 25.8,
+      "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
+      "excluded": null
     }
   ],
   "selected_helper": {
-    "entry": "0x009D92",
-    "caller_scope": "0x009812",
-    "status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC"
+    "entry": "0x0099D6",
+    "caller_scope": "0x009932",
+    "status": "FROZEN_POINTER_EXTENT_UNRESOLVED"
   },
   "authority_changes": 0,
   "current_totals": {
@@ -1270,18 +1278,18 @@
     "SOURCE_OWNED": 1487672
   },
   "latest_attempt": {
-    "mission": "helper #9 reranked after A7E6 bounded rejection; path-specific 9D92 verification",
-    "selected_target": "0x009D92",
-    "path_scope": "0x009812 BSR.W -> 0x009D92 -> RTS -> 0x009816",
+    "mission": "helper #10 bounded pointer/extent assessment",
+    "selected_target": "0x0099D6",
+    "path_scope": "0x009932 BSR.W -> 0x0099D6 -> RTS -> 0x009936",
     "natural_calls": 24,
     "natural_path_count": 1,
-    "debug_synthetic_cases": 4,
-    "release_synthetic_cases": 4,
-    "final_status": "CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC",
-    "global_status": "NO",
+    "debug_synthetic_cases": 0,
+    "release_synthetic_cases": 0,
+    "final_status": "FROZEN_POINTER_EXTENT_UNRESOLVED",
+    "global_status": "NO_CLAIM",
     "runtime_replacement_active": "NO",
-    "fallback_candidate": "0x0099d6",
-    "new_verified_helpers": 1,
+    "fallback_candidate": "0x00F788",
+    "new_verified_helpers": 0,
     "new_bytes_classified": 0,
     "authority_deltas": 0,
     "current_totals": {
@@ -1290,9 +1298,9 @@
       "STRUCTURAL_PROVEN": 1266667,
       "SOURCE_OWNED": 1487672
     },
-    "acceptance_receipt_sha256": "dc338b21e1c6594cfe018e013875df8f3d9c05cbdecf1f6d2bd3745a4056f561",
+    "acceptance_receipt_sha256": "ffb87b966a0fe2a90a421fe930b21ebf8e54b8bf216e1f75cdb86ced8b9cd2b5",
     "natural_capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
-    "native_island_design": "DESIGN_ONLY; NOT_ACTIVATED"
+    "native_island_design": "NINE_HELPER_REGISTRY_PREPARATION; NOT_ACTIVATED"
   },
   "replay_rerank": {
     "method": "replay full-call corpus v1; rank uses caller/path count, changed-output diversity, median executed instructions, write count, memory-read address cardinality and exact-boundary evidence; unknown metadata remains UNKNOWN",
@@ -1315,29 +1323,6 @@
       "0x009d92": "ALREADY_VERIFIED_PATH_SPECIFIC"
     },
     "top10": [
-      {
-        "ENTRY_PC": "0x0099d6",
-        "NATURAL_FULL_CALLS": 24,
-        "OBSERVED_DIRECT_CALLERS": {
-          "0x009932": 24
-        },
-        "OBSERVED_PATH_COUNT": 1,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 10.0,
-        "CHANGED_REGISTERS": [
-          "D3",
-          "D4",
-          "A1"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 24,
-        "DISTINCT_ENTRY_STATES": 24,
-        "DISTINCT_MEMORY_READ_ADDRESSES": 26,
-        "ORDERED_RAM_WRITE_EVENTS": 0,
-        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
-        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
-        "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 34.8
-      },
       {
         "ENTRY_PC": "0x00f788",
         "NATURAL_FULL_CALLS": 24,
@@ -1523,6 +1508,25 @@
         "EXISTING_STACK_STATUS": "UNKNOWN",
         "PRIOR_DISPOSITION": "UNASSESSED",
         "RANK_SCORE": 26.1
+      },
+      {
+        "ENTRY_PC": "0x01b580",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x01bc40": 24
+        },
+        "OBSERVED_PATH_COUNT": 1,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 4.0,
+        "CHANGED_REGISTERS": [],
+        "DISTINCT_CHANGED_OUTPUTS": 0,
+        "DISTINCT_ENTRY_STATES": 7,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 1,
+        "ORDERED_RAM_WRITE_EVENTS": 0,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 25.8
       }
     ],
     "all_remaining_targets": [
@@ -1543,11 +1547,13 @@
         "DISTINCT_ENTRY_STATES": 24,
         "DISTINCT_MEMORY_READ_ADDRESSES": 26,
         "ORDERED_RAM_WRITE_EVENTS": 0,
-        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXACT_BOUNDARY_STATUS": "EXACT [0x0099D6,0x0099F0)",
         "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
         "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 34.8
+        "PRIOR_DISPOSITION": "FROZEN_POINTER_EXTENT_UNRESOLVED",
+        "RANK_SCORE": 34.8,
+        "PATH_SCOPE": "0x009932 BSR.W; 24 natural full calls",
+        "POINTER_EXTENT_STATUS": "UNRESOLVED_NO_BOUNDS_OR_VALID_COORDINATE_DOMAIN"
       },
       {
         "ENTRY_PC": "0x00f788",
@@ -5014,6 +5020,6 @@
       }
     ],
     "all_replay_targets_count": 165,
-    "remaining_candidate_count": 154
+    "remaining_candidate_count": 153
   }
 }

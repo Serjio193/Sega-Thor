@@ -1656,3 +1656,6 @@ under `build/thor-evidence/`.
 - `tests/positive_bound_model_test.cpp` — 24 replay vectors and clamp/flag/wrap checks for `0x9D92`.
 - `docs/reports/THOR_REPLAY_HELPER9_9D92_20261011.md` — `0xA7E6` bounded rejection and `0x9D92` verification evidence.
 - `docs/reports/THOR_REPLAY_HELPER9_9D92_ACCEPTANCE_20261011.json` — machine-readable path-specific acceptance receipt.
+
+- `docs/reports/THOR_REPLAY_HELPER10_99D6_BOUNDARY_20261012.md/.json` — exact `0x99D6` read arithmetic, caller evidence, and unresolved extent disposition.
+- `docs/reports/THOR_NATIVE_ISLAND_REGISTRY_PREP_9_HELPERS_20261012.md/.json` — nine verified path-scoped helper contracts grouped for future dispatch design; no runtime wiring.
