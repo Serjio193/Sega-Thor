@@ -304,9 +304,7 @@ int main(int argc, char** argv) {
                 throw std::runtime_error("frame count must precede input mode");
             input_mode = argv[6];
         }
-        if (!replay && input_mode != "fallback" && input_mode != "physical" &&
-            input_mode != "scripted" && input_mode != "live")
-            throw std::runtime_error("input mode must be fallback, physical, scripted, or live");
+        active_input_mode = parse_input_mode(input_mode);
         if (!frames || frames > 1000000) throw std::runtime_error("invalid frame count");
         const auto rom = oasis::Rom::load(rom_path.string());
         replay_call_census.set_rom(rom.bytes().data(), rom.bytes().size());
@@ -346,9 +344,6 @@ int main(int argc, char** argv) {
         output_dir = run_path.string();
         auto input = replay ? InputJournal::load(polls_path) : InputJournal(InputJournal::Mode::Capture);
         journal = &input; callback_session = &input;
-        active_input_mode = input_mode == "physical" ? InputMode::Physical :
-            input_mode == "scripted" ? InputMode::Scripted :
-            input_mode == "live" ? InputMode::LiveOverride : InputMode::Fallback;
         std::ofstream calls(calls_run_path, std::ios::trunc);
         calls.exceptions(std::ios::failbit | std::ios::badbit); call_output = &calls;
         std::ifstream expected_frames;

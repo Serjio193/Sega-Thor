@@ -2,8 +2,12 @@
 
 #include "core/rom_identity.hpp"
 
+#include <array>
 #include <cstdint>
+#include <span>
 #include <stdexcept>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 namespace oasis::hybrid::session {
@@ -23,6 +27,23 @@ void write_array(std::ofstream& out, const std::array<unsigned, 8>& values) {
     out << '[';
     for (unsigned i = 0; i < values.size(); ++i) out << (i ? "," : "") << values[i];
     out << ']';
+}
+
+void write_memory_component_hashes(std::ofstream& out, const std::vector<std::uint8_t>& memory) {
+    constexpr std::array<std::pair<std::string_view, std::size_t>, 7> components{{
+        {"work_ram", 0x10000U}, {"z80_ram", 0x2000U}, {"vram", 0x10000U},
+        {"cram", 0x80U}, {"vsram", 0x80U}, {"vdp_regs", 0x20U}, {"sat", 0x400U}}};
+    std::size_t offset{};
+    out << ",\"observable_memory_components\":{";
+    for (std::size_t i = 0; i < components.size(); ++i) {
+        const auto [name, size] = components[i];
+        if (offset + size > memory.size()) throw std::runtime_error("observable memory component extent invalid");
+        out << (i ? "," : "") << '\"' << name << "\":\""
+            << calculate_sha256(std::span<const std::uint8_t>(memory).subspan(offset, size)) << '\"';
+        offset += size;
+    }
+    if (offset != memory.size()) throw std::runtime_error("observable memory components do not cover snapshot");
+    out << '}';
 }
 
 void write_architecture(std::ofstream& out, unsigned frame, const CpuSnapshot& cpu,
@@ -81,7 +102,9 @@ void ReplayEquivalenceTrace::observe_frame(unsigned frame, RegisterRead register
         << ',' << s.refresh_cycles << ',' << s.frame_cycle_end << ',' << s.irq_level
         << ',' << s.irq_mask << ',' << s.z80_cycles << ',' << s.vdp_cycle << ','
         << s.scanline << ',' << s.z80_pc << ',' << s.z80_irq_state
-        << "],\"observable_memory_sha256\":\"" << calculate_sha256(memory) << "\"}\n";
+        << "],\"observable_memory_sha256\":\"" << calculate_sha256(memory) << '\"';
+    write_memory_component_hashes(full_frame_state_, memory);
+    full_frame_state_ << "}\n";
 }
 
 void ReplayEquivalenceTrace::observe(unsigned type, int width, unsigned address, unsigned value,

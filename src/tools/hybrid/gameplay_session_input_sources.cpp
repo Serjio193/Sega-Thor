@@ -44,6 +44,33 @@ Sample scripted_sample(unsigned frame) {
     return {0, InputSource::InjectedScripted};
 }
 
+Sample replay_c_sample(unsigned frame) {
+    if (frame < 2300U) return fallback_sample(frame);
+    const auto offset = frame - 2300U;
+    const auto phase = (offset / 72U) % 4U;
+    const auto phase_frame = offset % 72U;
+    std::uint16_t mask{};
+    switch (phase) {
+    case 0:
+        mask = 1U << RETRO_DEVICE_ID_JOYPAD_RIGHT;
+        if (phase_frame < 24U) mask |= 1U << RETRO_DEVICE_ID_JOYPAD_B;
+        break;
+    case 1:
+        mask = 1U << RETRO_DEVICE_ID_JOYPAD_UP;
+        if (phase_frame < 24U) mask |= 1U << RETRO_DEVICE_ID_JOYPAD_A;
+        break;
+    case 2:
+        mask = 1U << RETRO_DEVICE_ID_JOYPAD_LEFT;
+        if (phase_frame < 24U) mask |= 1U << RETRO_DEVICE_ID_JOYPAD_X;
+        break;
+    case 3:
+        mask = 1U << RETRO_DEVICE_ID_JOYPAD_DOWN;
+        if (phase_frame < 24U) mask |= 1U << RETRO_DEVICE_ID_JOYPAD_Y;
+        break;
+    }
+    return {mask, InputSource::InjectedScripted};
+}
+
 #ifdef _WIN32
 struct Pad { unsigned short buttons; unsigned char left_trigger, right_trigger; short lx, ly, rx, ry; };
 struct PadState { unsigned packet; Pad pad; };
@@ -80,7 +107,17 @@ Sample capture_sample(unsigned frame, InputMode mode) {
         throw std::runtime_error("physical input capture is currently Windows-only");
 #endif
     if (mode == InputMode::Scripted) return scripted_sample(frame);
+    if (mode == InputMode::ReplayC) return replay_c_sample(frame);
     return fallback_sample(frame);
+}
+
+InputMode parse_input_mode(std::string_view mode) {
+    if (mode == "fallback") return InputMode::Fallback;
+    if (mode == "physical") return InputMode::Physical;
+    if (mode == "scripted") return InputMode::Scripted;
+    if (mode == "replay-c") return InputMode::ReplayC;
+    if (mode == "live") return InputMode::LiveOverride;
+    throw std::runtime_error("input mode must be fallback, physical, scripted, replay-c, or live");
 }
 
 } // namespace oasis::hybrid::session

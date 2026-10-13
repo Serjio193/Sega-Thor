@@ -10092,3 +10092,45 @@ limited to Replay A because Replay B has no island-helper calls. Global helper
 verification remains NO; production runtime activation remains NO; all
 evidence authorities are unchanged. Recommend Replay C that naturally reaches
 accepted helper paths before island expansion or production-layer work.
+
+TASK: Acquire Replay C with the Replay A fallback input progression through
+frame 2599, then use a separate deterministic movement/action schedule from
+frame 2600. Capture the actual effective polls through the session runner.
+Preserve helper contracts, the eight-helper island set, production routing,
+and all evidence authorities.
+
+ACCEPTANCE: the new input mode is unit-tested at the shared-prefix boundary and
+scripted-divergence points; Debug and Release session-runner builds/tests pass;
+the capture manifest pins all identities. Two ROM-only C replays must match
+canonical per-frame state, 60 checkpoints, scheduler/call state, and polls.
+Check the C caller/path census before enabling the island. Any new path that is
+not established by the existing contract must remain ROM-backed until its
+instruction/timing/scheduler behavior is separately validated.
+
+RESULT: Replay C uses Replay A's fallback input through frame 2,299, then a
+deterministic direction/action schedule. Its first changed effective input is
+frame 2,300; per-frame observable memory first differs at frame 2,341 and 56
+frames differ in WRAM hash only. CPU state, scheduler, PC fingerprints, Z80
+RAM, and VDP/SAT components match Replay A. The changed WRAM owner remains
+unresolved. Replay C ROM-only duplicate runs are byte-identical across 3,600
+full-frame records, landmarks, call logs/census, full-call captures, scheduler
+sync, normalized/external events, and timing artifacts; strict ROM-only replay
+passes.
+
+The C callable census matches A (283 targets, 643,046 aggregate entries), and
+the frozen eight-helper diagnostic replay matches C ROM-only across all
+full-frame state records and scheduler, landmark, normalized-event and external
+event outputs. Native/fallback totals remain 45,968/410,911. C adds no accepted
+caller path, helper path ID, sampled input/output signature, timing vector,
+refresh variant, or IRQ interleave, so no new native-path evidence is claimed.
+The raw strict native call-capture validator fails closed because instruction
+stepping changes raw call representation; canonical and normalized replay
+surfaces pass. Two pre-existing route/census count discrepancies remain
+unchanged and are preserved in the receipt. Replay B remains routing-only with
+zero island entries. Production activation and global helper verification are
+NO; authority deltas are zero and totals are unchanged.
+
+Machine receipt and report: `docs/reports/THOR_REPLAY_NATIVE_ISLAND_EIGHT_REPLAY_C_20261013.{md,json}`.
+The Replay C input source and component-level frame hashes are covered by the
+focused Debug/Release input tests and runner builds; those checks passed. No
+ROM or copyrighted assets are included in the report or commit.

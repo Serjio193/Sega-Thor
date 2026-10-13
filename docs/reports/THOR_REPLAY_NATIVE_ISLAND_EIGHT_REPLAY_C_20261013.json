@@ -1,0 +1,121 @@
+{
+  "schema": "oasis.replay-native-island-independent-replay.v1",
+  "replay_c_id": "THOR_REPLAY_NATIVE_ISLAND_EIGHT_REPLAY_C_DIVERGENT_V1_20261013",
+  "baseline_id": "THOR_REPLAY_NATIVE_ISLAND_EIGHT_CLEAN_V1_20261013",
+  "replay_scope_count": 3,
+  "scope_qualification": {
+    "replay_a": "NATIVE_COVERED_BASELINE",
+    "replay_b": "ROUTING_ONLY_ZERO_ISLAND_ENTRIES",
+    "replay_c": "NATIVE_COVERED_SAME_HELPER_PATH_SURFACE_AS_A"
+  },
+  "identity": {
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "rom_size_bytes": 3145728,
+    "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+    "runner_sha256": "d524b7d6aece6bab7b5a58330d4ae56bbe3367a6f2bee58388cff5f0efc75039",
+    "config_sha256": "5921a426c45f076645a517693ccc3332b989e39aa47647a2056cded29db80180",
+    "input_sha256": "93f6816e6f114fead5089a41a9ed6bfedd44147397daa7be494e64550cceb49b",
+    "initial_snapshot_sha256": "f5cdb6f070430855d6f0ffd02462491db451ae0b543a030734b882c64ee0901f",
+    "input_poll_count": 3600,
+    "reset_method": "retro_load_game_cold_start",
+    "canonical_hash_schema": "accepted GPGX checkpoint canonical-state and per-frame observable-state schema"
+  },
+  "trajectory_difference": {
+    "replay_a_input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+    "first_effective_input_difference_poll_index_zero_based": 2301,
+    "first_effective_input_difference_poll_index_one_based": 2302,
+    "first_effective_input_difference_frame_zero_based": 2300,
+    "first_canonical_observable_memory_difference_frame": 2341,
+    "full_frame_records_different_from_a": 56,
+    "first_pc_fingerprint_difference_frame": null,
+    "pc_fingerprints_match_all_frames": true,
+    "cpu_state_matches_all_frames": true,
+    "scheduler_state_matches_all_frames": true,
+    "component_difference_counts": {
+      "work_ram": 56,
+      "z80_ram": 0,
+      "vram": 0,
+      "cram": 0,
+      "vsram": 0,
+      "vdp_regs": 0,
+      "sat": 0
+    },
+    "interpretation": "Distinct observable WRAM trajectory; owning field and semantic role unresolved; no PC/call distribution change"
+  },
+  "rom_only_c": {
+    "diagnostic_run_count": 2,
+    "strict_replay_status": "PASS",
+    "strict_replay_frames": 3600,
+    "strict_replay_polls": 3600,
+    "duplicate_run_matches": {
+      "full_frame_state": {
+        "sha256": "7fceca5059e01ea814551ef986d0b419e637e06e858b5d5b98ef0760482c2e89",
+        "records": 3600
+      },
+      "observed_landmarks": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+      "calls": "ed664fa85f29d0e5eee03ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+      "call_census": "79b1987f4a1c5dfa0d4bbe63e382899c60b68393e0e9270f1dd311a82eff04c2",
+      "auto_full_calls": "108a9001e935f1b79d4b65041516fefbc6ef3179811eef90c45798d4de35368a",
+      "scheduler_sync": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+      "normalized_events": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+      "external_events": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+      "helper_timing": "5e0890f90880208ff4bf959566487caeab37ccbe96b2ffb56edfe6a210c25c25"
+    }
+  },
+  "helper_census": {
+    "unique_callable_targets": 283,
+    "aggregate_target_entries": 643046,
+    "matches_replay_a": true,
+    "accepted_native_calls": 45968,
+    "rom_fallback_calls": 410911,
+    "new_island_path_evidence": false,
+    "new_timing_refresh_irq_evidence": false,
+    "full_cfg_coverage": "NO"
+  },
+  "helpers": [
+    {"entry_pc":"0x9D70","accepted_caller":"0x9144","native_calls":184,"rom_fallback_calls":2,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9D4E","accepted_caller":"0x909E","native_calls":113,"rom_fallback_calls":0,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9DB4","accepted_caller":"0x92CC","native_calls":507,"rom_fallback_calls":0,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9D92","accepted_caller":"0x9812","native_calls":24,"rom_fallback_calls":208,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x94A2","accepted_caller":"0x9468","native_calls":66,"rom_fallback_calls":0,"replay_a_paths":3,"replay_c_paths":3,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9C40","accepted_caller":"0xE376","native_calls":24,"rom_fallback_calls":3,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x8EF8","accepted_caller":"PATH_SPECIFIC_ACCEPTED_SET","native_calls":3,"rom_fallback_calls":11,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"},
+    {"entry_pc":"0xE268","accepted_caller":"0x359A","native_calls":45047,"rom_fallback_calls":410687,"replay_a_paths":1,"replay_c_paths":1,"new_path":"NO","full_cfg_coverage":"NO"}
+  ],
+  "eight_helper_c": {
+    "diagnostic_replay_status": "PASS",
+    "frames": 3600,
+    "divergence": "NO",
+    "full_frame_state_matches_c_rom_only": true,
+    "full_frame_state_sha256": "7fceca5059e01ea814551ef986d0b419e637e06e858b5d5b98ef0760482c2e89",
+    "scheduler_sync_matches": true,
+    "observed_landmarks_match": true,
+    "normalized_events_match": true,
+    "external_events_match": true,
+    "e268_metrics_match_replay_a": true,
+    "strict_raw_call_capture_validator": "FAIL_CLOSED_TARGET_CALL_CAPTURE_MISMATCH",
+    "strict_failure_scope": "raw capture representation differs under native instruction stepping; normalized diagnostic/canonical surfaces pass",
+    "accepted_native_calls": 45968,
+    "accepted_rom_fallback_calls": 410911,
+    "native_mismatches": 0
+  },
+  "count_discrepancies": [
+    "0x8EF8 raw callable census has 13 entries while route trace/frozen accepted receipt accounts for 14 (3 native + 11 ROM); unchanged from replay A",
+    "0xE268 step metrics target_entries=455734 while raw call census=455656 (difference 78); unchanged from replay A"
+  ],
+  "scope_limits": {
+    "replay_b_is_native_path_coverage": false,
+    "global_helper_verification": "NO",
+    "production_runtime_active": "NO",
+    "full_cfg_natural_coverage": "NO",
+    "raw_serializer_hash": "DIAGNOSTIC_ONLY",
+    "evidence_authority_deltas": 0,
+    "current_totals": {
+      "rom_size_bytes": 3145728,
+      "runtime_total_proven_bytes": 440425,
+      "structural_proven_bytes": 1266667,
+      "source_owned_bytes": 1487672
+    }
+  },
+  "recommendation": "Acquire a further natural replay that changes accepted helper inputs or path/timing coverage before adding helpers or designing production dispatch."
+}
