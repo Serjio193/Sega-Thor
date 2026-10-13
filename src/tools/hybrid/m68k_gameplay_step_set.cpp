@@ -10,7 +10,7 @@
 
 namespace oasis::hybrid {
 namespace {
-enum class Helper : unsigned { None, H9D70, H9D4E, H9DB4 };
+enum class Helper : unsigned { None, H9D70, H9D4E, H9DB4, H9D92 };
 constexpr unsigned kRamStart = 0xFF0000U;
 constexpr unsigned kRamEnd = 0x1000000U;
 
@@ -40,9 +40,9 @@ BranchAdjustment g_branch_adjustment{};
 BranchAdjustment g_byte_branch_adjustment{};
 void (*g_observe)(unsigned, unsigned){};
 void (*g_fault)(unsigned){};
-std::array<bool, 3> g_enabled{};
+std::array<bool, 4> g_enabled{};
 Helper g_active{Helper::None};
-std::array<unsigned, 3> g_calls{};
+std::array<unsigned, 4> g_calls{};
 
 std::uint32_t rr(void*, unsigned index) { return g_read_register(index); }
 void wr(void*, unsigned index, std::uint32_t value) { g_write_register(index, value); }
@@ -82,6 +82,19 @@ bool caller_matches(const M68k9D70StepApi& api, unsigned caller,
         !be_read(api, caller + 2U, 2U, extension)) return false;
     const auto displacement = static_cast<std::int16_t>(extension);
     return static_cast<unsigned>(static_cast<int>(caller + 2U) + displacement) == target;
+}
+
+bool in_work_ram(unsigned address, unsigned length) noexcept {
+    return address >= kRamStart && address <= kRamEnd - length;
+}
+bool bounded_9d92_inputs(const M68k9D70StepApi& api) noexcept {
+    const unsigned a0 = api.read_register(api.context, 8U) & 0xFFFFFFU;
+    const unsigned a6 = api.read_register(api.context, 14U) & 0xFFFFFFU;
+    unsigned dimension{}, offset{};
+    return in_work_ram(a0 + 6U, 2U) && in_work_ram(a6 + 0x41U, 1U) &&
+        in_work_ram(a6 + 0x46U, 2U) &&
+        be_read(api, a0 + 6U, 2U, dimension) &&
+        be_read(api, a6 + 0x46U, 2U, offset);
 }
 
 std::uint16_t ccr(const M68k9D70StepApi& api) noexcept {
@@ -143,6 +156,9 @@ bool supported_entry(unsigned pc, const M68k9D70StepApi& api, Helper& helper) no
     if (pc == 0x9D70U && g_enabled[0] && caller_matches(api, 0x9144U, pc, 0x9148U)) helper = Helper::H9D70;
     else if (pc == 0x9D4EU && g_enabled[1] && caller_matches(api, 0x909EU, pc, 0x90A2U)) helper = Helper::H9D4E;
     else if (pc == 0x9DB4U && g_enabled[2] && caller_matches(api, 0x92CCU, pc, 0x92D0U)) helper = Helper::H9DB4;
+    else if (pc == 0x9D92U && g_enabled[3] &&
+             caller_matches(api, 0x9812U, pc, 0x9816U) && bounded_9d92_inputs(api))
+        helper = Helper::H9D92;
     else return false;
     return true;
 }
@@ -160,11 +176,14 @@ M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
     }
     const Helper helper = g_active;
     const unsigned low = helper == Helper::H9D70 ? 0x9D70U :
-        helper == Helper::H9D4E ? 0x9D4EU : 0x9DB4U;
+        helper == Helper::H9D4E ? 0x9D4EU :
+        helper == Helper::H9DB4 ? 0x9DB4U : 0x9D92U;
     const unsigned high = helper == Helper::H9D70 ? 0x9D92U :
-        helper == Helper::H9D4E ? 0x9D70U : 0x9DD6U;
+        helper == Helper::H9D4E ? 0x9D70U :
+        helper == Helper::H9DB4 ? 0x9DD6U : 0x9DB4U;
     if (pc == 0x9D86U || pc == 0x9D90U || pc == 0x9D6EU ||
-        pc == 0x9DCAU || pc == 0x9DD4U) {
+        pc == 0x9DCAU || pc == 0x9DD4U ||
+        (helper == Helper::H9D92 && pc == 0x9DB2U)) {
         if (pc < low || pc >= high) return M68k9D70StepResult::ContractFault;
         g_active = Helper::None;
         ++g_calls[static_cast<unsigned>(helper) - 1U];
@@ -294,7 +313,7 @@ M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
             const auto val = static_cast<std::uint8_t>(old | 0x48U); api.write(api.context, a6 + 0x40U, 1, val);
             set_ccr(api, byte_logic_flags(val, ccr(api)));
         } else return M68k9D70StepResult::ContractFault;
-    } else {
+    } else if (helper == Helper::H9DB4) {
         if (pc == 0x9DB4U && opcode == 0x3602U) {
             const auto old = api.read_register(api.context, 3U), src = api.read_register(api.context, 2U);
             api.write_register(api.context, 3U, (old & 0xFFFF0000U) | (src & 0xFFFFU));
@@ -330,10 +349,104 @@ M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
             const auto val = static_cast<std::uint8_t>(old | 0x48U); api.write(api.context, a6 + 0x41U, 1, val);
             set_ccr(api, byte_logic_flags(val, ccr(api)));
         } else return M68k9D70StepResult::ContractFault;
+    } else {
+        if (pc == 0x9D92U && opcode == 0x3E02U) {
+            const auto old = api.read_register(api.context, 7U);
+            const auto value = api.read_register(api.context, 2U);
+            api.write_register(api.context, 7U, (old & 0xFFFF0000U) | (value & 0xFFFFU));
+            set_ccr(api, logic_flags(static_cast<std::uint16_t>(value), ccr(api)));
+        } else if (pc == 0x9D94U && opcode == 0xDE6EU) {
+            if (api.fetch16(api.context) != 0x0046U) return M68k9D70StepResult::ContractFault;
+            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
+            const auto rhs = static_cast<std::uint16_t>(api.read(api.context, a6 + 0x46U, 2));
+            const auto result = static_cast<std::uint16_t>(lhs + rhs);
+            api.write_register(api.context, 7U,
+                (api.read_register(api.context, 7U) & 0xFFFF0000U) | result);
+            set_ccr(api, add_flags(lhs, rhs, result, ccr(api), true));
+        } else if (pc == 0x9D98U && opcode == 0x3628U) {
+            if (api.fetch16(api.context) != 0x0006U) return M68k9D70StepResult::ContractFault;
+            const unsigned a0 = api.read_register(api.context, 8U) & 0xFFFFFFU;
+            const auto value = static_cast<std::uint16_t>(api.read(api.context, a0 + 6U, 2));
+            const auto old = api.read_register(api.context, 3U);
+            api.write_register(api.context, 3U, (old & 0xFFFF0000U) | value);
+            set_ccr(api, logic_flags(value, ccr(api)));
+        } else if (pc == 0x9D9CU && opcode == 0xE74BU) {
+            const auto original = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
+            auto value = original;
+            bool carry{}, overflow{};
+            for (unsigned bit = 0; bit < 3U; ++bit) {
+                const bool old_sign = (value & 0x8000U) != 0U;
+                carry = old_sign;
+                value = static_cast<std::uint16_t>(value << 1U);
+                overflow = overflow || old_sign != ((value & 0x8000U) != 0U);
+            }
+            const auto flags = static_cast<std::uint16_t>((carry ? 0x11U : 0U) |
+                (value == 0U ? 0x04U : 0U) | ((value & 0x8000U) ? 0x08U : 0U) |
+                (overflow ? 0x02U : 0U));
+            api.write_register(api.context, 3U,
+                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
+            set_ccr(api, flags);
+            api.add_cycles(api.context, 42);
+        } else if (pc == 0x9D9EU && opcode == 0x5343U) {
+            const auto old = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
+            const auto value = static_cast<std::uint16_t>(old - 1U);
+            api.write_register(api.context, 3U,
+                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
+            set_ccr(api, sub_flags(old, 1U, value, ccr(api), true));
+        } else if (pc == 0x9DA0U && opcode == 0x9647U) {
+            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
+            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
+            const auto value = static_cast<std::uint16_t>(lhs - rhs);
+            api.write_register(api.context, 3U,
+                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
+            set_ccr(api, sub_flags(lhs, rhs, value, ccr(api), true));
+        } else if (pc == 0x9DA2U && opcode == 0xB043U) {
+            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 0U));
+            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
+            set_ccr(api, sub_flags(lhs, rhs, static_cast<std::uint16_t>(lhs - rhs),
+                                   ccr(api), false));
+        } else if (pc == 0x9DA4U && opcode == 0x6300U) {
+            branch = true;
+            taken = condition(3U, ccr(api));
+            const auto extension_pc = api.read_register(api.context, 16U);
+            const auto displacement = static_cast<std::int16_t>(api.fetch16(api.context));
+            if (displacement != 0x000CU) return M68k9D70StepResult::ContractFault;
+            if (taken) {
+                const auto dest = static_cast<unsigned>(
+                    static_cast<int>(extension_pc) + displacement) & 0xFFFFFFU;
+                unsigned word{};
+                if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
+                api.set_return_state(api.context, dest, dest + 2U, word);
+            }
+        } else if (pc == 0x9DA8U && opcode == 0x3003U) {
+            const auto old = api.read_register(api.context, 0U);
+            const auto value = api.read_register(api.context, 3U);
+            api.write_register(api.context, 0U, (old & 0xFFFF0000U) | (value & 0xFFFFU));
+            set_ccr(api, logic_flags(static_cast<std::uint16_t>(value), ccr(api)));
+        } else if (pc == 0x9DAAU && opcode == 0x6606U) {
+            branch = true;
+            taken = condition(6U, ccr(api));
+            if (taken) {
+                const auto displacement = static_cast<std::int8_t>(opcode & 0xFFU);
+                const auto dest = static_cast<unsigned>(
+                    static_cast<int>(api.read_register(api.context, 16U)) + displacement) & 0xFFFFFFU;
+                unsigned word{};
+                if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
+                api.set_return_state(api.context, dest, dest + 2U, word);
+            }
+        } else if (pc == 0x9DACU && opcode == 0x002EU) {
+            if (api.fetch16(api.context) != 0x0048U || api.fetch16(api.context) != 0x0041U)
+                return M68k9D70StepResult::ContractFault;
+            const auto old = static_cast<std::uint8_t>(api.read(api.context, a6 + 0x41U, 1));
+            const auto value = static_cast<std::uint8_t>(old | 0x48U);
+            api.write(api.context, a6 + 0x41U, 1, value);
+            set_ccr(api, byte_logic_flags(value, ccr(api)));
+        } else return M68k9D70StepResult::ContractFault;
     }
     api.finish_instruction(api.context, opcode);
     if (branch && !taken) {
-        const bool short_branch = helper == Helper::H9D4E && pc == 0x9D68U;
+        const bool short_branch = (helper == Helper::H9D4E && pc == 0x9D68U) ||
+            (helper == Helper::H9D92 && pc == 0x9DAAU);
         const auto adjustment = short_branch && api.byte_not_taken_adjustment ?
             api.byte_not_taken_adjustment(api.context) : api.word_not_taken_adjustment(api.context);
         api.add_cycles(api.context, adjustment);
@@ -377,8 +490,9 @@ void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enab
     g_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_word_adjustment");
     g_byte_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_adjustment");
     g_observe = observer; g_fault = fault_handler;
-    g_enabled = {selected(enabled_helpers, "9d70"), selected(enabled_helpers, "9d4e"), selected(enabled_helpers, "9db4")};
-    if ((!g_enabled[0] && !g_enabled[1] && !g_enabled[2]) || !g_observe || !g_fault)
+    g_enabled = {selected(enabled_helpers, "9d70"), selected(enabled_helpers, "9d4e"),
+        selected(enabled_helpers, "9db4"), selected(enabled_helpers, "9d92")};
+    if ((!g_enabled[0] && !g_enabled[1] && !g_enabled[2] && !g_enabled[3]) || !g_observe || !g_fault)
         throw std::runtime_error("instruction step set is empty or lacks callbacks");
     core.get<InstallBlock>("retro_hybrid_install_block")(block_hook);
 }

@@ -3982,3 +3982,11 @@ yields remain core-owned. Only one natural branch path per helper was observed
 in this replay; other paths are not promoted by this result. No coverage,
 SOURCE_OWNED, or canonical SQLite authority changed. See
 `docs/reports/THOR_MULTI_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}`.
+
+## M68K 0x9D92 instruction-stepped replay path (2026-10-13)
+
+Canonical ROM SHA-256: eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263. The caller-gated adapter accepts only BSR.W source 0x009812, target 0x009D92, and return 0x009816; exact ROM opcode/extension checks and bounded WRAM input-address checks precede execution. The runner identity pins this adapter contract version. RTS remains core-owned at 0x009DB2; refresh checks, cycle-end yields and scheduler resume remain core-owned.
+
+The observed path is 9D92,9D94,9D98,9D9C,9D9E,9DA0,9DA2,9DA4 (BLS taken),9DB2 (RTS). Opcode 0xDE6E is ADD.W. LSL.W #3 at 0x9D9C costs six base plus six dynamic 68000 cycles. The nominal call costs 78 core cycles / 546 master-cycle units; the 24 natural calls showed seven timing vectors from refresh interaction and totals 546, 560, or 637. BLS was taken in all 24; BNE at 0x9DAA was not reached, so this does not claim full natural CFG coverage.
+
+The 0x9D92-only and four-helper runs matched the ROM-only baseline across 3,600 full-frame records, 60 periodic state/RAM hashes, CPU/scheduler synchronization, Z80 RAM, normalized helper events and ordered external events. This validates the four-helper instruction-stepped island only for the pinned replay and caller paths. Global CPP verification and production activation remain NO. See docs/reports/THOR_FOUR_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}.

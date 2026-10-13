@@ -88,7 +88,7 @@ void observe_step_instruction(unsigned pc, unsigned opcode) {
     native_step_observer = true;
     bridge_hook(execute_event, 0, pc, opcode);
     native_step_observer = false;
-    if (equivalence_trace && (pc == 0x9D70U || pc == 0x9D4EU || pc == 0x9DB4U))
+    if (equivalence_trace && (pc == 0x9D70U || pc == 0x9D4EU || pc == 0x9DB4U || pc == 0x9D92U))
         equivalence_trace->mark_native_route(pc);
 }
 void fail_9d70_instruction_step(unsigned pc) {
@@ -136,7 +136,8 @@ unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value)
                                    frame_number + 1U, read_register, peek_memory);
         if ((type & execute_event) != 0) {
             oasis::hybrid::session::observe_step_instruction_trace(*call_output, frame_number + 1U,
-                address, previous_pc, read_register, read_scheduler, native_step_observer);
+                address, read_be(peek_memory, address, 2U), previous_pc,
+                read_register, read_scheduler, native_step_observer);
             if (previous_pc && oasis::hybrid::session::is_call_transfer_instruction(previous_pc, peek_memory))
                 ++total_m68k_transfers;
             if (address == 0x9D70U && native_helper_selected != "9d70-step" &&
@@ -264,7 +265,7 @@ std::int16_t input_state(unsigned port, unsigned device, unsigned index, unsigne
 }
 int main(int argc, char** argv) {
     if (argc < 5 || argc > 8) {
-        std::cerr << "usage: oasis_gameplay_session <capture|replay> <GPGX core> <canonical ROM> <session-dir> [frames] [input-mode|--native-island=9d70-step] [--restore-initial-state]\n";
+        std::cerr << "usage: oasis_gameplay_session <capture|replay> <GPGX core> <canonical ROM> <session-dir> [frames] [input-mode|--native-island=step:<ids>] [--restore-initial-state]\n";
         return 2;
     }
     try {

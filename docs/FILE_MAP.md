@@ -1704,3 +1704,15 @@ under `build/thor-evidence/`.
   development replay; production dispatch remains inactive.
 - Raw replay runs and intermediate captures are under ignored
   `build/multi-helper-step-20261013/`.
+
+## 2026-10-13 — Four-helper instruction-stepped replay island
+
+- src/tools/hybrid/m68k_gameplay_step_set.{hpp,cpp} — adds the exact
+  caller-gated step path 0x9D92@0x9812 to the existing three-helper
+  scheduler-backed set; replay/development use only.
+- src/tools/hybrid/gameplay_session_step_trace.{hpp,cpp} — records the ROM
+  opcode for each traced instruction and includes the 0x9D92 path range.
+- src/tools/hybrid/normalize_step_helper_trace.py — emits opcode decode,
+  branch and cycle census for the observed 0x9D92 path, plus helper metrics.
+- docs/reports/THOR_FOUR_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}
+  — pinned ROM-only, single-helper and four-helper replay results.
