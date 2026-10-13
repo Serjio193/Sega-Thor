@@ -19,9 +19,23 @@ struct ByteGridAggregate {
 class ByteGridView {
 public:
     ByteGridView(std::span<const std::uint8_t> bytes,
+                 std::uint16_t width,
+                 std::uint16_t height,
                  std::uint16_t row_stride,
                  std::uint8_t row_shift) noexcept;
 
+    [[nodiscard]] static std::optional<ByteGridView> from_parent_output(
+        std::span<const std::uint8_t> parent,
+        std::size_t offset,
+        std::uint16_t width,
+        std::uint16_t height,
+        std::uint16_t row_stride,
+        std::uint8_t row_shift) noexcept;
+
+    [[nodiscard]] bool valid() const noexcept;
+    [[nodiscard]] std::span<const std::uint8_t> data() const noexcept { return bytes_; }
+    [[nodiscard]] std::uint16_t width() const noexcept { return width_; }
+    [[nodiscard]] std::uint16_t height() const noexcept { return height_; }
     [[nodiscard]] std::uint16_t row_stride() const noexcept { return row_stride_; }
     [[nodiscard]] std::uint8_t row_shift() const noexcept { return row_shift_; }
 
@@ -42,8 +56,15 @@ public:
         std::int32_t center_y,
         std::uint16_t radius) const noexcept;
 
+    [[nodiscard]] std::optional<ByteGridAggregate> aggregate_cell_column_world_y(
+        std::int32_t cell_x,
+        std::int32_t center_y,
+        std::uint16_t radius) const noexcept;
+
 private:
     std::span<const std::uint8_t> bytes_;
+    std::uint16_t width_{};
+    std::uint16_t height_{};
     std::uint16_t row_stride_{};
     std::uint8_t row_shift_{};
 };

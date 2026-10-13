@@ -6,7 +6,7 @@
 #include "tools/hybrid/gameplay_session_receipts.hpp"
 #include "tools/hybrid/gameplay_session_call_capture.hpp"
 #include "tools/hybrid/m68k_gameplay_step_set.hpp"
-#include "tools/hybrid/gameplay_session_replay_diagnostic.hpp"
+#include "tools/hybrid/gameplay_session_metrics.hpp"
 #include "tools/hybrid/gameplay_session_replay_options.hpp"
 #include "tools/hybrid/gameplay_session_step_trace.hpp"
 #include "tools/hybrid/replay_equivalence_trace.hpp"
@@ -77,9 +77,10 @@ bool island_write_memory(unsigned address, int width, unsigned value) {
     return write_memory && write_memory(address, width, value) != 0;
 }
 
-void write_island_metrics(const std::string& status, const std::string& reason) {
-    oasis::hybrid::session::write_native_island_metrics(island_metrics_path.string(), status, reason,
-        total_m68k_transfers, island_counters, island_first_frame, island_last_frame);
+void write_island_metrics(const std::string& status, const std::string& reason, bool replay_divergence = false) {
+    oasis::hybrid::session::write_gameplay_step_metrics(island_metrics_path, status,
+        reason, total_m68k_transfers, island_counters, island_first_frame, island_last_frame,
+        replay_divergence);
 }
 oasis::hybrid::session::CallCapture call;
 
@@ -88,11 +89,12 @@ void observe_step_instruction(unsigned pc, unsigned opcode) {
     native_step_observer = true;
     bridge_hook(execute_event, 0, pc, opcode);
     native_step_observer = false;
-    if (equivalence_trace && (pc == 0x9D70U || pc == 0x9D4EU || pc == 0x9DB4U || pc == 0x9D92U))
+    if (equivalence_trace && oasis::hybrid::session::is_native_step_helper_pc(pc))
         equivalence_trace->mark_native_route(pc);
 }
+unsigned current_transfer_source_pc() { return previous_pc; }
 void fail_9d70_instruction_step(unsigned pc) {
-    hook_error = "9D70 instruction-step contract fault at " + std::to_string(pc);
+    hook_error = "gameplay instruction-step contract fault at " + std::to_string(pc);
     if (stop_core) stop_core();
 }
 } // namespace
@@ -264,7 +266,7 @@ std::int16_t input_state(unsigned port, unsigned device, unsigned index, unsigne
 }
 }
 int main(int argc, char** argv) {
-    if (argc < 5 || argc > 8) {
+    if (argc < 5 || argc > 9) {
         std::cerr << "usage: oasis_gameplay_session <capture|replay> <GPGX core> <canonical ROM> <session-dir> [frames] [input-mode|--native-island=step:<ids>] [--restore-initial-state]\n";
         return 2;
     }
@@ -280,7 +282,6 @@ int main(int argc, char** argv) {
             native_helper_selected = options.native_helper;
             native_island_selected = options.native_island;
         }
-        if (replay && argc > 8) throw std::runtime_error("too many replay options");
         if (!replay && argc >= 6 && std::string(argv[5]).starts_with("--native-island="))
             throw std::runtime_error("native island is replay-only");
         const auto core_path = std::filesystem::absolute(argv[2]);
@@ -375,7 +376,7 @@ int main(int argc, char** argv) {
         if (native_helper_selected == "9d70-step" || native_helper_selected.starts_with("step:"))
             oasis::hybrid::install_m68k_gameplay_step_set(core,
                 native_helper_selected == "9d70-step" ? "9d70" : native_helper_selected.substr(5),
-                observe_step_instruction, fail_9d70_instruction_step);
+                observe_step_instruction, fail_9d70_instruction_step, current_transfer_source_pc);
         core.get<void(*)(decltype(&environment))>("retro_set_environment")(environment);
         core.get<void(*)(decltype(&video))>("retro_set_video_refresh")(video);
         core.get<void(*)(decltype(&audio))>("retro_set_audio_sample")(audio);
@@ -461,7 +462,7 @@ int main(int argc, char** argv) {
                 input.finish();
                 equivalence_trace_owner->write_receipt((run_path / "normalized-trace.receipt.json").string());
                 landmark_diagnostic.write_receipt((run_path / "landmark-diagnostic.json").string());
-                write_island_metrics("DIAGNOSTIC_ONLY", "see landmark-diagnostic.json");
+                write_island_metrics("DIAGNOSTIC_ONLY", "see landmark-diagnostic.json", landmark_diagnostic.has_divergence());
                 std::cout << "DIAGNOSTIC_REPLAY_COMPLETE frames=" << frames << " divergence="
                     << (landmark_diagnostic.has_divergence() ? "YES" : "NO") << '\n';
                 core.get<void(*)()>("retro_unload_game")(); core.get<void(*)()>("retro_deinit")();

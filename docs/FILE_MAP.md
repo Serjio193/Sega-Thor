@@ -196,6 +196,21 @@ validation are recorded in
 
 # THOR Evidence Engine design
 
+# THOR frozen eight-helper replay island
+
+`src/tools/hybrid/gameplay_session_metrics.*` and the related session replay
+modules provide the development-only instruction-stepped replay runner.
+`m68k_*_instruction_step.*` and `m68k_gameplay_step_set.*` hold caller-gated
+helper steppers; `native_island_runtime.*` supplies the bounded effect/runtime
+support. `src/game/world/byte_grid.*` is the typed grid view used by the
+verified grid helpers. Focused regression tests live in
+`tests/native_island_runtime_test.cpp`,
+`tests/gameplay_session_replay_diagnostic_test.cpp`, and
+`tests/build_island_telemetry_v2_test.py`. Frozen V1/V2 identities and clean
+reproduction results are documented in `docs/reports/THOR_REPLAY_NATIVE_ISLAND_EIGHT_*.{md,json}`.
+Replay captures, the user-supplied ROM, and external GPGX source remain outside
+the repository under local `build/` paths.
+
 # AUTO64 Knowledge Coverage and scheduler
 
 `src/tools/thor_evidence/auto64_knowledge_coverage.py` imports existing AUTO62,

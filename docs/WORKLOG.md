@@ -10026,3 +10026,39 @@ The four-helper replay passed. Native calls: 0x9D70=184, 0x9D4E=113, 0x9DB4=507,
 0x9D92_STEPPER_ADAPTER_VERIFIED=YES, SINGLE_HELPER_REPLAY_EQUIVALENT=YES, and REPLAY_NATIVE_ISLAND_VALIDATED=YES for the pinned four-helper set and session. Global CPP verification and production activation remain NO. Authority deltas are zero. See docs/reports/THOR_FOUR_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}.
 
 VALIDATION: GNU/Linux Debug and Release oasis_gameplay_session builds passed; Debug and Release hybrid checkpoint evidence/layout tests passed 2/2 each; replay comparison passed for ROM-only, 0x9D92-only, and four-helper runs; Python bytecode compilation passed. Touched sources are below the 500-line limit (runner 499, step set 500, normalizer 202). The shared dirty checkout's repository-wide source-limit test reports three unrelated files over the limit: src/tools/re_slice_decoder.cpp (506), src/tools/thor_evidence/audio_mode1_structural_closure.py (519), and src/tools/thor_evidence/helper_candidate_index.py (518). They were left unchanged. Focused git diff --check passed.
+## 2026-10-13 — Clean-checkout reproduction of frozen eight-helper island
+
+TASK: Reproduce the immutable V1/V2 eight-helper replay baseline from committed
+base `907520f04c9cc5a285d4a6fc4670456fa5ec2801` in an isolated worktree, using
+only the minimum required implementation patch and external pinned ROM/GPGX
+inputs. Do not add helpers, activate production routing, or change evidence
+authorities.
+
+RESULT: The clean worktree built the Debug and Release gameplay-session targets
+with GNU 13.3/CMake 3.28 and passed the four focused CTest cases plus two V2
+receipt tests in each configuration. The fresh Debug clean-worktree replay
+completed 3,600 frames, matching all 3,600 canonical frame records, 60 periodic
+hashes, 128 architectural and scheduler sync records, Z80/VDP artifacts,
+normalized helper events, external event ordering, and native/fallback counts.
+Native/fallback totals remain 45,968/410,911. All deterministic replay artifact
+hashes match the frozen Debug reference. The sole artifact difference is the
+raw cold-start/restore serializer fingerprint in `replay-start-state.json`;
+the captured snapshot identity and canonical emulation-state records match.
+Raw serializer hashes remain diagnostic and are not substituted for canonical
+state evidence.
+
+The exact Debug/Release runner identities match frozen V1/V2. The clean CMake
+link closure uses 23 `oasis_core` sources; five unrelated modules in the broad
+V2 census were not needed by this runner and were excluded. The V2 receipt's
+dependency list omitted the normalizer script used to generate the normalized
+trace receipt; the clean reproduction records it as a required build/receipt
+tool. No ROM or copyrighted assets were added. No runtime, structural,
+SOURCE_OWNED, or canonical SQLite authority changed. Production routing and
+global helper verification remain NO.
+
+VALIDATION: GNU/Linux Debug/Release builds passed; focused CTest passed 4/4 in
+both configurations; telemetry receipt tests passed 2/2 in both configurations;
+the pinned clean-worktree Debug replay passed; `git diff --check` passed. The
+clean base checkout and changed island source files pass the 500-line rule.
+The separate shared primary dirty checkout still has three pre-existing
+over-limit files (506, 519, and 518 lines), outside this isolated patch.

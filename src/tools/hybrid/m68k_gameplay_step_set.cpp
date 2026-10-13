@@ -1,7 +1,12 @@
 #include "tools/hybrid/m68k_gameplay_step_set.hpp"
 
 #include "tools/hybrid/external_library.hpp"
+#include "tools/hybrid/m68k_94a2_instruction_step.hpp"
+#include "tools/hybrid/m68k_8ef8_instruction_step.hpp"
+#include "tools/hybrid/m68k_e268_instruction_step.hpp"
+#include "tools/hybrid/m68k_9c40_instruction_step.hpp"
 #include "tools/hybrid/m68k_9d70_instruction_step.hpp"
+#include "tools/hybrid/m68k_gameplay_step_flags.hpp"
 
 #include <array>
 #include <cstdint>
@@ -10,6 +15,7 @@
 
 namespace oasis::hybrid {
 namespace {
+using namespace step_flags;
 enum class Helper : unsigned { None, H9D70, H9D4E, H9DB4, H9D92 };
 constexpr unsigned kRamStart = 0xFF0000U;
 constexpr unsigned kRamEnd = 0x1000000U;
@@ -25,6 +31,9 @@ using Instruction = void (*)(unsigned);
 using AddCycles = void (*)(int);
 using BranchAdjustment = int (*)();
 using InstallBlock = void (*)(int (*)(unsigned));
+using SkipBusRefresh = void (*)();
+using SchedulerField = int (*)(unsigned);
+using TransferSourcePc = unsigned (*)();
 
 ReadRegister g_read_register{};
 WriteRegister g_write_register{};
@@ -38,9 +47,12 @@ Instruction g_finish{};
 AddCycles g_add_cycles{};
 BranchAdjustment g_branch_adjustment{};
 BranchAdjustment g_byte_branch_adjustment{};
+SkipBusRefresh g_skip_bus_refresh{};
+SchedulerField g_scheduler_field{};
+TransferSourcePc g_transfer_source_pc{};
 void (*g_observe)(unsigned, unsigned){};
 void (*g_fault)(unsigned){};
-std::array<bool, 4> g_enabled{};
+std::array<bool, 8> g_enabled{};
 Helper g_active{Helper::None};
 std::array<unsigned, 4> g_calls{};
 
@@ -56,6 +68,9 @@ void set_return(void*, unsigned pc, unsigned pref_addr, unsigned pref_data) {
 void begin(void*, unsigned opcode) { g_begin(opcode); }
 void finish(void*, unsigned opcode) { g_finish(opcode); }
 void add_cycles(void*, int cycles) { g_add_cycles(cycles); }
+void skip_bus_refresh(void*) { g_skip_bus_refresh(); }
+int scheduler_field(void*, unsigned field) { return g_scheduler_field(field); }
+unsigned transfer_source_pc(void*) { return g_transfer_source_pc ? g_transfer_source_pc() : 0U; }
 int branch_adjust(void*) { return g_branch_adjustment(); }
 int byte_branch_adjust(void*) { return g_byte_branch_adjustment(); }
 void observe(void*, unsigned pc, unsigned opcode) { g_observe(pc, opcode); }
@@ -104,54 +119,6 @@ void set_ccr(const M68k9D70StepApi& api, std::uint16_t value) noexcept {
     const auto sr = api.read_register(api.context, 17U);
     api.write_register(api.context, 17U, (sr & 0xFFE0U) | (value & 0x1FU));
 }
-std::uint16_t logic_flags(std::uint16_t value, std::uint16_t old) noexcept {
-    return static_cast<std::uint16_t>((old & 0x10U) | (value == 0 ? 4U : 0U) |
-        ((value & 0x8000U) ? 8U : 0U));
-}
-std::uint16_t byte_logic_flags(std::uint8_t value, std::uint16_t old) noexcept {
-    return static_cast<std::uint16_t>((old & 0x10U) | (value == 0 ? 4U : 0U) |
-        ((value & 0x80U) ? 8U : 0U));
-}
-std::uint16_t sub_flags(std::uint16_t lhs, std::uint16_t rhs,
-                        std::uint16_t result, std::uint16_t old,
-                        bool affect_x) noexcept {
-    const bool carry = lhs < rhs;
-    const bool overflow = ((lhs ^ rhs) & (lhs ^ result) & 0x8000U) != 0;
-    return static_cast<std::uint16_t>((affect_x ? (carry ? 0x10U : 0U) : old & 0x10U) |
-        (result == 0 ? 4U : 0U) | ((result & 0x8000U) ? 8U : 0U) |
-        (overflow ? 2U : 0U) | (carry ? 1U : 0U));
-}
-std::uint16_t add_flags(std::uint16_t lhs, std::uint16_t rhs,
-                        std::uint16_t result, std::uint16_t old,
-                        bool affect_x) noexcept {
-    const bool carry = static_cast<std::uint32_t>(lhs) + rhs > 0xFFFFU;
-    const bool overflow = ((~(lhs ^ rhs)) & (lhs ^ result) & 0x8000U) != 0;
-    return static_cast<std::uint16_t>((affect_x ? (carry ? 0x10U : 0U) : old & 0x10U) |
-        (result == 0 ? 4U : 0U) | ((result & 0x8000U) ? 8U : 0U) |
-        (overflow ? 2U : 0U) | (carry ? 1U : 0U));
-}
-bool condition(unsigned cc, std::uint16_t sr) noexcept {
-    const bool x = (sr & 0x10U) != 0, n = (sr & 8U) != 0;
-    const bool z = (sr & 4U) != 0, v = (sr & 2U) != 0, c = (sr & 1U) != 0;
-    switch (cc) {
-    case 2: return !c && !z;
-    case 3: return c || z;
-    case 4: return !c;
-    case 5: return c;
-    case 6: return !z;
-    case 7: return z;
-    case 8: return !v;
-    case 9: return v;
-    case 10: return !n;
-    case 11: return n;
-    case 12: return n == v;
-    case 13: return n != v;
-    case 14: return !z && n == v;
-    case 15: return z || n != v;
-    default: (void)x; return false;
-    }
-}
-
 bool supported_entry(unsigned pc, const M68k9D70StepApi& api, Helper& helper) noexcept {
     if (pc == 0x9D70U && g_enabled[0] && caller_matches(api, 0x9144U, pc, 0x9148U)) helper = Helper::H9D70;
     else if (pc == 0x9D4EU && g_enabled[1] && caller_matches(api, 0x909EU, pc, 0x90A2U)) helper = Helper::H9D4E;
@@ -163,7 +130,7 @@ bool supported_entry(unsigned pc, const M68k9D70StepApi& api, Helper& helper) no
     return true;
 }
 
-M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
+M68k9D70StepResult step_9d_family(unsigned pc, const M68k9D70StepApi& api) noexcept {
     pc &= 0xFFFFFFU;
     if (!api.read_register || !api.write_register || !api.peek || !api.read ||
         !api.write || !api.fetch16 || !api.set_return_state || !api.begin_instruction ||
@@ -456,8 +423,17 @@ M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
 
 int block_hook(unsigned pc) {
     const M68k9D70StepApi api{nullptr, rr, wr, peek, read, write, fetch16, set_return,
-        begin, finish, add_cycles, branch_adjust, byte_branch_adjust, observe};
-    const auto result = step(pc, api);
+        begin, finish, add_cycles, branch_adjust, byte_branch_adjust, observe,
+        skip_bus_refresh, scheduler_field, transfer_source_pc};
+    auto result = step_9d_family(pc, api);
+    if (result == M68k9D70StepResult::NotHandled)
+        result = step_m68k_94a2(pc, api, g_enabled[4]);
+    if (result == M68k9D70StepResult::NotHandled)
+        result = step_m68k_9c40(pc, api, g_enabled[5]);
+    if (result == M68k9D70StepResult::NotHandled)
+        result = step_m68k_8ef8(pc, api, g_enabled[6]);
+    if (result == M68k9D70StepResult::NotHandled)
+        result = step_m68k_e268(pc, api, g_enabled[7]);
     if (result == M68k9D70StepResult::ContractFault) { if (g_fault) g_fault(pc); return 1; }
     return result == M68k9D70StepResult::InstructionStepped ? 1 : 0;
 }
@@ -476,7 +452,8 @@ bool selected(std::string_view list, std::string_view id) {
 
 void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enabled_helpers,
                                     void (*observer)(unsigned, unsigned),
-                                    void (*fault_handler)(unsigned)) {
+                                    void (*fault_handler)(unsigned),
+                                    unsigned (*source_pc_reader)()) {
     g_read_register = core.get<ReadRegister>("retro_9c40_capture_register");
     g_write_register = core.get<WriteRegister>("retro_9c40_capture_set_register");
     g_peek = core.get<PeekMemory>("retro_9c40_capture_peek");
@@ -489,12 +466,23 @@ void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enab
     g_add_cycles = core.get<AddCycles>("retro_hybrid_add_cycles");
     g_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_word_adjustment");
     g_byte_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_adjustment");
+    g_skip_bus_refresh = core.get<SkipBusRefresh>("retro_hybrid_skip_bus_refresh");
+    g_scheduler_field = core.get<SchedulerField>("retro_hybrid_scheduler_field");
+    g_transfer_source_pc = source_pc_reader;
     g_observe = observer; g_fault = fault_handler;
     g_enabled = {selected(enabled_helpers, "9d70"), selected(enabled_helpers, "9d4e"),
-        selected(enabled_helpers, "9db4"), selected(enabled_helpers, "9d92")};
-    if ((!g_enabled[0] && !g_enabled[1] && !g_enabled[2] && !g_enabled[3]) || !g_observe || !g_fault)
+        selected(enabled_helpers, "9db4"), selected(enabled_helpers, "9d92"),
+        selected(enabled_helpers, "94a2"), selected(enabled_helpers, "9c40"),
+        selected(enabled_helpers, "8ef8"), selected(enabled_helpers, "e268")};
+    if ((!g_enabled[0] && !g_enabled[1] && !g_enabled[2] && !g_enabled[3] &&
+         !g_enabled[4] && !g_enabled[5] && !g_enabled[6] && !g_enabled[7]) ||
+        !g_observe || !g_fault)
         throw std::runtime_error("instruction step set is empty or lacks callbacks");
     core.get<InstallBlock>("retro_hybrid_install_block")(block_hook);
+}
+
+void write_m68k_gameplay_step_metrics(const std::filesystem::path& path) {
+    write_e268_step_metrics(path);
 }
 
 } // namespace oasis::hybrid

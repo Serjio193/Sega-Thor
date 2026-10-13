@@ -58,7 +58,8 @@ void ReplayLandmarkDiagnostic::write_receipt(const std::string& path) const {
 
 void write_native_island_metrics(const std::string& path, const std::string& status,
     const std::string& reason, std::uint64_t transfers,
-    const native_island::Counters& counters, unsigned first_frame, unsigned last_frame) {
+    const native_island::Counters& counters, unsigned first_frame, unsigned last_frame,
+    bool replay_divergence) {
     if (path.empty()) return;
     std::ofstream out(path, std::ios::trunc);
     if (!out) return;
@@ -71,7 +72,7 @@ void write_native_island_metrics(const std::string& path, const std::string& sta
         << ",\"precondition_rejects\":" << counters.precondition_rejects
         << ",\"contract_rejects\":" << counters.contract_rejects
         << ",\"native_mismatches\":" << counters.mismatches
-        << ",\"replay_divergence\":" << (status == "PASS" ? "false" : "true")
+        << ",\"replay_divergence\":" << (replay_divergence ? "true" : "false")
         << ",\"helper\":{\"entry_pc\":\"0x009D70\",\"caller_pc\":\"0x009144\",\"native_call_count\":"
         << counters.native_calls << ",\"rom_fallback_count\":" << counters.rom_fallbacks
         << ",\"first_frame\":" << first_frame << ",\"last_frame\":" << last_frame << "}}\n";

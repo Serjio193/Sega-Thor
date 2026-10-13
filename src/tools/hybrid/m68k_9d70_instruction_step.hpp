@@ -21,6 +21,9 @@ struct M68k9D70StepApi {
     int (*word_not_taken_adjustment)(void*){};
     int (*byte_not_taken_adjustment)(void*){};
     void (*observe_instruction)(void*, unsigned, unsigned){};
+    void (*skip_bus_refresh)(void*){};
+    int (*read_scheduler_field)(void*, unsigned){};
+    unsigned (*read_transfer_source_pc)(void*){};
 };
 
 enum class M68k9D70StepResult { NotHandled, InstructionStepped, ContractFault };

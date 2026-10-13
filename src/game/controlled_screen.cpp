@@ -59,7 +59,7 @@ bool operator==(const ScreenState& left, const ScreenState& right) noexcept {
 }
 
 ControlledScreen::ControlledScreen()
-    : terrain_(fixture_cells_, kGridWidth, 5) {
+    : terrain_(fixture_cells_, kGridWidth, kGridHeight, kGridWidth, 5) {
     movement_config_.footprint_radius = 6;
     state_.player.x_fixed = 48 * 0x10000;
     state_.player.y_fixed = 48 * 0x10000;

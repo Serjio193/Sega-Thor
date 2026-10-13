@@ -29,5 +29,15 @@ int main() {
             text.find("changed") == std::string::npos)
             throw std::runtime_error("machine receipt missed first differing frame");
     }
+    const auto metrics_path = base / "metrics.json";
+    oasis::hybrid::native_island::Counters counters{};
+    oasis::hybrid::session::write_native_island_metrics(metrics_path.string(), "DIAGNOSTIC_ONLY",
+        "landmarks match", 0, counters, 0, 0, false);
+    {
+        std::ifstream metrics(metrics_path);
+        const std::string text((std::istreambuf_iterator<char>(metrics)), {});
+        if (text.find("\"replay_divergence\":false") == std::string::npos)
+            throw std::runtime_error("diagnostic status incorrectly implies replay divergence");
+    }
     std::filesystem::remove_all(base);
 }
