@@ -1687,3 +1687,20 @@ under `build/thor-evidence/`.
 - `src/tools/hybrid/replay_equivalence_trace.{hpp,cpp}` — per-call and per-frame CPU/scheduler/observable-memory trace for the selected `0x9D70` replay experiment.
 - `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}` — natural-call timing, full-replay comparison, and disclosed serializer-hash instability.
 - Paired replay traces are generated under ignored `build/9d70-step-diagnostic-20261013/post-marker3/`.
+
+# 2026-10-13 three-helper instruction-stepped replay island
+
+- `src/tools/hybrid/m68k_gameplay_step_set.{hpp,cpp}` — caller-gated,
+  scheduler-backed instruction-step adapters for the accepted paths at
+  `0x9D70`, `0x9D4E`, and `0x9DB4`; developer/replay-only.
+- `src/tools/hybrid/gameplay_session_replay_options.{hpp,cpp}` — replay option
+  parsing for selecting a step-helper set.
+- `src/tools/hybrid/gameplay_session_step_trace.{hpp,cpp}` — filtered
+  instruction-step trace collection and route markers.
+- `src/tools/hybrid/normalize_step_helper_trace.py` — creates normalized helper
+  events, path-specific cycle census, and native/fallback route metrics.
+- `docs/reports/THOR_MULTI_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}`
+  — baseline, single, pair, and triple replay acceptance for the pinned
+  development replay; production dispatch remains inactive.
+- Raw replay runs and intermediate captures are under ignored
+  `build/multi-helper-step-20261013/`.

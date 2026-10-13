@@ -234,7 +234,7 @@ void observe_instruction(void*, unsigned pc, unsigned opcode) { g_observe(pc, op
 int block_hook(unsigned pc) {
     const M68k9D70StepApi api{nullptr, read_register, write_register, peek, read, write,
         fetch16, set_return_state, begin_instruction, finish_instruction, add_cycles,
-        word_not_taken_adjustment, observe_instruction};
+        word_not_taken_adjustment, nullptr, observe_instruction};
     switch (g_stepper.step(pc, api)) {
     case M68k9D70StepResult::NotHandled: return 0;
     case M68k9D70StepResult::InstructionStepped: return 1;

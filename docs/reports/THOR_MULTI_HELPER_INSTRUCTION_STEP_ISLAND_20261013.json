@@ -1,0 +1,4258 @@
+{
+  "schema": "oasis.thor.multi_helper_instruction_step_island.v1",
+  "status": "REPLAY_NATIVE_ISLAND_VALIDATED",
+  "scope": {
+    "helpers": [
+      "0x9D70",
+      "0x9D4E",
+      "0x9DB4"
+    ],
+    "replay_frames": 3600,
+    "configuration": "pinned deterministic development replay; developer-only; production activation NO"
+  },
+  "identity": {
+    "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+    "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+    "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+    "config_sha256": "d82ab08ca4a5b961e847fbb077d5ccc159070a3508c692998b227857958a572b",
+    "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+    "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+    "input_poll_count": "3600",
+    "frames": "3600",
+    "reset_method": "retro_load_game_cold_start"
+  },
+  "baseline": "ROM_ONLY PASS",
+  "single_helper_results": {
+    "0x9D70": "PASS",
+    "0x9D4E": "PASS",
+    "0x9DB4": "PASS"
+  },
+  "pair_results": {
+    "0x9D70+0x9D4E": "PASS",
+    "0x9D70+0x9DB4": "PASS",
+    "0x9D4E+0x9DB4": "PASS"
+  },
+  "triple_result": "PASS",
+  "equivalence": {
+    "full_frame_canonical_state_records": "3600/3600",
+    "architectural_sync_records": "128/128",
+    "scheduler_sync_records": "128/128",
+    "observed_landmarks": "60/60",
+    "z80_ram_sync_bytes": 1048576,
+    "normalized_helper_events": "804/804",
+    "normalized_events": "MATCH",
+    "external_event_records": "MATCH",
+    "step_path_timing_census": "MATCH",
+    "first_divergence": null,
+    "native_mismatches": 0,
+    "contract_rejects": 0
+  },
+  "triple_metrics": {
+    "0x009D70": {
+      "target_entries": 186,
+      "eligible_entries": 184,
+      "native_calls": 184,
+      "provenance_rejects": 2,
+      "precondition_rejects": 0,
+      "first_native_frame": 2655,
+      "last_native_frame": 3565,
+      "rom_fallback_calls": 2,
+      "enabled": true
+    },
+    "0x009D4E": {
+      "target_entries": 113,
+      "eligible_entries": 113,
+      "native_calls": 113,
+      "provenance_rejects": 0,
+      "precondition_rejects": 0,
+      "first_native_frame": 2335,
+      "last_native_frame": 3599,
+      "rom_fallback_calls": 0,
+      "enabled": true
+    },
+    "0x009DB4": {
+      "target_entries": 507,
+      "eligible_entries": 507,
+      "native_calls": 507,
+      "provenance_rejects": 0,
+      "precondition_rejects": 0,
+      "first_native_frame": 2017,
+      "last_native_frame": 3567,
+      "rom_fallback_calls": 0,
+      "enabled": true
+    }
+  },
+  "timing_paths": [
+    {
+      "helper_id": "0x009D4E",
+      "path_id": "PCSEQ_8b402cf91320c4cb",
+      "branch_outcomes": [
+        "009D60_TAKEN"
+      ],
+      "instruction_sequence": [
+        "0x009D4E",
+        "0x009D50",
+        "0x009D54",
+        "0x009D58",
+        "0x009D5A",
+        "0x009D5C",
+        "0x009D5E",
+        "0x009D60",
+        "0x009D6E"
+      ],
+      "cycle_sequences_to_rts": [
+        [
+          28,
+          84,
+          84,
+          84,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          84,
+          28,
+          28,
+          28,
+          84
+        ],
+        [
+          28,
+          84,
+          84,
+          84,
+          28,
+          42,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          84,
+          42,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          98,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          161,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          168,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          98,
+          84,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          28,
+          98,
+          84,
+          84,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          42,
+          84,
+          84,
+          84,
+          28,
+          28,
+          28,
+          70
+        ],
+        [
+          42,
+          84,
+          84,
+          84,
+          28,
+          28,
+          28,
+          140
+        ],
+        [
+          42,
+          84,
+          154,
+          84,
+          28,
+          28,
+          28,
+          70
+        ]
+      ],
+      "total_cycles": [
+        546,
+        560,
+        623,
+        630
+      ],
+      "observed_calls": 113,
+      "refresh_before_rts_values": [
+        false,
+        true
+      ]
+    },
+    {
+      "helper_id": "0x009D70",
+      "path_id": "PCSEQ_fb1452a2f31b48b8",
+      "branch_outcomes": [
+        "009D76_NOT_TAKEN",
+        "009D7C_TAKEN"
+      ],
+      "instruction_sequence": [
+        "0x009D70",
+        "0x009D72",
+        "0x009D76",
+        "0x009D7A",
+        "0x009D7C",
+        "0x009D86"
+      ],
+      "cycle_sequences_to_rts": [
+        [
+          28,
+          84,
+          84,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          28,
+          84
+        ],
+        [
+          28,
+          84,
+          84,
+          28,
+          140
+        ],
+        [
+          28,
+          84,
+          84,
+          28,
+          147
+        ],
+        [
+          28,
+          84,
+          84,
+          42,
+          70
+        ],
+        [
+          28,
+          84,
+          98,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          98,
+          28,
+          140
+        ],
+        [
+          42,
+          84,
+          84,
+          28,
+          70
+        ],
+        [
+          98,
+          84,
+          84,
+          28,
+          70
+        ]
+      ],
+      "total_cycles": [
+        406,
+        420,
+        476,
+        483,
+        490
+      ],
+      "observed_calls": 184,
+      "refresh_before_rts_values": [
+        false,
+        true
+      ]
+    },
+    {
+      "helper_id": "0x009DB4",
+      "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+      "branch_outcomes": [
+        "009DBA_NOT_TAKEN",
+        "009DC0_TAKEN"
+      ],
+      "instruction_sequence": [
+        "0x009DB4",
+        "0x009DB6",
+        "0x009DBA",
+        "0x009DBE",
+        "0x009DC0",
+        "0x009DCA"
+      ],
+      "cycle_sequences_to_rts": [
+        [
+          28,
+          84,
+          84,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          84,
+          28,
+          84
+        ],
+        [
+          28,
+          84,
+          84,
+          28,
+          140
+        ],
+        [
+          28,
+          84,
+          84,
+          42,
+          70
+        ],
+        [
+          28,
+          84,
+          98,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          154,
+          28,
+          70
+        ],
+        [
+          28,
+          84,
+          161,
+          42,
+          70
+        ],
+        [
+          28,
+          84,
+          168,
+          28,
+          70
+        ],
+        [
+          28,
+          161,
+          84,
+          28,
+          70
+        ],
+        [
+          42,
+          84,
+          84,
+          28,
+          70
+        ],
+        [
+          42,
+          84,
+          161,
+          28,
+          70
+        ]
+      ],
+      "total_cycles": [
+        406,
+        420,
+        476,
+        483,
+        490,
+        497
+      ],
+      "observed_calls": 507,
+      "refresh_before_rts_values": [
+        false,
+        true
+      ]
+    }
+  ],
+  "runs": {
+    "ROM_ONLY": {
+      "directory": "baseline-final",
+      "enabled_helpers": [],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 186,
+          "enabled": false
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 113,
+          "enabled": false
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 507,
+          "enabled": false
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9D70": {
+      "directory": "single-final-9d70",
+      "enabled_helpers": [
+        "0x009D70"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 184,
+          "provenance_rejects": 2,
+          "precondition_rejects": 0,
+          "first_native_frame": 2655,
+          "last_native_frame": 3565,
+          "rom_fallback_calls": 2,
+          "enabled": true
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 113,
+          "enabled": false
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 507,
+          "enabled": false
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9D4E": {
+      "directory": "single-final-9d4e",
+      "enabled_helpers": [
+        "0x009D4E"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 186,
+          "enabled": false
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 113,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2335,
+          "last_native_frame": 3599,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 507,
+          "enabled": false
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9DB4": {
+      "directory": "single-final-9db4",
+      "enabled_helpers": [
+        "0x009DB4"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 186,
+          "enabled": false
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 113,
+          "enabled": false
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 507,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2017,
+          "last_native_frame": 3567,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9D70+9D4E": {
+      "directory": "pair-final-9d70-9d4e",
+      "enabled_helpers": [
+        "0x009D70",
+        "0x009D4E"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 184,
+          "provenance_rejects": 2,
+          "precondition_rejects": 0,
+          "first_native_frame": 2655,
+          "last_native_frame": 3565,
+          "rom_fallback_calls": 2,
+          "enabled": true
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 113,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2335,
+          "last_native_frame": 3599,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 507,
+          "enabled": false
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9D70+9DB4": {
+      "directory": "pair-final-9d70-9db4",
+      "enabled_helpers": [
+        "0x009D70",
+        "0x009DB4"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 184,
+          "provenance_rejects": 2,
+          "precondition_rejects": 0,
+          "first_native_frame": 2655,
+          "last_native_frame": 3565,
+          "rom_fallback_calls": 2,
+          "enabled": true
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 113,
+          "enabled": false
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 507,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2017,
+          "last_native_frame": 3567,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "9D4E+9DB4": {
+      "directory": "pair-final-9d4e-9db4",
+      "enabled_helpers": [
+        "0x009D4E",
+        "0x009DB4"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 0,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": null,
+          "last_native_frame": null,
+          "rom_fallback_calls": 186,
+          "enabled": false
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 113,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2335,
+          "last_native_frame": 3599,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 507,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2017,
+          "last_native_frame": 3567,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    },
+    "TRIPLE": {
+      "directory": "triple-final",
+      "enabled_helpers": [
+        "0x009D70",
+        "0x009D4E",
+        "0x009DB4"
+      ],
+      "frames": 3600,
+      "input_polls": 3600,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "runner_sha256": "281e0af844ed569e99fd06cd7df3f412374b298d505ec8afae82e66b99a6bb24",
+      "input_sha256": "a5b2973a6f26b2c29948263e9aa160f05f0f7acc8e2e879407854d6002e24ef4",
+      "initial_state_sha256": "56e6a34e8d063638e7d35c0d31a7d704f2361a2633e9481966d66a3c92f51a54",
+      "component_comparison": {
+        "full-frame-state.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2",
+          "bytes": 1157316,
+          "records": 3600
+        },
+        "architectural-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57",
+          "bytes": 89937,
+          "records": 128
+        },
+        "scheduler-sync.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b",
+          "bytes": 27008,
+          "records": 128
+        },
+        "external-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584",
+          "bytes": 6611,
+          "records": 49
+        },
+        "normalized-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33",
+          "bytes": 55352,
+          "records": 368
+        },
+        "normalized-step-helper-events.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cec23c1c8336f8cc9ad575946986c8eb5c67f87a0c1cebeb2f677b321c0c5a09",
+          "bytes": 200941,
+          "records": 804
+        },
+        "observed-landmarks.jsonl": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458",
+          "bytes": 499078,
+          "records": 3600
+        },
+        "z80-ram-sync.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+          "bytes": 1048576,
+          "records": null
+        },
+        "call-z80-ram.bin": {
+          "exists": true,
+          "matches_baseline": true,
+          "sha256": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+          "bytes": 32768,
+          "records": null
+        }
+      },
+      "landmark_divergence": {
+        "schema": "oasis.replay-landmark-diagnostic.v1",
+        "first_different_frame": 0,
+        "different_frame_count": 0,
+        "expected": "",
+        "observed": ""
+      },
+      "helper_metrics": {
+        "0x009D70": {
+          "target_entries": 186,
+          "eligible_entries": 184,
+          "native_calls": 184,
+          "provenance_rejects": 2,
+          "precondition_rejects": 0,
+          "first_native_frame": 2655,
+          "last_native_frame": 3565,
+          "rom_fallback_calls": 2,
+          "enabled": true
+        },
+        "0x009D4E": {
+          "target_entries": 113,
+          "eligible_entries": 113,
+          "native_calls": 113,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2335,
+          "last_native_frame": 3599,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        },
+        "0x009DB4": {
+          "target_entries": 507,
+          "eligible_entries": 507,
+          "native_calls": 507,
+          "provenance_rejects": 0,
+          "precondition_rejects": 0,
+          "first_native_frame": 2017,
+          "last_native_frame": 3567,
+          "rom_fallback_calls": 0,
+          "enabled": true
+        }
+      },
+      "timing_paths": [
+        {
+          "helper_id": "0x009D4E",
+          "path_id": "PCSEQ_8b402cf91320c4cb",
+          "branch_outcomes": [
+            "009D60_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D4E",
+            "0x009D50",
+            "0x009D54",
+            "0x009D58",
+            "0x009D5A",
+            "0x009D5C",
+            "0x009D5E",
+            "0x009D60",
+            "0x009D6E"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              28,
+              42,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              84,
+              42,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              98,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              161,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              168,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              28,
+              98,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              84,
+              28,
+              28,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              154,
+              84,
+              28,
+              28,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            546,
+            560,
+            623,
+            630
+          ],
+          "observed_calls": 113,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009D70",
+          "path_id": "PCSEQ_fb1452a2f31b48b8",
+          "branch_outcomes": [
+            "009D76_NOT_TAKEN",
+            "009D7C_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009D70",
+            "0x009D72",
+            "0x009D76",
+            "0x009D7A",
+            "0x009D7C",
+            "0x009D86"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              147
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              140
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              98,
+              84,
+              84,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490
+          ],
+          "observed_calls": 184,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        },
+        {
+          "helper_id": "0x009DB4",
+          "path_id": "PCSEQ_d3a8269ba6aaa4e2",
+          "branch_outcomes": [
+            "009DBA_NOT_TAKEN",
+            "009DC0_TAKEN"
+          ],
+          "instruction_sequence": [
+            "0x009DB4",
+            "0x009DB6",
+            "0x009DBA",
+            "0x009DBE",
+            "0x009DC0",
+            "0x009DCA"
+          ],
+          "cycle_sequences_to_rts": [
+            [
+              28,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              84
+            ],
+            [
+              28,
+              84,
+              84,
+              28,
+              140
+            ],
+            [
+              28,
+              84,
+              84,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              98,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              154,
+              28,
+              70
+            ],
+            [
+              28,
+              84,
+              161,
+              42,
+              70
+            ],
+            [
+              28,
+              84,
+              168,
+              28,
+              70
+            ],
+            [
+              28,
+              161,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              84,
+              28,
+              70
+            ],
+            [
+              42,
+              84,
+              161,
+              28,
+              70
+            ]
+          ],
+          "total_cycles": [
+            406,
+            420,
+            476,
+            483,
+            490,
+            497
+          ],
+          "observed_calls": 507,
+          "refresh_before_rts_values": [
+            false,
+            true
+          ]
+        }
+      ],
+      "normalized_call_count": 804
+    }
+  },
+  "authority_deltas": {
+    "runtime_total_proven": 0,
+    "structural_proven": 0,
+    "source_owned": 0,
+    "canonical_sqlite": "UNCHANGED"
+  },
+  "status_separation": {
+    "cpp_replacement_verified_path_specific": "UNCHANGED",
+    "cpp_replacement_verified_global": "NO",
+    "stepper_adapter_verified": "YES for tested natural paths and scheduler microcase scope",
+    "single_helper_replay_equivalent": "YES for each tested helper in pinned replay",
+    "multi_helper_replay_equivalent": "YES for 3 helpers in pinned replay",
+    "production_runtime_active": "NO"
+  }
+}

@@ -19,6 +19,7 @@ struct M68k9D70StepApi {
     void (*finish_instruction)(void*, unsigned){};
     void (*add_cycles)(void*, int){};
     int (*word_not_taken_adjustment)(void*){};
+    int (*byte_not_taken_adjustment)(void*){};
     void (*observe_instruction)(void*, unsigned, unsigned){};
 };
 

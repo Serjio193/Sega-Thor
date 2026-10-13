@@ -145,7 +145,9 @@ if(OASIS_HYBRID_GPGX_SOURCE)
     add_executable(oasis_gameplay_session
         gameplay_session.cpp gameplay_session_identity.cpp gameplay_session_receipts.cpp
         gameplay_session_landmarks.cpp gameplay_session_input_sources.cpp
-        gameplay_session_call_capture.cpp m68k_9d70_instruction_step.cpp
+        gameplay_session_call_capture.cpp gameplay_session_replay_options.cpp
+        gameplay_session_step_trace.cpp m68k_9d70_instruction_step.cpp
+        m68k_gameplay_step_set.cpp
         gameplay_session_cpu.cpp gameplay_session_replay_diagnostic.cpp replay_equivalence_trace.cpp
         checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp
         grid_query_native_model.cpp m68k_call_census.cpp native_island_runtime.cpp

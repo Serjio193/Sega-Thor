@@ -5,8 +5,10 @@
 #include "tools/hybrid/gameplay_session_landmarks.hpp"
 #include "tools/hybrid/gameplay_session_receipts.hpp"
 #include "tools/hybrid/gameplay_session_call_capture.hpp"
-#include "tools/hybrid/m68k_9d70_instruction_step.hpp"
+#include "tools/hybrid/m68k_gameplay_step_set.hpp"
 #include "tools/hybrid/gameplay_session_replay_diagnostic.hpp"
+#include "tools/hybrid/gameplay_session_replay_options.hpp"
+#include "tools/hybrid/gameplay_session_step_trace.hpp"
 #include "tools/hybrid/replay_equivalence_trace.hpp"
 #include "tools/hybrid/checkpoint_evidence.hpp"
 #include "tools/hybrid/grid_query_native_model.hpp"
@@ -69,6 +71,7 @@ std::filesystem::path island_metrics_path;
 std::unique_ptr<oasis::hybrid::session::ReplayEquivalenceTrace> equivalence_trace_owner;
 oasis::hybrid::session::ReplayEquivalenceTrace* equivalence_trace{};
 std::uint64_t total_m68k_transfers{};
+bool native_step_observer{};
 
 bool island_write_memory(unsigned address, int width, unsigned value) {
     return write_memory && write_memory(address, width, value) != 0;
@@ -81,9 +84,11 @@ void write_island_metrics(const std::string& status, const std::string& reason) 
 oasis::hybrid::session::CallCapture call;
 
 unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value);
-void observe_9d70_instruction(unsigned pc, unsigned opcode) {
+void observe_step_instruction(unsigned pc, unsigned opcode) {
+    native_step_observer = true;
     bridge_hook(execute_event, 0, pc, opcode);
-    if (equivalence_trace && pc == 0x9D70U)
+    native_step_observer = false;
+    if (equivalence_trace && (pc == 0x9D70U || pc == 0x9D4EU || pc == 0x9DB4U))
         equivalence_trace->mark_native_route(pc);
 }
 void fail_9d70_instruction_step(unsigned pc) {
@@ -130,9 +135,12 @@ unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value)
         replay_call_census.on_hook(type, width, address, value, previous_pc,
                                    frame_number + 1U, read_register, peek_memory);
         if ((type & execute_event) != 0) {
+            oasis::hybrid::session::observe_step_instruction_trace(*call_output, frame_number + 1U,
+                address, previous_pc, read_register, read_scheduler, native_step_observer);
             if (previous_pc && oasis::hybrid::session::is_call_transfer_instruction(previous_pc, peek_memory))
                 ++total_m68k_transfers;
-            if (address == 0x9D70U && native_helper_selected != "9d70-step") {
+            if (address == 0x9D70U && native_helper_selected != "9d70-step" &&
+                !native_helper_selected.starts_with("step:")) {
                 if (!island_first_frame) island_first_frame = frame_number + 1U;
                 island_last_frame = frame_number + 1U;
                 const auto state = read_cpu_snapshot(read_register);
@@ -263,26 +271,13 @@ int main(int argc, char** argv) {
         const std::string mode = argv[1];
         if (mode != "capture" && mode != "replay") throw std::runtime_error("invalid session mode");
         const bool replay = mode == "replay";
-        if (replay && argc >= 6) for (int i = 5; i < argc; ++i) {
-            const std::string option = argv[i];
-            constexpr std::string_view prefix = "--native-island=";
-            if (option == "--restore-initial-state") {
-                restore_initial_state = true;
-            } else if (option == "--normalized-rom") {
-                diagnostic_replay = true;
-            } else if (option.starts_with(prefix)) {
-                native_helper_selected = option.substr(prefix.size());
-            } else {
-                throw std::runtime_error("replay option must be --native-island=<helper> or --normalized-rom");
-            }
-            if (native_helper_selected == "9d70-diagnostic") {
-                native_helper_selected = "9d70";
-                diagnostic_replay = true;
-            }
-            if (!native_helper_selected.empty() && native_helper_selected != "9d70-step" &&
-                !oasis::hybrid::native_island::supported_helper(native_helper_selected))
-                throw std::runtime_error("native replay adapter is not available for selected helper");
-            native_island_selected = native_helper_selected == "9d70";
+        if (replay && argc >= 6) {
+            const auto options = oasis::hybrid::session::parse_replay_options(
+                argc, argv, oasis::hybrid::native_island::supported_helper);
+            restore_initial_state = options.restore_initial_state;
+            diagnostic_replay = options.diagnostic;
+            native_helper_selected = options.native_helper;
+            native_island_selected = options.native_island;
         }
         if (replay && argc > 8) throw std::runtime_error("too many replay options");
         if (!replay && argc >= 6 && std::string(argv[5]).starts_with("--native-island="))
@@ -376,8 +371,10 @@ int main(int argc, char** argv) {
         read_scheduler = core.get<oasis::hybrid::session::SchedulerRead>("retro_9c40_capture_scheduler");
         copy_observable_memory = core.get<oasis::hybrid::session::CopyObservableMemory>("retro_9c40_capture_copy_observable");
         core.get<Install>("retro_9c40_capture_install")(bridge_hook);
-        if (native_helper_selected == "9d70-step")
-            oasis::hybrid::install_m68k_9d70_instruction_step(core, observe_9d70_instruction, fail_9d70_instruction_step);
+        if (native_helper_selected == "9d70-step" || native_helper_selected.starts_with("step:"))
+            oasis::hybrid::install_m68k_gameplay_step_set(core,
+                native_helper_selected == "9d70-step" ? "9d70" : native_helper_selected.substr(5),
+                observe_step_instruction, fail_9d70_instruction_step);
         core.get<void(*)(decltype(&environment))>("retro_set_environment")(environment);
         core.get<void(*)(decltype(&video))>("retro_set_video_refresh")(video);
         core.get<void(*)(decltype(&audio))>("retro_set_audio_sample")(audio);

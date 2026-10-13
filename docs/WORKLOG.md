@@ -9994,3 +9994,21 @@ instruction-step comparison passed 60/60, and roundtrip continuation passed
 3,600/3,600. `git diff --check` passed for the focused source files. The
 development fixture is the scope of the serializer-determinism claim; no
 cross-build or production save-state portability claim is made.
+
+## 2026-10-13 — Three-helper instruction-stepped replay island
+
+TASK: Extend the scheduler-backed instruction stepper from `0x9D70` to path-specific `0x9D4E` (`0x00909E` caller) and `0x9DB4` (`0x0092CC` caller), then validate the three helpers independently, in all pairs, and together against one fresh deterministic 3,600-frame ROM-only baseline.
+
+ACCEPTANCE: Start from the same canonical ROM, serializer-fixed HOOK_CPU fixture, runner/configuration, initial-state lineage, and effective input log. Compare canonical emulation-state hashes, scheduler/CPU synchronization, WRAM, Z80 RAM/state, VDP/scheduler state, normalized helper events, and ordered external events. Preserve instruction-step ordering, per-instruction core cycle charging, refresh checks, cycle-end yields, scheduler resume and architectural state. Run singles first; any failure blocks pairs, and any pair failure blocks the triple. Keep all routes developer/replay-only, all new route flags default-off, and path gates exact. No evidence-authority changes.
+
+INITIAL STATUS: `0x9D70` has a tested single-call instruction-step replay receipt. `0x9D4E` and `0x9DB4` have path-specific semantic replacement receipts but no instruction-stepped route. Baseline and each route result remain to be measured in this task.
+
+RESULT: The ROM-only baseline passed. Each single helper route passed, all three pair routes passed, and the three-helper route passed for 3,600 frames. Across all runs, effective input identity and poll count were identical; each route matched all 3,600 full-frame canonical CPU/scheduler/observable-memory records, 128 architectural sync records, 128 scheduler sync records, 60 observed landmarks, 1 MiB of Z80 RAM snapshots, 804 normalized helper events, normalized events, ordered external events, and the observed path timing census. No replay divergence, native mismatch, contract reject, or precondition reject occurred.
+
+The triple executed 184 native calls for 0x9D70, 113 for 0x9D4E, and 507 for 0x9DB4 (804 total). Two additional 0x9D70 entries had unsupported caller provenance and correctly fell back to ROM. Every helper retained its exact accepted caller gate. The replay observed one natural branch path per helper; cycle sequences and total costs varied with refresh/scheduler timing, and are recorded per path in the machine receipt. This does not claim complete natural CFG coverage.
+
+Implementation correction found by differential replay: 0x9D54 opcode 0xDE6E is ADD.W, not subtraction. The 0x9D58 LSL.W #3 dynamic shift cycle charge was also restored at the instruction boundary. The resulting path preserves core refresh, cycle_end yield, scheduler resume, and architectural effects.
+
+REPLAY_NATIVE_ISLAND_VALIDATED=YES only for the pinned 3,600-frame development replay and {0x9D70@0x9144, 0x9D4E@0x909E, 0x9DB4@0x92CC}. CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC statuses are unchanged, global verification remains NO, and production runtime activation remains NO. Runtime, structural, SOURCE_OWNED, and canonical SQLite authorities are unchanged. See docs/reports/THOR_MULTI_HELPER_INSTRUCTION_STEP_ISLAND_20261013.md and the adjacent JSON receipt.
+
+VALIDATION: Windows Debug gameplay-session runner build passed; focused Debug CTest passed 3/3. GNU/Linux Debug runner build passed. GNU/Linux Release runner build and focused CTest passed 3/3. All single/pair/triple deterministic replay comparisons passed. Diff and source-size checks recorded after final documentation review.

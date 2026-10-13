@@ -3963,3 +3963,22 @@ Canonical ROM SHA-256 is `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088
 Canonical ROM SHA-256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`. Exact body `[0x009D70,0x009D92)`, 11 instructions, RTS exits `0x009D86` and `0x009D90`. Direct BSR.W callers are `0x009144` and `0x00979E`; only `0x009144` is verified. It computes D3.low = D1.low - word [A6+0x46] modulo 16 bits, clamps D0.low, and conditionally ORs `0x48` into byte [A6+0x40] on negative difference or zero clamp. All register upper words, other registers, and full SR semantics are modeled; the only stack activity is RTS. No tables, loops, nested calls, indirect control, or variable addresses occur. The 22 natural `0x009144` calls and four canonical-ROM branch cases match the native model. Caller D0 is live; caller CCR/X are overwritten before condition use; D3 is overwritten before subsequent use in both observed continuation alternatives. Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC`, global NO, runtime inactive. See `docs/reports/THOR_REPLAY_HELPER10_9D70_20261012.md` and machine receipt. No authority changes.
 
 Instruction-step follow-up (2026-10-13): the isolated scheduler fixture passed its ten documented cases. One natural `0x009144` call at frame 2655 was stepped through the exact `0x9D70` path. ROM and substitute both charged 420 helper cycles, crossed `cycle_end=690840`, and returned at cycle 690877 before identical scheduler continuation. A one-call-only 3,600-frame replay matched the explicit captured frame CPU/scheduler/memory hashes, helper boundaries, 128-event post-return windows, external events, normalized helper events, and Z80 RAM samples. The old whole-save-state landmark hash still differs at 60 checkpoints, and the same pattern appears in ROM-only duplicate restores; this is reported rather than treated as a clean serializer-equivalence result. Classification is limited to the selected natural caller path and captured replay surface. `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC` is unchanged, `CPP_REPLACEMENT_VERIFIED_GLOBAL=NO`, and production runtime replacement is inactive. See `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.md`.
+
+## 2026-10-13 — Three-helper instruction-stepped replay island
+
+The caller-gated instruction-step paths for `0x9D70` (`0x009144`), `0x9D4E`
+(`0x00909E`), and `0x9DB4` (`0x0092CC`) passed fresh ROM-only baseline,
+individual, pairwise, and combined 3,600-frame development replays. The
+canonical state, CPU/scheduler synchronization, WRAM/Z80/VDP-visible state,
+normalized helper events, and external events matched baseline. The machine
+receipt records path timing variants and per-helper counts. The claim is
+limited to this pinned replay/configuration and these exact caller paths;
+production activation and global helper verification remain NO.
+
+Differential debugging corrected the `0x9D54` operation in the `0x9D4E`
+stepper: `0xDE6E` is ADD.W. The dynamic cycle charge for `LSL.W #3` at
+`0x9D58` is also applied at the instruction boundary. Refresh and scheduler
+yields remain core-owned. Only one natural branch path per helper was observed
+in this replay; other paths are not promoted by this result. No coverage,
+SOURCE_OWNED, or canonical SQLite authority changed. See
+`docs/reports/THOR_MULTI_HELPER_INSTRUCTION_STEP_ISLAND_20261013.{md,json}`.
