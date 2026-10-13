@@ -2958,5 +2958,23 @@
     "runtime_total_proven_bytes": 440425,
     "structural_proven_bytes": 1266667,
     "source_owned_bytes": 1487672
+  },
+  "post_commit_replay": {
+    "commit": "5841361",
+    "runner_sha256": "53b7f61d5c6bbdadd890364b4affe4b0198c91c274859ce5b8354082dc7e6485",
+    "frames": "3600/3600",
+    "canonical_state": "MATCH",
+    "periodic_hashes": "60/60",
+    "architectural_sync": "128/128",
+    "scheduler_sync": "128/128",
+    "z80_vdp": "MATCH",
+    "normalized_events": "MATCH",
+    "external_event_order": "MATCH",
+    "calls_sha256": "9dc29baece0c8b314e284e0995784116851e258d5ec5078b0da20fee76427aad",
+    "deterministic_artifacts": "ALL MATCH REFERENCE",
+    "first_different_frame": 0,
+    "different_frame_count": 0,
+    "raw_cold_start_sha256": "5534b37cfe6b1e967286f265cf8dd8d0ee6e8f5c35128de653cd05d334071155",
+    "raw_serializer": "DIAGNOSTIC_ONLY; differs across otherwise equivalent duplicate runs"
   }
 }
