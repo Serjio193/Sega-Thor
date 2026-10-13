@@ -9956,3 +9956,41 @@ ACCEPTANCE: exact natural call timing and continuation parity; one selected step
 RESULT: The selected frame-2655 call entered at cycle 690457 and returned at 690877 in both paths (420 helper cycles, 37 cycles beyond `cycle_end=690840`). The instruction-step trace was marked on exactly one call among 184 accepted caller invocations. ROM and step runs match byte-for-byte for full-frame observable CPU/scheduler/memory snapshots, call boundaries, 128-instruction architectural/scheduler sync, external events, normalized helper events, and sampled Z80 RAM. The replay completed 3,600 frames. The legacy strict landmark validator still reports 60 `state_sha256` mismatches; two ROM-only restores from the same session show the same mismatch pattern with all other landmark fields equal. Therefore route parity is scoped to the explicit captured surface and replay, and serialized savestate equality is not claimed. The diagnostic step route remains non-production; helper status and all totals are unchanged. Report/receipt: `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}`.
 
 VALIDATION: Windows and GNU/Linux Debug/Release runner builds passed. The three focused gameplay-session tests passed in all four configurations. The 10-case scheduler microfixture remains green in its documented tested scope. `gameplay_session_runner.cpp` is 499 lines. No ROM/assets, canonical SQLite, or evidence authority files were changed.
+
+## 2026-10-13 — canonical serializer replay and restore stability
+
+TASK: Independently reproduce the duplicate ROM-only raw checkpoint mismatch,
+map its bytes to serialized components, test restore relevance, and validate
+a canonical emulation-state hash without hiding scheduler state. Do not enable
+additional native helpers or change evidence authorities.
+
+RESULT: Two matched 3,600-frame ROM-only restores reproduced raw hash mismatch
+at all 60 checkpoints. The first mismatch is frame 60: 55 contiguous ranges,
+275 bytes, all explained by 54 YM2612 host-pointer fields plus one Z80 padding
+and daisy-pointer range. The canonical hash matched ROM-only A/B at 60/60 and
+ROM-only vs the selected 0x9D70 instruction-step replay at 60/60. The frame-60
+serialize/restore/serialize roundtrip was byte-identical; ROM-only and
+roundtrip continuations matched at all 3,600 full-frame snapshots.
+
+The earlier fixture roundtrip exposed a real omitted scheduler field:
+`m68k.refresh_cycles` was reconstructed by reset instead of restored. The
+isolated HOOK_CPU fixture now appends and restores that value behind a tagged
+tail marker. The repaired fixture passes the roundtrip and continuation
+checks; production GPGX serialization is unchanged. Raw hashes remain
+diagnostic and unstable. Canonical hashes exclude only declared host-pointer
+and ABI-padding spans for the pinned GPGX state version and size. Runtime,
+structural, SOURCE_OWNED, and canonical SQLite authorities are unchanged;
+production replacement remains inactive.
+
+Artifacts: `docs/reports/THOR_SERIALIZER_CANONICAL_REPLAY_20261013.md` and its
+JSON receipt, plus the byte-range receipt
+`docs/reports/THOR_SERIALIZER_BYTE_DIFF_20261013.json`. Ignored local replay
+captures remain under `build/9d70-step-diagnostic-20261013/`.
+
+VALIDATION: Linux Debug and Release gameplay-session runner builds passed;
+hybrid checkpoint evidence/layout tests passed in both configurations.
+Fixture Python `py_compile` passed. Canonical duplicate replay passed 60/60,
+instruction-step comparison passed 60/60, and roundtrip continuation passed
+3,600/3,600. `git diff --check` passed for the focused source files. The
+development fixture is the scope of the serializer-determinism claim; no
+cross-build or production save-state portability claim is made.

@@ -2259,3 +2259,13 @@ is redesigned.
 
 
 **Scheduler fixture and selected instruction-step replay follow-up (2026-10-13):** The isolated fixture verifies its ten documented instruction-step microcases across line-budget, refresh, Z80/VDP, IRQ, and resume behavior. Applying the stepper to one natural `0x009144 → 0x009D70` call preserved the measured 420-cycle helper cost and line-boundary crossing. A 3,600-frame replay matched the explicit per-frame CPU/scheduler/observable-memory trace, call boundaries, post-return sync windows, external events, helper events, and sampled Z80 RAM. The legacy landmark validator still reports only serializer `state_sha256` mismatches at 60 checkpoints, which also occur in duplicate ROM-only restores; those hashes remain a disclosed limitation and are not silently normalized. This supports only the tested single caller-path call and replay surface. Keep the route diagnostic-only, `RUNTIME_REPLACEMENT_ACTIVE=NO`, and helper verification path-specific; do not imply arbitrary-opcode, unsupported-caller, or future-session equivalence. See `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}`.
+
+**Serializer acceptance follow-up (2026-10-13):** Gameplay-session replay
+landmarks now use the existing version- and size-checked canonical checkpoint
+hash; raw serializer hashes remain diagnostics. Duplicate ROM-only restores
+matched canonical checkpoints 60/60, and the selected instruction-step replay
+matched ROM-only 60/60. A fixture-only save-state tail now preserves
+`m68k.refresh_cycles`; roundtrip continuation matched 3,600/3,600 frames.
+This does not broaden the `0x9D70` route claim, enable production dispatch, or
+change any evidence authority. See
+`docs/reports/THOR_SERIALIZER_CANONICAL_REPLAY_20261013.md`.

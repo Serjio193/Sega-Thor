@@ -1,0 +1,954 @@
+{
+  "schema": "oasis.serializer-byte-diff.v2",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "checkpoint_frame": 60,
+  "raw_record_size": 1036288,
+  "range_count": 55,
+  "differing_byte_count": 275,
+  "range_classification": "54 YM2612 host-pointer ranges plus one Z80 ABI-padding/host-pointer range",
+  "ranges": [
+    {
+      "offset_start": 140653,
+      "offset_end_exclusive": 140658,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140653,
+          "end_exclusive": 140658,
+          "field": "CH[0].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 140733,
+      "offset_end_exclusive": 140738,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140733,
+          "end_exclusive": 140738,
+          "field": "CH[0].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 140813,
+      "offset_end_exclusive": 140818,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140813,
+          "end_exclusive": 140818,
+          "field": "CH[0].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 140893,
+      "offset_end_exclusive": 140898,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140893,
+          "end_exclusive": 140898,
+          "field": "CH[0].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 140989,
+      "offset_end_exclusive": 140994,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140989,
+          "end_exclusive": 140994,
+          "field": "CH[0].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 140997,
+      "offset_end_exclusive": 141002,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 140997,
+          "end_exclusive": 141002,
+          "field": "CH[0].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141005,
+      "offset_end_exclusive": 141010,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141005,
+          "end_exclusive": 141010,
+          "field": "CH[0].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141013,
+      "offset_end_exclusive": 141018,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141013,
+          "end_exclusive": 141018,
+          "field": "CH[0].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141021,
+      "offset_end_exclusive": 141026,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141021,
+          "end_exclusive": 141026,
+          "field": "CH[0].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141053,
+      "offset_end_exclusive": 141058,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141053,
+          "end_exclusive": 141058,
+          "field": "CH[1].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141133,
+      "offset_end_exclusive": 141138,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141133,
+          "end_exclusive": 141138,
+          "field": "CH[1].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141213,
+      "offset_end_exclusive": 141218,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141213,
+          "end_exclusive": 141218,
+          "field": "CH[1].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141293,
+      "offset_end_exclusive": 141298,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141293,
+          "end_exclusive": 141298,
+          "field": "CH[1].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141389,
+      "offset_end_exclusive": 141394,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141389,
+          "end_exclusive": 141394,
+          "field": "CH[1].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141397,
+      "offset_end_exclusive": 141402,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141397,
+          "end_exclusive": 141402,
+          "field": "CH[1].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141405,
+      "offset_end_exclusive": 141410,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141405,
+          "end_exclusive": 141410,
+          "field": "CH[1].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141413,
+      "offset_end_exclusive": 141418,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141413,
+          "end_exclusive": 141418,
+          "field": "CH[1].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141421,
+      "offset_end_exclusive": 141426,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141421,
+          "end_exclusive": 141426,
+          "field": "CH[1].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141453,
+      "offset_end_exclusive": 141458,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141453,
+          "end_exclusive": 141458,
+          "field": "CH[2].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141533,
+      "offset_end_exclusive": 141538,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141533,
+          "end_exclusive": 141538,
+          "field": "CH[2].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141613,
+      "offset_end_exclusive": 141618,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141613,
+          "end_exclusive": 141618,
+          "field": "CH[2].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141693,
+      "offset_end_exclusive": 141698,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141693,
+          "end_exclusive": 141698,
+          "field": "CH[2].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141789,
+      "offset_end_exclusive": 141794,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141789,
+          "end_exclusive": 141794,
+          "field": "CH[2].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141797,
+      "offset_end_exclusive": 141802,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141797,
+          "end_exclusive": 141802,
+          "field": "CH[2].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141805,
+      "offset_end_exclusive": 141810,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141805,
+          "end_exclusive": 141810,
+          "field": "CH[2].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141813,
+      "offset_end_exclusive": 141818,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141813,
+          "end_exclusive": 141818,
+          "field": "CH[2].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141821,
+      "offset_end_exclusive": 141826,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141821,
+          "end_exclusive": 141826,
+          "field": "CH[2].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141853,
+      "offset_end_exclusive": 141858,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141853,
+          "end_exclusive": 141858,
+          "field": "CH[3].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 141933,
+      "offset_end_exclusive": 141938,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 141933,
+          "end_exclusive": 141938,
+          "field": "CH[3].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142013,
+      "offset_end_exclusive": 142018,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142013,
+          "end_exclusive": 142018,
+          "field": "CH[3].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142093,
+      "offset_end_exclusive": 142098,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142093,
+          "end_exclusive": 142098,
+          "field": "CH[3].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142189,
+      "offset_end_exclusive": 142194,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142189,
+          "end_exclusive": 142194,
+          "field": "CH[3].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142197,
+      "offset_end_exclusive": 142202,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142197,
+          "end_exclusive": 142202,
+          "field": "CH[3].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142205,
+      "offset_end_exclusive": 142210,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142205,
+          "end_exclusive": 142210,
+          "field": "CH[3].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142213,
+      "offset_end_exclusive": 142218,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142213,
+          "end_exclusive": 142218,
+          "field": "CH[3].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142221,
+      "offset_end_exclusive": 142226,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142221,
+          "end_exclusive": 142226,
+          "field": "CH[3].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142253,
+      "offset_end_exclusive": 142258,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142253,
+          "end_exclusive": 142258,
+          "field": "CH[4].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142333,
+      "offset_end_exclusive": 142338,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142333,
+          "end_exclusive": 142338,
+          "field": "CH[4].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142413,
+      "offset_end_exclusive": 142418,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142413,
+          "end_exclusive": 142418,
+          "field": "CH[4].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142493,
+      "offset_end_exclusive": 142498,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142493,
+          "end_exclusive": 142498,
+          "field": "CH[4].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142589,
+      "offset_end_exclusive": 142594,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142589,
+          "end_exclusive": 142594,
+          "field": "CH[4].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142597,
+      "offset_end_exclusive": 142602,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142597,
+          "end_exclusive": 142602,
+          "field": "CH[4].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142605,
+      "offset_end_exclusive": 142610,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142605,
+          "end_exclusive": 142610,
+          "field": "CH[4].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142613,
+      "offset_end_exclusive": 142618,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142613,
+          "end_exclusive": 142618,
+          "field": "CH[4].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142621,
+      "offset_end_exclusive": 142626,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142621,
+          "end_exclusive": 142626,
+          "field": "CH[4].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142653,
+      "offset_end_exclusive": 142658,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142653,
+          "end_exclusive": 142658,
+          "field": "CH[5].SLOT[0].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142733,
+      "offset_end_exclusive": 142738,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142733,
+          "end_exclusive": 142738,
+          "field": "CH[5].SLOT[1].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142813,
+      "offset_end_exclusive": 142818,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142813,
+          "end_exclusive": 142818,
+          "field": "CH[5].SLOT[2].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142893,
+      "offset_end_exclusive": 142898,
+      "length": 5,
+      "run_a_hex": "16CDA26C72",
+      "run_b_hex": "069D114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142893,
+          "end_exclusive": 142898,
+          "field": "CH[5].SLOT[3].DT",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142989,
+      "offset_end_exclusive": 142994,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142989,
+          "end_exclusive": 142994,
+          "field": "CH[5].connect1",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 142997,
+      "offset_end_exclusive": 143002,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 142997,
+          "end_exclusive": 143002,
+          "field": "CH[5].connect3",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 143005,
+      "offset_end_exclusive": 143010,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 143005,
+          "end_exclusive": 143010,
+          "field": "CH[5].connect2",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 143013,
+      "offset_end_exclusive": 143018,
+      "length": 5,
+      "run_a_hex": "0CCDA26C72",
+      "run_b_hex": "FC9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 143013,
+          "end_exclusive": 143018,
+          "field": "CH[5].connect4",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 143021,
+      "offset_end_exclusive": 143026,
+      "length": 5,
+      "run_a_hex": "0DCDA26C72",
+      "run_b_hex": "FD9C114A7E",
+      "component": "YM2612",
+      "segments": [
+        {
+          "start": 143021,
+          "end_exclusive": 143026,
+          "field": "CH[5].mem_connect",
+          "classification": "YM2612 host pointer",
+          "restore": "YM2612LoadContext rebuilds per-channel connections and DT table references"
+        }
+      ]
+    },
+    {
+      "offset_start": 144575,
+      "offset_end_exclusive": 144580,
+      "length": 5,
+      "run_a_hex": "0D85A06C72",
+      "run_b_hex": "FD540F4A7E",
+      "component": "Z80_STATE",
+      "segments": [
+        {
+          "start": 144575,
+          "end_exclusive": 144576,
+          "field": "Z80_Regs ABI padding",
+          "classification": "padding",
+          "restore": "loaded with raw struct bytes; not an execution field"
+        },
+        {
+          "start": 144576,
+          "end_exclusive": 144580,
+          "field": "Z80_Regs.daisy pointer",
+          "classification": "host pointer",
+          "restore": "loaded raw; source search found no use after initialization in tested core"
+        }
+      ]
+    }
+  ]
+}

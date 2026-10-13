@@ -8,6 +8,7 @@
 #include "tools/hybrid/m68k_9d70_instruction_step.hpp"
 #include "tools/hybrid/gameplay_session_replay_diagnostic.hpp"
 #include "tools/hybrid/replay_equivalence_trace.hpp"
+#include "tools/hybrid/checkpoint_evidence.hpp"
 #include "tools/hybrid/grid_query_native_model.hpp"
 #include "tools/hybrid/m68k_call_census.hpp"
 #include "tools/hybrid/native_island_runtime.hpp"
@@ -28,7 +29,6 @@
 #include <string>
 #include <string_view>
 #include <vector>
-
 namespace {
 using namespace oasis::hybrid::session;
 constexpr char canonical_sha[] = "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263";
@@ -431,8 +431,10 @@ int main(int argc, char** argv) {
             std::vector<std::uint8_t> state, ram;
             const bool checkpoint = (frame_number + 1) % landmark_period == 0 || frame_number + 1 == frames;
             if (checkpoint) { state = serialize_core_state(state_size, serialize); ram = read_work_ram(peek_memory); }
+            if (checkpoint) oasis::hybrid::maybe_record_checkpoint(run_path, frame_number + 1, state,
+                core.get<bool(*)(const void*, std::size_t)>("retro_unserialize"), serialize);
             FrameLandmark landmark{frame_number + 1, frame_poll_count, frame_exec_count,
-                pc_fingerprint, read_register(16), checkpoint ? oasis::calculate_sha256(state) : "",
+                pc_fingerprint, read_register(16), checkpoint ? oasis::hybrid::checkpoint_identity_hash(state) : "",
                 checkpoint ? oasis::calculate_sha256(ram) : "", 0, 0, 0, &frame_watched_hits};
             if (checkpoint) {
                 landmark.grid_selector = read_be(peek_memory, 0xFF16F0, 2);

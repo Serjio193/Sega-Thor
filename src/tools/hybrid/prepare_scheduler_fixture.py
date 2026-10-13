@@ -156,6 +156,39 @@ int m68k_hybrid_bcc_not_taken_adjustment(void)
     cpu_source.write_text(ctext, encoding="utf-8")
 
 
+def instrument_state_serializer(root: Path) -> None:
+    source = root / "core/state.c"
+    text = source.read_text(encoding="utf-8")
+    load_anchor = "    bufferptr += md_cart_context_load(&state[bufferptr]);"
+    load_replacement = """    bufferptr += md_cart_context_load(&state[bufferptr]);
+    if (bufferptr <= STATE_SIZE - 8)
+    {
+      uint32 marker;
+      memcpy(&marker, &state[bufferptr], sizeof(marker));
+      if (marker == 0x31594248)
+      {
+        bufferptr += sizeof(marker);
+        load_param(&m68k.refresh_cycles, sizeof(m68k.refresh_cycles));
+      }
+    }
+"""
+    if text.count(load_anchor) != 1:
+        raise ValueError("unsupported Genesis state-load tail")
+    text = text.replace(load_anchor, load_replacement)
+    save_anchor = "    bufferptr += md_cart_context_save(&state[bufferptr]);"
+    save_replacement = """    bufferptr += md_cart_context_save(&state[bufferptr]);
+    if (bufferptr > STATE_SIZE - 8) return 0;
+    {
+      const uint32 marker = 0x31594248;
+      save_param(&marker, sizeof(marker));
+      save_param(&m68k.refresh_cycles, sizeof(m68k.refresh_cycles));
+    }
+"""
+    if text.count(save_anchor) != 1:
+        raise ValueError("unsupported Genesis state-save tail")
+    source.write_text(text.replace(save_anchor, save_replacement), encoding="utf-8")
+
+
 def prepare_fixture(source: Path, destination: Path) -> None:
     source = source.resolve()
     destination = destination.resolve()
@@ -168,6 +201,7 @@ def prepare_fixture(source: Path, destination: Path) -> None:
     ))
     prepare(destination)
     instrument_scheduler(destination)
+    instrument_state_serializer(destination)
     makefile = destination / "Makefile.libretro"
     text = makefile.read_text(encoding="utf-8")
     text = replace_once(text, "HOOK_CPU = 0", "HOOK_CPU = 1", "isolated HOOK_CPU build flag")

@@ -21,6 +21,10 @@ public:
     void record(unsigned frame, std::span<const std::uint8_t> state,
                 std::uint64_t cpu_cycles, std::string_view raw_hash,
                 std::string_view identity_hash);
+    void record(unsigned frame, std::span<const std::uint8_t> state);
+    void record_with_roundtrip_option(unsigned frame, std::span<const std::uint8_t> state,
+                                      bool (*unserialize)(const void*, std::size_t),
+                                      bool (*serialize)(void*, std::size_t));
     void close();
 
 private:
@@ -30,5 +34,10 @@ private:
     class Files;
     Files* files_{};
 };
+
+void maybe_record_checkpoint(const std::filesystem::path& directory, unsigned frame,
+                             std::span<const std::uint8_t> state,
+                             bool (*unserialize)(const void*, std::size_t),
+                             bool (*serialize)(void*, std::size_t));
 
 } // namespace oasis::hybrid
