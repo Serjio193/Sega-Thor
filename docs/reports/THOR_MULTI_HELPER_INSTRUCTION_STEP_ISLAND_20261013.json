@@ -37,7 +37,6 @@
     "full_frame_canonical_state_records": "3600/3600",
     "architectural_sync_records": "128/128",
     "scheduler_sync_records": "128/128",
-    "observed_landmarks": "60/60",
     "z80_ram_sync_bytes": 1048576,
     "normalized_helper_events": "804/804",
     "normalized_events": "MATCH",
@@ -45,7 +44,10 @@
     "step_path_timing_census": "MATCH",
     "first_divergence": null,
     "native_mismatches": 0,
-    "contract_rejects": 0
+    "contract_rejects": 0,
+    "frame_landmarks": "3600/3600",
+    "periodic_canonical_state_hashes": "60/60",
+    "periodic_ram_hashes": "60/60"
   },
   "triple_metrics": {
     "0x009D70": {

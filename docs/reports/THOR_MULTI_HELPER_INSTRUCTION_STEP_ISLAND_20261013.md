@@ -6,7 +6,7 @@
 
 ## Validation
 
-A fresh ROM-only baseline passed, followed by all three single-helper runs, all three pair combinations, and the triple. Every route used the same ROM, core, runner build, config, initial state lineage, 3,600 polls and effective-input hash. Across each route, all 3,600 full-frame canonical CPU/scheduler/observable-memory records matched baseline; architectural and scheduler sync traces (128 each), 60 observed landmarks, 1 MiB Z80 RAM snapshots, normalized helper events (804), other normalized events and ordered external events matched. The timing-path census matched baseline. No divergence or native mismatch occurred. Raw serializer SHA is diagnostic only.
+A fresh ROM-only baseline passed, followed by all three single-helper runs, all three pair combinations, and the triple. Every route used the same ROM, core, runner build, config, initial state lineage, 3,600 polls and effective-input hash. Across each route, all 3,600 full-frame canonical CPU/scheduler/observable-memory records matched baseline; architectural and scheduler sync traces (128 each), 3,600 frame landmarks including 60 periodic canonical-state and RAM hash checkpoints, 1 MiB Z80 RAM snapshots, normalized helper events (804), other normalized events and ordered external events matched. The timing-path census matched baseline. No divergence or native mismatch occurred. Raw serializer SHA is diagnostic only.
 
 Triple counts: `0x9D70` native 184, provenance rejects 2 and ROM fallbacks 2; `0x9D4E` native 113; `0x9DB4` native 507. Total native calls were 804. The two `0x9D70` rejected entries were left on the ROM path. No precondition rejects occurred.
 

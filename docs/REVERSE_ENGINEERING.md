@@ -3969,7 +3969,7 @@ Instruction-step follow-up (2026-10-13): the isolated scheduler fixture passed i
 The caller-gated instruction-step paths for `0x9D70` (`0x009144`), `0x9D4E`
 (`0x00909E`), and `0x9DB4` (`0x0092CC`) passed fresh ROM-only baseline,
 individual, pairwise, and combined 3,600-frame development replays. The
-canonical state, CPU/scheduler synchronization, WRAM/Z80/VDP-visible state,
+3,600 frame landmarks and 60 periodic canonical-state/RAM hash checkpoints, CPU/scheduler synchronization, WRAM/Z80/VDP-visible state,
 normalized helper events, and external events matched baseline. The machine
 receipt records path timing variants and per-helper counts. The claim is
 limited to this pinned replay/configuration and these exact caller paths;
