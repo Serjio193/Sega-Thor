@@ -10062,3 +10062,33 @@ the pinned clean-worktree Debug replay passed; `git diff --check` passed. The
 clean base checkout and changed island source files pass the 500-line rule.
 The separate shared primary dirty checkout still has three pre-existing
 over-limit files (506, 519, and 518 lines), outside this isolated patch.
+
+TASK: Capture and validate a second independent deterministic gameplay replay
+against the frozen eight-helper native island. Keep Replay A immutable; do not
+add helpers, broaden contracts, activate production, or change evidence
+authorities.
+
+RESULT: Replay B used the same ROM/core/runner/configuration and a pinned
+3,600-poll scripted input log. It is a meaningfully different trajectory:
+effective input first differs at frame 30, canonical observable memory at frame
+121, and PC fingerprint at frame 661. Its callable census differs (82 targets
+and 143,881 aggregate calls vs A's 283 and 643,046); B reached `0xB730` from
+`0x03B448` 2,264 times, while no accepted island helper was entered.
+
+Two ROM-only diagnostic replays matched full-frame state, all 60 60-frame
+checkpoints, landmarks, call logs, census, and auto-capture outputs; strict
+ROM-only replay passed. The eight-helper-enabled diagnostic and strict replay
+also passed with exact ROM-only B state/call artifacts. This pass routed zero
+native calls, so it validates the alternate replay and fail-closed empty-helper
+surface, not new native path coverage. Z80 RAM and VDP memories are included in
+the observable-memory digest; Z80 PC/IRQ and VDP scheduler state are in the
+per-frame scheduler record. Full Z80 architectural registers remain outside
+this capture schema. Raw serializer fingerprints remain diagnostic.
+
+Machine receipt and detailed path coverage are in
+`docs/reports/THOR_REPLAY_NATIVE_ISLAND_EIGHT_REPLAY_B_20261013.{md,json}`.
+Replay scope count is 2, but the native-island generalization evidence remains
+limited to Replay A because Replay B has no island-helper calls. Global helper
+verification remains NO; production runtime activation remains NO; all
+evidence authorities are unchanged. Recommend Replay C that naturally reaches
+accepted helper paths before island expansion or production-layer work.

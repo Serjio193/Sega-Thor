@@ -1,5 +1,12 @@
 # THOR M12 AUTO64.1 invariant repair
 
+# Replay-native island reports
+
+`docs/reports/THOR_REPLAY_NATIVE_ISLAND_EIGHT_REPLAY_B_20261013.md` and its
+JSON receipt record the second deterministic gameplay trajectory, its ROM-only
+repeatability, and the eight-helper fail-closed replay result. Replay B does
+not enter any island helper; it is not additional native path coverage.
+
 # THOR M12 AUTO65 multi-chain campaign
 
 `src/tools/thor_evidence/auto65_chain.py` owns normalized chain construction,

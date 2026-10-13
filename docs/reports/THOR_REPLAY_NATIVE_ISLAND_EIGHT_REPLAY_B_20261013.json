@@ -1,0 +1,89 @@
+{
+  "schema": "oasis.replay-native-island-independent-replay.v1",
+  "replay_b_id": "THOR_REPLAY_NATIVE_ISLAND_EIGHT_REPLAY_B_SCRIPTED_V1_20261013",
+  "baseline_id": "THOR_REPLAY_NATIVE_ISLAND_EIGHT_CLEAN_V1_20261013",
+  "replay_scope_count": 2,
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "runner_sha256": "53b7f61d5c6bbdadd890364b4affe4b0198c91c274859ce5b8354082dc7e6485",
+  "config_sha256": "32340d7cf5593502616580635857f1df1cf8e883b6f1a1dc6a5da1666f136104",
+  "frames": 3600,
+  "input_poll_count": 3600,
+  "input_sha256": "1084323624fe29c59c235c958a8df886466b407b8bc122e29b66a6c5487cbeb1",
+  "initial_state_sha256": "adede3f681bd1c9d5767734f2829ffb5f133b7ae3d56110b68f4e55ac401fc1b",
+  "initial_state_identity_note": "Pinned B initial.state snapshot reused for every B replay; raw post-restore serializer fingerprints can differ and are diagnostic only.",
+  "trajectory_difference": {
+    "first_effective_input_difference_poll_index_zero_based": 30,
+    "first_effective_input_difference_frame": 30,
+    "first_canonical_observable_memory_difference_frame": 121,
+    "first_pc_fingerprint_difference_frame": 661,
+    "replay_a_call_census_target_count": 283,
+    "replay_a_call_census_aggregate_target_calls": 643046,
+    "replay_b_call_census_target_count": 82,
+    "replay_b_call_census_aggregate_target_calls": 143881,
+    "new_b_callable": {
+      "entry_pc": "0x00B730",
+      "caller_pc": "0x03B448",
+      "count": 2264
+    }
+  },
+  "rom_only_b": {
+    "diagnostic_run_count": 2,
+    "strict_run_status": "PASS",
+    "each_diagnostic_divergence": "NO",
+    "full_frame_state_records": 3600,
+    "periodic_60_frame_records": 60,
+    "rom_only_pair_match": {
+      "full_frame_state_sha256": "a175759f5c4a6519dc0e031959256eae2fb192cb4f638ef6ee6145aeea92b627",
+      "observed_landmarks_sha256": "4c3437229ca13481483a00d293fe009a28423d0684d63ca22a7d4a8648351dd3",
+      "calls_sha256": "c0ce8c894c67b284e6554fd5392d404496e68b0c160035be3ace2704bd58707d",
+      "call_census_sha256": "8ddaccca25902b94dee464bd250ff5b9e82837bee3e1f9319fd462b30a90bde4",
+      "auto_full_calls_sha256": "2af7613b2deb1219a3aa9981984e6e0550cd1d664d918bddd3e4502786f0f5a7"
+    }
+  },
+  "helpers": [
+    {"entry_pc":"0x9D70","replay_a_native":184,"replay_a_rom_fallback":2,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9D4E","replay_a_native":113,"replay_a_rom_fallback":0,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9DB4","replay_a_native":507,"replay_a_rom_fallback":0,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9D92","replay_a_native":24,"replay_a_rom_fallback":208,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"PARTIAL","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x94A2","replay_a_native":66,"replay_a_rom_fallback":0,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x9C40","replay_a_native":24,"replay_a_rom_fallback":3,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"PARTIAL","full_cfg_coverage":"NO"},
+    {"entry_pc":"0x8EF8","replay_a_native":3,"replay_a_rom_fallback":11,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"},
+    {"entry_pc":"0xE268","replay_a_native":45047,"replay_a_rom_fallback":410687,"replay_b_natural_calls":0,"replay_b_accepted_calls":0,"replay_b_unsupported_calls":0,"replay_b_paths":"NONE_OBSERVED","replay_b_timing_refresh_irq":"NONE_OBSERVED","synthetic_paths":"UNKNOWN","full_cfg_coverage":"NO"}
+  ],
+  "replay_b_island": {
+    "enabled_helpers": ["0x9D70","0x9D4E","0x9DB4","0x9D92","0x94A2","0x9C40","0x8EF8","0xE268"],
+    "diagnostic_divergence": "NO",
+    "strict_replay_status": "PASS",
+    "native_calls": 0,
+    "rom_fallback_calls": 0,
+    "provenance_rejects": 0,
+    "precondition_rejects": 0,
+    "contract_rejects": 0,
+    "native_mismatches": 0,
+    "canonical_full_frame_state_matches_rom_only": true,
+    "periodic_60_frame_records_match": 60,
+    "normalized_helper_events": "EMPTY_BOTH_RUNS_NO_NATIVE_ENTRY",
+    "external_event_order": "EMPTY_BOTH_RUNS_NO_SELECTED_HELPER_WINDOW"
+  },
+  "coverage_matrix": {
+    "replay_a_paths": {"0x9D70":1,"0x9D4E":1,"0x9DB4":1,"0x9D92":1,"0x94A2":3,"0x9C40":1,"0x8EF8":1,"0xE268":1},
+    "replay_b_paths": "NONE_OBSERVED_FOR_ALL_EIGHT",
+    "new_paths_in_b": "NONE_FOR_ISLAND_HELPERS",
+    "full_cfg_coverage": "NO_FOR_ALL_EIGHT"
+  },
+  "status": {
+    "replay_native_island_validated": "YES_WITH_ZERO_NATIVE_EXECUTIONS_IN_REPLAY_B",
+    "replay_scope_count": 2,
+    "global_helper_verification": "NO",
+    "production_runtime_active": "NO",
+    "evidence_authority_deltas": 0,
+    "current_totals": {
+      "rom_size_bytes": 3145728,
+      "runtime_total_proven_bytes": 440425,
+      "structural_proven_bytes": 1266667,
+      "source_owned_bytes": 1487672
+    }
+  },
+  "next_recommendation": "Acquire replay C with distinct effective inputs that naturally enter one or more accepted island caller paths; do not add helpers or design production activation based on replay B."
+}
