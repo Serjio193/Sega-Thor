@@ -1,3 +1,47 @@
+# ADR-M15-54 — Execution-Driven Recompilation: 0x005670 Player Pre-Action Input, Timers & Action Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x00557A`, fresh actual-ROM execution census ranked `0x005670` #1 with 772 executions from caller `0x005586` (return PC `0x00558A`, displacement `+0x00EA`).
+Disassembly and physical analysis established `0x005670` as the **Player Pre-Action Input, Timers & Action Dispatcher** (`0x005670..0x0059B8`, 842 bytes, 421 words, 189 instructions in core sequence + auxiliary loop `0x005B3C..0x005B9E`):
+1. Block 1 (`0x005670..0x0057D0`):
+   - Stores `%sp` into `$FF1934`.
+   - Evaluates input and action readiness flags at `$FF1985`, `$FF1987`, `$FF0DBA`, `$FF1971`, `$FF1982`.
+   - Updates motion and attack interval timers at `114(a6)`, `74(a6)`, `142(a6)`.
+   - Early `rts` exits available at `0x0056FA` and `0x0057CE`.
+   - Calls child subroutine `jsr 0x00E682` at `0x0057D0` (772 calls). Subroutine `0x00E682` returns normally to `0x0057D6` on 753 calls, and pops return PC to grandparent `0x00558A` on 19 calls.
+2. Block 2 (`0x0057D6..0x0059B8`):
+   - Evaluates sub-actions at `$FF198B`, `108(a6)`, `132(a6)`, `131(a6)`, `56(a6)`.
+   - Calls `bsr.w 0x008EF8` at `0x0058FA` and `0x005928` (2 child calls across canonical replay).
+   - Reads action code `4(a6)` into `%d0`, calculates offset table address `lea 6(%pc, %d0.w), %a0`, resolves branch target `adda.w (%a0), %a0`, and executes tail dispatch `jmp (%a0)` at `0x0059B8` (753 completions).
+3. Block 3 (`0x005B3C..0x005B9E`):
+   - Auxiliary interaction branch with `movem.l d1, -(sp)` at `0x005B6C` and `movem.l (sp)+, d1` at `0x005B82`, both charging canonical 56-cycle bus refresh timing (112 cycles total).
+
+**Decision:**
+1. Reverse-engineer complete `0x005670` contract:
+   - Routine bounds: `0x005670..0x0059B8` + `0x005B3C..0x005B9E`.
+   - Proven caller: `0x005586` (772 calls, return PC `0x00558A`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_005670_step_ops.hpp` (152 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_ops1.cpp` (360 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_ops2.cpp` (338 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block1.hpp` (7 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block1.cpp` (172 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block2.hpp` (7 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block2.cpp` (250 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block3.hpp` (7 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_step_block3.cpp` (70 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_instruction_step.hpp` (31 lines <= 500)
+   - `src/tools/hybrid/m68k_005670_instruction_step.cpp` (166 lines <= 500)
+   - Unit tests in `tests/m68k_005670_instruction_step_test.cpp` (198 lines <= 500) verifying caller gating, corrupt ROM rejection, odd SP rejection, action dispatch path, and interruption/reentrancy protection.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x005670` OFF) vs Run B (`0x005670` ON).
+   - Achieved 100% native displacement: 772 native calls (`0x005586`: 772), 0 ROM fallbacks, 47,655 stepped instructions: 772 child calls to `0x00E682`, 2 child calls to `0x008EF8`, 753 tail-dispatch completions, 19 grandparent return completions.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0` (`divergence=NO`).
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** Player dispatcher `0x005670` now executes 100% natively in C++, completely displacing 772 calls from ROM and establishing `0x008B8E` (772 calls from `0x008B26`) as the new #1 untranslated actual-ROM target.
+
 # ADR-M15-53 — Execution-Driven Recompilation: 0x00557A Player Per-Frame State, Footstep Audio & Shadow Coordinator Integration
 **Status:** Accepted
 **Date:** 2026-10-17

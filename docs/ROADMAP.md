@@ -1,9 +1,32 @@
-# M15.54 Execution-Driven Recompilation: 0x005670 Instruction-Stepped Native Replacement — ACTIVE
+# M15.55 Execution-Driven Recompilation: 0x008B8E Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x005670` (Player Per-Frame Velocity & Input Subroutine) called 772 times in 3,600 canonical frames from caller `0x005586` (return PC `0x00558A`).
+- Reverse-engineer and displace runtime target `0x008B8E` called 772 times in 3,600 canonical frames from caller `0x008B26` (return PC `0x008B2A`).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.54 Execution-Driven Recompilation: 0x005670 Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x005670` (Player Pre-Action Input, Timers & Action Dispatcher) called 772 times in 3,600 canonical frames from caller `0x005586` (772 calls, return PC `0x00558A`).
+- Semantics & architecture:
+  * Block 1 (`0x005670..0x0057D0`): saves `%sp` to `$FF1934`, evaluates input/action readiness flags (`$FF1985`, `$FF1987`, `$FF0DBA`, `$FF1971`, `$FF1982`), updates motion/attack interval timers (`114(a6)`, `74(a6)`, `142(a6)`), and calls child subroutine `jsr 0x00E682` at `0x0057D0` (772 calls). Child returns normally to `0x0057D6` on 753 calls, or pops return address to grandparent `0x00558A` on 19 calls.
+  * Block 2 (`0x0057D6..0x0059B8`): evaluates sub-action state bytes (`$FF198B`, `108(a6)`, `132(a6)`, `131(a6)`, `56(a6)`), invokes `bsr.w 0x008EF8` at `0x0058FA` and `0x005928` (2 child calls), and dispatches via jump table at `0x0059B8` (`jmp (%a0)`, 753 tail-dispatch completions).
+  * Block 3 (`0x005B3C..0x005B9E`): auxiliary branch with `movem.l d1, -(sp)` at `0x005B6C` and `movem.l (sp)+, d1` at `0x005B82` adding canonical 56-cycle bus refresh timing.
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x005670` OFF) and Run B (`0x005670` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_005670: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 47,655 stepped instructions: 772 child calls to `0x00E682`, 2 child calls to `0x008EF8`, 753 dispatch completions, 19 grandparent return completions).
+  * NATIVE_EXEC_005670: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x005670` active in native island chain (`step:...,005670`) and ranked fresh call census for remaining ROM targets:
+  1. `0x008B8E`: 772 remaining ROM calls (caller: `0x008B26`: 772) -> ACTIVE TARGET #1
+  2. `0x008BAC`: 772 remaining ROM calls (caller: `0x008B22`: 772)
+  3. `0x00DEEC`: 772 remaining ROM calls (caller: `0x008B32`: 772)
+  4. `0x00E0BA`: 772 remaining ROM calls (caller: `0x008B36`: 772)
+  5. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772)
+  6. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  7. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
 
 # M15.53 Execution-Driven Recompilation: 0x00557A Dual Replay Verification & Displacement — DONE
 

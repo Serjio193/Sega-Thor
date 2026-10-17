@@ -1,3 +1,67 @@
+# 2026-10-17 — Target 0x005670 Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
+
+- Mission Objective:
+  - Displace the #1 remaining untranslated actual-ROM target `0x005670` (Player Pre-Action Input, Timers & Action Dispatcher, 772 calls in canonical replay).
+  - Implement full instruction-stepping logic in C++ without fallback.
+  - Attain 100% bit-for-bit SHA-256 equivalence across all 8 canonical replay streams across all 3,600 frames.
+- Implementation Details:
+  - `src/tools/hybrid/m68k_005670_instruction_step.hpp` (31 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_instruction_step.cpp` (166 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_ops.hpp` (152 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_ops1.cpp` (360 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_ops2.cpp` (338 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block1.hpp` (7 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block1.cpp` (172 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block2.hpp` (7 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block2.cpp` (250 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block3.hpp` (7 lines, <= 500).
+  - `src/tools/hybrid/m68k_005670_step_block3.cpp` (70 lines, <= 500).
+  - `tests/m68k_005670_instruction_step_test.cpp` (198 lines, <= 500).
+- Unit Tests:
+  - `oasis_m68k_005670_step_test`: passed 100% cleanly (caller gating `0x005586`, corrupt ROM rejection, odd SP rejection, action dispatch path, interruption/reentrancy protection).
+  - All 39/39 `oasis_m68k_*` test targets pass (100%).
+- Replay Execution Metrics (Canonical 3,600 Frames):
+  - `target_entries`: 772
+  - `native_calls`: 772 (caller `0x005586`: 772, other: 0)
+  - `rom_fallback_calls`: 0 (100% displaced)
+  - `completed_calls`: 772 (753 tail-dispatch completions via `jmp (%a0)`, 19 completions via grandparent return)
+  - `stepped_instructions`: 47,655
+  - `active_at_entry`: 0
+  - `child_calls_00e682`: 772
+  - `child_calls_008ef8`: 2
+- Architectural Discoveries:
+  - Block 1 (`0x005670..0x0057D0`): saves `%sp` to `$FF1934`, evaluates input/action readiness flags (`$FF1985`, `$FF1987`, `$FF0DBA`, `$FF1971`, `$FF1982`), updates motion/attack interval timers (`114(a6)`, `74(a6)`, `142(a6)`), and calls child subroutine `jsr 0x00E682` at `0x0057D0` (772 calls). Child returns normally to `0x0057D6` on 753 calls, or pops return address to grandparent `0x00558A` on 19 calls.
+  - Block 2 (`0x0057D6..0x0059B8`): evaluates sub-action state bytes (`$FF198B`, `108(a6)`, `132(a6)`, `131(a6)`, `56(a6)`), invokes `bsr.w 0x008EF8` at `0x0058FA` and `0x005928` (2 child calls), and dispatches via jump table at `0x0059B8` (`jmp (%a0)`, 753 tail-dispatch completions).
+  - Block 3 (`0x005B3C..0x005B9E`): auxiliary branch with `movem.l d1, -(sp)` at `0x005B6C` and `movem.l (sp)+, d1` at `0x005B82` adding canonical 56-cycle bus refresh timing (112 cycles total).
+  - In `block_hook`, `step_m68k_005670` must be evaluated before `step_m68k_00557a` so that grandparent RTS completions from `0x00E682` directly to `0x00558A` are cleared before `0x00557a` resumes.
+- Canonical Eight-Stream Replay Verification (Run A vs Run B):
+  - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+  - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+  - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+  - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+  - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+  - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+  - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+  - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+  - Replay divergence: `different_frame_count == 0`, `divergence=NO` across all 3,600 frames (`All streams match: True`).
+- Source Size Policy:
+  - Every single source, header, test, and CMake file is strictly <= 500 lines.
+- Fresh Census Ranking (Post-0x005670):
+  - 1. Target `0x008B8E`: 772 calls (caller: `0x008B26:772`) -> ACTIVE TARGET #1 (Milestone M15.55)
+  - 2. Target `0x008BAC`: 772 calls (caller: `0x008B22:772`)
+  - 3. Target `0x00DEEC`: 772 calls (caller: `0x008B32:772`)
+  - 4. Target `0x00E0BA`: 772 calls (caller: `0x008B36:772`)
+  - 5. Target `0x00E0F4`: 772 calls (caller: `0x008B3A`: 772)
+  - 6. Target `0x00B3B2`: 759 calls (caller: `0x00AD4E:759`)
+  - 7. Target `0x00CEEA`: 743 calls (callers: `0x02E604:89`, `0x02E6F6:190`, `0x02E87C:464`)
+  - 8. Target `0x00D188`: 743 calls (caller: `0x00D0BC:743`)
+  - 9. Target `0x00D344`: 743 calls (caller: `0x00D2B4:743`)
+  - 10. Target `0x00D398`: 743 calls (callers: `0x02E60A:89`, `0x02E6FC:190`, `0x02E882:464`)
+  - 11. Target `0x00C9B2`: 742 calls (callers: `0x02E5B0:89`, `0x02E64E:190`, `0x02E774:463`)
+  - 12. Target `0x061EF4`: 731 calls (caller: `0x061EE4:731`)
+  - 13. Target `0x02E704`: 653 calls (callers: `0x02E64A:190`, `0x02E770:463`)
+  - 14. Target `0x00F91C`: 630 calls (caller: `0x00F7C6:630`)
+
 # 2026-10-17 — Target 0x00557A Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
 
 - Mission Objective:

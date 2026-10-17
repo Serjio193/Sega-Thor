@@ -3414,3 +3414,9 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `src/tools/hybrid/m68k_00557a_step_block1.hpp/.cpp` — block 1 instruction dispatch sequence for `0x00557A..0x0055DC`.
 - `src/tools/hybrid/m68k_00557a_step_block2.hpp/.cpp` — block 2 instruction dispatch sequence for `0x0055E2..0x00566E`.
 - `tests/m68k_00557a_instruction_step_test.cpp` — unit test suite verifying caller gating (`0x008B2E`), corrupt ROM rejection, shadow skip path, shadow update path, and interruption/reentrancy protection.
+- `src/tools/hybrid/m68k_005670_instruction_step.hpp/.cpp` — exact ROM-checked, single-caller-gated instruction-stepped helper for Player Pre-Action Input, Timers & Action Dispatcher (`0x005670..0x0059B8` + `0x005B3C..0x005B9E`, caller `0x005586`), verified in dual canonical 3,600-frame replay (Run A: 772 ROM executions; Run B: 772 native executions, 0 fallbacks, 47,655 stepped instructions, bit-identical stream hashes across all 3,600 frames).
+- `src/tools/hybrid/m68k_005670_step_ops.hpp`, `src/tools/hybrid/m68k_005670_step_ops1.cpp`, `src/tools/hybrid/m68k_005670_step_ops2.cpp` — instruction-stepping primitives, input/timer evaluations, table lookups, arithmetic, and hardware bus refresh cycles under `namespace oasis::hybrid::step_005670`.
+- `src/tools/hybrid/m68k_005670_step_block1.hpp/.cpp` — block 1 instruction dispatch sequence for `0x005670..0x0057D0`.
+- `src/tools/hybrid/m68k_005670_step_block2.hpp/.cpp` — block 2 instruction dispatch sequence for `0x0057D6..0x0059B8`.
+- `src/tools/hybrid/m68k_005670_step_block3.hpp/.cpp` — block 3 instruction dispatch sequence for `0x005B3C..0x005B9E`.
+- `tests/m68k_005670_instruction_step_test.cpp` — unit test suite verifying caller gating (`0x005586`), corrupt ROM rejection, odd SP rejection, action dispatch path, and interruption/reentrancy protection.
