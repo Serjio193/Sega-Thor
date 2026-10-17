@@ -5025,3 +5025,23 @@ Analysis and reverse-engineering of `0x00A342..0x00A436` revealed it is the Base
 
 **Consequences:**
 All 773 calls to `0x00A342` in canonical replay are stepped in C++ with 0 ROM fallback calls and 55,011 stepped instructions. All 8 streams match bit-for-bit across all 3,600 frames. The new #1 remaining non-displaced target is `0x00B34C` (773 calls).
+
+## ADR-M15-56: Instruction-Stepped Native Displacement of Player Menu, Pause & Inventory Coordinator (`0x008BAC`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x008BAC` as the #1 remaining untranslated actual-ROM target with 772 calls (caller `0x008B22`: 772).
+Analysis of `0x008BAC..0x008C5A` revealed it is the Player Menu, Pause & Inventory Coordinator:
+1. Operation:
+   - Resets pending menu request via `clr.b $FF185E`.
+   - Checks system/mode inhibit flags: `$FF1987`, `$FF17B8` (bit 2), `$FF1983`, and `$FF1982`. If any flag is asserted, branches directly to `rts` at `0x008C34`.
+   - Reads controller state words `$FF165E`, `$FF165F`, `$FF1660`, testing pause and start triggers.
+   - If menu/inventory is requested, sets `$FF185E` (values 1, 2, or 3) and executes tail jump to menu loop `0x003B3E`.
+   - In canonical gameplay, menu is never requested, resulting in all 772 calls completing through input evaluation and returning cleanly via `0x008C34` `rts`.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x008BAC` into `m68k_008bac_instruction_step.{hpp,cpp}` and `m68k_008bac_step_ops.{hpp,cpp}`, strictly observing the 500-line limit.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B22` (return PC `0x008B26`), or having an odd/invalid SP, or mismatched ROM words.
+3. **Dual Replay Validation**: Verify bit-identical SHA-256 equivalence across all 8 canonical streams across all 3,600 frames (`different_frame_count == 0`, `divergence=NO`).
+
+**Consequences:**
+All 772 calls to `0x008BAC` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 17,262 instructions stepped: 772 clean RTS completions). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00DEEC` (772 calls).

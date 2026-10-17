@@ -1,9 +1,35 @@
-# M15.56 Execution-Driven Recompilation: 0x008BAC Instruction-Stepped Native Replacement — ACTIVE
+# M15.57 Execution-Driven Recompilation: 0x00DEEC Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x008BAC` called 772 times in 3,600 canonical frames from caller `0x008B22` (return PC `0x008B26`).
+- Reverse-engineer and displace runtime target `0x00DEEC` called 772 times in 3,600 canonical frames from caller `0x008B32` (return PC `0x008B36`).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.56 Execution-Driven Recompilation: 0x008BAC Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x008BAC` (Player Menu, Pause & Inventory Input Coordinator) called 772 times in 3,600 canonical frames from caller `0x008B22` (772 calls, return PC `0x008B26`).
+- Semantics & architecture:
+  * Resets pending menu request via `clr.b $00FF185E`.
+  * Mode inhibit checks: `$00FF1987`, `$00FF17B8` (bit 2), `$00FF1983`, and `$00FF1982`. If any flag is non-zero/set, early exits via `0x008C34` `rts`.
+  * Evaluates controller input words `$00FF165E`, `$00FF165F`, `$00FF1660` for start / pause button triggers.
+  * If menu requested, sets mode `$00FF185E` (1, 2, or 3) and executes tail jump to menu loop `0x003B3E`.
+  * In canonical replay, menu is not requested, resulting in all 772 calls completing through input evaluation and returning cleanly via `0x008C34` `rts`.
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x008BAC` OFF) and Run B (`0x008BAC` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_008BAC: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 17,262 stepped instructions: 772 clean RTS completions).
+  * NATIVE_EXEC_008BAC: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x008BAC` active in native island chain (`step:...,008bac`) and ranked fresh call census for remaining ROM targets:
+  1. `0x00DEEC`: 772 remaining ROM calls (caller: `0x008B32`: 772) -> ACTIVE TARGET #1 (Milestone M15.57)
+  2. `0x00E0BA`: 772 remaining ROM calls (caller: `0x008B36`: 772)
+  3. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772)
+  4. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  5. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
+  6. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
+  7. `0x00D344`: 743 remaining ROM calls (caller: `0x00D2B4`: 743)
+
 
 # M15.55 Execution-Driven Recompilation: 0x008B8E Dual Replay Verification & Displacement — DONE
 

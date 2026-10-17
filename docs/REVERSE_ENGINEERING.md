@@ -8070,3 +8070,39 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_008b8e_instruction_step_test.cpp` passed 100% (7/7 tests).
+
+### 53. Player Menu / Pause / Inventory Input Coordinator (`0x008BAC`)
+
+- **Routine Address:** `0x008BAC..0x008C5A` (174 bytes, 87 words, 35 instructions).
+- **Semantic Classification:** Player Menu, Pause & Inventory Input Coordinator.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcode scan: `0x008BAC` is targeted by `BSR.W` from `0x008B22` (`0x6100 0x0088`, displacement `+0x0088`, return PC `0x008B26`).
+  * Total observed executions in 3,600 canonical frames: 772 calls (Caller `0x008B22`: 772).
+- **Execution Paths & Architecture:**
+  * Reset menu request: `clr.b $00FF185E` at `0x008BAC`.
+  * Mode inhibit checks:
+    - `tst.b $00FF1987`: if set, branches to `rts` at `0x008C34`.
+    - `btst #2, $00FF17B8`: if set, branches to `rts` at `0x008C34`.
+    - `tst.b $00FF1983`: if set, branches to `rts` at `0x008C34`.
+    - `tst.b $00FF1982`: if set, branches to `rts` at `0x008C34`.
+  * Input evaluation:
+    - Reads controller bytes `$00FF165E`, `$00FF165F`, `$00FF1660`.
+    - Checks for Start / Pause triggers (bit 7 / bit 5).
+    - If menu/inventory requested, sets menu mode `$00FF185E` (1, 2, or 3) and executes tail jump to menu loop `0x003B3E`.
+    - Otherwise, falls through or branches to `0x008C34` `rts`, popping return PC to caller `0x008B26`.
+  * In canonical replay: Menu is not invoked, resulting in all 772 calls executing through input checks and cleanly returning via `0x008C34` `rts`.
+- **Dual Replay Validation Status:**
+  * Run A (`0x008BAC` OFF): `0x008BAC` = 772 ROM executions, 0 native executions.
+  * Run B (`0x008BAC` ON): `0x008BAC` = 772 native executions (Caller `0x008B22`: 772), 0 ROM fallbacks (100% displaced, 17,262 stepped instructions: 772 clean RTS completions).
+  * Equivalence: Bit-identical canonical eight-stream hashes across all 3,600 frames:
+    - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+    - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+    - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+    - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+    - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+    - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+    - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+    - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+    - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- **Unit Test Status:** `tests/m68k_008bac_instruction_step_test.cpp` passed 100% (6/6 tests).

@@ -42,6 +42,7 @@
 #include "tools/hybrid/m68k_00557a_instruction_step.hpp"
 #include "tools/hybrid/m68k_005670_instruction_step.hpp"
 #include "tools/hybrid/m68k_008b8e_instruction_step.hpp"
+#include "tools/hybrid/m68k_008bac_instruction_step.hpp"
 #include "tools/hybrid/m68k_94a2_instruction_step.hpp"
 #include "tools/hybrid/m68k_8ef8_instruction_step.hpp"
 #include "tools/hybrid/m68k_9d_family_instruction_step.hpp"
@@ -88,7 +89,7 @@ SchedulerField g_scheduler_field{};
 TransferSourcePc g_transfer_source_pc{};
 void (*g_observe)(unsigned, unsigned){};
 void (*g_fault)(unsigned){};
-std::array<bool, 49> g_enabled{};
+std::array<bool, 50> g_enabled{};
 
 std::uint32_t rr(void*, unsigned index) { return g_read_register(index); }
 void wr(void*, unsigned index, std::uint32_t value) { g_write_register(index, value); }
@@ -160,6 +161,7 @@ int block_hook(unsigned pc) {
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_005670(pc, api, g_enabled[47]);
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00557a(pc, api, g_enabled[46]);
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_008b8e(pc, api, g_enabled[48]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_008bac(pc, api, g_enabled[49]);
     if (result == M68k9D70StepResult::ContractFault) { if (g_fault) g_fault(pc); return 1; }
     return result == M68k9D70StepResult::InstructionStepped ? 1 : 0;
 }
@@ -248,7 +250,9 @@ void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enab
          selected(enabled_helpers, "00557A") || selected(enabled_helpers, "557A")),
         (selected(enabled_helpers, "005670") || selected(enabled_helpers, "5670")),
         (selected(enabled_helpers, "008b8e") || selected(enabled_helpers, "8b8e") ||
-         selected(enabled_helpers, "008B8E") || selected(enabled_helpers, "8B8E"))
+         selected(enabled_helpers, "008B8E") || selected(enabled_helpers, "8B8E")),
+        (selected(enabled_helpers, "008bac") || selected(enabled_helpers, "8bac") ||
+         selected(enabled_helpers, "008BAC") || selected(enabled_helpers, "8BAC"))
     };
     bool any_enabled = false;
     for (bool b : g_enabled) any_enabled = any_enabled || b;
@@ -301,6 +305,7 @@ void write_m68k_gameplay_step_metrics(const std::filesystem::path& path) {
         write_00557a_step_metrics(path.parent_path() / "00557a-step-metrics.json");
         write_005670_step_metrics(path.parent_path() / "005670-step-metrics.json");
         write_008b8e_step_metrics(path.parent_path() / "008b8e-step-metrics.json");
+        write_008bac_step_metrics(path.parent_path() / "008bac-step-metrics.json");
     }
 }
 
