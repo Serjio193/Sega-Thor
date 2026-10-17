@@ -8227,3 +8227,34 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_00e0f4_instruction_step_test.cpp` passed 100% (6/6 tests).
+### 57. Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine (`0x00B3B2`)
+
+- **Routine Address:** `0x00B3B2..0x00B3D2` (32 bytes, 16 words, 8 instructions).
+- **Semantic Classification:** Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcode scan: `0x00B3B2` is targeted by `BSR.W` from `0x00AD4E` (`0x6100 0x0662`, displacement `+0x0662`, return PC `0x00AD52`).
+  * Total observed executions in 3,600 canonical frames: 759 calls (Caller `0x00AD4E`: 759).
+- **Execution Paths & Architecture:**
+  * Global pause freeze test: `tst.b $00FF1927`.
+    - If non-zero (`bne.w 0x00B382`), branches to shared exit `rts` at `0x00B382` (pause freeze active, bypasses entity update).
+  * Entity flag inspection:
+    - Reads entity attribute byte from slot frame: `move.b 57(%a6), %d5`.
+    - Tests flag bit 1: `btst #1, %d5`.
+    - If bit 1 is set (`bne.w 0x00B3CA`), executes child routine: `bsr.w 0x00B66A`, followed by unconditional loop branch `bra.w 0x00B3C8`.
+    - If bit 1 is clear, falls through directly to `0x00B3C8` `rts`.
+  * Return to caller: `0x00B3C8` returns via `rts` to caller `0x00AD52`.
+- **Dual Replay Validation Status:**
+  * Run A (`0x00B3B2` OFF): `0x00B3B2` = 759 ROM executions, 0 native executions.
+  * Run B (`0x00B3B2` ON): `0x00B3B2` = 759 native executions (Caller `0x00AD4E`: 759), 0 ROM fallbacks (100% displaced, 4,554 stepped instructions: 759 normal exit calls).
+  * Equivalence: Bit-identical canonical eight-stream hashes across all 3,600 frames:
+    - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+    - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+    - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+    - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+    - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+    - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+    - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+    - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+    - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- **Unit Test Status:** `tests/m68k_00b3b2_instruction_step_test.cpp` passed 100% (6/6 tests).

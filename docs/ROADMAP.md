@@ -1,9 +1,33 @@
-# M15.60 Execution-Driven Recompilation: 0x00B3B2 Instruction-Stepped Native Replacement — ACTIVE
+# M15.61 Execution-Driven Recompilation: 0x00CEEA Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x00B3B2` called 759 times in 3,600 canonical frames from caller `0x00AD4E` (return PC `0x00AD52`).
+- Reverse-engineer and displace runtime target `0x00CEEA` called 743 times in 3,600 canonical frames from callers `0x02E604` (89), `0x02E6F6` (190), and `0x02E87C` (464).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.60 Execution-Driven Recompilation: 0x00B3B2 Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x00B3B2` (Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine) called 759 times in 3,600 canonical frames from caller `0x00AD4E` (759 calls, return PC `0x00AD52`).
+- Semantics & architecture:
+  * Global pause freeze test: `tst.b $00FF1927`. If non-zero, immediately branches via `bne.w 0x00B382` to shared `rts` at `0x00B382` (pause freeze active, bypasses entity update).
+  * Entity flag inspection: reads `move.b 57(%a6), %d5`, tests bit 1 via `btst #1, %d5`.
+  * If bit 1 is set, executes child routine `bsr.w 0x00B66A` and loops via `bra.w 0x00B3C8`.
+  * If bit 1 is clear, falls through directly to `0x00B3C8` `rts`.
+  * In canonical replay, bit 1 is clear across all 759 calls, executing all 759 calls through normal return via `0x00B3C8` `rts` to caller `0x00AD52`.
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x00B3B2` OFF) and Run B (`0x00B3B2` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_00B3B2: Run A = 759; Run B = 0 (100% displaced, 0 fallbacks, 4,554 stepped instructions: 759 normal exit calls).
+  * NATIVE_EXEC_00B3B2: Run B = 759; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x00B3B2` active in native island chain (`step:...,00b3b2`) and ranked fresh call census for remaining ROM targets:
+  1. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464) -> ACTIVE TARGET #1 (Milestone M15.61)
+  2. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
+  3. `0x00D344`: 743 remaining ROM calls (caller: `0x00D2B4`: 743)
+  4. `0x00D398`: 743 remaining ROM calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
+  5. `0x00C9B2`: 742 remaining ROM calls (callers: `0x02E5B0`: 89, `0x02E64E`: 190, `0x02E774`: 463)
+  6. `0x061EF4`: 731 remaining ROM calls (caller: `0x061EE4`: 731)
 
 # M15.59 Execution-Driven Recompilation: 0x00E0F4 Dual Replay Verification & Displacement — DONE
 

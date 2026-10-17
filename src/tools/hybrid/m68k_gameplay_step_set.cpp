@@ -46,6 +46,7 @@
 #include "tools/hybrid/m68k_00deec_instruction_step.hpp"
 #include "tools/hybrid/m68k_00e0ba_instruction_step.hpp"
 #include "tools/hybrid/m68k_00e0f4_instruction_step.hpp"
+#include "tools/hybrid/m68k_00b3b2_instruction_step.hpp"
 #include "tools/hybrid/m68k_94a2_instruction_step.hpp"
 #include "tools/hybrid/m68k_8ef8_instruction_step.hpp"
 #include "tools/hybrid/m68k_9d_family_instruction_step.hpp"
@@ -92,7 +93,7 @@ SchedulerField g_scheduler_field{};
 TransferSourcePc g_transfer_source_pc{};
 void (*g_observe)(unsigned, unsigned){};
 void (*g_fault)(unsigned){};
-std::array<bool, 53> g_enabled{};
+std::array<bool, 54> g_enabled{};
 
 std::uint32_t rr(void*, unsigned index) { return g_read_register(index); }
 void wr(void*, unsigned index, std::uint32_t value) { g_write_register(index, value); }
@@ -168,6 +169,7 @@ int block_hook(unsigned pc) {
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00deec(pc, api, g_enabled[50]);
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00e0ba(pc, api, g_enabled[51]);
     if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00e0f4(pc, api, g_enabled[52]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00b3b2(pc, api, g_enabled[53]);
     if (result == M68k9D70StepResult::ContractFault) { if (g_fault) g_fault(pc); return 1; }
     return result == M68k9D70StepResult::InstructionStepped ? 1 : 0;
 }
@@ -264,7 +266,9 @@ void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enab
         (selected(enabled_helpers, "00e0ba") || selected(enabled_helpers, "e0ba") ||
          selected(enabled_helpers, "00E0BA") || selected(enabled_helpers, "E0BA")),
         (selected(enabled_helpers, "00e0f4") || selected(enabled_helpers, "e0f4") ||
-         selected(enabled_helpers, "00E0F4") || selected(enabled_helpers, "E0F4"))
+         selected(enabled_helpers, "00E0F4") || selected(enabled_helpers, "E0F4")),
+        (selected(enabled_helpers, "00b3b2") || selected(enabled_helpers, "b3b2") ||
+         selected(enabled_helpers, "00B3B2") || selected(enabled_helpers, "B3B2"))
     };
     bool any_enabled = false;
     for (bool b : g_enabled) any_enabled = any_enabled || b;
@@ -321,6 +325,7 @@ void write_m68k_gameplay_step_metrics(const std::filesystem::path& path) {
         write_00deec_step_metrics(path.parent_path() / "00deec-step-metrics.json");
         write_00e0ba_step_metrics(path.parent_path() / "00e0ba-step-metrics.json");
         write_00e0f4_step_metrics(path.parent_path() / "00e0f4-step-metrics.json");
+        write_00b3b2_step_metrics(path.parent_path() / "00b3b2-step-metrics.json");
     }
 }
 

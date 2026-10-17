@@ -54,6 +54,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     m68k_00deec_step_ops.cpp m68k_00deec_instruction_step.cpp
     m68k_00e0ba_step_ops.cpp m68k_00e0ba_instruction_step.cpp
     m68k_00e0f4_step_ops.cpp m68k_00e0f4_instruction_step.cpp
+    m68k_00b3b2_step_ops.cpp m68k_00b3b2_instruction_step.cpp
     coordinate_bound_model.cpp
     negative_bound_model.cpp
     positive_bound_model.cpp
@@ -246,6 +247,9 @@ add_test(NAME oasis_m68k_00e0ba_step COMMAND oasis_m68k_00e0ba_step_test)
 add_executable(oasis_m68k_00e0f4_step_test ${PROJECT_SOURCE_DIR}/tests/m68k_00e0f4_instruction_step_test.cpp)
 target_link_libraries(oasis_m68k_00e0f4_step_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_m68k_00e0f4_step COMMAND oasis_m68k_00e0f4_step_test)
+add_executable(oasis_m68k_00b3b2_step_test ${PROJECT_SOURCE_DIR}/tests/m68k_00b3b2_instruction_step_test.cpp)
+target_link_libraries(oasis_m68k_00b3b2_step_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_m68k_00b3b2_step COMMAND oasis_m68k_00b3b2_step_test)
 
 add_executable(oasis_hybrid_basic_block_test ${PROJECT_SOURCE_DIR}/tests/hybrid_basic_block_test.cpp)
 target_link_libraries(oasis_hybrid_basic_block_test PRIVATE oasis_hybrid_contract)
@@ -405,6 +409,7 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         m68k_00deec_step_ops.cpp m68k_00deec_instruction_step.cpp
         m68k_00e0ba_step_ops.cpp m68k_00e0ba_instruction_step.cpp
         m68k_00e0f4_step_ops.cpp m68k_00e0f4_instruction_step.cpp
+        m68k_00b3b2_step_ops.cpp m68k_00b3b2_instruction_step.cpp
         m68k_gameplay_step_set.cpp
         gameplay_session_cpu.cpp gameplay_session_replay_diagnostic.cpp replay_equivalence_trace.cpp
         checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp

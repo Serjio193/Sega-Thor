@@ -1,6 +1,9 @@
+import sys
 import json
+from pathlib import Path
 
-with open("build/session-00e0f4-run-B/replay-run/call-census.json") as f:
+path = sys.argv[1] if len(sys.argv) > 1 else "build/session-00b3b2-run-B/replay-run/call-census.json"
+with open(path) as f:
     data = json.load(f)
 
 targets = data.get("targets", [])
@@ -12,7 +15,7 @@ displaced = {
     "016ebc", "009ad6", "009bf2", "0027a6", "00b15e", "00a8da", "017d12", "6281a",
     "6282e", "01ac90", "01b102", "00350e", "008e22", "00a7e6", "008e90", "00f788",
     "00a196", "00a342", "00b34c", "00c980", "00c998", "008dd4", "00557a", "005670",
-    "008b8e", "008bac", "00deec", "00e0ba", "00e0f4"
+    "008b8e", "008bac", "00deec", "00e0ba", "00e0f4", "00b3b2"
 }
 
 displaced_clean = {x.lower().lstrip("0") for x in displaced}

@@ -1,3 +1,57 @@
+# 2026-10-17 — Target 0x00B3B2 Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
+
+- Mission Objective:
+  - Displace the #1 remaining untranslated actual-ROM target `0x00B3B2` (Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine, 759 calls in canonical replay).
+  - Implement full instruction-stepping logic in C++ without fallback.
+  - Attain 100% bit-for-bit SHA-256 equivalence across all 8 canonical replay streams across all 3,600 frames.
+- Implementation Details:
+  - `src/tools/hybrid/m68k_00b3b2_instruction_step.hpp` (31 lines, <= 500).
+  - `src/tools/hybrid/m68k_00b3b2_instruction_step.cpp` (233 lines, <= 500).
+  - `src/tools/hybrid/m68k_00b3b2_step_ops.hpp` (49 lines, <= 500).
+  - `src/tools/hybrid/m68k_00b3b2_step_ops.cpp` (80 lines, <= 500).
+  - `tests/m68k_00b3b2_instruction_step_test.cpp` (235 lines, <= 500).
+  - `src/tools/hybrid/CMakeLists.txt` (475 lines, <= 500).
+  - `src/tools/hybrid/m68k_gameplay_step_set.cpp` (331 lines, <= 500).
+  - `scratch/run_ab_00b3b2.py` (173 lines, <= 500).
+- Unit Tests:
+  - `oasis_m68k_00b3b2_step_test`: passed 100% cleanly (6/6 tests: caller gating `0x00AD4E`, corrupt ROM rejection, odd SP rejection, pause exit path, bit 1 clear exit path, and bit 1 set child bsr path).
+  - `project_file_line_limit`: passed 100%.
+- Replay Execution Metrics (Canonical 3,600 Frames):
+  - `target_entries`: 759
+  - `native_calls`: 759 (caller `0x00AD4E`: 759, other: 0)
+  - `rom_fallback_calls`: 0 (100% displaced)
+  - `completed_calls`: 759
+  - `stepped_instructions`: 4,554
+  - `caller_00ad4e_calls`: 759
+  - `pause_exit_calls`: 0
+  - `normal_exit_calls`: 759
+  - `child_bsr_calls`: 0
+- Architectural Discoveries:
+  - `0x00B3B2` is the Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine (`0x00B3B2..0x00B3D2`, 32 bytes, 16 words, 8 instructions). It is called every non-menu frame from caller `0x00AD4E` (`bsr.w 0x00B3B2`, displacement `+0x0662`, return PC `0x00AD52`). It tests global freeze flag `$00FF1927` (`tst.b $00FF1927`) and branches to `0x00B382` `rts` if non-zero. Otherwise, it inspects entity attribute byte 57 (`move.b 57(%a6), %d5`), tests bit 1 (`btst #1, %d5`), and if set, invokes child routine `bsr.w 0x00B66A` before returning via `0x00B3C8` `rts`. In canonical replay, bit 1 is clear across all 759 calls, executing all 759 calls through normal return to `0x00AD52`.
+- Canonical Eight-Stream Replay Verification (Run A vs Run B):
+  - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+  - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+  - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+  - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+  - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+  - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+  - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+  - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+  - Replay divergence: `different_frame_count == 0`, `divergence=NO` across all 3,600 frames (`All streams match: True`).
+- Source Size Policy:
+  - Every single source, header, test, and CMake file is strictly <= 500 lines.
+- Fresh Census Ranking (Post-0x00B3B2):
+  - 1. Target `0x00CEEA`: 743 calls (callers: `0x02E604:89`, `0x02E6F6:190`, `0x02E87C:464`) -> ACTIVE TARGET #1 (Milestone M15.61)
+  - 2. Target `0x00D188`: 743 calls (caller: `0x00D0BC`: 743)
+  - 3. Target `0x00D344`: 743 calls (caller: `0x00D2B4`: 743)
+  - 4. Target `0x00D398`: 743 calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
+  - 5. Target `0x00C9B2`: 742 calls (callers: `0x02E5B0`: 89, `0x02E64E`: 190, `0x02E774`: 463)
+  - 6. Target `0x061EF4`: 731 calls (caller: `0x061EE4`: 731)
+  - 7. Target `0x02E704`: 653 calls (callers: `0x02E64A`: 190, `0x02E770`: 463)
+  - 8. Target `0x00F91C`: 630 calls (caller: `0x00F7C6`: 630)
+  - 9. Target `0x0178EA`: 541 calls (callers: `0x00DF1A`: 539, `0x00FF88`: 2)
+  - 10. Target `0x009DB4`: 507 calls (caller: `0x0092CC`: 507)
+
 # 2026-10-17 — Target 0x00E0F4 Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
 
 - Mission Objective:

@@ -5110,3 +5110,24 @@ Analysis of `0x00E0F4..0x00E140` revealed it is the Tertiary / Interactive Entit
 
 **Consequences:**
 All 772 calls to `0x00E0F4` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 32,010 instructions stepped: 30 inhibit exits, 742 loop completions, 467 child jsr calls). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00B3B2` (759 calls).
+
+## ADR-M15-60: Instruction-Stepped Native Displacement of Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine (`0x00B3B2`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00B3B2` as the #1 remaining untranslated actual-ROM target with 759 calls (caller `0x00AD4E`: 759).
+Analysis of `0x00B3B2..0x00B3D2` revealed it is the Player / Entity Pause Freeze Gate & Flag Dispatch Subroutine:
+1. Operation:
+   - Global pause freeze test: `tst.b $00FF1927`. If non-zero, immediately branches via `bne.w 0x00B382` to shared `rts` at `0x00B382` (pause freeze active, bypasses entity update).
+   - Entity flag inspection: reads `move.b 57(%a6), %d5`, tests bit 1 via `btst #1, %d5`.
+   - If bit 1 is set, executes child routine `bsr.w 0x00B66A` and loops via `bra.w 0x00B3C8`.
+   - If bit 1 is clear, falls through directly to `0x00B3C8` `rts`.
+   - In canonical replay, bit 1 is clear across all 759 calls, executing all 759 calls through normal return via `0x00B3C8` `rts` to caller `0x00AD52`.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00B3B2` into `m68k_00b3b2_instruction_step.{hpp,cpp}` and `m68k_00b3b2_step_ops.{hpp,cpp}`, strictly observing the 500-line limit.
+2. **Canonical Step Helpers**: Use battle-tested Musashi opcode and extension word prefetch synchronization helpers (`step_623ac` and `step_flags`) for exact instruction pipeline alignment, condition evaluations, and return state management.
+3. **Fail-Closed Verification**: Reject any call not originating from `0x00AD4E` (return PC `0x00AD52`), or having an odd/invalid SP, or mismatched ROM words.
+4. **Dual Replay Validation**: Verify bit-identical SHA-256 equivalence across all 8 canonical streams across all 3,600 frames (`different_frame_count == 0`, `divergence=NO`).
+
+**Consequences:**
+All 759 calls to `0x00B3B2` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 4,554 instructions stepped: 759 normal exit calls). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00CEEA` (743 calls).
