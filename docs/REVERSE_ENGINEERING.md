@@ -7967,3 +7967,38 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_008dd4_instruction_step_test.cpp` passed 100%.
+
+### 50. Player Per-Frame State, Footstep Audio & Shadow Coordinator (`0x00557A`)
+
+- **Routine Address:** `0x00557A..0x00566E` (246 bytes, 123 words, 52 instructions).
+- **Semantic Classification:** Player Per-Frame State, Footstep Audio & Shadow Coordinator.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcode scan: `0x00557A` is targeted by `BSR.W` from `0x008B2E` (`0x6100 0xCA4A`, displacement `-0x35B6`, return PC `0x008B32`).
+  * Total observed executions in 3,600 canonical frames: 772 calls (Caller `0x008B2E`: 772).
+- **Execution Paths & Architecture:**
+  * Clears `$FF1986` via `sf $00FF1986`.
+  * Loads player entity slot address `A6 = $FF19E8` via `lea $00FF19E8, %a6`.
+  * Calls child subroutine `bsr.w 0x005670` (child call return PC `0x00558A`).
+  * Reloads player entity slot `A6 = $FF19E8`.
+  * Clears `%d1` and copies to `%d2`.
+  * Reads displacement bytes `72(a6)` and `73(a6)` into `%d1` and `%d2`.
+  * Tests bit 0 of facing/orientation byte `23(a6)` via `btst #0, 23(%a6)`. If clear, executes `exg %d1, %d2`.
+  * Stores velocity/facing words into `66(a6)` and `68(a6)`.
+  * Footstep audio path: decrements timer byte `$FF1993` via `subq.b #1, %d0` or evaluates motion word `138(a6)` to compute interval timer and trigger sound effect via `jsr 0x060004` (`d0 = 0x00A0038C`).
+  * Secondary audio path: decrements timer byte `$FF1994` or evaluates state flag `$FF1AA4` / timer `142(a6)` to trigger secondary sound effect via `jsr 0x060004` (`d0 = 0x00A004DD`).
+  * Shadow coordinator path: tests bit 7 of state byte `111(a6)`. If set, exits via `0x00565E` `rts` (shadow skipped, 439 calls). If clear, evaluates player action word `4(a6)`. If action is 0, 2, or 4, loads shadow slot `A0 = $FF1972` via `lea $00FF1972, %a0`, copies player X coordinate `8(a6)` to `(a0)+` and Y coordinate `12(a6)` to `(a0)`, then exits via `0x00566E` `rts` (shadow updated, 333 calls).
+- **Dual Replay Validation Status:**
+  * Run A (`0x00557A` OFF): `0x00557A` = 772 ROM executions, 0 native executions.
+  * Run B (`0x00557A` ON): `0x00557A` = 772 native executions (Caller `0x008B2E`: 772), 0 ROM fallbacks (100% displaced, 24,968 stepped instructions: 772 child calls to `0x005670`, 439 shadow-skip exits, 333 shadow-update exits).
+  * Equivalence: Bit-identical canonical eight-stream hashes across all 3,600 frames:
+    - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+    - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+    - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+    - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+    - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+    - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+    - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+    - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+    - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- **Unit Test Status:** `tests/m68k_00557a_instruction_step_test.cpp` passed 100%.

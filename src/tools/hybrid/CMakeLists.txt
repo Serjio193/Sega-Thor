@@ -75,6 +75,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     m68k_00c980_step_ops.cpp m68k_00c980_instruction_step.cpp
     m68k_00c998_step_ops.cpp m68k_00c998_instruction_step.cpp
     m68k_008dd4_step_ops.cpp m68k_008dd4_instruction_step.cpp
+    m68k_00557a_step_ops.cpp m68k_00557a_step_block1.cpp m68k_00557a_step_block2.cpp m68k_00557a_instruction_step.cpp
     coordinate_bound_model.cpp
     negative_bound_model.cpp
     positive_bound_model.cpp
@@ -246,6 +247,9 @@ add_test(NAME oasis_m68k_00c998_step COMMAND oasis_m68k_00c998_step_test)
 add_executable(oasis_m68k_008dd4_step_test ${PROJECT_SOURCE_DIR}/tests/m68k_008dd4_instruction_step_test.cpp)
 target_link_libraries(oasis_m68k_008dd4_step_test PRIVATE oasis_hybrid_contract)
 add_test(NAME oasis_m68k_008dd4_step COMMAND oasis_m68k_008dd4_step_test)
+add_executable(oasis_m68k_00557a_step_test ${PROJECT_SOURCE_DIR}/tests/m68k_00557a_instruction_step_test.cpp)
+target_link_libraries(oasis_m68k_00557a_step_test PRIVATE oasis_hybrid_contract)
+add_test(NAME oasis_m68k_00557a_step COMMAND oasis_m68k_00557a_step_test)
 
 add_executable(oasis_hybrid_basic_block_test ${PROJECT_SOURCE_DIR}/tests/hybrid_basic_block_test.cpp)
 target_link_libraries(oasis_hybrid_basic_block_test PRIVATE oasis_hybrid_contract)
@@ -413,9 +417,7 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         m68k_00350e_instruction_step.cpp
         m68k_008e22_step_cycle.cpp
         m68k_008e22_instruction_step.cpp
-        m68k_00a7e6_step_mode_a.cpp
-        m68k_00a7e6_step_mode_b.cpp
-        m68k_00a7e6_instruction_step.cpp
+        m68k_00a7e6_step_mode_a.cpp m68k_00a7e6_step_mode_b.cpp m68k_00a7e6_instruction_step.cpp
         m68k_008e90_step_ops.cpp m68k_008e90_step_scan.cpp m68k_008e90_step_anim.cpp
         m68k_008e90_step_move_x.cpp m68k_008e90_step_move_y.cpp m68k_008e90_step_move_alt.cpp m68k_008e90_instruction_step.cpp
         m68k_00f788_step_ops.cpp m68k_00f788_step_seq.cpp m68k_00f788_instruction_step.cpp
@@ -425,6 +427,7 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         m68k_00c980_step_ops.cpp m68k_00c980_instruction_step.cpp
         m68k_00c998_step_ops.cpp m68k_00c998_instruction_step.cpp
         m68k_008dd4_step_ops.cpp m68k_008dd4_instruction_step.cpp
+        m68k_00557a_step_ops.cpp m68k_00557a_step_block1.cpp m68k_00557a_step_block2.cpp m68k_00557a_instruction_step.cpp
         m68k_gameplay_step_set.cpp
         gameplay_session_cpu.cpp gameplay_session_replay_diagnostic.cpp replay_equivalence_trace.cpp
         checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp

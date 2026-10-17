@@ -1,3 +1,38 @@
+# ADR-M15-53 — Execution-Driven Recompilation: 0x00557A Player Per-Frame State, Footstep Audio & Shadow Coordinator Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x008DD4`, fresh actual-ROM execution census ranked `0x00557A` #1 with 772 executions from caller `0x008B2E` (return PC `0x008B32`, displacement `-0x35B6` / `0xCA4A`).
+Disassembly and physical analysis established `0x00557A` as the **Player Per-Frame State, Footstep Audio & Shadow Coordinator** (`0x00557A..0x00566E`, 123 words, 246 bytes, 52 instructions):
+1. Clears `$FF1986` (`sf $00FF1986`).
+2. Loads player entity slot pointer `A6 = $FF19E8` and invokes child subroutine `bsr.w 0x005670` (return PC `0x00558A`).
+3. Reloads player entity slot `A6 = $FF19E8`, unpacks displacement bytes `72(a6)` and `73(a6)`, checks facing flip `23(a6)` bit 0, and writes velocity words to `66(a6)` and `68(a6)`.
+4. Manages footstep audio timer `$FF1993` / motion word `138(a6)` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A0038C`).
+5. Manages secondary sound timer `$FF1994` / state `$FF1AA4` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A004DD`).
+6. Evaluates bit 7 of state byte `111(a6)`. If set, exits via `0x00565E` RTS without updating shadow coordinates (439 calls in canonical replay). If clear, checks player action state `4(a6)`. If action is 0, 2, or 4, updates shadow/footprint coordinate words at `$FF1972` from `8(a6)` and `12(a6)`, exiting via `0x00566E` RTS (333 calls in canonical replay).
+
+**Decision:**
+1. Reverse-engineer complete `0x00557A` contract:
+   - Routine bounds: `0x00557A..0x00566E` (246 bytes, 123 words, 52 instructions, terminal exits via RTS `0x00565E` and `0x00566E`, child calls to `0x005670` and `0x060004`).
+   - Proven caller: `0x008B2E` (772 calls, return PC `0x008B32`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_00557a_step_ops.hpp` (73 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_step_ops.cpp` (277 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_step_block1.hpp` (13 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_step_block1.cpp` (70 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_step_block2.hpp` (13 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_step_block2.cpp` (84 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_instruction_step.hpp` (35 lines <= 500)
+   - `src/tools/hybrid/m68k_00557a_instruction_step.cpp` (210 lines <= 500)
+   - Unit tests in `tests/m68k_00557a_instruction_step_test.cpp` (370 lines <= 500) verifying caller gating, corrupt ROM rejection, shadow skip path, shadow update path, and reentrancy/interruption handling.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00557A` OFF) vs Run B (`0x00557A` ON).
+   - Achieved 100% native displacement: 772 native calls (`0x008B2E`: 772), 0 ROM fallbacks, 24,968 stepped instructions, 772 child calls to `0x005670`, 439 shadow-skipped calls, 333 shadow-updated calls.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0` (`divergence=NO`).
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** Player coordinator `0x00557A` now executes 100% natively in C++, completely displacing 772 calls from ROM and establishing child subroutine `0x005670` (772 calls from `0x005586`) as the new #1 untranslated actual-ROM target.
+
 # ADR-M15-52 — Execution-Driven Recompilation: 0x008DD4 HUD / Screen Spirit / Special Counter Step Handler Integration
 **Status:** Accepted
 **Date:** 2026-10-17

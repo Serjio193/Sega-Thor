@@ -1,3 +1,44 @@
+# M15.54 Execution-Driven Recompilation: 0x005670 Instruction-Stepped Native Replacement — ACTIVE
+
+Planned:
+- Reverse-engineer and displace runtime target `0x005670` (Player Per-Frame Velocity & Input Subroutine) called 772 times in 3,600 canonical frames from caller `0x005586` (return PC `0x00558A`).
+- Implement instruction-stepped native C++ handler with zero ROM fallbacks.
+- Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.53 Execution-Driven Recompilation: 0x00557A Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x00557A` (Player Per-Frame State, Footstep Audio & Shadow Coordinator) called 772 times in 3,600 canonical frames from caller `0x008B2E` (772 calls, return PC `0x008B32`).
+- Semantics & architecture:
+  * Clears `$FF1986` via `sf $00FF1986`.
+  * Loads player entity slot pointer `A6 = $FF19E8` and invokes child subroutine `bsr.w 0x005670` (return PC `0x00558A`).
+  * Reloads player entity slot `A6 = $FF19E8`, unpacks displacement bytes `72(a6)` and `73(a6)`, checks facing flip `23(a6)` bit 0, and writes velocity words to `66(a6)` and `68(a6)`.
+  * Manages footstep audio timer `$FF1993` / motion word `138(a6)` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A0038C`).
+  * Manages secondary sound timer `$FF1994` / state `$FF1AA4` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A004DD`).
+  * Shadow coordinator: evaluates bit 7 of state byte `111(a6)`. If set, exits via `0x00565E` RTS without updating shadow (439 calls). If clear, checks player action state `4(a6)`. If action is 0, 2, or 4, updates shadow coordinates at `$FF1972` from `8(a6)` and `12(a6)`, exiting via `0x00566E` RTS (333 calls).
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x00557A` OFF) and Run B (`0x00557A` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_00557A: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 24,968 stepped instructions: 772 child calls to `0x005670`, 439 shadow skips, 333 shadow updates).
+  * NATIVE_EXEC_00557A: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x00557A` active in native island chain (`step:...,00557a`) and ranked fresh call census for remaining ROM targets:
+  1. `0x005670`: 772 remaining ROM calls (caller: `0x005586`: 772) -> ACTIVE TARGET #1
+  2. `0x008B8E`: 772 remaining ROM calls (caller: `0x008B26`: 772)
+  3. `0x008BAC`: 772 remaining ROM calls (caller: `0x008B22`: 772)
+  4. `0x00DEEC`: 772 remaining ROM calls (caller: `0x008B32`: 772)
+  5. `0x00E0BA`: 772 remaining ROM calls (caller: `0x008B36`: 772)
+  6. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772)
+  7. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  8. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
+  9. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
+  10. `0x00D344`: 743 remaining ROM calls (caller: `0x00D2B4`: 743)
+  11. `0x00D398`: 743 remaining ROM calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
+  12. `0x00C9B2`: 742 remaining ROM calls (callers: `0x02E5B0`: 89, `0x02E64E`: 190, `0x02E774`: 463)
+  13. `0x061EF4`: 731 remaining ROM calls (caller: `0x061EE4`: 731)
+  14. `0x02E704`: 653 remaining ROM calls (callers: `0x02E64A`: 190, `0x02E770`: 463)
+  15. `0x00F91C`: 630 remaining ROM calls (caller: `0x00F7C6`: 630)
+
 # M15.52 Execution-Driven Recompilation: 0x008DD4 Dual Replay Verification & Displacement — DONE
 
 Delivered:

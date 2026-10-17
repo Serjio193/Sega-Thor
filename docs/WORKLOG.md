@@ -1,3 +1,65 @@
+# 2026-10-17 — Target 0x00557A Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
+
+- Mission Objective:
+  - Displace the #1 remaining untranslated actual-ROM target `0x00557A` (Player Per-Frame State, Footstep Audio & Shadow Coordinator, 772 calls in canonical replay).
+  - Implement full instruction-stepping logic in C++ without fallback.
+  - Attain 100% bit-for-bit SHA-256 equivalence across all 8 canonical replay streams across all 3,600 frames.
+- Implementation Details:
+  - `src/tools/hybrid/m68k_00557a_instruction_step.hpp` (35 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_instruction_step.cpp` (210 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_ops.hpp` (73 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_ops.cpp` (277 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_block1.hpp` (13 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_block1.cpp` (70 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_block2.hpp` (13 lines, <= 500).
+  - `src/tools/hybrid/m68k_00557a_step_block2.cpp` (84 lines, <= 500).
+  - `tests/m68k_00557a_instruction_step_test.cpp` (370 lines, <= 500).
+- Unit Tests:
+  - `oasis_m68k_00557a_step_test`: passed 100% cleanly (caller gating `0x008B2E`, corrupt ROM rejection, shadow skip path, shadow update path, interruption/reentrancy protection).
+  - All 38/38 `oasis_m68k_*` test targets pass (100%).
+- Replay Execution Metrics (Canonical 3,600 Frames):
+  - `target_entries`: 772
+  - `native_calls`: 772 (caller `0x008B2E`: 772, other: 0)
+  - `rom_fallback_calls`: 0 (100% displaced)
+  - `completed_calls`: 772
+  - `stepped_instructions`: 24,968
+  - `active_at_entry`: 0
+  - `child_calls_005670`: 772
+  - `child_calls_060004`: 0
+  - `shadow_skipped_calls`: 439
+  - `shadow_updated_calls`: 333
+- Architectural Discoveries:
+  - `0x00557A` coordinates player per-frame state, footstep audio timers, and shadow coordinate updates. It clears `$FF1986`, sets up player entity slot `A6 = $FF19E8`, and calls child subroutine `bsr.w 0x005670`. It reloads `A6`, extracts displacement bytes `72(a6)` and `73(a6)`, checks facing flip `23(a6)` bit 0 (exchanging if clear), and writes velocity words to `66(a6)` and `68(a6)`. It decrements footstep audio timer `$FF1993` or evaluates `138(a6)` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A0038C`). It decrements secondary sound timer `$FF1994` or evaluates `$FF1AA4` to queue sound effects via `jsr 0x060004` (`d0 = 0x00A004DD`). Finally, it checks bit 7 of `111(a6)`. If set, it skips shadow updating and returns via `0x00565E` `rts` (439 calls). If clear, it checks player action state `4(a6)`. For actions 0, 2, or 4, it copies player coordinates `8(a6)` and `12(a6)` into shadow slot `$FF1972` and returns via `0x00566E` `rts` (333 calls).
+- Canonical Eight-Stream Replay Verification (Run A vs Run B):
+  - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+  - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+  - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+  - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+  - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+  - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+  - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+  - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+  - Replay divergence: `different_frame_count == 0`, `divergence=NO` across all 3,600 frames (`All streams match: True`).
+- Source Size Policy:
+  - Every single source, header, test, and CMake file is strictly <= 500 lines.
+- Fresh Census Ranking (Post-0x00557A):
+  - 1. Target `0x005670`: 772 calls (caller: `0x005586:772`) -> ACTIVE TARGET #1
+  - 2. Target `0x008B8E`: 772 calls (caller: `0x008B26:772`)
+  - 3. Target `0x008BAC`: 772 calls (caller: `0x008B22:772`)
+  - 4. Target `0x00DEEC`: 772 calls (caller: `0x008B32:772`)
+  - 5. Target `0x00E0BA`: 772 calls (caller: `0x008B36:772`)
+  - 6. Target `0x00E0F4`: 772 calls (caller: `0x008B3A`: 772)
+  - 7. Target `0x00B3B2`: 759 calls (caller: `0x00AD4E:759`)
+  - 8. Target `0x00CEEA`: 743 calls (callers: `0x02E604:89`, `0x02E6F6:190`, `0x02E87C:464`)
+  - 9. Target `0x00D188`: 743 calls (caller: `0x00D0BC:743`)
+  - 10. Target `0x00D344`: 743 calls (caller: `0x00D2B4:743`)
+  - 11. Target `0x00D398`: 743 calls (callers: `0x02E60A:89`, `0x02E6FC:190`, `0x02E882:464`)
+  - 12. Target `0x00C9B2`: 742 calls (callers: `0x02E5B0:89`, `0x02E64E:190`, `0x02E774:463`)
+  - 13. Target `0x061EF4`: 731 calls (caller: `0x061EE4:731`)
+  - 14. Target `0x02E704`: 653 calls (callers: `0x02E64A:190`, `0x02E770:463`)
+  - 15. Target `0x00F91C`: 630 calls (caller: `0x00F7C6:630`)
+  - Next Autonomous Mission Target: `0x005670` (772 calls, Player Per-Frame Velocity & Input Subroutine).
+
 # 2026-10-17 — Target 0x008DD4 Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
 
 - Mission Objective:
