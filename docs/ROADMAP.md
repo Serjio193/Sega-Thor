@@ -1,9 +1,35 @@
-# M15.57 Execution-Driven Recompilation: 0x00DEEC Instruction-Stepped Native Replacement — ACTIVE
+# M15.58 Execution-Driven Recompilation: 0x00E0BA Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x00DEEC` called 772 times in 3,600 canonical frames from caller `0x008B32` (return PC `0x008B36`).
+- Reverse-engineer and displace runtime target `0x00E0BA` called 772 times in 3,600 canonical frames from caller `0x008B36` (return PC `0x008B3A`).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.57 Execution-Driven Recompilation: 0x00DEEC Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x00DEEC` (Master Active Entity Tick & Isometric Velocity Projection Loop) called 772 times in 3,600 canonical frames from caller `0x008B32` (772 calls, return PC `0x008B36`).
+- Semantics & architecture:
+  * Inhibit check: `tst.b $00FF1988`. If non-zero, immediately early exits via `0x00DF50` `rts` (observed 30 times in canonical replay).
+  * Iterates across 20 entity slots starting at `0x00FF1AA4` with stride 188 bytes (`0xBC`).
+  * Entity state check `4(%a6)`: if `>= 22` (`0x16`), invokes indirect tick handler via `0x00DF28(%pc, %d6.w)`, saving/restoring `%d7/%a6` across the call with canonical `movem.l` cycle adjustments.
+  * Applies isometric velocity projection from delta bytes 72 and 73 to entity coordinates and clears displacement bytes.
+  * Advances slot via `dbf %d7, 0x00DF00` with exact Musashi-equivalent taken (-14 master cycles) and not-taken (+14 master cycles) cycle adjustments.
+  * Completes loop and returns via `0x00DF50` `rts` (742 loop completions).
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x00DEEC` OFF) and Run B (`0x00DEEC` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_00DEEC: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 161,708 stepped instructions: 30 inhibit exits, 742 loop completions, 4,895 child jsr calls).
+  * NATIVE_EXEC_00DEEC: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x00DEEC` active in native island chain (`step:...,00deec`) and ranked fresh call census for remaining ROM targets:
+  1. `0x00E0BA`: 772 remaining ROM calls (caller: `0x008B36`: 772) -> ACTIVE TARGET #1 (Milestone M15.58)
+  2. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772)
+  3. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  4. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
+  5. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
+  6. `0x00D344`: 743 remaining ROM calls (caller: `0x00D2B4`: 743)
+  7. `0x00D398`: 743 remaining ROM calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
 
 # M15.56 Execution-Driven Recompilation: 0x008BAC Dual Replay Verification & Displacement — DONE
 

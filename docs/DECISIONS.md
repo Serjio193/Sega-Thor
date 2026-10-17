@@ -5045,3 +5045,24 @@ Analysis of `0x008BAC..0x008C5A` revealed it is the Player Menu, Pause & Invento
 
 **Consequences:**
 All 772 calls to `0x008BAC` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 17,262 instructions stepped: 772 clean RTS completions). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00DEEC` (772 calls).
+
+## ADR-M15-57: Instruction-Stepped Native Displacement of Master Active Entity Tick & Isometric Projection Loop (`0x00DEEC`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00DEEC` as the #1 remaining untranslated actual-ROM target with 772 calls (caller `0x008B32`: 772).
+Analysis of `0x00DEEC..0x00DF52` revealed it is the Master Active Entity Tick & Isometric Velocity Projection Loop:
+1. Operation:
+   - Evaluates inhibit flag `$00FF1988`; if set, immediately returns via `rts` at `0x00DF50` (30 occurrences).
+   - Iterates through 20 entity slots (`%a6 = $00FF1AA4`, stride 188 bytes, `%d7` counter 19..0).
+   - Evaluates state code `4(%a6)`. Inactive/sub-threshold entities (`%d6 < 22`) advance directly.
+   - For active entities (`%d6 >= 22`), saves `%d7/%a6` to stack via `movem.l`, invokes indirect handler via `0x00DF28(%pc, %d6.w)`, restores `%d7/%a6`, unpacks velocity deltas `72(%a6)` and `73(%a6)`, computes isometric position adjustments, and advances to the next slot.
+   - Canonical M68K cycle timing requires accurate handling of `dbf` branches (taken: -14 master cycles, expired: +14 master cycles), `movem.l` push/pop (112 master cycles each with bus refresh cycles and pop dummy read), and `lsr.w #1` (+14 master cycles).
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00DEEC` into `m68k_00deec_instruction_step.{hpp,cpp}` and `m68k_00deec_step_ops.{hpp,cpp}`, strictly observing the 500-line limit.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B32` (return PC `0x008B36`), or having an odd/invalid SP, or mismatched ROM words.
+3. **Exact Cycle Modeling**: Model exact hardware cycle timing adjustments for `dbf`, `movem.l`, and `lsr.w` in the instruction-stepping loop.
+4. **Dual Replay Validation**: Verify bit-identical SHA-256 equivalence across all 8 canonical streams across all 3,600 frames (`different_frame_count == 0`, `divergence=NO`).
+
+**Consequences:**
+All 772 calls to `0x00DEEC` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 161,708 instructions stepped: 30 inhibit exits, 742 loop completions, 4,895 child jsr calls). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00E0BA` (772 calls).

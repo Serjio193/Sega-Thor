@@ -1,3 +1,56 @@
+# 2026-10-17 — Target 0x00DEEC Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
+
+- Mission Objective:
+  - Displace the #1 remaining untranslated actual-ROM target `0x00DEEC` (Master Active Entity Tick & Isometric Velocity Projection Loop, 772 calls in canonical replay).
+  - Implement full instruction-stepping logic in C++ without fallback.
+  - Attain 100% bit-for-bit SHA-256 equivalence across all 8 canonical replay streams across all 3,600 frames.
+- Implementation Details:
+  - `src/tools/hybrid/m68k_00deec_instruction_step.hpp` (24 lines, <= 500).
+  - `src/tools/hybrid/m68k_00deec_instruction_step.cpp` (262 lines, <= 500).
+  - `src/tools/hybrid/m68k_00deec_step_ops.hpp` (71 lines, <= 500).
+  - `src/tools/hybrid/m68k_00deec_step_ops.cpp` (399 lines, <= 500).
+  - `tests/m68k_00deec_instruction_step_test.cpp` (211 lines, <= 500).
+  - `src/tools/hybrid/CMakeLists.txt` (461 lines, <= 500).
+  - `src/tools/hybrid/m68k_gameplay_step_set.cpp` (318 lines, <= 500).
+- Unit Tests:
+  - `oasis_m68k_00deec_step_test`: passed 100% cleanly (6/6 tests: caller gating `0x008B32`, corrupt ROM rejection, odd SP rejection, inhibit early exit path, full entity loop path, and reentrancy/state handling).
+  - `project_file_line_limit`: passed 100%.
+- Replay Execution Metrics (Canonical 3,600 Frames):
+  - `target_entries`: 772
+  - `native_calls`: 772 (caller `0x008B32`: 772, other: 0)
+  - `rom_fallback_calls`: 0 (100% displaced)
+  - `completed_calls`: 772
+  - `stepped_instructions`: 161,708
+  - `caller_008b32_calls`: 772
+  - `inhibit_exit_calls`: 30
+  - `loop_completed_calls`: 742
+  - `child_jsr_calls`: 4,895
+- Architectural Discoveries:
+  - `0x00DEEC` is the central loop driving active entities in the game. It checks `$00FF1988` to see if entity updates are inhibited (30 frames during transitions/dialogs). Otherwise, it iterates through 20 entity slots starting at `$00FF1AA4` (stride 188 bytes). Active slots (`state >= 22`) call entity tick handlers via `0x00DF28(%pc, %d6.w)`, saving `%d7/%a6` to the stack with `movem.l`. Upon return, displacement deltas in bytes 72/73 are integrated into the entity coordinates using isometric projection ($-1.5 \times Y + X$). Loop termination uses `dbf %d7` with exact cycle compensation (-14 cycles when looping, +14 cycles when expiring).
+- Canonical Eight-Stream Replay Verification (Run A vs Run B):
+  - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+  - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+  - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+  - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+  - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+  - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+  - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+  - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+  - Replay divergence: `different_frame_count == 0`, `divergence=NO` across all 3,600 frames (`All streams match: True`).
+- Source Size Policy:
+  - Every single source, header, test, and CMake file is strictly <= 500 lines.
+- Fresh Census Ranking (Post-0x00DEEC):
+  - 1. Target `0x00E0BA`: 772 calls (caller: `0x008B36:772`) -> ACTIVE TARGET #1 (Milestone M15.58)
+  - 2. Target `0x00E0F4`: 772 calls (caller: `0x008B3A`: 772)
+  - 3. Target `0x00B3B2`: 759 calls (caller: `0x00AD4E:759`)
+  - 4. Target `0x00CEEA`: 743 calls (callers: `0x02E604:89`, `0x02E6F6:190`, `0x02E87C:464`)
+  - 5. Target `0x00D188`: 743 calls (caller: `0x00D0BC`: 743)
+  - 6. Target `0x00D344`: 743 calls (caller: `0x00D2B4`: 743)
+  - 7. Target `0x00D398`: 743 calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
+  - 8. Target `0x00C9B2`: 742 calls (callers: `0x02E5B0`: 89, `0x02E64E`: 190, `0x02E774`: 463)
+  - 9. Target `0x061EF4`: 731 calls (caller: `0x061EE4`: 731)
+  - 10. Target `0x008E90`: 730 calls (caller: `0x008BA6`: 730)
+
 # 2026-10-17 — Target 0x008BAC Instruction-Stepped Native Displacement Complete & Bit-Identical Replay Verified
 
 - Mission Objective:

@@ -8106,3 +8106,48 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_008bac_instruction_step_test.cpp` passed 100% (6/6 tests).
+
+### 54. Master Active Entity Tick & Isometric Velocity Projection Loop (`0x00DEEC`)
+
+- **Routine Address:** `0x00DEEC..0x00DF52` (104 bytes, 52 words, 26 instructions + branch targets).
+- **Semantic Classification:** Master Active Entity Tick & Isometric Velocity Projection Loop.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcode scan: `0x00DEEC` is targeted by `BSR.W` from `0x008B32` (`0x6100 0x53B8`, displacement `+0x53B8`, return PC `0x008B36`).
+  * Total observed executions in 3,600 canonical frames: 772 calls (Caller `0x008B32`: 772).
+- **Execution Paths & Architecture:**
+  * Inhibit check at entry: `tst.b $00FF1988`. If non-zero, immediately branches to `0x00DF50` `rts` (observed 30 times in canonical replay).
+  * Slot initialization: `lea $00FF1AA4, %a6` (base address of active entity array), `moveq #19, %d7` (loop counter for 20 slots, stride 188 bytes / `0xBC`).
+  * Slot processing loop (`0x00DF00..0x00DF4E`):
+    - Reads entity state byte `move.b 4(%a6), %d6` (sign-extended to word).
+    - If `%d6 <= 0` or `%d6 < 22` (`0x16`), entity is inactive or unmanaged: branch to `0x00DF4A` (`lea 188(%a6), %a6; dbf %d7, 0x00DF00`).
+    - If `%d6 >= 22`:
+      * `add.w %d6, %d6`
+      * `move.w 0x00DF28(%pc, %d6.w), %a0` (indirect function pointer relative to `0x00DF28`).
+      * `movem.l %d7/%a6, -(%sp)` (saves slot counter and pointer to stack; incurs canonical +112 bus cycles + refresh).
+      * `jsr (%a0)` (executes entity-specific tick handler; 4,895 child invocations across canonical replay).
+      * `movem.l (%sp)+, %d7/%a6` (restores slot counter and pointer; incurs canonical +112 bus cycles + dummy read at SP + refresh).
+      * Reads displacement bytes `move.b 72(%a6), %d0` (ext.w) and `move.b 73(%a6), %d1` (ext.w).
+      * Calculates isometric velocity projection: `d6 = d1; lsr.w #1, d6; d6 += d1; d6 = -d6; d6 += d0` (computes $-1.5 \times Y + X$).
+      * Applies displacement to entity coordinates: adds `%d6` to entity X/Y position (`0(%a6)` / `2(%a6)`), clears delta bytes `clr.w 72(%a6)`.
+      * Advances to next slot: `lea 188(%a6), %a6; dbf %d7, 0x00DF00`.
+  * Loop completion: returns via `0x00DF50` `rts` to caller `0x008B36`.
+  * Cycle model specifics:
+    - `dbf` taken: base 84 - 14 = 70 master cycles.
+    - `dbf` not taken (counter expires): base 84 + 14 = 98 master cycles.
+    - `movem.l` push / pop: 112 master cycles + bus refresh (+ dummy read on pop).
+    - `lsr.w #1, %d6`: 42 base + 14 immediate shift cycles = 56 master cycles.
+- **Dual Replay Validation Status:**
+  * Run A (`0x00DEEC` OFF): `0x00DEEC` = 772 ROM executions, 0 native executions.
+  * Run B (`0x00DEEC` ON): `0x00DEEC` = 772 native executions (Caller `0x008B32`: 772), 0 ROM fallbacks (100% displaced, 161,708 stepped instructions: 30 inhibit exit calls, 742 loop completed calls, 4,895 child jsr calls).
+  * Equivalence: Bit-identical canonical eight-stream hashes across all 3,600 frames:
+    - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+    - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+    - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+    - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+    - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+    - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+    - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+    - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+    - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- **Unit Test Status:** `tests/m68k_00deec_instruction_step_test.cpp` passed 100% (6/6 tests).
