@@ -5066,3 +5066,25 @@ Analysis of `0x00DEEC..0x00DF52` revealed it is the Master Active Entity Tick & 
 
 **Consequences:**
 All 772 calls to `0x00DEEC` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 161,708 instructions stepped: 30 inhibit exits, 742 loop completions, 4,895 child jsr calls). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00E0BA` (772 calls).
+
+## ADR-M15-58: Instruction-Stepped Native Displacement of Secondary / Auxiliary Entity Slot Dispatch Loop (`0x00E0BA`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00E0BA` as the #1 remaining untranslated actual-ROM target with 772 calls (caller `0x008B36`: 772).
+Analysis of `0x00E0BA..0x00E0F4` revealed it is the Secondary / Auxiliary Entity Slot Dispatch Loop:
+1. Operation:
+   - Evaluates inhibit bit: `btst #1, $00FF17B8`; if set, immediately branches via `bne.w 0x00E0F2` to `rts` (30 occurrences).
+   - Iterates through 6 entity slots (`%a6 = $00FF2D8C`, stride 90 bytes, `%d7` counter 5..0).
+   - Evaluates active flag `0(%a6)` and handler pointer `86(%a6)`. Inactive or null slots branch directly to `0x00E0EA`.
+   - For active slots with valid handlers, saves `%d7/%a6` to stack via `movem.l`, invokes indirect handler via `jsr (%a0)`, restores `%d7/%a6`, and advances to the next slot via `lea 90(%a6), %a6; dbf %d7, 0x00E0CE`.
+   - Canonical M68K cycle timing requires accurate handling of `dbf` branches (taken: -14 master cycles, expired: +14 master cycles) and `movem.l` push/pop (112 master cycles each with bus refresh cycles and pop dummy read).
+   - In canonical replay, all 6 slots are empty across non-inhibited frames, resulting in fast slot traversal via `beq.w 0x00E0EA`.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00E0BA` into `m68k_00e0ba_instruction_step.{hpp,cpp}` and `m68k_00e0ba_step_ops.{hpp,cpp}`, strictly observing the 500-line limit.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B36` (return PC `0x008B3A`), or having an odd/invalid SP, or mismatched ROM words.
+3. **Exact Cycle Modeling**: Model exact hardware cycle timing adjustments for `dbf` and `movem.l` in the instruction-stepping loop.
+4. **Dual Replay Validation**: Verify bit-identical SHA-256 equivalence across all 8 canonical streams across all 3,600 frames (`different_frame_count == 0`, `divergence=NO`).
+
+**Consequences:**
+All 772 calls to `0x00E0BA` in canonical replay are stepped in C++ with 0 ROM fallback calls (100% displaced, 21,608 instructions stepped: 30 inhibit exits, 742 loop completions, 0 child jsr calls). All 8 canonical streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00E0F4` (772 calls).

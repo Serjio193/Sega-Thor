@@ -8151,3 +8151,38 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_00deec_instruction_step_test.cpp` passed 100% (6/6 tests).
+
+### 55. Secondary / Auxiliary Entity Slot Dispatch Loop (`0x00E0BA`)
+
+- **Routine Address:** `0x00E0BA..0x00E0F4` (58 bytes, 29 words, 15 instructions).
+- **Semantic Classification:** Secondary / Auxiliary Entity Slot Dispatch Loop.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcode scan: `0x00E0BA` is targeted by `BSR.W` from `0x008B36` (`0x6100 0x5582`, displacement `+0x5582`, return PC `0x008B3A`).
+  * Total observed executions in 3,600 canonical frames: 772 calls (Caller `0x008B36`: 772).
+- **Execution Paths & Architecture:**
+  * Inhibit check at entry: `btst #1, $00FF17B8`. If bit 1 is set, immediately branches via `bne.w 0x00E0F2` to `rts` (observed 30 times in canonical replay).
+  * Slot initialization: `lea $00FF2D8C, %a6` (base address of auxiliary entity array), `moveq #5, %d7` (loop counter for 6 slots, stride 90 bytes / `0x5A`).
+  * Slot processing loop (`0x00E0CE..0x00E0EE`):
+    - Reads active flag word `move.w 0(%a6), %d6`.
+    - If `%d6 == 0`, slot is inactive: branch via `beq.w 0x00E0EA` to slot advance.
+    - If `%d6 != 0`:
+      * Reads handler pointer `move.l 86(%a6), %d6` (`0x56 = 86`).
+      * If handler pointer is null (`%d6 == 0`), branch via `beq.w 0x00E0EA` to slot advance.
+      * If valid handler: `movea.l %d6, %a0`, `movem.l %d7/%a6, -(%sp)` (+112 bus cycles + refresh), `jsr (%a0)`, `movem.l (%sp)+, %d7/%a6` (+112 bus cycles + refresh + dummy read).
+    - Slot advance at `0x00E0EA`: `lea 90(%a6), %a6; dbf %d7, 0x00E0CE` (stride 90 bytes, taken: -14 cycles, expired: +14 cycles).
+  * Loop completion: returns via `0x00E0F2` `rts` to caller `0x008B3A` (742 loop completions).
+- **Dual Replay Validation Status:**
+  * Run A (`0x00E0BA` OFF): `0x00E0BA` = 772 ROM executions, 0 native executions.
+  * Run B (`0x00E0BA` ON): `0x00E0BA` = 772 native executions (Caller `0x008B36`: 772), 0 ROM fallbacks (100% displaced, 21,608 stepped instructions: 30 inhibit exit calls, 742 loop completed calls, 0 child jsr calls).
+  * Equivalence: Bit-identical canonical eight-stream hashes across all 3,600 frames:
+    - `observed-landmarks.jsonl`: MATCH (`8dad9412b2fdd1cf72e8162e197c66a0a453d7af4001afa343d3647f3cbef458`)
+    - `full-frame-state.jsonl`: MATCH (`e4994a25e19fd79c971eab4acc9d71957c9c56d345ae2bbf1085f772c8e8d0d2`)
+    - `architectural-sync.jsonl`: MATCH (`36b6755aa49265da12fe81c23e5cf67e9e22a56c6bccbec3231022d72406bd57`)
+    - `scheduler-sync.jsonl`: MATCH (`a4333b5db16f8349e90f085cf4beec2e2b637bf92d8769b8e972fc87e413473b`)
+    - `z80-ram-sync.bin`: MATCH (`cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a`)
+    - `call-z80-ram.bin`: MATCH (`1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894`)
+    - `external-events.jsonl`: MATCH (`e5e3ceeb383517f914673ce1bb9d61a4fb0e3b43c6633c749e629f85c5dc0584`)
+    - `normalized-events.jsonl`: MATCH (`0657f588eb94b506ff52327968478447e4288cf1ab028f7b6cfe6a59f051de33`)
+    - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- **Unit Test Status:** `tests/m68k_00e0ba_instruction_step_test.cpp` passed 100% (6/6 tests).

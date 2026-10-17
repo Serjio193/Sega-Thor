@@ -1,9 +1,35 @@
-# M15.58 Execution-Driven Recompilation: 0x00E0BA Instruction-Stepped Native Replacement — ACTIVE
+# M15.59 Execution-Driven Recompilation: 0x00E0F4 Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x00E0BA` called 772 times in 3,600 canonical frames from caller `0x008B36` (return PC `0x008B3A`).
+- Reverse-engineer and displace runtime target `0x00E0F4` called 772 times in 3,600 canonical frames from caller `0x008B3A` (return PC `0x008B3E`).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.58 Execution-Driven Recompilation: 0x00E0BA Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x00E0BA` (Secondary / Auxiliary Entity Slot Dispatch Loop) called 772 times in 3,600 canonical frames from caller `0x008B36` (772 calls, return PC `0x008B3A`).
+- Semantics & architecture:
+  * Inhibit check: `btst #1, $00FF17B8`. If bit 1 is set, immediately branches via `bne.w 0x00E0F2` to `rts` (observed 30 times in canonical replay).
+  * Iterates across 6 entity slots starting at `0x00FF2D8C` with stride 90 bytes (`0x5A`).
+  * Entity active word `0(%a6)` and function pointer `86(%a6)`: if non-null, saves/restores `%d7/%a6` across `jsr (%a0)` with canonical `movem.l` cycle adjustments.
+  * In canonical replay, all 6 slots are empty across non-inhibited frames, resulting in fast slot traversal via `beq.w 0x00E0EA`.
+  * Advances slot via `dbf %d7, 0x00E0CE` with exact Musashi-equivalent taken (-14 master cycles) and not-taken (+14 master cycles) cycle adjustments.
+  * Completes loop and returns via `0x00E0F2` `rts` (742 loop completions).
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x00E0BA` OFF) and Run B (`0x00E0BA` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_00E0BA: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 21,608 stepped instructions: 30 inhibit exits, 742 loop completions, 0 child jsr calls).
+  * NATIVE_EXEC_00E0BA: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x00E0BA` active in native island chain (`step:...,00e0ba`) and ranked fresh call census for remaining ROM targets:
+  1. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772) -> ACTIVE TARGET #1 (Milestone M15.59)
+  2. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  3. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
+  4. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
+  5. `0x00D344`: 743 remaining ROM calls (caller: `0x00D2B4`: 743)
+  6. `0x00D398`: 743 remaining ROM calls (callers: `0x02E60A`: 89, `0x02E6FC`: 190, `0x02E882`: 464)
+  7. `0x00C9B2`: 742 remaining ROM calls (callers: `0x02E5B0`: 89, `0x02E64E`: 190, `0x02E774`: 463)
 
 # M15.57 Execution-Driven Recompilation: 0x00DEEC Dual Replay Verification & Displacement — DONE
 
