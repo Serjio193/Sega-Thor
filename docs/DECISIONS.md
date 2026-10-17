@@ -1,3 +1,33 @@
+# ADR-M15-55 — Execution-Driven Recompilation: 0x008B8E Per-Frame State Gate & Mode Transition Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x005670`, fresh actual-ROM execution census ranked `0x008B8E` #1 with 772 executions from caller `0x008B26` (return PC `0x008B2A`, displacement `+0x0066`).
+Disassembly and physical analysis established `0x008B8E` as the **Per-Frame State Gate & Mode Transition Dispatcher** (`0x008B8E..0x008BAC`, 30 bytes, 15 words, 7 instructions):
+1. Reads byte `$00FF1864` into `%d0` via `move.b $00FF1864, %d0`.
+2. When `$00FF1864 == 0`, branches via `beq.w 0x008BAA` directly to `rts`, popping return PC `0x008B2A` from stack (772 calls in canonical replay).
+3. When `$00FF1864 != 0`, tests and clears bit 7 via `bclr #7, $00FF1864` (modifying Z flag only).
+4. If bit 7 was clear (Z == 1), executes `bra.w 0x00530C` tail jump to mode handler `0x00530C`.
+5. If bit 7 was set (Z == 0), branches via `bne.s 0x008BA6` to execute `bra.w 0x007CC6` tail jump to mode handler `0x007CC6`.
+
+**Decision:**
+1. Reverse-engineer complete `0x008B8E` contract:
+   - Routine bounds: `0x008B8E..0x008BAC` (30 bytes, 15 words, 7 instructions, terminal exit via RTS `0x008BAA` and tail branches `0x00530C` / `0x007CC6`).
+   - Proven caller: `0x008B26` (772 calls, return PC `0x008B2A`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_008b8e_step_ops.hpp` (28 lines <= 500)
+   - `src/tools/hybrid/m68k_008b8e_step_ops.cpp` (24 lines <= 500)
+   - `src/tools/hybrid/m68k_008b8e_instruction_step.hpp` (33 lines <= 500)
+   - `src/tools/hybrid/m68k_008b8e_instruction_step.cpp` (183 lines <= 500)
+   - Unit tests in `tests/m68k_008b8e_instruction_step_test.cpp` (296 lines <= 500) verifying caller gating, corrupt ROM rejection, odd SP rejection, zero-exit path, bra 0x530c path, bra 0x7cc6 path, and interruption/reentrancy handling.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x008B8E` OFF) vs Run B (`0x008B8E` ON).
+   - Achieved 100% native displacement: 772 native calls (`0x008B26`: 772), 0 ROM fallbacks, 2,316 stepped instructions (772 zero-exit completions).
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0` (`divergence=NO`).
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** State gate `0x008B8E` now executes 100% natively in C++, completely displacing 772 calls from ROM and establishing `0x008BAC` (772 calls from `0x008B22`) as the new #1 untranslated actual-ROM target.
+
 # ADR-M15-54 — Execution-Driven Recompilation: 0x005670 Player Pre-Action Input, Timers & Action Dispatcher Integration
 **Status:** Accepted
 **Date:** 2026-10-17

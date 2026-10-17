@@ -1,9 +1,34 @@
-# M15.55 Execution-Driven Recompilation: 0x008B8E Instruction-Stepped Native Replacement — ACTIVE
+# M15.56 Execution-Driven Recompilation: 0x008BAC Instruction-Stepped Native Replacement — ACTIVE
 
 Planned:
-- Reverse-engineer and displace runtime target `0x008B8E` called 772 times in 3,600 canonical frames from caller `0x008B26` (return PC `0x008B2A`).
+- Reverse-engineer and displace runtime target `0x008BAC` called 772 times in 3,600 canonical frames from caller `0x008B22` (return PC `0x008B26`).
 - Implement instruction-stepped native C++ handler with zero ROM fallbacks.
 - Verify bit-identical 3,600-frame dual A/B replay across all 8 canonical streams.
+
+# M15.55 Execution-Driven Recompilation: 0x008B8E Dual Replay Verification & Displacement — DONE
+
+Delivered:
+- Recompiled runtime-discovered target `0x008B8E` (Per-Frame State Gate & Mode Transition Dispatcher) called 772 times in 3,600 canonical frames from caller `0x008B26` (772 calls, return PC `0x008B2A`).
+- Semantics & architecture:
+  * Reads state/mode byte `$00FF1864` into `%d0` via `move.b $00FF1864, %d0`.
+  * If `$00FF1864 == 0`, branches via `beq.w 0x008BAA` directly to `rts`, popping return PC `0x008B2A` from stack (772 executions in canonical replay).
+  * If `$00FF1864 != 0`, tests and clears bit 7 via `bclr #7, $00FF1864` (updating Z flag only).
+  * If bit 7 was clear (Z == 1), executes `bra.w 0x00530C` tail jump to mode handler `0x00530C`.
+  * If bit 7 was set (Z == 0), branches via `bne.s 0x008BA6` to execute `bra.w 0x007CC6` tail jump to mode handler `0x007CC6`.
+- Achieved 100% bit-for-bit identical state across all 3,600 frames between Run A (`0x008B8E` OFF) and Run B (`0x008B8E` ON):
+  * `different_frame_count: 0`, `divergence=NO`.
+  * ROM_EXEC_008B8E: Run A = 772; Run B = 0 (100% displaced, 0 fallbacks, 2,316 stepped instructions: 772 zero-exit completions).
+  * NATIVE_EXEC_008B8E: Run B = 772; Run A = 0.
+  * Matching SHA256 hashes across all 8 canonical streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+  * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+- Kept `0x008B8E` active in native island chain (`step:...,008b8e`) and ranked fresh call census for remaining ROM targets:
+  1. `0x008BAC`: 772 remaining ROM calls (caller: `0x008B22`: 772) -> ACTIVE TARGET #1 (Milestone M15.56)
+  2. `0x00DEEC`: 772 remaining ROM calls (caller: `0x008B32`: 772)
+  3. `0x00E0BA`: 772 remaining ROM calls (caller: `0x008B36`: 772)
+  4. `0x00E0F4`: 772 remaining ROM calls (caller: `0x008B3A`: 772)
+  5. `0x00B3B2`: 759 remaining ROM calls (caller: `0x00AD4E`: 759)
+  6. `0x00CEEA`: 743 remaining ROM calls (callers: `0x02E604`: 89, `0x02E6F6`: 190, `0x02E87C`: 464)
+  7. `0x00D188`: 743 remaining ROM calls (caller: `0x00D0BC`: 743)
 
 # M15.54 Execution-Driven Recompilation: 0x005670 Dual Replay Verification & Displacement — DONE
 
