@@ -1,6 +1,49 @@
 #include "tools/hybrid/m68k_gameplay_step_set.hpp"
 
 #include "tools/hybrid/external_library.hpp"
+#include "tools/hybrid/m68k_613b2_instruction_step.hpp"
+#include "tools/hybrid/m68k_61e48_instruction_step.hpp"
+#include "tools/hybrid/m68k_61934_instruction_step.hpp"
+#include "tools/hybrid/m68k_6147e_instruction_step.hpp"
+#include "tools/hybrid/m68k_623ac_instruction_step.hpp"
+#include "tools/hybrid/m68k_6273a_instruction_step.hpp"
+#include "tools/hybrid/m68k_62788_instruction_step.hpp"
+#include "tools/hybrid/m68k_60000_instruction_step.hpp"
+#include "tools/hybrid/m68k_60286_instruction_step.hpp"
+#include "tools/hybrid/m68k_62ae0_instruction_step.hpp"
+#include "tools/hybrid/m68k_626bc_instruction_step.hpp"
+#include "tools/hybrid/m68k_0027fc_instruction_step.hpp"
+#include "tools/hybrid/m68k_002992_instruction_step.hpp"
+#include "tools/hybrid/m68k_6138e_instruction_step.hpp"
+#include "tools/hybrid/m68k_00e682_instruction_step.hpp"
+#include "tools/hybrid/m68k_0613f8_instruction_step.hpp"
+#include "tools/hybrid/m68k_009ad6_instruction_step.hpp"
+#include "tools/hybrid/m68k_009bf2_instruction_step.hpp"
+#include "tools/hybrid/m68k_0027a6_instruction_step.hpp"
+#include "tools/hybrid/m68k_00b15e_instruction_step.hpp"
+#include "tools/hybrid/m68k_00a8da_instruction_step.hpp"
+#include "tools/hybrid/m68k_017d12_instruction_step.hpp"
+#include "tools/hybrid/m68k_6281a_instruction_step.hpp"
+#include "tools/hybrid/m68k_6282e_instruction_step.hpp"
+#include "tools/hybrid/m68k_016ebc_instruction_step.hpp"
+#include "tools/hybrid/m68k_01ac90_instruction_step.hpp"
+#include "tools/hybrid/m68k_01b102_instruction_step.hpp"
+#include "tools/hybrid/m68k_00350e_instruction_step.hpp"
+#include "tools/hybrid/m68k_008e22_instruction_step.hpp"
+#include "tools/hybrid/m68k_00a7e6_instruction_step.hpp"
+#include "tools/hybrid/m68k_008e90_instruction_step.hpp"
+#include "tools/hybrid/m68k_00f788_instruction_step.hpp"
+#include "tools/hybrid/m68k_00a196_instruction_step.hpp"
+#include "tools/hybrid/m68k_00a342_instruction_step.hpp"
+#include "tools/hybrid/m68k_00b34c_instruction_step.hpp"
+#include "tools/hybrid/m68k_00c980_instruction_step.hpp"
+#include "tools/hybrid/m68k_00c998_instruction_step.hpp"
+#include "tools/hybrid/m68k_008dd4_instruction_step.hpp"
+#include "tools/hybrid/m68k_94a2_instruction_step.hpp"
+#include "tools/hybrid/m68k_8ef8_instruction_step.hpp"
+#include "tools/hybrid/m68k_9d_family_instruction_step.hpp"
+#include "tools/hybrid/m68k_e268_instruction_step.hpp"
+#include "tools/hybrid/m68k_9c40_instruction_step.hpp"
 #include "tools/hybrid/m68k_9d70_instruction_step.hpp"
 
 #include <array>
@@ -10,10 +53,6 @@
 
 namespace oasis::hybrid {
 namespace {
-enum class Helper : unsigned { None, H9D70, H9D4E, H9DB4, H9D92 };
-constexpr unsigned kRamStart = 0xFF0000U;
-constexpr unsigned kRamEnd = 0x1000000U;
-
 using ReadRegister = std::uint32_t (*)(unsigned);
 using WriteRegister = void (*)(unsigned, unsigned);
 using PeekMemory = int (*)(unsigned);
@@ -25,6 +64,9 @@ using Instruction = void (*)(unsigned);
 using AddCycles = void (*)(int);
 using BranchAdjustment = int (*)();
 using InstallBlock = void (*)(int (*)(unsigned));
+using SkipBusRefresh = void (*)();
+using SchedulerField = int (*)(unsigned);
+using TransferSourcePc = unsigned (*)();
 
 ReadRegister g_read_register{};
 WriteRegister g_write_register{};
@@ -38,11 +80,12 @@ Instruction g_finish{};
 AddCycles g_add_cycles{};
 BranchAdjustment g_branch_adjustment{};
 BranchAdjustment g_byte_branch_adjustment{};
+SkipBusRefresh g_skip_bus_refresh{};
+SchedulerField g_scheduler_field{};
+TransferSourcePc g_transfer_source_pc{};
 void (*g_observe)(unsigned, unsigned){};
 void (*g_fault)(unsigned){};
-std::array<bool, 4> g_enabled{};
-Helper g_active{Helper::None};
-std::array<unsigned, 4> g_calls{};
+std::array<bool, 46> g_enabled{};
 
 std::uint32_t rr(void*, unsigned index) { return g_read_register(index); }
 void wr(void*, unsigned index, std::uint32_t value) { g_write_register(index, value); }
@@ -56,408 +99,61 @@ void set_return(void*, unsigned pc, unsigned pref_addr, unsigned pref_data) {
 void begin(void*, unsigned opcode) { g_begin(opcode); }
 void finish(void*, unsigned opcode) { g_finish(opcode); }
 void add_cycles(void*, int cycles) { g_add_cycles(cycles); }
+void skip_bus_refresh(void*) { g_skip_bus_refresh(); }
+int scheduler_field(void*, unsigned field) { return g_scheduler_field(field); }
+unsigned transfer_source_pc(void*) { return g_transfer_source_pc ? g_transfer_source_pc() : 0U; }
 int branch_adjust(void*) { return g_branch_adjustment(); }
 int byte_branch_adjust(void*) { return g_byte_branch_adjustment(); }
 void observe(void*, unsigned pc, unsigned opcode) { g_observe(pc, opcode); }
 
-bool be_read(const M68k9D70StepApi& api, unsigned address, unsigned width,
-             unsigned& value) noexcept {
-    value = 0;
-    if (address > 0xFFFFFFU || width > 4U || address + width > 0x1000000U) return false;
-    for (unsigned i = 0; i < width; ++i) {
-        const int byte = api.peek(api.context, address + i);
-        if (byte < 0 || byte > 255) return false;
-        value = (value << 8U) | static_cast<unsigned>(byte);
-    }
-    return true;
-}
-
-bool caller_matches(const M68k9D70StepApi& api, unsigned caller,
-                    unsigned target, unsigned return_pc) noexcept {
-    const unsigned sp = api.read_register(api.context, 15U) & 0xFFFFFFU;
-    unsigned stack_return{}, opcode{}, extension{};
-    if (sp < kRamStart || sp > kRamEnd - 4U ||
-        !be_read(api, sp, 4U, stack_return) || stack_return != return_pc ||
-        !be_read(api, caller, 2U, opcode) || opcode != 0x6100U ||
-        !be_read(api, caller + 2U, 2U, extension)) return false;
-    const auto displacement = static_cast<std::int16_t>(extension);
-    return static_cast<unsigned>(static_cast<int>(caller + 2U) + displacement) == target;
-}
-
-bool in_work_ram(unsigned address, unsigned length) noexcept {
-    return address >= kRamStart && address <= kRamEnd - length;
-}
-bool bounded_9d92_inputs(const M68k9D70StepApi& api) noexcept {
-    const unsigned a0 = api.read_register(api.context, 8U) & 0xFFFFFFU;
-    const unsigned a6 = api.read_register(api.context, 14U) & 0xFFFFFFU;
-    unsigned dimension{}, offset{};
-    return in_work_ram(a0 + 6U, 2U) && in_work_ram(a6 + 0x41U, 1U) &&
-        in_work_ram(a6 + 0x46U, 2U) &&
-        be_read(api, a0 + 6U, 2U, dimension) &&
-        be_read(api, a6 + 0x46U, 2U, offset);
-}
-
-std::uint16_t ccr(const M68k9D70StepApi& api) noexcept {
-    return static_cast<std::uint16_t>(api.read_register(api.context, 17U));
-}
-void set_ccr(const M68k9D70StepApi& api, std::uint16_t value) noexcept {
-    const auto sr = api.read_register(api.context, 17U);
-    api.write_register(api.context, 17U, (sr & 0xFFE0U) | (value & 0x1FU));
-}
-std::uint16_t logic_flags(std::uint16_t value, std::uint16_t old) noexcept {
-    return static_cast<std::uint16_t>((old & 0x10U) | (value == 0 ? 4U : 0U) |
-        ((value & 0x8000U) ? 8U : 0U));
-}
-std::uint16_t byte_logic_flags(std::uint8_t value, std::uint16_t old) noexcept {
-    return static_cast<std::uint16_t>((old & 0x10U) | (value == 0 ? 4U : 0U) |
-        ((value & 0x80U) ? 8U : 0U));
-}
-std::uint16_t sub_flags(std::uint16_t lhs, std::uint16_t rhs,
-                        std::uint16_t result, std::uint16_t old,
-                        bool affect_x) noexcept {
-    const bool carry = lhs < rhs;
-    const bool overflow = ((lhs ^ rhs) & (lhs ^ result) & 0x8000U) != 0;
-    return static_cast<std::uint16_t>((affect_x ? (carry ? 0x10U : 0U) : old & 0x10U) |
-        (result == 0 ? 4U : 0U) | ((result & 0x8000U) ? 8U : 0U) |
-        (overflow ? 2U : 0U) | (carry ? 1U : 0U));
-}
-std::uint16_t add_flags(std::uint16_t lhs, std::uint16_t rhs,
-                        std::uint16_t result, std::uint16_t old,
-                        bool affect_x) noexcept {
-    const bool carry = static_cast<std::uint32_t>(lhs) + rhs > 0xFFFFU;
-    const bool overflow = ((~(lhs ^ rhs)) & (lhs ^ result) & 0x8000U) != 0;
-    return static_cast<std::uint16_t>((affect_x ? (carry ? 0x10U : 0U) : old & 0x10U) |
-        (result == 0 ? 4U : 0U) | ((result & 0x8000U) ? 8U : 0U) |
-        (overflow ? 2U : 0U) | (carry ? 1U : 0U));
-}
-bool condition(unsigned cc, std::uint16_t sr) noexcept {
-    const bool x = (sr & 0x10U) != 0, n = (sr & 8U) != 0;
-    const bool z = (sr & 4U) != 0, v = (sr & 2U) != 0, c = (sr & 1U) != 0;
-    switch (cc) {
-    case 2: return !c && !z;
-    case 3: return c || z;
-    case 4: return !c;
-    case 5: return c;
-    case 6: return !z;
-    case 7: return z;
-    case 8: return !v;
-    case 9: return v;
-    case 10: return !n;
-    case 11: return n;
-    case 12: return n == v;
-    case 13: return n != v;
-    case 14: return !z && n == v;
-    case 15: return z || n != v;
-    default: (void)x; return false;
-    }
-}
-
-bool supported_entry(unsigned pc, const M68k9D70StepApi& api, Helper& helper) noexcept {
-    if (pc == 0x9D70U && g_enabled[0] && caller_matches(api, 0x9144U, pc, 0x9148U)) helper = Helper::H9D70;
-    else if (pc == 0x9D4EU && g_enabled[1] && caller_matches(api, 0x909EU, pc, 0x90A2U)) helper = Helper::H9D4E;
-    else if (pc == 0x9DB4U && g_enabled[2] && caller_matches(api, 0x92CCU, pc, 0x92D0U)) helper = Helper::H9DB4;
-    else if (pc == 0x9D92U && g_enabled[3] &&
-             caller_matches(api, 0x9812U, pc, 0x9816U) && bounded_9d92_inputs(api))
-        helper = Helper::H9D92;
-    else return false;
-    return true;
-}
-
-M68k9D70StepResult step(unsigned pc, const M68k9D70StepApi& api) noexcept {
-    pc &= 0xFFFFFFU;
-    if (!api.read_register || !api.write_register || !api.peek || !api.read ||
-        !api.write || !api.fetch16 || !api.set_return_state || !api.begin_instruction ||
-        !api.finish_instruction || !api.add_cycles || !api.word_not_taken_adjustment ||
-        !api.observe_instruction) return M68k9D70StepResult::ContractFault;
-    if (g_active == Helper::None) {
-        Helper selected{};
-        if (!supported_entry(pc, api, selected)) return M68k9D70StepResult::NotHandled;
-        g_active = selected;
-    }
-    const Helper helper = g_active;
-    const unsigned low = helper == Helper::H9D70 ? 0x9D70U :
-        helper == Helper::H9D4E ? 0x9D4EU :
-        helper == Helper::H9DB4 ? 0x9DB4U : 0x9D92U;
-    const unsigned high = helper == Helper::H9D70 ? 0x9D92U :
-        helper == Helper::H9D4E ? 0x9D70U :
-        helper == Helper::H9DB4 ? 0x9DD6U : 0x9DB4U;
-    if (pc == 0x9D86U || pc == 0x9D90U || pc == 0x9D6EU ||
-        pc == 0x9DCAU || pc == 0x9DD4U ||
-        (helper == Helper::H9D92 && pc == 0x9DB2U)) {
-        if (pc < low || pc >= high) return M68k9D70StepResult::ContractFault;
-        g_active = Helper::None;
-        ++g_calls[static_cast<unsigned>(helper) - 1U];
-        return M68k9D70StepResult::NotHandled;
-    }
-    if (pc < low || pc >= high) return M68k9D70StepResult::ContractFault;
-
-    unsigned raw{};
-    if (!be_read(api, pc, 2U, raw)) return M68k9D70StepResult::ContractFault;
-    const auto opcode = raw & 0xFFFFU;
-    const unsigned a6 = api.read_register(api.context, 14U) & 0xFFFFFFU;
-    api.observe_instruction(api.context, pc, opcode);
-    if ((api.fetch16(api.context) & 0xFFFFU) != opcode) return M68k9D70StepResult::ContractFault;
-    api.begin_instruction(api.context, opcode);
-    bool branch{}, taken{};
-
-    if (helper == Helper::H9D70) {
-        const auto d3 = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-        if (pc == 0x9D70U && opcode == 0x3601U) {
-            const auto d = api.read_register(api.context, 3U), value = api.read_register(api.context, 1U);
-            api.write_register(api.context, 3U, (d & 0xFFFF0000U) | (value & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(value), ccr(api)));
-        } else if (pc == 0x9D72U && opcode == 0x966EU) {
-            if (api.fetch16(api.context) != 0x46U) return M68k9D70StepResult::ContractFault;
-            const auto rhs = static_cast<std::uint16_t>(api.read(api.context, a6 + 0x46U, 2));
-            const auto result = static_cast<std::uint16_t>(d3 - rhs);
-            api.write_register(api.context, 3U, (api.read_register(api.context, 3U) & 0xFFFF0000U) | result);
-            set_ccr(api, sub_flags(d3, rhs, result, ccr(api), true));
-        } else if (pc == 0x9D76U || pc == 0x9D7CU || pc == 0x9D82U) {
-            branch = true; unsigned ext{};
-            if (!be_read(api, pc + 2U, 2U, ext)) return M68k9D70StepResult::ContractFault;
-            const unsigned expected = pc == 0x9D76U ? 0x0010U : pc == 0x9D7CU ? 0x0008U : 0x0006U;
-            if (ext != expected) return M68k9D70StepResult::ContractFault;
-            const auto flags = ccr(api); const unsigned cc = pc == 0x9D76U ? 11U : pc == 0x9D7CU ? 3U : 7U;
-            taken = condition(cc, flags);
-            const auto extension_pc = api.read_register(api.context, 16U);
-            const int displacement = static_cast<std::int16_t>(api.fetch16(api.context));
-            if (taken) {
-                const auto dest = static_cast<unsigned>(static_cast<int>(extension_pc) + displacement) & 0xFFFFFFU;
-                unsigned word{}; if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word); }
-        } else if (pc == 0x9D7AU && opcode == 0xB043U) {
-            const auto d0 = static_cast<std::uint16_t>(api.read_register(api.context, 0U));
-            set_ccr(api, sub_flags(d0, d3, static_cast<std::uint16_t>(d0 - d3), ccr(api), false));
-        } else if ((pc == 0x9D80U && opcode == 0x3003U) || (pc == 0x9D88U && opcode == 0x4240U)) {
-            const auto old = api.read_register(api.context, 0U); const auto val = pc == 0x9D80U ? d3 : 0U;
-            api.write_register(api.context, 0U, (old & 0xFFFF0000U) | val);
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(val), ccr(api)));
-        } else if (pc == 0x9D8AU && opcode == 0x002EU) {
-            if (api.fetch16(api.context) != 0x48U || api.fetch16(api.context) != 0x40U) return M68k9D70StepResult::ContractFault;
-            const auto old = static_cast<std::uint8_t>(api.read(api.context, a6 + 0x40U, 1));
-            const auto val = static_cast<std::uint8_t>(old | 0x48U); api.write(api.context, a6 + 0x40U, 1, val);
-            set_ccr(api, byte_logic_flags(val, ccr(api)));
-        } else return M68k9D70StepResult::ContractFault;
-    } else if (helper == Helper::H9D4E) {
-        if (pc == 0x9D4EU && opcode == 0x3E01U) {
-            const auto old = api.read_register(api.context, 7U), src = api.read_register(api.context, 1U);
-            api.write_register(api.context, 7U, (old & 0xFFFF0000U) | (src & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(src), ccr(api)));
-        } else if (pc == 0x9D50U && opcode == 0xDE6EU) {
-            if (api.fetch16(api.context) != 0x46U) return M68k9D70StepResult::ContractFault;
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
-            const auto rhs = static_cast<std::uint16_t>(api.read(api.context, a6 + 0x46U, 2));
-            const auto result = static_cast<std::uint16_t>(lhs + rhs);
-            api.write_register(api.context, 7U, (api.read_register(api.context, 7U) & 0xFFFF0000U) | result);
-            set_ccr(api, add_flags(lhs, rhs, result, ccr(api), true));
-        } else if (pc == 0x9D54U && opcode == 0x3628U) {
-            if (api.fetch16(api.context) != 4U) return M68k9D70StepResult::ContractFault;
-            const unsigned a0 = api.read_register(api.context, 8U) & 0xFFFFFFU;
-            const auto val = static_cast<std::uint16_t>(api.read(api.context, a0 + 4U, 2));
-            const auto old = api.read_register(api.context, 3U);
-            api.write_register(api.context, 3U, (old & 0xFFFF0000U) | val);
-            set_ccr(api, logic_flags(val, ccr(api)));
-        } else if (pc == 0x9D58U && opcode == 0xE74BU) {
-            auto val = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            auto flags = ccr(api); bool overflow{}; unsigned count = 3U;
-            for (unsigned i = 0; i < count; ++i) { const bool before = (val & 0x8000U) != 0;
-                val = static_cast<std::uint16_t>(val << 1U); overflow |= before != ((val & 0x8000U) != 0); }
-            const bool carry = (api.read_register(api.context, 3U) & 0x2000U) != 0;
-            flags = static_cast<std::uint16_t>((carry ? 0x11U : 0U) | (val == 0 ? 4U : 0U) |
-                ((val & 0x8000U) ? 8U : 0U) | (overflow ? 2U : 0U));
-            api.write_register(api.context, 3U, (api.read_register(api.context, 3U) & 0xFFFF0000U) | val);
-            set_ccr(api, flags);
-            // The core's LSL.W immediate handler charges two cycles per bit
-            // beyond its base opcode-table cost. This constant is the exact
-            // three-bit path used by this ROM instruction (3 * CYC_SHIFT * MUL).
-            api.add_cycles(api.context, 42);
-        } else if (pc == 0x9D5AU && opcode == 0x5343U) {
-            const auto old = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            const auto val = static_cast<std::uint16_t>(old - 1U);
-            api.write_register(api.context, 3U, (api.read_register(api.context, 3U) & 0xFFFF0000U) | val);
-            const bool borrow = old == 0U;
-            set_ccr(api, static_cast<std::uint16_t>((borrow ? 0x11U : (ccr(api) & 0x10U)) |
-                (val == 0 ? 4U : 0U) | ((val & 0x8000U) ? 8U : 0U) | (old == 0x8000U ? 2U : 0U)));
-        } else if (pc == 0x9D5CU && opcode == 0x9647U) {
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
-            const auto val = static_cast<std::uint16_t>(lhs - rhs);
-            api.write_register(api.context, 3U, (api.read_register(api.context, 3U) & 0xFFFF0000U) | val);
-            set_ccr(api, sub_flags(lhs, rhs, val, ccr(api), true));
-        } else if (pc == 0x9D5EU && opcode == 0xB043U) {
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 0U));
-            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            set_ccr(api, sub_flags(lhs, rhs, static_cast<std::uint16_t>(lhs - rhs), ccr(api), false));
-        } else if (pc == 0x9D60U && opcode == 0x6300U) {
-            branch = true; const auto flags = ccr(api); taken = condition(3U, flags);
-            const auto extension_pc = api.read_register(api.context, 16U);
-            const auto displacement = static_cast<std::int16_t>(api.fetch16(api.context));
-            if (displacement != 0x000CU) return M68k9D70StepResult::ContractFault;
-            if (taken) {
-                const auto dest = static_cast<unsigned>(static_cast<int>(extension_pc) + displacement) & 0xFFFFFFU;
-                unsigned word{}; if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word); }
-        } else if (pc == 0x9D64U && opcode == 0x3003U) {
-            const auto old = api.read_register(api.context, 0U), val = api.read_register(api.context, 3U);
-            api.write_register(api.context, 0U, (old & 0xFFFF0000U) | (val & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(val), ccr(api)));
-        } else if (pc == 0x9D66U && opcode == 0x6606U) {
-            branch = true; taken = condition(6U, ccr(api));
-            if (taken) { const auto displacement = static_cast<std::int8_t>(opcode & 0xFFU);
-                const auto dest = static_cast<unsigned>(static_cast<int>(api.read_register(api.context, 16U)) + displacement) & 0xFFFFFFU;
-                unsigned word{}; if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word); }
-        } else if (pc == 0x9D68U && opcode == 0x002EU) {
-            if (api.fetch16(api.context) != 0x48U || api.fetch16(api.context) != 0x40U) return M68k9D70StepResult::ContractFault;
-            const auto old = static_cast<std::uint8_t>(api.read(api.context, a6 + 0x40U, 1));
-            const auto val = static_cast<std::uint8_t>(old | 0x48U); api.write(api.context, a6 + 0x40U, 1, val);
-            set_ccr(api, byte_logic_flags(val, ccr(api)));
-        } else return M68k9D70StepResult::ContractFault;
-    } else if (helper == Helper::H9DB4) {
-        if (pc == 0x9DB4U && opcode == 0x3602U) {
-            const auto old = api.read_register(api.context, 3U), src = api.read_register(api.context, 2U);
-            api.write_register(api.context, 3U, (old & 0xFFFF0000U) | (src & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(src), ccr(api)));
-        } else if (pc == 0x9DB6U && opcode == 0x966EU) {
-            if (api.fetch16(api.context) != 0x46U) return M68k9D70StepResult::ContractFault;
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            const auto rhs = static_cast<std::uint16_t>(api.read(api.context, a6 + 0x46U, 2));
-            const auto val = static_cast<std::uint16_t>(lhs - rhs);
-            api.write_register(api.context, 3U, (api.read_register(api.context, 3U) & 0xFFFF0000U) | val);
-            set_ccr(api, sub_flags(lhs, rhs, val, ccr(api), true));
-        } else if (pc == 0x9DBAU || pc == 0x9DC0U || pc == 0x9DC6U) {
-            branch = true; const unsigned cc = pc == 0x9DBAU ? 11U : pc == 0x9DC0U ? 3U : 7U;
-            taken = condition(cc, ccr(api)); const auto extension_pc = api.read_register(api.context, 16U);
-            const auto displacement = static_cast<std::int16_t>(api.fetch16(api.context));
-            if (taken) { const auto dest = static_cast<unsigned>(static_cast<int>(extension_pc) + displacement) & 0xFFFFFFU;
-                unsigned word{}; if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word); }
-        } else if (pc == 0x9DBEU && opcode == 0xB043U) {
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 0U));
-            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            set_ccr(api, sub_flags(lhs, rhs, static_cast<std::uint16_t>(lhs - rhs), ccr(api), false));
-        } else if (pc == 0x9DC4U && opcode == 0x3003U) {
-            const auto old = api.read_register(api.context, 0U), val = api.read_register(api.context, 3U);
-            api.write_register(api.context, 0U, (old & 0xFFFF0000U) | (val & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(val), ccr(api)));
-        } else if (pc == 0x9DCCU && opcode == 0x4240U) {
-            api.write_register(api.context, 0U, api.read_register(api.context, 0U) & 0xFFFF0000U);
-            set_ccr(api, 0x04U | (ccr(api) & 0x10U));
-        } else if (pc == 0x9DCEU && opcode == 0x002EU) {
-            if (api.fetch16(api.context) != 0x48U || api.fetch16(api.context) != 0x41U) return M68k9D70StepResult::ContractFault;
-            const auto old = static_cast<std::uint8_t>(api.read(api.context, a6 + 0x41U, 1));
-            const auto val = static_cast<std::uint8_t>(old | 0x48U); api.write(api.context, a6 + 0x41U, 1, val);
-            set_ccr(api, byte_logic_flags(val, ccr(api)));
-        } else return M68k9D70StepResult::ContractFault;
-    } else {
-        if (pc == 0x9D92U && opcode == 0x3E02U) {
-            const auto old = api.read_register(api.context, 7U);
-            const auto value = api.read_register(api.context, 2U);
-            api.write_register(api.context, 7U, (old & 0xFFFF0000U) | (value & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(value), ccr(api)));
-        } else if (pc == 0x9D94U && opcode == 0xDE6EU) {
-            if (api.fetch16(api.context) != 0x0046U) return M68k9D70StepResult::ContractFault;
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
-            const auto rhs = static_cast<std::uint16_t>(api.read(api.context, a6 + 0x46U, 2));
-            const auto result = static_cast<std::uint16_t>(lhs + rhs);
-            api.write_register(api.context, 7U,
-                (api.read_register(api.context, 7U) & 0xFFFF0000U) | result);
-            set_ccr(api, add_flags(lhs, rhs, result, ccr(api), true));
-        } else if (pc == 0x9D98U && opcode == 0x3628U) {
-            if (api.fetch16(api.context) != 0x0006U) return M68k9D70StepResult::ContractFault;
-            const unsigned a0 = api.read_register(api.context, 8U) & 0xFFFFFFU;
-            const auto value = static_cast<std::uint16_t>(api.read(api.context, a0 + 6U, 2));
-            const auto old = api.read_register(api.context, 3U);
-            api.write_register(api.context, 3U, (old & 0xFFFF0000U) | value);
-            set_ccr(api, logic_flags(value, ccr(api)));
-        } else if (pc == 0x9D9CU && opcode == 0xE74BU) {
-            const auto original = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            auto value = original;
-            bool carry{}, overflow{};
-            for (unsigned bit = 0; bit < 3U; ++bit) {
-                const bool old_sign = (value & 0x8000U) != 0U;
-                carry = old_sign;
-                value = static_cast<std::uint16_t>(value << 1U);
-                overflow = overflow || old_sign != ((value & 0x8000U) != 0U);
-            }
-            const auto flags = static_cast<std::uint16_t>((carry ? 0x11U : 0U) |
-                (value == 0U ? 0x04U : 0U) | ((value & 0x8000U) ? 0x08U : 0U) |
-                (overflow ? 0x02U : 0U));
-            api.write_register(api.context, 3U,
-                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
-            set_ccr(api, flags);
-            api.add_cycles(api.context, 42);
-        } else if (pc == 0x9D9EU && opcode == 0x5343U) {
-            const auto old = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            const auto value = static_cast<std::uint16_t>(old - 1U);
-            api.write_register(api.context, 3U,
-                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
-            set_ccr(api, sub_flags(old, 1U, value, ccr(api), true));
-        } else if (pc == 0x9DA0U && opcode == 0x9647U) {
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 7U));
-            const auto value = static_cast<std::uint16_t>(lhs - rhs);
-            api.write_register(api.context, 3U,
-                (api.read_register(api.context, 3U) & 0xFFFF0000U) | value);
-            set_ccr(api, sub_flags(lhs, rhs, value, ccr(api), true));
-        } else if (pc == 0x9DA2U && opcode == 0xB043U) {
-            const auto lhs = static_cast<std::uint16_t>(api.read_register(api.context, 0U));
-            const auto rhs = static_cast<std::uint16_t>(api.read_register(api.context, 3U));
-            set_ccr(api, sub_flags(lhs, rhs, static_cast<std::uint16_t>(lhs - rhs),
-                                   ccr(api), false));
-        } else if (pc == 0x9DA4U && opcode == 0x6300U) {
-            branch = true;
-            taken = condition(3U, ccr(api));
-            const auto extension_pc = api.read_register(api.context, 16U);
-            const auto displacement = static_cast<std::int16_t>(api.fetch16(api.context));
-            if (displacement != 0x000CU) return M68k9D70StepResult::ContractFault;
-            if (taken) {
-                const auto dest = static_cast<unsigned>(
-                    static_cast<int>(extension_pc) + displacement) & 0xFFFFFFU;
-                unsigned word{};
-                if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word);
-            }
-        } else if (pc == 0x9DA8U && opcode == 0x3003U) {
-            const auto old = api.read_register(api.context, 0U);
-            const auto value = api.read_register(api.context, 3U);
-            api.write_register(api.context, 0U, (old & 0xFFFF0000U) | (value & 0xFFFFU));
-            set_ccr(api, logic_flags(static_cast<std::uint16_t>(value), ccr(api)));
-        } else if (pc == 0x9DAAU && opcode == 0x6606U) {
-            branch = true;
-            taken = condition(6U, ccr(api));
-            if (taken) {
-                const auto displacement = static_cast<std::int8_t>(opcode & 0xFFU);
-                const auto dest = static_cast<unsigned>(
-                    static_cast<int>(api.read_register(api.context, 16U)) + displacement) & 0xFFFFFFU;
-                unsigned word{};
-                if (!be_read(api, dest, 2U, word)) return M68k9D70StepResult::ContractFault;
-                api.set_return_state(api.context, dest, dest + 2U, word);
-            }
-        } else if (pc == 0x9DACU && opcode == 0x002EU) {
-            if (api.fetch16(api.context) != 0x0048U || api.fetch16(api.context) != 0x0041U)
-                return M68k9D70StepResult::ContractFault;
-            const auto old = static_cast<std::uint8_t>(api.read(api.context, a6 + 0x41U, 1));
-            const auto value = static_cast<std::uint8_t>(old | 0x48U);
-            api.write(api.context, a6 + 0x41U, 1, value);
-            set_ccr(api, byte_logic_flags(value, ccr(api)));
-        } else return M68k9D70StepResult::ContractFault;
-    }
-    api.finish_instruction(api.context, opcode);
-    if (branch && !taken) {
-        const bool short_branch = (helper == Helper::H9D4E && pc == 0x9D68U) ||
-            (helper == Helper::H9D92 && pc == 0x9DAAU);
-        const auto adjustment = short_branch && api.byte_not_taken_adjustment ?
-            api.byte_not_taken_adjustment(api.context) : api.word_not_taken_adjustment(api.context);
-        api.add_cycles(api.context, adjustment);
-    }
-    return M68k9D70StepResult::InstructionStepped;
-}
-
 int block_hook(unsigned pc) {
     const M68k9D70StepApi api{nullptr, rr, wr, peek, read, write, fetch16, set_return,
-        begin, finish, add_cycles, branch_adjust, byte_branch_adjust, observe};
-    const auto result = step(pc, api);
+        begin, finish, add_cycles, branch_adjust, byte_branch_adjust, observe,
+        skip_bus_refresh, scheduler_field, transfer_source_pc};
+    std::array<bool, 4> enabled_9d{g_enabled[0], g_enabled[1], g_enabled[2], g_enabled[3]};
+    auto result = step_9d_family(pc, api, enabled_9d);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_94a2(pc, api, g_enabled[4]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_9c40(pc, api, g_enabled[5]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_8ef8(pc, api, g_enabled[6]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_e268(pc, api, g_enabled[7]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_613b2(pc, api, g_enabled[8]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_61e48(pc, api, g_enabled[9]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_61934(pc, api, g_enabled[10]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_6147e(pc, api, g_enabled[11]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_623ac(pc, api, g_enabled[12]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_6273a(pc, api, g_enabled[13]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_62788(pc, api, g_enabled[14]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_60000(pc, api, g_enabled[15]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_60286(pc, api, g_enabled[16]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_62ae0(pc, api, g_enabled[17]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_626bc(pc, api, g_enabled[18]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_0027fc(pc, api, g_enabled[19]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_002992(pc, api, g_enabled[20]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_6138e(pc, api, g_enabled[21]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00e682(pc, api, g_enabled[22]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_0613f8(pc, api, g_enabled[23]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_016ebc(pc, api, g_enabled[24]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_009ad6(pc, api, g_enabled[25]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_009bf2(pc, api, g_enabled[26]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_0027a6(pc, api, g_enabled[27]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00b15e(pc, api, g_enabled[28]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00a8da(pc, api, g_enabled[29]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_017d12(pc, api, g_enabled[30]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_6281a(pc, api, g_enabled[31]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_6282e(pc, api, g_enabled[32]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_01ac90(pc, api, g_enabled[33]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_01b102(pc, api, g_enabled[34]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00350e(pc, api, g_enabled[35]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_008e22(pc, api, g_enabled[36]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00a7e6(pc, api, g_enabled[37]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_008e90(pc, api, g_enabled[38]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00f788(pc, api, g_enabled[39]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00a196(pc, api, g_enabled[40]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00a342(pc, api, g_enabled[41]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00b34c(pc, api, g_enabled[42]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00c980(pc, api, g_enabled[43]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_00c998(pc, api, g_enabled[44]);
+    if (result == M68k9D70StepResult::NotHandled) result = step_m68k_008dd4(pc, api, g_enabled[45]);
     if (result == M68k9D70StepResult::ContractFault) { if (g_fault) g_fault(pc); return 1; }
     return result == M68k9D70StepResult::InstructionStepped ? 1 : 0;
 }
@@ -476,7 +172,8 @@ bool selected(std::string_view list, std::string_view id) {
 
 void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enabled_helpers,
                                     void (*observer)(unsigned, unsigned),
-                                    void (*fault_handler)(unsigned)) {
+                                    void (*fault_handler)(unsigned),
+                                    unsigned (*source_pc_reader)()) {
     g_read_register = core.get<ReadRegister>("retro_9c40_capture_register");
     g_write_register = core.get<WriteRegister>("retro_9c40_capture_set_register");
     g_peek = core.get<PeekMemory>("retro_9c40_capture_peek");
@@ -489,12 +186,108 @@ void install_m68k_gameplay_step_set(ExternalLibrary& core, std::string_view enab
     g_add_cycles = core.get<AddCycles>("retro_hybrid_add_cycles");
     g_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_word_adjustment");
     g_byte_branch_adjustment = core.get<BranchAdjustment>("retro_hybrid_bcc_not_taken_adjustment");
+    g_skip_bus_refresh = core.get<SkipBusRefresh>("retro_hybrid_skip_bus_refresh");
+    g_scheduler_field = core.get<SchedulerField>("retro_hybrid_scheduler_field");
+    g_transfer_source_pc = source_pc_reader;
     g_observe = observer; g_fault = fault_handler;
-    g_enabled = {selected(enabled_helpers, "9d70"), selected(enabled_helpers, "9d4e"),
-        selected(enabled_helpers, "9db4"), selected(enabled_helpers, "9d92")};
-    if ((!g_enabled[0] && !g_enabled[1] && !g_enabled[2] && !g_enabled[3]) || !g_observe || !g_fault)
+    g_enabled = {
+        selected(enabled_helpers, "9d70"), selected(enabled_helpers, "9d4e"),
+        selected(enabled_helpers, "9db4"), selected(enabled_helpers, "9d92"),
+        selected(enabled_helpers, "94a2"), selected(enabled_helpers, "9c40"),
+        selected(enabled_helpers, "8ef8"), selected(enabled_helpers, "e268"),
+        selected(enabled_helpers, "613b2"), selected(enabled_helpers, "61e48"),
+        selected(enabled_helpers, "61934"), selected(enabled_helpers, "6147e"),
+        selected(enabled_helpers, "623ac"), selected(enabled_helpers, "6273a"),
+        selected(enabled_helpers, "62788"), selected(enabled_helpers, "60000"),
+        selected(enabled_helpers, "60286"), selected(enabled_helpers, "62ae0"),
+        selected(enabled_helpers, "626bc"), selected(enabled_helpers, "0027fc"),
+        selected(enabled_helpers, "002992"),
+        (selected(enabled_helpers, "6138e") || selected(enabled_helpers, "06138e")),
+        (selected(enabled_helpers, "e682") || selected(enabled_helpers, "00e682")),
+        (selected(enabled_helpers, "613f8") || selected(enabled_helpers, "0613f8")),
+        (selected(enabled_helpers, "16ebc") || selected(enabled_helpers, "016ebc")),
+        (selected(enabled_helpers, "9ad6") || selected(enabled_helpers, "009ad6")),
+        (selected(enabled_helpers, "9bf2") || selected(enabled_helpers, "009bf2")),
+        (selected(enabled_helpers, "27a6") || selected(enabled_helpers, "0027a6")),
+        (selected(enabled_helpers, "b15e") || selected(enabled_helpers, "00b15e")),
+        (selected(enabled_helpers, "a8da") || selected(enabled_helpers, "00a8da")),
+        (selected(enabled_helpers, "17d12") || selected(enabled_helpers, "017d12")),
+        (selected(enabled_helpers, "6281a") || selected(enabled_helpers, "06281a")),
+        (selected(enabled_helpers, "6282e") || selected(enabled_helpers, "06282e")),
+        (selected(enabled_helpers, "01ac90") || selected(enabled_helpers, "1ac90")),
+        (selected(enabled_helpers, "01b102") || selected(enabled_helpers, "1b102")),
+        (selected(enabled_helpers, "00350e") || selected(enabled_helpers, "350e") ||
+         selected(enabled_helpers, "00350E") || selected(enabled_helpers, "350E")),
+        (selected(enabled_helpers, "008e22") || selected(enabled_helpers, "8e22") ||
+         selected(enabled_helpers, "008E22") || selected(enabled_helpers, "8E22")),
+        (selected(enabled_helpers, "00a7e6") || selected(enabled_helpers, "a7e6") ||
+         selected(enabled_helpers, "00A7E6") || selected(enabled_helpers, "A7E6")),
+        (selected(enabled_helpers, "008e90") || selected(enabled_helpers, "8e90") ||
+         selected(enabled_helpers, "008E90") || selected(enabled_helpers, "8E90")),
+        (selected(enabled_helpers, "00f788") || selected(enabled_helpers, "f788") ||
+         selected(enabled_helpers, "00F788") || selected(enabled_helpers, "F788")),
+        (selected(enabled_helpers, "00a196") || selected(enabled_helpers, "a196") ||
+         selected(enabled_helpers, "00A196") || selected(enabled_helpers, "A196")),
+        (selected(enabled_helpers, "00a342") || selected(enabled_helpers, "a342") ||
+         selected(enabled_helpers, "00A342") || selected(enabled_helpers, "A342")),
+        (selected(enabled_helpers, "00b34c") || selected(enabled_helpers, "b34c") ||
+         selected(enabled_helpers, "00B34C") || selected(enabled_helpers, "B34C")),
+        (selected(enabled_helpers, "00c980") || selected(enabled_helpers, "c980") ||
+         selected(enabled_helpers, "00C980") || selected(enabled_helpers, "C980")),
+        (selected(enabled_helpers, "00c998") || selected(enabled_helpers, "c998") ||
+         selected(enabled_helpers, "00C998") || selected(enabled_helpers, "C998")),
+        (selected(enabled_helpers, "008dd4") || selected(enabled_helpers, "8dd4") ||
+         selected(enabled_helpers, "008DD4") || selected(enabled_helpers, "8DD4"))
+    };
+    bool any_enabled = false;
+    for (bool b : g_enabled) any_enabled = any_enabled || b;
+    if (!any_enabled || !g_observe || !g_fault)
         throw std::runtime_error("instruction step set is empty or lacks callbacks");
     core.get<InstallBlock>("retro_hybrid_install_block")(block_hook);
+}
+
+void write_m68k_gameplay_step_metrics(const std::filesystem::path& path) {
+    write_e268_step_metrics(path);
+    if (!path.empty()) {
+        write_613b2_step_metrics(path.parent_path() / "613b2-step-metrics.json");
+        write_61e48_step_metrics(path.parent_path() / "61e48-step-metrics.json");
+        write_61934_step_metrics(path.parent_path() / "61934-step-metrics.json");
+        write_6147e_step_metrics(path.parent_path() / "6147e-step-metrics.json");
+        write_623ac_step_metrics(path.parent_path() / "623ac-step-metrics.json");
+        write_6273a_step_metrics(path.parent_path() / "6273a-step-metrics.json");
+        write_62788_step_metrics(path.parent_path() / "62788-step-metrics.json");
+        write_60000_step_metrics(path.parent_path() / "60000-step-metrics.json");
+        write_60286_step_metrics(path.parent_path() / "60286-step-metrics.json");
+        write_62ae0_step_metrics(path.parent_path() / "62ae0-step-metrics.json");
+        write_626bc_step_metrics(path.parent_path() / "626bc-step-metrics.json");
+        write_0027fc_step_metrics(path.parent_path() / "0027fc-step-metrics.json");
+        write_002992_step_metrics(path.parent_path() / "002992-step-metrics.json");
+        write_6138e_step_metrics(path.parent_path() / "6138e-step-metrics.json");
+        write_00e682_step_metrics(path.parent_path() / "00e682-step-metrics.json");
+        write_0613f8_step_metrics(path.parent_path() / "0613f8-step-metrics.json");
+        write_016ebc_step_metrics(path.parent_path() / "016ebc-step-metrics.json");
+        write_009ad6_step_metrics(path.parent_path() / "009ad6-step-metrics.json");
+        write_009bf2_step_metrics(path.parent_path() / "009bf2-step-metrics.json");
+        write_0027a6_step_metrics(path.parent_path() / "0027a6-step-metrics.json");
+        write_00b15e_step_metrics(path.parent_path() / "00b15e-step-metrics.json");
+        write_00a8da_step_metrics(path.parent_path() / "00a8da-step-metrics.json");
+        write_017d12_step_metrics(path.parent_path() / "017d12-step-metrics.json");
+        write_6281a_step_metrics(path.parent_path() / "06281a-step-metrics.json");
+        write_6282e_step_metrics(path.parent_path() / "06282e-step-metrics.json");
+        write_01ac90_step_metrics(path.parent_path() / "01ac90-step-metrics.json");
+        write_01b102_step_metrics(path.parent_path() / "01b102-step-metrics.json");
+        write_00350e_step_metrics(path.parent_path() / "00350e-step-metrics.json");
+        write_008e22_step_metrics(path.parent_path() / "008e22-step-metrics.json");
+        write_00a7e6_step_metrics(path.parent_path() / "00a7e6-step-metrics.json");
+        write_008e90_step_metrics(path.parent_path() / "008e90-step-metrics.json");
+        write_00f788_step_metrics(path.parent_path() / "00f788-step-metrics.json");
+        write_00a196_step_metrics(path.parent_path() / "00a196-step-metrics.json");
+        write_00a342_step_metrics(path.parent_path() / "00a342-step-metrics.json");
+        write_00b34c_step_metrics(path.parent_path() / "00b34c-step-metrics.json");
+        write_00c980_step_metrics(path.parent_path() / "00c980-step-metrics.json");
+        write_00c998_step_metrics(path.parent_path() / "00c998-step-metrics.json");
+        write_008dd4_step_metrics(path.parent_path() / "008dd4-step-metrics.json");
+    }
 }
 
 } // namespace oasis::hybrid

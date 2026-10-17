@@ -1,3 +1,734 @@
+# ADR-M15-52 — Execution-Driven Recompilation: 0x008DD4 HUD / Screen Spirit / Special Counter Step Handler Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x00C998`, fresh actual-ROM execution census ranked `0x008DD4` #1 with 772 executions from caller `0x008B46` (return PC `0x008B4A`, displacement `+0x028C`).
+Disassembly and physical analysis established `0x008DD4` as the **HUD / Screen Spirit / Special Counter Step Handler** (`0x008DD4..0x008E20`, 39 words, 78 bytes, 23 instructions):
+1. Reads byte counter `$FF183E` into `%d0` via `move.b $00FF183E, %d0` and evaluates word flag `$FF1AA4` via `tst.w $00FF1AA4`.
+2. When `$FF1AA4 == 0` (spirit/mode inactive), branches via `beq.s 0x008E08` to evaluate `%d0`:
+   - If `%d0 == 0`, branches immediately via `beq.s 0x008E20` directly to `rts` without writing memory (772 calls in canonical replay).
+   - If `%d0 != 0`, decrements `%d0` (or clamps to 2 if `%d0 >= 4`), writes updated value to `$FF183E`, and returns via `rts`.
+3. When `$FF1AA4 != 0` (spirit/mode active), increments `%d0` (up to 3) or clamps to 3, evaluates frame counter `$FF199E` and bit 0 of `$FF199F` to optionally advance `%d0` to 4, writes updated value to `$FF183E`, and returns via `rts`.
+
+**Decision:**
+1. Reverse-engineer complete `0x008DD4` contract:
+   - Routine bounds: `0x008DD4..0x008E20` (78 bytes, 39 words, 23 instructions, terminal exits via RTS `0x008E20`).
+   - Proven caller: `0x008B46` (772 calls, return PC `0x008B4A`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_008dd4_step_ops.hpp` (15 lines <= 500)
+   - `src/tools/hybrid/m68k_008dd4_step_ops.cpp` (39 lines <= 500)
+   - `src/tools/hybrid/m68k_008dd4_instruction_step.hpp` (32 lines <= 500)
+   - `src/tools/hybrid/m68k_008dd4_instruction_step.cpp` (325 lines <= 500)
+   - Unit tests in `tests/m68k_008dd4_instruction_step_test.cpp` (331 lines <= 500) verifying caller gating, corrupt ROM rejection, active increment path, inactive zero-exit path, and interruption/reentrancy protection.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x008DD4` OFF) vs Run B (`0x008DD4` ON).
+   - Achieved 100% native displacement: 772 native calls (`0x008B46`: 772), 0 ROM fallbacks, 4,632 stepped instructions, 772 zero-exit calls.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** The HUD / screen spirit / special counter step handler `0x008DD4` now executes 100% natively in C++, completely displacing 772 calls from ROM and establishing `0x00557A` (772 calls, caller: `0x008B2E`: 772) as the new sole #1 remaining ROM target.
+
+# ADR-M15-51 — Execution-Driven Recompilation: 0x00C998 Per-Frame Map Script Vector 1 Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x00C980`, fresh actual-ROM execution census ranked `0x00C998` #1 with 772 executions from caller `0x008B52` (return PC `0x008B56`, displacement `+0x3E44`).
+Disassembly and physical analysis established `0x00C998` as the **Per-Frame Map Script Vector 1 Dispatcher** (`0x00C998..0x00C9B0`, 13 words, 26 bytes, 7 instructions):
+1. `btst #1, $00FF17B8`: Evaluates script inhibit flag bit 1 in RAM `$FF17B8`.
+2. `bne.w 0x00C9B0`: If bit 1 is set, branches directly to `rts` at `0x00C9B0`, returning to caller without script execution (30 calls in 3,600 frames).
+3. `movea.l $00FF16EC, %a1`: If script is not inhibited, loads map script vector table pointer from RAM `$FF16EC` into `%a1`.
+4. `addq.l #2, %a1`: Advances `%a1` by 2 bytes to select Vector 1 displacement entry in table.
+5. `adda.w (%a1), %a1`: Reads 16-bit signed displacement for Vector 1 from `(%a1)` and adds to `%a1`.
+6. `jmp (%a1)`: Indirect tail jump to active map's Vector 1 handler in ROM (742 calls in 3,600 frames). Target handler executes natively in Musashi; target's `rts` returns directly to outer caller `0x008B56`.
+
+**Decision:**
+1. Reverse-engineer complete `0x00C998` contract:
+   - Routine bounds: `0x00C998..0x00C9B0` (26 bytes, 13 words, 7 instructions, terminal exits via RTS `0x00C9B0` and indirect JMP `0x00C9AE`).
+   - Proven caller: `0x008B52` (772 calls, return PC `0x008B56`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_00c998_step_ops.hpp` (13 lines <= 500)
+   - `src/tools/hybrid/m68k_00c998_step_ops.cpp` (21 lines <= 500)
+   - `src/tools/hybrid/m68k_00c998_instruction_step.hpp` (34 lines <= 500)
+   - `src/tools/hybrid/m68k_00c998_instruction_step.cpp` (224 lines <= 500)
+   - Unit tests in `tests/m68k_00c998_instruction_step_test.cpp` (297 lines <= 500) verifying caller gating, corrupt ROM rejection, inhibited path, vector 1 dispatch path, and interruption/reentrancy protection.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00C998` OFF) vs Run B (`0x00C998` ON).
+   - Achieved 100% native displacement: 772 native calls (`0x008B52`: 772), 0 ROM fallbacks, 4,542 stepped instructions, 30 inhibit exits, 742 indirect vector jumps.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** The per-frame map script Vector 1 dispatcher `0x00C998` now executes 100% natively in C++, completely displacing 772 calls from ROM and establishing `0x008DD4` (772 calls, caller: `0x008B46`: 772) as the new sole #1 remaining ROM target.
+
+# ADR-M15-50 — Execution-Driven Recompilation: 0x00C980 Per-Frame Map Script Vector 0 Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x00B34C`, fresh actual-ROM execution census ranked `0x00C980` #1 with 773 executions across callers `0x008B60` (770 calls, return PC `0x008B64`, displacement `+0x3E1E`) and `0x00CD20` (3 calls, return PC `0x00CD24`, displacement `-0x03A2`). A third static caller exists in ROM at `0x006A3E` (return PC `0x006A42`, displacement `+0x5F40`).
+Disassembly and physical analysis established `0x00C980` as the **Per-Frame Map Script Vector 0 Dispatcher** (`0x00C980..0x00C996`, 12 words, 24 bytes, 6 instructions):
+1. `btst #1, $00FF17B8`: Evaluates script inhibit flag bit 1 in RAM `$FF17B8`.
+2. `bne.w 0x00C996`: If bit 1 is set, branches directly to `rts` at `0x00C996`, returning to caller without script execution (30 calls in 3,600 frames).
+3. `movea.l $00FF16EC, %a1`: If script is not inhibited, loads map script vector table pointer from RAM `$FF16EC` into `%a1`.
+4. `adda.w (%a1), %a1`: Reads 16-bit signed displacement for Vector 0 from `(%a1)` and adds to `%a1`.
+5. `jmp (%a1)`: Indirect tail jump to active map's Vector 0 handler in ROM (743 calls in 3,600 frames). Target handler executes natively in Musashi; target's `rts` returns directly to outer caller `0x008B64` or `0x00CD24`.
+
+**Decision:**
+1. Reverse-engineer complete `0x00C980` contract:
+   - Routine bounds: `0x00C980..0x00C996` (24 bytes, 12 words, 6 instructions, terminal exits via RTS `0x00C996` and indirect JMP `0x00C994`).
+   - Proven callers: `0x008B60` (770 calls, return PC `0x008B64`), `0x00CD20` (3 calls, return PC `0x00CD24`), `0x006A3E` (return PC `0x006A42`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_00c980_step_ops.hpp` (23 lines <= 500)
+   - `src/tools/hybrid/m68k_00c980_step_ops.cpp` (73 lines <= 500)
+   - `src/tools/hybrid/m68k_00c980_instruction_step.hpp` (35 lines <= 500)
+   - `src/tools/hybrid/m68k_00c980_instruction_step.cpp` (220 lines <= 500)
+   - Unit tests in `tests/m68k_00c980_instruction_step_test.cpp` (294 lines <= 500) verifying caller gating, corrupt ROM rejection, inhibited path, vector 0 dispatch path, and interruption/reentrancy protection.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00C980` OFF) vs Run B (`0x00C980` ON).
+   - Achieved 100% native displacement: 773 native calls (`0x008B60`: 770, `0x00CD20`: 3), 0 ROM fallbacks, 3,805 stepped instructions, 30 inhibit exits, 743 indirect vector jumps.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** The per-frame map script Vector 0 dispatcher `0x00C980` now executes 100% natively in C++, completely displacing 773 calls from ROM and establishing `0x00C998` (772 calls, caller: `0x008B52`: 772) as the new sole #1 remaining ROM target.
+
+# ADR-M15-49 — Execution-Driven Recompilation: 0x00B34C Entity Display Mode & Visual Effects Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x00A342`, fresh actual-ROM execution census ranked `0x00B34C` #1 with 773 executions from caller `0x00AD42` (return PC `0x00AD46`, displacement `0x0608`). A second static caller in ROM exists at `0x00B012` (return PC `0x00B016`, displacement `0x0338`).
+Disassembly and architectural analysis established `0x00B34C` as the **Entity Display Mode & Visual Effects Dispatcher** (`0x00B34C..0x00B3B0`, 51 words, 102 bytes, 25 instructions):
+1. `tst.b $00FF1927`: Checks global pause/freeze flag. If non-zero, exits immediately via `bne.w 0x00B382` RTS.
+2. `move.b 57(%fp), %d5`: Loads entity display mode byte from `$39(A6)` into `D5`.
+3. `btst #0, %d5`: Tests primary compositor bit. If set, invokes child routine `0x00B3D2` via `bsr.w 0x00B3D2` at `0x00B384` (481 calls in 3,600 frames). Upon return to `0x00B388`, branches to `0x00B362`.
+4. `btst #3, %d5`: Tests secondary compositor bit. If set, invokes child routine `0x00B45C` via `bsr.w 0x00B45C` at `0x00B394`. Upon return to `0x00B398`, branches to `0x00B36A`.
+5. `btst #4, %d5`: Tests alternative compositor bit. If set, invokes child routine `0x00B4FE` via `bsr.w 0x00B4FE` at `0x00B39C`. Upon return to `0x00B3A0`, branches to `0x00B372`.
+6. `btst #1, %d5`: Tests priority overlay bit. If set, invokes child routine `0x00B610` via `bsr.w 0x00B610` at `0x00B3A4`. Upon return to `0x00B3A8`, clears bit 2 in memory via `bclr #2, 57(%fp)`, and branches directly to `0x00B382` RTS.
+7. `btst #2, %d5`: Tests background compositor bit. If set, invokes child routine `0x00B56E` via `bsr.w 0x00B56E` at `0x00B38C` (292 calls in 3,600 frames). Upon return to `0x00B390`, branches to `0x00B382` RTS.
+8. `0x00B382` RTS: Exits back to caller `0x00AD46` (773 completed calls).
+
+**Decision:**
+1. Reverse-engineer complete `0x00B34C` contract:
+   - Routine bounds: `0x00B34C..0x00B3B0` (102 bytes, 51 words, 25 instructions, single RTS exit `0x00B382`).
+   - Proven callers: `0x00AD42` (773 calls, return PC `0x00AD46`), `0x00B012` (0 calls in canonical replay, return PC `0x00B016`).
+   - Child delegation protocol: `0x00B3D2` (481 calls, return PC `0x00B388`), `0x00B56E` (292 calls, return PC `0x00B390`), `0x00B45C` (return PC `0x00B398`), `0x00B4FE` (return PC `0x00B3A0`), `0x00B610` (return PC `0x00B3A8`).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_00b34c_step_ops.hpp` (17 lines <= 500)
+   - `src/tools/hybrid/m68k_00b34c_step_ops.cpp` (56 lines <= 500)
+   - `src/tools/hybrid/m68k_00b34c_step_seq.hpp` (12 lines <= 500)
+   - `src/tools/hybrid/m68k_00b34c_step_seq.cpp` (63 lines <= 500)
+   - `src/tools/hybrid/m68k_00b34c_instruction_step.hpp` (35 lines <= 500)
+   - `src/tools/hybrid/m68k_00b34c_instruction_step.cpp` (206 lines <= 500)
+   - Unit tests in `tests/m68k_00b34c_instruction_step_test.cpp` (292 lines <= 500) verifying caller gating, global freeze early exit, primary child dispatch, background child dispatch, overlay child dispatch with memory bit clear, and fail-closed rejections.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00B34C` OFF) vs Run B (`0x00B34C` ON).
+   - Achieved 100% native displacement: 773 native calls (`0x00AD42`: 773), 0 ROM fallbacks, 12,368 stepped instructions, 481 child calls to `0x00B3D2`, 292 child calls to `0x00B56E`.
+   - Achieved bit-exact SHA-256 parity across all 8 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`) with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
+
+**Consequences:** The entity display mode & visual effects dispatcher `0x00B34C` now executes 100% natively in C++, completely displacing 773 calls from ROM and establishing `0x00C980` (773 calls, callers: `0x008B60`: 770, `0x00CD20`: 3) as the new sole #1 remaining ROM target.
+
+# ADR-M15-41 — Execution-Driven Recompilation: 0x01B102 Entity Type 0x38 Damage & Hit Processing Handler Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x01AC90`, fresh actual-ROM execution census ranked `0x01B102` #1 with 890 executions across four observed callers: `0x01B7F8` (102 calls in State 1), `0x01BBFE` (332 calls in State 2), `0x01BF8A` (344 calls in State 3), and `0x01C4E2` (112 calls in State 5). All four callers originate from Entity Type `0x0038` state handlers dispatched by `0x01AC90`.
+Physical layout and disassembly analysis established `0x01B102` as the dedicated **Entity Type 0x38 Damage & Hit Processing Handler** (`0x01B102..0x01B1BE`, 94 words, 188 bytes, 45 instructions):
+1. `move.w $86(a6), d0` loads the incoming hit packet word from `$86(a6)`.
+2. `beq.w 0x01B1BC`: If no hit was received (`$86(a6) == 0`), branches directly to `RTS` at `0x01B1BC` (879 calls in 3,600 frames).
+3. If hit was received (`$86(a6) != 0`, 11 calls in 3,600 frames):
+   - Clears incoming hit word (`clr.w $86(a6)`).
+   - Clears flags: `bclr #2, $39(a6)` and `bclr #2, $38(a6)`.
+   - Reads attacker orientation `$84(a6)`, inverts horizontal orientation via `bchg #1, d1`, writes facing `$16(a6)`, indexes 4-entry angle table at `0x01074A` (`{0x0040, 0x0000, 0x00C0, 0x0080}`), and sets knockback angle `$9E(a6)`.
+   - Checks heavy hit / SFX bit 13 of D0 (`btst #13, d0`). If set, sets bit 3 of `$39(a6)` and invokes SFX trigger `0x00E7E8` via `jsr 0x00E7E8`.
+   - Calculates damage: isolates low 12 bits (`andi.w #$0fff, d0`), subtracts entity defense `$92(a6)`, clamping to minimum 1 point (`moveq #1, d0`).
+   - Applies damage to HP `$8A(a6)` (`sub.w d0, d1`). Clamps negative HP to 0.
+   - If HP reaches 0 (6 fatal hits in 3,600 frames), invokes death hook `jsr 0x00E4D0` and sets death/heavy recoil flags (`ori.w #$c000, d7`).
+   - Checks recoil flags `d7 & 0xC000`:
+     - If non-zero (10 recoil calls): sets recoil timer `$10(a6) = 24`, clears `$83(a6)`, sets bit 3 of `$38(a6)`, sets sub-action state `$4(a6) = 2`, calls animation setup `0x008EF8` with `D0 = 10`, sets `$2(a6) = $4a(a6)` and `$4a(a6) = 10`, then exits via `RTS`.
+     - If zero (1 idle/light recoil call): sets `$4(a6) = 0`, loads `D0 = 6`, and executes tail jump `jmp 0x008EF8`.
+
+**Decision:**
+1. Reverse-engineer complete `0x01B102` contract:
+   - Routine bounds: `0x01B102..0x01B1BE` (188 bytes, 94 words, 45 instructions, single RTS exit `0x01B1BC` plus tail call `0x01B18A`).
+   - Proven callers: `0x01B7F8` (102 calls, return PC `0x01B7FC`), `0x01BBFE` (332 calls, return PC `0x01BC02`), `0x01BF8A` (344 calls, return PC `0x01BF8E`), `0x01C4E2` (112 calls, return PC `0x01C4E6`).
+   - Register ABI: takes entity instance pointer in `A6` (`$0(a6) == 0x0038`).
+   - Condition codes and registers preserved identically to Musashi 68000.
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_01b102_instruction_step.hpp` (36 lines <= 500)
+   - `src/tools/hybrid/m68k_01b102_step_hit.hpp` (13 lines <= 500)
+   - `src/tools/hybrid/m68k_01b102_step_hit.cpp` (402 lines <= 500)
+   - `src/tools/hybrid/m68k_01b102_instruction_step.cpp` (228 lines <= 500)
+   - Unit tests in `tests/m68k_01b102_instruction_step_test.cpp` (353 lines <= 500) verifying all 4 callers, no-hit path, heavy recoil, voice SFX, fatal hits, and fail-closed rejections.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x01B102` OFF) vs Run B (`0x01B102` ON).
+   - Achieved 100% native displacement: 890 native calls (`0x01B7F8`: 102, `0x01BBFE`: 332, `0x01BF8A`: 344, `0x01C4E2`: 112), 0 ROM fallbacks, 2,121 stepped instructions (879 no-hit exits, 11 hit paths: 6 fatal, 10 recoil, 1 idle).
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO`.
+
+**Consequences:** The entity damage and hit processing routine `0x01B102` now executes 100% natively in C++, completely displacing 890 calls from ROM and establishing `0x00350E` (866 calls, caller: `0x0033FE`: 866) as the fresh #1 remaining ROM target.
+
+# ADR-M15-40 — Execution-Driven Recompilation: 0x01AC90 Entity Type 0x38 Lifecycle State Machine & Jump Table Dispatcher Integration
+**Status:** Accepted
+**Date:** 2026-10-17
+
+**Context:** Following the displacement of `0x06282E`, fresh actual-ROM execution census ranked `0x01AC90` #1 with 914 executions across three observed callers: `0x00DF1A` (908 calls in the main per-frame entity loop), `0x00FD7A` (2 calls in entity spawn/initialization), and `0x00FDFE` (4 calls in entity transformation/spawn).
+Physical layout and disassembly analysis disproved the speculative label "Core Gameplay Entity Handler" and established `0x01AC90` as the dedicated **Entity Type 0x38 Lifecycle State Machine & Jump Table Dispatcher**.
+The routine forms an 18-byte jump table dispatch block (`0x01AC90..0x01ACA2`, 9 words, 6 instructions, 1 basic block) followed by a 25-entry PC-relative jump table (`0x01ACA2..0x01ACD4`, 25 words, 50 bytes) for entity states 0..24:
+1. `move.b $66(a6), d0` (84 master cycles) loads the current lifecycle state byte from `$66(a6)`.
+2. `andi.w #$ff, d0` (56 master cycles) zeroes the high byte of `D0.W`.
+3. `add.w d0, d0` (28 master cycles) doubles `D0.W` into a 2-byte word table index.
+4. `lea.l $1aca2(pc, d0.w), a0` (84 master cycles) computes the address of the jump table entry.
+5. `adda.w (a0), a0` (84 master cycles) reads the signed 16-bit displacement and adds it to `A0`.
+6. `jmp (a0)` (56 master cycles) jumps directly to the state handler in ROM with the caller's return PC preserved on stack.
+Total cycle count: deterministic 392 master cycles (56 CPU clocks).
+
+All three callers (`0x00DF1A`, `0x00FD7A`, `0x00FDFE`) invoke `0x01AC90` via indirect subroutine call `jsr (a0)` using the entity dispatch table at `0x00DF54 - 0x2C = 0x00DF28`. At index 28 (`$0(a6) = 0x0038`, offset `0x70` from `0x00DF28` or `0x44` from `0x00DF54`), the table points to `0x01AC90`.
+Observed runtime states in canonical 3,600-frame replay:
+- State 1 (`0x01B7F2`): 105 calls (calls freeze gatekeeper `0x00E682` and hit responder `0x01B102`)
+- State 2 (`0x01BBF8`): 337 calls (calls freeze gatekeeper `0x00E682` and hit responder `0x01B102`)
+- State 3 (`0x01BF84`): 350 calls (calls freeze gatekeeper `0x00E682` and hit responder `0x01B102`)
+- State 5 (`0x01C4DC`): 116 calls (calls freeze gatekeeper `0x00E682` and hit responder `0x01B102`)
+- State 9 (`0x01AEA4`): 1 call
+- State 10 (`0x01AF60`): 1 call
+- State 18 (`0x01AE02`): 1 call
+- State 20 (`0x01AFC8`): 1 call
+- State 22 (`0x01AFF6`): 2 calls
+Total calls: 914 calls, exactly matching observed ROM executions.
+
+**Decision:**
+1. Reverse-engineer complete `0x01AC90` contract:
+   - Routine bounds: `0x01AC90..0x01ACA2` (18 bytes, 9 words, 6 instructions, 1 basic block, jump table `0x01ACA2..0x01ACD4`).
+   - Proven callers: `0x00DF1A` (908 calls, return PC `0x00DF1C`), `0x00FD7A` (2 calls, return PC `0x00FD7C`), `0x00FDFE` (4 calls, return PC `0x00FE00`).
+   - Register ABI: takes entity instance pointer in `A6` (`$0(a6) == 0x0038`, `$66(a6) <= 24`). Clobbers `D0.W` (doubled state index) and `A0` (resolved target address). Preserves all other registers.
+   - Condition codes: N, Z, V, C, X updated according to `add.w d0, d0`.
+   - Timing: deterministic 392 master cycles ($56 \times 7$).
+2. Implement modular C++ instruction stepper:
+   - `src/tools/hybrid/m68k_01ac90_instruction_step.hpp/.cpp`
+   - Unit tests in `tests/m68k_01ac90_instruction_step_test.cpp` verifying all 3 callers, state resolution (0, 1, 2, 3, 5, 7, 24), register masking/doubling, condition codes, and fail-closed rejections for bad callers, invalid SP, wrong entity type, unsupported states (> 24), and ROM mismatch.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x01AC90` OFF) vs Run B (`0x01AC90` ON).
+   - Achieved 100% native displacement: 914 native calls (`0x00DF1A`: 908, `0x00FD7A`: 2, `0x00FDFE`: 4), 0 ROM fallbacks, 5,484 stepped instructions ($914 \times 6$).
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO`.
+
+**Consequences:** The entity lifecycle state dispatcher `0x01AC90` now executes 100% natively in C++, completely displacing 914 calls from ROM and establishing `0x01B102` (890 calls, callers: `0x01B7F8`: 102, `0x01BBFE`: 332, `0x01BF8A`: 344, `0x01C4E2`: 112) as the fresh #1 remaining ROM target.
+
+# ADR-M15-39 — Execution-Driven Recompilation: 0x06282E Sound Channel Attenuation Calculator & Hardware Committer Sub-Tail Entry Integration
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x06281A`, fresh actual-ROM execution census ranked `0x06282E` #1 with 922 executions across a single observed caller (`0x0624C8`: 922 calls in sound driver note-on / volume calculation handling).
+Physical layout analysis confirmed that `0x06282E` lies physically inside the already-translated ADSR sound envelope generator (`0x062788..0x06286E`), immediately following the release phase decrement sequence (`0x06281A..0x06282A`), and constitutes the common attenuation calculation and PSG hardware commit sub-tail (`0x06282E..0x06286C`, 31 words, 62 bytes, 16 instructions).
+Exhaustive ROM scanning identified exactly seven references to `0x06282E` in the entire ROM:
+1. Internal fall-through from `0x06281A`: at `0x06282A` (`move.b d0, $18(a6)` falls through to `0x06282E`).
+2. Internal branches from `0x062788`: at `0x0627AC` (`bra.w 0x06282E`), `0x0627B6` (`bra.w 0x06282E`), `0x0627E2` (`bra.w 0x06282E`), `0x0627EC` (`bra.w 0x06282E`), and `0x06280E` (`bra.w 0x06282E`) during envelope attack, decay, sustain, and holding stages.
+3. External call from `0x0623AC`: at `0x0624C8` (`bsr.w 0x06282E`, opcode `0x6100 0364` during sound channel note-on / note-trigger attenuation updates).
+
+The routine computes and commits the sound channel attenuation:
+1. Clears `D0.W` (`moveq #0, d0`) and reads current envelope level `$18(a6)` (`move.b $18(a6), d0`).
+2. Clears `D2.W` (`moveq #0, d2`), reads master channel volume `$12(a6)` (`move.b $12(a6), d2`), and increments by 1 (`addq.b #1, d2`, giving scaling factor 1..16).
+3. Multiplies envelope by master volume factor (`mulu.w d2, d0`) and shifts right 8 bits (`lsr.w #8, d0`) to extract the 4-bit attenuation level.
+4. Checks tremolo modulation flags: `$00(a6)` bit 2 and `$70(a6)` bit 5. If modulation is active, adds delta `$6F(a6)` and shifts right by 1.
+5. Inverts 4-bit attenuation level (`eori.b #15, d0`, where 0 = loud, 15 = mute) and stores to hardware mirror `$11(a6)`.
+6. Dispatches to PSG hardware attenuation committer `0x06273A` via `bsr.w 0x06273A`.
+7. Caches current envelope `$18(a6)` into shadow field `$13(a6)` (`move.b $18(a6), $13(a6)`) and returns via `rts` (`0x06286C`).
+
+Double-ownership architectural hazard resolved:
+- In the initial codebase, `0x0623AC` at `0x0624C8` was invoking `step_bsr_w_internal(0x06282EU)` and duplicating `0x06282E..0x06286C` instructions in `m68k_623ac_subs.cpp`.
+- To avoid conflicting instruction ownership and duplicated maintenance:
+  * Reused the shared release phase & attenuation tail (`0x06281A..0x062866`) in `src/tools/hybrid/m68k_6281a_step_tail.hpp/.cpp`, which already implemented `0x06282E..0x062866` as part of `dispatch_6281a_tail`.
+  * Refactored `0x0623AC` (`src/tools/hybrid/m68k_623ac_block1.cpp:78`) to call `step_bsr_w(api, pc, 0x06282EU, 0x0624CCU, resume_pc, child_call_active, saved_child_sp)`, yielding control as an external child subroutine.
+  * Cleaned up obsolete duplicate cases `0x06281A..0x06286C` from `src/tools/hybrid/m68k_623ac_subs.cpp`.
+  * Implemented dedicated caller-gated instruction stepper `step_m68k_6282e` in `src/tools/hybrid/m68k_6282e_instruction_step.hpp/.cpp` delegating directly to `step_6281a::dispatch_6281a_tail`.
+
+**Decision:**
+1. Reverse-engineer complete `0x06282E` contract:
+   - Routine bounds: `0x06282E..0x06286C` (62 bytes, 31 words, 16 instructions, single exit `0x06286C` RTS).
+   - Proven external caller: `0x0624C8` (922 calls, return PC `0x0624CC`, displacement `0x0364`).
+   - Register ABI: takes sound channel pointer in `A6` (work RAM `$00FF001A..`, size >= `$8A`), sound driver state in `A5` (`$00FF001A`), PSG data port in `A3` (`$00C00011`). Clobbers `D0.W`, `D2.W`.
+   - Child hardware delegation: at `0x062862` (`bsr.w 0x06273A`), calls child helper `0x06273A` to commit attenuation byte to PSG data port `0x00C00011`.
+2. Implement modular C++ replacement:
+   - `src/tools/hybrid/m68k_6282e_instruction_step.hpp/.cpp` (standalone instruction stepper delegating to shared tail).
+   - Unit tests in `tests/m68k_6282e_instruction_step_test.cpp` verifying caller gating, master volume multiplication, tremolo delta branch, attenuation inversion, child call to `0x06273A`, envelope caching, and RTS.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x06282E` OFF) vs Run B (`0x06282E` ON).
+   - Achieved 100% native displacement: 922 native calls (`0x0624C8`: 922), 0 ROM fallbacks, 11,986 stepped instructions, 922 child calls to `0x06273A`.
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO`.
+
+**Consequences:** The sound channel attenuation calculator & hardware committer `0x06282E` now executes 100% natively in C++, completely displacing 922 calls from ROM and establishing `0x01AC90` (914 calls, callers: `0x00DF1A`: 908, `0x00FD7A`: 2, `0x00FDFE`: 4) as the new sole #1 remaining ROM target.
+
+# ADR-M15-38 — Execution-Driven Recompilation: 0x06281A Sound Channel Note-Off / Release Phase Attenuation Committer & Mid-Tail Entry Integration
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x017D12`, fresh actual-ROM execution census ranked `0x06281A` #1 with 985 executions across a single observed caller (`0x06243C`: 985 calls in sound driver note-off handling).
+Physical layout analysis confirmed that `0x06281A` lies physically inside the already-translated ADSR sound envelope generator (`0x062788..0x06286E`), forming a mid-tail secondary entry point (`0x06281A..0x06286C`, 42 words, 84 bytes, 21 instructions).
+Exhaustive ROM scanning identified exactly two references to `0x06281A` in the entire ROM:
+1. Internal fall-through / conditional branch from `0x062788`: at `0x0627F4` (`beq.w 0x06281A` when decay phase is inactive / ADSR bit 2 is 0).
+2. External call from `0x0623AC`: at `0x06243C` (`bsr.w 0x06281A` during sound channel note-off handling after testing `$01(a6)` bit 4 and clearing flags `$70(a6)`).
+
+The routine computes and commits the sound channel release phase attenuation:
+1. Decrements current envelope `$18(a6)` by release rate `$89(a6)` (`move.b $18(a6), d0; move.b $89(a6), d1; sub.b d1, d0`).
+2. Clamps underflow borrow (`bcc.w 0x06282A; moveq #0, d0; 0x06282A: move.b d0, $18(a6)`).
+3. Scales by channel master volume `$12(a6) + 1` (1..16 factor) via `mulu.w d2, d0; lsr.w #8, d0` to extract the 4-bit attenuation level.
+4. Checks tremolo modulation flags: `$00(a6)` bit 2 and `$70(a6)` bit 5. If modulation is active, adds delta `$6F(a6)` and shifts right by 1.
+5. Inverts 4-bit attenuation level (`eori.b #15, d0`, where 0 = loud, 15 = mute) and stores to hardware mirror `$11(a6)`.
+6. Dispatches to PSG hardware attenuation committer `0x06273A` via `bsr.w 0x06273A`.
+7. Caches current envelope `$18(a6)` into shadow field `$13(a6)` and returns via `rts` (`0x06286C`).
+
+Double-ownership architectural hazard resolved:
+- In the initial codebase, `0x0623AC` at `0x06243C` was invoking `step_bsr_w_internal(0x06281AU)` and duplicating `0x06281A..0x06286C` instructions in `m68k_623ac_subs.cpp`.
+- To avoid conflicting instruction ownership and duplicated maintenance:
+  * Extracted the shared release phase & attenuation tail (`0x06281A..0x062866`) into `src/tools/hybrid/m68k_6281a_step_tail.hpp/.cpp`.
+  * Refactored `0x062788` (`src/tools/hybrid/m68k_62788_instruction_step.cpp`) to call `step_6281a::dispatch_6281a_tail`.
+  * Refactored `0x0623AC` (`src/tools/hybrid/m68k_623ac_block1.cpp:45`) to call `step_bsr_w(api, pc, 0x06281AU, 0x062440U, resume_pc, child_call_active, saved_child_sp)`, yielding control as an external child subroutine.
+  * Implemented dedicated caller-gated instruction stepper `step_m68k_6281a` in `src/tools/hybrid/m68k_6281a_instruction_step.hpp/.cpp`.
+
+**Decision:**
+1. Reverse-engineer complete `0x06281A` contract:
+   - Routine bounds: `0x06281A..0x06286C` (84 bytes, 42 words, 21 instructions, single exit `0x06286C` RTS).
+   - Proven external caller: `0x06243C` (985 calls, return PC `0x062440`, displacement `0x03DC`).
+   - Register ABI: takes sound channel pointer in `A6` (work RAM `$00FF001A..`, size >= `$8A`), sound driver state in `A5` (`$00FF001A`), PSG data port in `A3` (`$00C00011`). Clobbers `D0.W`, `D1.B`, `D2.W`.
+   - Child hardware delegation: at `0x062862` (`bsr.w 0x06273A`), calls child helper `0x06273A` to commit attenuation byte to PSG data port `0x00C00011`.
+2. Implement modular C++ replacement:
+   - `src/tools/hybrid/m68k_6281a_step_tail.hpp/.cpp` (shared tail dispatch).
+   - `src/tools/hybrid/m68k_6281a_instruction_step.hpp/.cpp` (standalone instruction stepper).
+   - Unit tests in `tests/m68k_6281a_instruction_step_test.cpp` verifying caller gating, normal release decrement, underflow clamp to 0, master volume multiplication, tremolo delta branch, attenuation inversion, child call to `0x06273A`, envelope caching, and RTS.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x06281A` OFF) vs Run B (`0x06281A` ON).
+   - Achieved 100% native displacement: 985 native calls (`0x06243C`: 985), 0 ROM fallbacks, 19,773 stepped instructions, 985 child calls to `0x06273A`.
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO`.
+
+**Consequences:** The sound channel note-off / release phase attenuation committer `0x06281A` now executes 100% natively in C++, completely displacing 985 calls from ROM and establishing `0x06282E` (922 calls, caller: `0x0624C8`) as the new sole #1 remaining ROM target.
+
+# ADR-M15-37 — Execution-Driven Recompilation: 0x017D12 Collectible Dropped Item & Chest Entity Handler (Entity Type 0x1E / 30)
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x00A8DA`, fresh actual-ROM execution census ranked `0x017D12` tied for #1 with 985 executions across 2 callers (`0x00DF1A`: 981 in the main entity update loop, `0x00FF88`: 4 in the entity spawn/initialization dispatcher). Disassembling `0x017D12..0x017E28` (278 bytes, 139 words, 70 instructions, 4 exits: `0x017D3C`, `0x017DB8`, `0x017DF0`, `0x017E26`) disproved prior working hypotheses and proved that `0x017D12` is the **Collectible Dropped Item & Chest Entity Handler** for Entity Type `0x1E` (30). The entity dispatch table at `0x00DF28 + 0x1E * 4 = 0x00DFA0` routes execution directly to `0x017D12`.
+The routine governs the complete lifecycle of dropped items, item pickups, and collectible chests:
+1. Spawn Initialization (`0x017D12..0x017D3C`): Checks initialization byte `$66(A6)`. If uninitialized, marks `$66(A6) = 0xFF`, copies initial elevation `$A0(A6)` to coordinate `$10(A6)`, and tests bit 7. If bit 7 is set (pre-opened chest), sets state `$04(A6) = 10`, advances animation `$2A(A6) += 2`, sets timer `$02(A6) = 1`, and exits.
+2. Air / Gravity Integration & Ground Bounce (`0x017D3E..0x017D82`): If elevation coordinate `$10(A6)` is positive (falling in air), decrements vertical velocity `$56(A6) -= 0xC000`, integrates elevation `$10(A6) += $56(A6)`. When ground is reached (`$10(A6) < 0`), clamps elevation to 0, rebounds once with upward velocity `$00030000`, flags ground contact at `$A6(A6) = 0xFF`, and triggers bounce sound effect `0x00400376` via `jsr 0x00E7FC`.
+3. Player Contact Detection & Pickup Trigger (`0x017D84..0x017DB8`): Evaluates entity state `$04(A6)`. If idle (`state == 0`) and player contact is triggered (`$86(A6) != 0`), transitions state `$04(A6) = 1`, arms timer `$02(A6) = 2`, increments animation `$2A(A6) += 2`, and triggers pickup sound effect `0x00900232` via `jsr 0x00E7FC`.
+4. Collection, Inventory Grant & Entity Deactivation (`0x017DBA..0x017DF0`): If pickup is in progress (`state == 1`), decrements timer `$02(A6)`. Upon timer expiration (`$02 == 0`), grants item to player inventory via `jsr 0x00F53C`, sets persistent event flag via `bsr 0x017FF2`, copies item ID `$A2(A6)` and metadata `$A4(A6)` to player record `$4E..$50(A0)`, and clears entity slot `$00(A6) = 0`.
+5. Chest Open & Item Grant Phase (`0x017DF2..0x017E26`): When `state == 10`, executes persistent event registration, inventory grant `jsr 0x00F53C`, clears `$04(A0)`, and deactivates entity slot `$00(A6) = 0`.
+
+**Decision:**
+1. Reverse-engineer complete `0x017D12` contract, caller contexts, and child delegation:
+   - Routine bounds: `0x017D12..0x017E28` (278 bytes, 139 words, 70 instructions, 4 exits: `0x017D3C`, `0x017DB8`, `0x017DF0`, `0x017E26`).
+   - Callers: 2 proven callers (`0x00DF1A`: 981 calls, return PC `0x00DF1C`; `0x00FF88`: 4 calls, return PC `0x00FF8A`).
+   - Entity type: `0x1E` (30), dispatched via `0x00DF28 + 0x1E * 4 = 0x00DFA0`.
+   - Register ABI: takes entity instance pointer in `A6` (`0x00FF1CD8..`); clobbers `D0.L` (sound ID parameters), `A0` (player context pointer); stack pushes return address for child calls (`jsr 0x00E7FC`, `jsr 0x00F53C`, `bsr 0x017FF2`).
+   - Child delegation protocol: during nested subroutines (`jsr 0x00E7FC`, `jsr 0x00F53C`, `bsr 0x017FF2`), the instruction step driver pushes the return address to the M68K stack, sets `child_call_active = true`, records `saved_child_sp`, and returns `InstructionStepped`. While active, the driver yields to Musashi until `sp == saved_child_sp && pc == resume_pc`, ensuring bit-exact hardware sound and inventory behavior without replicating external sound drivers.
+2. Implement modular instruction-stepped native replacement:
+   - Created modular components strictly $\le 500$ lines under `namespace oasis::hybrid::step_017d12` and `oasis::hybrid`:
+     - `src/tools/hybrid/m68k_017d12_step_ops.hpp` (40 lines)
+     - `src/tools/hybrid/m68k_017d12_step_ops.cpp` (95 lines)
+     - `src/tools/hybrid/m68k_017d12_step_init.cpp` (245 lines)
+     - `src/tools/hybrid/m68k_017d12_step_update.cpp` (481 lines)
+     - `src/tools/hybrid/m68k_017d12_instruction_step.hpp` (36 lines)
+     - `src/tools/hybrid/m68k_017d12_instruction_step.cpp` (188 lines)
+   - Created comprehensive unit test suite in `tests/m68k_017d12_instruction_step_test.cpp` (310 lines) validating initialization, gravity/air integration, chest open, contact sound dispatch, and timer expiration item collection.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x017D12` OFF) vs Run B (`0x017D12` ON).
+   - Achieved 100% native displacement: 985 native calls (`0x00DF1A`: 981, `0x00FF88`: 4), 0 ROM fallbacks, 10,025 stepped instructions (`path_init_calls`: 4, `path_update_idle_calls`: 977, `path_update_timer_calls`: 4).
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Acceptance Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO` (Observed canonical update, init, and idle paths verified bit-identically in replay; chest open and falling paths verified in unit tests).
+
+**Consequences:** The collectible item & chest entity handler `0x017D12` now executes 100% natively in C++, completely displacing 985 calls from ROM and establishing `0x06281A` (985 calls) as the new sole #1 remaining ROM target.
+
+# ADR-M15-36 — Execution-Driven Recompilation: 0x00A8DA Direct VDP Sprite Attribute Table Entry Appender & HUD Shadow Record Builder
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x00B15E`, fresh actual-ROM execution census ranked `0x00A8DA` #1 with 1,082 executions across 5 callers (`0x00A886`: 223, `0x00A896`: 223, `0x00A81E`: 212, `0x00A82A`: 212, `0x00A836`: 212). Disassembling `0x00A8DA..0x00A8F0` (22 bytes, 11 words, 10 instructions, 2 basic blocks) proved that `0x00A8DA` is the **Direct VDP Sprite Attribute Table (SAT) Entry Appender & HUD Shadow Record Builder**. It does not perform entity movement integration, velocity application, or collision displacement. Rather, it is the atomic hardware sprite appender invoked by the HUD status bar compositor (`0x00A7E6..0x00A8D8`). For each HUD piece, it validates the current hardware sprite count against the Mega Drive VDP 80-sprite limit (`cmpi.w #80, %d5; bcc.s 0x00A8EE`), increments sprite count `D5.W`, writes the 8-byte SAT entry into the WRAM shadow buffer (`0x00FF13CC + (0x00FF188C)`) via post-increment stores `(A5)+` for Y coordinate (`D2.W`), Link+Size (`(D5.W) + D4.W`), Tile/Priority/Palette attributes (`D3.W`), and X coordinate (`D1.W`), advancing `A5` by 8 bytes.
+
+**Decision:**
+1. Reverse-engineer complete `0x00A8DA` contract and relationship to the render pipeline:
+   - Routine bounds: `0x00A8DA..0x00A8F0` (22 bytes, 11 words, 10 instructions, 2 basic blocks).
+   - Callers: Exactly 5 proven callers in ROM (`0x00A81E`: 212 calls, return PC `0x00A822`; `0x00A82A`: 212 calls, return PC `0x00A82E`; `0x00A836`: 212 calls, return PC `0x00A83A`; `0x00A886`: 223 calls, return PC `0x00A88A`; `0x00A896`: 223 calls, return PC `0x00A89A`). Exhaustive ROM scanning proved 0 additional callers exist in the entire ROM.
+   - Register ABI: takes SAT buffer pointer in `A5` (`0x00FF13CC..0x00FF1650`), sprite count in `D5.W`, Y in `D2.W`, X in `D1.W`, size bits in `D4.W`, tile/attr in `D3.W`. Advances `A5` by +8 bytes, increments `D5.W` by +1, clobbers `D0.W` with `(D5.W + 1) + D4.W`, preserving upper words of `D0` and `D5` and all other registers.
+   - Exact Musashi cycle timing: `cmpi.w` (56 master cycles), `bcc.s` (70 taken, 56 not taken via -14 byte branch adjustment), `addq.w` (28 cycles), four `move.w reg, (a5)+` (56 cycles each), `move.w reg, reg` (28 cycles), `add.w reg, reg` (28 cycles).
+2. Implement modular instruction-stepped native replacement:
+   - Created `src/tools/hybrid/m68k_00a8da_instruction_step.hpp/.cpp` (well under 500 lines).
+   - Added unit test suite in `tests/m68k_00a8da_instruction_step_test.cpp`.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00A8DA` OFF) vs Run B (`0x00A8DA` ON).
+   - Achieved 100% native displacement: 1,082 native calls (`0x00A886`: 223, `0x00A896`: 223, `0x00A81E`: 212, `0x00A82A`: 212, `0x00A836`: 212), 0 ROM fallbacks, 9,738 stepped instructions, 1,082 SAT entries written, 0 SAT full terminations.
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO` (Normal append path observed in canonical gameplay; SAT full termination path verified in unit tests).
+
+**Consequences:** The HUD SAT entry appender `0x00A8DA` now executes 100% natively in C++, completely displacing 1,082 calls from ROM and revealing `0x017D12` and `0x06281A` (tied at 985 calls) as the next #1 remaining ROM targets.
+
+# ADR-M15-35 — Execution-Driven Recompilation: 0x00B15E Entity Multi-Piece Sprite Compositor, VDP SAT Shadow Buffer Builder & Dynamic VRAM Tile DMA Request Stager
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x0027A6`, fresh actual-ROM execution census ranked `0x00B15E` #1 with 1,165 executions across 2 callers (`0x00AB7A`: 948, `0x00AC74`: 217). Disassembling `0x00B15E..0x00B28C` (304 bytes, 152 words, 87 instructions, 16 basic blocks) disproved the working label "Object / Actor Collision Check" and proved that `0x00B15E` is the **Entity Multi-Piece Sprite Compositor, VDP SAT Shadow Buffer Builder & Dynamic VRAM Tile DMA Request Stager**. It does not perform actor collision detection, bounding box intersection, or terrain queries. Rather, it is the core graphics engine routine responsible for composing multi-piece hardware sprites for active entities (`A6`), reading master entity metadata tables (`0x03F2FA - 0x14 + (D5.W << 4)`), updating entity animation frame counters, clipping pieces against screen boundaries, constructing 8-byte Mega Drive VDP Sprite Attribute Table (SAT) records in WRAM (`0x00FF13CC`), updating the SAT link index (`0x00FF188A`), staging dynamic VRAM tile DMA requests (`0x00FF10B4..0x00FF1334`), and decrementing per-frame tile budget (`0x00FF1652`).
+
+**Decision:**
+1. Reverse-engineer complete `0x00B15E` contract and sprite composition pipeline:
+   - Routine bounds: `0x00B15E..0x00B28C` (304 bytes, 152 words, 87 instructions, 16 basic blocks for Path 1; `0x00B28E..` unexecuted in canonical replay).
+   - Callers: 2 proven callers (`0x00AB7A`: 948 calls, return PC `0x00AB7E`; `0x00AC74`: 217 calls, return PC `0x00AC78`).
+   - Register ABI: takes entity instance pointer in `A6`; preserves `D1-D3, D7, A4` via stack save/restore (`movem.l d1-d3/d7/a4, -(sp)` and `(sp)+`); clobbers `D0, D4, D5, D6, A0, A1, A2, A3, A5`.
+   - Cycle & bus exactness: recovered Musashi dynamic cycle models: `USE_CYCLES(s * CYC_SHIFT)` for shifts, `USE_CYCLES(2 * MUL) = +14` for `bset #31, d5` on register bit $\ge 16$, `movem.l` 280 cycles for 5-register push and pop with postincrement dummy read, and `dbf` taken/expired timing adjustments.
+2. Implement modular instruction-stepped native replacement:
+   - Created modular components strictly $\le 500$ lines: `src/tools/hybrid/m68k_00b15e_instruction_step.hpp/.cpp`, `m68k_00b15e_step_ops.hpp/.cpp`, `m68k_00b15e_step_setup.cpp`, `m68k_00b15e_step_piece.cpp`, and `m68k_00b15e_step_dma.cpp`.
+   - Added unit test suite in `tests/m68k_00b15e_instruction_step_test.cpp`.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x00B15E` OFF) vs Run B (`0x00B15E` ON).
+   - Achieved 100% native displacement: 1,165 native calls (`0x00AB7A`: 948, `0x00AC74`: 217), 0 ROM fallbacks, 130,936 stepped instructions, 1,729 SAT records written, 396 DMA descriptors staged, 479 offscreen clipped pieces, 0 SAT full terminations.
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO` (Path 1 canonical replay coverage verified; Path 2 `0x00B28E..` unexecuted in 3,600 frames).
+
+**Consequences:** The primary multi-piece sprite compositor and dynamic tile DMA stager `0x00B15E` now executes 100% in native C++, completely displacing 1,165 calls from ROM and revealing `0x00A8DA` (1,082 calls) as the next #1 remaining ROM target.
+
+# ADR-M15-34 — Execution-Driven Recompilation: 0x0027A6 Register-Parameterized Fixed-Buffer VDP Hardware DMA Committer
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following the displacement of `0x009BF2`, fresh actual-ROM execution census ranked `0x0027A6` #1 with 1,171 executions across 2 callers (`0x001FC4`: 822, `0x002252`: 349). Disassembling `0x0027A6..0x0027FA` (86 bytes, 43 words, 24 instructions) and the VBlank ISR (`0x001F76`) disproved the working label "VDP DMA Request Queue Stager" and proved that `0x0027A6` is the **Register-Parameterized Fixed-Buffer VDP Hardware DMA Committer (Direct SAT & CRAM VBlank DMA Executor)** — the direct sibling of `0x0027FC` (`0x0027FC..0x002896`, the WRAM Queue-Record VDP Hardware DMA Committer). While ~40 gameplay/graphics routines append 8-byte descriptors to the WRAM DMA queue (`0x00FF10B4..0x00FF1334`, pointer `0x00FF1892`) consumed by `0x0027FC`, the two fixed VBlank buffers — the Sprite Attribute Table (`0x00FF13CC` -> VRAM `0xD000`, Caller A `0x001FC4`) and Color Palette RAM (`0x00FF134C` -> CRAM `0x0000`, Caller B `0x002252`) — bypass the WRAM ring and are committed directly to VDP hardware by `0x0027A6`, sharing the VBlank DMA bandwidth budget (`0x00FF165A`, initialized to `0x00FA` and decremented by `0x0032` per transfer), VDP Mode 2 shadow (`0x00FF0BF4`), Z80 BUSREQ port (`0x00A11100`), and VDP Control/Data ports (`0x00C00004` / `0x00C00000`) with `0x0027FC`.
+
+**Decision:**
+1. Reverse-engineer complete `0x0027A6` contract and relationship to `0x0027FC`:
+   - Routine bounds: `0x0027A6..0x0027FA` (86 bytes, 43 words, 24 instructions, 3 basic blocks).
+   - Callers: 2 proven callers (`0x001FC4`: 822 SAT DMA calls, return PC `0x001FC8`; `0x002252`: 349 CRAM DMA calls, return PC `0x002256`).
+   - Register ABI: takes packed VDP command in `D5.L`, packed DMA length registers `#19/#20` in `D6.L`, source buffer base in `A5` (`0x00FF13CC` or `0x00FF134C`), and inline 6-byte ROM DMA source register table pointer in `A6` (`0x00001FB8` or `0x00002240`); preserves `D0-D3, D6-D7, A0-A3, A5, A7`; clobbers `D4.W`, sets `D5.L = D5_in | 0x00800000`, `A4 = 0x00C00004`, `A6 = A6_in + 4`, and preserves `SR` via stack save/restore.
+2. Implement modular instruction-stepped native replacement:
+   - Created `src/tools/hybrid/m68k_0027a6_instruction_step.hpp/.cpp` and `tests/m68k_0027a6_instruction_step_test.cpp`, keeping `0x0027A6` and `0x0027FC` as distinct modular step units.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x0027FC` ON, `0x0027A6` OFF) vs Run B (`0x0027FC` ON, `0x0027A6` ON).
+   - Achieved 100% native displacement: 1,171 native calls (`0x001FC4`: 822, `0x002252`: 349), 0 ROM fallbacks, 26,933 stepped instructions, 1,171 DMA transfers (`0x0027FC` simultaneously executed 2,806 native calls / 2,806 DMA transfers).
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0`.
+   - Marked `0x0027A6` as `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES` and `RUNTIME_REPLACEMENT_ACTIVE = YES`.
+
+**Consequences:** Both VDP hardware DMA committers (`0x0027A6` for fixed SAT/CRAM shadow buffers and `0x0027FC` for queued 8-byte WRAM descriptors) now execute 100% in native C++ (3,977 total VBlank DMA transfers across 3,600 frames with zero ROM fallbacks), isolating `0x00B15E` (1,165 calls) as the next #1 remaining ROM target.
+
+# ADR-M15-33 — Execution-Driven Recompilation: 0x009BF2 Entity Bounding-Box Terrain Grid Footprint Bitwise OR/AND Aggregator
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Following Phase 0 closure of `0x009AD6` across all six canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`), fresh actual-ROM execution census ranked `0x009BF2` #1 with 1,283 executions across 8 callers (`0x00935C`: 715, `0x0091D4`: 297, `0x009312`: 132, `0x009D26`: 42, `0x009270`: 32, `0x0098D4`: 24, `0x00918A`: 22, `0x0090E8`: 19), each paired with a corresponding `0x009AD6` call immediately afterward. Disassembling `0x009BF2..0x009C40` (78 bytes, 39 words, 32 instructions) and all 8 caller pairs disproved the working label "Coordinate Delta Math" and proved that `0x009BF2` is the **Entity Bounding-Box Terrain Grid Footprint Bitwise OR/AND Aggregator**. Given an active terrain grid descriptor in `A0` (`0(A0)` = grid base `0x00FF5FAC`, `4(A0)` = row stride `64`, `8(A0)` = row shift `6`), center X in `D1.W`, center Y in `D2.W`, and half-extents radius in `D3.W` (`$46(A6)`), `0x009BF2` converts `[X - R, X + R] x [Y - R, Y + R]` into 8x8 cell bounds (`asr.w #3`), scans the 2D cell rectangle via nested `dbf` loops, and returns the bitwise OR of all covered cell bytes in `D4.B` (stored by callers to `$6F(A6)`) and the bitwise AND in `D5.B` (stored by callers to `$6E(A6)` and mapped via `0x0096E8` into `$70(A6)`), before the caller invokes `0x009AD6` to compute exact center ground elevation (`$14(A6)`).
+
+**Decision:**
+1. Reverse-engineer complete `0x009BF2` contract and pairing with `0x009AD6`:
+   - Routine bounds: `0x009BF2..0x009C40` (78 bytes, 39 words, 32 instructions, 4 basic blocks, nested `dbf` loops).
+   - Callers: 8 proven callers (`0x0090E8`, `0x00918A`, `0x0091D4`, `0x009270`, `0x009312`, `0x00935C`, `0x0098D4`, `0x009D26`).
+   - Register ABI: preserves `D0, D1, D2, D3, D6, D7, A0, A3-A7` (saving/restoring `D2, D3, D6, D7` via `movem.l d2-d3/d6-d7, -(sp)` and `(sp)+`); clobbers `A1, A2, D4.W, D5.W`.
+   - Exact Musashi timing & bus ordering: `movem.l d2-d3/d6-d7, -(sp)` writes 4 registers as eight 16-bit predecrement stores (`+224` master cycles, `skip_bus_refresh`); `movem.l (sp)+, d2-d3/d6-d7` reads 4 registers as 32-bit loads plus a 16-bit post-increment dummy read at `SP` (`+224` master cycles, `skip_bus_refresh`); `asr.w #3` adds `+42` master cycles; `lsl.w d5, d4` adds `14 * shift` master cycles and calls `skip_bus_refresh`; `dbf` adds `-14` master cycles (with extension fetch) when taken and `+14` master cycles (no extension fetch) when expired.
+2. Implement modular instruction-stepped native replacement:
+   - Created `src/tools/hybrid/m68k_009bf2_instruction_step.hpp/.cpp` and `tests/m68k_009bf2_instruction_step_test.cpp`, keeping `0x009BF2` and `0x009AD6` as separate modular step units.
+3. Dual canonical 3,600-frame replay verification:
+   - Verified Run A (`0x009AD6` ON, `0x009BF2` OFF) vs Run B (`0x009AD6` ON, `0x009BF2` ON).
+   - Achieved 100% native displacement: 1,283 native calls, 0 ROM fallbacks, 124,041 stepped instructions, 18,816 inner cell reads, 4,817 outer row steps.
+   - Achieved bit-exact SHA-256 parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) with `different_frame_count == 0`.
+   - Marked `0x009BF2` as `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES` and `RUNTIME_REPLACEMENT_ACTIVE = YES`.
+
+**Consequences:** Both halves of the 1,283-call terrain footprint + elevation query pair (`0x009BF2` and `0x009AD6`) are now active in C++, displacing the top 20 most frequent logical routines in the 3,600-frame canonical trace and isolating `0x0027A6` (1,171 calls) as the next #1 remaining ROM target.
+
+# ADR-M15-32 — Execution-Driven Recompilation: 0x009AD6 Terrain Ground Height Calculation & Elevation Interpolation
+**Status:** Accepted
+**Date:** 2026-10-16
+
+**Context:** Fresh runtime call census following the displacement of `0x016EBC` identified target `0x009AD6` tied for Rank #1 with 1,283 executions across 8 callers (`0x009106`: 19, `0x0091A8`: 22, `0x0091EE`: 297, `0x00928E`: 32, `0x009330`: 132, `0x009376`: 715, `0x0098E0`: 24, `0x009D40`: 42). Previous working hypothesis assumed a coordinate clamp or bounding-box check; disassembling and tracing runtime state revealed `0x009AD6` to be the core **Terrain Ground Height Calculation & Slope Elevation Interpolation Routine** in the map/world navigation system.
+
+**Decision:**
+1. Reverse-engineer authentic terrain calculation contract:
+   - Routine bounds: `0x009AD6..0x009BF2` (284 bytes, 142 words, 72 instructions).
+   - Callers: 8 distinct callers in entity and player collision/physics update routines (`0x009106`, `0x0091A8`, `0x0091EE`, `0x00928E`, `0x009330`, `0x009376`, `0x0098E0`, `0x009D40`).
+   - Register ABI: preserves `D0, D1, D2, D3, D5, D6, D7, A0, A3-A7` (saving/restoring `D1-D3` via `movem.l d1-d3, -(sp)` and `(sp)+`); returns elevation in `D4.W`.
+   - Branch paths: Flat ground (`0 <= D4.B < 0x10`, 1,270 calls in canonical replay); Sloped elevation (`0x10 <= D4.B <= 0x23`, 13 calls in canonical replay).
+   - Dynamic cycle models: Musashi `MULU.W` requires dynamic cycle formula ($38 + 2 \times N$ cycles $\times 7$ master clock). Musashi `DIVU.W` requires iterative division loop adding dynamic cycles based on quotient bits and calls `skip_bus_refresh`. `MOVEM.L` register transfers add 168 master cycles each for save and restore, calling `skip_bus_refresh`.
+2. Implement modular instruction-stepped native replacement:
+   - Partition into modular files strictly obeying the $\le 500$ line limit: `m68k_009ad6_instruction_step.hpp/.cpp`, `m68k_009ad6_step_ops.hpp`, and `m68k_009ad6_step_slope.hpp/.cpp`.
+   - Add unit test suite in `tests/m68k_009ad6_instruction_step_test.cpp`.
+3. Dual canonical 3,600-frame replay verification:
+   - Verify Run A (`0x009AD6` OFF) vs Run B (`0x009AD6` ON).
+   - Achieve 100% native displacement: 1,283 calls displaced, 0 fallbacks, 31,624 stepped instructions.
+   - Achieve bit-exact hash parity across all 6 canonical acceptance streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) with `different_frame_count == 0` and `divergence == NO`.
+   - Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = NO` (canonical runtime observed flat and slope paths, not void/out-of-range fallback paths).
+
+**Consequences:** `0x009AD6` is fully displaced natively without ROM fallback. The paired hotspot `0x009BF2` (1,283 executions across identical caller call sites) is isolated as the undisputed #1 remaining ROM routine.
+
+# ADR-M15-SECONDARY-WEAPON-SELECTION-AND-USE-1 — Recompiled Secondary Weapon (Bow) Selection + Use Pipeline
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the completion of the elemental environment interaction, the vertical slice required introducing the secondary weapon inventory, selection, and usage system. In Beyond Oasis, secondary weapons (Bows and Bombs) are stored in an 8-slot array at RAM `0x00FF0D80..0x00FF0D90` (stride 2 bytes: weapon ID, ammo count). The active selection is indexed by `0x00FF0DB0` (0..7), with ID cached at `0x00FF0DB1` and ammo at `0x00FF198E`. Cycling through weapons (Button::Y) traverses owned slots, skipping empty slots (`id == 0`), and wrapping around. When a secondary weapon such as the Bow (Weapon ID `0x0006`) is selected and ammo > 0, the player can fire it (Button::C), initiating State 14 (`kStateSecondaryAttack = 14`), setting timer 0, and locking player directional movement. The 16-frame sequence comprises Startup (frames 0..11) -> Fire at frame 12 (`0x007260..0x00728E`) -> Recovery (frames 13..15) -> Normal (frame 16, resets state to 0). At frame 12, an Arrow projectile (Type `0x0034`) is spawned with directional offset, 8.0 px/frame cardinal velocity, lifetime 30 ticks, bounding box `[-6, 6] x [-6, 6]`, and sprite frame `0x154C22`. Firing decrements ammo by exactly 1; if ammo drops to 0, the slot is cleared and reverts to Knife in slot 0. The arrow inflicts 6 damage on enemy Type `0x0048` with knockback, and is consumed on enemy hit or wall collision.
+
+**Decision:**
+1. Reverse-engineer authentic secondary weapon inventory, selection, and usage:
+   - Weapon string table: ROM `0x05CC16` (0: None, 1: Knife, 2: Sword, 3: Broadsword, 4: Death Sword, 5: Omega Sword, 6: Bow, 7: Fire Bow, 8: Metal Bow, 9: Bomb, 10: Power Bomb, 11: Hyper Bomb, 12: Atomic Bow).
+   - RAM inventory: `0x00FF0D80` (8 slots, 2 bytes/slot: `+0` ID, `+1` ammo). Selected slot at `0x00FF0DB0`, ID at `0x00FF0DB1`, ammo cache at `0x00FF198E`.
+   - Cycle routine: `0x007EC4..0x007F10`. Loops 8 slots, skips unowned (`id == 0`), wraps 0..7.
+   - Attack State 14: `0x005C4C` & `0x0071CC..0x00728E`. Gates on ammo > 0, locks movement.
+   - Projectile spawning: Frame 12 fire branch at `0x007260`, spawns Arrow Type `0x0034` (`0x00F258`), decrements ammo by 1 (`0x008530`), clears slot and reverts to Knife if ammo reaches 0.
+   - Collision & damage: `0x010A74` and `0x01BE30..0x01BEE0`. Deals 6 damage to enemy Type `0x0048`, triggers knockback along arrow direction, deactivates arrow on enemy or wall impact.
+2. Implement secondary weapon module:
+   - Created `src/game/player/secondary_weapon.hpp` & `secondary_weapon.cpp` with `WeaponInventorySlot`, `WeaponInventory`, `ArrowProjectile`, `cycle_secondary_weapon()`, `try_start_secondary_attack()`, `update_secondary_attack()`, and `update_arrow_projectile()`.
+   - Updated `PlayerState` in `src/game/player/player.hpp` with secondary weapon fields and updated `is_attacking()` / `is_secondary_attacking()`.
+   - Integrated into `ControlledScreen` (`controlled_screen.hpp` & `controlled_screen.cpp`): Button::Y weapon cycle, Button::C secondary attack (when not facing chest in READY interaction state), projectile updating and drop spawning on kill, arrow rendering via `render_pieces`, transition reset (`arrow_.active = false`), and debug overlay.
+3. In-engine HUD diagnostics:
+   - Displayed all 7 requested fields: `SECONDARY_WEAPON`, `SECONDARY_AMMO`, `WEAPON_STATE`, `WEAPON_TIMER`, `PROJECTILE_TYPE`, `PROJECTILE_X/Y`, `LAST_WEAPON_HIT`.
+4. Deterministic tests:
+   - Added 10 unit tests in `tests/secondary_weapon_test.cpp`.
+   - Added Section 19 integration test in `tests/native_vertical_slice_test.cpp`.
+
+**Consequences:** The player can now authentically switch between owned secondary weapons, fire arrows with correct directional offsets, spend ammunition, defeat enemies with projectile combat, and return safely to normal movement. All source files strictly obey the $\le 500$ line size limit.
+
+# ADR-M15-WATER-BUBBLE-ENVIRONMENT-INTERACTION-1 — Recompiled Dytto Water Bubble → Flame Environment Interaction
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the recompiled Dytto Active Command (Water Bubble projectile, Type `0x0018`), the vertical slice required enabling the bubble to interact with environmental targets using original ROM semantics. In Beyond Oasis, Water Bubble does not only damage/stun enemies (Type `0x0048`), but also extinguishes fire/flame hazards (Type `0x004C`) placed in the world. The collision check sweeps bounding box `[-9, 9] x [-9, 9]` (`0x011EE6..0x011F02`) and branches: if the target is an environmental water-reactive target (`0x004C`), `0x011F58` sets flame substate `$66(A0) = 0xFF` and sets `target_entity_hit = 0x004C`. The bubble transitions to State 22 (Pop) for 4 frames and deactivates. The flame enters a 15-frame extinguish lifecycle (`0x016E80..0x016EEA`), toggling visibility every frame (`(timer & 1) == 0`). At frame 15, the entity slot deactivates (`active = false`, `clr.w $0(a6)`) and records persistence bit in RAM `0x00FF0DBC` (`0x018030`). Subsequent room reloads check `is_persistent_flag_set()`; extinguished flames do not respawn. Active flames deal 15 contact damage to the player (`[-14, 14] x [-8, 8]`), while extinguished flames cease contact damage.
+
+**Decision:**
+1. Reverse-engineer authentic environment interaction from ROM:
+   - Target selected: Type `0x004C` Flame Entity, located on Screen `{1, 1}` at `(192, 160)`.
+   - Collision volume: `[-9, 9] x [-9, 9]` bounding box around bubble origin.
+   - Water discriminator: `0x011EFC..0x011F02` distinguishes enemy (`0x0048`) vs environment target (`0x004C`).
+   - Interaction trigger: `0x011F58` sets flame substate `$66 = 0xFF` and transitions bubble to State 22 (Pop) for 4 frames.
+   - Extinguish lifecycle: 15 frames duration with alternating frame visibility (`flame_visible_ = ((flame_timer_ & 1) == 0)`).
+   - Slot deactivation & persistence: Slot deactivates at frame 15 and sets persistent flag bit in `0x00FF0DBC` (`0x018030`).
+   - Screen reload persistence: Checked during `trigger_screen_transition()`. Extinguished entities remain inactive.
+2. Integrate environmental interaction into native runtime:
+   - `src/game/entities/screen_entity.hpp` & `screen_entity.cpp`: added flame extinguish fields, timer, visibility toggle, contact damage hitbox `[-14, 14] x [-8, 8]`.
+   - `src/game/spirits/spirit_slots.cpp`: updated `update_dytto_ability()` to detect flame collision, trigger `extinguish()`, set `target_entity_hit = 0x004C`, and transition bubble to pop.
+   - `src/game/screen_instance.cpp`: added flame entity on screen `{1, 1}` at `(192, 160)` with persistent ID 1.
+   - `src/game/controlled_screen.hpp` & `controlled_screen.cpp`: added persistent room flag storage (`persistent_flags_` array), check on screen load/transition, flame contact damage, and flame slot deactivation flag setting.
+3. In-engine HUD diagnostics:
+   - Added all 7 requested fields: `ENV_TARGET_TYPE`, `ENV_TARGET_STATE`, `ENV_TARGET_X/Y`, `WATER_REACTIVE`, `LAST_ELEMENT_HIT`, `WORLD_FLAG`, `BUBBLE_STATE`.
+4. Deterministic tests:
+   - Added 8 unit tests in `tests/environment_interaction_test.cpp` and Section 18 integration tests in `tests/native_vertical_slice_test.cpp`.
+
+**Consequences:** Water Bubble now authentically interacts with environmental flame entities, extinguishing them with flashing visual feedback, updating room event flags, deactivating hazardous hitboxes, and persisting extinguished state across room transitions and reloads.
+
+# ADR-M15-DYTTO-ACTIVE-COMMAND-1 — Recompiled Dytto Active Command (Water Bubble) Pipeline
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** With Dytto summonable and persistent across screen transitions, the vertical slice required enabling the player to command the spirit to execute an authentic special ability. In Beyond Oasis, Button::A is repurposed when a spirit is active: tapping A produces Command 1 (Water Bubble), double-tapping produces Command 2 (Heal), and holding A produces Command 3 (Magic Storm). Command 1 triggers Dytto's Water Bubble ability, costing 5 SP (`0x011B28` & `0x011D8A`), transitioning Dytto to State 14 (Bubble Cast) with animation selector 6 (`0x011DA8`), and spawning a Water Bubble projectile (Type `0x0018`, `$A2 = 0xFF`) at frame 24 (`0x011E04..0x011EAC`) with 16x16 px piece geometry decoded from ROM `0x141412` (tile 248, pal 3). The bubble flies along player facing direction at 4.0 px/frame for up to 24 frames (`0x011F6A`), checks collision with enemies in bounding box `[-9, 9] x [-9, 9]` (`0x011EE6`), inflicts damage and stun upon hit, transitions to State 22 (Pop) with animation selector 36, and deactivates. Dytto returns to Follow State 2 with hover animation selector 4.
+
+**Decision:**
+1. Reverse-engineer authentic spirit command decoding and dispatch:
+   - Input decoder: `0x011A4C..0x011B26` monitors Button::A (`0x40` in `$FF165E`). Fresh press and release before 20 frames initiates a 6-frame double-tap window (`$FF19A1`). When the window expires, Command 1 (`$FF19A2 = 1`) is emitted.
+   - Command dispatch: `0x0121B4..0x0121CE` routes Command 1 to routine `0x011D8A`.
+   - SP gate & deduction: Player SP (`+$8E(A5)`) must be $\ge 5$; subtracts 5 SP (`player.sp -= 5`). If SP < 5, command is rejected and spirit remains in follow state.
+   - Cast sequence: Dytto enters State 14 (`+$04 = 14`), animation selector 6 (`+$2A = 6`), timer 24 ticks (`0x011DA8`).
+   - Projectile spawning: At frame 24, spawns Water Bubble entity (Type `0x0018`, substate `$A2 = 0xFF`), State 16 (Fly), velocity 4.0 px/frame cardinal, lifetime 24 ticks, pieces decoded from ROM `0x141412` (tile 248, pal line 3).
+   - Collision & reaction: Checks bounding box `[-9, 9] x [-9, 9]`. When colliding with enemy (Type `0x0048`), deals damage/stun, transitions bubble to State 22 (Pop) for 4 frames, and clears slot (`0x011FA0: clr.w $0(a6)`).
+   - Return to follow: Dytto returns to State 2 (Follow/Idle) with animation selector 4 upon cast completion.
+   - Room transition safety: Screen transition calls `cleanup_spirit_ability()`, clearing any active projectile and restoring Dytto to State 2.
+2. Integrate active command into native runtime:
+   - `src/game/spirits/spirit_slots.hpp` and `spirit_slots.cpp`: added `decode_dytto_command_input()`, `try_execute_dytto_command()`, `update_dytto_ability()`, `cleanup_spirit_ability()`, and command/projectile fields in `ActiveSpirit`.
+   - `src/game/controlled_screen.cpp`: hooked command decoding when spirit is active, updated ability and projectile rendering in `render_rom_backed()`, safely reset ability in `trigger_screen_transition()`, and extended debug overlay.
+3. In-engine HUD diagnostics:
+   - Added all 7 requested fields: `SPIRIT_CMD`, `SPIRIT_CMD_STATE`, `SPIRIT_CMD_TIMER`, `SPIRIT_SP_COST`, `SPIRIT_EFFECT_TYPE`, `SPIRIT_EFFECT_X/Y`, `SPIRIT_TARGET`.
+4. Deterministic tests:
+   - Added 10 unit tests in `tests/spirit_slots_test.cpp` and Section 17 integration test in `tests/native_vertical_slice_test.cpp`.
+
+**Consequences:** Dytto now responds to real player command inputs, executes the authentic Water Bubble ability, consumes 5 SP, spawns a ROM-backed 16x16 projectile, damages and stuns enemies, pops on contact or range expiry, and returns to follow state. All source files remain strictly $\le 500$ lines.
+
+# ADR-M15-SPIRIT-SUMMONING-PIPELINE-1 — Recompiled Authentic Spirit Summoning Pipeline
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the completion of the enemy death and item pickup loop, the vertical slice required introducing the core mechanic of Beyond Oasis / The Story of Thor: the spirit summoning system. In Beyond Oasis, spirits are summoned by the player via the Gold Armlet (Button::A) when the corresponding spirit slot has been acquired (tracked in `0x00FF0DBA` bits 0..3) and player magic resource (SP at `+$8E(A5)`) is available. Summoning allocates the spirit into the singleton spirit slot in RAM at `0x00FF1AA4` (stride `0xBC` after player `0x00FF19E8`), sets the spirit type (Dytto = Type `0x0018`), initializes elevation `z = z + 16` (`0x018D08`), enters State 26 (Appear) with animation selector 34 (`0x22`), and transitions to State 2 (Follow/Idle) with hover animation selector 4. The spirit tracks the player with smooth directional deltas (`0x01215E`) and hover elevation offset (`0x0123B4`), drains 1 SP every 45 frames (`0x011B72`), despawns upon SP exhaustion, and persists across screen transitions by teleporting to destination player coordinates (`0x03A464..0x03A47E`).
+
+**Decision:**
+1. Reverse-engineer authentic spirit summoning pipeline from ROM:
+   - First spirit selected: Dytto (Water Spirit), Entity Type `0x0018` (Row 11 at ROM `0x03F35A`).
+   - Slot mapping: Event `0x16` sets bit 0 of `0x00FF0DBA` (Slot 0). Acquired mask checked via `SpiritSlots::acquired(0)`.
+   - RAM slot: `0x00FF1AA4` (singleton spirit entity slot).
+   - Spawn routine: `0x014668..0x0146BE` and `0x018CDE..0x018D4C`.
+   - Initial position: `(player.x, player.y, player.z + 16)` with elevation offset `0x10.0000` (16 px) above summon point (`0x018D08`).
+   - Initial state: State 26 (`0x1A`), animation selector 34 (`0x22`).
+   - State transition: After appear timer (20 frames), advances to State 2 (`kSpiritStateFollow`), anim selector 4 (hover).
+   - Follow model: calculates delta vector towards player (`0x01215E`), hover elevation 48 px (`0x0123B4`), updates facing direction, steps towards player within leash bounds.
+   - Resource drain: Player SP at `+$8E(A5)`. Decrements 1 SP every 45 frames (`0x2D` ticks in `0x011B72`).
+   - Despawn: Upon SP == 0, spirit deactivates (`active = false`, State 28 `0x1C`).
+   - Screen transition: Spirit persists across rooms, teleporting to player destination coordinates (`0x03A464..0x03A47E`).
+   - Duplicate slot protection: Second summon attempt rejected while spirit is active (`NO_DUPLICATE_SLOT`).
+2. Integrate spirit pipeline into native runtime:
+   - `src/game/spirits/spirit_slots.hpp` and `spirit_slots.cpp`: added `ActiveSpirit`, constants, `try_summon_spirit()`, `update_active_spirit()`, `reposition_spirit_on_screen_transition()`, `despawn_spirit()`.
+   - `src/game/player/player.hpp`: added `sp{100}` and `max_sp{100}` resource fields.
+   - `src/game/controlled_screen.cpp`: integrated Button::A summon, spirit update, spirit sprite piece rendering, screen transition repositioning, and debug overlay.
+3. In-engine HUD diagnostics:
+   - Added all 8 requested spirit fields to `render_debug_overlay()`: `SPIRIT_ACTIVE`, `SPIRIT_TYPE`, `SPIRIT_SLOT`, `SPIRIT_STATE`, `SPIRIT_X/Y`, `SPIRIT_TARGET_X/Y`, `SPIRIT_RESOURCE`, and `SPIRIT_ANIM`.
+4. Deterministic tests:
+   - Added 10 unit tests in `tests/spirit_slots_test.cpp` and Section 16 integration test in `tests/native_vertical_slice_test.cpp`.
+
+**Consequences:** The first authentic spirit (Dytto) is summonable in the native vertical slice, accurately following the player, consuming magic resource, persisting across screen transitions, and deactivating on resource exhaustion. File line limit (<=500 lines) and frozen helper island policies are strictly preserved.
+
+# ADR-M15-ENEMY-DEATH-LOOT-DROP-PICKUP-1 — Recompiled Authentic Enemy Death -> Loot Drop -> Player Pickup Pipeline
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the player melee attack and enemy damage/death response, the vertical slice required completing the gameplay feedback loop: defeated enemies must produce authentic ROM-derived item drops, which spawn as authentic entities in the world and can be collected by the player to apply real game effects (such as health restoration). In Beyond Oasis, enemy death does not immediately delete the entity: it triggers a 16-frame flashing death state, evaluates an 8-byte loot table via the drop spawn routine, allocates an item entity from the object pool (Entity Type 0x0008), initializes coordinates with elevation and vertical bounce velocity, and sets the item in its idle ground state. When the player overlaps the item's hitbox, the item effect routine restores player health, latches single consumption, deactivates the item entity, and screen transitions properly isolate screen-local drops.
+
+**Decision:**
+1. Reverse-engineer authentic M68K enemy death and drop pipeline:
+   - Death completion routine: `0x017E82..0x017F6A`. Upon HP <= 0, enemy enters State 2 (Death), animation 2, timer `$2(a6) = 16` ticks (`0x10`). Counts down for 16 frames while flashing sprite visibility (`bchg #1, $36(a6)`). Upon timer expiration: loads loot table `lea.l $17f6c(pc), a1`, calls drop routine `jsr $f476.l`, deactivates slot `clr.w $0(a6)`.
+   - Drop table at ROM `0x017F6C`: 8 bytes `[0x0000, 0x1E01, 0x0000, 0x1E01]`. Selects Item `0x1E` (cheese / healing food) and quantity 1.
+   - Drop decision & item spawn routine: `0x00F476..0x00F538`. Allocates entity slot from pool `$ff2abc` via `bsr.w $d9be`, sets type to Type `0x0008` via `bsr.w $8d06`, copies enemy position `(x, y, z + 1)` with elevation offset `addq.w #1, d0`, initial vertical velocity `vz = 0x80000`, sets item state `+$04 = 2` (Ground / active idle).
+2. Model Item Entity (Type `0x0008`) using canonical entity descriptor:
+   - Row 3 at ROM `0x03F35A`: `dim_x = 8, dim_y = 8`, GFX descriptor `0x155AF6`, animation descriptor `0x155D76`.
+   - Decodes frame 0 sprite piece from `0x155B76`: 1 piece, 3x3 tiles (`w=3, h=3`), offset `(0, -12)`, base tile index 1268, palette line 3.
+   - Spawns drop entity using standard `ScreenEntity` runtime; rendered with existing entity multi-tile renderer without synthetic icons.
+3. Model pickup hitbox and one-time consumption:
+   - Pickup overlap check (`0x0082F8` / `0x00B852`): Item AABB `[-4, 4] x [-4, 4]` against player footprint radius 10 (`[-10, 10] x [-10, 10]`), elevation gate `abs(player_z - item_z) <= 16`.
+   - One-time consumption: When collected, `item.collect()` deactivates slot (`active_ = false`), preventing duplicate pickup.
+4. Recompile item effect routine (`0x0053A2..0x0053E8`):
+   - Item `0x1E`: restores `player.max_hp / 4` (25 HP for max 100), clamped to max HP: `player.hp = min(player.max_hp, player.hp + 25)`.
+   - Tracks `last_pickup_type = 0x001E`, `last_pickup_heal = 25`, increments `item_count`.
+5. Screen lifetime / persistence:
+   - Drops are screen-local; screen transitions discard temporary drops when reloading destination screen entities from ROM.
+6. Extend in-engine HUD diagnostics with all 7 requested fields:
+   `DROP_TYPE`, `DROP_STATE`, `DROP_X/Y`, `DROP_ACTIVE`, `PICKUP_TARGET`, `PLAYER_HP/CURRENCY/ITEM_COUNT`, and `LAST_PICKUP`.
+7. Add 10 deterministic tests in `tests/native_vertical_slice_test.cpp` verifying drop spawn, position matching, activity, rendering, range gating, pickup overlap, single effect application, removal, screen transition clearing, and deterministic RNG.
+
+**Consequences:** Defeated enemies authentically produce loot drops that can be picked up to restore player HP, completing the full combat loop on the native vertical slice. All files strictly comply with the <=500 lines limit. Frozen helper island policy is maintained.
+
+# ADR-M15-PLAYER-MELEE-ATTACK-ENEMY-DAMAGE-1 — Recompiled Player Melee Attack Path and Enemy Damage/Death Response
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the player ↔ moving enemy (Type 0x0048) harmful contact and damage pipeline, the vertical slice required the reciprocal combat path: player melee attack capability using original ROM semantics. In Beyond Oasis, basic melee attacks (Button::B) are not instantaneous AABB volumes: they involve structured startup, active, and recovery phases, movement lock, directional weapon bounding boxes looked up from ROM tables, hit-once-per-swing latches to prevent multi-hit exploits, and enemy-side damage reception, hurt/recoil state machines, and death deactivation.
+
+**Decision:**
+1. Reverse-engineer authentic M68K player attack path:
+   - Button::B attack input handler (`0x004A8E: btst.b #4, $03(a6)`).
+   - Attack state transition: sets movement state `+$04 = 10` (State 10: Melee Attack), zeros velocity `(+$4E, +$52) = (0, 0)`, and resets attack timer `+$36(A6) = 0`.
+   - Frame timing: 9 frames total duration comprising 4 startup frames (0..3, `attack_active = false`), 2 active hit frames (4..5, `attack_active = true`), and 3 recovery frames (6..8, `attack_active = false`). Directional movement is locked during the entire 9-frame attack sequence.
+2. Reconstruct authentic player weapon hitbox from ROM table `0x058176` (Record 0, dagger/basic melee):
+   - Offsets relative to player center `(world_x, world_y)`:
+     * Dir 0 (Up): `[-8, 7] x [-40, -9]`
+     * Dir 1 (Right): `[8, 47] x [-8, 7]`
+     * Dir 2 (Down): `[-8, 7] x [8, 47]`
+     * Dir 3 (Left): `[-47, -8] x [-8, 7]`
+   - Hitbox is active *only* during frames 4 and 5; returns `std::nullopt` during startup and recovery.
+3. Recompile enemy damage receiver, hurt state, and death lifecycle for Type `0x0048`:
+   - Single-hit latch: `PlayerState::attack_hit_latched` (ROM `bit 3 of $37(a6)`) prevents multiple damage applications within a single swing.
+   - Damage application (`ScreenEntity::apply_damage()`): decrements enemy HP by 10 (Type 0x0048 HP: 20 -> 10 on first hit).
+   - Hurt reaction: when HP > 0, actor enters State 4 (Hurt), setting hurt timer to 20, invulnerability timer to 20, knockback timer to 6, and knockback velocity to 3.0 px/frame (`0x30000`) along attack direction. Recovers to State 1 upon timer expiry.
+   - Death transition: when HP <= 0 on second hit (10 -> 0), actor enters State 2 (Death), clearing active flag `clr.w $0(a6)` (`active_ = false`) to deactivate the slot and exclude it from collision and updates.
+4. Model player attack fields in `PlayerState`: `attack_state (0)`, `attack_timer (0)`, `attack_active (false)`, `attack_direction (0)`, `attack_hit_latched (false)`, `last_hit_damage (0)`, and `is_attacking()` predicate.
+5. Recompile portable C++20 routines in `src/game/player/player.cpp`:
+   - `start_player_attack()`: initiates State 10 attack and movement lock.
+   - `update_player_attack()`: advances attack frames, toggles active window, and restores normal control upon completion.
+   - `player_attack_hitbox()`: evaluates directional transforms from ROM table `0x058176`.
+6. Enforce screen transition safety: screen transitions clear player attack state and reset enemy combat latches.
+7. Extend in-engine HUD diagnostics with all 8 requested combat fields:
+   `PLAYER_ATK_STATE`, `PLAYER_ATK_TIMER`, `PLAYER_ATK_ACTIVE`, `PLAYER_ATK_BOX`, `ENEMY_HP`, `ENEMY_HURT`, `ENEMY_STATE`, and `LAST_HIT_DAMAGE`.
+
+**Consequences:** The player can now engage and defeat moving enemies using authentic ROM combat mechanics. All files strictly comply with the <=500 lines limit. Frozen helper island policy is maintained.
+
+# ADR-M15-ENEMY-CONTACT-DAMAGE-PIPELINE-1 — Recompiled Authentic Player ↔ Moving Enemy (Type 0x0048) Contact and Damage Pipeline
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following the recompiled moving actor state machine for Type 0x0048, the vertical slice required authentic gameplay interaction between the moving actor and the player. In Beyond Oasis, enemy contact is not simply generic AABB intersection: physical movement blocking must be strictly distinguished from directional harmful attack collision, damage gating must respect invulnerability timers and hurt states, knockback vectors must follow attacker facing direction with authentic speed and duration, knockback movement must be grounded in the terrain collision grid, and control must return to normal upon recovery.
+
+**Decision:**
+1. Reverse-engineer the authentic M68K combat and collision pipeline:
+   - Entity-player collision loop (`0x00BC8E` -> `0x00BDE0`): tests active pool entities against player `0xFF19E8`.
+   - First-layer invulnerability gate (`0x00BE4C: tst.b $82(a0); bne $be5c`): blocks all harmful contact while invulnerability timer `$82 > 0`.
+   - Second-layer invulnerability bit test (`0x00BDEE: btst.b #3, $38(a0); bne $be5e`).
+   - Contact resolution (`0x00BEBA` / `0x00BED4`): sets attacker pointer `+$7E(A0)`, invulnerability timer `+$82(A0) = 30` frames, damage code `+$86(A0)`, knockback timer `+$83(A0) = 6` frames, and hit direction `+$84(A0) = attacker.direction`.
+   - Knockback vector calculation (`0x00BF2E`): cardinal speed `0x0300` (fixed-point `0x30000`, 3.0 px/frame) and diagonal `0x02C0` dispatched via `0x00E2D4` along hit direction `d5`, written to knockback velocity `(+$4E, +$52)`.
+   - Player damage handler (`0x00557A` / `0x0057FA..0x005942`): resolves raw damage (`10 HP` for Type 0x0048 from Record 0 byte +2 at ROM `0x058C82`), computes effective damage (`max(1, raw - defense)`), decrements player HP at `+$8A`, and sets player movement state `+$04 = 24` (State 24: Hurt / Knockback).
+   - Hurt update routine (`0x005CC8`): decrements knockback timer `+$83`, displaces player by knockback velocity `(+$4E, +$52)` with terrain collision gating, and recovers to normal control State 0 (`+$04 = 0`) via `0x0062CC` when timer expires.
+   - Invulnerability timer countdown (`0x00E682`): decrements `+$82` each frame down to 0.
+2. Distinguish physical blocking from directional attack hitboxes:
+   - Physical blocking uses `hitbox()` (`8x8` half-extents `4x4`), blocking player movement without damage.
+   - Harmful attack uses `attack_hitbox()`, an authentic directional box from behavior descriptor Record 0 at ROM `0x058C82`:
+     * Dir 0 (Up): `[-8, 8] x [-16, -4]`
+     * Dir 1 (Right): `[4, 16] x [-6, 6]`
+     * Dir 2 (Down): `[-8, 8] x [4, 16]`
+     * Dir 3 (Left): `[-16, -4] x [-6, 6]`
+   - Attack hitbox is active *only* when Type 0x0048 is in State 2 (Charge). In States 1 (Wait) and 3 (Return) or on static props (Type 0x002A chest), `attack_hitbox()` returns `nullopt`.
+3. Model player damage fields in `PlayerState`: `hp (100)`, `max_hp (100)`, `invuln_timer (0)`, `hurt_timer (0)`, `knockback_x_fixed (0)`, `knockback_y_fixed (0)`, `contact_entity (0)`, and `damage_gate_open (false)`.
+4. Recompile portable C++20 damage routines in `src/game/player/player.cpp`:
+   - `apply_enemy_contact_damage()`: gates damage on invulnerability/hurt timers; decrements HP by 10; sets hurt timer to 6, invulnerability timer to 30, movement state to 24, and directional knockback velocity.
+   - `update_player_hurt_knockback()`: updates timers, applies knockback velocity with terrain collision checks via `evaluate_terrain_gate`, and recovers to State 0 when knockback completes.
+5. Enforce screen transition isolation: screen transitions clear `contact_entity`, `damage_gate_open`, `hurt_timer`, `invuln_timer`, and knockback velocity.
+6. Extend in-engine HUD diagnostics with the 7 required fields: `PLAYER_HP`, `PLAYER_STATE`, `INVULN`, `KNOCKBACK_X/Y`, `CONTACT_ENTITY`, `DAMAGE_GATE`, `ACTOR_STATE`.
+
+**Consequences:** Moving Type 0x0048 actors interact authentically with the player using exact ROM gameplay semantics. No synthetic physics or arbitrary knockback values. All source files strictly comply with the <=500 lines limit.
+
+# ADR-M15-MOVING-ENTITY-STATE-MACHINE-1 — Recompiled First Real Moving ROM-Backed Entity State Machine
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following static props, multi-tile sprite rendering, animation playback, and player collision/interaction (Type 0x002A chest), the vertical slice required dynamic actors with original ROM state machines. Enemies and NPCs in Beyond Oasis rely on bounded state routines driven by timers, directional detection corridors, velocity calculation, terrain collision gating, and cyclic return-to-anchor behavior.
+
+**Decision:**
+1. Select Type 0x0048 (Row 35 in table 0x0003F2FA), a recurring patrol enemy/hazard with dimensions 8x8, GFX descriptor table 0x165E12 (6 multi-tile sprite frames), animation sequence table 0x040F4A, and update handler dispatched via enemy jump table 0x00DF54 to 0x01778C.
+2. Reverse-engineer the 4-state state machine at 0x01778C:
+   - State 0 (0x0177A6): Init / Anchor setup ($a8 = $8, $aa = $c, $2a = 0, state = 1).
+   - State 1 (0x0177C6): Wait / Line-of-sight detection using 4-directional table 0x1783E (24 tiles = 192 px range) checked against player bounding box via 0x00C1CE. When player is detected, sets fixed-point velocity via 0x00E2D4, anim_selector = 2, timer = $9e (30 ticks), state = 2.
+   - State 2 (0x01784E): Walk / Charge movement. Advances position by fixed-point velocity. Decrements timer. Tests terrain collision via ByteGridView and native directional gate 0x00938E (evaluate_terrain_gate). When timer expires or terrain blocks, toggles direction bit 1 (bchg.b #1, $17(a6)), anim_selector = 4, state = 3.
+   - State 3 (0x0178B2): Return to anchor ($a8, $aa) via 0x00E45E. Steps towards anchor. When distance == 0, restores forward direction, anim_selector = 0 (Idle), state = 1.
+3. Introduce native `ActorRuntime` model in `src/game/entities/screen_entity.hpp` holding state, substate, timer, direction, anchor coordinates, velocity deltas, animation selector, wait duration, speed, and halted flag.
+4. Recompile state transitions in pure C++20 (`update_actor_state_machine()`), coupling sprite frame selection (Frame 0 idle, Frame 3 walk/charge, Frame 1 turn) to state.
+5. Enforce fail-closed behavior on unsupported states (`actor_.halted = true`), freezing the actor and keeping the last safe frame.
+6. Integrate Type 0x0048 onto Screen 0x0100 at (160, 120) with direction 2 (Down), coexisting with chest Type 0x002A at (192, 160).
+7. Extend HUD diagnostics with actor state machine values (`ACT_ST=... TMR=... DIR=...`).
+
+**Consequences:** The native engine now features fully authentic ROM-driven dynamic actor movement, animation, terrain collision, and patrol cycles. Helper count remains preserved (frozen helper island policy). All files strictly comply with the <=500 lines limit.
+
+# ADR-M15-ENTITY-COLLISION-INTERACTION-1 — ROM-Backed Player ↔ Entity Collision and Interaction
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:** Following authentic multi-tile sprite rendering and ROM-driven animation playback for ScreenEntity in ControlledScreen, entities remained purely visual. Player movement could pass directly through physical objects (such as chests), and interactive state transitions (opening chests on player action input) were not modeled.
+
+**Decision:**
+1. Reconstruct M68K bounding box conventions from ROM consumers `0x009C7C..0x009CFE` (static overlap test) and `0x00BB18..0x00BBA6` (entity pool collision). Establish that positions are center-based (`world_x, world_y, world_z`) and dimensions (`dim_x = 24, dim_y = 20` for Type 0x002A at table `0x0003F2FA`) define half-extents (`radius_x = dim_x / 2 = 12, radius_y = dim_y / 2 = 10`, mirrored at pool offsets `+0x42` and `+0x44`).
+2. Implement `EntityHitbox` (`src/game/entities/screen_entity.hpp`) with `left, top, right, bottom, z_min, z_max` and `overlaps()` method.
+3. Integrate entity collision into the player movement update pipeline: candidate movement -> terrain collision -> entity collision check -> accept/revert position. If candidate overlaps an active entity hitbox, movement is rejected (`moved = false, blocked = true`).
+4. Implement interaction probe checking proximity (within 8 px expanded hitbox) and directional facing. When player faces an entity within range, candidate is acquired (`interaction_target_type = entity.type_id()`, `interaction_state = READY`).
+5. Wire action button inputs (`Button::A`, `Button::B`, `Button::C`) to trigger entity interaction (`trigger_interaction()`). For Type 0x002A (chest), trigger begins opening animation sequence from frame 0 -> frame 1 -> frame 2, where it permanently halts in `OPENED` state without looping.
+6. Enforce screen transition isolation: screen transitions clear `overlap_detected_`, `interaction_target_type_`, and reset `interaction_state_str_ = IDLE`. ScreenInstance entity ownership remains authoritative.
+7. Extend in-engine debug HUD to 24 lines, adding `ENTITY_HITBOX`, `PLAYER_HITBOX`, `OVERLAP`, `INTERACTION_TARGET`, and `INTERACTION_STATE`.
+
+**Consequences:** Physical blocking on all four sides and diagonal approaches is authentic. Chest interaction transitions from IDLE -> READY -> TRIGGERED (OPENING) -> OPENED. Screen transition guarantees zero dangling collision references. All files remain strictly <= 500 lines.
+
+# ADR-M15-CONTROLLED-SCREEN-TRANSITION-1 — Native ControlledScreen Multi-Screen Transitions
+**Status:** Accepted
+**Date:** 2026-10-13
+
+**Context:** Following the initial rendering of canonical ROM Screen 0x0100, the native engine must move from a single isolated screen to connected screens without process restarts. The transition must ensure explicit resource ownership, eliminate dangling pointers to decompressed grid views, update collision boundaries immediately, and provide seamless player and camera handoff.
+
+**Decision:**
+1. Introduce `ScreenInstance` (`src/game/screen_instance.hpp`/`.cpp`) encapsulating screen descriptor data, decompressed primary stream bytes, 512 Genesis tiles, CRAM palettes, decoded 64x28 tilemap words, and the 64x64 `world::ByteGridView`.
+2. Manage screen lifetimes using `std::unique_ptr<ScreenInstance> current_screen_` and `previous_screen_` in `ControlledScreen`. On transition, `previous_screen_` retains the old screen while `current_screen_` is instantiated from the target `ScreenId`, re-binding `terrain_` safely to the new screen's byte grid without dangling pointers.
+3. Select adjacent Screen B as setup `0x0101` (`Group: 1, Index: 1`), descriptor `0x02E612`, primary stream `0x212684` (1,590 compressed -> 12,460 decompressed bytes), sharing GFX resources `[13, 14, 15, 16]`.
+4. Support both programmatic/edge transitions (`EDGE_BOUNDARY_TRIGGER`) and debug transitions (`DEBUG_KEY_TRANSITION` mapped to `Button::X` / `'T'`).
+5. Handoff player position deterministically: entering 0x0101 at `(160, 156)` and returning to 0x0100 at `(160, 180)`, preserving direction and physics. Re-center camera bounded within `[0, 512-320] x [0, 512-224]`.
+6. Extend debug overlay with `CURRENT_SCREEN_SETUP_ID`, `PREVIOUS_SCREEN_SETUP_ID`, `TRANSITION_COUNT`, `PRIMARY_STREAM`, `GRID_BASE/OFFSET`, and `PLAYER_CELL`.
+
+**Consequences:** Seamless runtime transitions between authentic ROM screens 0x0100 and 0x0101 occur without restarting the executable. Differential collision proves the new screen's collision grid is immediately active. All files remain strictly below 500 lines.
+
+# ADR-M15-CONTROLLED-SCREEN-ROM-BACKED-1 — Native ControlledScreen Integration of Canonical ROM Screen 0x0100
+**Status:** Accepted
+**Date:** 2026-10-13
+
+**Context:** The existing `ControlledScreen` rendered a synthetic 32x28 obstacle course fixture with uniform colored rectangles. To advance towards a native game engine, the executable must render authentic game screens directly from the canonical Beyond Oasis ROM using real graphics decompression, Genesis VDP tile representation, screen descriptors, tilemaps, palettes, and collision byte-grids.
+
+**Decision:**
+1. Extend `ControlledScreen` with an optional `std::span<const std::uint8_t> rom` constructor parameter. If empty, the deterministic synthetic fixture is preserved.
+2. When a canonical ROM is supplied, wire Screen Setup `0x0100` (`Group: 1, Index: 0`), reading descriptor at ROM `0x02E57E`.
+3. Decompress primary resource `STREAM_211F7A` at ROM `0x211F7A` (1,801 compressed -> 12,460 decompressed bytes) via `decompress_graphics()`.
+4. Bind the 64x64 collision grid from decompressed offset `0x204` to `world::ByteGridView`.
+5. Load GFX resources `[13, 14, 15, 16]` from ROM via `load_graphics_resource()`, converting into 512 8x8 4bpp Genesis tiles.
+6. Parse CRAM palette lines 1 and 2 from decompressed offset `0x3004..0x3044` using `cram_to_rgb()`.
+7. Render 64x28 Genesis VDP tilemap words from decompressed offset `0x1204..0x2004` with priority, palette selection, horizontal/vertical flipping, and bounded camera scrolling.
+8. Retain existing native player physics at `TEST_SPAWN (160, 160)` with collision evaluated against the ROM-derived byte grid.
+9. Provide an in-engine toggleable 8-line diagnostic overlay (`Button::Mode` / `Tab` / `M`) via a dedicated modular bitmap font renderer (`oasis::game::render::draw_text`).
+
+**Consequences:** The native executable `oasis.exe` now visibly renders an authentic ROM screen (screen setup `0x0100`) with authentic background tiles, palette, and collision constraints, while retaining zero regressions on synthetic fixture tests. Source files adhere to the strict <=500 lines constraint.
+
 # ADR-M13-SCHEDULER-INSTRUCTION-STEP-FIXTURE-1 — Isolated GPGX Scheduler Oracle
 **Status:** Accepted for the tested synthetic instruction subset only
 **Date:** 2026-10-13
@@ -26,6 +757,339 @@ unchanged.
 
 **Evidence:** `docs/reports/THOR_SCHEDULER_FIXTURE_20261013.md` and machine
 receipts under ignored `build/scheduler-fixture-20261013/`.
+
+# ADR-M12-STRUCTURAL-DESCRIPTOR-STREAM-V3 — Descriptor-Selected Variable-Length Structural Contributions
+**Status:** Accepted for structural consumer-family evidence only
+**Date:** 2026-10-02
+
+**Context:** The existing fixed-size and pointer-table contribution schemas do
+not represent one family resource that owns both a descriptor record and its
+parser-bounded variable-length target, with a directly replayable provenance
+chain. Extending the established variable-stream v2 validator in place would
+invalidate its pinned source hashes and risk changing already accepted family
+contracts.
+
+**Decision:** Add the isolated `thor.static-family-contribution.v3` schema in
+`static_family_descriptor_stream.py`. It records descriptor and stream ranges
+per resource, source-artifact hashes, exact parser boundary evidence, a family
+descriptor contract, and root→descriptor→stream→consumer→boundary edges. The
+AUTO49 adapter requires agreement between deterministic Python and native
+decoder consumed ends and output lengths, and builds a removable structural
+view by exact range union and intersection.
+
+**Consequences:** v1, v2, the runtime bitmap, `TOTAL_PROVEN`, `SOURCE_OWNED`, and
+canonical SQLite remain unchanged. This schema establishes structural
+membership only and does not claim runtime execution or graphics semantics.
+
+# ADR-M12-W5C-EXACT-AUDIO-RESOURCE-OWNERSHIP-PROMOTION-V1 — Exact Audio Resource Ownership, Partition Split, and Canonical Promotion
+**Status:** Accepted for M12 W5c
+**Date:** 2026-09-21
+
+**Context:**
+Following W5 round-trip verification, two Mode 0 audio resources (`AUDIO_RESOURCE_FORMAT_A_0001` at `0x0BD540..0x0BF768`, 8,744 bytes, and `AUDIO_RESOURCE_FORMAT_A_0002` at `0x0BC95C..0x0BD540`, 3,044 bytes, combined 11,788 bytes) were proven byte-identical to canonical ROM without original nibble/byte dependence in the encoder. The pre-promotion canonical ROM knowledge map holds emission range `0x0B8000..0x0BF768` (30,568 bytes) as unowned `UNKNOWN` (`source_owned = 0`). Under ADR-0044, exact promoters alone may update ownership under their current gates.
+
+**Decision:**
+1. **Ownership Eligibility Qualification**:
+   - Qualify exact ownership eligibility for `AUDIO_RESOURCE_FORMAT_A_0001` (8,744 bytes) and `AUDIO_RESOURCE_FORMAT_A_0002` (3,044 bytes) under claim type `RECONSTRUCTION_VERIFIED` (`STATIC_VERIFIED`).
+   - Confirm boundaries, format, deterministic decode, semantic inverse encode, byte-identical round-trip, encoder independence, and canonical ROM identity.
+2. **Canonical Emission Partition Split**:
+   - Authorize canonical knowledge tooling (`w5_audio_promote.py`) to split canonical emission range `0x0B8000..0x0BF768` into three exact disjoint intervals:
+     * `[0x0B8000, 0x0BC95C)` (18,780 bytes): unpromoted `UNKNOWN`, `source_owned = 0`, artifact `blobs/0B8000_0BC95C.bin`.
+     * `[0x0BC95C, 0x0BD540)` (3,044 bytes): `AUDIO_RESOURCE_FORMAT_A_0002`, `SOUND_DATA_CONTAINER_CONFIRMED`, `DATA_KNOWN`, `source_owned = 1`, `DATA`, artifact `data/audio_0BC95C.bin`.
+     * `[0x0BD540, 0x0BF768)` (8,744 bytes): `AUDIO_RESOURCE_FORMAT_A_0001`, `SOUND_DATA_CONTAINER_CONFIRMED`, `DATA_KNOWN`, `source_owned = 1`, `DATA`, artifact `data/audio_0BD540.bin`.
+3. **Canonical Claims and Proof Evidence**:
+   - Create `rom_object` entries (`AUDIO_DATA`), `claim` entries (`SOURCE_OWNED = true, STATIC_VERIFIED`, `SOURCE_CLASS`, `FORMAT_SPEC`), and `evidence_ref` entries linking W5 acceptance proofs (`w5_audio_format_spec.json`, `w5_audio_resources.json`, `w5_roundtrip_receipt.json`, `w5_witness_alignment.json`).
+4. **Idempotence and Non-Duplication**:
+   - Re-running promotion on an already-promoted map produces `NEW_SOURCE_OWNED_BYTES = 0` and leaves hashes and partitions byte-for-byte identical.
+5. **Strict Scope Prohibition**:
+   - Descriptor tables (`0x0B8000..0x0B8050`), bank padding (`0x0BF768..0x0C0000`), Mode 1 resources, unverified neighbouring candidate resources, and whole audio banks remain strictly unpromoted as `UNKNOWN` or pre-existing padding until covered by independent reconstruction proof.
+6. **SOURCE_OWNED Accounting**:
+   - Increment `SOURCE_OWNED` from `1,475,600` to `1,487,388` bytes (`+11,788` bytes, 47.2827911377% of ROM).
+
+**Consequences:**
+1. Canonical knowledge map `docs/reports/THOR_M12_CANONICAL_ROM_KNOWLEDGE_MAP_2D.json` and its report are regenerated with updated hashes and metrics.
+2. Partition coverage remains complete across all 3,145,728 bytes with 0 gaps, 0 overlaps, and 0 out-of-bounds rows.
+3. Checkpoint emitted: `PASS_EXACT_AUDIO_RESOURCE_OWNERSHIP_V1`.
+
+# ADR-M12-W5-EXACT-AUDIO-RESOURCE-FORMAT-ROUNDTRIP-V1 — Non-Linear Delta-PCM (Format A), Bank Descriptor Tables, Canonical IR, and Byte-Identical Round-Trip
+**Status:** Accepted for M12 W5
+**Date:** 2026-09-21
+
+**Context:**
+Following the W4 Level-3 causal witness from early-boot banked ROM reads (`0x0BEDE4..0x0BEDED`) to YM2612 DAC writes (`0x4001`), the exact audio resource format, true resource boundaries, decoding logic, encoding logic, and hardware alignment must be proven end-to-end without guesswork or promotional semantics.
+
+**Decision:**
+1. **Exact Consumer & Decoder Routines**:
+   - The Z80 sound driver is located at ROM `0x062E38..0x064E38` (copied to Z80 RAM `0x0000..0x1FFF` during M68K boot).
+   - Sound command `0x11` at `0x064F` invokes descriptor parser and bank switcher at `0x0704..0x076D`.
+   - Bank switching writes 9 bits sequentially into Genesis bank latch `0x6000` via routine `0x0A0B..0x0A40`.
+   - Mode 0 sample loop resides at `0x080D` (high nibble) and `0x0854` (low nibble), with loop advancement at `0x0880` (`INC HL; DEC BC`) and termination check (`OR B, C; JP Z, 0x0892`).
+   - Hardware DAC emitter resides at `0x0968..0x0980`, writing to YM2612 port 0 register 0x2A (`(IY+0)=0x2A; ADD A, D; LD D, A; LD (IY+1), A`).
+2. **Exact Descriptor Table Layout**:
+   - Each of the 8 32KB audio banks (ROM `0x080000..0x0B8000`) begins with an 80-byte table (`0x8000..0x804F`) containing 16 5-byte entries.
+   - Entry structure: bytes 0..1 = 16-bit logical start address (`0x8000..0xFFFF`); bytes 2..3 = 16-bit compressed byte length; byte 4 = playback mode (0 = standard, 1 = hold/interpolate via `0x0999`).
+   - Compressed audio data starts immediately following the table at offset `0x8050` and packs contiguously until the end of the last resource, followed by `0xFF` bank padding.
+3. **Format Semantics (AUDIO_FORMAT_A)**:
+   - Initial accumulator `D = 0x80` (128 decimal, unsigned 8-bit PCM midpoint / silence).
+   - Lookup table at Z80 RAM `0x0008..0x0016`:
+     `[0, +1, +2, +6, +12, +24, +48, +96, -96, -48, -24, -12, -6, -2, -1]`.
+   - Nibble 0: repeat previous delta `E` for 3 consecutive sample ticks.
+   - Non-zero nibbles: load delta from table, add to accumulator `D`, emit sample.
+4. **Exact Boundaries for Primary Resource**:
+   - `AUDIO_RESOURCE_FORMAT_A_0001`: Bank 0x17, Entry 7 (`0x0BD540..0x0BF768`, 8,744 bytes, mode 0).
+   - Strictly encloses W4 witness cluster `0x0BEDE4..0x0BEDED` at byte offset 6,308.
+   - Decoded sample at byte offset 6,308 low nibble matches observed W4 DAC write `0x78` exactly.
+5. **Canonical IR & Byte-Identical Round-Trip**:
+   - Pure Intermediate Representation (`AudioResourceIR` / `AudioToken`) represents tokenized delta events and decoded PCM samples without storing original binary blobs.
+   - Deterministic encoder reconstructs original byte stream with 100% byte-identical SHA-256 match for primary resource (`AUDIO_RESOURCE_FORMAT_A_0001`), secondary resource (`AUDIO_RESOURCE_FORMAT_A_0002`), and across multiple audio banks.
+6. **SOURCE_OWNED Reconciliation**:
+   - All Gates A through J verified green.
+   - Manifest promotion delta deferred (`SOURCE_OWNED_DELTA = 0`) to preserve ADR-0044 manifest invariants until a full audio bank re-partitioning manifest is formally authorized.
+   - Checkpoint emitted: `PASS_EXACT_AUDIO_RESOURCE_ROUNDTRIP_V1`.
+
+**Consequences:**
+1. Complete deterministic codec implemented in `src/tools/thor_evidence/w5_audio_decode.py` and `w5_audio_encode.py`.
+2. All 9 required W5 acceptance artifacts emitted in `build/m12-w5-acceptance/`.
+3. 18 comprehensive tests pass in `tests/w5_audio_format_test.py`.
+4. Zero promotional or musical names used.
+
+# ADR-M12-W4-ACTIVE-AUDIO-RESOURCE-ANALYSIS-V1 — Four Causal Levels, Last-Writer Memory Handoff, Port-Local Audio Sinks, and Neutral Audio Resource Classification
+**Status:** Accepted for M12 W4
+**Date:** 2026-09-21
+
+**Context:**
+Connecting M68K sound commands to Z80 sound driver execution, Z80 RAM state, and physical audio outputs (YM2612 FM synthesis and PSG) requires strict evidentiary separation between temporal coincidence, memory dependencies, instruction dataflow, and strict end-to-end causal chains. Hardware audio interfaces require port-local latching semantics (YM2612 Part 1: 0x4000->0x4001; Part 2: 0x4002->0x4003) and exact hardware register recognition (DAC data 0x2A, enable 0x2B; PSG 0x7F11). Candidate audio resources in canonical ROM must be classified strictly with neutral taxonomy (AUDIO_COMMAND_CANDIDATE, AUDIO_TABLE_CANDIDATE, AUDIO_PATCH_CANDIDATE, AUDIO_RESOURCE_RANGE_CANDIDATE) without premature promotional music semantics (SONG, TRACK, INSTRUMENT).
+
+**Decision:**
+1. **Four Causal Levels**:
+   - Level 0 (`TEMPORAL_ASSOCIATION`): Temporal ordering ($T_1 < T_2$) within same execution context `(run_id, epoch)`. Necessary but not sufficient for causality.
+   - Level 1 (`MEMORY_DEPENDENCY`): Exact last-writer rule. M68K writes to Z80 window ($A00000..$A01FFF), Z80 reads matching value at $T_{read} > T_{write}$, and no intervening write occurs. Yields `OBSERVED_HANDOFF` (`DERIVED_EXACT`).
+   - Level 2 (`DATAFLOW_DEPENDENCY`): Exact Z80 instruction dataflow tracking across registers (A, B, C, D, E, H, L, IX, IY), memory, stack, and shadow registers. Unsupported opcodes terminate tracking conservatively without speculation.
+   - Level 3 (`STRICT_CAUSAL_CHAIN`): Provenance chain connecting verified source (M68K handoff or banked ROM read) to hardware audio sink through unbroken Level 2 dataflow (`DERIVED_EXACT`).
+2. **Port-Local YM2612 Latching Semantics**:
+   - Part 1: Port 0x4000 latches register address for Port 0x4001.
+   - Part 2: Port 0x4002 latches register address for Port 0x4003.
+   - Cross-port pairing (e.g. 0x4000 pairing with 0x4003) is strictly prohibited. An address write overwrites any previous unconsumed latch on that port.
+   - YM2612 register 0x2A is DAC data, 0x2B is DAC enable. Port 0x7F11 is PSG.
+3. **Input Evidence Authenticity**:
+   - Evidence records must exist in raw binary input files processed by the active pipeline run to be classified as `OBSERVED`. Historical records or prior run references absent from the active binary stream remain `WITNESS_CANDIDATE` (`HYPOTHESIS`).
+4. **Spatial Cluster Span vs. Resource Boundary**:
+   - Spatial span `[min_addr..max_addr]` of observed ROM reads defines an `OBSERVED_ROM_CLUSTER`, not an exact resource boundary. Resource ranges remain `HYPOTHESIS` until bounded by static or runtime closure proofs.
+5. **Neutral Resource Taxonomy**:
+   - All candidate audio structures must use strictly neutral types (`AUDIO_COMMAND_CANDIDATE`, `AUDIO_TABLE_CANDIDATE`, `AUDIO_PATCH_CANDIDATE`, `AUDIO_RESOURCE_RANGE_CANDIDATE`). Promotional labels (`SONG`, `TRACK`, `INSTRUMENT`, `VOICE`, `SAMPLE`) are strictly forbidden until behavioral parity is established.
+
+**Consequences:**
+1. Analysis pipeline (`w4_audio_pipeline.py`) emits 9 verified acceptance artifacts under `build/m12-w4-acceptance/`.
+2. Over 7,168 M68K->Z80 handoffs verified with exact last-writer matching and 0 intervening writes.
+3. 2,048 YM2612 register writes reach Level 3 Strict Causal Chain with exact Z80 dataflow provenance.
+4. Zero promotional or unverified music semantics introduced into the repository.
+
+# ADR-M12-W3-CANONICAL-CROSS-CPU-TIMELINE-V1 — Canonical Cross-CPU Temporal Identity and Causal Closure
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Dual-CPU co-capture records concurrent execution of M68000 and Z80 processors.
+To guarantee sound, non-speculative cross-CPU timeline analysis and causal relations
+(such as 68K writes to Z80 RAM followed by Z80 reads and YM2612 audio register writes),
+the exact semantics, source, units, frame reset behavior, and tie-breaking rules of
+`master_time` across both CPU cores must be mathematically verified and strictly enforced.
+
+**Decision:**
+1. **Master Time Source and Units**:
+   - `m68k.cycles` (`core/m68k/m68kcpu.c`) scales instruction cycles by `MUL = 7` (Genesis Master Clock / 7 = 7.67 MHz M68K clock).
+   - `Z80.cycles` (`core/z80/z80.c`) scales instruction cycles by `15` in `cc_op` tables (Genesis Master Clock / 15 = 3.58 MHz Z80 clock).
+   - Both cycle counters are directly expressed in the exact same physical unit: **Genesis Master Clock cycles** (3420 mcycles per scanline, 896,040 mcycles per standard NTSC frame). The conversion ratio is 1:1.
+2. **Temporal Semantics and Canonical Identity**:
+   - At every frame boundary, `core/system.c` executes `m68k.cycles -= mcycles_vdp` and `Z80.cycles -= mcycles_vdp`.
+   - Therefore, `master_time` is strictly `FRAME_RELATIVE` (rebasing to ~0 each frame).
+   - The canonical timeline key is defined as `(run_id, epoch, frame, master_time)`. Comparing `master_time` alone across different frames is strictly prohibited.
+3. **Cross-CPU Tie-Breaking Rule**:
+   - If M68K and Z80 share `(frame, master_time)`, the relation is defined as `SAME_MASTER_TIME_UNORDERED`.
+   - `stream_sequence` reflects host thread scheduling slices and CANNOT be used to prove causal precedence between same-timestamp events.
+   - Causal interactions require `STRICT_BEFORE` temporal precedence (`T_write < T_read`).
+4. **Timeline Integrity and Isolation**:
+   - Cross-run and cross-epoch events are strictly disjoint; joining or comparing events across differing `run_id` or `epoch` raises an error.
+5. **Retained Segment Metric**:
+   - `retained_segment_data` is defined as `CUMULATIVE_BYTES_PROCESSED` (cumulative audit throughput streamed to disk), not resident live memory. Live heap remains strictly bounded at 160 MiB.
+
+**Consequences:**
+1. Authoritative cross-CPU sorting in `w3_cross_cpu_timeline.py` respects frame precedence first, followed by master cycles.
+2. Tests A–G pass with 100% verification, preventing speculative causality, timestamp collisions, and cross-run contamination.
+3. Memory behavior remains proven `BOUNDED_OSCILLATING` under sustained gameplay.
+
+# ADR-M12-W3-SUSTAINED-10MIN-PROFILE-V1 — 10-Minute Sustained Gameplay Memory Stability and Safety Verification
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Following the configuration of the 2,097,152-slot default ring buffer (128 MiB slot storage, 96 MiB raw),
+it was necessary to prove that the default ring capacity is safe under prolonged, real gameplay emulation
+rather than brief, open-and-immediately-close acceptance campaigns. The system was subjected to a sustained
+Beyond Oasis emulation session for at least 10 minutes with 128 Workers and depth 100, sampling process
+working set, private bytes, native heap, ring allocation, worker counts, and record throughput every 5 seconds.
+
+**Decision:**
+1. Maintain the startup default ring capacity at 2,097,152 slots.
+2. Formally evaluate memory behavior using linear regression slope over sustained emulation (minutes 1 to 10).
+3. Require 0 retention failures, 0 dropped captures, 0 identity collisions, 0 stale ACKs, and 0 runtime errors
+   under full 128-Worker continuous turnover.
+4. Verify graceful END GAME shutdown via IPC and confirm post-cleanup return to steady-state.
+
+**Consequences:**
+1. Under 610.5 seconds of continuous Beyond Oasis gameplay (283,648 audited segments, 828,506,454 records produced,
+   395 ring wraps), Private Bytes remained strictly bounded between 301.35 MB and 306.72 MB with a slope of
+   -0.3350 MB/min, and Working Set remained bounded between 466.85 MB and 470.18 MB with a slope of +0.2237 MB/min.
+2. Memory behavior was classified as `BOUNDED_OSCILLATING`, proving the absence of memory leaks, unbounded queues,
+   or growth runaway.
+3. Retention failures remained exactly 0 throughout all 395 wraps.
+4. Upon triggering END GAME, final analysis completed without spikes (peak Private Bytes 303.93 MB), and the emulator
+   process terminated cleanly with code 0, releasing all resources.
+5. The 2,097,152-slot default capacity is verified as safe, robust, and permanent for the W3 architecture.
+
+# ADR-M12-W3-LARGE-BOUNDED-RING-ACCEPTANCE-V1 — Large Bounded Ring and Final W3 Acceptance
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+Dual-CPU co-capture (M68K + Z80) at scale increases stream record throughput.
+Under 128 active workers and deep chains (depth 100, 512, 1000), the initial 16,384-slot
+transport ring required frequent wraps (1,783 wraps per 100 rounds at depth 20).
+To ensure robust retention without dynamic reallocation or converting the ring into an
+unbounded log, a bounded large ring with constant-time hot-path indexing was needed.
+
+**Decision:**
+1. Set the default startup ring capacity to 2,097,152 slots (48-byte records, 96 MiB raw,
+   128 MiB slot storage). Keep capacity startup-configurable via `oasis_lf_set_ring_capacity()`
+   and command-line flag `--ring-capacity`.
+2. Prohibit dynamic resizing during emulation: the ring remains strictly bounded cyclic transport.
+3. Optimize hot-path record append with power-of-two bitmask indexing:
+   `(sequence - 1u) & (cap - 1u)` replaces division/modulo operations on the hot path.
+4. Scale worker result buffers with capture depth: 256 KiB for depth 100, 512 KiB for depth 512,
+   and 1024 KiB for depth 1000, ensuring `depth_limit_endings` are achieved without premature
+   buffer exhaustion.
+5. Invariant preservation: ring expansion does NOT alter Worker admission or capture-depth semantics.
+   Cross-CPU ordering strictly uses `(run_id, epoch, frame, master_time)`.
+
+**Consequences:**
+1. Ring turnover dropped by 137x (from 1,783 wraps to 13 wraps per 100 rounds at depth 20).
+2. Official acceptance at 128 Workers x Depth 100 passed 12,800/12,800 segments with 0 retention
+   failures and 0 overwrites.
+3. Deep-chain stress tests at Depth 512 (82.1M records) and Depth 1000 (138.2M records) passed
+   with 100% depth-limit completion, 0 retention failures, and 0 invalid captures.
+4. Frame timing under dual-CPU recording remained within normal emulation latency (p50 = 16-17 ms).
+
+# ADR-M12-W3-Z80-COCAPTURE-CROSS-CPU-TIMELINE-V1 — Z80 Co-Capture and Cross-CPU Timeline
+**Status:** Accepted for M12 W3
+**Date:** 2026-09-21
+
+**Context:**
+M12 Workers had M68K instruction and bus capture (W1), resource classification (W2),
+and frame coherence (W2.1), but lacked Z80 co-capture. Cross-CPU interactions
+(e.g., M68K writing to Z80 RAM, Z80 reading and writing to YM2612/PSG) could not
+be ordered on a common timeline, and Z80 banked ROM accesses could not resolve
+to physical addresses without external context. The 32-byte record was insufficient
+to losslessly represent common emulated time and multi-byte Z80 instructions.
+
+**Decision:**
+1. Upgrade `oasis_lf_record` to 48 bytes with explicit lossless fields:
+   `stream_sequence`, `instruction_sequence`, `master_time`, `pc`, `address`,
+   `value`, `kind_flags`, `cpu_id`, `length_or_width`, `domain`, `reserved`,
+   and `auxiliary`.
+2. Keep M68K and Z80 `instruction_sequence` strictly independent monotonic counters.
+3. Use frame-relative master cycles (`master_time`) as the authoritative common
+   timing basis across M68K and Z80.
+4. Make ring capacity configurable at initialization (default 16,384 slots).
+5. Capture ordered `BANK_REGISTER_CHANGE` events and resolve physical Genesis/ROM
+   addresses directly into the record `auxiliary` field for all banked ROM reads.
+6. Prohibit higher-level audio semantics (no SONG, TRACK, INSTRUMENT, VOICE,
+   SAMPLE, NOTE, MUSIC_RESOURCE).
+7. Validate cross-CPU causal relations only under strict temporal precedence
+   (T1 < T2 < T3) and matching addresses/values without speculative inference.
+
+**Consequences:**
+Native trace hooks cleanly capture both M68K and Z80 instruction and bus events.
+Cross-CPU timeline sorting by `master_time` produces deterministic temporal ordering.
+The C test suite (`oasis_live_forward_z80_test`) covers all 22 required test cases
+A–V. Python tools provide lossless decoding, bank tracking, physical address
+resolution, timeline construction, and primitive event classification.
+
+# ADR-M12-R11-EVENT-DRIVEN-SUBPROCESS-WAIT-1 — Event-driven Stage 7 waits
+**Status:** Accepted for M12 R11
+**Date:** 2026-09-20
+
+**Context:** Stage 7 and Stage 8 external tools were launched through a
+bounded runner that checked `Popen.poll()` only after a 250 ms sleep. The
+retained R10 workload showed 400 external decoder invocations, so the polling
+quantization was material to short child processes even though decoder
+semantics were correct.
+
+**Decision:** Replace process-completion polling with a blocking
+`Popen.wait()` waiter thread and completion event. Keep dedicated stdout and
+stderr drain threads, bounded joins, the existing timeout classifications,
+and terminate-then-kill shutdown. A separate heartbeat thread may publish
+progress but cannot determine child completion; callback failures are returned
+to the caller after bounded cleanup.
+
+**Consequences:** Fast children return at process-exit latency instead of a
+250 ms quantum. The Stage 7 worker pool, candidate ordering, proof,
+promotion, decoder contract, and temporary-output boundaries are unchanged.
+The checkout exposes no public cancellation API, so no cancellation contract
+was altered. The same sealed input produced identical request, unsupported,
+promotion, and SOURCE_OWNED results while reducing Stage 7 wall time.
+
+**Evidence:** `src/tools/thor_evidence/stage7_subprocess.py`,
+`tests/stage7_subprocess_test.py`, the R10 sealed receipt, and the three R11
+same-input optimized receipts under `build/thor-evidence/r11-event-wait-stage7`.
+
+# ADR-M12-R5-IN-PROCESS-POSTRUN-COORDINATOR-1 — In-process Stage 1–9
+**Status:** Accepted for M12 R5
+**Date:** 2026-09-19
+
+**Context:** R4 established ROM + MASTER V2 as the fail-closed startup
+authority, but post-run still crossed a runtime/subprocess/status-file boundary.
+
+**Decision:** Add `PostRunCoordinator` with explicit `PostRunContext`,
+`PostRunResult`, and in-memory stage events. Normal Stage 1–9 execution runs in
+one non-UI background thread owned by the runtime process. JSON status/report files
+are derived diagnostics only; the legacy subprocess launcher remains available
+for shadow/regression comparison. Disk-backed FLOW and Stage 5/6/7/8 truth
+semantics are unchanged. Atomic diagnostic snapshots retry transient Windows
+reader locks.
+
+**Consequences:** Closing the analysis window cannot terminate coordinator work;
+UI consumers may resubscribe to the event stream. Stage 7/8 external tools remain
+bounded subprocesses. A replay of an already-absorbed run remains fail-closed
+with `STOP_KNOWLEDGE_IMPORT_NONIDEMPOTENT`.
+
+**Evidence:** `tools/bizhawk-native-ring/live_forward_postrun_coordinator.py`,
+`tests/live_forward_postrun_coordinator_test.py`, and fresh runtime campaign
+`build/thor-evidence/live-worker-control-2h/campaign-desktop-20260919-231221-978`.
+
+# ADR-M12-R4-MASTER-STARTUP-AUTHORITY-1 — MASTER-only initialization
+**Status:** Accepted for M12 R4
+**Date:** 2026-09-19
+
+**Context:** R3 made MASTER V2 the read authority for canonical, provenance and
+outcome state, but normal startup still had no explicit fail-closed contract.
+
+**Decision:** Add `master_startup_authority.py` as the sole startup validator.
+It resolves one atomic pointer, verifies the MASTER file/logical/section hashes,
+ROM identity, lineage, canonical emission partition, SOURCE_OWNED, provenance,
+outcomes and absorption history, then exposes the existing canonical and outcome
+views in memory. Legacy state is never opened on the production path. The
+`--legacy-shadow-compare` flag is the explicit comparison boundary. Missing or
+invalid authority stops with `STOP_MASTER_STARTUP_UNAVAILABLE` or
+`STOP_MASTER_STARTUP_INTEGRITY` and never falls back to legacy files.
+
+**Consequences:** A MASTER-only environment can initialize and prepare a
+deterministic N+1 candidate descriptor without legacy persistent files. The
+current runtime transport and Stage 5–9 semantics remain unchanged; deletion of
+legacy artifacts is deferred.
+
+**Evidence:** `build/thor-evidence/master-v2/current.json`,
+`build/thor-evidence/master-v2/r4-startup-report.json`, and
+`tests/master_startup_authority_test.py`.
 
 # ADR-AUTO67-CARTOGRAPHER-SEAM-1 — Worker local chain to MAP-1
 **Status:** Accepted for AUTO67
@@ -2004,6 +3068,52 @@ SOURCE_OWNED and production runtime behavior remain unchanged.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M12-POSTRUN-PROGRESS-HEARTBEAT-2I1 — Truthful post-run completion
+**Status:** Accepted for M12 2I.1
+**Date:** 2026-09-19
+
+**Context:** The compact 2I analyzer wrote only a stage name and the post-run
+window treated every `PASS...` report as full completion. Long SQLite/FLOW
+work therefore looked frozen and could display `ANALYSIS COMPLETE` while
+later pipeline stages had not run.
+
+**Decision:** Publish an atomically replaced JSON snapshot at a bounded 4 Hz
+heartbeat. Each of the nine existing stages has an explicit state and factual
+N/M counters when a denominator exists; unknown totals use indeterminate UI
+animation. The UI derives heartbeat age and progress age independently,
+keeps raw JSON behind DETAILS, and reports compact-master-only output as
+`PARTIAL ANALYSIS COMPLETE`. Backend failure is terminal and does not kill or
+depend on the UI process.
+
+**Consequences:** A reopened window can restore the latest stage and counters
+from disk, closing the window does not stop the analyzer, and a stale backend
+is visible instead of an endless spinner. FLOW_V1, Worker lifecycle/scaling,
+END GAME boundary behavior, rolling-master semantics, canonical truth, 2E/2F
+promotion rules, and SOURCE_OWNED are unchanged.
+
+**Evidence:** `tests/live_forward_postrun_progress_test.py` and
+`docs/reports/THOR_M12_END_GAME_ROLLING_MASTER_2I.md`.
+
+# ADR-M12-END-GAME-ROLLING-MASTER-2I — Graceful close and compact post-run master
+**Status:** Accepted for the developer-only 2I compact orchestration pass
+**Date:** 2026-09-19
+
+**Decision:** The separate Worker Control window writes one atomic `END_GAME`
+sentinel. Lua consumes it only between complete Worker rounds and exits through
+the supported EmuHawk client path. After the sealed receipt, a background
+post-run process validates the raw/index hashes and writes a compact SQLite
+rolling generation containing deduplicated instruction-PC facts, control edges,
+terminal facts, occurrence counts and run provenance. A hash-bound `current.json`
+pointer is replaced only after SQLite integrity validation.
+
+The compact pass keeps raw FLOW and the segment index until the canonical
+Cartographer/Archivist/decoder refresh is independently available. It does not
+change FLOW_V1, Worker lifecycle/scaling semantics, SOURCE_OWNED or production
+AUTO67.
+
+**Evidence:** `docs/reports/THOR_M12_END_GAME_ROLLING_MASTER_2I.md` and the
+ignored rolling generation under `build/thor-evidence/`.
+
 # ADR-M12-CANONICAL-ROM-KNOWLEDGE-MAP-2D — Separate ranges, facts and emission
 **Status:** Accepted for the 2D checkpoint
 **Date:** 2026-09-18
@@ -2257,8 +3367,1151 @@ is redesigned.
 
 **Evidence:** `docs/reports/THOR_M12_AUTO67_PREDISPATCH_TRANSPORT_CLEAN_1.md`.
 
+# ADR-M12-END-GAME-POSTRUN-2I.2 — fail-closed stages 5–9
 
-**Scheduler fixture and selected instruction-step replay follow-up (2026-10-13):** The isolated fixture verifies its ten documented instruction-step microcases across line-budget, refresh, Z80/VDP, IRQ, and resume behavior. Applying the stepper to one natural `0x009144 → 0x009D70` call preserved the measured 420-cycle helper cost and line-boundary crossing. A 3,600-frame replay matched the explicit per-frame CPU/scheduler/observable-memory trace, call boundaries, post-return sync windows, external events, helper events, and sampled Z80 RAM. The legacy landmark validator still reports only serializer `state_sha256` mismatches at 60 checkpoints, which also occur in duplicate ROM-only restores; those hashes remain a disclosed limitation and are not silently normalized. This supports only the tested single caller-path call and replay surface. Keep the route diagnostic-only, `RUNTIME_REPLACEMENT_ACTIVE=NO`, and helper verification path-specific; do not imply arbitrary-opcode, unsupported-caller, or future-session equivalence. See `docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}`.
+**Status:** Accepted for developer-only post-run orchestration.
+
+**Decision:** Reuse the existing 2I.1 progress publisher and invoke one
+post-run coordinator after rolling-master compaction. The coordinator may
+construct a closed MAP-1 session only from a sealed, hash-checked ordered FLOW
+spool, and may publish a new canonical generation only through an atomic staged
+master/knowledge pair with idempotent replay and unchanged SOURCE_OWNED and
+emission hashes. Control provenance inspects ordered FLOW; aggregate rolling
+counts cannot supply predecessor evidence. ASM closure, full ROM audit, and
+cleanup remain fail-closed until an accepted runner and all required inputs are
+present. A STOP retains raw evidence and leaves later stages pending.
+
+**Consequences:** Normal END GAME now enters the real stage 5–9 path and shows
+an exact STOP reason when the current tree lacks a required accepted input.
+The UI does not claim completion from a displayed stage list. Worker/Lua/FLOW
+runtime semantics and production ownership remain unchanged.
+# ADR-M12-END-GAME-POSTRUN-2I.2a — terminal state coherence
+
+**Status:** Accepted for developer-only post-run orchestration.
+
+**Decision:** All terminal transitions use one progress finalizer. It clears
+the active stage, terminalizes the current stage, blocks later mandatory
+stages after STOP/ERROR, persists backend and exception metadata, and writes a
+single atomic snapshot. Heartbeat staleness remains non-terminal while the
+backend PID is alive. Malformed terminal snapshots are repaired before reuse.
+
+**Consequences:** `COMPLETE`, `PARTIAL_COMPLETE`, `STOPPED` and `FAILED` can
+never coexist with an ACTIVE stage. Raw evidence and accepted generations are
+retained on STOP/ERROR. This change affects status orchestration and UI display
+only; Worker/FLOW/Lua semantics and 2F reconstruction remain unchanged.
+
+# ADR-M12-INTERACTIVE-PREFLIGHT-POSTRUN-GATE — unsealed runs do not analyze
+
+**Status:** Accepted for developer-only interactive orchestration.
+
+**Decision:** Launch the post-run analyzer only after an interactive runtime
+has emitted a sealed terminal stop outcome. A resource, native-allocation, or
+host-transport preflight rejection is a visible Worker Control result, but it
+does not create a Stage 1/9 analyzer window. The rejection receipt records the
+exact reason and `RUN_NOT_SEALED`.
+
+**Consequences:** A failed start cannot be misreported as a post-run analysis
+failure. The resource reserve and fail-closed allocation policy are unchanged;
+only the secondary UI orchestration is gated. Worker, Lua, FLOW, and production
+runtime semantics remain unchanged.
+
+# ADR-M12-DESKTOP-MEMORY-FLOOR — one GiB host reserve
+
+**Status:** Accepted for developer-only Worker Control launch preflight.
+
+**Decision:** Reserve one GiB of currently available physical RAM for the host
+when calculating the desktop Worker Control native allocation budget. Keep the
+existing native/process/core caps and reject when the measured remainder cannot
+hold the requested plan. The evidence disk reserve remains independent.
+
+**Consequences:** A 32/64 GiB desktop with a few GiB currently free can start
+a small or medium requested Worker plan; severe host pressure still fails
+closed before EmuHawk starts. No Worker, Lua, FLOW, or production semantics
+change.
+# ADR-M12-STAGE5-COMPACT-SESSION — deterministic post-run MAP-1 refresh
+
+**Status:** Accepted for developer-only post-run analysis.
+
+**Decision:** Build one closed MAP-1 session from ordered FLOW in a run-specific
+analysis directory. Use compact lineage occurrence summaries, exact ROM-range
+decoding, and atomic canonical generations. Validate the accepted rolling-master
+proof separately; preserve the canonical emission partition and `SOURCE_OWNED`
+bytes exactly, failing closed on identity, ROM, count, or ownership conflicts.
+
+**Consequences:** Repeated observations remain auditable without materializing
+millions of duplicate lineage entries. `EXECUTED_NEXT` is emitted only for
+adjacent instruction records; terminal next-PC observations remain separate.
+Worker/Lua/native scaling semantics are unchanged.
+# ADR-M12-STAGE7 — Current-generation MAP-driven executed ASM closure
+
+Date: 2026-09-19
+
+The post-run pipeline consumes the accepted canonical generation directly and
+recomputes executed, not-fully-owned M68K candidate islands from current map
+objects and observed runtime relations. A candidate is promotable only after
+exact range decoding, complete control-flow closure, vasm byte round-trip, and
+an independent full-ROM rebuild. Dependency closure is fail-closed; unresolved
+islands remain blocked records. Promotion publishes a new immutable generation
+and updates the canonical pointer atomically. Stage 8 starts automatically and
+rebuilds the resulting split independently. No runtime campaign or production
+Worker/FLOW semantics are part of this decision.
+
+# ADR-M12-STAGE6-HANDOFF — receipt-bound control provenance lifecycle
+
+Date: 2026-09-19
+
+Stage 6 must consume the exact sealed receipt and ordered FLOW artifact already accepted by Stage 5. Its result is structured as PASS, NO_DELTA, STOP, or ERROR, including run identity, raw FLOW hashes, relation counters, generation, and failure details. NO_DELTA completes Stage 6 and immediately starts Stage 7; it is not a pipeline terminal state. The existing terminal finalizer handles STOP/ERROR so no terminal snapshot may retain an ACTIVE Stage 6. The Worker, Lua, native pool, and Stage 7 semantics remain unchanged.
+
+# ADR-M12-STAGE7-PREFLIGHT — lineage-bound emission partition handoff
+
+Date: 2026-09-19
+
+Stage 7 preflight must compare the current canonical map with a materialized
+emission/ownership manifest selected from the explicit generation parent chain.
+A historical path or latest/glob selection is not an authority. The preflight
+records both authority hashes and exact category totals, fails closed on any
+range, ROM, generation, or ownership mismatch, and keeps UNKNOWN fields outside
+the emission partition. This preserves the Stage 7 gate while allowing a
+post-2F canonical generation to reuse its own coherent materialized split.
+Worker, Lua, native scaling, predecessor, and FLOW semantics are unchanged.
+
+# ADR-M12-STAGE6-STOP — unresolved provenance is not an integrity failure
+
+Date: 2026-09-19
+
+Stage 6 may observe real indirect consumers whose register predecessor or
+transform cannot be resolved within bounded evidence. Those events remain in
+the diagnostic receipt and count as unresolved/unsupported; they do not stop
+the pipeline globally. Global STOP is reserved for ROM identity, FLOW
+continuity, impossible occurrence identity, or equivalent evidence-integrity
+failures. The result contract remains PASS/NO_DELTA/STOP/ERROR and the exact
+receipt is published before terminalization.
+
+# ADR-M12-STAGE9-ABSORPTION — permanent reclaim only after semantic proof
+
+Date: 2026-09-19
+
+Stage 9 may permanently delete run-scoped raw FLOW and reconstruction artifacts
+only after the exact run is present in the accepted rolling master, all prior
+stages and ROM identities pass, and a streaming semantic-equivalence audit
+reconciles every instruction, relation and terminal fact against compact
+master rows. Preparation writes an explicit delete manifest and an atomic
+absorption receipt before deletion; deletion uses direct filesystem unlink with
+bounded WinError 32 retry and no recycle-bin path. Replay consumes the durable
+manifest/receipt idempotently, while any missing protected state or failed
+post-delete integrity check stops closed and never reports cleanup PASS.
+
+The rolling master, canonical map, ownership/emission state, Stage 5–8
+receipts, final report/status and ROM are protected. Worker/FLOW runtime
+semantics and SOURCE_OWNED truth are unchanged.
+
+# ADR-M12-R1 — Shadow self-contained MASTER V2
+
+**Status:** Accepted for shadow validation only.
+
+**Decision:** Encode the accepted rolling master, canonical map/knowledge and
+Stage 5–9 semantic outcomes into a deterministic, section-hashed MASTER V2
+container while leaving all legacy pointers and artifacts authoritative. The
+container is independently decoded and compared against a streamed semantic
+projection of the legacy inputs. No runtime or cleanup path reads MASTER V2.
+
+**Reason:** R2–R10 require a self-contained authority before replacing the
+legacy split state. R1 proves the representation, deterministic size and
+corruption detection without changing runtime truth semantics or risking the
+accepted `PASS_ABSORBED_RAW_PERMANENT_RECLAIM_V1` path.
+
+**Consequences:** The current accepted master remains the only authority. The
+shadow currently measures `1,272,891,699` bytes for run `1789872670`; later
+migration stages must account for this size before changing authority.
+
+## ADR-M12-R2 — MASTER V2 canonical read authority (2026-09-19)
+
+**Decision:** Use one `MasterCanonicalView` access layer as the canonical read
+source for map, ownership and emission data. The R2 pointer selects a verified,
+deterministic MASTER V2 shadow generated from the accepted legacy state. Stage 5
+materializes a local scratch generation through the API; Stages 6–8 keep their
+existing consumers and semantics. Legacy canonical files remain present and
+unchanged for hash comparison only.
+
+**Rationale:** This changes exactly one authority boundary while avoiding a
+representation rewrite, runtime capture change, or independent MASTER V2
+parsers in individual stages. Fail-closed pointer verification prevents a stale
+shadow from becoming canonical. The R2 shadow is not itself committed as a
+GiB-scale artifact.
+
+**Validation:** Two real generations were byte-identical and semantically equal
+to the current legacy state; API counts, `SOURCE_OWNED`, ownership/emission,
+materialized SQLite integrity and targeted Stage 5–9 regressions passed.
+# ADR-M12-R3-MASTER-OUTCOME-AUTHORITY-1 — durable provenance and outcomes
+**Status:** Accepted for M12 R3
+**Date:** 2026-09-19
+
+**Context:** R2 made MASTER V2 the canonical map/ownership/emission read
+authority, but Stage 6 provenance, Stage 5–9 receipts and absorbed-run proof
+still lived in external JSON/SQLite artifacts.
+
+**Decision:** Add independently hashed MASTER V2 `provenance`, `outcomes` and
+`absorption_history` sections and expose them through `MasterOutcomeView` and
+`MasterProvenanceView`. Legacy receipts remain shadow comparison inputs. A
+missing or corrupt section raises `STOP_MASTER_OUTCOME_UNAVAILABLE`; the read
+layer never falls back silently to legacy JSON.
+
+**Consequences:** Accepted provenance, terminal stage outcomes, lineage,
+semantic-equivalence proof, deleted-byte totals and deletion mode remain
+available after raw FLOW deletion. Runtime capture, Stage 5–9 execution and
+SOURCE_OWNED semantics are unchanged. Legacy receipt removal is deferred to a
+later checkpoint.
+
+**Evidence:** `build/thor-evidence/master-v2-shadow-r3/r3-acceptance.json`.
+
+## ADR-M12-RUN-CONTRIBUTION-RECONCILIATION — run-scoped V2 idempotency
+
+Date: 2026-09-20
+
+**Decision:** Add a hashed `run_contributions` section to MASTER V2 and a
+run-scoped contribution boundary. A contribution is applied once by `run_id`
+and its logical hash; an identical replay returns `NO_DELTA_ALREADY_APPLIED`,
+while a differing contribution stops with `STOP_RUN_CONTRIBUTION_CONFLICT`.
+Occurrence deltas are retained even when a fact already exists globally.
+`VERIFY_ONLY` and forensic replay do not mutate counters, legacy generations,
+or raw evidence. Historical lineage membership alone remains ambiguous.
+
+**Consequences:** The current V2 startup pointer now verifies 54 ledger entries
+without changing canonical, provenance, Stage 5–9, Worker/FLOW or
+`SOURCE_OWNED` semantics. Six sealed runs are classified `NOT_COMMITTED` and
+are eligible only for a later single-run replay; 28 runs remain `AMBIGUOUS`.
+No historical raw/session data is deleted and no mass replay is started.
+
+## ADR-M12-SINGLE-V2-RUNTIME-WRITE-AUTHORITY — emulator post-run promotion
+
+Date: 2026-09-20
+
+**Decision:** Interactive Worker runs launched with the desktop control flow
+must use MASTER V2 startup and the in-process post-run coordinator. Stage 5–9
+may create only a campaign-local rolling scratch materialized from V2. The
+sealed contribution is calculated before cleanup, then the completed Stage 9
+result is written through an atomic V2 candidate/pointer replacement. The
+legacy persistent `rolling-master-2i` tree is not a write authority.
+
+**Consequences:** Future emulator runs append to the single V2 authority while
+preserving Stage 5–9 truth semantics and cleanup behavior. The old subprocess
+post-run mode is rejected for interactive runs so it cannot recreate a legacy
+rolling master. Legacy canonical shadow verification remains available only
+for explicit historical fixtures; current V2 startup does not require those
+files.
+
+## ADR-M12-R6-STAGE5-IN-MEMORY-CARTOGRAPHER — Stage 5 RAM session boundary
+
+Date: 2026-09-20
+
+**Decision:** Production Stage 5 uses an explicit `Stage5SessionMemory` backed
+by SQLite `:memory:` for semantic FLOW aggregation and MAP-1 construction.
+The sealed FLOW spool remains the input authority. Exact decoder exchange files
+are OS-managed ephemeral inputs/outputs only; they are not persistent Stage 5
+evidence. Canonical candidate/master files remain the durable outputs.
+
+**Consequences:** Normal R6 runs report zero Stage 5 SQLite bytes and zero
+persistent Stage 5 temporary files, release the in-memory session before Stage
+6–9 continues, and preserve the accepted MASTER V2, ownership/emission,
+provenance and cleanup semantics. The old disk session path remains available
+only in a named legacy shadow module for comparison and regression.
+
+## ADR-M12-R7-FLOW-IN-MEMORY-HANDOFF — Ordered FLOW without persistent spool
+
+Date: 2026-09-20
+
+**Decision:** The interactive R7 path transfers sealed ordered FLOW segments
+through a bounded in-memory queue. One runtime owns the handoff; a consumer
+feeds Stage 5 and control-provenance streaming consumers, and the coordinator
+closes the RAM session only after the queue drains. The existing disk FLOW
+implementation remains available as an explicit legacy/shadow path.
+
+**Consequences:** R7 reports explicit segment/record/hash accounting,
+backpressure, and zero FLOW disk reads/writes. Stage 5–9 truth semantics,
+canonical refresh, MASTER V2 promotion, ownership, emission and cleanup rules
+remain unchanged. The in-memory Cartographer connection is safe across the
+runtime consumer and post-run coordinator thread boundary.
+
+## ADR-M12-R8-BOUNDED-STAGE7-DECODE — profile-first analysis optimization
+
+Date: 2026-09-20
+
+**Decision:** Parallelize only the independent external Stage 7 candidate
+decodes with a bounded four-worker executor. Keep candidate proof, round-trip
+validation, promotion and graph/master merge sequential and ordered exactly as
+before. Publish timing and R7 handoff counters in `analysis_performance`.
+
+**Consequences:** The accepted R7 truth boundary is unchanged: Stage 5/6/7/8
+meaning, candidate ordering, fail-closed errors, `SOURCE_OWNED`, emission,
+cleanup and MASTER V2 authority remain the same. The measured median post-run
+wall time fell from `85.656 s` to `60.407 s` (`29.48%`), while Stage 7 fell
+from `51.906 s` to a `25.141 s` median (`51.57%`). Runtime coverage can still
+produce new facts; the second optimized campaign added 57 instructions and 66
+relations with zero source-owned delta.
+
+**Evidence:** R8 baseline and optimized campaign reports under
+`build/thor-evidence/live-worker-control-2h/`, plus the focused decode and
+post-run coordinator regression tests.
+
+## ADR-M12-R9-MEASURED-DECODE-DEDUP — no cache when requests are unique
+
+Date: 2026-09-20
+
+**Decision:** Measure complete Stage 7 external decode request identity before introducing memoization. The measured accepted workload had 139 unique keys for 139 requests (0% duplication), so no completed-result cache, in-flight coalescing table, eviction policy or persistent cache is added. Instead, reuse the immutable initial/final SQLite snapshot when no promotion can have changed it; retain fresh scans after every promotion.
+
+**Consequences:** Decoder key telemetry remains available in the Stage 7 receipt, including request counts, unique keys, duplicate rate, external wall, pool occupancy and key construction cost. Snapshot reuse preserves candidate ordering, proof, promotion, Stage 8, ownership and MASTER semantics while reducing fresh full-run median Stage 7 wall from `28.906 s` to `16.711 s`. R7/R8 in-memory FLOW and zero-disk guarantees remain unchanged.
+
+**Evidence:** R9 reference and optimized campaigns under `build/thor-evidence/live-worker-control-2h/`, direct sealed-generation profile, and `tests/stage7_decode_test.py` metric/key regressions.
+
+## ADR-M12-R10-STAGE7-DECODER-CONTRACT — explicit range decoder role
+
+Date: 2026-09-20
+
+**Decision:** Keep the Stage 5 PC-list decoder and Stage 7 bounded-range
+decoder as separate executable roles. Stage 7 requires the existing
+`oasis_re_assemble_range.exe` contract
+`ROM START END ASM_OUTPUT JSON_OUTPUT`; startup validation requires its exact
+`oasis.stage7.range.v1` capability marker. The PC-list helper remains the
+Stage 5 `PCS_INPUT TSV_OUTPUT` tool and cannot be substituted silently.
+
+**Consequences:** Invocation/configuration failures are fail-closed with a
+decoder-contract, input, output or tool classification and are no longer
+reported as unsupported M68K instructions. Stage 7 still owns bounded decode,
+candidate ordering and proof handoff; Stage 8 retains independent full-ROM
+assembly/round-trip validation. Cleanup validates both the pre-closure input
+generation and the promoted current generation when Stage 7 advances canonical
+ownership.
+
+**Evidence:** R10 canonical-ROM fixtures, capability probes, the sealed
+`campaign-r10-contract-20260920-1` report, and
+`tests/stage7_decoder_contract_test.py`.
+
+## ADR-M12-W1-NATIVE-BUS-EVENT-SIDEBAND
+
+Date: 2026-09-20
+
+**Decision:** Extend the existing 32-byte native ordered ring with explicit
+`EVENT` records for 68K data reads, data writes and frame boundaries. The event
+subtype occupies otherwise unused kind-flag bits. Bus events use the existing
+record fields for address/value and pack value high bits, width, mapped domain
+and CPU into `auxiliary`. Opcode and extension fetch helpers are excluded;
+32-bit top-level accesses produce one event. Frame events use instruction
+sequence zero and carry a monotonic per-epoch frame number.
+
+**Consequences:** Existing instruction/exception records and FLOW projection
+remain binary-compatible. Host consumers must preserve raw event records but
+filter them when deriving instruction-only control-flow, ROM-link and
+Cartographer facts. Domains are emulator memory-map facts only; no sprite,
+music, DMA or other semantic resource classification is introduced. The
+instrumentation remains developer-only and does not change `SOURCE_OWNED`.
+
+**Evidence boundary:** Native unit/parser tests and source-level GPGX syntax
+checks pass. Real WBX build, gameplay counts, retention measurements and
+`PASS_NATIVE_BUS_EVENT_SIDEBAND_V1` remain pending until the Waterbox sysroot
+and isolated runtime campaign are available.
+
+## ADR-M12-W2-ACTIVE-RESOURCE-CLASSIFICATION
+
+Date: 2026-09-20
+
+**Decision:** Interpret immutable W1 bus events in a separate bounded Worker
+analysis layer. Primitive labels are mapped-memory facts only. Instruction
+relations require exact ordered event association and a closed decoded
+instruction rule; equal values alone are insufficient. VDP register/control
+and CPU DMA programming are decoded from observed writes, while internal DMA
+payload, resource ownership, sprite identity, song and instrument semantics
+remain explicitly unclaimed. S1–S8 inputs are read-only and cross-links require
+coherent run/frame/range identity.
+
+**Consequences:** W2 produces deterministic analysis artifacts, bounded
+candidates and fail-closed gaps without modifying the native capture path,
+ring ABI, Worker scheduling, FLOW semantics, S1–S8 artifacts or
+`SOURCE_OWNED`. `OBSERVED` and `DERIVED_EXACT` remain distinct, and
+`HYPOTHESIS` is not emitted by this checkpoint.
+
+**Evidence:** `docs/reports/THOR_M12_WORKER_ACTIVE_RESOURCE_CLASSIFICATION_V1.md`
+and `build/m12-w2-acceptance/w2-active-resource-classification.json`.
+
+## ADR-M12-W2.1-FRAME-COHERENT-WORKER-EVIDENCE
+
+Date: 2026-09-20
+
+**Decision:** Anchor each accepted Worker segment with `entry_frame` and
+`exit_frame` snapshots of the already-authoritative W1 `frame_number`. Equal
+snapshots are single-frame only when no contained boundary contradicts them;
+changed snapshots require contained FRAME_BOUNDARY markers for exact
+partitioning and otherwise remain unresolved. Frame identity is the tuple
+`(run_id, epoch, frame)`.
+
+**Consequences:** The fixed 32-byte raw record and native bus semantics remain
+unchanged. W2 events, relations, VDP/DMA facts and candidates carry exact
+frame identity when the segment proof permits it, otherwise `UNRESOLVED`.
+S1–S8 inputs remain read-only and cross-run links are explicitly forbidden.
+No graphics meaning, Z80 implementation, Worker scheduling change or
+`SOURCE_OWNED` change is introduced.
+
+**Evidence:** `docs/reports/THOR_M12_WORKER_FRAME_COHERENT_EVIDENCE_V1.md`
+and `build/m12-w2-1-acceptance/w2-frame-coherent-evidence.json`.
+
+# ADR-M13.2-GENERIC-OBSERVED-CFG-AND-RAW-RETENTION
+
+**Date:** 2026-09-23
+
+**Status:** Accepted for the M13.2 developer-only closure pipeline.
+
+**Context:** The M13.1 closure received millions of normalized FLOW rows but no
+decoded instructions, memory facts, or exact range inputs. It emitted no graph
+facts, and raw FLOW was deleted before method gaps could be independently
+replayed. Existing normalized rows preserve a PC/opcode/next-PC subset, but omit
+CPU/domain identity and register snapshots.
+
+**Decision:** The generic closure core may materialize an observed PC-to-next-PC
+edge when and only when the source opcode matches canonical ROM bytes. It must
+retain an explicit observed-edge truth label; it must not infer static branch
+semantics, candidate extents, subsystem meaning, or SOURCE_OWNED changes from
+that edge. The live stage must run twice deterministically and emit a hashed
+gap ranking. Permanent raw-FLOW reclamation must require successful generic
+closure, the ranking artifact, and deterministic replay acceptance.
+
+**Consequences:** Missing instruction identity, CPU/domain, registers, bus
+width/value/order, and byte-round-trip boundaries remain unresolved. Observed
+CFG recovery can improve evidence navigation but by itself has no measurable
+ROM ownership payoff. A failed or missing acceptance artifact prevents cleanup.
+
+**Evidence:** `docs/reports/THOR_M13_2_GENERIC_CLOSURE_GAP_DRIVEN_IMPROVEMENT_V1.md`
+and the replay artifacts beneath `build/thor-evidence/live-worker-control/`.
+
+# ADR-M13.3-VERSIONED-GENERIC-FLOW-NORMALIZATION
+
+**Date:** 2026-09-23
+
+**Status:** Accepted as an additive, partial normalization contract; M13.3
+capture acceptance remains open.
+
+**Context:** M13.2 showed that the closure adapter discarded fields already
+present in native FLOW V2, including CPU ID, bus width/domain, stream and
+instruction sequence, and next-PC. The fixed 48-byte record does not carry a
+per-instruction register snapshot or complete M68K instruction bytes/width.
+
+**Decision:** Preserve all available fields through `oasis.m13.normalized-
+generic-corpus.v2`, materialize generic instruction, memory, ROM-read,
+control-flow, call, return, and indirect-target collections, and classify
+captured M68K opcodes against the canonical ROM without dropping mismatches.
+Use only native `cpu_id` for CPU identity. Carry the exact Worker segment
+entry/exit register snapshots from host-audited metadata and link them to the
+first/last instruction identities; never imply they describe intervening
+instructions. Missing per-instruction snapshots, decode, width, and
+address-space classifications remain explicit unresolved fields. Generic
+closure consumes normalized memory, ROM-read, call, and return facts while
+maintaining compatibility with v1 synthetic fixtures.
+
+**Consequences:** Available evidence is no longer lost at normalization, but
+the register reaching-definition contract is incomplete until native
+per-instruction bounded snapshots and references are captured. V2 status alone
+does not pass M13.3 acceptance and cannot release raw FLOW/index files. No
+ownership promotion or production runtime change is implied.
+
+**Evidence:** M13.3 normalizer tests, live generic-stage tests, and the
+preserved validation capture receipt (when emitted).
+# ADR-M14.2A — Canonical Global Evidence Graph Persistence
+**Status:** Proposed; safe-admission acceptance remains incomplete
+**Date:** 2026-09-24
+
+**Decision:** Add derivation and map-proposal records to the existing canonical
+ROM knowledge SQLite database. Keep `emission` as the sole ROM partition and
+`SOURCE_OWNED` authority. Runtime captures remain scoped evidence; proposals
+are bound to exact parent/map/graph/validator identities and are not canonical
+facts. MASTER V2 must preserve all added rows. This decision does not authorize
+graph fusion or ownership changes.
+
+**Acceptance limitation:** Runtime evidence import has not yet been migrated
+to admit individual scoped occurrence identities; therefore M14.2A safe
+admission is not complete.
+
+**M14.2A safe-admission completion:** The live importer now validates the
+existing scoped runtime occurrence identity and creates one evidence reference
+per occurrence, with individual claim/relation support references. The session
+occurrence log remains source-session evidence; canonical `knowledge.sqlite`
+retains the references. Focused replay, overlap-window, CPU/domain, persistence,
+and emission invariance acceptance passed. This does not fuse subsystems or
+change emission ownership.
+# ADR-ROM-PROPERTY-MAP-V1 — Direct observed-property map
+
+**Status:** Accepted for developer tooling; emulator runtime acceptance open
+**Date:** 2026-09-27
+
+**Context:** Required raw FLOW retention makes direct facts expensive to use
+for bounded ROM classification. The canonical emission map also records a
+different concern: reconstructed/source-owned partitioning.
+
+**Decision:** Add an independent dense `uint16_t` runtime property map. Its
+bits represent only evidence-backed use of exact physical ROM bytes. Zero is
+UNKNOWN. Checkpoints bind the map and per-run contributions to exact ROM,
+schema, proof-contract, core/build, run, generation, capability, and validation
+identity. Compatible contributions may be OR-merged and can be excluded and
+replayed. Ranges are exported as a full-ROM interval partition and may be
+overlaid on the existing canonical map without changing canonical class,
+truth, or ownership. No GPU, raw event archive, or semantic promotion is
+required for these direct facts.
+
+The byte-exact property and rejection contracts live in
+`src/tools/thor_evidence/runtime_rom_properties_contract.json`; the checkpoint
+identity pins its SHA-256. Emulator callbacks must prove backing and completion
+before calling low-level map operations. Unsupported cases stay zero.
+
+**Consequences:** Checkpoint, merge, exporter, M68K decoder-backed span
+primitive, Z80 fetched-byte validation, exact-copy RAM origins, and a
+canonical overlay are implemented as developer tooling. The tools do not yet
+establish that the emulator calls these primitives. Audio payload promotion,
+live callback acceptance, behavioral parity, and runtime performance remain
+unproven. This ADR does not change ROM reconstruction, emission authority, or
+`SOURCE_OWNED` gates.
+
+# ADR-M14-CONSUMER-EVIDENCE-IMPORT — Source-separated accepted artifacts
+
+**Status:** Accepted for developer tooling
+**Date:** 2026-09-28
+
+**Context:** W5 contains exact, accepted resource boundaries and byte-identical
+Format-A round-trip evidence for resources not read in a selected runtime
+scenario. Runtime checkpoints intentionally bind to one core and one global
+runtime proof-contract hash, so importing these facts into OASROMP1 would either
+misstate their source or weaken runtime merge compatibility.
+
+**Decision:** Store `ACCEPTED_ARTIFACT` claims in a separate, versioned sparse
+contribution ledger. Each claim binds ROM identity, exact half-open range,
+property and evidence kind, source artifact identity/hash/schema, source proof
+contract identity/hash, adapter identity/version/hash, and validation checks.
+The first adapter accepts only the W5 secondary `AUDIO_FORMAT_A_MODE0`
+resource `[0x0BC95C,0x0BD540)` as `AUDIO_PAYLOAD_PROVEN`, after checking the W5
+IR descriptor, exact ROM bytes, accepted round-trip/functional receipts, and W4
+consumer evidence. Runtime maps and canonical `knowledge.sqlite` remain
+independent authorities. A combined display is derived by replaying both
+sources; imported bits are never relabeled as runtime observations and never
+change `SOURCE_OWNED`.
+
+**Consequences:** Candidate ranges, heuristics, whole banks, descriptors,
+control data, temporal-only W4 evidence, and properties stronger than the
+source proof are rejected. Removing an artifact contribution means replaying
+the remaining ledger on the immutable runtime base; bit subtraction from an
+OR-combined map is forbidden. The current implementation emits an ignored
+build artifact and acceptance receipt without changing the runtime checkpoint,
+ROM, canonical map, or emulator hot path.
+
+**Accepted extension (2026-09-28):** Add a second narrow adapter for the
+already accepted M12-GFX-2 caller closure at
+`[0x18A4BE,0x18CC6E)`, using the existing `COMPRESSED_GRAPHICS_SOURCE` property.
+The original ignored JSON receipt was unavailable, so the adapter reconstructs
+a versioned machine artifact from pinned accepted Git objects, the accepted
+M12-GFX-2 caller rows, the AUTO8 sequential-consumer record, and deterministic
+Ancient decoder replay. It records the missing original receipt's historically
+reported SHA separately and does not represent it as recovered. Its generated
+contribution remains source-separated and is removable by replaying the
+runtime base and remaining ledgers.
+
+**Accepted extension (2026-09-28):** Reuse the same
+`M12_GFX2_CALLER_CLOSED_RESOURCE_V1` semantics for the TOP-20 exact caller rows
+whose physical streams independently replay to the accepted end in the same
+Ancient 0x3820 decoder. Stream mode may be command or bit without changing the
+property meaning: both prove compressed decoder-input bytes, not decoded asset
+semantics or VDP state. Record each range in its own ledger so any one claim
+can be removed and replayed independently. The missing original closure JSON
+remains marked absent; the batch manifest is reconstructed from pinned
+accepted evidence. Runtime, canonical ownership and SOURCE_OWNED remain
+unchanged.
+
+## ADR-ROM-PROPERTY-VDP-DIRECT-MOVE — Same-instruction VDP source
+
+**Status:** Accepted for implementation; live acceptance pending
+**Date:** 2026-09-27
+
+**Context:** The direct DMA adapter identifies physical ROM sources but cannot
+cover a CPU data-port write where one instruction reads a ROM word and forwards
+it directly to VRAM, CRAM, or VSRAM. General register tracking is not required
+for this bounded case.
+
+**Decision:** Reuse the existing VDP source bits. On Mode 5 CPU data-port
+writes, retain at most one exact ROM-backed 16-bit data read in the current
+M68K instruction. Set the matching VDP bit only after the write reaches the
+accepted hardware data path and the instruction completes as a memory-source
+`MOVE.W` whose value is unchanged. Reject other opcodes, address-register and
+data-register sources, immediate sources, extra reads, mismatches, incomplete
+instructions, and DMA-fill trigger writes. The contract hash changes so old
+and new contributions cannot be merged without an explicit migration.
+
+**Consequences:** This adds no property bit, canonical-map mutation, or generic
+CPU taint engine. It covers only a direct same-instruction ROM-to-port path.
+Register-mediated paths, RAM copies, graphics decompression, and audio remain
+separate proof contracts. Live capture, parity, and performance results are
+required before runtime acceptance.
+
+## ADR-ROM-PROPERTY-W5-AUDIO-CONSUMER — Exact Format-A Decoder Read Classification
+
+**Status:** Accepted; fresh 3600-frame runtime capture and exact replay passed
+**Date:** 2026-09-27
+
+**Context:** W4 established a live banked-ROM → Z80 decoder → YM2612 DAC chain.
+W5 independently closed two Format-A mode-0 resource ranges with a
+byte-identical decode/inverse-encode roundtrip. Generic Z80 data reads and
+sound-bank membership alone do not prove audio payload use.
+
+**Decision:** Reuse `AUDIO_PAYLOAD_PROVEN` only for byte-verified banked-ROM
+reads at decoder PCs `0x080E` and `0x0855` whose physical ROM offsets lie in
+`[0x0BC95C,0x0BD540)` or `[0x0BD540,0x0BF768)`. Mark only the exact byte read.
+Reject descriptors, other PCs, and all other banked ROM addresses. Bind these
+fixed inputs to the proof-contract hash.
+
+**Consequences:** This adds no property bit, whole-resource promotion, generic
+register taint, or canonical ownership change. Existing checkpoints use the
+prior proof contract and cannot be merged with contributions under this rule.
+
+## ADR-ROM-PROPERTY-3820-COMPRESSED-GRAPHICS — Completed decoder input span
+
+**Status:** Implemented; fresh runtime replay passed, coverage gain is bounded
+**Date:** 2026-09-27
+
+**Context:** The ROM has a verified `0x3820` graphics decompressor. Its `A0`
+argument is the compressed input pointer and returns immediately after consumed
+input. The routine has no nested call. Direct VDP source bits cannot describe
+compressed input without overstating what the hardware consumed.
+
+**Decision:** Add `COMPRESSED_GRAPHICS_SOURCE`. Capture `A0` only when the live
+M68K instruction stream enters exactly `0x3820`. At its completed `RTS`, accept
+only a nonempty span of at most 64 KiB whose every byte resolves to contiguous
+physical ROM offsets. Mark exactly `[A0_entry,A0_return)`. Exceptions,
+unsupported mappings, other entry points, and incomplete calls fail closed.
+
+**Consequences:** This adds one independent property bit and changes the proof
+contract identity. It does not imply direct VRAM use, change canonical
+ownership, track transformed RAM output, or promote all statically known
+resources. Older checkpoints remain valid only under their own contract hash.
+
+## ADR-ROLLING-MASTER-RUNTIME-MAP-VIEWER — Read-only runtime address visualization
+
+**Status:** Accepted
+**Date:** 2026-09-28
+
+**Context:** A run-local `oasis.m12.rolling-master.v1` SQLite generation records
+observed instruction PCs, execution counts, control edges, and run receipts. It
+does not contain the canonical emission partition or property bitmap. Reusing
+the property-checkpoint UI for this schema would merge separate evidence domains
+and could make runtime observations look like byte ownership.
+
+**Decision:** Provide a separate read-only viewer for rolling MASTER snapshots.
+Validate the schema and stored ROM identity, optionally verify a supplied ROM
+file, and display address-binned runtime PCs/hits with 1 KiB → 32-byte → byte
+zoom and exact instruction details. An empty cell means no instruction PC was
+recorded in that master; it does not mean proven UNKNOWN. The viewer does not
+write the database, promote the generation, or infer assets, ownership, or player
+semantics.
+
+**Consequences:** Runtime occurrence heat is now inspectable without changing
+existing OASROMP1 visualization or canonical-map authority. The viewer is a
+developer tool for one immutable snapshot and does not claim a literal 3D scene
+or complete ROM coverage.
+
+## ADR-POSTRUN-RUNTIME-MAP-CONTINUITY — Live-to-post-run visualization
+
+**Status:** Accepted
+**Date:** 2026-09-28
+
+**Context:** Worker Control publishes bounded live metrics, while a run-local
+rolling MASTER map is published only during post-run compaction. The large
+post-run report and SQLite generation must not block the Tk event loop or the
+emulator callback path.
+
+**Decision:** Keep live worker visualization on its existing snapshot reader and
+add a runtime-address overview tab to the post-run window. Resolve only the
+run-local atomic `current.json`, validate the generation remains under that run
+root and verify the database SHA-256. Read SQLite and build bins on a daemon
+thread; refresh only when the pointer identity changes. Parse the post-run
+report only when its file identity changes. Label this view as a 2D runtime
+address heatmap, separate from canonical ownership and any future 3D scene.
+
+**Consequences:** No new work enters the emulator hot path. The post-run screen
+can first show the base runtime generation and then follow a newly published
+rolling generation; map availability still depends on post-run publication.
+
+# ADR-M14-Z80-DRIVER-IMAGE-ARTIFACT — Separate proof for Z80 image upload
+
+**Status:** Implemented; import completed under ADR-M14-ACCEPTED-ARTIFACT-PROPERTY-V2
+**Date:** 2026-09-28
+
+**Context:** Accepted evidence identifies an exact 8 KiB ROM-to-Z80-RAM driver
+image transfer and separately observes Z80 execution and YM2612 output. Runtime
+property contracts do not currently express this upload relation. Treating the
+whole image as executed code would overstate the evidence, while adding a runtime
+property would require a runtime proof contract and capture.
+
+**Decision:** Define `Z80_DRIVER_IMAGE_SOURCE` solely in a new
+`ACCEPTED_ARTIFACT` proof contract for exact ROM `[0x062E38,0x064E38)`. Bind it
+to accepted upload, destination, and execution/sink source identities and hashes.
+The claim means the exact image is uploaded to Z80 RAM; it does not mean all
+bytes execute. Keep runtime `OASROMP1` vocabulary, checkpoints, and property bits
+unchanged. The accepted-artifact contribution uses the distinct typed property
+namespace defined by ADR-M14-ACCEPTED-ARTIFACT-PROPERTY-V2.
+
+**Consequences:** The accepted-artifact layer can represent this physical
+consumer relation without conflating it with runtime observations or altering
+canonical ownership. The imported artifact-layer contribution has zero overlap
+and adds 8,192 unique bytes; runtime property masks and canonical ownership
+remain unchanged.
+
+# ADR-M14-ACCEPTED-ARTIFACT-PROPERTY-V2 — Keep artifact properties outside runtime masks
+
+**Status:** Accepted for the Z80 driver image contribution
+**Date:** 2026-09-28
+
+**Context:** The runtime 16-bit property map has no bit for the accepted Z80
+image-upload relation. Reusing `Z80_EXECUTED_ENCODING` would falsely claim each
+byte executed; extending the runtime mask would mix static accepted-artifact
+evidence into `OASROMP1` and change its contract.
+
+**Decision:** Represent this import in a typed, independently removable
+`thor.accepted-artifact.property-contribution.v2` ledger carrying the exact
+property string `Z80_DRIVER_IMAGE_SOURCE` and range. Keep it outside runtime
+property masks. Compute total-proven coverage as the union of runtime-classified
+bytes and accepted-artifact ranges, and require removal/rebuild to reproduce the
+prior coverage bitmap byte-for-byte.
+
+**Consequences:** The exact 8,192-byte image contributes to total-proven coverage
+without changing runtime checkpoint bits or asserting `Z80_EXECUTED_ENCODING`.
+The ledger can be independently validated and removed; the runtime schema and
+canonical ownership remain unchanged.
+
+# ADR-GFX-PUBLICATION-WINDOW-V1 — Bounded cross-frame publication window
+
+**Status:** Accepted for diagnostic collection; resource closure remains pending
+**Date:** 2026-09-30
+
+**Context:** A live bounded run shows completed 0x3820 decoder calls and VDP
+activity, but the existing bridge expired output origin at each frame boundary.
+This can miss a later publication and cannot distinguish absence of a path from
+an observation window that was too short. RAM output locations may also be
+reused in later frames, so extending lifetime without byte-level overwrite
+invalidation would introduce false links.
+
+**Decision:** Keep completed output origin per byte for at most 120 frames.
+Only actual VDP bytes whose current RAM origin still names that exact completed
+transaction may match. Every transfer receipt records its own frame ID. Run
+change, reset/loadstate, overwritten bytes, capacity exhaustion, and timeout
+remain fail-closed. The bounded diagnostic ring records observed VDP operation
+families separately and cannot contribute ROM properties or canonical evidence.
+
+**Consequences:** The longer window can find delayed publication while keeping
+false-positive control local to exact byte origins and transaction identity.
+It may retain up to eight bounded transactions and can still produce false
+negatives after 120 frames. A matching publication alone does not prove SAT,
+palette use, or visible pixels; no property or ownership authority changes.
+# ADR-GFX-RESOURCE-TRANSACTION-V1 — Ephemeral graphics lineage
+
+**Status:** Accepted for the V1 receipt/reducer boundary
+**Date:** 2026-09-29
+
+**Context:** The accepted 0x3820 runtime property hook proves exact compressed
+ROM input bytes, while S2–S8 independently prove same-frame VDP/SAT/pixel facts.
+Existing receipts do not prove that one decoder call's RAM output supplied the
+VRAM tiles consumed by a visible SAT sprite. Joining unrelated runs or frames
+would invent causality.
+
+**Decision:** Represent one bounded resource as an ephemeral, deterministic
+transaction receipt. Closure requires exact same-ROM/run/frame identity, a
+completed 0x3820 call, exact decoder RAM output, ordered RAM-to-VRAM transfers
+with matching content hashes, SAT references fully covered by those transfers,
+exact same-frame CRAM bytes for each palette, and at least one visible
+nontransparent pixel. Palette is a CRAM dependency only;
+this contract does not claim a ROM palette source. The receipt/reducer cannot
+write the runtime property map or canonical knowledge map.
+
+**Consequences:** This adds no second canonical map and no new ROM property. The
+current implementation defines and tests the fail-closed host contract; emulator
+collection and an accepted live closure remain future work.
+
+# ADR-AUDIO-STRICT-CAUSAL-SOURCE-V1 — Sparse strict audio evidence layer
+
+**Status:** Accepted
+**Date:** 2026-09-30
+
+**Context:** `AUDIO_PAYLOAD_PROVEN` is an existing whole-resource/runtime
+consumer property with a separate accepted contract. Controlled Format-A
+captures also establish strict causal chains for sparse ROM input roots; many
+payload bytes have no accepted root. Reusing the whole-resource property would
+overstate those captures, while merging controlled and natural observations
+would erase how each result was obtained.
+
+**Decision:** Store exact strict roots under the distinct
+`AUDIO_STRICT_CAUSAL_SOURCE` name in the independently removable
+`accepted_artifact_only` namespace. The contribution contract is
+ROM byte → exact Format-A input → accepted strict provenance → decoded sample →
+YM2612 DAC write. Ledgers bind exact resource/range unions, replay identity,
+source/build hashes, and evidence origin. Controlled command-path captures use
+`CONTROLLED_CONSUMER_PROOF`; naturally observed Entry 7 remains explicitly
+`NATURAL_GAMEPLAY_OBSERVATION`. Neither evidence kind changes the runtime
+property ABI or `AUDIO_PAYLOAD_PROVEN` semantics, and gaps remain unknown.
+
+**Consequences:** Imported strict ranges add 164,394 unique bytes in this
+acceptance; Entry 7 contributes additional proof depth over already classified
+bytes. Each resource and the complete batch can be removed by rebuilding from
+the surviving ledgers. No canonical ownership or `SOURCE_OWNED` state changes.
+# ADR-GRAPHICS-VRAM-CAUSAL-SOURCE-V1 — Sparse decoder-to-VRAM evidence
+
+**Status:** Accepted
+**Date:** 2026-09-30
+
+**Context:** The graphics transaction bridge has a strict stage-1 contract for
+exact ROM input → completed `0x3820` decoder → exact RAM output → RAM-origin
+VRAM publication. This proves publication but not SAT/plane use, palette
+dependency, or visible pixels. Existing `COMPRESSED_GRAPHICS_SOURCE` describes
+source-format evidence and must not be reused to imply this runtime causal
+chain.
+
+**Decision:** Store only replayed exact ROM input ranges under the distinct
+`GRAPHICS_VRAM_CAUSAL_SOURCE` name in the removable `accepted_artifact_only`
+namespace. Each resource ledger binds ROM/build/overlay identity, both run
+receipts, decoder/RAM/VRAM ranges and hashes, and the stage-1 proof contract.
+The property claims exact publication to VRAM only; SAT, plane, palette, and
+visible-pixel semantics remain unclaimed.
+
+**Consequences:** The runtime property ABI, OASROMP1, canonical SQLite and
+`SOURCE_OWNED` remain unchanged. Each transaction can be independently removed
+and the prior total-proven bitmap rebuilt byte-for-byte.
+
+# ADR-STATICALLY-ENUMERATED-CONSUMER-SOURCE-V1 — Structural family evidence plane
+
+**Status:** Accepted
+**Date:** 2026-10-01
+
+**Context:** Closed selector/table/consumer contracts can establish exact
+physical ROM intervals for every structurally valid family member without
+observing every member in a runtime scenario. Treating these facts as runtime
+properties would overstate execution; discarding them would lose scalable,
+reproducible boundary evidence. Canonical `SOURCE_OWNED` is a separate authority.
+
+**Decision:** Store closed-family ranges in an independently removable
+`STATICALLY_ENUMERATED_CONSUMER_SOURCE` evidence plane, bound to ROM identity,
+contract entries, source artifact hashes, and exact physical interval union.
+The structural view is derived separately and is excluded from the runtime
+property bitmap and `TOTAL_PROVEN`. It makes no natural-execution or
+graphics/audio semantic claim. Runtime causal classes and canonical ownership
+remain unchanged.
+
+**Consequences:** Whole-ROM analysis can count exact structurally explained
+bytes and rank reusable contracts without requiring one runtime observation per
+entry. Reports must show structural-family bytes separately from runtime
+property coverage and `SOURCE_OWNED`. Each contribution can be removed and the
+derived structural view rebuilt independently.
+# ADR-M14-STRUCTURAL-VARIABLE-FAMILY-PROVENANCE-V1 — Variable-Length Structural Family Ledger
+**Status:** Accepted
+**Date:** 2026-10-01
+
+**Context:** The existing independently removable structural ledger represents
+fixed-size entries. `GFX_SCREEN_ROOTS` contains variable-length decoder streams
+whose ends must be established by the exact decoder/parser contract. Mutating
+the accepted v1 validator would invalidate its source-artifact provenance.
+
+**Decision:** Add a versioned v2 structural contribution model for
+`STATICALLY_ENUMERATED_CONSUMER_SOURCE` with `family -> roots[] -> descriptor
+-> stream [start,end)` records and explicit `root -> descriptor -> stream`
+provenance edges. Every range binds its decoder/consumer, boundary rule, exact
+ROM SHA, and source-artifact hashes. The GFX screen family is accepted only
+after deterministic Debug/Release census equality, exact interval-union
+accounting, source verification, and byte-exact removal replay. Keep the v1
+module and its accepted contribution unchanged. Structural bytes remain outside
+the runtime bitmap, `TOTAL_PROVEN`, canonical SQLite, and `SOURCE_OWNED`.
+
+**Consequences:** Variable-size reusable resource families can be enumerated
+without runtime observation of every entry when exact consumer and boundary
+contracts close. Their ranges remain independently removable structural
+evidence and make no runtime-execution or semantic graphics claim.
+# ADR-M14-STRUCTURAL-TABLE-VARIABLE-FAMILY-V3 — Selector-Indexed Variable-Length Structural Family
+**Status:** Accepted
+**Date:** 2026-10-02
+
+**Context:** The next large reusable family is selected through a global audio
+index into eight bank descriptor tables. The existing variable-range v2
+validator is bound to GFX_SCREEN_ROOTS' pointer-table and decoder-terminator
+contract; changing it would invalidate that accepted contribution. The audio
+parser instead provides a different exact end rule: descriptor length loaded
+into BC and consumed by the decoder loop.
+
+**Decision:** Preserve v1 and v2 schemas unchanged. Add a versioned table-rooted
+structural contribution schema that binds the complete 0..127 selector domain,
+all eight 16-entry descriptor tables, the 67 exact Mode-0 members, physical
+ROM mapping, descriptor-length boundary, root→descriptor→stream edges, ROM
+identity, and source hashes. Accept `AUDIO_MODE0_BANK_RESOURCES` only after
+independent enumeration through direct ROM parsing and the existing W5
+descriptor parser, exact interval overlap accounting, and removable-view
+replay. Keep this contribution exclusively in the structural evidence plane.
+
+**Consequences:** A closed parser/table contract can establish family ranges
+without runtime observation of each entry. Mode-1 descriptors remain outside
+this family, and no audio semantics, runtime property, canonical SQLite, or
+`SOURCE_OWNED` claim follows from structural membership.
+
+# ADR-M14-STRUCTURAL-ABSOLUTE-POINTER-FAMILY-V4 — Exact Decoder-Bounded Pointer Family
+**Status:** Accepted
+**Date:** 2026-10-02
+
+**Context:** `AUDIO_MODE0_BANK_RESOURCES` uses fixed-size descriptors whose
+length field provides each boundary. The indexed graphics table at
+`0x05CE96..0x05D046` instead contains absolute pointers to self-terminating
+streams. Reusing the descriptor-length schema would encode the wrong boundary
+contract; extending its family-specific validator would invalidate the accepted
+Mode-0 contribution's source hashes.
+
+**Decision:** Preserve structural v1/v2/v3 validators. Add an independently
+versioned pointer-table v4 contribution model for exact big-endian absolute ROM
+targets with per-target parser-consumed half-open ends. Require a complete slot
+census, exact table mapping, ROM and source hashes, explicit
+table-entry→pointer→reader→decoder→stream edges, deterministic A/B enumeration,
+exact overlap accounting, and byte-exact baseline restoration when the one
+contribution is removed. Reject the family as a whole on any invalid target or
+boundary. Keep it in `STATICALLY_ENUMERATED_CONSUMER_SOURCE` only.
+
+**Consequences:** The 107-member `GFX3820_INDEXED_POINTER_TABLE` can be admitted
+without runtime observation of every entry. This schema establishes structural
+membership only; it does not update the runtime bitmap, `TOTAL_PROVEN`, canonical
+SQLite, or `SOURCE_OWNED`, and it makes no asset-semantic claim.
+
+# ADR-M14-STRUCTURAL-SENTINEL-LIST-FAMILY-V1 — Sentinel-Bounded List Families
+**Status:** Accepted
+**Date:** 2026-10-04
+
+**Context:** The structural evidence plane already supports fixed descriptors,
+variable decoder streams, pointer tables, and direct roots. AUTO13_BCEA uses a
+different reusable boundary rule: signed relative pointers select lists whose
+44-byte records end at a negative signed-word key. Reusing a length-field or
+decoder-end schema would obscure whether the sentinel itself is included.
+
+**Decision:** Add the independently versioned
+`thor.static-family-sentinel-list-contribution.v1` ledger. Each member binds
+its field-3 table references, selector slot, raw signed-relative word, exact
+physical start, record count/width, sentinel address/value, two-byte included
+sentinel extent, ROM identity, and source-artifact hashes. Admission requires
+complete slot accounting, exact parser instruction bytes, independent A/B
+enumeration, exact physical union and overlap, and byte-exact removal replay.
+The shared structural-view dispatcher accepts this schema while runtime
+property evidence, `TOTAL_PROVEN`, `SOURCE_OWNED`, and canonical SQLite remain
+outside its inputs and outputs.
+
+**Consequences:** Exact sentinel-list families can be independently removed
+and regenerated without asserting natural runtime selection or per-entry
+execution. The `AUTO13_BCEA` contribution covers only the five exact physical
+union ranges and makes no graphics/audio semantic claim.
+
+# ADR-PORTABILITY-GFX3820-FILE-OVERRIDE-V1 — Hash-Pinned ResourceID File Backend
+**Status:** Accepted for backend prototype
+**Date:** 2026-10-04
+
+**Context:** The accepted `GFX3820_INDEXED_POINTER_TABLE` structural family
+already has 107 exact parser-bounded compressed streams and fixed 4,096-byte
+outputs. The native path was ID3-only. A portability test needs to replace the
+compressed payload source while preserving the existing decoder and canonical
+ROM behavior.
+
+**Decision:** Add a deterministic ResourceID 1..107 manifest pinned to the
+accepted census, canonical ROM identity, exact compressed bytes, and decoded
+hashes. `resource_loader` may use `assets/gfx3820/<id>.bin` only after exact
+manifest validation and exact decoder/output verification; every rejected
+override falls back to the canonical ROM stream and records a reason. A
+separate explicit replacement sidecar/hash mode represents intentional
+modified payloads and is never labeled an exact copy. Backend/migration status
+is a separate portability plane. The accepted prototype uses exact copies
+only; it adds no runtime, structural, SOURCE_OWNED, or canonical SQLite
+authority and assigns no resource semantics.
+
+**Consequences:** The game can keep all 107 resources ROM-backed without an
+assets directory, and exact file-backed replacements can be tested before any
+decoded-tile or semantic asset layer is introduced. The contract does not
+claim natural selection of every ID, visible identity, or gameplay use.
+
+# ADR-PORTABILITY-GFX-SCREEN-ROOTS-FILE-OVERRIDE-V1 — Stream-ID Screen Root Backend
+**Status:** Accepted for exact-copy portability prototype
+**Date:** 2026-10-04
+
+**Context:** The accepted `GFX_SCREEN_ROOTS` structural family preserves root
+addresses, descriptor addresses, and exact GFX3820-bounded streams. Those are
+not one-to-one: 21 roots produce 167 path uses, 163 unique descriptors, and
+159 unique streams; decoded lengths also vary.
+
+**Decision:** Keep root-path, descriptor, and stream identities as separate
+manifest columns. Use unique physical stream IDs (`STREAM_<ROM start>`) for
+external file names, while retaining every root/descriptor path and alias
+group. The dedicated `screen_resource_loader` validates manifest and ROM
+provenance, compressed length/hash, full decoder consumption, and decoded
+length/hash. Any absent or rejected exact-copy override uses the canonical ROM
+stream. Do not add semantic names or modified-resource mode in this prototype.
+
+**Consequences:** This enables deterministic file-backed copies without
+collapsing aliased descriptors or roots into ambiguous IDs. The manifest is
+portability metadata, not a structural admission or runtime selection record;
+all coverage and source-owned authorities remain unchanged.
+
+# ADR-CODE-TRANSLATION-AUDIO-FORMAT-A-V1 — Native Bounded Z80 Audio Decoder
+**Status:** Accepted as a translation candidate; dispatch replacement deferred
+**Date:** 2026-10-04
+
+**Context:** W5 already establishes a bounded Format-A Z80 decoder contract,
+exact audio descriptors, a deterministic Python decoder/encoder and two
+byte-identical resource roundtrips. The accepted Mode-0 descriptor family
+contains 67 exact payloads (205,208 bytes); the complete descriptor catalog
+contains 96 active selector rows across Modes 0 and 1. A native implementation
+can be checked against the independent Python path before integration with any
+sound-command or playback system.
+
+**Decision:** Add a portable C++ descriptor parser and Mode-0/Mode-1 sample
+decoder in `src/game/audio_format_a.*`, plus synthetic tests and a local-ROM
+whole-catalog differential tool. The stable selector identity is the original
+0..127 bank/entry selector; inactive slots remain absent. The native function
+consumes only the exact descriptor-bounded compressed span. Keep it as a
+candidate API without sound-command dispatch, hardware timing, or a claim that
+all catalog selectors are naturally reached. Mode-1 differential equality
+against W5 Python is not a new runtime proof.
+
+**Consequences:** The complete native decode transform is now mechanically
+comparable across all 96 active catalog rows, while runtime alignment remains
+limited to the existing 18-sample W4 witness. No runtime-property, structural,
+`TOTAL_PROVEN`, `SOURCE_OWNED`, or canonical SQLite authority is changed. A
+future dispatch replacement requires separate timing, state-continuation, and
+playback integration evidence.
+
+# ADR-PORTABILITY-M68K-FIXED-COUNT-RECORDS-V1 — Row-Preserving Raw Stream Backend
+**Status:** Accepted as exact-copy portability prototype
+**Date:** 2026-10-04
+
+**Context:** The accepted `M68K_FIXED_COUNT_RECORD_FIELD0` census contains 96
+active table rows but only 78 unique stream starts. The shared four-consumer
+contract bounds a stream by a big-endian inclusive count and six-byte records.
+The table aliases are meaningful identity relationships even though the
+records remain semantically unnamed.
+
+**Decision:** Keep `TABLE_ROW_ID`, stable `STREAM_<ROM start>`, and ROM range
+as separate manifest fields. The generic loader resolves any active row to its
+canonical unique stream, validates exact file size, count-derived extent, raw
+hash, and ROM identity, then returns raw bytes and neutral parsed words. On any
+override rejection it reads the exact ROM span. Exact-copy files remain
+optional; no resource payload is checked in.
+
+**Consequences:** The portability layer can now represent decoder-backed
+graphics, variable-size screen graphics, and count-bounded record streams as
+separate formats. It establishes no gameplay semantics or runtime selection and
+does not affect runtime, structural, SOURCE_OWNED, or canonical SQLite data.
+
+# PROPOSAL — Reversible path-specific M68K helper dispatch
+**Status:** Proposed; not accepted or implemented
+**Date:** 2026-10-08
+
+**Context:** Three helpers (`0x94A2`, `0x8EF8`, `0x16A46`) have independent
+`CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC` contracts. None is globally verified
+or active. Their ABIs differ and computed indirect entries are not excluded.
+
+**Proposal:** If implementation is separately accepted, dispatch at each
+helper entry after the guest BSR/JSR has executed, but only when a trustworthy
+observed transfer-source PC belongs to that helper's accepted direct caller
+set. Require a per-helper opt-in, matching canonical ROM identity, matching
+contract version/hash, and helper-specific input preconditions. Otherwise leave
+the original ROM entry untouched. Keep typed adapters separate, stage effects
+before mutation, use ROM-authoritative cloned-state reference comparison in
+development, and preserve three independently reversible enable flags.
+
+**Not decided:** This proposal does not authorize production wiring, active
+runtime replacement, or cycle/prefetch equivalence. Exact call-source
+instrumentation and GPGX continuation validation remain prerequisites. The
+existing target-only experimental registry is not sufficient unchanged.
+
+**Reference:** `docs/reports/THOR_M68K_HYBRID_DISPATCH_DESIGN_20261008.md`.
+
+# ADR — Opt-in developer runtime route for M68K `0x8EF8`
+**Status:** Accepted for the developer-only HOOK_CPU runner; production dispatch remains inactive
+**Date:** 2026-10-09
+
+**Context:** The verified cohort contains three path-specific helpers. Exact
+transfer-source provenance is now available for supported direct calls. A
+minimal reversible route was requested to exercise one helper in the executing
+M68K core, without generalizing the registry or changing the shipped game.
+
+**Decision:** Route only `0x8EF8` in the developer runner, only when
+`--enable-8ef8` is supplied and canonical ROM identity, helper entry, accepted
+direct caller PC, BSR.W target, immediate hook ordering, stack return, and
+bounded record-span checks all pass. Stage the record effect before committing;
+fallback executes the untouched ROM helper. Route through the helper's existing
+RTS so the ordinary call frame is returned. The flag is off by default.
+
+**Consequences:** The opt-in HOOK_CPU test runner reports runtime activity when
+the path-specific route actually executes. The production game remains
+ROM/native-runtime-independent and unchanged. Functional register/record
+parity is tested for six direct callsite instructions, but cycle/prefetch,
+write-bus timing, and natural gameplay reachability are not established. The
+helper's verification status remains path-specific; no ROM evidence authority
+or coverage total changes.
+
+**Reference:** `docs/reports/THOR_M68K_8EF8_OPT_IN_LIVE_ROUTE_20261009.md`.
+
+# ADR — Replay-only native island attempt for M68K `0x9D70`
+**Status:** Rejected as a replay-equivalent island; retained as default-off diagnostic code
+**Date:** 2026-10-12
+
+**Context:** Ten helpers have path-specific native equivalence receipts. The
+first proposed multi-helper replay used the exact `0x009144 BSR.W` contract for
+`0x9D70` as its smallest activation step.
+
+**Decision:** Keep the typed `0x9D70` adapter available only to the developer
+replay runner and default it off. A ROM-only 3,600-frame replay passed, but an
+enabled one-helper run produced a deterministic landmark divergence at frame
+2655 after one native execution. Stop the enable-set ladder at this failure;
+do not claim replay-native island validation or route the other helpers yet.
+The all-ROM run after the failure passed. Existing helper verification remains
+path-specific, global status remains NO, and production runtime replacement
+remains inactive.
+
+**Consequences:** The C++ route and its unit gates are useful instrumentation,
+but the exact cause of the replay divergence is unresolved; timing/prefetch,
+continuation handling, and state effects remain candidates for diagnosis. The
+available corpus also lacks natural calls to
+`0x16A46` and `0xB730`. Revisit only with a closed mismatch diagnosis and a
+session that reaches the missing caller paths. No ROM evidence authority or
+coverage total changes.
+
+**Reference:** `docs/reports/THOR_REPLAY_NATIVE_ISLAND_ATTEMPT_20261012.md`.
+
+**Follow-up (2026-10-12):** Strict instruction/PC mismatch is separated from
+normalized equivalence: native helper-body elision makes strict trace identity
+inapplicable as a pass criterion, but does not waive caller-visible state or
+scheduler checks. The matched call has normalized event and M68K boundary-state
+parity, but the native route is 294 cycles shorter and misses the M68K line
+budget crossing that advances Z80/VDP by one scanline. Z80 RAM then differs at
+return; normalized replay and timing equivalence both remain NO. No cycle compensation was attempted, and no route expansion follows from this
+diagnostic. See
+`docs/reports/THOR_REPLAY_NATIVE_9D70_TIMING_STATE_DIAGNOSTIC_20261012.{md,json}`.
+
+**Timing follow-up (2026-10-12):** The regular pre-instruction HOOK_CPU route
+is unsuitable for `0x9D70` substitution because ROM execution crosses the
+current M68K line budget before the RTS continuation, while the native route
+does not; this changes whether Z80/VDP scheduling occurs before caller
+continuation. Do not compensate with a single aggregate cycle delta: ROM
+branch paths have different measured costs, and refresh charging is checked at
+instruction boundaries. The existing developer block hook and per-instruction
+timing callbacks are the only selected candidate for a future experiment, but
+remain UNVERIFIED for scheduler equivalence until a synthetic line/refresh
+crossing micro-oracle passes. No compensation, route change, or helper-status
+change is authorized by this result. See
+`docs/reports/THOR_REPLAY_NATIVE_9D70_CYCLE_ACCOUNTING_20261012.{md,json}`.
+
+**Scheduler fixture and selected instruction-step replay follow-up (2026-10-13):**
+The isolated fixture now verifies its ten documented instruction-step microcases
+across line-budget, refresh, Z80/VDP, IRQ, and resume behavior. Applying the
+stepper to one natural `0x009144 → 0x009D70` call preserved the measured 420-cycle
+helper cost and line-boundary crossing. A 3,600-frame replay matched the explicit
+per-frame CPU/scheduler/observable-memory trace, call boundaries, post-return
+sync windows, external events, helper events, and sampled Z80 RAM. The legacy
+landmark validator still reports only serializer `state_sha256` mismatches at
+60 checkpoints, which also occur in duplicate ROM-only restores; those hashes
+remain a disclosed limitation and are not silently normalized. This supports
+only the tested single caller-path call and replay surface. Keep the route
+diagnostic-only, `RUNTIME_REPLACEMENT_ACTIVE=NO`, and helper verification
+path-specific; do not imply arbitrary-opcode, unsupported-caller, or future
+session equivalence. See
+`docs/reports/THOR_9D70_INSTRUCTION_STEP_REPLAY_20261013.{md,json}`.
 
 **Serializer acceptance follow-up (2026-10-13):** Gameplay-session replay
 landmarks now use the existing version- and size-checked canonical checkpoint
@@ -2269,3 +4522,397 @@ matched ROM-only 60/60. A fixture-only save-state tail now preserves
 This does not broaden the `0x9D70` route claim, enable production dispatch, or
 change any evidence authority. See
 `docs/reports/THOR_SERIALIZER_CANONICAL_REPLAY_20261013.md`.
+
+# ADR-0046 — ROM-Backed Screen Entity Model and Multi-Tile Sprite Rasterization
+**Status:** Accepted for M15.3
+**Date:** 2026-10-14
+
+**Context:** The vertical slice previously rendered real ROM background tiles, collision byte grids, and screen transitions for screens 0x0100 and 0x0101, but lacked real non-player entities and Genesis sprite rendering.
+
+**Decision:**
+1. Derive entity definitions directly from the canonical ROM type table at `0x0003F2FA` (32 bytes per row, indexed by `type / 2 - 1`), matching the original engine's `0x008D06` initialization contract.
+2. Bind screen entity lifetime directly to `ScreenInstance`. On screen load/transition, entities are created or destroyed with the screen instance, guaranteeing zero stale objects or leaks across screen boundaries.
+3. Rasterize multi-tile Genesis sprite pieces using the ROM frame descriptor format (proven by helper `0x0000B730`), translating world coordinates to viewport screen space via active camera coordinates.
+4. Keep the native recompilation helper island frozen (no helper #9 added).
+
+**Consequences:** Real ROM-backed entities appear and render on authentic screens, survive camera movements, reload cleanly on screen transitions, and maintain 100% backward compatibility with synthetic test fixture replay hashes.
+
+# ADR-0047 — Authentic ROM-Driven Entity Animation Playback and Fail-Closed Decoding
+**Status:** Accepted for M15.4
+**Date:** 2026-10-14
+
+**Context:** ScreenEntity previously rendered static multi-tile Genesis sprites from the initial frame descriptor (0x167DAC), but did not animate. The animation descriptor format and runtime driver needed reverse engineering and integration into the vertical slice without adding new helper routines.
+
+**Decision:**
+1. Derive entity animation sequence pointers from offset +20 (0x14) of the canonical ROM type table at `0x0003F2FA` (`0x00041052` for chest Type `0x002A`), which maps to `+0x26(A6)` in the M68K RAM entity pool.
+2. Reconstruct the 4-byte frame record format proven by M68K subroutine `0x008FA4..0x009040`: `[Word 0: frame index, Word 1: raw duration & loop flag]`, where `ticks = (duration & 0x7FFF) >> 1` and `0x8000` signals sequence termination / loop reset.
+3. Map frame indices to frame descriptors via the graphics table at `0x00167DAC` using authentic relative word offset addressing: `frame_addr = entry_addr + read_be16(entry_addr)`.
+4. Implement a fail-closed decoder: any invalid sequence header, out-of-bounds offset, or unsupported opcode marks the animation as `halted`, preserving the current visual frame without undefined behavior.
+5. Keep the native recompilation helper island frozen (no helper #9 added).
+
+**Consequences:** Entities on authentic ROM screens play authentic animations at authentic ROM tick rates, seamlessly loop, reload cleanly across screen transitions, and report their live animation state via the HUD.
+
+# ADR-0048 — Execution-Driven Hybrid Recompilation Strategy and Central Native Replacement Registry
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:**
+The project was previously operating with isolated instruction-step helper islands (`0x9D70, 0x9D4E, 0x9DB4, 0x9D92, 0x94A2, 0x9C40, 0x8EF8, 0xE268`) on one hand, and a full native vertical slice in `ControlledScreen` on the other. A strategy change shifts the workflow to execution-driven hybrid recompilation: the emulator remains the authoritative fallback executor for untranslated M68K code, while verified C++ replacements progressively displace ROM execution without scattering PC hooks.
+
+Before activating native player replacement, audit discrepancies regarding player record base (historical `0x00FF19E8` vs audit `0x00FF1800`) and entry PCs (`0x004A20` vs `0x00557A`) required runtime verification.
+
+**Decision:**
+1. **Canonicalize Player Record Base**: Confirmed via runtime execution traces that the player entity record base is `0x00FF19E8` (`PLAYER_A6_RUNTIME_BASE = 0x00FF19E8`). The audit reference to `0x00FF1800` is documented as inaccurate. `0x004A20` belongs to an early boot sound initialization path with 0 runtime hits in 3,600 frames; the canonical player update entry in ROM is `0x00557A` -> `0x005670` -> `0x0059B2`.
+2. **Central Native Replacement Registry**: Create `HybridExecutionRegistry` managing `NativeRegion` descriptors (`entry_pc`, `internal_pcs`, `exit_pcs`, `continuation_pc`, `supported_precondition`, `handler`, `timing_mode`, `fallback_policy`, `verification_status`).
+3. **Supported States & Fail-Closed Fallback**: Native execution is allowed strictly for States 0 (normal locomotion), 10 (melee attack), 14 (secondary weapon/bow), and 24 (hurt/knockback). Any other state triggers fail-closed ROM fallback, recording full M68K registers (`D0-D7`, `A0-A7`, `SR`), stack top, frame, and input state.
+4. **First-Divergence Oracle**: Support differential execution comparing D/A registers, SR/CCR/X, PC, stack, and player RAM record, halting on first meaningful divergence.
+5. **Eliminate Child Provenance Rejects**: When the native player dispatcher owns the call path, calls to `0x00E268`, `0x00938E`, and `0x009BF2` use existing native equivalents without triggering provenance rejects or weakening global gates for other callers.
+
+**Consequences:**
+A unified architecture allows C++ components from `ControlledScreen` to progressively displace M68K execution while preserving the emulator as an authoritative fallback, with zero evidence authority changes.
+
+# ADR-0049 — Main Loop Frame Tick Coordinator (0x0033D2..0x003424) and Instruction-Stepped E268 Caller Extension
+**Status:** Accepted
+**Date:** 2026-10-14
+
+**Context:**
+Runtime call census in the canonical 3,600-frame session revealed 410,548 ROM fallbacks (≈99.9% of all remaining fallback traffic) converging on helper `0x00E268`:
+- `CALLER 0x00340E -> 0x00E268`: 364,289 hits
+- `CALLER 0x0033E2 -> 0x00E268`: 46,259 hits
+
+Reverse engineering of cluster `0x0033D2..0x003424` disproved that these were player locomotion or gameplay calls. The cluster is the engine's Main Loop Frame Tick / Delay Coordinator, which sets frame counters at `0x00FF1658` (`0x005E` for initial delay, `0x0001` per frame tick) and spins waiting for VBlank interrupts (`0x0021F0` `subq.w #1, ($00FF1658).l`). During each spin iteration, the engine invokes `0x00E268` to churn the PRNG 16-bit LFSR seed at `0x00FF1928` and burn CPU cycles.
+
+The existing instruction-stepped helper `step_m68k_e268` correctly modeled the 29-word opcode sequence and scheduler/interleaving timing, but hardcoded caller validation to `0x00359A` only. Calls from `0x0033E2` and `0x00340E` were rejected with provenance errors and fell back to ROM.
+
+**Decision:**
+1. **Stale Region Accounting Clean-up**: Update `HybridExecutionRegistry` to distinguish active from inactive regions. Mark `0x004A20` as inactive (`active = false`, `VerificationStatus::StaleStaticCandidate`) because it had 0 executions in the canonical 3,600-frame session and belongs to boot sound initialization. The canonical player update region is `0x00557A` (`active = true`).
+2. **Instruction-Stepped Timing Classification**: Classify cluster `0x0033D2..0x003424` and child helper `0x00E268` strictly as `INSTRUCTION_STEPPED_NATIVE`. Whole-function block substitution is explicitly rejected because synchronous spinning stalls the emulator scheduler and starves VBlank/Z80/VDP interrupts.
+3. **Extend E268 Caller Provenance**: Update `step_m68k_e268` to accept verified callers `kProvenCallers = {0x00359A, 0x0033E2, 0x00340E}`. For each caller, strictly verify:
+   - ROM opcode at `caller_pc` is `jsr $0000E268` (`0x4EB9 0x0000 0xE268`).
+   - Stack top `(SP)` contains exact return address `caller_pc + 6`.
+   - Global provenance is preserved: all unverified callers fail closed to ROM fallback.
+4. **Register Main Loop Coordinator Region**: Register `Main_Loop_Frame_Tick_Coordinator_0033D2` in `HybridExecutionRegistry` with entry `0x0033D2`, exits `0x003424` and `0x003464`, and continuation `0x003428` in instruction-stepped timing mode.
+
+**Consequences:**
+The 410,548 ROM fallbacks from callers `0x00340E` (364,289) and `0x0033E2` (46,259) are completely eliminated without disturbing cycle-stepped timing, scheduler, IRQ, Z80, or VDP interleaving. All 28 hybrid unit tests pass 100%. All source files remain <= 500 lines.
+
+## ADR-0050: Bounded Native Displacement of Entity Oscillation Coordinator 0x0613B2
+
+**Context:**
+Following complete elimination of the 410,548 E268 spin-wait fallbacks, the next highest-frequency runtime dependency encountered during the canonical 3,600-frame gameplay session was `0x0613B2` (26,233 hits across callers `0x061AC2` with 16,673 hits and `0x062576` with 9,560 hits).
+Analysis of ROM bytes and control flow established that `0x0613B2..0x0613F6` is a self-contained 17-instruction leaf routine (70 bytes, 0 callees, 0 VDP/hardware accesses) that updates entity slot floating/bobbing oscillation displacements in Work RAM relative to `(A6)`. Additionally, the apparent ambiguity between `0x003408` and `0x00340E` was canonicalized: `0x003408` is the immediate address extension word of `btst.b #7, ($00FF165F).l` (`0x003402`), not an instruction boundary.
+
+**Decision:**
+1. **Implement Native Region**: Implement `Entity_Oscillation_Bobbing_Coordinator_0613B2` in `src/tools/hybrid/entity_oscillation_region.hpp` and `.cpp`.
+2. **Strict Provenance & Preconditions**: Require caller PC to match proven callers `{0x061AC2, 0x062576}`, verify `A6` is in valid Work RAM, and verify stack top `(SP)` contains `caller_pc + 4`. Unknown callers or malformed stack frames fail closed to ROM fallback.
+3. **Register Region**: Register `0x0613B2` in `HybridExecutionRegistry` as `VerifiedPathSpecific` with instruction-stepped timing semantics.
+4. **Hardware Classification**: Classified as `PURE_CPU_DATA_TRANSFORM` with 0 direct VDP/SAT interactions; safe for native execution without cycle drift.
+
+**Consequences:**
+The 26,233 ROM fallbacks targeting `0x0613B2` are completely displaced with zero divergence. Total remaining ROM fallbacks drop from 187,390 to 161,157. Next runtime dependency identified is `0x061934` (20,916 hits).
+
+## ADR-M15-28: Modular Native Child Displacement of 0x06138E and Dynamic Shift Timing Recovery
+
+**Status:** Accepted for Milestone M15.28
+**Date:** 2026-10-16
+
+**Context:**
+Census analysis after displacing gamepad debouncer `0x002992` and VDP committer `0x0027FC` identified `0x06138E` as an untranslated ROM child routine invoked 2,609 times across the canonical 3,600-frame replay from two already-native parent subsystems:
+- Caller A: `0x061A12` inside native `0x061934` (1,687 calls, displacement `0xF97A`, return PC `0x061A16`).
+- Caller B: `0x0624A0` inside native `0x0623AC` (922 calls, displacement `0xEEEC`, return PC `0x0624A4`).
+
+Historical working documentation labeled this routine as a "Coordinate Unpacker". Forensic disassembly and runtime analysis disproved this label: `0x06138E` is Sound Channel Envelope Parameter Staging & Modulation Init inside the Ancient Music Driver. It reads envelope configuration fields from channel RAM context `(A6)` (`+$78` -> `+$7E`, `+$79` -> `+$7F`, `+$7C` -> `+$80`), divides modulation frequency by 2 via `lsr.w #1, d6` (`+$7A` -> `D6` -> `+$82`), resets modulation timer `+$76` to 0, and returns via RTS.
+
+An initial implementation produced a divergence at frame 523 due to missing dynamic shift cycle compensation on `lsr.w #1, d6` (`0xE24E`) and emulating RTS inside the stepper rather than yielding `NotHandled` for native Musashi instruction retirement.
+
+**Decision:**
+1. **Disprove Legacy Semantics**: Formally reclassify `0x06138E` as Sound Channel Envelope Parameter Staging & Modulation Init. Confirm zero coordinate/display/VDP interactions.
+2. **Modular Child Dispatch**: Wire callers `0x061A12` and `0x0624A0` to invoke `step_m68k_6138e_instruction()` upon entry `PC == 0x06138E`.
+3. **Exact Memory Bus Ordering**: Replicate exact Musashi bus interleaving:
+   - Fetch source displacement word from PC (`pc + 2`).
+   - Read source byte/word from RAM context `d16(a6)`.
+   - Fetch destination displacement word from PC (`pc + 2`).
+   - Write destination byte/word to RAM context `d16(a6)`.
+4. **Dynamic Shift Timing Recovery**: For `0xE24E` (`lsr.w #1, d6`), add `shift_count * 2 * 7 = +14` master cycles to the core step before `finish_instruction`.
+5. **Native RTS Pipeline Handoff**: Return `NotHandled` at opcode `0x4E75` (RTS at `0x0613B0`), allowing Musashi to natively execute SP pop, return address tracking, and prefetch.
+6. **Census Reconciliation**: Reconcile call census to explicitly preserve `0x00E268` in the active `--native-island` helper set (`CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`), distinguishing logical call volume from actual remaining untranslated ROM execution.
+
+**Consequences:**
+The 2,609 ROM calls to `0x06138E` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. Bit-for-bit identity is preserved across all six diagnostic streams (`observed-landmarks`, `full-frame-state`, `architectural-sync`, `scheduler-sync`, `z80-ram-sync`, `call-z80-ram`) with `different_frame_count == 0`. The new #1 remaining untranslated ROM target is identified as `0x00E682` (2,104 calls).
+
+## ADR-M15-29: Modular Native Displacement of 0x00E682 and Caller Stack Bypass Architecture
+
+**Status:** Accepted for Milestone M15.29
+**Date:** 2026-10-16
+
+**Context:**
+Following displacement of child helper `0x06138E`, the census model ranked `0x00E682` as the #1 remaining untranslated ROM target with 2,104 calls across 3,600 canonical frames. Disassembly and runtime tracing revealed calls from 6 distinct callers:
+- `0x0057D0`: 772 calls (Player update status/animation tick, `A6 = 0x00FF19E8`)
+- `0x01A54E`: 424 calls (Entity handler)
+- `0x01BF84`: 350 calls (Entity handler)
+- `0x01BBF8`: 337 calls (Entity handler)
+- `0x01C4DC`: 116 calls (Entity handler)
+- `0x01B7F2`: 105 calls (Entity handler)
+
+Static analysis of `0x00E682..0x00E6BA` (56 bytes, 28 words, 16 instructions) revealed it is the Entity Action / Animation Freeze Timer & Damage Stun Gatekeeper. It tests entity state in WRAM `(A6)`:
+1. `+$9D(A6)`: Stun timer / hurt flash counter.
+   - If non-zero, checks if $\ge 20$. If $< 20$, sets bit 6 of `$36(A6)` (hurt flash flag).
+   - Pops the caller return address via `addq.l #4, sp` and executes `rts` at `0x00E6A8`, returning directly to the caller's caller (the parent entity dispatcher), completely bypassing the caller's remaining execution for that frame.
+2. `+$82(A6)`: Action / animation freeze timer.
+   - If non-zero, increments animation counter `$2E(A6)` and decrements `$82(A6)`.
+   - If `$82(A6)` decrements to zero (`beq.s` taken to `0x00E6A8`), exits via normal `rts` without popping the caller.
+   - If `$82(A6)` is still $> 0$, executes `addq.l #4, sp` at `0x00E6A6` and exits via `rts` at `0x00E6A8`, popping the caller's stack frame and returning directly to the grandparent entity dispatcher.
+3. If both `+$9D(A6) == 0` and `+$82(A6) == 0`, clears bit 6 of `$36(A6)` (`bclr #6, $36(a6)`) and exits normally via `rts` at `0x00E698`.
+
+This explained why historical call census reported `COMPLETED_RETURNS: 2061` out of 2,104 calls (exactly 43 calls took the stack-popping bypass path).
+
+**Decision:**
+1. **Model Stack Bypass Flow**: Implement `m68k_00e682_instruction_step` in `src/tools/hybrid/m68k_00e682_instruction_step.hpp` and `.cpp`. When executing `addq.l #4, sp` (`0x584F` at `0x00E6A6`), pop the caller's return PC off the guest stack so that the subsequent `rts` at `0x00E6A8` returns cleanly to the grandparent return address with full prefetch and cycle tracking.
+2. **Exact Branch Timing**: For `bne.w` (`0x6600`) and `bcc.w` (`0x6400`), add `+14` master cycles for not-taken branches via `api.word_not_taken_adjustment`. For `beq.s` (`0x6700`), add `-14` master cycles via `api.byte_not_taken_adjustment`.
+3. **Strict Caller Verification**: Restrict native entry strictly to the 6 verified callers `{0x0057D0, 0x01A54E, 0x01BF84, 0x01BBF8, 0x01C4DC, 0x01B7F2}`, validating that `(SP)` matches `caller_pc + 6` and ROM opcode at `caller_pc` is `jsr $0000E682` (`0x4EB9 0000 E682`).
+4. **Reconciled Census Ranking**: Preserve all 22 active native helpers in `--native-island`. Use remaining untranslated ROM executions (Ranking B) for the NEXT target selection.
+
+**Consequences:**
+All 2,104 calls to `0x00E682` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames (2,030 normal path 1, 31 timer expired path 2a, 43 caller bypass path 2b). All 6 diagnostic streams match bit-for-bit with `different_frame_count == 0`. All top 16 logical call targets are now 100% native. The new #1 remaining untranslated ROM target is `0x0613F8` (1,687 calls from `0x061A16` inside native `0x061934`).
+
+## ADR-M15-30: Modular Native Displacement of 0x0613F8 and Dual-Slot Modulation Initializer Verification
+
+**Status:** Accepted for Milestone M15.30
+**Date:** 2026-10-16
+
+**Context:**
+Following displacement of entity timer gatekeeper `0x00E682`, the census model ranked `0x0613F8` as the #1 remaining untranslated ROM target with 1,687 calls across 3,600 canonical frames, called exclusively from `0x061A16` (immediately following `0x061A12 -> 0x06138E`) inside native `0x061934`.
+
+Disassembly and runtime forensic analysis of `0x0613F8..0x06147E` (134 bytes, 67 words, 32 instructions) revealed it is the Sound Channel Dual Auxiliary Voice / Pitch-Modulation Slot Initializer:
+1. Outer Routine (`0x0613F8..0x061438`):
+   - Preserves `D0, A0, A1` on stack via `movem.l d0/a0-a1, -(sp)`.
+   - Slot 1 check (`+$B6(A6)`): checks bits 4 and 5 (`btst #4, 0(a0)`, `btst #5, 0(a0)`). If both are set, calls `0x06143A` via `bsr.w 0x06143A`.
+   - Slot 2 check (`+$C0(A6)`): checks bits 4 and 5 (`btst #4, 0(a0)`, `btst #5, 0(a0)`). If both are set, calls `0x06143A` via `bsr.w 0x06143A`.
+   - Restores registers via `movem.l (sp)+, d0/a0-a1` and returns via `rts` at `0x061438`.
+2. Sub-helper Routine (`0x06143A..0x06147C`):
+   - Unpacks status byte lower 4 bits into `5(A0)`, clears `6(A0)`, `7(A0)`, and `4(A0)` via `sf`, copies initial parameter from `3(A0)` to `6(A0)`.
+   - Compares `8(A0)` with `0xB0`:
+     * If $\ge \text{0xB0}$ (Default Path): loads byte from `+$18(A1)` (`+$B5(A6)`) to `9(A0)`, returns via `rts` at `0x06146E`.
+     * If $< \text{0xB0}$ (Table Path): shifts `d0 >>= 2` (`lsr.b #2, d0`, +28 master cycles), zero-extends to word, loads byte from table `0(A1, D0.W)` (`+$9D(A6) + index`) to `9(A0)`, returns via `rts` at `0x06147C`.
+3. In the 3,600-frame canonical gameplay, both slots have bit 4 clear across all 1,687 calls, traversing the fast path (8 instructions per call, 13,496 total stepped instructions).
+
+**Decision:**
+1. **Instruction-Stepped Native Replacement**: Implement `step_m68k_0613f8` in `src/tools/hybrid/m68k_0613f8_instruction_step.hpp` and `.cpp`.
+2. **Exact MOVEM Bus & Cycle Accounting**:
+   - `movem.l d0/a0-a1, -(sp)`: add 168 master cycles ($3 \times 8 \times 7$), write order A1, A0, D0, call `skip_bus_refresh`.
+   - `movem.l (sp)+, d0/a0-a1`: post-increment dummy word read at `new_sp`, add 168 master cycles ($3 \times 8 \times 7$), call `skip_bus_refresh`.
+3. **Fail-Closed Contract**: Strictly validate caller `0x061A16`, return PC `0x061A1A`, A6 in work RAM (`0x00FF0000..0x01000000`), and ROM bytes match canonical image.
+4. **Reconciled Census Model**: Keep all 23 accepted native helpers active in `--native-island`. Use remaining untranslated ROM executions (Ranking B) for NEXT target selection.
+
+**Consequences:**
+All 1,687 calls to `0x0613F8` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. All 6 diagnostic streams (`observed-landmarks`, `full-frame-state`, `architectural-sync`, `scheduler-sync`, `z80-ram-sync`, `call-z80-ram`) match bit-for-bit with `different_frame_count == 0`. All top 17 logical call targets are now 100% native. The new #1 remaining untranslated ROM target is `0x016EBC` (1,310 calls).
+
+## ADR-M15-31: Modular Native Displacement of 0x016EBC and Interactive Entity Handler Verification
+
+**Status:** Accepted for Milestone M15.31
+**Date:** 2026-10-16
+
+**Context:**
+Following displacement of Ancient audio modulation slot initializer `0x0613F8`, census Ranking B identified `0x016EBC` as the #1 remaining untranslated ROM target with 1,310 calls across the 3,600-frame canonical replay. Disassembly and forensic analysis revealed that `0x016EBC` is an interactive world object / chest / event entity update and initialization handler dispatched from the main entity update loop (`0x00DF1A`, 1,306 calls) and entity spawn/setup routine (`0x00FF88`, 4 calls).
+The routine spans `0x016EBC..0x016F0E` (84 bytes, 42 words, 23 instructions) with two primary execution paths:
+1. **Initialization Path (`0x016EBC..0x016EE8`, RTS)**:
+   - Executed when `0xA6(a6) == 0`. Sets initialization flag `0xA6(a6) = 0xFF`.
+   - Copies initial sprite/frame index: `16(a6) = 140(a6)` (`move.w $8C(a6), $10(a6)`).
+   - If property `158(a6) == 0` (`0x9E(a6)`): initializes delay/timer `74(a6) = 16` (`move.w #16, $4A(a6)`).
+   - If property `158(a6) == 1`: sets interaction/collision flag bit 0 of `60(a6)` (`bset #0, $3C(a6)`).
+   - Returns via `rts` at `0x016EE8`. (Observed 4 calls from `0x00FF88`).
+2. **Update Path (`0x016EBC..0x016F0E`, RTS)**:
+   - Executed when `0xA6(a6) != 0`. Inspects interaction/defeat trigger byte `102(a6)` (`0x66(a6)`).
+   - If `0x66(a6) == 0` (idle/waiting): branches directly to `0x016F0E` and returns via `rts`. (Observed 1,306 calls from `0x00DF1A`).
+   - If `0x66(a6) != 0` (triggered/defeat/open): unobserved in canonical replay; increments counter `2(a6)` up to 6, clears slot `0(a6) = 0`, calls `0x018030` to lookup persistent flag bit, and executes `bset d0, (a0)`.
+
+**Decision:**
+1. **Instruction-Stepped Native Replacement**: Implement `step_m68k_016ebc` in `src/tools/hybrid/m68k_016ebc_instruction_step.hpp` and `.cpp`.
+2. **Exact Memory-to-Memory Ordering**:
+   - `move.w $8C(a6), $10(a6)`: fetch source displacement `0x008C`, read source word from `a6 + 0x8C`, fetch destination displacement `0x0010`, write destination word to `a6 + 0x10`, update N/Z flags.
+3. **Fail-Closed Contract**: Validate callers `0x00DF1A` and `0x00FF88` (return PCs `0x00DF1C` and `0x00FF8A`), valid SP in work RAM, valid A6 entity structure in work RAM (`0x00FF0000..0x01000000`), and ROM image verification (42 words). Unobserved trigger paths fall back to Musashi ROM fail-closed.
+4. **Reconciled Census Model**: Keep all 24 accepted native helpers active in `--native-island`. Use remaining untranslated ROM executions (Ranking B) for NEXT target selection.
+
+**Consequences:**
+All 1,310 calls to `0x016EBC` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. All 6 diagnostic streams (`observed-landmarks`, `full-frame-state`, `architectural-sync`, `scheduler-sync`, `z80-ram-sync`, `call-z80-ram`) match bit-for-bit with `different_frame_count == 0`. All top 18 logical call targets are now 100% native. The new #1 remaining untranslated ROM target is `0x009AD6` (1,283 calls, tied with `0x009BF2`).
+
+## ADR-M15-42: Modular Native Displacement of 0x00350E and Title Screen Blinking Text Dispatcher
+
+**Status:** Accepted for Milestone M15.42
+**Date:** 2026-10-17
+
+**Context:**
+Following displacement of Entity Type 0x38 Damage & Hit Processing Handler `0x01B102`, the authoritative fresh actual-ROM execution census ranked `0x00350E` as the #1 remaining untranslated ROM target with 866 calls across 3,600 canonical frames, called exclusively from title screen wait loop `0x0033FE` (return PC `0x003402`).
+
+Disassembly and runtime forensic analysis of `0x00350E..0x003534` (38 bytes, 19 words, 9 instructions) revealed it is the Title Screen "PRESS START BUTTON" Blinking String Dispatcher:
+1. Operation:
+   - Evaluates frame counter `0x00FF1654`: `(0x00FF1654 & 0x7F) < 0x60` (visible phase, 96 frames of 128-frame cycle) vs `(0x00FF1654 & 0x7F) >= 0x60` (blank phase, 32 frames of 128-frame cycle).
+   - If visible (`bcs.s 0x3526` taken): sets `a6 = 0x00003534` (pointer to ASCII `"PRESS START BUTTON\0"`). Observed 655 times.
+   - If blank (`bcs.s` not taken): falls through to `0x3522` and sets `a6 = 0x00003547` (pointer to ASCII `"                  \0"`). Observed 211 times.
+   - Sets VDP VRAM Plane A write command: `d5 = 0x4A160003`.
+   - Sets base tile/palette attribute: `d6.w = 0x61C1` (preserving upper 16 bits of `D6`).
+   - Clears CCR condition codes `N=0, Z=0, V=0, C=0` (preserving `X`).
+   - Tail-branches via `bra.w 0x002CE4` to general text string VDP tilemap renderer at `0x002CE4`.
+2. Total execution in 3,600 frames: 866 calls (655 visible branches, 211 blank branches), 7,139 stepped instructions ($655 \times 8 + 211 \times 9 = 7139$).
+
+**Decision:**
+1. **Instruction-Stepped Native Replacement**: Implement `step_m68k_00350e` in `src/tools/hybrid/m68k_00350e_instruction_step.hpp` and `.cpp`.
+2. **Exact Tail-Branch Hand-off**: Execute `bra.w 0x002CE4` by updating CPU return state to `0x002CE4` and completing instruction stepping with `active = false`.
+3. **Fail-Closed Contract**: Strictly validate caller `0x0033FE` (return PC `0x003402`), SP in Work RAM (`0x00FF0000..0x01000000`), and all 19 ROM opcode words against canonical ROM image.
+4. **Reconciled Census Model**: Keep all 36 accepted native helpers active in `--native-island`. Use remaining untranslated ROM executions for NEXT target selection.
+
+**Consequences:**
+All 866 calls to `0x00350E` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. All 6 canonical diagnostic streams (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`) plus `external-events.jsonl` and `normalized-events.jsonl` match bit-for-bit with `different_frame_count == 0` and `divergence=NO`. The new #1 remaining untranslated ROM target is `0x008E22` (842 calls).
+
+## ADR-M15-43: Modular Native Displacement of 0x008E22 and Hardware Animated Palette CRAM Engine
+
+**Status:** Accepted for Milestone M15.43
+**Date:** 2026-10-17
+
+**Context:**
+Following displacement of Title Screen Blinking Text Dispatcher `0x00350E`, the authoritative fresh actual-ROM execution census ranked `0x008E22` as the #1 remaining untranslated ROM target with 842 calls across 3,600 canonical frames, called from:
+- `0x0007B8` (70 calls, return PC `0x0007BE`, VBlank ISR)
+- `0x008B3E` (772 calls, return PC `0x008B42`, Main Graphics Loop)
+
+Disassembly and runtime forensic analysis of `0x008E22..0x008E90` (110 bytes, 55 words, 29 instructions) revealed it is the Hardware Animated Palette CRAM Engine:
+1. Operation:
+   - Evaluates active flag byte `0x00FF164F`: if zero, fast exits via `beq.w 0x008E8E` (`RTS`).
+   - If non-zero (842 calls): loads animated palette record list head pointer `A0` from `0x00FF17A2`, sets CRAM shadow destination pointer `A1 = 0x00FF134C`, and clears dirty flag `D5.B = 0`.
+   - Iterates through linked record list at `(A0)`:
+     - Decrements frame countdown timer `6(A0)`.
+     - When timer expires (728 keyframe advances): advances frame offset `4(A0) += 4`, loads new duration from `0(A0, D1.W)`. If duration == 0, wraps back to keyframe 0 (`D1 = 8`, 164 loops). Writes updated offset to `4(A0)`, reads color word from `2(A0, D1.W)`, writes color word to `0(A1, D0.W)` (where `D0 = 2(A0)`), and marks dirty `D5.B = 0xFF` (728 CRAM buffer writes).
+     - Saves remaining timer back to `6(A0)`.
+     - Advances `A0 += (A0)` until next offset is 0 (3,508 records processed).
+   - If dirty (`D5 != 0`), sets DMA transfer pending flag bit 0 of `0x00FF164D` (173 DMA sets).
+   - Pops return PC from stack and returns via `RTS`.
+2. Total execution in 3,600 frames: 842 calls (70 VBlank ISR, 772 Graphics loop), 47,465 stepped instructions, 0 ROM fallbacks.
+
+**Decision:**
+1. **Instruction-Stepped Native Replacement**: Implement `step_m68k_008e22` in `src/tools/hybrid/m68k_008e22_instruction_step.hpp`, `.cpp`, and `m68k_008e22_step_cycle.hpp`, `.cpp` (split to ensure each file <= 500 lines).
+2. **Fail-Closed Contract**: Strictly validate callers `0x0007B8` (return PC `0x0007BE`) and `0x008B3E` (return PC `0x008B42`), SP in Work RAM, and all 55 ROM opcode words against canonical ROM image.
+3. **Canonical Replay Verification**: Verify bit-for-bit SHA-256 equivalence across all 6 canonical streams plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 842 calls to `0x008E22` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. All 8 diagnostic streams match bit-for-bit. The new #1 remaining untranslated ROM target is `0x00A7E6` (811 calls).
+
+## ADR-M15-44: Modular Native Displacement of 0x00A7E6 and HUD Status Overlay Sprite Generator
+
+**Status:** Accepted for Milestone M15.44
+**Date:** 2026-10-17
+
+**Context:**
+Following displacement of `0x008E22`, the authoritative fresh actual-ROM execution census ranked `0x00A7E6` as the #1 remaining untranslated ROM target with 811 calls across 3,600 canonical frames, called from:
+- `0x00A336` (773 calls, return PC `0x00A33A`, HUD update path)
+- `0x00A694` (38 calls, return PC `0x00A698`, alternate HUD update path)
+
+Disassembly and runtime forensic analysis of `0x00A7E6..0x00A8DA` (244 bytes, 122 words, 51 instructions) revealed it is the HUD Status Overlay Sprite Generator & VRAM DMA Transfer Queuer:
+1. Operation:
+   - Reads HUD inhibit flag byte `0x00FF1656`: if bit 7 is set (376 calls), fast exits via `bne.w 0x00A878` (`RTS`).
+   - If bit 7 is clear (435 calls): loads base sprite table address `A5 = 0x00FF13CC + $ff188c`, reads sprite link/index `D5 = $ff188a`, loads Y coordinate base `D2 = 0x00E4`.
+   - Tests bit 6 of `0x00FF1656`:
+     - Mode A (bit 6 clear, 212 calls): sets `D1 = 0x00F0`, `D4 = 0x0C00`, `D3 = 0x879B`, calls child helper `0x00A8DA` 3 times with `D1` advancing by `0x0020` each time and `D3` cycling `0x879B`, `0x879F`, `0x87A3` (636 child calls). Subtracts base `A5 -= 0x00FF13CC` and writes offset back to `0x00FF188C`, updates `0x00FF188A = D5`. Checks transfer state `0x00FF17C0`: if not 1, sets it to 1, writes 10 bytes to DMA queue at `(A5)+` from pointer `0x00FF1892`, and updates write pointer (7 DMA transfer queues).
+     - Mode B (bit 6 set, 223 calls): sets `D1 = 0x010C`, `D4 = 0x0800`, `D3 = 0x879B`, calls child helper `0x00A8DA` 2 times with `D1` advancing by `0x0018`, `D4 = 0x0400`, `D3 = 0x879E` (446 child calls). Subtracts base `A5 -= 0x00FF13CC` and writes offset back to `0x00FF188C`, updates `0x00FF188A = D5`. Checks transfer state `0x00FF17C0`: if not -1, sets it to -1, writes 10 bytes to DMA queue at `(A5)+` from pointer `0x00FF1892`, and updates write pointer (7 DMA transfer queues).
+   - All 5 child `bsr.w 0x00a8da` calls target the already-accepted native instruction-stepped helper `m68k_00a8da_instruction_step.cpp`.
+2. Total execution in 3,600 frames: 811 calls (773 from `0x00A336`, 38 from `0x00A694`), 12,017 stepped instructions, 1,082 child calls, 0 ROM fallbacks.
+
+**Decision:**
+1. **Instruction-Stepped Native Replacement**: Implement `step_m68k_00a7e6` modularized into `src/tools/hybrid/m68k_00a7e6_instruction_step.hpp`, `.cpp`, `m68k_00a7e6_step_mode_a.hpp`, `.cpp`, and `m68k_00a7e6_step_mode_b.hpp`, `.cpp` (strictly preserving the <= 500 lines per file policy).
+2. **Direct Child BSR Dispatch**: Dispatch `0x00A8DA` BSR calls directly prior to opcode preparation so that the child helper seamlessly manages its own instruction stepping and stack frames without word-boundary desynchronization.
+3. **Fail-Closed Contract**: Strictly validate callers `0x00A336` (return PC `0x00A33A`) and `0x00A694` (return PC `0x00A698`), SP in Work RAM, and all 122 ROM opcode words against canonical ROM image.
+4. **Canonical Replay Verification**: Verify bit-for-bit SHA-256 equivalence across all 6 canonical streams plus `external-events.jsonl` and `normalized-events.jsonl` with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 811 calls to `0x00A7E6` are displaced with 100% native execution and 0 fallbacks across all 3,600 frames. All 8 diagnostic streams match bit-for-bit. The new #1 remaining untranslated ROM target is `0x008E90` (775 calls).
+
+## ADR-0044: Instruction-Stepped Native Displacement of Active Entity Pool Scan & Master Physics/Animation Update Loop (`0x008E90`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x008E90` as the #1 remaining untranslated actual-ROM target with 775 calls.
+Disassembly and forensic execution analysis of `0x008E90..0x008EF6` and its branch sub-networks (`0x008FA4..0x00938C`, `0x009708..0x0098E8`, total 505 instructions) revealed it is the Active Entity Pool Scan & Master Physics/Animation Update Loop:
+1. Operation:
+   - Scans three active entity pools:
+     * Pool 1: `0xFF1770` (32 slots, stride 90 bytes).
+     * Pool 2: `0xFF19E8` (21 slots, stride 188 bytes).
+     * Pool 3: `0xFF2D8C` (6 slots, stride 90 bytes).
+   - In each active entity slot, performs active flag tests, collision mask checks, animation sequencing, and X/Y physics calculations with terrain obstacle checking.
+   - Dispatches child helper subroutines: `0x009AD6` (1,241 calls), `0x009BF2` (1,241 calls), `0x009D4E` (113 calls), `0x009D70` (186 calls), `0x009D92` (232 calls), `0x009DB4` (507 calls).
+   - Manages non-native child routines (`0x00938E`, `0x0094D2`, `0x0095AA`, `0x0098EC`, `0x009DD6`, `0x009EBA`, `0x009FA0`, `0x00A09A`, 1,360 total calls) via return PC latching and stack pointer tracking.
+2. Architectural findings:
+   - Dynamic shift cycle adjustments: immediate shifts (`asr.l #1`, `asr.w #3`) add `shift * 14` master cycles.
+   - `MOVEM.W` register popping: M68000 sign-extends 16-bit words into 32-bit registers upon stack pop. Preserving the upper word caused frame 2027 stack residue divergence (`0xFF0BD1 = 0x80` instead of `0x00`), which sign-extension resolved bit-for-bit.
+   - Loop branch cycles: `dbf` looping subtracts 14 master cycles; loop expiration adds 14 master cycles.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x008E90` across multiple small files under `namespace oasis::hybrid::step_008e90` (`m68k_008e90_instruction_step.cpp`, `m68k_008e90_step_ops.cpp`, `m68k_008e90_step_scan.cpp`, `m68k_008e90_step_anim.cpp`, `m68k_008e90_step_move_x.cpp`, `m68k_008e90_step_move_y.cpp`, `m68k_008e90_step_move_alt.cpp`), strictly keeping every file under 500 lines.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B42` (return PC `0x008B46`) or `0x00CD24` (return PC `0x00CD28`), or having an invalid SP, or mismatched ROM bytes.
+3. **Dual Replay Validation**: Validate bit-identical SHA-256 equivalence across all 8 canonical output streams with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 775 calls to `0x008E90` in canonical replay are stepped in C++ with 0 ROM fallback calls and 430,427 instructions stepped. All 8 streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00F788` (775 calls).
+
+## ADR-0045: Instruction-Stepped Native Displacement of Event Script & Cutscene / Camera Scroll Sequencer (`0x00F788`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00F788` as the undisputed #1 remaining untranslated actual-ROM target with 775 calls (callers `0x008B2A`: 772 in the main game loop, `0x00CD02`: 3 in secondary loop).
+Analysis and reverse-engineering of `0x00F788..0x00F920` (and child script commands at `0x00F854..0x010252`) revealed it is the Event Script & Cutscene / Camera Scroll Sequencer:
+1. Operation:
+   - Evaluates master event script inhibit flag: `btst #1, $FF17B8`. If bit 1 is set, exits immediately via `0x00F794` RTS (30 calls in 3,600 frames).
+   - Evaluates script wait countdown timer: loads `$FF17B6`. If non-zero, decrements `$FF17B6` and exits via `0x00F7A8` RTS (15 calls in 3,600 frames).
+   - Evaluates camera pan tick countdown: loads `$FF17BD`. If non-zero, dispatches camera pan tick via jump table `0x00F8C8` for directions 0..3 (`0x00F8D0`, `0x00F8E4`, `0x00F8F6`, `0x00F908`), decrements `$FF17BD`, and clears pan flags at expiration via `0x00F8C6` RTS.
+   - If camera pan countdown is zero, enters the Script Sequencer Loop (`0x00F7B4`): loads script byte pointer from `$FF17B2`, reads command bytes through `(A0)+`, indexes jump table at `0x00F7D0`, and dispatches child script commands via `jsr (A1)` (760 child script commands executed across 730 script calls).
+   - Early script command terminations: Commands 00, 06, 07, 08, 09, 16, 18, 19, and 1E pop the child return address from the stack (`addq.l #4, sp`) and execute `rts` straight to the caller of `0x00F788` (`0x008B2E` / `0x00CD06`).
+2. Architectural findings:
+   - Early child script terminations pop the JSR return address (`0x00F7C8`) and return directly to the outer caller. Native tracking must recognize caller return addresses (`0x008B2E`, `0x00CD06`) and early exit points (`0x00F890/0x00F892`, `0x00F91C/0x00F91E`, `0x00FE06/0x00FE08`, `0x00FF94/0x00FF96`) to avoid state latching across frames.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00F788` into small files under `namespace oasis::hybrid::step_00f788` (`m68k_00f788_instruction_step.cpp`, `m68k_00f788_step_ops.cpp`, `m68k_00f788_step_seq.cpp`), strictly keeping every file under 500 lines.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B2A` (return PC `0x008B2E`) or `0x00CD02` (return PC `0x00CD06`), or having an invalid SP, or mismatched ROM words.
+3. **Dual Replay Validation**: Validate bit-identical SHA-256 equivalence across all 8 canonical output streams with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 775 calls to `0x00F788` in canonical replay are stepped in C++ with 0 ROM fallback calls and 11,189 instructions stepped (30 inhibit exits, 15 timer exits, 730 script entries, 760 child script commands, 632 command 00/early exits). All 8 streams match bit-for-bit. The new #1 remaining non-displaced target is `0x00A196` (773 calls).
+
+## ADR-0046: Instruction-Stepped Native Displacement of Sprite Table Committer & Multi-Pool Display Dispatcher (`0x00A196`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00A196` as the #1 remaining untranslated actual-ROM target with 773 calls (callers `0x008B86`: 770 in the main game loop, `0x00CD28`: 3 in secondary loop).
+Analysis and reverse-engineering of `0x00A196..0x00A33E` revealed it is the Sprite Table Committer & Multi-Pool Display Dispatcher:
+1. Operation:
+   - Clears `$FF1651` via `sf $FF1651`, dispatches base sprite builder `0x00A342` via `bsr.w 0x00A342` (773 calls).
+   - Evaluates `$FF1996` via `tst.b $FF1996`; if non-zero, calls HUD sprite generator `0x00A7E6` via `bsr.w 0x00A7E6` at `0x00A336` (773 calls).
+   - Scans 5 display entity pools: pool `$FF2954` (4 slots * 90 bytes), pool `$FF19C8` (4 slots * 8 bytes), pool `$FF19E8` (21 slots * 188 bytes), pool `$FF2ABC` (8 slots * 90 bytes), and pool `$FF2D8C` (6 slots * 90 bytes).
+   - Arbitrates candidate priorities across slots using `D7` bitmask manipulation (`bset` and `btst`).
+   - Dispatches child helper subroutines by pushing return addresses onto the stack (`$00A1F8`, `$00A1BA`, `$00A270`, `$00A258`, `$00A1D0`) and branching via `beq.w 0x00AD76` (6,246 calls), `bra.w 0x00A9A0` (2,691 calls), or `jmp (a0)` (90 calls).
+   - Completes SAT and stages DMA (`0x00A2A6`): writes zero-terminator `-5(a6, d7.w) = 0`, sets bits 0 and 1 of `$FF164E` (`orib #3, $FF164E`) to trigger SAT DMA commit, and exits via `0x00A2C6` RTS.
+2. Architectural findings:
+   - Motorola 68000 / Musashi `BSET Dn, Dm` cycle scaling: Musashi's `m68k_op_bset_32_r_d` evaluates `if ((1 << (bit & 31)) & 0xFFFF0000) USE_CYCLES(2 * MUL);`. When `bit >= 16`, Musashi adds `2 * MUL = 14` master cycles. In the 21-iteration loop starting with `d6 = 20`, exactly 5 iterations (bits 20, 19, 18, 17, 16) added 14 cycles each, causing a 70-cycle delta when omitted. Implementing `cycle_adj = (bit >= 16U) ? 14 : 0` in `step_bset_reg_reg` achieved bit-identical cycle parity.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00A196` into small files under `namespace oasis::hybrid::step_00a196` (`m68k_00a196_instruction_step.cpp`, `m68k_00a196_step_ops.cpp`, `m68k_00a196_step_seq.cpp`), strictly keeping every file under 500 lines.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x008B86` (return PC `0x008B8A`) or `0x00CD28` (return PC `0x00CD2C`), or having an invalid SP, or mismatched ROM words.
+3. **Dual Replay Validation**: Validate bit-identical SHA-256 equivalence across all 8 canonical output streams with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 773 calls to `0x00A196` in canonical replay are stepped in C++ with 0 ROM fallback calls and 882,033 stepped instructions. All 8 streams match bit-for-bit across all 3,600 frames. The new #1 remaining non-displaced target is `0x00A342` (773 calls).
+
+## ADR-0047: Instruction-Stepped Native Displacement of Base Sprite Builder & VDP DMA Queue Stager (`0x00A342`)
+
+**Context:**
+The canonical 3,600-frame replay census identified `0x00A342` as the #1 remaining untranslated actual-ROM target with 773 calls (caller `0x00A19C`: 773).
+Analysis and reverse-engineering of `0x00A342..0x00A436` revealed it is the Base Sprite Builder & VDP DMA Queue Stager:
+1. Operation:
+   - Sets up shadow SAT buffer pointer `A5 = $FF13CC + $FF188C` and loads current sprite link index from `$FF188A` into `D5`.
+   - Tests `$FF1858` to select primary sprite template table (`0x00A438`) or alternate template table (`0x00A480`).
+   - Copies 6 base sprite attribute records (Loop 1, 6 iterations) from ROM table `(A0)+` into shadow SAT `(A5)+`, incrementing link counter `D5` and adding screen offset `$FF185A` to each sprite's X position (3,865 iterations total).
+   - If secondary/inverted flag `$FF184F` is non-zero, computes `D3 = 344 - $FF185A` and copies 3 additional sprite entries (Loop 2).
+   - If cursor/status sprite flag `$FF1856` is non-zero and `D5 < 80`, increments `D5` and emits an 8-byte sprite entry (Y=280, link=`D5`, tile=`0x85C7`, X=`$FF185A + 104`).
+   - If byte `$FF1854` differs from `$FF1855`, updates `$FF1855`, computes ROM address `D0 = 0x000AAebb + D0 * 144`, disables interrupts via `ori.w #0x0700, sr`, stages an 8-byte DMA transfer record (ROM source `D0`, VRAM dest `0xB8E0`, length `0x0090`) into the DMA staging queue at `$FF1892`, advances pointer `$FF1892`, and re-enables interrupts via `andi.w #0xF9FF, sr` (1 DMA record queued).
+   - Computes updated SAT displacement `suba.l #$FF13CC, a5`, writes back displacement to `$FF188C`, writes back link counter `D5` to `$FF188A`, and returns via `rts`.
+
+**Decision:**
+1. **Modular Instruction Stepping**: Modularize `0x00A342` into small files under `namespace oasis::hybrid::step_00a342` (`m68k_00a342_instruction_step.cpp`, `m68k_00a342_step_ops.cpp`, `m68k_00a342_step_seq.cpp`), strictly keeping every file under 500 lines.
+2. **Fail-Closed Verification**: Reject any call not originating from `0x00A19C` (return PC `0x00A1A0`) or `0x00A6A0` (return PC `0x00A6A4`), or having an invalid SP, or mismatched ROM words.
+3. **Dual Replay Validation**: Validate bit-identical SHA-256 equivalence across all 8 canonical output streams with `different_frame_count == 0` and `divergence=NO`.
+
+**Consequences:**
+All 773 calls to `0x00A342` in canonical replay are stepped in C++ with 0 ROM fallback calls and 55,011 stepped instructions. All 8 streams match bit-for-bit across all 3,600 frames. The new #1 remaining non-displaced target is `0x00B34C` (773 calls).
