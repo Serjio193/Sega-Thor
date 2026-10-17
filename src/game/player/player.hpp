@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/runtime.hpp"
+#include "game/entities/screen_entity.hpp"
 #include "game/world/byte_grid.hpp"
 
 #include <cstdint>
@@ -64,6 +65,39 @@ struct PlayerState {
     std::int32_t accumulated_y_fixed{}; // entity +0x76
     std::uint8_t footprint_any_bits{}; // entity +0x6F, produced by 0x9BF2
     std::uint16_t turn_timer{}; // FF197E in the state-4 branch
+    std::int16_t hp{100};       // entity +0x8a in ROM (Max HP in +0x88 is 100)
+    std::int16_t max_hp{100};   // entity +0x88 in ROM
+    std::uint8_t invuln_timer{0};    // entity +0x82 in ROM (decremented each frame)
+    std::uint8_t hurt_timer{0};      // entity +0x83 in ROM (knockback duration, 6 frames)
+    std::int32_t knockback_x_fixed{0}; // entity +0x4e in ROM (fixed point 16.16)
+    std::int32_t knockback_y_fixed{0}; // entity +0x52 in ROM (fixed point 16.16)
+    std::uint16_t contact_entity{0}; // type ID of harmful entity in contact
+    bool damage_gate_open{false};    // true when contact passes damage predicates
+    std::uint8_t attack_state{0};       // 0: idle, 10: State 10 (Player Attack in ROM)
+    std::uint8_t attack_timer{0};       // 0..8 (9 frames total: 4 startup, 2 active, 3 recovery)
+    bool attack_active{false};          // true during active frames (4 and 5)
+    std::uint8_t attack_direction{0};   // locked facing direction during attack
+    bool attack_hit_latched{false};     // bit 3 of $37(a6): hit once per swing latch
+    std::int16_t last_hit_damage{0};    // last damage dealt to enemy
+    std::int16_t sp{100};               // entity +0x8e in ROM (current SP / magic points)
+    std::int16_t max_sp{100};           // entity +0x8c in ROM (max SP / magic points)
+    std::uint16_t currency{0};          // gold / currency
+    std::uint16_t item_count{0};        // count of items collected
+    std::uint16_t last_pickup_type{0};  // item ID of most recent pickup (e.g. 0x001E)
+    std::uint16_t last_pickup_heal{0};  // HP restored by most recent pickup
+    std::uint8_t secondary_weapon{1};       // 0x00FF0DB1: 1 (Knife), 6 (Bow)
+    std::uint8_t secondary_slot{0};         // 0x00FF0DB0: active slot index 0..7
+    std::uint8_t secondary_ammo{0xFF};      // 0x00FF198E: current weapon ammo
+    std::uint8_t secondary_attack_state{0}; // 0: idle, 14: State 14 (Bow Attack in ROM)
+    std::uint8_t secondary_attack_timer{0}; // 0..15 ticks
+    bool secondary_attack_fired{false};     // arrow spawned at frame 12
+    std::uint8_t secondary_attack_direction{0}; // locked facing direction
+    std::uint16_t last_weapon_hit{0};       // type ID of enemy hit by secondary weapon
+
+    [[nodiscard]] constexpr bool is_hurt() const noexcept { return hurt_timer > 0; }
+    [[nodiscard]] constexpr bool is_invulnerable() const noexcept { return invuln_timer > 0; }
+    [[nodiscard]] constexpr bool is_attacking() const noexcept { return attack_state != 0 || secondary_attack_state != 0; }
+    [[nodiscard]] constexpr bool is_secondary_attacking() const noexcept { return secondary_attack_state != 0; }
 };
 
 struct MovementVector {
@@ -103,5 +137,29 @@ void adjust_velocity_for_context(
     const world::ByteGridView& terrain,
     const PlayerMovementConfig& config = {},
     const VelocityAdjustContext& velocity_context = {}) noexcept;
+
+[[nodiscard]] bool update_player_hurt_knockback(
+    PlayerState& player,
+    const world::ByteGridView* terrain) noexcept;
+
+void apply_enemy_contact_damage(
+    PlayerState& player,
+    std::uint16_t attacker_type,
+    std::uint8_t attacker_dir,
+    std::int16_t damage_amount = 10,
+    std::uint8_t knockback_frames = 6,
+    std::uint8_t invuln_duration = 30) noexcept;
+
+bool start_player_attack(PlayerState& player) noexcept;
+
+void update_player_attack(PlayerState& player) noexcept;
+
+[[nodiscard]] std::optional<entities::EntityHitbox> player_attack_hitbox(
+    const PlayerState& player) noexcept;
+
+void apply_item_pickup(
+    PlayerState& player,
+    std::uint16_t item_id,
+    std::uint8_t count = 1) noexcept;
 
 } // namespace oasis::game::player

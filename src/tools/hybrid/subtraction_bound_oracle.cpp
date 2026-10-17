@@ -28,6 +28,7 @@ using WriteMemory = int (*)(unsigned, int, unsigned);
 using RunCpu = void (*)(unsigned);
 using StopCpu = void (*)();
 using Install = void (*)(unsigned int (*)(int, int, unsigned, unsigned));
+using SchedulerRead = unsigned (*)(unsigned);
 
 Register read_register{};
 Peek peek_memory{};
@@ -35,6 +36,7 @@ SetRegister set_register{};
 WriteMemory write_memory{};
 RunCpu run_cpu{};
 StopCpu stop_cpu{};
+SchedulerRead scheduler_read{};
 const char* system_directory{};
 
 struct State { std::array<unsigned, 8> d{}, a{}; unsigned pc{}, sr{}; };
@@ -47,6 +49,7 @@ struct Scenario {
 };
 struct Observation {
     State entry{}, rts{}, exit{};
+    unsigned entry_cycles{}, entry_refresh{}, rts_cycles{}, rts_refresh{}, exit_cycles{}, exit_refresh{};
     std::vector<unsigned> path;
     std::vector<std::array<unsigned, 4>> writes;
     bool complete{};
@@ -71,6 +74,8 @@ unsigned int hook(int type, int width, unsigned address, unsigned value) {
         observations.emplace_back();
         active = &observations.back();
         active->entry = snapshot();
+        active->entry_cycles = scheduler_read(0);
+        active->entry_refresh = scheduler_read(1);
         active->path.push_back(address);
     } else if (active != nullptr && (type & memory_write) != 0) {
         active->writes.push_back({read_register(16U), address,
@@ -78,9 +83,13 @@ unsigned int hook(int type, int width, unsigned address, unsigned value) {
     } else if (active != nullptr && (type & execute) != 0 &&
                (address == 0x9D86U || address == 0x9D90U)) {
         active->rts = snapshot();
+        active->rts_cycles = scheduler_read(0);
+        active->rts_refresh = scheduler_read(1);
         active->path.push_back(address);
     } else if (active != nullptr && (type & execute) != 0 && address == sentinel_pc) {
         active->exit = snapshot();
+        active->exit_cycles = scheduler_read(0);
+        active->exit_refresh = scheduler_read(1);
         active->complete = true;
         active = nullptr;
         stop_cpu();
@@ -190,6 +199,7 @@ int main(int argc, char** argv) {
         set_register = library.get<SetRegister>("retro_9c40_capture_set_register");
         write_memory = library.get<WriteMemory>("retro_9c40_capture_write");
         run_cpu = library.get<RunCpu>("retro_9c40_capture_run");
+        scheduler_read = library.get<SchedulerRead>("retro_9c40_capture_scheduler");
         stop_cpu = library.get<StopCpu>("retro_9c40_capture_stop");
         const auto install = library.get<Install>("retro_9c40_capture_install");
         library.get<void(*)(decltype(&environment))>("retro_set_environment")(environment);
@@ -242,7 +252,16 @@ int main(int argc, char** argv) {
         for (std::size_t i = 0; i < scenarios.size(); ++i)
             receipt << (i ? "," : "") << "{\"id\":\"" << scenarios[i].name
                     << "\",\"rts_pc\":\"0x" << std::hex << observations[i].rts.pc
-                    << "\",\"write_count\":" << std::dec << observations[i].writes.size() << '}';
+                    << "\",\"write_count\":" << std::dec << observations[i].writes.size()
+                    << ",\"entry_cycles\":" << observations[i].entry_cycles
+                    << ",\"entry_refresh_cycles\":" << observations[i].entry_refresh
+                    << ",\"rts_pre_cycles\":" << observations[i].rts_cycles
+                    << ",\"rts_pre_refresh_cycles\":" << observations[i].rts_refresh
+                    << ",\"return_cycles\":" << observations[i].exit_cycles
+                    << ",\"return_refresh_cycles\":" << observations[i].exit_refresh
+                    << ",\"routine_cycle_cost\":" << observations[i].exit_cycles - observations[i].entry_cycles
+                    << ",\"pre_rts_cycle_cost\":" << observations[i].rts_cycles - observations[i].entry_cycles
+                    << ",\"rts_cycle_cost\":" << observations[i].exit_cycles - observations[i].rts_cycles << '}';
         receipt << "]}\n";
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';

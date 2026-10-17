@@ -233,4 +233,124 @@ MovementResult try_move(PlayerState& player,
     return result;
 }
 
+bool update_player_hurt_knockback(
+    PlayerState& player,
+    const world::ByteGridView* terrain) noexcept {
+    if (player.invuln_timer > 0) {
+        --player.invuln_timer;
+    }
+    if (player.hurt_timer == 0) {
+        return false;
+    }
+
+    --player.hurt_timer;
+    const auto candidate_x = player.x_fixed + player.knockback_x_fixed;
+    const auto candidate_y = player.y_fixed + player.knockback_y_fixed;
+
+    bool blocked = false;
+    if (candidate_x < 0 || candidate_y < 0) {
+        blocked = true;
+    } else if (terrain != nullptr && terrain->valid()) {
+        const auto code = terrain->terrain_code_world(
+            world_coordinate(candidate_x),
+            world_coordinate(candidate_y));
+        if (!code || world::evaluate_terrain_gate({
+            .entity_flags = 0,
+            .current_state = 0,
+            .prospective_state = world::terrain_state_from_code(*code),
+            .prospective_any_bits = 0
+        }) == world::TerrainGateResult::blocked) {
+            blocked = true;
+        }
+    }
+
+    if (!blocked) {
+        player.x_fixed = candidate_x;
+        player.y_fixed = candidate_y;
+    }
+
+    if (player.hurt_timer == 0) {
+        player.movement_state = 0; // State 0 (recovered back to normal control)
+        player.knockback_x_fixed = 0;
+        player.knockback_y_fixed = 0;
+    }
+    return true;
+}
+
+void apply_enemy_contact_damage(
+    PlayerState& player,
+    std::uint16_t attacker_type,
+    std::uint8_t attacker_dir,
+    std::int16_t damage_amount,
+    std::uint8_t knockback_frames,
+    std::uint8_t invuln_duration) noexcept {
+    player.contact_entity = attacker_type;
+    if (player.invuln_timer > 0 || player.hurt_timer > 0) {
+        player.damage_gate_open = false;
+        return;
+    }
+    player.damage_gate_open = true;
+    player.hp = static_cast<std::int16_t>(std::max(0, player.hp - damage_amount));
+    player.hurt_timer = knockback_frames;
+    player.invuln_timer = invuln_duration;
+    player.movement_state = 24; // State 24: Hurt in ROM
+    constexpr std::int32_t kSpeed = 0x30000; // 3.0 px/frame cardinal from 0x00BF2E
+    player.knockback_x_fixed = (attacker_dir == 1) ? kSpeed : ((attacker_dir == 3) ? -kSpeed : 0);
+    player.knockback_y_fixed = (attacker_dir == 2) ? kSpeed : ((attacker_dir == 0) ? -kSpeed : 0);
+}
+
+bool start_player_attack(PlayerState& player) noexcept {
+    if (player.is_hurt() || player.attack_state != 0) return false;
+    player.attack_state = 10;
+    player.attack_timer = 0;
+    player.attack_active = false;
+    player.attack_hit_latched = false;
+    player.attack_direction = static_cast<std::uint8_t>(player.direction_code & 3U);
+    return true;
+}
+
+void update_player_attack(PlayerState& player) noexcept {
+    if (player.attack_state == 0) return;
+    ++player.attack_timer;
+    if (player.attack_timer >= 9) {
+        player.attack_state = 0;
+        player.attack_timer = 0;
+        player.attack_active = false;
+        player.attack_hit_latched = false;
+    } else {
+        player.attack_active = (player.attack_timer >= 4 && player.attack_timer <= 5);
+    }
+}
+
+std::optional<entities::EntityHitbox> player_attack_hitbox(
+    const PlayerState& player) noexcept {
+    if (!player.attack_active) return std::nullopt;
+    const auto px = static_cast<std::int32_t>(player.x_fixed / 0x10000);
+    const auto py = static_cast<std::int32_t>(player.y_fixed / 0x10000);
+    switch (player.attack_direction & 3U) {
+    case 0: // Up (Dir 0)
+        return entities::EntityHitbox{px - 8, py - 40, px + 7, py - 9, -8, 8};
+    case 1: // Right (Dir 1)
+        return entities::EntityHitbox{px + 8, py - 8, px + 47, py + 7, -8, 8};
+    case 2: // Down (Dir 2)
+        return entities::EntityHitbox{px - 8, py + 8, px + 7, py + 47, -8, 8};
+    case 3: // Left (Dir 3)
+    default:
+        return entities::EntityHitbox{px - 47, py - 8, px - 8, py + 7, -8, 8};
+    }
+}
+
+void apply_item_pickup(
+    PlayerState& player,
+    std::uint16_t item_id,
+    std::uint8_t count) noexcept {
+    player.last_pickup_type = item_id;
+    player.item_count += count;
+    if (item_id == 0x001E) { // Food / cheese (ROM 0x0053A2..0x0053E8): heals max_hp / 4 (25 HP)
+        const auto heal_amount = static_cast<std::uint16_t>(player.max_hp / 4);
+        player.hp = static_cast<std::int16_t>(std::min<std::int32_t>(player.max_hp, player.hp + heal_amount));
+        player.last_pickup_heal = heal_amount;
+    }
+}
+
 } // namespace oasis::game::player

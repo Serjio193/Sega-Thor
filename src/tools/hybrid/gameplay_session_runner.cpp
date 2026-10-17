@@ -6,7 +6,7 @@
 #include "tools/hybrid/gameplay_session_receipts.hpp"
 #include "tools/hybrid/gameplay_session_call_capture.hpp"
 #include "tools/hybrid/m68k_gameplay_step_set.hpp"
-#include "tools/hybrid/gameplay_session_replay_diagnostic.hpp"
+#include "tools/hybrid/gameplay_session_metrics.hpp"
 #include "tools/hybrid/gameplay_session_replay_options.hpp"
 #include "tools/hybrid/gameplay_session_step_trace.hpp"
 #include "tools/hybrid/replay_equivalence_trace.hpp"
@@ -44,14 +44,9 @@ using Install = void (*)(unsigned (*)(unsigned, int, unsigned, unsigned));
 using StopCore = void (*)();
 using Cpu = oasis::hybrid::session::CpuSnapshot;
 using Event = oasis::hybrid::session::CallMemoryEvent;
-oasis::hybrid::session::RegisterRead read_register{};
-RegisterWrite set_register{};
-oasis::hybrid::session::Peek peek_memory{};
-WriteMemory write_memory{};
-StopCore stop_core{};
-oasis::hybrid::session::SchedulerRead read_scheduler{};
-oasis::hybrid::session::CopyObservableMemory copy_observable_memory{};
-InputJournal* journal{};
+oasis::hybrid::session::RegisterRead read_register{}; RegisterWrite set_register{}; oasis::hybrid::session::Peek peek_memory{};
+WriteMemory write_memory{}; StopCore stop_core{}; oasis::hybrid::session::SchedulerRead read_scheduler{};
+oasis::hybrid::session::CopyObservableMemory copy_observable_memory{}; InputJournal* journal{};
 std::ofstream* call_output{};
 unsigned frame_number{}, poll_index{}, frame_poll_count{}, frame_exec_count{}, previous_pc{};
 oasis::hybrid::call_census::M68kCallCensus replay_call_census;
@@ -77,9 +72,9 @@ bool island_write_memory(unsigned address, int width, unsigned value) {
     return write_memory && write_memory(address, width, value) != 0;
 }
 
-void write_island_metrics(const std::string& status, const std::string& reason) {
-    oasis::hybrid::session::write_native_island_metrics(island_metrics_path.string(), status, reason,
-        total_m68k_transfers, island_counters, island_first_frame, island_last_frame);
+void write_island_metrics(const std::string& status, const std::string& reason, bool replay_divergence = false) {
+    oasis::hybrid::session::write_gameplay_step_metrics(island_metrics_path, status, reason,
+        total_m68k_transfers, island_counters, island_first_frame, island_last_frame, replay_divergence);
 }
 oasis::hybrid::session::CallCapture call;
 
@@ -88,11 +83,13 @@ void observe_step_instruction(unsigned pc, unsigned opcode) {
     native_step_observer = true;
     bridge_hook(execute_event, 0, pc, opcode);
     native_step_observer = false;
-    if (equivalence_trace && (pc == 0x9D70U || pc == 0x9D4EU || pc == 0x9DB4U || pc == 0x9D92U))
+    if (equivalence_trace && oasis::hybrid::session::is_native_step_helper_pc(pc))
         equivalence_trace->mark_native_route(pc);
 }
+unsigned current_transfer_source_pc() { return previous_pc; }
 void fail_9d70_instruction_step(unsigned pc) {
-    hook_error = "9D70 instruction-step contract fault at " + std::to_string(pc);
+    std::cerr << "CONTRACT_FAULT_PC = 0x" << std::hex << pc << std::dec << " (" << pc << ")\n";
+    hook_error = "gameplay instruction-step contract fault at " + std::to_string(pc);
     if (stop_core) stop_core();
 }
 } // namespace
@@ -264,7 +261,7 @@ std::int16_t input_state(unsigned port, unsigned device, unsigned index, unsigne
 }
 }
 int main(int argc, char** argv) {
-    if (argc < 5 || argc > 8) {
+    if (argc < 5 || argc > 9) {
         std::cerr << "usage: oasis_gameplay_session <capture|replay> <GPGX core> <canonical ROM> <session-dir> [frames] [input-mode|--native-island=step:<ids>] [--restore-initial-state]\n";
         return 2;
     }
@@ -279,8 +276,8 @@ int main(int argc, char** argv) {
             diagnostic_replay = options.diagnostic;
             native_helper_selected = options.native_helper;
             native_island_selected = options.native_island;
+            watch_pcs.insert(watch_pcs.end(), options.watch_pcs.begin(), options.watch_pcs.end());
         }
-        if (replay && argc > 8) throw std::runtime_error("too many replay options");
         if (!replay && argc >= 6 && std::string(argv[5]).starts_with("--native-island="))
             throw std::runtime_error("native island is replay-only");
         const auto core_path = std::filesystem::absolute(argv[2]);
@@ -375,7 +372,7 @@ int main(int argc, char** argv) {
         if (native_helper_selected == "9d70-step" || native_helper_selected.starts_with("step:"))
             oasis::hybrid::install_m68k_gameplay_step_set(core,
                 native_helper_selected == "9d70-step" ? "9d70" : native_helper_selected.substr(5),
-                observe_step_instruction, fail_9d70_instruction_step);
+                observe_step_instruction, fail_9d70_instruction_step, current_transfer_source_pc);
         core.get<void(*)(decltype(&environment))>("retro_set_environment")(environment);
         core.get<void(*)(decltype(&video))>("retro_set_video_refresh")(video);
         core.get<void(*)(decltype(&audio))>("retro_set_audio_sample")(audio);
@@ -428,15 +425,16 @@ int main(int argc, char** argv) {
             input.end_frame(frame_number, frame_poll_count);
             std::vector<std::uint8_t> state, ram;
             const bool checkpoint = (frame_number + 1) % landmark_period == 0 || frame_number + 1 == frames;
-            if (checkpoint) { state = serialize_core_state(state_size, serialize); ram = read_work_ram(peek_memory); }
-            if (checkpoint) oasis::hybrid::maybe_record_checkpoint(run_path, frame_number + 1, state,
-                core.get<bool(*)(const void*, std::size_t)>("retro_unserialize"), serialize);
+            if (checkpoint) {
+                state = serialize_core_state(state_size, serialize); ram = read_work_ram(peek_memory);
+                oasis::hybrid::maybe_record_checkpoint(run_path, frame_number + 1, state,
+                    core.get<bool(*)(const void*, std::size_t)>("retro_unserialize"), serialize);
+            }
             FrameLandmark landmark{frame_number + 1, frame_poll_count, frame_exec_count,
                 pc_fingerprint, read_register(16), checkpoint ? oasis::hybrid::checkpoint_identity_hash(state) : "",
                 checkpoint ? oasis::calculate_sha256(ram) : "", 0, 0, 0, &frame_watched_hits};
             if (checkpoint) {
-                landmark.grid_selector = read_be(peek_memory, 0xFF16F0, 2);
-                landmark.object_state = read_be(peek_memory, 0xFF1706, 4);
+                landmark.grid_selector = read_be(peek_memory, 0xFF16F0, 2); landmark.object_state = read_be(peek_memory, 0xFF1706, 4);
                 landmark.grid_descriptor = read_be(peek_memory, 0xFF1766, 4);
             }
             const auto line = serialize_frame_landmark(landmark);
@@ -461,7 +459,7 @@ int main(int argc, char** argv) {
                 input.finish();
                 equivalence_trace_owner->write_receipt((run_path / "normalized-trace.receipt.json").string());
                 landmark_diagnostic.write_receipt((run_path / "landmark-diagnostic.json").string());
-                write_island_metrics("DIAGNOSTIC_ONLY", "see landmark-diagnostic.json");
+                write_island_metrics("DIAGNOSTIC_ONLY", "see landmark-diagnostic.json", landmark_diagnostic.has_divergence());
                 std::cout << "DIAGNOSTIC_REPLAY_COMPLETE frames=" << frames << " divergence="
                     << (landmark_diagnostic.has_divergence() ? "YES" : "NO") << '\n';
                 core.get<void(*)()>("retro_unload_game")(); core.get<void(*)()>("retro_deinit")();
@@ -470,8 +468,7 @@ int main(int argc, char** argv) {
             calls.flush(); calls.close();
             if (file_sha256(calls_run_path) != manifest.at("calls_sha256")) throw std::runtime_error("target call capture mismatch");
             if (file_sha256(census_path) != manifest.at("call_census_sha256") ||
-                file_sha256(full_calls_path) != manifest.at("auto_full_calls_sha256"))
-                throw std::runtime_error("replay callable census or auto-capture mismatch");
+                file_sha256(full_calls_path) != manifest.at("auto_full_calls_sha256")) throw std::runtime_error("replay callable census or auto-capture mismatch");
             write_replay_result(run_path / "replay.result", frames, input.polls().size(),
                 file_sha256(polls_path), manifest.at("landmarks_sha256"), manifest.at("calls_sha256"),
                 file_sha256(census_path), file_sha256(full_calls_path));
@@ -480,12 +477,9 @@ int main(int argc, char** argv) {
         } else {
             actual_frames.close(); input.save(polls_path); calls.flush(); calls.close();
             std::filesystem::copy_file(calls_run_path, calls_path);
-            manifest["input_sha256"] = file_sha256(polls_path);
-            manifest["landmarks_sha256"] = file_sha256(frames_path);
-            manifest["calls_sha256"] = file_sha256(calls_path);
-            manifest["call_census_sha256"] = file_sha256(census_path);
-            manifest["auto_full_calls_sha256"] = file_sha256(full_calls_path);
-            manifest["input_poll_count"] = std::to_string(input.polls().size());
+            manifest["input_sha256"] = file_sha256(polls_path); manifest["landmarks_sha256"] = file_sha256(frames_path);
+            manifest["calls_sha256"] = file_sha256(calls_path); manifest["call_census_sha256"] = file_sha256(census_path);
+            manifest["auto_full_calls_sha256"] = file_sha256(full_calls_path); manifest["input_poll_count"] = std::to_string(input.polls().size());
             write_manifest(manifest_path, manifest);
             std::cout << "CAPTURE_COMPLETE frames=" << frames << " polls=" << input.polls().size() << '\n';
         }

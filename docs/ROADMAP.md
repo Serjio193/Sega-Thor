@@ -1,4 +1,4 @@
-# M15.61 Execution-Driven Recompilation: 0x00CEEA Instruction-Stepped Native Replacement — ACTIVE
+# M15.61 Execution-Driven Recompilation: 0x00CEEA Instruction-Stepped Native Replacement — PLANNED
 
 Planned:
 - Reverse-engineer and displace runtime target `0x00CEEA` called 743 times in 3,600 canonical frames from callers `0x02E604` (89), `0x02E6F6` (190), and `0x02E87C` (464).

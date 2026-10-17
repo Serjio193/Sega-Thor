@@ -21,9 +21,12 @@ typedef struct
 
 uint32_t instruction_nesting;
 static lf_instruction instruction_stack[16];
+uint64_t frame_number;
+uint64_t current_master_time;
+uint64_t z80_instruction_sequence;
 
-typedef char oasis_lf_record_must_be_32_bytes[
-    sizeof(oasis_lf_record) == 32u ? 1 : -1];
+typedef char oasis_lf_record_must_be_48_bytes[
+    sizeof(oasis_lf_record) == 48u ? 1 : -1];
 
 uint64_t lf_instruction_stack_size(void)
 {
@@ -33,25 +36,31 @@ uint64_t lf_instruction_stack_size(void)
 void lf_append_record(oasis_lf_record record)
 {
   uint64_t sequence = ++stream_sequence;
-  lf_ring_slot *slot = &ring_storage[(sequence - 1u) % OASIS_LF_RING_CAPACITY];
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
+  lf_ring_slot *slot;
+  if ((cap & (cap - 1u)) == 0)
+  {
+    uint32_t mask = cap - 1u;
+    slot = &ring_storage[(sequence - 1u) & mask];
+    if ((sequence & mask) == 0)
+      metrics.shared_ring_wraps++;
+  }
+  else
+  {
+    slot = &ring_storage[(sequence - 1u) % cap];
+    if (sequence % cap == 0)
+      metrics.shared_ring_wraps++;
+  }
   record.stream_sequence = sequence;
   slot->record = record;
   slot->valid = 1;
   slot->sequence = sequence;
-  if (sequence % OASIS_LF_RING_CAPACITY == 0)
-    metrics.shared_ring_wraps++;
 }
 
-static void flag_all_active(uint32_t reason)
+void oasis_lf_set_master_time(uint64_t master_cycles)
 {
-  uint32_t offset;
-  for (offset = 0; offset < active_count; ++offset)
-  {
-    uint32_t slot = (active_head + offset) % worker_count;
-    lf_worker *worker = &workers[active_queue[slot]];
-    worker->invalid = 1;
-    worker->pending_end = reason;
-  }
+  current_master_time = master_cycles;
 }
 
 void oasis_lf_instruction_begin(uint32_t pc,
@@ -63,11 +72,27 @@ void oasis_lf_instruction_begin(uint32_t pc,
   lf_boundary(state);
   if (instruction_nesting >= 16u)
   {
-    flag_all_active(OASIS_LF_END_UNSUPPORTED_PATH);
+    uint32_t offset;
+    for (offset = 0; offset < active_count; ++offset)
+    {
+      uint32_t slot = (active_head + offset) % worker_count;
+      lf_worker *worker = &workers[active_queue[slot]];
+      worker->invalid = 1;
+      worker->pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
+    }
     return;
   }
   if (instruction_nesting)
-    flag_all_active(OASIS_LF_END_UNSUPPORTED_PATH);
+  {
+    uint32_t offset;
+    for (offset = 0; offset < active_count; ++offset)
+    {
+      uint32_t slot = (active_head + offset) % worker_count;
+      lf_worker *worker = &workers[active_queue[slot]];
+      worker->invalid = 1;
+      worker->pending_end = OASIS_LF_END_UNSUPPORTED_PATH;
+    }
+  }
   instruction = &instruction_stack[instruction_nesting++];
   memset(instruction, 0, sizeof(*instruction));
   instruction->sequence = ++instruction_sequence;
@@ -92,6 +117,55 @@ void oasis_lf_instruction_set_opcode(uint16_t opcode,
   instruction->flow_flags = flags;
 }
 
+static void append_bus_event(uint16_t subtype, uint32_t address,
+                             uint32_t value, uint32_t width,
+                             uint32_t domain)
+{
+  lf_instruction *instruction;
+  oasis_lf_record record;
+  if (!oasis_lf_recording_enabled || !instruction_nesting)
+    return;
+  instruction = &instruction_stack[instruction_nesting - 1u];
+  memset(&record, 0, sizeof(record));
+  record.instruction_sequence = instruction->sequence;
+  record.master_time = current_master_time;
+  record.pc = instruction->pc;
+  record.address = address;
+  record.value = value;
+  record.kind_flags = OASIS_LF_EVENT_KIND(subtype);
+  record.cpu_id = OASIS_LF_CPU_68K;
+  record.length_or_width = (uint8_t)width;
+  record.domain = (uint16_t)domain;
+  lf_append_record(record);
+}
+
+void oasis_lf_bus_read(uint32_t address, uint32_t value, uint32_t width,
+                       uint32_t domain)
+{
+  append_bus_event(OASIS_LF_EVENT_BUS_READ, address, value, width, domain);
+}
+
+void oasis_lf_bus_write(uint32_t address, uint32_t value, uint32_t width,
+                        uint32_t domain)
+{
+  append_bus_event(OASIS_LF_EVENT_BUS_WRITE, address, value, width, domain);
+}
+
+void oasis_lf_frame_boundary(void)
+{
+  oasis_lf_record record;
+  if (!oasis_lf_recording_enabled)
+    return;
+  memset(&record, 0, sizeof(record));
+  frame_number++;
+  record.master_time = current_master_time;
+  record.pc = (uint32_t)frame_number;
+  record.address = (uint32_t)(frame_number >> 32u);
+  record.kind_flags = OASIS_LF_EVENT_KIND(OASIS_LF_EVENT_FRAME_BOUNDARY);
+  record.cpu_id = OASIS_LF_CPU_NONE;
+  lf_append_record(record);
+}
+
 void oasis_lf_instruction_end(uint32_t next_pc,
                               const oasis_lf_cpu_state *state,
                               uint32_t stopped)
@@ -102,16 +176,24 @@ void oasis_lf_instruction_end(uint32_t next_pc,
     return;
   if (!instruction_nesting)
   {
-    flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
+    uint32_t offset;
+    for (offset = 0; offset < active_count; ++offset)
+    {
+      uint32_t slot = (active_head + offset) % worker_count;
+      workers[active_queue[slot]].invalid = 1;
+      workers[active_queue[slot]].pending_end = OASIS_LF_END_CAPTURE_ERROR;
+    }
     lf_finish_due(state, stopped);
     return;
   }
   instruction = instruction_stack[--instruction_nesting];
   memset(&record, 0, sizeof(record));
   record.instruction_sequence = instruction.sequence;
+  record.master_time = current_master_time;
   record.pc = instruction.pc;
-  record.next_pc = next_pc;
-  record.opcode_or_vector = instruction.opcode;
+  record.address = next_pc;
+  record.value = (uint32_t)instruction.opcode;
+  record.cpu_id = OASIS_LF_CPU_68K;
   record.kind_flags = OASIS_LF_INSTRUCTION;
   if (instruction.fetched)
     record.kind_flags |= OASIS_LF_FETCHED;
@@ -161,16 +243,26 @@ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
     instruction->exception_target_pc = target_pc;
     instruction->exception_vector = vector;
     if (!asynchronous)
-      flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
+    {
+      uint32_t offset;
+      for (offset = 0; offset < active_count; ++offset)
+      {
+        uint32_t slot = (active_head + offset) % worker_count;
+        workers[active_queue[slot]].invalid = 1;
+        workers[active_queue[slot]].pending_end = OASIS_LF_END_CAPTURE_ERROR;
+      }
+    }
     return;
   }
   {
     oasis_lf_record record;
     memset(&record, 0, sizeof(record));
     record.instruction_sequence = instruction_sequence;
+    record.master_time = current_master_time;
     record.pc = source_pc;
-    record.next_pc = target_pc;
-    record.opcode_or_vector = vector;
+    record.address = target_pc;
+    record.value = (uint32_t)vector;
+    record.cpu_id = OASIS_LF_CPU_68K;
     record.kind_flags = OASIS_LF_EXCEPTION | OASIS_LF_EXCEPTION_EVENT |
       OASIS_LF_CONTROL_FLOW |
       (asynchronous ? OASIS_LF_ASYNCHRONOUS : 0);
@@ -179,7 +271,15 @@ void oasis_lf_exception(uint16_t vector, uint32_t source_pc,
     lf_append_record(record);
   }
   if (!asynchronous)
-    flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
+  {
+    uint32_t offset;
+    for (offset = 0; offset < active_count; ++offset)
+    {
+      uint32_t slot = (active_head + offset) % worker_count;
+      workers[active_queue[slot]].invalid = 1;
+      workers[active_queue[slot]].pending_end = OASIS_LF_END_CAPTURE_ERROR;
+    }
+  }
   lf_finish_due(state, 0);
   lf_boundary(state);
 }
@@ -194,9 +294,11 @@ void oasis_lf_unwind(void)
     oasis_lf_record record;
     memset(&record, 0, sizeof(record));
     record.instruction_sequence = instruction->sequence;
+    record.master_time = current_master_time;
     record.pc = instruction->pc;
-    record.next_pc = instruction->exception_target_pc;
-    record.opcode_or_vector = instruction->opcode;
+    record.address = instruction->exception_target_pc;
+    record.value = (uint32_t)instruction->opcode;
+    record.cpu_id = OASIS_LF_CPU_68K;
     record.kind_flags = OASIS_LF_INSTRUCTION | OASIS_LF_EXCEPTION |
       OASIS_LF_CONTROL_FLOW | OASIS_LF_FAULTED;
     if (instruction->fetched)
@@ -205,17 +307,30 @@ void oasis_lf_unwind(void)
       ((uint32_t)(instruction->exception_vector & 0xffu) << 24);
     lf_append_record(record);
   }
-  flag_all_active(OASIS_LF_END_CAPTURE_ERROR);
+  {
+    uint32_t offset;
+    for (offset = 0; offset < active_count; ++offset)
+    {
+      uint32_t slot = (active_head + offset) % worker_count;
+      workers[active_queue[slot]].invalid = 1;
+      workers[active_queue[slot]].pending_end = OASIS_LF_END_CAPTURE_ERROR;
+    }
+  }
 }
 
 int oasis_lf_ring_record(uint64_t sequence, oasis_lf_record *record)
 {
   lf_ring_slot *slot;
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
   if (!oasis_lf_recording_enabled || !ring_storage || !record ||
       sequence == 0 || sequence > stream_sequence ||
-      stream_sequence - sequence >= OASIS_LF_RING_CAPACITY)
+      stream_sequence - sequence >= cap)
     return 0;
-  slot = &ring_storage[(sequence - 1u) % OASIS_LF_RING_CAPACITY];
+  if ((cap & (cap - 1u)) == 0)
+    slot = &ring_storage[(sequence - 1u) & (cap - 1u)];
+  else
+    slot = &ring_storage[(sequence - 1u) % cap];
   if (!slot->valid || slot->sequence != sequence)
     return 0;
   *record = slot->record;
@@ -224,5 +339,30 @@ int oasis_lf_ring_record(uint64_t sequence, oasis_lf_record *record)
 
 uint64_t oasis_lf_stream_sequence(void) { return stream_sequence; }
 uint64_t oasis_lf_instruction_sequence(void) { return instruction_sequence; }
+uint64_t oasis_lf_z80_instruction_seq(void) { return z80_instruction_sequence; }
 uint64_t oasis_lf_control_flow_sequence(void) { return control_flow_sequence; }
 uint64_t oasis_lf_epoch(void) { return runtime_epoch; }
+uint64_t oasis_lf_current_master_time(void) { return current_master_time; }
+
+uint64_t oasis_lf_latest_frame_boundary_record(void)
+{
+  uint64_t first;
+  uint64_t sequence;
+  oasis_lf_record record;
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
+  if (!ring_storage || !stream_sequence)
+    return 0;
+  first = stream_sequence > cap ? stream_sequence - cap + 1u : 1u;
+  for (sequence = stream_sequence;; --sequence)
+  {
+    if (oasis_lf_ring_record(sequence, &record) &&
+        (record.kind_flags & OASIS_LF_EVENT) &&
+        ((record.kind_flags & OASIS_LF_EVENT_SUBTYPE_MASK) >>
+         OASIS_LF_EVENT_SUBTYPE_SHIFT) == OASIS_LF_EVENT_FRAME_BOUNDARY)
+      return sequence;
+    if (sequence == first)
+      break;
+  }
+  return 0;
+}

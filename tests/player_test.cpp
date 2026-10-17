@@ -38,7 +38,7 @@ int main() {
 
     std::array<std::uint8_t, 64> grid{};
     grid.fill(0x02U); // terrain code 2 -> traversable state 2
-    const ByteGridView terrain(grid, 8, 3);
+    const ByteGridView terrain(grid, 8, 8, 8, 3);
     PlayerMovementConfig config;
     config.footprint_radius = 0;
 

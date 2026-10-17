@@ -154,6 +154,20 @@ bytes covered by an accepted view. The additions are 3,168 table bytes and
 46,858 stream bytes. No stream semantics beyond the raw parser contract are
 asserted, and no C++ migration is authorized.
 
+### Structural-family closure: M68K_FIXED_COUNT_RECORD_FIELD0
+
+The 99-entry table at `[0x03F306,0x03FF66)` stores a big-endian absolute ROM
+target in field 0 of each 32-byte entry. The shared consumers at `0x00AB82`,
+`0x00AF02`, `0x00B15E`, and `0x00B28E` read a 16-bit count followed by
+`count + 1` records of six bytes each. The exact half-open stream boundary is
+`[start, start + 2 + 6 * (count + 1))`; the count header is included and there
+is no trailer. Structural family acceptance is restricted to the enumerated
+table and exact count-bounded record views. It does not assert execution of
+each table entry, gameplay selection, audio/graphics meaning, or runtime
+property coverage. See the dated family closure report and machine census for
+the independently regenerated row identities, hashes, overlap, and removal
+replay.
+
 ## M12-AUTO10 exact code continuation
 
 The M12-AUTO10 transaction reaches 928,000 bytes (29.500325521%) of the
@@ -244,6 +258,25 @@ NUL-terminated stream. The 98 streams occupy `[0x0515FC,0x0541FD)` as
 the streams are accepted by the parser's observed dispatch set. The skipped
 indices remain included only as table-addressed records with the same closed
 parser/boundary contract; no text semantics are asserted.
+
+The 2026-10-04 structural-family audit rederived the table and all 98 exact
+NUL-bounded targets. Its bulk-loop subset is 95 strings / 10,303 bytes plus the
+196-byte table, but it is **not structurally accepted**. A direct call at
+`0x0083C4` supplies D0 from `(A0+$00A0)` to `0x00C2EC`; early branches at
+`0x00C2F4` and `0x00C300` bypass the loop's three-index skip and reach the
+table-reading path. The dynamic selector has no closed bound in this audit.
+Thus the three slots are excluded only from that bulk loop, not proven globally
+unreachable. The path-scoped `M68K_INDEXED_SCRIPT_BULK_LOOP_95` structural
+contribution is separately accepted. It includes the 95 selected table entries
+(190 bytes) and their NUL-inclusive strings (10,303 bytes), for an exact
+10,493-byte physical union and zero overlap against the 1,256,174-byte prior
+structural view. It does not include slots 27–29 or claim they are globally
+unreachable. The alternate dynamic path remains unresolved. Contribution
+removal restores the prior view byte-for-byte. This structural-only evidence
+does not alter runtime properties, `TOTAL_PROVEN`, `SOURCE_OWNED`, or canonical
+SQLite. See
+`THOR_M68K_INDEXED_SCRIPT_FAMILY_20261004/bulk-loop-95/closure.md` and the full
+family audit at `THOR_M68K_INDEXED_SCRIPT_FAMILY_20261004/closure.md`.
 
 The exact transaction is
 `build/m12-auto3-script-transaction-b/materialized/manifest.json`, and the

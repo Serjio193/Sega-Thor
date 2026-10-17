@@ -70,7 +70,7 @@ class LiveForwardCartographerTests(unittest.TestCase):
         source = (ROOT / "tools/bizhawk-native-ring/live_forward_scaling_runtime.py").read_text(
             encoding="utf-8")
         validated = source.index("segment = validate_segment(")
-        admitted = source.index("on_segment(ready_segment, list(RECORD.iter_unpack(data)), data)")
+        admitted = source.index("on_segment(ready_segment, list(record_struct.iter_unpack(data)), data)")
         acknowledged = source.index('with ack.open("a", encoding="ascii", newline="")')
         self.assertLess(validated, admitted)
         self.assertLess(admitted, acknowledged)

@@ -30,7 +30,20 @@ uint64_t instruction_sequence;
 uint64_t control_flow_sequence;
 uint64_t runtime_epoch = 1;
 uint32_t oasis_lf_recording_enabled;
+uint32_t oasis_lf_ring_capacity;
 lf_metrics metrics;
+
+int oasis_lf_set_ring_capacity(uint32_t capacity)
+{
+  uint32_t i;
+  if (active_count || instruction_nesting)
+    return 0;
+  for (i = 0; i < worker_count; ++i)
+    if (workers[i].state != LF_FREE)
+      return 0;
+  oasis_lf_ring_capacity = capacity;
+  return 1;
+}
 
 static int checked_add(uint64_t left, uint64_t right, uint64_t *result)
 {
@@ -93,10 +106,14 @@ int oasis_lf_memory_plan_get(uint32_t count, uint32_t depth,
       !checked_mul(count, sizeof(uint32_t), &plan->pending_queue_bytes) ||
       !checked_mul(count, sizeof(uint32_t), &plan->active_queue_bytes) ||
       !checked_mul(identity_slots, sizeof(lf_identity_entry),
-                   &plan->identity_table_bytes) ||
-      !checked_mul(OASIS_LF_RING_CAPACITY, sizeof(lf_ring_slot),
-                   &plan->shared_ring_bytes))
+                   &plan->identity_table_bytes))
     return 0;
+  {
+    uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                          : OASIS_LF_RING_CAPACITY_DEFAULT;
+    if (!checked_mul(cap, sizeof(lf_ring_slot), &plan->shared_ring_bytes))
+      return 0;
+  }
   if (!checked_add(plan->descriptor_bytes_total,
                    plan->result_buffers_bytes_total, &total) ||
       !checked_add(total, plan->pending_queue_bytes, &total) ||
@@ -204,8 +221,11 @@ int oasis_lf_configure_bounded(uint32_t count, uint32_t depth,
   active_queue = (uint32_t *)calloc(count, sizeof(*active_queue));
   identity_table = (lf_identity_entry *)calloc(plan.identity_capacity,
                                                 sizeof(*identity_table));
-  ring_storage = (lf_ring_slot *)calloc(OASIS_LF_RING_CAPACITY,
-                                         sizeof(*ring_storage));
+  {
+    uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                          : OASIS_LF_RING_CAPACITY_DEFAULT;
+    ring_storage = (lf_ring_slot *)calloc(cap, sizeof(*ring_storage));
+  }
   if (!workers || !record_storage || !pending_queue || !active_queue ||
       !identity_table || !ring_storage)
   {
@@ -222,7 +242,9 @@ int oasis_lf_configure_bounded(uint32_t count, uint32_t depth,
   stream_sequence = 0;
   last_entry_stream_sequence = 0;
   instruction_sequence = 0;
+  z80_instruction_sequence = 0;
   control_flow_sequence = 0;
+  current_master_time = 0;
   instruction_nesting = 0;
   last_started_instruction = UINT64_MAX;
   pending_head = 0;

@@ -51,6 +51,7 @@ typedef struct
 {
   uint64_t sequence;
   uint32_t valid;
+  uint32_t pad;
   oasis_lf_record record;
 } lf_ring_slot;
 
@@ -102,9 +103,13 @@ extern uint32_t instruction_nesting;
 extern uint64_t stream_sequence;
 extern uint64_t last_entry_stream_sequence;
 extern uint64_t instruction_sequence;
+extern uint64_t z80_instruction_sequence;
 extern uint64_t control_flow_sequence;
+extern uint64_t frame_number;
+extern uint64_t current_master_time;
 extern uint64_t runtime_epoch;
 extern uint32_t oasis_lf_recording_enabled;
+extern uint32_t oasis_lf_ring_capacity;
 extern lf_metrics metrics;
 
 void lf_append_record(oasis_lf_record record);

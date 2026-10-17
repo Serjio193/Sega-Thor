@@ -1205,12 +1205,6 @@
   ],
   "top_10": [
     {
-      "entry": "0x00f788",
-      "score": 34.1,
-      "reason": "24 natural full calls; 2 path(s); boundary UNKNOWN; 15 distinct output(s).",
-      "excluded": null
-    },
-    {
       "entry": "0x009d70",
       "score": 31.2,
       "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 24 distinct output(s).",
@@ -1263,12 +1257,18 @@
       "score": 25.8,
       "reason": "24 natural full calls; 1 path(s); boundary UNKNOWN; 0 distinct output(s).",
       "excluded": null
+    },
+    {
+      "entry": "0x00e192",
+      "score": 25.3,
+      "reason": "24 natural full calls; 3 path(s); boundary UNKNOWN; 24 distinct output(s).",
+      "excluded": null
     }
   ],
   "selected_helper": {
-    "entry": "0x0099D6",
-    "caller_scope": "0x009932",
-    "status": "FROZEN_POINTER_EXTENT_UNRESOLVED"
+    "entry": "0x00F788",
+    "caller_scope": "0x008B2A",
+    "status": "FROZEN_STATEFUL_INDIRECT_DISPATCH_UNBOUNDED"
   },
   "authority_changes": 0,
   "current_totals": {
@@ -1278,29 +1278,24 @@
     "SOURCE_OWNED": 1487672
   },
   "latest_attempt": {
-    "mission": "helper #10 bounded pointer/extent assessment",
-    "selected_target": "0x0099D6",
-    "path_scope": "0x009932 BSR.W -> 0x0099D6 -> RTS -> 0x009936",
+    "mission": "helper #10 stateful-dispatch/boundedness scout",
+    "selected_target": "0x00F788",
+    "path_scope": "0x008B2A BSR.W -> 0x00F788 -> RTS -> 0x008B2E",
     "natural_calls": 24,
-    "natural_path_count": 1,
+    "natural_path_count": 2,
     "debug_synthetic_cases": 0,
     "release_synthetic_cases": 0,
-    "final_status": "FROZEN_POINTER_EXTENT_UNRESOLVED",
+    "final_status": "FROZEN_STATEFUL_INDIRECT_DISPATCH_UNBOUNDED",
     "global_status": "NO_CLAIM",
     "runtime_replacement_active": "NO",
-    "fallback_candidate": "0x00F788",
+    "fallback_candidate": "0x009d70",
     "new_verified_helpers": 0,
     "new_bytes_classified": 0,
     "authority_deltas": 0,
-    "current_totals": {
-      "ROM": 3145728,
-      "RUNTIME_TOTAL_PROVEN": 440425,
-      "STRUCTURAL_PROVEN": 1266667,
-      "SOURCE_OWNED": 1487672
-    },
-    "acceptance_receipt_sha256": "ffb87b966a0fe2a90a421fe930b21ebf8e54b8bf216e1f75cdb86ced8b9cd2b5",
+    "acceptance_receipt_path": "docs/reports/THOR_REPLAY_HELPER10_F788_STATEFUL_FREEZE_20261012.json",
+    "acceptance_receipt_sha256": "43b3e2020cd1361b31f174d6d9135102069d73865a9d70f0dee4168484ac2f65",
     "natural_capture_sha256": "c598c4f2ad00567f6c726bd1b26bc28658129a288241711cb5b9d8adb178c27d",
-    "native_island_design": "NINE_HELPER_REGISTRY_PREPARATION; NOT_ACTIVATED"
+    "native_island_design": "NINE_HELPER_REGISTRY_PREPARATION; UNCHANGED; NOT_ACTIVATED"
   },
   "replay_rerank": {
     "method": "replay full-call corpus v1; rank uses caller/path count, changed-output diversity, median executed instructions, write count, memory-read address cardinality and exact-boundary evidence; unknown metadata remains UNKNOWN",
@@ -1320,30 +1315,11 @@
       "0x00a196": "EXCLUDED_CALLBACK_STATEFUL_PATH",
       "0x009db4": "ALREADY_VERIFIED_PATH_SPECIFIC",
       "0x00a7e6": "REJECTED_STATEFUL_SETUP_ROUTINE",
-      "0x009d92": "ALREADY_VERIFIED_PATH_SPECIFIC"
+      "0x009d92": "ALREADY_VERIFIED_PATH_SPECIFIC",
+      "0x00f788": "FROZEN_STATEFUL_INDIRECT_DISPATCH_UNBOUNDED",
+      "0x0099d6": "FROZEN_POINTER_EXTENT_UNRESOLVED"
     },
     "top10": [
-      {
-        "ENTRY_PC": "0x00f788",
-        "NATURAL_FULL_CALLS": 24,
-        "OBSERVED_DIRECT_CALLERS": {
-          "0x008b2a": 24
-        },
-        "OBSERVED_PATH_COUNT": 2,
-        "MEDIAN_EXECUTED_INSTRUCTIONS": 7.0,
-        "CHANGED_REGISTERS": [
-          "D1"
-        ],
-        "DISTINCT_CHANGED_OUTPUTS": 15,
-        "DISTINCT_ENTRY_STATES": 7,
-        "DISTINCT_MEMORY_READ_ADDRESSES": 2,
-        "ORDERED_RAM_WRITE_EVENTS": 14,
-        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
-        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
-        "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
-        "RANK_SCORE": 34.1
-      },
       {
         "ENTRY_PC": "0x009d70",
         "NATURAL_FULL_CALLS": 24,
@@ -1527,6 +1503,27 @@
         "EXISTING_STACK_STATUS": "UNKNOWN",
         "PRIOR_DISPOSITION": "UNASSESSED",
         "RANK_SCORE": 25.8
+      },
+      {
+        "ENTRY_PC": "0x00e192",
+        "NATURAL_FULL_CALLS": 24,
+        "OBSERVED_DIRECT_CALLERS": {
+          "0x00e130": 24
+        },
+        "OBSERVED_PATH_COUNT": 3,
+        "MEDIAN_EXECUTED_INSTRUCTIONS": 15.0,
+        "CHANGED_REGISTERS": [
+          "D0"
+        ],
+        "DISTINCT_CHANGED_OUTPUTS": 24,
+        "DISTINCT_ENTRY_STATES": 24,
+        "DISTINCT_MEMORY_READ_ADDRESSES": 3,
+        "ORDERED_RAM_WRITE_EVENTS": 69,
+        "EXACT_BOUNDARY_STATUS": "UNKNOWN",
+        "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
+        "EXISTING_STACK_STATUS": "UNKNOWN",
+        "PRIOR_DISPOSITION": "UNASSESSED",
+        "RANK_SCORE": 25.3
       }
     ],
     "all_remaining_targets": [
@@ -1573,7 +1570,7 @@
         "EXACT_BOUNDARY_STATUS": "UNKNOWN",
         "EXISTING_STATIC_CALLER_LIVENESS": "UNKNOWN",
         "EXISTING_STACK_STATUS": "UNKNOWN",
-        "PRIOR_DISPOSITION": "UNASSESSED",
+        "PRIOR_DISPOSITION": "FROZEN_STATEFUL_INDIRECT_DISPATCH_UNBOUNDED",
         "RANK_SCORE": 34.1
       },
       {

@@ -59,6 +59,7 @@ private:
         std::size_t stack_return_matches{};
         std::size_t stack_return_mismatches{};
         std::map<unsigned, std::size_t> callers;
+        std::map<unsigned, std::size_t> selected_caller_frame_calls;
         std::map<std::string, std::size_t> kinds;
         unsigned first_frame{};
         unsigned last_frame{};

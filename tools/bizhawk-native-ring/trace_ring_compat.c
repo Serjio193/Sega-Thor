@@ -26,6 +26,9 @@ static uint32_t scan_instructions(uint64_t start_instruction,
     if (!oasis_lf_ring_record(stream, &native_record) ||
         !(native_record.kind_flags & OASIS_LF_INSTRUCTION))
       continue;
+    /* Only report M68K instructions for compat layer. */
+    if (native_record.cpu_id != OASIS_LF_CPU_68K)
+      continue;
     if (latest_instruction)
       *latest_instruction = native_record.instruction_sequence;
     if (!destination)
@@ -39,7 +42,7 @@ static uint32_t scan_instructions(uint64_t start_instruction,
       break;
     destination[count].sequence = native_record.instruction_sequence;
     destination[count].pc = native_record.pc;
-    destination[count].opcode = native_record.opcode_or_vector;
+    destination[count].opcode = (uint16_t)native_record.value;
     destination[count].reserved = 0;
     ++count;
   }

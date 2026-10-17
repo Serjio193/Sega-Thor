@@ -143,6 +143,10 @@ int run(const char* rom_path, const char* input_path, const char* output_path) {
 } // namespace
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--capabilities") {
+        std::cout << "oasis.stage5.pc-list.v1\n";
+        return 0;
+    }
     try {
         if (argc == 2 && std::string(argv[1]) == "--self-test") {
             self_test();

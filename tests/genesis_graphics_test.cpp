@@ -7,13 +7,18 @@
 int main() {
     {
         std::array<std::uint8_t, 32> bytes{};
-        bytes[0] = 0x1F;
-        bytes[1] = 0xA5;
+        for (std::size_t row = 0; row < 8; ++row) {
+            bytes[row * 4] = 0x12;
+            bytes[row * 4 + 1] = 0x34;
+            bytes[row * 4 + 2] = 0x56;
+            bytes[row * 4 + 3] = 0x78;
+        }
         const auto tile = oasis::game::decode_genesis_4bpp_tile(bytes);
-        assert(tile[0] == 0x1);
-        assert(tile[1] == 0xF);
-        assert(tile[2] == 0xA);
-        assert(tile[3] == 0x5);
+        for (std::size_t row = 0; row < 8; ++row) {
+            for (std::size_t column = 0; column < 8; ++column) {
+                assert(tile[row * 8 + column] == column + 1);
+            }
+        }
     }
 
     {

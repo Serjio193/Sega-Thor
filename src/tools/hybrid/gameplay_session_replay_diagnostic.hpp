@@ -24,7 +24,8 @@ private:
 
 void write_native_island_metrics(const std::string& path, const std::string& status,
     const std::string& reason, std::uint64_t transfers,
-    const native_island::Counters& counters, unsigned first_frame, unsigned last_frame);
+    const native_island::Counters& counters, unsigned first_frame, unsigned last_frame,
+    bool replay_divergence);
 [[nodiscard]] bool is_call_transfer_instruction(unsigned pc, int (*peek)(unsigned)) noexcept;
 
 } // namespace oasis::hybrid::session

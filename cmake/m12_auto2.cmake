@@ -173,4 +173,22 @@ if(Python3_Interpreter_FOUND)
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_map_test.py)
     add_test(NAME oasis_m12_archivist_knowledge_pipeline_2g
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/rom_knowledge_pipeline_test.py)
+    add_test(NAME oasis_m12_map_driven_executed_asm_closure_2f
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_executed_asm_closure_test.py)
+    add_test(NAME oasis_m12_map_driven_stage7
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_stage7_test.py)
+    add_test(NAME oasis_m12_control_provenance_stage
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_control_provenance_stage_test.py)
+    add_test(NAME oasis_m12_stage7_preflight
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/map_driven_stage7_preflight_test.py)
+    add_test(NAME oasis_m12_absorption_cleanup
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/live_forward_absorption_cleanup_test.py)
+    add_test(NAME oasis_m12_master_v2_shadow
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_v2_shadow_test.py)
+    add_test(NAME oasis_m12_master_canonical_view
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/master_canonical_view_test.py)
+    add_test(NAME oasis_m12_w2_active_resource_classification
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w2_active_resource_classification_test.py)
+    add_test(NAME oasis_m12_w2_frame_coherent_evidence
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/w2_frame_coherent_evidence_test.py)
 endif()

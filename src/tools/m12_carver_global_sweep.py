@@ -123,12 +123,13 @@ def _runtime_records(artifact):
             src_after=None, consumed_bytes=None):
         if not _valid_span((start, end)):
             return
+        canon = canonical({
+            'source': path, 'scenario': scenario, 'start': start,
+            'end': end, 'type': access_type, 'reader': reader,
+            'width': width, 'order': order, 'frame': frame,
+        })
         record = {
-            "id": f"global-runtime:{hashlib.sha256(canonical({
-                'source': path, 'scenario': scenario, 'start': start,
-                'end': end, 'type': access_type, 'reader': reader,
-                'width': width, 'order': order, 'frame': frame,
-            }).encode()).hexdigest()[:24]}",
+            "id": f"global-runtime:{hashlib.sha256(canon.encode()).hexdigest()[:24]}",
             "start": start, "end": end, "type": "GLOBAL_RUNTIME_SPAN",
             "producer": "m12_carver_global_sweep", "confidence": "OBSERVED",
             "runtime": True, "scenario_id": scenario, "reader_pc": reader,

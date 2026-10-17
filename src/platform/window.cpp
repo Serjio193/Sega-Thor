@@ -125,6 +125,12 @@ core::ControllerState NativeWindow::poll_controller() const noexcept {
     if ((GetAsyncKeyState(VK_DOWN) & 0x8000) != 0) result.set(core::Button::Down);
     if ((GetAsyncKeyState(VK_LEFT) & 0x8000) != 0) result.set(core::Button::Left);
     if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0) result.set(core::Button::Right);
+    if ((GetAsyncKeyState(VK_TAB) & 0x8000) != 0 || (GetAsyncKeyState('M') & 0x8000) != 0) {
+        result.set(core::Button::Mode);
+    }
+    if ((GetAsyncKeyState('T') & 0x8000) != 0) {
+        result.set(core::Button::X);
+    }
     return result;
 }
 

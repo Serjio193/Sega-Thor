@@ -16,10 +16,24 @@ ReplayOptions parse_replay_options(int argc, char** argv,
             result.diagnostic = true;
         } else if (option.starts_with(prefix)) {
             result.native_helper = option.substr(prefix.size());
+        } else if (option.starts_with("--watch-pcs=")) {
+            std::string list = option.substr(12);
+            for (std::size_t at = 0; at < list.size();) {
+                const auto comma = list.find(',', at);
+                const auto item = list.substr(at, comma == std::string::npos ? std::string::npos : comma - at);
+                std::size_t used{};
+                const auto pc = std::stoul(item, &used, 16);
+                if (item.empty() || used != item.size() || pc > 0xFFFFFFUL)
+                    throw std::runtime_error("invalid --watch-pcs entry");
+                result.watch_pcs.push_back(static_cast<unsigned>(pc));
+                at = comma == std::string::npos ? list.size() : comma + 1;
+            }
         } else {
-            throw std::runtime_error("replay option must be --native-island=<helper-set> or --normalized-rom");
+            throw std::runtime_error("replay option must be --native-island=<helper-set>, --watch-pcs=<pcs> or --normalized-rom");
         }
     }
+    if (!result.watch_pcs.empty() && !result.diagnostic)
+        throw std::runtime_error("--watch-pcs requires --normalized-rom diagnostic replay");
     if (result.native_helper == "9d70-diagnostic") {
         result.native_helper = "9d70";
         result.diagnostic = true;

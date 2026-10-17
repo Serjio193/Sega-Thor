@@ -135,6 +135,9 @@ struct DecodeOptions {
 
 [[nodiscard]] DecodedSlice decode_m68k_slice(
     std::span<const std::uint8_t> rom, const DecodeOptions& options = {});
+// Decode one encoding at a physical ROM offset. Unsupported encodings fail closed.
+[[nodiscard]] DecodedInstruction decode_m68k_instruction(
+    std::span<const std::uint8_t> rom, std::uint32_t physical_offset);
 
 [[nodiscard]] std::string flow_kind_name(FlowKind kind);
 [[nodiscard]] std::string memory_kind_name(MemoryKind kind);

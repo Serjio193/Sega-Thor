@@ -4,6 +4,8 @@ int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity)
 {
   uint32_t i;
   uint64_t values[OASIS_LF_METRICS_COUNT];
+  uint32_t cap = oasis_lf_ring_capacity ? oasis_lf_ring_capacity
+                                        : OASIS_LF_RING_CAPACITY_DEFAULT;
   if (!output || capacity < OASIS_LF_METRICS_COUNT)
     return 0;
   values[0] = worker_count;
@@ -33,9 +35,11 @@ int oasis_lf_metrics_get(uint64_t *output, uint32_t capacity)
   values[24] = metrics.duplicate_entry_stream_sequences;
   values[25] = metrics.total_segment_bytes;
   values[26] = metrics.shared_ring_wraps;
-  values[27] = OASIS_LF_RING_CAPACITY;
+  values[27] = (uint64_t)cap;
   values[28] = worker_count ? sizeof(lf_worker) : 0;
   values[29] = worker_count ? memory_bytes : 0;
+  values[30] = z80_instruction_sequence;
+  values[31] = (uint64_t)sizeof(oasis_lf_record);
   for (i = 0; i < OASIS_LF_METRICS_COUNT; ++i)
     output[i] = values[i];
   return (int)OASIS_LF_METRICS_COUNT;

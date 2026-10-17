@@ -439,30 +439,26 @@ DecodedSlice decode_m68k_slice(Bytes rom, const DecodeOptions& options) {
             if (current.flow == FlowKind::direct_call) pending.insert(next);
             else if (current.flow == FlowKind::direct_branch && current.mnemonic != "bra") pending.insert(next);
             pending.insert(*current.direct_target);
-        } else if (current.flow == FlowKind::indirect_call) {
+        } else if (current.flow == FlowKind::indirect_call || current.flow == FlowKind::indirect_jump) {
             slice.unresolved_control_flow.push_back({pc, current.opcode, current.flow});
+            if (current.flow == FlowKind::indirect_call) pending.insert(next);
+        } else if (current.flow != FlowKind::return_instruction && current.flow != FlowKind::unsupported)
             pending.insert(next);
-        } else if (current.flow == FlowKind::indirect_jump) {
-            slice.unresolved_control_flow.push_back({pc, current.opcode, current.flow});
-        } else if (current.flow != FlowKind::return_instruction && current.flow != FlowKind::unsupported) {
-            pending.insert(next);
-        }
     }
     for (auto& [address, instruction] : decoded) {
         slice.instructions.push_back(std::move(instruction));
         if (!slice.instructions.back().supported) slice.unsupported_instruction_addresses.push_back(address);
     }
-    std::sort(slice.control_flow.begin(), slice.control_flow.end(), [](const auto& left, const auto& right) {
-        return std::tie(left.source, left.target, left.kind) < std::tie(right.source, right.target, right.kind);
+    std::sort(slice.control_flow.begin(), slice.control_flow.end(), [](const auto& l, const auto& r) {
+        return std::tie(l.source, l.target, l.kind) < std::tie(r.source, r.target, r.kind);
     });
     std::sort(slice.unresolved_control_flow.begin(), slice.unresolved_control_flow.end(),
-              [](const auto& left, const auto& right) { return left.address < right.address; });
+        [](const auto& l, const auto& r) { return l.address < r.address; });
 
     std::set<std::uint32_t> leaders{options.entry};
     for (const auto& instruction : slice.instructions) {
-        if (instruction.direct_target && in_range(*instruction.direct_target, options.entry, range_end)) {
+        if (instruction.direct_target && in_range(*instruction.direct_target, options.entry, range_end))
             leaders.insert(*instruction.direct_target);
-        }
         const auto next = instruction.address + instruction.bytes.size();
         if (instruction.flow == FlowKind::direct_branch && instruction.mnemonic != "bra" &&
             in_range(next, options.entry, range_end)) leaders.insert(next);
@@ -476,11 +472,9 @@ DecodedSlice decode_m68k_slice(Bytes rom, const DecodeOptions& options) {
         BasicBlock block{.start = leader};
         auto current = leader;
         while (instruction_addresses.contains(current)) {
-            const auto& instruction = slice.instructions[static_cast<std::size_t>(
-                std::lower_bound(slice.instructions.begin(), slice.instructions.end(), current,
-                                 [](const auto& item, std::uint32_t address) {
-                                     return item.address < address;
-                                 }) - slice.instructions.begin())];
+            const auto it = std::lower_bound(slice.instructions.begin(), slice.instructions.end(), current,
+                [](const auto& item, std::uint32_t a) { return item.address < a; });
+            const auto& instruction = *it;
             block.instruction_addresses.push_back(current);
             block.end = current + instruction.bytes.size();
             const auto next = block.end;
@@ -494,6 +488,12 @@ DecodedSlice decode_m68k_slice(Bytes rom, const DecodeOptions& options) {
     std::sort(slice.basic_blocks.begin(), slice.basic_blocks.end(),
               [](const auto& left, const auto& right) { return left.start < right.start; });
     return slice;
+}
+
+DecodedInstruction decode_m68k_instruction(Bytes rom, std::uint32_t physical_offset) {
+    if (physical_offset >= rom.size() || (physical_offset & 1U) != 0U)
+        throw std::invalid_argument("invalid M68K instruction ROM offset");
+    return decode_one(rom, physical_offset, static_cast<std::uint32_t>(rom.size()));
 }
 
 } // namespace oasis::tools

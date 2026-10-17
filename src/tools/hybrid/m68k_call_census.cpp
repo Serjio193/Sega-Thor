@@ -179,6 +179,8 @@ void M68kCallCensus::execute(unsigned pc, unsigned previous_pc, unsigned frame,
     stats.last_frame = frame;
     ++stats.calls;
     ++stats.callers[transfer.source_pc];
+    if (pc == 0x00E268U && transfer.source_pc == 0x00359AU)
+        ++stats.selected_caller_frame_calls[frame];
     ++stats.kinds[transfer.kind];
     if (return_address == transfer.return_pc) ++stats.stack_return_matches;
     else ++stats.stack_return_mismatches;
@@ -232,7 +234,18 @@ void M68kCallCensus::write(const std::filesystem::path& census_path,
             census << (first ? "" : ",") << "{\"pc\":\"" << hex(caller)
                    << "\",\"count\":" << count << '}'; first = false;
         }
-        census << "],\"TRANSFER_KINDS\":{";
+        census << ']';
+        if (target == 0x00E268U) {
+            census << ",\"CALLER_00359A_BY_FRAME\":[";
+            bool first_frame = true;
+            for (const auto& [frame, count] : stats.selected_caller_frame_calls) {
+                census << (first_frame ? "" : ",") << "{\"frame\":" << frame
+                       << ",\"count\":" << count << '}';
+                first_frame = false;
+            }
+            census << ']';
+        }
+        census << ",\"TRANSFER_KINDS\":{";
         first = true;
         for (const auto& [kind, count] : stats.kinds) {
             census << (first ? "" : ",") << '"' << kind << "\":" << count; first = false;

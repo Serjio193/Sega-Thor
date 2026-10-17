@@ -9,24 +9,36 @@
 
 #include <chrono>
 #include <algorithm>
+#include <charconv>
 #include <exception>
 #include <iomanip>
 #include <iostream>
+#include <string>
 #include <string_view>
 #include <thread>
 
 namespace {
 
-int run_resource_diagnostic(const oasis::Rom& rom) {
-    const auto resource = oasis::game::load_verified_resource(
-        rom.bytes(), oasis::game::kVerifiedResourceId);
+int run_resource_diagnostic(const oasis::Rom& rom, std::uint16_t resource_id) {
+    const auto resource = oasis::game::load_graphics_resource(rom.bytes(), resource_id);
+    std::cout << "ResourceID: " << resource.resource_id << "\n"
+              << "Backend: " << resource.backend_status << "\n"
+              << "Migration status: " << resource.migration_status << "\n"
+              << "Override mode: " << resource.override_mode << "\n"
+              << "Compressed SHA-256: " << resource.compressed_sha256 << "\n"
+              << "Decoded SHA-256: " << resource.decoded_sha256 << "\n"
+              << "ROM payload bytes passed to decoder: "
+              << resource.rom_payload_bytes_passed_to_decoder << "\n";
+    if (!resource.override_rejection_reason.empty()) {
+        std::cout << "Override fallback reason: " << resource.override_rejection_reason << "\n";
+    }
     oasis::genesis::Vdp vdp;
     oasis::game::render::ResourceDiagnosticScreen screen;
     screen.transfer_to_vram(vdp, resource.bytes);
     oasis::game::render::SoftwareFramebuffer framebuffer;
     oasis::platform::NativeWindow window(framebuffer.kWidth, framebuffer.kHeight);
     if (!window.backend_available() ||
-        !window.open("ROM-backed resource ID 3 diagnostic visualization")) {
+        !window.open("Graphics resource ID " + std::to_string(resource_id) + " diagnostic")) {
         std::cerr << "error: native window backend is unavailable on this platform\n";
         return 4;
     }
@@ -43,10 +55,18 @@ int run_resource_diagnostic(const oasis::Rom& rom) {
 } // namespace
 
 int main(int argc, char** argv) {
+    std::uint16_t resource_id{};
+    const auto id_argument = argc == 4 ? std::string_view(argv[3]) : std::string_view("0");
+    const auto parsed_id = std::from_chars(id_argument.data(),
+                                           id_argument.data() + id_argument.size(),
+                                           resource_id);
     const bool resource_mode = argc == 4 && std::string_view(argv[2]) == "--resource-id" &&
-                               std::string_view(argv[3]) == "3";
+                               !id_argument.empty() && parsed_id.ec == std::errc{} &&
+                               parsed_id.ptr == id_argument.data() + id_argument.size() &&
+                               resource_id >= 1U &&
+                               resource_id <= oasis::game::kGfx3820ResourceCount;
     if (argc != 2 && !resource_mode) {
-        std::cerr << "usage: oasis <rom.bin> [--resource-id 3]\n";
+        std::cerr << "usage: oasis <rom.bin> [--resource-id 1..107]\n";
         return 1;
     }
 
@@ -72,9 +92,9 @@ int main(int argc, char** argv) {
             std::cerr << "error: controlled native screen requires the canonical supported ROM\n";
             return 3;
         }
-        if (resource_mode) return run_resource_diagnostic(rom);
+        if (resource_mode) return run_resource_diagnostic(rom, resource_id);
 
-        oasis::game::screen::ControlledScreen screen;
+        oasis::game::screen::ControlledScreen screen(rom.bytes());
         oasis::game::render::SoftwareFramebuffer framebuffer;
         oasis::platform::NativeWindow window(framebuffer.kWidth, framebuffer.kHeight);
         if (!window.backend_available() || !window.open("Beyond Oasis - Native Controlled Screen")) {

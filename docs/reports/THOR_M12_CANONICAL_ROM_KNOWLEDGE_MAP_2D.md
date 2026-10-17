@@ -39,29 +39,29 @@ The older GFX-MAX screen-root-c manifest is rejected as current input: it is mis
 ## Canonical map
 
 ROM identity is `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` (3,145,728 bytes). The emission partition has
-2,461 contiguous intervals with exact coverage, no gaps or overlaps, and no out-of-bounds rows.
-It contains 3,794 canonical objects, 1,670,128 UNKNOWN bytes, and
-1,475,600 SOURCE_OWNED bytes (46.9080607096%). Runtime observations do not change that ownership.
+2,489 contiguous intervals with exact coverage, no gaps or overlaps, and no out-of-bounds rows.
+It contains 5,393 canonical objects, 1,658,056 UNKNOWN bytes, and
+1,487,672 SOURCE_OWNED bytes (47.2918192546%). Runtime observations do not change that ownership.
 
 | Measure | Value |
 | --- | ---: |
-| Executed M68K instruction objects | 330 |
-| Unique executed ROM bytes | 1,244 |
-| Runtime occurrences referenced | 199,630 |
-| Executed instructions not fully SOURCE_OWNED | 225 |
-| SOURCE_OWNED code ranges never observed / bytes | 508 / 53,420 |
-| Typed data / graphics / audio / Z80 objects | 772 / 138 / 1 / 1 |
-| EXECUTED_NEXT unique relations / occurrence refs | 338 / 195,794 |
-| OBSERVED_NEXT_PC unique relations / terminal facts | 26 / 1,600 |
+| Executed M68K instruction objects | 1,926 |
+| Unique executed ROM bytes | 7,588 |
+| Runtime occurrences referenced | 3,423,662 |
+| Executed instructions not fully SOURCE_OWNED | 777 |
+| SOURCE_OWNED code ranges never observed / bytes | 454 / 45,578 |
+| Typed data / graphics / audio / Z80 objects | 772 / 138 / 3 / 1 |
+| EXECUTED_NEXT unique relations / occurrence refs | 2,078 / 195,794 |
+| OBSERVED_NEXT_PC unique relations / terminal facts | 169 / 1,600 |
 | Exception-event next edges excluded from EXECUTED_NEXT | 47 / 1,726 |
 | Carver-5 hypotheses | 1,007 |
 | Conflicts imported | 0 |
-| Evidence references | 7,968 |
-| Emission ASM / DATA / ASSET / INCBIN bytes | 56,134 / 233,676 / 1,085,110 / 1,770,808 |
+| Evidence references | 17,681 |
+| Emission ASM / DATA / ASSET / INCBIN bytes | 56,418 / 245,464 / 1,085,110 / 1,758,736 |
 
-Objects by canonical type: `AUDIO_DATA` 1, `GRAPHICS_STREAM` 138, `M68K_INSTRUCTION` 330, `POINTER_TABLE` 35, `ROM_DATA` 737, `ROM_RANGE` 1,794, `UNKNOWN` 758, `Z80_PROGRAM` 1.
+Objects by canonical type: `AUDIO_DATA` 3, `GRAPHICS_STREAM` 138, `M68K_INSTRUCTION` 1,926, `POINTER_TABLE` 35, `ROM_DATA` 737, `ROM_RANGE` 1,794, `UNKNOWN` 759, `Z80_PROGRAM` 1.
 
-Claims by status: `DERIVED_EXACT` 1,516, `HYPOTHESIS` 1,007, `OBSERVED_RUNTIME` 330, `STATIC_VERIFIED` 3,406.
+Claims by status: `DERIVED_EXACT` 1,518, `HYPOTHESIS` 1,007, `OBSERVED_RUNTIME` 1,926, `STATIC_VERIFIED` 3,497.
 
 Byte coverage by claim status is a union per status; semantic and hypothesis intervals can
 overlap, so those status totals are not additive. The receipt also contains exact byte counts
@@ -79,10 +79,10 @@ facts remain address-only `OBSERVED_NEXT_PC` relations.
 
 ## Determinism and audit
 
-Structure hash: `7f9c95f8f05e29db54991e3f6abee94e4fd80d5013fbd0675f5abe9defdc18fe`.
-Evidence-index hash: `cb43a5fdfa5a1f592a8f1fac30cdab6a88052ac1719ae872ba25058eb4a69364`.
-Emission hash: `d76325cfa6d6312f28333f0633f74260214e5ae8a92fc2984fcc565872cbda8f`.
-Combined map hash: `589e97fe2e070ab7f9a71a3439e19f3b965a01d24ce82b2bd42cffc9f129232a`.
+Structure hash: `f4bf572c73c98c41728be9c6c4b4ecb9d605237d64447fc765dc25678af57ef6`.
+Evidence-index hash: `9f16c1ee70a309211072d58538fac7b61cee8f009312f0ed1aa196259c9d06ec`.
+Emission hash: `44a2332b0b433c635e33767886ffff35985ad31131e3dc3b4dea5e6984b17d92`.
+Combined map hash: `7c8b6321a8bd320d612ced68869d726733f76d941f0b9f7c91f8ffe3fabcf8b3`.
 The independent auditor returned `PASS_INDEPENDENT_CANONICAL_ROM_KNOWLEDGE_AUDIT`. Reimport counts and all three component hashes were unchanged.
 
 The compact JSON receipt contains the exact interval/object/claim/relation/evidence-reference

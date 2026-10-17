@@ -1,5 +1,111 @@
 ## THOR Evidence Engine design boundary
 
+### Ephemeral graphics resource transaction
+
+`graphics_resource_transaction.py` reduces one bounded observation into a
+deterministic resource receipt. It requires the same ROM, run and frame across
+the completed `0x3820` call, RAM-to-VRAM publication, SAT tile references and
+visible pixels. The receipt is derived runtime evidence, not a second map; it
+does not mutate OASROMP1, canonical SQLite, or `SOURCE_OWNED`. Exact same-frame
+CRAM palette bytes are retained as a dependency and are not treated as ROM
+provenance.
+Until emulator instrumentation supplies those linked observations, no live
+resource closure is accepted.
+
+The graphics runtime bridge also exposes a separate caller-scoped diagnostic
+record for `0x03C07C` → `0x3820`. It checks the immediate JSR and matched stack
+return, records entry register context, and accepts an exact physical ROM
+boundary only after byte mapping succeeds. A missing target call does not
+contribute coverage or change canonical ownership.
+
+The separate bounded `graphics_caller_census` buffer is discovery-only and
+does not mutate the graphics transaction ledger or ROM-property authority.
+The native `gpgx_graphics_transactions_json` export now wraps the existing
+transaction JSON with `caller_census` and row/serialized-byte diagnostics;
+the existing managed and Lua string bindings remain unchanged. A host-only
+synthetic pipeline test passes. The diagnostic install must keep both raw and
+compressed (`.wbx.zst`) core artifacts in sync. Live 1,800-frame acceptance
+passes when the refreshed compressed core is loaded; the capture runner treats
+the receipt as completion and then closes the still-open EmuHawk process.
+Caller-function identity remains unresolved until independently verified; a
+return-derived call-site candidate is explicitly unconfirmed.
+
+## M14.2 canonical global evidence authority
+
+The canonical `knowledge.sqlite` generation remains the only knowledge-map
+store. Its `emission` table is the ROM partition and `SOURCE_OWNED` authority;
+`rom_range`, `rom_object`, `claim`, `relation`, `evidence_ref`, and `conflict`
+hold evidence. M14.2 adds derivation/input and map-proposal/operation tables to
+that schema. Proposals bind to a parent generation, base map hash, graph hash,
+and validator version, but do not directly alter emission or establish
+ownership. Runtime occurrence identity must retain capture, epoch, CPU,
+address-space/domain, native sequence, and event kind. MASTER V2 preserves the
+added tables when serializing and materializing canonical knowledge.
+
+## Structural consumer-family evidence plane
+
+`src/tools/thor_evidence/static_family_evidence.py` emits the independent
+`STATICALLY_ENUMERATED_CONSUMER_SOURCE` ledger for exact members of a closed
+selector/table/consumer contract. It binds ROM identity, contract entries,
+source-artifact hashes, and the exact physical range union. Its derived view
+supports deterministic replay, overlap-aware union accounting, and independent
+contribution removal.
+
+This plane does not write or overlay the runtime property bitmap, contribute to
+`TOTAL_PROVEN`, update canonical SQLite, or affect `SOURCE_OWNED`. It does not
+claim that every entry executed in a runtime scenario and assigns no graphics
+or audio semantics. Runtime-causal classes such as
+`AUDIO_STRICT_CAUSAL_SOURCE` and `GRAPHICS_VRAM_CAUSAL_SOURCE` remain separate
+and unchanged.
+
+Variable-length families use the versioned
+`static_family_variable.py` contribution model. A family owns root records,
+exact descriptor records, and half-open stream intervals linked by explicit
+`root -> descriptor -> stream` provenance edges. Each resource carries its
+consumer/decoder contract, boundary evidence, ROM identity, and source-artifact
+hashes. `gfx_screen_roots_structural_closure.py` builds the 159-member
+`GFX_SCREEN_ROOTS` family from identical Debug/Release decoder censuses and
+replays contribution removal against the prior structural view. This extends
+only the structural evidence plane; the fixed-size v1 validator remains
+unchanged so its accepted source hashes continue to verify.
+
+Selector-indexed descriptor tables use
+`static_family_table_variable.py`. The schema records the complete selector
+domain and descriptor census, filters family members by exact descriptor
+fields, and binds each root→descriptor→stream path to a shared parser boundary
+rule. For `AUDIO_MODE0_BANK_RESOURCES`, the descriptor's little-endian length
+is loaded by the normal Z80 parser and the decoder loop exits when its byte
+counter reaches zero. This closes exact static half-open intervals without
+claiming runtime execution of every selected entry.
+
+Signed-relative sentinel lists use the versioned
+`static_family_sentinel_list.py` contribution model. Each instance carries its
+source table references and selector slot, resolved signed-relative target,
+record width/count, sentinel key location, included sentinel-byte count, ROM
+identity, and source hashes. The shared view dispatcher validates this schema
+without merging it into runtime properties or ownership. `AUTO13_BCEA` closes
+its finite slot census through independent regeneration and sentinel-bound
+interval replay.
+
+Absolute pointer tables with decoder-terminated streams use the separate
+`static_family_pointer_table.py` v4 model. It records every table slot,
+big-endian target mapping, exact decoder-consumed end, source hashes, and the
+table-entry→pointer→reader→decoder→stream provenance chain. The
+`GFX3820_INDEXED_POINTER_TABLE` adapter regenerates this census twice and only
+admits all 107 non-null entries when both canonical enumerations agree. Its
+view builder validates and unions the existing v1/v2/v3 contributions alongside
+v4, so contribution removal rebuilds the prior view without changing any other
+evidence authority.
+
+Descriptor-selected variable-length streams use
+`static_family_descriptor_stream.py` v3. Each resource stores its exact
+descriptor and stream half-open intervals, decoder-consumed end, source hashes,
+and explicit root→descriptor→stream→consumer→boundary provenance. The
+`GFX_DESCRIPTOR_STREAMS_AUTO49` adapter checks the descriptor pointer field and
+regenerates every end with independent Python and native decoders. The schema
+is structural-only and does not touch runtime properties, `TOTAL_PROVEN`,
+`SOURCE_OWNED`, or canonical SQLite.
+
 ## AUTO65 multi-chain campaign boundary
 
 `src/tools/thor_evidence/auto65_chain.py` makes a normalized causal chain the
@@ -502,6 +608,45 @@ It consumes the canonical ROM through `resource_loader`, stores bytes only in
 the bounded VDP model, and does not expose original work-RAM addresses as
 native architecture or assign unproven resource semantics.
 
+The GFX3820 externalization prototype extends `resource_loader` to stable
+ResourceIDs 1..107 using the accepted exact parser-bounded family manifest at
+`assets/gfx3820/manifest.tsv`. It checks optional `<id>.bin` compressed copies
+against pinned size/hash, requires full decoder consumption and the pinned
+4,096-byte decoded hash, and falls back to the canonical ROM stream on any
+override rejection. Explicit `replacements.tsv` rows form a separate
+hash-pinned modified-resource mode. These backend/migration statuses are
+portability evidence only; they do not alter runtime, structural, SOURCE_OWNED
+or canonical SQLite authority and assign no gameplay/visual semantics.
+
+The separate screen-root catalog at `assets/gfx3820_screen_roots/manifest.tsv`
+preserves three identities: root path, descriptor address, and unique physical
+stream. Its stable file ID is `STREAM_<ROM start>`: 21 roots expand to 167
+root/descriptor uses, 163 unique descriptors, and 159 unique streams. The
+`screen_resource_loader` resolves paths to streams, checks the pinned manifest
+and ROM/source census identities, and reuses `decompress_graphics`. Exact
+compressed copies are optional files under `assets/gfx3820_screen_roots/streams`;
+missing or invalid copies fall back to the exact ROM range. Decoded sizes vary
+from 6,212 to 46,316 bytes. This is a separate portability catalog; it makes no
+semantic or natural-selection claim and changes no runtime, structural,
+SOURCE_OWNED, or canonical SQLite authority.
+
+The fixed-count record backend is a third, independent portability catalog at
+`assets/fixed_count_records/manifest.tsv`. It keeps all 96 active table row IDs
+and their explicit aliases while resolving to 78 stable `STREAM_<ROM start>`
+files. A shared bounded parser validates the big-endian inclusive count and
+exact `2 + 6 * (count + 1)` extent; exact raw copies are optional files under
+`assets/fixed_count_records/streams`. Missing, wrong-sized, malformed, or
+hash-mismatched files fall back to the canonical ROM span. This catalog does
+not assign object/animation/map semantics or alter any ROM evidence authority.
+
+`audio_format_a` is a bounded native translation candidate for the W5 Format-A
+Z80 sample decoder. It parses the eight fixed bank descriptor tables into
+selector IDs (bank index × 16 + entry), then expands exact length-bounded Mode 0
+or Mode 1 byte spans into unsigned PCM samples. The API is not yet wired to the
+game's sound-command/playback dispatch. Differential validation is a manual
+local-ROM reference step against the independent W5 Python implementation;
+the 18-sample W4 DAC witness remains the only runtime sample oracle used here.
+
 Every routine translated from assembly should retain a traceable mapping to original ROM address(es).
 
 ### `tools`
@@ -875,6 +1020,75 @@ against canonical ROM bytes and persisted MAP-1 identities, and verifies that
 repeated occurrences share one stable range identity. This is an
 executed-instruction interval layer, not a full ROM classification map.
 
+## M12 generic recursive ROM closure V1
+
+`src/tools/thor_evidence/generic_recursive_closure.py` is the subsystem-neutral
+post-run closure core. It consumes normalized instruction, memory, call and
+exact-range facts; derives register and effective-address provenance; emits
+typed graph edges, table candidates, call relations, closure queue and capture
+gaps; and promotes only caller-supplied byte-identical ranges. Missing facts
+are `UNRESOLVED` and remain queued, so an incomplete chain cannot stop
+unrelated exact closure. The module has no game-PC rules. Its command-line
+entrypoint emits the nine `postrun_*` artifacts; the dynamic SAT selector chain
+is a regression fixture, not an engine special case.
+
+## M13 generic recursive closure live integration V1
+
+`live_forward_generic_closure_stage.py` is the post-run adapter between the
+semantic stages and ASM closure. It accepts only the sealed FLOW paths owned by
+the receipt, materializes a hash-bound normalized corpus, checks the canonical
+ROM identity, runs the generic core, and emits closure/gap artifacts. A zero
+promotion result is `NO_DELTA` with a deterministic capture-gap ranking and
+continues to ASM closure; missing or corrupted corpus/ROM identity is
+fail-closed. `generic_closure_handoff.py` keeps this policy out of the core
+graph engine and the coordinator owns the stage ordering.
+
+## M13.1 semantic unresolved scheduling
+
+`pipeline_outcomes.py` separates a stage's semantic result from its scheduling
+effect. Allowlisted semantic coverage/provenance/acceptance gaps remain
+`UNRESOLVED` with their original stop reason, while the scheduler continues to
+generic closure and independent downstream analysis. Integrity, identity, and
+other non-allowlisted stops remain fatal. The final pipeline can therefore
+complete its audits and cleanup while reporting unresolved evidence; the
+progress UI and final receipt preserve that distinction rather than relabeling
+the semantic gap as PASS.
+
+## M13.2 generic closure gap-driven improvement
+
+The closure engine may add `OBSERVED_NEXT_PC` edges only from normalized
+instruction events whose source opcode exactly matches canonical ROM bytes.
+These edges record observed transitions, not statically proven branch/call
+semantics, and do not establish candidate boundaries or ownership. The live
+stage runs closure twice and requires deterministic equality plus a hashed gap
+ranking before acceptance. Permanent raw-FLOW reclaim is gated on those
+artifacts; absent or altered generic acceptance evidence leaves raw inputs
+intact. Missing CPU/domain, register, memory-width and round-trip evidence
+remains unresolved and is reported for a future capture.
+
+## M13.3 normalized FLOW evidence contract V2
+
+`generic_flow_normalizer.py` maps every fixed-width native FLOW record into a
+versioned event identity and generic collections. CPU identity is taken only
+from the captured `cpu_id`; bus width/domain and the causal instruction
+sequence are retained, ROM bus reads are made explicit, and M68K opcode bytes
+are compared to the canonical ROM without dropping mismatches. Runtime
+next-PCs are kept as observed flow facts; JSR/BSR, returns, and indirect JMP
+targets are represented only when their encoded opcode family and captured
+transition support that relation. The closure core consumes normalized memory,
+ROM-read, call, and return facts directly while retaining the legacy v1 input
+path for fixtures.
+
+The current native 48-byte record ABI has no per-instruction register payload,
+snapshot reference, or complete M68K instruction byte width. Host-audited
+Worker segment metadata does preserve exact entry/exit D0-D7, A0-A7, SR and PC
+snapshots; V2 links these bounded snapshots to the segment's first/last
+instruction identities without pretending they describe intervening
+instructions. Missing per-instruction snapshots and decode/width fields stay
+explicit capture gaps. This is a partial schema migration only: it does not
+establish the M13.3 live acceptance gate or authorize raw evidence
+reclamation.
+
 ## M12 runtime control provenance 2C — Phase 0 stop
 
 Phase 0 examined the saved, independently audited 2B FLOW_V1 runtime evidence
@@ -891,3 +1105,184 @@ canonical graph relation was added. This is a run-local negative result, not a
 claim that all game scenarios lack indirect transfers. Reconsider a sensor only
 after accepted runtime evidence contains an actual indirect JMP/JSR whose
 memory origin the current evidence pipeline cannot resolve.
+
+## Runtime ROM property map v1 — developer tooling
+
+`uint16_t[rom_size]` stores additive observed-use bits, with zero reserved for
+UNKNOWN. It is separate from the canonical emission partition and
+`SOURCE_OWNED`. The versioned checkpoint binds the payload to ROM, schema,
+proof-contract, core/build, run, generation, capabilities, and validation
+identities. Runtime updates touch memory only; checkpoints and compact range
+exports are explicit operations.
+
+The developer library implements dirty-page tracking, supported M68K decoder
+span marking, byte-resolved data reads, Z80 fetched-byte validation, exact-copy
+RAM origin tags, consumed VDP source marking, cross-run union/rebuild, range
+export, and canonical-map overlay without changing existing classes or
+ownership. Pinned GPGX hooks now feed the live bitmap for accepted M68K, Z80,
+and direct VDP paths. Mode 5 CPU data-port writes additionally qualify only
+when one exact physical ROM word is read and a completed same-instruction
+`MOVE.W` forwards that value unchanged to the accepted VRAM, CRAM, or VSRAM
+port; fills and unsupported source modes fail closed. Their limits and
+acceptance evidence are in
+`docs/ROM_PROPERTY_MAP.md`.
+
+The Format-A mode-0 audio hook uses the existing Z80 banked-ROM read resolver.
+It adds `AUDIO_PAYLOAD_PROVEN` only for an exact byte read at verified decoder
+PC `0x080E` or `0x0855` inside either statically closed Format-A resource. It
+does not taint registers or promote a whole resource from one read.
+
+The graphics contract records `A0` at entry to verified M68K decompressor
+`0x3820` and classifies its exact ROM-backed input interval only after a
+successful `RTS`. The new `COMPRESSED_GRAPHICS_SOURCE` bit describes consumed
+compressed input; it does not assert direct VRAM provenance. The hook validates
+every byte's physical ROM mapping and rejects discontinuity, incomplete calls,
+and spans over 64 KiB.
+
+## M14 accepted-artifact ROM property contributions
+
+`src/tools/thor_evidence/m14_consumer_evidence_import.py` and
+`m14_gfx_accepted_artifact_import.py` and
+`m14_gfx_accepted_artifact_batch.py` are host-side verifiers and sparse ledger
+writers. They emit `ACCEPTED_ARTIFACT` claims apart from runtime `OASROMP1`
+contributions. A source-aware derived bitmap is rebuilt from the immutable
+runtime base plus revalidated ledgers; it is not saved with a fabricated runtime
+core identity. W5 support remains restricted to the exact secondary Format-A
+mode-0 resource and `AUDIO_PAYLOAD_PROVEN`. The GFX adapter reconstructs one
+accepted M12-GFX-2 closure from immutable Git source/report identities and the
+accepted AUTO8 consumer record, independently replays its exact Ancient decoder
+extent. The batch adapter reuses that same caller-closed proof semantics for
+the accepted TOP-20 exact ranges, recording each physical range as an
+independent `COMPRESSED_GRAPHICS_SOURCE` ledger. Both adapters validate source
+and proof-contract hashes, exact ROM identity, range replay, class delta,
+deterministic replay, removal, and read-only canonical SQLite invariance.
+Neither enters emulator, worker, or rendering paths.
+
+### ROM Coverage GUI — read-only visualization
+
+`tools/bizhawk-native-ring/rom_coverage_gui.py` is a Tkinter view over the
+existing versioned bitmap checkpoint. `rom_coverage_model.py` verifies the
+checkpoint checksum, ROM/schema/proof-contract/build identity and property
+capabilities before aggregation. An overlay receipt is accepted only with the
+exact paired checkpoint hash and identity. The GUI has no path to runtime
+hooks, property mutation, canonical map writes, or semantic promotion.
+
+The view keeps bitmap union coverage (`mask != 0`) separate from classification
+coverage. M68K/Z80 data-read bits are observations; by themselves their cell
+status is `OBSERVED_UNCLASSIFIED`, with separate colors for each read source.
+Executed-encoding, direct VDP-source, and proven
+audio-payload bits count as classified. The direct VDP-source bits include the
+same-instruction ROM-to-port path after its proof-contract extension. Multiple
+proven classes render as
+`MIXED`, while raw read observations overlapping one proven class do not hide
+that class. A run delta is unavailable until a compatible canonical union is
+loaded, preventing a missing baseline from being presented as new discovery.
+The view also reports newly classified bytes separately from newly covered
+bytes, so property refinement remains visible after union coverage plateaus.
+This grouping is local to the read-only view and does not alter the property
+contract or runtime bitmap.
+
+The LIVE mode polls the selected checkpoint's atomic replacement timestamp
+every 500 ms and reads changed snapshots on a separate reader thread. It never
+shares the emulator's in-memory property array or blocks its observation
+thread. The current capture script writes its bitmap at the end of a capture;
+LIVE refresh therefore occurs when an existing publisher replaces the
+checkpoint, and does not add a new live publisher to GPGX. Whole-ROM cells are
+1 KiB, with click-through 32-byte and 1-byte views. All levels use exact
+half-open byte ranges and compute total coverage from `mask != 0`.
+
+## Rolling MASTER runtime address map viewer
+
+`tools/bizhawk-native-ring/rolling_master_map_model.py` validates and reads one
+`oasis.m12.rolling-master.v1` snapshot through SQLite `mode=ro`; an optional ROM
+file must match its stored SHA-256. The paired GUI groups observed instruction
+PCs and execution counts into 1 KiB, 32-byte, and byte cells, with exact
+instruction rows on selection. This dataset carries runtime observations and
+control edges, not the canonical emission partition or `SOURCE_OWNED`. Empty
+cells mean only that the selected runtime master has no PC there. The viewer
+cannot write the database or promote semantic, ownership, asset, or player
+claims. It remains separate from the OASROMP1 property-checkpoint viewer.
+
+The live Worker Control window continues to display bounded runtime snapshots.
+After sealing, `live_forward_postrun_window.py` adds a runtime-map tab that polls
+only the run-local rolling MASTER `current.json`, validates the generation path
+and SQLite hash, then reads and bins the snapshot on a daemon thread. A pointer
+change refreshes the overview; unchanged generations are not rehashed. Large
+post-run reports are parsed only when their file identity changes so the 4 Hz
+progress display stays responsive. The map is a 2D ROM-address execution heat
+overview and does not represent canonical ownership or a literal 3D scene.
+
+## Accepted Z80 driver image source proof
+
+`src/tools/thor_evidence/m14_z80_driver_image_contract.py` validates accepted
+M12-AUTO2 upload evidence together with W4 execution/sink corroboration and W5
+destination evidence for the exact ROM image `[0x062E38,0x064E38)`. Its contract
+`contracts/m14_z80_driver_image_upload_v1.json` defines
+`Z80_DRIVER_IMAGE_SOURCE` only in the separate `ACCEPTED_ARTIFACT` evidence
+layer. It does not extend runtime `OASROMP1` properties or claim that every
+uploaded byte executed. The verifier replays the exact ROM range, reconciles
+current artifact ledgers, and reports overlap and potential unique gain without
+importing a contribution. Focused tests are in
+`tests/m14_z80_driver_image_contract_test.py`; the ranked family inventory is
+`docs/reports/THOR_CONSUMER_FAMILY_BACKLOG_20260928.md` with a JSON companion.
+
+## Artifact-only Z80 driver contribution
+
+`src/tools/thor_evidence/m14_z80_driver_image_import.py` consumes the accepted
+upload proof and emits `thor.accepted-artifact.property-contribution.v2` for
+`Z80_DRIVER_IMAGE_SOURCE`. Its typed property namespace is separate from the
+16-bit runtime `OASROMP1` mask; no runtime bit is allocated and
+`Z80_EXECUTED_ENCODING` is explicitly excluded. The verifier reconstructs the
+prior proven-coverage bitmap from the runtime checkpoint and independently
+validated W5/GFX ledgers, then proves exact range replay, unique-byte delta,
+removal, and deterministic rebuild. The removable ledger and result receipt
+are under ignored `build/m14-consumer-evidence-import/`. Regression coverage is
+in `tests/m14_z80_driver_image_import_test.py`.
+# M14 sparse graphics VRAM causal artifact layer
+
+`m14_graphics_vram_causal_import.py` validates reproducible bounded
+`0x3820` transactions and records exact ROM input ranges under the distinct
+`GRAPHICS_VRAM_CAUSAL_SOURCE` accepted-artifact property. The evidence layer
+requires replayed decoder output and exact RAM-origin VRAM transfers, and stays
+separate from the runtime property ABI, `COMPRESSED_GRAPHICS_SOURCE`, and
+canonical ownership. SAT/plane use, palette dependency, and rendered pixels
+remain separate proof stages.
+# Diagnostic caller census receipt path (2026-09-30)
+
+The developer-only `graphics_caller_census` module serializes bounded
+`0x3820` decoder observations. The native graphics-transactions export wraps
+the existing transaction JSON and appends `caller_census` plus row/byte
+diagnostics; the existing managed and Lua string bindings remain unchanged.
+This is diagnostic discovery data only. It does not update ROM properties,
+accepted evidence, canonical authority, or `SOURCE_OWNED`. Caller function
+identity remains unknown unless independently proved; a return-address-derived
+call-site candidate is explicitly marked unconfirmed.
+
+## Proposed path-specific M68K native dispatch (design only)
+
+The verified gameplay helpers at `0x94A2`, `0x8EF8`, and `0x16A46` remain
+inactive. Their reversible dispatch proposal, including distinct ABI adapters,
+caller gates, ROM fallback, staged effects, and cloned-state reference mode, is
+documented in `docs/reports/THOR_M68K_HYBRID_DISPATCH_DESIGN_20261008.md`.
+This proposal is not production architecture and adds no runtime wiring. A
+future implementation needs a separate decision after exact transfer-source
+provenance and emulator continuation requirements are proven.
+
+M68K `0x8EF8` now has an opt-in developer-only HOOK_CPU route in
+`oasis_raw_record_live_dispatch`. It is enabled only by `--enable-8ef8`, pins
+the canonical ROM, and gates on exact consecutive direct-BSR source PCs plus the
+matched stack return. Failed gates continue the original ROM routine. The
+runner is not linked into the shipped game and does not activate production
+dispatch; cycle/prefetch equivalence and natural gameplay reachability remain
+unproven. See `reports/THOR_M68K_8EF8_OPT_IN_LIVE_ROUTE_20261009.md`.
+
+## Replay-native island attempt (2026-10-12)
+
+The deterministic gameplay-session runner can opt into a replay-only typed
+adapter for `0x9D70`, gated to caller `0x009144`, the pinned ROM, exact BSR.W,
+stack return, contract ID, and bounded RAM inputs. The flag defaults off and
+the route uses staged effects before redirecting through the original RTS.
+ROM-only replay passes; an enabled one-helper run diverges at frame 2655 after
+one native call. Therefore the route is diagnostic-only, no multi-helper
+replay-equivalence is established, and production dispatch remains inactive.
+See `reports/THOR_REPLAY_NATIVE_ISLAND_ATTEMPT_20261012.md`.

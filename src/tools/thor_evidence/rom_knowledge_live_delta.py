@@ -63,7 +63,8 @@ def import_archivist_session(session_path: Path, master_path: Path,
                 "hashes_before": before_hashes, "hashes_after": before_hashes,
                 "session_graph_hash": session_graph_hash, "session_source_sha256": session_sha}
 
-        occurrences = _runtime_occurrences(session_db, run_id)
+        occurrences = [] if not nodes and not edges else \
+            _runtime_occurrences(session_db, run_id)
 
         for row in store.db.execute("SELECT source_sha256 FROM source_artifact"):
             if len(str(row[0])) != 64:
@@ -208,7 +209,7 @@ def import_archivist_session(session_path: Path, master_path: Path,
         store.close()
         if session_graph is None:
             session_db.close()
-            master_db.close()
+        master_db.close()
 
 
 def _runtime_occurrences(session_db: sqlite3.Connection,

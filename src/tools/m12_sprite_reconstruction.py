@@ -27,6 +27,25 @@ class TileAttributes:
 
 
 @dataclass(frozen=True)
+class SpritePixel:
+    """One visible sprite pixel with its CRAM line and priority metadata."""
+
+    palette_line: int
+    pixel_index: int
+    priority: bool
+
+    def __post_init__(self) -> None:
+        if not 0 <= self.palette_line <= 3:
+            raise ReconstructionError("sprite palette line is outside 0..3")
+        if not 1 <= self.pixel_index <= 15:
+            raise ReconstructionError("visible sprite pixel is outside 1..15")
+
+    @property
+    def cram_index(self) -> int:
+        return self.palette_line * 16 + self.pixel_index
+
+
+@dataclass(frozen=True)
 class SpritePiece:
     x: int
     y: int
@@ -86,14 +105,16 @@ def active_sat_chain(entries: Sequence[SpritePiece], first: int = 0) -> list[Spr
 
 
 def decode_genesis_tile(data: bytes, offset: int = 0) -> tuple[tuple[int, ...], ...]:
-    """Decode one Genesis 4bpp tile in its four-plane row layout."""
+    """Decode one packed-nibble Genesis 4bpp tile."""
     if offset < 0 or offset + 32 > len(data):
         raise ReconstructionError("Genesis tile requires 32 bytes")
     rows: list[tuple[int, ...]] = []
     for row in range(8):
-        planes = data[offset + row * 4:offset + row * 4 + 4]
-        rows.append(tuple(sum(((planes[plane] >> (7 - pixel)) & 1) << plane
-                              for plane in range(4)) for pixel in range(8)))
+        packed = data[offset + row * 4:offset + row * 4 + 4]
+        pixels: list[int] = []
+        for value in packed:
+            pixels.extend(((value >> 4) & 0x0F, value & 0x0F))
+        rows.append(tuple(pixels))
     return tuple(rows)
 
 
@@ -103,36 +124,60 @@ def decode_genesis_palette(data: bytes, offset: int = 0) -> tuple[tuple[int, int
     result = []
     for index in range(16):
         word = _u16(data, offset + index * 2)
-        result.append(tuple(((word >> shift) & 7) * 255 // 7
+        result.append(tuple((((word >> shift) & 7) * 255 + 3) // 7
                             for shift in (1, 5, 9)))
     return tuple(result)
 
 
-def compose_piece(piece: SpritePiece, tiles: Mapping[int, tuple[tuple[int, ...], ...]]) -> list[list[int]]:
+def _validate_tile(tile: tuple[tuple[int, ...], ...]) -> None:
+    if len(tile) != 8 or any(len(row) != 8 for row in tile):
+        raise ReconstructionError("missing or malformed tile in piece")
+    if any(value < 0 or value > 15 for row in tile for value in row):
+        raise ReconstructionError("tile pixel is outside 4bpp range")
+
+
+def compose_piece(
+    piece: SpritePiece,
+    tiles: Mapping[int, tuple[tuple[int, ...], ...]],
+) -> list[list[SpritePixel | None]]:
+    """Compose one SAT piece using Genesis column-major pattern order."""
     if not 1 <= piece.width_cells <= 4 or not 1 <= piece.height_cells <= 4:
         raise ReconstructionError("sprite dimensions must be 1..4 cells")
-    pixels = [[0] * (piece.width_cells * 8) for _ in range(piece.height_cells * 8)]
+    pixels: list[list[SpritePixel | None]] = [
+        [None] * (piece.width_cells * 8) for _ in range(piece.height_cells * 8)
+    ]
     for cell_y in range(piece.height_cells):
         for cell_x in range(piece.width_cells):
             source_cell_x = piece.width_cells - 1 - cell_x if piece.tile.flip_h else cell_x
             source_cell_y = piece.height_cells - 1 - cell_y if piece.tile.flip_v else cell_y
-            tile_index = piece.tile.tile_index + source_cell_y * piece.width_cells + source_cell_x
+            tile_index = (piece.tile.tile_index
+                          + source_cell_x * piece.height_cells
+                          + source_cell_y)
             tile = tiles.get(tile_index)
-            if tile is None or len(tile) != 8 or any(len(row) != 8 for row in tile):
+            if tile is None:
                 raise ReconstructionError("missing or malformed tile in piece")
+            _validate_tile(tile)
             for y in range(8):
                 for x in range(8):
                     source_x = 7 - x if piece.tile.flip_h else x
                     source_y = 7 - y if piece.tile.flip_v else y
-                    pixels[cell_y * 8 + y][cell_x * 8 + x] = tile[source_y][source_x]
+                    pixel_index = tile[source_y][source_x]
+                    if pixel_index:
+                        pixels[cell_y * 8 + y][cell_x * 8 + x] = SpritePixel(
+                            piece.tile.palette, pixel_index, piece.tile.priority)
     return pixels
 
 
 def compose_frame(
     pieces: Iterable[SpritePiece],
     tiles: Mapping[int, tuple[tuple[int, ...], ...]],
-) -> list[list[int | None]]:
-    """Compose relative pieces into an indexed frame; index 0 is transparent."""
+) -> list[list[SpritePixel | None]]:
+    """Compose SAT-chain pieces; earlier sprites win visible overlaps.
+
+    ``pieces`` must be in active SAT-chain order. Pixel zero is transparent;
+    sprite-vs-background priority and scanline limits are intentionally not
+    modeled here.
+    """
     pieces = list(pieces)
     if not pieces:
         raise ReconstructionError("logical frame has no sprite pieces")
@@ -142,14 +187,27 @@ def compose_frame(
     bottom = max(piece.y + piece.height_cells * 8 for piece in pieces)
     if right <= left or bottom <= top or right - left > 512 or bottom - top > 512:
         raise ReconstructionError("logical frame bounds are unreasonable")
-    frame = [[None] * (right - left) for _ in range(bottom - top)]
+    frame: list[list[SpritePixel | None]] = [
+        [None] * (right - left) for _ in range(bottom - top)
+    ]
     for piece in pieces:
         pixels = compose_piece(piece, tiles)
         for y, row in enumerate(pixels):
             for x, value in enumerate(row):
-                if value:
-                    frame[piece.y - top + y][piece.x - left + x] = value
+                target_y = piece.y - top + y
+                target_x = piece.x - left + x
+                if value is not None and frame[target_y][target_x] is None:
+                    frame[target_y][target_x] = value
     return frame
+
+
+def reconstruction_metadata() -> dict[str, object]:
+    """Return explicit limits of this deterministic reconstruction model."""
+    return {
+        "sprite_vs_sprite_order": "earlier_sat_chain_sprite_wins",
+        "sprite_vs_background_priority_modelled": False,
+        "scanline_limit_modelled": False,
+    }
 
 
 def validate_provenance(snapshot: Mapping[str, object], rom: bytes) -> dict[str, object]:
