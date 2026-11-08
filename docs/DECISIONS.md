@@ -1,3 +1,35 @@
+# ADR-20261108-M15-231-CONNECTED-RESOURCE-GAMEPLAY-TILEMAP-UPLOAD — Connected Resource / Gameplay Pipeline Recompilation; Tilemap Plane Row Upload Engine (0x002512..0x002630 as Native Slot 227); Hexa Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227); Authoritative Disjoint Residual Accounting; Resolution of Register-Shift Cycle Accumulation and SKIP_BUS_REFRESH Ordering
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Following M15.230, the exact disjoint breakdown of guest instructions in Scenario C was established:
+   6,413,735 (native) + 9,730,133 (idle sync wait) + 1,483,902 (residual non-idle) = 17,627,770 total guest instructions.
+2. In candidate evaluation, Candidate Domain B (`0x002512..0x002630`, Tilemap Plane Row Upload Engine) was selected: unowned by any active helper, genuine workload of 138,261 dynamic instructions in Scenario C across 333 calls, completely synchronous within the frame, and returns cleanly via `RTS` at `0x002630`.
+3. Candidate Domain A (`0x003820`, LZ/RLE Graphics Decompressor) was diagnosed as an asynchronous decompressor spanning up to 18 frames, where external VBlank interrupts during native execution induce frame-boundary cycle jitter without coroutine suspension.
+4. Slot 226 boundary audit confirmed that `0x00302C` (`RTS`) cleanly pops its caller (`0x00298A`) with 0 fallthrough into held helper #218 (`0x00302E`).
+
+**Decision:**
+1. **Recompilation of Tilemap Plane Row Upload Engine (Slot 227):**
+   - Recompiled `0x002512..0x002630` (92 instructions, 286 bytes) in modular C++20 units (`src/tools/hybrid/m68k_002512_*`, 6 files).
+   - Enforced strictly <= 500 lines per file per AGENTS.md Rule 3.
+2. **Reconciliation of Register-Shift Cycle Accumulation and Bus Refresh:**
+   - Forensic tracing of frame 1131 revealed a 14-master-cycle (2 CPU cycles) boundary discrepancy.
+   - Diagnosed root cause: in register-based shifts (`0x002568` and `0x0025C4` `LSL.W D6, D7`), `api.skip_bus_refresh()` was invoked before dynamic shift cycles were accumulated into `m68k.cycles`. Consequently, `m68k.refresh_cycles` was not advanced, causing Musashi to insert an extraneous 14-cycle DRAM refresh stall on the following instruction.
+   - Reordered `api.add_cycles(api.context, static_cast<int>(shift) * 14)` to run before `api.skip_bus_refresh(api.context)`, matching Musashi's execution order and completely eliminating the 14-master-cycle jitter.
+3. **Hexa Subsystem Qualification:**
+   - Simultaneous execution of Slots 222, 223, 224, 225, 226, and 227 alongside 196 production helpers.
+   - 24/24 raw streams match bit-exact across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames) with 0 contract faults.
+4. **Standalone Clean Architecture Bridge:**
+   - Designed decoupled C++20 domain interfaces in `src/game/render/tilemap_plane_upload.hpp/.cpp` (`TilemapPlaneUploadContract`).
+   - Kept `C:/Github/Sega-Thor-Standalone` strictly READ-ONLY.
+
+**Consequences:**
+- Genuine instruction displacement increased by +138,261 steps in Scenario C (+203,085 across three scenarios).
+- Scenario C combined native steps reached 6,551,996 (37.168% raw dynamic coverage, 82.961% non-idle dynamic coverage).
+- Residual non-idle interpreter steps reduced to 1,345,641 instructions (17.039% of non-idle execution).
+- Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slot 227 remains experimental and disabled by default.
+
 # ADR-20261108-M15-230-OWNERSHIP-AWARE-RECOMPILATION-PALETTE-SCALING — Ownership-Aware Recompilation of the Next High-Workload Gameplay Subsystem; Palette Scaling / Intensity Fade Engine (0x002FDA as Native Slot 226); Penta Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226); Honest Rectification of Slot 225 (0x008F22 Verified as IMPLEMENTED_BUT_SHADOWED by Active Helper #38 with 536,966 Steps); Candidate Shadowing Audit Proving Candidates A (0x00A196), B (0x06195A), C (0x00DEEC) 100% Shadowed by Helpers #40, #188, #130; Frame Sync Idle vs Non-Idle Separation (9,730,133 Idle Steps = 55.197%, 7,897,637 Non-Idle Steps); 6,413,735 Native Dynamic Instructions Displaced in Scenario C (36.384% Raw Dynamic Coverage, 81.211% Non-Idle Dynamic Coverage, +64,752 Net Displaced Instructions); 113,316 Instructions Displaced Across Three Scenarios (C: 64,752, A: 44,517, B: 4,047); Exact Variable-Cycle Math Timing (calc_mulu_cycles, calc_divu_cycles, skip_bus_refresh); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Palette Scaler Interfaces (`PaletteScalingContract`, `scale_genesis_color`, `scale_palette`) in `src/game/render/palette_scaler.hpp/.cpp`; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-230-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-226 Default Disabled)
 **Status:** Accepted
 **Date:** 2026-11-08

@@ -3,7 +3,7 @@
 Build script for isolated Linux runner with M15.230 Combined Native Clusters:
 Slot 222 (0x02575C Entity Engine) + Slot 223 (0x00AD76 Sprite Engine Mode 0) +
 Slot 224 (0x00A9A0 Sprite Engine Mode 1) + Slot 225 (0x008F22 Entity Motion Engine) +
-Slot 226 (0x003820 Graphics Decompression Engine).
+Slot 226 (0x002FDA Palette Scaling Engine).
 Strictly <= 500 lines per AGENTS.md Rule 3.
 """
 

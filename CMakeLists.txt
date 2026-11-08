@@ -33,6 +33,7 @@ add_library(oasis_core
     src/game/render/framebuffer.cpp
     src/game/render/debug_overlay.cpp
     src/game/render/sat_shadow_records.cpp
+    src/game/render/tilemap_plane_upload.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
@@ -65,6 +66,9 @@ add_test(NAME oasis_sparse_word_store COMMAND oasis_sparse_word_store_test)
 add_executable(oasis_sat_shadow_records_test tests/sat_shadow_records_test.cpp)
 target_link_libraries(oasis_sat_shadow_records_test PRIVATE oasis_core)
 add_test(NAME oasis_sat_shadow_records COMMAND oasis_sat_shadow_records_test)
+add_executable(oasis_tilemap_plane_upload_test tests/tilemap_plane_upload_test.cpp)
+target_link_libraries(oasis_tilemap_plane_upload_test PRIVATE oasis_core)
+add_test(NAME oasis_tilemap_plane_upload COMMAND oasis_tilemap_plane_upload_test)
 add_executable(oasis_fixed_count_resource_reference tests/fixed_count_resource_reference.cpp)
 target_link_libraries(oasis_fixed_count_resource_reference PRIVATE oasis_core)
 include(tools/bizhawk-native-ring/live_forward.cmake)

@@ -4161,3 +4161,16 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `tools/run_m15_230_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.230 (M15.230).
 - `tools/generate_m15_230_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.230 (M15.230).
 - `data/thor-evidence/combined-clusters-qualification-m15-230-20261108.json` — Machine-readable evidence receipt for Penta Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226), displacing 6,413,735 native instructions in Scenario C (36.384% raw, 81.211% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.230).
+- `src/game/render/tilemap_plane_upload.hpp/.cpp` — Standalone pure C++20 domain interfaces (`TilemapPlaneUploadContract`, `calculate_plane_row_params`, `simulate_plane_row_upload`) for VDP plane row VRAM updates (M15.231).
+- `tests/tilemap_plane_upload_test.cpp` — Standalone unit test suite for tilemap plane row upload contract and parameter calculations (M15.231).
+- `src/tools/hybrid/m68k_002512_step_ops.hpp/.cpp` — Core M68000 ALU, cycle-exact timing, CCR condition codes, and dynamic shift timing for `0x002512` (M15.231).
+- `src/tools/hybrid/m68k_002512_calc_step.hpp/.cpp` — Direction branch and horizontal plane upload address calculation (`0x002512..0x002568`, `0x00257E..0x0025C4`) (M15.231).
+- `src/tools/hybrid/m68k_002512_calc_down_step.hpp/.cpp` — Downward plane upload calculation, table indexing, VDP address setup (`0x00256A..0x00257C`, `0x0025C6..0x0025E6`) (M15.231).
+- `src/tools/hybrid/m68k_002512_upload_step.hpp/.cpp` — Unrolled 40-word tilemap buffer transfer loop into VDP data port and RTS cleanup (`0x0025E8..0x002630`) (M15.231).
+- `src/tools/hybrid/m68k_002512_metrics.hpp/.cpp` — Dynamic telemetry and entry/step counters for `0x002512` cluster (M15.231).
+- `src/tools/hybrid/m68k_002512_instruction_step.hpp/.cpp` — Modular instruction router and boundary stepper for `0x002512..0x002630` Tilemap Plane Row Upload Engine (M15.231).
+- `tests/m68k_002512_cluster_test.cpp` — Comprehensive unit test suite for `0x002512` cluster verifying all 4 directional paths and 40-word unrolled transfers (M15.231).
+- `tools/build_m15_231_runner.py` — Linux gameplay runner build orchestrator for M15.231 hexa-cluster runtime (Slots 222 + 223 + 224 + 225 + 226 + 227) (M15.231).
+- `tools/run_m15_231_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.231 (M15.231).
+- `tools/generate_002512_exact_step.py` — Tooling script generating exact cycle and flag accurate step dispatchers from ROM opcode map (M15.231).
+- `data/thor-evidence/combined-clusters-qualification-m15-231-20261108.json` — Machine-readable evidence receipt for Hexa Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227), displacing 6,551,996 native instructions in Scenario C (37.168% raw, 82.961% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.231).

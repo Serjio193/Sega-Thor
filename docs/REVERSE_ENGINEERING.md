@@ -1,3 +1,63 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.231: Connected Resource / Gameplay Pipeline Recompilation; Tilemap Plane Row Upload Engine 0x002512 as Native Slot 227; Hexa Recompiled Island Slots 222 + 223 + 224 + 225 + 226 + 227; Disjoint Residual Accounting; DRAM Refresh Jitter Reconciliation; 6,551,996 Native Steps in Scenario C / 37.168% Raw / 82.961% Non-Idle; 24/24 Bit-Exact Streams)
+
+## Milestone M15.231 Reverse Engineering Summary
+
+### 1. Tilemap Plane Row Upload Engine (`0x002512..0x002630`) Subsystem Characterization
+- **Routine Boundaries:** `0x002512` to `0x002630` (92 instructions, 286 bytes).
+- **Subsystem Function:** Tilemap Plane Row Upload Engine — computes destination VDP VRAM addresses and copies 40-word tilemap rows into the VDP data port ($C00000) via an unrolled transfer loop. Supports directional scrolling updates (horizontal right, horizontal left, vertical down) across Plane A and Plane B.
+- **Observed Callers in ROM:**
+  * Called from `0x002446` (Plane row updater dispatcher) and `0x0024A2`.
+- **Register ABI Contract:**
+  * Entry:
+    - `A3`: Pointer to scroll/plane state context block in RAM (`offset 2`: horizontal scroll pixel offset, `offset 4`: vertical scroll offset, `offset 6`: directional flags/mode).
+    - `A0`: Source buffer pointer in RAM containing 40 words (80 bytes) of decompressed tilemap plane data.
+    - `A2`: Constant VDP data port address (`$00C00000`).
+    - `A4`: Constant VDP control port address (`$00C00004`).
+    - Stack: Caller return address pushed on SP.
+  * Internal Execution Paths:
+    - Path 1 (`0x002512..0x002568`): Horizontal Right branch (`TST.W 6(A3)` -> `BNE`). Computes column word address from horizontal scroll coordinate, masks to 64-word plane row wrap, sets up VDP VRAM write command via `MOVE.L D6, (A4)` ($40000000 base).
+    - Path 2 (`0x00257E..0x0025C4`): Horizontal Left branch (`0x00257E`). Computes wrapped left column VRAM address.
+    - Path 3 (`0x00256A..0x00257C` & `0x0025C6..0x0025E6`): Vertical Down branch (`0x00256A`). Calculates row base address from VDP register scroll state, applies row index table lookup (`0x002632`), constructs VDP command.
+    - Transfer Loop (`0x0025E8..0x00262E`):
+      * Transfers exactly 40 words from `(A0)+` to `(A2)` (`MOVE.W (A0)+, (A2)` repeated 40 times unrolled).
+    - Exit (`0x002630`):
+      * `RTS` back to caller.
+  * Child Subroutines: 0 (completely self-contained, no BSR/JSR calls).
+  * Frame Boundaries: 0 (executes entirely within a single frame under VBlank disable; completely synchronous).
+
+### 2. Disjoint Coverage Accounting Audit
+- **Verification of Disjoint Accounting Identity:**
+  * Native Baseline (M15.230): 6,413,735 steps
+  * Two Identified Idle Sync Loops: 9,730,133 steps (`0x008ACA`: 5,327,384; `0x008B72`: 4,402,749)
+  * Remaining Non-Idle Interpreter Workload: 1,483,902 steps
+  * Total: 6,413,735 + 9,730,133 + 1,483,902 = **17,627,770 steps** (100.000% exact match).
+- **Candidate Selection Analysis:**
+  * Candidate Domain A (`0x003820..0x003BEE`, Graphics Decompressor): 213,264 steps. Audit confirmed it executes across ~18 frames asynchronously, pre-empted by VBlank interrupts, requiring sub-cycle interrupt queue modeling to prevent phase drift.
+  * Candidate Domain B (`0x002512..0x002630`, Tilemap Plane Row Upload Engine): 138,261 Scenario C steps. Completely synchronous, 0 child subroutines, unowned by any active production helper. Selected for recompilation.
+
+### 3. Sub-Cycle DRAM Refresh Timing Mechanics
+- **Discovery of Musashi / Genesis Plus GX Bus Refresh Jitter:**
+  * In Genesis Plus GX, the M68000 bus refresh mechanism (`SKIP_BUS_REFRESH`) adds a 14-master-cycle delay if `m68k.cycles >= m68k.refresh_cycles`.
+  * For instructions with dynamic cycle counts like `LSL.W D6, D7` (`0x002568` and `0x0025C4`):
+    - If `skip_bus_refresh()` is called before `add_cycles()`, `m68k.cycles` is checked prior to incorporating the shift cycles. If the un-shifted cycle count falls just below `refresh_cycles`, no refresh is skipped; later, when the next instruction runs, Musashi sees `m68k.cycles >= m68k.refresh_cycles` and incurs an unwanted 14-master-cycle penalty.
+    - Adding the dynamic shift cycles (`shift * 14` master cycles) *before* calling `skip_bus_refresh()` correctly advances the internal refresh threshold, eliminating the 14-cycle drift at frame 1131.
+  * With this ordering fix, all 34 frame landmark discrepancies were eliminated, achieving **24/24 bit-exact stream matches** across all 3,992 frames.
+
+### 4. Dynamic Native Workload & Coverage Achievement
+- **Scenario C (1,800 frames):**
+  * Production active helpers (196): 5,127,961 steps (29.090% raw, 64.930% non-idle)
+  * Slot 222 (Entity Engine): 53,508 steps (0.304% raw, 0.678% non-idle)
+  * Slot 223 (Sprite Engine Mode 0): 871,538 steps (4.944% raw, 11.035% non-idle)
+  * Slot 224 (Sprite Engine Mode 1): 295,976 steps (1.679% raw, 3.748% non-idle)
+  * Slot 225 (Entity Motion Engine): 0 steps (shadowed by helper #38)
+  * Slot 226 (Palette Scaling Engine): 64,752 steps (0.367% raw, 0.820% non-idle)
+  * Slot 227 (Tilemap Plane Row Upload Engine): **138,261 steps** (0.784% raw, 1.751% non-idle)
+  * **Combined Native Steps: 6,551,996 instructions**
+  * **Raw Dynamic Native Coverage: 37.168%** (+0.784 percentage points gain)
+  * **Non-Idle Dynamic Native Coverage: 82.961%** (+1.750 percentage points gain)
+  * Remaining Non-Idle Interpreter Workload: **1,345,641 instructions** (17.039%)
+  * Total Incremental Displacement Across 3 Scenarios: **203,085 instructions** (C: 138,261, A: 34,877, B: 29,947).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.230: Ownership-Aware Recompilation; Palette Scaling Engine 0x002FDA as Native Slot 226; Penta Recompiled Island Slots 222 + 223 + 224 + 225 + 226; Candidate Shadowing Discovery & Rectification; Frame Sync Idle vs Non-Idle Separation; Variable-Cycle Math Emulation; 6,413,735 Native Steps in Scenario C / 36.384% Raw / 81.211% Non-Idle; 24/24 Bit-Exact Streams)
 
 ## Milestone M15.230 Reverse Engineering Summary

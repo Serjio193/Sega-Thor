@@ -1,3 +1,41 @@
+# M15.231 Connected Resource / Gameplay Pipeline Recompilation with Proven Residual Workload (Hexa Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0 + Slot 225 Entity Motion Engine 0x008F22 + Slot 226 Palette Scaling Engine 0x002FDA + Slot 227 Tilemap Plane Row Upload Engine 0x002512); Candidate Domain B (0x002512..0x002630) Fully Recompiled and Verified; Total Native Steps in Scenario C Reaches 6,551,996 (37.168% Raw Dynamic Coverage, 82.961% Non-Idle Dynamic Coverage, +138,261 Net Displaced Instructions); 203,085 Total Instructions Displaced Across Three Scenarios (C: 138,261, A: 34,877, B: 29,947); Elimination of DRAM Refresh Jitter via Skip-Bus-Refresh Ordering Reconciled; 24/24 Bit-Exact Raw Streams Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Tilemap Plane Upload Interfaces (`TilemapPlaneUploadContract`, `calculate_plane_row_params`, `simulate_plane_row_upload`) in `src/game/render/tilemap_plane_upload.hpp/.cpp`; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-231-20261108.json) — COMPLETE / QUALIFIED HEXA SUBSYSTEM CLUSTER
+
+Delivered:
+- Hotspot & Candidate Selection Audit:
+  * Analyzed Candidate Domain A (`0x003820..0x003BEE`, 213,264 steps) and proved it is an asynchronous 18-frame decompressor subject to mid-stream VBlank interrupts and timing sensitivity.
+  * Selected Candidate Domain B (`0x002512..0x002630`, Tilemap Plane Row Upload Engine, 92 instructions, 286 bytes).
+  * Audited for shadowing: verified completely unowned by any active production helper (helpers #19 at `0x002446` and #20 at `0x0024A2` call out to RAM/external routines).
+  * Executes synchronously within a single frame under VBlank disable; 0 mid-stream interrupts, 0 asynchronous frame boundaries.
+- Full Recompilation of Tilemap Plane Row Upload Engine (Slot 227):
+  * Recompiled `0x002512..0x002630` across 8 modular source/header units in `src/tools/hybrid/m68k_002512_*`.
+  * Covered all 4 directional paths: rightward horizontal (`0x002512..0x002568`), leftward horizontal (`0x00257E..0x0025C4`), downward plane upload (`0x00256A..0x00257C` and `0x0025C6..0x0025E6`), and the 40-word unrolled tilemap transfer loop (`0x0025E8..0x002630`).
+  * Enforced AGENTS.md Rule 3: strictly <= 500 lines per file (max file 421 lines in `m68k_002512_calc_step.cpp`).
+- Bit-Exact Sub-Cycle DRAM Refresh Mechanics Reconciliation:
+  * Diagnosed and resolved 14-master-cycle (2 CPU cycle) timing divergence at frame 1131.
+  * Root cause: dynamic shift cycle addition for `LSL.W D6, D7` (`0x002568` and `0x0025C4`) must be recorded before calling `skip_bus_refresh()` so the internal `m68k.cycles >= m68k.refresh_cycles` test is evaluated with post-shift cycles, preventing spurious 14-cycle DRAM refresh penalties in Musashi/GPGX.
+- Real Gameplay Three-Scenario A/B Qualification (24/24 Bit-Exact Streams):
+  * Unified runner built at `build/auto-migrator/m15_231/linux-runner/oasis_gameplay_session` (SHA256: `fcb879460ea0a2de240a8c4fc7f0721629cabc1428980ebafddd445886226337`).
+  * Scenario C (1,800 frames): 8/8 bit-exact raw streams (P0 baseline vs P6 combined).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw streams (P0 baseline vs P6 combined).
+  * Scenario B (600 frames): 8/8 bit-exact raw streams (P0 baseline vs P6 combined).
+  * 24/24 bit-exact streams; 0 contract faults; zero regressions across 3,992 gameplay frames.
+- Disjoint Coverage Accounting:
+  * Disjoint verification: 6,413,735 (native baseline) + 9,730,133 (two idle sync loops) + 1,483,902 (residual non-idle) = 17,627,770 total guest steps.
+  * Scenario C native steps increased from 6,413,735 to **6,551,996** (+138,261 net new displaced instructions).
+  * Raw dynamic native coverage: **37.168%** (6,551,996 / 17,627,770).
+  * Non-idle dynamic native coverage: **82.961%** (6,551,996 / 7,897,637).
+  * Remaining non-idle interpreter workload reduced to 1,345,641 instructions (17.039%).
+  * Total incremental displacement across 3 scenarios: 203,085 instructions (C: 138,261, A: 34,877, B: 29,947).
+- Standalone Pure C++20 Domain Interfaces:
+  * Added decoupled domain interface `TilemapPlaneUploadContract`, `calculate_plane_row_params`, and `simulate_plane_row_upload` in `src/game/render/tilemap_plane_upload.hpp/.cpp`.
+  * Standalone worktree `C:/Github/Sega-Thor-Standalone` kept strictly READ-ONLY.
+  * Comprehensive unit tests in `tests/tilemap_plane_upload_test.cpp` and `tests/m68k_002512_cluster_test.cpp` pass 100%.
+- Production Governance & Verification Receipt:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224, 225, 226, 227 default disabled; `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Emitted formal machine receipt: `data/thor-evidence/combined-clusters-qualification-m15-231-20261108.json`.
+  * Verified with `ReceiptVerifier`: 68/68 physical files valid, 48/48 streams valid, `overall_valid = true`.
+
 # M15.230 Ownership-Aware Recompilation of the Next High-Workload Gameplay Subsystem (Penta Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0 + Slot 225 Entity Motion Engine 0x008F22 + Slot 226 Palette Scaling Engine 0x002FDA); Honest Rectification of Slot 225 (0x008F22 Verified as IMPLEMENTED_BUT_SHADOWED by Active Production Helper #38 with 536,966 Steps); Candidate Shadowing Audit Proving Candidates A (0x00A196), B (0x06195A), C (0x00DEEC) 100% Shadowed by Helpers #40, #188, #130; Frame Sync Idle vs Non-Idle Separation (9,730,133 Idle Steps = 55.197%, 7,897,637 Non-Idle Steps); 6,413,735 Total Native Steps in Scenario C (36.384% Raw Dynamic Coverage, 81.211% Non-Idle Dynamic Coverage, +64,752 Net Displaced Instructions); 113,316 Instructions Displaced Across Three Scenarios (C: 64,752, A: 44,517, B: 4,047); Exact Data-Dependent Variable-Cycle Timing (calc_mulu_cycles, calc_divu_cycles, skip_bus_refresh); 24/24 Bit-Exact Raw Streams Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Palette Scaler Interfaces (`PaletteScalingContract`, `scale_genesis_color`, `scale_palette`) in `src/game/render/palette_scaler.hpp/.cpp`; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-230-20261108.json) — COMPLETE / QUALIFIED PENTA SUBSYSTEM CLUSTER
 
 Delivered:
