@@ -4130,3 +4130,34 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `tools/run_m15_228_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.228 (M15.228).
 - `tools/generate_m15_228_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.228 (M15.228).
 - `data/thor-evidence/combined-clusters-qualification-m15-228-20261108.json` — Machine-readable evidence receipt for Sprite Dispatch Mode 1 (Slot 224) + Mode 0 (Slot 223) + Entity Engine (Slot 222), displacing 6,348,983 native instructions in Scenario C (36.017%) and 1,128,499 Mode 1 steps across 3 scenarios with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.228).
+- `src/tools/hybrid/m68k_008f22_step_ops.hpp/.cpp` — Core M68000 ALU, cycle-exact timing, CCR condition codes, and BSR stack frame management for `0x008F22` (M15.229).
+- `src/tools/hybrid/m68k_008f22_instruction_step.hpp/.cpp` — Main instruction router, ROM signature verification (`tst.w 42(a6)`), and execution boundary tracking for `0x008F22` (M15.229).
+- `src/tools/hybrid/m68k_008f22_ingress_step.hpp/.cpp` — Ingress checks, fast-path paused entity skip, status word evaluation (`0x008F22..0x008F8E`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_anim_step.hpp/.cpp` — Animation timer advance, direction vector lookup, frame indexing (`0x008F90..0x00904E`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_xright_step.hpp/.cpp` — Positive horizontal motion vector accumulation and bounds checking (`0x009050..0x0090AA`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_xloop_step.hpp/.cpp` — Rightward velocity stepping and obstacle collision checks (`0x0090AC..0x00911E`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_xleft_step.hpp/.cpp` — Negative horizontal motion vector accumulation (`0x009120..0x00915A`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_xleftloop_step.hpp/.cpp` — Leftward velocity stepping and terrain wall collision (`0x00915C..0x0091F4`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_ydown_step.hpp/.cpp` — Downward vertical motion vector accumulation (`0x0091F6..0x00923C`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_ydownloop_step.hpp/.cpp` — Downward velocity stepping and slope calculation (`0x00923E..0x0092AE`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_yup_step.hpp/.cpp` — Upward vertical motion vector accumulation and trajectory setup (`0x0092B0..0x0092FC`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_yuploop_step.hpp/.cpp` — Upward velocity stepping and ceiling collision (`0x0092FE..0x00938C`) (M15.229).
+- `src/tools/hybrid/m68k_008f22_metrics.hpp/.cpp` — Telemetry and dynamic counters for `0x008F22` cluster (M15.229).
+- `tests/m68k_008f22_cluster_test.cpp` — Comprehensive unit test suite for `0x008F22` cluster verifying disabled paths, paused exits, and motion transitions (M15.229).
+- `tests/m68k_008f22_instruction_step_test.cpp` — Deterministic unit tests for `0x008F22` instruction router and ROM validation (M15.229).
+- `tools/build_m15_229_runner.py` — Linux gameplay runner build orchestrator for M15.229 quad-cluster runtime (Slots 222 + 223 + 224 + 225) (M15.229).
+- `tools/run_m15_229_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.229 (M15.229).
+- `tools/build_global_hotspots_m15_229.py` — 14-column Top 20 unmigrated hotspots profiler for Scenario C (M15.229).
+- `build/scenario_c_top20_hotspots_m15_229.md` — Generated markdown table for Top 20 unmigrated hotspots with 14 detailed columns (M15.229).
+- `build/scenario_c_top20_hotspots_m15_229.json` — Machine-readable JSON profiling database for Top 20 unmigrated hotspots (M15.229).
+- `tools/generate_m15_229_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.229 (M15.229).
+- `data/thor-evidence/combined-clusters-qualification-m15-229-20261108.json` — Machine-readable evidence receipt for Quad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225), displacing 6,348,983 native instructions in Scenario C (36.017%) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.229).
+- `src/tools/hybrid/m68k_002fda_metrics.hpp/.cpp` — Telemetry and dynamic counters for `0x002FDA` Palette Scaling Engine (M15.230).
+- `src/tools/hybrid/m68k_002fda_step_ops.hpp/.cpp` — Core M68000 ALU, cycle-exact timing, CCR condition codes, data-dependent `calc_mulu_cycles` and `calc_divu_cycles` formulas, and RTS return management for `0x002FDA` (M15.230).
+- `src/tools/hybrid/m68k_002fda_instruction_step.hpp/.cpp` — Instruction stepper and loop router for `0x002FDA..0x00302C` palette color scaling engine (M15.230).
+- `src/game/render/palette_scaler.hpp/.cpp` — Standalone pure C++20 domain interfaces (`PaletteScalingContract`, `scale_genesis_color`, `scale_palette`) (M15.230).
+- `tests/m68k_002fda_cluster_test.cpp` — Comprehensive unit test suite for `0x002FDA` palette scaling engine across multiple intensity factors (0, 3, 7) (M15.230).
+- `tools/build_m15_230_runner.py` — Linux gameplay runner build orchestrator for M15.230 penta-cluster runtime (Slots 222 + 223 + 224 + 225 + 226) (M15.230).
+- `tools/run_m15_230_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.230 (M15.230).
+- `tools/generate_m15_230_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.230 (M15.230).
+- `data/thor-evidence/combined-clusters-qualification-m15-230-20261108.json` — Machine-readable evidence receipt for Penta Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226), displacing 6,413,735 native instructions in Scenario C (36.384% raw, 81.211% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.230).

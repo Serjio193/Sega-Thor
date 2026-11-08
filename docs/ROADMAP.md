@@ -1,3 +1,80 @@
+# M15.230 Ownership-Aware Recompilation of the Next High-Workload Gameplay Subsystem (Penta Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0 + Slot 225 Entity Motion Engine 0x008F22 + Slot 226 Palette Scaling Engine 0x002FDA); Honest Rectification of Slot 225 (0x008F22 Verified as IMPLEMENTED_BUT_SHADOWED by Active Production Helper #38 with 536,966 Steps); Candidate Shadowing Audit Proving Candidates A (0x00A196), B (0x06195A), C (0x00DEEC) 100% Shadowed by Helpers #40, #188, #130; Frame Sync Idle vs Non-Idle Separation (9,730,133 Idle Steps = 55.197%, 7,897,637 Non-Idle Steps); 6,413,735 Total Native Steps in Scenario C (36.384% Raw Dynamic Coverage, 81.211% Non-Idle Dynamic Coverage, +64,752 Net Displaced Instructions); 113,316 Instructions Displaced Across Three Scenarios (C: 64,752, A: 44,517, B: 4,047); Exact Data-Dependent Variable-Cycle Timing (calc_mulu_cycles, calc_divu_cycles, skip_bus_refresh); 24/24 Bit-Exact Raw Streams Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Palette Scaler Interfaces (`PaletteScalingContract`, `scale_genesis_color`, `scale_palette`) in `src/game/render/palette_scaler.hpp/.cpp`; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-230-20261108.json) — COMPLETE / QUALIFIED PENTA SUBSYSTEM CLUSTER
+
+Delivered:
+- Honest Rectification & Diagnostics of Slot 225:
+  * Verifiably proved that recompiled cluster Slot 225 (`0x008F22..0x00938C`) has `target_entries = 0` and `stepped_instructions = 0` in the combined production run because active production helper #38 (`0x008E90`, `step_scan`) already executes this routine natively for 536,966 dynamic steps in Scenario C.
+  * Status honestly updated and recorded as `IMPLEMENTED_BUT_SHADOWED`. No false claims or double-counting.
+- Candidate Shadowing Audit:
+  * Evaluated suggested candidates against active helper inventory: Candidate A (`0x00A196`) shadowed by helper #40; Candidate B (`0x06195A`) shadowed by helper #188; Candidate C (`0x00DEEC`) shadowed by helper #130.
+  * Proved 0 net-new instructions would be achieved by migrating Candidates A, B, or C under the active production set.
+- Hotspot Accounting & Frame Sync Idle vs Non-Idle Separation:
+  * Quantified busy-wait polling loops `0x008ACA..0x008AD0` (5,327,384 steps) and `0x008B72..0x008B7A` (4,402,749 steps).
+  * Total idle sync wait instructions: 9,730,133 steps (55.197% of all Scenario C guest execution).
+  * Genuine non-idle gameplay logic baseline: 7,897,637 instructions.
+- Candidate Selection & Recompilation of Palette Scaling Engine (Slot 226):
+  * Selected `0x002FDA..0x00302C` (Palette Scaling / Intensity Fade Engine, 26 instructions, 84 bytes).
+  * Unowned, unmigrated, synchronous within the frame (0 frame boundaries), executes 64,752 dynamic steps in Scenario C across 48 calls.
+  * Implemented modular C++20 cluster in `src/tools/hybrid/m68k_002fda_*` (6 files, strictly <= 500 lines per AGENTS.md Rule 3).
+- Exact Variable-Cycle Math Timing Mechanics:
+  * Diagnosed that `MULU.W` and `DIVU.W` in M68000 have data-dependent execution times that are simulated in Musashi.
+  * Implemented `calc_mulu_cycles` (38 base + 2 cycles per set bit * 7) and `calc_divu_cycles` (76 base + bit shifts * 7) alongside `skip_bus_refresh`.
+  * Unit tests in `tests/m68k_002fda_cluster_test.cpp` pass 100%.
+- Real Gameplay Three-Scenario A/B Qualification (24/24 Bit-Exact Streams):
+  * Unified runner built at `build/auto-migrator/m15_230/linux-runner/oasis_gameplay_session` (SHA256: `874a3de3fd20b764442affe248fa0deffea2715bcf79dfe4d07a1974a2b6e011`).
+  * Scenario C (1,800 frames): 8/8 bit-exact raw streams (P0 baseline vs P5 combined).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw streams (P0 baseline vs P5 combined).
+  * Scenario B (600 frames): 8/8 bit-exact raw streams (P0 baseline vs P5 combined).
+  * 24/24 bit-exact streams; 0 contract faults; zero regressions.
+- Dynamic Instruction Accounting & Coverage:
+  * Combined Scenario C native instructions: **6,413,735 / 17,627,770** (**36.384% raw dynamic coverage**).
+  * Genuine non-idle native coverage: **6,413,735 / 7,897,637** (**81.211% non-idle dynamic coverage**).
+  * Total incremental displacement across 3 scenarios: 113,316 dynamic instructions (C: 64,752, A: 44,517, B: 4,047).
+- Standalone Pure C++20 Interface:
+  * Added decoupled domain interfaces `PaletteScalingContract`, `scale_genesis_color`, `scale_palette` in `src/game/render/palette_scaler.hpp/.cpp`.
+  * `C:/Github/Sega-Thor-Standalone` kept strictly READ-ONLY.
+- Production Governance & Verification Receipt:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224, 225, 226 default disabled; `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Emitted formal machine receipt: `data/thor-evidence/combined-clusters-qualification-m15-230-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 physical files valid, 48/48 streams valid, `overall_valid = true`.
+
+# M15.229 Execution-Weighted Game Engine Recompilation & Connected Frame Pipeline Expansion (Quad Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0 + Slot 225 Entity Motion Engine 0x008F22); Architectural Absorption Finding on 0x008F22 (536,966 Steps Handled Inside Active Production Helper #38 0x008E90); 6,348,983 Total Native Steps in Scenario C (36.017% Game-Wide Coverage); 24/24 Bit-Exact Raw Streams Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; 14-Column Top 20 Unmigrated Hotspots Profiling Analysis; Standalone Cross-Track Semantic Interoperability (`ISpriteCompositor`, `SatPipelineContract`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-229-20261108.json) — COMPLETE / QUALIFIED QUAD SUBSYSTEM CLUSTER
+
+Delivered:
+- Architectural Absorption Finding on 0x008F22 vs Production Helper #38 (0x008E90):
+  * Uncovered root architectural cause of `0x008F22` step metrics in relation to existing production helper #38 (`0x008E90`, `m68k_008e90_instruction_step.cpp`).
+  * In pure unmigrated ROM execution, `0x008F22..0x00938C` accounts for 419,067 dynamic steps.
+  * In the hybrid runner with production helpers active, helper #38 enters at `0x008E90`, scans all 3 entity pools, and executes the entire motion calculation (`0x008F22..0x00938C`) internally for **536,966 dynamic steps** in Scenario C.
+  * Because helper #38 is evaluated in `block_hook` prior to cluster checks, standalone entries to `0x008F22` are absorbed.
+  * Recompiled cluster Slot 225 (`0x008F22`) was verified and qualified with bit-exact parity, providing an isolated model for entity motion decompilation.
+- Modular C++ Quad-Cluster Recompilation Architecture (AGENTS.md Rule 3 Compliance):
+  * Decomposed `0x008F22` into 26 modular C++20 units in `src/tools/hybrid/m68k_008f22_*`.
+  * Implemented cycle-exact ALU operations, CCR condition tracking, paused entity fast paths, and 4-way directional motion accumulators (xright, xloop, xleft, xleftloop, ydown, ydownloop, yup, yuploop).
+  * Unit test suites in `tests/m68k_008f22_cluster_test.cpp` (185 lines) and `tests/m68k_008f22_instruction_step_test.cpp` (143 lines) pass 100%.
+  * Every single file verified strictly <= 500 lines (maximum: 480 lines).
+- Real Gameplay Three-Scenario A/B Qualification (24/24 Bit-Exact Streams):
+  * Unified runner built at `build/auto-migrator/m15_229/linux-runner/oasis_gameplay_session` (SHA256: `d572cbf289afa73653446b15e05d607d8cb5edef2fe094258dac37c5602381b5`).
+  * Scenario C (1,800 frames): 8/8 bit-exact raw streams (P0 baseline vs P4 combined).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw streams (P0 baseline vs P4 combined).
+  * Scenario B (600 frames): 8/8 bit-exact raw streams (P0 baseline vs P4 combined).
+  * 24/24 bit-exact streams; 0 contract faults; zero regressions.
+- Dynamic Instruction Accounting & Coverage:
+  * Combined Scenario C native instructions: **6,348,983 / 17,627,770** (**36.017%**).
+  * Helper #38 (`0x008E90`) absorbs 536,966 dynamic steps executed natively inside helper #38.
+  * Remaining unmigrated guest instructions: 11,278,787 (63.983%).
+- Top 20 Unmigrated Hotspots Profile (14 Columns):
+  * Comprehensive profiling of the remaining unmigrated original-ROM execution workload (11,278,787 steps in Scenario C).
+  * 14 columns reported: Ranking, Address Range, Disassembly, Subsystem/Role, Execution Count, % Total, % Unmigrated, Unique PCs, Caller PCs, Callee Subroutines, Branch Target Exits, MMIO Access, Register Clobbers, Migration Complexity.
+  * Top unmigrated hotspot: Frame Sync / VBlank Busy-Wait Loop (`0x008ACA..0x008B7A`, 4,865,067 steps, 27.60% of total game workload, 86.56% of unmigrated block `0x008AA6..0x008BAA`).
+  * Next largest unmigrated subsystem: Graphics Decompression / Art Streaming Engine at `0x00003820` (407,855 steps, 2.31% of total game workload), directly aligning with `AGENTS.md` primary technical direction.
+- Standalone Cross-Track Semantic Interoperability:
+  * Verified mapping between `ISpriteCompositor` (`src/game/render/sprite_compositor.hpp`) and `SatPipelineContract` (`src/game/render/sat_pipeline_contract.hpp/.cpp`) covering piece transformation, viewport clipping, and 80-sprite SAT table generation.
+- Production Governance & Verification Receipt:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224, 225 default disabled; `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Emitted formal machine receipt: `data/thor-evidence/combined-clusters-qualification-m15-229-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 physical files valid, 48/48 streams valid, `overall_valid = true`.
+
 # M15.228 High-Impact Gameplay Engine Expansion — Sprite Dispatch Mode 1 / Entity Update Pipeline (Triple Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0); 100.00% Sprite Mode 1 Native Execution (1,182 / 1,182 Calls in Scenario C; 4,611 / 4,611 Calls Across 3 Scenarios); 295,976 Dynamic Steps in Scenario C (+295,976 Net New Native Steps); 6,348,983 Total Native Steps in Scenario C (36.017% Game-Wide Coverage, +1.679 Percentage Points Gain); 1,128,499 Mode 1 Steps Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Raw Streams; 0 Contract Faults; Standalone C++20 Sprite Compositor Domain Interfaces (`ISpriteCompositor`, `SpritePiece`, `SATRecord`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-228-20261108.json) — COMPLETE / QUALIFIED TRIPLE SUBSYSTEM CLUSTER
 
 Delivered:

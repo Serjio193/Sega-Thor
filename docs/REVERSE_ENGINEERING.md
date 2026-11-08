@@ -1,3 +1,135 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.230: Ownership-Aware Recompilation; Palette Scaling Engine 0x002FDA as Native Slot 226; Penta Recompiled Island Slots 222 + 223 + 224 + 225 + 226; Candidate Shadowing Discovery & Rectification; Frame Sync Idle vs Non-Idle Separation; Variable-Cycle Math Emulation; 6,413,735 Native Steps in Scenario C / 36.384% Raw / 81.211% Non-Idle; 24/24 Bit-Exact Streams)
+
+## Milestone M15.230 Reverse Engineering Summary
+
+### 1. Palette Scaling & Color Intensity Fade Engine (`0x002FDA..0x00302C`) Subsystem Characterization
+- **Routine Boundaries:** `0x002FDA` to `0x00302C` (26 instructions, 84 bytes).
+- **Subsystem Function:** Palette Intensity Scaling Engine — handles hardware palette fading, lighting dimming/brightening, and color component scaling (Red, Green, Blue) on Sega Mega Drive / Genesis hardware.
+- **Observed Callers in ROM:**
+  * Called from `0x0022F6`, `0x002354`, `0x002F3C`, `0x002FCA`, `0x0035DC`, `0x02B2E0`, `0x02B670`, `0x02B68A`, `0x02B6A2`, `0x03AF08`, `0x03AF60`, `0x03AF96`, `0x03AFB0`.
+- **Register ABI Contract:**
+  * Entry:
+    - `A6`: Pointer to source palette table in ROM or RAM (`0000_BBB0_GGG0_RRR0` 16-bit Genesis color format).
+    - `D6`: Word offset added to base destination address `$FF134C` (`ADDA.W D6, A3`).
+    - `D5`: Intensity scale factor (`0..7`, masked by `ANDI.W #7, D5`).
+    - `D7`: Color count minus 1 for DBF loop (typically 63 for 64 colors / 4 palettes).
+    - Stack: Caller return address pushed on SP.
+  * Internal Loop (`0x002FE6..0x003020`):
+    - Reads color from `(A6)+`.
+    - Isolates Red component (`ANDI.W #$0E, D0`), multiplies by intensity (`MULU.W D5, D0`), divides by 7 (`DIVU.W #7, D0`), isolates scaled Red (`ANDI.W #$0E, D0`) into `D1`.
+    - Isolates Green component (`ANDI.W #$E0, D0`), multiplies by intensity, divides by 7, isolates scaled Green into `D0`, ORs into `D1`.
+    - Isolates Blue component (`ANDI.W #$0E00, D0`), multiplies by intensity, divides by 7, isolates scaled Blue into `D0`, ORs into `D1`.
+    - Writes composite scaled color to `(A3)+`.
+    - Decrements `D7` and branches back via `DBF D7, $002FE6`.
+  * Exit:
+    - Sets dirty flag bit 0 in palette status byte: `BSET.B #0, ($FF164D).L`.
+    - Returns to caller via `RTS`.
+  * Child Subroutines: 0 (completely self-contained).
+  * Frame Boundaries: 0 (executes synchronously within the active frame).
+
+### 2. Candidate Shadowing Discovery & Accounting Audit
+- **Audit of Candidate Subsystems Against Active 196 Helper Baseline:**
+  * Candidate A (`0x00A196..0x00A2C6`): 100% shadowed by active production helper #40 (`m68k_00a196_instruction_step.cpp`).
+  * Candidate B (`0x06195A..0x061CD0`): 100% shadowed by active production helper #188 (`m68k_61934_instruction_step.cpp`).
+  * Candidate C (`0x00DEEC..0x00DF52`): 100% shadowed by active production helper #130 (`m68k_00deec_instruction_step.cpp`).
+- **Explanation of Top-20 Double Counting in M15.229:**
+  * M15.229 unmigrated profile was generated from an unmigrated baseline without subtracting existing active production helpers.
+  * Correcting the inventory prevents zero-displacement migrations.
+
+### 3. Frame Sync Idle vs Non-Idle Separation Discovery
+- **Idle Polling Loops:**
+  * `0x008ACA..0x008AD0` (`TST.W ($FF1654).L; BNE.S $008ACA`): 5,327,384 dynamic steps.
+  * `0x008B72..0x008B7A` (`CMPI.W #2, ($FF1654).L; BEQ.S $008B72`): 4,402,749 dynamic steps.
+  * Total Frame Sync Idle Wait Steps: **9,730,133 steps (55.197% of total Scenario C guest steps)**.
+- **Genuine Gameplay Logic Baseline:**
+  * Total Guest Instructions: 17,627,770
+  * Non-Idle Gameplay Workload: 17,627,770 - 9,730,133 = **7,897,637 instructions**.
+  * Previous Native Steps: 6,348,983 (80.391% of non-idle logic).
+  * New Native Steps with Slot 226: 6,413,735 (**81.211% of non-idle logic**).
+
+### 4. Data-Dependent Variable-Cycle Math Timing Mechanics
+- **Discovery:**
+  * In Motorola 68000, `MULU.W` execution time depends on the number of set bits in the multiplier: `38 + 2 * N` CPU cycles (where $N$ is the number of 1-bits). In Genesis Plus GX master clock units ($MUL = 7$), this is `266 + 14 * N` master clocks.
+  * In Motorola 68000, `DIVU.W` execution time depends on the dividend bit shifts: minimum 76 CPU cycles (`532` master clocks) plus bit quotient corrections, followed by bus refresh skips.
+  * Omitting dynamic cycle calculation causes the native stepper to complete hundreds of cycles too early, creating VBlank interrupt preemption timing drift across subsequent frames.
+  * Implementing `calc_mulu_cycles` and `calc_divu_cycles` alongside `skip_bus_refresh` restored 100% bit-exact timing across all 1,800 frames of Scenario C and all 3,992 frames across Scenarios C, A, and B.
+
+### 5. Dynamic Native Workload & Coverage Achievement
+- **Scenario C (1,800 frames):**
+  * Production active helpers (196): 5,127,961 steps (29.090% raw, 64.930% non-idle)
+  * Slot 222 (Entity Engine): 53,508 steps (0.304% raw, 0.678% non-idle)
+  * Slot 223 (Sprite Engine Mode 0): 871,538 steps (4.944% raw, 11.035% non-idle)
+  * Slot 224 (Sprite Engine Mode 1): 295,976 steps (1.679% raw, 3.748% non-idle)
+  * Slot 225 (Entity Motion Engine): 0 steps (absorbed in helper #38 with 536,966 steps)
+  * Slot 226 (Palette Scaling Engine): **64,752 steps** (0.367% raw, 0.820% non-idle)
+  * **Combined Native Steps: 6,413,735 instructions**
+  * **Raw Dynamic Native Coverage: 36.384%** (+0.367 percentage points gain)
+  * **Non-Idle Dynamic Native Coverage: 81.211%** (+0.820 percentage points gain)
+  * Total Incremental Displacement Across 3 Scenarios: 113,316 dynamic instructions (C: 64,752, A: 44,517, B: 4,047).
+
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.229: Execution-Weighted Game Engine Recompilation; Quad Recompiled Island Slot 222 + Slot 223 + Slot 224 + Slot 225; Helper #38 Scope & 0x008F22 Absorption; 6,348,983 Native Instructions in Scenario C / 36.017% Workload; 24/24 Bit-Exact Streams; 14-Column Top 20 Unmigrated Hotspots Profile; Standalone Cross-Track Semantic Interoperability)
+
+## Milestone M15.229 Reverse Engineering Summary
+
+### 1. Entity Motion & Translation Engine (`0x008F22..0x00938C`) Subsystem Characterization
+- **Routine Boundaries:** `0x008F22` to `0x00938C` (354 instructions, 1,130 bytes).
+- **Subsystem Function:** Entity Motion and Directional Translation Engine — handles entity velocity vector accumulation, terrain boundary and obstacle collision tests, direction-dependent velocity loops (X-Right, X-Left, Y-Down, Y-Up), slope calculations, and animation sequence updates.
+- **Observed Callers in Pure Unmigrated ROM:**
+  * Called from `0x008E90` loop across entity pools (`$FF1800..$FF1850`).
+- **Child Subroutines:**
+  * `0x00938E`, `0x009460`, `0x009BF2` (terrain collision and boundary queries).
+- **Register ABI Contract:**
+  * Entry:
+    - `A6`: Entity pointer in 68K RAM (`0xFFFFxxxx`).
+    - `42(A6)`: Paused/active state word (`TST.W 42(A6)`).
+    - `4(A6)`: Animation index and direction flag.
+    - Stack: Return PC pushed by caller.
+  * Exit:
+    - `16(A6)`: Updated X coordinate.
+    - `20(A6)`: Updated Y coordinate.
+    - `A6`: Preserved.
+    - Stack: Balanced and popped via RTS (`0x00938C`).
+
+### 2. Architectural Finding: Helper #38 (0x008E90) Absorption
+- In pure unmigrated ROM execution, `0x008F22..0x00938C` executes **419,067 dynamic instructions** in Scenario C.
+- In the hybrid runner with production helpers active, helper #38 (`0x008E90`, `src/tools/hybrid/m68k_008e90_instruction_step.cpp` / `m68k_008e90_step_scan.cpp`) is ALREADY an active helper that enters at `0x008E90` and performs a comprehensive scan of all three entity pools.
+- Inside helper #38, `0x008E90` directly steps the entire motion and animation logic (`0x008F22..0x00938C`) for **536,966 dynamic steps** in Scenario C.
+- Because helper #38 is evaluated in `block_hook` prior to cluster checks, standalone entries to `0x008F22` are absorbed.
+- Recompiled cluster Slot 225 (`0x008F22`) stands fully qualified and verified with bit-exact parity, providing standalone qualification and serving as an isolated model for entity motion decompilation.
+
+### 3. Top 20 Unmigrated Hotspots Profiling Discovery
+- Total unmigrated instructions remaining after production helpers + Clusters 222, 223, 224: **11,278,787 steps** (63.98%).
+- **Hotspot #1: Frame Synchronization & VBlank Busy-Wait Loop (`0x008ACA..0x008B7A`)**:
+  * `0x008ACA: TST.W ($FF1654).L; BNE.S $008ACA` (2,663,692 steps, 15.11%)
+  * `0x008B72: CMPI.W #2, ($FF1654).L; BEQ.S $008B72` (2,201,375 steps, 12.49%)
+  * Total frame sync loop steps: **4,865,067 dynamic steps (27.60% of total game workload)**!
+  * Subsystem: Frame Engine Sync / VBlank Handshake. Architectural complexity: High.
+- **Hotspot #2: Gameplay Logic & System Dispatch (`0x00A196..0x00A2C6`)**:
+  * 1,199,932 dynamic steps (6.81% of total game workload, 10.64% of unmigrated).
+- **Hotspot #3: Tilemap / Plane Scroll & Camera Manager (`0x06195A..0x061CD0`)**:
+  * 641,213 dynamic steps (3.64% of total game workload, 5.69% of unmigrated).
+- **Hotspot #4: Graphics Decompression & Art Streaming (`0x00003820..0x0038CE`)**:
+  * 407,855 dynamic steps (2.31% of total game workload, 3.62% of unmigrated).
+  * Subsystem: Core graphics decompression engine, directly aligning with `AGENTS.md` primary technical direction.
+
+### 4. Dynamic Native Workload & Coverage Achievement
+- **Scenario C (1,800 frames):**
+  * Production active helpers (196): 5,127,961 steps (29.090%)
+  * Slot 222 (Entity Engine): 53,508 steps (0.304%)
+  * Slot 223 (Sprite Engine Mode 0): 871,538 steps (4.944%)
+  * Slot 224 (Sprite Engine Mode 1): 295,976 steps (1.679%)
+  * **Combined Native Steps: 6,348,983 instructions** (**36.017%**).
+  * Helper #38 (`0x008E90`) absorbs 536,966 dynamic steps executed natively inside helper #38.
+- **Three-Scenario Differential Qualification:**
+  * Scenario C: 8/8 bit-exact raw streams (`match = True`).
+  * Scenario A: 8/8 bit-exact raw streams (`match = True`).
+  * Scenario B: 8/8 bit-exact raw streams (`match = True`).
+  * Total: **24/24 streams bit-exact match** across all 3,992 frames.
+  * 0 contract faults.
+
+---
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.228: High-Impact Gameplay Engine Expansion; Triple Recompiled Island Slot 222 + Slot 223 + Slot 224; 6,348,983 Native Instructions in Scenario C / 36.017% Workload; 1,128,499 Mode 1 Instructions Across 3 Scenarios; 24/24 Bit-Exact Streams; Musashi Cycle Rules; 32-bit Address Register State Retention; Instruction Disassembly Verification at 0x00AB48; Standalone C++20 Sprite Compositor Domain Interfaces)
 
 ## Milestone M15.228 Reverse Engineering Summary

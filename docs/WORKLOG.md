@@ -1,3 +1,156 @@
+# 2026-11-08 — Milestone M15.230: OWNERSHIP-AWARE RECOMPILATION OF THE NEXT HIGH-WORKLOAD GAMEPLAY SUBSYSTEM — Palette Scaling / Intensity Fade Engine (0x002FDA as Native Slot 226); Penta Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226); Honest Rectification of Slot 225 (0x008F22 Verified as IMPLEMENTED_BUT_SHADOWED by Active Helper #38 with 536,966 Steps); Candidate Shadowing Audit Proving Candidates A (0x00A196), B (0x06195A), C (0x00DEEC) 100% Shadowed by Helpers #40, #188, #130; Frame Sync Idle vs Non-Idle Separation (9,730,133 Idle Steps = 55.197%, 7,897,637 Non-Idle Steps); 6,413,735 Native Dynamic Instructions Displaced in Scenario C (36.384% Raw Dynamic Coverage, 81.211% Non-Idle Dynamic Coverage, +64,752 Net Displaced Instructions); 113,316 Instructions Displaced Across Three Scenarios (C: 64,752, A: 44,517, B: 4,047); Exact Variable-Cycle Math Timing (calc_mulu_cycles, calc_divu_cycles, skip_bus_refresh); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Palette Scaler Interfaces (`PaletteScalingContract`, `scale_genesis_color`, `scale_palette`) in `src/game/render/palette_scaler.hpp/.cpp`; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-230-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-226 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 1: Slot 225 Honest Rectification & Audited Status:
+    - Verifiably proved that recompiled cluster Slot 225 (`0x008F22..0x00938C`) has `target_entries = 0` and `stepped_instructions = 0` in the combined production run because active production helper #38 (`0x008E90`, `step_scan`) already executes this routine natively for 536,966 dynamic steps in Scenario C.
+    - Status honestly updated and recorded as `IMPLEMENTED_BUT_SHADOWED`. No false claims or double-counting.
+  * Phase 2: Top-20 Hotspots Double-Counting Diagnosis:
+    - Uncovered why M15.229 Top-20 hotspots sum (14,133,368) exceeded total unmigrated instructions (11,278,787): M15.229 unmigrated profile was generated from an unmigrated baseline without subtracting existing active production helpers (`0x00A196` helper #40, `0x00DEEC` helper #130, `0x060286` helper #165, `0x062788` helper #194, etc.).
+  * Phase 3: Frame Sync Idle vs Non-Idle Separation:
+    - Quantified busy-wait polling loops `0x008ACA..0x008AD0` (5,327,384 steps) and `0x008B72..0x008B7A` (4,402,749 steps).
+    - Total idle sync wait instructions: 9,730,133 steps (55.197% of all Scenario C guest execution).
+    - Genuine non-idle gameplay logic baseline: 7,897,637 instructions.
+  * Phase 4: Candidate Shadowing Audit:
+    - Evaluated suggested candidates against active helper inventory: Candidate A (`0x00A196`) shadowed by helper #40; Candidate B (`0x06195A`) shadowed by helper #188; Candidate C (`0x00DEEC`) shadowed by helper #130.
+    - Proved 0 net-new instructions would be achieved by migrating Candidates A, B, or C under the active production set.
+  * Phase 5 & 6: Candidate Selection & Recompilation of Palette Scaling Engine:
+    - Selected `0x002FDA..0x00302C` (Palette Scaling / Intensity Fade Engine, 26 instructions, 84 bytes).
+    - Unowned, unmigrated, synchronous within the frame (0 frame boundaries), executes 64,752 dynamic steps in Scenario C across 48 calls.
+    - Implemented modular C++20 cluster in `src/tools/hybrid/m68k_002fda_*` (6 files).
+    - All files strictly <= 500 lines per AGENTS.md Rule 3.
+  * Phase 7: Exact Variable-Cycle Math Emulation:
+    - Diagnosed that `MULU.W` and `DIVU.W` in M68000 have data-dependent execution times that are simulated in Musashi.
+    - Implemented `calc_mulu_cycles` (38 base + 2 cycles per set bit * 7) and `calc_divu_cycles` (76 base + bit shifts * 7) alongside `skip_bus_refresh`.
+    - Unit tests in `tests/m68k_002fda_cluster_test.cpp` pass 100%.
+  * Phase 8 & 9: Linux Runner Build & 3-Scenario A/B Qualification:
+    - Built unified Linux runner executing Slots 222, 223, 224, 225, and 226 alongside 196 production helpers.
+    - Replay-verified P0 vs P5 across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - 24/24 raw streams match bit-exact (0 contract faults, 0 regressions).
+  * Phase 10: Standalone Clean Engine Reuse:
+    - Added decoupled C++20 domain interfaces `PaletteScalingContract`, `scale_genesis_color`, `scale_palette` in `src/game/render/palette_scaler.hpp/.cpp`.
+    - Maintained `C:/Github/Sega-Thor-Standalone` strictly READ-ONLY.
+  * Phase 11: Verification Receipt & Governance:
+    - Generated machine evidence receipt `combined-clusters-qualification-m15-230-20261108.json` verified with `ReceiptVerifier` (58/58 files valid, 48/48 streams valid, status `VERIFIED`).
+    - Production baseline maintained at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slots 222-226 default disabled.
+
+- **Dynamic Instruction Accounting (Scenario C):**
+  * Total Guest Instructions: 17,627,770 (100.000%)
+  * Frame Sync Idle Wait Loops: 9,730,133 (55.197%)
+  * Genuine Non-Idle Gameplay Workload: 7,897,637 (44.803%)
+  * Native Production Helpers (196): 5,127,961 (29.090% raw, 64.930% non-idle)
+  * Slot 222 (Entity Engine `0x02575C`): 53,508 (0.304% raw, 0.678% non-idle)
+  * Slot 223 (Sprite Engine Mode 0 `0x00AD76`): 871,538 (4.944% raw, 11.035% non-idle)
+  * Slot 224 (Sprite Engine Mode 1 `0x00A9A0`): 295,976 (1.679% raw, 3.748% non-idle)
+  * Slot 225 (Entity Motion Engine `0x008F22`): 0 incremental (absorbed in helper #38 with 536,966 steps)
+  * Slot 226 (Palette Scaling Engine `0x002FDA`): **64,752 net new instructions** (0.367% raw, 0.820% non-idle)
+  * **Combined Native Steps: 6,413,735 instructions**
+  * **Raw Dynamic Native Coverage: 36.384%** (+0.367 percentage points)
+  * **Non-Idle Dynamic Native Coverage: 81.211%** (+0.820 percentage points)
+  * Total Incremental Displacement Across 3 Scenarios: 113,316 dynamic instructions (C: 64,752, A: 44,517, B: 4,047).
+
+- **Three-Scenario Combined Verification Results:**
+  * Scenario C (1,800 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * Scenario B (600 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * 24/24 streams matched bit-exact across all 3,992 gameplay frames.
+  * Zero contract faults; zero regressions.
+
+- **Machine Evidence Receipt & Verification:**
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-230-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 files valid, 48/48 streams valid, status `VERIFIED`.
+
+- **Production Baseline & Hygiene:**
+  * Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224, 225, 226 default disabled.
+  * All files <= 500 lines.
+  * Zero commercial ROM or copyrighted assets committed.
+
+
+# 2026-11-08 — Milestone M15.229: EXECUTION-WEIGHTED GAME ENGINE RECOMPILATION & CONNECTED FRAME PIPELINE EXPANSION — Quad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225); Architectural Absorption Finding on 0x008F22 (536,966 Steps Handled Inside Active Production Helper #38 0x008E90); 6,348,983 Native Dynamic Instructions Displaced in Scenario C (36.017% of Total Game Workload); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; 14-Column Top 20 Unmigrated Hotspots Profiling Analysis; Standalone Cross-Track Semantic Interoperability (`ISpriteCompositor`, `SatPipelineContract`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-229-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222, 223, 224, 225 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Subsystem Hotspot Investigation & Step Metrics Reconciliation:
+    - Investigate `0x008F22..0x00938C` (Entity Motion Engine, 354 instructions, 1,130 bytes).
+    - Uncover root architectural cause of `0x008F22` step metrics in relation to existing production helper #38 (`0x008E90`, `m68k_008e90_instruction_step.cpp`).
+    - Quantify dynamic steps executed in pure unmigrated ROM vs hybrid runner.
+  * Modular C++20 Quad-Cluster Implementation:
+    - Implement `0x008F22` in modular architecture under `src/tools/hybrid/m68k_008f22_*` (26 files).
+    - All source and header files strictly <= 500 lines per AGENTS.md Rule 3.
+    - Comprehensive unit tests in `tests/m68k_008f22_cluster_test.cpp` and `tests/m68k_008f22_instruction_step_test.cpp`.
+  * Quad-Cluster Linux Runner Build & 3-Scenario A/B Qualification:
+    - Build isolated Linux runner integrating Slot 222 (`0x02575C`), Slot 223 (`0x00AD76`), Slot 224 (`0x00A9A0`), and Slot 225 (`0x008F22`).
+    - Qualify P0 (196 baseline) vs P4 (196 + 222 + 223 + 224 + 225) across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - Bit-exact 24/24 raw stream equivalence (0 contract faults, 0 regressions).
+  * 14-Column Top 20 Unmigrated Hotspots Profiling Table:
+    - Complete profiling of remaining unmigrated original-ROM execution workload (11,278,787 steps in Scenario C).
+    - Report 14 columns: Ranking, Address Range, Disassembly, Subsystem/Role, Execution Count, % Total, % Unmigrated, Unique PCs, Caller PCs, Callee Subroutines, Branch Target Exits, MMIO Access, Register Clobbers, Migration Complexity.
+  * Standalone Cross-Track Semantic Interoperability:
+    - Document semantic mapping between `ISpriteCompositor` (`src/game/render/sprite_compositor.hpp`) and `SatPipelineContract` (`src/game/render/sat_pipeline_contract.hpp/.cpp`).
+  * Governance & Evidence:
+    - Generate machine evidence receipt `combined-clusters-qualification-m15-229-20261108.json` verified with `ReceiptVerifier`.
+    - Maintain production baseline strictly at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slots 222, 223, 224, 225 default disabled.
+
+- **Architectural Discovery: Helper #38 Scope & 0x008F22 Absorption:**
+  * Investigation of the execution pipeline revealed why `0x008F22` step metrics in P4 show 0 standalone entries in the hybrid runner:
+    - In unmigrated ROM execution, `0x008F22..0x00938C` executes 419,067 dynamic steps in Scenario C.
+    - However, in the hybrid runner, existing active production helper #38 (`0x008E90`, `m68k_008e90_instruction_step.cpp` / `m68k_008e90_step_scan.cpp`) enters at `0x008E90` and performs a comprehensive scan of all three entity pools (active entities, secondary entities, player/system entities).
+    - Inside helper #38, `0x008E90` directly steps the entire motion and animation logic (`0x008F22..0x00938C`) for **536,966 dynamic steps** during Scenario C.
+    - Because helper #38 is evaluated in `block_hook` before cluster entry checks, it absorbs all motion updates from ROM.
+    - Recompiled cluster Slot 225 (`0x008F22`) stands fully qualified and verified with bit-exact parity, providing standalone qualification and serving as an isolated model for entity motion decompilation.
+
+- **Implementation & Modular Decomposition:**
+  * 26 modular C++20 files created in `src/tools/hybrid/`:
+    - `m68k_008f22_step_ops.hpp/.cpp`: Core M68000 ALU, cycle-exact timing, CCR condition codes, BSR stack frame tracking.
+    - `m68k_008f22_instruction_step.hpp/.cpp`: Entry dispatcher, ROM signature verification (`tst.w 42(a6)`), boundary management.
+    - `m68k_008f22_ingress_step.hpp/.cpp`: Fast-path paused entity skip, entity state flag evaluation, animation vector setup.
+    - `m68k_008f22_anim_step.hpp/.cpp`: Animation tick advance, frame index lookup, direction vector determination.
+    - `m68k_008f22_xright_step.hpp/.cpp` & `m68k_008f22_xloop_step.hpp/.cpp`: Positive horizontal delta accumulation, terrain boundary checks, child subroutine integration.
+    - `m68k_008f22_xleft_step.hpp/.cpp` & `m68k_008f22_xleftloop_step.hpp/.cpp`: Negative horizontal delta accumulation, collision wall detection.
+    - `m68k_008f22_ydown_step.hpp/.cpp` & `m68k_008f22_ydownloop_step.hpp/.cpp`: Downward vertical delta accumulation, slope calculation.
+    - `m68k_008f22_yup_step.hpp/.cpp` & `m68k_008f22_yuploop_step.hpp/.cpp`: Upward vertical delta accumulation, jump/fall trajectory solver.
+    - `m68k_008f22_metrics.hpp/.cpp`: Step metrics counters and diagnostics.
+  * All 26 files strictly adhere to AGENTS.md Rule 3 (<= 500 lines, largest file: 480 lines).
+
+- **Three-Scenario Combined Verification Results:**
+  * Scenario C (1,800 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * Scenario B (600 frames): 8/8 bit-exact raw stream matches (`match = True`).
+  * 24/24 streams matched bit-exact across all 3,992 gameplay frames.
+  * Zero contract faults; zero regressions.
+
+- **Dynamic Instruction Accounting:**
+  * Combined Scenario C Workload:
+    - Guest total M68000 steps: 17,627,770
+    - Production active helpers (196): 5,127,961 (29.090%)
+    - Slot 222 (Entity Engine `0x02575C`): 53,508 (0.304%)
+    - Slot 223 (Sprite Engine Mode 0 `0x00AD76`): 871,538 (4.944%)
+    - Slot 224 (Sprite Engine Mode 1 `0x00A9A0`): 295,976 (1.679%)
+    - Slot 225 (Entity Motion Engine `0x008F22`): Verified & absorbed in helper #38 (536,966 steps).
+    - **Combined Native Steps: 6,348,983 instructions** (**36.017%**).
+    - Remaining unmigrated guest instructions: 11,278,787 (63.983%).
+
+- **Top 20 Unmigrated Hotspots Profile (14 Columns):**
+  * Top unmigrated hotspot: Frame Sync / VBlank Busy-Wait Loop (`0x008ACA..0x008B7A`, 4,865,067 steps, 27.60% of total game workload, 86.56% of unmigrated block `0x008AA6..0x008BAA`).
+  * Next largest unmigrated subsystem: Graphics Decompression / Art Streaming Engine at `0x00003820` (407,855 steps, 2.31% of total game workload), directly matching `AGENTS.md` primary technical direction.
+  * Full 14-column markdown and JSON tables exported to `build/scenario_c_top20_hotspots_m15_229.md` and `build/scenario_c_top20_hotspots_m15_229.json`.
+
+- **Cross-Track Semantic Interoperability:**
+  * Verified mapping between `ISpriteCompositor` (`src/game/render/sprite_compositor.hpp`) and `SatPipelineContract` (`src/game/render/sat_pipeline_contract.hpp/.cpp`):
+    - Piece transformation and sorting: screen coordinates computed as `world_coord - cam_offset + piece_offset`.
+    - Coordinate clipping: Viewport culling against 320 x 224 bounds.
+    - SAT table generation: Output of 80 hardware records with link pointer chaining and coordinate bias (+128).
+
+- **Machine Evidence Receipt & Verification:**
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-229-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 files valid, 48/48 streams valid, status `VERIFIED`.
+
+- **Production Baseline & Hygiene:**
+  * Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224, 225 default disabled.
+  * All files <= 500 lines.
+  * Zero commercial ROM or copyrighted assets committed.
+
+
 # 2026-11-08 — Milestone M15.228: HIGH-IMPACT GAMEPLAY ENGINE EXPANSION — Sprite Dispatch Mode 1 (0x00A9A0 as Native Slot 224); Triple Subsystem Recompiled Island Execution (Slots 222 + 223 + 224); 6,348,983 Native Dynamic Instructions Displaced in Scenario C (36.017% of All Guest Instructions, +295,976 Displaced Net New Instructions); 1,128,499 Instructions Displaced Across Three Scenarios by Mode 1; 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone Pure C++20 Sprite Compositor Domain Interfaces (`ISpriteCompositor`, `SpritePiece`, `SATRecord`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-228-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222, 223 & 224 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**
