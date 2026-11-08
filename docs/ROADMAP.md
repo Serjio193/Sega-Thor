@@ -1,3 +1,24 @@
+# M16.1 Standalone Frame Sequencer, Independent Pixel Oracle, and First Visible Animation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Independent Pixel Oracle Parity:
+  * Captured genuine emulator display pixels directly from pinned BizHawk 2.11.1 / Genplus-gx at VBlank boundary.
+  * Discovered and resolved color DAC quantization difference (`v * 0x22` hardware DAC vs software full scale).
+  * 100% bit-exact match on Frame 779 (71,680 / 71,680 pixels, 0 diffs).
+  * 100% bit-exact match on Frame 200 (71,680 / 71,680 pixels, 0 diffs).
+  * 100% bit-exact match across all 17 sequence frames 770..786 (1,218,560 / 1,218,560 pixels, 0 diffs).
+- First Visible Animation (Standalone Native Player):
+  * Built `oasis_standalone_player` presenting 320x224 scaled frames via Win32 GDI `StretchDIBits`.
+  * Interactive controls: Play/Pause (Space), Step Forward (Right/N), Step Backward (Left/P), Reset (R), Quit (ESC).
+  * Window title reflects frame index and pause state; supports `--headless` for automated regression testing.
+- Decoupled Native Simulation Boundary:
+  * Authored `src/game/standalone_game_loop.hpp` defining `FrameInput`, `SimulationState`, `IGameSimulation`, and `FrameSequenceSource`.
+- Zero Runtime Emulator Dependency:
+  * Standalone binaries link 0 GPGX, 0 Musashi, 0 libretro symbols.
+- Governance & Size Limits:
+  * All 898 governed source files strictly <= 500 lines. `git diff --check` green.
+
+
 # M15.224 Entity Engine Native Coverage Expansion: State 5 Safe Paths + Root Entry 0x0254EA Execution; Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Branching; Subsystem Reaches 53,508 Stepped Instructions (+43.9% Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); Three-Scenario Differential Qualification (24/24 Bit-Exact Streams) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER
 
 Delivered:

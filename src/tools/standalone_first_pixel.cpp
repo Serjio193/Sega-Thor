@@ -16,6 +16,7 @@ namespace {
 void print_usage(const char* prog) {
     std::cout << "Usage: " << prog << " --fixture <vdp_state.json> [options]\n"
               << "Options:\n"
+              << "  --dac <model|gpgx>               Color DAC formula (default: model)\n"
               << "  --output <file.ppm|file.rgb24>   Save native rendered frame\n"
               << "  --compare <reference.rgb24>      Compare against reference framebuffer\n"
               << "  --diff <diff.ppm>                Save visual diff on mismatch\n";
@@ -54,11 +55,19 @@ int main(int argc, char* argv[]) {
     std::string output_path;
     std::string compare_path;
     std::string diff_path;
+    oasis::genesis::ColorDacMode dac_mode = oasis::genesis::ColorDacMode::ModelFullRange;
 
     for (int i = 1; i < argc; ++i) {
         std::string_view arg = argv[i];
         if (arg == "--fixture" && i + 1 < argc) {
             fixture_path = argv[++i];
+        } else if (arg == "--dac" && i + 1 < argc) {
+            std::string_view mode_str = argv[++i];
+            if (mode_str == "gpgx" || mode_str == "genesis_plus_gx") {
+                dac_mode = oasis::genesis::ColorDacMode::GenesisPlusGx;
+            } else {
+                dac_mode = oasis::genesis::ColorDacMode::ModelFullRange;
+            }
         } else if (arg == "--output" && i + 1 < argc) {
             output_path = argv[++i];
         } else if (arg == "--compare" && i + 1 < argc) {
@@ -88,7 +97,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::uint8_t> native_rgb(static_cast<std::size_t>(width * height * 3));
 
     oasis::genesis::RasterMetrics metrics{};
-    oasis::genesis::render_vdp_frame_rgb24(state, native_rgb, &metrics);
+    oasis::genesis::render_vdp_frame_rgb24(state, native_rgb, dac_mode, &metrics);
 
     const std::string native_sha256 = oasis::core::compute_sha256(native_rgb);
 

@@ -1,3 +1,17 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.1: Standalone Frame Sequencer, Independent Pixel Oracle, and Hardware DAC Quantization Reconciliation)
+
+## Milestone M16.1 Reverse Engineering Summary
+
+### 1. Mega Drive VDP 9-Bit DAC Voltage Quantization vs Software Color Model
+- **Hardware Mechanism:** The Yamaha YM7101 / Mega Drive VDP contains a 9-bit digital-to-analog converter (3 bits per RGB channel). Normal display modes map 3-bit values 0..7 to 8 discrete voltage levels scaled by step `0x22` (`val * 34`), producing channel values: `0, 34, 68, 102, 136, 170, 204, 238`. The remaining `0x11` margin up to `255` is reserved for highlight mode (`0xEE + 0x11 = 0xFF`).
+- **Software Model Formula:** The M12 Python compositor normalized 3-bit levels via `(v * 255 + 3) / 7`, producing `0, 36, 73, 109, 146, 182, 219, 255`.
+- **Reconciliation:** Implementing both `ColorDacMode::GenesisPlusGx` and `ColorDacMode::ModelFullRange` in `src/genesis/vdp_rasterizer.cpp` allows bit-exact parity against both authentic emulator display pixels (0 diffs) and the historical M16.0 model artifacts (0 diffs).
+
+### 2. Snapshot Timing & Mid-Frame Raster Stability Across Gameplay Sequence
+- **Capture Point:** Snapshot taken strictly at the VBlank boundary (scanline 224, start of vertical blanking) on canonical ROM `Beyond Oasis (USA).md` (SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+- **Raster Stability:** Analyzed scanlines across consecutive frames 770..786. Line interrupts are disabled during attract playback; HScroll and VScroll registers remain stable per-frame. Zero mid-frame CRAM or register changes occur during active scan lines in this window.
+- **Dynamic Animation Tick:** At Frame 781, SAT entry #0 tile index updates, advancing the sprite animation cycle. All 17 consecutive frames render with 100% bit-exact equivalence (1,218,560 / 1,218,560 pixels matched, 0 diffs).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.224: Entity Engine Native Coverage Expansion — State 5 Safe Paths + Root Entry 0x0254EA Execution; Discovery of 0x00E682 Stack-Pop Tail Return and 134(a6) Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions; 24/24 Stream Parity)
 
 ## Milestone M15.224 Reverse Engineering Summary

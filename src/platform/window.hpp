@@ -18,6 +18,7 @@ public:
     NativeWindow& operator=(const NativeWindow&) = delete;
 
     [[nodiscard]] bool open(std::string_view title) noexcept;
+    void set_title(std::string_view title) noexcept;
     [[nodiscard]] bool process_events() noexcept;
     void present(std::span<const std::uint32_t> pixels) noexcept;
 

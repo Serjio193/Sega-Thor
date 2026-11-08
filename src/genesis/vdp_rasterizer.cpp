@@ -2,23 +2,28 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <stdexcept>
 #include <vector>
 
 namespace oasis::genesis {
 namespace {
 
-constexpr std::uint8_t expand_3bit(std::uint8_t value) noexcept {
+constexpr std::uint8_t expand_3bit(std::uint8_t value, ColorDacMode mode) noexcept {
+    if (mode == ColorDacMode::GenesisPlusGx) {
+        return static_cast<std::uint8_t>(value * 0x22U);
+    }
     return static_cast<std::uint8_t>((static_cast<unsigned>(value) * 255U + 3U) / 7U);
 }
 
-void get_cram_rgb(const VdpState& state, std::uint8_t cram_index, std::uint8_t& r, std::uint8_t& g, std::uint8_t& b) noexcept {
+void get_cram_rgb(const VdpState& state, std::uint8_t cram_index, ColorDacMode mode,
+                  std::uint8_t& r, std::uint8_t& g, std::uint8_t& b) noexcept {
     const std::size_t offset = static_cast<std::size_t>(cram_index & 0x3FU) * 2U;
     const std::uint16_t word = static_cast<std::uint16_t>(
         (static_cast<std::uint16_t>(state.cram[offset]) << 8U) | state.cram[offset + 1U]);
-    r = expand_3bit(static_cast<std::uint8_t>((word >> 1U) & 0x07U));
-    g = expand_3bit(static_cast<std::uint8_t>((word >> 5U) & 0x07U));
-    b = expand_3bit(static_cast<std::uint8_t>((word >> 9U) & 0x07U));
+    r = expand_3bit(static_cast<std::uint8_t>((word >> 1U) & 0x07U), mode);
+    g = expand_3bit(static_cast<std::uint8_t>((word >> 5U) & 0x07U), mode);
+    b = expand_3bit(static_cast<std::uint8_t>((word >> 9U) & 0x07U), mode);
 }
 
 int signed10(std::uint16_t val) noexcept {
@@ -154,7 +159,7 @@ std::vector<SpriteInfo> decode_sat(const VdpState& state) {
     return sprites;
 }
 
-bool is_in_window(const VdpState& state, int screen_x, int screen_y, int width) noexcept {
+bool is_in_window(const VdpState& state, int screen_x, int screen_y) noexcept {
     const std::uint8_t reg17 = state.registers[17];
     const std::uint8_t reg18 = state.registers[18];
     const int win_x_boundary = static_cast<int>(reg17 & 0x1FU) * 16;
@@ -173,24 +178,24 @@ bool is_in_window(const VdpState& state, int screen_x, int screen_y, int width) 
     return h_match || v_match;
 }
 
-} // namespace
-
-void render_vdp_frame_rgb24(
+template <typename PixelWriter>
+void rasterize_vdp_internal(
     const VdpState& state,
-    std::span<std::uint8_t> output_rgb24,
-    RasterMetrics* metrics
+    ColorDacMode dac_mode,
+    RasterMetrics* metrics,
+    PixelWriter&& writer
 ) {
     const int width = state.display_width();
     const int height = state.display_height();
-    const std::size_t required_bytes = static_cast<std::size_t>(width * height * 3);
-
-    if (output_rgb24.size() < required_bytes) {
-        throw std::runtime_error("output buffer is smaller than display frame");
-    }
 
     if (metrics) {
         *metrics = {};
         metrics->total_pixels = width * height;
+    }
+
+    std::array<std::array<std::uint8_t, 3>, 64> palette_table{};
+    for (std::uint8_t i = 0; i < 64; ++i) {
+        get_cram_rgb(state, i, dac_mode, palette_table[i][0], palette_table[i][1], palette_table[i][2]);
     }
 
     const auto sprites = decode_sat(state);
@@ -225,14 +230,12 @@ void render_vdp_frame_rgb24(
             int vscroll_b = 0;
             get_vscroll(state, x, vscroll_a, vscroll_b);
 
-            // Plane B
             const int bx = ((x - hscroll_b) % (plane_w * 8) + (plane_w * 8)) % (plane_w * 8);
             const int by = ((y + vscroll_b) % (plane_h * 8) + (plane_h * 8)) % (plane_h * 8);
             const auto sample_b = sample_plane(state, plane_b_base, bx / 8, by / 8, bx % 8, by % 8, plane_w, plane_h);
 
-            // Plane A / Window
             PixelSample sample_a{};
-            bool is_window = is_in_window(state, x, y, width);
+            bool is_window = is_in_window(state, x, y);
             if (is_window) {
                 const int win_w_cells = state.is_h40() ? 64 : 32;
                 sample_a = sample_plane(state, window_base, x / 8, y / 8, x % 8, y % 8, win_w_cells, 32);
@@ -242,7 +245,6 @@ void render_vdp_frame_rgb24(
                 sample_a = sample_plane(state, plane_a_base, ax / 8, ay / 8, ax % 8, ay % 8, plane_w, plane_h);
             }
 
-            // Sprite pixel
             PixelSample sample_s{};
             for (const auto* spr : line_sprites) {
                 if (spr->x <= x && x < spr->x + spr->w_cells * 8) {
@@ -268,7 +270,6 @@ void render_vdp_frame_rgb24(
                 }
             }
 
-            // Priority composition
             std::uint8_t winner_cram = backdrop_idx;
             enum class Layer { BACKDROP, PLANE_B, PLANE_A, SPRITE, WINDOW };
             Layer winner_layer = Layer::BACKDROP;
@@ -308,10 +309,55 @@ void render_vdp_frame_rgb24(
                 }
             }
 
-            const std::size_t out_idx = static_cast<std::size_t>(y * width + x) * 3U;
-            get_cram_rgb(state, winner_cram, output_rgb24[out_idx], output_rgb24[out_idx + 1U], output_rgb24[out_idx + 2U]);
+            const auto& c = palette_table[winner_cram & 0x3FU];
+            writer(x, y, c[0], c[1], c[2]);
         }
     }
+}
+
+} // namespace
+
+void render_vdp_frame_rgb24(
+    const VdpState& state,
+    std::span<std::uint8_t> output_rgb24,
+    ColorDacMode dac_mode,
+    RasterMetrics* metrics
+) {
+    const int width = state.display_width();
+    const int height = state.display_height();
+    const std::size_t required_bytes = static_cast<std::size_t>(width * height * 3);
+
+    if (output_rgb24.size() < required_bytes) {
+        throw std::runtime_error("output buffer is smaller than display frame");
+    }
+
+    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
+        const std::size_t out_idx = static_cast<std::size_t>(y * width + x) * 3U;
+        output_rgb24[out_idx] = r;
+        output_rgb24[out_idx + 1U] = g;
+        output_rgb24[out_idx + 2U] = b;
+    });
+}
+
+void render_vdp_frame_rgba32(
+    const VdpState& state,
+    std::span<std::uint32_t> output_rgba32,
+    ColorDacMode dac_mode,
+    RasterMetrics* metrics
+) {
+    const int width = state.display_width();
+    const int height = state.display_height();
+    const std::size_t required_pixels = static_cast<std::size_t>(width * height);
+
+    if (output_rgba32.size() < required_pixels) {
+        throw std::runtime_error("output buffer is smaller than display frame");
+    }
+
+    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
+        const std::size_t out_idx = static_cast<std::size_t>(y * width + x);
+        output_rgba32[out_idx] = 0xFF000000U | (static_cast<std::uint32_t>(r) << 16U) |
+                                 (static_cast<std::uint32_t>(g) << 8U) | static_cast<std::uint32_t>(b);
+    });
 }
 
 } // namespace oasis::genesis

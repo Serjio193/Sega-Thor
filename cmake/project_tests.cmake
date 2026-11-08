@@ -105,6 +105,9 @@ add_test(NAME oasis_vdp COMMAND oasis_vdp_test)
 add_executable(oasis_vdp_rasterizer_test tests/vdp_rasterizer_test.cpp)
 target_link_libraries(oasis_vdp_rasterizer_test PRIVATE oasis_core)
 add_test(NAME oasis_vdp_rasterizer COMMAND oasis_vdp_rasterizer_test)
+add_executable(oasis_standalone_sequencer_test tests/standalone_sequencer_test.cpp)
+target_link_libraries(oasis_standalone_sequencer_test PRIVATE oasis_core)
+add_test(NAME oasis_standalone_sequencer COMMAND oasis_standalone_sequencer_test)
 add_executable(oasis_runtime_test tests/runtime_test.cpp)
 target_link_libraries(oasis_runtime_test PRIVATE oasis_core)
 add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
@@ -282,6 +285,7 @@ set(oasis_test_targets
     oasis_genesis_graphics_test
     oasis_vdp_test
     oasis_vdp_rasterizer_test
+    oasis_standalone_sequencer_test
     oasis_runtime_test
     oasis_screen_descriptor_test
     oasis_byte_grid_test
@@ -334,6 +338,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_genesis_graphics
         oasis_vdp
         oasis_vdp_rasterizer
+        oasis_standalone_sequencer
         oasis_runtime
         oasis_screen_descriptor
         oasis_byte_grid

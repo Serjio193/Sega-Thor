@@ -1,3 +1,14 @@
+# M16 Standalone Native Runtime & Frame Sequencer V1
+
+- `src/genesis/vdp_state.hpp` / `src/genesis/vdp_state.cpp`: Explicit Mega Drive VDP hardware state model (registers, VRAM, CRAM, VSRAM, memory layout decoders).
+- `src/genesis/vdp_rasterizer.hpp` / `src/genesis/vdp_rasterizer.cpp`: Native C++ VDP rasterizer compositing Plane A, Plane B, Window, Sprites, and Backdrop into RGB24 and RGBA32 buffers with support for `ColorDacMode::GenesisPlusGx` and `ColorDacMode::ModelFullRange`.
+- `src/game/standalone_game_loop.hpp`: Decoupled simulation boundary interfaces (`FrameInput`, `SimulationState`, `IGameSimulation`, `FrameSequenceSource`).
+- `src/tools/standalone_first_pixel.cpp`: Native VDP rasterizer verification CLI with `--dac`, `--fixture`, `--output`, `--compare`, and `--diff`.
+- `src/tools/standalone_player.cpp`: Interactive windowed frame sequencer player using Win32 GDI `NativeWindow` with 60 FPS pacing, pause/resume, step forward/backward, reset, and `--headless` mode.
+- `tests/vdp_rasterizer_test.cpp`: Unit tests for VDP state parsing, plane priority, model and genuine emulator oracle matching, determinism, and RGBA32 formatting.
+- `tests/standalone_sequencer_test.cpp`: Unit tests for sequence chronological ordering, sprite animation transition detection, pause/step state machine, and error handling.
+- `data/standalone-fixtures/`: Authentic frame state JSONs and reference `.rgb24` framebuffers for Frame 779, Frame 200, and 17-frame sequence 770..786.
+
 # M12 Controlled Entity / Player Provenance V1
 
 `docs/reports/THOR_ACCEPTED_ARTIFACT_BACKLOG_20260928.md` inventories existing

@@ -80,6 +80,12 @@ bool NativeWindow::open(std::string_view title) noexcept {
     return true;
 }
 
+void NativeWindow::set_title(std::string_view title) noexcept {
+    if (window_handle_ == nullptr) return;
+    std::wstring wide(title.begin(), title.end());
+    SetWindowTextW(static_cast<HWND>(window_handle_), wide.c_str());
+}
+
 bool NativeWindow::process_events() noexcept {
     MSG message{};
     while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) != 0) {
@@ -97,7 +103,6 @@ bool NativeWindow::process_events() noexcept {
 void NativeWindow::present(std::span<const std::uint32_t> pixels) noexcept {
     if (!open_ || pixels.size() < static_cast<std::size_t>(logical_width_) * logical_height_) return;
     const auto window = static_cast<HWND>(window_handle_);
-
     BITMAPINFO info{};
     info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     info.bmiHeader.biWidth = static_cast<LONG>(logical_width_);
@@ -148,6 +153,7 @@ NativeWindow::NativeWindow(std::uint32_t logical_width,
 NativeWindow::~NativeWindow() = default;
 
 bool NativeWindow::open(std::string_view) noexcept { return false; }
+void NativeWindow::set_title(std::string_view) noexcept {}
 bool NativeWindow::process_events() noexcept { return false; }
 void NativeWindow::present(std::span<const std::uint32_t>) noexcept {}
 bool NativeWindow::backend_available() const noexcept { return false; }

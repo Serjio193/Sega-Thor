@@ -1,3 +1,39 @@
+# ADR-20261108-M16-01-STANDALONE-ORACLE-AND-FRAME-SEQUENCER — Independent Emulator Pixel Oracle Verification, Hardware Color DAC Formula Reconciliation, 17-Frame Gameplay Sequence Bit-Exact Parity, and Standalone Native Windowed Player
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.0 produced a native C++ VDP rasterizer that achieved 100% bit-exact pixel matching against two reference framebuffers (`frame_779_reference.rgb24`, `frame_200_reference.rgb24`).
+2. Forensic audit revealed those reference images were produced by a Python software model (`m12_vdp_frame_artifact.v1`), not captured directly from an emulator display. Full hardware equivalence required testing against genuine emulator display output.
+3. Milestone M16.1 mandates:
+   - Capturing genuine emulator display pixels from pinned BizHawk 2.11.1 / Genplus-gx at the VBlank boundary.
+   - Performing pixel-by-pixel differential analysis and reconciling any color quantization discrepancies.
+   - Capturing and verifying a sequence of consecutive gameplay frames (770..786).
+   - Creating a standalone windowed player (`oasis_standalone_player`) capable of 60 FPS playback, pause, single-stepping, and reset without linking GPGX, Musashi, or libretro.
+   - Decoupling future simulation logic from rendering via a clean native loop interface.
+
+**Decision:**
+1. **Color DAC Quantization Reconciliation:**
+   - In Mega Drive hardware, the VDP 9-bit DAC outputs 8 linear levels per RGB channel: `0, 34, 68, 102, 136, 170, 204, 238` (`value * 0x22`). This leaves headroom for highlight mode (`0xEE + 0x11 = 0xFF`).
+   - The original M12 software model normalized colors using `(value * 255 + 3) / 7` (`0, 36, 73, 109, 146, 182, 219, 255`).
+   - Introduced `ColorDacMode::GenesisPlusGx` and `ColorDacMode::ModelFullRange` in `src/genesis/vdp_rasterizer.hpp`.
+   - With `GenesisPlusGx` mode, standalone rasterizer achieves 100% bit-exact match against authentic emulator display:
+     * Frame 779: 71,680 / 71,680 pixels matched (0 diffs).
+     * Frame 200: 71,680 / 71,680 pixels matched (0 diffs).
+     * Frames 770..786: 1,218,560 / 1,218,560 pixels matched (0 diffs).
+2. **First Visible Animation (Standalone Player):**
+   - Implemented `oasis_standalone_player` linking only `oasis_core` and `oasis_platform` (Win32 GDI `StretchDIBits`).
+   - Interactive controls: Spacebar toggles pause/play, Right Arrow/N steps forward, Left Arrow/P steps backward, R resets to start.
+   - Paced at 60 FPS using steady clock; window title updates dynamically.
+   - Headless mode (`--headless`) for automated CI runs.
+3. **Simulation Boundary Decoupling:**
+   - Authored `src/game/standalone_game_loop.hpp` defining `FrameInput`, `SimulationState`, `IGameSimulation`, and `FrameSequenceSource`.
+
+**Consequences:**
+- Standalone C++ rasterizer proven bit-identical to real Genesis Plus GX display output across both static screens and dynamic gameplay sequences.
+- Complete independence from emulators at runtime: zero links to GPGX, Musashi, or libretro.
+- All files strictly adhere to <= 500 line rule.
+
 # ADR-20261108-M15-224-ENTITY-ENGINE-CLUSTER-NATIVE-COVERAGE-EXPANSION — Entity Engine Cluster Native Coverage Expansion: State 5 Safe Paths Execution (+206 Instructions across 40 Calls) with Fail-Closed Preflight on Z80 Arbitration Chains; Root Entry 0x0254EA Execution (+15,960 Instructions across 3,192 Calls) with Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Reaching 53,508 Instructions (+43.9% Relative Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, ORACLE_APPROVAL = PENDING)
 **Status:** Accepted
 **Date:** 2026-11-08

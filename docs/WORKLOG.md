@@ -1,3 +1,63 @@
+# 2026-11-08 — Milestone M16.1: STANDALONE FRAME SEQUENCER, INDEPENDENT PIXEL ORACLE, AND FIRST VISIBLE ANIMATION — Real Hardware Pixel Parity (100% Bit-Exact Match on 71,680 Pixels Across Frames 779 and 200, 0 Diffs); 17-Frame Gameplay Sequence Bit-Exact Parity (1,218,560 Pixels, 0 Diffs); Color DAC Model Reconciliation (v * 0x22 Mega Drive Hardware vs Full Scale); Standalone Interactive Win32/GDI Player (60 FPS, Space Pause, Step Forward/Back, Reset, Headless Mode); Next Game Loop Simulation Boundary Decoupled; Zero Emulator Links (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Repository Isolation & Difference Audit:
+    - Verify git worktree status and branch `standalone/m16` on `C:/Github/Sega-Thor-Standalone`.
+    - Treat original project `C:/Github/Sega-Thor` as strictly READ-ONLY.
+    - Resolve and explain file count discrepancy (895 governed files in clean standalone worktree vs >2100 in hybrid worktree with untracked scripts/artifacts).
+  * Phase 1 — Independent Oracle Audit:
+    - Trace origin of M16.0 reference framebuffers (`frame_779_reference.rgb24`, `frame_200_reference.rgb24`).
+    - Produce detailed Oracle Provenance Report classifying software compositor vs independent emulator framebuffer.
+  * Phase 2 & 3 — Real Display Pixels Capture & Snapshot Timing:
+    - Capture authentic display pixels directly from pinned emulator (BizHawk 2.11.1 / Genplus-gx) for Frame 779, Frame 200, and consecutive sequence 770..786.
+    - Verify capture timing strictly aligned at VBlank boundary without mid-frame beam artifacts.
+  * Phase 4 & 5 — Real Pixel Comparison & Gameplay Frame Sequence:
+    - Compare standalone native C++ rasterizer against authentic emulator display output.
+    - Reconcile Mega Drive DAC voltage quantization (`v * 0x22`) with software full-range scaling (`(v * 255 + 3) / 7`).
+    - Verify bit-exact 0-diff parity across entire 17-frame sequence (frames 770..786).
+  * Phase 6 — First Visible Animation (Standalone Native Player):
+    - Build standalone windowed application using `oasis::platform::NativeWindow` (Win32 GDI `StretchDIBits`).
+    - Paced 60 FPS playback, Spacebar pause/resume, single-step forward (Right/N), single-step backward (Left/P), reset (R).
+    - Window title dynamically reflects frame number and status.
+    - Support `--headless` mode for automated CI/regression testing.
+  * Phase 7 — Component Tests:
+    - Unit tests covering real emulator display match, sequence ordering, sprite animation change detection, pause/step state machine, and malformed fixture robustness.
+  * Phase 8 — Next Game Loop Interface:
+    - Define decoupled types and interfaces in `src/game/standalone_game_loop.hpp` separating input, state, simulation advancement, VDP state, and rendering.
+  * Governance & Validation:
+    - Zero dependencies on GPGX, Musashi, or libretro in standalone targets.
+    - File size limit: all 898 governed files strictly <= 500 lines.
+    - `git diff --check` green.
+
+- **Phase 0 Audit Results (File Scope Discrepancy):**
+  * `tests/check_file_limits.cmake` queries `git ls-files --cached --others --exclude-standard`.
+  * In `C:/Github/Sega-Thor`, the hybrid workspace contains ~1,243 untracked files (`--others`) in `src/tools/hybrid/`, `tests/`, and `tools/bizhawk-native-ring/` generated during dynamic experiments.
+  * In `C:/Github/Sega-Thor-Standalone`, the worktree is clean with only tracked governed files (898 files), all strictly <= 500 lines.
+
+- **Phase 1 Audit Results (Oracle Provenance):**
+  * M16.0 reference files were derived from `m12_vdp_frame_artifact.v1` (a Python-based compositor model consuming S8 VDP registers/VRAM), NOT captured directly from an independent emulator display.
+  * M16.1 established independent emulator display capture from BizHawk 2.11.1 / Genplus-gx.
+
+- **Phase 2-5 Results (Real Hardware DAC Parity):**
+  * Mega Drive VDP 9-bit DAC maps 3-bit color channels to 8 voltage levels: `0, 34, 68, 102, 136, 170, 204, 238` (`v * 0x22`).
+  * Full-range software scaling used `(v * 255 + 3) / 7` (`0, 36, 73, 109, 146, 182, 219, 255`).
+  * Implemented `ColorDacMode::GenesisPlusGx` alongside `ColorDacMode::ModelFullRange` in `src/genesis/vdp_rasterizer.hpp/.cpp`.
+  * Results against genuine emulator display:
+    - Frame 779: 71,680 / 71,680 pixels matched (0 diffs, SHA256: `9c2c1e57e68104859714e1f24d6cfe0b941aa0b79e30200ebd52ab2efe9a29d2`).
+    - Frame 200: 71,680 / 71,680 pixels matched (0 diffs, SHA256: `9efaa3202d894bba02c53eafe11567af663f4c1d993ff62762518af3abaa0756`).
+    - 17-Frame Sequence (770..786): 1,218,560 / 1,218,560 pixels matched (0 diffs).
+    - Sprite animation tick cleanly observed at frame 781 (SHA256 changes from `9c2c...` to `2ec3...`).
+
+- **Phase 6 Implementation (Standalone Player):**
+  * Built `oasis_standalone_player` (`src/tools/standalone_player.cpp`).
+  * Supported CLI options: `--sequence-dir`, `--fps`, `--scale`, `--dac`, `--headless`, `--max-frames`.
+  * Interactive controls: Space (Pause/Play), Right/N (Step forward), Left/P (Step backward), R (Reset), ESC (Clean exit).
+  * Binary inspection confirms zero references/links to GPGX, Musashi, or libretro.
+
+- **Phase 7 & 8 Results (Tests & Loop Interface):**
+  * Added `tests/standalone_sequencer_test.cpp` and expanded `tests/vdp_rasterizer_test.cpp`. All tests PASS.
+  * Designed `src/game/standalone_game_loop.hpp` (`FrameInput`, `SimulationState`, `IGameSimulation`, `FrameSequenceSource`, `StandaloneFrameContext`).
+
 # 2026-11-08 — Milestone M15.224: ENTITY ENGINE NATIVE COVERAGE EXPANSION — State 5 Safe Paths + Root Entry 0x0254EA Execution; Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions (+16,326 Native Instructions, +43.9% Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Stream Matches Maintained Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 222 Default Disabled, ORACLE_APPROVAL = PENDING)
 
 - **Concrete Task & Acceptance Criteria:**

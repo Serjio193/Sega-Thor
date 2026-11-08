@@ -79,8 +79,8 @@ This document provides a comprehensive navigational map of the canonical Beyond 
   - `0xD000`: Sprite Attribute Table base (H40).
   - `0xDC00`: HScroll Table base.
   - `0x0000`: Window Plane base (when enabled).
-- **Evidence Level**: `VERIFIED` (Bit-exact match on Frame 779 with 660 sprite pixels and Frame 200 with zero diffs).
-- **Recompilation Status**: `NATIVE` (Implemented standalone in `src/genesis/vdp_state.cpp`, `src/genesis/vdp_rasterizer.cpp`, verified in `tests/vdp_rasterizer_test.cpp`).
+- **Evidence Level**: `VERIFIED` (Bit-exact match on Frame 779, Frame 200, and 17-frame sequence 770..786 against both M12 model and authentic BizHawk 2.11.1 / Genplus-gx display output with zero diffs).
+- **Recompilation Status**: `NATIVE` (Implemented standalone in `src/genesis/vdp_state.cpp`, `src/genesis/vdp_rasterizer.cpp`, interactive windowed player in `src/tools/standalone_player.cpp`, verified in `tests/vdp_rasterizer_test.cpp` and `tests/standalone_sequencer_test.cpp`).
 
 ---
 

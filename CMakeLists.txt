@@ -56,6 +56,12 @@ endif()
 add_executable(oasis_standalone_first_pixel src/tools/standalone_first_pixel.cpp)
 target_link_libraries(oasis_standalone_first_pixel PRIVATE oasis_core)
 
+add_executable(oasis_standalone_player src/tools/standalone_player.cpp)
+target_link_libraries(oasis_standalone_player PRIVATE oasis_core oasis_platform)
+if(WIN32)
+    target_link_libraries(oasis_standalone_player PRIVATE user32 gdi32)
+endif()
+
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
