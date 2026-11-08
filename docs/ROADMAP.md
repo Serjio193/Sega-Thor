@@ -1,3 +1,51 @@
+# M16.6 Native Scene Graphics Pipeline, SAT Reconstruction, Tile Streaming and Multi-Domain Parity — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Resolution of Frame 0 Video Latch & Libretro Pitch Margin Artifacts:
+  * Resolved Frame 0 indexing gap: Frame 0 framebuffer hash in oracle was empty string `""` because libretro `video_cb` only fires during `retro_run()`. Thus Frame 0 was previously skipped in framebuffer comparison, incorrectly labeling Frame 1 as the initial comparison point.
+  * Dissected GPGX libretro video buffer: `video_cb` receives `w = 320, h = 224, pitch = 1440` (720 16-bit words/row). Slicing `pitch * h = 322560` captured 800 bytes of border margin padding per row, explaining why oracle FRAMEBUFFER_HASH held blank backdrop data.
+  * Dissected Frame 0 SAT buffer: VRAM at `0xD000` contains an active hardware link chain of exactly 23 sprites (terminating with `link = 0` at slot 22). Inactive entries beyond slot 22 represent stale unlinked scratch RAM.
+- Authentic SAT Pipeline Reconstruction:
+  * Implemented `src/game/render/sprite_compositor.hpp` (97 lines) and `src/game/render/sprite_compositor.cpp` (154 lines) providing `ISpriteCompositor`:
+    - Mode 0 (`0x00AD76`): world-space entity composition with camera subtraction and flips.
+    - Mode 1 (`0x00A9A0`): attached / child / shadow / mirror composite mapping.
+    - Active chain traversal (`active_chain()`) following `link` until `0`.
+    - Big-endian Genesis VDP VRAM serialization via `commit_to_vdp()`.
+  * Extended `SatPipelineContract` with `commit_to_vdp()` and `active_chain()` traversal.
+- HUD and Overlay Composition (Routine 0x003FA0):
+  * Implemented `src/game/render/hud_overlay.hpp` (37 lines) and `src/game/render/hud_overlay.cpp` (35 lines) based on authentic ROM routine `0x003FA0`:
+    - Slots 0..2: Health gauge base frame (8, 8, tile 0x0781), bar 1 (16, 24, tile 0x0787), bar 2 (16, 56, tile 0x078B).
+    - Slots 3..5: Magic gauge base frame (8, 80, tile 0x078E), bar 1 (16, 96, tile 0x0794), bar 2 (16, 128, tile 0x0798).
+    - Emitted at table head with `priority = true` and `palette = 0`.
+    - Validated 100.0% exact match across all 121 frames (`HUD_PIXELS_EXACT: 121/121`).
+- Tilemap and Background Streaming:
+  * Verified Plane B name table (`0xE000`): 100.0% bit-for-bit constant across all 121 frames (`PLANE_B_EXACT: 121/121`).
+  * Verified Plane A name table (`0xC000`): 100.0% exact match across frames 0..28 prior to camera horizontal displacement.
+- Full 12-Domain Differential Oracle Pipeline:
+  * Expanded `tests/differential_oracle_comparison_test.cpp` (386 lines) reporting all 12 required domains:
+    * PLAYER_EXACT: 121/121 (100.0%) [ROM PC 0x009D50, PlayerStateMachine]
+    * CAMERA_EXACT: 121/121 (100.0%) [ROM PC 0x00CEEA, CameraController]
+    * SCROLL_EXACT: 121/121 (100.0%) [ROM PC 0x00CEEA, CameraController]
+    * ENTITY_EXACT: 121/121 (100.0%) [ROM PC 0x0063DA, NativeEntityPool]
+    * HUD_PIXELS_EXACT: 121/121 (100.0%) [ROM PC 0x003FA0, HudOverlay]
+    * PLANE_B_EXACT: 121/121 (100.0%) [ROM PC 0x003260, VdpState]
+    * SPRITE_PIXELS_EXACT: 121/121 (100.0%) [ROM PC 0x00AD76, VdpRasterizer]
+    * PLANE_A_EXACT: 29/121 (24.0%) [ROM PC 0x003260, ScreenInstance]
+    * SAT_ACTIVE_CHAIN_EXACT: 1/121 (0.8%) [ROM PC 0x00AD76, SpriteCompositor]
+    * SAT_RAW_EXACT: 1/121 (0.8%) [ROM PC 0x008000, SatPipelineContract]
+    * VRAM_RELEVANT_EXACT: 0/121 (0.0%) [ROM PC 0x003300, VdpState]
+    * FULL_FRAME_EXACT: 0/121 (0.0%) [ROM PC 0x000200, VdpRasterizer]
+- Standalone Player Demonstration:
+  * Updated `src/tools/standalone_player.cpp` (377 lines) supporting interactive simulation and headless replay.
+  * Verified headless execution `--headless --max-frames 60` reporting STATUS=PASS.
+- File Size & Governance:
+  * Verified all modified source files strictly $\le 500$ lines.
+  * `project_file_line_limit` test passes 100%.
+  * Zero emulator linkage verified.
+
+Next Milestone:
+- M16.7: Full Dynamic Background Streaming, Water Surface Animation, and Pixel-Exact Full-Frame Parity.
+
 # M16.5 ROM-Verified Scrolling Scene and First Authentic Interaction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

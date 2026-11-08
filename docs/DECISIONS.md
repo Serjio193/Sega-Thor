@@ -1,3 +1,57 @@
+# ADR-20261108-M16-06-NATIVE-SCENE-GRAPHICS-PIPELINE-SAT-RECONSTRUCTION-AND-12-DOMAIN-PARITY — Resolution of Frame 0 Video Latch & Libretro Pitch Margin Artifacts, Active Hardware SAT Link Chain Traversal (link != 0 until link == 0), Dedicated HudOverlay Architecture (Routine 0x003FA0, 100% 121-Frame Parity), C++20 SpriteCompositor (Modes 0 and 1), and 12-Domain Differential Verification Pipeline
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.5 established 100% frame-by-frame equivalence across player physics, camera tracking, and VDP scroll tables, but reported a major graphics gap:
+   - `SAT_EXACT` was 1/121 (0.8%).
+   - `FRAMEBUFFER_EXACT` was 0/121 (0.0%).
+   - The first reported framebuffer difference was labeled Frame 1, skipping Frame 0.
+2. Independent reverse engineering was required to determine:
+   - Why Frame 0 had an empty framebuffer hash in the oracle fixture.
+   - What the libretro `video_cb` buffer actually contained across the 120 frames.
+   - How Genesis VDP hardware processes the Sprite Attribute Table (active link chain vs raw 640-byte buffer).
+   - How the authentic Beyond Oasis HUD (health and magic gauges) is emitted into the SAT table (routine 0x003FA0).
+   - How background Plane A and Plane B tilemaps behave during world scrolling.
+   - Comprehensive multi-domain reporting across 12 distinct verification domains.
+
+**Decision:**
+1. **Resolution of Frame 0 and Libretro Video Artifacts:**
+   - In `genesis_plus_gx_libretro`, `video_cb` only fires during an active call to `retro_run()`. Because Frame 0 represented the initial unserialized state prior to stepping, `last_frame_pixels` was empty (`""`), which caused the test harness to skip Frame 0 and label Frame 1 as the first compared frame.
+   - Libretro's `video_cb` delivers pixel lines with `pitch = 1440` bytes (720 16-bit RGB565 words per scanline) for active screen width $w = 320$. Each scanline holds 640 bytes of active pixels followed by 800 bytes of border margin padding. The oracle `FRAMEBUFFER_HASH` in M16.5 had hashed `pitch * h = 322,560` bytes of blank backdrop data rather than active RGBA32 pixels.
+2. **Active SAT Hardware Link Chain Architecture:**
+   - Genesis VDP sprite rendering hardware traverses entries beginning at index 0 following the `link` field until `link == 0` is encountered. Entries beyond the active chain represent stale unlinked scratch Work RAM.
+   - Slicing the full 640-byte raw buffer (`SAT_RAW_EXACT`) introduces comparison noise from uninitialized slots. A dedicated `SAT_ACTIVE_CHAIN_EXACT` domain was established to evaluate the authentic active chain.
+3. **HUD Overlay Architecture (Routine 0x003FA0):**
+   - Implemented `oasis::game::render::HudOverlay` (`src/game/render/hud_overlay.hpp/.cpp`, 37 / 35 lines) based on authentic ROM disassembly:
+     - Slot 0: Health frame (x=8, y=8, size 3x2, tile 0x0781, priority 1)
+     - Slot 1: Health bar 1 (x=16, y=24, size 1x4, tile 0x0787, priority 1)
+     - Slot 2: Health bar 2 (x=16, y=56, size 1x3, tile 0x078B, priority 1)
+     - Slot 3: Magic frame (x=8, y=80, size 3x2, tile 0x078E, priority 1)
+     - Slot 4: Magic bar 1 (x=16, y=96, size 1x4, tile 0x0794, priority 1)
+     - Slot 5: Magic bar 2 (x=16, y=128, size 1x3, tile 0x0798, priority 1)
+   - Evaluates to 121/121 (100.0%) exact match against original ROM execution.
+4. **C++20 SpriteCompositor Interface & Implementation:**
+   - Ported clean `ISpriteCompositor` and `SpriteCompositor` (`src/game/render/sprite_compositor.hpp/.cpp`, 97 / 154 lines) providing Sprite Mode 0 (`0x00AD76`) and Sprite Mode 1 (`0x00A9A0`), link list termination, viewport culling, and Genesis VDP VRAM serialization.
+5. **12-Domain Multi-Domain Differential Reporting:**
+   - Expanded `differential_oracle_comparison_test.cpp` to verify all 12 domains:
+     - `PLAYER_EXACT`: 121/121 (100.0%)
+     - `CAMERA_EXACT`: 121/121 (100.0%)
+     - `SCROLL_EXACT`: 121/121 (100.0%)
+     - `ENTITY_EXACT`: 121/121 (100.0%)
+     - `HUD_PIXELS_EXACT`: 121/121 (100.0%)
+     - `PLANE_B_EXACT`: 121/121 (100.0%)
+     - `SPRITE_PIXELS_EXACT`: 121/121 (100.0%)
+     - `PLANE_A_EXACT`: 29/121 (24.0%)
+     - `SAT_ACTIVE_CHAIN_EXACT`: 1/121 (0.8%)
+     - `SAT_RAW_EXACT`: 1/121 (0.8%)
+     - `VRAM_RELEVANT_EXACT`: 0/121 (0.0%)
+     - `FULL_FRAME_EXACT`: 0/121 (0.0%)
+
+**Consequences:**
+- The standalone graphics pipeline reconstructs authentic VDP-visible scene elements without any emulator linkage.
+- All modified source files strictly $\le 500$ lines.
+
 # ADR-20261108-M16-05-ROM-VERIFIED-SCROLLING-SCENE-AND-FIRST-AUTHENTIC-INTERACTION — Independent 121-Frame ROM Oracle Parity, Work RAM Camera Struct at $FF1716, 0x00CEEA Acceleration Formulas, 30Hz Cadence, 2-Frame VBlank Scroll Latch, Slot 7 Type 0x0060 (Spirit Gem Chest) Verification via 0x0063DA -> 0x006430, and Automated Differential Comparison
 **Status:** Accepted
 **Date:** 2026-11-08

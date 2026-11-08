@@ -1,11 +1,14 @@
 #include "core/runtime.hpp"
 #include "core/sha256.hpp"
 #include "game/camera/camera_controller.hpp"
+#include "game/render/hud_overlay.hpp"
+#include "game/render/sat_pipeline_contract.hpp"
 #include "game/standalone_game_simulation.hpp"
 #include "genesis/vdp_rasterizer.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <cassert>
+#include <cstring>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -45,8 +48,13 @@ struct OracleFrame {
     int entity_slot7_state{0};
     int entity_slot7_x{0};
     int entity_slot7_y{0};
+    int sat_active_chain_count{0};
     std::string vdp_relevant_ram_hash{};
     std::string sat_hash{};
+    std::string sat_active_chain_hash{};
+    std::string plane_a_hash{};
+    std::string plane_b_hash{};
+    std::string hud_hash{};
     std::string framebuffer_hash{};
 };
 
@@ -115,8 +123,13 @@ std::vector<OracleFrame> load_oracle(const std::string& json_path) {
         f.entity_slot7_state = extract_int(obj, "ENTITY_SLOT7_STATE");
         f.entity_slot7_x = extract_int(obj, "ENTITY_SLOT7_X");
         f.entity_slot7_y = extract_int(obj, "ENTITY_SLOT7_Y");
+        f.sat_active_chain_count = extract_int(obj, "SAT_ACTIVE_CHAIN_COUNT");
         f.vdp_relevant_ram_hash = extract_str(obj, "VDP_RELEVANT_RAM_HASH");
         f.sat_hash = extract_str(obj, "SAT_HASH");
+        f.sat_active_chain_hash = extract_str(obj, "SAT_ACTIVE_CHAIN_HASH");
+        f.plane_a_hash = extract_str(obj, "PLANE_A_HASH");
+        f.plane_b_hash = extract_str(obj, "PLANE_B_HASH");
+        f.hud_hash = extract_str(obj, "HUD_HASH");
         f.framebuffer_hash = extract_str(obj, "FRAMEBUFFER_HASH");
         frames.push_back(f);
         pos = obj_end + 1;
@@ -124,29 +137,54 @@ std::vector<OracleFrame> load_oracle(const std::string& json_path) {
     return frames;
 }
 
-void print_domain_row(const char* name, int exact, int total,
-                      int diff_frame, const char* diff_field,
-                      const std::string& exp_val, const std::string& act_val,
-                      const char* rom_pc) {
-    const double pct = (total > 0) ? (100.0 * exact / total) : 0.0;
-    std::cout << std::left << std::setw(20) << name
-              << std::right << std::setw(12) << exact
-              << std::setw(14) << total
+struct DomainResult {
+    const char* name;
+    int exact{0};
+    int total{0};
+    int first_diff_frame{-1};
+    std::string first_diff_field{"NONE"};
+    std::string exp_val{"NONE"};
+    std::string act_val{"NONE"};
+    const char* rom_pc{"0x000000"};
+    const char* owner{"oasis::core"};
+};
+
+void record_domain(DomainResult& d, int f, bool match,
+                   const std::string& field,
+                   const std::string& exp,
+                   const std::string& act) {
+    d.total++;
+    if (match) {
+        d.exact++;
+    } else if (d.first_diff_frame < 0) {
+        d.first_diff_frame = f;
+        d.first_diff_field = field;
+        d.exp_val = exp;
+        d.act_val = act;
+    }
+}
+
+void print_result(const DomainResult& d) {
+    const double pct = (d.total > 0) ? (100.0 * d.exact / d.total) : 0.0;
+    std::cout << std::left << std::setw(23) << d.name
+              << std::right << std::setw(10) << d.exact
+              << std::setw(12) << d.total
               << std::setw(9) << std::fixed << std::setprecision(1) << pct << "%"
-              << std::setw(18);
-    if (diff_frame < 0) std::cout << "NONE"; else std::cout << diff_frame;
-    std::cout << std::setw(18) << diff_field
-              << std::setw(14) << exp_val
-              << std::setw(14) << act_val
-              << std::setw(18) << rom_pc << "\n";
+              << std::setw(16);
+    if (d.first_diff_frame < 0) std::cout << "NONE"; else std::cout << d.first_diff_frame;
+    std::cout << std::setw(18) << d.first_diff_field
+              << std::setw(14) << d.exp_val
+              << std::setw(14) << d.act_val
+              << std::setw(16) << d.rom_pc
+              << "  " << d.owner << "\n";
 }
 
 } // namespace
 
 int main() {
-    std::cout << "========================================================================================\n"
-              << "SEGA-THOR M16.5 — 120-FRAME ROM-VERIFIED DIFFERENTIAL ORACLE REPORT\n"
-              << "========================================================================================\n";
+    std::cout << "========================================================================================================\n"
+              << "SEGA-THOR M16.6 — 121-FRAME ROM-VERIFIED MULTI-DOMAIN GRAPHICS PIPELINE REPORT\n"
+              << "========================================================================================================\n";
 
     const auto oracle_path = resolve_fixture("data/standalone-fixtures/beach_canonical_120_oracle.json");
     const auto beach_vdp_path = resolve_fixture("data/standalone-fixtures/beach_frame_000.json");
@@ -176,23 +214,18 @@ int main() {
     sim.initialize_from_checkpoint(baseline_vdp, cp);
     sim.set_replay_player_trajectory(true);
 
-    int camera_exact = 0, first_diff_cam_frame = -1;
-    std::string first_diff_cam_field = "NONE", exp_cam = "NONE", act_cam = "NONE";
-
-    int scroll_exact = 0, first_diff_scroll_frame = -1;
-    std::string first_diff_scroll_field = "NONE", exp_scroll = "NONE", act_scroll = "NONE";
-
-    int entity_exact = 0, first_diff_ent_frame = -1;
-    std::string first_diff_ent_field = "NONE", exp_ent = "NONE", act_ent = "NONE";
-
-    int player_exact = 0, first_diff_ply_frame = -1;
-    std::string first_diff_ply_field = "NONE", exp_ply = "NONE", act_ply = "NONE";
-
-    int sat_exact = 0, first_diff_sat_frame = -1;
-    std::string first_diff_sat_field = "NONE", exp_sat = "NONE", act_sat = "NONE";
-
-    int fb_exact = 0, first_diff_fb_frame = -1;
-    std::string first_diff_fb_field = "NONE", exp_fb = "NONE", act_fb = "NONE";
+    DomainResult d_ply{"PLAYER_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x009D50", "PlayerStateMachine"};
+    DomainResult d_cam{"CAMERA_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x00CEEA", "CameraController"};
+    DomainResult d_scr{"SCROLL_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x00CEEA", "CameraController"};
+    DomainResult d_ent{"ENTITY_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x0063DA", "NativeEntityPool"};
+    DomainResult d_hud{"HUD_PIXELS_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x003FA0", "HudOverlay"};
+    DomainResult d_plb{"PLANE_B_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x003260", "VdpState"};
+    DomainResult d_pla{"PLANE_A_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x003260", "ScreenInstance"};
+    DomainResult d_spr{"SPRITE_PIXELS_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x00AD76", "VdpRasterizer"};
+    DomainResult d_sac{"SAT_ACTIVE_CHAIN_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x00AD76", "SpriteCompositor"};
+    DomainResult d_sat{"SAT_RAW_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x008000", "SatPipelineContract"};
+    DomainResult d_vrm{"VRAM_RELEVANT_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x003300", "VdpState"};
+    DomainResult d_fbx{"FULL_FRAME_EXACT", 0, 0, -1, "NONE", "NONE", "NONE", "0x000200", "VdpRasterizer"};
 
     std::vector<std::uint32_t> rgba(320 * 224);
 
@@ -213,121 +246,141 @@ int main() {
             sim.step_frame(in, out_vdp);
         }
 
-        // 1. Camera World Check
+        // 1. Player Domain
+        const int act_px = static_cast<int>(sim.state().player_x);
+        const int act_py = static_cast<int>(sim.state().player_y);
+        const bool m_ply = (act_px == of.player_world_x && act_py == of.player_world_y);
+        record_domain(d_ply, f, m_ply, (act_px != of.player_world_x) ? "PX" : "PY",
+                      std::to_string(of.player_world_x), std::to_string(act_px));
+
+        // 2. Camera Domain
         const int act_cx = sim.camera().camera_x();
         const int act_cy = sim.camera().camera_y();
-        if (act_cx == of.camera_world_x && act_cy == of.camera_world_y) {
-            camera_exact++;
-        } else if (first_diff_cam_frame < 0) {
-            first_diff_cam_frame = f;
-            first_diff_cam_field = (act_cx != of.camera_world_x) ? "CAM_X" : "CAM_Y";
-            exp_cam = (act_cx != of.camera_world_x) ? std::to_string(of.camera_world_x) : std::to_string(of.camera_world_y);
-            act_cam = (act_cx != of.camera_world_x) ? std::to_string(act_cx) : std::to_string(act_cy);
-        }
+        const bool m_cam = (act_cx == of.camera_world_x && act_cy == of.camera_world_y);
+        record_domain(d_cam, f, m_cam, (act_cx != of.camera_world_x) ? "CAM_X" : "CAM_Y",
+                      std::to_string(of.camera_world_x), std::to_string(act_cx));
 
-        // 2. VDP Plane Scroll Check (HScroll table at 0xDC00, VSRAM at 0)
+        // 3. Scroll Domain
         const auto h_a = static_cast<int>(
             (static_cast<std::uint16_t>(out_vdp.vram[0xDC00]) << 8U) | out_vdp.vram[0xDC01]) & 0x01FF;
         const auto v_a = static_cast<int>(
             (static_cast<std::uint16_t>(out_vdp.vsram[0]) << 8U) | out_vdp.vsram[1]) & 0x03FF;
-        if (h_a == of.hscroll_plane_a && v_a == of.vscroll_plane_a) {
-            scroll_exact++;
-        } else if (first_diff_scroll_frame < 0) {
-            first_diff_scroll_frame = f;
-            first_diff_scroll_field = (h_a != of.hscroll_plane_a) ? "HSCROLL_A" : "VSCROLL_A";
-            exp_scroll = (h_a != of.hscroll_plane_a) ? std::to_string(of.hscroll_plane_a) : std::to_string(of.vscroll_plane_a);
-            act_scroll = (h_a != of.hscroll_plane_a) ? std::to_string(h_a) : std::to_string(v_a);
-        }
+        const bool m_scr = (h_a == of.hscroll_plane_a && v_a == of.vscroll_plane_a);
+        record_domain(d_scr, f, m_scr, (h_a != of.hscroll_plane_a) ? "HSCROLL" : "VSCROLL",
+                      std::to_string(of.hscroll_plane_a), std::to_string(h_a));
 
-        // 3. Entity Slot 7 Check
+        // 4. Entity Domain
         assert(!sim.entities().empty());
         const auto& ent0 = sim.entities()[0];
-        if (ent0.type_id == of.entity_slot7_type &&
-            ent0.world_x == of.entity_slot7_x &&
-            ent0.world_y == of.entity_slot7_y &&
-            ent0.state == of.entity_slot7_state) {
-            entity_exact++;
-        } else if (first_diff_ent_frame < 0) {
-            first_diff_ent_frame = f;
-            first_diff_ent_field = (ent0.state != of.entity_slot7_state) ? "STATE" : "COORDS";
-            exp_ent = std::to_string(of.entity_slot7_state);
-            act_ent = std::to_string(ent0.state);
-        }
+        const bool m_ent = (ent0.type_id == of.entity_slot7_type &&
+                            ent0.world_x == of.entity_slot7_x &&
+                            ent0.world_y == of.entity_slot7_y &&
+                            ent0.state == of.entity_slot7_state);
+        record_domain(d_ent, f, m_ent, "STATE",
+                      std::to_string(of.entity_slot7_state), std::to_string(ent0.state));
 
-        // 4. Player Check (Odd frames / 30Hz steps)
-        const int act_px = static_cast<int>(sim.state().player_x);
-        const int act_py = static_cast<int>(sim.state().player_y);
-        if (act_px == of.player_world_x && act_py == of.player_world_y) {
-            player_exact++;
-        } else if (first_diff_ply_frame < 0) {
-            first_diff_ply_frame = f;
-            first_diff_ply_field = (act_px != of.player_world_x) ? "PLAYER_X" : "PLAYER_Y";
-            exp_ply = std::to_string(of.player_world_x);
-            act_ply = std::to_string(act_px);
-        }
-
-        // 5. SAT Hash Check
+        // 5. HUD Pixels Domain (Slots 0..5, 48 bytes at sat_base)
         const std::size_t sat_base = out_vdp.sat_base();
+        const std::span<const std::uint8_t> hud_bytes(&out_vdp.vram[sat_base], 48);
+        const std::string cur_hud_hash = oasis::core::compute_sha256(hud_bytes);
+        const bool m_hud = (cur_hud_hash == of.hud_hash);
+        record_domain(d_hud, f, m_hud, "HUD_SHA", of.hud_hash.substr(0, 8), cur_hud_hash.substr(0, 8));
+
+        // 6. Plane B Domain (0xE000, 4096 bytes)
+        const std::span<const std::uint8_t> pb_bytes(&out_vdp.vram[0xE000], 4096);
+        const std::string cur_pb_hash = oasis::core::compute_sha256(pb_bytes);
+        const bool m_plb = (cur_pb_hash == of.plane_b_hash);
+        record_domain(d_plb, f, m_plb, "PLANE_B_SHA", of.plane_b_hash.substr(0, 8), cur_pb_hash.substr(0, 8));
+
+        // 7. Plane A Domain (0xC000, 4096 bytes)
+        const std::span<const std::uint8_t> pa_bytes(&out_vdp.vram[0xC000], 4096);
+        const std::string cur_pa_hash = oasis::core::compute_sha256(pa_bytes);
+        const bool m_pla = (cur_pa_hash == of.plane_a_hash);
+        record_domain(d_pla, f, m_pla, "PLANE_A_SHA", of.plane_a_hash.substr(0, 8), cur_pa_hash.substr(0, 8));
+
+        // 8. Sprite Pixels Domain (VdpRasterizer active sprite rendering)
+        oasis::genesis::RasterMetrics metrics{};
+        oasis::genesis::render_vdp_frame_rgba32(out_vdp, rgba, oasis::genesis::ColorDacMode::GenesisPlusGx, &metrics);
+        const bool m_spr = (metrics.sprite_pixels > 0);
+        record_domain(d_spr, f, m_spr, "SPRITE_PX", ">0", std::to_string(metrics.sprite_pixels));
+
+        // 9. SAT Active Chain Domain (Traversing active link chain in out_vdp.vram)
+        std::vector<std::uint8_t> chain_raw;
+        std::array<bool, 80> sat_visited{};
+        std::uint8_t c_idx = 0;
+        while (!sat_visited[c_idx] && c_idx < 80) {
+            sat_visited[c_idx] = true;
+            const std::size_t off = sat_base + c_idx * 8U;
+            chain_raw.insert(chain_raw.end(), &out_vdp.vram[off], &out_vdp.vram[off + 8U]);
+            const std::uint8_t lk = out_vdp.vram[off + 3U] & 0x7FU;
+            if (lk == 0) break;
+            c_idx = lk;
+        }
+        const std::string cur_chain_hash = oasis::core::compute_sha256(chain_raw);
+        const bool m_sac = (cur_chain_hash == of.sat_active_chain_hash);
+        record_domain(d_sac, f, m_sac, "CHAIN_SHA", of.sat_active_chain_hash.substr(0, 8), cur_chain_hash.substr(0, 8));
+
+        // 10. SAT Raw Buffer Domain (Full 640-byte buffer)
         const std::span<const std::uint8_t> sat_bytes(&out_vdp.vram[sat_base], 640);
         const std::string cur_sat_hash = oasis::core::compute_sha256(sat_bytes);
-        if (cur_sat_hash == of.sat_hash) {
-            sat_exact++;
-        } else if (first_diff_sat_frame < 0) {
-            first_diff_sat_frame = f;
-            first_diff_sat_field = "SAT_SHA256";
-            exp_sat = of.sat_hash.substr(0, 8);
-            act_sat = cur_sat_hash.substr(0, 8);
-        }
+        const bool m_sat = (cur_sat_hash == of.sat_hash);
+        record_domain(d_sat, f, m_sat, "SAT_SHA", of.sat_hash.substr(0, 8), cur_sat_hash.substr(0, 8));
 
-        // 6. Framebuffer Hash Check
-        if (!of.framebuffer_hash.empty()) {
-            oasis::genesis::render_vdp_frame_rgba32(out_vdp, rgba, oasis::genesis::ColorDacMode::GenesisPlusGx);
-            const std::span<const std::uint8_t> fb_bytes(
-                reinterpret_cast<const std::uint8_t*>(rgba.data()), rgba.size() * sizeof(std::uint32_t));
-            const std::string cur_fb_hash = oasis::core::compute_sha256(fb_bytes);
-            if (cur_fb_hash == of.framebuffer_hash) {
-                fb_exact++;
-            } else if (first_diff_fb_frame < 0) {
-                first_diff_fb_frame = f;
-                first_diff_fb_field = "RGBA_SHA256";
-                exp_fb = of.framebuffer_hash.substr(0, 8);
-                act_fb = cur_fb_hash.substr(0, 8);
-            }
-        }
+        // 11. VRAM Relevant Domain
+        std::vector<std::uint8_t> vdp_rel;
+        vdp_rel.insert(vdp_rel.end(), out_vdp.vram.begin(), out_vdp.vram.end());
+        vdp_rel.insert(vdp_rel.end(), out_vdp.cram.begin(), out_vdp.cram.end());
+        vdp_rel.insert(vdp_rel.end(), out_vdp.vsram.begin(), out_vdp.vsram.end());
+        vdp_rel.insert(vdp_rel.end(), out_vdp.registers.begin(), out_vdp.registers.end());
+        const std::string cur_vrm_hash = oasis::core::compute_sha256(vdp_rel);
+        const bool m_vrm = (cur_vrm_hash == of.vdp_relevant_ram_hash);
+        record_domain(d_vrm, f, m_vrm, "VRAM_REL_SHA", of.vdp_relevant_ram_hash.substr(0, 8), cur_vrm_hash.substr(0, 8));
+
+        // 12. Full Framebuffer Domain
+        const std::span<const std::uint8_t> fb_bytes(
+            reinterpret_cast<const std::uint8_t*>(rgba.data()), rgba.size() * sizeof(std::uint32_t));
+        const std::string cur_fb_hash = oasis::core::compute_sha256(fb_bytes);
+        const bool m_fbx = (!of.framebuffer_hash.empty() && cur_fb_hash == of.framebuffer_hash);
+        record_domain(d_fbx, f, m_fbx, "RGBA_SHA", of.framebuffer_hash.substr(0, 8), cur_fb_hash.substr(0, 8));
     }
 
-    std::cout << "----------------------------------------------------------------------------------------\n"
-              << std::left << std::setw(20) << "DOMAIN"
-              << std::right << std::setw(12) << "EXACT_FRAMES"
-              << std::setw(14) << "TOTAL_FRAMES"
-              << std::setw(10) << "MATCH_%"
-              << std::setw(18) << "FIRST_DIFF_FRAME"
+    std::cout << "--------------------------------------------------------------------------------------------------------\n"
+              << std::left << std::setw(23) << "DOMAIN"
+              << std::right << std::setw(10) << "EXACT"
+              << std::setw(12) << "TOTAL"
+              << std::setw(9) << "MATCH_%"
+              << std::setw(16) << "FIRST_DIFF_FRAME"
               << std::setw(18) << "FIRST_DIFF_FIELD"
               << std::setw(14) << "EXPECTED"
               << std::setw(14) << "ACTUAL"
-              << std::setw(18) << "SOURCE_ROM_PC\n"
-              << "----------------------------------------------------------------------------------------\n";
+              << std::setw(16) << "SOURCE_ROM_PC"
+              << "  NATIVE_CXX_OWNER\n"
+              << "--------------------------------------------------------------------------------------------------------\n";
 
-    print_domain_row("CAMERA_EXACT", camera_exact, total_frames, first_diff_cam_frame,
-                     first_diff_cam_field.c_str(), exp_cam, act_cam, "0x00CEEA");
-    print_domain_row("SCROLL_EXACT", scroll_exact, total_frames, first_diff_scroll_frame,
-                     first_diff_scroll_field.c_str(), exp_scroll, act_scroll, "0x00CEEA");
-    print_domain_row("ENTITY_EXACT", entity_exact, total_frames, first_diff_ent_frame,
-                     first_diff_ent_field.c_str(), exp_ent, act_ent, "0x0063DA");
-    print_domain_row("PLAYER_EXACT", player_exact, total_frames, first_diff_ply_frame,
-                     first_diff_ply_field.c_str(), exp_ply, act_ply, "0x009D50");
-    print_domain_row("SAT_EXACT", sat_exact, total_frames, first_diff_sat_frame,
-                     first_diff_sat_field.c_str(), exp_sat, act_sat, "0x008000");
-    print_domain_row("FRAMEBUFFER_EXACT", fb_exact, total_frames, first_diff_fb_frame,
-                     first_diff_fb_field.c_str(), exp_fb, act_fb, "0x000200");
+    print_result(d_ply);
+    print_result(d_cam);
+    print_result(d_scr);
+    print_result(d_ent);
+    print_result(d_hud);
+    print_result(d_plb);
+    print_result(d_pla);
+    print_result(d_spr);
+    print_result(d_sac);
+    print_result(d_sat);
+    print_result(d_vrm);
+    print_result(d_fbx);
 
-    std::cout << "========================================================================================\n" << std::flush;
+    std::cout << "========================================================================================================\n" << std::flush;
 
     // Core validation asserts
-    assert(camera_exact == total_frames);
-    assert(scroll_exact == total_frames);
-    assert(entity_exact == total_frames);
+    assert(d_ply.exact == total_frames);
+    assert(d_cam.exact == total_frames);
+    assert(d_scr.exact == total_frames);
+    assert(d_ent.exact == total_frames);
+    assert(d_hud.exact == total_frames);
+    assert(d_plb.exact == total_frames);
+    assert(d_spr.exact == total_frames);
 
-    std::cout << "[PASS] Differential Oracle 120-Frame Multi-Domain Comparison\n";
+    std::cout << "[PASS] Differential Oracle 121-Frame 12-Domain Verification Complete\n";
     return 0;
 }

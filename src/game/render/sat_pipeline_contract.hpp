@@ -4,6 +4,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <vector>
+
+namespace oasis::genesis {
+struct VdpState;
+}
 
 namespace oasis::game::render {
 
@@ -14,6 +19,8 @@ struct MegaDriveSatEntry {
     std::uint8_t link{};         // Next sprite index in chain (0 terminates)
     std::uint16_t attr{};        // Priority (bit 15), Palette (14..13), VFlip (12), HFlip (11), Tile (10..0)
     std::uint16_t x_pos{};       // Screen X + 128 (bits 9..0)
+
+    bool operator==(const MegaDriveSatEntry&) const noexcept = default;
 };
 static_assert(sizeof(MegaDriveSatEntry) == 8, "MegaDriveSatEntry must be exactly 8 bytes");
 
@@ -46,6 +53,12 @@ public:
 
     // Finalizes the frame: terminates link chain (link=0) and marks dirty for VDP DMA.
     SatFrameSummary finalize_frame() noexcept;
+
+    // Commits active SAT entries into VDP VRAM at the configured SAT base address.
+    void commit_to_vdp(genesis::VdpState& vdp) const noexcept;
+
+    // Traverses the active hardware link chain starting at slot 0 until link==0.
+    [[nodiscard]] std::vector<MegaDriveSatEntry> active_chain() const;
 
     [[nodiscard]] std::uint16_t active_count() const noexcept { return active_count_; }
     [[nodiscard]] std::span<const std::uint8_t> raw_buffer() const noexcept;

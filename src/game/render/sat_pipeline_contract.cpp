@@ -1,4 +1,5 @@
 #include "game/render/sat_pipeline_contract.hpp"
+#include "genesis/vdp_state.hpp"
 
 #include <cstring>
 
@@ -53,7 +54,7 @@ bool SatPipelineContract::emit_piece(int screen_x, int screen_y,
     entry.size = size_byte;
     entry.link = static_cast<std::uint8_t>(active_count_ + 1U); // Link to subsequent entry
     entry.attr = attr;
-    entry.x_pos = static_cast<std::uint16_t>(vdp_x & 0x03FFU);
+    entry.x_pos = static_cast<std::uint16_t>(vdp_x & 0x01FFU);
 
     active_count_++;
     dirty_ = true;
@@ -76,6 +77,38 @@ SatFrameSummary SatPipelineContract::finalize_frame() noexcept {
     summary.buffer_bytes = static_cast<std::uint16_t>(active_count_ * sizeof(MegaDriveSatEntry));
     summary.is_dirty = dirty_;
     return summary;
+}
+
+void SatPipelineContract::commit_to_vdp(genesis::VdpState& vdp) const noexcept {
+    const std::size_t sat_base = (static_cast<std::size_t>(vdp.registers[5] & 0x7FU)) << 9U;
+    for (std::size_t i = 0; i < active_count_; ++i) {
+        const auto& e = entries_[i];
+        const std::size_t addr = sat_base + (i * 8U);
+        if (addr + 8U <= vdp.vram.size()) {
+            vdp.vram[addr + 0U] = static_cast<std::uint8_t>((e.y_pos >> 8U) & 0xFFU);
+            vdp.vram[addr + 1U] = static_cast<std::uint8_t>(e.y_pos & 0xFFU);
+            vdp.vram[addr + 2U] = e.size;
+            vdp.vram[addr + 3U] = e.link;
+            vdp.vram[addr + 4U] = static_cast<std::uint8_t>((e.attr >> 8U) & 0xFFU);
+            vdp.vram[addr + 5U] = static_cast<std::uint8_t>(e.attr & 0xFFU);
+            vdp.vram[addr + 6U] = static_cast<std::uint8_t>((e.x_pos >> 8U) & 0xFFU);
+            vdp.vram[addr + 7U] = static_cast<std::uint8_t>(e.x_pos & 0xFFU);
+        }
+    }
+}
+
+std::vector<MegaDriveSatEntry> SatPipelineContract::active_chain() const {
+    std::vector<MegaDriveSatEntry> chain;
+    chain.reserve(active_count_);
+    std::array<bool, kMaxSprites> visited{};
+    std::uint8_t idx = 0;
+    while (!visited[idx] && idx < active_count_) {
+        visited[idx] = true;
+        chain.push_back(entries_[idx]);
+        if (entries_[idx].link == 0) break;
+        idx = entries_[idx].link;
+    }
+    return chain;
 }
 
 std::span<const std::uint8_t> SatPipelineContract::raw_buffer() const noexcept {

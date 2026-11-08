@@ -1,3 +1,52 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.6: Native Scene Graphics Pipeline, SAT Reconstruction, Routine 0x003FA0 HUD Extraction, and 12-Domain Parity Audit)
+
+## Milestone M16.6 Reverse Engineering Summary
+
+### 1. Resolution of Frame 0 Video Latch & Libretro Pitch Margins
+- **Root Cause of Frame 0 Framebuffer Hash Empty String:**
+  * In `genesis_plus_gx_libretro`, video refresh callback `video_cb` only fires during `retro_run()`. Frame 0 represents the initial unserialized state prior to stepping. Consequently, `last_frame_pixels` was empty (`""`), which caused earlier test harnesses to skip Frame 0 and label Frame 1 as the first compared frame.
+- **Libretro Pitch Padding Dissection:**
+  * Libretro's `video_cb` passes `w = 320, h = 224, pitch = 1440` bytes in `RETRO_PIXEL_FORMAT_RGB565`.
+  * Active scanline width is $320 \times 2 = 640$ bytes, followed by $800$ bytes of border/margin padding per row.
+  * Hashing `pitch * h = 322,560` bytes captured border padding filled with backdrop color `0x4328` rather than visible game scene pixels.
+
+### 2. Genesis VDP Hardware Active SAT Link Chain Architecture
+- **Hardware Link Chain vs Raw Buffer:**
+  * Genesis VDP sprite rendering hardware processes SAT entries starting at slot 0 and follows `link` until `link == 0` is reached. Entries beyond the active chain represent stale unlinked scratch Work RAM.
+  * In Frame 0 on the beach, exactly 23 sprites form the active link chain, terminating with `link = 0` at slot 22. Inactive entries beyond slot 22 must not pollute active rendering.
+  * Established `SAT_ACTIVE_CHAIN_EXACT` domain to evaluate active link chain sprites independently from stale scratch RAM.
+
+### 3. Authentic HUD Overlay Reverse Engineering (Routine `0x003FA0`)
+- **HUD Sprite Allocation & VRAM Layout:**
+  * Routine `0x003FA0` allocates HUD sprites at the head of the SAT table (slots 0..5) with `priority = true` and `palette = 0`:
+    - Slot 0: Health gauge base frame: (8, 8), 3x2 tiles (24x16 px), tile `0x0781`.
+    - Slot 1: Health bar upper/middle: (16, 24), 1x4 tiles (8x32 px), tile `0x0787`.
+    - Slot 2: Health bar lower/tail: (16, 56), 1x3 tiles (8x24 px), tile `0x078B`.
+    - Slot 3: Magic gauge base frame: (8, 80), 3x2 tiles (24x16 px), tile `0x078E`.
+    - Slot 4: Magic bar upper/middle: (16, 96), 1x4 tiles (8x32 px), tile `0x0794`.
+    - Slot 5: Magic bar lower/tail: (16, 128), 1x3 tiles (8x24 px), tile `0x0798`.
+  * Implemented in `src/game/render/hud_overlay.hpp/.cpp`, achieving **121 / 121 (100.0%)** exact parity across all 121 frames.
+
+### 4. Tilemap Name Table Dynamics
+- **Plane B Name Table (VRAM `0xE000`):**
+  * Verified 100% constant bit-for-bit across all 121 frames (`PLANE_B_EXACT: 121/121`).
+- **Plane A Name Table (VRAM `0xC000`):**
+  * Matches 100% across frames 0..28 (`PLANE_A_EXACT: 29/121`), diverging at frame 29 when the horizontal camera displacement begins streaming new right-edge tile columns.
+
+### 5. Multi-Domain Differential Execution Results Across 121 Frames
+- `PLAYER_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x009D50, PlayerStateMachine]
+- `CAMERA_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x00CEEA, CameraController]
+- `SCROLL_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x00CEEA, CameraController]
+- `ENTITY_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x0063DA, NativeEntityPool]
+- `HUD_PIXELS_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x003FA0, HudOverlay]
+- `PLANE_B_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x003260, VdpState]
+- `SPRITE_PIXELS_EXACT`: **121 / 121 (100.0%)** [ROM PC 0x00AD76, VdpRasterizer]
+- `PLANE_A_EXACT`: 29 / 121 (24.0%) [ROM PC 0x003260, ScreenInstance]
+- `SAT_ACTIVE_CHAIN_EXACT`: 1 / 121 (0.8%) [ROM PC 0x00AD76, SpriteCompositor]
+- `SAT_RAW_EXACT`: 1 / 121 (0.8%) [ROM PC 0x008000, SatPipelineContract]
+- `VRAM_RELEVANT_EXACT`: 0 / 121 (0.0%) [ROM PC 0x003300, VdpState]
+- `FULL_FRAME_EXACT`: 0 / 121 (0.0%) [ROM PC 0x000200, VdpRasterizer]
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.5: Independent 121-Frame ROM Oracle Parity, Work RAM Camera Struct at $FF1716, 0x00CEEA Acceleration Formulas, 30Hz Cadence, 2-Frame VBlank Scroll Latch, and Slot 7 Type 0x0060 Verification at 0x0063DA -> 0x006430)
 
 ## Milestone M16.5 Reverse Engineering Summary

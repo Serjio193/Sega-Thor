@@ -251,72 +251,87 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     // Commit authentic camera horizontal and vertical scroll to VDP VRAM and VSRAM
     camera_.apply_to_vdp(vdp);
 
+    const int cam_x = camera_.camera_x();
+    const int cam_y = camera_.camera_y();
+
+    // 1. Authentic HUD overlay from ROM routine 0x003FA0 (Slots 0..5)
+    hud_.emit_hud(sat_pipeline_, player_.hp, player_.max_hp, 100, 100);
+
+    // 2. Beach water reflections (Slots 6..8, visible when screen overlaps y=100..108)
+    const int refl_y = 103 - cam_y;
+    sat_pipeline_.emit_piece(208 - cam_x, refl_y, 4, 1, 0x079BU, 0, true, false, false);
+    sat_pipeline_.emit_piece(240 - cam_x, refl_y, 4, 1, 0x079FU, 0, true, false, false);
+    sat_pipeline_.emit_piece(272 - cam_x, refl_y, 4, 1, 0x07A3U, 0, true, false, false);
+
+    // 3. Scene entities (Chest entity at Slot 7)
+    for (const auto& entity : entities_) {
+        if (!entity.active) continue;
+        const int ex = camera_.world_to_screen_x(entity.world_x);
+        const int ey = camera_.world_to_screen_y(entity.world_y);
+        if (entity.type_id == 0x0060) {
+            // Beach Chest: authentic multi-piece object
+            if (entity.state == 0x6AU) {
+                // Opened state
+                sat_pipeline_.emit_piece(ex, ey, 4, 2, 0x04B0U, 0, false, false, false);
+            } else {
+                // Closed state composite
+                sat_pipeline_.emit_piece(ex - 9, ey - 6, 2, 2, 0x04E8U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 8, ey + 8, 1, 1, 0x04A8U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 16, ey, 1, 2, 0x04A9U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 48, ey, 4, 2, 0x04ABU, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 24, ey + 16, 3, 3, 0x04B3U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 56, ey + 16, 4, 3, 0x04BCU, 0, false, false, false);
+            }
+        }
+    }
+
     const bool facing_left = (player_.direction_code == 3);
     const int px = camera_.world_to_screen_x(static_cast<int>(sim_state_.player_x));
     const int py = camera_.world_to_screen_y(static_cast<int>(sim_state_.player_y));
-
-    // Emit player shadow (2x1 tiles, palette 3, low priority)
-    sat_pipeline_.emit_shadow(px + 4, py + 28, 0x07B0, 3);
 
     // Dynamic walk cycle animation tile base
     const std::uint16_t walk_tile_offset = (player_.movement_state != 0)
         ? static_cast<std::uint16_t>((walk_tick_ / 4) * 4)
         : 0;
 
-    // Emit 4-piece composite player Ali sprite
-    // Piece 0 (Body/Legs): 3x4 tiles (24x32 px)
+    // 4. Emit 4-piece composite player Ali sprite (Mode 0: world entity)
     sat_pipeline_.emit_piece(px, py, 3, 4,
                             0x0479U + walk_tile_offset, 0, true, facing_left, false);
-
-    // Piece 1 (Torso): 3x2 tiles (24x16 px)
     sat_pipeline_.emit_piece(px, py - 16, 3, 2,
                             0x0485U, 0, true, facing_left, false);
-
-    // Piece 2 (Head): 2x2 tiles (16x16 px)
     const int head_x = facing_left ? px : (px + 8);
-    sat_pipeline_.emit_piece(head_x, py - 32, 2, 2,
+    sat_pipeline_.emit_piece(head_x, py - 24, 2, 2,
                             0x048BU, 0, true, facing_left, false);
-
-    // Piece 3 (Hair): 1x1 tile (8x8 px)
     const int hair_x = facing_left ? (px + 16) : px;
-    sat_pipeline_.emit_piece(hair_x, py - 24, 1, 1,
+    sat_pipeline_.emit_piece(hair_x, py - 16, 1, 1,
                             0x048FU, 0, true, facing_left, false);
 
-    // Emit secondary entities using world-to-screen transform
+    // 5. Emit Player Ali mirror / water reflection composite (Mode 1: horizontal reflection)
+    const int mirror_x = px + 24;
+    sat_pipeline_.emit_piece(mirror_x, py, 3, 4,
+                            0x0479U + walk_tile_offset, 0, true, !facing_left, false);
+    sat_pipeline_.emit_piece(mirror_x, py - 16, 3, 2,
+                            0x0485U, 0, true, !facing_left, false);
+    const int m_head_x = !facing_left ? mirror_x : (mirror_x + 8);
+    sat_pipeline_.emit_piece(m_head_x, py - 24, 2, 2,
+                            0x048BU, 0, true, !facing_left, false);
+    const int m_hair_x = !facing_left ? (mirror_x + 16) : mirror_x;
+    sat_pipeline_.emit_piece(m_hair_x, py - 16, 1, 1,
+                            0x048FU, 0, true, !facing_left, false);
+
+    // 6. Pier column entity
     for (const auto& entity : entities_) {
-        if (!entity.active) continue;
+        if (!entity.active || entity.type_id != 0x0098) continue;
         const int ex = camera_.world_to_screen_x(entity.world_x);
         const int ey = camera_.world_to_screen_y(entity.world_y);
-        if (entity.type_id == 0x0060) {
-            // Beach Object: 4x2 tiles (32x16 px), palette 0, low priority
-            sat_pipeline_.emit_piece(ex, ey, 4, 2, entity.tile_base, 0, false, false, false);
-            sat_pipeline_.emit_shadow(ex + 8, ey + 14, 0x07B0, 3);
-        } else if (entity.type_id == 0x0098) {
-            // Pier Torch / Column: 3x3 tiles (24x24 px), palette 0, low priority
-            sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
-        }
+        sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
     }
 
-    // Finalize SAT frame
+    // 7. Finalize SAT frame: terminates link list at last active sprite (link = 0)
     sat_pipeline_.finalize_frame();
 
-    // Commit SAT entries into VDP VRAM at SAT base in big-endian Genesis VDP format
-    const std::size_t sat_base = (static_cast<std::size_t>(vdp.registers[5] & 0x7FU)) << 9U;
-    const auto entries = sat_pipeline_.entries();
-    for (std::size_t i = 0; i < entries.size(); ++i) {
-        const auto& e = entries[i];
-        const std::size_t addr = sat_base + (i * 8U);
-        if (addr + 8U <= vdp.vram.size()) {
-            vdp.vram[addr + 0U] = static_cast<std::uint8_t>((e.y_pos >> 8U) & 0xFFU);
-            vdp.vram[addr + 1U] = static_cast<std::uint8_t>(e.y_pos & 0xFFU);
-            vdp.vram[addr + 2U] = e.size;
-            vdp.vram[addr + 3U] = e.link;
-            vdp.vram[addr + 4U] = static_cast<std::uint8_t>((e.attr >> 8U) & 0xFFU);
-            vdp.vram[addr + 5U] = static_cast<std::uint8_t>(e.attr & 0xFFU);
-            vdp.vram[addr + 6U] = static_cast<std::uint8_t>((e.x_pos >> 8U) & 0xFFU);
-            vdp.vram[addr + 7U] = static_cast<std::uint8_t>(e.x_pos & 0xFFU);
-        }
-    }
+    // 8. Commit active SAT entries into VDP VRAM at SAT base in big-endian Genesis VDP format
+    sat_pipeline_.commit_to_vdp(vdp);
 }
 
 } // namespace oasis::game

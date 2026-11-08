@@ -3,6 +3,7 @@
 #include "core/runtime.hpp"
 #include "game/camera/camera_controller.hpp"
 #include "game/player/player.hpp"
+#include "game/render/hud_overlay.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/standalone_game_loop.hpp"
 #include "game/world/byte_grid.hpp"
@@ -85,6 +86,11 @@ public:
         return sat_pipeline_;
     }
 
+    // Access HUD overlay generator.
+    [[nodiscard]] const render::HudOverlay& hud() const noexcept {
+        return hud_;
+    }
+
     // Access native camera controller.
     [[nodiscard]] const camera::CameraController& camera() const noexcept {
         return camera_;
@@ -139,6 +145,7 @@ private:
     camera::CameraController camera_{};
     std::vector<NativeEntity> entities_{};
     render::SatPipelineContract sat_pipeline_{};
+    render::HudOverlay hud_{};
 
     std::vector<std::uint8_t> terrain_buffer_{};
     world::ByteGridView terrain_{};
