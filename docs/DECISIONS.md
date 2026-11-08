@@ -1,3 +1,45 @@
+# ADR-20261108-M15-225-SPRITE-ENGINE-MODE0-CLUSTER-RECOMPILATION — Subsystem Batch Recompilation of High-Impact Sprite Engine Mode 0 Cluster (0x00AD76..0x00B010); 1,305,350 Dynamic Instructions Displaced; 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); Dynamic Timing Reconciliation of Musashi BCLR.L #31 (+14 Clocks) and LSR.W #8 (+112 Clocks); 32-Bit Full-Width Address Register Parity; Machine Evidence Receipt Verified (00ad76-three-scenario-qualification-m15-225-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 223 Default Disabled)
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Following the successful completion of the Entity Engine cluster in M15.224, engineering strategy shifted from leaf routines to high-impact gameplay subsystems with large dynamic execution footprints.
+2. Game-wide profiling identified `0x00AD76` (Sprite Engine Mode 0) as the largest unmigrated hotspot in authentic gameplay, executing 871,538 instructions in Scenario C (~4.94% of all M68K instructions).
+3. The cluster spans `0x00AD76..0x00B010` (666 bytes, 135 instructions) and implements entity ingress, hidden-state fast path, attribute evaluation, camera screen-space transformation, sprite descriptor parsing, multi-piece iteration loop via `dbf`, Mega Drive VDP Sprite Attribute Table (SAT) generation, shadow rendering, and SAT commit.
+4. Non-negotiable requirements:
+   - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Every C++ source file must strictly obey the $\le 500$ line size limit (AGENTS.md Rule 3).
+   - Strict 24/24 bit-exact stream matches across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames).
+
+**Decision:**
+1. **Cluster Modular Decomposition:**
+   - Partitioned the 666-byte cluster into 9 single-responsibility native modules in `src/tools/hybrid/`, all strictly $\le 500$ lines:
+     * `step_ops`: Bus peek/write, CCR management, and 68000 branching operations (`step_bcc_w`, `step_bcc_s`, `step_dbf_d5`, `step_movem_push_d7`, `step_movem_pop_d7`, `step_rts`).
+     * `instruction_step`: Router, ROM verification, weapon hook fallback detection, stage dispatch.
+     * `ingress_step`: Fast-path hidden RTS evaluation (`btst #1, 54(a6)`).
+     * `attrib_step`: Orientation, flip, palette bank parsing.
+     * `camera_step`: Coordinate translation, camera clipping, dynamic tile budget management.
+     * `piece_step`: Descriptor table lookup, piece header parsing, loop setup.
+     * `render_step`: SAT piece formatting, link generation, loop step.
+     * `shadow_step`: Shadow rendering path.
+     * `commit_step`: SAT shadow buffer address subtraction, count writeback, stack pop and RTS.
+     * `metrics`: Dynamic path and coverage telemetry.
+2. **Timing & Architectural Parity Discoveries:**
+   - **Musashi BCLR Immediate Bit $>15$ Dynamic Cycles (`0x00AF9C`):** Disassembly of `m68k_op_bclr_32_s_d` in `genesis_plus_gx_libretro.so` revealed that Musashi dynamically adds 14 master clocks (+2 CPU cycles) when bit index exceeds 15 (`bclr #31, d3`). Added +14 clock adjustment in `shadow_step.cpp`, resolving initial scheduler sync drift.
+   - **Full 32-Bit Address Register Parity:** Address register writes (`A0..A7`) were incorrectly masked with `& kMask24` (0x00FFFFFF), causing negative sign-extended offsets to be truncated (e.g. `0xFFFFFFFC` becoming `0x00FFFFFC` in A4). Restored full 32-bit register width without masking.
+   - **Musashi LSR Immediate Shift Dynamic Cycles (`0x00AF56`):** Disassembly of `m68k_op_lsr_16_s` revealed dynamic cycle calculation: $8 \times 14 = 112$ master clocks (16 CPU cycles) added for shift count 8. Added +112 clock adjustment in `render_step.cpp`, resolving full-frame state divergence at frame 619.
+3. **Execution & Evidence Qualification:**
+   - Qualified across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames) using isolated Linux runner (SHA256: `e90e0c17c7f57edc903a8878137a2e168f9dd1f706bb1043c2e52fc590786ea2`).
+   - Verified 24/24 bit-exact stream matches.
+   - Verified machine evidence receipt `00ad76-three-scenario-qualification-m15-225-20261108.json` with `ReceiptVerifier` (status: `VERIFIED`, 58/58 files valid, 48/48 stream artifacts valid).
+
+**Consequences:**
+- Subsystem displaced 851,284 dynamic M68K instructions in Scenario C (4.829% of entire guest CPU workload).
+- Displaced 329,496 dynamic instructions in Scenario A and 124,570 dynamic instructions in Scenario B (total 1,305,350 dynamic instructions across 3,992 frames).
+- Total native completed calls: 9,239 with 0 contract faults.
+- Game-wide dynamic native instruction execution increases to nearly 34% of the game engine.
+- Production active helpers remain fail-closed at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+
 # ADR-20261108-M15-224-ENTITY-ENGINE-CLUSTER-NATIVE-COVERAGE-EXPANSION — Entity Engine Cluster Native Coverage Expansion: State 5 Safe Paths Execution (+206 Instructions across 40 Calls) with Fail-Closed Preflight on Z80 Arbitration Chains; Root Entry 0x0254EA Execution (+15,960 Instructions across 3,192 Calls) with Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Reaching 53,508 Instructions (+43.9% Relative Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, ORACLE_APPROVAL = PENDING)
 **Status:** Accepted
 **Date:** 2026-11-08

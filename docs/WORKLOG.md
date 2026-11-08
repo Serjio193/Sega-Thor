@@ -1,3 +1,66 @@
+# 2026-11-08 — Milestone M15.225: GAME-WIDE RECOMPILATION COVERAGE & HIGH-IMPACT SUBSYSTEM CLUSTER — Sprite Engine Mode 0 Cluster (0x00AD76..0x00B010); 1,305,350 Dynamic M68K Instructions Displaced (+4.829% of Scenario C Execution); 24/24 Bit-Exact Stream Equivalence Across Scenarios C, A, and B (3,992 Frames); Dynamic Timing Reconciliation of Musashi BCLR.L #31 (+14 Clocks) and LSR.W #8 (+112 Clocks); 32-Bit Full-Width Address Register Parity; Machine Evidence Receipt Verified (00ad76-three-scenario-qualification-m15-225-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 223 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Subsystem Candidate Selection:
+    - Execute game-wide dynamic execution profiling to identify highest-impact unmigrated candidate cluster.
+    - Profile identified `0x00AD76` Sprite Engine Mode 0 (871,538 instructions in Scenario C, ~4.94% of total guest execution).
+  * Modular C++ Recompilation:
+    - Decompose the cluster into focused single-responsibility native modules strictly $\le 500$ lines.
+    - Cover Ingress fast-path hidden RTS (`0x00AD76..0x00AD84`), Attribute evaluation & rotation (`0x00ADDE..0x00AE3E`), Camera transform & coordinate clipping (`0x00AE40..0x00AECA`), Descriptor parsing & Piece loop entry (`0x00AECC..0x00AF16`), SAT tile rendering & SAT link generation (`0x00AF18..0x00AF74`), Shadow attribute rendering (`0x00AF76..0x00AFF8`), and SAT buffer commit (`0x00AFFA..0x00B010`).
+    - Preserve fail-closed fallback to original ROM for weapon parts hook when `57(a6) != 0` (`0x00B012..0x00B08E`).
+  * Strict Verification & Three-Scenario Qualification:
+    - Production baseline remains strictly at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Experimental slot 223 default disabled in production.
+    - Execute single-variable differential A/B across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - Achieve 24/24 bit-exact stream matches with zero contract faults.
+    - Generate machine evidence receipt `00ad76-three-scenario-qualification-m15-225-20261108.json` verified with `ReceiptVerifier`.
+
+- **Cluster Architecture & Source File Limit Compliance (AGENTS.md Rule 3):**
+  * `src/tools/hybrid/m68k_00ad76_step_ops.hpp` (52 lines) & `m68k_00ad76_step_ops.cpp` (156 lines): Memory bus accessors, CCR status helpers, 68000 branching semantics (`step_bcc_w`, `step_bcc_s`, `step_dbf_d5`, `step_movem_push_d7`, `step_movem_pop_d7`, `step_rts`).
+  * `src/tools/hybrid/m68k_00ad76_instruction_step.hpp` (29 lines) & `m68k_00ad76_instruction_step.cpp` (105 lines): Cluster router, ROM opcode integrity verification, weapon hook fallback detection, stage dispatch.
+  * `src/tools/hybrid/m68k_00ad76_ingress_step.hpp` (11 lines) & `m68k_00ad76_ingress_step.cpp` (200 lines): Entity attribute ingress, hidden-state fast path evaluation (`btst #1, 54(a6); bne.w $00B010`), sprite frame indexing.
+  * `src/tools/hybrid/m68k_00ad76_attrib_step.hpp` (11 lines) & `m68k_00ad76_attrib_step.cpp` (246 lines): Orientation flags, horizontal flip/rotation attributes, palette bank selection.
+  * `src/tools/hybrid/m68k_00ad76_camera_step.hpp` (11 lines) & `m68k_00ad76_camera_step.cpp` (385 lines): Camera coordinate subtraction, screen-space transformation, dynamic tile budget checks.
+  * `src/tools/hybrid/m68k_00ad76_piece_step.hpp` (11 lines) & `m68k_00ad76_piece_step.cpp` (207 lines): Sprite descriptor table resolution, multi-piece loop setup, piece coordinate parsing.
+  * `src/tools/hybrid/m68k_00ad76_render_step.hpp` (11 lines) & `m68k_00ad76_render_step.cpp` (413 lines): SAT entry generation, tile attribute packing, piece loop iteration via `dbf d5`.
+  * `src/tools/hybrid/m68k_00ad76_shadow_step.hpp` (11 lines) & `m68k_00ad76_shadow_step.cpp` (468 lines): Shadow sprite rendering path, coordinate offsets, shadow SAT attributes.
+  * `src/tools/hybrid/m68k_00ad76_commit_step.hpp` (11 lines) & `m68k_00ad76_commit_step.cpp` (62 lines): SAT buffer address subtraction (`suba.l #$00FF13CC, a1`), SAT count writeback (`0x00FF188A`), stack pop and RTS.
+  * `src/tools/hybrid/m68k_00ad76_metrics.cpp` (43 lines): Structural performance and call-path telemetry metrics.
+  * All files strictly verified $\le 500$ lines.
+
+- **Key Engineering Discoveries & Timing Parity Breakthroughs:**
+  * Musashi BCLR Dynamic Cycle Charge (`0x00AF9C`):
+    - Disassembly of `m68k_op_bclr_32_s_d` in `genesis_plus_gx_libretro.so` revealed that when immediate bit index $> 15$ (`bclr #31, d3`), Musashi dynamically calls `USE_CYCLES(14)` (+14 master clocks = 2 CPU cycles).
+    - Adding `14` extra master cycles to `complete_step` in `shadow_step.cpp` eliminated the 14-cycle drift, achieving immediate bit-exact scheduler synchronization.
+  * Full 32-Bit Address Register Parity:
+    - Tracing full CPU state identified truncation in address register `A4` (`0x00FFFFFC` vs `0xFFFFFFFC`) caused by masking address register calculations with `& kMask24` (0x00FFFFFF).
+    - In Motorola 68000 and Musashi, address registers `A0..A7` are full 32-bit registers preserving sign extension; 24-bit truncation applies only to bus memory accesses. Removed `& kMask24` across all address register writes in `attrib_step`, `camera_step`, `piece_step`, `render_step`, `shadow_step`, and `commit_step`.
+  * Musashi LSR Dynamic Shift Cycle Charge (`0x00AF56`):
+    - Instruction-level call tracing in Frame 619 revealed a 112-master-clock discrepancy in `0x00AF56` (`lsr.w #8, d6`).
+    - Disassembly of `m68k_op_lsr_16_s` in Musashi revealed dynamic cycle calculation: `imul ecx, edx; imul ecx, ecx, 0xe` charging 14 master clocks per shifted bit. For shift count 8, Musashi dynamically adds $8 \times 14 = 112$ master clocks (16 CPU cycles).
+    - Passing `112` extra master clocks to `complete_step` in `render_step.cpp` achieved bit-exact full-frame state and landmark stream alignment across all 1,800 frames of Scenario C.
+
+- **Verification Results Across All Three Scenarios (3,992 Frames):**
+  * Scenario C (1,800 frames): 8/8 streams match bit-exact (`observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`).
+    - 7,183 target entries; 5,914 native calls completed (82.33%); 1,269 ROM weapon-hook fallbacks; 794 fast-path hidden RTS exits; 5,120 full render calls; 18,761 piece-loop steps; 851,284 dynamic M68K instructions stepped (4.829% of Scenario C guest execution).
+  * Scenario A (1,592 frames): 8/8 streams match bit-exact.
+    - 3,764 target entries; 2,344 native calls completed; 1,420 ROM weapon-hook fallbacks; 50 fast-path exits; 2,294 full render calls; 7,705 piece-loop steps; 329,496 dynamic M68K instructions stepped.
+  * Scenario B (600 frames): 8/8 streams match bit-exact.
+    - 1,577 target entries; 981 native calls completed; 596 ROM weapon-hook fallbacks; 981 full render calls; 3,281 piece-loop steps; 124,570 dynamic M68K instructions stepped.
+  * Aggregate Three-Scenario Totals:
+    - Total target entries: 12,524.
+    - Total native completed calls: 9,239.
+    - Total native dynamic instructions displaced: 1,305,350.
+    - Total contract faults: 0.
+    - Total streams matching bit-exact: 24/24.
+  * Receipt Verification: `data/thor-evidence/00ad76-three-scenario-qualification-m15-225-20261108.json` verified with `ReceiptVerifier` (`overall_valid: true`, `evidence_status: VERIFIED`, 58/58 files valid, 48/48 stream artifacts valid).
+
+- **Current Repository State:**
+  * Production active helpers: 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Candidate helper: `0x00AD76` (Slot 223, Sprite Engine Mode 0 Cluster, default disabled, `ORACLE_OWNER_APPROVAL = PENDING`).
+  * Runner SHA256: `e90e0c17c7f57edc903a8878137a2e168f9dd1f706bb1043c2e52fc590786ea2`.
+  * Unit tests: All cluster unit tests pass (`tests/m68k_00ad76_cluster_test.cpp`).
+
 # 2026-11-08 — Milestone M15.224: ENTITY ENGINE NATIVE COVERAGE EXPANSION — State 5 Safe Paths + Root Entry 0x0254EA Execution; Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions (+16,326 Native Instructions, +43.9% Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Stream Matches Maintained Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 222 Default Disabled, ORACLE_APPROVAL = PENDING)
 
 - **Concrete Task & Acceptance Criteria:**

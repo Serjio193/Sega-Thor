@@ -1,3 +1,57 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.225: Sprite Engine Mode 0 Cluster 0x00AD76..0x00B010 Recompilation; 1,305,350 Dynamic Instructions Displaced; 24/24 Stream Parity Across Scenarios C, A, and B)
+
+## Milestone M15.225 Reverse Engineering Summary
+
+### 1. Subsystem Architecture & Cluster Scope (`0x00AD76..0x00B010`)
+- **Routine Address Range:** `0x00AD76` to `0x00B010` (666 ROM bytes, 135 M68K instructions).
+- **Subsystem Function:** Sprite Engine Mode 0 (Primary Entity Sprite Composition & Mega Drive VDP SAT Generator).
+- **Call Sites & Dispatch Provenance:**
+  * Dispatched primarily from `0x00A196` via `beq.w 0x00AD76` (6,246 calls in attract/gameplay) and secondary parent dispatcher blocks.
+  * Direct callers push return address onto stack before branching into `0x00AD76`.
+- **Pipeline Stage Breakdown:**
+  1. *Ingress & Hidden-State Fast Path (`0x00AD76..0x00AD84`):*
+     - `0x00AD76`: `btst.b #1, 54(a6)`
+     - `0x00AD7C`: `bne.w $00B010` (fast-path hidden entity exit; 794 calls in Scenario C, 50 in Scenario A, 0 in Scenario B).
+  2. *Attribute Parsing & Orientation (`0x00AD86..0x00AE3E`):*
+     - Evaluates entity animation frame `22(a6)`, state flags `44(a6)`, and orientation bitfield `54(a6)`.
+     - Handles horizontal flip (`bset #15, d3`) and palette selection.
+  3. *Camera Transformation & Screen Clipping (`0x00AE40..0x00AECA`):*
+     - Subtracts camera scroll registers (`0x00FF1716` / `0x00FF173E`) from entity world coordinates (`2(a6)`, `6(a6)`).
+     - Checks dynamic tile budget (`0x00FF1652`).
+  4. *Multi-Piece Descriptor Resolution (`0x00AECC..0x00AF16`):*
+     - Resolves SAT base pointer `0x00FF13CC` into A1, adds current SAT offset from `0x00FF188C`.
+     - Loads multi-piece header and piece count into D5 (`move.w (a0)+, d5`).
+  5. *SAT Piece Generation Loop (`0x00AF18..0x00AF74`):*
+     - Formats 8-byte SAT entries: Y coordinate, size/link, tile attributes, X coordinate.
+     - Advances SAT write pointer `a1 += 8`, advances descriptor pointer `a0 += 6`.
+     - Loops via `dbf d5, $00AF18` (18,761 piece iterations in Scenario C, 7,705 in Scenario A, 3,281 in Scenario B).
+  6. *Shadow Sprite Rendering (`0x00AF76..0x00AFF8`):*
+     - Evaluates shadow elevation offset `62(a6)`, renders shadow SAT records with palette attributes.
+  7. *Buffer Commit & Exit (`0x00AFFA..0x00B010`):*
+     - Computes written SAT byte count: `suba.l #$00FF13CC, a1`.
+     - Commits updated SAT byte count to `0x00FF188C` and sprite count to `0x00FF188A`.
+     - Pops saved register `d7` (`movem.l (sp)+, d7`) and returns via `rts` (`0x00B010`).
+  8. *Weapon Parts Hook Fallback (`0x00B012..0x00B08E`):*
+     - Checks `57(a6)` (`weapon_part`). When non-zero, safely declines fail-closed to original ROM (1,269 calls in Scenario C, 1,420 in Scenario A, 596 in Scenario B).
+
+### 2. Forensic Discovery of Musashi Dynamic Instruction Timing
+- **Musashi BCLR Immediate $>15$ Timing:**
+  * At `0x00AF9C` (`bclr #31, d3`): Musashi core charges base instruction cycles (14 CPU cycles = 98 master clocks) and checks bit index. Because bit $31 > 15$, `m68k_op_bclr_32_s_d` executes `imul edx, ratio, 0xe` adding 14 master clocks (+2 CPU cycles = 16 CPU cycles total).
+  * Passing +14 master clocks to `complete_step` in `shadow_step.cpp` eliminated cycle drift, achieving 100% bit-exact scheduler synchronization across all 1,800 frames of Scenario C.
+- **Full 32-Bit Address Register Parity:**
+  * Motorola 68000 address registers `A0..A7` are 32-bit registers. Instructions like `movea.w`, `suba.w`, `adda.w`, and `suba.l` operate in full 32-bit sign extension.
+  * Masking address register values with `& 0x00FFFFFF` corrupted negative sign extensions (e.g., `-4` becoming `0x00FFFFFC` instead of `0xFFFFFFFC`). Restoring full 32-bit register width eliminated register divergence.
+- **Musashi LSR Dynamic Shift Timing:**
+  * At `0x00AF56` (`lsr.w #8, d6`): Musashi charges base instruction cycles (6 CPU cycles = 42 master clocks) and executes `imul ecx, edx; imul ecx, ecx, 0xe` charging 14 master clocks per shifted bit. For shift count 8, Musashi dynamically adds $8 \times 14 = 112$ master clocks (16 CPU cycles).
+  * Passing +112 master clocks to `complete_step` in `render_step.cpp` achieved bit-exact full-frame state and landmark stream alignment across all 1,800 frames of Scenario C.
+
+### 3. Dynamic Execution Impact & Coverage
+- **Scenario C:** 7,183 target entries, 5,914 native calls completed (82.33%), 851,284 dynamic M68K instructions stepped (**4.829% of all Scenario C guest execution**).
+- **Scenario A:** 3,764 target entries, 2,344 native calls completed, 329,496 dynamic instructions stepped.
+- **Scenario B:** 1,577 target entries, 981 native calls completed, 124,570 dynamic instructions stepped.
+- **Three-Scenario Aggregate:** 12,524 entries, 9,239 native completed calls, **1,305,350 native dynamic M68K instructions displaced**, 0 contract faults.
+- **Stream Equivalence:** 24/24 bit-exact streams across 3,992 total frames.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.224: Entity Engine Native Coverage Expansion — State 5 Safe Paths + Root Entry 0x0254EA Execution; Discovery of 0x00E682 Stack-Pop Tail Return and 134(a6) Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions; 24/24 Stream Parity)
 
 ## Milestone M15.224 Reverse Engineering Summary

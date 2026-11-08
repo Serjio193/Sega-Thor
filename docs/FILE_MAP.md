@@ -4084,3 +4084,18 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `src/tools/hybrid/m68k_02575c_root_step.hpp/.cpp` — Dedicated native stepper module for Root Entry `0x0254EA`, implementing Mode 0 path into dispatcher `0x02575C`, child motion helper `0x00E682` coordination, `134(a6) == 0` check, preflight decline of complex paths (Modes 1..5, motion stack pop, non-zero 134), and metrics tracking (3,192 calls, 15,960 native steps) (M15.224).
 - `tools/generate_02575c_m15_224_receipt.py` — Automated receipt generator for M15.224, capturing all 48 stream artifacts across Scenarios A, B, and C with exact byte counts and SHA256 hashes (M15.224).
 - `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json` — Machine-readable three-scenario qualification evidence receipt for M15.224 (State 5 safe paths, Root Entry `0x0254EA` execution, 53,508 stepped instructions, 24/24 streams), validated via `ReceiptVerifier` across 58 check operations with status `VERIFIED` (M15.224).
+- `src/tools/hybrid/m68k_00ad76_step_ops.hpp/.cpp` — Shared memory, CCR status helpers, and 68000 branching operations for Sprite Engine Mode 0 Cluster (M15.225).
+- `src/tools/hybrid/m68k_00ad76_instruction_step.hpp/.cpp` — Main instruction router and stage coordinator for `0x00AD76` cluster (M15.225).
+- `src/tools/hybrid/m68k_00ad76_ingress_step.hpp/.cpp` — Ingress attribute checks and fast-path hidden RTS evaluation (`0x00AD76..0x00AD84`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_attrib_step.hpp/.cpp` — Sprite orientation, flip, and palette bank parsing (`0x00ADDE..0x00AE3E`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_camera_step.hpp/.cpp` — Camera coordinate transformation, screen-space clipping, dynamic tile budget management (`0x00AE40..0x00AECA`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_piece_step.hpp/.cpp` — Sprite descriptor table resolution, multi-piece loop setup, piece coordinate parsing (`0x00AECC..0x00AF16`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_render_step.hpp/.cpp` — SAT entry generation, tile attribute packing, piece loop iteration via `dbf d5` (`0x00AF18..0x00AF74`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_shadow_step.hpp/.cpp` — Shadow sprite rendering path and shadow SAT attributes (`0x00AF76..0x00AFF8`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_commit_step.hpp/.cpp` — SAT buffer subtraction, count commit, stack pop and RTS (`0x00AFFA..0x00B010`) (M15.225).
+- `src/tools/hybrid/m68k_00ad76_metrics.cpp` — Dynamic telemetry and call metrics for `0x00AD76` cluster (M15.225).
+- `tests/m68k_00ad76_cluster_test.cpp` — Comprehensive unit test suite for the `0x00AD76` cluster modules (M15.225).
+- `tools/build_00ad76_runner.py` — Isolated Linux gameplay runner build orchestrator for `0x00AD76` (M15.225).
+- `tools/run_00ad76_three_scenario_ab.py` — Three-scenario differential A/B qualification runner for `0x00AD76` (M15.225).
+- `data/thor-evidence/00ad76-three-scenario-qualification-m15-225-20261108.json` — Machine-readable three-scenario qualification evidence receipt for `0x00AD76` (1,305,350 stepped instructions, 24/24 streams), validated via `ReceiptVerifier` (M15.225).
+- `data/thor-evidence/cluster_00ad76/` — Machine-readable cluster configuration, dynamic execution profile, external transfers, and ownership ledgers for `0x00AD76` (M15.225).
