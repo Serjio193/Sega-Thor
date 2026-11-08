@@ -8,10 +8,14 @@ namespace oasis::render {
 
 struct TilemapPlaneUploadContract {
     static constexpr unsigned kColumnsPerScreenRow = 40U;
-    static constexpr unsigned kWordsPerUpload = 41U;
+    static constexpr unsigned kWordsPerRowUpload = 41U;
+    static constexpr unsigned kRowsPerScreenColumn = 28U;
+    static constexpr unsigned kWordsPerColumnUpload = 29U;
     static constexpr unsigned kVdpDataPort = 0xC00000U;
     static constexpr unsigned kVdpControlPort = 0xC00004U;
     static constexpr uint16_t kVdpWriteCommandBase = 0x4000U;
+    static constexpr uint16_t kVdpAutoincrement128 = 0x8F80U;
+    static constexpr uint16_t kVdpAutoincrement2 = 0x8F02U;
 };
 
 struct PlaneUploadState {
@@ -34,5 +38,10 @@ struct VdpWriteRecord {
 // Pure domain logic for Mega Drive VDP Plane Nametable Row Streaming (0x002512)
 // Advances plane coordinates and emits VDP command and data port writes.
 std::vector<VdpWriteRecord> execute_plane_row_upload(PlaneUploadState& state, std::span<const uint16_t> source_tiles);
+
+// Pure domain logic for Mega Drive VDP Plane Nametable Column Streaming (0x0023CC)
+// Sets autoincrement 128, advances plane coordinates, streams 29 vertical tiles,
+// wraps VRAM boundary, and restores autoincrement 2.
+std::vector<VdpWriteRecord> execute_plane_column_upload(PlaneUploadState& state, std::span<const uint16_t> source_tiles);
 
 } // namespace oasis::render

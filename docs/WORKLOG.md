@@ -1,3 +1,43 @@
+# 2026-11-08 — Milestone M15.232: INTERRUPT-SAFE GRAPHICS PIPELINE RECOMPILATION AND STANDALONE TILEMAP SEMANTIC BRIDGE — Tilemap Plane Column Upload Engine (0x0023CC..0x002510 as Native Slot 228); Dual-Axis Tilemap Plane Streaming Subsystem Complete (Row Upload 0x002512 + Column Upload 0x0023CC); Heptad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227 + 228); Multi-Frame Decompressor (0x003820..0x0038CE) Preemption Jitter Quarantine (Proved 48 VBlank Preemption Boundaries, Micro-Cycle Divergence at Frame 597 Formally Reproduced and Quarantined Pending Sub-Cycle Interrupt Queue Modeling); Resolution of 126-Master-Cycle Boundary Jitter via Musashi Immediate Shift Cycle Audit (LSR.W #7 +98 cycles, ROL.W #2 +28 cycles, Exactly Matching 487-361=126 Cycle Discrepancy); 6,583,206 Native Dynamic Instructions Displaced in Scenario C (37.345% Raw Dynamic Coverage, 83.357% Non-Idle Dynamic Coverage, +31,210 Net Displaced Instructions); 38,907 Instructions Displaced Across Three Scenarios (C: 31,210, A: 0, B: 7,697); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Dual-Axis Tilemap Streaming Model (execute_plane_column_upload in tilemap_plane_upload.hpp/.cpp, tilemap_plane_upload_test.cpp); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-232-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-228 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Close M15.231 Governance Gaps & Baseline Verification:
+    - Confirmed baseline commit `4d7047442ce696284fcb61aa4b9711b5be352d05`.
+    - Production helper active inventory strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Pinned core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`, canonical ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+  * Phase 1: Tilemap Row Upload Engine Verification & Fixtures:
+    - Verified `0x002630` 2-byte RTS (`4E75`), end-exclusive boundary `0x002632`.
+    - Generated immutable fixtures in `data/thor-fixtures/tilemap_upload/`.
+  * Phase 2 & 4: Deep Analysis of Multi-Frame Decompressor (`0x003820..0x0038CE`):
+    - Traced execution across 1,800 frames of Scenario C: discovered that decompression spans 48 distinct VBlank interrupt boundaries.
+    - Diagnosed that micro-cycle phase accumulation across tens of thousands of loop iterations causes VBlank to strike at PC `0x003864` vs `0x00389E` on Frame 597 under hybrid stepping.
+    - Formally quarantined `0x003820` from atomic/coarse native stepping pending full sub-cycle interrupt queue modeling.
+  * Phase 3 & 5: Candidate Selection Gate:
+    - Selected Candidate Domain B: `0x0023CC..0x002510` (Tilemap Plane Column Upload Engine, 107 instructions, 326 bytes).
+    - Dual-axis complement to Slot 227 (`0x002512`), completing the tilemap plane DMA/streaming subsystem.
+    - Executes 31,210 dynamic steps in Scenario C (76 entries, 0 frame boundaries, purely synchronous VBlank routine).
+  * Phase 6: Modular C++20 Recompilation:
+    - Implemented cycle-accurate modular step engine across 6 files in `src/tools/hybrid/m68k_0023cc_*`.
+    - Enforced AGENTS.md Rule 3: all files strictly <= 500 lines.
+  * Phase 7 & 8: Forensic Discrepancy Resolution & Cycle Accounting:
+    - Initial differential replay revealed Frame 28/29 divergence with a 126-master-cycle (18 CPU cycles) discrepancy in the idle wait loop.
+    - Conducted comprehensive audit of Musashi's `m68kops.h` and `m68ki_cycles.h` for all 108 instruction opcodes.
+    - Discovered that Musashi accounts `USE_CYCLES(shift * 14)` for register shifts AND immediate shifts: `0x0024AE: LSR.W #7, D4` (+98 cycles) and `0x0024B2: ROL.W #2, D5` (+28 cycles).
+    - 98 + 28 = exactly 126 master cycles, precisely matching the 126-cycle discrepancy (`487 - 361 = 126`).
+    - Added cycle adjustments and eliminated 24-bit address register masking on `ADDA`/`SUBA`.
+  * Phase 9: Unified Linux Runner Build & 3-Scenario Qualification:
+    - Built unified Linux runner executing Slots 222-228 alongside 196 production helpers (`RUNNER_SHA256 = b2aea55386c13207e88597080957a9abda6ceedfbe1351f1bc7729016d0a5441`).
+    - Replay-verified P0 vs P7 across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - Achieved 24/24 bit-exact stream matches (0 contract faults, 0 regressions).
+  * Phase 10: Standalone C++ Semantic Bridge Transfer Package:
+    - Extended decoupled C++20 plane streaming model in `src/game/render/tilemap_plane_upload.hpp` (47 lines) and `.cpp` (186 lines) with `execute_plane_column_upload`.
+    - Standalone unit tests in `tests/tilemap_plane_upload_test.cpp` (129 lines) pass 100%.
+    - Verified `C:/Github/Sega-Thor-Standalone` is untouched (STRICTLY READ-ONLY).
+  * Phase 11: Machine Evidence Receipt & Verification:
+    - Emitted machine evidence receipt `data/thor-evidence/combined-clusters-qualification-m15-232-20261108.json`.
+    - Verified receipt with `ReceiptVerifier` (status `VERIFIED`, `overall_valid: true`, 58/58 files valid, 48/48 stream artifacts valid).
+    - Production baseline maintained strictly at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slot 228 remains experimental and disabled by default.
+
 # 2026-11-08 — Milestone M15.231: CONNECTED RESOURCE / GAMEPLAY PIPELINE RECOMPILATION WITH PROVEN RESIDUAL WORKLOAD — Tilemap Plane Row Upload Engine (0x002512..0x002630 as Native Slot 227); Hexa Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227); Authoritative Disjoint Residual Accounting (6,413,735 Native + 9,730,133 Idle Sync + 1,483,902 Residual Non-Idle = 17,627,770 Total Guest Instructions); 14-Column Corrected Top-20 Residual Hotspots Table; Boundary Audit of 0x002FDA RTS Fallthrough (0x4E75 cleanly returns without fallthrough into Held Slot 218 at 0x00302E); Prototype Decompression Engine Failure Documented (0x003820 18-frame asynchronous decompressor interrupted by VBlank preemption jitter); Register-Shift Cycle Accumulation and SKIP_BUS_REFRESH Reconciliation on 0x002568/0x0025C4 Eliminating 14-Master-Cycle Boundary Jitter; 6,551,996 Native Dynamic Instructions Displaced in Scenario C (37.168% Raw Dynamic Coverage, 82.961% Non-Idle Dynamic Coverage, +138,261 Net Displaced Instructions); 203,085 Instructions Displaced Across Three Scenarios (C: 138,261, A: 34,877, B: 29,947); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Clean Plane Upload Model (tilemap_plane_upload.hpp/.cpp, TilemapPlaneUploadContract); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-231-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-227 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**

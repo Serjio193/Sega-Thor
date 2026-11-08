@@ -4174,3 +4174,19 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `tools/run_m15_231_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.231 (M15.231).
 - `tools/generate_002512_exact_step.py` — Tooling script generating exact cycle and flag accurate step dispatchers from ROM opcode map (M15.231).
 - `data/thor-evidence/combined-clusters-qualification-m15-231-20261108.json` — Machine-readable evidence receipt for Hexa Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227), displacing 6,551,996 native instructions in Scenario C (37.168% raw, 82.961% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.231).
+- `src/tools/hybrid/m68k_0023cc_step_ops.hpp/.cpp` — Core M68000 ALU, cycle-exact timing, CCR condition codes, and step orchestration for `0x0023CC` Tilemap Plane Column Upload Engine (M15.232).
+- `src/tools/hybrid/m68k_0023cc_calc_step.hpp/.cpp` — Scroll offset and VDP address calculation for plane column upload (`0x0023CC..0x00245A`) (M15.232).
+- `src/tools/hybrid/m68k_0023cc_calc_left_step.hpp/.cpp` — Leftward scroll offset, wrap-around bounds checking, and VDP command setup (`0x00245E..0x0024AA`) (M15.232).
+- `src/tools/hybrid/m68k_0023cc_upload_step.hpp/.cpp` — 28-row column tile buffer DMA upload loop, auto-increment toggle ($8F80 -> $8F02), and RTS return (`0x0024AE..0x002510`) (M15.232).
+- `src/tools/hybrid/m68k_0023cc_metrics.hpp/.cpp` — Dynamic telemetry and entry/step counters for `0x0023CC` cluster (M15.232).
+- `src/tools/hybrid/m68k_0023cc_instruction_step.hpp/.cpp` — Modular instruction router and boundary stepper for `0x0023CC..0x002510` Tilemap Plane Column Upload Engine (M15.232).
+- `tests/m68k_0023cc_cluster_test.cpp` — Comprehensive unit test suite for `0x0023CC` cluster verifying left/right scroll paths and column transfers (M15.232).
+- `tools/build_m15_232_runner.py` — Linux gameplay runner build orchestrator for M15.232 heptad-cluster runtime (Slots 222 + 223 + 224 + 225 + 226 + 227 + 228) (M15.232).
+- `tools/run_m15_232_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.232 (M15.232).
+- `tools/gen_0023cc_calc.py` — Modular generator submodule for 0x0023CC plane column upload calculation step C++ implementation (M15.232).
+- `tools/gen_0023cc_left.py` — Modular generator submodule for 0x0023CC plane column upload left-scroll calculation step C++ implementation (M15.232).
+- `tools/gen_0023cc_upload.py` — Modular generator submodule for 0x0023CC plane column tile buffer DMA upload loop C++ implementation (M15.232).
+- `tools/generate_0023cc_exact_step.py` — Orchestrator tooling script generating exact cycle and flag accurate step dispatchers for column upload from ROM opcode map (M15.232).
+- `tools/generate_m15_232_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.232 (M15.232).
+- `data/thor-evidence/combined-clusters-qualification-m15-232-20261108.json` — Machine-readable evidence receipt for Heptad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227 + 228), displacing 6,583,206 native instructions in Scenario C (37.345% raw, 83.357% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.232).
+- `data/thor-fixtures/tilemap_upload/` — Directory containing immutable oracle fixtures for tilemap plane row and column upload parameter contracts (M15.232).

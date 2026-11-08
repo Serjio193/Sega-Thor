@@ -1,0 +1,294 @@
+{
+  "case_id": "case3_column_wrap_boundary",
+  "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 VDP writes with wrap commands)",
+  "rom_entry_pc": "0x002512",
+  "rom_exit_pc": "0x002630",
+  "input_state": {
+    "vram_base": 49152,
+    "scroll_counter": 1,
+    "vram_offset": 112,
+    "plane_width": 128,
+    "plane_height": 32,
+    "x_pos": 2,
+    "y_pos": 1,
+    "shift_factor": 7
+  },
+  "output_state": {
+    "final_scroll_counter": 0,
+    "final_y_pos": 2,
+    "final_vram_offset": 240,
+    "vdp_writes": [
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x4EF0",
+        "type": "VDP_CTRL_CMD_LOW"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x0003",
+        "type": "VDP_CTRL_CMD_HIGH"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A82",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A83",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A84",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A85",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A86",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A87",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A88",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A89",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x4E80",
+        "type": "VDP_CTRL_CMD_WRAP_LOW"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x0003",
+        "type": "VDP_CTRL_CMD_WRAP_HIGH"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8A",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8B",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8C",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8D",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A8F",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A90",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A91",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A92",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A93",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A94",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A95",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A96",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A97",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A98",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A99",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9A",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9B",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9C",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9D",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A9F",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA0",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA1",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA2",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA3",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA4",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA5",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA6",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA7",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA8",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AA9",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AAA",
+        "type": "VDP_DATA_PORT"
+      }
+    ],
+    "total_writes": 45
+  }
+}

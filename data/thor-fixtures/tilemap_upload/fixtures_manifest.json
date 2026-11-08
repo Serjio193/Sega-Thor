@@ -1,0 +1,41 @@
+{
+  "schema": "oasis.tilemap-upload-fixture-manifest.v1",
+  "routine": "0x002512",
+  "routine_range": "0x002512..0x002630",
+  "exclusive_boundary": "0x002632",
+  "subsystem": "Tilemap Plane Row Upload Engine",
+  "caller_pcs": [
+    "0x0020C4",
+    "0x002106"
+  ],
+  "cases": [
+    {
+      "case_id": "case1_scroll_up_plane_a",
+      "description": "Authentic Plane A scroll up row upload without column wrapping (43 VDP writes)",
+      "file": "case1_scroll_up_plane_a.json",
+      "sha256": "71147ee547e03381a431b2decc970efdfe55ee24b95c1030c7eb6ba261b8631c",
+      "total_writes": 43
+    },
+    {
+      "case_id": "case2_scroll_down_plane_a",
+      "description": "Authentic Plane A scroll down row upload with negative scroll counter",
+      "file": "case2_scroll_down_plane_a.json",
+      "sha256": "1884a8eece9a2568a5e5f3dc5d864f60fc578b697911447edc09b11ec5b59677",
+      "total_writes": 43
+    },
+    {
+      "case_id": "case3_column_wrap_boundary",
+      "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 VDP writes with wrap commands)",
+      "file": "case3_column_wrap_boundary.json",
+      "sha256": "102f75af8e30874ff3f2ffb6fa500937f03419e843a9555026dee7d9fc2588f3",
+      "total_writes": 45
+    },
+    {
+      "case_id": "case4_scroll_up_plane_b",
+      "description": "Authentic Plane B row upload (VRAM base 0xE000) under scroll up",
+      "file": "case4_scroll_up_plane_b.json",
+      "sha256": "a8a7ca1dc69a7551d33ada1f90508f8c1cedf8418a5d36e39758ec463c353575",
+      "total_writes": 43
+    }
+  ]
+}

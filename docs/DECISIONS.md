@@ -10390,3 +10390,54 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
    - Clusters 222 & 223 remain experimental and disabled by default (`ORACLE_OWNER_APPROVAL = PENDING`).
    - All source and test files verified strictly $\le 500$ lines.
+
+
+## 2026-11-08 — M15.232: Interrupt-Safe Graphics Pipeline Recompilation, Multi-Frame Decompressor Preemption Jitter Quarantine, and Standalone Tilemap Semantic Bridge
+
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. M15.231 qualified Hexa Subsystem Recompiled Island Execution (Slots 222-227), displacing 6,551,996 native dynamic instructions in Scenario C (37.168% raw dynamic coverage, 82.961% non-idle dynamic coverage).
+2. The next objective was to migrate an unowned, high-workload graphics or resource-processing pipeline. Candidate Domain A (`0x003820..0x0038CE`, Multi-Frame Decompressor) was evaluated as a candidate for recompilation.
+3. Detailed execution tracing over 1,800 frames of Scenario C revealed that `0x003820` inner loops span 48 distinct VBlank interrupt preemption boundaries. Micro-cycle phase accumulation across tens of thousands of loop iterations causes VBlank to strike at PC `0x003864` vs `0x00389E` on Frame 597 under hybrid stepping.
+4. Attempting to step a multi-frame routine without sub-cycle interrupt queue modeling violates physical interrupt semantics and creates unresolvable timing jitter.
+
+**Decisions:**
+1. **Multi-Frame Decompressor Preemption Jitter Quarantine:**
+   - Quarantined `0x003820` from atomic or coarse native instruction stepping.
+   - Recorded architectural finding: asynchronous multi-frame decompressors require explicit coroutine resumption or sub-cycle interrupt preemption scheduling before hybrid migration is permissible.
+2. **Candidate Selection Gate — Tilemap Plane Column Upload Engine (`0x0023CC..0x002510`):**
+   - Selected Candidate Domain B: `0x0023CC..0x002510` (107 instructions, 326 bytes, 31,210 dynamic steps in Scenario C across 76 entries, 0 child calls).
+   - Entirely synchronous within VBlank (0 frame boundaries, 0 interrupt preemption points).
+   - Functions as the exact dual-axis complement to Slot 227 (`0x002512` row upload), completing the entire tilemap plane DMA/streaming subsystem.
+3. **Modular C++20 Recompilation of Slot 228:**
+   - Implemented cycle-accurate modular step engine across 6 files in `src/tools/hybrid/m68k_0023cc_*`:
+     * `m68k_0023cc_step_ops.hpp/.cpp`: address checks, CCR flags, and step orchestration.
+     * `m68k_0023cc_calc_step.hpp/.cpp`: scroll offset and VDP address calculation.
+     * `m68k_0023cc_calc_left_step.hpp/.cpp`: left-scroll offset logic.
+     * `m68k_0023cc_upload_step.hpp/.cpp`: column tile upload loop and VDP port writes.
+     * `m68k_0023cc_instruction_step.hpp/.cpp`: boundary entry/exit and step dispatch.
+     * `m68k_0023cc_metrics.hpp/.cpp`: telemetry and execution accounting.
+   - Enforced AGENTS.md Rule 3: all files strictly $\le 500$ lines.
+4. **Immediate Shift Cycle Accounting Discovery & Resolution:**
+   - Initial differential replay revealed Frame 28/29 divergence with a 126-master-cycle (18 CPU cycles) discrepancy in the idle wait loop.
+   - Comprehensive audit of Musashi's `m68kops.h` and `m68ki_cycles.h` revealed that Musashi accounts `USE_CYCLES(shift * 14)` for immediate shifts as well as register shifts:
+     * `0x0024AE: LSR.W #7, D4` (+98 master cycles).
+     * `0x0024B2: ROL.W #2, D5` (+28 master cycles).
+     * $98 + 28 = 126$ master cycles, precisely matching the observed $487 - 361 = 126$ cycle discrepancy.
+   - Added missing cycle adjustments and removed erroneous 24-bit address register masking on `ADDA`/`SUBA`.
+5. **Three-Scenario Differential Qualification:**
+   - Built unified Linux runner executing Slots 222-228 alongside 196 baseline helpers (`RUNNER_SHA256 = b2aea55386c13207e88597080957a9abda6ceedfbe1351f1bc7729016d0a5441`).
+   - Replay-verified P0 vs P7 across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+   - Achieved **24/24 bit-exact stream matches** across all 3,992 frames with 0 contract faults.
+6. **Standalone C++ Semantic Bridge Transfer Package:**
+   - Extended decoupled C++20 plane streaming model in `src/game/render/tilemap_plane_upload.hpp` (47 lines) and `.cpp` (186 lines) with `execute_plane_column_upload`.
+   - Standalone unit tests in `tests/tilemap_plane_upload_test.cpp` (129 lines) pass 100%.
+   - Verified `C:/Github/Sega-Thor-Standalone` is untouched (STRICTLY READ-ONLY).
+7. **Coverage & Workload Metrics:**
+   - Scenario C combined native steps reached **6,583,206 / 17,627,770** (**37.345%** raw dynamic coverage, **83.357%** non-idle dynamic coverage, +31,210 net displaced instructions).
+   - Total instructions displaced across three scenarios: **38,907** (C: 31,210, A: 0, B: 7,697).
+8. **Governance & Active Inventory Preservation:**
+   - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Slot 228 remains experimental and disabled by default (`ORACLE_OWNER_APPROVAL = PENDING`).

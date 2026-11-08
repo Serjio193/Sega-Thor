@@ -8965,3 +8965,64 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
   * Mode 0 native displacement: 7,183 / 7,183 entries (100.00% native displacement, 0 ROM fallback calls).
   * 24 / 24 bit-exact stream matches across Scenarios C, A, and B.
   * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json` (`VERIFIED`).
+
+### 59. Tilemap Plane Row Upload Engine (`0x002512..0x002630`)
+
+- **Routine Addresses:** `0x002512..0x002630` (286 bytes, 143 words, 92 instructions).
+- **Semantic Classification:** Tilemap Plane Row DMA / VRAM Stream Engine (Dual-Plane Row Upload).
+- **Evidence & Disassembly:**
+  * Aligned ROM entry: `0x002512: MOVEA.L 22(A3), A0`.
+  * Exit: `0x002630: 4E75` (`RTS`).
+  * Direct callers: `0x0020C4` (looping over pending rows when `30(A3) != 0`).
+  * Ingress registers:
+    - `A3`: Plane state context structure base pointer.
+    - `22(A3)`: Plane buffer data pointer (longword, loaded into `A0`).
+    - `26(A3)`: Plane VRAM base address command word (loaded into `D5`).
+    - `30(A3)`: Row count / direction (signed word in `D6`).
+    - `12(A3)`: Current plane tile offset.
+  * Child calls: 0 child calls (pure leaf routine).
+  * Frame boundaries: 0 (synchronous within VBlank).
+- **Validation Status:**
+  * Qualified in Milestone M15.231 as Native Experimental Slot 227.
+  * Scenario C: 333 entries, 138,261 dynamic instructions.
+  * 24/24 bit-exact streams across Scenarios C, A, and B.
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-231-20261108.json` (`VERIFIED`).
+
+### 60. Tilemap Plane Column Upload Engine (`0x0023CC..0x002510`)
+
+- **Routine Addresses:** `0x0023CC..0x002510` (326 bytes, 163 words, 107 instructions).
+- **Semantic Classification:** Tilemap Plane Column DMA / VRAM Stream Engine (Dual-Plane Column Upload).
+- **Evidence & Disassembly:**
+  * Aligned ROM entry: `0x0023CC: MOVEA.L 22(A3), A0`.
+  * Exit: `0x002510: 4E75` (`RTS`).
+  * Direct callers:
+    - `0x0020AE: 6100 031C` (`BSR.W $0023CC`, Plane A column upload).
+    - `0x0020F0: 6100 02DA` (`BSR.W $0023CC`, Plane B column upload).
+  * Ingress registers:
+    - `A3`: Plane state context pointer (`0xFF165A` for Plane A, `0xFF173E` for Plane B).
+    - `22(A3)`: Source tilemap data buffer base (loaded into `A0`).
+    - `26(A3)`: Target VRAM write command word (loaded into `D5`).
+    - `28(A3)`: Pending column upload count / scroll direction (signed word in `D6`).
+    - `12(A3)`: Current plane tile VRAM offset (updated upon upload).
+    - `32(A3)`: Tilemap width in tiles (loaded into `D4`).
+    - `34(A3)`: Tilemap height in tiles (loaded into `D3`).
+    - `36(A3)`: Tile row pitch shift factor (loaded into `D7`, typically 5 or 6).
+  * Hardware Ports & Auto-Increment:
+    - `A2`: `$00C00000` (VDP Data Port).
+    - `A4`: `$00C00004` (VDP Control Port).
+    - `0x0023DE: MOVE.W #$8F80, (A4)`: Sets VDP Register 15 (auto-increment) to 128 bytes (`$80`), allowing sequential vertical column writes without manual VDP address reprogramming per row.
+    - `0x00250C: MOVE.W #$8F02, (A4)`: Restores VDP auto-increment back to 2 bytes (`$02`) prior to `RTS`.
+  * Upload Loop:
+    - Loop iterates 28 times (`0x0024C8: MOVE.W #$001C, D7` and `0x002508: DBF D7, $0024CC`).
+    - In each iteration, `MOVE.W (A0), (A2)` writes a 16-bit plane pattern descriptor into VRAM.
+    - Pointer `A0` is advanced down by one row pitch: `SWAP.W D2` / `ADDA.W D2, A0` / `SWAP.W D2`.
+    - Handles vertical wrapping via `CMP.W D3, D2` / `SUBA.W D3, A0`.
+  * Child calls: 0 child calls (pure leaf routine).
+  * Frame boundaries: 0 (synchronous within VBlank).
+- **Validation Status:**
+  * Qualified in Milestone M15.232 as Native Experimental Slot 228.
+  * Scenario C: 76 entries, 31,210 dynamic instructions.
+  * Scenario B: 19 entries, 7,697 dynamic instructions.
+  * Scenario A: 0 entries (attract mode has no horizontal plane scroll).
+  * 24/24 bit-exact streams across Scenarios C, A, and B (3,992 frames, 0 contract faults).
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-232-20261108.json` (`VERIFIED`).
