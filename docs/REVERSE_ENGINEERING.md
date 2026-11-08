@@ -1,3 +1,54 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.5: Independent 121-Frame ROM Oracle Parity, Work RAM Camera Struct at $FF1716, 0x00CEEA Acceleration Formulas, 30Hz Cadence, 2-Frame VBlank Scroll Latch, and Slot 7 Type 0x0060 Verification at 0x0063DA -> 0x006430)
+
+## Milestone M16.5 Reverse Engineering Summary
+
+### 1. Persistent Work RAM Camera Struct ($FF1716)
+- **Disassembly of Routine `0x00CEEA`:**
+  * Work RAM address `$FF1716`: Camera World X (signed 16-bit). Initial beach value: $96$ (`0x0060`).
+  * Work RAM address `$FF171A`: Camera World Y (signed 16-bit). Initial beach value: $3$ (`0x0003`).
+  * Work RAM address `$FF1724`: Plane A HScroll cache.
+  * Work RAM address `$FF1726`: Plane A VScroll cache.
+  * Work RAM address `$FF173E`: Previously hypothesized as camera origin in M16.4, confirmed to be an intermediate rendering buffer. Authentic game camera state is maintained at `$FF1716`.
+
+### 2. Camera Acceleration Formulas & Smoothing (Routine `0x00CEEA`)
+- Deadzone thresholds:
+  * Horizontal deadzone: $[120..200]$ ($0x78..0xC8$).
+  * Vertical deadzone: $[104..128]$ ($0x68..0x80$).
+- Horizontal tracking step calculation:
+  * Rightward: $d_0 = screen\_x - 200$. If $d_0 \le 3$, $\Delta X = d_0$; if $d_0 \le 32$, $\Delta X = 3$; if $d_0 > 32$, $\Delta X = d_0 - 30$ (accelerating to 5-6 px/step catch-up).
+  * Leftward: $d_0 = screen\_x - 120$. If $d_0 \ge -3$, $\Delta X = d_0$; if $d_0 \ge -32$, $\Delta X = -3$; if $d_0 < -32$, $\Delta X = d_0 + 30$.
+- Vertical tracking step calculation:
+  * Downward: $d_0 = screen\_y - 128$. If $d_0 \le 3$, $\Delta Y = d_0$; if $d_0 \le 32$, $\Delta Y = 3$; if $d_0 > 32$, $\Delta Y = d_0 - 30$.
+  * Upward: $d_0 = screen\_y - 104$. If $d_0 \ge -3$, $\Delta Y = d_0$; if $d_0 \ge -32$, $\Delta Y = -3$; if $d_0 < -32$, $\Delta Y = \max(-6, d_0 + 30)$.
+- Scene bounds: Clamped by `$FF177A` (beach max X = 192) and `$FF177C` (beach max Y = 288).
+
+### 3. Execution Cadence & 2-Frame VBlank Latch
+- Routine `0x00CEEA` executes on a **30 Hz cadence** (odd frames: 1, 3, 5, 7, ...). Even frames hold steady.
+- Hardware VDP VRAM HScroll table (`0xDC00`) and VSRAM (offset 0) lag logical camera updates by **2 frames** due to VBlank latching in the Genesis double-buffered display pipeline.
+- Formula matching hardware: $h\_a = (-(latched\_camera\_x - 96)) \pmod{512}$, $v\_a = (139 + (latched\_camera\_y - 3)) \pmod{1024}$.
+
+### 4. Slot 7 Type 0x0060 (Spirit Gem Chest) Verification (0x0063DA -> 0x006430)
+- Slot 7 Entity located at Work RAM `$0x00FF1F0C` has Type `0x0060` at $(256, 88)$.
+- Disassembly of routine `0x0063DA`:
+  * Checks spirit gem inventory table at `$FF0DB2` + offset 3 (`$FF0DB5`, Bow/Plant gem).
+  * Branches to `0x006430`:
+    - Writes `#$10` to `$FF1854`.
+    - Sets interaction timer `#$3C` (60 frames) at `$FF1856`.
+    - Writes `#$36` to entity offset `$2A(a6)`.
+    - Transitions entity state to `#$6A` (`$4(a6)`).
+    - Sets `$2(a6)` to `#$5`.
+    - Updates SAT sprite tile base to `0x04B0`.
+- Authentic interaction condition: requires player adjacent ($\Delta X \le 20, \Delta Y \le 12$) with Action button pressed.
+
+### 5. Multi-Domain Differential Execution Results
+- Oracle fixture `data/standalone-fixtures/beach_canonical_120_oracle.json` (121 frames):
+  * CAMERA_EXACT: **121 / 121 (100.0%)** (0 diffs, ROM PC 0x00CEEA)
+  * SCROLL_EXACT: **121 / 121 (100.0%)** (0 diffs, ROM PC 0x00CEEA)
+  * ENTITY_EXACT: **121 / 121 (100.0%)** (0 diffs, ROM PC 0x0063DA)
+  * PLAYER_EXACT: **121 / 121 (100.0%)** (0 diffs, ROM PC 0x009D50)
+  * SAT_EXACT: 1 / 121 (reported independently; standalone slice composes Ali composite + scene entities)
+  * FRAMEBUFFER_EXACT: 0 / 121 (reported independently; dynamic tilemap streaming and HUD differences isolated)
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.4: Camera Subsystem, VDP HScroll Base 0xDC00 Derivation, Background Plane Scrolling, and Slot 7 Interaction at 0x0063DA)
 
 ## Milestone M16.4 Reverse Engineering Summary

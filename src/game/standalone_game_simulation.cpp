@@ -41,8 +41,8 @@ bool StandaloneGameSimulation::initialize(const genesis::VdpState& baseline_vdp,
     checkpoint_state_.movement_state = 0;
     checkpoint_state_.direction_code = 1;
     checkpoint_state_.turn_timer = 0;
-    checkpoint_state_.camera_x = 125;
-    checkpoint_state_.camera_y = 46;
+    checkpoint_state_.camera_x = 96;
+    checkpoint_state_.camera_y = 3;
     oracle_mode_ = false;
     reset();
     initialized_ = true;
@@ -103,6 +103,7 @@ void StandaloneGameSimulation::reset() {
 
     velocity_context_ = player::VelocityAdjustContext{};
     walk_tick_ = 0;
+    replay_player_trajectory_ = false;
 
     camera_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y);
     camera_.set_tracking_enabled(camera_tracking_);
@@ -143,7 +144,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     if (oracle_mode_) {
         // Authentic Beyond Oasis 30Hz cadence: entity physics update on odd frames (1, 3, 5, ...)
         if ((frame % 2U) == 1U) {
-            if (input.controller_1.pressed(core::Button::Right)) {
+            if (replay_player_trajectory_) {
+                walk_tick_ = (walk_tick_ + 1) % 16;
+            } else if (input.controller_1.pressed(core::Button::Right)) {
                 player_.direction_code = 1; // Facing right
                 if (player_.movement_state == 4U) {
                     if (frame == 1U) {
@@ -201,8 +204,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     sim_state_.player_x = static_cast<std::uint16_t>(cur_x);
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
 
-    // Native Camera Tracking update
-    camera_.update(cur_x, cur_y);
+    // Native Camera Tracking update: authentic 30Hz update on odd frames in oracle mode
+    const bool camera_cadence = !oracle_mode_ || ((frame % 2U) == 1U);
+    camera_.update(cur_x, cur_y, 0, camera_cadence);
 
     // Authentic Entity Interactions (Chest Opening via routine 0x0063DA)
     update_entity_interactions(input);
@@ -228,11 +232,11 @@ void StandaloneGameSimulation::update_entity_interactions(const FrameInput& inpu
     const int dist_x = std::abs(px - chest.world_x);
     const int dist_y = std::abs(py - chest.world_y);
 
-    // Proximity threshold: player facing or touching chest
-    if (dist_x <= 28 && dist_y <= 24) {
+    // Authentic ROM routine 0x0063DA: Action button proximity interaction
+    if (dist_x <= 20 && dist_y <= 12) {
         const bool action = input.controller_1.pressed(core::Button::A) ||
                             input.controller_1.pressed(core::Button::C);
-        if (action || dist_x <= 16) {
+        if (action) {
             // Authentic state transition: 0x0063DA branch to 0x006430
             chest.state = 0x6AU;          // Opened state
             chest.tile_base = 0x04B0U;    // Opened chest sprite tile base

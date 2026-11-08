@@ -15,12 +15,12 @@ struct CameraConfig {
     int deadzone_bottom{128};        // 0x80: bottom threshold
     int min_camera_x{0};             // Viewport min X clamp
     int max_camera_x{192};           // 0x00FF177A: beach scene max camera X (0xC0)
-    int min_camera_y{46};            // Beach scene min camera Y clamp
+    int min_camera_y{0};             // Viewport min Y clamp
     int max_camera_y{288};           // 0x00FF177C: beach scene max camera Y (0x120)
-    int max_step_per_frame{3};       // 0x00CEEA max tracking step clamp
+    int max_step_per_frame{3};       // 0x00CEEA standard tracking step clamp
     bool smooth_tracking{true};      // Enable authentic smoothing clamp
-    int initial_camera_x{125};       // Default checkpoint viewport origin X
-    int initial_camera_y{46};        // Default checkpoint viewport origin Y
+    int initial_camera_x{96};        // 0x00FF1716: default beach viewport origin X
+    int initial_camera_y{3};         // 0x00FF171A: default beach viewport origin Y
     int initial_hscroll_a{0};        // Default Plane A horizontal scroll
     int initial_hscroll_b{0};        // Default Plane B horizontal scroll
     int initial_vscroll_a{139};      // 0x00FF1726: default Plane A vertical scroll
@@ -29,10 +29,12 @@ struct CameraConfig {
 
 // Current camera and VDP plane scroll state.
 struct CameraState {
-    int camera_world_x{125};         // Camera world origin X
-    int camera_world_y{46};          // Camera world origin Y
-    int prev_camera_world_x{125};    // Previous frame camera X
-    int prev_camera_world_y{46};     // Previous frame camera Y
+    int camera_world_x{96};          // Camera world origin X
+    int camera_world_y{3};           // Camera world origin Y
+    int prev_camera_world_x{96};     // Previous frame camera X
+    int prev_camera_world_y{3};      // Previous frame camera Y
+    int prev2_camera_world_x{96};    // 2-frame latch for VDP VRAM double-buffering
+    int prev2_camera_world_y{3};     // 2-frame latch for VDP VSRAM double-buffering
 
     int plane_a_hscroll{0};          // VRAM HScroll table Plane A (signed 16-bit)
     int plane_b_hscroll{0};          // VRAM HScroll table Plane B (signed 16-bit)
@@ -51,11 +53,11 @@ public:
     explicit CameraController(CameraConfig config = {}) noexcept;
 
     // Resets camera to default configuration or custom starting coordinates.
-    void reset(int initial_x = 125, int initial_y = 46) noexcept;
+    void reset(int initial_x = 96, int initial_y = 3) noexcept;
 
     // Updates camera position based on player world coordinates (and altitude).
     // Follows authentic deadzone bounding and smoothing from ROM routine 0x00CEEA.
-    void update(int player_world_x, int player_world_y, int player_world_z = 0) noexcept;
+    void update(int player_world_x, int player_world_y, int player_world_z = 0, bool active_cadence = true) noexcept;
 
     // Directly set camera world position (e.g. for scripted panning or fixed camera).
     void set_camera_position(int world_x, int world_y) noexcept;

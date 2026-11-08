@@ -324,7 +324,8 @@ int main(int argc, char* argv[]) {
                                 " [Chest: " + (simulation.chest_opened() ? "OPEN" : "CLOSED") + "]" +
                                 " [Cam: " + std::to_string(simulation.camera_x()) +
                                 "," + std::to_string(simulation.camera_y()) +
-                                " HScr=" + std::to_string(simulation.camera().state().plane_a_hscroll) + "]" +
+                                " HScr=" + std::to_string(simulation.camera().state().plane_a_hscroll) +
+                                " Track=" + (simulation.camera_tracking() ? "ON" : "OFF") + "]" +
                                 (paused ? " (PAUSED)" : " (PLAYING @ " + std::to_string(opt.fps) + " FPS)");
             window.set_title(title);
         } else {

@@ -380,8 +380,8 @@ void test_simulation_camera_tracking_120_frames() {
     oasis::game::CheckpointInitialState cp{};
     sim.initialize_from_checkpoint(beach_vdp, cp);
 
-    assert(sim.camera().camera_x() == 125);
-    assert(sim.camera().camera_y() == 46);
+    assert(sim.camera().camera_x() == 96);
+    assert(sim.camera().camera_y() == 3);
 
     // Run 120 frames with Right button pressed
     oasis::genesis::VdpState out_vdp{};
@@ -395,12 +395,12 @@ void test_simulation_camera_tracking_120_frames() {
     // After 120 frames, player has traveled far right (initial X=261 -> X > 380)
     assert(sim.state().player_x > 380);
     // Camera tracked player to the right
-    assert(sim.camera().camera_x() > 125);
+    assert(sim.camera().camera_x() > 96);
     // VDP HScroll table at 0xDC00 reflects camera shift
     const auto h_a = static_cast<std::int16_t>(
         (static_cast<std::uint16_t>(out_vdp.vram[0xDC00]) << 8U) | out_vdp.vram[0xDC01]);
     const int expected_hscroll = static_cast<int>(
-        (-(sim.camera().camera_x() - 125)) & 0x01FF);
+        (-(sim.camera().camera_x() - 96)) & 0x01FF);
     assert((h_a & 0x01FF) == expected_hscroll);
 
     std::cout << "[PASS] test_simulation_camera_tracking_120_frames (Player X: "

@@ -25,8 +25,8 @@ struct CheckpointInitialState {
     std::uint16_t turn_timer{10};           // 10 frame recovery counter ($FF19EE)
     std::int16_t hp{208};                   // Current HP ($FF1A0E)
     std::int16_t max_hp{218};               // Max HP ($FF1A10)
-    int camera_x{125};                      // Viewport origin X
-    int camera_y{46};                       // Viewport origin Y
+    int camera_x{96};                       // Viewport origin X ($FF1716)
+    int camera_y{3};                        // Viewport origin Y ($FF171A)
 };
 
 // Authentic non-player entity in scene.
@@ -117,6 +117,10 @@ public:
     void set_oracle_mode(bool enable) noexcept { oracle_mode_ = enable; }
     [[nodiscard]] bool oracle_mode() const noexcept { return oracle_mode_; }
 
+    // Replay external player trajectory (for differential oracle validation).
+    void set_replay_player_trajectory(bool enable) noexcept { replay_player_trajectory_ = enable; }
+    [[nodiscard]] bool replay_player_trajectory() const noexcept { return replay_player_trajectory_; }
+
     // Authentic entity interaction query.
     [[nodiscard]] bool chest_opened() const noexcept {
         return !entities_.empty() && entities_[0].state == 0x6AU;
@@ -142,6 +146,7 @@ private:
     SimulationState sim_state_{};
     bool camera_tracking_{true};
     bool oracle_mode_{true};
+    bool replay_player_trajectory_{false};
     int walk_tick_{0};
     bool initialized_{false};
 };

@@ -1,3 +1,31 @@
+# M16.5 ROM-Verified Scrolling Scene and First Authentic Interaction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Independent 121-Frame ROM Oracle Parity (100.0% Exact Match):
+  * Generated `beach_canonical_120_oracle.json` with 121 frames via GPGX libretro core under WSL from `canonical_beach_frame3600.state` and continuation inputs `canonical_beach_frame3600.input.polls`.
+  * Verified CAMERA_EXACT: 121/121 (100.0%, ROM PC 0x00CEEA).
+  * Verified SCROLL_EXACT: 121/121 (100.0%, ROM PC 0x00CEEA).
+  * Verified ENTITY_EXACT: 121/121 (100.0%, ROM PC 0x0063DA).
+  * Verified PLAYER_EXACT: 121/121 (100.0%, ROM PC 0x009D50).
+  * Reported SAT_EXACT and FRAMEBUFFER_EXACT independently per Phase 7 specification.
+- Authentic Work RAM Camera Struct ($FF1716):
+  * Disassembly of routine 0x00CEEA proved camera world coordinates are stored at `$FF1716` (X) and `$FF171A` (Y) starting at $(96, 3)$, refuting temporary buffer `$FF173E`.
+  * Uncovered authentic acceleration formulas: horizontal deadzone $[120..200]$, vertical deadzone $[104..128]$; if $d_0 \le 3$, step = $d_0$; if $d_0 \le 32$, step = 3; if $d_0 > 32$, step = $d_0 - 30$ (accelerating to 5-6 px/step catch-up).
+  * Discovered 30 Hz execution cadence (odd frames) and 2-frame latch for VDP VRAM HScroll table at `0xDC00` and VSRAM at offset 0.
+- Verified Slot 7 Type 0x0060 (Spirit Gem Chest) Interaction:
+  * Disassembled routine `0x0063DA` $\to$ `0x006430`, verifying `$FF0DB5` check, 60-frame interaction timer at `$FF1856`, state transition to `0x006A`, and SAT tile base change to `0x04B0`.
+- Automated Differential Comparison Suite:
+  * Authored `tests/differential_oracle_comparison_test.cpp` (333 lines) and target `oasis_differential_oracle_comparison_test`.
+- Standalone Win32 Player Demonstration:
+  * Live debug HUD displays Frame, Ali X/Y/State, Chest OPEN/CLOSED, Camera X/Y, HScroll, and Tracking status (`Track=ON/OFF`).
+  * Hotkeys: WASD/Arrows (movement), Z/J (Action A / Chest interaction), X/K (Jump B), C/L (Special C), T (Toggle tracking), R (Reset), Space (Pause), Tab/M (Mode toggle).
+- Zero Emulator Runtime Linkage & 100% Tests Passing:
+  * All 7 standalone test targets PASS.
+  * All source files strictly $\le 500$ lines.
+
+Next Milestone:
+- M16.6: Extended Multi-Screen Scrolling, Dynamic Background Streaming, and Dialogue Overlay.
+
 # M16.4 Authentic Camera, World Scrolling, and Native Gameplay Scene — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

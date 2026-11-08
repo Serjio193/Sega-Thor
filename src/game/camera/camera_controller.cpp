@@ -12,6 +12,8 @@ void CameraController::reset(int initial_x, int initial_y) noexcept {
     state_.camera_world_y = initial_y;
     state_.prev_camera_world_x = initial_x;
     state_.prev_camera_world_y = initial_y;
+    state_.prev2_camera_world_x = initial_x;
+    state_.prev2_camera_world_y = initial_y;
 
     state_.plane_a_hscroll = config_.initial_hscroll_a;
     state_.plane_b_hscroll = config_.initial_hscroll_b;
@@ -23,6 +25,8 @@ void CameraController::reset(int initial_x, int initial_y) noexcept {
 }
 
 void CameraController::set_camera_position(int world_x, int world_y) noexcept {
+    state_.prev2_camera_world_x = state_.prev_camera_world_x;
+    state_.prev2_camera_world_y = state_.prev_camera_world_y;
     state_.prev_camera_world_x = state_.camera_world_x;
     state_.prev_camera_world_y = state_.camera_world_y;
 
@@ -41,45 +45,79 @@ void CameraController::set_camera_position(int world_x, int world_y) noexcept {
                               (state_.camera_world_y != state_.prev_camera_world_y);
 }
 
-void CameraController::update(int player_world_x, int player_world_y, int player_world_z) noexcept {
+void CameraController::update(int player_world_x, int player_world_y, int player_world_z, bool active_cadence) noexcept {
+    state_.prev2_camera_world_x = state_.prev_camera_world_x;
+    state_.prev2_camera_world_y = state_.prev_camera_world_y;
     state_.prev_camera_world_x = state_.camera_world_x;
     state_.prev_camera_world_y = state_.camera_world_y;
     state_.moved_this_frame = false;
 
-    if (!state_.tracking_enabled) {
-        return;
+    if (state_.tracking_enabled && active_cadence) {
+        const int screen_x = player_world_x - state_.camera_world_x;
+        const int screen_y = (player_world_y - player_world_z) - state_.camera_world_y;
+
+        // Authentic ROM routine 0x00CEEA: Horizontal Tracking
+        int delta_x = 0;
+        if (screen_x < config_.deadzone_left) {
+            const int d0 = screen_x - config_.deadzone_left;
+            if (!config_.smooth_tracking) {
+                delta_x = d0;
+            } else if (d0 >= -3) {
+                delta_x = d0;
+            } else if (d0 >= -32) {
+                delta_x = -3;
+            } else {
+                delta_x = d0 + 30; // Accelerated catch-up
+            }
+        } else if (screen_x > config_.deadzone_right) {
+            const int d0 = screen_x - config_.deadzone_right;
+            if (!config_.smooth_tracking) {
+                delta_x = d0;
+            } else if (d0 <= 3) {
+                delta_x = d0;
+            } else if (d0 <= 32) {
+                delta_x = 3;
+            } else {
+                delta_x = d0 - 30; // Accelerated catch-up
+            }
+        }
+
+        // Authentic ROM routine 0x00CEEA: Vertical Tracking
+        int delta_y = 0;
+        if (screen_y < config_.deadzone_top) {
+            const int d0 = screen_y - config_.deadzone_top;
+            if (!config_.smooth_tracking) {
+                delta_y = d0;
+            } else if (d0 >= -3) {
+                delta_y = d0;
+            } else if (d0 >= -32) {
+                delta_y = -3;
+            } else {
+                delta_y = std::max(-6, d0 + 30);
+            }
+        } else if (screen_y > config_.deadzone_bottom) {
+            const int d0 = screen_y - config_.deadzone_bottom;
+            if (!config_.smooth_tracking) {
+                delta_y = d0;
+            } else if (d0 <= 3) {
+                delta_y = d0;
+            } else if (d0 <= 32) {
+                delta_y = 3;
+            } else {
+                delta_y = d0 - 30;
+            }
+        }
+
+        const int target_x = state_.camera_world_x + delta_x;
+        const int target_y = state_.camera_world_y + delta_y;
+
+        state_.camera_world_x = std::clamp(target_x, config_.min_camera_x, config_.max_camera_x);
+        state_.camera_world_y = std::clamp(target_y, config_.min_camera_y, config_.max_camera_y);
     }
 
-    const int screen_x = player_world_x - state_.camera_world_x;
-    const int screen_y = (player_world_y - player_world_z) - state_.camera_world_y;
-
-    int delta_x = 0;
-    if (screen_x < config_.deadzone_left) {
-        delta_x = screen_x - config_.deadzone_left;
-    } else if (screen_x > config_.deadzone_right) {
-        delta_x = screen_x - config_.deadzone_right;
-    }
-
-    int delta_y = 0;
-    if (screen_y < config_.deadzone_top) {
-        delta_y = screen_y - config_.deadzone_top;
-    } else if (screen_y > config_.deadzone_bottom) {
-        delta_y = screen_y - config_.deadzone_bottom;
-    }
-
-    if (config_.smooth_tracking) {
-        delta_x = std::clamp(delta_x, -config_.max_step_per_frame, config_.max_step_per_frame);
-        delta_y = std::clamp(delta_y, -config_.max_step_per_frame, config_.max_step_per_frame);
-    }
-
-    const int target_x = state_.camera_world_x + delta_x;
-    const int target_y = state_.camera_world_y + delta_y;
-
-    state_.camera_world_x = std::clamp(target_x, config_.min_camera_x, config_.max_camera_x);
-    state_.camera_world_y = std::clamp(target_y, config_.min_camera_y, config_.max_camera_y);
-
-    const int total_dx = state_.camera_world_x - config_.initial_camera_x;
-    const int total_dy = state_.camera_world_y - config_.initial_camera_y;
+    // 2-frame latch for VDP VRAM and VSRAM registers (double-buffered display pipeline)
+    const int total_dx = state_.prev2_camera_world_x - config_.initial_camera_x;
+    const int total_dy = state_.prev2_camera_world_y - config_.initial_camera_y;
 
     state_.plane_a_hscroll = static_cast<int>((config_.initial_hscroll_a - total_dx) & 0x01FF);
     state_.plane_b_hscroll = static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF);

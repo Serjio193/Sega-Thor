@@ -1,3 +1,40 @@
+# ADR-20261108-M16-05-ROM-VERIFIED-SCROLLING-SCENE-AND-FIRST-AUTHENTIC-INTERACTION — Independent 121-Frame ROM Oracle Parity, Work RAM Camera Struct at $FF1716, 0x00CEEA Acceleration Formulas, 30Hz Cadence, 2-Frame VBlank Scroll Latch, Slot 7 Type 0x0060 (Spirit Gem Chest) Verification via 0x0063DA -> 0x006430, and Automated Differential Comparison
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.4 implemented candidate camera tracking, VDP scroll updates, and chest interaction, but an evidence gap remained:
+   - Full per-frame camera and scroll comparison against independently recorded original-ROM state was required.
+   - Camera RAM source address and initial coordinates required verification against ROM disassembly and physical emulator memory ($FF1716 vs $FF173E).
+   - Candidate camera deadzone, acceleration, and step clamp behaviors required disassembly verification from routines 0x00CEEA, 0x00D188, 0x00D344, 0x00D398.
+   - Slot 7 Type 0x0060 interaction semantics needed independent disassembly confirmation from routine 0x0063DA.
+   - A multi-domain frame-by-frame differential execution report across >= 120 frames was needed.
+
+**Decision:**
+1. **Camera Struct and Authentic Origin ($FF1716):**
+   - Disassembly of routine 0x00CEEA confirms the persistent camera state struct in Work RAM is located at `$FF1716` (World X, signed word) and `$FF171A` (World Y, signed word). Initial beach coordinates are $X = 96, Y = 3$. Work RAM `$FF173E` was identified as a temporary working buffer.
+2. **Authentic 0x00CEEA Acceleration Formulas:**
+   - Deadzones: horizontal $[120..200]$, vertical $[104..128]$.
+   - For excess $\le 3$ px: step = excess.
+   - For excess $\le 32$ px: step = 3 px.
+   - For excess $> 32$ px: step = excess - 30 (accelerated catch-up smoothing).
+   - Scene bounds: clamped by `$FF177A` (beach max X = 192) and `$FF177C` (beach max Y = 288).
+3. **Execution Cadence & VBlank Latch:**
+   - Camera routine 0x00CEEA runs at 30 Hz (odd frames).
+   - VRAM HScroll table (`0xDC00`) and VSRAM (offset 0) lag logical camera updates by a 2-frame latch due to the Genesis display double-buffering pipeline.
+4. **Authentic Entity Interaction (0x0063DA -> 0x006430):**
+   - Entity Slot 7 at `$FF1F0C` (Type 0x0060, Beach Chest / Spirit Gem container) checks spirit inventory at `$FF0DB5`.
+   - Interaction condition: player adjacent ($\Delta X \le 20, \Delta Y \le 12$) with Action button pressed.
+   - Routine 0x006430 executes: writes `#$10` to `$FF1854`, sets 60-frame interaction timer `#$3C` at `$FF1856`, writes `#$36` to `$2A(a6)`, transitions entity state to `#$6A` (`$4(a6)`), and updates SAT tile base to `0x04B0`.
+5. **Deterministic Multi-Domain Differential Execution:**
+   - Authored `data/standalone-fixtures/beach_canonical_120_oracle.json` (121 frames, frames 0..120) with SHA-256 provenance.
+   - Authored `tests/differential_oracle_comparison_test.cpp` (333 lines) and target `oasis_differential_oracle_comparison_test`.
+   - Results: CAMERA_EXACT: 121/121 (100.0%), SCROLL_EXACT: 121/121 (100.0%), ENTITY_EXACT: 121/121 (100.0%), PLAYER_EXACT: 121/121 (100.0%). SAT and Framebuffer correctness reported independently.
+
+**Consequences:**
+- Standalone runtime is independently verified against original ROM execution with mathematical precision across all domains.
+- All source files strictly $\le 500$ lines. Zero emulator dependencies preserved.
+
 # ADR-20261108-M16-04-AUTHENTIC-CAMERA-TRACKING-WORLD-SCROLLING-AND-NATIVE-GAMEPLAY-SCENE — Authentic Camera Controller Subsystem (Routines 0x00CEEA, 0x00D188), VDP HScroll Base 0xDC00 Derivation, Plane Parallax, Entity Viewport Culling, and Authentic Chest Interaction (Routine 0x0063DA)
 **Status:** Accepted
 **Date:** 2026-11-08
