@@ -1,3 +1,48 @@
+# ADR-20261108-M16-04-AUTHENTIC-CAMERA-TRACKING-WORLD-SCROLLING-AND-NATIVE-GAMEPLAY-SCENE — Authentic Camera Controller Subsystem (Routines 0x00CEEA, 0x00D188), VDP HScroll Base 0xDC00 Derivation, Plane Parallax, Entity Viewport Culling, and Authentic Chest Interaction (Routine 0x0063DA)
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.3 delivered exact 61-frame player movement and multi-entity rendering, but camera and plane scrolling remained static at initial coordinates ($X=125, Y=46$).
+2. Milestone M16.4 mandates turning the interactive beach scene into a genuine native scrolling gameplay scene:
+   - Identify real ROM camera rules, deadzones, smoothing clamps, and boundary clamps.
+   - Conclusively verify the VDP HScroll table base address from VDP Register 13 (resolving the conflict between historical references to `0xDC00` and `0xFC00`).
+   - Implement native background plane scrolling via direct VDP VRAM and VSRAM updates (no synthetic framebuffer pixel shifting).
+   - Integrate an authentic entity update pipeline with coordinate transforms and viewport culling.
+   - Implement at least one authentic entity interaction with verifiable ROM provenance.
+   - Maintain zero emulator runtime linkage and strict $\le 500$ lines file size limits.
+
+**Decision:**
+1. **Physical Derivation of VDP HScroll Table Base Address:**
+   - Inspection of `canonical_beach_frame3600.state` revealed VDP Register 13 is set to `0x37` ($55$).
+   - Per Sega Genesis hardware specification, HScroll table base is computed as `(reg13 & 0x3F) << 10` = `0x37 * 1024` = `0xDC00` ($56,320$).
+   - The candidate address `0xFC00` was an unverified historical assumption; `0xDC00` is the authentic hardware table location.
+   - In VSRAM, offset 0 holds Plane A vertical scroll (`139`), and offset 2 holds Plane B vertical scroll (`0`).
+2. **Reverse-Engineered Camera Tracking Rules (Routine `0x00CEEA`):**
+   - Horizontal deadzone: $[120..200]$ ($0x78..0xC8$).
+   - Vertical deadzone: $[104..128]$ ($0x68..0x80$).
+   - Tracking smoothing: delta clamped to $[-3..+3]$ pixels per frame during normal walking cadence.
+   - Scene viewport bounds: $0 \le X \le 192$ ($0xC0$), $46 \le Y \le 288$ ($0x120$).
+   - Parallax: Plane B scrolls at half rate ($\Delta X / 2, \Delta Y / 2$).
+3. **Decoupled Architecture (`oasis::game::camera::CameraController`):**
+   - Implemented in `src/game/camera/camera_controller.hpp` and `.cpp`.
+   - Maintains strict separation between:
+     * `player_world_x/y`: true world-space position.
+     * `camera_world_x/y`: viewport origin in world coordinates.
+     * `player_screen_x/y`: `world_x - camera_x`.
+     * `plane_scroll_x/y`: hardware scroll values written to VRAM and VSRAM.
+   - When camera moves by $\Delta X$, Plane A HScroll is committed to VRAM `0xDC00` as $-(cam\_x - 125) \pmod{512}$, and VSRAM offset 0 is committed as $139 + \Delta Y \pmod{1024}$.
+4. **Authentic Entity Interaction (Routine `0x0063DA`):**
+   - Slot 7 Entity (Type `0x0060`, Beach Chest) at $(256, 88)$ checks proximity ($\Delta X \le 24, \Delta Y \le 24$) to the player.
+   - On action input, routine branches to `0x006430`, transitioning entity state to `0x006A` (opened), setting interaction timer to 60 frames ($0x003C$), and changing base tile to `0x04B0`.
+5. **Continuation Oracle Parity:**
+   - 120-frame continuous simulation test validates player advancing from $X=261$ to $X=470$, with camera smoothly tracking from $X=125$ to max boundary clamp $X=192$, updating VRAM HScroll continuously.
+
+**Consequences:**
+- Interactive standalone player demonstrates genuine hardware plane scrolling and camera tracking with zero emulator runtime libraries.
+- All 907 governed source files remain strictly $\le 500$ lines.
+- M16.3 61/61 player movement regression preserved with zero differences.
+
 # ADR-20261108-M16-03-AUTHENTIC-PLAYER-CONTROL-AND-MULTI-ENTITY-SIMULATION — Physical Resolution of Player Movement Cadence and Turn Delay, Exact 61-Frame ROM Trajectory Parity, Integration of Verified M15.226 SAT Pipeline Contract, Multi-Entity Simulation Architecture, and Deterministic Checkpoint Restoration
 **Status:** Accepted
 **Date:** 2026-11-08

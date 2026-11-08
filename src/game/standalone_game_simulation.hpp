@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/runtime.hpp"
+#include "game/camera/camera_controller.hpp"
 #include "game/player/player.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/standalone_game_loop.hpp"
@@ -9,6 +10,7 @@
 
 #include <array>
 #include <cstdint>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -29,10 +31,10 @@ struct CheckpointInitialState {
 
 // Authentic non-player entity in scene.
 struct NativeEntity {
-    std::uint16_t type_id{0x0060};          // Entity type in ROM
+    std::uint16_t type_id{0x0060};          // Entity type in ROM (0x0060 = beach chest)
     std::int32_t world_x{256};              // World X coordinate
     std::int32_t world_y{88};               // World Y coordinate
-    std::uint8_t state{0};                  // Entity state
+    std::uint8_t state{0};                  // Entity state (0 = closed, 0x6A = opened)
     std::uint8_t anim_frame{0};             // Current animation frame
     std::uint16_t tile_base{0x04A8};        // SAT base tile index
     bool active{true};                      // Whether entity is active
@@ -40,7 +42,8 @@ struct NativeEntity {
 
 // Standalone C++ game simulation vertical slice.
 // Implements IGameSimulation without linking GPGX, Musashi or libretro.
-// Connects player state machine, authentic 30Hz movement cadence, secondary entities,
+// Connects player state machine, authentic 30Hz movement cadence, camera tracking,
+// VDP plane scrolling, secondary scene entities, authentic entity interaction,
 // and publishes hardware SAT entries through SatPipelineContract to VdpState.
 class StandaloneGameSimulation : public IGameSimulation {
 public:
@@ -55,6 +58,9 @@ public:
     // Initializes simulation with full authentic checkpoint state.
     bool initialize_from_checkpoint(const genesis::VdpState& baseline_vdp,
                                     const CheckpointInitialState& cp_state);
+
+    // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
+    bool load_rom_background(std::span<const std::uint8_t> rom);
 
     // Advances the simulation by exactly one deterministic frame.
     void step_frame(const FrameInput& input, genesis::VdpState& out_vdp) override;
@@ -79,6 +85,14 @@ public:
         return sat_pipeline_;
     }
 
+    // Access native camera controller.
+    [[nodiscard]] const camera::CameraController& camera() const noexcept {
+        return camera_;
+    }
+    [[nodiscard]] camera::CameraController& camera() noexcept {
+        return camera_;
+    }
+
     // Reset player, entities and camera back to initialization state.
     void reset();
 
@@ -86,11 +100,14 @@ public:
     void set_player_position(std::int32_t x, std::int32_t y) noexcept;
 
     // Viewport camera origin.
-    [[nodiscard]] int camera_x() const noexcept { return camera_x_; }
-    [[nodiscard]] int camera_y() const noexcept { return camera_y_; }
+    [[nodiscard]] int camera_x() const noexcept { return camera_.camera_x(); }
+    [[nodiscard]] int camera_y() const noexcept { return camera_.camera_y(); }
 
     // Toggle camera tracking player vs fixed camera.
-    void set_camera_tracking(bool track) noexcept { camera_tracking_ = track; }
+    void set_camera_tracking(bool track) noexcept {
+        camera_tracking_ = track;
+        camera_.set_tracking_enabled(track);
+    }
     [[nodiscard]] bool camera_tracking() const noexcept { return camera_tracking_; }
 
     // Walk animation cycle tick (0..15).
@@ -100,8 +117,14 @@ public:
     void set_oracle_mode(bool enable) noexcept { oracle_mode_ = enable; }
     [[nodiscard]] bool oracle_mode() const noexcept { return oracle_mode_; }
 
+    // Authentic entity interaction query.
+    [[nodiscard]] bool chest_opened() const noexcept {
+        return !entities_.empty() && entities_[0].state == 0x6AU;
+    }
+
 private:
     void update_sat_sprites(genesis::VdpState& vdp);
+    void update_entity_interactions(const FrameInput& input);
 
     genesis::VdpState baseline_vdp_{};
     player::PlayerState player_{};
@@ -109,6 +132,7 @@ private:
     player::VelocityAdjustContext velocity_context_{};
     CheckpointInitialState checkpoint_state_{};
 
+    camera::CameraController camera_{};
     std::vector<NativeEntity> entities_{};
     render::SatPipelineContract sat_pipeline_{};
 
@@ -116,9 +140,7 @@ private:
     world::ByteGridView terrain_{};
 
     SimulationState sim_state_{};
-    int camera_x_{125};
-    int camera_y_{46};
-    bool camera_tracking_{false};
+    bool camera_tracking_{true};
     bool oracle_mode_{true};
     int walk_tick_{0};
     bool initialized_{false};

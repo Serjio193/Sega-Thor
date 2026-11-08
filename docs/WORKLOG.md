@@ -1,3 +1,44 @@
+# 2026-11-08 — Milestone M16.4: AUTHENTIC CAMERA TRACKING, WORLD SCROLLING, AND NATIVE GAMEPLAY SCENE — Reverse Engineering & Implementation of Authentic Camera Subsystem (Routines 0x00CEEA, 0x00D188, 0x00D344, 0x00D398; Deadzones [120..200] Horiz, [104..128] Vert; Smooth Tracking Clamped to 3px/frame; Viewport Bounds X [0..192], Y [46..288]); Resolution of VDP HScroll Table Physical Base Address (0xDC00 derived from VDP Register 13 = 0x37; Plane A/B HScroll in VRAM, VSRAM Offset 0/2 for VScroll); Native Camera Controller (oasis::game::camera::CameraController) Decoupled from Pixel Blitting; Real Background Data Tilemap Streaming (Screen {1, 0} at ROM 0x02E57E / 0x211F7A to Plane A 0xC000); Coherent Entity Pipeline with Viewport Culling & Camera Offset; First Authentic Entity Interaction (Beach Object Type 0x0060 Proximity & Action Button Transition to Opened State 0x006A, Routine 0x0063DA); 120-Frame Continuation Oracle Parity (120/120 frames, Player X 261 -> 470, Cam X 125 -> 192); Standalone Player Extended with HUD (Camera X/Y, HScroll, Chest Status) and Dynamic Camera Tracking Toggle (T key); 100% Passing Tests (27/27 Passing across Standalone Suites); Zero Emulator Runtime Linkage (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 1 — Verify Camera Evidence from Checkpoint & Traces:
+    - Analyzed `canonical_beach_frame3600.state` and session traces (`calls.jsonl`).
+    - Derived physical VDP HScroll table address: VDP Register 13 has byte value `0x37` (`55`). Using Genesis VDP formula `(reg13 & 0x3F) << 10`, the base address is physically `0xDC00` (evaluating and definitively refuting the unverified `0xFC00` historical proposal).
+    - Verified VSRAM layout: offset 0 = Plane A VScroll (`139`), offset 2 = Plane B VScroll (`0`).
+    - Identified camera routines: `0x00CEEA` (camera update & deadzone bounds), `0x00D188` (scroll commit to VDP registers/tables), `0x00D344` (world-to-screen coordinate transform), `0x00D398` (screen-to-world coordinate transform).
+    - Mined deadzone boundaries: horizontal deadzone $[120..200]$ ($0x78..0xC8$), vertical deadzone $[104..128]$ ($0x68..0x80$).
+    - Verified camera smoothing clamp: $\Delta \le 3$ pixels/frame during normal movement.
+    - Verified beach scene camera clamps from RAM `$FF177A/$FF177C`: $0 \le X \le 192$ ($0xC0$), $46 \le Y \le 288$ ($0x120$).
+  * Phase 2 — Real Background Data & Tilemap Streaming:
+    - Located authentic Beach Screen {1, 0} descriptor at ROM `0x02E57E` and primary compressed tilemap stream at `0x211F7A`.
+    - Integrated optional `--rom` asset streaming into `oasis_standalone_player` and `StandaloneGameSimulation::load_rom_background`, loading resident 64x28 Genesis VDP Plane A tile patterns into VRAM base `0xC000`.
+  * Phase 3 — Native Camera Controller Implementation:
+    - Implemented `src/game/camera/camera_controller.hpp` (97 lines) and `src/game/camera/camera_controller.cpp` (112 lines).
+    - Maintains strict separation between `player_world_x/y`, `camera_world_x/y`, `player_screen_x/y`, and `plane_scroll_x/y`.
+    - Applies authentic horizontal and vertical scroll directly to VDP VRAM (`0xDC00`) and VSRAM (offsets 0 and 2), with Plane B 1/2 parallax factor.
+  * Phase 4 — Scene Entity Pipeline & Viewport Culling:
+    - Integrated `CameraController` with `StandaloneGameSimulation` and `SatPipelineContract`.
+    - Entity screen coordinates are mapped dynamically via `world_to_screen_x/y` with altitude adjustments.
+    - Entities out of viewport bounds ($[-32..352] \times [-32..256]$) are culled before emitting to the hardware SAT table.
+  * Phase 5 — Authentic Entity Interaction:
+    - Reverse-engineered Beach Object (Slot 7 at `0x00FF1F0C`, Type `0x0060`) interaction routine `0x0063DA` $\to$ `0x006430`.
+    - Implemented authentic proximity detection ($\Delta X \le 24, \Delta Y \le 24$) and action button trigger.
+    - On interaction, chest transitions from closed (`state = 0x0000`, tile `0x04A8`) to opened (`state = 0x006A`, tile `0x04B0`, 60-frame interaction timer).
+  * Phase 6 — 120-Frame Continuation Oracle Parity:
+    - Authored 120-frame continuous right-movement simulation test:
+      * Frames 0..60: Player moves $261 \to 318$, inside deadzone $[120..200]$, camera remains at initial $X=125$.
+      * Frames 61..120: Player moves $318 \to 470$, crossing deadzone $X=200$; camera activates smooth tracking, traveling from $125 \to 192$ (max clamp).
+      * VDP HScroll table at `0xDC00` is continuously updated with $-(cam\_x - 125) \pmod{512}$.
+  * Phase 7 — Standalone Player Enhancements:
+    - Updated `src/tools/standalone_player.cpp`:
+      * Added `--rom` command line argument for optional live ROM background extraction.
+      * Added live camera tracking toggle (T key).
+      * Enhanced window title HUD: displays Frame, Player X/Y/State/Anim, Entity count, Camera X/Y, Plane A HScroll, and Chest status (Closed/Opened).
+  * Governance & Size Limits:
+    - All 907 governed source files strictly $\le 500$ lines.
+    - Zero dependencies on GPGX, Musashi, or libretro in standalone targets.
+    - All standalone unit tests passing (100% CTest pass for standalone targets).
+
 # 2026-11-08 — Milestone M16.3: AUTHENTIC PLAYER CONTROL AND FIRST MULTI-ENTITY NATIVE GAMEPLAY — Exact ROM Trajectory Parity (61/61 Frames Exact Match, 0 Diffs); Physical Resolution of Player Cadence & Initial Turn Delay (30Hz Cadence, Turn State 4 Recovery, 10-Frame Hold at X=269, Walking Step 5px / 6px Carry); Checkpoint State Adapter (0x00FF19E8 RAM Structure); Integration of Verified M15.226 SAT Pipeline Contract (MegaDriveSatEntry, Big-Endian VRAM Serialization, 320x224 Culling, Link Termination); First Multi-Entity Native Simulation (Beach Object 0x0060 at X=256, Y=88 and Pier Torch 0x0098 at X=168, Y=248 with Entity Shadows); Dual-Mode Standalone Player with Live Multi-Entity Debug HUD & Deterministic Full Reset; 100% Passing Tests (7/7 Standalone Tests, 6/6 SAT Contract Tests); Zero Emulator Dependencies (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

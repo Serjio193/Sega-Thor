@@ -114,6 +114,9 @@ add_test(NAME oasis_standalone_gameplay COMMAND oasis_standalone_gameplay_test)
 add_executable(oasis_sat_pipeline_contract_test tests/sat_pipeline_contract_test.cpp)
 target_link_libraries(oasis_sat_pipeline_contract_test PRIVATE oasis_core)
 add_test(NAME oasis_sat_pipeline_contract COMMAND oasis_sat_pipeline_contract_test)
+add_executable(oasis_camera_controller_test tests/camera_controller_test.cpp)
+target_link_libraries(oasis_camera_controller_test PRIVATE oasis_core)
+add_test(NAME oasis_camera_controller COMMAND oasis_camera_controller_test)
 add_executable(oasis_runtime_test tests/runtime_test.cpp)
 target_link_libraries(oasis_runtime_test PRIVATE oasis_core)
 add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
@@ -294,6 +297,7 @@ set(oasis_test_targets
     oasis_standalone_sequencer_test
     oasis_standalone_gameplay_test
     oasis_sat_pipeline_contract_test
+    oasis_camera_controller_test
     oasis_runtime_test
     oasis_screen_descriptor_test
     oasis_byte_grid_test
@@ -349,6 +353,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_standalone_sequencer
         oasis_standalone_gameplay
         oasis_sat_pipeline_contract
+        oasis_camera_controller
         oasis_runtime
         oasis_screen_descriptor
         oasis_byte_grid

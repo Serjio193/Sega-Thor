@@ -366,10 +366,80 @@ void test_rasterization_of_simulation_output() {
               << metrics.sprite_pixels << " pixels)\n";
 }
 
+void test_simulation_camera_tracking_120_frames() {
+    const std::string fixture_path = resolve_fixture("data/standalone-fixtures/beach_frame_000.json");
+    if (!fs::exists(fixture_path)) {
+        std::cout << "[SKIP] test_simulation_camera_tracking_120_frames (fixture not present)\n";
+        return;
+    }
+
+    oasis::genesis::VdpState beach_vdp{};
+    assert(beach_vdp.load_from_file(fixture_path.c_str()));
+
+    oasis::game::StandaloneGameSimulation sim{};
+    oasis::game::CheckpointInitialState cp{};
+    sim.initialize_from_checkpoint(beach_vdp, cp);
+
+    assert(sim.camera().camera_x() == 125);
+    assert(sim.camera().camera_y() == 46);
+
+    // Run 120 frames with Right button pressed
+    oasis::genesis::VdpState out_vdp{};
+    for (int frame = 1; frame <= 120; ++frame) {
+        oasis::game::FrameInput input{};
+        input.frame_index = frame;
+        input.controller_1.set(oasis::core::Button::Right);
+        sim.step_frame(input, out_vdp);
+    }
+
+    // After 120 frames, player has traveled far right (initial X=261 -> X > 380)
+    assert(sim.state().player_x > 380);
+    // Camera tracked player to the right
+    assert(sim.camera().camera_x() > 125);
+    // VDP HScroll table at 0xDC00 reflects camera shift
+    const auto h_a = static_cast<std::int16_t>(
+        (static_cast<std::uint16_t>(out_vdp.vram[0xDC00]) << 8U) | out_vdp.vram[0xDC01]);
+    const int expected_hscroll = static_cast<int>(
+        (-(sim.camera().camera_x() - 125)) & 0x01FF);
+    assert((h_a & 0x01FF) == expected_hscroll);
+
+    std::cout << "[PASS] test_simulation_camera_tracking_120_frames (Player X: "
+              << sim.state().player_x << ", Cam X: " << sim.camera().camera_x() << ")\n";
+}
+
+void test_authentic_chest_interaction() {
+    oasis::game::StandaloneGameSimulation sim{};
+    oasis::genesis::VdpState dummy_vdp{};
+    dummy_vdp.registers[13] = 0x37; // HScroll table at 0xDC00
+    oasis::game::CheckpointInitialState cp{};
+    // Place player at (256, 95), within 24 pixels of chest at (256, 88)
+    cp.x_fixed = 256 << 16;
+    cp.y_fixed = 95 << 16;
+    sim.initialize_from_checkpoint(dummy_vdp, cp);
+
+    assert(sim.entities().size() >= 1);
+    assert(sim.entities()[0].type_id == 0x0060);
+    assert(sim.entities()[0].state == 0x0000);
+
+    // Frame with Button::A pressed triggers interaction (routine 0x0063DA)
+    oasis::game::FrameInput input{};
+    input.frame_index = 1;
+    input.controller_1.set(oasis::core::Button::A);
+
+    oasis::genesis::VdpState out_vdp{};
+    sim.step_frame(input, out_vdp);
+
+    // Entity transitioned to opened state 0x006A and changed SAT tile base
+    assert(sim.entities()[0].state == 0x006A);
+    assert(sim.entities()[0].tile_base == 0x04B0);
+
+    std::cout << "[PASS] test_authentic_chest_interaction (Chest opened, state 0x006A)\n";
+}
+
 } // namespace
 
 int main() {
-    std::cout << "Running Standalone Gameplay Simulation Tests (M16.3)...\n";
+    std::cout << "Running Standalone Gameplay Simulation Tests (M16.4)...\n";
     test_direction_input_mapping();
     test_controller_state_buttons();
     test_player_position_integration();
@@ -379,6 +449,8 @@ int main() {
     test_simulation_determinism();
     test_canonical_beach_oracle_trajectory_exact();
     test_rasterization_of_simulation_output();
+    test_simulation_camera_tracking_120_frames();
+    test_authentic_chest_interaction();
 
     std::cout << "All Standalone Gameplay Simulation Tests PASSED!\n";
     return 0;

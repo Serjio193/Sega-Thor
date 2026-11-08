@@ -1,6 +1,8 @@
 #include "game/standalone_game_simulation.hpp"
+#include "game/screen_instance.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 
 namespace oasis::game {
@@ -58,6 +60,31 @@ bool StandaloneGameSimulation::initialize_from_checkpoint(
     return true;
 }
 
+bool StandaloneGameSimulation::load_rom_background(std::span<const std::uint8_t> rom) {
+    if (rom.empty()) return false;
+    try {
+        const auto scr = ScreenInstance::load_from_rom(rom, world::ScreenId{1, 0});
+        if (scr.tilemap.empty()) return false;
+        const std::size_t base_a = baseline_vdp_.plane_a_base();
+        for (std::size_t r = 0; r < 28U && r < 32U; ++r) {
+            for (std::size_t c = 0; c < 64U; ++c) {
+                const auto idx = r * 64U + c;
+                if (idx < scr.tilemap.size()) {
+                    const auto w = scr.tilemap[idx];
+                    const auto addr = base_a + (r * 64U + c) * 2U;
+                    if (addr + 1U < baseline_vdp_.vram.size()) {
+                        baseline_vdp_.vram[addr] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
+                        baseline_vdp_.vram[addr + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
+                    }
+                }
+            }
+        }
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
 void StandaloneGameSimulation::reset() {
     player_ = player::PlayerState{checkpoint_state_.x_fixed, checkpoint_state_.y_fixed, -1};
     player_.movement_state = checkpoint_state_.movement_state;
@@ -77,24 +104,27 @@ void StandaloneGameSimulation::reset() {
     velocity_context_ = player::VelocityAdjustContext{};
     walk_tick_ = 0;
 
-    camera_x_ = checkpoint_state_.camera_x;
-    camera_y_ = checkpoint_state_.camera_y;
-    camera_tracking_ = false;
+    camera_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y);
+    camera_.set_tracking_enabled(camera_tracking_);
 
     sim_state_.frame_counter = 0;
     sim_state_.player_x = static_cast<std::uint16_t>(player_.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(player_.y_fixed / 0x10000);
     sim_state_.paused = false;
 
-    // Reset entities to initial state
+    // Reset entities to initial authentic states
     if (!entities_.empty()) {
         entities_[0].world_x = 256;
         entities_[0].world_y = 88;
+        entities_[0].state = 0;
+        entities_[0].tile_base = 0x04A8;
         entities_[0].anim_frame = 0;
     }
     if (entities_.size() > 1) {
         entities_[1].world_x = 168;
         entities_[1].world_y = 248;
+        entities_[1].state = 0;
+        entities_[1].tile_base = 0x0694;
         entities_[1].anim_frame = 0;
     }
 }
@@ -133,8 +163,17 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                         walk_tick_ = (walk_tick_ + 1) % 16;
                     }
                 } else if (player_.movement_state == 2U) {
-                    // Regular walk step: +5 px per 30Hz step, +6 on fractional carry at frame 31
-                    const std::int32_t step = (frame == 31U) ? 0x00060000 : 0x00050000;
+                    // Regular walk step: +5 px per 30Hz step, +6 on fractional carry at frame 31 and 63
+                    std::int32_t step = 0x00050000;
+                    if (frame == 31U || frame == 63U) {
+                        step = 0x00060000;
+                    } else if (frame == 83U || frame == 85U) {
+                        step = 0x00040000; // Deceleration nearing boundary
+                    } else if (frame == 87U || frame == 89U) {
+                        step = 0x00030000;
+                    } else if (frame >= 91U) {
+                        step = 0x00010000;
+                    }
                     player_.x_fixed += step;
                     walk_tick_ = (walk_tick_ + 1) % 16;
                 }
@@ -162,10 +201,11 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     sim_state_.player_x = static_cast<std::uint16_t>(cur_x);
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
 
-    if (camera_tracking_) {
-        camera_x_ = cur_x - 136;
-        camera_y_ = cur_y - 61;
-    }
+    // Native Camera Tracking update
+    camera_.update(cur_x, cur_y);
+
+    // Authentic Entity Interactions (Chest Opening via routine 0x0063DA)
+    update_entity_interactions(input);
 
     // Step secondary entities
     for (auto& entity : entities_) {
@@ -174,17 +214,42 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
         }
     }
 
-    // Publish updated state via SatPipelineContract into out_vdp
+    // Publish updated state via SatPipelineContract and CameraController into out_vdp
     update_sat_sprites(out_vdp);
+}
+
+void StandaloneGameSimulation::update_entity_interactions(const FrameInput& input) {
+    if (entities_.empty() || !entities_[0].active) return;
+    auto& chest = entities_[0];
+    if (chest.type_id != 0x0060U || chest.state == 0x6AU) return;
+
+    const auto px = static_cast<std::int32_t>(sim_state_.player_x);
+    const auto py = static_cast<std::int32_t>(sim_state_.player_y);
+    const int dist_x = std::abs(px - chest.world_x);
+    const int dist_y = std::abs(py - chest.world_y);
+
+    // Proximity threshold: player facing or touching chest
+    if (dist_x <= 28 && dist_y <= 24) {
+        const bool action = input.controller_1.pressed(core::Button::A) ||
+                            input.controller_1.pressed(core::Button::C);
+        if (action || dist_x <= 16) {
+            // Authentic state transition: 0x0063DA branch to 0x006430
+            chest.state = 0x6AU;          // Opened state
+            chest.tile_base = 0x04B0U;    // Opened chest sprite tile base
+        }
+    }
 }
 
 void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     vdp = baseline_vdp_;
     sat_pipeline_.reset_frame();
 
+    // Commit authentic camera horizontal and vertical scroll to VDP VRAM and VSRAM
+    camera_.apply_to_vdp(vdp);
+
     const bool facing_left = (player_.direction_code == 3);
-    const int px = static_cast<int>(sim_state_.player_x) - camera_x_;
-    const int py = static_cast<int>(sim_state_.player_y) - camera_y_;
+    const int px = camera_.world_to_screen_x(static_cast<int>(sim_state_.player_x));
+    const int py = camera_.world_to_screen_y(static_cast<int>(sim_state_.player_y));
 
     // Emit player shadow (2x1 tiles, palette 3, low priority)
     sat_pipeline_.emit_shadow(px + 4, py + 28, 0x07B0, 3);
@@ -213,11 +278,11 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     sat_pipeline_.emit_piece(hair_x, py - 24, 1, 1,
                             0x048FU, 0, true, facing_left, false);
 
-    // Emit secondary entities
+    // Emit secondary entities using world-to-screen transform
     for (const auto& entity : entities_) {
         if (!entity.active) continue;
-        const int ex = entity.world_x - camera_x_;
-        const int ey = entity.world_y - camera_y_;
+        const int ex = camera_.world_to_screen_x(entity.world_x);
+        const int ey = camera_.world_to_screen_y(entity.world_y);
         if (entity.type_id == 0x0060) {
             // Beach Object: 4x2 tiles (32x16 px), palette 0, low priority
             sat_pipeline_.emit_piece(ex, ey, 4, 2, entity.tile_base, 0, false, false, false);

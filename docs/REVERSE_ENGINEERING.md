@@ -1,3 +1,53 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.4: Camera Subsystem, VDP HScroll Base 0xDC00 Derivation, Background Plane Scrolling, and Slot 7 Interaction at 0x0063DA)
+
+## Milestone M16.4 Reverse Engineering Summary
+
+### 1. Camera Tracking Routines & Deadzone Windows
+- **ROM Camera Update Routine (`0x00CEEA`):**
+  * Reads player world coordinates ($X, Y$) from player entity struct at `$FF19E8`.
+  * Computes player position relative to current camera viewport origin:
+    - `screen_x = player_world_x - camera_world_x`
+    - `screen_y = (player_world_y - player_world_z) - camera_world_y`
+  * Evaluates against authentic deadzone windows:
+    - Horizontal window: $[120..200]$ ($0x0078..0x00C8$). When `screen_x < 120`, camera moves left; when `screen_x > 200`, camera moves right.
+    - Vertical window: $[104..128]$ ($0x0068..0x0080$). When `screen_y < 104`, camera moves up; when `screen_y > 128`, camera moves down.
+  * Applies maximum tracking step clamp of $\pm 3$ pixels/frame during normal movement cadence to provide authentic smooth following.
+  * Enforces room/scene boundary clamps stored in Work RAM at `$FF177A` (max camera X) and `$FF177C` (max camera Y):
+    - Beach Scene ($X \in [0..192]$, $Y \in [46..288]$).
+- **VDP Scroll Commit Routine (`0x00D188`):**
+  * Takes camera displacement from origin and converts to hardware scroll parameters.
+  * Plane A HScroll = $-(camera\_x - initial\_camera\_x) \pmod{512}$.
+  * Plane B HScroll = $-(camera\_x - initial\_camera\_x) / 2 \pmod{512}$ (half-speed parallax).
+  * Plane A VScroll = $initial\_vscroll\_a + (camera\_y - initial\_camera\_y) \pmod{1024}$.
+  * Plane B VScroll = $initial\_vscroll\_b + (camera\_y - initial\_camera\_y) / 2 \pmod{1024}$.
+- **Coordinate Conversion Routines:**
+  * `0x00D344`: World-to-screen coordinate mapping (`screen_x = world_x - cam_x`, `screen_y = world_y - cam_y - altitude`).
+  * `0x00D398`: Screen-to-world coordinate mapping (`world_x = screen_x + cam_x`, `world_y = screen_y + cam_y + altitude`).
+
+### 2. VDP Register 13 & HScroll Base Address Verification
+- **VDP Register 13 Value:** Checkpoint 3600 VDP context records `registers[13] = 0x37` ($55$).
+- **Hardware Formula:** Sega Genesis VDP specification defines the HScroll table base address as `(Register 13 & 0x3F) << 10`.
+- **Physical Address Resolution:**
+  * $0x37 \times 1024 = 0xDC00$ ($56,320$).
+  * The historical restoration proposal mentioned `0xFC00`. That proposal was based on an unverified guess; actual ROM execution and register state prove `0xDC00` is the physical base address in VRAM.
+  * In the 1KB table at `0xDC00`, Plane A HScroll is at offset 0 (bytes 0..1), and Plane B HScroll is at offset 2 (bytes 2..3).
+- **VSRAM Allocation:**
+  * Byte offset 0..1: Plane A Vertical Scroll ($139 = 0x008B$).
+  * Byte offset 2..3: Plane B Vertical Scroll ($0 = 0x0000$).
+
+### 3. Background Tilemap Representation (Screen {1, 0})
+- Primary ROM descriptor located at `0x02E57E`.
+- Primary compressed tilemap data stream located at `0x211F7A`.
+- Unpacks 64x28 Genesis tile words into Plane A name table base `0xC000` (derived from Register 2 = `0x30`, `(0x30 & 0x38) << 10 = 0xC000`).
+
+### 4. Beach Object Interaction Routine (`0x0063DA`)
+- Slot 7 Entity (Work RAM `0x00FF1F0C`): Type `0x0060` (Washed Ashore Chest) at $(256, 88)$.
+- When player distance $|\Delta X| \le 24$ and $|\Delta Y| \le 24$ and an action button (A/B/C) is triggered:
+  * Branches to routine `0x006430`.
+  * Writes state code `0x006A` (opened state) to entity offset `0x04(A6)`.
+  * Sets interaction timer to `0x003C` (60 frames) at entity offset `0x06(A6)`.
+  * Changes tile base from closed (`0x04A8`) to opened chest frame (`0x04B0`).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.3: Movement Cadence & Turn Delay Resolution, Checkpoint Structure at 0x00FF19E8, M15.226 SAT Pipeline Contract, Multi-Entity Pool Inspection)
 
 ## Milestone M16.3 Reverse Engineering Summary

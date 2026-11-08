@@ -37,11 +37,13 @@ struct PlayerOptions {
     PlayerMode mode{PlayerMode::Simulation};
     std::string sequence_dir{"data/standalone-fixtures/sequence"};
     std::string sim_fixture{"data/standalone-fixtures/beach_frame_000.json"};
+    std::string rom_path{};
     std::string input_journal{};
     int fps{60};
     int scale{3};
     bool headless{false};
     int max_frames{0};
+    bool camera_tracking{true};
     oasis::genesis::ColorDacMode dac_mode{oasis::genesis::ColorDacMode::GenesisPlusGx};
 };
 
@@ -112,11 +114,13 @@ void print_help(const char* exe_name) {
               << "Options:\n"
               << "  --mode <replay|simulation>   Operating mode (default: simulation)\n"
               << "  --sim-fixture <path>         Initial VDP state fixture (default: beach_frame_000.json)\n"
+              << "  --rom <path>                 Optional Beyond Oasis ROM for background streaming\n"
               << "  --sequence-dir <dir>         Replay sequence directory (default: sequence)\n"
               << "  --input-journal <path>       Input poll journal for deterministic simulation\n"
               << "  --fps <number>               Playback framerate (default: 60)\n"
               << "  --scale <number>             Window integer scaling factor (default: 3)\n"
               << "  --dac <gpgx|model>           Color DAC model (default: gpgx)\n"
+              << "  --no-cam                     Disable automatic camera tracking at start\n"
               << "  --headless                   Run without window for CI / validation\n"
               << "  --max-frames <number>        Limit total frames rendered\n";
 }
@@ -133,6 +137,8 @@ int main(int argc, char* argv[]) {
             opt.mode = (m == "replay") ? PlayerMode::Replay : PlayerMode::Simulation;
         } else if (arg == "--sim-fixture" && i + 1 < argc) {
             opt.sim_fixture = argv[++i];
+        } else if (arg == "--rom" && i + 1 < argc) {
+            opt.rom_path = argv[++i];
         } else if (arg == "--sequence-dir" && i + 1 < argc) {
             opt.sequence_dir = argv[++i];
         } else if (arg == "--input-journal" && i + 1 < argc) {
@@ -141,6 +147,8 @@ int main(int argc, char* argv[]) {
             opt.fps = std::max(1, std::stoi(argv[++i]));
         } else if (arg == "--scale" && i + 1 < argc) {
             opt.scale = std::max(1, std::stoi(argv[++i]));
+        } else if (arg == "--no-cam") {
+            opt.camera_tracking = false;
         } else if (arg == "--headless") {
             opt.headless = true;
         } else if (arg == "--max-frames" && i + 1 < argc) {
@@ -171,6 +179,16 @@ int main(int argc, char* argv[]) {
     cp_init.direction_code = 0;
     cp_init.turn_timer = 10;
     simulation.initialize_from_checkpoint(baseline_vdp, cp_init);
+    simulation.set_camera_tracking(opt.camera_tracking);
+
+    if (!opt.rom_path.empty() && fs::exists(opt.rom_path)) {
+        std::ifstream rom_file(opt.rom_path, std::ios::binary);
+        std::vector<std::uint8_t> rom_bytes((std::istreambuf_iterator<char>(rom_file)),
+                                            std::istreambuf_iterator<char>());
+        if (simulation.load_rom_background(rom_bytes)) {
+            std::cout << "Loaded authentic ROM background: " << opt.rom_path << "\n";
+        }
+    }
 
     // Prepare replay sequence
     const auto sequence_entries = discover_sequence(opt.sequence_dir);
@@ -199,7 +217,6 @@ int main(int argc, char* argv[]) {
                 oasis::game::FrameInput input{};
                 input.frame_index = static_cast<std::uint32_t>(f);
                 if (f < static_cast<int>(journal_buttons.size())) {
-                    // Journal has 1<<7=Right (0x80), 1<<8=A (0x100)
                     const auto b = journal_buttons[f];
                     if ((b & 0x0080U) != 0U) input.controller_1.set(oasis::core::Button::Right);
                     if ((b & 0x0040U) != 0U) input.controller_1.set(oasis::core::Button::Left);
@@ -216,6 +233,10 @@ int main(int argc, char* argv[]) {
             std::cout << "HEADLESS_SIMULATION_FRAMES=" << processed << "\n"
                       << "FINAL_PLAYER_X=" << simulation.state().player_x << "\n"
                       << "FINAL_PLAYER_Y=" << simulation.state().player_y << "\n"
+                      << "FINAL_CAM_X=" << simulation.camera_x() << "\n"
+                      << "FINAL_CAM_Y=" << simulation.camera_y() << "\n"
+                      << "FINAL_HSCROLL=" << simulation.camera().state().plane_a_hscroll << "\n"
+                      << "CHEST_OPENED=" << (simulation.chest_opened() ? "YES" : "NO") << "\n"
                       << "STATUS=PASS\n";
         } else {
             for (std::size_t i = 0; i < sequence.frame_count(); ++i) {
@@ -296,14 +317,14 @@ int main(int argc, char* argv[]) {
 
             const auto& st = simulation.state();
             const auto& pl = simulation.player();
-            std::string title = "Beyond Oasis Native Simulation - Frame " +
-                                std::to_string(st.frame_counter) + " [Player: X=" +
-                                std::to_string(st.player_x) + ", Y=" + std::to_string(st.player_y) +
-                                ", State=" + std::to_string(pl.movement_state) +
-                                ", Anim=" + std::to_string(simulation.walk_tick()) + "]" +
-                                " [Entities: " + std::to_string(simulation.entities().size()) + "]" +
-                                " [Cam: X=" + std::to_string(simulation.camera_x()) +
-                                ", Y=" + std::to_string(simulation.camera_y()) + "]" +
+            std::string title = "Beyond Oasis Simulation - F" +
+                                std::to_string(st.frame_counter) + " [Ali: " +
+                                std::to_string(st.player_x) + "," + std::to_string(st.player_y) +
+                                " S" + std::to_string(pl.movement_state) + "]" +
+                                " [Chest: " + (simulation.chest_opened() ? "OPEN" : "CLOSED") + "]" +
+                                " [Cam: " + std::to_string(simulation.camera_x()) +
+                                "," + std::to_string(simulation.camera_y()) +
+                                " HScr=" + std::to_string(simulation.camera().state().plane_a_hscroll) + "]" +
                                 (paused ? " (PAUSED)" : " (PLAYING @ " + std::to_string(opt.fps) + " FPS)");
             window.set_title(title);
         } else {

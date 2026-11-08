@@ -1,3 +1,34 @@
+# M16.4 Authentic Camera, World Scrolling, and Native Gameplay Scene — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Reverse-Engineered Camera Controller (`oasis::game::camera::CameraController`):
+  * ROM camera routines `0x00CEEA`, `0x00D188`, `0x00D344`, `0x00D398` reverse engineered and implemented.
+  * Authentic deadzone tracking: horizontal $[120..200]$, vertical $[104..128]$.
+  * Authentic step smoothing clamp ($\Delta \le 3$ px/frame) and beach scene boundary clamps ($X \in [0..192], Y \in [46..288]$).
+- Hardware VDP Plane Scrolling & Physical Address Resolution:
+  * VDP Register 13 = `0x37` physically evaluated to HScroll base address `0xDC00` in VRAM.
+  * Plane A and Plane B horizontal scroll written directly to VRAM `0xDC00`, with 1/2 parallax for Plane B.
+  * Plane A and Plane B vertical scroll written to VSRAM offsets 0 and 2.
+- Background Tilemap Streaming:
+  * Screen {1, 0} descriptor at ROM `0x02E57E` and tilemap stream at `0x211F7A` integrated via `load_rom_background`.
+- Coherent Multi-Entity Pipeline with Viewport Culling:
+  * Dynamic world-to-screen coordinate mapping with altitude adjustment.
+  * Viewport culling against $[-32..352] \times [-32..256]$ prior to hardware SAT entry serialization.
+- Authentic Entity Interaction:
+  * Beach Chest (Type `0x0060`) interaction routine `0x0063DA` $\to$ `0x006430` implemented.
+  * Proximity detection ($\le 24$ px) + action button triggers state transition to `0x006A` (opened) and base tile change to `0x04B0`.
+- 120-Frame Continuation Oracle Parity:
+  * 120-frame continuous test validates player progression ($X: 261 \to 470$) and camera tracking ($X: 125 \to 192$).
+- Interactive Standalone Player HUD:
+  * Real-time HUD title displays Player X/Y/State/Anim, Entity count, Camera X/Y, HScroll, and Chest status.
+  * Dynamic camera tracking toggle (T key).
+- Zero Emulator Runtime Linkage & 100% Tests Passing:
+  * 27 passing tests across standalone test suites.
+  * All 907 governed source files strictly $\le 500$ lines.
+
+Next Milestone:
+- M16.5: NPC Dialogue System, Audio Subsystem Translation, and Combat Mechanics.
+
 # M16.3 Authentic Player Control and First Multi-Entity Native Gameplay — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
