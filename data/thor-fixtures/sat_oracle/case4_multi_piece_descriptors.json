@@ -1,0 +1,80 @@
+{
+  "case_id": "case4_multi_piece_descriptors",
+  "description": "Multi-piece composite entity descriptor emitting 4 linked SAT entries",
+  "inputs": [
+    {
+      "screen_x": 100,
+      "screen_y": 50,
+      "w_tiles": 4,
+      "h_tiles": 4,
+      "tile_idx": 1024,
+      "palette": 2,
+      "prio": false,
+      "h_flip": false,
+      "v_flip": false
+    },
+    {
+      "screen_x": 132,
+      "screen_y": 50,
+      "w_tiles": 4,
+      "h_tiles": 4,
+      "tile_idx": 1040,
+      "palette": 2,
+      "prio": false,
+      "h_flip": false,
+      "v_flip": false
+    },
+    {
+      "screen_x": 100,
+      "screen_y": 82,
+      "w_tiles": 4,
+      "h_tiles": 4,
+      "tile_idx": 1056,
+      "palette": 2,
+      "prio": false,
+      "h_flip": false,
+      "v_flip": false
+    },
+    {
+      "screen_x": 132,
+      "screen_y": 82,
+      "w_tiles": 4,
+      "h_tiles": 4,
+      "tile_idx": 1072,
+      "palette": 2,
+      "prio": false,
+      "h_flip": false,
+      "v_flip": false
+    }
+  ],
+  "expected_entries": [
+    {
+      "x_pos": 228,
+      "y_pos": 178,
+      "size": 15,
+      "link": 1,
+      "attr": 17408
+    },
+    {
+      "x_pos": 260,
+      "y_pos": 178,
+      "size": 15,
+      "link": 2,
+      "attr": 17424
+    },
+    {
+      "x_pos": 228,
+      "y_pos": 210,
+      "size": 15,
+      "link": 3,
+      "attr": 17440
+    },
+    {
+      "x_pos": 260,
+      "y_pos": 210,
+      "size": 15,
+      "link": 0,
+      "attr": 17456
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "case_id": "case5_shadow_table_00acfe",
+  "description": "Authentic shadow entry generated using ROM table 0x00ACFE (Type 1: 2x1 tiles, offset 3, 8)",
+  "inputs": [
+    {
+      "screen_x": 160,
+      "screen_y": 120,
+      "shadow_type": 1,
+      "rom_offset": 8
+    }
+  ],
+  "expected_entries": [
+    {
+      "x_pos": 280,
+      "y_pos": 245,
+      "size": 4,
+      "link": 0,
+      "attr": 25929
+    }
+  ]
+}

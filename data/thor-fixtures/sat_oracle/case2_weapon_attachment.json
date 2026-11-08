@@ -1,0 +1,44 @@
+{
+  "case_id": "case2_weapon_attachment",
+  "description": "Player sprite with attached weapon sprite in consecutive SAT slots with link chaining",
+  "inputs": [
+    {
+      "screen_x": 148,
+      "screen_y": 96,
+      "w_tiles": 3,
+      "h_tiles": 4,
+      "tile_idx": 640,
+      "palette": 0,
+      "prio": true,
+      "h_flip": false,
+      "v_flip": false
+    },
+    {
+      "screen_x": 168,
+      "screen_y": 104,
+      "w_tiles": 2,
+      "h_tiles": 2,
+      "tile_idx": 784,
+      "palette": 1,
+      "prio": true,
+      "h_flip": false,
+      "v_flip": false
+    }
+  ],
+  "expected_entries": [
+    {
+      "x_pos": 276,
+      "y_pos": 224,
+      "size": 11,
+      "link": 1,
+      "attr": 33408
+    },
+    {
+      "x_pos": 296,
+      "y_pos": 232,
+      "size": 5,
+      "link": 0,
+      "attr": 41744
+    }
+  ]
+}

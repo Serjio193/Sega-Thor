@@ -8690,3 +8690,28 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_00b3b2_instruction_step_test.cpp` passed 100% (6/6 tests).
+
+### 58. Sprite Engine Mode 0 Weapon Path Expansion (`0x00B012..0x00B020`) & Dual Subsystem Integration
+
+- **Routine Addresses:** `0x00B012..0x00B020` (16 bytes, 8 words, 4 instructions).
+- **Semantic Classification:** Sprite Engine Mode 0 Attached Weapon & Sub-Piece Coordination Island.
+- **Evidence & Disassembly:**
+  * Aligned ROM opcodes:
+    - `0x00B012`: `6100 0338` (`bsr.w $00B34C`, displacement `+0x0338`, return PC `0x00B016`).
+    - `0x00B016`: `6000 FECE` (`bra.w $00AEE6`, displacement `-0x0132`, jumps to piece descriptor loop).
+    - `0x00B01A`: `6100 0396` (`bsr.w $00B3B2`, displacement `+0x0396`, return PC `0x00B01E`).
+    - `0x00B01E`: `6000 FF7C` (`bra.w $00AF9C`, displacement `-0x0084`, jumps to shadow clearing at `bclr.l #31, d3`).
+  * Direct callers inside `0x00AD76`:
+    - `0x00AEE2`: `bne.w $00B012` (taken when entity attribute byte `57(a6) != 0`).
+    - `0x00AF98`: `bne.w $00B01A` (taken when entity attribute byte `57(a6) != 0`).
+  * Ingress stack frame provenance:
+    - `0x00A22C: MOVE.L #$0000A1F8, -(A7)` (primary player / entity rendering entry).
+    - `0x00A2FC: MOVE.L #$0000A258, -(A7)` (secondary entity rendering entry).
+- **Child Routines:**
+  * `0x00B34C`: Weapon piece descriptor parsing and SAT attribute calculation. Returns via `rts` to `0x00B016`.
+  * `0x00B3B2`: Weapon pause freeze gate and animation flag dispatch. Returns via `rts` to `0x00B01E`.
+- **Validation Status:**
+  * Scenario C (1,800 frames): 187 calls to `0x00B012` (`0x00B34C`) and 187 calls to `0x00B01A` (`0x00B3B2`).
+  * Mode 0 native displacement: 7,183 / 7,183 entries (100.00% native displacement, 0 ROM fallback calls).
+  * 24 / 24 bit-exact stream matches across Scenarios C, A, and B.
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json` (`VERIFIED`).

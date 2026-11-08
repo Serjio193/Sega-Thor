@@ -149,7 +149,7 @@ def main():
     p2_csv = p0_csv + ",00ad76"
     p3_csv = p0_csv + ",02575c,00ad76"
 
-    work_root = pathlib.Path("build/ab_combined_m15_226").resolve()
+    work_root = pathlib.Path("build/ab_combined_m15_227").resolve()
     work_root.mkdir(parents=True, exist_ok=True)
 
     scenarios = [
@@ -202,6 +202,8 @@ def main():
             sys.exit(1)
 
     print("\nALL 4 CONFIGURATIONS ON SCENARIO C MATCH BIT-EXACT 8/8!")
+    shutil.copytree(runs_c["P0"][0], scen_c_dir / "run_a", dirs_exist_ok=True)
+    shutil.copytree(runs_c["P3"][0], scen_c_dir / "run_b", dirs_exist_ok=True)
 
     # Now verify Scenarios A and B for P0 vs P3
     final_results = {"scenario_c": {"p0_vs_p3": compare_two_stream_sets(p0_set, stream_sets_c["P3"])[1]}}
@@ -236,6 +238,8 @@ def main():
             print(f"FATAL: {scen_name} P3 does not match P0 bit-exact!")
             sys.exit(1)
         final_results[scen_name] = {"p0_vs_p3": diff}
+        shutil.copytree(dir_p0, sdir / "run_a", dirs_exist_ok=True)
+        shutil.copytree(dir_p3, sdir / "run_b", dirs_exist_ok=True)
 
     # Save summary results
     summary_path = work_root / "combined_qualification_results.json"

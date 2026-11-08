@@ -30,8 +30,9 @@ struct ProvenCaller {
     std::int16_t displacement{};
 };
 
-constexpr std::array<ProvenCaller, 1> kCallers = {{
-    {0x00AD4EU, 0x00AD52U, static_cast<std::int16_t>(0x0662)}
+constexpr std::array<ProvenCaller, 2> kCallers = {{
+    {0x00AD4EU, 0x00AD52U, static_cast<std::int16_t>(0x0662)},
+    {0x00B01AU, 0x00B01EU, static_cast<std::int16_t>(0x0396)}
 }};
 
 bool in_work_ram(unsigned addr, unsigned size) noexcept {
@@ -111,6 +112,8 @@ M68k9D70StepResult step_m68k_00b3b2(unsigned pc, const M68k9D70StepApi& api,
 
         if (caller->caller_pc == 0x00AD4EU) {
             metrics.caller_00ad4e_calls++;
+        } else {
+            metrics.caller_other_calls++;
         }
 
         metrics.target_entries++;

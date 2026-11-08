@@ -10156,3 +10156,41 @@ The dual-oracle evidence framework is rigorously clarified, preventing conflatio
 
 **Consequences:**
 Second-oracle determinism is proven and certified as frame-exact reference. The clerical hash suffix discrepancy is permanently eliminated and reconciled. Routine `0x00B66A` executes natively in C++ with 0 ROM fallbacks and 100% dual-scenario parity, establishing a verified active baseline of 196 active native helpers.
+
+## 2026-11-08 — M15.227: Sprite Engine Weapon Path Expansion, Child Caller Integration, and Verified Game-Wide Native Coverage
+
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. M15.226 qualified simultaneous dual-cluster execution of Entity Engine Cluster (Slot 222, `0x02575C`) and Sprite Engine Mode 0 Cluster (Slot 223, `0x00AD76`), achieving 6,032,753 native steps (34.223% coverage) in Scenario C.
+2. In M15.226, 1,269 entries in Scenario C (plus 1,420 in Scenario A and 596 in Scenario B) were declined by the preflight check `57(A6) != 0` (weapon / attached sprite hook).
+3. Detailed forensic analysis identified that `0x00AD76` caller frame provenance is established via `0x00A22C: MOVE.L #$0000A1F8, -(A7)` and `0x00A2FC: MOVE.L #$0000A258, -(A7)`. Of the 1,269 Scenario C entries with `57(A6) != 0`, 1,082 are hidden entities that exit immediately via `0x00AD7C -> 0x00B010` (RTS), while 187 are visible entities that branch to `0x00B012` and `0x00B01A`.
+4. The target child subroutines `0x00B34C` and `0x00B3B2` were already compiled production helpers; `0x00B3B2` required adding `{0x00B01AU, 0x00B01EU, 0x0396}` to its accepted caller table.
+
+**Decisions:**
+1. **Recompiled Weapon Branch Paths (`0x00B012..0x00B020`):**
+   - Implemented modular native stepping in `m68k_00ad76_weapon_step.hpp/.cpp`:
+     * `0x00B012`: `bsr.w $00B34C` (pushes `0x00B016`, invokes child `0x00B34C`, sets `resume_pc = 0x00B016`).
+     * `0x00B016`: `bra.w $00AEE6` (resumes piece loop).
+     * `0x00B01A`: `bsr.w $00B3B2` (pushes `0x00B01E`, invokes child `0x00B3B2`, sets `resume_pc = 0x00B01E`).
+     * `0x00B01E`: `bra.w $00AF9C` (resumes shadow pipeline).
+2. **Eliminated Weapon Preflight Decline:**
+   - Removed the `57(A6) != 0` preflight check in `m68k_00ad76_instruction_step.cpp`.
+   - Wired `0x00AEE2` in `m68k_00ad76_piece_step.cpp` and `0x00AF98` in `m68k_00ad76_shadow_step.cpp` to branch natively to `0x00B012U` and `0x00B01AU`.
+   - Achieved **100.00% native execution** of all 7,183 entries into `0x00AD76` with 0 ROM fallback calls and 0 child fallback calls.
+3. **SAT Pipeline Contract Validation:**
+   - Generated authentic SAT oracle fixtures in `data/thor-fixtures/sat_oracle/` across 6 test cases (normal player sprite, weapon attachment, horizontal flip, multi-piece descriptors, authentic shadow table at `0x00ACFE`, and capacity/clipping boundary).
+   - Validated pure C++ `sat_pipeline_contract.hpp/.cpp` passing 6/6 tests.
+4. **Three-Scenario A/B Qualification:**
+   - Rebuilt runner `oasis_gameplay_session` (SHA256: `afe7b80147981be36447bbf2f223cbfa5e9434ee996de9929cd43bb30b7cd92b`).
+   - Ran 4-way comparison on Scenario C (P0, P1, P2, P3) and P0 vs P3 on Scenarios A and B: **24/24 streams bit-exact match**.
+   - Verified formal evidence receipt: `data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json` (58/58 files valid, 48/48 stream artifacts valid).
+5. **Coverage Gain:**
+   - Scenario C Sprite Cluster steps increased from 851,284 to **871,538** (+20,254 steps).
+   - Scenario C combined native steps reached **6,053,007 / 17,627,770** (**34.338%**, +0.115 percentage points).
+   - Three-scenario total sprite steps: **1,331,652** (+26,302 steps).
+6. **Governance Preservation:**
+   - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Clusters 222 & 223 remain experimental and disabled by default (`ORACLE_OWNER_APPROVAL = PENDING`).
+   - All source and test files verified strictly $\le 500$ lines.

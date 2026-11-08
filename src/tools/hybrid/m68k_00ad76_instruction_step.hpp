@@ -24,6 +24,7 @@ struct M68k00AD76StepMetrics {
 M68k9D70StepResult step_m68k_00ad76(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
 void write_00ad76_step_metrics(const std::filesystem::path& path);
 void reset_00ad76_step_metrics() noexcept;
+void reset_00ad76_state() noexcept;
 const M68k00AD76StepMetrics& get_00ad76_step_metrics() noexcept;
 
 } // namespace oasis::hybrid

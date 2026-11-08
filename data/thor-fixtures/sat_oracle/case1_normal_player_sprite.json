@@ -1,0 +1,26 @@
+{
+  "case_id": "case1_normal_player_sprite",
+  "description": "Authentic single-piece player sprite at screen center (3x4 tiles, high priority, palette 0)",
+  "inputs": [
+    {
+      "screen_x": 148,
+      "screen_y": 96,
+      "w_tiles": 3,
+      "h_tiles": 4,
+      "tile_idx": 640,
+      "palette": 0,
+      "prio": true,
+      "h_flip": false,
+      "v_flip": false
+    }
+  ],
+  "expected_entries": [
+    {
+      "x_pos": 276,
+      "y_pos": 224,
+      "size": 11,
+      "link": 0,
+      "attr": 33408
+    }
+  ]
+}

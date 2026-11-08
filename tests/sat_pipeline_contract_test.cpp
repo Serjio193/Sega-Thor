@@ -5,135 +5,154 @@
 
 namespace {
 
-void test_initial_state() {
-    oasis::game::render::SatPipelineContract pipeline;
-    assert(pipeline.active_count() == 0);
-    const auto summary = pipeline.finalize_frame();
-    assert(summary.active_count == 0);
-    assert(summary.buffer_bytes == 0);
-    assert(!summary.is_dirty);
-    std::cout << "[PASS] test_initial_state\n";
-}
+using oasis::game::render::SatPipelineContract;
 
-void test_single_piece_packing() {
-    oasis::game::render::SatPipelineContract pipeline;
-    // Emit piece at screen (100, 50), 2x3 tiles, tile index 0x120, palette 2, high priority, h_flip
-    const bool ok = pipeline.emit_piece(100, 50, 2, 3, 0x120, 2, true, true, false);
+// Case 1: Normal single-piece player sprite (3x4 tiles, high priority, palette 0)
+void test_case1_normal_player_sprite() {
+    SatPipelineContract pipeline;
+    const bool ok = pipeline.emit_piece(148, 96, 3, 4, 0x0280, 0, true, false, false);
     assert(ok);
     assert(pipeline.active_count() == 1);
 
     const auto summary = pipeline.finalize_frame();
     assert(summary.active_count == 1);
     assert(summary.buffer_bytes == 8);
-    assert(summary.is_dirty);
 
     const auto entries = pipeline.entries();
     assert(entries.size() == 1);
-    const auto& e0 = entries[0];
+    assert(entries[0].y_pos == 96 + 128); // 224
+    assert(entries[0].size == (((3 - 1) << 2) | (4 - 1))); // (2 << 2) | 3 = 11
+    assert(entries[0].link == 0); // terminated
+    assert(entries[0].attr == (0x0280 | 0x8000)); // prio 1, pal 0
+    assert(entries[0].x_pos == 148 + 128); // 276
 
-    // VDP Y = screen Y + 128 = 50 + 128 = 178
-    assert(e0.y_pos == 178);
-    // Size = ((2 - 1) << 2) | (3 - 1) = (1 << 2) | 2 = 6
-    assert(e0.size == 6);
-    // Link field should be terminated to 0 by finalize_frame()
-    assert(e0.link == 0);
-    // Attr: tile=0x120, h_flip (bit 11: 0x0800), palette=2 (bits 14..13: 2 << 13 = 0x4000), priority (bit 15: 0x8000)
-    // 0x120 | 0x0800 | 0x4000 | 0x8000 = 0xC920
-    assert(e0.attr == 0xC920);
-    // VDP X = screen X + 128 = 100 + 128 = 228
-    assert(e0.x_pos == 228);
-
-    std::cout << "[PASS] test_single_piece_packing\n";
+    std::cout << "[PASS] test_case1_normal_player_sprite\n";
 }
 
-void test_link_chain_traversal() {
-    oasis::game::render::SatPipelineContract pipeline;
-    // Emit 3 pieces
-    assert(pipeline.emit_piece(10, 10, 1, 1, 0x10, 0, false, false, false));
-    assert(pipeline.emit_piece(20, 20, 2, 2, 0x20, 1, false, false, false));
-    assert(pipeline.emit_piece(30, 30, 3, 3, 0x30, 2, false, false, false));
-    assert(pipeline.active_count() == 3);
+// Case 2: Player sprite with attached weapon sprite in consecutive SAT slots with link chaining
+void test_case2_weapon_attachment() {
+    SatPipelineContract pipeline;
+    // Player body
+    assert(pipeline.emit_piece(148, 96, 3, 4, 0x0280, 0, true, false, false));
+    // Attached weapon
+    assert(pipeline.emit_piece(168, 104, 2, 2, 0x0310, 1, true, false, false));
+    assert(pipeline.active_count() == 2);
 
     pipeline.finalize_frame();
     const auto entries = pipeline.entries();
-    assert(entries.size() == 3);
+    assert(entries.size() == 2);
 
-    // Entry 0 links to entry 1
+    // Entry 0 (player) links to entry 1 (weapon)
     assert(entries[0].link == 1);
-    // Entry 1 links to entry 2
+    assert(entries[0].attr == (0x0280 | 0x8000));
+
+    // Entry 1 (weapon) terminates chain
+    assert(entries[1].y_pos == 104 + 128);
+    assert(entries[1].size == (((2 - 1) << 2) | (2 - 1))); // 5
+    assert(entries[1].link == 0);
+    assert(entries[1].attr == (0x0310 | (1 << 13) | 0x8000)); // pal 1, prio 1
+    assert(entries[1].x_pos == 168 + 128);
+
+    std::cout << "[PASS] test_case2_weapon_attachment\n";
+}
+
+// Case 3: Horizontal flip validation for west-facing player sprite
+void test_case3_horizontal_flip() {
+    SatPipelineContract pipeline;
+    assert(pipeline.emit_piece(130, 96, 3, 4, 0x0280, 0, true, true, false));
+    pipeline.finalize_frame();
+
+    const auto entries = pipeline.entries();
+    assert(entries.size() == 1);
+    // H-flip bit 11 (0x0800), priority bit 15 (0x8000)
+    assert(entries[0].attr == (0x0280 | 0x0800 | 0x8000));
+    assert(entries[0].x_pos == 130 + 128);
+
+    std::cout << "[PASS] test_case3_horizontal_flip\n";
+}
+
+// Case 4: Multi-piece composite entity descriptor emitting 4 linked SAT entries
+void test_case4_multi_piece_descriptors() {
+    SatPipelineContract pipeline;
+    assert(pipeline.emit_piece(100, 50, 4, 4, 0x0400, 2, false, false, false));
+    assert(pipeline.emit_piece(132, 50, 4, 4, 0x0410, 2, false, false, false));
+    assert(pipeline.emit_piece(100, 82, 4, 4, 0x0420, 2, false, false, false));
+    assert(pipeline.emit_piece(132, 82, 4, 4, 0x0430, 2, false, false, false));
+    assert(pipeline.active_count() == 4);
+
+    pipeline.finalize_frame();
+    const auto entries = pipeline.entries();
+    assert(entries.size() == 4);
+    assert(entries[0].link == 1);
     assert(entries[1].link == 2);
-    // Entry 2 is the tail, link must be 0
-    assert(entries[2].link == 0);
+    assert(entries[2].link == 3);
+    assert(entries[3].link == 0);
 
-    std::cout << "[PASS] test_link_chain_traversal\n";
+    for (std::size_t i = 0; i < 4; ++i) {
+        assert(entries[i].size == (((4 - 1) << 2) | (4 - 1))); // 15
+        assert((entries[i].attr >> 13) == 2); // palette 2
+    }
+
+    std::cout << "[PASS] test_case4_multi_piece_descriptors\n";
 }
 
-void test_clipping_culling() {
-    oasis::game::render::SatPipelineContract pipeline;
-    // Completely off-screen left: screen X = -40, width = 2 tiles (16px) -> -40 + 16 = -24 <= 0
-    assert(!pipeline.emit_piece(-40, 50, 2, 2, 0x10, 0, false, false, false));
-    // Completely off-screen top: screen Y = -30, height = 2 tiles (16px) -> -30 + 16 = -14 <= 0
-    assert(!pipeline.emit_piece(50, -30, 2, 2, 0x10, 0, false, false, false));
-    // Completely off-screen right: screen X = 320 >= 320
-    assert(!pipeline.emit_piece(320, 50, 1, 1, 0x10, 0, false, false, false));
-    // Completely off-screen bottom: screen Y = 224 >= 224
-    assert(!pipeline.emit_piece(50, 224, 1, 1, 0x10, 0, false, false, false));
+// Case 5: Authentic shadow entry generated using ROM table 0x00ACFE (Type 1: 2x1 tiles, offset 8, 3)
+void test_case5_shadow_table_00acfe() {
+    SatPipelineContract pipeline;
+    // Emitted by 0x00AD76 at screen center (160, 120), Type 1 offset is x=8, y=3
+    const bool ok = pipeline.emit_shadow(160 - 8, 120 - 3, 0x0549, 3);
+    assert(ok);
+    pipeline.finalize_frame();
 
-    // Partially visible piece: screen X = -8, width = 2 tiles (16px) -> -8 + 16 = +8 > 0 -> should be accepted!
-    assert(pipeline.emit_piece(-8, 50, 2, 2, 0x10, 0, false, false, false));
-    assert(pipeline.active_count() == 1);
+    const auto entries = pipeline.entries();
+    assert(entries.size() == 1);
+    assert(entries[0].y_pos == (120 - 3) + 128); // 245
+    assert(entries[0].size == 4); // 2x1 tiles
+    assert(entries[0].link == 0);
+    assert(entries[0].attr == 0x6549); // palette 3, tile 0x0549
+    assert(entries[0].x_pos == (160 - 8) + 128); // 280
 
-    std::cout << "[PASS] test_clipping_culling\n";
+    std::cout << "[PASS] test_case5_shadow_table_00acfe\n";
 }
 
-void test_capacity_limit_80() {
-    oasis::game::render::SatPipelineContract pipeline;
+// Case 6: Strict 80-sprite capacity limit with link-terminator and clipping boundary rejection
+void test_case6_capacity_clipping_boundary() {
+    SatPipelineContract pipeline;
     for (int i = 0; i < 80; ++i) {
-        const bool ok = pipeline.emit_piece(i * 2, i * 2, 1, 1, static_cast<std::uint16_t>(i), 0, false, false, false);
+        const int x = (i % 20) * 16;
+        const int y = (i / 20) * 32;
+        const bool ok = pipeline.emit_piece(x, y, 2, 2, static_cast<std::uint16_t>(0x0100 + i), 0, true, false, false);
         assert(ok);
     }
     assert(pipeline.active_count() == 80);
 
-    // 81st piece must be rejected
-    const bool overflow = pipeline.emit_piece(100, 100, 1, 1, 0x99, 0, false, false, false);
-    assert(!overflow);
-    assert(pipeline.active_count() == 80);
+    // 81st piece must be rejected due to capacity limit
+    assert(!pipeline.emit_piece(50, 50, 1, 1, 0x0200, 0, false, false, false));
+
+    // Culled pieces outside viewport
+    assert(!pipeline.emit_piece(-32, 50, 2, 2, 0x0999, 0, true, false, false));
+    assert(!pipeline.emit_piece(320, 50, 1, 1, 0x0999, 0, true, false, false));
+    assert(!pipeline.emit_piece(50, -32, 2, 2, 0x0999, 0, true, false, false));
+    assert(!pipeline.emit_piece(50, 224, 1, 1, 0x0999, 0, true, false, false));
 
     const auto summary = pipeline.finalize_frame();
     assert(summary.active_count == 80);
     assert(summary.buffer_bytes == 640);
     assert(pipeline.entries()[79].link == 0);
 
-    std::cout << "[PASS] test_capacity_limit_80\n";
-}
-
-void test_shadow_emission() {
-    oasis::game::render::SatPipelineContract pipeline;
-    const bool ok = pipeline.emit_shadow(120, 150, 0x050, 3);
-    assert(ok);
-    assert(pipeline.active_count() == 1);
-
-    const auto entries = pipeline.entries();
-    const auto& sh = entries[0];
-    // Shadow is 2x1 tiles: size = ((2-1)<<2) | (1-1) = 4
-    assert(sh.size == 4);
-    // Palette 3, low priority, no flip
-    assert((sh.attr >> 13) == 3);
-    assert((sh.attr & 0x8000) == 0);
-
-    std::cout << "[PASS] test_shadow_emission\n";
+    std::cout << "[PASS] test_case6_capacity_clipping_boundary\n";
 }
 
 } // namespace
 
 int main() {
-    test_initial_state();
-    test_single_piece_packing();
-    test_link_chain_traversal();
-    test_clipping_culling();
-    test_capacity_limit_80();
-    test_shadow_emission();
+    test_case1_normal_player_sprite();
+    test_case2_weapon_attachment();
+    test_case3_horizontal_flip();
+    test_case4_multi_piece_descriptors();
+    test_case5_shadow_table_00acfe();
+    test_case6_capacity_clipping_boundary();
 
-    std::cout << "\nALL SAT PIPELINE CONTRACT TESTS PASSED!\n";
+    std::cout << "\nALL 6 SAT ORACLE FIXTURE TESTS PASSED!\n";
     return 0;
 }

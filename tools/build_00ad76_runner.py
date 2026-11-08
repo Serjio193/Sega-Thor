@@ -108,6 +108,9 @@ def main():
         repo_root / "src" / "tools" / "hybrid" / "m68k_00ad76_render_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_00ad76_shadow_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_00ad76_commit_step.cpp",
+        repo_root / "src" / "tools" / "hybrid" / "m68k_00ad76_weapon_step.cpp",
+        repo_root / "src" / "tools" / "hybrid" / "m68k_00b3b2_instruction_step.cpp",
+        repo_root / "src" / "tools" / "hybrid" / "m68k_00b34c_instruction_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_00ad76_metrics.cpp",
         repo_root / "src" / "tools" / "hybrid" / "gameplay_session_step_trace.cpp",
         overlay_cpp,
@@ -139,6 +142,8 @@ def main():
         and not o.endswith("m68k_gameplay_step_metrics.o")
         and not o.endswith("m68k_gameplay_step_set_overlay.o")
         and not o.endswith("m68k_gameplay_step_metrics_overlay.o")
+        and not "m68k_00b3b2_instruction_step" in o
+        and not "m68k_00b34c_instruction_step" in o
         and not "gameplay_session_step_trace" in o
     ]
     for obj in compiled_objs:

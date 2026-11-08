@@ -1,3 +1,38 @@
+# M15.227 Sprite Engine Weapon Path Expansion & Verified Game-Wide Native Coverage (Dual Recompiled Island: Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76..0x00B020); 100.00% Sprite Mode 0 Native Execution (7,183 / 7,183 Calls); 871,538 Dynamic Sprite Steps in Scenario C (+20,254 Steps); 6,053,007 Total Native Steps in Scenario C (34.338% Game-Wide Coverage); 1,331,652 Sprite Steps Across 3 Scenarios (+26,302 Steps); 24/24 Bit-Exact Streams (P0, P1, P2, P3 Across 3,992 Frames); Authentic ROM SAT Oracle Fixtures (0x00ACFE Shadow Table); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-227-20261108.json) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER PAIR
+
+Delivered:
+- Weapon Path Investigation & Forensic Call Provenance:
+  * Traced complete caller frame provenance: `0x00A22C: MOVE.L #$0000A1F8, -(A7)` (primary) and `0x00A2FC: MOVE.L #$0000A258, -(A7)` (secondary).
+  * Resolved the 1,269 Scenario C entries previously declined by `57(A6) != 0`:
+    - 1,082 hidden entities branch directly at `0x00AD7C -> 0x00B010` (RTS) without entering piece or shadow loops.
+    - 187 visible entities enter full render, branching at `0x00AEE2 -> 0x00B012` (`bsr.w $00B34C`, weapon piece hook) and `0x00AF98 -> 0x00B01A` (`bsr.w $00B3B2`, weapon shadow hook).
+  * Child routines `0x00B34C` and `0x00B3B2` audited: `0x00B34C` already accepted caller `0x00B012`; updated `m68k_00b3b2_instruction_step.cpp` with `{0x00B01AU, 0x00B01EU, 0x0396}`.
+- Modular C++ Weapon Path Recompilation (AGENTS.md Rule 3 Compliance):
+  * Implemented `src/tools/hybrid/m68k_00ad76_weapon_step.hpp` (13 lines) and `m68k_00ad76_weapon_step.cpp` (33 lines).
+  * Implemented `step_bsr_w` in `m68k_00ad76_step_ops.hpp/.cpp` to push return PC, set child target return state, and track `child_call_active` / `saved_child_sp`.
+  * Removed preflight decline `57(A6) != 0` in `m68k_00ad76_instruction_step.cpp`.
+  * Updated `m68k_00ad76_piece_step.cpp` and `m68k_00ad76_shadow_step.cpp` to take branch targets natively.
+  * Verified unit tests: `tests/m68k_00ad76_cluster_test.cpp` (3/3 test suites passing).
+- Authentic SAT Oracle Fixtures (0x00ACFE Shadow Table):
+  * Created `tools/generate_sat_oracle_fixtures.py` (210 lines) and generated 6 authentic fixtures + manifest in `data/thor-fixtures/sat_oracle/` (normal player sprite, weapon attachment, horizontal flip, multi-piece descriptors, authentic shadow table at `0x00ACFE`, and capacity/clipping boundary).
+  * Validated pure C++ `sat_pipeline_contract.hpp/.cpp` via `tests/sat_pipeline_contract_test.cpp` (158 lines, 6/6 tests passing).
+- Real Gameplay Three-Scenario A/B Qualification (24/24 Bit-Exact Streams):
+  * Rebuilt runner `oasis_gameplay_session` (SHA256: `afe7b80147981be36447bbf2f223cbfa5e9434ee996de9929cd43bb30b7cd92b`).
+  * Scenario C (1,800 frames): 4-way comparison P0 (196 baseline) == P1 (196 + 02575c) == P2 (196 + 00ad76) == P3 (196 + 02575c + 00ad76) matches bit-exact across all 8 raw streams!
+  * Scenario A (1,592 frames): P0 vs P3 matches 8/8 streams bit-exact.
+  * Scenario B (600 frames): P0 vs P3 matches 8/8 streams bit-exact.
+  * Aggregate stream matches: 24/24 bit-exact streams; 0 contract faults.
+- 100.00% Native Execution & Game-Wide Coverage Expansion:
+  * Scenario C Sprite Mode 0 entries natively executed: **7,183 / 7,183 (100.00%)**, 0 rom_calls, 0 child fallback calls, 0 weapon hook fallbacks.
+  * Scenario C Sprite Cluster steps: **871,538** (net gain of **+20,254 steps** over M15.226 baseline of 851,284).
+  * Scenario C combined native steps (P3): **6,053,007 / 17,627,770** (**34.338%**, net gain of **+0.115 percentage points**).
+  * Three-scenario total sprite steps: **1,331,652** (net gain of **+26,302 steps** over M15.226).
+- Production Governance & Verification Receipt:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222 & 223 default disabled in production; `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Emitted formal machine receipt: `data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 physical files valid, 48/48 streams valid, `overall_valid = true`.
+
 # M15.226 Combined Native Cluster Qualification & Sprite Pipeline Expansion (Dual Recompiled Island: Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76); 6,032,753 Native Dynamic Instructions in Scenario C (34.223% of All Guest Instructions); 12,588,815 Native Instructions Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Streams; Anomaly Forensics; Fallback Classification; Reusable Standalone Pure C++ SAT Behavior Contract; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-226-20261108.json) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER PAIR
 
 Delivered:

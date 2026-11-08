@@ -30,6 +30,7 @@ void write_00ad76_step_metrics(const std::filesystem::path& path) {
 
 void reset_00ad76_step_metrics() noexcept {
     g_metrics = {};
+    reset_00ad76_state();
 }
 
 const M68k00AD76StepMetrics& get_00ad76_step_metrics() noexcept {

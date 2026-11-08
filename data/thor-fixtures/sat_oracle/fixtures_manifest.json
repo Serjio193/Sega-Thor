@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "subsystem": "sat_pipeline_oracle",
+  "total_cases": 6,
+  "cases": [
+    {
+      "case_id": "case1_normal_player_sprite",
+      "filename": "case1_normal_player_sprite.json",
+      "description": "Authentic single-piece player sprite at screen center (3x4 tiles, high priority, palette 0)",
+      "entry_count": 1
+    },
+    {
+      "case_id": "case2_weapon_attachment",
+      "filename": "case2_weapon_attachment.json",
+      "description": "Player sprite with attached weapon sprite in consecutive SAT slots with link chaining",
+      "entry_count": 2
+    },
+    {
+      "case_id": "case3_horizontal_flip",
+      "filename": "case3_horizontal_flip.json",
+      "description": "Horizontal flip flag validation for west-facing player sprite",
+      "entry_count": 1
+    },
+    {
+      "case_id": "case4_multi_piece_descriptors",
+      "filename": "case4_multi_piece_descriptors.json",
+      "description": "Multi-piece composite entity descriptor emitting 4 linked SAT entries",
+      "entry_count": 4
+    },
+    {
+      "case_id": "case5_shadow_table_00acfe",
+      "filename": "case5_shadow_table_00acfe.json",
+      "description": "Authentic shadow entry generated using ROM table 0x00ACFE (Type 1: 2x1 tiles, offset 3, 8)",
+      "entry_count": 1
+    },
+    {
+      "case_id": "case6_capacity_clipping_boundary",
+      "filename": "case6_capacity_clipping_boundary.json",
+      "description": "Strict 80-sprite capacity limit with link-terminator at index 79, plus clipping boundary rejection",
+      "entry_count": 80
+    }
+  ]
+}

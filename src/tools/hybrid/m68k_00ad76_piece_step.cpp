@@ -59,12 +59,8 @@ M68k9D70StepResult step_00ad76_piece(const M68k9D70StepApi& api, unsigned pc,
     }
     case 0x00AEE2U: { // bne.w $00B012
         const bool taken = (ccr(api) & 0x04U) == 0U;
-        if (taken) {
-            metrics.weapon_hook_fallbacks++;
-            return M68k9D70StepResult::NotHandled; // fallback to ROM for weapon parts hook
-        }
         metrics.stepped_instructions++;
-        return step_bcc_w(api, pc, false, 0x00B012U, 0x00AEE6U, resume_pc);
+        return step_bcc_w(api, pc, taken, 0x00B012U, 0x00AEE6U, resume_pc);
     }
     case 0x00AEE6U: { // move.w 62(a6), d5
         if (!prepare_step(api, pc, opcode)) return M68k9D70StepResult::ContractFault;

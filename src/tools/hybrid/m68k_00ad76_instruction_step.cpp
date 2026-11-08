@@ -6,6 +6,7 @@
 #include "tools/hybrid/m68k_00ad76_piece_step.hpp"
 #include "tools/hybrid/m68k_00ad76_render_step.hpp"
 #include "tools/hybrid/m68k_00ad76_shadow_step.hpp"
+#include "tools/hybrid/m68k_00ad76_weapon_step.hpp"
 #include "tools/hybrid/m68k_00ad76_step_ops.hpp"
 
 #include <array>
@@ -20,6 +21,8 @@ using namespace step_00ad76;
 
 bool active = false;
 bool interrupted = false;
+bool child_call_active = false;
+unsigned saved_child_sp = 0U;
 unsigned resume_pc = 0U;
 
 constexpr std::array<std::uint16_t, 3> kRomWords = {{
@@ -39,43 +42,53 @@ bool verify_rom(const M68k9D70StepApi& api) noexcept {
 
 } // namespace
 
+void reset_00ad76_state() noexcept {
+    active = false;
+    interrupted = false;
+    child_call_active = false;
+    saved_child_sp = 0U;
+    resume_pc = 0U;
+}
+
 M68k9D70StepResult step_m68k_00ad76(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept {
     if (!enabled) return M68k9D70StepResult::NotHandled;
 
     auto& metrics = mutable_00ad76_step_metrics();
 
+    if (pc == kStartPc && active) {
+        active = false;
+        interrupted = false;
+        child_call_active = false;
+        saved_child_sp = 0U;
+    }
+
+    if (!active) {
+        if (pc != kStartPc) return M68k9D70StepResult::NotHandled;
+        if (!verify_rom(api)) return M68k9D70StepResult::NotHandled;
+
+        metrics.target_entries++;
+        active = true;
+        interrupted = false;
+        child_call_active = false;
+        saved_child_sp = 0U;
+        resume_pc = pc;
+        metrics.native_calls++;
+    } else if (child_call_active) {
+        const auto sp = api.read_register(api.context, kRegSP) & kMask24;
+        if (sp == saved_child_sp && pc == resume_pc) {
+            child_call_active = false;
+        } else {
+            return M68k9D70StepResult::NotHandled;
+        }
+    } else if (interrupted) {
+        if (pc != resume_pc) return M68k9D70StepResult::NotHandled;
+        interrupted = false;
+    }
+
     if (active && pc != resume_pc) {
         interrupted = true;
         return M68k9D70StepResult::NotHandled;
     }
-    if (interrupted && pc == resume_pc) {
-        interrupted = false;
-    }
-
-    if (pc == kStartPc) {
-        if (active) {
-            active = false;
-            interrupted = false;
-            return M68k9D70StepResult::NotHandled;
-        }
-        if (!verify_rom(api)) return M68k9D70StepResult::NotHandled;
-
-        metrics.target_entries++;
-        const auto a6 = api.read_register(api.context, kRegA6) & kMask24;
-        unsigned weapon_part = 0U;
-        if (read_be(api, a6 + 57U, 1, weapon_part) && (weapon_part & 0xFFU) != 0U) {
-            metrics.rom_calls++;
-            metrics.child_fallback_calls++;
-            return M68k9D70StepResult::NotHandled;
-        }
-
-        active = true;
-        interrupted = false;
-        resume_pc = pc;
-        metrics.native_calls++;
-    }
-
-    if (!active) return M68k9D70StepResult::NotHandled;
 
     const auto a6 = api.read_register(api.context, kRegA6) & kMask24;
 
@@ -94,10 +107,13 @@ M68k9D70StepResult step_m68k_00ad76(unsigned pc, const M68k9D70StepApi& api, boo
         res = step_00ad76_shadow(api, pc, a6, resume_pc, metrics);
     } else if (pc <= 0x00B010U) {
         res = step_00ad76_commit(api, pc, resume_pc, active, metrics);
+    } else if (pc <= 0x00B020U) {
+        res = step_00ad76_weapon(api, pc, resume_pc, child_call_active, saved_child_sp, metrics);
     }
 
     if (res == M68k9D70StepResult::NotHandled) {
         active = false;
+        child_call_active = false;
     }
     return res;
 }

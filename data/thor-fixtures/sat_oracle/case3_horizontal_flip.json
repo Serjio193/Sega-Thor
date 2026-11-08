@@ -1,0 +1,26 @@
+{
+  "case_id": "case3_horizontal_flip",
+  "description": "Horizontal flip flag validation for west-facing player sprite",
+  "inputs": [
+    {
+      "screen_x": 130,
+      "screen_y": 96,
+      "w_tiles": 3,
+      "h_tiles": 4,
+      "tile_idx": 640,
+      "palette": 0,
+      "prio": true,
+      "h_flip": true,
+      "v_flip": false
+    }
+  ],
+  "expected_entries": [
+    {
+      "x_pos": 258,
+      "y_pos": 224,
+      "size": 11,
+      "link": 0,
+      "attr": 35456
+    }
+  ]
+}

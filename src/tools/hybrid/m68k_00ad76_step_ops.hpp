@@ -41,6 +41,9 @@ M68k9D70StepResult step_bcc_s(const M68k9D70StepApi& api, unsigned pc, bool take
                               unsigned target_pc, unsigned next_pc, unsigned& resume_pc) noexcept;
 M68k9D70StepResult step_bra_w(const M68k9D70StepApi& api, unsigned pc, unsigned target_pc,
                               unsigned& resume_pc) noexcept;
+M68k9D70StepResult step_bsr_w(const M68k9D70StepApi& api, unsigned pc, unsigned target,
+                              unsigned return_pc, unsigned& resume_pc,
+                              bool& child_call_active, unsigned& saved_child_sp) noexcept;
 M68k9D70StepResult step_dbf_d5(const M68k9D70StepApi& api, unsigned pc, unsigned loop_pc,
                                unsigned exit_pc, unsigned& resume_pc) noexcept;
 M68k9D70StepResult step_movem_push_d7(const M68k9D70StepApi& api, unsigned pc,

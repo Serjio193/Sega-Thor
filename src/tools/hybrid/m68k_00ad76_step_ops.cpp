@@ -86,6 +86,23 @@ M68k9D70StepResult step_bra_w(const M68k9D70StepApi& api, unsigned pc, unsigned 
     return M68k9D70StepResult::InstructionStepped;
 }
 
+M68k9D70StepResult step_bsr_w(const M68k9D70StepApi& api, unsigned pc, unsigned target,
+                              unsigned return_pc, unsigned& resume_pc,
+                              bool& child_call_active, unsigned& saved_child_sp) noexcept {
+    std::uint16_t opcode{};
+    if (!prepare_step(api, pc, opcode)) return M68k9D70StepResult::ContractFault;
+    (void)api.fetch16(api.context);
+    const unsigned old_sp = api.read_register(api.context, kRegSP);
+    const unsigned sp = (old_sp - 4U) & kMask24;
+    api.write(api.context, sp, 4, return_pc);
+    api.write_register(api.context, kRegSP, old_sp - 4U);
+    if (!complete_step(api, target, opcode, 0, resume_pc)) return M68k9D70StepResult::ContractFault;
+    child_call_active = true;
+    saved_child_sp = old_sp;
+    resume_pc = return_pc;
+    return M68k9D70StepResult::InstructionStepped;
+}
+
 M68k9D70StepResult step_dbf_d5(const M68k9D70StepApi& api, unsigned pc, unsigned loop_pc,
                                unsigned exit_pc, unsigned& resume_pc) noexcept {
     std::uint16_t opcode{};

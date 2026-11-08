@@ -29244,3 +29244,54 @@ RESULT: PASS.
   * Audited all active helpers via `tools/audit_steppers.py`: 0 defects across all 10 semantic rules, 18/18 fixtures passing.
   * Verified file size limits: `check_file_limits.cmake` passed (2,059 governed source/test/CMake files strictly <= 500 lines).
   * `git diff --check`: Clean.
+
+
+## 2026-11-08 — M15.227: Sprite Engine Weapon Path Expansion and Verified Game-Wide Coverage
+
+**Task:** Expand the native Sprite Engine Cluster (0x00AD76) to cover authentic weapon and attached-sprite branch paths (0x00B012..0x00B020), wire child callers 0x00B34C and 0x00B3B2, validate the pure C++ SAT contract against authentic ROM fixtures, and qualify the combined dual clusters across three scenarios.
+**Track:** TRACK = HYBRID_ROM_TO_CPP
+**Priority:** CRITICAL
+
+### Key Outcomes:
+1. **Physical Baseline Verification:**
+   - Production active helpers: strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+   - Canonical ROM SHA256: eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+   - Core GPGX SHA256: ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134.
+2. **Forensic Weapon Path Resolution:**
+   - Caller frame provenance audited: 0x00A22C: MOVE.L #, -(A7) and 0x00A2FC: MOVE.L #, -(A7).
+   - Preflight decline forensic breakdown of 1,269 entries with 57(A6) != 0 in Scenario C:
+     * 1,082 hidden entities branch directly at 0x00AD7C -> 0x00B010 (RTS) without entering render loops.
+     * 187 visible entities enter full render, branching at 0x00AEE2 -> 0x00B012 (weapon piece hook) and 0x00AF98 -> 0x00B01A (weapon shadow hook).
+   - Target children 0x00B34C and 0x00B3B2 audited: 0x00B34C already accepted caller 0x00B012; m68k_00b3b2_instruction_step.cpp updated with {0x00B01AU, 0x00B01EU, 0x0396}.
+3. **Modular Native Weapon Implementation:**
+   - Implemented src/tools/hybrid/m68k_00ad76_weapon_step.hpp (13 lines) and m68k_00ad76_weapon_step.cpp (33 lines).
+   - Implemented step_bsr_w in m68k_00ad76_step_ops.hpp/.cpp to push return PC, set child target return state, and track child_call_active / saved_child_sp.
+   - Removed preflight decline in m68k_00ad76_instruction_step.cpp.
+   - Updated m68k_00ad76_piece_step.cpp and m68k_00ad76_shadow_step.cpp to take branch targets natively.
+   - Added unit test test_weapon_hook_native in tests/m68k_00ad76_cluster_test.cpp (all cluster tests passing).
+4. **SAT Pipeline Contract Validation:**
+   - Created tools/generate_sat_oracle_fixtures.py (210 lines) generating 6 authentic fixtures and fixtures_manifest.json in data/thor-fixtures/sat_oracle/ (normal player sprite, weapon attachment, horizontal flip, multi-piece descriptors, authentic shadow table at 0x00ACFE, and capacity/clipping boundary).
+   - Updated tests/sat_pipeline_contract_test.cpp (158 lines) validating pure C++ sat_pipeline_contract.hpp/.cpp (6/6 tests passing).
+5. **Real Gameplay Three-Scenario A/B Qualification:**
+   - Rebuilt runner oasis_gameplay_session (SHA256: afe7b80147981be36447bbf2f223cbfa5e9434ee996de9929cd43bb30b7cd92b).
+   - Ran 4-way configuration test on Scenario C (P0 baseline, P1 entity cluster, P2 sprite cluster, P3 dual clusters): 8/8 streams bit-exact match across all 4 configurations.
+   - Ran P0 vs P3 on Scenario A (1,592 frames) and Scenario B (600 frames): 8/8 streams bit-exact match each (24/24 total streams).
+   - Verified 0 contract faults, 0 ROM fallback calls, 0 child fallback calls, and 0 weapon fallbacks across all scenarios.
+6. **Coverage Gain Measurement (Scenario C):**
+   - Total M68000 guest instructions: 17,627,770
+   - Production native steps (196 helpers): 5,127,961
+   - Entity Cluster native steps (Slot 222): 53,508
+   - Sprite Cluster native steps (Slot 223): 871,538 (gain of +20,254 steps over M15.226 baseline of 851,284)
+   - Total native steps executed: 6,053,007
+   - Dynamic native coverage: 34.338% (net gain of +0.115 percentage points over M15.226 baseline of 34.223%)
+   - Three-scenario total sprite steps: 1,331,652 (Scenario C: 871,538; Scenario A: 333,756; Scenario B: 126,358; net gain of +26,302 steps)
+   - Sprite Mode 0 entries natively executed: 7,183 / 7,183 (100.00% native execution):
+     * Full render calls: 5,307 (5,120 regular + 187 weapon attached)
+     * Fast-path hidden exits: 1,876 (794 regular + 1,082 weapon attached)
+     * ROM calls: 0, child fallback calls: 0, weapon hook fallbacks: 0
+7. **Production Governance:**
+   - Production active helpers remain strictly at 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+   - Clusters 222 and 223 remain experimental and disabled by default (ORACLE_OWNER_APPROVAL = PENDING).
+   - Emitted formal verification receipt: data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json.
+   - Verified receipt using ReceiptVerifier: 58/58 physical files valid, 48/48 streams valid, overall_valid = true.
+   - Source-code size policy verified: all touched and created C++/Python files strictly <= 500 lines.

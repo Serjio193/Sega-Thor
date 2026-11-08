@@ -113,7 +113,7 @@ void test_fast_path_hidden() {
     std::cout << "[PASS] test_fast_path_hidden passed\n";
 }
 
-void test_weapon_hook_fallback() {
+void test_weapon_hook_native() {
     g_regs.fill(0U);
     g_mem.clear();
     init_test_rom();
@@ -125,18 +125,19 @@ void test_weapon_hook_fallback() {
     g_regs[kRegA6] = a6;
     mock_write_mem(nullptr, sp, 4, 0x0000A1F8U);
 
-    // Entity 57(a6) != 0 (attached weapon part)
+    // Entity 57(a6) != 0 (attached weapon part) - now enters natively!
     mock_write_mem(nullptr, a6 + 57U, 1, 0x01U);
 
     auto api = make_test_api();
     auto res = step_m68k_00ad76(0x00AD76U, api, true);
-    TEST_ASSERT(res == M68k9D70StepResult::NotHandled);
+    TEST_ASSERT(res == M68k9D70StepResult::InstructionStepped);
 
     const auto& m = get_00ad76_step_metrics();
     TEST_ASSERT(m.target_entries == 1);
-    TEST_ASSERT(m.child_fallback_calls == 1);
-    TEST_ASSERT(m.rom_calls == 1);
-    std::cout << "[PASS] test_weapon_hook_fallback passed\n";
+    TEST_ASSERT(m.native_calls == 1);
+    TEST_ASSERT(m.child_fallback_calls == 0);
+    TEST_ASSERT(m.rom_calls == 0);
+    std::cout << "[PASS] test_weapon_hook_native passed\n";
 }
 
 void test_full_render_piece_loop() {
@@ -238,7 +239,7 @@ void test_full_render_piece_loop() {
 int main() {
     std::cout << "Running M68K 0x00AD76 Cluster Unit Tests...\n";
     test_fast_path_hidden();
-    test_weapon_hook_fallback();
+    test_weapon_hook_native();
     test_full_render_piece_loop();
     std::cout << "All M68K 0x00AD76 Cluster Tests Passed Successfully.\n";
     return 0;
