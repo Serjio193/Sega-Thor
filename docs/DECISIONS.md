@@ -10064,3 +10064,41 @@ The dual-oracle evidence framework is rigorously clarified, preventing conflatio
 
 **Consequences:**
 Second-oracle determinism is proven and certified as frame-exact reference. The clerical hash suffix discrepancy is permanently eliminated and reconciled. Routine `0x00B66A` executes natively in C++ with 0 ROM fallbacks and 100% dual-scenario parity, establishing a verified active baseline of 196 active native helpers.
+
+
+## ADR-0202 — 2026-11-08 — M16.0 Standalone Native Renderer & First Complete Frame Verification
+
+### Context
+Milestone M16.0 initiates the Standalone C++ Runtime Track for Beyond Oasis (`standalone/m16`). Prior milestones developed a hybrid M68K recompilation track that depended on Genesis Plus GX / BizHawk / Musashi for execution and rasterization. M16.0 requires a pure, standalone C++ native renderer capable of consuming explicit VDP state (VRAM, CRAM, VSRAM, registers) and generating bit-exact RGB24 framebuffers without linking to or executing GPGX, Musashi, or libretro.
+
+### Decision
+1. **Isolated Standalone Core & Native VDP Rasterizer Architecture**:
+   - Implemented `oasis::genesis::VdpState` (`src/genesis/vdp_state.hpp` and `.cpp`, <= 500 lines) holding explicit VRAM (64 KiB), CRAM (128 bytes), VSRAM (80 bytes), and 32 VDP registers with fast zero-dependency JSON serialization.
+   - Implemented `oasis::genesis::render_vdp_frame_rgb24` (`src/genesis/vdp_rasterizer.hpp` and `.cpp`, <= 500 lines) providing pure standalone C++ rasterization of Sega Genesis graphics hardware semantics:
+     * Full-screen, cell, and line HScroll decoding (`Reg11 & 3`, `Reg13`);
+     * Full-screen and 2-cell column VScroll decoding (`(Reg11 >> 2) & 1`);
+     * Plane A, Plane B, and Window plane name table decoding, cell wrapping (32x32, 64x32, 128x32, 32x64, 64x64, 128x64), tile flipping (H/V), and 4bpp pixel extraction;
+     * Sprite Attribute Table (SAT) link traversal (up to 80 sprites, maximum 20 sprites per scanline), column-major tile addressing, coordinate mapping (`screen = raw - 128`), and X/Y flipping;
+     * Exact hardware layer priority composition: low-priority backdrop < Plane B < Plane A < Sprite, high-priority Plane B < Plane A < Sprite;
+     * Deterministic Mega Drive 9-bit RGB word (`0x0BGR`) color expansion to RGB24 via `(val * 255 + 3) / 7`.
+2. **Headless Executable Target**:
+   - Created `oasis_standalone_first_pixel` (`src/tools/standalone_first_pixel.cpp`, <= 500 lines) providing headless execution, pixel SHA256 computation, PPM output, and bit-exact per-pixel comparison reporting.
+   - Binary dependency audit verified zero imports/links to libretro, Genesis Plus GX, Musashi, or hybrid stepper.
+3. **Oracle Fixtures and Bit-Exact Pixel Parity**:
+   - Primary target: Frame 779 (`data/standalone-fixtures/frame_779_vdp_state.json` and `frame_779_reference.rgb24`).
+     * Compared: 71,680 pixels ($320 \times 224$).
+     * Matched: 71,680 pixels (100.0%).
+     * Different: 0 pixels. Max color error: 0.
+     * Layer composition: Plane A: 50,205, Plane B: 20,815, Sprite: 660, Backdrop: 0, Window: 0. Total: 71,680.
+     * Pixel Buffer SHA256: `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`.
+   - Second input robustness: Frame 200 (`data/standalone-fixtures/frame_200_vdp_state.json` and `frame_200_reference.rgb24`).
+     * Compared: 71,680 pixels ($320 \times 224$).
+     * Matched: 71,680 pixels (100.0%).
+     * Different: 0 pixels. Max color error: 0.
+     * Pixel Buffer SHA256: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`.
+4. **Governance and Hygiene**:
+   - Preserved hybrid production baseline (196 active helpers strictly intact, `ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Every source, header, test, and build file strictly <= 500 lines (`tests/check_file_limits.cmake` passed: 896 governed files <= 500 lines).
+
+### Consequences
+The standalone native execution track is operational with a verified bit-exact rasterizer. The native renderer can be driven directly by future standalone game loop stages without any emulation core.

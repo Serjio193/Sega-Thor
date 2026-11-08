@@ -8569,3 +8569,50 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Divergence: `different_frame_count == 0` across all 3,600 frames (`divergence=NO`).
   * Status: `CPP_REPLACEMENT_VERIFIED_PATH_SPECIFIC = YES`, `RUNTIME_REPLACEMENT_ACTIVE = YES`, `CPP_REPLACEMENT_VERIFIED_GLOBAL = YES`.
 - **Unit Test Status:** `tests/m68k_00b3b2_instruction_step_test.cpp` passed 100% (6/6 tests).
+
+
+---
+
+## 2026-11-08 — M16.0 Standalone Native VDP Rasterizer Reverse Engineering & Oracle Validation
+
+### Subroutine / Subsystem: Native VDP State & Rasterization Pipeline
+- **Original Addresses**:
+  * `0x0027A6`: VDP register write helper.
+  * `0x0027E8`: VDP display mode setup (`Reg12=0x81` H40 320x224, `Reg1=0x64` V28 Display ON).
+  * `0x003820`: Graphics decompression to VRAM.
+  * `0x00A196..0x00AD40`: SAT sprite assembly and DMA stager.
+- **Hardware Register Mapping**:
+  * `Reg 0`: Mode Register 1 (`0x04`: 9-bit color MD mode, HBlank IRQ disabled).
+  * `Reg 1`: Mode Register 2 (`0x64`: Display ON, VBlank IRQ enabled, DMA enabled, V28 mode 224 lines).
+  * `Reg 2`: Plane A Name Table base: `(Reg2 & 0x38) << 10` -> `0xC000` (in H40).
+  * `Reg 3`: Window Plane Name Table base: `(Reg3 & 0x3C) << 10` -> `0x0000` (in H40).
+  * `Reg 4`: Plane B Name Table base: `(Reg4 & 0x07) << 13` -> `0xE000`.
+  * `Reg 5`: Sprite Attribute Table base: `(Reg5 & 0x7F) << 9` -> `0xD000` (in H40).
+  * `Reg 7`: Backdrop Color: `Reg7 & 0x3F` (Palette line * 16 + color index, `0x00` -> black).
+  * `Reg 11`: Scroll Modes: bits 0-1 HScroll (`0` = full screen, `1` = 8px cell, `2` = tile line, `3` = scanline); bit 2 VScroll (`0` = full screen, `1` = 2-cell 16px column).
+  * `Reg 12`: Mode Register 4 (`0x81`: H40 mode 320 pixels wide, shadow/highlight disabled).
+  * `Reg 13`: HScroll Table base: `(Reg13 & 0x3F) << 10` -> `0xDC00`.
+  * `Reg 16`: Plane Size: bits 0-1 width (`0`=32, `1`=64, `3`=128 cells); bits 4-5 height (`0`=32, `1`=64, `3`=128 cells). For `0x01` -> 64x32 cells (512x256 pixels).
+  * `Reg 17`: Window Horizontal Position (`0x00` = disabled / inactive).
+  * `Reg 18`: Window Vertical Position (`0x00` = disabled / inactive).
+- **Color Decoding & Space Conversion**:
+  * Mega Drive CRAM: 128 bytes (64 words of 16-bit `0x0BGR`).
+  * Red: `(word >> 1) & 7`; Green: `(word >> 5) & 7`; Blue: `(word >> 9) & 7`.
+  * Standard 3-bit to 8-bit DAC expansion: `(val * 255 + 3) / 7`.
+  * Result: 100% bit-exact across all 64 CRAM colors against BizHawk / Genesis Plus GX oracle output.
+- **Layer Priority Resolution Hierarchy**:
+  * Low priority: BACKDROP (0) < PLANE_B (1) < PLANE_A (2) < SPRITE (3) < WINDOW (4).
+  * High priority: PLANE_B (5) < PLANE_A (6) < SPRITE (7) < WINDOW (8).
+  * Transparent pixels (color index 0) pass through to underlying layers.
+- **Oracle Validation Results**:
+  * **Frame 779** (Gameplay frame with active sprites and dual background planes):
+    - Viewport: 320 x 224 (H40/V28).
+    - Total pixels: 71,680. Matched: 71,680. Different: 0 (100.0% exact match).
+    - Layer composition: Plane A: 50,205; Plane B: 20,815; Sprite: 660; Backdrop: 0; Window: 0.
+    - Buffer SHA256: `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`.
+  * **Frame 200** (Title/Sega logo screen, second input robustness):
+    - Viewport: 320 x 224 (H40/V28).
+    - Total pixels: 71,680. Matched: 71,680. Different: 0 (100.0% exact match).
+    - Layer composition: Backdrop: 69,039; Plane A: 2,641; Plane B: 0; Sprite: 0; Window: 0.
+    - Buffer SHA256: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`.
+- **Status**: `NATIVE_RECOMPILATION_VERIFIED`. Implemented in `src/genesis/vdp_state.cpp`, `src/genesis/vdp_rasterizer.cpp`, validated via `tests/vdp_rasterizer_test.cpp` and `oasis_standalone_first_pixel`.

@@ -5185,8 +5185,19 @@ its own evidence and architectural decision before implementation.
 ## M15 — Portability and packaging — TODO
 Initial targets: Windows, Linux and macOS. Additional platforms are later decisions.
 
-## M16 — Optional enhancements — TODO
-Only after base parity: scaling/resolution, controller UX, widescreen experiments, QoL and rendering enhancements. Faithful mode remains available.
+## M16 — Standalone Native C++ Runtime Track — IN_PROGRESS
+
+### M16.0 — Standalone Native Renderer, First Pixel / First Complete Frame — COMPLETE
+- Initiated the standalone native C++ execution track on branch `standalone/m16`.
+- Implemented pure C++ standalone VDP state representation (`src/genesis/vdp_state.hpp` / `.cpp`) and native rasterizer (`src/genesis/vdp_rasterizer.hpp` / `.cpp`) without linking or running GPGX, Musashi, or libretro.
+- Created headless rendering tool `oasis_standalone_first_pixel` (`src/tools/standalone_first_pixel.cpp`).
+- Verified Frame 779 bit-exact pixel match: 71,680 / 71,680 pixels (100.0% match, 0 different pixels, max color error 0, SHA256 `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`).
+- Verified Frame 200 second input robustness: 71,680 / 71,680 pixels (100.0% match, 0 different pixels, max color error 0, SHA256 `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`).
+- Audited binary dependencies: 0 forbidden imports.
+- Created `docs/SEMANTIC_MAP.md` with entity cluster `0x0254EA..0x025B32` marked `PARTIALLY_RECOMPILED`.
+
+### M16.1 — Standalone Frame Sequencer & Input Integration — PLANNED
+Advance standalone runtime with deterministic frame sequencer and native controller input dispatch.
 
 ## Deferred
 **The Story of Thor 2 / The Legend of Oasis** is explicitly deferred until the first project reaches a mature parity milestone.

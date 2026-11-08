@@ -6,6 +6,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(oasis_core
     src/core/rom.cpp
     src/core/rom_identity.cpp
+    src/core/sha256.cpp
     src/core/mechanical_primitive.cpp
     src/core/table_copy_routine.cpp
     src/core/ram_flag_routine.cpp
@@ -13,6 +14,8 @@ add_library(oasis_core
     src/core/runtime.cpp
     src/genesis/memory_bus.cpp
     src/genesis/vdp.cpp
+    src/genesis/vdp_state.cpp
+    src/genesis/vdp_rasterizer.cpp
     src/game/translated_routines.cpp
     src/game/graphics_decompress.cpp
     src/game/genesis_graphics.cpp
@@ -50,28 +53,16 @@ target_link_libraries(oasis PRIVATE oasis_core oasis_platform)
 if(WIN32)
     target_link_libraries(oasis PRIVATE user32 gdi32)
 endif()
+add_executable(oasis_standalone_first_pixel src/tools/standalone_first_pixel.cpp)
+target_link_libraries(oasis_standalone_first_pixel PRIVATE oasis_core)
+
 add_executable(oasis_inspect src/tools/asset_inspector.cpp)
 target_link_libraries(oasis_inspect PRIVATE oasis_core)
 add_executable(oasis_resource_boundary_scan src/tools/re_resource_boundary_scan.cpp)
 target_link_libraries(oasis_resource_boundary_scan PRIVATE oasis_core)
-add_executable(oasis_gfx_screen_resource_reference tests/gfx_screen_resource_reference.cpp)
-target_link_libraries(oasis_gfx_screen_resource_reference PRIVATE oasis_core)
-add_executable(oasis_raw_record_initializer_test tests/raw_record_initializer_test.cpp)
-target_link_libraries(oasis_raw_record_initializer_test PRIVATE oasis_core)
-add_test(NAME oasis_raw_record_initializer COMMAND oasis_raw_record_initializer_test)
-add_executable(oasis_sparse_word_store_test tests/sparse_word_store_test.cpp)
-target_link_libraries(oasis_sparse_word_store_test PRIVATE oasis_core)
-add_test(NAME oasis_sparse_word_store COMMAND oasis_sparse_word_store_test)
-add_executable(oasis_sat_shadow_records_test tests/sat_shadow_records_test.cpp)
-target_link_libraries(oasis_sat_shadow_records_test PRIVATE oasis_core)
-add_test(NAME oasis_sat_shadow_records COMMAND oasis_sat_shadow_records_test)
-add_executable(oasis_fixed_count_resource_reference tests/fixed_count_resource_reference.cpp)
-target_link_libraries(oasis_fixed_count_resource_reference PRIVATE oasis_core)
 include(tools/bizhawk-native-ring/live_forward.cmake)
 # Developer-only reverse-engineering tooling; it is not linked into oasis_core.
 add_library(oasis_re_tooling
-    src/tools/thor_evidence/runtime_rom_properties.cpp
-    src/tools/thor_evidence/runtime_rom_observation.cpp
     src/tools/gpgx_import_io.cpp
     src/tools/gpgx_json.cpp
     src/tools/re_slice_decoder.cpp
@@ -118,8 +109,6 @@ add_library(oasis_re_tooling
     src/tools/re_static_translation.cpp
 )
 target_include_directories(oasis_re_tooling PUBLIC src)
-add_executable(oasis_m12_b730_native_differential src/tools/m12_b730_native_differential.cpp)
-target_link_libraries(oasis_m12_b730_native_differential PRIVATE oasis_core oasis_re_tooling)
 add_executable(oasis_re_slice src/tools/re_slice_report.cpp)
 target_link_libraries(oasis_re_slice PRIVATE oasis_core oasis_re_tooling)
 add_executable(oasis_re_program src/tools/re_program_report.cpp)
@@ -160,5 +149,10 @@ add_executable(oasis_gpgx_coverage_report src/tools/gpgx_coverage_report.cpp)
 target_link_libraries(oasis_gpgx_coverage_report PRIVATE oasis_re_tooling oasis_core)
 add_executable(oasis_re_import_gpgx_coverage src/tools/gpgx_import_gpgx_coverage.cpp)
 target_link_libraries(oasis_re_import_gpgx_coverage PRIVATE oasis_re_tooling oasis_core)
+
 include(cmake/project_tests.cmake)
-add_subdirectory(src/tools/hybrid) # Optional external-emulator experiment.
+
+option(ENABLE_HYBRID "Enable external emulator hybrid experiment" OFF)
+if(ENABLE_HYBRID)
+    add_subdirectory(src/tools/hybrid)
+endif()

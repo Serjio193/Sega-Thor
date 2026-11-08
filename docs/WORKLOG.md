@@ -29089,3 +29089,85 @@ RESULT: PASS.
   * Audited all active helpers via `tools/audit_steppers.py`: 0 defects across all 10 semantic rules, 18/18 fixtures passing.
   * Verified file size limits: `check_file_limits.cmake` passed (2,059 governed source/test/CMake files strictly <= 500 lines).
   * `git diff --check`: Clean.
+
+
+# 2026-11-08 — M16.0 Standalone Native Renderer, First Pixel / First Complete Frame — PASS
+
+## Task & Acceptance Criteria
+- **Objective**: Launch the standalone native C++ execution track (`standalone/m16`) by creating a pure native C++ Sega Genesis VDP rasterizer capable of rendering complete authentic game frames from explicit VDP state without linking to or running Genesis Plus GX, Musashi, or libretro.
+- **Acceptance Criteria**:
+  1. Headless C++ rasterizer consumes explicit VDP state (VRAM, CRAM, VSRAM, registers) and outputs RGB24 pixels.
+  2. Authentic Frame 779 rendered with 100% bit-exact pixel match against reference oracle (0 different pixels out of 71,680).
+  3. Second input robustness verified on Frame 200 with 100% bit-exact pixel match (0 different pixels out of 71,680).
+  4. Executable binary dependencies audited to guarantee 0 links to GPGX, Musashi, or libretro.
+  5. Semantic ROM map created in `docs/SEMANTIC_MAP.md` with entity cluster `0x0254EA..0x025B32` marked `PARTIALLY_RECOMPILED`.
+  6. All source, header, test, and build files strictly <= 500 lines.
+  7. Hybrid production baseline (196 active helpers) strictly preserved.
+
+## Implementation Details
+
+### Phase 1 — Inventory & Standalone Architecture
+- Identified existing reusable primitives:
+  * `src/genesis/vdp.hpp` / `vdp_types.hpp` for tile/plane/sprite attribute bitfield decoding.
+  * `src/game/genesis_graphics.cpp` for Genesis 4bpp tile nibble extraction and 3-bit to 8-bit DAC expansion `(val * 255 + 3) / 7`.
+  * `src/core/rom.hpp` / `rom_identity.cpp` for ROM header reading and identity checks.
+- Created dedicated modular standalone components:
+  * `src/core/sha256.hpp/.cpp` (89 lines, <= 500): Pure C++20 SHA-256 calculation utility.
+  * `src/genesis/vdp_state.hpp/.cpp` (144 lines, <= 500): Explicit VDP state struct (64 KiB VRAM, 128-byte CRAM, 80-byte VSRAM, 32 registers), table address calculations, and streaming JSON parser.
+  * `src/genesis/vdp_rasterizer.hpp/.cpp` (283 lines, <= 500): Decoupled standalone Sega Genesis VDP rasterizer supporting H40/H32, V28/V30, backdrop, Plane B, Plane A, Window plane, SAT sprite traversal, priority hierarchy, and RGB24 conversion.
+
+### Phase 2 — Oracle Evidence & Fixtures
+- Isolated authentic hardware VDP states and generated versioned test fixtures in `data/standalone-fixtures/`:
+  * `frame_779_vdp_state.json`: Authentic Frame 779 VRAM (65,536 bytes), CRAM (128 bytes), VSRAM (80 bytes), and VDP registers from S8 capture.
+  * `frame_779_reference.rgb24`: Authentic 320x224 RGB24 reference framebuffer (215,040 bytes, SHA256 `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`).
+  * `frame_200_vdp_state.json`: Authentic Frame 200 VRAM, CRAM, VSRAM, and registers from `vdp_oracle_v2_f200`.
+  * `frame_200_reference.rgb24`: Authentic 320x224 RGB24 reference framebuffer (215,040 bytes, SHA256 `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`).
+
+### Phase 3 & 4 — Headless Executable & Tests
+- Created standalone CLI executable `oasis_standalone_first_pixel` (`src/tools/standalone_first_pixel.cpp`, 173 lines, <= 500).
+- Created unit test target `oasis_vdp_rasterizer_test` (`tests/vdp_rasterizer_test.cpp`, 147 lines, <= 500).
+- Registered targets in `CMakeLists.txt` and `cmake/project_tests.cmake` linking strictly to `oasis_core`.
+
+### Phase 5 & 6 — Pixel-Exact Validation Results
+- **Frame 779 (Gameplay vertical slice with Plane A, Plane B, and active sprites)**:
+  * `NATIVE_WIDTH`: 320
+  * `NATIVE_HEIGHT`: 224
+  * `NATIVE_SHA256`: `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`
+  * `REFERENCE_WIDTH`: 320
+  * `REFERENCE_HEIGHT`: 224
+  * `REFERENCE_SHA256`: `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`
+  * `TOTAL_COMPARED_PIXELS`: 71,680
+  * `MATCHED_PIXELS`: 71,680 (100.0%)
+  * `DIFFERENT_PIXELS`: 0
+  * `FIRST_DIFFERENT_XY`: NONE
+  * `MAX_COLOR_CHANNEL_ERROR`: 0
+  * `STATUS`: **PASS**
+  * Layer Breakdown: Plane A: 50,205 px, Plane B: 20,815 px, Sprites: 660 px, Backdrop: 0 px, Window: 0 px (matches S8 provenance exactly).
+- **Frame 200 (Second Input Robustness — Sega Logo / Title Screen)**:
+  * `NATIVE_WIDTH`: 320
+  * `NATIVE_HEIGHT`: 224
+  * `NATIVE_SHA256`: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`
+  * `REFERENCE_WIDTH`: 320
+  * `REFERENCE_HEIGHT`: 224
+  * `REFERENCE_SHA256`: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`
+  * `TOTAL_COMPARED_PIXELS`: 71,680
+  * `MATCHED_PIXELS`: 71,680 (100.0%)
+  * `DIFFERENT_PIXELS`: 0
+  * `FIRST_DIFFERENT_XY`: NONE
+  * `MAX_COLOR_CHANNEL_ERROR`: 0
+  * `STATUS`: **PASS**
+
+### Phase 7 — Binary Dependency Audit
+- Inspected imported symbols and libraries of `oasis_standalone_first_pixel.exe` via `objdump`:
+  * Linked DLLs: `libgcc_s_seh-1.dll`, `KERNEL32.dll`, standard Windows UCRT DLLs, `libstdc++-6.dll`.
+  * Forbidden imports (`gpgx`, `genesis`, `musashi`, `m68k`, `libretro`, `hybrid`): **0 matches**.
+
+### Phase 8 — Semantic ROM Map
+- Created `docs/SEMANTIC_MAP.md` mapping all 11 core ROM subsystems with ROM ranges, responsible routines, data structures, state variables, evidence levels (`VERIFIED` / `INFERRED` / `UNKNOWN`), and recompilation statuses (`NATIVE` / `HYBRID` / `PARTIALLY_RECOMPILED`).
+- The entity engine cluster `0x0254EA..0x025B32` is explicitly classified as `PARTIALLY_RECOMPILED`.
+
+## Governance & Hygiene
+- File Limit Check: `tests/check_file_limits.cmake` passed cleanly (896 governed files strictly <= 500 lines).
+- Whitespace Check: `git diff --check` passed cleanly with 0 errors.
+- Hybrid Production Baseline: Strictly preserved (196 active helpers, `ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+- Read-only Worktree Policy: Original project directory `C:/Github/Sega-Thor` treated strictly as READ-ONLY; zero files modified in the other agent's worktree.

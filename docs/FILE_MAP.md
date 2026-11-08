@@ -4084,3 +4084,14 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `src/tools/hybrid/m68k_02575c_root_step.hpp/.cpp` — Dedicated native stepper module for Root Entry `0x0254EA`, implementing Mode 0 path into dispatcher `0x02575C`, child motion helper `0x00E682` coordination, `134(a6) == 0` check, preflight decline of complex paths (Modes 1..5, motion stack pop, non-zero 134), and metrics tracking (3,192 calls, 15,960 native steps) (M15.224).
 - `tools/generate_02575c_m15_224_receipt.py` — Automated receipt generator for M15.224, capturing all 48 stream artifacts across Scenarios A, B, and C with exact byte counts and SHA256 hashes (M15.224).
 - `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json` — Machine-readable three-scenario qualification evidence receipt for M15.224 (State 5 safe paths, Root Entry `0x0254EA` execution, 53,508 stepped instructions, 24/24 streams), validated via `ReceiptVerifier` across 58 check operations with status `VERIFIED` (M15.224).
+
+- `src/core/sha256.hpp/.cpp` — Modular standard C++20 SHA-256 calculation utility decoupled from platform and emulator code (M16.0).
+- `src/genesis/vdp_state.hpp/.cpp` — Explicit Sega Genesis VDP state representation (64 KiB VRAM, 128-byte CRAM, 80-byte VSRAM, 32 registers), table address calculations, and zero-dependency JSON serialization (M16.0).
+- `src/genesis/vdp_rasterizer.hpp/.cpp` — Standalone native C++ VDP rasterizer implementing Genesis backdrop, Plane B, Plane A, Window plane, SAT sprite traversal (link order, column-major tiles, scanline limits), priority layering, and 9-bit color expansion (M16.0).
+- `src/tools/standalone_first_pixel.cpp` — Headless standalone executable `oasis_standalone_first_pixel` with PPM output, frame SHA256 computation, and per-pixel reference comparison (M16.0).
+- `tests/vdp_rasterizer_test.cpp` — Comprehensive unit test suite for native VDP state and rasterizer, including bit-exact Frame 779 and Frame 200 pixel validation (M16.0).
+- `data/standalone-fixtures/frame_779_vdp_state.json` — Versioned VDP state fixture for Frame 779 (VRAM, CRAM, VSRAM, registers) (M16.0).
+- `data/standalone-fixtures/frame_779_reference.rgb24` — Authentic reference RGB24 framebuffer for Frame 779 (SHA256: `fcfceb5833abef88a33c13339f2d40d38130e3ccda9b35699bd49a8d6125f690`) (M16.0).
+- `data/standalone-fixtures/frame_200_vdp_state.json` — Versioned VDP state fixture for Frame 200 (VRAM, CRAM, VSRAM, registers) (M16.0).
+- `data/standalone-fixtures/frame_200_reference.rgb24` — Authentic reference RGB24 framebuffer for Frame 200 (SHA256: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`) (M16.0).
+- `docs/SEMANTIC_MAP.md` — Navigational map of canonical Beyond Oasis ROM by subsystem with explicit evidence levels and recompilation statuses (M16.0).

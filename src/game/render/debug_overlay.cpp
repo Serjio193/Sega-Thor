@@ -1,0 +1,120 @@
+#include "game/render/debug_overlay.hpp"
+
+#include <algorithm>
+#include <array>
+
+namespace oasis::game::render {
+namespace {
+
+// 5x7 font table where each glyph is 5 columns of 7 vertical pixels.
+struct Glyph {
+    char ch{};
+    std::array<std::uint8_t, 5> cols{};
+};
+
+constexpr Glyph kFont[] = {
+    {' ', {0x00, 0x00, 0x00, 0x00, 0x00}},
+    {'0', {0x3E, 0x51, 0x49, 0x45, 0x3E}},
+    {'1', {0x00, 0x42, 0x7F, 0x40, 0x00}},
+    {'2', {0x42, 0x61, 0x51, 0x49, 0x46}},
+    {'3', {0x21, 0x41, 0x45, 0x4B, 0x31}},
+    {'4', {0x18, 0x14, 0x12, 0x7F, 0x10}},
+    {'5', {0x27, 0x45, 0x45, 0x45, 0x39}},
+    {'6', {0x3C, 0x4A, 0x49, 0x49, 0x30}},
+    {'7', {0x01, 0x71, 0x09, 0x05, 0x03}},
+    {'8', {0x36, 0x49, 0x49, 0x49, 0x36}},
+    {'9', {0x06, 0x49, 0x49, 0x29, 0x1E}},
+    {':', {0x00, 0x36, 0x36, 0x00, 0x00}},
+    {',', {0x00, 0x50, 0x30, 0x00, 0x00}},
+    {'.', {0x00, 0x60, 0x60, 0x00, 0x00}},
+    {'-', {0x08, 0x08, 0x08, 0x08, 0x08}},
+    {'_', {0x80, 0x80, 0x80, 0x80, 0x80}},
+    {'/', {0x20, 0x10, 0x08, 0x04, 0x02}},
+    {'=', {0x14, 0x14, 0x14, 0x14, 0x14}},
+    {'A', {0x7E, 0x11, 0x11, 0x11, 0x7E}},
+    {'B', {0x7F, 0x49, 0x49, 0x49, 0x36}},
+    {'C', {0x3E, 0x41, 0x41, 0x41, 0x22}},
+    {'D', {0x7F, 0x41, 0x41, 0x22, 0x1C}},
+    {'E', {0x7F, 0x49, 0x49, 0x49, 0x41}},
+    {'F', {0x7F, 0x09, 0x09, 0x09, 0x01}},
+    {'G', {0x3E, 0x41, 0x49, 0x49, 0x7A}},
+    {'H', {0x7F, 0x08, 0x08, 0x08, 0x7F}},
+    {'I', {0x00, 0x41, 0x7F, 0x41, 0x00}},
+    {'J', {0x20, 0x40, 0x41, 0x3F, 0x01}},
+    {'K', {0x7F, 0x08, 0x14, 0x22, 0x41}},
+    {'L', {0x7F, 0x40, 0x40, 0x40, 0x40}},
+    {'M', {0x7F, 0x02, 0x0C, 0x02, 0x7F}},
+    {'N', {0x7F, 0x04, 0x08, 0x10, 0x7F}},
+    {'O', {0x3E, 0x41, 0x41, 0x41, 0x3E}},
+    {'P', {0x7F, 0x09, 0x09, 0x09, 0x06}},
+    {'Q', {0x3E, 0x41, 0x51, 0x21, 0x5E}},
+    {'R', {0x7F, 0x09, 0x19, 0x29, 0x46}},
+    {'S', {0x46, 0x49, 0x49, 0x49, 0x31}},
+    {'T', {0x01, 0x01, 0x7F, 0x01, 0x01}},
+    {'U', {0x3F, 0x40, 0x40, 0x40, 0x3F}},
+    {'V', {0x1F, 0x20, 0x40, 0x20, 0x1F}},
+    {'W', {0x7F, 0x20, 0x18, 0x20, 0x7F}},
+    {'X', {0x63, 0x14, 0x08, 0x14, 0x63}},
+    {'Y', {0x07, 0x08, 0x70, 0x08, 0x07}},
+    {'Z', {0x61, 0x51, 0x49, 0x45, 0x43}},
+};
+
+std::array<std::uint8_t, 5> get_glyph_columns(char c) noexcept {
+    const auto upper = (c >= 'a' && c <= 'z') ? static_cast<char>(c - 'a' + 'A') : c;
+    for (const auto& entry : kFont) {
+        if (entry.ch == upper) return entry.cols;
+    }
+    return kFont[0].cols;
+}
+
+} // namespace
+
+void fill_debug_rect(std::span<std::uint32_t> pixels,
+                     std::size_t width,
+                     std::size_t height,
+                     int x,
+                     int y,
+                     int rect_w,
+                     int rect_h,
+                     std::uint32_t color) noexcept {
+    const auto x0 = std::max(0, x);
+    const auto y0 = std::max(0, y);
+    const auto x1 = std::min(static_cast<int>(width), x + rect_w);
+    const auto y1 = std::min(static_cast<int>(height), y + rect_h);
+    for (auto row = y0; row < y1; ++row) {
+        for (auto col = x0; col < x1; ++col) {
+            pixels[static_cast<std::size_t>(row) * width + col] = color;
+        }
+    }
+}
+
+void draw_debug_text(std::span<std::uint32_t> pixels,
+                     std::size_t width,
+                     std::size_t height,
+                     int x,
+                     int y,
+                     std::string_view text,
+                     std::uint32_t color,
+                     std::uint32_t bg_color) noexcept {
+    auto cursor_x = x;
+    for (const char ch : text) {
+        const auto cols = get_glyph_columns(ch);
+        for (int col = 0; col < 5; ++col) {
+            const auto px = cursor_x + col;
+            if (px < 0 || static_cast<std::size_t>(px) >= width) continue;
+            for (int row = 0; row < 7; ++row) {
+                const auto py = y + row;
+                if (py < 0 || static_cast<std::size_t>(py) >= height) continue;
+                const auto dst_idx = static_cast<std::size_t>(py) * width + px;
+                if ((cols[col] & (1U << row)) != 0U) {
+                    pixels[dst_idx] = color;
+                } else if (bg_color != 0U) {
+                    pixels[dst_idx] = bg_color;
+                }
+            }
+        }
+        cursor_x += 6;
+    }
+}
+
+} // namespace oasis::game::render
