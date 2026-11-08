@@ -13,14 +13,14 @@
 #include "tools/hybrid/checkpoint_evidence.hpp"
 #include "tools/hybrid/grid_query_native_model.hpp"
 #include "tools/hybrid/m68k_call_census.hpp"
+#include "tools/hybrid/m68k_code_map.hpp"
 #include "tools/hybrid/native_island_runtime.hpp"
+#include "tools/hybrid/replay_finalization.hpp"
 #include "core/rom.hpp"
 #include "core/rom_identity.hpp"
 #include <libretro.h>
 #include <array>
-#include <cstdlib>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -50,16 +50,14 @@ oasis::hybrid::session::CopyObservableMemory copy_observable_memory{}; InputJour
 std::ofstream* call_output{};
 unsigned frame_number{}, poll_index{}, frame_poll_count{}, frame_exec_count{}, previous_pc{};
 oasis::hybrid::call_census::M68kCallCensus replay_call_census;
+oasis::hybrid::code_map::M68kCodeMap code_map;
 std::uint64_t pc_fingerprint{14695981039346656037ULL};
 std::map<unsigned, unsigned> watched_hits, frame_watched_hits;
 std::vector<unsigned> watch_pcs{source_pc, target_pc, 0x94A2, 0x8EF8, 0xB730, 0x16A46,
                                0x9D70, 0x9D86, 0x9D90, 0x9148};
 std::string hook_error;
 oasis::hybrid::native_island::Counters island_counters;
-bool native_island_selected{};
-bool diagnostic_replay{};
-bool diagnostic_native_consumed{};
-bool restore_initial_state{};
+bool native_island_selected{}, diagnostic_replay{}, diagnostic_native_consumed{}, restore_initial_state{};
 std::string native_helper_selected;
 unsigned island_first_frame{}, island_last_frame{};
 std::filesystem::path island_metrics_path;
@@ -112,8 +110,7 @@ unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value)
                 constexpr std::array<std::pair<const char*, unsigned>, 7> regions{{
                     {"work_ram", 0x10000U}, {"z80_ram", 0x2000U}, {"vram", 0x10000U},
                     {"cram", 0x80U}, {"vsram", 0x80U}, {"vdp_regs", 0x20U}, {"sat", 0x400U}}};
-                std::ostringstream hashes;
-                hashes << '{';
+                std::ostringstream hashes; hashes << '{';
                 std::size_t offset{};
                 for (std::size_t i = 0; i < regions.size(); ++i) {
                     const auto [name, length] = regions[i];
@@ -121,8 +118,7 @@ unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value)
                     hashes << (i ? "," : "") << '\"' << name << "\":\"" << oasis::calculate_sha256(data) << '\"';
                     offset += length;
                 }
-                hashes << '}';
-                memory_hash_json = hashes.str();
+                hashes << '}'; memory_hash_json = hashes.str();
                 z80_ram_snapshot = std::span<const std::uint8_t>(memory_snapshot.data() + 0x10000U, 0x2000U);
             }
             equivalence_trace->observe(type, width, address, value, previous_pc, frame_number + 1U,
@@ -132,6 +128,7 @@ unsigned bridge_hook(unsigned type, int width, unsigned address, unsigned value)
         replay_call_census.on_hook(type, width, address, value, previous_pc,
                                    frame_number + 1U, read_register, peek_memory);
         if ((type & execute_event) != 0) {
+            if (code_map.enabled()) code_map.observe(address, frame_number + 1U, peek_memory);
             oasis::hybrid::session::observe_step_instruction_trace(*call_output, frame_number + 1U,
                 address, read_be(peek_memory, address, 2U), previous_pc,
                 read_register, read_scheduler, native_step_observer);
@@ -308,6 +305,13 @@ int main(int argc, char** argv) {
         replay_call_census.set_rom(rom.bytes().data(), rom.bytes().size());
         const auto identity = oasis::identify_rom(rom.bytes());
         if (identity.fingerprint.sha256 != canonical_sha) throw std::runtime_error("canonical ROM identity mismatch");
+        const char* code_map_env = std::getenv("OASIS_CODE_MAP_DIR");
+        if (code_map_env && *code_map_env) {
+            const char* scen_env = std::getenv("OASIS_SCENARIO_NAME");
+            const std::string scen = (scen_env && *scen_env) ? scen_env :
+                (session_path.string().find("attract") != std::string::npos ? "attract_3600" : session_path.filename().string());
+            code_map.init(rom.bytes().data(), rom.bytes().size(), identity.fingerprint.sha256, scen, code_map_env);
+        }
         const auto executable = executable_path();
         const auto config = config_identity(frames, input_mode);
         const Manifest fixed{
@@ -317,10 +321,8 @@ int main(int argc, char** argv) {
             {"config", config}, {"config_sha256", oasis::calculate_sha256({reinterpret_cast<const std::uint8_t*>(config.data()), config.size()})},
             {"frames", std::to_string(frames)}, {"input_mode", input_mode},
             {"reset_method", "retro_load_game_cold_start"}, {"landmark_period", std::to_string(landmark_period)},
-            {"target_watch", "0xE376,0x9C40,0x94A2,0x8EF8,0xB730,0x16A46"},
-            {"call_watch", "0xE376:0x9C40:0xE37A:0xE396;RTS=0x9C7A"},
-            {"call_census", "M68K_DIRECT_BSR_JSR_ABS_JSR_AN_V1"},
-            {"cross_cpu_landmark", "UNAVAILABLE_M68K_HOOK_ONLY"},
+            {"target_watch", "0xE376,0x9C40,0x94A2,0x8EF8,0xB730,0x16A46"}, {"call_watch", "0xE376:0x9C40:0xE37A:0xE396;RTS=0x9C7A"},
+            {"call_census", "M68K_DIRECT_BSR_JSR_ABS_JSR_AN_V1"}, {"cross_cpu_landmark", "UNAVAILABLE_M68K_HOOK_ONLY"},
         };
         if (replay) for (const auto& [key, value] : fixed)
             if (manifest.at(key) != value) throw std::runtime_error("session identity mismatch: " + key);
@@ -454,16 +456,17 @@ int main(int argc, char** argv) {
             std::string extra;
             if (std::getline(expected_frames, extra)) throw std::runtime_error("extra recorded frame after replay end");
             if (diagnostic_replay) {
-                calls.flush(); calls.close();
-                replay_call_census.write(census_path, full_calls_path);
-                input.finish();
-                equivalence_trace_owner->write_receipt((run_path / "normalized-trace.receipt.json").string());
-                landmark_diagnostic.write_receipt((run_path / "landmark-diagnostic.json").string());
-                write_island_metrics("DIAGNOSTIC_ONLY", "see landmark-diagnostic.json", landmark_diagnostic.has_divergence());
+                const auto fin = oasis::hybrid::session::finalize_diagnostic_replay(
+                    run_path, frames, frame_number, calls, equivalence_trace,
+                    replay_call_census, census_path, full_calls_path, input, landmark_diagnostic, code_map,
+                    [](const auto& st, const auto& re, bool div) { write_island_metrics(st, re, div); },
+                    core.get<void(*)()>("retro_unload_game"), core.get<void(*)()>("retro_deinit"));
+                if (!fin.success) throw std::runtime_error("finalization failed: " + fin.error_message);
                 std::cout << "DIAGNOSTIC_REPLAY_COMPLETE frames=" << frames << " divergence="
-                    << (landmark_diagnostic.has_divergence() ? "YES" : "NO") << '\n';
-                core.get<void(*)()>("retro_unload_game")(); core.get<void(*)()>("retro_deinit")();
-                return 0;
+                    << (landmark_diagnostic.has_divergence() ? "YES" : "NO") << '\n'
+                    << "FINALIZATION_STATUS=SUCCESS records=" << fin.validated_full_frame_records
+                    << " teardown=" << fin.teardown_status << '\n';
+                std::cout.flush(); return 0;
             }
             calls.flush(); calls.close();
             if (file_sha256(calls_run_path) != manifest.at("calls_sha256")) throw std::runtime_error("target call capture mismatch");
@@ -483,6 +486,7 @@ int main(int argc, char** argv) {
             write_manifest(manifest_path, manifest);
             std::cout << "CAPTURE_COMPLETE frames=" << frames << " polls=" << input.polls().size() << '\n';
         }
+        if (code_map.enabled()) code_map.finish();
         core.get<void(*)()>("retro_unload_game")(); core.get<void(*)()>("retro_deinit")();
         return 0;
     } catch (const std::exception& error) {

@@ -199,6 +199,66 @@ void checks_replay_receipt(const std::filesystem::path& base) {
     input.close();
     std::filesystem::remove(path);
 }
+void checks_tail_entry_vs_call_boundary_metrics() {
+    using namespace oasis::hybrid::call_census;
+    M68kCallCensus census;
+    std::map<unsigned, std::size_t> actual_routine_entry_invocations;
+    const auto on_routine_entry = [&](unsigned pc) {
+        ++actual_routine_entry_invocations[pc & 0xFFFFFFU];
+    };
+
+    constexpr unsigned kCaller1Pc = 0x001000U;
+    constexpr unsigned kRoutineAPc = 0x002000U;
+    constexpr unsigned kRoutineBPc = 0x002100U;
+    constexpr unsigned kReturn1Pc = 0x001006U;
+    constexpr unsigned kEntrySp = 0x00FF8000U;
+
+    // Step 1: Caller1 calls Routine A via JSR_ABS.L
+    CpuState state_a_entry{};
+    state_a_entry.pc = kRoutineAPc;
+    state_a_entry.a[7] = kEntrySp;
+    census.execute(kRoutineAPc, kCaller1Pc, 1, state_a_entry, 0x203C, 0x4EB9, 0, kRoutineAPc, kReturn1Pc);
+    on_routine_entry(kRoutineAPc);
+
+    check(census.calls_for_target(kRoutineAPc) == 1);
+    check(census.calls_for_target(kRoutineBPc) == 0);
+    check(actual_routine_entry_invocations[kRoutineAPc] == 1);
+    check(actual_routine_entry_invocations[kRoutineBPc] == 0);
+
+    // Step 2: Routine A tail-branches to Routine B via BRA.W
+    CpuState state_b_tail_entry{};
+    state_b_tail_entry.pc = kRoutineBPc;
+    state_b_tail_entry.a[7] = kEntrySp;
+    census.execute(kRoutineBPc, 0x002010U, 1, state_b_tail_entry, 0x4E71, 0x6000, 0x00EE, 0, kReturn1Pc);
+    on_routine_entry(kRoutineBPc);
+
+    // BRA.W tail entry does not increment call boundary census, but increments entry invocations
+    check(census.calls_for_target(kRoutineBPc) == 0);
+    check(actual_routine_entry_invocations[kRoutineBPc] == 1);
+
+    // Step 3: Routine B executes RTS to caller
+    CpuState state_b_rts = state_b_tail_entry;
+    state_b_rts.pc = 0x002106U;
+    census.execute(0x002106U, kRoutineBPc, 1, state_b_rts, 0x4E75, 0x4E71, 0, 0, 0);
+    CpuState state_returned = state_b_rts;
+    state_returned.pc = kReturn1Pc;
+    state_returned.a[7] = kEntrySp + 4U;
+    census.execute(kReturn1Pc, 0x002106U, 1, state_returned, 0x4E71, 0x4E75, 0, 0, 0);
+
+    // Step 4: Later, Caller2 calls Routine B directly via JSR_ABS.L
+    constexpr unsigned kCaller2Pc = 0x001050U;
+    constexpr unsigned kReturn2Pc = 0x001056U;
+    CpuState state_b_direct_entry{};
+    state_b_direct_entry.pc = kRoutineBPc;
+    state_b_direct_entry.a[7] = kEntrySp;
+    census.execute(kRoutineBPc, kCaller2Pc, 2, state_b_direct_entry, 0x4E71, 0x4EB9, 0, kRoutineBPc, kReturn2Pc);
+    on_routine_entry(kRoutineBPc);
+
+    // Routine B has 1 call boundary observed (from JSR) and 2 actual entry invocations (BRA.W + JSR)
+    check(census.calls_for_target(kRoutineBPc) == 1);
+    check(actual_routine_entry_invocations[kRoutineBPc] == 2);
+    check(actual_routine_entry_invocations[kRoutineBPc] - census.calls_for_target(kRoutineBPc) == 1);
+}
 } // namespace
 
 int main() {
@@ -212,5 +272,6 @@ int main() {
     checks_call_transfer_decoding();
     checks_census_return_and_full_capture(path);
     checks_replay_receipt(path);
+    checks_tail_entry_vs_call_boundary_metrics();
     std::filesystem::remove(path);
 }

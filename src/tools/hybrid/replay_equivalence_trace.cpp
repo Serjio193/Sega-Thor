@@ -68,6 +68,37 @@ ReplayEquivalenceTrace::ReplayEquivalenceTrace(const std::string& output_dir) {
         throw std::runtime_error("normalized replay trace output open failed");
 }
 
+ReplayEquivalenceTrace::~ReplayEquivalenceTrace() {
+    close();
+}
+
+void ReplayEquivalenceTrace::close() {
+    if (closed_) return;
+    flush();
+    semantic_events_.close();
+    call_timing_.close();
+    architectural_sync_.close();
+    timing_sync_.close();
+    external_events_.close();
+    call_boundaries_.close();
+    z80_ram_samples_.close();
+    call_z80_samples_.close();
+    full_frame_state_.close();
+    closed_ = true;
+}
+
+void ReplayEquivalenceTrace::flush() {
+    semantic_events_.flush();
+    call_timing_.flush();
+    architectural_sync_.flush();
+    timing_sync_.flush();
+    external_events_.flush();
+    call_boundaries_.flush();
+    z80_ram_samples_.flush();
+    call_z80_samples_.flush();
+    full_frame_state_.flush();
+}
+
 void ReplayEquivalenceTrace::observe_frame(unsigned frame, RegisterRead registers,
                                             SchedulerRead scheduler,
                                             CopyObservableMemory copy_memory) {
@@ -82,6 +113,8 @@ void ReplayEquivalenceTrace::observe_frame(unsigned frame, RegisterRead register
         << ',' << s.irq_mask << ',' << s.z80_cycles << ',' << s.vdp_cycle << ','
         << s.scanline << ',' << s.z80_pc << ',' << s.z80_irq_state
         << "],\"observable_memory_sha256\":\"" << calculate_sha256(memory) << "\"}\n";
+    ++full_frame_records_written_;
+    full_frame_state_.flush();
 }
 
 void ReplayEquivalenceTrace::observe(unsigned type, int width, unsigned address, unsigned value,
@@ -179,6 +212,7 @@ void ReplayEquivalenceTrace::observe(unsigned type, int width, unsigned address,
             << ",\"m68k_cycles\":" << scheduler.m68k_cycles
             << ",\"z80_cycles\":" << scheduler.z80_cycles
             << ",\"vdp_cycle\":" << scheduler.vdp_cycle << "}\n";
+        ++external_events_count_;
     }
 }
 
@@ -219,6 +253,7 @@ void ReplayEquivalenceTrace::mark_native_route(unsigned target) {
 }
 
 void ReplayEquivalenceTrace::write_receipt(const std::string& path) const {
+    const_cast<ReplayEquivalenceTrace*>(this)->flush();
     std::ofstream out(path, std::ios::trunc);
     if (!out) throw std::runtime_error("normalized replay trace receipt open failed");
     out << "{\"schema\":\"oasis.replay-native-normalized-trace.v1\",\"contract\":\""

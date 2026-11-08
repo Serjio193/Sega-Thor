@@ -52,6 +52,7 @@ public:
     [[nodiscard]] std::size_t target_count() const noexcept;
     [[nodiscard]] std::size_t full_capture_count() const noexcept;
     [[nodiscard]] bool has_active() const noexcept;
+    [[nodiscard]] std::size_t calls_for_target(unsigned target_pc) const noexcept;
 
 private:
     struct Stats {

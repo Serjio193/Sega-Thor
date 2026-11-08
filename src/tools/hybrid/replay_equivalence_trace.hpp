@@ -31,6 +31,11 @@ inline constexpr unsigned observable_memory_snapshot_size = 0x10000U + 0x2000U +
 class ReplayEquivalenceTrace {
 public:
     explicit ReplayEquivalenceTrace(const std::string& output_dir);
+    ~ReplayEquivalenceTrace();
+    void flush();
+    void close();
+    [[nodiscard]] unsigned full_frame_records_written() const noexcept { return full_frame_records_written_; }
+    [[nodiscard]] unsigned external_events_count() const noexcept { return external_events_count_; }
     void observe(unsigned type, int width, unsigned address, unsigned value,
                  unsigned previous_pc, unsigned frame, const CpuSnapshot& cpu,
                  const SchedulerSnapshot& scheduler, std::string_view memory_hash_json,
@@ -74,6 +79,9 @@ private:
     SchedulerSnapshot transfer_source_scheduler_{};
     bool transfer_source_pending_{};
     unsigned memory_sample_count_{};
+    unsigned full_frame_records_written_{};
+    unsigned external_events_count_{};
+    bool closed_{};
 };
 
 } // namespace oasis::hybrid::session

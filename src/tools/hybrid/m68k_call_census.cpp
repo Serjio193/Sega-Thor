@@ -296,5 +296,9 @@ void M68kCallCensus::write(const std::filesystem::path& census_path,
 std::size_t M68kCallCensus::target_count() const noexcept { return stats_.size(); }
 std::size_t M68kCallCensus::full_capture_count() const noexcept { return captures_.size(); }
 bool M68kCallCensus::has_active() const noexcept { return !active_.empty(); }
+std::size_t M68kCallCensus::calls_for_target(unsigned target_pc) const noexcept {
+    const auto it = stats_.find(target_pc & address_mask);
+    return it != stats_.end() ? it->second.calls : 0;
+}
 
 } // namespace oasis::hybrid::call_census

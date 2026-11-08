@@ -1,0 +1,143 @@
+{
+  "schema": "oasis.gameplay-checkpoint-evidence.v1",
+  "milestone": "M15.220",
+  "routine": "0x02575C",
+  "name": "Entity Motion/State Engine Main Dispatcher & State 0 Handler Cluster",
+  "subsystem": "ENTITY_SYSTEM / MOTION_ENGINE",
+  "boundary": "0x02575C..0x02589E",
+  "cluster_scope": "0x0254EA..0x025B32",
+  "size_bytes": 322,
+  "instructions": 7,
+  "lookup_table_bytes": 26,
+  "exit_pc": "0x02589E (rts) / 0x0255D8 (common join)",
+  "contract_type": "ENTITY_CLUSTER_STEP_CONTRACT",
+  "proven_direct_callers": [
+    "0x0254EA"
+  ],
+  "children": [],
+  "verification_scope": "three_scenario_differential_qualification",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "runner_path": "build/auto-migrator/02575c/linux-runner/oasis_gameplay_session",
+  "runner_sha256": "a52af18ca2b88ef9b71cc8a17cbfde56c5e40a4079d086b88d078da60c857777",
+  "checkpoint_path": "build/checkpoints/canonical_beach_frame3600.state",
+  "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+  "checkpoint_state_bytes": 1036288,
+  "single_variable_differential_proof": {
+    "runs_root": "build/ab_three_scenario_02575c",
+    "stream_artifact_count": 48,
+    "stream_artifacts_valid": 48,
+    "run_a_helpers": 196,
+    "run_b_helpers": 197,
+    "single_variable_difference": [
+      "0x02575C"
+    ],
+    "baseline_before_sha256": "17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867",
+    "baseline_after_sha256": "17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867",
+    "scenario_a_canonical_frame2008": {
+      "checkpoint_sha256": "6228c27ed09e7623fbe4664fb841331fba963b527337ec019abed40bbf0c3c26",
+      "continuation_frames": 1592,
+      "streams_match_8_of_8": true,
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "60d62df22fd2974632527f888ee8417a6f5b538a2616b0202467220520b7fc6b",
+        "full-frame-state.jsonl": "499ac47714012e61a02f93aed4a32e016cc6fad8cb9407f3ce4c004bfb331040",
+        "architectural-sync.jsonl": "de2f50d455394e451cc4fa8b0471f120d43d27a09602664d0c58557df024ac63",
+        "scheduler-sync.jsonl": "59db6d66529901a8b5573a4c6cd1e9b7853bd6f6dfb608e67dae6867c2f709b4",
+        "z80-ram-sync.bin": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+        "call-z80-ram.bin": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+        "external-events.jsonl": "b6faac965d6bc54930de49bc78cdc9a623fb6354dd1bbfcea8ba7b7d6a2366d6",
+        "normalized-events.jsonl": "2c53a52af78951f6e185a1a0b1717d2b4a3b062671b8d924ebfa1d776b4f9c4c"
+      }
+    },
+    "scenario_b_beach_frame3600": {
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "continuation_frames": 600,
+      "streams_match_8_of_8": true,
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "f03ae5e01af05e1ff2f57862f843c35e4a333c736cc1551fdc973620af64898d",
+        "full-frame-state.jsonl": "f2e3fcdbd51475562e3cb123acd505aa02e4f4970c3daa18cdca9eebe639d0c8",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "2323372df792882f2ea62e0f8116bcb1313da70784af711513eb97a4097f664f"
+      }
+    },
+    "scenario_c_target_active_beach_1800": {
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "continuation_frames": 1800,
+      "streams_match_8_of_8": true,
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "033b96d9344a34386360223e9f9c19a2ce3f80ad80e4b4e878ae15b6cefe1bad",
+        "full-frame-state.jsonl": "188f329c8919400406c72c783c7ada5992905490d465a6e7463a885e4017d550",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c"
+      }
+    }
+  },
+  "gameplay_telemetry_scenario_a": {
+    "target_entries": 0,
+    "rom_calls": 0,
+    "native_calls": 0,
+    "rom_fallback_calls": 0,
+    "completed_calls": 0,
+    "stepped_instructions": 0
+  },
+  "gameplay_telemetry_scenario_b": {
+    "target_entries": 0,
+    "rom_calls": 0,
+    "native_calls": 0,
+    "rom_fallback_calls": 0,
+    "completed_calls": 0,
+    "stepped_instructions": 0
+  },
+  "gameplay_telemetry_scenario_c": {
+    "target_entries": 3194,
+    "rom_calls": 0,
+    "native_calls": 1609,
+    "unsupported_state_entries": 1585,
+    "rom_fallback_calls": 0,
+    "completed_calls": 1558,
+    "stepped_instructions": 11212,
+    "state0_calls": 1609,
+    "state0_steps": 11212,
+    "state0_rts_exits": 1558,
+    "state0_loopback_exits": 51
+  },
+  "governance_and_oracle_status": {
+    "oracle_approval": "PENDING",
+    "promotion_action": "PROMOTION_RETAINED_AT_196_BASELINE",
+    "active_helpers_count": 196,
+    "active_set_sha256": "17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867",
+    "slot_222_registration_status": "EXPERIMENTAL_REGISTERED_DISABLED"
+  },
+  "budget_compliance": {
+    "source_code_max_lines": 500,
+    "files_checked": [
+      "src/tools/hybrid/m68k_02575c_instruction_step.hpp",
+      "src/tools/hybrid/m68k_02575c_instruction_step.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_types.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_context.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_context.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_dispatch.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_dispatch.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_state0.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_state0.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_target10.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_target10.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_target11_12.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_target11_12.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_coordinator.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_coordinator.cpp",
+      "src/tools/hybrid/m68k_entity_cluster_metrics.hpp",
+      "src/tools/hybrid/m68k_entity_cluster_metrics.cpp",
+      "tests/m68k_entity_cluster_test.cpp"
+    ],
+    "all_files_le_500_lines": true
+  }
+}

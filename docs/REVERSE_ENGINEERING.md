@@ -1,3 +1,255 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.223: Entity Engine Cluster Subsystem Completion — State 5 Timing Blocker Forensics, Root Control Flow Integration from 0x0254EA to 0x02575C, Complete Per-Call-Site Transfer Ledger, and 24/24 Stream Parity)
+
+## Milestone M15.223 Reverse Engineering Summary
+
+### 1. State 5 Disassembly & Forensic Timing Analysis (`0x0259CE..0x025A72`)
+- **Address Range:** `0x0259CE` to `0x025A72` (164 ROM bytes, 36 instructions).
+- **Subroutine Call Structure & Branching:**
+  * 42 authentic Scenario C calls.
+  * 38 calls exit via RTS (`0x0259EA` or `0x025A70`).
+  * 2 calls branch via `BRA.W $0255D8` at `0x0259E6` (loopback to common join).
+  * Exactly 2 calls (calls #14 and #35 in Scenario C) take the child-calls branch at `0x0259EC`, executing:
+    - `0x0259F2`: `JSR $00E66E` (Helper 182, shadow coordinate update).
+    - `0x025A0E`: `JSR $00E338` (terrain height / elevation interpolation).
+    - `0x025A32`: `JSR $00E7E8` (Z80 audio command dispatch).
+    - `0x025A44`: `ASR.L #4, D0` (dynamic shift).
+    - `0x025A46`: `ASR.L #4, D1` (dynamic shift).
+- **Forensic Diagnosis of Divergence:**
+  * First Divergent Frame: Frame 785 (Frame 784 is 100% bit-for-bit identical across all 8 stream artifacts).
+  * First Divergent Guest PC: `0x8B72` (Run B) vs `0x8B7A` (Run A).
+  * Scheduler Timing Delta: 140 refresh cycle difference in scheduler (294 in Run B vs 154 in Run A), caused by a 70 CPU cycle drift.
+  * Root Causes:
+    1. Child routine `0x00E7E8` does not return directly with RTS; it jumps into the Ancient Z80 music driver at `0x060004` / `0x06042A`, which sets SR interrupt mask to level 7 (`ORI.W #0x0700, SR`), pushes registers to stack, and arbitrates synchronously with the Z80 audio processor via Z80 RAM bus.
+    2. Helper 182 (`0x00E66E`) applies hardcoded cycle compensation (+168 cycles).
+    3. `ASR.L #4` instructions at `0x025A44` and `0x025A46` execute dynamic bit shifts whose variable cycle cost ($8 + 2 \times \text{count} = 16$) is not captured by Musashi's static `CYC_INSTRUCTION` table.
+- **Fail-Closed Resolution:** In Slot 222, State 5 is guarded with `metrics.unsupported_state_entries++` (42 entries in Scenario C) to delegate State 5 execution safely to original ROM. This preserves 100% bit-exact stream parity across all 24 streams.
+
+### 2. Root Control Flow Graph Integration (`0x0254EA..0x02575C`)
+- **Parent Entry Point:** `0x0254EA` (3,209 authentic Scenario C calls).
+- **Prefix CFG Breakdown:**
+  * `0x0254EA`: `move.b 102(a6), d0` -> inspects entity mode byte.
+  * Mode 0 (`d0 == 0`): normal tick path, branches to `0x0256B8`, calls motion helper `0x00E682`, checks `134(a6) == 0`, and branches to jump table `0x02575C` (3,194 calls reach dispatcher).
+  * Mode 1 (`d0 == 1`): initialization sequence at `0x02550E`, writes `144(a6)` and `160(a6)`, and branches to common join `0x0255D8` (8 calls).
+  * Modes 2..4 (`d0 == 2..4`): death/removal sequences at `0x025538..0x025578`, clears `102(a6)`, and exits via RTS at `0x0255D6` (6 calls).
+  * Motion helper `0x00E682`: 1 call remotely diverges without returning before scenario completion.
+- **Exact Accounting:** Exactly $3,194 + 8 + 6 + 1 = 3,209$ calls accounted for with zero unexplained control transfers.
+
+### 3. Comprehensive Subsystem Transfer Ledger
+- **Reconciled External Child Subroutines:**
+  * Target 10 (`0x00F0D2`): 1,202 calls, 1,202 returns.
+  * State 1 (`0x00BCD8` / `0x00E7E8`): 230 calls, 230 returns.
+  * State 3 (`0x00B852` / `0x00BCD8`): 15 calls, 15 returns.
+  * State 4 (`0x00E502`): 1 call, 1 return.
+  * State 6 (`0x00E7E8` / `0x00F476`): 34 calls, 34 returns.
+- **Reconciled Common Join Exits (`0x0255D8`):**
+  * State 0 Loopback: 51 exits.
+  * State 1 Loopback: 11 exits.
+  * State 5 Loopback: 2 exits.
+  * Target 12 Loopback: 1 exit.
+- **Totals:**
+  * Total Child Completions: 1,482 authentic ROM returns.
+  * Contract Faults: 0.
+
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.222: Entity Engine Cluster Multi-State Native Expansion — States 1, 2, 3, 4, 6, 7 Native Implementation, Opcode Semantics Verification, and 98.68% Dispatch Coverage)
+
+## Milestone M15.222 Reverse Engineering Summary: Multi-State Cluster Expansion
+
+### 1. State 1 Disassembly & Attack/Movement Processing (`0x0258A0..0x025940`)
+- **Range:** `0x0258A0` to `0x025940` (160 ROM bytes, 36 instructions).
+- **Semantics:** Active attack and linear displacement physics; integration with child collision helper `0x00BCD8`.
+- **Key Instructions & Exits:**
+  * Dispatches child routine `JSR $00BCD8` at `0x0258A2` (bounding collision probe).
+  * Exits:
+    - RTS at `0x0258BA`, `0x0258F2`, `0x025930`.
+    - Loopback to `0x0255D8` at `0x02593C` (`BRA.W $0255D8`).
+- **Empirical Execution (Scenario C):**
+  * 229 native entries.
+  * 3,196 dynamic instructions stepped.
+  * 218 RTS exits, 11 loopback exits to common join `0x0255D8`.
+  * 230 child calls dispatched and resumed without fault.
+
+### 2. State 2 Disassembly & Acceleration Decay (`0x025940..0x025968`)
+- **Range:** `0x025940` to `0x025968` (40 ROM bytes, 10 instructions).
+- **Semantics:** Deceleration accumulation; adds velocity delta `78(A6)` and `82(A6)` to coordinates `114(A6)` and `118(A6)`.
+- **Exits:** RTS at `0x02595C`; optional loopback at `0x025964` (`BRA.W $0255D8`).
+- **Empirical Execution (Scenario C):**
+  * 3 native entries.
+  * 24 instructions stepped.
+  * 3 normal RTS exits. 0 faults.
+
+### 3. State 3 Disassembly & AI Alert Mode (`0x025968..0x0259AC`)
+- **Range:** `0x025968` to `0x0259AC` (68 ROM bytes, 14 instructions).
+- **Semantics:** AI target evaluation via child routine `0x00E502`; status flag modification; tail transfer to `0x00E7E8`.
+- **Key Disassembly & Discovered Hardware Semantics:**
+  * `0x025968`: `JSR ($00E502).L` -> alert check child call.
+  * `0x02596E`: `BEQ.W $025974` -> if alert condition met, branch.
+  * `0x025972`: `RTS` -> if not alert, return to caller.
+  * `0x025974`: `BCLR #3, 56(A6)` (`08AE 0003 0038`) -> clears bit 3 in status byte 56 (tested bit sets Z flag).
+  * `0x02597A`: `BCLR #3, 57(A6)` (`08AE 0003 0039`) -> clears bit 3 in status byte 57.
+  * `0x025980`: `TST.W 138(A6)`
+  * `0x025984`: `BNE.W $0255D8` -> branches to `0x0255D8` (`kCommonJoinPc`).
+  * `0x025988`: `MOVE.W #6, 42(A6)`
+  * `0x02598E`: `MOVE.W #8, 4(A6)`
+  * `0x025994`: `BCLR #2, 57(A6)` (`08AE 0002 0039`)
+  * `0x02599A`: `ORI.B #$0C, 56(A6)` (`002E 000C 0038`)
+  * `0x0259A0`: `MOVE.L #$0080035A, D0`
+  * `0x0259A6`: `JMP ($00E7E8).L` -> tail continuation jump.
+- **Empirical Execution (Scenario C):**
+  * 15 native entries, 54 instructions stepped.
+  * 14 normal RTS exits, 1 tail jump exit to `0x00E7E8`.
+
+### 4. State 4 Disassembly & Invulnerability/Hit Reaction (`0x0259AC..0x0259CE`)
+- **Range:** `0x0259AC` to `0x0259CE` (34 ROM bytes, 7 instructions).
+- **Semantics:** Reaction check; tests bit 1 of byte 55; dispatches child routine `0x00F476`.
+- **Exits:** RTS at `0x0259C4`.
+- **Empirical Execution (Scenario C):**
+  * 9 native entries, 30 instructions stepped.
+  * 9 normal RTS exits, 1 child call dispatched.
+
+### 5. State 6 Disassembly & Bounding Box Collision Check (`0x025A72..0x025B22`)
+- **Range:** `0x025A72` to `0x025B22` (176 ROM bytes, 36 instructions).
+- **Semantics:** Bounding box setup and child probe `0x00B852`; conditional entity state update.
+- **Key Disassembly & Discovered Hardware Semantics:**
+  * `0x025A72`: `MOVEQ #1, D0`
+  * `0x025A74`: `MOVEQ #-1, D1`
+  * `0x025A76`: `MOVE.W D1, D2`
+  * `0x025A78`: `MOVE.W D1, D3`
+  * `0x025A7A`: `NEG.W D3` (`4443`) -> negates D3 (operating on D3, setting D3 to +1; D2 remains -1).
+  * `0x025A7C`: `MOVE.W D3, D4` -> sets D4 to +1.
+  * `0x025A7E`: `CLR.W D5`
+  * `0x025A80`: `JSR ($00B852).L`
+  * Dispatches child `0x00E7E8` at `0x025AE6` and `0x025AF2`.
+  * Exits: RTS at `0x025AAE` and `0x025AC0`.
+- **Empirical Execution (Scenario C):**
+  * 32 native entries, 618 instructions stepped.
+  * 32 RTS exits, 34 child calls dispatched.
+
+### 6. State 7 Disassembly & Stunned Termination (`0x025B22..0x025B32`)
+- **Range:** `0x025B22` to `0x025B32` (16 ROM bytes, 4 instructions).
+- **Semantics:** Tests bit 1 of byte 55; clears entity control word `0(A6)` if flag set; returns via RTS.
+- **Exits:** RTS at `0x025B30`.
+- **Empirical Execution (Scenario C):**
+  * 12 native entries, 38 instructions stepped.
+  * 12 normal RTS exits. 0 faults.
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.221: Entity Engine Cluster Multi-Handler Runtime Expansion — Targets 10, 11, 12, ROM Child Transfer Coordination, Intentional Continuations, and 24/24 Bit-Exact Replay Parity)
+
+## Milestone M15.221 Reverse Engineering Summary: Multi-Handler Cluster Expansion
+
+### 1. Target 10 Disassembly & Child Transfer Protocol (`0x0257EE..0x02583C`)
+- **Range:** `0x0257EE` to `0x02583C` (80 ROM bytes, 16 instructions).
+- **Semantics:** Player proximity detection and target acquisition check.
+- **ROM Disassembly Breakdown:**
+  * `0x0257EE`: `BTST.B #3, ($00FF1A20).L` -> checks player active/proximity status flag.
+  * `0x0257F6`: `BNE.W $02583C` -> if set, branch to RTS exit.
+  * `0x0257FA`: `MOVE.W ($00FF19FC).L, D0` -> load target entity ID.
+  * `0x025800`: `CMP.W 20(A6), D0` -> compare with current entity ID.
+  * `0x025804`: `BNE.W $02583C` -> if mismatched, branch to RTS exit.
+  * `0x025808`: `MOVE.W ($00FF19F0).L, D1` -> player X coordinate.
+  * `0x02580E`: `MOVE.W ($00FF19F4).L, D2` -> player Y coordinate.
+  * `0x025814`: `MOVE.W 8(A6), D3` -> entity X coordinate.
+  * `0x025818`: `MOVE.W 12(A6), D4` -> entity Y coordinate.
+  * `0x02581C`: `JSR ($00F0D2).L` -> compute Euclidean distance: $\sqrt{(D1 - D3)^2 + (D2 - D4)^2} \to D0$.
+  * `0x025822`: `CMPI.W #$0030, D0` -> compare distance with threshold 48 (0x30).
+  * `0x025826`: `BGT.W $02583C` -> if distance > 48, branch to RTS exit.
+  * `0x02582A`: `BCLR.B #1, 54(A6)` -> clear tracking active bit in entity status byte 54.
+  * `0x025830`: `BCLR.B #0, 55(A6)` -> clear engaged bit in entity status byte 55.
+  * `0x025836`: `MOVE.W #$0016, 4(A6)` -> transition entity state to 0x0016 (Target 11).
+  * `0x02583C`: `RTS` -> return to caller.
+- **Empirical Execution (Scenario C):**
+  * 1,202 calls entered.
+  * 1,202 child calls dispatched to `0x00F0D2`.
+  * 1,202 child returns and native continuations handled cleanly at `0x025822`.
+  * 1,201 calls branched at `0x025826` to RTS; 1 call met threshold, transitioned to Target 11, and exited via RTS.
+  * 1,202 completed calls via RTS. 0 contract faults.
+
+### 2. Target 11 Disassembly & Elevation Math (`0x02583E..0x02587A`)
+- **Range:** `0x02583E` to `0x02587A` (66 ROM bytes, 14 instructions).
+- **Semantics:** Vertical elevation integration, gravity accumulation, and ground collision handling.
+- **ROM Disassembly Breakdown:**
+  * `0x02583E`: `MOVE.L 86(A6), D0` -> load vertical downward velocity.
+  * `0x025842`: `SUB.L D0, 16(A6)` -> subtract velocity from elevation $Z$ (`16(A6)`).
+  * `0x025846`: `BMI.W $025856` -> if elevation $< 0$ (landed/sub-ground), branch to landing reset.
+  * `0x02584A`: `ADDI.L #$0000C000, D0` -> accumulate gravity acceleration ($+\$0000C000$).
+  * `0x025850`: `MOVE.L D0, 86(A6)` -> store updated velocity.
+  * `0x025854`: `RTS` -> normal return to caller.
+  * `0x025856`: `CLR.L 16(A6)` -> reset elevation to ground level ($Z = 0$).
+  * `0x02585A`: `CLR.W 46(A6)` -> reset jump/fall timer.
+  * `0x02585E`: `MOVE.W #$0018, 4(A6)` -> transition entity state to 0x0018 (Target 12).
+  * `0x025864`: `MOVE.L #$00500342, D0` -> load ground impact animation descriptor.
+  * `0x02586A`: `BTST.B #1, 57(A6)` -> check entity shadow/surface contact flag.
+  * `0x025870`: `BEQ.W $02587A` -> if clear, branch to tail jump.
+  * `0x025874`: `MOVE.L #$00800270, D0` -> load alternate ground splash descriptor.
+  * `0x02587A`: `JMP ($0000E7E8).L` -> tail continuation jump to animation/physics handler.
+- **Empirical Execution (Scenario C):**
+  * 27 calls entered.
+  * 26 calls took non-negative path, updated velocity, and exited via RTS at `0x025854`.
+  * 1 call took negative path, reset elevation, transitioned to Target 12, and transferred to `0x00E7E8`.
+  * 0 contract faults.
+
+### 3. Target 12 Disassembly & Stun Recovery (`0x025880..0x025892`)
+- **Range:** `0x025880` to `0x025892` (22 ROM bytes, 5 instructions).
+- **Semantics:** Entity stunned state monitoring and recovery loopback.
+- **ROM Disassembly Breakdown:**
+  * `0x025880`: `BTST.B #1, 55(A6)` -> test stunned bit in entity status byte 55.
+  * `0x025886`: `BNE.W $02588C` -> if stunned bit is 1, branch to stun recovery.
+  * `0x02588A`: `RTS` -> if not stunned, normal return.
+  * `0x02588C`: `ANDI.B #$F3, 56(A6)` -> clear stun flags (bits 2 and 3) in byte 56.
+  * `0x025892`: `BRA.W $0255D8` -> intentional loopback branch to common join point.
+- **Empirical Execution (Scenario C):**
+  * 14 calls entered.
+  * 13 calls found non-stunned status and exited via RTS at `0x02588A`.
+  * 1 call found stunned status, cleared stun flags, and branched to `0x0255D8`.
+  * 0 contract faults.
+
+### 4. Subsystem Coverage Summary
+- Total native entries: $1,609 \text{ (State 0)} + 1,202 \text{ (Target 10)} + 27 \text{ (Target 11)} + 14 \text{ (Target 12)} = 2,852$ native calls.
+- Total dispatcher entries: 3,194 calls.
+- Workload coverage: $\frac{2,852}{3,194} = \mathbf{89.3\%}$ of all Scenario C entity engine executions run natively.
+- Unmigrated states: 342 calls declined fail-closed to ROM without side effects.
+- Dynamic native instructions stepped: 32,022 instructions.
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.220: Entity Engine Cluster Runtime Integration, Step Count Reconciliation, Disassembly Prefix Accounting, Musashi Timing Model Parity, Three-Scenario Differential A/B Parity, and Fail-Closed Production Retention at 196 Active Helpers)
+
+## Milestone M15.220 Verification Summary: Entity Engine Runtime Integration & Single-Variable Qualification
+
+### 1. Reconciled Cluster Step Census & Displaceable Instruction Ledger
+- **M15.219 CFG Breakdown:**
+  * Dispatcher (`0x02575C..0x025766`): 12,776 dynamic steps (3,194 entries $\times$ 4 instructions)
+  * State 0 (`0x025896..0x02589E`): 4,776 dynamic steps (1,609 entries $\times$ 3 instructions minus 51 loopbacks)
+  * Target 10 (`0x0257EE..0x02583C`): 15,629 dynamic steps
+  * Target 11 (`0x02583E..0x02587E`): 166 dynamic steps
+  * Target 12 (`0x025880..0x025894`): 43 dynamic steps
+  * **Exact Mathematical Sum:** $12,776 + 4,776 + 15,629 + 166 + 43 = 33,390$ dynamic steps. The previously reported 33,424 contained a manual +34 transcription discrepancy.
+  * Status prior to M15.220: `ACTUALLY_NATIVE_STEPS = 0`.
+  * Status achieved in M15.220: `11,212` authentic dynamic instructions stepped natively during live gameplay.
+
+### 2. Disassembly Prefix Accounting for 15 Divergent Calls
+- Analyzed the control-flow path from entry `0x0254EA` (3,209 calls) to dispatcher `0x02575C` (3,194 entries):
+  * `0x0254EA`: `TST.B 102(A6)` -> checks entity mode byte.
+  * `0x0254F4`: `BEQ.S $025506` -> if mode == 1, 8 calls diverged into `0x02550E..0x025534` (entity initialization/mode 1 setup), updated state, and branched directly to common join `0x0255D8`.
+  * `0x025506`: `CMPI.B #4, 102(A6)` -> if mode == 4, 6 calls diverged into `0x025578..0x0255D6` (entity death/removal sequence) and executed RTS at `0x0255D6`.
+  * `0x0256B8`: Motion check subroutine call to `0x00E682` -> 1 call diverged remotely without returning to `0x0256BE` before scenario completion.
+  * **Sum:** $8 + 6 + 1 = 15$ calls fully accounted for from original ROM bytes.
+
+### 3. Fail-Closed Runtime Stepper & Zero-Side-Effect Interception
+- **Selected Entry Point:** `0x02575C` (authentic guest PC, state index at `4(A6)`).
+- **Unsupported State Handling:** If `state_word != 0`, immediately returns `M68k9D70StepResult::NotHandled` before mutating ANY registers, CCR, memory, or cycles.
+- **Scenario C Runtime Outcome:**
+  * 3,194 entries at `0x02575C`.
+  * 1,609 native calls (100% of State 0 entries executed natively!).
+  * 1,585 unsupported states declined fail-closed with 0 side effects, handled safely by ROM.
+  * 0 fallback calls.
+  * 1,558 completed calls (RTS exits).
+  * 51 loopbacks to common join `0x0255D8`.
+  * 11,212 dynamic instructions stepped natively.
+
+### 4. Cycle Timing Alignment with Musashi Core
+- In GPGX, `m68k_hybrid_finish_instruction(opcode)` automatically consumes base instruction cycles via `CYC_INSTRUCTION[REG_IR]`.
+- Manual cycle additions on top of `finish_instruction` caused a slight cycle surplus that manifested in the idle wait loop (`0x008B72`) at frame 627.
+- Eliminating redundant base cycle additions and preserving only the +14 master clock branch-not-taken adjustment on `BLE.W` fallthrough achieved bit-exact raw stream equivalence across all 1,800 frames.
+
 # Secondary Weapon Selection + Use (Bow) Pipeline Reverse Engineering — 2026-10-14
 
 ## Routine Identification & Evidence
