@@ -1,3 +1,37 @@
+# M15.228 High-Impact Gameplay Engine Expansion — Sprite Dispatch Mode 1 / Entity Update Pipeline (Triple Recompiled Island: Slot 222 Entity Engine 0x02575C + Slot 223 Sprite Engine Mode 0 0x00AD76 + Slot 224 Sprite Engine Mode 1 0x00A9A0); 100.00% Sprite Mode 1 Native Execution (1,182 / 1,182 Calls in Scenario C; 4,611 / 4,611 Calls Across 3 Scenarios); 295,976 Dynamic Steps in Scenario C (+295,976 Net New Native Steps); 6,348,983 Total Native Steps in Scenario C (36.017% Game-Wide Coverage, +1.679 Percentage Points Gain); 1,128,499 Mode 1 Steps Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Raw Streams; 0 Contract Faults; Standalone C++20 Sprite Compositor Domain Interfaces (`ISpriteCompositor`, `SpritePiece`, `SATRecord`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-228-20261108.json) — COMPLETE / QUALIFIED TRIPLE SUBSYSTEM CLUSTER
+
+Delivered:
+- Upstream Subsystem Candidate Profiling & Selection:
+  * Profiled gameplay hotspots and selected `0x00A9A0` (Sprite Engine Mode 1), 188 instructions (960 bytes) spanning `0x00A9A0..0x00AD56`.
+  * Real execution profile: 1,182 calls in Scenario C (295,976 steps), 2,856 calls in Scenario A (717,003 steps), 573 calls in Scenario B (115,520 steps).
+  * Exceeds net new displacement requirement ($\ge 100,000$ steps) by nearly 3x in Scenario C alone (+295,976 steps).
+- Modular C++ Recompilation Architecture (AGENTS.md Rule 3 Compliance):
+  * Decomposed `0x00A9A0` into 25 modular C++20 units in `src/tools/hybrid/m68k_00a9a0_*`.
+  * Implemented cycle-exact step ops, BSR frame preservation for child calls (`0x00B15E`, `0x00B34C`, `0x00B3B2`), and full coordinate translation.
+  * Every single file verified strictly $\le 500$ lines (maximum: 463 lines).
+- Emulation Mechanics Breakthroughs:
+  * Discovered Musashi master clock multiplier rule: `bclr #31, d` and `bset #31, d` add 14 master clock cycles ($2 \times 7$) when operand mask > 16 bits.
+  * Resolved address register 32-bit state retention: fixed upper-byte corruption when saving pointers to memory (`$FF1892`).
+  * Corrected opcode decoding at `0x00AB48` from `suba.w d5, a4` to `add.w d5, d1` (`0xD245`), fixing the SAT buffer coordinate discrepancy.
+- Real Gameplay Three-Scenario A/B Qualification (24/24 Bit-Exact Streams):
+  * Unified runner built at `build/auto-migrator/m15_228/linux-runner/oasis_gameplay_session` (SHA256: `d1809aa4aae503946a5dff66de88f1e2de925f9e2c9e2aa3907f03fd28cef38c`).
+  * Scenario C (1,800 frames): 8/8 bit-exact raw streams (P0 baseline vs P3 combined).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw streams (P0 baseline vs P3 combined).
+  * Scenario B (600 frames): 8/8 bit-exact raw streams (P0 baseline vs P3 combined).
+  * 24/24 bit-exact streams; 0 contract faults; zero regressions.
+- Game-Wide Instruction Displacement:
+  * 100.00% native execution rate on Mode 1 entries across all three scenarios (4,611 / 4,611 calls).
+  * Combined Scenario C native instructions: **6,348,983 / 17,627,770** (**36.017%**).
+  * Net new displaced instructions in M15.228: **+295,976 steps** (+1.679 percentage points gain).
+- Standalone C++20 Domain Interfaces:
+  * Implemented `src/game/render/sprite_compositor.hpp` and `src/game/render/sprite_compositor.cpp` providing `ISpriteCompositor`, `SpritePiece`, and `SATRecord`.
+  * Comprehensive deterministic unit tests passing in `tests/sprite_compositor_test.cpp` and `tests/m68k_00a9a0_instruction_step_test.cpp`.
+- Production Governance & Verification Receipt:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224 default disabled; `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Emitted formal machine receipt: `data/thor-evidence/combined-clusters-qualification-m15-228-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 physical files valid, 48/48 streams valid, `overall_valid = true`.
+
 # M15.227 Sprite Engine Weapon Path Expansion & Verified Game-Wide Native Coverage (Dual Recompiled Island: Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76..0x00B020); 100.00% Sprite Mode 0 Native Execution (7,183 / 7,183 Calls); 871,538 Dynamic Sprite Steps in Scenario C (+20,254 Steps); 6,053,007 Total Native Steps in Scenario C (34.338% Game-Wide Coverage); 1,331,652 Sprite Steps Across 3 Scenarios (+26,302 Steps); 24/24 Bit-Exact Streams (P0, P1, P2, P3 Across 3,992 Frames); Authentic ROM SAT Oracle Fixtures (0x00ACFE Shadow Table); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-227-20261108.json) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER PAIR
 
 Delivered:

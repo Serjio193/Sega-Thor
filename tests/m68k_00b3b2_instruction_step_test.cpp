@@ -56,7 +56,8 @@ void observe(void*, unsigned pc, unsigned) {
 }
 void skip_bus(void*) {}
 int sched(void*, unsigned) { return 0; }
-unsigned transfer_pc(void*) { return 0x00AD4EU; }
+unsigned g_transfer_pc = 0x00AD4EU;
+unsigned transfer_pc(void*) { return g_transfer_pc; }
 
 const M68k9D70StepApi kApi{
     nullptr, rr, wr, peek, read, write, fetch16, set_return,
@@ -75,6 +76,11 @@ void setup_rom() {
     // Return PC opcode at 0x00AD52
     write(nullptr, 0x00AD52U, 2, 0x6000U);
     write(nullptr, 0x00AD54U, 2, 0xFF30U);
+    // Caller at 0x00B01A: bsr.w 0x00B3B2 (0x6100, 0x0396)
+    write(nullptr, 0x00B01AU, 2, 0x6100U);
+    write(nullptr, 0x00B01CU, 2, 0x0396U);
+    // Return PC opcode at 0x00B01E
+    write(nullptr, 0x00B01EU, 2, 0x4E75U);
     // Child target dummy opcode at 0x00B66A
     write(nullptr, 0x00B66AU, 2, 0x4E75U);
 }
@@ -221,6 +227,36 @@ void test_executes_bit1_set_child_bsr_path() {
     std::cout << "test_executes_bit1_set_child_bsr_path passed (steps=" << steps << ")\n";
 }
 
+void test_executes_caller_00b01a_path() {
+    reset_m68k_00b3b2_state();
+    g_mem.clear();
+    g_regs.fill(0U);
+    setup_rom();
+    g_transfer_pc = 0x00B01AU;
+    write(nullptr, 0x00FF1927U, 1, 0x01U); // pause non-zero
+    g_regs[15] = 0x00FF8000U;
+    write(nullptr, 0x00FF8000U, 4, 0x00B01EU); // return PC to 0x00B01E
+
+    unsigned pc = kEntryPc_00b3b2;
+    auto res = step_m68k_00b3b2(pc, kApi, true);
+    assert(res == M68k9D70StepResult::InstructionStepped);
+
+    pc = 0x00B3B8U;
+    res = step_m68k_00b3b2(pc, kApi, true);
+    assert(res == M68k9D70StepResult::InstructionStepped);
+
+    pc = 0x00B382U;
+    res = step_m68k_00b3b2(pc, kApi, true);
+    assert(res == M68k9D70StepResult::InstructionStepped);
+    assert(g_regs[15] == 0x00FF8004U); // popped return PC
+
+    assert(m68k_00b3b2_metrics().target_entries == 1);
+    assert(m68k_00b3b2_metrics().completed_calls == 1);
+    assert(m68k_00b3b2_metrics().pause_exit_calls == 1);
+    std::cout << "test_executes_caller_00b01a_path passed\n";
+    g_transfer_pc = 0x00AD4EU; // restore default
+}
+
 } // namespace
 
 int main() {
@@ -230,6 +266,7 @@ int main() {
     test_executes_pause_exit_path();
     test_executes_bit1_clear_exit_path();
     test_executes_bit1_set_child_bsr_path();
+    test_executes_caller_00b01a_path();
     std::cout << "All 00B3B2 tests passed cleanly!\n";
     return 0;
 }

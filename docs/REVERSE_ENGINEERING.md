@@ -1,3 +1,61 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.228: High-Impact Gameplay Engine Expansion; Triple Recompiled Island Slot 222 + Slot 223 + Slot 224; 6,348,983 Native Instructions in Scenario C / 36.017% Workload; 1,128,499 Mode 1 Instructions Across 3 Scenarios; 24/24 Bit-Exact Streams; Musashi Cycle Rules; 32-bit Address Register State Retention; Instruction Disassembly Verification at 0x00AB48; Standalone C++20 Sprite Compositor Domain Interfaces)
+
+## Milestone M15.228 Reverse Engineering Summary
+
+### 1. Sprite Engine Mode 1 (`0x00A9A0..0x00AD56`) Subsystem Characterization
+- **Routine Boundaries:** `0x00A9A0` to `0x00AD56` (188 instructions, 960 bytes).
+- **Subsystem Function:** Sprite Engine Mode 1 — specialized compositor for player/weapon attached pieces, secondary entities, and absolute/relative coordinate rendering.
+- **Observed Callers in Gameplay:**
+  * Primary caller `0x00A22C`: `BSR.W $00A9A0`
+  * Secondary caller `0x00A2FC`: `BSR.W $00A9A0`
+  * Tertiary caller `0x00A290`: `BSR.W $00A9A0`
+- **Child Subroutines:**
+  * `0x00B15E`: piece coordinate adjust / relative offset calculation.
+  * `0x00B34C`: external weapon hook 1 (resumes at `0x00AC6A`).
+  * `0x00B3B2`: external weapon hook 2 (resumes at `0x00AC82`).
+- **Register ABI Contract:**
+  * Entry:
+    - `A6`: Entity pointer in 68K RAM (`0xFFFFxxxx`).
+    - `A2`: Pointer to active SAT hardware buffer record loaded from `$FF1892`.
+    - `A1`: Staging SAT buffer pointer (`$00FF13CC`).
+    - `D2.W`: Viewport / camera Y coordinate.
+    - Stack: Return PC pushed by caller BSR.
+  * Exit:
+    - `$FF1892`: Updated 32-bit SAT pointer.
+    - `$FF188C`: Updated piece buffer offset.
+    - `$FF188A`: Updated sprite index.
+    - `D7/A6`: Restored from stack via `movem.l (sp)+, d7/a6`.
+    - Stack: Balanced and popped via RTS.
+
+### 2. Emulation Mechanics Discoveries & Bug Resolutions
+- **Musashi Master Clock Adjustment (MUL = 7):**
+  * Genesis-Plus-GX uses a master clock multiplier of 7 for M68K bus cycles.
+  * In Musashi `m68kcpu.c`, bit-manipulation instructions `bset #31, d` and `bclr #31, d` add $2 \times MUL = 14$ master clock cycles when the bit mask exceeds 16 bits (`mask & 0xFFFF0000`).
+  * Adding 14 cycles to `complete_step` at `0x00AC84` and `0x00ABA4` resolved scheduler cycle synchronization divergence.
+- **32-Bit Address Register State Retention:**
+  * Address registers `A0-A7` maintain full 32-bit internal state in M68000 and Musashi.
+  * Masking address register updates with `0x00FFFFFF` caused high-byte stripping when writing to RAM pointers such as `$FF1892`.
+  * Preserving full 32-bit values in register storage and masking only bus addresses passed to `read_be` / `write_be` resolved memory state divergence.
+- **Instruction Disassembly Exactness at 0x00AB48:**
+  * Opcode `0xD245` at `0x00AB48` is `add.w d5, d1` (adding offset 2 to X coordinate), not `suba.w d5, a4`.
+  * Correcting this instruction eliminated the -2 offset discrepancy in SAT buffer memory during Scenario A frame 1098.
+
+### 3. Dynamic Native Workload & Coverage Achievement
+- **Scenario C (1,800 frames):**
+  * Mode 1 target entries: 1,182 / 1,182 (100% native execution rate).
+  * Mode 1 stepped instructions: 295,976 steps.
+  * Combined native steps (P3): 6,348,983 / 17,627,770 (**36.017% native workload**).
+  * Net new native instruction displacement: **+295,976 steps** (+1.679 percentage points gain).
+- **Scenario A (1,592 frames):**
+  * Mode 1 target entries: 2,856 / 2,856 (100% native execution rate).
+  * Mode 1 stepped instructions: 717,003 steps.
+- **Scenario B (600 frames):**
+  * Mode 1 target entries: 573 / 573 (100% native execution rate).
+  * Mode 1 stepped instructions: 115,520 steps.
+- **Three-Scenario Mode 1 Total:** 4,611 entries, **1,128,499 dynamic instructions** displaced.
+
+---
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.226: Combined Native Cluster Qualification & Sprite Pipeline Expansion; Dual Recompiled Island Slot 222 + Slot 223; 6,032,753 Native Instructions in Scenario C / 34.223% Workload; 12,588,815 Native Instructions Across 3 Scenarios; 24/24 Bit-Exact Streams; Anomaly Forensics; 3,285 Fallback Classification; Reusable Standalone Pure C++ SAT Contract)
 
 ## Milestone M15.226 Reverse Engineering Summary

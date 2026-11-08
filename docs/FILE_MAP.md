@@ -4109,3 +4109,24 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `data/thor-fixtures/sat_oracle/` — Authentic SAT oracle fixtures and manifest covering normal player sprite, weapon attachment, horizontal flip, multi-piece descriptors, shadow table `0x00ACFE`, and capacity/clipping boundary (M15.227).
 - `tools/generate_m15_227_receipt.py` — Machine evidence receipt generator and ReceiptVerifier runner for M15.227 (M15.227).
 - `data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json` — Machine-readable evidence receipt for Sprite Engine Weapon Path Expansion (Slot 223) + Entity Engine Cluster (Slot 222), displacing 6,053,007 native instructions in Scenario C (34.338%) and 1,331,652 sprite steps across 3 scenarios with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.227).
+- `src/tools/hybrid/m68k_00a9a0_step_ops.hpp/.cpp` — Core M68000 ALU, cycle-exact timing, CCR tracking, and BSR stack frame management for `0x00A9A0` (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_instruction_step.hpp/.cpp` — Main instruction router, ROM signature verification (`btst.b #1, 54(a6)`), and execution boundary tracking for Sprite Engine Mode 1 `0x00A9A0` (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_ingress_step.hpp/.cpp` — Fast-path hidden/paused entity exit, status word checks, flip/palette unpack (`0x00A9A0..0x00AA02`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_attrib_step.hpp/.cpp` — Sprite orientation, flip, palette bank and tile attributes (`0x00AA04..0x00AA74`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_camera_step.hpp/.cpp` — Camera coordinate translation, camera subtraction, relative vs absolute coordinates (`0x00AA76..0x00AAFC`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_coords_step.hpp/.cpp` — Coordinate offsets, camera calculations, and conditional X/Y adjustment (`0x00AB00..0x00AB66`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_piece_step.hpp/.cpp` — Multi-piece loop setup, piece coordinate parsing, child call `0x00B15E` integration (`0x00AB68..0x00ABDC`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_pieceloop_step.hpp/.cpp` — Piece loop iteration and bounding box updates (`0x00ABDE..0x00AC14`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_render_step.hpp/.cpp` — 8-byte SAT record emission, link chaining, viewport clipping (`0x00AC16..0x00AC5A`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_shadow_step.hpp/.cpp` — Attached entity shadow rendering loop (`0x00ACA0..0x00ACDE`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_commit_step.hpp/.cpp` — SAT pointer updates (`$FF1892`, `$FF188C`, `$FF188A`), stack register restore, RTS (`0x00AC5E..0x00ACFC`, `0x00AD1E..0x00AD40`) (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_weapon_step.hpp/.cpp` — Modular stepper for weapon hook branches to `0x00B34C` and `0x00B3B2` (M15.228).
+- `src/tools/hybrid/m68k_00a9a0_metrics.cpp` — Telemetry and dynamic counters for `0x00A9A0` cluster (M15.228).
+- `src/game/render/sprite_compositor.hpp/.cpp` — Standalone pure C++20 domain interfaces (`ISpriteCompositor`, `SpritePiece`, `SATRecord`) and concrete compositor decoupled from CPU emulation (M15.228).
+- `tests/sprite_compositor_test.cpp` — Unit test suite for `ISpriteCompositor` and `SpriteCompositor` covering Mode 0, Mode 1 (absolute & relative), and clipping/shadows (M15.228).
+- `tests/m68k_00a9a0_instruction_step_test.cpp` — Deterministic unit tests for Mode 1 instruction step dispatcher and fast-path hidden exits (M15.228).
+- `tests/m68k_00a9a0_cluster_test.cpp` — Comprehensive unit test suite for 0x00A9A0 Mode 1 cluster verifying fast paths, full piece loops, and weapon hook routing (M15.228).
+- `tools/build_m15_228_runner.py` — Linux gameplay runner build orchestrator for M15.228 triple-cluster runtime (Slots 222 + 223 + 224) (M15.228).
+- `tools/run_m15_228_combined_ab.py` — Combined 3-scenario differential A/B qualification runner for M15.228 (M15.228).
+- `tools/generate_m15_228_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.228 (M15.228).
+- `data/thor-evidence/combined-clusters-qualification-m15-228-20261108.json` — Machine-readable evidence receipt for Sprite Dispatch Mode 1 (Slot 224) + Mode 0 (Slot 223) + Entity Engine (Slot 222), displacing 6,348,983 native instructions in Scenario C (36.017%) and 1,128,499 Mode 1 steps across 3 scenarios with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.228).

@@ -1,3 +1,84 @@
+# 2026-11-08 — Milestone M15.228: HIGH-IMPACT GAMEPLAY ENGINE EXPANSION — Sprite Dispatch Mode 1 (0x00A9A0 as Native Slot 224); Triple Subsystem Recompiled Island Execution (Slots 222 + 223 + 224); 6,348,983 Native Dynamic Instructions Displaced in Scenario C (36.017% of All Guest Instructions, +295,976 Displaced Net New Instructions); 1,128,499 Instructions Displaced Across Three Scenarios by Mode 1; 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone Pure C++20 Sprite Compositor Domain Interfaces (`ISpriteCompositor`, `SpritePiece`, `SATRecord`); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-228-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222, 223 & 224 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Subsystem Candidate Selection & Profile Justification:
+    - Profile gameplay hotspots upstream/downstream of sprite pipeline.
+    - Candidate selected: `0x00A9A0` (Sprite Engine Mode 1), 188 instructions (960 bytes), spanning `0x00A9A0..0x00AD56`.
+    - Scenario C execution: 295,976 dynamic steps across 1,182 entries.
+    - Scenario A execution: 717,003 dynamic steps across 2,856 entries.
+    - Scenario B execution: 115,520 dynamic steps across 573 entries.
+    - Net new instruction displacement goal: $\ge 100,000$ steps in Scenario C.
+  * Native Recompilation Architecture:
+    - Implement `0x00A9A0` in modular C++20 architecture in `src/tools/hybrid/m68k_00a9a0_*`.
+    - All source and header files strictly $\le 500$ lines per AGENTS.md Rule 3.
+  * Triple-Cluster Runtime Integration:
+    - Unified Linux runner executing Slot 222 (Entity Engine `0x02575C`), Slot 223 (Sprite Engine Mode 0 `0x00AD76`), and Slot 224 (Sprite Engine Mode 1 `0x00A9A0`).
+    - Qualify P0 (196 baseline) vs P3 (196 + 222 + 223 + 224) across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - Achieve 24/24 bit-exact raw stream equivalence with 0 contract faults.
+  * Standalone C++20 Domain Interfaces:
+    - Produce `ISpriteCompositor`, `SpritePiece`, and `SATRecord` in `src/game/render/` decoupled from CPU emulation.
+    - Unit tests in `tests/sprite_compositor_test.cpp` and `tests/m68k_00a9a0_instruction_step_test.cpp`.
+  * Governance & Evidence:
+    - Machine qualification receipt `combined-clusters-qualification-m15-228-20261108.json` verified with `ReceiptVerifier`.
+    - Production baseline strictly maintained at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slots 222, 223, 224 default disabled.
+
+- **Implementation & Modular Decomposition:**
+  * 25 modular C++20 files created in `src/tools/hybrid/`:
+    - `m68k_00a9a0_step_ops.hpp/.cpp`: Core M68000 ALU, cycle-exact timing, CCR tracking, BSR stack frame management.
+    - `m68k_00a9a0_instruction_step.hpp/.cpp`: Entry dispatcher, ROM signature verification (`btst.b #1, 54(a6)`), boundary tracking.
+    - `m68k_00a9a0_ingress_step.hpp/.cpp`: Fast-path hidden/paused entity exit, status word checks, flip/palette unpack.
+    - `m68k_00a9a0_attrib_step.hpp/.cpp`: Sprite attribute and tile index calculations, palette mapping.
+    - `m68k_00a9a0_camera_step.hpp/.cpp` & `m68k_00a9a0_coords_step.hpp/.cpp`: Coordinate translation, camera subtraction, relative vs absolute coordinates.
+    - `m68k_00a9a0_piece_step.hpp/.cpp` & `m68k_00a9a0_pieceloop_step.hpp/.cpp`: Piece descriptor iteration, SAT entry formatting, child subroutine integration (`0x00B15E`).
+    - `m68k_00a9a0_render_step.hpp/.cpp`: 8-byte SAT record emission, link chaining, viewport boundary clipping.
+    - `m68k_00a9a0_shadow_step.hpp/.cpp`: Attached entity shadow emission loop.
+    - `m68k_00a9a0_commit_step.hpp/.cpp`: SAT buffer pointer updates (`$FF1892`, `$FF188C`, `$FF188A`), stack register restore, RTS.
+    - `m68k_00a9a0_weapon_step.hpp/.cpp`: External weapon hook dispatchers (`0x00B34C`, `0x00B3B2`).
+    - `m68k_00a9a0_metrics.cpp`: Diagnostics, counters, JSON serialization.
+  * All files strictly $\le 500$ lines (maximum: 463 lines).
+
+- **Key Reverse-Engineering & Emulation Mechanics Discoveries:**
+  * Musashi Master Clock Multiplier (MUL = 7): Bit-manipulation instructions `bclr #31, d` and `bset #31, d` add $2 \times 7 = 14$ master clock cycles when the operand mask exceeds 16 bits. Applying this correction eliminated scheduler cycle divergence.
+  * Address Register 32-bit Storage vs Bus Masking: Address registers (`A0-A7`) in M68000 maintain 32-bit internal state. Masking register writes with 24-bit masks caused upper-byte truncation when saving pointers (e.g. `$FF1892`). Reading and updating full 32-bit registers while masking only bus addresses resolved memory divergence.
+  * Instruction Decoding Exactness at 0x00AB48: Disassembly analysis revealed `0x00AB48` opcode `0xD245` is `add.w d5, d1` (shifting X coordinate), not `suba.w d5, a4`. Correcting this eliminated the -2 offset discrepancy in SAT buffer memory at Frame 1098 of Scenario A.
+
+- **Three-Scenario Combined Verification Results:**
+  * Scenario C (1,800 frames): 8/8 bit-exact raw streams (`match = True`).
+  * Scenario A (1,592 frames): 8/8 bit-exact raw streams (`match = True`).
+  * Scenario B (600 frames): 8/8 bit-exact raw streams (`match = True`).
+  * 24/24 streams matched bit-exact across all 3,992 gameplay frames.
+  * Zero contract faults; zero regressions.
+
+- **Dynamic Instruction Accounting:**
+  * Mode 1 (`0x00A9A0`) Execution:
+    - Scenario C: 1,182 entries (100% native), 295,976 stepped instructions.
+    - Scenario A: 2,856 entries (100% native), 717,003 stepped instructions.
+    - Scenario B: 573 entries (100% native), 115,520 stepped instructions.
+    - Mode 1 Three-Scenario Total: 4,611 entries, **1,128,499 dynamic instructions**.
+  * Combined Scenario C Workload:
+    - Guest total M68000 steps: 17,627,770
+    - Production active helpers (196): 5,127,961 (29.090%)
+    - Slot 222 (Entity Engine): 53,508 (0.304%)
+    - Slot 223 (Sprite Engine Mode 0): 871,538 (4.944%)
+    - Slot 224 (Sprite Engine Mode 1): 295,976 (1.679%)
+    - **Combined Native Steps: 6,348,983 instructions** (**36.017%**).
+    - Net new displaced instructions in M15.228: **+295,976 steps** ($\gg 100,000$).
+
+- **Standalone C++20 Sprite Compositor Domain Interfaces:**
+  * Implemented `src/game/render/sprite_compositor.hpp` (107 lines) and `src/game/render/sprite_compositor.cpp` (121 lines).
+  * Provides `ISpriteCompositor`, `SpritePiece`, and `SATRecord` domain abstractions.
+  * Unit tests in `tests/sprite_compositor_test.cpp` and `tests/m68k_00a9a0_instruction_step_test.cpp` passing cleanly.
+
+- **Machine Evidence Receipt & Verification:**
+  * Receipt: `data/thor-evidence/combined-clusters-qualification-m15-228-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58/58 files valid, 48/48 streams valid, status `VERIFIED`.
+
+- **Production Baseline & Hygiene:**
+  * Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222, 223, 224 default disabled.
+  * Clean `git diff --check`.
+  * Zero commercial ROM or copyrighted assets committed.
+
 # 2026-11-08 — Milestone M15.226: COMBINED NATIVE CLUSTER QUALIFICATION & SPRITE PIPELINE EXPANSION — Dual Recompiled Island Qualification (Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76); 6,032,753 Native Dynamic Instructions Displaced in Scenario C (34.223% of All Guest Instructions); 12,588,815 Native Instructions Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Stream Matches; Reconciled Cross-Milestone Evidence Transcription Anomaly; Full Forensic Classification of 3,285 Fallback Calls; Pure C++ Reusable SAT Pipeline Contract Implemented & Tested (sat_pipeline_contract.hpp/.cpp); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-226-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222 & 223 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**
