@@ -6,6 +6,7 @@ cmake-build-*/
 CMakeCache.txt
 CMakeFiles/
 *.bin
+!data/standalone-fixtures/*.bin
 *.gen
 *.smd
 *.rom

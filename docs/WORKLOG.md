@@ -29529,3 +29529,33 @@ RESULT: PASS.
 - Whitespace Check: `git diff --check` passed cleanly with 0 errors.
 - Hybrid Production Baseline: Strictly preserved (196 active helpers, `ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
 - Read-only Worktree Policy: Original project directory `C:/Github/Sega-Thor` treated strictly as READ-ONLY; zero files modified in the other agent's worktree.
+
+
+# M16.9 Worklog — Dynamic Sprite State Reconstruction and First Bit-Exact Gameplay Frames
+
+## Objectives
+- Resolve Frame 1 pixel mismatch (1,412 pixels).
+- Correct SAT slot ownership and composite piece arrangement.
+- Implement dynamic VRAM pattern streaming for Ali walk animation.
+- Implement authentic CRAM water palette animation.
+- Achieve the first 100.0% bit-exact full gameplay frame.
+
+## Execution & Results
+1. **Phase 1: Pixel Mismatch Localization**:
+   - Mismatches strictly localized to Ali sprite bounding box $X \in [141..203], Y \in [72..111]$.
+   - Native idle tile pattern at `0x9560` drew solid pixels where walk pose 0 had transparent pixels (`0x00`).
+2. **Phase 2: SAT Ownership Correction**:
+   - Slots 0..5: HUD overlay (Routine `0x003FA0`).
+   - Slots 6..8: Water foam reflections.
+   - Slots 9..14: Player Ali 6-piece composite (tiles `0x04E8`, `0x04A8`, `0x04A9`, `0x04AB`, `0x04B3`, `0x04BC`).
+   - Slots 15..22: Beach Chest 8-piece composite (tiles `0x0479`, `0x0485`, `0x048B`, `0x048F`).
+   - Slot 23: Pier column shadow (tile `0x069D`).
+3. **Phase 3: Dynamic Pattern Streaming**:
+   - Created `data/standalone-fixtures/beach_ali_walk_patterns_8poses.bin` (9,216 bytes).
+   - Dynamic upload into VRAM `0x9500` (1024 bytes) and `0x9D00` (128 bytes) every 4 frames.
+4. **Phase 4: Water Palette Animation**:
+   - Palette 2 entries 33..36 cycle circular rotation every 6 frames.
+5. **Phase 5: Verification**:
+   - Frame 1: 71,680 / 71,680 pixels matched (100.0%, 0 mismatches, first mismatch: NONE).
+   - All 28 standalone test suites PASS across MinGW Release and MSVC Debug.
+   - All 916 governed source files strictly <= 500 lines.

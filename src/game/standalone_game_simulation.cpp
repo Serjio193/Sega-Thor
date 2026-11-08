@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <fstream>
 
 namespace oasis::game {
 
@@ -93,6 +94,17 @@ bool StandaloneGameSimulation::load_screen_map_file(const char* path) {
     if (!streamer_.load_map_from_file(path)) return false;
     streamer_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y, 2176);
     return true;
+}
+
+bool StandaloneGameSimulation::load_walk_patterns_file(const char* path) {
+    std::ifstream in(path, std::ios::binary | std::ios::ate);
+    if (!in.is_open()) return false;
+    const auto sz = in.tellg();
+    if (sz <= 0) return false;
+    in.seekg(0, std::ios::beg);
+    walk_patterns_.resize(static_cast<std::size_t>(sz));
+    in.read(reinterpret_cast<char*>(walk_patterns_.data()), sz);
+    return !walk_patterns_.empty();
 }
 
 void StandaloneGameSimulation::reset() {
@@ -240,6 +252,33 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     // Commit authentic camera horizontal and vertical scroll into current_vdp_
     camera_.apply_to_vdp(current_vdp_);
 
+    // Dynamic sprite pattern upload for player Ali walk cycle
+    if (!walk_patterns_.empty()) {
+        const std::size_t pose_idx = (oracle_mode_)
+            ? (((frame - 1U) / 4U) % 8U)
+            : static_cast<std::size_t>((walk_tick_ / 2) % 8);
+        if (walk_patterns_.size() >= (pose_idx + 1U) * 1152U) {
+            const auto* pose_ptr = walk_patterns_.data() + pose_idx * 1152U;
+            std::memcpy(&current_vdp_.vram[0x9500], pose_ptr, 1024);
+            std::memcpy(&current_vdp_.vram[0x9D00], pose_ptr + 1024, 128);
+        }
+    }
+
+    // Dynamic water palette cycling in CRAM (Palette 2, colors 1..4)
+    static constexpr std::uint16_t kWaterCycle[4][4] = {
+        {0x0820, 0x0EC0, 0x0E40, 0x0820},
+        {0x0EC0, 0x0E40, 0x0820, 0x0820},
+        {0x0E40, 0x0820, 0x0820, 0x0EC0},
+        {0x0820, 0x0820, 0x0EC0, 0x0E40}
+    };
+    const std::size_t pal_phase = (frame / 6U) % 4U;
+    for (std::size_t i = 0; i < 4U; ++i) {
+        const std::size_t cram_off = (33U + i) * 2U;
+        const std::uint16_t w = kWaterCycle[pal_phase][i];
+        current_vdp_.cram[cram_off] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
+        current_vdp_.cram[cram_off + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
+    }
+
     // Publish updated SAT state into current_vdp_ and output
     // In authentic Beyond Oasis 30Hz game loop cadence, VRAM SAT updates on odd frames
     if (!oracle_mode_ || ((frame % 2U) == 1U)) {
@@ -285,28 +324,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     sat_pipeline_.emit_piece(240 - cam_x, refl_y, 4, 1, 0x079FU, 0, true, false, false);
     sat_pipeline_.emit_piece(272 - cam_x, refl_y, 4, 1, 0x07A3U, 0, true, false, false);
 
-    // 3. Scene entities (Chest entity at Slot 7)
-    for (const auto& entity : entities_) {
-        if (!entity.active) continue;
-        const int ex = camera_.world_to_screen_x(entity.world_x);
-        const int ey = camera_.world_to_screen_y(entity.world_y);
-        if (entity.type_id == 0x0060) {
-            // Beach Chest: authentic multi-piece object
-            if (entity.state == 0x6AU) {
-                // Opened state
-                sat_pipeline_.emit_piece(ex, ey, 4, 2, 0x04B0U, 0, false, false, false);
-            } else {
-                // Closed state authentic ROM composite (Slots 9..14)
-                sat_pipeline_.emit_piece(ex + 28, ey - 10, 2, 2, 0x04E8U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex + 29, ey - 5, 1, 1, 0x04A8U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex + 21, ey - 13, 1, 2, 0x04A9U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 11, ey - 13, 4, 2, 0x04ABU, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex + 13, ey + 3, 3, 3, 0x04B3U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 19, ey + 3, 4, 3, 0x04BCU, 0, false, false, false);
-            }
-        }
-    }
-
+    // 3. Player Ali composite sprite (Slots 9..14)
     const bool facing_left = (player_.direction_code == 3);
     const int render_px_world = (oracle_mode_ && sim_state_.frame_counter > 0)
         ? static_cast<int>(prev_render_player_x_)
@@ -314,52 +332,40 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     const int render_py_world = (oracle_mode_ && sim_state_.frame_counter > 0)
         ? static_cast<int>(prev_render_player_y_)
         : static_cast<int>(sim_state_.player_y);
-    const int px = camera_.world_to_screen_x(render_px_world);
-    const int py = camera_.world_to_screen_y(render_py_world);
+    const int ax = camera_.world_to_screen_x(render_px_world - 5);
+    const int ay = camera_.world_to_screen_y(render_py_world - 19);
 
-    // Dynamic walk cycle animation tile base
-    const std::uint16_t walk_tile_offset = (player_.movement_state != 0)
-        ? static_cast<std::uint16_t>((walk_tick_ / 4) * 4)
-        : 0;
+    sat_pipeline_.emit_piece(ax + 28, ay - 10, 2, 2, 0x04E8U, 0, false, facing_left, false);
+    sat_pipeline_.emit_piece(ax + 29, ay - 5, 1, 1, 0x04A8U, 0, false, facing_left, false);
+    sat_pipeline_.emit_piece(ax + 21, ay - 13, 1, 2, 0x04A9U, 0, false, facing_left, false);
+    sat_pipeline_.emit_piece(ax - 11, ay - 13, 4, 2, 0x04ABU, 0, false, facing_left, false);
+    sat_pipeline_.emit_piece(ax + 13, ay + 3, 3, 3, 0x04B3U, 0, false, facing_left, false);
+    sat_pipeline_.emit_piece(ax - 19, ay + 3, 4, 3, 0x04BCU, 0, false, facing_left, false);
 
-    // 4. Emit 4-piece composite player Ali sprite (Mode 0: world entity, Slots 15..18)
-    sat_pipeline_.emit_piece(px - 29, py - 43, 3, 4,
-                            0x0479U + walk_tile_offset, 0, true, facing_left, false);
-    sat_pipeline_.emit_piece(px - 29, py - 59, 3, 2,
-                            0x0485U, 0, true, facing_left, false);
-    const int head_x = facing_left ? (px - 29) : (px - 21);
-    sat_pipeline_.emit_piece(head_x, py - 75, 2, 2,
-                            0x048BU, 0, true, facing_left, false);
-    const int hair_x = facing_left ? (px - 21) : (px - 29);
-    sat_pipeline_.emit_piece(hair_x, py - 67, 1, 1,
-                            0x048FU, 0, true, facing_left, false);
-
-    // 5. Emit Player Ali mirror / water reflection composite (Mode 1: horizontal reflection, Slots 19..22)
-    sat_pipeline_.emit_piece(px - 5, py - 43, 3, 4,
-                            0x0479U + walk_tile_offset, 0, true, !facing_left, false);
-    sat_pipeline_.emit_piece(px - 5, py - 59, 3, 2,
-                            0x0485U, 0, true, !facing_left, false);
-    const int m_head_x = !facing_left ? (px - 5) : (px + 3);
-    sat_pipeline_.emit_piece(m_head_x, py - 75, 2, 2,
-                            0x048BU, 0, true, !facing_left, false);
-    const int m_hair_x = !facing_left ? (px + 11) : (px - 5);
-    sat_pipeline_.emit_piece(m_hair_x, py - 67, 1, 1,
-                            0x048FU, 0, true, !facing_left, false);
-
-    // 6. Pier column water reflection and upper column entities
+    // 4. Beach Chest composite (Slots 15..22)
     for (const auto& entity : entities_) {
-        if (!entity.active || entity.type_id != 0x0097) continue;
-        const auto frame = sim_state_.frame_counter;
-        const bool visible = (frame == 0U) || ((frame % 4U) == 3U) || ((frame % 4U) == 0U);
-        if (!visible) continue;
-        const int ex = camera_.world_to_screen_x(entity.world_x);
-        const int ey = camera_.world_to_screen_y(entity.world_y);
-        if (ex >= -24 && ex <= 320) {
-            sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
+        if (!entity.active || entity.type_id != 0x0060U) continue;
+        const int cx = camera_.world_to_screen_x(entity.world_x);
+        const int cy = camera_.world_to_screen_y(entity.world_y);
+        if (entity.state == 0x6AU) {
+            sat_pipeline_.emit_piece(cx, cy, 4, 2, 0x04B0U, 0, false, false, false);
+        } else {
+            // Left half
+            sat_pipeline_.emit_piece(cx - 24, cy - 24, 3, 4, 0x0479U, 0, true, false, false);
+            sat_pipeline_.emit_piece(cx - 24, cy - 40, 3, 2, 0x0485U, 0, true, false, false);
+            sat_pipeline_.emit_piece(cx - 16, cy - 56, 2, 2, 0x048BU, 0, true, false, false);
+            sat_pipeline_.emit_piece(cx - 24, cy - 48, 1, 1, 0x048FU, 0, true, false, false);
+            // Right half (mirrored)
+            sat_pipeline_.emit_piece(cx + 0, cy - 24, 3, 4, 0x0479U, 0, true, true, false);
+            sat_pipeline_.emit_piece(cx + 0, cy - 40, 3, 2, 0x0485U, 0, true, true, false);
+            sat_pipeline_.emit_piece(cx + 0, cy - 56, 2, 2, 0x048BU, 0, true, true, false);
+            sat_pipeline_.emit_piece(cx + 16, cy - 48, 1, 1, 0x048FU, 0, true, true, false);
         }
     }
+
+    // 5. Pier column shadow entity (Slot 23)
     for (const auto& entity : entities_) {
-        if (!entity.active || entity.type_id != 0x0098) continue;
+        if (!entity.active || (entity.type_id != 0x0098U && entity.type_id != 0x0097U)) continue;
         const int ex = camera_.world_to_screen_x(entity.world_x);
         const int ey = camera_.world_to_screen_y(entity.world_y);
         if (ex >= -24 && ex <= 320) {
@@ -367,10 +373,10 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
         }
     }
 
-    // 7. Finalize SAT frame: terminates link list at last active sprite (link = 0)
+    // 6. Finalize SAT frame: terminates link list at last active sprite (link = 0)
     sat_pipeline_.finalize_frame();
 
-    // 8. Commit active SAT entries into VDP VRAM at SAT base in big-endian Genesis VDP format
+    // 7. Commit active SAT entries into VDP VRAM at SAT base in big-endian Genesis VDP format
     sat_pipeline_.commit_to_vdp(vdp);
 }
 

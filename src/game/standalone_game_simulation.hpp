@@ -68,6 +68,9 @@ public:
     bool load_screen_map(std::span<const std::uint16_t> map_data);
     bool load_screen_map_file(const char* path);
 
+    // Load authentic 8-pose walk pattern data for dynamic pattern upload.
+    bool load_walk_patterns_file(const char* path);
+
     // Access dynamic tilemap streamer.
     [[nodiscard]] const world::TilemapStreamer& streamer() const noexcept {
         return streamer_;
@@ -164,6 +167,7 @@ private:
 
     std::vector<std::uint8_t> terrain_buffer_{};
     world::ByteGridView terrain_{};
+    std::vector<std::uint8_t> walk_patterns_{};
 
     SimulationState sim_state_{};
     bool camera_tracking_{true};

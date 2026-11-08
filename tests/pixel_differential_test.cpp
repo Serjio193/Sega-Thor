@@ -45,6 +45,7 @@ int main() {
 
     const auto vdp_path = resolve_fixture("data/standalone-fixtures/beach_frame_000.json");
     const auto map_path = resolve_fixture("data/standalone-fixtures/beach_plane_a_map_64x64.bin");
+    const auto patterns_path = resolve_fixture("data/standalone-fixtures/beach_ali_walk_patterns_8poses.bin");
 
     oasis::genesis::VdpState baseline_vdp{};
     assert(baseline_vdp.load_from_file(vdp_path.c_str()));
@@ -60,6 +61,7 @@ int main() {
     cp.camera_y = 3;
     sim.initialize_from_checkpoint(baseline_vdp, cp);
     assert(sim.load_screen_map_file(map_path.c_str()));
+    assert(sim.load_walk_patterns_file(patterns_path.c_str()));
     sim.set_replay_player_trajectory(true);
 
     const std::vector<int> target_frames = {1, 29, 60, 120};
@@ -90,6 +92,14 @@ int main() {
 
         const std::span<const std::uint8_t> nat_bytes(
             reinterpret_cast<const std::uint8_t*>(native_rgba.data()), native_rgba.size() * sizeof(std::uint32_t));
+
+        if (frame == 1) {
+            const auto nat_file = fs::path(resolve_fixture(ref_name)).parent_path() / "frame_001_native.rgba32";
+            std::ofstream out_nat(nat_file, std::ios::binary);
+            if (out_nat.is_open()) {
+                out_nat.write(reinterpret_cast<const char*>(nat_bytes.data()), nat_bytes.size());
+            }
+        }
 
         int strict_exact = 0;
         int dac_matched = 0;
@@ -138,6 +148,12 @@ int main() {
 
         std::cout << "      |       | Breakdown: HUD=" << 608 << "px (100%), Sprites=" << metrics.sprite_pixels
                   << "px, PlaneA=" << metrics.plane_a_pixels << "px, PlaneB=" << metrics.plane_b_pixels << "px\n";
+
+        if (frame == 1) {
+            // Milestone M16.9 achievement: First 100.0% full-frame DAC parity frame (0 mismatches across 71,680 pixels)
+            assert(mismatch_count == 0);
+            assert(dac_matched == 71680);
+        }
     }
 
     std::cout << "========================================================================================================\n";

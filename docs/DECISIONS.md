@@ -10429,3 +10429,31 @@ Milestone M16.0 initiates the Standalone C++ Runtime Track for Beyond Oasis (`st
 
 ### Consequences
 The standalone native execution track is operational with a verified bit-exact rasterizer. The native renderer can be driven directly by future standalone game loop stages without any emulation core.
+
+
+## Decision: M16.9 — Dynamic Sprite State Reconstruction and First Bit-Exact Gameplay Frames
+
+### Context
+Milestone M16.8 established full-screen pixel differential tooling and discovered a 1,412 pixel mismatch on Frame 1 (98.03% match, 70,268/71,680 pixels). The root cause of this divergence was unresolved: whether it stemmed from SAT coordinate rounding, rasterizer layer blending, or missing dynamic VRAM/CRAM updates.
+
+### Findings & Implementation
+1. **Root Cause Analysis of Frame 1 Pixel Mismatch**:
+   - Connected component analysis proved that all 1,412 mismatched pixels were localized to an exact 63x40 bounding box spanning $X \in [141..203], Y \in [72..111]$.
+   - This bounding box belongs to Player Ali's 6-piece composite sprite in slots 9..14.
+   - The divergence was caused by a missing dynamic pattern upload: native was rendering idle pattern data at VRAM `0x9560`, whereas Beyond Oasis dynamically streams walk pose 0 tiles (`0x04A8..0x04C7` and `0x04E8..0x04EB`) into VRAM on walk cycle frames.
+2. **SAT Ownership Correction**:
+   - Audited the entity loop (`0x00A6A4..0x00A780`) and verified exact SAT slot allocation:
+     * Slots 0..5: HUD overlay (Routine `0x003FA0`, 6 slots)
+     * Slots 6..8: Beach water foam / surface reflections (3 slots)
+     * Slots 9..14: Player Ali 6-piece composite (6 slots)
+     * Slots 15..22: Beach Chest 8-piece composite (left half + mirrored right half, 8 slots)
+     * Slot 23: Pier column shadow (1 slot, terminating link chain with `link = 0`)
+   - Corrected slot inversion from prior milestones where Chest and Ali pieces had been swapped.
+3. **Dynamic VRAM Pattern Streaming**:
+   - Extracted authentic 8-pose walk cycle pattern data (9,216 bytes, 1,152 bytes per pose covering 36 tiles) into `data/standalone-fixtures/beach_ali_walk_patterns_8poses.bin`.
+   - Pattern updates stream into VRAM `0x9500..0x98FF` (32 tiles) and `0x9D00..0x9D7F` (4 tiles) every 4 frames (2 simulation ticks at 30Hz cadence).
+4. **CRAM Water Palette Animation**:
+   - Identified and implemented circular 4-color water palette animation in Palette 2 (entries 33..36) cycling `{0x0820, 0x0EC0, 0x0E40, 0x0820}` every 6 frames.
+5. **Frame 1 Bit-Exactness Achieved**:
+   - Frame 1 achieved **100.0% DAC match with 0 mismatched pixels** across all 71,680 pixels ($320 \times 224$).
+   - VDP state parity: 100% exact raw CRAM, palette index selection, and active SAT chain.
