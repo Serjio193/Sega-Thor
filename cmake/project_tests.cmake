@@ -108,6 +108,9 @@ add_test(NAME oasis_vdp_rasterizer COMMAND oasis_vdp_rasterizer_test)
 add_executable(oasis_standalone_sequencer_test tests/standalone_sequencer_test.cpp)
 target_link_libraries(oasis_standalone_sequencer_test PRIVATE oasis_core)
 add_test(NAME oasis_standalone_sequencer COMMAND oasis_standalone_sequencer_test)
+add_executable(oasis_standalone_gameplay_test tests/standalone_gameplay_test.cpp)
+target_link_libraries(oasis_standalone_gameplay_test PRIVATE oasis_core)
+add_test(NAME oasis_standalone_gameplay COMMAND oasis_standalone_gameplay_test)
 add_executable(oasis_runtime_test tests/runtime_test.cpp)
 target_link_libraries(oasis_runtime_test PRIVATE oasis_core)
 add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
@@ -286,6 +289,7 @@ set(oasis_test_targets
     oasis_vdp_test
     oasis_vdp_rasterizer_test
     oasis_standalone_sequencer_test
+    oasis_standalone_gameplay_test
     oasis_runtime_test
     oasis_screen_descriptor_test
     oasis_byte_grid_test

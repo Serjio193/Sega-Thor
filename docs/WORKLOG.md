@@ -1,3 +1,36 @@
+# 2026-11-08 — Milestone M16.2: FIRST NATIVE INTERACTIVE GAMEPLAY SLICE — Live Player Simulation Driven by Gamepad/Keyboard Input; Reverse-Engineered Physics & State Machine (Routines 0x0085E2 Direction Table, 0x008F12 Velocity Vectors, Fixed-Point Sub-Pixel Accumulator, Footprint Collision & Terrain Gating); VDP State Translation via SAT Update (Entries 13-16 Multi-Part Sprite Composition at 0xD000); Canonical Beach Savestate (Frame 3600) Fixture Extraction & 60-Frame Oracle Trajectory Verification; Dual-Mode Player (Mode A Replay + Mode B Live Interactive Simulation) with 60 FPS Pacing, Real-Time Coordinates in Window Title, Camera Tracking Toggle (T), Mode Toggle (Tab/M), Headless Mode; 7/7 Unit Tests Passing; Zero Emulator Runtime Links (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 1 — Verify M16.1 Frame Evidence:
+    - Audit all 17 frame fixtures in `data/standalone-fixtures/sequence/`.
+    - Verify individual frame integrity, frame-by-frame SHA256, and ensure all 17 frames are genuine BizHawk VBlank captures.
+  * Phase 2 & 3 — Authentic Beach Checkpoint & Oracle Mining:
+    - Locate canonical playable checkpoint `canonical_beach_frame3600.state` (1,036,288 bytes) and continuation inputs `canonical_beach_frame3600.input.polls` (600 frames).
+    - Reverse engineer GPGX 1.7.6 savestate memory layout: Work RAM at offset 16 (64KB byte-swapped words on x86 host), VDP context at offset 73765 (VRAM 64KB, SAT 1KB, CRAM 128B 9-bit packed, VSRAM 128B, Registers 32B).
+    - Locate player RAM entity base in Work RAM (`A6 = 0x00FF19E8`): type `0x0002`, movement state `0x0004`, initial coordinates $X = 261$ (`0x0105`), $Y = 107$ (`0x006B`), HP 208/218.
+    - Mine 60-frame authentic execution trace from `C:/Github/Sega-Thor/build/session-beach-frame3600-resumed/replay-run/calls.jsonl`:
+      Routine `0x009D50` with $A6 = 0x00FF19E8$, $D7 = \text{player\_x}$: Frame 1: $X = 261$, Frame 3: $X = 266$, Frame 15: $X = 274$, Frame 19: $X = 284$, Frame 39: $X = 335$, Frame 59: $X = 385$.
+    - Emit `data/standalone-fixtures/beach_canonical_60_frames.json`.
+  * Phase 4 — Baseline VDP State Extraction:
+    - Build `build/export_beach_vdp_state.py` to extract baseline VDP state from `canonical_beach_frame3600.state`.
+    - Generate `data/standalone-fixtures/beach_frame_000.json` with unswapped 64KB VRAM, unpacked 128B CRAM words (`0000_BBB0_GGG0_RRR0`), 80B VSRAM, and registers.
+    - Verify rasterization through `oasis_standalone_first_pixel`: 71,680 pixels (Plane A 66,356 px, Sprites 5,324 px).
+    - Identify multi-part player sprite in SAT entries 13..16: Piece 13 body/legs $24 \times 32$ (tile `0x479`), Piece 14 torso $24 \times 16$ (tile `0x485`), Piece 15 head $16 \times 16$ (tile `0x48B`), Piece 16 hair $8 \times 8$ (tile `0x48F`).
+  * Phase 5 — Native Simulation Implementation:
+    - Author `src/game/standalone_game_simulation.hpp` (64 lines) and `src/game/standalone_game_simulation.cpp` (115 lines) implementing `IGameSimulation`.
+    - Input maps from `oasis::core::ControllerState` via direction decoder `0x0085E2` into player movement logic (`player::try_move`).
+    - Advance player fixed-point accumulator ($16.16$ format, cardinal speed $X = \text{0x36000}$, $Y = \text{0x30000}$; diagonal speed $X = \text{0x2A000}$, $Y = \text{0x25800}$).
+    - Evaluate terrain collision and gate against traversable ground grid ($128 \times 128$ cells).
+    - Update VDP SAT entries 13..16 with screen coordinates, flip flags, and walk cycle ticks.
+  * Phase 6 — Dual-Mode Standalone Player & Platform Input:
+    - Update `src/platform/window.cpp` (159 lines): map Arrow keys / WASD to directional D-pad, Z/J (Button A), X/K (Button B), C/L (Button C), Enter (Start), Tab/M (Mode toggle), T (Camera tracking toggle).
+    - Update `src/tools/standalone_player.cpp` (311 lines): support `--mode <replay|simulation>`, `--sim-fixture`, `--input-journal`, interactive hotkeys, dynamic title bar displaying coordinates and state, and headless runner.
+  * Phase 7 — Testing Suite & Governance:
+    - Author `tests/standalone_gameplay_test.cpp` (206 lines) with 7 comprehensive unit tests.
+    - Verify all governed files $\le 500$ lines.
+    - Run headless simulation and replay runs: both report STATUS=PASS.
+    - Zero emulator links: verified with `objdump -p` and `nm` (0 GPGX, 0 Musashi, 0 libretro).
+
 # 2026-11-08 — Milestone M16.1: STANDALONE FRAME SEQUENCER, INDEPENDENT PIXEL ORACLE, AND FIRST VISIBLE ANIMATION — Real Hardware Pixel Parity (100% Bit-Exact Match on 71,680 Pixels Across Frames 779 and 200, 0 Diffs); 17-Frame Gameplay Sequence Bit-Exact Parity (1,218,560 Pixels, 0 Diffs); Color DAC Model Reconciliation (v * 0x22 Mega Drive Hardware vs Full Scale); Standalone Interactive Win32/GDI Player (60 FPS, Space Pause, Step Forward/Back, Reset, Headless Mode); Next Game Loop Simulation Boundary Decoupled; Zero Emulator Links (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

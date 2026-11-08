@@ -1,3 +1,45 @@
+# ADR-20261108-M16-02-NATIVE-INTERACTIVE-GAMEPLAY-SLICE — First Native Interactive Gameplay Update, Player Physics Simulation (Routines 0x0085E2, 0x008F12), Multi-Piece SAT Sprite Composition, Canonical Beach Checkpoint Integration, and Dual-Mode Player Architecture
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.1 delivered an authentic 17-frame gameplay sequence player with 100% bit-exact pixel matching against BizHawk/Genplus-gx, but playback remained passive and prerecorded.
+2. Milestone M16.2 mandates advancing from static VDP playback to the FIRST real standalone C++ gameplay update driven by live controller/keyboard input.
+3. The player must respond to input through authentic reverse-engineered game logic (not by faking movement or direct RGB pixel blitting).
+4. Original ROM behavior and authentic gameplay state must serve as the reference oracle without linking GPGX, Musashi, or libretro.
+
+**Decision:**
+1. **Reverse-Engineered Simulation Pipeline:**
+   - Implemented `oasis::game::StandaloneGameSimulation` implementing `IGameSimulation`.
+   - Controller state (`oasis::core::ControllerState`) is decoded via direction lookup routine `0x0085E2` and dispatched into `oasis::game::player::try_move`.
+   - Movement vectors are derived using authentic speeds from routine `0x008F12`: cardinal $X = \text{0x36000}$ ($3.375$ px/frame), cardinal $Y = \text{0x30000}$ ($3.0$ px/frame); diagonal $X = \text{0x2A000}$ ($2.625$ px/frame), diagonal $Y = \text{0x25800}$ ($2.34375$ px/frame).
+   - Collision detection is evaluated via `world::ByteGridView` aggregating world cells against traversable terrain codes and applying `world::evaluate_terrain_gate`.
+   - Resulting sub-pixel coordinates advance the player state machine and fixed-point accumulator.
+2. **Authentic VDP SAT Sprite Reflection:**
+   - Ali on the beach scene is composed of 4 hardware sprite pieces (SAT entries 13..16 at VRAM `0xD000`):
+     * Piece 13: Body/Legs ($3 \times 4$ cells, $24 \times 32$ px, base tile `0x479`) at $(X, Y)$
+     * Piece 14: Torso ($3 \times 2$ cells, $24 \times 16$ px, base tile `0x485`) at $(X, Y - 16)$
+     * Piece 15: Head ($2 \times 2$ cells, $16 \times 16$ px, base tile `0x48B`) at $(X + 8, Y - 32)$
+     * Piece 16: Hair ($1 \times 1$ cell, $8 \times 8$ px, base tile `0x48F`) at $(X, Y - 24)$
+   - Turning left sets the horizontal flip bit (`0x0800`) across all 4 pieces and mirrors relative offsets.
+   - Walking updates tile base indices according to the 16-frame walk cycle tick.
+   - The updated SAT entries are written directly to `VdpState` VRAM, which the standalone VDP rasterizer renders with complete plane priorities and backdrop color.
+3. **Canonical Checkpoint & Oracle Verification:**
+   - Mined checkpoint `canonical_beach_frame3600.state` from the hybrid repository without modifying original worktree files.
+   - Extracted baseline VDP state `data/standalone-fixtures/beach_frame_000.json`.
+   - Reverse engineered 60-frame continuation input trajectory from GPGX trace, validating player progression from $X = 261$ to $X = 385$.
+4. **Dual-Mode Standalone Player:**
+   - Extended `oasis_standalone_player` to seamlessly operate in:
+     * Mode A (Replay): authentic captured VDP frame sequence playback.
+     * Mode B (Simulation): live interactive player simulation with real-time controller/keyboard input.
+   - Runtime switching via Tab/M; camera tracking toggle via T; live coordinates and movement state displayed in the window title.
+   - Supported headless execution (`--headless`) for continuous integration.
+
+**Consequences:**
+- First interactive gameplay vertical slice established entirely in native C++.
+- Zero dependencies on GPGX, Musashi, or libretro in standalone binaries.
+- All source files remain strictly $\le 500$ lines.
+
 # ADR-20261108-M16-01-STANDALONE-ORACLE-AND-FRAME-SEQUENCER — Independent Emulator Pixel Oracle Verification, Hardware Color DAC Formula Reconciliation, 17-Frame Gameplay Sequence Bit-Exact Parity, and Standalone Native Windowed Player
 **Status:** Accepted
 **Date:** 2026-11-08

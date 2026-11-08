@@ -1,0 +1,373 @@
+{
+  "schema": "oasis.standalone.beach-oracle.v1",
+  "checkpoint": "canonical_beach_frame3600.state",
+  "total_frames": 61,
+  "frames": [
+    {
+      "frame": 0,
+      "buttons": 256,
+      "player_x": 261,
+      "player_y": 107
+    },
+    {
+      "frame": 1,
+      "buttons": 128,
+      "player_x": 261,
+      "player_y": 107
+    },
+    {
+      "frame": 2,
+      "buttons": 128,
+      "player_x": 261,
+      "player_y": 107
+    },
+    {
+      "frame": 3,
+      "buttons": 128,
+      "player_x": 266,
+      "player_y": 107
+    },
+    {
+      "frame": 4,
+      "buttons": 128,
+      "player_x": 266,
+      "player_y": 107
+    },
+    {
+      "frame": 5,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 6,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 7,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 8,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 9,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 10,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 11,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 12,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 13,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 14,
+      "buttons": 128,
+      "player_x": 269,
+      "player_y": 107
+    },
+    {
+      "frame": 15,
+      "buttons": 128,
+      "player_x": 274,
+      "player_y": 107
+    },
+    {
+      "frame": 16,
+      "buttons": 128,
+      "player_x": 274,
+      "player_y": 107
+    },
+    {
+      "frame": 17,
+      "buttons": 128,
+      "player_x": 279,
+      "player_y": 107
+    },
+    {
+      "frame": 18,
+      "buttons": 128,
+      "player_x": 279,
+      "player_y": 107
+    },
+    {
+      "frame": 19,
+      "buttons": 128,
+      "player_x": 284,
+      "player_y": 107
+    },
+    {
+      "frame": 20,
+      "buttons": 1,
+      "player_x": 284,
+      "player_y": 107
+    },
+    {
+      "frame": 21,
+      "buttons": 128,
+      "player_x": 289,
+      "player_y": 107
+    },
+    {
+      "frame": 22,
+      "buttons": 128,
+      "player_x": 289,
+      "player_y": 107
+    },
+    {
+      "frame": 23,
+      "buttons": 128,
+      "player_x": 294,
+      "player_y": 107
+    },
+    {
+      "frame": 24,
+      "buttons": 128,
+      "player_x": 294,
+      "player_y": 107
+    },
+    {
+      "frame": 25,
+      "buttons": 128,
+      "player_x": 299,
+      "player_y": 107
+    },
+    {
+      "frame": 26,
+      "buttons": 128,
+      "player_x": 299,
+      "player_y": 107
+    },
+    {
+      "frame": 27,
+      "buttons": 128,
+      "player_x": 304,
+      "player_y": 107
+    },
+    {
+      "frame": 28,
+      "buttons": 128,
+      "player_x": 304,
+      "player_y": 107
+    },
+    {
+      "frame": 29,
+      "buttons": 128,
+      "player_x": 309,
+      "player_y": 107
+    },
+    {
+      "frame": 30,
+      "buttons": 128,
+      "player_x": 309,
+      "player_y": 107
+    },
+    {
+      "frame": 31,
+      "buttons": 128,
+      "player_x": 315,
+      "player_y": 107
+    },
+    {
+      "frame": 32,
+      "buttons": 128,
+      "player_x": 315,
+      "player_y": 107
+    },
+    {
+      "frame": 33,
+      "buttons": 128,
+      "player_x": 320,
+      "player_y": 107
+    },
+    {
+      "frame": 34,
+      "buttons": 128,
+      "player_x": 320,
+      "player_y": 107
+    },
+    {
+      "frame": 35,
+      "buttons": 128,
+      "player_x": 325,
+      "player_y": 107
+    },
+    {
+      "frame": 36,
+      "buttons": 128,
+      "player_x": 325,
+      "player_y": 107
+    },
+    {
+      "frame": 37,
+      "buttons": 128,
+      "player_x": 330,
+      "player_y": 107
+    },
+    {
+      "frame": 38,
+      "buttons": 128,
+      "player_x": 330,
+      "player_y": 107
+    },
+    {
+      "frame": 39,
+      "buttons": 128,
+      "player_x": 335,
+      "player_y": 107
+    },
+    {
+      "frame": 40,
+      "buttons": 256,
+      "player_x": 335,
+      "player_y": 107
+    },
+    {
+      "frame": 41,
+      "buttons": 128,
+      "player_x": 340,
+      "player_y": 107
+    },
+    {
+      "frame": 42,
+      "buttons": 128,
+      "player_x": 340,
+      "player_y": 107
+    },
+    {
+      "frame": 43,
+      "buttons": 128,
+      "player_x": 345,
+      "player_y": 107
+    },
+    {
+      "frame": 44,
+      "buttons": 128,
+      "player_x": 345,
+      "player_y": 107
+    },
+    {
+      "frame": 45,
+      "buttons": 128,
+      "player_x": 350,
+      "player_y": 107
+    },
+    {
+      "frame": 46,
+      "buttons": 128,
+      "player_x": 350,
+      "player_y": 107
+    },
+    {
+      "frame": 47,
+      "buttons": 128,
+      "player_x": 355,
+      "player_y": 107
+    },
+    {
+      "frame": 48,
+      "buttons": 128,
+      "player_x": 355,
+      "player_y": 107
+    },
+    {
+      "frame": 49,
+      "buttons": 128,
+      "player_x": 360,
+      "player_y": 107
+    },
+    {
+      "frame": 50,
+      "buttons": 128,
+      "player_x": 360,
+      "player_y": 107
+    },
+    {
+      "frame": 51,
+      "buttons": 128,
+      "player_x": 365,
+      "player_y": 107
+    },
+    {
+      "frame": 52,
+      "buttons": 128,
+      "player_x": 365,
+      "player_y": 107
+    },
+    {
+      "frame": 53,
+      "buttons": 128,
+      "player_x": 370,
+      "player_y": 107
+    },
+    {
+      "frame": 54,
+      "buttons": 128,
+      "player_x": 370,
+      "player_y": 107
+    },
+    {
+      "frame": 55,
+      "buttons": 128,
+      "player_x": 375,
+      "player_y": 107
+    },
+    {
+      "frame": 56,
+      "buttons": 128,
+      "player_x": 375,
+      "player_y": 107
+    },
+    {
+      "frame": 57,
+      "buttons": 128,
+      "player_x": 380,
+      "player_y": 107
+    },
+    {
+      "frame": 58,
+      "buttons": 128,
+      "player_x": 380,
+      "player_y": 107
+    },
+    {
+      "frame": 59,
+      "buttons": 128,
+      "player_x": 385,
+      "player_y": 107
+    },
+    {
+      "frame": 60,
+      "buttons": 1,
+      "player_x": 385,
+      "player_y": 107
+    }
+  ]
+}

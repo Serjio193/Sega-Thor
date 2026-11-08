@@ -126,10 +126,30 @@ bool NativeWindow::backend_available() const noexcept { return true; }
 core::ControllerState NativeWindow::poll_controller() const noexcept {
     core::ControllerState result{};
     if (GetForegroundWindow() != static_cast<HWND>(window_handle_)) return result;
-    if ((GetAsyncKeyState(VK_UP) & 0x8000) != 0) result.set(core::Button::Up);
-    if ((GetAsyncKeyState(VK_DOWN) & 0x8000) != 0) result.set(core::Button::Down);
-    if ((GetAsyncKeyState(VK_LEFT) & 0x8000) != 0) result.set(core::Button::Left);
-    if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0) result.set(core::Button::Right);
+    if ((GetAsyncKeyState(VK_UP) & 0x8000) != 0 || (GetAsyncKeyState('W') & 0x8000) != 0) {
+        result.set(core::Button::Up);
+    }
+    if ((GetAsyncKeyState(VK_DOWN) & 0x8000) != 0 || (GetAsyncKeyState('S') & 0x8000) != 0) {
+        result.set(core::Button::Down);
+    }
+    if ((GetAsyncKeyState(VK_LEFT) & 0x8000) != 0 || (GetAsyncKeyState('A') & 0x8000) != 0) {
+        result.set(core::Button::Left);
+    }
+    if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0 || (GetAsyncKeyState('D') & 0x8000) != 0) {
+        result.set(core::Button::Right);
+    }
+    if ((GetAsyncKeyState('Z') & 0x8000) != 0 || (GetAsyncKeyState('J') & 0x8000) != 0) {
+        result.set(core::Button::A);
+    }
+    if ((GetAsyncKeyState('X') & 0x8000) != 0 || (GetAsyncKeyState('K') & 0x8000) != 0) {
+        result.set(core::Button::B);
+    }
+    if ((GetAsyncKeyState('C') & 0x8000) != 0 || (GetAsyncKeyState('L') & 0x8000) != 0) {
+        result.set(core::Button::C);
+    }
+    if ((GetAsyncKeyState(VK_RETURN) & 0x8000) != 0) {
+        result.set(core::Button::Start);
+    }
     if ((GetAsyncKeyState(VK_TAB) & 0x8000) != 0 || (GetAsyncKeyState('M') & 0x8000) != 0) {
         result.set(core::Button::Mode);
     }

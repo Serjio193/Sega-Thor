@@ -1,3 +1,31 @@
+# M16.2 First Native Interactive Gameplay Slice — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Live Interactive Player Simulation:
+  * Input-driven native gameplay update via `oasis::game::StandaloneGameSimulation`.
+  * Keyboard / controller inputs (WASD, Arrows, Buttons A/B/C, Start) feed into `core::ControllerState`.
+  * Authentic reverse-engineered direction table `0x0085E2` and velocity vectors `0x008F12` integrated with fixed-point sub-pixel accumulator ($16.16$).
+  * Terrain collision and gating evaluated against $128 \times 128$ grid via `world::ByteGridView`.
+- Authentic VDP Sprite Composition:
+  * Player multi-part sprite structure reflected into VDP SAT entries 13..16 at VRAM `0xD000` (body/legs, torso, head, hair).
+  * Horizontal flip and walk-tick animation cycling updated in real time.
+  * Standalone VDP rasterizer renders updated state with complete plane composition.
+- Authentic Beach Checkpoint & Oracle Mining:
+  * Extracted baseline VDP state from `canonical_beach_frame3600.state` (`data/standalone-fixtures/beach_frame_000.json`).
+  * Mined 60-frame canonical continuation oracle trajectory (`data/standalone-fixtures/beach_canonical_60_frames.json`).
+- Dual-Mode Standalone Player:
+  * Extended `oasis_standalone_player` with Mode A (Replay) and Mode B (Interactive Simulation).
+  * Interactive controls: WASD / Arrows (Move), Space (Pause/Resume), N/Right (Step Forward), P/Left (Step Back), R (Reset), Tab/M (Mode Toggle), T (Camera Tracking Toggle), ESC (Exit).
+  * Dynamic window title reflects real-time coordinates, state, and FPS.
+  * Headless mode (`--headless`) for automated CI runs.
+- Unit Testing & Zero Emulator Runtime Links:
+  * Added `tests/standalone_gameplay_test.cpp` (7/7 PASS).
+  * Standalone executables link zero GPGX, Musashi, or libretro libraries.
+  * All source files strictly <= 500 lines.
+
+Next Milestone:
+- M16.3: Multi-Entity Native Simulation, NPC Interactions, and Full Scene Integration.
+
 # M16.1 Standalone Frame Sequencer, Independent Pixel Oracle, and First Visible Animation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

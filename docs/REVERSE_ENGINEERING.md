@@ -1,3 +1,53 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.2: First Native Interactive Gameplay Slice, Player Movement State Machine, SAT Multi-Part Sprite Composition, and Canonical Beach Oracle Trajectory)
+
+## Milestone M16.2 Reverse Engineering Summary
+
+### 1. Player Entity Structure & Movement Routines
+- **Player RAM Entity Base:** In Beyond Oasis Work RAM, the active player entity is referenced at `$A6 = 0x00FF19E8`:
+  * `0x00(A6)`: Entity type code (`0x0002` = player).
+  * `0x02(A6)`: Direction code (0=Up, 1=Right, 2=Down, 3=Left).
+  * `0x04(A6)`: Movement state word (`0x0002` = walking, `0x0004` = turning).
+  * `0x06(A6)`: Sub-pixel X coordinate (16.16 fixed point; high word = world X).
+  * `0x0A(A6)`: Sub-pixel Y coordinate (16.16 fixed point; high word = world Y).
+  * `0x26(A6)`: Current HP (`0x00D0` = 208).
+  * `0x28(A6)`: Max HP (`0x00DA` = 218).
+- **Direction Table Routine `0x0085E2`:**
+  * Consumes 4-bit controller directional input (Up, Down, Left, Right).
+  * Translates input nibble into cardinal and diagonal direction codes:
+    Input `0x08` (Right) -> Direction 1, delta $(+X, 0)$.
+    Input `0x04` (Left) -> Direction 3, delta $(-X, 0)$.
+    Input `0x02` (Down) -> Direction 2, delta $(0, +Y)$.
+    Input `0x01` (Up) -> Direction 0, delta $(0, -Y)$.
+    Diagonal inputs combine orthogonal deltas with scaled velocity.
+- **Velocity Vector Routine `0x008F12`:**
+  * Cardinal horizontal speed: `0x00036000` (3.375 pixels/frame).
+  * Cardinal vertical speed: `0x00030000` (3.0 pixels/frame).
+  * Diagonal horizontal speed: `0x0002A000` (2.625 pixels/frame).
+  * Diagonal vertical speed: `0x00025800` (2.34375 pixels/frame).
+  * Footprint collision radius: 10 pixels around player center.
+
+### 2. Multi-Piece Hardware Sprite Composition at 0xD000 (Beach Scene)
+- **VDP Sprite Attribute Table Base:** `0xD000` (Register 5 = `0x68`).
+- **Player Sprite Structure (SAT Entries 13..16):**
+  * Entry 13 (Body & Legs): Tile index `0x0479`, size $3 \times 4$ cells ($24 \times 32$ pixels), screen pos $(X, Y)$.
+  * Entry 14 (Torso): Tile index `0x0485`, size $3 \times 2$ cells ($24 \times 16$ pixels), screen pos $(X, Y - 16)$.
+  * Entry 15 (Head): Tile index `0x048B`, size $2 \times 2$ cells ($16 \times 16$ pixels), screen pos $(X + 8, Y - 32)$ (unflipped) or $(X, Y - 32)$ (flipped).
+  * Entry 16 (Hair/Neck): Tile index `0x048F`, size $1 \times 1$ cell ($8 \times 8$ pixels), screen pos $(X, Y - 24)$ (unflipped) or $(X + 16, Y - 24)$ (flipped).
+- **Horizontal Flipping:** When moving or facing Left, bit 11 (`0x0800`) of the tile attribute word is set on all 4 pieces.
+- **Walk Cycle Progression:** Every frame in motion advances the 16-frame walk cycle tick, cycling body/leg tile bases (`0x0479` through walk offsets).
+
+### 3. Canonical Beach Savestate & 60-Frame Oracle Trajectory
+- **Savestate Artifact:** `canonical_beach_frame3600.state` (1,036,288 bytes, SHA256: `0833d941865cbe61c9e8884fc5706927bfab47f15e81d77a835b0d0c266858e9`).
+- **GPGX Savestate Memory Offsets:**
+  * Byte offset 16: Mega Drive Work RAM (64KB, word-swapped for x86).
+  * Byte offset 73,765: Mega Drive VDP State (64KB VRAM, 1KB SAT, 128B CRAM, 128B VSRAM, 32B registers).
+  * CRAM 9-bit format: `0000_000B_BBGG_GRRR` packed words; unpacked to Genesis 16-bit big-endian words via `((b << 1) << 8) | ((g << 5) | (r << 1))`.
+- **60-Frame Trajectory Parity:**
+  * Continuation input journal `canonical_beach_frame3600.input.polls` applies continuous Right directional input.
+  * Extracted oracle coordinates from `calls.jsonl` routine `0x009D50` ($A6 = 0x00FF19E8$, $D7 = \text{player\_x}$):
+    Frame 1: $X = 261$, Frame 3: $X = 266$, Frame 15: $X = 274$, Frame 19: $X = 284$, Frame 39: $X = 335$, Frame 59: $X = 385$.
+  * Native C++ simulation reproduces this trajectory deterministically without running an emulator core.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.1: Standalone Frame Sequencer, Independent Pixel Oracle, and Hardware DAC Quantization Reconciliation)
 
 ## Milestone M16.1 Reverse Engineering Summary
