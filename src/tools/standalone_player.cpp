@@ -190,6 +190,13 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    const std::string default_map = "data/standalone-fixtures/beach_plane_a_map_64x64.bin";
+    if (fs::exists(default_map)) {
+        if (simulation.load_screen_map_file(default_map.c_str())) {
+            std::cout << "Loaded authentic Plane A map for streaming: " << default_map << "\n";
+        }
+    }
+
     // Prepare replay sequence
     const auto sequence_entries = discover_sequence(opt.sequence_dir);
     std::vector<oasis::genesis::VdpState> vdp_frames;

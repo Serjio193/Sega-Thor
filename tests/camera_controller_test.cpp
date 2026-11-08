@@ -129,6 +129,31 @@ void test_apply_to_vdp() {
     std::cout << "[PASS] test_apply_to_vdp\n";
 }
 
+void test_camera_accelerated_catchup() {
+    using namespace oasis::game::camera;
+
+    CameraConfig cfg{};
+    cfg.min_camera_x = 0;
+    cfg.max_camera_x = 1000;
+    cfg.smooth_tracking = true;
+    CameraController camera{cfg};
+    camera.set_camera_position(100, 100);
+
+    // deadzone_right is 200. With camera at 100, deadzone_right world edge is 100 + 200 = 300.
+    // If player moves to world_x = 340, screen_x = 240, d0 = 240 - 200 = +40 (> 32).
+    // Authentic ROM routine 0x00CFC4..0x00CFD4 accelerated catch-up: delta_x = d0 - 0x1E = 40 - 30 = 10.
+    camera.update(340, 100, 0);
+    assert(camera.camera_x() == 110); // 100 + 10 = 110
+
+    // Deadzone_left is 120. With camera at 110, deadzone_left world edge is 110 + 120 = 230.
+    // If player moves to world_x = 190, screen_x = 80, d0 = 80 - 120 = -40 (< -32).
+    // Accelerated catch-up: delta_x = d0 + 30 = -40 + 30 = -10.
+    camera.update(190, 100, 0);
+    assert(camera.camera_x() == 100); // 110 - 10 = 100
+
+    std::cout << "[PASS] test_camera_accelerated_catchup\n";
+}
+
 } // namespace
 
 int main() {
@@ -136,6 +161,7 @@ int main() {
     test_camera_initial_state();
     test_camera_deadzone();
     test_camera_tracking_right_and_smoothing();
+    test_camera_accelerated_catchup();
     test_camera_clamping();
     test_world_to_screen_mapping();
     test_apply_to_vdp();

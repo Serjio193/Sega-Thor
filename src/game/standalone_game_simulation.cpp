@@ -24,10 +24,10 @@ StandaloneGameSimulation::StandaloneGameSimulation() {
 
     NativeEntity pier_column{};
     pier_column.type_id = 0x0098;
-    pier_column.world_x = 168;
-    pier_column.world_y = 248;
+    pier_column.world_x = 259;
+    pier_column.world_y = 101;
     pier_column.state = 0;
-    pier_column.tile_base = 0x0694;
+    pier_column.tile_base = 0x069DU;
     pier_column.active = true;
     entities_.push_back(pier_column);
 }
@@ -85,6 +85,16 @@ bool StandaloneGameSimulation::load_rom_background(std::span<const std::uint8_t>
     }
 }
 
+bool StandaloneGameSimulation::load_screen_map(std::span<const std::uint16_t> map_data) {
+    return streamer_.initialize(checkpoint_state_.camera_x, checkpoint_state_.camera_y, 2176, map_data);
+}
+
+bool StandaloneGameSimulation::load_screen_map_file(const char* path) {
+    if (!streamer_.load_map_from_file(path)) return false;
+    streamer_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y, 2176);
+    return true;
+}
+
 void StandaloneGameSimulation::reset() {
     player_ = player::PlayerState{checkpoint_state_.x_fixed, checkpoint_state_.y_fixed, -1};
     player_.movement_state = checkpoint_state_.movement_state;
@@ -107,10 +117,14 @@ void StandaloneGameSimulation::reset() {
 
     camera_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y);
     camera_.set_tracking_enabled(camera_tracking_);
+    streamer_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y, 2176);
+    current_vdp_ = baseline_vdp_;
 
     sim_state_.frame_counter = 0;
     sim_state_.player_x = static_cast<std::uint16_t>(player_.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(player_.y_fixed / 0x10000);
+    prev_render_player_x_ = sim_state_.player_x;
+    prev_render_player_y_ = sim_state_.player_y;
     sim_state_.paused = false;
 
     // Reset entities to initial authentic states
@@ -122,15 +136,17 @@ void StandaloneGameSimulation::reset() {
         entities_[0].anim_frame = 0;
     }
     if (entities_.size() > 1) {
-        entities_[1].world_x = 168;
-        entities_[1].world_y = 248;
+        entities_[1].world_x = 259;
+        entities_[1].world_y = 101;
         entities_[1].state = 0;
-        entities_[1].tile_base = 0x0694;
+        entities_[1].tile_base = 0x069DU;
         entities_[1].anim_frame = 0;
     }
 }
 
 void StandaloneGameSimulation::set_player_position(std::int32_t x, std::int32_t y) noexcept {
+    prev_render_player_x_ = sim_state_.player_x;
+    prev_render_player_y_ = sim_state_.player_y;
     player_.x_fixed = x * 0x10000;
     player_.y_fixed = y * 0x10000;
     sim_state_.player_x = static_cast<std::uint16_t>(x);
@@ -218,8 +234,15 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
         }
     }
 
-    // Publish updated state via SatPipelineContract and CameraController into out_vdp
-    update_sat_sprites(out_vdp);
+    // Dynamic tilemap streaming for Plane A into current_vdp_
+    streamer_.step_frame(camera_.camera_x(), camera_.camera_y(), current_vdp_);
+
+    // Commit authentic camera horizontal and vertical scroll into current_vdp_
+    camera_.apply_to_vdp(current_vdp_);
+
+    // Publish updated SAT state into current_vdp_ and output
+    update_sat_sprites(current_vdp_);
+    out_vdp = current_vdp_;
 }
 
 void StandaloneGameSimulation::update_entity_interactions(const FrameInput& input) {
@@ -245,11 +268,7 @@ void StandaloneGameSimulation::update_entity_interactions(const FrameInput& inpu
 }
 
 void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
-    vdp = baseline_vdp_;
     sat_pipeline_.reset_frame();
-
-    // Commit authentic camera horizontal and vertical scroll to VDP VRAM and VSRAM
-    camera_.apply_to_vdp(vdp);
 
     const int cam_x = camera_.camera_x();
     const int cam_y = camera_.camera_y();
@@ -274,52 +293,57 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
                 // Opened state
                 sat_pipeline_.emit_piece(ex, ey, 4, 2, 0x04B0U, 0, false, false, false);
             } else {
-                // Closed state composite
-                sat_pipeline_.emit_piece(ex - 9, ey - 6, 2, 2, 0x04E8U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 8, ey + 8, 1, 1, 0x04A8U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 16, ey, 1, 2, 0x04A9U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 48, ey, 4, 2, 0x04ABU, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 24, ey + 16, 3, 3, 0x04B3U, 0, false, false, false);
-                sat_pipeline_.emit_piece(ex - 56, ey + 16, 4, 3, 0x04BCU, 0, false, false, false);
+                // Closed state authentic ROM composite (Slots 9..14)
+                sat_pipeline_.emit_piece(ex + 28, ey - 10, 2, 2, 0x04E8U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex + 29, ey - 5, 1, 1, 0x04A8U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex + 21, ey - 13, 1, 2, 0x04A9U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 11, ey - 13, 4, 2, 0x04ABU, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex + 13, ey + 3, 3, 3, 0x04B3U, 0, false, false, false);
+                sat_pipeline_.emit_piece(ex - 19, ey + 3, 4, 3, 0x04BCU, 0, false, false, false);
             }
         }
     }
 
     const bool facing_left = (player_.direction_code == 3);
-    const int px = camera_.world_to_screen_x(static_cast<int>(sim_state_.player_x));
-    const int py = camera_.world_to_screen_y(static_cast<int>(sim_state_.player_y));
+    const int render_px_world = (oracle_mode_ && sim_state_.frame_counter > 0)
+        ? static_cast<int>(prev_render_player_x_)
+        : static_cast<int>(sim_state_.player_x);
+    const int render_py_world = (oracle_mode_ && sim_state_.frame_counter > 0)
+        ? static_cast<int>(prev_render_player_y_)
+        : static_cast<int>(sim_state_.player_y);
+    const int px = camera_.world_to_screen_x(render_px_world);
+    const int py = camera_.world_to_screen_y(render_py_world);
 
     // Dynamic walk cycle animation tile base
     const std::uint16_t walk_tile_offset = (player_.movement_state != 0)
         ? static_cast<std::uint16_t>((walk_tick_ / 4) * 4)
         : 0;
 
-    // 4. Emit 4-piece composite player Ali sprite (Mode 0: world entity)
-    sat_pipeline_.emit_piece(px, py, 3, 4,
+    // 4. Emit 4-piece composite player Ali sprite (Mode 0: world entity, Slots 15..18)
+    sat_pipeline_.emit_piece(px - 29, py - 43, 3, 4,
                             0x0479U + walk_tile_offset, 0, true, facing_left, false);
-    sat_pipeline_.emit_piece(px, py - 16, 3, 2,
+    sat_pipeline_.emit_piece(px - 29, py - 59, 3, 2,
                             0x0485U, 0, true, facing_left, false);
-    const int head_x = facing_left ? px : (px + 8);
-    sat_pipeline_.emit_piece(head_x, py - 24, 2, 2,
+    const int head_x = facing_left ? (px - 29) : (px - 21);
+    sat_pipeline_.emit_piece(head_x, py - 75, 2, 2,
                             0x048BU, 0, true, facing_left, false);
-    const int hair_x = facing_left ? (px + 16) : px;
-    sat_pipeline_.emit_piece(hair_x, py - 16, 1, 1,
+    const int hair_x = facing_left ? (px - 21) : (px - 29);
+    sat_pipeline_.emit_piece(hair_x, py - 67, 1, 1,
                             0x048FU, 0, true, facing_left, false);
 
-    // 5. Emit Player Ali mirror / water reflection composite (Mode 1: horizontal reflection)
-    const int mirror_x = px + 24;
-    sat_pipeline_.emit_piece(mirror_x, py, 3, 4,
+    // 5. Emit Player Ali mirror / water reflection composite (Mode 1: horizontal reflection, Slots 19..22)
+    sat_pipeline_.emit_piece(px - 5, py - 43, 3, 4,
                             0x0479U + walk_tile_offset, 0, true, !facing_left, false);
-    sat_pipeline_.emit_piece(mirror_x, py - 16, 3, 2,
+    sat_pipeline_.emit_piece(px - 5, py - 59, 3, 2,
                             0x0485U, 0, true, !facing_left, false);
-    const int m_head_x = !facing_left ? mirror_x : (mirror_x + 8);
-    sat_pipeline_.emit_piece(m_head_x, py - 24, 2, 2,
+    const int m_head_x = !facing_left ? (px - 5) : (px + 3);
+    sat_pipeline_.emit_piece(m_head_x, py - 75, 2, 2,
                             0x048BU, 0, true, !facing_left, false);
-    const int m_hair_x = !facing_left ? (mirror_x + 16) : mirror_x;
-    sat_pipeline_.emit_piece(m_hair_x, py - 16, 1, 1,
+    const int m_hair_x = !facing_left ? (px + 11) : (px - 5);
+    sat_pipeline_.emit_piece(m_hair_x, py - 67, 1, 1,
                             0x048FU, 0, true, !facing_left, false);
 
-    // 6. Pier column entity
+    // 6. Pier column entity (Slot 23)
     for (const auto& entity : entities_) {
         if (!entity.active || entity.type_id != 0x0098) continue;
         const int ex = camera_.world_to_screen_x(entity.world_x);

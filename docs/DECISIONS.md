@@ -1,3 +1,42 @@
+# ADR-20261108-M16-07-AUTHENTIC-DYNAMIC-TILEMAP-STREAMING-AND-SPRITE-CHAIN-DIFFERENTIAL — Dynamic Plane A Tilemap Streaming Engine (Routines 0x002084, 0x0023CC, 0x002512), 2-Frame Presentation Pipeline Delay, GPGX Render Flag Activation, Versioned Graphics Oracle v3, and Honest Ownership Differential Reporting
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. In milestone M16.6, Plane A name table comparison diverged at frame 29 (`PLANE_A_EXACT: 29/121`), coinciding with the camera exceeding the horizontal tile streaming threshold ($X > 128$).
+2. The libretro emulator core used for oracle recording generated blank framebuffers due to default zeroing of layer render flags in BizHawk Waterbox.
+3. Active SAT chain matched only on Frame 0, as complex multi-piece entities, reflections, and pipeline latency were unmodeled during dynamic movement.
+4. Camera catch-up formula and chest interaction conditions required formal ROM disassembly verification.
+
+**Decision:**
+1. **Dynamic Plane A Tilemap Streaming Engine (Routine 0x0023CC / 0x002512):**
+   - Reverse-engineered the authentic Beyond Oasis VDP Plane A streaming system:
+     - Tilemap is stored decompressed in RAM at `$00FF3FAC` as a 64x64 word matrix (8,192 bytes) representing Screen {1, 0}.
+     - Routine `0x0023CC` streams vertical columns when the camera crosses an 8-pixel horizontal boundary: writes 29 rows with auto-increment `0x80` to the leading edge `(col_idx + 40) % 64`.
+     - Routine `0x002512` streams horizontal rows when crossing an 8-pixel vertical boundary: writes 41 words horizontally to leading edge `(row_idx + 28) % 64`.
+     - Discovered a 2-frame presentation pipeline delay (+2 VDP frames = 1 30Hz game loop tick) between camera coordinate crossing and the DMA commit to VRAM Plane A name table at `0xC000`.
+   - Implemented `oasis::game::world::TilemapStreamer` (`src/game/world/tilemap_streamer.hpp/.cpp`, 67 / 144 lines), achieving **121/121 (100.0%)** exact match on `PLANE_A_EXACT`.
+2. **True Video Layout and GPGX Layer Activation:**
+   - Located the BizHawk Waterbox render flags at RAM offsets: `cinterface_render_bgw` (`0x281cb44`), `bgb` (`0x281cb48`), `bga` (`0x281cb4c`), and `obj` (`0x281cb50`). Setting all four to 1 enabled authentic 320x224 RGB565 rendering with 70,771 non-backdrop pixels per active frame.
+   - Preserved immutable M16.5 `beach_canonical_120_oracle.json` fixture and published versioned `beach_graphics_oracle_v3.json` with normalized 320x224 RGBA32 framebuffers ($286,720$ bytes).
+3. **Honest Multi-Domain Ownership Differential Reporting:**
+   - Replaced ambiguous labels with explicit ownership distinctions:
+     - `OWNED_SPRITE_PIXELS_EXACT`: 121/121 (100.0%)
+     - `HUD_OWNED_PIXELS_EXACT`: 121/121 (100.0%)
+     - `PLANE_B_EXACT`: 121/121 (100.0%)
+     - `PLANE_A_EXACT`: 121/121 (100.0%)
+     - `SAT_ACTIVE_CHAIN_EXACT`: 2/121 (1.7%)
+     - `SAT_RAW_EXACT`: 2/121 (1.7%)
+     - `VRAM_RELEVANT_EXACT`: 0/121 (0.0%)
+     - `FULL_FRAME_EXACT`: 0/121 (0.0%)
+4. **Camera Accelerated Catch-Up Formula:**
+   - Disassembled routine `0x00CEEA` (`0x00CFC4..0x00CFD4`): accelerated catch-up for `delta > 32` is confirmed as `delta - 0x1E` (`delta - 30`). Added unit test `test_camera_accelerated_catchup()`.
+   - Verified that the 120-frame input journal contains no Action button presses near the chest (`ENTITY_SLOT7_STATE == 0`), confirming `CHEST_INTERACTION_ROM_VERIFIED = FALSE`.
+
+**Consequences:**
+- Plane A background scrolls bit-for-bit identically with original ROM execution across all 121 frames.
+- Full compliance with source file size limit ($\le 500$ lines) and zero emulator linkage.
+
 # ADR-20261108-M16-06-NATIVE-SCENE-GRAPHICS-PIPELINE-SAT-RECONSTRUCTION-AND-12-DOMAIN-PARITY — Resolution of Frame 0 Video Latch & Libretro Pitch Margin Artifacts, Active Hardware SAT Link Chain Traversal (link != 0 until link == 0), Dedicated HudOverlay Architecture (Routine 0x003FA0, 100% 121-Frame Parity), C++20 SpriteCompositor (Modes 0 and 1), and 12-Domain Differential Verification Pipeline
 **Status:** Accepted
 **Date:** 2026-11-08

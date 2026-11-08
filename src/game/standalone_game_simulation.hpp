@@ -7,6 +7,7 @@
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/standalone_game_loop.hpp"
 #include "game/world/byte_grid.hpp"
+#include "game/world/tilemap_streamer.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <array>
@@ -62,6 +63,18 @@ public:
 
     // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
     bool load_rom_background(std::span<const std::uint8_t> rom);
+
+    // Load full authentic 64x64 screen map for dynamic tilemap streaming.
+    bool load_screen_map(std::span<const std::uint16_t> map_data);
+    bool load_screen_map_file(const char* path);
+
+    // Access dynamic tilemap streamer.
+    [[nodiscard]] const world::TilemapStreamer& streamer() const noexcept {
+        return streamer_;
+    }
+    [[nodiscard]] world::TilemapStreamer& streamer() noexcept {
+        return streamer_;
+    }
 
     // Advances the simulation by exactly one deterministic frame.
     void step_frame(const FrameInput& input, genesis::VdpState& out_vdp) override;
@@ -137,12 +150,14 @@ private:
     void update_entity_interactions(const FrameInput& input);
 
     genesis::VdpState baseline_vdp_{};
+    genesis::VdpState current_vdp_{};
     player::PlayerState player_{};
     player::PlayerMovementConfig movement_config_{};
     player::VelocityAdjustContext velocity_context_{};
     CheckpointInitialState checkpoint_state_{};
 
     camera::CameraController camera_{};
+    world::TilemapStreamer streamer_{};
     std::vector<NativeEntity> entities_{};
     render::SatPipelineContract sat_pipeline_{};
     render::HudOverlay hud_{};
@@ -154,6 +169,8 @@ private:
     bool camera_tracking_{true};
     bool oracle_mode_{true};
     bool replay_player_trajectory_{false};
+    std::uint16_t prev_render_player_x_{261};
+    std::uint16_t prev_render_player_y_{107};
     int walk_tick_{0};
     bool initialized_{false};
 };

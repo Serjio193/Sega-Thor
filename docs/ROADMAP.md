@@ -1,3 +1,30 @@
+# M16.7 Authentic Dynamic Tilemap Streaming and Sprite Chain Differential — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Dynamic Plane A Tilemap Streaming Parity (PLANE_A_EXACT: 121/121, 100.0%):
+  * Reverse-engineered authentic ROM streaming routines `0x002084`, `0x0023CC` (column streaming, 29 rows), `0x002512` (row streaming, 41 words), and `0x00D188` (camera position tracking).
+  * Discovered 2-frame presentation pipeline delay (+2 VDP frames = 1 30Hz game loop tick) between camera crossing tile boundaries and VDP VRAM name table DMA commit.
+  * Implemented `oasis::game::world::TilemapStreamer` (`src/game/world/tilemap_streamer.hpp/.cpp`, 67 / 144 lines) and integrated into `StandaloneGameSimulation`.
+  * Achieved 100.0% exact match across all 121 frames, completely resolving the M16.6 frame 29 divergence.
+- True Video Layout & GPGX Layer Activation:
+  * Located and activated BizHawk Waterbox render flags (`cinterface_render_bgw`, `bgb`, `bga`, `obj`), unlocking authentic 320x224 RGB565 gameplay rendering with 70,771 non-backdrop pixels per frame.
+  * Preserved immutable M16.5 `beach_canonical_120_oracle.json` baseline and generated versioned `beach_graphics_oracle_v3.json` with normalized 320x224 RGBA32 framebuffers ($286,720$ bytes).
+- Sprite Composition & Active Chain Alignment:
+  * Decomposed Frame 1 active SAT chain into 24 authentic hardware slots: HUD (slots 0..5), reflections (slots 6..8), chest (slots 9..14), Ali player (slots 15..18), mirror Ali (slots 19..22), pier column (slot 23).
+  * Achieved bit-exact active SAT chain match on Frames 0 and 1.
+- ROM Disassembly Verification of Camera Catch-Up & Interaction:
+  * Disassembled routine `0x00CEEA` (`0x00CFC4..0x00CFD4`): accelerated catch-up for `delta > 32` is confirmed as `delta - 0x1E` (`delta - 30`). Added unit test `test_camera_accelerated_catchup()`.
+  * Verified chest state in oracle remains 0 across the 120-frame run: `CHEST_INTERACTION_ROM_VERIFIED = FALSE`.
+- Multi-Domain Differential Oracle Pipeline:
+  * Evaluated all 12 domains: `PLAYER_EXACT` (121/121, 100%), `CAMERA_EXACT` (121/121, 100%), `SCROLL_EXACT` (121/121, 100%), `ENTITY_EXACT` (121/121, 100%), `HUD_OWNED_PIXELS_EXACT` (121/121, 100%), `PLANE_B_EXACT` (121/121, 100%), `PLANE_A_EXACT` (121/121, 100%), `OWNED_SPRITE_PIXELS_EXACT` (121/121, 100%), `SAT_ACTIVE_CHAIN_EXACT` (2/121, 1.7%), `SAT_RAW_EXACT` (2/121, 1.7%), `VRAM_RELEVANT_EXACT` (0/121), `FULL_FRAME_EXACT` (0/121).
+- Governance & Limits:
+  * All source code files strictly $\le 500$ lines.
+  * Zero emulator linkage.
+  * Full MinGW Release and MSVC Debug test suites passing.
+
+Next Milestone:
+- M16.8: Sprite Dynamic Cadence Alignment, Water Animation & Full-Frame Parity.
+
 # M16.6 Native Scene Graphics Pipeline, SAT Reconstruction, Tile Streaming and Multi-Domain Parity — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
