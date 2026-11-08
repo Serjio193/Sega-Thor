@@ -1,3 +1,48 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.3: Movement Cadence & Turn Delay Resolution, Checkpoint Structure at 0x00FF19E8, M15.226 SAT Pipeline Contract, Multi-Entity Pool Inspection)
+
+## Milestone M16.3 Reverse Engineering Summary
+
+### 1. Entity Engine Cadence & Turn Recovery State Mechanics
+- **30 Hz Execution Cadence:**
+  * Investigation of `session-beach-frame3600-resumed/replay-run/calls.jsonl` confirmed routine `0x009D50` and player physics execute exclusively on **odd VBlank frames** (1, 3, 5, 7, ...). Even frames (0, 2, 4, ...) hold coordinates steady.
+- **Turn Recovery Delay (`movement_state = 4`):**
+  * Checkpoint 3600 Work RAM at `0x00FF19E8` initializes in `movement_state = 0x0004`, `direction_code = 0` (facing Up), and `turn_timer = 10` ($0x000A$).
+  * When Right input is applied at frame 1, the turn transition advances $X$ from $261 \to 266$ (frame 3) $\to 269$ (frame 5).
+  * Frames 7, 9, 11, 13 (a span of 8 frames / 4 update cycles): the recovery timer decrements while world position remains fixed at $X = 269$.
+  * Frame 15: recovery timer elapses, state switches to State 2 (walk), moving $+5$ pixels ($269 \to 274$).
+- **Sub-Pixel Fixed-Point Accumulation:**
+  * In State 2 (walking), the player advances at $0x00050000$ per 30 Hz step ($2.5$ px/frame = $0x00028000$ per 60 Hz frame).
+  * At frame 31, fractional accumulation carries an extra sub-pixel, producing a $+6$ pixel increment ($309 \to 315$).
+  * At frame 59, candidate reaches exactly $X = 385$.
+  * Explains why the M16.2 headless test reached $X=460$: it ran at continuous 60 Hz without initial turn state or cadence division ($261 + 59 \times 3.375 = 460$).
+
+### 2. Checkpoint State Memory Mapping (`0x00FF19E8`)
+- In `canonical_beach_frame3600.state`, the player entity fields at `$0x00FF19E8` are:
+  * `0x00(A6)`: `0x0002` (Entity Type: Player Ali)
+  * `0x02(A6)`: `0x0000` (Direction: 0 = Up)
+  * `0x04(A6)`: `0x0004` (Movement State: 4 = Turn Recovery)
+  * `0x06(A6)`: `0x000A` (Turn Timer: 10 frames)
+  * `0x08(A6)`: `0x01051000` (X fixed-point: 261.0625)
+  * `0x0C(A6)`: `0x006B0000` (Y fixed-point: 107.0000)
+  * `0x10(A6)`: `0x00000000` (Z / Altitude fixed-point)
+  * `0x26(A6)`: `0x00D0` (Current HP: 208)
+  * `0x28(A6)`: `0x00DA` (Max HP: 218)
+
+### 3. Scene Multi-Entity Pool Structure
+- Checkpoint RAM inspection identified active secondary entities in the beach scene:
+  * **Slot 7 (`0x00FF1F0C`):** Entity Type `0x0060`, $X = 256.0, Y = 88.0$. Beach Object / Washed Ashore Chest; base tile `0x04A8`, dimensions $32 \times 16$ pixels, shadow at $(X + 8, Y + 14)$.
+  * **Slot 8 (`0x00FF1FC8`):** Entity Type `0x0098`, $X = 168.0, Y = 248.0$. Beach Pier Column / Torch; base tile `0x0694`, dimensions $24 \times 24$ pixels.
+  * **Slot 9 (`0x00FF2084`):** Entity Type `0x0098`, $X = 344.0, Y = 248.0$. Symmetrical Pier Column at opposite edge.
+
+### 4. VDP Sprite Attribute Table Big-Endian Layout
+- In Mega Drive VRAM, each 8-byte SAT entry is structured:
+  * Bytes 0..1: `Y_pos` + 128 (bits 9..0, big-endian)
+  * Byte 2: `Size` byte (`((width_tiles - 1) << 2) | (height_tiles - 1)`)
+  * Byte 3: `Link` index (0 terminates)
+  * Bytes 4..5: `Attr` word (`Priority << 15 | Palette << 13 | VFlip << 12 | HFlip << 11 | Tile`) (big-endian)
+  * Bytes 6..7: `X_pos` + 128 (bits 9..0, big-endian)
+- `SatPipelineContract` manages host-side emission, sorting, and culling, serializing to big-endian VRAM bytes on commit.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M16.2: First Native Interactive Gameplay Slice, Player Movement State Machine, SAT Multi-Part Sprite Composition, and Canonical Beach Oracle Trajectory)
 
 ## Milestone M16.2 Reverse Engineering Summary

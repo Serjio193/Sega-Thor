@@ -36,6 +36,7 @@ add_library(oasis_core
     src/game/render/framebuffer.cpp
     src/game/render/debug_overlay.cpp
     src/game/render/sat_shadow_records.cpp
+    src/game/render/sat_pipeline_contract.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp

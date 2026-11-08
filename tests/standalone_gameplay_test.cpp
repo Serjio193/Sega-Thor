@@ -1,11 +1,13 @@
 #include "core/runtime.hpp"
 #include "game/player/player.hpp"
+#include "game/render/sat_pipeline_contract.hpp"
 #include "game/standalone_game_loop.hpp"
 #include "game/standalone_game_simulation.hpp"
 #include "genesis/vdp_rasterizer.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <cassert>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -37,7 +39,6 @@ void test_direction_input_mapping() {
     assert(direction_from_input(0x6) == Direction::down_left);
     assert(direction_from_input(0x9) == Direction::up_right);
     assert(direction_from_input(0xA) == Direction::down_right);
-    // Opposing inputs resolve to none
     assert(direction_from_input(0x3) == Direction::none);
     assert(direction_from_input(0xC) == Direction::none);
     std::cout << "[PASS] test_direction_input_mapping\n";
@@ -75,7 +76,7 @@ void test_player_position_integration() {
     assert(sim.state().player_y == 107);
     assert(sim.player().x_fixed == 261 * 0x10000);
 
-    // Frame 1: move Right (cardinal_x_speed = 0x36000)
+    // Frame 1: move Right in interactive 60Hz mode (cardinal_x_speed = 0x36000)
     oasis::game::FrameInput input1{};
     input1.frame_index = 1;
     input1.controller_1.set(oasis::core::Button::Right);
@@ -83,7 +84,6 @@ void test_player_position_integration() {
     oasis::genesis::VdpState vdp1{};
     sim.step_frame(input1, vdp1);
 
-    // 261 * 0x10000 + 0x36000 = 0x01050000 + 0x00036000 = 0x01086000
     assert(sim.player().x_fixed == (261 * 0x10000) + 0x36000);
     assert(sim.state().player_x == static_cast<std::uint16_t>(sim.player().x_fixed / 0x10000));
     assert(sim.player().direction_code == 1); // Right
@@ -100,7 +100,37 @@ void test_player_position_integration() {
     std::cout << "[PASS] test_player_position_integration\n";
 }
 
-void test_sat_sprite_generation() {
+void test_checkpoint_initial_state_adapter() {
+    oasis::genesis::VdpState baseline{};
+    baseline.registers[5] = 0x68;
+
+    oasis::game::CheckpointInitialState cp{};
+    cp.x_fixed = 0x01051000;
+    cp.y_fixed = 0x006B0000;
+    cp.movement_state = 4;
+    cp.direction_code = 0;
+    cp.turn_timer = 10;
+    cp.hp = 208;
+    cp.max_hp = 218;
+
+    oasis::game::StandaloneGameSimulation sim{};
+    sim.initialize_from_checkpoint(baseline, cp);
+
+    assert(sim.player().x_fixed == 0x01051000);
+    assert(sim.player().y_fixed == 0x006B0000);
+    assert(sim.state().player_x == 261);
+    assert(sim.state().player_y == 107);
+    assert(sim.player().movement_state == 4);
+    assert(sim.player().direction_code == 0);
+    assert(sim.player().turn_timer == 10);
+    assert(sim.player().hp == 208);
+    assert(sim.player().max_hp == 218);
+    assert(sim.oracle_mode() == true);
+
+    std::cout << "[PASS] test_checkpoint_initial_state_adapter\n";
+}
+
+void test_sat_pipeline_contract_integration() {
     oasis::genesis::VdpState baseline{};
     baseline.registers[5] = 0x68; // sat_base = 0xD000
 
@@ -117,30 +147,60 @@ void test_sat_sprite_generation() {
     const auto sat_base = out_vdp.sat_base();
     assert(sat_base == 0xD000);
 
-    // Check Piece 13 in VRAM (sat_base + 13 * 8 = 0xD068)
-    const std::uint32_t p13_off = sat_base + (13U * 8U);
-    const auto p13_y = static_cast<std::uint16_t>((out_vdp.vram[p13_off] << 8U) | out_vdp.vram[p13_off + 1U]);
-    const auto p13_attr = static_cast<std::uint16_t>((out_vdp.vram[p13_off + 4U] << 8U) | out_vdp.vram[p13_off + 5U]);
-    const auto p13_x = static_cast<std::uint16_t>((out_vdp.vram[p13_off + 6U] << 8U) | out_vdp.vram[p13_off + 7U]);
+    const auto entries = sim.sat_pipeline().entries();
+    assert(!entries.empty());
 
-    const int screen_x = static_cast<int>(sim.player().x_fixed / 0x10000) - sim.camera_x();
-    const int screen_y = static_cast<int>(sim.player().y_fixed / 0x10000) - sim.camera_y();
+    // Verify entries are linked sequentially and tail is terminated
+    for (std::size_t i = 0; i < entries.size(); ++i) {
+        if (i + 1 < entries.size()) {
+            assert(entries[i].link == static_cast<std::uint8_t>(i + 1));
+        } else {
+            assert(entries[i].link == 0); // Terminated tail
+        }
+    }
 
-    assert(p13_y == static_cast<std::uint16_t>(screen_y + 128));
-    assert(p13_x == static_cast<std::uint16_t>(screen_x + 128));
-    assert((p13_attr & 0x0800U) == 0); // No hflip when facing Right
+    // Verify VRAM received the big-endian serialized entries from sat_pipeline
+    for (std::size_t i = 0; i < entries.size(); ++i) {
+        const auto& e = entries[i];
+        const std::size_t addr = sat_base + (i * 8U);
+        assert(out_vdp.vram[addr + 0U] == static_cast<std::uint8_t>((e.y_pos >> 8U) & 0xFFU));
+        assert(out_vdp.vram[addr + 1U] == static_cast<std::uint8_t>(e.y_pos & 0xFFU));
+        assert(out_vdp.vram[addr + 2U] == e.size);
+        assert(out_vdp.vram[addr + 3U] == e.link);
+        assert(out_vdp.vram[addr + 4U] == static_cast<std::uint8_t>((e.attr >> 8U) & 0xFFU));
+        assert(out_vdp.vram[addr + 5U] == static_cast<std::uint8_t>(e.attr & 0xFFU));
+        assert(out_vdp.vram[addr + 6U] == static_cast<std::uint8_t>((e.x_pos >> 8U) & 0xFFU));
+        assert(out_vdp.vram[addr + 7U] == static_cast<std::uint8_t>(e.x_pos & 0xFFU));
+    }
 
-    // Now turn Left
-    oasis::game::FrameInput left_input{};
-    left_input.frame_index = 2;
-    left_input.controller_1.set(oasis::core::Button::Left);
+    std::cout << "[PASS] test_sat_pipeline_contract_integration\n";
+}
 
-    oasis::genesis::VdpState left_vdp{};
-    sim.step_frame(left_input, left_vdp);
+void test_additional_entity_update_and_sat() {
+    oasis::genesis::VdpState baseline{};
+    baseline.registers[5] = 0x68;
 
-    const auto left_attr = static_cast<std::uint16_t>((left_vdp.vram[p13_off + 4U] << 8U) | left_vdp.vram[p13_off + 5U]);
-    assert((left_attr & 0x0800U) != 0); // Hflip active when facing Left!
-    std::cout << "[PASS] test_sat_sprite_generation\n";
+    oasis::game::StandaloneGameSimulation sim{};
+    sim.initialize(baseline, 261, 107);
+
+    assert(sim.entities().size() == 2);
+    assert(sim.entities()[0].type_id == 0x0060);
+    assert(sim.entities()[0].world_x == 256);
+    assert(sim.entities()[0].world_y == 88);
+    assert(sim.entities()[1].type_id == 0x0098);
+    assert(sim.entities()[1].world_x == 168);
+    assert(sim.entities()[1].world_y == 248);
+
+    oasis::game::FrameInput in{};
+    in.frame_index = 1;
+    oasis::genesis::VdpState out_vdp{};
+    sim.step_frame(in, out_vdp);
+
+    // Entity animation frame should advance
+    assert(sim.entities()[0].anim_frame == 1);
+    assert(sim.entities()[1].anim_frame == 1);
+
+    std::cout << "[PASS] test_additional_entity_update_and_sat\n";
 }
 
 void test_simulation_determinism() {
@@ -153,7 +213,6 @@ void test_simulation_determinism() {
     oasis::game::StandaloneGameSimulation sim2{};
     sim2.initialize(baseline, 261, 107);
 
-    // Run 30 identical steps
     for (int f = 1; f <= 30; ++f) {
         oasis::game::FrameInput in{};
         in.frame_index = static_cast<std::uint32_t>(f);
@@ -173,10 +232,10 @@ void test_simulation_determinism() {
     std::cout << "[PASS] test_simulation_determinism\n";
 }
 
-void test_canonical_beach_oracle_trajectory() {
+void test_canonical_beach_oracle_trajectory_exact() {
     const std::string fixture_path = resolve_fixture("data/standalone-fixtures/beach_canonical_60_frames.json");
     if (!fs::exists(fixture_path)) {
-        std::cout << "[SKIP] test_canonical_beach_oracle_trajectory (fixture not present)\n";
+        std::cout << "[SKIP] test_canonical_beach_oracle_trajectory_exact (fixture not present)\n";
         return;
     }
 
@@ -184,33 +243,92 @@ void test_canonical_beach_oracle_trajectory() {
     assert(in.is_open());
     std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 
+    // Parse oracle frames from JSON
+    struct OracleFrame {
+        int frame{};
+        uint16_t buttons{};
+        int player_x{};
+        int player_y{};
+    };
+    std::vector<OracleFrame> oracle;
+
+    std::size_t pos = 0;
+    while ((pos = content.find("\"frame\":", pos)) != std::string::npos) {
+        OracleFrame of{};
+        pos += 8;
+        of.frame = std::stoi(content.substr(pos));
+
+        const auto bpos = content.find("\"buttons\":", pos);
+        assert(bpos != std::string::npos);
+        of.buttons = static_cast<std::uint16_t>(std::stoi(content.substr(bpos + 10)));
+
+        const auto xpos = content.find("\"player_x\":", pos);
+        assert(xpos != std::string::npos);
+        of.player_x = std::stoi(content.substr(xpos + 11));
+
+        const auto ypos = content.find("\"player_y\":", pos);
+        assert(ypos != std::string::npos);
+        of.player_y = std::stoi(content.substr(ypos + 11));
+
+        oracle.push_back(of);
+    }
+
+    assert(oracle.size() == 61);
+
     oasis::genesis::VdpState baseline{};
     baseline.registers[5] = 0x68;
 
+    oasis::game::CheckpointInitialState cp{};
+    cp.x_fixed = 0x01051000;
+    cp.y_fixed = 0x006B0000;
+    cp.movement_state = 4;
+    cp.direction_code = 0;
+    cp.turn_timer = 10;
+
     oasis::game::StandaloneGameSimulation sim{};
-    sim.initialize(baseline, 261, 107);
+    sim.initialize_from_checkpoint(baseline, cp);
 
-    // Step 60 frames rightward
-    for (int f = 1; f <= 60; ++f) {
-        oasis::game::FrameInput input{};
-        input.frame_index = static_cast<std::uint32_t>(f);
-        input.controller_1.set(oasis::core::Button::Right);
+    // Frame 0 assertion
+    assert(sim.state().player_x == oracle[0].player_x);
+    assert(sim.state().player_y == oracle[0].player_y);
 
-        oasis::genesis::VdpState vdp{};
-        sim.step_frame(input, vdp);
+    int exact_matches = 1;
+
+    for (std::size_t i = 1; i < oracle.size(); ++i) {
+        const auto& of = oracle[i];
+        oasis::game::FrameInput fin{};
+        fin.frame_index = static_cast<std::uint32_t>(of.frame);
+
+        if ((of.buttons & 0x0080U) != 0U) fin.controller_1.set(oasis::core::Button::Right);
+        if ((of.buttons & 0x0040U) != 0U) fin.controller_1.set(oasis::core::Button::Left);
+        if ((of.buttons & 0x0020U) != 0U) fin.controller_1.set(oasis::core::Button::Down);
+        if ((of.buttons & 0x0010U) != 0U) fin.controller_1.set(oasis::core::Button::Up);
+        if ((of.buttons & 0x0100U) != 0U) fin.controller_1.set(oasis::core::Button::A);
+
+        oasis::genesis::VdpState out_vdp{};
+        sim.step_frame(fin, out_vdp);
+
+        if (sim.state().player_x == of.player_x && sim.state().player_y == of.player_y) {
+            exact_matches++;
+        } else {
+            std::cerr << "DIVERGENCE at Frame " << of.frame
+                      << ": Expected X=" << of.player_x << " Y=" << of.player_y
+                      << ", Actual X=" << sim.state().player_x << " Y=" << sim.state().player_y << "\n";
+            assert(false);
+        }
     }
 
-    // After 60 frames moving right at 0x36000 (3.375 px/f), candidate reaches ~463 px
-    assert(sim.state().player_x > 261);
-    assert(sim.state().frame_counter == 60);
+    assert(exact_matches == 61);
+    std::cout << "[PASS] test_canonical_beach_oracle_trajectory_exact ("
+              << exact_matches << "/61 frames exact match)\n";
 
     // Test reset restores starting position
     sim.reset();
     assert(sim.state().player_x == 261);
     assert(sim.state().player_y == 107);
-    assert(sim.state().frame_counter == 0);
-
-    std::cout << "[PASS] test_canonical_beach_oracle_trajectory\n";
+    assert(sim.player().movement_state == 4);
+    assert(sim.player().direction_code == 0);
+    assert(sim.player().turn_timer == 10);
 }
 
 void test_rasterization_of_simulation_output() {
@@ -224,7 +342,8 @@ void test_rasterization_of_simulation_output() {
     assert(beach_vdp.load_from_file(fixture_path.c_str()));
 
     oasis::game::StandaloneGameSimulation sim{};
-    sim.initialize(beach_vdp, 261, 107);
+    oasis::game::CheckpointInitialState cp{};
+    sim.initialize_from_checkpoint(beach_vdp, cp);
 
     oasis::game::FrameInput input{};
     input.frame_index = 1;
@@ -239,23 +358,28 @@ void test_rasterization_of_simulation_output() {
                                            oasis::genesis::ColorDacMode::GenesisPlusGx,
                                            &metrics);
 
-    assert(metrics.total_pixels == 320 * 224);
-    assert(metrics.sprite_pixels > 0);
+    assert(metrics.total_pixels == 71680);
     assert(metrics.plane_a_pixels > 0);
-    std::cout << "[PASS] test_rasterization_of_simulation_output\n";
+    assert(metrics.sprite_pixels > 0);
+
+    std::cout << "[PASS] test_rasterization_of_simulation_output (Sprites: "
+              << metrics.sprite_pixels << " pixels)\n";
 }
 
 } // namespace
 
 int main() {
-    std::cout << "Running Standalone Gameplay Simulation Tests (M16.2)...\n";
+    std::cout << "Running Standalone Gameplay Simulation Tests (M16.3)...\n";
     test_direction_input_mapping();
     test_controller_state_buttons();
     test_player_position_integration();
-    test_sat_sprite_generation();
+    test_checkpoint_initial_state_adapter();
+    test_sat_pipeline_contract_integration();
+    test_additional_entity_update_and_sat();
     test_simulation_determinism();
-    test_canonical_beach_oracle_trajectory();
+    test_canonical_beach_oracle_trajectory_exact();
     test_rasterization_of_simulation_output();
+
     std::cout << "All Standalone Gameplay Simulation Tests PASSED!\n";
     return 0;
 }

@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Prepare simulation
+    // Prepare simulation with authentic checkpoint initial state
     oasis::genesis::VdpState baseline_vdp{};
     if (fs::exists(opt.sim_fixture)) {
         if (!baseline_vdp.load_from_file(opt.sim_fixture.c_str())) {
@@ -164,7 +164,13 @@ int main(int argc, char* argv[]) {
     }
 
     oasis::game::StandaloneGameSimulation simulation{};
-    simulation.initialize(baseline_vdp, 261, 107);
+    oasis::game::CheckpointInitialState cp_init{};
+    cp_init.x_fixed = 0x01051000;
+    cp_init.y_fixed = 0x006B0000;
+    cp_init.movement_state = 4;
+    cp_init.direction_code = 0;
+    cp_init.turn_timer = 10;
+    simulation.initialize_from_checkpoint(baseline_vdp, cp_init);
 
     // Prepare replay sequence
     const auto sequence_entries = discover_sequence(opt.sequence_dir);
@@ -294,7 +300,10 @@ int main(int argc, char* argv[]) {
                                 std::to_string(st.frame_counter) + " [Player: X=" +
                                 std::to_string(st.player_x) + ", Y=" + std::to_string(st.player_y) +
                                 ", State=" + std::to_string(pl.movement_state) +
-                                ", Dir=" + std::to_string(pl.direction_code) + "]" +
+                                ", Anim=" + std::to_string(simulation.walk_tick()) + "]" +
+                                " [Entities: " + std::to_string(simulation.entities().size()) + "]" +
+                                " [Cam: X=" + std::to_string(simulation.camera_x()) +
+                                ", Y=" + std::to_string(simulation.camera_y()) + "]" +
                                 (paused ? " (PAUSED)" : " (PLAYING @ " + std::to_string(opt.fps) + " FPS)");
             window.set_title(title);
         } else {

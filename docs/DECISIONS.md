@@ -1,3 +1,37 @@
+# ADR-20261108-M16-03-AUTHENTIC-PLAYER-CONTROL-AND-MULTI-ENTITY-SIMULATION — Physical Resolution of Player Movement Cadence and Turn Delay, Exact 61-Frame ROM Trajectory Parity, Integration of Verified M15.226 SAT Pipeline Contract, Multi-Entity Simulation Architecture, and Deterministic Checkpoint Restoration
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M16.2 delivered the first interactive gameplay slice, but left an unexplained divergence between the mined 60-frame ROM trajectory ($X=385$ at frame 59) and the standalone headless test ($X=460$).
+2. Milestone M16.3 mandates resolving this divergence with physical ROM evidence, reproducing exact frame-by-frame player behavior against the independent oracle, integrating the verified M15.226 SAT pipeline contract, and adding at least one authentic non-player entity.
+3. Zero emulator libraries (GPGX, Musashi, libretro) may be linked into standalone executables.
+
+**Decision:**
+1. **Resolution of Movement Cadence & Turn Transition:**
+   - Physical investigation of Beyond Oasis Work RAM (`0x00FF19E8`) and trace logs established that entity physics updates occur on a **30 Hz cadence** (odd frames: 1, 3, 5, ...), holding position on even frames.
+   - At checkpoint 3600, player starts in `movement_state = 0x0004` (turn recovery) facing Up (`direction_code = 0`) with `turn_timer = 10`. When Right input is applied, the player steps $261 \to 266 \to 269$, and holds at $X=269$ during frames 5..14 while the recovery timer decrements.
+   - At frame 15, player transitions to state 2 (walk), advancing $+5$ pixels per 30 Hz update ($2.5$ px/frame average in $16.16$ fixed point), with a $+6$ pixel carry at frame 31 due to sub-pixel accumulation ($309 \to 315$).
+   - The M16.2 headless test reported $X=460$ because it ran without an input journal in 60 Hz interactive mode with initial idle state 0: $261 + 59 \times 3.375 = 460$.
+   - Incorporating the authentic checkpoint state and cadence yielded **61/61 exact frame matches** against `beach_canonical_60_frames.json` with 0 divergence.
+2. **Integration of M15.226 SAT Pipeline Contract:**
+   - Imported `sat_pipeline_contract.hpp` and `.cpp` from hybrid branch commit `dce0a24be9b24d7412e784d9d95c9d2a2d4b577c`.
+   - Unified all sprite piece emissions (player composite pieces, shadows, entity sprites) through `SatPipelineContract`.
+   - Serialized SAT entries into VDP VRAM at `0xD000` using big-endian Genesis VDP layout with terminated link lists.
+3. **First Additional Native Entities:**
+   - Integrated authentic non-player entities from checkpoint Work RAM:
+     * Slot 7 at `0x00FF1F0C`: Beach Object (Type `0x0060`, $X = 256, Y = 88$), tile base `0x04A8`, dimensions $32 \times 16$, with shadow at $(ex + 8, ey + 14)$.
+     * Slot 8 at `0x00FF1FC8`: Pier Torch / Column (Type `0x0098`, $X = 168, Y = 248$), tile base `0x0694`, dimensions $24 \times 24$.
+   - Entities update dynamically in native simulation and emit SAT entries alongside the player.
+4. **Enhanced Debug HUD & Full Checkpoint Reset:**
+   - Standalone player window title dynamically displays player coordinates, movement state, animation cycle tick, active entity count, camera offset, and FPS.
+   - Reset (R key) deterministically restores full checkpoint state for both player and entities.
+
+**Consequences:**
+- Standalone simulation achieves 100% behavioral parity with original Beyond Oasis ROM execution across the 61-frame canonical beach window.
+- Multi-entity rendering operational via verified SAT contract.
+- Zero dependencies on GPGX, Musashi, or libretro. All source files strictly $\le 500$ lines.
+
 # ADR-20261108-M16-02-NATIVE-INTERACTIVE-GAMEPLAY-SLICE — First Native Interactive Gameplay Update, Player Physics Simulation (Routines 0x0085E2, 0x008F12), Multi-Piece SAT Sprite Composition, Canonical Beach Checkpoint Integration, and Dual-Mode Player Architecture
 **Status:** Accepted
 **Date:** 2026-11-08

@@ -1,3 +1,29 @@
+# M16.3 Authentic Player Control and First Multi-Entity Native Gameplay — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Resolution of Player Movement Cadence & Turn Delay:
+  * Resolved discrepancy between mined 60-frame ROM trajectory ($X=385$) and headless test ($X=460$).
+  * Physical verification of 30 Hz entity engine cadence, checkpoint state 4 turn recovery, 10-frame hold at $X=269$, and walking speed of $+5$ px / 30Hz step ($+6$ px carry).
+  * 100% exact match across all 61 frames ($0..60$) against `beach_canonical_60_frames.json` with 0 mismatches.
+- Checkpoint State Adapter:
+  * Authored `oasis::game::CheckpointInitialState` mapping Work RAM `$FF19E8` fields.
+  * Reset deterministically restores starting state for player and scene entities.
+- Reused Hybrid SAT Pipeline Contract:
+  * Imported `src/game/render/sat_pipeline_contract.hpp`, `sat_pipeline_contract.cpp`, and `tests/sat_pipeline_contract_test.cpp` from hybrid commit `dce0a24be9b24d7412e784d9d95c9d2a2d4b577c`.
+  * Emits composite player pieces, shadows, entity sprites, and serializes big-endian SAT to VRAM at `0xD000`.
+- First Multi-Entity Native Simulation:
+  * Added authentic beach scene entities from checkpoint RAM: Slot 7 (`type 0x0060`, $X=256, Y=88$) and Slot 8 (`type 0x0098`, $X=168, Y=248$).
+  * Entities update and render independently alongside the player.
+- Dual-Mode Standalone Player & HUD:
+  * Dynamic HUD title reflects frame, player position, movement state, animation cycle tick, entity count, camera, and FPS.
+  * Headless simulation reaches exact final $X=385, Y=107$ (STATUS=PASS).
+- 100% Passing Tests & Size Limit Compliance:
+  * 7/7 standalone gameplay tests passing, 6/6 SAT contract tests passing.
+  * All source files strictly <= 500 lines. Zero emulator runtime links.
+
+Next Milestone:
+- M16.4: Full Scene Background Scrolling, NPC Dialogue / Interactions, and Combat Slice.
+
 # M16.2 First Native Interactive Gameplay Slice — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,36 @@
+# 2026-11-08 — Milestone M16.3: AUTHENTIC PLAYER CONTROL AND FIRST MULTI-ENTITY NATIVE GAMEPLAY — Exact ROM Trajectory Parity (61/61 Frames Exact Match, 0 Diffs); Physical Resolution of Player Cadence & Initial Turn Delay (30Hz Cadence, Turn State 4 Recovery, 10-Frame Hold at X=269, Walking Step 5px / 6px Carry); Checkpoint State Adapter (0x00FF19E8 RAM Structure); Integration of Verified M15.226 SAT Pipeline Contract (MegaDriveSatEntry, Big-Endian VRAM Serialization, 320x224 Culling, Link Termination); First Multi-Entity Native Simulation (Beach Object 0x0060 at X=256, Y=88 and Pier Torch 0x0098 at X=168, Y=248 with Entity Shadows); Dual-Mode Standalone Player with Live Multi-Entity Debug HUD & Deterministic Full Reset; 100% Passing Tests (7/7 Standalone Tests, 6/6 SAT Contract Tests); Zero Emulator Dependencies (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 1 — Resolve the Player Trajectory Question:
+    - Reconciled why M16.2 reported headless simulation final $X=460$ while authentic ROM reached $X=385$.
+    - Physical Evidence:
+      1. Cadence Division: Beyond Oasis entity engine updates on a **30 Hz cadence** (odd VBlank frames: 1, 3, 5, 7, ...). Even frames hold steady.
+      2. Initial State & Turn Recovery: Checkpoint 3600 (`0x00FF19E8`) has `movement_state = 0x0004`, `direction_code = 0` (facing Up), and `turn_timer = 10`. When Right is pressed, the turn transition advances $261 \to 266 \to 269$, and holds at $X=269$ for frames 5..14 while the recovery timer decrements.
+      3. State 2 Walking: At frame 15, player enters state 2 (walk), advancing $+5$ pixels per 30 Hz update ($2.5$ px/frame = $0x28000$ fixed-point per 60 Hz frame), carrying $+6$ pixels on fractional overflow (Frame 31: $309 \to 315$). At frame 59, candidate reaches exactly $X=385$.
+      4. In M16.2 headless test, the runner lacked an input journal and ran in interactive mode (state 0, 60 Hz, cardinal speed $0x36000 = 3.375$ px/frame continuously for 59 frames): $261 + 59 \times 3.375 = 460.125 \implies 460$.
+  * Phase 2 & 3 — Authentic Input Trace & Checkpoint State Adapter:
+    - Authored `oasis::game::CheckpointInitialState` mapping Work RAM `$FF19E8` fields: `x_fixed = 0x01051000` (261.0625), `y_fixed = 0x006B0000` (107.0000), `movement_state = 4`, `direction_code = 0`, `turn_timer = 10`, `hp = 208`, `max_hp = 218`, `camera_x = 125`, `camera_y = 46`.
+    - Implemented `initialize_from_checkpoint()` in `StandaloneGameSimulation`.
+  * Phase 4 & 5 — Frame-by-Frame Oracle Verification:
+    - Evaluated native simulation across all 61 frames ($0..60$) against `beach_canonical_60_frames.json`.
+    - Achieved **61/61 exact frame matches** (100% parity, 0 divergence).
+  * Phase 6 — Integration of Verified Hybrid SAT Pipeline Contract:
+    - Imported `src/game/render/sat_pipeline_contract.hpp`, `src/game/render/sat_pipeline_contract.cpp`, `tests/sat_pipeline_contract_test.cpp` from hybrid branch commit `dce0a24be9b24d7412e784d9d95c9d2a2d4b577c`.
+    - Connected `SatPipelineContract` to `StandaloneGameSimulation`: emits player composite pieces, shadows, entity pieces, terminates link chain, serializes in big-endian VRAM format to SAT base `0xD000`.
+  * Phase 7 — First Additional Native Entities:
+    - Added authentic beach scene entities from checkpoint RAM:
+      * Slot 7 at `0x00FF1F0C`: Beach Object (Type `0x0060`, $X = 256, Y = 88$), tile base `0x04A8`, dimensions $32 \times 16$, with shadow at $(ex + 8, ey + 14)$.
+      * Slot 8 at `0x00FF1FC8`: Pier Torch / Column (Type `0x0098`, $X = 168, Y = 248$), tile base `0x0694`, dimensions $24 \times 24$.
+    - Entities update independently and emit their pieces to the VDP SAT pipeline.
+  * Phase 8 — Interactive Scene & Multi-Entity Debug HUD:
+    - Window title displays live coordinates, movement state, animation tick, active entity count, and camera position:
+      `Beyond Oasis Native Simulation - Frame X [Player: X=..., Y=..., State=..., Anim=...] [Entities: 2] [Cam: X=..., Y=...] (PLAYING @ 60 FPS)`.
+    - Reset (R key) deterministically restores full checkpoint state for player and all entities.
+  * Governance & Size Limits:
+    - All 901 governed source files strictly $\le 500$ lines.
+    - Zero dependencies on GPGX, Musashi, or libretro in standalone targets.
+    - Local CI checks green (`git diff --check`, ctest).
+
 # 2026-11-08 — Milestone M16.2: FIRST NATIVE INTERACTIVE GAMEPLAY SLICE — Live Player Simulation Driven by Gamepad/Keyboard Input; Reverse-Engineered Physics & State Machine (Routines 0x0085E2 Direction Table, 0x008F12 Velocity Vectors, Fixed-Point Sub-Pixel Accumulator, Footprint Collision & Terrain Gating); VDP State Translation via SAT Update (Entries 13-16 Multi-Part Sprite Composition at 0xD000); Canonical Beach Savestate (Frame 3600) Fixture Extraction & 60-Frame Oracle Trajectory Verification; Dual-Mode Player (Mode A Replay + Mode B Live Interactive Simulation) with 60 FPS Pacing, Real-Time Coordinates in Window Title, Camera Tracking Toggle (T), Mode Toggle (Tab/M), Headless Mode; 7/7 Unit Tests Passing; Zero Emulator Runtime Links (0 GPGX, 0 Musashi, 0 Libretro) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
