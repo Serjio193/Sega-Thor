@@ -1,3 +1,70 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.226: Combined Native Cluster Qualification & Sprite Pipeline Expansion; Dual Recompiled Island Slot 222 + Slot 223; 6,032,753 Native Instructions in Scenario C / 34.223% Workload; 12,588,815 Native Instructions Across 3 Scenarios; 24/24 Bit-Exact Streams; Anomaly Forensics; 3,285 Fallback Classification; Reusable Standalone Pure C++ SAT Contract)
+
+## Milestone M15.226 Reverse Engineering Summary
+
+### 1. Dual Subsystem Cluster Integration & Concurrent Execution
+- **Integrated Subsystems:**
+  * Subsystem A: Entity Engine Motion & State Cluster (`0x0254EA..0x025B32`, Slot 222) — 10 native basic-block handlers, root entry coordinator, State 5 fast paths.
+  * Subsystem B: Sprite Engine Mode 0 Cluster (`0x00AD76..0x00B010`, Slot 223) — multi-piece sprite composition, SAT entry generation, camera transform, shadow rendering.
+- **Concurrent Execution Parity:**
+  * Both subsystems run simultaneously in a single Linux runner binary without bus contention, register corruption, or timing drift.
+  * Verified 4-way configuration parity on Scenario C:
+    - P0 (196 baseline) == P1 (196 + Slot 222) == P2 (196 + Slot 223) == P3 (196 + Slot 222 & Slot 223).
+  * All 8 streams match bit-exact across all 4 configurations!
+
+### 2. Cross-Milestone Evidence Anomaly Reconciliation
+- **Investigated Item:** `normalized-events.jsonl` reported hash prefix anomaly (`372417fb62e0d753` in M15.224 vs `372417fbe8e9d564` in M15.225 prose response; both 54,764 B).
+- **Physical Verification:**
+  * File on disk for M15.224 (`build/ab_three_scenario_02575c/scenario_c/run_a/replay-run/normalized-events.jsonl`):
+    - Size: 54,764 B, SHA256: `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+  * File on disk for M15.225 (`build/ab_three_scenario_00ad76/scenario_c/run_a/replay-run/normalized-events.jsonl`):
+    - Size: 54,764 B, SHA256: `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+  * Byte-for-byte diff: `diffs: []` (0 bytes differing).
+  * Machine evidence receipt for M15.224 (`02575c-three-scenario-qualification-m15-224-20261108.json`): `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+  * Machine evidence receipt for M15.225 (`00ad76-three-scenario-qualification-m15-225-20261108.json`): `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+- **Root Cause & Conclusion:** The physical files and machine-verified receipts have always been 100% bit-exact and physically identical. The divergent hash prefix appeared only in the formatted markdown response text of step 4726 due to an LLM transcription artifact. Zero evidence drift occurred.
+
+### 3. Forensic Fallback Classification (3,285 Calls)
+- **Census:**
+  * Scenario C: 1,269 fallbacks out of 7,183 entries (17.67%).
+  * Scenario A: 1,420 fallbacks out of 3,764 entries (37.73%).
+  * Scenario B: 596 fallbacks out of 1,577 entries (37.79%).
+  * Total Fallbacks: 3,285 calls.
+- **Entry PC:** `0x00AD76` (100% of fallback calls).
+- **Callers:**
+  * Primary sprite dispatcher `0x00A240`: `BEQ.W $00AD76` (return address `0x0000A1F8` pushed onto stack).
+  * Secondary sprite dispatcher `0x00A30E`: `BEQ.W $00AD76` (return address `0x0000A258` pushed onto stack).
+- **Condition:** `read_be(api, a6 + 57, 1, val) && (val & 0xFF) != 0` (entity has attached weapon/sub-sprite pieces).
+- **Reason:** `PREFLIGHT_DECLINE` before any registers, stack, or memory are mutated.
+- **ROM Destination:** Original ROM executes the full routine via interpreter, branching at `0x00AEDE` to `0x00B012` (`bsr.w $00B34C; bra.w $00AEE6`) and `0x00AF98` to `0x00B01A` (`bsr.w $00B3B2; bra.w $00AF9C`).
+- **Side effects:** ZERO.
+
+### 4. Sprite Engine Pipeline Decomposition (Mode 0 vs Mode 1)
+- **Sprite Engine Dispatcher (`0x00A1AA..0x00A2C6`):**
+  * Dispatches entities based on bit 0 of `54(a6)`:
+    - Bit 0 = 0 (`0x00A240: BEQ.W $00AD76`): Mode 0 (Static/ROM tile sprites, enemies, objects, weapons, projectiles).
+    - Bit 0 = 1 (`0x00A244: BRA.W $00A9A0`): Mode 1 (Dynamic streaming DMA sprites, Ali/player characters with dynamic VRAM tile loading via DMA queue at `0x00FF1892`).
+- **Mode 1 Subsystem (`0x00A9A0..0x00ACFC`):**
+  * Spans 860 bytes, 182 instructions, executing ~294,000 instructions in Scenario C.
+  * Direct sibling of Mode 0, using identical SAT layout and link chaining conventions.
+- **Combined Sprite Workload:**
+  * Mode 0 + Mode 1 constitute over 1.14 million instructions in Scenario C alone (~6.5% of total guest execution).
+
+### 5. Reusable Pure C++ SAT Pipeline Contract
+- **Contract Definition (`sat_pipeline_contract.hpp/.cpp`):**
+  * Fully decoupled from CPU emulation.
+  * Models Mega Drive VDP Sprite Attribute Table:
+    - 8-byte entry layout (`y_pos`, `size`, `link`, `attr`, `x_pos`).
+    - Base coordinate offset (+128 pixels).
+    - Tile attributes (Priority, Palette 0..3, V-Flip, H-Flip, Tile index 0..2047).
+    - Link chain traversal and termination (`link = 0` on last active sprite).
+    - Visible viewport clipping (320x224).
+    - Capacity limit (80 sprites / 640 bytes).
+    - Shadow sprite generation (2x1 tiles, low priority, palette 3).
+- **Verification:** Unit tests in `tests/sat_pipeline_contract_test.cpp` pass 6/6 tests.
+
+---
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.225: Sprite Engine Mode 0 Cluster 0x00AD76..0x00B010 Recompilation; 1,305,350 Dynamic Instructions Displaced; 24/24 Stream Parity Across Scenarios C, A, and B)
 
 ## Milestone M15.225 Reverse Engineering Summary

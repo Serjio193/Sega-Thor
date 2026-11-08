@@ -1,3 +1,95 @@
+# 2026-11-08 — Milestone M15.226: COMBINED NATIVE CLUSTER QUALIFICATION & SPRITE PIPELINE EXPANSION — Dual Recompiled Island Qualification (Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76); 6,032,753 Native Dynamic Instructions Displaced in Scenario C (34.223% of All Guest Instructions); 12,588,815 Native Instructions Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Stream Matches; Reconciled Cross-Milestone Evidence Transcription Anomaly; Full Forensic Classification of 3,285 Fallback Calls; Pure C++ Reusable SAT Pipeline Contract Implemented & Tested (sat_pipeline_contract.hpp/.cpp); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-226-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222 & 223 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Physical Baseline & Anomaly Forensics:
+    - Verify baseline: 196 active helpers, `ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`, ROM SHA256 (`eb19bda4...`), core SHA256 (`ca4be304...`), runner SHA256 (`e90e0c17...`).
+    - Independently reconcile `normalized-events.jsonl` cross-milestone hash prefix anomaly (`372417fb62e0d753` vs `372417fbe8e9d564`).
+    - Classify all 3,285 fallback calls across Scenarios C, A, and B (entry PC, caller PC, condition, reason, ROM destination, side effects).
+  * Dual-Cluster Recompilation Qualification (P0, P1, P2, P3):
+    - Single runner binary executing both Slot 222 (Entity Engine: `0x0254EA`/`0x02575C`) and Slot 223 (Sprite Engine: `0x00AD76`).
+    - 4-way configuration test on Scenario C (1,800 frames): P0 (196 baseline), P1 (196 + 02575c), P2 (196 + 00ad76), P3 (196 + 02575c + 00ad76).
+    - Qualify P0 vs P3 across Scenario A (1,592 frames) and Scenario B (600 frames).
+    - Verify 24/24 bit-exact stream matches across all 3 scenarios.
+  * Global Instruction Accounting & Displaced ROM Workload:
+    - Measure production native steps, entity steps, sprite steps, ROM steps, and total guest steps without double counting.
+  * Reusable Pure C++ SAT Contract:
+    - Establish standalone Mega Drive VDP Sprite Attribute Table (SAT) semantic contract and deterministic unit test suite.
+  * Governance & Evidence:
+    - Strictly adhere to AGENTS.md Rule 3 ($\le 500$ lines per file).
+    - Generate machine evidence receipt `combined-clusters-qualification-m15-226-20261108.json` verified with `ReceiptVerifier`.
+    - Maintain production baseline strictly at 196 active helpers; experimental slots 222 & 223 default disabled (`ORACLE_OWNER_APPROVAL = PENDING`).
+
+- **Cross-Milestone Evidence Anomaly Reconciliation:**
+  * Investigation of `normalized-events.jsonl` hash prefix anomaly (`372417fb62e0d753` in M15.224 vs `372417fbe8e9d564` in M15.225 text response):
+    - Physical files on disk:
+      * `build/ab_three_scenario_02575c/scenario_c/run_a/replay-run/normalized-events.jsonl`: 54,764 B, SHA256 `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+      * `build/ab_three_scenario_00ad76/scenario_c/run_a/replay-run/normalized-events.jsonl`: 54,764 B, SHA256 `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+      * Byte diff: `diffs: []` (0 bytes differing, bit-exact identical across runs and milestones).
+    - Machine receipts:
+      * `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json`: `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+      * `data/thor-evidence/00ad76-three-scenario-qualification-m15-225-20261108.json`: `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+    - Forensic Conclusion: The underlying physical files and verified receipts are 100% physically identical and consistent across milestones. The hash string `372417fbe8e9d564fa7994eb6873550b` only appeared in the textual response prose in step 4726 due to an LLM markdown formatting transcription error.
+
+- **Forensic Fallback Classification (3,285 Calls Across 3 Scenarios):**
+  * Entry PC: `0x00AD76` (100% of fallback calls).
+  * Callers:
+    - Primary sprite dispatcher `0x00A240`: `BEQ.W $00AD76` (pushed return address `0x0000A1F8`).
+    - Secondary sprite dispatcher `0x00A30E`: `BEQ.W $00AD76` (pushed return address `0x0000A258`).
+  * Condition: `read_be(api, a6 + 57, 1, weapon_part) && (weapon_part & 0xFF) != 0` (entity has attached weapon/sub-sprite piece).
+  * Reason: `PREFLIGHT_DECLINE` triggered at routine ingress before any registers, stack, or RAM are mutated.
+  * ROM Destination: Continues in original ROM at `0x00AD76`, subsequently branching at `0x00AEDE` to `0x00B012` (`bsr.w $00B34C`) and `0x00AF98` to `0x00B01A` (`bsr.w $00B3B2`).
+  * Pre-fallback Side Effects: ZERO (100% clean preflight decline).
+  * Distribution by Scenario:
+    - Scenario C: 1,269 fallbacks (out of 7,183 entries = 17.67%).
+    - Scenario A: 1,420 fallbacks (out of 3,764 entries = 37.73%).
+    - Scenario B: 596 fallbacks (out of 1,577 entries = 37.79%).
+    - Total: 3,285 calls.
+
+- **Combined Cluster Qualification (P0, P1, P2, P3 Across 3,992 Frames):**
+  * Scenario C (1,800 frames) 4-Way Comparison:
+    - P0 (196 production baseline): 8/8 streams match baseline.
+    - P1 (196 + Slot 222 Entity Engine): 8/8 streams match P0 bit-exact.
+    - P2 (196 + Slot 223 Sprite Engine): 8/8 streams match P0 bit-exact.
+    - P3 (196 + Slot 222 & Slot 223 Combined): 8/8 streams match P0 bit-exact.
+    - `observed-landmarks.jsonl`: `033b96d9344a34386360223e9f9c19a2ce3f80ad80e4b4e878ae15b6cefe1bad`
+    - `full-frame-state.jsonl`: `188f329c8919400406c72c783c7ada5992905490d465a6e7463a885e4017d550`
+    - `architectural-sync.jsonl`: `8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7`
+    - `scheduler-sync.jsonl`: `e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe`
+    - `z80-ram-sync.bin`: `c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58`
+    - `call-z80-ram.bin`: `0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c`
+    - `external-events.jsonl`: `339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413`
+    - `normalized-events.jsonl`: `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c`
+  * Scenario A (1,592 frames) P0 vs P3: 8/8 streams match bit-exact.
+  * Scenario B (600 frames) P0 vs P3: 8/8 streams match bit-exact.
+  * Aggregate Three-Scenario Result: 24/24 streams match bit-exact! Contract faults: 0.
+
+- **Global Instruction Accounting & Displaced ROM Footprint (P3 Configuration):**
+  * Scenario C Dynamic Instructions:
+    - Total guest instructions: 17,627,770
+    - Production native steps (196 helpers): 5,127,961 steps (29.090%)
+    - Entity Cluster native steps (Slot 222): 53,508 steps (0.304%)
+    - Sprite Cluster native steps (Slot 223): 851,284 steps (4.829%)
+    - Total Combined Native Steps: **6,032,753 steps** (**34.223%** of all Scenario C guest execution)
+  * Scenario A Dynamic Instructions:
+    - Production: 4,545,426; Entity: 0; Sprite: 329,496; Total Native: 4,874,922 steps.
+  * Scenario B Dynamic Instructions:
+    - Production: 1,556,570; Entity: 0; Sprite: 124,570; Total Native: 1,681,140 steps.
+  * Three-Scenario Total Native Instructions Displaced: **12,588,815 instructions** across 3,992 frames.
+
+- **Reusable Pure C++ SAT Behavior Contract:**
+  * `src/game/render/sat_pipeline_contract.hpp` (60 lines) & `src/game/render/sat_pipeline_contract.cpp` (92 lines):
+    - Full-featured standalone Mega Drive VDP Sprite Attribute Table pipeline contract.
+    - Decoupled from CPU emulation; models MegaDriveSatEntry (8-byte exact layout), coordinate offset (+128), tile attributes, link list chaining, screen-space clipping, capacity clamping at 80 sprites, shadow rendering, and frame finalization (`link = 0`).
+  * `tests/sat_pipeline_contract_test.cpp` (139 lines):
+    - Comprehensive test suite covering initial state, single-piece bitfield packing, link chain traversal, screen clipping culling, capacity clamping at 80 sprites, and shadow emission. 6/6 tests passing.
+
+- **Evidence & Governance:**
+  * Machine receipt generated: `data/thor-evidence/combined-clusters-qualification-m15-226-20261108.json`.
+  * Verified with `ReceiptVerifier`: `overall_valid: true`, `evidence_status: VERIFIED`, 58/58 physical files valid, 48/48 stream artifacts valid.
+  * Production baseline strictly maintained at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222 and 223 remain experimental disabled by default (`ORACLE_OWNER_APPROVAL = PENDING`).
+  * All files strictly verified $\le 500$ lines.
+
 # 2026-11-08 — Milestone M15.225: GAME-WIDE RECOMPILATION COVERAGE & HIGH-IMPACT SUBSYSTEM CLUSTER — Sprite Engine Mode 0 Cluster (0x00AD76..0x00B010); 1,305,350 Dynamic M68K Instructions Displaced (+4.829% of Scenario C Execution); 24/24 Bit-Exact Stream Equivalence Across Scenarios C, A, and B (3,992 Frames); Dynamic Timing Reconciliation of Musashi BCLR.L #31 (+14 Clocks) and LSR.W #8 (+112 Clocks); 32-Bit Full-Width Address Register Parity; Machine Evidence Receipt Verified (00ad76-three-scenario-qualification-m15-225-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 223 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**

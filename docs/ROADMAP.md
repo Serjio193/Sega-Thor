@@ -1,3 +1,35 @@
+# M15.226 Combined Native Cluster Qualification & Sprite Pipeline Expansion (Dual Recompiled Island: Slot 222 Entity Engine 0x0254EA/0x02575C + Slot 223 Sprite Engine 0x00AD76); 6,032,753 Native Dynamic Instructions in Scenario C (34.223% of All Guest Instructions); 12,588,815 Native Instructions Across 3 Scenarios (3,992 Frames); 24/24 Bit-Exact Streams; Anomaly Forensics; Fallback Classification; Reusable Standalone Pure C++ SAT Behavior Contract; Machine Evidence Receipt Verified (combined-clusters-qualification-m15-226-20261108.json) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER PAIR
+
+Delivered:
+- Cross-Milestone Evidence Anomaly Reconciliation:
+  * Reconciled `normalized-events.jsonl` cross-milestone hash prefix anomaly (`372417fb62e0d753` vs `372417fbe8e9d564`).
+  * Verified physical files on disk across `build/ab_three_scenario_00ad76` and `build/ab_three_scenario_02575c` both have identical SHA256 `372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c` (0 bytes differing).
+  * Machine receipts for both M15.224 and M15.225 recorded the identical verified hash. Concluded the discrepancy in M15.225 response prose was an LLM formatting transcription artifact; underlying evidence is 100% physically intact.
+- Comprehensive Fallback Classification:
+  * Full census and classification of all 3,285 fallback calls across Scenario C (1,269), Scenario A (1,420), and Scenario B (596).
+  * 100% occur at routine ingress `0x00AD76` from callers `0x00A240` and `0x00A30E` due to non-zero weapon piece flag (`57(a6) != 0`).
+  * Classified as `PREFLIGHT_DECLINE` before any registers or memory are modified, with zero pre-fallback side effects.
+- Dual-Cluster Combined Qualification (P0, P1, P2, P3 Across 3,992 Frames):
+  * Unified runner binary `build/auto-migrator/00ad76/linux-runner/oasis_gameplay_session` (SHA256: `e90e0c17c7f57edc903a8878137a2e168f9dd1f706bb1043c2e52fc590786ea2`).
+  * Scenario C (1,800 frames): 4-way comparison P0 (196 baseline) == P1 (196 + 02575c) == P2 (196 + 00ad76) == P3 (196 + 02575c + 00ad76) matches bit-exact across all 8 raw streams!
+  * Scenario A (1,592 frames): P0 vs P3 matches 8/8 streams bit-exact.
+  * Scenario B (600 frames): P0 vs P3 matches 8/8 streams bit-exact.
+  * Aggregate stream matches: 24/24 bit-exact streams; 0 contract faults.
+- Global Instruction Accounting & Displaced ROM Footprint (P3 Configuration):
+  * Scenario C: 5,127,961 production native steps (29.090%) + 53,508 entity steps (0.304%) + 851,284 sprite steps (4.829%) = **6,032,753 native steps** (**34.223%** of all Scenario C guest execution).
+  * Scenario A: 4,545,426 production + 329,496 sprite = 4,874,922 native steps.
+  * Scenario B: 1,556,570 production + 124,570 sprite = 1,681,140 native steps.
+  * Three-Scenario Total Native Displacement: **12,588,815 native instructions** across 3,992 frames.
+- Reusable Standalone Pure C++ SAT Behavior Contract:
+  * Implemented `src/game/render/sat_pipeline_contract.hpp` (60 lines) and `src/game/render/sat_pipeline_contract.cpp` (92 lines), completely decoupled from CPU emulation.
+  * Implemented comprehensive test suite `tests/sat_pipeline_contract_test.cpp` (139 lines), verifying entry packing, coordinate translation (+128 base offset), attribute packing, link chain traversal and termination (`link = 0`), viewport clipping, 80-sprite capacity limit, and shadow rendering. 6/6 tests passing.
+- Machine Evidence Receipt:
+  * Generated versioned receipt `data/thor-evidence/combined-clusters-qualification-m15-226-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58 checks, `valid=True`, `status=VERIFIED`, 48 stream artifacts valid.
+- Production Governance:
+  * Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Slots 222 & 223 default disabled in production; `ORACLE_OWNER_APPROVAL = PENDING`.
+
 # M15.225 Subsystem Recompilation of High-Impact Sprite Engine Mode 0 Cluster (0x00AD76..0x00B010); 1,305,350 Dynamic M68K Instructions Displaced (+4.829% of Scenario C Execution); Three-Scenario Differential Qualification (24/24 Bit-Exact Streams across 3,992 Frames); Dynamic Timing Reconciliation of Musashi BCLR.L #31 (+14 Clocks) and LSR.W #8 (+112 Clocks); 32-Bit Address Register Parity; Machine Evidence Receipt Verified (00ad76-three-scenario-qualification-m15-225-20261108.json) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER
 
 Delivered:
