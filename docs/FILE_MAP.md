@@ -1,5 +1,8 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `tests/pixel_differential_test.cpp`: Automated scanline-by-scanline RGBA32 multi-layer pixel differential test comparing native VDP rasterization against genuine GPGX Waterbox video output, establishing 98.03% pixel match (70,268 / 71,680 pixels) on Frame 1 within 1 DAC step (M16.8).
+- `tests/alternative_trace_test.cpp`: Unit test evaluating alternative input journal trajectory (Left -> Stop -> Up -> Stop) across 61 frames, achieving 100% Plane B parity (M16.8).
+- `data/standalone-fixtures/beach_alternative_trace_oracle.json`: Independent 61-frame ROM execution oracle fixture mined via GPGX libretro core under WSL for alternative input sequence (M16.8).
 - `src/game/world/tilemap_streamer.hpp` / `src/game/world/tilemap_streamer.cpp`: Authentic Beyond Oasis Plane A dynamic tilemap streamer implementing column streaming (routine 0x0023CC, 29 rows), row streaming (routine 0x002512, 41 words), 64x64 Screen {1, 0} beach map decompression, and 2-frame presentation pipeline delay, achieving 100.0% exact parity across all 121 frames on PLANE_A_EXACT (M16.7).
 - `data/standalone-fixtures/beach_graphics_oracle_v3.json`: Versioned 121-frame graphics oracle fixture mined via GPGX libretro core under WSL with activated Waterbox render flags (`cinterface_render_bgw/bgb/bga/obj`), containing normalized 320x224 RGBA32 framebuffers ($286,720$ bytes), active SAT link chain count and hashes, Plane A and Plane B name table hashes, HUD sprite hashes, and SHA-256 hashes of Work RAM, SAT, and framebuffers (M16.7).
 - `data/standalone-fixtures/beach_plane_a_map_64x64.bin`: Authentic 64x64 Screen {1, 0} beach Plane A tilemap (8,192 bytes) extracted from RAM at $00FF3FAC (M16.7).

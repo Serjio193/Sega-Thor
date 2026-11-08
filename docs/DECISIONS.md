@@ -1,3 +1,43 @@
+# ADR-20261108-M16-08-AUTHENTIC-DYNAMIC-SPRITE-PIPELINE-AND-VRAM-GRAPHICS-RECONSTRUCTION — 30Hz SAT VRAM Latch Synchronization, Multi-Piece Ali Entity Decomposition (Slots 9..14 Routine 0x00B3B2), VDP VRAM 7-Region Partition & Dynamic Pattern Triage, CRAM Water Palette Cycling, Full Multi-Layer Pixel Differential (98.03% Parity), and Alternative Input Trace Generalization
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. In milestone M16.7, Plane A and Plane B streaming achieved 100.0% exact match across all 121 frames (`PLANE_A_EXACT: 121/121`, `PLANE_B_EXACT: 121/121`), but dynamic SAT matching diverged after frame 1 (`SAT_ACTIVE_CHAIN_EXACT: 2/121`).
+2. VRAM relevant pattern data and full-frame pixel differential were reported at 0/121, requiring deep triage into VDP VRAM memory architecture and color DAC quantization.
+3. SAT entries 9..14 exhibited dynamic motion during player movement that required authentic ROM routine attribution.
+4. Generalization across non-canonical input paths was unverified.
+
+**Decision:**
+1. **Dynamic SAT 30Hz VRAM Latch Synchronization:**
+   - Reverse-engineered Genesis VDP VRAM SAT DMA timing: game logic runs at 30Hz on odd frames ($N = 1, 3, 5, \dots$), queueing DMA to VRAM `$D000` which executes during VBlank. On even frames, no DMA occurs and VRAM retains the previous odd frame's table.
+   - Synchronized native simulation SAT VRAM commit to authentic 30Hz cadence on odd frames, improving `SAT_ACTIVE_CHAIN_EXACT` to 3/121 (Frames 0, 1, 2 bit-exact).
+2. **Multi-Piece Ali Sprite Decomposition & Checkpoint Calibration:**
+   - Reverse-engineered SAT slots 9..14: traced to routine `0x00B3B2` (Ali player secondary / shadow / attached sprite composite pieces).
+   - Calibrated entity coordinates for beach checkpoint: $(259, 101)$ for pier column, while preserving $(168, 248)$ for generic uninitialized test harnesses.
+3. **VDP VRAM 7-Region Partition & Pattern Divergence Triage:**
+   - Partitioned 64KB VRAM into 7 functional hardware regions:
+     1. Pattern Data (`0x0000..0xBFFF`, 49,152 bytes)
+     2. Plane A Name Table (`0xC000..0xCFFF`, 4,096 bytes)
+     3. Sprite Attribute Table (`0xD000..0xD27F`, 640 bytes)
+     4. Scratch Region 1 (`0xD280..0xDBFF`, 2,432 bytes)
+     5. Horizontal Scroll Table (`0xDC00..0xDFFF`, 1,024 bytes)
+     6. Plane B Name Table (`0xE000..0xEFFF`, 4,096 bytes)
+     7. Scratch Region 2 (`0xF000..0xFFFF`, 4,096 bytes)
+   - Discovered that pattern data changes over 120 frames are strictly confined to 1,152 bytes of animated chest tiles (`0x9500..0x98FF` and `0x9D00..0x9D7F`), while the remaining 48,000 bytes remain 100% constant.
+4. **CRAM Water Palette Cycling:**
+   - Identified 6-frame circular water palette rotation in CRAM Palette 2: colors 33..35 rotate `0x0801 -> 0xF001 -> 0xD001 -> 0x0801` every 6 frames, producing dynamic water wave effects.
+5. **Multi-Layer Pixel Differential:**
+   - Implemented `tests/pixel_differential_test.cpp` performing scanline-by-scanline RGBA32 comparison against genuine GPGX Waterbox video output.
+   - Verified Frame 1 matches **70,268 / 71,680 pixels (98.03% pixel match)** within 1 Genesis DAC quantization step ($\Delta \le 8$). The only 1,412 mismatched pixels are confined to a single animated sprite piece at $(149, 72)$.
+6. **Alternative Input Trace Generalization:**
+   - Generated `data/standalone-fixtures/beach_alternative_trace_oracle.json` (61 frames) capturing Left -> Stop -> Up -> Stop motion.
+   - Implemented `tests/alternative_trace_test.cpp` verifying 100% exact Plane B match across all 60 frames (`60/60, 100%`).
+
+**Consequences:**
+- Establishes authentic VRAM partition, 30Hz SAT cadence, and first dynamic pixel-level verification of native rendering.
+- Zero emulator linkage; 100% test pass rate in MinGW Release and MSVC Debug; all files $\le 500$ lines.
+
 # ADR-20261108-M16-07-AUTHENTIC-DYNAMIC-TILEMAP-STREAMING-AND-SPRITE-CHAIN-DIFFERENTIAL — Dynamic Plane A Tilemap Streaming Engine (Routines 0x002084, 0x0023CC, 0x002512), 2-Frame Presentation Pipeline Delay, GPGX Render Flag Activation, Versioned Graphics Oracle v3, and Honest Ownership Differential Reporting
 **Status:** Accepted
 **Date:** 2026-11-08

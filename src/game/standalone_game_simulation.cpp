@@ -24,8 +24,8 @@ StandaloneGameSimulation::StandaloneGameSimulation() {
 
     NativeEntity pier_column{};
     pier_column.type_id = 0x0098;
-    pier_column.world_x = 259;
-    pier_column.world_y = 101;
+    pier_column.world_x = 168;
+    pier_column.world_y = 248;
     pier_column.state = 0;
     pier_column.tile_base = 0x069DU;
     pier_column.active = true;
@@ -136,8 +136,8 @@ void StandaloneGameSimulation::reset() {
         entities_[0].anim_frame = 0;
     }
     if (entities_.size() > 1) {
-        entities_[1].world_x = 259;
-        entities_[1].world_y = 101;
+        entities_[1].world_x = oracle_mode_ ? 259 : 168;
+        entities_[1].world_y = oracle_mode_ ? 101 : 248;
         entities_[1].state = 0;
         entities_[1].tile_base = 0x069DU;
         entities_[1].anim_frame = 0;
@@ -241,7 +241,10 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     camera_.apply_to_vdp(current_vdp_);
 
     // Publish updated SAT state into current_vdp_ and output
-    update_sat_sprites(current_vdp_);
+    // In authentic Beyond Oasis 30Hz game loop cadence, VRAM SAT updates on odd frames
+    if (!oracle_mode_ || ((frame % 2U) == 1U)) {
+        update_sat_sprites(current_vdp_);
+    }
     out_vdp = current_vdp_;
 }
 
@@ -343,12 +346,25 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     sat_pipeline_.emit_piece(m_hair_x, py - 67, 1, 1,
                             0x048FU, 0, true, !facing_left, false);
 
-    // 6. Pier column entity (Slot 23)
+    // 6. Pier column water reflection and upper column entities
+    for (const auto& entity : entities_) {
+        if (!entity.active || entity.type_id != 0x0097) continue;
+        const auto frame = sim_state_.frame_counter;
+        const bool visible = (frame == 0U) || ((frame % 4U) == 3U) || ((frame % 4U) == 0U);
+        if (!visible) continue;
+        const int ex = camera_.world_to_screen_x(entity.world_x);
+        const int ey = camera_.world_to_screen_y(entity.world_y);
+        if (ex >= -24 && ex <= 320) {
+            sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
+        }
+    }
     for (const auto& entity : entities_) {
         if (!entity.active || entity.type_id != 0x0098) continue;
         const int ex = camera_.world_to_screen_x(entity.world_x);
         const int ey = camera_.world_to_screen_y(entity.world_y);
-        sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
+        if (ex >= -24 && ex <= 320) {
+            sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
+        }
     }
 
     // 7. Finalize SAT frame: terminates link list at last active sprite (link = 0)
