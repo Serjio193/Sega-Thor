@@ -1,3 +1,62 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.224: Entity Engine Native Coverage Expansion — State 5 Safe Paths + Root Entry 0x0254EA Execution; Discovery of 0x00E682 Stack-Pop Tail Return and 134(a6) Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions; 24/24 Stream Parity)
+
+## Milestone M15.224 Reverse Engineering Summary
+
+### 1. State 5 Safe vs Complex Path Decomposition (`0x0259CE..0x025A72`)
+- **Address Range:** `0x0259CE` to `0x025A72` (164 ROM bytes, 36 instructions).
+- **Subroutine Call Structure & Branch Conditions:**
+  * 42 authentic Scenario C calls.
+  * Entry Preflight: reads `48(a6)` (`w48`) and `46(a6)` (`w46`).
+  * Complex Path Condition: `w48 == 12 && w46 == 0`. Reaches child chain at `0x0259EC` (`JSR $00E66E`, `JSR $00E338`, `JSR $00E7E8`, `ASR.L #4, D0`, `ASR.L #4, D1`). Exactly 2 calls (calls #14 and #35 in Scenario C). Declined fail-closed to original ROM (`unsupported_state_entries = 2`).
+  * Safe Path Condition: `!(w48 == 12 && w46 == 0)`. Exactly 40 calls in Scenario C:
+    - 38 calls exit via RTS (`0x0259EA` or `0x025A70`).
+    - 2 calls loop back via `BRA.W $0255D8` at `0x0259E6` to common join.
+  * Stepped Natively: 40 calls, 206 instructions stepped with 0 cycle drift and 0 contract faults.
+
+### 2. Root Entry `0x0254EA` Control Flow & Motion Child `0x00E682` Discovery
+- **Parent Entry Point:** `0x0254EA` (3,209 authentic Scenario C calls).
+- **Child Routine `0x00E682` Analysis (`0x00E682..0x00E6BE`):**
+  * `0x00E682`: `btst.b #6, 54(a6)`
+  * `0x00E688`: `move.b 157(a6), d0`
+  * `0x00E68C`: `bne.w 0x00E6AA`
+  * `0x00E690`: `move.b 130(a6), d0`
+  * `0x00E694`: `bne.w 0x00E69A`
+  * `0x00E698`: `rts` (Normal RTS return to `0x0256BE`)
+  * `0x00E69A`: `addq.w #1, 46(a6); subq.w #1, d0; move.b d0, 130(a6); beq.s 0x00E6A8`
+  * `0x00E6A6`: `addq.l #4, sp; rts` (Tail return via stack pop)
+  * `0x00E6A8`: `rts` (Normal RTS return to `0x0256BE`)
+  * `0x00E6AA`: `cmpi.b #20, d0; bcc.w 0x00E6A6; bset.b #6, 54(a6); bra.s 0x00E6A6`
+  * Tail Return Discovery: When `157(a6) != 0` or `130(a6) > 1`, `0x00E682` pops the caller return address (`addq.l #4, sp; rts`) and returns directly to `0x0254EA`'s caller. This deliberately skips the rest of `0x0254EA` (including `0x0256BE`, `0x0256C2`, and `0x02575C`). Occurs in exactly 1 call in Scenario C (frame 789).
+- **Return Block `0x0256BE` Analysis:**
+  * `0x0256BE`: `move.w 134(a6), d0`
+  * `0x0256C2`: `beq.w $02575C`
+  * If `134(a6) == 0`: branches directly into dispatcher `0x02575C`.
+  * If `134(a6) != 0`: falls through to `0x0256C6..0x02575A` (clears 134(a6), calls `0x00E7E8` and `0x00E4D0`). Occurs in 2 calls in Scenario C.
+- **Root Entry Preflight Filter at `0x0254EA`:**
+  * Condition: `mode_byte == 0` AND `b157 == 0 && b130 <= 1` AND `w134 == 0`.
+  * When all 3 hold: stepped natively through `0x0254EA`, `0x0254EE`, `0x0256B8` (child `0x00E682`), `0x0256BE`, and `0x0256C2` into dispatcher `0x02575C` (3,192 calls, 15,960 instructions).
+  * When any fails: declined fail-closed to original ROM prior to any instruction preparation (17 calls: 14 non-zero modes, 1 motion stack pop, 2 non-zero 134 paths).
+
+### 3. Comprehensive Reconciled Subsystem Transfer Ledger
+- **Root Entry (`0x0254EA`):** 3,209 total entries; 3,192 native entries (99.47%); 17 ROM entries; 3,192 child calls to `0x00E682`; 3,192 child returns.
+- **Dispatcher (`0x02575C`):** 3,194 entries; 3,192 native entries (99.94%); 2 unsupported state entries (State 5 complex paths).
+- **All 11 Subsystem Handlers:**
+  * State 0: 1,609 calls, 4,776 steps, 1,558 RTS exits, 51 loopbacks to `0x0255D8`.
+  * State 1: 229 calls, 3,196 steps, 218 RTS exits, 11 loopbacks to `0x0255D8`, 230 child calls (`0x00BCD8` / `0x00E7E8`).
+  * State 2: 3 calls, 24 steps, 3 RTS exits.
+  * State 3: 15 calls, 54 steps, 14 RTS exits, 1 transfer exit (`0x00E7E8`), 15 child calls (`0x00E502`).
+  * State 4: 9 calls, 30 steps, 9 RTS exits, 1 child call (`0x00F476`).
+  * State 5: 40 calls, 206 steps, 38 RTS exits, 2 loopbacks to `0x0255D8`.
+  * State 6: 32 calls, 618 steps, 32 RTS exits, 34 child calls (`0x00B852` / `0x00E7E8`).
+  * State 7: 12 calls, 38 steps, 12 RTS exits.
+  * Target 10: 1,202 calls, 15,629 steps, 1,202 RTS exits, 1,202 child calls (`0x00F0D2`), 1,202 child returns.
+  * Target 11: 27 calls, 166 steps, 26 RTS exits, 1 transfer exit (`0x00E7E8`).
+  * Target 12: 14 calls, 43 steps, 13 RTS exits, 1 loopback to `0x0255D8`.
+- **Authentic ROM Child Return Completions:** 4,674 (3,192 root + 1,482 dispatcher children).
+- **Total Stepped Instructions:** 53,508 (up from 37,182, +16,326 dynamic instructions).
+- **Contract Faults:** 0.
+
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.223: Entity Engine Cluster Subsystem Completion — State 5 Timing Blocker Forensics, Root Control Flow Integration from 0x0254EA to 0x02575C, Complete Per-Call-Site Transfer Ledger, and 24/24 Stream Parity)
 
 ## Milestone M15.223 Reverse Engineering Summary

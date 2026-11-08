@@ -241,6 +241,104 @@ void test_runtime_bridge_unsupported_and_disabled() {
     TEST_ASSERT(get_02575c_step_metrics().rom_calls == 1);
     std::cout << "[PASS] test_runtime_bridge_unsupported_and_disabled\n";
 }
+
+void test_runtime_bridge_state5_safe_rts() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U, kSp = 0xFF7FFCU, kRet = 0x00DF1EU;
+    g_regs[14] = kA6; g_regs[15] = kSp;
+    mock_write_mem(nullptr, kSp, 4, kRet);
+    mock_write_mem(nullptr, kA6 + 4U, 2, 0x000AU); // State 5
+    mock_write_mem(nullptr, kA6 + 48U, 2, 0x0000U); // 48(a6) != 12 -> branches to 0x0259E0
+    mock_write_mem(nullptr, kA6 + 55U, 1, 0x00U); // bit 1 of 55(a6) is 0 -> exits via RTS at 0x0259EA
+    step_sequence(api, {0x02575CU, 0x025760U, 0x025764U, 0x025766U, 0x0259CEU, 0x0259D4U, 0x0259E0U, 0x0259E6U, 0x0259EAU});
+    TEST_ASSERT(g_last_return_pc == kRet);
+    const auto& m = get_02575c_step_metrics();
+    TEST_ASSERT(m.state5_calls == 1 && m.state5_rts_exits == 1);
+    std::cout << "[PASS] test_runtime_bridge_state5_safe_rts\n";
+}
+
+void test_runtime_bridge_state5_safe_loopback() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U, kSp = 0xFF7FFCU;
+    g_regs[14] = kA6; g_regs[15] = kSp;
+    mock_write_mem(nullptr, kA6 + 4U, 2, 0x000AU); // State 5
+    mock_write_mem(nullptr, kA6 + 48U, 2, 0x0000U); // 48(a6) != 12 -> branches to 0x0259E0
+    mock_write_mem(nullptr, kA6 + 55U, 1, 0x02U); // bit 1 of 55(a6) is 1 -> branches to 0x0255D8
+    step_sequence(api, {0x02575CU, 0x025760U, 0x025764U, 0x025766U, 0x0259CEU, 0x0259D4U, 0x0259E0U, 0x0259E6U});
+    TEST_ASSERT(g_last_return_pc == 0x0255D8U);
+    const auto& m = get_02575c_step_metrics();
+    TEST_ASSERT(m.state5_calls == 1 && m.state5_loopback_exits == 1);
+    std::cout << "[PASS] test_runtime_bridge_state5_safe_loopback\n";
+}
+
+void test_runtime_bridge_state5_complex_preflight_rejection() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U; g_regs[14] = kA6;
+    mock_write_mem(nullptr, kA6 + 4U, 2, 0x000AU); // State 5
+    mock_write_mem(nullptr, kA6 + 48U, 2, 0x000CU); // 48(a6) == 12
+    mock_write_mem(nullptr, kA6 + 46U, 2, 0x0000U); // 46(a6) == 0 -> complex path condition!
+    TEST_ASSERT(step_m68k_02575c(0x02575CU, api, true) == M68k9D70StepResult::NotHandled);
+    const auto& m = get_02575c_step_metrics();
+    TEST_ASSERT(m.unsupported_state_entries == 1 && m.native_calls == 0);
+    std::cout << "[PASS] test_runtime_bridge_state5_complex_preflight_rejection\n";
+}
+
+void test_runtime_bridge_root_mode0_success() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U, kSp = 0xFF7FFCU;
+    g_regs[14] = kA6; g_regs[15] = kSp;
+    mock_write_mem(nullptr, kA6 + 102U, 1, 0x00U); // Mode 0
+    mock_write_mem(nullptr, kA6 + 134U, 2, 0x0000U); // 134(a6) == 0 -> branches to 0x02575C
+    mock_write_mem(nullptr, 0x00E682U, 2, 0x08AEU); // Child opcode in ROM
+    TEST_ASSERT(step_m68k_02575c(0x0254EAU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_02575c(0x0254EEU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_02575c(0x0256B8U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(g_regs[15] == kSp - 4U);
+    TEST_ASSERT(mock_read_mem(nullptr, kSp - 4U, 4) == 0x0256BEU);
+    TEST_ASSERT(g_last_return_pc == 0x00E682U);
+    g_regs[15] = kSp;
+    TEST_ASSERT(step_m68k_02575c(0x0256BEU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_02575c(0x0256C2U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(g_last_return_pc == 0x02575CU);
+    const auto& m = get_02575c_step_metrics();
+    TEST_ASSERT(m.root_entries == 1 && m.root_native_entries == 1 && m.root_steps == 5);
+    TEST_ASSERT(m.root_child_calls == 1 && m.root_child_returns == 1);
+    std::cout << "[PASS] test_runtime_bridge_root_mode0_success\n";
+}
+
+void test_runtime_bridge_root_non_zero_mode_rejection() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U; g_regs[14] = kA6;
+    mock_write_mem(nullptr, kA6 + 102U, 1, 0x01U); // Mode 1
+    TEST_ASSERT(step_m68k_02575c(0x0254EAU, api, true) == M68k9D70StepResult::NotHandled);
+    const auto& m = get_02575c_step_metrics();
+    TEST_ASSERT(m.root_entries == 1 && m.root_rom_entries == 1 && m.root_native_entries == 0);
+    std::cout << "[PASS] test_runtime_bridge_root_non_zero_mode_rejection\n";
+}
+
+void test_runtime_bridge_root_complex_path_rejections() {
+    reset_environment(); const auto api = make_test_api();
+    constexpr unsigned kA6 = 0xFF2000U; g_regs[14] = kA6;
+
+    // Case 1: b157 != 0 (motion stack pop)
+    mock_write_mem(nullptr, kA6 + 102U, 1, 0x00U);
+    mock_write_mem(nullptr, kA6 + 157U, 1, 0x01U);
+    TEST_ASSERT(step_m68k_02575c(0x0254EAU, api, true) == M68k9D70StepResult::NotHandled);
+
+    // Case 2: b130 > 1 (motion stack pop)
+    reset_environment(); g_regs[14] = kA6;
+    mock_write_mem(nullptr, kA6 + 102U, 1, 0x00U);
+    mock_write_mem(nullptr, kA6 + 130U, 1, 0x02U);
+    TEST_ASSERT(step_m68k_02575c(0x0254EAU, api, true) == M68k9D70StepResult::NotHandled);
+
+    // Case 3: w134 != 0 (non-zero 134 path)
+    reset_environment(); g_regs[14] = kA6;
+    mock_write_mem(nullptr, kA6 + 102U, 1, 0x00U);
+    mock_write_mem(nullptr, kA6 + 134U, 2, 0x0001U);
+    TEST_ASSERT(step_m68k_02575c(0x0254EAU, api, true) == M68k9D70StepResult::NotHandled);
+
+    std::cout << "[PASS] test_runtime_bridge_root_complex_path_rejections\n";
+}
 } // namespace
 
 int main() {
@@ -255,6 +353,12 @@ int main() {
     test_runtime_bridge_target11_non_negative_rts();
     test_runtime_bridge_target11_negative_tail_jump();
     test_runtime_bridge_target12_rts_and_loopback();
+    test_runtime_bridge_state5_safe_rts();
+    test_runtime_bridge_state5_safe_loopback();
+    test_runtime_bridge_state5_complex_preflight_rejection();
+    test_runtime_bridge_root_mode0_success();
+    test_runtime_bridge_root_non_zero_mode_rejection();
+    test_runtime_bridge_root_complex_path_rejections();
     test_runtime_bridge_unsupported_and_disabled();
     std::cout << "ALL ENTITY CLUSTER UNIT TESTS PASSED SUCCESSFULLY!\n";
     return 0;

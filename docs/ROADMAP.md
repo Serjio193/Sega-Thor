@@ -1,3 +1,43 @@
+# M15.224 Entity Engine Native Coverage Expansion: State 5 Safe Paths + Root Entry 0x0254EA Execution; Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Branching; Subsystem Reaches 53,508 Stepped Instructions (+43.9% Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); Three-Scenario Differential Qualification (24/24 Bit-Exact Streams) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER
+
+Delivered:
+- Work Package A — State 5 Safe Paths Execution (`0x0259CE`):
+  * Pure side-effect-free entry preflight checking `48(a6)` (`w48`) and `46(a6)` (`w46`).
+  * Declined 2 complex child-chain calls (`w48 == 12 && w46 == 0`, calls #14 and #35 in Scenario C) fail-closed to original ROM (`unsupported_state_entries = 2`).
+  * Stepped 40 safe calls natively (38 direct RTS exits + 2 common-join loopbacks to `0x0255D8`).
+  * 206 native instructions stepped with zero cycle drift.
+- Work Package B — Root Entry `0x0254EA` Execution:
+  * Discovered motion child `0x00E682` tail return behavior: when `157(a6) != 0` or `130(a6) > 1`, `0x00E682` pops caller return address (`addq.l #4, sp; rts`) directly returning to `0x0254EA`'s caller.
+  * Discovered `134(a6) != 0` branching away from `0x02575C` through `0x0256C6..0x02575A`.
+  * Implemented pure entry preflight: `mode_byte == 0` AND `b157 == 0 && b130 <= 1` AND `w134 == 0`.
+  * Mode 0 safe paths stepped natively: 3,192 calls, 15,960 instructions through `0x0254EA`, `0x0254EE`, `0x0256B8` (child `0x00E682`), `0x0256BE`, and `0x0256C2` into dispatcher `0x02575C`.
+  * Declined 17 non-matching calls fail-closed to original ROM: 14 non-zero modes, 1 motion stack pop, 2 non-zero 134 paths.
+- Reconciled Subsystem Metrics:
+  * Native Dispatcher Coverage: **3,192 / 3,194 entries (99.94%)** of all Scenario C dispatcher workload.
+  * Native Root Entry Coverage: **3,192 / 3,209 entries (99.47%)** of all parent calls.
+  * Total Stepped Instructions: **53,508** (up from 37,182, +16,326 dynamic instructions, +43.9% relative increase).
+  * Authentic ROM Child Return Completions: **4,674** (3,192 root + 1,482 dispatcher children).
+  * Contract Faults: **0**.
+- Game-Wide Dynamic Coverage:
+  * Scenario C Total M68K Dynamic Instructions: 17,627,770.
+  * Subsystem Native Share: 53,508 / 17,627,770 = **0.304%** (increased from 0.211%).
+- Modular Architecture & AGENTS.md Rule 3 Compliance:
+  * All 9 cluster source modules strictly <= 500 lines.
+  * Unit tests in `tests/m68k_entity_cluster_test.cpp`: 17/17 PASS.
+- Three-Scenario Differential Qualification:
+  * Runner SHA256: `62396429a65f863c2055aaea9780e23a33c1e91718a670d5a3665f3167e281fa`.
+  * Scenario C (1,800 frames): 8/8 raw streams matched bit-for-bit.
+  * Scenario A (1,592 frames): 8/8 raw streams matched bit-for-bit.
+  * Scenario B (600 frames): 8/8 raw streams matched bit-for-bit.
+  * Overall: **24/24 bit-exact stream matches**.
+- Evidence Receipt & Machine Verification:
+  * Generated versioned receipt `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json`.
+  * Verified with `ReceiptVerifier`: 58 checks, `valid=True`, `status=VERIFIED`.
+- Production Governance:
+  * Production active helpers remain strictly at **196 active helpers** (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Experimental slot 222 default disabled; `ORACLE_APPROVAL = PENDING`.
+
+
 # M15.223 Entity Engine Cluster: Subsystem Completion, Root-Level Control Flow Integration (0x0254EA to 0x02575C), State 5 Timing Blocker Forensics, Complete Transfer Ledger, and Three-Scenario Qualification (24/24 Bit-Exact Streams) — COMPLETE / QUALIFIED EXPERIMENTAL SUBSYSTEM CLUSTER
 
 Delivered:

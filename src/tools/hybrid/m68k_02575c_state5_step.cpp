@@ -106,12 +106,8 @@ M68k9D70StepResult step_state5(
         active = false;
         return M68k9D70StepResult::InstructionStepped;
     }
-    case 0x0259ECU: { // movea.l a6, a4
-        if (!prepare_step(api, pc, opcode)) return M68k9D70StepResult::ContractFault;
-        api.write_register(api.context, 12U, a6);
-        if (!complete_step(api, 0x0259EEU, opcode, 0, resume_pc)) return M68k9D70StepResult::ContractFault;
-        metrics.stepped_instructions++; metrics.state5_steps++;
-        return M68k9D70StepResult::InstructionStepped;
+    case 0x0259ECU: { // movea.l a6, a4 - complex path blocked; must be rejected by entry preflight
+        return M68k9D70StepResult::ContractFault;
     }
     case 0x0259EEU: { // lea ($00FF19E8).l, a6
         if (!prepare_step(api, pc, opcode)) return M68k9D70StepResult::ContractFault;

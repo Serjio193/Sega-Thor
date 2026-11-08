@@ -81,6 +81,7 @@ def main():
     # Compile files to compile:
     sources = [
         repo_root / "src" / "tools" / "hybrid" / "m68k_02575c_instruction_step.cpp",
+        repo_root / "src" / "tools" / "hybrid" / "m68k_02575c_root_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_02575c_target10_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_02575c_target11_step.cpp",
         repo_root / "src" / "tools" / "hybrid" / "m68k_02575c_state1_step.cpp",

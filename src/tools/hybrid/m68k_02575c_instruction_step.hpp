@@ -86,6 +86,14 @@ struct M68k02575CStepMetrics {
     std::uint64_t target12_rts_exits{};
     std::uint64_t target12_loopback_exits{};
 
+    // Root Entry (0x0254EA..0x02575C)
+    std::uint64_t root_entries{};
+    std::uint64_t root_steps{};
+    std::uint64_t root_native_entries{};
+    std::uint64_t root_rom_entries{};
+    std::uint64_t root_child_calls{};
+    std::uint64_t root_child_returns{};
+
     // Global transitions
     std::uint64_t rom_child_return_completions{};
     std::uint64_t native_continuation_entries{};

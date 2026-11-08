@@ -1,3 +1,81 @@
+# 2026-11-08 — Milestone M15.224: ENTITY ENGINE NATIVE COVERAGE EXPANSION — State 5 Safe Paths + Root Entry 0x0254EA Execution; Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Increased to 53,508 Instructions (+16,326 Native Instructions, +43.9% Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Stream Matches Maintained Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 222 Default Disabled, ORACLE_APPROVAL = PENDING)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Work Package A — State 5 Safe Paths (`0x0259CE`):
+    - Implement side-effect-free entry preflight checking `48(a6)` (`w48`) and `46(a6)` (`w46`).
+    - Natively execute 40 safe calls (38 direct RTS exits + 2 common-join loopbacks to `0x0255D8`).
+    - Decline 2 complex child-chain calls (calls #14 and #35 in Scenario C) fail-closed to original ROM.
+  * Work Package B — Root Entry `0x0254EA` Execution:
+    - Natively step Mode 0 path into dispatcher `0x02575C` (`0x0254EA` -> `0x0254EE` -> `0x0256B8` -> child `0x00E682` -> return `0x0256BE` -> branch `0x0256C2` to `0x02575C`).
+    - Reconcile external child calls and frame transitions without double-charging instructions or duplicate state mutations.
+    - Forensically identify and safeguard against non-standard child stack alterations.
+  * Governance & Validation:
+    - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Slot 222 remains default disabled in production; `ORACLE_OWNER_APPROVAL = PENDING`.
+    - Strict 24/24 bit-exact stream matches across Scenarios A, B, and C with zero contract faults.
+    - All executable source files strictly <= 500 lines.
+    - Generate machine evidence receipt `02575c-three-scenario-qualification-m15-224-20261108.json` verified with `ReceiptVerifier`.
+
+- **M15.223 Reality Confirmation (Phase 1):**
+  * Prior M15.223 runner SHA256: `cdd7f58d0215fe9418b8fed5b1f84bd3c84a913c3a92e960f4c1707ed85819c8`.
+  * `RUNTIME_BINARY_CHANGED = FALSE`, `RUNTIME_CODE_PATH_CHANGED = FALSE`, `NATIVE_COVERAGE_DELTA = 0`. M15.223 performed analysis and architectural reconciliation while leaving runner binary unchanged.
+
+- **Work Package A Implementation & Results (State 5 Safe Paths):**
+  * Preflight Condition: Evaluates `48(a6)` and `46(a6)`.
+    - Complex Path (`w48 == 12 && w46 == 0`): Routes to `0x0259EC` containing Z80 audio command dispatch (`0x00E7E8`), shadow coordinate updates (`0x00E66E`), and dynamic shift operations (`ASR.L #4`). Declines fail-closed to original ROM (`metrics.unsupported_state_entries++`).
+    - Safe Path (`!(w48 == 12 && w46 == 0)`): 40 calls in Scenario C executed natively (38 RTS exits at `0x0259EA`/`0x025A70` + 2 loopback exits to `0x0255D8`).
+  * Stepped Instructions: 206 native instructions stepped across 40 calls with 0 contract faults.
+
+- **Work Package B Implementation & Results (Root Entry 0x0254EA):**
+  * Disassembly Analysis of Motion Child `0x00E682`:
+    - Tests `157(a6)` (`0x9D(a6)`) and `130(a6)` (`0x82(a6)`).
+    - Normal RTS Return: Occurs when `157(a6) == 0` and (`130(a6) == 0` or `130(a6) == 1`).
+    - Tail Return via Frame Pop: When `157(a6) != 0` or `130(a6) > 1`, `0x00E682` executes `0x00E6A6`: `addq.l #4, sp; rts`. This pops the caller frame and returns directly to `0x0254EA`'s caller, intentionally bypassing the remainder of `0x0254EA` (including `0x0256BE`, `0x0256C2`, and `0x02575C`). Occurs in exactly 1 call in Scenario C (frame 789).
+  * Disassembly Analysis of `0x0256BE`:
+    - `move.w 134(a6), d0; beq.w $02575C`.
+    - If `134(a6) == 0`: branches directly into dispatcher `0x02575C`.
+    - If `134(a6) != 0`: executes through `0x0256C6..0x02575A` (clears 134(a6), calls `0x00E7E8` and `0x00E4D0`). Occurs in 2 calls in Scenario C.
+  * Root Entry Preflight at `0x0254EA`:
+    - Condition: `mode_byte == 0` AND `b157 == 0 && b130 <= 1` AND `w134 == 0`.
+    - Safe Mode 0 Path: 3,192 calls in Scenario C executed natively through `0x0254EA`, `0x0254EE`, `0x0256B8` (child `0x00E682`), `0x0256BE`, and `0x0256C2` into dispatcher `0x02575C`.
+    - Rejections: Exactly 17 calls safely declined fail-closed to original ROM: 14 non-zero modes (Modes 1..5) + 1 motion stack pop + 2 non-zero 134 paths.
+  * Stepped Instructions: 15,960 native instructions stepped in root module across 3,192 calls with 0 contract faults.
+
+- **Reconciled Subsystem Transfer Ledger:**
+  * Root Entry (`0x0254EA`): 3,209 total entries; 3,192 native entries; 17 ROM fallback entries; 3,192 child calls to `0x00E682`; 3,192 child returns.
+  * Dispatcher (`0x02575C`): 3,194 entries; 3,192 native entries (99.94%); 2 unsupported state entries (State 5 complex paths).
+  * State 0: 1,609 calls, 4,776 steps, 1,558 RTS exits, 51 loopbacks to `0x0255D8`.
+  * State 1: 229 calls, 3,196 steps, 218 RTS exits, 11 loopbacks to `0x0255D8`, 230 child calls (229 `0x00BCD8` + 1 `0x00E7E8`).
+  * State 2: 3 calls, 24 steps, 3 RTS exits.
+  * State 3: 15 calls, 54 steps, 14 RTS exits, 1 transfer exit (`0x00E7E8`), 15 child calls (`0x00E502`).
+  * State 4: 9 calls, 30 steps, 9 RTS exits, 1 child call (`0x00F476`).
+  * State 5: 40 calls, 206 steps, 38 RTS exits, 2 loopbacks to `0x0255D8`.
+  * State 6: 32 calls, 618 steps, 32 RTS exits, 34 child calls (32 `0x00B852` + 2 `0x00E7E8`).
+  * State 7: 12 calls, 38 steps, 12 RTS exits.
+  * Target 10: 1,202 calls, 15,629 steps, 1,202 RTS exits, 1,202 child calls (`0x00F0D2`), 1,202 child returns.
+  * Target 11: 27 calls, 166 steps, 26 RTS exits, 1 transfer exit (`0x00E7E8`).
+  * Target 12: 14 calls, 43 steps, 13 RTS exits, 1 loopback to `0x0255D8`.
+  * Total Child Completions: 4,674 authentic ROM child returns (3,192 root + 1,482 dispatcher children).
+  * Total Stepped Instructions: 53,508 (up from 37,182, +16,326 dynamic instructions).
+  * Contract Faults: 0.
+
+- **Game-Wide Coverage Measurement:**
+  * Scenario C Total M68K Dynamic Instructions: 17,627,770 (from `observed-landmarks.jsonl`).
+  * Subsystem Native Instruction Share: 53,508 / 17,627,770 = 0.304% (increased from 0.211% in M15.223).
+
+- **Three-Scenario Differential A/B Verification:**
+  * Qualified Runner: `build/auto-migrator/02575c/linux-runner/oasis_gameplay_session` (SHA256: `62396429a65f863c2055aaea9780e23a33c1e91718a670d5a3665f3167e281fa`).
+  * Scenario C (1,800 frames): 8/8 raw streams matched bit-for-bit.
+  * Scenario A (1,592 frames): 8/8 raw streams matched bit-for-bit.
+  * Scenario B (600 frames): 8/8 raw streams matched bit-for-bit.
+  * Overall: 24/24 bit-exact stream matches. Zero stream drift.
+
+- **Evidence & Governance:**
+  * Evidence Receipt: `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json` verified with `ReceiptVerifier` (status: `VERIFIED`, 58 checks, `valid=True`).
+  * Production Active Set: Strictly 196 helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Experimental Entity Cluster: Slot 222, default disabled in production. `ORACLE_OWNER_APPROVAL = PENDING`.
+  * Source Line Limit Compliance: All 9 modified/created source files strictly <= 500 lines per AGENTS.md Rule 3.
+
 # 2026-11-08 — Milestone M15.223: ENTITY ENGINE CLUSTER: Subsystem Completion & Root-Level Control Flow Integration — State 5 Exact Timing Blocker Resolution (Frame 785 Divergence Down to PC 0x8B72 vs 0x8B7A, Z80 Audio Driver Arbitration at 0x060004/0x06042A, IPL 7 Masking, and Dynamic Shift Timing Delays); Root Control Flow Graph Integration from Parent Entry 0x0254EA (3,209 Scenario C Calls) to Dispatcher 0x02575C (3,194 Calls) with Full Prefix Accounting for All 15 Non-Dispatcher Branches (8 Mode-1 Setup, 6 Mode-4 Death/Removal, 1 Remote Divergence to 0x00E682); Complete Per-Call-Site Child Transfer Ledger Reconciling 1,482 Child Completions and 65 Loopbacks to Common Join 0x0255D8 with Zero Faults; Module Unification Audit (m68k_entity_cluster_* C++ Coordinator vs m68k_02575c_* Runtime Steppers); All Source Code Files Strictly <= 500 Lines; 24/24 Bit-Exact Stream Parity Maintained Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-223-20261108.json); Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slot 222 Default Disabled, ORACLE_APPROVAL = PENDING)
 
 - **Concrete Task & Acceptance Criteria:**

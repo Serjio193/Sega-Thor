@@ -1,4 +1,5 @@
 #include "tools/hybrid/m68k_02575c_instruction_step.hpp"
+#include "tools/hybrid/m68k_02575c_root_step.hpp"
 #include "tools/hybrid/m68k_02575c_step_ops.hpp"
 
 #include <array>
@@ -20,6 +21,10 @@ bool active = false;
 bool child_call_active = false;
 unsigned saved_child_sp = 0U;
 unsigned resume_pc = 0U;
+bool root_active = false;
+bool root_child_active = false;
+unsigned root_resume_pc = 0U;
+unsigned saved_root_child_sp = 0U;
 M68k02575CStepMetrics metrics{};
 
 constexpr std::array<std::uint16_t, 6> kRomWords = {{
@@ -215,6 +220,10 @@ M68k9D70StepResult step_state7(const M68k9D70StepApi& api, unsigned pc, unsigned
 M68k9D70StepResult step_m68k_02575c(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept {
     pc &= kMask24;
 
+    if (pc == 0x0254EAU || root_active || root_child_active || (pc >= 0x0256BEU && pc <= 0x0256C2U)) {
+        return step_root(pc, api, enabled, root_active, root_child_active, root_resume_pc, saved_root_child_sp, metrics);
+    }
+
     if (child_call_active) {
         const auto sp = api.read_register(api.context, 15U) & kMask24;
         if (pc == resume_pc && sp == saved_child_sp) {
@@ -238,8 +247,20 @@ M68k9D70StepResult step_m68k_02575c(unsigned pc, const M68k9D70StepApi& api, boo
         unsigned state_word = 0U;
         if (!read_be(api, a6 + 4U, 2, state_word)) { metrics.contract_faults++; return M68k9D70StepResult::ContractFault; }
 
-        // Test States 0..4, 6..7, 10..12 (State 5 blocked by Z80 sound arbitration / cycle drift at frame 785)
-        if (state_word != 0x0000U && state_word != 0x0002U && state_word != 0x0004U &&
+        // Test States 0..4, 6..7, 10..12, and State 5 safe paths (preflight complex path)
+        if (state_word == 0x000AU) {
+            unsigned w48 = 0U, w46 = 0U;
+            if (!read_be(api, a6 + 48U, 2, w48) || !read_be(api, a6 + 46U, 2, w46)) {
+                metrics.contract_faults++;
+                return M68k9D70StepResult::ContractFault;
+            }
+            if (w48 == 12U && w46 == 0U) {
+                // Complex path with Z80 arbitration & child calls: decline fail-closed to ROM
+                metrics.unsupported_state_entries++;
+                return M68k9D70StepResult::NotHandled;
+            }
+            // Safe path (40/42 calls in Scenario C): allow native stepping
+        } else if (state_word != 0x0000U && state_word != 0x0002U && state_word != 0x0004U &&
             state_word != 0x0006U && state_word != 0x0008U &&
             state_word != 0x000CU && state_word != 0x000EU &&
             state_word != 0x0014U && state_word != 0x0016U && state_word != 0x0018U) {
@@ -352,6 +373,10 @@ void reset_02575c_step_metrics() noexcept {
     child_call_active = false;
     saved_child_sp = 0U;
     resume_pc = 0U;
+    root_active = false;
+    root_child_active = false;
+    root_resume_pc = 0U;
+    saved_root_child_sp = 0U;
 }
 
 void write_02575c_step_metrics(const std::filesystem::path& path) {
@@ -414,6 +439,12 @@ void write_02575c_step_metrics(const std::filesystem::path& path) {
         << "  \"target12_steps\": " << metrics.target12_steps << ",\n"
         << "  \"target12_rts_exits\": " << metrics.target12_rts_exits << ",\n"
         << "  \"target12_loopback_exits\": " << metrics.target12_loopback_exits << ",\n"
+        << "  \"root_entries\": " << metrics.root_entries << ",\n"
+        << "  \"root_steps\": " << metrics.root_steps << ",\n"
+        << "  \"root_native_entries\": " << metrics.root_native_entries << ",\n"
+        << "  \"root_rom_entries\": " << metrics.root_rom_entries << ",\n"
+        << "  \"root_child_calls\": " << metrics.root_child_calls << ",\n"
+        << "  \"root_child_returns\": " << metrics.root_child_returns << ",\n"
         << "  \"rom_child_return_completions\": " << metrics.rom_child_return_completions << ",\n"
         << "  \"native_continuation_entries\": " << metrics.native_continuation_entries << ",\n"
         << "  \"contract_faults\": " << metrics.contract_faults << "\n"

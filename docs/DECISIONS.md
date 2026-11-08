@@ -1,3 +1,41 @@
+# ADR-20261108-M15-224-ENTITY-ENGINE-CLUSTER-NATIVE-COVERAGE-EXPANSION — Entity Engine Cluster Native Coverage Expansion: State 5 Safe Paths Execution (+206 Instructions across 40 Calls) with Fail-Closed Preflight on Z80 Arbitration Chains; Root Entry 0x0254EA Execution (+15,960 Instructions across 3,192 Calls) with Forensic Discovery of 0x00E682 Stack-Pop Tail Return (addq.l #4, sp; rts) and 134(a6) Non-Zero Branching; Subsystem Dynamic Execution Reaching 53,508 Instructions (+43.9% Relative Growth); 99.94% Native Dispatcher Coverage (3,192 / 3,194 Calls); 99.47% Native Root Coverage (3,192 / 3,209 Calls); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios A, B, and C; Machine Receipt Verified (02575c-three-scenario-qualification-m15-224-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, ORACLE_APPROVAL = PENDING)
+**Status:** Accepted
+**Date:** 2026-11-08
+
+**Context:**
+1. Milestone M15.223 identified the root causes of the State 5 timing divergence (Z80 bus arbitration, dynamic bit shift cycles, helper 182 compensation) and established the control flow graph from parent entry `0x0254EA` down to dispatcher `0x02575C`. However, it left runtime binary execution unchanged.
+2. Milestone M15.224 mandates delivering measurable new native execution in authentic gameplay across two connected packages:
+   - Package A: Safely native-execute eligible State 5 paths while fail-closed declining complex paths without cycle drift.
+   - Package B: Native-execute root entry `0x0254EA` Mode 0 into `0x02575C` without double-stepping or stack corruption.
+3. Production active helpers must remain at strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`) with Slot 222 default disabled. All 24 raw streams across Scenarios A, B, and C must remain bit-for-bit identical.
+
+**Decision:**
+1. **Work Package A — State 5 Preflight Filter:**
+   - Evaluated `48(a6)` and `46(a6)` at entry to State 5 (`0x02575C` with state word `0x000A`).
+   - Complex path condition: `48(a6) == 12 && 46(a6) == 0` (takes child chain to `0x0259EC`). Safely declined fail-closed to original ROM (`unsupported_state_entries = 2`).
+   - Safe path condition: `!(48(a6) == 12 && 46(a6) == 0)`. Stepped natively in C++ across 40 authentic Scenario C calls (38 direct RTS exits + 2 common-join loopbacks to `0x0255D8`).
+2. **Work Package B — Root Entry 0x0254EA Preflight & Execution:**
+   - Forensically disassembled motion child `0x00E682` and discovered that when `157(a6) != 0` or `130(a6) > 1`, `0x00E682` executes `0x00E6A6`: `addq.l #4, sp; rts`. This pops the caller frame and returns directly to `0x0254EA`'s caller, bypassing the rest of `0x0254EA`.
+   - Also discovered that when `134(a6) != 0`, `0x0256C2` falls through to `0x0256C6..0x02575A` instead of branching to `0x02575C`.
+   - Constructed a pure, side-effect-free entry preflight checking:
+     * `mode_byte == 0` (Mode 0)
+     * `b157 == 0 && b130 <= 1` (motion child will not alter stack frame)
+     * `w134 == 0` (branch at `0x0256C2` is taken directly to `0x02575C`)
+   - When all conditions hold, steps `0x0254EA`, `0x0254EE`, `0x0256B8` (child `0x00E682`), `0x0256BE`, and `0x0256C2` natively into dispatcher `0x02575C` (3,192 calls, 15,960 instructions).
+   - When any condition fails, declines fail-closed to original ROM prior to any instruction preparation (17 calls: 14 non-zero modes, 1 motion stack pop, 2 non-zero 134 paths).
+3. **Execution & Qualification:**
+   - Rebuilt isolated Linux runner `oasis_gameplay_session` (SHA256: `62396429a65f863c2055aaea9780e23a33c1e91718a670d5a3665f3167e281fa`).
+   - Qualified across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 raw stream artifacts matched bit-for-bit.
+   - Verified evidence receipt `data/thor-evidence/02575c-three-scenario-qualification-m15-224-20261108.json` with `ReceiptVerifier` (status: `VERIFIED`, 58 checks, `valid=True`).
+
+**Consequences:**
+- Subsystem native dynamic instruction execution increased from 37,182 to 53,508 (+16,326 dynamic instructions, +43.9% relative increase).
+- Native dispatcher workload coverage reached 3,192 / 3,194 entries (99.94%).
+- Native root entry coverage reached 3,192 / 3,209 entries (99.47%).
+- Game-wide dynamic native instruction share reached 0.304% of all M68K instructions in Scenario C.
+- Production baseline remains unchanged at strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+
+
 # ADR-20261108-M15-223-ENTITY-ENGINE-CLUSTER-COMPLETION-AND-ROOT-CFG — Entity Engine Cluster Completion, Root-Level Control Flow Integration from 0x0254EA to 0x02575C, State 5 Exact Timing Blocker Identification (Z80 Arbitration & Dynamic Shift Cycle Drift), Complete Transfer Ledger, Machine Receipt Qualification, and Baseline Retention at 196 Helpers
 **Status:** Accepted
 **Date:** 2026-11-08
