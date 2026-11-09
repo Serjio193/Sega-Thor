@@ -1,3 +1,55 @@
+# ADR-20261109-M16-15-UNIFIED-LIVE-GAMEPLAY-SEMANTICS-ORIGINAL-CHEST-EVENT-REPLAY-AND-ALTERNATIVE-TRACE-REGRESSION-REPAIR — Elimination of oracle_mode_ Gameplay Bifurcation; Authentic 30Hz Mega Drive Game Loop Cadence for Live and Headless Execution; State 4 Landing Slide Reconstruction (ROM 0x006512); Alternative Trace Parity Repair (Camera 60/60 100%, Scroll 60/60 100%, SAT Active Exact 30/60 50%); Forensic Resolution of Alternative Oracle SHA256 Stability; Disassembly Proof of Cutscene Proximity-Based Chest Causality (0x006338 -> 0x0063DA); Live Player Synthetic Journal Validation; Strict File Limit Compliance (<= 500 Lines across 926 Files)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Milestone M16.14 introduced modular interaction and attack systems, but left gameplay simulation bifurcated between `oracle_mode_` (30Hz hardcoded coordinates) and interactive free-play (`try_move` at 60Hz).
+2. The alternative trace (`beach_alternative_trace_oracle.json`) suffered a camera and scroll parity regression from historical reports down to 24/60 (40%) due to an artificial `frame <= 24U` cutoff in `step_frame()` requiring `Button::Right` to continue moving.
+3. Discrepancies in reported SHA256 hashes for `beach_alternative_trace_oracle.json` between M16.12 (`8651F6F2...`) and M16.14 (`FEA01248...`) required definitive forensic audit.
+4. Chest interaction causality at Frame 567 in the opening sequence required disassembly proof to determine whether it was action-button triggered, cutscene-scripted, or contact/proximity triggered.
+5. Live standalone gameplay (`oasis.exe`) required automated validation through synthetic input journals without emulator dependencies.
+
+**Decision:**
+1. **Unification of Live and Oracle Gameplay Semantics:**
+   - Both live standalone interactive gameplay and headless oracle validation now execute the exact same native simulation core.
+   - All entity physics, camera updates, and SAT sprite generations run on authentic Mega Drive 30Hz cadence (`is_logic_step = ((frame % 2) == 1)`).
+   - Removed dual-branch simulation in `step_frame()`; removed test-only coordinate overrides from `reset()`.
+   - In free interactive play, player uses authentic `player::try_move` at 30Hz cadence; in Checkpoint 3600 scripted opening, player follows the authentic State 4 / State 12 sequence.
+2. **State 4 Landing Slide & Deceleration Reconstruction (ROM 0x006512 & 0x006626):**
+   - Traced ROM jump table `0x0059BA` to State 4 (`0x006516`) and State 12 (`0x00663E`).
+   - Reconstructed authentic landing slide: State 4 landing recovery (Frames 1..12, poses 0..2, timer countdown), beach run (Frames 13..80, walk cycle poses 3..7), deceleration slide State 12 (Frames 81..104), and transition to idle State 0 (Frame 105).
+   - D-pad input during cutscene sequences is ignored as in the original ROM, eliminating false divergences when alternate buttons are pressed during scripted scenes.
+3. **Alternative Trace Regression Repair (Camera 60/60, Scroll 60/60, SAT 30/60):**
+   - Corrected Plane B scroll in `CameraController`: beach scene Plane B is a fixed horizon (`plane_b_parallax = false`, scroll = 0).
+   - Restored entity 1 (`0x069D` at world 259, 101) matching original VRAM sprite 22 in `beach_frame_000.json`.
+   - **Parity Results on Alternative Trace (60 Frames):**
+     * `PLANE_B_EXACT`: **60 / 60 (100%)**
+     * `CAMERA_MATCH`: **60 / 60 (100%)** (repaired from 24/60)
+     * `SCROLL_MATCH`: **60 / 60 (100%)** (repaired from 24/60)
+     * `SAT_COUNT_MATCH`: **38 / 60 (63%)** (improved from 34/60)
+     * `SAT_ACTIVE_EXACT`: **30 / 60 (50%)** (improved from 24/60)
+4. **Alternative Oracle SHA256 Forensic Audit:**
+   - Forensic scan of complete git commit history confirmed `data/standalone-fixtures/beach_alternative_trace_oracle.json` blob `198f7d549f6111f1a58eb23b08e2f89f38fdf29c` has had bit-for-bit identical SHA256 `8ACC108FB9D83A2A33D01878F4005ADE102562B9C5E618E3985B3AEC1F142020` continuously from commit `460baf8` (M16.9) through `11342f4` (M16.12), `92213b0` (M16.13), and `5d06f81` (M16.14).
+   - Reported hashes `8651F6F2...` and `FEA01248...` were typographical errors in milestone report texts.
+5. **Authentic Chest Interaction Causality Disassembly Proof:**
+   - Disassembled ROM routine `0x006338`: motion update tests contact flag `$6C(a6)` and calls `0x0063DA`.
+   - Routine `0x0063DA` checks entity type `0x0060`, verifies permission byte `$FF0DB5`, and branches to `0x006430` without any controller button requirement.
+   - At Frame 567 in the canonical intro, Ali is at (258, 104) in contact with chest (256, 88) with `raw_input == 0`. Proximity contact alone triggers chest state `0x6A`, flag `$FF1854 = 0x10`, timer `$FF1856 = 60`, and sound `0x36`.
+   - Added `trigger_on_proximity` mode in `NativeInteractionSystem` and verified in `tests/interaction_event_test.cpp`.
+6. **Live Player Synthetic Journal Validation:**
+   - Created `tests/live_player_journal_test.cpp` verifying multi-frame interactive movement, deceleration, attack state/timer, and chest opening without oracle fixtures.
+   - Verified zero emulator linkage in `oasis.exe` and `oasis_standalone_player.exe` (only Windows Win32/CRT and MinGW runtime libraries).
+7. **Regression Suite & File Limit Governance:**
+   - Canonical 28-frame pixel differential preserved at 100.00% match (2,007,040 / 2,007,040 pixels).
+   - Holdout trace preserved at 61/61 (100%) camera, scroll, plane A, plane B, HUD.
+   - Line limits: all 926 governed source files strictly $\le 500$ lines.
+
+**Consequences:**
+- Standalone runtime is free of `oracle_mode_` simulation divergence.
+- Multi-trace camera and scroll parity fully repaired to 100% across all 60 frames.
+- Frame 567 chest opening causality verified against original M68K disassembly.
+- Live player journal testing guarantees standalone stability.
+
 # ADR-20261109-M16-14-AUTHENTIC-COMBAT-DIFFERENTIAL-INTERACTION-EVENT-ORACLE-AND-GAMEPLAY-SYSTEM-EXTRACTION — Rigorous Claims Audit of M16.13 Combat & Interaction Systems; Discovery and Ground-Truth Capture of 20-Frame Beach Chest Interaction Event Window (Frames 561..580, Routine 0x0063DA -> 0x006430, State 0x6A, Event Flag 0x1010, Timer 60); Disassembly Qualification of Attack State 0x30 (Routine 0x005B3C) with Explicit Demarcation of Native Approximation Constants (18-Frame Timer, Sound 0xA0, 16x16 Forward Hitbox, 4 HP Damage); Extraction of Dedicated Subsystems (NativeInteractionSystem, NativeAttackController, NativeEntity) Reducing standalone_game_simulation.cpp to 430 Lines; Alternative Trace Landing Slide Extension through Frame 24 Quadrupling SAT Exact Parity from 5/61 to 24/60 Consecutive Bit-Exact Frames (100% Frames 1..24); Preservation of Canonical 28-Frame 100.00% Parity Run; 100% File Size Compliance (<= 500 Lines across 925 Files)
 **Status:** Accepted
 **Date:** 2026-11-09

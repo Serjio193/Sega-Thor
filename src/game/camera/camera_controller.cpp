@@ -37,9 +37,13 @@ void CameraController::set_camera_position(int world_x, int world_y) noexcept {
     const int total_dy = state_.camera_world_y - config_.initial_camera_y;
 
     state_.plane_a_hscroll = static_cast<int>((config_.initial_hscroll_a - total_dx) & 0x01FF);
-    state_.plane_b_hscroll = static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF);
+    state_.plane_b_hscroll = config_.plane_b_parallax
+                                 ? static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF)
+                                 : config_.initial_hscroll_b;
     state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & 0x03FF);
-    state_.plane_b_vscroll = static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF);
+    state_.plane_b_vscroll = config_.plane_b_parallax
+                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF)
+                                 : config_.initial_vscroll_b;
 
     state_.moved_this_frame = (state_.camera_world_x != state_.prev_camera_world_x) ||
                               (state_.camera_world_y != state_.prev_camera_world_y);
@@ -120,9 +124,13 @@ void CameraController::update(int player_world_x, int player_world_y, int player
     const int total_dy = state_.prev2_camera_world_y - config_.initial_camera_y;
 
     state_.plane_a_hscroll = static_cast<int>((config_.initial_hscroll_a - total_dx) & 0x01FF);
-    state_.plane_b_hscroll = static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF);
+    state_.plane_b_hscroll = config_.plane_b_parallax
+                                 ? static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF)
+                                 : config_.initial_hscroll_b;
     state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & 0x03FF);
-    state_.plane_b_vscroll = static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF);
+    state_.plane_b_vscroll = config_.plane_b_parallax
+                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF)
+                                 : config_.initial_vscroll_b;
 
     state_.moved_this_frame = (state_.camera_world_x != state_.prev_camera_world_x) ||
                               (state_.camera_world_y != state_.prev_camera_world_y);

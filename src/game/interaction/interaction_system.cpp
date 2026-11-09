@@ -30,13 +30,16 @@ void NativeInteractionSystem::update(std::int32_t player_x,
     const int dist_x = std::abs(player_x - chest.world_x);
     const int dist_y = std::abs(player_y - chest.world_y);
 
-    // Authentic ROM routine 0x0063DA: Action button proximity interaction
+    // Authentic ROM routine 0x0063DA -> 0x006430:
+    // Triggers on proximity contact ($6C(a6) in ROM). In interactive play, requires
+    // action button (A or C); in cutscenes / scripted sequences, proximity alone triggers.
     if (chest.type_id == 0x0060U && chest.state != 0x6AU && dist_x <= 20 && dist_y <= 12) {
-        const bool action = controller.pressed(core::Button::A) ||
+        const bool action = trigger_on_proximity_ ||
+                            controller.pressed(core::Button::A) ||
                             controller.pressed(core::Button::C);
         if (action) {
             // Authentic state transition: 0x0063DA branch to 0x006430
-            chest.state = 0x6AU;          // Opened state
+            chest.state = 0x6AU;          // Opened state (0x006452: move.w #$6a, $4(a6))
             chest.tile_base = 0x04B0U;    // Opened chest sprite tile base
             interaction_timer_ = 60U;     // 60-frame event freeze timer ($FF1856)
             event_flag_ = 0x10U;          // Chest 0x10 opened event flag ($FF1854)

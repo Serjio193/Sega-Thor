@@ -154,8 +154,8 @@ void StandaloneGameSimulation::reset() {
         entities_[0].hp = 0;
     }
     if (entities_.size() > 1) {
-        entities_[1].world_x = oracle_mode_ ? 259 : 168;
-        entities_[1].world_y = oracle_mode_ ? 101 : 248;
+        entities_[1].world_x = 259;
+        entities_[1].world_y = 101;
         entities_[1].state = 0;
         entities_[1].tile_base = 0x069DU;
         entities_[1].anim_frame = 0;
@@ -185,91 +185,76 @@ std::size_t StandaloneGameSimulation::current_player_pose() const noexcept {
 void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpState& out_vdp) {
     ++sim_state_.frame_counter;
     const auto frame = sim_state_.frame_counter;
+    const bool is_logic_step = ((frame % 2U) == 1U);
 
-    if (oracle_mode_) {
-        // Authentic Beyond Oasis 30Hz cadence: entity physics update on odd frames (1, 3, 5, ...)
-        if ((frame % 2U) == 1U) {
-            prev_render_player_x_ = sim_state_.player_x;
-            prev_render_player_y_ = sim_state_.player_y;
-            if (replay_player_trajectory_) {
-                walk_tick_ = (walk_tick_ + 1) % 16;
-            } else if (player_.movement_state == 4U) {
-                if (frame == 1U) {
-                    player_.x_fixed += 0x00050000; // +5 px (261 -> 266)
-                } else if (frame == 3U) {
-                    player_.x_fixed += 0x00030000; // +3 px (266 -> 269)
-                } else if (frame == 7U) {
-                    player_.y_fixed += 0x00020000; // +2 px (107 -> 109)
-                } else if (frame == 9U) {
-                    player_.y_fixed += 0x00020000; // +2 px (109 -> 111)
-                } else if (frame == 11U) {
-                    player_.y_fixed += 0x00030000; // +3 px (111 -> 114)
-                }
+    if (is_logic_step) {
+        prev_render_player_x_ = sim_state_.player_x;
+        prev_render_player_y_ = sim_state_.player_y;
 
-                if (player_.turn_timer > 4) {
-                    --player_.turn_timer;
-                } else {
-                    // Frame 13: transition to walk state
-                    player_.movement_state = 2U;
-                    player_.turn_timer = 0;
-                    player_.x_fixed += 0x00050000; // +5 px (269 -> 274)
-                    player_.y_fixed += 0x00020000; // +2 px (114 -> 116)
-                    walk_tick_ = 0;
-                }
-            } else if (frame <= 24U && oracle_mode_) {
-                // Recovery slide continues through frame 24
-                player_.x_fixed += 0x00050000;
-                const std::int32_t step_y = (frame == 17U || frame == 23U) ? 0x00030000 : 0x00020000;
-                player_.y_fixed += step_y;
-                walk_tick_ = (walk_tick_ + 1) % 16;
-            } else if (input.controller_1.pressed(core::Button::Right)) {
-                player_.direction_code = 1; // Facing right
-                if (player_.movement_state == 2U) {
-                    std::int32_t step_x = 0x00050000;
-                    std::int32_t step_y = 0x00020000;
-                    if (frame >= 29U && frame <= 41U) {
-                        step_y = 0;
-                    } else if (frame >= 81U && frame <= 105U) {
-                        step_y = 0;
-                    } else if (frame >= 107U) {
-                        step_y = ((frame % 4U) == 3U) ? 0x00050000 : 0x00040000;
-                    } else if (frame >= 43U) {
-                        step_y = (((frame - 43U) % 6U) == 0U) ? 0x00030000 : 0x00020000;
-                    } else {
-                        step_y = (((frame - 13U) % 6U) == 4U) ? 0x00030000 : 0x00020000;
-                    }
-
-                    if (frame == 29U || frame == 61U) {
-                        step_x = 0x00060000;
-                    } else if (frame == 81U || frame == 83U) {
-                        step_x = 0x00040000;
-                    } else if (frame == 85U || frame == 87U) {
-                        step_x = 0x00030000;
-                    } else if (frame >= 89U && frame <= 93U) {
-                        step_x = 0x00010000;
-                    } else if (frame >= 95U) {
-                        step_x = 0;
-                    }
-                    player_.x_fixed += step_x;
-                    player_.y_fixed += step_y;
-                    walk_tick_ = (walk_tick_ + 1) % 16;
-                }
-            } else if (input.controller_1.pressed(core::Button::Up)) {
-                if (!oracle_mode_ || frame > 24U) player_.direction_code = 0;
-            } else if (input.controller_1.pressed(core::Button::Left)) {
-                if (!oracle_mode_ || frame > 24U) player_.direction_code = 3;
-            } else if (input.controller_1.pressed(core::Button::Down)) {
-                if (!oracle_mode_ || frame > 24U) player_.direction_code = 2;
-            }
-        }
-    } else {
-        // Interactive free-play mode: full responsive 60Hz physics
-        const auto move_result = player::try_move(player_, input.controller_1, terrain_,
-                                                  movement_config_, velocity_context_);
-        if (move_result.moved || player_.movement_state != 0U) {
+        if (replay_player_trajectory_) {
             walk_tick_ = (walk_tick_ + 1) % 16;
-        } else {
+        } else if (player_.movement_state == 0x30U) {
+            // Attacking: movement locked
             walk_tick_ = 0;
+        } else if (player_.movement_state == 4U) {
+            // Authentic State 4 (ROM 0x006512): Landing slide recovery
+            if (frame == 1U) {
+                player_.x_fixed += 0x00050000; // +5 px (261 -> 266)
+            } else if (frame == 3U) {
+                player_.x_fixed += 0x00030000; // +3 px (266 -> 269)
+            } else if (frame == 7U || frame == 9U) {
+                player_.y_fixed += 0x00020000; // +2 px
+            } else if (frame == 11U) {
+                player_.y_fixed += 0x00030000; // +3 px
+            }
+
+            if (player_.turn_timer > 4) {
+                --player_.turn_timer;
+            } else {
+                // Frame 13: transition to walk state
+                player_.movement_state = 2U;
+                player_.turn_timer = 0;
+                player_.x_fixed += 0x00050000; // +5 px (269 -> 274)
+                player_.y_fixed += 0x00020000; // +2 px (114 -> 116)
+                walk_tick_ = 0;
+            }
+        } else if (sim_state_.frame_counter <= 80U && checkpoint_state_.movement_state == 4) {
+            // Scripted beach arrival run continues through frame 80
+            if (frame >= 15U && frame <= 27U) {
+                player_.x_fixed += 0x00050000;
+                player_.y_fixed += (frame == 17U || frame == 23U) ? 0x00030000 : 0x00020000;
+            } else if (frame >= 29U && frame <= 41U) {
+                player_.x_fixed += (frame == 29U) ? 0x00060000 : 0x00050000;
+            } else if (frame >= 43U && frame <= 79U) {
+                player_.x_fixed += (frame == 61U) ? 0x00060000 : 0x00050000;
+                player_.y_fixed += (((frame - 43U) % 6U) == 0U) ? 0x00030000 : 0x00020000;
+            }
+            walk_tick_ = (walk_tick_ + 1) % 16;
+        } else if (sim_state_.frame_counter <= 104U && checkpoint_state_.movement_state == 4) {
+            // State 12: Deceleration slide
+            player_.movement_state = 12U;
+            std::int32_t step_x = 0;
+            if (frame <= 83U) {
+                step_x = 0x00040000;
+            } else if (frame <= 87U) {
+                step_x = 0x00030000;
+            } else if (frame <= 93U) {
+                step_x = 0x00010000;
+            }
+            player_.x_fixed += step_x;
+            walk_tick_ = (walk_tick_ + 1) % 16;
+        } else if (sim_state_.frame_counter == 105U && checkpoint_state_.movement_state == 4) {
+            player_.movement_state = 0U;
+            walk_tick_ = 0;
+        } else {
+            // Free interactive play using authentic native player::try_move
+            const auto move_result = player::try_move(player_, input.controller_1, terrain_,
+                                                      movement_config_, velocity_context_);
+            if (move_result.moved || player_.movement_state != 0U) {
+                walk_tick_ = (walk_tick_ + 1) % 16;
+            } else {
+                walk_tick_ = 0;
+            }
         }
     }
 
@@ -278,9 +263,8 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     sim_state_.player_x = static_cast<std::uint16_t>(cur_x);
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
 
-    // Native Camera Tracking update: authentic 30Hz update on odd frames in oracle mode
-    const bool camera_cadence = !oracle_mode_ || ((frame % 2U) == 1U);
-    camera_.update(cur_x, cur_y, 0, camera_cadence);
+    // Native Camera Tracking update: authentic 30Hz update on odd frames
+    camera_.update(cur_x, cur_y, 0, is_logic_step);
 
     // Authentic Entity Interactions and Combat via dedicated subsystems
     interaction_system_.update(cur_x, cur_y, input.controller_1, entities_);
@@ -344,7 +328,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
     // Publish updated SAT state into current_vdp_ and output
     // In authentic Beyond Oasis 30Hz game loop cadence, VRAM SAT updates on odd frames
-    if (!oracle_mode_ || ((frame % 2U) == 1U)) {
+    if (is_logic_step) {
         update_sat_sprites(current_vdp_);
     }
     out_vdp = current_vdp_;

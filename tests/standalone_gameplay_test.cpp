@@ -37,7 +37,7 @@ void test_player_position_integration() {
     assert(sim.state().player_y == 107);
     assert(sim.player().x_fixed == 261 * 0x10000);
 
-    // Frame 1: move Right in interactive 60Hz mode (cardinal_x_speed = 0x36000)
+    // Frame 1: move Right in authentic 30Hz cadence (cardinal_x_speed = 0x36000)
     oasis::game::FrameInput input1{};
     input1.frame_index = 1;
     input1.controller_1.set(oasis::core::Button::Right);
@@ -49,14 +49,22 @@ void test_player_position_integration() {
     assert(sim.state().player_x == static_cast<std::uint16_t>(sim.player().x_fixed / 0x10000));
     assert(sim.player().direction_code == 1); // Right
 
-    // Frame 2: move Right again
+    // Frame 2: even frame (display hold on 30Hz cadence)
     oasis::game::FrameInput input2{};
     input2.frame_index = 2;
     input2.controller_1.set(oasis::core::Button::Right);
 
     oasis::genesis::VdpState vdp2{};
     sim.step_frame(input2, vdp2);
+    assert(sim.player().x_fixed == (261 * 0x10000) + 0x36000);
 
+    // Frame 3: odd frame (second 30Hz step)
+    oasis::game::FrameInput input3{};
+    input3.frame_index = 3;
+    input3.controller_1.set(oasis::core::Button::Right);
+
+    oasis::genesis::VdpState vdp3{};
+    sim.step_frame(input3, vdp3);
     assert(sim.player().x_fixed == (261 * 0x10000) + (2 * 0x36000));
     std::cout << "[PASS] test_player_position_integration\n";
 }
@@ -149,8 +157,8 @@ void test_additional_entity_update_and_sat() {
     assert(sim.entities()[0].world_x == 256);
     assert(sim.entities()[0].world_y == 88);
     assert(sim.entities()[1].type_id == 0x0098);
-    assert(sim.entities()[1].world_x == 168);
-    assert(sim.entities()[1].world_y == 248);
+    assert(sim.entities()[1].world_x == 259);
+    assert(sim.entities()[1].world_y == 101);
 
     oasis::game::FrameInput in{};
     in.frame_index = 1;
@@ -418,6 +426,7 @@ void test_authentic_attack_slice() {
     cp.y_fixed = 90 << 16;
     cp.direction_code = 2;
     sim.initialize_from_checkpoint(dummy_vdp, cp);
+    sim.set_entity_position(1, 259, 101); // Target dummy in attack range
     assert(sim.entities().size() > 1);
     assert(sim.entities()[1].hp == 4);
 

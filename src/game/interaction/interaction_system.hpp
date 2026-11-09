@@ -17,6 +17,11 @@ public:
 
     void reset() noexcept;
 
+    // Sets whether chest interaction triggers on proximity alone (e.g. during cutscenes
+    // like Frame 567 where current_input == 0) or requires an action button (A / C).
+    void set_trigger_on_proximity(bool enable) noexcept { trigger_on_proximity_ = enable; }
+    [[nodiscard]] bool trigger_on_proximity() const noexcept { return trigger_on_proximity_; }
+
     // Checks proximity and controller input, triggers chest opening if qualified.
     // Handles authentic interaction timer countdown.
     void update(std::int32_t player_x,
@@ -36,6 +41,7 @@ private:
     std::uint16_t interaction_timer_{0};
     std::uint16_t event_flag_{0};
     std::uint16_t sound_command_{0};
+    bool trigger_on_proximity_{false};
 };
 
 } // namespace oasis::game

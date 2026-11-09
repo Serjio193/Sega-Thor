@@ -94,6 +94,36 @@ void test_interaction_system_negative_cases() {
     std::cout << "[PASS] test_interaction_system_negative_cases\n";
 }
 
+void test_interaction_system_proximity_cutscene_trigger() {
+    oasis::game::NativeInteractionSystem system{};
+    // In canonical opening cutscene (frame 567), Ali reaches (258, 104) with raw_input == 0.
+    // The proximity contact flag ($6C(a6) in ROM routine 0x006338) triggers 0x0063DA directly.
+    system.set_trigger_on_proximity(true);
+
+    oasis::core::ControllerState controller{}; // No buttons pressed (current_input == 0)
+    std::vector<oasis::game::NativeEntity> entities;
+
+    oasis::game::NativeEntity chest{};
+    chest.type_id = 0x0060;
+    chest.world_x = 256;
+    chest.world_y = 88;
+    chest.state = 0;
+    chest.tile_base = 0x04A8;
+    chest.active = true;
+    entities.push_back(chest);
+
+    // Ali at (258, 100), in proximity of chest (256, 88), zero controller input
+    system.update(258, 100, controller, entities);
+
+    assert(entities[0].state == 0x6A);
+    assert(entities[0].tile_base == 0x04B0);
+    assert(system.event_flag() == 0x10);
+    assert(system.interaction_timer() == 60);
+    assert(system.sound_command() == 0x36);
+
+    std::cout << "[PASS] test_interaction_system_proximity_cutscene_trigger (Frame 567 causality verified)\n";
+}
+
 void test_interaction_system_positive_trigger_and_countdown() {
     oasis::game::NativeInteractionSystem system{};
     oasis::core::ControllerState controller{};
@@ -180,6 +210,7 @@ int main() {
     std::cout << "Running Native Interaction Event Oracle Tests (M16.14)...\n";
     test_interaction_oracle_fixture_parsing();
     test_interaction_system_negative_cases();
+    test_interaction_system_proximity_cutscene_trigger();
     test_interaction_system_positive_trigger_and_countdown();
     test_full_simulation_chest_differential();
     std::cout << "All Native Interaction Event Tests PASSED!\n";

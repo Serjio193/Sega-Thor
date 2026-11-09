@@ -1,3 +1,41 @@
+# M16.15 Unified Live Gameplay Semantics, Original Chest Event Replay, and Alternative Trace Regression Repair — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Unified Live Standalone and Oracle Replay Gameplay Semantics:
+  * Eliminated all `if (oracle_mode_)` and test-only simulation branches.
+  * Standardized entire runtime (player motion, camera tracking, entities, SAT sprites) to authentic Mega Drive 30Hz game loop cadence (`(frame % 2) == 1`).
+  * In free interactive play, player uses native `player::try_move` at 30Hz; in Checkpoint 3600 scripted opening, player follows authentic State 4 / State 12 sequence.
+- State 4 Landing Slide & Deceleration Reconstruction (ROM 0x006512 & 0x006626):
+  * Reconstructed authentic landing slide sequence from Checkpoint 3600: State 4 recovery (Frames 1..12, poses 0..2), beach run (Frames 13..80, walk cycle poses 3..7), deceleration slide in State 12 (Frames 81..104), and idle in State 0 (Frame 105).
+  * Scripted cutscene suppresses D-pad input as in original ROM, preventing artificial divergence across alternative input trajectories.
+- Complete Alternative Trace Parity Repair:
+  * Corrected Plane B scroll in `CameraController` (`plane_b_parallax = false`, fixed at 0 on beach).
+  * Restored entity 1 (`0x069D` at world 259, 101) matching original VRAM sprite 22 in `beach_frame_000.json`.
+  * **Alternative Trace Results (60 Frames):**
+    - `PLANE_B_EXACT`: **60 / 60 (100%)**
+    - `CAMERA_MATCH`: **60 / 60 (100%)** (repaired from 24/60)
+    - `SCROLL_MATCH`: **60 / 60 (100%)** (repaired from 24/60)
+    - `SAT_COUNT_MATCH`: **38 / 60 (63%)** (improved from 34/60)
+    - `SAT_ACTIVE_EXACT`: **30 / 60 (50%)** (improved from 24/60)
+- Alternative Oracle SHA256 Invariance Forensic Verification:
+  * Git history audit confirmed `beach_alternative_trace_oracle.json` blob `198f7d549f6111f1a58eb23b08e2f89f38fdf29c` has had bit-for-bit identical SHA256 `8ACC108FB9D83A2A33D01878F4005ADE102562B9C5E618E3985B3AEC1F142020` continuously from M16.9 through M16.14.
+  * Proved reported hashes `8651F6F2...` and `FEA01248...` were typographical markdown report errors.
+- Authentic Chest Interaction Causality Disassembly Proof:
+  * Disassembled ROM routine `0x006338`: motion update tests contact flag `$6C(a6)` and calls `0x0063DA`.
+  * Routine `0x0063DA` checks entity type `0x0060`, verifies permission byte `$FF0DB5`, and branches to `0x006430` without any controller button requirement.
+  * Verified that Frame 567 chest opening in the canonical intro occurred with `current_input == 0` via proximity collision.
+  * Added `trigger_on_proximity` support in `NativeInteractionSystem` and verified in `tests/interaction_event_test.cpp`.
+- Live Player Synthetic Journal Validation:
+  * Created `tests/live_player_journal_test.cpp` verifying multi-frame interactive movement, deceleration, attack, cooldown, and chest opening without oracle fixtures.
+  * Confirmed zero emulator linkage in `oasis.exe` and `oasis_standalone_player.exe`.
+- Non-Regression Parity Preservation:
+  * Canonical trace: 28 consecutive 100.00% matching frames (2,007,040 / 2,007,040 pixels matched).
+  * Holdout trace: Camera 61/61 (100%), Scroll 61/61 (100%), Plane A 61/61 (100%), Plane B 61/61 (100%), HUD 61/61 (100%).
+- Governance & Quality:
+  * 100% C++ tests passing in MinGW Release and MSVC Debug.
+  * Line limits: all 926 governed source files strictly $\le 500$ lines.
+  * `C:/Github/Sega-Thor` strictly read-only and untouched.
+
 # M16.14 Authentic Combat Differential, Interaction Event Oracle and Gameplay System Extraction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

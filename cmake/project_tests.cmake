@@ -129,6 +129,9 @@ add_test(NAME oasis_pixel_differential COMMAND oasis_pixel_differential_test)
 add_executable(oasis_alternative_trace_test tests/alternative_trace_test.cpp)
 target_link_libraries(oasis_alternative_trace_test PRIVATE oasis_core)
 add_test(NAME oasis_alternative_trace COMMAND oasis_alternative_trace_test)
+add_executable(oasis_live_player_journal_test tests/live_player_journal_test.cpp)
+target_link_libraries(oasis_live_player_journal_test PRIVATE oasis_core)
+add_test(NAME oasis_live_player_journal COMMAND oasis_live_player_journal_test)
 add_executable(oasis_holdout_trace_test tests/holdout_trace_test.cpp)
 target_link_libraries(oasis_holdout_trace_test PRIVATE oasis_core)
 add_test(NAME oasis_holdout_trace COMMAND oasis_holdout_trace_test)
@@ -317,6 +320,7 @@ set(oasis_test_targets
     oasis_camera_controller_test
     oasis_pixel_differential_test
     oasis_alternative_trace_test
+    oasis_live_player_journal_test
     oasis_holdout_trace_test
     oasis_runtime_test
     oasis_screen_descriptor_test

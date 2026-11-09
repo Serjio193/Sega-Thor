@@ -131,6 +131,16 @@ public:
     void set_oracle_mode(bool enable) noexcept { oracle_mode_ = enable; }
     [[nodiscard]] bool oracle_mode() const noexcept { return oracle_mode_; }
 
+    void set_interaction_trigger_on_proximity(bool enable) noexcept {
+        interaction_system_.set_trigger_on_proximity(enable);
+    }
+    void set_entity_position(std::size_t index, std::int32_t x, std::int32_t y) noexcept {
+        if (index < entities_.size()) {
+            entities_[index].world_x = x;
+            entities_[index].world_y = y;
+        }
+    }
+
     // Replay external player trajectory (for differential oracle validation).
     void set_replay_player_trajectory(bool enable) noexcept { replay_player_trajectory_ = enable; }
     [[nodiscard]] bool replay_player_trajectory() const noexcept { return replay_player_trajectory_; }
