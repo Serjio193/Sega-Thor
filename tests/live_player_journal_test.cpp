@@ -69,7 +69,7 @@ void test_live_player_interactive_journal() {
     assert(sim.player().movement_state == 0x30); // Attack state
     assert(sim.is_attacking());
     assert(sim.attack_timer() == 18);
-    assert(sim.sound_command() == 0xA0); // Dagger swing sound
+    assert(sim.sound_command() == 0x0218); // M16.16: Authentic dagger swing sound (routine 0x00632A)
 
     // Attack cooldown over 18 frames
     for (int f = 22; f <= 39; ++f) {

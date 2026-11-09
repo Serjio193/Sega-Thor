@@ -352,7 +352,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     // 3. Player Ali composite sprite (Slots 9..14 or pose-dependent count)
     const bool facing_left = (player_.direction_code == 3);
     const std::size_t cur_pose = current_player_pose();
-    const int ax = (cur_pose == 6U)
+    const int ax = (cur_pose >= 6U)
         ? camera_.world_to_screen_x(sim_state_.player_x)
         : camera_.world_to_display_x(sim_state_.player_x);
     const int ay = camera_.world_to_display_y(sim_state_.player_y);

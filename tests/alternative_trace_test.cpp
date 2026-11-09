@@ -208,7 +208,7 @@ int main() {
     assert(cam_matches == total);     // M16.15: Fully restored to 60/60 (100%)
     assert(scroll_matches == total);  // M16.15: Fully restored to 60/60 (100%)
     assert(sat_count_matches >= 38);  // M16.15: Improved to 38/60 (63%)
-    assert(sat_active_matches >= 30); // M16.15: Improved to 30/60 (50%)
+    assert(sat_active_matches >= 32); // M16.16: Improved to 32/60 (53%)
 
     std::cout << "[PASS] Alternative Trace Generalization Test Succeeded (SAT Parity: "
               << sat_active_matches << " / " << total << ")\n";

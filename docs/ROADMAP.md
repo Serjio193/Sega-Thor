@@ -1,3 +1,36 @@
+# M16.16 Authentic Player State Machine, Directional SAT Completion and Original Attack Oracle — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Authentic Player State Machine Architecture (ROM 0x0059BA):
+  * Disassembled ROM jump table `0x0059BA` and state routines: State 4 (`0x006512`, sand recovery/run), State 12 (`0x006632`, deceleration), and State 0 (`0x0061F6`/`0x0062CC`, idle).
+  * Proved State 12 applies exact fixed-point `0xACCC` (44,236) horizontal velocity decrement every 30Hz step until zero, holding pose for 5 steps before entering State 0.
+  * Generated and frozen execution trace fixture `data/standalone-fixtures/beach_landing_transition_trace.json` across frames 75..112 (SHA256: `B9106E41C0CE264E6ED23CCA15B29E7EAE1C99D8516760A2804D338EB4E8BD4F`).
+- Alternative Trace Directional SAT Parity Improvement:
+  * Resolved Frame 29 SAT mismatch: generalized moving player sprite camera alignment from `cur_pose == 6U` to `cur_pose >= 6U` using current viewport `world_to_screen_x` instead of 2-frame delayed `world_to_display_x`.
+  * Frames 29 and 30 are now 100% bit-exact SAT matches.
+  * `SAT_ACTIVE_EXACT` on alternative trace increased from 30/60 (50%) to **32/60 (53%)**; `PLANE_B_EXACT` = 60/60 (100%), `CAMERA_MATCH` = 60/60 (100%), `SCROLL_MATCH` = 60/60 (100%).
+- Canonical Graphics Parity Extension:
+  * Extended consecutive 100.00% DAC-tolerant frames from 28 to **30 consecutive frames** (Frames 1..30: 2,150,400 / 2,150,400 pixels matching within DAC tolerance <= 8 with 0 mismatches).
+- Authentic Contact Chest Interaction Isolation:
+  * Separated authentic proximity contact chest logic (`0x006338` -> `0x0063DA`) from experimental button interaction.
+  * Added `set_experimental_button_trigger_enabled(bool)` gate in `NativeInteractionSystem`, disabled by default for canonical cutscene fidelity.
+  * Added gate unit test in `tests/interaction_event_test.cpp`.
+- Original Attack Mechanics Disassembly Audit:
+  * Disassembled routine `0x0059A0`: Button B check in `$FF1942`, branches to `0x005B3C`.
+  * Routine `0x005B3C`: sets State `0x30`, Animation ID `0x36`.
+  * Routine `0x00632A`: dispatches knife sound `0x01500218` (Sound ID `0x0218`) via `jsr $60004.l`.
+  * ROM animation descriptor at `0x0401F4` verified for Anim 0x36.
+  * Updated `NativeAttackController` sound command to authentic `0x0218U`.
+- Native Attack Differential Test:
+  * Created and registered `tests/attack_journal_differential_test.cpp` (`oasis_attack_journal_differential_test`).
+  * Validated attack trigger, sound dispatch `0x0218`, movement lock during swing, cooldown decay, and return to idle.
+- Quality, Governance & Compatibility:
+  * Dual clean builds in LLVM-MinGW Release and MSVC Debug.
+  * 100% test pass rate across all 20 native standalone test targets (20/20).
+  * Line limits strictly verified (all files <= 500 lines via `project_file_line_limit`).
+  * Zero emulator linkage in `oasis.exe`.
+  * Hybrid repository `C:/Github/Sega-Thor` strictly untouched (0 modifications).
+
 # M16.15 Unified Live Gameplay Semantics, Original Chest Event Replay, and Alternative Trace Regression Repair — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

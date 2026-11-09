@@ -94,6 +94,47 @@ void test_interaction_system_negative_cases() {
     std::cout << "[PASS] test_interaction_system_negative_cases\n";
 }
 
+void test_interaction_system_experimental_button_gate() {
+    oasis::game::NativeInteractionSystem system{};
+    // In original-parity mode, experimental button trigger is disabled
+    system.set_experimental_button_trigger_enabled(false);
+    system.set_trigger_on_proximity(false);
+
+    oasis::core::ControllerState controller{};
+    controller.set(oasis::core::Button::A); // Press Button A
+
+    std::vector<oasis::game::NativeEntity> entities;
+    oasis::game::NativeEntity chest{};
+    chest.type_id = 0x0060;
+    chest.world_x = 256;
+    chest.world_y = 88;
+    chest.state = 0;
+    chest.tile_base = 0x04A8;
+    chest.active = true;
+    entities.push_back(chest);
+
+    // Ali at (258, 100), in bounding box, Button A pressed
+    system.update(258, 100, controller, entities);
+
+    // Button trigger is disabled: chest remains closed
+    assert(entities[0].state == 0);
+    assert(system.interaction_timer() == 0);
+    assert(system.event_flag() == 0);
+
+    // Now enable proximity trigger (authentic ROM cutscene contact path)
+    system.set_trigger_on_proximity(true);
+    controller = oasis::core::ControllerState{}; // zero buttons pressed
+    system.update(258, 100, controller, entities);
+
+    // Authentic collision contact triggers opening
+    assert(entities[0].state == 0x6A);
+    assert(entities[0].tile_base == 0x04B0);
+    assert(system.event_flag() == 0x10);
+    assert(system.interaction_timer() == 60);
+
+    std::cout << "[PASS] test_interaction_system_experimental_button_gate\n";
+}
+
 void test_interaction_system_proximity_cutscene_trigger() {
     oasis::game::NativeInteractionSystem system{};
     // In canonical opening cutscene (frame 567), Ali reaches (258, 104) with raw_input == 0.
@@ -210,6 +251,7 @@ int main() {
     std::cout << "Running Native Interaction Event Oracle Tests (M16.14)...\n";
     test_interaction_oracle_fixture_parsing();
     test_interaction_system_negative_cases();
+    test_interaction_system_experimental_button_gate();
     test_interaction_system_proximity_cutscene_trigger();
     test_interaction_system_positive_trigger_and_countdown();
     test_full_simulation_chest_differential();

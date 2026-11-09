@@ -103,7 +103,9 @@ void test_apply_to_vdp() {
     vdp.vram.fill(0);
     vdp.vsram.fill(0);
 
-    CameraController camera{};
+    CameraConfig config{};
+    config.plane_b_parallax = true;
+    CameraController camera{config};
     camera.set_camera_position(106, 13); // total_dx = +10, total_dy = +10
     camera.set_camera_position(106, 13); // step 2 to advance 2-frame latch
     camera.apply_to_vdp(vdp);

@@ -31,12 +31,12 @@ void NativeInteractionSystem::update(std::int32_t player_x,
     const int dist_y = std::abs(player_y - chest.world_y);
 
     // Authentic ROM routine 0x0063DA -> 0x006430:
-    // Triggers on proximity contact ($6C(a6) in ROM). In interactive play, requires
-    // action button (A or C); in cutscenes / scripted sequences, proximity alone triggers.
+    // Triggers on proximity contact ($6C(a6) in ROM, routine 0x006338).
+    // In free interactive mode, experimental action buttons (A or C) can also trigger if enabled.
     if (chest.type_id == 0x0060U && chest.state != 0x6AU && dist_x <= 20 && dist_y <= 12) {
-        const bool action = trigger_on_proximity_ ||
-                            controller.pressed(core::Button::A) ||
-                            controller.pressed(core::Button::C);
+        const bool button_action = allow_experimental_button_ &&
+                                   (controller.pressed(core::Button::A) || controller.pressed(core::Button::C));
+        const bool action = trigger_on_proximity_ || button_action;
         if (action) {
             // Authentic state transition: 0x0063DA branch to 0x006430
             chest.state = 0x6AU;          // Opened state (0x006452: move.w #$6a, $4(a6))

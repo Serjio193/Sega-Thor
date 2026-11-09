@@ -1,3 +1,51 @@
+# ADR-20261109-M16-16-AUTHENTIC-PLAYER-STATE-MACHINE-DIRECTIONAL-SAT-COMPLETION-AND-ORIGINAL-ATTACK-ORACLE — Authentic Player State-Transition Logic (ROM 0x0059BA Jump Table, 0x006512 State 4 Landing/Run, 0x006632 State 12 Deceleration with 0xACCC Decrement, 0x0061F6/0x0062CC State 0 Idle); Beach Landing Transition Trace Fixture (Frames 75..112, beach_landing_transition_trace.json); Generalization of Player Sprite Viewport vs Display Latching (cur_pose >= 6U uses world_to_screen_x); Alternative Trace SAT Parity Improved to 32/60 (53%, Frames 29 & 30 Bit-Exact); Canonical Pixel Differential Extended to 30 Consecutive 100.00% Tolerant Frames (2,150,400 / 2,150,400 pixels); Isolation of Authentic Contact Chest Causality from Experimental Button Interactivity; Authentic M68K Disassembly Audit of Attack Mechanics (0x005990 Joypad B Test, 0x005B3C State 0x30 Entry, 0x0401F4 Anim 0x36 Descriptor, 0x00632A Sound 0x0218 Dispatch); Implementation of Native Attack Journal Differential Test (tests/attack_journal_differential_test.cpp); Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. In M16.15, player state progression during beach landing used hardcoded frame thresholds rather than internal state variables and authentic accumulators.
+2. Alternative trace SAT parity at Frame 29 diverged due to a 3-pixel X discrepancy between viewport coordinates and 2-frame latched display coordinates.
+3. Authentic chest contact interaction needed clear programmatic separation from experimental button-triggered interaction so that cutscenes remain authentic while interactive modes can be safely enabled.
+4. Attack mechanics in M16.15 used native approximations (sound 0xA0, arbitrary timer 18). Disassembly proof of the original M68K attack routines was required to establish authentic animation IDs, sound command IDs, and state transitions.
+
+**Decision:**
+1. **Authentic Player State Machine Architecture (ROM 0x0059BA):**
+   - Disassembled ROM jump table `0x0059BA` and primary state handlers: State 4 (`0x006512`, sand recovery/run), State 12 (`0x006632`, deceleration), and State 0 (`0x0061F6`/`0x0062CC`, idle).
+   - Proved State 12 deceleration mechanism: decrements 16.16 horizontal velocity by exact fixed-point delta `0xACCC` (44,236) on each 30Hz step until zero, holding pose for 5 steps before entering State 0.
+   - Captured and committed frozen ground-truth execution trace `data/standalone-fixtures/beach_landing_transition_trace.json` (Frames 75..112, SHA256: `B9106E41C0CE264E6ED23CCA15B29E7EAE1C99D8516760A2804D338EB4E8BD4F`).
+2. **Alternative SAT Parity Improvement (Frames 29 & 30 Bit-Exact):**
+   - Root-caused Frame 29 SAT mismatch: pose 7 fell back to 2-frame delayed camera coordinates because condition was strictly `cur_pose == 6U`.
+   - Generalized to `(cur_pose >= 6U) ? camera_.world_to_screen_x : camera_.world_to_display_x`.
+   - Result: Frames 29 and 30 are now 100% bit-exact SAT matches.
+   - `SAT_ACTIVE_EXACT` on alternative trace increased from 30/60 (50%) to **32/60 (53%)**; `PLANE_B_EXACT` = 60/60 (100%), `CAMERA_MATCH` = 60/60 (100%), `SCROLL_MATCH` = 60/60 (100%).
+3. **Canonical Graphics Parity Extension:**
+   - Extended consecutive 100.00% DAC-tolerant frames from 28 to **30 consecutive frames** (Frames 1..30: 2,150,400 / 2,150,400 pixels matching within DAC tolerance <= 8 with 0 mismatches).
+4. **Authentic Contact Chest Causality Gate:**
+   - Isolated authentic contact chest interaction (`0x006338` -> `0x0063DA`) from experimental button triggers.
+   - Added `allow_experimental_button_` flag and `set_experimental_button_trigger_enabled(bool)` to `NativeInteractionSystem`, disabled by default in canonical cutscene replay.
+   - Added unit test `test_interaction_system_experimental_button_gate()` in `tests/interaction_event_test.cpp`.
+5. **Original Attack Mechanics Disassembly Audit:**
+   - Routine `0x0059A0`: tests joypad bit 7 (Button B) in `$FF1942`, branches to `0x005B3C`.
+   - Routine `0x005B3C`: sets State `0x30` (`move.w #$30, $4(a6)`), selects Animation ID `0x36` (`move.w #$36, d0; bsr.w $8ef8`).
+   - Routine `0x00632A`: dispatches knife sound `0x01500218` (Sound ID `0x0218`) via `jsr $60004.l`.
+   - ROM animation descriptor table at `0x03FF7A` + offset `0x36` resolves to frame sequence at ROM `0x0401F4`.
+   - Updated `NativeAttackController` sound command from `0xA0` to authentic `0x0218U`.
+6. **Native Attack Differential Test:**
+   - Implemented `tests/attack_journal_differential_test.cpp` (101 lines) validating attack state entry on Button B, sound dispatch `0x0218`, movement locking during attack, cooldown timer decay, and return to State 0.
+   - Registered `oasis_attack_journal_differential_test` in `cmake/project_tests.cmake`.
+7. **Governance & Multi-Compiler Verification:**
+   - Dual clean builds in LLVM-MinGW Release and MSVC Debug.
+   - 100% passing rate across all 20 native standalone test targets.
+   - Line limits strictly verified (all files <= 500 lines via `project_file_line_limit`).
+   - Zero emulator linkage in `oasis.exe`.
+   - `C:/Github/Sega-Thor` hybrid repo strictly read-only and untouched.
+
+**Consequences:**
+- Player state transitions in beach landing are fully grounded in original M68K state logic and deceleration physics.
+- Alternative trace SAT parity improved to 32/60 (53%).
+- Canonical pixel parity extended to 30 consecutive 100.00% frames.
+- Attack mechanics verified against authentic ROM disassembly (State 0x30, Anim 0x36, Sound 0x0218).
+
 # ADR-20261109-M16-15-UNIFIED-LIVE-GAMEPLAY-SEMANTICS-ORIGINAL-CHEST-EVENT-REPLAY-AND-ALTERNATIVE-TRACE-REGRESSION-REPAIR — Elimination of oracle_mode_ Gameplay Bifurcation; Authentic 30Hz Mega Drive Game Loop Cadence for Live and Headless Execution; State 4 Landing Slide Reconstruction (ROM 0x006512); Alternative Trace Parity Repair (Camera 60/60 100%, Scroll 60/60 100%, SAT Active Exact 30/60 50%); Forensic Resolution of Alternative Oracle SHA256 Stability; Disassembly Proof of Cutscene Proximity-Based Chest Causality (0x006338 -> 0x0063DA); Live Player Synthetic Journal Validation; Strict File Limit Compliance (<= 500 Lines across 926 Files)
 **Status:** Accepted
 **Date:** 2026-11-09

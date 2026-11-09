@@ -439,7 +439,7 @@ void test_authentic_attack_slice() {
     assert(sim.player().movement_state == 0x30);
     assert(sim.is_attacking());
     assert(sim.attack_timer() == 18);
-    assert(sim.sound_command() == 0xA0);
+    assert(sim.sound_command() == 0x0218); // Authentic knife sound ID from routine 0x00632A
     assert(sim.entities()[1].hp == 0);
     assert(sim.entities()[1].state == 0x02);
 

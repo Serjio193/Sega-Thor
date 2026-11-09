@@ -20,10 +20,10 @@ void NativeAttackController::update(player::PlayerState& player,
 
     const bool attack_pressed = controller.pressed(core::Button::B);
     if (attack_pressed && player.movement_state != 0x30U) {
-        player.movement_state = 0x30U; // ROM attack state ($FF19EC = 0x30)
+        player.movement_state = 0x30U; // ROM attack state ($FF19EC = 0x30, routine 0x005B90)
         is_attacking_ = true;
         attack_timer_ = 18U;           // 18-frame cooldown/duration
-        sound_command_ = 0xA0U;        // Dagger swing sound request ($FF1993)
+        sound_command_ = 0x0218U;      // Dagger slash sound request (routine 0x00632A: move.l #$1500218, d0)
 
         // Check forward hitbox collision with secondary entities
         for (std::size_t i = 1; i < target_entities.size(); ++i) {

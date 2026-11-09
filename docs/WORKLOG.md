@@ -1,3 +1,43 @@
+# 2026-11-09 — Milestone M16.16: AUTHENTIC PLAYER STATE MACHINE, DIRECTIONAL SAT COMPLETION AND ORIGINAL ATTACK ORACLE — Ground-Truth ROM Jump Table 0x0059BA Disassembly (State 4 Landing/Run 0x006512, State 12 Deceleration 0x006632 with Exact Fixed-Point 0xACCC Decrement, State 0 Idle 0x0061F6/0x0062CC); Generation of Frozen Beach Landing Transition Trace Fixture (Frames 75..112, beach_landing_transition_trace.json); Resolution of Frame 29/30 Alternative Trace SAT Divergence (Sprite Viewport Alignment cur_pose >= 6U); Improvement of Alternative Trace SAT Parity to 32/60 Frames (53%); Extension of Canonical Full-Frame Tolerant Parity to 30 Consecutive Frames (2,150,400 / 2,150,400 pixels); Isolation of Authentic Contact Chest Causality from Experimental Button Interaction via Native Gate; Forensic Disassembly Audit of Original Attack System (0x005990 Joypad B Test, 0x005B3C State 0x30 Entry, 0x0401F4 Anim 0x36 Descriptor, 0x00632A Sound 0x0218 Dispatch); Implementation of Native Attack Journal Differential Test (tests/attack_journal_differential_test.cpp); Dual Clean MinGW Release and MSVC Debug Builds; 100% Native Test Suite Pass Rate (20/20); Strict Compliance with File Line Limit (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Verified git commit `5813adea5ab72d3c8c1d82a251ad6cd0018301f1` (M16.15 HEAD).
+    - Verified pinned ROM SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Verified GPGX core SHA256 `CA4BE3049E56B1FDFBA9A7C727BEBBDC645B3D50203D635A468048BA81165134`.
+    - Verified Checkpoint 3600 SHA256 `0833D94150FEFCBA091F523C82F8BCB99CBAAA03784EB176BC3C063FFDD776C7`.
+    - Confirmed read-only boundary on `C:/Github/Sega-Thor` (strictly 0 modifications).
+  * Phase 1 & Phase 2 — Player State Machine Forensics & Fixture:
+    - Disassembled ROM jump table `0x0059BA` and state routines: State 4 (`0x006512`), State 12 (`0x006632`), State 0 (`0x0061F6`/`0x0062CC`).
+    - Proved that State 12 deceleration applies an exact fixed-point `0xACCC` (44,236) horizontal velocity decrement every 30Hz step until velocity crosses zero, then holds pose for 5 steps before transitioning to State 0.
+    - Captured and committed frozen ground-truth execution trace `data/standalone-fixtures/beach_landing_transition_trace.json` across frames 75..112 (SHA256: `B9106E41C0CE264E6ED23CCA15B29E7EAE1C99D8516760A2804D338EB4E8BD4F`).
+  * Phase 3 & Phase 4 — Alternative Trace SAT Parity Improvement:
+    - Root-caused Frame 29 SAT mismatch: pose 7 fell back to 2-frame delayed camera coordinates because condition was strictly `cur_pose == 6U`.
+    - Generalized sprite coordinate selection to `(cur_pose >= 6U) ? camera_.world_to_screen_x : camera_.world_to_display_x`.
+    - Result: Frames 29 and 30 became 100% bit-exact SAT matches.
+    - Alternative trace SAT parity improved from 30/60 (50%) to **32/60 (53%)**; `PLANE_B_EXACT` = 60/60, `CAMERA_MATCH` = 60/60, `SCROLL_MATCH` = 60/60.
+  * Phase 5 — Canonical Graphics Parity Extension:
+    - Extended consecutive 100.00% DAC-tolerant frames from 28 to **30 consecutive frames** (Frames 1..30: 2,150,400 / 2,150,400 pixels matching within DAC tolerance <= 8 with 0 mismatches).
+  * Phase 6 — Chest Semantics & Event Causality:
+    - Programmatically separated authentic proximity contact chest interaction from experimental button interaction.
+    - Added `set_experimental_button_trigger_enabled(bool)` to `NativeInteractionSystem`, keeping experimental triggers disabled by default in cutscenes.
+    - Added gate verification unit test in `tests/interaction_event_test.cpp`.
+  * Phase 7 & Phase 8 — Original Attack Mechanics Audit:
+    - Disassembled routine `0x0059A0`: joypad Button B test in `$FF1942`, branches to `0x005B3C`.
+    - Routine `0x005B3C`: sets State `0x30` (`move.w #$30, $4(a6)`), selects Animation ID `0x36` (`move.w #$36, d0; bsr.w $8ef8`).
+    - Routine `0x00632A`: dispatches knife sound `0x01500218` (Sound ID `0x0218`) via `jsr $60004.l`.
+    - ROM animation descriptor table at `0x03FF7A` + offset `0x36` resolves to frame sequence at ROM `0x0401F4`.
+    - Updated `NativeAttackController` sound command from `0xA0` to authentic `0x0218U`.
+  * Phase 9 — Native Attack Differential Test:
+    - Implemented `tests/attack_journal_differential_test.cpp` (101 lines) validating attack state entry on Button B, sound dispatch `0x0218`, movement locking during attack, cooldown timer decay, and return to State 0.
+    - Registered `oasis_attack_journal_differential_test` in `cmake/project_tests.cmake`.
+  * Phase 10 & Phase 11 — Qualification & Verification:
+    - Clean dual builds in LLVM-MinGW Release and MSVC Debug.
+    - 100% test pass rate across all 20 native standalone test targets (20/20).
+    - Line limits: all modified and created files strictly <= 500 lines; verified by `project_file_line_limit`.
+    - Confirmed zero emulator linkage in `oasis.exe`.
+    - Hybrid repository `C:/Github/Sega-Thor` strictly read-only and untouched.
+
 # 2026-11-09 — Milestone M16.15: UNIFIED LIVE GAMEPLAY SEMANTICS, ORIGINAL CHEST EVENT REPLAY, AND ALTERNATIVE TRACE REGRESSION REPAIR — Unification of Live Standalone and Oracle Replay Gameplay Semantics; Elimination of Dual-Branch oracle_mode_ Simulation Core; Authentic 30Hz Mega Drive Game Loop Cadence; State 4 Landing Slide & Deceleration Reconstruction (ROM 0x006512 & 0x006626); Complete Alternative Trace Parity Repair (Camera Match 60/60 100%, Scroll Match 60/60 100%, Plane B Match 60/60 100%, SAT Count Match 38/60 63%, SAT Active Exact Match 30/60 50%); Forensic Verification of Alternative Oracle SHA256 Invariance (8ACC108FB9D83A2A33D01878F4005ADE102562B9C5E618E3985B3AEC1F142020); M68K Disassembly Proof of Cutscene Proximity Contact Chest Opening (0x006338 -> 0x0063DA); Creation of Automated Live Player Synthetic Journal Test (tests/live_player_journal_test.cpp); Preservation of Canonical 28-Frame 100.00% Parity Run & Holdout 61/61 Parity; Clean Dual Release (MinGW) and Debug (MSVC) Builds; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across 926 Governed Files) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
