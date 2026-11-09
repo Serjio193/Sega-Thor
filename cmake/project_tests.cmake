@@ -111,6 +111,9 @@ add_test(NAME oasis_standalone_sequencer COMMAND oasis_standalone_sequencer_test
 add_executable(oasis_standalone_gameplay_test tests/standalone_gameplay_test.cpp)
 target_link_libraries(oasis_standalone_gameplay_test PRIVATE oasis_core)
 add_test(NAME oasis_standalone_gameplay COMMAND oasis_standalone_gameplay_test)
+add_executable(oasis_interaction_event_test tests/interaction_event_test.cpp)
+target_link_libraries(oasis_interaction_event_test PRIVATE oasis_core)
+add_test(NAME oasis_interaction_event COMMAND oasis_interaction_event_test)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
@@ -308,6 +311,7 @@ set(oasis_test_targets
     oasis_vdp_rasterizer_test
     oasis_standalone_sequencer_test
     oasis_standalone_gameplay_test
+    oasis_interaction_event_test
     oasis_differential_oracle_comparison_test
     oasis_sat_pipeline_contract_test
     oasis_camera_controller_test
@@ -368,6 +372,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_vdp_rasterizer
         oasis_standalone_sequencer
         oasis_standalone_gameplay
+        oasis_interaction_event
         oasis_differential_oracle_comparison
         oasis_sat_pipeline_contract
         oasis_camera_controller

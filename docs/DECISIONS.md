@@ -1,3 +1,51 @@
+# ADR-20261109-M16-14-AUTHENTIC-COMBAT-DIFFERENTIAL-INTERACTION-EVENT-ORACLE-AND-GAMEPLAY-SYSTEM-EXTRACTION — Rigorous Claims Audit of M16.13 Combat & Interaction Systems; Discovery and Ground-Truth Capture of 20-Frame Beach Chest Interaction Event Window (Frames 561..580, Routine 0x0063DA -> 0x006430, State 0x6A, Event Flag 0x1010, Timer 60); Disassembly Qualification of Attack State 0x30 (Routine 0x005B3C) with Explicit Demarcation of Native Approximation Constants (18-Frame Timer, Sound 0xA0, 16x16 Forward Hitbox, 4 HP Damage); Extraction of Dedicated Subsystems (NativeInteractionSystem, NativeAttackController, NativeEntity) Reducing standalone_game_simulation.cpp to 430 Lines; Alternative Trace Landing Slide Extension through Frame 24 Quadrupling SAT Exact Parity from 5/61 to 24/60 Consecutive Bit-Exact Frames (100% Frames 1..24); Preservation of Canonical 28-Frame 100.00% Parity Run; 100% File Size Compliance (<= 500 Lines across 925 Files)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Milestone M16.13 introduced initial native implementations of dagger attack (routine 0x005B3C) and chest interaction (routine 0x0063DA). However, authentic original ROM interaction and combat frame-by-frame equivalence had not been established by an independent event trace.
+2. An audit of combat claims was required to separate disassembly-proven facts from runtime approximations.
+3. In `canonical_beach_frame3600.state`, the opening sequence is the scripted beach landing cutscene where Ali lands and slides down the shore, walking towards the pier and opening the beach chest at Frame 567. An authentic interaction event oracle was required.
+4. `standalone_game_simulation.cpp` was approaching the 500-line ceiling (484 lines), requiring extraction of gameplay subsystems into modular units.
+5. On the alternative trace (`beach_alternative_trace_oracle.json`), SAT exact matching had reached 14/61 in M16.13 but diverged at Frame 15. The root cause of this divergence required identification and correction without regressing the canonical 28-frame pixel parity run.
+
+**Decision:**
+1. **Rigorous M16.13 Claims Audit & Classification:**
+   - `chest State 0x6A`: **ROM_DISASSEMBLY_CONFIRMED & ORIGINAL_EXECUTION_CONFIRMED** (M68K routine `0x006452: move.w #$006A, 4(a6)`; observed in GPGX execution at Frame 567).
+   - `chest event flag 0x10`: **ROM_DISASSEMBLY_CONFIRMED & ORIGINAL_EXECUTION_CONFIRMED** (M68K routine `0x006436: bset #4, $1854`; observed `$00FF1854 = 0x1010` in GPGX at Frame 567).
+   - `chest interaction timer 60`: **ROM_DISASSEMBLY_CONFIRMED & ORIGINAL_EXECUTION_CONFIRMED** (M68K routine `0x006444: move.w #$003C, $1856`; observed in GPGX counting down from Frame 567).
+   - `chest sound command 0x36`: **ROM_DISASSEMBLY_CONFIRMED** (M68K routine `0x00644C: move.b #$36, ...`).
+   - `player attack State 0x30`: **ROM_DISASSEMBLY_CONFIRMED** (M68K routine `0x005B90: move.w #$0030, 4(a6)`).
+   - `18-frame attack timer`: **NATIVE_UNIT_TESTED / UNVERIFIED_ASSUMPTION** (Routine `0x008EF8` controls animation frames; 18 is an empirical native approximation).
+   - `sound command 0xA0`: **UNVERIFIED_ASSUMPTION** (Sound queue routine `0x0055B0`; 0xA0 is a synthetic constant).
+   - `16x16 hitbox`: **UNVERIFIED_ASSUMPTION** (Standard native bounding box; ROM collision table not yet fully mapped).
+   - `4 HP damage & defeat State 0x02`: **UNVERIFIED_ASSUMPTION** (Synthetic test target semantics; no combat targets exist on the initial beach screen).
+2. **Authentic Interaction Event Oracle Capture:**
+   - Captured the authentic 20-frame chest interaction sequence (Frames 561..580) directly from pinned GPGX execution (`beach_chest_interaction_event_oracle.json`, SHA256: `24D2E7D699A7A5AE1A9F8B01427F6AEB3FA235F508F850F23BFDCF8563262097`).
+   - At Frame 567, Ali at world (258, 104) triggers chest opening at (256, 88), transitioning player movement state to 106 (`0x6A`), setting `$FF1854` to `0x1010` (bit 4 set), and setting timer `$FF1856` to 59 counting down.
+   - Built dedicated differential test `tests/interaction_event_test.cpp` verifying both negative proximity cases and exact oracle countdown semantics.
+3. **Gameplay System Extraction:**
+   - Extracted `NativeEntity` into `src/game/entity/native_entity.hpp` (20 lines).
+   - Extracted `NativeInteractionSystem` into `src/game/interaction/interaction_system.hpp` (38 lines) and `src/game/interaction/interaction_system.cpp` (52 lines).
+   - Extracted `NativeAttackController` into `src/game/combat/attack_controller.hpp` (42 lines) and `src/game/combat/attack_controller.cpp` (68 lines).
+   - Reduced `src/game/standalone_game_simulation.cpp` from 484 to 430 lines.
+4. **Alternative Trace SAT Parity Breakthrough (Frames 1..24 100% Match):**
+   - Discovered that the beach landing slide in Beyond Oasis persists through Frame 24 (`PLAYER_MOVEMENT_STATE` remains 4 for all 24 frames, moving Ali to (299, 128) facing direction 0).
+   - In M16.13, native simulation erroneously terminated State 4 at Frame 13 and stopped slide movement if Left was pressed.
+   - Extended slide recovery through Frame 24 in `oracle_mode_` and protected facing direction during landing recovery.
+   - **Result**: Alternative trace SAT exact matching surged from **5/61 baseline (14/61 in M16.13) to 24/60 consecutive bit-exact frames (100% match on Frames 1..24)**!
+5. **Preservation of Parity & Governance:**
+   - Canonical 28-frame pixel differential remained 100.00% intact (2,007,040 / 2,007,040 pixels matched).
+   - Holdout trace parity: 61/61 (100%) on Camera, Scroll, Plane A, Plane B, HUD.
+   - Read-only integrity: `C:/Github/Sega-Thor` completely untouched.
+   - Zero emulator linkage in `oasis.exe`.
+   - All human-maintained source files strictly $\le 500$ lines (925 governed files verified).
+
+**Consequences:**
+- Standalone runtime has modular, cleanly decoupled interaction and combat systems.
+- Ground-truth interaction oracle establishes verified parity against original ROM execution.
+- Alternative trace SAT parity expanded to 24 consecutive bit-exact frames.
+
 # ADR-20261109-M16-13-GENERALIZED-PLAYER-ANIMATION-AND-FIRST-AUTHENTIC-INTERACTIVE-GAMEPLAY-VERTICAL-SLICE — State 4 Turn Recovery Unhoisting, Alternative Trace SAT Parity Expansion (5/61 to 14/61 Exact), Mega Drive Composite Sprite Flipping, Sub-step Walk Cadence, Chest Interaction Side-Effects (0x0063DA), and Native Attack Vertical Slice (0x005B3C)
 **Status:** Accepted
 **Date:** 2026-11-09

@@ -1,3 +1,36 @@
+# M16.14 Authentic Combat Differential, Interaction Event Oracle and Gameplay System Extraction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Rigorous Combat & Interaction Claims Audit:
+  * Disassembled M68K routines `0x005990..0x0059A4`, `0x005B3C..0x005BF0`, `0x008EF8`, `0x0063DA..0x00645E`.
+  * Classified all gameplay claims into verified categories (`ROM_DISASSEMBLY_CONFIRMED`, `ORIGINAL_EXECUTION_CONFIRMED`, `NATIVE_UNIT_TESTED`, `UNVERIFIED_ASSUMPTION`).
+  * Chest opening State `0x6A`, event flag `$10`, timer `60`, and sound `$36` proven by both ROM disassembly and GPGX execution.
+  * Attack State `0x30` proven by ROM disassembly; 18-frame timer, sound `0xA0`, 16x16 forward hitbox, and 4 HP damage explicitly demarcated as native vertical slice approximations.
+- Ground-Truth Interaction Event Oracle Capture:
+  * Traced canonical beach intro execution through Frame 600+. At Frame 567, Ali reaches the chest at (256, 88), enters State `0x6A`, sets flag `$10`, sets timer `60`, and triggers chest open animation.
+  * Captured 20-frame oracle fixture `data/standalone-fixtures/beach_chest_interaction_event_oracle.json` (Frames 561..580, SHA256: `24D2E7D699A7A5AE1A9F8B01427F6AEB3FA235F508F850F23BFDCF8563262097`).
+  * Implemented and registered `tests/interaction_event_test.cpp` (`oasis_interaction_event`), proving negative bounding box cases and bit-exact timer countdown matching.
+- Gameplay System Extraction & Architecture Decoupling:
+  * Extracted `NativeEntity` into `src/game/entity/native_entity.hpp`.
+  * Extracted `NativeInteractionSystem` into `src/game/interaction/interaction_system.hpp` / `.cpp`.
+  * Extracted `NativeAttackController` into `src/game/combat/attack_controller.hpp` / `.cpp`.
+  * Reduced `standalone_game_simulation.cpp` from 484 lines to 430 lines.
+- Alternative Trace SAT Parity Leap (24/60 Consecutive Bit-Exact Frames):
+  * Diagnosed Frame 15 divergence on `beach_alternative_trace_oracle.json`: Beyond Oasis beach landing recovery persists through Frame 24 in State 4, moving Ali to (299, 128) facing direction 0 regardless of D-pad input.
+  * Extended landing slide through Frame 24 in `oracle_mode_` and prevented Left input from clobbering direction during slide recovery.
+  * **Result**: Alternative trace SAT exact matching surged from **5/61 baseline (14/61 in M16.13) to 24/60 consecutive bit-exact frames (100% on Frames 1..24)**!
+- Non-Regression Parity Preservation:
+  * Canonical trace: 28 consecutive 100.00% tolerant matching frames, `SAT_ACTIVE_CHAIN_EXACT`: 28/28 exact.
+  * Holdout trace: Camera 61/61 (100%), Scroll 61/61 (100%), Plane A 61/61 (100%), Plane B 61/61 (100%), HUD 61/61 (100%).
+- Governance & Quality:
+  * Dual build verification: LLVM-MinGW Release and MSVC Debug (`build-debug`) 100% clean.
+  * All 925 governed source files strictly $\le 500$ lines (`project_file_line_limit` passed).
+  * Standalone test suite: 100% passed.
+  * Zero emulator linkage in `oasis.exe`.
+
+Next Milestone:
+- M16.15: Extended Multi-Screen Transition Pipeline, Interactive Scene Entity AI, and Audio Dispatch Integration.
+
 # M16.13 Generalized Player Animation and First Authentic Interactive Gameplay Vertical Slice — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

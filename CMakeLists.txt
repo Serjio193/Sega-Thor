@@ -45,6 +45,8 @@ add_library(oasis_core
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
     src/game/world/tilemap_streamer.cpp
+    src/game/interaction/interaction_system.cpp
+    src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp
 )
 target_include_directories(oasis_core PUBLIC src)
