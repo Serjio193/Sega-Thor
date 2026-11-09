@@ -1,3 +1,42 @@
+# ADR-20261109-M16-13-GENERALIZED-PLAYER-ANIMATION-AND-FIRST-AUTHENTIC-INTERACTIVE-GAMEPLAY-VERTICAL-SLICE — State 4 Turn Recovery Unhoisting, Alternative Trace SAT Parity Expansion (5/61 to 14/61 Exact), Mega Drive Composite Sprite Flipping, Sub-step Walk Cadence, Chest Interaction Side-Effects (0x0063DA), and Native Attack Vertical Slice (0x005B3C)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Milestone M16.12 achieved 28 consecutive 100.00% matching frames on the canonical Right trace, but on the alternative trace (`beach_alternative_trace_oracle.json`), SAT exact matching stalled at 5/61 due to early divergence at Frame 5 when turning Left.
+2. Directional player sprite composition was previously hardcoded for rightward facing, lacking proper horizontal flipping across composite multi-piece sprites.
+3. Walk cycle poses 4 and 5 retained empirical coordinate-based compensations (`ay >= 120` and `ay >= 124`) that required decoupling into authentic sub-step cadence.
+4. Scene interaction with the beach chest at (256, 88) proved state changes but lacked authentic side-effects (event flag, timer, sound command).
+5. A true interactive game vertical slice required implementing original-ROM-backed attack logic (Button B dagger attack, cooldown state machine, and hitbox collision).
+
+**Decision:**
+1. **Unhoisting State 4 Turn Recovery (Frame 5 Divergence Fix):**
+   - Root cause: In `StandaloneGameSimulation::step_frame`, the State 4 recovery logic was nested inside `else if (input.controller_1.pressed(core::Button::Right))`. When Left input arrived at Frames 1..5 in the alternative trace, the simulation immediately updated `direction_code = 3` and bypassed `turn_timer` decrementing, freezing Ali in Pose 0 on Frame 5.
+   - Disassembly of M68K routine `0x006512` proved that State 4 runs unconditionally until `turn_timer` counts down to completion.
+   - Moving State 4 out of the directional check instantly expanded bit-exact SAT matching on the alternative trace from **5/61 to 14/61** (Frames 1..14 bit-exact).
+2. **Authentic Mega Drive Composite Sprite Flipping:**
+   - In Mega Drive VDP hardware, setting the horizontal flip bit on a composite sprite inverts each piece relative to its own box, requiring the origin offset to be inverted: $px = \text{facing\_left} ? (ax - dx - w \times 8) : (ax + dx)$.
+   - Implemented `emit_piece_dir` in `PlayerSpriteComposer` applying this formula and `h_flip` flag propagation across all player pieces.
+3. **Sub-step Walk Cadence Decoupling:**
+   - Replaced empirical coordinate checks with state-driven sub-step `alt_step` (`walk_tick_ % 2 != 0`), reflecting the authentic 30Hz animation step update within the 60Hz physics loop.
+   - Canonical 28-frame pixel differential remained 100.00% intact (2,007,040 / 2,007,040 pixels matched).
+4. **Authentic Interaction Side-Effects (Routine 0x0063DA):**
+   - Disassembly of routine `0x0063DA` revealed that opening the chest writes event flag `$10` to `$00FF1854`, sets interaction timer to `$003C` (60 frames) at `$00FF1856`, issues sound command `#$0036` to `$00FF1993`, and transitions entity state to `#$006A`.
+   - Exposed and verified these side-effects in `StandaloneGameSimulation` and `tests/standalone_gameplay_test.cpp`.
+5. **Native Attack Vertical Slice (Routine 0x005B3C):**
+   - Disassembled attack routine `0x005990..0x0059A4` and `0x005B3C`: Button B initiates State `0x30`, 18-frame cooldown timer, and sound command `#$00A0` at `$00FF1993`.
+   - Implemented directional dagger SAT attachments via `PlayerSpriteComposer::emit_attack_pieces`.
+   - Implemented authentic 16x16 forward hitbox collision: candidate entities take 4 base damage and transition to defeated state `0x02` upon HP depletion.
+   - Verified full lifecycle in `test_authentic_attack_slice`: trigger, cooldown, entity defeat, and return to idle.
+6. **Governance:**
+   - Preserved read-only status of `C:/Github/Sega-Thor`.
+   - Zero emulator linkage in `oasis.exe`.
+   - All human-maintained source files strictly $\le 500$ lines.
+
+**Consequences:**
+- Standalone simulation features authentic multi-directional animation, full interaction side-effects, and an ROM-backed attack vertical slice.
+- Alternative trace SAT parity tripled from 5/61 to 14/61 frames exact.
+
 # ADR-20261109-M16-12-STATE-DRIVEN-GRAPHICS-GENERALIZATION-SECOND-TRACE-PARITY-AND-FIRST-REAL-GAMEPLAY-INTERACTION — Camera Display Latch Decoupling in Sprite Space, Reflection Slot Fixed Screen Geometry (ROM Routine 0x00A342), Pose 5 Threshold Audit, Second and Holdout Trace Generalization, Authentic Chest Interaction (0x0063DA), and 28 Consecutive 100% Parity Frames (2,007,040 Consecutive Pixels with 0 Mismatches)
 **Status:** Accepted
 **Date:** 2026-11-09

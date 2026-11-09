@@ -39,6 +39,7 @@ struct NativeEntity {
     std::uint8_t state{0};                  // Entity state (0 = closed, 0x6A = opened)
     std::uint8_t anim_frame{0};             // Current animation frame
     std::uint16_t tile_base{0x04A8};        // SAT base tile index
+    std::int16_t hp{20};                    // Health points
     bool active{true};                      // Whether entity is active
 };
 
@@ -147,6 +148,11 @@ public:
     [[nodiscard]] bool chest_opened() const noexcept {
         return !entities_.empty() && entities_[0].state == 0x6AU;
     }
+    [[nodiscard]] std::uint16_t sound_command() const noexcept { return sound_command_; }
+    [[nodiscard]] std::uint16_t event_flag() const noexcept { return event_flag_; }
+    [[nodiscard]] std::uint16_t interaction_timer() const noexcept { return interaction_timer_; }
+    [[nodiscard]] std::uint16_t attack_timer() const noexcept { return attack_timer_; }
+    [[nodiscard]] bool is_attacking() const noexcept { return player_.movement_state == 0x30U; }
 
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
@@ -179,6 +185,10 @@ private:
     std::uint16_t prev_render_player_x_{261};
     std::uint16_t prev_render_player_y_{107};
     int walk_tick_{0};
+    std::uint16_t attack_timer_{0};
+    std::uint16_t interaction_timer_{0};
+    std::uint16_t event_flag_{0};
+    std::uint16_t sound_command_{0};
     bool initialized_{false};
 };
 

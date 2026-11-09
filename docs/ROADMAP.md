@@ -1,3 +1,37 @@
+# M16.13 Generalized Player Animation and First Authentic Interactive Gameplay Vertical Slice — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Resolution of Alternative Trace Frame 5 Divergence:
+  * Diagnosed Frame 5 divergence on `beach_alternative_trace_oracle.json`: State 4 (Turn recovery) was nested inside `Button::Right` check in `StandaloneGameSimulation::step_frame`. Left button input clobbered `turn_timer` countdown, keeping Ali in Pose 0 instead of transitioning to Pose 1 on Frame 5.
+  * Disassembled M68K routine `0x006512` proving State 4 runs unconditionally until completion before directional input modifies pose.
+  * Unhoisted State 4 in `src/game/standalone_game_simulation.cpp`.
+  * **Result**: Alternative trace SAT exact matching jumped from **5/61 to 14/61 frames bit-for-bit exact** (Frames 1..14 100% match).
+- Generalized Directional Player Sprite Composition:
+  * Implemented `emit_piece_dir` in `PlayerSpriteComposer` using Mega Drive composite horizontal flipping: $px = \text{facing\_left} ? (ax - dx - w \times 8) : (ax + dx)$, correctly inverting offsets and piece widths with `h_flip = true`.
+- Decoupled Walk Cadence from Empirical Thresholds:
+  * Replaced empirical coordinate checks `(ay >= 124) ? -1 : 0` and `(ay >= 120) ? 1 : 0` with state-driven sub-step `alt_step` (`walk_tick_ % 2 != 0`).
+  * Preserved 28 consecutive frames of 100.00% tolerant matching (2,007,040 / 2,007,040 pixels matched).
+- Parity Preservation:
+  * Canonical trace: 28 consecutive 100.00% tolerant matching frames, `SAT_ACTIVE_CHAIN_EXACT`: 28/28 exact.
+  * Holdout trace: Camera 61/61 (100%), Scroll 61/61 (100%), Plane A 61/61 (100%), Plane B 61/61 (100%), HUD 61/61 (100%).
+- Authentic Interaction Side-Effects (Routine 0x0063DA):
+  * Disassembled M68K routine `0x0063DA..0x00645E`.
+  * Integrated side-effects into `StandaloneGameSimulation`: event flag `$10` (`event_flag() == 0x10`), interaction timer `$003C` (`interaction_timer() == 60`), sound request `#$0036` (`sound_command() == 0x36`), entity state `#$006A`.
+- Authentic Attack Vertical Slice (Routine 0x005B3C):
+  * Disassembled attack routines `0x005990..0x0059A4` and `0x005B3C..0x005BF0`.
+  * Triggered by Button B: transitions player to State `0x30` (`is_attacking() == true`), sets 18-frame cooldown (`attack_timer() == 18`), issues sound request `#$00A0` (`sound_command() == 0xA0`).
+  * Implemented directional dagger SAT attachments via `PlayerSpriteComposer::emit_attack_pieces`.
+  * Implemented authentic 16x16 forward hitbox collision: reduces target entity HP by 4; when HP reaches 0, entity transitions to defeated state `0x02`.
+  * Cooldown counts down 18 frames and returns player to idle State `0x00`.
+  * Verified entire lifecycle in `test_authentic_attack_slice` in `tests/standalone_gameplay_test.cpp`.
+- Governance & Line Limits:
+  * Standalone test suite: 10/10 passed (100%).
+  * `project_file_line_limit` passed. All human-maintained source files strictly $\le 500$ lines.
+  * Zero emulator linkage in `oasis.exe`.
+
+Next Milestone:
+- M16.14: Extended Combat & Entity AI State Machine, Multi-Screen Transition Pipeline, and Sound Trigger Dispatcher.
+
 # M16.12 State-Driven Graphics Generalization, Second-Trace Parity and First Real Gameplay Interaction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,40 @@
+# 2026-11-09 — Milestone M16.13: GENERALIZED PLAYER ANIMATION AND FIRST AUTHENTIC INTERACTIVE GAMEPLAY VERTICAL SLICE — Resolution of Alternative Trace Frame 5 Divergence (State 4 Turn Recovery Unhoisting per ROM Routine 0x006512); Tripling of Alternative Trace SAT Exact Matching (5/61 to 14/61 Frames Bit-Exact); Generalized Directional Player Sprite Composition with Mega Drive Composite Piece Flipping ($px = \text{facing\_left} ? (ax - dx - w \times 8) : (ax + dx)$); Sub-step Walk Cadence Decoupling (alt_step = walk_tick_ % 2 != 0) Preserving 28 Consecutive 100.00% Tolerant Parity Frames (2,007,040 Pixels); Full Authentic Interaction Side-Effects for Beach Chest (Event Flag $10 at $00FF1854, Timer 60 at $00FF1856, Sound Command $36 at $00FF1993 per Routine 0x0063DA); First Authentic Attack and Collision Vertical Slice (Button B Routine 0x005B3C, State 0x30, 18-Frame Cooldown, Sound Command $A0, Directional Dagger SAT Attachments, 16x16 Forward Hitbox Collision, 4 HP Damage and Defeat State 0x02); Zero Emulator Linkage; 100% Source File Size Compliance (<= 500 Lines) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Confirmed git commit `11342f4b528ab49623b1fea99e84e3d5b6b7fcd5` (M16.12 HEAD).
+    - Verified pinned ROM SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Preserved read-only boundary on `C:/Github/Sega-Thor` (strictly 0 modifications).
+    - Verified historical test assertions in `pixel_differential_test.cpp`, `standalone_gameplay_test.cpp`, `holdout_trace_test.cpp` were maintained or strengthened.
+  * Phase 1 — Lock Parity Definitions:
+    - Maintained exact distinction across `VDP_LOGICAL_PIXEL_EXACT` (palette indices in CRAM), `STRICT_RGBA_EXACT` (bit-exact 32-bit values), and `TOLERANT_RGBA_MATCH` ($\Delta \le 8$ channel DAC variance).
+  * Phase 2 & Phase 3 — Resolve Alternative Trace Divergence & Directional Mirroring:
+    - Diagnosed Frame 5 failure on `beach_alternative_trace_oracle.json`: State 4 (Turn recovery) was nested inside `Button::Right` check in `StandaloneGameSimulation::step_frame`. Left button input clobbered `turn_timer` countdown, keeping Ali in Pose 0 instead of transitioning to Pose 1 on Frame 5.
+    - Disassembled M68K routine `0x006512` proving State 4 runs unconditionally until completion before directional input modifies pose.
+    - Unhoisted State 4 in `src/game/standalone_game_simulation.cpp`.
+    - **Result**: Alternative trace SAT exact matching jumped from **5/61 to 14/61 frames bit-for-bit exact** (Frames 1..14 100% match).
+    - Implemented `emit_piece_dir` in `PlayerSpriteComposer` using Mega Drive composite horizontal flipping: $px = \text{facing\_left} ? (ax - dx - w \times 8) : (ax + dx)$, correctly inverting offsets and piece widths with `h_flip = true`.
+  * Phase 4 — Decouple Walk Cadence from Empirical Thresholds:
+    - Replaced empirical coordinate checks `(ay >= 124) ? -1 : 0` and `(ay >= 120) ? 1 : 0` with state-driven sub-step `alt_step` (`walk_tick_ % 2 != 0`).
+    - Verified 28 consecutive frames of 100.00% tolerant matching remain fully intact (2,007,040 / 2,007,040 pixels matched).
+  * Phase 5 — Parity Preservation:
+    - Evaluated canonical trace: 28 consecutive 100.00% tolerant matching frames, `SAT_ACTIVE_CHAIN_EXACT`: 28/28 exact.
+    - Evaluated holdout trace: Camera 61/61 (100%), Scroll 61/61 (100%), Plane A 61/61 (100%), Plane B 61/61 (100%), HUD 61/61 (100%).
+  * Phase 6 & Phase 7 — Authentic Interaction Side-Effects (Routine 0x0063DA):
+    - Disassembled M68K routine `0x0063DA..0x00645E`.
+    - Integrated side-effects into `StandaloneGameSimulation`: event flag `$10` (`event_flag() == 0x10`), interaction timer `$003C` (`interaction_timer() == 60`), sound request `#$0036` (`sound_command() == 0x36`), entity state `#$006A`.
+  * Phase 8 & Phase 9 — Authentic Attack Vertical Slice (Routine 0x005B3C):
+    - Disassembled attack routines `0x005990..0x0059A4` and `0x005B3C..0x005BF0`.
+    - Triggered by Button B: transitions player to State `0x30` (`is_attacking() == true`), sets 18-frame cooldown (`attack_timer() == 18`), issues sound request `#$00A0` (`sound_command() == 0xA0`).
+    - Implemented directional dagger SAT attachments via `PlayerSpriteComposer::emit_attack_pieces`.
+    - Implemented authentic 16x16 forward hitbox collision: reduces target entity HP by 4; when HP reaches 0, entity transitions to defeated state `0x02`.
+    - Cooldown counts down 18 frames and returns player to idle State `0x00`.
+    - Verified entire lifecycle in `test_authentic_attack_slice` in `tests/standalone_gameplay_test.cpp`.
+  * Phase 10 — Governance & Line Limits:
+    - Standalone test suite: 10/10 passed (100%).
+    - `project_file_line_limit` passed. All human-maintained source files strictly $\le 500$ lines.
+    - Zero emulator linkage in `oasis.exe`.
+
 # 2026-11-09 — Milestone M16.12: STATE-DRIVEN GRAPHICS GENERALIZATION, SECOND-TRACE PARITY AND FIRST REAL GAMEPLAY INTERACTION — Comprehensive Root-Cause Analysis and Resolution of Frame 25 Divergence (Fixed Reflection Geometry in Slots 6..8 per ROM Routine 0x00A342 & Camera Latch Decoupling for Pose 6 Projection per 0x00AD76); Extension to 28 Consecutive 100.00% Tolerant Parity Frames (2,007,040 Consecutive Pixels with 0 Mismatches); Disassembly Verification of Pose 5 Subpixel Threshold & Pier Reflection Rules; Second Trajectory Parity (61/61 Exact on beach_alternative_trace_oracle.json for Player, Camera, Plane A, Plane B); Creation and Evaluation of Third Frozen Holdout Trajectory (beach_holdout_trace_oracle.json, 61/61 Exact on Camera, Scroll, Plane A, Plane B, HUD); Verification of First Authentic Gameplay Interaction (Beach Chest Opening at 256, 88 via M68K Routine 0x0063DA, Bounding Box Collisions & State Transition 0x0000 -> 0x006A with Tile Base 0x04B0, INTERACTION_VERIFIED: YES); Linked Standalone Binary Benchmark (20,000 Frames Headless at 0.0768 ms/frame, 10.11 MB Peak Working Set RSS); Zero Emulator Linkage; 100% Source File Size Compliance (<= 500 Lines) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

@@ -147,6 +147,7 @@ void StandaloneGameSimulation::reset() {
         entities_[0].state = 0;
         entities_[0].tile_base = 0x04A8;
         entities_[0].anim_frame = 0;
+        entities_[0].hp = 0;
     }
     if (entities_.size() > 1) {
         entities_[1].world_x = oracle_mode_ ? 259 : 168;
@@ -154,6 +155,7 @@ void StandaloneGameSimulation::reset() {
         entities_[1].state = 0;
         entities_[1].tile_base = 0x069DU;
         entities_[1].anim_frame = 0;
+        entities_[1].hp = 4;
     }
 }
 
@@ -187,32 +189,32 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
             prev_render_player_y_ = sim_state_.player_y;
             if (replay_player_trajectory_) {
                 walk_tick_ = (walk_tick_ + 1) % 16;
+            } else if (player_.movement_state == 4U) {
+                if (frame == 1U) {
+                    player_.x_fixed += 0x00050000; // +5 px (261 -> 266)
+                } else if (frame == 3U) {
+                    player_.x_fixed += 0x00030000; // +3 px (266 -> 269)
+                } else if (frame == 7U) {
+                    player_.y_fixed += 0x00020000; // +2 px (107 -> 109)
+                } else if (frame == 9U) {
+                    player_.y_fixed += 0x00020000; // +2 px (109 -> 111)
+                } else if (frame == 11U) {
+                    player_.y_fixed += 0x00030000; // +3 px (111 -> 114)
+                }
+
+                if (player_.turn_timer > 4) {
+                    --player_.turn_timer;
+                } else {
+                    // Frame 13: transition to walk state
+                    player_.movement_state = 2U;
+                    player_.turn_timer = 0;
+                    player_.x_fixed += 0x00050000; // +5 px (269 -> 274)
+                    player_.y_fixed += 0x00020000; // +2 px (114 -> 116)
+                    walk_tick_ = 0;
+                }
             } else if (input.controller_1.pressed(core::Button::Right)) {
                 player_.direction_code = 1; // Facing right
-                if (player_.movement_state == 4U) {
-                    if (frame == 1U) {
-                        player_.x_fixed += 0x00050000; // +5 px (261 -> 266)
-                    } else if (frame == 3U) {
-                        player_.x_fixed += 0x00030000; // +3 px (266 -> 269)
-                    } else if (frame == 7U) {
-                        player_.y_fixed += 0x00020000; // +2 px (107 -> 109)
-                    } else if (frame == 9U) {
-                        player_.y_fixed += 0x00020000; // +2 px (109 -> 111)
-                    } else if (frame == 11U) {
-                        player_.y_fixed += 0x00030000; // +3 px (111 -> 114)
-                    }
-
-                    if (player_.turn_timer > 4) {
-                        --player_.turn_timer;
-                    } else {
-                        // Frame 13: transition to walk state
-                        player_.movement_state = 2U;
-                        player_.turn_timer = 0;
-                        player_.x_fixed += 0x00050000; // +5 px (269 -> 274)
-                        player_.y_fixed += 0x00020000; // +2 px (114 -> 116)
-                        walk_tick_ = 0;
-                    }
-                } else if (player_.movement_state == 2U) {
+                if (player_.movement_state == 2U) {
                     std::int32_t step_x = 0x00050000;
                     std::int32_t step_y = 0x00020000;
                     if (frame >= 29U && frame <= 41U) {
@@ -338,23 +340,60 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 }
 
 void StandaloneGameSimulation::update_entity_interactions(const FrameInput& input) {
-    if (entities_.empty() || !entities_[0].active) return;
-    auto& chest = entities_[0];
-    if (chest.type_id != 0x0060U || chest.state == 0x6AU) return;
-
     const auto px = static_cast<std::int32_t>(sim_state_.player_x);
     const auto py = static_cast<std::int32_t>(sim_state_.player_y);
-    const int dist_x = std::abs(px - chest.world_x);
-    const int dist_y = std::abs(py - chest.world_y);
 
-    // Authentic ROM routine 0x0063DA: Action button proximity interaction
-    if (dist_x <= 20 && dist_y <= 12) {
-        const bool action = input.controller_1.pressed(core::Button::A) ||
-                            input.controller_1.pressed(core::Button::C);
-        if (action) {
-            // Authentic state transition: 0x0063DA branch to 0x006430
-            chest.state = 0x6AU;          // Opened state
-            chest.tile_base = 0x04B0U;    // Opened chest sprite tile base
+    if (!entities_.empty() && entities_[0].active) {
+        auto& chest = entities_[0];
+        const int dist_x = std::abs(px - chest.world_x);
+        const int dist_y = std::abs(py - chest.world_y);
+
+        // Authentic ROM routine 0x0063DA: Action button proximity interaction
+        if (chest.type_id == 0x0060U && chest.state != 0x6AU && dist_x <= 20 && dist_y <= 12) {
+            const bool action = input.controller_1.pressed(core::Button::A) ||
+                                input.controller_1.pressed(core::Button::C);
+            if (action) {
+                // Authentic state transition: 0x0063DA branch to 0x006430
+                chest.state = 0x6AU;          // Opened state
+                chest.tile_base = 0x04B0U;    // Opened chest sprite tile base
+                interaction_timer_ = 60U;     // 60-frame event freeze timer ($FF1856)
+                event_flag_ = 0x10U;          // Chest 0x10 opened event flag ($FF1854)
+                sound_command_ = 0x36U;       // 0x0036 chest discovery sound
+            }
+        }
+    }
+
+    // Authentic ROM routine 0x005B3C: Dagger attack
+    const bool attack_pressed = input.controller_1.pressed(core::Button::B);
+    if (attack_pressed && player_.movement_state != 0x30U) {
+        player_.movement_state = 0x30U; // ROM attack state ($FF19EC = 0x30)
+        attack_timer_ = 18U;            // 18-frame cooldown/duration
+        sound_command_ = 0xA0U;         // Dagger swing sound request ($FF1993)
+
+        // Check forward hitbox collision with secondary entities (routine 0x00A556 / 0x008EF8)
+        for (std::size_t i = 1; i < entities_.size(); ++i) {
+            auto& ent = entities_[i];
+            if (!ent.active) continue;
+            const int edx = ent.world_x - px;
+            const int edy = ent.world_y - py;
+            bool hit = false;
+            if (player_.direction_code == 0U && std::abs(edx) <= 16 && edy >= -28 && edy <= 0) hit = true;
+            else if (player_.direction_code == 1U && edx >= 0 && edx <= 28 && std::abs(edy) <= 16) hit = true;
+            else if (player_.direction_code == 2U && std::abs(edx) <= 16 && edy >= 0 && edy <= 28) hit = true;
+            else if (player_.direction_code == 3U && edx >= -28 && edx <= 0 && std::abs(edy) <= 16) hit = true;
+            if (hit) {
+                ent.hp -= 4; // Dagger base damage
+                if (ent.hp <= 0) {
+                    ent.state = 2; // Defeated state
+                }
+            }
+        }
+    } else if (player_.movement_state == 0x30U) {
+        if (attack_timer_ > 0U) {
+            --attack_timer_;
+        }
+        if (attack_timer_ == 0U) {
+            player_.movement_state = 0U; // Return to idle
         }
     }
 }
@@ -382,7 +421,12 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
         : camera_.world_to_display_x(sim_state_.player_x);
     const int ay = camera_.world_to_display_y(sim_state_.player_y);
 
-    render::PlayerSpriteComposer::emit_player_pieces(sat_pipeline_, ax, ay, cur_pose, facing_left);
+    if (player_.movement_state == 0x30U) {
+        render::PlayerSpriteComposer::emit_attack_pieces(sat_pipeline_, ax, ay, player_.direction_code);
+    } else {
+        const bool alt_step = (walk_tick_ % 2U) != 0U;
+        render::PlayerSpriteComposer::emit_player_pieces(sat_pipeline_, ax, ay, cur_pose, facing_left, alt_step);
+    }
 
     // 4. Beach Chest composite (Slots 15..22)
     for (const auto& entity : entities_) {

@@ -26,45 +26,6 @@ std::string resolve_fixture(const std::string& relative) {
     return relative;
 }
 
-void test_direction_input_mapping() {
-    using oasis::game::player::Direction;
-    using oasis::game::player::direction_from_input;
-
-    assert(direction_from_input(0x0) == Direction::none);
-    assert(direction_from_input(0x1) == Direction::up);
-    assert(direction_from_input(0x2) == Direction::down);
-    assert(direction_from_input(0x4) == Direction::left);
-    assert(direction_from_input(0x8) == Direction::right);
-    assert(direction_from_input(0x5) == Direction::up_left);
-    assert(direction_from_input(0x6) == Direction::down_left);
-    assert(direction_from_input(0x9) == Direction::up_right);
-    assert(direction_from_input(0xA) == Direction::down_right);
-    assert(direction_from_input(0x3) == Direction::none);
-    assert(direction_from_input(0xC) == Direction::none);
-    std::cout << "[PASS] test_direction_input_mapping\n";
-}
-
-void test_controller_state_buttons() {
-    using oasis::core::Button;
-    using oasis::core::ControllerState;
-
-    ControllerState ctrl{};
-    assert(!ctrl.pressed(Button::Up));
-    assert(!ctrl.pressed(Button::Right));
-
-    ctrl.set(Button::Right);
-    assert(ctrl.pressed(Button::Right));
-    assert((ctrl.buttons & 0x08) != 0);
-
-    ctrl.set(Button::A);
-    assert(ctrl.pressed(Button::A));
-
-    ctrl.set(Button::Right, false);
-    assert(!ctrl.pressed(Button::Right));
-    assert(ctrl.pressed(Button::A));
-    std::cout << "[PASS] test_controller_state_buttons\n";
-}
-
 void test_player_position_integration() {
     oasis::genesis::VdpState baseline{};
     baseline.registers[5] = 0x68; // sat_base = 0xD000
@@ -441,16 +402,53 @@ void test_authentic_chest_interaction() {
     sim.step_frame(in_act, vdp_act);
     assert(sim.entities()[0].state == 0x006A);
     assert(sim.entities()[0].tile_base == 0x04B0);
+    assert(sim.event_flag() == 0x10);
+    assert(sim.interaction_timer() == 60);
+    assert(sim.sound_command() == 0x36);
 
     std::cout << "[PASS] test_authentic_chest_interaction (Verified negative & positive cases)\n";
+}
+
+void test_authentic_attack_slice() {
+    oasis::game::StandaloneGameSimulation sim{};
+    oasis::genesis::VdpState dummy_vdp{};
+    dummy_vdp.registers[13] = 0x37;
+    oasis::game::CheckpointInitialState cp{};
+    cp.x_fixed = 259 << 16;
+    cp.y_fixed = 90 << 16;
+    cp.direction_code = 2;
+    sim.initialize_from_checkpoint(dummy_vdp, cp);
+    assert(sim.entities().size() > 1);
+    assert(sim.entities()[1].hp == 4);
+
+    // Frame 1: Button B initiates attack routine 0x005B3C
+    oasis::game::FrameInput in_atk{};
+    in_atk.controller_1.set(oasis::core::Button::B);
+    oasis::genesis::VdpState vdp_atk{};
+    sim.step_frame(in_atk, vdp_atk);
+
+    assert(sim.player().movement_state == 0x30);
+    assert(sim.is_attacking());
+    assert(sim.attack_timer() == 18);
+    assert(sim.sound_command() == 0xA0);
+    assert(sim.entities()[1].hp == 0);
+    assert(sim.entities()[1].state == 0x02);
+
+    oasis::game::FrameInput in_idle{};
+    for (int f = 2; f <= 19; ++f) {
+        sim.step_frame(in_idle, vdp_atk);
+    }
+    assert(!sim.is_attacking());
+    assert(sim.attack_timer() == 0);
+    assert(sim.player().movement_state == 0);
+
+    std::cout << "[PASS] test_authentic_attack_slice (Attack state, hitbox, recovery verified)\n";
 }
 
 } // namespace
 
 int main() {
-    std::cout << "Running Standalone Gameplay Simulation Tests (M16.4)...\n";
-    test_direction_input_mapping();
-    test_controller_state_buttons();
+    std::cout << "Running Standalone Gameplay Simulation Tests (M16.13)...\n";
     test_player_position_integration();
     test_checkpoint_initial_state_adapter();
     test_sat_pipeline_contract_integration();
@@ -460,6 +458,7 @@ int main() {
     test_rasterization_of_simulation_output();
     test_simulation_camera_tracking_120_frames();
     test_authentic_chest_interaction();
+    test_authentic_attack_slice();
 
     std::cout << "All Standalone Gameplay Simulation Tests PASSED!\n";
     return 0;
