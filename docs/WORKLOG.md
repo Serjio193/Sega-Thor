@@ -1,3 +1,45 @@
+# 2026-11-09 — Milestone M15.237: SCHEDULER-SAFE BATCH RECOMPILATION, REAL RUNTIME DISPLACEMENT AND INTERRUPT-BOUNDARY VALIDATION — Automated Scheduler-Safe M68000 Code Generation for Disjoint Leaf Candidates; Explicit GPGX Register Architecture Isolation Verification (D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17, Proving CCR Writes Never Corrupt Program Counter); Musashi Variable Shift Cycle Parity Verification (Dynamic Shift Cost `shift * 14` Master Clocks); Interrupt Boundary Cooperative Preemption and Resumption Stress Testing in tests/m68k_scheduler_safe_differential_test.cpp; Candidate Discovery & Selection from Scenario C Residual Profile (data/thor-fixtures/batch_recompiler_candidates_m15_237.json); Automated Compilation of 4 Candidate Routines: Slot 233 (0x005660, Palette Color Math Add/Saturate), Slot 234 (0x006E7A, Event / System Flag Query Engine), Slot 235 (0x062694, Sound Driver Channel Attenuation Tail Normalizer), and Slot 236 (0x062A78, Sound Driver Channel Pan Direct Register Update); Differential Unit & Mutation Testing (100% Bit-Exact); Full Integration in Linux Runner (build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session, SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b); Three-Scenario A/B Verification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 (0x006E7A): 51 Calls, 153 Stepped Native Instructions in Scenario C, 29 Calls (86 Steps) in Scenario A, 17 Calls (51 Steps) in Scenario B (Total 290 Steps Across All 3 Scenarios); Identification of Production Helper Shadowing for Slots 233 (Shadowed by 00557a in m68k_00557a_step_block2.cpp) and Slots 235/236 (Shadowed by Legacy Helper #12 623ac); Combined Scenario C Native Steps Increased to 6,591,268 (Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps Reduced to 1,306,369); Standalone Reuse Analysis Produced (Event/System Flag State Query Interface); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-236 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Baseline Integrity:
+    - Confirmed baseline commit e7fc38a6a8cf898990bcd404fcc659e9b709ff92 (M15.236).
+    - Production helper active inventory strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+    - Pinned core SHA256 ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134, canonical ROM SHA256 eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+    - Verified M15.236 runner SHA256 1cd767c5287c270a6083ac19ef2dd712eb9d9cf2c4e86e8b24e182cb1b333727 and receipt validity (58/58 valid).
+  * Phase 1: Audit M15.236 Baseline:
+    - Slot 230 (0x00D266): Classified as RUNTIME_QUALIFIED_PRODUCTIVE (114 calls, 1,944 steps in Scenario C, 0 fallbacks, exact landmark parity).
+    - Slot 231 (0x062732) & Slot 232 (0x062722): Classified as SEMANTICALLY_VERIFIED_ONLY and UNREACHED_IN_SCENARIOS (0 calls in Scenarios A/B/C).
+    - Slot 225 (0x008F22): Confirmed SHADOWED_BY_PRODUCTION (0 external calls due to parent native caller Slot 222 0x02575C).
+  * Phase 2 & 3: Generator Instruction Semantics & Variable Shift Cycles:
+    - Verified GPGX register mapping: D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17. Verified that CCR writes update register 17 isolated from PC (register 16).
+    - Added BTST.B #imm, abs_l to `tools/thor_recompiler/decoder.py`.
+    - Added AND, ANDI, ORI, EOR, EORI, BTST, LSR to `tools/thor_recompiler/codegen_step.py`.
+    - Validated Musashi dynamic shift cost: `shift * 14` master clocks matching `CYC_SHIFT = 2 * 7 = 14`.
+  * Phase 4 & 5: Candidate Discovery & Batch Selection:
+    - Analyzed Scenario C residual profile (5,297,239 unowned steps). Documented why >20,000 leaf step target is blocked: large unmigrated hotspots (0x00A1D6 at 1.16M steps, 0x00AF02 at 561k steps, 0x0602FE at 246k steps) are complex non-leaf dispatchers with dynamic JSR tables and Z80 MMIO.
+    - Selected and froze 4 clean, disjoint leaf candidates in `data/thor-fixtures/batch_recompiler_candidates_m15_237.json`:
+      1. Candidate 1: 0x005660..0x00566E (Palette Color Math Component Add / Saturate, 567 calls, 2,268 steps)
+      2. Candidate 2: 0x006E7A..0x006E84 (Event / System Flag Query Engine, 51 calls, 153 steps)
+      3. Candidate 3: 0x062694..0x0626BA (Sound Driver Channel Attenuation Tail Normalizer, 22 calls, 90 steps)
+      4. Candidate 4: 0x062A78..0x062A96 (Sound Driver Channel Pan Direct Register Update, 12 calls, 24 steps)
+  * Phase 6, 7 & 8: Code Generation, Differential Testing & Interrupt Boundary Stress:
+    - Generated C++20 units: `m68k_recompiled_005660` (90 lines), `m68k_recompiled_006e7a` (82 lines), `m68k_recompiled_062694` (185 lines), `m68k_recompiled_062a78` (134 lines). All strictly <= 500 lines per AGENTS.md Rule 3.
+    - Updated `tests/m68k_scheduler_safe_differential_test.cpp` (310 lines <= 500) covering register isolation, shift cycles, all 4 candidates, mutation assertions, and IRQ preemption/cooperative resumption. Built and passed 100% in WSL.
+  * Phase 9 & 10: Linux Runner Integration & Three-Scenario Differential Qualification:
+    - Built Linux runner `build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session` (SHA256 `864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b`).
+    - Allocated Slots 233..236 overlaying `std::array<bool, 237> g_enabled{};`.
+    - Executed differential qualification across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - All 24 raw streams match 100% bit-exact (8/8 in C, 8/8 in A, 8/8 in B). Zero contract faults.
+    - Verified new native execution: Slot 234 (`0x006E7A`) productively executed across all three scenarios: 51 calls (153 steps) in C, 29 calls (86 steps) in A, 17 calls (51 steps) in B (Total 290 native steps).
+    - Identified that Slot 233 is shadowed by active production helper `00557a` (`m68k_00557a_step_block2.cpp`), and Slots 235/236 are shadowed by legacy production helper #12 (`623ac`).
+    - Total Scenario C combined native steps increased from 6,591,115 to 6,591,268 (+153). Raw dynamic coverage reached 37.391%, non-idle dynamic coverage reached 83.459%, remaining non-idle interpreted steps reduced to 1,306,369.
+  * Phase 11, 12, 13 & 14: Benchmark, Standalone Reuse & Authoritative Receipt:
+    - Replay performance benchmark verified identical execution efficiency.
+    - Produced read-only standalone reuse mapping for system story flag query. Standalone worktree confirmed untouched.
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-237-20261109.json`.
+    - Verified with `ReceiptVerifier`: 58/58 files valid, 48/48 stream artifacts valid.
+    - Governed file limit check passed (2,339 files <= 500 lines). `git diff --check` green.
+
 # 2026-11-09 — Milestone M15.236: SCHEDULER-SAFE AUTOMATIC M68000 RECOMPILATION — Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding, Landmark Parity Resolution, and First Qualified Recompiled Batch; Implementation of tools/thor_recompiler/codegen_step.py and src/tools/hybrid/generated/m68k_step_helpers.hpp; Elimination of Frame 381 Landmark Desynchronization Blocker Discovered in M15.235; Discovery and Resolution of Shift Dynamic Cycle Accounting (+42 Master Clocks on LSL.W #3 Matching Musashi's CYC_SHIFT); Resolution of GPGX Status Register Register Indexing (kRegSR = 17 vs kRegPC = 16); Recompilation and Qualification of Camera World Coordinate Normalizer 0x00D266..0x00D2B2 (Slot 230, 25 Insns), Sound Modulation Strobe 0x062732 (Slot 231, 4 Insns), and Sound Modulation Clamp 0x062722 (Slot 232, 6 Insns); Candidate 4 (0x00C012) Audited and Disqualified (DISQUALIFIED_FALLTHROUGH_INTO_00C038); 100% Bit-Exact Differential Unit Parity in tests/m68k_scheduler_safe_differential_test.cpp; Full Gameplay Replay Integration in Unified Linux Runner (build/auto-migrator/m15_236/linux-runner/oasis_gameplay_session, SHA256 1cd767c5287c270a6083ac19ef2dd712eb9d9cf2c4e86e8b24e182cb1b333727); Three-Scenario A/B Verification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Positive Measured Dynamic Native Instruction Displacement (+1,944 Steps in Scenario C, Total Combined Native Steps Reaching 6,591,115, Raw Native Coverage 37.390%, Non-Idle Coverage 83.457%, Remaining Interpreted Steps 1,306,522); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-232 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
 
 - **Concrete Task & Acceptance Criteria:**

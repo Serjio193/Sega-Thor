@@ -1,0 +1,14 @@
+{
+  "0x006E7A": {
+    "bytes": "0839000400FF165F",
+    "mnemonic": "BTST"
+  },
+  "0x006E82": {
+    "bytes": "6602",
+    "mnemonic": "BNE"
+  },
+  "0x006E84": {
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

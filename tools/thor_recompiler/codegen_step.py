@@ -186,7 +186,7 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
             f"        const auto val = {val};",
             f"        update_logic_ccr_{insn.size}(api, val);",
         ])
-    elif insn.mnemonic == "OR":
+    elif insn.mnemonic in ("OR", "ORI"):
         src = emit_operand_read_expr(insn.ops[0], insn.size)
         dst = emit_operand_read_expr(insn.ops[1], insn.size)
         lines.extend([
@@ -194,13 +194,40 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
         ])
         lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, "val")])
         lines.append(f"        update_logic_ccr_{insn.size}(api, val);")
-    elif insn.mnemonic in ("LSL", "ASR"):
+    elif insn.mnemonic in ("AND", "ANDI"):
+        src = emit_operand_read_expr(insn.ops[0], insn.size)
+        dst = emit_operand_read_expr(insn.ops[1], insn.size)
+        lines.extend([
+            f"        const auto val = ({dst}) & ({src});",
+        ])
+        lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, "val")])
+        lines.append(f"        update_logic_ccr_{insn.size}(api, val);")
+    elif insn.mnemonic in ("EOR", "EORI"):
+        src = emit_operand_read_expr(insn.ops[0], insn.size)
+        dst = emit_operand_read_expr(insn.ops[1], insn.size)
+        lines.extend([
+            f"        const auto val = ({dst}) ^ ({src});",
+        ])
+        lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, "val")])
+        lines.append(f"        update_logic_ccr_{insn.size}(api, val);")
+    elif insn.mnemonic == "BTST":
+        bit_num = insn.ops[0].val
+        dst_op = insn.ops[1]
+        val_expr = emit_operand_read_expr(dst_op, insn.size)
+        bit_mask = 7 if insn.size == "b" else 31
+        lines.extend([
+            f"        const auto val = {val_expr};",
+            f"        const bool is_zero = (val & (1U << ({bit_num}U & {bit_mask}U))) == 0U;",
+            f"        update_btst_ccr(api, is_zero);",
+        ])
+    elif insn.mnemonic in ("LSL", "LSR", "ASR"):
         shift_val = insn.ops[0].val if insn.ops[0].kind == "imm" else 1
         dst = emit_operand_read_expr(insn.ops[1], insn.size)
+        shift_op = "<<" if insn.mnemonic == "LSL" else ">>"
         lines.extend([
             f"        const auto old_d = {dst};",
             f"        const auto shift = {shift_val}U;",
-            f"        const auto val = static_cast<std::uint16_t>((old_d {'<<' if insn.mnemonic=='LSL' else '>>'} shift) & 0xFFFFU);",
+            f"        const auto val = static_cast<std::uint16_t>((old_d {shift_op} shift) & 0xFFFFU);",
         ])
         lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, "val")])
         lines.append(f"        update_shift_ccr_{insn.mnemonic.lower()}_{insn.size}(api, old_d, shift, val);")

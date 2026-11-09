@@ -57,5 +57,96 @@
     "base_cycles": 16,
     "variable_cycles": 0,
     "branch_target": null
+  },
+  {
+    "pc": "0x0626A6",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x3200"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626A8",
+    "mnemonic": "ANDI",
+    "size": "b",
+    "raw_words": [
+      "0x0200",
+      "0x000F"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626AC",
+    "mnemonic": "OR",
+    "size": "b",
+    "raw_words": [
+      "0x802D",
+      "0x0004"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626B0",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1680"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626B2",
+    "mnemonic": "LSR",
+    "size": "w",
+    "raw_words": [
+      "0xE849"
+    ],
+    "base_cycles": 42,
+    "variable_cycles": 56,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626B4",
+    "mnemonic": "ANDI",
+    "size": "b",
+    "raw_words": [
+      "0x0201",
+      "0x003F"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626B8",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1681"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x0626BA",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
   }
 ]

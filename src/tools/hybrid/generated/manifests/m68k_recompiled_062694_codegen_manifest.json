@@ -1,18 +1,13 @@
 {
   "name": "m68k_recompiled_062694",
   "entry_pc": "0x062694",
-  "limit_pc": "0x0626A4",
-  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
-  "target_abi": "hybrid_step_v1",
-  "policy": "strict_reject_unsupported",
-  "generated_files": [
-    "m68k_recompiled_062694.hpp",
-    "m68k_recompiled_062694.cpp"
-  ],
+  "limit_pc": "0x0626BA",
+  "execution_mode": "SCHEDULER_SAFE_STEP",
+  "instruction_count": 13,
+  "cpp_lines": 185,
+  "hpp_lines": 23,
   "source_hashes": {
-    "m68k_recompiled_062694.hpp": "c63b43c2f844b90e7aca5ebe31d54c5fa8a8f0be98307698f91e1a3d7483e851",
-    "m68k_recompiled_062694.cpp": "d26e4372d86f5afa4148e225cc930bb4cb244a0bb5b746c839851c839ea8576f"
-  },
-  "block_count": 2,
-  "instruction_count": 5
+    "m68k_recompiled_062694.cpp": "7b4cf521188446f6e303270ff286fbff4ef7bffe6158d00e3521a5522905f332",
+    "m68k_recompiled_062694.hpp": "4ddcb5d5b9f22d37e4f6f9c5f28cd57627e76d802a228e81f261b194d98a2092"
+  }
 }

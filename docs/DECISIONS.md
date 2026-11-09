@@ -1,3 +1,44 @@
+# ADR-20261109-M15-237-SCHEDULER-SAFE-BATCH-RECOMPILATION-AND-DISPLACEMENT — Automated Scheduler-Safe Batch Recompilation for Disjoint Leaf Candidates; Explicit GPGX Register Architecture Isolation Verification (D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17); Musashi Dynamic Shift Cycle Parity Verification (`shift * 14` Master Clocks); Interrupt Boundary Preemption and Cooperative Resumption Verification; Candidate Discovery & Selection from Scenario C Residual Profile in data/thor-fixtures/batch_recompiler_candidates_m15_237.json; Automated Compilation of 4 Candidate Routines: Slot 233 (0x005660), Slot 234 (0x006E7A), Slot 235 (0x062694), and Slot 236 (0x062A78); Differential Unit & Mutation Testing 100% Bit-Exact; Unified Linux Runner build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session (SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b); Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 (0x006E7A): 51 Calls / 153 Steps in C, 29 Calls / 86 Steps in A, 17 Calls / 51 Steps in B (290 Native Steps Total); Identification of Production Helper Shadowing for Slots 233 (by 00557a) and Slots 235/236 (by 623ac); Scenario C Combined Native Steps Reaching 6,591,268, Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps 1,306,369; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.236's introduction of the `SCHEDULER_SAFE_STEP` instruction-level execution mode, M15.237 focused on scaling this automated recompiler to batches of disjoint leaf subroutines, achieving positive measured runtime displacement and proving interrupt safety.
+2. Generator semantics and architecture contracts were verified:
+   - GPGX register architecture isolation: Register 16 is Program Counter (`m68k.pc`), Register 17 is Status Register (`m68k.sr`). Explicit unit tests confirmed CCR flag calculations write to Register 17 without altering PC or data registers.
+   - Dynamic cycle costs: Musashi variable shifts charge `{shift_val * 14}` master clocks; unit tests confirmed dynamic shift scaling across 1..8 bit shifts.
+   - Interrupt boundary stress: Unit tests simulated mid-routine VBlank/IRQ arrival, demonstrating that the recompiled stepper cleanly yields (`NotHandled`) and exact resumption occurs upon `RTE`.
+3. Scenario C residual profile (5,297,239 unowned steps) was analyzed. Large residual hotspots (e.g., `0x00A1D6` at 1.16M steps, `0x00AF02` at 561k steps, `0x0602FE` at 246k steps) are complex non-leaf coordinators with dynamic JSR tables and hardware Z80 MMIO, rather than simple isolated leaves.
+4. 4 clean leaf candidates were frozen in `data/thor-fixtures/batch_recompiler_candidates_m15_237.json`:
+   - Slot 233 (`0x005660..0x00566E`): Palette Color Math Component Add / Saturate (16 bytes, 4 insts).
+   - Slot 234 (`0x006E7A..0x006E84`): Event / System Flag Query Engine (12 bytes, 3 insts).
+   - Slot 235 (`0x062694..0x0626BA`): Sound Driver Attenuation Normalizer (38 bytes, 13 insts).
+   - Slot 236 (`0x062A78..0x062A96`): Sound Driver Channel Pan Update (30 bytes, 8 insts).
+5. All 4 candidates were automatically compiled to scheduler-safe C++20 and passed 100% bit-exact in differential unit testing (`tests/m68k_scheduler_safe_differential_test.cpp`).
+6. Full gameplay integration was executed across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames).
+7. Three-scenario results revealed:
+   - Slot 234 (`0x006E7A`) is productively executed in authentic gameplay across all three scenarios: 51 calls (153 steps) in C, 29 calls (86 steps) in A, 17 calls (51 steps) in B (Total 290 native steps).
+   - Slot 233 (`0x005660`) is semantically verified but shadowed during authentic gameplay by active production helper `00557a` (`m68k_00557a_step_block2.cpp`).
+   - Slots 235 and 236 are semantically verified but shadowed during authentic gameplay by legacy production helper #12 (`623ac`).
+
+**Decision:**
+1. **Accept Slot 234 (`0x006E7A`) as Productively Qualified:**
+   - Record genuine runtime displacement of +153 steps in Scenario C (290 steps total across A/B/C).
+2. **Accept Slots 233, 235, and 236 as Semantically Qualified but Shadowed:**
+   - Keep the generated implementations in the recompiler library for standalone C++ reuse and eventual production consolidation.
+3. **Preserve Decompressor Quarantine:**
+   - Multi-frame decompressor `0x003820` remains strictly quarantined pending full sub-cycle interrupt queue modeling.
+4. **Standalone Worktree Read-Only Policy:**
+   - `C:/Github/Sega-Thor-Standalone` remains untouched.
+
+**Consequences:**
+- Combined Scenario C native instructions reach 6,591,268 (up from 6,591,115).
+- Raw dynamic native coverage: 37.391%, non-idle dynamic native coverage: 83.459%.
+- Remaining non-idle interpreted steps reduced to 1,306,369.
+- 24/24 raw streams match 100% bit-exact across all three scenarios with zero contract faults.
+- Production active helpers remain strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+- All governed source files strictly <= 500 lines.
+
 # ADR-20261109-M15-236-SCHEDULER-SAFE-AUTOMATIC-M68000-RECOMPILATION — Scheduler-Safe Automatic M68000 Recompiler Architecture; Fine-Grained Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding; Resolution of Intermediate Landmark Telemetry Divergence (Frame 381 Desync); Musashi Dynamic Shift Cycle Accounting (+42 Master Clocks on LSL.W #3); Correct GPGX SR Indexing (kRegSR = 17); Qualification of Recompiled Camera Coordinate Normalizer 0x00D266..0x00D2B2 (Slot 230), Sound Modulation Direct Strobe 0x062732 (Slot 231), and Sound Modulation Threshold Clamp 0x062722 (Slot 232); Candidate 0x00C012 Audited and Disqualified (DISQUALIFIED_FALLTHROUGH_INTO_00C038); Three-Scenario 24/24 Bit-Exact Qualification; +1,944 Measured Incremental Native Steps in Scenario C (Total Combined Native Steps Reaching 6,591,115, Raw Dynamic Coverage 37.390%, Non-Idle Coverage 83.457%); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
 **Status:** Accepted
 **Date:** 2026-11-09

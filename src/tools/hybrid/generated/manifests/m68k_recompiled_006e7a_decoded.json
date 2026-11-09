@@ -1,0 +1,38 @@
+[
+  {
+    "pc": "0x006E7A",
+    "mnemonic": "BTST",
+    "size": "b",
+    "raw_words": [
+      "0x0839",
+      "0x0004",
+      "0x00FF",
+      "0x165F"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x006E82",
+    "mnemonic": "BNE",
+    "size": "w",
+    "raw_words": [
+      "0x6602"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x006E86"
+  },
+  {
+    "pc": "0x006E84",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

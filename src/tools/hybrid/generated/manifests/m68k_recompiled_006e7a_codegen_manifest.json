@@ -1,0 +1,13 @@
+{
+  "name": "m68k_recompiled_006e7a",
+  "entry_pc": "0x006E7A",
+  "limit_pc": "0x006E84",
+  "execution_mode": "SCHEDULER_SAFE_STEP",
+  "instruction_count": 3,
+  "cpp_lines": 82,
+  "hpp_lines": 23,
+  "source_hashes": {
+    "m68k_recompiled_006e7a.cpp": "4708f76dc0076a3f95f946afb30035c30142b9fbb3244d7969131472e8241a3d",
+    "m68k_recompiled_006e7a.hpp": "9b45ab1a9e9bcd67e1f9c564678a1c5fa979a48d23adf2e99bcf2cbed765c0ad"
+  }
+}

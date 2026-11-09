@@ -1,25 +1,17 @@
 {
   "0x005660": {
-    "block_start": "0x005660",
-    "block_end": "0x005670",
     "bytes": "41F900FF1972",
     "mnemonic": "LEA"
   },
   "0x005666": {
-    "block_start": "0x005660",
-    "block_end": "0x005670",
     "bytes": "30EE0008",
     "mnemonic": "MOVE"
   },
   "0x00566A": {
-    "block_start": "0x005660",
-    "block_end": "0x005670",
     "bytes": "30AE000C",
     "mnemonic": "MOVE"
   },
   "0x00566E": {
-    "block_start": "0x005660",
-    "block_end": "0x005670",
     "bytes": "4E75",
     "mnemonic": "RTS"
   }

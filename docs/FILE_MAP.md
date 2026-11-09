@@ -4237,3 +4237,13 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/run_m15_236_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.236 (M15.236).
 - tools/generate_m15_236_receipt.py — Authoritative receipt generator and verifier for M15.236 (M15.236).
 - data/thor-evidence/combined-clusters-qualification-m15-236-20261109.json — Verified machine evidence receipt for M15.236 (M15.236).
+- data/thor-fixtures/batch_recompiler_candidates_m15_237.json — Manifest of evaluated scheduler-safe leaf candidates from Scenario C profile (M15.237).
+- src/tools/hybrid/generated/m68k_recompiled_005660* — Machine-generated scheduler-safe recompiled routine for 0x005660..0x00566E (Slot 233, shadowed by 00557a) (M15.237).
+- src/tools/hybrid/generated/m68k_recompiled_006e7a* — Machine-generated scheduler-safe recompiled Event/System Flag Query Engine for 0x006E7A..0x006E84 (Slot 234, productive +153 steps) (M15.237).
+- src/tools/hybrid/generated/m68k_recompiled_062694* — Machine-generated scheduler-safe recompiled Sound Driver Attenuation Normalizer for 0x062694..0x0626BA (Slot 235, shadowed by 623ac) (M15.237).
+- src/tools/hybrid/generated/m68k_recompiled_062a78* — Machine-generated scheduler-safe recompiled Sound Driver Channel Pan Update for 0x062A78..0x062A96 (Slot 236, shadowed by 623ac) (M15.237).
+- tools/audit_m15_237_candidates.py — Candidate discovery, ownership screening, and Scenario C step profiler for M15.237 (M15.237).
+- tools/build_m15_237_runner.py — Linux qualification runner build harness for M15.237 (M15.237).
+- tools/run_m15_237_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.237 (M15.237).
+- tools/generate_m15_237_receipt.py — Authoritative receipt generator and verifier for M15.237 (M15.237).
+- data/thor-evidence/combined-clusters-qualification-m15-237-20261109.json — Verified machine evidence receipt for M15.237 (M15.237).

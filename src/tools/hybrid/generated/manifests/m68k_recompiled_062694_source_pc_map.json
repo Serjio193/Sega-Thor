@@ -1,31 +1,53 @@
 {
   "0x062694": {
-    "block_start": "0x062694",
-    "block_end": "0x0626A4",
     "bytes": "122E0017",
     "mnemonic": "MOVE"
   },
   "0x062698": {
-    "block_start": "0x062694",
-    "block_end": "0x0626A4",
     "bytes": "02010003",
     "mnemonic": "ANDI"
   },
   "0x06269C": {
-    "block_start": "0x062694",
-    "block_end": "0x0626A4",
     "bytes": "0C010003",
     "mnemonic": "CMPI"
   },
   "0x0626A0": {
-    "block_start": "0x062694",
-    "block_end": "0x0626A4",
     "bytes": "67000004",
     "mnemonic": "BEQ"
   },
   "0x0626A4": {
-    "block_start": "0x0626A4",
-    "block_end": "0x0626A6",
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  },
+  "0x0626A6": {
+    "bytes": "3200",
+    "mnemonic": "MOVE"
+  },
+  "0x0626A8": {
+    "bytes": "0200000F",
+    "mnemonic": "ANDI"
+  },
+  "0x0626AC": {
+    "bytes": "802D0004",
+    "mnemonic": "OR"
+  },
+  "0x0626B0": {
+    "bytes": "1680",
+    "mnemonic": "MOVE"
+  },
+  "0x0626B2": {
+    "bytes": "E849",
+    "mnemonic": "LSR"
+  },
+  "0x0626B4": {
+    "bytes": "0201003F",
+    "mnemonic": "ANDI"
+  },
+  "0x0626B8": {
+    "bytes": "1681",
+    "mnemonic": "MOVE"
+  },
+  "0x0626BA": {
     "bytes": "4E75",
     "mnemonic": "RTS"
   }

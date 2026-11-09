@@ -1,3 +1,46 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.237: Scheduler-Safe Batch Recompilation, Real Runtime Displacement and Interrupt-Boundary Validation; Explicit GPGX Register Architecture Isolation Verification D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17; Musashi Dynamic Shift Cycle Parity Verification `shift * 14` Master Clocks; Interrupt Boundary Cooperative Preemption and Resumption Stress Testing in tests/m68k_scheduler_safe_differential_test.cpp; Candidate Discovery & Selection from Scenario C Residual Profile in data/thor-fixtures/batch_recompiler_candidates_m15_237.json; Automated Compilation of 4 Candidate Routines: Slot 233 0x005660, Slot 234 0x006E7A, Slot 235 0x062694, and Slot 236 0x062A78; Differential Unit & Mutation Testing 100% Bit-Exact; Unified Linux Runner build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session, SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b; Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 0x006E7A: 51 Calls / 153 Steps in C, 29 Calls / 86 Steps in A, 17 Calls / 51 Steps in B (290 Native Steps Total); Identification of Production Helper Shadowing for Slots 233 by 00557a and Slots 235/236 by 623ac; Scenario C Combined Native Steps Reaching 6,591,268, Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps 1,306,369; Authoritative Machine Receipt Verified: combined-clusters-qualification-m15-237-20261109.json)
+
+## Milestone M15.237 Reverse Engineering Summary
+
+### Section 64: Scheduler-Safe Batch Candidates & Runtime Displacement Analysis
+
+#### 1. Routine 0x006E7A..0x006E84: Event / System Flag Query Engine (Slot 234)
+- **Original Address:** `0x006E7A` to `0x006E84` (3 instructions, 12 bytes).
+- **Subsystem:** Story Event & Quest State Flag Query Subsystem.
+- **Entry ABI:** Reads byte at `$00FF165F`.
+- **Logic:**
+  * `0x006E7A`: `BTST.B #4, $00FF165F` (checks bit 4 of story event flags in RAM).
+  * `0x006E82`: `BNE.S $006E86` (if flag is set, branches over RTS; otherwise falls through).
+  * `0x006E84`: `RTS`.
+- **Proven Callers:** `0x006DF0` (Primary scene coordinator / story trigger check).
+- **Runtime Performance:**
+  * Scenario C: 51 calls, 153 stepped native instructions, 0 faults.
+  * Scenario A: 29 calls, 86 stepped native instructions, 0 faults.
+  * Scenario B: 17 calls, 51 stepped native instructions, 0 faults.
+  * Total: 290 native instructions across all three scenarios.
+- **Status:** `RUNTIME_QUALIFIED_PRODUCTIVE`. Real native instruction displacement achieved.
+
+#### 2. Routine 0x005660..0x00566E: Palette Color Math Component Add / Saturate (Slot 233)
+- **Original Address:** `0x005660` to `0x00566E` (4 instructions, 16 bytes).
+- **Subsystem:** Palette Lighting & Color Math.
+- **Entry ABI:** `A6` = palette workspace. Reads word offsets `8(A6)` and `12(A6)`.
+- **Logic:** Adds component offsets into palette work RAM addresses `$FF1972` and `$FF1974`, then returns via `RTS` at `0x00566E`.
+- **Status:** `SEMANTICALLY_VERIFIED_SHADOWED`. Passed all 4 differential unit steps bit-exact. Identified as shadowed during authentic gameplay by production active helper `00557a` (`m68k_00557a_step_block2.cpp` case `0x005660U`).
+
+#### 3. Routine 0x062694..0x0626BA: Sound Driver Channel Attenuation Tail Normalizer (Slot 235)
+- **Original Address:** `0x062694` to `0x0626BA` (13 instructions, 38 bytes).
+- **Subsystem:** Audio Driver Channel Attenuation.
+- **Entry ABI:** `A6` = sound channel control block, `A5` = driver workspace, `A3` = hardware write register pointer.
+- **Logic:** Reads channel attenuation byte at `23(A6)`, masks lower 2 bits, compares with 3; if not equal, returns via early RTS at `0x0626A4` (2 calls in Scenario C); if equal, normalizes volume registers and returns at `0x0626BA` (20 calls in Scenario C).
+- **Status:** `SEMANTICALLY_VERIFIED_SHADOWED`. Recompiled and verified bit-exact. Shadowed during authentic gameplay by legacy production helper #12 (`623ac`).
+
+#### 4. Routine 0x062A78..0x062A96: Sound Driver Channel Pan Direct Register Update (Slot 236)
+- **Original Address:** `0x062A78` to `0x062A96` (8 instructions, 30 bytes).
+- **Subsystem:** Audio Driver Stereo Pan Engine.
+- **Entry ABI:** `A6` = channel block, `A5` = workspace, `D7` = pan flags.
+- **Logic:** Tests longword at `30(A6)`; if 0, branches to `0x062A98` (which invokes a BSR in sound driver). If non-zero and test bits match, moves address to `A0` and returns via RTS at `0x062A96`.
+- **Status:** `SEMANTICALLY_VERIFIED_SHADOWED`. In authentic gameplay, the branch to `0x062A98` is always taken (12 calls in Scenario C), and the routine is shadowed by legacy production helper #12 (`623ac`).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.236: Scheduler-Safe Automatic M68000 Recompilation; Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding; Elimination of Frame 381 Landmark Desynchronization; Musashi Dynamic Shift Cycle Accounting (+42 Master Clocks on LSL.W #3); Recompilation of Camera World Coordinate Normalizer 0x00D266..0x00D2B2 as Slot 230, Sound Modulation Strobe 0x062732 as Slot 231, and Sound Modulation Clamp 0x062722 as Slot 232; Candidate 0x00C012 Disqualified on Fallthrough; 100% Bit-Exact Differential Unit Parity; 24/24 Bit-Exact Streams Across Scenarios C, A, and B; 0 Contract Faults)
 
 ## Milestone M15.236 Reverse Engineering Summary

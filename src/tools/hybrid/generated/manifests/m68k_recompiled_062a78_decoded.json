@@ -1,0 +1,98 @@
+[
+  {
+    "pc": "0x062A78",
+    "mnemonic": "TST",
+    "size": "l",
+    "raw_words": [
+      "0x4AAE",
+      "0x001E"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062A7C",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x001A"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062A98"
+  },
+  {
+    "pc": "0x062A80",
+    "mnemonic": "BTST",
+    "size": "l",
+    "raw_words": [
+      "0x0807",
+      "0x001F"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062A84",
+    "mnemonic": "BNE",
+    "size": "w",
+    "raw_words": [
+      "0x6600",
+      "0x0012"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062A98"
+  },
+  {
+    "pc": "0x062A88",
+    "mnemonic": "BTST",
+    "size": "b",
+    "raw_words": [
+      "0x082D",
+      "0x0002",
+      "0x0000"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062A8E",
+    "mnemonic": "BNE",
+    "size": "w",
+    "raw_words": [
+      "0x6600",
+      "0x0008"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062A98"
+  },
+  {
+    "pc": "0x062A92",
+    "mnemonic": "MOVEA",
+    "size": "l",
+    "raw_words": [
+      "0x206E",
+      "0x001E"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062A96",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

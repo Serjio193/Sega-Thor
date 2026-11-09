@@ -108,8 +108,25 @@ inline void update_cmp_ccr_w(const M68k9D70StepApi& api, std::uint16_t d, std::u
     set_ccr(api, step_flags::sub_flags(d, s, static_cast<std::uint16_t>(r), get_ccr(api), false));
 }
 
+inline void update_btst_ccr(const M68k9D70StepApi& api, bool is_zero) noexcept {
+    const auto old = get_ccr(api);
+    set_ccr(api, is_zero ? static_cast<std::uint16_t>(old | 0x04U) : static_cast<std::uint16_t>(old & ~0x04U));
+}
+
 inline void update_shift_ccr_lsl_w(const M68k9D70StepApi& api, std::uint16_t old_d, unsigned shift, std::uint16_t val) noexcept {
     const std::uint8_t c_bit = static_cast<std::uint8_t>((old_d >> (16U - shift)) & 1U);
+    std::uint8_t new_ccr = (val == 0U ? 0x04U : (val & 0x8000U ? 0x08U : 0x00U)) | c_bit | (c_bit << 4U);
+    set_ccr(api, new_ccr);
+}
+
+inline void update_shift_ccr_lsr_w(const M68k9D70StepApi& api, std::uint16_t old_d, unsigned shift, std::uint16_t val) noexcept {
+    const std::uint8_t c_bit = static_cast<std::uint8_t>((old_d >> (shift - 1U)) & 1U);
+    std::uint8_t new_ccr = (val == 0U ? 0x04U : 0x00U) | c_bit | (c_bit << 4U);
+    set_ccr(api, new_ccr);
+}
+
+inline void update_shift_ccr_asr_w(const M68k9D70StepApi& api, std::uint16_t old_d, unsigned shift, std::uint16_t val) noexcept {
+    const std::uint8_t c_bit = static_cast<std::uint8_t>((old_d >> (shift - 1U)) & 1U);
     std::uint8_t new_ccr = (val == 0U ? 0x04U : (val & 0x8000U ? 0x08U : 0x00U)) | c_bit | (c_bit << 4U);
     set_ccr(api, new_ccr);
 }

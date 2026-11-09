@@ -102,6 +102,10 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             disp = struct.unpack_from(">h", rom, pc + 4)[0]
             words.append(disp & 0xFFFF)
             return DecodedInstruction(pc, words, mnemonic, "b", [Operand("imm", val=bit_num), Operand("disp_a", reg=dst_reg, val=disp, size="b")], base_cycles=12)
+        elif dst_mode == 7 and dst_reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + 4)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            return DecodedInstruction(pc, words, mnemonic, "b", [Operand("imm", val=bit_num), Operand("abs_l", val=addr, size="b")], base_cycles=16)
 
     # BRA / Bcc: 0x6000..0x6F00
     if (w0 & 0xF000) == 0x6000:

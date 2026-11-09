@@ -1,0 +1,34 @@
+{
+  "0x062A78": {
+    "bytes": "4AAE001E",
+    "mnemonic": "TST"
+  },
+  "0x062A7C": {
+    "bytes": "6700001A",
+    "mnemonic": "BEQ"
+  },
+  "0x062A80": {
+    "bytes": "0807001F",
+    "mnemonic": "BTST"
+  },
+  "0x062A84": {
+    "bytes": "66000012",
+    "mnemonic": "BNE"
+  },
+  "0x062A88": {
+    "bytes": "082D00020000",
+    "mnemonic": "BTST"
+  },
+  "0x062A8E": {
+    "bytes": "66000008",
+    "mnemonic": "BNE"
+  },
+  "0x062A92": {
+    "bytes": "206E001E",
+    "mnemonic": "MOVEA"
+  },
+  "0x062A96": {
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}
