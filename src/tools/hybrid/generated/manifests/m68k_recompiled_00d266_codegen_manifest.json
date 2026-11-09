@@ -1,0 +1,13 @@
+{
+  "name": "m68k_recompiled_00d266",
+  "entry_pc": "0x00D266",
+  "limit_pc": "0x00D2B2",
+  "execution_mode": "SCHEDULER_SAFE_STEP",
+  "instruction_count": 25,
+  "cpp_lines": 313,
+  "hpp_lines": 23,
+  "source_hashes": {
+    "m68k_recompiled_00d266.cpp": "83b2af36e59e8ad1db269cd190765e9039febda298d2f33467a3fe80395ad30a",
+    "m68k_recompiled_00d266.hpp": "cde1251eb66815628cbab7c0b3f4f291f969067ad19fc9055afba63fd60117cb"
+  }
+}

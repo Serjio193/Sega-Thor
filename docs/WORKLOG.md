@@ -1,3 +1,41 @@
+# 2026-11-09 — Milestone M15.236: SCHEDULER-SAFE AUTOMATIC M68000 RECOMPILATION — Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding, Landmark Parity Resolution, and First Qualified Recompiled Batch; Implementation of tools/thor_recompiler/codegen_step.py and src/tools/hybrid/generated/m68k_step_helpers.hpp; Elimination of Frame 381 Landmark Desynchronization Blocker Discovered in M15.235; Discovery and Resolution of Shift Dynamic Cycle Accounting (+42 Master Clocks on LSL.W #3 Matching Musashi's CYC_SHIFT); Resolution of GPGX Status Register Register Indexing (kRegSR = 17 vs kRegPC = 16); Recompilation and Qualification of Camera World Coordinate Normalizer 0x00D266..0x00D2B2 (Slot 230, 25 Insns), Sound Modulation Strobe 0x062732 (Slot 231, 4 Insns), and Sound Modulation Clamp 0x062722 (Slot 232, 6 Insns); Candidate 4 (0x00C012) Audited and Disqualified (DISQUALIFIED_FALLTHROUGH_INTO_00C038); 100% Bit-Exact Differential Unit Parity in tests/m68k_scheduler_safe_differential_test.cpp; Full Gameplay Replay Integration in Unified Linux Runner (build/auto-migrator/m15_236/linux-runner/oasis_gameplay_session, SHA256 1cd767c5287c270a6083ac19ef2dd712eb9d9cf2c4e86e8b24e182cb1b333727); Three-Scenario A/B Verification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Positive Measured Dynamic Native Instruction Displacement (+1,944 Steps in Scenario C, Total Combined Native Steps Reaching 6,591,115, Raw Native Coverage 37.390%, Non-Idle Coverage 83.457%, Remaining Interpreted Steps 1,306,522); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-232 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Baseline Verification:
+    - Confirmed baseline commit c6aed5078bc4bc75bf0fb80e493feaef2af783b6 (M15.235).
+    - Production helper active inventory strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+    - Pinned core SHA256 ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134, canonical ROM SHA256 eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+    - Verified baseline metrics: 6,589,171 native steps in Scenario C (37.379% raw, 83.432% non-idle, 1,308,466 remaining non-idle interpreted steps).
+  * Phase 1 & 2: Scheduler-Safe Recompiler Architecture & Toolchain Implementation:
+    - Developed `tools/thor_recompiler/codegen_step.py` (314 lines <= 500) and `src/tools/hybrid/generated/m68k_step_helpers.hpp` (119 lines <= 500).
+    - Created instruction-level stepper architecture: translates basic blocks into per-instruction cases executing `prepare_step`, `api.begin_instruction`, `api.observe_instruction`, memory/register mutations, CCR calculation, `api.add_cycles`, and `complete_step` with `api.finish_instruction`, yielding to the GPGX scheduler per instruction.
+    - Updated `tools/thor_recompiler/main.py` (289 lines <= 500) with `--mode scheduler_safe` and `--batch-manifest` CLI flags.
+  * Phase 3: Candidate Selection, Auditing & Disqualification:
+    - Candidate 1: `0x00D266..0x00D2B2` (`m68k_recompiled_00d266`, 25 instructions, camera map coordinate normalizer).
+    - Candidate 2: `0x062732..0x062738` (`m68k_recompiled_062732`, 4 instructions, sound modulation strobe).
+    - Candidate 3: `0x062722..0x062730` (`m68k_recompiled_062722`, 6 instructions, sound modulation clamp).
+    - Candidate 4: `0x00C012..0x00C036` audited and **disqualified** (`DISQUALIFIED_FALLTHROUGH_INTO_00C038`) due to conditional BEQ match branching into subsequent subroutine rather than returning via RTS.
+  * Phase 4: Differential Unit Testing:
+    - Implemented `tests/m68k_scheduler_safe_differential_test.cpp` (265 lines <= 500) and build script `tools/build_scheduler_safe_differential_test.py`.
+    - Tested Candidate 1 across taken, untaken, and negative coordinate wrap conditions (100% bit-exact).
+    - Tested Candidates 2 and 3 across all branch cases (100% bit-exact).
+  * Phase 5: GPGX Scheduler & Timing Forensics:
+    - Identified that GPGX register 16 is Program Counter (PC) and register 17 is Status Register (SR); fixed CCR access in `m68k_step_helpers.hpp`.
+    - Identified cycle timing drift at Frame 1130: Musashi's static `CYC_INSTRUCTION` table only captures base opcode cycles (6 M68K cycles); variable shift cost (`3 * 14 = 42` master clocks) was missing on `LSL.W #3, D6`. Added dynamic shift term `{shift_val * 14}` to `codegen_step.py`.
+    - Recompiled Linux runner (`oasis_gameplay_session`, SHA256 `1cd767c5287c270a6083ac19ef2dd712eb9d9cf2c4e86e8b24e182cb1b333727`).
+  * Phase 6: Three-Scenario Differential Qualification (24/24 Raw Streams):
+    - Executed differential qualification across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames).
+    - All 24 raw streams match 100% bit-exact (8/8 in C, 8/8 in A, 8/8 in B). Zero contract faults.
+    - Verified new native execution: Slot 230 (`0x00D266`) executed 114 native calls, 114 completed calls, 0 fallbacks, 1,944 stepped native instructions.
+    - Total Scenario C combined native steps increased from 6,589,171 to 6,591,115 (+1,944).
+    - Raw native dynamic coverage reached 37.390% (up from 37.379%); non-idle dynamic coverage reached 83.457% (up from 83.432%). Remaining non-idle interpreted steps reduced to 1,306,522.
+  * Phase 7: Authoritative Qualification Receipt:
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-236-20261109.json`.
+    - Verified with `ReceiptVerifier`: `overall_valid = true`, `files_checked: 58, files_valid: 58`, `stream_artifact_count: 48, stream_artifacts_valid: 48`.
+    - Preserved `0x003820` multi-frame decompressor quarantine.
+    - Governed file limit check passed (2,335 files <= 500 lines). `git diff --check` green.
+    - Standalone worktree confirmed untouched (STRICTLY READ-ONLY).
+
 # 2026-11-09 — Milestone M15.235: AUTOMATED M68000 BATCH RECOMPILATION AND DIFFERENTIAL QUALIFICATION — Scalable Unattended M68000 to C++20 Batch Recompiler Toolchain (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py, supported_opcodes.json); Automated Compilation of 9 Independent ROM Functions (data/thor-fixtures/batch_recompiler_candidates_m15_235.json Totaling 104,129 Scenario C Steps); Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated Translation Unit (AGENTS.md Rule 3); Exact Multi-Function Differential Verification and Mutation Testing (tests/m68k_batch_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, CCR Flags, Stack Pop, and Return PC); Exclusive Ownership Screening and Identification of Nested Subroutine Ownership Collisions (Sound Driver 0x062000..0x062FFF vs Legacy Helper #12 623ac; 0x005660 vs 00557a); Architectural Analysis of GPGX Landmark Parity Constraint (Atomic Multi-Instruction Hook Skips Intermediate Fetch Callbacks; Recompiled Subroutines Require Instruction-Step Decomposition for Landmark Parity); Experimental Batch Slots Quarantined from Atomic Gameplay Stepping; Three-Scenario A/B Verification Across Scenarios C, A, and B (24/24 Raw Streams Bit-Exact, 3,992 Frames Total); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-238 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
 
 - **Concrete Task & Acceptance Criteria:**

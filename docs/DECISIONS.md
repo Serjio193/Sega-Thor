@@ -1,3 +1,45 @@
+# ADR-20261109-M15-236-SCHEDULER-SAFE-AUTOMATIC-M68000-RECOMPILATION — Scheduler-Safe Automatic M68000 Recompiler Architecture; Fine-Grained Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding; Resolution of Intermediate Landmark Telemetry Divergence (Frame 381 Desync); Musashi Dynamic Shift Cycle Accounting (+42 Master Clocks on LSL.W #3); Correct GPGX SR Indexing (kRegSR = 17); Qualification of Recompiled Camera Coordinate Normalizer 0x00D266..0x00D2B2 (Slot 230), Sound Modulation Direct Strobe 0x062732 (Slot 231), and Sound Modulation Threshold Clamp 0x062722 (Slot 232); Candidate 0x00C012 Audited and Disqualified (DISQUALIFIED_FALLTHROUGH_INTO_00C038); Three-Scenario 24/24 Bit-Exact Qualification; +1,944 Measured Incremental Native Steps in Scenario C (Total Combined Native Steps Reaching 6,591,115, Raw Dynamic Coverage 37.390%, Non-Idle Coverage 83.457%); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. M15.235 successfully recompiled 9 M68000 subroutines using an automated batch compiler. However, all 9 were quarantined from gameplay execution due to:
+   a. **Landmark Counter Desynchronization:** GPGX's `observed-landmarks.jsonl` tracks execution via per-instruction fetch callbacks. Replacing a multi-instruction subroutine atomically in a single hook call skips intermediate instruction callbacks, diverging at Frame 381.
+   b. **Interrupt Boundary Safety:** Multi-instruction atomic routines do not yield to the GPGX scheduler during instruction execution, potentially desynchronizing mid-routine VBlank and H-IRQ timers.
+   c. **Subroutine Fallthrough / Boundary Ownership:** Candidate subroutines must be verified for clean RTS return contracts without unexpected fallthrough into adjacent routines.
+2. M15.236 targeted developing a general scheduler-safe recompilation mode (`SCHEDULER_SAFE_STEP`) that emits instruction-level steppers with `prepare_step`, `begin_instruction`, `complete_step`, `finish_instruction`, and `step_rts`, cooperatively yielding control to the GPGX scheduler per instruction.
+3. 4 candidate subroutines were evaluated in `data/thor-fixtures/batch_recompiler_candidates_m15_236.json`:
+   - `0x00D266..0x00D2B2`: Camera World Coordinate Map Normalizer (25 instructions).
+   - `0x062732..0x062738`: Sound Modulation Direct Strobe (4 instructions).
+   - `0x062722..0x062730`: Sound Modulation Threshold Clamp (6 instructions).
+   - `0x00C012..0x00C036`: Sprite table parser (13 instructions).
+4. Candidate 4 (`0x00C012`) was disqualified because on matching conditions its `BEQ` branches into `0x00C038` (the subsequent routine) rather than returning via `RTS`.
+5. Candidates 1, 2, and 3 were successfully generated via `tools/thor_recompiler/codegen_step.py` and validated with 100% bit-exact register/memory/CCR parity in `tests/m68k_scheduler_safe_differential_test.cpp`.
+6. During full replay integration, two critical timing and register indexing forensics discoveries were made:
+   a. **GPGX Register Indexing:** In GPGX's Musashi bridge, register 16 is Program Counter (`m68k.pc`) and register 17 is Status Register (`m68k.sr`). Indexing 16 for CCR read/wrote the low byte of PC. Correcting `kRegSR = 17` resolved CCR flag corruption.
+   b. **Musashi Dynamic Shift Cycles:** Musashi's static `CYC_INSTRUCTION` table only captures base opcode cycles (6 M68K cycles = 42 master clocks). The variable shift cost (`shift_count * CYC_SHIFT = 3 * 14 = 42` master clocks) is dynamically added in Musashi. Missing this dynamic term caused an 84-clock cycle drift per call, crossing a frame boundary at Frame 1130. Adding `{shift_val * 14}` to `complete_step` cycle adjustment restored 100% bit-exact landmark alignment.
+
+**Decision:**
+1. **Scheduler-Safe Instruction Stepper Mode:**
+   - Standardize `tools/thor_recompiler/codegen_step.py` emitting per-instruction cases with cooperative yielding via `prepare_step` and `complete_step`.
+2. **Cycle Accounting Contract:**
+   - Account for Musashi variable shift cycles dynamically via `{shift_val * 14}` master clocks in `complete_step`.
+3. **Disqualification Protocol:**
+   - Explicitly disqualify routines that fall through or branch into adjacent subroutines without returning via RTS (`0x00C012`).
+4. **Three-Scenario Differential Qualification:**
+   - Execute differential qualification across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames).
+   - Confirm all 24 raw streams bit-exact with 0 contract faults.
+5. **Standalone Worktree Integrity:**
+   - Maintain `C:/Github/Sega-Thor-Standalone` strictly READ-ONLY.
+
+**Consequences:**
+- Frame 381 landmark desynchronization blocker is permanently solved.
+- Recompiled M68000 code now executes natively inside the authentic GPGX scheduler loop with instruction-level landmark telemetry.
+- Slot 230 (`0x00D266`) displaces +1,944 genuine native instructions during authentic gameplay in Scenario C.
+- Combined Scenario C native instructions reach 6,591,115 (37.390% raw dynamic coverage, 83.457% non-idle dynamic coverage, 1,306,522 remaining non-idle interpreted steps).
+- Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slots 222-232 default disabled (`ORACLE_OWNER_APPROVAL = PENDING`).
+- All governed source files strictly <= 500 lines.
+
 # ADR-20261109-M15-235-AUTOMATED-M68000-BATCH-RECOMPILATION — Scalable Unattended M68000 to C++20 Batch Recompilation Toolchain; Generation of 9 Independent ROM Functions (104,129 Dynamic Steps in Scenario C); Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated File; Multi-Function Differential Verification and Mutation Testing (tests/m68k_batch_differential_test.cpp); Exclusive Ownership Screening and Identification of Nested Subroutine Collisions; Architectural Discovery of GPGX Landmark Instruction-Stepping Requirement (Atomic Subroutine Replacement Desynchronizes Instruction Counters in Landmark Artifacts); Experimental Batch Slots Quarantined from Atomic Gameplay Stepping; Three-Scenario Differential Qualification (24/24 Bit-Exact Streams); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
 **Status:** Accepted
 **Date:** 2026-11-09

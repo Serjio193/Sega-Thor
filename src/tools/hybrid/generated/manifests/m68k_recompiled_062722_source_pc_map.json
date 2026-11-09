@@ -1,0 +1,26 @@
+{
+  "0x062722": {
+    "bytes": "0C0700E0",
+    "mnemonic": "CMPI"
+  },
+  "0x062726": {
+    "bytes": "67000008",
+    "mnemonic": "BEQ"
+  },
+  "0x06272A": {
+    "bytes": "701F",
+    "mnemonic": "MOVEQ"
+  },
+  "0x06272C": {
+    "bytes": "8007",
+    "mnemonic": "OR"
+  },
+  "0x06272E": {
+    "bytes": "1680",
+    "mnemonic": "MOVE"
+  },
+  "0x062730": {
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

@@ -4225,3 +4225,15 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/run_m15_235_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.235 (M15.235).
 - tools/generate_m15_235_receipt.py — Authoritative receipt generator and verifier for M15.235 (M15.235).
 - data/thor-evidence/combined-clusters-qualification-m15-235-20261109.json — Verified machine evidence receipt for M15.235 (M15.235).
+- tools/thor_recompiler/codegen_step.py — Instruction-level C++20 scheduler-safe stepper generator with cooperative GPGX scheduler yielding and dynamic shift cycle accounting (M15.236).
+- src/tools/hybrid/generated/m68k_step_helpers.hpp — Common scheduler-safe step helpers (read_be, branch_to, prepare_step, complete_step, step_rts, CCR updates) (M15.236).
+- data/thor-fixtures/batch_recompiler_candidates_m15_236.json — Manifest of evaluated and qualified scheduler-safe recompiler candidate subroutines (M15.236).
+- src/tools/hybrid/generated/m68k_recompiled_00d266* — Scheduler-safe recompiled camera world coordinate normalizer routine for 0x00D266..0x00D2B2 (Slot 230) (M15.236).
+- src/tools/hybrid/generated/m68k_recompiled_062732* — Scheduler-safe recompiled sound modulation direct strobe for 0x062732..0x062738 (Slot 231) (M15.236).
+- src/tools/hybrid/generated/m68k_recompiled_062722* — Scheduler-safe recompiled sound modulation threshold clamp for 0x062722..0x062730 (Slot 232) (M15.236).
+- tests/m68k_scheduler_safe_differential_test.cpp — Independent differential test suite for scheduler-safe instruction-stepped routines (M15.236).
+- tools/build_scheduler_safe_differential_test.py — Build and execution harness for scheduler-safe differential tests (M15.236).
+- tools/build_m15_236_runner.py — Linux qualification runner build harness for M15.236 (M15.236).
+- tools/run_m15_236_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.236 (M15.236).
+- tools/generate_m15_236_receipt.py — Authoritative receipt generator and verifier for M15.236 (M15.236).
+- data/thor-evidence/combined-clusters-qualification-m15-236-20261109.json — Verified machine evidence receipt for M15.236 (M15.236).

@@ -1,0 +1,13 @@
+{
+  "name": "m68k_recompiled_062732",
+  "entry_pc": "0x062732",
+  "limit_pc": "0x062738",
+  "execution_mode": "SCHEDULER_SAFE_STEP",
+  "instruction_count": 4,
+  "cpp_lines": 87,
+  "hpp_lines": 23,
+  "source_hashes": {
+    "m68k_recompiled_062732.cpp": "8a1e1586af5b0d1d48a7a209ba15c0ca3ca121cd15c61f5d98e64acd65db0224",
+    "m68k_recompiled_062732.hpp": "b7058584a1db5f99f2b92ea8c0f1e2ef7f80abe24dcbe1ffcf7da5409c22a302"
+  }
+}

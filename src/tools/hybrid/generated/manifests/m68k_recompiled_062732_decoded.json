@@ -1,0 +1,46 @@
+[
+  {
+    "pc": "0x062732",
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "raw_words": [
+      "0x701F"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062734",
+    "mnemonic": "OR",
+    "size": "b",
+    "raw_words": [
+      "0x8007"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062736",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1680"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062738",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

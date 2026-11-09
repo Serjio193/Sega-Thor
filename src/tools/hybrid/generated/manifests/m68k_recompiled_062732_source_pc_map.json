@@ -1,0 +1,18 @@
+{
+  "0x062732": {
+    "bytes": "701F",
+    "mnemonic": "MOVEQ"
+  },
+  "0x062734": {
+    "bytes": "8007",
+    "mnemonic": "OR"
+  },
+  "0x062736": {
+    "bytes": "1680",
+    "mnemonic": "MOVE"
+  },
+  "0x062738": {
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

@@ -1,0 +1,70 @@
+[
+  {
+    "pc": "0x062722",
+    "mnemonic": "CMPI",
+    "size": "b",
+    "raw_words": [
+      "0x0C07",
+      "0x00E0"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062726",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x0008"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062730"
+  },
+  {
+    "pc": "0x06272A",
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "raw_words": [
+      "0x701F"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06272C",
+    "mnemonic": "OR",
+    "size": "b",
+    "raw_words": [
+      "0x8007"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06272E",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1680"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062730",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

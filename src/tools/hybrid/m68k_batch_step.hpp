@@ -14,16 +14,10 @@ struct BatchStepMetrics {
     std::uint64_t stepped_instructions{};
 };
 
-// Experimental Slots 230..238
-M68k9D70StepResult step_m68k_062610(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_005660(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_062986(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_06293a(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_062900(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_0626a6(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_062a24(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_062694(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
-M68k9D70StepResult step_m68k_0629ee(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
+// Scheduler-Safe Experimental Slots 230..232
+M68k9D70StepResult step_m68k_batch_00d266(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
+M68k9D70StepResult step_m68k_batch_062732(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
+M68k9D70StepResult step_m68k_batch_062722(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
 
 void write_batch_step_metrics(const std::filesystem::path& parent_dir);
 void reset_batch_step_metrics() noexcept;

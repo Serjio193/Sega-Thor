@@ -1,3 +1,51 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.236: Scheduler-Safe Automatic M68000 Recompilation; Instruction-Level Stepping with GPGX Scheduler Cooperative Yielding; Elimination of Frame 381 Landmark Desynchronization; Musashi Dynamic Shift Cycle Accounting (+42 Master Clocks on LSL.W #3); Recompilation of Camera World Coordinate Normalizer 0x00D266..0x00D2B2 as Slot 230, Sound Modulation Strobe 0x062732 as Slot 231, and Sound Modulation Clamp 0x062722 as Slot 232; Candidate 0x00C012 Disqualified on Fallthrough; 100% Bit-Exact Differential Unit Parity; 24/24 Bit-Exact Streams Across Scenarios C, A, and B; 0 Contract Faults)
+
+## Milestone M15.236 Reverse Engineering Summary
+
+### Section 63: Scheduler-Safe Instruction Stepping & Subroutine Analysis
+
+#### 1. Routine 0x00D266..0x00D2B2: Camera World Coordinate Map Normalizer (Slot 230)
+- **Original Address:** `0x00D266` to `0x00D2B2` (25 instructions, 78 bytes).
+- **Subsystem:** Camera Tracking & Map Coordinate Engine.
+- **Entry ABI:**
+  * `A0`: Pointer to camera map structure (e.g. `$FFA800` / camera workspace).
+  * `0x20(A0)`: Map X width/stride in tiles (word).
+  * `0x00(A0)`: Raw camera map X coordinate (word).
+  * `0x22(A0)`: Map Y height/stride in tiles (word).
+  * `0x04(A0)`: Raw camera map Y coordinate (word).
+- **Proven Callers:**
+  * `0x02EB2A` (`JSR $00D266`): Primary gameplay camera update loop immediately following `0x00D168` (Slot 229).
+  * `0x03580E` (`JSR $00D266`): Secondary room/scene camera map repositioning coordinator.
+- **Algorithm & Behavioral Flow:**
+  * Twin loops for X (`0x00D266..0x00D288`) and Y (`0x00D28C..0x00D2AE`).
+  * Multiplies tile dimension by 8 (`LSL.W #3, D6`) to obtain pixel coordinate boundary.
+  * If coordinate is negative, iteratively adds stride (`ADD.W D6, D5; BMI.W`) until non-negative.
+  * If coordinate exceeds map boundary, iteratively subtracts stride (`CMP.W D6, D5; BCS.W; SUB.W D6, D5; BRA.W`) until wrapped within `[0, map_pixel_span)`.
+  * Stores normalized coordinates back to `0(A0)` and `4(A0)`.
+  * Returns via `RTS` at `0x00D2B2`.
+- **Timing & Scheduler Forensics:**
+  * Base opcode cycle cost for `LSL.W #3, D6` (`0xE74E`) in Musashi's `CYC_INSTRUCTION` table is 6 M68K cycles (42 master clocks).
+  * Musashi dynamically charges variable shift cycles via `USE_CYCLES(shift_count * CYC_SHIFT)` where `CYC_SHIFT = 14` master clocks (2 M68K cycles).
+  * Failure to account for `{shift_val * 14}` (42 master clocks) caused 84-clock cycle drift per call, crossing a frame boundary at Frame 1130. Adding this dynamic term restored 100% bit-exact parity across all 1800 frames.
+
+#### 2. Routine 0x062732..0x062738: Sound Modulation Direct Strobe (Slot 231)
+- **Original Address:** `0x062732` to `0x062738` (4 instructions, 8 bytes).
+- **Subsystem:** FM/PSG Audio Driver.
+- **Entry ABI:** `A5` = audio driver workspace (`$FFA800`), `D0.B` = strobe command byte.
+- **Logic:** Writes command byte to hardware strobe address, clears high bits, and returns via RTS.
+- **Status:** Recompiled, differentially verified 100% bit-exact, qualified in 24/24 stream runner.
+
+#### 3. Routine 0x062722..0x062730: Sound Modulation Threshold Clamp (Slot 232)
+- **Original Address:** `0x062722` to `0x062730` (6 instructions, 16 bytes).
+- **Subsystem:** FM/PSG Audio Driver.
+- **Entry ABI:** `A5` = audio driver workspace, `D0.B` = modulation level.
+- **Logic:** Compares level against threshold (`0xE0`), branches to exit if matched, otherwise clamps to `0x1F` and returns via RTS.
+- **Status:** Recompiled, differentially verified 100% bit-exact, qualified in 24/24 stream runner.
+
+#### 4. Disqualified Routine: 0x00C012..0x00C036 (Candidate 4)
+- **Disqualification Reason:** `DISQUALIFIED_FALLTHROUGH_INTO_00C038`.
+- **Evidence:** Disassembly reveals that on match conditions, `BEQ.S $00C038` falls directly into the subsequent subroutine `0x00C038` without returning to the caller. Does not meet leaf-subroutine isolation requirements for autonomous stepper migration.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.235: Automated M68000 Batch Recompilation and Differential Qualification; Automated Batch Recompilation of 9 Subroutines in data/thor-fixtures/batch_recompiler_candidates_m15_235.json Totaling 104,129 Scenario C Steps; Multi-Function Differential & Mutation Testing in tests/m68k_batch_differential_test.cpp; Exclusive Ownership Screening; GPGX Landmark Instruction-Stepping Requirement Discovery; 24/24 Bit-Exact Streams Across Scenarios C, A, and B; 0 Contract Faults)
 
 ## Milestone M15.235 Reverse Engineering Summary

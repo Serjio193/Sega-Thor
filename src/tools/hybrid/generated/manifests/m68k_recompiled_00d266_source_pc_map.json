@@ -1,0 +1,102 @@
+{
+  "0x00D266": {
+    "bytes": "3C280020",
+    "mnemonic": "MOVE"
+  },
+  "0x00D26A": {
+    "bytes": "E74E",
+    "mnemonic": "LSL"
+  },
+  "0x00D26C": {
+    "bytes": "3A280000",
+    "mnemonic": "MOVE"
+  },
+  "0x00D270": {
+    "bytes": "4A45",
+    "mnemonic": "TST"
+  },
+  "0x00D272": {
+    "bytes": "6A000008",
+    "mnemonic": "BPL"
+  },
+  "0x00D276": {
+    "bytes": "DA46",
+    "mnemonic": "ADD"
+  },
+  "0x00D278": {
+    "bytes": "6B00FFFC",
+    "mnemonic": "BMI"
+  },
+  "0x00D27C": {
+    "bytes": "BA46",
+    "mnemonic": "CMP"
+  },
+  "0x00D27E": {
+    "bytes": "65000008",
+    "mnemonic": "BCS"
+  },
+  "0x00D282": {
+    "bytes": "9A46",
+    "mnemonic": "SUB"
+  },
+  "0x00D284": {
+    "bytes": "6000FFF6",
+    "mnemonic": "BRA"
+  },
+  "0x00D288": {
+    "bytes": "31450000",
+    "mnemonic": "MOVE"
+  },
+  "0x00D28C": {
+    "bytes": "3C280022",
+    "mnemonic": "MOVE"
+  },
+  "0x00D290": {
+    "bytes": "E74E",
+    "mnemonic": "LSL"
+  },
+  "0x00D292": {
+    "bytes": "3A280004",
+    "mnemonic": "MOVE"
+  },
+  "0x00D296": {
+    "bytes": "4A45",
+    "mnemonic": "TST"
+  },
+  "0x00D298": {
+    "bytes": "6A000008",
+    "mnemonic": "BPL"
+  },
+  "0x00D29C": {
+    "bytes": "DA46",
+    "mnemonic": "ADD"
+  },
+  "0x00D29E": {
+    "bytes": "6B00FFFC",
+    "mnemonic": "BMI"
+  },
+  "0x00D2A2": {
+    "bytes": "BA46",
+    "mnemonic": "CMP"
+  },
+  "0x00D2A4": {
+    "bytes": "65000008",
+    "mnemonic": "BCS"
+  },
+  "0x00D2A8": {
+    "bytes": "9A46",
+    "mnemonic": "SUB"
+  },
+  "0x00D2AA": {
+    "bytes": "6000FFF6",
+    "mnemonic": "BRA"
+  },
+  "0x00D2AE": {
+    "bytes": "31450004",
+    "mnemonic": "MOVE"
+  },
+  "0x00D2B2": {
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}
