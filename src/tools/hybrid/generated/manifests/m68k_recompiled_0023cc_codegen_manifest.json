@@ -1,0 +1,42 @@
+{
+  "name": "m68k_recompiled_0023cc",
+  "entry_pc": "0x0023CC",
+  "limit_pc": "0x002510",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_0023cc_p0.hpp",
+    "m68k_recompiled_0023cc_p0.cpp",
+    "m68k_recompiled_0023cc_p1.hpp",
+    "m68k_recompiled_0023cc_p1.cpp",
+    "m68k_recompiled_0023cc_p2.hpp",
+    "m68k_recompiled_0023cc_p2.cpp",
+    "m68k_recompiled_0023cc_p3.hpp",
+    "m68k_recompiled_0023cc_p3.cpp",
+    "m68k_recompiled_0023cc_p4.hpp",
+    "m68k_recompiled_0023cc_p4.cpp",
+    "m68k_recompiled_0023cc_p5.hpp",
+    "m68k_recompiled_0023cc_p5.cpp",
+    "m68k_recompiled_0023cc.hpp",
+    "m68k_recompiled_0023cc.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_0023cc_p0.hpp": "b5dedb2352609afde0de76832532e385a46856f03d2d6fcb7dd731a6ce8bf26f",
+    "m68k_recompiled_0023cc_p0.cpp": "0fa931b9e4e26e9557b3e3ef91bf167bfe5927cc844908f68c901da1c961140c",
+    "m68k_recompiled_0023cc_p1.hpp": "ec1091df539a3fc4fff61bc4828f5d49b83c052f8891d7d82e0d2bd250300fdc",
+    "m68k_recompiled_0023cc_p1.cpp": "3365f91239f866378885340c767436a88b6c590acedfd3debd0b81b7bba7d869",
+    "m68k_recompiled_0023cc_p2.hpp": "b0beb101b6bc7f65cb7b76b9c6cbebf2f60c59ce43062cca2ed65005002dd727",
+    "m68k_recompiled_0023cc_p2.cpp": "5bab712ceeecf1c727fd2231109811e7e3b0740043efb5f0901720b7250d57da",
+    "m68k_recompiled_0023cc_p3.hpp": "6ca7ff763e6db6e348b872a36eea965387bd3a561c2bb55ff888fa1c59388373",
+    "m68k_recompiled_0023cc_p3.cpp": "e4a157ac0262c8e366ffa7b0803101f0a263ffacf911b92f0b3c83b8526ca6c3",
+    "m68k_recompiled_0023cc_p4.hpp": "53eee908a97b6d48cd3d5c39638cd3e41fe2d91526cf8a624db961e247d189ee",
+    "m68k_recompiled_0023cc_p4.cpp": "60750de01d6ec70b46e6ef35e01ef303560d2f1421c2dd0e3035e8ab5611273d",
+    "m68k_recompiled_0023cc_p5.hpp": "09516502fa93e0b4a9937d860502f148be9eb4a211ef24b3ea20ee98e0ca85d1",
+    "m68k_recompiled_0023cc_p5.cpp": "a30c36696486204f61bfe3cafe2713517902865624642cb82f435a48d76a05ed",
+    "m68k_recompiled_0023cc.hpp": "4d73862dce25c497da2190270b2f1b7ce6229ad5729fa869bb5ff4aa3cb6eefb",
+    "m68k_recompiled_0023cc.cpp": "d86945b4d3d6f9b0799e0c37b0a25caae5417b04f49ce90efcf5a1d2117fb582"
+  },
+  "block_count": 16,
+  "instruction_count": 108
+}

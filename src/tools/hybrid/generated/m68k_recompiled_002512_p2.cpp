@@ -1,4 +1,4 @@
-#include "tools/hybrid/generated/m68k_recompiled_002512_left.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_002512_p2.hpp"
 
 namespace oasis::hybrid::generated {
 
@@ -35,7 +35,7 @@ inline void update_logic_ccr16(const M68k9D70StepApi& api, std::uint16_t val) no
 }
 } // namespace
 
-unsigned m68k_recompiled_002512_left(const M68k9D70StepApi& api, unsigned block_pc, unsigned& resume_pc) noexcept {
+unsigned m68k_recompiled_002512_p2(const M68k9D70StepApi& api, unsigned block_pc, unsigned& resume_pc) noexcept {
     switch (block_pc) {
     case 0x002596U: {
         // 0x002596: MOVE.w [322B000C]

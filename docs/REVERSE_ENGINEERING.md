@@ -1,3 +1,86 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.234: Automated M68000 Recompiler Generalization; Independent Multi-Function Translation of Target A 0x002512, Target B 0x0023CC, Target C 0x00D168; Dynamic Sub-Function Partitioning <= 500 Lines; Differential Proof & Mutation Testing; Tilemap Camera Tracking Engine 0x00D168 Integrated as Native Slot 229; 6,589,171 Native Steps in Scenario C / 37.379% Raw / 83.432% Non-Idle; 24/24 Bit-Exact Streams)
+
+## Milestone M15.234 Reverse Engineering Summary
+
+### 1. Tilemap Camera Scroll Tracking & Budget Engine (`0x00D168..0x00D264`) Subsystem Characterization
+- **Routine Boundaries:** `0x00D168` to `0x00D264` (75 instructions, 22 basic blocks, 252 bytes).
+- **Subsystem Function:** Tilemap Camera Scroll Tracking & Budget Engine — responsible for updating high-precision 32-bit camera coordinates (`0(A0)` and `4(A0)`), calculating displacement deltas (`$12(A0)` and `$14(A0)`), detecting tile boundary crossings via `ASR.W #3`, computing word budgets for column and row uploads (`$1C(A0)` and `$1E(A0)`), and triggering tilemap streaming flags (`BSET #0, $26(A0)` for column uploads and `BSET #1, $26(A0)` for row uploads).
+- **Observed Callers in ROM:**
+  * Called from `0x02EB24` (`JSR $00D168`) within the primary gameplay frame coordinator (`0x02EB14..0x02EB80`).
+- **Register ABI Contract:**
+  * Entry:
+    - `A0`: Pointer to camera context structure in RAM (canonically `$FF1700`).
+    - `D1`: Signed 16-bit horizontal movement delta.
+    - `D2`: Signed 16-bit vertical movement delta.
+    - Stack: Caller return address (`$02EB2A`) pushed on SP.
+  * Internal Execution Paths:
+    - Path 1: Update Enabled Check (`TST.B $24(A0)` -> `BEQ` exit). If camera updates are disabled, the routine exits immediately.
+    - Path 2: Coordinate Integration: Adds `D1` and `D2` to 32-bit position fields at `0(A0)` and `4(A0)`.
+    - Path 3: Horizontal Sub-Tile Boundary Check: Shifts accumulated coordinate delta right by 3 (`ASR.W #3, D1`), tests if tile boundary is crossed. If crossed, updates tile tracking index, calculates upload budget in `$1C(A0)`, and asserts column streaming trigger bit `0` in byte `$26(A0)` via `BSET #0, $26(A0)`.
+    - Path 4: Vertical Sub-Tile Boundary Check: Shifts accumulated coordinate delta right by 3 (`ASR.W #3, D2`), tests tile boundary. If crossed, updates tile tracking index, calculates upload budget in `$1E(A0)`, and asserts row streaming trigger bit `1` in byte `$26(A0)` via `BSET #1, $26(A0)`.
+    - Exit (`0x00D264`): `RTS` returning control to `$02EB2A`.
+  * Child Subroutines: 0 (completely self-contained; leaf calculation function).
+  * Frame Boundaries: 0 (synchronous execution within single frame).
+
+### 2. General Recompiler Architecture & Dynamic Budget Partitioning
+- **Instruction Budget Partitioning:**
+  * To guarantee AGENTS.md Rule 3 ($\le 500$ lines per generated source file) across arbitrarily large functions, the code generator (`tools/thor_recompiler/codegen_cpp.py`) clusters basic blocks dynamically using an instruction budget threshold ($\le 24$ instructions per partition).
+  * Generates a primary entry/dispatcher header/source (`m68k_recompiled_<addr>.hpp/.cpp`) and partitioned sub-functions (`m68k_recompiled_<addr>_p0.cpp`, `p1.cpp`, etc.).
+  * Every generated translation unit stays under 300 lines (well below the 500-line limit).
+- **Expanded Instruction Coverage:**
+  * Cataloged in machine-readable manifest `tools/thor_recompiler/supported_opcodes.json`.
+  * Added decoding and full C++20 emission for: `BTST` (immediate and register), `BSET` (immediate and register), `CLR.W`, `NEG.W`, `ASR.W`, byte-sized memory addressing, and complete arithmetic CCR updates (N, Z, V, C, X).
+
+### 3. Differential Verification & Mutation Qualification
+- **Differential Test Harness (`tests/m68k_target_c_differential_test.cpp`):**
+  * Evaluated across 7 authentic runtime test scenarios:
+    1. Zero movement (stationary camera).
+    2. Sub-tile movement within 8x8 pixel boundary.
+    3. Column upload trigger (positive horizontal movement crossing 8-pixel tile boundary).
+    4. Row upload trigger (positive vertical movement crossing 8-pixel tile boundary).
+    5. Dual-axis trigger (diagonal movement crossing both boundaries).
+    6. Negative scroll direction (negative delta crossing boundary).
+    7. Update disabled state (`$24(A0) = 0`).
+  * Verified 100% bit-exact parity across registers D0-D7, A0-A7, RAM context mutations at `$FF1700`, and stack pop return PC `$02EB2A`.
+  * Mutation testing confirmed intentional RAM mutations at offset `$26` are immediately caught as mismatches.
+
+### 4. Dynamic Native Workload & Combined Coverage
+- **Scenario C (1,800 frames):**
+  * Target C (Slot 229): 114 entries, 114 completed native executions, 0 fallbacks.
+  * Displaced Native Steps: **+5,965 incremental guest instructions**.
+  * Total Combined Native Steps: **6,589,171 instructions**.
+  * Raw Dynamic Native Coverage: **37.379%** of all guest instructions (17,627,770).
+  * Non-Idle Dynamic Native Coverage: **83.432%** of active gameplay logic (7,897,637).
+  * Remaining Non-Idle Interpreter Workload: **1,308,466 instructions** (16.568%).
+  * Three-Scenario A/B Qualification: **24/24 bit-exact raw streams** (Scenario C: 8/8, Scenario A: 8/8, Scenario B: 8/8, total 3,992 frames) with 0 contract faults.
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.233: Connected Tilemap Pipeline & Automated M68000 Recompiler Prototype; Automated Code Generation Pipeline tools/thor_recompiler; Prototype Translation of 0x002512; Differential Bit-Exact Verification Against Reference Execution; Preemption Architecture Analysis of 0x003820 Decompressor; 6,583,206 Native Steps; 24/24 Bit-Exact Streams)
+
+## Milestone M15.233 Reverse Engineering Summary
+
+### 1. Connected Tilemap Subsystem Architecture
+- **Connected Pipeline Analysis:**
+  * Tilemap Update Dispatcher (`0x002084..0x002112`, 142 bytes) inspects dirty flags in plane context at `$26(A3)` and dispatches column uploads (`0x0023CC`) or row uploads (`0x002512`).
+  * Word budget counters at `$1C(A3)` and `$1E(A3)` govern the quantity of tiles/words transferred per frame budget to avoid over-subscribing VBlank DMA slots.
+- **Recompiler Prototype (`tools/thor_recompiler/`):**
+  * Automated M68000 to C++20 recompiler translating binary ROM routines into modular C++ functions.
+  * Successfully translated Target A (`0x002512`) into structured C++ basic blocks with switch dispatch.
+  * Validated bit-exact against reference execution in `tests/m68k_recompiler_differential_test.cpp`.
+
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.232: Interrupt-Safe Graphics Pipeline Recompilation; Tilemap Plane Column Upload Engine 0x0023CC as Native Slot 228; Dual-Axis Tilemap Streaming Subsystem Complete; Multi-Frame Decompressor 0x003820 Preemption Jitter Quarantine; Resolution of 126-Master-Cycle Boundary Jitter; 6,583,206 Native Steps in Scenario C / 37.345% Raw / 83.357% Non-Idle; 24/24 Bit-Exact Streams)
+
+## Milestone M15.232 Reverse Engineering Summary
+
+### 1. Tilemap Plane Column Upload Engine (`0x0023CC..0x002510`) Subsystem Characterization
+- **Routine Boundaries:** `0x0023CC` to `0x002510` (107 instructions, 326 bytes).
+- **Subsystem Function:** Tilemap Plane Column Upload Engine — dual-axis counterpart to row upload engine (`0x002512`), computing column destination VRAM addresses and streaming vertical columns of tilemap data into VDP VRAM across Plane A and Plane B.
+- **Register ABI Contract:**
+  * Entry: `A3` scroll context pointer, `A0` tile column data source, `A2` VDP data port `$C00000`, `A4` VDP control port `$C00004`.
+  * Exit: `RTS` at `0x002510`.
+  * Child Subroutines: 0 (completely self-contained).
+- **Cycle Timing Alignment:**
+  * Resolved 126-master-cycle boundary jitter caused by Musashi shift instruction cycle formulas: `LSR.W #7` (+98 cycles) and `ROL.W #2` (+28 cycles), restoring exact synchronization with GPGX core.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-08 (M15.231: Connected Resource / Gameplay Pipeline Recompilation; Tilemap Plane Row Upload Engine 0x002512 as Native Slot 227; Hexa Recompiled Island Slots 222 + 223 + 224 + 225 + 226 + 227; Disjoint Residual Accounting; DRAM Refresh Jitter Reconciliation; 6,551,996 Native Steps in Scenario C / 37.168% Raw / 82.961% Non-Idle; 24/24 Bit-Exact Streams)
 
 ## Milestone M15.231 Reverse Engineering Summary

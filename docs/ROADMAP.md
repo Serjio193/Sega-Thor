@@ -1,3 +1,32 @@
+# M15.234 Automated M68000 Recompiler: Independent Functions, Differential Proof & Production-Compatible Execution (General Automated Recompiler Pipeline in tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py, supported_opcodes.json; Dynamic Block Partitioning Satisfying AGENTS.md Rule 3 <= 500 Lines; Independent Multi-Function Compilation: Target A 0x002512 Row Upload, Target B 0x0023CC Column Upload, Target C 0x00D168 Camera Tracking Engine; 100% Bit-Exact Differential Parity and Mutation Testing in tests/m68k_target_c_differential_test.cpp; Octad Subsystem Recompiled Island Execution: Slots 222 + 223 + 224 + 225 + 226 + 227 + 228 + 229; 6,589,171 Native Steps in Scenario C, 37.379% Raw Dynamic Coverage, 83.432% Non-Idle Dynamic Coverage, +5,965 Net Displaced Instructions; 24/24 Bit-Exact Raw Streams Across Scenarios C, A, and B; 0 Contract Faults; Authoritative Machine Evidence Receipt Verified: combined-clusters-qualification-m15-234-20261109.json) — COMPLETE / QUALIFIED GENERAL RECOMPILER
+
+- **General Automated M68000 to C++20 Recompiler:** Extended and hardened the recompiler toolchain in `tools/thor_recompiler/`:
+  * `supported_opcodes.json`: Machine-readable opcode manifest covering bit patterns, operand syntaxes, and Musashi-exact cycle costs.
+  * `decoder.py` (253 lines): Disassembly and decoding for ALU, shifts (ASR), bit manipulation (BTST, BSET), clear/negate (CLR, NEG), and byte memory addressing modes.
+  * `cfg.py` (105 lines): Leader discovery, basic block partition, and edge graph construction.
+  * `codegen_cpp.py` (405 lines): C++20 emission of switch-based basic-block dispatchers with full CCR calculation (N, Z, V, C, X), cycle accounting, and bus refresh.
+  * `main.py` (216 lines): Deterministic CLI pipeline with dynamic basic block partitioning ensuring every generated C++ file is strictly <= 300 lines (well under the 500-line limit).
+- **Independent Multi-Function Validation:**
+  * Target A: `0x002512..0x002630` (Tilemap Row Upload, 16 basic blocks, 12 files).
+  * Target B: `0x0023CC..0x002510` (Tilemap Column Upload, 16 basic blocks, 14 files).
+  * Target C: `0x00D168..0x00D264` (Tilemap Camera Scroll Tracking & Budget Engine, 22 basic blocks, 12 files).
+  * Deterministic re-generation confirmed: all files match SHA256 hashes in manifest.
+- **Differential Verification & Mutation Testing:**
+  * Implemented `tests/m68k_target_c_differential_test.cpp` (237 lines) testing all 7 authentic movement paths against reference execution.
+  * Verified 100% bit-exact parity across registers D0-D7/A0-A7, RAM structures at `0xFF1700`, stack pop, return PC `0x02EB2A`, and cycle counts.
+  * Mutation testing proved intentional memory mutation is detected.
+- **Octad Combined Cluster Execution (Slots 222..229):**
+  * Integrated Target C as experimental native Slot 229 in unified Linux runner (`oasis_gameplay_session`, SHA256 `991697297b9a5feae29dec5dff613963791ce7cf9fbd8876f3d4b71ebc71d9ef`).
+  * 24/24 bit-exact streams across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames).
+  * Displaced +5,965 incremental dynamic native instructions in Scenario C (114 entries, 114 completed, 0 fallbacks).
+  * Scenario C combined native execution reached 6,589,171 instructions (37.379% raw dynamic coverage, 83.432% non-idle dynamic coverage).
+- **Quarantine of Multi-Frame Decompressor (0x003820):**
+  * Preserved `0x003820` quarantine pending instruction-boundary yield/resume interrupt queue modeling.
+- **Governance & Legal Hygiene:**
+  * `C:/Github/Sega-Thor-Standalone` confirmed untouched (STRICTLY READ-ONLY).
+  * Production baseline maintained at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`). Slots 222-229 remain experimental and disabled by default.
+  * All 2,112 governed code files verified <= 500 lines.
+
 # M15.233 Connected Tilemap Pipeline & Automated M68000 Recompilation Prototype (Automated Recompiler Toolchain in tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py; Automatic CFG Partitioning into Sub-Functions Enforcing AGENTS.md Rule 3 <= 500 Lines; Machine-Generated C++20 for 0x002512..0x002630 Qualified Bit-Exact Against Musashi and Handwritten Stepper; Connected Tilemap Dispatcher 0x002084..0x002112, VBlank Auto-Vector 6 0x001F76, Plane A Context 0x00FF1716, Plane B Context 0x00FF173E Fully Disassembled and Mapped; 8 Authentic Oracle Fixtures in data/thor-fixtures/tilemap_upload/; Decompressor 0x003820 Yield/Resume Architectural Specification; Standalone C++20 Interfaces Verified; Production Baseline Maintained at 196 Active Helpers) — COMPLETE / QUALIFIED RECOMPILER PROTOTYPE
 
 - **Automated M68000 Recompiler Prototype:** Implemented modular Python-based recompiler in `tools/thor_recompiler/` (all modules strictly <= 500 lines). Recompiled `0x002512..0x002630` directly from ROM bytes into partitioned C++20 units (`m68k_recompiled_002512_right.cpp`, `_left.cpp`, `_upload.cpp`, and orchestrator `m68k_recompiled_002512.cpp`).

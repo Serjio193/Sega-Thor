@@ -1,3 +1,40 @@
+# 2026-11-09 — Milestone M15.234: AUTOMATED M68000 RECOMPILER: INDEPENDENT FUNCTIONS, DIFFERENTIAL PROOF AND PRODUCTION-COMPATIBLE EXECUTION — Deterministic M68000 to C++20 Recompiler Pipeline (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py, supported_opcodes.json); Automated Compilation of Multiple Independent Functions (Target A: 0x002512 Row Upload, Target B: 0x0023CC Column Upload, Target C: 0x00D168 Camera Tracking Engine); Dynamic Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated Translation Unit (AGENTS.md Rule 3); Exact Differential Verification and Mutation Testing (tests/m68k_target_c_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, RAM structures at 0xFF1700, Return PC 0x02EB2A); Slot 229 Integration in Unified Linux Runner (build/auto-migrator/m15_234/linux-runner/oasis_gameplay_session, SHA256 991697297b9a5feae29dec5dff613963791ce7cf9fbd8876f3d4b71ebc71d9ef); Three-Scenario A/B Verification Across Scenarios C, A, and B (24/24 Raw Streams Bit-Exact, 3,992 Frames Total); Zero Contract Faults; Positive Measured Dynamic Native Instruction Displacement (+5,965 Steps in Scenario C, Total Combined Native Steps Reaching 6,589,171, Raw Native Coverage 37.379%, Non-Idle Coverage 83.432%); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-229 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Baseline Verification:
+    - Confirmed baseline commit 4a14e9ce2bf0d89616c019ed7fdc345cec974156 (M15.233).
+    - Production helper active inventory strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+    - Pinned core SHA256 ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134, canonical ROM SHA256 eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+  * Phase 1 & 2: General Recompiler Pipeline & Supported Opcode Manifest:
+    - Established deterministic CLI in tools/thor_recompiler/main.py accepting all required parameters.
+    - Created machine-readable supported opcode manifest tools/thor_recompiler/supported_opcodes.json.
+    - Enhanced decoder.py (253 lines) and codegen_cpp.py (405 lines) with BTST, BSET, CLR, NEG, ASR, byte addressing, and full arithmetic CCR calculation.
+    - Added dynamic basic block partitioning ensuring every generated translation unit is strictly <= 300 lines (well under the 500-line limit).
+    - Structured manifest output: _decoded.json, _cfg.json, _source_pc_map.json, _unsupported_opcodes.json, and _codegen_manifest.json with SHA256 integrity proofs.
+  * Phase 3 & 4: Independent Function Compilation:
+    - Recompiled Target A: 0x002512..0x002630 (Tilemap Row Upload, 16 basic blocks, 12 files).
+    - Recompiled Target B: 0x0023CC..0x002510 (Tilemap Column Upload, 16 basic blocks, 14 files).
+    - Recompiled Target C: 0x00D168..0x00D264 (Tilemap Camera Scroll Tracking & Budget Engine, 22 basic blocks, 12 files).
+    - Verified deterministic re-generation produces bit-exact identical files matching manifest hashes.
+  * Phase 5 & 6: Differential Verification & Mutation Testing:
+    - Implemented tests/m68k_target_c_differential_test.cpp (237 lines) and build tool tools/build_target_c_test.py.
+    - Differential tests pass 100% bit-exact across all 7 authentic runtime movement cases (no movement, sub-tile, row trigger, column trigger, dual-axis trigger, negative scroll, update disabled).
+    - Mutation testing confirmed intentional memory alteration at offset 0x26 is detected.
+  * Phase 7 & 8: Combined Runtime Integration & 3-Scenario A/B Qualification:
+    - Integrated Target C as experimental native Slot 229.
+    - Built unified Linux runner build/auto-migrator/m15_234/linux-runner/oasis_gameplay_session (SHA256 991697297b9a5feae29dec5dff613963791ce7cf9fbd8876f3d4b71ebc71d9ef).
+    - Executed 3-scenario A/B qualification across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 raw streams bit-exact.
+    - Achieved 0 contract faults.
+    - Displaced +5,965 incremental dynamic native instructions in Scenario C (114 entries, 114 completed, 0 fallbacks).
+    - Scenario C combined native execution reached 6,589,171 instructions (37.379% raw dynamic coverage, 83.432% non-idle dynamic coverage).
+  * Phase 9: Governance & Receipt Verification:
+    - Generated authoritative machine evidence receipt data/thor-evidence/combined-clusters-qualification-m15-234-20261109.json.
+    - Verified with ReceiptVerifier: 58/58 files valid, 48/48 streams verified, overall_valid = True.
+    - Preserved 0x003820 multi-frame decompressor quarantine.
+    - Checked all 2,112 governed code files: 0 violations of 500-line rule.
+    - git diff --check green.
+
+
 # 2026-11-09 — Milestone M15.233: CONNECTED TILEMAP PIPELINE AND AUTOMATED M68000 RECOMPILATION PROTOTYPE — Connected Tilemap Update Dispatcher (0x002084..0x002112) and Plane Subsystem Architecture Verified; Word Budget Counters ($1C(A3), $1E(A3)) and Transfer Flags ($26(A3)) Disassembled; Automated M68000 to C++20 Recompiler Prototype Built (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py); Automatic Basic-Block Partitioning Preserving AGENTS.md Rule 3 (all generated units <= 500 lines); Recompiled Code Validated Differential Bit-Exact Against Musashi and Handwritten Steppers (tests/m68k_recompiler_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, 43 VDP Writes, Stack Pop and Return PC 0x0020C8); Forensic Discrepancy Audit of M15.231/M15.232 Receipt File Counts (58 Evaluated Receipt Checks vs Conflated Disk Inventory); Preserved 0x003820 Decompressor Quarantine with Interruptible Instruction-Boundary Yield/Resume Architectural Specification; Expanded Tilemap Upload Fixtures (8 Cases in data/thor-fixtures/tilemap_upload/); Pure C++20 Domain Model (src/game/render/tilemap_plane_upload.hpp/.cpp) Passing 100%; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-228 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**

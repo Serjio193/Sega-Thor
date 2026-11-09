@@ -10482,3 +10482,43 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - C:/Github/Sega-Thor-Standalone kept strictly READ-ONLY (0 modifications).
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
    - All source and test files verified strictly <= 500 lines via tests/check_file_limits.cmake.
+
+## 2026-11-09 — M15.234: Automated M68000 Recompiler: Independent Functions, Differential Proof and Production-Compatible Execution
+
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.233, an initial prototype of the automated M68000 to C++20 recompiler was demonstrated on the tilemap row upload routine (0x002512).
+2. Milestone M15.234 required proving that the compiler pipeline is general, fully deterministic, and capable of translating independent, unowned ROM functions without handwritten intervention.
+3. Candidate Target C (0x00D168..0x00D264, Tilemap Camera Scroll Tracking & Budget Engine) was selected and verified as an unowned, previously ROM-interpreted function that directly feeds the recompiled tilemap pipeline.
+
+**Decisions:**
+1. **General Automated M68000 Recompiler Pipeline (tools/thor_recompiler/):**
+   - Implemented reproducible CLI in main.py supporting ROM_FILE, ENTRY_PC, LIMIT_PC, OUTPUT_DIRECTORY, TARGET_ABI, and POLICY.
+   - Created machine-readable supported opcode manifest tools/thor_recompiler/supported_opcodes.json defining bit patterns, operand addressing modes, and cycle accounting rules.
+   - Enhanced decoder.py (253 lines) with support for bit manipulation (BTST #imm, <ea>, BSET #imm, dn), clear/negate (CLR.w dn, NEG.w dn), shifts (ASR.w), and byte memory addressing.
+   - Enhanced codegen_cpp.py (405 lines) with static basic block switch dispatch, full arithmetic CCR condition code updates (N, Z, V, C, X), cycle accumulation, and bus refresh hooks.
+   - Dynamic instruction-budget block partitioning: generated C++ files are automatically partitioned into modular sub-functions (_p0, _p1, etc.) guaranteeing strict compliance with AGENTS.md Rule 3 (all generated files <= 300 lines, well below 500 lines).
+   - Emits structured JSON manifests for each compilation: decoded instructions, CFG, source PC map, unsupported opcode audit, and SHA256 hashes of generated translation units.
+2. **Independent Multi-Function Verification:**
+   - Target A: 0x002512..0x002630 (Tilemap Row Upload, 16 basic blocks, 12 generated files).
+   - Target B: 0x0023CC..0x002510 (Tilemap Column Upload, 16 basic blocks, 14 generated files).
+   - Target C: 0x00D168..0x00D264 (Tilemap Camera Scroll Tracking & Budget Engine, 22 basic blocks, 12 generated files).
+   - Deterministic regeneration audit: re-running code generation produces byte-for-byte identical output matching manifest hashes.
+3. **Differential Qualification & Mutation Testing:**
+   - Implemented tests/m68k_target_c_differential_test.cpp (237 lines) testing all 7 authentic coordinate/delta execution paths (update disabled, no motion, sub-tile, column upload trigger, row upload trigger, dual-axis trigger, negative delta) and mutation verification against reference stepper.
+   - Differential test passed with 100% bit-exact parity across registers D0-D7/A0-A7, RAM structures at 0xFF1700, stack pop, return address 0x02EB2A, and cycle counts.
+   - Mutation test confirmed intentional memory mutation is reliably detected.
+4. **Octad Subsystem Recompiled Island Execution (Slots 222..229):**
+   - Integrated Target C as experimental native Slot 229 in unified Linux runner (build/auto-migrator/m15_234/linux-runner/oasis_gameplay_session, SHA256 991697297b9a5feae29dec5dff613963791ce7cf9fbd8876f3d4b71ebc71d9ef).
+   - Ran 3-scenario differential A/B verification (Scenarios C, A, B) testing 196 baseline helpers (P0) against P8 (196 helpers + Slots 222-229).
+   - Achieved 24/24 bit-exact raw stream matches (1,800 frames in C, 1,592 frames in A, 600 frames in B) with 0 contract faults.
+   - Displaced +5,965 dynamic native instructions in Scenario C (114 entries, 114 native calls, 114 completed, 0 fallbacks).
+   - Scenario C combined native steps reached 6,589,171 (37.379% raw dynamic coverage, 83.432% non-idle dynamic coverage).
+5. **Preserved Quarantine of Multi-Frame Decompressor (0x003820):**
+   - Maintained quarantine of 0x003820 from atomic stepping pending instruction-boundary yield/resume interrupt modeling.
+6. **Governance & Legal Hygiene:**
+   - C:/Github/Sega-Thor-Standalone kept strictly READ-ONLY (0 modifications).
+   - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
+   - All 2,112 governed code files verified <= 500 lines.

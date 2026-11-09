@@ -4197,3 +4197,13 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `src/tools/hybrid/generated/m68k_recompiled_002512*` — Machine-generated C++20 recompiled units for `0x002512..0x002630` (M15.233).
 - `tests/m68k_recompiler_differential_test.cpp` — Differential qualification test comparing recompiled C++ against handwritten stepper (M15.233).
 - `tools/build_recompiler_test.py` — Build and execution harness for recompiler differential tests (M15.233).
+- 	ools/thor_recompiler/supported_opcodes.json — Machine-readable supported opcode family manifest with bit patterns and cycle rules (M15.234).
+- src/tools/hybrid/generated/m68k_recompiled_0023cc* — Machine-generated C++20 recompiled units for 0x0023CC..0x002510 (M15.234).
+- src/tools/hybrid/generated/m68k_recompiled_00d168* — Machine-generated C++20 recompiled units for 0x00D168..0x00D264 (M15.234).
+- src/tools/hybrid/generated/manifests/* — Recompiler manifests (decoded, CFG, source_pc_map, unsupported_opcodes, codegen_manifest) (M15.234).
+- 	ests/m68k_target_c_differential_test.cpp — Differential and mutation verification test for Target C (0x00D168) against reference stepper (M15.234).
+- 	ools/build_target_c_test.py — Build and execution harness for Target C differential test (M15.234).
+- 	ools/build_m15_234_runner.py — Isolated Linux runner build harness with Slot 229 integration (M15.234).
+- 	ools/run_m15_234_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.234 (M15.234).
+- 	ools/generate_m15_234_receipt.py — Authoritative receipt generator and verifier for M15.234 (M15.234).
+- data/thor-evidence/combined-clusters-qualification-m15-234-20261109.json — Verified machine evidence receipt for M15.234 (M15.234).

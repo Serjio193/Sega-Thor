@@ -1,0 +1,141 @@
+{
+  "schema": "thor.m68k-supported-opcodes.v1",
+  "generator": "tools/thor_recompiler",
+  "target_abi": "hybrid_step_v1",
+  "instruction_families": [
+    {
+      "family": "MOVE",
+      "mnemonics": ["MOVE", "MOVEA"],
+      "encoding_pattern": "00ss_dddd_ddss_ssss",
+      "operand_widths": ["b", "w", "l"],
+      "supported_source_addressing_modes": ["Dn (mode 0)", "An (mode 1)", "(An) (mode 2)", "(An)+ (mode 3)", "d16(An) (mode 5)", "#imm (mode 7, reg 4)"],
+      "supported_destination_addressing_modes": ["Dn (mode 0)", "An (mode 1)", "(An) (mode 2)", "d16(An) (mode 5)"],
+      "ccr_effects": {
+        "MOVE": "X unaffected, N = (result < 0), Z = (result == 0), V = 0, C = 0",
+        "MOVEA": "None (CCR unaffected)"
+      },
+      "memory_accesses": "Read source if memory mode; write destination if memory mode (big-endian 8/16/32-bit)",
+      "pc_behavior": "Sequential advance by instruction word length",
+      "cycle_model": "Fixed base cycles (4..16 depending on addressing modes) multiplied by 7 for master clock (28..112 cycles)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard Musashi refresh cycle advancement",
+      "unsupported_cases": ["Pre-decrement -(An)", "Index (An,Dn)", "Absolute 16-bit abs.w"]
+    },
+    {
+      "family": "ADD_SUB",
+      "mnemonics": ["ADD", "SUB", "ADDI", "SUBI", "ADDQ", "SUBQ", "ADDA", "SUBA"],
+      "encoding_pattern": "1101/1001/0x04/0x06/0x50/0x51",
+      "operand_widths": ["w", "l"],
+      "supported_source_addressing_modes": ["Dn", "An", "#imm", "d16(An)"],
+      "supported_destination_addressing_modes": ["Dn", "An", "d16(An)"],
+      "ccr_effects": "X = C, N = (result < 0), Z = (result == 0), V = signed overflow, C = carry/borrow; ADDA/SUBA leave CCR unchanged",
+      "memory_accesses": "Read memory if source mode 5; write memory if destination mode 5",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "4..16 CPU cycles (28..112 master cycles)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["Byte width (.b) for ADDA/SUBA"]
+    },
+    {
+      "family": "CMP",
+      "mnemonics": ["CMP", "CMPI"],
+      "encoding_pattern": "1011_rrr0_ssmm_mrrr / 0000_1100_ssmm_mrrr",
+      "operand_widths": ["w", "l"],
+      "supported_source_addressing_modes": ["Dn", "#imm", "d16(An)"],
+      "supported_destination_addressing_modes": ["Dn"],
+      "ccr_effects": "X unaffected, N = (dest - src < 0), Z = (dest == src), V = signed overflow, C = (dest < src unsigned)",
+      "memory_accesses": "Read memory if source is d16(An); destination not written",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "4..8 CPU cycles (28..56 master cycles)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["CMPA address register compare", "CMPM memory compare"]
+    },
+    {
+      "family": "LOGIC",
+      "mnemonics": ["ANDI", "ORI", "CLR", "NEG"],
+      "encoding_pattern": "0000_00x0_ssmm_mrrr / 0100_0010_ssmm_mrrr / 0100_0100_ssmm_mrrr",
+      "operand_widths": ["b", "w", "l"],
+      "supported_source_addressing_modes": ["#imm (ANDI/ORI)", "implied (CLR/NEG)"],
+      "supported_destination_addressing_modes": ["Dn", "d16(An)"],
+      "ccr_effects": {
+        "ANDI_ORI": "X unaffected, N = MSB, Z = (res == 0), V = 0, C = 0",
+        "CLR": "X unaffected, N = 0, Z = 1, V = 0, C = 0",
+        "NEG": "X = C, N = MSB, Z = (res == 0), V = (src == 0x8000), C = (src != 0)"
+      },
+      "memory_accesses": "Read/write d16(An) if memory destination",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "4..16 CPU cycles (28..112 master cycles)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["AND/OR register-register (use ANDI/ORI)", "EOR"]
+    },
+    {
+      "family": "BIT_MANIPULATION",
+      "mnemonics": ["BTST", "BSET", "BCLR", "BCHG"],
+      "encoding_pattern": "0000_1000_xxmm_mrrr (static bit #)",
+      "operand_widths": ["b", "l"],
+      "supported_source_addressing_modes": ["#imm (bit number)"],
+      "supported_destination_addressing_modes": ["Dn (long, bit % 32)", "d16(An) (byte, bit % 8)"],
+      "ccr_effects": "Z = ((target_bit) == 0); N, V, C, X unaffected",
+      "memory_accesses": "Read byte from d16(An) for BTST; read-modify-write byte for BSET/BCLR",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "12 CPU cycles for memory destination (84 master cycles); 8..12 CPU cycles for register",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["Dynamic bit number in Dn (0x0100..0x01FF)"]
+    },
+    {
+      "family": "SHIFT_ROTATE",
+      "mnemonics": ["LSL", "LSR", "ASR", "ASL", "ROL", "ROR"],
+      "encoding_pattern": "1110_ccc_d_ss_i_tt_rrr",
+      "operand_widths": ["w"],
+      "supported_source_addressing_modes": ["#imm (1..8)", "Dn (dynamic shift count)"],
+      "supported_destination_addressing_modes": ["Dn"],
+      "ccr_effects": {
+        "LSL_LSR": "X = C, N = MSB, Z = (res == 0), V = 0, C = last bit shifted out",
+        "ASR": "X = C, N = MSB, Z = (res == 0), V = 0, C = last bit shifted out (sign replicated)",
+        "ROL": "X unaffected, N = MSB, Z = (res == 0), V = 0, C = last bit shifted out"
+      },
+      "memory_accesses": "None (register-only operations)",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "Immediate: 6 + 2 * shift CPU cycles = 42 + shift * 14 master cycles; Register: 6 CPU cycles + shift * 14 master cycles with skip_bus_refresh",
+      "variable_timing": true,
+      "bus_refresh_effects": "Register shift skips DRAM refresh cycle stall to match Musashi hardware simulation order",
+      "unsupported_cases": ["Memory shifts (<ea> by 1 bit)"]
+    },
+    {
+      "family": "BRANCH_CONTROL",
+      "mnemonics": ["BRA", "Bcc", "DBRA", "RTS"],
+      "encoding_pattern": "0110_cccc_dddd_dddd / 0101_0001_1100_1rrr / 0100_1110_0111_0101",
+      "operand_widths": ["w"],
+      "supported_source_addressing_modes": ["branch displacement (d8, d16)"],
+      "supported_destination_addressing_modes": ["PC"],
+      "ccr_effects": "None (branches evaluate CCR but do not modify it)",
+      "memory_accesses": "RTS reads 4 bytes from stack (SP)+ and advances SP by +4",
+      "pc_behavior": "Branches transfer control to target PC on condition true; fallthrough on false; RTS pops return PC",
+      "cycle_model": "BRA taken: 10 cycles (70 master); Bcc taken: 10 cycles, not taken: 8 cycles; DBRA loop: 10 cycles, expired: 14 cycles; RTS: 16 cycles (112 master)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["BSR child function call inside cluster (requires leaf or inlined function)"]
+    },
+    {
+      "family": "ADDRESS_MANIPULATION",
+      "mnemonics": ["LEA", "SWAP"],
+      "encoding_pattern": "0100_rrr1_11mm_mrrr / 0100_1000_0100_0rrr",
+      "operand_widths": ["w", "l"],
+      "supported_source_addressing_modes": ["abs.l (mode 7, reg 1)", "d16(An) (mode 5)", "Dn (SWAP)"],
+      "supported_destination_addressing_modes": ["An (LEA)", "Dn (SWAP)"],
+      "ccr_effects": {
+        "LEA": "None",
+        "SWAP": "X unaffected, N = MSB(31), Z = (res == 0), V = 0, C = 0"
+      },
+      "memory_accesses": "None (effective address computed into An; 32-bit register swap)",
+      "pc_behavior": "Sequential advance",
+      "cycle_model": "LEA: 8..12 CPU cycles (56..84 master); SWAP: 4 CPU cycles (28 master)",
+      "variable_timing": false,
+      "bus_refresh_effects": "Standard",
+      "unsupported_cases": ["PEA (push effective address)"]
+    }
+  ]
+}

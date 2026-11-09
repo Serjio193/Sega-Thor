@@ -71,28 +71,97 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 sign = "+" if disp >= 0 else "-"
                 lines.append(f"        api.write_register(api.context, {dst_reg}, api.read_register(api.context, {r}) {sign} 0x{abs(disp):X}U);")
             lines.append(f"        api.add_cycles(api.context, {insn.base_cycles} * 7);")
-        elif insn.mnemonic == "MOVE":
-            src_val = emit_operand_read(insn.ops[0], insn.size)
+        elif insn.mnemonic == "CLR":
+            dst_reg = reg_name(insn.ops[0].kind, insn.ops[0].reg)
+            lines.extend([
+                "        {",
+                f"            const auto old_d = api.read_register(api.context, {dst_reg});",
+                f"            api.write_register(api.context, {dst_reg}, old_d & 0xFFFF0000U);",
+                "            update_logic_ccr16(api, 0U);",
+                "        }",
+                f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
+            ])
+        elif insn.mnemonic == "NEG":
+            dst_reg = reg_name(insn.ops[0].kind, insn.ops[0].reg)
+            lines.extend([
+                "        {",
+                f"            const auto old_d = api.read_register(api.context, {dst_reg});",
+                "            const std::uint32_t a = old_d & 0xFFFFU;",
+                "            const std::uint32_t res = (0U - a) & 0xFFFFU;",
+                f"            api.write_register(api.context, {dst_reg}, (old_d & 0xFFFF0000U) | res);",
+                "            const bool c = (a != 0U);",
+                "            const bool v = (a == 0x8000U);",
+                "            const bool n = (res & 0x8000U) != 0;",
+                "            const bool z = (res == 0U);",
+                "            set_ccr(api, (c ? 0x11U : 0x00U) | (v ? 0x02U : 0x00U) | (z ? 0x04U : 0x00U) | (n ? 0x08U : 0x00U));",
+                "        }",
+                f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
+            ])
+        elif insn.mnemonic in ("BTST", "BSET"):
+            bit_num = insn.ops[0].val
             dst_op = insn.ops[1]
-            if dst_op.kind == "reg_d":
-                dst_reg = reg_name(dst_op.kind, dst_op.reg)
-                lines.extend([
-                    "        {",
-                    f"            const auto val = static_cast<std::uint16_t>({src_val});",
-                    f"            const auto old = api.read_register(api.context, {dst_reg});",
-                    f"            api.write_register(api.context, {dst_reg}, (old & 0xFFFF0000U) | val);",
-                    "            update_logic_ccr16(api, val);",
-                    "        }"
-                ])
-            elif dst_op.kind == "disp_a":
+            if dst_op.kind == "disp_a":
                 r = reg_name("reg_a", dst_op.reg)
                 disp = dst_op.val
                 sign = "+" if disp >= 0 else "-"
                 lines.extend([
                     "        {",
-                    f"            const auto val = static_cast<std::uint16_t>({src_val});",
-                    f"            api.write(api.context, api.read_register(api.context, {r}) {sign} 0x{abs(disp):X}U, 2, val);",
-                    "            update_logic_ccr16(api, val);",
+                    f"            const auto addr = api.read_register(api.context, {r}) {sign} 0x{abs(disp):X}U;",
+                    "            const auto byte_val = api.read(api.context, addr, 1);",
+                    f"            const bool z = ((byte_val >> ({bit_num % 8}U)) & 1U) == 0;",
+                    "            set_ccr(api, (get_ccr(api) & ~0x04U) | (z ? 0x04U : 0x00U));",
+                    "        }",
+                    f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
+                ])
+            elif dst_op.kind == "reg_d":
+                dst_reg = reg_name(dst_op.kind, dst_op.reg)
+                is_set = (insn.mnemonic == "BSET")
+                set_code = f"api.write_register(api.context, {dst_reg}, old_d | (1U << {bit_num % 32}U));" if is_set else ""
+                lines.extend([
+                    "        {",
+                    f"            const auto old_d = api.read_register(api.context, {dst_reg});",
+                    f"            const bool z = ((old_d >> ({bit_num % 32}U)) & 1U) == 0;",
+                    f"            {set_code}",
+                    "            set_ccr(api, (get_ccr(api) & ~0x04U) | (z ? 0x04U : 0x00U));",
+                    "        }",
+                    f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
+                ])
+        elif insn.mnemonic == "MOVE":
+            src_val = emit_operand_read(insn.ops[0], insn.size)
+            dst_op = insn.ops[1]
+            if dst_op.kind == "reg_d":
+                dst_reg = reg_name(dst_op.kind, dst_op.reg)
+                if insn.size == "b":
+                    lines.extend([
+                        "        {",
+                        f"            const auto val = static_cast<std::uint8_t>({src_val});",
+                        f"            const auto old = api.read_register(api.context, {dst_reg});",
+                        f"            api.write_register(api.context, {dst_reg}, (old & 0xFFFFFF00U) | val);",
+                        "            const std::uint16_t n = (val & 0x80U) ? 0x08U : 0x00U;",
+                        "            const std::uint16_t z = (val == 0U) ? 0x04U : 0x00U;",
+                        "            set_ccr(api, (get_ccr(api) & 0x10U) | n | z);",
+                        "        }"
+                    ])
+                else:
+                    lines.extend([
+                        "        {",
+                        f"            const auto val = static_cast<std::uint16_t>({src_val});",
+                        f"            const auto old = api.read_register(api.context, {dst_reg});",
+                        f"            api.write_register(api.context, {dst_reg}, (old & 0xFFFF0000U) | val);",
+                        "            update_logic_ccr16(api, val);",
+                        "        }"
+                    ])
+            elif dst_op.kind == "disp_a":
+                r = reg_name("reg_a", dst_op.reg)
+                disp = dst_op.val
+                sign = "+" if disp >= 0 else "-"
+                w = 1 if insn.size == "b" else 2
+                val_cast = "std::uint8_t" if insn.size == "b" else "std::uint16_t"
+                lines.extend([
+                    "        {",
+                    f"            const auto val = static_cast<{val_cast}>({src_val});",
+                    f"            api.write(api.context, api.read_register(api.context, {r}) {sign} 0x{abs(disp):X}U, {w}, val);",
+                    f"            {'const std::uint16_t n = (val & 0x80U) ? 0x08U : 0x00U; const std::uint16_t z = (val == 0U) ? 0x04U : 0x00U; set_ccr(api, (get_ccr(api) & 0x10U) | n | z);' if insn.size == 'b' else 'update_logic_ccr16(api, val);'}",
                     "        }"
                 ])
             elif dst_op.kind == "indir_a":
@@ -144,7 +213,7 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
             ])
         elif insn.mnemonic in ("ANDI", "ORI"):
-            is_or = insn.mnemonic == "ORI"
+            is_or = (insn.mnemonic == "ORI")
             src_val = emit_operand_read(insn.ops[0], insn.size)
             dst_reg = reg_name(insn.ops[1].kind, insn.ops[1].reg)
             op_char = "|" if is_or else "&"
@@ -174,7 +243,7 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 "        }",
                 f"        api.add_cycles(api.context, {insn.base_cycles} * 7);"
             ])
-        elif insn.mnemonic in ("LSL", "LSR", "ROL"):
+        elif insn.mnemonic in ("LSL", "LSR", "ASR", "ROL"):
             dst_reg = reg_name("reg_d", insn.ops[1].reg)
             if insn.ops[0].kind == "imm":
                 shift_cnt = insn.ops[0].val
@@ -187,6 +256,11 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 elif insn.mnemonic == "LSR":
                     lines.append(f"            const std::uint32_t res = (val >> {shift_cnt}U) & 0xFFFFU;")
                     lines.append(f"            const bool c = ((val >> ({shift_cnt}U - 1U)) & 1U) != 0;")
+                elif insn.mnemonic == "ASR":
+                    lines.append(f"            const std::int16_t sval = static_cast<std::int16_t>(val);")
+                    lines.append(f"            const std::int16_t sres = sval >> {shift_cnt}U;")
+                    lines.append(f"            const std::uint32_t res = static_cast<std::uint16_t>(sres);")
+                    lines.append(f"            const bool c = ((sval >> ({shift_cnt}U - 1U)) & 1U) != 0;")
                 else:
                     lines.append(f"            const std::uint32_t res = ((val << {shift_cnt}U) | (val >> (16U - {shift_cnt}U))) & 0xFFFFU;")
                     lines.append(f"            const bool c = ((val >> (16U - {shift_cnt}U)) & 1U) != 0;")
@@ -224,7 +298,7 @@ def emit_block_body(block: BasicBlock) -> List[str]:
             ])
         elif insn.mnemonic == "BRA":
             lines.append(f"        return 0x{insn.branch_target:06X}U;")
-        elif insn.mnemonic in ("BMI", "BPL", "BLT", "BGE", "BNE", "BEQ"):
+        elif insn.mnemonic in ("BMI", "BPL", "BLT", "BGE", "BNE", "BEQ", "BGT", "BLE"):
             conds = {
                 "BMI": "(get_ccr(api) & 0x08U) != 0",
                 "BPL": "(get_ccr(api) & 0x08U) == 0",
@@ -232,9 +306,10 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 "BNE": "(get_ccr(api) & 0x04U) == 0",
                 "BLT": "((get_ccr(api) & 0x08U) != 0) != ((get_ccr(api) & 0x02U) != 0)",
                 "BGE": "((get_ccr(api) & 0x08U) != 0) == ((get_ccr(api) & 0x02U) != 0)",
+                "BGT": "(get_ccr(api) & 0x04U) == 0 && (((get_ccr(api) & 0x08U) != 0) == ((get_ccr(api) & 0x02U) != 0))",
+                "BLE": "(get_ccr(api) & 0x04U) != 0 || (((get_ccr(api) & 0x08U) != 0) != ((get_ccr(api) & 0x02U) != 0))",
             }
             lines.append(f"        if ({conds[insn.mnemonic]}) return 0x{insn.branch_target:06X}U;")
-            # Fallthrough target is end_pc
             lines.append(f"        return 0x{block.end_pc:06X}U;")
         elif insn.mnemonic == "DBRA":
             dst_reg = reg_name("reg_d", insn.ops[0].reg)
@@ -249,9 +324,8 @@ def emit_block_body(block: BasicBlock) -> List[str]:
                 "        }"
             ])
 
-    # If block ended without branch/RTS, return fallthrough successor
     last_insn = block.instructions[-1]
-    if last_insn.mnemonic not in ("BRA", "RTS", "BMI", "BPL", "BLT", "BGE", "BNE", "BEQ", "DBRA"):
+    if last_insn.mnemonic not in ("BRA", "RTS", "BMI", "BPL", "BLT", "BGE", "BNE", "BEQ", "BGT", "BLE", "DBRA"):
         lines.append(f"        return 0x{block.end_pc:06X}U;")
     lines.append("    }")
     return lines

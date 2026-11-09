@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-M68000 Instruction Decoder for Thor Recompiler Prototype.
-Decodes representative instruction subset for tilemap pipelines.
+M68000 Instruction Decoder for Thor Recompiler.
+Decodes instruction subset for tilemap pipelines, camera scroll, and entity tracking.
 Strictly <= 500 lines per AGENTS.md Rule 3.
 """
 from dataclasses import dataclass, field
@@ -24,13 +24,13 @@ class DecodedInstruction:
     ops: List[Operand] = field(default_factory=list)
     branch_target: Optional[int] = None
     base_cycles: int = 4
-    variable_cycles: int = 0  # e.g. for shifts
+    variable_cycles: int = 0
     skip_refresh: bool = False
 
 def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
     w0 = struct.unpack_from(">H", rom, pc)[0]
     words = [w0]
-    
+
     # RTS: 0x4E75
     if w0 == 0x4E75:
         return DecodedInstruction(pc, words, "RTS", "", [], base_cycles=16)
@@ -39,6 +39,33 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
     if (w0 & 0xFFF8) == 0x4840:
         reg = w0 & 7
         return DecodedInstruction(pc, words, "SWAP", "w", [Operand("reg_d", reg=reg)], base_cycles=4)
+
+    # CLR: 0x4200 (0x4240 | reg for .w, mode 0)
+    if (w0 & 0xFFF8) == 0x4240:
+        reg = w0 & 7
+        return DecodedInstruction(pc, words, "CLR", "w", [Operand("reg_d", reg=reg, size="w")], base_cycles=4)
+
+    # NEG: 0x4400 (0x4440 | reg for .w, mode 0)
+    if (w0 & 0xFFF8) == 0x4440:
+        reg = w0 & 7
+        return DecodedInstruction(pc, words, "NEG", "w", [Operand("reg_d", reg=reg, size="w")], base_cycles=4)
+
+    # Bit manipulation with immediate bit number: BTST / BSET / BCLR / BCHG (0x0800..0x08FF)
+    if (w0 & 0xFF00) == 0x0800:
+        bit_op = (w0 >> 6) & 3  # 0: BTST, 1: BCHG, 2: BCLR, 3: BSET
+        op_names = {0: "BTST", 1: "BCHG", 2: "BCLR", 3: "BSET"}
+        mnemonic = op_names[bit_op]
+        bit_word = struct.unpack_from(">H", rom, pc + 2)[0]
+        words.append(bit_word)
+        bit_num = bit_word & 0xFF
+        dst_mode = (w0 >> 3) & 7
+        dst_reg = w0 & 7
+        if dst_mode == 0:  # Dn (size .l)
+            return DecodedInstruction(pc, words, mnemonic, "l", [Operand("imm", val=bit_num), Operand("reg_d", reg=dst_reg, size="l")], base_cycles=12)
+        elif dst_mode == 5:  # d16(An) (size .b)
+            disp = struct.unpack_from(">h", rom, pc + 4)[0]
+            words.append(disp & 0xFFFF)
+            return DecodedInstruction(pc, words, mnemonic, "b", [Operand("imm", val=bit_num), Operand("disp_a", reg=dst_reg, val=disp, size="b")], base_cycles=12)
 
     # BRA / Bcc: 0x6000..0x6F00
     if (w0 & 0xF000) == 0x6000:
@@ -58,7 +85,7 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             target = pc + 2 + disp8
         return DecodedInstruction(pc, words, mnemonic, "w", [Operand("branch_disp", val=target)], branch_target=target, base_cycles=10)
 
-    # DBcc / DBRA: 0x50C8..0x5FCF ((w0 & 0xF0F8) == 0x50C8)
+    # DBcc / DBRA: 0x50C8..0x5FCF
     if (w0 & 0xF0F8) == 0x50C8:
         reg = w0 & 7
         cond = (w0 >> 8) & 0x0F
@@ -68,7 +95,7 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         target = pc + 2 + w1
         return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=reg), Operand("branch_disp", val=target)], branch_target=target, base_cycles=10)
 
-    # ADDQ / SUBQ: 0x5000 (ADDQ), 0x5100 (SUBQ) - checked AFTER DBRA!
+    # ADDQ / SUBQ: 0x5000 / 0x5100
     if (w0 & 0xF100) in (0x5000, 0x5100):
         is_sub = (w0 & 0x0100) != 0
         data = (w0 >> 9) & 7
@@ -86,11 +113,11 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         a_reg = (w0 >> 9) & 7
         mode = (w0 >> 3) & 7
         reg = w0 & 7
-        if mode == 7 and reg == 1: # abs.l (0x45F9 / 0x47F9 / 0x41F9)
+        if mode == 7 and reg == 1:  # abs.l
             addr = struct.unpack_from(">I", rom, pc + 2)[0]
             words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
             return DecodedInstruction(pc, words, "LEA", "l", [Operand("abs_l", val=addr), Operand("reg_a", reg=a_reg)], base_cycles=12)
-        elif mode == 5: # d16(An) (0x49EA)
+        elif mode == 5:  # d16(An)
             disp = struct.unpack_from(">h", rom, pc + 2)[0]
             words.append(disp & 0xFFFF)
             return DecodedInstruction(pc, words, "LEA", "l", [Operand("disp_a", reg=reg, val=disp), Operand("reg_a", reg=a_reg)], base_cycles=8)
@@ -103,7 +130,6 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         src_mode = (w0 >> 3) & 7
         src_reg = w0 & 7
 
-        # Decode source operand
         offset = 2
         if src_mode == 0:
             src_op = Operand("reg_d", reg=src_reg, size=sz)
@@ -118,7 +144,7 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             words.append(disp & 0xFFFF)
             offset += 2
             src_op = Operand("disp_a", reg=src_reg, val=disp, size=sz)
-        elif src_mode == 7 and src_reg == 4: # imm
+        elif src_mode == 7 and src_reg == 4:
             if sz == "l":
                 val = struct.unpack_from(">I", rom, pc + offset)[0]
                 words.extend([(val >> 16) & 0xFFFF, val & 0xFFFF])
@@ -131,7 +157,6 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         else:
             raise NotImplementedError(f"Unsupported MOVE src mode={src_mode} reg={src_reg} at 0x{pc:06X}")
 
-        # Decode dest operand
         if dst_mode == 0:
             dst_op = Operand("reg_d", reg=dst_reg, size=sz)
         elif dst_mode == 1:
@@ -178,17 +203,21 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         src_mode = (w0 >> 3) & 7
         src_reg = w0 & 7
 
-        if opmode in (3, 7): # ADDA / SUBA
+        if opmode in (3, 7):  # ADDA / SUBA
             sz = "w" if opmode == 3 else "l"
             mnemonic = "SUBA" if is_sub else "ADDA"
             if src_mode == 0:
                 return DecodedInstruction(pc, words, mnemonic, sz, [Operand("reg_d", reg=src_reg, size=sz), Operand("reg_a", reg=reg, size="l")], base_cycles=8)
             elif src_mode == 1:
                 return DecodedInstruction(pc, words, mnemonic, sz, [Operand("reg_a", reg=src_reg, size=sz), Operand("reg_a", reg=reg, size="l")], base_cycles=8)
-        elif opmode == 1: # ADD.W / SUB.W (Dn, <ea>)
+        elif opmode == 1:  # ADD.W / SUB.W (<ea>, Dn)
             mnemonic = "SUB" if is_sub else "ADD"
-            if src_mode == 0: # reg to reg
+            if src_mode == 0:
                 return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=src_reg), Operand("reg_d", reg=reg)], base_cycles=4)
+            elif src_mode == 5:
+                disp = struct.unpack_from(">h", rom, pc + 2)[0]
+                words.append(disp & 0xFFFF)
+                return DecodedInstruction(pc, words, mnemonic, "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=reg)], base_cycles=8)
 
     # CMP
     if (w0 & 0xF000) == 0xB000 and ((w0 >> 6) & 7) == 1:
@@ -197,25 +226,28 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         src_reg = w0 & 7
         if src_mode == 0:
             return DecodedInstruction(pc, words, "CMP", "w", [Operand("reg_d", reg=src_reg), Operand("reg_d", reg=d_dst)], base_cycles=4)
+        elif src_mode == 5:
+            disp = struct.unpack_from(">h", rom, pc + 2)[0]
+            words.append(disp & 0xFFFF)
+            return DecodedInstruction(pc, words, "CMP", "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=d_dst)], base_cycles=8)
 
     # Shifts / Rotates: 0xE000
     if (w0 & 0xF000) == 0xE000:
         count_or_reg = (w0 >> 9) & 7
-        dr = (w0 >> 8) & 1 # 0: right, 1: left
-        ir = (w0 >> 5) & 1 # 0: imm count, 1: reg count
-        shift_type = (w0 >> 3) & 3 # 0: ASR/ASL, 1: LSR/LSL, 2: ROXR/ROXL, 3: ROR/ROL
+        dr = (w0 >> 8) & 1  # 0: right, 1: left
+        ir = (w0 >> 5) & 1  # 0: imm count, 1: reg count
+        shift_type = (w0 >> 3) & 3  # 0: ASR/ASL, 1: LSR/LSL, 2: ROXR/ROXL, 3: ROR/ROL
         target_reg = w0 & 7
-        
+
         type_names = {0: "AS", 1: "LS", 2: "ROX", 3: "RO"}
         prefix = type_names[shift_type]
         dir_suffix = "L" if dr == 1 else "R"
         mnemonic = f"{prefix}{dir_suffix}"
 
-        if ir == 0: # immediate shift
+        if ir == 0:
             count = 8 if count_or_reg == 0 else count_or_reg
-            # Variable cycles in Musashi: count * 14 master cycles (+ 6 CPU cycles = 42 master cycles)
             return DecodedInstruction(pc, words, mnemonic, "w", [Operand("imm", val=count), Operand("reg_d", reg=target_reg)], base_cycles=42, variable_cycles=count * 14)
-        else: # register shift
+        else:
             return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=count_or_reg), Operand("reg_d", reg=target_reg)], base_cycles=42, variable_cycles=-1)
 
     raise NotImplementedError(f"Unsupported opcode 0x{w0:04X} at 0x{pc:06X}")

@@ -1,0 +1,144 @@
+{
+  "entry_pc": "0x0023CC",
+  "limit_pc": "0x002510",
+  "block_count": 16,
+  "exit_pcs": [
+    "0x002510"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x0023CC",
+      "end_pc": "0x0023EA",
+      "instruction_count": 7,
+      "successors": [
+        "0x00245E",
+        "0x0023EA"
+      ]
+    },
+    {
+      "start_pc": "0x0023EA",
+      "end_pc": "0x00241A",
+      "instruction_count": 16,
+      "successors": [
+        "0x00241C",
+        "0x00241A"
+      ]
+    },
+    {
+      "start_pc": "0x00241A",
+      "end_pc": "0x00241C",
+      "instruction_count": 1,
+      "successors": [
+        "0x00241C"
+      ]
+    },
+    {
+      "start_pc": "0x00241C",
+      "end_pc": "0x00242A",
+      "instruction_count": 4,
+      "successors": [
+        "0x002432",
+        "0x00242A"
+      ]
+    },
+    {
+      "start_pc": "0x00242A",
+      "end_pc": "0x002432",
+      "instruction_count": 3,
+      "successors": [
+        "0x00242A",
+        "0x002432"
+      ]
+    },
+    {
+      "start_pc": "0x002432",
+      "end_pc": "0x00245E",
+      "instruction_count": 15,
+      "successors": [
+        "0x0024AE"
+      ]
+    },
+    {
+      "start_pc": "0x00245E",
+      "end_pc": "0x00248C",
+      "instruction_count": 15,
+      "successors": [
+        "0x00248E",
+        "0x00248C"
+      ]
+    },
+    {
+      "start_pc": "0x00248C",
+      "end_pc": "0x00248E",
+      "instruction_count": 1,
+      "successors": [
+        "0x00248E"
+      ]
+    },
+    {
+      "start_pc": "0x00248E",
+      "end_pc": "0x0024AE",
+      "instruction_count": 11,
+      "successors": [
+        "0x0024AE"
+      ]
+    },
+    {
+      "start_pc": "0x0024AE",
+      "end_pc": "0x0024CC",
+      "instruction_count": 11,
+      "successors": [
+        "0x0024CC"
+      ]
+    },
+    {
+      "start_pc": "0x0024CC",
+      "end_pc": "0x0024DC",
+      "instruction_count": 7,
+      "successors": [
+        "0x0024EC",
+        "0x0024DC"
+      ]
+    },
+    {
+      "start_pc": "0x0024DC",
+      "end_pc": "0x0024EC",
+      "instruction_count": 5,
+      "successors": [
+        "0x0024EC"
+      ]
+    },
+    {
+      "start_pc": "0x0024EC",
+      "end_pc": "0x0024FA",
+      "instruction_count": 4,
+      "successors": [
+        "0x002508",
+        "0x0024FA"
+      ]
+    },
+    {
+      "start_pc": "0x0024FA",
+      "end_pc": "0x002508",
+      "instruction_count": 5,
+      "successors": [
+        "0x002508"
+      ]
+    },
+    {
+      "start_pc": "0x002508",
+      "end_pc": "0x00250C",
+      "instruction_count": 1,
+      "successors": [
+        "0x0024CC",
+        "0x00250C"
+      ]
+    },
+    {
+      "start_pc": "0x00250C",
+      "end_pc": "0x002512",
+      "instruction_count": 2,
+      "successors": []
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "m68k_recompiled_00d168",
+  "entry_pc": "0x00D168",
+  "limit_pc": "0x00D264",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_00d168_p0.hpp",
+    "m68k_recompiled_00d168_p0.cpp",
+    "m68k_recompiled_00d168_p1.hpp",
+    "m68k_recompiled_00d168_p1.cpp",
+    "m68k_recompiled_00d168_p2.hpp",
+    "m68k_recompiled_00d168_p2.cpp",
+    "m68k_recompiled_00d168_p3.hpp",
+    "m68k_recompiled_00d168_p3.cpp",
+    "m68k_recompiled_00d168_p4.hpp",
+    "m68k_recompiled_00d168_p4.cpp",
+    "m68k_recompiled_00d168.hpp",
+    "m68k_recompiled_00d168.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_00d168_p0.hpp": "824efe4aedf4dc3c4ece2cf22f525c3aa739d66df4973b300fb4b5e028b4a960",
+    "m68k_recompiled_00d168_p0.cpp": "07a23146534956f73874444158d15c5d4cd545486f7ee14d2f7920fe7cef08ae",
+    "m68k_recompiled_00d168_p1.hpp": "b009574a3bf982470abadb5c013ffe3137186aaf382aa4515d6c9c30fb1e5cb7",
+    "m68k_recompiled_00d168_p1.cpp": "c57ffb2234f05b87153f22827aee310171cae1d2b44f386dc1691aa24179a7a6",
+    "m68k_recompiled_00d168_p2.hpp": "a1bfd7b1417aea0eea30cbcf82e7cb5cefe3d4d4171c6243ca865ffa9346bba1",
+    "m68k_recompiled_00d168_p2.cpp": "e67e00a3d0270208b5b685172a256852195716ad687a79b680d16ae0b274701e",
+    "m68k_recompiled_00d168_p3.hpp": "435b042c4be2ac7ae6df5d6945bc820f05b706ed8ffe075336679f75b2897046",
+    "m68k_recompiled_00d168_p3.cpp": "f200ecddf2fa9dac1261b01469c2c8e14e8988b5b40d37c7ef71305e61904fa6",
+    "m68k_recompiled_00d168_p4.hpp": "c6f9f44fc0e321ca1a7fd2ab9403f6c7cc6b9866f56fb176477e7128ebb53946",
+    "m68k_recompiled_00d168_p4.cpp": "e06f9baec305d4251c24a6aad86e1b648f4f94395bcda8b6ed340fd536843b47",
+    "m68k_recompiled_00d168.hpp": "08f4d9311d2bdfcaea26f923bd3a7f4b5b36bf5395d0c55c636f2b1ed0cdf1f3",
+    "m68k_recompiled_00d168.cpp": "2db9b6fdeed80a5dcf7665f1ea28230b29f57b684d927ea0b84f179c53ae812f"
+  },
+  "block_count": 22,
+  "instruction_count": 73
+}
