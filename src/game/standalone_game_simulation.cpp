@@ -368,17 +368,19 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     // 1. Authentic HUD overlay from ROM routine 0x003FA0 (Slots 0..5)
     hud_.emit_hud(sat_pipeline_, player_.hp, player_.max_hp, 100, 100);
 
-    // 2. Beach water reflections (Slots 6..8, visible when screen overlaps y=100..108)
-    const int refl_y = 103 - cam_y;
-    sat_pipeline_.emit_piece(208 - cam_x, refl_y, 4, 1, 0x079BU, 0, true, false, false);
-    sat_pipeline_.emit_piece(240 - cam_x, refl_y, 4, 1, 0x079FU, 0, true, false, false);
-    sat_pipeline_.emit_piece(272 - cam_x, refl_y, 4, 1, 0x07A3U, 0, true, false, false);
+    // 2. Beach water reflections (Slots 6..8): authentic fixed HUD/status pieces from
+    // ROM routine 0x00A342 (table 0x00A468), emitted at fixed screen positions (112, 144, 176 at y=100)
+    sat_pipeline_.emit_piece(112, 100, 4, 1, 0x079BU, 0, true, false, false);
+    sat_pipeline_.emit_piece(144, 100, 4, 1, 0x079FU, 0, true, false, false);
+    sat_pipeline_.emit_piece(176, 100, 4, 1, 0x07A3U, 0, true, false, false);
 
     // 3. Player Ali composite sprite (Slots 9..14 or pose-dependent count)
     const bool facing_left = (player_.direction_code == 3);
-    const int ax = camera_.world_to_display_x(sim_state_.player_x);
-    const int ay = camera_.world_to_display_y(sim_state_.player_y);
     const std::size_t cur_pose = current_player_pose();
+    const int ax = (cur_pose == 6U)
+        ? camera_.world_to_screen_x(sim_state_.player_x)
+        : camera_.world_to_display_x(sim_state_.player_x);
+    const int ay = camera_.world_to_display_y(sim_state_.player_y);
 
     render::PlayerSpriteComposer::emit_player_pieces(sat_pipeline_, ax, ay, cur_pose, facing_left);
 

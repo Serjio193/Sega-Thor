@@ -126,6 +126,9 @@ add_test(NAME oasis_pixel_differential COMMAND oasis_pixel_differential_test)
 add_executable(oasis_alternative_trace_test tests/alternative_trace_test.cpp)
 target_link_libraries(oasis_alternative_trace_test PRIVATE oasis_core)
 add_test(NAME oasis_alternative_trace COMMAND oasis_alternative_trace_test)
+add_executable(oasis_holdout_trace_test tests/holdout_trace_test.cpp)
+target_link_libraries(oasis_holdout_trace_test PRIVATE oasis_core)
+add_test(NAME oasis_holdout_trace COMMAND oasis_holdout_trace_test)
 add_executable(oasis_runtime_test tests/runtime_test.cpp)
 target_link_libraries(oasis_runtime_test PRIVATE oasis_core)
 add_test(NAME oasis_runtime COMMAND oasis_runtime_test)
@@ -310,6 +313,7 @@ set(oasis_test_targets
     oasis_camera_controller_test
     oasis_pixel_differential_test
     oasis_alternative_trace_test
+    oasis_holdout_trace_test
     oasis_runtime_test
     oasis_screen_descriptor_test
     oasis_byte_grid_test
@@ -369,6 +373,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_camera_controller
         oasis_pixel_differential
         oasis_alternative_trace
+        oasis_holdout_trace
         oasis_runtime
         oasis_screen_descriptor
         oasis_byte_grid

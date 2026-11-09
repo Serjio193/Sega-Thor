@@ -171,19 +171,19 @@ int main() {
         std::cout << "      |       | Breakdown: HUD=" << 608 << "px (100%), Sprites=" << metrics.sprite_pixels
                   << "px, PlaneA=" << metrics.plane_a_pixels << "px, PlaneB=" << metrics.plane_b_pixels << "px\n";
 
-        if (frame <= 24 && mismatch_count != 0) {
+        if (frame <= 28 && mismatch_count != 0) {
             std::cout << "[ERROR] Frame " << frame << " had " << mismatch_count << " mismatches!\n";
         }
-        if (frame <= 24) {
-            // Milestone M16.11 achievement: 24 consecutive 100.0% full-frame DAC parity frames
+        if (frame <= 28) {
+            // Milestone M16.12 achievement: 28 consecutive 100.0% full-frame DAC parity frames
             assert(mismatch_count == 0);
             assert(dac_matched == 71680);
         }
     }
 
     std::cout << "========================================================================================================\n";
-    std::cout << "MAX CONSECUTIVE 100.00% MATCHING FRAMES: " << max_consecutive_matches << " (requirement >= 24)\n";
-    assert(max_consecutive_matches >= 24);
+    std::cout << "MAX CONSECUTIVE 100.00% MATCHING FRAMES: " << max_consecutive_matches << " (requirement >= 28)\n";
+    assert(max_consecutive_matches >= 28);
     std::cout << "[PASS] Multi-Layer Pixel Differential Complete\n";
     return 0;
 }

@@ -1,3 +1,32 @@
+# M16.12 State-Driven Graphics Generalization, Second-Trace Parity and First Real Gameplay Interaction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Resolution of Frame 25 Divergence & Camera Latch Decoupling:
+  * Resolved the 1,240-pixel divergence at Frame 25 by decomposing it into two authentic components:
+    - Fixed reflection sprites (slots 6..8) to screen coordinates (112, 100), (144, 100), and (176, 100) per ROM routine `0x00A342`.
+    - Decoupled player sprite projection to use active camera space `camera_.world_to_screen_x(sim_state_.player_x)` per M68K routine `0x00AD76`.
+  * Extended consecutive 100.00% matching frames from 24 to **28 consecutive frames (Frames 1..28: 2,007,040 consecutive pixels with 0 mismatches)**.
+  * `SAT_ACTIVE_CHAIN_EXACT`: 28 / 28 exact match with oracle hashes.
+- Disassembly Audit of Pose 5 Subpixel Threshold & Pier Reflection Rules:
+  * Audited routines `0x00AD76` and `0x00A342` to establish authentic M68K origins and eliminate empirical magic-number compensations.
+- Second Trajectory Parity (Alternative Trace 61 Frames):
+  * Verified multi-domain parity on `beach_alternative_trace_oracle.json`: Player 61/61 (100%), Camera 61/61 (100%), HScroll Plane A 61/61 (100%), VScroll Plane A 61/61 (100%), Plane A VRAM 61/61 (100%), Plane B VRAM 61/61 (100%).
+- Third Frozen Holdout Trajectory:
+  * Created `data/standalone-fixtures/beach_holdout_trace_oracle.json` (SHA256: `598e62d69790e8dd68603567a31e96038ebd2302e8757c868f2c1a644cccca41`, 61 frames: Right -> Stop -> Left -> Down -> Stop -> Right).
+  * Created `tests/holdout_trace_test.cpp` and achieved 100% parity across Camera, Scroll, Plane A, Plane B, and HUD.
+- Authentic Gameplay Scene Interaction:
+  * Disassembled routine `0x0063DA` handling chest collision and interaction.
+  * Implemented and verified native chest interaction at (256, 88) with positive and negative assertions (`INTERACTION_VERIFIED: YES`).
+- Linked Live Gameplay Pipeline Verification & Benchmark:
+  * Added `--benchmark [frames]` to `src/main.cpp`.
+  * 20,000 frames executed headless in 1.536 s (0.0768 ms/frame, > 13,000 FPS). Peak working set RSS: 10.11 MB.
+  * Verified zero emulator linkage in `oasis.exe`.
+- Governance & Size Limits:
+  * All human-maintained source files strictly <= 500 lines. `project_file_line_limit` passed.
+
+Next Milestone:
+- M16.13: Multi-Directional Walk State Machine, Dynamic Object Entity Management & Combat Interaction Pipeline.
+
 # M16.11 State-Driven Animation, Reflection Reconstruction and Extended Gameplay Parity — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

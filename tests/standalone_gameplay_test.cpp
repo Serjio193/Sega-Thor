@@ -412,29 +412,37 @@ void test_authentic_chest_interaction() {
     oasis::game::StandaloneGameSimulation sim{};
     oasis::genesis::VdpState dummy_vdp{};
     dummy_vdp.registers[13] = 0x37; // HScroll table at 0xDC00
-    oasis::game::CheckpointInitialState cp{};
-    // Place player at (256, 95), within 24 pixels of chest at (256, 88)
-    cp.x_fixed = 256 << 16;
-    cp.y_fixed = 95 << 16;
-    sim.initialize_from_checkpoint(dummy_vdp, cp);
 
-    assert(sim.entities().size() >= 1);
-    assert(sim.entities()[0].type_id == 0x0060);
+    // Proof 1: Outside proximity with Button A -> chest does not trigger
+    oasis::game::CheckpointInitialState cp_far{};
+    cp_far.x_fixed = 200 << 16;
+    cp_far.y_fixed = 200 << 16;
+    sim.initialize_from_checkpoint(dummy_vdp, cp_far);
+    oasis::game::FrameInput in_far{};
+    in_far.controller_1.set(oasis::core::Button::A);
+    oasis::genesis::VdpState vdp_far{};
+    sim.step_frame(in_far, vdp_far);
     assert(sim.entities()[0].state == 0x0000);
 
-    // Frame with Button::A pressed triggers interaction (routine 0x0063DA)
-    oasis::game::FrameInput input{};
-    input.frame_index = 1;
-    input.controller_1.set(oasis::core::Button::A);
+    // Proof 2: In proximity without action button -> chest does not trigger
+    oasis::game::CheckpointInitialState cp_near{};
+    cp_near.x_fixed = 256 << 16;
+    cp_near.y_fixed = 95 << 16;
+    sim.initialize_from_checkpoint(dummy_vdp, cp_near);
+    oasis::game::FrameInput in_no_btn{};
+    oasis::genesis::VdpState vdp_no_btn{};
+    sim.step_frame(in_no_btn, vdp_no_btn);
+    assert(sim.entities()[0].state == 0x0000);
 
-    oasis::genesis::VdpState out_vdp{};
-    sim.step_frame(input, out_vdp);
-
-    // Entity transitioned to opened state 0x006A and changed SAT tile base
+    // Proof 3: In proximity (256, 95) with Button A -> triggers routine 0x0063DA
+    oasis::game::FrameInput in_act{};
+    in_act.controller_1.set(oasis::core::Button::A);
+    oasis::genesis::VdpState vdp_act{};
+    sim.step_frame(in_act, vdp_act);
     assert(sim.entities()[0].state == 0x006A);
     assert(sim.entities()[0].tile_base == 0x04B0);
 
-    std::cout << "[PASS] test_authentic_chest_interaction (Chest opened, state 0x006A)\n";
+    std::cout << "[PASS] test_authentic_chest_interaction (Verified negative & positive cases)\n";
 }
 
 } // namespace

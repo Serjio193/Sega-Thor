@@ -65,8 +65,11 @@ int main(int argc, char** argv) {
                                parsed_id.ptr == id_argument.data() + id_argument.size() &&
                                resource_id >= 1U &&
                                resource_id <= oasis::game::kGfx3820ResourceCount;
-    if (argc != 2 && !resource_mode) {
-        std::cerr << "usage: oasis <rom.bin> [--resource-id 1..107]\n";
+    const bool benchmark_mode = (argc >= 3 && std::string_view(argv[2]) == "--benchmark");
+    const int benchmark_frames = (argc >= 4) ? std::atoi(argv[3]) : 120;
+
+    if (argc != 2 && !resource_mode && !benchmark_mode) {
+        std::cerr << "usage: oasis <rom.bin> [--resource-id 1..107] [--benchmark [frames]]\n";
         return 1;
     }
 
@@ -93,6 +96,26 @@ int main(int argc, char** argv) {
             return 3;
         }
         if (resource_mode) return run_resource_diagnostic(rom, resource_id);
+        if (benchmark_mode) {
+            oasis::game::screen::ControlledScreen screen(rom.bytes());
+            oasis::game::render::SoftwareFramebuffer framebuffer;
+            oasis::core::RuntimeLoop runtime(screen);
+            const auto start_time = std::chrono::steady_clock::now();
+            for (int f = 0; f < benchmark_frames; ++f) {
+                oasis::core::ControllerState ctrl{};
+                ctrl.set(oasis::core::Button::Right);
+                runtime.step(oasis::core::InputSnapshot{ctrl, {}});
+                screen.render(framebuffer.pixels());
+            }
+            const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now() - start_time).count();
+            const double total_ms = elapsed / 1000.0;
+            const double avg_ms = total_ms / benchmark_frames;
+            std::cout << std::dec << "BENCHMARK_FRAMES: " << benchmark_frames << "\n"
+                      << "TOTAL_TIME_MS: " << total_ms << "\n"
+                      << "AVERAGE_FRAME_TIME_MS: " << avg_ms << "\n";
+            return 0;
+        }
 
         oasis::game::screen::ControlledScreen screen(rom.bytes());
         oasis::game::render::SoftwareFramebuffer framebuffer;
