@@ -1,0 +1,16 @@
+{
+  "entry_pc": "0x005660",
+  "limit_pc": "0x00566E",
+  "block_count": 1,
+  "exit_pcs": [
+    "0x00566E"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x005660",
+      "end_pc": "0x005670",
+      "instruction_count": 4,
+      "successors": []
+    }
+  ]
+}

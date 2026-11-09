@@ -1,0 +1,120 @@
+{
+  "entry_pc": "0x062610",
+  "limit_pc": "0x062692",
+  "block_count": 13,
+  "exit_pcs": [
+    "0x062692"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x062610",
+      "end_pc": "0x062620",
+      "instruction_count": 3,
+      "successors": [
+        "0x062624",
+        "0x062620"
+      ]
+    },
+    {
+      "start_pc": "0x062620",
+      "end_pc": "0x062624",
+      "instruction_count": 1,
+      "successors": [
+        "0x06273A",
+        "0x062624"
+      ]
+    },
+    {
+      "start_pc": "0x062624",
+      "end_pc": "0x06262E",
+      "instruction_count": 2,
+      "successors": [
+        "0x062634",
+        "0x06262E"
+      ]
+    },
+    {
+      "start_pc": "0x06262E",
+      "end_pc": "0x062634",
+      "instruction_count": 2,
+      "successors": [
+        "0x062634"
+      ]
+    },
+    {
+      "start_pc": "0x062634",
+      "end_pc": "0x062650",
+      "instruction_count": 8,
+      "successors": [
+        "0x062654",
+        "0x062650"
+      ]
+    },
+    {
+      "start_pc": "0x062650",
+      "end_pc": "0x062654",
+      "instruction_count": 2,
+      "successors": [
+        "0x062660"
+      ]
+    },
+    {
+      "start_pc": "0x062654",
+      "end_pc": "0x06265C",
+      "instruction_count": 2,
+      "successors": [
+        "0x062660",
+        "0x06265C"
+      ]
+    },
+    {
+      "start_pc": "0x06265C",
+      "end_pc": "0x062660",
+      "instruction_count": 1,
+      "successors": [
+        "0x062660"
+      ]
+    },
+    {
+      "start_pc": "0x062660",
+      "end_pc": "0x062668",
+      "instruction_count": 2,
+      "successors": [
+        "0x062692",
+        "0x062668"
+      ]
+    },
+    {
+      "start_pc": "0x062668",
+      "end_pc": "0x062674",
+      "instruction_count": 3,
+      "successors": [
+        "0x062694",
+        "0x062674"
+      ]
+    },
+    {
+      "start_pc": "0x062674",
+      "end_pc": "0x06267E",
+      "instruction_count": 2,
+      "successors": [
+        "0x062692",
+        "0x06267E"
+      ]
+    },
+    {
+      "start_pc": "0x06267E",
+      "end_pc": "0x062692",
+      "instruction_count": 7,
+      "successors": [
+        "0x062692"
+      ]
+    },
+    {
+      "start_pc": "0x062692",
+      "end_pc": "0x062694",
+      "instruction_count": 1,
+      "successors": []
+    }
+  ]
+}

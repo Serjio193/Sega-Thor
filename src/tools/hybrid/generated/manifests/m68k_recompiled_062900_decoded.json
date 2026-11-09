@@ -1,0 +1,231 @@
+[
+  {
+    "pc": "0x062900",
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "raw_words": [
+      "0x7000"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062902",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1018"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062904",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1D40",
+      "0x0010"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062908",
+    "mnemonic": "LEA",
+    "size": "l",
+    "raw_words": [
+      "0x43FA",
+      "0x04CE"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06290C",
+    "mnemonic": "LEA",
+    "size": "l",
+    "raw_words": [
+      "0x45EE",
+      "0x0084"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062910",
+    "mnemonic": "ADD",
+    "size": "w",
+    "raw_words": [
+      "0xD040"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062912",
+    "mnemonic": "ADDA",
+    "size": "w",
+    "raw_words": [
+      "0xD2C0"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062914",
+    "mnemonic": "ADD",
+    "size": "w",
+    "raw_words": [
+      "0xD040"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062916",
+    "mnemonic": "ADDA",
+    "size": "w",
+    "raw_words": [
+      "0xD2C0"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062918",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06291A",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06291C",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06291E",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062920",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062922",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x14D9"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062924",
+    "mnemonic": "BSET",
+    "size": "b",
+    "raw_words": [
+      "0x08EE",
+      "0x0004",
+      "0x0001"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06292A",
+    "mnemonic": "BCLR",
+    "size": "b",
+    "raw_words": [
+      "0x08AE",
+      "0x0007",
+      "0x0001"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062930",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x0006"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062938"
+  },
+  {
+    "pc": "0x062934",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x3D40",
+      "0x0008"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062938",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

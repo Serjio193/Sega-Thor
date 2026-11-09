@@ -1,0 +1,25 @@
+{
+  "entry_pc": "0x062694",
+  "limit_pc": "0x0626A4",
+  "block_count": 2,
+  "exit_pcs": [
+    "0x0626A4"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x062694",
+      "end_pc": "0x0626A4",
+      "instruction_count": 4,
+      "successors": [
+        "0x0626A6",
+        "0x0626A4"
+      ]
+    },
+    {
+      "start_pc": "0x0626A4",
+      "end_pc": "0x0626A6",
+      "instruction_count": 1,
+      "successors": []
+    }
+  ]
+}

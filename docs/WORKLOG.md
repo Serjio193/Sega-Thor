@@ -1,3 +1,46 @@
+# 2026-11-09 — Milestone M15.235: AUTOMATED M68000 BATCH RECOMPILATION AND DIFFERENTIAL QUALIFICATION — Scalable Unattended M68000 to C++20 Batch Recompiler Toolchain (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py, supported_opcodes.json); Automated Compilation of 9 Independent ROM Functions (data/thor-fixtures/batch_recompiler_candidates_m15_235.json Totaling 104,129 Scenario C Steps); Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated Translation Unit (AGENTS.md Rule 3); Exact Multi-Function Differential Verification and Mutation Testing (tests/m68k_batch_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, CCR Flags, Stack Pop, and Return PC); Exclusive Ownership Screening and Identification of Nested Subroutine Ownership Collisions (Sound Driver 0x062000..0x062FFF vs Legacy Helper #12 623ac; 0x005660 vs 00557a); Architectural Analysis of GPGX Landmark Parity Constraint (Atomic Multi-Instruction Hook Skips Intermediate Fetch Callbacks; Recompiled Subroutines Require Instruction-Step Decomposition for Landmark Parity); Experimental Batch Slots Quarantined from Atomic Gameplay Stepping; Three-Scenario A/B Verification Across Scenarios C, A, and B (24/24 Raw Streams Bit-Exact, 3,992 Frames Total); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-238 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 1: Baseline Verification:
+    - Confirmed baseline commit 895696fe5b20f9df5a09845f70dc381893f3a1d4 (M15.234).
+    - Production helper active inventory strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+    - Pinned core SHA256 ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134, canonical ROM SHA256 eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+    - Verified baseline metrics: 6,589,171 native steps in Scenario C (37.379% raw, 83.432% non-idle, 1,308,466 remaining non-idle interpreted steps).
+  * Phase 2 & 3: Residual Subroutine Discovery & Candidate Manifest:
+    - Profiled Scenario C unowned residual execution, targeting leaf routines with high dynamic call frequencies.
+    - Froze candidate manifest in data/thor-fixtures/batch_recompiler_candidates_m15_235.json containing 9 independent candidate functions (104,129 dynamic steps total):
+      1. m68k_recompiled_062610 (0x062610..0x062692, 32 insts, 99,467 steps)
+      2. m68k_recompiled_005660 (0x005660..0x00566E, 4 insts, 2,268 steps)
+      3. m68k_recompiled_062986 (0x062986..0x0629B8, 12 insts, 1,101 steps)
+      4. m68k_recompiled_06293a (0x06293A..0x062984, 20 insts, 397 steps)
+      5. m68k_recompiled_062900 (0x062900..0x062938, 19 insts, 342 steps)
+      6. m68k_recompiled_0626a6 (0x0626A6..0x0626BA, 8 insts, 160 steps)
+      7. m68k_recompiled_062a24 (0x062A24..0x062A76, 25 insts, 136 steps)
+      8. m68k_recompiled_062694 (0x062694..0x0626A4, 5 insts, 90 steps)
+      9. m68k_recompiled_0629ee (0x0629EE..0x062A0A, 9 insts, 63 steps)
+  * Phase 4 & 5: Batch Toolchain Generalization & Automated Code Generation:
+    - Updated tools/thor_recompiler/supported_opcodes.json with SUB.W, OR.B, EOR.B, ROR.W, ROL.W, BNE.B, BEQ.B, BMI.B, BPL.B, BSR.S, RTS, TST, MOVE variants, etc.
+    - Extended decoder.py (329 lines <= 500) and codegen_cpp.py (480 lines <= 500) with complete arithmetic/logical/shift CCR calculations.
+    - Updated main.py (227 lines <= 500) with unattended batch driver producing partitioned units in src/tools/hybrid/generated/ with SHA256 integrity proofs.
+    - Generated all 9 candidates with max unit size 287 lines (well below the 500-line limit).
+  * Phase 6: Independent Multi-Function Differential Verification & Mutation:
+    - Authored tests/m68k_batch_differential_test.cpp (242 lines <= 500).
+    - Verified 100% bit-exact parity across registers D0-D7/A0-A7, CCR flags, memory mutations, and return PC for top 5 candidates.
+    - Mutation testing confirmed intentional bitflip mutation in Candidate 1 is caught immediately.
+  * Phase 7: Batch Integration, Exclusive Ownership Screening & Landmark Parity Discovery:
+    - Created src/tools/hybrid/m68k_batch_step.hpp and m68k_batch_step.cpp (114 lines <= 500) defining experimental Slots 230-238.
+    - Discovered that Sound Driver routines 0x062000..0x062FFF overlap with legacy helper #12 (623ac), and 0x005660 overlaps with 00557a.
+    - Discovered that atomic replacement of multi-instruction subroutines desynchronizes GPGX's observed-landmarks instruction counter (frame 381).
+    - Batch candidates quarantined from atomic gameplay stepping pending instruction-level decomposition.
+    - Built unified Linux runner build/auto-migrator/m15_235/linux-runner/oasis_gameplay_session (SHA256 4309f15c39227321e8f0691dde2952b0eb46c823b89c4baf363dc513740acbbb).
+    - Executed 3-scenario differential A/B across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 raw streams bit-exact. Zero contract faults.
+  * Phase 8: Authoritative Qualification Receipt:
+    - Emitted data/thor-evidence/combined-clusters-qualification-m15-235-20261109.json.
+    - Verified with ReceiptVerifier: overall_valid = true, 58/58 files valid, 48/48 streams verified.
+    - Preserved 0x003820 multi-frame decompressor quarantine.
+    - Governed file limit check passed (2,325 files <= 500 lines). git diff --check green.
+    - Standalone worktree confirmed untouched (STRICTLY READ-ONLY).
+
 # 2026-11-09 — Milestone M15.234: AUTOMATED M68000 RECOMPILER: INDEPENDENT FUNCTIONS, DIFFERENTIAL PROOF AND PRODUCTION-COMPATIBLE EXECUTION — Deterministic M68000 to C++20 Recompiler Pipeline (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py, supported_opcodes.json); Automated Compilation of Multiple Independent Functions (Target A: 0x002512 Row Upload, Target B: 0x0023CC Column Upload, Target C: 0x00D168 Camera Tracking Engine); Dynamic Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated Translation Unit (AGENTS.md Rule 3); Exact Differential Verification and Mutation Testing (tests/m68k_target_c_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, RAM structures at 0xFF1700, Return PC 0x02EB2A); Slot 229 Integration in Unified Linux Runner (build/auto-migrator/m15_234/linux-runner/oasis_gameplay_session, SHA256 991697297b9a5feae29dec5dff613963791ce7cf9fbd8876f3d4b71ebc71d9ef); Three-Scenario A/B Verification Across Scenarios C, A, and B (24/24 Raw Streams Bit-Exact, 3,992 Frames Total); Zero Contract Faults; Positive Measured Dynamic Native Instruction Displacement (+5,965 Steps in Scenario C, Total Combined Native Steps Reaching 6,589,171, Raw Native Coverage 37.379%, Non-Idle Coverage 83.432%); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-229 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**

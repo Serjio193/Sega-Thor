@@ -1,0 +1,30 @@
+{
+  "name": "m68k_recompiled_062a24",
+  "entry_pc": "0x062A24",
+  "limit_pc": "0x062A76",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_062a24_p0.hpp",
+    "m68k_recompiled_062a24_p0.cpp",
+    "m68k_recompiled_062a24_p1.hpp",
+    "m68k_recompiled_062a24_p1.cpp",
+    "m68k_recompiled_062a24_p2.hpp",
+    "m68k_recompiled_062a24_p2.cpp",
+    "m68k_recompiled_062a24.hpp",
+    "m68k_recompiled_062a24.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_062a24_p0.hpp": "08b337acde8614d09de20b3b1b06eaf0340f22ae43b8909b7c6a458a79d5a396",
+    "m68k_recompiled_062a24_p0.cpp": "bbed4434d4df946640ddbb3675efcb0c3c9383247a7a2369c2929717302b99b0",
+    "m68k_recompiled_062a24_p1.hpp": "669acb748e2f5d2aa96f5a2419920644f3c924e5080ae283c6a104c0a80f9546",
+    "m68k_recompiled_062a24_p1.cpp": "5687c3058e0de96612bb8b965b4301b70a04a0bbb66e0fbbe155dbdf0dc899b0",
+    "m68k_recompiled_062a24_p2.hpp": "45e8e4569b6236a2d9186f1b9ca44eb32655184c955ee4210e1507b434e2c181",
+    "m68k_recompiled_062a24_p2.cpp": "34faf0aedb91ec460c2b45e2891878268827d5e5b7c57434556a9d9add011c86",
+    "m68k_recompiled_062a24.hpp": "9cde0068c4735885681a263098e54e8b51280eef3df9c1e367ea56d6c6d31972",
+    "m68k_recompiled_062a24.cpp": "494188dc77629ee81f23bab515395cdb4f27a4c73096a5af5765f10a1dead9db"
+  },
+  "block_count": 11,
+  "instruction_count": 26
+}

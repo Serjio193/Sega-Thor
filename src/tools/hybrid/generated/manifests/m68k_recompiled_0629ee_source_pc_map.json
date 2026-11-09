@@ -1,0 +1,56 @@
+{
+  "0x0629EE": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "102E0017",
+    "mnemonic": "MOVE"
+  },
+  "0x0629F2": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "02000003",
+    "mnemonic": "ANDI"
+  },
+  "0x0629F6": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "00000004",
+    "mnemonic": "ORI"
+  },
+  "0x0629FA": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "1D400017",
+    "mnemonic": "MOVE"
+  },
+  "0x0629FE": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "8001",
+    "mnemonic": "OR"
+  },
+  "0x062A00": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "082E00060001",
+    "mnemonic": "BTST"
+  },
+  "0x062A06": {
+    "block_start": "0x0629EE",
+    "block_end": "0x062A08",
+    "bytes": "6602",
+    "mnemonic": "BNE"
+  },
+  "0x062A08": {
+    "block_start": "0x062A08",
+    "block_end": "0x062A0A",
+    "bytes": "1680",
+    "mnemonic": "MOVE"
+  },
+  "0x062A0A": {
+    "block_start": "0x062A0A",
+    "block_end": "0x062A0C",
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

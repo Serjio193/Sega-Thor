@@ -1,0 +1,26 @@
+{
+  "name": "m68k_recompiled_06293a",
+  "entry_pc": "0x06293A",
+  "limit_pc": "0x062984",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_06293a_p0.hpp",
+    "m68k_recompiled_06293a_p0.cpp",
+    "m68k_recompiled_06293a_p1.hpp",
+    "m68k_recompiled_06293a_p1.cpp",
+    "m68k_recompiled_06293a.hpp",
+    "m68k_recompiled_06293a.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_06293a_p0.hpp": "53186bc77bd76150633ae83d37bcb7b0322a3f3e80dba6817f65fc370e135a57",
+    "m68k_recompiled_06293a_p0.cpp": "411fd1e80f2900c6b837836812142cfd7170eea6b39fb060fdb777c716b740a0",
+    "m68k_recompiled_06293a_p1.hpp": "e1b483f85fa8401652f006d2906f9d04a00b549a970660b0f9f77dd64ba9597a",
+    "m68k_recompiled_06293a_p1.cpp": "ac0b3e693faba59b01e874cb265a33203c2057b1161420ea03a79b74ab73fc30",
+    "m68k_recompiled_06293a.hpp": "38b40c08c84e46b03ce6d23531b502c6bbd56b10a0decddb965cd3c7ec449231",
+    "m68k_recompiled_06293a.cpp": "721654c9f3f292208a45be911c5272385c3f24f560594dae2c94487104d7bdc4"
+  },
+  "block_count": 10,
+  "instruction_count": 25
+}

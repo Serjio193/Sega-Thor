@@ -1,0 +1,33 @@
+{
+  "entry_pc": "0x0629EE",
+  "limit_pc": "0x062A0A",
+  "block_count": 3,
+  "exit_pcs": [
+    "0x062A0A"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x0629EE",
+      "end_pc": "0x062A08",
+      "instruction_count": 7,
+      "successors": [
+        "0x062A0A",
+        "0x062A08"
+      ]
+    },
+    {
+      "start_pc": "0x062A08",
+      "end_pc": "0x062A0A",
+      "instruction_count": 1,
+      "successors": [
+        "0x062A0A"
+      ]
+    },
+    {
+      "start_pc": "0x062A0A",
+      "end_pc": "0x062A0C",
+      "instruction_count": 1,
+      "successors": []
+    }
+  ]
+}

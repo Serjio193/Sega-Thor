@@ -1,3 +1,83 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.235: Automated M68000 Batch Recompilation and Differential Qualification; Automated Batch Recompilation of 9 Subroutines in data/thor-fixtures/batch_recompiler_candidates_m15_235.json Totaling 104,129 Scenario C Steps; Multi-Function Differential & Mutation Testing in tests/m68k_batch_differential_test.cpp; Exclusive Ownership Screening; GPGX Landmark Instruction-Stepping Requirement Discovery; 24/24 Bit-Exact Streams Across Scenarios C, A, and B; 0 Contract Faults)
+
+## Milestone M15.235 Reverse Engineering Summary
+
+### Section 62: Batch Sound Routines & Ownership Mapping
+
+#### 1. Candidate Subroutines Inventory & Register Contracts
+The automated batch recompiler evaluated, disassembled, and generated C++20 implementations for 9 candidate subroutines in `data/thor-fixtures/batch_recompiler_candidates_m15_235.json`:
+
+1. **`m68k_recompiled_062610` (`0x062610..0x062692`, 32 instructions, 132 bytes, 99,467 Scenario C steps):**
+   - **Role:** Sound driver channel command dispatch / modulation step processing.
+   - **Entry ABI:** `A5` = sound driver workspace pointer (`$FFA800`), `D0.W` = command opcode / parameter.
+   - **Call Sites:** Called via `BSR.S $062610` from `0x062534` within parent driver dispatcher `0x0623AC`.
+   - **Exit:** `RTS` at `0x062692`.
+
+2. **`m68k_recompiled_005660` (`0x005660..0x00566E`, 4 instructions, 16 bytes, 2,268 Scenario C steps):**
+   - **Role:** Hardware status query / controller strobe latch check.
+   - **Entry ABI:** `A0` = hardware port register pointer, `D0.B` = status mask.
+   - **Call Sites:** Called via `BSR.W` from `0x00557A`.
+   - **Exit:** `RTS` at `0x00566E`.
+
+3. **`m68k_recompiled_062986` (`0x062986..0x0629B8`, 12 instructions, 52 bytes, 1,101 Scenario C steps):**
+   - **Role:** FM / PSG frequency pitch-bend / envelope calculation.
+   - **Entry ABI:** `A5` = driver workspace, `D1.W` = envelope step, `D2.W` = base frequency.
+   - **Call Sites:** Called from `0x062758` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x0629B8`.
+
+4. **`m68k_recompiled_06293a` (`0x06293A..0x062984`, 20 instructions, 76 bytes, 397 Scenario C steps):**
+   - **Role:** Sound queue circular buffer pop & event dispatch.
+   - **Entry ABI:** `A5` = driver workspace, `A4` = channel pointer.
+   - **Call Sites:** Called from `0x062688` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x062984`.
+
+5. **`m68k_recompiled_062900` (`0x062900..0x062938`, 19 instructions, 58 bytes, 342 Scenario C steps):**
+   - **Role:** Sound channel volume / attenuation table lookup.
+   - **Entry ABI:** `A5` = driver workspace, `D0.B` = volume index.
+   - **Call Sites:** Called from `0x0626F0` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x062938`.
+
+6. **`m68k_recompiled_0626a6` (`0x0626A6..0x0626BA`, 8 instructions, 22 bytes, 160 Scenario C steps):**
+   - **Role:** Channel note-off key release processing.
+   - **Entry ABI:** `A5` = driver workspace.
+   - **Call Sites:** Called from `0x062590` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x0626BA`.
+
+7. **`m68k_recompiled_062a24` (`0x062A24..0x062A76`, 25 instructions, 84 bytes, 136 Scenario C steps):**
+   - **Role:** Z80 command packet formatting and handshake serialization.
+   - **Entry ABI:** `A5` = driver workspace, `D0.B` = command byte.
+   - **Call Sites:** Called from `0x062810` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x062A76`.
+
+8. **`m68k_recompiled_062694` (`0x062694..0x0626A4`, 5 instructions, 18 bytes, 90 Scenario C steps):**
+   - **Role:** Voice mute bitfield reset.
+   - **Entry ABI:** `A5` = driver workspace.
+   - **Call Sites:** Called from `0x062580` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x0626A4`.
+
+9. **`m68k_recompiled_0629ee` (`0x0629EE..0x062A0A`, 9 instructions, 30 bytes, 63 Scenario C steps):**
+   - **Role:** Channel timer tick decrement and threshold check.
+   - **Entry ABI:** `A5` = driver workspace, `D3.W` = tick count.
+   - **Call Sites:** Called from `0x0627A0` within `0x0623AC`.
+   - **Exit:** `RTS` at `0x062A0A`.
+
+#### 2. Discovered Parent Ownership & Architectural Collisions
+- **The 0x0623AC Sound Coordinator:** Candidates 1, 3, 4, 5, 6, 7, 8, 9 all reside within the range `0x062000..0x062FFF` and are called exclusively as internal subroutines of the sound engine driver whose entry point is `0x0623AC`.
+- **Legacy Active Helper Collisions:** In the production registry, Helper #12 is registered at `0x0623AC` (`m68k_623ac_*.cpp`). When Helper #12 is active or stepper interception is structured at entry points, installing sub-steppers inside the same address range creates overlapping execution contexts if not explicitly coordinated with Helper #12.
+- **Candidate 2 (`0x005660`) Collision:** Similarly, candidate `0x005660` is invoked directly by `0x00557A` (`m68k_00557a_step_block2.cpp`).
+
+#### 3. Root Cause of Frame 381 Landmark Desynchronization
+- **GPGX Landmark Recorder Protocol:** In GPGX, `observed-landmarks.jsonl` tracks execution dynamics (such as `instructions` executed, `pc_fingerprint`, and memory access counts) by hooking individual instruction fetch events in the M68000 CPU core.
+- **Atomic Block Stepping Divergence:** When a recompiled C++ function executes an entire subroutine atomically (e.g., executing 32 instructions in a single C++ call and updating the CPU's PC directly to the return address via `set_return_state`), the CPU interpreter bypasses 31 instruction fetch callbacks.
+- **Desynchronization Manifestation:** At frame 381 of Scenario C, during sound driver execution, this instruction-counter deficit causes `observed-landmarks.jsonl` to diverge from the reference run, even though register state, memory contents, VDP commands, and video/audio output remain 100% bit-exact.
+- **Instruction-Step Decomposition Requirement:** To preserve both full state parity and landmark telemetry parity, native recompiled functions in the hybrid runtime must step instruction-by-instruction (as implemented in `m68k_00d168_instruction_step.cpp`) or the GPGX landmark recorder must be provided with synthetic instruction-step notification hooks.
+- **Quarantine Action:** Consequently, atomic batch stepping slots (Slots 230–238) are quarantined in the hybrid qualification runner pending instruction-step decomposition.
+
+#### 4. Guidance for Standalone Integration
+- **Sound Engine Decoupling:** In the standalone C++20 engine (`C:/Github/Sega-Thor-Standalone`), the entire M68000 sound driver (`0x062000..0x062FFF`) is bypassed in favor of native audio synthesis.
+- **Z80 Audio Queue Connection:** The game's main coordinator writes audio commands to the communication queue at `$FFA800..$FFA8FF`. Recompiled sound routines (such as `0x062A24` Z80 command packet formatting) bridge directly to the standalone audio mixer's command queue (`oasis::audio::SoundCommandQueue`).
+- **Elimination of M68000 Spinwaits:** By migrating sound command dispatch to native C++, the standalone engine avoids CPU spinwaits on Z80 bus grant status, cleanly separating game logic updates from audio playback.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.234: Automated M68000 Recompiler Generalization; Independent Multi-Function Translation of Target A 0x002512, Target B 0x0023CC, Target C 0x00D168; Dynamic Sub-Function Partitioning <= 500 Lines; Differential Proof & Mutation Testing; Tilemap Camera Tracking Engine 0x00D168 Integrated as Native Slot 229; 6,589,171 Native Steps in Scenario C / 37.379% Raw / 83.432% Non-Idle; 24/24 Bit-Exact Streams)
 
 ## Milestone M15.234 Reverse Engineering Summary

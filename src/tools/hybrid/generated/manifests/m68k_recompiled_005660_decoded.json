@@ -1,0 +1,50 @@
+[
+  {
+    "pc": "0x005660",
+    "mnemonic": "LEA",
+    "size": "l",
+    "raw_words": [
+      "0x41F9",
+      "0x00FF",
+      "0x1972"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x005666",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x30EE",
+      "0x0008"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x00566A",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x30AE",
+      "0x000C"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x00566E",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

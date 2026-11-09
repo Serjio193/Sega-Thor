@@ -4207,3 +4207,21 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - 	ools/run_m15_234_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.234 (M15.234).
 - 	ools/generate_m15_234_receipt.py — Authoritative receipt generator and verifier for M15.234 (M15.234).
 - data/thor-evidence/combined-clusters-qualification-m15-234-20261109.json — Verified machine evidence receipt for M15.234 (M15.234).
+- data/thor-fixtures/batch_recompiler_candidates_m15_235.json — Frozen candidate manifest for M15.235 batch recompilation containing 9 candidate subroutines (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_062610* — Machine-generated C++20 recompiled units for 0x062610..0x062692 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_005660* — Machine-generated C++20 recompiled units for 0x005660..0x00566E (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_062986* — Machine-generated C++20 recompiled units for 0x062986..0x0629B8 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_06293a* — Machine-generated C++20 recompiled units for 0x06293A..0x062984 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_062900* — Machine-generated C++20 recompiled units for 0x062900..0x062938 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_0626a6* — Machine-generated C++20 recompiled units for 0x0626A6..0x0626BA (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_062a24* — Machine-generated C++20 recompiled units for 0x062A24..0x062A76 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_062694* — Machine-generated C++20 recompiled units for 0x062694..0x0626A4 (M15.235).
+- src/tools/hybrid/generated/m68k_recompiled_0629ee* — Machine-generated C++20 recompiled units for 0x0629EE..0x062A0A (M15.235).
+- src/tools/hybrid/m68k_batch_step.hpp — Batch stepper declarations and metrics for experimental Slots 230–238 (M15.235).
+- src/tools/hybrid/m68k_batch_step.cpp — Batch stepper implementation and dispatch wiring (M15.235).
+- tests/m68k_batch_differential_test.cpp — Independent differential and mutation verification test suite for batch candidates (M15.235).
+- tools/build_batch_differential_test.py — Build and execution script for batch differential tests (M15.235).
+- tools/build_m15_235_runner.py — Linux qualification runner build harness for M15.235 (M15.235).
+- tools/run_m15_235_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.235 (M15.235).
+- tools/generate_m15_235_receipt.py — Authoritative receipt generator and verifier for M15.235 (M15.235).
+- data/thor-evidence/combined-clusters-qualification-m15-235-20261109.json — Verified machine evidence receipt for M15.235 (M15.235).

@@ -1,0 +1,32 @@
+{
+  "0x062694": {
+    "block_start": "0x062694",
+    "block_end": "0x0626A4",
+    "bytes": "122E0017",
+    "mnemonic": "MOVE"
+  },
+  "0x062698": {
+    "block_start": "0x062694",
+    "block_end": "0x0626A4",
+    "bytes": "02010003",
+    "mnemonic": "ANDI"
+  },
+  "0x06269C": {
+    "block_start": "0x062694",
+    "block_end": "0x0626A4",
+    "bytes": "0C010003",
+    "mnemonic": "CMPI"
+  },
+  "0x0626A0": {
+    "block_start": "0x062694",
+    "block_end": "0x0626A4",
+    "bytes": "67000004",
+    "mnemonic": "BEQ"
+  },
+  "0x0626A4": {
+    "block_start": "0x0626A4",
+    "block_end": "0x0626A6",
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

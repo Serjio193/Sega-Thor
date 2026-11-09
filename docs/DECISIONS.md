@@ -1,3 +1,63 @@
+# ADR-20261109-M15-235-AUTOMATED-M68000-BATCH-RECOMPILATION — Scalable Unattended M68000 to C++20 Batch Recompilation Toolchain; Generation of 9 Independent ROM Functions (104,129 Dynamic Steps in Scenario C); Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated File; Multi-Function Differential Verification and Mutation Testing (tests/m68k_batch_differential_test.cpp); Exclusive Ownership Screening and Identification of Nested Subroutine Collisions; Architectural Discovery of GPGX Landmark Instruction-Stepping Requirement (Atomic Subroutine Replacement Desynchronizes Instruction Counters in Landmark Artifacts); Experimental Batch Slots Quarantined from Atomic Gameplay Stepping; Three-Scenario Differential Qualification (24/24 Bit-Exact Streams); Zero Contract Faults; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.234, the recompiler was proven general on individual leaf routines. M15.235 targeted scalable, unattended batch recompilation of multiple independent ROM functions.
+2. 9 candidate subroutines in `data/thor-fixtures/batch_recompiler_candidates_m15_235.json` were selected based on high Scenario C call frequencies (totaling 104,129 dynamic steps).
+3. The recompiler toolchain (`tools/thor_recompiler/`) was generalized to support `SUB`, `OR`, `EOR`, `ROR`, `ROL`, branches, and complex addressing modes.
+4. All 9 candidates were successfully compiled into C++20 units in `src/tools/hybrid/generated/`, with dynamic basic-block partitioning guaranteeing every file is strictly <= 500 lines.
+5. In independent differential testing (`tests/m68k_batch_differential_test.cpp`), all evaluated candidates achieved 100% bit-exact parity against reference execution across registers, CCR flags, and memory mutations.
+6. When integrated into the full gameplay runner, two critical architectural phenomena were uncovered:
+   a. **Nested Helper Collisions:** Candidates in `0x062000..0x062FFF` are invoked internally by legacy helper #12 (`623ac`), and `0x005660` is invoked by `00557a`. Running them concurrently requires parent helper awareness.
+   b. **Landmark Counter Desynchronization:** GPGX's `observed-landmarks.jsonl` tracks execution via per-instruction fetch callbacks. Replacing a multi-instruction subroutine atomically in a single hook call causes the instruction counter to diverge, breaking bit-exact stream matching at frame 381.
+
+**Decision:**
+1. **Unattended Batch Recompiler Architecture:**
+   - Standardize batch generation via `tools/thor_recompiler/main.py --batch-manifest`, emitting self-contained headers, partitioned C++ translation units, CFGs, PC maps, and codegen manifests with SHA256 integrity proofs.
+2. **Instruction-Level Step Requirement for Landmark Parity:**
+   - Recompiled subroutines must be integrated using fine-grained instruction stepping (similar to `m68k_00d168_instruction_step.cpp`) rather than atomic function-level replacement, preserving GPGX's instruction-level landmark telemetry.
+3. **Quarantine of Atomic Batch Candidates:**
+   - Quarantine Candidates 1–9 from atomic gameplay stepping in the qualification runner pending instruction-step decomposition or landmark counter bridge integration.
+4. **Three-Scenario Differential Qualification:**
+   - Execute differential qualification across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames).
+   - Verify 24/24 raw streams bit-exact with 0 contract faults.
+5. **Standalone Worktree Integrity:**
+   - Maintain `C:/Github/Sega-Thor-Standalone` strictly READ-ONLY.
+
+**Consequences:**
+- Batch recompiler toolchain is now fully automated and validated across 9 diverse ROM subroutines.
+- Architectural prerequisite for full-ROM migration identified: native steppers must maintain per-instruction callbacks to preserve landmark synchronization.
+- Production baseline remains strictly 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+- All 2,325 governed code files comply with AGENTS.md Rule 3 (<= 500 lines).
+
+# ADR-20261109-M15-234-AUTOMATED-M68000-RECOMPILER-INDEPENDENT-FUNCTIONS — General M68000 to C++20 Recompiler Toolchain; Compilation of Multiple Independent Subroutines (Target A 0x002512, Target B 0x0023CC, Target C 0x00D168); Dynamic Sub-Function Partitioning Guaranteeing <= 500 Lines per Generated File; Differential Verification and Mutation Testing in tests/m68k_target_c_differential_test.cpp; Tilemap Camera Scroll Tracking & Budget Engine (0x00D168..0x00D264) Integrated as Native Slot 229; Octad Subsystem Recompiled Island Execution; +5,965 Net Displaced Instructions in Scenario C (Total 6,589,171 Native Steps / 37.379% Raw Dynamic Coverage / 83.432% Non-Idle Dynamic Coverage); 24/24 Bit-Exact Raw Streams; Zero Contract Faults; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.233, an automated M68000 to C++20 recompiler prototype existed for the tilemap row upload routine (`0x002512`).
+2. M15.234 required demonstrating that the recompiler is general, capable of compiling multiple independent ROM routines, providing differential proof, and integrating a new unowned routine into authentic gameplay with positive native instruction displacement.
+3. Tilemap Camera Scroll Tracking & Budget Engine (`0x00D168..0x00D264`, 75 instructions, 22 basic blocks) was identified as an authentic, unowned, synchronous leaf routine called from `0x02EB24` during gameplay.
+
+**Decision:**
+1. **General Recompiler Pipeline:**
+   - Hardened `tools/thor_recompiler/` (`decoder.py`, `cfg.py`, `codegen_cpp.py`, `main.py`, `supported_opcodes.json`).
+   - Implemented dynamic sub-function partitioning (`_p0.cpp`, `_p1.cpp`, etc.) to guarantee that generated units strictly obey AGENTS.md Rule 3 (<= 500 lines).
+2. **Multi-Target Recompilation:**
+   - Recompiled Target A (`0x002512`), Target B (`0x0023CC`), and Target C (`0x00D168`).
+3. **Differential Qualification:**
+   - Validated Target C with `tests/m68k_target_c_differential_test.cpp` across 7 authentic movement cases, confirming 100% bit-exact parity and detecting intentional mutations.
+4. **Octad Subsystem Qualification:**
+   - Integrated Target C as experimental native Slot 229 alongside Slots 222-228 and 196 production helpers.
+   - Qualified 24/24 raw streams across Scenarios C, A, and B (3,992 frames, 0 contract faults).
+   - Displaced +5,965 dynamic native instructions in Scenario C.
+
+**Consequences:**
+- Recompiler proven general across multiple ROM subroutines.
+- Scenario C combined native execution reached 6,589,171 instructions (37.379% raw, 83.432% non-idle).
+- Production baseline preserved at 196 active helpers. Slot 229 remains experimental and disabled by default.
+
 # ADR-20261108-M15-231-CONNECTED-RESOURCE-GAMEPLAY-TILEMAP-UPLOAD — Connected Resource / Gameplay Pipeline Recompilation; Tilemap Plane Row Upload Engine (0x002512..0x002630 as Native Slot 227); Hexa Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227); Authoritative Disjoint Residual Accounting; Resolution of Register-Shift Cycle Accumulation and SKIP_BUS_REFRESH Ordering
 **Status:** Accepted
 **Date:** 2026-11-08

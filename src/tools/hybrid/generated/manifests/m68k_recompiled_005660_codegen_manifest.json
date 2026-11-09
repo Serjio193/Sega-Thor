@@ -1,0 +1,18 @@
+{
+  "name": "m68k_recompiled_005660",
+  "entry_pc": "0x005660",
+  "limit_pc": "0x00566E",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_005660.hpp",
+    "m68k_recompiled_005660.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_005660.hpp": "3e2df70dceb7edae17cf816e34feb59b45a6057beefc07a58d29928af1e7ad41",
+    "m68k_recompiled_005660.cpp": "2402849458445f78da8ac580a26e31310c5f0819f16b2b83ce96a4b9ff4ccd4f"
+  },
+  "block_count": 1,
+  "instruction_count": 4
+}

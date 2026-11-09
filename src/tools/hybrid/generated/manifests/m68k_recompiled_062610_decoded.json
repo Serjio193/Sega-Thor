@@ -1,0 +1,428 @@
+[
+  {
+    "pc": "0x062610",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1D6D",
+      "0x0003",
+      "0x006D"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062616",
+    "mnemonic": "BTST",
+    "size": "b",
+    "raw_words": [
+      "0x082E",
+      "0x0002",
+      "0x0000"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06261C",
+    "mnemonic": "BNE",
+    "size": "w",
+    "raw_words": [
+      "0x6600",
+      "0x0006"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062624"
+  },
+  {
+    "pc": "0x062620",
+    "mnemonic": "BSR",
+    "size": "w",
+    "raw_words": [
+      "0x6100",
+      "0x0118"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x06273A"
+  },
+  {
+    "pc": "0x062624",
+    "mnemonic": "BCLR",
+    "size": "b",
+    "raw_words": [
+      "0x08AE",
+      "0x0002",
+      "0x0075"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06262A",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x0008"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062634"
+  },
+  {
+    "pc": "0x06262E",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x103C",
+      "0x00FF"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062632",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1680"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062634",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x302E",
+      "0x001C"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062638",
+    "mnemonic": "ADD",
+    "size": "w",
+    "raw_words": [
+      "0xD06E",
+      "0x0076"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06263C",
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "raw_words": [
+      "0x7200"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06263E",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x122E",
+      "0x0071"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062642",
+    "mnemonic": "ASR",
+    "size": "w",
+    "raw_words": [
+      "0xE260"
+    ],
+    "base_cycles": 42,
+    "variable_cycles": -1,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062644",
+    "mnemonic": "ADD",
+    "size": "w",
+    "raw_words": [
+      "0xD06E",
+      "0x000A"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062648",
+    "mnemonic": "CMPI",
+    "size": "w",
+    "raw_words": [
+      "0x0C40",
+      "0x0001"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06264C",
+    "mnemonic": "BGE",
+    "size": "w",
+    "raw_words": [
+      "0x6C00",
+      "0x0006"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062654"
+  },
+  {
+    "pc": "0x062650",
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "raw_words": [
+      "0x7001"
+    ],
+    "base_cycles": 4,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062652",
+    "mnemonic": "BRA",
+    "size": "w",
+    "raw_words": [
+      "0x600C"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062660"
+  },
+  {
+    "pc": "0x062654",
+    "mnemonic": "CMPI",
+    "size": "w",
+    "raw_words": [
+      "0x0C40",
+      "0x03FF"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062658",
+    "mnemonic": "BLE",
+    "size": "w",
+    "raw_words": [
+      "0x6F00",
+      "0x0006"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062660"
+  },
+  {
+    "pc": "0x06265C",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x303C",
+      "0x03FF"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062660",
+    "mnemonic": "CMP",
+    "size": "w",
+    "raw_words": [
+      "0xB06E",
+      "0x0008"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062664",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x002C"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062692"
+  },
+  {
+    "pc": "0x062668",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x3D40",
+      "0x0008"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06266C",
+    "mnemonic": "CMPI",
+    "size": "b",
+    "raw_words": [
+      "0x0C07",
+      "0x00E0"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062670",
+    "mnemonic": "BEQ",
+    "size": "w",
+    "raw_words": [
+      "0x6700",
+      "0x0022"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062694"
+  },
+  {
+    "pc": "0x062674",
+    "mnemonic": "BTST",
+    "size": "b",
+    "raw_words": [
+      "0x082E",
+      "0x0006",
+      "0x0001"
+    ],
+    "base_cycles": 12,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06267A",
+    "mnemonic": "BNE",
+    "size": "w",
+    "raw_words": [
+      "0x6600",
+      "0x0016"
+    ],
+    "base_cycles": 10,
+    "variable_cycles": 0,
+    "branch_target": "0x062692"
+  },
+  {
+    "pc": "0x06267E",
+    "mnemonic": "MOVE",
+    "size": "w",
+    "raw_words": [
+      "0x3200"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062680",
+    "mnemonic": "ANDI",
+    "size": "b",
+    "raw_words": [
+      "0x0200",
+      "0x000F"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062684",
+    "mnemonic": "OR",
+    "size": "b",
+    "raw_words": [
+      "0x802D",
+      "0x0004"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062688",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1680"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06268A",
+    "mnemonic": "LSR",
+    "size": "w",
+    "raw_words": [
+      "0xE849"
+    ],
+    "base_cycles": 42,
+    "variable_cycles": 56,
+    "branch_target": null
+  },
+  {
+    "pc": "0x06268C",
+    "mnemonic": "ANDI",
+    "size": "b",
+    "raw_words": [
+      "0x0201",
+      "0x003F"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062690",
+    "mnemonic": "MOVE",
+    "size": "b",
+    "raw_words": [
+      "0x1681"
+    ],
+    "base_cycles": 8,
+    "variable_cycles": 0,
+    "branch_target": null
+  },
+  {
+    "pc": "0x062692",
+    "mnemonic": "RTS",
+    "size": "",
+    "raw_words": [
+      "0x4E75"
+    ],
+    "base_cycles": 16,
+    "variable_cycles": 0,
+    "branch_target": null
+  }
+]

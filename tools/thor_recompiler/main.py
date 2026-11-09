@@ -160,7 +160,7 @@ def main():
     else:
         # Single function
         ho = generate_cpp_header(args.name, is_orchestrator=True)
-        sub_s = generate_sub_function(f"{args.name}_impl", blocks_list)
+        sub_s = generate_sub_function(f"{args.name}_impl", blocks_list, is_inline=True)
         so_lines = [
             f'#include "tools/hybrid/generated/{args.name}.hpp"',
             "",

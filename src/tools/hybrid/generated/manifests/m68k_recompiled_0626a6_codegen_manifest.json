@@ -1,0 +1,18 @@
+{
+  "name": "m68k_recompiled_0626a6",
+  "entry_pc": "0x0626A6",
+  "limit_pc": "0x0626BA",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_0626a6.hpp",
+    "m68k_recompiled_0626a6.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_0626a6.hpp": "63a021644ebea95ba5c5a2667028b548b2c4d193003f5def8d64db373e4fa8ce",
+    "m68k_recompiled_0626a6.cpp": "bb3ba63d63fb4c4d0b8f4f2de290bcdf17df952da65ef5873dfd316f10c60fd8"
+  },
+  "block_count": 1,
+  "instruction_count": 8
+}

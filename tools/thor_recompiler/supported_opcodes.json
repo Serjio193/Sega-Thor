@@ -5,14 +5,15 @@
   "instruction_families": [
     {
       "family": "MOVE",
-      "mnemonics": ["MOVE", "MOVEA"],
-      "encoding_pattern": "00ss_dddd_ddss_ssss",
+      "mnemonics": ["MOVE", "MOVEA", "MOVEQ"],
+      "encoding_pattern": "00ss_dddd_ddss_ssss / 0111_rrr0_dddd_dddd",
       "operand_widths": ["b", "w", "l"],
       "supported_source_addressing_modes": ["Dn (mode 0)", "An (mode 1)", "(An) (mode 2)", "(An)+ (mode 3)", "d16(An) (mode 5)", "#imm (mode 7, reg 4)"],
-      "supported_destination_addressing_modes": ["Dn (mode 0)", "An (mode 1)", "(An) (mode 2)", "d16(An) (mode 5)"],
+      "supported_destination_addressing_modes": ["Dn (mode 0)", "An (mode 1)", "(An) (mode 2)", "(An)+ (mode 3)", "d16(An) (mode 5)"],
       "ccr_effects": {
         "MOVE": "X unaffected, N = (result < 0), Z = (result == 0), V = 0, C = 0",
-        "MOVEA": "None (CCR unaffected)"
+        "MOVEA": "None (CCR unaffected)",
+        "MOVEQ": "X unaffected, N = (result < 0), Z = (result == 0), V = 0, C = 0"
       },
       "memory_accesses": "Read source if memory mode; write destination if memory mode (big-endian 8/16/32-bit)",
       "pc_behavior": "Sequential advance by instruction word length",
@@ -25,7 +26,7 @@
       "family": "ADD_SUB",
       "mnemonics": ["ADD", "SUB", "ADDI", "SUBI", "ADDQ", "SUBQ", "ADDA", "SUBA"],
       "encoding_pattern": "1101/1001/0x04/0x06/0x50/0x51",
-      "operand_widths": ["w", "l"],
+      "operand_widths": ["b", "w", "l"],
       "supported_source_addressing_modes": ["Dn", "An", "#imm", "d16(An)"],
       "supported_destination_addressing_modes": ["Dn", "An", "d16(An)"],
       "ccr_effects": "X = C, N = (result < 0), Z = (result == 0), V = signed overflow, C = carry/borrow; ADDA/SUBA leave CCR unchanged",
@@ -38,13 +39,13 @@
     },
     {
       "family": "CMP",
-      "mnemonics": ["CMP", "CMPI"],
-      "encoding_pattern": "1011_rrr0_ssmm_mrrr / 0000_1100_ssmm_mrrr",
-      "operand_widths": ["w", "l"],
-      "supported_source_addressing_modes": ["Dn", "#imm", "d16(An)"],
-      "supported_destination_addressing_modes": ["Dn"],
-      "ccr_effects": "X unaffected, N = (dest - src < 0), Z = (dest == src), V = signed overflow, C = (dest < src unsigned)",
-      "memory_accesses": "Read memory if source is d16(An); destination not written",
+      "mnemonics": ["CMP", "CMPI", "TST"],
+      "encoding_pattern": "1011_rrr0_ssmm_mrrr / 0000_1100_ssmm_mrrr / 0100_1010_ssmm_mrrr",
+      "operand_widths": ["b", "w", "l"],
+      "supported_source_addressing_modes": ["Dn", "#imm", "d16(An)", "(An)"],
+      "supported_destination_addressing_modes": ["Dn", "d16(An)", "(An)"],
+      "ccr_effects": "X unaffected, N = (dest - src < 0), Z = (dest == src), V = signed overflow, C = (dest < src unsigned); TST sets V=0, C=0",
+      "memory_accesses": "Read memory if source is d16(An) or (An); destination not written",
       "pc_behavior": "Sequential advance",
       "cycle_model": "4..8 CPU cycles (28..56 master cycles)",
       "variable_timing": false,
@@ -53,22 +54,23 @@
     },
     {
       "family": "LOGIC",
-      "mnemonics": ["ANDI", "ORI", "CLR", "NEG"],
-      "encoding_pattern": "0000_00x0_ssmm_mrrr / 0100_0010_ssmm_mrrr / 0100_0100_ssmm_mrrr",
+      "mnemonics": ["ANDI", "ORI", "EORI", "OR", "CLR", "NEG", "NOT", "SF", "ST"],
+      "encoding_pattern": "0000_00x0_ssmm_mrrr / 0100_0010_ssmm_mrrr / 0100_0100_ssmm_mrrr / 0100_0110_ssmm_mrrr / 0101_xxxx_11mm_mrrr",
       "operand_widths": ["b", "w", "l"],
-      "supported_source_addressing_modes": ["#imm (ANDI/ORI)", "implied (CLR/NEG)"],
+      "supported_source_addressing_modes": ["#imm (ANDI/ORI/EORI)", "Dn", "d16(An)", "implied (CLR/NEG/NOT/SF/ST)"],
       "supported_destination_addressing_modes": ["Dn", "d16(An)"],
       "ccr_effects": {
-        "ANDI_ORI": "X unaffected, N = MSB, Z = (res == 0), V = 0, C = 0",
+        "ANDI_ORI_EORI_OR_NOT": "X unaffected, N = MSB, Z = (res == 0), V = 0, C = 0",
         "CLR": "X unaffected, N = 0, Z = 1, V = 0, C = 0",
-        "NEG": "X = C, N = MSB, Z = (res == 0), V = (src == 0x8000), C = (src != 0)"
+        "NEG": "X = C, N = MSB, Z = (res == 0), V = (src == 0x8000), C = (src != 0)",
+        "SF_ST": "None"
       },
       "memory_accesses": "Read/write d16(An) if memory destination",
       "pc_behavior": "Sequential advance",
       "cycle_model": "4..16 CPU cycles (28..112 master cycles)",
       "variable_timing": false,
       "bus_refresh_effects": "Standard",
-      "unsupported_cases": ["AND/OR register-register (use ANDI/ORI)", "EOR"]
+      "unsupported_cases": ["AND register-register"]
     },
     {
       "family": "BIT_MANIPULATION",
@@ -124,7 +126,7 @@
       "mnemonics": ["LEA", "SWAP"],
       "encoding_pattern": "0100_rrr1_11mm_mrrr / 0100_1000_0100_0rrr",
       "operand_widths": ["w", "l"],
-      "supported_source_addressing_modes": ["abs.l (mode 7, reg 1)", "d16(An) (mode 5)", "Dn (SWAP)"],
+      "supported_source_addressing_modes": ["abs.l (mode 7, reg 1)", "d16(PC) (mode 7, reg 2)", "d16(An) (mode 5)", "Dn (SWAP)"],
       "supported_destination_addressing_modes": ["An (LEA)", "Dn (SWAP)"],
       "ccr_effects": {
         "LEA": "None",

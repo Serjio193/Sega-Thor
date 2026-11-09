@@ -1,0 +1,122 @@
+{
+  "0x062900": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "7000",
+    "mnemonic": "MOVEQ"
+  },
+  "0x062902": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "1018",
+    "mnemonic": "MOVE"
+  },
+  "0x062904": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "1D400010",
+    "mnemonic": "MOVE"
+  },
+  "0x062908": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "43FA04CE",
+    "mnemonic": "LEA"
+  },
+  "0x06290C": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "45EE0084",
+    "mnemonic": "LEA"
+  },
+  "0x062910": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "D040",
+    "mnemonic": "ADD"
+  },
+  "0x062912": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "D2C0",
+    "mnemonic": "ADDA"
+  },
+  "0x062914": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "D040",
+    "mnemonic": "ADD"
+  },
+  "0x062916": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "D2C0",
+    "mnemonic": "ADDA"
+  },
+  "0x062918": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x06291A": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x06291C": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x06291E": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x062920": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x062922": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "14D9",
+    "mnemonic": "MOVE"
+  },
+  "0x062924": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "08EE00040001",
+    "mnemonic": "BSET"
+  },
+  "0x06292A": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "08AE00070001",
+    "mnemonic": "BCLR"
+  },
+  "0x062930": {
+    "block_start": "0x062900",
+    "block_end": "0x062934",
+    "bytes": "67000006",
+    "mnemonic": "BEQ"
+  },
+  "0x062934": {
+    "block_start": "0x062934",
+    "block_end": "0x062938",
+    "bytes": "3D400008",
+    "mnemonic": "MOVE"
+  },
+  "0x062938": {
+    "block_start": "0x062938",
+    "block_end": "0x06293A",
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}

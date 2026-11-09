@@ -1,0 +1,50 @@
+{
+  "entry_pc": "0x062986",
+  "limit_pc": "0x0629B8",
+  "block_count": 5,
+  "exit_pcs": [
+    "0x0629B8"
+  ],
+  "blocks": [
+    {
+      "start_pc": "0x062986",
+      "end_pc": "0x062998",
+      "instruction_count": 5,
+      "successors": [
+        "0x0629A0",
+        "0x062998"
+      ]
+    },
+    {
+      "start_pc": "0x062998",
+      "end_pc": "0x0629A0",
+      "instruction_count": 2,
+      "successors": [
+        "0x0629AC"
+      ]
+    },
+    {
+      "start_pc": "0x0629A0",
+      "end_pc": "0x0629A8",
+      "instruction_count": 2,
+      "successors": [
+        "0x0629AC",
+        "0x0629A8"
+      ]
+    },
+    {
+      "start_pc": "0x0629A8",
+      "end_pc": "0x0629AC",
+      "instruction_count": 1,
+      "successors": [
+        "0x0629AC"
+      ]
+    },
+    {
+      "start_pc": "0x0629AC",
+      "end_pc": "0x0629BA",
+      "instruction_count": 4,
+      "successors": []
+    }
+  ]
+}

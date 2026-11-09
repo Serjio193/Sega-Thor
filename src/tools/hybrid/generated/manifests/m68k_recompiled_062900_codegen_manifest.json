@@ -1,0 +1,18 @@
+{
+  "name": "m68k_recompiled_062900",
+  "entry_pc": "0x062900",
+  "limit_pc": "0x062938",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "target_abi": "hybrid_step_v1",
+  "policy": "strict_reject_unsupported",
+  "generated_files": [
+    "m68k_recompiled_062900.hpp",
+    "m68k_recompiled_062900.cpp"
+  ],
+  "source_hashes": {
+    "m68k_recompiled_062900.hpp": "3ace8e3ba8d9fd9c30e3565929ff3e1da83988c516664b58458ae23605e43f13",
+    "m68k_recompiled_062900.cpp": "1e8d9bd86da51b4bd96e60c4849a32eb67bf2c9606f86b3c0557f4278a868350"
+  },
+  "block_count": 3,
+  "instruction_count": 20
+}

@@ -1,0 +1,50 @@
+{
+  "0x0626A6": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "3200",
+    "mnemonic": "MOVE"
+  },
+  "0x0626A8": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "0200000F",
+    "mnemonic": "ANDI"
+  },
+  "0x0626AC": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "802D0004",
+    "mnemonic": "OR"
+  },
+  "0x0626B0": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "1680",
+    "mnemonic": "MOVE"
+  },
+  "0x0626B2": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "E849",
+    "mnemonic": "LSR"
+  },
+  "0x0626B4": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "0201003F",
+    "mnemonic": "ANDI"
+  },
+  "0x0626B8": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "1681",
+    "mnemonic": "MOVE"
+  },
+  "0x0626BA": {
+    "block_start": "0x0626A6",
+    "block_end": "0x0626BC",
+    "bytes": "4E75",
+    "mnemonic": "RTS"
+  }
+}
