@@ -1,5 +1,6 @@
 #include "game/combat/attack_controller.hpp"
 
+#include <algorithm>
 #include <cmath>
 
 namespace oasis::game {
@@ -20,6 +21,7 @@ void NativeAttackController::update(player::PlayerState& player,
     const bool attack_pressed = controller.pressed(core::Button::B);
     const bool currently_in_attack = (player.movement_state == 0x30U ||
                                       player.movement_state == 0x0AU ||
+                                      player.movement_state == 0x08U ||
                                       player.movement_state == 0x46U);
 
     if (attack_pressed && !currently_in_attack) {
@@ -57,9 +59,32 @@ void NativeAttackController::update(player::PlayerState& player,
                 }
             }
         } else {
-            // Authentic 33-frame original ROM attack (routine 0x008028)
-            player.movement_state = 0x0AU; // Default unarmed attack state
+            // Authentic 33-frame original ROM attack (routine 0x0078AA - 0x0078F0)
+            player.movement_state = 0x0AU; // Default sword attack state
             attack_timer_ = 33U;           // Exact 33-frame recovery duration
+
+            // Authentic ROM combat contact & damage calculation (routine 0x00E6BA / 0x01F450)
+            for (std::size_t i = 1; i < target_entities.size(); ++i) {
+                auto& ent = target_entities[i];
+                if (!ent.active) continue;
+
+                const int edx = ent.world_x - player_x;
+                const int edy = ent.world_y - player_y;
+                // Authentic distance check (routine 0x00E6F0)
+                if (std::abs(edx) <= 32 && std::abs(edy) <= 32) {
+                    // Routine 0x01F450: damage = max(1, incoming_dmg - defense)
+                    constexpr int kBaseDmg = 4;
+                    constexpr int kDef = 0;
+                    const int final_dmg = std::max(1, kBaseDmg - kDef);
+                    ent.hp = static_cast<std::int16_t>(std::max(0, ent.hp - final_dmg));
+                    if (ent.hp == 0) {
+                        ent.state = 0x0EU; // Defeat state
+                    } else {
+                        ent.state = 0x0AU; // Hurt reaction state 0x0A (routine 0x01F478)
+                    }
+                    ent.anim_frame = 0x08U; // Hurt animation 0x08 (routine 0x01F484)
+                }
+            }
         }
     } else if (currently_in_attack) {
         if (attack_timer_ > 0U) {

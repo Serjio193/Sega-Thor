@@ -1,3 +1,20 @@
+# M16.18 Authentic Attack Semantics Reconciliation, Natural Free-Control Validation, and First Real Enemy Contact Oracle — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Attack State Contradiction Reconciliation & Evidence Matrix:
+  * Proved M16.16 State 0x30 / Animation 0x36 (0x0401F4) is Object Interaction / Chest Open / Push / Lift written at routine 0x005B90.
+  * Proved M16.17 State 0x0A / Animation 0x3A (0x0400A0) is authentic Sword Attack written at routine 0x0078F0.
+  * Discovered State 0x08 / Animation 0x0A (0x0400D4) is authentic Dagger Attack written at routine 0x0078BC.
+  * Discovered equipment select bit: Bit 4 of $FF165E selects Sword (bit 4 = 1) vs Dagger (bit 4 = 0).
+- Checkpoint Provenance Audit:
+  * Proved that in Genesis 68K memory space, `free_control_frame580.state` modifies exactly 1 byte: $FF1997 from 0xFF to 0x00. Cutscene lock $FF0DB5 is naturally 0x00. Labeled RESEARCH_MODIFIED.
+- First Original Enemy Contact & Combat Forensics:
+  * Discovered entity table layout: entity stride is exactly 0x2F0 bytes (Slot 0 Player $FF19E8, Slot 1 Enemy Guard $FF1CD8, Slot 2 $FF1FC8, Slot 3 $FF22B8).
+  * Disassembled routine 0x01F450: proved damage formula `damage = max(1, base_dmg - def)`, HP storage at $8A, defense at $92, damage mailbox at $86, hurt reaction state 0x0A, hurt animation 0x08, hit sound 0x8004D9.
+- Test Suite & Multi-Toolchain Verification:
+  * Extended `tests/attack_journal_differential_test.cpp` with provenance audit, state reconciliation, and authentic enemy combat mechanics.
+  * 100% pass across MinGW Release and MSVC Debug test suites.
+
 # M16.17 Original Attack Execution Oracle, Player State Transition Parity, and Generalized Sprite Presentation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

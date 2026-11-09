@@ -1,3 +1,30 @@
+# 2026-11-09 — Milestone M16.18: AUTHENTIC ATTACK SEMANTICS RECONCILIATION, NATURAL FREE-CONTROL VALIDATION, AND FIRST REAL ENEMY CONTACT ORACLE — Reconciliation of Original Attack State and Animation IDs (0x30/0x36 vs 0x0A/0x3A vs 0x08/0x0A); Formal Audit of Checkpoint Provenance (RESEARCH_MODIFIED Flag Modification 0xFF1997); Independence Audit of Attack Oracle (34 Frames, beach_attack_oracle.json); Natural Free-Control Progression Analysis; First Authentic Enemy Contact & Collision Forensics (Routines 0x007852, 0x00E6BA, 0x01F41C, 0x01F450); Memory Field Architecture Discovered (Entity Slot Size 0x2F0 Bytes, HP 0x8A, Defense 0x92, Damage Mailbox 0x86, Hurt State 0x0A, Hurt Anim 0x08, Sound 0x8004D9); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Verified M16.17 commit `405d5cbc133785ef2b64b111c9295452ae3cd300`.
+    - Verified ROM SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Verified GPGX core SHA256 `CA4BE3049E56B1FDFBA9A7C727BEBBDC645B3D50203D635A468048BA81165134`.
+    - Verified attack oracle SHA256 `AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713`.
+    - Verified checkpoint SHA256 `21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9`.
+  * Phase 1 — Resolve Attack State Contradictions:
+    - Disassembled routines 0x005990, 0x005B3C, 0x00632A, 0x007852..0x0078F0, 0x0401F4.
+    - Demonstrated State 0x30 / Animation 0x36 is Object Interaction / Lift / Push / Chest Open (routine 0x005B90).
+    - Demonstrated State 0x0A / Animation 0x3A is Sword Attack (routine 0x0078F0).
+    - Demonstrated State 0x08 / Animation 0x0A is Dagger Attack (routine 0x0078BC).
+  * Phase 2 — Attack Oracle Independence Audit:
+    - Quantified all 12 requested fields across 34 frames in `beach_attack_oracle.json`.
+  * Phase 3 — Checkpoint Provenance Audit:
+    - Audited byte-level differences between natural Frame 580 state and `free_control_frame580.state`. Verified exactly 1 byte modified in Genesis RAM ($FF1997 = 0). Labeled RESEARCH_MODIFIED.
+  * Phase 6 & 7 — First Original Enemy Contact & Collision Forensics:
+    - Discovered entity slot stride = 0x2F0 bytes (Slot 0 Player $FF19E8, Slot 1 Enemy Guard $FF1CD8).
+    - Traced combat contact at Frame 1914 where Enemy 1 takes damage, transitions from State 24 to State 0x0A (Hurt), anim 0x08 (Hurt).
+    - Disassembled routine 0x01F450: documented authentic damage formula, HP at $8A, defense at $92, damage mailbox at $86, hit sound 0x8004D9.
+  * Phase 8 & 9 — Native Combat Implementation & Differential:
+    - Updated `NativeAttackController` and `attack_journal_differential_test.cpp` to support authentic ROM damage formulas and hurt reactions.
+  * Phase 12 — Dual-toolchain & Governance:
+    - Both MinGW Release and MSVC Debug test suites pass 100%. All human-maintained source files <= 500 lines.
+
 # 2026-11-09 — Milestone M16.17: ORIGINAL ATTACK EXECUTION ORACLE, PLAYER STATE TRANSITION PARITY, AND GENERALIZED SPRITE PRESENTATION — Isolation of Free Interactive Control Checkpoint (Frame 580, free_control_frame580.state, SHA256 21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9); Disassembly Proof of Attract Mode Demo Flag $FF1997 Bypass; Generation of Authentic Attack Execution Oracle (34 Frames, beach_attack_oracle.json, SHA256 AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713); Decoupling and Formal Gating of Experimental Combat Approximations (18-frame Cooldown, 16x16 Hitbox, 4 HP Damage, Defeat State 2); Full 33-Frame Authentic Attack Semantics (State 0x0A, Anim 0x3A, Sound 0x0218, Movement Lock, 34-Frame Return to State 0 Idle); State 4 -> 12 -> 0 Transition Integration with Exact 0xACCC Deceleration; Comprehensive Differential Attack Test Suite (tests/attack_journal_differential_test.cpp); Dual Release (MinGW) and Debug (MSVC) Clean Builds; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

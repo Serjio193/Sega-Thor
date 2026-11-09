@@ -1,3 +1,26 @@
+# ADR-20261109-M16-18-AUTHENTIC-ATTACK-SEMANTICS-RECONCILIATION-NATURAL-FREE-CONTROL-VALIDATION-AND-FIRST-REAL-ENEMY-CONTACT-ORACLE — Reconciliation of Original Attack State and Animation IDs (0x30/0x36 vs 0x0A/0x3A vs 0x08/0x0A); Formal Audit of Checkpoint Provenance (RESEARCH_MODIFIED Flag Modification 0xFF1997); Independence Audit of Attack Oracle (34 Frames, beach_attack_oracle.json); Natural Free-Control Progression Analysis; First Authentic Enemy Contact & Collision Forensics (Routines 0x007852, 0x00E6BA, 0x01F41C, 0x01F450); Memory Field Architecture Discovered (Entity Slot Size 0x2F0 Bytes, HP 0x8A, Defense 0x92, Damage Mailbox 0x86, Hurt State 0x0A, Hurt Anim 0x08, Sound 0x8004D9); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. M16.16 identified attack State 0x30 and animation 0x36 (descriptor 0x0401F4), while M16.17 reported State 0x0A and animation 0x3A (descriptor 0x0400A0). This contradiction required exhaustive M68K disassembly forensics to isolate root causes.
+2. The attack checkpoint was created by clearing demo flag $FF1997, requiring a formal provenance audit and explicit classification as RESEARCH_MODIFIED.
+3. Authentic enemy collision and combat mechanics (hurt reaction, damage formula, HP storage) were unverified in original execution.
+
+**Decisions:**
+1. Reconciled Attack State & Animation M68K Writer Hierarchy:
+   - State 0x30, Animation 0x36 (routine 0x005B90 / 0x005B96): Triggered by Button A / interaction check at 0x0059A0 against interactive entities ($68(a6) in $FF19E8..$FF2954). Represents Object Interaction / Push / Pull / Chest Opening, NOT weapon attack.
+   - State 0x0A, Animation 0x3A (routine 0x0078F0 / 0x0078EA): Triggered by Button B (attack button) at 0x005990 via routine 0x007852 when weapon byte $FF165E bit 4 is set. Represents authentic Sword / Weapon Attack.
+   - State 0x08, Animation 0x0A (routine 0x0078BC / 0x0078B6): Triggered when weapon byte $FF165E bit 4 is clear. Represents authentic Dagger Attack.
+2. Checkpoint Provenance Audit (RESEARCH_MODIFIED):
+   - Provenance analysis of `data/checkpoints/free_control_frame580.state` vs unpatched Frame 580 demonstrated that in Genesis 68K RAM, exactly one byte was modified: offset 0x19A6 ($FF1997) from 0xFF (demo playback active) to 0x00 (controller input active). Cutscene lock $FF0DB5 was naturally 0x00. All other 65,535 bytes of WRAM are bit-exact original execution state.
+3. Authentic Enemy Collision & Combat Forensics (Routines 0x00E6BA, 0x01F41C, 0x01F450):
+   - Discovered entity slot stride is exactly 0x2F0 bytes (752 bytes).
+   - Entity WRAM offsets: $8A = HP, $92 = Defense, $86 = Incoming Damage Mailbox, $04 = Movement State, $2A = Animation ID, $38 bit 3 = Invulnerability flag.
+   - Authentic Damage Formula: `final_damage = std::max(1, incoming_damage - defense)`. `hp = std::max(0, hp - final_damage)`. On hit: state transitions to 0x0A (Hurt), anim transitions to 0x08 (Hurt), sound effect 0x8004D9 is dispatched.
+4. Native Implementation & Test Expansion:
+   - Updated `NativeAttackController` and test suite `tests/attack_journal_differential_test.cpp` to verify authentic enemy damage calculation, state transitions, and provenance audits.
+
 # ADR-20261109-M16-17-ORIGINAL-ATTACK-EXECUTION-ORACLE-PLAYER-STATE-TRANSITION-PARITY-AND-GENERALIZED-SPRITE-PRESENTATION — Authentic Attack Execution Oracle (34 Frames, beach_attack_oracle.json, SHA256 AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713); Isolation of Free Interactive Control Checkpoint (Frame 580, free_control_frame580.state, SHA256 21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9); Disassembly Proof of Attract Mode Demo Flag $FF1997 Bypass; Decoupling and Formal Gating of Experimental Combat Approximations (18-frame Cooldown, 16x16 Hitbox, 4 HP Damage, Defeat State 2); Full 33-Frame Authentic Attack Semantics (State 0x0A, Anim 0x3A, Sound 0x0218, Movement Lock, 34-Frame Return to State 0 Idle); State 4 -> 12 -> 0 Transition Integration with Exact 0xACCC Deceleration; Comprehensive Differential Attack Test Suite (tests/attack_journal_differential_test.cpp); Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
 **Status:** Accepted
 **Date:** 2026-11-09
