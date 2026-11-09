@@ -22,6 +22,8 @@ M68k9D70StepResult step_m68k_batch_005660(unsigned pc, const M68k9D70StepApi& ap
 M68k9D70StepResult step_m68k_batch_006e7a(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
 M68k9D70StepResult step_m68k_batch_062694(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
 M68k9D70StepResult step_m68k_batch_062a78(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
+M68k9D70StepResult step_m68k_batch_00d2b4(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
+M68k9D70StepResult step_m68k_batch_0059a8(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept;
 
 void write_batch_step_metrics(const std::filesystem::path& parent_dir);
 void reset_batch_step_metrics() noexcept;

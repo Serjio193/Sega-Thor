@@ -136,17 +136,18 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=reg), Operand("branch_disp", val=target)], branch_target=target, base_cycles=10)
 
     # ADDQ / SUBQ: 0x5000 / 0x5100
-    if (w0 & 0xF100) in (0x5000, 0x5100):
+    if (w0 & 0xF000) == 0x5000 and (w0 & 0x00C0) != 0x00C0:
         is_sub = (w0 & 0x0100) != 0
         data = (w0 >> 9) & 7
         imm = 8 if data == 0 else data
+        sz = "b" if (w0 & 0x00C0) == 0 else ("w" if (w0 & 0x00C0) == 0x0040 else "l")
         mode = (w0 >> 3) & 7
         reg = w0 & 7
         mnemonic = "SUBQ" if is_sub else "ADDQ"
         if mode == 0:
-            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("imm", val=imm), Operand("reg_d", reg=reg)], base_cycles=4)
+            return DecodedInstruction(pc, words, mnemonic, sz, [Operand("imm", val=imm), Operand("reg_d", reg=reg, size=sz)], base_cycles=4 if sz != "l" else 8)
         elif mode == 1:
-            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("imm", val=imm), Operand("reg_a", reg=reg)], base_cycles=8)
+            return DecodedInstruction(pc, words, mnemonic, sz, [Operand("imm", val=imm), Operand("reg_a", reg=reg, size=sz)], base_cycles=8)
 
     # LEA: 0x41C0..0x4FF8
     if (w0 & 0xF1C0) == 0x41C0:
@@ -162,6 +163,13 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             words.append(disp & 0xFFFF)
             target_addr = pc + 2 + disp
             return DecodedInstruction(pc, words, "LEA", "l", [Operand("imm", val=target_addr, size="l"), Operand("reg_a", reg=a_reg)], base_cycles=8)
+        elif mode == 7 and reg == 3:  # d8(PC, Xn)
+            ext = struct.unpack_from(">H", rom, pc + 2)[0]
+            words.append(ext)
+            x_reg = (ext >> 12) & 7
+            disp = struct.unpack(">b", bytes([ext & 0xFF]))[0]
+            base_addr = pc + 2 + disp
+            return DecodedInstruction(pc, words, "LEA", "l", [Operand("pc_index", reg=x_reg, val=base_addr, size="w"), Operand("reg_a", reg=a_reg)], base_cycles=12)
         elif mode == 5:  # d16(An)
             disp = struct.unpack_from(">h", rom, pc + 2)[0]
             words.append(disp & 0xFFFF)
@@ -189,6 +197,11 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             words.append(disp & 0xFFFF)
             offset += 2
             src_op = Operand("disp_a", reg=src_reg, val=disp, size=sz)
+        elif src_mode == 7 and src_reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + offset)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            offset += 4
+            src_op = Operand("abs_l", val=addr, size=sz)
         elif src_mode == 7 and src_reg == 4:
             if sz == "l":
                 val = struct.unpack_from(">I", rom, pc + offset)[0]
@@ -276,6 +289,8 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 return DecodedInstruction(pc, words, mnemonic, sz, [Operand("reg_d", reg=src_reg, size=sz), Operand("reg_a", reg=reg, size="l")], base_cycles=8)
             elif src_mode == 1:
                 return DecodedInstruction(pc, words, mnemonic, sz, [Operand("reg_a", reg=src_reg, size=sz), Operand("reg_a", reg=reg, size="l")], base_cycles=8)
+            elif src_mode == 2:
+                return DecodedInstruction(pc, words, mnemonic, sz, [Operand("indir_a", reg=src_reg, size=sz), Operand("reg_a", reg=reg, size="l")], base_cycles=8)
         elif opmode == 0:  # ADD.B / SUB.B (<ea>, Dn)
             mnemonic = "SUB" if is_sub else "ADD"
             if src_mode == 0:
@@ -299,17 +314,37 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 words.append(disp & 0xFFFF)
                 return DecodedInstruction(pc, words, mnemonic, "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=reg)], base_cycles=8)
 
-    # CMP
-    if (w0 & 0xF000) == 0xB000 and ((w0 >> 6) & 7) == 1:
-        d_dst = (w0 >> 9) & 7
+    # CMP / CMPA: 0xB000
+    if (w0 & 0xF000) == 0xB000:
+        opmode = (w0 >> 6) & 7
         src_mode = (w0 >> 3) & 7
         src_reg = w0 & 7
-        if src_mode == 0:
-            return DecodedInstruction(pc, words, "CMP", "w", [Operand("reg_d", reg=src_reg), Operand("reg_d", reg=d_dst)], base_cycles=4)
-        elif src_mode == 5:
-            disp = struct.unpack_from(">h", rom, pc + 2)[0]
-            words.append(disp & 0xFFFF)
-            return DecodedInstruction(pc, words, "CMP", "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=d_dst)], base_cycles=8)
+        if opmode in (3, 7):  # CMPA
+            sz = "w" if opmode == 3 else "l"
+            a_dst = (w0 >> 9) & 7
+            if src_mode == 7 and src_reg == 4:  # imm
+                if sz == "l":
+                    imm = struct.unpack_from(">I", rom, pc + 2)[0]
+                    words.extend([(imm >> 16) & 0xFFFF, imm & 0xFFFF])
+                else:
+                    imm = struct.unpack_from(">H", rom, pc + 2)[0]
+                    words.append(imm)
+                return DecodedInstruction(pc, words, "CMPA", sz, [Operand("imm", val=imm, size=sz), Operand("reg_a", reg=a_dst, size="l")], base_cycles=6)
+        elif opmode == 1:
+            d_dst = (w0 >> 9) & 7
+            if src_mode == 0:
+                return DecodedInstruction(pc, words, "CMP", "w", [Operand("reg_d", reg=src_reg), Operand("reg_d", reg=d_dst)], base_cycles=4)
+            elif src_mode == 5:
+                disp = struct.unpack_from(">h", rom, pc + 2)[0]
+                words.append(disp & 0xFFFF)
+                return DecodedInstruction(pc, words, "CMP", "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=d_dst)], base_cycles=8)
+
+    # JMP: 0x4EC0..0x4EFF
+    if (w0 & 0xFFC0) == 0x4EC0:
+        mode = (w0 >> 3) & 7
+        reg = w0 & 7
+        if mode == 2:
+            return DecodedInstruction(pc, words, "JMP", "", [Operand("indir_a", reg=reg)], base_cycles=8)
 
     # Shifts / Rotates: 0xE000
     if (w0 & 0xF000) == 0xE000:

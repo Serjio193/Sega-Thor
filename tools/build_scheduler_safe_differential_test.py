@@ -21,6 +21,8 @@ def main():
         "src/tools/hybrid/generated/m68k_recompiled_006e7a.cpp",
         "src/tools/hybrid/generated/m68k_recompiled_062694.cpp",
         "src/tools/hybrid/generated/m68k_recompiled_062a78.cpp",
+        "src/tools/hybrid/generated/m68k_recompiled_00d2b4.cpp",
+        "src/tools/hybrid/generated/m68k_recompiled_0059a8.cpp",
     ]
 
     out_bin = "build/test_scheduler_safe_diff"

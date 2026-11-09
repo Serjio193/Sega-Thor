@@ -4247,3 +4247,12 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/run_m15_237_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.237 (M15.237).
 - tools/generate_m15_237_receipt.py — Authoritative receipt generator and verifier for M15.237 (M15.237).
 - data/thor-evidence/combined-clusters-qualification-m15-237-20261109.json — Verified machine evidence receipt for M15.237 (M15.237).
+- data/thor-evidence/scenario_c_disjoint_execution_ledger_m15_238.json — Verified mathematical disjoint execution ledger for Scenario C guest execution (M15.238).
+- tools/audit_m15_238_residual_ledger.py — Verification script for mathematical disjoint execution ledger (M15.238).
+- data/thor-fixtures/indirect_target_manifest_m15_238.json — Versioned runtime manifest for 0x0059B8 dynamic jump table targets (M15.238).
+- src/tools/hybrid/generated/m68k_recompiled_00d2b4* — Machine-generated non-leaf recompiled Camera Viewport Scroll Step Coordinator for 0x00D2B4..0x00D344 (Slot 237, productive +3,124 steps) (M15.238).
+- src/tools/hybrid/generated/m68k_recompiled_0059a8* — Machine-generated dynamic jump table recompiled Entity Type Action Dispatcher for 0x0059A8..0x0059BA (Slot 238, productive +25 steps) (M15.238).
+- tools/build_m15_238_runner.py — Linux qualification runner build harness for M15.238 with Slots 222..238 (M15.238).
+- tools/run_m15_238_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.238 (M15.238).
+- tools/generate_m15_238_receipt.py — Authoritative receipt generator and verifier for M15.238 (M15.238).
+- data/thor-evidence/combined-clusters-qualification-m15-238-20261109.json — Verified machine evidence receipt for M15.238 (M15.238).

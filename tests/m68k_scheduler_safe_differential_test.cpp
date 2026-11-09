@@ -4,6 +4,8 @@
 #include "tools/hybrid/generated/m68k_recompiled_062694.hpp"
 #include "tools/hybrid/generated/m68k_recompiled_062a78.hpp"
 #include "tools/hybrid/generated/m68k_recompiled_006e7a.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_00d2b4.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_0059a8.hpp"
 
 #include <array>
 #include <cstdint>
@@ -275,6 +277,109 @@ void test_interrupt_stress() {
     std::cout << "  Passed (Cooperative yield on IRQ, exact resume at next PC)\n";
 }
 
+void test_non_leaf_00d2b4() {
+    std::cout << "Testing Candidate 1 Non-Leaf BSR & Resume (0x00D2B4)...\n";
+    reset_metrics_00d2b4();
+    MockGuestState s{};
+    auto api = make_api(s);
+
+    s.regs[kRegA7] = 0x00FFFE00U;
+    s.regs[kRegA0] = 0x00FF1716U;
+    s.write_mem(0x00FF1716U + 0x26U, 1, 0x04U); // bit 2 set -> BCLR clears it
+    s.write_mem(0x00FF1716U + 0x0EU, 2, 0x0123U); // camera D0
+    s.write_mem(0x00FF16F0U, 1, 0x00U); // bit 1 is 0 -> BEQ $d330 taken
+    s.write_mem(0x00FFFE00U, 4, 0x00A500U); // caller return address
+
+    // Opcode words for read_be
+    s.write_mem(0x00D2B4U, 2, 0x6100U);
+    s.write_mem(0x00D344U, 2, 0x4E75U);
+    s.write_mem(0x00D2B8U, 2, 0x08A8U);
+    s.write_mem(0x00D2BEU, 2, 0x6700U);
+    s.write_mem(0x00D2C2U, 2, 0x08F9U);
+    s.write_mem(0x00D2CAU, 2, 0x3028U);
+    s.write_mem(0x00D2CEU, 2, 0x0839U);
+    s.write_mem(0x00D2D6U, 2, 0x6700U);
+    s.write_mem(0x00D330U, 2, 0x43F9U);
+    s.write_mem(0x00D336U, 2, 0xB1FCU);
+    s.write_mem(0x00D33CU, 2, 0x6702U);
+    s.write_mem(0x00D340U, 2, 0x3280U);
+    s.write_mem(0x00D342U, 2, 0x4E75U);
+    s.write_mem(0x00A500U, 2, 0x4E71U);
+
+    // Step 1: BSR.W $D344
+    auto res1 = step_m68k_00d2b4(0x00D2B4U, api, true);
+    TEST_ASSERT(res1 == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.regs[kRegA7] == 0x00FFFE00U - 4U);
+    TEST_ASSERT(s.read_mem(s.regs[kRegA7], 4) == 0x00D2B8U); // return address pushed!
+    TEST_ASSERT(s.next_pc == 0x00D344U); // target child PC set!
+
+    // While in child: caller must yield NotHandled
+    TEST_ASSERT(step_m68k_00d2b4(0x00D344U, api, true) == M68k9D70StepResult::NotHandled);
+
+    // Child returns via RTS: pops return address 0x00D2B8
+    s.regs[kRegA7] += 4U;
+
+    // Caller resumes at 0x00D2B8
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2B8U, api, true) == M68k9D70StepResult::InstructionStepped);
+    // BCLR cleared bit 2
+    TEST_ASSERT((s.read_mem(0x00FF1716U + 0x26U, 1) & 0x04U) == 0U);
+    TEST_ASSERT(s.next_pc == 0x00D2BEU);
+
+    // Continue stepping
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2BEU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x00D2C2U);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2C2U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2CAU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2CEU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D2D6U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x00D330U); // BEQ taken to $d330
+    TEST_ASSERT(step_m68k_00d2b4(0x00D330U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D336U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D33CU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x00D340U);
+    TEST_ASSERT(step_m68k_00d2b4(0x00D340U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x00D342U);
+
+    // Step RTS at 0x00D342
+    TEST_ASSERT(step_m68k_00d2b4(0x00D342U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x00A500U);
+    TEST_ASSERT(get_metrics_00d2b4().completed_calls == 1);
+    std::cout << "  Passed (Non-leaf BSR push, child yield, return resume, and completion)\n";
+}
+
+void test_dynamic_jump_table_0059a8() {
+    std::cout << "Testing Candidate 2 Dynamic Jump Table (0x0059A8)...\n";
+    reset_metrics_0059a8();
+    MockGuestState s{};
+    auto api = make_api(s);
+
+    s.regs[kRegA6] = 0x00FFB000U;
+    s.write_mem(0x00FF165EU, 2, 0x1234U);
+    s.write_mem(0x00FFB004U, 2, 0x0000U); // D0 = 0 (first table index)
+    s.write_mem(0x0059BAU, 2, 0x083CU); // offset 0x083C -> target = 0x0059BA + 0x083C = 0x0061F6
+
+    s.write_mem(0x0059A8U, 2, 0x3E39U);
+    s.write_mem(0x0059AEU, 2, 0x302EU);
+    s.write_mem(0x0059B2U, 2, 0x41FBU);
+    s.write_mem(0x0059B6U, 2, 0xD0D0U);
+    s.write_mem(0x0059B8U, 2, 0x4ED0U);
+    s.write_mem(0x0061F6U, 2, 0x4E75U);
+
+    TEST_ASSERT(step_m68k_0059a8(0x0059A8U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.read_reg(kRegD7) == 0x1234U);
+    TEST_ASSERT(step_m68k_0059a8(0x0059AEU, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT((s.read_reg(kRegD0) & 0xFFFFU) == 0x0000U);
+    TEST_ASSERT(step_m68k_0059a8(0x0059B2U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.read_reg(kRegA0) == 0x0059BAU);
+    TEST_ASSERT(step_m68k_0059a8(0x0059B6U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.read_reg(kRegA0) == 0x0061F6U);
+    // JMP (A0)
+    TEST_ASSERT(step_m68k_0059a8(0x0059B8U, api, true) == M68k9D70StepResult::InstructionStepped);
+    TEST_ASSERT(s.next_pc == 0x0061F6U);
+    TEST_ASSERT(get_metrics_0059a8().completed_calls == 1);
+    std::cout << "  Passed (PC-relative indexed LEA, ADDA.W, and JMP (A0) dispatch)\n";
+}
+
 void test_mutation_assertions() {
     std::cout << "Testing Mutation Assertions (Phase 7)...\n";
     // Mutant 1: Wrong register index for SR corrupting PC
@@ -296,7 +401,7 @@ void test_mutation_assertions() {
 } // namespace
 
 int main() {
-    std::cout << "=== Thor Recompiler M15.237 Scheduler-Safe Differential Test ===\n";
+    std::cout << "=== Thor Recompiler M15.238 Scheduler-Safe Differential Test ===\n";
     test_gpgx_register_mapping();
     test_dynamic_shift_cycles();
     test_cand_005660();
@@ -304,6 +409,8 @@ int main() {
     test_cand_062a78();
     test_cand_006e7a();
     test_interrupt_stress();
+    test_non_leaf_00d2b4();
+    test_dynamic_jump_table_0059a8();
     test_mutation_assertions();
     std::cout << "=== ALL QUALIFIED SCHEDULER-SAFE DIFFERENTIAL TESTS PASSED ===\n";
     return 0;

@@ -62,6 +62,9 @@ def emit_operand_write_stmts(op: Operand, size: str, val_expr: str) -> List[str]
         if op.kind == "postinc_a":
             stmts.append(f"api.write_register(api.context, {r}, api.read_register(api.context, {r}) + {w}U);")
         return stmts
+    elif op.kind == "abs_l":
+        w = 1 if size == "b" else (2 if size == "w" else 4)
+        return [f"api.write(api.context, 0x{op.val:06X}U, {w}, {val_expr});"]
     raise NotImplementedError(f"Unsupported write operand {op.kind}")
 
 def get_cond_expr(mnemonic: str) -> str:
@@ -107,11 +110,60 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
     insn_bytes = len(insn.raw_words) * 2
     fallthrough_pc = insn.pc + insn_bytes
 
-    if insn.mnemonic in ("BRA", "BSR") and insn.branch_target is not None:
+    if insn.mnemonic == "BRA" and insn.branch_target is not None:
         target_pc = insn.branch_target
         lines.extend([
             f"        complete_step(api, 0x{target_pc:06X}U, opcode, 0, resume_pc);",
             "        metrics.stepped_instructions++;",
+            "        return M68k9D70StepResult::InstructionStepped;",
+            "    }"
+        ])
+        return lines
+
+    if insn.mnemonic == "BSR" and insn.branch_target is not None:
+        target_pc = insn.branch_target
+        lines.extend([
+            "        const unsigned sp = (api.read_register(api.context, kRegA7) - 4U) & kMask24;",
+            "        api.write_register(api.context, kRegA7, sp);",
+            f"        api.write(api.context, sp, 4, 0x{fallthrough_pc:06X}U);",
+            "        unsigned dummy_resume = 0;",
+            f"        complete_step(api, 0x{target_pc:06X}U, opcode, 0, dummy_resume);",
+            f"        resume_pc = 0x{fallthrough_pc:06X}U;",
+            "        metrics.stepped_instructions++;",
+            "        return M68k9D70StepResult::InstructionStepped;",
+            "    }"
+        ])
+        return lines
+
+    if insn.mnemonic == "DBRA" and insn.branch_target is not None:
+        target_pc = insn.branch_target
+        reg_c = reg_const("reg_d", insn.ops[0].reg)
+        lines.extend([
+            f"        const auto old_d = api.read_register(api.context, {reg_c});",
+            "        const auto count = static_cast<std::int16_t>(old_d & 0xFFFFU) - 1;",
+            f"        api.write_register(api.context, {reg_c}, (old_d & 0xFFFF0000U) | static_cast<std::uint16_t>(count));",
+            "        const bool taken = (count != -1);",
+            f"        const unsigned target = taken ? 0x{target_pc:06X}U : 0x{fallthrough_pc:06X}U;",
+            "        const int adj = taken ? 0 : 4;",
+            "        complete_step(api, target, opcode, adj, resume_pc);",
+            "        metrics.stepped_instructions++;",
+            "        return M68k9D70StepResult::InstructionStepped;",
+            "    }"
+        ])
+        return lines
+
+    if insn.mnemonic == "JMP" and len(insn.ops) > 0 and insn.ops[0].kind == "indir_a":
+        reg_c = reg_const("reg_a", insn.ops[0].reg)
+        lines.extend([
+            f"        const auto target = api.read_register(api.context, {reg_c}) & kMask24;",
+            "        if ((target & 1U) != 0U || target < 0x000200U || target >= 0x300000U) {",
+            "            active = false; interrupted = false; return M68k9D70StepResult::ContractFault;",
+            "        }",
+            "        complete_step(api, target, opcode, 0, resume_pc);",
+            "        metrics.stepped_instructions++;",
+            "        metrics.completed_calls++;",
+            "        active = false;",
+            "        interrupted = false;",
             "        return M68k9D70StepResult::InstructionStepped;",
             "    }"
         ])
@@ -147,18 +199,33 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
             r = reg_const("reg_a", src_op.reg)
             sign = "+" if src_op.val >= 0 else "-"
             lines.append(f"        api.write_register(api.context, {dst_r}, (api.read_register(api.context, {r}) {sign} 0x{abs(src_op.val):X}U) & kMask24);")
-    elif insn.mnemonic in ("ADD", "ADDI", "ADDQ"):
+        elif src_op.kind == "pc_index":
+            idx_r = reg_const("reg_d", src_op.reg)
+            lines.extend([
+                f"        const auto idx = static_cast<std::int16_t>(api.read_register(api.context, {idx_r}) & 0xFFFFU);",
+                f"        api.write_register(api.context, {dst_r}, (0x{src_op.val:06X}U + static_cast<std::uint32_t>(static_cast<std::int32_t>(idx))) & kMask24);",
+            ])
+    elif insn.mnemonic in ("ADD", "ADDI", "ADDQ", "ADDA"):
         src = emit_operand_read_expr(insn.ops[0], insn.size)
-        dst = emit_operand_read_expr(insn.ops[1], insn.size)
-        lines.extend([
-            f"        const auto src = {src};",
-            f"        const auto dst = {dst};",
-            f"        const auto res = static_cast<std::uint32_t>(dst) + static_cast<std::uint32_t>(src);",
-        ])
-        mask = '0xFF' if insn.size == 'b' else ('0xFFFF' if insn.size == 'w' else '0xFFFFFFFF')
-        lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, f"(res & {mask}U)")])
-        if insn.ops[1].kind != "reg_a":
-            lines.append(f"        update_add_ccr_{insn.size}(api, dst, src, res);")
+        dst = emit_operand_read_expr(insn.ops[1], "l" if insn.ops[1].kind == "reg_a" else insn.size)
+        if insn.ops[1].kind == "reg_a" and insn.size == "w":
+            src_expr = f"static_cast<std::uint32_t>(static_cast<std::int32_t>(static_cast<std::int16_t>({src})))"
+            lines.extend([
+                f"        const auto src = {src_expr};",
+                f"        const auto dst = {dst};",
+                "        const auto res = (dst + src) & kMask24;",
+            ])
+            lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], "l", "res")])
+        else:
+            lines.extend([
+                f"        const auto src = {src};",
+                f"        const auto dst = {dst};",
+                f"        const auto res = static_cast<std::uint32_t>(dst) + static_cast<std::uint32_t>(src);",
+            ])
+            mask = '0xFF' if insn.size == 'b' else ('0xFFFF' if insn.size == 'w' else '0xFFFFFFFF')
+            lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, f"(res & {mask}U)")])
+            if insn.ops[1].kind != "reg_a":
+                lines.append(f"        update_add_ccr_{insn.size}(api, dst, src, res);")
     elif insn.mnemonic in ("SUB", "SUBI", "SUBQ", "SUBA"):
         src = emit_operand_read_expr(insn.ops[0], insn.size)
         dst = emit_operand_read_expr(insn.ops[1], insn.size)
@@ -171,7 +238,7 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
         lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, f"(res & {mask}U)")])
         if insn.mnemonic != "SUBA" and insn.ops[1].kind != "reg_a":
             lines.append(f"        update_sub_ccr_{insn.size}(api, dst, src, res);")
-    elif insn.mnemonic in ("CMP", "CMPI"):
+    elif insn.mnemonic in ("CMP", "CMPI", "CMPA"):
         src = emit_operand_read_expr(insn.ops[0], insn.size)
         dst = emit_operand_read_expr(insn.ops[1], insn.size)
         lines.extend([
@@ -210,7 +277,7 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
         ])
         lines.extend([f"        {s}" for s in emit_operand_write_stmts(insn.ops[1], insn.size, "val")])
         lines.append(f"        update_logic_ccr_{insn.size}(api, val);")
-    elif insn.mnemonic == "BTST":
+    elif insn.mnemonic in ("BTST", "BSET", "BCLR"):
         bit_num = insn.ops[0].val
         dst_op = insn.ops[1]
         val_expr = emit_operand_read_expr(dst_op, insn.size)
@@ -218,8 +285,12 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
         lines.extend([
             f"        const auto val = {val_expr};",
             f"        const bool is_zero = (val & (1U << ({bit_num}U & {bit_mask}U))) == 0U;",
-            f"        update_btst_ccr(api, is_zero);",
+            "        update_btst_ccr(api, is_zero);",
         ])
+        if insn.mnemonic in ("BSET", "BCLR"):
+            set_or_clr = f"val | (1U << ({bit_num}U & {bit_mask}U))" if insn.mnemonic == "BSET" else f"val & ~(1U << ({bit_num}U & {bit_mask}U))"
+            lines.append(f"        const auto new_val = static_cast<std::uint8_t>({set_or_clr});")
+            lines.extend([f"        {s}" for s in emit_operand_write_stmts(dst_op, insn.size, "new_val")])
     elif insn.mnemonic in ("LSL", "LSR", "ASR"):
         shift_val = insn.ops[0].val if insn.ops[0].kind == "imm" else 1
         dst = emit_operand_read_expr(insn.ops[1], insn.size)

@@ -1,4 +1,62 @@
-# 2026-11-09 — Milestone M15.237: SCHEDULER-SAFE BATCH RECOMPILATION, REAL RUNTIME DISPLACEMENT AND INTERRUPT-BOUNDARY VALIDATION — Automated Scheduler-Safe M68000 Code Generation for Disjoint Leaf Candidates; Explicit GPGX Register Architecture Isolation Verification (D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17, Proving CCR Writes Never Corrupt Program Counter); Musashi Variable Shift Cycle Parity Verification (Dynamic Shift Cost `shift * 14` Master Clocks); Interrupt Boundary Cooperative Preemption and Resumption Stress Testing in tests/m68k_scheduler_safe_differential_test.cpp; Candidate Discovery & Selection from Scenario C Residual Profile (data/thor-fixtures/batch_recompiler_candidates_m15_237.json); Automated Compilation of 4 Candidate Routines: Slot 233 (0x005660, Palette Color Math Add/Saturate), Slot 234 (0x006E7A, Event / System Flag Query Engine), Slot 235 (0x062694, Sound Driver Channel Attenuation Tail Normalizer), and Slot 236 (0x062A78, Sound Driver Channel Pan Direct Register Update); Differential Unit & Mutation Testing (100% Bit-Exact); Full Integration in Linux Runner (build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session, SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b); Three-Scenario A/B Verification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 (0x006E7A): 51 Calls, 153 Stepped Native Instructions in Scenario C, 29 Calls (86 Steps) in Scenario A, 17 Calls (51 Steps) in Scenario B (Total 290 Steps Across All 3 Scenarios); Identification of Production Helper Shadowing for Slots 233 (Shadowed by 00557a in m68k_00557a_step_block2.cpp) and Slots 235/236 (Shadowed by Legacy Helper #12 623ac); Combined Scenario C Native Steps Increased to 6,591,268 (Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps Reduced to 1,306,369); Standalone Reuse Analysis Produced (Event/System Flag State Query Interface); Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-236 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING)
+# 2026-11-09 — Milestone M15.238: NON-LEAF AUTOMATIC RECOMPILATION, DYNAMIC CALL RESOLUTION AND SCHEDULER-SAFE MIXED EXECUTION — Mathematical Disjoint Residual Accounting Reconciliation (Total Guest Steps 17,627,770 = 9,730,133 Idle + 5,127,961 Production Native + 1,463,307 Qualified Experimental Native + 1,306,369 Remaining Non-Idle Interpreted Steps, Zero Unclassified; Machine-Readable Audit in data/thor-evidence/scenario_c_disjoint_execution_ledger_m15_238.json via tools/audit_m15_238_residual_ledger.py); Coordinator Hotspot Forensics Disproving Unowned Step Fallacy (0x00A1D6 100% Owned by Active Production Helper 00a196, 0x00AF02 100% Owned by Slot 223 00ad76, 0x0602FE Shadowed by FIFO/Z80 Production Helpers 60000/60286/623ac, 0x00DF2C 100% Owned by Active Production Helper 00deec); Mixed Execution Architecture Upgrades in tools/thor_recompiler/decoder.py (368 lines <= 500) and tools/thor_recompiler/codegen_step.py (409 lines <= 500) Supporting BSR Subroutine Call / Return Address Stack Management, Caller Preemption / Resumption, DBRA Loops, Dynamic Jump Table Dispatch JMP (An), LEA disp(PC, Xn), ADDA.W (An), CMPA.L #imm, BSET.B, and BCLR.B; Versioned Dynamic Jump Table Manifest in data/thor-fixtures/indirect_target_manifest_m15_238.json; Differential Unit & Mutation Tests in tests/m68k_scheduler_safe_differential_test.cpp (417 lines <= 500) 100% Bit-Exact in WSL; Unified Linux Runner build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session (SHA256 b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d); Three-Scenario Differential Qualification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved: Slot 237 (0x00D2B4, Camera Viewport Scroll Step Coordinator) 667 Calls / 3,124 Stepped Instructions in Scenario C, Slot 238 (0x0059A8, Entity Type Action Jump Table Dispatcher) 5 Calls / 25 Stepped Instructions in Scenario C (Total +3,149 New Native Steps); Combined Scenario C Native Steps Reaching 6,594,417 / 17,627,770 (Raw Native Coverage 37.409%, Non-Idle Dynamic Coverage 83.499%, Remaining Non-Idle Interpreted Steps Reduced to 1,303,220); Replay Performance Benchmark at 6,445.7 FPS (0.28 s for 1,800 Frames); Standalone CameraController Semantic Bridge Established; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-238 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING); Authoritative Machine Receipt Verified: combined-clusters-qualification-m15-238-20261109.json (58/58 Files Valid, 48/48 Stream Artifacts Valid) — COMPLETE / QUALIFIED NON-LEAF & DYNAMIC DISPLACEMENT
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Baseline Integrity:
+    - Confirmed baseline commit fbb71fa561fa4c1cea07948f43ef0de84fc7e0ad (M15.237).
+    - Production helper active inventory strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+    - Pinned core SHA256 ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134, canonical ROM SHA256 eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263.
+    - Verified M15.237 runner SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b.
+  * Phase 1: Mathematical Reconciliation of Residual Accounting:
+    - Reconciled the 5.29M unowned steps figure vs the verified 1,306,369 non-idle interpreted remainder.
+    - Constructed exact disjoint ledger:
+      * IDENTIFIED_IDLE: 9,730,133 steps (55.198% of total guest steps) across 0x008ACA (5,327,384) and 0x008B72 (4,402,749).
+      * PRODUCTION_NATIVE: 5,127,961 steps (29.090% of guest steps, 64.930% of non-idle) across 196 active helpers.
+      * QUALIFIED_EXPERIMENTAL_NATIVE: 1,463,307 steps (8.301% of guest steps, 18.528% of non-idle) across Slots 222..236.
+      * ROM_INTERPRETED_NON_IDLE: 1,306,369 steps (7.411% of guest steps, 16.541% of non-idle).
+      * UNCLASSIFIED: 0 steps (0.000%).
+      * Integer Sum: 9,730,133 + 5,127,961 + 1,463,307 + 1,306,369 = 17,627,770 (Exact Match).
+    - Emitted machine-readable audit `data/thor-evidence/scenario_c_disjoint_execution_ledger_m15_238.json` and verification script `tools/audit_m15_238_residual_ledger.py`.
+    - Identified that the 5.29M figure arose from naively filtering code-map.json against an incomplete native-ownership-index.json slice inventory (~2.19M steps), which mistakenly left active production helpers (00a196, 00deec, 623ac) classified as unowned.
+  * Phase 2: Call Graph and Non-Leaf Survey:
+    - Surveyed top residual coordinator hotspots:
+      * 0x00A1D6 (1.16M steps): 100% owned by active production helper `00a196` (`m68k_00a196_instruction_step.cpp`). Unowned steps = 0.
+      * 0x00AF02 (561k steps): 100% owned by qualified experimental Slot 223 (`00ad76`). Unowned steps = 0.
+      * 0x0602FE (246k steps): Inside Sound FIFO loop, shadowed by active production helpers `60000`, `60286`, and legacy helper #12 (`623ac`). Unowned steps = 0.
+      * 0x00DF2C (92k steps): 100% owned by active production helper `00deec` (`m68k_00deec_instruction_step.cpp`). Unowned steps = 0.
+    - Identified genuine unowned non-leaf and dynamic candidates:
+      * Candidate 1: `0x00D2B4..0x00D344` (Camera Viewport Scroll Step Coordinator, direct BSR to 0x00D344, 955 calls, 4,636 steps in Scenario C).
+      * Candidate 2: `0x0059A8..0x0059BA` (Entity Type Action Jump Table Dispatcher, dynamic JMP (A0), 858 calls, ~2,574 steps in Scenario C).
+  * Phase 3, 4, 5 & 6: Recompiler Upgrades & Non-Leaf / Dynamic Codegen:
+    - Extended `tools/thor_recompiler/decoder.py` (368 lines <= 500) with `ADDQ.L #imm, An`, `CMPA.L #imm, An`, `LEA disp8(PC, Xn.w), An`, `ADDA.W (An), An`, `MOVE.W abs_l, Dn`, and `JMP (An)`.
+    - Extended `tools/thor_recompiler/codegen_step.py` (409 lines <= 500):
+      * `BSR.W` / `BSR.B`: pushes return address to guest stack (A7) and sets caller `resume_pc` to fallthrough PC while setting GPGX return state to child target. While child executes, caller yields `NotHandled` without clearing `active`. Upon child `RTS`, caller seamlessly resumes at return PC.
+      * `DBRA`: decrements low word of Dn; conditionally branches back or falls through with +4 cycle penalty on expired counter.
+      * `JMP (An)`: register-indirect jump with 24-bit alignment and ROM range validation, completing the dispatch cleanly.
+      * `BSET.B` and `BCLR.B`: tests bit into CCR Z flag and mutates byte in memory.
+      * `LEA disp8(PC, Xn.w), An` and `ADDA.W (An), An`: PC-relative indexed addressing and address register addition.
+    - Extended `src/tools/hybrid/generated/m68k_step_helpers.hpp` with `update_cmp_ccr_l`.
+    - Generated `m68k_recompiled_00d2b4` (Slot 237, 40 insns, 485 cpp lines <= 500) and `m68k_recompiled_0059a8` (Slot 238, 5 insns, 105 cpp lines <= 500).
+    - Emitted versioned dynamic target manifest `data/thor-fixtures/indirect_target_manifest_m15_238.json` for 24 jump table entries at `0x0059BA`.
+  * Phase 7 & 8: Differential Unit & Mutation Testing:
+    - Updated `tests/m68k_scheduler_safe_differential_test.cpp` (417 lines <= 500) and `tools/build_scheduler_safe_differential_test.py`.
+    - Differential tests verified BSR stack push, child yield, return resume, DBRA loop, dynamic JMP table dispatch, and mutation testing in WSL (100% PASS).
+  * Phase 9, 10 & 11: Linux Runner Integration & Three-Scenario Differential Qualification:
+    - Built unified Linux runner `build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session` (SHA256 `b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d`).
+    - Allocated Slots 237 and 238 overlaying `std::array<bool, 239> g_enabled{};`.
+    - Executed differential qualification across Scenario C (1,800 frames), Scenario A (1,592 frames), and Scenario B (600 frames) using `tools/run_m15_238_combined_ab.py`.
+    - All 24 raw streams match 100% bit-exact (8/8 in C, 8/8 in A, 8/8 in B). Zero contract faults.
+    - Measured genuine new native execution:
+      * Slot 237 (`0x00D2B4`): 667 calls, 3,124 stepped native instructions in Scenario C.
+      * Slot 238 (`0x0059A8`): 5 calls, 25 stepped native instructions in Scenario C.
+      * Total new native steps: +3,149 steps in Scenario C!
+    - Combined Scenario C native steps increased from 6,591,268 to 6,594,417 (+3,149). Raw dynamic coverage reached 37.409%, non-idle dynamic coverage reached 83.499%, and remaining non-idle interpreted steps reduced to 1,303,220.
+  * Phase 12, 13 & 14: Benchmark, Standalone Reuse & Authoritative Receipt:
+    - Replay benchmark: 1,800 frames replayed in 0.28 seconds (6,445.7 FPS).
+    - Standalone read-only inspection: `C:/Github/Sega-Thor-Standalone` confirmed untouched (STRICTLY READ-ONLY). Semantic bridge established between `CameraController` and ROM `0x00D2B4` line-by-line scroll table generator writing to `0x00FFFB5C` (Plane A) and `0x00FF1344` (Plane B).
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-238-20261109.json`.
+    - Verified with `ReceiptVerifier`: 58/58 files valid, 48/48 stream artifacts valid.
+    - Governed file limit check passed (2,343 files <= 500 lines). `git diff --check` green.
+
 
 - **Concrete Task & Acceptance Criteria:**
   * Phase 0: Baseline Integrity:

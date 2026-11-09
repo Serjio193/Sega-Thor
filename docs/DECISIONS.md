@@ -1,3 +1,42 @@
+# ADR-20261109-M15-238-NON-LEAF-RECOMPILATION-AND-DYNAMIC-DISPATCH — Non-Leaf Automatic Recompilation, Dynamic Call Resolution and Scheduler-Safe Mixed Execution; Mathematical Disjoint Residual Accounting Reconciliation (Total Guest Steps 17,627,770 = 9,730,133 Idle + 5,127,961 Production Native + 1,463,307 Qualified Experimental Native + 1,306,369 Remaining Non-Idle Interpreted Steps, Zero Unclassified); Coordinator Hotspot Forensics Disproving Unowned Step Fallacy; Recompiler Upgrades in tools/thor_recompiler/decoder.py and codegen_step.py Supporting BSR Subroutine Call / Return Address Stack Management, Caller Preemption / Resumption, DBRA Loops, Dynamic Jump Table Dispatch JMP (An), LEA disp(PC, Xn), ADDA.W (An), CMPA.L #imm, BSET.B, and BCLR.B; Versioned Dynamic Jump Table Manifest in data/thor-fixtures/indirect_target_manifest_m15_238.json; Unified Linux Runner build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session (SHA256 b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d); Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved: Slot 237 (0x00D2B4) 667 Calls / 3,124 Stepped Instructions, Slot 238 (0x0059A8) 5 Calls / 25 Stepped Instructions (Total +3,149 New Native Steps in Scenario C); Combined Scenario C Native Steps Reaching 6,594,417 / 17,627,770 (Raw Native Coverage 37.409%, Non-Idle Dynamic Coverage 83.499%, Remaining Non-Idle Interpreted Steps Reduced to 1,303,220); Replay Performance Benchmark at 6,445.7 FPS; Standalone CameraController Semantic Bridge Established; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.237, leaf-only recompilation faced diminishing returns due to ownership shadowing and isolated call boundaries. Major residual hotspots (`0x00A1D6`, `0x00AF02`, `0x0602FE`, `0x00DF2C`) were audited and demonstrated to be 100% owned by active production helpers (`00a196`, `00deec`, `60000`/`60286`/`623ac`) or Slot 223 (`00ad76`).
+2. Mathematical reconciliation proved that the true remaining non-idle interpreted instruction workload in Scenario C is exactly 1,306,369 steps (7.411% of total guest execution), while 55.198% (9,730,133 steps) is identified idle wait loop execution, 29.090% (5,127,961 steps) is production native execution, and 8.301% (1,463,307 steps) is qualified experimental native execution.
+3. To displace genuine unowned non-idle interpreted workload, the automated recompiler required non-leaf control flow capabilities:
+   - Calling child subroutines (`BSR.W`/`BSR.B`) while maintaining guest stack (A7) push/pop integrity.
+   - Preemption handling: while guest execution proceeds inside child routines or interrupt handlers, caller state must cooperatively yield (`NotHandled`) without destroying the active call state.
+   - Resumption handling: upon child `RTS`, execution returns to the caller's return address and resumes stepping.
+   - Dynamic register-indirect jumps (`JMP (An)`) for state machine jump table dispatching.
+   - PC-relative indexed addressing (`LEA disp(PC, Xn)`) and word dereferencing (`ADDA.W (An), An`).
+4. Two productive candidates were identified and generated:
+   - Slot 237 (`0x00D2B4..0x00D344`): Camera Viewport Scroll Step Coordinator (calls `0x00D344` via BSR, builds scanline scroll tables in VRAM staging buffers `0x00FFFB5C` and `0x00FF1344`).
+   - Slot 238 (`0x0059A8..0x0059BA`): Entity Type Action Jump Table Dispatcher (evaluates PC-relative offset table at `0x0059BA` and dispatches via `JMP (A0)`).
+5. All 24 differential qualification streams across Scenarios C, A, and B matched 100% bit-exact with 0 contract faults.
+
+**Decision:**
+1. **Accept Non-Leaf Execution Model (Transition C Protocol):**
+   - In non-leaf steppers, `BSR` pushes the return address to guest stack (A7), sets GPGX return state to the child entry PC, and sets caller `resume_pc` to the return address. The caller yields `NotHandled` while PC is outside the caller, resuming cleanly when child `RTS` pops the return address.
+2. **Accept Dynamic Register Jump Table Protocol:**
+   - Dynamic jumps (`JMP (An)`) validate address alignment and ROM address boundaries (`target & 1 == 0 && target >= 0x000200 && target < 0x300000`), complete the step to the dynamic target, increment `completed_calls`, and reset `active = false`.
+3. **Accept Slots 237 and 238 as Productively Qualified:**
+   - Record +3,149 new native steps in Scenario C (3,124 steps in Slot 237, 25 steps in Slot 238).
+4. **Preserve Decompressor Quarantine:**
+   - Multi-frame decompressor `0x003820` remains strictly quarantined pending sub-cycle interrupt queue modeling.
+5. **Standalone Worktree Read-Only Policy:**
+   - `C:/Github/Sega-Thor-Standalone` remains untouched.
+
+**Consequences:**
+- Combined Scenario C native instructions reach 6,594,417 (up from 6,591,268).
+- Raw dynamic native coverage: 37.409% (up from 37.391%).
+- Non-idle dynamic native coverage: 83.499% (up from 83.459%).
+- Remaining non-idle interpreted steps reduced to 1,303,220.
+- 24/24 raw streams match 100% bit-exact across all three scenarios with zero contract faults.
+- Production active helpers remain strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+- All governed source files strictly <= 500 lines.
+
 # ADR-20261109-M15-237-SCHEDULER-SAFE-BATCH-RECOMPILATION-AND-DISPLACEMENT — Automated Scheduler-Safe Batch Recompilation for Disjoint Leaf Candidates; Explicit GPGX Register Architecture Isolation Verification (D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17); Musashi Dynamic Shift Cycle Parity Verification (`shift * 14` Master Clocks); Interrupt Boundary Preemption and Cooperative Resumption Verification; Candidate Discovery & Selection from Scenario C Residual Profile in data/thor-fixtures/batch_recompiler_candidates_m15_237.json; Automated Compilation of 4 Candidate Routines: Slot 233 (0x005660), Slot 234 (0x006E7A), Slot 235 (0x062694), and Slot 236 (0x062A78); Differential Unit & Mutation Testing 100% Bit-Exact; Unified Linux Runner build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session (SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b); Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 (0x006E7A): 51 Calls / 153 Steps in C, 29 Calls / 86 Steps in A, 17 Calls / 51 Steps in B (290 Native Steps Total); Identification of Production Helper Shadowing for Slots 233 (by 00557a) and Slots 235/236 (by 623ac); Scenario C Combined Native Steps Reaching 6,591,268, Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps 1,306,369; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
 **Status:** Accepted
 **Date:** 2026-11-09

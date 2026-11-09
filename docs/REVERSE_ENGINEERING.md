@@ -1,3 +1,65 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.238: Non-Leaf Automatic Recompilation, Dynamic Call Resolution and Scheduler-Safe Mixed Execution; Mathematical Disjoint Residual Accounting Reconciliation Total Guest Steps 17,627,770 = 9,730,133 Idle + 5,127,961 Production Native + 1,463,307 Qualified Experimental Native + 1,306,369 Remaining Non-Idle Interpreted Steps, Zero Unclassified; Coordinator Hotspot Forensics; Mixed Execution Architecture Upgrades in tools/thor_recompiler/decoder.py and tools/thor_recompiler/codegen_step.py Supporting BSR Subroutine Call / Return Address Stack Management, Caller Preemption / Resumption, DBRA Loops, Dynamic Jump Table Dispatch JMP (An), LEA disp(PC, Xn), ADDA.W (An), CMPA.L #imm, BSET.B, and BCLR.B; Versioned Dynamic Jump Table Manifest in data/thor-fixtures/indirect_target_manifest_m15_238.json; Unified Linux Runner build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session, SHA256 b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d; Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved: Slot 237 0x00D2B4 Camera Viewport Scroll Step Coordinator 667 Calls / 3,124 Stepped Instructions in Scenario C, Slot 238 0x0059A8 Entity Type Action Jump Table Dispatcher 5 Calls / 25 Stepped Instructions in Scenario C, Total +3,149 New Native Steps; Combined Scenario C Native Steps Reaching 6,594,417 / 17,627,770, Raw Native Coverage 37.409%, Non-Idle Dynamic Coverage 83.499%, Remaining Non-Idle Interpreted Steps Reduced to 1,303,220; Authoritative Machine Receipt Verified: combined-clusters-qualification-m15-238-20261109.json)
+
+## Milestone M15.238 Reverse Engineering Summary
+
+### Section 65: Non-Leaf Control Flow, Dynamic Jump Dispatch & Residual Accounting
+
+#### 1. Mathematical Reconciliation of Scenario C Residual Workload
+- **Total Guest Execution:** `17,627,770` steps.
+- **Identified Idle Loop Wait:** `9,730,133` steps (55.198% of guest execution):
+  * `0x008ACA..0x008AD0`: `5,327,384` steps.
+  * `0x008B72..0x008B7A`: `4,402,749` steps.
+- **Production Native Helpers:** `5,127,961` steps (29.090% of guest execution, 64.930% of non-idle) across 196 active helpers.
+- **Qualified Experimental Native Clusters:** `1,463,307` steps (8.301% of guest execution, 18.528% of non-idle) across Slots 222..236.
+- **ROM Interpreted Non-Idle Remainder:** `1,306,369` steps (7.411% of guest execution, 16.541% of non-idle).
+- **Unclassified Guest Steps:** `0` steps (0.000%).
+- **Forensic Resolution:** The 5.29M unowned steps figure reported in M15.237 candidate rankings arose from filtering `code-map.json` against an incomplete static slice inventory (~2.19M steps) in `native-ownership-index.json`. Because 196 active production helpers (5.13M steps) were not fully inventoried by instruction address in that index, active production code was erroneously labeled unowned. The true remaining non-idle interpreted instruction workload was exactly 1,306,369 steps.
+
+#### 2. Coordinator Hotspot Forensics
+- **`0x00A1D6` (1,160,000 steps):** Located inside `0x00A196..0x00A33E`. 100% owned by active production helper `00a196` (`m68k_00a196_instruction_step.cpp`). Unowned steps = 0.
+- **`0x00AF02` (561,000 steps):** Located inside `0x00AD76..0x00B010`. 100% owned by qualified experimental Slot 223 (`00ad76`). Unowned steps = 0.
+- **`0x0602FE` (246,000 steps):** Sound Driver command FIFO processing loop (`0x060000..0x060340`). Shadowed by active production helpers `60000`, `60286`, and legacy production helper #12 (`623ac`). Unowned steps = 0.
+- **`0x00DF2C` (92,000 steps):** Located inside `0x00DEEC..0x00DF50`. 100% owned by active production helper `00deec` (`m68k_00deec_instruction_step.cpp`). Unowned steps = 0.
+
+#### 3. Routine 0x00D2B4..0x00D344: Camera Viewport Scroll Step Coordinator (Slot 237)
+- **Original Address:** `0x00D2B4` to `0x00D344` (40 instructions, 144 bytes).
+- **Subsystem:** Viewport Scroll Staging and VDP HScroll Buffer Assembly.
+- **Control Flow:**
+  * `0x00D2B4`: `BSR.W $D344` (pushes return address `0x00D2B8` to guest stack A7, transfers to child subroutine `0x00D344`).
+  * `0x00D2B8`: `BCLR.B #2, $26(A0)` (clears scroll dirty flag).
+  * `0x00D2BE`: `BEQ.W $D342` (returns if no update needed).
+  * `0x00D2C2`: `BSET.B #3, $FF16F0.L` (marks VDP scroll latch dirty).
+  * `0x00D2CA`: `MOVE.W $E(A0), D0` (camera scroll step).
+  * `0x00D2CE`: `BTST.B #1, $FF16F0.L`
+  * `0x00D2D6`: `BEQ.W $D330`
+  * `0x00D2DA`: `BTST.B #0, $FF16F0.L`
+  * `0x00D2E2`: `BEQ.W $D310`
+  * `0x00D2E6`: `LEA.L $FFFB5C.L, A1` (VRAM Plane A HScroll table buffer)
+  * `0x00D2EC`: `CMPA.L #$FF1716, A0`
+  * `0x00D2F2`: `BEQ.B $D2F6`
+  * `0x00D2F4`: `ADDQ.L #2, A1`
+  * `0x00D2F6`: `MOVEQ #$39, D1`
+  * `0x00D2F8`..`0x00D308`: Unrolled scanline scroll write loop with `DBRA D1, $D2F8`.
+  * `0x00D342`: `RTS`.
+- **Runtime Performance:**
+  * Scenario C: 667 calls, 3,124 stepped native instructions, 0 faults.
+  * 100% bit-exact across all 24 differential qualification streams.
+- **Status:** `RUNTIME_QUALIFIED_PRODUCTIVE`. Real native instruction displacement achieved.
+
+#### 4. Routine 0x0059A8..0x0059BA: Entity Type Action Jump Table Dispatcher (Slot 238)
+- **Original Address:** `0x0059A8` to `0x0059BA` (5 instructions, 18 bytes).
+- **Subsystem:** Central Entity Action State Machine Dispatcher.
+- **Control Flow:**
+  * `0x0059A8`: `MOVE.W $FF165E.L, D7`
+  * `0x0059AE`: `MOVE.W $4(A6), D0` (reads action routine index from entity state).
+  * `0x0059B2`: `LEA.L $59BA(PC, D0.W), A0` (computes address of word offset in jump table).
+  * `0x0059B6`: `ADDA.W (A0), A0` (sign-extends word offset and adds to table address).
+  * `0x0059B8`: `JMP (A0)` (dynamic tail jump to entity action handler).
+- **Runtime Performance:**
+  * Scenario C: 5 calls, 25 stepped native instructions, 0 faults.
+  * 100% bit-exact across all 24 differential qualification streams.
+- **Status:** `RUNTIME_QUALIFIED_PRODUCTIVE`. Real native instruction displacement achieved.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.237: Scheduler-Safe Batch Recompilation, Real Runtime Displacement and Interrupt-Boundary Validation; Explicit GPGX Register Architecture Isolation Verification D0..D7 = 0..7, A0..A7 = 8..15, PC = 16, SR = 17; Musashi Dynamic Shift Cycle Parity Verification `shift * 14` Master Clocks; Interrupt Boundary Cooperative Preemption and Resumption Stress Testing in tests/m68k_scheduler_safe_differential_test.cpp; Candidate Discovery & Selection from Scenario C Residual Profile in data/thor-fixtures/batch_recompiler_candidates_m15_237.json; Automated Compilation of 4 Candidate Routines: Slot 233 0x005660, Slot 234 0x006E7A, Slot 235 0x062694, and Slot 236 0x062A78; Differential Unit & Mutation Testing 100% Bit-Exact; Unified Linux Runner build/auto-migrator/m15_237/linux-runner/oasis_gameplay_session, SHA256 864178d614d23ab1e09424ffc7a11a8700d91fa47d963a48ef5759fd92ca349b; Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved by Slot 234 0x006E7A: 51 Calls / 153 Steps in C, 29 Calls / 86 Steps in A, 17 Calls / 51 Steps in B (290 Native Steps Total); Identification of Production Helper Shadowing for Slots 233 by 00557a and Slots 235/236 by 623ac; Scenario C Combined Native Steps Reaching 6,591,268, Raw Native Coverage 37.391%, Non-Idle Coverage 83.459%, Remaining Interpreted Non-Idle Steps 1,306,369; Authoritative Machine Receipt Verified: combined-clusters-qualification-m15-237-20261109.json)
 
 ## Milestone M15.237 Reverse Engineering Summary

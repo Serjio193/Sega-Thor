@@ -1,0 +1,55 @@
+{
+  "milestone": "M15.238",
+  "scenario": "Scenario C (Attract / Intro / Title / Initial Demo)",
+  "total_guest_steps": 17627770,
+  "accounting_disjoint_check": "PASS",
+  "categories": {
+    "IDENTIFIED_IDLE": {
+      "steps": 9730133,
+      "share_of_guest": 0.5519775331763462,
+      "breakdown": {
+        "0x008ACA_0x008AD0": 5327384,
+        "0x008B72_0x008B7A": 4402749
+      }
+    },
+    "PRODUCTION_NATIVE": {
+      "steps": 5127961,
+      "share_of_guest": 0.2909024227114377,
+      "share_of_non_idle": 0.6493032029707113,
+      "active_helpers": 196
+    },
+    "QUALIFIED_EXPERIMENTAL_NATIVE": {
+      "steps": 1463307,
+      "share_of_guest": 0.08301146429752601,
+      "share_of_non_idle": 0.1852841552479558,
+      "breakdown": {
+        "slot_222_entity": 53508,
+        "slot_223_sprite_m0": 871538,
+        "slot_224_sprite_m1": 295976,
+        "slot_225_motion_shadowed": 0,
+        "slot_226_palette": 64752,
+        "slot_227_tilemap_row": 138261,
+        "slot_228_tilemap_col": 31210,
+        "slot_229_camera_range": 5965,
+        "slot_230_camera_coord": 1944,
+        "slot_231_camera_clamp_unreached": 0,
+        "slot_232_camera_bounds_unreached": 0,
+        "slot_233_entity_flags_shadowed": 0,
+        "slot_234_actor_velocity": 153,
+        "slot_235_sound_queue_shadowed": 0,
+        "slot_236_sound_command_shadowed": 0
+      }
+    },
+    "ROM_INTERPRETED_NON_IDLE": {
+      "steps": 1306369,
+      "share_of_guest": 0.07410857981469011,
+      "share_of_non_idle": 0.16541264178133283,
+      "status": "Target for incremental automated migration"
+    },
+    "UNCLASSIFIED": {
+      "steps": 0,
+      "share_of_guest": 0.0
+    }
+  },
+  "forensics_resolution_note": "The 5.29M figure reported in M15.237 candidate rankings arose from filtering code-map.json against an incomplete native-ownership-index.json slice inventory (~2.19M steps). Because 196 active production helpers (5.13M steps) were not fully mapped by instruction PC in that static index, active production code was erroneously labeled unowned. The true remaining non-idle interpreted instruction workload is exactly 1,306,369 steps."
+}
