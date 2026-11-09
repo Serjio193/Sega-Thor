@@ -9,6 +9,9 @@
 #include "tools/hybrid/generated/m68k_recompiled_062a78.hpp"
 #include "tools/hybrid/generated/m68k_recompiled_00d2b4.hpp"
 #include "tools/hybrid/generated/m68k_recompiled_0059a8.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_00e682.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_015ae2.hpp"
+#include "tools/hybrid/generated/m68k_recompiled_00c9b2.hpp"
 
 #include <fstream>
 
@@ -67,6 +70,18 @@ M68k9D70StepResult step_m68k_batch_0059a8(unsigned pc, const M68k9D70StepApi& ap
     return generated::step_m68k_0059a8(pc, api, enabled);
 }
 
+M68k9D70StepResult step_m68k_batch_00e682(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept {
+    return generated::step_m68k_00e682(pc, api, enabled);
+}
+
+M68k9D70StepResult step_m68k_batch_015ae2(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept {
+    return generated::step_m68k_015ae2(pc, api, enabled);
+}
+
+M68k9D70StepResult step_m68k_batch_00c9b2(unsigned pc, const M68k9D70StepApi& api, bool enabled) noexcept {
+    return generated::step_m68k_00c9b2(pc, api, enabled);
+}
+
 void write_batch_step_metrics(const std::filesystem::path& p) {
     const auto& m1 = generated::get_metrics_00d266();
     write_metrics_file(p / "00d266-step-metrics.json", m1.target_entries, m1.native_calls, m1.completed_calls, m1.stepped_instructions);
@@ -86,6 +101,12 @@ void write_batch_step_metrics(const std::filesystem::path& p) {
     write_metrics_file(p / "00d2b4-step-metrics.json", m8.target_entries, m8.native_calls, m8.completed_calls, m8.stepped_instructions);
     const auto& m9 = generated::get_metrics_0059a8();
     write_metrics_file(p / "0059a8-step-metrics.json", m9.target_entries, m9.native_calls, m9.completed_calls, m9.stepped_instructions);
+    const auto& m10 = generated::get_metrics_00e682();
+    write_metrics_file(p / "00e682-step-metrics.json", m10.target_entries, m10.native_calls, m10.completed_calls, m10.stepped_instructions);
+    const auto& m11 = generated::get_metrics_015ae2();
+    write_metrics_file(p / "015ae2-step-metrics.json", m11.target_entries, m11.native_calls, m11.completed_calls, m11.stepped_instructions);
+    const auto& m12 = generated::get_metrics_00c9b2();
+    write_metrics_file(p / "00c9b2-step-metrics.json", m12.target_entries, m12.native_calls, m12.completed_calls, m12.stepped_instructions);
 }
 
 void reset_batch_step_metrics() noexcept {
@@ -98,6 +119,9 @@ void reset_batch_step_metrics() noexcept {
     generated::reset_metrics_062a78();
     generated::reset_metrics_00d2b4();
     generated::reset_metrics_0059a8();
+    generated::reset_metrics_00e682();
+    generated::reset_metrics_015ae2();
+    generated::reset_metrics_00c9b2();
 }
 
 } // namespace oasis::hybrid

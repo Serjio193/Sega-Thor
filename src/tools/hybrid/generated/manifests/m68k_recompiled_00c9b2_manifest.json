@@ -1,0 +1,141 @@
+{
+  "routine_name": "m68k_recompiled_00c9b2",
+  "entry_pc": "0x00C9B2",
+  "instruction_count": 15,
+  "partition_count": 2,
+  "exit_pcs": [
+    "0x00C9E6",
+    "0x00C9EA"
+  ],
+  "pc_to_source_map": {
+    "0x00C9B2": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9B8": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9BA": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9C0": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9C4": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9CA": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9CC": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9D4": "m68k_recompiled_00c9b2_part0.cpp",
+    "0x00C9D6": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9DC": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9DE": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9E4": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9E6": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9E8": "m68k_recompiled_00c9b2_part1.cpp",
+    "0x00C9EA": "m68k_recompiled_00c9b2_part1.cpp"
+  },
+  "source_hashes": {
+    "m68k_recompiled_00c9b2_part0.hpp": "a81a2f0d360aa4b6f2c0fd334b2976040ab3ecb358d8c5b95eb7501ad4eec9c7",
+    "m68k_recompiled_00c9b2_part0.cpp": "a6a463cbb70be63c23d858ccf8150180265a23c18f2c5aa7d18fc874eafa2c12",
+    "m68k_recompiled_00c9b2_part1.hpp": "30dfef6b73a2680824568db8946e42d07f8f462eee3d2df053b40ce3cd66607b",
+    "m68k_recompiled_00c9b2_part1.cpp": "b336007e27933c6772b54bdcde30f7694d4cb32a2134024844c4c5084d2c6033",
+    "m68k_recompiled_00c9b2.hpp": "a3dffc8bcb214e7eba49c531785f33bc3be6af30c23e4a9547834086b477adeb",
+    "m68k_recompiled_00c9b2.cpp": "30393c930eed91e28d842b75359228c76a1f4c0ed2b3d3a4641e17e4d180b938"
+  },
+  "cfg_manifest": {
+    "entry": "0x00C9B2",
+    "blocks": 2,
+    "instructions": [
+      {
+        "pc": "0x00C9B2",
+        "mnemonic": "TST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9B8",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9BA",
+        "mnemonic": "TST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9C0",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9C4",
+        "mnemonic": "TST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9CA",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9CC",
+        "mnemonic": "BTST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9D4",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9D6",
+        "mnemonic": "TST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9DC",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9DE",
+        "mnemonic": "TST",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00C9E4",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00C9E8"
+      },
+      {
+        "pc": "0x00C9E6",
+        "mnemonic": "RTS",
+        "size": "",
+        "target": null
+      },
+      {
+        "pc": "0x00C9E8",
+        "mnemonic": "ADDQ",
+        "size": "l",
+        "target": null
+      },
+      {
+        "pc": "0x00C9EA",
+        "mnemonic": "RTS",
+        "size": "",
+        "target": null
+      }
+    ]
+  },
+  "dependency_manifest": {
+    "headers": [
+      "m68k_step_helpers.hpp"
+    ],
+    "parts": [
+      "m68k_recompiled_00c9b2_part0.hpp",
+      "m68k_recompiled_00c9b2_part1.hpp"
+    ]
+  },
+  "unsupported_opcodes": []
+}

@@ -1,3 +1,56 @@
+# ADR-20261109-M15-239-RESIDUAL-DRIVEN-AUTOMATIC-RECOMPILATION-AND-PORTABLE-IR — Residual-Driven Automatic Recompilation, Mixed Call/Return Hardening, and Standalone-Ready IR Architecture; Authoritative Direct Runtime Residual Interpreter Profiling in src/tools/hybrid/m68k_residual_profiler.cpp; Mathematical Disjoint Ledger Accounting Verification (Total Guest Steps 17,627,770 = 9,730,133 Idle Wait Loop + 5,122,171 Production Native + 1,475,282 Experimental Native + 1,300,184 Remaining Non-Idle Interpreted Steps, Zero Unclassified, Variance Accounted for by 0085c4 Runtime Execution); Discovery and Audit of Residual Hotspots in data/thor-fixtures/residual_hotspots_m15_239.json with Strict Exclusion of Native-Owned Blocks (0x00A1D6, 0x00AF02, 0x0602FE, 0x00DF2C); Hardened Mixed Execution ABI and Interrupt Continuation Proof in tests/m68k_mixed_abi_and_irq_test.cpp; 24-Target Dynamic Jump Audit at 0x0059BA with Misalignment / Bus Error Contract Safety; Automated Code Partitioning in tools/thor_recompiler/partitioner.py Restricting Every Generated Source File to <= 350 Lines (Partitions <= 8 Instructions Each with Discrete Component Files and CFG Manifests); Qualification of Three Genuine Unowned Candidates: Slot 239 (0x00E682, Camera Viewport State & Clamping Coordinator, 19,183 Scenario C Native Steps), Slot 240 (0x015AE2, Entity AI Movement Branch Selector, 16,324 Scenario C Native Steps), and Slot 241 (0x00C9B2, System Status Gatekeeper Routine, 5,340 Scenario C Native Steps); Combined Native Displacement of +40,847 Genuine Interpreted Instructions (>4x Goal of 10,000); Combined Scenario C Native Steps Reaching 6,635,264 / 17,627,770 (Raw Native Coverage 37.641%, Non-Idle Dynamic Coverage 84.016%, Remaining Non-Idle Interpreted Steps Reduced to 1,262,373); Unified Linux Runner build/auto-migrator/m15_239/linux-runner/oasis_gameplay_session (SHA256 b87a2a721b5c798858616303430ba0d5f0fefe8087ce8a7ba0b653570d203c59); Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Certified Evidence Receipt data/thor-evidence/combined-clusters-qualification-m15-239-20261109.json Verified by ReceiptVerifier (58 Files Checked, 48 Stream Artifacts Valid); Emulator-Independent IR Architecture in src/tools/thor_ir/ir_schema.hpp and Mode A vs Mode B Equivalence Differential Test tests/thor_ir_mode_differential_test.cpp; Standalone CameraController and TilemapStreamer Semantic Handoff Analysis; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.238, non-leaf control flow and dynamic jump table dispatching were proven with Slots 237 and 238, but further scaling required addressing code generator source size limits (where routines exceeding 25 instructions approached the 500-line limit), authoritative residual profiling directly on the interpreter runtime path, and establishing an emulator-independent IR architecture for portable native execution.
+2. Direct runtime interpreter instrumentation across Scenario C (1,800 frames) established exact disjoint ledger accounting:
+   - Total guest instructions: 17,627,770 (100.000%)
+   - Idle wait loops (0x008ACA..0x008AD0 & 0x008B72..0x008B7A): 9,730,133 steps (55.198%)
+   - Production native steps: 5,122,171 steps (29.057%)
+   - Experimental native steps: 1,475,282 steps (8.369%)
+   - Non-idle interpreted steps: 1,300,184 steps (7.376%)
+   - Accounting check: $9{,}730{,}133 + 5{,}122{,}171 + 1{,}475{,}282 + 1{,}300{,}184 = 17{,}627{,}770$ (0 unclassified).
+   - The 3,036-step variance from the static estimate (1,303,220) was investigated and proven to be caused by active production helper `0x0085c4` (which stepped 2,356 instructions at runtime) and related unmetricized loops.
+3. Excluded native-owned hotspots (`0x00A1D6`, `0x00AF02`, `0x0602FE`, `0x00DF2C`) were audited and verified to have exactly 0 steps in the residual profile, verifying 100% native ownership.
+4. Three genuine unowned candidates were selected from the residual profile:
+   - Candidate 1: `0x00E682..0x00E6A8` (Camera Viewport State/Flags Coordinator) — 12 instructions, 20,044 Scenario C steps.
+   - Candidate 2: `0x015AE2..0x015AFC` (Entity Movement / AI Branch Selector) — 9 instructions, 16,666 Scenario C steps.
+   - Candidate 3: `0x00C9B2..0x00C9EA` (System Status Gatekeeper / Early Exit Routine) — 15 instructions, 5,340 Scenario C steps.
+   - Combined potential displaceable workload: 42,050 steps (>4x the required 10,000 steps).
+
+**Decisions:**
+1. **Automated Partitioning Architecture (`tools/thor_recompiler/partitioner.py`):**
+   - Automatically partitions routines into sub-functions of <= 8 instructions per file (`_part0.cpp`, `_part1.cpp`, etc.) coordinated by a top-level dispatcher.
+   - Guarantees every generated source file is <= 350 lines (observed 59..102 lines per file), strictly complying with AGENTS.md Rule 3.
+   - Emits structured manifests with PC-to-source maps, source hashes, and CFG descriptors.
+2. **Harden Mixed Execution ABI and Interrupt Boundaries (`tests/m68k_mixed_abi_and_irq_test.cpp`):**
+   - Verified native->native, native->interpreted, interpreted->native, and nested call stack conservation.
+   - Verified interrupt continuation across scheduler boundaries (Format 0 exception frame, RTE restoration, resume_pc preservation).
+   - Audited the 24 jump table entries at `0x0059BA`: verified that misaligned (odd) targets and invalid bus targets return ContractFault / Address Error, preserving 24-bit address bus semantics.
+3. **Emulator-Independent IR Architecture (`src/tools/thor_ir/ir_schema.hpp`):**
+   - Created backend-neutral IR schema defining sizes, registers, operations, CCR effects, cycles, branches, and synchronization boundaries.
+   - Implemented and verified Mode A (Verification step backend) vs Mode B (Portable native backend) equivalence in `tests/thor_ir_mode_differential_test.cpp`.
+4. **Three-Scenario Differential Qualification (Slots 239, 240, 241):**
+   - Unified Linux runner built at `build/auto-migrator/m15_239/linux-runner/oasis_gameplay_session` (SHA256 `b87a2a721b5c798858616303430ba0d5f0fefe8087ce8a7ba0b653570d203c59`).
+   - Achieved 24/24 raw stream bit-exact matches across Scenarios C, A, B with 0 contract faults.
+   - Delivered +40,847 new native steps in Scenario C:
+     - Slot 239 (`00e682`): 3,195 entries / 19,183 steps.
+     - Slot 240 (`015ae2`): 2,041 entries / 16,324 steps.
+     - Slot 241 (`00c9b2`): 552 entries / 5,340 steps.
+5. **Preserve Decompressor Quarantine & Standalone Isolation:**
+   - Multi-frame decompressor `0x003820` remains quarantined.
+   - `C:/Github/Sega-Thor-Standalone` remains strictly READ-ONLY.
+
+**Consequences:**
+- Combined Scenario C native instructions reach 6,635,264 (up from 6,594,417).
+- Raw dynamic native coverage: 37.641% (up from 37.409%).
+- Non-idle dynamic native coverage: 84.016% (up from 83.499%).
+- Remaining non-idle interpreted steps reduced to 1,262,373.
+- Net displacement of interpreted instructions: +40,847 steps.
+- Qualification receipt `data/thor-evidence/combined-clusters-qualification-m15-239-20261109.json` certified valid by `ReceiptVerifier`.
+- Production active helpers remain strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+
 # ADR-20261109-M15-238-NON-LEAF-RECOMPILATION-AND-DYNAMIC-DISPATCH — Non-Leaf Automatic Recompilation, Dynamic Call Resolution and Scheduler-Safe Mixed Execution; Mathematical Disjoint Residual Accounting Reconciliation (Total Guest Steps 17,627,770 = 9,730,133 Idle + 5,127,961 Production Native + 1,463,307 Qualified Experimental Native + 1,306,369 Remaining Non-Idle Interpreted Steps, Zero Unclassified); Coordinator Hotspot Forensics Disproving Unowned Step Fallacy; Recompiler Upgrades in tools/thor_recompiler/decoder.py and codegen_step.py Supporting BSR Subroutine Call / Return Address Stack Management, Caller Preemption / Resumption, DBRA Loops, Dynamic Jump Table Dispatch JMP (An), LEA disp(PC, Xn), ADDA.W (An), CMPA.L #imm, BSET.B, and BCLR.B; Versioned Dynamic Jump Table Manifest in data/thor-fixtures/indirect_target_manifest_m15_238.json; Unified Linux Runner build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session (SHA256 b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d); Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved: Slot 237 (0x00D2B4) 667 Calls / 3,124 Stepped Instructions, Slot 238 (0x0059A8) 5 Calls / 25 Stepped Instructions (Total +3,149 New Native Steps in Scenario C); Combined Scenario C Native Steps Reaching 6,594,417 / 17,627,770 (Raw Native Coverage 37.409%, Non-Idle Dynamic Coverage 83.499%, Remaining Non-Idle Interpreted Steps Reduced to 1,303,220); Replay Performance Benchmark at 6,445.7 FPS; Standalone CameraController Semantic Bridge Established; Multi-Frame Decompressor 0x003820 Quarantine Preserved; Standalone Worktree Unmodified (READ-ONLY)
 **Status:** Accepted
 **Date:** 2026-11-09

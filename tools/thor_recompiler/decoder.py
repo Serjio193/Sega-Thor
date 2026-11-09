@@ -68,6 +68,10 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             return DecodedInstruction(pc, words, "TST", sz, [Operand("disp_a", reg=reg, val=disp, size=sz)], base_cycles=8)
         elif mode == 2:
             return DecodedInstruction(pc, words, "TST", sz, [Operand("indir_a", reg=reg, size=sz)], base_cycles=8)
+        elif mode == 7 and reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + 2)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            return DecodedInstruction(pc, words, "TST", sz, [Operand("abs_l", val=addr, size=sz)], base_cycles=12)
 
     # Scc (SF.B / ST.B): 0x50C0..0x5FC0
     if (w0 & 0xF0C0) == 0x50C0:
@@ -148,6 +152,10 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             return DecodedInstruction(pc, words, mnemonic, sz, [Operand("imm", val=imm), Operand("reg_d", reg=reg, size=sz)], base_cycles=4 if sz != "l" else 8)
         elif mode == 1:
             return DecodedInstruction(pc, words, mnemonic, sz, [Operand("imm", val=imm), Operand("reg_a", reg=reg, size=sz)], base_cycles=8)
+        elif mode == 5:
+            disp = struct.unpack_from(">h", rom, pc + 2)[0]
+            words.append(disp & 0xFFFF)
+            return DecodedInstruction(pc, words, mnemonic, sz, [Operand("imm", val=imm), Operand("disp_a", reg=reg, val=disp, size=sz)], base_cycles=12)
 
     # LEA: 0x41C0..0x4FF8
     if (w0 & 0xF1C0) == 0x41C0:

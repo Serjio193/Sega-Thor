@@ -4256,3 +4256,22 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/run_m15_238_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.238 (M15.238).
 - tools/generate_m15_238_receipt.py — Authoritative receipt generator and verifier for M15.238 (M15.238).
 - data/thor-evidence/combined-clusters-qualification-m15-238-20261109.json — Verified machine evidence receipt for M15.238 (M15.238).
+- src/tools/hybrid/m68k_residual_profiler.hpp/.cpp — Residual-only runtime execution profiler instrumenting ROM interpreter steps to build exact PC-level histograms without native interference (M15.239).
+- src/tools/thor_ir/ir_schema.hpp — Emulator-independent intermediate representation schema with typed operations, operands, basic blocks, and abstract guest environment interface for portable C++20 and verification backends (M15.239).
+- tools/thor_recompiler/partitioner.py — Deterministic automatic partitioning pipeline decomposing M68000 CFGs into bounded C++20 units (<= 8 instructions per file, <= 105 lines) with coordination dispatchers and manifest generation (M15.239).
+- src/tools/hybrid/generated/m68k_recompiled_00e682* — Partitioned machine-generated scheduler-safe recompiled units and dispatcher for Camera Viewport State/Flags Coordinator at 0x00E682..0x00E6A8 (Slot 239, productive +19,183 steps) (M15.239).
+- src/tools/hybrid/generated/m68k_recompiled_015ae2* — Partitioned machine-generated scheduler-safe recompiled units and dispatcher for Entity Movement / AI Branch Selector at 0x015AE2..0x015AFC (Slot 240, productive +16,324 steps) (M15.239).
+- src/tools/hybrid/generated/m68k_recompiled_00c9b2* — Partitioned machine-generated scheduler-safe recompiled units and dispatcher for System Status Gatekeeper Routine at 0x00C9B2..0x00C9EA (Slot 241, productive +5,340 steps) (M15.239).
+- src/tools/hybrid/generated/manifests/m68k_recompiled_*_manifest.json — Machine-generated candidate manifests containing PC-to-source maps, source hashes, and CFG structures (M15.239).
+- tests/m68k_mixed_abi_and_irq_test.cpp — Comprehensive test suite for mixed call/return ABI stack preservation, NotHandled idempotence, interrupt preemption and continuation across scheduler boundaries, and dynamic jump table safety (M15.239).
+- tests/m68k_candidate_diff_m15_239_test.cpp — Differential and mutation verification tests for Candidates 1–3 against pinned CPU reference logic with fault injection (M15.239).
+- tests/thor_ir_mode_differential_test.cpp — Differential test verifying bit-exact execution parity between Mode A (verification stepper backend) and Mode B (compiled portable native backend) using the emulator-independent IR (M15.239).
+- tools/build_m15_239_tests.py — Test build and execution runner for M15.239 differential, ABI, and IR test suites (M15.239).
+- tools/build_m15_239_runner.py — Linux qualification runner build harness for M15.239 with Slots 222..241 (M15.239).
+- tools/run_m15_239_profile.py — Execution harness for runtime residual profiling across Scenario C (M15.239).
+- tools/generate_m15_239_candidates.py — Recompilation orchestrator generating partitioned C++20 code, dispatchers, and manifests for Candidates 1–3 (M15.239).
+- tools/run_m15_239_combined_ab.py — 3-scenario combined cluster A/B qualification runner for M15.239 (M15.239).
+- tools/benchmark_m15_239.py — Performance benchmark script measuring replay time and frame rates for P0 vs P_COMBINED (M15.239).
+- tools/generate_m15_239_receipt.py — Machine evidence receipt generator and ReceiptVerifier runner for M15.239 (M15.239).
+- data/thor-fixtures/residual_hotspots_m15_239.json — Frozen ranked residual interpreter hotspots excluding native-owned ranges and quarantined decompressor (M15.239).
+- data/thor-evidence/combined-clusters-qualification-m15-239-20261109.json — Verified machine evidence receipt for M15.239 qualifying Slots 222..241, displacing 6,635,264 native instructions in Scenario C (+40,847 new native steps) with 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.239).

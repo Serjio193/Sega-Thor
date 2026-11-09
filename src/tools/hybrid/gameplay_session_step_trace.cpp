@@ -1,6 +1,8 @@
 #include "tools/hybrid/gameplay_session_step_trace.hpp"
+#include "tools/hybrid/m68k_residual_profiler.hpp"
 
 #include <cstdint>
+#include <cstdlib>
 
 namespace oasis::hybrid::session {
 namespace {
@@ -23,6 +25,20 @@ void write_step_instruction(std::ostream& out, unsigned frame, unsigned pc, unsi
 void observe_step_instruction_trace(std::ostream& out, unsigned frame, unsigned pc, unsigned opcode,
                                     unsigned previous_pc, RegisterRead read_register,
                                     SchedulerRead read_scheduler, bool native_step) {
+    static bool profiler_checked = false;
+    if (!profiler_checked) {
+        profiler_checked = true;
+        const char* dir = std::getenv("OASIS_RESIDUAL_PROFILE_DIR");
+        if (dir && *dir) {
+            const char* scen = std::getenv("OASIS_SCENARIO_NAME");
+            M68kResidualProfiler::instance().init(dir, (scen && *scen) ? scen : "scenario_c");
+        }
+    }
+    if (M68kResidualProfiler::instance().enabled()) {
+        M68kResidualProfiler::instance().observe(pc, opcode, frame, previous_pc,
+                                                 read_register, read_scheduler, native_step);
+    }
+
     if (pc == 0xE268U)
         out << "{\"kind\":\"E268_CALL\",\"frame\":" << frame
             << ",\"source_pc\":" << previous_pc << ",\"native\":"

@@ -1,0 +1,120 @@
+{
+  "routine_name": "m68k_recompiled_00e682",
+  "entry_pc": "0x00E682",
+  "instruction_count": 12,
+  "partition_count": 2,
+  "exit_pcs": [
+    "0x00E698",
+    "0x00E6A8"
+  ],
+  "pc_to_source_map": {
+    "0x00E682": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E688": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E68C": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E690": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E694": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E698": "m68k_recompiled_00e682_part0.cpp",
+    "0x00E69A": "m68k_recompiled_00e682_part1.cpp",
+    "0x00E69E": "m68k_recompiled_00e682_part1.cpp",
+    "0x00E6A0": "m68k_recompiled_00e682_part1.cpp",
+    "0x00E6A4": "m68k_recompiled_00e682_part1.cpp",
+    "0x00E6A6": "m68k_recompiled_00e682_part1.cpp",
+    "0x00E6A8": "m68k_recompiled_00e682_part1.cpp"
+  },
+  "source_hashes": {
+    "m68k_recompiled_00e682_part0.hpp": "19d37b103d6dda29ea8255a005ab738d129a176a3dbc67731b83fd781f718914",
+    "m68k_recompiled_00e682_part0.cpp": "85387f98fdf1026d13b3397d27eff37326f527e66d63c1bebd0fbcdc1972d176",
+    "m68k_recompiled_00e682_part1.hpp": "ae26cae3b47ed226997bf43886282b0f8cfb56847c49c01c0ec5dba2b470ac88",
+    "m68k_recompiled_00e682_part1.cpp": "808749478c6dc000079244b451510387cce17b999c10a183da25129fa42a4a03",
+    "m68k_recompiled_00e682.hpp": "9a9e4a38ce8311fc34204f32dd04c3b6485872b9df30ef51846f999c9d15081a",
+    "m68k_recompiled_00e682.cpp": "1bb16d09531514c8e53f898faa3e172f3cf379837ceb8cdc1fc34130b527def3"
+  },
+  "cfg_manifest": {
+    "entry": "0x00E682",
+    "blocks": 2,
+    "instructions": [
+      {
+        "pc": "0x00E682",
+        "mnemonic": "BCLR",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00E688",
+        "mnemonic": "MOVE",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00E68C",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00E6AA"
+      },
+      {
+        "pc": "0x00E690",
+        "mnemonic": "MOVE",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00E694",
+        "mnemonic": "BNE",
+        "size": "w",
+        "target": "0x00E69A"
+      },
+      {
+        "pc": "0x00E698",
+        "mnemonic": "RTS",
+        "size": "",
+        "target": null
+      },
+      {
+        "pc": "0x00E69A",
+        "mnemonic": "ADDQ",
+        "size": "w",
+        "target": null
+      },
+      {
+        "pc": "0x00E69E",
+        "mnemonic": "SUBQ",
+        "size": "w",
+        "target": null
+      },
+      {
+        "pc": "0x00E6A0",
+        "mnemonic": "MOVE",
+        "size": "b",
+        "target": null
+      },
+      {
+        "pc": "0x00E6A4",
+        "mnemonic": "BEQ",
+        "size": "w",
+        "target": "0x00E6A8"
+      },
+      {
+        "pc": "0x00E6A6",
+        "mnemonic": "ADDQ",
+        "size": "l",
+        "target": null
+      },
+      {
+        "pc": "0x00E6A8",
+        "mnemonic": "RTS",
+        "size": "",
+        "target": null
+      }
+    ]
+  },
+  "dependency_manifest": {
+    "headers": [
+      "m68k_step_helpers.hpp"
+    ],
+    "parts": [
+      "m68k_recompiled_00e682_part0.hpp",
+      "m68k_recompiled_00e682_part1.hpp"
+    ]
+  },
+  "unsupported_opcodes": []
+}
