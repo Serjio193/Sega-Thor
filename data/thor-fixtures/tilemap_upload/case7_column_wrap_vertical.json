@@ -1,0 +1,234 @@
+{
+  "case_id": "case7_column_wrap_vertical",
+  "description": "Plane A column upload with vertical row wrap at 32 rows emitting wrap control commands (35 writes)",
+  "rom_entry_pc": "0x0023CC",
+  "rom_exit_pc": "0x002510",
+  "input_state": {
+    "vram_base": 49152,
+    "scroll_counter": 1,
+    "vram_offset": 3712,
+    "plane_width": 128,
+    "plane_height": 32,
+    "x_pos": 5,
+    "y_pos": 30,
+    "shift_factor": 7
+  },
+  "output_state": {
+    "final_scroll_counter": 0,
+    "final_x_pos": 6,
+    "final_vram_offset": 3714,
+    "vdp_writes": [
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x8F80",
+        "type": "VDP_REG_AUTOINC_128"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x4ED2",
+        "type": "VDP_CTRL_CMD_LOW"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x0003",
+        "type": "VDP_CTRL_CMD_HIGH"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0EAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0F2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x07AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x3ED2",
+        "type": "VDP_CTRL_CMD_WRAP_LOW"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x0003",
+        "type": "VDP_CTRL_CMD_WRAP_HIGH"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x082E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x08AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x092E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x09AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0A2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0AAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0B2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0BAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0C2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0CAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0D2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0DAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0E2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0EAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0F2E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x0FAE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x102E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x10AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x112E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x11AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x122E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x12AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x132E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x13AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x142E",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00000",
+        "addr": 12582912,
+        "value": "0x14AE",
+        "type": "VDP_DATA_PORT"
+      },
+      {
+        "port": "0xC00004",
+        "addr": 12582916,
+        "value": "0x8F02",
+        "type": "VDP_REG_AUTOINC_2"
+      }
+    ],
+    "total_writes": 35
+  }
+}

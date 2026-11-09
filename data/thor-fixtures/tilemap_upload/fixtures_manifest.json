@@ -1,41 +1,75 @@
 {
-  "schema": "oasis.tilemap-upload-fixture-manifest.v1",
-  "routine": "0x002512",
-  "routine_range": "0x002512..0x002630",
-  "exclusive_boundary": "0x002632",
-  "subsystem": "Tilemap Plane Row Upload Engine",
-  "caller_pcs": [
-    "0x0020C4",
-    "0x002106"
+  "schema": "oasis.tilemap-upload-fixture-manifest.v2",
+  "subsystems": [
+    {
+      "routine": "0x002512",
+      "range": "0x002512..0x002630",
+      "exclusive_boundary": "0x002632",
+      "name": "Tilemap Plane Row Upload Engine"
+    },
+    {
+      "routine": "0x0023CC",
+      "range": "0x0023CC..0x002510",
+      "exclusive_boundary": "0x002512",
+      "name": "Tilemap Plane Column Upload Engine"
+    }
   ],
   "cases": [
     {
       "case_id": "case1_scroll_up_plane_a",
-      "description": "Authentic Plane A scroll up row upload without column wrapping (43 VDP writes)",
+      "description": "Plane A scroll up row upload without column wrapping (43 VDP writes)",
       "file": "case1_scroll_up_plane_a.json",
-      "sha256": "71147ee547e03381a431b2decc970efdfe55ee24b95c1030c7eb6ba261b8631c",
+      "sha256": "43615804266225d8548662ec3285dea11f0da7077679a86aea79ca98cc2e2a85",
       "total_writes": 43
     },
     {
       "case_id": "case2_scroll_down_plane_a",
-      "description": "Authentic Plane A scroll down row upload with negative scroll counter",
+      "description": "Plane A scroll down row upload with negative scroll counter",
       "file": "case2_scroll_down_plane_a.json",
-      "sha256": "1884a8eece9a2568a5e5f3dc5d864f60fc578b697911447edc09b11ec5b59677",
+      "sha256": "42604ac3afaf25e5a482c190559bf63b5eefe0e4dfa3bc73e4b31f92c7e56da2",
       "total_writes": 43
     },
     {
       "case_id": "case3_column_wrap_boundary",
-      "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 VDP writes with wrap commands)",
+      "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 writes)",
       "file": "case3_column_wrap_boundary.json",
-      "sha256": "102f75af8e30874ff3f2ffb6fa500937f03419e843a9555026dee7d9fc2588f3",
+      "sha256": "fedad35f7a02ea3d85d1f8d3fbe3527a6cdd86824ba117acafb983f38788e997",
       "total_writes": 45
     },
     {
       "case_id": "case4_scroll_up_plane_b",
-      "description": "Authentic Plane B row upload (VRAM base 0xE000) under scroll up",
+      "description": "Plane B row upload (VRAM base 0xE000) under scroll up",
       "file": "case4_scroll_up_plane_b.json",
-      "sha256": "a8a7ca1dc69a7551d33ada1f90508f8c1cedf8418a5d36e39758ec463c353575",
+      "sha256": "db9b52bcee78dcecdb3b45e2c1d72b55b46749195900356bab8892355e549a14",
       "total_writes": 43
+    },
+    {
+      "case_id": "case5_scroll_right_column_plane_a",
+      "description": "Plane A scroll right column upload with auto-inc 128 setup and restore 2 (33 writes)",
+      "file": "case5_scroll_right_column_plane_a.json",
+      "sha256": "b576cc066b9e76677e01b39da0ea5c103c48c9477acbd6a3f3912d31cc7addb8",
+      "total_writes": 33
+    },
+    {
+      "case_id": "case6_scroll_left_column_plane_a",
+      "description": "Plane A scroll left column upload with negative counter (33 writes)",
+      "file": "case6_scroll_left_column_plane_a.json",
+      "sha256": "8d18748faf05594c578c1e6fe93bee79a7942b896435ef719003f1d86517ca4f",
+      "total_writes": 33
+    },
+    {
+      "case_id": "case7_column_wrap_vertical",
+      "description": "Plane A column upload with vertical row wrap at 32 rows emitting wrap control commands (35 writes)",
+      "file": "case7_column_wrap_vertical.json",
+      "sha256": "f8fa3a896f68e94542d54b9006164f3d2fafafff8ae97c765ec331c636df0438",
+      "total_writes": 35
+    },
+    {
+      "case_id": "case8_scroll_right_plane_b",
+      "description": "Plane B column upload (VRAM base 0xE000) under scroll right (33 writes)",
+      "file": "case8_scroll_right_plane_b.json",
+      "sha256": "006ab60ef77c491461bdf558a905abe7d045025a9cc156d1a87e10a092db7579",
+      "total_writes": 33
     }
   ]
 }

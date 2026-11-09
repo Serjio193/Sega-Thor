@@ -4190,3 +4190,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `tools/generate_m15_232_receipt.py` — Machine evidence receipt generator and `ReceiptVerifier` runner for M15.232 (M15.232).
 - `data/thor-evidence/combined-clusters-qualification-m15-232-20261108.json` — Machine-readable evidence receipt for Heptad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227 + 228), displacing 6,583,206 native instructions in Scenario C (37.345% raw, 83.357% non-idle) with 24/24 bit-exact stream matches, validated via `ReceiptVerifier` (M15.232).
 - `data/thor-fixtures/tilemap_upload/` — Directory containing immutable oracle fixtures for tilemap plane row and column upload parameter contracts (M15.232).
+- `tools/thor_recompiler/decoder.py` — M68000 instruction decoder for recompiler prototype (M15.233).
+- `tools/thor_recompiler/cfg.py` — Basic block discovery and CFG builder for recompiler prototype (M15.233).
+- `tools/thor_recompiler/codegen_cpp.py` — C++20 code generator with basic block switch dispatch, cycle accounting, and bus refresh (M15.233).
+- `tools/thor_recompiler/main.py` — Automated CFG partitioning CLI tool enforcing Rule 3 (<= 500 lines) (M15.233).
+- `src/tools/hybrid/generated/m68k_recompiled_002512*` — Machine-generated C++20 recompiled units for `0x002512..0x002630` (M15.233).
+- `tests/m68k_recompiler_differential_test.cpp` — Differential qualification test comparing recompiled C++ against handwritten stepper (M15.233).
+- `tools/build_recompiler_test.py` — Build and execution harness for recompiler differential tests (M15.233).

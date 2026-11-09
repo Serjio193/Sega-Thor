@@ -1,6 +1,6 @@
 {
   "case_id": "case2_scroll_down_plane_a",
-  "description": "Authentic Plane A scroll down row upload with negative scroll counter",
+  "description": "Plane A scroll down row upload with negative scroll counter",
   "rom_entry_pc": "0x002512",
   "rom_exit_pc": "0x002630",
   "input_state": {

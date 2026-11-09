@@ -1,6 +1,6 @@
 {
   "case_id": "case3_column_wrap_boundary",
-  "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 VDP writes with wrap commands)",
+  "description": "Plane A row upload with horizontal plane column wrap at 64 words (45 writes)",
   "rom_entry_pc": "0x002512",
   "rom_exit_pc": "0x002630",
   "input_state": {

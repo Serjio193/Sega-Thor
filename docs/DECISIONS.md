@@ -10441,3 +10441,44 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
 8. **Governance & Active Inventory Preservation:**
    - Production active helpers remain strictly at 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
    - Slot 228 remains experimental and disabled by default (`ORACLE_OWNER_APPROVAL = PENDING`).
+
+## 2026-11-09 — M15.233: Connected Tilemap Pipeline and Automated M68000 Recompilation Prototype
+
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. Following M15.232, the dual-axis tilemap plane upload routines were fully recompiled in native C++: Slot 227 (0x002512..0x002630, Row Upload) and Slot 228 (0x0023CC..0x002510, Column Upload), achieving 6,583,206 native guest steps displaced in Scenario C (37.345% raw coverage, 83.357% non-idle coverage).
+2. The next technical goals were twofold:
+   - Connect and map the complete original tilemap update pipeline: from VBlank Auto-Vector 6 (0x001F76) through dispatcher 0x002084..0x002112, context RAM structures (0x00FF1716 for Plane A, 0x00FF173E for Plane B), budget counters, and callee invocations.
+   - Develop an automated M68000-to-C++ recompiler prototype (tools/thor_recompiler/) that parses original ROM bytes, builds a control flow graph (CFG), and synthesizes C++20 code compliant with the strict 500-line limit (AGENTS.md Rule 3) and verified bit-exact against handwritten steppers and Musashi.
+
+**Decisions:**
+1. **Automated M68000 Recompiler Prototype (tools/thor_recompiler/):**
+   - Implemented a clean, modular Python-based recompiler in 4 focused modules (all <= 500 lines):
+     * decoder.py (221 lines): Opcode disassembly, effective address decoding, and operand resolution for integer ALU, branch, move, swap, and shift instructions.
+     * cfg.py (105 lines): Leader detection, basic block discovery, terminator analysis, and CFG edge construction.
+     * codegen_cpp.py (331 lines): C++20 code generator emitting basic-block switch dispatchers, cycle accumulation, and bus refresh hooks matching Musashi semantics.
+     * main.py (99 lines): CLI orchestrator featuring semantic basic block partitioning into sub-functions to strictly satisfy the <= 500 lines file size rule.
+   - Tested and verified code generation against 0x002512..0x002630, automatically producing 4 compliant translation units (m68k_recompiled_002512_right.cpp, _left.cpp, _upload.cpp, and orchestrator m68k_recompiled_002512.cpp).
+2. **Differential Qualification:**
+   - Implemented tests/m68k_recompiler_differential_test.cpp (205 lines) and runner tools/build_recompiler_test.py (55 lines).
+   - Validated recompiled C++ against handwritten stepper across both Scroll Up/Right and Scroll Down/Left paths.
+   - Verified 100% bit-exact parity across all 16 registers (D0-D7, A0-A7), 43 VDP writes, RAM mutations, and stack return PC (0x0020C8).
+3. **Connected Tilemap Call Graph & State Architecture:**
+   - Vector 30 (0x000078) points to VBlank Auto-Vector 6 at 0x001F76.
+   - VBlank handler invokes Tilemap Dispatcher at 0x002084..0x002112.
+   - The dispatcher manages two symmetric 40-byte contexts: Plane A (0x00FF1716) and Plane B (0x00FF173E).
+   - Flag byte at offset (A3) specifies active transfers: bit 0 triggers Column Upload (0x0023CC), bit 1 triggers Row Upload (0x002512).
+   - Word budget counters at (A3) (columns) and (A3) (rows) control streaming loops per frame.
+   - Evaluated dispatcher self-workload: ~24,000 steps total in Scenario C, with the heavy lifting already contained in qualified Slots 227 and 228.
+4. **Semantic Output Contract & Expanded Fixtures:**
+   - Expanded immutable fixtures in data/thor-fixtures/tilemap_upload/ to 8 comprehensive test cases covering row uploads, column uploads, auto-increment switching ( -> ), and both horizontal and vertical plane wrap boundaries.
+   - Validated pure C++ domain engine in src/game/render/tilemap_plane_upload.hpp/.cpp with tests/tilemap_plane_upload_test.cpp passing 100%.
+5. **Decompressor Architectural Study (0x003820):**
+   - Preserved quarantine of 0x003820 from atomic stepping.
+   - Designed interruptible instruction-boundary yield/resume mechanism: generated steppers track basic-block PC, check external interrupt pending flags before block transitions, and yield execution to the guest scheduler when an interrupt occurs, resuming cleanly upon RTE.
+6. **Governance & Hygiene:**
+   - C:/Github/Sega-Thor-Standalone kept strictly READ-ONLY (0 modifications).
+   - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867).
+   - All source and test files verified strictly <= 500 lines via tests/check_file_limits.cmake.

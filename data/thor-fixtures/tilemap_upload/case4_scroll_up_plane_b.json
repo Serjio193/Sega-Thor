@@ -1,6 +1,6 @@
 {
   "case_id": "case4_scroll_up_plane_b",
-  "description": "Authentic Plane B row upload (VRAM base 0xE000) under scroll up",
+  "description": "Plane B row upload (VRAM base 0xE000) under scroll up",
   "rom_entry_pc": "0x002512",
   "rom_exit_pc": "0x002630",
   "input_state": {

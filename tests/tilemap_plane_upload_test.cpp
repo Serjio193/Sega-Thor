@@ -74,10 +74,31 @@ int main() {
         assert(state.y_pos == 2);
     }
 
-    // Case 4: Scroll right column upload
+    // Case 4: Plane B scroll up row upload
     {
         std::vector<uint16_t> tiles(4096);
         for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0400 + i);
+
+        PlaneUploadState state{};
+        state.vram_base = 0xE000U;
+        state.scroll_counter = 1;
+        state.vram_offset = 0x0100;
+        state.plane_width = 0x80U;
+        state.plane_height = 0x20U;
+        state.x_pos = 8;
+        state.y_pos = 3;
+        state.shift_factor = 7;
+
+        auto writes = execute_plane_row_upload(state, tiles);
+        assert(writes.size() == 43);
+        assert(state.scroll_counter == 0);
+        assert(state.y_pos == 4);
+    }
+
+    // Case 5: Scroll right column upload
+    {
+        std::vector<uint16_t> tiles(4096);
+        for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0500 + i);
 
         PlaneUploadState state{};
         state.vram_base = 0xC000U;
@@ -90,7 +111,7 @@ int main() {
         state.shift_factor = 7;
 
         auto writes = execute_plane_column_upload(state, tiles);
-        assert(writes.size() >= 33);
+        assert(writes.size() == 33); // 1 autoinc + 2 cmd + 29 data + 1 restore autoinc
         assert(writes[0].port == TilemapPlaneUploadContract::kVdpControlPort);
         assert(writes[0].value == TilemapPlaneUploadContract::kVdpAutoincrement128);
         assert(writes.back().port == TilemapPlaneUploadContract::kVdpControlPort);
@@ -99,10 +120,10 @@ int main() {
         assert(state.x_pos == 5);
     }
 
-    // Case 5: Scroll left column upload
+    // Case 6: Scroll left column upload
     {
         std::vector<uint16_t> tiles(4096);
-        for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0500 + i);
+        for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0600 + i);
 
         PlaneUploadState state{};
         state.vram_base = 0xC000U;
@@ -115,7 +136,7 @@ int main() {
         state.shift_factor = 7;
 
         auto writes = execute_plane_column_upload(state, tiles);
-        assert(writes.size() >= 33);
+        assert(writes.size() == 33);
         assert(writes[0].port == TilemapPlaneUploadContract::kVdpControlPort);
         assert(writes[0].value == TilemapPlaneUploadContract::kVdpAutoincrement128);
         assert(writes.back().port == TilemapPlaneUploadContract::kVdpControlPort);
@@ -124,6 +145,48 @@ int main() {
         assert(state.x_pos == 7);
     }
 
-    std::cout << "[PASS] tilemap_plane_upload_test: all row and column cases verified.\n";
+    // Case 7: Column wrap vertical (row index >= 32 wraps plane)
+    {
+        std::vector<uint16_t> tiles(4096);
+        for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0700 + i);
+
+        PlaneUploadState state{};
+        state.vram_base = 0xC000U;
+        state.scroll_counter = 1;
+        state.vram_offset = 0x0E80;
+        state.plane_width = 0x80U;
+        state.plane_height = 0x20U;
+        state.x_pos = 5;
+        state.y_pos = 30;
+        state.shift_factor = 7;
+
+        auto writes = execute_plane_column_upload(state, tiles);
+        assert(writes.size() == 35); // autoinc + 2 cmd + 29 data + 2 wrap cmd + restore autoinc
+        assert(state.scroll_counter == 0);
+        assert(state.x_pos == 6);
+    }
+
+    // Case 8: Plane B scroll right column upload
+    {
+        std::vector<uint16_t> tiles(4096);
+        for (size_t i = 0; i < tiles.size(); ++i) tiles[i] = static_cast<uint16_t>(0x0800 + i);
+
+        PlaneUploadState state{};
+        state.vram_base = 0xE000U;
+        state.scroll_counter = 3;
+        state.vram_offset = 0x0040;
+        state.plane_width = 0x80U;
+        state.plane_height = 0x20U;
+        state.x_pos = 12;
+        state.y_pos = 10;
+        state.shift_factor = 7;
+
+        auto writes = execute_plane_column_upload(state, tiles);
+        assert(writes.size() == 33);
+        assert(state.scroll_counter == 2);
+        assert(state.x_pos == 13);
+    }
+
+    std::cout << "[PASS] tilemap_plane_upload_test: all 8 row and column oracle cases verified.\n";
     return 0;
 }

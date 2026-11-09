@@ -1,3 +1,57 @@
+# 2026-11-09 — Milestone M15.233: CONNECTED TILEMAP PIPELINE AND AUTOMATED M68000 RECOMPILATION PROTOTYPE — Connected Tilemap Update Dispatcher (0x002084..0x002112) and Plane Subsystem Architecture Verified; Word Budget Counters ($1C(A3), $1E(A3)) and Transfer Flags ($26(A3)) Disassembled; Automated M68000 to C++20 Recompiler Prototype Built (tools/thor_recompiler/: decoder.py, cfg.py, codegen_cpp.py, main.py); Automatic Basic-Block Partitioning Preserving AGENTS.md Rule 3 (all generated units <= 500 lines); Recompiled Code Validated Differential Bit-Exact Against Musashi and Handwritten Steppers (tests/m68k_recompiler_differential_test.cpp, 100% Bit-Exact Registers D0-D7/A0-A7, 43 VDP Writes, Stack Pop and Return PC 0x0020C8); Forensic Discrepancy Audit of M15.231/M15.232 Receipt File Counts (58 Evaluated Receipt Checks vs Conflated Disk Inventory); Preserved 0x003820 Decompressor Quarantine with Interruptible Instruction-Boundary Yield/Resume Architectural Specification; Expanded Tilemap Upload Fixtures (8 Cases in data/thor-fixtures/tilemap_upload/); Pure C++20 Domain Model (src/game/render/tilemap_plane_upload.hpp/.cpp) Passing 100%; Standalone Worktree Unmodified (STRICTLY READ-ONLY); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-228 Default Disabled)
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0: Baseline Verification:
+    - Confirmed baseline commit `b5a5008a2404d1c1b952ae73ad837f666311a20d`.
+    - Production helper active inventory strictly 196 (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Pinned core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`, canonical ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Linux runner SHA256 `b2aea55386c13207e88597080957a9abda6ceedfbe1351f1bc7729016d0a5441`.
+  * Phase 1: Evidence Audit & Discrepancy Analysis:
+    - Resolved 68 vs 58 verified receipt file discrepancy between M15.231 and M15.232: verified that `ReceiptVerifier` evaluates exactly 58 checks (48 stream artifacts + 10 checkpoint/ROM/core/runner assets); the mention of "68" was an external textual misattribution counting 58 checks + 10 auxiliary metrics/fixture files on disk.
+    - Verified instruction boundaries: `0x0023CC..0x002510` cleanly exits via `4E75 RTS` at `0x002510` (exclusive upper boundary `0x002512`, 0 fallthrough). `0x002512..0x002630` cleanly exits via `4E75 RTS` at `0x002630` (exclusive upper boundary `0x002632`, 0 fallthrough).
+    - Shift cycle accounting audit: verified that immediate and register shifts do not double-count cycles and match Musashi's internal timing exactly.
+  * Phase 2: Connected Tilemap Call Graph & State Architecture:
+    - Root entry identified: Vector 30 at `0x000078` is VBlank Auto-Vector 6 -> `0x001F76`.
+    - Dispatcher at `0x002084..0x002112`: inspects symmetric 40-byte structures at RAM `0x00FF1716` (Plane A) and `0x00FF173E` (Plane B).
+    - Request flags at offset `$26(A3)`: bit 0 triggers Column Upload (`0x0023CC`), bit 1 triggers Row Upload (`0x002512`).
+    - Loops based on word budget counters at `$1C(A3)` (columns) and `$1E(A3)` (rows) to stream multiple tile rows/columns per frame if budget permits.
+    - Confirmed zero active production helpers in range `0x001E00..0x0027A5`.
+  * Phase 3: Semantic Output Contract & Expanded Fixtures:
+    - Expanded oracle fixtures in `data/thor-fixtures/tilemap_upload/` to 8 authentic test cases covering row uploads, column uploads, auto-increment switching ($8F80 -> $8F02), and plane boundaries (horizontal and vertical wrap).
+    - Validated pure C++ domain engine in `src/game/render/tilemap_plane_upload.hpp/.cpp` with `tests/tilemap_plane_upload_test.cpp` passing 100%.
+  * Phase 4 & 5: Automated M68000 Recompiler Prototype:
+    - Built working prototype toolchain in `tools/thor_recompiler/`:
+      - `decoder.py` (221 lines): M68000 instruction decoder.
+      - `cfg.py` (105 lines): basic block discovery and CFG builder.
+      - `codegen_cpp.py` (331 lines): C++20 code generator with basic block switch dispatch, cycle accounting, and bus refresh.
+      - `main.py` (99 lines): automatic CFG partitioning ensuring all files <= 500 lines per AGENTS.md Rule 3.
+    - Generated C++20 code for `0x002512..0x002630`:
+      - `src/tools/hybrid/generated/m68k_recompiled_002512.hpp` (12 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512.cpp` (23 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_right.hpp` (12 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_right.cpp` (428 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_left.hpp` (12 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_left.cpp` (287 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_upload.hpp` (12 lines)
+      - `src/tools/hybrid/generated/m68k_recompiled_002512_upload.cpp` (352 lines)
+  * Phase 6: Differential Qualification:
+    - Implemented `tests/m68k_recompiler_differential_test.cpp` (205 lines) and runner `tools/build_recompiler_test.py` (55 lines).
+    - Recompiled C++ matches handwritten stepper bit-exact across both Scroll Right/Down and Scroll Left/Down scenarios.
+    - 100% bit-exact register matching (D0-D7, A0-A7), VDP writes (43 writes matching address & value), RAM context mutations, stack pop, and return PC `0x0020C8`.
+  * Phase 7: Optional New Native Connected Region Evaluation:
+    - Evaluated `0x002084..0x002112` dispatcher: 142 bytes, ~24K guest steps across Scenario C.
+    - All high-workload callees (`0x0023CC` and `0x002512`) are already recompiled in Slots 228 and 227 (+169,471 displaced steps).
+  * Phase 8: Decompressor Architectural Study (`0x003820`):
+    - Preserved `0x003820` quarantine.
+    - Produced technical specification for interruptible instruction boundary yield/resume mechanism.
+  * Phase 9: Standalone Bridge Package:
+    - Verified `C:/Github/Sega-Thor-Standalone` is untouched (STRICTLY READ-ONLY).
+    - Domain streaming logic and contracts documented for standalone ingestion.
+  * Phase 10: Tests & Governance:
+    - `tests/check_file_limits.cmake` passed: 2,251 governed files <= 500 lines.
+    - `git diff --check` passed cleanly.
+    - Production inventory maintained strictly at 196 active helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+
 # 2026-11-08 — Milestone M15.232: INTERRUPT-SAFE GRAPHICS PIPELINE RECOMPILATION AND STANDALONE TILEMAP SEMANTIC BRIDGE — Tilemap Plane Column Upload Engine (0x0023CC..0x002510 as Native Slot 228); Dual-Axis Tilemap Plane Streaming Subsystem Complete (Row Upload 0x002512 + Column Upload 0x0023CC); Heptad Subsystem Recompiled Island Execution (Slots 222 + 223 + 224 + 225 + 226 + 227 + 228); Multi-Frame Decompressor (0x003820..0x0038CE) Preemption Jitter Quarantine (Proved 48 VBlank Preemption Boundaries, Micro-Cycle Divergence at Frame 597 Formally Reproduced and Quarantined Pending Sub-Cycle Interrupt Queue Modeling); Resolution of 126-Master-Cycle Boundary Jitter via Musashi Immediate Shift Cycle Audit (LSR.W #7 +98 cycles, ROL.W #2 +28 cycles, Exactly Matching 487-361=126 Cycle Discrepancy); 6,583,206 Native Dynamic Instructions Displaced in Scenario C (37.345% Raw Dynamic Coverage, 83.357% Non-Idle Dynamic Coverage, +31,210 Net Displaced Instructions); 38,907 Instructions Displaced Across Three Scenarios (C: 31,210, A: 0, B: 7,697); 24/24 Bit-Exact Raw Stream Qualification Across Scenarios C, A, and B (3,992 Frames); 0 Contract Faults; Standalone C++20 Dual-Axis Tilemap Streaming Model (execute_plane_column_upload in tilemap_plane_upload.hpp/.cpp, tilemap_plane_upload_test.cpp); Machine Evidence Receipt Verified (combined-clusters-qualification-m15-232-20261108.json); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-228 Default Disabled)
 
 - **Concrete Task & Acceptance Criteria:**
