@@ -291,6 +291,67 @@ def emit_instruction_case(insn: DecodedInstruction, rom: bytes) -> List[str]:
             set_or_clr = f"val | (1U << ({bit_num}U & {bit_mask}U))" if insn.mnemonic == "BSET" else f"val & ~(1U << ({bit_num}U & {bit_mask}U))"
             lines.append(f"        const auto new_val = static_cast<std::uint8_t>({set_or_clr});")
             lines.extend([f"        {s}" for s in emit_operand_write_stmts(dst_op, insn.size, "new_val")])
+    elif insn.mnemonic == "DIVU":
+        src = emit_operand_read_expr(insn.ops[0], "w")
+        dst_r = reg_const(insn.ops[1].kind, insn.ops[1].reg)
+        lines.extend([
+            f"        const auto divisor = static_cast<std::uint16_t>({src});",
+            f"        const auto dividend = api.read_register(api.context, {dst_r});",
+            "        if (divisor != 0) {",
+            "            const auto quot = dividend / divisor;",
+            "            const auto rem = dividend % divisor;",
+            f"            api.write_register(api.context, {dst_r}, ((rem & 0xFFFFU) << 16U) | (quot & 0xFFFFU));",
+            "            std::uint16_t ccr = 0;",
+            "            if ((quot & 0xFFFFU) == 0) ccr |= 0x04U;",
+            "            if (quot & 0x8000U) ccr |= 0x08U;",
+            "            if (quot > 0xFFFFU) ccr |= 0x02U;",
+            "            set_ccr(api, (get_ccr(api) & 0xFFE0U) | ccr);",
+            "        }",
+        ])
+    elif insn.mnemonic == "MULS":
+        src = emit_operand_read_expr(insn.ops[0], "w")
+        dst_r = reg_const(insn.ops[1].kind, insn.ops[1].reg)
+        lines.extend([
+            f"        const auto s1 = static_cast<std::int32_t>(static_cast<std::int16_t>({src}));",
+            f"        const auto s2 = static_cast<std::int32_t>(static_cast<std::int16_t>(api.read_register(api.context, {dst_r}) & 0xFFFFU));",
+            "        const auto res = static_cast<std::uint32_t>(s1 * s2);",
+            f"        api.write_register(api.context, {dst_r}, res);",
+            "        std::uint16_t ccr = 0;",
+            "        if (res == 0) ccr |= 0x04U;",
+            "        if (res & 0x80000000U) ccr |= 0x08U;",
+            "        set_ccr(api, (get_ccr(api) & 0xFFE0U) | ccr);",
+        ])
+    elif insn.mnemonic == "MOVEM":
+        mask = insn.ops[0].val if insn.ops[0].kind == "imm" else insn.ops[1].val
+        is_pop = (insn.raw_words[0] == 0x4CDF)
+        lines.extend([
+            "        auto sp = api.read_register(api.context, kRegA7) & kMask24;",
+        ])
+        if is_pop:
+            offset = 0
+            for r_idx in range(8):
+                if mask & (1 << r_idx):
+                    lines.append(f"        api.write_register(api.context, {reg_const('reg_d', r_idx)}, api.read(api.context, (sp + {offset}U) & kMask24, 4));")
+                    offset += 4
+            for r_idx in range(8):
+                if mask & (1 << (r_idx + 8)):
+                    lines.append(f"        api.write_register(api.context, {reg_const('reg_a', r_idx)}, api.read(api.context, (sp + {offset}U) & kMask24, 4));")
+                    offset += 4
+            lines.append(f"        api.write_register(api.context, kRegA7, (sp + {offset}U) & kMask24);")
+        else:
+            # Predecrement mode (-(An)): bit 15..8 is D0..D7, bit 7..0 is A0..A7
+            regs_to_push = []
+            for r_idx in range(8):
+                if mask & (1 << (15 - r_idx)):
+                    regs_to_push.append(reg_const('reg_d', r_idx))
+            for r_idx in range(8):
+                if mask & (1 << (7 - r_idx)):
+                    regs_to_push.append(reg_const('reg_a', r_idx))
+            total_bytes = len(regs_to_push) * 4
+            lines.append(f"        sp = (sp - {total_bytes}U) & kMask24;")
+            lines.append("        api.write_register(api.context, kRegA7, sp);")
+            for idx_push, r_name in enumerate(regs_to_push):
+                lines.append(f"        api.write(api.context, (sp + {idx_push * 4}U) & kMask24, 4, api.read_register(api.context, {r_name}));")
     elif insn.mnemonic in ("LSL", "LSR", "ASR"):
         shift_val = insn.ops[0].val if insn.ops[0].kind == "imm" else 1
         dst = emit_operand_read_expr(insn.ops[1], insn.size)

@@ -1,0 +1,236 @@
+{
+  "schema": "oasis.thor-ir.function.v1",
+  "name": "pilot_00e682",
+  "entry_pc": "0x00E682",
+  "block_count": 6,
+  "blocks": [
+    {
+      "start_pc": "0x00E682",
+      "end_pc": "0x00E68E",
+      "instruction_count": 3,
+      "successors": [
+        "0x00E690"
+      ],
+      "instructions": [
+        {
+          "pc": "0x00E682",
+          "opcode": "Bclr",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 12,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x6",
+              "disp": "0x0"
+            },
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Byte",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0x36"
+            }
+          ]
+        },
+        {
+          "pc": "0x00E688",
+          "opcode": "Move",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Byte",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0x9d"
+            },
+            {
+              "kind": "Register",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x00E68C",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "NotEqual",
+          "target_pc": "0x00E6AA",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x00E690",
+      "end_pc": "0x00E696",
+      "instruction_count": 2,
+      "successors": [
+        "0x00E69A",
+        "0x00E698"
+      ],
+      "instructions": [
+        {
+          "pc": "0x00E690",
+          "opcode": "Move",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Byte",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0x82"
+            },
+            {
+              "kind": "Register",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x00E694",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "NotEqual",
+          "target_pc": "0x00E69A",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x00E698",
+      "end_pc": "0x00E698",
+      "instruction_count": 1,
+      "successors": [
+        "0x00E69A"
+      ],
+      "instructions": [
+        {
+          "pc": "0x00E698",
+          "opcode": "Return",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 16,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x00E69A",
+      "end_pc": "0x00E6A4",
+      "instruction_count": 4,
+      "successors": [
+        "0x00E6A8",
+        "0x00E6A6"
+      ],
+      "instructions": [
+        {
+          "pc": "0x00E69A",
+          "opcode": "Nop",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 12,
+          "operands": []
+        },
+        {
+          "pc": "0x00E69E",
+          "opcode": "Nop",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 4,
+          "operands": []
+        },
+        {
+          "pc": "0x00E6A0",
+          "opcode": "Move",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Register",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            },
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Byte",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0x82"
+            }
+          ]
+        },
+        {
+          "pc": "0x00E6A4",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "Equal",
+          "target_pc": "0x00E6A8",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x00E6A6",
+      "end_pc": "0x00E6A6",
+      "instruction_count": 1,
+      "successors": [
+        "0x00E6A8"
+      ],
+      "instructions": [
+        {
+          "pc": "0x00E6A6",
+          "opcode": "Nop",
+          "size": "Long",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x00E6A8",
+      "end_pc": "0x00E6A8",
+      "instruction_count": 1,
+      "successors": [],
+      "instructions": [
+        {
+          "pc": "0x00E6A8",
+          "opcode": "Return",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 16,
+          "operands": []
+        }
+      ]
+    }
+  ]
+}

@@ -96,6 +96,10 @@ inline void update_add_ccr_w(const M68k9D70StepApi& api, std::uint16_t d, std::u
     set_ccr(api, step_flags::add_flags(d, s, static_cast<std::uint16_t>(r), get_ccr(api), true));
 }
 
+inline void update_add_ccr_l(const M68k9D70StepApi& api, std::uint32_t d, std::uint32_t s, std::uint32_t r) noexcept {
+    set_ccr(api, step_flags::long_add_flags(d, s, r, get_ccr(api), true));
+}
+
 inline void update_sub_ccr_b(const M68k9D70StepApi& api, std::uint8_t d, std::uint8_t s, std::uint32_t r) noexcept {
     set_ccr(api, step_flags::byte_sub_flags(d, s, static_cast<std::uint8_t>(r), get_ccr(api), true));
 }

@@ -52,6 +52,12 @@ bool M68kResidualProfiler::is_experimental_native_pc(unsigned pc) noexcept {
     if (pc >= 0x006E7AU && pc <= 0x006E86U) return true; // Slot 234
     if (pc >= 0x00D2B4U && pc <= 0x00D344U) return true; // Slot 237
     if (pc >= 0x0059A8U && pc <= 0x0059BCU) return true; // Slot 238
+    if (pc >= 0x00E682U && pc <= 0x00E698U) return true; // Slot 239
+    if (pc >= 0x015AE2U && pc <= 0x015AF8U) return true; // Slot 240
+    if (pc >= 0x00C9B2U && pc <= 0x00C9BCU) return true; // Slot 241
+    if (pc >= 0x00E6BAU && pc <= 0x00E6EEU) return true; // Slot 242
+    if (pc >= 0x00F0D2U && pc <= 0x00F0EAU) return true; // Slot 243
+    if (pc >= 0x016294U && pc <= 0x0162CEU) return true; // Slot 244
     return false;
 }
 

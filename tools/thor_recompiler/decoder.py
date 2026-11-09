@@ -313,6 +313,14 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 disp = struct.unpack_from(">h", rom, pc + 2)[0]
                 words.append(disp & 0xFFFF)
                 return DecodedInstruction(pc, words, mnemonic, "b", [Operand("reg_d", reg=reg, size="b"), Operand("disp_a", reg=src_reg, val=disp, size="b")], base_cycles=8)
+        elif opmode == 2:  # ADD.L / SUB.L (<ea>, Dn)
+            mnemonic = "SUB" if is_sub else "ADD"
+            if src_mode == 0:
+                return DecodedInstruction(pc, words, mnemonic, "l", [Operand("reg_d", reg=src_reg, size="l"), Operand("reg_d", reg=reg, size="l")], base_cycles=6)
+            elif src_mode == 5:
+                disp = struct.unpack_from(">h", rom, pc + 2)[0]
+                words.append(disp & 0xFFFF)
+                return DecodedInstruction(pc, words, mnemonic, "l", [Operand("disp_a", reg=src_reg, val=disp, size="l"), Operand("reg_d", reg=reg, size="l")], base_cycles=12)
         elif opmode == 1:  # ADD.W / SUB.W (<ea>, Dn)
             mnemonic = "SUB" if is_sub else "ADD"
             if src_mode == 0:
@@ -353,6 +361,39 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         reg = w0 & 7
         if mode == 2:
             return DecodedInstruction(pc, words, "JMP", "", [Operand("indir_a", reg=reg)], base_cycles=8)
+
+    # MOVEM: 0x48E7 (-(A7)), 0x4CDF ((A7)+)
+    if w0 in (0x48E7, 0x4CDF):
+        is_pop = (w0 == 0x4CDF)
+        mask = struct.unpack_from(">H", rom, pc + 2)[0]
+        words.append(mask)
+        mnemonic = "MOVEM"
+        mode_str = "postinc_a" if is_pop else "predec_a"
+        cycles = 12 + (bin(mask).count("1") * 8)
+        if is_pop:
+            return DecodedInstruction(pc, words, mnemonic, "l", [Operand(mode_str, reg=7), Operand("imm", val=mask, size="w")], base_cycles=cycles)
+        else:
+            return DecodedInstruction(pc, words, mnemonic, "l", [Operand("imm", val=mask, size="w"), Operand(mode_str, reg=7)], base_cycles=cycles)
+
+    # MULS / MULU: 0xC1C0 / 0xC0C0
+    if (w0 & 0xF0C0) in (0xC1C0, 0xC0C0):
+        is_signed = (w0 & 0x0100) != 0
+        reg = (w0 >> 9) & 7
+        src_mode = (w0 >> 3) & 7
+        src_reg = w0 & 7
+        mnemonic = "MULS" if is_signed else "MULU"
+        if src_mode == 0:
+            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=src_reg, size="w"), Operand("reg_d", reg=reg, size="w")], base_cycles=54)
+
+    # DIVS / DIVU: 0x81C0 / 0x80C0
+    if (w0 & 0xF0C0) in (0x81C0, 0x80C0):
+        is_signed = (w0 & 0x0100) != 0
+        reg = (w0 >> 9) & 7
+        src_mode = (w0 >> 3) & 7
+        src_reg = w0 & 7
+        mnemonic = "DIVS" if is_signed else "DIVU"
+        if src_mode == 0:
+            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=src_reg, size="w"), Operand("reg_d", reg=reg, size="w")], base_cycles=140)
 
     # Shifts / Rotates: 0xE000
     if (w0 & 0xF000) == 0xE000:

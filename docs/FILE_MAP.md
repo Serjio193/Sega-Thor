@@ -4275,3 +4275,19 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/generate_m15_239_receipt.py — Machine evidence receipt generator and ReceiptVerifier runner for M15.239 (M15.239).
 - data/thor-fixtures/residual_hotspots_m15_239.json — Frozen ranked residual interpreter hotspots excluding native-owned ranges and quarantined decompressor (M15.239).
 - data/thor-evidence/combined-clusters-qualification-m15-239-20261109.json — Verified machine evidence receipt for M15.239 qualifying Slots 222..241, displacing 6,635,264 native instructions in Scenario C (+40,847 new native steps) with 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.239).
+- src/tools/thor_ir/portable_guest_env.hpp — Scoped, emulator-independent guest environment interface implementing memory decoding, byte-swapped reads/writes, condition code arithmetic, and zero runtime dependencies on GPGX or Musashi (M15.240).
+- src/tools/thor_ir/pilot_00e682_ir.json — Direct ROM-extracted Thor IR JSON representation for Camera Viewport pilot routine 0x00E682 (M15.240).
+- src/tools/hybrid/m68k_jump_exception_types.hpp/.cpp — Formal dynamic jump target classification differentiating original M68000 architectural exceptions (Vector 2 BusError, Vector 3 AddressError), MMIO UnsupportedBusMapping, KnownCompiledTarget, and ValidUncompiledTarget (M15.240).
+- src/tools/hybrid/generated/m68k_recompiled_00e6ba_part1.cpp — Partitioned recompiled unit for Integer Square Root subroutine at 0x00E6BA..0x00E6FC (quarantined/registered-disabled due to data-dependent DIVU cycle timing) (M15.240).
+- src/tools/hybrid/generated/m68k_recompiled_00f0d2_part1.cpp — Partitioned recompiled unit for 2D Euclidean Distance Math at 0x00F0D2..0x00F110 (quarantined/registered-disabled due to Booth MULS cycle timing) (M15.240).
+- src/tools/hybrid/generated/m68k_recompiled_016294_part1.cpp — Partitioned recompiled unit for Entity AI Patrol State Timer & Selector at 0x016294..0x0162CE (Slot 242, qualified productive execution with +1,976 Scenario C steps) (M15.240).
+- tests/thor_ir_three_way_diff_test.cpp — Three-way differential verification test achieving bit-exact parity across Pinned CPU, Mode A Verification Step backend, and Mode B Portable C++ backend across 5 authentic state paths + mutation tests (M15.240).
+- tests/m68k_jump_exception_semantics_test.cpp — Comprehensive unit test verifying dynamic jump classification, address error (Vector 3), bus error (Vector 2), MMIO execution, known compiled, and uncompiled ROM/RAM targets (M15.240).
+- tests/m68k_candidate_diff_m15_240_test.cpp — Differential tests for M15.240 candidate routines against reference M68000 state mutations (M15.240).
+- tests/m68k_mixed_stress_m15_240_test.cpp — Stress test validating nested call stacks, stack push/pop balance, interrupt preemption and resumption idempotence, and MMIO access ordering (M15.240).
+- tools/thor_recompiler/ir_builder.py — Authentic ROM-to-Thor-IR extraction pipeline parsing instruction streams into structured IR JSON models (M15.240).
+- tools/generate_m15_240_candidates.py — Orchestrator compiling candidate routines 0x00E6BA, 0x00F0D2, and 0x016294 into scheduler-safe C++20 units (M15.240).
+- tools/generate_m15_240_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.240 (M15.240).
+- tools/benchmark_m15_240.py — Replay performance benchmark measuring P0 baseline vs P_COMBINED execution throughput and speedup (M15.240).
+- tools/run_m15_240_combined_ab.py — Three-scenario differential qualification runner executing Scenarios C, A, and B across 24 differential streams (M15.240).
+- data/thor-evidence/combined-clusters-qualification-m15-240-20261109.json — Certified machine evidence receipt for M15.240 qualifying Slots 222..242, displacing 6,637,240 native instructions in Scenario C (+1,976 new native steps) with 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.240).
