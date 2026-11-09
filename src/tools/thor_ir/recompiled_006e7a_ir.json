@@ -1,0 +1,96 @@
+{
+  "schema": "oasis.thor-ir.function.v1",
+  "name": "recompiled_006e7a",
+  "entry_pc": "0x006E7A",
+  "block_count": 3,
+  "blocks": [
+    {
+      "start_pc": "0x006E7A",
+      "end_pc": "0x006E82",
+      "instruction_count": 2,
+      "successors": [
+        "0x006E86",
+        "0x006E84"
+      ],
+      "instructions": [
+        {
+          "pc": "0x006E7A",
+          "opcode": "Btst",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 16,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x4",
+              "disp": "0x0"
+            },
+            {
+              "kind": "AbsoluteAddress",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0xff165f",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x006E82",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "NotEqual",
+          "target_pc": "0x006E86",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x006E84",
+      "end_pc": "0x006E84",
+      "instruction_count": 1,
+      "successors": [
+        "0x006E86"
+      ],
+      "instructions": [
+        {
+          "pc": "0x006E84",
+          "opcode": "Return",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 16,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x006E86",
+      "end_pc": "0x006E88",
+      "instruction_count": 1,
+      "successors": [],
+      "instructions": [
+        {
+          "pc": "0x006E86",
+          "opcode": "Clear",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 12,
+          "operands": [
+            {
+              "kind": "AbsoluteAddress",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0xff16ea",
+              "disp": "0x0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

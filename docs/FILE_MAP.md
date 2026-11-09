@@ -4291,3 +4291,19 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/benchmark_m15_240.py — Replay performance benchmark measuring P0 baseline vs P_COMBINED execution throughput and speedup (M15.240).
 - tools/run_m15_240_combined_ab.py — Three-scenario differential qualification runner executing Scenarios C, A, and B across 24 differential streams (M15.240).
 - data/thor-evidence/combined-clusters-qualification-m15-240-20261109.json — Certified machine evidence receipt for M15.240 qualifying Slots 222..242, displacing 6,637,240 native instructions in Scenario C (+1,976 new native steps) with 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.240).
+- src/tools/thor_ir/recompiled_016294_ir.json — Direct ROM-extracted Thor IR JSON representation for Entity AI Patrol State Timer routine 0x016294 (M15.241).
+- src/tools/thor_ir/recompiled_006e7a_ir.json — Direct ROM-extracted Thor IR JSON representation for Event Flag Bit-Test routine 0x006E7A (M15.241).
+- src/tools/thor_ir/generated/portable_routines.hpp — Generated C++20 routines for 0x00E682, 0x016294, and 0x006E7A implementing Mode A (Verification Stepper) and Mode B (Portable Native C++) execution backends (M15.241).
+- data/thor-fixtures/m15_241_cpu_reference_fixtures.json — Authoritative frozen CPU hardware reference execution fixtures generated directly from pinned GPGX core ca4be304... across 9 diverse execution paths (M15.241).
+- data/thor-fixtures/m15_241_cpu_reference_fixtures.hpp — C++ header embedding the 9 frozen reference execution fixtures for fast, standalone test execution (M15.241).
+- data/thor-fixtures/m15_241_ir_manifest.json — Metadata manifest indexing all generated Thor IR modules, checksums, entry PCs, and instruction inventories (M15.241).
+- data/thor-evidence/idle_loop_audit_m15_241.json — Disjoint classification audit evidence reconciling attract sync loop (0x008ACA..0x008AD0, 5,327,384 steps) and gameplay sync loop (0x008B72..0x008B7A, 4,402,749 steps), totaling exact 9,730,133 idle wait steps (M15.241).
+- data/thor-evidence/combined-clusters-qualification-m15-241-20261109.json — Certified machine evidence receipt for M15.241 qualifying canonical 3 MiB memory model, reference core independence, multi-routine IR recompilation, and 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.241).
+- tests/portable_memory_map_test.cpp — Comprehensive unit test verifying canonical 3 MiB ROM boundary access (0x000000, 0x1FFFFE, 0x200000, 0x2FFFFE, 0x300000), read-only protection, RAM mirroring, alignment exceptions, and MMIO callbacks (M15.241).
+- tests/portable_continuation_contract_test.cpp — Resumable continuation contract test verifying dual SSP/USP stack swapping, stack push/pop, 24-bit address wraparound, and instruction-boundary yield/resume hooks (M15.241).
+- tests/m68k_variable_cycle_arithmetic_test.cpp — Variable-cycle arithmetic timing test modeling Booth multiplier (38..70 cycles), non-restoring DIVU (108..140 cycles), and characterizing sub-cycle timing drift in 0x00E6BA (M15.241).
+- tests/m68k_decompressor_resumption_test.cpp — Decompressor 0x003820 resumption forensics test proving state preservation across VBlank Level 6 interrupts and confirming quarantine requirement (M15.241).
+- tools/generate_m15_241_fixtures.py — Fixture generator sampling authentic reference execution directly from pinned core ca4be304... (M15.241).
+- tools/audit_idle_loop_classification.py — Forensic audit script analyzing disjoint idle polling loops in Beyond Oasis (M15.241).
+- tools/benchmark_m15_241.py — Performance benchmark measuring Mode A verification stepper vs Mode B portable C++ execution throughput and speedup (M15.241).
+- tools/generate_m15_241_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.241 (M15.241).

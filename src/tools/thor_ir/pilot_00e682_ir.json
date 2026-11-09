@@ -145,12 +145,27 @@
       "instructions": [
         {
           "pc": "0x00E69A",
-          "opcode": "Nop",
+          "opcode": "Add",
           "size": "Word",
           "condition": "Always",
           "target_pc": "0x000000",
           "cycles": 12,
-          "operands": []
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x1",
+              "disp": "0x0"
+            },
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Word",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0x2e"
+            }
+          ]
         },
         {
           "pc": "0x00E69E",
@@ -206,12 +221,27 @@
       "instructions": [
         {
           "pc": "0x00E6A6",
-          "opcode": "Nop",
+          "opcode": "Add",
           "size": "Long",
           "condition": "Always",
           "target_pc": "0x000000",
           "cycles": 8,
-          "operands": []
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Long",
+              "reg": "Data0",
+              "imm": "0x4",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Long",
+              "reg": "Address7",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
         }
       ]
     },

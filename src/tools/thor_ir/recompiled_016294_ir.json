@@ -1,0 +1,336 @@
+{
+  "schema": "oasis.thor-ir.function.v1",
+  "name": "recompiled_016294",
+  "entry_pc": "0x016294",
+  "block_count": 6,
+  "blocks": [
+    {
+      "start_pc": "0x016294",
+      "end_pc": "0x01629E",
+      "instruction_count": 2,
+      "successors": [
+        "0x0162A0"
+      ],
+      "instructions": [
+        {
+          "pc": "0x016294",
+          "opcode": "Btst",
+          "size": "Byte",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 16,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            },
+            {
+              "kind": "AbsoluteAddress",
+              "size": "Byte",
+              "reg": "Data0",
+              "imm": "0xff0e1d",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x01629C",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "NotEqual",
+          "target_pc": "0x0163A4",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x0162A0",
+      "end_pc": "0x0162B0",
+      "instruction_count": 5,
+      "successors": [
+        "0x0162B2"
+      ],
+      "instructions": [
+        {
+          "pc": "0x0162A0",
+          "opcode": "Move",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Word",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0xb0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162A4",
+          "opcode": "Add",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 4,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x1",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162A6",
+          "opcode": "Move",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            },
+            {
+              "kind": "MemoryDisplacement",
+              "size": "Word",
+              "reg": "Address6",
+              "imm": "0x0",
+              "disp": "0xb0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162AA",
+          "opcode": "Compare",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x5a",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162AE",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "CarrySet",
+          "target_pc": "0x015AFC",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x0162B2",
+      "end_pc": "0x0162B8",
+      "instruction_count": 2,
+      "successors": [
+        "0x0162BA"
+      ],
+      "instructions": [
+        {
+          "pc": "0x0162B2",
+          "opcode": "Compare",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x7b",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162B6",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "CarrySet",
+          "target_pc": "0x016306",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x0162BA",
+      "end_pc": "0x0162C0",
+      "instruction_count": 2,
+      "successors": [
+        "0x0162C2"
+      ],
+      "instructions": [
+        {
+          "pc": "0x0162BA",
+          "opcode": "Compare",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x96",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162BE",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "CarrySet",
+          "target_pc": "0x015AFC",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x0162C2",
+      "end_pc": "0x0162C8",
+      "instruction_count": 2,
+      "successors": [
+        "0x0162CA"
+      ],
+      "instructions": [
+        {
+          "pc": "0x0162C2",
+          "opcode": "Compare",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0xb7",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162C6",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "CarrySet",
+          "target_pc": "0x01634A",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    },
+    {
+      "start_pc": "0x0162CA",
+      "end_pc": "0x0162CE",
+      "instruction_count": 2,
+      "successors": [],
+      "instructions": [
+        {
+          "pc": "0x0162CA",
+          "opcode": "Compare",
+          "size": "Word",
+          "condition": "Always",
+          "target_pc": "0x000000",
+          "cycles": 8,
+          "operands": [
+            {
+              "kind": "Immediate",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0xd3",
+              "disp": "0x0"
+            },
+            {
+              "kind": "Register",
+              "size": "Word",
+              "reg": "Data0",
+              "imm": "0x0",
+              "disp": "0x0"
+            }
+          ]
+        },
+        {
+          "pc": "0x0162CE",
+          "opcode": "Branch",
+          "size": "Word",
+          "condition": "CarrySet",
+          "target_pc": "0x015AFC",
+          "cycles": 10,
+          "operands": []
+        }
+      ]
+    }
+  ]
+}

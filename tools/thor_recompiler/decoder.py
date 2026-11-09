@@ -45,10 +45,21 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         reg = w0 & 7
         return DecodedInstruction(pc, words, "NOT", "b", [Operand("reg_d", reg=reg, size="b")], base_cycles=4)
 
-    # CLR: 0x4200 (0x4240 | reg for .w, mode 0)
-    if (w0 & 0xFFF8) == 0x4240:
+    # CLR: 0x4200 (bits 7..6 size, bits 5..3 mode, bits 2..0 reg)
+    if (w0 & 0xFF00) == 0x4200:
+        sz = "b" if (w0 & 0x00C0) == 0x0000 else ("w" if (w0 & 0x00C0) == 0x0040 else "l")
+        mode = (w0 >> 3) & 7
         reg = w0 & 7
-        return DecodedInstruction(pc, words, "CLR", "w", [Operand("reg_d", reg=reg, size="w")], base_cycles=4)
+        if mode == 0:
+            return DecodedInstruction(pc, words, "CLR", sz, [Operand("reg_d", reg=reg, size=sz)], base_cycles=4 if sz != "l" else 6)
+        elif mode == 5:
+            disp = struct.unpack_from(">h", rom, pc + 2)[0]
+            words.append(disp & 0xFFFF)
+            return DecodedInstruction(pc, words, "CLR", sz, [Operand("disp_a", reg=reg, val=disp, size=sz)], base_cycles=8 if sz != "l" else 12)
+        elif mode == 7 and reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + 2)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            return DecodedInstruction(pc, words, "CLR", sz, [Operand("abs_l", val=addr, size=sz)], base_cycles=12 if sz != "l" else 16)
 
     # NEG: 0x4400 (0x4440 | reg for .w, mode 0)
     if (w0 & 0xFFF8) == 0x4440:

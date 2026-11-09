@@ -1,0 +1,29 @@
+{
+  "schema": "oasis.m15_241.idle_loop_audit.v1",
+  "total_guest_steps": 17627770,
+  "total_idle_steps": 9730133,
+  "idle_share_percent": 55.198,
+  "disjoint_loops": {
+    "loop1_attract_sync": {
+      "pc_range": "0x008ACA..0x008AD0",
+      "instructions": [
+        "0x008ACA: TST.W ($FF1654).l",
+        "0x008AD0: BNE.S $008ACA"
+      ],
+      "purpose": "Attract Mode & Title Screen Frame Synchronization",
+      "scenario_c_dynamic_steps": 5327384,
+      "share_of_total": "30.221%"
+    },
+    "loop2_gameplay_sync": {
+      "pc_range": "0x008B72..0x008B7A",
+      "instructions": [
+        "0x008B72: TST.W ($FF1654).l",
+        "0x008B7A: BNE.S $008B72"
+      ],
+      "purpose": "Active Gameplay VBlank Frame Synchronization",
+      "scenario_c_dynamic_steps": 4402749,
+      "share_of_total": "24.976%"
+    }
+  },
+  "historical_reconciliation": "Reconciliation Finding:\n- Milestones M15.228 and earlier cited '0x008ACA..0x008B7A' as a single coarse range (4.86M steps).\n- M15.238/M15.239/M15.240 performed exact PC-level instruction tracing, revealing that this workload consists of two distinct, sibling frame-wait loops:\n  1. 0x008ACA..0x008AD0 (5,327,384 steps) during attract/title sequence.\n  2. 0x008B72..0x008B7A (4,402,749 steps) during active gameplay.\n- The sum of these two loops is exactly 9,730,133 steps (55.198% of total guest steps).\n- The code between 0x008AD2 and 0x008B70 is non-idle frame dispatching logic and must not be classified as idle."
+}
