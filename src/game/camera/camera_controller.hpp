@@ -88,6 +88,14 @@ public:
     [[nodiscard]] const CameraConfig& config() const noexcept { return config_; }
     [[nodiscard]] int camera_x() const noexcept { return state_.camera_world_x; }
     [[nodiscard]] int camera_y() const noexcept { return state_.camera_world_y; }
+    [[nodiscard]] int display_camera_x() const noexcept { return state_.prev2_camera_world_x; }
+    [[nodiscard]] int display_camera_y() const noexcept { return state_.prev2_camera_world_y; }
+    [[nodiscard]] int world_to_display_x(int world_x) const noexcept {
+        return world_x - state_.prev2_camera_world_x;
+    }
+    [[nodiscard]] int world_to_display_y(int world_y, int world_z = 0) const noexcept {
+        return world_y - world_z - state_.prev2_camera_world_y;
+    }
     [[nodiscard]] bool tracking_enabled() const noexcept { return state_.tracking_enabled; }
     void set_tracking_enabled(bool enabled) noexcept { state_.tracking_enabled = enabled; }
 

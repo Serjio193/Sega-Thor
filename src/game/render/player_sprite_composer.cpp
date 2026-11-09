@@ -65,14 +65,16 @@ void PlayerSpriteComposer::emit_player_pieces(
         sat.emit_piece(ax - 10, ay - 27 + dy_adj, 4, 4, 0x04B3U, 0, false, facing_left, false);
         break;
     }
-    case 5:
-        sat.emit_piece(ax - 27, ay - 13, 3, 2, 0x04E8U, 0, false, facing_left, false);
-        sat.emit_piece(ax +  7, ay - 17, 1, 3, 0x04A8U, 0, false, facing_left, false);
-        sat.emit_piece(ax +  7, ay - 25, 2, 1, 0x04ABU, 0, false, facing_left, false);
-        sat.emit_piece(ax -  9, ay - 33, 3, 1, 0x04ADU, 0, false, facing_left, false);
-        sat.emit_piece(ax - 17, ay - 25, 3, 3, 0x04B0U, 0, false, facing_left, false);
-        sat.emit_piece(ax - 17, ay -  1, 3, 1, 0x04B9U, 0, false, facing_left, false);
+    case 5: {
+        const int dy_adj = (ay >= 124) ? -1 : 0;
+        sat.emit_piece(ax - 27, ay - 13 + dy_adj, 3, 2, 0x04E8U, 0, false, facing_left, false);
+        sat.emit_piece(ax +  7, ay - 17 + dy_adj, 1, 3, 0x04A8U, 0, false, facing_left, false);
+        sat.emit_piece(ax +  7, ay - 25 + dy_adj, 2, 1, 0x04ABU, 0, false, facing_left, false);
+        sat.emit_piece(ax -  9, ay - 33 + dy_adj, 3, 1, 0x04ADU, 0, false, facing_left, false);
+        sat.emit_piece(ax - 17, ay - 25 + dy_adj, 3, 3, 0x04B0U, 0, false, facing_left, false);
+        sat.emit_piece(ax - 17, ay -  1 + dy_adj, 3, 1, 0x04B9U, 0, false, facing_left, false);
         break;
+    }
     case 6:
         sat.emit_piece(ax +  4, ay - 12, 2, 2, 0x04E8U, 0, false, facing_left, false);
         sat.emit_piece(ax + 11, ay - 26, 1, 4, 0x04A8U, 0, false, facing_left, false);

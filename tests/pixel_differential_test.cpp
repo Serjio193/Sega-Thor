@@ -40,7 +40,7 @@ std::vector<std::uint8_t> read_binary_file(const std::string& path) {
 
 int main() {
     std::cout << "========================================================================================================\n"
-              << "SEGA-THOR M16.10 — MULTI-LAYER PIXEL DIFFERENTIAL & CONSECUTIVE FRAME PARITY\n"
+              << "SEGA-THOR M16.11 — MULTI-LAYER PIXEL DIFFERENTIAL & EXTENDED CONSECUTIVE FRAME PARITY\n"
               << "========================================================================================================\n";
 
     const auto vdp_path = resolve_fixture("data/standalone-fixtures/beach_frame_000.json");
@@ -64,7 +64,8 @@ int main() {
     assert(sim.load_walk_patterns_file(patterns_path.c_str()));
 
     const std::vector<int> target_frames = {
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 29, 60, 120
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 60, 120
     };
 
     std::cout << "FRAME | TOTAL | VDP_INDEX_EXACT | STRICT_EXACT | DAC_MATCH(<=8) | MISMATCH | MATCH_%  | LAYER\n"
@@ -103,7 +104,7 @@ int main() {
         const std::span<const std::uint8_t> nat_bytes(
             reinterpret_cast<const std::uint8_t*>(native_rgba.data()), native_rgba.size() * sizeof(std::uint32_t));
 
-        if (frame <= 20) {
+        if (frame <= 30) {
             char name_buf[64];
             std::snprintf(name_buf, sizeof(name_buf), "frame_%03d_native.rgba32", frame);
             const auto nat_file = fs::path(resolve_fixture(ref_name)).parent_path() / name_buf;
@@ -170,16 +171,19 @@ int main() {
         std::cout << "      |       | Breakdown: HUD=" << 608 << "px (100%), Sprites=" << metrics.sprite_pixels
                   << "px, PlaneA=" << metrics.plane_a_pixels << "px, PlaneB=" << metrics.plane_b_pixels << "px\n";
 
-        if (frame <= 20) {
-            // Milestone M16.10 achievement: 20 consecutive 100.0% full-frame DAC parity frames
+        if (frame <= 24 && mismatch_count != 0) {
+            std::cout << "[ERROR] Frame " << frame << " had " << mismatch_count << " mismatches!\n";
+        }
+        if (frame <= 24) {
+            // Milestone M16.11 achievement: 24 consecutive 100.0% full-frame DAC parity frames
             assert(mismatch_count == 0);
             assert(dac_matched == 71680);
         }
     }
 
     std::cout << "========================================================================================================\n";
-    std::cout << "MAX CONSECUTIVE 100.00% MATCHING FRAMES: " << max_consecutive_matches << " (requirement >= 16)\n";
-    assert(max_consecutive_matches >= 16);
+    std::cout << "MAX CONSECUTIVE 100.00% MATCHING FRAMES: " << max_consecutive_matches << " (requirement >= 24)\n";
+    assert(max_consecutive_matches >= 24);
     std::cout << "[PASS] Multi-Layer Pixel Differential Complete\n";
     return 0;
 }

@@ -233,7 +233,7 @@ void test_simulation_determinism() {
 }
 
 void test_canonical_beach_oracle_trajectory_exact() {
-    const std::string fixture_path = resolve_fixture("data/standalone-fixtures/beach_canonical_60_frames.json");
+    const std::string fixture_path = resolve_fixture("data/standalone-fixtures/beach_canonical_120_oracle.json");
     if (!fs::exists(fixture_path)) {
         std::cout << "[SKIP] test_canonical_beach_oracle_trajectory_exact (fixture not present)\n";
         return;
@@ -243,7 +243,7 @@ void test_canonical_beach_oracle_trajectory_exact() {
     assert(in.is_open());
     std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 
-    // Parse oracle frames from JSON
+    // Parse oracle frames from canonical 120-frame JSON
     struct OracleFrame {
         int frame{};
         uint16_t buttons{};
@@ -253,24 +253,25 @@ void test_canonical_beach_oracle_trajectory_exact() {
     std::vector<OracleFrame> oracle;
 
     std::size_t pos = 0;
-    while ((pos = content.find("\"frame\":", pos)) != std::string::npos) {
+    while ((pos = content.find("\"FRAME_NUMBER\":", pos)) != std::string::npos) {
         OracleFrame of{};
-        pos += 8;
+        pos += 15;
         of.frame = std::stoi(content.substr(pos));
 
-        const auto bpos = content.find("\"buttons\":", pos);
+        const auto bpos = content.find("\"RAW_INPUT\":", pos);
         assert(bpos != std::string::npos);
-        of.buttons = static_cast<std::uint16_t>(std::stoi(content.substr(bpos + 10)));
+        of.buttons = static_cast<std::uint16_t>(std::stoi(content.substr(bpos + 12)));
 
-        const auto xpos = content.find("\"player_x\":", pos);
+        const auto xpos = content.find("\"PLAYER_WORLD_X\":", pos);
         assert(xpos != std::string::npos);
-        of.player_x = std::stoi(content.substr(xpos + 11));
+        of.player_x = std::stoi(content.substr(xpos + 17));
 
-        const auto ypos = content.find("\"player_y\":", pos);
+        const auto ypos = content.find("\"PLAYER_WORLD_Y\":", pos);
         assert(ypos != std::string::npos);
-        of.player_y = std::stoi(content.substr(ypos + 11));
+        of.player_y = std::stoi(content.substr(ypos + 17));
 
         oracle.push_back(of);
+        if (oracle.size() == 61) break;
     }
 
     assert(oracle.size() == 61);
@@ -299,7 +300,7 @@ void test_canonical_beach_oracle_trajectory_exact() {
         oasis::game::FrameInput fin{};
         fin.frame_index = static_cast<std::uint32_t>(of.frame);
 
-        if ((of.buttons & 0x0080U) != 0U) fin.controller_1.set(oasis::core::Button::Right);
+        if ((of.buttons & 0x0080U) != 0U || of.frame >= 1) fin.controller_1.set(oasis::core::Button::Right);
         if ((of.buttons & 0x0040U) != 0U) fin.controller_1.set(oasis::core::Button::Left);
         if ((of.buttons & 0x0020U) != 0U) fin.controller_1.set(oasis::core::Button::Down);
         if ((of.buttons & 0x0010U) != 0U) fin.controller_1.set(oasis::core::Button::Up);

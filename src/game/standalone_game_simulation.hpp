@@ -148,6 +148,9 @@ public:
         return !entities_.empty() && entities_[0].state == 0x6AU;
     }
 
+    // State-driven player animation pose query.
+    [[nodiscard]] std::size_t current_player_pose() const noexcept;
+
 private:
     void update_sat_sprites(genesis::VdpState& vdp);
     void update_entity_interactions(const FrameInput& input);
