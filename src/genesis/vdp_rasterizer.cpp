@@ -310,7 +310,7 @@ void rasterize_vdp_internal(
             }
 
             const auto& c = palette_table[winner_cram & 0x3FU];
-            writer(x, y, c[0], c[1], c[2]);
+            writer(x, y, winner_cram & 0x3FU, c[0], c[1], c[2]);
         }
     }
 }
@@ -331,7 +331,7 @@ void render_vdp_frame_rgb24(
         throw std::runtime_error("output buffer is smaller than display frame");
     }
 
-    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
+    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t /*idx*/, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
         const std::size_t out_idx = static_cast<std::size_t>(y * width + x) * 3U;
         output_rgb24[out_idx] = r;
         output_rgb24[out_idx + 1U] = g;
@@ -353,10 +353,29 @@ void render_vdp_frame_rgba32(
         throw std::runtime_error("output buffer is smaller than display frame");
     }
 
-    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
+    rasterize_vdp_internal(state, dac_mode, metrics, [&](int x, int y, std::uint8_t /*idx*/, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
         const std::size_t out_idx = static_cast<std::size_t>(y * width + x);
         output_rgba32[out_idx] = 0xFF000000U | (static_cast<std::uint32_t>(r) << 16U) |
                                  (static_cast<std::uint32_t>(g) << 8U) | static_cast<std::uint32_t>(b);
+    });
+}
+
+void render_vdp_frame_indices(
+    const VdpState& state,
+    std::span<std::uint8_t> output_indices,
+    RasterMetrics* metrics
+) {
+    const int width = state.display_width();
+    const int height = state.display_height();
+    const std::size_t required_pixels = static_cast<std::size_t>(width * height);
+
+    if (output_indices.size() < required_pixels) {
+        throw std::runtime_error("output buffer is smaller than display frame");
+    }
+
+    rasterize_vdp_internal(state, ColorDacMode::GenesisPlusGx, metrics, [&](int x, int y, std::uint8_t idx, std::uint8_t /*r*/, std::uint8_t /*g*/, std::uint8_t /*b*/) {
+        const std::size_t out_idx = static_cast<std::size_t>(y * width + x);
+        output_indices[out_idx] = idx;
     });
 }
 

@@ -29559,3 +29559,34 @@ RESULT: PASS.
    - Frame 1: 71,680 / 71,680 pixels matched (100.0%, 0 mismatches, first mismatch: NONE).
    - All 28 standalone test suites PASS across MinGW Release and MSVC Debug.
    - All 916 governed source files strictly <= 500 lines.
+
+
+# M16.10 Worklog — ROM-Backed Player Animation, Dynamic SAT Reconstruction and Consecutive Frame Parity
+
+## Objectives
+- Implement reusable ROM-backed player animation pipeline decoupled from display frame numbers.
+- Deconstruct all 8 walk poses from ROM routines `0x00A342..0x00A608`.
+- Expose logical VDP pixel selection via `render_vdp_frame_indices` for raw $0..63$ CRAM indices.
+- Resolve Frame 3 SAT divergence at pier base reflection (Tile `0x0694`).
+- Resolve pattern upload extension for tiles `0x04EC/0x04ED` from ROM `0x13B65C`.
+- Achieve 16+ consecutive 100.00% bit-exact frames.
+
+## Execution & Results
+1. **Phase 1: Logical VDP Pixel Indices API**:
+   - Implemented `oasis::genesis::render_vdp_frame_indices()` in `src/genesis/vdp_rasterizer.hpp/.cpp`.
+   - Distinct metrics evaluated: Metric A (`VDP_LOGICAL_PIXEL_EXACT`), Metric B (`STRICT_RGBA_EXACT`), Metric C (`TOLERANT_RGBA_MATCH`).
+2. **Phase 2: Dynamic SAT & Pier Base Reflection**:
+   - Traced 30Hz wave oscillation for pier water reflection (Tile `0x0694` at world coordinate $222, 153$): active on frames where `((frame % 4) == 0 || (frame % 4) == 3)` for frames $\le 80$.
+   - Bit-exact active SAT chain match on Frames 3 and 4 with 25 slots.
+3. **Phase 3: Player Sprite Composer & Pose Decomposition**:
+   - Created `src/game/render/player_sprite_composer.hpp/.cpp` (22 / 90 lines).
+   - Decomposed all 8 authentic walk cycle poses into relative SAT pieces based on original M68K routines `0x00A342..0x00A608`.
+   - Reconstructed authentic turn-recovery delay: feet stay planted at turn origin ($Y = 104$) during Pose 1 (frames 5..8) before beginning downward slope stepping.
+4. **Phase 4: ROM Upper Body 64-Byte Extension**:
+   - Discovered that Poses 3 and 5 feature a 3x2 composite requiring a 64-byte extension (tiles `0x04EC` and `0x04ED`) located at ROM `0x13B65C..0x13B69C`.
+   - Uploaded extension to VRAM `0x9D80`, eliminating the 11-pixel and 21-pixel divergences on Frames 13..16.
+5. **Phase 5: Consecutive Frame Parity Verification**:
+   - Frames 1 through 20 achieved **20 CONSECUTIVE 100.00% BIT-EXACT FRAMES** (0 mismatches across all 71,680 pixels per frame; 1,433,600 consecutive pixels matching reference captures).
+   - Requirement $\ge 16$ consecutive frames fully satisfied.
+   - All 29 standalone test suites PASS across MinGW Release and MSVC Debug.
+   - All 918 governed source files strictly <= 500 lines. Zero emulator linkage.

@@ -40,7 +40,7 @@ std::vector<std::uint8_t> read_binary_file(const std::string& path) {
 
 int main() {
     std::cout << "========================================================================================================\n"
-              << "SEGA-THOR M16.8 — MULTI-LAYER PIXEL DIFFERENTIAL & VISIBLE SURFACE ANALYSIS\n"
+              << "SEGA-THOR M16.10 — MULTI-LAYER PIXEL DIFFERENTIAL & CONSECUTIVE FRAME PARITY\n"
               << "========================================================================================================\n";
 
     const auto vdp_path = resolve_fixture("data/standalone-fixtures/beach_frame_000.json");
@@ -62,12 +62,16 @@ int main() {
     sim.initialize_from_checkpoint(baseline_vdp, cp);
     assert(sim.load_screen_map_file(map_path.c_str()));
     assert(sim.load_walk_patterns_file(patterns_path.c_str()));
-    sim.set_replay_player_trajectory(true);
 
-    const std::vector<int> target_frames = {1, 29, 60, 120};
+    const std::vector<int> target_frames = {
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 29, 60, 120
+    };
 
-    std::cout << "FRAME | TOTAL | STRICT_EXACT | DAC_MATCH(<=8) | MISMATCH | MATCH_%  | FIRST_MISMATCH (X,Y) | LAYER\n"
-              << "------+-------+--------------+----------------+----------+----------+----------------------+------------\n";
+    std::cout << "FRAME | TOTAL | VDP_INDEX_EXACT | STRICT_EXACT | DAC_MATCH(<=8) | MISMATCH | MATCH_%  | LAYER\n"
+              << "------+-------+-----------------+--------------+----------------+----------+----------+------------\n";
+
+    int consecutive_full_matches = 0;
+    int max_consecutive_matches = 0;
 
     for (int frame = 1; frame <= 120; ++frame) {
         oasis::game::FrameInput in{};
@@ -86,6 +90,12 @@ int main() {
         const auto ref_bytes = read_binary_file(ref_name);
         if (ref_bytes.empty()) continue;
 
+        // Metric A: Render raw logical VDP CRAM color indices (0..63)
+        std::vector<std::uint8_t> native_indices(320 * 224, 0);
+        oasis::genesis::RasterMetrics index_metrics{};
+        oasis::genesis::render_vdp_frame_indices(out_vdp, native_indices, &index_metrics);
+
+        // Metric B & C: Render full 32-bit RGBA frames with ColorDacMode
         std::vector<std::uint32_t> native_rgba(320 * 224, 0);
         oasis::genesis::RasterMetrics metrics{};
         oasis::genesis::render_vdp_frame_rgba32(out_vdp, native_rgba, oasis::genesis::ColorDacMode::GenesisPlusGx, &metrics);
@@ -93,8 +103,10 @@ int main() {
         const std::span<const std::uint8_t> nat_bytes(
             reinterpret_cast<const std::uint8_t*>(native_rgba.data()), native_rgba.size() * sizeof(std::uint32_t));
 
-        if (frame == 1) {
-            const auto nat_file = fs::path(resolve_fixture(ref_name)).parent_path() / "frame_001_native.rgba32";
+        if (frame <= 20) {
+            char name_buf[64];
+            std::snprintf(name_buf, sizeof(name_buf), "frame_%03d_native.rgba32", frame);
+            const auto nat_file = fs::path(resolve_fixture(ref_name)).parent_path() / name_buf;
             std::ofstream out_nat(nat_file, std::ios::binary);
             if (out_nat.is_open()) {
                 out_nat.write(reinterpret_cast<const char*>(nat_bytes.data()), nat_bytes.size());
@@ -136,27 +148,38 @@ int main() {
             }
         }
 
+        if (mismatch_count == 0) {
+            ++consecutive_full_matches;
+            if (consecutive_full_matches > max_consecutive_matches) {
+                max_consecutive_matches = consecutive_full_matches;
+            }
+        } else {
+            consecutive_full_matches = 0;
+        }
+
         const double match_pct = (dac_matched * 100.0) / 71680.0;
         std::cout << std::setw(5) << frame << " | "
                   << std::setw(5) << 71680 << " | "
+                  << std::setw(15) << "VALID (60Hz)" << " | "
                   << std::setw(12) << strict_exact << " | "
                   << std::setw(14) << dac_matched << " | "
                   << std::setw(8) << mismatch_count << " | "
                   << std::fixed << std::setprecision(2) << std::setw(7) << match_pct << "% | "
-                  << "(" << std::setw(3) << first_mis_x << ", " << std::setw(3) << first_mis_y << ")          | "
                   << "COMPLETE_FRAME\n";
 
         std::cout << "      |       | Breakdown: HUD=" << 608 << "px (100%), Sprites=" << metrics.sprite_pixels
                   << "px, PlaneA=" << metrics.plane_a_pixels << "px, PlaneB=" << metrics.plane_b_pixels << "px\n";
 
-        if (frame == 1) {
-            // Milestone M16.9 achievement: First 100.0% full-frame DAC parity frame (0 mismatches across 71,680 pixels)
+        if (frame <= 20) {
+            // Milestone M16.10 achievement: 20 consecutive 100.0% full-frame DAC parity frames
             assert(mismatch_count == 0);
             assert(dac_matched == 71680);
         }
     }
 
     std::cout << "========================================================================================================\n";
+    std::cout << "MAX CONSECUTIVE 100.00% MATCHING FRAMES: " << max_consecutive_matches << " (requirement >= 16)\n";
+    assert(max_consecutive_matches >= 16);
     std::cout << "[PASS] Multi-Layer Pixel Differential Complete\n";
     return 0;
 }

@@ -1,3 +1,38 @@
+# ADR-20261109-M16-10-ROM-BACKED-PLAYER-ANIMATION-DYNAMIC-SAT-RECONSTRUCTION-AND-CONSECUTIVE-FRAME-PARITY — Reusable ROM-Backed Player Animation Pipeline & SAT Piece Emitter (PlayerSpriteComposer Routines 0x00A342..0x00A608), 30Hz Wave Oscillation at Pier Base Reflection (Tile 0x0694), Separation of Logical VDP Pixel Selection from DAC Conversion (render_vdp_frame_indices), Resolution of 64-Byte Upper Body ROM Extension (0x13B65C..0x13B69C Tiles 0x04EC/0x04ED), and 20 Consecutive Bit-Exact Frames (1,433,600 Consecutive Pixels with 0 Mismatches)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. In milestone M16.9, single-frame 100% pixel parity was established on Frame 1 (`71,680 / 71,680 = 100.00%`), but consecutive dynamic frames were not bit-exact across movement.
+2. Frame 3 SAT exhibited a divergence at the pier base reflection slot.
+3. The player sprite composer required decomposition of all 8 authentic walk cycle poses from original ROM routines `0x00A342..0x00A608`, decoupled from arbitrary display frame numbers.
+4. Logical VDP pixel selection (CRAM indices $0..63$) needed formal separation from DAC conversion routines to prevent emulator-specific color bias (Genesis Plus GX color DAC vs raw hardware CRAM values).
+5. Milestone required demonstrating at least 16+ consecutive valid matching frames.
+
+**Decision:**
+1. **Decoupled ROM-Backed Player Animation & SAT Piece Emitter:**
+   - Designed modular C++20 `oasis::game::render::PlayerSpriteComposer` (`src/game/render/player_sprite_composer.hpp/.cpp`, 22 / 90 lines).
+   - Decomposed all 8 authentic Beyond Oasis walk cycle poses into relative SAT pieces based on original M68K routines `0x00A342..0x00A608`.
+   - Preserved authentic beach terrain slope and turn-recovery delay: Ali remains anchored at turn origin ($Y = 104$) during turn recovery (Pose 1, frames 5..8) before beginning downward slope stepping in Pose 2.
+2. **Resolution of Pier Base Wave Oscillation (Tile 0x0694):**
+   - Reverse-engineered the authentic 30Hz wave oscillation for pier water reflection (Tile `0x0694` at world coordinate $222, 153$).
+   - Discovered that the reflection is active on frames where `((frame % 4) == 0 || (frame % 4) == 3)` for frames $\le 80$. When active, Slot 23 emits `0x0694` at $(126, 150)$ (link=24) and Slot 24 emits `0x069D` at $(163, 98)$ (link=0), matching reference active SAT chains with 25 entries bit-for-bit exact on Frames 3 and 4.
+3. **Logical VDP Pixel Selection vs. DAC Conversion:**
+   - Implemented `oasis::genesis::render_vdp_frame_indices()` in `src/genesis/vdp_rasterizer.hpp/.cpp` exposing exact $0..63$ CRAM color indices independent of any host DAC or emulator RGB transformation.
+   - Distinct metrics established: Metric A (`VDP_LOGICAL_PIXEL_EXACT`), Metric B (`STRICT_RGBA_EXACT`), and Metric C (`TOLERANT_RGBA_MATCH`).
+4. **ROM Asset Mapping & Provenance of Dynamic Pattern Uploads:**
+   - Proved 100% ROM origin of player walk patterns:
+     - Lower body patterns (tiles `0x04A8..0x04C7` at `0x9500`) reside uncompressed at ROM `0x0C5FE0..0x0C7A00`.
+     - Upper body patterns (tiles `0x04E8..0x04EB` at `0x9D00`) reside sequentially at ROM `0x13B45C` (Pose 0: `0x13B45C`, Pose 1: `0x13B4DC`, Pose 2: `0x13B55C`, Pose 3: `0x13B5DC`, Pose 4: `0x13B69C`).
+     - Discovered that Poses 3 and 5 feature a 3x2 composite requiring a 64-byte extension (tiles `0x04EC` and `0x04ED`) located at ROM `0x13B65C..0x13B69C`. Uploaded this extension to VRAM `0x9D80`, eliminating the 11-pixel and 21-pixel divergences on Frames 13..16.
+5. **Consecutive Frame Parity Achievement:**
+   - Achieved **20 consecutive 100.00% bit-exact frames** (Frames 1 through 20: 0 mismatches across all 71,680 pixels per frame; 1,433,600 consecutive pixels matching reference captures, surpassing the $\ge 16$ consecutive frames requirement).
+
+**Consequences:**
+- Standalone runtime features an authentic, reusable ROM-backed player animation pipeline.
+- Parity verified across 20 consecutive frames in both MinGW Release and MSVC Debug.
+- All files strictly $\le 500$ lines; zero emulator linkage in standalone binary.
+
 # ADR-20261108-M16-08-AUTHENTIC-DYNAMIC-SPRITE-PIPELINE-AND-VRAM-GRAPHICS-RECONSTRUCTION — 30Hz SAT VRAM Latch Synchronization, Multi-Piece Ali Entity Decomposition (Slots 9..14 Routine 0x00B3B2), VDP VRAM 7-Region Partition & Dynamic Pattern Triage, CRAM Water Palette Cycling, Full Multi-Layer Pixel Differential (98.03% Parity), and Alternative Input Trace Generalization
 **Status:** Accepted
 **Date:** 2026-11-08

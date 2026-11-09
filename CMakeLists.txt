@@ -39,6 +39,7 @@ add_library(oasis_core
     src/game/render/sat_pipeline_contract.cpp
     src/game/render/hud_overlay.cpp
     src/game/render/sprite_compositor.cpp
+    src/game/render/player_sprite_composer.cpp
     src/game/camera/camera_controller.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp

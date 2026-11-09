@@ -39,4 +39,12 @@ void render_vdp_frame_rgba32(
     RasterMetrics* metrics = nullptr
 );
 
+// Renders explicit VDP state into raw logical VDP pixel indices (0..63 in CRAM).
+// Pure native hardware representation independent of DAC or RGB color conversions.
+void render_vdp_frame_indices(
+    const VdpState& state,
+    std::span<std::uint8_t> output_indices,
+    RasterMetrics* metrics = nullptr
+);
+
 } // namespace oasis::genesis

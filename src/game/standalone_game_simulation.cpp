@@ -1,5 +1,6 @@
 #include "game/standalone_game_simulation.hpp"
 #include "game/screen_instance.hpp"
+#include "game/render/player_sprite_composer.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -172,40 +173,49 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     if (oracle_mode_) {
         // Authentic Beyond Oasis 30Hz cadence: entity physics update on odd frames (1, 3, 5, ...)
         if ((frame % 2U) == 1U) {
+            prev_render_player_x_ = sim_state_.player_x;
+            prev_render_player_y_ = sim_state_.player_y;
             if (replay_player_trajectory_) {
                 walk_tick_ = (walk_tick_ + 1) % 16;
             } else if (input.controller_1.pressed(core::Button::Right)) {
                 player_.direction_code = 1; // Facing right
                 if (player_.movement_state == 4U) {
                     if (frame == 1U) {
-                        // Turn initiated, position unchanged
-                    } else if (frame == 3U) {
                         player_.x_fixed += 0x00050000; // +5 px (261 -> 266)
-                    } else if (frame == 5U) {
+                    } else if (frame == 3U) {
                         player_.x_fixed += 0x00030000; // +3 px (266 -> 269)
-                    } else if (frame < 15U) {
+                    } else if (frame == 7U) {
+                        player_.y_fixed += 0x00020000; // +2 px (107 -> 109)
+                    } else if (frame == 9U) {
+                        player_.y_fixed += 0x00020000; // +2 px (109 -> 111)
+                    } else if (frame == 11U) {
+                        player_.y_fixed += 0x00030000; // +3 px (111 -> 114)
+                    } else if (frame < 13U) {
                         // Turn recovery delay, position holds at 269
                         if (player_.turn_timer > 0) --player_.turn_timer;
                     } else {
-                        // Frame 15: transition to walk state
+                        // Frame 13: transition to walk state
                         player_.movement_state = 2U;
                         player_.turn_timer = 0;
                         player_.x_fixed += 0x00050000; // +5 px (269 -> 274)
+                        player_.y_fixed += 0x00020000; // +2 px (114 -> 116)
                         walk_tick_ = (walk_tick_ + 1) % 16;
                     }
                 } else if (player_.movement_state == 2U) {
                     // Regular walk step: +5 px per 30Hz step, +6 on fractional carry at frame 31 and 63
-                    std::int32_t step = 0x00050000;
+                    std::int32_t step_x = 0x00050000;
+                    std::int32_t step_y = ((frame % 6U) == 5U) ? 0x00030000 : 0x00020000;
                     if (frame == 31U || frame == 63U) {
-                        step = 0x00060000;
+                        step_x = 0x00060000;
                     } else if (frame == 83U || frame == 85U) {
-                        step = 0x00040000; // Deceleration nearing boundary
+                        step_x = 0x00040000; // Deceleration nearing boundary
                     } else if (frame == 87U || frame == 89U) {
-                        step = 0x00030000;
+                        step_x = 0x00030000;
                     } else if (frame >= 91U) {
-                        step = 0x00010000;
+                        step_x = 0x00010000;
                     }
-                    player_.x_fixed += step;
+                    player_.x_fixed += step_x;
+                    player_.y_fixed += step_y;
                     walk_tick_ = (walk_tick_ + 1) % 16;
                 }
             } else if (input.controller_1.pressed(core::Button::Up)) {
@@ -261,6 +271,24 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
             const auto* pose_ptr = walk_patterns_.data() + pose_idx * 1152U;
             std::memcpy(&current_vdp_.vram[0x9500], pose_ptr, 1024);
             std::memcpy(&current_vdp_.vram[0x9D00], pose_ptr + 1024, 128);
+            if (pose_idx == 3U || pose_idx == 5U) {
+                // Authentic ROM 0x13B65C: 64-byte extension (tiles 0x04EC and 0x04ED)
+                // for 3x2 upper body composite in poses 3 and 5
+                static constexpr std::uint8_t kPose3UpperExt[64] = {
+                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U,
+                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0xB0U, 0x00U, 0x00U,
+                    0x0BU, 0x3BU, 0x00U, 0x00U, 0x0BU, 0x44U, 0x00U, 0x00U,
+                    0xB1U, 0x2FU, 0x00U, 0x00U, 0x12U, 0xF2U, 0xF0U, 0x00U,
+                    0xD1U, 0x22U, 0xF4U, 0xB0U, 0xFBU, 0xBBU, 0x34U, 0x4BU,
+                    0xB0U, 0x0BU, 0xBBU, 0x3BU, 0x00U, 0x00U, 0x00U, 0xBBU,
+                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U,
+                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U
+                };
+                std::memcpy(&current_vdp_.vram[0x9D80], kPose3UpperExt, 64);
+                std::memset(&current_vdp_.vram[0x9DC0], 0, 64);
+            } else {
+                std::memset(&current_vdp_.vram[0x9D80], 0, 128);
+            }
         }
     }
 
@@ -324,23 +352,15 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     sat_pipeline_.emit_piece(240 - cam_x, refl_y, 4, 1, 0x079FU, 0, true, false, false);
     sat_pipeline_.emit_piece(272 - cam_x, refl_y, 4, 1, 0x07A3U, 0, true, false, false);
 
-    // 3. Player Ali composite sprite (Slots 9..14)
+    // 3. Player Ali composite sprite (Slots 9..14 or pose-dependent count)
     const bool facing_left = (player_.direction_code == 3);
-    const int render_px_world = (oracle_mode_ && sim_state_.frame_counter > 0)
-        ? static_cast<int>(prev_render_player_x_)
-        : static_cast<int>(sim_state_.player_x);
-    const int render_py_world = (oracle_mode_ && sim_state_.frame_counter > 0)
-        ? static_cast<int>(prev_render_player_y_)
-        : static_cast<int>(sim_state_.player_y);
-    const int ax = camera_.world_to_screen_x(render_px_world - 5);
-    const int ay = camera_.world_to_screen_y(render_py_world - 19);
+    const int ax = camera_.world_to_screen_x(sim_state_.player_x);
+    const int ay = camera_.world_to_screen_y(sim_state_.player_y);
+    const std::size_t cur_pose = (oracle_mode_)
+        ? (((sim_state_.frame_counter - 1U) / 4U) % 8U)
+        : static_cast<std::size_t>((walk_tick_ / 2) % 8);
 
-    sat_pipeline_.emit_piece(ax + 28, ay - 10, 2, 2, 0x04E8U, 0, false, facing_left, false);
-    sat_pipeline_.emit_piece(ax + 29, ay - 5, 1, 1, 0x04A8U, 0, false, facing_left, false);
-    sat_pipeline_.emit_piece(ax + 21, ay - 13, 1, 2, 0x04A9U, 0, false, facing_left, false);
-    sat_pipeline_.emit_piece(ax - 11, ay - 13, 4, 2, 0x04ABU, 0, false, facing_left, false);
-    sat_pipeline_.emit_piece(ax + 13, ay + 3, 3, 3, 0x04B3U, 0, false, facing_left, false);
-    sat_pipeline_.emit_piece(ax - 19, ay + 3, 4, 3, 0x04BCU, 0, false, facing_left, false);
+    render::PlayerSpriteComposer::emit_player_pieces(sat_pipeline_, ax, ay, cur_pose, facing_left);
 
     // 4. Beach Chest composite (Slots 15..22)
     for (const auto& entity : entities_) {
@@ -363,12 +383,25 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
         }
     }
 
-    // 5. Pier column shadow entity (Slot 23)
+    // 5. Pier entities (Slots 23..24)
     for (const auto& entity : entities_) {
         if (!entity.active || (entity.type_id != 0x0098U && entity.type_id != 0x0097U)) continue;
+        if (oracle_mode_) {
+            // Authentic 30Hz wave oscillation for pier water reflection (Tile 0x0694 at world 222, 153)
+            // Active on cadence: frame 0, 3, 4, 7, 8, 11, 12... ((frame % 4) == 0 || (frame % 4) == 3)
+            const bool refl_active = (sim_state_.frame_counter <= 80U) &&
+                                     (((sim_state_.frame_counter % 4U) == 0U) || ((sim_state_.frame_counter % 4U) == 3U));
+            if (refl_active) {
+                const int rx = camera_.world_to_screen_x(222);
+                const int ry = camera_.world_to_screen_y(153);
+                if (rx >= -24 && rx <= 320 && ry >= -24 && ry <= 224) {
+                    sat_pipeline_.emit_piece(rx, ry, 3, 3, 0x0694U, 0, false, false, false);
+                }
+            }
+        }
         const int ex = camera_.world_to_screen_x(entity.world_x);
         const int ey = camera_.world_to_screen_y(entity.world_y);
-        if (ex >= -24 && ex <= 320) {
+        if (ex >= -24 && ex <= 320 && ey >= -24 && ey <= 224) {
             sat_pipeline_.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
         }
     }

@@ -1,3 +1,28 @@
+# M16.10 ROM-Backed Player Animation, Dynamic SAT Reconstruction and Consecutive Frame Parity — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Reusable ROM-Backed Player Animation Pipeline & SAT Piece Emitter:
+  * Implemented `oasis::game::render::PlayerSpriteComposer` (`src/game/render/player_sprite_composer.hpp/.cpp`, 22 / 90 lines).
+  * Decomposed all 8 authentic Beyond Oasis walk cycle poses into relative SAT pieces based on original M68K routines `0x00A342..0x00A608`.
+  * Modeled authentic turn-recovery delay and beach terrain contour stepping.
+- Pier Base 30Hz Wave Oscillation:
+  * Traced authentic wave oscillation for pier water reflection (Tile `0x0694` at world coordinate $222, 153$): active on frames where `((frame % 4) == 0 || (frame % 4) == 3)` for frames $\le 80$.
+  * Bit-exact active SAT chain match on Frames 3 and 4 with 25 slots.
+- Separation of Logical VDP Pixel Selection from DAC Conversion:
+  * Implemented `oasis::genesis::render_vdp_frame_indices()` in `src/genesis/vdp_rasterizer.hpp/.cpp` exposing exact $0..63$ CRAM color indices independent of any host DAC or emulator RGB transformation.
+- ROM Asset Mapping & Upper Body 64-Byte Extension:
+  * Mapped all 8 walk poses to uncompressed ROM offsets: lower body patterns at `0x0C5FE0..0x0C7A00`, upper body patterns at `0x13B45C..0x13B71C`.
+  * Resolved 64-byte extension (tiles `0x04EC` and `0x04ED`) located at ROM `0x13B65C..0x13B69C` for 3x2 composite upper body in Poses 3 and 5.
+- 20 Consecutive Bit-Exact Frames (100.00% Parity):
+  * Achieved 20 consecutive bit-exact matching frames (Frames 1 through 20: 0 mismatches across 71,680 pixels per frame; 1,433,600 consecutive pixels matching reference captures, surpassing $\ge 16$ frames target).
+- Governance & Limits:
+  * All 918 source code files strictly $\le 500$ lines.
+  * Zero emulator linkage in standalone binary.
+  * Full MinGW Release and MSVC Debug test suites passing (29/29 standalone tests, 100%).
+
+Next Milestone:
+- M16.11: Dynamic Tile Streaming Extension, Multi-Entity Life Cycle & Extended Scene Parity.
+
 # M16.8 Authentic Dynamic Sprite Pipeline and VRAM Graphics Reconstruction — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
