@@ -143,6 +143,8 @@ void StandaloneGameSimulation::reset() {
     // Reset native gameplay subsystems
     interaction_system_.reset();
     attack_controller_.reset();
+    landing_velocity_x_ = 0;
+    landing_hold_ticks_ = 0;
 
     // Reset entities to initial authentic states
     if (!entities_.empty()) {
@@ -193,7 +195,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
         if (replay_player_trajectory_) {
             walk_tick_ = (walk_tick_ + 1) % 16;
-        } else if (player_.movement_state == 0x30U) {
+        } else if (player_.movement_state == 0x30U || player_.movement_state == 0x0AU || player_.movement_state == 0x46U) {
             // Attacking: movement locked
             walk_tick_ = 0;
         } else if (player_.movement_state == 4U) {
@@ -230,22 +232,27 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                 player_.y_fixed += (((frame - 43U) % 6U) == 0U) ? 0x00030000 : 0x00020000;
             }
             walk_tick_ = (walk_tick_ + 1) % 16;
-        } else if (sim_state_.frame_counter <= 104U && checkpoint_state_.movement_state == 4) {
-            // State 12: Deceleration slide
-            player_.movement_state = 12U;
-            std::int32_t step_x = 0;
-            if (frame <= 83U) {
-                step_x = 0x00040000;
-            } else if (frame <= 87U) {
-                step_x = 0x00030000;
-            } else if (frame <= 93U) {
-                step_x = 0x00010000;
+            if (frame == 79U) {
+                // Transition to State 12 Deceleration slide (ROM 0x006618 / 0x006632)
+                player_.movement_state = 12U;
+                landing_velocity_x_ = 287540; // 0x00046334 (initial deceleration velocity)
+                landing_hold_ticks_ = 0;
             }
-            player_.x_fixed += step_x;
-            walk_tick_ = (walk_tick_ + 1) % 16;
-        } else if (sim_state_.frame_counter == 105U && checkpoint_state_.movement_state == 4) {
-            player_.movement_state = 0U;
-            walk_tick_ = 0;
+        } else if (player_.movement_state == 12U && checkpoint_state_.movement_state == 4) {
+            // [AUTHENTIC_ROM_BACKED] State 12 deceleration (ROM 0x00665C): subtract 0xACCC per 30Hz step
+            if (landing_velocity_x_ > 0) {
+                player_.x_fixed += landing_velocity_x_;
+                landing_velocity_x_ = (landing_velocity_x_ > 0x0000ACCC) ? (landing_velocity_x_ - 0x0000ACCC) : 0;
+                walk_tick_ = (walk_tick_ + 1) % 16;
+            } else {
+                // Velocity reached 0: authentic 5-tick pose hold (frames 95..104)
+                ++landing_hold_ticks_;
+                if (landing_hold_ticks_ >= 5U) {
+                    // Routine 0x0062CC: transition to State 0 Idle
+                    player_.movement_state = 0U;
+                    walk_tick_ = 0;
+                }
+            }
         } else {
             // Free interactive play using authentic native player::try_move
             const auto move_result = player::try_move(player_, input.controller_1, terrain_,
@@ -357,7 +364,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
         : camera_.world_to_display_x(sim_state_.player_x);
     const int ay = camera_.world_to_display_y(sim_state_.player_y);
 
-    if (player_.movement_state == 0x30U) {
+    if (player_.movement_state == 0x30U || player_.movement_state == 0x0AU || player_.movement_state == 0x46U) {
         render::PlayerSpriteComposer::emit_attack_pieces(sat_pipeline_, ax, ay, player_.direction_code);
     } else {
         const bool alt_step = (walk_tick_ % 2U) != 0U;

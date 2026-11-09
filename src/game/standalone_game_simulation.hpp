@@ -180,6 +180,10 @@ public:
         return attack_controller_;
     }
 
+    void set_allow_experimental_combat(bool allow) noexcept {
+        attack_controller_.set_allow_experimental_combat(allow);
+    }
+
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
 
@@ -212,6 +216,8 @@ private:
     bool replay_player_trajectory_{false};
     std::uint16_t prev_render_player_x_{261};
     std::uint16_t prev_render_player_y_{107};
+    std::int32_t landing_velocity_x_{0};
+    std::uint16_t landing_hold_ticks_{0};
     int walk_tick_{0};
     bool initialized_{false};
 };

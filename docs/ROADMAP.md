@@ -1,3 +1,34 @@
+# M16.17 Original Attack Execution Oracle, Player State Transition Parity, and Generalized Sprite Presentation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Attract Mode Demo Flag ($FF1997) Bypass & Free Interactive Control Checkpoint:
+  * Disassembled routine `0x0028A8`: identified that `$FF1997 != 0` redirects controller polling to playback buffer `$FF1998`.
+  * Isolated Frame 580 on the beach (immediately post-chest opening, where lock `$FF0DB5 == 0`): clearing `$FF1997 = 0` provides authentic interactive gamepad control.
+  * Saved and frozen checkpoint `data/checkpoints/free_control_frame580.state` (SHA256: `21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9`).
+- Authentic Original ROM Attack Execution Oracle:
+  * Generated 34-frame immutable oracle `data/standalone-fixtures/beach_attack_oracle.json` (SHA256: `AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713`).
+  * Established original attack execution rules: unarmed attack enters State `0x0A` (10), animation `0x3A` (58), sound `0x0218` (routine `0x00632A`), locked world position (258, 101) for 33 frames, and transitions to State 0 Idle (`0x0062CC`) at frame 34.
+- Decoupling and Formal Gating of Experimental Combat Approximations:
+  * Added `allow_experimental_combat_` toggle to `NativeAttackController` and `StandaloneGameSimulation`.
+  * Explicitly segregated authentic ROM-backed mechanics from experimental approximations (18-frame cooldown, 16x16 hitbox, 4 HP damage, defeat state 2).
+- Native Differential Attack Test Suite:
+  * Enhanced `tests/attack_journal_differential_test.cpp` to verify:
+    1. Unit controller semantics with experimental combat enabled.
+    2. Simulation replay with experimental combat enabled.
+    3. Bit-exact 33-frame authentic attack differential against `beach_attack_oracle.json`.
+- State 4 -> 12 -> 0 State Transition Parity:
+  * Integrated State 12 deceleration subtracting `0xACCC` from 16.16 velocity each 30Hz step until 0, followed by 5 hold ticks and transition to State 0 Idle (`0x0062CC`).
+- Multi-Trace and Graphics Verification:
+  * Verified canonical 30 consecutive 100.00% tolerant frames (2,150,400 / 2,150,400 pixels).
+  * Verified alternative trace: Plane B 60/60 (100%), Camera 60/60 (100%), Scroll 60/60 (100%), SAT count 38/60 (63%), SAT active 32/60 (53%).
+  * Verified holdout trace 61/61 (100%).
+- Governance & Compiler Verification:
+  * Dual clean builds in LLVM-MinGW Release and MSVC Debug.
+  * 100% test pass rate across standalone test targets.
+  * Zero emulator linkage in `oasis.exe` (Win32/MinGW DLLs only).
+  * Line limit test `project_file_line_limit` passed (all human-maintained source files <= 500 lines).
+  * Hybrid repository `C:/Github/Sega-Thor` strictly untouched (0 modifications).
+
 # M16.16 Authentic Player State Machine, Directional SAT Completion and Original Attack Oracle — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

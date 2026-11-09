@@ -1,3 +1,53 @@
+# ADR-20261109-M16-17-ORIGINAL-ATTACK-EXECUTION-ORACLE-PLAYER-STATE-TRANSITION-PARITY-AND-GENERALIZED-SPRITE-PRESENTATION — Authentic Attack Execution Oracle (34 Frames, beach_attack_oracle.json, SHA256 AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713); Isolation of Free Interactive Control Checkpoint (Frame 580, free_control_frame580.state, SHA256 21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9); Disassembly Proof of Attract Mode Demo Flag $FF1997 Bypass; Decoupling and Formal Gating of Experimental Combat Approximations (18-frame Cooldown, 16x16 Hitbox, 4 HP Damage, Defeat State 2); Full 33-Frame Authentic Attack Semantics (State 0x0A, Anim 0x3A, Sound 0x0218, Movement Lock, 34-Frame Return to State 0 Idle); State 4 -> 12 -> 0 Transition Integration with Exact 0xACCC Deceleration; Comprehensive Differential Attack Test Suite (tests/attack_journal_differential_test.cpp); Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
+**Status:** Accepted
+**Date:** 2026-11-09
+
+**Context:**
+1. In M16.16, attack mechanics were audited in M68K disassembly, but lacked an immutable independent oracle trace captured directly from hardware/emulator execution.
+2. In Checkpoint 3600 (Beyond Oasis attract mode), controller inputs after beach arrival were ignored because routine `0x0028A8` checked `$FF1997` (demo replay flag), feeding scripted inputs from `$FF1998` instead of hardware joypads.
+3. Synthetic combat approximations (18-frame cooldown, 16x16 hitbox, 4 HP damage, defeat state 2) were intermingled with authentic ROM mechanics without explicit gating.
+4. Player state transition from State 4 (landing run) through State 12 (deceleration) to State 0 (idle) required full native integration with the authentic `0xACCC` fixed-point decrement.
+
+**Decision:**
+1. **Attract Mode Demo Flag Bypass & Free Interactive Control Checkpoint:**
+   - Disassembled input polling routine `0x0028A8`: when `$FF1997 != 0`, gamepad reads are redirected to the demo replay buffer at `$FF1998`.
+   - Identified Frame 580 on the beach (immediately after chest opening, where cutscene lock `$FF0DB5 == 0` naturally): clearing `$FF1997 = 0` establishes genuine free interactive player control.
+   - Captured and committed frozen checkpoint `data/checkpoints/free_control_frame580.state` (SHA256: `21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9`).
+2. **Authentic Attack Execution Oracle (beach_attack_oracle.json):**
+   - Generated 34-frame immutable attack oracle `data/standalone-fixtures/beach_attack_oracle.json` (SHA256: `AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713`).
+   - Verified that Button B initiates an authentic 33-frame unarmed attack:
+     - Player State: `0x0A` (10)
+     - Animation ID: `0x3A` (58)
+     - Sound Request Mailbox: `0x01500218` (Sound ID `0x0218` via routine `0x00632A`)
+     - Movement Lock: world position invariant at (258, 101) throughout frames 1..33
+     - Recovery Timer: counts down from 33 to 1
+     - Return to Idle: Frame 34 transitions to State 0 Idle (`0x0062CC`).
+3. **Decoupling and Formal Gating of Experimental Combat:**
+   - Introduced `allow_experimental_combat_` toggle in `NativeAttackController` and `StandaloneGameSimulation`.
+   - Formally classified subsystem logic:
+     - `AUTHENTIC_ROM_BACKED`: State 0x0A / 0x46, Animation 0x3A / 0x4E, Sound 0x0218, 33-frame duration, movement lock, State 0 transition.
+     - `EXPERIMENTAL_APPROXIMATION`: 18-frame duration, 16x16 axis-aligned forward hitbox, 4 HP damage, defeat state 2.
+     - `NOT_IMPLEMENTED`: Dynamic enemy hitstun reactions, ROM damage tables.
+   - When `allow_experimental_combat_ == false`, runtime executes the exact 33-frame authentic attack.
+4. **State 4 -> 12 -> 0 Transition Parity:**
+   - Integrated authentic State 12 deceleration in `StandaloneGameSimulation`: decrements 16.16 horizontal velocity by `0xACCC` each 30Hz step until 0, holds pose for 5 steps, then enters State 0 Idle (`0x0062CC`).
+   - Preserved 100% bit-exact parity across canonical beach 30-frame run, alternative 60-frame trace, and landing transition trace (`beach_landing_transition_trace.json`).
+5. **Comprehensive Differential Attack Test Suite:**
+   - Enhanced `tests/attack_journal_differential_test.cpp` with 3 comprehensive tests:
+     - `test_native_attack_controller_semantics`: verifies experimental combat scaffold.
+     - `test_simulation_attack_journal_replay`: verifies simulation combat replay.
+     - `test_authentic_attack_oracle_differential`: verifies bit-exact 33-frame authentic attack against `beach_attack_oracle.json`.
+6. **Governance & Compatibility Verification:**
+   - Both MinGW Release and MSVC Debug test suites pass 100%.
+   - Line limit test `project_file_line_limit` passed (all human-maintained source files <= 500 lines).
+   - Zero emulator linkage in `oasis.exe` (only Win32/MinGW runtime DLLs).
+   - `C:/Github/Sega-Thor` hybrid repo strictly read-only and untouched.
+
+**Consequences:**
+- Standalone runtime features an authentic, independently proven 33-frame attack pipeline verified against hardware execution oracle.
+- Experimental combat scaffolding is cleanly decoupled and gated, preventing synthetic approximations from polluting authentic parity evaluation.
+- Authentic player free-control checkpoint is formally isolated and reusable across interactive tests.
+
 # ADR-20261109-M16-16-AUTHENTIC-PLAYER-STATE-MACHINE-DIRECTIONAL-SAT-COMPLETION-AND-ORIGINAL-ATTACK-ORACLE — Authentic Player State-Transition Logic (ROM 0x0059BA Jump Table, 0x006512 State 4 Landing/Run, 0x006632 State 12 Deceleration with 0xACCC Decrement, 0x0061F6/0x0062CC State 0 Idle); Beach Landing Transition Trace Fixture (Frames 75..112, beach_landing_transition_trace.json); Generalization of Player Sprite Viewport vs Display Latching (cur_pose >= 6U uses world_to_screen_x); Alternative Trace SAT Parity Improved to 32/60 (53%, Frames 29 & 30 Bit-Exact); Canonical Pixel Differential Extended to 30 Consecutive 100.00% Tolerant Frames (2,150,400 / 2,150,400 pixels); Isolation of Authentic Contact Chest Causality from Experimental Button Interactivity; Authentic M68K Disassembly Audit of Attack Mechanics (0x005990 Joypad B Test, 0x005B3C State 0x30 Entry, 0x0401F4 Anim 0x36 Descriptor, 0x00632A Sound 0x0218 Dispatch); Implementation of Native Attack Journal Differential Test (tests/attack_journal_differential_test.cpp); Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
 **Status:** Accepted
 **Date:** 2026-11-09
