@@ -5914,3 +5914,11 @@ full-game parity and remaining subsystem coverage. See
 - Implemented machine-readable original-versus-native SAT forensic diff engine (`tests/m16_24_sat_forensics_test.cpp`, `oasis_m16_24_sat_forensics`) reporting active chain exact, structural, full 80-entry, HUD exact (6/6), guard/arch exact (56/56), and unused entry metrics.
 - Reconstructed and verified original sprite emission order (`0x00A6EC..0x00A718`): Y-descending sorting, lower slot index tie-breaking, water ripples (`0x00B610`/`0x00B66A`), and hardware clipping (`(y-0x60)<=0x100`, `(x-0x60)<=0x160`).
 - Verified multi-enemy scheduler interactions, rooftop drop physics, projectile vertical collision, PRNG sequence parity, and transition thresholds in MinGW Release and MSVC Debug. All governed files strictly `<= 500` lines. Zero emulator linkage.
+
+# M16.25 — Player Weapon Overlay, Foreground Effect Pool & Exact SAT Chain Parity — PASS
+- Reconstructed original player weapon overlay generation path (ROM `0x00AA06..0x00AA36`, `0x00B15E`, table `0x00059D9C`): bit 8 under-vs-over painter ordering (`d2 & 0x0100`), bit 11 HFLIP toggle (`d2 & 0x0800`), relative signed offsets `(rel_x, rel_y)`, and dynamic descriptor mapping at `0x143E76`.
+- Reconstructed Foreground Effect Pool 0 at WRAM `$FF2954` (4 slots, stride `0x5A`) emitted at `0x00A6A4` after HUD and before entity slots, modeling combat hit sparks at `0x00A8F0` (size `0x05`, tiles `0x0556`/`0x055A`/`0x0D56` when timer >= 3).
+- Reconciled water ripple dynamics (table `0x00B660`, phase counter `0x99`, variable `dy` on upper ripple).
+- Achieved **6/6 (100.00%) Active Chain Byte-Exact Parity** (192/192 active sprites match byte-for-byte across reference frames 775, 777, 789, 795, 797, 815).
+- Implemented `tests/m16_25_weapon_particles_sat_test.cpp` (`oasis_m16_25_weapon_particles_sat`), passing all assertions in both MinGW Release and MSVC Debug.
+- Maintained zero emulator linkage in `oasis.exe`, strict hybrid isolation, and all governed files `<= 500` lines.

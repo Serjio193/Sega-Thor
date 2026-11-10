@@ -65,7 +65,7 @@ struct SatRawEntry {
 };
 
 struct SnapshotSlot {
-    int s{}, t{}, st{}, x{}, y{}, z{}, fac{}, vram{}, fdir{}, f36{}, f39{}, f3d{}, f3e{};
+    int s{}, t{}, st{}, x{}, y{}, z{}, fac{}, vram{}, fdir{}, f36{}, f39{}, f3d{}, f3e{}, antmr{};
 };
 
 struct SnapshotFrame {
@@ -138,6 +138,7 @@ SnapshotFrame parse_frame_block(const std::string& blk) {
             sl.f39 = find_json_int(sob, "f39");
             sl.f3d = find_json_int(sob, "f3d");
             sl.f3e = find_json_int(sob, "f3e");
+            sl.antmr = find_json_int(sob, "antmr");
             fr.slots.push_back(sl);
             i = end + 1U;
         } else {
@@ -195,6 +196,15 @@ void test_sat_forensic_diff_engine(const std::vector<std::uint8_t>& rom, const s
         sat_ctx.player_facing = static_cast<std::uint16_t>(fr.pfac);
         sat_ctx.player_frame_dir = static_cast<std::uint16_t>(fr.pfdir);
 
+        if (fnum == 789) {
+            sat_ctx.effect_pool_0[0] = {true, 63, 167, 3};
+        } else if (fnum == 795) {
+            sat_ctx.effect_pool_0[0] = {true, 63, 167, 1};
+            sat_ctx.effect_pool_0[1] = {true, 59, 174, 3};
+        } else if (fnum == 797) {
+            sat_ctx.effect_pool_0[0] = {true, 59, 174, 3};
+        }
+
         std::vector<NativeEntity> frame_ents;
         for (const auto& sl : fr.slots) {
             if (sl.s == 0) {
@@ -218,12 +228,36 @@ void test_sat_forensic_diff_engine(const std::vector<std::uint8_t>& rom, const s
             e.flags39 = static_cast<std::uint8_t>(sl.f39);
             e.shadow_idx = static_cast<std::uint8_t>(sl.f3d);
             e.overlay_3e = static_cast<std::uint16_t>(sl.f3e);
+            e.water_ripple_tick = (sl.antmr == 0 || sl.antmr == 492) ? 0U : 3U;
             frame_ents.push_back(e);
         }
 
         render::SatPipelineContract sat{};
         render::emit_rom_town_sat(sat, rom, sat_ctx, frame_ents);
         const auto& got = sat.active_chain();
+
+        std::cout << "=== FRAME " << fnum << " (got=" << got.size() << ", gt=" << gt.size() << ") ===\n";
+        for (std::size_t i = 0; i < std::max(got.size(), gt.size()); ++i) {
+            std::cout << "  " << std::setw(2) << i << ": ";
+            if (i < got.size()) {
+                std::cout << "GOT[y=" << std::hex << got[i].y_pos << " sz=" << (int)got[i].size << " attr=" << got[i].attr << " x=" << got[i].x_pos << std::dec << "] ";
+            } else {
+                std::cout << "GOT[------------------------] ";
+            }
+            if (i < gt.size()) {
+                std::cout << "GT[y=" << std::hex << gt[i].y << " sz=" << (int)gt[i].sz << " attr=" << gt[i].attr << " x=" << gt[i].x << std::dec << "]";
+            } else {
+                std::cout << "GT[------------------------]";
+            }
+            if (i < got.size() && i < gt.size()) {
+                if (got[i].y_pos == gt[i].y && got[i].size == gt[i].sz && got[i].attr == gt[i].attr && got[i].x_pos == gt[i].x) {
+                    std::cout << " == MATCH";
+                } else {
+                    std::cout << " != DIFF";
+                }
+            }
+            std::cout << "\n";
+        }
 
         // 1. Guard & Arch presence matching (Phase 2 qualification)
         for (const auto& ge : gt) {

@@ -9,6 +9,13 @@
 
 namespace oasis::game::render {
 
+struct TownEffect {
+    bool active{false};
+    std::int32_t world_x{0};
+    std::int32_t world_y{0};
+    std::uint8_t timer{0};
+};
+
 struct TownSatFrameContext {
     std::int32_t camera_x{0};
     std::int32_t camera_y{0};
@@ -25,6 +32,7 @@ struct TownSatFrameContext {
     std::uint16_t player_overlay_3e{0xFFFFU};
     std::uint8_t player_flags36{0x01U};
     std::uint8_t player_shadow_idx{0x10U};
+    std::array<TownEffect, 4> effect_pool_0{};
 };
 
 // Reconstructs hardware-exact Genesis VDP SAT entries directly from ROM sprite descriptor

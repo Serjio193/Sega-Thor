@@ -149,6 +149,22 @@ void emit_rom_town_sat(SatPipelineContract& sat,
         }
     }
 
+    // 2.5. Foreground / Hit Effect Pool 0 at $FF2954 (ROM 0x00A6A4..0x00A6C2, 0x00A8F0..0x00A99A)
+    for (const auto& eff : ctx.effect_pool_0) {
+        if (!eff.active || eff.timer == 0U) {
+            continue;
+        }
+        std::uint16_t attr = 0x0556U;
+        if (eff.timer == 2U) {
+            attr = 0x055AU;
+        } else if (eff.timer >= 3U) {
+            attr = 0x0D56U;
+        }
+        const int evdp_x = eff.world_x - ctx.camera_x + 120;
+        const int evdp_y = eff.world_y - ctx.camera_y + 120;
+        sat.emit_rom_piece(evdp_x, evdp_y, 0x05U, attr);
+    }
+
     // 3. Gather renderable slots (Player as slot 0 + active scene entities) and Y-sort descending
     struct RenderItem {
         std::int32_t world_y;
@@ -181,15 +197,53 @@ void emit_rom_town_sat(SatPipelineContract& sat,
             const int vdp_y = ground_y - ctx.player_z;
             const bool hflip = (ctx.player_facing == 3U);
 
-            // Weapon overlay BEFORE Ali body when (overlay_3e & 0x8100) == 0 (ROM 0x00AB6E..0x00B15E)
-            if ((ctx.player_overlay_3e & 0x8100U) == 0U) {
-                const std::uint32_t w_tbl = read_be32(rom, kEntityClassTableAddr + 0xA0U - 0x14U);
-                emit_descriptor_parts(sat, rom, w_tbl, static_cast<std::uint16_t>(ctx.player_overlay_3e & 0x7FU),
-                                      ctx.player_weapon_vram, true, hflip, vdp_x, vdp_y);
+            // Weapon attachment record from ROM 0x00059D9C (ROM 0x00AA06..0x00AA36, 0x00B15E)
+            constexpr std::uint32_t kAttachTableAddr = 0x00059D9CU;
+            std::uint16_t w_frame = 0U;
+            int weapon_vdp_x = vdp_x;
+            int weapon_vdp_y = vdp_y;
+            bool w_hflip = hflip;
+            bool w_active = false;
+            bool w_draw_after_body = false;
+
+            if (kAttachTableAddr + 2U <= rom.size()) {
+                const std::uint16_t sword_off = read_be16(rom, kAttachTableAddr);
+                const std::size_t sword_ptr = kAttachTableAddr + sword_off;
+                const std::size_t slot_rec = sword_ptr + static_cast<std::size_t>(ctx.player_frame_dir) * 2U;
+                if (slot_rec + 2U <= rom.size()) {
+                    const std::uint16_t rel = read_be16(rom, slot_rec);
+                    if (rel != 0U && slot_rec + rel + 6U <= rom.size()) {
+                        const std::size_t rec_ptr = slot_rec + rel;
+                        const std::uint16_t d2 = read_be16(rom, rec_ptr);
+                        const std::int16_t rel_x = read_be16s(rom, rec_ptr + 2U);
+                        const std::int16_t rel_y = read_be16s(rom, rec_ptr + 4U);
+                        if ((d2 & 0x8000U) == 0U) {
+                            w_active = true;
+                            w_frame = static_cast<std::uint16_t>(d2 & 0x007FU);
+                            w_draw_after_body = (d2 & 0x0100U) != 0U;
+                            if ((d2 & 0x0800U) != 0U) {
+                                w_hflip = !w_hflip;
+                            }
+                            weapon_vdp_x += (hflip ? -rel_x : rel_x);
+                            weapon_vdp_y += rel_y;
+                        }
+                    }
+                }
             }
+
+            const std::uint32_t w_tbl = read_be32(rom, kEntityClassTableAddr + 0xA0U - 0x14U);
+
+            if (w_active && !w_draw_after_body) {
+                emit_descriptor_parts(sat, rom, w_tbl, w_frame, ctx.player_weapon_vram, true, w_hflip, weapon_vdp_x, weapon_vdp_y);
+            }
+
             const std::uint32_t ali_tbl = read_be32(rom, kEntityClassTableAddr + 12U);
             emit_descriptor_parts(sat, rom, ali_tbl, ctx.player_frame_dir, ctx.player_vram_base,
                                   (ctx.player_flags36 & 0x01U) != 0U, hflip, vdp_x, vdp_y);
+
+            if (w_active && w_draw_after_body) {
+                emit_descriptor_parts(sat, rom, w_tbl, w_frame, ctx.player_weapon_vram, true, w_hflip, weapon_vdp_x, weapon_vdp_y);
+            }
             continue;
         }
 

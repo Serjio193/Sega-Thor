@@ -11033,3 +11033,41 @@ M16.23 reached `55/56` guard/archway piece parity, with exactly one missing piec
 
 ### Consequences
 Guard and archway piece parity is verified at 100.00% (56/56) across all 6 Town frames. HUD and structural layer ordering are 6/6. All tests pass across MinGW Release and MSVC Debug with zero emulator linkage and strict hybrid repository isolation.
+
+
+## Decision: M16.25 — Player Weapon Overlay, Foreground Effect Pool & Exact SAT Chain Parity
+
+### Context
+M16.24 achieved 56/56 (100.00%) guard and archway sprite parity, 6/6 HUD exact, and 6/6 structural parity, but `0/6` active-chain byte-exact parity due to two remaining discrepancies: (1) player weapon overlay assignment and ordering (slots 3 and 4), and (2) auxiliary combat particles and sparks (slots 20–24). M16.25 required reconstructing these systems from original ROM and GPGX execution evidence to achieve fully byte-exact active SAT chain parity.
+
+### Findings & Implementation
+1. **Player Weapon Overlay Architecture (ROM `0x00AA06..0x00AA36`, `0x00B15E`, table `0x00059D9C`)**:
+   - Disassembly revealed that pointer `$5E(a6)` points to weapon attachment table `0x00059D9C`. For the sword (`type_id = 10`), the subtable pointer is at `0x00059DA6`.
+   - Each player `frame_dir` indexes an attachment record providing `d2` (`overlay_3e`) and signed relative offsets `(rel_x, rel_y)`.
+   - **Painter Order (Bit 8)**: If `(d2 & 0x0100) == 0`, the weapon sprite is emitted BEFORE the player body (under Ali). If `(d2 & 0x0100) != 0`, the weapon sprite is emitted AFTER the player body (over Ali).
+   - **Horizontal Flip (Bit 11)**: Bit 11 toggles the base entity HFLIP state.
+   - **Positioning**: `weapon_vdp_x = player_vdp_x + (hflip ? -rel_x : rel_x); weapon_vdp_y = player_vdp_y + rel_y`.
+   - Weapon frame descriptor table is located at `0x143E76`, dynamically mapped into VRAM (`is_dynamic_vram = true`).
+2. **Foreground Effect Pool 0 & Combat Sparks (ROM `0x00A6A4..0x00A6C2`, `0x00A8F0..0x00A99A`, RAM `$FF2954`)**:
+   - Discovered that Beyond Oasis maintains a 4-slot transient effect pool at WRAM `$FF2954` (stride `0x5A` bytes).
+   - Routine `0x00A6A4` scans this effect pool and emits active effects immediately after blinking HUD status strips and **before** all 21 regular entity slots!
+   - Hit spark routine at `0x00A8F0` configures 2x2 pieces (`size = 0x05`), setting tile base `0x0556` (timer 1), `0x055A` (timer 2), and `0x0D56` (HFLIP bit 11 set when timer >= 3). Screen coordinates: `evdp_x = eff.world_x - cam_x + 120; evdp_y = eff.world_y - cam_y + 120`.
+   - These hit sparks occupy SAT entries 9..10 on frames 789, 795, and 797.
+3. **Exact SAT Parity Across Full Reference Window**:
+   - Reconciled water ripple dynamics (table `0x00B660`, phase counter `0x99`, tile offsets `0x05B4`/`0x05B8` lower, `0x05B2` upper with variable `dy`).
+   - Achieved **6/6 (100.00%) Active Chain Byte-Exact Parity** across all reference frames:
+     - F775: 29/29 (100.00%)
+     - F777: 28/28 (100.00%)
+     - F789: 32/32 (100.00%)
+     - F795: 35/35 (100.00%)
+     - F797: 35/35 (100.00%)
+     - F815: 33/33 (100.00%)
+     - Total: 192/192 active sprites match byte-for-byte in Y, Size, Link, Attr, and X!
+4. **Validation and Quality Assurance**:
+   - Implemented `tests/m16_25_weapon_particles_sat_test.cpp` (`oasis_m16_25_weapon_particles_sat`).
+   - All tests pass in both MinGW Release and MSVC Debug.
+   - All 948 governed human-maintained source files remain <= 500 lines.
+   - Confirmed zero emulator linkage in `oasis.exe` and 100% hybrid repository read-only isolation.
+
+### Consequences
+The standalone runtime now renders authentic, byte-exact active SAT chains for combat frames including player weapon overlays, multi-enemy guard sprites, environmental water ripples, and combat hit sparks with deterministic timing and zero emulator dependencies.

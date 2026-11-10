@@ -30040,3 +30040,13 @@ RESULT: PASS.
 - **Scheduler & Projectile Parity**: Fixed projectile 3D AABB vertical overlap condition `ent.world_z >= player_z && ent.world_z <= player_z + 40` in `town_entity_scheduler.cpp`, verifying thrown projectile player collision and rooftop ambush drops.
 - **Automated Differential Test**: Created `tests/m16_24_sat_forensics_test.cpp` (`oasis_m16_24_sat_forensics`) reporting active chain exact, structural, full 80-entry, HUD exact (6/6), guard/arch exact (56/56), and transition semantics.
 - **Verification**: Verified 100% PASS on MinGW Release and MSVC Debug. All governed source files strictly `<= 500` lines. Zero emulator linkage. Hybrid worktree strictly untouched.
+
+
+# M16.25 Worklog — Player Weapon Overlay, Combat Particle Lifecycle, Exact SAT Chain Parity, and Independent Gameplay Validation
+
+## Execution & Results
+- **Player Weapon Overlay Architecture**: Disassembled ROM `0x00AA06..0x00AA36` and `0x00B15E`, identifying weapon attachment lookup via table `0x00059D9C` (sword at `0x00059DA6`). Decoded record fields: `d2` (`overlay_3e`) bit 8 controls under-vs-over body painter ordering (`(d2 & 0x0100) != 0` emits over Ali body; `== 0` emits under), bit 11 toggles HFLIP, and `(rel_x, rel_y)` are signed offsets added to player position. Mapped weapon sprite descriptor table at `0x143E76`.
+- **Foreground Effect Pool 0 & Combat Sparks**: Disassembled ROM `0x00A6A4..0x00A6C2` and `0x00A8F0..0x00A99A`, discovering the 4-slot transient effect pool at WRAM `$FF2954` (stride `0x5A`) scanned and emitted immediately after HUD and before entity slots. Mapped hit spark routine at `0x00A8F0` (size `0x05`, tile `0x0556` for timer 1, `0x055A` for timer 2, `0x0D56` with bit 11 HFLIP for timer >= 3).
+- **Exact SAT Parity Verification**: Reconciled water ripple dynamics (table `0x00B660`, phase counter `0x99`, variable `dy` on upper ripple). Achieved **6/6 (100.00%) Active Chain Byte-Exact Parity** across all reference frames (F775: 29/29, F777: 28/28, F789: 32/32, F795: 35/35, F797: 35/35, F815: 33/33; total 192/192 active sprites match byte-for-byte in Y, Size, Link, Attr, and X).
+- **Automated Test Suite**: Implemented `tests/m16_25_weapon_particles_sat_test.cpp` (`oasis_m16_25_weapon_particles_sat`), testing weapon attachment tables, effect pool 0 lifecycle, 6-frame exact active chain parity, and 521-frame encounter validation.
+- **Verification & Governance**: MinGW Release and MSVC Debug builds and tests clean. Full native CTest passes 199/211 (only 12 historical BizHawk M12 tests fail; 0 regressions). All 948 governed source files strictly `<= 500` lines. Zero emulator linkage in `oasis.exe`. Hybrid worktree `C:/Github/Sega-Thor` strictly untouched.
