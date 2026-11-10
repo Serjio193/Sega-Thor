@@ -1,3 +1,19 @@
+# M16.22 Authentic Beach-to-Town Gameplay, Enemy AI Motion, Combat SAT Reconstruction, and Second Entity Damage Qualification — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Town Scene Context & ROM Decompression Manifest (`town_scene_resource_manifest_v1.json`):
+  * Captured Beach->Town exit at F597 (`MAP_ID 0x003D -> 0x005A`, `Screen(1,3)` `0x02E88A`, init `0x02E8A4`, player `(160, 488)`, camera `(0, 376)->(0, 288)`, Town object header `0x0464F0..`).
+  * `src/game/world/town_scene_loader.hpp/.cpp` decodes all 7 Town `0x003820` streams directly from ROM via `decompress_graphics()` (7/7 exact SHA-256 parity) and parses all 11 Town entities (Arch `0x0060` + 10 `0x002C` guards).
+- Entity `0x002C` Solid-Body Repulsion & Full F775..F855 Death Lifecycle (`town_death_lifecycle_f775_855.json`):
+  * Resolved F777/F781 XY divergence to `0x00A0C8..0x00A188` 3D solid-body repulsion (`d6 == 0` edge contact `-1` px/tick).
+  * Reconstructed knockback velocity tiers, `-0xC000` gravity with `0x00E51E` `0x0000FFFF` apex preserve, `Y = 136` clamp, landing State `0x08` / Anim `0x06` at F825, and slot release (`0x0000`) at F843 (`src/game/entity/entity_physics.hpp/.cpp`): 81/81 frame parity.
+- Combat SAT & Sound Command Dispatch (`src/game/render/town_combat_sat.hpp/.cpp`, `src/game/combat/sound_command_queue.hpp`):
+  * Camera-relative Town SAT composition for HUD, Ali, Arch `0x0060`, and Slot 5 `0x002C` airborne (`0x295` + shadow `0x54B`), corpse (`0x2C1` + shadow `0x5AA`), and despawn (full background sibling-guard structural diff tracked honestly).
+  * Reconstructed sound command dispatch (`0x00700217`, `0x00800207`, `0x00800216`, `0x0080035B`, `0x0080035A`, `0x01500218`, `0x007004D3`, `0x0080025B`, `0x008004D9`).
+- Entity `0x006E` Qualification (`entity_006e_controlled_oracle.json`) & Continuous Beach-to-Town Integration:
+  * Qualified `0x006E` under `CONTROLLED_CPU_ENTRY`, verified `0x01EC24` table, fixed `0x24` hurt anim parity in `damage_arithmetic.hpp` & `attack_journal_differential_test.cpp`.
+  * Integrated Beach->Town north exit (`y <= 77`) into `StandaloneGameSimulation`; reconciled `40 JSR + 4 BSR = 44` `0x00E682` callers in `ROM_00E682_STACK_CONTRACT_v1.md`.
+
 # M16.21 Real Damage Event Discovery, Combat Oracle Integrity Audit, and Authentic Enemy Hurt State Qualification — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

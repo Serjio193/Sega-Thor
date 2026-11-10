@@ -29,6 +29,16 @@ struct NativeEntity {
     std::uint8_t action_timer{0};           // Action timer decremented by 0x00E682 (+0x82)
     std::uint8_t flash_timer{0};            // Hit flash timer (+0x83)
     bool active{true};                      // Whether entity slot is active (>0 at +0x00)
+    std::int32_t x_fp{0};                   // 16.16 fixed-point world X (+0x08)
+    std::int32_t y_fp{0};                   // 16.16 fixed-point world Y (+0x0C)
+    std::int32_t z_fp{0};                   // 16.16 fixed-point world Z (+0x10)
+    std::int32_t vx_fp{0};                  // 16.16 X velocity (+0x4E)
+    std::int32_t vy_fp{0};                  // 16.16 Y velocity (+0x52)
+    std::int32_t vz_fp{0};                  // 16.16 Z velocity (+0x56)
+    std::uint8_t flags37{0};                // Anim status flags (+0x37, bit 1=anim finished)
+    std::uint8_t flags38{0};                // Combat flags (+0x38: bit 2=ground dead, bit 3=invuln)
+    std::uint8_t ground_linger_ticks{0};    // Internal death landing/corpse timer (does not mutate +0x82)
+    std::uint32_t last_sound_cmd{0};        // Last 32-bit Genesis Z80 sound command dispatched
 };
 
 } // namespace oasis::game

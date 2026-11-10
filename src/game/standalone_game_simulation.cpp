@@ -1,4 +1,7 @@
 #include "game/standalone_game_simulation.hpp"
+#include "game/combat/damage_arithmetic.hpp"
+#include "game/entity/entity_physics.hpp"
+#include "game/render/town_combat_sat.hpp"
 #include "game/screen_instance.hpp"
 #include "game/render/player_sprite_composer.hpp"
 
@@ -141,6 +144,8 @@ void StandaloneGameSimulation::reset() {
     sim_state_.paused = false;
 
     // Reset native gameplay subsystems
+    map_id_ = world::kBeachMapId;
+    sound_queue_.clear();
     interaction_system_.reset();
     attack_controller_.reset();
     landing_velocity_x_ = 0;
@@ -148,6 +153,9 @@ void StandaloneGameSimulation::reset() {
 
     // Reset entities to initial authentic states
     if (!entities_.empty()) {
+        if (entities_.size() > 2U) entities_.resize(2U);
+        entities_[0].type_id = 0x0060;
+        entities_[0].active = true;
         entities_[0].world_x = 256;
         entities_[0].world_y = 88;
         entities_[0].state = 0;
@@ -156,12 +164,54 @@ void StandaloneGameSimulation::reset() {
         entities_[0].hp = 0;
     }
     if (entities_.size() > 1) {
+        entities_[1].type_id = 0x0098;
+        entities_[1].active = true;
         entities_[1].world_x = 259;
         entities_[1].world_y = 101;
         entities_[1].state = 0;
         entities_[1].tile_base = 0x069DU;
         entities_[1].anim_frame = 0;
         entities_[1].hp = 4;
+    }
+}
+
+bool StandaloneGameSimulation::prepare_town_from_rom(std::span<const std::uint8_t> rom) {
+    if (rom.empty()) return false;
+    try {
+        town_scene_ = world::load_town_scene_from_rom(rom);
+        town_prepared_ = true;
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
+    map_id_ = world::kTownMapId;
+    const auto& tr = town_scene_.transition;
+    player_.x_fixed = tr.player_x * 0x10000;
+    player_.y_fixed = tr.player_y * 0x10000;
+    player_.movement_state = 0;
+    player_.direction_code = 0;
+    sim_state_.player_x = static_cast<std::uint16_t>(tr.player_x);
+    sim_state_.player_y = static_cast<std::uint16_t>(tr.player_y);
+
+    camera::CameraConfig cfg = camera_.config();
+    cfg.min_camera_x = 0;
+    cfg.max_camera_x = tr.max_camera_x;
+    cfg.min_camera_y = 0;
+    cfg.max_camera_y = tr.max_camera_y;
+    cfg.initial_camera_x = tr.initial_cam_x;
+    cfg.initial_camera_y = settled_camera ? tr.settled_cam_y : tr.initial_cam_y;
+    cfg.initial_vscroll_a = tr.initial_vscroll_a;
+    camera_ = camera::CameraController(cfg);
+    camera_.set_tracking_enabled(camera_tracking_);
+
+    if (!town_scene_.entities.empty()) {
+        entities_ = town_scene_.entities;
+    }
+    if (town_prepared_) {
+        world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
     }
 }
 
@@ -269,6 +319,10 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     const auto cur_y = static_cast<std::int32_t>(player_.y_fixed / 0x10000);
     sim_state_.player_x = static_cast<std::uint16_t>(cur_x);
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
+    if (map_id_ == world::kBeachMapId && town_prepared_ &&
+        world::is_beach_to_town_exit_triggered(cur_x, cur_y)) {
+        transition_to_town(false);
+    }
 
     // Native Camera Tracking update: authentic 30Hz update on odd frames
     camera_.update(cur_x, cur_y, 0, is_logic_step);
@@ -278,8 +332,22 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     attack_controller_.update(player_, cur_x, cur_y, input.controller_1, entities_);
 
     // Step secondary entities
+    if (map_id_ == world::kTownMapId && is_logic_step) {
+        const entity::SolidActorBox actor{cur_x, cur_y, 0, 10, 10, 40,
+                                          player_.movement_state == 0x36U};
+        for (auto& ent : entities_) {
+            if (!ent.active || ent.type_id != 0x002CU) continue;
+            ent.last_sound_cmd = 0U;
+            entity::apply_solid_body_repulsion(actor, ent);
+            combat::step_entity_combat_tick(ent);
+            entity::step_002c_death_and_velocity(ent, 136);
+            if (ent.last_sound_cmd != 0U) {
+                sound_queue_.push(static_cast<int>(frame), ent.last_sound_cmd);
+            }
+        }
+    }
     for (auto& entity : entities_) {
-        if (entity.active) {
+        if (entity.active && entity.type_id != 0x002CU) {
             entity.anim_frame = static_cast<std::uint8_t>((entity.anim_frame + 1U) % 32U);
         }
     }
@@ -342,6 +410,13 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 }
 
 void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
+    if (map_id_ == world::kTownMapId) {
+        render::emit_town_combat_sat(
+            sat_pipeline_, hud_, camera_, player_, sim_state_.player_x,
+            sim_state_.player_y, walk_tick_, entities_);
+        sat_pipeline_.commit_to_vdp(vdp);
+        return;
+    }
     sat_pipeline_.reset_frame();
 
     const int cam_x = camera_.display_camera_x();

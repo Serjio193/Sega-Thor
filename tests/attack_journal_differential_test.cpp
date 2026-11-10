@@ -265,7 +265,7 @@ void test_authentic_enemy_combat_mechanics() {
     // Overlap interval: [199, 212] (14 pixels) -> HIT CONFIRMED!
     assert(targets[1].hp == 46);                     // Damage 4 applied
     assert(targets[1].state == 0x0AU);               // Hurt state 0x0A
-    assert(targets[1].anim_frame == 0x08U);          // Hurt anim 0x08
+    assert(targets[1].anim_frame == 0x24U);          // Hurt anim 0x24 (36, 0x01F47E + 2*hurt_idx)
     assert(targets[1].previous_state == 24U);        // Saved previous state
     assert(targets[1].invulnerable == true);         // Bit 3 of +0x38 set
     assert(controller.sound_command() == 0x04D9U);   // Hit sound 0x8004D9

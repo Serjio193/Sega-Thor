@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "qualification_status": "CONTROLLED_CPU_ENTRY",
+  "entity_id": "0x006E",
+  "entry_pc": "0x01EB54",
+  "init_pc": "0x01EC00",
+  "damage_pc": "0x01F41C",
+  "recovery_pc": "0x01EF0C",
+  "hp_and_stat_table_01EC24": [
+    2,
+    4,
+    6,
+    8,
+    8,
+    6,
+    4,
+    2,
+    40,
+    30,
+    20,
+    10
+  ],
+  "cases": [
+    {
+      "name": "hit_nonlethal_hp50_def0_mb2004",
+      "input": {
+        "hp": 50,
+        "defense": 0,
+        "mailbox": "0x2004"
+      },
+      "output": {
+        "prepare_ok": 1,
+        "done": true,
+        "sound_cmd": "0x008004D9",
+        "hp_after": 46,
+        "state_after": 10,
+        "anim_after": 36,
+        "f38_after": 2056,
+        "prev_state_saved": 24,
+        "prev_anim_saved": 4,
+        "action_timer": 0,
+        "flash_timer": 0,
+        "mailbox_after": 0
+      }
+    },
+    {
+      "name": "hit_lethal_hp4_def0_mb2004",
+      "input": {
+        "hp": 4,
+        "defense": 0,
+        "mailbox": "0x2004"
+      },
+      "output": {
+        "prepare_ok": 1,
+        "done": true,
+        "sound_cmd": "0x008004D9",
+        "hp_after": 0,
+        "state_after": 10,
+        "anim_after": 36,
+        "f38_after": 2056,
+        "prev_state_saved": 24,
+        "prev_anim_saved": 4,
+        "action_timer": 0,
+        "flash_timer": 0,
+        "mailbox_after": 0
+      }
+    },
+    {
+      "name": "hit_min_damage_def20_mb2004",
+      "input": {
+        "hp": 40,
+        "defense": 20,
+        "mailbox": "0x2004"
+      },
+      "output": {
+        "prepare_ok": 1,
+        "done": true,
+        "sound_cmd": "0x008004D9",
+        "hp_after": 39,
+        "state_after": 10,
+        "anim_after": 36,
+        "f38_after": 2056,
+        "prev_state_saved": 24,
+        "prev_anim_saved": 4,
+        "action_timer": 0,
+        "flash_timer": 0,
+        "mailbox_after": 0
+      }
+    },
+    {
+      "name": "recovery_nonlethal_hp46",
+      "input": {
+        "hp": 46
+      },
+      "output": {
+        "prepare_ok": 1,
+        "done": true,
+        "exit_pc": "0x01EF3C",
+        "state_after": 24,
+        "anim_after": 4,
+        "f38_after": 0,
+        "flash_after": 0
+      }
+    },
+    {
+      "name": "death_branch_hp0",
+      "input": {
+        "hp": 0
+      },
+      "output": {
+        "prepare_ok": 1,
+        "done": true,
+        "exit_pc": "0x01EF4A",
+        "state_after": 12,
+        "anim_after": 36,
+        "f38_after": 3072,
+        "flash_after": 0
+      }
+    }
+  ]
+}

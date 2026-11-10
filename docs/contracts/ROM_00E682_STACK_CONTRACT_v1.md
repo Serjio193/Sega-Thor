@@ -96,3 +96,12 @@
   - Native C++ / IR interpreters MUST model the non-local return (`CALLER_BYPASSED = TRUE` when `$9D(a6) != 0` or `($82(a6)_before > 1)`).
 - **UNRESOLVED_BEHAVIOR:**
   - In `0x00E688`, `move.b $9D(a6), d0` writes only bits `0..7` of `D0`, whereas `0x00E6AA: cmpi.w #$0014, d0` compares bits `0..15`; no caller observed in F775..F815 or F1900..F1940 entered with `$9D(a6) != 0`, so callers' upper `D0` bits on that branch are noted from static ROM analysis only (`STATIC_ANALYSIS_ONLY`).
+
+---
+
+## 6. CROSS_TRACK_RECONCILIATION (M15.243 / M16.22 — `2026-11-10`)
+
+- **Cross-Track Agreement Summary:** Audited against hybrid track `C:/Github/Sega-Thor` (read-only) M15.243 verification:
+  - **Routine identity & span:** `entity_timer_tick_and_yield`, `0x00E682..0x00E6AA` (`40` bytes, `SHA256 = E1C1CA4F7CE879E1BCDD6B4141DD5EB3381E4468142719C13CC183085D1AF71C`) and `38`-byte prefix (`SHA256 = 80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F`) match 100%.
+  - **Slot stride & stack-pop semantics:** Stride `0xBC` and `0x00E6A6: addq.l #4, a7; rts` non-local return (`CALLER_BYPASSED`) match 100%.
+  - **Static caller census (`40 JSR + 4 BSR = 44`):** Independent ROM binary verification confirms `40` `JSR $00E682` sites plus `4` `BSR.W $00E682` sites at `0x01255A`, `0x012F3C`, `0x01388A`, and `0x014848` (`44` total static callers), eliminating the earlier JSR-only ambiguity.

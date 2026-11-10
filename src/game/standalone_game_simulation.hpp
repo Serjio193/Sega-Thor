@@ -3,6 +3,7 @@
 #include "core/runtime.hpp"
 #include "game/camera/camera_controller.hpp"
 #include "game/combat/attack_controller.hpp"
+#include "game/combat/sound_command_queue.hpp"
 #include "game/entity/native_entity.hpp"
 #include "game/interaction/interaction_system.hpp"
 #include "game/player/player.hpp"
@@ -11,6 +12,7 @@
 #include "game/standalone_game_loop.hpp"
 #include "game/world/byte_grid.hpp"
 #include "game/world/tilemap_streamer.hpp"
+#include "game/world/town_scene_loader.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <array>
@@ -184,6 +186,16 @@ public:
         attack_controller_.set_allow_experimental_combat(allow);
     }
 
+    // Load authentic Town Screen(1,3) resources/spawns from ROM for continuous Beach->Town play.
+    bool prepare_town_from_rom(std::span<const std::uint8_t> rom);
+
+    // Transition immediately into Town Screen(1,3) (MAP_ID=0x005A).
+    void transition_to_town(bool settled_camera = false);
+
+    [[nodiscard]] std::uint16_t map_id() const noexcept { return map_id_; }
+    [[nodiscard]] const combat::SoundCommandQueue& sound_queue() const noexcept { return sound_queue_; }
+    [[nodiscard]] const world::LoadedTownScene& town_scene() const noexcept { return town_scene_; }
+
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
 
@@ -205,6 +217,11 @@ private:
 
     NativeInteractionSystem interaction_system_{};
     NativeAttackController attack_controller_{};
+    combat::SoundCommandQueue sound_queue_{};
+
+    world::LoadedTownScene town_scene_{};
+    bool town_prepared_{false};
+    std::uint16_t map_id_{world::kBeachMapId};
 
     std::vector<std::uint8_t> terrain_buffer_{};
     world::ByteGridView terrain_{};

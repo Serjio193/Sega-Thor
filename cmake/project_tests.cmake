@@ -120,6 +120,9 @@ add_test(NAME oasis_attack_journal_differential COMMAND oasis_attack_journal_dif
 add_executable(oasis_m16_21_combat_oracle_test tests/m16_21_combat_oracle_test.cpp)
 target_link_libraries(oasis_m16_21_combat_oracle_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_21_combat_oracle COMMAND oasis_m16_21_combat_oracle_test)
+add_executable(oasis_m16_22_town_combat_test tests/m16_22_town_combat_test.cpp)
+target_link_libraries(oasis_m16_22_town_combat_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_22_town_combat COMMAND oasis_m16_22_town_combat_test)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
@@ -323,6 +326,7 @@ set(oasis_test_targets
     oasis_interaction_event_test
     oasis_attack_journal_differential_test
     oasis_m16_21_combat_oracle_test
+    oasis_m16_22_town_combat_test
     oasis_differential_oracle_comparison_test
     oasis_sat_pipeline_contract_test
     oasis_camera_controller_test
@@ -387,6 +391,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_interaction_event
         oasis_attack_journal_differential
         oasis_m16_21_combat_oracle
+        oasis_m16_22_town_combat
         oasis_differential_oracle_comparison
         oasis_sat_pipeline_contract
         oasis_camera_controller

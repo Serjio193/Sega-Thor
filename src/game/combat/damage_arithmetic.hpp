@@ -113,7 +113,14 @@ inline bool step_entity_combat_tick(NativeEntity& ent) noexcept {
             if (ent.hp == 0) {
                 ent.flash_timer = 0U;
                 ent.invulnerable = true; // 0x025746: bset #3, $38(a6)
-                ent.world_z += 18;
+                ent.flags38 |= 0x08U;
+                if (ent.z_fp == 0 && ent.vz_fp != 0) {
+                    // Lethal knockback: base +16px elevation before gravity integrates vz
+                    ent.z_fp = 16 * 0x10000;
+                    ent.world_z = 16;
+                } else {
+                    ent.world_z += 18;
+                }
                 ent.state = 0x06U;       // Death state 6
                 ent.anim_frame = 0x04U;
                 return sound_04d9;
@@ -121,12 +128,18 @@ inline bool step_entity_combat_tick(NativeEntity& ent) noexcept {
             ent.state = 0x04U;           // Hurt state 4
             ent.anim_frame = 0x08U;      // Hurt anim 8
         } else if (ent.type_id == 0x006EU) {
-            // Entity 0x006E (ROM 0x01F41C..0x01F488)
+            // Entity 0x006E (ROM 0x01F41C..0x01F488): always enters State 0x0A Hurt
+            // with anim 0x24 (36 + 2*index), sound 0x008004D9 if bit 13 set, before 0x01EF0C.
             ent.previous_state = ent.state;
             ent.previous_anim = ent.anim_frame;
             ent.invulnerable = true;
+            ent.flags38 |= 0x08U;
             ent.state = 0x0AU;
-            ent.anim_frame = 0x08U;
+            ent.anim_frame = 0x24U;
+            ent.flags37 &= static_cast<std::uint8_t>(~0x02U);
+            if (sound_04d9) {
+                ent.last_sound_cmd = 0x008004D9U;
+            }
             return sound_04d9;
         }
     }
@@ -141,17 +154,31 @@ inline bool step_entity_combat_tick(NativeEntity& ent) noexcept {
             ent.anim_frame = 0x00U; // 0x025690: anim 0
         } else {
             ent.flags36 |= 0x40U;   // 0x025946: bset #6, $36(a6)
-            ent.world_y -= 3;       // 0x025954 knockback velocity integration
+            if (ent.vy_fp != 0) {
+                if ((ent.y_fp >> 16) != ent.world_y) {
+                    ent.y_fp = ent.world_y * 0x10000;
+                }
+                ent.y_fp += ent.vy_fp;
+                ent.world_y = ent.y_fp >> 16;
+            } else {
+                ent.world_y -= 3;       // Fallback integer knockback step
+            }
         }
     } else if (ent.type_id == 0x006EU && ent.state == 0x0AU) {
-        // ROM 0x01EF0C..0x01EF4A: checks animation end
-        if (ent.hp == 0) {
-            ent.invulnerable = true;
-            ent.state = 0x0CU;      // Death state 12
-        } else {
-            ent.invulnerable = false;
-            ent.state = static_cast<std::uint8_t>(ent.previous_state);
-            ent.anim_frame = static_cast<std::uint8_t>(ent.previous_anim);
+        // ROM 0x01EF0C..0x01EF4A: checks animation end (bit 1 of +0x37)
+        if ((ent.flags37 & 0x02U) != 0U || ent.hp == 0 || ent.flash_timer == 0U) {
+            ent.flash_timer = 0U;
+            if (ent.hp == 0) {
+                ent.invulnerable = true;
+                ent.flags38 = 0x0CU; // bits 2 & 3 set (0x01EF4A -> $38=0x0C)
+                ent.state = 0x0CU;   // Death state 12
+                ent.anim_frame = 0x24U;
+            } else {
+                ent.invulnerable = false;
+                ent.flags38 = 0x00U;
+                ent.state = static_cast<std::uint8_t>(ent.previous_state);
+                ent.anim_frame = static_cast<std::uint8_t>(ent.previous_anim);
+            }
         }
     }
 

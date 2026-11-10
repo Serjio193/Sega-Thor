@@ -28,6 +28,7 @@ add_library(oasis_core
     src/game/entities/raw_record_initializer.cpp
     src/game/entities/sparse_word_store.cpp
     src/game/entities/screen_entity.cpp
+    src/game/entity/entity_physics.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
     src/game/player/secondary_weapon.cpp
@@ -40,11 +41,13 @@ add_library(oasis_core
     src/game/render/hud_overlay.cpp
     src/game/render/sprite_compositor.cpp
     src/game/render/player_sprite_composer.cpp
+    src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp
     src/game/world/tilemap_streamer.cpp
+    src/game/world/town_scene_loader.cpp
     src/game/interaction/interaction_system.cpp
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp
