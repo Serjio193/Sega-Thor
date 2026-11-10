@@ -114,6 +114,27 @@ MovementVector update_movement_state(
     const PlayerMovementConfig& config,
     const VelocityAdjustContext& velocity_context) noexcept {
     const auto input = static_cast<std::uint8_t>(input_nibble & 0x0FU);
+    if (player.movement_state == 0x18U) {
+        if (player.hurt_timer > 0U) {
+            --player.hurt_timer;
+        }
+        if (player.hurt_timer == 0U) {
+            stop_movement(player);
+        }
+        return {};
+    }
+    if (player.movement_state == 0x0CU) {
+        if (player.decel_timer == 0U) {
+            stop_movement(player);
+            return {};
+        }
+        --player.decel_timer;
+        player.intent_x_fixed = approach_zero(player.intent_x_fixed);
+        player.intent_y_fixed = approach_zero(player.intent_y_fixed);
+        player.accumulated_x_fixed += player.intent_x_fixed;
+        player.accumulated_y_fixed += player.intent_y_fixed;
+        return {Direction::none, player.intent_x_fixed, player.intent_y_fixed};
+    }
     if (player.movement_state == 4U) {
         const auto& entry = kDirectionTable[input];
         const auto selected_bit = direction_bit(player.direction_code);
@@ -123,11 +144,12 @@ MovementVector update_movement_state(
                 return {};
             }
             player.movement_state = 0x0CU;
+            player.decel_timer = 11U;
             player.intent_x_fixed = approach_zero(player.intent_x_fixed);
             player.intent_y_fixed = approach_zero(player.intent_y_fixed);
             player.accumulated_x_fixed += player.intent_x_fixed;
             player.accumulated_y_fixed += player.intent_y_fixed;
-            return {};
+            return {Direction::none, player.intent_x_fixed, player.intent_y_fixed};
         }
 
         const auto diagonal_x = config.diagonal_x_speed;

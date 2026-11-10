@@ -22,6 +22,7 @@ struct TownSchedulerContext {
     bool player_invisible{false};       // bit 3 of $FF1A20
     std::int16_t pending_player_damage{0};
     int frame_60hz{0};
+    bool skip_post_move_repulsion{false};
 };
 
 // Executes one full 30Hz ROM 0x00DEEC scheduler pass across all Town entities (Slots 4..19),

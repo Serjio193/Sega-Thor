@@ -1,3 +1,49 @@
+# 2026-11-10 — Milestone M16.34: AUTHENTIC NEW GPGX HOLDOUT, BLIND NATIVE GENERALIZATION, AND MULTI-FRAME HARDWARE STATE VALIDATION — Fixture Provenance Audit (Prior Holdouts Reclassified; F779 VRAM b063f302 Disclosed As Early Beach Capture); Genuinely New Original GPGX Holdout Session Captured & Frozen (F775..F1125, Checkpoint 28ac7eb5, Inputs d54b9277, Trace c1178cf5, Holdout VDP 2eaa70a2, Canonical VDP 9bf84f58, Manifest m16_34_holdout_manifest.json); Blind First-Pass Native Replay Preserving Initial Divergence at F776 & Root Causes; General ROM Systems Implemented (Player State 0x0C Decel 0x006624, 4-Axis Repulsion Clamp 0x009DB0, Deferred Damage Mailbox 0x00BEE0, Town 30Hz Combo Combat 0x00BF28, Guard 11 Death Arc 0x00E502, Drop Table Roll 0x00F476, Integer Euclidean Distance 0x00F0D2, Interactive Banner Suppression 0x00A7E6); Post-Fix Convergence (Player, Camera, HP, Slot 11, S19 Projectile: 350/350 Frames Exact); Multi-Frame Full 64KB VRAM/VDP Audit & 20-Sprite Line Limit Validation; Metric Reconciliation (521 = 246 Active-DMA + 275 Zero-DMA vs 341 = 170 Active-DMA + 170 Zero-DMA + F775); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 208/220 Passing with 12 Historical BizHawk Failures Preserved); <=500 Line Limit Preserved Across 957 Files; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `e2b1a1728022482fc45c4121ac41391734a383f7`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+  * Fixture Provenance Audit:
+    - Reclassified `598e62d6...` as M16.12 Beach holdout, `8acc108f...` as M16.10 Beach holdout, and `77d3ba6e...` as M16.20 Town death fixture.
+    - Disclosed that `data/standalone-fixtures/frame_779_vdp_state.json` (`b063f302...`) was byte-identical in VRAM to `sequence/frame_779.json` from the early Beach capture.
+  * Authentic New GPGX Holdout Captured & Frozen Pre-Modification:
+    - Generated interactive free-controller Town session across F775..F1125 using pinned core and ROM with active movement and slashes against Guard 11 and Guard 8.
+    - Frozen artifacts recorded in `m16_34_holdout_manifest.json`:
+      * Checkpoint: `data/checkpoints/town_free_control_f775.state` (`28ac7eb5ea89e368657b33d641854d8d6f8b8615c83683672d4d03d4db154ff0`).
+      * Inputs: `data/standalone-fixtures/town_independent_holdout_inputs.json` (`d54b9277372d5c04e534a9e03939a33ef70b9a84c7c342312b354de513a318d2`).
+      * Trace: `data/standalone-fixtures/town_independent_holdout_trace.json` (`c1178cf5cce37bfb221961e751d15fcd813001d5cded78faeaf1ef564d38ec00`, 351 frames F775..F1125).
+      * Holdout VDP: `data/standalone-fixtures/town_independent_holdout_vdp.json` (`2eaa70a20e4858850d9021f7a076d8117464fe0e5e49623509e84bcf6962174a`).
+      * Canonical VDP: `data/standalone-fixtures/town_canonical_vdp_snapshots.json` (`9bf84f58715509e7fd87dd6f6cad1ee5717cc897e3930ddefb97c4eccaa6e17c`).
+  * Blind First-Pass Native Replay:
+    - First divergence at F776 (Player ref (73,200) vs nat (76,200), Camera ref (0,118) vs nat (0,121), PRNG ref 0x5d94 vs nat 0x22bc).
+    - Diagnosed root causes: inverted 30Hz logic tick phase vs checkpoint WRAM `$FF1656`, missing State 0x0C decel handler, and Beach-only movement branch leakage.
+  * General ROM Systems Implementation:
+    - Player State 0x0C 12-tick decel with fractional accumulator (`0x006624..0x00669E`).
+    - 4-axis solid entity repulsion clamp with symmetric push (`0x009DB0..0x00A188`).
+    - Deferred player damage mailbox & hurt State 0x18 (`0x00BEE0`).
+    - Town 30Hz combo combat machine (`0x00BF28..0x00BF94`).
+    - Guard 11 airborne death arc & item drop table roll (`0x00E502`, `0x00F476`).
+    - Integer Euclidean distance calculation (`0x00F0D2 -> 0x00E6BA`).
+    - Interactive attract banner suppression (`0x00A7E6`).
+  * Post-Fix Convergence:
+    - Player parity: 350/350 (100% exact across F776..F1125).
+    - Camera parity: 350/350 (100% exact).
+    - Damage/HP parity: 350/350 (100% exact).
+    - Slot 11 parity: 350/350 (100% exact).
+    - S19 projectile parity: 350/350 (100% exact).
+    - PRNG parity: 237/350 (F776..F1012 exact).
+  * Multi-Frame Hardware VDP State & Sprite Limit Validation:
+    - Compared 64KB VRAM, 128B CRAM, 80B VSRAM across 7 canonical frames and 7 holdout frames.
+    - Verified 20-sprite per line limit and onscreen clipping.
+  * Dual-Toolchain Verification & Governance:
+    - Added `tests/m16_34_blind_generalization_test.cpp` (294 lines, <= 500 lines) and registered in `cmake/project_tests.cmake`.
+    - MinGW Release CTest passed 208/220 in 12.93s (12 historical BizHawk failures preserved).
+    - MSVC Debug CTest passed 208/220 in 15.35s (exact same 12 historical BizHawk failures preserved).
+    - `tests/check_file_limits.cmake` passed on all 957 governed files.
+    - Zero emulator linkage in `oasis.exe`; hybrid repository `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.33: INDEPENDENT GAMEPLAY GENERALIZATION, CHECKPOINT-FREE SCENE TRANSITION, AND HARDWARE-VISIBLE VDP VALIDATION — Metric Reconciliation (All-Frame Exact Interval 341 F775..F1115, Full 521 Journal: 246 Active-DMA, 275 Zero-DMA); Qualification of Three Independent Gameplay Holdout Traces (Beach 61-Frame Holdout, Beach Alternative v2 61-Frame Trace, Town Death Lifecycle 81-Frame Trace with Sound Dispatch); Authentic Frame 779 Hardware VDP State & VRAM/SAT Audit; Checkpoint-Free Scene Transition from ROM Graphics Decompression; 207/219 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

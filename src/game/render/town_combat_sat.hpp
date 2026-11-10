@@ -30,4 +30,10 @@ void emit_town_combat_sat(SatPipelineContract& sat,
                           std::span<const NativeEntity> entities,
                           bool include_status_bars = true) noexcept;
 
+// Uploads player dynamic walk pose tiles and steps animated water palette CRAM entries.
+void apply_player_patterns_and_water_cycle(std::span<const std::uint8_t> walk_patterns,
+                                           std::size_t pose_idx,
+                                           std::uint32_t frame,
+                                           genesis::VdpState& vdp) noexcept;
+
 } // namespace oasis::game::render

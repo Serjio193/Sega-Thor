@@ -65,6 +65,7 @@ struct PlayerState {
     std::int32_t accumulated_y_fixed{}; // entity +0x76
     std::uint8_t footprint_any_bits{}; // entity +0x6F, produced by 0x9BF2
     std::uint16_t turn_timer{}; // FF197E in the state-4 branch
+    std::uint8_t decel_timer{0}; // Remaining ticks in state 0x0C deceleration (ROM 0x00669E)
     std::int16_t hp{100};       // entity +0x8a in ROM (Max HP in +0x88 is 100)
     std::int16_t max_hp{100};   // entity +0x88 in ROM
     std::uint8_t invuln_timer{0};    // entity +0x82 in ROM (decremented each frame)
@@ -73,6 +74,7 @@ struct PlayerState {
     std::int32_t knockback_y_fixed{0}; // entity +0x52 in ROM (fixed point 16.16)
     std::uint16_t contact_entity{0}; // type ID of harmful entity in contact
     bool damage_gate_open{false};    // true when contact passes damage predicates
+    std::int16_t pending_damage{0};  // incoming damage mailbox (+0x86) applied on next player tick
     std::uint8_t attack_state{0};       // 0: idle, 10: State 10 (Player Attack in ROM)
     std::uint8_t attack_timer{0};       // 0..8 (9 frames total: 4 startup, 2 active, 3 recovery)
     bool attack_active{false};          // true during active frames (4 and 5)

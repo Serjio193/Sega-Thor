@@ -92,6 +92,74 @@ bool apply_solid_body_repulsion(const SolidActorBox& actor, NativeEntity& ent) n
     return true;
 }
 
+void clamp_player_motion_against_solid_entities(std::int32_t old_x_fixed,
+                                                 std::int32_t old_y_fixed,
+                                                 std::int32_t& new_x_fixed,
+                                                 std::int32_t& new_y_fixed,
+                                                 std::span<NativeEntity> entities,
+                                                 bool player_movement_locked,
+                                                 std::int16_t player_z) noexcept {
+    constexpr std::int32_t kHW = 10, kHD = 10, kH = 40;
+    const auto is_solid = [&](const NativeEntity& e) {
+        return e.active && e.type_id >= 0x0016U && (e.flags38 & 0x04U) == 0U &&
+               (e.flags3a & 0x02U) == 0U && (e.state == 0x00U || e.state == 0x02U) &&
+               (e.world_z + e.height > player_z) && (e.world_z < player_z + kH);
+    };
+
+    const std::int32_t old_x = old_x_fixed >> 16;
+    const std::int32_t old_y = old_y_fixed >> 16;
+    const std::int32_t req_y = new_y_fixed >> 16;
+    std::int32_t final_y = req_y;
+    if (req_y != old_y) {
+        const bool up = (req_y < old_y);
+        std::int32_t allowed = up ? (old_y - req_y) : (req_y - old_y);
+        const std::int32_t p_left = old_x - kHW, p_right = old_x + kHW;
+        for (auto& ent : entities) {
+            if (!is_solid(ent)) continue;
+            if (up ? (ent.world_y >= old_y) : (ent.world_y <= old_y)) continue;
+            const std::int32_t gap = up ? ((old_y - kHD) - (ent.world_y + ent.half_depth))
+                                        : ((ent.world_y - ent.half_depth) - (old_y + kHD));
+            const std::int32_t d6 = std::max<std::int32_t>(0, gap);
+            if (d6 >= kHD * 2) continue;
+            if (ent.world_x + ent.half_width <= p_left || ent.world_x - ent.half_width >= p_right) continue;
+            allowed = std::min(allowed, d6);
+            if (d6 == 0 && !player_movement_locked && (ent.flags37 & 0x40U) == 0U) {
+                sync_fixed_point_from_world(ent);
+                ent.y_fp += up ? -0x10000 : 0x10000;
+                ent.world_y = ent.y_fp >> 16;
+            }
+        }
+        final_y = up ? (old_y - allowed) : (old_y + allowed);
+        new_y_fixed = static_cast<std::int32_t>((static_cast<std::uint32_t>(final_y) << 16) |
+                                                (static_cast<std::uint32_t>(new_y_fixed) & 0xFFFFU));
+    }
+
+    const std::int32_t req_x = new_x_fixed >> 16;
+    if (req_x != old_x) {
+        const bool left = (req_x < old_x);
+        std::int32_t allowed = left ? (old_x - req_x) : (req_x - old_x);
+        const std::int32_t p_top = final_y - kHD, p_bot = final_y + kHD;
+        for (auto& ent : entities) {
+            if (!is_solid(ent)) continue;
+            if (left ? (ent.world_x >= old_x) : (ent.world_x <= old_x)) continue;
+            const std::int32_t gap = left ? ((old_x - kHW) - (ent.world_x + ent.half_width))
+                                          : ((ent.world_x - ent.half_width) - (old_x + kHW));
+            const std::int32_t d6 = std::max<std::int32_t>(0, gap);
+            if (d6 >= kHW * 2) continue;
+            if (ent.world_y + ent.half_depth <= p_top || ent.world_y - ent.half_depth >= p_bot) continue;
+            allowed = std::min(allowed, d6);
+            if (d6 == 0 && !player_movement_locked && (ent.flags37 & 0x40U) == 0U) {
+                sync_fixed_point_from_world(ent);
+                ent.x_fp += left ? -0x10000 : 0x10000;
+                ent.world_x = ent.x_fp >> 16;
+            }
+        }
+        const std::int32_t final_x = left ? (old_x - allowed) : (old_x + allowed);
+        new_x_fixed = static_cast<std::int32_t>((static_cast<std::uint32_t>(final_x) << 16) |
+                                                (static_cast<std::uint32_t>(new_x_fixed) & 0xFFFFU));
+    }
+}
+
 void step_002c_death_and_velocity(NativeEntity& ent, std::int32_t y_min_bound) noexcept {
     if (!ent.active || ent.type_id == 0U) {
         return;

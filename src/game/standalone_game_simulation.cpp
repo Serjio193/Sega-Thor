@@ -212,6 +212,8 @@ void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
     if (town_prepared_) {
         world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
     }
+    attack_controller_.reset();
+    attack_controller_.set_allow_experimental_combat(false);
 }
 
 bool StandaloneGameSimulation::initialize_town_checkpoint(
@@ -223,6 +225,14 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     player_.y_fixed = town_cp.y_fixed;
     player_.movement_state = town_cp.movement_state;
     player_.direction_code = town_cp.direction_code;
+    player_.turn_timer = town_cp.turn_timer;
+    player_.intent_x_fixed = town_cp.intent_x_fixed;
+    player_.intent_y_fixed = town_cp.intent_y_fixed;
+    player_.decel_timer = 0U;
+    player_.pending_damage = 0;
+    player_.hurt_timer = 0U;
+    attack_controller_.reset();
+    attack_controller_.set_allow_experimental_combat(false);
     player_.hp = town_cp.hp;
     player_.max_hp = town_cp.max_hp;
     sim_state_.player_x = static_cast<std::uint16_t>(town_cp.x_fixed / 0x10000);
@@ -285,11 +295,19 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     if (is_logic_step) {
         prev_render_player_x_ = sim_state_.player_x;
         prev_render_player_y_ = sim_state_.player_y;
+        if (map_id_ == world::kTownMapId && player_.pending_damage > 0) {
+            player_.hp = static_cast<std::int16_t>(std::max(0, static_cast<int>(player_.hp) - player_.pending_damage));
+            player_.pending_damage = 0;
+            if (player_.movement_state != 0x36U) { player_.movement_state = 0x18U; player_.hurt_timer = 4U; }
+        }
+        if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
+            attack_controller_.update_town_30hz(player_, sim_state_.player_x, sim_state_.player_y, input.controller_1, entities_);
+        }
 
         if (replay_player_trajectory_) {
             walk_tick_ = (walk_tick_ + 1) % 16;
         } else if (player_.movement_state == 0x30U || player_.movement_state == 0x0AU ||
-                   player_.movement_state == 0x46U || player_.movement_state == 0x36U) {
+                   player_.movement_state == 0x08U || player_.movement_state == 0x46U || player_.movement_state == 0x36U) {
             walk_tick_ = 0;
         } else if (map_id_ == world::kBeachMapId && checkpoint_state_.movement_state == 4U &&
                    player_.movement_state == 4U) {
@@ -312,7 +330,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                 player_.y_fixed += 0x00020000;
                 walk_tick_ = 0;
             }
-        } else if (sim_state_.frame_counter <= 80U && checkpoint_state_.movement_state == 4) {
+        } else if (map_id_ == world::kBeachMapId && sim_state_.frame_counter <= 80U && checkpoint_state_.movement_state == 4) {
             if (frame >= 15U && frame <= 27U) {
                 player_.x_fixed += 0x00050000;
                 player_.y_fixed += (frame == 17U || frame == 23U) ? 0x00030000 : 0x00020000;
@@ -328,7 +346,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                 landing_velocity_x_ = 287540;
                 landing_hold_ticks_ = 0;
             }
-        } else if (player_.movement_state == 12U && checkpoint_state_.movement_state == 4) {
+        } else if (map_id_ == world::kBeachMapId && player_.movement_state == 12U && checkpoint_state_.movement_state == 4) {
             if (landing_velocity_x_ > 0) {
                 player_.x_fixed += landing_velocity_x_;
                 landing_velocity_x_ = (landing_velocity_x_ > 0x0000ACCC) ? (landing_velocity_x_ - 0x0000ACCC) : 0;
@@ -341,8 +359,12 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                 }
             }
         } else {
-            const auto move_result = player::try_move(player_, input.controller_1, terrain_,
-                                                      movement_config_, velocity_context_);
+            const std::int32_t old_x_fixed = player_.x_fixed;
+            const std::int32_t old_y_fixed = player_.y_fixed;
+            const auto move_result = player::try_move(player_, input.controller_1, terrain_, movement_config_, velocity_context_);
+            if (map_id_ == world::kTownMapId) {
+                entity::clamp_player_motion_against_solid_entities(old_x_fixed, old_y_fixed, player_.x_fixed, player_.y_fixed, entities_, player_.movement_state == 0x36U);
+            }
             if (move_result.moved || player_.movement_state != 0U) {
                 walk_tick_ = (walk_tick_ + 1) % 16;
             } else {
@@ -366,7 +388,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
     camera_.update(cur_x, cur_y, 0, is_logic_step);
     interaction_system_.update(cur_x, cur_y, input.controller_1, entities_);
-    attack_controller_.update(player_, cur_x, cur_y, input.controller_1, entities_);
+    if (!(map_id_ == world::kTownMapId && !rom_bytes_.empty())) {
+        attack_controller_.update(player_, cur_x, cur_y, input.controller_1, entities_);
+    }
 
     if (map_id_ == world::kTownMapId && is_logic_step) {
         if (!rom_bytes_.empty()) {
@@ -377,15 +401,13 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
             town_ctx_.player_hp = player_.hp;
             town_ctx_.pending_player_damage = 0;
             town_ctx_.frame_60hz = static_cast<int>(frame);
-            entity::step_town_scheduler(entities_, rom_bytes_, town_scene_.terrain_collision,
-                                        town_ctx_, sound_queue_, true);
+            town_ctx_.skip_post_move_repulsion = true;
+            entity::step_town_scheduler(entities_, rom_bytes_, town_scene_.terrain_collision, town_ctx_, sound_queue_, true);
             if (town_ctx_.pending_player_damage > 0) {
-                player_.hp = static_cast<std::int16_t>(
-                    std::max(0, static_cast<int>(player_.hp) - town_ctx_.pending_player_damage));
+                player_.pending_damage = static_cast<std::int16_t>(player_.pending_damage + town_ctx_.pending_player_damage);
             }
         } else {
-            const entity::SolidActorBox actor{cur_x, cur_y, 0, 10, 10, 40,
-                                              player_.movement_state == 0x36U};
+            const entity::SolidActorBox actor{cur_x, cur_y, 0, 10, 10, 40, player_.movement_state == 0x36U};
             for (auto& ent : entities_) {
                 if (!ent.active || ent.type_id != 0x002CU) continue;
                 ent.last_sound_cmd = 0U;
@@ -407,39 +429,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
     streamer_.step_frame(camera_.camera_x(), camera_.camera_y(), current_vdp_);
     camera_.apply_to_vdp(current_vdp_);
-
-    if (!walk_patterns_.empty()) {
-        const std::size_t pose_idx = current_player_pose();
-        if (walk_patterns_.size() >= (pose_idx + 1U) * 1152U) {
-            const auto* pose_ptr = walk_patterns_.data() + pose_idx * 1152U;
-            std::memcpy(&current_vdp_.vram[0x9500], pose_ptr, 1024);
-            std::memcpy(&current_vdp_.vram[0x9D00], pose_ptr + 1024, 128);
-            if (pose_idx == 3U || pose_idx == 5U) {
-                static constexpr std::uint8_t kPose3UpperExt[64] = {
-                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0xB0U, 0x00U, 0x00U,
-                    0x0BU, 0x3BU, 0x00U, 0x00U, 0x0BU, 0x44U, 0x00U, 0x00U, 0xB1U, 0x2FU, 0x00U, 0x00U, 0x12U, 0xF2U, 0xF0U, 0x00U,
-                    0xD1U, 0x22U, 0xF4U, 0xB0U, 0xFBU, 0xBBU, 0x34U, 0x4BU, 0xB0U, 0x0BU, 0xBBU, 0x3BU, 0x00U, 0x00U, 0x00U, 0xBBU,
-                    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U
-                };
-                std::memcpy(&current_vdp_.vram[0x9D80], kPose3UpperExt, 64);
-                std::memset(&current_vdp_.vram[0x9DC0], 0, 64);
-            } else {
-                std::memset(&current_vdp_.vram[0x9D80], 0, 128);
-            }
-        }
-    }
-
-    static constexpr std::uint16_t kWaterCycle[4][4] = {
-        {0x0820, 0x0EC0, 0x0E40, 0x0820}, {0x0EC0, 0x0E40, 0x0820, 0x0820},
-        {0x0E40, 0x0820, 0x0820, 0x0EC0}, {0x0820, 0x0820, 0x0EC0, 0x0E40}
-    };
-    const std::size_t pal_phase = (frame / 6U) % 4U;
-    for (std::size_t i = 0; i < 4U; ++i) {
-        const std::size_t cram_off = (33U + i) * 2U;
-        const std::uint16_t w = kWaterCycle[pal_phase][i];
-        current_vdp_.cram[cram_off] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
-        current_vdp_.cram[cram_off + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
-    }
+    render::apply_player_patterns_and_water_cycle(walk_patterns_, current_player_pose(), frame, current_vdp_);
 
     const bool is_sat_step = (map_id_ == world::kTownMapId)
         ? ((tick_counter_ % 2U) == 0U)
@@ -476,16 +466,12 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
             }
             render::emit_town_combat_sat(sat_pipeline_, rom_bytes_, sat_ctx, entities_);
         } else {
-            render::emit_town_combat_sat(
-                sat_pipeline_, hud_, camera_, player_, sim_state_.player_x,
-                sim_state_.player_y, walk_tick_, entities_);
+            render::emit_town_combat_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, walk_tick_, entities_);
         }
         sat_pipeline_.commit_to_vdp(vdp);
         return;
     }
-    render::emit_beach_sat(
-        sat_pipeline_, hud_, camera_, player_, sim_state_.player_x,
-        sim_state_.player_y, current_player_pose(), walk_tick_, entities_);
+    render::emit_beach_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, current_player_pose(), walk_tick_, entities_);
     sat_pipeline_.commit_to_vdp(vdp);
 }
 

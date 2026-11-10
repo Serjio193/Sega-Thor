@@ -45,6 +45,13 @@ public:
                 const core::ControllerState& controller,
                 std::span<NativeEntity> target_entities) noexcept;
 
+    // 30Hz Town ROM attack handler (State 0x36 moving combo & State 0x0A->0x08 slash).
+    void update_town_30hz(player::PlayerState& player,
+                          std::int32_t player_x,
+                          std::int32_t player_y,
+                          const core::ControllerState& controller,
+                          std::span<NativeEntity> target_entities) noexcept;
+
     [[nodiscard]] bool is_attacking() const noexcept { return is_attacking_; }
     [[nodiscard]] std::uint16_t attack_timer() const noexcept { return attack_timer_; }
     [[nodiscard]] std::uint16_t sound_command() const noexcept { return sound_command_; }
@@ -62,6 +69,7 @@ public:
 private:
     bool is_attacking_{false};
     std::uint16_t attack_timer_{0};
+    std::uint16_t attack_elapsed_{0};
     std::uint16_t sound_command_{0};
     bool allow_experimental_combat_{true};
 };

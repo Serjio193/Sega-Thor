@@ -2,6 +2,8 @@
 
 #include "game/render/player_sprite_composer.hpp"
 
+#include <cstring>
+
 namespace oasis::game::render {
 
 void emit_town_combat_sat(SatPipelineContract& sat,
@@ -80,6 +82,41 @@ void emit_town_combat_sat(SatPipelineContract& sat,
     }
 
     sat.finalize_frame();
+}
+
+void apply_player_patterns_and_water_cycle(std::span<const std::uint8_t> walk_patterns,
+                                           std::size_t pose_idx,
+                                           std::uint32_t frame,
+                                           genesis::VdpState& vdp) noexcept {
+    if (!walk_patterns.empty() && walk_patterns.size() >= (pose_idx + 1U) * 1152U) {
+        const auto* pose_ptr = walk_patterns.data() + pose_idx * 1152U;
+        std::memcpy(&vdp.vram[0x9500], pose_ptr, 1024);
+        std::memcpy(&vdp.vram[0x9D00], pose_ptr + 1024, 128);
+        if (pose_idx == 3U || pose_idx == 5U) {
+            static constexpr std::uint8_t kPose3UpperExt[64] = {
+                0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0xB0U, 0x00U, 0x00U,
+                0x0BU, 0x3BU, 0x00U, 0x00U, 0x0BU, 0x44U, 0x00U, 0x00U, 0xB1U, 0x2FU, 0x00U, 0x00U, 0x12U, 0xF2U, 0xF0U, 0x00U,
+                0xD1U, 0x22U, 0xF4U, 0xB0U, 0xFBU, 0xBBU, 0x34U, 0x4BU, 0xB0U, 0x0BU, 0xBBU, 0x3BU, 0x00U, 0x00U, 0x00U, 0xBBU,
+                0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U
+            };
+            std::memcpy(&vdp.vram[0x9D80], kPose3UpperExt, 64);
+            std::memset(&vdp.vram[0x9DC0], 0, 64);
+        } else {
+            std::memset(&vdp.vram[0x9D80], 0, 128);
+        }
+    }
+
+    static constexpr std::uint16_t kWaterCycle[4][4] = {
+        {0x0820, 0x0EC0, 0x0E40, 0x0820}, {0x0EC0, 0x0E40, 0x0820, 0x0820},
+        {0x0E40, 0x0820, 0x0820, 0x0EC0}, {0x0820, 0x0820, 0x0EC0, 0x0E40}
+    };
+    const std::size_t pal_phase = (frame / 6U) % 4U;
+    for (std::size_t i = 0; i < 4U; ++i) {
+        const std::size_t cram_off = (33U + i) * 2U;
+        const std::uint16_t w = kWaterCycle[pal_phase][i];
+        vdp.cram[cram_off] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
+        vdp.cram[cram_off + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
+    }
 }
 
 } // namespace oasis::game::render

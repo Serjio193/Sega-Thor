@@ -6,10 +6,106 @@
 
 namespace oasis::game {
 
+namespace {
+
+void weapon_aabb_for_facing(std::uint16_t dir, std::int32_t px, std::int32_t py,
+                            int& xmin, int& xmax, int& ymin, int& ymax) noexcept {
+    if (dir == 0U) {
+        xmin = px - 16; xmax = px + 7; ymin = py - 32; ymax = py - 1;
+    } else if (dir == 1U) {
+        xmin = px + 0; xmax = px + 32; ymin = py - 8; ymax = py + 16;
+    } else if (dir == 2U) {
+        xmin = px - 16; xmax = px + 7; ymin = py + 1; ymax = py + 32;
+    } else {
+        xmin = px - 32; xmax = px - 0; ymin = py - 8; ymax = py + 16;
+    }
+}
+
+void write_town_002c_hit(std::uint16_t facing, std::int32_t px, std::int32_t py,
+                         std::span<NativeEntity> targets, std::uint16_t dmg_mailbox,
+                         std::uint8_t act_timer, std::uint16_t& snd_out) noexcept {
+    int wxmin = 0, wxmax = 0, wymin = 0, wymax = 0;
+    weapon_aabb_for_facing(facing, px, py, wxmin, wxmax, wymin, wymax);
+    for (std::size_t i = 0; i < targets.size(); ++i) {
+        auto& ent = targets[i];
+        if (!ent.active || ent.type_id != 0x002CU || ent.invulnerable) continue;
+        if ((ent.flags38 & 0x08U) != 0U) continue;
+        const bool ox = (wxmin <= ent.world_x + ent.half_width) && (wxmax >= ent.world_x - ent.half_width);
+        const bool oy = (wymin <= ent.world_y + ent.half_depth) && (wymax >= ent.world_y - ent.half_depth);
+        const bool oz = (0 <= ent.world_z + ent.height) && (16 >= ent.world_z);
+        if (ox && oy && oz) {
+            ent.action_timer = act_timer;
+            ent.flash_timer = 6U;
+            ent.damage_mailbox = dmg_mailbox;
+            snd_out = 0x04D9U;
+        }
+    }
+}
+
+} // namespace
+
 void NativeAttackController::reset() noexcept {
     is_attacking_ = false;
     attack_timer_ = 0;
+    attack_elapsed_ = 0;
     sound_command_ = 0;
+}
+
+void NativeAttackController::update_town_30hz(player::PlayerState& player,
+                                              std::int32_t player_x,
+                                              std::int32_t player_y,
+                                              const core::ControllerState& controller,
+                                              std::span<NativeEntity> target_entities) noexcept {
+    sound_command_ = 0;
+    if (player.movement_state == 0x18U) {
+        is_attacking_ = false;
+        attack_timer_ = 0;
+        attack_elapsed_ = 0;
+        return;
+    }
+
+    const bool attack_pressed = controller.pressed(core::Button::B);
+    const bool in_atk = (player.movement_state == 0x36U || player.movement_state == 0x0AU ||
+                         player.movement_state == 0x08U || player.movement_state == 0x30U ||
+                         player.movement_state == 0x46U);
+    if (!in_atk) {
+        is_attacking_ = false;
+        if (!attack_pressed) return;
+        is_attacking_ = true;
+        attack_elapsed_ = 0U;
+        sound_command_ = 0x0218U;
+        if (player.movement_state == 2U || player.movement_state == 4U) {
+            player.movement_state = 0x36U;
+            attack_timer_ = 14U;
+        } else {
+            player.movement_state = 0x0AU;
+            attack_timer_ = 12U;
+        }
+        return;
+    }
+
+    ++attack_elapsed_;
+    if (attack_timer_ > 0U) {
+        --attack_timer_;
+    }
+    if (attack_timer_ == 0U) {
+        player.movement_state = 0U;
+        is_attacking_ = false;
+        return;
+    }
+    if (player.movement_state == 0x0AU && attack_elapsed_ >= 2U) {
+        player.movement_state = 0x08U;
+    }
+
+    if (player.movement_state == 0x36U) {
+        if (attack_elapsed_ == 3U) {
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2002U, 1U, sound_command_);
+        } else if (attack_elapsed_ == 6U) {
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0xC005U, 2U, sound_command_);
+        }
+    } else if (player.movement_state == 0x08U && attack_elapsed_ == 3U) {
+        write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2004U, 1U, sound_command_);
+    }
 }
 
 void NativeAttackController::update(player::PlayerState& player,
@@ -74,20 +170,7 @@ void NativeAttackController::update(player::PlayerState& player,
             int w_xmin = 0, w_xmax = 0, w_ymin = 0, w_ymax = 0;
             constexpr int w_zmin = 0;
             constexpr int w_zmax = 16;
-
-            if (player.direction_code == 0U) { // Facing Up
-                w_xmin = player_x - 16; w_xmax = player_x + 7;
-                w_ymin = player_y - 32; w_ymax = player_y - 1;
-            } else if (player.direction_code == 1U) { // Facing Right
-                w_xmin = player_x + 0;  w_xmax = player_x + 32;
-                w_ymin = player_y - 8;  w_ymax = player_y + 16;
-            } else if (player.direction_code == 2U) { // Facing Down
-                w_xmin = player_x - 16; w_xmax = player_x + 7;
-                w_ymin = player_y + 1;  w_ymax = player_y + 32;
-            } else { // Facing Left (routine 0x00BDB6: mirrored X)
-                w_xmin = player_x - 32; w_xmax = player_x - 0;
-                w_ymin = player_y - 8;  w_ymax = player_y + 16;
-            }
+            weapon_aabb_for_facing(player.direction_code, player_x, player_y, w_xmin, w_xmax, w_ymin, w_ymax);
 
             for (std::size_t i = 1; i < target_entities.size(); ++i) {
                 auto& ent = target_entities[i];

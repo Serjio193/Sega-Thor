@@ -50,6 +50,9 @@ struct TownCheckpointInitialState {
     std::uint16_t tick_counter{2392};
     std::uint32_t frame_counter{775};
     std::uint16_t prng_seed{0x22BCU};
+    std::uint16_t turn_timer{0};
+    std::int32_t intent_x_fixed{0};
+    std::int32_t intent_y_fixed{0};
     std::vector<NativeEntity> entities{};
 };
 

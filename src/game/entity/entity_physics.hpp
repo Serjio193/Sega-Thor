@@ -3,6 +3,7 @@
 #include "game/entity/native_entity.hpp"
 
 #include <cstdint>
+#include <span>
 
 namespace oasis::game::entity {
 
@@ -30,6 +31,16 @@ void sync_world_from_fixed_point(NativeEntity& ent) noexcept;
 // for player half_d=10 and 0x002C half_d=7), applies subq.w #1 to entity's Y (-1.0 px push).
 // Returns true if repulsion shifted the entity.
 bool apply_solid_body_repulsion(const SolidActorBox& actor, NativeEntity& ent) noexcept;
+
+// Clamps player X/Y motion (ROM 0x009DB0..0x00A188) against solid entities on all 4 cardinal
+// directions while preserving fractional subpixel accumulators and pushing touching entities.
+void clamp_player_motion_against_solid_entities(std::int32_t old_x_fixed,
+                                                 std::int32_t old_y_fixed,
+                                                 std::int32_t& new_x_fixed,
+                                                 std::int32_t& new_y_fixed,
+                                                 std::span<NativeEntity> entities,
+                                                 bool player_movement_locked = false,
+                                                 std::int16_t player_z = 0) noexcept;
 
 // Executes one 30Hz physics integration + death lifecycle tick for Entity 0x002C:
 // - Integrates vx_fp / vy_fp (clamping Y >= y_min boundary, Town curb 136)

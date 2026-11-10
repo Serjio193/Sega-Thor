@@ -48,12 +48,32 @@ void emit_sound(NativeEntity& src, TownSchedulerContext& ctx, combat::SoundComma
     }
 }
 
+std::int32_t rom_dist_f0d2(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2) noexcept {
+    // ROM 0x00F0D2 -> 0x00E6BA exact integer Euclidean distance isqrt(dx^2 + dy^2).
+    const std::int64_t dx = static_cast<std::int64_t>(x2) - x1;
+    const std::int64_t dy = static_cast<std::int64_t>(y2) - y1;
+    const std::uint64_t sum = static_cast<std::uint64_t>(dx * dx + dy * dy);
+    std::uint64_t res = 0, bit = 1ULL << 30;
+    while (bit > sum) bit >>= 2;
+    std::uint64_t n = sum;
+    while (bit != 0) {
+        if (n >= res + bit) {
+            n -= res + bit;
+            res = (res >> 1) + bit;
+        } else {
+            res >>= 1;
+        }
+        bit >>= 2;
+    }
+    return static_cast<std::int32_t>(res);
+}
+
 void decide_002c_action(NativeEntity& ent, std::vector<NativeEntity>& entities,
                         TownSchedulerContext& ctx, combat::SoundCommandQueue& q) noexcept {
     // ROM 0x0255D8
     const std::uint16_t var = ent.variant_96 & 3U;
     if (var != 0U && var != 3U && !ctx.player_invisible) {
-        const std::int32_t dist = std::abs(ctx.player_x - ent.world_x) + std::abs(ctx.player_y - ent.world_y);
+        const std::int32_t dist = rom_dist_f0d2(ctx.player_x, ctx.player_y, ent.world_x, ent.world_y);
         bool try_throw = false;
         if (var == 1U) {
             if (dist < 0x50 && prng_mod(ctx.prng_seed, 4U) == 0U) {
@@ -123,15 +143,20 @@ void apply_entity_002c_damage(NativeEntity& ent, TownSchedulerContext& ctx,
     ent.hp = dmg_res.hp_after;
 
     std::uint16_t lethal_bits = static_cast<std::uint16_t>(raw & 0xC000U);
-    if (dmg_res.zero_hp) {
-        if (lethal_bits == 0U) {
-            compute_dir_velocity(ent.facing, 0x0300, 0x02E0, ent.vx_fp, ent.vy_fp);
-            ent.vz_fp = 0x00060000;
+    const std::uint16_t knockback_dir = static_cast<std::uint16_t>(ent.facing ^ 2U);
+    if (dmg_res.zero_hp || lethal_bits == 0xC000U) {
+        if (lethal_bits == 0xC000U) {
+            compute_dir_velocity(knockback_dir, 0x0700, 0x0680, ent.vx_fp, ent.vy_fp);
+        } else {
+            compute_dir_velocity(knockback_dir, 0x0300, 0x02E0, ent.vx_fp, ent.vy_fp);
         }
+        ent.vz_fp = 0x00030000;
         lethal_bits |= 0xC000U;
     }
 
     if (lethal_bits == 0U) {
+        compute_dir_velocity(knockback_dir, 0x0300, 0x02C0, ent.vx_fp, ent.vy_fp);
+        ent.vz_fp = 0;
         ent.state = 0x04U;
         init_entity_animation(ent, 0x08U);
         ent.flash_timer = 4U;
@@ -245,11 +270,18 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
             ent.flags39 &= ~0x08U;
             ent.invulnerable = false;
             if (ent.hp == 0) {
-                ent.anim_frame = 0x06U;
-                ent.state = 0x08U;
-                ent.flags39 &= ~0x04U;
-                ent.flags38 |= 0x0CU;
-                emit_sound(ent, ctx, q, combat::kSndEnemy002cLandThud);
+                if (ent.ground_linger_ticks == 0U) {
+                    ent.ground_linger_ticks = 2U;
+                } else {
+                    --ent.ground_linger_ticks;
+                    if (ent.ground_linger_ticks == 0U) {
+                        init_entity_animation(ent, 0x06U);
+                        ent.state = 0x08U;
+                        ent.flags39 &= ~0x04U;
+                        ent.flags38 |= 0x0CU;
+                        emit_sound(ent, ctx, q, combat::kSndEnemy002cLandThud);
+                    }
+                }
             } else {
                 decide_002c_action(ent, entities, ctx, q);
             }
@@ -258,6 +290,13 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
     }
     case 0x08U: {
         if ((ent.flags37 & 0x02U) != 0U) {
+            // ROM 0x0259B6 -> 0x00F476 drop table {0x0CCC: 0x2301, 0x0147: 0x1A01}
+            if ((ent.flags39 & 0x80U) == 0U) {
+                const std::uint16_t r1 = step_prng(ctx.prng_seed);
+                if (r1 > 0x0CCCU) {
+                    (void)step_prng(ctx.prng_seed);
+                }
+            }
             ent.type_id = 0U;
             ent.active = false;
         }
@@ -328,7 +367,7 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
     case 0x10U:
     case 0x14U: {
         if (!ctx.player_invisible) {
-            const std::int32_t dist = std::abs(ctx.player_x - ent.world_x) + std::abs(ctx.player_y - ent.world_y);
+            const std::int32_t dist = rom_dist_f0d2(ctx.player_x, ctx.player_y, ent.world_x, ent.world_y);
             if (dist <= 0x30) {
                 ent.flags36 &= ~0x02U;
                 ent.flags37 &= ~0x01U;
@@ -354,6 +393,8 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
     case 0x18U: {
         if ((ent.flags37 & 0x02U) != 0U) {
             ent.flags38 &= ~0x0CU;
+            ent.invulnerable = false;
+            ent.height = 16;
             decide_002c_action(ent, entities, ctx, q);
         }
         break;
@@ -402,7 +443,9 @@ void step_town_scheduler(std::vector<NativeEntity>& entities,
         }
 
         if (ent.type_id == 0x002CU) {
-            apply_solid_body_repulsion(actor, ent);
+            if (!ctx.skip_post_move_repulsion) {
+                apply_solid_body_repulsion(actor, ent);
+            }
             step_entity_002c(ent, entities, rom, ctx, sound_queue);
 
             // ROM 0x02E8C8 water channel current & splash flag check

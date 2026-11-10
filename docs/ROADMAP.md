@@ -1,3 +1,31 @@
+# M16.34 Authentic New GPGX Holdout, Blind Native Generalization, and Multi-Frame Hardware State Validation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Fixture Provenance Audit & Independent Evidence Hygiene:
+  * Complete audit of prior fixtures: identified M16.33 reuse of earlier holdouts (`598e62d6...` from M16.12, `8acc108f...` from M16.10, `77d3ba6e...` from M16.20).
+  * Disclosed that `data/standalone-fixtures/frame_779_vdp_state.json` (`b063f302...`) was byte-identical in VRAM to early S8 Beach capture `sequence/frame_779.json`.
+- Genuinely New GPGX Holdout Session & Pre-Modification Freeze:
+  * Captured interactive Town free-controller gameplay session across F775..F1125 using pinned core `ca4be304...` and canonical ROM `eb19bda4...` with active movement, combo slashes, and combat against Guard 11 and Guard 8.
+  * Generated and froze 5 new authentic artifacts before any runtime modification:
+    - Checkpoint: `town_free_control_f775.state` (`28ac7eb5ea89e368657b33d641854d8d6f8b8615c83683672d4d03d4db154ff0`, 1,036,288 B).
+    - Inputs: `town_independent_holdout_inputs.json` (`d54b9277372d5c04e534a9e03939a33ef70b9a84c7c342312b354de513a318d2`, 12,248 B).
+    - Trace: `town_independent_holdout_trace.json` (`c1178cf5cce37bfb221961e751d15fcd813001d5cded78faeaf1ef564d38ec00`, 624,873 B, 351 frames F775..F1125).
+    - Holdout VDP: `town_independent_holdout_vdp.json` (`2eaa70a20e4858850d9021f7a076d8117464fe0e5e49623509e84bcf6962174a`, 921,269 B, 7 frames).
+    - Canonical VDP: `town_canonical_vdp_snapshots.json` (`9bf84f58715509e7fd87dd6f6cad1ee5717cc897e3930ddefb97c4eccaa6e17c`, 921,313 B, 7 frames).
+    - Manifest: `m16_34_holdout_manifest.json` (`FIXTURE_REUSE_DETECTED: false`, `ORIGINAL_CPU_EXECUTION_CONFIRMED: true`).
+- Blind First-Pass Native Replay & General ROM Implementation:
+  * Baseline execution preserved first divergence at F776 (Player (73,200) vs (76,200), Camera (0,118) vs (0,121), PRNG 0x5d94 vs 0x22bc).
+  * Implemented general ROM systems without frame-specific shortcuts: Player State 0x0C 12-tick decel (`0x006624`), 4-axis solid repulsion clamp (`0x009DB0`), deferred damage mailbox (`0x00BEE0`), Town 30Hz combo combat machine (`0x00BF28`), Guard 11 airborne death arc & item drop roll (`0x00E502`, `0x00F476`), integer Euclidean distance (`0x00F0D2`), and attract banner suppression during interactive play (`0x00A7E6`).
+  * Post-fix convergence: Player 350/350, Camera 350/350, HP 350/350, Slot 11 350/350, S19 projectile 350/350, PRNG exact F776..F1012.
+- Multi-Frame Hardware VDP State & Sprite Limits:
+  * Full 64KB VRAM, 128B CRAM, 80B VSRAM differential comparison across 7 canonical frames (F775, F779, F858, F886, F944, F956, F1115) and 7 holdout frames (F775, F809, F825, F833, F893, F941, F1125).
+  * Hardware-visible sprite audit: enforced 20-sprite per scanline limit and viewport clipping.
+- Governance & Dual-Toolchain Verification:
+  * Implemented `tests/m16_34_blind_generalization_test.cpp` (294 lines, <= 500 limit).
+  * Both MinGW Release (12.93s) and MSVC Debug (15.35s) CTests pass 208/220 (12 historical BizHawk failures preserved).
+  * All 957 governed source files <= 500 lines verified via `cmake -P tests/check_file_limits.cmake`.
+  * Zero emulator linkage in `oasis.exe`; `C:/Github/Sega-Thor` strictly untouched.
+
 # M16.33 Independent Gameplay Generalization, Checkpoint-Free Scene Transition, and Hardware-Visible VDP Validation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

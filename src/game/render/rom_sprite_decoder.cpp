@@ -137,8 +137,8 @@ void emit_rom_town_sat(SatPipelineContract& sat,
         sat.emit_rom_piece(x, y, sz, attr);
     }
 
-    // 2. Blinking status bar strips (ROM 0x00A7E6..0x00A8D8)
-    if ((ctx.tick_counter & 0x0080U) == 0U) {
+    // 2. Blinking status bar strips (ROM 0x00A7E6..0x00A8D8) - attract mode demo only
+    if (ctx.attract_banner_enabled && (ctx.tick_counter & 0x0080U) == 0U) {
         if ((ctx.tick_counter & 0x0040U) != 0U) {
             sat.emit_rom_piece(0x00F0, 0x00E4, 0x0C, 0x879BU);
             sat.emit_rom_piece(0x0110, 0x00E4, 0x0C, 0x879FU);

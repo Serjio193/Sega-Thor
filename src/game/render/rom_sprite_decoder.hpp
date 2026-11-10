@@ -32,6 +32,7 @@ struct TownSatFrameContext {
     std::uint16_t player_overlay_3e{0xFFFFU};
     std::uint8_t player_flags36{0x01U};
     std::uint8_t player_shadow_idx{0x10U};
+    bool attract_banner_enabled{false}; // ROM 0x00A7E6: suppressed when $FF1996 == 0 (free controller gameplay)
     std::array<TownEffect, 4> effect_pool_0{};
 };
 
