@@ -1,3 +1,28 @@
+# 2026-11-10 — Milestone M16.33: INDEPENDENT GAMEPLAY GENERALIZATION, CHECKPOINT-FREE SCENE TRANSITION, AND HARDWARE-VISIBLE VDP VALIDATION — Metric Reconciliation (All-Frame Exact Interval 341 F775..F1115, Full 521 Journal: 246 Active-DMA, 275 Zero-DMA); Qualification of Three Independent Gameplay Holdout Traces (Beach 61-Frame Holdout, Beach Alternative v2 61-Frame Trace, Town Death Lifecycle 81-Frame Trace with Sound Dispatch); Authentic Frame 779 Hardware VDP State & VRAM/SAT Audit; Checkpoint-Free Scene Transition from ROM Graphics Decompression; 207/219 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `7227a7ec9c02a7023cab40a9b11f935be3ab908f`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Pinned Town Journal SHA256 `bfecaef539aedb30d2d9dc7e3c1337a3c441cc3cc05e3aed59095d78f3a4edde`.
+  * Metric Reconciliation:
+    - Reconciled metrics across Town encounter: all-frame exact active SAT interval = 341 frames (F775..F1115); canonical journal total = 521 frames (246 active-DMA, 275 zero-DMA); zero per-frame oracle state injection.
+  * Three Independent Gameplay Holdouts Qualified:
+    - Beach 61-frame holdout trace (`598e62d69790e8dd68603567a31e96038ebd2302e8757c868f2c1a644cccca41`): 61/61 exact.
+    - Beach alternative trace v2 with distinct player inputs and camera trajectory (`8acc108fb9d83a2a33d01878f4005ade102562b9c5e618e3985b3aec1f142020`): 61/61 exact.
+    - Town death lifecycle trace F775..F855 (`77d3ba6e3ed5dd1d161f7853a54792e64a48a080c55de6b27842bb6178eaf063`): 81/81 exact with sound call verification.
+  * Hardware VDP State & VRAM/SAT Audit:
+    - Verified authentic VDP state at frame 779 (`b063f302ecbc6af67acc40cb8e676dc8d0a1970245eda9064ce7ada5527e4eb2`): full 64KB VRAM, 128-byte CRAM, 80-byte VSRAM, 20 VDP registers.
+    - Differentiated logical SAT list, DMA buffer, hardware VRAM, and visible sprites; confirmed zero-DMA frames preserve VRAM contents without overwriting.
+  * Checkpoint-Free Scene Transition:
+    - Reconstructed Town transition from ROM: decompressed 7 graphics chunks (64KB each) directly via `decompress_graphics()`, initialized player at `(160, 488)`, camera `(0, 376) -> (0, 288)`, and loaded all 11 scene entities without injected runtime state.
+  * Dual-Toolchain Verification & Governance:
+    - Implemented `tests/m16_33_generalization_test.cpp` and registered in `cmake/project_tests.cmake`.
+    - 207/219 tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved without suppression).
+    - All 956 governed files <= 500 lines verified via `cmake -P tests/check_file_limits.cmake`.
+    - Zero emulator linkage in `oasis.exe`; `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.32: COMPLETE TOWN REPLAY VISUAL QUALIFICATION, PROJECTILE TERMINAL LIFECYCLE, AND SAT/VDP STATE PROVENANCE — Full 521-Frame Town Replay Qualification (F595..F1115 SAT Distribution: 246 Active DMA, 275 Zero-DMA); Projectile Slot 5 Complete Terminal Lifecycle (F858 Type 46 -> F886 Launch Flight z=24 -> F887 First Render sat_cnt=29 -> F944 Ground Landing at (58,140,0) into State 0x0E -> F955 Last Frame -> F956 Despawn/Slot Free on flags37 bit 1); ROM Shadow Table & Projection Disassembly (0x00ACFE/0x00AA7E); Extended Continuous Autonomous SAT Parity F775..F1115 (341 Consecutive Frames); 206/218 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

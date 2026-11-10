@@ -159,6 +159,10 @@ add_test(NAME oasis_m16_31_projectile_flight COMMAND oasis_m16_31_projectile_fli
 add_executable(oasis_m16_32_town_replay_qualification_test tests/m16_32_town_replay_qualification_test.cpp)
 target_link_libraries(oasis_m16_32_town_replay_qualification_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_32_town_replay_qualification COMMAND oasis_m16_32_town_replay_qualification_test)
+
+add_executable(oasis_m16_33_generalization_test tests/m16_33_generalization_test.cpp)
+target_link_libraries(oasis_m16_33_generalization_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_33_generalization COMMAND oasis_m16_33_generalization_test)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
@@ -438,6 +442,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_m16_30_projectile_slot_reuse
         oasis_m16_31_projectile_flight
         oasis_m16_32_town_replay_qualification
+        oasis_m16_33_generalization
         oasis_differential_oracle_comparison
         oasis_sat_pipeline_contract
         oasis_camera_controller

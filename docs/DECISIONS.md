@@ -1,3 +1,28 @@
+# ADR-20261110-M16-33-INDEPENDENT-GAMEPLAY-GENERALIZATION-CHECKPOINT-FREE-SCENE-TRANSITION-AND-HARDWARE-VISIBLE-VDP-VALIDATION — Metric Reconciliation (All-Frame Exact Interval 341 F775..F1115, Full 521 Journal: 246 Active-DMA, 275 Zero-DMA), Qualification of Three Independent Gameplay Holdout Traces (Beach 61, Beach Alt v2 61, Town Death Lifecycle 81), Hardware VDP State & VRAM/SAT Provenance (Frame 779 Fixture Audit), Checkpoint-Free Scene Transition from ROM Graphics Decompression, 207/219 Tests Passing (12 Historical BizHawk Failures Preserved), <=500 Line Source Limit Preserved, Zero Emulator Linkage
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.32 visually qualified the Town replay across F595..F1115 and verified Slot 5 projectile terminal lifecycle through ground impact and slot release.
+2. M16.33 addresses independent gameplay generalization: proving the standalone runtime functions across different gameplay sessions and inputs rather than matching only one reference replay.
+3. Metric reconciliation was required between all-frame exact intervals and the full 521-frame encounter journal.
+4. Hardware VDP state and checkpoint dependencies needed explicit characterization.
+
+**Decisions:**
+1. **Metric Reconciliation:**
+   - Defined all-frame exact active SAT interval across autonomous Town encounter as 341 frames (F775..F1115: 170 zero-DMA logic frames and 170 active-presentation frames, plus F775 checkpoint).
+   - Documented canonical 521-frame journal (F595..F1115) distribution: 246 active-DMA frames and 275 zero-DMA frames.
+2. **Three Independent Gameplay Holdout Traces Qualified:**
+   - Beach 61-frame holdout trace (`598e62d69790e8dd68603567a31e96038ebd2302e8757c868f2c1a644cccca41`): 61/61 exact.
+   - Beach alternative trace v2 with distinct player inputs and camera trajectory (`8acc108fb9d83a2a33d01878f4005ade102562b9c5e618e3985b3aec1f142020`): 61/61 exact.
+   - Town death lifecycle trace F775..F855 (`77d3ba6e3ed5dd1d161f7853a54792e64a48a080c55de6b27842bb6178eaf063`): 81/81 exact with sound call verification.
+3. **Hardware VDP State & VRAM Audit:**
+   - Audited authentic VDP state at frame 779 (`b063f302ecbc6af67acc40cb8e676dc8d0a1970245eda9064ce7ada5527e4eb2`): 64KB VRAM, 128-byte CRAM, 80-byte VSRAM, 20 VDP registers.
+   - Confirmed distinction between logical SAT list, DMA buffer, hardware VRAM, and visible sprites; confirmed zero-DMA frames preserve VRAM contents without overwriting.
+4. **Checkpoint-Free Scene Transition from ROM:**
+   - Verified autonomous transition to Town without checkpoint injection: decompresses 7 graphics chunks (64KB each) directly from ROM via `decompress_graphics()`, sets player position `(160, 488)`, camera `(0, 376) -> (0, 288)`, and initializes all 11 scene entities.
+   - All 207 passing C++ tests verified in MinGW Release and MSVC Debug; 12 historical BizHawk failures preserved without suppression; all 956 source files <= 500 lines.
+
 # ADR-20261110-M16-32-COMPLETE-TOWN-REPLAY-VISUAL-QUALIFICATION-PROJECTILE-TERMINAL-LIFECYCLE-AND-SAT-VDP-STATE-PROVENANCE — Full 521-Frame Town Replay Visual Qualification (F595..F1115 Distribution: 246 Active DMA, 275 Zero-DMA), Projectile Slot 5 Terminal Lifecycle (F944 Landing at (58,140,0) into State 0x0E, F955 Last Frame, F956 Despawn/Slot Release), Autonomous Continuous SAT Parity Extended to 341 Consecutive Frames (F775..F1115), Accurate Hardware VDP/VRAM Provenance Scope, 206/218 Tests Passing (12 Historical BizHawk Failures Preserved), <=500 Line Source Limit Preserved, Zero Emulator Linkage
 **Status:** Accepted
 **Date:** 2026-11-10

@@ -1,3 +1,21 @@
+# M16.33 Independent Gameplay Generalization, Checkpoint-Free Scene Transition, and Hardware-Visible VDP Validation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Baseline Metric Reconciliation & Full Qualification:
+  * Reconciled metrics across Town encounter: all-frame exact active SAT interval = 341 frames (F775..F1115); canonical journal total = 521 frames (246 active-DMA, 275 zero-DMA); zero per-frame oracle state injection.
+- Three Independent Gameplay Holdout Traces Qualified:
+  * Beach 61-frame holdout trace (`598e62d69790e8dd68603567a31e96038ebd2302e8757c868f2c1a644cccca41`): 61/61 exact.
+  * Beach alternative trace v2 with distinct player inputs and camera trajectory (`8acc108fb9d83a2a33d01878f4005ade102562b9c5e618e3985b3aec1f142020`): 61/61 exact.
+  * Town death lifecycle trace F775..F855 (`77d3ba6e3ed5dd1d161f7853a54792e64a48a080c55de6b27842bb6178eaf063`): 81/81 exact with sound call verification.
+- Authentic VDP State & Hardware VRAM/SAT Audit:
+  * Verified authentic VDP state at frame 779 (`b063f302ecbc6af67acc40cb8e676dc8d0a1970245eda9064ce7ada5527e4eb2`): full 64KB VRAM, 128-byte CRAM, 80-byte VSRAM, 20 VDP registers.
+  * Differentiated logical SAT list, DMA buffer, hardware VRAM, and visible sprites; confirmed zero-DMA frames preserve VRAM contents without overwriting.
+- Checkpoint-Free Scene Transition & Resource Loading:
+  * Reconstructed Town transition from ROM: decompressed 7 graphics chunks (64KB each) directly via `decompress_graphics()`, initialized player at `(160, 488)`, camera `(0, 376) -> (0, 288)`, and loaded all 11 scene entities without injected runtime state.
+- Dual-Toolchain Verification & Governance:
+  * Implemented `tests/m16_33_generalization_test.cpp` (233 lines, <= 500 line limit) and registered in `cmake/project_tests.cmake`.
+  * 207/219 C++ tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved); all 956 governed files <= 500 lines; zero emulator linkage in `oasis.exe`; hybrid repository strictly untouched.
+
 # M16.32 Complete Town Replay Visual Qualification, Projectile Terminal Lifecycle, and SAT/VDP State Provenance — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
