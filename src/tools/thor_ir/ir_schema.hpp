@@ -108,6 +108,24 @@ struct IrFunction {
     std::vector<IrBasicBlock> blocks{};
 };
 
+enum class PortableContinuationOutcome : std::uint8_t {
+    CompiledNextPc,
+    ValidUncompiledPc,
+    OriginalCpuException
+};
+
+struct PortableExecutionResult {
+    std::uint32_t d[8]{};
+    std::uint32_t a[8]{};
+    std::uint32_t pc{0};
+    std::uint16_t ccr{0};
+    int cycles{0};
+    std::vector<std::pair<std::uint32_t, std::uint8_t>> writes;
+    bool completed{false};
+    PortableContinuationOutcome outcome{PortableContinuationOutcome::CompiledNextPc};
+    std::uint32_t exception_vector{0};
+};
+
 class IGuestEnvironment {
 public:
     virtual ~IGuestEnvironment() = default;

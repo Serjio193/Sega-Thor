@@ -211,6 +211,28 @@ public:
         sync_boundary_count++;
         sync_pcs.push_back(bpc & kBusAddressMask);
     }
+
+    void enter_interrupt(int level, std::uint32_t vector_pc) {
+        const std::uint16_t old_sr = sr;
+        set_sr(sr | kSrSupervisor);
+        a_regs[7] = (a_regs[7] - 4U) & kBusAddressMask;
+        write_memory(a_regs[7], IrOpSize::Long, pc);
+        a_regs[7] = (a_regs[7] - 2U) & kBusAddressMask;
+        write_memory(a_regs[7], IrOpSize::Word, old_sr);
+        sr = (sr & ~kSrIrqMask) | ((static_cast<std::uint16_t>(level) & 7U) << 8U);
+        pc = vector_pc & kBusAddressMask;
+        total_cycles += 44;
+    }
+
+    void execute_rte() {
+        const auto new_sr = static_cast<std::uint16_t>(read_memory(a_regs[7], IrOpSize::Word));
+        a_regs[7] = (a_regs[7] + 2U) & kBusAddressMask;
+        const auto new_pc = read_memory(a_regs[7], IrOpSize::Long);
+        a_regs[7] = (a_regs[7] + 4U) & kBusAddressMask;
+        set_sr(new_sr);
+        pc = new_pc & kBusAddressMask;
+        total_cycles += 20;
+    }
 };
 
 } // namespace oasis::recompiler::ir

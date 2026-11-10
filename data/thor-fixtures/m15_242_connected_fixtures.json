@@ -1,0 +1,325 @@
+{
+  "schema": "oasis.m15_242.connected_fixtures.v1",
+  "fixtures": [
+    {
+      "test_id": "connected_path1_fast_exit_both",
+      "subsystem": "Raster Scroll & Parallax Plane Coordinator",
+      "caller_pc": "0x00D2B4",
+      "callee_pc": "0x00D344",
+      "reference_cpu_hash": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "entry_registers": {
+        "d0": "0x00000000",
+        "d1": "0x00000000",
+        "a0": "0x00000000",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "sr": "0x2700"
+      },
+      "entry_ram": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00"
+        },
+        {
+          "addr": "0x00FF1654",
+          "val": "0x00"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x00"
+        }
+      ],
+      "input_memory_map": {
+        "rom_start": "0x000000",
+        "rom_size": "0x300000",
+        "work_ram_start": "0xFF0000",
+        "work_ram_size": "0x010000"
+      },
+      "expected_exit_pc": "0x02CAD8",
+      "expected_registers": {
+        "d0": "0x00000000",
+        "d1": "0x00000000",
+        "a0": "0x00000000",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "ccr": "0x04"
+      },
+      "expected_writes": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        }
+      ],
+      "expected_cycles": 94
+    },
+    {
+      "test_id": "connected_path2_plane_a_single_line",
+      "subsystem": "Raster Scroll & Parallax Plane Coordinator",
+      "caller_pc": "0x00D2B4",
+      "callee_pc": "0x00D344",
+      "reference_cpu_hash": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "entry_registers": {
+        "d0": "0x00000000",
+        "d1": "0x00000000",
+        "a0": "0x00000000",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "sr": "0x2700"
+      },
+      "entry_ram": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x01"
+        },
+        {
+          "addr": "0x00FF8038",
+          "val": "0x42"
+        },
+        {
+          "addr": "0x00FF8039",
+          "val": "0x11"
+        },
+        {
+          "addr": "0x00FF1654",
+          "val": "0x00"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x00"
+        }
+      ],
+      "input_memory_map": {
+        "rom_start": "0x000000",
+        "rom_size": "0x300000",
+        "work_ram_start": "0xFF0000",
+        "work_ram_size": "0x010000"
+      },
+      "expected_exit_pc": "0x02CAD8",
+      "expected_registers": {
+        "d0": "0x00004211",
+        "d1": "0x00000000",
+        "a0": "0x00FFA002",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "ccr": "0x05"
+      },
+      "expected_writes": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x02",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA002",
+          "val": "0x42",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA003",
+          "val": "0x11",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        }
+      ],
+      "expected_cycles": 192
+    },
+    {
+      "test_id": "connected_path3_plane_b_single_line",
+      "subsystem": "Raster Scroll & Parallax Plane Coordinator",
+      "caller_pc": "0x00D2B4",
+      "callee_pc": "0x00D344",
+      "reference_cpu_hash": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "entry_registers": {
+        "d0": "0x00000000",
+        "d1": "0x00000000",
+        "a0": "0x00000000",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "sr": "0x2700"
+      },
+      "entry_ram": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x02"
+        },
+        {
+          "addr": "0x00FF803A",
+          "val": "0x88"
+        },
+        {
+          "addr": "0x00FF803B",
+          "val": "0x33"
+        },
+        {
+          "addr": "0x00FF1654",
+          "val": "0x00"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x00"
+        }
+      ],
+      "input_memory_map": {
+        "rom_start": "0x000000",
+        "rom_size": "0x300000",
+        "work_ram_start": "0xFF0000",
+        "work_ram_size": "0x010000"
+      },
+      "expected_exit_pc": "0x02CAD8",
+      "expected_registers": {
+        "d0": "0x00008833",
+        "d1": "0x00000000",
+        "a0": "0x00FFA402",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "ccr": "0x01"
+      },
+      "expected_writes": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x02",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x04",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA402",
+          "val": "0x88",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA403",
+          "val": "0x33",
+          "size": "Byte"
+        }
+      ],
+      "expected_cycles": 192
+    },
+    {
+      "test_id": "connected_path4_both_planes_single_line",
+      "subsystem": "Raster Scroll & Parallax Plane Coordinator",
+      "caller_pc": "0x00D2B4",
+      "callee_pc": "0x00D344",
+      "reference_cpu_hash": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "entry_registers": {
+        "d0": "0x00000000",
+        "d1": "0x00000000",
+        "a0": "0x00000000",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "sr": "0x2700"
+      },
+      "entry_ram": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x03"
+        },
+        {
+          "addr": "0x00FF8038",
+          "val": "0x12"
+        },
+        {
+          "addr": "0x00FF8039",
+          "val": "0x34"
+        },
+        {
+          "addr": "0x00FF803A",
+          "val": "0x56"
+        },
+        {
+          "addr": "0x00FF803B",
+          "val": "0x78"
+        },
+        {
+          "addr": "0x00FF1654",
+          "val": "0x00"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x00"
+        }
+      ],
+      "input_memory_map": {
+        "rom_start": "0x000000",
+        "rom_size": "0x300000",
+        "work_ram_start": "0xFF0000",
+        "work_ram_size": "0x010000"
+      },
+      "expected_exit_pc": "0x02CAD8",
+      "expected_registers": {
+        "d0": "0x00005678",
+        "d1": "0x00000000",
+        "a0": "0x00FFA402",
+        "a6": "0x00FF8000",
+        "a7": "0x00FFFE00",
+        "ccr": "0x01"
+      },
+      "expected_writes": [
+        {
+          "addr": "0x00FF8036",
+          "val": "0x02",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x02",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA002",
+          "val": "0x12",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA003",
+          "val": "0x34",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF8036",
+          "val": "0x00",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FF1657",
+          "val": "0x06",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA402",
+          "val": "0x56",
+          "size": "Byte"
+        },
+        {
+          "addr": "0x00FFA403",
+          "val": "0x78",
+          "size": "Byte"
+        }
+      ],
+      "expected_cycles": 290
+    }
+  ]
+}

@@ -9,16 +9,6 @@
 
 namespace oasis::recompiler::ir {
 
-struct PortableExecutionResult {
-    std::uint32_t d[8]{};
-    std::uint32_t a[8]{};
-    std::uint32_t pc{0};
-    std::uint16_t ccr{0};
-    int cycles{0};
-    std::vector<std::pair<std::uint32_t, std::uint8_t>> writes;
-    bool completed{false};
-};
-
 inline PortableExecutionResult extract_result(const PortableGuestEnvironment& env,
                                              const std::vector<std::pair<std::uint32_t, std::uint8_t>>& writes) {
     PortableExecutionResult res{};

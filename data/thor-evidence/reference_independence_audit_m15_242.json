@@ -1,0 +1,8 @@
+{
+  "schema": "oasis.m15_242.reference_independence_audit.v1",
+  "pinned_core_hash": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "canonical_rom_hash": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "fixture_count": 9,
+  "audit_passed": true,
+  "reference_independence_guaranteed": true
+}

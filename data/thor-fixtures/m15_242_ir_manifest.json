@@ -1,0 +1,40 @@
+{
+  "schema": "oasis.m15_242.ir_manifest.v1",
+  "functions": {
+    "pilot_00e682": {
+      "entry_pc": "0x00E682",
+      "end_pc": "0x00E6A8",
+      "blocks": 6,
+      "sha256": "33e8dbfeac6d5bb43242b192cdfbecab91d9771b83f5079293bf0dd3f63fa4eb",
+      "path": "src/tools/thor_ir/pilot_00e682_ir.json"
+    },
+    "recompiled_016294": {
+      "entry_pc": "0x016294",
+      "end_pc": "0x0162CE",
+      "blocks": 6,
+      "sha256": "220203a2fa1fd36fcce1e52dceb8b54b366956b288b85944c7ed0eb31cd6616d",
+      "path": "src/tools/thor_ir/recompiled_016294_ir.json"
+    },
+    "recompiled_006e7a": {
+      "entry_pc": "0x006E7A",
+      "end_pc": "0x006E88",
+      "blocks": 3,
+      "sha256": "14c39c9880d01e6752d2265c4450ad7507d70c8ab15e3228700855b187876261",
+      "path": "src/tools/thor_ir/recompiled_006e7a_ir.json"
+    },
+    "connected_00d2b4": {
+      "entry_pc": "0x00D2B4",
+      "end_pc": "0x00D342",
+      "blocks": 16,
+      "sha256": "9f7c1c0ab5e3236a24c1a9ee1613f000af441c8b92dada4aeeb1ebda2c610b29",
+      "path": "src/tools/thor_ir/connected_00d2b4_ir.json"
+    },
+    "connected_00d344": {
+      "entry_pc": "0x00D344",
+      "end_pc": "0x00D396",
+      "blocks": 10,
+      "sha256": "8faa505bbd443c720becfee03741f25b7f0af08e063b192cfbb8689f6f6dd90b",
+      "path": "src/tools/thor_ir/connected_00d344_ir.json"
+    }
+  }
+}

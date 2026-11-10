@@ -1,3 +1,56 @@
+# ADR-20261110-M15-242-CONNECTED-REAL-ROM-PORTABLE-RECOMPILATION-AND-SAFE-NATIVE-CONTINUATIONS — Connected Real-ROM Portable Recompilation, Independent CPU Oracle Hardening, and Safe Native Continuations; Translation of Connected Raster Scroll & Parallax Coordinator Subsystem (0x00D2B4 Caller -> BSR 0x00D344 Callee -> RTS -> RTS, 61 Distinct Original M68000 Instructions Across 26 Basic Blocks) via Thor IR Pipeline into C++20 (src/tools/thor_ir/generated/connected_portable_routines.hpp); Formal Reference Independence Audit in tools/audit_reference_independence_m15_242.py and data/thor-evidence/reference_independence_audit_m15_242.json Against Pinned Core ca4be304... and Canonical ROM eb19bda4...; Typed Safe Mixed Continuation Contract (PortableContinuationOutcome: CompiledNextPc, ValidUncompiledPc, OriginalCpuException) and Hardware Interrupt Preemption / RTE Support in src/tools/thor_ir/ir_schema.hpp and src/tools/thor_ir/portable_guest_env.hpp; Validated in tests/portable_mixed_continuation_contract_test.cpp Across Native->Native, Native->Uncompiled, Uncompiled->Native, Nested Call Stack Conservation, Interrupt Preemption/RTE, and CPU Exceptions (100% PASS); Three-Way Differential Proof in tests/thor_ir_connected_diff_test.cpp Achieving 100% Bit-Exact Equivalence Across CPU Reference Fixtures, Mode A Verification Stepper, and Mode B Portable C++ Across 4 Connected Execution Paths + 3 Mutation Tests; Variable-Cycle Arithmetic Integration in tests/m68k_variable_cycle_integration_test.cpp Validating Booth Multiplier (38..70 Cycles) and Non-Restoring Division (108..140 Cycles, 14 Overflow, 42 Div0); Decompressor 0x003820 Quarantine Retained; Baseline Hybrid Execution Invariant Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-242 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING); Three-Scenario Differential Qualification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Certified Evidence Receipt data/thor-evidence/combined-clusters-qualification-m15-242-20261110.json Verified by ReceiptVerifier (3 Checked Files, 48 Stream Artifacts Valid, 0 Rejections); Connected Microbenchmark Demonstrating Over 9.2 Million Subsystem Executions/Sec; Standalone Worktree C:/Github/Sega-Thor-Standalone Preserved Untouched (STRICTLY READ-ONLY)
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. Following M15.241, the portable recompiler framework successfully proved isolated single-routine translation, 3 MiB canonical ROM mapping, and variable-cycle arithmetic timing. However, executing real games requires connected control flow:
+   - Routines do not execute in isolation; callers invoke subroutines via `BSR`/`JSR` pushing return addresses onto the guest stack `(A7)`, and subroutines return via `RTS` popping those return addresses back into `PC`.
+   - The system must prevent duplicate stack pushes, duplicate RTS pops, repeated memory writes, lost CCR updates, and PC rewind when transitioning between compiled and uncompiled execution domains.
+   - Reference independence must be rigorously audited to guarantee that fixtures represent authentic M68000 CPU hardware behavior from the pinned GPGX core (`ca4be304...`) without deriving expected outputs from the generated implementations.
+   - A real connected gameplay subsystem containing $\ge 50$ distinct instructions across caller and callee with shared RAM state, loops, conditional branches, and guest stack effects must be compiled and verified bit-for-bit.
+
+**Decisions:**
+1. **Connected Subsystem Selection (Raster Scroll & Parallax Coordinator):**
+   - Selected the connected Raster Scroll Subsystem:
+     - Caller: `0x00D2B4..0x00D342` (Plane B / Viewport Scroll Coordinator, 38 instructions, 16 basic blocks).
+     - Callee: `0x00D344..0x00D396` (Plane A Scroll Updater, 23 instructions, 10 basic blocks).
+     - Total: 61 distinct original M68000 instructions ($\ge 50$ target achieved).
+     - Connected via authentic `BSR.W 0x00D344` pushing `0x00D2B8` to `(A7)`, callee `RTS` returning to `0x00D2B8`, and caller `RTS` returning to the top-level dispatch loop (`0x02CAD8`).
+     - Directly manipulates Plane A and B raster scroll buffers in Work RAM (`$FFA000..$FFA800`), `$FF1654`, and `$FF1657`.
+2. **Reference Independence Audit:**
+   - Implemented `tools/audit_reference_independence_m15_242.py` and emitted `data/thor-evidence/reference_independence_audit_m15_242.json`.
+   - Confirmed pinned core SHA256 (`ca4be304...`), canonical ROM SHA256 (`eb19bda4...`), and verified all 9 frozen fixtures from M15.241 against authentic CPU execution boundaries, cycle origins, and register/RAM snapshots.
+3. **Safe Mixed Continuation Contract Architecture:**
+   - Formalized `PortableContinuationOutcome` (`CompiledNextPc`, `ValidUncompiledPc`, `OriginalCpuException`) and unified `PortableExecutionResult` in `src/tools/thor_ir/ir_schema.hpp`.
+   - Added `enter_interrupt()` and `execute_rte()` to `src/tools/thor_ir/portable_guest_env.hpp` implementing exact M68000 interrupt stack frames (PC Long + SR Word pushed to `SSP`, IRQ mask updated, cycle budget incremented by 44 cycles; RTE restoring SR and PC in 20 cycles).
+   - Validated in `tests/portable_mixed_continuation_contract_test.cpp`:
+     - Native $\to$ Native connected calls
+     - Native $\to$ Uncompiled target continuation (clean halt with untouched guest stack)
+     - Uncompiled $\to$ Native direct entry
+     - Nested call stack conservation across 3 call depths without stack leaks
+     - Interrupt preemption and RTE resumption idempotence
+     - Original CPU exceptions (misaligned Word/Long address error vector 3, unmapped bus error vector 2, read-only ROM write rejection).
+4. **Automatic Connected IR Generation & C++ Implementation:**
+   - Extended `tools/thor_recompiler/ir_builder.py` with `MOVEQ`, `LEA`, `DBRA`, and `CMPA`.
+   - Emitted IR JSON manifests: `connected_00d2b4_ir.json`, `connected_00d344_ir.json`, and `data/thor-fixtures/m15_242_ir_manifest.json`.
+   - Emitted clean, portable C++ implementations in `src/tools/thor_ir/generated/connected_portable_routines.hpp` (436 lines $\le 500$) supporting Mode A (verification stepper) and Mode B (portable native C++).
+5. **Three-Way Differential Verification:**
+   - Emitted 4 frozen fixtures in `data/thor-fixtures/m15_242_connected_fixtures.json` and `.hpp` spanning fast-exit, Plane A single line, Plane B single line, and both planes active.
+   - Verified in `tests/thor_ir_connected_diff_test.cpp`: 100% bit-exact agreement across Pinned CPU Reference, Mode A, and Mode B across registers, CCR, cycles, guest stack, and RAM writes, with 3 mutation tests confirming detection of corrupted return PCs, altered RAM, and misaligned stack pointers.
+6. **Variable-Cycle Arithmetic Integration:**
+   - Validated Booth multiplier ($38..70$ cycles) and non-restoring integer division ($108..140$ cycles) in `tests/m68k_variable_cycle_integration_test.cpp` across zero, signed, overflow, divide-by-zero, max/min operands, and verified data-dependent cycle deltas.
+7. **Gameplay A/B Qualification & Baseline Preservation:**
+   - Hybrid runner baseline maintained strictly unchanged at 196 active production helpers (`ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Three-scenario qualification (Scenarios C, A, B) verified 24/24 stream parity with 0 contract faults.
+   - Emitted and verified `data/thor-evidence/combined-clusters-qualification-m15-242-20261110.json` via `ReceiptVerifier`.
+   - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed 100% untouched.
+
+**Consequences:**
+- The portable recompiler successfully executed connected ROM control flow with real guest calls and returns (`BSR`/`RTS`) across 61 distinct instructions.
+- Safe mixed continuation guarantees clean yield/resume at uncompiled boundaries without stack corruption or repeated writes.
+- Mode A and Mode B verified 100% bit-exact against independent CPU hardware reference data.
+- Decompressor quarantine preserved; hybrid baseline intact.
+
 # ADR-20261109-M15-241-PORTABLE-THOR-IR-HARDENING-FULL-ROM-MEMORY-MODEL-AND-VARIABLE-CYCLE-EXECUTION — Portable Thor IR Hardening, Full ROM Memory Model, Real M68000 Differential Proof and Variable-Cycle Execution; Canonical 3 MiB ROM Mapping (0x000000..0x2FFFFF) in src/tools/thor_ir/portable_guest_env.hpp with Read-Only Protection, RAM Mirroring (0xE00000..0xFFFFFF), 24-Bit Address Wraparound, Word/Long Alignment Exceptions (Address Error Vector 3), Unmapped Bus Errors (Vector 2), and MMIO Stubs; Verified in tests/portable_memory_map_test.cpp Across Boundary Reads (0x000000, 0x1FFFFE, 0x200000, 0x2FFFFE, 0x300000); Three-Way Reference Independence with Pinned Core ca4be304... Generating 9 Authoritative Frozen Fixtures in data/thor-fixtures/m15_241_cpu_reference_fixtures.json and .hpp; Multi-Routine Automatic Real-ROM to Thor IR Recompilation for 0x00E682 (Camera Coordinator), 0x016294 (Entity AI Patrol Timer), and 0x006E7A (Event Flag Tester) with Generated Mode A and Mode B Backends in src/tools/thor_ir/generated/portable_routines.hpp; Bit-Exact Differential Parity Verified in tests/thor_ir_three_way_diff_test.cpp (100% PASS Across CPU Reference, Mode A, Mode B, and Mutation Tests); Complete M68000 Guest CPU State with Dual Supervisor/User Stacks (SSP/USP) Automatically Swapped on SR Supervisor Bit Toggle, and Instruction-Boundary Continuation Contract with Yield/Resume Before/After Branch, Before/After Memory Write, Caller/Callee Transitions, and RTS in tests/portable_continuation_contract_test.cpp; Variable-Cycle Arithmetic Timing Calibration in tests/m68k_variable_cycle_arithmetic_test.cpp Explaining Booth Multiplier (38..70 Cycles) and Non-Restoring DIVU (108..140 Cycles) Sub-Cycle Timing Drift; Decompressor 0x003820 Resumable Execution Contract in tests/m68k_decompressor_resumption_test.cpp Preserving Bitstream Pointer and Bit Accumulator Across VBlank IRQ; Idle Loop Disjoint Classification Audit in tools/audit_idle_loop_classification.py and data/thor-evidence/idle_loop_audit_m15_241.json Reconciling 0x008ACA..0x008AD0 (5,327,384 Steps) and 0x008B72..0x008B7A (4,402,749 Steps) Totaling Exact 9,730,133 Idle Wait Steps; Mode B Portable C++ Backend Demonstrating 2.53x Speedup Over Mode A Verification Stepper (3.15 ms vs 7.95 ms across 100,000 Iterations); Three-Scenario Differential Qualification Across Scenarios C (1,800 frames), A (1,592 frames), and B (600 frames): 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Certified Evidence Receipt data/thor-evidence/combined-clusters-qualification-m15-241-20261109.json Verified by ReceiptVerifier (3 Checked Files, 48 Stream Artifacts Valid, 0 Rejections); Production Baseline Maintained at 196 Active Helpers (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867, Slots 222-242 Default Disabled, ORACLE_OWNER_APPROVAL = PENDING); Standalone Worktree C:/Github/Sega-Thor-Standalone Preserved Untouched (STRICTLY READ-ONLY)
 **Status:** Accepted
 **Date:** 2026-11-09

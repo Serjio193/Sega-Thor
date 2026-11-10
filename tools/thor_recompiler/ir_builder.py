@@ -137,6 +137,34 @@ def translate_instruction_to_ir(insn: DecodedInstruction) -> IrInstructionJson:
                 ops.append(IrOperandJson(kind="MemoryDisplacement", size=ir_size, reg_kind="Address", reg_index=op.reg, displacement=op.val))
         return IrInstructionJson(original_pc=pc, opcode="Add", size=ir_size, operands=ops, base_cycles=insn.base_cycles, updates_ccr=True)
 
+    if insn.mnemonic == "MOVEQ":
+        ops = [
+            IrOperandJson(kind="Immediate", size="Long", imm_val=insn.ops[0].val),
+            IrOperandJson(kind="Register", size="Long", reg_kind="Data", reg_index=insn.ops[1].reg)
+        ]
+        return IrInstructionJson(original_pc=pc, opcode="Move", size="Long", operands=ops, base_cycles=insn.base_cycles, updates_ccr=True)
+
+    if insn.mnemonic == "LEA":
+        ops = []
+        for op in insn.ops:
+            if op.kind == "abs_l":
+                ops.append(IrOperandJson(kind="AbsoluteAddress", size="Long", imm_val=op.val))
+            elif op.kind == "disp_a":
+                ops.append(IrOperandJson(kind="MemoryDisplacement", size="Long", reg_kind="Address", reg_index=op.reg, displacement=op.val))
+            elif op.kind == "reg_a":
+                ops.append(IrOperandJson(kind="Register", size="Long", reg_kind="Address", reg_index=op.reg))
+            elif op.kind == "imm":
+                ops.append(IrOperandJson(kind="Immediate", size="Long", imm_val=op.val))
+        return IrInstructionJson(original_pc=pc, opcode="Lea", size="Long", operands=ops, base_cycles=insn.base_cycles, updates_ccr=False)
+
+    if insn.mnemonic == "DBRA":
+        target = insn.branch_target if insn.branch_target is not None else 0
+        ops = [IrOperandJson(kind="Register", size="Word", reg_kind="Data", reg_index=insn.ops[0].reg)]
+        return IrInstructionJson(
+            original_pc=pc, opcode="Dbra", size="Word", operands=ops,
+            target_pc=target, base_cycles=insn.base_cycles, updates_ccr=False, is_sync_boundary=True
+        )
+
     if insn.mnemonic in ("CMP", "CMPI", "CMPA"):
         ops = []
         for op in insn.ops:
@@ -144,6 +172,8 @@ def translate_instruction_to_ir(insn: DecodedInstruction) -> IrInstructionJson:
                 ops.append(IrOperandJson(kind="Immediate", size=ir_size, imm_val=op.val))
             elif op.kind == "reg_d":
                 ops.append(IrOperandJson(kind="Register", size=ir_size, reg_kind="Data", reg_index=op.reg))
+            elif op.kind == "reg_a":
+                ops.append(IrOperandJson(kind="Register", size=ir_size, reg_kind="Address", reg_index=op.reg))
         return IrInstructionJson(original_pc=pc, opcode="Compare", size=ir_size, operands=ops, base_cycles=insn.base_cycles, updates_ccr=True)
 
     if insn.mnemonic == "CLR":
@@ -252,7 +282,9 @@ def main():
     targets = [
         ("pilot_00e682", 0x00E682, 0x00E6A8, "src/tools/thor_ir/pilot_00e682_ir.json"),
         ("recompiled_016294", 0x016294, 0x0162CE, "src/tools/thor_ir/recompiled_016294_ir.json"),
-        ("recompiled_006e7a", 0x006E7A, 0x006E88, "src/tools/thor_ir/recompiled_006e7a_ir.json")
+        ("recompiled_006e7a", 0x006E7A, 0x006E88, "src/tools/thor_ir/recompiled_006e7a_ir.json"),
+        ("connected_00d2b4", 0x00D2B4, 0x00D342, "src/tools/thor_ir/connected_00d2b4_ir.json"),
+        ("connected_00d344", 0x00D344, 0x00D396, "src/tools/thor_ir/connected_00d344_ir.json")
     ]
 
     manifests = {}
@@ -272,10 +304,10 @@ def main():
         }
         print(f"Generated Thor IR for {name} -> {out_path} ({len(fn.blocks)} blocks)")
 
-    out_man = Path("data/thor-fixtures/m15_241_ir_manifest.json")
+    out_man = Path("data/thor-fixtures/m15_242_ir_manifest.json")
     out_man.parent.mkdir(parents=True, exist_ok=True)
     with open(out_man, "w", encoding="utf-8") as f:
-        json.dump({"schema": "oasis.m15_241.ir_manifest.v1", "functions": manifests}, f, indent=2)
+        json.dump({"schema": "oasis.m15_242.ir_manifest.v1", "functions": manifests}, f, indent=2)
     print(f"Emitted IR manifest -> {out_man}")
 
 

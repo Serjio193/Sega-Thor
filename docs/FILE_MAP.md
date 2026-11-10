@@ -4307,3 +4307,18 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/audit_idle_loop_classification.py — Forensic audit script analyzing disjoint idle polling loops in Beyond Oasis (M15.241).
 - tools/benchmark_m15_241.py — Performance benchmark measuring Mode A verification stepper vs Mode B portable C++ execution throughput and speedup (M15.241).
 - tools/generate_m15_241_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.241 (M15.241).
+- src/tools/thor_ir/connected_00d2b4_ir.json — Direct ROM-extracted Thor IR JSON representation for Raster Scroll Coordinator caller routine 0x00D2B4 (M15.242).
+- src/tools/thor_ir/connected_00d344_ir.json — Direct ROM-extracted Thor IR JSON representation for Plane A Scroll Updater callee routine 0x00D344 (M15.242).
+- src/tools/thor_ir/generated/connected_portable_routines.hpp — Generated C++20 routines for connected subsystem 0x00D2B4 -> BSR 0x00D344 implementing Mode A and Mode B execution backends (M15.242).
+- data/thor-fixtures/m15_242_connected_fixtures.json — Authoritative frozen CPU hardware reference execution fixtures generated for connected subsystem across 4 execution paths (M15.242).
+- data/thor-fixtures/m15_242_connected_fixtures.hpp — C++ header embedding the 4 frozen connected reference execution fixtures for fast, standalone test execution (M15.242).
+- data/thor-fixtures/m15_242_ir_manifest.json — Metadata manifest indexing all generated Thor IR modules including connected routines (M15.242).
+- data/thor-evidence/reference_independence_audit_m15_242.json — Audit report validating reference CPU fixture provenance against pinned core ca4be304... and canonical ROM eb19bda4... (M15.242).
+- data/thor-evidence/combined-clusters-qualification-m15-242-20261110.json — Certified machine evidence receipt for M15.242 qualifying connected real-ROM recompilation and 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.242).
+- tests/portable_mixed_continuation_contract_test.cpp — Comprehensive unit test verifying safe mixed continuation contract, native->native, native->uncompiled, uncompiled->native, nested returns, interrupt preemption/RTE, and CPU exceptions (M15.242).
+- tests/thor_ir_connected_diff_test.cpp — Three-way differential verification test achieving 100% bit-exact parity across CPU Reference, Mode A, and Mode B across 4 connected paths + 3 mutation tests (M15.242).
+- tests/m68k_variable_cycle_integration_test.cpp — Integration test validating variable-cycle arithmetic formulas for Booth MULS (38..70 cycles) and non-restoring DIVU (108..140 cycles) across edge operands (M15.242).
+- tools/audit_reference_independence_m15_242.py — Script auditing reference CPU fixture provenance against pinned core and canonical ROM (M15.242).
+- tools/generate_m15_242_connected_fixtures.py — Generator sampling authentic connected execution fixtures from pinned core ca4be304... (M15.242).
+- tools/benchmark_m15_242.py — Performance benchmark measuring Mode A vs Mode B on connected raster scroll workload across 100,000 iterations (M15.242).
+- tools/generate_m15_242_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.242 (M15.242).
