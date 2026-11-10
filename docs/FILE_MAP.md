@@ -1,3 +1,12 @@
+# M15.252 Bounded Basic-Block Fusion, Dispatch Amortization, and Measured Gameplay Speedup
+
+- `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp` — bounded basic-block execution adapter (`HybridM68kFusedBus250` / `step_m68k_portable_m15250_fused`) implementing `slice_yield_` scheduler boundary yielding.
+- `tools/run_m15_252_fused_ab.py` — nine-configuration (`RUN_A`..`RUN_I`) six-scenario qualification harness.
+- `data/thor-evidence/m15_252_fused_ab_summary.json` — qualification evidence report confirming 100% bit-exact stream matching across 432 stream files and 31 checkpoints.
+- `tools/benchmark_m15_252.py` / `data/thor-evidence/benchmark_m15_252_report.json` — microbenchmark and dispatch amortization attribution (1.40x isolated speedup, -58.82% dispatch entries).
+- `tools/generate_m15_252_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-252-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_252_BOUNDED_BASIC_BLOCK_FUSION_HANDOFF.md` — standalone track handoff for basic-block and routine-level fusion.
+
 # M15.251 Real Gameplay Speedup, Native Coverage Accounting, and Hybrid Dispatch Cost Forensics
 
 - `docs/handoffs/STANDALONE_M15_251_DISPATCH_FORENSICS_HANDOFF.md` — standalone track handoff detailing verified ROM findings, calling conventions, and dispatch overhead forensics.

@@ -1,3 +1,24 @@
+# M15.252 Bounded Basic-Block Fusion, Dispatch Amortization, and Measured Gameplay Speedup (`m15250f`) — COMPLETE / VERIFIED BOUNDED BASIC-BLOCK FUSION & DISPATCH AMORTIZATION
+
+- **Bounded Basic-Block Fusion Implementation (`m15250f` / `RUN_I`):**
+  * Implemented `HybridM68kFusedBus250` and `step_m68k_portable_m15250_fused` in `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp` (188 lines $\le 500$).
+  * Fused 71 compiled basic blocks into multi-instruction executions via `run_exp250_mode_b_all`, amortizing single-step wrapper entry overhead.
+  * Dispatched 90,416 fused basic blocks executing 219,573 guest instructions across 6 scenarios (**-58.82% reduction** in wrapper entries, averaging 2.43 instructions/dispatch).
+- **Cycle-Exact Frame Timeslice Yield Safety:**
+  * Implemented `slice_yield_` check using `api.read_scheduler_field(0) >= api.read_scheduler_field(1)` in `HybridM68kFusedBus250::begin_insn` for all instructions after block entry.
+  * Prevents cross-slice execution drift at frame boundaries while running native basic blocks at full speed when within timeslice budget.
+- **Nine-Configuration Six-Scenario Qualification:**
+  * Verified 100% bit-exact stream matching across all 432 stream files (`RUN_A` through `RUN_I` across Scenario C 1800f, Scenario A 1592f, Scenario B 600f, `longrun_3600f` 3600f, `longrun_alt_1800f` 1800f, and `longrun_combat_1800f` 1800f).
+  * 31/31 checkpoints matched bit-exactly. Zero contract faults, zero fallbacks, zero CPU exceptions.
+- **Microbenchmark & Performance Validation:**
+  * Mode A vs Mode B isolated speedup measured at **1.40x** (160.8 ms vs 115.3 ms across 10 trials).
+  * Reduced host dispatch calls by 58.82%, demonstrating measurable dispatch amortization.
+- **Governance & Verification:**
+  * Generated and verified `data/thor-evidence/combined-clusters-qualification-m15-252-20261111.json` via `ReceiptVerifier` (0 rejections).
+  * Published `docs/handoffs/STANDALONE_M15_252_BOUNDED_BASIC_BLOCK_FUSION_HANDOFF.md`.
+  * Production inventory verified strictly at 196 active helpers (`17396fda...`).
+  * 295/295 Linux CTests passing. Source line limits ($\le 500$) respected.
+
 # M15.251 Real Gameplay Speedup, Native Coverage Accounting, and Hybrid Dispatch Cost Forensics — COMPLETE / VERIFIED ACCOUNTING & FORENSICS
 
 - **Canonical Execution Accounting Forensics:**

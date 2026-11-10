@@ -49,22 +49,24 @@ def main() -> int:
 
     step_code = m249_step.replace(
         '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"',
-        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"',
+        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_fused_hybrid_adapter.hpp"',
         1,
     )
     m_arr = re.search(r"std::array<bool,\s*(\d+)>\s*g_enabled\{\};", step_code)
     old_sz = int(m_arr.group(1))
-    new_sz = old_sz + 1
+    new_sz = old_sz + 2
     step_code = step_code.replace(m_arr.group(0), f"std::array<bool, {new_sz}> g_enabled{{}};", 1)
     step_code = step_code.replace(
         "#undef CHK",
-        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250, {old_sz});\n#undef CHK",
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250, {old_sz});\n"
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_fused, {old_sz + 1});\n#undef CHK",
         1,
     )
     step_code = step_code.replace(
         "oasis::recompiler::ir::reset_exp249_dispatch_hybrid_metrics();",
         f'oasis::recompiler::ir::reset_exp249_dispatch_hybrid_metrics();\n'
         f'    g_enabled[{old_sz}] = step_helper_selected_exact(enabled_helpers, "m15250p");\n'
+        f'    g_enabled[{old_sz + 1}] = step_helper_selected_exact(enabled_helpers, "m15250f");\n'
         f"    oasis::recompiler::ir::reset_exp250_dispatch_hybrid_metrics();",
         1,
     )
@@ -89,7 +91,8 @@ def main() -> int:
                        << "  \\"valid_uncompiled_exits\\": " << m250.valid_uncompiled_exits << ",\\n"
                        << "  \\"cpu_exceptions\\": " << m250.cpu_exceptions << ",\\n"
                        << "  \\"contract_faults\\": " << m250.contract_faults << ",\\n"
-                       << "  \\"completed_returns\\": " << m250.completed_returns << "\\n"
+                       << "  \\"completed_returns\\": " << m250.completed_returns << ",\\n"
+                       << "  \\"fused_blocks\\": " << m250.fused_blocks << "\\n"
                        << "}\\n";
             }
         }

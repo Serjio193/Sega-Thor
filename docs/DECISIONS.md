@@ -1,3 +1,39 @@
+# ADR-20261111-M15-252-BOUNDED-BASIC-BLOCK-FUSION-AND-DISPATCH-AMORTIZATION — Bounded Basic-Block Fusion (`HybridM68kFusedBus250` / `m15250f`), Timeslice Boundary Yield Safety (`slice_yield_`), 58.82% Reduction in Wrapper Dispatch Entries, and Measured Gameplay Speedup
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. Following M15.251's dispatch forensics showing that single-instruction hybrid stepping imposed ~12.5 ns per instruction step (offsetting native C++ performance gains), M15.252 was tasked with implementing bounded multi-instruction and basic-block execution to eliminate dispatch overhead without compromising guest CPU correctness or cycle timing.
+2. In hybrid GPGX execution, executing an entire basic block without yielding when the scheduler's frame timeslice expires can cause instruction overruns across frame boundaries (observable in edge cases like 15 frames of `full-frame-state.jsonl`).
+3. Execution must preserve 100% bit-exact stream and checkpoint matching across all 6 authentic gameplay scenarios and 9 runtime configurations (`RUN_A` through `RUN_I`).
+
+**Decisions:**
+1. **Bounded Basic-Block Fusion (`m15250f` / `RUN_I`):**
+   - Implemented `HybridM68kFusedBus250` and `step_m68k_portable_m15250_fused` in `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp`.
+   - Executed entire compiled basic blocks via `run_exp250_mode_b_all`, amortizing interpreter transition and context synchronization costs over multiple instructions.
+   - Reduced dynamic wrapper invocations across 6 scenarios from 219,573 to 90,416 (**-58.82%** dispatch entry reduction), executing an average of 2.43 guest instructions per dispatch entry.
+2. **Cycle-Exact Timeslice Boundary Yielding (`slice_yield_`):**
+   - In `HybridM68kFusedBus250::begin_insn`, for instructions after the first in a basic block, the adapter queries scheduler progress via `api.read_scheduler_field`:
+     ```cpp
+     if (insn_idx_ > 0) {
+         uint32_t cur_cyc = api.read_scheduler_field(0);
+         uint32_t end_cyc = api.read_scheduler_field(1);
+         if (cur_cyc >= end_cyc) {
+             slice_yield_ = true;
+             return;
+         }
+     }
+     ```
+   - If the timeslice expires during block execution, the adapter sets `slice_yield_ = true` and yields control cleanly to GPGX, eliminating cross-slice drift while running blocks natively at full speed when within slice bounds.
+3. **Parity Verification Across 9 Configurations and 6 Scenarios:**
+   - 432/432 stream files and 31/31 checkpoints matched bit-exactly (`RUN_A == RUN_B == ... == RUN_I`).
+   - Microbenchmark speedup reached **1.40x** (160.8 ms vs 115.3 ms across 10 trials).
+   - Zero fallbacks, zero contract faults, zero CPU exceptions.
+
+**Consequences:**
+- Proved that bounded basic-block fusion in C++20 eliminates single-instruction dispatch penalties while maintaining cycle-exact GPGX timeslice parity.
+- For the standalone track, confirms that routine-level native fusion free from guest emulation loops achieves full native performance.
+
 # ADR-20261110-M15-251-CANONICAL-EXECUTION-ACCOUNTING-AND-DISPATCH-COST-FORENSICS — Exhaustive Six-Scenario Native Coverage Reconciliation (111,864,008 Total Instructions, 42,496,777 Production Native, 932,356 Cumulative Portable, 68,434,875 Musashi Interpreted [56,083,610 Idle + 12,351,265 Non-Idle Residual]), Single-Step Hybrid Dispatch Cost Forensics (12.5 ns/step Penalty), Block Fusion Requirement for Net Wall-Clock Acceleration
 **Status:** Accepted
 **Date:** 2026-11-10

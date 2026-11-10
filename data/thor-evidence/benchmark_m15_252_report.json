@@ -1,0 +1,93 @@
+{
+  "schema": "thor.benchmark_report.v2",
+  "milestone": "M15.252",
+  "isolated_microbenchmark": {
+    "mode_a_portable_step_interpreter": {
+      "min_ms": 15.204,
+      "median_ms": 15.466,
+      "mean_ms": 15.468,
+      "p95_ms": 15.885,
+      "max_ms": 15.885
+    },
+    "mode_b_compiled_block_runner": {
+      "min_ms": 10.892,
+      "median_ms": 11.011,
+      "mean_ms": 11.031,
+      "p95_ms": 11.296,
+      "max_ms": 11.296
+    },
+    "speedup_ratio_median": 1.4,
+    "trials": 10,
+    "total_iterations": 800000,
+    "parity_verified": true
+  },
+  "integrated_gameplay_performance": {
+    "scenario_c": {
+      "run_g_sec": 18.424,
+      "run_h_sec": 18.571,
+      "run_i_sec": 19.924,
+      "run_g_vs_run_i_speedup": 0.9247,
+      "run_h_vs_run_i_speedup": 0.9321,
+      "fused_blocks": 14281,
+      "fused_guest_steps": 37213
+    },
+    "scenario_a": {
+      "run_g_sec": 15.63,
+      "run_h_sec": 15.581,
+      "run_i_sec": 14.934,
+      "run_g_vs_run_i_speedup": 1.0466,
+      "run_h_vs_run_i_speedup": 1.0434,
+      "fused_blocks": 21850,
+      "fused_guest_steps": 49266
+    },
+    "scenario_b": {
+      "run_g_sec": 6.776,
+      "run_h_sec": 6.927,
+      "run_i_sec": 6.078,
+      "run_g_vs_run_i_speedup": 1.1148,
+      "run_h_vs_run_i_speedup": 1.1396,
+      "fused_blocks": 247,
+      "fused_guest_steps": 834
+    },
+    "longrun_3600f": {
+      "run_g_sec": 35.234,
+      "run_h_sec": 37.105,
+      "run_i_sec": 38.09,
+      "run_g_vs_run_i_speedup": 0.925,
+      "run_h_vs_run_i_speedup": 0.9741,
+      "fused_blocks": 17660,
+      "fused_guest_steps": 44947
+    },
+    "longrun_alt_1800f": {
+      "run_g_sec": 17.748,
+      "run_h_sec": 18.012,
+      "run_i_sec": 16.622,
+      "run_g_vs_run_i_speedup": 1.0677,
+      "run_h_vs_run_i_speedup": 1.0837,
+      "fused_blocks": 22097,
+      "fused_guest_steps": 50100
+    },
+    "longrun_combat_1800f": {
+      "run_g_sec": 17.154,
+      "run_h_sec": 17.917,
+      "run_i_sec": 18.27,
+      "run_g_vs_run_i_speedup": 0.939,
+      "run_h_vs_run_i_speedup": 0.9807,
+      "fused_blocks": 14281,
+      "fused_guest_steps": 37213
+    }
+  },
+  "dispatch_amortization": {
+    "single_step_wrapper_invocations": 219573,
+    "fused_block_wrapper_invocations": 90416,
+    "wrapper_invocation_reduction_percent": 58.82,
+    "average_instructions_per_dispatch": 2.43
+  },
+  "integrated_totals": {
+    "run_g_total_sec": 110.966,
+    "run_h_total_sec": 114.114,
+    "run_i_total_sec": 113.917,
+    "run_g_vs_run_i_speedup": 0.9741,
+    "run_h_vs_run_i_speedup": 1.0017
+  }
+}

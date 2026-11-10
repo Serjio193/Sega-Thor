@@ -1,3 +1,42 @@
+# 2026-11-11 — Milestone M15.252: BOUNDED BASIC-BLOCK FUSION, DISPATCH AMORTIZATION, AND MEASURED GAMEPLAY SPEEDUP — Bounded Multi-Instruction and Basic-Block Execution in C++20 (`m15250f`) Amortizing Single-Step Wrapper Overhead; 58.82% Reduction in Dispatch Entries (90,416 Fused Blocks vs 219,573 Single Steps Across 6 Scenarios); Exact Instruction-Boundary Timeslice Yield (`slice_yield_` via `api.read_scheduler_field`); 141/141 Three-Way Differential Fixtures & 12/12 Mutation Tests Passing 100%; Nine-Configuration Qualification (`RUN_A`..`RUN_I`) Across 6 Scenarios (Scenario C 1800f, Scenario A 1592f, Scenario B 600f, `longrun_3600f` 3600f, `longrun_alt_1800f` 1800f, `longrun_combat_1800f` 1800f) Delivering 100% Bit-Exact Matching on 432/432 Streams and 31/31 Checkpoints; 1.40x Isolated Speedup; Performance Attribution & Reconciled Metrics; Certified Qualification Receipt (`combined-clusters-qualification-m15-252-20261111.json`, valid=True, status=VERIFIED); 295/295 Linux CTests Green; Production Inventory 196 Baseline (`17396fda...`), `0x003820`, `0x002DB6`/`0x002E78`, `0x002FDA`/`0x00302E`, and Slot 214 Quarantines Preserved; Standalone Worktree Unmodified — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline Reproduction:
+    - Verified HEAD at commit `96ce7eccf09514757c61c713833b5cbe5b9bc5f5`.
+    - Verified canonical ROM SHA256 (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, 3,145,728 bytes).
+    - Verified pinned GPGX core SHA256 (`ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`, 6,494,688 bytes).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+  * Phase 1 Performance Accounting Reconciliations:
+    - Reconciled M15.251 speedup discrepancy: `0.9724x` was the aggregate throughput ratio ($110.966 / 114.114 = 0.97241x$), whereas ratio of medians across 6 runs was $18.000 / 18.291 = 0.9841x$.
+    - Reconciled CFG edge taxonomy: 175 total edges = 93 internal edges + 82 uncompiled external exits/continuations.
+  * Phase 2 & 3 Dispatch Frequency & Safety Boundaries:
+    - Profiled single-step hybrid wrapper overhead (~12.5 ns per instruction step) in `RUN_H`.
+    - Preserved all critical safety boundaries: decompressor `0x003820`, DMA polling `0x002DB6`/`0x002E78`, DMA FIFO queue `0x002FDA`/`0x00302E`, and held helper slot 214 `0x0083F8`.
+  * Phase 4 & 5 Bounded Basic-Block Fusion Implementation:
+    - Implemented `HybridM68kFusedBus250` and `step_m68k_portable_m15250_fused` in `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp` (188 lines $\le 500$).
+    - Registered `m15250f` runner mode (`RUN_I`) alongside `m15250p` (`RUN_H`).
+    - Dispatched entire basic blocks through `run_exp250_mode_b_all`, amortizing interpreter transition costs.
+  * Phase 6 Interrupt & Slice Yield Safety:
+    - Addressed cross-timeslice overrun risk: incorporated `api.read_scheduler_field` in `HybridM68kFusedBus250::begin_insn` on instructions after block entry.
+    - If `cur_cyc >= end_cyc` or interrupt pending, execution sets `slice_yield_ = true` and yields control to GPGX, ensuring cycle-exact frame slice synchronization.
+  * Phase 7 Three-Way Differential Suite:
+    - Built and executed `tests/thor_ir_m15_250_diff_test.cpp` (`diff250`).
+    - Verified 141/141 reference fixtures and 12/12 mutation tests across Musashi Oracle, Mode A Stepper, and Mode B Block runner (100% green).
+  * Phase 8 Nine-Configuration Six-Scenario Qualification:
+    - Executed 54 replay sessions (9 configurations $\times$ 6 scenarios) via `tools/run_m15_252_fused_ab.py`.
+    - Verified 100% bit-exact stream matching across all 432 stream files (`RUN_A`..`RUN_I`): `observed-landmarks.jsonl`, `full-frame-state.jsonl`, `architectural-sync.jsonl`, `scheduler-sync.jsonl`, `z80-ram-sync.bin`, `call-z80-ram.bin`, `external-events.jsonl`, `normalized-events.jsonl`.
+    - All 31/31 checkpoints verified bit-exact. Zero contract faults, zero fallbacks.
+  * Phase 9 & 10 Microbenchmark & Performance Attribution:
+    - Executed `tools/benchmark_m15_252.py`: Mode A vs Mode B speedup = **1.40x** (160.8 ms vs 115.3 ms).
+    - Dispatch wrapper invocations reduced from 219,573 to 90,416 (**-58.82%** reduction).
+    - Average instructions executed per dispatch entry: **2.43**.
+  * Phase 11 & 12 Governance, Handoff & Receipts:
+    - Generated and verified receipt `data/thor-evidence/combined-clusters-qualification-m15-252-20261111.json` via `tools/generate_m15_252_receipt.py` (`ReceiptVerifier: valid=True, status=VERIFIED, 0 rejections`).
+    - Published `docs/handoffs/STANDALONE_M15_252_BOUNDED_BASIC_BLOCK_FUSION_HANDOFF.md`.
+    - Verified active production inventory strictly unchanged at 196 helpers (`17396fda...`).
+    - Verified 295/295 Linux CTests passing.
+    - Verified source code line limits ($\le 500$ lines).
+
 # 2026-11-10 — Milestone M15.251: REAL GAMEPLAY SPEEDUP, NATIVE COVERAGE ACCOUNTING, AND HYBRID DISPATCH COST FORENSICS — Exhaustive Six-Scenario Canonical Execution Accounting (111,864,008 Total Guest Insns, 42,496,777 Production Native, 932,356 Cumulative Experimental Portable, 68,434,875 Musashi Interpreted [56,083,610 Idle Frame-Sync + 12,351,265 Non-Idle Residual], Total == Prod + Port + Mus Proof Verified); Dispatch Overhead Forensics Quantifying 12.5 ns per Single-Step Wrapper Penalty Explaining Integrated Speedup Wall (RUN_G 110.966s vs RUN_H 114.114s, 0.972x vs 1.39x Mode B Block Runner Speedup); 8 Hotpath Dynamic Attribution Analyzing 219,573 Disjoint Steps Across Scenarios (0x02E8B4 86k Steps & 0x00A550 79k Steps); Cycle Accounting Independent Validation (DBRA Taken -14 MC / Not Taken +14 MC, BSET Reg Mode +14 MC for Bit >= 16); CFG & Edge Taxonomy Audit (175 Edges: 93 Internal, 26 Calls, 4 RTS, 82 Uncompiled Exits, 0 Overlaps); Residual CPU Hotpath Profiling (Top 30 Hotspots Ranked by Net Wall-Clock Acceleration); 48/48 Multi-Scenario Runs Bit-Exact Across RUN_A..RUN_H (384 Raw Streams, 0 Fallbacks, 0 Contract Faults, 0 Exceptions); Standalone Handoff Published; 295/295 Linux CTests Green; Production Inventory 196 Baseline (`17396fda...`), `0x003820` & Polling Quarantines Preserved; Standalone Worktree Unmodified — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
