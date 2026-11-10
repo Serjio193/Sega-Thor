@@ -1,0 +1,677 @@
+{
+  "schema": "oasis.m15_247.callee-cfg-source-map.v1",
+  "milestone": "M15.247",
+  "instruction_count": 128,
+  "block_count": 56,
+  "edge_summary": {
+    "total_edges": 84,
+    "conditional_edges": 30,
+    "unconditional_edges": 6,
+    "dynamic_edges": 0,
+    "dynamic_compiled_edges": 0,
+    "dynamic_uncompiled_edges": 0,
+    "call_edges": 11,
+    "return_edges": 12,
+    "uncompiled_exit_edges": 25
+  },
+  "omitted_instruction_count": 0,
+  "production_overlap_count": 0,
+  "m15_244_overlap_count": 0,
+  "m15_245_overlap_count": 0,
+  "m15_246_overlap_count": 0,
+  "generated_files": [
+    "exp247_dispatch_common.hpp",
+    "exp247_dispatch_part0.hpp",
+    "exp247_dispatch_part1.hpp",
+    "exp247_dispatch_part2.hpp",
+    "exp247_dispatch_part3.hpp",
+    "exp247_dispatch_part4.hpp",
+    "exp247_dispatch_router_p0.hpp",
+    "exp247_dispatch_router.hpp",
+    "exp247_dispatch_mode_b_p0.hpp",
+    "exp247_dispatch_mode_b.hpp",
+    "exp247_dispatch_portable_routines.hpp"
+  ],
+  "source_map": {
+    "0x005CD8": {
+      "ir_op_id": "IR247_0000_0x005CD8",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "4..12"
+    },
+    "0x005DE4": {
+      "ir_op_id": "IR247_0001_0x005DE4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "13..20"
+    },
+    "0x005DEA": {
+      "ir_op_id": "IR247_0002_0x005DEA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "21..30"
+    },
+    "0x005DF0": {
+      "ir_op_id": "IR247_0003_0x005DF0",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "31..37"
+    },
+    "0x005DF4": {
+      "ir_op_id": "IR247_0004_0x005DF4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "38..47"
+    },
+    "0x005DFA": {
+      "ir_op_id": "IR247_0005_0x005DFA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "48..54"
+    },
+    "0x005DFC": {
+      "ir_op_id": "IR247_0006_0x005DFC",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "55..62"
+    },
+    "0x005E04": {
+      "ir_op_id": "IR247_0007_0x005E04",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "63..70"
+    },
+    "0x005E06": {
+      "ir_op_id": "IR247_0008_0x005E06",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "71..80"
+    },
+    "0x005E0A": {
+      "ir_op_id": "IR247_0009_0x005E0A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "81..87"
+    },
+    "0x005E0C": {
+      "ir_op_id": "IR247_0010_0x005E0C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "88..94"
+    },
+    "0x005E10": {
+      "ir_op_id": "IR247_0011_0x005E10",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "95..103"
+    },
+    "0x005E14": {
+      "ir_op_id": "IR247_0012_0x005E14",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "104..110"
+    },
+    "0x005E16": {
+      "ir_op_id": "IR247_0013_0x005E16",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "111..119"
+    },
+    "0x005E1A": {
+      "ir_op_id": "IR247_0014_0x005E1A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "120..126"
+    },
+    "0x005E20": {
+      "ir_op_id": "IR247_0015_0x005E20",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "127..134"
+    },
+    "0x005E26": {
+      "ir_op_id": "IR247_0016_0x005E26",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "135..144"
+    },
+    "0x005E2A": {
+      "ir_op_id": "IR247_0017_0x005E2A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "145..153"
+    },
+    "0x005E30": {
+      "ir_op_id": "IR247_0018_0x005E30",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "154..160"
+    },
+    "0x005E32": {
+      "ir_op_id": "IR247_0019_0x005E32",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "161..167"
+    },
+    "0x005E34": {
+      "ir_op_id": "IR247_0020_0x005E34",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "168..176"
+    },
+    "0x005E36": {
+      "ir_op_id": "IR247_0021_0x005E36",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "177..184"
+    },
+    "0x005E3C": {
+      "ir_op_id": "IR247_0022_0x005E3C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "185..191"
+    },
+    "0x005E40": {
+      "ir_op_id": "IR247_0023_0x005E40",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "192..199"
+    },
+    "0x005E44": {
+      "ir_op_id": "IR247_0024_0x005E44",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "200..211"
+    },
+    "0x005E48": {
+      "ir_op_id": "IR247_0025_0x005E48",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "212..218"
+    },
+    "0x005E4C": {
+      "ir_op_id": "IR247_0026_0x005E4C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "219..225"
+    },
+    "0x005E4E": {
+      "ir_op_id": "IR247_0027_0x005E4E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "226..235"
+    },
+    "0x005E52": {
+      "ir_op_id": "IR247_0028_0x005E52",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "236..243"
+    },
+    "0x005E58": {
+      "ir_op_id": "IR247_0029_0x005E58",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part0.hpp",
+      "cpp_lines": "244..255"
+    },
+    "0x005E5C": {
+      "ir_op_id": "IR247_0030_0x005E5C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "4..15"
+    },
+    "0x005E60": {
+      "ir_op_id": "IR247_0031_0x005E60",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "16..23"
+    },
+    "0x005F8A": {
+      "ir_op_id": "IR247_0032_0x005F8A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "24..32"
+    },
+    "0x005F8E": {
+      "ir_op_id": "IR247_0033_0x005F8E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "33..37"
+    },
+    "0x0060B2": {
+      "ir_op_id": "IR247_0034_0x0060B2",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "38..44"
+    },
+    "0x0060B4": {
+      "ir_op_id": "IR247_0035_0x0060B4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "45..52"
+    },
+    "0x0060B8": {
+      "ir_op_id": "IR247_0036_0x0060B8",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "53..59"
+    },
+    "0x0060BA": {
+      "ir_op_id": "IR247_0037_0x0060BA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "60..67"
+    },
+    "0x0060BE": {
+      "ir_op_id": "IR247_0038_0x0060BE",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "68..74"
+    },
+    "0x0060C0": {
+      "ir_op_id": "IR247_0039_0x0060C0",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "75..82"
+    },
+    "0x0060C4": {
+      "ir_op_id": "IR247_0040_0x0060C4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "83..89"
+    },
+    "0x0060C6": {
+      "ir_op_id": "IR247_0041_0x0060C6",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "90..94"
+    },
+    "0x0066C4": {
+      "ir_op_id": "IR247_0042_0x0066C4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "95..102"
+    },
+    "0x006770": {
+      "ir_op_id": "IR247_0043_0x006770",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "103..110"
+    },
+    "0x006844": {
+      "ir_op_id": "IR247_0044_0x006844",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "111..119"
+    },
+    "0x006848": {
+      "ir_op_id": "IR247_0045_0x006848",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "120..128"
+    },
+    "0x00684C": {
+      "ir_op_id": "IR247_0046_0x00684C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "129..140"
+    },
+    "0x006850": {
+      "ir_op_id": "IR247_0047_0x006850",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "141..152"
+    },
+    "0x006854": {
+      "ir_op_id": "IR247_0048_0x006854",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "153..164"
+    },
+    "0x006858": {
+      "ir_op_id": "IR247_0049_0x006858",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "165..176"
+    },
+    "0x00685E": {
+      "ir_op_id": "IR247_0050_0x00685E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "177..184"
+    },
+    "0x006862": {
+      "ir_op_id": "IR247_0051_0x006862",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "185..196"
+    },
+    "0x006868": {
+      "ir_op_id": "IR247_0052_0x006868",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "197..204"
+    },
+    "0x00686C": {
+      "ir_op_id": "IR247_0053_0x00686C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "205..211"
+    },
+    "0x00686E": {
+      "ir_op_id": "IR247_0054_0x00686E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "212..219"
+    },
+    "0x006874": {
+      "ir_op_id": "IR247_0055_0x006874",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "220..227"
+    },
+    "0x006908": {
+      "ir_op_id": "IR247_0056_0x006908",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "228..238"
+    },
+    "0x00690C": {
+      "ir_op_id": "IR247_0057_0x00690C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "239..246"
+    },
+    "0x006912": {
+      "ir_op_id": "IR247_0058_0x006912",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part1.hpp",
+      "cpp_lines": "247..258"
+    },
+    "0x006918": {
+      "ir_op_id": "IR247_0059_0x006918",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "4..10"
+    },
+    "0x00691E": {
+      "ir_op_id": "IR247_0060_0x00691E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "11..17"
+    },
+    "0x006922": {
+      "ir_op_id": "IR247_0061_0x006922",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "18..25"
+    },
+    "0x006928": {
+      "ir_op_id": "IR247_0062_0x006928",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "26..33"
+    },
+    "0x00692E": {
+      "ir_op_id": "IR247_0063_0x00692E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "34..40"
+    },
+    "0x006934": {
+      "ir_op_id": "IR247_0064_0x006934",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "41..48"
+    },
+    "0x00693A": {
+      "ir_op_id": "IR247_0065_0x00693A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "49..56"
+    },
+    "0x006C3A": {
+      "ir_op_id": "IR247_0066_0x006C3A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "57..67"
+    },
+    "0x006C40": {
+      "ir_op_id": "IR247_0067_0x006C40",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "68..74"
+    },
+    "0x006C44": {
+      "ir_op_id": "IR247_0068_0x006C44",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "75..82"
+    },
+    "0x006D58": {
+      "ir_op_id": "IR247_0069_0x006D58",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "83..90"
+    },
+    "0x006D5E": {
+      "ir_op_id": "IR247_0070_0x006D5E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "91..97"
+    },
+    "0x006D64": {
+      "ir_op_id": "IR247_0071_0x006D64",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "98..105"
+    },
+    "0x006F82": {
+      "ir_op_id": "IR247_0072_0x006F82",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "106..113"
+    },
+    "0x006F88": {
+      "ir_op_id": "IR247_0073_0x006F88",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "114..118"
+    },
+    "0x006FB6": {
+      "ir_op_id": "IR247_0074_0x006FB6",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "119..128"
+    },
+    "0x006FBA": {
+      "ir_op_id": "IR247_0075_0x006FBA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "129..140"
+    },
+    "0x006FBE": {
+      "ir_op_id": "IR247_0076_0x006FBE",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "141..152"
+    },
+    "0x006FC2": {
+      "ir_op_id": "IR247_0077_0x006FC2",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "153..160"
+    },
+    "0x00739A": {
+      "ir_op_id": "IR247_0078_0x00739A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "161..169"
+    },
+    "0x00739C": {
+      "ir_op_id": "IR247_0079_0x00739C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "170..179"
+    },
+    "0x0073A0": {
+      "ir_op_id": "IR247_0080_0x0073A0",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "180..186"
+    },
+    "0x0073A2": {
+      "ir_op_id": "IR247_0081_0x0073A2",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "187..195"
+    },
+    "0x0073A6": {
+      "ir_op_id": "IR247_0082_0x0073A6",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "196..202"
+    },
+    "0x0073A8": {
+      "ir_op_id": "IR247_0083_0x0073A8",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "203..208"
+    },
+    "0x0073AA": {
+      "ir_op_id": "IR247_0084_0x0073AA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "209..218"
+    },
+    "0x0073B0": {
+      "ir_op_id": "IR247_0085_0x0073B0",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "219..227"
+    },
+    "0x0073B4": {
+      "ir_op_id": "IR247_0086_0x0073B4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "228..234"
+    },
+    "0x0073B8": {
+      "ir_op_id": "IR247_0087_0x0073B8",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "235..241"
+    },
+    "0x0073BA": {
+      "ir_op_id": "IR247_0088_0x0073BA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "242..247"
+    },
+    "0x0073BC": {
+      "ir_op_id": "IR247_0089_0x0073BC",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part2.hpp",
+      "cpp_lines": "248..256"
+    },
+    "0x0073C0": {
+      "ir_op_id": "IR247_0090_0x0073C0",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "4..11"
+    },
+    "0x0073C6": {
+      "ir_op_id": "IR247_0091_0x0073C6",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "12..19"
+    },
+    "0x0073CC": {
+      "ir_op_id": "IR247_0092_0x0073CC",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "20..30"
+    },
+    "0x0073D2": {
+      "ir_op_id": "IR247_0093_0x0073D2",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "31..37"
+    },
+    "0x0073D6": {
+      "ir_op_id": "IR247_0094_0x0073D6",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "38..45"
+    },
+    "0x0074FC": {
+      "ir_op_id": "IR247_0095_0x0074FC",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "46..52"
+    },
+    "0x007500": {
+      "ir_op_id": "IR247_0096_0x007500",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "53..59"
+    },
+    "0x007504": {
+      "ir_op_id": "IR247_0097_0x007504",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "60..67"
+    },
+    "0x00750A": {
+      "ir_op_id": "IR247_0098_0x00750A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "68..75"
+    },
+    "0x00750E": {
+      "ir_op_id": "IR247_0099_0x00750E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "76..83"
+    },
+    "0x007512": {
+      "ir_op_id": "IR247_0100_0x007512",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "84..91"
+    },
+    "0x00751A": {
+      "ir_op_id": "IR247_0101_0x00751A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "92..105"
+    },
+    "0x00751E": {
+      "ir_op_id": "IR247_0102_0x00751E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "106..113"
+    },
+    "0x00792A": {
+      "ir_op_id": "IR247_0103_0x00792A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "114..119"
+    },
+    "0x007930": {
+      "ir_op_id": "IR247_0104_0x007930",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "120..129"
+    },
+    "0x007936": {
+      "ir_op_id": "IR247_0105_0x007936",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "130..136"
+    },
+    "0x007938": {
+      "ir_op_id": "IR247_0106_0x007938",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "137..144"
+    },
+    "0x007942": {
+      "ir_op_id": "IR247_0107_0x007942",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "145..151"
+    },
+    "0x007944": {
+      "ir_op_id": "IR247_0108_0x007944",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "152..158"
+    },
+    "0x007946": {
+      "ir_op_id": "IR247_0109_0x007946",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "159..166"
+    },
+    "0x00794A": {
+      "ir_op_id": "IR247_0110_0x00794A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "167..173"
+    },
+    "0x00794C": {
+      "ir_op_id": "IR247_0111_0x00794C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "174..181"
+    },
+    "0x007956": {
+      "ir_op_id": "IR247_0112_0x007956",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "182..189"
+    },
+    "0x00795A": {
+      "ir_op_id": "IR247_0113_0x00795A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "190..200"
+    },
+    "0x007960": {
+      "ir_op_id": "IR247_0114_0x007960",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "201..207"
+    },
+    "0x007962": {
+      "ir_op_id": "IR247_0115_0x007962",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "208..215"
+    },
+    "0x007968": {
+      "ir_op_id": "IR247_0116_0x007968",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "216..222"
+    },
+    "0x00796C": {
+      "ir_op_id": "IR247_0117_0x00796C",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "223..227"
+    },
+    "0x007970": {
+      "ir_op_id": "IR247_0118_0x007970",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "228..235"
+    },
+    "0x0079EE": {
+      "ir_op_id": "IR247_0119_0x0079EE",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "236..242"
+    },
+    "0x0079F4": {
+      "ir_op_id": "IR247_0120_0x0079F4",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "243..250"
+    },
+    "0x0079FA": {
+      "ir_op_id": "IR247_0121_0x0079FA",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part3.hpp",
+      "cpp_lines": "251..258"
+    },
+    "0x0079FC": {
+      "ir_op_id": "IR247_0122_0x0079FC",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "4..11"
+    },
+    "0x007A00": {
+      "ir_op_id": "IR247_0123_0x007A00",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "12..20"
+    },
+    "0x007A04": {
+      "ir_op_id": "IR247_0124_0x007A04",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "21..27"
+    },
+    "0x007A06": {
+      "ir_op_id": "IR247_0125_0x007A06",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "28..34"
+    },
+    "0x007A0A": {
+      "ir_op_id": "IR247_0126_0x007A0A",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "35..41"
+    },
+    "0x007A0E": {
+      "ir_op_id": "IR247_0127_0x007A0E",
+      "cpp_file": "src/tools/thor_ir/generated_m15_247/exp247_dispatch_part4.hpp",
+      "cpp_lines": "42..49"
+    }
+  }
+}

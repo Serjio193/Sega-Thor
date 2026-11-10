@@ -1,0 +1,429 @@
+{
+  "schema": "oasis.m15_247.ranked-callee-candidates.v1",
+  "milestone": "M15.247",
+  "selected_roots": {
+    "0x005CD8": "state_16_entity_action",
+    "0x005DE4": "state_15_entity_action",
+    "0x005F8A": "state_48_entity_action",
+    "0x0060B2": "state_54_entity_action",
+    "0x0066C4": "state_58_entity_action",
+    "0x006770": "state_55_entity_action",
+    "0x006844": "state_25_entity_action",
+    "0x006908": "state_26_entity_action",
+    "0x006C3A": "state_9_entity_action",
+    "0x006D58": "state_37_entity_action",
+    "0x006F82": "state_49_entity_action",
+    "0x006FB6": "state_50_entity_action",
+    "0x00739A": "state_41_entity_action",
+    "0x0074FC": "state_42_entity_action",
+    "0x00792A": "state_57_entity_action",
+    "0x0079EE": "state_29_entity_action",
+    "0x0079FC": "state_10_entity_action"
+  },
+  "compiled_windows": [
+    [
+      "0x005DE4",
+      "0x005E60"
+    ],
+    [
+      "0x006C3A",
+      "0x006C46"
+    ],
+    [
+      "0x00792A",
+      "0x007972"
+    ],
+    [
+      "0x006844",
+      "0x006864"
+    ],
+    [
+      "0x006908",
+      "0x006924"
+    ],
+    [
+      "0x00739A",
+      "0x0073D0"
+    ],
+    [
+      "0x0074FC",
+      "0x007510"
+    ],
+    [
+      "0x0060B2",
+      "0x0060CE"
+    ],
+    [
+      "0x0079FC",
+      "0x007A10"
+    ],
+    [
+      "0x0079EE",
+      "0x0079F8"
+    ],
+    [
+      "0x006D58",
+      "0x006D64"
+    ],
+    [
+      "0x005F8A",
+      "0x005F92"
+    ],
+    [
+      "0x006F82",
+      "0x006F8A"
+    ],
+    [
+      "0x006FB6",
+      "0x006FC2"
+    ],
+    [
+      "0x006770",
+      "0x006776"
+    ],
+    [
+      "0x0066C4",
+      "0x0066CA"
+    ],
+    [
+      "0x005CD8",
+      "0x005CE0"
+    ]
+  ],
+  "cfg_summary": {
+    "compiled_instructions": 128,
+    "basic_blocks": 56,
+    "edges": 84,
+    "edge_counts": {
+      "total_edges": 84,
+      "conditional_edges": 30,
+      "unconditional_edges": 6,
+      "dynamic_edges": 0,
+      "dynamic_compiled_edges": 0,
+      "dynamic_uncompiled_edges": 0,
+      "call_edges": 11,
+      "return_edges": 12,
+      "uncompiled_exit_edges": 25
+    },
+    "production_overlap_count": 0,
+    "m15_244_overlap_count": 0,
+    "m15_245_overlap_count": 0,
+    "m15_246_overlap_count": 0
+  },
+  "candidates_and_verdicts": [
+    {
+      "pc": "0x005DE4",
+      "status": "SELECTED_UNOWNED_HANDLER",
+      "current_owner": "M15_247_PORTABLE",
+      "rationale": "Entity state index 15 (offset 0x1E); 30 entries in authentic C+A+B.",
+      "compiled_static_insns": 30,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 30,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0
+      }
+    },
+    {
+      "pc": "0x00792A",
+      "status": "SELECTED_UNOWNED_HANDLER",
+      "current_owner": "M15_247_PORTABLE",
+      "rationale": "Entity state index 57 (offset 0x72); 24 entries in authentic C+A+B.",
+      "compiled_static_insns": 16,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 24,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0
+      }
+    },
+    {
+      "pc": "0x006C3A",
+      "status": "SELECTED_UNOWNED_HANDLER",
+      "current_owner": "M15_247_PORTABLE",
+      "rationale": "Entity state index 9 (offset 0x12); direct bridge to M15.245 0x0062CC.",
+      "compiled_static_insns": 3,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0
+      }
+    },
+    {
+      "pc": "0x002FDA",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Palette interpolation math helper; 32 longrun entries, 43,168 dynamic steps.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 32,
+        "dynamic_steps": 43168,
+        "unique_pcs": 26
+      }
+    },
+    {
+      "pc": "0x00302E",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Palette fade loop; 66 longrun entries, 46,728 dynamic steps; bridges to prod 0x003064.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 66,
+        "dynamic_steps": 46728,
+        "unique_pcs": 26
+      }
+    },
+    {
+      "pc": "0x0085E2",
+      "status": "REJECTED_PRODUCTION_OWNED",
+      "current_owner": "PRODUCTION_HELPER(m68k_0085e2_instruction_step.cpp)",
+      "rationale": "Already owned by active production helper m68k_0085e2_instruction_step.cpp.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0
+      }
+    },
+    {
+      "pc": "0x007A28",
+      "status": "DEFERRED_LOW_ROI",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Entity state idx 29: 20 C entries, low dynamic cycle yield compared to math/callees.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 20,
+        "scenario_a": 30,
+        "scenario_b": 10,
+        "longrun_3600f": 20
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0
+      }
+    },
+    {
+      "pc": "0x0032E8",
+      "status": "DEFERRED_BUSY_WAIT",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "4-insn VBlank spin-wait loop in 0x00307A; not gameplay logic.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 155,
+        "dynamic_steps": 1500194,
+        "unique_pcs": 4
+      }
+    },
+    {
+      "pc": "0x003820",
+      "status": "QUARANTINED_DECOMPRESSOR",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Nemesis/LZ decompressor explicitly quarantined by AGENTS.md.",
+      "compiled_static_insns": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 24,
+        "dynamic_steps": 698168,
+        "unique_pcs": 288
+      }
+    }
+  ],
+  "boundary_exits": [
+    {
+      "from_pc": "0x0060B2",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0079FC",
+      "to_pc": "0x00BE98",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x005F8E",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "PRODUCTION_HELPER(m68k_0062cc_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x006C40",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "PRODUCTION_HELPER(m68k_0062cc_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x006F88",
+      "to_pc": "0x005E78",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "M15_245_PORTABLE"
+    },
+    {
+      "from_pc": "0x0079F4",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x005DF0",
+      "to_pc": "0x005F14",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0060B8",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x007504",
+      "to_pc": "0x00E2D4",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_00e2d4_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x0060BE",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0073D2",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "PRODUCTION_HELPER(m68k_0062cc_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x007956",
+      "to_pc": "0x00BCC4",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "M15_246_PORTABLE"
+    },
+    {
+      "from_pc": "0x005E0A",
+      "to_pc": "0x005E62",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0060C4",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x00685E",
+      "to_pc": "0x009C40",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x007946",
+      "to_pc": "0x00BCEA",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "M15_246_PORTABLE"
+    },
+    {
+      "from_pc": "0x005E0C",
+      "to_pc": "0x005F14",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0060C6",
+      "to_pc": "0x0060A8",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x006934",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x007962",
+      "to_pc": "0x008910",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_008910_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x007968",
+      "to_pc": "0x007972",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x00796C",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "PRODUCTION_HELPER(m68k_0062cc_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x005E20",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x0073C0",
+      "to_pc": "0x00F396",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x005E52",
+      "to_pc": "0x00E2D4",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_00e2d4_instruction_step.cpp)"
+    }
+  ]
+}

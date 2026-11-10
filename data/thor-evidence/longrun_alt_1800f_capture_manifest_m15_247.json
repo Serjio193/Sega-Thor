@@ -1,0 +1,16 @@
+{
+  "schema": "oasis.m15_247.longrun-alt-1800f-capture-manifest.v1",
+  "milestone": "M15.247",
+  "map_region": "TOWN_VILLAGE_EXTENDED",
+  "initial_state_sha256": "6228c27ed09e7623fbe4664fb841331fba963b527337ec019abed40bbf0c3c26",
+  "input_journal_sha256": "eab5006456e7369935315f41e8141e88e13866482c5521a7f628b8edf09bd55a",
+  "landmarks_sha256": "cb0d03f6e932a935dae7f0177687db494919eba8f9a23dbf3358e8f80053909c",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "input_provenance": {
+    "frames_0_to_1591": "PINNED_SCENARIO_A_PREFIX",
+    "frames_1592_to_1799": "INJECTED_SCRIPTED"
+  },
+  "frame_count": 1800,
+  "poll_count": 1800
+}

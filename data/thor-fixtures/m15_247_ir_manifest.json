@@ -1,0 +1,4133 @@
+{
+  "schema": "thor.ir.m15_247.callees.v1",
+  "milestone": "M15.247",
+  "name": "m15_247_high_freq_callees",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "entry_roots": {
+    "0x005CD8": "state_16_entity_action",
+    "0x005DE4": "state_15_entity_action",
+    "0x005F8A": "state_48_entity_action",
+    "0x0060B2": "state_54_entity_action",
+    "0x0066C4": "state_58_entity_action",
+    "0x006770": "state_55_entity_action",
+    "0x006844": "state_25_entity_action",
+    "0x006908": "state_26_entity_action",
+    "0x006C3A": "state_9_entity_action",
+    "0x006D58": "state_37_entity_action",
+    "0x006F82": "state_49_entity_action",
+    "0x006FB6": "state_50_entity_action",
+    "0x00739A": "state_41_entity_action",
+    "0x0074FC": "state_42_entity_action",
+    "0x00792A": "state_57_entity_action",
+    "0x0079EE": "state_29_entity_action",
+    "0x0079FC": "state_10_entity_action"
+  },
+  "instruction_count": 128,
+  "block_count": 56,
+  "edge_summary": {
+    "total_edges": 84,
+    "conditional_edges": 30,
+    "unconditional_edges": 6,
+    "dynamic_edges": 0,
+    "dynamic_compiled_edges": 0,
+    "dynamic_uncompiled_edges": 0,
+    "call_edges": 11,
+    "return_edges": 12,
+    "uncompiled_exit_edges": 25
+  },
+  "blocks": [
+    {
+      "block_id": "BB_00_0x005CD8",
+      "start_pc": "0x005CD8",
+      "end_pc": "0x005CDC",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0000_0x005CD8",
+          "pc": "0x005CD8",
+          "raw_words": [
+            3,
+            57
+          ],
+          "mnemonic": "ORI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 57,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 3,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "ORI.b #0x39, D3"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_01_0x005DE4",
+      "start_pc": "0x005DE4",
+      "end_pc": "0x005DF4",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0001_0x005DE4",
+          "pc": "0x005DE4",
+          "raw_words": [
+            15740,
+            16,
+            74
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 16,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 74,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x10, 74(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0002_0x005DEA",
+          "pc": "0x005DEA",
+          "raw_words": [
+            3182,
+            76,
+            42
+          ],
+          "mnemonic": "CMPI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 76,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 42,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "CMPI.w #0x4C, 42(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0003_0x005DF0",
+          "pc": "0x005DF0",
+          "raw_words": [
+            26368,
+            290
+          ],
+          "mnemonic": "BEQ",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24340,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005F14",
+          "cycles": 10,
+          "disasm": "BEQ.w 0x005F14"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_02_0x005DF4",
+      "start_pc": "0x005DF4",
+      "end_pc": "0x005DFC",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0004_0x005DF4",
+          "pc": "0x005DF4",
+          "raw_words": [
+            3182,
+            4,
+            48
+          ],
+          "mnemonic": "CMPI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 48,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "CMPI.w #0x4, 48(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0005_0x005DFA",
+          "pc": "0x005DFA",
+          "raw_words": [
+            25098
+          ],
+          "mnemonic": "BHI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24070,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E06",
+          "cycles": 10,
+          "disasm": "BHI.b 0x005E06"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_03_0x005DFC",
+      "start_pc": "0x005DFC",
+      "end_pc": "0x005E06",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0006_0x005DFC",
+          "pc": "0x005DFC",
+          "raw_words": [
+            11644,
+            5,
+            0,
+            86
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 327680,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 86,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "MOVE.l #0x50000, 86(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0007_0x005E04",
+          "pc": "0x005E04",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_04_0x005E06",
+      "start_pc": "0x005E06",
+      "end_pc": "0x005E0C",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0008_0x005E06",
+          "pc": "0x005E06",
+          "raw_words": [
+            8238,
+            86
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 86,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.l 86(A6), D0"
+        },
+        {
+          "ir_op_id": "IR247_0009_0x005E0A",
+          "pc": "0x005E0A",
+          "raw_words": [
+            27478
+          ],
+          "mnemonic": "BMI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24162,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E62",
+          "cycles": 10,
+          "disasm": "BMI.b 0x005E62"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_05_0x005E0C",
+      "start_pc": "0x005E0C",
+      "end_pc": "0x005E10",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0010_0x005E0C",
+          "pc": "0x005E0C",
+          "raw_words": [
+            26368,
+            262
+          ],
+          "mnemonic": "BEQ",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24340,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005F14",
+          "cycles": 10,
+          "disasm": "BEQ.w 0x005F14"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_06_0x005E10",
+      "start_pc": "0x005E10",
+      "end_pc": "0x005E16",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0011_0x005E10",
+          "pc": "0x005E10",
+          "raw_words": [
+            19118,
+            16
+          ],
+          "mnemonic": "TST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 16,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "TST.l 16(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0012_0x005E14",
+          "pc": "0x005E14",
+          "raw_words": [
+            26132
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24106,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E2A",
+          "cycles": 10,
+          "disasm": "BNE.b 0x005E2A"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_07_0x005E16",
+      "start_pc": "0x005E16",
+      "end_pc": "0x005E26",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0013_0x005E16",
+          "pc": "0x005E16",
+          "raw_words": [
+            18663,
+            32768
+          ],
+          "mnemonic": "MOVEM",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 32768,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "predec_a",
+              "reg_index": 7,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "MOVEM.l #0x8000, -(A7)"
+        },
+        {
+          "ir_op_id": "IR247_0014_0x005E1A",
+          "pc": "0x005E1A",
+          "raw_words": [
+            8252,
+            128,
+            832
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 8389440,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.l #0x800340, D0"
+        },
+        {
+          "ir_op_id": "IR247_0015_0x005E20",
+          "pc": "0x005E20",
+          "raw_words": [
+            20153,
+            6,
+            4
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 393220,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x060004",
+          "cycles": 20,
+          "disasm": "JSR.l 0x060004.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_08_0x005E26",
+      "start_pc": "0x005E26",
+      "end_pc": "0x005E2A",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0016_0x005E26",
+          "pc": "0x005E26",
+          "raw_words": [
+            19679,
+            1
+          ],
+          "mnemonic": "MOVEM",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "postinc_a",
+              "reg_index": 7,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "MOVEM.l (A7)+, #0x1"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_09_0x005E2A",
+      "start_pc": "0x005E2A",
+      "end_pc": "0x005E32",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0017_0x005E2A",
+          "pc": "0x005E2A",
+          "raw_words": [
+            1152,
+            0,
+            49152
+          ],
+          "mnemonic": "SUBI",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 49152,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "SUBI.l #0xC000, D0"
+        },
+        {
+          "ir_op_id": "IR247_0018_0x005E30",
+          "pc": "0x005E30",
+          "raw_words": [
+            28174
+          ],
+          "mnemonic": "BGT",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24128,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E40",
+          "cycles": 10,
+          "disasm": "BGT.b 0x005E40"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_10_0x005E32",
+      "start_pc": "0x005E32",
+      "end_pc": "0x005E34",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0019_0x005E32",
+          "pc": "0x005E32",
+          "raw_words": [
+            26114
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24118,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E36",
+          "cycles": 10,
+          "disasm": "BNE.b 0x005E36"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_11_0x005E34",
+      "start_pc": "0x005E34",
+      "end_pc": "0x005E36",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0020_0x005E34",
+          "pc": "0x005E34",
+          "raw_words": [
+            21376
+          ],
+          "mnemonic": "SUBQ",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "SUBQ.l #0x1, D0"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_12_0x005E36",
+      "start_pc": "0x005E36",
+      "end_pc": "0x005E40",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0021_0x005E36",
+          "pc": "0x005E36",
+          "raw_words": [
+            15740,
+            12,
+            48
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 12,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 48,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0xC, 48(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0022_0x005E3C",
+          "pc": "0x005E3C",
+          "raw_words": [
+            17006,
+            46
+          ],
+          "mnemonic": "CLR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 46,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "CLR.w 46(A6)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_13_0x005E40",
+      "start_pc": "0x005E40",
+      "end_pc": "0x005E58",
+      "instruction_count": 6,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0023_0x005E40",
+          "pc": "0x005E40",
+          "raw_words": [
+            11584,
+            86
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 86,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.l D0, 86(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0024_0x005E44",
+          "pc": "0x005E44",
+          "raw_words": [
+            53678,
+            16
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 16,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D0, 16(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0025_0x005E48",
+          "pc": "0x005E48",
+          "raw_words": [
+            12860,
+            384
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 384,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "MOVE.w #0x180, D1"
+        },
+        {
+          "ir_op_id": "IR247_0026_0x005E4C",
+          "pc": "0x005E4C",
+          "raw_words": [
+            13313
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "MOVE.w D1, D2"
+        },
+        {
+          "ir_op_id": "IR247_0027_0x005E4E",
+          "pc": "0x005E4E",
+          "raw_words": [
+            13870,
+            22
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 22,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 3,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.w 22(A6), D3"
+        },
+        {
+          "ir_op_id": "IR247_0028_0x005E52",
+          "pc": "0x005E52",
+          "raw_words": [
+            20153,
+            0,
+            58068
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 58068,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00E2D4",
+          "cycles": 20,
+          "disasm": "JSR.l 0x00E2D4.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_14_0x005E58",
+      "start_pc": "0x005E58",
+      "end_pc": "0x005E62",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0029_0x005E58",
+          "pc": "0x005E58",
+          "raw_words": [
+            54190,
+            114
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 114,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D1, 114(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0030_0x005E5C",
+          "pc": "0x005E5C",
+          "raw_words": [
+            54702,
+            118
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 118,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D2, 118(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0031_0x005E60",
+          "pc": "0x005E60",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_15_0x005F8A",
+      "start_pc": "0x005F8A",
+      "end_pc": "0x005F92",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0032_0x005F8A",
+          "pc": "0x005F8A",
+          "raw_words": [
+            3,
+            57
+          ],
+          "mnemonic": "ORI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 57,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 3,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "ORI.b #0x39, D3"
+        },
+        {
+          "ir_op_id": "IR247_0033_0x005F8E",
+          "pc": "0x005F8E",
+          "raw_words": [
+            24576,
+            828
+          ],
+          "mnemonic": "BRA",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 25292,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0062CC",
+          "cycles": 10,
+          "disasm": "BRA.w 0x0062CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_16_0x0060B2",
+      "start_pc": "0x0060B2",
+      "end_pc": "0x0060B4",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0034_0x0060B2",
+          "pc": "0x0060B2",
+          "raw_words": [
+            26166
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24810,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0060EA",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0060EA"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_17_0x0060B4",
+      "start_pc": "0x0060B4",
+      "end_pc": "0x0060BA",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0035_0x0060B4",
+          "pc": "0x0060B4",
+          "raw_words": [
+            2048,
+            4
+          ],
+          "mnemonic": "BTST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 10,
+          "disasm": "BTST.l #0x4, D0"
+        },
+        {
+          "ir_op_id": "IR247_0036_0x0060B8",
+          "pc": "0x0060B8",
+          "raw_words": [
+            26160
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24810,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0060EA",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0060EA"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_18_0x0060BA",
+      "start_pc": "0x0060BA",
+      "end_pc": "0x0060C0",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0037_0x0060BA",
+          "pc": "0x0060BA",
+          "raw_words": [
+            2048,
+            5
+          ],
+          "mnemonic": "BTST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 5,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 10,
+          "disasm": "BTST.l #0x5, D0"
+        },
+        {
+          "ir_op_id": "IR247_0038_0x0060BE",
+          "pc": "0x0060BE",
+          "raw_words": [
+            26154
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24810,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0060EA",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0060EA"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_19_0x0060C0",
+      "start_pc": "0x0060C0",
+      "end_pc": "0x0060C6",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0039_0x0060C0",
+          "pc": "0x0060C0",
+          "raw_words": [
+            2048,
+            7
+          ],
+          "mnemonic": "BTST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 7,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 10,
+          "disasm": "BTST.l #0x7, D0"
+        },
+        {
+          "ir_op_id": "IR247_0040_0x0060C4",
+          "pc": "0x0060C4",
+          "raw_words": [
+            26148
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24810,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0060EA",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0060EA"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_20_0x0060C6",
+      "start_pc": "0x0060C6",
+      "end_pc": "0x0060C8",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0041_0x0060C6",
+          "pc": "0x0060C6",
+          "raw_words": [
+            24800
+          ],
+          "mnemonic": "BRA",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24744,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0060A8",
+          "cycles": 10,
+          "disasm": "BRA.b 0x0060A8"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_21_0x0066C4",
+      "start_pc": "0x0066C4",
+      "end_pc": "0x0066C8",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0042_0x0066C4",
+          "pc": "0x0066C4",
+          "raw_words": [
+            6976,
+            836
+          ],
+          "mnemonic": "MOVE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 5,
+              "val": 836,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.b D0, 836(A5)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_22_0x006770",
+      "start_pc": "0x006770",
+      "end_pc": "0x006774",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0043_0x006770",
+          "pc": "0x006770",
+          "raw_words": [
+            6976,
+            836
+          ],
+          "mnemonic": "MOVE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 5,
+              "val": 836,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.b D0, 836(A5)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_23_0x006844",
+      "start_pc": "0x006844",
+      "end_pc": "0x006858",
+      "instruction_count": 5,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0044_0x006844",
+          "pc": "0x006844",
+          "raw_words": [
+            7,
+            0
+          ],
+          "mnemonic": "ORI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 7,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "ORI.b #0x0, D7"
+        },
+        {
+          "ir_op_id": "IR247_0045_0x006848",
+          "pc": "0x006848",
+          "raw_words": [
+            4,
+            117
+          ],
+          "mnemonic": "ORI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 117,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 4,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "ORI.b #0x75, D4"
+        },
+        {
+          "ir_op_id": "IR247_0046_0x00684C",
+          "pc": "0x00684C",
+          "raw_words": [
+            37806,
+            8
+          ],
+          "mnemonic": "SUB",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 8,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "SUB.l D1, 8(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0047_0x006850",
+          "pc": "0x006850",
+          "raw_words": [
+            38318,
+            12
+          ],
+          "mnemonic": "SUB",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 12,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "SUB.l D2, 12(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0048_0x006854",
+          "pc": "0x006854",
+          "raw_words": [
+            53678,
+            12
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 12,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D0, 12(A6)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_24_0x006858",
+      "start_pc": "0x006858",
+      "end_pc": "0x006862",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0049_0x006858",
+          "pc": "0x006858",
+          "raw_words": [
+            1646,
+            13,
+            12
+          ],
+          "mnemonic": "ADDI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 13,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 12,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "ADDI.w #0xD, 12(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0050_0x00685E",
+          "pc": "0x00685E",
+          "raw_words": [
+            24832,
+            13280
+          ],
+          "mnemonic": "BSR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 40000,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x009C40",
+          "cycles": 18,
+          "disasm": "BSR.w 0x009C40"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_25_0x006862",
+      "start_pc": "0x006862",
+      "end_pc": "0x00686E",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0051_0x006862",
+          "pc": "0x006862",
+          "raw_words": [
+            1134,
+            14,
+            12
+          ],
+          "mnemonic": "SUBI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 14,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 12,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "SUBI.w #0xE, 12(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0052_0x006868",
+          "pc": "0x006868",
+          "raw_words": [
+            2053,
+            7
+          ],
+          "mnemonic": "BTST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 7,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 5,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 10,
+          "disasm": "BTST.l #0x7, D5"
+        },
+        {
+          "ir_op_id": "IR247_0053_0x00686C",
+          "pc": "0x00686C",
+          "raw_words": [
+            26602
+          ],
+          "mnemonic": "BEQ",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 26712,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x006858",
+          "cycles": 10,
+          "disasm": "BEQ.b 0x006858"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_26_0x00686E",
+      "start_pc": "0x00686E",
+      "end_pc": "0x006876",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0054_0x00686E",
+          "pc": "0x00686E",
+          "raw_words": [
+            15740,
+            50,
+            4
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 50,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x32, 4(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0055_0x006874",
+          "pc": "0x006874",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_27_0x006908",
+      "start_pc": "0x006908",
+      "end_pc": "0x00693A",
+      "instruction_count": 9,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0056_0x006908",
+          "pc": "0x006908",
+          "raw_words": [
+            11600,
+            38
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "indir_a",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 38,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "MOVE.l (A0), 38(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0057_0x00690C",
+          "pc": "0x00690C",
+          "raw_words": [
+            7548,
+            28,
+            56
+          ],
+          "mnemonic": "MOVE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 28,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 56,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.b #0x1C, 56(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0058_0x006912",
+          "pc": "0x006912",
+          "raw_words": [
+            2286,
+            3,
+            58
+          ],
+          "mnemonic": "BSET",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 3,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 58,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "BSET.b #0x3, 58(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0059_0x006918",
+          "pc": "0x006918",
+          "raw_words": [
+            20985,
+            255,
+            6542
+          ],
+          "mnemonic": "SF",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16718222,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "SF.b 0xFF198E.L"
+        },
+        {
+          "ir_op_id": "IR247_0060_0x00691E",
+          "pc": "0x00691E",
+          "raw_words": [
+            17006,
+            6
+          ],
+          "mnemonic": "CLR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 6,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "CLR.w 6(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0061_0x006922",
+          "pc": "0x006922",
+          "raw_words": [
+            15740,
+            8,
+            42
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 8,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 42,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x8, 42(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0062_0x006928",
+          "pc": "0x006928",
+          "raw_words": [
+            15740,
+            88,
+            4
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 88,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x58, 4(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0063_0x00692E",
+          "pc": "0x00692E",
+          "raw_words": [
+            8252,
+            128,
+            890
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 8389498,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.l #0x80037A, D0"
+        },
+        {
+          "ir_op_id": "IR247_0064_0x006934",
+          "pc": "0x006934",
+          "raw_words": [
+            20153,
+            6,
+            4
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 393220,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x060004",
+          "cycles": 20,
+          "disasm": "JSR.l 0x060004.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_28_0x00693A",
+      "start_pc": "0x00693A",
+      "end_pc": "0x00693C",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0065_0x00693A",
+          "pc": "0x00693A",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_29_0x006C3A",
+      "start_pc": "0x006C3A",
+      "end_pc": "0x006C44",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0066_0x006C3A",
+          "pc": "0x006C3A",
+          "raw_words": [
+            2094,
+            1,
+            55
+          ],
+          "mnemonic": "BTST",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 55,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "BTST.b #0x1, 55(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0067_0x006C40",
+          "pc": "0x006C40",
+          "raw_words": [
+            26112,
+            63114
+          ],
+          "mnemonic": "BNE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 25292,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0062CC",
+          "cycles": 10,
+          "disasm": "BNE.w 0x0062CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_30_0x006C44",
+      "start_pc": "0x006C44",
+      "end_pc": "0x006C46",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0068_0x006C44",
+          "pc": "0x006C44",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_31_0x006D58",
+      "start_pc": "0x006D58",
+      "end_pc": "0x006D66",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0069_0x006D58",
+          "pc": "0x006D58",
+          "raw_words": [
+            15740,
+            82,
+            4
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 82,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x52, 4(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0070_0x006D5E",
+          "pc": "0x006D5E",
+          "raw_words": [
+            17017,
+            255,
+            5866
+          ],
+          "mnemonic": "CLR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16717546,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 20,
+          "disasm": "CLR.w 0xFF16EA.L"
+        },
+        {
+          "ir_op_id": "IR247_0071_0x006D64",
+          "pc": "0x006D64",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_32_0x006F82",
+      "start_pc": "0x006F82",
+      "end_pc": "0x006F8C",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0072_0x006F82",
+          "pc": "0x006F82",
+          "raw_words": [
+            15740,
+            20,
+            48
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 20,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 48,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0x14, 48(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0073_0x006F88",
+          "pc": "0x006F88",
+          "raw_words": [
+            24576,
+            61166
+          ],
+          "mnemonic": "BRA",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 24184,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x005E78",
+          "cycles": 10,
+          "disasm": "BRA.w 0x005E78"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_33_0x006FB6",
+      "start_pc": "0x006FB6",
+      "end_pc": "0x006FC4",
+      "instruction_count": 4,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0074_0x006FB6",
+          "pc": "0x006FB6",
+          "raw_words": [
+            9262,
+            82
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 82,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.l 82(A6), D2"
+        },
+        {
+          "ir_op_id": "IR247_0075_0x006FBA",
+          "pc": "0x006FBA",
+          "raw_words": [
+            54190,
+            114
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 114,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D1, 114(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0076_0x006FBE",
+          "pc": "0x006FBE",
+          "raw_words": [
+            54702,
+            118
+          ],
+          "mnemonic": "ADD",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 118,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "ADD.l D2, 118(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0077_0x006FC2",
+          "pc": "0x006FC2",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_34_0x00739A",
+      "start_pc": "0x00739A",
+      "end_pc": "0x0073A2",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0078_0x00739A",
+          "pc": "0x00739A",
+          "raw_words": [
+            22592
+          ],
+          "mnemonic": "ADDQ",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "ADDQ.w #0x4, D0"
+        },
+        {
+          "ir_op_id": "IR247_0079_0x00739C",
+          "pc": "0x00739C",
+          "raw_words": [
+            45166,
+            48
+          ],
+          "mnemonic": "CMP",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 48,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "CMP.w 48(A6), D0"
+        },
+        {
+          "ir_op_id": "IR247_0080_0x0073A0",
+          "pc": "0x0073A0",
+          "raw_words": [
+            26154
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 29644,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0073CC",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0073CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_35_0x0073A2",
+      "start_pc": "0x0073A2",
+      "end_pc": "0x0073A8",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0081_0x0073A2",
+          "pc": "0x0073A2",
+          "raw_words": [
+            19054,
+            46
+          ],
+          "mnemonic": "TST",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 46,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "TST.w 46(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0082_0x0073A6",
+          "pc": "0x0073A6",
+          "raw_words": [
+            26148
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 29644,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0073CC",
+          "cycles": 10,
+          "disasm": "BNE.b 0x0073CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_36_0x0073A8",
+      "start_pc": "0x0073A8",
+      "end_pc": "0x0073C6",
+      "instruction_count": 8,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0083_0x0073A8",
+          "pc": "0x0073A8",
+          "raw_words": [
+            16960
+          ],
+          "mnemonic": "CLR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "CLR.w D0"
+        },
+        {
+          "ir_op_id": "IR247_0084_0x0073AA",
+          "pc": "0x0073AA",
+          "raw_words": [
+            4153,
+            255,
+            3505
+          ],
+          "mnemonic": "MOVE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16715185,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.b 0xFF0DB1.L, D0"
+        },
+        {
+          "ir_op_id": "IR247_0085_0x0073B0",
+          "pc": "0x0073B0",
+          "raw_words": [
+            1024,
+            9
+          ],
+          "mnemonic": "SUBI",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 9,
+              "size": "b",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "SUBI.b #0x9, D0"
+        },
+        {
+          "ir_op_id": "IR247_0086_0x0073B4",
+          "pc": "0x0073B4",
+          "raw_words": [
+            12860,
+            34
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 34,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "MOVE.w #0x22, D1"
+        },
+        {
+          "ir_op_id": "IR247_0087_0x0073B8",
+          "pc": "0x0073B8",
+          "raw_words": [
+            13312
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "MOVE.w D0, D2"
+        },
+        {
+          "ir_op_id": "IR247_0088_0x0073BA",
+          "pc": "0x0073BA",
+          "raw_words": [
+            59722
+          ],
+          "mnemonic": "LSL",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 4,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 14,
+          "disasm": "LSL.w #0x4, D2"
+        },
+        {
+          "ir_op_id": "IR247_0089_0x0073BC",
+          "pc": "0x0073BC",
+          "raw_words": [
+            1602,
+            1
+          ],
+          "mnemonic": "ADDI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "ADDI.w #0x1, D2"
+        },
+        {
+          "ir_op_id": "IR247_0090_0x0073C0",
+          "pc": "0x0073C0",
+          "raw_words": [
+            20153,
+            0,
+            62358
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 62358,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00F396",
+          "cycles": 20,
+          "disasm": "JSR.l 0x00F396.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_37_0x0073C6",
+      "start_pc": "0x0073C6",
+      "end_pc": "0x0073CC",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0091_0x0073C6",
+          "pc": "0x0073C6",
+          "raw_words": [
+            15740,
+            65535,
+            92
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 65535,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 92,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.w #0xFFFF, 92(A6)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_38_0x0073CC",
+      "start_pc": "0x0073CC",
+      "end_pc": "0x0073D6",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0092_0x0073CC",
+          "pc": "0x0073CC",
+          "raw_words": [
+            2094,
+            1,
+            55
+          ],
+          "mnemonic": "BTST",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 55,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "BTST.b #0x1, 55(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0093_0x0073D2",
+          "pc": "0x0073D2",
+          "raw_words": [
+            26112,
+            61176
+          ],
+          "mnemonic": "BNE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 25292,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0062CC",
+          "cycles": 10,
+          "disasm": "BNE.w 0x0062CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_39_0x0073D6",
+      "start_pc": "0x0073D6",
+      "end_pc": "0x0073D8",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0094_0x0073D6",
+          "pc": "0x0073D6",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_40_0x0074FC",
+      "start_pc": "0x0074FC",
+      "end_pc": "0x00750A",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0095_0x0074FC",
+          "pc": "0x0074FC",
+          "raw_words": [
+            12860,
+            2048
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 2048,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "MOVE.w #0x800, D1"
+        },
+        {
+          "ir_op_id": "IR247_0096_0x007500",
+          "pc": "0x007500",
+          "raw_words": [
+            13372,
+            1920
+          ],
+          "mnemonic": "MOVE",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1920,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 8,
+          "disasm": "MOVE.w #0x780, D2"
+        },
+        {
+          "ir_op_id": "IR247_0097_0x007504",
+          "pc": "0x007504",
+          "raw_words": [
+            20153,
+            0,
+            58068
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 58068,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00E2D4",
+          "cycles": 20,
+          "disasm": "JSR.l 0x00E2D4.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_41_0x00750A",
+      "start_pc": "0x00750A",
+      "end_pc": "0x007520",
+      "instruction_count": 5,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0098_0x00750A",
+          "pc": "0x00750A",
+          "raw_words": [
+            8513,
+            78
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 1,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 78,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.l D1, 78(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0099_0x00750E",
+          "pc": "0x00750E",
+          "raw_words": [
+            8514,
+            82
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 2,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 82,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "MOVE.l D2, 82(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0100_0x007512",
+          "pc": "0x007512",
+          "raw_words": [
+            8572,
+            2,
+            0,
+            86
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 131072,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 86,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "MOVE.l #0x20000, 86(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0101_0x00751A",
+          "pc": "0x00751A",
+          "raw_words": [
+            19679,
+            14
+          ],
+          "mnemonic": "MOVEM",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "postinc_a",
+              "reg_index": 7,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 14,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 36,
+          "disasm": "MOVEM.l (A7)+, #0xE"
+        },
+        {
+          "ir_op_id": "IR247_0102_0x00751E",
+          "pc": "0x00751E",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_42_0x00792A",
+      "start_pc": "0x00792A",
+      "end_pc": "0x007938",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0103_0x00792A",
+          "pc": "0x00792A",
+          "raw_words": [
+            16889,
+            255,
+            7008
+          ],
+          "mnemonic": "LEA",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16718688,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_a",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "LEA.l 0xFF1B60.L, A0"
+        },
+        {
+          "ir_op_id": "IR247_0104_0x007930",
+          "pc": "0x007930",
+          "raw_words": [
+            3176,
+            58,
+            0
+          ],
+          "mnemonic": "CMPI",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 58,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 0,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "CMPI.w #0x3A, 0(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0105_0x007936",
+          "pc": "0x007936",
+          "raw_words": [
+            26130
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 31050,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00794A",
+          "cycles": 10,
+          "disasm": "BNE.b 0x00794A"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_43_0x007938",
+      "start_pc": "0x007938",
+      "end_pc": "0x00794A",
+      "instruction_count": 4,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0106_0x007938",
+          "pc": "0x007938",
+          "raw_words": [
+            9212,
+            0,
+            48826,
+            255,
+            6464
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 48826,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16718144,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 28,
+          "disasm": "MOVE.l #0xBEBA, 0xFF1940.L"
+        },
+        {
+          "ir_op_id": "IR247_0107_0x007942",
+          "pc": "0x007942",
+          "raw_words": [
+            32256
+          ],
+          "mnemonic": "MOVEQ",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 7,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "MOVEQ.l #0x0, D7"
+        },
+        {
+          "ir_op_id": "IR247_0108_0x007944",
+          "pc": "0x007944",
+          "raw_words": [
+            28684
+          ],
+          "mnemonic": "MOVEQ",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 12,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "MOVEQ.l #0xC, D0"
+        },
+        {
+          "ir_op_id": "IR247_0109_0x007946",
+          "pc": "0x007946",
+          "raw_words": [
+            24832,
+            17314
+          ],
+          "mnemonic": "BSR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 48362,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00BCEA",
+          "cycles": 18,
+          "disasm": "BSR.w 0x00BCEA"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_44_0x00794A",
+      "start_pc": "0x00794A",
+      "end_pc": "0x00795A",
+      "instruction_count": 3,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0110_0x00794A",
+          "pc": "0x00794A",
+          "raw_words": [
+            28684
+          ],
+          "mnemonic": "MOVEQ",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 12,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 4,
+          "disasm": "MOVEQ.l #0xC, D0"
+        },
+        {
+          "ir_op_id": "IR247_0111_0x00794C",
+          "pc": "0x00794C",
+          "raw_words": [
+            9212,
+            0,
+            31228,
+            255,
+            6464
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 31228,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 16718144,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 28,
+          "disasm": "MOVE.l #0x79FC, 0xFF1940.L"
+        },
+        {
+          "ir_op_id": "IR247_0112_0x007956",
+          "pc": "0x007956",
+          "raw_words": [
+            24832,
+            17260
+          ],
+          "mnemonic": "BSR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 48324,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00BCC4",
+          "cycles": 18,
+          "disasm": "BSR.w 0x00BCC4"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_45_0x00795A",
+      "start_pc": "0x00795A",
+      "end_pc": "0x007962",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0113_0x00795A",
+          "pc": "0x00795A",
+          "raw_words": [
+            2094,
+            1,
+            55
+          ],
+          "mnemonic": "BTST",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 1,
+              "size": "w",
+              "ext": 0
+            },
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 6,
+              "val": 55,
+              "size": "b",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "BTST.b #0x1, 55(A6)"
+        },
+        {
+          "ir_op_id": "IR247_0114_0x007960",
+          "pc": "0x007960",
+          "raw_words": [
+            26382
+          ],
+          "mnemonic": "BEQ",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 31088,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x007970",
+          "cycles": 10,
+          "disasm": "BEQ.b 0x007970"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_46_0x007962",
+      "start_pc": "0x007962",
+      "end_pc": "0x007968",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0115_0x007962",
+          "pc": "0x007962",
+          "raw_words": [
+            20153,
+            0,
+            35088
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 35088,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x008910",
+          "cycles": 20,
+          "disasm": "JSR.l 0x008910.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_47_0x007968",
+      "start_pc": "0x007968",
+      "end_pc": "0x00796C",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0116_0x007968",
+          "pc": "0x007968",
+          "raw_words": [
+            25856,
+            8
+          ],
+          "mnemonic": "BCS",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 31090,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x007972",
+          "cycles": 10,
+          "disasm": "BCS.w 0x007972"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_48_0x00796C",
+      "start_pc": "0x00796C",
+      "end_pc": "0x007970",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0117_0x00796C",
+          "pc": "0x00796C",
+          "raw_words": [
+            24576,
+            59742
+          ],
+          "mnemonic": "BRA",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 25292,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x0062CC",
+          "cycles": 10,
+          "disasm": "BRA.w 0x0062CC"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_49_0x007970",
+      "start_pc": "0x007970",
+      "end_pc": "0x007972",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0118_0x007970",
+          "pc": "0x007970",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_50_0x0079EE",
+      "start_pc": "0x0079EE",
+      "end_pc": "0x0079FA",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0119_0x0079EE",
+          "pc": "0x0079EE",
+          "raw_words": [
+            8252,
+            128,
+            603
+          ],
+          "mnemonic": "MOVE",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "imm",
+              "reg_index": 0,
+              "val": 8389211,
+              "size": "l",
+              "ext": 0
+            },
+            {
+              "raw_kind": "reg_d",
+              "reg_index": 0,
+              "val": 0,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 12,
+          "disasm": "MOVE.l #0x80025B, D0"
+        },
+        {
+          "ir_op_id": "IR247_0120_0x0079F4",
+          "pc": "0x0079F4",
+          "raw_words": [
+            20153,
+            6,
+            4
+          ],
+          "mnemonic": "JSR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "abs_l",
+              "reg_index": 0,
+              "val": 393220,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x060004",
+          "cycles": 20,
+          "disasm": "JSR.l 0x060004.L"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_51_0x0079FA",
+      "start_pc": "0x0079FA",
+      "end_pc": "0x0079FC",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0121_0x0079FA",
+          "pc": "0x0079FA",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_52_0x0079FC",
+      "start_pc": "0x0079FC",
+      "end_pc": "0x007A00",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0122_0x0079FC",
+          "pc": "0x0079FC",
+          "raw_words": [
+            24832,
+            17562
+          ],
+          "mnemonic": "BSR",
+          "size": "w",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 48792,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x00BE98",
+          "cycles": 18,
+          "disasm": "BSR.w 0x00BE98"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_53_0x007A00",
+      "start_pc": "0x007A00",
+      "end_pc": "0x007A06",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0123_0x007A00",
+          "pc": "0x007A00",
+          "raw_words": [
+            19112,
+            86
+          ],
+          "mnemonic": "TST",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 86,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "TST.l 86(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0124_0x007A04",
+          "pc": "0x007A04",
+          "raw_words": [
+            26120
+          ],
+          "mnemonic": "BNE",
+          "size": "b",
+          "operands": [
+            {
+              "raw_kind": "branch_disp",
+              "reg_index": 0,
+              "val": 31246,
+              "size": "w",
+              "ext": 0
+            }
+          ],
+          "branch_target": "0x007A0E",
+          "cycles": 10,
+          "disasm": "BNE.b 0x007A0E"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_54_0x007A06",
+      "start_pc": "0x007A06",
+      "end_pc": "0x007A0E",
+      "instruction_count": 2,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0125_0x007A06",
+          "pc": "0x007A06",
+          "raw_words": [
+            17064,
+            78
+          ],
+          "mnemonic": "CLR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 78,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "CLR.l 78(A0)"
+        },
+        {
+          "ir_op_id": "IR247_0126_0x007A0A",
+          "pc": "0x007A0A",
+          "raw_words": [
+            17064,
+            82
+          ],
+          "mnemonic": "CLR",
+          "size": "l",
+          "operands": [
+            {
+              "raw_kind": "disp_a",
+              "reg_index": 0,
+              "val": 82,
+              "size": "l",
+              "ext": 0
+            }
+          ],
+          "branch_target": null,
+          "cycles": 24,
+          "disasm": "CLR.l 82(A0)"
+        }
+      ]
+    },
+    {
+      "block_id": "BB_55_0x007A0E",
+      "start_pc": "0x007A0E",
+      "end_pc": "0x007A10",
+      "instruction_count": 1,
+      "instructions": [
+        {
+          "ir_op_id": "IR247_0127_0x007A0E",
+          "pc": "0x007A0E",
+          "raw_words": [
+            20085
+          ],
+          "mnemonic": "RTS",
+          "size": "",
+          "operands": [],
+          "branch_target": null,
+          "cycles": 16,
+          "disasm": "RTS"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from_pc": "0x0060B2",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0060B2",
+      "to_pc": "0x0060B4",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0079FC",
+      "to_pc": "0x00BE98",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x0079FC",
+      "to_pc": "0x007A00",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005F8E",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x006C40",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x006C40",
+      "to_pc": "0x006C44",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x006F88",
+      "to_pc": "0x005E78",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0079F4",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x0079F4",
+      "to_pc": "0x0079FA",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005DF0",
+      "to_pc": "0x005F14",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x005DF0",
+      "to_pc": "0x005DF4",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0060B8",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0060B8",
+      "to_pc": "0x0060BA",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x006C44",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x006D64",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x0073A0",
+      "to_pc": "0x0073CC",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x0073A0",
+      "to_pc": "0x0073A2",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x007504",
+      "to_pc": "0x00E2D4",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x007504",
+      "to_pc": "0x00750A",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x007936",
+      "to_pc": "0x00794A",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x007936",
+      "to_pc": "0x007938",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0079FA",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007A04",
+      "to_pc": "0x007A0E",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x007A04",
+      "to_pc": "0x007A06",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x006FC2",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007A0E",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x005DFA",
+      "to_pc": "0x005E06",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x005DFA",
+      "to_pc": "0x005DFC",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0060BE",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0060BE",
+      "to_pc": "0x0060C0",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0073D2",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0073D2",
+      "to_pc": "0x0073D6",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0073A6",
+      "to_pc": "0x0073CC",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x0073A6",
+      "to_pc": "0x0073A8",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x007A0A",
+      "to_pc": "0x007A0E",
+      "kind": "UNCONDITIONAL"
+    },
+    {
+      "from_pc": "0x0073D6",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007956",
+      "to_pc": "0x00BCC4",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x007956",
+      "to_pc": "0x00795A",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005E0A",
+      "to_pc": "0x005E62",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x005E0A",
+      "to_pc": "0x005E0C",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x005E04",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x0060C4",
+      "to_pc": "0x0060EA",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x0060C4",
+      "to_pc": "0x0060C6",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x00685E",
+      "to_pc": "0x009C40",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x00685E",
+      "to_pc": "0x006862",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x007946",
+      "to_pc": "0x00BCEA",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x007946",
+      "to_pc": "0x00794A",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005E0C",
+      "to_pc": "0x005F14",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x005E0C",
+      "to_pc": "0x005E10",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x0060C6",
+      "to_pc": "0x0060A8",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x00751E",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007960",
+      "to_pc": "0x007970",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x007960",
+      "to_pc": "0x007962",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x006934",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x006934",
+      "to_pc": "0x00693A",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x007970",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007962",
+      "to_pc": "0x008910",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x007962",
+      "to_pc": "0x007968",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005E14",
+      "to_pc": "0x005E2A",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x005E14",
+      "to_pc": "0x005E16",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x00686C",
+      "to_pc": "0x006858",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x00686C",
+      "to_pc": "0x00686E",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x00693A",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x007968",
+      "to_pc": "0x007972",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x007968",
+      "to_pc": "0x00796C",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x00796C",
+      "to_pc": "0x0062CC",
+      "kind": "UNCOMPILED_EXIT"
+    },
+    {
+      "from_pc": "0x005E30",
+      "to_pc": "0x005E40",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x005E30",
+      "to_pc": "0x005E32",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x006874",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x005E32",
+      "to_pc": "0x005E36",
+      "kind": "CONDITIONAL_TAKEN"
+    },
+    {
+      "from_pc": "0x005E32",
+      "to_pc": "0x005E34",
+      "kind": "CONDITIONAL_FALLTHROUGH"
+    },
+    {
+      "from_pc": "0x005E20",
+      "to_pc": "0x060004",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x005E20",
+      "to_pc": "0x005E26",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x0073C0",
+      "to_pc": "0x00F396",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x0073C0",
+      "to_pc": "0x0073C6",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005E34",
+      "to_pc": "0x005E36",
+      "kind": "UNCONDITIONAL"
+    },
+    {
+      "from_pc": "0x005E26",
+      "to_pc": "0x005E2A",
+      "kind": "UNCONDITIONAL"
+    },
+    {
+      "from_pc": "0x0073C6",
+      "to_pc": "0x0073CC",
+      "kind": "UNCONDITIONAL"
+    },
+    {
+      "from_pc": "0x005E3C",
+      "to_pc": "0x005E40",
+      "kind": "UNCONDITIONAL"
+    },
+    {
+      "from_pc": "0x005E52",
+      "to_pc": "0x00E2D4",
+      "kind": "CALL_UNCOMPILED"
+    },
+    {
+      "from_pc": "0x005E52",
+      "to_pc": "0x005E58",
+      "kind": "CALL_RETURN_CONTINUATION"
+    },
+    {
+      "from_pc": "0x005E60",
+      "to_pc": "0x000000",
+      "kind": "RETURN"
+    },
+    {
+      "from_pc": "0x006854",
+      "to_pc": "0x006858",
+      "kind": "UNCONDITIONAL"
+    }
+  ]
+}

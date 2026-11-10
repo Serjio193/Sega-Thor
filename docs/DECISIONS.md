@@ -1,3 +1,30 @@
+# ADR-20261110-M15-247-AUTHENTIC-CFG-EDGE-COVERAGE-AND-TOWN-ACTION-HANDLERS — Authentic CFG Edge Coverage Qualification (104/151 Edges), Long-Run Dual Capture Parity, Recompilation of 17 Town Entity Action Handlers (`m15247p`), and Five-Configuration Bit-Exact Verification
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M15.246 compiled 375 instructions across 7 roots with 52/151 internal edge coverage, leaving 99 internal edges unexercised. Milestone M15.247 required lifting edge coverage to >= 100/151 internal edges with authentic CPU fixtures.
+2. Investigation into candidate palette fade routines (`0x002FDA` / `0x00302E`) revealed that asynchronous VDP DMA concurrent execution causes 1-cycle timing drift across frame boundaries.
+3. Clean synchronous unowned routines were required to expand native coverage without timing fragility.
+
+**Decisions:**
+1. **Comprehensive CFG Edge Analysis & Reference Oracle Harness (`data/thor-evidence/cfg_edge_coverage_manifest_m15_247.json`, `tests/thor_ir_m15_247_diff_test.cpp`):**
+   - Audited all 183 CFG edges of M15.246.
+   - Generated 70 pinned GPGX fixtures (`data/thor-fixtures/m15_247_callee_fixtures.hpp`), lifting internal edge coverage from 52/151 (34.4%) to 104/151 (68.9%), surpassing the >= 100 requirement.
+   - Verified 100% PASS across GPGX, Mode A, and Mode B in Debug and Release.
+2. **M68000 Semantic Stress Test Suite (`tests/m68k_semantic_stress_test.cpp`):**
+   - Implemented automated stress testing covering all 19 required instruction classes across controlled registers, condition codes, arithmetic edge cases, and memory buses with zero failures in Debug and Release.
+3. **Town Entity Action Handlers Subsystem Recompilation (`m15247p`):**
+   - Recompiled 17 unowned synchronous action handlers connected to table `0x0059BA` (`0x005DE4`, `0x00792A`, `0x006C3A`, `0x006844`, `0x006908`, `0x00739A`, `0x0074FC`, `0x0060B2`, `0x0079FC`, `0x0079EE`, `0x006D58`, `0x005F8A`, `0x006F82`, `0x006FB6`, `0x006770`, `0x0066C4`, `0x005CD8`).
+   - Emitted 128 M68000 instructions across 56 basic blocks and 84 edges partitioned into 14 headers in `src/tools/thor_ir/generated_m15_247/` (all `<= 274` lines, well within `<= 350` policy limit).
+   - Cumulative portable IR footprint reached 1,141 static M68000 instructions across M15.244–M15.247.
+4. **Five-Configuration Runtime Qualification & Dual Long-Run Parity:**
+   - Integrated `m15247p` into isolated runner `e89ebeaa...`.
+   - Verified bit-exact raw stream equivalence (`A==B==C==D==E`) across all 5 scenarios (Scenario C, A, B, longrun_3600f, longrun_alt_1800f) with zero fallbacks, zero contract faults, and zero CPU exceptions.
+
+**Consequences:**
+- 17 authentic town entity handlers run completely portably with zero timing drift, proving that synchronous game loop subsystems can be displaced safely without impacting long-run bit-exact deterministic parity.
+
 # ADR-20261110-M15-246-LONG-RUN-CAPTURE-AND-CALLEE-RECOMPILATION — Long-Run 3,600-Frame Gameplay Capture, Coverage Forensics & Single-Owner Accounting, Connected High-Frequency Callee Recompilation (`m15246p`), and 4-Config Parity Proof
 **Status:** Accepted
 **Date:** 2026-11-10

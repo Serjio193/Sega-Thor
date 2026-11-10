@@ -1,0 +1,119 @@
+{
+  "schema": "oasis.coverage-accounting-contract.v2",
+  "milestone": "M15.247",
+  "scenarios": {
+    "scenario_c": {
+      "total_guest_steps": 17627770,
+      "idle_loop_steps": 9730133,
+      "non_idle_guest_steps": 7897637,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 5145887,
+        "M15_244_PORTABLE": 463,
+        "M15_245_PORTABLE": 28912,
+        "M15_246_PORTABLE": 127790,
+        "M15_247_PORTABLE": 0,
+        "ORIGINAL_CPU_NON_IDLE": 2594585,
+        "IDLE_LOOP_ORIGINAL_CPU": 9730133
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 5303052,
+      "combined_portable_steps": 157165,
+      "raw_native_percent": 30.084,
+      "non_idle_native_percent": 67.147
+    },
+    "scenario_a": {
+      "total_guest_steps": 15493548,
+      "idle_loop_steps": 8853218,
+      "non_idle_guest_steps": 6640330,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 4524921,
+        "M15_244_PORTABLE": 231,
+        "M15_245_PORTABLE": 20782,
+        "M15_246_PORTABLE": 22079,
+        "M15_247_PORTABLE": 576,
+        "ORIGINAL_CPU_NON_IDLE": 2071741,
+        "IDLE_LOOP_ORIGINAL_CPU": 8853218
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 4568589,
+      "combined_portable_steps": 43668,
+      "raw_native_percent": 29.487,
+      "non_idle_native_percent": 68.801
+    },
+    "scenario_b": {
+      "total_guest_steps": 5773843,
+      "idle_loop_steps": 3759080,
+      "non_idle_guest_steps": 2014763,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 1551304,
+        "M15_244_PORTABLE": 97,
+        "M15_245_PORTABLE": 9822,
+        "M15_246_PORTABLE": 1098,
+        "M15_247_PORTABLE": 0,
+        "ORIGINAL_CPU_NON_IDLE": 452442,
+        "IDLE_LOOP_ORIGINAL_CPU": 3759080
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 1562321,
+      "combined_portable_steps": 11017,
+      "raw_native_percent": 27.059,
+      "non_idle_native_percent": 77.544
+    },
+    "longrun_3600f": {
+      "total_guest_steps": 37831953,
+      "idle_loop_steps": 15098646,
+      "non_idle_guest_steps": 22733307,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 20914478,
+        "M15_244_PORTABLE": 922,
+        "M15_245_PORTABLE": 45789,
+        "M15_246_PORTABLE": 214941,
+        "M15_247_PORTABLE": 0,
+        "ORIGINAL_CPU_NON_IDLE": 1557177,
+        "IDLE_LOOP_ORIGINAL_CPU": 15098646
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 21176130,
+      "combined_portable_steps": 261652,
+      "raw_native_percent": 55.974,
+      "non_idle_native_percent": 93.15
+    },
+    "longrun_alt_1800f": {
+      "total_guest_steps": 17950240,
+      "idle_loop_steps": 8912400,
+      "non_idle_guest_steps": 9037840,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 5214300,
+        "M15_244_PORTABLE": 231,
+        "M15_245_PORTABLE": 24396,
+        "M15_246_PORTABLE": 22787,
+        "M15_247_PORTABLE": 576,
+        "ORIGINAL_CPU_NON_IDLE": 3775550,
+        "IDLE_LOOP_ORIGINAL_CPU": 8912400
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 5262290,
+      "combined_portable_steps": 47990,
+      "raw_native_percent": 29.316,
+      "non_idle_native_percent": 58.225
+    }
+  },
+  "negative_mutation_tests": [
+    {
+      "test": "double_counting_rejection",
+      "passed": true
+    },
+    {
+      "test": "omitted_idle_rejection",
+      "passed": true
+    },
+    {
+      "test": "unknown_owner_rejection",
+      "passed": true
+    },
+    {
+      "test": "sum_mismatch_rejection",
+      "passed": true
+    }
+  ]
+}

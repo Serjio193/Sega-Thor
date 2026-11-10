@@ -1,3 +1,28 @@
+# M15.247 Authentic CFG Edge Coverage & Town Action Handlers Recompilation
+
+- `data/thor-evidence/cfg_edge_coverage_manifest_m15_247.json` — complete inventory and edge classification of all 183 CFG edges across M15.246.
+- `data/thor-fixtures/m15_247_callee_fixtures.hpp` / `data/thor-fixtures/m15_247_callee_fixtures.json` — 70 pinned GPGX reference fixtures reaching 104/151 internal edges (68.9% >= 100 target).
+- `tests/thor_ir_m15_247_diff_test.cpp` — 3-way differential test (GPGX vs Mode A vs Mode B) + 12 negative and mutation test contracts in Debug & Release.
+- `tests/m68k_semantic_stress_test.cpp` — standalone semantic stress test exercising 19 M68000 instruction classes with zero failures.
+- `data/thor-evidence/longrun_diversity_report_m15_247.json` — 300-frame execution diversity audit over all 12 windows of the 3,600f journal.
+- `tools/audit_coverage_and_displacement_m15_247.py` — canonical single-owner coverage accounting V2 script with 4 negative mutation tests.
+- `data/thor-evidence/native_coverage_accounting_m15_247.json` — single-owner coverage accounting evidence across C, A, B, longrun_3600f, and longrun_alt_1800f.
+- `tools/audit_m15_247_candidates.py` — candidate hotspot profiler and unowned candidate ranking.
+- `data/thor-evidence/ranked_callee_candidates_m15_247.json` — candidate classification and selection manifest.
+- `src/tools/thor_ir/m15_247_callee_ir.json` / `data/thor-fixtures/m15_247_ir_manifest.json` — portable Thor IR document for the 17 Town entity action handlers.
+- `data/thor-evidence/callee_cfg_source_map_m15_247.json` — 1:1 mapping from original M68000 instruction PCs to basic blocks and generated C++ headers.
+- `src/tools/thor_ir/generated_m15_247/` — 14 auto-split C++20 headers implementing the 17 entity handlers (all <= 274 lines, <= 350 limit).
+- `src/tools/thor_ir/exp247_dispatch_hybrid_adapter.hpp` — hybrid bridge adapting the 17 action handlers into `oasis_gameplay_session`.
+- `tools/generate_entity_dispatch_m15_247.py` — compiler driver generating IR, CFG, source map, and C++ headers.
+- `tools/thor_recompiler/insn_lowering_m15_247.py` / `tools/thor_recompiler/cpp_emitter_m15_247.py` — instruction lowering and C++ code generator for M15.247.
+- `tools/generate_m15_247_longrun_journal.py` — journal generator capturing Town/Village gameplay (`longrun_alt_1800f`).
+- `data/thor-evidence/longrun_alt_1800f_capture_manifest_m15_247.json` — capture manifest with initial state, input polls, and video/audio hashes.
+- `tools/run_m15_247_portable_ab.py` — five-configuration runtime qualification harness (`RUN_A..E`).
+- `build/ab_portable_m15_247/m15_247_ab_summary.json` — summary of 5-config qualification across all 5 scenarios.
+- `tools/benchmark_m15_247.py` / `data/thor-evidence/benchmark_m15_247_report.json` — isolated microbenchmark comparing Mode A vs Mode B.
+- `docs/handoffs/STANDALONE_M15_247_TOWN_SUB_SYSTEM_HANDOFF.md` — standalone track handoff for the Town entity action handlers subsystem.
+- `tools/generate_m15_247_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-247-20261110.json` — certified qualification receipt verified by `ReceiptVerifier`.
+
 # M12 Controlled Entity / Player Provenance V1
 
 `docs/reports/THOR_ACCEPTED_ARTIFACT_BACKLOG_20260928.md` inventories existing

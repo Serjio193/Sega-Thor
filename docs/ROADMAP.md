@@ -1,3 +1,20 @@
+# M15.247 Authentic CFG Edge Coverage, Long-Run Execution Diversity, and Safe Connected Portable Expansion (`m15247p`) — COMPLETE / VERIFIED QUALIFIED ACTION HANDLERS & EDGE COVERAGE
+
+- **Comprehensive CFG Edge Analysis & Reference Oracle Harness (`tests/thor_ir_m15_247_diff_test.cpp`):**
+  * Audited all 183 CFG edges of M15.246 (`data/thor-evidence/cfg_edge_coverage_manifest_m15_247.json`).
+  * Generated 70 pinned GPGX fixtures (`data/thor-fixtures/m15_247_callee_fixtures.hpp`), lifting internal edge coverage from 52/151 (34.4%) to 104/151 (68.9%), surpassing the >= 100 requirement.
+  * Verified 100% PASS across GPGX Oracle, Mode A, and Mode B + 12/12 mutation tests in Debug and Release.
+- **M68000 Semantic Stress Test Suite (`tests/m68k_semantic_stress_test.cpp`):**
+  * Verified all 19 instruction classes in Debug and Release with zero failures.
+- **Town Entity Action Handlers Subsystem Recompilation (`m15247p`):**
+  * Recompiled 17 unowned synchronous action handlers connected to `0x0059BA` (`0x005DE4`, `0x00792A`, `0x006C3A`, `0x006844`, `0x006908`, `0x00739A`, `0x0074FC`, `0x0060B2`, `0x0079FC`, `0x0079EE`, `0x006D58`, `0x005F8A`, `0x006F82`, `0x006FB6`, `0x006770`, `0x0066C4`, `0x005CD8`).
+  * Emitted 128 M68000 instructions across 56 basic blocks and 84 edges partitioned into 14 headers in `src/tools/thor_ir/generated_m15_247/` (all `<= 274` lines, well within `<= 350` policy limit).
+  * Cumulative portable IR footprint reached 1,141 static M68000 instructions across M15.244–M15.247.
+- **Five-Configuration Runtime Integration (`m15247p`, Runner `e89ebeaa...`) & Certification:**
+  * Qualified 5 configurations (`RUN_A..E`) across 5 scenarios: Scenario C (1,800f), A (1,592f), B (600f), `longrun_3600f` (3,600f), and `longrun_alt_1800f` (1,800f).
+  * Verified bit-exact raw stream equivalence (`A==B==C==D==E`), 0 fallbacks, 0 contract faults, and 0 CPU exceptions.
+  * Standalone track preserved strictly read-only (`C:/Github/Sega-Thor-Standalone` untouched), production inventory preserved at 196 active helpers (`17396fda...`), and decompressor `0x003820` quarantine preserved.
+
 # M15.246 Long-Run Original Gameplay Capture, High-Frequency Callee Recompilation, and Auditable Native Coverage Expansion (`m15246p`) — COMPLETE / VERIFIED LONG-RUN CALLEE & MATH DISPLACEMENT
 
 - **Coverage Forensics & Canonical Accounting (`tools/audit_coverage_and_displacement_m15_246.py`):**
