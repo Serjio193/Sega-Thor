@@ -296,7 +296,7 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
     case 0x0CU: {
         const std::int32_t dx = std::abs(ent.world_x - ctx.player_x);
         const std::int32_t dy = std::abs(ent.world_y - ctx.player_y);
-        const bool z_overlap = (ctx.player_z >= ent.world_z) && (ctx.player_z <= ent.world_z + 40);
+        const bool z_overlap = (ent.world_z >= ctx.player_z) && (ent.world_z <= ctx.player_z + 40);
         if (dx <= 11 && dy <= 11 && z_overlap) {
             ctx.pending_player_damage += 2;
             emit_sound(ent, ctx, q, combat::kSndEnemy002cBodyHit1);

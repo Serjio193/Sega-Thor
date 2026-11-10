@@ -13,6 +13,7 @@ struct TownSatFrameContext {
     std::int32_t camera_x{0};
     std::int32_t camera_y{0};
     std::uint16_t tick_counter{0};      // $FF1656 (used by 0x00A7E6 status bars)
+    std::uint32_t frame_60hz{0};        // $FF1971 (60Hz VBLANK frame counter for 0x00AB1A shake)
     int hud_x_offset{0x20};             // $FF185A (0x20 right side, 0x138 left side)
     std::int32_t player_x{160};
     std::int32_t player_y{488};

@@ -421,6 +421,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
             sat_ctx.camera_x = camera_.camera_x();
             sat_ctx.camera_y = camera_.camera_y();
             sat_ctx.tick_counter = tick_counter_;
+            sat_ctx.frame_60hz = sim_state_.frame_counter;
             sat_ctx.hud_x_offset = (sim_state_.player_x < 80U) ? 0x138 : 0x20;
             sat_ctx.player_x = sim_state_.player_x;
             sat_ctx.player_y = sim_state_.player_y;

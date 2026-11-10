@@ -30030,3 +30030,13 @@ RESULT: PASS.
 - **Forensics & Fixtures**: Disassembled `0x00DEEC`, `0x008FA4..0x00903E`, `0x00A6A0..0x00B72E`, `0x0254EA..0x025C7E`, `0x00E268..0x00E3B0`, `0x00E7E8..0x00E908`, `0x06042A..0x0611E0`, `0x00D4C8..0x00D680`, and `0x02E784`/`0x02E920`; captured 521-frame GPGX trace `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json`.
 - **Native Runtime**: Added `src/game/entity/town_entity_animation.*`, `src/game/entity/town_entity_scheduler.*`, `src/game/render/rom_sprite_decoder.*`, `src/game/render/beach_sat_emitter.*`; updated `town_scene_loader.*`, `town_combat_sat.*`, `sat_pipeline_contract.*`, `sound_command_queue.hpp`, `native_entity.hpp`, and `standalone_game_simulation.*`.
 - **Tests**: Added `tests/m16_23_town_full_sim_test.cpp` (`oasis_m16_23_town_full_sim`); updated `tests/m16_22_town_combat_test.cpp` for 15 spawns & `y <= 76` threshold. All governed files strictly `<= 500` lines; zero emulator linkage in `oasis.exe`.
+
+
+# M16.24 Worklog — First-Divergence SAT Forensics, Deterministic Town Scheduling, and Authentic Multi-Enemy Gameplay
+
+## Execution & Results
+- **Forensic SAT Comparator & Missing Part Resolution**: Disassembled ROM `0x00AB1A` (`flags36 & 0x40` Hurt shake) and proved it reads 60Hz VBLANK frame counter from `$00FF1971` (`addq.b #1, ($00FF1971).l` at `0x008AC4`), not 30Hz game tick `$00FF1656`. Separating `tick_counter` (used by `0x00A7E6` status bars) and `frame_60hz` ($FF1971) resolved the missing 1/56 sprite piece at F789 (`y = 0x0C5`), achieving 56/56 (100.00%) guard and archway piece parity.
+- **Original Emission Order Forensics**: Disassembled and verified ROM painter's algorithm `0x00A6EC..0x00A718`: Y-descending order, stable tie-break by lower slot index (Player Ali slot 0 before slot 11), lower water ripples (`0x00B610`) before entity body, upper water ripples (`0x00B66A`) after entity body, and hardware clipping `(y - 0x60) <= 0x100 && (x - 0x60) <= 0x160` at `0x00B6E2`.
+- **Scheduler & Projectile Parity**: Fixed projectile 3D AABB vertical overlap condition `ent.world_z >= player_z && ent.world_z <= player_z + 40` in `town_entity_scheduler.cpp`, verifying thrown projectile player collision and rooftop ambush drops.
+- **Automated Differential Test**: Created `tests/m16_24_sat_forensics_test.cpp` (`oasis_m16_24_sat_forensics`) reporting active chain exact, structural, full 80-entry, HUD exact (6/6), guard/arch exact (56/56), and transition semantics.
+- **Verification**: Verified 100% PASS on MinGW Release and MSVC Debug. All governed source files strictly `<= 500` lines. Zero emulator linkage. Hybrid worktree strictly untouched.

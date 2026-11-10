@@ -266,6 +266,7 @@ void test_15_spawns_and_3level_sat_parity(const std::vector<std::uint8_t>& rom,
         sat_ctx.camera_x = fr.cam_x;
         sat_ctx.camera_y = fr.cam_y;
         sat_ctx.tick_counter = static_cast<std::uint16_t>(fr.tick);
+        sat_ctx.frame_60hz = static_cast<std::uint32_t>(fr.f);
         sat_ctx.hud_x_offset = (fr.px < 80) ? 0x138 : 0x20;
         sat_ctx.player_x = fr.px;
         sat_ctx.player_y = fr.py;
@@ -343,7 +344,7 @@ void test_15_spawns_and_3level_sat_parity(const std::vector<std::uint8_t>& rom,
         }
     }
 
-    assert(guard_total > 40U && guard_matches >= 55U);
+    assert(guard_total == 56U && guard_matches == 56U);
     assert(structural_matches == check_frames.size());
     std::cout << "[PASS] test_15_spawns_and_3level_sat_parity ("
               << "15 ROM spawns, ENTITY_GUARD_ARCH=" << guard_matches << "/" << guard_total

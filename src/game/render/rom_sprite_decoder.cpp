@@ -201,8 +201,10 @@ void emit_rom_town_sat(SatPipelineContract& sat,
         const int ground_y = e.world_y - ctx.camera_y + 128;
         int vdp_y = ground_y - e.world_z;
         // ROM 0x00AB1A: bit 6 of flags36 applies +/-2px alternating frame shake (bit 0 of facing selects X vs Y)
+        // Uses 60Hz VBLANK frame counter from $FF1971
         if ((e.flags36 & 0x40U) != 0U) {
-            const int jitter = ((ctx.tick_counter & 1U) != 0U) ? 2 : 0;
+            const std::uint32_t fc = (ctx.frame_60hz != 0U) ? ctx.frame_60hz : ctx.tick_counter;
+            const int jitter = ((fc & 1U) != 0U) ? 2 : 0;
             if ((e.facing & 1U) != 0U) {
                 vdp_x += jitter;
             } else {

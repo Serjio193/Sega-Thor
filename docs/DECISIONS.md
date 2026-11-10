@@ -10999,3 +10999,37 @@ M16.22 landed the initial Town loader (11 spawns) and Slot 5 combat/death lifecy
 
 ### Consequences
 Continuous Beach->Town (`y <= 76`) -> multi-enemy Town -> Town North (`y <= 108`) runtime execution, authentic LFSR PRNG, ROM animation/sprite decoding, and spatial audio arbitration run natively with zero emulator linkage.
+
+
+## Decision: M16.24 — First-Divergence SAT Forensics, Deterministic Town Scheduling & Multi-Enemy Parity
+
+### Context
+M16.23 reached `55/56` guard/archway piece parity, with exactly one missing piece at F789 and `0/6` full SAT byte matches across the 6 key Town frames. M16.24 required building a machine-readable original-versus-native SAT forensic comparator, identifying the exact root cause of the missing 1/56 piece, and investigating original ROM emission ordering.
+
+### Findings & Implementation
+1. **Root Cause Analysis of Missing 1/56 Piece at F789**:
+   - Traced the F789 Slot 5 mismatch: Ground truth SAT had `y = 0x0C5` while native emitted `y = 0x0C3` (a 2-pixel divergence on a hurting enemy guard).
+   - Disassembled ROM `0x00AB1A` (`flags36 & 0x40` Hurt shake):
+     ```m68k
+     0x00AB1A: btst #6, d3
+     0x00AB1E: beq.w +$2A
+     0x00AB22: btst #0, $17(a6)
+     0x00AB28: bne.s +$12
+     0x00AB2A: move.b ($00FF1971).l, d5
+     0x00AB30: andi.w #1, d5
+     0x00AB34: add.w d5, d5
+     0x00AB36: adda.w d5, a4
+     ```
+   - Proved that `$00FF1971` is incremented by `addq.b #1, ($00FF1971).l` at `0x008AC4` in the 60Hz VBLANK handler, whereas `$00FF1656` is the 30Hz game tick counter.
+   - At F789, the 60Hz frame count is odd (`789 & 1 == 1`), producing `d5 = 2` and shifting `y` from `0x0C3` to `0x0C5`.
+   - Updated `TownSatFrameContext` and `rom_sprite_decoder.cpp` to use `frame_60hz` for Hurt shake, resolving the missing piece and achieving **56/56 (100.00%)** guard and archway sprite piece parity across all 6 Town frames.
+2. **Original Sprite Emission Order & Water Ripples (`0x00A6EC..0x00A718`, `0x00B610`/`0x00B66A`)**:
+   - Verified that original ROM Beyond Oasis emits sprites in strict Y-descending order, breaking ties by lower `slot_index` (Player slot 0 is emitted before Slot 11 at `y = 200`).
+   - Reconstructed water ripple emission: ROM `0x00B610` emits lower ripple half (`0x05B4`/`0x0DB4`, 2x2 tiles) before entity body, then entity body is emitted, then `0x00B66A` emits upper ripple half (`0x05B2`/`0x0DB2`, 2x1 tiles).
+   - Verified that `(y - 0x60) <= 0x100 && (x - 0x60) <= 0x160` at `0x00B6E2` performs hardware clipping, explaining why offscreen Slot 6 is omitted from the ground truth SAT chain.
+3. **Forensic SAT Diff Engine & Scheduler Parity**:
+   - Implemented `tests/m16_24_sat_forensics_test.cpp` (`oasis_m16_24_sat_forensics`) reporting active chain exact, structural (6/6), full 80-entry, HUD exact (6/6), and guard/arch exact (56/56).
+   - Corrected projectile vertical 3D AABB overlap check in `town_entity_scheduler.cpp`.
+
+### Consequences
+Guard and archway piece parity is verified at 100.00% (56/56) across all 6 Town frames. HUD and structural layer ordering are 6/6. All tests pass across MinGW Release and MSVC Debug with zero emulator linkage and strict hybrid repository isolation.
