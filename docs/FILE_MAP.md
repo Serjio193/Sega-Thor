@@ -1,3 +1,7 @@
+# M15.251 Real Gameplay Speedup, Native Coverage Accounting, and Hybrid Dispatch Cost Forensics
+
+- `docs/handoffs/STANDALONE_M15_251_DISPATCH_FORENSICS_HANDOFF.md` — standalone track handoff detailing verified ROM findings, calling conventions, and dispatch overhead forensics.
+
 # M15.250 Residual CPU Bottleneck Elimination, Connected Hotpath Expansion, and Integrated Gameplay Performance
 
 - `tools/audit_m15_250_phase1.py` / `data/thor-evidence/native_coverage_accounting_m15_250_phase1.json` — Phase 1 baseline coverage accounting across 6 scenarios (712,783 baseline steps).

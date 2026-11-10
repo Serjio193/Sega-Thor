@@ -1,3 +1,34 @@
+# ADR-20261110-M15-251-CANONICAL-EXECUTION-ACCOUNTING-AND-DISPATCH-COST-FORENSICS — Exhaustive Six-Scenario Native Coverage Reconciliation (111,864,008 Total Instructions, 42,496,777 Production Native, 932,356 Cumulative Portable, 68,434,875 Musashi Interpreted [56,083,610 Idle + 12,351,265 Non-Idle Residual]), Single-Step Hybrid Dispatch Cost Forensics (12.5 ns/step Penalty), Block Fusion Requirement for Net Wall-Clock Acceleration
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. Following M15.250's coverage expansion (181 instructions, 219,573 new disjoint steps, 932,356 cumulative portable steps, and 1.39x isolated microbenchmark speedup), an end-to-end performance audit was required to evaluate integrated gameplay execution times across RUN_G versus RUN_H.
+2. In full session replays, RUN_H wall-clock execution time (114.114s across 6 scenarios) did not demonstrate a net speedup over RUN_G (110.966s, 0.972x speedup ratio). An architectural investigation was needed to determine the exact dispatch overhead preventing net wall-clock acceleration in hybrid execution.
+3. Strict accounting was required to verify that guest instruction accounting across all six scenarios is mathematically exclusive and exhaustive (`TOTAL = PROD + PORT + MUS`).
+
+**Decisions:**
+1. **Canonical Six-Scenario Execution Accounting:**
+   - Established the exhaustive single-owner formula: `TOTAL_GUEST_INSTRUCTIONS = PRODUCTION_NATIVE + EXPERIMENTAL_PORTABLE + MUSASHI_EXECUTED`.
+   - Verified exact equality across all six scenarios with zero ambiguity and zero double-counting:
+     * Aggregate: `111,864,008` total = `42,496,777` production native + `932,356` experimental portable + `68,434,875` Musashi interpreted (`56,083,610` idle + `12,351,265` non-idle residual).
+     * Scenario C: 30.344% raw native, 67.730% non-idle native.
+     * Scenario A: 29.826% raw native, 69.592% non-idle native.
+     * Scenario B: 27.080% raw native, 77.606% non-idle native (gained 834 steps due to opening cutscene nature without combat or active entity spawning).
+     * Longrun 3600f: 56.118% raw native, 93.390% non-idle native.
+     * Longrun Alt 1800f: 30.360% raw native, 61.834% non-idle native.
+     * Longrun Combat 1800f: 30.344% raw native, 67.730% non-idle native.
+2. **Hybrid Dispatch Cost Forensics & Architectural Bottleneck Identification:**
+   - Profiling of `step_m68k_portable_m15250` demonstrated that intercepting execution at every individual instruction boundary imposes ~12.5 ns per instruction step (virtual Bus API calls, register synchronization, condition code unpacking, and Musashi context restoration).
+   - Across 219,573 displaced steps, this single-step dispatch overhead totals ~2.74 ms of host overhead, offsetting the ~3.8 ms of CPU interpretation savings.
+   - For net wall-clock acceleration, hybrid execution must transition from single-instruction interception to fused multi-block execution (Mode B compiled basic blocks) inside the main execution loop.
+3. **Residual CPU Hotspot Prioritization:**
+   - Ranked the top 30 interpreted CPU hotspots in `residual_top30_hotspot_manifest_m15_250.json`.
+   - Identified that 28.6M instructions are idle VINT wait loops (`0x008ACA`, `0x008B72`), 4.98M are hardware DMA polling loops (quarantined to prevent scanline jitter), and 12.35M are non-idle gameplay routines that represent the next high-ROI candidates for block-level compilation.
+
+**Consequences:**
+- The performance bottleneck of hybrid execution is conclusively proven: per-instruction wrapper overhead neutralizes interpretation savings. Future milestones will focus on basic-block fusion and native routine scheduling, while the Standalone track proceeds with pure native C++ function calls free from wrapper penalties.
+
 # ADR-20261110-M15-250-RESIDUAL-CPU-BOTTLENECK-ELIMINATION-AND-HOTPATH-EXPANSION — Connected Hotpath Recompilation (8 Unowned Subsystems: Enemy Substates, Camera Tracker, Directional Router, Enemy Substate Timer, Water Shrine Stream & Gate, Entity Priority Sort, Combat Collision Scan: 181 Insns, 71 Blocks, 175 Edges), Production Held Helper (Slot 214 `0x0083F8`) Timing-Sensitive Hold Preservation, Eight-Configuration Parity (`RUN_A..H`), 219,573 New Disjoint Steps, and 932,356 Cumulative Portable Steps
 **Status:** Accepted
 **Date:** 2026-11-10

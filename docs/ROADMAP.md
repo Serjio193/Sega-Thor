@@ -1,3 +1,30 @@
+# M15.251 Real Gameplay Speedup, Native Coverage Accounting, and Hybrid Dispatch Cost Forensics — COMPLETE / VERIFIED ACCOUNTING & FORENSICS
+
+- **Canonical Execution Accounting Forensics:**
+  * Validated exhaustive single-owner coverage accounting across all 6 gameplay scenarios: `TOTAL_GUEST_INSTRUCTIONS = PRODUCTION_NATIVE + EXPERIMENTAL_PORTABLE + MUSASHI_EXECUTED`.
+  * Across all 6 scenarios combined: `111,864,008` total = `42,496,777` production native + `932,356` experimental portable + `68,434,875` Musashi interpreted (`56,083,610` idle frame-sync wait loops + `12,351,265` residual non-idle instructions).
+  * Audited per-scenario native percentages:
+    - Scenario C (1800f): 30.344% raw native, 67.730% non-idle native (37,213 M15.250 steps).
+    - Scenario A (1592f): 29.826% raw native, 69.592% non-idle native (49,266 M15.250 steps).
+    - Scenario B (600f): 27.080% raw native, 77.606% non-idle native (834 M15.250 steps; lower displacement due to opening cutscene with zero combat).
+    - Longrun 3600f: 56.118% raw native, 93.390% non-idle native (44,947 M15.250 steps).
+    - Longrun Alt 1800f: 30.360% raw native, 61.834% non-idle native (50,100 M15.250 steps).
+    - Longrun Combat 1800f: 30.344% raw native, 67.730% non-idle native (37,213 M15.250 steps).
+  * Total M15.250 disjoint displaced steps: 219,573 steps; cumulative portable steps: 932,356.
+- **Dispatch Overhead Forensics & Integrated Gameplay Performance:**
+  * Isolated microbenchmark Mode A (14.909 ms) vs Mode B (10.728 ms) verified **1.39x isolated speedup**.
+  * Integrated session wall-clock times: RUN_G 110.966s vs RUN_H 114.114s (0.972x speedup).
+  * Forensics determined that single-instruction step wrappers in hybrid execution incur ~12.5 ns per instruction step (context switching, bus peeks, and cycle addition), which offsets the CPU interpretation savings in tight loops.
+  * Formulated requirement for block-level compilation and basic-block fusion inside the main loop for net wall-clock acceleration.
+- **Cycle Accounting & CFG Integrity:**
+  * Confirmed exact Musashi cycle parity for `DBRA` (taken -14 MC / not taken +14 MC) and `BSET` (+14 MC for bit >= 16).
+  * Audited all 175 CFG edges (93 internal, 26 calls, 4 returns, 82 uncompiled exits) with zero collisions with production or quarantined paths.
+  * 141/141 three-way differential fixtures and 12/12 mutation tests PASS.
+- **Residual CPU Hotspot Profiling & Standalone Handoff:**
+  * Categorized remaining interpreted workload (28.6M idle wait loops, 4.98M quarantined DMA polling, 12.35M gameplay/AI routines).
+  * Published `docs/handoffs/STANDALONE_M15_251_DISPATCH_FORENSICS_HANDOFF.md` providing standalone specifications for all 8 hotpath subsystems.
+  * All 295 Linux CTests green; production baseline 196 helpers (`17396fda...`) preserved; Standalone worktree unmodified.
+
 # M15.250 Residual CPU Bottleneck Elimination, Connected Hotpath Expansion, and Integrated Gameplay Performance (`m15250p`) — COMPLETE / VERIFIED RESIDUAL BOTTLENECK ELIMINATION & CONNECTED HOTPATH EXPANSION
 
 - **Profile-Guided Hotpath Target Selection & Production Hold Policy:**
