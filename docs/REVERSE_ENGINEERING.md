@@ -1,3 +1,22 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.245: Live GPGX Profiling & 25-Handler Ownership Audit Excluding Production Overlaps; Caller Continuation Topology `0x005670 -> 0x0059B8 JMP (A0)` Direct Entry `1,908` Times; 16 Unowned Roots Totaling 508 New M68000 Instructions / 230 Blocks / 397 Edges Including `0x007DC8..0x007EC2` `$FF1668` Ring Input Gate & `0x007E96` Nonlocal SP Unwind; `28/28` GPGX Three-Way Parity & `60,307` Combined Disjoint Portable Steps Across Scenarios C/A/B)
+
+## Milestone M15.245 Reverse Engineering Summary
+
+### Section 68: High-Frequency Unowned Entity Handlers (`508` New Instructions), Caller Continuation & `$FF1668` Input Ring Gate (`0x007DC8`)
+
+#### 1. Real GPGX Hotspot Profiling & Strict 196-Helper Ownership Boundary Audit
+- **Evidence:** `tools/m15_245_gpgx_profiler.cpp`, `tools/audit_m15_245_candidates.py` -> `data/thor-evidence/entity_handler_hotspot_manifest_m15_245.json` and `rom_005670_and_00e682_continuation_proof_m15_245.json`.
+- **Caller Continuation Discovery (`0x005670 -> 0x0059B8`):** Across Scenarios C (`861`), A (`772`), and B (`299`), all `1,932` entries into `0x005670` arrive from `0x005586` (return `0x00558A`), and `1,908` exit via `0x0059B8 JMP (A0)` straight to the jump-table handler entry PC. Because production `m68k_005670` stops at `0x0059B8`, hooking the unowned target PCs avoids modifying production helpers cleanly.
+- **Exact `case 0x...:` Disjoint Boundary:** Excluded `0x006516` (`546` ent / `61,998` dyn steps), `0x0062E4` (`252` / `24,235`), `0x00663E`, `0x006FE4`, `0x00701A`, `0x00705A` (`0` overlap). Proved `0x007112` (index `11`, `135` entries) is `100%` unowned because `m68k_0070f8` terminates at `0x007110 RTS`.
+
+#### 2. Input Ring Gate & Nonlocal Unwind (`0x007DC8..0x007EC2`) & 16 Unowned Entity Roots
+- **Evidence:** `src/tools/thor_ir/entity_dispatch_expanded_ir.json`, `data/thor-evidence/entity_dispatch_cfg_source_map_m15_245.json`.
+- **Verified Mechanics (`0x007DC8`, `46,625` GPGX steps across C=24,231 / A=14,362 / B=8,032):**
+  * Checks `$FF1983`, `4(A6) == 0`, bit 7 of `111(A6)`, sets `$FF1986` (`0x007DE6`).
+  * Scans 64-word ring buffer `$FF1668` using `$FF16E8` (`D5 = (D5 + 2) & 0x7E`) and `$FF16EA` (`D4` clamped `<= 4` words, up to 5 samples) via `OR.W 0(A0, D5.W), D0` + `DBRA`.
+  * On attack/special (`BTST #6, D0 -> 0x007E46` with `$FF1985==0`, `4(A6)!=4`, `$FF1AA4==0`, `142(A6)!=0`), writes `42(A6)=20`, `4(A6)=20`, clears `$FF1990`, calls SFX `JSR 0x060004`, and performs nonlocal stack unwind **`0x007E96 MOVEA.L $FF1934, A7; 0x007E9C RTS`** (`+8` `A7` delta directly to `$00558A`).
+- **Compiled Scope & Verification:** `508` new M68000 instructions (`638` combined M15.244+245), `230` CFG blocks (`273` combined), `397` edges, `0` omitted, `0` production overlap. `28/28` GPGX reference fixtures + `15/15` nonlocal/negative/mutation contracts PASS in Debug & Release across Oracle, Mode A, and fused Mode B (`200/508` fixture insns); live Scenarios C/A/B achieve `24/24` bit-exact raw streams (`A==B==C`), `59,516` new disjoint portable steps (`C=28,912`, `A=20,782`, `B=9,822`), `442/508` (`87.0%`) live insn coverage (`457/508` [`90.0%`] combined).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.244: Exhaustive 59-Entry Entity Jump Table Manifest `0x0059BA..0x005A30` + Live Watch Counts Across 1,908 Gameplay Entries; Nonlocal Guest Stack Frame Proof `0x00E682..0x00E6A8` Across 49 Authentic GPGX Unwinds; Connected Entity State-Dispatch CFG Reconstruction 130 Instructions / 43 Basic Blocks / 123 Edges; First Real Portable Gameplay Displacement `0059a8p` Displacing 791 Disjoint Instructions Across Scenarios C/A/B)
 
 ## Milestone M15.244 Reverse Engineering Summary

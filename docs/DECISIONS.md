@@ -1,3 +1,28 @@
+# ADR-20261110-M15-245-HIGH-FREQUENCY-ENTITY-HANDLERS-AND-CALLER-CONTINUATION — High-Frequency Entity Handler Recompilation, Caller-Side Continuation (`0x005670 -> 0x0059B8`), Input Ring Gate (`0x007DC8..0x007EC2`), and Real Portable Gameplay Scaling (`m15245p`)
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M15.244 established real portable C++20 gameplay displacement (`0059a8p`, `130` instructions, `791` disjoint steps across Scenarios C/A/B), but hit two bottlenecks: (a) `0x005670` is owned by production helper `m68k_005670` and exits directly at `0x0059B8 JMP (A0)` into the entity handler entry PC (`1,908` dynamic entries bypassed `0x0059A8`), and (b) unowned high-frequency entity handlers and callee `0x007DC8..0x007EC2` (`46,625` dynamic steps across C/A/B) remained interpreted as `ValidUncompiledPc`.
+
+**Decisions:**
+1. **Real GPGX Profiling & Strict Disjoint Candidate Selection (`tools/m15_245_gpgx_profiler.cpp`, 443 lines; `tools/audit_m15_245_candidates.py`, 198 lines):**
+   - Profiled full Scenarios C (`1,800f`, `17,627,770` total / `9,730,133` idle / `7,897,637` non-idle), A (`1,592f`, `15,493,548` / `8,853,218` / `6,640,330`), and B (`600f`, `5,773,843` / `3,759,080` / `2,014,763`).
+   - Audited exact `case 0x...:` ownership across all `196` active production helpers (`17396fda...`): explicitly excluded `0x006516` (`61,998` steps), `0x0062E4` (`24,235` steps), `0x00663E`, `0x006FE4`, `0x00701A`, and `0x00705A` (`0` overlap). Resolved false coarse overlap on `0x007112` (`m68k_0070f8` stops at `0x007110 RTS`; `0x007112` is `100%` unowned).
+   - Recorded `0x005670` caller topology (`1,932/1,932` calls from `0x005586`, `1,908` `0x0059B8 JMP (A0)` direct handoffs) and `0x00E682` live stack unwinds (`49` nonlocal returns, `a7_delta = +8`) in `data/thor-evidence/rom_005670_and_00e682_continuation_proof_m15_245.json`.
+2. **Decoder Fix & Expanded Auto-Split Compiler (`tools/thor_recompiler/`, `tools/generate_entity_dispatch_m15_245.py`, 183 lines):**
+   - Fixed `ASR.L`/`ASL`/`LSR`/`LSL` shift size decoding (`(w0>>6)&3`) in `decoder.py` and added `decoder_ext.py` (107 lines), `insn_lowering_m15_245.py` (334 lines), and `cpp_emitter_m15_245.py` (221 lines) while preserving zero diff on M15.244 outputs.
+   - Calibrated `DBRA` (`12, taken ? -1 : 1`) and `ASR.L #1` (`8, 1`) `branch_adj_sign` so BOTH `PortableIrBus` and Musashi `HybridM68kStepBus::finish_instruction` stay 100% cycle-exact (`10`/`14` for `DBRA`, `10` for `ASR.L #1`) without modifying M15.244's `entity_dispatch_common.hpp`.
+   - Recompiled `16` unowned entry roots (`0x0061F6`, `0x006338`, `0x006464`, `0x0066AA`, `0x006738`, `0x006EDA`, `0x007112`, `0x0071DA`, `0x007656`, `0x007852`, `0x0078F8`, `0x005E78`, `0x006E28`, `0x006E4A`, `0x006E7A`, `0x007DC8..0x007EC2`) into **`508` new M68000 instructions**, **`230` CFG blocks**, and **`397` edges** (`638` combined M15.244+245 insns, `273` blocks, `0` prod overlap, `0` M15.244 overlap) across `29` headers `<= 259` lines under `src/tools/thor_ir/generated_m15_245/`.
+3. **3-Way Reference Proof, Runner Integration & Certification:**
+   - Captured `28` real GPGX fixtures (`18 AUTHENTIC + 10 CONTROLLED`, `tools/m15_245_gpgx_oracle.cpp`, 331 lines; `generate_m15_245_fixtures.py`, 247 lines); verified `28/28` bit/cycle-exact parity across GPGX Oracle, Mode A, and fused Mode B (`run_exp_mb_chunk_0..4`) + Phase 5 nonlocal unwind (`+8 A7`, `6` mutations) + `9` negative contracts (`15/15` mutations PASS) in Debug and Release (`tests/thor_ir_m15_245_diff_test.cpp`, 209 lines).
+   - Integrated `m15245p` (`src/tools/thor_ir/exp_dispatch_hybrid_adapter.hpp`, 102 lines) into isolated runner `build/auto-migrator/m15_245/linux-runner/oasis_gameplay_session` (`SHA256 = 3461acf8e3b6715790350609ce57d22a3538aab92dea271abd492ac2e332bf81`): **`24/24` bit-exact streams (`A==B==C`)**, **`59,516` new disjoint M15.245 steps** (`C=28,912, A=20,782, B=9,822`, `2,849` entries, `1,699` completed returns), **`60,307` combined portable steps** (`791 + 59,516`, `76.2x` M15.244), `0` fallbacks, `0` faults, and identical `5,145,887` Scenario C / `4,524,921` A / `1,551,304` B single-step production counts across all 3 runs (`0` overlap).
+   - **Phase 10 Long-Run Honest Finding:** No verified Scenario C `input.polls` journal longer than `1,800f` exists (`LONG_RUN_EXTENSION = UNAVAILABLE`); recorded all `7` Scenario C 300-frame checkpoint hashes (`0..1799`).
+   - Benchmarked Mode A (`15.402 ms`) vs fused Mode B (`12.649 ms`) in `tools/benchmark_m15_245.py` (238 lines): `1.218x` speedup (`975,000` insns/trial). Verified `data/thor-evidence/combined-clusters-qualification-m15-245-20261110.json` via `ReceiptVerifier` (`overall_valid=True, checked_files=57, rejections=[]`), emitted `docs/handoffs/STANDALONE_M15_245_ENTITY_HANDLERS_HANDOFF.md`, kept Standalone (`b21e4c59...`) untouched and production inventory (`196`, `17396fda...`) + `0x003820` quarantine unchanged.
+
+**Consequences:**
+- Portable C++20 translation now covers all high-frequency unowned player/entity movement, input ring scanning (`0x007DC8`), combat gating, and shared tails at 100% behavioral parity, demonstrating a 76.2x increase in live portable instruction displacement.
+
 # ADR-20261110-M15-244-EXHAUSTIVE-ENTITY-DISPATCH-AND-PORTABLE-GAMEPLAY-DISPLACEMENT — Dynamic Entity Dispatch Exhaustive Qualification, Guest Stack Nonlocal-Return Proof, Auto-Split Portable C++20 Compiler, and First Real Portable Gameplay Displacement (`0059a8p`)
 **Status:** Accepted
 **Date:** 2026-11-10

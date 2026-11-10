@@ -1,0 +1,1521 @@
+{
+  "schema": "oasis.m15_245.hotspot-manifest.v1",
+  "milestone": "M15.245",
+  "scenarios": {
+    "scenario_c": {
+      "frames": 1800,
+      "total_original_steps": 17627770,
+      "idle_steps": 9730133,
+      "non_idle_steps": 7897637,
+      "caller_005670": {
+        "entries": 861,
+        "from_005586": 861,
+        "from_other": 0,
+        "to_0059b8_jmp": 858,
+        "early_rts": 3,
+        "nonlocal_exits": 0,
+        "steps": 61165,
+        "callers": {
+          "0x5586": 861
+        },
+        "exits": {
+          "0x558a": 3,
+          "0x5c1a": 4,
+          "0x5cc8": 4,
+          "0x61f6": 113,
+          "0x62e4": 145,
+          "0x6338": 2,
+          "0x6464": 10,
+          "0x6516": 307,
+          "0x663e": 36,
+          "0x66aa": 24,
+          "0x7112": 72,
+          "0x71da": 19,
+          "0x7656": 28,
+          "0x780e": 20,
+          "0x7852": 42,
+          "0x78f8": 12,
+          "0x7a28": 20
+        }
+      },
+      "dispatcher_0059a8": {
+        "entries": 858,
+        "direct": 0,
+        "via_005670": 858,
+        "direct_callers": {}
+      },
+      "timer_00e682": {
+        "entries": 4056,
+        "normal_rts": 4047,
+        "nonlocal_rts": 4,
+        "callers": {
+          "0x57d0": 861,
+          "0x256b8": 3195
+        },
+        "nonlocal_return_pcs": {
+          "0x558a": 3,
+          "0xdf1c": 1
+        }
+      }
+    },
+    "scenario_a": {
+      "frames": 1592,
+      "total_original_steps": 15493548,
+      "idle_steps": 8853218,
+      "non_idle_steps": 6640330,
+      "caller_005670": {
+        "entries": 772,
+        "from_005586": 772,
+        "from_other": 0,
+        "to_0059b8_jmp": 753,
+        "early_rts": 19,
+        "nonlocal_exits": 0,
+        "steps": 52455,
+        "callers": {
+          "0x5586": 772
+        },
+        "exits": {
+          "0x558a": 19,
+          "0x5cf8": 10,
+          "0x5dc8": 10,
+          "0x5de4": 30,
+          "0x61f6": 151,
+          "0x62e4": 84,
+          "0x6338": 1,
+          "0x6464": 5,
+          "0x6516": 97,
+          "0x663e": 12,
+          "0x66aa": 72,
+          "0x6738": 35,
+          "0x6eda": 10,
+          "0x6fe4": 24,
+          "0x701a": 18,
+          "0x705a": 30,
+          "0x7112": 39,
+          "0x7656": 28,
+          "0x7852": 43,
+          "0x792a": 24,
+          "0x7a28": 30
+        }
+      },
+      "dispatcher_0059a8": {
+        "entries": 753,
+        "direct": 0,
+        "via_005670": 753,
+        "direct_callers": {}
+      },
+      "timer_00e682": {
+        "entries": 2104,
+        "normal_rts": 2030,
+        "nonlocal_rts": 43,
+        "callers": {
+          "0x57d0": 772,
+          "0x1a54e": 424,
+          "0x1b7f2": 105,
+          "0x1bbf8": 337,
+          "0x1bf84": 350,
+          "0x1c4dc": 116
+        },
+        "nonlocal_return_pcs": {
+          "0x558a": 19,
+          "0xdf1c": 24
+        }
+      }
+    },
+    "scenario_b": {
+      "frames": 600,
+      "total_original_steps": 5773843,
+      "idle_steps": 3759080,
+      "non_idle_steps": 2014763,
+      "caller_005670": {
+        "entries": 299,
+        "from_005586": 299,
+        "from_other": 0,
+        "to_0059b8_jmp": 297,
+        "early_rts": 2,
+        "nonlocal_exits": 0,
+        "steps": 21261,
+        "callers": {
+          "0x5586": 299
+        },
+        "exits": {
+          "0x558a": 2,
+          "0x5c1a": 4,
+          "0x61f6": 21,
+          "0x62e4": 23,
+          "0x6338": 1,
+          "0x6464": 5,
+          "0x6516": 142,
+          "0x663e": 24,
+          "0x66aa": 24,
+          "0x7112": 24,
+          "0x71da": 19,
+          "0x7a28": 10
+        }
+      },
+      "dispatcher_0059a8": {
+        "entries": 297,
+        "direct": 0,
+        "via_005670": 297,
+        "direct_callers": {}
+      },
+      "timer_00e682": {
+        "entries": 299,
+        "normal_rts": 296,
+        "nonlocal_rts": 2,
+        "callers": {
+          "0x57d0": 299
+        },
+        "nonlocal_return_pcs": {
+          "0x558a": 2
+        }
+      }
+    }
+  },
+  "candidates": [
+    {
+      "target_pc": "0x0061F6",
+      "prompt_candidate": true,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 113,
+      "entries_a": 151,
+      "entries_b": 21,
+      "entries_total": 285,
+      "dynamic_steps_c": 11825,
+      "dynamic_steps_a": 17809,
+      "dynamic_steps_b": 2665,
+      "dynamic_steps_total": 32299,
+      "unique_pcs_c": 410,
+      "ram_writes_c": 1306,
+      "guest_cycles_c": 129738,
+      "entity_w0_c": {
+        "0x2": 113
+      },
+      "callers_c": {
+        "0x5586": 113
+      },
+      "return_pcs_c": {
+        "0x558a": 113
+      },
+      "boundary_audit": {
+        "entry_pc": "0x0061F6",
+        "min_pc": "0x0061F6",
+        "max_end_pc": "0x00626E",
+        "decoded_instructions": 19,
+        "estimated_blocks": 9,
+        "callees": [
+          "0x007DC8",
+          "0x0085E2",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BCC",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x00626C"
+        ],
+        "mmio_access_pcs": [
+          "0x006202",
+          "0x00620C"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x006216": {
+            "word": "0xCC47",
+            "error": "Unsupported opcode 0xCC47 at 0x006216"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x007656",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 28,
+      "entries_a": 28,
+      "entries_b": 0,
+      "entries_total": 56,
+      "dynamic_steps_c": 7002,
+      "dynamic_steps_a": 8824,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 15826,
+      "unique_pcs_c": 256,
+      "ram_writes_c": 253,
+      "guest_cycles_c": 68369,
+      "entity_w0_c": {
+        "0x2": 28
+      },
+      "callers_c": {
+        "0x5586": 28
+      },
+      "return_pcs_c": {
+        "0x558a": 28
+      },
+      "boundary_audit": {
+        "entry_pc": "0x007656",
+        "min_pc": "0x007656",
+        "max_end_pc": "0x00780E",
+        "decoded_instructions": 83,
+        "estimated_blocks": 34,
+        "callees": [
+          "0x0086B4",
+          "0x008778",
+          "0x008814",
+          "0x008910",
+          "0x008950",
+          "0x00E2D4",
+          "0x060004"
+        ],
+        "tail_exits": [],
+        "return_pcs": [
+          "0x0076C0",
+          "0x00770A",
+          "0x007740",
+          "0x0077AC",
+          "0x0077CC",
+          "0x00780C"
+        ],
+        "mmio_access_pcs": [
+          "0x007656",
+          "0x007692",
+          "0x0076C4",
+          "0x0076CA",
+          "0x0076D0",
+          "0x007718",
+          "0x007726",
+          "0x00774E",
+          "0x0077BA"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x0076DC": {
+            "word": "0x0830",
+            "error": "Unsupported opcode 0x0830 at 0x0076DC"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x0066AA",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 24,
+      "entries_a": 72,
+      "entries_b": 24,
+      "entries_total": 120,
+      "dynamic_steps_c": 2392,
+      "dynamic_steps_a": 7352,
+      "dynamic_steps_b": 2392,
+      "dynamic_steps_total": 12136,
+      "unique_pcs_c": 344,
+      "ram_writes_c": 470,
+      "guest_cycles_c": 29284,
+      "entity_w0_c": {
+        "0x2": 24
+      },
+      "callers_c": {
+        "0x5586": 24
+      },
+      "return_pcs_c": {
+        "0x558a": 24
+      },
+      "boundary_audit": {
+        "entry_pc": "0x0066AA",
+        "min_pc": "0x0066AA",
+        "max_end_pc": "0x006738",
+        "decoded_instructions": 41,
+        "estimated_blocks": 21,
+        "callees": [
+          "0x0064C4",
+          "0x00BCBA",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BNE",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x006736"
+        ],
+        "mmio_access_pcs": [
+          "0x0066B8"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x007112",
+      "prompt_candidate": true,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 72,
+      "entries_a": 39,
+      "entries_b": 24,
+      "entries_total": 135,
+      "dynamic_steps_c": 3912,
+      "dynamic_steps_a": 2123,
+      "dynamic_steps_b": 1302,
+      "dynamic_steps_total": 7337,
+      "unique_pcs_c": 162,
+      "ram_writes_c": 733,
+      "guest_cycles_c": 49324,
+      "entity_w0_c": {
+        "0x2": 72
+      },
+      "callers_c": {
+        "0x5586": 72
+      },
+      "return_pcs_c": {
+        "0x558a": 72
+      },
+      "boundary_audit": {
+        "entry_pc": "0x007112",
+        "min_pc": "0x007112",
+        "max_end_pc": "0x007198",
+        "decoded_instructions": 33,
+        "estimated_blocks": 19,
+        "callees": [
+          "0x006E7A",
+          "0x007198",
+          "0x0085E2",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BEQ",
+            "0x006E4A"
+          ],
+          [
+            "BRA",
+            "0x005E78"
+          ]
+        ],
+        "return_pcs": [
+          "0x007132",
+          "0x00717C"
+        ],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x006738",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 0,
+      "entries_a": 35,
+      "entries_b": 0,
+      "entries_total": 35,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 6968,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 6968,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x006738",
+        "min_pc": "0x006738",
+        "max_end_pc": "0x0067DE",
+        "decoded_instructions": 49,
+        "estimated_blocks": 25,
+        "callees": [
+          "0x0064C4",
+          "0x00BCBA",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BNE",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x00675A",
+          "0x0067DC"
+        ],
+        "mmio_access_pcs": [
+          "0x006764"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x007852",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 42,
+      "entries_a": 43,
+      "entries_b": 0,
+      "entries_total": 85,
+      "dynamic_steps_c": 3333,
+      "dynamic_steps_a": 3569,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 6902,
+      "unique_pcs_c": 262,
+      "ram_writes_c": 195,
+      "guest_cycles_c": 34577,
+      "entity_w0_c": {
+        "0x2": 42
+      },
+      "callers_c": {
+        "0x5586": 42
+      },
+      "return_pcs_c": {
+        "0x558a": 42
+      },
+      "boundary_audit": {
+        "entry_pc": "0x007852",
+        "min_pc": "0x007852",
+        "max_end_pc": "0x0078F8",
+        "decoded_instructions": 35,
+        "estimated_blocks": 28,
+        "callees": [
+          "0x007D8A",
+          "0x0085E2",
+          "0x0086B4",
+          "0x008778",
+          "0x008814",
+          "0x008910",
+          "0x008950",
+          "0x00BCBA",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BCS",
+            "0x00770C"
+          ],
+          [
+            "BCS",
+            "0x007742"
+          ],
+          [
+            "BCS",
+            "0x00776C"
+          ],
+          [
+            "BCS",
+            "0x0077AE"
+          ],
+          [
+            "BCS",
+            "0x0077CE"
+          ],
+          [
+            "BEQ",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x0078D4",
+          "0x0078F6"
+        ],
+        "mmio_access_pcs": [
+          "0x0078AA",
+          "0x0078CE",
+          "0x0078D6"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x0071DA",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 19,
+      "entries_a": 0,
+      "entries_b": 19,
+      "entries_total": 38,
+      "dynamic_steps_c": 2669,
+      "dynamic_steps_a": 0,
+      "dynamic_steps_b": 2669,
+      "dynamic_steps_total": 5338,
+      "unique_pcs_c": 199,
+      "ram_writes_c": 814,
+      "guest_cycles_c": 31528,
+      "entity_w0_c": {
+        "0x2": 19
+      },
+      "callers_c": {
+        "0x5586": 19
+      },
+      "return_pcs_c": {
+        "0x558a": 19
+      },
+      "boundary_audit": {
+        "entry_pc": "0x0071DA",
+        "min_pc": "0x0071DA",
+        "max_end_pc": "0x007262",
+        "decoded_instructions": 34,
+        "estimated_blocks": 18,
+        "callees": [
+          "0x007DC8",
+          "0x009D00"
+        ],
+        "tail_exits": [
+          [
+            "BNE",
+            "0x0062CC"
+          ],
+          [
+            "BRA",
+            "0x005E78"
+          ]
+        ],
+        "return_pcs": [
+          "0x007260"
+        ],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x00792A",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 0,
+      "entries_a": 24,
+      "entries_b": 0,
+      "entries_total": 24,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 4035,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 4035,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x00792A",
+        "min_pc": "0x00792A",
+        "max_end_pc": "0x007972",
+        "decoded_instructions": 16,
+        "estimated_blocks": 9,
+        "callees": [
+          "0x008910",
+          "0x00BCC4",
+          "0x00BCEA"
+        ],
+        "tail_exits": [
+          [
+            "BRA",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x007970"
+        ],
+        "mmio_access_pcs": [
+          "0x00792A",
+          "0x007938",
+          "0x00794C"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x007972": {
+            "word": "0x5239",
+            "error": "Unsupported opcode 0x5239 at 0x007972"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x005DE4",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 0,
+      "entries_a": 30,
+      "entries_b": 0,
+      "entries_total": 30,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 2655,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 2655,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x005DE4",
+        "min_pc": "0x005DE4",
+        "max_end_pc": "0x005F70",
+        "decoded_instructions": 86,
+        "estimated_blocks": 50,
+        "callees": [
+          "0x007D8A",
+          "0x0086B4",
+          "0x008778",
+          "0x008814",
+          "0x008910",
+          "0x008950",
+          "0x009C40",
+          "0x009C7C",
+          "0x00E2D4",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BCS",
+            "0x00770C"
+          ],
+          [
+            "BCS",
+            "0x007742"
+          ],
+          [
+            "BCS",
+            "0x00776C"
+          ],
+          [
+            "BCS",
+            "0x0077AE"
+          ],
+          [
+            "BCS",
+            "0x0077CE"
+          ],
+          [
+            "BEQ",
+            "0x0062CC"
+          ],
+          [
+            "BRA",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x005E04",
+          "0x005E60",
+          "0x005EE6"
+        ],
+        "mmio_access_pcs": [
+          "0x005F1E",
+          "0x005EA2",
+          "0x005EBE",
+          "0x005EC4"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x005F0E": {
+            "word": "0x4EF9",
+            "error": "Unsupported opcode 0x4EF9 at 0x005F0E"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x0078F8",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 12,
+      "entries_a": 0,
+      "entries_b": 0,
+      "entries_total": 12,
+      "dynamic_steps_c": 1548,
+      "dynamic_steps_a": 0,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 1548,
+      "unique_pcs_c": 317,
+      "ram_writes_c": 221,
+      "guest_cycles_c": 16429,
+      "entity_w0_c": {
+        "0x2": 12
+      },
+      "callers_c": {
+        "0x5586": 12
+      },
+      "return_pcs_c": {
+        "0x558a": 12
+      },
+      "boundary_audit": {
+        "entry_pc": "0x0078F8",
+        "min_pc": "0x0078F8",
+        "max_end_pc": "0x00792A",
+        "decoded_instructions": 12,
+        "estimated_blocks": 6,
+        "callees": [
+          "0x00BCBA",
+          "0x00BCEA"
+        ],
+        "tail_exits": [
+          [
+            "BNE",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x007928"
+        ],
+        "mmio_access_pcs": [
+          "0x0078F8",
+          "0x007906"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x006EDA",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 0,
+      "entries_a": 10,
+      "entries_b": 0,
+      "entries_total": 10,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 1141,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 1141,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x006EDA",
+        "min_pc": "0x006EDA",
+        "max_end_pc": "0x006F3C",
+        "decoded_instructions": 26,
+        "estimated_blocks": 13,
+        "callees": [
+          "0x007198",
+          "0x0085E2"
+        ],
+        "tail_exits": [
+          [
+            "BEQ",
+            "0x006E4A"
+          ],
+          [
+            "BRA",
+            "0x005E78"
+          ],
+          [
+            "BRA",
+            "0x00BCBA"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [
+          "0x006EE8",
+          "0x006F2C"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x007A28",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 20,
+      "entries_a": 30,
+      "entries_b": 10,
+      "entries_total": 60,
+      "dynamic_steps_c": 227,
+      "dynamic_steps_a": 348,
+      "dynamic_steps_b": 117,
+      "dynamic_steps_total": 692,
+      "unique_pcs_c": 94,
+      "ram_writes_c": 87,
+      "guest_cycles_c": 3238,
+      "entity_w0_c": {
+        "0x2": 20
+      },
+      "callers_c": {
+        "0x5586": 20
+      },
+      "return_pcs_c": {
+        "0x558a": 20
+      },
+      "boundary_audit": {
+        "entry_pc": "0x007A28",
+        "min_pc": "0x007A28",
+        "max_end_pc": "0x007C3C",
+        "decoded_instructions": 57,
+        "estimated_blocks": 28,
+        "callees": [
+          "0x060004"
+        ],
+        "tail_exits": [],
+        "return_pcs": [
+          "0x007B28"
+        ],
+        "mmio_access_pcs": [
+          "0x007A32",
+          "0x007A74",
+          "0x007B64",
+          "0x007BF6",
+          "0x007C04",
+          "0x007C10",
+          "0x007BEC",
+          "0x007B84",
+          "0x007B7A",
+          "0x007B9A"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x007A7A": {
+            "word": "0x1231",
+            "error": "Unsupported MOVE src mode=6 reg=1 at 0x007A7A"
+          },
+          "0x007BA8": {
+            "word": "0x4880",
+            "error": "Unsupported opcode 0x4880 at 0x007BA8"
+          },
+          "0x007BD8": {
+            "word": "0x4880",
+            "error": "Unsupported opcode 0x4880 at 0x007BD8"
+          },
+          "0x007C16": {
+            "word": "0x5479",
+            "error": "Unsupported opcode 0x5479 at 0x007C16"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x006464",
+      "prompt_candidate": false,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 10,
+      "entries_a": 5,
+      "entries_b": 5,
+      "entries_total": 20,
+      "dynamic_steps_c": 218,
+      "dynamic_steps_a": 103,
+      "dynamic_steps_b": 109,
+      "dynamic_steps_total": 430,
+      "unique_pcs_c": 84,
+      "ram_writes_c": 106,
+      "guest_cycles_c": 2953,
+      "entity_w0_c": {
+        "0x2": 10
+      },
+      "callers_c": {
+        "0x5586": 10
+      },
+      "return_pcs_c": {
+        "0x558a": 10
+      },
+      "boundary_audit": {
+        "entry_pc": "0x006464",
+        "min_pc": "0x006464",
+        "max_end_pc": "0x0064C4",
+        "decoded_instructions": 29,
+        "estimated_blocks": 12,
+        "callees": [
+          "0x017FF2",
+          "0x060004"
+        ],
+        "tail_exits": [
+          [
+            "BEQ",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x0064C2"
+        ],
+        "mmio_access_pcs": [
+          "0x00647C"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x006338",
+      "prompt_candidate": true,
+      "ownership_status": "UNOWNED_CANDIDATE",
+      "entries_c": 2,
+      "entries_a": 1,
+      "entries_b": 1,
+      "entries_total": 4,
+      "dynamic_steps_c": 208,
+      "dynamic_steps_a": 104,
+      "dynamic_steps_b": 104,
+      "dynamic_steps_total": 416,
+      "unique_pcs_c": 88,
+      "ram_writes_c": 32,
+      "guest_cycles_c": 2505,
+      "entity_w0_c": {
+        "0x2": 2
+      },
+      "callers_c": {
+        "0x5586": 2
+      },
+      "return_pcs_c": {
+        "0x558a": 2
+      },
+      "boundary_audit": {
+        "entry_pc": "0x006338",
+        "min_pc": "0x006338",
+        "max_end_pc": "0x006358",
+        "decoded_instructions": 9,
+        "estimated_blocks": 5,
+        "callees": [
+          "0x0063DA",
+          "0x007DC8",
+          "0x0083D4"
+        ],
+        "tail_exits": [],
+        "return_pcs": [],
+        "mmio_access_pcs": [
+          "0x00634A"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {
+          "0x006358": {
+            "word": "0xB400",
+            "error": "Unsupported opcode 0xB400 at 0x006358"
+          }
+        },
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x006516",
+      "prompt_candidate": true,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 307,
+      "entries_a": 97,
+      "entries_b": 142,
+      "entries_total": 546,
+      "dynamic_steps_c": 32584,
+      "dynamic_steps_a": 13903,
+      "dynamic_steps_b": 15511,
+      "dynamic_steps_total": 61998,
+      "unique_pcs_c": 570,
+      "ram_writes_c": 3074,
+      "guest_cycles_c": 389737,
+      "entity_w0_c": {
+        "0x2": 307
+      },
+      "callers_c": {
+        "0x5586": 307
+      },
+      "return_pcs_c": {
+        "0x558a": 307
+      },
+      "boundary_audit": {
+        "entry_pc": "0x006516",
+        "min_pc": "0x006516",
+        "max_end_pc": "0x00651A",
+        "decoded_instructions": 1,
+        "estimated_blocks": 2,
+        "callees": [
+          "0x007DC8"
+        ],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x00651A"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x006516(m68k_006516_step_block1.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x0062E4",
+      "prompt_candidate": true,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 145,
+      "entries_a": 84,
+      "entries_b": 23,
+      "entries_total": 252,
+      "dynamic_steps_c": 13320,
+      "dynamic_steps_a": 8875,
+      "dynamic_steps_b": 2040,
+      "dynamic_steps_total": 24235,
+      "unique_pcs_c": 411,
+      "ram_writes_c": 1530,
+      "guest_cycles_c": 158179,
+      "entity_w0_c": {
+        "0x2": 145
+      },
+      "callers_c": {
+        "0x5586": 145
+      },
+      "return_pcs_c": {
+        "0x558a": 145
+      },
+      "boundary_audit": {
+        "entry_pc": "0x0062E4",
+        "min_pc": "0x0062E4",
+        "max_end_pc": "0x0062E8",
+        "decoded_instructions": 1,
+        "estimated_blocks": 2,
+        "callees": [
+          "0x007DC8"
+        ],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x0062E8"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x0062E4(m68k_0062e4_instruction_step.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x006FE4",
+      "prompt_candidate": false,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 0,
+      "entries_a": 24,
+      "entries_b": 0,
+      "entries_total": 24,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 3915,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 3915,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x006FE4",
+        "min_pc": "0x006FE4",
+        "max_end_pc": "0x006FE8",
+        "decoded_instructions": 1,
+        "estimated_blocks": 2,
+        "callees": [
+          "0x007074"
+        ],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x006FE8"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x006FE4(m68k_006fe4_instruction_step.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x00663E",
+      "prompt_candidate": false,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 36,
+      "entries_a": 12,
+      "entries_b": 24,
+      "entries_total": 72,
+      "dynamic_steps_c": 1670,
+      "dynamic_steps_a": 552,
+      "dynamic_steps_b": 1137,
+      "dynamic_steps_total": 3359,
+      "unique_pcs_c": 86,
+      "ram_writes_c": 584,
+      "guest_cycles_c": 23994,
+      "entity_w0_c": {
+        "0x2": 36
+      },
+      "callers_c": {
+        "0x5586": 36
+      },
+      "return_pcs_c": {
+        "0x558a": 36
+      },
+      "boundary_audit": {
+        "entry_pc": "0x00663E",
+        "min_pc": "0x00663E",
+        "max_end_pc": "0x006644",
+        "decoded_instructions": 1,
+        "estimated_blocks": 1,
+        "callees": [],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x006644"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x00663E(m68k_00663e_instruction_step.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x00780E",
+      "prompt_candidate": false,
+      "ownership_status": "ALREADY_M15_244",
+      "entries_c": 20,
+      "entries_a": 0,
+      "entries_b": 0,
+      "entries_total": 20,
+      "dynamic_steps_c": 2709,
+      "dynamic_steps_a": 0,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 2709,
+      "unique_pcs_c": 113,
+      "ram_writes_c": 125,
+      "guest_cycles_c": 26091,
+      "entity_w0_c": {
+        "0x2": 20
+      },
+      "callers_c": {
+        "0x5586": 20
+      },
+      "return_pcs_c": {
+        "0x558a": 20
+      },
+      "boundary_audit": {
+        "entry_pc": "0x00780E",
+        "min_pc": "0x00780E",
+        "max_end_pc": "0x007852",
+        "decoded_instructions": 20,
+        "estimated_blocks": 8,
+        "callees": [
+          "0x00BCBA"
+        ],
+        "tail_exits": [
+          [
+            "BRA",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x007844"
+        ],
+        "mmio_access_pcs": [
+          "0x007846"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x005CF8",
+      "prompt_candidate": false,
+      "ownership_status": "ALREADY_M15_244",
+      "entries_c": 0,
+      "entries_a": 10,
+      "entries_b": 0,
+      "entries_total": 10,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 2690,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 2690,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x005CF8",
+        "min_pc": "0x005CF8",
+        "max_end_pc": "0x005DC8",
+        "decoded_instructions": 49,
+        "estimated_blocks": 19,
+        "callees": [
+          "0x00B79A",
+          "0x060004"
+        ],
+        "tail_exits": [],
+        "return_pcs": [
+          "0x005DA4",
+          "0x005DBE",
+          "0x005DC6"
+        ],
+        "mmio_access_pcs": [
+          "0x005D6C"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x00701A",
+      "prompt_candidate": false,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 0,
+      "entries_a": 18,
+      "entries_b": 0,
+      "entries_total": 18,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 2639,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 2639,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x00701A",
+        "min_pc": "0x00701A",
+        "max_end_pc": "0x00701E",
+        "decoded_instructions": 1,
+        "estimated_blocks": 2,
+        "callees": [
+          "0x007074"
+        ],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x00701E"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x00701A(m68k_00701a_instruction_step.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x005C1A",
+      "prompt_candidate": false,
+      "ownership_status": "ALREADY_M15_244",
+      "entries_c": 4,
+      "entries_a": 0,
+      "entries_b": 4,
+      "entries_total": 8,
+      "dynamic_steps_c": 99,
+      "dynamic_steps_a": 0,
+      "dynamic_steps_b": 99,
+      "dynamic_steps_total": 198,
+      "unique_pcs_c": 61,
+      "ram_writes_c": 53,
+      "guest_cycles_c": 1508,
+      "entity_w0_c": {
+        "0x2": 4
+      },
+      "callers_c": {
+        "0x5586": 4
+      },
+      "return_pcs_c": {
+        "0x558a": 4
+      },
+      "boundary_audit": {
+        "entry_pc": "0x005C1A",
+        "min_pc": "0x005C1A",
+        "max_end_pc": "0x005C82",
+        "decoded_instructions": 22,
+        "estimated_blocks": 3,
+        "callees": [
+          "0x005C82",
+          "0x060004"
+        ],
+        "tail_exits": [],
+        "return_pcs": [
+          "0x005C80"
+        ],
+        "mmio_access_pcs": [
+          "0x005C34",
+          "0x005C68",
+          "0x005C7A"
+        ],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x00705A",
+      "prompt_candidate": false,
+      "ownership_status": "PRODUCTION_OVERLAP",
+      "entries_c": 0,
+      "entries_a": 30,
+      "entries_b": 0,
+      "entries_total": 30,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 100,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 100,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x00705A",
+        "min_pc": "0x00705A",
+        "max_end_pc": "0x007060",
+        "decoded_instructions": 1,
+        "estimated_blocks": 1,
+        "callees": [],
+        "tail_exits": [
+          [
+            "FALL_INTO_PROD",
+            "0x007060"
+          ]
+        ],
+        "return_pcs": [],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 1,
+        "production_overlap_sample": [
+          "0x00705A(m68k_00701a_instruction_step.cpp)"
+        ],
+        "unsupported_opcodes": {},
+        "clean_boundary": false
+      }
+    },
+    {
+      "target_pc": "0x005DC8",
+      "prompt_candidate": false,
+      "ownership_status": "ALREADY_M15_244",
+      "entries_c": 0,
+      "entries_a": 10,
+      "entries_b": 0,
+      "entries_total": 10,
+      "dynamic_steps_c": 0,
+      "dynamic_steps_a": 43,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 43,
+      "unique_pcs_c": 0,
+      "ram_writes_c": 0,
+      "guest_cycles_c": 0,
+      "entity_w0_c": {},
+      "callers_c": {},
+      "return_pcs_c": {},
+      "boundary_audit": {
+        "entry_pc": "0x005DC8",
+        "min_pc": "0x005DC8",
+        "max_end_pc": "0x005DE4",
+        "decoded_instructions": 7,
+        "estimated_blocks": 3,
+        "callees": [],
+        "tail_exits": [],
+        "return_pcs": [
+          "0x005DE2"
+        ],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    },
+    {
+      "target_pc": "0x005CC8",
+      "prompt_candidate": false,
+      "ownership_status": "ALREADY_M15_244",
+      "entries_c": 4,
+      "entries_a": 0,
+      "entries_b": 0,
+      "entries_total": 4,
+      "dynamic_steps_c": 35,
+      "dynamic_steps_a": 0,
+      "dynamic_steps_b": 0,
+      "dynamic_steps_total": 35,
+      "unique_pcs_c": 17,
+      "ram_writes_c": 19,
+      "guest_cycles_c": 600,
+      "entity_w0_c": {
+        "0x2": 4
+      },
+      "callers_c": {
+        "0x5586": 4
+      },
+      "return_pcs_c": {
+        "0x558a": 4
+      },
+      "boundary_audit": {
+        "entry_pc": "0x005CC8",
+        "min_pc": "0x005CC8",
+        "max_end_pc": "0x005CF8",
+        "decoded_instructions": 11,
+        "estimated_blocks": 3,
+        "callees": [],
+        "tail_exits": [
+          [
+            "BRA",
+            "0x0062CC"
+          ]
+        ],
+        "return_pcs": [
+          "0x005CF6"
+        ],
+        "mmio_access_pcs": [],
+        "production_overlap_count": 0,
+        "production_overlap_sample": [],
+        "unsupported_opcodes": {},
+        "clean_boundary": true
+      }
+    }
+  ]
+}

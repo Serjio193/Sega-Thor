@@ -29,6 +29,9 @@ def format_operand(op: Operand) -> str:
         return f"#0x{op.val & 0xFFFFFFFF:X}"
     if op.kind == "disp_a":
         return f"{op.val}(A{op.reg})"
+    if op.kind == "disp_ax":
+        idx = f"{'A' if (op.ext & 0x8000) else 'D'}{(op.ext >> 12) & 7}.{'l' if (op.ext & 0x0800) else 'w'}"
+        return f"{op.val}(A{op.reg},{idx})"
     if op.kind == "indir_a":
         return f"(A{op.reg})"
     if op.kind == "postinc_a":
@@ -59,7 +62,7 @@ def operand_to_ir_dict(op: Operand) -> dict:
         "postinc_a": "PostIncrement", "predec_a": "PreDecrement",
     }
     rk = "Data" if op.kind == "reg_d" else ("Address" if op.kind in ("reg_a", "disp_a", "indir_a", "postinc_a", "predec_a") else "None")
-    return {
+    d = {
         "kind": kind_map.get(op.kind, op.kind),
         "raw_kind": op.kind,
         "reg_kind": rk,
@@ -67,6 +70,10 @@ def operand_to_ir_dict(op: Operand) -> dict:
         "val": op.val,
         "size": op.size,
     }
+    ext = getattr(op, "ext", 0)
+    if ext:
+        d["ext"] = ext
+    return d
 
 
 def reconstruct_cfg(
@@ -75,8 +82,18 @@ def reconstruct_cfg(
     jump_table_base: int,
     jump_table_entries: int,
     compiled_targets: Set[int],
+    compiled_windows: List[Tuple[int, int]] | None = None,
+    stop_pcs: Set[int] | None = None,
 ) -> dict:
     """Reconstruct complete reachable CFG, split into true basic blocks, and emit 1:1 IR."""
+    if compiled_windows is None:
+        compiled_windows = [(0x0059A8, 0x0059BA), (0x005C1A, 0x005DE4), (0x00780E, 0x007852)]
+    stop_set = set(stop_pcs or ())
+
+    def in_windows(addr: int | None) -> bool:
+        if addr is None or addr in stop_set:
+            return False
+        return any(s <= addr < e for s, e in compiled_windows)
     # Allowed contiguous code windows so external BRA targets outside these windows are classified UncompiledExit
     decoded_map: Dict[int, DecodedInstruction] = {}
     reachable_pcs: Set[int] = set()
@@ -97,24 +114,31 @@ def reconstruct_cfg(
         if m == "RTS" or m == "RTE":
             raw_edges.append((pc, 0, "RETURN"))
         elif m == "JMP":
-            # Dynamic jump table at 0x0059B8
-            for i in range(jump_table_entries):
-                t_addr = jump_table_base + i * 2
-                off = struct.unpack_from(">h", rom, t_addr)[0]
-                tgt = (t_addr + off) & 0xFFFFFF
-                if tgt in compiled_targets:
-                    raw_edges.append((pc, tgt, "DYNAMIC_COMPILED"))
+            if insn.branch_target is not None:
+                tgt = insn.branch_target
+                if in_windows(tgt):
+                    raw_edges.append((pc, tgt, "UNCONDITIONAL"))
                     leaders.add(tgt)
                     if tgt not in decoded_map:
                         queue.append(tgt)
                 else:
-                    raw_edges.append((pc, tgt, "DYNAMIC_UNCOMPILED_EXIT"))
+                    raw_edges.append((pc, tgt, "UNCOMPILED_EXIT"))
+            else:
+                # Dynamic jump table at 0x0059B8
+                for i in range(jump_table_entries):
+                    t_addr = jump_table_base + i * 2
+                    off = struct.unpack_from(">h", rom, t_addr)[0]
+                    tgt = (t_addr + off) & 0xFFFFFF
+                    if tgt in compiled_targets:
+                        raw_edges.append((pc, tgt, "DYNAMIC_COMPILED"))
+                        leaders.add(tgt)
+                        if tgt not in decoded_map:
+                            queue.append(tgt)
+                    else:
+                        raw_edges.append((pc, tgt, "DYNAMIC_UNCOMPILED_EXIT"))
         elif m == "BRA":
             tgt = insn.branch_target
-            # If BRA jumps to an uncompiled external address outside known cluster or not in entry functions:
-            # Check if tgt is within compiled_targets/local internal range (0x005C1A..0x005DE4 or 0x00780E..0x007852)
-            in_scope = (0x0059A8 <= tgt < 0x0059BA) or (0x005C1A <= tgt < 0x005DE4) or (0x00780E <= tgt < 0x007852)
-            if in_scope:
+            if in_windows(tgt):
                 raw_edges.append((pc, tgt, "UNCONDITIONAL"))
                 leaders.add(tgt)
                 if tgt not in decoded_map:
@@ -123,8 +147,20 @@ def reconstruct_cfg(
                 raw_edges.append((pc, tgt, "UNCOMPILED_EXIT"))
         elif m in CONDITIONAL_BRANCHES:
             tgt = insn.branch_target
-            in_scope = (0x0059A8 <= tgt < 0x0059BA) or (0x005C1A <= tgt < 0x005DE4) or (0x00780E <= tgt < 0x007852)
-            if in_scope:
+            if in_windows(tgt):
+                raw_edges.append((pc, tgt, "CONDITIONAL_TAKEN"))
+                leaders.add(tgt)
+                if tgt not in decoded_map:
+                    queue.append(tgt)
+            else:
+                raw_edges.append((pc, tgt, "UNCOMPILED_EXIT"))
+            raw_edges.append((pc, next_pc, "CONDITIONAL_FALLTHROUGH"))
+            leaders.add(next_pc)
+            if next_pc not in decoded_map:
+                queue.append(next_pc)
+        elif m == "DBRA":
+            tgt = insn.branch_target
+            if in_windows(tgt):
                 raw_edges.append((pc, tgt, "CONDITIONAL_TAKEN"))
                 leaders.add(tgt)
                 if tgt not in decoded_map:
@@ -137,7 +173,7 @@ def reconstruct_cfg(
                 queue.append(next_pc)
         elif m in ("BSR", "JSR"):
             tgt = insn.branch_target
-            if tgt in entry_roots or (0x005C1A <= tgt < 0x005DE4) or (0x00780E <= tgt < 0x007852):
+            if tgt in entry_roots or in_windows(tgt):
                 raw_edges.append((pc, tgt, "CALL_COMPILED"))
                 leaders.add(tgt)
                 if tgt not in decoded_map:
@@ -189,7 +225,7 @@ def reconstruct_cfg(
             cur_block_start = pc
         cur_insns.append(insn)
         m = insn.mnemonic
-        if m in ("RTS", "RTE", "JMP", "BRA", "BSR", "JSR") or m in CONDITIONAL_BRANCHES:
+        if m in ("RTS", "RTE", "JMP", "BRA", "BSR", "JSR", "DBRA") or m in CONDITIONAL_BRANCHES:
             flush_block()
     flush_block()
 
@@ -205,7 +241,7 @@ def reconstruct_cfg(
     for b in blocks:
         last = b["insns"][-1]
         m = last.mnemonic
-        if m not in ("RTS", "RTE", "JMP", "BRA", "BSR", "JSR") and m not in CONDITIONAL_BRANCHES:
+        if m not in ("RTS", "RTE", "JMP", "BRA", "BSR", "JSR", "DBRA") and m not in CONDITIONAL_BRANCHES:
             nxt = last.pc + len(last.raw_words) * 2
             if nxt in decoded_map:
                 key = (last.pc, nxt, "UNCONDITIONAL")

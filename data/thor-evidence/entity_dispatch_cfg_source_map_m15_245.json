@@ -1,0 +1,5224 @@
+{
+  "schema": "oasis.cfg-source-coverage-audit.m15_245.v1",
+  "milestone": "M15.245",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "NEW_UNIQUE_ROM_INSTRUCTIONS": 508,
+  "TOTAL_COMPILED_ROM_INSTRUCTIONS_M15_244_PLUS_245": 638,
+  "NEW_CFG_BLOCKS": 230,
+  "TOTAL_CFG_BLOCKS_M15_244_PLUS_245": 273,
+  "NEW_CFG_EDGES": {
+    "total_edges": 397,
+    "conditional_edges": 205,
+    "unconditional_edges": 37,
+    "dynamic_edges": 0,
+    "dynamic_compiled_edges": 0,
+    "dynamic_uncompiled_edges": 0,
+    "call_edges": 57,
+    "return_edges": 25,
+    "uncompiled_exit_edges": 68
+  },
+  "OVERLAP_WITH_PRODUCTION": 0,
+  "OVERLAP_WITH_M15_244": 0,
+  "generated_ir_sha256": "1ea72912c21af03847ef411366cabf61ad25dfbb2bc66fc0e9ad0b2621a6f690",
+  "generated_cpp_umbrella_sha256": "e0d168ab69f67a787b9c47be10cae8cd84e8123654e46d08db755a158c2c945e",
+  "generated_files": {
+    "exp_dispatch_common.hpp": {
+      "lines": 2,
+      "sha256": "9acac3c0f60e0228f0d7757ff8d32b9a484cf9a7d11f1cab688319f52606f9a6"
+    },
+    "exp_dispatch_part0.hpp": {
+      "lines": 253,
+      "sha256": "58baeac311786efc36b920b9b7e66a9465f640242b07feea051bcc946a08a10a"
+    },
+    "exp_dispatch_part1.hpp": {
+      "lines": 253,
+      "sha256": "44250cb5c566399d35723f92d22a7af1c0a38de8b71e74b702b1b3d80a397ef5"
+    },
+    "exp_dispatch_part2.hpp": {
+      "lines": 248,
+      "sha256": "7a3e7b2871a3e49f8ec3af9c76474f754525a9a8e016be9c2da270c965ed3e2f"
+    },
+    "exp_dispatch_part3.hpp": {
+      "lines": 257,
+      "sha256": "7f1ebf780da3d090fb2c8c6d43cc6f0f00fdb0b60ba77f1d84001049c9d7a27d"
+    },
+    "exp_dispatch_part4.hpp": {
+      "lines": 254,
+      "sha256": "d04a140c195d04b1adbe3a185904be42172e707d5ef9bfc9d19eb2297275273d"
+    },
+    "exp_dispatch_part5.hpp": {
+      "lines": 253,
+      "sha256": "5d253c0898793527339c35c2e8430b32c016586549f1b8b98bc95a3de177cfa8"
+    },
+    "exp_dispatch_part6.hpp": {
+      "lines": 256,
+      "sha256": "0dc9959068c7bef202577ba2404a467f1385fe118b02d4c04f1cd3eeab501364"
+    },
+    "exp_dispatch_part7.hpp": {
+      "lines": 259,
+      "sha256": "b7fd3cf8b078262611fdfccf7dc7c49132bf05dc1665c0385d8b3f8fc25d003b"
+    },
+    "exp_dispatch_part8.hpp": {
+      "lines": 254,
+      "sha256": "e8df4bb8d4363e9c7d0a8132bd6857722b6bdde53fae86e0bb1b623af59fbada"
+    },
+    "exp_dispatch_part9.hpp": {
+      "lines": 255,
+      "sha256": "ca6a87b8c16946c0f81770c7adcbdc868d9be9ce30655e8ccfafabb44a1d51db"
+    },
+    "exp_dispatch_part10.hpp": {
+      "lines": 253,
+      "sha256": "1abe0b0b80241b66ebe188b43b9332b8f5c51e530c80cfa3641c59701c8516cc"
+    },
+    "exp_dispatch_part11.hpp": {
+      "lines": 257,
+      "sha256": "195dc4743a9b16df6e93d8d59034acdd9da472e73162ba373d7c28ba3865256f"
+    },
+    "exp_dispatch_part12.hpp": {
+      "lines": 258,
+      "sha256": "65e193787971f5d671a63007b8fe9972824a7f58b236bc08f608e578985471de"
+    },
+    "exp_dispatch_part13.hpp": {
+      "lines": 258,
+      "sha256": "24797194bd708fa96bc2012bbc4d6ed79d6b101441b100111530f3132b30079f"
+    },
+    "exp_dispatch_part14.hpp": {
+      "lines": 257,
+      "sha256": "ba1de264890fb4a100e35ddbe5107d65ee1bf4a3a7702f675865942e84f25a2f"
+    },
+    "exp_dispatch_part15.hpp": {
+      "lines": 256,
+      "sha256": "707b84d06913844f081a404303a0b18800c5807acf387d08369e6d94f744d061"
+    },
+    "exp_dispatch_part16.hpp": {
+      "lines": 121,
+      "sha256": "10d4789a75caad2b85228ed339aea5f5bd8270c41637c66e52bd159b9dc930e1"
+    },
+    "exp_dispatch_router_p0.hpp": {
+      "lines": 204,
+      "sha256": "d10eb9fe04185c767ae68c54b40d394a65929e45c3e8886f5022f98a00329422"
+    },
+    "exp_dispatch_router_p1.hpp": {
+      "lines": 204,
+      "sha256": "5d61350fbadfabbf1aa9acfa8aaf695a6a25a63d025dab679d9a69ded5f04fae"
+    },
+    "exp_dispatch_router_p2.hpp": {
+      "lines": 172,
+      "sha256": "8df4856db8f2a7bc866ff36dd1f909ff693b800625b6b6f16039c214bab70f63"
+    },
+    "exp_dispatch_router.hpp": {
+      "lines": 81,
+      "sha256": "db899f15e055e0a020d7460d3668ad58c38428de7eb2fd0133fd24e204a875fb"
+    },
+    "exp_dispatch_mode_b_p0.hpp": {
+      "lines": 248,
+      "sha256": "9c9938abc9b65e9e9ee39c4f3e1ebb02984e4296e80e8b93003c0d93c005bf39"
+    },
+    "exp_dispatch_mode_b_p1.hpp": {
+      "lines": 246,
+      "sha256": "ebdb7f2351ef4c98a4961dfcd6d2835d50f778bd167e21138a7ade1645ff6eef"
+    },
+    "exp_dispatch_mode_b_p2.hpp": {
+      "lines": 247,
+      "sha256": "6b65394ae177a32f4acea98d6739fc8923358fe3616fe2da9976d2a4bbe896c3"
+    },
+    "exp_dispatch_mode_b_p3.hpp": {
+      "lines": 248,
+      "sha256": "2b2858ea4a1fcac34ef363fa3a6c4e785acf3249631837e4dfd90740e07c6916"
+    },
+    "exp_dispatch_mode_b_p4.hpp": {
+      "lines": 19,
+      "sha256": "0928619503acc2abd480cb7e269f1161299c579faa6ea65b6a06f9e6815aa697"
+    },
+    "exp_dispatch_mode_b.hpp": {
+      "lines": 27,
+      "sha256": "c536d9db05ca572483de8963b1c746c3eadea02daa7c489d933778bdafad8af8"
+    },
+    "exp_dispatch_portable_routines.hpp": {
+      "lines": 20,
+      "sha256": "e0d168ab69f67a787b9c47be10cae8cd84e8123654e46d08db755a158c2c945e"
+    }
+  },
+  "mappings": [
+    {
+      "ROM_PC": "0x005E78",
+      "ROM_BYTES": "4280",
+      "DECODED_INSTRUCTION": "CLR.l D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0000_0x005E78"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "4..9"
+    },
+    {
+      "ROM_PC": "0x005E7A",
+      "ROM_BYTES": "3D40002E",
+      "DECODED_INSTRUCTION": "MOVE.w D0, 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0001_0x005E7A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "10..17"
+    },
+    {
+      "ROM_PC": "0x005E7E",
+      "ROM_BYTES": "2D400010",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0002_0x005E7E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "18..25"
+    },
+    {
+      "ROM_PC": "0x005E82",
+      "ROM_BYTES": "61003DBC",
+      "DECODED_INSTRUCTION": "BSR.w 0x009C40",
+      "IR_OPERATION_IDS": [
+        "IR245_0003_0x005E82"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "26..33"
+    },
+    {
+      "ROM_PC": "0x005E86",
+      "ROM_BYTES": "08050007",
+      "DECODED_INSTRUCTION": "BTST.l #0x7, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0004_0x005E86"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "34..41"
+    },
+    {
+      "ROM_PC": "0x005E8A",
+      "ROM_BYTES": "6700005C",
+      "DECODED_INSTRUCTION": "BEQ.w 0x005EE8",
+      "IR_OPERATION_IDS": [
+        "IR245_0005_0x005E8A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "42..48"
+    },
+    {
+      "ROM_PC": "0x005E8E",
+      "ROM_BYTES": "61003DEC",
+      "DECODED_INSTRUCTION": "BSR.w 0x009C7C",
+      "IR_OPERATION_IDS": [
+        "IR245_0006_0x005E8E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "49..56"
+    },
+    {
+      "ROM_PC": "0x005E92",
+      "ROM_BYTES": "65000054",
+      "DECODED_INSTRUCTION": "BCS.w 0x005EE8",
+      "IR_OPERATION_IDS": [
+        "IR245_0007_0x005E92"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "57..63"
+    },
+    {
+      "ROM_PC": "0x005E96",
+      "ROM_BYTES": "08AE0007006F",
+      "DECODED_INSTRUCTION": "BCLR.b #0x7, 111(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0008_0x005E96"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "64..75"
+    },
+    {
+      "ROM_PC": "0x005E9C",
+      "ROM_BYTES": "08EE00030038",
+      "DECODED_INSTRUCTION": "BSET.b #0x3, 56(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0009_0x005E9C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "76..87"
+    },
+    {
+      "ROM_PC": "0x005EA2",
+      "ROM_BYTES": "51F900FF198E",
+      "DECODED_INSTRUCTION": "SF.b 0xFF198E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0010_0x005EA2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "88..94"
+    },
+    {
+      "ROM_PC": "0x005EA8",
+      "ROM_BYTES": "3D7C003E0004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x3E, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0011_0x005EA8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "95..102"
+    },
+    {
+      "ROM_PC": "0x005EAE",
+      "ROM_BYTES": "3D7C0038002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x38, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0012_0x005EAE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "103..110"
+    },
+    {
+      "ROM_PC": "0x005EB4",
+      "ROM_BYTES": "426E0016",
+      "DECODED_INSTRUCTION": "CLR.w 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0013_0x005EB4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "111..117"
+    },
+    {
+      "ROM_PC": "0x005EB8",
+      "ROM_BYTES": "08EE00010036",
+      "DECODED_INSTRUCTION": "BSET.b #0x1, 54(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0014_0x005EB8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "118..129"
+    },
+    {
+      "ROM_PC": "0x005EBE",
+      "ROM_BYTES": "50F900FF1995",
+      "DECODED_INSTRUCTION": "ST.b 0xFF1995.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0015_0x005EBE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "130..136"
+    },
+    {
+      "ROM_PC": "0x005EC4",
+      "ROM_BYTES": "08F9000200FF17B8",
+      "DECODED_INSTRUCTION": "BSET.b #0x2, 0xFF17B8.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0016_0x005EC4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "137..148"
+    },
+    {
+      "ROM_PC": "0x005ECC",
+      "ROM_BYTES": "203C00B00213",
+      "DECODED_INSTRUCTION": "MOVE.l #0xB00213, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0017_0x005ECC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "149..155"
+    },
+    {
+      "ROM_PC": "0x005ED2",
+      "ROM_BYTES": "082E00010039",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 57(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0018_0x005ED2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "156..166"
+    },
+    {
+      "ROM_PC": "0x005ED8",
+      "ROM_BYTES": "6706",
+      "DECODED_INSTRUCTION": "BEQ.b 0x005EE0",
+      "IR_OPERATION_IDS": [
+        "IR245_0019_0x005ED8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "167..173"
+    },
+    {
+      "ROM_PC": "0x005EDA",
+      "ROM_BYTES": "203C00B00240",
+      "DECODED_INSTRUCTION": "MOVE.l #0xB00240, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0020_0x005EDA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "174..180"
+    },
+    {
+      "ROM_PC": "0x005EE0",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0021_0x005EE0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "181..188"
+    },
+    {
+      "ROM_PC": "0x005EE6",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0022_0x005EE6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "189..196"
+    },
+    {
+      "ROM_PC": "0x0061F6",
+      "ROM_BYTES": "61001BD0",
+      "DECODED_INSTRUCTION": "BSR.w 0x007DC8",
+      "IR_OPERATION_IDS": [
+        "IR245_0023_0x0061F6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "197..204"
+    },
+    {
+      "ROM_PC": "0x0061FA",
+      "ROM_BYTES": "610023E6",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0024_0x0061FA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "205..212"
+    },
+    {
+      "ROM_PC": "0x0061FE",
+      "ROM_BYTES": "640000CC",
+      "DECODED_INSTRUCTION": "BCC.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0025_0x0061FE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "213..219"
+    },
+    {
+      "ROM_PC": "0x006202",
+      "ROM_BYTES": "4A3900FF1985",
+      "DECODED_INSTRUCTION": "TST.b 0xFF1985.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0026_0x006202"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "220..228"
+    },
+    {
+      "ROM_PC": "0x006208",
+      "ROM_BYTES": "6600002E",
+      "DECODED_INSTRUCTION": "BNE.w 0x006238",
+      "IR_OPERATION_IDS": [
+        "IR245_0027_0x006208"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "229..235"
+    },
+    {
+      "ROM_PC": "0x00620C",
+      "ROM_BYTES": "1C3900FF165E",
+      "DECODED_INSTRUCTION": "MOVE.b 0xFF165E.L, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0028_0x00620C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "236..245"
+    },
+    {
+      "ROM_PC": "0x006212",
+      "ROM_BYTES": "3E3C000F",
+      "DECODED_INSTRUCTION": "MOVE.w #0xF, D7",
+      "IR_OPERATION_IDS": [
+        "IR245_0029_0x006212"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part0.hpp",
+      "GENERATED_CPP_LINES": "246..252"
+    },
+    {
+      "ROM_PC": "0x006216",
+      "ROM_BYTES": "CC47",
+      "DECODED_INSTRUCTION": "AND.w D7, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0030_0x006216"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "4..12"
+    },
+    {
+      "ROM_PC": "0x006218",
+      "ROM_BYTES": "0C460001",
+      "DECODED_INSTRUCTION": "CMPI.w #0x1, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0031_0x006218"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "13..19"
+    },
+    {
+      "ROM_PC": "0x00621C",
+      "ROM_BYTES": "6712",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006230",
+      "IR_OPERATION_IDS": [
+        "IR245_0032_0x00621C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "20..26"
+    },
+    {
+      "ROM_PC": "0x00621E",
+      "ROM_BYTES": "0C460002",
+      "DECODED_INSTRUCTION": "CMPI.w #0x2, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0033_0x00621E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "27..33"
+    },
+    {
+      "ROM_PC": "0x006222",
+      "ROM_BYTES": "670C",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006230",
+      "IR_OPERATION_IDS": [
+        "IR245_0034_0x006222"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "34..40"
+    },
+    {
+      "ROM_PC": "0x006224",
+      "ROM_BYTES": "0C460004",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0035_0x006224"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "41..47"
+    },
+    {
+      "ROM_PC": "0x006228",
+      "ROM_BYTES": "6706",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006230",
+      "IR_OPERATION_IDS": [
+        "IR245_0036_0x006228"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "48..54"
+    },
+    {
+      "ROM_PC": "0x00622A",
+      "ROM_BYTES": "0C460008",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0037_0x00622A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "55..61"
+    },
+    {
+      "ROM_PC": "0x00622E",
+      "ROM_BYTES": "6608",
+      "DECODED_INSTRUCTION": "BNE.b 0x006238",
+      "IR_OPERATION_IDS": [
+        "IR245_0038_0x00622E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "62..68"
+    },
+    {
+      "ROM_PC": "0x006230",
+      "ROM_BYTES": "610021C6",
+      "DECODED_INSTRUCTION": "BSR.w 0x0083F8",
+      "IR_OPERATION_IDS": [
+        "IR245_0039_0x006230"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "69..76"
+    },
+    {
+      "ROM_PC": "0x006234",
+      "ROM_BYTES": "64000038",
+      "DECODED_INSTRUCTION": "BCC.w 0x00626E",
+      "IR_OPERATION_IDS": [
+        "IR245_0040_0x006234"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "77..83"
+    },
+    {
+      "ROM_PC": "0x006238",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0041_0x006238"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "84..95"
+    },
+    {
+      "ROM_PC": "0x00623C",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0042_0x00623C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "96..103"
+    },
+    {
+      "ROM_PC": "0x006240",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0043_0x006240"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "104..115"
+    },
+    {
+      "ROM_PC": "0x006244",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0044_0x006244"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "116..123"
+    },
+    {
+      "ROM_PC": "0x006248",
+      "ROM_BYTES": "3D430016",
+      "DECODED_INSTRUCTION": "MOVE.w D3, 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0045_0x006248"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "124..131"
+    },
+    {
+      "ROM_PC": "0x00624C",
+      "ROM_BYTES": "3D7C0002002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x2, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0046_0x00624C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "132..139"
+    },
+    {
+      "ROM_PC": "0x006252",
+      "ROM_BYTES": "3D7C00020004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x2, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0047_0x006252"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "140..147"
+    },
+    {
+      "ROM_PC": "0x006258",
+      "ROM_BYTES": "082E00010039",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 57(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0048_0x006258"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "148..158"
+    },
+    {
+      "ROM_PC": "0x00625E",
+      "ROM_BYTES": "670C",
+      "DECODED_INSTRUCTION": "BEQ.b 0x00626C",
+      "IR_OPERATION_IDS": [
+        "IR245_0049_0x00625E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "159..165"
+    },
+    {
+      "ROM_PC": "0x006260",
+      "ROM_BYTES": "203C01500218",
+      "DECODED_INSTRUCTION": "MOVE.l #0x1500218, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0050_0x006260"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "166..172"
+    },
+    {
+      "ROM_PC": "0x006266",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0051_0x006266"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "173..180"
+    },
+    {
+      "ROM_PC": "0x00626C",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0052_0x00626C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "181..188"
+    },
+    {
+      "ROM_PC": "0x00626E",
+      "ROM_BYTES": "2001",
+      "DECODED_INSTRUCTION": "MOVE.l D1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0053_0x00626E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "189..195"
+    },
+    {
+      "ROM_PC": "0x006270",
+      "ROM_BYTES": "E280",
+      "DECODED_INSTRUCTION": "ASR.l #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0054_0x006270"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "196..205"
+    },
+    {
+      "ROM_PC": "0x006272",
+      "ROM_BYTES": "D280",
+      "DECODED_INSTRUCTION": "ADD.l D0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0055_0x006272"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "206..214"
+    },
+    {
+      "ROM_PC": "0x006274",
+      "ROM_BYTES": "2002",
+      "DECODED_INSTRUCTION": "MOVE.l D2, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0056_0x006274"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "215..221"
+    },
+    {
+      "ROM_PC": "0x006276",
+      "ROM_BYTES": "E280",
+      "DECODED_INSTRUCTION": "ASR.l #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0057_0x006276"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "222..231"
+    },
+    {
+      "ROM_PC": "0x006278",
+      "ROM_BYTES": "D480",
+      "DECODED_INSTRUCTION": "ADD.l D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0058_0x006278"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "232..240"
+    },
+    {
+      "ROM_PC": "0x00627A",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0059_0x00627A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part1.hpp",
+      "GENERATED_CPP_LINES": "241..252"
+    },
+    {
+      "ROM_PC": "0x00627E",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0060_0x00627E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "4..11"
+    },
+    {
+      "ROM_PC": "0x006282",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0061_0x006282"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "12..23"
+    },
+    {
+      "ROM_PC": "0x006286",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0062_0x006286"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "24..31"
+    },
+    {
+      "ROM_PC": "0x00628A",
+      "ROM_BYTES": "3D430016",
+      "DECODED_INSTRUCTION": "MOVE.w D3, 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0063_0x00628A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "32..39"
+    },
+    {
+      "ROM_PC": "0x00628E",
+      "ROM_BYTES": "3D7C0004002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0064_0x00628E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "40..47"
+    },
+    {
+      "ROM_PC": "0x006294",
+      "ROM_BYTES": "3D7C00040004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0065_0x006294"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "48..55"
+    },
+    {
+      "ROM_PC": "0x00629A",
+      "ROM_BYTES": "427900FF197E",
+      "DECODED_INSTRUCTION": "CLR.w 0xFF197E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0066_0x00629A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "56..62"
+    },
+    {
+      "ROM_PC": "0x0062A0",
+      "ROM_BYTES": "203C02400357",
+      "DECODED_INSTRUCTION": "MOVE.l #0x2400357, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0067_0x0062A0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "63..69"
+    },
+    {
+      "ROM_PC": "0x0062A6",
+      "ROM_BYTES": "0839000500FF16F0",
+      "DECODED_INSTRUCTION": "BTST.b #0x5, 0xFF16F0.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0068_0x0062A6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "70..80"
+    },
+    {
+      "ROM_PC": "0x0062AE",
+      "ROM_BYTES": "6606",
+      "DECODED_INSTRUCTION": "BNE.b 0x0062B6",
+      "IR_OPERATION_IDS": [
+        "IR245_0069_0x0062AE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "81..87"
+    },
+    {
+      "ROM_PC": "0x0062B0",
+      "ROM_BYTES": "203C0040038E",
+      "DECODED_INSTRUCTION": "MOVE.l #0x40038E, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0070_0x0062B0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "88..94"
+    },
+    {
+      "ROM_PC": "0x0062B6",
+      "ROM_BYTES": "082E00010039",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 57(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0071_0x0062B6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "95..105"
+    },
+    {
+      "ROM_PC": "0x0062BC",
+      "ROM_BYTES": "6706",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0062C4",
+      "IR_OPERATION_IDS": [
+        "IR245_0072_0x0062BC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "106..112"
+    },
+    {
+      "ROM_PC": "0x0062BE",
+      "ROM_BYTES": "203C01500218",
+      "DECODED_INSTRUCTION": "MOVE.l #0x1500218, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0073_0x0062BE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "113..119"
+    },
+    {
+      "ROM_PC": "0x0062C4",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0074_0x0062C4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "120..127"
+    },
+    {
+      "ROM_PC": "0x0062CA",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0075_0x0062CA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "128..135"
+    },
+    {
+      "ROM_PC": "0x006338",
+      "ROM_BYTES": "4A2E006C",
+      "DECODED_INSTRUCTION": "TST.b 108(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0076_0x006338"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "136..144"
+    },
+    {
+      "ROM_PC": "0x00633C",
+      "ROM_BYTES": "6704",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006342",
+      "IR_OPERATION_IDS": [
+        "IR245_0077_0x00633C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "145..151"
+    },
+    {
+      "ROM_PC": "0x00633E",
+      "ROM_BYTES": "6100009A",
+      "DECODED_INSTRUCTION": "BSR.w 0x0063DA",
+      "IR_OPERATION_IDS": [
+        "IR245_0078_0x00633E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "152..159"
+    },
+    {
+      "ROM_PC": "0x006342",
+      "ROM_BYTES": "61001A84",
+      "DECODED_INSTRUCTION": "BSR.w 0x007DC8",
+      "IR_OPERATION_IDS": [
+        "IR245_0079_0x006342"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "160..167"
+    },
+    {
+      "ROM_PC": "0x006346",
+      "ROM_BYTES": "6100208C",
+      "DECODED_INSTRUCTION": "BSR.w 0x0083D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0080_0x006346"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "168..175"
+    },
+    {
+      "ROM_PC": "0x00634A",
+      "ROM_BYTES": "103900FF165E",
+      "DECODED_INSTRUCTION": "MOVE.b 0xFF165E.L, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0081_0x00634A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "176..185"
+    },
+    {
+      "ROM_PC": "0x006350",
+      "ROM_BYTES": "0240000F",
+      "DECODED_INSTRUCTION": "ANDI.w #0xF, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0082_0x006350"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "186..194"
+    },
+    {
+      "ROM_PC": "0x006354",
+      "ROM_BYTES": "4242",
+      "DECODED_INSTRUCTION": "CLR.w D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0083_0x006354"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "195..200"
+    },
+    {
+      "ROM_PC": "0x006356",
+      "ROM_BYTES": "03C2",
+      "DECODED_INSTRUCTION": "BSET.l D1, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0084_0x006356"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "201..209"
+    },
+    {
+      "ROM_PC": "0x006358",
+      "ROM_BYTES": "B400",
+      "DECODED_INSTRUCTION": "CMP.b D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0085_0x006358"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "210..216"
+    },
+    {
+      "ROM_PC": "0x00635A",
+      "ROM_BYTES": "6600FF70",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0086_0x00635A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "217..223"
+    },
+    {
+      "ROM_PC": "0x00635E",
+      "ROM_BYTES": "61002282",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0087_0x00635E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "224..231"
+    },
+    {
+      "ROM_PC": "0x006362",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0088_0x006362"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "232..239"
+    },
+    {
+      "ROM_PC": "0x006366",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0089_0x006366"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part2.hpp",
+      "GENERATED_CPP_LINES": "240..247"
+    },
+    {
+      "ROM_PC": "0x00636A",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0090_0x00636A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "4..15"
+    },
+    {
+      "ROM_PC": "0x00636E",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0091_0x00636E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "16..27"
+    },
+    {
+      "ROM_PC": "0x006372",
+      "ROM_BYTES": "4A2E006C",
+      "DECODED_INSTRUCTION": "TST.b 108(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0092_0x006372"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "28..36"
+    },
+    {
+      "ROM_PC": "0x006376",
+      "ROM_BYTES": "6706",
+      "DECODED_INSTRUCTION": "BEQ.b 0x00637E",
+      "IR_OPERATION_IDS": [
+        "IR245_0093_0x006376"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "37..43"
+    },
+    {
+      "ROM_PC": "0x006378",
+      "ROM_BYTES": "61000012",
+      "DECODED_INSTRUCTION": "BSR.w 0x00638C",
+      "IR_OPERATION_IDS": [
+        "IR245_0094_0x006378"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "44..51"
+    },
+    {
+      "ROM_PC": "0x00637C",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0095_0x00637C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "52..59"
+    },
+    {
+      "ROM_PC": "0x00637E",
+      "ROM_BYTES": "3D7C0002002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x2, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0096_0x00637E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "60..67"
+    },
+    {
+      "ROM_PC": "0x006384",
+      "ROM_BYTES": "3D7C00020004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x2, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0097_0x006384"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "68..75"
+    },
+    {
+      "ROM_PC": "0x00638A",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0098_0x00638A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "76..83"
+    },
+    {
+      "ROM_PC": "0x006464",
+      "ROM_BYTES": "302E0002",
+      "DECODED_INSTRUCTION": "MOVE.w 2(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0099_0x006464"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "84..93"
+    },
+    {
+      "ROM_PC": "0x006468",
+      "ROM_BYTES": "5340",
+      "DECODED_INSTRUCTION": "SUBQ.w #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0100_0x006468"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "94..102"
+    },
+    {
+      "ROM_PC": "0x00646A",
+      "ROM_BYTES": "3D400002",
+      "DECODED_INSTRUCTION": "MOVE.w D0, 2(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0101_0x00646A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "103..110"
+    },
+    {
+      "ROM_PC": "0x00646E",
+      "ROM_BYTES": "6700FE5C",
+      "DECODED_INSTRUCTION": "BEQ.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0102_0x00646E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "111..117"
+    },
+    {
+      "ROM_PC": "0x006472",
+      "ROM_BYTES": "0C400002",
+      "DECODED_INSTRUCTION": "CMPI.w #0x2, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0103_0x006472"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "118..124"
+    },
+    {
+      "ROM_PC": "0x006476",
+      "ROM_BYTES": "664A",
+      "DECODED_INSTRUCTION": "BNE.b 0x0064C2",
+      "IR_OPERATION_IDS": [
+        "IR245_0104_0x006476"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "125..131"
+    },
+    {
+      "ROM_PC": "0x006478",
+      "ROM_BYTES": "206E00AA",
+      "DECODED_INSTRUCTION": "MOVEA.l 170(A6), A0",
+      "IR_OPERATION_IDS": [
+        "IR245_0105_0x006478"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "132..140"
+    },
+    {
+      "ROM_PC": "0x00647C",
+      "ROM_BYTES": "43F900FF0DB2",
+      "DECODED_INSTRUCTION": "LEA.l 0xFF0DB2.L, A1",
+      "IR_OPERATION_IDS": [
+        "IR245_0106_0x00647C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "141..146"
+    },
+    {
+      "ROM_PC": "0x006482",
+      "ROM_BYTES": "30280000",
+      "DECODED_INSTRUCTION": "MOVE.w 0(A0), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0107_0x006482"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "147..156"
+    },
+    {
+      "ROM_PC": "0x006486",
+      "ROM_BYTES": "0C40005A",
+      "DECODED_INSTRUCTION": "CMPI.w #0x5A, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0108_0x006486"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "157..163"
+    },
+    {
+      "ROM_PC": "0x00648A",
+      "ROM_BYTES": "6718",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0064A4",
+      "IR_OPERATION_IDS": [
+        "IR245_0109_0x00648A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "164..170"
+    },
+    {
+      "ROM_PC": "0x00648C",
+      "ROM_BYTES": "5289",
+      "DECODED_INSTRUCTION": "ADDQ.l #0x1, A1",
+      "IR_OPERATION_IDS": [
+        "IR245_0110_0x00648C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "171..176"
+    },
+    {
+      "ROM_PC": "0x00648E",
+      "ROM_BYTES": "0C40005C",
+      "DECODED_INSTRUCTION": "CMPI.w #0x5C, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0111_0x00648E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "177..183"
+    },
+    {
+      "ROM_PC": "0x006492",
+      "ROM_BYTES": "6710",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0064A4",
+      "IR_OPERATION_IDS": [
+        "IR245_0112_0x006492"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "184..190"
+    },
+    {
+      "ROM_PC": "0x006494",
+      "ROM_BYTES": "5289",
+      "DECODED_INSTRUCTION": "ADDQ.l #0x1, A1",
+      "IR_OPERATION_IDS": [
+        "IR245_0113_0x006494"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "191..196"
+    },
+    {
+      "ROM_PC": "0x006496",
+      "ROM_BYTES": "0C40005E",
+      "DECODED_INSTRUCTION": "CMPI.w #0x5E, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0114_0x006496"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "197..203"
+    },
+    {
+      "ROM_PC": "0x00649A",
+      "ROM_BYTES": "6708",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0064A4",
+      "IR_OPERATION_IDS": [
+        "IR245_0115_0x00649A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "204..210"
+    },
+    {
+      "ROM_PC": "0x00649C",
+      "ROM_BYTES": "5289",
+      "DECODED_INSTRUCTION": "ADDQ.l #0x1, A1",
+      "IR_OPERATION_IDS": [
+        "IR245_0116_0x00649C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "211..216"
+    },
+    {
+      "ROM_PC": "0x00649E",
+      "ROM_BYTES": "0C400060",
+      "DECODED_INSTRUCTION": "CMPI.w #0x60, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0117_0x00649E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "217..223"
+    },
+    {
+      "ROM_PC": "0x0064A2",
+      "ROM_BYTES": "6608",
+      "DECODED_INSTRUCTION": "BNE.b 0x0064AC",
+      "IR_OPERATION_IDS": [
+        "IR245_0118_0x0064A2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "224..230"
+    },
+    {
+      "ROM_PC": "0x0064A4",
+      "ROM_BYTES": "1011",
+      "DECODED_INSTRUCTION": "MOVE.b (A1), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0119_0x0064A4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "231..240"
+    },
+    {
+      "ROM_PC": "0x0064A6",
+      "ROM_BYTES": "6704",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0064AC",
+      "IR_OPERATION_IDS": [
+        "IR245_0120_0x0064A6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "241..247"
+    },
+    {
+      "ROM_PC": "0x0064A8",
+      "ROM_BYTES": "5300",
+      "DECODED_INSTRUCTION": "SUBQ.b #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0121_0x0064A8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part3.hpp",
+      "GENERATED_CPP_LINES": "248..256"
+    },
+    {
+      "ROM_PC": "0x0064AA",
+      "ROM_BYTES": "1280",
+      "DECODED_INSTRUCTION": "MOVE.b D0, (A1)",
+      "IR_OPERATION_IDS": [
+        "IR245_0122_0x0064AA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "4..11"
+    },
+    {
+      "ROM_PC": "0x0064AC",
+      "ROM_BYTES": "42680000",
+      "DECODED_INSTRUCTION": "CLR.w 0(A0)",
+      "IR_OPERATION_IDS": [
+        "IR245_0123_0x0064AC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "12..18"
+    },
+    {
+      "ROM_PC": "0x0064B0",
+      "ROM_BYTES": "4EB900017FF2",
+      "DECODED_INSTRUCTION": "JSR.l 0x017FF2.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0124_0x0064B0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "19..26"
+    },
+    {
+      "ROM_PC": "0x0064B6",
+      "ROM_BYTES": "203C00B00385",
+      "DECODED_INSTRUCTION": "MOVE.l #0xB00385, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0125_0x0064B6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "27..33"
+    },
+    {
+      "ROM_PC": "0x0064BC",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0126_0x0064BC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "34..41"
+    },
+    {
+      "ROM_PC": "0x0064C2",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0127_0x0064C2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "42..49"
+    },
+    {
+      "ROM_PC": "0x0066AA",
+      "ROM_BYTES": "7004",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x4, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0128_0x0066AA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "50..56"
+    },
+    {
+      "ROM_PC": "0x0066AC",
+      "ROM_BYTES": "6100560C",
+      "DECODED_INSTRUCTION": "BSR.w 0x00BCBA",
+      "IR_OPERATION_IDS": [
+        "IR245_0129_0x0066AC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "57..64"
+    },
+    {
+      "ROM_PC": "0x0066B0",
+      "ROM_BYTES": "0C6E00080030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0130_0x0066B0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "65..74"
+    },
+    {
+      "ROM_PC": "0x0066B6",
+      "ROM_BYTES": "6416",
+      "DECODED_INSTRUCTION": "BCC.b 0x0066CE",
+      "IR_OPERATION_IDS": [
+        "IR245_0131_0x0066B6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "75..81"
+    },
+    {
+      "ROM_PC": "0x0066B8",
+      "ROM_BYTES": "0839000000FF1971",
+      "DECODED_INSTRUCTION": "BTST.b #0x0, 0xFF1971.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0132_0x0066B8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "82..92"
+    },
+    {
+      "ROM_PC": "0x0066C0",
+      "ROM_BYTES": "670C",
+      "DECODED_INSTRUCTION": "BEQ.b 0x0066CE",
+      "IR_OPERATION_IDS": [
+        "IR245_0133_0x0066C0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "93..99"
+    },
+    {
+      "ROM_PC": "0x0066C2",
+      "ROM_BYTES": "203C1B400344",
+      "DECODED_INSTRUCTION": "MOVE.l #0x1B400344, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0134_0x0066C2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "100..106"
+    },
+    {
+      "ROM_PC": "0x0066C8",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0135_0x0066C8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "107..114"
+    },
+    {
+      "ROM_PC": "0x0066CE",
+      "ROM_BYTES": "0C6E00080030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0136_0x0066CE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "115..124"
+    },
+    {
+      "ROM_PC": "0x0066D4",
+      "ROM_BYTES": "6614",
+      "DECODED_INSTRUCTION": "BNE.b 0x0066EA",
+      "IR_OPERATION_IDS": [
+        "IR245_0137_0x0066D4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "125..131"
+    },
+    {
+      "ROM_PC": "0x0066D6",
+      "ROM_BYTES": "0C6E0001002E",
+      "DECODED_INSTRUCTION": "CMPI.w #0x1, 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0138_0x0066D6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "132..141"
+    },
+    {
+      "ROM_PC": "0x0066DC",
+      "ROM_BYTES": "640C",
+      "DECODED_INSTRUCTION": "BCC.b 0x0066EA",
+      "IR_OPERATION_IDS": [
+        "IR245_0139_0x0066DC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "142..148"
+    },
+    {
+      "ROM_PC": "0x0066DE",
+      "ROM_BYTES": "203C00600343",
+      "DECODED_INSTRUCTION": "MOVE.l #0x600343, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0140_0x0066DE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "149..155"
+    },
+    {
+      "ROM_PC": "0x0066E4",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0141_0x0066E4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "156..163"
+    },
+    {
+      "ROM_PC": "0x0066EA",
+      "ROM_BYTES": "203C00008000",
+      "DECODED_INSTRUCTION": "MOVE.l #0x8000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0142_0x0066EA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "164..170"
+    },
+    {
+      "ROM_PC": "0x0066F0",
+      "ROM_BYTES": "222E004E",
+      "DECODED_INSTRUCTION": "MOVE.l 78(A6), D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0143_0x0066F0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "171..180"
+    },
+    {
+      "ROM_PC": "0x0066F4",
+      "ROM_BYTES": "6B08",
+      "DECODED_INSTRUCTION": "BMI.b 0x0066FE",
+      "IR_OPERATION_IDS": [
+        "IR245_0144_0x0066F4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "181..187"
+    },
+    {
+      "ROM_PC": "0x0066F6",
+      "ROM_BYTES": "9280",
+      "DECODED_INSTRUCTION": "SUB.l D0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0145_0x0066F6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "188..196"
+    },
+    {
+      "ROM_PC": "0x0066F8",
+      "ROM_BYTES": "6A0A",
+      "DECODED_INSTRUCTION": "BPL.b 0x006704",
+      "IR_OPERATION_IDS": [
+        "IR245_0146_0x0066F8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "197..203"
+    },
+    {
+      "ROM_PC": "0x0066FA",
+      "ROM_BYTES": "4281",
+      "DECODED_INSTRUCTION": "CLR.l D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0147_0x0066FA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "204..209"
+    },
+    {
+      "ROM_PC": "0x0066FC",
+      "ROM_BYTES": "6006",
+      "DECODED_INSTRUCTION": "BRA.b 0x006704",
+      "IR_OPERATION_IDS": [
+        "IR245_0148_0x0066FC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "210..214"
+    },
+    {
+      "ROM_PC": "0x0066FE",
+      "ROM_BYTES": "D280",
+      "DECODED_INSTRUCTION": "ADD.l D0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0149_0x0066FE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "215..223"
+    },
+    {
+      "ROM_PC": "0x006700",
+      "ROM_BYTES": "6B02",
+      "DECODED_INSTRUCTION": "BMI.b 0x006704",
+      "IR_OPERATION_IDS": [
+        "IR245_0150_0x006700"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "224..230"
+    },
+    {
+      "ROM_PC": "0x006702",
+      "ROM_BYTES": "4281",
+      "DECODED_INSTRUCTION": "CLR.l D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0151_0x006702"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "231..236"
+    },
+    {
+      "ROM_PC": "0x006704",
+      "ROM_BYTES": "242E0052",
+      "DECODED_INSTRUCTION": "MOVE.l 82(A6), D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0152_0x006704"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "237..246"
+    },
+    {
+      "ROM_PC": "0x006708",
+      "ROM_BYTES": "6B08",
+      "DECODED_INSTRUCTION": "BMI.b 0x006712",
+      "IR_OPERATION_IDS": [
+        "IR245_0153_0x006708"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part4.hpp",
+      "GENERATED_CPP_LINES": "247..253"
+    },
+    {
+      "ROM_PC": "0x00670A",
+      "ROM_BYTES": "9480",
+      "DECODED_INSTRUCTION": "SUB.l D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0154_0x00670A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "4..12"
+    },
+    {
+      "ROM_PC": "0x00670C",
+      "ROM_BYTES": "6A0A",
+      "DECODED_INSTRUCTION": "BPL.b 0x006718",
+      "IR_OPERATION_IDS": [
+        "IR245_0155_0x00670C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "13..19"
+    },
+    {
+      "ROM_PC": "0x00670E",
+      "ROM_BYTES": "4282",
+      "DECODED_INSTRUCTION": "CLR.l D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0156_0x00670E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "20..25"
+    },
+    {
+      "ROM_PC": "0x006710",
+      "ROM_BYTES": "6006",
+      "DECODED_INSTRUCTION": "BRA.b 0x006718",
+      "IR_OPERATION_IDS": [
+        "IR245_0157_0x006710"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "26..30"
+    },
+    {
+      "ROM_PC": "0x006712",
+      "ROM_BYTES": "D480",
+      "DECODED_INSTRUCTION": "ADD.l D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0158_0x006712"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "31..39"
+    },
+    {
+      "ROM_PC": "0x006714",
+      "ROM_BYTES": "6B02",
+      "DECODED_INSTRUCTION": "BMI.b 0x006718",
+      "IR_OPERATION_IDS": [
+        "IR245_0159_0x006714"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "40..46"
+    },
+    {
+      "ROM_PC": "0x006716",
+      "ROM_BYTES": "4282",
+      "DECODED_INSTRUCTION": "CLR.l D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0160_0x006716"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "47..52"
+    },
+    {
+      "ROM_PC": "0x006718",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0161_0x006718"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "53..60"
+    },
+    {
+      "ROM_PC": "0x00671C",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0162_0x00671C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "61..68"
+    },
+    {
+      "ROM_PC": "0x006720",
+      "ROM_BYTES": "6100FDA2",
+      "DECODED_INSTRUCTION": "BSR.w 0x0064C4",
+      "IR_OPERATION_IDS": [
+        "IR245_0163_0x006720"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "69..76"
+    },
+    {
+      "ROM_PC": "0x006724",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0164_0x006724"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "77..88"
+    },
+    {
+      "ROM_PC": "0x006728",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0165_0x006728"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "89..100"
+    },
+    {
+      "ROM_PC": "0x00672C",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0166_0x00672C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "101..111"
+    },
+    {
+      "ROM_PC": "0x006732",
+      "ROM_BYTES": "6600FB98",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0167_0x006732"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "112..118"
+    },
+    {
+      "ROM_PC": "0x006736",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0168_0x006736"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "119..126"
+    },
+    {
+      "ROM_PC": "0x006738",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0169_0x006738"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "127..137"
+    },
+    {
+      "ROM_PC": "0x00673E",
+      "ROM_BYTES": "6600FB8C",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0170_0x00673E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "138..144"
+    },
+    {
+      "ROM_PC": "0x006742",
+      "ROM_BYTES": "700E",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0xE, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0171_0x006742"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "145..151"
+    },
+    {
+      "ROM_PC": "0x006744",
+      "ROM_BYTES": "0C6E00180030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x18, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0172_0x006744"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "152..161"
+    },
+    {
+      "ROM_PC": "0x00674A",
+      "ROM_BYTES": "6502",
+      "DECODED_INSTRUCTION": "BCS.b 0x00674E",
+      "IR_OPERATION_IDS": [
+        "IR245_0173_0x00674A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "162..168"
+    },
+    {
+      "ROM_PC": "0x00674C",
+      "ROM_BYTES": "5440",
+      "DECODED_INSTRUCTION": "ADDQ.w #0x2, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0174_0x00674C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "169..177"
+    },
+    {
+      "ROM_PC": "0x00674E",
+      "ROM_BYTES": "6100556A",
+      "DECODED_INSTRUCTION": "BSR.w 0x00BCBA",
+      "IR_OPERATION_IDS": [
+        "IR245_0175_0x00674E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "178..185"
+    },
+    {
+      "ROM_PC": "0x006752",
+      "ROM_BYTES": "0C6E00080030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0176_0x006752"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "186..195"
+    },
+    {
+      "ROM_PC": "0x006758",
+      "ROM_BYTES": "6402",
+      "DECODED_INSTRUCTION": "BCC.b 0x00675C",
+      "IR_OPERATION_IDS": [
+        "IR245_0177_0x006758"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "196..202"
+    },
+    {
+      "ROM_PC": "0x00675A",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0178_0x00675A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "203..210"
+    },
+    {
+      "ROM_PC": "0x00675C",
+      "ROM_BYTES": "0C6E00140030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x14, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0179_0x00675C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "211..220"
+    },
+    {
+      "ROM_PC": "0x006762",
+      "ROM_BYTES": "6216",
+      "DECODED_INSTRUCTION": "BHI.b 0x00677A",
+      "IR_OPERATION_IDS": [
+        "IR245_0180_0x006762"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "221..227"
+    },
+    {
+      "ROM_PC": "0x006764",
+      "ROM_BYTES": "0839000000FF1971",
+      "DECODED_INSTRUCTION": "BTST.b #0x0, 0xFF1971.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0181_0x006764"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "228..238"
+    },
+    {
+      "ROM_PC": "0x00676C",
+      "ROM_BYTES": "670C",
+      "DECODED_INSTRUCTION": "BEQ.b 0x00677A",
+      "IR_OPERATION_IDS": [
+        "IR245_0182_0x00676C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "239..245"
+    },
+    {
+      "ROM_PC": "0x00676E",
+      "ROM_BYTES": "203C1B400344",
+      "DECODED_INSTRUCTION": "MOVE.l #0x1B400344, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0183_0x00676E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part5.hpp",
+      "GENERATED_CPP_LINES": "246..252"
+    },
+    {
+      "ROM_PC": "0x006774",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0184_0x006774"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "4..11"
+    },
+    {
+      "ROM_PC": "0x00677A",
+      "ROM_BYTES": "0C6E001C0030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x1C, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0185_0x00677A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "12..21"
+    },
+    {
+      "ROM_PC": "0x006780",
+      "ROM_BYTES": "6418",
+      "DECODED_INSTRUCTION": "BCC.b 0x00679A",
+      "IR_OPERATION_IDS": [
+        "IR245_0186_0x006780"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "22..28"
+    },
+    {
+      "ROM_PC": "0x006782",
+      "ROM_BYTES": "102E0040",
+      "DECODED_INSTRUCTION": "MOVE.b 64(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0187_0x006782"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "29..38"
+    },
+    {
+      "ROM_PC": "0x006786",
+      "ROM_BYTES": "802E0041",
+      "DECODED_INSTRUCTION": "OR.b 65(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0188_0x006786"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "39..50"
+    },
+    {
+      "ROM_PC": "0x00678A",
+      "ROM_BYTES": "08000006",
+      "DECODED_INSTRUCTION": "BTST.l #0x6, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0189_0x00678A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "51..58"
+    },
+    {
+      "ROM_PC": "0x00678E",
+      "ROM_BYTES": "670A",
+      "DECODED_INSTRUCTION": "BEQ.b 0x00679A",
+      "IR_OPERATION_IDS": [
+        "IR245_0190_0x00678E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "59..65"
+    },
+    {
+      "ROM_PC": "0x006790",
+      "ROM_BYTES": "3D7C00180030",
+      "DECODED_INSTRUCTION": "MOVE.w #0x18, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0191_0x006790"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "66..73"
+    },
+    {
+      "ROM_PC": "0x006796",
+      "ROM_BYTES": "426E002E",
+      "DECODED_INSTRUCTION": "CLR.w 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0192_0x006796"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "74..80"
+    },
+    {
+      "ROM_PC": "0x00679A",
+      "ROM_BYTES": "203C00008000",
+      "DECODED_INSTRUCTION": "MOVE.l #0x8000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0193_0x00679A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "81..87"
+    },
+    {
+      "ROM_PC": "0x0067A0",
+      "ROM_BYTES": "222E004E",
+      "DECODED_INSTRUCTION": "MOVE.l 78(A6), D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0194_0x0067A0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "88..97"
+    },
+    {
+      "ROM_PC": "0x0067A4",
+      "ROM_BYTES": "6B08",
+      "DECODED_INSTRUCTION": "BMI.b 0x0067AE",
+      "IR_OPERATION_IDS": [
+        "IR245_0195_0x0067A4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "98..104"
+    },
+    {
+      "ROM_PC": "0x0067A6",
+      "ROM_BYTES": "9280",
+      "DECODED_INSTRUCTION": "SUB.l D0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0196_0x0067A6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "105..113"
+    },
+    {
+      "ROM_PC": "0x0067A8",
+      "ROM_BYTES": "6A0A",
+      "DECODED_INSTRUCTION": "BPL.b 0x0067B4",
+      "IR_OPERATION_IDS": [
+        "IR245_0197_0x0067A8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "114..120"
+    },
+    {
+      "ROM_PC": "0x0067AA",
+      "ROM_BYTES": "4281",
+      "DECODED_INSTRUCTION": "CLR.l D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0198_0x0067AA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "121..126"
+    },
+    {
+      "ROM_PC": "0x0067AC",
+      "ROM_BYTES": "6006",
+      "DECODED_INSTRUCTION": "BRA.b 0x0067B4",
+      "IR_OPERATION_IDS": [
+        "IR245_0199_0x0067AC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "127..131"
+    },
+    {
+      "ROM_PC": "0x0067AE",
+      "ROM_BYTES": "D280",
+      "DECODED_INSTRUCTION": "ADD.l D0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0200_0x0067AE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "132..140"
+    },
+    {
+      "ROM_PC": "0x0067B0",
+      "ROM_BYTES": "6B02",
+      "DECODED_INSTRUCTION": "BMI.b 0x0067B4",
+      "IR_OPERATION_IDS": [
+        "IR245_0201_0x0067B0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "141..147"
+    },
+    {
+      "ROM_PC": "0x0067B2",
+      "ROM_BYTES": "4281",
+      "DECODED_INSTRUCTION": "CLR.l D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0202_0x0067B2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "148..153"
+    },
+    {
+      "ROM_PC": "0x0067B4",
+      "ROM_BYTES": "242E0052",
+      "DECODED_INSTRUCTION": "MOVE.l 82(A6), D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0203_0x0067B4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "154..163"
+    },
+    {
+      "ROM_PC": "0x0067B8",
+      "ROM_BYTES": "6B08",
+      "DECODED_INSTRUCTION": "BMI.b 0x0067C2",
+      "IR_OPERATION_IDS": [
+        "IR245_0204_0x0067B8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "164..170"
+    },
+    {
+      "ROM_PC": "0x0067BA",
+      "ROM_BYTES": "9480",
+      "DECODED_INSTRUCTION": "SUB.l D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0205_0x0067BA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "171..179"
+    },
+    {
+      "ROM_PC": "0x0067BC",
+      "ROM_BYTES": "6A0A",
+      "DECODED_INSTRUCTION": "BPL.b 0x0067C8",
+      "IR_OPERATION_IDS": [
+        "IR245_0206_0x0067BC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "180..186"
+    },
+    {
+      "ROM_PC": "0x0067BE",
+      "ROM_BYTES": "4282",
+      "DECODED_INSTRUCTION": "CLR.l D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0207_0x0067BE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "187..192"
+    },
+    {
+      "ROM_PC": "0x0067C0",
+      "ROM_BYTES": "6006",
+      "DECODED_INSTRUCTION": "BRA.b 0x0067C8",
+      "IR_OPERATION_IDS": [
+        "IR245_0208_0x0067C0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "193..197"
+    },
+    {
+      "ROM_PC": "0x0067C2",
+      "ROM_BYTES": "D480",
+      "DECODED_INSTRUCTION": "ADD.l D0, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0209_0x0067C2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "198..206"
+    },
+    {
+      "ROM_PC": "0x0067C4",
+      "ROM_BYTES": "6B02",
+      "DECODED_INSTRUCTION": "BMI.b 0x0067C8",
+      "IR_OPERATION_IDS": [
+        "IR245_0210_0x0067C4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "207..213"
+    },
+    {
+      "ROM_PC": "0x0067C6",
+      "ROM_BYTES": "4282",
+      "DECODED_INSTRUCTION": "CLR.l D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0211_0x0067C6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "214..219"
+    },
+    {
+      "ROM_PC": "0x0067C8",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0212_0x0067C8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "220..227"
+    },
+    {
+      "ROM_PC": "0x0067CC",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0213_0x0067CC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "228..235"
+    },
+    {
+      "ROM_PC": "0x0067D0",
+      "ROM_BYTES": "6100FCF2",
+      "DECODED_INSTRUCTION": "BSR.w 0x0064C4",
+      "IR_OPERATION_IDS": [
+        "IR245_0214_0x0067D0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "236..243"
+    },
+    {
+      "ROM_PC": "0x0067D4",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0215_0x0067D4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part6.hpp",
+      "GENERATED_CPP_LINES": "244..255"
+    },
+    {
+      "ROM_PC": "0x0067D8",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0216_0x0067D8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "4..15"
+    },
+    {
+      "ROM_PC": "0x0067DC",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0217_0x0067DC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "16..23"
+    },
+    {
+      "ROM_PC": "0x006E28",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0218_0x006E28"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "24..31"
+    },
+    {
+      "ROM_PC": "0x006E4A",
+      "ROM_BYTES": "0C6E0004009E",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, 158(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0219_0x006E4A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "32..41"
+    },
+    {
+      "ROM_PC": "0x006E50",
+      "ROM_BYTES": "6704",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006E56",
+      "IR_OPERATION_IDS": [
+        "IR245_0220_0x006E50"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "42..48"
+    },
+    {
+      "ROM_PC": "0x006E52",
+      "ROM_BYTES": "61000F74",
+      "DECODED_INSTRUCTION": "BSR.w 0x007DC8",
+      "IR_OPERATION_IDS": [
+        "IR245_0221_0x006E52"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "49..56"
+    },
+    {
+      "ROM_PC": "0x006E56",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0222_0x006E56"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "57..67"
+    },
+    {
+      "ROM_PC": "0x006E5C",
+      "ROM_BYTES": "67CA",
+      "DECODED_INSTRUCTION": "BEQ.b 0x006E28",
+      "IR_OPERATION_IDS": [
+        "IR245_0223_0x006E5C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "68..74"
+    },
+    {
+      "ROM_PC": "0x006E5E",
+      "ROM_BYTES": "0C6E0004009E",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, 158(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0224_0x006E5E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "75..84"
+    },
+    {
+      "ROM_PC": "0x006E64",
+      "ROM_BYTES": "6600F466",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0225_0x006E64"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "85..91"
+    },
+    {
+      "ROM_PC": "0x006E68",
+      "ROM_BYTES": "426E009E",
+      "DECODED_INSTRUCTION": "CLR.w 158(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0226_0x006E68"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "92..98"
+    },
+    {
+      "ROM_PC": "0x006E6C",
+      "ROM_BYTES": "3D7C0004002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0227_0x006E6C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "99..106"
+    },
+    {
+      "ROM_PC": "0x006E72",
+      "ROM_BYTES": "3D7C00040004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0228_0x006E72"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "107..114"
+    },
+    {
+      "ROM_PC": "0x006E78",
+      "ROM_BYTES": "60AE",
+      "DECODED_INSTRUCTION": "BRA.b 0x006E28",
+      "IR_OPERATION_IDS": [
+        "IR245_0229_0x006E78"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "115..119"
+    },
+    {
+      "ROM_PC": "0x006E7A",
+      "ROM_BYTES": "0839000400FF165F",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0xFF165F.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0230_0x006E7A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "120..130"
+    },
+    {
+      "ROM_PC": "0x006E82",
+      "ROM_BYTES": "6602",
+      "DECODED_INSTRUCTION": "BNE.b 0x006E86",
+      "IR_OPERATION_IDS": [
+        "IR245_0231_0x006E82"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "131..137"
+    },
+    {
+      "ROM_PC": "0x006E84",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0232_0x006E84"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "138..145"
+    },
+    {
+      "ROM_PC": "0x006EDA",
+      "ROM_BYTES": "0C6E004C002A",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4C, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0233_0x006EDA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "146..155"
+    },
+    {
+      "ROM_PC": "0x006EE0",
+      "ROM_BYTES": "6700FF68",
+      "DECODED_INSTRUCTION": "BEQ.w 0x006E4A",
+      "IR_OPERATION_IDS": [
+        "IR245_0234_0x006EE0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "156..162"
+    },
+    {
+      "ROM_PC": "0x006EE4",
+      "ROM_BYTES": "7200",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x0, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0235_0x006EE4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "163..169"
+    },
+    {
+      "ROM_PC": "0x006EE6",
+      "ROM_BYTES": "2401",
+      "DECODED_INSTRUCTION": "MOVE.l D1, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0236_0x006EE6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "170..176"
+    },
+    {
+      "ROM_PC": "0x006EE8",
+      "ROM_BYTES": "4A3900FF17BB",
+      "DECODED_INSTRUCTION": "TST.b 0xFF17BB.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0237_0x006EE8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "177..185"
+    },
+    {
+      "ROM_PC": "0x006EEE",
+      "ROM_BYTES": "6604",
+      "DECODED_INSTRUCTION": "BNE.b 0x006EF4",
+      "IR_OPERATION_IDS": [
+        "IR245_0238_0x006EEE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "186..192"
+    },
+    {
+      "ROM_PC": "0x006EF0",
+      "ROM_BYTES": "610016F0",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0239_0x006EF0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "193..200"
+    },
+    {
+      "ROM_PC": "0x006EF4",
+      "ROM_BYTES": "610002A2",
+      "DECODED_INSTRUCTION": "BSR.w 0x007198",
+      "IR_OPERATION_IDS": [
+        "IR245_0240_0x006EF4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "201..208"
+    },
+    {
+      "ROM_PC": "0x006EF8",
+      "ROM_BYTES": "202E0056",
+      "DECODED_INSTRUCTION": "MOVE.l 86(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0241_0x006EF8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "209..218"
+    },
+    {
+      "ROM_PC": "0x006EFC",
+      "ROM_BYTES": "6700FF4C",
+      "DECODED_INSTRUCTION": "BEQ.w 0x006E4A",
+      "IR_OPERATION_IDS": [
+        "IR245_0242_0x006EFC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "219..225"
+    },
+    {
+      "ROM_PC": "0x006F00",
+      "ROM_BYTES": "04800000C000",
+      "DECODED_INSTRUCTION": "SUBI.l #0xC000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0243_0x006F00"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "226..234"
+    },
+    {
+      "ROM_PC": "0x006F06",
+      "ROM_BYTES": "6602",
+      "DECODED_INSTRUCTION": "BNE.b 0x006F0A",
+      "IR_OPERATION_IDS": [
+        "IR245_0244_0x006F06"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "235..241"
+    },
+    {
+      "ROM_PC": "0x006F08",
+      "ROM_BYTES": "5340",
+      "DECODED_INSTRUCTION": "SUBQ.w #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0245_0x006F08"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "242..250"
+    },
+    {
+      "ROM_PC": "0x006F0A",
+      "ROM_BYTES": "2D400056",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0246_0x006F0A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part7.hpp",
+      "GENERATED_CPP_LINES": "251..258"
+    },
+    {
+      "ROM_PC": "0x006F0E",
+      "ROM_BYTES": "D1AE0010",
+      "DECODED_INSTRUCTION": "ADD.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0247_0x006F0E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "4..15"
+    },
+    {
+      "ROM_PC": "0x006F12",
+      "ROM_BYTES": "6F18",
+      "DECODED_INSTRUCTION": "BLE.b 0x006F2C",
+      "IR_OPERATION_IDS": [
+        "IR245_0248_0x006F12"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "16..22"
+    },
+    {
+      "ROM_PC": "0x006F14",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0249_0x006F14"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "23..34"
+    },
+    {
+      "ROM_PC": "0x006F18",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0250_0x006F18"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "35..46"
+    },
+    {
+      "ROM_PC": "0x006F1C",
+      "ROM_BYTES": "7000",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x0, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0251_0x006F1C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "47..53"
+    },
+    {
+      "ROM_PC": "0x006F1E",
+      "ROM_BYTES": "0C6E000E0010",
+      "DECODED_INSTRUCTION": "CMPI.w #0xE, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0252_0x006F1E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "54..63"
+    },
+    {
+      "ROM_PC": "0x006F24",
+      "ROM_BYTES": "6E02",
+      "DECODED_INSTRUCTION": "BGT.b 0x006F28",
+      "IR_OPERATION_IDS": [
+        "IR245_0253_0x006F24"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "64..70"
+    },
+    {
+      "ROM_PC": "0x006F26",
+      "ROM_BYTES": "7002",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x2, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0254_0x006F26"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "71..77"
+    },
+    {
+      "ROM_PC": "0x006F28",
+      "ROM_BYTES": "60004D90",
+      "DECODED_INSTRUCTION": "BRA.w 0x00BCBA",
+      "IR_OPERATION_IDS": [
+        "IR245_0255_0x006F28"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "78..82"
+    },
+    {
+      "ROM_PC": "0x006F2C",
+      "ROM_BYTES": "51F900FF17BB",
+      "DECODED_INSTRUCTION": "SF.b 0xFF17BB.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0256_0x006F2C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "83..89"
+    },
+    {
+      "ROM_PC": "0x006F32",
+      "ROM_BYTES": "3D7C00040030",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0257_0x006F32"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "90..97"
+    },
+    {
+      "ROM_PC": "0x006F38",
+      "ROM_BYTES": "6000EF3E",
+      "DECODED_INSTRUCTION": "BRA.w 0x005E78",
+      "IR_OPERATION_IDS": [
+        "IR245_0258_0x006F38"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "98..102"
+    },
+    {
+      "ROM_PC": "0x007112",
+      "ROM_BYTES": "0C6E004C002A",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4C, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0259_0x007112"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "103..112"
+    },
+    {
+      "ROM_PC": "0x007118",
+      "ROM_BYTES": "6700FD30",
+      "DECODED_INSTRUCTION": "BEQ.w 0x006E4A",
+      "IR_OPERATION_IDS": [
+        "IR245_0260_0x007118"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "113..119"
+    },
+    {
+      "ROM_PC": "0x00711C",
+      "ROM_BYTES": "610014C4",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0261_0x00711C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "120..127"
+    },
+    {
+      "ROM_PC": "0x007120",
+      "ROM_BYTES": "61000076",
+      "DECODED_INSTRUCTION": "BSR.w 0x007198",
+      "IR_OPERATION_IDS": [
+        "IR245_0262_0x007120"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "128..135"
+    },
+    {
+      "ROM_PC": "0x007124",
+      "ROM_BYTES": "0C6E00040030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0263_0x007124"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "136..145"
+    },
+    {
+      "ROM_PC": "0x00712A",
+      "ROM_BYTES": "6208",
+      "DECODED_INSTRUCTION": "BHI.b 0x007134",
+      "IR_OPERATION_IDS": [
+        "IR245_0264_0x00712A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "146..152"
+    },
+    {
+      "ROM_PC": "0x00712C",
+      "ROM_BYTES": "08EE00000067",
+      "DECODED_INSTRUCTION": "BSET.b #0x0, 103(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0265_0x00712C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "153..164"
+    },
+    {
+      "ROM_PC": "0x007132",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0266_0x007132"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "165..172"
+    },
+    {
+      "ROM_PC": "0x007134",
+      "ROM_BYTES": "08AE00000067",
+      "DECODED_INSTRUCTION": "BCLR.b #0x0, 103(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0267_0x007134"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "173..184"
+    },
+    {
+      "ROM_PC": "0x00713A",
+      "ROM_BYTES": "670C",
+      "DECODED_INSTRUCTION": "BEQ.b 0x007148",
+      "IR_OPERATION_IDS": [
+        "IR245_0268_0x00713A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "185..191"
+    },
+    {
+      "ROM_PC": "0x00713C",
+      "ROM_BYTES": "203C00500341",
+      "DECODED_INSTRUCTION": "MOVE.l #0x500341, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0269_0x00713C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "192..198"
+    },
+    {
+      "ROM_PC": "0x007142",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0270_0x007142"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "199..206"
+    },
+    {
+      "ROM_PC": "0x007148",
+      "ROM_BYTES": "202E0056",
+      "DECODED_INSTRUCTION": "MOVE.l 86(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0271_0x007148"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "207..216"
+    },
+    {
+      "ROM_PC": "0x00714C",
+      "ROM_BYTES": "6B30",
+      "DECODED_INSTRUCTION": "BMI.b 0x00717E",
+      "IR_OPERATION_IDS": [
+        "IR245_0272_0x00714C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "217..223"
+    },
+    {
+      "ROM_PC": "0x00714E",
+      "ROM_BYTES": "6700FCFA",
+      "DECODED_INSTRUCTION": "BEQ.w 0x006E4A",
+      "IR_OPERATION_IDS": [
+        "IR245_0273_0x00714E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "224..230"
+    },
+    {
+      "ROM_PC": "0x007152",
+      "ROM_BYTES": "04800000C000",
+      "DECODED_INSTRUCTION": "SUBI.l #0xC000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0274_0x007152"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "231..239"
+    },
+    {
+      "ROM_PC": "0x007158",
+      "ROM_BYTES": "6E0E",
+      "DECODED_INSTRUCTION": "BGT.b 0x007168",
+      "IR_OPERATION_IDS": [
+        "IR245_0275_0x007158"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "240..246"
+    },
+    {
+      "ROM_PC": "0x00715A",
+      "ROM_BYTES": "6602",
+      "DECODED_INSTRUCTION": "BNE.b 0x00715E",
+      "IR_OPERATION_IDS": [
+        "IR245_0276_0x00715A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part8.hpp",
+      "GENERATED_CPP_LINES": "247..253"
+    },
+    {
+      "ROM_PC": "0x00715C",
+      "ROM_BYTES": "5380",
+      "DECODED_INSTRUCTION": "SUBQ.l #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0277_0x00715C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "4..12"
+    },
+    {
+      "ROM_PC": "0x00715E",
+      "ROM_BYTES": "3D7C000C0030",
+      "DECODED_INSTRUCTION": "MOVE.w #0xC, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0278_0x00715E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "13..20"
+    },
+    {
+      "ROM_PC": "0x007164",
+      "ROM_BYTES": "426E002E",
+      "DECODED_INSTRUCTION": "CLR.w 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0279_0x007164"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "21..27"
+    },
+    {
+      "ROM_PC": "0x007168",
+      "ROM_BYTES": "2D400056",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0280_0x007168"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "28..35"
+    },
+    {
+      "ROM_PC": "0x00716C",
+      "ROM_BYTES": "D1AE0010",
+      "DECODED_INSTRUCTION": "ADD.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0281_0x00716C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "36..47"
+    },
+    {
+      "ROM_PC": "0x007170",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0282_0x007170"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "48..59"
+    },
+    {
+      "ROM_PC": "0x007174",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0283_0x007174"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "60..71"
+    },
+    {
+      "ROM_PC": "0x007178",
+      "ROM_BYTES": "6100FD00",
+      "DECODED_INSTRUCTION": "BSR.w 0x006E7A",
+      "IR_OPERATION_IDS": [
+        "IR245_0284_0x007178"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "72..79"
+    },
+    {
+      "ROM_PC": "0x00717C",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0285_0x00717C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "80..87"
+    },
+    {
+      "ROM_PC": "0x00717E",
+      "ROM_BYTES": "04800000C000",
+      "DECODED_INSTRUCTION": "SUBI.l #0xC000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0286_0x00717E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "88..96"
+    },
+    {
+      "ROM_PC": "0x007184",
+      "ROM_BYTES": "2D400056",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0287_0x007184"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "97..104"
+    },
+    {
+      "ROM_PC": "0x007188",
+      "ROM_BYTES": "D1AE0010",
+      "DECODED_INSTRUCTION": "ADD.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0288_0x007188"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "105..116"
+    },
+    {
+      "ROM_PC": "0x00718C",
+      "ROM_BYTES": "6EE2",
+      "DECODED_INSTRUCTION": "BGT.b 0x007170",
+      "IR_OPERATION_IDS": [
+        "IR245_0289_0x00718C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "117..123"
+    },
+    {
+      "ROM_PC": "0x00718E",
+      "ROM_BYTES": "3D7C00140030",
+      "DECODED_INSTRUCTION": "MOVE.w #0x14, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0290_0x00718E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "124..131"
+    },
+    {
+      "ROM_PC": "0x007194",
+      "ROM_BYTES": "6000ECE2",
+      "DECODED_INSTRUCTION": "BRA.w 0x005E78",
+      "IR_OPERATION_IDS": [
+        "IR245_0291_0x007194"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "132..136"
+    },
+    {
+      "ROM_PC": "0x0071DA",
+      "ROM_BYTES": "0C6E004C002A",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4C, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0292_0x0071DA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "137..146"
+    },
+    {
+      "ROM_PC": "0x0071E0",
+      "ROM_BYTES": "67000070",
+      "DECODED_INSTRUCTION": "BEQ.w 0x007252",
+      "IR_OPERATION_IDS": [
+        "IR245_0293_0x0071E0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "147..153"
+    },
+    {
+      "ROM_PC": "0x0071E4",
+      "ROM_BYTES": "202E0056",
+      "DECODED_INSTRUCTION": "MOVE.l 86(A6), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0294_0x0071E4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "154..163"
+    },
+    {
+      "ROM_PC": "0x0071E8",
+      "ROM_BYTES": "6B44",
+      "DECODED_INSTRUCTION": "BMI.b 0x00722E",
+      "IR_OPERATION_IDS": [
+        "IR245_0295_0x0071E8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "164..170"
+    },
+    {
+      "ROM_PC": "0x0071EA",
+      "ROM_BYTES": "67000066",
+      "DECODED_INSTRUCTION": "BEQ.w 0x007252",
+      "IR_OPERATION_IDS": [
+        "IR245_0296_0x0071EA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "171..177"
+    },
+    {
+      "ROM_PC": "0x0071EE",
+      "ROM_BYTES": "04800000C000",
+      "DECODED_INSTRUCTION": "SUBI.l #0xC000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0297_0x0071EE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "178..186"
+    },
+    {
+      "ROM_PC": "0x0071F4",
+      "ROM_BYTES": "6E0E",
+      "DECODED_INSTRUCTION": "BGT.b 0x007204",
+      "IR_OPERATION_IDS": [
+        "IR245_0298_0x0071F4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "187..193"
+    },
+    {
+      "ROM_PC": "0x0071F6",
+      "ROM_BYTES": "6602",
+      "DECODED_INSTRUCTION": "BNE.b 0x0071FA",
+      "IR_OPERATION_IDS": [
+        "IR245_0299_0x0071F6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "194..200"
+    },
+    {
+      "ROM_PC": "0x0071F8",
+      "ROM_BYTES": "5380",
+      "DECODED_INSTRUCTION": "SUBQ.l #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0300_0x0071F8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "201..209"
+    },
+    {
+      "ROM_PC": "0x0071FA",
+      "ROM_BYTES": "3D7C00040030",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0301_0x0071FA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "210..217"
+    },
+    {
+      "ROM_PC": "0x007200",
+      "ROM_BYTES": "426E002E",
+      "DECODED_INSTRUCTION": "CLR.w 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0302_0x007200"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "218..224"
+    },
+    {
+      "ROM_PC": "0x007204",
+      "ROM_BYTES": "2D400056",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0303_0x007204"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "225..232"
+    },
+    {
+      "ROM_PC": "0x007208",
+      "ROM_BYTES": "D1AE0010",
+      "DECODED_INSTRUCTION": "ADD.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0304_0x007208"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "233..244"
+    },
+    {
+      "ROM_PC": "0x00720C",
+      "ROM_BYTES": "222E004E",
+      "DECODED_INSTRUCTION": "MOVE.l 78(A6), D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0305_0x00720C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part9.hpp",
+      "GENERATED_CPP_LINES": "245..254"
+    },
+    {
+      "ROM_PC": "0x007210",
+      "ROM_BYTES": "242E0052",
+      "DECODED_INSTRUCTION": "MOVE.l 82(A6), D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0306_0x007210"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "4..13"
+    },
+    {
+      "ROM_PC": "0x007214",
+      "ROM_BYTES": "D3AE0072",
+      "DECODED_INSTRUCTION": "ADD.l D1, 114(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0307_0x007214"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "14..25"
+    },
+    {
+      "ROM_PC": "0x007218",
+      "ROM_BYTES": "D5AE0076",
+      "DECODED_INSTRUCTION": "ADD.l D2, 118(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0308_0x007218"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "26..37"
+    },
+    {
+      "ROM_PC": "0x00721C",
+      "ROM_BYTES": "61002AE2",
+      "DECODED_INSTRUCTION": "BSR.w 0x009D00",
+      "IR_OPERATION_IDS": [
+        "IR245_0309_0x00721C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "38..45"
+    },
+    {
+      "ROM_PC": "0x007220",
+      "ROM_BYTES": "4A2E0070",
+      "DECODED_INSTRUCTION": "TST.b 112(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0310_0x007220"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "46..54"
+    },
+    {
+      "ROM_PC": "0x007224",
+      "ROM_BYTES": "6B3A",
+      "DECODED_INSTRUCTION": "BMI.b 0x007260",
+      "IR_OPERATION_IDS": [
+        "IR245_0311_0x007224"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "55..61"
+    },
+    {
+      "ROM_PC": "0x007226",
+      "ROM_BYTES": "08AE00000038",
+      "DECODED_INSTRUCTION": "BCLR.b #0x0, 56(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0312_0x007226"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "62..73"
+    },
+    {
+      "ROM_PC": "0x00722C",
+      "ROM_BYTES": "6032",
+      "DECODED_INSTRUCTION": "BRA.b 0x007260",
+      "IR_OPERATION_IDS": [
+        "IR245_0313_0x00722C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "74..78"
+    },
+    {
+      "ROM_PC": "0x00722E",
+      "ROM_BYTES": "04800000C000",
+      "DECODED_INSTRUCTION": "SUBI.l #0xC000, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0314_0x00722E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "79..87"
+    },
+    {
+      "ROM_PC": "0x007234",
+      "ROM_BYTES": "2D400056",
+      "DECODED_INSTRUCTION": "MOVE.l D0, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0315_0x007234"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "88..95"
+    },
+    {
+      "ROM_PC": "0x007238",
+      "ROM_BYTES": "D1AE0010",
+      "DECODED_INSTRUCTION": "ADD.l D0, 16(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0316_0x007238"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "96..107"
+    },
+    {
+      "ROM_PC": "0x00723C",
+      "ROM_BYTES": "6ECE",
+      "DECODED_INSTRUCTION": "BGT.b 0x00720C",
+      "IR_OPERATION_IDS": [
+        "IR245_0317_0x00723C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "108..114"
+    },
+    {
+      "ROM_PC": "0x00723E",
+      "ROM_BYTES": "61002AC0",
+      "DECODED_INSTRUCTION": "BSR.w 0x009D00",
+      "IR_OPERATION_IDS": [
+        "IR245_0318_0x00723E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "115..122"
+    },
+    {
+      "ROM_PC": "0x007242",
+      "ROM_BYTES": "022E00F20038",
+      "DECODED_INSTRUCTION": "ANDI.b #0xF2, 56(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0319_0x007242"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "123..134"
+    },
+    {
+      "ROM_PC": "0x007248",
+      "ROM_BYTES": "3D7C000C0030",
+      "DECODED_INSTRUCTION": "MOVE.w #0xC, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0320_0x007248"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "135..142"
+    },
+    {
+      "ROM_PC": "0x00724E",
+      "ROM_BYTES": "6000EC28",
+      "DECODED_INSTRUCTION": "BRA.w 0x005E78",
+      "IR_OPERATION_IDS": [
+        "IR245_0321_0x00724E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "143..147"
+    },
+    {
+      "ROM_PC": "0x007252",
+      "ROM_BYTES": "61000B74",
+      "DECODED_INSTRUCTION": "BSR.w 0x007DC8",
+      "IR_OPERATION_IDS": [
+        "IR245_0322_0x007252"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "148..155"
+    },
+    {
+      "ROM_PC": "0x007256",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0323_0x007256"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "156..166"
+    },
+    {
+      "ROM_PC": "0x00725C",
+      "ROM_BYTES": "6600F06E",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0324_0x00725C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "167..173"
+    },
+    {
+      "ROM_PC": "0x007260",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0325_0x007260"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "174..181"
+    },
+    {
+      "ROM_PC": "0x007656",
+      "ROM_BYTES": "0839000400FF165E",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0xFF165E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0326_0x007656"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "182..192"
+    },
+    {
+      "ROM_PC": "0x00765E",
+      "ROM_BYTES": "6662",
+      "DECODED_INSTRUCTION": "BNE.b 0x0076C2",
+      "IR_OPERATION_IDS": [
+        "IR245_0327_0x00765E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "193..199"
+    },
+    {
+      "ROM_PC": "0x007660",
+      "ROM_BYTES": "4EB900008814",
+      "DECODED_INSTRUCTION": "JSR.l 0x008814.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0328_0x007660"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "200..207"
+    },
+    {
+      "ROM_PC": "0x007666",
+      "ROM_BYTES": "65000104",
+      "DECODED_INSTRUCTION": "BCS.w 0x00776C",
+      "IR_OPERATION_IDS": [
+        "IR245_0329_0x007666"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "208..214"
+    },
+    {
+      "ROM_PC": "0x00766A",
+      "ROM_BYTES": "4EB9000086B4",
+      "DECODED_INSTRUCTION": "JSR.l 0x0086B4.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0330_0x00766A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "215..222"
+    },
+    {
+      "ROM_PC": "0x007670",
+      "ROM_BYTES": "6500009A",
+      "DECODED_INSTRUCTION": "BCS.w 0x00770C",
+      "IR_OPERATION_IDS": [
+        "IR245_0331_0x007670"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "223..229"
+    },
+    {
+      "ROM_PC": "0x007674",
+      "ROM_BYTES": "4EB900008778",
+      "DECODED_INSTRUCTION": "JSR.l 0x008778.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0332_0x007674"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "230..237"
+    },
+    {
+      "ROM_PC": "0x00767A",
+      "ROM_BYTES": "650000C6",
+      "DECODED_INSTRUCTION": "BCS.w 0x007742",
+      "IR_OPERATION_IDS": [
+        "IR245_0333_0x00767A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "238..244"
+    },
+    {
+      "ROM_PC": "0x00767E",
+      "ROM_BYTES": "4EB900008910",
+      "DECODED_INSTRUCTION": "JSR.l 0x008910.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0334_0x00767E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part10.hpp",
+      "GENERATED_CPP_LINES": "245..252"
+    },
+    {
+      "ROM_PC": "0x007684",
+      "ROM_BYTES": "65000128",
+      "DECODED_INSTRUCTION": "BCS.w 0x0077AE",
+      "IR_OPERATION_IDS": [
+        "IR245_0335_0x007684"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "4..10"
+    },
+    {
+      "ROM_PC": "0x007688",
+      "ROM_BYTES": "4EB900008950",
+      "DECODED_INSTRUCTION": "JSR.l 0x008950.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0336_0x007688"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "11..18"
+    },
+    {
+      "ROM_PC": "0x00768E",
+      "ROM_BYTES": "6500013E",
+      "DECODED_INSTRUCTION": "BCS.w 0x0077CE",
+      "IR_OPERATION_IDS": [
+        "IR245_0337_0x00768E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "19..25"
+    },
+    {
+      "ROM_PC": "0x007692",
+      "ROM_BYTES": "427900FF16EA",
+      "DECODED_INSTRUCTION": "CLR.w 0xFF16EA.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0338_0x007692"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "26..32"
+    },
+    {
+      "ROM_PC": "0x007698",
+      "ROM_BYTES": "203C007004D3",
+      "DECODED_INSTRUCTION": "MOVE.l #0x7004D3, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0339_0x007698"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "33..39"
+    },
+    {
+      "ROM_PC": "0x00769E",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0340_0x00769E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "40..47"
+    },
+    {
+      "ROM_PC": "0x0076A4",
+      "ROM_BYTES": "0C6E00000030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x0, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0341_0x0076A4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "48..57"
+    },
+    {
+      "ROM_PC": "0x0076AA",
+      "ROM_BYTES": "6208",
+      "DECODED_INSTRUCTION": "BHI.b 0x0076B4",
+      "IR_OPERATION_IDS": [
+        "IR245_0342_0x0076AA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "58..64"
+    },
+    {
+      "ROM_PC": "0x0076AC",
+      "ROM_BYTES": "3D7C0008002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x8, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0343_0x0076AC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "65..72"
+    },
+    {
+      "ROM_PC": "0x0076B2",
+      "ROM_BYTES": "6006",
+      "DECODED_INSTRUCTION": "BRA.b 0x0076BA",
+      "IR_OPERATION_IDS": [
+        "IR245_0344_0x0076B2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "73..77"
+    },
+    {
+      "ROM_PC": "0x0076B4",
+      "ROM_BYTES": "3D7C003C002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x3C, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0345_0x0076B4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "78..85"
+    },
+    {
+      "ROM_PC": "0x0076BA",
+      "ROM_BYTES": "3D7C00080004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x8, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0346_0x0076BA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "86..93"
+    },
+    {
+      "ROM_PC": "0x0076C0",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0347_0x0076C0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "94..101"
+    },
+    {
+      "ROM_PC": "0x0076C2",
+      "ROM_BYTES": "4240",
+      "DECODED_INSTRUCTION": "CLR.w D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0348_0x0076C2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "102..107"
+    },
+    {
+      "ROM_PC": "0x0076C4",
+      "ROM_BYTES": "41F900FF1668",
+      "DECODED_INSTRUCTION": "LEA.l 0xFF1668.L, A0",
+      "IR_OPERATION_IDS": [
+        "IR245_0349_0x0076C4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "108..113"
+    },
+    {
+      "ROM_PC": "0x0076CA",
+      "ROM_BYTES": "3A3900FF16E8",
+      "DECODED_INSTRUCTION": "MOVE.w 0xFF16E8.L, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0350_0x0076CA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "114..123"
+    },
+    {
+      "ROM_PC": "0x0076D0",
+      "ROM_BYTES": "3E3900FF16EA",
+      "DECODED_INSTRUCTION": "MOVE.w 0xFF16EA.L, D7",
+      "IR_OPERATION_IDS": [
+        "IR245_0351_0x0076D0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "124..133"
+    },
+    {
+      "ROM_PC": "0x0076D6",
+      "ROM_BYTES": "5347",
+      "DECODED_INSTRUCTION": "SUBQ.w #0x1, D7",
+      "IR_OPERATION_IDS": [
+        "IR245_0352_0x0076D6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "134..142"
+    },
+    {
+      "ROM_PC": "0x0076D8",
+      "ROM_BYTES": "6B000018",
+      "DECODED_INSTRUCTION": "BMI.w 0x0076F2",
+      "IR_OPERATION_IDS": [
+        "IR245_0353_0x0076D8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "143..149"
+    },
+    {
+      "ROM_PC": "0x0076DC",
+      "ROM_BYTES": "083000045000",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0(A0,D5.w)",
+      "IR_OPERATION_IDS": [
+        "IR245_0354_0x0076DC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "150..160"
+    },
+    {
+      "ROM_PC": "0x0076E2",
+      "ROM_BYTES": "6700000E",
+      "DECODED_INSTRUCTION": "BEQ.w 0x0076F2",
+      "IR_OPERATION_IDS": [
+        "IR245_0355_0x0076E2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "161..167"
+    },
+    {
+      "ROM_PC": "0x0076E6",
+      "ROM_BYTES": "5240",
+      "DECODED_INSTRUCTION": "ADDQ.w #0x1, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0356_0x0076E6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "168..176"
+    },
+    {
+      "ROM_PC": "0x0076E8",
+      "ROM_BYTES": "5445",
+      "DECODED_INSTRUCTION": "ADDQ.w #0x2, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0357_0x0076E8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "177..185"
+    },
+    {
+      "ROM_PC": "0x0076EA",
+      "ROM_BYTES": "0245007E",
+      "DECODED_INSTRUCTION": "ANDI.w #0x7E, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0358_0x0076EA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "186..194"
+    },
+    {
+      "ROM_PC": "0x0076EE",
+      "ROM_BYTES": "51CFFFEC",
+      "DECODED_INSTRUCTION": "DBRA.w D7, 0x0076DC",
+      "IR_OPERATION_IDS": [
+        "IR245_0359_0x0076EE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "195..202"
+    },
+    {
+      "ROM_PC": "0x0076F2",
+      "ROM_BYTES": "0C400008",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0360_0x0076F2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "203..209"
+    },
+    {
+      "ROM_PC": "0x0076F6",
+      "ROM_BYTES": "6512",
+      "DECODED_INSTRUCTION": "BCS.b 0x00770A",
+      "IR_OPERATION_IDS": [
+        "IR245_0361_0x0076F6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "210..216"
+    },
+    {
+      "ROM_PC": "0x0076F8",
+      "ROM_BYTES": "0C6E00080030",
+      "DECODED_INSTRUCTION": "CMPI.w #0x8, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0362_0x0076F8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "217..226"
+    },
+    {
+      "ROM_PC": "0x0076FE",
+      "ROM_BYTES": "640A",
+      "DECODED_INSTRUCTION": "BCC.b 0x00770A",
+      "IR_OPERATION_IDS": [
+        "IR245_0363_0x0076FE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "227..233"
+    },
+    {
+      "ROM_PC": "0x007700",
+      "ROM_BYTES": "3D7C00080030",
+      "DECODED_INSTRUCTION": "MOVE.w #0x8, 48(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0364_0x007700"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "234..241"
+    },
+    {
+      "ROM_PC": "0x007706",
+      "ROM_BYTES": "426E002E",
+      "DECODED_INSTRUCTION": "CLR.w 46(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0365_0x007706"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "242..248"
+    },
+    {
+      "ROM_PC": "0x00770A",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0366_0x00770A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part11.hpp",
+      "GENERATED_CPP_LINES": "249..256"
+    },
+    {
+      "ROM_PC": "0x00770C",
+      "ROM_BYTES": "3D7C0046002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x46, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0367_0x00770C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "4..11"
+    },
+    {
+      "ROM_PC": "0x007712",
+      "ROM_BYTES": "3D7C00400004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x40, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0368_0x007712"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "12..19"
+    },
+    {
+      "ROM_PC": "0x007718",
+      "ROM_BYTES": "13FC001200FF198E",
+      "DECODED_INSTRUCTION": "MOVE.b #0x12, 0xFF198E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0369_0x007718"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "20..27"
+    },
+    {
+      "ROM_PC": "0x007720",
+      "ROM_BYTES": "08EE00030038",
+      "DECODED_INSTRUCTION": "BSET.b #0x3, 56(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0370_0x007720"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "28..39"
+    },
+    {
+      "ROM_PC": "0x007726",
+      "ROM_BYTES": "13EE001700FF198A",
+      "DECODED_INSTRUCTION": "MOVE.b 23(A6), 0xFF198A.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0371_0x007726"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "40..50"
+    },
+    {
+      "ROM_PC": "0x00772E",
+      "ROM_BYTES": "3D7C00020016",
+      "DECODED_INSTRUCTION": "MOVE.w #0x2, 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0372_0x00772E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "51..58"
+    },
+    {
+      "ROM_PC": "0x007734",
+      "ROM_BYTES": "203C00600343",
+      "DECODED_INSTRUCTION": "MOVE.l #0x600343, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0373_0x007734"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "59..65"
+    },
+    {
+      "ROM_PC": "0x00773A",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0374_0x00773A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "66..73"
+    },
+    {
+      "ROM_PC": "0x007740",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0375_0x007740"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "74..81"
+    },
+    {
+      "ROM_PC": "0x007742",
+      "ROM_BYTES": "3D7C0064002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x64, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0376_0x007742"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "82..89"
+    },
+    {
+      "ROM_PC": "0x007748",
+      "ROM_BYTES": "3D7C00560004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x56, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0377_0x007748"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "90..97"
+    },
+    {
+      "ROM_PC": "0x00774E",
+      "ROM_BYTES": "13FC001400FF198E",
+      "DECODED_INSTRUCTION": "MOVE.b #0x14, 0xFF198E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0378_0x00774E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "98..105"
+    },
+    {
+      "ROM_PC": "0x007756",
+      "ROM_BYTES": "08EE00030038",
+      "DECODED_INSTRUCTION": "BSET.b #0x3, 56(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0379_0x007756"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "106..117"
+    },
+    {
+      "ROM_PC": "0x00775C",
+      "ROM_BYTES": "3D7C0000004A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x0, 74(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0380_0x00775C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "118..125"
+    },
+    {
+      "ROM_PC": "0x007762",
+      "ROM_BYTES": "2D7C000840000056",
+      "DECODED_INSTRUCTION": "MOVE.l #0x84000, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0381_0x007762"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "126..133"
+    },
+    {
+      "ROM_PC": "0x00776A",
+      "ROM_BYTES": "601A",
+      "DECODED_INSTRUCTION": "BRA.b 0x007786",
+      "IR_OPERATION_IDS": [
+        "IR245_0382_0x00776A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "134..138"
+    },
+    {
+      "ROM_PC": "0x00776C",
+      "ROM_BYTES": "3D7C0070002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x70, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0383_0x00776C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "139..146"
+    },
+    {
+      "ROM_PC": "0x007772",
+      "ROM_BYTES": "3D7C00620004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x62, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0384_0x007772"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "147..154"
+    },
+    {
+      "ROM_PC": "0x007778",
+      "ROM_BYTES": "3D7C0000004A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x0, 74(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0385_0x007778"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "155..162"
+    },
+    {
+      "ROM_PC": "0x00777E",
+      "ROM_BYTES": "2D7C000300000056",
+      "DECODED_INSTRUCTION": "MOVE.l #0x30000, 86(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0386_0x00777E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "163..170"
+    },
+    {
+      "ROM_PC": "0x007786",
+      "ROM_BYTES": "323C0100",
+      "DECODED_INSTRUCTION": "MOVE.w #0x100, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0387_0x007786"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "171..177"
+    },
+    {
+      "ROM_PC": "0x00778A",
+      "ROM_BYTES": "343C0100",
+      "DECODED_INSTRUCTION": "MOVE.w #0x100, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0388_0x00778A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "178..184"
+    },
+    {
+      "ROM_PC": "0x00778E",
+      "ROM_BYTES": "362E0016",
+      "DECODED_INSTRUCTION": "MOVE.w 22(A6), D3",
+      "IR_OPERATION_IDS": [
+        "IR245_0389_0x00778E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "185..194"
+    },
+    {
+      "ROM_PC": "0x007792",
+      "ROM_BYTES": "4EB90000E2D4",
+      "DECODED_INSTRUCTION": "JSR.l 0x00E2D4.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0390_0x007792"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "195..202"
+    },
+    {
+      "ROM_PC": "0x007798",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0391_0x007798"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "203..210"
+    },
+    {
+      "ROM_PC": "0x00779C",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0392_0x00779C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "211..218"
+    },
+    {
+      "ROM_PC": "0x0077A0",
+      "ROM_BYTES": "203C00800220",
+      "DECODED_INSTRUCTION": "MOVE.l #0x800220, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0393_0x0077A0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "219..225"
+    },
+    {
+      "ROM_PC": "0x0077A6",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0394_0x0077A6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "226..233"
+    },
+    {
+      "ROM_PC": "0x0077AC",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0395_0x0077AC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "234..241"
+    },
+    {
+      "ROM_PC": "0x0077AE",
+      "ROM_BYTES": "3D7C007A002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x7A, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0396_0x0077AE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "242..249"
+    },
+    {
+      "ROM_PC": "0x0077B4",
+      "ROM_BYTES": "3D7C00720004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x72, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0397_0x0077B4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part12.hpp",
+      "GENERATED_CPP_LINES": "250..257"
+    },
+    {
+      "ROM_PC": "0x0077BA",
+      "ROM_BYTES": "51F900FF1991",
+      "DECODED_INSTRUCTION": "SF.b 0xFF1991.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0398_0x0077BA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "4..10"
+    },
+    {
+      "ROM_PC": "0x0077C0",
+      "ROM_BYTES": "203C0080025B",
+      "DECODED_INSTRUCTION": "MOVE.l #0x80025B, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0399_0x0077C0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "11..17"
+    },
+    {
+      "ROM_PC": "0x0077C6",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0400_0x0077C6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "18..25"
+    },
+    {
+      "ROM_PC": "0x0077CC",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0401_0x0077CC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "26..33"
+    },
+    {
+      "ROM_PC": "0x0077CE",
+      "ROM_BYTES": "3D7C0080002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x80, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0402_0x0077CE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "34..41"
+    },
+    {
+      "ROM_PC": "0x0077D4",
+      "ROM_BYTES": "3D7C00740004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x74, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0403_0x0077D4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "42..49"
+    },
+    {
+      "ROM_PC": "0x0077DA",
+      "ROM_BYTES": "323C0600",
+      "DECODED_INSTRUCTION": "MOVE.w #0x600, D1",
+      "IR_OPERATION_IDS": [
+        "IR245_0404_0x0077DA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "50..56"
+    },
+    {
+      "ROM_PC": "0x0077DE",
+      "ROM_BYTES": "343C0600",
+      "DECODED_INSTRUCTION": "MOVE.w #0x600, D2",
+      "IR_OPERATION_IDS": [
+        "IR245_0405_0x0077DE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "57..63"
+    },
+    {
+      "ROM_PC": "0x0077E2",
+      "ROM_BYTES": "362E0016",
+      "DECODED_INSTRUCTION": "MOVE.w 22(A6), D3",
+      "IR_OPERATION_IDS": [
+        "IR245_0406_0x0077E2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "64..73"
+    },
+    {
+      "ROM_PC": "0x0077E6",
+      "ROM_BYTES": "4EB90000E2D4",
+      "DECODED_INSTRUCTION": "JSR.l 0x00E2D4.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0407_0x0077E6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "74..81"
+    },
+    {
+      "ROM_PC": "0x0077EC",
+      "ROM_BYTES": "2D41004E",
+      "DECODED_INSTRUCTION": "MOVE.l D1, 78(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0408_0x0077EC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "82..89"
+    },
+    {
+      "ROM_PC": "0x0077F0",
+      "ROM_BYTES": "2D420052",
+      "DECODED_INSTRUCTION": "MOVE.l D2, 82(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0409_0x0077F0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "90..97"
+    },
+    {
+      "ROM_PC": "0x0077F4",
+      "ROM_BYTES": "08EE00020039",
+      "DECODED_INSTRUCTION": "BSET.b #0x2, 57(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0410_0x0077F4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "98..109"
+    },
+    {
+      "ROM_PC": "0x0077FA",
+      "ROM_BYTES": "1D7C0015009A",
+      "DECODED_INSTRUCTION": "MOVE.b #0x15, 154(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0411_0x0077FA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "110..117"
+    },
+    {
+      "ROM_PC": "0x007800",
+      "ROM_BYTES": "203C007004D3",
+      "DECODED_INSTRUCTION": "MOVE.l #0x7004D3, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0412_0x007800"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "118..124"
+    },
+    {
+      "ROM_PC": "0x007806",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0413_0x007806"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "125..132"
+    },
+    {
+      "ROM_PC": "0x00780C",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0414_0x00780C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "133..140"
+    },
+    {
+      "ROM_PC": "0x007852",
+      "ROM_BYTES": "7004",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x4, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0415_0x007852"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "141..147"
+    },
+    {
+      "ROM_PC": "0x007854",
+      "ROM_BYTES": "61004464",
+      "DECODED_INSTRUCTION": "BSR.w 0x00BCBA",
+      "IR_OPERATION_IDS": [
+        "IR245_0416_0x007854"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "148..155"
+    },
+    {
+      "ROM_PC": "0x007858",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0417_0x007858"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "156..166"
+    },
+    {
+      "ROM_PC": "0x00785E",
+      "ROM_BYTES": "67000074",
+      "DECODED_INSTRUCTION": "BEQ.w 0x0078D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0418_0x00785E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "167..173"
+    },
+    {
+      "ROM_PC": "0x007862",
+      "ROM_BYTES": "7007",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x7, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0419_0x007862"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "174..180"
+    },
+    {
+      "ROM_PC": "0x007864",
+      "ROM_BYTES": "61000524",
+      "DECODED_INSTRUCTION": "BSR.w 0x007D8A",
+      "IR_OPERATION_IDS": [
+        "IR245_0420_0x007864"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "181..188"
+    },
+    {
+      "ROM_PC": "0x007868",
+      "ROM_BYTES": "08000004",
+      "DECODED_INSTRUCTION": "BTST.l #0x4, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0421_0x007868"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "189..196"
+    },
+    {
+      "ROM_PC": "0x00786C",
+      "ROM_BYTES": "67000068",
+      "DECODED_INSTRUCTION": "BEQ.w 0x0078D6",
+      "IR_OPERATION_IDS": [
+        "IR245_0422_0x00786C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "197..203"
+    },
+    {
+      "ROM_PC": "0x007870",
+      "ROM_BYTES": "61000D70",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0423_0x007870"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "204..211"
+    },
+    {
+      "ROM_PC": "0x007874",
+      "ROM_BYTES": "3D430016",
+      "DECODED_INSTRUCTION": "MOVE.w D3, 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0424_0x007874"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "212..219"
+    },
+    {
+      "ROM_PC": "0x007878",
+      "ROM_BYTES": "4EB900008814",
+      "DECODED_INSTRUCTION": "JSR.l 0x008814.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0425_0x007878"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "220..227"
+    },
+    {
+      "ROM_PC": "0x00787E",
+      "ROM_BYTES": "6500FEEC",
+      "DECODED_INSTRUCTION": "BCS.w 0x00776C",
+      "IR_OPERATION_IDS": [
+        "IR245_0426_0x00787E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "228..234"
+    },
+    {
+      "ROM_PC": "0x007882",
+      "ROM_BYTES": "4EB9000086B4",
+      "DECODED_INSTRUCTION": "JSR.l 0x0086B4.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0427_0x007882"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "235..242"
+    },
+    {
+      "ROM_PC": "0x007888",
+      "ROM_BYTES": "6500FE82",
+      "DECODED_INSTRUCTION": "BCS.w 0x00770C",
+      "IR_OPERATION_IDS": [
+        "IR245_0428_0x007888"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "243..249"
+    },
+    {
+      "ROM_PC": "0x00788C",
+      "ROM_BYTES": "4EB900008778",
+      "DECODED_INSTRUCTION": "JSR.l 0x008778.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0429_0x00788C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part13.hpp",
+      "GENERATED_CPP_LINES": "250..257"
+    },
+    {
+      "ROM_PC": "0x007892",
+      "ROM_BYTES": "6500FEAE",
+      "DECODED_INSTRUCTION": "BCS.w 0x007742",
+      "IR_OPERATION_IDS": [
+        "IR245_0430_0x007892"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "4..10"
+    },
+    {
+      "ROM_PC": "0x007896",
+      "ROM_BYTES": "4EB900008910",
+      "DECODED_INSTRUCTION": "JSR.l 0x008910.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0431_0x007896"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "11..18"
+    },
+    {
+      "ROM_PC": "0x00789C",
+      "ROM_BYTES": "6500FF10",
+      "DECODED_INSTRUCTION": "BCS.w 0x0077AE",
+      "IR_OPERATION_IDS": [
+        "IR245_0432_0x00789C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "19..25"
+    },
+    {
+      "ROM_PC": "0x0078A0",
+      "ROM_BYTES": "4EB900008950",
+      "DECODED_INSTRUCTION": "JSR.l 0x008950.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0433_0x0078A0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "26..33"
+    },
+    {
+      "ROM_PC": "0x0078A6",
+      "ROM_BYTES": "6500FF26",
+      "DECODED_INSTRUCTION": "BCS.w 0x0077CE",
+      "IR_OPERATION_IDS": [
+        "IR245_0434_0x0078A6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "34..40"
+    },
+    {
+      "ROM_PC": "0x0078AA",
+      "ROM_BYTES": "0839000400FF165E",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0xFF165E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0435_0x0078AA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "41..51"
+    },
+    {
+      "ROM_PC": "0x0078B2",
+      "ROM_BYTES": "6600002E",
+      "DECODED_INSTRUCTION": "BNE.w 0x0078E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0436_0x0078B2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "52..58"
+    },
+    {
+      "ROM_PC": "0x0078B6",
+      "ROM_BYTES": "3D7C000A002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0xA, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0437_0x0078B6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "59..66"
+    },
+    {
+      "ROM_PC": "0x0078BC",
+      "ROM_BYTES": "3D7C00080004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x8, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0438_0x0078BC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "67..74"
+    },
+    {
+      "ROM_PC": "0x0078C2",
+      "ROM_BYTES": "203C007004D3",
+      "DECODED_INSTRUCTION": "MOVE.l #0x7004D3, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0439_0x0078C2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "75..81"
+    },
+    {
+      "ROM_PC": "0x0078C8",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0440_0x0078C8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "82..89"
+    },
+    {
+      "ROM_PC": "0x0078CE",
+      "ROM_BYTES": "427900FF16EA",
+      "DECODED_INSTRUCTION": "CLR.w 0xFF16EA.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0441_0x0078CE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "90..96"
+    },
+    {
+      "ROM_PC": "0x0078D4",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0442_0x0078D4"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "97..104"
+    },
+    {
+      "ROM_PC": "0x0078D6",
+      "ROM_BYTES": "0839000400FF165E",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0xFF165E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0443_0x0078D6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "105..115"
+    },
+    {
+      "ROM_PC": "0x0078DE",
+      "ROM_BYTES": "6700E9EC",
+      "DECODED_INSTRUCTION": "BEQ.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0444_0x0078DE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "116..122"
+    },
+    {
+      "ROM_PC": "0x0078E2",
+      "ROM_BYTES": "61000CFE",
+      "DECODED_INSTRUCTION": "BSR.w 0x0085E2",
+      "IR_OPERATION_IDS": [
+        "IR245_0445_0x0078E2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "123..130"
+    },
+    {
+      "ROM_PC": "0x0078E6",
+      "ROM_BYTES": "3D430016",
+      "DECODED_INSTRUCTION": "MOVE.w D3, 22(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0446_0x0078E6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "131..138"
+    },
+    {
+      "ROM_PC": "0x0078EA",
+      "ROM_BYTES": "3D7C003A002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x3A, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0447_0x0078EA"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "139..146"
+    },
+    {
+      "ROM_PC": "0x0078F0",
+      "ROM_BYTES": "3D7C000A0004",
+      "DECODED_INSTRUCTION": "MOVE.w #0xA, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0448_0x0078F0"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "147..154"
+    },
+    {
+      "ROM_PC": "0x0078F6",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0449_0x0078F6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "155..162"
+    },
+    {
+      "ROM_PC": "0x0078F8",
+      "ROM_BYTES": "41F900FF1B60",
+      "DECODED_INSTRUCTION": "LEA.l 0xFF1B60.L, A0",
+      "IR_OPERATION_IDS": [
+        "IR245_0450_0x0078F8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "163..168"
+    },
+    {
+      "ROM_PC": "0x0078FE",
+      "ROM_BYTES": "0C68003A0000",
+      "DECODED_INSTRUCTION": "CMPI.w #0x3A, 0(A0)",
+      "IR_OPERATION_IDS": [
+        "IR245_0451_0x0078FE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "169..178"
+    },
+    {
+      "ROM_PC": "0x007904",
+      "ROM_BYTES": "6612",
+      "DECODED_INSTRUCTION": "BNE.b 0x007918",
+      "IR_OPERATION_IDS": [
+        "IR245_0452_0x007904"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "179..185"
+    },
+    {
+      "ROM_PC": "0x007906",
+      "ROM_BYTES": "23FC0000BEBA00FF1940",
+      "DECODED_INSTRUCTION": "MOVE.l #0xBEBA, 0xFF1940.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0453_0x007906"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "186..193"
+    },
+    {
+      "ROM_PC": "0x007910",
+      "ROM_BYTES": "7E00",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x0, D7",
+      "IR_OPERATION_IDS": [
+        "IR245_0454_0x007910"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "194..200"
+    },
+    {
+      "ROM_PC": "0x007912",
+      "ROM_BYTES": "7000",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x0, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0455_0x007912"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "201..207"
+    },
+    {
+      "ROM_PC": "0x007914",
+      "ROM_BYTES": "610043D4",
+      "DECODED_INSTRUCTION": "BSR.w 0x00BCEA",
+      "IR_OPERATION_IDS": [
+        "IR245_0456_0x007914"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "208..215"
+    },
+    {
+      "ROM_PC": "0x007918",
+      "ROM_BYTES": "7000",
+      "DECODED_INSTRUCTION": "MOVEQ.l #0x0, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0457_0x007918"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "216..222"
+    },
+    {
+      "ROM_PC": "0x00791A",
+      "ROM_BYTES": "6100439E",
+      "DECODED_INSTRUCTION": "BSR.w 0x00BCBA",
+      "IR_OPERATION_IDS": [
+        "IR245_0458_0x00791A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "223..230"
+    },
+    {
+      "ROM_PC": "0x00791E",
+      "ROM_BYTES": "082E00010037",
+      "DECODED_INSTRUCTION": "BTST.b #0x1, 55(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0459_0x00791E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "231..241"
+    },
+    {
+      "ROM_PC": "0x007924",
+      "ROM_BYTES": "6600E9A6",
+      "DECODED_INSTRUCTION": "BNE.w 0x0062CC",
+      "IR_OPERATION_IDS": [
+        "IR245_0460_0x007924"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "242..248"
+    },
+    {
+      "ROM_PC": "0x007928",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0461_0x007928"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part14.hpp",
+      "GENERATED_CPP_LINES": "249..256"
+    },
+    {
+      "ROM_PC": "0x007DC8",
+      "ROM_BYTES": "4A3900FF1983",
+      "DECODED_INSTRUCTION": "TST.b 0xFF1983.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0462_0x007DC8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "4..12"
+    },
+    {
+      "ROM_PC": "0x007DCE",
+      "ROM_BYTES": "66000074",
+      "DECODED_INSTRUCTION": "BNE.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0463_0x007DCE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "13..19"
+    },
+    {
+      "ROM_PC": "0x007DD2",
+      "ROM_BYTES": "0C6E00000004",
+      "DECODED_INSTRUCTION": "CMPI.w #0x0, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0464_0x007DD2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "20..29"
+    },
+    {
+      "ROM_PC": "0x007DD8",
+      "ROM_BYTES": "66000012",
+      "DECODED_INSTRUCTION": "BNE.w 0x007DEC",
+      "IR_OPERATION_IDS": [
+        "IR245_0465_0x007DD8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "30..36"
+    },
+    {
+      "ROM_PC": "0x007DDC",
+      "ROM_BYTES": "082E0007006F",
+      "DECODED_INSTRUCTION": "BTST.b #0x7, 111(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0466_0x007DDC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "37..47"
+    },
+    {
+      "ROM_PC": "0x007DE2",
+      "ROM_BYTES": "66000008",
+      "DECODED_INSTRUCTION": "BNE.w 0x007DEC",
+      "IR_OPERATION_IDS": [
+        "IR245_0467_0x007DE2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "48..54"
+    },
+    {
+      "ROM_PC": "0x007DE6",
+      "ROM_BYTES": "50F900FF1986",
+      "DECODED_INSTRUCTION": "ST.b 0xFF1986.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0468_0x007DE6"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "55..61"
+    },
+    {
+      "ROM_PC": "0x007DEC",
+      "ROM_BYTES": "41F900FF1668",
+      "DECODED_INSTRUCTION": "LEA.l 0xFF1668.L, A0",
+      "IR_OPERATION_IDS": [
+        "IR245_0469_0x007DEC"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "62..67"
+    },
+    {
+      "ROM_PC": "0x007DF2",
+      "ROM_BYTES": "3A3900FF16E8",
+      "DECODED_INSTRUCTION": "MOVE.w 0xFF16E8.L, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0470_0x007DF2"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "68..77"
+    },
+    {
+      "ROM_PC": "0x007DF8",
+      "ROM_BYTES": "383900FF16EA",
+      "DECODED_INSTRUCTION": "MOVE.w 0xFF16EA.L, D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0471_0x007DF8"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "78..87"
+    },
+    {
+      "ROM_PC": "0x007DFE",
+      "ROM_BYTES": "5344",
+      "DECODED_INSTRUCTION": "SUBQ.w #0x1, D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0472_0x007DFE"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "88..96"
+    },
+    {
+      "ROM_PC": "0x007E00",
+      "ROM_BYTES": "6B000042",
+      "DECODED_INSTRUCTION": "BMI.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0473_0x007E00"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "97..103"
+    },
+    {
+      "ROM_PC": "0x007E04",
+      "ROM_BYTES": "0C440004",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0474_0x007E04"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "104..110"
+    },
+    {
+      "ROM_PC": "0x007E08",
+      "ROM_BYTES": "63000006",
+      "DECODED_INSTRUCTION": "BLS.w 0x007E10",
+      "IR_OPERATION_IDS": [
+        "IR245_0475_0x007E08"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "111..117"
+    },
+    {
+      "ROM_PC": "0x007E0C",
+      "ROM_BYTES": "383C0004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x4, D4",
+      "IR_OPERATION_IDS": [
+        "IR245_0476_0x007E0C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "118..124"
+    },
+    {
+      "ROM_PC": "0x007E10",
+      "ROM_BYTES": "4240",
+      "DECODED_INSTRUCTION": "CLR.w D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0477_0x007E10"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "125..130"
+    },
+    {
+      "ROM_PC": "0x007E12",
+      "ROM_BYTES": "80705000",
+      "DECODED_INSTRUCTION": "OR.w 0(A0,D5.w), D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0478_0x007E12"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "131..142"
+    },
+    {
+      "ROM_PC": "0x007E16",
+      "ROM_BYTES": "5445",
+      "DECODED_INSTRUCTION": "ADDQ.w #0x2, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0479_0x007E16"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "143..151"
+    },
+    {
+      "ROM_PC": "0x007E18",
+      "ROM_BYTES": "0245007E",
+      "DECODED_INSTRUCTION": "ANDI.w #0x7E, D5",
+      "IR_OPERATION_IDS": [
+        "IR245_0480_0x007E18"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "152..160"
+    },
+    {
+      "ROM_PC": "0x007E1C",
+      "ROM_BYTES": "51CCFFF4",
+      "DECODED_INSTRUCTION": "DBRA.w D4, 0x007E12",
+      "IR_OPERATION_IDS": [
+        "IR245_0481_0x007E1C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "161..168"
+    },
+    {
+      "ROM_PC": "0x007E20",
+      "ROM_BYTES": "08000006",
+      "DECODED_INSTRUCTION": "BTST.l #0x6, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0482_0x007E20"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "169..176"
+    },
+    {
+      "ROM_PC": "0x007E24",
+      "ROM_BYTES": "66000020",
+      "DECODED_INSTRUCTION": "BNE.w 0x007E46",
+      "IR_OPERATION_IDS": [
+        "IR245_0483_0x007E24"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "177..183"
+    },
+    {
+      "ROM_PC": "0x007E28",
+      "ROM_BYTES": "08000004",
+      "DECODED_INSTRUCTION": "BTST.l #0x4, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0484_0x007E28"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "184..191"
+    },
+    {
+      "ROM_PC": "0x007E2C",
+      "ROM_BYTES": "66000154",
+      "DECODED_INSTRUCTION": "BNE.w 0x007F82",
+      "IR_OPERATION_IDS": [
+        "IR245_0485_0x007E2C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "192..198"
+    },
+    {
+      "ROM_PC": "0x007E30",
+      "ROM_BYTES": "0839000400FF165E",
+      "DECODED_INSTRUCTION": "BTST.b #0x4, 0xFF165E.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0486_0x007E30"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "199..209"
+    },
+    {
+      "ROM_PC": "0x007E38",
+      "ROM_BYTES": "6600017C",
+      "DECODED_INSTRUCTION": "BNE.w 0x007FB6",
+      "IR_OPERATION_IDS": [
+        "IR245_0487_0x007E38"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "210..216"
+    },
+    {
+      "ROM_PC": "0x007E3C",
+      "ROM_BYTES": "08000005",
+      "DECODED_INSTRUCTION": "BTST.l #0x5, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0488_0x007E3C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "217..224"
+    },
+    {
+      "ROM_PC": "0x007E40",
+      "ROM_BYTES": "660003EA",
+      "DECODED_INSTRUCTION": "BNE.w 0x00822C",
+      "IR_OPERATION_IDS": [
+        "IR245_0489_0x007E40"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "225..231"
+    },
+    {
+      "ROM_PC": "0x007E44",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0490_0x007E44"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "232..239"
+    },
+    {
+      "ROM_PC": "0x007E46",
+      "ROM_BYTES": "4A3900FF1985",
+      "DECODED_INSTRUCTION": "TST.b 0xFF1985.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0491_0x007E46"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "240..248"
+    },
+    {
+      "ROM_PC": "0x007E4C",
+      "ROM_BYTES": "6700000E",
+      "DECODED_INSTRUCTION": "BEQ.w 0x007E5C",
+      "IR_OPERATION_IDS": [
+        "IR245_0492_0x007E4C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part15.hpp",
+      "GENERATED_CPP_LINES": "249..255"
+    },
+    {
+      "ROM_PC": "0x007E50",
+      "ROM_BYTES": "13FC000100FF1985",
+      "DECODED_INSTRUCTION": "MOVE.b #0x1, 0xFF1985.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0493_0x007E50"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "4..11"
+    },
+    {
+      "ROM_PC": "0x007E58",
+      "ROM_BYTES": "6000FFEA",
+      "DECODED_INSTRUCTION": "BRA.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0494_0x007E58"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "12..16"
+    },
+    {
+      "ROM_PC": "0x007E5C",
+      "ROM_BYTES": "0C6E00040004",
+      "DECODED_INSTRUCTION": "CMPI.w #0x4, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0495_0x007E5C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "17..26"
+    },
+    {
+      "ROM_PC": "0x007E62",
+      "ROM_BYTES": "6700FFE0",
+      "DECODED_INSTRUCTION": "BEQ.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0496_0x007E62"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "27..33"
+    },
+    {
+      "ROM_PC": "0x007E66",
+      "ROM_BYTES": "4A7900FF1AA4",
+      "DECODED_INSTRUCTION": "TST.w 0xFF1AA4.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0497_0x007E66"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "34..42"
+    },
+    {
+      "ROM_PC": "0x007E6C",
+      "ROM_BYTES": "6600FFD6",
+      "DECODED_INSTRUCTION": "BNE.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0498_0x007E6C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "43..49"
+    },
+    {
+      "ROM_PC": "0x007E70",
+      "ROM_BYTES": "4A6E008E",
+      "DECODED_INSTRUCTION": "TST.w 142(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0499_0x007E70"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "50..58"
+    },
+    {
+      "ROM_PC": "0x007E74",
+      "ROM_BYTES": "6700FFCE",
+      "DECODED_INSTRUCTION": "BEQ.w 0x007E44",
+      "IR_OPERATION_IDS": [
+        "IR245_0500_0x007E74"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "59..65"
+    },
+    {
+      "ROM_PC": "0x007E78",
+      "ROM_BYTES": "3D7C0014002A",
+      "DECODED_INSTRUCTION": "MOVE.w #0x14, 42(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0501_0x007E78"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "66..73"
+    },
+    {
+      "ROM_PC": "0x007E7E",
+      "ROM_BYTES": "3D7C00140004",
+      "DECODED_INSTRUCTION": "MOVE.w #0x14, 4(A6)",
+      "IR_OPERATION_IDS": [
+        "IR245_0502_0x007E7E"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "74..81"
+    },
+    {
+      "ROM_PC": "0x007E84",
+      "ROM_BYTES": "51F900FF1990",
+      "DECODED_INSTRUCTION": "SF.b 0xFF1990.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0503_0x007E84"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "82..88"
+    },
+    {
+      "ROM_PC": "0x007E8A",
+      "ROM_BYTES": "203C00900359",
+      "DECODED_INSTRUCTION": "MOVE.l #0x900359, D0",
+      "IR_OPERATION_IDS": [
+        "IR245_0504_0x007E8A"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "89..95"
+    },
+    {
+      "ROM_PC": "0x007E90",
+      "ROM_BYTES": "4EB900060004",
+      "DECODED_INSTRUCTION": "JSR.l 0x060004.L",
+      "IR_OPERATION_IDS": [
+        "IR245_0505_0x007E90"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "96..103"
+    },
+    {
+      "ROM_PC": "0x007E96",
+      "ROM_BYTES": "2E7900FF1934",
+      "DECODED_INSTRUCTION": "MOVEA.l 0xFF1934.L, A7",
+      "IR_OPERATION_IDS": [
+        "IR245_0506_0x007E96"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "104..112"
+    },
+    {
+      "ROM_PC": "0x007E9C",
+      "ROM_BYTES": "4E75",
+      "DECODED_INSTRUCTION": "RTS",
+      "IR_OPERATION_IDS": [
+        "IR245_0507_0x007E9C"
+      ],
+      "GENERATED_CPP_FILE": "src/tools/thor_ir/generated_m15_245/exp_dispatch_part16.hpp",
+      "GENERATED_CPP_LINES": "113..120"
+    }
+  ]
+}

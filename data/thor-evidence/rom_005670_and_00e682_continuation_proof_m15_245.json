@@ -1,0 +1,151 @@
+{
+  "schema": "oasis.m15_245.caller-timer-continuation-proof.v1",
+  "milestone": "M15.245",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "caller_005670_topology": {
+    "scenario_c": {
+      "entries": 861,
+      "from_005586": 861,
+      "from_other": 0,
+      "to_0059b8_jmp": 858,
+      "early_rts": 3,
+      "nonlocal_exits": 0,
+      "steps": 61165,
+      "callers": {
+        "0x5586": 861
+      },
+      "exits": {
+        "0x558a": 3,
+        "0x5c1a": 4,
+        "0x5cc8": 4,
+        "0x61f6": 113,
+        "0x62e4": 145,
+        "0x6338": 2,
+        "0x6464": 10,
+        "0x6516": 307,
+        "0x663e": 36,
+        "0x66aa": 24,
+        "0x7112": 72,
+        "0x71da": 19,
+        "0x7656": 28,
+        "0x780e": 20,
+        "0x7852": 42,
+        "0x78f8": 12,
+        "0x7a28": 20
+      }
+    },
+    "scenario_a": {
+      "entries": 772,
+      "from_005586": 772,
+      "from_other": 0,
+      "to_0059b8_jmp": 753,
+      "early_rts": 19,
+      "nonlocal_exits": 0,
+      "steps": 52455,
+      "callers": {
+        "0x5586": 772
+      },
+      "exits": {
+        "0x558a": 19,
+        "0x5cf8": 10,
+        "0x5dc8": 10,
+        "0x5de4": 30,
+        "0x61f6": 151,
+        "0x62e4": 84,
+        "0x6338": 1,
+        "0x6464": 5,
+        "0x6516": 97,
+        "0x663e": 12,
+        "0x66aa": 72,
+        "0x6738": 35,
+        "0x6eda": 10,
+        "0x6fe4": 24,
+        "0x701a": 18,
+        "0x705a": 30,
+        "0x7112": 39,
+        "0x7656": 28,
+        "0x7852": 43,
+        "0x792a": 24,
+        "0x7a28": 30
+      }
+    },
+    "scenario_b": {
+      "entries": 299,
+      "from_005586": 299,
+      "from_other": 0,
+      "to_0059b8_jmp": 297,
+      "early_rts": 2,
+      "nonlocal_exits": 0,
+      "steps": 21261,
+      "callers": {
+        "0x5586": 299
+      },
+      "exits": {
+        "0x558a": 2,
+        "0x5c1a": 4,
+        "0x61f6": 21,
+        "0x62e4": 23,
+        "0x6338": 1,
+        "0x6464": 5,
+        "0x6516": 142,
+        "0x663e": 24,
+        "0x66aa": 24,
+        "0x7112": 24,
+        "0x71da": 19,
+        "0x7a28": 10
+      }
+    },
+    "production_ownership_note": "0x005670..0x0059B8 is owned by active helper m68k_005670 (only when caller is 0x005586 -> return 0x00558A). After 0x0059B8 JMP (A0), control hands directly to the entity handler entry PC where M15.245 executes unowned portable handlers seamlessly."
+  },
+  "timer_00e682_summary": {
+    "scenario_c": {
+      "entries": 4056,
+      "normal_rts": 4047,
+      "nonlocal_rts": 4,
+      "callers": {
+        "0x57d0": 861,
+        "0x256b8": 3195
+      },
+      "nonlocal_return_pcs": {
+        "0x558a": 3,
+        "0xdf1c": 1
+      }
+    },
+    "scenario_a": {
+      "entries": 2104,
+      "normal_rts": 2030,
+      "nonlocal_rts": 43,
+      "callers": {
+        "0x57d0": 772,
+        "0x1a54e": 424,
+        "0x1b7f2": 105,
+        "0x1bbf8": 337,
+        "0x1bf84": 350,
+        "0x1c4dc": 116
+      },
+      "nonlocal_return_pcs": {
+        "0x558a": 19,
+        "0xdf1c": 24
+      }
+    },
+    "scenario_b": {
+      "entries": 299,
+      "normal_rts": 296,
+      "nonlocal_rts": 2,
+      "callers": {
+        "0x57d0": 299
+      },
+      "nonlocal_return_pcs": {
+        "0x558a": 2
+      }
+    },
+    "m15_244_stack_proof_counts": {
+      "scenario_c": 4,
+      "scenario_a": 43,
+      "scenario_b": 2,
+      "total": 49,
+      "a7_delta": 8
+    }
+  }
+}

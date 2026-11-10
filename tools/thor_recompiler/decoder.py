@@ -10,10 +10,11 @@ from typing import List, Optional
 
 @dataclass
 class Operand:
-    kind: str  # "reg_d", "reg_a", "imm", "disp_a", "indir_a", "postinc_a", "abs_l", "branch_disp"
+    kind: str  # "reg_d", "reg_a", "imm", "disp_a", "indir_a", "postinc_a", "abs_l", "branch_disp", "disp_ax"
     reg: int = 0
     val: int = 0
     size: str = "w"  # "b", "w", "l"
+    ext: int = 0
 
 @dataclass
 class DecodedInstruction:
@@ -448,10 +449,12 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
         if src_mode == 0:
             return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=src_reg, size="w"), Operand("reg_d", reg=reg, size="w")], base_cycles=140)
 
-    # Shifts / Rotates: 0xE000
-    if (w0 & 0xF000) == 0xE000:
+    # Shifts / Rotates: 0xE000 (register shifts when (w0 >> 6) & 3 != 3)
+    if (w0 & 0xF000) == 0xE000 and ((w0 >> 6) & 3) != 3:
         count_or_reg = (w0 >> 9) & 7
         dr = (w0 >> 8) & 1
+        sz_code = (w0 >> 6) & 3
+        sz_name = ("b", "w", "l")[sz_code]
         ir = (w0 >> 5) & 1
         shift_type = (w0 >> 3) & 3
         target_reg = w0 & 7
@@ -463,8 +466,13 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
 
         if ir == 0:
             count = 8 if count_or_reg == 0 else count_or_reg
-            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("imm", val=count), Operand("reg_d", reg=target_reg)], base_cycles=42, variable_cycles=count * 14)
+            return DecodedInstruction(pc, words, mnemonic, sz_name, [Operand("imm", val=count, size=sz_name), Operand("reg_d", reg=target_reg, size=sz_name)], base_cycles=(8 if sz_name == "l" else 6) + 2 * count)
         else:
-            return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=count_or_reg), Operand("reg_d", reg=target_reg)], base_cycles=42, variable_cycles=-1)
+            return DecodedInstruction(pc, words, mnemonic, sz_name, [Operand("reg_d", reg=count_or_reg, size=sz_name), Operand("reg_d", reg=target_reg, size=sz_name)], base_cycles=(8 if sz_name == "l" else 6), variable_cycles=-1)
+
+    from tools.thor_recompiler.decoder_ext import decode_ext_at
+    ext_res = decode_ext_at(rom, pc, DecodedInstruction)
+    if ext_res is not None:
+        return ext_res
 
     raise NotImplementedError(f"Unsupported opcode 0x{w0:04X} at 0x{pc:06X}")

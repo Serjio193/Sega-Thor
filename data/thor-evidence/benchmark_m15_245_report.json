@@ -1,0 +1,50 @@
+{
+  "schema": "oasis.m15_245.benchmark.v1",
+  "milestone": "M15.245",
+  "generated_source_files": 29,
+  "generated_source_bytes": 386305,
+  "generated_source_lines": 5920,
+  "benchmark_binary_bytes": 429688,
+  "portable_gameplay_runner_bytes": 3380704,
+  "isolated_backend_results": {
+    "fixture_count": 28,
+    "trials": 10,
+    "sweeps_per_trial": 2500,
+    "transitions_per_trial": 70000,
+    "guest_instructions_per_trial": 975000,
+    "uncompiled_continuations_per_trial": 42500,
+    "ram_writes_per_trial": 412500,
+    "mode_a": {
+      "min_ms": 15.3466,
+      "median_ms": 15.402,
+      "max_ms": 15.8732,
+      "stddev_ms": 0.17178,
+      "sink": 1311451050000
+    },
+    "mode_b": {
+      "min_ms": 12.537,
+      "median_ms": 12.6489,
+      "max_ms": 12.9747,
+      "stddev_ms": 0.164079,
+      "sink": 1311451050000
+    },
+    "speedup_median": 1.21766
+  },
+  "integrated_runner_wall_clock": {
+    "scenario_c": {
+      "run_a_prod_sec": 21.71807819999958,
+      "run_b_m15_244_sec": 20.016254299998764,
+      "run_c_m15_245_sec": 19.42637840000134
+    },
+    "scenario_a": {
+      "run_a_prod_sec": 17.899803999998767,
+      "run_b_m15_244_sec": 38.36521229999926,
+      "run_c_m15_245_sec": 25.172936599999957
+    },
+    "scenario_b": {
+      "run_a_prod_sec": 15.140557099999569,
+      "run_b_m15_244_sec": 14.965582099999665,
+      "run_c_m15_245_sec": 11.152860599999258
+    }
+  }
+}
