@@ -1,3 +1,33 @@
+# 2026-11-10 — Milestone M16.31: PROJECTILE LAUNCH, 3D FLIGHT, SHADOW PROJECTION, AND POST-COMBAT CONTINUOUS SAT CONVERGENCE — M16.30 Reporting Gap Reconciliation (F775 Exact, F775..F885 111-Frame Interval, F858 DMA Count 0 vs 26, 32 Comparator Fields); Projectile Launch & Flight Forensics across F886..F915 (F886 Launch into State 0x0C Flight z=24, F887 First Render sat_cnt=29, F888 (101,196,29), F890 (99,193,33), F894 (94,186,40)); ROM Flight & Shadow Disassembly (0x00ACFE/0x00AA7E/0x02569E/0x0256A6); Extended Continuous Autonomous SAT Parity F776..F940 (165 Frames, 166 Total Including F775); 205/217 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `f02c7d37a8d725e7f3fa7d6ca60aa0cf8e7c5114`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Pinned Town Journal SHA256 `bfecaef539aedb30d2d9dc7e3c1337a3c441cc3cc05e3aed59095d78f3a4edde`.
+  * Reporting Gap Reconciliation:
+    - Formalized `F775_ACTIVE_SAT_EXACT` (`sat_cnt = 26`).
+    - Formalized `F776_TO_F885_EXACT = 110` frames and `TRUE_LONGEST_CONSECUTIVE_INTERVAL = 111` frames (F775..F885).
+    - Documented `F858_DMA_COUNT_ORIGINAL = 0` and `F858_DMA_COUNT_NATIVE_BEFORE_FIX = 26`.
+    - Documented `ENTITY_COMPARATOR_FIELD_COUNT_RECONCILED = 32`.
+  * Projectile Launch & Flight Trajectory Forensics:
+    - Traced Guard 11 throw launch at F886 (`tick = 2503`) transforming Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, calculated directional velocity `(vx, vy, vz) = (-3, -4, 6)`.
+    - Traced first presentation at F887 (`tick = 2504`, `sat_cnt = 29`, `fid = 45`, `fdir = 45`) with ground shadow projected at `ground_y`.
+    - Traced 3D flight trajectory integration: F888 `(101, 196, 29)`, F890 `(99, 193, 33)`, F892 `(96, 190, 37)`, F894 `(94, 186, 40)`.
+  * ROM Flight & Shadow Disassembly:
+    - Proved ROM `$00ACFE` shadow table structure (`dy = 0x0003`, `sz = 0x0000`, `attr = 0x0548`).
+    - Proved ROM `$00AA7E` shadow emission routine entry (`move.w $10(a6), d2`).
+    - Proved ROM `$02569E` throw allocator invocation and `$0256A6` pointer linkage at `$9E(a6)`.
+  * Extended Continuous SAT Parity:
+    - Extended continuous autonomous simulation parity across 165 frames (F776..F940): 82 logic frames with `sat_cnt = 0` and 83 presentation frames with authentic active sprite emission (`25 <= sat_cnt <= 40`).
+    - Including initial checkpoint F775, total consecutive active SAT frames reached 166.
+  * Dual-Toolchain Verification & Governance:
+    - Implemented `tests/m16_31_projectile_flight_test.cpp` and registered in `cmake/project_tests.cmake`.
+    - 205/217 tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved without suppression).
+    - All 954 governed files <= 500 lines verified via `cmake -P tests/check_file_limits.cmake`.
+    - Zero emulator linkage in `oasis.exe`; `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.30: F858 PROJECTILE SLOT REUSE FORENSICS, FULL ENTITY-SLOT LIFECYCLE, AND LONG-RANGE CONTINUOUS SAT CONVERGENCE — F858 SAT Forensics (Byte Offset 0 / sat_cnt=0 Logic-Only VDP DMA Skipped); Complete Slot 5 Lifecycle Trace (F795 Lethal Hit -> F841 Ground Collapse End -> F842 Despawn/Slot Free -> F858 Reclaim by Guard 11 Throw Windup via ROM 0x00DA72 as Type 0x002E -> F886 Projectile Flight Launch as Type 0x002C State 0x0C -> F887 First Render Frame with sat_cnt=29); ROM Allocator & Caller Disassembly (0x00DA72/0x00DAA0/0x0255D8/0x02569E/0x0256A6); Extended Continuous Simulation SAT Parity F776..F885 (110 Frames, 55 Cleared Logic + 55 Active Presentation); 204/216 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

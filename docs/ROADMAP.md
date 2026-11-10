@@ -1,3 +1,23 @@
+# M16.31 Projectile Launch, 3D Flight, Shadow Projection, and Post-Combat Continuous SAT Convergence — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Reconciliation of M16.30 Reporting Gaps:
+  * Formally documented and tested exact reconciliation: `F775_ACTIVE_SAT_EXACT` (`sat_cnt = 26`), `F776_TO_F885_EXACT = 110` frames, `TRUE_LONGEST_CONSECUTIVE_INTERVAL = 111` frames (F775..F885), `F858_DMA_COUNT_ORIGINAL = 0`, `F858_DMA_COUNT_NATIVE_BEFORE_FIX = 26`, `ENTITY_COMPARATOR_FIELD_COUNT_RECONCILED = 32`.
+- Projectile Launch & Flight Trajectory Forensics across F886..F915:
+  * Traced Guard 11 throw launch at F886 (`tick = 2503`) transforming Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, calculated directional velocity `(vx, vy, vz) = (-3, -4, 6)`.
+  * Traced first presentation at F887 (`tick = 2504`, `sat_cnt = 29`, `fid = 45`, `fdir = 45`) with ground shadow projected at `ground_y`.
+  * Traced 3D flight trajectory integration: F888 `(101, 196, 29)`, F890 `(99, 193, 33)`, F892 `(96, 190, 37)`, F894 `(94, 186, 40)`.
+- ROM Flight Physics, Gravity, and Shadow Disassembly Verification:
+  * Verified ROM `$00ACFE` shadow table structure (`dy = 0x0003`, `sz = 0x0000`, `attr = 0x0548`).
+  * Verified ROM `$00AA7E` shadow emission routine entry (`move.w $10(a6), d2`).
+  * Verified ROM `$02569E` throw initialization and linked pointer offset `940` at `$0256A6`.
+- Extended Autonomous Continuous SAT Parity:
+  * Extended continuous autonomous simulation parity across 165 frames (F776..F940): alternating between logic frames with `sat_cnt = 0` and presentation frames with authentic active sprite emission (`25 <= sat_cnt <= 40`).
+  * Total consecutive byte-exact active SAT frames reached 166 frames (F775..F940).
+- Dual-Toolchain Verification & Test Governance:
+  * Implemented `tests/m16_31_projectile_flight_test.cpp` (245 lines, <= 500 line limit) and registered in `cmake/project_tests.cmake`.
+  * 205/217 C++ tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved); all 954 governed files <= 500 lines; zero emulator linkage in `oasis.exe`.
+
 # M16.30 F858 Projectile Slot Reuse Forensics, Full Entity-Slot Lifecycle, and Long-Range Continuous SAT Convergence — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

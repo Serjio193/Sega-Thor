@@ -1,3 +1,31 @@
+# ADR-20261110-M16-31-PROJECTILE-LAUNCH-3D-FLIGHT-SHADOW-PROJECTION-AND-POST-COMBAT-CONTINUOUS-SAT-CONVERGENCE — M16.30 Reporting Gap Reconciliation (F775 Exactness, 111-Frame Interval F775..F885, F858 DMA Count 0 vs 26, 32 Comparator Fields), Projectile Flight Forensics & 3D Physics (F886 Launch, F887 Render sat_cnt=29, F888 (101,196,29), F890 (99,193,33), F894 (94,186,40)), ROM Flight & Shadow Disassembly (0x00ACFE/0x00AA7E/0x02569E/0x0256A6), Autonomous Continuous Active SAT Parity Extended to 165 Frames (F776..F940, 166 Total Including F775), 205/217 Tests Passing (12 Historical BizHawk Failures Preserved), <=500 Line File Limit Preserved, Zero Emulator Linkage
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.30 achieved 110 consecutive frames of continuous active SAT parity (F776..F885), resolving the F858 logic tick VDP DMA clearing issue and tracing Slot 5 reclaim.
+2. Reporting gaps in M16.30 required explicit documentation: F775 active SAT exactness, true continuous interval F775..F885 (111 frames), F858 DMA count original (0) vs native before fix (26), and entity comparator field count (32 reconciled).
+3. The projectile launched by Guard 11 at F886 and presented at F887 required validation of 3D trajectory mathematics, ground shadow projection, collision windows, and continuous SAT parity across flight.
+
+**Decisions:**
+1. **Reconciliation of Reporting Gaps:**
+   - Formalized `F775_ACTIVE_SAT_EXACT` as exact (`sat_cnt = 26`).
+   - Defined `F776_TO_F885_EXACT` as 110 frames and `TRUE_LONGEST_CONSECUTIVE_INTERVAL` as 111 frames (F775..F885).
+   - Documented `F858_DMA_COUNT_ORIGINAL = 0` and `F858_DMA_COUNT_NATIVE_BEFORE_FIX = 26`.
+   - Confirmed `ENTITY_COMPARATOR_FIELD_COUNT_RECONCILED = 32`.
+2. **Projectile Launch & 3D Flight Physics:**
+   - Guard 11 throw keyframe at F886 (`anim_key_off == 0x000C`) transforms Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, initial velocity `(vx, vy, vz) = (-3, -4, 6)`.
+   - First rendered at F887 (`sat_cnt = 29`, `fid = 45`, `fdir = 45`) with shadow piece at `ground_y`.
+   - In-flight integration tested and validated at F888 `(101, 196, 29)`, F890 `(99, 193, 33)`, F892 `(96, 190, 37)`, and F894 `(94, 186, 40)`.
+3. **ROM Flight & Shadow Disassembly Verification:**
+   - Proved ROM `$00ACFE` shadow table structure (`dy = 0x0003`, `sz = 0x0000`, `attr = 0x0548`).
+   - Proved ROM `$00AA7E` shadow emission routine entry (`move.w $10(a6), d2`).
+   - Proved ROM `$02569E` throw allocator invocation and `$0256A6` pointer linkage at `$9E(a6)`.
+4. **Autonomous Extended Continuous SAT Parity:**
+   - Extended continuous autonomous simulation parity across 165 frames (F776..F940): 82 logic frames with `sat_cnt = 0` and 83 presentation frames with authentic active sprite emission (`25 <= sat_cnt <= 40`).
+   - Including initial checkpoint F775, total consecutive active SAT frames reached 166.
+   - All 205 passing C++ tests verified in MinGW Release and MSVC Debug; 12 historical BizHawk failures preserved without suppression; all 954 source files <= 500 lines.
+
 # ADR-20261110-M16-30-PROJECTILE-SLOT-REUSE-FORENSICS-FULL-ENTITY-SLOT-LIFECYCLE-AND-LONG-RANGE-CONTINUOUS-SAT-CONVERGENCE — F858 SAT Byte Forensics (Even Logic-Tick 0 VDP DMA Emission), Complete Slot 5 Lifecycle Trace (F795 Lethal Damage -> F842 Despawn -> F858 Reclaim via ROM 0x00DA72 as Type 0x002E -> F886 Launch into Type 0x002C Flight -> F887 First Render Frame), Authentic Allocator Disassembly (0x00DA72/0x0255D8/0x02569E/0x0256A6), Continuous Simulation SAT Parity Extended Across 110 Frames (F776..F885), 204/216 Tests Passing (12 Historical BizHawk Failures Preserved), Zero Emulator Linkage, <=500 Line Source Limit Preserved
 **Status:** Accepted
 **Date:** 2026-11-10
