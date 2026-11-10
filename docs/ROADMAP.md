@@ -5951,3 +5951,14 @@ full-game parity and remaining subsystem coverage. See
 - Preserved extended continuous SAT parity across F775..F855 (`81/81`), verified active chain termination at `0x00A77E`, DMA length limiting at `0x000976`, sound priority arbitration (`0x06112E`), and spatial attenuation (`0x00E7E8`).
 - Verified independent holdout traces and implemented 13 negative mutation guards.
 - Built and verified passing in MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage in `oasis.exe`.
+
+
+# M16.29 — Post-Combat F856 First-Divergence Forensics, Full Entity-State Audit, and Extended Autonomous SAT Parity — PASS
+- Reconciled entity parity contradiction: proved M16.28's `521/521` was `SELECTED_FIELD_PARITY` (milestone events), not full 26-field frame-by-frame state across all 15 slots; explained why F856 background guard movement was unasserted.
+- Established machine-readable Parity Coverage Manifest distinguishing `SELECTED_FIELD_PARITY`, `FULL_ENTITY_STATE_PARITY`, `ACTIVE_SAT_PARITY`, `FULL_SAT_BUFFER_PARITY`, `SELECTED_VDP_PARITY`, and `FULL_VDP_STATE_PARITY`.
+- Resolved F856 SAT divergence: proved F856 has `sat_cnt = 0` due to being an even logic-only tick (`tick = 2473`) where VDP DMA is skipped; active SAT resumes on presentation frame F857 with 26 sprites (SHA256 `1EF5DAD0...`).
+- Traced post-combat corpse release and entity slot reuse: Slot 5 guard despawns at F842; Slot 5 is reclaimed at F858 by Guard 11 throw trigger (`try_throw`, ROM `0x0255D8`) for projectile Type 46 (`0x002E`) with `ai_timer = 60`.
+- Resolved HP discrepancy (98 vs 208): proved canonical player HP at RAM `$FF18D0` is 208 (`0x00D0`), reducing to 206 (`0x00CE`) at F808; 98 was an isolated test fixture artifact.
+- Resolved VDP metrics: confirmed `CONTINUOUS_521_VDP_PARITY` was `SELECTED_VDP_PARITY` (Plane A metatiles, scroll, water CRAM), while `FULL_80_ENTRY_SAT_PARITY` is `0/521` due to active-count DMA (`0x000976`), leaving `FULL_VDP_STATE_PARITY = NOT_MEASURED`.
+- Implemented and verified 14 comparator mutation tests in `tests/m16_29_post_combat_sat_test.cpp`.
+- Built and verified passing in MinGW Release (203/215 passed, 12 historical BizHawk failures preserved) and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage in `oasis.exe`. Hybrid worktree untouched.

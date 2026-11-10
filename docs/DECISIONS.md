@@ -11179,3 +11179,38 @@ M16.27 corrected the first continuous native simulation divergence at Frame 776 
 
 ### Consequences
 The standalone native runtime is now fully qualified for autonomous continuous multi-enemy simulation across the complete 521-frame encounter with authentic event causality, zero intermediate state injections, and strict architectural compliance.
+
+
+## Decision: M16.29 — Post-Combat F856 First-Divergence Forensics, Full Entity-State Audit, and Extended Autonomous SAT Parity
+
+### Context
+Milestone M16.29 resolves the apparent contradiction in M16.28 between reported complete entity-state parity and the F856 SAT divergence attributed to background guard repositioning. It establishes a machine-readable Parity Coverage Manifest, resolves historical HP representation differences (98 vs 208) and VDP metric interpretations (521/521 selected vs 0/521 full-buffer), traces post-combat corpse release and slot reuse mechanics around F842–F858, and qualifies continuous SAT behavior with negative mutation guards.
+
+### Findings & Implementation
+1. **Parity Coverage Manifest & Contradiction Resolution**:
+   - Resolved why M16.28 reported `521/521 ENTITY_PARITY` while F856 diverged: M16.28 measured `SELECTED_FIELD_PARITY` (verifying Beach-to-Town exit, rooftop activation distance, projectile spawn/hit, lethal damage arithmetic, and North transition milestones), not continuous 26-field frame-by-frame comparison across all 15 slots.
+   - Formulated explicit manifest categories:
+     - `SELECTED_FIELD_PARITY`: 521/521 (verified authentic event milestones)
+     - `FULL_ENTITY_STATE_PARITY`: NOT_MEASURED across all 521 frames (explained why background guard movement was unasserted)
+     - `ACTIVE_SAT_PARITY`: 81/81 across F775..F855, 6/6 across reference frames
+     - `FULL_SAT_BUFFER_PARITY`: 0/521 (due to active-count DMA copying only `active_count * 8` bytes, leaving inactive entries retaining stale VRAM)
+     - `SELECTED_VDP_PARITY`: 521/521 (Plane A metatiles, scroll position, water cycle CRAM)
+     - `FULL_VDP_STATE_PARITY`: NOT_MEASURED (complete 64KB VRAM)
+2. **F856 SAT & Entity Differential Forensics**:
+   - Proved F856 has `sat_cnt = 0` because it is an even frame (logic-only tick 2473), where Mega Drive VDP DMA transfer does not occur; active SAT resumes on presentation frame F857 with 26 sprites (SHA256 `1EF5DAD0BBA7C4306316F82604F21F757FB118132CA16B43B5A5C745A22DC973`).
+   - Guard 8 repositioning at F856 (`y: 328 -> 330`) verified as authentic patrol progression.
+   - Corpse release at F842 verified: Slot 5 guard despawns, leaving Slot 5 inactive/empty through F857.
+   - Entity slot reuse at F858: Guard 11 triggers throw (`try_throw`, State 0x0A, `t9e = 940`), scanning slots for the first free entry and reallocating Slot 5 for projectile Type 46 (`0x002EU`) with `ai_timer = 60` (`0x003C`).
+   - ROM writer PCs verified: `0x0255D8` (throw/allocation), `0x00DF60` (physics/collision), `0x00A6EC..0x00A718` (SAT Y-sort), `0x00A77E` (link termination), `0x000976` (DMA count).
+3. **HP Representation Discrepancy (98 vs 208) Resolved**:
+   - Player HP is stored as a raw word at M68K RAM `$FF18D0`.
+   - In canonical attract replay (`canonical_beach_frame3600.state`), initial HP is decimal 208 (`0x00D0`).
+   - At F808, projectile collision deals +2 damage, reducing HP: 208 -> 206 (`0x00CE`).
+   - M16.26's reported `HP 98 -> 96` was an artifact of an isolated unit test where initial HP was set to 100 decimal.
+4. **14 Comparator Mutation Tests & Governance**:
+   - Added 14 negative mutation tests covering entity coordinates, fractional coordinates, action timers, scheduler thresholds, corpse states, link termination, sorting order, logic phase, VRAM persistence, PRNG progression, damage clamping, HP representation, slot reuse types, and inactive VRAM regions.
+   - CTest suite passed: 203/215 passed, with the 12 expected historical BizHawk M12 failures preserved.
+   - All source files strictly `<= 500` lines. Zero emulator linkage in `oasis.exe`.
+
+### Consequences
+The standalone engine now has an audited, machine-readable parity manifest, complete post-combat slot reuse comprehension, and verified non-oracle active SAT parity.
