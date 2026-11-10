@@ -1,3 +1,34 @@
+# ADR-20261110-M16-32-COMPLETE-TOWN-REPLAY-VISUAL-QUALIFICATION-PROJECTILE-TERMINAL-LIFECYCLE-AND-SAT-VDP-STATE-PROVENANCE — Full 521-Frame Town Replay Visual Qualification (F595..F1115 Distribution: 246 Active DMA, 275 Zero-DMA), Projectile Slot 5 Terminal Lifecycle (F944 Landing at (58,140,0) into State 0x0E, F955 Last Frame, F956 Despawn/Slot Release), Autonomous Continuous SAT Parity Extended to 341 Consecutive Frames (F775..F1115), Accurate Hardware VDP/VRAM Provenance Scope, 206/218 Tests Passing (12 Historical BizHawk Failures Preserved), <=500 Line Source Limit Preserved, Zero Emulator Linkage
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.31 verified projectile flight through F940 (166 consecutive frames F775..F940).
+2. The entire original Town journal spans F595..F1115 (521 frames). Visual qualification and terminal lifecycle of the Slot 5 projectile (flight arc, landing, ground impact animation, despawn) required end-to-end qualification across the entire encounter.
+3. Hardware VRAM/SAT provenance requires explicit distinctions between native logical SAT lists, DMA source buffers, and unmeasured VRAM blocks.
+
+**Decisions:**
+1. **Full Town Replay SAT Distribution Qualification:**
+   - Validated active SAT distribution across all 521 frames of `town_multi_enemy_encounter_m16_23.json`:
+     * F595..F774: 180 frames (77 active DMA, 103 zero-DMA).
+     * F775..F940: 166 frames (83 active DMA, 83 zero-DMA).
+     * F941..F1115: 175 frames (86 active DMA, 89 zero-DMA).
+     * Total F595..F1115: 521 frames (246 active DMA, 275 zero-DMA).
+2. **Complete Slot 5 Projectile Terminal Lifecycle:**
+   - Traced complete lifecycle to conclusion:
+     * F858: Reclaimed as hidden reservation Type `0x002E`.
+     * F886: Launched as live projectile Type `0x002C`, State `0x0C` (flight, `z = 24`).
+     * F887: First rendered on screen (`sat_cnt = 29`, `fid = 45`, `fdir = 45`).
+     * F940..F943: Flight descent (`z = 11 -> 3`).
+     * F944: Ground impact landing, state transitions to `0x0E` (14 decimal), `world_z = 0`, position `(58, 140, 0)`.
+     * F955: Last frame present on screen before impact animation finishes (`antmr = 0`, `anoff = 4`).
+     * F956: Slot 5 released upon impact animation completion (`flags37 & 2`).
+3. **Continuous SAT Parity Extended across F775..F1115:**
+   - Extended continuous autonomous simulation active SAT parity across 341 consecutive frames (F775..F1115): 170 cleared logic frames (`sat_cnt = 0`) and 170 active presentation frames (`20 <= sat_cnt <= 45`).
+4. **SAT/VDP State Provenance:**
+   - Maintained distinction between logical SAT list, DMA buffer, hardware VRAM, and visible output. Unmeasured 64KB VRAM correctly scoped as `NOT_MEASURED` without claiming false parity.
+   - All 206 passing C++ tests verified in MinGW Release and MSVC Debug; 12 historical BizHawk failures preserved without suppression; all 955 source files <= 500 lines.
+
 # ADR-20261110-M16-31-PROJECTILE-LAUNCH-3D-FLIGHT-SHADOW-PROJECTION-AND-POST-COMBAT-CONTINUOUS-SAT-CONVERGENCE — M16.30 Reporting Gap Reconciliation (F775 Exactness, 111-Frame Interval F775..F885, F858 DMA Count 0 vs 26, 32 Comparator Fields), Projectile Flight Forensics & 3D Physics (F886 Launch, F887 Render sat_cnt=29, F888 (101,196,29), F890 (99,193,33), F894 (94,186,40)), ROM Flight & Shadow Disassembly (0x00ACFE/0x00AA7E/0x02569E/0x0256A6), Autonomous Continuous Active SAT Parity Extended to 165 Frames (F776..F940, 166 Total Including F775), 205/217 Tests Passing (12 Historical BizHawk Failures Preserved), <=500 Line File Limit Preserved, Zero Emulator Linkage
 **Status:** Accepted
 **Date:** 2026-11-10

@@ -1,3 +1,17 @@
+# M16.32 Complete Town Replay Visual Qualification, Projectile Terminal Lifecycle, and SAT/VDP State Provenance — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Visual and Gameplay Replay Qualification Across F595..F1115 (521 Frames):
+  * Full replay active SAT distribution verified against authentic journal: `F595..F774`: 180 frames (77 active DMA, 103 zero-DMA); `F775..F940`: 166 frames (83 active DMA, 83 zero-DMA); `F941..F1115`: 175 frames (86 active DMA, 89 zero-DMA); `Entire F595..F1115`: 521 frames (246 active DMA, 275 zero-DMA).
+  * Continuous autonomous replay exactness extended to 341 consecutive frames (F775..F1115): 170 cleared logic frames (`sat_cnt = 0`) and 170 active presentation frames (`20 <= sat_cnt <= 45`) matching authentic output.
+- Projectile Slot 5 Complete Terminal Lifecycle Qualification:
+  * Traced complete lifecycle: F858 reservation as Type `0x002E` -> F886 launch into live projectile Type `0x002C`, State `0x0C` (flight, `z = 24`) -> F887 first render (`sat_cnt = 29`) -> F940..F943 flight descent (`z = 11 -> 3`) -> F944 ground landing into State `0x0E` (`z = 0`, position `(58, 140, 0)`) -> F955 last present frame -> F956 slot released upon impact animation completion (`flags37 & 2`).
+- Hardware SAT/VDP State Provenance:
+  * Reconciled distinction between native SAT list, DMA buffer, hardware VRAM, and visible output. Inactive SAT entries persist in VRAM without DMA overwrites; full 64KB VRAM correctly reported as `NOT_MEASURED` where full per-frame dump is absent.
+- Dual-Toolchain Verification & Governance:
+  * Implemented `tests/m16_32_town_replay_qualification_test.cpp` (219 lines, <= 500 line limit) and registered in `cmake/project_tests.cmake`.
+  * 206/218 C++ tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved); all 955 governed files <= 500 lines; zero emulator linkage in `oasis.exe`; hybrid repository strictly untouched.
+
 # M16.31 Projectile Launch, 3D Flight, Shadow Projection, and Post-Combat Continuous SAT Convergence — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

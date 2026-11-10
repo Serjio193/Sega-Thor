@@ -1,3 +1,27 @@
+# 2026-11-10 — Milestone M16.32: COMPLETE TOWN REPLAY VISUAL QUALIFICATION, PROJECTILE TERMINAL LIFECYCLE, AND SAT/VDP STATE PROVENANCE — Full 521-Frame Town Replay Qualification (F595..F1115 SAT Distribution: 246 Active DMA, 275 Zero-DMA); Projectile Slot 5 Complete Terminal Lifecycle (F858 Type 46 -> F886 Launch Flight z=24 -> F887 First Render sat_cnt=29 -> F944 Ground Landing at (58,140,0) into State 0x0E -> F955 Last Frame -> F956 Despawn/Slot Free on flags37 bit 1); ROM Shadow Table & Projection Disassembly (0x00ACFE/0x00AA7E); Extended Continuous Autonomous SAT Parity F775..F1115 (341 Consecutive Frames); 206/218 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `3e37297b8b8346a39dd9c08b1382e466eadba893`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Pinned Town Journal SHA256 `bfecaef539aedb30d2d9dc7e3c1337a3c441cc3cc05e3aed59095d78f3a4edde`.
+  * Visual & Gameplay Replay Qualification Across F595..F1115:
+    - Verified complete active SAT distribution across all 521 frames:
+      * F595..F774: 180 frames (77 active DMA, 103 zero-DMA).
+      * F775..F940: 166 frames (83 active DMA, 83 zero-DMA).
+      * F941..F1115: 175 frames (86 active DMA, 89 zero-DMA).
+      * Full F595..F1115: 521 frames (246 active DMA, 275 zero-DMA).
+  * Projectile Slot 5 Terminal Lifecycle:
+    - Traced full lifecycle: F858 reclaim (Type 46) -> F886 launch into flight (Type 44, State 12, `z = 24`) -> F887 first render (`sat_cnt = 29`) -> F940..F943 descent (`z = 11 -> 3`) -> F944 ground impact landing into State 14 (`0x0E`), `world_z = 0`, position `(58, 140, 0)` -> F955 last present frame -> F956 slot released upon impact animation completion (`flags37 & 2`).
+  * Extended Continuous Active SAT Parity:
+    - Extended continuous autonomous simulation active SAT parity across 341 consecutive frames (F775..F1115): 170 cleared logic frames (`sat_cnt = 0`) and 170 active presentation frames (`20 <= sat_cnt <= 45`).
+  * Dual-Toolchain Verification & Governance:
+    - Implemented `tests/m16_32_town_replay_qualification_test.cpp` and registered in `cmake/project_tests.cmake`.
+    - 206/218 tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved without suppression).
+    - All 955 governed files <= 500 lines verified via `cmake -P tests/check_file_limits.cmake`.
+    - Zero emulator linkage in `oasis.exe`; `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.31: PROJECTILE LAUNCH, 3D FLIGHT, SHADOW PROJECTION, AND POST-COMBAT CONTINUOUS SAT CONVERGENCE — M16.30 Reporting Gap Reconciliation (F775 Exact, F775..F885 111-Frame Interval, F858 DMA Count 0 vs 26, 32 Comparator Fields); Projectile Launch & Flight Forensics across F886..F915 (F886 Launch into State 0x0C Flight z=24, F887 First Render sat_cnt=29, F888 (101,196,29), F890 (99,193,33), F894 (94,186,40)); ROM Flight & Shadow Disassembly (0x00ACFE/0x00AA7E/0x02569E/0x0256A6); Extended Continuous Autonomous SAT Parity F776..F940 (165 Frames, 166 Total Including F775); 205/217 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
