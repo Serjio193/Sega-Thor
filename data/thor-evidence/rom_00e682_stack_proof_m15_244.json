@@ -1,0 +1,756 @@
+{
+  "schema": "oasis.e682-nonlocal-stack-proof.v1",
+  "milestone": "M15.244",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "routine": "0x00E682",
+  "nonlocal_instruction_pc": "0x00E6A6",
+  "nonlocal_instruction": "ADDQ.L #4, A7 (0x588F) followed by RTS (0x4E75) at 0x00E6A8",
+  "total_observed_nonlocal_returns": 49,
+  "scenario_counts": {
+    "scenario_c": 4,
+    "scenario_a": 43,
+    "scenario_b": 2
+  },
+  "distinct_bypassed_callers": [
+    "0x1a54e",
+    "0x1b7f2",
+    "0x1bbf8",
+    "0x1bf84",
+    "0x1c4dc",
+    "0x256b8",
+    "0x57d0"
+  ],
+  "distinct_actual_rts_targets": [
+    "0x558a",
+    "0xdf1c"
+  ],
+  "canonical_stack_delta_bytes": 8,
+  "proof_explanation": "On entry from JSR/BSR caller, [A7] holds the immediate caller return PC and [A7+4] holds the grandparent return PC. Executing ADDQ.L #4, A7 at 0x00E6A6 pops the immediate caller return frame (+4 bytes), and RTS at 0x00E6A8 pops the grandparent return PC (+4 bytes, total A7 delta = +8 bytes), aborting the active sub-action directly back to the grandparent dispatcher.",
+  "scenario_c_samples": [
+    {
+      "frame": 196,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 198,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 994,
+      "m68k_cycles": 142,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 794,
+      "caller_pc": "0x256b8",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x256be",
+        "0xdf1c",
+        "0xf",
+        "0xff1d94"
+      ],
+      "skipped_longword": "0x256be",
+      "skipped_return_pc": "0x256be",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xf",
+        "0xff1d94",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 994,
+      "m68k_cycles": 142,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1dca",
+          "w": 1,
+          "val": "0x0"
+        },
+        {
+          "addr": "0xff1dc2",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1e16",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 796,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x4"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    }
+  ],
+  "scenario_a_samples": [
+    {
+      "frame": 46,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 48,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 274,
+      "caller_pc": "0x1c4dc",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1c4e2",
+        "0xdf1c",
+        "0xd",
+        "0xff1f0c"
+      ],
+      "skipped_longword": "0x1c4e2",
+      "skipped_return_pc": "0x1c4e2",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xd",
+        "0xff1f0c",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 994,
+      "m68k_cycles": 142,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1f42",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1f3a",
+          "w": 2,
+          "val": "0x1f3"
+        },
+        {
+          "addr": "0xff1f8e",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 274,
+      "caller_pc": "0x1c4dc",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1c4e2",
+        "0xdf1c",
+        "0xc",
+        "0xff1fc8"
+      ],
+      "skipped_longword": "0x1c4e2",
+      "skipped_return_pc": "0x1c4e2",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xc",
+        "0xff1fc8",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 1001,
+      "m68k_cycles": 143,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1ffe",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1ff6",
+          "w": 2,
+          "val": "0x1f3"
+        },
+        {
+          "addr": "0xff204a",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 276,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x6"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 276,
+      "caller_pc": "0x1c4dc",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1c4e2",
+        "0xdf1c",
+        "0xd",
+        "0xff1f0c"
+      ],
+      "skipped_longword": "0x1c4e2",
+      "skipped_return_pc": "0x1c4e2",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xd",
+        "0xff1f0c",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1f42",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1f3a",
+          "w": 2,
+          "val": "0x1f3"
+        },
+        {
+          "addr": "0xff1f8e",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 276,
+      "caller_pc": "0x1c4dc",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1c4e2",
+        "0xdf1c",
+        "0xc",
+        "0xff1fc8"
+      ],
+      "skipped_longword": "0x1c4e2",
+      "skipped_return_pc": "0x1c4e2",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xc",
+        "0xff1fc8",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1ffe",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1ff6",
+          "w": 2,
+          "val": "0x1f3"
+        },
+        {
+          "addr": "0xff204a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 278,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x6"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 342,
+      "caller_pc": "0x1bf84",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1bf8a",
+        "0xdf1c",
+        "0xd",
+        "0xff1f0c"
+      ],
+      "skipped_longword": "0x1bf8a",
+      "skipped_return_pc": "0x1bf8a",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xd",
+        "0xff1f0c",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1f42",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1f3a",
+          "w": 2,
+          "val": "0x14"
+        },
+        {
+          "addr": "0xff1f8e",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    },
+    {
+      "frame": 342,
+      "caller_pc": "0x1bf84",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bd6",
+      "stack_words_before": [
+        "0x1bf8a",
+        "0xdf1c",
+        "0xc",
+        "0xff1fc8"
+      ],
+      "skipped_longword": "0x1bf8a",
+      "skipped_return_pc": "0x1bf8a",
+      "actual_rts_target_pc": "0xdf1c",
+      "exit_a7": "0xff0bde",
+      "stack_words_after": [
+        "0xc",
+        "0xff1fc8",
+        "0x8b36",
+        "0x45c"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1ffe",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1ff6",
+          "w": 2,
+          "val": "0x14"
+        },
+        {
+          "addr": "0xff204a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    }
+  ],
+  "scenario_b_samples": [
+    {
+      "frame": 196,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 924,
+      "m68k_cycles": 132,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x2"
+        }
+      ]
+    },
+    {
+      "frame": 198,
+      "caller_pc": "0x57d0",
+      "entry_pc": "0xe682",
+      "entry_a7": "0xff0bde",
+      "stack_words_before": [
+        "0x57d6",
+        "0x558a",
+        "0x8b32",
+        "0x45c"
+      ],
+      "skipped_longword": "0x57d6",
+      "skipped_return_pc": "0x57d6",
+      "actual_rts_target_pc": "0x558a",
+      "exit_a7": "0xff0be6",
+      "stack_words_after": [
+        "0x8b32",
+        "0x45c",
+        "0x0",
+        "0x80048164"
+      ],
+      "a7_delta": 8,
+      "call_depth_before": 6,
+      "call_depth_after": 4,
+      "master_cycles": 994,
+      "m68k_cycles": 142,
+      "instructions": 11,
+      "writes": [
+        {
+          "addr": "0xff1a1e",
+          "w": 1,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a16",
+          "w": 2,
+          "val": "0x1"
+        },
+        {
+          "addr": "0xff1a6a",
+          "w": 1,
+          "val": "0x1"
+        }
+      ]
+    }
+  ]
+}

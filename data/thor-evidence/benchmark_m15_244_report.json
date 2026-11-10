@@ -1,0 +1,33 @@
+{
+  "schema": "oasis.m15_244.benchmark.v1",
+  "milestone": "M15.244",
+  "generated_source_files": 9,
+  "generated_source_bytes": 109246,
+  "generated_source_lines": 1691,
+  "benchmark_binary_bytes": 151016,
+  "portable_gameplay_runner_bytes": 3192696,
+  "isolated_backend_results": {
+    "fixture_count": 19,
+    "trials": 10,
+    "sweeps_per_trial": 4000,
+    "transitions_per_trial": 76000,
+    "guest_instructions_per_trial": 936000,
+    "uncompiled_continuations_per_trial": 44000,
+    "ram_writes_per_trial": 564000,
+    "mode_a": {
+      "min_ms": 15.531,
+      "median_ms": 15.7729,
+      "max_ms": 15.9015,
+      "stddev_ms": 0.120828,
+      "sink": 3374293960000
+    },
+    "mode_b": {
+      "min_ms": 13.8826,
+      "median_ms": 14.0675,
+      "max_ms": 14.1868,
+      "stddev_ms": 0.0918459,
+      "sink": 3374293960000
+    },
+    "speedup_median": 1.12123
+  }
+}

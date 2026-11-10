@@ -4337,3 +4337,34 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/benchmark_m15_243.py — Performance benchmark measuring Mode A vs Mode B on connected entity state-dispatch subsystem across 100,000 iterations (2.06x speedup) (M15.243).
 - data/thor-evidence/combined-clusters-qualification-m15-243-20261110.json — Certified machine evidence receipt for M15.243 qualifying semantic audits, portable entity state dispatch, and 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.243).
 - tools/generate_m15_243_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.243 (M15.243).
+- tools/audit_entity_dispatch_table_m15_244.py — Exhaustive 59-entry entity jump-table audit (`0x0059BA..0x005A30`), ownership, and gameplay watch-count aggregator (264 lines <= 500) (M15.244).
+- data/thor-evidence/entity_dispatch_table_manifest_m15_244.json — Authoritative 59-entry table manifest, boundary proof (`0x005A30`), and observed hit counts across Scenarios C/A/B (M15.244).
+- data/thor-evidence/entity_dispatch_watch_counts_m15_244.json — Committed compact summary of live Scenario C/A/B `PC_WATCH` counts at `0x0059B8` (M15.244).
+- tools/thor_recompiler/cfg_reconstructor.py — BFS reachable CFG basic-block splitter and typed edge classifier for M68000 subsystems (237 lines <= 500) (M15.244).
+- tools/thor_recompiler/cpp_emitter.py — Auto-splitting templated C++20 emitter (`<= 350` lines/file) with Musashi-calibrated hardware cycle counts and Mode B block dispatch (488 lines <= 500) (M15.244).
+- tools/generate_entity_dispatch_m15_244.py — Deterministic IR + C++20 + CFG source-map generator for the 7-root entity state-dispatch subsystem (161 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_common.hpp — Auto-generated shared bus/operand/ALU helpers for entity state dispatch (104 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_part0.hpp — Auto-generated entity dispatch per-instruction steppers partition 0 (253 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_part1.hpp — Auto-generated entity dispatch per-instruction steppers partition 1 (252 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_part2.hpp — Auto-generated entity dispatch per-instruction steppers partition 2 (258 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_part3.hpp — Auto-generated entity dispatch per-instruction steppers partition 3 (250 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_part4.hpp — Auto-generated entity dispatch per-instruction steppers partition 4 (157 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_router.hpp — Auto-generated PC ownership predicate and instruction dispatcher across all 130 entity-dispatch ops (163 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_mode_b.hpp — Auto-generated fused CFG basic-block Mode B executor for entity state dispatch (234 lines <= 500) (M15.244).
+- src/tools/thor_ir/generated/entity_dispatch_portable_routines.hpp — Umbrella portable header defining `run_entity_dispatch_mode_a` / `run_entity_dispatch_mode_b` (20 lines <= 500) (M15.244).
+- data/thor-evidence/entity_dispatch_cfg_source_map_m15_244.json — Complete 130-row traceability map linking ROM PC, ROM bytes, disassembly, IR op IDs, and generated C++ locations (M15.244).
+- data/thor-fixtures/m15_244_ir_manifest.json — Subsystem IR build manifest for M15.244 (`130` instructions, `43` blocks, `123` edges) (M15.244).
+- tools/m15_244_gpgx_oracle.cpp — Standalone pinned-GPGX oracle replayer and isolated CPU prober (420 lines <= 500) (M15.244).
+- tools/generate_m15_244_fixtures.py — Authentic + controlled GPGX oracle fixture generator and `0x00E682` stack proof extractor (248 lines <= 500) (M15.244).
+- data/thor-evidence/rom_00e682_stack_proof_m15_244.json — Proof of `49` live nonlocal returns via `0x00E6A6 ADDQ.L #4, A7 + 0x00E6A8 RTS` across Scenarios C/A/B (M15.244).
+- data/thor-fixtures/m15_244_entity_dispatch_fixtures.json — 20 frozen GPGX hardware reference fixtures (`10 AUTHENTIC_GAMEPLAY_ENTRY` + `10 CONTROLLED_CPU_ENTRY`) (M15.244).
+- data/thor-fixtures/m15_244_entity_dispatch_fixtures.hpp — C++ header embedding the 20 M15.244 GPGX reference fixtures (36 lines <= 500) (M15.244).
+- tests/portable_entity_interrupt_safety_test.cpp — Portable VBlank Level 6 & HBlank Level 4 preemption, masking, and RTE resumption test suite (112 lines <= 500) (M15.244).
+- src/tools/thor_ir/entity_dispatch_hybrid_adapter.hpp — Hybrid runner step adapter executing generated portable C++20 `step_one_entity_dispatch_ir` as `0059a8p` (158 lines <= 500) (M15.244).
+- tools/build_m15_244_runner.py — Standalone WSL build script compiling isolated `oasis_gameplay_session` with portable `0059a8p` support (149 lines <= 500) (M15.244).
+- tools/run_m15_244_portable_ab.py — Three-scenario Single-Variable A/B qualification harness comparing 196 prod vs `196+0059a8p` vs `196+comb+0059a8p` (143 lines <= 500) (M15.244).
+- tools/benchmark_m15_244.py — Reproducible 10-trial Mode A vs Mode B Release benchmark and binary/source size collector (222 lines <= 500) (M15.244).
+- data/thor-evidence/benchmark_m15_244_report.json — Verified M15.244 Mode A vs Mode B benchmark measurements (`1.121x` speedup across 10 trials) (M15.244).
+- tools/generate_m15_244_receipt.py — Receipt generator & `ReceiptVerifier` runner for M15.244 (`57` checked disk files) (205 lines <= 500) (M15.244).
+- data/thor-evidence/combined-clusters-qualification-m15-244-20261110.json — Certified M15.244 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`, `48/48` stream artifacts) (M15.244).
+- docs/handoffs/STANDALONE_M15_244_ENTITY_DISPATCH_HANDOFF.md — Read-only standalone engineering handoff for entity state dispatch (`0x0059A8`) and nonlocal sub-action abort (`0x00E682`) (M15.244).

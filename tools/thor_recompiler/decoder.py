@@ -94,6 +94,10 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             disp = struct.unpack_from(">h", rom, pc + 2)[0]
             words.append(disp & 0xFFFF)
             return DecodedInstruction(pc, words, mnemonic, "b", [Operand("disp_a", reg=reg, val=disp, size="b")], base_cycles=8)
+        elif mode == 7 and reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + 2)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            return DecodedInstruction(pc, words, mnemonic, "b", [Operand("abs_l", val=addr, size="b")], base_cycles=12)
 
     # MOVEQ: 0x7000..0x7F00
     if (w0 & 0xF100) == 0x7000:
@@ -150,9 +154,11 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             w1 = struct.unpack_from(">h", rom, pc + 2)[0]
             words.append(w1 & 0xFFFF)
             target = pc + 2 + w1
+            sz = "w"
         else:
             target = pc + 2 + disp8
-        return DecodedInstruction(pc, words, mnemonic, "w", [Operand("branch_disp", val=target)], branch_target=target, base_cycles=10)
+            sz = "b"
+        return DecodedInstruction(pc, words, mnemonic, sz, [Operand("branch_disp", val=target)], branch_target=target, base_cycles=10)
 
     # DBcc / DBRA: 0x50C8..0x5FCF
     if (w0 & 0xF0F8) == 0x50C8:
@@ -350,6 +356,12 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 disp = struct.unpack_from(">h", rom, pc + 2)[0]
                 words.append(disp & 0xFFFF)
                 return DecodedInstruction(pc, words, mnemonic, "l", [Operand("disp_a", reg=src_reg, val=disp, size="l"), Operand("reg_d", reg=reg, size="l")], base_cycles=12)
+        elif opmode == 5:  # ADD.W / SUB.W (Dn, <ea>)
+            mnemonic = "SUB" if is_sub else "ADD"
+            if src_mode == 5:
+                disp = struct.unpack_from(">h", rom, pc + 2)[0]
+                words.append(disp & 0xFFFF)
+                return DecodedInstruction(pc, words, mnemonic, "w", [Operand("reg_d", reg=reg, size="w"), Operand("disp_a", reg=src_reg, val=disp, size="w")], base_cycles=12)
         elif opmode == 6:  # ADD.L / SUB.L (Dn, <ea>)
             mnemonic = "SUB" if is_sub else "ADD"
             if src_mode == 5:

@@ -212,6 +212,16 @@ public:
         sync_pcs.push_back(bpc & kBusAddressMask);
     }
 
+    bool irq_accepted(int level) const noexcept {
+        return level == 7 || level > static_cast<int>((sr >> 8) & 7U);
+    }
+
+    bool try_deliver_interrupt(int level, std::uint32_t vector_pc) {
+        if (!irq_accepted(level)) return false;
+        enter_interrupt(level, vector_pc);
+        return true;
+    }
+
     void enter_interrupt(int level, std::uint32_t vector_pc) {
         const std::uint16_t old_sr = sr;
         set_sr(sr | kSrSupervisor);

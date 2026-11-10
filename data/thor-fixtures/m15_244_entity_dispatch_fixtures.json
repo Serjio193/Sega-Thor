@@ -1,0 +1,5781 @@
+{
+  "milestone": "M15.244",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "fixtures": [
+    {
+      "test_id": "auth_c_f0_0x6516",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x11",
+        "0x0",
+        "0x1000004",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0xc0"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10e4",
+        "0x9",
+        "0xee",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2104",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 8
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 4
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 5
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 16
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 107
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF19FF",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A17",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 21
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 22
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 28
+        },
+        {
+          "addr": "0xFF1A28",
+          "val": 17
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A37",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A38",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 28
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 33
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x6516",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x4",
+        "0x0",
+        "0x1000004",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x800"
+      ],
+      "expected_a": [
+        "0x6516",
+        "0xf91c",
+        "0xff10e4",
+        "0x9",
+        "0xee",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 60,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "auth_c_f106_0x61f6",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 106,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x1000000",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0xa8"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10d4",
+        "0x9",
+        "0xc0",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2109",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 2
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 58
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 202
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 202
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 25
+        },
+        {
+          "addr": "0xFF19F3",
+          "val": 176
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 177
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 80
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF19FF",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A16",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A17",
+          "val": 131
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 63
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 64
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A21",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A26",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A44",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 33
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A82",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x61f6",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x0",
+        "0x0",
+        "0x1000000",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x200"
+      ],
+      "expected_a": [
+        "0x61f6",
+        "0xf91c",
+        "0xff10d4",
+        "0x9",
+        "0xc0",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "expected_sr": "0x2104",
+      "expected_cycles": 62,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "auth_c_f234_0x62e4",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 234,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x12",
+        "0x1000002",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x80"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10e4",
+        "0x9",
+        "0x12",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2104",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 2
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 209
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 209
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 249
+        },
+        {
+          "addr": "0xFF19F3",
+          "val": 176
+        },
+        {
+          "addr": "0xFF19F4",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 95
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 80
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF19FF",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A17",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 6
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A29",
+          "val": 18
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 33
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x62e4",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x2",
+        "0x12",
+        "0x1000002",
+        "0x69d",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x200"
+      ],
+      "expected_a": [
+        "0x62e4",
+        "0xf91c",
+        "0xff10e4",
+        "0x9",
+        "0x12",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 62,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "auth_c_f292_0x558a",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 292,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x34",
+        "0x0",
+        "0x1000004",
+        "0x8479",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x68"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10d4",
+        "0x19",
+        "0xffffffe4",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2104",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 5
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 151
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 189
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 46
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 186
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 169
+        },
+        {
+          "addr": "0xFF19F3",
+          "val": 176
+        },
+        {
+          "addr": "0xFF19F4",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 113
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 248
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF19FF",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 52
+        },
+        {
+          "addr": "0xFF1A14",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 25
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 30
+        },
+        {
+          "addr": "0xFF1A28",
+          "val": 51
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A36",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A37",
+          "val": 250
+        },
+        {
+          "addr": "0xFF1A38",
+          "val": 240
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 30
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 33
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x558a",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x1",
+        "0x3",
+        "0x1000004",
+        "0x8479",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x500"
+      ],
+      "expected_a": [
+        "0x5c1a",
+        "0xf91c",
+        "0xff10d4",
+        "0x19",
+        "0xffffffe4",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be6"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 242,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5c1a",
+        "0x5c1c",
+        "0x5c1e",
+        "0x5c82",
+        "0x5c88",
+        "0x5c8a",
+        "0x5c92",
+        "0x5c94",
+        "0x5c9a",
+        "0x5c9c",
+        "0x5ca0",
+        "0x5ca2",
+        "0x5ca6",
+        "0x5cac",
+        "0x5cb2"
+      ]
+    },
+    {
+      "test_id": "auth_c_f480_0x7112",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 480,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x1000016",
+        "0x8479",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x68"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10dc",
+        "0x13",
+        "0x1f",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 33
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 245
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 22
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 108
+        },
+        {
+          "addr": "0xFF19F3",
+          "val": 208
+        },
+        {
+          "addr": "0xFF19F4",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 7
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 22
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 22
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 45
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 45
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 60
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3A",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 251
+        },
+        {
+          "addr": "0xFF1A3C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A3F",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 60
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 33
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A81",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A87",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x7112",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x16",
+        "0x0",
+        "0x1000016",
+        "0x8479",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x2100"
+      ],
+      "expected_a": [
+        "0x7112",
+        "0xf91c",
+        "0xff10dc",
+        "0x13",
+        "0x1f",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 62,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "auth_c_f566_0x6338",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 566,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x36",
+        "0x190",
+        "0x1000004",
+        "0x8479",
+        "0xff0000",
+        "0x0",
+        "0x1",
+        "0x1"
+      ],
+      "entry_a": [
+        "0xff1f0c",
+        "0xf91c",
+        "0xff10b4",
+        "0x1b",
+        "0xbe",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2104",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 32
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 48
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F0",
+          "val": 1
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 108
+        },
+        {
+          "addr": "0xFF19F3",
+          "val": 208
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 104
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 16
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 54
+        },
+        {
+          "addr": "0xFF1A14",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A29",
+          "val": 144
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3A",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 251
+        },
+        {
+          "addr": "0xFF1A3C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 31
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A54",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A81",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x6338",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x30",
+        "0x190",
+        "0x1000004",
+        "0x8479",
+        "0xff0000",
+        "0x0",
+        "0x1",
+        "0x100"
+      ],
+      "expected_a": [
+        "0x6338",
+        "0xf91c",
+        "0xff10b4",
+        "0x1b",
+        "0xbe",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 62,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "auth_c_f810_0x558a",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 810,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x1000018",
+        "0x8490",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0xff27dc",
+        "0xf91c",
+        "0xff10b4",
+        "0x17",
+        "0x99",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 140
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 68
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 24
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 65
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 128
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 199
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 30
+        },
+        {
+          "addr": "0xFF1A14",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 180
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 180
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 22
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 22
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 148
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 39
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 220
+        },
+        {
+          "addr": "0xFF1A6B",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 206
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 7
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A81",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 31
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 12
+        }
+      ],
+      "expected_exit_pc": "0x558a",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x18",
+        "0x0",
+        "0x0",
+        "0x8490",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5cc8",
+        "0xf91c",
+        "0xff10b4",
+        "0x17",
+        "0x99",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be6"
+      ],
+      "expected_sr": "0x2104",
+      "expected_cycles": 206,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5cc8",
+        "0x5ccc",
+        "0x5ce0",
+        "0x5ce6",
+        "0x5cea",
+        "0x5cee",
+        "0x5cf2",
+        "0x5cf6"
+      ]
+    },
+    {
+      "test_id": "auth_c_f1727_0xbcba",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_c",
+      "frame": 1727,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+      "input_journal_sha256": "16b00302074fa1d24db185c8c64328a76c2d021e980da51521d70542e5f9f803",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x1000040",
+        "0x4200",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x240"
+      ],
+      "entry_a": [
+        "0x4664c",
+        "0xf91c",
+        "0xff10dc",
+        "0x15",
+        "0xc4",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 61
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 244
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 64
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 244
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 192
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 249
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 8
+        },
+        {
+          "addr": "0xFF19FF",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 70
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 70
+        },
+        {
+          "addr": "0xFF1A17",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A1A",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A1C",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 31
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A26",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3A",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 253
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A44",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 42
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 28
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 216
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 39
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 220
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 206
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A81",
+          "val": 6
+        },
+        {
+          "addr": "0xFF1A82",
+          "val": 21
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 28
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 216
+        }
+      ],
+      "expected_exit_pc": "0xbcba",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x2",
+        "0x0",
+        "0x1000040",
+        "0x4200",
+        "0xff0000",
+        "0xffffffff",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x780e",
+        "0xf91c",
+        "0xff10dc",
+        "0x15",
+        "0xc4",
+        "0xad56",
+        "0xff19e8",
+        "0xff0bde"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 172,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x780e",
+        "0x7810",
+        "0x7814",
+        "0x7818",
+        "0x781a",
+        "0x781c",
+        "0x7820",
+        "0x7822",
+        "0x7824",
+        "0x7828",
+        "0x782a",
+        "0x782c",
+        "0x7830",
+        "0x7832"
+      ]
+    },
+    {
+      "test_id": "auth_a_f1144_0x5cf8",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_a",
+      "frame": 1144,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "6228c27ed09e7623fbe4664fb841331fba963b527337ec019abed40bbf0c3c26",
+      "input_journal_sha256": "ed878c5d7d546f6d933accd9ee0f96acd053a63569dd55ab237a3f9edda0eda3",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x507001a",
+        "0x694",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x8000"
+      ],
+      "entry_a": [
+        "0xff2430",
+        "0xf91c",
+        "0xff10b4",
+        "0x9",
+        "0xde",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 37
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 26
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 255
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 64
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 179
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 40
+        },
+        {
+          "addr": "0xFF19F9",
+          "val": 16
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 38
+        },
+        {
+          "addr": "0xFF1A14",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 240
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 240
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A26",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A3C",
+          "val": 192
+        },
+        {
+          "addr": "0xFF1A3F",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A40",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 58
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0xb79a",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x1c000",
+        "0x0",
+        "0x507001a",
+        "0x694",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5cf8",
+        "0xf91c",
+        "0xff10b4",
+        "0x9",
+        "0xde",
+        "0xad56",
+        "0xff19e8",
+        "0xff0bde"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 238,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5cf8",
+        "0x5cfe",
+        "0x5d04",
+        "0x5d16",
+        "0x5d1c",
+        "0x5d2e",
+        "0x5d32",
+        "0x5d38",
+        "0x5d3c",
+        "0x5d40",
+        "0x5d44",
+        "0x5d46"
+      ]
+    },
+    {
+      "test_id": "auth_a_f1164_0x5dc8",
+      "classification": "AUTHENTIC_GAMEPLAY_ENTRY",
+      "scenario": "scenario_a",
+      "frame": 1164,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "6228c27ed09e7623fbe4664fb841331fba963b527337ec019abed40bbf0c3c26",
+      "input_journal_sha256": "ed878c5d7d546f6d933accd9ee0f96acd053a63569dd55ab237a3f9edda0eda3",
+      "entry_pc": "0x59a8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x100001c",
+        "0x694",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x100"
+      ],
+      "entry_a": [
+        "0x464ec",
+        "0xf91c",
+        "0xff10ec",
+        "0x9",
+        "0xdb",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be2"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF0BE2",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE3",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE4",
+          "val": 85
+        },
+        {
+          "addr": "0xFF0BE5",
+          "val": 138
+        },
+        {
+          "addr": "0xFF0BE6",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE7",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BE8",
+          "val": 139
+        },
+        {
+          "addr": "0xFF0BE9",
+          "val": 50
+        },
+        {
+          "addr": "0xFF0BEA",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEB",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEC",
+          "val": 4
+        },
+        {
+          "addr": "0xFF0BED",
+          "val": 92
+        },
+        {
+          "addr": "0xFF0BEE",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BEF",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF0",
+          "val": 0
+        },
+        {
+          "addr": "0xFF0BF1",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165E",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1660",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1661",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 11
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 226
+        },
+        {
+          "addr": "0xFF1970",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1971",
+          "val": 47
+        },
+        {
+          "addr": "0xFF1972",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1973",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1987",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1988",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1989",
+          "val": 0
+        },
+        {
+          "addr": "0xFF198A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF19E9",
+          "val": 2
+        },
+        {
+          "addr": "0xFF19EB",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19ED",
+          "val": 28
+        },
+        {
+          "addr": "0xFF19EF",
+          "val": 10
+        },
+        {
+          "addr": "0xFF19F1",
+          "val": 255
+        },
+        {
+          "addr": "0xFF19F2",
+          "val": 64
+        },
+        {
+          "addr": "0xFF19F5",
+          "val": 212
+        },
+        {
+          "addr": "0xFF19F6",
+          "val": 232
+        },
+        {
+          "addr": "0xFF19FD",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A00",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A01",
+          "val": 168
+        },
+        {
+          "addr": "0xFF1A03",
+          "val": 19
+        },
+        {
+          "addr": "0xFF1A04",
+          "val": 205
+        },
+        {
+          "addr": "0xFF1A05",
+          "val": 252
+        },
+        {
+          "addr": "0xFF1A07",
+          "val": 12
+        },
+        {
+          "addr": "0xFF1A0B",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A0C",
+          "val": 128
+        },
+        {
+          "addr": "0xFF1A0F",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A10",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A11",
+          "val": 122
+        },
+        {
+          "addr": "0xFF1A13",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A15",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A16",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A17",
+          "val": 242
+        },
+        {
+          "addr": "0xFF1A1B",
+          "val": 126
+        },
+        {
+          "addr": "0xFF1A1D",
+          "val": 126
+        },
+        {
+          "addr": "0xFF1A1E",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A1F",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A20",
+          "val": 24
+        },
+        {
+          "addr": "0xFF1A21",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A25",
+          "val": 16
+        },
+        {
+          "addr": "0xFF1A26",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A27",
+          "val": 57
+        },
+        {
+          "addr": "0xFF1A2B",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2D",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A2F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A30",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A31",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A33",
+          "val": 40
+        },
+        {
+          "addr": "0xFF1A3B",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A3C",
+          "val": 192
+        },
+        {
+          "addr": "0xFF1A3E",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A3F",
+          "val": 251
+        },
+        {
+          "addr": "0xFF1A42",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A43",
+          "val": 232
+        },
+        {
+          "addr": "0xFF1A44",
+          "val": 8
+        },
+        {
+          "addr": "0xFF1A45",
+          "val": 57
+        },
+        {
+          "addr": "0xFF1A47",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A48",
+          "val": 157
+        },
+        {
+          "addr": "0xFF1A49",
+          "val": 156
+        },
+        {
+          "addr": "0xFF1A51",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A52",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A53",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A56",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A57",
+          "val": 3
+        },
+        {
+          "addr": "0xFF1A58",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A67",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A68",
+          "val": 36
+        },
+        {
+          "addr": "0xFF1A69",
+          "val": 48
+        },
+        {
+          "addr": "0xFF1A6D",
+          "val": 2
+        },
+        {
+          "addr": "0xFF1A71",
+          "val": 218
+        },
+        {
+          "addr": "0xFF1A73",
+          "val": 208
+        },
+        {
+          "addr": "0xFF1A74",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A75",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A76",
+          "val": 1
+        },
+        {
+          "addr": "0xFF1A77",
+          "val": 4
+        },
+        {
+          "addr": "0xFF1A7D",
+          "val": 5
+        },
+        {
+          "addr": "0xFF1A7F",
+          "val": 10
+        },
+        {
+          "addr": "0xFF1A82",
+          "val": 14
+        },
+        {
+          "addr": "0xFF1A93",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1A94",
+          "val": 29
+        },
+        {
+          "addr": "0xFF1A95",
+          "val": 148
+        }
+      ],
+      "expected_exit_pc": "0x558a",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x1c",
+        "0x0",
+        "0x100001c",
+        "0x694",
+        "0xff0009",
+        "0xff01",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5dc8",
+        "0xf91c",
+        "0xff10ec",
+        "0x9",
+        "0xdb",
+        "0xad56",
+        "0xff19e8",
+        "0xff0be6"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 120,
+      "allow_refresh_jitter": true,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5dc8",
+        "0x5dce",
+        "0x5dd2",
+        "0x5de2"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx12_branch_taken_rts",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 24
+        },
+        {
+          "addr": "0xFF8083",
+          "val": 5
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2000",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x18",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5cc8",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe04"
+      ],
+      "expected_sr": "0x2104",
+      "expected_cycles": 202,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5cc8",
+        "0x5ccc",
+        "0x5ce0",
+        "0x5ce6",
+        "0x5cea",
+        "0x5cee",
+        "0x5cf2",
+        "0x5cf6"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx12_expire_uncompiled_0062cc",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 24
+        },
+        {
+          "addr": "0xFF8036",
+          "val": 64
+        },
+        {
+          "addr": "0xFF8039",
+          "val": 8
+        },
+        {
+          "addr": "0xFF8083",
+          "val": 1
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0x62cc",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x18",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5cc8",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe00"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 138,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5cc8",
+        "0x5ccc",
+        "0x5cd0",
+        "0x5cd6",
+        "0x5cdc"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx16_shared_air_to_da6_rts",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF1987",
+          "val": 1
+        },
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 32
+        },
+        {
+          "addr": "0xFF8010",
+          "val": 255
+        },
+        {
+          "addr": "0xFF8011",
+          "val": 255
+        },
+        {
+          "addr": "0xFF8012",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8013",
+          "val": 0
+        },
+        {
+          "addr": "0xFF802A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF802B",
+          "val": 38
+        },
+        {
+          "addr": "0xFF8056",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8057",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8058",
+          "val": 192
+        },
+        {
+          "addr": "0xFF8059",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2000",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0xffff",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5cf8",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe04"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 398,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5cf8",
+        "0x5cfe",
+        "0x5d04",
+        "0x5d16",
+        "0x5d1c",
+        "0x5d2e",
+        "0x5d32",
+        "0x5d38",
+        "0x5d3a",
+        "0x5d3c",
+        "0x5d40",
+        "0x5d44",
+        "0x5d5c",
+        "0x5d60",
+        "0x5d66",
+        "0x5d6c",
+        "0x5d72",
+        "0x5da6",
+        "0x5daa",
+        "0x5db0",
+        "0x5db6",
+        "0x5dc0",
+        "0x5dc6"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx17_shared_timer_advance_rts",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8002",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8003",
+          "val": 1
+        },
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 34
+        },
+        {
+          "addr": "0xFF802A",
+          "val": 0
+        },
+        {
+          "addr": "0xFF802B",
+          "val": 4
+        },
+        {
+          "addr": "0xFF8039",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2000",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x22",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5dc8",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe04"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 168,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5dc8",
+        "0x5dce",
+        "0x5dd2",
+        "0x5dd4",
+        "0x5dd8",
+        "0x5ddc",
+        "0x5de2"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx23_normal_return_to_jsr_60004",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF165E",
+          "val": 36
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 46
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0x60004",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x800340",
+        "0x3",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x2400"
+      ],
+      "expected_a": [
+        "0x5c1a",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffdfc"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 476,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5c1a",
+        "0x5c1c",
+        "0x5c1e",
+        "0x5c82",
+        "0x5c88",
+        "0x5c8a",
+        "0x5c92",
+        "0x5cb2",
+        "0x5c20",
+        "0x5c24",
+        "0x5c2c",
+        "0x5c34",
+        "0x5c3a",
+        "0x5c3e",
+        "0x5c42",
+        "0x5c46",
+        "0x5c4c",
+        "0x5c52",
+        "0x5c56",
+        "0x5c5a",
+        "0x5c5e",
+        "0x5c62",
+        "0x5c68",
+        "0x5c6e",
+        "0x5c74"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx23_nonlocal_stack_reset",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF165E",
+          "val": 0
+        },
+        {
+          "addr": "0xFF165F",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1934",
+          "val": 0
+        },
+        {
+          "addr": "0xFF1935",
+          "val": 255
+        },
+        {
+          "addr": "0xFF1936",
+          "val": 254
+        },
+        {
+          "addr": "0xFF1937",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 46
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2000",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x2",
+        "0x3",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5c1a",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe04"
+      ],
+      "expected_sr": "0x2104",
+      "expected_cycles": 180,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x5c1a",
+        "0x5c1c",
+        "0x5c1e",
+        "0x5c82",
+        "0x5c88",
+        "0x5cb4",
+        "0x5cba",
+        "0x5cc0",
+        "0x5cc6"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx32_direction_to_bsr_bcba",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 64
+        },
+        {
+          "addr": "0xFF8030",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8031",
+          "val": 8
+        },
+        {
+          "addr": "0xFF8037",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xbcba",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x2",
+        "0x2",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x780e",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffdfc"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 148,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8",
+        "0x780e",
+        "0x7810",
+        "0x7814",
+        "0x7818",
+        "0x781a",
+        "0x781c",
+        "0x7820",
+        "0x782c",
+        "0x7830",
+        "0x7832"
+      ]
+    },
+    {
+      "test_id": "ctrl_idx32_resume_after_bsr_rts",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x007836",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8037",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2000",
+      "expected_outcome": "CompiledNextPc",
+      "expected_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe04"
+      ],
+      "expected_sr": "0x2104",
+      "expected_cycles": 56,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x7836",
+        "0x783c",
+        "0x7842",
+        "0x7844"
+      ]
+    },
+    {
+      "test_id": "ctrl_oob_even_0080_valid_005a64",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 128
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0x5a64",
+      "expected_outcome": "ValidUncompiledPc",
+      "expected_d": [
+        "0x80",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x5a64",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffe00"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 60,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6",
+        "0x59b8"
+      ]
+    },
+    {
+      "test_id": "ctrl_odd_index_0019_addr_error",
+      "classification": "CONTROLLED_CPU_ENTRY",
+      "scenario": "gpgx_fixture_probe",
+      "frame": 0,
+      "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+      "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+      "checkpoint_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "input_journal_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_pc": "0x0059A8",
+      "entry_d": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "entry_a": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xFF8000",
+        "0xFFFE00"
+      ],
+      "entry_sr": "0x2100",
+      "ram_init": [
+        {
+          "addr": "0xFF8004",
+          "val": 0
+        },
+        {
+          "addr": "0xFF8005",
+          "val": 25
+        },
+        {
+          "addr": "0xFFFE00",
+          "val": 0
+        },
+        {
+          "addr": "0xFFFE01",
+          "val": 255
+        },
+        {
+          "addr": "0xFFFE02",
+          "val": 32
+        },
+        {
+          "addr": "0xFFFE03",
+          "val": 0
+        }
+      ],
+      "expected_exit_pc": "0xff2200",
+      "expected_outcome": "OriginalCpuException",
+      "expected_d": [
+        "0x19",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "expected_a": [
+        "0x59d3",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0xff8000",
+        "0xfffdf2"
+      ],
+      "expected_sr": "0x2100",
+      "expected_cycles": 78,
+      "allow_refresh_jitter": false,
+      "pc_trace": [
+        "0x59a8",
+        "0x59ae",
+        "0x59b2",
+        "0x59b6"
+      ]
+    }
+  ]
+}

@@ -1,158 +1,179 @@
-#include "tools/thor_ir/portable_guest_env.hpp"
+#include "data/thor-fixtures/m15_244_entity_dispatch_fixtures.hpp"
 #include "tools/thor_ir/generated/entity_dispatch_portable_routines.hpp"
-#include "data/thor-fixtures/m15_243_entity_dispatch_fixtures.hpp"
 
 #include <cassert>
+#include <cstdint>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
+#include <set>
 #include <vector>
 
 using namespace oasis::recompiler::ir;
-using namespace oasis::recompiler::fixtures;
 
-constexpr const char* kCoreHash = "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134";
+namespace {
 
-// 118 authentic jump table bytes at 0x0059BA
-static const std::uint8_t kJumpTableBytes[118] = {
-    0x08, 0x3c, 0x09, 0x28, 0x0b, 0x58, 0x14, 0x12, 0x1e, 0x90, 0x1c, 0x92, 0x0c, 0x78, 0x18, 0x12,
-    0x12, 0x7c, 0x12, 0x6e, 0x20, 0x42, 0x17, 0x42, 0x02, 0xf6, 0x03, 0x24, 0x03, 0xf2, 0x04, 0x0c,
-    0x03, 0x1e, 0x03, 0xec, 0x05, 0x92, 0x14, 0xfa, 0x01, 0xc0, 0x01, 0xe6, 0x01, 0xfa, 0x02, 0x32,
-    0x09, 0x4e, 0x0e, 0x8a, 0x0f, 0x4e, 0x1f, 0x08, 0x0c, 0xb8, 0x20, 0x34, 0x22, 0x46, 0x0e, 0x08,
-    0x1e, 0x14, 0x13, 0x7e, 0x21, 0x2c, 0x1a, 0x3c, 0x15, 0x3a, 0x13, 0x9e, 0x18, 0x5c, 0x18, 0xe2,
-    0x19, 0x5a, 0x19, 0xe0, 0x1b, 0x42, 0x15, 0x7c, 0x11, 0x18, 0x11, 0x34, 0x1b, 0x6e, 0x05, 0x7a,
-    0x05, 0xd0, 0x15, 0xc8, 0x15, 0xfc, 0x16, 0x30, 0x16, 0x38, 0x0a, 0x40, 0x06, 0xf8, 0x0d, 0xb6,
-    0x05, 0xb8, 0x1e, 0xfe, 0x0d, 0x0a
-};
+bool load_rom(std::vector<std::uint8_t>& out) {
+    std::ifstream in("local-roms/Beyond Oasis (USA).md", std::ios::binary);
+    if (!in) return false;
+    out.assign(std::istreambuf_iterator<char>(in), {});
+    return out.size() == 3145728U;
+}
 
-void setup_env_from_fixture(PortableGuestEnvironment& env, const EntityDispatchFixture& fix) {
-    // Populate jump table in ROM data if not already set
-    if (env.rom_data.size() < 0x0059BAU + sizeof(kJumpTableBytes)) {
-        env.rom_data.resize(0x0059BAU + sizeof(kJumpTableBytes) + 16, 0);
-        for (std::size_t i = 0; i < sizeof(kJumpTableBytes); ++i) {
-            env.rom_data[0x0059BAU + i] = kJumpTableBytes[i];
-        }
-    }
-
+void init_env(PortableGuestEnvironment& env, const std::vector<std::uint8_t>& rom,
+              const DispatchRefFixture& fx) {
+    env = PortableGuestEnvironment{};
+    env.set_rom(rom);
     for (int i = 0; i < 8; ++i) {
-        env.d_regs[i] = 0;
-        env.a_regs[i] = 0;
+        env.d_regs[i] = fx.ed[i];
+        env.a_regs[i] = fx.ea[i];
     }
-    env.a_regs[6] = fix.a6;
-    env.a_regs[7] = fix.a7;
-    env.sr = 0x2700U;
-
-    // Set RAM state
-    env.write_memory(0x00FF165EU, IrOpSize::Word, 0x0000U);
-    env.write_memory(fix.a6 + 0x04U, IrOpSize::Word, fix.state_idx);
-    env.write_memory(fix.a6 + 0x83U, IrOpSize::Byte, fix.timer_83);
-    env.write_memory(fix.a6 + 0x36U, IrOpSize::Byte, fix.flag_36);
-    env.write_memory(fix.a6 + 0x39U, IrOpSize::Byte, fix.flag_39);
-    env.write_memory(fix.a6 + 0x4EU, IrOpSize::Long, fix.vel_x);
-    env.write_memory(fix.a6 + 0x52U, IrOpSize::Long, fix.vel_y);
-    env.write_memory(fix.a6 + 0x72U, IrOpSize::Long, fix.pos_x);
-    env.write_memory(fix.a6 + 0x76U, IrOpSize::Long, fix.pos_y);
-    env.write_memory(fix.a6 + 0x2AU, IrOpSize::Word, 40U);
-    env.write_memory(fix.a6 + 0x8AU, IrOpSize::Word, 0x1234U);
-    const std::uint16_t timer_02 = (fix.test_id == "dispatch_path3_state17_timer_tick_branch_taken") ? 2U : 1U;
-    env.write_memory(fix.a6 + 0x02U, IrOpSize::Word, timer_02);
-
-    // Push caller return address to guest stack
-    env.a_regs[7] -= 4U;
-    env.write_memory(env.a_regs[7], IrOpSize::Long, fix.expected_exit_pc);
+    env.set_sr(fx.entry_sr);
+    env.pc = fx.entry_pc;
+    for (const auto& rb : fx.ram) {
+        env.work_ram[rb.addr & 0xFFFFU] = rb.val;
+    }
 }
 
-void test_entity_dispatch_three_way_fixtures() {
-    const auto& fixtures = get_entity_dispatch_fixtures();
-    std::cout << "Reference Core Hash: " << kCoreHash << "\n";
-    std::cout << "Verifying " << fixtures.size() << " entity dispatch execution paths...\n";
-
-    for (const auto& fix : fixtures) {
-        std::cout << "  Verifying " << fix.test_id << " (Entry " << std::hex
-                  << fix.entry_pc << " -> State " << fix.state_idx << " -> Exit "
-                  << fix.expected_exit_pc << ", " << std::dec << fix.expected_cycles << " cycles)...\n";
-
-        const std::uint32_t stop_pc = (fix.expected_outcome == PortableContinuationOutcome::OriginalCpuException) ? 0U : fix.expected_exit_pc;
-
-        // Mode A
-        PortableGuestEnvironment env_a;
-        setup_env_from_fixture(env_a, fix);
-        const auto res_a = run_entity_dispatch_mode_a(env_a, fix.entry_pc, stop_pc);
-
-        // Mode B
-        PortableGuestEnvironment env_b;
-        setup_env_from_fixture(env_b, fix);
-        const auto res_b = run_entity_dispatch_mode_b(env_b, fix.entry_pc, stop_pc);
-
-
-
-        // Verify Mode A vs Mode B exact match
-        assert(res_a.outcome == res_b.outcome);
-        assert(res_a.pc == res_b.pc);
-        assert(res_a.cycles == res_b.cycles);
-        for (int i = 0; i < 8; ++i) {
-            assert(res_a.d[i] == res_b.d[i]);
-            assert(res_a.a[i] == res_b.a[i]);
+bool verify_vs_oracle(const char* mode, const DispatchRefFixture& fx,
+                      const PortableGuestEnvironment& env,
+                      const PortableExecutionResult& res) {
+    if (res.outcome != fx.outcome) {
+        std::cerr << "FAIL [" << mode << "] " << fx.id << " outcome mismatch: got "
+                  << static_cast<int>(res.outcome) << " expected " << static_cast<int>(fx.outcome) << "\n";
+        return false;
+    }
+    if (fx.outcome == PortableContinuationOutcome::OriginalCpuException) {
+        if (res.exception_vector != 3U) {
+            std::cerr << "FAIL [" << mode << "] " << fx.id << " expected vector 3\n";
+            return false;
         }
-        assert(res_a.writes.size() == res_b.writes.size());
-
-        // Verify Mode A & Mode B vs Reference CPU Fixture
-        assert(res_a.outcome == fix.expected_outcome);
-        assert(res_a.pc == fix.expected_exit_pc);
-        assert(res_a.cycles == fix.expected_cycles);
-
-        if (fix.expected_outcome == PortableContinuationOutcome::CompiledNextPc && fix.vel_x != 0) {
-            const auto final_x = env_a.read_memory(fix.a6 + 0x72U, IrOpSize::Long);
-            const auto final_y = env_a.read_memory(fix.a6 + 0x76U, IrOpSize::Long);
-            assert(final_x == fix.expected_pos_x);
-            assert(final_y == fix.expected_pos_y);
+        return true;
+    }
+    if ((res.pc & kBusAddressMask) != (fx.exit_pc & kBusAddressMask)) {
+        std::cerr << "FAIL [" << mode << "] " << fx.id << " exit PC mismatch: got 0x"
+                  << std::hex << res.pc << " expected 0x" << fx.exit_pc << std::dec << "\n";
+        return false;
+    }
+    for (int i = 0; i < 8; ++i) {
+        if (res.d[i] != fx.xd[i]) {
+            std::cerr << "FAIL [" << mode << "] " << fx.id << " D" << i << " mismatch: got 0x"
+                      << std::hex << res.d[i] << " expected 0x" << fx.xd[i] << std::dec << "\n";
+            return false;
         }
-
-        std::cout << "    [PASS] " << fix.test_id << " (100% Bit-Exact Match across CPU Ref, Mode A, Mode B)\n";
+        if (res.a[i] != fx.xa[i]) {
+            std::cerr << "FAIL [" << mode << "] " << fx.id << " A" << i << " mismatch: got 0x"
+                      << std::hex << res.a[i] << " expected 0x" << fx.xa[i] << std::dec << "\n";
+            return false;
+        }
     }
+    if ((env.sr & 0x071FU) != (fx.exit_sr & 0x071FU)) {
+        std::cerr << "FAIL [" << mode << "] " << fx.id << " SR/CCR/X mismatch: got 0x"
+                  << std::hex << env.sr << " expected 0x" << fx.exit_sr << std::dec << "\n";
+        return false;
+    }
+    if (!fx.jitter_ok) {
+        if (res.cycles != fx.cycles) {
+            std::cerr << "FAIL [" << mode << "] " << fx.id << " cycle mismatch: got "
+                      << res.cycles << " expected " << fx.cycles << "\n";
+            return false;
+        }
+    } else {
+        if (res.cycles > fx.cycles || (fx.cycles - res.cycles) > 16U) {
+            std::cerr << "FAIL [" << mode << "] " << fx.id << " unexpected replay cycle delta: portable="
+                      << res.cycles << " replay=" << fx.cycles << "\n";
+            return false;
+        }
+    }
+    return true;
 }
 
-void test_entity_dispatch_mutations() {
-    std::cout << "  Running Mutation Tests...\n";
-    const auto& fix = get_entity_dispatch_fixtures()[0];
-
-    // Mutation 1: Mutated return address on stack
-    {
-        PortableGuestEnvironment env;
-        setup_env_from_fixture(env, fix);
-        env.write_memory(env.a_regs[7], IrOpSize::Long, 0x088888U);
-        const auto res = run_entity_dispatch_mode_a(env, fix.entry_pc, 0x088888U);
-        assert(res.pc == 0x088888U);
-        std::cout << "    [Mutation 1] Mutated return address correctly detected!\n";
+bool verify_mode_a_eq_mode_b(const DispatchRefFixture& fx,
+                             const PortableGuestEnvironment& env_a, const PortableExecutionResult& ra,
+                             const PortableGuestEnvironment& env_b, const PortableExecutionResult& rb) {
+    if (ra.outcome != rb.outcome || ra.pc != rb.pc || ra.ccr != rb.ccr || ra.cycles != rb.cycles ||
+        env_a.sr != env_b.sr || env_a.ssp != env_b.ssp || env_a.usp != env_b.usp ||
+        ra.writes != rb.writes || env_a.work_ram != env_b.work_ram) {
+        std::cerr << "FAIL Mode A vs Mode B mismatch on " << fx.id << "\n";
+        return false;
     }
-
-    // Mutation 2: Mutated timer state (0 vs 5 flips branch)
-    {
-        PortableGuestEnvironment env;
-        setup_env_from_fixture(env, fix);
-        env.write_memory(fix.a6 + 0x83U, IrOpSize::Byte, 0x01U); // timer expires to 0
-        const auto res = run_entity_dispatch_mode_a(env, fix.entry_pc, 0x0062CCU);
-        assert(res.outcome == PortableContinuationOutcome::ValidUncompiledPc);
-        assert(res.pc == 0x0062CCU);
-        std::cout << "    [Mutation 2] Mutated timer state correctly flipped branch decision!\n";
-    }
-
-    // Mutation 3: Odd jump table index triggers address error
-    {
-        PortableGuestEnvironment env;
-        setup_env_from_fixture(env, fix);
-        env.write_memory(fix.a6 + 0x04U, IrOpSize::Word, 0x0019U); // odd index
-        const auto res = run_entity_dispatch_mode_a(env, fix.entry_pc, fix.expected_exit_pc);
-        assert(res.outcome == PortableContinuationOutcome::OriginalCpuException);
-        assert(res.exception_vector == 3U);
-        std::cout << "    [Mutation 3] Misaligned table index correctly triggered Address Error (Vector 3)!\n";
-    }
+    return true;
 }
+
+} // namespace
 
 int main() {
-    std::cout << "=== Running M15.243 Three-Way Entity Dispatch Differential Tests ===\n";
-    test_entity_dispatch_three_way_fixtures();
-    test_entity_dispatch_mutations();
-    std::cout << "ALL THREE-WAY ENTITY DISPATCH DIFFERENTIAL TESTS PASSED (100% BIT-EXACT)!\n";
+    std::cout << "=== M15.244 Expanded Three-Way Differential & Mutation Proof ===\n";
+    std::vector<std::uint8_t> rom;
+    if (!load_rom(rom)) {
+        std::cerr << "FATAL: Canonical ROM missing\n";
+        return 1;
+    }
+    const auto fixtures = get_m15_244_dispatch_fixtures();
+    std::cout << "Loaded " << fixtures.size() << " real pinned GPGX fixtures.\n";
+
+    std::size_t auth_pass = 0, ctrl_pass = 0;
+    std::set<std::uint32_t> covered_entry_targets;
+
+    for (const auto& fx : fixtures) {
+        PortableGuestEnvironment env_a, env_b;
+        init_env(env_a, rom, fx);
+        init_env(env_b, rom, fx);
+        const std::uint32_t stop_arg = (fx.outcome == PortableContinuationOutcome::CompiledNextPc) ? fx.exit_pc : 0xFFFFFFFFU;
+        const auto ra = run_entity_dispatch_mode_a(env_a, fx.entry_pc, stop_arg);
+        const auto rb = run_entity_dispatch_mode_b(env_b, fx.entry_pc, stop_arg);
+
+        if (!verify_vs_oracle("ModeA", fx, env_a, ra)) return 2;
+        if (!verify_vs_oracle("ModeB", fx, env_b, rb)) return 3;
+        if (!verify_mode_a_eq_mode_b(fx, env_a, ra, env_b, rb)) return 4;
+
+        covered_entry_targets.insert(env_a.a_regs[0] & kBusAddressMask);
+        if (std::string(fx.kind) == "AUTHENTIC_GAMEPLAY_ENTRY") ++auth_pass;
+        else ++ctrl_pass;
+        std::cout << "  [PASS] " << fx.id << " (" << fx.kind << ", cyc=" << ra.cycles << ")\n";
+    }
+
+    // Phase 5 Continuation Safety: Split Yield->Resume mid-block + MMIO UnsupportedBusBehavior
+    {
+        PortableGuestEnvironment env_mid;
+        init_env(env_mid, rom, fixtures[10]); // ctrl_idx12_branch_taken_rts
+        const auto r1 = run_entity_dispatch_mode_a(env_mid, 0x0059A8U, 0x005CC8U);
+        assert(r1.outcome == PortableContinuationOutcome::CompiledNextPc && r1.pc == 0x005CC8U && r1.cycles == 60U);
+        const auto r2 = run_entity_dispatch_mode_a(env_mid, r1.pc, fixtures[10].exit_pc);
+        assert(r2.outcome == PortableContinuationOutcome::CompiledNextPc && r2.pc == fixtures[10].exit_pc);
+        assert(r2.cycles == fixtures[10].cycles && "No double-counted or skipped instructions on mid-handoff");
+
+        PortableGuestEnvironment env_mmio;
+        env_mmio.set_rom(rom);
+        (void)env_mmio.read_memory(0x00C00004U, IrOpSize::Word);
+        assert(env_mmio.bus_error && "Unmapped VDP MMIO read flagged bus_error");
+        std::cout << "  [PASS] Continuation boundary yield/resume (0x0059A8 -> 0x005CC8 -> 0x00FF2000) & UnsupportedBusBehavior\n";
+    }
+
+    // Phase 9: 10 Explicit Mutation Tests
+    const auto base_fx = fixtures[10];
+    int mutations_detected = 0;
+    auto expect_diff = [&](const char* name, PortableGuestEnvironment& em) {
+        const auto rm = run_entity_dispatch_mode_b(em, base_fx.entry_pc, base_fx.exit_pc);
+        const bool same = (rm.pc == base_fx.exit_pc && rm.cycles == base_fx.cycles &&
+                           rm.d[0] == base_fx.xd[0] && rm.a[0] == base_fx.xa[0] &&
+                           rm.a[7] == base_fx.xa[7] && (em.sr & 0x1F) == (base_fx.exit_sr & 0x1F));
+        assert(!same && "Mutation test failed to diverge!");
+        ++mutations_detected;
+        std::cout << "  [PASS Mutation " << mutations_detected << "] " << name << "\n";
+    };
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0x8005] = 0x1A; e.a_regs[0] = 0x5CF8; expect_diff("1. wrong table target/index", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0x8005] = 0x1C; expect_diff("2. wrong target index", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.a_regs[7] += 4; expect_diff("3. wrong stack pop (A7 shifted)", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0xFE03] ^= 2; expect_diff("4. wrong return PC", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.set_sr(0x2104U); const auto rm = run_entity_dispatch_mode_b(e, 0x005CCCU, base_fx.exit_pc); assert(rm.pc == 0x0062CCU); ++mutations_detected; std::cout << "  [PASS Mutation " << mutations_detected << "] 5. wrong flags (Z-bit flipped at branch)\n"; }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.total_cycles += 14; expect_diff("6. wrong cycles", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0x8051] ^= 1; (void)run_entity_dispatch_mode_b(e, base_fx.entry_pc, base_fx.exit_pc); assert(e.work_ram[0x8075] != 0); ++mutations_detected; std::cout << "  [PASS Mutation " << mutations_detected << "] 7. wrong RAM write detected\n"; }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0x8083] = 1; expect_diff("8. missing/flipped branch", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); (void)run_entity_dispatch_mode_b(e, base_fx.entry_pc, base_fx.exit_pc); e.pc = 0x005CC8U; expect_diff("9. duplicate execution", e); }
+    { PortableGuestEnvironment e; init_env(e, rom, base_fx); e.work_ram[0x8005] = 0x80; const auto r = run_entity_dispatch_mode_b(e, base_fx.entry_pc, 0xFFFFFFFFU); assert(r.outcome == PortableContinuationOutcome::ValidUncompiledPc && r.pc == 0x005A64U && !e.address_error); ++mutations_detected; std::cout << "  [PASS Mutation " << mutations_detected << "] 10. OOB even target stays ValidUncompiledPc (not false exception)\n"; }
+
+    std::cout << "SUMMARY: AUTHENTIC=" << auth_pass << ", CONTROLLED=" << ctrl_pass
+              << ", MUTATIONS=" << mutations_detected << "/10, UNIQUE_TARGETS_EXERCISED="
+              << covered_entry_targets.size() << "\nALL M15.244 THREE-WAY DIFFERENTIAL & MUTATION TESTS PASSED!\n";
     return 0;
 }

@@ -1,0 +1,1675 @@
+{
+  "schema": "oasis.entity-dispatch-table-manifest.v1",
+  "milestone": "M15.244",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "rom_size_bytes": 3145728,
+  "dispatcher_entry_pc": "0x0059A8",
+  "dispatcher_jmp_pc": "0x0059B8",
+  "jump_table_start": "0x0059BA",
+  "jump_table_end_exclusive": "0x005A30",
+  "table_size_bytes": 118,
+  "instruction_after_table": {
+    "pc": "0x005A30",
+    "bytes": "082E00010040",
+    "disasm": "BTST.B #$01, $0040(A6)"
+  },
+  "summary": {
+    "table_entry_count": 59,
+    "unique_target_count": 57,
+    "shared_target_count": 2,
+    "shared_targets": {
+      "0x005CF8": [
+        13,
+        16
+      ],
+      "0x005DC8": [
+        14,
+        17
+      ]
+    },
+    "all_59_targets_even_aligned": true,
+    "all_59_targets_in_rom": true,
+    "observed_authentic_unique_target_count": 25,
+    "observed_authentic_index_count": 25,
+    "observed_authentic_indices": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19,
+      23,
+      24,
+      27,
+      28,
+      29,
+      32,
+      49,
+      50,
+      52,
+      53,
+      57,
+      58
+    ],
+    "observed_total_entries_c_a_b": {
+      "scenario_c": 858,
+      "scenario_a": 753,
+      "scenario_b": 297
+    },
+    "invalid_or_oob_indices_reachable_in_gameplay": false
+  },
+  "index_formation_semantics": {
+    "0x0059A8": "MOVE.W $00FF165E.L, D7",
+    "0x0059AE": "MOVE.W $0004(A6), D0 (signed int16 index byte offset = 2 * state_id)",
+    "0x0059B2": "LEA 6(PC, D0.W), A0 -> A0 = (0x0059BA + (int32_t)(int16_t)D0) & 0xFFFFFF (does NOT trap on LEA)",
+    "0x0059B6": "ADDA.W (A0), A0 -> Vector 3 Address Error if A0 odd; else reads signed int16 at (A0), computes (A0 + offset) & 0xFFFFFF",
+    "0x0059B8": "JMP (A0) -> Vector 3 Address Error if target PC odd; else transfers control to effective target",
+    "m15_243_audit_note": "M15.243 synthetic trap at 0x0059B2 for d0 >= 0x76 disagreed with real M68000 LEA hardware semantics; M15.244 removes synthetic bounds trap."
+  },
+  "entries": [
+    {
+      "TABLE_INDEX": 0,
+      "D0_VALUE": "0x00",
+      "ROM_TABLE_ADDRESS": "0x0059BA",
+      "RAW_TABLE_BYTES": "083C",
+      "SIGNED_OFFSET": 2108,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0061F6",
+      "ALIAS_INDICES": [
+        0
+      ],
+      "TARGET_ROM_BYTES_SHA256": "4dfde8ba37666737cb38eff6aba84aa1e34f1358b2ff769f2e6a470d52d1715a",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0061F6",
+        "end": "0x0062E4"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 113,
+        "scenario_a": 151,
+        "scenario_b": 21,
+        "total": 285
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 1,
+      "D0_VALUE": "0x02",
+      "ROM_TABLE_ADDRESS": "0x0059BC",
+      "RAW_TABLE_BYTES": "0928",
+      "SIGNED_OFFSET": 2344,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0062E4",
+      "ALIAS_INDICES": [
+        1
+      ],
+      "TARGET_ROM_BYTES_SHA256": "6ad0e0151a1aabfe9f84147fc9da5159e5ab7017fb02749caa0470cbcdafca62",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0062E4",
+        "end": "0x006338"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_0062e4_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 145,
+        "scenario_a": 84,
+        "scenario_b": 23,
+        "total": 252
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 2,
+      "D0_VALUE": "0x04",
+      "ROM_TABLE_ADDRESS": "0x0059BE",
+      "RAW_TABLE_BYTES": "0B58",
+      "SIGNED_OFFSET": 2904,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006516",
+      "ALIAS_INDICES": [
+        2
+      ],
+      "TARGET_ROM_BYTES_SHA256": "3239a9d932d54a437fd38801e0cdd3837a040f6e449021322b68e44b2cc240ab",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006516",
+        "end": "0x006556"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_006516_step_block1.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 307,
+        "scenario_a": 97,
+        "scenario_b": 142,
+        "total": 546
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 3,
+      "D0_VALUE": "0x06",
+      "ROM_TABLE_ADDRESS": "0x0059C0",
+      "RAW_TABLE_BYTES": "1412",
+      "SIGNED_OFFSET": 5138,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006DD2",
+      "ALIAS_INDICES": [
+        3
+      ],
+      "TARGET_ROM_BYTES_SHA256": "d7e390a2d96c7c44734bda0f68d0dd4c75c6d496dd61cb713a9fc128d13e811b",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006DD2",
+        "end": "0x006EDA"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 4,
+      "D0_VALUE": "0x08",
+      "ROM_TABLE_ADDRESS": "0x0059C2",
+      "RAW_TABLE_BYTES": "1E90",
+      "SIGNED_OFFSET": 7824,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007852",
+      "ALIAS_INDICES": [
+        4
+      ],
+      "TARGET_ROM_BYTES_SHA256": "9695ee0a325fd3384c319fa8d75c21d955667b00091ee86a29b48d0b97d929fe",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007852",
+        "end": "0x0078F8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 42,
+        "scenario_a": 43,
+        "scenario_b": 0,
+        "total": 85
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 5,
+      "D0_VALUE": "0x0A",
+      "ROM_TABLE_ADDRESS": "0x0059C4",
+      "RAW_TABLE_BYTES": "1C92",
+      "SIGNED_OFFSET": 7314,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007656",
+      "ALIAS_INDICES": [
+        5
+      ],
+      "TARGET_ROM_BYTES_SHA256": "1abbb13889a294ceabea7c11c5378f1f32c58ae4c3b2c8d120f09560c9e49929",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007656",
+        "end": "0x007696"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 28,
+        "scenario_a": 28,
+        "scenario_b": 0,
+        "total": 56
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 6,
+      "D0_VALUE": "0x0C",
+      "ROM_TABLE_ADDRESS": "0x0059C6",
+      "RAW_TABLE_BYTES": "0C78",
+      "SIGNED_OFFSET": 3192,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00663E",
+      "ALIAS_INDICES": [
+        6
+      ],
+      "TARGET_ROM_BYTES_SHA256": "cfde1d03af7cd49c95313fb20e9bbb68a32db4e6fbccbd807a831fc44403c536",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00663E",
+        "end": "0x0066AA"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_00663e_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 36,
+        "scenario_a": 12,
+        "scenario_b": 24,
+        "total": 72
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 7,
+      "D0_VALUE": "0x0E",
+      "ROM_TABLE_ADDRESS": "0x0059C8",
+      "RAW_TABLE_BYTES": "1812",
+      "SIGNED_OFFSET": 6162,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0071DA",
+      "ALIAS_INDICES": [
+        7
+      ],
+      "TARGET_ROM_BYTES_SHA256": "88b7b804fd3068a317ef608b662975ec3ab5c21be9784a45e0b95380226c5265",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0071DA",
+        "end": "0x007262"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 19,
+        "scenario_a": 0,
+        "scenario_b": 19,
+        "total": 38
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 8,
+      "D0_VALUE": "0x10",
+      "ROM_TABLE_ADDRESS": "0x0059CA",
+      "RAW_TABLE_BYTES": "127C",
+      "SIGNED_OFFSET": 4732,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006C46",
+      "ALIAS_INDICES": [
+        8
+      ],
+      "TARGET_ROM_BYTES_SHA256": "ca4d3ef1ff362f7deba49a6325f05530db3d3c54793ebb3d11f00531b2692f28",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006C46",
+        "end": "0x006C86"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 9,
+      "D0_VALUE": "0x12",
+      "ROM_TABLE_ADDRESS": "0x0059CC",
+      "RAW_TABLE_BYTES": "126E",
+      "SIGNED_OFFSET": 4718,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006C3A",
+      "ALIAS_INDICES": [
+        9
+      ],
+      "TARGET_ROM_BYTES_SHA256": "03c3e66798a14415fe158508f5569cdd136d99492a45855fd451032f4667d197",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006C3A",
+        "end": "0x006C46"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 10,
+      "D0_VALUE": "0x14",
+      "ROM_TABLE_ADDRESS": "0x0059CE",
+      "RAW_TABLE_BYTES": "2042",
+      "SIGNED_OFFSET": 8258,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007A10",
+      "ALIAS_INDICES": [
+        10
+      ],
+      "TARGET_ROM_BYTES_SHA256": "d49dfb63adc89f92f1db79a2fa6b9b79fb9ced29b1330459b0dabc882844f781",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007A10",
+        "end": "0x007A28"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 11,
+      "D0_VALUE": "0x16",
+      "ROM_TABLE_ADDRESS": "0x0059D0",
+      "RAW_TABLE_BYTES": "1742",
+      "SIGNED_OFFSET": 5954,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007112",
+      "ALIAS_INDICES": [
+        11
+      ],
+      "TARGET_ROM_BYTES_SHA256": "3decdf5aec85bd1fa838bfd5aaea08bd7c6d3c2e4557b298879dbfb63a5cb967",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007112",
+        "end": "0x0071DA"
+      },
+      "TARGET_OWNERSHIP": "COARSE_RANGE_OVERLAP_ONLY:0x0070F8 [0x0070F8..0x007138)",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 72,
+        "scenario_a": 39,
+        "scenario_b": 24,
+        "total": 135
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 12,
+      "D0_VALUE": "0x18",
+      "ROM_TABLE_ADDRESS": "0x0059D2",
+      "RAW_TABLE_BYTES": "02F6",
+      "SIGNED_OFFSET": 758,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005CC8",
+      "ALIAS_INDICES": [
+        12
+      ],
+      "TARGET_ROM_BYTES_SHA256": "713eaecb89d33514bac81e14b40c4f0b99f5647949237bd0999c508cf9049bc9",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005CC8",
+        "end": "0x005CF8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 4,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 4
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_12_velocity_accumulate",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 13,
+      "D0_VALUE": "0x1A",
+      "ROM_TABLE_ADDRESS": "0x0059D4",
+      "RAW_TABLE_BYTES": "0324",
+      "SIGNED_OFFSET": 804,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005CF8",
+      "ALIAS_INDICES": [
+        13,
+        16
+      ],
+      "TARGET_ROM_BYTES_SHA256": "cbf1aa56f1802038adaf1e0a8988d128820427e912a4f8d31d517353eb3f7295",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005CF8",
+        "end": "0x005DC8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 10,
+        "scenario_b": 0,
+        "total": 10
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_13_16_air_gravity",
+      "VALIDITY_STATUS": "VALID_SHARED_HANDLER"
+    },
+    {
+      "TABLE_INDEX": 14,
+      "D0_VALUE": "0x1C",
+      "ROM_TABLE_ADDRESS": "0x0059D6",
+      "RAW_TABLE_BYTES": "03F2",
+      "SIGNED_OFFSET": 1010,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005DC8",
+      "ALIAS_INDICES": [
+        14,
+        17
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b7acbcf0b7914eda53eddbf52c40a109dcc00ca4a731a45f161750d6fc249d2f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005DC8",
+        "end": "0x005DE4"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 10,
+        "scenario_b": 0,
+        "total": 10
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_14_17_timer_advance",
+      "VALIDITY_STATUS": "VALID_SHARED_HANDLER"
+    },
+    {
+      "TABLE_INDEX": 15,
+      "D0_VALUE": "0x1E",
+      "ROM_TABLE_ADDRESS": "0x0059D8",
+      "RAW_TABLE_BYTES": "040C",
+      "SIGNED_OFFSET": 1036,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005DE4",
+      "ALIAS_INDICES": [
+        15
+      ],
+      "TARGET_ROM_BYTES_SHA256": "d1df8e4d9f949a34a133bbbb5ebcfbc59a76d7b261a2d654afcdd81f9c417352",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005DE4",
+        "end": "0x005E24"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 30,
+        "scenario_b": 0,
+        "total": 30
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 16,
+      "D0_VALUE": "0x20",
+      "ROM_TABLE_ADDRESS": "0x0059DA",
+      "RAW_TABLE_BYTES": "031E",
+      "SIGNED_OFFSET": 798,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005CF8",
+      "ALIAS_INDICES": [
+        13,
+        16
+      ],
+      "TARGET_ROM_BYTES_SHA256": "cbf1aa56f1802038adaf1e0a8988d128820427e912a4f8d31d517353eb3f7295",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005CF8",
+        "end": "0x005DC8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_13_16_air_gravity",
+      "VALIDITY_STATUS": "VALID_SHARED_HANDLER"
+    },
+    {
+      "TABLE_INDEX": 17,
+      "D0_VALUE": "0x22",
+      "ROM_TABLE_ADDRESS": "0x0059DC",
+      "RAW_TABLE_BYTES": "03EC",
+      "SIGNED_OFFSET": 1004,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005DC8",
+      "ALIAS_INDICES": [
+        14,
+        17
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b7acbcf0b7914eda53eddbf52c40a109dcc00ca4a731a45f161750d6fc249d2f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005DC8",
+        "end": "0x005DE4"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_14_17_timer_advance",
+      "VALIDITY_STATUS": "VALID_SHARED_HANDLER"
+    },
+    {
+      "TABLE_INDEX": 18,
+      "D0_VALUE": "0x24",
+      "ROM_TABLE_ADDRESS": "0x0059DE",
+      "RAW_TABLE_BYTES": "0592",
+      "SIGNED_OFFSET": 1426,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005F70",
+      "ALIAS_INDICES": [
+        18
+      ],
+      "TARGET_ROM_BYTES_SHA256": "e63cc9d76dcf43554c561a7b0b444397feb3f3bee9ede808cbf91b036cec6664",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005F70",
+        "end": "0x005F92"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 19,
+      "D0_VALUE": "0x26",
+      "ROM_TABLE_ADDRESS": "0x0059E0",
+      "RAW_TABLE_BYTES": "14FA",
+      "SIGNED_OFFSET": 5370,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006EDA",
+      "ALIAS_INDICES": [
+        19
+      ],
+      "TARGET_ROM_BYTES_SHA256": "a0674f6309efc07df97c4cc72c5055a473b4956e6874d3f5e71f75136fe88934",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006EDA",
+        "end": "0x006F3C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 10,
+        "scenario_b": 0,
+        "total": 10
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 20,
+      "D0_VALUE": "0x28",
+      "ROM_TABLE_ADDRESS": "0x0059E2",
+      "RAW_TABLE_BYTES": "01C0",
+      "SIGNED_OFFSET": 448,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005BA2",
+      "ALIAS_INDICES": [
+        20
+      ],
+      "TARGET_ROM_BYTES_SHA256": "4dac66c5f894419ba65b3c162328f2e00e5fb0e2990d09a2129eb79934d45572",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005BA2",
+        "end": "0x005BE2"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 21,
+      "D0_VALUE": "0x2A",
+      "ROM_TABLE_ADDRESS": "0x0059E4",
+      "RAW_TABLE_BYTES": "01E6",
+      "SIGNED_OFFSET": 486,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005BCA",
+      "ALIAS_INDICES": [
+        21
+      ],
+      "TARGET_ROM_BYTES_SHA256": "9ca98336591196dad1197be34bac2b325326bcc28a783d0f4f44799bf16462d8",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005BCA",
+        "end": "0x005CC8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 22,
+      "D0_VALUE": "0x2C",
+      "ROM_TABLE_ADDRESS": "0x0059E6",
+      "RAW_TABLE_BYTES": "01FA",
+      "SIGNED_OFFSET": 506,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005BE0",
+      "ALIAS_INDICES": [
+        22
+      ],
+      "TARGET_ROM_BYTES_SHA256": "6129626d64d98632a01bf1542eb39d15cee30dfc172d337cfef649763f55c7f7",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005BE0",
+        "end": "0x005CC8"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 23,
+      "D0_VALUE": "0x2E",
+      "ROM_TABLE_ADDRESS": "0x0059E8",
+      "RAW_TABLE_BYTES": "0232",
+      "SIGNED_OFFSET": 562,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005C1A",
+      "ALIAS_INDICES": [
+        23
+      ],
+      "TARGET_ROM_BYTES_SHA256": "ffd98549848a94abf7c3e0c2ead5dd0c0b3c29ed612538f8e8e1404eb81b8ee3",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005C1A",
+        "end": "0x005C82"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 4,
+        "scenario_a": 0,
+        "scenario_b": 4,
+        "total": 8
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_23_knockback_setup",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 24,
+      "D0_VALUE": "0x30",
+      "ROM_TABLE_ADDRESS": "0x0059EA",
+      "RAW_TABLE_BYTES": "094E",
+      "SIGNED_OFFSET": 2382,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006338",
+      "ALIAS_INDICES": [
+        24
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b9701f6232789f28282ad88be778b7165edf0d571687231ca2417e249ff0e617",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006338",
+        "end": "0x006378"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 2,
+        "scenario_a": 1,
+        "scenario_b": 1,
+        "total": 4
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 25,
+      "D0_VALUE": "0x32",
+      "ROM_TABLE_ADDRESS": "0x0059EC",
+      "RAW_TABLE_BYTES": "0E8A",
+      "SIGNED_OFFSET": 3722,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006876",
+      "ALIAS_INDICES": [
+        25
+      ],
+      "TARGET_ROM_BYTES_SHA256": "192b701c14b816180248e9bd8d02c4d9ed665d1a0ce46bc8207acf03dd884aba",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006876",
+        "end": "0x00693C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 26,
+      "D0_VALUE": "0x34",
+      "ROM_TABLE_ADDRESS": "0x0059EE",
+      "RAW_TABLE_BYTES": "0F4E",
+      "SIGNED_OFFSET": 3918,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00693C",
+      "ALIAS_INDICES": [
+        26
+      ],
+      "TARGET_ROM_BYTES_SHA256": "942e7038eea3b4d8893eb5be6a93142807389cf9a79826b7bc3b98476567b6eb",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00693C",
+        "end": "0x00697C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 27,
+      "D0_VALUE": "0x36",
+      "ROM_TABLE_ADDRESS": "0x0059F0",
+      "RAW_TABLE_BYTES": "1F08",
+      "SIGNED_OFFSET": 7944,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0078F8",
+      "ALIAS_INDICES": [
+        27
+      ],
+      "TARGET_ROM_BYTES_SHA256": "d09b0be02560727e8bc0e02ceebfa3e97bc46469894a2a136e670e81bbba8635",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0078F8",
+        "end": "0x00792A"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 12,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 12
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 28,
+      "D0_VALUE": "0x38",
+      "ROM_TABLE_ADDRESS": "0x0059F2",
+      "RAW_TABLE_BYTES": "0CB8",
+      "SIGNED_OFFSET": 3256,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0066AA",
+      "ALIAS_INDICES": [
+        28
+      ],
+      "TARGET_ROM_BYTES_SHA256": "49cd64a2f1b923149983cd8d2bbeafee57bf65fd7dcbed4d667615acf3f5a3fc",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0066AA",
+        "end": "0x006738"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 24,
+        "scenario_a": 72,
+        "scenario_b": 24,
+        "total": 120
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 29,
+      "D0_VALUE": "0x3A",
+      "ROM_TABLE_ADDRESS": "0x0059F4",
+      "RAW_TABLE_BYTES": "2034",
+      "SIGNED_OFFSET": 8244,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007A28",
+      "ALIAS_INDICES": [
+        29
+      ],
+      "TARGET_ROM_BYTES_SHA256": "6785a7b180fc5d1cf93d2654f089fbd9d1ed3ed9ad958b02cd04ce73b1eed3c3",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007A28",
+        "end": "0x007A68"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 20,
+        "scenario_a": 30,
+        "scenario_b": 10,
+        "total": 60
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 30,
+      "D0_VALUE": "0x3C",
+      "ROM_TABLE_ADDRESS": "0x0059F6",
+      "RAW_TABLE_BYTES": "2246",
+      "SIGNED_OFFSET": 8774,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007C3C",
+      "ALIAS_INDICES": [
+        30
+      ],
+      "TARGET_ROM_BYTES_SHA256": "db67c0b236e4acd0a342b8e17dc10448dfd19c64db830ff630658517e4f1a3f2",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007C3C",
+        "end": "0x007C7C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 31,
+      "D0_VALUE": "0x3E",
+      "ROM_TABLE_ADDRESS": "0x0059F8",
+      "RAW_TABLE_BYTES": "0E08",
+      "SIGNED_OFFSET": 3592,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006800",
+      "ALIAS_INDICES": [
+        31
+      ],
+      "TARGET_ROM_BYTES_SHA256": "ccc9082fa555ef91cb0c15f1723010b34c574c1b74fd084a91d2674f6a115441",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006800",
+        "end": "0x006840"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 32,
+      "D0_VALUE": "0x40",
+      "ROM_TABLE_ADDRESS": "0x0059FA",
+      "RAW_TABLE_BYTES": "1E14",
+      "SIGNED_OFFSET": 7700,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00780E",
+      "ALIAS_INDICES": [
+        32
+      ],
+      "TARGET_ROM_BYTES_SHA256": "808d04630c1d0d6547753ea588db53e852d891d2cded44ad47ab258c8e425bce",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00780E",
+        "end": "0x007852"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 20,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 20
+      },
+      "COMPILED_STATUS": "COMPILED_PORTABLE:state_32_direction_action",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 33,
+      "D0_VALUE": "0x42",
+      "ROM_TABLE_ADDRESS": "0x0059FC",
+      "RAW_TABLE_BYTES": "137E",
+      "SIGNED_OFFSET": 4990,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006D7A",
+      "ALIAS_INDICES": [
+        33
+      ],
+      "TARGET_ROM_BYTES_SHA256": "cc35e644932d7313eecc73c01c84310945c02ec7b5046b46c1f1c5917eca3877",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006D7A",
+        "end": "0x006DD2"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 34,
+      "D0_VALUE": "0x44",
+      "ROM_TABLE_ADDRESS": "0x0059FE",
+      "RAW_TABLE_BYTES": "212C",
+      "SIGNED_OFFSET": 8492,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007B2A",
+      "ALIAS_INDICES": [
+        34
+      ],
+      "TARGET_ROM_BYTES_SHA256": "f6c32de43a7adf985f6562e5cc71c6f3c2502539a49b73ef7d5c65c6ced6cc51",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007B2A",
+        "end": "0x007B64"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 35,
+      "D0_VALUE": "0x46",
+      "ROM_TABLE_ADDRESS": "0x005A00",
+      "RAW_TABLE_BYTES": "1A3C",
+      "SIGNED_OFFSET": 6716,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00743C",
+      "ALIAS_INDICES": [
+        35
+      ],
+      "TARGET_ROM_BYTES_SHA256": "86c8b5fafc70a658c2f31d2d024fb870e65b0a91ec615839a3c5ab4839f18feb",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00743C",
+        "end": "0x007548"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 36,
+      "D0_VALUE": "0x48",
+      "ROM_TABLE_ADDRESS": "0x005A02",
+      "RAW_TABLE_BYTES": "153A",
+      "SIGNED_OFFSET": 5434,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006F3C",
+      "ALIAS_INDICES": [
+        36
+      ],
+      "TARGET_ROM_BYTES_SHA256": "f01fc73ac410f6845d9beb2641da822f8c98e98b740eb9e3420ec703db271434",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006F3C",
+        "end": "0x006F8C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 37,
+      "D0_VALUE": "0x4A",
+      "ROM_TABLE_ADDRESS": "0x005A04",
+      "RAW_TABLE_BYTES": "139E",
+      "SIGNED_OFFSET": 5022,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006DA2",
+      "ALIAS_INDICES": [
+        37
+      ],
+      "TARGET_ROM_BYTES_SHA256": "9a1c706d7812103700b64b4a0a95782ac14a24c071a6f4198425effed36071b8",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006DA2",
+        "end": "0x006DD2"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 38,
+      "D0_VALUE": "0x4C",
+      "ROM_TABLE_ADDRESS": "0x005A06",
+      "RAW_TABLE_BYTES": "185C",
+      "SIGNED_OFFSET": 6236,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007262",
+      "ALIAS_INDICES": [
+        38
+      ],
+      "TARGET_ROM_BYTES_SHA256": "476f576ce588cc0bc024be6a873364c3b2cedebfd220a84619f6a31df58fc21d",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007262",
+        "end": "0x0072EA"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 39,
+      "D0_VALUE": "0x4E",
+      "ROM_TABLE_ADDRESS": "0x005A08",
+      "RAW_TABLE_BYTES": "18E2",
+      "SIGNED_OFFSET": 6370,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0072EA",
+      "ALIAS_INDICES": [
+        39
+      ],
+      "TARGET_ROM_BYTES_SHA256": "d30203023f8d7a402f313ed13039d17cfaedcb79dbb43540e276934874df1a7f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0072EA",
+        "end": "0x007364"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 40,
+      "D0_VALUE": "0x50",
+      "ROM_TABLE_ADDRESS": "0x005A0A",
+      "RAW_TABLE_BYTES": "195A",
+      "SIGNED_OFFSET": 6490,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007364",
+      "ALIAS_INDICES": [
+        40
+      ],
+      "TARGET_ROM_BYTES_SHA256": "bc6427e3bb883ba201193561a9b3b2c58c4cbf8d475fe077390e55c47d082d9a",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007364",
+        "end": "0x0073EC"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 41,
+      "D0_VALUE": "0x52",
+      "ROM_TABLE_ADDRESS": "0x005A0C",
+      "RAW_TABLE_BYTES": "19E0",
+      "SIGNED_OFFSET": 6624,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0073EC",
+      "ALIAS_INDICES": [
+        41
+      ],
+      "TARGET_ROM_BYTES_SHA256": "a5fa465075406e5ae923f8fbc1c5d1e96cd88391812c734e22e4b68f0ac66797",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0073EC",
+        "end": "0x00743C"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 42,
+      "D0_VALUE": "0x54",
+      "ROM_TABLE_ADDRESS": "0x005A0E",
+      "RAW_TABLE_BYTES": "1B42",
+      "SIGNED_OFFSET": 6978,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007550",
+      "ALIAS_INDICES": [
+        42
+      ],
+      "TARGET_ROM_BYTES_SHA256": "f3c9efcac82c2126d1e43a05065e190cc1394a6664fbb7559f773cb1b9aaf970",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007550",
+        "end": "0x007584"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 43,
+      "D0_VALUE": "0x56",
+      "ROM_TABLE_ADDRESS": "0x005A10",
+      "RAW_TABLE_BYTES": "157C",
+      "SIGNED_OFFSET": 5500,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006F8C",
+      "ALIAS_INDICES": [
+        43
+      ],
+      "TARGET_ROM_BYTES_SHA256": "e6de3e936a38712c4b232228479b572b403c5015df40a811d87d449290634ea5",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006F8C",
+        "end": "0x006FE4"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 44,
+      "D0_VALUE": "0x58",
+      "ROM_TABLE_ADDRESS": "0x005A12",
+      "RAW_TABLE_BYTES": "1118",
+      "SIGNED_OFFSET": 4376,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006B2A",
+      "ALIAS_INDICES": [
+        44
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b7086b1ce8212a31f1a013590e6489e0c04f92e485eef04671c15332cb910cd2",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006B2A",
+        "end": "0x006B48"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 45,
+      "D0_VALUE": "0x5A",
+      "ROM_TABLE_ADDRESS": "0x005A14",
+      "RAW_TABLE_BYTES": "1134",
+      "SIGNED_OFFSET": 4404,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006B48",
+      "ALIAS_INDICES": [
+        45
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b6fefa8da6fff7d6e7d2f44fcecf840a15d811cb8d45288257e702d2f717605f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006B48",
+        "end": "0x006C3A"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 46,
+      "D0_VALUE": "0x5C",
+      "ROM_TABLE_ADDRESS": "0x005A16",
+      "RAW_TABLE_BYTES": "1B6E",
+      "SIGNED_OFFSET": 7022,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007584",
+      "ALIAS_INDICES": [
+        46
+      ],
+      "TARGET_ROM_BYTES_SHA256": "95326fffa32944490d7910f65c60e1bd3ee8b4499b1386d56ce3897f4e2a22c7",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007584",
+        "end": "0x007632"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 47,
+      "D0_VALUE": "0x5E",
+      "ROM_TABLE_ADDRESS": "0x005A18",
+      "RAW_TABLE_BYTES": "057A",
+      "SIGNED_OFFSET": 1402,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005F92",
+      "ALIAS_INDICES": [
+        47
+      ],
+      "TARGET_ROM_BYTES_SHA256": "f420f92eb4215bd39c2266de08eaa55db16fb4a070a00d872e8dcbe33eb35251",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005F92",
+        "end": "0x005FE2"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 48,
+      "D0_VALUE": "0x60",
+      "ROM_TABLE_ADDRESS": "0x005A1A",
+      "RAW_TABLE_BYTES": "05D0",
+      "SIGNED_OFFSET": 1488,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005FEA",
+      "ALIAS_INDICES": [
+        48
+      ],
+      "TARGET_ROM_BYTES_SHA256": "5ce6c5105a2c03df6e29bad572e86fc730b29a0b8cff650995de3040fd4dba92",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005FEA",
+        "end": "0x006100"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 49,
+      "D0_VALUE": "0x62",
+      "ROM_TABLE_ADDRESS": "0x005A1C",
+      "RAW_TABLE_BYTES": "15C8",
+      "SIGNED_OFFSET": 5576,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006FE4",
+      "ALIAS_INDICES": [
+        49
+      ],
+      "TARGET_ROM_BYTES_SHA256": "6de2fd00b94f99e1986a16189e74a5a981452a2a6082c8ca1c7c31350b197f00",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006FE4",
+        "end": "0x0070F8"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_006fe4_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 24,
+        "scenario_b": 0,
+        "total": 24
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 50,
+      "D0_VALUE": "0x64",
+      "ROM_TABLE_ADDRESS": "0x005A1E",
+      "RAW_TABLE_BYTES": "15FC",
+      "SIGNED_OFFSET": 5628,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00701A",
+      "ALIAS_INDICES": [
+        50
+      ],
+      "TARGET_ROM_BYTES_SHA256": "c72123875db213ae0e070e8e44235ccc0e8d94668f2e4f30e8741728f5c43faf",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00701A",
+        "end": "0x0070F8"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_00701a_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 18,
+        "scenario_b": 0,
+        "total": 18
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 51,
+      "D0_VALUE": "0x66",
+      "ROM_TABLE_ADDRESS": "0x005A20",
+      "RAW_TABLE_BYTES": "1630",
+      "SIGNED_OFFSET": 5680,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x007050",
+      "ALIAS_INDICES": [
+        51
+      ],
+      "TARGET_ROM_BYTES_SHA256": "284d35c7bbb2a0bbaf82b16ebb2fb4d321d73e56b993671dc45c480c4c1abeb5",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x007050",
+        "end": "0x0070F8"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_00701a_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 52,
+      "D0_VALUE": "0x68",
+      "ROM_TABLE_ADDRESS": "0x005A22",
+      "RAW_TABLE_BYTES": "1638",
+      "SIGNED_OFFSET": 5688,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00705A",
+      "ALIAS_INDICES": [
+        52
+      ],
+      "TARGET_ROM_BYTES_SHA256": "6d56128ae845f0345abd4b7c2f5734dd04c518ba5c4d91bfefbf1d9cce11c66f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00705A",
+        "end": "0x007066"
+      },
+      "TARGET_OWNERSHIP": "PRODUCTION_STEPPED:m68k_00701a_instruction_step.cpp",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 30,
+        "scenario_b": 0,
+        "total": 30
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 53,
+      "D0_VALUE": "0x6A",
+      "ROM_TABLE_ADDRESS": "0x005A24",
+      "RAW_TABLE_BYTES": "0A40",
+      "SIGNED_OFFSET": 2624,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006464",
+      "ALIAS_INDICES": [
+        53
+      ],
+      "TARGET_ROM_BYTES_SHA256": "509e4360de2d969424b84e1219f57f736c9bd85ed76b1c26f303831b071383c4",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006464",
+        "end": "0x0064C4"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 10,
+        "scenario_a": 5,
+        "scenario_b": 5,
+        "total": 20
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 54,
+      "D0_VALUE": "0x6C",
+      "ROM_TABLE_ADDRESS": "0x005A26",
+      "RAW_TABLE_BYTES": "06F8",
+      "SIGNED_OFFSET": 1784,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00611E",
+      "ALIAS_INDICES": [
+        54
+      ],
+      "TARGET_ROM_BYTES_SHA256": "a0391ef179bffef31a877f283bc9220412f07e62cbbb8f946cbbc2ede0b75cc6",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00611E",
+        "end": "0x0061CC"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 55,
+      "D0_VALUE": "0x6E",
+      "ROM_TABLE_ADDRESS": "0x005A28",
+      "RAW_TABLE_BYTES": "0DB6",
+      "SIGNED_OFFSET": 3510,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x0067DE",
+      "ALIAS_INDICES": [
+        55
+      ],
+      "TARGET_ROM_BYTES_SHA256": "13bf47f1fcb07c1230cd71c28fd9c3b7ece280674959df0cddaa7474756636b5",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x0067DE",
+        "end": "0x006800"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 56,
+      "D0_VALUE": "0x70",
+      "ROM_TABLE_ADDRESS": "0x005A2A",
+      "RAW_TABLE_BYTES": "05B8",
+      "SIGNED_OFFSET": 1464,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x005FE2",
+      "ALIAS_INDICES": [
+        56
+      ],
+      "TARGET_ROM_BYTES_SHA256": "ec7adcb53eeba6ac0b431501040ef5e185c8fee2bc4fb06e30d33c6b3d0ba848",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x005FE2",
+        "end": "0x006100"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "total": 0
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 57,
+      "D0_VALUE": "0x72",
+      "ROM_TABLE_ADDRESS": "0x005A2C",
+      "RAW_TABLE_BYTES": "1EFE",
+      "SIGNED_OFFSET": 7934,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x00792A",
+      "ALIAS_INDICES": [
+        57
+      ],
+      "TARGET_ROM_BYTES_SHA256": "9604fe373b9857730cd86096486b199175a22ba4833b37a9a1f937206edf3bc5",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x00792A",
+        "end": "0x0079FC"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 24,
+        "scenario_b": 0,
+        "total": 24
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    },
+    {
+      "TABLE_INDEX": 58,
+      "D0_VALUE": "0x74",
+      "ROM_TABLE_ADDRESS": "0x005A2E",
+      "RAW_TABLE_BYTES": "0D0A",
+      "SIGNED_OFFSET": 3338,
+      "ENTRY_WIDTH": 2,
+      "ENTRY_ENCODING": "PC_INDEXED_REL_I16_FROM_0059BA_PLUS_D0",
+      "RESOLVED_TARGET_PC": "0x006738",
+      "ALIAS_INDICES": [
+        58
+      ],
+      "TARGET_ROM_BYTES_SHA256": "b3e0a3d7cad0e548246bdaf2de932ac051baab76dd32a5a76fc32620bcca811f",
+      "TARGET_FUNCTION_BOUNDARY": {
+        "start": "0x006738",
+        "end": "0x0067DE"
+      },
+      "TARGET_OWNERSHIP": "UNOWNED",
+      "OBSERVED_RUNTIME_ENTRIES": {
+        "scenario_c": 0,
+        "scenario_a": 35,
+        "scenario_b": 0,
+        "total": 35
+      },
+      "COMPILED_STATUS": "UNCOMPILED_ROM_TARGET",
+      "VALIDITY_STATUS": "VALID_UNIQUE_ROM_TARGET"
+    }
+  ]
+}

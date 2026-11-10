@@ -1,3 +1,28 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.244: Exhaustive 59-Entry Entity Jump Table Manifest `0x0059BA..0x005A30` + Live Watch Counts Across 1,908 Gameplay Entries; Nonlocal Guest Stack Frame Proof `0x00E682..0x00E6A8` Across 49 Authentic GPGX Unwinds; Connected Entity State-Dispatch CFG Reconstruction 130 Instructions / 43 Basic Blocks / 123 Edges; First Real Portable Gameplay Displacement `0059a8p` Displacing 791 Disjoint Instructions Across Scenarios C/A/B)
+
+## Milestone M15.244 Reverse Engineering Summary
+
+### Section 67: Exhaustive Entity Dispatch Table (`0x0059BA`), Nonlocal Stack Proof (`0x00E682`) & 130-Instruction Connected CFG
+
+#### 1. 59-Entry PC-Indexed Jump Table Audit (`0x0059A8..0x005A30`)
+- **Evidence:** `tools/audit_entity_dispatch_table_m15_244.py` -> `data/thor-evidence/entity_dispatch_table_manifest_m15_244.json` + `entity_dispatch_watch_counts_m15_244.json`.
+- **Verified Structure:**
+  * Table spans `0x0059BA..0x005A30` (`59` signed 16-bit PC-relative entries, `118` bytes) immediately preceding `0x005A30 BTST.B #$01, $0040(A6)`.
+  * `57` unique targets (`[13,16]->0x005CF8`, `[14,17]->0x005DC8`, `15->0x005DE4`), all even-aligned inside `[0x000200, 0x300000)`.
+  * Hardware index semantics verified directly on pinned GPGX (`ca4be304...`): `0x0059B2 LEA 6(PC,D0.W), A0` accepts even out-of-bounds offsets (e.g. `D0 = 0x0080` -> valid `0x005A64`), while odd `D0` raises Vector 3 Address Error at `0x0059B6 ADDA.W (A0), A0`; M15.243 synthetic `d0 >= 0x76` trap removed.
+  * Live gameplay `PC_WATCH` hits (`1,908` total: `C=858, A=753, B=297`) exercised `25/59` indices (`25/57` unique targets) with `0` OOB or odd indices.
+
+#### 2. Authentic Nonlocal Guest Stack Frame Proof (`0x00E682..0x00E6A8`)
+- **Evidence:** `tools/m15_244_gpgx_oracle.cpp` -> `data/thor-evidence/rom_00e682_stack_proof_m15_244.json`.
+- **Verified Runtime Unwind:**
+  * Across Scenarios C (`4`), A (`43`), B (`2`), observed `49` authentic executions of `0x00E6A6 ADDQ.L #4, A7; 0x00E6A8 RTS`, popping the immediate caller return PC and returning directly to grandparent return PC (`a7_delta = +8`, `call_depth 6 -> 4`).
+  * Distinct bypassed immediate callers: `0x0057D0` (`-> 0x00558A`), `0x01A54E`, `0x01B7F2`, `0x01BBF8`, `0x01BF84`, `0x01C4DC`, `0x0256B8` (`-> 0x00DF1C`).
+
+#### 3. Connected 130-Instruction Entity State-Dispatch CFG (`0x0059A8`, `0x005C1A`, `0x005C82`, `0x005CC8`, `0x005CF8`, `0x005DC8`, `0x00780E`)
+- **Evidence:** `data/thor-evidence/entity_dispatch_cfg_source_map_m15_244.json` + `src/tools/thor_ir/entity_dispatch_subsystem_ir.json`.
+- **Verified Scope:** `130` original M68000 instructions (`0` omitted, `0` unreachable), `43` CFG basic blocks, `123` edges (`36` conditional, `7` unconditional, `57` dynamic [`5` compiled, `52` uncompiled], `6` call [`0x005C82`, `0x060004`, `0x00B79A`, `0x00BCBA`], `9` return, `59` total uncompiled exits including `0x0062CC`).
+- **Verification Status:** `20/20` GPGX reference fixtures + `10/10` mutation tests + interrupt preemption/masking/RTE passing in Debug & Release; `24/24` raw streams bit-exact across Scenarios C/A/B displacing `791` disjoint portable guest instructions (`C=463, A=231, B=97`, `91` entries, `0` fallbacks, `0` faults).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.243: Cross-Track ROM Semantic Audit, Portable Entity State Dispatch, and Real Gameplay Integration Proof; Authoritative Reconciliation of Routine 0x00E682 as entity_timer_tick_and_yield; Exact 60-Instruction 1:1 IR Coverage Audit of Raster Scroll Subsystem 0x00D2B4 & 0x00D344; Recompilation of Connected Entity State-Dispatch Subsystem 0x0059A8..0x0059BA Jump Table, Helper 0x005C82, and States 12-17 Totaling 80 Instructions Across 6 CFG Blocks; Three-Way Differential Proof Across 6 Authentic Paths + 3 Mutation Tests)
 
 ## Milestone M15.243 Reverse Engineering Summary
