@@ -1,3 +1,29 @@
+# 2026-11-10 — Milestone M16.30: F858 PROJECTILE SLOT REUSE FORENSICS, FULL ENTITY-SLOT LIFECYCLE, AND LONG-RANGE CONTINUOUS SAT CONVERGENCE — F858 SAT Forensics (Byte Offset 0 / sat_cnt=0 Logic-Only VDP DMA Skipped); Complete Slot 5 Lifecycle Trace (F795 Lethal Hit -> F841 Ground Collapse End -> F842 Despawn/Slot Free -> F858 Reclaim by Guard 11 Throw Windup via ROM 0x00DA72 as Type 0x002E -> F886 Projectile Flight Launch as Type 0x002C State 0x0C -> F887 First Render Frame with sat_cnt=29); ROM Allocator & Caller Disassembly (0x00DA72/0x00DAA0/0x0255D8/0x02569E/0x0256A6); Extended Continuous Simulation SAT Parity F776..F885 (110 Frames, 55 Cleared Logic + 55 Active Presentation); 204/216 Tests Passing (12 Historical BizHawk Failures Preserved); <=500 Line File Limit Preserved; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `d6472f10439f95b30c25bf144f8caea1711aa1a1`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Pinned Town Journal SHA256 `bfecaef539aedb30d2d9dc7e3c1337a3c441cc3cc05e3aed59095d78f3a4edde`.
+  * F858 Forensics & Logic Frame Clearing:
+    - Identified root cause of F858 SAT divergence: on even logic ticks (`tick = 2475`), Genesis hardware skips VDP SAT DMA, setting active DMA sprite count `sat_cnt = 0`. Uncorrected native left 26 sprites from F857 in `sat_pipeline_`.
+    - Fixed in `StandaloneGameSimulation::step_frame`: on non-SAT steps in Town, `sat_pipeline_.reset_frame()` and `finalize_frame()` clear active sprites without modifying baseline VRAM, matching `sat_cnt = 0`.
+  * Complete Slot 5 Lifecycle:
+    - Traced full lifecycle: F795 lethal hit -> F841 collapse end -> F842 slot freed -> F858 reclaimed by Guard 11 throw windup via ROM `$00DA72` allocator.
+    - Initialized as Type `0x002E` with `ai_timer = 60`, `flags36 = 2` (hidden), `frame_dir = 0xFFFF` (emits 0 sprites across F858..F885).
+    - Guard 11 stores linked slot RAM pointer offset `940` (`0x03AC` = `$FF2084 - $FF1CD8`) at `$9E(a6)`.
+    - At F886, Guard 11 reaches launch keyframe (`anim_key_off == 0x000C`), transforming Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, calculated directional velocity toward Ali.
+    - At F887 (presentation tick 2504), Slot 5 emits active SAT pieces for the first time (`sat_cnt = 29`, `fdir = 45`).
+  * ROM Allocator Disassembly:
+    - Proved ROM `$00DA72` allocator scans from entity base `$FF1CD8` with stride `0xBC` (188 bytes), writes allocated type at `$00DAA0` (`move.w #$002E, 0(a6)`).
+    - Proved Guard 11 caller `$0255D8` invokes allocator at `$02569E` (`jsr $00DA72.l`) and stores linked offset at `$0256A6` (`move.w d0, $9E(a6)`).
+  * Dual-Toolchain Verification & Governance:
+    - Implemented `tests/m16_30_projectile_slot_reuse_test.cpp` and registered in `cmake/project_tests.cmake`.
+    - 204/216 tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved without suppression).
+    - All 953 governed files <= 500 lines verified via `cmake -P tests/check_file_limits.cmake`.
+    - Zero emulator linkage in `oasis.exe`; `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.22: AUTHENTIC BEACH-TO-TOWN GAMEPLAY, ENEMY AI MOTION, COMBAT SAT RECONSTRUCTION, AND SECOND ENTITY DAMAGE QUALIFICATION — Beach-to-Town F597 Trigger & Screen(1,3) `0x02E88A` Manifest (`town_scene_resource_manifest_v1.json`, 7/7 Real `0x003820` ROM Decompressions SHA-256 Exact); Entity `0x002C` Solid-Body Repulsion Root Cause (`0x00A0C8..0x00A188`) & Full 81-Frame Death Lifecycle (`F775..F855`, `town_death_lifecycle_f775_855.json`, Gravity/Apex `0x0000FFFF`/Y=136/State `0x08`/Release F843); Native Town Combat SAT (`town_combat_sat.cpp`) + Structural Diff; Live Combat Sound Command Ownership & Dispatch (`0x00700217`/`0x00800207`/`0x00800216`/`0x0080035B`/`0x0080035A`); Entity `0x006E` `CONTROLLED_CPU_ENTRY` Qualification (`entity_006e_controlled_oracle.json`, `0x24` Hurt Anim Fix); Cross-Track `0x00E682` 44-Caller Reconciliation (`40 JSR + 4 BSR`); Dual-Toolchain Verification & <=500 Line Governance — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

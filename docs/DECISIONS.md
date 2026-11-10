@@ -1,3 +1,29 @@
+# ADR-20261110-M16-30-PROJECTILE-SLOT-REUSE-FORENSICS-FULL-ENTITY-SLOT-LIFECYCLE-AND-LONG-RANGE-CONTINUOUS-SAT-CONVERGENCE — F858 SAT Byte Forensics (Even Logic-Tick 0 VDP DMA Emission), Complete Slot 5 Lifecycle Trace (F795 Lethal Damage -> F842 Despawn -> F858 Reclaim via ROM 0x00DA72 as Type 0x002E -> F886 Launch into Type 0x002C Flight -> F887 First Render Frame), Authentic Allocator Disassembly (0x00DA72/0x0255D8/0x02569E/0x0256A6), Continuous Simulation SAT Parity Extended Across 110 Frames (F776..F885), 204/216 Tests Passing (12 Historical BizHawk Failures Preserved), Zero Emulator Linkage, <=500 Line Source Limit Preserved
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.29 extended continuous active SAT parity through F857 (83 consecutive frames), but identified a divergence at F858 when Slot 5 was reclaimed.
+2. In Genesis hardware and Beyond Oasis VDP architecture, VDP SAT DMA is skipped on logic-only frames (even frames in Town, odd `tick_counter_`), setting active DMA sprite count `sat_cnt = 0`. Uncorrected native simulation retained previous active sprites in the pipeline.
+3. Full entity lifecycle for Slot 5 (reclaimed by Guard 11 throw windup as entity type `0x002E` at F858 and launched into projectile flight `0x002C` at F886) needed exact ROM disassembly and simulation verification.
+
+**Decisions:**
+1. **F858 SAT Forensics & Logic Frame Clearing (`src/game/standalone_game_simulation.cpp`):**
+   - Verified that on even Town frames (`(tick_counter_ % 2U) != 0U`), hardware skips VDP SAT DMA (`sat_cnt = 0`).
+   - In `StandaloneGameSimulation::step_frame`, on non-SAT steps in Town, `sat_pipeline_.reset_frame()` and `sat_pipeline_.finalize_frame()` clear active sprites without modifying baseline VRAM, ensuring `active_chain().empty()` (`sat_cnt = 0`).
+2. **Complete Slot 5 Lifecycle & Guard 11 Interaction:**
+   - Traced complete lifecycle: F795 lethal hit -> F841 collapse end -> F842 slot freed -> F858 reclaimed by Guard 11 throw windup via ROM `$00DA72` allocator.
+   - Initialized as Type `0x002E` with `ai_timer = 60`, `flags36 = 2` (hidden), `frame_dir = 0xFFFF` (emits 0 sprites across F858..F885).
+   - Guard 11 stores linked slot RAM pointer offset `940` (`0x03AC` = `$FF2084 - $FF1CD8`) at `$9E(a6)`.
+   - At F886, Guard 11 reaches launch keyframe (`anim_key_off == 0x000C`), transforming Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, calculated directional velocity toward Ali.
+   - At F887 (presentation tick 2504), Slot 5 emits active SAT pieces for the first time (`sat_cnt = 29`, `fdir = 45`).
+3. **ROM Allocator & Caller Disassembly Verification:**
+   - Proved ROM `$00DA72` allocator scans from entity base `$FF1CD8` with stride `0xBC` (188 bytes), writes allocated type at `$00DAA0` (`move.w #$002E, 0(a6)`).
+   - Proved Guard 11 caller `$0255D8` invokes allocator at `$02569E` (`jsr $00DA72.l`) and stores linked offset at `$0256A6` (`move.w d0, $9E(a6)`).
+4. **Autonomous Extended Continuous Active SAT Parity:**
+   - Extended continuous autonomous simulation parity across 110 frames (F776..F885): 55 logic frames with `sat_cnt = 0` and 55 presentation frames with authentic active sprite emission.
+   - All 204 passing C++ tests verified in MinGW Release and MSVC Debug; 12 historical BizHawk failures preserved without suppression; all source files <= 500 lines.
+
 # ADR-20261110-M16-22-TOWN-SCENE-ENEMY-AI-DEATH-LIFECYCLE-COMBAT-SAT-SOUND-006E — Authentic Beach-to-Town Transition (F597 `MAP_ID=0x003D->0x005A`, Screen(1,3) `0x02E88A`), Real ROM `0x003820` Town Decompression Manifest (`town_scene_resource_manifest_v1.json`, 7/7 SHA-256 Bit-Exact), Entity `0x002C` F777/F781 Solid-Body Push Root Cause (`0x00A0C8..0x00A188`) and Full F775..F855 Knockback/Gravity/Landing/Slot-Release Lifecycle (`town_death_lifecycle_f775_855.json`), Structural Town SAT Pipeline (`town_combat_sat.cpp`), Combat Sound Command Ownership & Parity (`SoundCommandQueue`), Entity `0x006E` `CONTROLLED_CPU_ENTRY` Qualification (`entity_006e_controlled_oracle.json`, Fixing `0x24` Hurt Anim), Cross-Track `0x00E682` 44-Caller Reconciliation (`40 JSR + 4 BSR`), Zero Emulator Linkage, <=500 Line Compliance
 **Status:** Accepted
 **Date:** 2026-11-10

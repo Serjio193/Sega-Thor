@@ -30,7 +30,8 @@ void NativeAttackController::update(player::PlayerState& player,
         is_attacking_ = true;
         sound_command_ = 0x0218U; // Authentic attack sound (routine 0x00632A)
 
-        if (player.movement_state == 4U || controller.pressed(core::Button::Up) || controller.pressed(core::Button::Left)) {
+        if ((!allow_experimental_combat_ && player.movement_state == 4U) ||
+            controller.pressed(core::Button::Up) || controller.pressed(core::Button::Left)) {
             player.movement_state = 0x36U; // Combo attack
             attack_timer_ = 32U;
         } else if (allow_experimental_combat_) {

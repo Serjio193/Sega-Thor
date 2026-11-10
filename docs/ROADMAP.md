@@ -1,3 +1,22 @@
+# M16.30 F858 Projectile Slot Reuse Forensics, Full Entity-Slot Lifecycle, and Long-Range Continuous SAT Convergence — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- F858 First-Divergence SAT Forensics & Logic Frame Clearing (`src/game/standalone_game_simulation.cpp`):
+  * Discovered that Beyond Oasis and Genesis VDP hardware skip VDP SAT DMA on logic-only frames (even frames in Town, odd `tick_counter_`), setting `sat_cnt = 0`.
+  * Updated `StandaloneGameSimulation::step_frame` to clear active sprite pipeline records (`sat_pipeline_.reset_frame()` + `finalize_frame()`) without altering VRAM, ensuring `active_chain().empty()` (`sat_cnt = 0`) on all logic frames.
+- Full Entity-Slot Lifecycle & Slot 5 Reclaim Provenance:
+  * Traced complete Slot 5 lifecycle: F795 lethal damage -> F841 collapse animation end -> F842 slot freed -> F858 reclaimed by Guard 11 throw windup via ROM `$00DA72` allocator.
+  * Reclaimed as Type `0x002E` (46 decimal) with `ai_timer = 60`, `flags36 = 2` (hidden), `frame_dir = 0xFFFF` (emits 0 sprites across F858..F885).
+  * Linked to Guard 11 via RAM pointer offset `940` (`0x03AC` = `$FF2084 - $FF1CD8`) stored at `$9E(a6)`.
+  * Launched at F886 when Guard 11 reaches keyframe `0x000C`, transforming Slot 5 into live projectile Type `0x002C`, State `0x0C` (flight), `world_z = 24`, calculated directional velocity toward Ali.
+  * Rendered at F887 (presentation tick 2504, `sat_cnt = 29`, `fdir = 45`) for the first time.
+- ROM Allocator & Caller Disassembly Verification:
+  * Verified ROM `$00DA72` allocator (`0x00DA72: 48E7`, `0x00DA76: 4DF9 00FF 1CD8`, `0x00DAA0: 3D7C 002E 0000`).
+  * Verified Guard 11 caller `$0255D8` (`0x02569E: 4EB9 0000 DA72`, `0x0256A6: 3D40 009E`).
+- Extended Continuous Active SAT Parity:
+  * Continuous autonomous replay extended across 110 frames (F776..F885): 55 logic frames with `sat_cnt = 0` and 55 presentation frames with authentic active sprite count.
+  * 204/216 C++ tests passing in MinGW Release and MSVC Debug (12 historical BizHawk failures preserved); all files <= 500 lines; zero emulator linkage in `oasis.exe`.
+
 # M16.22 Authentic Beach-to-Town Gameplay, Enemy AI Motion, Combat SAT Reconstruction, and Second Entity Damage Qualification — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
