@@ -1,3 +1,28 @@
+# M16.19 Authentic Enemy Hit Differential, Collision Geometry Reconciliation, and First Complete Combat Encounter — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- 3D Axis-Aligned Bounding Box (AABB) Collision Geometry Reconciliation (ROM 0x00BCBA..0x00BE64):
+  * Mathematically reconciled why Player at (263, 231) facing Up and Enemy Guard at (256, 184) intersect despite 47.52px Euclidean separation.
+  * Proved weapon hitbox reaches upward by 32px ($Y \in [199, 230]$) and Enemy hurtbox extends downward by 28px ($Y \in [156, 212]$), overlapping in $Y \in [199, 212]$ (14px).
+  * Overlap verified across all three dimensions ($X \in [247, 270]$ inside $[241, 271]$, $Z \in [0, 16]$ inside $[0, 32]$).
+- Routine 0x00E682 Conclusive Qualification:
+  * Disassembled routine 0x00E682 byte-by-byte: verified `entity_timer_tick_and_yield` decrements action timer `$82(a6)`, advances animation step `$2e(a6)`, and pops stack via `addq.l #4, a7; rts` to yield execution. Refuted earlier labels of camera viewport or collision detection.
+- Entity Slot Architecture Confirmed:
+  * Established entity slot stride is exactly `0xBC` (188 bytes) per entity slot (`lea.l $bc(a0), a0`).
+  * Mapped WRAM entity structure: `$00` Type ID, `$04` State, `$08` X, `$0C` Y, `$10` Z, `$16` Facing, `$2A` Anim ID, `$2E` Anim Step, `$38` bit 3 Invulnerability, `$42` Half-Width, `$44` Half-Depth, `$4A` Height, `$82` Action Timer, `$83` Hit Flash, `$86` Damage Mailbox, `$88` Max HP, `$8A` Current HP, `$92` Defense, `$AA` Saved State, `$AC` Saved Anim.
+- Dedicated Frozen Enemy Hit Oracle:
+  * Captured 41 frames (Frames 1900..1940) from `canonical_beach_frame3600.state`.
+  * Generated and frozen `data/standalone-fixtures/enemy_hit_oracle.json` (SHA256: `637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8`).
+- Damage Arithmetic & State Reaction Mechanics:
+  * Verified formula `final_damage = std::max(1, incoming_damage - defense)`, `hp = std::max(0, hp - final_damage)`.
+  * Verified hurt reaction state 0x0A, hurt animation 0x08, invulnerability bit 3 set, previous state/anim saved at `$aa` / `$ac`, hit sound 0x8004D9 dispatched, recovery back to previous state.
+- Natural Gameplay Progression Verification:
+  * Verified that on console boot and Title Screen / New Game, demo flag `$FF1997 == 0x00` naturally, confirming full interactive player control without RAM patching.
+- Complete Test Suite & Governance:
+  * Audited 12 historical M12 tests in full CTest (missing BizHawk Python harness).
+  * 100% pass across all 52 native C++ standalone tests in both MinGW Release and MSVC Debug.
+  * 100% compliance with 500-line source file limit. Zero emulator linkage in `oasis.exe`.
+
 # M16.18 Authentic Attack Semantics Reconciliation, Natural Free-Control Validation, and First Real Enemy Contact Oracle — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

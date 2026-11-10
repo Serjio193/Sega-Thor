@@ -1,3 +1,36 @@
+# ADR-20261110-M16-19-AUTHENTIC-ENEMY-HIT-DIFFERENTIAL-COLLISION-GEOMETRY-RECONCILIATION-AND-FIRST-COMPLETE-COMBAT-ENCOUNTER — Forensic Resolution of 3D Axis-Aligned Bounding Box (AABB) Collision Geometry (ROM 0x00BCBA..0x00BE64); Mathematical Reconciliation of 47.52px Euclidean Center Separation Overlap; Audit and Qualification of Routine 0x00E682 as entity_timer_tick_and_yield (NOT Camera Viewport and NOT Collision); Entity Slot Architecture Confirmed at 0xBC (188 bytes); Generation and Freezing of Dedicated Enemy Hit Oracle (41 Frames, enemy_hit_oracle.json, SHA256 637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8); Proof of Natural Interactive Gameplay Entry (Demo Flag $FF1997 Naturally 0x00 on Boot/New Game); Audit of 12 Historical M12 Tests (Missing BizHawk Python Harness); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.18 identified an enemy contact event at Frame 1914 where Player at (263, 231) and Enemy Guard at (256, 184) were separated by 47.52 pixels Euclidean distance, conflicting with an earlier assumption of a center-to-center distance <= 32 pixels.
+2. Routine 0x00E682 suffered contradictory documentation across milestones: hybrid labeled it camera viewport update, while M16.18 labeled it collision detection.
+3. Authentic enemy damage, invulnerability bit, hurt state/animation, and recovery timing required exact M68K disassembly verification and independent oracle freezing.
+4. Natural gameplay progression from Title Screen / New Game needed verification to ensure player control is naturally active without RAM modification.
+
+**Decisions:**
+1. **Collision Geometry Reconciled (3D Axis-Aligned Bounding Box, ROM 0x00BCBA..0x00BE64):**
+   - Disassembly revealed Beyond Oasis uses an authentic 3D AABB intersection check, NOT a Euclidean circle check:
+     * Weapon Hitbox: `[Player.X + x_min, Player.X + x_max] x [Player.Y + y_min, Player.Y + y_max] x [Player.Z + z_min, Player.Z + z_max]`.
+     * Target Hurtbox: `[Enemy.X - half_w, Enemy.X + half_w] x [Enemy.Y - half_d, Enemy.Y + half_d] x [Enemy.Z, Enemy.Z + height]`.
+   - For Player at (263, 231) facing Up, weapon hitbox extends upward by 32 pixels ($Y \in [199, 230]$).
+   - Enemy Guard has `half_depth = 28` (`$44(a0)`), extending downward by 28 pixels ($Y \in [156, 212]$).
+   - The vertical intervals overlap in `[199, 212]` (14 pixels). Total forward reach is $32 + 28 = 60$ pixels, easily encompassing the 47-pixel vertical separation ($\Delta Y = 47 \le 60$).
+2. **Routine 0x00E682 Identity Audited:**
+   - Disassembled 0x00E682: `bclr #6, $36(a6); move.b $9d(a6), d0; bne.w $e6aa; move.b $82(a6), d0; bne.w $e69a; rts; $e69a: addq.w #1, $2e(a6); subq.w #1, d0; move.b d0, $82(a6); addq.l #4, a7; rts`.
+   - Conclusively qualified as `entity_timer_tick_and_yield`: decrements action timer `$82(a6)`, advances animation step `$2e(a6)`, and pops caller's stack frame via `addq.l #4, a7; rts` to yield execution. It is neither camera viewport nor collision detection.
+3. **Entity Slot Architecture & Combat Forensics:**
+   - Confirmed entity slot stride is exactly `0xBC` (188 bytes) per entity (routine 0x00BE60: `lea.l $bc(a0), a0`).
+   - Enemy WRAM offsets: `$00` = Type ID, `$04` = State, `$08` = X, `$0C` = Y, `$10` = Z, `$16` = Facing, `$2A` = Anim ID, `$2E` = Anim Step, `$38` bit 3 = Invulnerability, `$42` = Half-Width, `$44` = Half-Depth, `$4A` = Height, `$82` = Action Timer, `$83` = Hit Flash, `$86` = Damage Mailbox, `$88` = Max HP, `$8A` = Current HP, `$92` = Defense, `$AA` = Saved State, `$AC` = Saved Anim.
+   - Damage arithmetic: `final_damage = std::max(1, incoming_damage - defense)`, `hp = std::max(0, hp - final_damage)`. On hit, sets hurt state 0x0A, hurt anim 0x08, sets invulnerability bit 3, saves previous state/anim, dispatches sound 0x8004D9. On recovery, restores previous state/anim and clears invulnerability bit.
+4. **Enemy Hit Oracle Frozen (enemy_hit_oracle.json):**
+   - Captured 41 frames (Frames 1900..1940) of the combat encounter from `canonical_beach_frame3600.state`.
+   - Frozen fixture `data/standalone-fixtures/enemy_hit_oracle.json` with SHA256: `637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8`.
+5. **Natural Gameplay Progression Verified:**
+   - Proved that upon normal console power-on and New Game / File Select, demo flag `$FF1997` is naturally `0x00`. Free interactive control requires zero RAM patching in natural gameplay.
+6. **Audit of 12 Failing Historical M12 Tests:**
+   - Full CTest audit demonstrated that the 12 failing tests (out of 206) are historical M12 Python scripts requiring external BizHawk harnesses (`live_forward_scaling_stream`, missing test scripts). All 52 native C++ standalone tests pass 100%.
+
 # ADR-20261109-M16-18-AUTHENTIC-ATTACK-SEMANTICS-RECONCILIATION-NATURAL-FREE-CONTROL-VALIDATION-AND-FIRST-REAL-ENEMY-CONTACT-ORACLE — Reconciliation of Original Attack State and Animation IDs (0x30/0x36 vs 0x0A/0x3A vs 0x08/0x0A); Formal Audit of Checkpoint Provenance (RESEARCH_MODIFIED Flag Modification 0xFF1997); Independence Audit of Attack Oracle (34 Frames, beach_attack_oracle.json); Natural Free-Control Progression Analysis; First Authentic Enemy Contact & Collision Forensics (Routines 0x007852, 0x00E6BA, 0x01F41C, 0x01F450); Memory Field Architecture Discovered (Entity Slot Size 0x2F0 Bytes, HP 0x8A, Defense 0x92, Damage Mailbox 0x86, Hurt State 0x0A, Hurt Anim 0x08, Sound 0x8004D9); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
 **Status:** Accepted
 **Date:** 2026-11-09

@@ -1,3 +1,35 @@
+# 2026-11-10 — Milestone M16.19: AUTHENTIC ENEMY HIT DIFFERENTIAL, COLLISION GEOMETRY RECONCILIATION, AND FIRST COMPLETE COMBAT ENCOUNTER — Forensic Resolution of 3D Axis-Aligned Bounding Box (AABB) Collision Geometry (ROM 0x00BCBA..0x00BE64); Mathematical Reconciliation of 47.52px Euclidean Center Separation Overlap; Audit and Qualification of Routine 0x00E682 as entity_timer_tick_and_yield (NOT Camera Viewport and NOT Collision); Entity Slot Architecture Confirmed at 0xBC (188 bytes); Generation and Freezing of Dedicated Enemy Hit Oracle (41 Frames, enemy_hit_oracle.json, SHA256 637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8); Proof of Natural Interactive Gameplay Entry (Demo Flag $FF1997 Naturally 0x00 on Boot/New Game); Audit of 12 Historical M12 Tests (Missing BizHawk Python Harness); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Verified M16.18 commit `4ebd6a341f0521bdeefff66eb8adb0a38dfedbeb`.
+    - Verified ROM SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Verified GPGX core SHA256 `CA4BE3049E56B1FDFBA9A7C727BEBBDC645B3D50203D635A468048BA81165134`.
+    - Verified attack oracle SHA256 `AA03298383F2CFA11F0DA3BD42EA298EAD60CD5A5C46734DF00A4452D239B713`.
+    - Verified checkpoint SHA256 `21059015C9E496A5DC84D26B97C6546DD95856F06E6C3C83E00A2EA9D70089C9`.
+  * Phase 1 — Combat Event Provenance:
+    - Isolated Frame 1914 enemy contact from `canonical_beach_frame3600.state`.
+    - Recorded exact positions, states, anim IDs, and steps for Player and Enemy Guard.
+  * Phase 2 — Collision Geometry Reconciliation:
+    - Disassembled routines 0x00BCBA..0x00BDDC and 0x00BDE0..0x00BE60.
+    - Proved collision detection uses 3D Axis-Aligned Bounding Box (AABB) checks.
+    - Reconciled 47.52px separation: Sword reaches up by 32px ($Y \in [199, 230]$), Enemy hurtbox reaches down by 28px ($Y \in [156, 212]$), overlapping in $Y \in [199, 212]$ (14px).
+  * Phase 3 — Routine 0x00E682 Identity Audit:
+    - Proved 0x00E682 is `entity_timer_tick_and_yield` (action timer decrement, anim step advance, stack pop to yield frame). Neither camera viewport nor collision detection.
+  * Phase 4 — Frozen Enemy Hit Oracle:
+    - Generated `data/standalone-fixtures/enemy_hit_oracle.json` (41 frames, SHA256: `637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8`).
+  * Phase 5 & 6 — Damage Arithmetic & State Reaction:
+    - Verified formula `final_damage = std::max(1, incoming_damage - defense)`, `hp = std::max(0, hp - final_damage)`.
+    - Verified hurt reaction state 0x0A, hurt anim 0x08, invulnerability bit 3 set, previous state/anim saved, sound 0x8004D9 dispatched, recovery back to previous state.
+  * Phase 7 & 8 — Native Combat & Differential Tests:
+    - Updated `NativeEntity`, `NativeAttackController`, and `attack_journal_differential_test.cpp`.
+  * Phase 9 & 10 — Natural Gameplay Progression:
+    - Verified that on console boot, demo flag `$FF1997 == 0x00` naturally, confirming full interactive player control without RAM patching.
+  * Phase 11 — Graphics Regression Check:
+    - Verified 30-frame tolerant RGB run, alternative camera (60/60), scroll (60/60), SAT (32/60), holdout (61/61).
+  * Phase 12 — Dual-Toolchain & Governance:
+    - Audited 12 historical M12 tests in full CTest. 100% pass across 52 native C++ standalone tests in MinGW Release and MSVC Debug. All files <= 500 lines. Zero emulator linkage.
+
 # 2026-11-09 — Milestone M16.18: AUTHENTIC ATTACK SEMANTICS RECONCILIATION, NATURAL FREE-CONTROL VALIDATION, AND FIRST REAL ENEMY CONTACT ORACLE — Reconciliation of Original Attack State and Animation IDs (0x30/0x36 vs 0x0A/0x3A vs 0x08/0x0A); Formal Audit of Checkpoint Provenance (RESEARCH_MODIFIED Flag Modification 0xFF1997); Independence Audit of Attack Oracle (34 Frames, beach_attack_oracle.json); Natural Free-Control Progression Analysis; First Authentic Enemy Contact & Collision Forensics (Routines 0x007852, 0x00E6BA, 0x01F41C, 0x01F450); Memory Field Architecture Discovered (Entity Slot Size 0x2F0 Bytes, HP 0x8A, Defense 0x92, Damage Mailbox 0x86, Hurt State 0x0A, Hurt Anim 0x08, Sound 0x8004D9); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
