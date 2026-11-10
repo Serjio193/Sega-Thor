@@ -5922,3 +5922,12 @@ full-game parity and remaining subsystem coverage. See
 - Achieved **6/6 (100.00%) Active Chain Byte-Exact Parity** (192/192 active sprites match byte-for-byte across reference frames 775, 777, 789, 795, 797, 815).
 - Implemented `tests/m16_25_weapon_particles_sat_test.cpp` (`oasis_m16_25_weapon_particles_sat`), passing all assertions in both MinGW Release and MSVC Debug.
 - Maintained zero emulator linkage in `oasis.exe`, strict hybrid isolation, and all governed files `<= 500` lines.
+
+# M16.26 — Continuous Town Ambush, Multi-Enemy AI, Projectile Combat, and Full SAT State Qualification — PASS
+- Established three-layer qualification framework separating Layer A (Original GPGX CPU reference), Layer B (State-fed Renderer Differential), and Layer C (Continuous Native Simulation Differential without per-frame state injection).
+- Audited 521-frame multi-enemy journal (`town_multi_enemy_encounter_m16_23.json`) and 81-frame combat/death lifecycle trace (`town_death_lifecycle_f775_855.json`), confirming canonical attract-mode provenance without RAM modification.
+- Qualified authentic rooftop ambush: 6 guards (slots 13..18) at `z = 256` with `sub_mode = 4` at `0x025578`, proximity activation `dist <= 48` at `0x0255D8`, and 54-frame (27 ticks) parabolic descent under `-0x0000C000` gravity to `z = 0` landing recovery.
+- Qualified projectile combat: slot 19 spawn at `0x0256B0`, 3D AABB collision at `0x00DF60` (`dx <= 11 && dy <= 11 && z in [player_z, player_z + 40]`), player hit at F808 (+2 damage, State 0x0C -> 0x0E).
+- Resolved SAT persistence reality: proved ROM `0x00A77E` clears link of last active sprite and exits, while ROM `0x000976` DMAs only `active_count * 8` bytes to VRAM, leaving unlinked VRAM entries stale.
+- Implemented `tests/m16_26_continuous_ambush_combat_test.cpp` (`oasis_m16_26_continuous_ambush_combat`) with mutation detectors for activation distance, projectile vertical gating, and lethal knockback.
+- Built and verified passing in MinGW Release and MSVC Debug. Governed files strictly `<= 500` lines. Zero emulator linkage.

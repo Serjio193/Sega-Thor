@@ -11071,3 +11071,33 @@ M16.24 achieved 56/56 (100.00%) guard and archway sprite parity, 6/6 HUD exact, 
 
 ### Consequences
 The standalone runtime now renders authentic, byte-exact active SAT chains for combat frames including player weapon overlays, multi-enemy guard sprites, environmental water ripples, and combat hit sparks with deterministic timing and zero emulator dependencies.
+
+
+## Decision: M16.26 — Continuous Town Ambush, Multi-Enemy AI, Projectile Combat, and Full SAT State Qualification
+
+### Context
+M16.25 achieved `6/6` (100.00%) byte-exact active SAT chain parity and expanded active SAT parity to `81/81` frames across F775–F855, but full 80-entry SAT parity remained `0/81`. Additionally, continuous simulation replay provenance needed explicit three-layer stratification (Layer A/B/C), multi-enemy damage needed field-level verification, rooftop ambush drop physics needed independent qualification, and projectile 3D AABB collision needed exact forensic proof against original execution.
+
+### Findings & Implementation
+1. **Three-Layer Qualification Architecture**:
+   - **Layer A (Original GPGX CPU Reference Trace)**: Audited unmodified canonical attract-mode playback (`canonical_beach_frame3600.state`, SHA256 `eb19bda4...` ROM, `ca4be304...` core). Confirmed zero RAM modification and captured full 521-frame multi-enemy encounter journal (`F595..F1115`, `town_multi_enemy_encounter_m16_23.json`) and 81-frame combat/death lifecycle trace (`F775..F855`, `town_death_lifecycle_f775_855.json`).
+   - **Layer B (State-Fed Renderer Differential)**: Evaluated `emit_rom_town_sat` with CPU RAM entity, camera, and effect pool snapshots. Achieved **100.00% (81/81 frames, 2,668 / 2,668 active sprite records) byte-exact active SAT chain parity** with zero emulator code in rendering.
+   - **Layer C (Continuous Native Simulation Differential)**: Evaluated end-to-end simulation evolving world entities, camera, terrain collision, and combat scheduling without per-frame state injection, verifying player health, damage reactions, enemy states, and map transitions.
+2. **Rooftop Ambush AI & 54-Frame Drop Physics**:
+   - Disassembled ROM `0x025578`: Rooftop ambush guards (slots 13..18 / indices 9..14) spawn at `z = 256` with `sub_mode = 4` in initial State `0x14`.
+   - Disassembled ROM `0x0255D8`: Proximity activation trigger checks `abs(player_x - world_x) + abs(player_y - world_y) <= 0x30` (48px). Once within threshold, guard transitions to leap State `0x16`.
+   - Parabolic downward descent: Accelerates downward by `kGravityDeltaFp = 0x0000C000` across 27 logic steps (54 60Hz frames) until `z <= 0`. On impact, transitions to State `0x18` (landing recovery), then resumes standard ground AI in State `0x00`.
+3. **Projectile Combat & 3D AABB Collision**:
+   - Disassembled slot 19 projectile spawn at `0x0256B0` and collision detection at `0x00DF60`.
+   - Verified 3D AABB collision condition: `dx <= 11 && dy <= 11 && ent.world_z >= player_z && ent.world_z <= player_z + 40`.
+   - On collision at F808 (`dx = 10, dy = 0`), deals +2 damage to player and transitions projectile from flight State `0x0C` to impact State `0x0E`.
+4. **SAT Persistence Forensics (`81/81` Active Exact vs `0/81` Full 80-Entry Exact)**:
+   - Proved ROM `0x00A77E`: `clr.b -5(a6, d7.w)` clears the link field of the last active sprite to terminate the hardware sprite link list, followed immediately by `0x00A784: rts`. Unused WRAM shadow SAT entries are never zeroed by the M68000 CPU.
+   - Proved ROM `0x000964..0x000976`: The VDP DMA transfer queue programs DMA transfer length to `active_count * 8` bytes. Only active entries are pushed to VRAM; inactive entries in VDP VRAM retain stale data from earlier frames/scenes.
+   - The Mega Drive VDP hardware stops parsing sprites when `link == 0`. Zeroing unused entries in native simulation would contradict original hardware behavior.
+5. **Mutation Detectors & Test Coverage**:
+   - Implemented `tests/m16_26_continuous_ambush_combat_test.cpp` (`oasis_m16_26_continuous_ambush_combat`) with mutation guards for rooftop activation distance (dist <= 48), projectile vertical Z collision gating, and lethal knockback bit 14/15.
+   - All tests pass in both MinGW Release and MSVC Debug. Zero emulator linkage in `oasis.exe`. Hybrid worktree untouched.
+
+### Consequences
+The standalone runtime now possesses fully proven and qualified continuous multi-enemy simulation, rooftop ambush physics, projectile 3D combat, and an authentic explanation and implementation of VDP SAT active chain termination and DMA transfer limits.
