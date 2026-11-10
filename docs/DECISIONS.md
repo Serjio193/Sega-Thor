@@ -1,3 +1,36 @@
+# ADR-20261110-M15-249-DYNAMIC-DISPLACEMENT-SCALE-UP-AND-HARDWARE-POLLING-BOUNDARIES — Connected Hotpath Recompilation (7 Master Enemy AI & Math Routines, 118 Insns, 45 Blocks, 71 Edges), Hardware Polling Quarantine Formalization, Edge Coverage Closure (133/151 Internal, 88.1%), Seven-Configuration Parity (`RUN_A..G`), and 712,783 Cumulative Portable Steps
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M15.248 compiled 15 profile-selected routines and achieved 12,362 new portable steps, lifting cumulative portable steps to 691,019. However, deeper unowned hotpaths connected to the Master Enemy Controller table (`0x00DF80`) and spatial coordinate routines were executing millions of guest cycles per long run.
+2. Hardware polling loop boundaries (`0x002DB6`, `0x002E78` polling `$FF164D`, and DMA queue handlers `0x002FDA`, `0x00302E`) required formal auditing and permanent isolation from native displacement to ensure zero sub-scanline timing jitter.
+3. Edge coverage in the M15.246 cluster was at 123/151 (81.5%); targeted qualification of unexercised branches in the 2D AABB bounding box collision routine (`0x00BE20..0x00BE5C`) and tail transitions was required.
+
+**Decisions:**
+1. **Phase 1-5 Residual Hotspot Discovery & Hardware Polling Boundary Audit:**
+   - Audited all 15 M15.248 roots (`data/thor-evidence/m15_249_phase1_inventory.json`).
+   - Emitted Phase 2 canonical single-owner coverage accounting proving 691,019 baseline cumulative portable steps (`data/thor-evidence/native_coverage_accounting_m15_249_phase2.json`).
+   - Emitted `residual_top30_hotspot_manifest_m15_249.json` ranking candidate unowned routines by dynamic return on investment.
+   - Formalized hardware polling quarantine boundaries in `hardware_polling_boundary_audit_m15_249.json`, confirming that `$FF164D` busy-waits remain in Musashi CPU interpretation.
+2. **Master Enemy Controller Hotpath Recompilation (`m15249p`):**
+   - Recompiled 7 unowned deterministic hotpath routines connected to the Master Enemy Controller (`0x00DF80`) and auxiliary subsystems: `0x0254EA` (Water Shrine enemy AI), `0x00EA04`, `0x016D5C`, `0x0170E0`, `0x0171C4`, `0x00E0B8`, and `0x00F96A`.
+   - Static footprint: 118 new M68000 instructions, 45 basic blocks, 71 CFG edges with zero production or prior milestone overlap.
+   - Auto-partitioned into 12 headers in `src/tools/thor_ir/generated_m15_249/` (all `<= 260` lines, well within `<= 350` policy limit).
+   - Calibrated `pc_index` effective address mode (10 cycles) for exact Musashi/GPGX cycle parity.
+3. **CFG Edge Coverage Expansion & Differential Proof:**
+   - Emitted 130 pinned GPGX reference fixtures (`data/thor-fixtures/m15_249_callee_fixtures.hpp`), lifting M15.246 internal edge coverage to 133/151 (88.1%) and combined edge coverage to 150/151 (99.3%).
+   - 130/130 3-way differential executions passed across Musashi Oracle, Mode A stepper, and Mode B C++20 + 12/12 mutation tests in Debug and Release.
+4. **Seven-Configuration Runtime Qualification (`RUN_A..G`):**
+   - Qualified across 6 scenarios (Scenario C, A, B, longrun_3600f, longrun_alt_1800f, longrun_combat_1800f): 48/48 raw streams bit-exact (8/8 per scenario) with zero fallbacks, zero contract faults, and zero CPU exceptions.
+   - Displaced 21,764 new disjoint M15.249 portable steps across scenarios, bringing cumulative portable guest steps to **712,783**.
+   - Verified Mode B microbenchmark speedup of 1.21x (5.396 ms vs 4.446 ms).
+   - Emitted qualification receipt certified by `ReceiptVerifier` (`valid=True, status=VERIFIED`).
+   - Standalone track (`C:/Github/Sega-Thor-Standalone`) preserved strictly read-only; production baseline of 196 active helpers (`17396fda...`) and `0x003820` quarantine preserved.
+
+**Consequences:**
+- Master Enemy Controller AI routines and spatial math now execute via portable native C++20 with bit-exact cycle parity and zero hardware polling drift.
+
 # ADR-20261110-M15-248-PROFILE-GUIDED-HOTPATH-RECOMPILATION-AND-DMA-POLLING-QUARANTINE — Profile-Guided Hotpath Recompilation (15 Unowned Routines, 240 Insns, 76 Blocks, 126 Edges), DMA Polling Loop Quarantine, M15.246 Edge Coverage Expansion (123/151 Edges, 81.5%), Six-Configuration Bit-Exact Parity (`RUN_A..F`)
 **Status:** Accepted
 **Date:** 2026-11-10

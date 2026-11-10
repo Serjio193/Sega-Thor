@@ -1,3 +1,25 @@
+# M15.249 Dynamic Displacement Scale-Up, Hardware-Polling Boundaries, and Connected Callee Recompilation
+
+- `tools/audit_m15_249_phase1_2.py` — audit tool for Phase 1 inventory and Phase 2 baseline accounting.
+- `data/thor-evidence/m15_249_phase1_inventory.json` — inventory audit covering all 15 M15.248 roots.
+- `data/thor-evidence/native_coverage_accounting_m15_249_phase2.json` — baseline canonical accounting for 691,019 cumulative portable steps.
+- `tools/build_m15_249_residual_manifest.py` / `data/thor-evidence/residual_top30_hotspot_manifest_m15_249.json` — residual hotspot profile and unowned candidate ranking.
+- `tools/audit_hardware_polling_boundaries_m15_249.py` / `data/thor-evidence/hardware_polling_boundary_audit_m15_249.json` — formal audit of hardware polling loop boundaries (`$FF164D`).
+- `tools/thor_recompiler/decoder_ext_m15_249.py` / `tools/thor_recompiler/insn_lowering_m15_249.py` / `tools/thor_recompiler/cpp_emitter_m15_249.py` — compiler extensions for M15.249 instructions (`pc_index`, `disp_ax`, cycle calibration).
+- `tools/generate_entity_dispatch_m15_249.py` — compiler driver generating IR, source map, and partitioned C++20 headers.
+- `src/tools/thor_ir/m15_249_callee_ir.json` / `src/tools/thor_ir/m15_249_source_map.json` — portable Thor IR document and 1:1 PC source map.
+- `src/tools/thor_ir/generated_m15_249/` — 12 partitioned C++20 headers implementing the 7 hotpath routines (all <= 260 lines).
+- `src/tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp` — hybrid bridge adapting the M15.249 routines with polling loop quarantine.
+- `tools/generate_m15_249_fixtures.py` / `data/thor-fixtures/m15_249_callee_fixtures.hpp` / `data/thor-fixtures/m15_249_callee_fixtures.json` — 130 pinned GPGX reference fixtures.
+- `tools/audit_m15_249_cfg_coverage.py` / `data/thor-evidence/cfg_edge_coverage_manifest_m15_249.json` — CFG edge coverage manifest reaching 133/151 internal edges (88.1%) and 150/151 combined (99.3%).
+- `tests/thor_ir_m15_249_diff_test.cpp` — 3-way differential test (Musashi vs Mode A vs Mode B) + 12 mutation tests.
+- `tools/build_m15_249_runner.py` / `tools/run_m15_249_portable_ab.py` — build script and seven-configuration runtime qualification harness (`RUN_A..G`).
+- `data/thor-evidence/m15_249_ab_summary.json` — summary of 7-config qualification across all 6 scenarios.
+- `data/thor-evidence/native_coverage_accounting_m15_249.json` — canonical single-owner coverage accounting V4 (712,783 cumulative portable steps).
+- `tools/benchmark_m15_249.py` / `data/thor-evidence/benchmark_m15_249_report.json` — isolated microbenchmark comparing Mode A vs Mode B (1.21x speedup).
+- `tools/generate_m15_249_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-249-20261110.json` — certified qualification receipt verified by `ReceiptVerifier`.
+- `docs/handoffs/STANDALONE_M15_249_HOTPATH_HANDOFF.md` — standalone track handoff for the Master Enemy Controller and spatial math routines.
+
 # M15.248 Profile-Guided Hotpath Recompilation & Cycle-Exact Hybrid Expansion
 
 - `data/thor-evidence/m15_248_hotspot_profile_manifest.json` — profile manifest across all 6 scenarios.

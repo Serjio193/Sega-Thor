@@ -1,0 +1,141 @@
+{
+  "schema": "oasis.m15_249.hardware_polling_audit.v1",
+  "milestone": "M15.249",
+  "quarantined_routines": [
+    {
+      "root_pc": "0x002DB6",
+      "routine_name": "vdp_dma_reg_config_and_poll",
+      "entry_pc": "0x002DB6",
+      "exit_pc": "0x002E00",
+      "polling_pc_range": "0x002DBA..0x002DC2",
+      "polling_instruction": "BTST.B #4, $FF164D ; BNE.B 0x002DBA",
+      "hardware_register": "$FFFF164D (Bit 4 = VDP DMA Busy Flag)",
+      "register_reads": [
+        "$FF164D",
+        "D0",
+        "A0",
+        "A1",
+        "$FF1880"
+      ],
+      "register_writes": [
+        "$FF1926",
+        "$FF1896..$FF1916",
+        "$FF1888",
+        "$FF1886",
+        "$FF1882",
+        "$FF188C",
+        "$FF188E"
+      ],
+      "prefix_non_polling": {
+        "pc_range": "0x002DB6..0x002DBA",
+        "instructions": [
+          "MOVEM.L D1-D7/A0-A6, -(A7)"
+        ],
+        "cycles": 60,
+        "compilable": true,
+        "recommendation": "DO_NOT_SPLIT_FROM_POLLING"
+      },
+      "suffix_non_polling": {
+        "pc_range": "0x002DC4..0x002E00",
+        "instructions": [
+          "ST.B $FF1926",
+          "LEA $FF134C, A0",
+          "LEA $FF1896, A1",
+          "32x MOVE.L (A0)+, (A1)+",
+          "MOVE.L D0, $FF1888",
+          "CLR.W $FF1886",
+          "MOVE.W $FF1882, $FF1884",
+          "CLR.W $FF188C",
+          "MOVE.W #63, $FF188E"
+        ],
+        "cycles": 740,
+        "compilable": true,
+        "recommendation": "QUARANTINED_TO_AVOID_SCANLINE_EXIT_JITTER"
+      },
+      "master_cycles": "Variable polling duration (typically 12..48 scanlines in original hardware)",
+      "dma_state": "VDP DMA FIFO transfer active",
+      "vdp_state": "FIFO drain in progress, VCounter incrementing",
+      "interrupt_phase": "VBlank / HBlank preemption window active",
+      "bus_contention": "M68000 bus grant held by VDP DMA; CPU spins on RAM cache/bus stall",
+      "continuation_pc": "0x002E00",
+      "verdict": "QUARANTINED_HARDWARE_POLLING"
+    },
+    {
+      "root_pc": "0x002E78",
+      "routine_name": "vdp_dma_queue_calc_and_poll",
+      "entry_pc": "0x002E78",
+      "exit_pc": "0x002EC0",
+      "polling_pc_range": "0x002E7C..0x002E84",
+      "polling_instruction": "BTST.B #4, $FF164D ; BNE.B 0x002E7C",
+      "hardware_register": "$FFFF164D (Bit 4 = VDP DMA Busy Flag)",
+      "register_reads": [
+        "$FF164D",
+        "D0",
+        "A0",
+        "A1",
+        "$FF1880"
+      ],
+      "register_writes": [
+        "$FF1926",
+        "$FF1896..$FF1916",
+        "$FF1888",
+        "$FF1886",
+        "$FF1882",
+        "$FF188C"
+      ],
+      "prefix_non_polling": {
+        "pc_range": "0x002E78..0x002E7C",
+        "instructions": [
+          "MOVEM.L D1-D7/A0-A6, -(A7)"
+        ],
+        "cycles": 60,
+        "compilable": true,
+        "recommendation": "DO_NOT_SPLIT_FROM_POLLING"
+      },
+      "suffix_non_polling": {
+        "pc_range": "0x002E86..0x002EC0",
+        "instructions": [
+          "SF.B $FF1926",
+          "LEA $FF134C, A0",
+          "LEA $FF1896, A1",
+          "32x MOVE.L (A0)+, (A1)+",
+          "MOVE.L D0, $FF1888",
+          "MOVE.W #7, $FF1886",
+          "MOVE.W $FF1882, $FF1884",
+          "CLR.W $FF188C"
+        ],
+        "cycles": 740,
+        "compilable": true,
+        "recommendation": "QUARANTINED_TO_AVOID_SCANLINE_EXIT_JITTER"
+      },
+      "master_cycles": "Variable polling duration",
+      "dma_state": "VDP DMA FIFO transfer active",
+      "vdp_state": "FIFO drain in progress",
+      "interrupt_phase": "HBlank/VBlank preemption window active",
+      "bus_contention": "M68000 bus grant held by VDP DMA",
+      "continuation_pc": "0x002EC0",
+      "verdict": "QUARANTINED_HARDWARE_POLLING"
+    },
+    {
+      "root_pc": "0x002FDA",
+      "routine_name": "palette_interpolation_math",
+      "entry_pc": "0x002FDA",
+      "exit_pc": "0x00302E",
+      "reason": "DATA_DEPENDENT_MULU_DIVU_CYCLE_VARIANCE_DURING_DMA",
+      "verdict": "QUARANTINED_DMA_PALETTE"
+    },
+    {
+      "root_pc": "0x00302E",
+      "routine_name": "palette_fade_loop",
+      "entry_pc": "0x00302E",
+      "exit_pc": "0x00307A",
+      "reason": "DATA_DEPENDENT_FADE_LOOP_CYCLE_VARIANCE_DURING_DMA",
+      "verdict": "QUARANTINED_DMA_PALETTE"
+    }
+  ],
+  "hardware_polling_rules": [
+    "Never compile active polling loops unless cycle-exact hardware bus contention is independently modeled.",
+    "Never bypass hardware status polling by substituting a constant result.",
+    "Quarantining polling loops in original CPU preserves bit-exact scanline and interrupt delivery alignment."
+  ]
+}

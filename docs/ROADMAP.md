@@ -1,3 +1,22 @@
+# M15.249 Dynamic Displacement Scale-Up, Hardware-Polling Boundaries, and Cross-Scenario Native Coverage Audit (`m15249p`) — COMPLETE / VERIFIED SCALED CONNECTED DISPLACEMENT & EDGE EXPANSION
+
+- **Residual Hotspot Profiling & Polling Boundaries (`tools/build_m15_249_residual_manifest.py`, `tools/audit_hardware_polling_boundaries_m15_249.py`):**
+  * Profiled residual execution across 6 scenarios and audited all 15 M15.248 roots.
+  * Formalized hardware polling quarantine boundaries (`0x002DB6`, `0x002E78`, `$FF164D` busy-waits, `0x002FDA`/`0x00302E` DMA queues) to guarantee zero sub-scanline timing jitter.
+- **Master Enemy Controller Hotpath Recompilation (`m15249p`, `src/tools/thor_ir/generated_m15_249/`):**
+  * Recompiled 7 unowned hotpath routines connected to table `0x00DF80` and coordinate systems (`0x0254EA`, `0x00EA04`, `0x016D5C`, `0x0170E0`, `0x0171C4`, `0x00E0B8`, `0x00F96A`): 118 static instructions, 45 basic blocks, 71 CFG edges.
+  * Partitioned into 12 headers (all `<= 260` lines, policy limit `<= 350` / `<= 500`).
+  * Calibrated `pc_index` EA mode (10 cycles) for exact cycle parity.
+- **Edge Coverage Closure & Differential Proof (`tests/thor_ir_m15_249_diff_test.cpp`):**
+  * Generated 130 pinned GPGX reference fixtures, lifting M15.246 internal edge coverage to 133/151 (88.1%) and combined edge coverage to 150/151 (99.3%).
+  * 130/130 3-way differential executions passed across Musashi Oracle, Mode A stepper, and Mode B C++20 + 12/12 mutation tests in Debug & Release.
+- **Seven-Configuration Runtime Integration (`m15249p`, Runner `0f6ac48b...`) & Parity:**
+  * Qualified 7 configurations (`RUN_A..G`) across 6 scenarios: 48/48 raw streams bit-exact (8/8 per scenario), 0 fallbacks, 0 contract faults, 0 CPU exceptions.
+  * Displaced 21,764 new disjoint M15.249 portable steps across scenarios, bringing cumulative portable execution to **712,783 steps**.
+  * Mode B microbenchmark speedup 1.21x (5.396 ms vs 4.446 ms).
+  * Certified qualification receipt verified by `ReceiptVerifier` (`valid=True, status=VERIFIED`).
+  * Standalone worktree clean and strictly read-only; production baseline (196 active helpers) and `0x003820` quarantine preserved.
+
 # M15.248 Profile-Guided Hotpath Recompilation, Authentic Gameplay Diversity, and Cycle-Exact Hybrid Expansion (`m15248p`) — COMPLETE / VERIFIED QUALIFIED HOTPATH DISPLACEMENT & EDGE EXPANSION
 
 - **Cross-Scenario Profiling & Hotspot Ranking (`tools/audit_m15_248_candidates.py`):**

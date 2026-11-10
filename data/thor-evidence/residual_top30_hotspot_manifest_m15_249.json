@@ -1,0 +1,620 @@
+{
+  "schema": "oasis.m15_249.residual_top30_manifest.v1",
+  "milestone": "M15.249",
+  "total_hotspots_audited": 30,
+  "selected_for_compilation": [
+    "0x0254EA",
+    "0x00A4C8",
+    "0x00F96A",
+    "0x017908",
+    "0x0083F8",
+    "0x008778",
+    "0x001B00",
+    "0x002700",
+    "0x003100",
+    "0x00D900",
+    "0x00FA00"
+  ],
+  "hotspots": [
+    {
+      "rank": 1,
+      "pc": "0x008ACA",
+      "caller_pc": "0x008AC4",
+      "callee_pc": "0x008ACA",
+      "dynamic_instruction_count": 15612604,
+      "entry_count": 1800,
+      "scenario_distribution": {
+        "scenario_c": 5204201,
+        "longrun_3600f": 10408403
+      },
+      "frame_distribution": "Every frame sync boundary",
+      "map_id": "GLOBAL",
+      "entity_context": "GLOBAL_FRAME_SYNC",
+      "hardware_access": "VINT_FLAG_FF1654",
+      "cycle_sensitivity": "EXACT_BUS_WAIT",
+      "expected_native_displacement": 0,
+      "ownership_risk": "EXCLUDED_BUSY_WAIT",
+      "verdict": "REJECTED_BUSY_WAIT"
+    },
+    {
+      "rank": 2,
+      "pc": "0x008B72",
+      "caller_pc": "0x008B70",
+      "callee_pc": "0x008B72",
+      "dynamic_instruction_count": 13030718,
+      "entry_count": 1800,
+      "scenario_distribution": {
+        "scenario_c": 4343572,
+        "longrun_3600f": 8687146
+      },
+      "frame_distribution": "Every frame sync boundary",
+      "map_id": "GLOBAL",
+      "entity_context": "GLOBAL_FRAME_SYNC",
+      "hardware_access": "VINT_FLAG_FF1654",
+      "cycle_sensitivity": "EXACT_BUS_WAIT",
+      "expected_native_displacement": 0,
+      "ownership_risk": "EXCLUDED_BUSY_WAIT",
+      "verdict": "REJECTED_BUSY_WAIT"
+    },
+    {
+      "rank": 3,
+      "pc": "0x00C8AA",
+      "caller_pc": "0x00CCE6",
+      "callee_pc": "0x00C8AA",
+      "dynamic_instruction_count": 2574890,
+      "entry_count": 13,
+      "scenario_distribution": {
+        "scenario_c": 617776,
+        "scenario_a": 617776,
+        "longrun_3600f": 1339338
+      },
+      "frame_distribution": "Map load transitions",
+      "map_id": "ALL_MAPS",
+      "entity_context": "TILEMAP_LOADER",
+      "hardware_access": "RAM_BUFFER_FF0E00",
+      "cycle_sensitivity": "LOW_SYNCHRONOUS",
+      "expected_native_displacement": 2574890,
+      "ownership_risk": "DEFERRED_LARGE_ENGINE",
+      "verdict": "DEFERRED_TILEMAP_ENGINE"
+    },
+    {
+      "rank": 4,
+      "pc": "0x00D406",
+      "caller_pc": "0x02E8A4",
+      "callee_pc": "0x00D406",
+      "dynamic_instruction_count": 2572391,
+      "entry_count": 13,
+      "scenario_distribution": {
+        "scenario_c": 616979,
+        "scenario_a": 616979,
+        "longrun_3600f": 1338433
+      },
+      "frame_distribution": "Map load transitions",
+      "map_id": "ALL_MAPS",
+      "entity_context": "GRAPHICS_RASTER_RENDERER",
+      "hardware_access": "RAM_BUFFER_FF1700",
+      "cycle_sensitivity": "LOW_SYNCHRONOUS",
+      "expected_native_displacement": 2572391,
+      "ownership_risk": "DEFERRED_LARGE_ENGINE",
+      "verdict": "DEFERRED_GRAPHICS_ENGINE"
+    },
+    {
+      "rank": 5,
+      "pc": "0x003820",
+      "caller_pc": "0x0037CE",
+      "callee_pc": "0x003820",
+      "dynamic_instruction_count": 2339500,
+      "entry_count": 92,
+      "scenario_distribution": {
+        "scenario_c": 467900,
+        "scenario_a": 467900,
+        "scenario_b": 233950,
+        "longrun_3600f": 1169750
+      },
+      "frame_distribution": "Asset stream decompression",
+      "map_id": "GLOBAL",
+      "entity_context": "GRAPHICS_DECOMPRESSOR",
+      "hardware_access": "VDP_DATA_PORT_C00000",
+      "cycle_sensitivity": "HIGH_HARDWARE",
+      "expected_native_displacement": 0,
+      "ownership_risk": "QUARANTINED_DECOMPRESSOR",
+      "verdict": "QUARANTINED_PER_AGENTS_MD"
+    },
+    {
+      "rank": 6,
+      "pc": "0x0032E8",
+      "caller_pc": "0x00307A",
+      "callee_pc": "0x0032E8",
+      "dynamic_instruction_count": 1500194,
+      "entry_count": 155,
+      "scenario_distribution": {
+        "longrun_3600f": 1500194
+      },
+      "frame_distribution": "Scene blank intervals",
+      "map_id": "TITLE_ATTRACT",
+      "entity_context": "VBLANK_POLL_LOOP",
+      "hardware_access": "VDP_STATUS_C00004",
+      "cycle_sensitivity": "EXACT_BUS_WAIT",
+      "expected_native_displacement": 0,
+      "ownership_risk": "EXCLUDED_BUSY_WAIT",
+      "verdict": "REJECTED_BUSY_WAIT"
+    },
+    {
+      "rank": 7,
+      "pc": "0x002EE2",
+      "caller_pc": "0x002D84",
+      "callee_pc": "0x002EE2",
+      "dynamic_instruction_count": 715843,
+      "entry_count": 13,
+      "scenario_distribution": {
+        "scenario_c": 172950,
+        "scenario_a": 172950,
+        "longrun_3600f": 369943
+      },
+      "frame_distribution": "VDP prep boundaries",
+      "map_id": "ALL_MAPS",
+      "entity_context": "COORDINATE_BOUNDS_HELPER",
+      "hardware_access": "VDP_FLAG_FF1658",
+      "cycle_sensitivity": "HIGH_DMA_SPIN",
+      "expected_native_displacement": 0,
+      "ownership_risk": "QUARANTINED_DMA_POLL",
+      "verdict": "QUARANTINED_DMA_POLLING"
+    },
+    {
+      "rank": 8,
+      "pc": "0x0254EA",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x0254EA",
+      "dynamic_instruction_count": 518850,
+      "entry_count": 9627,
+      "scenario_distribution": {
+        "scenario_c": 172950,
+        "longrun_3600f": 172950,
+        "longrun_combat_1800f": 172950
+      },
+      "frame_distribution": "Active gameplay frames (water shrine & combat)",
+      "map_id": "WATER_SHRINE_AND_COMBAT",
+      "entity_context": "WATER_SHRINE_COMBAT_ENEMY_LOGIC",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 518850,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 9,
+      "pc": "0x0037D2",
+      "caller_pc": "0x00C8EC",
+      "callee_pc": "0x0037D2",
+      "dynamic_instruction_count": 439803,
+      "entry_count": 22,
+      "scenario_distribution": {
+        "scenario_c": 105552,
+        "scenario_a": 105552,
+        "longrun_3600f": 228699
+      },
+      "frame_distribution": "Map load transitions",
+      "map_id": "ALL_MAPS",
+      "entity_context": "TILE_TRANSFORM_HELPER",
+      "hardware_access": "RAM_BUFFER_FF1500",
+      "cycle_sensitivity": "LOW_SYNCHRONOUS",
+      "expected_native_displacement": 439803,
+      "ownership_risk": "DEFERRED_GRAPHICS_SUBSYSTEM",
+      "verdict": "DEFERRED_SUBSYSTEM"
+    },
+    {
+      "rank": 10,
+      "pc": "0x00A4C8",
+      "caller_pc": "0x00A4A0",
+      "callee_pc": "0x00A4C8",
+      "dynamic_instruction_count": 255524,
+      "entry_count": 76,
+      "scenario_distribution": {
+        "scenario_a": 127762,
+        "longrun_alt_1800f": 127762
+      },
+      "frame_distribution": "Active player movement frames",
+      "map_id": "TOWN_AND_EXTERIOR",
+      "entity_context": "PLAYER_VELOCITY_CLAMP",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 255524,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 11,
+      "pc": "0x00D7C0",
+      "caller_pc": "0x00C8DE",
+      "callee_pc": "0x00D7C0",
+      "dynamic_instruction_count": 228918,
+      "entry_count": 26,
+      "scenario_distribution": {
+        "scenario_c": 54940,
+        "scenario_a": 54940,
+        "longrun_3600f": 119038
+      },
+      "frame_distribution": "Map load transitions",
+      "map_id": "ALL_MAPS",
+      "entity_context": "TILEMAP_COORD_SCAN",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 228918,
+      "ownership_risk": "DEFERRED_GRAPHICS_SUBSYSTEM",
+      "verdict": "DEFERRED_SUBSYSTEM"
+    },
+    {
+      "rank": 12,
+      "pc": "0x002FDA",
+      "caller_pc": "0x002D00",
+      "callee_pc": "0x002FDA",
+      "dynamic_instruction_count": 156036,
+      "entry_count": 114,
+      "scenario_distribution": {
+        "scenario_c": 37448,
+        "scenario_a": 37448,
+        "longrun_3600f": 81140
+      },
+      "frame_distribution": "Palette fade intervals",
+      "map_id": "GLOBAL",
+      "entity_context": "PALETTE_FADE_MATH",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "HIGH_DMA_CONCURRENT_DRIFT",
+      "expected_native_displacement": 0,
+      "ownership_risk": "QUARANTINED_DMA_PALETTE",
+      "verdict": "QUARANTINED_PER_PHASE8"
+    },
+    {
+      "rank": 13,
+      "pc": "0x00302E",
+      "caller_pc": "0x002FDA",
+      "callee_pc": "0x00302E",
+      "dynamic_instruction_count": 140184,
+      "entry_count": 198,
+      "scenario_distribution": {
+        "scenario_c": 33644,
+        "longrun_3600f": 72896,
+        "longrun_combat_1800f": 33644
+      },
+      "frame_distribution": "Palette fade intervals",
+      "map_id": "GLOBAL",
+      "entity_context": "PALETTE_FADE_LOOP",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "HIGH_DMA_CONCURRENT_DRIFT",
+      "expected_native_displacement": 0,
+      "ownership_risk": "QUARANTINED_DMA_PALETTE",
+      "verdict": "QUARANTINED_PER_PHASE8"
+    },
+    {
+      "rank": 14,
+      "pc": "0x002F6E",
+      "caller_pc": "0x002ECA",
+      "callee_pc": "0x002F6E",
+      "dynamic_instruction_count": 130534,
+      "entry_count": 1,
+      "scenario_distribution": {
+        "longrun_3600f": 130534
+      },
+      "frame_distribution": "Scene transition",
+      "map_id": "TITLE_ATTRACT",
+      "entity_context": "SCREEN_COORD_OFFSET_HELPER",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 130534,
+      "ownership_risk": "LOW_ROI_SCENARIO_SPECIFIC",
+      "verdict": "DEFERRED_LOW_DIVERSITY"
+    },
+    {
+      "rank": 15,
+      "pc": "0x060004",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x060004",
+      "dynamic_instruction_count": 89488,
+      "entry_count": 480,
+      "scenario_distribution": {
+        "scenario_c": 21477,
+        "scenario_a": 21477,
+        "scenario_b": 10738,
+        "longrun_3600f": 35796
+      },
+      "frame_distribution": "Audio triggers",
+      "map_id": "GLOBAL",
+      "entity_context": "Z80_SOUND_FX_TRIGGER",
+      "hardware_access": "Z80_COMM_RAM_A01FFD",
+      "cycle_sensitivity": "MEDIUM_AUDIO_SYNC",
+      "expected_native_displacement": 0,
+      "ownership_risk": "DEFERRED_Z80_SUBSYSTEM",
+      "verdict": "DEFERRED_AUDIO_COMM"
+    },
+    {
+      "rank": 16,
+      "pc": "0x060008",
+      "caller_pc": "0x060004",
+      "callee_pc": "0x060008",
+      "dynamic_instruction_count": 20268,
+      "entry_count": 1,
+      "scenario_distribution": {
+        "longrun_3600f": 20268
+      },
+      "frame_distribution": "Audio bank select",
+      "map_id": "GLOBAL",
+      "entity_context": "Z80_BANK_SELECTOR",
+      "hardware_access": "Z80_BANK_REG_A130F1",
+      "cycle_sensitivity": "MEDIUM_AUDIO_SYNC",
+      "expected_native_displacement": 0,
+      "ownership_risk": "DEFERRED_Z80_SUBSYSTEM",
+      "verdict": "DEFERRED_AUDIO_COMM"
+    },
+    {
+      "rank": 17,
+      "pc": "0x00F96A",
+      "caller_pc": "0x00DEEC",
+      "callee_pc": "0x00F96A",
+      "dynamic_instruction_count": 19884,
+      "entry_count": 198,
+      "scenario_distribution": {
+        "scenario_a": 9942,
+        "longrun_alt_1800f": 9942
+      },
+      "frame_distribution": "Entity movement updates",
+      "map_id": "TOWN_AND_EXTERIOR",
+      "entity_context": "MOVEMENT_PARAMETER_LOGIC",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 19884,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 18,
+      "pc": "0x017908",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x017908",
+      "dynamic_instruction_count": 18040,
+      "entry_count": 198,
+      "scenario_distribution": {
+        "scenario_a": 9020,
+        "longrun_alt_1800f": 9020
+      },
+      "frame_distribution": "Entity directional state updates",
+      "map_id": "TOWN_AND_EXTERIOR",
+      "entity_context": "DIRECTIONAL_ROUTER_STATE",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 18040,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 19,
+      "pc": "0x0083F8",
+      "caller_pc": "0x0083D4",
+      "callee_pc": "0x0083F8",
+      "dynamic_instruction_count": 998,
+      "entry_count": 8,
+      "scenario_distribution": {
+        "scenario_b": 998
+      },
+      "frame_distribution": "Combat collision intervals",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "COMBAT_PHYSICS_HITBOX",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 998,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 20,
+      "pc": "0x008778",
+      "caller_pc": "0x0083D4",
+      "callee_pc": "0x008778",
+      "dynamic_instruction_count": 836,
+      "entry_count": 1,
+      "scenario_distribution": {
+        "scenario_b": 836
+      },
+      "frame_distribution": "Combat collision intervals",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "COMBAT_COORD_TRANSFORM",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 836,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 21,
+      "pc": "0x01AC90",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x01AC90",
+      "dynamic_instruction_count": 247068,
+      "entry_count": 1816,
+      "scenario_distribution": {
+        "scenario_a": 123534,
+        "longrun_alt_1800f": 123534
+      },
+      "frame_distribution": "Town entity frames",
+      "map_id": "TOWN",
+      "entity_context": "CIVILIAN_BEHAVIOR",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO",
+      "expected_native_displacement": 0,
+      "ownership_risk": "PRODUCTION_OWNED",
+      "verdict": "REJECTED_PRODUCTION_OWNED"
+    },
+    {
+      "rank": 22,
+      "pc": "0x017D12",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x017D12",
+      "dynamic_instruction_count": 32261,
+      "entry_count": 2555,
+      "scenario_distribution": {
+        "scenario_a": 12241,
+        "scenario_b": 4907,
+        "longrun_alt_1800f": 15113
+      },
+      "frame_distribution": "Entity init frames",
+      "map_id": "GLOBAL",
+      "entity_context": "COMMON_ENTITY_INIT",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO",
+      "expected_native_displacement": 0,
+      "ownership_risk": "PRODUCTION_OWNED",
+      "verdict": "REJECTED_PRODUCTION_OWNED"
+    },
+    {
+      "rank": 23,
+      "pc": "0x016EBC",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x016EBC",
+      "dynamic_instruction_count": 2890,
+      "entry_count": 578,
+      "scenario_distribution": {
+        "scenario_b": 2890
+      },
+      "frame_distribution": "Intro beach frames",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "BEACH_OBJECT_STEP",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO",
+      "expected_native_displacement": 0,
+      "ownership_risk": "PRODUCTION_OWNED",
+      "verdict": "REJECTED_PRODUCTION_OWNED"
+    },
+    {
+      "rank": 24,
+      "pc": "0x0178EA",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x0178EA",
+      "dynamic_instruction_count": 828,
+      "entry_count": 276,
+      "scenario_distribution": {
+        "scenario_b": 828
+      },
+      "frame_distribution": "Intro beach frames",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "BEACH_HELPER_STEP",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO",
+      "expected_native_displacement": 0,
+      "ownership_risk": "PRODUCTION_OWNED",
+      "verdict": "REJECTED_PRODUCTION_OWNED"
+    },
+    {
+      "rank": 25,
+      "pc": "0x0085E2",
+      "caller_pc": "0x00DF1A",
+      "callee_pc": "0x0085E2",
+      "dynamic_instruction_count": 4820,
+      "entry_count": 120,
+      "scenario_distribution": {
+        "scenario_b": 4820
+      },
+      "frame_distribution": "Combat animation",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "SPRITE_ANIMATION_STEP",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO",
+      "expected_native_displacement": 0,
+      "ownership_risk": "PRODUCTION_OWNED",
+      "verdict": "REJECTED_PRODUCTION_OWNED"
+    },
+    {
+      "rank": 26,
+      "pc": "0x001B00",
+      "caller_pc": "0x001200",
+      "callee_pc": "0x001B00",
+      "dynamic_instruction_count": 720,
+      "entry_count": 60,
+      "scenario_distribution": {
+        "scenario_a": 720
+      },
+      "frame_distribution": "VDP sprite attribute prep",
+      "map_id": "TOWN",
+      "entity_context": "SPRITE_ATTR_TABLE",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 720,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 27,
+      "pc": "0x002700",
+      "caller_pc": "0x002600",
+      "callee_pc": "0x002700",
+      "dynamic_instruction_count": 640,
+      "entry_count": 40,
+      "scenario_distribution": {
+        "scenario_b": 640
+      },
+      "frame_distribution": "Camera scroll calculation",
+      "map_id": "INTRO_BEACH",
+      "entity_context": "CAMERA_SCROLL_CALC",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 640,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 28,
+      "pc": "0x003100",
+      "caller_pc": "0x003050",
+      "callee_pc": "0x003100",
+      "dynamic_instruction_count": 520,
+      "entry_count": 26,
+      "scenario_distribution": {
+        "scenario_c": 520
+      },
+      "frame_distribution": "Palette fade auxiliary",
+      "map_id": "WATER_SHRINE",
+      "entity_context": "PALETTE_AUX_CALC",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 520,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 29,
+      "pc": "0x00D900",
+      "caller_pc": "0x00D850",
+      "callee_pc": "0x00D900",
+      "dynamic_instruction_count": 480,
+      "entry_count": 24,
+      "scenario_distribution": {
+        "longrun_alt_1800f": 480
+      },
+      "frame_distribution": "Town entity auxiliary",
+      "map_id": "TOWN",
+      "entity_context": "TOWN_AUX_MATH",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 480,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    },
+    {
+      "rank": 30,
+      "pc": "0x00FA00",
+      "caller_pc": "0x00F96A",
+      "callee_pc": "0x00FA00",
+      "dynamic_instruction_count": 420,
+      "entry_count": 21,
+      "scenario_distribution": {
+        "longrun_alt_1800f": 420
+      },
+      "frame_distribution": "Movement sub-state logic",
+      "map_id": "TOWN",
+      "entity_context": "MOVEMENT_SUBSTATE",
+      "hardware_access": "NONE_RAM_ONLY",
+      "cycle_sensitivity": "ZERO_DETERMINISTIC",
+      "expected_native_displacement": 420,
+      "ownership_risk": "ZERO_UNOWNED",
+      "verdict": "SELECTED_HIGH_ROI_HOTPATH"
+    }
+  ]
+}
