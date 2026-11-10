@@ -178,7 +178,7 @@ void replay_hook(hook_type_t type, int width, unsigned address, unsigned value) 
 
 bool g_probe_done{};
 struct ProbeTrace {
-    unsigned stop_pc{}, stop_sp{}, max_steps{500};
+    unsigned stop_pc{}, stop_sp{}, max_steps{2000};
     std::vector<unsigned> pc_trace, cyc_trace;
     std::vector<WriteRec> writes;
     unsigned start_cyc{}, end_cyc{}, last_insn_cyc{}, exit_pc{};

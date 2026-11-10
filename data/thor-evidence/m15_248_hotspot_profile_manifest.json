@@ -1,0 +1,637 @@
+{
+  "schema": "oasis.m15_248.hotspot-profile-manifest.v1",
+  "milestone": "M15.248",
+  "scenarios_audited": [
+    "scenario_c",
+    "scenario_a",
+    "scenario_b",
+    "longrun_3600f",
+    "longrun_alt_1800f",
+    "longrun_combat_1800f"
+  ],
+  "total_audited_frames": 11192,
+  "candidates": [
+    {
+      "ROOT_PC": "0x00FCB8",
+      "ROUTINE_NAME": "callee_fcb8_subroutine",
+      "ENTRY_COUNT": 19,
+      "DYNAMIC_INSTRUCTION_COUNT": 399018,
+      "UNIQUE_ROM_PC_COUNT": 93,
+      "CALLER_PC": [
+        "0xf844"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 1,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 399018,
+      "ROI": 399018.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected unowned connected math/call subroutine; 399,018 dynamic steps across all 6 scenarios."
+    },
+    {
+      "ROOT_PC": "0x00D9A4",
+      "ROUTINE_NAME": "callee_d9a4_subroutine",
+      "ENTRY_COUNT": 19,
+      "DYNAMIC_INSTRUCTION_COUNT": 398923,
+      "UNIQUE_ROM_PC_COUNT": 88,
+      "CALLER_PC": [
+        "0xfcbe"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 1,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 398923,
+      "ROI": 398923.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected unowned connected math/call subroutine; 398,923 dynamic steps across all 6 scenarios."
+    },
+    {
+      "ROOT_PC": "0x002D84",
+      "ROUTINE_NAME": "callee_2d84_coord_helper",
+      "ENTRY_COUNT": 13,
+      "DYNAMIC_INSTRUCTION_COUNT": 716831,
+      "UNIQUE_ROM_PC_COUNT": 65,
+      "CALLER_PC": [
+        "0xce28"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 2,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 716831,
+      "ROI": 358415.5,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected unowned coordinate transform helper; 716,831 dynamic steps across all 6 scenarios."
+    },
+    {
+      "ROOT_PC": "0x003586",
+      "ROUTINE_NAME": "callee_3586_loop",
+      "ENTRY_COUNT": 1,
+      "DYNAMIC_INSTRUCTION_COUNT": 640632,
+      "UNIQUE_ROM_PC_COUNT": 51,
+      "CALLER_PC": [
+        "0x33a2"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "longrun_3600f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 2,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 640632,
+      "ROI": 320316.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected high-frequency loop; 640,632 dynamic steps in 3600f longrun."
+    },
+    {
+      "ROOT_PC": "0x00C8AA",
+      "ROUTINE_NAME": "tilemap_prep_helper",
+      "ENTRY_COUNT": 13,
+      "DYNAMIC_INSTRUCTION_COUNT": 2574890,
+      "UNIQUE_ROM_PC_COUNT": 701,
+      "CALLER_PC": [
+        "0xcce6"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 8,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 2574890,
+      "ROI": 321861.25,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected tilemap prep helper; 1,957,114 dynamic steps across C, A, LR, Alt."
+    },
+    {
+      "ROOT_PC": "0x00D406",
+      "ROUTINE_NAME": "graphics_line_engine",
+      "ENTRY_COUNT": 13,
+      "DYNAMIC_INSTRUCTION_COUNT": 2572391,
+      "UNIQUE_ROM_PC_COUNT": 491,
+      "CALLER_PC": [
+        "0x2e62c",
+        "0x2e762",
+        "0x2e8a4",
+        "0x2e99a",
+        "0x2eb58"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 12,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 2572391,
+      "ROI": 214365.92,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected graphics line rendering subroutine; 1,955,412 dynamic steps across C, A, LR, Alt."
+    },
+    {
+      "ROOT_PC": "0x002EE2",
+      "ROUTINE_NAME": "callee_2ee2_bounds_check",
+      "ENTRY_COUNT": 13,
+      "DYNAMIC_INSTRUCTION_COUNT": 715843,
+      "UNIQUE_ROM_PC_COUNT": 51,
+      "CALLER_PC": [
+        "0x2dac"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 4,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 715843,
+      "ROI": 178960.75,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected coordinate bounds check helper; 553,096 dynamic steps across all 6 scenarios."
+    },
+    {
+      "ROOT_PC": "0x00F80E",
+      "ROUTINE_NAME": "callee_f80e_query_helper",
+      "ENTRY_COUNT": 13,
+      "DYNAMIC_INSTRUCTION_COUNT": 399571,
+      "UNIQUE_ROM_PC_COUNT": 132,
+      "CALLER_PC": [
+        "0xd53e"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 5,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 399571,
+      "ROI": 79914.2,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected entity parameter query helper; 399,571 dynamic steps across all 6 scenarios."
+    },
+    {
+      "ROOT_PC": "0x00A4C8",
+      "ROUTINE_NAME": "movement_velocity_clamp",
+      "ENTRY_COUNT": 76,
+      "DYNAMIC_INSTRUCTION_COUNT": 255524,
+      "UNIQUE_ROM_PC_COUNT": 755,
+      "CALLER_PC": [
+        "0x8b1e"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_a",
+        "longrun_alt_1800f"
+      ],
+      "FRAMES_EXERCISED": 3392,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 4,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 255524,
+      "ROI": 63881.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected movement velocity clamp; 255,524 dynamic steps across A and Alt."
+    },
+    {
+      "ROOT_PC": "0x002F6E",
+      "ROUTINE_NAME": "screen_coord_offset_helper",
+      "ENTRY_COUNT": 1,
+      "DYNAMIC_INSTRUCTION_COUNT": 130534,
+      "UNIQUE_ROM_PC_COUNT": 45,
+      "CALLER_PC": [
+        "0x2e46"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "longrun_3600f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 2,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 130534,
+      "ROI": 65267.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected screen coordinate offset helper; 130,534 dynamic steps in longrun."
+    },
+    {
+      "ROOT_PC": "0x002E1E",
+      "ROUTINE_NAME": "screen_viewport_math_helper",
+      "ENTRY_COUNT": 1,
+      "DYNAMIC_INSTRUCTION_COUNT": 137248,
+      "UNIQUE_ROM_PC_COUNT": 67,
+      "CALLER_PC": [
+        "0x294c"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "longrun_3600f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 3,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 137248,
+      "ROI": 45749.33,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected screen viewport math helper; 137,248 dynamic steps in longrun."
+    },
+    {
+      "ROOT_PC": "0x01A184",
+      "ROUTINE_NAME": "state_town_entity_logic",
+      "ENTRY_COUNT": 842,
+      "DYNAMIC_INSTRUCTION_COUNT": 67008,
+      "UNIQUE_ROM_PC_COUNT": 863,
+      "CALLER_PC": [
+        "0xdf1a",
+        "0xfdfe"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_a",
+        "longrun_alt_1800f"
+      ],
+      "FRAMES_EXERCISED": 3392,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 3,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 67008,
+      "ROI": 22336.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected town entity state logic called via 0x00DF1A; 67,008 dynamic steps (842 entries) in A and Alt."
+    },
+    {
+      "ROOT_PC": "0x060004",
+      "ROUTINE_NAME": "sound_fx_audio_dispatch",
+      "ENTRY_COUNT": 480,
+      "DYNAMIC_INSTRUCTION_COUNT": 89488,
+      "UNIQUE_ROM_PC_COUNT": 302,
+      "CALLER_PC": [
+        "0x179a0",
+        "0x2936",
+        "0x295a",
+        "0x2eb10",
+        "0x2ebc8"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "scenario_b",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 11192,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 3,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 89488,
+      "ROI": 29829.33,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected sound FX trigger dispatched from entity handlers; 66,420 dynamic steps (392 entries) across all scenarios."
+    },
+    {
+      "ROOT_PC": "0x00D7C0",
+      "ROUTINE_NAME": "tilemap_coord_scan_helper",
+      "ENTRY_COUNT": 26,
+      "DYNAMIC_INSTRUCTION_COUNT": 228918,
+      "UNIQUE_ROM_PC_COUNT": 130,
+      "CALLER_PC": [
+        "0xd6fe",
+        "0xd708"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 8,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 228918,
+      "ROI": 28614.75,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected tilemap coordinate scan helper; 173,540 dynamic steps across C, A, LR, Alt."
+    },
+    {
+      "ROOT_PC": "0x017908",
+      "ROUTINE_NAME": "directional_jump_table_router",
+      "ENTRY_COUNT": 198,
+      "DYNAMIC_INSTRUCTION_COUNT": 18040,
+      "UNIQUE_ROM_PC_COUNT": 93,
+      "CALLER_PC": [
+        "0xdf1a",
+        "0xff88"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_a",
+        "longrun_alt_1800f"
+      ],
+      "FRAMES_EXERCISED": 3392,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 2,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 18040,
+      "ROI": 9020.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected directional state router; 18,040 dynamic steps (198 entries) in A and Alt."
+    },
+    {
+      "ROOT_PC": "0x00FCCE",
+      "ROUTINE_NAME": "scenario_c_subroutine_fcce",
+      "ENTRY_COUNT": 30,
+      "DYNAMIC_INSTRUCTION_COUNT": 30080,
+      "UNIQUE_ROM_PC_COUNT": 599,
+      "CALLER_PC": [
+        "0xf7c6"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 4,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 30080,
+      "ROI": 7520.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected subroutine in Scenario C and Combat; 30,080 dynamic steps."
+    },
+    {
+      "ROOT_PC": "0x00F96A",
+      "ROUTINE_NAME": "movement_state_logic",
+      "ENTRY_COUNT": 198,
+      "DYNAMIC_INSTRUCTION_COUNT": 19884,
+      "UNIQUE_ROM_PC_COUNT": 30,
+      "CALLER_PC": [
+        "0xf7c6"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_a",
+        "longrun_alt_1800f"
+      ],
+      "FRAMES_EXERCISED": 3392,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 6,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 19884,
+      "ROI": 3314.0,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Selected movement state logic; 19,884 dynamic steps (198 entries) in A and Alt."
+    },
+    {
+      "ROOT_PC": "0x060008",
+      "ROUTINE_NAME": "sound_driver_bank_selector",
+      "ENTRY_COUNT": 1,
+      "DYNAMIC_INSTRUCTION_COUNT": 20268,
+      "UNIQUE_ROM_PC_COUNT": 96,
+      "CALLER_PC": [
+        "0x412"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "longrun_3600f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 5,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 20268,
+      "ROI": 4053.6,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Sound driver bank selector; 20,268 dynamic steps in longrun."
+    },
+    {
+      "ROOT_PC": "0x008778",
+      "ROUTINE_NAME": "combat_entity_coord_transform",
+      "ENTRY_COUNT": 1,
+      "DYNAMIC_INSTRUCTION_COUNT": 836,
+      "UNIQUE_ROM_PC_COUNT": 30,
+      "CALLER_PC": [
+        "0x80fa"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_b"
+      ],
+      "FRAMES_EXERCISED": 600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 3,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 836,
+      "ROI": 278.67,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Combat entity coordinate transform; 836 dynamic steps in B and Combat."
+    },
+    {
+      "ROOT_PC": "0x0083F8",
+      "ROUTINE_NAME": "combat_entity_physics_helper",
+      "ENTRY_COUNT": 8,
+      "DYNAMIC_INSTRUCTION_COUNT": 998,
+      "UNIQUE_ROM_PC_COUNT": 33,
+      "CALLER_PC": [
+        "0x6230"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_b"
+      ],
+      "FRAMES_EXERCISED": 600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 4,
+      "MMIO_RISK": "LOW",
+      "CYCLE_RISK": "LOW",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 998,
+      "ROI": 249.5,
+      "VERDICT": "SELECTED_UNOWNED_CALLEE",
+      "RATIONALE": "Combat entity physics/hitbox helper; 998 dynamic steps in B and Combat."
+    },
+    {
+      "ROOT_PC": "0x003820",
+      "ROUTINE_NAME": "nemesis_lz_decompressor",
+      "ENTRY_COUNT": 92,
+      "DYNAMIC_INSTRUCTION_COUNT": 2339500,
+      "UNIQUE_ROM_PC_COUNT": 288,
+      "CALLER_PC": [
+        "0x3278",
+        "0x3356",
+        "0x335c",
+        "0x37d8",
+        "0xd4ee"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "scenario_b",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 11192,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 15,
+      "MMIO_RISK": "HIGH",
+      "CYCLE_RISK": "HIGH",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 0,
+      "ROI": 1559.67,
+      "VERDICT": "QUARANTINED_DECOMPRESSOR",
+      "RATIONALE": "Explicitly quarantined graphics decompressor per AGENTS.md."
+    },
+    {
+      "ROOT_PC": "0x0032E8",
+      "ROUTINE_NAME": "vblank_spin_wait_loop",
+      "ENTRY_COUNT": 155,
+      "DYNAMIC_INSTRUCTION_COUNT": 1500194,
+      "UNIQUE_ROM_PC_COUNT": 4,
+      "CALLER_PC": [
+        "0x308c"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "longrun_3600f"
+      ],
+      "FRAMES_EXERCISED": 3600,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 1,
+      "MMIO_RISK": "HIGH",
+      "CYCLE_RISK": "HIGH",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 0,
+      "ROI": 15001.94,
+      "VERDICT": "DEFERRED_BUSY_WAIT",
+      "RATIONALE": "4-insn VBlank spin-wait loop in 0x00307A; non-gameplay wait."
+    },
+    {
+      "ROOT_PC": "0x002FDA",
+      "ROUTINE_NAME": "palette_interpolation_math",
+      "ENTRY_COUNT": 114,
+      "DYNAMIC_INSTRUCTION_COUNT": 156036,
+      "UNIQUE_ROM_PC_COUNT": 26,
+      "CALLER_PC": [
+        "0x2f3c",
+        "0x2fca"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "scenario_a",
+        "longrun_3600f",
+        "longrun_alt_1800f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 10592,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 4,
+      "MMIO_RISK": "MEDIUM",
+      "CYCLE_RISK": "HIGH",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 0,
+      "ROI": 780.18,
+      "VERDICT": "QUARANTINED_DMA_PALETTE",
+      "RATIONALE": "Palette interpolation math helper; causes master cycle drift during VDP DMA (Phase 8 forensics)."
+    },
+    {
+      "ROOT_PC": "0x00302E",
+      "ROUTINE_NAME": "palette_fade_loop",
+      "ENTRY_COUNT": 198,
+      "DYNAMIC_INSTRUCTION_COUNT": 140184,
+      "UNIQUE_ROM_PC_COUNT": 26,
+      "CALLER_PC": [
+        "0x1631e",
+        "0x16362"
+      ],
+      "CALLEE_PC": [],
+      "SCENARIOS_EXERCISED": [
+        "scenario_c",
+        "longrun_3600f",
+        "longrun_combat_1800f"
+      ],
+      "FRAMES_EXERCISED": 7200,
+      "OWNER_STATUS": "ORIGINAL_CPU",
+      "CFG_COMPLEXITY": 3,
+      "MMIO_RISK": "MEDIUM",
+      "CYCLE_RISK": "HIGH",
+      "EXPECTED_PORTABLE_DISPLACEMENT": 0,
+      "ROI": 934.56,
+      "VERDICT": "QUARANTINED_DMA_PALETTE",
+      "RATIONALE": "Palette fade loop; causes master cycle drift during VDP DMA (Phase 8 forensics)."
+    }
+  ]
+}

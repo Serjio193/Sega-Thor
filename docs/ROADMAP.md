@@ -1,3 +1,21 @@
+# M15.248 Profile-Guided Hotpath Recompilation, Authentic Gameplay Diversity, and Cycle-Exact Hybrid Expansion (`m15248p`) — COMPLETE / VERIFIED QUALIFIED HOTPATH DISPLACEMENT & EDGE EXPANSION
+
+- **Cross-Scenario Profiling & Hotspot Ranking (`tools/audit_m15_248_candidates.py`):**
+  * Profiled authentic CPU execution across 6 scenarios (C, A, B, longrun_3600f, longrun_alt_1800f, and new authentic combat capture `longrun_combat_1800f`).
+  * Selected top 15 unowned deterministic hotpath routines (240 static instructions, 76 basic blocks, 126 CFG edges, 0 overlap with production or prior milestones).
+- **M15.246 CFG Edge Coverage Expansion (`data/thor-evidence/cfg_edge_coverage_manifest_m15_248.json`):**
+  * Generated 112 pinned GPGX reference fixtures, lifting M15.246 cluster edge coverage to 123/151 internal edges (81.5% >= 79% requirement).
+  * 112/112 3-way differential executions passed across Musashi Oracle, Mode A stepper, and Mode B C++20 + 12/12 mutation tests in Debug & Release.
+- **DMA Polling Loop Quarantine Policy (`src/tools/thor_ir/exp248_dispatch_hybrid_adapter.hpp`):**
+  * Investigated DMA flag polling (`$ff164d`) and variable cycle math in `0x002DB6`/`0x002E78`/`0x002FDA`/`0x00302E`.
+  * Safely quarantined hardware DMA polling loops from hybrid native execution to eliminate scanline jitter, enabling bit-exact execution across all 6 scenarios.
+- **Six-Configuration Runtime Integration (`m15248p`, Runner `2c0a0949...`) & Parity:**
+  * Qualified 6 configurations (`RUN_A..F`) across 6 scenarios: 48/48 raw streams bit-exact (8/8 per scenario), 0 fallbacks, 0 contract faults, 0 CPU exceptions.
+  * Displaced 12,362 new disjoint M15.248 portable steps across scenarios, bringing cumulative portable execution to 691,019 steps.
+  * Mode B microbenchmark speedup 1.11x (4.398 ms vs 3.978 ms).
+  * Certified qualification receipt verified by `ReceiptVerifier` (`valid=True, status=VERIFIED`).
+  * Standalone worktree clean and strictly read-only; production baseline (196 active helpers) and `0x003820` quarantine preserved.
+
 # M15.247 Authentic CFG Edge Coverage, Long-Run Execution Diversity, and Safe Connected Portable Expansion (`m15247p`) — COMPLETE / VERIFIED QUALIFIED ACTION HANDLERS & EDGE COVERAGE
 
 - **Comprehensive CFG Edge Analysis & Reference Oracle Harness (`tests/thor_ir_m15_247_diff_test.cpp`):**

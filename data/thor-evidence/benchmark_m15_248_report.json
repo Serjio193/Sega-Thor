@@ -1,0 +1,782 @@
+{
+  "schema": "oasis_thor_m15_248_benchmark_v1",
+  "milestone": "M15.248",
+  "description": "Mode A (interpreter) vs Mode B (compiled C++20) speedup & qualification timing",
+  "microbenchmark": {
+    "trials": 10,
+    "iters_per_trial": 80000,
+    "parity_verified": true,
+    "mode_a_interpreter": {
+      "min_ms": 4.23,
+      "median_ms": 4.398,
+      "mean_ms": 4.413,
+      "p95_ms": 4.7,
+      "max_ms": 4.7
+    },
+    "mode_b_compiled_cpp": {
+      "min_ms": 3.921,
+      "median_ms": 3.978,
+      "mean_ms": 4.007,
+      "p95_ms": 4.131,
+      "max_ms": 4.131
+    },
+    "mode_b_speedup_factor": "1.11x"
+  },
+  "runner_scenarios": {
+    "scenario_c": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 17.0011547000031,
+        "run_b": 16.965657000000647,
+        "run_c": 17.010671200005163,
+        "run_d": 16.972702899998694,
+        "run_e": 16.73185250000097,
+        "run_f": 16.383391099996516
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "033b96d9344a34386360223e9f9c19a2ce3f80ad80e4b4e878ae15b6cefe1bad",
+        "full-frame-state.jsonl": "188f329c8919400406c72c783c7ada5992905490d465a6e7463a885e4017d550",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 53,
+        "portable_guest_instructions": 463,
+        "disjoint_new_native_steps": 463,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 53,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 27
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 1247,
+        "new_handler_guest_steps": 28912,
+        "disjoint_new_native_steps": 28912,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1247,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 829
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 5768,
+        "m15246_guest_steps": 127790,
+        "disjoint_new_native_steps": 127790,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 5768,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 4910
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 0,
+        "m15247_guest_steps": 0,
+        "disjoint_new_native_steps": 0,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 0
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 1640,
+        "m15248_guest_steps": 2137,
+        "disjoint_new_native_steps": 2137,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1640,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 1519,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          15,
+          0,
+          0,
+          0,
+          1513,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 6,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "5941d5190fbe2d4e845cba2ddacf97d1df529ab4174780d8212af26f824b4123"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "08f1d1c320325d992509c47c9dcf21d7820e86013c61e7131d837116ccc0807a"
+          },
+          {
+            "frame": 900,
+            "match": true,
+            "sha256": "0df301614063256e564b528cf30d28f4e32e3c9a9d1201966383ed5258df49b9"
+          },
+          {
+            "frame": 1200,
+            "match": true,
+            "sha256": "2f8cdcf0594b17fbb0455a7de6f3f9256a9cf1075cbddda6e841be849f3659a1"
+          },
+          {
+            "frame": 1500,
+            "match": true,
+            "sha256": "fb220f78d9251b92e047190424a02bc6eaf01576fe0bf45062d6925dd48a6617"
+          },
+          {
+            "frame": 1800,
+            "match": true,
+            "sha256": "adfe0418dd835514a377dbf420168fdd28d0b10d3be2001248be7cfdf3239295"
+          }
+        ]
+      }
+    },
+    "scenario_a": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 14.01658789999783,
+        "run_b": 13.992849399997795,
+        "run_c": 14.381834799998614,
+        "run_d": 14.170137100001739,
+        "run_e": 14.027152700000443,
+        "run_f": 14.069663299997046
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "60d62df22fd2974632527f888ee8417a6f5b538a2616b0202467220520b7fc6b",
+        "full-frame-state.jsonl": "499ac47714012e61a02f93aed4a32e016cc6fad8cb9407f3ce4c004bfb331040",
+        "architectural-sync.jsonl": "de2f50d455394e451cc4fa8b0471f120d43d27a09602664d0c58557df024ac63",
+        "scheduler-sync.jsonl": "59db6d66529901a8b5573a4c6cd1e9b7853bd6f6dfb608e67dae6867c2f709b4",
+        "z80-ram-sync.bin": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+        "call-z80-ram.bin": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+        "external-events.jsonl": "b6faac965d6bc54930de49bc78cdc9a623fb6354dd1bbfcea8ba7b7d6a2366d6",
+        "normalized-events.jsonl": "2c53a52af78951f6e185a1a0b1717d2b4a3b062671b8d924ebfa1d776b4f9c4c"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 29,
+        "portable_guest_instructions": 231,
+        "disjoint_new_native_steps": 231,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 29,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 20
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 1184,
+        "new_handler_guest_steps": 20782,
+        "disjoint_new_native_steps": 20782,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1184,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 590
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 296,
+        "m15246_guest_steps": 22079,
+        "disjoint_new_native_steps": 22079,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 296,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 278
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 101,
+        "m15247_guest_steps": 576,
+        "disjoint_new_native_steps": 576,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 101,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 50
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 1755,
+        "m15248_guest_steps": 2387,
+        "disjoint_new_native_steps": 2387,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1755,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 1318,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          421,
+          2,
+          0,
+          0,
+          0,
+          1308,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 5,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "08ac74bb96164b05f23c923abf3a06ff6e9a80178a16c7765ed4db6e9ab5ac64"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "9592ef46f327af404f74691eb2259860c677dafe0757c6c8723f09d7bbcf8d24"
+          },
+          {
+            "frame": 900,
+            "match": true,
+            "sha256": "68f57604e4c28e8d96b42fdfa6595089c698f311555cc1ac6bb6bf3eda4b7e8b"
+          },
+          {
+            "frame": 1200,
+            "match": true,
+            "sha256": "f33205d2090dd3dac026f0123d598a6325cbad329fbb609545510d648dc9e505"
+          },
+          {
+            "frame": 1500,
+            "match": true,
+            "sha256": "3a80c9f81a541849bf70f12d6a17a36b8cf109d882e39b33145172834bf72d52"
+          }
+        ]
+      }
+    },
+    "scenario_b": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 5.645608599996194,
+        "run_b": 5.651844299994991,
+        "run_c": 6.020029400002386,
+        "run_d": 6.058746799993969,
+        "run_e": 5.777883800001291,
+        "run_f": 5.739799999995739
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "f03ae5e01af05e1ff2f57862f843c35e4a333c736cc1551fdc973620af64898d",
+        "full-frame-state.jsonl": "f2e3fcdbd51475562e3cb123acd505aa02e4f4970c3daa18cdca9eebe639d0c8",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "2323372df792882f2ea62e0f8116bcb1313da70784af711513eb97a4097f664f"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 9,
+        "portable_guest_instructions": 97,
+        "disjoint_new_native_steps": 97,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 9,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 5
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 418,
+        "new_handler_guest_steps": 9822,
+        "disjoint_new_native_steps": 9822,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 418,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 280
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 25,
+        "m15246_guest_steps": 1098,
+        "disjoint_new_native_steps": 1098,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 25,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 24
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 0,
+        "m15247_guest_steps": 0,
+        "disjoint_new_native_steps": 0,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 0
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 425,
+        "m15248_guest_steps": 425,
+        "disjoint_new_native_steps": 425,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 425,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 425,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          425,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 2,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "5941d5190fbe2d4e845cba2ddacf97d1df529ab4174780d8212af26f824b4123"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "08f1d1c320325d992509c47c9dcf21d7820e86013c61e7131d837116ccc0807a"
+          }
+        ]
+      }
+    },
+    "longrun_3600f": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 31.29960690000007,
+        "run_b": 31.446855199996207,
+        "run_c": 31.831658700000844,
+        "run_d": 32.02587859999767,
+        "run_e": 32.0554845000006,
+        "run_f": 32.40135929999815
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "3b7a04b60643bc639dc901039c2f96360af3fa8184680ecae4eefafab04f5b11",
+        "full-frame-state.jsonl": "731427133c6038f8cb98e495605768d459e5394d3ff003d2bb86436424d2f8c7",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "9d6959c250225850739f68b6cb4fa26e06222b994a43995aaf420996f91d6446"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 109,
+        "portable_guest_instructions": 922,
+        "disjoint_new_native_steps": 922,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 109,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 60
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 2030,
+        "new_handler_guest_steps": 45789,
+        "disjoint_new_native_steps": 45789,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 2030,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 1295
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 15470,
+        "m15246_guest_steps": 214941,
+        "disjoint_new_native_steps": 214941,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 15470,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 9502
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 0,
+        "m15247_guest_steps": 0,
+        "disjoint_new_native_steps": 0,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 0
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 2214,
+        "m15248_guest_steps": 2711,
+        "disjoint_new_native_steps": 2711,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 2214,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 2093,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          15,
+          0,
+          0,
+          0,
+          2087,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 12,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "5941d5190fbe2d4e845cba2ddacf97d1df529ab4174780d8212af26f824b4123"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "08f1d1c320325d992509c47c9dcf21d7820e86013c61e7131d837116ccc0807a"
+          },
+          {
+            "frame": 900,
+            "match": true,
+            "sha256": "0df301614063256e564b528cf30d28f4e32e3c9a9d1201966383ed5258df49b9"
+          },
+          {
+            "frame": 1200,
+            "match": true,
+            "sha256": "2f8cdcf0594b17fbb0455a7de6f3f9256a9cf1075cbddda6e841be849f3659a1"
+          },
+          {
+            "frame": 1500,
+            "match": true,
+            "sha256": "fb220f78d9251b92e047190424a02bc6eaf01576fe0bf45062d6925dd48a6617"
+          },
+          {
+            "frame": 1800,
+            "match": true,
+            "sha256": "adfe0418dd835514a377dbf420168fdd28d0b10d3be2001248be7cfdf3239295"
+          },
+          {
+            "frame": 2100,
+            "match": true,
+            "sha256": "e6e6c58c42710077a63043b2b2f837affa5278be22976a4f82316ed90074a24f"
+          },
+          {
+            "frame": 2400,
+            "match": true,
+            "sha256": "83cd7babed5163fc77995a2af0ea0a46455e12cb72ce7b11084a5df7c684631d"
+          },
+          {
+            "frame": 2700,
+            "match": true,
+            "sha256": "07ad92a2c8f78ff96e63aca25afd5a8af0812ee2164935650e5b9ab69cf88b11"
+          },
+          {
+            "frame": 3000,
+            "match": true,
+            "sha256": "d63eed185da5fa9c87d0355ab53bcb6c560b3b7de7718cd7778bbab0a631670c"
+          },
+          {
+            "frame": 3300,
+            "match": true,
+            "sha256": "c6c2a78d9efc48b501b11cb0042ed5897ac5da203bb4a030196604ffc89e9c25"
+          },
+          {
+            "frame": 3600,
+            "match": true,
+            "sha256": "b399154f4baecc297eafdddf450c33866fc1f33824551594f2a7dd30cef35567"
+          }
+        ]
+      }
+    },
+    "longrun_alt_1800f": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 16.19698409999546,
+        "run_b": 15.885488799998711,
+        "run_c": 15.79161860000022,
+        "run_d": 15.837555600002815,
+        "run_e": 16.195525000002817,
+        "run_f": 15.983800300004077
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "cb0d03f6e932a935dae7f0177687db494919eba8f9a23dbf3358e8f80053909c",
+        "full-frame-state.jsonl": "1d19959e16de735a702ae227eaf94417e80fa53fca3a66a3793f7b17049071a0",
+        "architectural-sync.jsonl": "de2f50d455394e451cc4fa8b0471f120d43d27a09602664d0c58557df024ac63",
+        "scheduler-sync.jsonl": "59db6d66529901a8b5573a4c6cd1e9b7853bd6f6dfb608e67dae6867c2f709b4",
+        "z80-ram-sync.bin": "cf71e3e198b52d4e64cbaeff8368a5c1342be0196d578c33497d6540bf17d78a",
+        "call-z80-ram.bin": "1b04e4829cc715b727771e1f0575f35282f823cc9fd0c361ea5bec6660055894",
+        "external-events.jsonl": "b6faac965d6bc54930de49bc78cdc9a623fb6354dd1bbfcea8ba7b7d6a2366d6",
+        "normalized-events.jsonl": "2c53a52af78951f6e185a1a0b1717d2b4a3b062671b8d924ebfa1d776b4f9c4c"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 29,
+        "portable_guest_instructions": 231,
+        "disjoint_new_native_steps": 231,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 29,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 20
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 1310,
+        "new_handler_guest_steps": 24396,
+        "disjoint_new_native_steps": 24396,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1310,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 680
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 311,
+        "m15246_guest_steps": 22787,
+        "disjoint_new_native_steps": 22787,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 311,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 292
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 101,
+        "m15247_guest_steps": 576,
+        "disjoint_new_native_steps": 576,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 101,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 50
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 1933,
+        "m15248_guest_steps": 2565,
+        "disjoint_new_native_steps": 2565,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1933,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 1496,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          421,
+          2,
+          0,
+          0,
+          0,
+          1486,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 6,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "08ac74bb96164b05f23c923abf3a06ff6e9a80178a16c7765ed4db6e9ab5ac64"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "9592ef46f327af404f74691eb2259860c677dafe0757c6c8723f09d7bbcf8d24"
+          },
+          {
+            "frame": 900,
+            "match": true,
+            "sha256": "68f57604e4c28e8d96b42fdfa6595089c698f311555cc1ac6bb6bf3eda4b7e8b"
+          },
+          {
+            "frame": 1200,
+            "match": true,
+            "sha256": "f33205d2090dd3dac026f0123d598a6325cbad329fbb609545510d648dc9e505"
+          },
+          {
+            "frame": 1500,
+            "match": true,
+            "sha256": "3a80c9f81a541849bf70f12d6a17a36b8cf109d882e39b33145172834bf72d52"
+          },
+          {
+            "frame": 1800,
+            "match": true,
+            "sha256": "c03f00d97bd488ae968fc39685b3db87a74f213c895001d70f42ebbafed42dc9"
+          }
+        ]
+      }
+    },
+    "longrun_combat_1800f": {
+      "all_6_configs_match_8_of_8": true,
+      "wall_clock_seconds": {
+        "run_a": 15.648159899996244,
+        "run_b": 16.04592910000065,
+        "run_c": 15.800007700003334,
+        "run_d": 15.92732889999752,
+        "run_e": 15.711237499999697,
+        "run_f": 15.91240729999845
+      },
+      "stream_hashes": {
+        "observed-landmarks.jsonl": "033b96d9344a34386360223e9f9c19a2ce3f80ad80e4b4e878ae15b6cefe1bad",
+        "full-frame-state.jsonl": "7657c0126fe387b2187a83e3cd8171aac1919c9add30554776e6974207a6c447",
+        "architectural-sync.jsonl": "8cebe193eab24fa7f78efa8b0d220f2539966f473b0a43beaa34c01a2eb1b6e7",
+        "scheduler-sync.jsonl": "e1b9aaa4112d10a40bee6be667be96acefe611a4f807b2330c97e67a767a2cfe",
+        "z80-ram-sync.bin": "c0641348a32717ed38b8f28d6c30d4ef475b3f389eeb26858f1d70e7a0c6da58",
+        "call-z80-ram.bin": "0c2474966020b697ea7756a7e384e04322886f7b233921ad8c68e35f0eca562c",
+        "external-events.jsonl": "339e2dcbc550e3294d68068a5dc8c5c299f5bc68676a51ca0314a03e29101413",
+        "normalized-events.jsonl": "372417fb62e0d75337a1ae78ac0409dfc24bf8ebaf82eb756772a7b640173a9c"
+      },
+      "m15_244_metrics": {
+        "portable_runtime_entries": 53,
+        "portable_guest_instructions": 463,
+        "disjoint_new_native_steps": 463,
+        "fallback_transfers": 0,
+        "uncompiled_continuations": 53,
+        "original_cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 27
+      },
+      "m15_245_metrics": {
+        "new_handler_entries": 1247,
+        "new_handler_guest_steps": 28912,
+        "disjoint_new_native_steps": 28912,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1247,
+        "nonlocal_returns": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 829
+      },
+      "m15_246_metrics": {
+        "m15246_entries": 5768,
+        "m15246_guest_steps": 127790,
+        "disjoint_new_native_steps": 127790,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 5768,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 4910
+      },
+      "m15_247_metrics": {
+        "m15247_entries": 0,
+        "m15247_guest_steps": 0,
+        "disjoint_new_native_steps": 0,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 0,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 0
+      },
+      "m15_248_metrics": {
+        "m15248_entries": 1640,
+        "m15248_guest_steps": 2137,
+        "disjoint_new_native_steps": 2137,
+        "original_cpu_fallbacks": 0,
+        "valid_uncompiled_exits": 1640,
+        "cpu_exceptions": 0,
+        "contract_faults": 0,
+        "completed_returns": 1519,
+        "root_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          15,
+          0,
+          0,
+          0,
+          1513,
+          0
+        ]
+      },
+      "checkpoints": {
+        "checked": 6,
+        "all_match": true,
+        "checkpoints": [
+          {
+            "frame": 300,
+            "match": true,
+            "sha256": "5941d5190fbe2d4e845cba2ddacf97d1df529ab4174780d8212af26f824b4123"
+          },
+          {
+            "frame": 600,
+            "match": true,
+            "sha256": "08f1d1c320325d992509c47c9dcf21d7820e86013c61e7131d837116ccc0807a"
+          },
+          {
+            "frame": 900,
+            "match": true,
+            "sha256": "0df301614063256e564b528cf30d28f4e32e3c9a9d1201966383ed5258df49b9"
+          },
+          {
+            "frame": 1200,
+            "match": true,
+            "sha256": "2f8cdcf0594b17fbb0455a7de6f3f9256a9cf1075cbddda6e841be849f3659a1"
+          },
+          {
+            "frame": 1500,
+            "match": true,
+            "sha256": "fb220f78d9251b92e047190424a02bc6eaf01576fe0bf45062d6925dd48a6617"
+          },
+          {
+            "frame": 1800,
+            "match": true,
+            "sha256": "adfe0418dd835514a377dbf420168fdd28d0b10d3be2001248be7cfdf3239295"
+          }
+        ]
+      }
+    }
+  }
+}

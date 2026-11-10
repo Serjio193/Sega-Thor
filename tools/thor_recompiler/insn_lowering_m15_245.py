@@ -25,9 +25,7 @@ def ea_cycles(rk: str, sz: str, is_dst: bool = False) -> int:
     is_l = (sz == "l")
     if rk in ("reg_d", "reg_a"):
         return 0
-    if rk == "imm":
-        return 8 if is_l else 4
-    if rk == "indir_a":
+    if rk in ("imm", "indir_a", "postinc_a", "predec_a"):
         return 8 if is_l else 4
     if rk == "disp_a":
         return 12 if is_l else 8
@@ -59,6 +57,8 @@ def exact_m68k_cycles(insn: dict) -> int:
     if m == "MOVEA":
         if ops[0] == "abs_l":
             return 20 if sz == "l" else 16
+        if ops[0] == "postinc_a":
+            return 12 if sz == "l" else 8
         return 12 if ops[0] == "disp_a" else 4
     if m == "MOVE":
         return 4 + ea_cycles(ops[0], sz) + ea_cycles(ops[1], sz, True)

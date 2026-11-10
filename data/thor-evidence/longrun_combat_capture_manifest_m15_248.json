@@ -1,0 +1,17 @@
+{
+  "schema": "oasis.m15_248.longrun-combat-capture-manifest.v1",
+  "milestone": "M15.248",
+  "scenario_name": "longrun_combat_1800f",
+  "map_region": "BEACH_COMBAT_ARENA_EXTENDED",
+  "initial_state_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+  "input_journal_sha256": "47ee8da0f67371aad3f327cd6b616c29fdcebc44a3fc19fef49483096656c473",
+  "landmarks_sha256": "033b96d9344a34386360223e9f9c19a2ce3f80ad80e4b4e878ae15b6cefe1bad",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "input_provenance": {
+    "frames_0_to_599": "PINNED_SCENARIO_B_PREFIX",
+    "frames_600_to_1799": "INJECTED_SCRIPTED_COMBAT"
+  },
+  "frame_count": 1800,
+  "poll_count": 1800
+}

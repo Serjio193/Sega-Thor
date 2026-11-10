@@ -1,0 +1,223 @@
+#pragma once
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part0.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part1.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part2.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part3.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part4.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part5.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part6.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part7.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part8.hpp"
+#include "tools/thor_ir/generated_m15_248/exp248_dispatch_part9.hpp"
+namespace oasis::recompiler::ir {
+template <typename Bus> inline bool step_exp248_router_p1(Bus& bus, std::uint32_t pc, std::uint32_t& out_pc) noexcept {
+  switch (pc) {
+    case 0x002E28U: return step_ir_0x002E28(bus, out_pc);
+    case 0x002E2EU: return step_ir_0x002E2E(bus, out_pc);
+    case 0x002E30U: return step_ir_0x002E30(bus, out_pc);
+    case 0x002E34U: return step_ir_0x002E34(bus, out_pc);
+    case 0x002E36U: return step_ir_0x002E36(bus, out_pc);
+    case 0x002E3AU: return step_ir_0x002E3A(bus, out_pc);
+    case 0x002E3CU: return step_ir_0x002E3C(bus, out_pc);
+    case 0x002E42U: return step_ir_0x002E42(bus, out_pc);
+    case 0x002E44U: return step_ir_0x002E44(bus, out_pc);
+    case 0x002E46U: return step_ir_0x002E46(bus, out_pc);
+    case 0x002E4AU: return step_ir_0x002E4A(bus, out_pc);
+    case 0x002E52U: return step_ir_0x002E52(bus, out_pc);
+    case 0x002E5AU: return step_ir_0x002E5A(bus, out_pc);
+    case 0x002E5CU: return step_ir_0x002E5C(bus, out_pc);
+    case 0x002E62U: return step_ir_0x002E62(bus, out_pc);
+    case 0x002E68U: return step_ir_0x002E68(bus, out_pc);
+    case 0x002E6CU: return step_ir_0x002E6C(bus, out_pc);
+    case 0x002E6EU: return step_ir_0x002E6E(bus, out_pc);
+    case 0x002E72U: return step_ir_0x002E72(bus, out_pc);
+    case 0x002E76U: return step_ir_0x002E76(bus, out_pc);
+    case 0x002E78U: return step_ir_0x002E78(bus, out_pc);
+    case 0x002E7CU: return step_ir_0x002E7C(bus, out_pc);
+    case 0x002E84U: return step_ir_0x002E84(bus, out_pc);
+    case 0x002E86U: return step_ir_0x002E86(bus, out_pc);
+    case 0x002E8CU: return step_ir_0x002E8C(bus, out_pc);
+    case 0x002E92U: return step_ir_0x002E92(bus, out_pc);
+    case 0x002E98U: return step_ir_0x002E98(bus, out_pc);
+    case 0x002E9AU: return step_ir_0x002E9A(bus, out_pc);
+    case 0x002E9EU: return step_ir_0x002E9E(bus, out_pc);
+    case 0x002EA0U: return step_ir_0x002EA0(bus, out_pc);
+    case 0x002EA4U: return step_ir_0x002EA4(bus, out_pc);
+    case 0x002EAAU: return step_ir_0x002EAA(bus, out_pc);
+    case 0x002EB2U: return step_ir_0x002EB2(bus, out_pc);
+    case 0x002EBCU: return step_ir_0x002EBC(bus, out_pc);
+    case 0x002EC2U: return step_ir_0x002EC2(bus, out_pc);
+    case 0x002ECAU: return step_ir_0x002ECA(bus, out_pc);
+    case 0x002ED4U: return step_ir_0x002ED4(bus, out_pc);
+    case 0x002EDCU: return step_ir_0x002EDC(bus, out_pc);
+    case 0x002EE0U: return step_ir_0x002EE0(bus, out_pc);
+    case 0x003586U: return step_ir_0x003586(bus, out_pc);
+    case 0x00358CU: return step_ir_0x00358C(bus, out_pc);
+    case 0x003594U: return step_ir_0x003594(bus, out_pc);
+    case 0x003596U: return step_ir_0x003596(bus, out_pc);
+    case 0x00359AU: return step_ir_0x00359A(bus, out_pc);
+    case 0x0035A0U: return step_ir_0x0035A0(bus, out_pc);
+    case 0x0035A8U: return step_ir_0x0035A8(bus, out_pc);
+    case 0x0035AAU: return step_ir_0x0035AA(bus, out_pc);
+    case 0x009BC0U: return step_ir_0x009BC0(bus, out_pc);
+    case 0x00D9A4U: return step_ir_0x00D9A4(bus, out_pc);
+    case 0x00D9A8U: return step_ir_0x00D9A8(bus, out_pc);
+    case 0x00D9AAU: return step_ir_0x00D9AA(bus, out_pc);
+    case 0x00D9B0U: return step_ir_0x00D9B0(bus, out_pc);
+    case 0x00D9B2U: return step_ir_0x00D9B2(bus, out_pc);
+    case 0x00D9B8U: return step_ir_0x00D9B8(bus, out_pc);
+    case 0x00D9BCU: return step_ir_0x00D9BC(bus, out_pc);
+    case 0x00F80EU: return step_ir_0x00F80E(bus, out_pc);
+    case 0x00F812U: return step_ir_0x00F812(bus, out_pc);
+    case 0x00F818U: return step_ir_0x00F818(bus, out_pc);
+    case 0x00F81AU: return step_ir_0x00F81A(bus, out_pc);
+    case 0x00F81CU: return step_ir_0x00F81C(bus, out_pc);
+    case 0x00F820U: return step_ir_0x00F820(bus, out_pc);
+    case 0x00F824U: return step_ir_0x00F824(bus, out_pc);
+    case 0x00F828U: return step_ir_0x00F828(bus, out_pc);
+    case 0x00F82CU: return step_ir_0x00F82C(bus, out_pc);
+    case 0x00F830U: return step_ir_0x00F830(bus, out_pc);
+    case 0x00F834U: return step_ir_0x00F834(bus, out_pc);
+    case 0x00F838U: return step_ir_0x00F838(bus, out_pc);
+    case 0x00F83CU: return step_ir_0x00F83C(bus, out_pc);
+    case 0x00F83EU: return step_ir_0x00F83E(bus, out_pc);
+    case 0x00F842U: return step_ir_0x00F842(bus, out_pc);
+    case 0x00F844U: return step_ir_0x00F844(bus, out_pc);
+    case 0x00F846U: return step_ir_0x00F846(bus, out_pc);
+    case 0x00F84CU: return step_ir_0x00F84C(bus, out_pc);
+    case 0x00FCB8U: return step_ir_0x00FCB8(bus, out_pc);
+    case 0x00FCBAU: return step_ir_0x00FCBA(bus, out_pc);
+    case 0x00FCBCU: return step_ir_0x00FCBC(bus, out_pc);
+    case 0x00FCBEU: return step_ir_0x00FCBE(bus, out_pc);
+    case 0x00FCC2U: return step_ir_0x00FCC2(bus, out_pc);
+    case 0x00FCCEU: return step_ir_0x00FCCE(bus, out_pc);
+    case 0x00FCD2U: return step_ir_0x00FCD2(bus, out_pc);
+    case 0x00FCD8U: return step_ir_0x00FCD8(bus, out_pc);
+    case 0x00FCDCU: return step_ir_0x00FCDC(bus, out_pc);
+    case 0x00FCE0U: return step_ir_0x00FCE0(bus, out_pc);
+    case 0x00FCE4U: return step_ir_0x00FCE4(bus, out_pc);
+    case 0x00FCE8U: return step_ir_0x00FCE8(bus, out_pc);
+    case 0x00FCECU: return step_ir_0x00FCEC(bus, out_pc);
+    case 0x00FCEEU: return step_ir_0x00FCEE(bus, out_pc);
+    case 0x00FCF0U: return step_ir_0x00FCF0(bus, out_pc);
+    case 0x00FCF2U: return step_ir_0x00FCF2(bus, out_pc);
+    case 0x00FCF6U: return step_ir_0x00FCF6(bus, out_pc);
+    case 0x00FCFCU: return step_ir_0x00FCFC(bus, out_pc);
+    case 0x00FD00U: return step_ir_0x00FD00(bus, out_pc);
+    case 0x00FD04U: return step_ir_0x00FD04(bus, out_pc);
+    case 0x00FD08U: return step_ir_0x00FD08(bus, out_pc);
+    case 0x00FD0CU: return step_ir_0x00FD0C(bus, out_pc);
+    case 0x00FD10U: return step_ir_0x00FD10(bus, out_pc);
+    case 0x00FD14U: return step_ir_0x00FD14(bus, out_pc);
+    case 0x00FD18U: return step_ir_0x00FD18(bus, out_pc);
+    case 0x00FD1AU: return step_ir_0x00FD1A(bus, out_pc);
+    case 0x00FD1EU: return step_ir_0x00FD1E(bus, out_pc);
+    default: return false;
+  }
+}
+inline constexpr bool is_compiled_exp248_p1(std::uint32_t pc) noexcept {
+  switch (pc) {
+    case 0x002E28U: return true;
+    case 0x002E2EU: return true;
+    case 0x002E30U: return true;
+    case 0x002E34U: return true;
+    case 0x002E36U: return true;
+    case 0x002E3AU: return true;
+    case 0x002E3CU: return true;
+    case 0x002E42U: return true;
+    case 0x002E44U: return true;
+    case 0x002E46U: return true;
+    case 0x002E4AU: return true;
+    case 0x002E52U: return true;
+    case 0x002E5AU: return true;
+    case 0x002E5CU: return true;
+    case 0x002E62U: return true;
+    case 0x002E68U: return true;
+    case 0x002E6CU: return true;
+    case 0x002E6EU: return true;
+    case 0x002E72U: return true;
+    case 0x002E76U: return true;
+    case 0x002E78U: return true;
+    case 0x002E7CU: return true;
+    case 0x002E84U: return true;
+    case 0x002E86U: return true;
+    case 0x002E8CU: return true;
+    case 0x002E92U: return true;
+    case 0x002E98U: return true;
+    case 0x002E9AU: return true;
+    case 0x002E9EU: return true;
+    case 0x002EA0U: return true;
+    case 0x002EA4U: return true;
+    case 0x002EAAU: return true;
+    case 0x002EB2U: return true;
+    case 0x002EBCU: return true;
+    case 0x002EC2U: return true;
+    case 0x002ECAU: return true;
+    case 0x002ED4U: return true;
+    case 0x002EDCU: return true;
+    case 0x002EE0U: return true;
+    case 0x003586U: return true;
+    case 0x00358CU: return true;
+    case 0x003594U: return true;
+    case 0x003596U: return true;
+    case 0x00359AU: return true;
+    case 0x0035A0U: return true;
+    case 0x0035A8U: return true;
+    case 0x0035AAU: return true;
+    case 0x009BC0U: return true;
+    case 0x00D9A4U: return true;
+    case 0x00D9A8U: return true;
+    case 0x00D9AAU: return true;
+    case 0x00D9B0U: return true;
+    case 0x00D9B2U: return true;
+    case 0x00D9B8U: return true;
+    case 0x00D9BCU: return true;
+    case 0x00F80EU: return true;
+    case 0x00F812U: return true;
+    case 0x00F818U: return true;
+    case 0x00F81AU: return true;
+    case 0x00F81CU: return true;
+    case 0x00F820U: return true;
+    case 0x00F824U: return true;
+    case 0x00F828U: return true;
+    case 0x00F82CU: return true;
+    case 0x00F830U: return true;
+    case 0x00F834U: return true;
+    case 0x00F838U: return true;
+    case 0x00F83CU: return true;
+    case 0x00F83EU: return true;
+    case 0x00F842U: return true;
+    case 0x00F844U: return true;
+    case 0x00F846U: return true;
+    case 0x00F84CU: return true;
+    case 0x00FCB8U: return true;
+    case 0x00FCBAU: return true;
+    case 0x00FCBCU: return true;
+    case 0x00FCBEU: return true;
+    case 0x00FCC2U: return true;
+    case 0x00FCCEU: return true;
+    case 0x00FCD2U: return true;
+    case 0x00FCD8U: return true;
+    case 0x00FCDCU: return true;
+    case 0x00FCE0U: return true;
+    case 0x00FCE4U: return true;
+    case 0x00FCE8U: return true;
+    case 0x00FCECU: return true;
+    case 0x00FCEEU: return true;
+    case 0x00FCF0U: return true;
+    case 0x00FCF2U: return true;
+    case 0x00FCF6U: return true;
+    case 0x00FCFCU: return true;
+    case 0x00FD00U: return true;
+    case 0x00FD04U: return true;
+    case 0x00FD08U: return true;
+    case 0x00FD0CU: return true;
+    case 0x00FD10U: return true;
+    case 0x00FD14U: return true;
+    case 0x00FD18U: return true;
+    case 0x00FD1AU: return true;
+    case 0x00FD1EU: return true;
+    default: return false;
+  }
+}
+} // namespace oasis::recompiler::ir

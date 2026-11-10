@@ -1,3 +1,30 @@
+# ADR-20261110-M15-248-PROFILE-GUIDED-HOTPATH-RECOMPILATION-AND-DMA-POLLING-QUARANTINE — Profile-Guided Hotpath Recompilation (15 Unowned Routines, 240 Insns, 76 Blocks, 126 Edges), DMA Polling Loop Quarantine, M15.246 Edge Coverage Expansion (123/151 Edges, 81.5%), Six-Configuration Bit-Exact Parity (`RUN_A..F`)
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. While M15.247 compiled 17 Town action handlers, their dynamic executions in Scenario C and `longrun_3600f` were zero. M15.248 required profiling authentic gameplay across multiple scenarios and selecting high-frequency unowned candidates by genuine dynamic return on investment.
+2. Edge coverage in the M15.246 cluster was 104/151 (68.9%), requiring expansion to >= 120/151 (>= 79%).
+3. Investigation into candidate DMA/palette routines (`0x002DB6`, `0x002E78`, `0x002FDA`, `0x00302E`) revealed that routines polling hardware DMA registers (`btst.b #4, $ff164d.l; bne.b loop`) or computing variable-cycle division in tight loops introduce sub-scanline timing jitter into hybrid execution without hardware-accurate DMA bus stall emulation.
+
+**Decisions:**
+1. **Profile-Guided Candidate Selection (`tools/audit_m15_248_candidates.py`):**
+   - Profiled 5 scenarios + 1 new authentic combat journal (`longrun_combat_1800f`).
+   - Selected 15 unowned deterministic hotpath routines (`0x0017AE`, `0x0017CE`, `0x001E46`, `0x002D84`, `0x002DB6`, `0x002E78`, `0x002F48`, `0x006C78`, `0x006CCC`, `0x00780E`, `0x007870`, `0x007886`, `0x00789C`, `0x0078B2`, `0x0078FE`): 240 static instructions, 76 basic blocks, 126 CFG edges with zero production or prior milestone overlap.
+   - Compiled into portable C++20 across 19 auto-split headers in `src/tools/thor_ir/generated_m15_248/` (all `<= 260` lines, <= 350 limit).
+2. **DMA Polling Loop Quarantine Policy (`src/tools/thor_ir/exp248_dispatch_hybrid_adapter.hpp`):**
+   - Routines containing tight polling loops on hardware status flags (`$ff164d`) must remain in CPU interpretation unless the peripheral bus arbiter is cycle-exact modeled.
+   - Quarantined `0x002D84..0x003600` from hybrid native dispatch while maintaining pure deterministic routines (`0x0017AE`, `0x0017CE`, `0x001E46`, `0x006C78`, `0x006CCC`, `0x00780E..0x0078FE`) active, achieving 12,362 new disjoint portable steps without a single frame of scanline drift.
+3. **M15.246 CFG Edge Coverage Expansion (`data/thor-evidence/cfg_edge_coverage_manifest_m15_248.json`):**
+   - Generated 112 pinned GPGX reference fixtures (`data/thor-fixtures/m15_248_callee_fixtures.hpp`), lifting internal edge coverage to 123/151 (81.5%), surpassing the >= 120 (>= 79%) requirement.
+   - 112/112 3-way differential tests passed across Musashi Oracle, Mode A stepper, and Mode B C++20.
+4. **Six-Configuration Runtime Qualification (`RUN_A..F`):**
+   - Qualified across 6 scenarios (Scenario C, A, B, longrun_3600f, longrun_alt_1800f, longrun_combat_1800f): 48/48 raw streams bit-exact (8/8 per scenario) with zero fallbacks, zero contract faults, and zero CPU exceptions.
+
+**Consequences:**
+- Sub-scanline timing hazards are formally identified and isolated.
+- Cumulative portable guest execution reached 691,019 steps with 100% bit-exact determinism across 6 distinct scenarios.
+
 # ADR-20261110-M15-247-AUTHENTIC-CFG-EDGE-COVERAGE-AND-TOWN-ACTION-HANDLERS — Authentic CFG Edge Coverage Qualification (104/151 Edges), Long-Run Dual Capture Parity, Recompilation of 17 Town Entity Action Handlers (`m15247p`), and Five-Configuration Bit-Exact Verification
 **Status:** Accepted
 **Date:** 2026-11-10

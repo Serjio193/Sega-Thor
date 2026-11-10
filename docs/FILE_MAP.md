@@ -1,3 +1,26 @@
+# M15.248 Profile-Guided Hotpath Recompilation & Cycle-Exact Hybrid Expansion
+
+- `data/thor-evidence/m15_248_hotspot_profile_manifest.json` — profile manifest across all 6 scenarios.
+- `data/thor-evidence/ranked_callee_candidates_m15_248.json` — unowned candidate ranking and selection table.
+- `data/thor-evidence/longrun_diversity_report_m15_248.json` — long-run execution diversity report.
+- `tools/generate_m15_248_combat_journal.py` — authentic gameplay combat journal generator for `longrun_combat_1800f`.
+- `data/thor-evidence/longrun_combat_capture_manifest_m15_248.json` — capture manifest for the 1,800-frame combat session.
+- `src/tools/thor_ir/m15_248_callee_ir.json` — portable Thor IR document for the 15 selected hotpath routines.
+- `src/tools/thor_ir/m15_248_source_map.json` — 1:1 mapping from original M68000 instruction PCs to basic blocks and generated C++ headers.
+- `src/tools/thor_ir/generated_m15_248/` — 19 auto-split C++20 headers implementing the 15 routines (all <= 260 lines, <= 350 limit).
+- `src/tools/thor_ir/exp248_dispatch_hybrid_adapter.hpp` — hybrid bridge adapting the M15.248 routines with DMA polling quarantine.
+- `tools/thor_recompiler/insn_lowering_m15_248.py` / `tools/thor_recompiler/cpp_emitter_m15_248.py` — instruction lowering and C++ code generator for M15.248.
+- `tools/generate_entity_dispatch_m15_248.py` — compiler driver generating IR, CFG, source map, and C++ headers.
+- `data/thor-fixtures/m15_248_callee_fixtures.hpp` / `data/thor-fixtures/m15_248_callee_fixtures.json` — 112 pinned GPGX reference fixtures.
+- `data/thor-evidence/cfg_edge_coverage_manifest_m15_248.json` — CFG edge coverage manifest reaching 123/151 internal edges (81.5%).
+- `tests/thor_ir_m15_248_diff_test.cpp` — 3-way differential test (Musashi vs Mode A vs Mode B) + 12 mutation tests.
+- `tools/run_m15_248_portable_ab.py` — six-configuration runtime qualification harness (`RUN_A..F`).
+- `data/thor-evidence/m15_248_ab_summary.json` — summary of 6-config qualification across all 6 scenarios.
+- `tools/audit_m15_248_accounting.py` / `data/thor-evidence/native_coverage_accounting_m15_248.json` — canonical single-owner coverage accounting V3.
+- `tools/benchmark_m15_248.py` / `data/thor-evidence/benchmark_m15_248_report.json` — isolated microbenchmark comparing Mode A vs Mode B.
+- `docs/handoffs/STANDALONE_M15_248_TOWN_SUB_SYSTEM_HANDOFF.md` — standalone track handoff for the hotpath and town subsystem.
+- `tools/generate_m15_248_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-248-20261110.json` — certified qualification receipt verified by `ReceiptVerifier`.
+
 # M15.247 Authentic CFG Edge Coverage & Town Action Handlers Recompilation
 
 - `data/thor-evidence/cfg_edge_coverage_manifest_m15_247.json` — complete inventory and edge classification of all 183 CFG edges across M15.246.
