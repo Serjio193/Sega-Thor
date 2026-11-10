@@ -137,6 +137,10 @@ add_test(NAME oasis_m16_25_weapon_particles_sat COMMAND oasis_m16_25_weapon_part
 add_executable(oasis_m16_26_continuous_ambush_combat_test tests/m16_26_continuous_ambush_combat_test.cpp)
 target_link_libraries(oasis_m16_26_continuous_ambush_combat_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_26_continuous_ambush_combat COMMAND oasis_m16_26_continuous_ambush_combat_test)
+
+add_executable(oasis_m16_27_first_divergence_test tests/m16_27_first_divergence_test.cpp)
+target_link_libraries(oasis_m16_27_first_divergence_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_27_first_divergence COMMAND oasis_m16_27_first_divergence_test)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
@@ -410,6 +414,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_m16_24_sat_forensics
         oasis_m16_25_weapon_particles_sat
         oasis_m16_26_continuous_ambush_combat
+        oasis_m16_27_first_divergence
         oasis_differential_oracle_comparison
         oasis_sat_pipeline_contract
         oasis_camera_controller

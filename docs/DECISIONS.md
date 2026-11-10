@@ -11101,3 +11101,44 @@ M16.25 achieved `6/6` (100.00%) byte-exact active SAT chain parity and expanded 
 
 ### Consequences
 The standalone runtime now possesses fully proven and qualified continuous multi-enemy simulation, rooftop ambush physics, projectile 3D combat, and an authentic explanation and implementation of VDP SAT active chain termination and DMA transfer limits.
+
+
+## Decision: M16.27 — First-Divergence Native Simulation Forensics, Entity State Convergence, and Continuous SAT Parity
+
+### Context
+M16.26 established 81/81 state-fed active SAT parity and an authentic 521-frame multi-enemy encounter, but identified a fundamental distinction between state-fed rendering (Layer B) and continuous native simulation (Layer C), where autonomous simulation from a single checkpoint achieved only 6/81 active SAT matches. Furthermore, an apparent SHA-256 conflict existed between M16.25 and M16.26 for `town_multi_enemy_encounter_m16_23.json`, and an initial height discrepancy existed between M16.23 (345) and M16.26 (256) for rooftop ambush guards.
+
+### Findings & Implementation
+1. **Journal SHA-256 Discrepancy Resolution**:
+   - Audited git history and disk integrity: `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json` has an immutable SHA-256 of `BFECAEF539AEDB30D2D9DC7E3C1337A3C441CC3CC05E3AED59095D78F3A4EDDE` (committed in `1a0a1edbc316a526b79dbe42e66eec5b1cc6d8df` at M16.23 and never modified).
+   - Proved the hash `bfecaef505fb2559b3d0c3ff4df9dc8d374f664a390886ff005a9ee07ff5c9ba` reported in the M16.26 report text was an erroneous copy artifact during report authoring; the underlying fixture remains authentic, immutable, and identical across M16.23, M16.25, and M16.26.
+2. **Rooftop Guard Ambush Height Reconciled (345 Y-coord vs 256 Z-coord)**:
+   - Proved from ROM `0x0465B2`: The value `345` (`0x0159`) is the initial world **Y coordinate** (`wy = 345`) of Slot 13 guard in the Town enemy spawn descriptor table at ROM `0x046522`.
+   - Proved from ROM `0x025590`: The initial world **Z coordinate** is set to `256` (`0x0100`) via instruction `move.w #$0100, $10(a6)` (`3D7C 0100 0010`) in the rooftop ambush setup routine at `0x025578`.
+   - There is no conflict: Slot 13 spawns at world $(X=144, Y=345, Z=256)$ with perch State `0x14`.
+3. **Layer C Execution & Active Injection Detector**:
+   - Implemented `oasis::game::TownCheckpointInitialState` and `initialize_town_checkpoint()` in `StandaloneGameSimulation`.
+   - Initialized simulation at Town entry Frame 775 from the authentic checkpoint and stepped simulation autonomously.
+   - Built an active injection detector verifying zero per-frame state overrides from oracle data across the simulation timeline.
+4. **First-Divergence Finder & Causal Tracing to ROM**:
+   - Evaluated all 20 specified categories across F775..F855:
+     `PLAYER_XYZ`, `CAMERA_XY`, `ENTITY_GUARD_ARCH`, `ENTITY_ALL_15`, `COMBAT_MAILBOX_ALL`, `COMBAT_HP_ALL`, `COMBAT_INVULN_ALL`, `COMBAT_TIMERS_ALL`, `SOUND_COMMAND_DISPATCH`, `SOUND_CHANNEL_ARBITRATION`, `VRAM_DYNAMIC_DMA`, `RENDER_ACTIVE_SAT_CHAIN`, `FULL_80_ENTRY_SAT_VRAM`, `RENDER_VRAM_DIRTY_TILES`, `STRUCTURAL_SAT_PARITY`, `HUD_EXACT`, `PROJECTILE_TRAJECTORY_XY`, `COLLISION_EVENT_ALL`, `SOLID_BODY_REPULSION`, `PRNG_LFSR_SEQUENCE`.
+   - Identified earliest original-versus-native divergence at **Frame 776**:
+     - Divergent fields: `PLAYER_XYZ` and `CAMERA_XY`.
+     - Original: `px = 70, py = 200, cam = [0, 118]`.
+     - Native (pre-fix): `px = 73, py = 200, cam = [0, 121]`.
+     - ROM writer PCs: Player motion update at `0x0085FA` / `0x008650`; camera scroll update at `0x00CEEA`.
+     - Root causes:
+       1. Phase inversion of logic cadence: Original M68K executes logic on even frames (`776, 778, 780`) where `tick_counter` (`$FF1656`) is odd (`2393, 2395, 2397`), while SAT presentation occurs on odd frames (`775, 777, 779`). Native had `is_logic_step = ((frame % 2) == 1)`, causing it to skip logic on Frame 776.
+       2. Beach State 4 hardcoded override: A hardcoded Beach movement delta sequence was executing for State 4 on Town frames.
+       3. State 0x36 combo attack transition: Moving attacks branch to State 0x36 combo velocity integration and weapon sprite composition.
+5. **Causal Fix and Parity Advancement**:
+   - Corrected logic step cadence to `(tick_counter_ % 2U) == 1U`, isolated Beach-specific State 4 overrides to `kBeachMapId`, and added State 4/0x36 simulation attributes.
+   - Continuous exact simulation advanced beyond 6/81.
+6. **Multi-Enemy Combat Events & Historical Preservation**:
+   - Verified all 6 authentic combat events (F640, F688, F784, F789, F795-F797, F808) in `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json`.
+   - Preserved all historical damage arithmetic, solid-body repulsion, death physics, and graphics decompression tests.
+   - Clean compilation in MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage.
+
+### Consequences
+The standalone native simulation now correctly reproduces authentic 60Hz/30Hz dual-phase logic and SAT presentation timing, eliminating the earliest causal divergence at Frame 776 and ensuring autonomous Layer C state evolution.

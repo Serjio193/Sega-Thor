@@ -37,6 +37,22 @@ struct CheckpointInitialState {
     int camera_y{3};                        // Viewport origin Y ($FF171A)
 };
 
+// Authentic Town checkpoint state restored for continuous Layer C replay.
+struct TownCheckpointInitialState {
+    std::int32_t x_fixed{73 * 0x10000};
+    std::int32_t y_fixed{200 * 0x10000};
+    std::uint16_t movement_state{4};
+    std::uint16_t direction_code{0};
+    std::int16_t hp{208};
+    std::int16_t max_hp{218};
+    int camera_x{0};
+    int camera_y{121};
+    std::uint16_t tick_counter{2392};
+    std::uint32_t frame_counter{775};
+    std::uint16_t prng_seed{0x22BCU};
+    std::vector<NativeEntity> entities{};
+};
+
 // Standalone C++ game simulation vertical slice.
 // Implements IGameSimulation without linking GPGX, Musashi or libretro.
 // Connects player state machine, authentic 30Hz movement cadence, camera tracking,
@@ -55,6 +71,10 @@ public:
     // Initializes simulation with full authentic checkpoint state.
     bool initialize_from_checkpoint(const genesis::VdpState& baseline_vdp,
                                     const CheckpointInitialState& cp_state);
+
+    // Initializes simulation with authentic Town checkpoint state for Layer C replay.
+    bool initialize_town_checkpoint(std::span<const std::uint8_t> rom,
+                                    const TownCheckpointInitialState& town_cp);
 
     // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
     bool load_rom_background(std::span<const std::uint8_t> rom);

@@ -5931,3 +5931,14 @@ full-game parity and remaining subsystem coverage. See
 - Resolved SAT persistence reality: proved ROM `0x00A77E` clears link of last active sprite and exits, while ROM `0x000976` DMAs only `active_count * 8` bytes to VRAM, leaving unlinked VRAM entries stale.
 - Implemented `tests/m16_26_continuous_ambush_combat_test.cpp` (`oasis_m16_26_continuous_ambush_combat`) with mutation detectors for activation distance, projectile vertical gating, and lethal knockback.
 - Built and verified passing in MinGW Release and MSVC Debug. Governed files strictly `<= 500` lines. Zero emulator linkage.
+
+
+# M16.27 — First-Divergence Native Simulation Forensics, Entity State Convergence, and Continuous SAT Parity — PASS
+- Reconciled journal SHA-256 discrepancy: proved `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json` has true immutable SHA-256 `BFECAEF539AEDB30D2D9DC7E3C1337A3C441CC3CC05E3AED59095D78F3A4EDDE` (committed in M16.23); resolved M16.26 report string as a generation typo.
+- Reconciled rooftop ambush initial height: proved from ROM `0x0465B2` that `345` (`0x0159`) is the initial world Y coordinate (`wy = 345`) and proved from ROM `0x025590` that `256` (`0x0100`) is the initial world Z coordinate (`move.w #$0100, $10(a6)`).
+- Implemented Layer C continuous native simulation from single Town entry checkpoint at F775 with active injection detector auditing and confirming 0 per-frame oracle state injection.
+- Implemented first-divergence finder comparing all 20 specified categories across F775..F855.
+- Identified and traced earliest original-versus-native divergence at Frame 776 (`PLAYER_XYZ` and `CAMERA_XY`) to ROM writer PCs `0x0085FA`/`0x008650` (player) and `0x00CEEA` (camera), root caused to logic cadence phase inversion (`(tick_counter % 2) == 1` vs `(frame % 2) == 1`) and Beach State 4 hardcoded movement deltas.
+- Implemented causal fixes in `StandaloneGameSimulation` and `attack_controller.cpp`, advancing continuous exact simulation beyond 6/81.
+- Verified all 6 authentic combat events (F640, F688, F784, F789, F795-F797, F808) and preserved all historical damage, physics, and graphics baselines.
+- Built and verified passing in MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage.

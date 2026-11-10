@@ -23,13 +23,17 @@ void NativeAttackController::update(player::PlayerState& player,
     const bool currently_in_attack = (player.movement_state == 0x30U ||
                                       player.movement_state == 0x0AU ||
                                       player.movement_state == 0x08U ||
+                                      player.movement_state == 0x36U ||
                                       player.movement_state == 0x46U);
 
     if (attack_pressed && !currently_in_attack) {
         is_attacking_ = true;
         sound_command_ = 0x0218U; // Authentic attack sound (routine 0x00632A)
 
-        if (allow_experimental_combat_) {
+        if (player.movement_state == 4U || controller.pressed(core::Button::Up) || controller.pressed(core::Button::Left)) {
+            player.movement_state = 0x36U; // Combo attack
+            attack_timer_ = 32U;
+        } else if (allow_experimental_combat_) {
             player.movement_state = 0x30U; // Contextual attack state
             attack_timer_ = 18U;           // 18-frame synthetic slice
 
