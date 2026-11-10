@@ -122,6 +122,20 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
             return DecodedInstruction(pc, words, mnemonic, "b", [Operand("imm", val=bit_num), Operand("abs_l", val=addr, size="b")], base_cycles=16)
 
+    # Dynamic bit manipulation with register: BTST / BSET / BCLR / BCHG (0x0100..0x01FF)
+    if (w0 & 0xF100) in (0x0100, 0x0140, 0x0180, 0x01C0):
+        bit_op = (w0 >> 6) & 3
+        mnemonic = {0: "BTST", 1: "BCHG", 2: "BCLR", 3: "BSET"}[bit_op]
+        d_reg = (w0 >> 9) & 7
+        dst_mode = (w0 >> 3) & 7
+        dst_reg = w0 & 7
+        if dst_mode == 7 and dst_reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + 2)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            return DecodedInstruction(pc, words, mnemonic, "b", [Operand("reg_d", reg=d_reg, size="b"), Operand("abs_l", val=addr, size="b")], base_cycles=12)
+        elif dst_mode == 0:
+            return DecodedInstruction(pc, words, mnemonic, "l", [Operand("reg_d", reg=d_reg, size="l"), Operand("reg_d", reg=dst_reg, size="l")], base_cycles=8)
+
     # BRA / Bcc: 0x6000..0x6F00
     if (w0 & 0xF000) == 0x6000:
         cond_codes = {
@@ -247,6 +261,10 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
             disp = struct.unpack_from(">h", rom, pc + offset)[0]
             words.append(disp & 0xFFFF)
             dst_op = Operand("disp_a", reg=dst_reg, val=disp, size=sz)
+        elif dst_mode == 7 and dst_reg == 1:
+            addr = struct.unpack_from(">I", rom, pc + offset)[0]
+            words.extend([(addr >> 16) & 0xFFFF, addr & 0xFFFF])
+            dst_op = Operand("abs_l", val=addr, size=sz)
         else:
             raise NotImplementedError(f"Unsupported MOVE dst mode={dst_mode} reg={dst_reg} at 0x{pc:06X}")
 
@@ -332,6 +350,12 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 disp = struct.unpack_from(">h", rom, pc + 2)[0]
                 words.append(disp & 0xFFFF)
                 return DecodedInstruction(pc, words, mnemonic, "l", [Operand("disp_a", reg=src_reg, val=disp, size="l"), Operand("reg_d", reg=reg, size="l")], base_cycles=12)
+        elif opmode == 6:  # ADD.L / SUB.L (Dn, <ea>)
+            mnemonic = "SUB" if is_sub else "ADD"
+            if src_mode == 5:
+                disp = struct.unpack_from(">h", rom, pc + 2)[0]
+                words.append(disp & 0xFFFF)
+                return DecodedInstruction(pc, words, mnemonic, "l", [Operand("reg_d", reg=reg, size="l"), Operand("disp_a", reg=src_reg, val=disp, size="l")], base_cycles=16)
         elif opmode == 1:  # ADD.W / SUB.W (<ea>, Dn)
             mnemonic = "SUB" if is_sub else "ADD"
             if src_mode == 0:
@@ -365,6 +389,12 @@ def decode_at(rom: bytes, pc: int) -> DecodedInstruction:
                 disp = struct.unpack_from(">h", rom, pc + 2)[0]
                 words.append(disp & 0xFFFF)
                 return DecodedInstruction(pc, words, "CMP", "w", [Operand("disp_a", reg=src_reg, val=disp), Operand("reg_d", reg=d_dst)], base_cycles=8)
+
+    # JSR: 0x4EB9
+    if w0 == 0x4EB9:
+        target = struct.unpack_from(">I", rom, pc + 2)[0]
+        words.extend([(target >> 16) & 0xFFFF, target & 0xFFFF])
+        return DecodedInstruction(pc, words, "JSR", "l", [Operand("abs_l", val=target, size="l")], branch_target=target, base_cycles=16)
 
     # JMP: 0x4EC0..0x4EFF
     if (w0 & 0xFFC0) == 0x4EC0:

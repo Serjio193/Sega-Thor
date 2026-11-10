@@ -1,3 +1,40 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.243: Cross-Track ROM Semantic Audit, Portable Entity State Dispatch, and Real Gameplay Integration Proof; Authoritative Reconciliation of Routine 0x00E682 as entity_timer_tick_and_yield; Exact 60-Instruction 1:1 IR Coverage Audit of Raster Scroll Subsystem 0x00D2B4 & 0x00D344; Recompilation of Connected Entity State-Dispatch Subsystem 0x0059A8..0x0059BA Jump Table, Helper 0x005C82, and States 12-17 Totaling 80 Instructions Across 6 CFG Blocks; Three-Way Differential Proof Across 6 Authentic Paths + 3 Mutation Tests)
+
+## Milestone M15.243 Reverse Engineering Summary
+
+### Section 66: Cross-Track ROM Semantic Audit & Connected Entity State Dispatch
+
+#### 1. Routine `0x00E682`: `entity_timer_tick_and_yield` (Cross-Track Audit)
+- **Original Address:** `0x00E682..0x00E6AA` (38 bytes core yield, SHA-256 `80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F`; 40 bytes extended range `0x00E682..0x00E6AC`, SHA-256 `E1C1CA4F7CE879E1BCDD6B4141DD5EB3381E4468142719C13CC183085D1AF71C`).
+- **Evidence & Root Cause Reconciliation:**
+  * Earlier experimental pilot metadata in M15.240/M15.241 mislabeled `0x00E682` as "Camera Viewport Coordinator" from an early synthetic mock, conflicting with Standalone M16.19 (`entity_timer_tick_and_yield`) and earlier M15.224 (`Entity Action/Animation Freeze Timer & Damage Stun Gatekeeper`).
+  * Audited via `tools/generate_rom_00e682_semantic_audit.py` and `data/thor-evidence/rom_00e682_semantic_audit_m15_243.json`:
+    - `A6` consistently points to an entity instance record in Work RAM (`$FF8000..$FF8FFF`, slot stride `0xBC` = 188 bytes).
+    - Checks freeze/stun flags (`btst #6, 54(a6)`), decrements timer `157(a6)`, evaluates animation timer `130(a6)`.
+    - At `0x00E6A6`: `ADDQ.l #4, A7; RTS` deliberately pops the immediate caller's return frame from `(A7)`, aborting the sub-action and returning directly to the grandparent dispatcher (`0x0254EA`).
+    - Static ROM scan identified 44 direct callers across entity behavior scripts.
+  * **Canonical Status:** Deprecated the "Camera Viewport Coordinator" label; `entity_timer_tick_and_yield` is confirmed as the single authoritative semantic name.
+
+#### 2. Raster Scroll & Parallax Coordinator (`0x00D2B4` & `0x00D344`) Instruction Audit
+- **Evidence:** Audited via `tools/generate_scroll_subsystem_audit.py` and `data/thor-evidence/scroll_subsystem_instruction_audit_m15_243.json`.
+- **Instruction Count Reconciliation:** Reconciled the 61 reported estimate in M15.242 against the exact static disassembly: `0x00D2B4..0x00D342` contains exactly **39** instructions (`connected_00d2b4_ir.json`: 39 ops), and `0x00D344..0x00D396` contains exactly **21** instructions (`connected_00d344_ir.json`: 21 ops), totaling **60** M68000 instructions mapped 1:1 with zero skipped paths.
+- **Scroll RAM Layout Reconciliation:** Clarified `$FFA000..$FFA800` (general VDP DMA staging buffer) vs `$FFFB5C` (HScroll table), `$FFFF5C` (VScroll table), `$FF1344` / `$FF1348` (scroll register mirrors), and `$FF16F0` (scroll flags).
+
+#### 3. Connected Entity State-Dispatch Subsystem (`0x0059A8`)
+- **Original Addresses:**
+  * Dispatcher & PC-Indexed Jump Table: `0x0059A8..0x0059BA` (5 instructions, 18 bytes) + 59-word table (`0x0059BA..0x005A30`, 118 bytes).
+  * Connected Helper: `0x005C82..0x005CC6` (18 instructions, 70 bytes).
+  * State 12 Action Handler: `0x005CC8..0x005CF6` (12 instructions, 48 bytes).
+  * States 13 & 16 Handler: `0x005CF8..0x005DA4` (37 instructions, 174 bytes).
+  * State 15 Idle Exit: `0x005DC6..0x005DC8` (1 instruction `RTS`, 2 bytes).
+  * States 14 & 17 Handler: `0x005DC8..0x005DE4` (7 instructions, 28 bytes).
+  * **Total:** 80 distinct original M68000 instructions across 6 CFG blocks (340 bytes of executable code).
+- **Assumptions & Continuation Boundaries:**
+  * Validated dynamic jump table relative offset computation `A0 = (0x0059BA + D0) + *(int16_t*)(0x0059BA + D0)`.
+  * Uncompiled states (e.g., State 0 at `0x0061F6`) cleanly yield `ValidUncompiledPc`.
+  * Out-of-bounds or odd dispatch indices ($\ge 118$ or misaligned) trigger M68000 Vector 3 (`OriginalCpuException`).
+- **Test Status:** Verified 100% bit-exact parity across Pinned GPGX CPU Reference, Mode A Stepper, and Mode B Portable C++ in `tests/thor_ir_entity_dispatch_diff_test.cpp` across 6 authentic execution paths + 3 mutation tests.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-09 (M15.238: Non-Leaf Automatic Recompilation, Dynamic Call Resolution and Scheduler-Safe Mixed Execution; Mathematical Disjoint Residual Accounting Reconciliation Total Guest Steps 17,627,770 = 9,730,133 Idle + 5,127,961 Production Native + 1,463,307 Qualified Experimental Native + 1,306,369 Remaining Non-Idle Interpreted Steps, Zero Unclassified; Coordinator Hotspot Forensics; Mixed Execution Architecture Upgrades in tools/thor_recompiler/decoder.py and tools/thor_recompiler/codegen_step.py Supporting BSR Subroutine Call / Return Address Stack Management, Caller Preemption / Resumption, DBRA Loops, Dynamic Jump Table Dispatch JMP (An), LEA disp(PC, Xn), ADDA.W (An), CMPA.L #imm, BSET.B, and BCLR.B; Versioned Dynamic Jump Table Manifest in data/thor-fixtures/indirect_target_manifest_m15_238.json; Unified Linux Runner build/auto-migrator/m15_238/linux-runner/oasis_gameplay_session, SHA256 b57c288d21c91066d72121a63a4ae339e8e0721614530707d33defa95259861d; Three-Scenario Differential Qualification Across Scenarios C, A, and B: 24/24 Raw Streams Bit-Exact; 0 Contract Faults; Genuine New Native Execution Achieved: Slot 237 0x00D2B4 Camera Viewport Scroll Step Coordinator 667 Calls / 3,124 Stepped Instructions in Scenario C, Slot 238 0x0059A8 Entity Type Action Jump Table Dispatcher 5 Calls / 25 Stepped Instructions in Scenario C, Total +3,149 New Native Steps; Combined Scenario C Native Steps Reaching 6,594,417 / 17,627,770, Raw Native Coverage 37.409%, Non-Idle Dynamic Coverage 83.499%, Remaining Non-Idle Interpreted Steps Reduced to 1,303,220; Authoritative Machine Receipt Verified: combined-clusters-qualification-m15-238-20261109.json)
 
 ## Milestone M15.238 Reverse Engineering Summary

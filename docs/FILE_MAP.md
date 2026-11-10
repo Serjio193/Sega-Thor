@@ -4322,3 +4322,18 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/generate_m15_242_connected_fixtures.py — Generator sampling authentic connected execution fixtures from pinned core ca4be304... (M15.242).
 - tools/benchmark_m15_242.py — Performance benchmark measuring Mode A vs Mode B on connected raster scroll workload across 100,000 iterations (M15.242).
 - tools/generate_m15_242_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.242 (M15.242).
+- tools/generate_rom_00e682_semantic_audit.py — Cross-track semantic audit script analyzing 0x00E682 ROM bytes, 44 callers, A6 entity pointer, and ADDQ.L #4, A7 frame pop yield semantics (M15.243).
+- data/thor-evidence/rom_00e682_semantic_audit_m15_243.json — Authoritative semantic reconciliation report identifying 0x00E682 as entity_timer_tick_and_yield (M15.243).
+- tools/generate_scroll_subsystem_audit.py — Instruction coverage and scroll RAM layout audit script for M15.242 raster scroll subsystem 0x00D2B4 & 0x00D344 (M15.243).
+- data/thor-evidence/scroll_subsystem_instruction_audit_m15_243.json — Exact 60-instruction 1:1 IR coverage audit report and scroll RAM layout reconciliation (M15.243).
+- tools/generate_entity_dispatch_ir.py — Automatic Thor IR and C++20 code generator for the connected entity state-dispatch subsystem 0x0059A8 (80 instructions, 6 CFG blocks) (M15.243).
+- src/tools/thor_ir/entity_dispatch_subsystem_ir.json — Direct ROM-extracted Thor IR JSON representation for connected entity state-dispatch subsystem (0x0059A8, 0x005C82, States 12-17) (M15.243).
+- src/tools/thor_ir/generated/entity_dispatch_portable_routines.hpp — Generated C++20 routines for connected entity state-dispatch subsystem implementing Mode A and Mode B backends (M15.243).
+- data/thor-fixtures/m15_243_ir_manifest.json — Metadata manifest indexing generated Thor IR module and blocks for entity state-dispatch subsystem (M15.243).
+- tools/generate_m15_243_fixtures.py — Generator sampling 6 authentic execution paths (including ValidUncompiledPc and Address Error exception) from pinned core ca4be304... (M15.243).
+- data/thor-fixtures/m15_243_entity_dispatch_fixtures.json — Authoritative frozen CPU hardware reference execution fixtures across 6 entity dispatch paths (M15.243).
+- data/thor-fixtures/m15_243_entity_dispatch_fixtures.hpp — C++ header embedding the 6 frozen entity dispatch reference fixtures for standalone test execution (M15.243).
+- tests/thor_ir_entity_dispatch_diff_test.cpp — Three-way differential verification test achieving 100% bit-exact parity across CPU Reference, Mode A, and Mode B across 6 paths + 3 mutation tests (M15.243).
+- tools/benchmark_m15_243.py — Performance benchmark measuring Mode A vs Mode B on connected entity state-dispatch subsystem across 100,000 iterations (2.06x speedup) (M15.243).
+- data/thor-evidence/combined-clusters-qualification-m15-243-20261110.json — Certified machine evidence receipt for M15.243 qualifying semantic audits, portable entity state dispatch, and 24/24 bit-exact stream matches, validated via ReceiptVerifier (M15.243).
+- tools/generate_m15_243_receipt.py — Machine evidence receipt generator and ReceiptVerifier executor for M15.243 (M15.243).

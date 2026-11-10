@@ -1,0 +1,457 @@
+{
+  "schema": "oasis.rom-semantic-audit.v1",
+  "milestone": "M15.243",
+  "routine": "0x00E682",
+  "canonical_identity": "entity_timer_tick_and_yield",
+  "historical_misnomer": "Camera Viewport State & Clamping Coordinator",
+  "rom_pc_start": "0x00E682",
+  "rom_pc_end": "0x00E6A8",
+  "rom_pc_tail": "0x00E6BA",
+  "byte_lengths": {
+    "core_yield_bytes": 38,
+    "inclusive_rts_bytes": 40,
+    "extended_subsystem_bytes": 56
+  },
+  "sha256": {
+    "core_yield_38b": "80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F",
+    "inclusive_rts_40b": "E1C1CA4F7CE879E1BCDD6B4141DD5EB3381E4468142719C13CC183085D1AF71C",
+    "extended_56b": "F1A4096C140D7D70DD02E27660AA63DE9F6192D14894A790BF3B1D0A913BE02E"
+  },
+  "raw_hex_bytes": {
+    "core_38b": "08ae00060036102e009d6600001c102e0082660000044e75526e002e53401d4000826702588f",
+    "inclusive_40b": "08ae00060036102e009d6600001c102e0082660000044e75526e002e53401d4000826702588f4e75",
+    "extended_56b": "08ae00060036102e009d6600001c102e0082660000044e75526e002e53401d4000826702588f4e750c0000146400fff608ee0006003660ec"
+  },
+  "independent_disassembly": [
+    {
+      "pc": "0x00E682",
+      "mnemonic": "BCLR",
+      "size": "b",
+      "raw_words": [
+        "0x08AE",
+        "0x0006",
+        "0x0036"
+      ],
+      "operands": [
+        {
+          "kind": "imm",
+          "reg": 0,
+          "val": "0x6",
+          "size": "w"
+        },
+        {
+          "kind": "disp_a",
+          "reg": 6,
+          "val": "0x36",
+          "size": "b"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E688",
+      "mnemonic": "MOVE",
+      "size": "b",
+      "raw_words": [
+        "0x102E",
+        "0x009D"
+      ],
+      "operands": [
+        {
+          "kind": "disp_a",
+          "reg": 6,
+          "val": "0x9d",
+          "size": "b"
+        },
+        {
+          "kind": "reg_d",
+          "reg": 0,
+          "val": "0x0",
+          "size": "b"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E68C",
+      "mnemonic": "BNE",
+      "size": "w",
+      "raw_words": [
+        "0x6600",
+        "0x001C"
+      ],
+      "operands": [
+        {
+          "kind": "branch_disp",
+          "reg": 0,
+          "val": "0xe6aa",
+          "size": "w"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E690",
+      "mnemonic": "MOVE",
+      "size": "b",
+      "raw_words": [
+        "0x102E",
+        "0x0082"
+      ],
+      "operands": [
+        {
+          "kind": "disp_a",
+          "reg": 6,
+          "val": "0x82",
+          "size": "b"
+        },
+        {
+          "kind": "reg_d",
+          "reg": 0,
+          "val": "0x0",
+          "size": "b"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E694",
+      "mnemonic": "BNE",
+      "size": "w",
+      "raw_words": [
+        "0x6600",
+        "0x0004"
+      ],
+      "operands": [
+        {
+          "kind": "branch_disp",
+          "reg": 0,
+          "val": "0xe69a",
+          "size": "w"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E698",
+      "mnemonic": "RTS",
+      "size": "",
+      "raw_words": [
+        "0x4E75"
+      ],
+      "operands": []
+    },
+    {
+      "pc": "0x00E69A",
+      "mnemonic": "ADDQ",
+      "size": "w",
+      "raw_words": [
+        "0x526E",
+        "0x002E"
+      ],
+      "operands": [
+        {
+          "kind": "imm",
+          "reg": 0,
+          "val": "0x1",
+          "size": "w"
+        },
+        {
+          "kind": "disp_a",
+          "reg": 6,
+          "val": "0x2e",
+          "size": "w"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E69E",
+      "mnemonic": "SUBQ",
+      "size": "w",
+      "raw_words": [
+        "0x5340"
+      ],
+      "operands": [
+        {
+          "kind": "imm",
+          "reg": 0,
+          "val": "0x1",
+          "size": "w"
+        },
+        {
+          "kind": "reg_d",
+          "reg": 0,
+          "val": "0x0",
+          "size": "w"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E6A0",
+      "mnemonic": "MOVE",
+      "size": "b",
+      "raw_words": [
+        "0x1D40",
+        "0x0082"
+      ],
+      "operands": [
+        {
+          "kind": "reg_d",
+          "reg": 0,
+          "val": "0x0",
+          "size": "b"
+        },
+        {
+          "kind": "disp_a",
+          "reg": 6,
+          "val": "0x82",
+          "size": "b"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E6A4",
+      "mnemonic": "BEQ",
+      "size": "w",
+      "raw_words": [
+        "0x6702"
+      ],
+      "operands": [
+        {
+          "kind": "branch_disp",
+          "reg": 0,
+          "val": "0xe6a8",
+          "size": "w"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E6A6",
+      "mnemonic": "ADDQ",
+      "size": "l",
+      "raw_words": [
+        "0x588F"
+      ],
+      "operands": [
+        {
+          "kind": "imm",
+          "reg": 0,
+          "val": "0x4",
+          "size": "w"
+        },
+        {
+          "kind": "reg_a",
+          "reg": 7,
+          "val": "0x0",
+          "size": "l"
+        }
+      ]
+    },
+    {
+      "pc": "0x00E6A8",
+      "mnemonic": "RTS",
+      "size": "",
+      "raw_words": [
+        "0x4E75"
+      ],
+      "operands": []
+    }
+  ],
+  "register_conventions": {
+    "A6_base_pointer": "Entity instance slot pointer in RAM ($FF8000..$FF8FFF), slot stride 0xBC (188 bytes)",
+    "A7_stack_pointer": "Guest stack pointer ($FFFE00..$FFFF00)",
+    "D0_scratch": "Timer scratch register holding $9D(A6) and $82(A6)"
+  },
+  "ram_offsets": {
+    "offset_2E_word": "Entity frame / animation tick counter (incremented via ADDQ.w #1, $2E(A6))",
+    "offset_36_byte": "Entity status / activity flags (bit 6 = timer lock / action busy flag)",
+    "offset_82_byte": "Entity action timer (action_timer, decremented via SUBQ.w #1, D0; written back)",
+    "offset_9D_byte": "Secondary entity state timer compared against threshold 20"
+  },
+  "stack_effects": {
+    "instruction": "0x00E6A6: ADDQ.l #4, A7",
+    "mechanism": "Pops 4 bytes from guest stack, discarding caller return address",
+    "behavior": "When action timer is still active (>0), routine yields directly to grandparent caller (entity engine dispatcher 0x0254EA), skipping remainder of caller state handler",
+    "normal_exit": "0x00E698 RTS (when timer initially 0) or 0x00E6A8 RTS (when timer expires to 0)"
+  },
+  "observed_runtime_entries": {
+    "static_caller_count": 44,
+    "callers": [
+      {
+        "pc": "0x0057D0",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01255A",
+        "type": "BSR.W"
+      },
+      {
+        "pc": "0x012F3C",
+        "type": "BSR.W"
+      },
+      {
+        "pc": "0x01388A",
+        "type": "BSR.W"
+      },
+      {
+        "pc": "0x014848",
+        "type": "BSR.W"
+      },
+      {
+        "pc": "0x017E38",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x019858",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01A54E",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01B64C",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01B7F2",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01BBF8",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01BF84",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01C296",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01C4DC",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01C64C",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01C83C",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01CE48",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01D436",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01E2E0",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01F08A",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01F25A",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01F41C",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01F6B8",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x01F90A",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x020DAA",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x021C20",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x022418",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x0256B8",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x025D30",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x0263FA",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x027DDA",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x0284EE",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x0288C2",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x028DF0",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x0295BA",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02A012",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02A400",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02A6C4",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02AA4E",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02AD4C",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02B1DA",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02B826",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02BFD0",
+        "type": "JSR.L"
+      },
+      {
+        "pc": "0x02C314",
+        "type": "JSR.L"
+      }
+    ]
+  },
+  "root_cause_analysis": {
+    "reconciliation": "Standalone M16.19 finding verified. Hybrid M15.240/M15.241 pilot used synthetic mock routine labeled Camera Viewport Coordinator due to proximity to camera scroll code and hand-written fixture states. The actual ROM subroutine at 0x00E682 is definitively entity_timer_tick_and_yield.",
+    "cross_track_status": "UNIFIED_PASS"
+  }
+}

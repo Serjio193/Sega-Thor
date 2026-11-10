@@ -1,0 +1,461 @@
+{
+  "schema": "oasis.scroll-subsystem-audit.v1",
+  "milestone": "M15.243",
+  "subsystem": "Connected Raster Scroll & Parallax Coordinator",
+  "routines": [
+    "0x00D2B4",
+    "0x00D344"
+  ],
+  "instruction_count_audit": {
+    "historical_preliminary_reported": 61,
+    "preliminary_breakdown": {
+      "0x00D2B4_reported": 38,
+      "0x00D344_reported": 23
+    },
+    "canonical_rom_m68k_count": 60,
+    "canonical_breakdown": {
+      "0x00D2B4": 39,
+      "0x00D344": 21
+    },
+    "thor_ir_op_count": 60,
+    "reconciliation_explanation": "The preliminary count of 61 in M15.242 was a pre-compilation estimate (38 caller + 23 callee). Exhaustive static decoding confirms 0x00D2B4 contains exactly 39 instructions and 0x00D344 contains exactly 21 instructions, totaling exactly 60 instructions. The Thor IR pipeline generates exactly 39 ops for 0x00D2B4 and 21 ops for 0x00D344 (60 ops total). Zero instructions were skipped or omitted.",
+    "unmapped_instructions": 0,
+    "coverage_percentage": 100.0
+  },
+  "caller_00d2b4_mapping": [
+    {
+      "rom_pc": "0x00D2B4",
+      "m68k_mnemonic": "BSR",
+      "ir_opcode": "Call",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2B8",
+      "m68k_mnemonic": "BCLR",
+      "ir_opcode": "Bclr",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2BE",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2C2",
+      "m68k_mnemonic": "BSET",
+      "ir_opcode": "Bset",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2CA",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2CE",
+      "m68k_mnemonic": "BTST",
+      "ir_opcode": "Btst",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2D6",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2DA",
+      "m68k_mnemonic": "BTST",
+      "ir_opcode": "Btst",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2E2",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2E6",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2EC",
+      "m68k_mnemonic": "CMPA",
+      "ir_opcode": "Compare",
+      "ir_cycles": 6,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2F2",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2F4",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2F6",
+      "m68k_mnemonic": "MOVEQ",
+      "ir_opcode": "Move",
+      "ir_cycles": 4,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2F8",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2FA",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2FC",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D2FE",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D300",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D302",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D304",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D306",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D308",
+      "m68k_mnemonic": "DBRA",
+      "ir_opcode": "Dbra",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D30C",
+      "m68k_mnemonic": "BRA",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D310",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D316",
+      "m68k_mnemonic": "CMPA",
+      "ir_opcode": "Compare",
+      "ir_cycles": 6,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D31C",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D31E",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D320",
+      "m68k_mnemonic": "MOVEQ",
+      "ir_opcode": "Move",
+      "ir_cycles": 4,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D322",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D324",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D328",
+      "m68k_mnemonic": "DBRA",
+      "ir_opcode": "Dbra",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D32C",
+      "m68k_mnemonic": "BRA",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D330",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D336",
+      "m68k_mnemonic": "CMPA",
+      "ir_opcode": "Compare",
+      "ir_cycles": 6,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D33C",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D33E",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D340",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D342",
+      "m68k_mnemonic": "RTS",
+      "ir_opcode": "Return",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    }
+  ],
+  "callee_00d344_mapping": [
+    {
+      "rom_pc": "0x00D344",
+      "m68k_mnemonic": "BCLR",
+      "ir_opcode": "Bclr",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D34A",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D34E",
+      "m68k_mnemonic": "BSET",
+      "ir_opcode": "Bset",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D356",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D35A",
+      "m68k_mnemonic": "BTST",
+      "ir_opcode": "Btst",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D362",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D366",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D36C",
+      "m68k_mnemonic": "CMPA",
+      "ir_opcode": "Compare",
+      "ir_cycles": 6,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D372",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D374",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D376",
+      "m68k_mnemonic": "MOVEQ",
+      "ir_opcode": "Move",
+      "ir_cycles": 4,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D378",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D37A",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D37C",
+      "m68k_mnemonic": "DBRA",
+      "ir_opcode": "Dbra",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D380",
+      "m68k_mnemonic": "BRA",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D384",
+      "m68k_mnemonic": "LEA",
+      "ir_opcode": "Lea",
+      "ir_cycles": 12,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D38A",
+      "m68k_mnemonic": "CMPA",
+      "ir_opcode": "Compare",
+      "ir_cycles": 6,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D390",
+      "m68k_mnemonic": "BEQ",
+      "ir_opcode": "Branch",
+      "ir_cycles": 10,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D392",
+      "m68k_mnemonic": "ADDQ",
+      "ir_opcode": "Add",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D394",
+      "m68k_mnemonic": "MOVE",
+      "ir_opcode": "Move",
+      "ir_cycles": 8,
+      "status": "1_TO_1_EXACT_MATCH"
+    },
+    {
+      "rom_pc": "0x00D396",
+      "m68k_mnemonic": "RTS",
+      "ir_opcode": "Return",
+      "ir_cycles": 16,
+      "status": "1_TO_1_EXACT_MATCH"
+    }
+  ],
+  "memory_semantics_audit": {
+    "ram_buffer_architecture": {
+      "0xFFA000_to_0xFFA800": "General VDP tilemap staging and DMA transfer buffer; unreferenced in direct scanline raster scroll calculations.",
+      "0xFFFB5C": "Active scanline H-scroll table buffer (224 scanlines x 4 bytes = 896 bytes). Plane A offset at +0, Plane B offset at +2.",
+      "0xFFFF5C": "Active 2-column V-scroll table buffer (20 columns x 4 bytes = 80 bytes). Plane A offset at +0, Plane B offset at +2.",
+      "0xFF1344": "Full-screen Horizontal Scroll register mirror (written directly when per-line raster scrolling is disabled).",
+      "0xFF1348": "Full-screen Vertical Scroll register mirror (written directly when 2-column vertical scrolling is disabled).",
+      "0xFF16F0": "Display and Scroll subsystem mode flags: Bit 0: 2-line parallax step enable; Bit 1: Per-line horizontal scroll enable; Bit 2: 2-column vertical scroll enable; Bit 3: Plane A scroll update dirty flag; Bit 4: Plane B scroll update dirty flag.",
+      "0xFF1716": "Sentinel plane selector base address compared against A0 to dynamically select Plane A (+0) vs Plane B (+2) destination offsets."
+    },
+    "status": "MEMORY_SEMANTICS_VERIFIED_EXACT"
+  }
+}
