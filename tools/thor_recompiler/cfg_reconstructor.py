@@ -84,8 +84,11 @@ def reconstruct_cfg(
     compiled_targets: Set[int],
     compiled_windows: List[Tuple[int, int]] | None = None,
     stop_pcs: Set[int] | None = None,
+    decode_fn=None,
 ) -> dict:
     """Reconstruct complete reachable CFG, split into true basic blocks, and emit 1:1 IR."""
+    if decode_fn is None:
+        decode_fn = decode_at
     if compiled_windows is None:
         compiled_windows = [(0x0059A8, 0x0059BA), (0x005C1A, 0x005DE4), (0x00780E, 0x007852)]
     stop_set = set(stop_pcs or ())
@@ -103,9 +106,9 @@ def reconstruct_cfg(
     queue = collections.deque(sorted(entry_roots.keys()))
     while queue:
         pc = queue.popleft()
-        if pc in decoded_map:
+        if pc in decoded_map or pc in stop_set:
             continue
-        insn = decode_at(rom, pc)
+        insn = decode_fn(rom, pc)
         decoded_map[pc] = insn
         reachable_pcs.add(pc)
         next_pc = pc + len(insn.raw_words) * 2
@@ -173,7 +176,7 @@ def reconstruct_cfg(
                 queue.append(next_pc)
         elif m in ("BSR", "JSR"):
             tgt = insn.branch_target
-            if tgt in entry_roots or in_windows(tgt):
+            if tgt is not None and (tgt in entry_roots or in_windows(tgt)):
                 raw_edges.append((pc, tgt, "CALL_COMPILED"))
                 leaders.add(tgt)
                 if tgt not in decoded_map:
@@ -236,7 +239,8 @@ def reconstruct_cfg(
         key = (from_pc, to_pc, ekind)
         if key not in seen_edges:
             seen_edges.add(key)
-            edge_records.append({"from_pc": f"0x{from_pc:06X}", "to_pc": f"0x{to_pc:06X}", "kind": ekind})
+            to_s = f"0x{to_pc:06X}" if to_pc is not None else "INDIRECT"
+            edge_records.append({"from_pc": f"0x{from_pc:06X}", "to_pc": to_s, "kind": ekind})
 
     for b in blocks:
         last = b["insns"][-1]

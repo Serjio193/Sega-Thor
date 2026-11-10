@@ -4397,3 +4397,31 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/generate_m15_245_receipt.py — Qualification receipt generator & `ReceiptVerifier` runner for M15.245 (211 lines <= 500) (M15.245).
 - data/thor-evidence/combined-clusters-qualification-m15-245-20261110.json — Certified M15.245 qualification receipt (`ReceiptVerifier overall_valid=True, checked_files=57, rejections=[]`) (M15.245).
 - docs/handoffs/STANDALONE_M15_245_ENTITY_HANDLERS_HANDOFF.md — Read-only standalone handoff covering M15.245 entity handlers, `$FF1668` input ring scan, caller continuation, and trace hashes (M15.245).
+- tools/audit_coverage_and_displacement_m15_246.py — Coverage forensics reconciler & strictly disjoint single-owner execution auditor for C/A/B & `longrun_3600f` (M15.246).
+- data/thor-evidence/native_coverage_accounting_m15_246.json — Canonical coverage accounting contract (`oasis.coverage-accounting-contract.v1`), reconciliation, and single-owner histograms (M15.246).
+- tools/generate_m15_246_longrun_journal.py — Deterministic 3,600f input journal (`Scenario C 0..1799` + `INJECTED_SCRIPTED 1800..3599`) & manifest generator (M15.246).
+- tools/m15_246_longrun_capture.cpp — Pinned-GPGX 3,600f capture profiler collecting checkpoints and video/audio/CPU trace hashes (M15.246).
+- data/thor-evidence/longrun_3600f_capture_manifest_m15_246.json — Verified 3,600f gameplay capture manifest (`37,831,953` steps, `12` checkpoints) (M15.246).
+- tools/audit_m15_246_candidates.py — Callee hotspot ranker, candidate ownership verifier (`0x0085E2`/`0x00BCBA`/`0x007A28`), and CFG boundary auditor (M15.246).
+- data/thor-evidence/callee_hotspot_manifest_m15_246.json — Ranked callee ownership & CFG boundary audit manifest (M15.246).
+- tools/thor_recompiler/decoder_ext_m15_246.py — M68000 decoder extensions for `DIVU`/`DIVS #imm`, `EXT`, `SF/ST Dn`, `LEA disp_ax`, `MOVEM.W`, `EXG`, `CMPA`, `JSR (An)` (M15.246).
+- tools/thor_recompiler/insn_lowering_m15_246.py — M15.246 C++20 lowering & Musashi cycle calibration (`MULS`, `DIVU`/`DIVS`, `MOVEM.W` vs `.L`, `ASL`/`LSL`/`LSR`, `ADD.L <ea>, Dn`) (M15.246).
+- tools/thor_recompiler/cpp_emitter_m15_246.py — Auto-splitting M15.246 C++20 emitter producing `<= 259`-line partitioned headers (M15.246).
+- tools/generate_entity_dispatch_m15_246.py — Deterministic IR + 23-header C++20 + 375-row CFG source-map generator for the 7 M15.246 roots (M15.246).
+- src/tools/thor_ir/m15_246_callee_ir.json — Thor IR JSON for the `375` M15.246 instructions across `104` blocks and `183` edges (M15.246).
+- data/thor-fixtures/m15_246_ir_manifest.json — Build manifest for M15.246 connected high-frequency callee IR (M15.246).
+- data/thor-evidence/callee_cfg_source_map_m15_246.json — 375-row PC/IR/C++ source map with `0` overlap and `0` omitted ops (M15.246).
+- src/tools/thor_ir/generated_m15_246/exp246_dispatch_*.hpp — Auto-generated C++20 common, stepper (`part0..part12`), router (`router_p0..p2, router`), Mode B (`mode_b_p0..p2, mode_b`), and umbrella headers (`<= 259` lines) (M15.246).
+- tools/m15_246_gpgx_oracle.cpp — Pinned-GPGX oracle replayer and isolated CPU probe harness with full pre-entry RAM snapshot & Vector 5 trapping (M15.246).
+- tools/generate_m15_246_fixtures.py — Authentic (`18`) + controlled (`12`) GPGX fixture generator emitting JSON and C++ header (M15.246).
+- data/thor-fixtures/m15_246_callee_fixtures.json — 30 frozen pinned-GPGX reference fixtures (`18 AUTHENTIC + 12 CONTROLLED`) (M15.246).
+- data/thor-fixtures/m15_246_callee_fixtures.hpp — C++ header embedding the 30 M15.246 GPGX reference fixtures (M15.246).
+- tests/thor_ir_m15_246_diff_test.cpp — Three-way bit/cycle-exact differential (`30/30`), cross-module M15.244/245/246 continuations, and `12/12` mutation contracts suite (M15.246).
+- src/tools/thor_ir/exp246_dispatch_hybrid_adapter.hpp — Hybrid runner step adapter registering default-disabled `m15246p` (M15.246).
+- tools/build_m15_246_runner.py — Isolated WSL builder compiling `oasis_gameplay_session` with `0059a8p`, `m15245p`, and `m15246p` (M15.246).
+- tools/run_m15_246_portable_ab.py — Four-configuration (`RUN_A..D`) A/B/C/D + `longrun_3600f` parity harness across `32/32` streams and `12/12` 300f checkpoints (M15.246).
+- tools/benchmark_m15_246.py — 10-trial Release Mode A vs Mode B benchmark and integrated timing reporter (M15.246).
+- data/thor-evidence/benchmark_m15_246_report.json — Verified M15.246 Mode A (`24.655 ms`) vs Mode B (`18.122 ms`, `1.361x`) and integrated timing report (M15.246).
+- tools/generate_m15_246_receipt.py — Qualification receipt generator & `ReceiptVerifier` runner for M15.246 (`139` checked files, `0` rejections) (M15.246).
+- data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
+- docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).

@@ -1,3 +1,21 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.246: Coverage Forensics Reconciling M15.242 vs M15.245; 3,600-Frame Gameplay Capture `37,831,953` Steps; Callee Verdicts on `0x0085E2`/`0x00BCBA`/`0x007A28`/`0x0032E8`/`0x003820`; `375` Newly Compiled Instructions Across `7` Unowned Roots; Musashi `MOVEM.W` Refresh & `ADD.L <ea>, Dn` Timing Discoveries; `32/32` Bit-Exact Multi-Scenario Streams + `127,790` C / `214,941` 3,600f Steps)
+
+## Milestone M15.246 Reverse Engineering Summary
+
+### Section 69: Long-Run 3,600-Frame Capture, Coverage Reconciliation, and High-Frequency Connected Callees (`0x00F0D2`, `0x00E6BA`, `0x006DD2`, `0x00BCBA`/`0x00BCD8`, `0x015AE2`, `0x02ED20`)
+
+#### 1. Native Coverage Reconciliation & Single-Owner Disjoint Accounting (`oasis.coverage-accounting-contract.v1`)
+- **Evidence:** `tools/audit_coverage_and_displacement_m15_246.py` -> `data/thor-evidence/native_coverage_accounting_m15_246.json`.
+- **Resolved Discrepancy:** M15.242 reported `6,637,240` (`37.652%` / `84.041%`) by combining `196` active prod helpers (`5,145,887`) + `13` executed disabled experimental Slots `222..242` (`1,484,756` -> `6,630,643` actual disk sum) + `+6,597` hardcoded constant drift in `tools/generate_m15_239_receipt.py`. M15.245 disabled experimental slots (`ORACLE_OWNER_APPROVAL = PENDING`), reporting `5,145,887 + 463 + 28,912 = 5,175,262` (`29.359%` / `65.529%`) with `0` active overlap.
+
+#### 2. 3,600-Frame Capture & Candidate Verdicts (`tools/m15_246_longrun_capture.cpp`, `tools/audit_m15_246_candidates.py`)
+- **Evidence:** `data/thor-evidence/longrun_3600f_capture_manifest_m15_246.json`, `data/thor-evidence/callee_hotspot_manifest_m15_246.json`.
+- **Verdicts:** `0x0085E2` -> `REJECTED_PRODUCTION_OWNED` (`m68k_0085e2_instruction_step.cpp`); `0x00BCBA` + `0x00BCD8` -> `SELECTED_UNOWNED_CALLEE`; `0x007A28` -> `DEFERRED_LOW_ROI` (`20` C / `20` 3600f entries); `0x0032E8` -> `DEFERRED_BUSY_WAIT` (`4` PCs VBlank spin); `0x003820` -> `QUARANTINED_DECOMPRESSOR`; `0x00F0D2`, `0x00E6BA`, `0x006DD2`, `0x015AE2`, `0x02ED20` -> `SELECTED` (`375` unique insns, `104` blocks, `183` edges, `0` prod/M15.244/M15.245 overlap; stops cleanly before prod `0x02EDCA`, `0x02EEA0`, `0x0085E2` and M15.245 `0x006E28`, `0x006E4A`, `0x006E7A`).
+
+#### 3. Reverse-Engineered M68000 Instruction Timing Discoveries Against Musashi (`m68kops.h`)
+- **Discovery A (`MOVEM.W` vs `MOVEM.L` bus refresh):** Inspected pinned GPGX `core/m68k/m68kops.h` (`lines 15139..15601`): 32-bit `MOVEM.L` (`0x48E7`, `0x4CDF`) invokes `SKIP_BUS_REFRESH()`, whereas 16-bit `MOVEM.W` (`0x4C99` at `0x00BDA6`/`0x00BDAA`) does NOT. Emitting `skip_refresh=false` for `MOVEM.W` resolved the `-14` master-cycle drift in Scenario A frame `693` and Scenario C frame `639` with bit-exact parity.
+- **Discovery B (`ADD.L <ea>, Dn` base cycles):** Verified `0x006DEC ADD.L 78(A6), D1` executes in `18` cycles (`6 + 12`), not `20` (`8 + 12` applies only when `<ea>` is `Dn`/`An`/`#imm`), matching GPGX `98/98` cycles on `ctrl_6de2_resume_to_m245_6e4a`.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.245: Live GPGX Profiling & 25-Handler Ownership Audit Excluding Production Overlaps; Caller Continuation Topology `0x005670 -> 0x0059B8 JMP (A0)` Direct Entry `1,908` Times; 16 Unowned Roots Totaling 508 New M68000 Instructions / 230 Blocks / 397 Edges Including `0x007DC8..0x007EC2` `$FF1668` Ring Input Gate & `0x007E96` Nonlocal SP Unwind; `28/28` GPGX Three-Way Parity & `60,307` Combined Disjoint Portable Steps Across Scenarios C/A/B)
 
 ## Milestone M15.245 Reverse Engineering Summary

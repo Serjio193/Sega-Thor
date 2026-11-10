@@ -1,3 +1,28 @@
+# ADR-20261110-M15-246-LONG-RUN-CAPTURE-AND-CALLEE-RECOMPILATION — Long-Run 3,600-Frame Gameplay Capture, Coverage Forensics & Single-Owner Accounting, Connected High-Frequency Callee Recompilation (`m15246p`), and 4-Config Parity Proof
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. Historical Scenario C native counts reported at M15.242 (`6,637,240`, `37.652%/84.041%`) differed from M15.245 (`5,175,262`, `29.359%/65.529%`), creating ambiguity around ownership and net progress.
+2. M15.245 qualified `59,516` disjoint portable steps across entity handlers (`m15245p`), while high-frequency non-entity callees (`0x00F0D2 -> 0x00E6BA`, `0x00BCBA`/`0x00BCD8`, `0x015AE2`, `0x02ED20`) and state `0x006DD2` remained interpreted in `ORIGINAL_CPU`, and Scenario C lacked a reproducible `3,600`-frame extension beyond `1,800f`.
+
+**Decisions:**
+1. **Coverage Forensics & Canonical Single-Owner Accounting (`tools/audit_coverage_and_displacement_m15_246.py`, `data/thor-evidence/native_coverage_accounting_m15_246.json`):**
+   - Established canonical accounting contract `oasis.coverage-accounting-contract.v1` enforcing strictly 1 owner per dynamic M68000 instruction (`PRODUCTION_HELPER`, `M15_244_PORTABLE`, `M15_245_PORTABLE`, `M15_246_PORTABLE`, `ORIGINAL_CPU_NON_IDLE`, `IDLE_LOOP_ORIGINAL_CPU`).
+   - Proved M15.242 `6,637,240` included `196` active prod helpers (`5,145,887`) + `13` executed disabled experimental Slots `222..242` (`1,484,756` -> `6,630,643` actual disk sum) + `+6,597` hardcoded receipt formula drift in `generate_m15_239_receipt.py`; M15.245 kept experimental slots disabled and added `463 + 28,912` portable steps (`5,175,262`) with `0` overlap.
+2. **Reproducible 3,600-Frame Original Gameplay Capture & Callee Hotspot Audit (`tools/generate_m15_246_longrun_journal.py`, `tools/m15_246_longrun_capture.cpp`, `tools/audit_m15_246_candidates.py`):**
+   - Preserved Scenario C `0..1799` verbatim and appended deterministic `INJECTED_SCRIPTED` inputs (`1800..3599`) executed live on pinned GPGX (`ca4be304...`): `37,831,953` total steps (`15,098,646` idle / `22,733,307` non-idle), `3,599` VBL ticks, `12` checkpoints (`300..3600`), trace SHA256 `2cc765d9...`, video `049d8957...`, audio `16379ce6...`.
+   - Audited candidates across C, A, B, and `longrun_3600f`: rejected `0x0085E2` (`REJECTED_PRODUCTION_OWNED`, `m68k_0085e2_instruction_step.cpp`), deferred `0x007A28` (`DEFERRED_LOW_ROI`, `20` C / `20` 3600f entries), deferred `0x0032E8` (`DEFERRED_BUSY_WAIT`), retained `0x003820` quarantine, and selected `7` unowned roots: `0x00F0D2`, `0x00E6BA`, `0x006DD2`, `0x00BCBA`, `0x00BCD8`, `0x015AE2`, `0x02ED20` (`0` overlap against `196` prod / M15.244 / M15.245).
+3. **Math/Shift/MOVEM/Indirect-Call Compiler Extension (`tools/thor_recompiler/{decoder_ext_m15_246,insn_lowering_m15_246,cpp_emitter_m15_246}.py`, `tools/generate_entity_dispatch_m15_246.py`):**
+   - Compiled `375` M68000 instructions (`104` CFG blocks, `183` edges, `0` omitted, `0` overlap) across `23` partitioned headers `<= 259` lines under `src/tools/thor_ir/generated_m15_246/` (`1,013` combined M15.244+245+246 static insns), preserving zero diff on M15.244 and M15.245.
+   - Calibrated Musashi `MOVEM.W` (does NOT call `SKIP_BUS_REFRESH()`) vs `MOVEM.L` / `DIVU` / `DIVS` (calls `SKIP_BUS_REFRESH()`), Booth `MULS.W`, restoring/non-restoring `DIVU.W`/`DIVS.W` (overflow `N|V`, Vector 5 div0 pre-`begin_insn` yield), `ADD.L <ea>, Dn` (`18` vs `20` cycles), `ASL`/`LSL`/`LSR` shifts, `EXT`, `EXG`, `NEG`, `SWAP`, `ADDA`, `CMPA`, `LEA disp_ax`, and `JSR (An)`.
+4. **3-Way Differential Proof, 4-Config Long-Run Integration & Certification (`m15246p`):**
+   - Verified `30/30` GPGX fixtures (`18 AUTHENTIC + 12 CONTROLLED`, `201/375` insns / `56/104` blocks) across GPGX Oracle, Mode A, and fused Mode B + combined M15.244+245+246 continuations + `12/12` mutations PASS in Debug & Release (`tests/thor_ir_m15_246_diff_test.cpp`).
+   - Integrated default-disabled `m15246p` into isolated runner `7fe1002a...` (`RUN_A..D` across C, A, B, and `longrun_3600f`): **`CAB 24/24` + `longrun_3600f 8/8` (`32/32`) bit-exact streams + `12/12` 300f checkpoints**, `0` fallbacks, `0` faults; Scenario C displaced **`127,790`** new M15.246 steps (**`5,303,052`** combined native = **`30.084%` raw / `67.147%` non-idle**), `longrun_3600f` displaced **`214,941`** new steps (**`55.974%` raw / `93.150%` non-idle**). Mode B benchmark speedup **`1.361x`** (`24.655 ms` -> `18.122 ms`), ReceiptVerifier `overall_valid=True` (`139` checks, `0` rejections), Standalone (`529900ce...`) untouched.
+
+**Consequences:**
+- Native coverage accounting is permanently reconciled under a single-owner contract, and high-frequency math, distance/sqrt, hitbox scan, ground physics, and viewport projection callees now execute portably at full 3,600-frame hardware parity.
+
 # ADR-20261110-M15-245-HIGH-FREQUENCY-ENTITY-HANDLERS-AND-CALLER-CONTINUATION — High-Frequency Entity Handler Recompilation, Caller-Side Continuation (`0x005670 -> 0x0059B8`), Input Ring Gate (`0x007DC8..0x007EC2`), and Real Portable Gameplay Scaling (`m15245p`)
 **Status:** Accepted
 **Date:** 2026-11-10

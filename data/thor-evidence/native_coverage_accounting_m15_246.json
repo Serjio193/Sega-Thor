@@ -1,0 +1,217 @@
+{
+  "schema": "oasis.m15_246.coverage-reconciliation-and-ownership.v1",
+  "milestone": "M15.246",
+  "accounting_contract": {
+    "schema": "oasis.coverage-accounting-contract.v1",
+    "rules": [
+      "Every dynamic M68000 instruction execution has strictly ONE owner: ORIGINAL_CPU, PRODUCTION_HELPER, M15_244_PORTABLE, M15_245_PORTABLE, M15_246_PORTABLE, or DISABLED_EXPERIMENTAL_SLOT (never counted unless explicitly enabled in a separate column).",
+      "SCENARIO_TOTAL_STEPS = IDLE_LOOP_STEPS + NON_IDLE_GUEST_INSTRUCTIONS.",
+      "IDLE_LOOP_STEPS = executions inside idle wait loops (0x008ACA..0x008AD0 and 0x008B72..0x008B7A in Scenario C = 9,730,133).",
+      "PRODUCTION_HELPER_STEPS = sum(stepped_instructions) across exactly the 196 active helpers in StatusAdapter.",
+      "PORTABLE_GUEST_STEPS = disjoint instructions executed via Thor IR C++ adapters (0059a8p, m15245p, m15246p), verified with 0 production overlap and 0 prior-portable overlap.",
+      "COMBINED_NATIVE_STEPS = PRODUCTION_HELPER_STEPS + sum(PORTABLE_GUEST_STEPS).",
+      "RAW_NATIVE_PERCENT = 100 * COMBINED_NATIVE_STEPS / SCENARIO_TOTAL_STEPS; NON_IDLE_NATIVE_PERCENT = 100 * COMBINED_NATIVE_STEPS / NON_IDLE_GUEST_INSTRUCTIONS.",
+      "ORIGINAL_CPU_NON_IDLE_STEPS = NON_IDLE_GUEST_INSTRUCTIONS - COMBINED_NATIVE_STEPS (zero duplicate steps)."
+    ]
+  },
+  "historical_reconciliation_scenario_c": [
+    {
+      "milestone": "M15.240 / M15.241 / M15.242 (reported)",
+      "active_prod_helpers": 196,
+      "disabled_experimental_slots_enabled": true,
+      "production_helper_steps": 5145887,
+      "disabled_slots_steps_on_disk": 1484756,
+      "legacy_receipt_formula_drift_plus6597": 6597,
+      "portable_steps": 0,
+      "reported_combined_native_steps": 6637240,
+      "actual_disk_combined_steps": 6630643,
+      "reported_raw_native_percent": 37.652,
+      "reported_non_idle_native_percent": 84.041,
+      "actual_disk_raw_percent": 37.615,
+      "actual_disk_non_idle_percent": 83.957,
+      "root_cause": "Included 196 active helpers (5,145,887) + 13 executed disabled experimental slots 222..242 (1,484,756 -> 6,630,643 disk sum), plus +6,597 hardcoded baseline constant drift from tools/generate_m15_239_receipt.py (5,127,961 base + 00e682/00c9b2/slots)."
+    },
+    {
+      "milestone": "M15.244 (portable-only vs combined)",
+      "active_prod_helpers": 196,
+      "disabled_experimental_slots_enabled_in_report": false,
+      "production_helper_steps": 5145887,
+      "disabled_slots_steps_on_disk_in_comb_run": 1484731,
+      "portable_steps": 463,
+      "active_plus_portable_steps": 5146350,
+      "active_plus_portable_raw_percent": 29.195,
+      "active_plus_portable_non_idle_percent": 65.163,
+      "comb_run_disk_total_with_disabled_slots": 6631081,
+      "root_cause": "Portable qualification ran with 196 active helpers (5,145,887) + 0059a8p (+463) = 5,146,350; run_p_comb_portable also ran with disabled Slots 222..242 = 6,630,618 + 463 = 6,631,081 (-25 overlap against disabled Slot 238 0x0059A8)."
+    },
+    {
+      "milestone": "M15.245",
+      "active_prod_helpers": 196,
+      "disabled_experimental_slots_enabled": false,
+      "production_helper_steps": 5145887,
+      "m15_244_portable_steps": 463,
+      "m15_245_portable_steps": 28912,
+      "combined_native_steps": 5175262,
+      "reported_raw_native_percent": 29.359,
+      "reported_non_idle_native_percent": 65.529,
+      "note_vs_disabled_slots": "Excludes unpromoted Slots 222..242 per ORACLE_OWNER_APPROVAL=PENDING. Static PC overlap with disabled Slot 234 (0x006E7A) is 153 Scenario C steps, 0 overlap with active 196 helpers or M15.244."
+    }
+  ],
+  "m15_238_to_239_prod_delta": {
+    "m238_run_a": 5129453,
+    "m239_run_a": 5145887,
+    "delta": 16434
+  },
+  "disabled_experimental_slots_222_242_c": {
+    "0023cc": 31210,
+    "002512": 138261,
+    "002fda": 64752,
+    "0059a8": 25,
+    "006e7a": 153,
+    "00a9a0": 295976,
+    "00ad76": 871538,
+    "00d168": 5965,
+    "00d266": 1944,
+    "00d2b4": 3124,
+    "015ae2": 16324,
+    "016294": 1976,
+    "02575c": 53508
+  },
+  "disabled_slots_c_total": 1484756,
+  "phase2_disjoint_single_owner_baseline": {
+    "scenario_c": {
+      "total_guest_steps": 17627770,
+      "idle_loop_steps": 9730133,
+      "non_idle_guest_steps": 7897637,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 5145887,
+        "M15_244_PORTABLE": 463,
+        "M15_245_PORTABLE": 28912,
+        "ORIGINAL_CPU_NON_IDLE": 2722375,
+        "IDLE_LOOP_ORIGINAL_CPU": 9730133
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 5175262,
+      "raw_native_percent": 29.359,
+      "non_idle_native_percent": 65.529,
+      "caller_005670_bypass_0059b8_entries": 853,
+      "dispatch_0059a8_steps_owned_by_005670": 4265,
+      "m15_244_runtime_entries": 53,
+      "m15_245_runtime_entries": 1247
+    },
+    "scenario_a": {
+      "total_guest_steps": 15493548,
+      "idle_loop_steps": 8853218,
+      "non_idle_guest_steps": 6640330,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 4524921,
+        "M15_244_PORTABLE": 231,
+        "M15_245_PORTABLE": 20782,
+        "ORIGINAL_CPU_NON_IDLE": 2094396,
+        "IDLE_LOOP_ORIGINAL_CPU": 8853218
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 4545934,
+      "raw_native_percent": 29.341,
+      "non_idle_native_percent": 68.459,
+      "caller_005670_bypass_0059b8_entries": 753,
+      "dispatch_0059a8_steps_owned_by_005670": 3765,
+      "m15_244_runtime_entries": 29,
+      "m15_245_runtime_entries": 1184
+    },
+    "scenario_b": {
+      "total_guest_steps": 5773843,
+      "idle_loop_steps": 3759080,
+      "non_idle_guest_steps": 2014763,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 1551304,
+        "M15_244_PORTABLE": 97,
+        "M15_245_PORTABLE": 9822,
+        "ORIGINAL_CPU_NON_IDLE": 453540,
+        "IDLE_LOOP_ORIGINAL_CPU": 3759080
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 1561223,
+      "raw_native_percent": 27.04,
+      "non_idle_native_percent": 77.489,
+      "caller_005670_bypass_0059b8_entries": 292,
+      "dispatch_0059a8_steps_owned_by_005670": 1460,
+      "m15_244_runtime_entries": 9,
+      "m15_245_runtime_entries": 418
+    }
+  },
+  "m15_246_disjoint_single_owner": {
+    "scenario_c": {
+      "total_guest_steps": 17627770,
+      "idle_loop_steps": 9730133,
+      "non_idle_guest_steps": 7897637,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 5145887,
+        "M15_244_PORTABLE": 463,
+        "M15_245_PORTABLE": 28912,
+        "M15_246_PORTABLE": 127790,
+        "ORIGINAL_CPU_NON_IDLE": 2594585,
+        "IDLE_LOOP_ORIGINAL_CPU": 9730133
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 5303052,
+      "combined_portable_steps": 157165,
+      "raw_native_percent": 30.084,
+      "non_idle_native_percent": 67.147
+    },
+    "scenario_a": {
+      "total_guest_steps": 15493548,
+      "idle_loop_steps": 8853218,
+      "non_idle_guest_steps": 6640330,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 4524921,
+        "M15_244_PORTABLE": 231,
+        "M15_245_PORTABLE": 20782,
+        "M15_246_PORTABLE": 22079,
+        "ORIGINAL_CPU_NON_IDLE": 2072317,
+        "IDLE_LOOP_ORIGINAL_CPU": 8853218
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 4568013,
+      "combined_portable_steps": 43092,
+      "raw_native_percent": 29.483,
+      "non_idle_native_percent": 68.792
+    },
+    "scenario_b": {
+      "total_guest_steps": 5773843,
+      "idle_loop_steps": 3759080,
+      "non_idle_guest_steps": 2014763,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 1551304,
+        "M15_244_PORTABLE": 97,
+        "M15_245_PORTABLE": 9822,
+        "M15_246_PORTABLE": 1098,
+        "ORIGINAL_CPU_NON_IDLE": 452442,
+        "IDLE_LOOP_ORIGINAL_CPU": 3759080
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 1562321,
+      "combined_portable_steps": 11017,
+      "raw_native_percent": 27.059,
+      "non_idle_native_percent": 77.544
+    },
+    "longrun_3600f": {
+      "total_guest_steps": 37831953,
+      "idle_loop_steps": 15098646,
+      "non_idle_guest_steps": 22733307,
+      "single_owner_histogram": {
+        "PRODUCTION_HELPER": 20914478,
+        "M15_244_PORTABLE": 922,
+        "M15_245_PORTABLE": 45789,
+        "M15_246_PORTABLE": 214941,
+        "ORIGINAL_CPU_NON_IDLE": 1557177,
+        "IDLE_LOOP_ORIGINAL_CPU": 15098646
+      },
+      "sum_check_equals_total": true,
+      "combined_native_steps": 21176130,
+      "combined_portable_steps": 261652,
+      "raw_native_percent": 55.974,
+      "non_idle_native_percent": 93.15
+    }
+  }
+}

@@ -1,0 +1,64 @@
+#pragma once
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_router_p0.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_router_p1.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_router_p2.hpp"
+namespace oasis::recompiler::ir {
+inline bool is_compiled_exp246_dispatch_pc(std::uint32_t pc) noexcept {
+  switch (pc & kBusAddressMask) {
+  case 0x006DD2U: case 0x006DD4U: case 0x006DD6U: case 0x006DDCU: case 0x006DDEU: case 0x006DE2U: case 0x006DE8U: case 0x006DECU: return true;
+  case 0x006DF0U: case 0x006DF4U: case 0x006DF8U: case 0x006DFAU: case 0x006DFEU: case 0x006E04U: case 0x006E06U: case 0x006E08U: return true;
+  case 0x006E0AU: case 0x006E10U: case 0x006E14U: case 0x006E18U: case 0x006E1CU: case 0x006E20U: case 0x006E24U: case 0x00BCBAU: return true;
+  case 0x00BCC4U: case 0x00BCCCU: case 0x00BCD2U: case 0x00BCD4U: case 0x00BCD8U: case 0x00BCE2U: case 0x00BCE8U: case 0x00BCEAU: return true;
+  case 0x00BCF0U: case 0x00BCF4U: case 0x00BCFAU: case 0x00BCFEU: case 0x00BD00U: case 0x00BD02U: case 0x00BD06U: case 0x00BD08U: return true;
+  case 0x00BD0CU: case 0x00BD0EU: case 0x00BD12U: case 0x00BD16U: case 0x00BD1AU: case 0x00BD1CU: case 0x00BD20U: case 0x00BD24U: return true;
+  case 0x00BD28U: case 0x00BD2AU: case 0x00BD2CU: case 0x00BD2EU: case 0x00BD30U: case 0x00BD32U: case 0x00BD34U: case 0x00BD36U: return true;
+  case 0x00BD38U: case 0x00BD3CU: case 0x00BD40U: case 0x00BD46U: case 0x00BD4AU: case 0x00BD4EU: case 0x00BD52U: case 0x00BD54U: return true;
+  case 0x00BD56U: case 0x00BD5AU: case 0x00BD5CU: case 0x00BD5EU: case 0x00BD62U: case 0x00BD64U: case 0x00BD66U: case 0x00BD6AU: return true;
+  case 0x00BD6CU: case 0x00BD6EU: case 0x00BD72U: case 0x00BD74U: case 0x00BD76U: case 0x00BD7AU: case 0x00BD7CU: case 0x00BD7EU: return true;
+  case 0x00BD82U: case 0x00BD84U: case 0x00BD86U: case 0x00BD88U: case 0x00BD8CU: case 0x00BD8EU: case 0x00BD92U: case 0x00BD94U: return true;
+  case 0x00BD96U: case 0x00BD9AU: case 0x00BD9CU: case 0x00BD9EU: case 0x00BDA0U: case 0x00BDA2U: case 0x00BDA6U: case 0x00BDAAU: return true;
+  case 0x00BDAEU: case 0x00BDB0U: case 0x00BDB2U: case 0x00BDB6U: case 0x00BDB8U: case 0x00BDBAU: case 0x00BDBCU: case 0x00BDC0U: return true;
+  case 0x00BDC4U: case 0x00BDC6U: case 0x00BDC8U: case 0x00BDCCU: case 0x00BDCEU: case 0x00BDD0U: case 0x00BDD4U: case 0x00BDD8U: return true;
+  case 0x00BDDAU: case 0x00BDDCU: case 0x00BDDEU: case 0x00BDE0U: case 0x00BDE4U: case 0x00BDE8U: case 0x00BDEAU: case 0x00BDEEU: return true;
+  case 0x00BDF4U: case 0x00BDF8U: case 0x00BDFCU: case 0x00BE00U: case 0x00BE02U: case 0x00BE06U: case 0x00BE08U: case 0x00BE0CU: return true;
+  case 0x00BE0EU: case 0x00BE12U: case 0x00BE14U: case 0x00BE18U: case 0x00BE1CU: case 0x00BE1EU: case 0x00BE20U: case 0x00BE22U: return true;
+  case 0x00BE24U: case 0x00BE28U: case 0x00BE2AU: case 0x00BE2EU: case 0x00BE32U: case 0x00BE36U: case 0x00BE3AU: case 0x00BE3CU: return true;
+  case 0x00BE3EU: case 0x00BE40U: case 0x00BE42U: case 0x00BE46U: case 0x00BE48U: case 0x00BE4CU: case 0x00BE50U: case 0x00BE54U: return true;
+  case 0x00BE5AU: case 0x00BE5CU: case 0x00BE5EU: case 0x00BE60U: case 0x00BE64U: case 0x00BE68U: case 0x00BE6EU: case 0x00BE72U: return true;
+  case 0x00BE78U: case 0x00BE7CU: case 0x00BE82U: case 0x00BE86U: case 0x00BE8AU: case 0x00BE8EU: case 0x00BE92U: case 0x00BE96U: return true;
+  case 0x00E6BAU: case 0x00E6BEU: case 0x00E6C0U: case 0x00E6C4U: case 0x00E6CAU: case 0x00E6CEU: case 0x00E6D2U: case 0x00E6D6U: return true;
+  case 0x00E6D8U: case 0x00E6DAU: case 0x00E6DCU: case 0x00E6DEU: case 0x00E6E0U: case 0x00E6E2U: case 0x00E6E4U: case 0x00E6E8U: return true;
+  case 0x00E6EAU: case 0x00E6EEU: case 0x00F0D2U: case 0x00F0D6U: case 0x00F0D8U: case 0x00F0DAU: case 0x00F0DCU: case 0x00F0DEU: return true;
+  case 0x00F0E0U: case 0x00F0E2U: case 0x00F0E6U: case 0x00F0EAU: case 0x015AE2U: case 0x015AE6U: case 0x015AEAU: case 0x015AECU: return true;
+  case 0x015AF0U: case 0x015AF2U: case 0x015AF6U: case 0x015AF8U: case 0x015AFCU: case 0x015AFEU: case 0x015B02U: case 0x015B06U: return true;
+  case 0x015B0CU: case 0x015B12U: case 0x015B14U: case 0x015B18U: case 0x015B1EU: case 0x015B24U: case 0x015B28U: case 0x015B2CU: return true;
+  case 0x015B32U: case 0x015B38U: case 0x015B3CU: case 0x015B42U: case 0x015B48U: case 0x015B4CU: case 0x015B50U: case 0x015B56U: return true;
+  case 0x015B5CU: case 0x015B60U: case 0x015B66U: case 0x015B6CU: case 0x015B72U: case 0x015B78U: case 0x015B7EU: case 0x015B84U: return true;
+  case 0x015B8AU: case 0x015B90U: case 0x015B96U: case 0x015B9CU: case 0x015BA2U: case 0x015BA8U: case 0x015BAEU: case 0x015BB2U: return true;
+  case 0x015BB8U: case 0x015BBEU: case 0x015BC4U: case 0x015BCAU: case 0x015BCEU: case 0x015BD4U: case 0x015BDAU: case 0x015BE0U: return true;
+  case 0x015BE6U: case 0x015BEAU: case 0x015BF0U: case 0x015BF6U: case 0x015BFCU: case 0x015C02U: case 0x015C06U: case 0x015C0CU: return true;
+  case 0x015C12U: case 0x015C18U: case 0x015C1EU: case 0x015C20U: case 0x015C24U: case 0x015C28U: case 0x015C2EU: case 0x015C34U: return true;
+  case 0x015C3AU: case 0x015C40U: case 0x015C44U: case 0x02ED20U: case 0x02ED26U: case 0x02ED2CU: case 0x02ED30U: case 0x02ED38U: return true;
+  case 0x02ED3EU: case 0x02ED44U: case 0x02ED48U: case 0x02ED4CU: case 0x02ED4EU: case 0x02ED50U: case 0x02ED54U: case 0x02ED56U: return true;
+  case 0x02ED58U: case 0x02ED5CU: case 0x02ED5EU: case 0x02ED60U: case 0x02ED64U: case 0x02ED66U: case 0x02ED68U: case 0x02ED6CU: return true;
+  case 0x02ED6EU: case 0x02ED70U: case 0x02ED74U: case 0x02ED76U: case 0x02ED7AU: case 0x02ED7EU: case 0x02ED80U: case 0x02ED82U: return true;
+  case 0x02ED86U: case 0x02ED88U: case 0x02ED8AU: case 0x02ED8EU: case 0x02ED90U: case 0x02ED92U: case 0x02ED96U: case 0x02ED98U: return true;
+  case 0x02ED9AU: case 0x02ED9EU: case 0x02EDA0U: case 0x02EDA4U: case 0x02EDA6U: case 0x02EDA8U: case 0x02EDAAU: case 0x02EDAEU: return true;
+  case 0x02EDB0U: case 0x02EDB2U: case 0x02EDB6U: case 0x02EDB8U: case 0x02EDBAU: case 0x02EDBEU: case 0x02EDC0U: case 0x02EDC2U: return true;
+  case 0x02EDC6U: case 0x02EDC8U: case 0x02EDE6U: case 0x02EDECU: case 0x02EDF2U: case 0x02EDF8U: case 0x02EDFCU: case 0x02EE02U: return true;
+  case 0x02EE06U: case 0x02EE0AU: case 0x02EE0EU: case 0x02EE12U: case 0x02EE16U: case 0x02EE1AU: case 0x02EE1EU: case 0x02EE24U: return true;
+  case 0x02EE2AU: case 0x02EE2EU: case 0x02EE32U: case 0x02EE38U: case 0x02EE3CU: case 0x02EE40U: case 0x02EE44U: case 0x02EE4AU: return true;
+  case 0x02EE4CU: case 0x02EE4EU: case 0x02EE52U: case 0x02EE54U: case 0x02EE56U: case 0x02EE58U: case 0x02EE5CU: case 0x02EE60U: return true;
+  case 0x02EE64U: case 0x02EE66U: case 0x02EE68U: case 0x02EE6AU: case 0x02EE6CU: case 0x02EE6EU: case 0x02EE70U: case 0x02EE74U: return true;
+  case 0x02EE78U: case 0x02EE7CU: case 0x02EE7EU: case 0x02EE80U: case 0x02EE82U: case 0x02EE86U: case 0x02EE88U: case 0x02EE8AU: return true;
+  case 0x02EE8EU: case 0x02EE90U: case 0x02EE92U: case 0x02EE96U: case 0x02EE98U: case 0x02EE9AU: case 0x02EE9EU: return true;
+  default: return false; }
+}
+template <typename Bus> inline bool step_one_exp246_dispatch_ir(Bus& bus, std::uint32_t pc, std::uint32_t& out_pc) noexcept {
+  const std::uint32_t m = pc & kBusAddressMask;
+  if (m >= 0x006DD2U && m <= 0x00E6DEU) return step_exp246_chunk_0(bus, m, out_pc);
+  if (m >= 0x00E6E0U && m <= 0x02EE74U) return step_exp246_chunk_1(bus, m, out_pc);
+  if (m >= 0x02EE78U && m <= 0x02EE9EU) return step_exp246_chunk_2(bus, m, out_pc);
+  return false;
+}
+} // namespace oasis::recompiler::ir

@@ -1,0 +1,200 @@
+#pragma once
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part0.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part1.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part2.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part3.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part4.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part5.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part6.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part7.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part8.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part9.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part10.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part11.hpp"
+#include "tools/thor_ir/generated_m15_246/exp246_dispatch_part12.hpp"
+namespace oasis::recompiler::ir {
+template <typename Bus> inline bool step_exp246_chunk_0(Bus& bus, std::uint32_t pc, std::uint32_t& out_pc) noexcept {
+  switch (pc & kBusAddressMask) {
+  case 0x006DD2U: return step_ir_0x006DD2(bus, out_pc);
+  case 0x006DD4U: return step_ir_0x006DD4(bus, out_pc);
+  case 0x006DD6U: return step_ir_0x006DD6(bus, out_pc);
+  case 0x006DDCU: return step_ir_0x006DDC(bus, out_pc);
+  case 0x006DDEU: return step_ir_0x006DDE(bus, out_pc);
+  case 0x006DE2U: return step_ir_0x006DE2(bus, out_pc);
+  case 0x006DE8U: return step_ir_0x006DE8(bus, out_pc);
+  case 0x006DECU: return step_ir_0x006DEC(bus, out_pc);
+  case 0x006DF0U: return step_ir_0x006DF0(bus, out_pc);
+  case 0x006DF4U: return step_ir_0x006DF4(bus, out_pc);
+  case 0x006DF8U: return step_ir_0x006DF8(bus, out_pc);
+  case 0x006DFAU: return step_ir_0x006DFA(bus, out_pc);
+  case 0x006DFEU: return step_ir_0x006DFE(bus, out_pc);
+  case 0x006E04U: return step_ir_0x006E04(bus, out_pc);
+  case 0x006E06U: return step_ir_0x006E06(bus, out_pc);
+  case 0x006E08U: return step_ir_0x006E08(bus, out_pc);
+  case 0x006E0AU: return step_ir_0x006E0A(bus, out_pc);
+  case 0x006E10U: return step_ir_0x006E10(bus, out_pc);
+  case 0x006E14U: return step_ir_0x006E14(bus, out_pc);
+  case 0x006E18U: return step_ir_0x006E18(bus, out_pc);
+  case 0x006E1CU: return step_ir_0x006E1C(bus, out_pc);
+  case 0x006E20U: return step_ir_0x006E20(bus, out_pc);
+  case 0x006E24U: return step_ir_0x006E24(bus, out_pc);
+  case 0x00BCBAU: return step_ir_0x00BCBA(bus, out_pc);
+  case 0x00BCC4U: return step_ir_0x00BCC4(bus, out_pc);
+  case 0x00BCCCU: return step_ir_0x00BCCC(bus, out_pc);
+  case 0x00BCD2U: return step_ir_0x00BCD2(bus, out_pc);
+  case 0x00BCD4U: return step_ir_0x00BCD4(bus, out_pc);
+  case 0x00BCD8U: return step_ir_0x00BCD8(bus, out_pc);
+  case 0x00BCE2U: return step_ir_0x00BCE2(bus, out_pc);
+  case 0x00BCE8U: return step_ir_0x00BCE8(bus, out_pc);
+  case 0x00BCEAU: return step_ir_0x00BCEA(bus, out_pc);
+  case 0x00BCF0U: return step_ir_0x00BCF0(bus, out_pc);
+  case 0x00BCF4U: return step_ir_0x00BCF4(bus, out_pc);
+  case 0x00BCFAU: return step_ir_0x00BCFA(bus, out_pc);
+  case 0x00BCFEU: return step_ir_0x00BCFE(bus, out_pc);
+  case 0x00BD00U: return step_ir_0x00BD00(bus, out_pc);
+  case 0x00BD02U: return step_ir_0x00BD02(bus, out_pc);
+  case 0x00BD06U: return step_ir_0x00BD06(bus, out_pc);
+  case 0x00BD08U: return step_ir_0x00BD08(bus, out_pc);
+  case 0x00BD0CU: return step_ir_0x00BD0C(bus, out_pc);
+  case 0x00BD0EU: return step_ir_0x00BD0E(bus, out_pc);
+  case 0x00BD12U: return step_ir_0x00BD12(bus, out_pc);
+  case 0x00BD16U: return step_ir_0x00BD16(bus, out_pc);
+  case 0x00BD1AU: return step_ir_0x00BD1A(bus, out_pc);
+  case 0x00BD1CU: return step_ir_0x00BD1C(bus, out_pc);
+  case 0x00BD20U: return step_ir_0x00BD20(bus, out_pc);
+  case 0x00BD24U: return step_ir_0x00BD24(bus, out_pc);
+  case 0x00BD28U: return step_ir_0x00BD28(bus, out_pc);
+  case 0x00BD2AU: return step_ir_0x00BD2A(bus, out_pc);
+  case 0x00BD2CU: return step_ir_0x00BD2C(bus, out_pc);
+  case 0x00BD2EU: return step_ir_0x00BD2E(bus, out_pc);
+  case 0x00BD30U: return step_ir_0x00BD30(bus, out_pc);
+  case 0x00BD32U: return step_ir_0x00BD32(bus, out_pc);
+  case 0x00BD34U: return step_ir_0x00BD34(bus, out_pc);
+  case 0x00BD36U: return step_ir_0x00BD36(bus, out_pc);
+  case 0x00BD38U: return step_ir_0x00BD38(bus, out_pc);
+  case 0x00BD3CU: return step_ir_0x00BD3C(bus, out_pc);
+  case 0x00BD40U: return step_ir_0x00BD40(bus, out_pc);
+  case 0x00BD46U: return step_ir_0x00BD46(bus, out_pc);
+  case 0x00BD4AU: return step_ir_0x00BD4A(bus, out_pc);
+  case 0x00BD4EU: return step_ir_0x00BD4E(bus, out_pc);
+  case 0x00BD52U: return step_ir_0x00BD52(bus, out_pc);
+  case 0x00BD54U: return step_ir_0x00BD54(bus, out_pc);
+  case 0x00BD56U: return step_ir_0x00BD56(bus, out_pc);
+  case 0x00BD5AU: return step_ir_0x00BD5A(bus, out_pc);
+  case 0x00BD5CU: return step_ir_0x00BD5C(bus, out_pc);
+  case 0x00BD5EU: return step_ir_0x00BD5E(bus, out_pc);
+  case 0x00BD62U: return step_ir_0x00BD62(bus, out_pc);
+  case 0x00BD64U: return step_ir_0x00BD64(bus, out_pc);
+  case 0x00BD66U: return step_ir_0x00BD66(bus, out_pc);
+  case 0x00BD6AU: return step_ir_0x00BD6A(bus, out_pc);
+  case 0x00BD6CU: return step_ir_0x00BD6C(bus, out_pc);
+  case 0x00BD6EU: return step_ir_0x00BD6E(bus, out_pc);
+  case 0x00BD72U: return step_ir_0x00BD72(bus, out_pc);
+  case 0x00BD74U: return step_ir_0x00BD74(bus, out_pc);
+  case 0x00BD76U: return step_ir_0x00BD76(bus, out_pc);
+  case 0x00BD7AU: return step_ir_0x00BD7A(bus, out_pc);
+  case 0x00BD7CU: return step_ir_0x00BD7C(bus, out_pc);
+  case 0x00BD7EU: return step_ir_0x00BD7E(bus, out_pc);
+  case 0x00BD82U: return step_ir_0x00BD82(bus, out_pc);
+  case 0x00BD84U: return step_ir_0x00BD84(bus, out_pc);
+  case 0x00BD86U: return step_ir_0x00BD86(bus, out_pc);
+  case 0x00BD88U: return step_ir_0x00BD88(bus, out_pc);
+  case 0x00BD8CU: return step_ir_0x00BD8C(bus, out_pc);
+  case 0x00BD8EU: return step_ir_0x00BD8E(bus, out_pc);
+  case 0x00BD92U: return step_ir_0x00BD92(bus, out_pc);
+  case 0x00BD94U: return step_ir_0x00BD94(bus, out_pc);
+  case 0x00BD96U: return step_ir_0x00BD96(bus, out_pc);
+  case 0x00BD9AU: return step_ir_0x00BD9A(bus, out_pc);
+  case 0x00BD9CU: return step_ir_0x00BD9C(bus, out_pc);
+  case 0x00BD9EU: return step_ir_0x00BD9E(bus, out_pc);
+  case 0x00BDA0U: return step_ir_0x00BDA0(bus, out_pc);
+  case 0x00BDA2U: return step_ir_0x00BDA2(bus, out_pc);
+  case 0x00BDA6U: return step_ir_0x00BDA6(bus, out_pc);
+  case 0x00BDAAU: return step_ir_0x00BDAA(bus, out_pc);
+  case 0x00BDAEU: return step_ir_0x00BDAE(bus, out_pc);
+  case 0x00BDB0U: return step_ir_0x00BDB0(bus, out_pc);
+  case 0x00BDB2U: return step_ir_0x00BDB2(bus, out_pc);
+  case 0x00BDB6U: return step_ir_0x00BDB6(bus, out_pc);
+  case 0x00BDB8U: return step_ir_0x00BDB8(bus, out_pc);
+  case 0x00BDBAU: return step_ir_0x00BDBA(bus, out_pc);
+  case 0x00BDBCU: return step_ir_0x00BDBC(bus, out_pc);
+  case 0x00BDC0U: return step_ir_0x00BDC0(bus, out_pc);
+  case 0x00BDC4U: return step_ir_0x00BDC4(bus, out_pc);
+  case 0x00BDC6U: return step_ir_0x00BDC6(bus, out_pc);
+  case 0x00BDC8U: return step_ir_0x00BDC8(bus, out_pc);
+  case 0x00BDCCU: return step_ir_0x00BDCC(bus, out_pc);
+  case 0x00BDCEU: return step_ir_0x00BDCE(bus, out_pc);
+  case 0x00BDD0U: return step_ir_0x00BDD0(bus, out_pc);
+  case 0x00BDD4U: return step_ir_0x00BDD4(bus, out_pc);
+  case 0x00BDD8U: return step_ir_0x00BDD8(bus, out_pc);
+  case 0x00BDDAU: return step_ir_0x00BDDA(bus, out_pc);
+  case 0x00BDDCU: return step_ir_0x00BDDC(bus, out_pc);
+  case 0x00BDDEU: return step_ir_0x00BDDE(bus, out_pc);
+  case 0x00BDE0U: return step_ir_0x00BDE0(bus, out_pc);
+  case 0x00BDE4U: return step_ir_0x00BDE4(bus, out_pc);
+  case 0x00BDE8U: return step_ir_0x00BDE8(bus, out_pc);
+  case 0x00BDEAU: return step_ir_0x00BDEA(bus, out_pc);
+  case 0x00BDEEU: return step_ir_0x00BDEE(bus, out_pc);
+  case 0x00BDF4U: return step_ir_0x00BDF4(bus, out_pc);
+  case 0x00BDF8U: return step_ir_0x00BDF8(bus, out_pc);
+  case 0x00BDFCU: return step_ir_0x00BDFC(bus, out_pc);
+  case 0x00BE00U: return step_ir_0x00BE00(bus, out_pc);
+  case 0x00BE02U: return step_ir_0x00BE02(bus, out_pc);
+  case 0x00BE06U: return step_ir_0x00BE06(bus, out_pc);
+  case 0x00BE08U: return step_ir_0x00BE08(bus, out_pc);
+  case 0x00BE0CU: return step_ir_0x00BE0C(bus, out_pc);
+  case 0x00BE0EU: return step_ir_0x00BE0E(bus, out_pc);
+  case 0x00BE12U: return step_ir_0x00BE12(bus, out_pc);
+  case 0x00BE14U: return step_ir_0x00BE14(bus, out_pc);
+  case 0x00BE18U: return step_ir_0x00BE18(bus, out_pc);
+  case 0x00BE1CU: return step_ir_0x00BE1C(bus, out_pc);
+  case 0x00BE1EU: return step_ir_0x00BE1E(bus, out_pc);
+  case 0x00BE20U: return step_ir_0x00BE20(bus, out_pc);
+  case 0x00BE22U: return step_ir_0x00BE22(bus, out_pc);
+  case 0x00BE24U: return step_ir_0x00BE24(bus, out_pc);
+  case 0x00BE28U: return step_ir_0x00BE28(bus, out_pc);
+  case 0x00BE2AU: return step_ir_0x00BE2A(bus, out_pc);
+  case 0x00BE2EU: return step_ir_0x00BE2E(bus, out_pc);
+  case 0x00BE32U: return step_ir_0x00BE32(bus, out_pc);
+  case 0x00BE36U: return step_ir_0x00BE36(bus, out_pc);
+  case 0x00BE3AU: return step_ir_0x00BE3A(bus, out_pc);
+  case 0x00BE3CU: return step_ir_0x00BE3C(bus, out_pc);
+  case 0x00BE3EU: return step_ir_0x00BE3E(bus, out_pc);
+  case 0x00BE40U: return step_ir_0x00BE40(bus, out_pc);
+  case 0x00BE42U: return step_ir_0x00BE42(bus, out_pc);
+  case 0x00BE46U: return step_ir_0x00BE46(bus, out_pc);
+  case 0x00BE48U: return step_ir_0x00BE48(bus, out_pc);
+  case 0x00BE4CU: return step_ir_0x00BE4C(bus, out_pc);
+  case 0x00BE50U: return step_ir_0x00BE50(bus, out_pc);
+  case 0x00BE54U: return step_ir_0x00BE54(bus, out_pc);
+  case 0x00BE5AU: return step_ir_0x00BE5A(bus, out_pc);
+  case 0x00BE5CU: return step_ir_0x00BE5C(bus, out_pc);
+  case 0x00BE5EU: return step_ir_0x00BE5E(bus, out_pc);
+  case 0x00BE60U: return step_ir_0x00BE60(bus, out_pc);
+  case 0x00BE64U: return step_ir_0x00BE64(bus, out_pc);
+  case 0x00BE68U: return step_ir_0x00BE68(bus, out_pc);
+  case 0x00BE6EU: return step_ir_0x00BE6E(bus, out_pc);
+  case 0x00BE72U: return step_ir_0x00BE72(bus, out_pc);
+  case 0x00BE78U: return step_ir_0x00BE78(bus, out_pc);
+  case 0x00BE7CU: return step_ir_0x00BE7C(bus, out_pc);
+  case 0x00BE82U: return step_ir_0x00BE82(bus, out_pc);
+  case 0x00BE86U: return step_ir_0x00BE86(bus, out_pc);
+  case 0x00BE8AU: return step_ir_0x00BE8A(bus, out_pc);
+  case 0x00BE8EU: return step_ir_0x00BE8E(bus, out_pc);
+  case 0x00BE92U: return step_ir_0x00BE92(bus, out_pc);
+  case 0x00BE96U: return step_ir_0x00BE96(bus, out_pc);
+  case 0x00E6BAU: return step_ir_0x00E6BA(bus, out_pc);
+  case 0x00E6BEU: return step_ir_0x00E6BE(bus, out_pc);
+  case 0x00E6C0U: return step_ir_0x00E6C0(bus, out_pc);
+  case 0x00E6C4U: return step_ir_0x00E6C4(bus, out_pc);
+  case 0x00E6CAU: return step_ir_0x00E6CA(bus, out_pc);
+  case 0x00E6CEU: return step_ir_0x00E6CE(bus, out_pc);
+  case 0x00E6D2U: return step_ir_0x00E6D2(bus, out_pc);
+  case 0x00E6D6U: return step_ir_0x00E6D6(bus, out_pc);
+  case 0x00E6D8U: return step_ir_0x00E6D8(bus, out_pc);
+  case 0x00E6DAU: return step_ir_0x00E6DA(bus, out_pc);
+  case 0x00E6DCU: return step_ir_0x00E6DC(bus, out_pc);
+  case 0x00E6DEU: return step_ir_0x00E6DE(bus, out_pc);
+  default: return false; }
+}
+} // namespace oasis::recompiler::ir

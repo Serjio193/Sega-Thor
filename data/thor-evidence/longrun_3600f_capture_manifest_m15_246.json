@@ -1,0 +1,156 @@
+{
+  "schema": "oasis.m15_246.longrun-3600f-capture-manifest.v1",
+  "milestone": "M15.246",
+  "initial_state_sha256": "0833d94150fefcba091f523c82f8bcb99cbaaa03784eb176bc3c063ffdd776c7",
+  "input_journal_sha256": "1050a32495d0b9767ab6c27362262eeaecf777bcbdbbb52a125f54706f5b4c33",
+  "landmarks_sha256": "3b7a04b60643bc639dc901039c2f96360af3fa8184680ecae4eefafab04f5b11",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "core_sha256": "ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134",
+  "input_provenance": {
+    "frames_0_to_1799": "PINNED_SCENARIO_C_PREFIX",
+    "frames_1800_to_3599": "INJECTED_SCRIPTED"
+  },
+  "frame_count": 3600,
+  "poll_count": 3600,
+  "game_tick_count": 3599,
+  "total_original_steps": 37831953,
+  "idle_steps": 15098646,
+  "non_idle_steps": 22733307,
+  "original_cpu_trace_sha256": "2cc765d9931300e7ac3a66b73fe38f2f2d7f0430c4ddd363a3558b5850698dd7",
+  "video_stream_sha256": "049d8957aa2e8cb3932537a098c8a928bf3d81ae0b5955d7f159d63dc35b093f",
+  "audio_stream_sha256": "16379ce6230d3749c2f07325180b6846c372764382e90d13b4547a497ba469bd",
+  "checkpoint_hashes": [
+    {
+      "frame": 300,
+      "state_sha256": "3656e009aa2dd76d45e9f6e1530854e5e8ab5df7ce4bf37e5d212926eec212a2",
+      "ram_sha256": "cee876af0e17d199fca5a41e3b4382b3abbc08c8ec4260647d9d2047ceae7954",
+      "frame_trace_sha256": "5dcde069ca2c85728bc1fc7585874a023e291721a5fb5ef936827b7eee04793e",
+      "video_frame_sha256": "0fcfb29589a8ab359fe24e79d1825992f8b3fb9f6803d1b73feaf8439c99bdc9",
+      "audio_frame_sha256": "41723547390e1c523428084544ab6a03d6495869f8dee595671e44026a8f1bf3",
+      "total_steps": 2888592,
+      "non_idle_steps": 1023479,
+      "vbl_ticks": 300
+    },
+    {
+      "frame": 600,
+      "state_sha256": "0d9ffc8c3b646443d6ea88a517b70750964c5cdcce1ea97eb9aab0871c6a4221",
+      "ram_sha256": "0e40ec67dd22499e45adc4364643c8c03dbe98dc6b667e59761d193dd6783ef1",
+      "frame_trace_sha256": "1862675bbe5732fa20c02d86387b69d8c7d7baa450ebfbdf3e90808f738d3e58",
+      "video_frame_sha256": "ca67714e7284c986100512494c8cf74128c29b5f79a324e1c38946e1ea5eec78",
+      "audio_frame_sha256": "a433b182e8ae7fcac86860bae0086e54c32439031282418c89466620be93472e",
+      "total_steps": 5773843,
+      "non_idle_steps": 2014763,
+      "vbl_ticks": 600
+    },
+    {
+      "frame": 900,
+      "state_sha256": "50df1e7611643775e83923ff09cf04148a90d95271efba87a58377be2181ba44",
+      "ram_sha256": "125fe44dbd5a1997ca14b61e9f0b60877629f01c7f127edda137afef653854b1",
+      "frame_trace_sha256": "4e44ba9b5af637cb7be6b456b7dda08289388d5912c4dedd457ad007e2f96a67",
+      "video_frame_sha256": "d70a450a6393d55bc1275901d9dbfdb1b4233e72f8d6b4ccb75051e14e14f1c3",
+      "audio_frame_sha256": "c7ed5dccc5e59f8f0a863d394239a0a6c34d910256169bccd5df604d33dff845",
+      "total_steps": 8765180,
+      "non_idle_steps": 3758243,
+      "vbl_ticks": 900
+    },
+    {
+      "frame": 1200,
+      "state_sha256": "158d1b016acfeff23808d7da7a59439cc990bb2f6f944d3bb22e83234b25e069",
+      "ram_sha256": "65b50d45845babbf01a01968e318ba56c6f21da3f9f83649e2e27f4175fccb3c",
+      "frame_trace_sha256": "6fae4e921f110806de0187a02c785c609b9b1e8c4cb48ad5cf7044599576f571",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "6e4c4f93b2cc3908b57f3d3d6d0ff4e7852725d631112cb9d771a1b233699f60",
+      "total_steps": 11711143,
+      "non_idle_steps": 5250075,
+      "vbl_ticks": 1200
+    },
+    {
+      "frame": 1500,
+      "state_sha256": "741291b66847304fffb5793a3c3711baed6bc52cc86c5cebdccd06f6713e61bc",
+      "ram_sha256": "4d52017159932c17147e70409b9820fe814a48c361c70b5370aec8c4fa9ac9d8",
+      "frame_trace_sha256": "7a861afda1ac5319a1d317a6880181660844ede119d92983d1a794756e9f566a",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "2decd9d9683a2eddc20766a7405f51b42578c79456e938c1bda6afb5ea805b7a",
+      "total_steps": 14637331,
+      "non_idle_steps": 6506859,
+      "vbl_ticks": 1500
+    },
+    {
+      "frame": 1800,
+      "state_sha256": "9037d709c15f784901cc82cb31e7c128fd2162afb39de9dfa3cf5119f230079d",
+      "ram_sha256": "aba375fe2f3f6bbabc669c7aaf15ec953078f5ea5b3c1b29fab55723cf4eaebe",
+      "frame_trace_sha256": "d668bea179f871beb669a0fb7cdabfff4a8392cd2b36ba6ce2ec4d7276ec641e",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "1539cd1505332b798e84376a4f890344619c9b456506364254dbaf4bbbd042c4",
+      "total_steps": 17627770,
+      "non_idle_steps": 7897637,
+      "vbl_ticks": 1800
+    },
+    {
+      "frame": 2100,
+      "state_sha256": "9717f9b303917c73dc87f989cc3a7907e879680a4cdad7ed6ded966860de5c92",
+      "ram_sha256": "8aefd46a6ea44b851157fc76a8036320ae7df46a24bb8663c75ee608ea7fbe0e",
+      "frame_trace_sha256": "f2154f977937764e161de18c82971a317ba07a201a291aff7b0fb48469a42c33",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "2f672af04da1330ce69005ac5d68d3a904caebd7e24b3a9f270ae41246dc00b9",
+      "total_steps": 20612500,
+      "non_idle_steps": 9277471,
+      "vbl_ticks": 2100
+    },
+    {
+      "frame": 2400,
+      "state_sha256": "eb70134c1928833c8aa5a0482d554968af4d02ffd335b15658e3fd20a0a1fbec",
+      "ram_sha256": "86113e0b69b7a4d6452826e53d576efd87bf4790970d3efd140c7e7f7b7fe511",
+      "frame_trace_sha256": "39a6aefbb65112dcaf108f04abb4801a2e098447b093dba336069097f9f4e6f1",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "9fe701390d03b9f8e2489ffd394a1f670e2d27064ab56d9b9d0df57ea1386604",
+      "total_steps": 23592124,
+      "non_idle_steps": 10601285,
+      "vbl_ticks": 2400
+    },
+    {
+      "frame": 2700,
+      "state_sha256": "25e1e079007c4c9c7666abb30e4b1ef107ef848708169b04a5f379dd94713e21",
+      "ram_sha256": "321312355fedf376edba1adc13955c63d924cdf882d0ac8fdb950a3a91e84467",
+      "frame_trace_sha256": "1f22ab8420892937ded46cf9068d4d941bf809f85b64fed603c38b916918cb01",
+      "video_frame_sha256": "de459faf981cef710c0867c53cd9aa8f1f5b17e533c0c0cbc1f56a262de209ba",
+      "audio_frame_sha256": "fb3eb670295b3b2d74d3f28398693e7583c20921285d47a375e0e3f2de8842ef",
+      "total_steps": 26576240,
+      "non_idle_steps": 11988399,
+      "vbl_ticks": 2700
+    },
+    {
+      "frame": 3000,
+      "state_sha256": "b38ceb8c6920e60db4c2bf4bd9e96a9bc005ab89c8015c2cdb666e078385b1a3",
+      "ram_sha256": "28936d425b55c799e049d27850495b33e66e7cd6b4a86e77ce28ee9da894c197",
+      "frame_trace_sha256": "e990da19bd4d6b33b66ed937b5a85fa40f54e27ec3c47449bf2c67a4f29423b9",
+      "video_frame_sha256": "805f89516ae3725e591d02cc0594f250fbc9ab74461f1e03faeed1649f24e9a2",
+      "audio_frame_sha256": "85e59f7e1bb5b3c5e95cccaa8b311f46d61a630145f38ada2c1c6f8ee0ece90c",
+      "total_steps": 29518759,
+      "non_idle_steps": 14420113,
+      "vbl_ticks": 2999
+    },
+    {
+      "frame": 3300,
+      "state_sha256": "6025689cdd16179b616cbd3fef266c4ef350f4ee3cf9e0b73261cdd5bfb67641",
+      "ram_sha256": "e709dc4471251ea0fea1241fc74dff51fa8f5b2a0bb4f2fb53eb65cc49611571",
+      "frame_trace_sha256": "71a70858aa036ea5f0b417a90b5fd665acec0b4710080148aafe833ba2562f66",
+      "video_frame_sha256": "805f89516ae3725e591d02cc0594f250fbc9ab74461f1e03faeed1649f24e9a2",
+      "audio_frame_sha256": "8598f9f1a99ae868a71fe7e65c486f537e3afb41298750ca0cfd653b771ebe43",
+      "total_steps": 33648540,
+      "non_idle_steps": 18549894,
+      "vbl_ticks": 3299
+    },
+    {
+      "frame": 3600,
+      "state_sha256": "f69a8b43c57600e8367004369ec2523b1e8f3b62480068ee9e99528114655a72",
+      "ram_sha256": "17f3db0a2384e9544d6638873fdf2b2e7aad1fba186f0dbc2a0768c55519f56a",
+      "frame_trace_sha256": "4fef0220b42ffbbfc03d4b9bf167598cbb75aae8b4efd5065962a2a52b2415c4",
+      "video_frame_sha256": "805f89516ae3725e591d02cc0594f250fbc9ab74461f1e03faeed1649f24e9a2",
+      "audio_frame_sha256": "bd81058ad0cd8db23db2e9d656df66f1e8bca08ea0cf91bbde88f365010e1a4c",
+      "total_steps": 37831953,
+      "non_idle_steps": 22733307,
+      "vbl_ticks": 3599
+    }
+  ]
+}

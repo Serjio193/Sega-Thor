@@ -1,0 +1,666 @@
+{
+  "schema": "oasis.m15_246.callee-hotspot-manifest.v1",
+  "milestone": "M15.246",
+  "selected_roots": {
+    "0x006DD2": "state_3_entity_action",
+    "0x00BCBA": "callee_bcba_hitbox_scan",
+    "0x00BCD8": "callee_bcd8_hitbox_alt",
+    "0x00E6BA": "callee_e6ba_isqrt",
+    "0x00F0D2": "callee_f0d2_dist2d",
+    "0x015AE2": "callee_15ae2_entity_phys",
+    "0x02ED20": "callee_2ed20_viewport_proj"
+  },
+  "compiled_windows": [
+    [
+      "0x00E6BA",
+      "0x00E6F0"
+    ],
+    [
+      "0x00F0D2",
+      "0x00F0EC"
+    ],
+    [
+      "0x006DD2",
+      "0x006E28"
+    ],
+    [
+      "0x00BCBA",
+      "0x00BE98"
+    ],
+    [
+      "0x015AE2",
+      "0x015C4A"
+    ],
+    [
+      "0x02ED20",
+      "0x02EEA0"
+    ]
+  ],
+  "cfg_summary": {
+    "compiled_instructions": 375,
+    "basic_blocks": 104,
+    "edges": 183,
+    "edge_counts": {
+      "total_edges": 183,
+      "conditional_edges": 108,
+      "unconditional_edges": 20,
+      "dynamic_edges": 0,
+      "dynamic_compiled_edges": 0,
+      "dynamic_uncompiled_edges": 0,
+      "call_edges": 22,
+      "return_edges": 5,
+      "uncompiled_exit_edges": 27
+    },
+    "production_overlap_count": 0,
+    "m15_244_overlap_count": 0,
+    "m15_245_overlap_count": 0
+  },
+  "exception_paths": [
+    {
+      "pc": "0x00E6DC",
+      "op": "DIVU",
+      "vector": 5,
+      "note": "Zero-divide trap Vector 5 (0x0014)"
+    },
+    {
+      "pc": "0x02EE58",
+      "op": "DIVS",
+      "vector": 5,
+      "note": "Zero-divide trap Vector 5 (0x0014)"
+    },
+    {
+      "pc": "0x02EE5C",
+      "op": "DIVS",
+      "vector": 5,
+      "note": "Zero-divide trap Vector 5 (0x0014)"
+    },
+    {
+      "pc": "0x02EE60",
+      "op": "DIVS",
+      "vector": 5,
+      "note": "Zero-divide trap Vector 5 (0x0014)"
+    }
+  ],
+  "candidates_and_verdicts": [
+    {
+      "pc": "0x00F0D2",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "2D distance helper calling 0x00E6BA; 0 overlap; hot math ROI.",
+      "compiled_static_insns": 10,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 1202,
+        "dynamic_steps": 72193,
+        "unique_pcs": 27,
+        "guest_cycles": 1543913,
+        "ram_writes": 6010,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0x2581c": 1202
+        },
+        "return_pcs": {
+          "0x25822": 1202
+        },
+        "call_depths": {
+          "3": 1202
+        },
+        "entity_w0": {
+          "0x2c": 1202
+        },
+        "entity_states": {
+          "0x14": 1202
+        }
+      }
+    },
+    {
+      "pc": "0x00E6BA",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "32-bit integer square root called by 0x00F0D2.",
+      "compiled_static_insns": 18,
+      "observed_entity_region_c_steps": 48153,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 1202,
+        "dynamic_steps": 60173,
+        "unique_pcs": 17,
+        "guest_cycles": 1297517,
+        "ram_writes": 4808,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0xf0e2": 1202
+        },
+        "return_pcs": {
+          "0xf0e6": 1202
+        },
+        "call_depths": {
+          "4": 1202
+        },
+        "entity_w0": {
+          "0x2c": 1202
+        },
+        "entity_states": {
+          "0x14": 1202
+        }
+      }
+    },
+    {
+      "pc": "0x006DD2",
+      "status": "SELECTED_UNOWNED_HANDLER",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "Entity state index 3 (offset 0x06); bridges M15.246 -> M15.245 & 0x0085E2.",
+      "compiled_static_insns": 23,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 21
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0,
+        "guest_cycles": 0,
+        "ram_writes": 0,
+        "nonlocal_returns": 0,
+        "callers": {},
+        "return_pcs": {},
+        "call_depths": {},
+        "entity_w0": {},
+        "entity_states": {}
+      }
+    },
+    {
+      "pc": "0x00BCBA",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "Hitbox/entity collision scan called by M15.244/245; prompt target; includes 0x00BCD8.",
+      "compiled_static_insns": 145,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0,
+        "guest_cycles": 0,
+        "ram_writes": 0,
+        "nonlocal_returns": 0,
+        "callers": {},
+        "return_pcs": {},
+        "call_depths": {},
+        "entity_w0": {},
+        "entity_states": {}
+      }
+    },
+    {
+      "pc": "0x00BCD8",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "Secondary entrypoint into 0x00BCBA hitbox scan called by M15.245.",
+      "compiled_static_insns": 145,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0,
+        "guest_cycles": 0,
+        "ram_writes": 0,
+        "nonlocal_returns": 0,
+        "callers": {},
+        "return_pcs": {},
+        "call_depths": {},
+        "entity_w0": {},
+        "entity_states": {}
+      }
+    },
+    {
+      "pc": "0x015AE2",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "Entity ground physics/displacement helper entering viewport tail.",
+      "compiled_static_insns": 71,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 7098,
+        "dynamic_steps": 170406,
+        "unique_pcs": 1322,
+        "guest_cycles": 615284728,
+        "ram_writes": 6408,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0xdf1a": 7097,
+          "0xfd7a": 1
+        },
+        "return_pcs": {
+          "0xdf1c": 7097,
+          "0xfd7c": 1
+        },
+        "call_depths": {
+          "2": 7097,
+          "4": 1
+        },
+        "entity_w0": {
+          "0x30": 7098
+        },
+        "entity_states": {
+          "0x0": 6193,
+          "0x2": 64,
+          "0x4": 81,
+          "0x6": 60,
+          "0x8": 90,
+          "0xa": 134,
+          "0x12": 107,
+          "0x14": 108,
+          "0x18": 261
+        }
+      }
+    },
+    {
+      "pc": "0x02ED20",
+      "status": "SELECTED_UNOWNED_CALLEE",
+      "current_owner": "M15_246_PORTABLE",
+      "rationale": "Viewport/screen projection routine calling prod 0x02EDCA and 0x02EEA0.",
+      "compiled_static_insns": 108,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 703,
+        "dynamic_steps": 110363,
+        "unique_pcs": 118,
+        "guest_cycles": 1606966,
+        "ram_writes": 7485,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0x2ec3c": 703
+        },
+        "return_pcs": {
+          "0x2ec40": 703
+        },
+        "call_depths": {
+          "2": 703
+        },
+        "entity_w0": {
+          "0x0": 703
+        },
+        "entity_states": {
+          "0x0": 703
+        }
+      }
+    },
+    {
+      "pc": "0x0085E2",
+      "status": "REJECTED_PRODUCTION_OWNED",
+      "current_owner": "PRODUCTION_HELPER(m68k_0085e2_instruction_step.cpp)",
+      "rationale": "Already owned by active production helper m68k_0085e2_instruction_step.cpp.",
+      "compiled_static_insns": 0,
+      "observed_entity_region_c_steps": 336,
+      "observed_entity_region_a_steps": 283,
+      "observed_entity_region_b_steps": 69,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0,
+        "guest_cycles": 0,
+        "ram_writes": 0,
+        "nonlocal_returns": 0,
+        "callers": {},
+        "return_pcs": {},
+        "call_depths": {},
+        "entity_w0": {},
+        "entity_states": {}
+      }
+    },
+    {
+      "pc": "0x007A28",
+      "status": "DEFERRED_LOW_ROI",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Entity state idx 29: 20 C / 20 3600f entries (~227 C steps), 28 uncompiled/complex ops.",
+      "compiled_static_insns": 0,
+      "observed_entity_region_c_steps": 20,
+      "observed_entity_region_a_steps": 30,
+      "observed_entity_region_b_steps": 10,
+      "table_handler_entries": {
+        "scenario_c": 20,
+        "scenario_a": 30,
+        "scenario_b": 10,
+        "longrun_3600f": 20
+      },
+      "longrun_3600f": {
+        "entries": 0,
+        "dynamic_steps": 0,
+        "unique_pcs": 0,
+        "guest_cycles": 0,
+        "ram_writes": 0,
+        "nonlocal_returns": 0,
+        "callers": {},
+        "return_pcs": {},
+        "call_depths": {},
+        "entity_w0": {},
+        "entity_states": {}
+      }
+    },
+    {
+      "pc": "0x0032E8",
+      "status": "DEFERRED_BUSY_WAIT",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "4-insn VBlank spin-wait loop in 0x00307A; not gameplay logic.",
+      "compiled_static_insns": 0,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 155,
+        "dynamic_steps": 1500194,
+        "unique_pcs": 4,
+        "guest_cycles": 82217877153,
+        "ram_writes": 465,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0x308c": 155
+        },
+        "return_pcs": {
+          "0x3090": 155
+        },
+        "call_depths": {
+          "2": 155
+        },
+        "entity_w0": {
+          "0x21ee": 155
+        },
+        "entity_states": {
+          "0x2111": 155
+        }
+      }
+    },
+    {
+      "pc": "0x003820",
+      "status": "QUARANTINED_DECOMPRESSOR",
+      "current_owner": "ORIGINAL_CPU",
+      "rationale": "Nemesis/LZ decompressor explicitly quarantined by AGENTS.md.",
+      "compiled_static_insns": 0,
+      "observed_entity_region_c_steps": 0,
+      "observed_entity_region_a_steps": 0,
+      "observed_entity_region_b_steps": 0,
+      "table_handler_entries": {
+        "scenario_c": 0,
+        "scenario_a": 0,
+        "scenario_b": 0,
+        "longrun_3600f": 0
+      },
+      "longrun_3600f": {
+        "entries": 24,
+        "dynamic_steps": 698168,
+        "unique_pcs": 288,
+        "guest_cycles": 5522296840,
+        "ram_writes": 155502,
+        "nonlocal_returns": 0,
+        "callers": {
+          "0x3278": 1,
+          "0x3356": 1,
+          "0x335c": 1,
+          "0x37d8": 6,
+          "0xd4ee": 12,
+          "0xd54a": 3
+        },
+        "return_pcs": {
+          "0x327c": 1,
+          "0x335a": 1,
+          "0x3360": 1,
+          "0x37dc": 6,
+          "0xd4f4": 12,
+          "0xd550": 3
+        },
+        "call_depths": {
+          "2": 3,
+          "3": 1,
+          "4": 17,
+          "8": 3
+        },
+        "entity_w0": {
+          "0xff": 15,
+          "0x800": 1,
+          "0x1c09": 1,
+          "0x21ee": 3,
+          "0x6701": 1,
+          "0x871a": 1,
+          "0xefde": 2
+        },
+        "entity_states": {
+          "0xf": 1,
+          "0x20": 5,
+          "0x40": 10,
+          "0x4e9": 1,
+          "0xc00": 1,
+          "0x190e": 1,
+          "0x2111": 3,
+          "0xeeee": 2
+        }
+      }
+    }
+  ],
+  "boundary_exits": [
+    {
+      "from_pc": "0x015AE6",
+      "to_pc": "0x016294",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x006DDE",
+      "to_pc": "0x0085E2",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_0085e2_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x006DE8",
+      "to_pc": "0x006E4A",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "M15_245_PORTABLE"
+    },
+    {
+      "from_pc": "0x015AF2",
+      "to_pc": "0x015CCA",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x015AF8",
+      "to_pc": "0x015CB6",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x006DF8",
+      "to_pc": "0x006E2A",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x006DFA",
+      "to_pc": "0x006E4A",
+      "kind": "UNCOMPILED_EXIT",
+      "target_owner": "M15_245_PORTABLE"
+    },
+    {
+      "from_pc": "0x015B18",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EDAA",
+      "to_pc": "0x02EDCA",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02edca_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x015B2C",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EDB2",
+      "to_pc": "0x02EDCA",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02edca_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x006E24",
+      "to_pc": "0x006E7A",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "M15_245_PORTABLE"
+    },
+    {
+      "from_pc": "0x015B3C",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EDBA",
+      "to_pc": "0x02EDCA",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02edca_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x015B50",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EDC2",
+      "to_pc": "0x02EDCA",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02edca_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x015B60",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x015BB2",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EE82",
+      "to_pc": "0x02EEA0",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02eea0_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x02EE8A",
+      "to_pc": "0x02EEA0",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02eea0_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x015BCE",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x02EE92",
+      "to_pc": "0x02EEA0",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02eea0_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x02EE9A",
+      "to_pc": "0x02EEA0",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "PRODUCTION_HELPER(m68k_02eea0_instruction_step.cpp)"
+    },
+    {
+      "from_pc": "0x015BEA",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x015C06",
+      "to_pc": "0x00E66E",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x00BE92",
+      "to_pc": "0x008530",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "ORIGINAL_CPU"
+    },
+    {
+      "from_pc": "0x00BE5A",
+      "to_pc": "INDIRECT",
+      "kind": "CALL_UNCOMPILED",
+      "target_owner": "INDIRECT_VIA_A2(RETURNS_TO_NEXT_PC)"
+    }
+  ]
+}

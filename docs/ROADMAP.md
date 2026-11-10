@@ -1,3 +1,16 @@
+# M15.246 Long-Run Original Gameplay Capture, High-Frequency Callee Recompilation, and Auditable Native Coverage Expansion (`m15246p`) — COMPLETE / VERIFIED LONG-RUN CALLEE & MATH DISPLACEMENT
+
+- **Coverage Forensics & Canonical Accounting (`tools/audit_coverage_and_displacement_m15_246.py`):**
+  * Published `oasis.coverage-accounting-contract.v1` and reconciled historical Scenario C counts (`M15.242` `6,637,240` = `196` active prod `5,145,887` + `13` disabled experimental slots `1,484,756` + `+6,597` legacy receipt formula drift; `M15.245` `5,175,262` kept experimental slots disabled with `0` overlap).
+- **Reproducible 3,600-Frame Capture & Candidate Ownership Audit (`tools/generate_m15_246_longrun_journal.py`, `tools/audit_m15_246_candidates.py`):**
+  * Captured `3,600f` run on pinned GPGX `ca4be304...` (`Scenario C 0..1799` + `INJECTED_SCRIPTED 1800..3599`): `37,831,953` total / `15,098,646` idle / `22,733,307` non-idle, `12` checkpoints (`300..3600`), trace/video/audio hashes recorded.
+  * Issued explicit verdicts: `0x0085E2` `REJECTED_PRODUCTION_OWNED`, `0x00BCBA` + `0x00BCD8` `SELECTED_UNOWNED_CALLEE`, `0x007A28` `DEFERRED_LOW_ROI`, `0x0032E8` `DEFERRED_BUSY_WAIT`, `0x003820` `QUARANTINED`, plus `0x00F0D2`, `0x00E6BA`, `0x006DD2`, `0x015AE2`, `0x02ED20` `SELECTED`.
+- **Extended ROM->IR->C++20 Compiler & 30-Fixture 3-Way Proof (`tools/generate_entity_dispatch_m15_246.py`):**
+  * Recompiled `375` M68000 instructions (`104` blocks, `183` edges, `0` overlap) across `23` headers `<= 259` lines (`1,013` combined M15.244+245+246 static insns), including exact Musashi `MULS.W`/`DIVU.W`/`DIVS.W` (Vector 5 + overflow), `MOVEM.L`/`MOVEM.W` (`SKIP_BUS_REFRESH` parity), `ASL`/`LSL`/`LSR`, `JSR (An)`, `EXT`, `EXG`, `NEG`, `SWAP`, `ADDA`, `CMPA`, `LEA disp_ax`, and `ADD.L <ea>, Dn` cycle fix.
+  * Passed `30/30` pinned GPGX fixtures (`18 AUTHENTIC + 12 CONTROLLED`, `201/375` [53.6%] insns) across GPGX Oracle, Mode A, and Mode B + combined M15.244+245+246 continuations + `12/12` mutations in Debug & Release.
+- **4-Config Runtime Integration (`m15246p`, Runner `7fe1002a...`) & Certification:**
+  * Verified **`CAB 24/24` + `longrun_3600f 8/8` (`32/32` raw streams) + `12/12` 300f checkpoints** bit-exact across `RUN_A/B/C/D`, `0` fallbacks, `0` faults; Scenario C **`127,790`** new M15.246 steps (`5,303,052` combined native = **`30.084%` raw / `67.147%` non-idle**), `longrun_3600f` **`214,941`** new steps (**`55.974%` raw / `93.150%` non-idle**). Benchmark Mode B speedup **`1.361x`** (`24.655 ms` -> `18.122 ms`), ReceiptVerifier `overall_valid=True` (`139` checks, `0` rejections), Standalone (`529900ce...`) untouched.
+
 # M15.245 High-Frequency Entity Handler Recompilation, Caller-Side Continuation, and Long-Run Native Displacement Qualification (`m15245p`) — COMPLETE / VERIFIED SCALED PORTABLE DISPLACEMENT
 
 - **Real GPGX Profiling & Ownership Audit (`tools/m15_245_gpgx_profiler.cpp`, `tools/audit_m15_245_candidates.py`):**
