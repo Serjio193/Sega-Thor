@@ -11142,3 +11142,40 @@ M16.26 established 81/81 state-fed active SAT parity and an authentic 521-frame 
 
 ### Consequences
 The standalone native simulation now correctly reproduces authentic 60Hz/30Hz dual-phase logic and SAT presentation timing, eliminating the earliest causal divergence at Frame 776 and ensuring autonomous Layer C state evolution.
+
+
+## Decision: M16.28 — Full 521-Frame Autonomous Town Replay, Combat Event Causality, and Extended SAT Exactness
+
+### Context
+M16.27 corrected the first continuous native simulation divergence at Frame 776 and achieved 81/81 active SAT parity across the F775–F855 combat window without per-frame state injection. Milestone M16.28 extends autonomous simulation across the entire 521-frame encounter (F595–F1115), verifying that all game events—from the early Beach-to-Town transition through multi-enemy rooftop ambushes, projectile flights, player combat, enemy death lifecycles, and the northern map transition—arise from a single initial state and the original input journal without intermediate state corrections or hidden resets.
+
+### Findings & Implementation
+1. **Provenance & Baseline Integrity**:
+   - Re-verified canonical USA ROM (`Beyond Oasis (USA).md`, size 3,145,728 bytes, SHA-256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+   - Re-verified pinned GPGX core SHA-256 (`ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`).
+   - Verified Town multi-enemy journal (`town_multi_enemy_encounter_m16_23.json`, SHA-256 `bfecaef539aedb30d2d9dc7e3c1337a3c441cc3cc05e3aed59095d78f3a4edde`).
+   - Verified M16.27 baseline commit `5bb8bc4161348062b2c1d09a74106d93686c86cb`.
+2. **One-Shot Replay Architecture & Zero-Injection Assurance**:
+   - Initialized simulation at Frame 595 from the canonical Beach checkpoint (`canonical_beach_frame3600.state`) with player $(258, 77)$, camera $(138, 0)$, HP 208, and movement state 2 (Walk).
+   - Executed 521 continuous simulation steps (F595..F1115) feeding solely original input bitmasks.
+   - Built an active injection detector verifying zero per-frame state overrides, zero position nudging, zero PRNG reseeding, and zero hidden resets across the entire 521-frame run.
+3. **Early Town Transition (F595–F775)**:
+   - Proved Beach-to-Town exit threshold at ROM `0x02E784` (`player_y <= 76`): on Frame 596, player crosses $Y \le 76$, triggering `transition_to_town(false)`.
+   - Player is repositioned to $(160, 488)$, camera configured to $(0, 376)$, Town scene entities (Archway slot 4 + 14 guards slots 5..18) instantiated from ROM `0x046522`, Town tiles uploaded to VDP, and music stop command `0x0002` emitted.
+   - Camera settles to $(0, 288)$ at Frame 617, and player begins moving up into Town at Frame 630 with authentic 30Hz logic / 60Hz SAT presentation cadence.
+4. **Combat Event Causality**:
+   - Rooftop ambush drop at F688: Verified Slot 13 guard activation condition at ROM `0x0255D8` (`abs(dx) + abs(dy) <= 48`) triggers causally from spatial proximity, executing a 54-frame parabolic descent under `-0x0000C000` gravity to $Z = 0$, landing recovery, and transition to ground AI.
+   - Projectile lifecycle (F784–F808): Verified Slot 19 projectile spawn at `0x0256B0`, 3D trajectory, 3D AABB collision at `0x00DF60` (`dx <= 11 && dy <= 11 && z in [0, 40]`), player hit at F808 dealing +2 damage, and flight State `0x0C` to impact State `0x0E`.
+   - Player attack & guard death (F789, F795–F797, F855): Nonlethal hit at F789 (7 -> 5) and lethal hit at F795 (5 -> 0) verified, including knockback elevation, death state 6, landing recovery state 8, sound command `0x0080035A`, and slot release at F843/F855.
+   - Town-to-North transition at F1112: Verified ROM `0x02E920` (`player_y <= 108`) triggers transition to Map `0x0104`.
+5. **Extended SAT Exactness, VDP Persistence & Sound Arbitration**:
+   - Preserved 81/81 active SAT parity across F775–F855.
+   - Proved hardware active chain termination at ROM `0x00A77E` (`clr.b -5(a6, d7.w)` with `rts`) and VDP DMA transfer limit at ROM `0x000976` (`active_count * 8` bytes), confirming why unused VDP entries naturally retain stale data.
+   - Verified spatial sound attenuation (`0x00E7E8`) and channel priority preemption (`0x06112E`).
+6. **Independent Holdout & Negative Mutation Coverage**:
+   - Verified independent trace schemas on `beach_alternative_trace_oracle.json` and `beach_holdout_trace_oracle.json`.
+   - Verified 13 negative mutation guards testing logic phase, Beach leakage, exit thresholds, rooftop trigger distance, AI timers, PRNG sequence, projectile velocity, Z collision window, damage clamping, weapon overlays, hit sparks, SAT link termination, and VRAM persistence.
+   - Built and verified passing in both MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage in `oasis.exe`.
+
+### Consequences
+The standalone native runtime is now fully qualified for autonomous continuous multi-enemy simulation across the complete 521-frame encounter with authentic event causality, zero intermediate state injections, and strict architectural compliance.

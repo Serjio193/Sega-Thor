@@ -5942,3 +5942,12 @@ full-game parity and remaining subsystem coverage. See
 - Implemented causal fixes in `StandaloneGameSimulation` and `attack_controller.cpp`, advancing continuous exact simulation beyond 6/81.
 - Verified all 6 authentic combat events (F640, F688, F784, F789, F795-F797, F808) and preserved all historical damage, physics, and graphics baselines.
 - Built and verified passing in MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage.
+
+
+# M16.28 — Full 521-Frame Autonomous Town Replay, Combat Event Causality, and Extended SAT Exactness — PASS
+- Verified one-shot replay architecture: initialized once at Frame 595 from `canonical_beach_frame3600.state` and evolved autonomously across 521 frames through F1115 without intermediate state injection (verified by active injection detector).
+- Verified early Town transition at F596 (`y <= 76`, ROM `0x02E784`), player reset to $(160, 488)$, camera setup, 15 Town entity spawns, and sound command `0x0002` dispatch. Verified North transition at F1112 (`y <= 108`, ROM `0x02E920`).
+- Verified combat event causality: rooftop guard drop at F688 triggered by spatial proximity `dist <= 48` (ROM `0x0255D8`), projectile spawn at F784 and 3D collision at F808 dealing +2 damage, player attacks at F789 (7 -> 5) and F795 (5 -> 0), knockback, death physics, and slot release.
+- Preserved extended continuous SAT parity across F775..F855 (`81/81`), verified active chain termination at `0x00A77E`, DMA length limiting at `0x000976`, sound priority arbitration (`0x06112E`), and spatial attenuation (`0x00E7E8`).
+- Verified independent holdout traces and implemented 13 negative mutation guards.
+- Built and verified passing in MinGW Release and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage in `oasis.exe`.
