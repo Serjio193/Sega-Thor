@@ -1,3 +1,22 @@
+# M15.250 Residual CPU Bottleneck Elimination, Connected Hotpath Expansion, and Integrated Gameplay Performance
+
+- `tools/audit_m15_250_phase1.py` / `data/thor-evidence/native_coverage_accounting_m15_250_phase1.json` — Phase 1 baseline coverage accounting across 6 scenarios (712,783 baseline steps).
+- `data/thor-evidence/residual_top30_hotspot_manifest_m15_250.json` — residual hotspot profile and unowned candidate ranking.
+- `tools/thor_recompiler/decoder_ext_m15_250.py` / `tools/thor_recompiler/insn_lowering_m15_250.py` / `tools/thor_recompiler/cpp_emitter_m15_250.py` — compiler extensions for M15.250 instructions (exact DBRA cycle adjustment, BSET register cycle calibration, block dispatch fusion).
+- `tools/generate_entity_dispatch_m15_250.py` — compiler driver generating IR, source map, and partitioned C++20 headers.
+- `src/tools/thor_ir/m15_250_callee_ir.json` / `src/tools/thor_ir/m15_250_source_map.json` — portable Thor IR document and 1:1 PC source map (181 insns, 71 blocks, 175 edges).
+- `src/tools/thor_ir/generated_m15_250/` — 18 partitioned C++20 headers implementing the 8 hotpath routines (all <= 260 lines).
+- `src/tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp` — hybrid bridge adapting the M15.250 routines with held helper slot 214 preservation.
+- `tools/generate_m15_250_fixtures.py` / `data/thor-fixtures/m15_250_callee_fixtures.hpp` / `data/thor-fixtures/m15_250_callee_fixtures.json` — 141 pinned GPGX reference fixtures (18 authentic + 123 controlled).
+- `tools/audit_m15_250_cfg_coverage.py` / `data/thor-evidence/cfg_edge_coverage_manifest_m15_250.json` — CFG edge coverage manifest reaching 133/151 internal edges (88.1%) and 150/151 combined (99.3%).
+- `tests/thor_ir_m15_250_diff_test.cpp` — 3-way differential test (Musashi vs Mode A vs Mode B) + 12 mutation tests.
+- `tools/build_m15_250_runner.py` / `tools/run_m15_250_portable_ab.py` — build script and eight-configuration runtime qualification harness (`RUN_A..H`).
+- `data/thor-evidence/m15_250_ab_summary.json` — summary of 8-config qualification across all 6 scenarios (219,573 new steps, 100% bit-exact).
+- `tools/audit_m15_250_accounting.py` / `data/thor-evidence/native_coverage_accounting_m15_250.json` — canonical single-owner coverage accounting V5 (932,356 cumulative portable steps).
+- `tools/benchmark_m15_250.py` / `data/thor-evidence/benchmark_m15_250_report.json` — isolated microbenchmark comparing Mode A vs Mode B (1.39x speedup).
+- `tools/generate_m15_250_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-250-20261110.json` — certified qualification receipt verified by `ReceiptVerifier`.
+- `docs/handoffs/STANDALONE_M15_250_CAMERA_AND_AI_SUBSTATES_HANDOFF.md` — standalone track handoff for the camera tracker, priority sort, enemy AI substates, and dungeon stream routines.
+
 # M15.249 Dynamic Displacement Scale-Up, Hardware-Polling Boundaries, and Connected Callee Recompilation
 
 - `tools/audit_m15_249_phase1_2.py` — audit tool for Phase 1 inventory and Phase 2 baseline accounting.

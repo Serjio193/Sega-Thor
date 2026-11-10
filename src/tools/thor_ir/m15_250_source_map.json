@@ -1,0 +1,1824 @@
+{
+  "0x008778": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x008778",
+    "raw_words": [
+      16889,
+      255,
+      5736
+    ]
+  },
+  "0x00877E": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x00877e",
+    "raw_words": [
+      14905,
+      255,
+      5864
+    ]
+  },
+  "0x008784": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x008784",
+    "raw_words": [
+      15929,
+      255,
+      5866
+    ]
+  },
+  "0x00878A": {
+    "mnemonic": "SUBQ",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x00878a",
+    "raw_words": [
+      21319
+    ]
+  },
+  "0x00878C": {
+    "mnemonic": "BMI",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x00878c",
+    "raw_words": [
+      27392,
+      84
+    ]
+  },
+  "0x008790": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x008790",
+    "raw_words": [
+      12334,
+      22
+    ]
+  },
+  "0x008794": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x008794",
+    "raw_words": [
+      13372,
+      4
+    ]
+  },
+  "0x008798": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x008798",
+    "raw_words": [
+      13884,
+      8
+    ]
+  },
+  "0x00879C": {
+    "mnemonic": "BTST",
+    "size": "l",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x00879c",
+    "raw_words": [
+      2048,
+      0
+    ]
+  },
+  "0x0087A0": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087a0",
+    "raw_words": [
+      26376
+    ]
+  },
+  "0x0087A2": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087a2",
+    "raw_words": [
+      13372,
+      1
+    ]
+  },
+  "0x0087A6": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087a6",
+    "raw_words": [
+      13884,
+      2
+    ]
+  },
+  "0x0087AA": {
+    "mnemonic": "LSL",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087aa",
+    "raw_words": [
+      59208
+    ]
+  },
+  "0x0087AC": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087ac",
+    "raw_words": [
+      17403,
+      70
+    ]
+  },
+  "0x0087B0": {
+    "mnemonic": "MOVE",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087b0",
+    "raw_words": [
+      4625
+    ]
+  },
+  "0x0087B2": {
+    "mnemonic": "MOVE",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087b2",
+    "raw_words": [
+      4144,
+      20480
+    ]
+  },
+  "0x0087B6": {
+    "mnemonic": "CMP",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087b6",
+    "raw_words": [
+      46080
+    ]
+  },
+  "0x0087B8": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087b8",
+    "raw_words": [
+      26368,
+      40
+    ]
+  },
+  "0x0087BC": {
+    "mnemonic": "CMP",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087bc",
+    "raw_words": [
+      46592
+    ]
+  },
+  "0x0087BE": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087be",
+    "raw_words": [
+      26368,
+      34
+    ]
+  },
+  "0x0087C2": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087c2",
+    "raw_words": [
+      12336,
+      20480
+    ]
+  },
+  "0x0087C6": {
+    "mnemonic": "AND",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087c6",
+    "raw_words": [
+      49193,
+      4
+    ]
+  },
+  "0x0087CA": {
+    "mnemonic": "CMP",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087ca",
+    "raw_words": [
+      45568
+    ]
+  },
+  "0x0087CC": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087cc",
+    "raw_words": [
+      26112,
+      10
+    ]
+  },
+  "0x0087D0": {
+    "mnemonic": "ADDQ",
+    "size": "l",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087d0",
+    "raw_words": [
+      21129
+    ]
+  },
+  "0x0087D2": {
+    "mnemonic": "TST",
+    "size": "b",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087d2",
+    "raw_words": [
+      18961
+    ]
+  },
+  "0x0087D4": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087d4",
+    "raw_words": [
+      26368,
+      18
+    ]
+  },
+  "0x0087D8": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087d8",
+    "raw_words": [
+      21573
+    ]
+  },
+  "0x0087DA": {
+    "mnemonic": "ANDI",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087da",
+    "raw_words": [
+      581,
+      126
+    ]
+  },
+  "0x0087DE": {
+    "mnemonic": "DBRA",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x0087de",
+    "raw_words": [
+      20943,
+      65488
+    ]
+  },
+  "0x00A4C8": {
+    "mnemonic": "ADDI",
+    "size": "w",
+    "part": "exp250_dispatch_part0.hpp",
+    "fn": "step_ir_0x00a4c8",
+    "raw_words": [
+      1657,
+      48,
+      255,
+      6284
+    ]
+  },
+  "0x00A4D0": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4d0",
+    "raw_words": [
+      23673,
+      255,
+      6282
+    ]
+  },
+  "0x00A4D6": {
+    "mnemonic": "TST",
+    "size": "b",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4d6",
+    "raw_words": [
+      19001,
+      255,
+      6223
+    ]
+  },
+  "0x00A4DC": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4dc",
+    "raw_words": [
+      26368,
+      16
+    ]
+  },
+  "0x00A4E0": {
+    "mnemonic": "ADDI",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4e0",
+    "raw_words": [
+      1657,
+      24,
+      255,
+      6284
+    ]
+  },
+  "0x00A4E8": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4e8",
+    "raw_words": [
+      22137,
+      255,
+      6282
+    ]
+  },
+  "0x00A4EE": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4ee",
+    "raw_words": [
+      19962,
+      65352
+    ]
+  },
+  "0x00A4F2": {
+    "mnemonic": "TST",
+    "size": "b",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4f2",
+    "raw_words": [
+      19001,
+      255,
+      6232
+    ]
+  },
+  "0x00A4F8": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4f8",
+    "raw_words": [
+      26372
+    ]
+  },
+  "0x00A4FA": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4fa",
+    "raw_words": [
+      19962,
+      65412
+    ]
+  },
+  "0x00A4FE": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a4fe",
+    "raw_words": [
+      9174,
+      255,
+      5068
+    ]
+  },
+  "0x00A504": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a504",
+    "raw_words": [
+      19065,
+      255,
+      6230
+    ]
+  },
+  "0x00A50A": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a50a",
+    "raw_words": [
+      26368,
+      14
+    ]
+  },
+  "0x00A50E": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a50e",
+    "raw_words": [
+      20601,
+      255,
+      6284
+    ]
+  },
+  "0x00A514": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a514",
+    "raw_words": [
+      21113,
+      255,
+      6282
+    ]
+  },
+  "0x00A550": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a550",
+    "raw_words": [
+      11833,
+      255,
+      6286
+    ]
+  },
+  "0x00A556": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a556",
+    "raw_words": [
+      19961,
+      255,
+      6632
+    ]
+  },
+  "0x00A55C": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a55c",
+    "raw_words": [
+      31764
+    ]
+  },
+  "0x00A55E": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a55e",
+    "raw_words": [
+      31487
+    ]
+  },
+  "0x00A560": {
+    "mnemonic": "CLR",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a560",
+    "raw_words": [
+      16964
+    ]
+  },
+  "0x00A562": {
+    "mnemonic": "BTST",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a562",
+    "raw_words": [
+      3335
+    ]
+  },
+  "0x00A564": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a564",
+    "raw_words": [
+      26112,
+      18
+    ]
+  },
+  "0x00A568": {
+    "mnemonic": "CMP",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a568",
+    "raw_words": [
+      47726,
+      12
+    ]
+  },
+  "0x00A56C": {
+    "mnemonic": "BGE",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a56c",
+    "raw_words": [
+      27648,
+      10
+    ]
+  },
+  "0x00A570": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a570",
+    "raw_words": [
+      14894,
+      12
+    ]
+  },
+  "0x00A574": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a574",
+    "raw_words": [
+      10254
+    ]
+  },
+  "0x00A576": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a576",
+    "raw_words": [
+      13830
+    ]
+  },
+  "0x00A578": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a578",
+    "raw_words": [
+      19950,
+      188
+    ]
+  },
+  "0x00A57C": {
+    "mnemonic": "DBRA",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a57c",
+    "raw_words": [
+      20942,
+      65508
+    ]
+  },
+  "0x00A580": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a580",
+    "raw_words": [
+      19012
+    ]
+  },
+  "0x00A582": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part1.hpp",
+    "fn": "step_ir_0x00a582",
+    "raw_words": [
+      26368,
+      34
+    ]
+  },
+  "0x00A586": {
+    "mnemonic": "BSET",
+    "size": "l",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00a586",
+    "raw_words": [
+      1991
+    ]
+  },
+  "0x00A588": {
+    "mnemonic": "MOVEA",
+    "size": "l",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00a588",
+    "raw_words": [
+      11332
+    ]
+  },
+  "0x00EA16": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea16",
+    "raw_words": [
+      2094,
+      1,
+      55
+    ]
+  },
+  "0x00EA1C": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea1c",
+    "raw_words": [
+      26368,
+      80
+    ]
+  },
+  "0x00EA20": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea20",
+    "raw_words": [
+      12334,
+      158
+    ]
+  },
+  "0x00EA24": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea24",
+    "raw_words": [
+      26368,
+      74
+    ]
+  },
+  "0x00EA28": {
+    "mnemonic": "SUBQ",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea28",
+    "raw_words": [
+      21312
+    ]
+  },
+  "0x00EA2A": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea2a",
+    "raw_words": [
+      15680,
+      158
+    ]
+  },
+  "0x00EA2E": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea2e",
+    "raw_words": [
+      26368,
+      64
+    ]
+  },
+  "0x00EA32": {
+    "mnemonic": "BSR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea32",
+    "raw_words": [
+      24832,
+      63540
+    ]
+  },
+  "0x00EA36": {
+    "mnemonic": "ANDI",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea36",
+    "raw_words": [
+      576,
+      31
+    ]
+  },
+  "0x00EA3A": {
+    "mnemonic": "SUBI",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea3a",
+    "raw_words": [
+      1088,
+      16
+    ]
+  },
+  "0x00EA3E": {
+    "mnemonic": "ADD",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea3e",
+    "raw_words": [
+      53358,
+      78
+    ]
+  },
+  "0x00EA42": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea42",
+    "raw_words": [
+      15680,
+      8
+    ]
+  },
+  "0x00EA46": {
+    "mnemonic": "BSR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea46",
+    "raw_words": [
+      24832,
+      63520
+    ]
+  },
+  "0x00EA4A": {
+    "mnemonic": "ANDI",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea4a",
+    "raw_words": [
+      576,
+      31
+    ]
+  },
+  "0x00EA4E": {
+    "mnemonic": "SUBI",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea4e",
+    "raw_words": [
+      1088,
+      16
+    ]
+  },
+  "0x00EA52": {
+    "mnemonic": "ADD",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea52",
+    "raw_words": [
+      53358,
+      82
+    ]
+  },
+  "0x00EA56": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea56",
+    "raw_words": [
+      15680,
+      12
+    ]
+  },
+  "0x00EA5A": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea5a",
+    "raw_words": [
+      8252,
+      144,
+      539
+    ]
+  },
+  "0x00EA60": {
+    "mnemonic": "BSR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea60",
+    "raw_words": [
+      24832,
+      64902
+    ]
+  },
+  "0x00EA64": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea64",
+    "raw_words": [
+      8252,
+      96,
+      898
+    ]
+  },
+  "0x00EA6A": {
+    "mnemonic": "BSR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea6a",
+    "raw_words": [
+      24832,
+      64892
+    ]
+  },
+  "0x00EA6E": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea6e",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x00EA70": {
+    "mnemonic": "CLR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea70",
+    "raw_words": [
+      17006,
+      0
+    ]
+  },
+  "0x00EA74": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x00ea74",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x017908": {
+    "mnemonic": "TST",
+    "size": "b",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x017908",
+    "raw_words": [
+      18990,
+      102
+    ]
+  },
+  "0x01790C": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x01790c",
+    "raw_words": [
+      26368,
+      65508
+    ]
+  },
+  "0x017910": {
+    "mnemonic": "CLR",
+    "size": "w",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x017910",
+    "raw_words": [
+      16960
+    ]
+  },
+  "0x017912": {
+    "mnemonic": "MOVE",
+    "size": "b",
+    "part": "exp250_dispatch_part2.hpp",
+    "fn": "step_ir_0x017912",
+    "raw_words": [
+      4142,
+      158
+    ]
+  },
+  "0x017916": {
+    "mnemonic": "ADD",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x017916",
+    "raw_words": [
+      53312
+    ]
+  },
+  "0x017918": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x017918",
+    "raw_words": [
+      16891,
+      6
+    ]
+  },
+  "0x01791C": {
+    "mnemonic": "ADDA",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x01791c",
+    "raw_words": [
+      53456
+    ]
+  },
+  "0x01791E": {
+    "mnemonic": "JMP",
+    "size": "",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x01791e",
+    "raw_words": [
+      20176
+    ]
+  },
+  "0x0255D8": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255d8",
+    "raw_words": [
+      19054,
+      150
+    ]
+  },
+  "0x0255DC": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255dc",
+    "raw_words": [
+      26446
+    ]
+  },
+  "0x0255DE": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255de",
+    "raw_words": [
+      3182,
+      3,
+      150
+    ]
+  },
+  "0x0255E4": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255e4",
+    "raw_words": [
+      26452
+    ]
+  },
+  "0x0255E6": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255e6",
+    "raw_words": [
+      2105,
+      3,
+      255,
+      6688
+    ]
+  },
+  "0x0255EE": {
+    "mnemonic": "BNE",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255ee",
+    "raw_words": [
+      26172
+    ]
+  },
+  "0x0255F0": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255f0",
+    "raw_words": [
+      20153,
+      0,
+      58264
+    ]
+  },
+  "0x0255F6": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255f6",
+    "raw_words": [
+      3182,
+      1,
+      150
+    ]
+  },
+  "0x0255FC": {
+    "mnemonic": "BNE",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255fc",
+    "raw_words": [
+      26136
+    ]
+  },
+  "0x0255FE": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x0255fe",
+    "raw_words": [
+      3141,
+      80
+    ]
+  },
+  "0x025602": {
+    "mnemonic": "BCC",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025602",
+    "raw_words": [
+      25640
+    ]
+  },
+  "0x025604": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025604",
+    "raw_words": [
+      28676
+    ]
+  },
+  "0x025606": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025606",
+    "raw_words": [
+      20153,
+      0,
+      58018
+    ]
+  },
+  "0x02560C": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02560c",
+    "raw_words": [
+      19008
+    ]
+  },
+  "0x02560E": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02560e",
+    "raw_words": [
+      26112,
+      28
+    ]
+  },
+  "0x025612": {
+    "mnemonic": "BRA",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025612",
+    "raw_words": [
+      24576,
+      138
+    ]
+  },
+  "0x025616": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025616",
+    "raw_words": [
+      3141,
+      128
+    ]
+  },
+  "0x02561A": {
+    "mnemonic": "BCC",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02561a",
+    "raw_words": [
+      25616
+    ]
+  },
+  "0x02561C": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02561c",
+    "raw_words": [
+      20153,
+      0,
+      57960
+    ]
+  },
+  "0x025622": {
+    "mnemonic": "BTST",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025622",
+    "raw_words": [
+      2048,
+      0
+    ]
+  },
+  "0x025626": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025626",
+    "raw_words": [
+      26372
+    ]
+  },
+  "0x025628": {
+    "mnemonic": "BRA",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025628",
+    "raw_words": [
+      24576,
+      116
+    ]
+  },
+  "0x02562C": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02562c",
+    "raw_words": [
+      12846,
+      160
+    ]
+  },
+  "0x025630": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025630",
+    "raw_words": [
+      20153,
+      0,
+      57960
+    ]
+  },
+  "0x025636": {
+    "mnemonic": "AND",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025636",
+    "raw_words": [
+      49217
+    ]
+  },
+  "0x025638": {
+    "mnemonic": "BNE",
+    "size": "b",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025638",
+    "raw_words": [
+      26192
+    ]
+  },
+  "0x02563A": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02563a",
+    "raw_words": [
+      28676
+    ]
+  },
+  "0x02563C": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x02563c",
+    "raw_words": [
+      20153,
+      0,
+      58018
+    ]
+  },
+  "0x025642": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part3.hpp",
+    "fn": "step_ir_0x025642",
+    "raw_words": [
+      15680,
+      22
+    ]
+  },
+  "0x025646": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025646",
+    "raw_words": [
+      12860,
+      576
+    ]
+  },
+  "0x02564A": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02564a",
+    "raw_words": [
+      13372,
+      512
+    ]
+  },
+  "0x02564E": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02564e",
+    "raw_words": [
+      13824
+    ]
+  },
+  "0x025650": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025650",
+    "raw_words": [
+      20153,
+      0,
+      58068
+    ]
+  },
+  "0x025656": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025656",
+    "raw_words": [
+      11585,
+      78
+    ]
+  },
+  "0x02565A": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02565a",
+    "raw_words": [
+      11586,
+      82
+    ]
+  },
+  "0x02565E": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02565e",
+    "raw_words": [
+      15740,
+      2,
+      4
+    ]
+  },
+  "0x025664": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025664",
+    "raw_words": [
+      15740,
+      2,
+      42
+    ]
+  },
+  "0x02566A": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02566a",
+    "raw_words": [
+      28672
+    ]
+  },
+  "0x02566C": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02566c",
+    "raw_words": [
+      20153,
+      0,
+      57960
+    ]
+  },
+  "0x025672": {
+    "mnemonic": "LSL",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025672",
+    "raw_words": [
+      58760
+    ]
+  },
+  "0x025674": {
+    "mnemonic": "ADDI",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025674",
+    "raw_words": [
+      1664,
+      4,
+      0
+    ]
+  },
+  "0x02567A": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02567a",
+    "raw_words": [
+      11584,
+      86
+    ]
+  },
+  "0x02567E": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02567e",
+    "raw_words": [
+      8252,
+      128,
+      1232
+    ]
+  },
+  "0x025684": {
+    "mnemonic": "JMP",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025684",
+    "raw_words": [
+      20217,
+      0,
+      59368
+    ]
+  },
+  "0x02568A": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02568a",
+    "raw_words": [
+      15740,
+      0,
+      4
+    ]
+  },
+  "0x025690": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025690",
+    "raw_words": [
+      15740,
+      0,
+      42
+    ]
+  },
+  "0x025696": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x025696",
+    "raw_words": [
+      15740,
+      30,
+      2
+    ]
+  },
+  "0x02569C": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02569c",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x02569E": {
+    "mnemonic": "JSR",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02569e",
+    "raw_words": [
+      20153,
+      0,
+      55922
+    ]
+  },
+  "0x0256A4": {
+    "mnemonic": "BCS",
+    "size": "b",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x0256a4",
+    "raw_words": [
+      25990
+    ]
+  },
+  "0x0256A6": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x0256a6",
+    "raw_words": [
+      15680,
+      158
+    ]
+  },
+  "0x0256AA": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x0256aa",
+    "raw_words": [
+      15740,
+      10,
+      4
+    ]
+  },
+  "0x0256B0": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x0256b0",
+    "raw_words": [
+      15740,
+      10,
+      42
+    ]
+  },
+  "0x0256B6": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x0256b6",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x02E8B4": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8b4",
+    "raw_words": [
+      8252,
+      2,
+      0
+    ]
+  },
+  "0x02E8BA": {
+    "mnemonic": "MOVE",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8ba",
+    "raw_words": [
+      9276,
+      1,
+      0
+    ]
+  },
+  "0x02E8C0": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8c0",
+    "raw_words": [
+      16889,
+      255,
+      6632
+    ]
+  },
+  "0x02E8C6": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8c6",
+    "raw_words": [
+      29204
+    ]
+  },
+  "0x02E8C8": {
+    "mnemonic": "BCLR",
+    "size": "b",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8c8",
+    "raw_words": [
+      2216,
+      1,
+      57
+    ]
+  },
+  "0x02E8CE": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8ce",
+    "raw_words": [
+      2088,
+      5,
+      110
+    ]
+  },
+  "0x02E8D4": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part4.hpp",
+    "fn": "step_ir_0x02e8d4",
+    "raw_words": [
+      26368,
+      50
+    ]
+  },
+  "0x02E8D8": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8d8",
+    "raw_words": [
+      2088,
+      6,
+      55
+    ]
+  },
+  "0x02E8DE": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8de",
+    "raw_words": [
+      26112,
+      40
+    ]
+  },
+  "0x02E8E2": {
+    "mnemonic": "BSET",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8e2",
+    "raw_words": [
+      2280,
+      1,
+      57
+    ]
+  },
+  "0x02E8E8": {
+    "mnemonic": "TST",
+    "size": "l",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8e8",
+    "raw_words": [
+      19112,
+      16
+    ]
+  },
+  "0x02E8EC": {
+    "mnemonic": "BNE",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8ec",
+    "raw_words": [
+      26138
+    ]
+  },
+  "0x02E8EE": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8ee",
+    "raw_words": [
+      3176,
+      448,
+      12
+    ]
+  },
+  "0x02E8F4": {
+    "mnemonic": "BCC",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8f4",
+    "raw_words": [
+      25618
+    ]
+  },
+  "0x02E8F6": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8f6",
+    "raw_words": [
+      3176,
+      432,
+      12
+    ]
+  },
+  "0x02E8FC": {
+    "mnemonic": "BCS",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8fc",
+    "raw_words": [
+      25862
+    ]
+  },
+  "0x02E8FE": {
+    "mnemonic": "ADD",
+    "size": "l",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e8fe",
+    "raw_words": [
+      54696,
+      118
+    ]
+  },
+  "0x02E902": {
+    "mnemonic": "BRA",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e902",
+    "raw_words": [
+      24580
+    ]
+  },
+  "0x02E904": {
+    "mnemonic": "ADD",
+    "size": "l",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e904",
+    "raw_words": [
+      53672,
+      118
+    ]
+  },
+  "0x02E908": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e908",
+    "raw_words": [
+      16872,
+      188
+    ]
+  },
+  "0x02E90C": {
+    "mnemonic": "DBRA",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02e90c",
+    "raw_words": [
+      20937,
+      65466
+    ]
+  },
+  "0x02EC18": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec18",
+    "raw_words": [
+      2105,
+      2,
+      255,
+      3516
+    ]
+  },
+  "0x02EC20": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec20",
+    "raw_words": [
+      26112,
+      176
+    ]
+  },
+  "0x02EC24": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec24",
+    "raw_words": [
+      2105,
+      5,
+      255,
+      3612
+    ]
+  },
+  "0x02EC2C": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec2c",
+    "raw_words": [
+      26112,
+      82
+    ]
+  },
+  "0x02EC30": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec30",
+    "raw_words": [
+      2105,
+      1,
+      255,
+      3613
+    ]
+  },
+  "0x02EC38": {
+    "mnemonic": "BNE",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec38",
+    "raw_words": [
+      26112,
+      42
+    ]
+  },
+  "0x02EC3C": {
+    "mnemonic": "BSR",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec3c",
+    "raw_words": [
+      24832,
+      226
+    ]
+  },
+  "0x02EC40": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec40",
+    "raw_words": [
+      3193,
+      48,
+      255,
+      7384
+    ]
+  },
+  "0x02EC48": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec48",
+    "raw_words": [
+      26368,
+      136
+    ]
+  },
+  "0x02EC4C": {
+    "mnemonic": "BSET",
+    "size": "b",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec4c",
+    "raw_words": [
+      2297,
+      1,
+      255,
+      3613
+    ]
+  },
+  "0x02EC54": {
+    "mnemonic": "ADDQ",
+    "size": "l",
+    "part": "exp250_dispatch_part5.hpp",
+    "fn": "step_ir_0x02ec54",
+    "raw_words": [
+      20729,
+      255,
+      6531
+    ]
+  }
+}

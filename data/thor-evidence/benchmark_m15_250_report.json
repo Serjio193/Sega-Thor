@@ -1,0 +1,68 @@
+{
+  "schema": "thor.benchmark_report.v1",
+  "milestone": "M15.250",
+  "isolated_microbenchmark": {
+    "mode_a_portable_step_interpreter": {
+      "min_ms": 14.837,
+      "median_ms": 14.909,
+      "mean_ms": 15.07,
+      "p95_ms": 15.739,
+      "max_ms": 15.739
+    },
+    "mode_b_compiled_block_runner": {
+      "min_ms": 10.616,
+      "median_ms": 10.728,
+      "mean_ms": 10.783,
+      "p95_ms": 11.086,
+      "max_ms": 11.086
+    },
+    "speedup_ratio_median": 1.39,
+    "trials": 10,
+    "total_iterations": 800000,
+    "parity_verified": true
+  },
+  "integrated_gameplay_performance": {
+    "scenario_c": {
+      "run_a_prod_sec": 22.889,
+      "run_g_m249_sec": 18.424,
+      "run_h_m250_sec": 18.571,
+      "run_g_vs_run_h_speedup": 0.9921
+    },
+    "scenario_a": {
+      "run_a_prod_sec": 16.052,
+      "run_g_m249_sec": 15.63,
+      "run_h_m250_sec": 15.581,
+      "run_g_vs_run_h_speedup": 1.0031
+    },
+    "scenario_b": {
+      "run_a_prod_sec": 6.493,
+      "run_g_m249_sec": 6.776,
+      "run_h_m250_sec": 6.927,
+      "run_g_vs_run_h_speedup": 0.9782
+    },
+    "longrun_3600f": {
+      "run_a_prod_sec": 35.339,
+      "run_g_m249_sec": 35.234,
+      "run_h_m250_sec": 37.105,
+      "run_g_vs_run_h_speedup": 0.9496
+    },
+    "longrun_alt_1800f": {
+      "run_a_prod_sec": 16.648,
+      "run_g_m249_sec": 17.748,
+      "run_h_m250_sec": 18.012,
+      "run_g_vs_run_h_speedup": 0.9853
+    },
+    "longrun_combat_1800f": {
+      "run_a_prod_sec": 17.719,
+      "run_g_m249_sec": 17.154,
+      "run_h_m250_sec": 17.917,
+      "run_g_vs_run_h_speedup": 0.9574
+    }
+  },
+  "integrated_totals": {
+    "run_a_total_sec": 115.14,
+    "run_g_total_sec": 110.966,
+    "run_h_total_sec": 114.114,
+    "run_g_vs_run_h_wall_speedup": 0.9724
+  }
+}

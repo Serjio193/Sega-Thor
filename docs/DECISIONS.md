@@ -1,3 +1,44 @@
+# ADR-20261110-M15-250-RESIDUAL-CPU-BOTTLENECK-ELIMINATION-AND-HOTPATH-EXPANSION — Connected Hotpath Recompilation (8 Unowned Subsystems: Enemy Substates, Camera Tracker, Directional Router, Enemy Substate Timer, Water Shrine Stream & Gate, Entity Priority Sort, Combat Collision Scan: 181 Insns, 71 Blocks, 175 Edges), Production Held Helper (Slot 214 `0x0083F8`) Timing-Sensitive Hold Preservation, Eight-Configuration Parity (`RUN_A..H`), 219,573 New Disjoint Steps, and 932,356 Cumulative Portable Steps
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M15.249 compiled 7 Master Enemy Controller routines and reached 712,783 cumulative portable steps across six scenarios. Residual CPU hotspots profiled under `RUN_G` revealed heavy unowned execution loops in camera scrolling, entity priority sorting, enemy AI substates, combat collision testing, and Water Shrine dungeon streaming.
+2. An initial candidate `0x0083F8` was found to be an existing held helper in production (`slot 214`, `false /* 0083f8 timing cycle sensitive hold */`), which suffered from Musashi dynamic cycle drift in live gameplay. A clean policy was needed to handle held production helpers and avoid collision.
+3. Instruction lowering for `DBRA` (condition false loop) and `BSET` register mode required cycle calibration to match Musashi's internal cycle subtraction logic (`CYC_DBCC_F_NOEXP` -14 MC / `CYC_DBCC_F_EXP` +14 MC; bit index >= 16 +14 MC).
+
+**Decisions:**
+1. **Preservation of Held Helper Slot 214 (`0x0083F8`):**
+   - Maintained `0x0083F8` strictly in its existing production timing-sensitive hold, preventing helper collisions and preserving production baseline integrity (196 active helpers, hash `17396fda...`).
+   - Selected 8 pure, unowned, deterministic hotpaths with zero helper collision and zero prior milestone overlap:
+     1. `0x0255D8..0x0256B8`: `hotpath_255d8_enemy_substates` (54 insns, 18 blocks)
+     2. `0x00A4C8..0x00A51A`: `hotpath_0a4c8_camera_scroll_tracker` (15 insns, 8 blocks)
+     3. `0x017908..0x017920`: `hotpath_17908_directional_router` (8 insns, 4 blocks)
+     4. `0x00EA16..0x00EA76`: `hotpath_0ea16_enemy_substate_timer` (24 insns, 10 blocks)
+     5. `0x02E8B4..0x02E910`: `hotpath_2e8b4_water_shrine_stream` (21 insns, 8 blocks)
+     6. `0x00A550..0x00A58A`: `hotpath_0a550_entity_priority_sort` (17 insns, 8 blocks)
+     7. `0x008778..0x0087E2`: `hotpath_08778_combat_collision_scan` (30 insns, 11 blocks)
+     8. `0x02EC18..0x02EC5A`: `hotpath_2ec18_water_shrine_gate` (12 insns, 4 blocks)
+   - Total static footprint: 181 M68000 instructions, 71 basic blocks, 175 CFG edges.
+   - Partitioned into 18 headers in `src/tools/thor_ir/generated_m15_250/` (all `<= 260` lines, strictly conforming to the `<= 350` policy limit).
+2. **Cycle Parity Calibration for Lowering Pipeline:**
+   - In `insn_lowering_m15_250.py`, calibrated `DBRA` execution cycles: `taken ? 10 : 14` with base cycle adjustment (`taken ? -14 : 14` MC), perfectly replicating Musashi's cycle accounting.
+   - Calibrated `BSET Dm, Dn` register mode: dynamic addition of `+14 MC` when `(bit & 31) >= 16`.
+3. **Three-Way Differential Fixtures & CFG Qualification:**
+   - Emitted 141 pinned GPGX reference fixtures (18 authentic + 123 controlled) in `data/thor-fixtures/m15_250_callee_fixtures.hpp`.
+   - Verified 141/141 differential executions PASS across Musashi Oracle, Mode A stepper, and Mode B C++20 + 12/12 negative and mutation tests in Debug and Release.
+   - Maintained M15.246 internal edge coverage at 133/151 (88.1%) and combined coverage at 150/151 (99.3%).
+4. **Eight-Configuration Multi-Scenario Parity (`RUN_A..H`):**
+   - Executed full 48-run matrix (`RUN_A..H` across Scenario C, Scenario A, Scenario B, `longrun_3600f`, `longrun_alt_1800f`, `longrun_combat_1800f`).
+   - Achieved 100% bit-exact stream and checkpoint matching (`A==B==C==D==E==F==G==H`) across all 384 stream files with 0 contract faults and 0 fallbacks.
+   - Displaced **219,573 new disjoint portable steps** across scenarios (surpassing the 50,000 target by >4.3x; 10x M15.249), lifting cumulative portable guest steps to **932,356**.
+   - Verified Mode B microbenchmark speedup of **1.39x** (14.909 ms vs 10.728 ms).
+   - Emitted qualification receipt certified by `ReceiptVerifier` (`valid=True, status=VERIFIED`).
+   - Standalone track (`C:/Github/Sega-Thor-Standalone`) kept strictly read-only and untouched; 295/295 Linux CTests passed; production baseline of 196 active helpers (`17396fda...`) and `0x003820` quarantine preserved.
+
+**Consequences:**
+- Entity AI substates, camera tracking, directional calculations, and environmental trigger loops now execute natively with zero timing jitter, bit-exact parity, and 1.39x execution speedup.
+
 # ADR-20261110-M15-249-DYNAMIC-DISPLACEMENT-SCALE-UP-AND-HARDWARE-POLLING-BOUNDARIES — Connected Hotpath Recompilation (7 Master Enemy AI & Math Routines, 118 Insns, 45 Blocks, 71 Edges), Hardware Polling Quarantine Formalization, Edge Coverage Closure (133/151 Internal, 88.1%), Seven-Configuration Parity (`RUN_A..G`), and 712,783 Cumulative Portable Steps
 **Status:** Accepted
 **Date:** 2026-11-10

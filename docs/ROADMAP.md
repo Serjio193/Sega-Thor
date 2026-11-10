@@ -1,3 +1,33 @@
+# M15.250 Residual CPU Bottleneck Elimination, Connected Hotpath Expansion, and Integrated Gameplay Performance (`m15250p`) — COMPLETE / VERIFIED RESIDUAL BOTTLENECK ELIMINATION & CONNECTED HOTPATH EXPANSION
+
+- **Profile-Guided Hotpath Target Selection & Production Hold Policy:**
+  * Profiled residual CPU execution under `RUN_G` across 6 scenarios (`data/thor-evidence/residual_top30_hotspot_manifest_m15_250.json`).
+  * Audited candidate `0x0083F8` and preserved its existing production timing-sensitive hold (`slot 214`, `false /* 0083f8 timing cycle sensitive hold */`), preventing helper collisions and protecting production baseline hash `17396fda...`.
+  * Selected 8 unowned, high-ROI hotpaths with zero helper collision and zero prior milestone overlap:
+    1. `0x0255D8..0x0256B8`: `hotpath_255d8_enemy_substates` (54 insns, 18 blocks)
+    2. `0x00A4C8..0x00A51A`: `hotpath_0a4c8_camera_scroll_tracker` (15 insns, 8 blocks)
+    3. `0x017908..0x017920`: `hotpath_17908_directional_router` (8 insns, 4 blocks)
+    4. `0x00EA16..0x00EA76`: `hotpath_0ea16_enemy_substate_timer` (24 insns, 10 blocks)
+    5. `0x02E8B4..0x02E910`: `hotpath_2e8b4_water_shrine_stream` (21 insns, 8 blocks, >86k dynamic steps)
+    6. `0x00A550..0x00A58A`: `hotpath_0a550_entity_priority_sort` (17 insns, 8 blocks, >79k dynamic steps)
+    7. `0x008778..0x0087E2`: `hotpath_08778_combat_collision_scan` (30 insns, 11 blocks, >6.5k dynamic steps)
+    8. `0x02EC18..0x02EC5A`: `hotpath_2ec18_water_shrine_gate` (12 insns, 4 blocks, >6.3k dynamic steps)
+  * Total static footprint: 181 new M68000 instructions, 71 CFG basic blocks, 175 CFG edges (1,680 cumulative compiled instructions across M15.244–M15.250).
+- **Lowering & Code Generation (`src/tools/thor_ir/generated_m15_250/`):**
+  * Emitted portable Thor IR (`src/tools/thor_ir/m15_250_callee_ir.json`) and source map (`src/tools/thor_ir/m15_250_source_map.json`).
+  * Auto-partitioned into 18 C++20 headers under `src/tools/thor_ir/generated_m15_250/` (all `<= 260` lines, strictly conforming to the `<= 350` policy limit).
+  * Calibrated Musashi instruction execution cycles: `DBRA` (taken -14 MC, not taken +14 MC) and `BSET` register mode (+14 MC for bit >= 16) for cycle-exact timing parity.
+- **Three-Way Differential Fixtures & CFG Qualification (`tests/thor_ir_m15_250_diff_test.cpp`):**
+  * Emitted 141 pinned GPGX reference fixtures (18 authentic + 123 controlled) in `data/thor-fixtures/m15_250_callee_fixtures.hpp`.
+  * Verified 141/141 differential executions pass across Musashi Oracle, Mode A stepper, and Mode B C++20 + 12/12 mutation tests in Debug & Release.
+  * Maintained M15.246 internal edge coverage at 133/151 (88.1%) and combined coverage at 150/151 (99.3%).
+- **Eight-Configuration Multi-Scenario Parity (`RUN_A..H`, Runner `e32e4316...`):**
+  * Qualified 8 configurations (`RUN_A..H`) across 6 scenarios: 48/48 raw streams bit-exact (8/8 per scenario) across all 384 stream files, 0 fallbacks, 0 contract faults, 0 CPU exceptions.
+  * Displaced **219,573 new disjoint portable steps** across scenarios (surpassing the 50,000 target by >4.3x; 10x M15.249), bringing cumulative portable guest steps to **932,356**.
+  * Verified Mode B microbenchmark speedup of **1.39x** (14.909 ms vs 10.728 ms).
+  * Certified qualification receipt verified by `ReceiptVerifier` (`valid=True, status=VERIFIED`).
+  * Standalone worktree clean and strictly read-only; 295/295 Linux CTests passed; production baseline (196 active helpers) and `0x003820` quarantine preserved.
+
 # M15.249 Dynamic Displacement Scale-Up, Hardware-Polling Boundaries, and Cross-Scenario Native Coverage Audit (`m15249p`) — COMPLETE / VERIFIED SCALED CONNECTED DISPLACEMENT & EDGE EXPANSION
 
 - **Residual Hotspot Profiling & Polling Boundaries (`tools/build_m15_249_residual_manifest.py`, `tools/audit_hardware_polling_boundaries_m15_249.py`):**

@@ -1,3 +1,31 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.250: Residual CPU Bottleneck Elimination via 8 Unowned Hotpath Subsystems; Slot 214 `0x0083F8` Timing-Sensitive Hold Preserved; Musashi `DBRA` Dynamic Cycle Calibrations `CYC_DBCC_F_NOEXP`/`CYC_DBCC_F_EXP` & `BSET` Register Mode; 181 Newly Compiled Instructions / 71 Basic Blocks / 175 CFG Edges; 141 Pinned GPGX Reference Fixtures; 48/48 Bit-Exact Multi-Scenario Runs `RUN_A..H`; 219,573 New Disjoint Steps & 932,356 Cumulative Portable Guest Steps)
+
+## Milestone M15.250 Reverse Engineering Summary
+
+### Section 70: Residual CPU Bottleneck Elimination, Hotpath Calibration, and Multi-Scenario Displacement Expansion
+
+#### 1. Residual CPU Hotspot Manifest & Production Hold Boundaries
+- **Evidence:** `tools/audit_m15_250_phase1.py` -> `data/thor-evidence/native_coverage_accounting_m15_250_phase1.json`, `data/thor-evidence/residual_top30_hotspot_manifest_m15_250.json`.
+- **Slot 214 (`0x0083F8`) Timing-Sensitive Hold Audit:** Routine `0x0083F8` was audited during candidate selection. It was confirmed to be held in production helper registry slot 214 (`false /* 0083f8 timing cycle sensitive hold */`) due to dynamic Musashi cycle drift under live gameplay. To guarantee production integrity (hash `17396fda...`), `0x0083F8` was preserved in its existing timing-sensitive hold, and 8 unowned, clean deterministic hotpaths were selected instead.
+- **Audited Hotpath Subsystems:**
+  1. `0x0255D8..0x0256B8`: `hotpath_255d8_enemy_substates` (54 insns, 18 blocks) — Substates 1..5 continuation of the Water Shrine enemy AI state machine.
+  2. `0x00A4C8..0x00A51A`: `hotpath_0a4c8_camera_scroll_tracker` (15 insns, 8 blocks) — Viewport bounds calculation and scroll tracking at `$FF188E`.
+  3. `0x017908..0x017920`: `hotpath_17908_directional_router` (8 insns, 4 blocks) — Delta coordinate direction mapper.
+  4. `0x00EA16..0x00EA76`: `hotpath_0ea16_enemy_substate_timer` (24 insns, 10 blocks) — Entity substate timer decrements and transition dispatcher.
+  5. `0x02E8B4..0x02E910`: `hotpath_2e8b4_water_shrine_stream` (21 insns, 8 blocks) — Dungeon trigger loop and water plane animation generator (>86k dynamic steps).
+  6. `0x00A550..0x00A58A`: `hotpath_0a550_entity_priority_sort` (17 insns, 8 blocks) — Entity Y-coordinate sorting loop (>79k dynamic steps).
+  7. `0x008778..0x0087E2`: `hotpath_08778_combat_collision_scan` (30 insns, 11 blocks) — Weapon hitbox vs enemy hurtbox intersection loop (>6.5k dynamic steps).
+  8. `0x02EC18..0x02EC5A`: `hotpath_2ec18_water_shrine_gate` (12 insns, 4 blocks) — Water Shrine gate trigger loop (>6.3k dynamic steps).
+  Total: 181 new static M68000 instructions, 71 CFG basic blocks, 175 CFG edges.
+
+#### 2. Reverse-Engineered M68000 Instruction Timing Calibrations Against Musashi (`m68kops.h`)
+- **Discovery A (`DBRA` Dynamic Cycle Subtraction):** In Musashi (`core/m68k/m68kops.h`), base cycle table sets `12` cycles for `DBRA`. When loop condition is taken, it invokes `USE_CYCLES(CYC_DBCC_F_NOEXP)` (`-2 * 7 = -14 MC`), resulting in 10 cycles; when not taken (loop terminates), it invokes `USE_CYCLES(CYC_DBCC_F_EXP)` (`+2 * 7 = +14 MC`), resulting in 14 cycles. Calibrated `insn_lowering_m15_250.py` to emit dynamic cycle adjustments (`taken ? -14 : 14`), perfectly synchronizing loop execution timing with GPGX.
+- **Discovery B (`BSET <ea>, Dn` Register Timing):** In `m68k_op_bset_32_r_d`, base cycles is `6 * 7 = 42 MC` (6 bus cycles). If `mask & 0xffff0000` is true (bit index >= 16), it invokes `USE_CYCLES(2 * 7)` (+14 MC / 2 bus cycles). Lowering was calibrated to dynamically add +14 MC when `(bit & 31) >= 16`, eliminating cycle jitter in `0x00A550`.
+
+#### 3. Execution Displacement & Parity Proof
+- **Live Qualification Results:** Across all 6 gameplay scenarios (`RUN_A..H`), 48/48 runs achieved 100% bit-exact stream and checkpoint matching across all 384 stream files, with 0 contract faults, 0 fallbacks, and 0 CPU exceptions.
+- **Dynamic Steps Displaced:** Displaced 219,573 new disjoint portable steps (37,213 in scenario_c, 49,266 in scenario_a, 834 in scenario_b, 44,947 in longrun_3600f, 50,100 in longrun_alt_1800f, 37,213 in longrun_combat_1800f), bringing cumulative portable guest steps across M15.244..M15.250 to **932,356**.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.246: Coverage Forensics Reconciling M15.242 vs M15.245; 3,600-Frame Gameplay Capture `37,831,953` Steps; Callee Verdicts on `0x0085E2`/`0x00BCBA`/`0x007A28`/`0x0032E8`/`0x003820`; `375` Newly Compiled Instructions Across `7` Unowned Roots; Musashi `MOVEM.W` Refresh & `ADD.L <ea>, Dn` Timing Discoveries; `32/32` Bit-Exact Multi-Scenario Streams + `127,790` C / `214,941` 3,600f Steps)
 
 ## Milestone M15.246 Reverse Engineering Summary
