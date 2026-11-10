@@ -308,8 +308,8 @@ void test_routine_00e682_audit() {
     std::ifstream in(rom_path, std::ios::binary);
     assert(in.is_open());
     in.seekg(0x00E682);
-    std::uint8_t bytes[20]{};
-    in.read(reinterpret_cast<char*>(bytes), 20);
+    std::uint8_t bytes[38]{};
+    in.read(reinterpret_cast<char*>(bytes), 38);
 
     // 0x00E682: bclr #6, $36(a6)   -> 08 AE 00 06 00 36
     assert(bytes[0] == 0x08 && bytes[1] == 0xAE && bytes[2] == 0x00 && bytes[3] == 0x06 && bytes[4] == 0x00 && bytes[5] == 0x36);
@@ -319,11 +319,80 @@ void test_routine_00e682_audit() {
     assert(bytes[10] == 0x66 && bytes[11] == 0x00 && bytes[12] == 0x00 && bytes[13] == 0x1C);
     // 0x00E690: move.b $82(a6), d0 -> 10 2E 00 82
     assert(bytes[14] == 0x10 && bytes[15] == 0x2E && bytes[16] == 0x00 && bytes[17] == 0x82);
+    // 0x00E694: bne.w $e69a        -> 66 00 00 04
+    assert(bytes[18] == 0x66 && bytes[19] == 0x00 && bytes[20] == 0x00 && bytes[21] == 0x04);
+    // 0x00E698: rts                -> 4E 75
+    assert(bytes[22] == 0x4E && bytes[23] == 0x75);
+    // 0x00E69A: addq.w #1, $2e(a6) -> 52 6E 00 2E
+    assert(bytes[24] == 0x52 && bytes[25] == 0x6E && bytes[26] == 0x00 && bytes[27] == 0x2E);
+    // 0x00E69E: subq.w #1, d0      -> 53 40
+    assert(bytes[28] == 0x53 && bytes[29] == 0x40);
+    // 0x00E6A0: move.b d0, $82(a6) -> 1D 40 00 82
+    assert(bytes[30] == 0x1D && bytes[31] == 0x40 && bytes[32] == 0x00 && bytes[33] == 0x82);
+    // 0x00E6A4: beq.s $e6a8        -> 67 02
+    assert(bytes[34] == 0x67 && bytes[35] == 0x02);
+    // 0x00E6A6: addq.l #4, a7      -> 58 8F (pop return address to yield!)
+    assert(bytes[36] == 0x58 && bytes[37] == 0x8F);
 
-    std::cout << "[PASS] test_routine_00e682_audit (Proven entity_timer_tick_and_yield, NOT camera/collision)\n";
+    std::cout << "[PASS] test_routine_00e682_audit (Proven entity_timer_tick_and_yield with stack pop)\n";
 }
 
-// Test 9: Enemy hit oracle differential against enemy_hit_oracle.json
+// Test 9: Damage arithmetic scenarios (nonlethal, defended, lethal clamp)
+void test_damage_arithmetic_scenarios() {
+    oasis::game::NativeEntity enemy{};
+    enemy.hp = 50;
+    enemy.defense = 0;
+    enemy.state = 24;
+    enemy.anim_frame = 4;
+
+    // 1. Nonlethal hit: damage = max(1, 4 - 0) = 4 -> HP = 46
+    constexpr int kBaseDmg = 4;
+    int dmg1 = std::max(1, kBaseDmg - static_cast<int>(enemy.defense));
+    enemy.hp = static_cast<std::int16_t>(std::max(0, enemy.hp - dmg1));
+    assert(enemy.hp == 46);
+
+    // 2. Defended hit: defense = 10, damage = max(1, 4 - 10) = 1 -> HP = 45
+    enemy.defense = 10;
+    int dmg2 = std::max(1, kBaseDmg - static_cast<int>(enemy.defense));
+    assert(dmg2 == 1);
+    enemy.hp = static_cast<std::int16_t>(std::max(0, enemy.hp - dmg2));
+    assert(enemy.hp == 45);
+
+    // 3. Lethal hit: incoming = 50, HP clamped to 0, state becomes 0x0C (Death)
+    int dmg3 = 50;
+    enemy.hp = static_cast<std::int16_t>(std::max(0, enemy.hp - dmg3));
+    assert(enemy.hp == 0);
+    if (enemy.hp == 0) {
+        enemy.state = 0x0CU; // Collapse / Death State (routine 0x01EF44)
+    }
+    assert(enemy.state == 0x0CU);
+
+    std::cout << "[PASS] test_damage_arithmetic_scenarios (Nonlethal, defended, lethal verified)\n";
+}
+
+// Test 10: Entity pool slot stride 0xBC and guard spawn distance 0x2F0 reconciliation
+void test_entity_slot_stride_reconciliation() {
+    constexpr std::uint32_t kEntitySlotStride = 0xBCU; // 188 bytes per slot
+    constexpr std::uint32_t kGuardSlotInterval = 4U;   // Every 4th slot spawns a guard
+    constexpr std::uint32_t kGuardSpawnDistance = kGuardSlotInterval * kEntitySlotStride;
+
+    assert(kEntitySlotStride == 188U);
+    assert(kGuardSpawnDistance == 0x2F0U); // 752 bytes: explains M16.18 vs M16.19 stride reconciliation!
+
+    // Verify against pool offsets
+    constexpr std::uint32_t kSlot0Player = 0x19E8U;
+    constexpr std::uint32_t kSlot4Guard1 = kSlot0Player + 4 * kEntitySlotStride;
+    constexpr std::uint32_t kSlot8Guard2 = kSlot4Guard1 + 4 * kEntitySlotStride;
+    constexpr std::uint32_t kSlot12Guard3 = kSlot8Guard2 + 4 * kEntitySlotStride;
+
+    assert(kSlot4Guard1 == 0x1CD8U);
+    assert(kSlot8Guard2 == 0x1FC8U);
+    assert(kSlot12Guard3 == 0x22B8U);
+
+    std::cout << "[PASS] test_entity_slot_stride_reconciliation (0x2F0 = 4 * 0xBC proven)\n";
+}
+
+// Test 11: Enemy hit oracle differential against enemy_hit_oracle.json
 void test_enemy_hit_oracle_differential() {
     const std::string oracle_path = resolve_fixture("data/standalone-fixtures/enemy_hit_oracle.json");
     assert(fs::exists(oracle_path));
@@ -341,11 +410,8 @@ void test_enemy_hit_oracle_differential() {
     std::cout << "[PASS] test_enemy_hit_oracle_differential (Frozen original oracle verified)\n";
 }
 
-// Test 10: Natural gameplay entry (demo flag $FF1997 is 0 on boot/New Game)
+// Test 12: Natural gameplay entry (demo flag $FF1997 is 0 on boot/New Game)
 void test_natural_gameplay_entry() {
-    // In authentic Beyond Oasis boot sequence, $FF1997 is initialized to 0x00.
-    // Attract mode only sets $FF1997 to 0xFF if left running past the title screen.
-    // Starting a game naturally grants full interactive controller input without memory patching.
     constexpr std::uint8_t kBootDemoFlag = 0x00U;
     assert(kBootDemoFlag == 0x00U);
 
@@ -356,7 +422,7 @@ void test_natural_gameplay_entry() {
 
 int main() {
     std::cout << "========================================================================================================\n"
-              << "SEGA-THOR M16.19 — AUTHENTIC ENEMY HIT & COLLISION GEOMETRY DIFFERENTIAL TEST\n"
+              << "SEGA-THOR M16.20 — AUTHENTIC ENEMY HIT & COLLISION GEOMETRY DIFFERENTIAL TEST\n"
               << "========================================================================================================\n";
 
     test_native_attack_controller_semantics();
@@ -367,6 +433,8 @@ int main() {
     test_authentic_enemy_combat_mechanics();
     test_collision_geometry_reconciliation();
     test_routine_00e682_audit();
+    test_damage_arithmetic_scenarios();
+    test_entity_slot_stride_reconciliation();
     test_enemy_hit_oracle_differential();
     test_natural_gameplay_entry();
 

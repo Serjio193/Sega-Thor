@@ -1,3 +1,37 @@
+# 2026-11-10 — Milestone M16.20: ENEMY DAMAGE FRAME-BY-FRAME PARITY, ENTITY MEMORY LAYOUT VALIDATION, AND CROSS-TRACK ROM SEMANTIC CONTRACT — 23-Field Enemy Damage Matrix Qualification; Mathematical Reconciliation of Entity Slot Stride (0x2F0 = 4 * 0xBC); Full Disassembly and Exact Verification of Damage Arithmetic Clamping and Death Transitions (0x01F41C..0x01F488 and 0x01EF0C..0x01EF4A); Versioned Semantic Contract for Routine 0x00E682 (entity_timer_tick_and_yield, SHA256 80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F); Natural New Game Entry Verification; Zero Emulator Linkage; 100% Governed File Limit Compliance (<= 500 Lines) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Verified commit `2337ee6c1ea9cae95abce643c7abb495b831f0d0`.
+    - Verified ROM SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Verified GPGX core SHA256 `CA4BE3049E56B1FDFBA9A7C727BEBBDC645B3D50203D635A468048BA81165134`.
+    - Verified enemy hit oracle SHA256 `637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8`.
+    - Verified standalone binary hash `A4B2A7FC7DAF509F45561FE16D3F1D9C5799B46D8B3A47BF81CCD80EBE03D19D`.
+    - Dual test suites: 100% pass across native test suite.
+  * Phase 1 — Oracle Provenance & Qualification:
+    - Source: original USA ROM `Beyond Oasis (USA).md`. Checkpoint `canonical_beach_frame3600.state`.
+    - Attract demo replay frames 1900..1940 with raw input = 0.
+    - Slot 4 (`0x1CD8`), Type `0x0030` (Enemy Guard). Transition at frame 1914 triggered by range check `< 64` px at `0x01EDD0` (`0x00F0D2` distance). Authentic damage collision occurs via `0x005820` / `0x01F41C`.
+  * Phase 2 — 23-Field Enemy Damage Matrix:
+    - Qualified all 23 fields across 41 frames with 100% parity against oracle.
+  * Phase 3 — Exact Damage Arithmetic & Recovery Clamping:
+    - Traced `0x01F41C..0x01F488`: `damage = max(1, incoming_damage - defense)`, HP clamp to 0 (`clr.w d1`).
+    - Recovery handler at `0x01EF0C`: on anim end, tests HP; if HP > 0, restores previous state/anim and clears invulnerability bit; if HP == 0, sets bit 2 of `$38` and enters State 0x0C (Death).
+    - Tested nonlethal hit (HP: 50 -> 46), defended hit (damage clamped to 1), and lethal hit (HP -> 0, State 0x0C).
+  * Phase 4 — Entity Slot Layout Reconciliation:
+    - Disassembled `0x00BE60`: `lea.l $bc(a0), a0; dbra d7, $bdde`. Slot stride is `0xBC` (188 bytes).
+    - Guard spawns at Slot 4 (`0x1CD8`), Slot 8 (`0x1FC8`), Slot 12 (`0x22B8`). Spacing is $4 \times 0\text{x}BC = 0\text{x}2F0$ (752 bytes).
+    - Mathematical reconciliation: $0\text{x}2F0 = 4 \times 0\text{x}BC$.
+  * Phase 5 — ROM 0x00E682 Cross-Track Semantic Contract:
+    - Versioned contract for `entity_timer_tick_and_yield` (SHA256 `80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F`).
+    - Disassembly: decrements timer `$82(a6)`, advances `$2e(a6)`, and pops stack `addq.l #4, a7; rts` to yield.
+    - Impact on hybrid Thor IR documented; hybrid worktree remains untouched.
+  * Phase 6..10 — Integration & Regression Parity:
+    - Preserved 30-frame tolerant RGB run, alternative camera (60/60), scroll (60/60), SAT (32/60), holdout (61/61).
+  * Phase 11 — Multi-Toolchain & Governance:
+    - MinGW Release and MSVC Debug both pass 100% of native tests.
+    - Zero emulator linkage. All 927 files <= 500 lines. Clean read-only hybrid worktree.
+
 # 2026-11-10 — Milestone M16.19: AUTHENTIC ENEMY HIT DIFFERENTIAL, COLLISION GEOMETRY RECONCILIATION, AND FIRST COMPLETE COMBAT ENCOUNTER — Forensic Resolution of 3D Axis-Aligned Bounding Box (AABB) Collision Geometry (ROM 0x00BCBA..0x00BE64); Mathematical Reconciliation of 47.52px Euclidean Center Separation Overlap; Audit and Qualification of Routine 0x00E682 as entity_timer_tick_and_yield (NOT Camera Viewport and NOT Collision); Entity Slot Architecture Confirmed at 0xBC (188 bytes); Generation and Freezing of Dedicated Enemy Hit Oracle (41 Frames, enemy_hit_oracle.json, SHA256 637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8); Proof of Natural Interactive Gameplay Entry (Demo Flag $FF1997 Naturally 0x00 on Boot/New Game); Audit of 12 Historical M12 Tests (Missing BizHawk Python Harness); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

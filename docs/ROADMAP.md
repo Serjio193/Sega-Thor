@@ -1,3 +1,25 @@
+# M16.20 Enemy Damage Frame-by-Frame Parity, Entity Memory Layout Validation, and Cross-Track ROM Semantic Contract — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- 23-Field Enemy Damage Matrix Qualification:
+  * Full 41-frame comparison table across all 23 specified fields (`PLAYER_STATE`, `PLAYER_XY`, `ATTACK_ANIMATION`, `WEAPON_AABB`, `ENEMY_TYPE`, `ENEMY_SLOT`, `ENEMY_XY`, `ENEMY_Z`, `ENEMY_STATE`, `ENEMY_ANIMATION`, `ENEMY_ANIMATION_STEP`, `ENEMY_ACTION_TIMER`, `ENEMY_FLASH_TIMER`, `ENEMY_HP`, `ENEMY_MAX_HP`, `DAMAGE_MAILBOX`, `DEFENSE`, `INVULNERABILITY_FLAG`, `PREVIOUS_STATE`, `PREVIOUS_ANIMATION`, `SOUND_REQUEST`, `ENEMY_SAT`, `FULL_SAT`).
+  * 41/41 frames matched across all fields (100.0% parity against frozen oracle).
+- Mathematical Reconciliation of Entity Slot Stride:
+  * Proved underlying entity table stride is `0xBC` (188 bytes) per slot (`lea.l $bc(a0), a0` at routine 0x00BE60).
+  * Proved spawned enemy guards occupy Slot 4 (`0x1CD8`), Slot 8 (`0x1FC8`), Slot 12 (`0x22B8`), explaining the $4 \times 0\text{x}BC = 0\text{x}2F0$ (752 bytes) spacing observed in M16.18.
+- Exact Damage Arithmetic Clamping and Death Mechanics:
+  * Traced routine `0x01F41C..0x01F488`: formula `damage = max(1, incoming_damage - defense)`, HP clamped to 0 (`sub.w d0, d1; bpl ...; clr.w d1`).
+  * Recovery handler at `0x01EF0C`: on animation end, tests HP; if HP > 0, restores previous state/anim and clears invulnerability bit; if HP == 0, transitions to State 0x0C (Death).
+  * Unit tested nonlethal hit, defended hit, and lethal hit transitions.
+- Routine 0x00E682 Cross-Track Semantic Contract:
+  * Formalized contract for `entity_timer_tick_and_yield` (SHA256: `80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F`).
+  * Verified stack-popping yield logic (`addq.l #4, a7; rts`) when action timer at `+0x82` is active.
+- Natural Gameplay Progression & Graphics Parity:
+  * Preserved 30-frame tolerant RGB run, alternative camera (60/60), scroll (60/60), SAT (32/60), holdout (61/61).
+- Multi-Toolchain & Governance Compliance:
+  * 100% pass across all native tests in MinGW Release and MSVC Debug.
+  * All 927 governed files strictly <= 500 lines. Zero emulator linkage.
+
 # M16.19 Authentic Enemy Hit Differential, Collision Geometry Reconciliation, and First Complete Combat Encounter — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

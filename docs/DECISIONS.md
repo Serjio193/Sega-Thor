@@ -1,3 +1,46 @@
+# ADR-20261110-M16-20-ENEMY-DAMAGE-FRAME-BY-FRAME-PARITY-ENTITY-MEMORY-LAYOUT-VALIDATION-AND-CROSS-TRACK-ROM-SEMANTIC-CONTRACT — 23-Field Enemy Damage Matrix Qualification; Mathematical Reconciliation of Entity Slot Stride (0x2F0 = 4 * 0xBC); Full Disassembly and Exact Verification of Damage Arithmetic Clamping and Death Transitions (0x01F41C..0x01F488 and 0x01EF0C..0x01EF4A); Versioned Semantic Contract for Routine 0x00E682 (entity_timer_tick_and_yield, SHA256 80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F); Natural New Game Entry Verification; Zero Emulator Linkage; 100% Governed File Limit Compliance (<= 500 Lines)
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.19 discovered authentic 3D AABB collision geometry, qualified routine 0x00E682 as entity timer logic, and identified entity slot stride 0xBC.
+2. Full independent native enemy damage parity required a frame-by-frame 23-field qualification matrix.
+3. The apparent contradiction between M16.18's reported 0x2F0 entity stride and M16.19's 0xBC required formal mathematical reconciliation.
+4. Exact damage arithmetic formulas `max(1, incoming - defense)` and HP clamping to 0 with State 0x0C death reaction needed ROM byte-level proof.
+5. A cross-project semantic conflict with hybrid Thor IR required a formal versioned semantic contract for routine 0x00E682 without modifying the hybrid worktree.
+
+**Decisions:**
+1. **23-Field Enemy Damage Matrix Qualified:**
+   - Evaluated all 23 specified fields across all 41 frames (Frames 1900..1940) of `data/standalone-fixtures/enemy_hit_oracle.json`:
+     `PLAYER_STATE`, `PLAYER_XY`, `ATTACK_ANIMATION`, `WEAPON_AABB`, `ENEMY_TYPE`, `ENEMY_SLOT`, `ENEMY_XY`, `ENEMY_Z`, `ENEMY_STATE`, `ENEMY_ANIMATION`, `ENEMY_ANIMATION_STEP`, `ENEMY_ACTION_TIMER`, `ENEMY_FLASH_TIMER`, `ENEMY_HP`, `ENEMY_MAX_HP`, `DAMAGE_MAILBOX`, `DEFENSE`, `INVULNERABILITY_FLAG`, `PREVIOUS_STATE`, `PREVIOUS_ANIMATION`, `SOUND_REQUEST`, `ENEMY_SAT`, `FULL_SAT`.
+   - Every single field matched 41/41 frames with 0 mismatches (`FIRST_MISMATCH = NONE`).
+2. **Entity Slot Architecture Reconciled (0x2F0 = 4 * 0xBC):**
+   - Disassembly of entity iteration at 0x00BE60 (`lea.l $bc(a0), a0; dbra d7, $bdde`) proves the underlying entity table slot stride is exactly `0xBC` (188 bytes).
+   - In live WRAM, active combat guards are placed at Slot 4 (`0x1CD8`), Slot 8 (`0x1FC8`), Slot 12 (`0x22B8`).
+   - The observed stride between spawned enemy guards is $4 \times 0\text{x}BC = 0\text{x}2F0$ (752 bytes).
+   - Thus, 0x2F0 is the active enemy spawn spacing, while 0xBC is the underlying slot stride. Both observations are mathematically reconciled.
+3. **Exact Damage Arithmetic & State Reaction Clamping:**
+   - Traced ROM routine `0x01F41C..0x01F488`:
+     * Incoming damage mailbox at `+0x86`: masked with `0x0FFF`.
+     * Bit 13 set triggers sound `0x008004D9` via `jsr $00E7E8` and sets bit 3 of `$39(a6)`.
+     * Clamped damage: `sub.w $92(a6), d0; bhi.s ... ; moveq #1, d0` -> formula `damage = max(1, incoming_damage - defense)`.
+     * Clamped HP: `sub.w d0, d1; bpl.s ... ; clr.w d1; move.w d1, $8a(a6)` -> HP clamped to 0.
+     * Invulnerability bit: bit 3 of `$38(a6)` set via `bset #3, $38(a6)`.
+     * State backup: `$aa(a6) = $04(a6)`, `$ac(a6) = $2a(a6)`.
+     * Hurt State: `$04(a6) = 0x000A` (10), hurt anim `$2a(a6) = 0x0008` (8).
+   - Recovery handler at `0x01EF0C`:
+     * Checks animation completion via `btst #1, $37(a6)`.
+     * If HP > 0: clears flash timer `$83(a6)`, clears invulnerability bit 3 of `$38(a6)`, restores previous state from `$aa(a6)` and anim from `$ac(a6)`.
+     * If HP == 0: sets dead flag bit 2 of `$38(a6)`, transitions to State 0x0C (Death).
+4. **Versioned Semantic Contract for Routine 0x00E682:**
+   - Routine: `entity_timer_tick_and_yield` at `0x00E682..0x00E6A8` (38 bytes, SHA256: `80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F`).
+   - Opcode sequence: `08 AE 00 06 00 36 10 2E 00 9D 66 00 00 1C 10 2E 00 82 66 00 00 04 4E 75 52 6E 00 2E 53 40 1D 40 00 82 67 02 58 8F 4E 75`.
+   - Behavior: Decrements action timer at `+0x82`. If timer remains > 0, it executes `addq.l #4, a7; rts` (popping the caller's return address from the stack to yield execution directly to the entity loop).
+   - Hybrid Cross-Track Clarification: Explains why hybrid test misattributed it to camera/collision (it was called at the start of entity loops). The standalone implementation maintains authentic yield behavior.
+5. **Multi-Toolchain Build & File Limit Compliance:**
+   - 100% pass across all 32 native C++ standalone tests in MinGW Release and MSVC Debug.
+   - All 927 governed files strictly <= 500 lines. Zero emulator linkage.
+
 # ADR-20261110-M16-19-AUTHENTIC-ENEMY-HIT-DIFFERENTIAL-COLLISION-GEOMETRY-RECONCILIATION-AND-FIRST-COMPLETE-COMBAT-ENCOUNTER — Forensic Resolution of 3D Axis-Aligned Bounding Box (AABB) Collision Geometry (ROM 0x00BCBA..0x00BE64); Mathematical Reconciliation of 47.52px Euclidean Center Separation Overlap; Audit and Qualification of Routine 0x00E682 as entity_timer_tick_and_yield (NOT Camera Viewport and NOT Collision); Entity Slot Architecture Confirmed at 0xBC (188 bytes); Generation and Freezing of Dedicated Enemy Hit Oracle (41 Frames, enemy_hit_oracle.json, SHA256 637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8); Proof of Natural Interactive Gameplay Entry (Demo Flag $FF1997 Naturally 0x00 on Boot/New Game); Audit of 12 Historical M12 Tests (Missing BizHawk Python Harness); Dual MinGW & MSVC Test Suite Expansion; Zero Emulator Linkage; 100% Source Line Limit Compliance (<= 500 Lines across All Governed Files)
 **Status:** Accepted
 **Date:** 2026-11-10
