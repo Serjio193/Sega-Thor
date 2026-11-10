@@ -1,3 +1,26 @@
+# M16.21 Real Damage Event Discovery, Combat Oracle Integrity Audit, and Authentic Enemy Hurt State Qualification — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- F1914 Forensic Classification (`NON_DAMAGE_EVENT`):
+  * Live GPGX CPU instrumentation across F1900..F1940 proved candidate PCs `0x01EDC6`, `0x01EDD0`, `0x00F0D2`, `0x005820`, `0x01F41C`, `0x01F462`, and `0x00BEE8` all executed 0 times.
+  * Actual F1914 writer PCs are `0x01698A` / `0x016990` (triggered by PRNG `0x00E2A2` at `0x016882` inside Entity `0x0030` dispatcher `0x015AE2`), pairing Slot 4 (`0xFF1CD8`) and Slot 9 (`0xFF2084`) with 0 damage (`HP=50`).
+  * Corrected M16.20 documentation & test attribution: `0x0030` -> `0x015AE2`, `0x002C` -> `0x0254EA`, `0x006E` -> `0x01EB54/0x01EC00/0x01F41C`.
+- M16.20 Oracle Integrity Audit & Mutation Detectors:
+  * Froze `data/standalone-fixtures/m16_20_oracle_provenance_audit.json` correcting ROM size to `3,145,728` bytes (`EB19BDA4...`) and auditing all 23 fields (`0` positive damage fields independently replayed in M16.20).
+  * Added 7 mutation tests failing on wrong HP, damage, state, event frame, invulnerability, position, and SAT hash.
+- Genuine Positive Damage Discovery & Immutable Oracle (`data/standalone-fixtures/positive_damage_oracle_f775_815.json`):
+  * Captured 41 original frames (`F775..F815`) and 48 M68000 entity write records (`Player 0x0002 -> Enemy 0x002C` Slot 5 `@0xFF1D94`) from unmodified `canonical_beach_frame3600.state`.
+  * Hit #1 (F789): `0x00BEE8` writes `mailbox=0x0002` -> `HP: 7 -> 5`, Hurt State `0x04`, Anim `0x08`, Flash `5..3`, Y knockback `181 -> 172`.
+  * Hit #2 (F795..797): `0x00BEE8` writes `mailbox=0xC005, timer=2` -> F795 `0x00E682` pops caller stack (`addq.l #4, a7; rts`); F797 reduces `HP: 5 -> 0`, sets `+0x38` bit 3, enters Death State `0x06`.
+- Exact M68000 Arithmetic & Controlled Recovery Verification:
+  * Added `src/game/combat/damage_arithmetic.hpp` matching all 11 controlled GPGX M68000 cases (`0x8001 - 1 -> 0` on `N=1` saturation, unsigned `BHI`, CCR `XNZVC`, bit-13 `0x04D9` gating).
+  * Verified `0x002C` full single-hit Hurt recovery (`0x04 -> 0x00`) on flash timer countdown `5 -> 0` via `CONTROLLED_CPU_ENTRY`.
+- Cross-Track `0x00E682` Stack Handoff:
+  * Created `docs/contracts/ROM_00E682_STACK_CONTRACT_v1.md` with live captured stack trace (`0x000256BE` bypassed to `0x0000DF1C`).
+- Native Replay, Graphics Parity & Governance:
+  * 41/41 native parity against `positive_damage_oracle_f775_815.json` for HP, State, Anim, Damage Mailbox, Action Timer, Flash Timer, and Invulnerability; mismatch frames reported honestly for unmodeled town SAT & patrol/airborne AI XY.
+  * 33/33 native tests PASSED in MinGW Release & MSVC Debug; 195/207 full CTest (12 external M12 BizHawk failures unchanged); all governed files <= 500 lines; zero emulator linkage; hybrid untouched.
+
 # M16.20 Enemy Damage Frame-by-Frame Parity, Entity Memory Layout Validation, and Cross-Track ROM Semantic Contract — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

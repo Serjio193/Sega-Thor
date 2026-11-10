@@ -1,3 +1,28 @@
+# 2026-11-10 — Milestone M16.21: REAL DAMAGE EVENT DISCOVERY, COMBAT ORACLE INTEGRITY AUDIT, AND AUTHENTIC ENEMY HURT STATE QUALIFICATION — F1914 Live CPU Instrumentation (`NON_DAMAGE_EVENT` via 0x01698A Owned by 0x0030 Dispatcher 0x015AE2); Correction of M16.20 ROM Size to 3,145,728 Bytes & 23-Field Audit (`m16_20_oracle_provenance_audit.json`); Discovery & Freezing of Positive Damage Oracle (`positive_damage_oracle_f775_815.json`, F789 Nonlethal 7->5 & F795..797 Lethal 5->0 on Entity 0x002C); Controlled M68000 Arithmetic & CCR Parity (11/11 Bit-Exact Including 0x8001 Signed N=1 Saturation); Single-Hit Recovery Proof (0x04->0x00); Live `0x00E682` Stack-Pop Trace & Cross-Track Handoff (`ROM_00E682_STACK_CONTRACT_v1.md`); Native Integration & Dual-Toolchain Verification — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Verification:
+    - Verified M16.20 commit `f7f56e5f227870ce61785d838ed953d69cd5c61a`.
+    - Verified canonical ROM `Beyond Oasis (USA).md` size **`3,145,728` bytes** (fixing M16.20 erroneous `524,288`), SHA256 `EB19BDA4982366A2FD43D65AB8A7F9709D83A8CC902C14A682C088C16359C263`.
+    - Verified GPGX core SHA256 `CA4BE3049E56B1FDFBA9A7C727BEBBDC645B3D50203D635A468048BA81165134`.
+    - Verified M16.20 oracle SHA256 `637C75D950F837AC7F15EF48A70D9721CC81B5E0E94A9FEDC9881033C54597B8`.
+  * Phase 1 & 2 — F1914 Forensics & Oracle Integrity Audit:
+    - Instrumented live GPGX CPU (`retro_hybrid_install`) on `canonical_beach_frame3600.state` F1900..F1940: `0x01EDC6, 0x01EDD0, 0x00F0D2, 0x005820, 0x01F41C, 0x01F462, 0x00BEE8` had **0 executions**.
+    - Actual writer PCs at F1914 were `0x01698A` / `0x016990` (entity `0x0030` dispatcher `0x015AE2` via PRNG `0x00E2A2` at `0x016882`); `DAMAGE_MAILBOX = 0->0`, `HP = 50->50`. Classified `NON_DAMAGE_EVENT`.
+    - Audited all 23 M16.20 fields in `data/standalone-fixtures/m16_20_oracle_provenance_audit.json` (`actual_independent_positive_damage_field_count = 0`). Added 7 mutation tests.
+  * Phase 3, 4, 5 — Real Positive Damage Discovery & Immutable Oracle:
+    - Found genuine unmodified positive damage in `canonical_beach_frame3600.state` at F789 (`7->5`) & F795..797 (`5->0`) on `Player 0x0002 -> Enemy 0x002C` (Slot 5 `@0xFF1D94`) AND F2038/F2286/F2376 on `0x0030`.
+    - Froze `data/standalone-fixtures/positive_damage_oracle_f775_815.json` (`SHA256 = 3C98EA53D8D4E000D86BE73F985A573D4AE3FD6EDCBEF363BFFA82BFB683A10E`, `ORIGINAL_TRACE_SHA256 = 1AC205494AEAA325F9151D124E000150C36253C0A1D068AAD9178888CC51B619`, 41 frames, 48 entity writes).
+  * Phase 6 & 7 — Exact M68000 Arithmetic & Hurt/Recovery Forensics:
+    - Verified all 11 boundary/CCR cases in live GPGX M68000 (`0x01F44C..0x01F466` & `0x0256F6..0x025714`), including signed `N=1` saturation on `0x8001 - 1 = 0x8000 -> 0`. Implemented `src/game/combat/damage_arithmetic.hpp`.
+    - Verified `0x002C` Hurt (`0x04`), flash countdown (`5..0`), knockback (`Y: 181 -> 167`), and Recovery (`0x02595E -> 0x02568A` to State `0x00`) under `CONTROLLED_CPU_ENTRY`.
+  * Phase 8 & 9 — Native Combat Integration & `0x00E682` Stack Handoff:
+    - Replayed F775..F815 in `tests/m16_21_combat_oracle_test.cpp`: 41/41 parity on HP, State, Anim, Damage Mailbox, Action Timer (`0x00E682` F795 yield), Flash Timer, and Invulnerability (`+0x38` bit 3).
+    - Captured live stack trace of `0x00E682` (`addq.l #4, a7; rts` skipping `0x000256BE` -> returning to `0x0000DF1C`) and authored `docs/contracts/ROM_00E682_STACK_CONTRACT_v1.md`.
+  * Phase 10..13 — Graphics Parity, Multi-Toolchain & Governance:
+    - Preserved 30-frame tolerant RGB, Alt Camera 60/60, Scroll 60/60, SAT 32/60, Holdout 61/61.
+    - 33/33 native tests PASSED in MinGW Release & MSVC Debug; 195/207 full CTest (12 external M12 BizHawk failures preserved); all files <= 500 lines; `oasis.exe` SHA256 `C4B5B86F4396FC6703B789462CADA30B4A45B7BF5C8ED9A36FCA46D7165E9E59`; zero emulator linkage; hybrid untouched.
+
 # 2026-11-10 — Milestone M16.20: ENEMY DAMAGE FRAME-BY-FRAME PARITY, ENTITY MEMORY LAYOUT VALIDATION, AND CROSS-TRACK ROM SEMANTIC CONTRACT — 23-Field Enemy Damage Matrix Qualification; Mathematical Reconciliation of Entity Slot Stride (0x2F0 = 4 * 0xBC); Full Disassembly and Exact Verification of Damage Arithmetic Clamping and Death Transitions (0x01F41C..0x01F488 and 0x01EF0C..0x01EF4A); Versioned Semantic Contract for Routine 0x00E682 (entity_timer_tick_and_yield, SHA256 80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F); Natural New Game Entry Verification; Zero Emulator Linkage; 100% Governed File Limit Compliance (<= 500 Lines) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

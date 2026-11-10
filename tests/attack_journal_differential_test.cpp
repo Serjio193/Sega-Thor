@@ -236,9 +236,9 @@ void test_authentic_enemy_combat_mechanics() {
     player.direction_code = 0; // Facing Up
 
     std::vector<oasis::game::NativeEntity> targets(2);
-    // Entity 1: Enemy Guard (Type 0x0030) at (256, 184)
+    // Entity 1: Guard/Soldier class 0x006E (owner of ROM 0x01EB54/0x01F41C..0x01F488)
     targets[1].active = true;
-    targets[1].type_id = 0x0030;
+    targets[1].type_id = 0x006E;
     targets[1].world_x = 256;
     targets[1].world_y = 184;
     targets[1].world_z = 0;

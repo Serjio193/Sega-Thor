@@ -1,4 +1,5 @@
 #include "game/combat/attack_controller.hpp"
+#include "game/combat/damage_arithmetic.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -87,7 +88,7 @@ void NativeAttackController::update(player::PlayerState& player,
                 auto& ent = target_entities[i];
                 if (!ent.active) continue;
                 if (ent.invulnerable) continue; // routine 0x00BDEE: btst #3, $38(a0)
-                if (ent.type_id != 0x0030U) continue; // Only authentic damageable enemy types (0x0030 Guard)
+                if (ent.type_id != 0x002CU && ent.type_id != 0x006EU) continue;
 
                 // Target bounding box in 3D world coordinates (routine 0x00BDF8..0x00BE48)
                 const int t_xmin = ent.world_x - ent.half_width;
@@ -102,20 +103,13 @@ void NativeAttackController::update(player::PlayerState& player,
                 const bool overlap_z = (w_zmin <= t_zmax) && (w_zmax >= t_zmin);
 
                 if (overlap_x && overlap_y && overlap_z) {
-                    // Routine 0x01F450: damage arithmetic clamped to minimum 1
-                    constexpr int kBaseDmg = 4;
-                    const int final_dmg = std::max(1, kBaseDmg - static_cast<int>(ent.defense));
-                    ent.hp = static_cast<std::int16_t>(std::max(0, ent.hp - final_dmg));
-                    ent.previous_state = ent.state;
-                    ent.previous_anim = ent.anim_frame;
-                    ent.invulnerable = true; // routine 0x01F466: bset #3, $38(a6)
-                    if (ent.hp == 0) {
-                        ent.state = 0x0CU; // Collapse / Death State (routine 0x01EF44)
-                    } else {
-                        ent.state = 0x0AU; // Hurt State (routine 0x01F478)
+                    // Collision writer (ROM 0x00BEE8): sets damage mailbox + action/flash timers
+                    ent.action_timer = (ent.type_id == 0x002CU) ? 1U : 0U;
+                    ent.flash_timer = (ent.type_id == 0x002CU) ? 6U : 0U;
+                    ent.damage_mailbox = 0x2004U; // 4 base damage + bit 13 hit sound flag
+                    if (combat::step_entity_combat_tick(ent)) {
+                        sound_command_ = 0x04D9U; // Hit Sound (routine 0x01F43E / 0x0256E8)
                     }
-                    ent.anim_frame = 0x08U;  // Hurt Anim (routine 0x01F484)
-                    sound_command_ = 0x04D9U; // Hit Sound (routine 0x01F43E)
                 }
             }
         }

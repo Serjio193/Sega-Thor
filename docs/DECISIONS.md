@@ -1,3 +1,32 @@
+# ADR-20261110-M16-21-REAL-DAMAGE-EVENT-DISCOVERY-COMBAT-ORACLE-INTEGRITY-AUDIT-AND-AUTHENTIC-ENEMY-HURT-STATE-QUALIFICATION — Live GPGX M68000 Forensics of F1914 (Proven NON_DAMAGE_EVENT at 0x01698A Owned by Entity 0x0030 Dispatcher 0x015AE2); Full Provenance Audit of M16.20 Combat Oracle (m16_20_oracle_provenance_audit.json, Correction of ROM Size to 3,145,728 Bytes); Discovery and Freezing of Genuine Original Positive Damage Oracle (Frames 775..815, Slot 5 Entity 0x002C, positive_damage_oracle_f775_815.json, SHA256 3C98EA53D8D4E000D86BE73F985A573D4AE3FD6EDCBEF363BFFA82BFB683A10E); Controlled M68000 Damage Arithmetic & CCR Flag Parity (11/11 Bit-Exact Including 0x8001 Signed N=1 Saturation); Entity 0x002C Hurt/Knockback/Flash/Recovery & Death Mechanics Verified; Live Stack-Pop Capture & Cross-Track Handoff for ROM 0x00E682 (ROM_00E682_STACK_CONTRACT_v1.md); Zero Emulator Linkage; <=500 Line Compliance
+**Status:** Accepted
+**Date:** 2026-11-10
+
+**Context:**
+1. M16.20 claimed 41/41 parity across 23 combat fields against `enemy_hit_oracle.json` (Frames 1900..1940), where `ENEMY_HP=50`, `DAMAGE_MAILBOX=0`, `INVULNERABILITY=false`, and `FLASH_TIMER=0` throughout.
+2. M16.20 also reported ROM size as 524,288 bytes instead of the canonical 3,145,728 bytes (3 MiB), and attributed Slot 4 (`0x0030`) state changes at F1914 to `0x01EDD0` / `0x01F41C`.
+3. Positive original damage, exact M68000 CCR condition-code arithmetic, Hurt/Recovery transitions, and live stack evidence for `0x00E682` caller bypass had not yet been captured under M68000 CPU write instrumentation.
+
+**Decisions:**
+1. **F1914 Forensic Classification (`NON_DAMAGE_EVENT`):**
+   - Live GPGX CPU instrumentation (`retro_hybrid_install`) across F1900..F1940 proved candidate PCs `0x01EDC6`, `0x01EDD0`, `0x00F0D2`, `0x005820`, `0x01F41C`, `0x01F462`, and `0x00BEE8` all executed **0 times**.
+   - Actual entity jump table disassembly (`0x00DF00..0x00DF52`, base `0x00DF28 + type*2`) proved Entity `0x0030` dispatches to `0x015AE2` (not `0x01EC00`, which belongs to `0x006E`), and Entity `0x002C` dispatches to `0x0254EA`.
+   - At F1914, PC `0x016882` called PRNG `0x00E2A2` and jumped to `0x016970..0x016990`, writing `0x0A` to State (`+0x04`) and `0x08` to Anim (`+0x2A`) on Slot 4 (`0xFF1CD8`) paired with Slot 9 (`0xFF2084`). Zero collision or damage occurred (`HP=50->50`, `mailbox=0->0`).
+2. **M16.20 Oracle Integrity Audit (`m16_20_oracle_provenance_audit.json`):**
+   - Corrected ROM size to `3,145,728` bytes (`EB19BDA4...`).
+   - Audited all 23 fields: `actual_independent_positive_damage_field_count = 0`; 13 WRAM/SAT fields were captured for a non-damage window without frame-by-frame C++ differential replay in M16.20; 10 fields were absent from `enemy_hit_oracle.json`.
+   - Added 7 oracle mutation detectors verifying failure on wrong HP, damage, state, event frame, invulnerability, position, and SAT hash.
+3. **Genuine Positive Original Damage Discovered & Frozen (`positive_damage_oracle_f775_815.json`):**
+   - Unmodified canonical attract mode (`canonical_beach_frame3600.state`) contains authentic positive combat events at **F789 & F795..797** (`Player 0x0002 -> Enemy 0x002C` Slot 5 `@0xFF1D94`) as well as F2038/F2286/F2376 (`Player -> Boss 0x0030`).
+   - Froze 41-frame oracle (`F775..F815`, SHA256 `3C98EA53D8D4E000D86BE73F985A573D4AE3FD6EDCBEF363BFFA82BFB683A10E`) with 48 live M68000 entity write records (`ORIGINAL_TRACE_SHA256 = 1AC205494AEAA325F9151D124E000150C36253C0A1D068AAD9178888CC51B619`).
+   - F789: `0x00BEE8` writes `mailbox=0x0002, timer=1, flash=6` -> `0x0256C6..0x02572A` lowers HP `7 -> 5`, enters Hurt State `0x04`, Anim `0x08`, flash countdown `5..3`, Y knockback `181 -> 172`.
+   - F795..797: `0x00BEE8` writes `mailbox=0xC005, timer=2, flash=6` -> F795 `0x00E682` decrements timer `2 -> 1` and pops return stack via `addq.l #4, a7; rts`; F797 reduces HP `5 -> 0`, sets invulnerability/dead bit 3 of `+0x38` (`0x08`) at `0x025746`, and transitions to Death State `0x06` (`0x02574C`).
+4. **Exact M68000 Damage Arithmetic & Controlled Hurt Recovery:**
+   - Implemented `compute_m68k_damage_step` in `src/game/combat/damage_arithmetic.hpp` verified 11/11 against live GPGX M68000 (`0x01F44C..0x01F466` & `0x0256F6..0x025714`), including `0x8001 - 1 = 0x8000` (`N=1` -> `clr.w d1` -> `0`), unsigned `BHI` comparison for high-bit defense (`0x8000`), bit-13 (`0x2000`) hit sound gating, and exact CCR flags (`X,N,Z,V,C`).
+   - Verified `0x002C` full Hurt recovery via `CONTROLLED_CPU_ENTRY` single-hit test (`F789..F799`): flash decrements `5 -> 0`, then `0x02595E -> 0x02568A` recovers State `0x04 -> 0x00` and Anim `0x08 -> 0x00`.
+5. **Cross-Track ROM `0x00E682` Stack Contract (`docs/contracts/ROM_00E682_STACK_CONTRACT_v1.md`):**
+   - Captured live stack frames proving `addq.l #4, a7; rts` skips immediate caller `0x000256BE` (when `$82(a6) >= 2`, Frame 795) and returns to outer dispatcher `0x0000DF1C` (`EXIT_A7 = ENTRY_A7 + 8`). Documented full 56-byte span (`0x00E682..0x00E6BA`). Hybrid worktree left strictly untouched.
+
 # ADR-20261110-M16-20-ENEMY-DAMAGE-FRAME-BY-FRAME-PARITY-ENTITY-MEMORY-LAYOUT-VALIDATION-AND-CROSS-TRACK-ROM-SEMANTIC-CONTRACT — 23-Field Enemy Damage Matrix Qualification; Mathematical Reconciliation of Entity Slot Stride (0x2F0 = 4 * 0xBC); Full Disassembly and Exact Verification of Damage Arithmetic Clamping and Death Transitions (0x01F41C..0x01F488 and 0x01EF0C..0x01EF4A); Versioned Semantic Contract for Routine 0x00E682 (entity_timer_tick_and_yield, SHA256 80E633200E87EC73688A79F27E07B71A8C4F971EA603D7C8614BB7333710115F); Natural New Game Entry Verification; Zero Emulator Linkage; 100% Governed File Limit Compliance (<= 500 Lines)
 **Status:** Accepted
 **Date:** 2026-11-10
