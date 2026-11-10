@@ -10977,3 +10977,25 @@ Milestone M16.8 established full-screen pixel differential tooling and discovere
 5. **Frame 1 Bit-Exactness Achieved**:
    - Frame 1 achieved **100.0% DAC match with 0 mismatched pixels** across all 71,680 pixels ($320 \times 224$).
    - VDP state parity: 100% exact raw CRAM, palette index selection, and active SAT chain.
+
+
+## Decision: M16.23 — Complete Town Entity Scheduler, Authentic PRNG, ROM SAT Reconstruction & Continuous Encounter Qualification
+
+### Context
+M16.22 landed the initial Town loader (11 spawns) and Slot 5 combat/death lifecycle (`81/81`), but left `FULL_COMBAT_SAT_PARITY = 0/41`, omitted Slots 15..18 rooftop guards, lacked an authentic `0x002C` AI/PRNG/throw/rooftop-drop scheduler and ROM sprite descriptor decoder, and assumed `y <= 77` for Beach-to-Town transition.
+
+### Findings & Implementation
+1. **Full 15+1 Town Entity Scheduler & ROM Animation Stepper (`src/game/entity/town_entity_scheduler.*`, `town_entity_animation.*`)**:
+   - Reconstructed exact ROM `0x00DEEC..0x00DF52` scheduler loop (half-extent swap `0x00DF20`), exact 16-bit LFSR PRNG `0x00E268` / `0x00E2A2` on `$FF1928` (`8/8` GPGX transitions matched), and authentic `0x008FA4..0x00903E` ROM animation table stepper reading `0x042E04` (`0x002C`), `0x040E70` (`0x0060`), and `0x03FF7A` (`0x0002`).
+   - Updated `town_scene_loader.cpp` to load **all 14** `0x002C` records at `0x046522..0x04661D` (8 ground guards `s5..s12` + 6 rooftop ambush guards `s13..s18` with `z=256`, `state=0x14`) plus Archway `s4 = 0x0060` (`15` spawns total) and Slot 19 throw/drop slot.
+   - Reconstructed `0x002C` state machine `0x0254EA`: Idle (`0x00`), Hop (`0x02`), Hurt/Flash (`0x04`), Death (`0x06`), Corpse (`0x08`), Throw (`0x0A` launching Slot 19 `0x002E -> 0x002C` `0x0C` against Player), Shatter (`0x0E`), Rooftop ambush/drop (`0x14/0x16/0x18`), and `0x02E8C8` water current/splash (`flags39 |= 2`).
+2. **Genuine ROM Multi-Part SAT Decoder & 3-Level Parity (`src/game/render/rom_sprite_decoder.*`)**:
+   - Reconstructed `0x00A6A0..0x00B72E` Y-descending painter's algorithm (`world_y` desc, tie-break `slot_index` asc), `0x00A438` HUD, `0x00A7E6` blinking bars, `0x2AF1A6`/`0x163716`/`0x13CDFC` multi-part descriptors, `0x00B610/0x00B66A` water ripples, `0x00ACFE` shadows, `(-32..320, -32..224)` ROM wrap clipping in `SatPipelineContract::emit_rom_piece`, and static vs dynamic attribute math (`0x00AF3E` vs `0x00ABE0`).
+   - Across `F775, F777, F789, F795, F797, F815`: **55/56** Guard/Arch sprite parity, **6/6** structural HUD/Y-sort parity, **0/6** full 80-entry byte parity (due to unmodeled auxiliary hit-spark pool 20..24 & weapon table phase). Zero prerecorded SAT injection.
+3. **Beach-to-Town Boundary, Town VDP Upload & Spatial Sound Arbitration**:
+   - Fixed `kBeachNorthExitThresholdY = 76` (`0x4C`, `0x02E784`) and added `kTownNorthExitThresholdY = 108` (`0x6C`, `0x02E920` -> `0x0104`), `ExitLockFlags` (`0x00C9B2`), decoded `64x64` Plane A metatiles + `64x64` terrain collision + 32-word scene palette from `0x213850`, corrected VRAM uploads (`0x0000`, `0x4000`, `0x9200`), and implemented `0x00E7E8`/`0x06112E` spatial sound attenuation + priority arbitration.
+4. **`0x006E` Spawn Census**:
+   - Audited ROM `0x04371E` screen spawn directory: `0x006E` first appears in `Screen(3,1)` (`0x0474BE`), never in Group 1 Beach/Town (`0x0100..0x0104`); `CONTROLLED_CPU_ENTRY` provenance retained.
+
+### Consequences
+Continuous Beach->Town (`y <= 76`) -> multi-enemy Town -> Town North (`y <= 108`) runtime execution, authentic LFSR PRNG, ROM animation/sprite decoding, and spatial audio arbitration run natively with zero emulator linkage.

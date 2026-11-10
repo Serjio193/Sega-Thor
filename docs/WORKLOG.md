@@ -30022,3 +30022,11 @@ RESULT: PASS.
    - Requirement $\ge 16$ consecutive frames fully satisfied.
    - All 29 standalone test suites PASS across MinGW Release and MSVC Debug.
    - All 918 governed source files strictly <= 500 lines. Zero emulator linkage.
+
+
+# M16.23 Worklog — Complete Town Entity Simulation, Authentic SAT Parity & Multi-Enemy Encounter
+
+## Execution & Results
+- **Forensics & Fixtures**: Disassembled `0x00DEEC`, `0x008FA4..0x00903E`, `0x00A6A0..0x00B72E`, `0x0254EA..0x025C7E`, `0x00E268..0x00E3B0`, `0x00E7E8..0x00E908`, `0x06042A..0x0611E0`, `0x00D4C8..0x00D680`, and `0x02E784`/`0x02E920`; captured 521-frame GPGX trace `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json`.
+- **Native Runtime**: Added `src/game/entity/town_entity_animation.*`, `src/game/entity/town_entity_scheduler.*`, `src/game/render/rom_sprite_decoder.*`, `src/game/render/beach_sat_emitter.*`; updated `town_scene_loader.*`, `town_combat_sat.*`, `sat_pipeline_contract.*`, `sound_command_queue.hpp`, `native_entity.hpp`, and `standalone_game_simulation.*`.
+- **Tests**: Added `tests/m16_23_town_full_sim_test.cpp` (`oasis_m16_23_town_full_sim`); updated `tests/m16_22_town_combat_test.cpp` for 15 spawns & `y <= 76` threshold. All governed files strictly `<= 500` lines; zero emulator linkage in `oasis.exe`.

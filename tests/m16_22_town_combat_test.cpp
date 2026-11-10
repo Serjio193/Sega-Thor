@@ -182,12 +182,12 @@ void test_town_scene_manifest_and_rom_decompression() {
         assert(json_str(blk, "decoded_sha256") == to_upper_hex(c.decoded_sha256));
     }
 
-    assert(scene.entities.size() == 11U);
+    assert(scene.entities.size() == 15U);
     assert(scene.entities[0].type_id == 0x0060U && scene.entities[0].world_x == 160 && scene.entities[0].world_y == 120);
     assert(scene.entities[1].type_id == 0x002CU && scene.entities[1].world_x == 59 && scene.entities[1].world_y == 184 && scene.entities[1].hp == 7);
     assert(scene.entities[2].type_id == 0x002CU && scene.entities[2].world_x == 68 && scene.entities[2].world_y == 399 && scene.entities[2].hp == 4);
 
-    std::cout << "[PASS] test_town_scene_manifest_and_rom_decompression (7/7 ROM 0x003820 chunks SHA-256 exact + 11 spawns)\n";
+    std::cout << "[PASS] test_town_scene_manifest_and_rom_decompression (7/7 ROM 0x003820 chunks SHA-256 exact + 15 spawns)\n";
 }
 
 void test_002c_f777_f781_repulsion_and_multi_init() {
@@ -430,7 +430,7 @@ void test_beach_to_town_continuous_transition_and_cross_track() {
     assert(sim.map_id() == oasis::game::world::kTownMapId);
     assert(sim.state().player_x == 160 && sim.state().player_y == 488);
     assert(sim.camera_x() == 0 && sim.camera_y() == 288);
-    assert(sim.entities().size() == 11U);
+    assert(sim.entities().size() == 16U); // 15 Town spawns + slot 19 projectile/drop slot
 
     // Cross-track 0x00E682 verification (40 JSR + 4 BSR = 44 static callers)
     const auto find_bsr_target = [&](std::uint32_t addr) -> std::uint32_t {
@@ -448,7 +448,7 @@ void test_beach_to_town_continuous_transition_and_cross_track() {
         assert(find_bsr_target(s) == 0x00E682U);
     }
 
-    std::cout << "[PASS] test_beach_to_town_continuous_transition_and_cross_track (y<=77 -> Town 0x005A + 0x00E682 44 callers)\n";
+    std::cout << "[PASS] test_beach_to_town_continuous_transition_and_cross_track (y<=76 -> Town 0x005A + 0x00E682 44 callers)\n";
 }
 
 void test_m16_22_mutation_guards() {

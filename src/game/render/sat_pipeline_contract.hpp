@@ -47,6 +47,12 @@ public:
                     std::uint16_t tile_index, std::uint8_t palette,
                     bool priority, bool h_flip, bool v_flip) noexcept;
 
+    // Emits a raw Genesis VDP SAT entry using exact ROM 0x00ABBE..0x00AC12 clipping:
+    // accepts unsigned wrap (vdp_y - 0x60) <= 0x100 and (vdp_x - 0x60) <= 0x160.
+    bool emit_rom_piece(int vdp_x, int vdp_y,
+                        std::uint8_t size_byte,
+                        std::uint16_t raw_attr) noexcept;
+
     // Emits an entity shadow piece at the specified base coordinates.
     bool emit_shadow(int screen_x, int screen_y,
                      std::uint16_t tile_index, std::uint8_t palette) noexcept;

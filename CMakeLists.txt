@@ -29,6 +29,8 @@ add_library(oasis_core
     src/game/entities/sparse_word_store.cpp
     src/game/entities/screen_entity.cpp
     src/game/entity/entity_physics.cpp
+    src/game/entity/town_entity_animation.cpp
+    src/game/entity/town_entity_scheduler.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
     src/game/player/secondary_weapon.cpp
@@ -41,6 +43,8 @@ add_library(oasis_core
     src/game/render/hud_overlay.cpp
     src/game/render/sprite_compositor.cpp
     src/game/render/player_sprite_composer.cpp
+    src/game/render/beach_sat_emitter.cpp
+    src/game/render/rom_sprite_decoder.cpp
     src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp
     src/game/world/byte_grid.cpp

@@ -61,6 +61,29 @@ bool SatPipelineContract::emit_piece(int screen_x, int screen_y,
     return true;
 }
 
+bool SatPipelineContract::emit_rom_piece(int vdp_x, int vdp_y,
+                                         std::uint8_t size_byte,
+                                         std::uint16_t raw_attr) noexcept {
+    if (active_count_ >= kMaxSprites) {
+        return false;
+    }
+    const std::uint16_t wy = static_cast<std::uint16_t>(vdp_y) & 0xFFFFU;
+    const std::uint16_t wx = static_cast<std::uint16_t>(vdp_x) & 0xFFFFU;
+    if (static_cast<std::uint16_t>(wy - 0x0060U) > 0x0100U ||
+        static_cast<std::uint16_t>(wx - 0x0060U) > 0x0160U) {
+        return false;
+    }
+    auto& entry = entries_[active_count_];
+    entry.y_pos = static_cast<std::uint16_t>(wy & 0x03FFU);
+    entry.size = size_byte;
+    entry.link = static_cast<std::uint8_t>(active_count_ + 1U);
+    entry.attr = raw_attr;
+    entry.x_pos = static_cast<std::uint16_t>(wx & 0x01FFU);
+    active_count_++;
+    dirty_ = true;
+    return true;
+}
+
 bool SatPipelineContract::emit_shadow(int screen_x, int screen_y,
                                       std::uint16_t tile_index, std::uint8_t palette) noexcept {
     // Mega Drive Beyond Oasis oval shadow: 2x1 tiles (16x8 pixels), palette 3, low priority

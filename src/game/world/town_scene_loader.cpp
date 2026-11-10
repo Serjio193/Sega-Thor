@@ -11,12 +11,12 @@ namespace oasis::game::world {
 
 namespace {
 
-constexpr std::uint32_t kTownScriptObjBankPtr1 = 0x0464F0U; // -> 0x2AF51E
-constexpr std::uint32_t kTownScriptObjBankPtr2 = 0x0464F8U; // -> 0x163BDA
+constexpr std::uint32_t kTownScriptObjBankPtr1 = 0x0464F0U; // -> 0x2AF51E (0x002C @ VRAM 0x4000)
+constexpr std::uint32_t kTownScriptObjBankPtr2 = 0x0464F8U; // -> 0x163BDA (0x0060 @ VRAM 0x9200)
 constexpr std::uint32_t kTownChestSpawnXAddr = 0x046512U;
 constexpr std::uint32_t kTownEnemySpawnListAddr = 0x046522U;
 constexpr std::size_t kTownEnemyRecordStride = 18U;
-constexpr std::size_t kTownMaxSlots = 10U; // Slots 5..14 active in Screen(1,3)
+constexpr std::size_t kTownEnemySpawnCount = 14U; // ROM 0x046522..0x04661D: 14 active 0x002C records (Slots 5..18)
 
 std::uint16_t read_be16(std::span<const std::uint8_t> data, std::size_t off) {
     if (off + 2U > data.size()) {
@@ -53,6 +53,72 @@ TownStreamChunk decompress_rom_stream(std::span<const std::uint8_t> rom, std::ui
     return chunk;
 }
 
+NativeEntity make_guard_from_rom(std::span<const std::uint8_t> rom, std::size_t rec,
+                                 std::uint16_t slot_index) {
+    // ROM 0x025568/0x025570 variant tables indexed by variant_96 & 3:
+    static constexpr std::uint16_t kDefenseByVariant[4] = {0x0000U, 0x0004U, 0x0006U, 0x0000U};
+    static constexpr std::uint16_t kPrngMaskByVariant[4] = {0x0703U, 0x0000U, 0x0000U, 0x0000U};
+    static constexpr std::uint16_t kVariant96Table[4] = {0x0001U, 0x0001U, 0x0000U, 0x0000U};
+
+    NativeEntity guard{};
+    guard.slot_index = slot_index;
+    guard.type_id = read_be16(rom, rec + 2U);
+    const std::uint16_t raw_var = read_be16(rom, rec + 4U);
+    guard.world_x = static_cast<std::int32_t>(read_be16(rom, rec + 6U));
+    guard.world_y = static_cast<std::int32_t>(read_be16(rom, rec + 8U));
+    guard.x_fp = guard.world_x * 0x10000;
+    guard.y_fp = guard.world_y * 0x10000;
+
+    const std::int16_t hp_val = static_cast<std::int16_t>(read_be16(rom, rec + 10U));
+    guard.hp = hp_val;
+    guard.max_hp = hp_val;
+    const std::uint16_t spawn_flags = read_be16(rom, rec + 12U);
+    const std::uint8_t sub_mode = static_cast<std::uint8_t>(read_be16(rom, rec + 14U) >> 8U);
+    guard.init_sub = sub_mode;
+    guard.tile_base = read_be16(rom, rec + 16U); // 0x2200 (pal 1) or 0x0200 (pal 0)
+
+    // Populate authentic ROM 0x03F59A defaults for Entity 0x002C
+    guard.height = 16;
+    guard.base_half_w = 10;
+    guard.base_half_d = 10;
+    guard.half_width = 10;
+    guard.half_depth = 15;
+    guard.shadow_idx = 0x10U;
+    guard.flags38 = 0x10U;
+    guard.active = true;
+
+    guard.variant_96 = raw_var;
+    if ((spawn_flags & 0x8000U) != 0U) {
+        guard.flags38 |= 0x20U;
+    }
+    const std::uint16_t vidx = raw_var & 3U;
+    (void)kDefenseByVariant;
+    (void)kVariant96Table;
+    guard.prng_mask_a0 = (vidx == 0U) ? kPrngMaskByVariant[0] : 0x0307U;
+
+    if (sub_mode == 4U) {
+        // ROM 0x025578: Rooftop spawn (z=256, state=0x14, anim=0x12, hidden until dist <= 48)
+        guard.state = 0x14U;
+        guard.anim_frame = 0x12U;
+        guard.world_z = 256;
+        guard.z_fp = 256 * 0x10000;
+        guard.flags36 |= 0x02U;
+        guard.flags37 |= 0x01U;
+        guard.flags38 |= 0x0CU;
+        guard.overlay_3e = 0U;
+        guard.frame_dir = 0xFFFFU;
+    } else {
+        guard.facing = 2U;
+        guard.state = 0x00U;
+        guard.anim_frame = 0x00U;
+        guard.frame_id = 0U;
+        guard.frame_dir = 2U;
+        guard.flags37 = 0x24U;
+        guard.overlay_3e = 0xFFFFU;
+    }
+    return guard;
+}
+
 } // namespace
 
 LoadedTownScene load_town_scene_from_rom(std::span<const std::uint8_t> rom) {
@@ -73,59 +139,96 @@ LoadedTownScene load_town_scene_from_rom(std::span<const std::uint8_t> rom) {
 
     // 7: Primary Town Screen(1,3) map layout stream (0x213850)
     scene.stream_chunks[6] = decompress_rom_stream(rom, scene.descriptor.primary_stream_pointer());
+    const auto& map_bytes = scene.stream_chunks[6].decoded_bytes;
+    if (map_bytes.size() >= 4U + 8192U) {
+        scene.plane_a_metatiles.resize(4096U);
+        for (std::size_t i = 0; i < 4096U; ++i) {
+            scene.plane_a_metatiles[i] = read_be16(map_bytes, 4U + i * 2U);
+        }
+    }
+    if (map_bytes.size() >= 4U + 8192U + 4096U) {
+        scene.terrain_collision.assign(map_bytes.begin() + 4 + 8192,
+                                       map_bytes.begin() + 4 + 8192 + 4096);
+    }
+    if (map_bytes.size() >= 4U + 8192U + 4096U + 64U) {
+        for (std::size_t i = 0; i < 32U; ++i) {
+            scene.scene_palette_words[i] = read_be16(map_bytes, 4U + 8192U + 4096U + i * 2U);
+        }
+    }
 
-    // Entity 0 in Town scene vector: Town gate/chest 0x0060 at (160, 120) from 0x046512
-    NativeEntity gate_obj{};
-    gate_obj.type_id = 0x0060U;
-    gate_obj.world_x = static_cast<std::int32_t>(read_be16(rom, kTownChestSpawnXAddr));
-    gate_obj.world_y = static_cast<std::int32_t>(read_be16(rom, kTownChestSpawnXAddr + 2U));
-    gate_obj.x_fp = gate_obj.world_x * 0x10000;
-    gate_obj.y_fp = gate_obj.world_y * 0x10000;
-    gate_obj.tile_base = 0x0490U;
-    gate_obj.active = true;
-    scene.entities.push_back(gate_obj);
+    // Slot 4 in Town scene: Town Archway 0x0060 at (160, 120) from 0x046512
+    NativeEntity arch_obj{};
+    arch_obj.slot_index = 4U;
+    arch_obj.type_id = 0x0060U;
+    arch_obj.world_x = static_cast<std::int32_t>(read_be16(rom, kTownChestSpawnXAddr));
+    arch_obj.world_y = static_cast<std::int32_t>(read_be16(rom, kTownChestSpawnXAddr + 2U));
+    arch_obj.x_fp = arch_obj.world_x * 0x10000;
+    arch_obj.y_fp = arch_obj.world_y * 0x10000;
+    arch_obj.tile_base = 0x8490U;
+    arch_obj.half_width = 24;
+    arch_obj.half_depth = 12;
+    arch_obj.height = 16;
+    arch_obj.shadow_idx = 0U;
+    arch_obj.flags3a = 0x07U;
+    arch_obj.flags37 = 0x64U;
+    arch_obj.flags38 = 0x88U;
+    arch_obj.flags36 = 0x08U;
+    arch_obj.frame_dir = 0U;
+    arch_obj.overlay_3e = 0xFFFFU;
+    arch_obj.active = true;
+    scene.entities.push_back(arch_obj);
 
-    // Next 10 Town entities: Enemy 0x002C guards from ROM 0x046522.. (18-byte records)
-    for (std::size_t idx = 0; idx < kTownMaxSlots; ++idx) {
+    // Slots 5..18: ALL 14 Enemy 0x002C guards from ROM 0x046522..0x04661D
+    for (std::size_t idx = 0; idx < kTownEnemySpawnCount; ++idx) {
         const std::size_t rec = kTownEnemySpawnListAddr + idx * kTownEnemyRecordStride;
         const std::uint16_t marker = read_be16(rom, rec);
         if (marker == 0U) {
             break;
         }
-        NativeEntity guard{};
-        guard.type_id = read_be16(rom, rec + 2U);
-        guard.facing = read_be16(rom, rec + 4U);
-        guard.world_x = static_cast<std::int32_t>(read_be16(rom, rec + 6U));
-        guard.world_y = static_cast<std::int32_t>(read_be16(rom, rec + 8U));
-        guard.x_fp = guard.world_x * 0x10000;
-        guard.y_fp = guard.world_y * 0x10000;
-        const std::int16_t hp_val = static_cast<std::int16_t>(read_be16(rom, rec + 10U));
-        guard.hp = hp_val;
-        guard.max_hp = hp_val;
-        guard.defense = 0;
-        guard.half_width = 10;
-        guard.half_depth = 7;
-        guard.height = 16;
-        guard.tile_base = 0x0200U;
-        guard.active = true;
-        scene.entities.push_back(guard);
+        scene.entities.push_back(make_guard_from_rom(rom, rec, static_cast<std::uint16_t>(5U + idx)));
     }
 
     return scene;
 }
 
 void upload_town_tiles_to_vdp(const LoadedTownScene& scene, genesis::VdpState& vdp) {
-    // Load decoded Town 4bpp pattern payloads into VRAM sequentially for tileset & sprites.
-    std::size_t cursor = 0x4000U;
-    for (std::size_t i = 0; i < 6U; ++i) {
+    // 1. Background 4bpp tilesets (chunks 0..3: 4 x 4KB) -> VRAM 0x0000..0x3FFF (0x00D4C8)
+    for (std::size_t i = 0; i < 4U; ++i) {
+        const std::size_t dst = i * 4096U;
         const auto& bytes = scene.stream_chunks[i].decoded_bytes;
-        const std::size_t copy_len = std::min(bytes.size(), vdp.vram.size() - cursor);
+        const std::size_t copy_len = std::min(bytes.size(), vdp.vram.size() - dst);
         if (copy_len > 0U) {
-            std::copy_n(bytes.begin(), copy_len, vdp.vram.begin() + static_cast<std::ptrdiff_t>(cursor));
-            cursor += (copy_len + 31U) & ~std::size_t{31U};
+            std::copy_n(bytes.begin(), copy_len, vdp.vram.begin() + static_cast<std::ptrdiff_t>(dst));
         }
-        if (cursor >= vdp.vram.size()) {
-            break;
+    }
+
+    // 2. Entity 0x002C sprite bank (chunk 4: 0x2AF51E) -> VRAM 0x4000 (tile 0x0200)
+    {
+        constexpr std::size_t kGuardVramAddr = 0x4000U;
+        const auto& bytes = scene.stream_chunks[4].decoded_bytes;
+        const std::size_t copy_len = std::min(bytes.size(), vdp.vram.size() - kGuardVramAddr);
+        if (copy_len > 0U) {
+            std::copy_n(bytes.begin(), copy_len, vdp.vram.begin() + static_cast<std::ptrdiff_t>(kGuardVramAddr));
+        }
+    }
+
+    // 3. Entity 0x0060 Archway sprite bank (chunk 5: 0x163BDA) -> VRAM 0x9200 (tile 0x0490)
+    {
+        constexpr std::size_t kArchVramAddr = 0x9200U;
+        const auto& bytes = scene.stream_chunks[5].decoded_bytes;
+        const std::size_t copy_len = std::min(bytes.size(), vdp.vram.size() - kArchVramAddr);
+        if (copy_len > 0U) {
+            std::copy_n(bytes.begin(), copy_len, vdp.vram.begin() + static_cast<std::ptrdiff_t>(kArchVramAddr));
+        }
+    }
+
+    // 4. Upload scene palette words ($FF179E -> $FF138C.. / CRAM Pal 2..3)
+    for (std::size_t i = 0; i < 32U; ++i) {
+        const std::size_t cram_off = (32U + i) * 2U;
+        if (cram_off + 1U < vdp.cram.size()) {
+            const std::uint16_t w = scene.scene_palette_words[i];
+            vdp.cram[cram_off] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
+            vdp.cram[cram_off + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
         }
     }
 }

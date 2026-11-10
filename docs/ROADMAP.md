@@ -5902,3 +5902,9 @@ bytes remain open. M4 has direct VRAM source evidence; CRAM/VSRAM are
 unobserved. M5 live provenance is unaccepted. M9 remains partial pending
 full-game parity and remaining subsystem coverage. See
 `docs/reports/THOR_RUNTIME_ROM_PROPERTIES_RESEAL_20260927.md`.
+
+
+# M16.23 — Complete Town Entity Simulation, Authentic SAT Parity & Continuous Replay — PASS
+- Delivered full 15+1 Town scheduler (`0x00DEEC`, Arch `0x0060` + 14 `0x002C` ground/rooftop guards + Slot 19 throw/drop), exact 16-bit PRNG LFSR (`0x00E268` `8/8`), ROM animation stepper (`0x008FA4`), and `0x0254EA` `0x002C` state machine (`0x00..0x18`).
+- Delivered genuine ROM multi-part SAT decoder (`0x00A6A0..0x00B72E`), `55/56` Guard/Arch parity, `6/6` structural SAT parity across `F775..F815`, and captured 521-frame GPGX fixture `data/standalone-fixtures/town_multi_enemy_encounter_m16_23.json`.
+- Corrected Beach-to-Town transition threshold (`player_y <= 76` / `0x4C`), Town-to-North (`player_y <= 108` / `0x6C`), VRAM layout (`0x0000`, `0x4000`, `0x9200`), `64x64` metatile/collision decode (`0x213850`), spatial sound queue arbitration, and `0x006E` census (`CONTROLLED_CPU_ENTRY`).

@@ -5,6 +5,7 @@
 #include "game/combat/attack_controller.hpp"
 #include "game/combat/sound_command_queue.hpp"
 #include "game/entity/native_entity.hpp"
+#include "game/entity/town_entity_scheduler.hpp"
 #include "game/interaction/interaction_system.hpp"
 #include "game/player/player.hpp"
 #include "game/render/hud_overlay.hpp"
@@ -195,6 +196,10 @@ public:
     [[nodiscard]] std::uint16_t map_id() const noexcept { return map_id_; }
     [[nodiscard]] const combat::SoundCommandQueue& sound_queue() const noexcept { return sound_queue_; }
     [[nodiscard]] const world::LoadedTownScene& town_scene() const noexcept { return town_scene_; }
+    [[nodiscard]] std::uint16_t prng_seed() const noexcept { return town_ctx_.prng_seed; }
+    void set_prng_seed(std::uint16_t seed) noexcept { town_ctx_.prng_seed = seed; }
+    [[nodiscard]] std::uint16_t tick_counter() const noexcept { return tick_counter_; }
+    void set_tick_counter(std::uint16_t tick) noexcept { tick_counter_ = tick; }
 
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
@@ -220,6 +225,9 @@ private:
     combat::SoundCommandQueue sound_queue_{};
 
     world::LoadedTownScene town_scene_{};
+    entity::TownSchedulerContext town_ctx_{};
+    std::vector<std::uint8_t> rom_bytes_{};
+    std::uint16_t tick_counter_{0};
     bool town_prepared_{false};
     std::uint16_t map_id_{world::kBeachMapId};
 

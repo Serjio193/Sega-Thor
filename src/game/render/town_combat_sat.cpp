@@ -5,6 +5,13 @@
 namespace oasis::game::render {
 
 void emit_town_combat_sat(SatPipelineContract& sat,
+                          std::span<const std::uint8_t> rom,
+                          const TownSatFrameContext& frame_ctx,
+                          std::span<const NativeEntity> entities) noexcept {
+    emit_rom_town_sat(sat, rom, frame_ctx, entities);
+}
+
+void emit_town_combat_sat(SatPipelineContract& sat,
                           HudOverlay& hud,
                           const camera::CameraController& camera,
                           const player::PlayerState& player,
