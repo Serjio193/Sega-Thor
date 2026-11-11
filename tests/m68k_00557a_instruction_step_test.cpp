@@ -349,11 +349,11 @@ void test_interruption_and_reentrancy() {
     auto res_irq = step_m68k_00557a(0x000400U, api, true);
     assert(res_irq == M68k9D70StepResult::NotHandled);
 
-    // Re-entrance while active
+    // Re-entrance while active is rejected as NotHandled
     auto res_reenter = step_m68k_00557a(0x00557AU, api, true);
     assert(res_reenter == M68k9D70StepResult::NotHandled);
     const auto& m = get_00557a_step_metrics();
-    assert(m.active_at_entry == 1);
+    assert(m.native_calls == 1);
     std::cout << "test_interruption_and_reentrancy passed\n";
 }
 

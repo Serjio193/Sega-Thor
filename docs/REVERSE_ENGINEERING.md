@@ -1,3 +1,49 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.258: Safe Computational Islands, Debug Harness Repair, and Candidate Safety Forensics)
+
+## Milestone M15.258 Reverse Engineering Summary
+
+### Section 76: Safe Computational Island Discovery, Candidate Forensics, and Disqualification Proofs
+
+#### 1. Debug Test Harness Triage & Verification
+- **Triage Targets:** `oasis_m68k_00557a_step_test`, `oasis_m68k_005670_step_test`, `oasis_m68k_008dd4_step_test`.
+- **Finding 1 (`005670`):** `mock_peek` unconditionally returned 0, preventing corrupt ROM detection by `prepare_step`. Fixed by adding `g_custom_peek` hook returning -1, causing `prepare_step` to fail and return `ContractFault`.
+- **Finding 2 (`00557a` & `008dd4`):** When active, re-entrance at `kStart` triggers the active interruption filter (`pc != resume_pc -> NotHandled`) before reaching `pc == kStart`. The helper correctly rejected re-entrance with `NotHandled`; test expectations aligned to verify `res_reenter == NotHandled` and `native_calls == 1`.
+- **Result:** All 4 build configurations pass 100% (295/295 Linux Debug, 295/295 Linux Release, 295/295 Windows Debug, 295/295 Windows Release). Production code unmodified.
+
+#### 2. Candidate `0x00D406` Subregion Dissection
+- **Subregion 1 (`0x00D44E..0x00D464`):**
+  - Shift-add coordinate calculation loop running 4 iterations (`move.b (a0)+, d3; ext.w d3; asl.w #3, d3; ...; dbra d0`).
+  - Dynamic workload: entered 14 times total across entire replay; executes 40 dynamic instructions per call = 560 dynamic instructions total.
+  - Net ROI: <0.001% (far below 1.5% measurement noise floor). Dispatch transition overhead exceeds savings. Disqualified.
+- **Subregion 2 (`0x00D47C..0x00D482`):**
+  - RAM clearing loop running 10 iterations (`move.w d0, (a0)+; dbra d0`).
+  - Dynamic workload: 140 dynamic instructions total across replay. Disqualified by ROI gate.
+- **Subregion 3 (`0x00D56C..0x00D5C2`):**
+  - Sprite/tile coordinate generation. Calls external subroutines (`bsr.w 0x00D7B0`, `bsr.w 0x00D74A`), coupled directly with VDP DMA setup and port `$C00004` writes. Disqualified by hardware coupling gate.
+
+#### 3. Forensics on Top Musashi Residual Hotspots
+- **`0x0032E8` (1.50M steps):**
+  - Spin-wait loop: `move.w d0, ($FF1658); tst.w ($FF1658); bne.s 0x0032EE; rts`.
+  - Disqualified: hardware/interrupt synchronization spin-wait loop (deadlock risk / CPU pacing violation).
+- **`0x002EE2` (715K steps):**
+  - Spin-wait loop: `tst.w ($FF1658); bne.s 0x002F0A`.
+  - Disqualified: hardware spin-wait loop.
+- **`0x0037D2` (439K steps):**
+  - VDP DMA command queue processor with interrupt suppression (`ORI.W #$0700, SR`), polling `$FF164D`, and VDP MMIO writes.
+  - Disqualified: hardware MMIO, interrupt masking, and polling.
+- **`0x0254EA` (518K steps):**
+  - Entity action state dispatcher indexed via `move.b 0x66(a6), d0`.
+  - Disqualified: non-leaf dispatcher calling 7 unmigrated child subroutines (`0x00E398`, `0x00E2A2`, `0x00E268`, `0x00E2D4`, `0x00DA72`, `0x00E682`, `0x00E7E8`).
+- **`0x00A4C8` (255K steps):**
+  - Tilemap coordinate calculation; entangled CFG with non-local cross-boundary jumps into `0x00A9A0` and `0x00AD76`.
+  - Disqualified: non-isolated CFG.
+- **`0x00D7C0` (228K steps):**
+  - VDP command generator; contains privileged SR manipulation and direct VDP MMIO writes.
+  - Disqualified: hardware MMIO and SR manipulation.
+
+#### 4. Reverse Engineering Conclusion
+None of the surveyed residual hotspots qualifies as a safe, profitable computational island. Recompilation is safely halted under `SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.257: Heavy-Kernel Forensics, Low-Overhead Invariant TSC CPU Profiling, and Phase 4 Safety Gate Evaluation of 0x00C8AA and 0x00D406)
 
 ## Milestone M15.257 Reverse Engineering Summary

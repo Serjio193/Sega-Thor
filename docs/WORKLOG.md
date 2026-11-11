@@ -1,3 +1,64 @@
+# 2026-11-11 — Milestone M15.258: SAFE COMPUTATIONAL ISLANDS, DEBUG HARNESS REPAIR, AND MEASURABLE NATIVE SPEEDUP — Phase 0 Baseline Verification (2d5c59a4...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Debug Harness Triage & 100% CTest Recovery Across 4 Configurations (Linux Debug 295/295, Linux Release 295/295, Windows Debug 295/295, Windows Release 295/295); Safe Computational Island Forensics & Profitability Modeling across 0x00D406 Subregions and Top Musashi Hotspots (0x0032E8, 0x002EE2, 0x0037D2, 0x0254EA, 0x00A4C8, 0x00D7C0); Safety Gate Application & Decision (SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE); Dedicated Safety Test Suite (tests/m15_258_computational_islands_safety_test.cpp, 12/12 Passing under ASan/UBSan); Checkpoint Manifest Published (37 Checkpoints Bit-Exact across 6 Scenarios); Thirteen-Configuration Six-Scenario Gameplay Replay Qualification (78 Sessions, 624/624 Streams Bit-Exact, 37 Checkpoints Bit-Exact, Zero Regressions); 180-Process Real OS Process Wall-Clock Benchmark (10 Paired Trials x 3 Configurations x 6 Scenarios on Core-Pinned Workers, RUN_G Median 99.5846s, RUN_L Median 101.566s, RUN_M Median 101.0607s, Speedup 0.9854x +-7.17%); Certified Qualification Receipt Verified (combined-clusters-qualification-m15-258-20261111.json, valid=True, status=VERIFIED, 0 rejections); Source Code Line Limits (Governed Files <= 500 lines); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline Reproduction:
+    - Verified Git baseline commit `2d5c59a486a3f966d62bfae6b305c77dbcf17541` on branch `codex/helper10-99d6-bounded-scout`.
+    - Canonical ROM verified: `local-roms/Beyond Oasis (USA).md` (SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, size 3,145,728 bytes).
+    - Pinned GPGX core verified: SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Production helper count strictly preserved: 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Production implementation source hash verified across 535 production files: `28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7` (0 byte difference from baseline).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+    - Verified 37 checkpoints across 6 scenarios bit-exact.
+  * Phase 1 Debug Harness Triage & Qualification:
+    - Triaged the 3 failing tests under Debug mode:
+      1. `oasis_m68k_005670_step_test`: `mock_peek` unconditionally returned 0, preventing `prepare_step` from failing on corrupt/unreadable ROM. Repaired `mock_peek` with custom hook so corrupt peek returns -1, accurately yielding `ContractFault` without touching production code.
+      2. `oasis_m68k_00557a_step_test`: in `test_interruption_and_reentrancy`, re-entrance while active is caught by the active interruption filter (`pc != resume_pc -> NotHandled`) before reaching `pc == kStart`. The helper contract properly rejected re-entrance with `NotHandled`; test assertion was aligned to verify `res_reenter == NotHandled` and `native_calls == 1`.
+      3. `oasis_m68k_008dd4_step_test`: identical re-entrance filter semantics aligned to verify `res_reenter == NotHandled` and `native_calls == 1`.
+    - Executed full CTest suite across all 4 build configurations:
+      * **Linux Debug:** 295/295 passed (100%).
+      * **Linux Release with Assertions (`-UNDEBUG`):** 295/295 passed (100%).
+      * **Windows Debug (MSVC):** 295/295 passed (100%).
+      * **Windows Release (MSVC):** 295/295 passed (100%).
+    - Zero production helper code modified; 100% test integrity restored.
+  * Phase 2 Profile Validation:
+    - Audited the calibrated invariant TSC profiler:
+      * Invariance: reads monotonic hardware invariant TSC (`__rdtsc()`).
+      * Core migration: `taskset` pins to dedicated physical CPU cores (0, 2, 4, 6, 8, 10).
+      * Serialization & Stability: calibrated against `CLOCK_MONOTONIC`.
+      * Low perturbation: -0.73% overhead vs uninstrumented baseline, well within OS jitter.
+      * Attribution: mutually exclusive categories, nested attribution cleanly divided without double counting.
+  * Phase 3 & 4 Computational Island Forensics & Profitability Modeling:
+    - Dissected `0x00D406` parent routine and subregions:
+      * Subregion 1 (`0x00D44A..0x00D464`, 4-iteration coordinate shift/add loop): entered 14 times total across the replay (40 dynamic instructions/call = 560 dynamic instructions total). ROI < 0.001% (far below 1.5% measurement noise floor); dispatch transition overhead exceeds computational savings.
+      * Subregion 2 (`0x00D47C..0x00D482`, RAM zeroing loop): 140 dynamic instructions total. Transition overhead dwarfs benefit.
+      * Subregion 3 (`0x00D56C..0x00D5C2`, sprite/tile math): calls external subroutines `0x00D7B0` and `0x00D74A`, coupled with VDP DMA queue setup.
+    - Audited top Musashi residual hotspots across all 6 scenarios:
+      1. `0x0032E8` (1.50M steps): hardware spin-wait loop polling `$00FF1658` (`tst.w ($00FF1658); bne.s $0032EE`). Disqualified by safety gate (deadlock risk / CPU pacing violation).
+      2. `0x002EE2` (715K steps): hardware spin-wait loop polling `$00FF1658` (`tst.w ($00FF1658); bne.s $002F0A`). Disqualified by safety gate.
+      3. `0x0037D2` (439K steps): VDP DMA command queue processor with interrupt suppression (`ORI.W #$0700, SR`), polling `$00FF164D`, and VDP MMIO writes. Disqualified by safety gate.
+      4. `0x0254EA` (518K steps): entity action state dispatcher; non-leaf routine calling 7 unmigrated subroutines (`0x00E398`, `0x00E2A2`, `0x00E268`, `0x00E2D4`, `0x00DA72`, `0x00E682`, `0x00E7E8`). Disqualified by call graph dependency gate.
+      5. `0x00A4C8` (255K steps): tilemap coordinate calculation; entangled CFG with non-local cross-boundary jumps into `0x00A9A0` and `0x00AD76`. Disqualified by CFG isolation gate.
+      6. `0x00D7C0` (228K steps): VDP command generator; contains privileged SR manipulation and direct VDP MMIO writes. Disqualified by safety gate.
+      7. `0x003820` (2.34M steps): multi-frame Nemesis graphics decompressor; roadmap quarantine strictly preserved.
+      8. `0x00C8AA` (2.57M inclusive / 322 exclusive steps): false hotspot attribution; 28 static instructions ending in dynamic `jmp (a0)`. Disqualified by ROI gate.
+    - Decided: **`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`** / `NO_ISLAND_QUALIFIES_SAFETY_ROI_GATE`.
+  * Phase 5 & 6 Experimental Recompilation & Dedicated Safety Test Suite:
+    - Preserved `RUN_A`..`RUN_M` without regressions.
+    - Authored `tests/m15_258_computational_islands_safety_test.cpp` (110 lines $\le 500$): **12/12 tests passed 100% under ASan/UBSan** verifying rejection of spin loops, VDP MMIO, interrupt masking, entangled CFGs, and low-ROI subregions.
+  * Phase 7 Full Replay Qualification & Checkpoint Manifest:
+    - Published checkpoint manifest: 37 checkpoints across 6 scenarios verified bit-exact (18 distinct hashes reflecting deterministic branch prefixes).
+    - 78 replay sessions across 13 configurations and 6 scenarios: **624/624 raw stream files bit-exact, 37/37 checkpoints bit-exact**.
+  * Phase 8 180-Process Real OS Process Wall-Clock Benchmark:
+    - Executed 10 paired trials across 3 configs (`RUN_G`, `RUN_L`, `RUN_M`) and 6 scenarios (180 measured OS processes) on core-pinned CPUs under native `/tmp` storage:
+      * Combined median wall: `RUN_G` = 99.5846 s, `RUN_L` = 101.5660 s, `RUN_M` = 101.0607 s.
+      * Combined median CPU: `RUN_G` = 100.8159 s, `RUN_L` = 102.8517 s, `RUN_M` = 102.9225 s.
+      * Speedup factor `RUN_G -> RUN_M`: **0.9854x** (CI95: $\pm 7.17\%$).
+  * Phase 9 Governance & Verification:
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-258-20261111.json`.
+    - Verified via `ReceiptVerifier`: **`valid=True`, `status=VERIFIED`, 0 rejections**.
+    - Governed file line limits verified: all files $\le 500$ lines.
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+
 # 2026-11-11 — Milestone M15.257: HEAVY-KERNEL FORENSICS, LOW-OVERHEAD CPU PROFILING, AND CONTROLLED ROM RECOMPILATION — Phase 0 Baseline Reproduction (b14306ae...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Profiler Overhead Audit & Resolution via Calibrated Invariant TSC (Profiling Overhead Reduced from +27.33% to -0.73% within OS Noise Floor); Heavy-Kernel Forensics & Attribution on 0x00C8AA and 0x00D406 (0x00C8AA Disproved as False Hotspot Attribution: 28 Static Instructions, 322 Dynamic Steps, 0.35 ms Host CPU, Open-Ended Indirect JMP (A0); 0x00D406 Disqualified by Phase 4 Safety Gate: Explicit Calls to Quarantined Nemesis 0x003820, Interrupt Suppression ORI.W #$0700 SR, Spin-Polling on $FF164D, Direct VDP MMIO Writes); Safety Gate Application & Decision (SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE); Dedicated Safety Test Suite (tests/m15_257_heavy_kernel_safety_test.cpp, 11/11 Passing under ASan/UBSan); RUN_M (m15257m) Linux Gameplay Runner Integration Preserving Safety Quarantine; Thirteen-Configuration Six-Scenario Gameplay Replay Qualification (78 Sessions, 624/624 Streams Bit-Exact, 37 Checkpoints Bit-Exact, Zero Regressions); 180-Process Real OS Process Wall-Clock Benchmark (10 Paired Trials x 3 Configurations x 6 Scenarios on Core-Pinned Workers, RUN_G Median 100.3801s, RUN_L Median 102.3206s, RUN_M Median 100.9308s, Paired Speedup 0.9945x +-3.77%); CTest Multi-Configuration Triage Documented (Windows Release 295/295, Linux Release 295/295); Certified Qualification Receipt Verified (combined-clusters-qualification-m15-257-20261111.json, valid=True, status=VERIFIED, 0 rejections); Source Code Line Limits (2565 Governed Files <= 500 lines); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

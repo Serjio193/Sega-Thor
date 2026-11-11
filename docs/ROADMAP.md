@@ -1,3 +1,31 @@
+# M15.258 Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup — COMPLETE / VERIFIED TEST REPAIR & SAFETY GATE ENFORCEMENT
+
+- **Debug Test Harness Triage & 100% CTest Recovery Across 4 Configurations:**
+  * Identified and repaired test harness defects in `oasis_m68k_00557a_step_test`, `oasis_m68k_005670_step_test`, and `oasis_m68k_008dd4_step_test`.
+  * Production helper source code strictly preserved (535 files hash `28b6617d...`, 196 active helpers).
+  * Achieved 100% test pass across all 4 configurations:
+    - Linux Debug: **295/295 passed (100%)**.
+    - Linux Release with Assertions (`-UNDEBUG`): **295/295 passed (100%)**.
+    - Windows Debug (MSVC): **295/295 passed (100%)**.
+    - Windows Release (MSVC): **295/295 passed (100%)**.
+- **Safe Computational Island Discovery & Safety Gate Evaluation:**
+  * Analyzed `0x00D406` subregions: Subregion 1 (shift-add loop, 560 dynamic instructions total across entire replay, ROI < 0.001%), Subregion 2 (zeroing loop, 140 dynamic instructions total), Subregion 3 (VDP DMA queue setup coupling). Disqualified by ROI gate against 1.5% measurement noise floor.
+  * Disqualified top Musashi residual hotspots: `0x0032E8` (spin loop on `$FF1658`), `0x002EE2` (spin loop on `$FF1658`), `0x0037D2` (VDP MMIO, interrupt masking, hardware polling `$FF164D`), `0x0254EA` (non-leaf dispatcher, 7 unmigrated callees), `0x00A4C8` (tangled tilemap CFG jumping into `0x00A9A0` and `0x00AD76`), `0x00D7C0` (VDP MMIO/SR manipulation), `0x003820` (quarantined Nemesis decompressor), `0x00C8AA` (false hotspot, 28 instructions, dynamic `jmp (a0)`).
+  * Enforced Safety Gate: **`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`**.
+- **Dedicated Safety Test Suite:**
+  * Authored `tests/m15_258_computational_islands_safety_test.cpp` (110 lines $\le 500$): **12/12 tests passed 100% under ASan/UBSan**.
+- **Checkpoint Manifest & Thirteen-Configuration Replay Qualification:**
+  * Published Checkpoint Manifest: 37 checkpoints across 6 scenarios verified bit-exact (18 distinct hashes reflecting deterministic branch prefixes).
+  * Replayed 78 sessions across 13 configurations and 6 scenarios: **624/624 raw stream files bit-exact, 37 checkpoints bit-exact**.
+- **180-Process Real OS Process Wall-Clock Benchmark:**
+  * Measured 10 paired trials x 3 configs x 6 scenarios = 180 independent OS processes on core-pinned CPUs:
+    - Combined median wall: `RUN_G` = 99.5846 s, `RUN_L` = 101.5660 s, `RUN_M` = 101.0607 s.
+    - Speedup factor `RUN_G -> RUN_M`: **0.9854x** (CI95: $\pm 7.17\%$).
+- **Governance & Verification:**
+  * Emitted and verified `data/thor-evidence/combined-clusters-qualification-m15-258-20261111.json` via `ReceiptVerifier` (status=VERIFIED, valid=True, 0 rejections).
+  * Governed file line limits verified: all files $\le 500$ lines.
+  * Production inventory strictly preserved at 196 baseline helpers (`17396fda...`).
+
 # M15.257 Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation (`m15257m`) — COMPLETE / VERIFIED HEAVY-KERNEL FORENSICS & SAFETY QUARANTINE
 
 - **Profiler Overhead Elimination via Invariant TSC:**

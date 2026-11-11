@@ -1,3 +1,45 @@
+# ADR-20261111-M15-258-SAFE-COMPUTATIONAL-ISLANDS-DEBUG-HARNESS-REPAIR-AND-MEASURABLE-SPEEDUP — Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. Following M15.257, three test harnesses (`oasis_m68k_00557a_step_test`, `oasis_m68k_005670_step_test`, `oasis_m68k_008dd4_step_test`) failed under Debug build configurations with active assertions. The failures needed resolution without modifying frozen production helpers (196 active helpers, baseline SHA256 `28b6617d...`).
+2. Computational profiling identified substantial unowned Musashi interpreter execution time, and `0x00D406` was flagged for subregion analysis (discovering safe computational islands within the parent routine that avoid VDP MMIO, Nemesis `0x003820`, interrupt masking, and hardware spin-polling).
+3. Additional top Musashi residual hotspots across all 6 scenarios required systematic forensics against safety gates and profitability modeling before compiling into portable C++20.
+
+**Decisions:**
+1. **Debug Test Harness Triage & 100% CTest Recovery Across 4 Configurations:**
+   - Forensic analysis proved that production helper implementations were completely sound and frozen.
+   - `005670`: `mock_peek` was returning 0 unconditionally. Added a custom peek hook so corrupt ROM simulation returns -1, causing `prepare_step` to fail and return `ContractFault`.
+   - `00557a` & `008dd4`: in `test_interruption_and_reentrancy`, re-entrance while active is caught by the active interruption filter (`pc != resume_pc -> NotHandled`) before reaching `pc == kStart`. The test assertion was updated to verify `res_reenter == NotHandled` and `native_calls == 1`.
+   - Qualified all 4 CTest configurations: Linux Debug (295/295, 100%), Linux Release with assertions (295/295, 100%), Windows Debug (295/295, 100%), Windows Release (295/295, 100%).
+2. **Dissection & ROI Disqualification of `0x00D406` Subregions:**
+   - Subregion 1 (`0x00D44A..0x00D464`, 4-iteration coordinate shift/add loop): entered only 14 times total across the replay (560 dynamic instructions total). Net ROI < 0.001%, failing the profitability gate against the 1.5% measurement noise floor. Dispatch transition overhead exceeds savings.
+   - Subregion 2 (`0x00D47C..0x00D482`, RAM zeroing loop): 140 dynamic instructions total. Transition overhead dwarfs benefit.
+   - Subregion 3 (`0x00D56C..0x00D5C2`, sprite/tile coordinate math): calls external subroutines `0x00D7B0` and `0x00D74A`, coupled with VDP DMA queue setup.
+3. **Safety Gate Disqualification of Top Musashi Residual Hotspots:**
+   - `0x0032E8` (1.50M steps) & `0x002EE2` (715K steps): hardware spin-wait loops polling `$00FF1658`. Disqualified by safety gate (hardware spin-loop / deadlock risk / CPU pacing violation).
+   - `0x0037D2` (439K steps): VDP DMA command queue processor with interrupt suppression (`ORI.W #$0700, SR`), polling `$00FF164D`, and VDP MMIO writes. Disqualified by safety gate.
+   - `0x0254EA` (518K steps): entity action state dispatcher; non-leaf routine calling 7 unmigrated subroutines (`0x00E398`, `0x00E2A2`, `0x00E268`, `0x00E2D4`, `0x00DA72`, `0x00E682`, `0x00E7E8`). Disqualified by call graph dependency gate.
+   - `0x00A4C8` (255K steps): tilemap coordinate calculation; entangled CFG with non-local cross-boundary jumps into `0x00A9A0` and `0x00AD76`. Disqualified by CFG isolation gate.
+   - `0x00D7C0` (228K steps): VDP command generator; contains privileged SR manipulation and direct VDP MMIO writes. Disqualified by safety gate.
+   - `0x003820` (2.34M steps): multi-frame Nemesis graphics decompressor; roadmap quarantine strictly preserved.
+   - `0x00C8AA` (28 instructions, 322 dynamic steps): false hotspot attribution ending in dynamic `jmp (a0)`. Disqualified by ROI gate.
+   - Decided: **`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`**.
+4. **Dedicated Safety Test Suite & Replay Qualification:**
+   - Authored `tests/m15_258_computational_islands_safety_test.cpp` (110 lines $\le 500$): 12/12 tests passing under ASan/UBSan.
+   - Published Checkpoint Manifest: 37 checkpoints across 6 scenarios verified bit-exact (18 distinct hashes reflecting deterministic branch prefixes).
+   - Qualified 13 configurations (`RUN_A`..`RUN_M`) across 6 scenarios: **78 replay sessions, 624/624 raw stream files bit-exact, 37 checkpoints bit-exact**.
+5. **180-Process Real OS Process Wall-Clock Benchmark:**
+   - Executed 10 paired trials across 3 configs (`RUN_G`, `RUN_L`, `RUN_M`) and 6 scenarios (180 measured OS processes) on core-pinned CPUs:
+     * Combined median wall: `RUN_G` = 99.5846 s, `RUN_L` = 101.5660 s, `RUN_M` = 101.0607 s.
+     * Speedup factor `RUN_G -> RUN_M`: **0.9854x** (CI95: $\pm 7.17\%$).
+
+**Consequences:**
+- Restores 100% CTest green status across all 4 build configurations without modifying frozen production helpers.
+- Proves that neither `0x00D406` subregions nor the top Musashi residual hotspots meet the safety and ROI gates for isolated recompilation, preventing fragile recompiler transitions.
+- Published complete, verified Checkpoint Manifest proving cross-scenario replay determinism.
+
 # ADR-20261111-M15-257-HEAVY-KERNEL-FORENSICS-LOW-OVERHEAD-PROFILING-AND-SAFETY-GATE-QUARANTINE — Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation (`RUN_M` / `m15257m`)
 **Status:** Accepted
 **Date:** 2026-11-11

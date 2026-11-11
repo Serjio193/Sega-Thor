@@ -1,3 +1,11 @@
+# M15.258 Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup
+
+- `tests/m15_258_computational_islands_safety_test.cpp` — dedicated safety gate test suite validating disqualification of `0x00D406` subregions and top Musashi hotspots (12/12 passing under ASan/UBSan).
+- `tools/dump_checkpoint_manifest.py` — tool for inspecting and verifying all 37 checkpoints across the 6 gameplay scenarios.
+- `tools/benchmark_m15_258_worker.py` / `tools/benchmark_m15_258_real.py` / `data/thor-evidence/benchmark_m15_258_measured_summary.json` — 180-process real OS process wall-clock benchmark harness and evidence report.
+- `tools/generate_m15_258_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-258-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_258_HANDOFF.md` — comprehensive handoff document detailing debug harness triage, computational island discovery, and qualification evidence.
+
 # M15.257 Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation
 
 - `src/tools/hybrid/host_cpu_profiler.hpp` — calibrated invariant TSC profiler hooks with kernel-specific attribution (`0x00C8AA`, `0x00D406`).

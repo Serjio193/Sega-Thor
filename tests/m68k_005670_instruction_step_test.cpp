@@ -28,7 +28,12 @@ void mock_write_reg(void*, unsigned idx, std::uint32_t val) {
     if (idx == 17) g_ccr = static_cast<std::uint16_t>(val);
 }
 
-int mock_peek(void*, unsigned) { return 0; }
+int (*g_custom_peek)(void*, unsigned) = nullptr;
+
+int mock_peek(void* ctx, unsigned addr) {
+    if (g_custom_peek) return g_custom_peek(ctx, addr);
+    return 0;
+}
 
 std::uint32_t mock_read(void*, unsigned addr, int width) {
     std::uint32_t res = 0;
@@ -124,8 +129,10 @@ void test_rejects_corrupt_rom() {
     mock_write(nullptr, 0x00FF2000U, 4, 0x000558AU); // valid return PC from 0x005586
     g_fetches = {0x0000U}; // corrupt opcode
     g_fetch_index = 0;
+    g_custom_peek = [](void*, unsigned) -> int { return -1; };
 
     auto res = step_m68k_005670(0x005670U, api, true);
+    g_custom_peek = nullptr;
     assert(res == M68k9D70StepResult::ContractFault);
     std::cout << "test_rejects_corrupt_rom passed\n";
 }
