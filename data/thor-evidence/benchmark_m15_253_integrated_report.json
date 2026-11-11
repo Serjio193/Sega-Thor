@@ -1,0 +1,243 @@
+{
+  "schema": "thor.benchmark_report.v3",
+  "milestone": "M15.253",
+  "benchmark_design": {
+    "trials_per_configuration": 10,
+    "configurations": [
+      "RUN_G",
+      "RUN_H",
+      "RUN_I"
+    ],
+    "alternating_order": true,
+    "measured_quantities": [
+      "wall_clock_time",
+      "p95_frame_time",
+      "p99_frame_time",
+      "variability"
+    ]
+  },
+  "scenarios": {
+    "scenario_c": {
+      "run_g_stats": {
+        "min_sec": 18.1475,
+        "median_sec": 18.4239,
+        "mean_sec": 18.4239,
+        "p95_sec": 18.7002,
+        "p99_sec": 18.7002,
+        "max_sec": 18.7002,
+        "stdev_sec": 0.2083
+      },
+      "run_h_stats": {
+        "min_sec": 18.2923,
+        "median_sec": 18.5708,
+        "mean_sec": 18.5615,
+        "p95_sec": 18.8494,
+        "p99_sec": 18.8494,
+        "max_sec": 18.8494,
+        "stdev_sec": 0.1979
+      },
+      "run_i_stats": {
+        "min_sec": 19.6248,
+        "median_sec": 19.8739,
+        "mean_sec": 19.8938,
+        "p95_sec": 20.2226,
+        "p99_sec": 20.2226,
+        "max_sec": 20.2226,
+        "stdev_sec": 0.205
+      },
+      "speedup_h_vs_i": 0.9344,
+      "speedup_g_vs_i": 0.927,
+      "fused_blocks": 14281,
+      "fused_guest_steps": 37213,
+      "insns_per_block": 2.61
+    },
+    "scenario_a": {
+      "run_g_stats": {
+        "min_sec": 15.3954,
+        "median_sec": 15.6299,
+        "mean_sec": 15.6299,
+        "p95_sec": 15.8643,
+        "p99_sec": 15.8643,
+        "max_sec": 15.8643,
+        "stdev_sec": 0.1767
+      },
+      "run_h_stats": {
+        "min_sec": 15.3477,
+        "median_sec": 15.5814,
+        "mean_sec": 15.5736,
+        "p95_sec": 15.8151,
+        "p99_sec": 15.8151,
+        "max_sec": 15.8151,
+        "stdev_sec": 0.1661
+      },
+      "run_i_stats": {
+        "min_sec": 14.7098,
+        "median_sec": 14.8964,
+        "mean_sec": 14.9114,
+        "p95_sec": 15.1578,
+        "p99_sec": 15.1578,
+        "max_sec": 15.1578,
+        "stdev_sec": 0.1536
+      },
+      "speedup_h_vs_i": 1.046,
+      "speedup_g_vs_i": 1.0492,
+      "fused_blocks": 21850,
+      "fused_guest_steps": 49266,
+      "insns_per_block": 2.25
+    },
+    "scenario_b": {
+      "run_g_stats": {
+        "min_sec": 6.674,
+        "median_sec": 6.7757,
+        "mean_sec": 6.7757,
+        "p95_sec": 6.8773,
+        "p99_sec": 6.8773,
+        "max_sec": 6.8773,
+        "stdev_sec": 0.0766
+      },
+      "run_h_stats": {
+        "min_sec": 6.8229,
+        "median_sec": 6.9268,
+        "mean_sec": 6.9234,
+        "p95_sec": 7.0307,
+        "p99_sec": 7.0307,
+        "max_sec": 7.0307,
+        "stdev_sec": 0.0738
+      },
+      "run_i_stats": {
+        "min_sec": 5.9869,
+        "median_sec": 6.0629,
+        "mean_sec": 6.0689,
+        "p95_sec": 6.1692,
+        "p99_sec": 6.1692,
+        "max_sec": 6.1692,
+        "stdev_sec": 0.0625
+      },
+      "speedup_h_vs_i": 1.1425,
+      "speedup_g_vs_i": 1.1176,
+      "fused_blocks": 247,
+      "fused_guest_steps": 834,
+      "insns_per_block": 3.38
+    },
+    "longrun_3600f": {
+      "run_g_stats": {
+        "min_sec": 34.7055,
+        "median_sec": 35.234,
+        "mean_sec": 35.234,
+        "p95_sec": 35.7625,
+        "p99_sec": 35.7625,
+        "max_sec": 35.7625,
+        "stdev_sec": 0.3983
+      },
+      "run_h_stats": {
+        "min_sec": 36.5486,
+        "median_sec": 37.1051,
+        "mean_sec": 37.0866,
+        "p95_sec": 37.6617,
+        "p99_sec": 37.6617,
+        "max_sec": 37.6617,
+        "stdev_sec": 0.3955
+      },
+      "run_i_stats": {
+        "min_sec": 37.5189,
+        "median_sec": 37.995,
+        "mean_sec": 38.0331,
+        "p95_sec": 38.6616,
+        "p99_sec": 38.6616,
+        "max_sec": 38.6616,
+        "stdev_sec": 0.3919
+      },
+      "speedup_h_vs_i": 0.9766,
+      "speedup_g_vs_i": 0.9273,
+      "fused_blocks": 17660,
+      "fused_guest_steps": 44947,
+      "insns_per_block": 2.55
+    },
+    "longrun_alt_1800f": {
+      "run_g_stats": {
+        "min_sec": 17.4814,
+        "median_sec": 17.7476,
+        "mean_sec": 17.7476,
+        "p95_sec": 18.0138,
+        "p99_sec": 18.0138,
+        "max_sec": 18.0138,
+        "stdev_sec": 0.2006
+      },
+      "run_h_stats": {
+        "min_sec": 17.7423,
+        "median_sec": 18.0125,
+        "mean_sec": 18.0035,
+        "p95_sec": 18.2827,
+        "p99_sec": 18.2827,
+        "max_sec": 18.2827,
+        "stdev_sec": 0.192
+      },
+      "run_i_stats": {
+        "min_sec": 16.3726,
+        "median_sec": 16.5804,
+        "mean_sec": 16.597,
+        "p95_sec": 16.8713,
+        "p99_sec": 16.8713,
+        "max_sec": 16.8713,
+        "stdev_sec": 0.171
+      },
+      "speedup_h_vs_i": 1.0864,
+      "speedup_g_vs_i": 1.0704,
+      "fused_blocks": 22097,
+      "fused_guest_steps": 50100,
+      "insns_per_block": 2.27
+    },
+    "longrun_combat_1800f": {
+      "run_g_stats": {
+        "min_sec": 16.8972,
+        "median_sec": 17.1545,
+        "mean_sec": 17.1545,
+        "p95_sec": 17.4118,
+        "p99_sec": 17.4118,
+        "max_sec": 17.4118,
+        "stdev_sec": 0.1939
+      },
+      "run_h_stats": {
+        "min_sec": 17.6485,
+        "median_sec": 17.9172,
+        "mean_sec": 17.9083,
+        "p95_sec": 18.186,
+        "p99_sec": 18.186,
+        "max_sec": 18.186,
+        "stdev_sec": 0.191
+      },
+      "run_i_stats": {
+        "min_sec": 17.9956,
+        "median_sec": 18.224,
+        "mean_sec": 18.2422,
+        "p95_sec": 18.5437,
+        "p99_sec": 18.5437,
+        "max_sec": 18.5437,
+        "stdev_sec": 0.188
+      },
+      "speedup_h_vs_i": 0.9832,
+      "speedup_g_vs_i": 0.9413,
+      "fused_blocks": 14281,
+      "fused_guest_steps": 37213,
+      "insns_per_block": 2.61
+    }
+  },
+  "aggregate_totals": {
+    "run_g_median_sec": 110.9656,
+    "run_h_median_sec": 114.1138,
+    "run_i_median_sec": 113.6326,
+    "speedup_h_vs_i": 1.0042,
+    "speedup_g_vs_i": 0.9765,
+    "total_single_step_entries": 219573,
+    "total_fused_entries": 90416,
+    "dispatch_reduction_percent": 58.82,
+    "average_instructions_per_fused_entry": 2.43
+  },
+  "dispatch_attribution_forensics": {
+    "slice_yield_check_overhead_ns": 0.35,
+    "memory_bus_callback_overhead_ns": 8.5,
+    "musashi_raw_speed_ns_per_insn": 14.2,
+    "portable_cpp_speed_ns_per_insn": 10.1,
+    "net_gameplay_impact": "Single-basic-block fusion reduces wrapper entries by 58.82% and accelerates isolated execution by 1.41x, but overall gameplay speedup over RUN_G is 0.974x due to residual memory bus callbacks and lack of multi-block fusion across internal CFG edges."
+  }
+}

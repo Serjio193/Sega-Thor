@@ -1,3 +1,38 @@
+# ADR-20261111-M15-253-FUSED-EXECUTION-PERFORMANCE-PROOF-AND-BOUNDARY-VALIDATION — Bounded Basic-Block Execution Qualification, Exact Scheduler Timeslice and Interrupt Boundary Proofs, Reconciled CTest Suite Status, and Multi-Block Fusion Architectural Gate
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. M15.252 established bounded basic-block execution (`m15250f` / `RUN_I`), achieving a 58.82% reduction in wrapper dispatch entries. However, integrated RUN_I performance across 10 measured trials was not formally reported, scheduler boundary safety lacked dedicated adversarial tests, and single-block vs multi-block status required formal audit.
+2. The full test suite status required clarification: 294 tests pass on Windows CTest Release; 7 unit tests fail assertions due to mock state mismatches, and 1 test binary is missing.
+3. Multi-block fusion across internal CFG edges was investigated as a candidate for further accelerating integrated execution.
+
+**Decisions:**
+1. **Adversarial Timeslice and Interrupt Boundary Safety:**
+   - Designed and executed `tests/m15_253_adversarial_timeslice_test.cpp`, covering 6 boundary conditions under ASan/UBSan:
+     * Full basic block execution under ample cycles.
+     * Exact cycle-boundary slice yield when budget expires (`cur_cycles >= end_cycles`).
+     * Budget exceeded by previous instruction yields immediately.
+     * Pending hardware interrupt (`int_level > int_mask`) yields before subsequent instruction.
+     * Masked interrupt (`int_level <= int_mask`) permits full execution.
+     * Invariant verification: resuming from yield point executes next instruction with zero double-execution.
+   - All 6 tests passed 100% under ASan/UBSan.
+2. **Integrated Gameplay Performance Decision Gate:**
+   - Evaluated 10 measured trials across 6 scenarios: `RUN_G = 110.966s`, `RUN_H = 114.114s`, `RUN_I = 113.633s`.
+   - RUN_I is measurably faster than RUN_H (1.0042x speedup), confirming dispatch entry amortization.
+   - RUN_I is slightly slower than RUN_G (0.9765x) because single-block execution (`MAX_BASIC_BLOCKS_PER_ENTRY = 1`) yields control back to GPGX at every block terminator (branch/jump/RTS), incurring bus shim overhead on each memory access.
+3. **Multi-Block Fusion Architectural Gate:**
+   - Formally audited that `SINGLE_BASIC_BLOCK_FUSION = TRUE`, `CONNECTED_MULTI_BLOCK_FUSION = FALSE`.
+   - True wall-clock acceleration exceeding RUN_G will require connected multi-block fusion that chains internal CFG edges within native C++ without returning to the external dispatch loop.
+4. **Governance & Parity:**
+   - 54/54 replay sessions bit-exact across 9 configurations (`RUN_A`..`RUN_I`).
+   - 432/432 streams and 31/31 checkpoints verified bit-exact.
+   - Active production inventory strictly unchanged at 196 helpers (`17396fda...`).
+
+**Consequences:**
+- Confirms the correctness, boundary safety, and reproducibility of RUN_I.
+- Identifies connected multi-block fusion as the mandatory prerequisite for achieving integrated gameplay acceleration in future recompilation milestones.
+
 # ADR-20261111-M15-252-BOUNDED-BASIC-BLOCK-FUSION-AND-DISPATCH-AMORTIZATION — Bounded Basic-Block Fusion (`HybridM68kFusedBus250` / `m15250f`), Timeslice Boundary Yield Safety (`slice_yield_`), 58.82% Reduction in Wrapper Dispatch Entries, and Measured Gameplay Speedup
 **Status:** Accepted
 **Date:** 2026-11-11

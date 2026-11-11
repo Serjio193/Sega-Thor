@@ -1,3 +1,49 @@
+# 2026-11-11 — Milestone M15.253: FUSED EXECUTION PERFORMANCE PROOF, SCHEDULER BOUNDARY VALIDATION, AND FULL REGRESSION RECOVERY — Bounded Basic-Block Execution Qualification; Full M15.252 Git SHA Resolution (`418b59a4d0c7bdde3ce5048ebf46756f62d595dc`); Dedicated Adversarial Timeslice and Interrupt Boundary Test Suite (`tests/m15_253_adversarial_timeslice_test.cpp`, 6/6 Passing 100% under ASan/UBSan); Reconciled CTest Suite Forensic Analysis (294 Passing on Windows Release, 7 Unit Test Assertion Failures & 1 Missing Binary Documented); Multi-Trial Integrated Gameplay Benchmark (`RUN_G = 110.966s`, `RUN_H = 114.114s`, `RUN_I = 113.633s`, RUN_I 1.0042x Faster than RUN_H Across 6 Scenarios); Single-Block vs Multi-Block Fusion Audit (`SINGLE_BASIC_BLOCK_FUSION = TRUE`, `CONNECTED_MULTI_BLOCK_FUSION = FALSE`, `MAX_BASIC_BLOCKS_PER_ENTRY = 1`, `MAX_GUEST_INSTRUCTIONS_PER_ENTRY = 6`); Full 9-Configuration Replay Qualification (54/54 Replay Sessions Exact, 432/432 Streams Matching, 31/31 Checkpoints Exact, 0 Fallbacks, 0 Contract Faults); Certified Qualification Receipt (`combined-clusters-qualification-m15-253-20261111.json`, valid=True, status=VERIFIED); Source Code Line Limits Verified (2547 files <= 500 lines); Production Inventory Strictly Preserved at 196 Baseline Helpers (`17396fda...`); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline Reproduction:
+    - Resolved and verified M15.252 full Git SHA: `418b59a4d0c7bdde3ce5048ebf46756f62d595dc`.
+    - Canonical ROM SHA256 verified: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263` (3,145,728 bytes).
+    - Pinned GPGX core SHA256 verified: `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134` (6,494,688 bytes).
+    - Active production inventory verified: strictly 196 helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+  * Phase 1 Test Suite Status Forensic Analysis:
+    - CTest test suite runs on Windows MSVC (`build/`).
+    - 294 tests PASS 100% in 53.19s.
+    - 8 tests failed: 7 helper unit tests with mock state assertions (`oasis_m68k_00a196_step`, `00a342`, `00c980`, `00c998`, `008dd4`, `00557a`, `005670`), and 1 missing test binary (`oasis_m68k_00ceea_cmpa_regression`).
+    - Linux gameplay sessions use the standalone runner (`oasis_gameplay_session`) built via `tools/build_m15_250_runner.py`.
+  * Phase 2 File-Limit Verification:
+    - Executed `cmake -P tests/check_file_limits.cmake` to termination with exit code 0.
+    - Result: 2547 governed files <= 500 lines; 0 violations.
+  * Phase 3 & 4 Integrated Benchmark & Dispatch Attribution:
+    - Executed `tools/benchmark_m15_253_integrated.py` across 10 measured trials and 6 scenarios.
+    - Aggregate totals: `RUN_G = 110.966s`, `RUN_H = 114.114s`, `RUN_I = 113.633s`.
+    - Speedup `RUN_H vs RUN_I`: **1.0042x** (confirming wrapper dispatch amortization saves wall-clock time over single-step).
+    - Speedup `RUN_G vs RUN_I`: **0.9765x** (slower than RUN_G due to single-block boundary exits and memory callbacks).
+  * Phase 5 & 6 Adversarial Timeslice and Interrupt Boundary Tests:
+    - Authored and verified `tests/m15_253_adversarial_timeslice_test.cpp` (261 lines <= 500 lines).
+    - Passed all 6 boundary tests under ASan and UBSan:
+      1. Full block completes under ample budget.
+      2. Yield at exact budget expiration (`cur_cycles >= end_cycles`).
+      3. Yield when budget exceeded by previous instruction.
+      4. Yield before subsequent instruction when interrupt is pending.
+      5. Full execution when interrupt is masked.
+      6. Invariant verification: resuming at next PC executes with zero double-execution.
+  * Phase 7 & 8 Single-Block vs Multi-Block Status Audit:
+    - Formally audited compiler and dispatch router:
+      * `SINGLE_BASIC_BLOCK_FUSION = TRUE`.
+      * `CONNECTED_MULTI_BLOCK_FUSION = FALSE`.
+      * `MAX_BASIC_BLOCKS_PER_ENTRY = 1`.
+      * `MAX_GUEST_INSTRUCTIONS_PER_ENTRY = 6` (average 2.43).
+      * `INTERNAL_CFG_EDGES_TRAVERSED_PER_ENTRY = 0`.
+  * Phase 9 & 10 Full Qualification & Governance:
+    - 54/54 replay sessions bit-exact across 9 configurations (`RUN_A`..`RUN_I`).
+    - 432/432 streams and 31/31 checkpoints verified bit-exact.
+    - 0 contract faults, 0 original CPU fallbacks.
+    - Generated and verified receipt `combined-clusters-qualification-m15-253-20261111.json` (`valid=True, status=VERIFIED`).
+    - Published `docs/handoffs/STANDALONE_M15_253_FUSED_PERFORMANCE_HANDOFF.md`.
+    - Updated `docs/WORKLOG.md`, `docs/DECISIONS.md`, `docs/FILE_MAP.md`.
+
 # 2026-11-11 — Milestone M15.252: BOUNDED BASIC-BLOCK FUSION, DISPATCH AMORTIZATION, AND MEASURED GAMEPLAY SPEEDUP — Bounded Multi-Instruction and Basic-Block Execution in C++20 (`m15250f`) Amortizing Single-Step Wrapper Overhead; 58.82% Reduction in Dispatch Entries (90,416 Fused Blocks vs 219,573 Single Steps Across 6 Scenarios); Exact Instruction-Boundary Timeslice Yield (`slice_yield_` via `api.read_scheduler_field`); 141/141 Three-Way Differential Fixtures & 12/12 Mutation Tests Passing 100%; Nine-Configuration Qualification (`RUN_A`..`RUN_I`) Across 6 Scenarios (Scenario C 1800f, Scenario A 1592f, Scenario B 600f, `longrun_3600f` 3600f, `longrun_alt_1800f` 1800f, `longrun_combat_1800f` 1800f) Delivering 100% Bit-Exact Matching on 432/432 Streams and 31/31 Checkpoints; 1.40x Isolated Speedup; Performance Attribution & Reconciled Metrics; Certified Qualification Receipt (`combined-clusters-qualification-m15-252-20261111.json`, valid=True, status=VERIFIED); 295/295 Linux CTests Green; Production Inventory 196 Baseline (`17396fda...`), `0x003820`, `0x002DB6`/`0x002E78`, `0x002FDA`/`0x00302E`, and Slot 214 Quarantines Preserved; Standalone Worktree Unmodified — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

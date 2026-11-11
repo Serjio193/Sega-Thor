@@ -1,3 +1,10 @@
+# M15.253 Fused Execution Performance Proof, Scheduler Boundary Validation, and Full Regression Recovery
+
+- `tests/m15_253_adversarial_timeslice_test.cpp` — dedicated adversarial timeslice and interrupt boundary test suite (6/6 passing under ASan/UBSan).
+- `tools/benchmark_m15_253_integrated.py` / `data/thor-evidence/benchmark_m15_253_integrated_report.json` — multi-trial integrated performance report and dispatch attribution forensics across 6 scenarios.
+- `tools/generate_m15_253_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-253-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_253_FUSED_PERFORMANCE_HANDOFF.md` — standalone track handoff for bounded basic-block and routine-level fusion.
+
 # M15.252 Bounded Basic-Block Fusion, Dispatch Amortization, and Measured Gameplay Speedup
 
 - `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp` — bounded basic-block execution adapter (`HybridM68kFusedBus250` / `step_m68k_portable_m15250_fused`) implementing `slice_yield_` scheduler boundary yielding.
