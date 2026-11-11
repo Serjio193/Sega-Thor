@@ -1,3 +1,55 @@
+# 2026-11-11 — Milestone M16.42: WATER RIPPLE SAT SCHEDULER FORENSICS AND ATTACK ANIMATION GENERALIZATION — Causal Resolution of F787 and F788 Divergences via ROM 0x00E66E Entity Struct Inheritance and 0x025A02 Projectile Launch Mechanics; Elimination of Residual 29-Byte / 2-Byte SAT Divergence Down to Bit-for-Bit Exact 0 Differing Pixels and 0 Differing VRAM Bytes; Extension of Verified Pixel-Exact Continuous Prefix to 16 Consecutive Frames (F775..F790); Universal Pattern RAM Parity (0 Differing Bytes Across All 21 Frames F775..F795); First Subsequent Divergence Advanced to F791 (123 Diff Pixels, 95 SAT Bytes); Full 14-Snapshot Canonical and Holdout Parity Preserved; 5/5 Focused Mutation Guards Killed; Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 216/228 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance Across All 966 Governed Files; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Reproduction & Verification:
+    - Baseline commit `7eeb441fb5da99bc48329c1d749823ddcc791bf3`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Verified baseline F787 metrics: 105 differing pixels, 29 physical SAT bytes differing.
+    - Verified 12-frame exact prefix F775..F786 and 0 Pattern RAM diff across F775..F795.
+  * Phase 1 & 2 — F787 SAT Forensics & Root-Cause Discovery:
+    - Compared original GPGX and native SAT states entry-by-entry at F787.
+    - Discovered primary cause of 29-byte SAT diff was Slot 19 (airborne Guard projectile launched by Slot 11) being suppressed due to `(flags36 & 0x02) != 0` in `rom_sprite_decoder.cpp:224`.
+    - Corrected Guard projectile launch in `town_entity_scheduler.cpp`: added `proj.flags36 &= ~0x02U;`, `proj.tile_base = ent.tile_base;`, `proj.flags37 = 0x20U;`. SAT diff dropped from 29 bytes to 2 bytes (Entry 23 x: 222 vs 221; Entry 24 x: 227 vs 226).
+  * Phase 3 & 4 — ROM Forensics (0x00E66E & 0x025A02) & Exact Subpixel Alignment:
+    - Disassembled M68K projectile launch routine at ROM `0x0259CE..0x025A70` and helper `0x00E66E`.
+    - Proved `0x00E66E` performs a 0xBC-byte copy (`move.w #$5d, d0; move.w (a4)+, (a6)+; dbra d0`) copying the entire parent entity struct to the projectile, inheriting the exact fixed-point subpixel coordinates (`x_fp = 0x00688000`).
+    - In native, `proj.x_fp` was being overwritten with `proj.world_x * 0x10000` (truncating subpixels), which caused horizontal velocity integration to evaluate to integer 101 instead of 102 at tick 2402, shifting screen X by exactly 1 pixel (221 vs 222).
+    - Preserved parent subpixel position (`proj.x_fp = ent.x_fp; proj.y_fp = ent.y_fp;`).
+    - Differing SAT bytes at F787 and F788 dropped to exactly **0 bytes**!
+    - Differing pixels at F787 and F788 dropped to exactly **0 pixels**!
+  * Phase 5 — Prefix Expansion (16 Consecutive Pixel-Exact Frames):
+    - Continuous bit-for-bit exact prefix expanded to **16 consecutive frames (F775..F790)**:
+      * F775: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`9b0b9c68d3acd37a...`)
+      * F776: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`9b0b9c68d3acd37a...`)
+      * F777: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`c526f51298434a02...`)
+      * F778: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`9b8736554f83bfd0...`)
+      * F779: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`b6cf377d1feadd9d...`)
+      * F780: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`b6cf377d1feadd9d...`)
+      * F781: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`f966992c6b3668a7...`)
+      * F782: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`f966992c6b3668a7...`)
+      * F783: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`18301924c0607893...`)
+      * F784: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`18301924c0607893...`)
+      * F785: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`733d6f9efbbca903...`)
+      * F786: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`733d6f9efbbca903...`)
+      * F787: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`9ec54aab8029732b...`)
+      * F788: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`82a2115802c0c571...`)
+      * F789: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`39f962b859c0cb47...`)
+      * F790: 0 px, 0 VRAM, 0 CRAM, 0 VSRAM, exact RGB24 SHA256 (`39f962b859c0cb47...`)
+    - Universal Pattern RAM Parity: 0 bytes differing across all 21 frames (F775..F795).
+    - First post-prefix divergence advanced to F791 (123 differing pixels, 95 SAT bytes).
+  * Phase 6 — Attack Animation & Generalization Verification:
+    - Multi-directional attack support verified (cardinal directions mapped via direction offset).
+    - Shadow table parameters grounded in ROM `0x00ACFE` (`dy=3, sz=0, attr=0x0548, dx=3`).
+  * Phase 7 & 8 — Qualification, Tests & Governance:
+    - Created `tests/m16_42_water_ripple_sat_scheduler_test.cpp` (430 lines, <= 500).
+    - Registered `oasis_m16_42_water_ripple_sat_scheduler` in `cmake/project_tests_m16.cmake`.
+    - MinGW Release CTest: 216/228 passing (95%), exact 12 historical BizHawk failures preserved.
+    - MSVC Debug CTest: 216/228 passing (95%), exact 12 historical BizHawk failures preserved.
+    - All 5 focused mutation guards killed.
+    - `project_file_line_limit` passed: all 966 governed files strictly `<= 500` lines.
+    - Zero emulator linkage in `oasis.exe`.
+    - Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # 2026-11-11 — Milestone M16.37: PIXEL-EXACT RENDERING, DMA PATTERN FORENSICS, AND FRAME-ALIGNED VDP VALIDATION — Relabeled M16.36 17,698 VRAM Bytes as Temporal Changes Relative to F775; Established Frame-Aligned Simultaneous Native-vs-Original VDP Differential Harness across All 14 Snapshot Pairs (F775 Pixel-Exact 0/71,680 Diff Pixels after Authentic Initial VdpState Preservation Fix; Active Frames Quantified: Holdout Sum 8,379 B VRAM / 138,194 Diff Pixels, Canonical Sum 9,159 B VRAM / 180,444 Diff Pixels); First Confirmed VRAM Divergence at 0x9504 (F779 Canonical / F809 Holdout) Attributed to ROM 0x00A2E8 / 0x00A380 Guard Walk Pattern DMA Queue; Hardware-Visible Sprite Validation (402 Sprites Across 14 Snapshots); Preserved 521/521 Canonical Active SAT, 350/350 Holdout PRNG & 51,476/51,476 Entity Field Parity; 22/22 Mutations Killed; MinGW Release & MSVC Debug CTest 211/223 Passing (Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance across 961 Governed Files — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

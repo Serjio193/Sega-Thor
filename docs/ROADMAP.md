@@ -1,3 +1,24 @@
+# M16.42 Water Ripple SAT Scheduler Forensics and Attack Animation Generalization — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- F787 and F788 Divergence Root-Cause Resolution:
+  * Discovered Slot 19 (airborne projectile) was omitted from native SAT due to `flags36 & 0x02` mask in `rom_sprite_decoder.cpp:224`.
+  * Traced ROM `0x00E66E` 0xBC-byte entity struct copy routine and `0x025A02` launch sequence.
+  * Corrected projectile initialization in `src/game/entity/town_entity_scheduler.cpp` to inherit parent subpixel coordinates (`proj.x_fp = ent.x_fp; proj.y_fp = ent.y_fp;`), clearing `flags36 & 0x02`, setting `tile_base`, and updating `flags37`.
+  * F787 and F788 achieved **0 differing pixels** and **0 differing VRAM bytes** (100% bit-for-bit exact)!
+- Continuous Pixel-Exact Prefix Expansion:
+  * Expanded continuous bit-for-bit exact prefix to **16 consecutive frames (F775..F790)** with exact matching 64 KB VRAM, CRAM, VSRAM, registers, and RGB24 SHA256 hashes.
+  * Universal Pattern RAM parity maintained at 0 differing bytes across all 21 frames (F775..F795).
+  * First subsequent post-prefix divergence identified and quantified at F791 (123 diff pixels, 95 SAT bytes).
+- Full 14-Snapshot Regression Parity:
+  * Canonical 7 snapshots: F775, F779 exact (0 px diff), total canonical sum 148,820 px.
+  * Independent holdout 7 snapshots: F775 exact (0 px diff), total holdout sum 21,300 px.
+- Qualification & Multi-Compiler Verification:
+  * Created `tests/m16_42_water_ripple_sat_scheduler_test.cpp` (430 lines, <= 500 lines) killing 5 focused mutation guards.
+  * Dual-toolchain CTest verification: 216/228 passing (95%) in both MinGW Release and MSVC Debug with exact 12 historical BizHawk failures preserved.
+  * All 966 governed files strictly `<= 500` lines.
+  * Zero emulator linkage in `oasis.exe`. Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # M16.37 Pixel-Exact Rendering, DMA Pattern Forensics, and Frame-Aligned VDP Validation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

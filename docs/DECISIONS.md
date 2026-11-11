@@ -1,3 +1,30 @@
+# ADR-20261111-M16-42-WATER-RIPPLE-SAT-SCHEDULER-FORENSICS-AND-ATTACK-ANIMATION-GENERALIZATION — Resolution of F787/F788 Divergences via ROM 0x00E66E Entity Struct Inheritance and 0x025A02 Projectile Launch Mechanics; Bit-For-Bit Exact F787 and F788 Frames (0 Diff Pixels, 0 Diff VRAM); Expansion of Continuous Pixel-Exact Prefix to 16 Consecutive Frames (F775..F790); Universal Pattern RAM Parity Across F775..F795; First Post-Prefix Divergence Advanced to F791; Dual-Toolchain Verification (216/228 Passing, 12 Historical BizHawk Failures)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. In M16.41, the standalone engine achieved a 12-frame continuous pixel-exact prefix (F775..F786), with the first post-prefix divergence occurring at F787 (105 differing pixels, 29 physical SAT bytes).
+2. SAT forensics revealed that at F787, Slot 19 (airborne Guard projectile launched by Slot 11) was absent in native SAT due to `flags36 & 0x02` dormancy mask not being cleared on launch in `town_entity_scheduler.cpp`.
+3. After clearing `flags36 & 0x02`, setting `tile_base`, and updating `flags37`, SAT divergence dropped from 29 bytes to 2 bytes (Entry 23 and 24 X coordinate differed by exactly 1 pixel: 221 vs 222).
+4. ROM disassembly of `0x0259CE..0x025A70` and helper `0x00E66E` revealed that the original game performs a full 0xBC-byte copy of the parent Guard entity struct to the projectile entity. This copies `ent.x_fp` with its subpixel components (`0x00688000`).
+5. Overwriting `proj.x_fp` with `proj.world_x * 0x10000` discarded the subpixels, causing horizontal integration to land on integer 101 instead of 102 at tick 2402, shifting screen X by 1 pixel.
+
+**Decisions:**
+1. **ROM-Grounded Projectile Launch Inheritance:**
+   - In `src/game/entity/town_entity_scheduler.cpp`, updated Slot 11 projectile launch logic to inherit parent `ent.x_fp` and `ent.y_fp` directly (`proj.x_fp = ent.x_fp; proj.y_fp = ent.y_fp;`), matching ROM `0x00E66E`.
+   - Cleared `flags36 & 0x02U`, copied `tile_base`, and assigned `flags37 = 0x20U`.
+2. **Elimination of F787 and F788 Divergences:**
+   - With exact subpixel inheritance, `base_vdp_x` at tick 2402 evaluates to 230, producing exact Entry 23 X (222) and Entry 24 X (227).
+   - F787 and F788 achieved **0 differing pixels** and **0 differing VRAM bytes**!
+3. **Continuous Pixel-Exact Prefix Expansion:**
+   - Expanded the continuous bit-for-bit exact prefix to **16 consecutive frames (F775..F790)**.
+   - Preserved universal Pattern RAM accuracy across all 21 frames F775..F795 (0 diff).
+   - Identified and quantified the first subsequent divergence at F791 (123 diff px, 95 SAT bytes).
+4. **Qualification & Verification:**
+   - Implemented `tests/m16_42_water_ripple_sat_scheduler_test.cpp` (430 lines, <= 500 lines) with 5 focused mutation guards.
+   - Dual-toolchain CTest verification: 216/228 passing in both MinGW Release and MSVC Debug, preserving exact 12 historical BizHawk failures.
+   - Zero emulator linkage in `oasis.exe`. Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # ADR-20261111-M16-37-PIXEL-EXACT-RENDERING-DMA-PATTERN-FORENSICS-AND-FRAME-ALIGNED-VDP-VALIDATION — Relabeling M16.36 17,698 Temporal VRAM Bytes; Frame-Aligned Simultaneous Native-vs-Original VDP Differential Harness (F775 Pixel-Exact 0/71,680; Total Simultaneous VRAM Diff 17,538 Bytes, Total Diff Pixels 318,638); Preserving Explicit Initial VdpState in `initialize_town_checkpoint`; ROM `0x00A2E8`/`0x00A380` Guard Walk DMA Forensics; Dual-Toolchain Verification (211/223 Passing, 12 Historical BizHawk Failures)
 **Status:** Accepted
 **Date:** 2026-11-11

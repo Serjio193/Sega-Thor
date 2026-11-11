@@ -1,3 +1,30 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M16.42: Projectile Struct Copy 0x00E66E, Launch 0x025A02, and Exact Continuous Prefix Expansion F775..F790)
+
+## Milestone M16.42 Reverse Engineering Summary
+
+### 1. Guard Projectile Launch Routine (ROM 0x0259CE..0x025A70) & Full Struct Inheritance (0x00E66E)
+- **M68K Disassembly of 0x00E66E:**
+  ```m68k
+  0x00E66E: movem.l   d0/a4/a6, -(a7)
+  0x00E672: move.w    #$5d, d0
+  0x00E676: move.w    (a4)+, (a6)+
+  0x00E678: dbra      d0, $e676
+  0x00E67C: movem.l   (a7)+, d0/a4/a6
+  0x00E680: rts
+  ```
+  Routine `0x00E66E` performs a complete `$5E` words = 0xBC bytes copy from parent entity `a4` (Slot 11 Guard) into child projectile `a6` (Slot 19).
+- **Subpixel Coordinate Retention:**
+  Parent Guard at F775 holds `x_fp = 0x00688000` (104.5 in fixed-point, world_x = 104). Overwriting `proj.x_fp` with `proj.world_x * 0x10000` dropped the `0x8000` subpixel fraction, causing velocity integration `(player_x_fp - proj.x_fp) >> 4` to truncate to 101 instead of 102 when staged at tick 2402, producing a 1-pixel X discrepancy in SAT Entries 23 and 24.
+  Inheriting parent coordinates (`proj.x_fp = ent.x_fp; proj.y_fp = ent.y_fp;`) matches ROM and brings Entry 23 and 24 into 100% bit-for-bit parity.
+
+### 2. Elimination of F787 and F788 Divergences & 16-Frame Continuous Bit-for-Bit Exact Prefix
+- **Bit-for-Bit Exact Prefix (F775..F790):**
+  * All 16 frames (F775 through F790) match original GPGX VRAM, CRAM, VSRAM, registers, and rendered RGB24 pixel images with 0 differences and exact SHA256 hashes.
+  * F787: 0 diff px, 0 diff VRAM.
+  * F788: 0 diff px, 0 diff VRAM.
+  * Universal Pattern RAM parity: 0 diff across all 21 frames (F775..F795).
+  * First subsequent divergence advanced to F791 (123 diff px, 95 SAT bytes).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M16.37: Frame-Aligned Simultaneous VDP Validation, DMA Pattern Forensics, and Pixel-Exact Reference Verification)
 
 ## Milestone M16.37 Reverse Engineering Summary
