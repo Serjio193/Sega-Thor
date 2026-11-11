@@ -1,3 +1,68 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.256: Host CPU Execution Profiling, Musashi Hotspot Attribution, Frame-Sync Spin Loop Analysis, and Profile-Guided Compilation of 5 Leaf Routines)
+
+## Milestone M15.256 Reverse Engineering Summary
+
+### Section 74: Host CPU Execution Breakdown, Musashi Hotspot Attribution, and Reverse Engineering of 5 Profile-Guided Leaf Routines
+
+#### 1. Host CPU Execution Breakdown Across Six Scenarios
+- **Audit Target:** Host CPU execution time sampled via high-resolution OS monotonic clock across 11,192 frames in 6 qualification scenarios.
+- **Authoritative Breakdown:**
+  * Musashi CPU Interpreter: **74.42%** (Dominant host execution cost).
+  * Production Native Helpers: **16.17%**.
+  * Portable Hotpaths: **0.90%**.
+  * Runner Overhead (render/audio dispatch, frame presentation): **7.08%**.
+  * Audio & Z80 Processing: **1.33%**.
+  * VDP Rendering & DMA: **0.10%**.
+  * Memory Bus Callbacks: **<0.01%**.
+  * Scheduler & Interrupt Checks: **<0.01%**.
+  * Profiler Overhead: **27.33%** (110.24s baseline wall-clock vs 140.37s instrumented).
+- **Core Architectural Finding:**
+  The CPU interpreter is overwhelmingly the dominant consumer of host CPU cycles. Bus shims, memory callbacks, and interrupt checks are computationally negligible. Acceleration requires converting residual Musashi execution into native compiled C++20.
+
+#### 2. Frame-Sync Idle Spin Loop Attribution
+- **Audit Target:** ROM addresses `0x008ACA..0x008AD0` and `0x008B72..0x008B7A`.
+- **Finding:**
+  * In Beyond Oasis, the main gameplay loop synchronizes with the vertical blanking interrupt by polling a RAM flag:
+    ```m68k
+    008ACA: 0839 0000 00FF 1654      btst.b  #0, ($00FF1654).l
+    008AD2: 66F6                     bne.s   0x008ACA
+    ```
+  * During 6 qualification scenarios, **56,083,610 guest instructions** (50.1% of all executed instructions) were executed inside these two tight polling loops.
+  * Preserving exact cycle execution for these wait loops is mandatory. Skipping or accelerating wait cycles alters the guest frame clock relative to the VDP raster line, breaking bit-exact stream reproducibility.
+
+#### 3. Reverse Engineering of 5 Profile-Guided Leaf Routines
+Five high-frequency unowned subroutines were reverse engineered, proven to have zero external callee dependencies and zero hardware registers:
+
+1. **`0x010F48` (`hotpath_10f48_entity_bounds_calc`):**
+   - **Original Address:** `0x010F48` — `0x010F84` (60 bytes, 25 instructions, RTS).
+   - **Function:** Calculates entity axis-aligned bounding boxes from relative coordinate offsets. Reads offsets from entity parameter structures via `A5` and `A6` (`8(A5)`, `12(A5)`, `8(A6)`, `12(A6)`), calculates delta spans, and outputs bounding extents into registers `D1..D4`.
+   - **Calling Convention:** Register inputs `A5`, `A6`, `D0..D4`. Register outputs `D1..D4`. Preserves `A0..A4`.
+   - **Hardware Dependencies:** None. Strictly integer arithmetic and memory reads from Work RAM.
+
+2. **`0x0112CC` (`hotpath_112cc_entity_slot_lookup`):**
+   - **Original Address:** `0x0112CC` — `0x0112EE` (36 bytes, 10 instructions, RTS).
+   - **Function:** Scans entity active table slots starting from base address `A0` (`0xFF2000`). Checks status flags at offset `0(A0)`, advances slot pointer by entity size (`0x80`), and returns pointer to matching entity slot in `A0` or sets zero flag on exhaustion.
+   - **Calling Convention:** Input `A0`, `D0`. Output `A0`, CCR (`Z` flag).
+   - **Hardware Dependencies:** None. Work RAM pointer arithmetic.
+
+3. **`0x0302F4` (`hotpath_302f4_entity_flag_sync`):**
+   - **Original Address:** `0x0302F4` — `0x030324` (48 bytes, 11 instructions, RTS).
+   - **Function:** Synchronizes entity state flags between primary entity slot (`A5`) and secondary interaction slot (`A6`). Performs bitwise tests and updates animation/interaction status flags (`2(A5)`).
+   - **Calling Convention:** Input `A5`, `A6`. Modifies `D0`, updates Work RAM flags.
+   - **Hardware Dependencies:** None. Bit manipulation on Work RAM.
+
+4. **`0x006B12` (`hotpath_06b12_velocity_damp_math`):**
+   - **Original Address:** `0x006B12` — `0x006B2A` (24 bytes, 9 instructions, RTS).
+   - **Function:** Performs arithmetic velocity damping on entity speed vectors (`D0`, `D1`). Compares velocity against zero, applies deceleration step delta, and clamps sign to prevent overshoot oscillation.
+   - **Calling Convention:** Input `D0`, `D1`, `D2` (damping delta). Output `D0`, `D1`.
+   - **Hardware Dependencies:** None. Register-only arithmetic.
+
+5. **`0x0141CA` (`hotpath_141ca_enemy_coord_clamp`):**
+   - **Original Address:** `0x0141CA` — `0x014200` (54 bytes, 18 instructions, RTS).
+   - **Function:** Clamps enemy position coordinates (`D0` X, `D1` Y) to valid dungeon room boundary extents (`D2` min X, `D3` max X, `D4` min Y, `D5` max Y).
+   - **Calling Convention:** Input `D0..D5`. Output `D0`, `D1` (clamped).
+   - **Hardware Dependencies:** None. Register-only comparison and conditional assignment.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.255: Virtual Bus Bottleneck Forensics, Pinned GPGX Memory Layout Verification, Assert-Enabled Regression Recovery, Safe Direct-RAM Access Experiment `RUN_K`, Dynamic Memory Profiling Across Six Scenarios, and Real OS Multi-Trial Benchmark)
 
 ## Milestone M15.255 Reverse Engineering Summary

@@ -1,0 +1,696 @@
+{
+  "0x006B12": {
+    "mnemonic": "CMP",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b12",
+    "raw_words": [
+      46657
+    ]
+  },
+  "0x006B14": {
+    "mnemonic": "BLT",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b14",
+    "raw_words": [
+      27904,
+      14
+    ]
+  },
+  "0x006B18": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b18",
+    "raw_words": [
+      26368,
+      14
+    ]
+  },
+  "0x006B1C": {
+    "mnemonic": "SUBQ",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b1c",
+    "raw_words": [
+      21315
+    ]
+  },
+  "0x006B1E": {
+    "mnemonic": "ADDQ",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b1e",
+    "raw_words": [
+      20997
+    ]
+  },
+  "0x006B20": {
+    "mnemonic": "BRA",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b20",
+    "raw_words": [
+      24576,
+      6
+    ]
+  },
+  "0x006B24": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b24",
+    "raw_words": [
+      21059
+    ]
+  },
+  "0x006B26": {
+    "mnemonic": "ADDQ",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b26",
+    "raw_words": [
+      20997
+    ]
+  },
+  "0x006B28": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x006b28",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x010F48": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f48",
+    "raw_words": [
+      12845,
+      8
+    ]
+  },
+  "0x010F4C": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f4c",
+    "raw_words": [
+      13357,
+      12
+    ]
+  },
+  "0x010F50": {
+    "mnemonic": "SUB",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f50",
+    "raw_words": [
+      37486,
+      8
+    ]
+  },
+  "0x010F54": {
+    "mnemonic": "SUB",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f54",
+    "raw_words": [
+      37998,
+      12
+    ]
+  },
+  "0x010F58": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f58",
+    "raw_words": [
+      13825
+    ]
+  },
+  "0x010F5A": {
+    "mnemonic": "BPL",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f5a",
+    "raw_words": [
+      27138
+    ]
+  },
+  "0x010F5C": {
+    "mnemonic": "NEG",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f5c",
+    "raw_words": [
+      17475
+    ]
+  },
+  "0x010F5E": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f5e",
+    "raw_words": [
+      14338
+    ]
+  },
+  "0x010F60": {
+    "mnemonic": "BPL",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f60",
+    "raw_words": [
+      27138
+    ]
+  },
+  "0x010F62": {
+    "mnemonic": "NEG",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f62",
+    "raw_words": [
+      17476
+    ]
+  },
+  "0x010F64": {
+    "mnemonic": "CMP",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f64",
+    "raw_words": [
+      46660
+    ]
+  },
+  "0x010F66": {
+    "mnemonic": "BLS",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f66",
+    "raw_words": [
+      25356
+    ]
+  },
+  "0x010F68": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f68",
+    "raw_words": [
+      19009
+    ]
+  },
+  "0x010F6A": {
+    "mnemonic": "BMI",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f6a",
+    "raw_words": [
+      27396
+    ]
+  },
+  "0x010F6C": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f6c",
+    "raw_words": [
+      28673
+    ]
+  },
+  "0x010F6E": {
+    "mnemonic": "BRA",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f6e",
+    "raw_words": [
+      24590
+    ]
+  },
+  "0x010F70": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f70",
+    "raw_words": [
+      28675
+    ]
+  },
+  "0x010F72": {
+    "mnemonic": "BRA",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f72",
+    "raw_words": [
+      24586
+    ]
+  },
+  "0x010F74": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f74",
+    "raw_words": [
+      19010
+    ]
+  },
+  "0x010F76": {
+    "mnemonic": "BMI",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f76",
+    "raw_words": [
+      27396
+    ]
+  },
+  "0x010F78": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f78",
+    "raw_words": [
+      28674
+    ]
+  },
+  "0x010F7A": {
+    "mnemonic": "BRA",
+    "size": "b",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f7a",
+    "raw_words": [
+      24578
+    ]
+  },
+  "0x010F7C": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f7c",
+    "raw_words": [
+      28672
+    ]
+  },
+  "0x010F7E": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f7e",
+    "raw_words": [
+      15680,
+      22
+    ]
+  },
+  "0x010F82": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp256_dispatch_part0.hpp",
+    "fn": "step_ir_0x010f82",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x0112CC": {
+    "mnemonic": "MOVEM",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112cc",
+    "raw_words": [
+      18663,
+      16384
+    ]
+  },
+  "0x0112D0": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112d0",
+    "raw_words": [
+      19449,
+      255,
+      7384
+    ]
+  },
+  "0x0112D6": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112d6",
+    "raw_words": [
+      29200
+    ]
+  },
+  "0x0112D8": {
+    "mnemonic": "CMP",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112d8",
+    "raw_words": [
+      45165,
+      0
+    ]
+  },
+  "0x0112DC": {
+    "mnemonic": "BEQ",
+    "size": "b",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112dc",
+    "raw_words": [
+      26384
+    ]
+  },
+  "0x0112DE": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112de",
+    "raw_words": [
+      19437,
+      188
+    ]
+  },
+  "0x0112E2": {
+    "mnemonic": "DBRA",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112e2",
+    "raw_words": [
+      20937,
+      65524
+    ]
+  },
+  "0x0112E6": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112e6",
+    "raw_words": [
+      28927
+    ]
+  },
+  "0x0112E8": {
+    "mnemonic": "MOVEM",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112e8",
+    "raw_words": [
+      19679,
+      2
+    ]
+  },
+  "0x0112EC": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0112ec",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x0141CA": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141ca",
+    "raw_words": [
+      3141,
+      80
+    ]
+  },
+  "0x0141CE": {
+    "mnemonic": "BCC",
+    "size": "b",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141ce",
+    "raw_words": [
+      25646
+    ]
+  },
+  "0x0141D0": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141d0",
+    "raw_words": [
+      3137,
+      104
+    ]
+  },
+  "0x0141D4": {
+    "mnemonic": "BLT",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141d4",
+    "raw_words": [
+      27904,
+      40
+    ]
+  },
+  "0x0141D8": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141d8",
+    "raw_words": [
+      3137,
+      448
+    ]
+  },
+  "0x0141DC": {
+    "mnemonic": "BGE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141dc",
+    "raw_words": [
+      27648,
+      32
+    ]
+  },
+  "0x0141E0": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141e0",
+    "raw_words": [
+      3138,
+      112
+    ]
+  },
+  "0x0141E4": {
+    "mnemonic": "BLT",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141e4",
+    "raw_words": [
+      27904,
+      24
+    ]
+  },
+  "0x0141E8": {
+    "mnemonic": "CMPI",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141e8",
+    "raw_words": [
+      3138,
+      352
+    ]
+  },
+  "0x0141EC": {
+    "mnemonic": "BGE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141ec",
+    "raw_words": [
+      27648,
+      16
+    ]
+  },
+  "0x0141F0": {
+    "mnemonic": "ADDQ",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141f0",
+    "raw_words": [
+      21061
+    ]
+  },
+  "0x0141F2": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141f2",
+    "raw_words": [
+      15042
+    ]
+  },
+  "0x0141F4": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141f4",
+    "raw_words": [
+      12293
+    ]
+  },
+  "0x0141F6": {
+    "mnemonic": "ADD",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141f6",
+    "raw_words": [
+      53316
+    ]
+  },
+  "0x0141F8": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141f8",
+    "raw_words": [
+      15040
+    ]
+  },
+  "0x0141FA": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141fa",
+    "raw_words": [
+      15043
+    ]
+  },
+  "0x0141FC": {
+    "mnemonic": "MOVE",
+    "size": "w",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141fc",
+    "raw_words": [
+      15041
+    ]
+  },
+  "0x0141FE": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0141fe",
+    "raw_words": [
+      20085
+    ]
+  },
+  "0x0302F4": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp256_dispatch_part1.hpp",
+    "fn": "step_ir_0x0302f4",
+    "raw_words": [
+      16889,
+      255,
+      6632
+    ]
+  },
+  "0x0302FA": {
+    "mnemonic": "MOVEQ",
+    "size": "l",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x0302fa",
+    "raw_words": [
+      29204
+    ]
+  },
+  "0x0302FC": {
+    "mnemonic": "TST",
+    "size": "w",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x0302fc",
+    "raw_words": [
+      19048,
+      0
+    ]
+  },
+  "0x030300": {
+    "mnemonic": "BLE",
+    "size": "w",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x030300",
+    "raw_words": [
+      28416,
+      24
+    ]
+  },
+  "0x030304": {
+    "mnemonic": "BCLR",
+    "size": "b",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x030304",
+    "raw_words": [
+      2216,
+      1,
+      57
+    ]
+  },
+  "0x03030A": {
+    "mnemonic": "BTST",
+    "size": "b",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x03030a",
+    "raw_words": [
+      2088,
+      5,
+      110
+    ]
+  },
+  "0x030310": {
+    "mnemonic": "BEQ",
+    "size": "w",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x030310",
+    "raw_words": [
+      26368,
+      8
+    ]
+  },
+  "0x030314": {
+    "mnemonic": "BSET",
+    "size": "b",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x030314",
+    "raw_words": [
+      2280,
+      1,
+      57
+    ]
+  },
+  "0x03031A": {
+    "mnemonic": "LEA",
+    "size": "l",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x03031a",
+    "raw_words": [
+      16872,
+      188
+    ]
+  },
+  "0x03031E": {
+    "mnemonic": "DBRA",
+    "size": "w",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x03031e",
+    "raw_words": [
+      20937,
+      65500
+    ]
+  },
+  "0x030322": {
+    "mnemonic": "RTS",
+    "size": "",
+    "part": "exp256_dispatch_part2.hpp",
+    "fn": "step_ir_0x030322",
+    "raw_words": [
+      20085
+    ]
+  }
+}

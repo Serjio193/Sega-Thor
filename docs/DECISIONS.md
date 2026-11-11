@@ -1,3 +1,55 @@
+# ADR-20261111-M15-256-HOST-CPU-PROFILING-MUSASHI-HOTSPOTS-AND-PROFILE-GUIDED-EXPANSION — Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion (`RUN_L` / `m15256p`)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. M15.255 proved that virtual memory bus callbacks are not the bottleneck limiting integrated gameplay performance (bus callback overhead is < 0.05 ms per frame).
+2. The core question for M15.256 was determining where actual host CPU execution time is spent during integrated gameplay across all scenarios, attributing the workload between Musashi, production native helpers, portable code, idle frame-sync wait loops, audio, and VDP.
+3. Once host hotspots are identified, can profile-guided selection of candidate leaf routines expand portable C++20 coverage while maintaining 100% bit-exact parity across all 576 qualification streams?
+
+**Decisions:**
+1. **Host CPU Profiling & Execution Breakdown:**
+   - Implemented high-resolution host CPU profiler in `src/tools/hybrid/host_cpu_profiler.hpp` (201 lines $\le 500$) instrumenting all 6 qualification scenarios (11,192 frames).
+   - Authoritative workload distribution:
+     * Musashi CPU Execution: **74.42%** of host wall-clock time.
+     * Production Native Helpers: **16.17%**.
+     * Portable Hotpaths: **0.90%**.
+     * Runner Overhead (frame dispatch, texture sync): **7.08%**.
+     * Audio & Z80: **1.33%**.
+     * VDP & DMA: **0.10%**.
+     * Memory Bus Callbacks: **<0.01%**.
+     * Scheduler & Interrupt Checks: **<0.01%**.
+     * Profiler Overhead: **27.33%** (Uninstrumented: 110.24s, Instrumented: 140.37s).
+2. **Idle Wait Loop Attribution:**
+   - Attributed 56,083,610 guest steps (50.1% of all guest instructions) to frame-sync wait loops (`0x008ACA..0x008AD0` and `0x008B72..0x008B7A`), spinning on `$FF1654` for VINT.
+   - Decided to preserve exact cycle timing on all idle wait loops without cycle-skipping, as altering guest cycle progression modifies VDP beam synchronization and breaks deterministic stream matching.
+3. **Profile-Guided Candidate Selection & Compilation:**
+   - Selected 5 high-ROI, clean leaf routines with zero hardware risk:
+     1. `0x010F48` (`hotpath_10f48_entity_bounds_calc`): 25 instructions, bounds math.
+     2. `0x0112CC` (`hotpath_112cc_entity_slot_lookup`): 10 instructions, slot lookup.
+     3. `0x0302F4` (`hotpath_302f4_entity_flag_sync`): 11 instructions, status flag bitops.
+     4. `0x006B12` (`hotpath_06b12_velocity_damp_math`): 9 instructions, velocity damping.
+     5. `0x0141CA` (`hotpath_141ca_enemy_coord_clamp`): 18 instructions, coordinate clamping.
+   - Lowered to Thor-IR (73 instructions, 34 basic blocks) and emitted 11 partitioned headers in `src/tools/thor_ir/generated_m15_256/*.hpp` (all $\le 260$ lines).
+   - Preserved held production helper slot 214 and integrated `exp256_dispatch_hybrid_adapter.hpp` (143 lines $\le 500$).
+4. **Differential Qualification & Replay Parity:**
+   - Pinned reference fixture suite `tests/thor_ir_m15_256_diff_test.cpp` (146 lines $\le 500$): **146/146 fixtures passed bit-exact across Mode A and Mode B, 12/12 mutation contracts passed under ASan/UBSan**.
+   - Twelve-Configuration Six-Scenario Qualification (`RUN_A`..`RUN_L`): **72 sessions, 576 stream files bit-exact, 31 checkpoints bit-exact**.
+5. **Real OS Process Wall-Clock Benchmark:**
+   - Executed 10 measured OS process trials on `scenario_a` (1592 frames):
+     * `RUN_G`: 15.2886 s.
+     * `RUN_I`: 15.2236 s.
+     * `RUN_J`: 15.2904 s.
+     * `RUN_K`: 15.2292 s.
+     * `RUN_L`: 15.3132 s.
+     * Result is within the $\pm 1.5\%$ host OS measurement noise floor ($\pm 0.55\%$).
+   - Concluded that compiling small leaf routines (73 static instructions) maintains perfect bit-exact determinism, but integrated speedup requires attacking the unowned heavy computational kernels (`0x00C8AA` tilemap prep and `0x00D406` graphics line engine, each >2.57M steps).
+
+**Consequences:**
+- Settles the CPU bottleneck: Musashi is 74.42% of host time, confirming that replacing Musashi execution with compiled portable C++20 is the correct long-term strategy for performance.
+- Establishes that small leaf routines do not move the integrated needle alone; upcoming milestones must tackle complex loops once their call graphs and dependencies are unblocked.
+- Production helper inventory remains strictly preserved at 196 baseline helpers.
+
 # ADR-20261111-M15-255-VIRTUAL-BUS-BOTTLENECK-FORENSICS-AND-SAFE-DIRECT-RAM-ACCESS-EXPERIMENT — Virtual Bus Bottleneck Forensics, Pinned GPGX Memory Layout Verification, Assert-Enabled Full Regression Recovery (Windows 296/296, Linux 295/295), and Safe Direct Work RAM Access Experiment (`RUN_K` / `m15250k`)
 **Status:** Accepted
 **Date:** 2026-11-11

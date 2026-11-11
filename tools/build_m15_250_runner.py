@@ -52,19 +52,41 @@ def main() -> int:
 
     step_code = m249_step.replace(
         '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"',
-        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_fused_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_direct_ram_adapter.hpp"',
+        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_fused_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_direct_ram_adapter.hpp"\n#include "tools/thor_ir/exp256_dispatch_hybrid_adapter.hpp"\n#include "tools/hybrid/host_cpu_profiler.hpp"',
         1,
     )
     m_arr = re.search(r"std::array<bool,\s*(\d+)>\s*g_enabled\{\};", step_code)
     old_sz = int(m_arr.group(1))
-    new_sz = old_sz + 4
-    step_code = step_code.replace(m_arr.group(0), f"std::array<bool, {new_sz}> g_enabled{{}};", 1)
+    new_sz = old_sz + 5
+    step_code = step_code.replace(m_arr.group(0), f"std::array<bool, {new_sz}> g_enabled{{}};\nstatic int g_last_stepped_slot = -1;", 1)
     step_code = step_code.replace(
         "#undef CHK",
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250, {old_sz});\n"
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_fused, {old_sz + 1});\n"
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_multiblock, {old_sz + 2});\n"
-        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_direct_ram, {old_sz + 3});\n#undef CHK",
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_direct_ram, {old_sz + 3});\n"
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15256, {old_sz + 4});\n#undef CHK",
+        1,
+    )
+    # Wrap CHK to record stepped slot
+    step_code = step_code.replace(
+        "result = fn(pc, api, g_enabled[idx]);",
+        "result = fn(pc, api, g_enabled[idx]); if (result == M68k9D70StepResult::InstructionStepped) g_last_stepped_slot = idx;",
+        1,
+    )
+    # Hook block_hook entry and exit for profiling
+    step_code = step_code.replace(
+        "int block_hook(unsigned pc) {",
+        "int block_hook(unsigned pc) {\n    g_last_stepped_slot = -1;\n    const auto t0 = oasis::profiler::HostCpuProfiler::instance().enabled() ? oasis::profiler::now_cpu_ns() : 0;",
+        1,
+    )
+    step_code = step_code.replace(
+        "return result == M68k9D70StepResult::InstructionStepped ? 1 : 0;",
+        "if (result == M68k9D70StepResult::InstructionStepped) {\n"
+        "        if (t0 > 0) oasis::profiler::HostCpuProfiler::instance().record_native_step(oasis::profiler::now_cpu_ns() - t0, g_last_stepped_slot < 245);\n"
+        "        return 1;\n"
+        "    }\n"
+        "    return 0;",
         1,
     )
     init_hook = (
@@ -73,6 +95,7 @@ def main() -> int:
         f'    g_enabled[{old_sz + 1}] = step_helper_selected_exact(enabled_helpers, "m15250f");\n'
         f'    g_enabled[{old_sz + 2}] = step_helper_selected_exact(enabled_helpers, "m15250m");\n'
         f'    g_enabled[{old_sz + 3}] = step_helper_selected_exact(enabled_helpers, "m15250k");\n'
+        f'    g_enabled[{old_sz + 4}] = step_helper_selected_exact(enabled_helpers, "m15256p");\n'
         f'    using GetMemData = void* (*)(unsigned);\n'
         f'    using GetMemSize = std::size_t (*)(unsigned);\n'
         f'    auto get_mem = core.get<GetMemData>("retro_get_memory_data");\n'
@@ -80,8 +103,21 @@ def main() -> int:
         f'    if (get_mem && get_sz) {{\n'
         f'        oasis::recompiler::ir::set_m15250_direct_ram(static_cast<std::uint8_t*>(get_mem(2)), get_sz(2));\n'
         f'    }}\n'
+        f'    const char* prof_dir = std::getenv("OASIS_HOST_CPU_PROFILE_DIR");\n'
+        f'    if (prof_dir && *prof_dir) {{\n'
+        f'        const char* scen = std::getenv("OASIS_SCENARIO_NAME");\n'
+        f'        oasis::profiler::HostCpuProfiler::instance().init(prof_dir, (scen && *scen) ? scen : "scenario_a");\n'
+        f'        using InstallSched = void (*)(void (*)(int, int, int));\n'
+        f'        auto install_sched = core.get<InstallSched>("retro_hybrid_install_scheduler");\n'
+        f'        if (install_sched) {{\n'
+        f'            install_sched([](int kind, int a0, int a1) {{\n'
+        f'                oasis::profiler::HostCpuProfiler::instance().on_sched_event(kind, a0, a1);\n'
+        f'            }});\n'
+        f'        }}\n'
+        f'    }}\n'
         f'    oasis::recompiler::ir::reset_exp250_memory_profile_metrics();\n'
-        f'    oasis::recompiler::ir::reset_exp250_dispatch_hybrid_metrics();'
+        f'    oasis::recompiler::ir::reset_exp250_dispatch_hybrid_metrics();\n'
+        f'    oasis::recompiler::ir::reset_exp256_dispatch_hybrid_metrics();'
     )
     step_code = step_code.replace("oasis::recompiler::ir::reset_exp249_dispatch_hybrid_metrics();", init_hook, 1)
     overlay_cpp = runner_dir / "m68k_gameplay_step_set_overlay.cpp"
@@ -89,7 +125,7 @@ def main() -> int:
 
     metrics_code = m249_metrics.replace(
         '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"',
-        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_direct_ram_adapter.hpp"',
+        '#include "tools/thor_ir/exp249_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_dispatch_hybrid_adapter.hpp"\n#include "tools/thor_ir/exp250_direct_ram_adapter.hpp"\n#include "tools/thor_ir/exp256_dispatch_hybrid_adapter.hpp"\n#include "tools/hybrid/host_cpu_profiler.hpp"',
         1,
     )
     dump_250 = """
@@ -137,6 +173,21 @@ def main() -> int:
                        << "  \\"fallback_bus_writes\\": " << mem.fallback_bus_writes << "\\n"
                        << "}\\n";
             }
+            const auto& m256 = oasis::recompiler::ir::get_exp256_dispatch_hybrid_metrics();
+            std::ofstream ofs256(parent / "m15256-portable-step-metrics.json");
+            if (ofs256) {
+                ofs256 << "{\\n"
+                       << "  \\"m15256_entries\\": " << m256.m15256_entries << ",\\n"
+                       << "  \\"m15256_guest_steps\\": " << m256.m15256_guest_steps << ",\\n"
+                       << "  \\"disjoint_new_native_steps\\": " << m256.disjoint_new_native_steps << ",\\n"
+                       << "  \\"original_cpu_fallbacks\\": " << m256.original_cpu_fallbacks << ",\\n"
+                       << "  \\"valid_uncompiled_exits\\": " << m256.valid_uncompiled_exits << ",\\n"
+                       << "  \\"cpu_exceptions\\": " << m256.cpu_exceptions << ",\\n"
+                       << "  \\"contract_faults\\": " << m256.contract_faults << ",\\n"
+                       << "  \\"completed_returns\\": " << m256.completed_returns << "\\n"
+                       << "}\\n";
+            }
+            oasis::profiler::HostCpuProfiler::instance().finish();
         }
         write_batch_step_metrics(parent);"""
     metrics_code = metrics_code.replace("write_batch_step_metrics(parent);", dump_250, 1)

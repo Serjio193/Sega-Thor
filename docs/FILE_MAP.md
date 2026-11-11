@@ -1,3 +1,19 @@
+# M15.256 Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion
+
+- `src/tools/hybrid/host_cpu_profiler.hpp` — high-resolution host CPU execution time profiler instrumenting 9 categories of engine workload.
+- `tools/run_m15_256_host_cpu_profile.py` / `data/thor-evidence/m15_256_host_cpu_profile_summary.json` — 6-scenario host CPU profiling runner and evidence summary.
+- `tools/thor_recompiler/decoder_ext_m15_256.py` / `tools/thor_recompiler/insn_lowering_m15_256.py` / `tools/thor_recompiler/cpp_emitter_m15_256.py` — compiler extensions for M15.256 instructions (`ADDA.W (A0)+, A1` pattern decoding, IR lowering, partitioned C++20 emission).
+- `tools/generate_entity_dispatch_m15_256.py` — compilation driver emitting Thor-IR, source map, IR manifest, and partitioned headers for 5 candidate leaf routines.
+- `src/tools/thor_ir/m15_256_callee_ir.json` / `src/tools/thor_ir/m15_256_source_map.json` / `data/thor-fixtures/m15_256_ir_manifest.json` — Thor-IR document, 1:1 PC source map, and manifest (73 insns, 34 blocks).
+- `src/tools/thor_ir/generated_m15_256/` — 11 partitioned C++20 headers implementing the 5 hotpath leaf routines (all $\le 260$ lines).
+- `src/tools/thor_ir/exp256_dispatch_hybrid_adapter.hpp` — hybrid dispatch bridge adapting the M15.256 routines with held helper slot 214 preservation.
+- `tools/generate_m15_256_fixtures.py` / `data/thor-fixtures/m15_256_callee_fixtures.hpp` / `data/thor-fixtures/m15_256_callee_fixtures.json` — 146 pinned GPGX reference fixtures (5 new for M15.256).
+- `tests/thor_ir_m15_256_diff_test.cpp` — 3-way differential test (Musashi vs Mode A vs Mode B) and 12 mutation safety contracts (146/146 passing 100% under ASan/UBSan).
+- `tools/run_m15_256_qualification.py` / `data/thor-evidence/m15_256_qualification_summary.json` — 12-configuration qualification runner and summary (72 sessions, 576 streams bit-exact, 31 checkpoints bit-exact).
+- `tools/benchmark_m15_256_real.py` / `data/thor-evidence/benchmark_m15_256_measured_summary.json` — 10-trial measured OS process wall-clock benchmark across RUN_G, RUN_I, RUN_J, RUN_K, RUN_L.
+- `tools/generate_m15_256_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-256-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_256_HOTSPOT_HANDOFF.md` — comprehensive handoff document detailing host profiling breakdown, unowned candidate landscape, and roadmap to milestone M15.257.
+
 # M15.255 Virtual Bus Bottleneck Forensics, Assert-Enabled Regression Recovery, and Safe Direct-RAM Access Experiment
 
 - `src/tools/thor_ir/exp250_direct_ram_adapter.hpp` — direct Work RAM fast-path bus adapter (`HybridM68kDirectRamBus250` / `step_m68k_portable_m15250_direct_ram`) with byte-interleaving awareness and fail-closed fallback.

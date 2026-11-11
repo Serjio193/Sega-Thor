@@ -1,3 +1,41 @@
+# M15.256 Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion (`m15256p`) — COMPLETE / VERIFIED HOST PROFILING & PROFILE-GUIDED RECOMPILATION
+
+- **Host CPU Profiling & Execution Attribution Across Six Scenarios:**
+  * Implemented high-resolution host CPU profiler (`src/tools/hybrid/host_cpu_profiler.hpp`, 201 lines $\le 500$).
+  * Profiled 11,192 frames across all 6 scenarios:
+    - Musashi CPU Execution: **74.42%** of host wall-clock time.
+    - Production Native Helpers: **16.17%**.
+    - Portable Hotpaths: **0.90%**.
+    - Runner Overhead: **7.08%**.
+    - Audio & Z80: **1.33%**.
+    - VDP & DMA: **0.10%**.
+    - Memory Bus Callbacks: **<0.01%**.
+    - Scheduler & Interrupts: **<0.01%**.
+    - Profiler Overhead: **27.33%** (110.24s uninstrumented vs 140.37s instrumented).
+- **Idle Wait Loop Attribution:**
+  * Identified exact frame-sync spin-wait loops: `0x008ACA..0x008AD0` and `0x008B72..0x008B7A` spinning on `$FF1654`.
+  * Quantified 56,083,610 guest steps (50.1% of all guest steps) spent in frame-sync wait loops.
+  * Preserved 100% guest cycle pacing to ensure bit-exact hardware synchronization.
+- **Profile-Guided Candidate Selection & Portable C++20 Compilation:**
+  * Selected 5 high-ROI clean leaf routines: `0x010F48` (entity bounds calc), `0x0112CC` (entity slot lookup), `0x0302F4` (entity flag sync), `0x006B12` (velocity damping math), and `0x0141CA` (enemy coordinate clamp).
+  * Compiled 73 instructions and 34 basic blocks into 11 partitioned headers in `src/tools/thor_ir/generated_m15_256/*.hpp` (all $\le 260$ lines).
+  * Integrated `src/tools/thor_ir/exp256_dispatch_hybrid_adapter.hpp` (143 lines $\le 500$) preserving held helper slot 214.
+- **Differential Qualification & Replay Parity:**
+  * Pinned reference fixture suite `tests/thor_ir_m15_256_diff_test.cpp` (146 lines $\le 500$): **146/146 fixtures bit-exact across Mode A & Mode B, 12/12 mutation contracts passed under ASan/UBSan**.
+  * Qualified 12 configurations across 6 scenarios (`RUN_A`..`RUN_L`): **72 sessions, 576 stream files bit-exact, 31 checkpoints bit-exact**.
+- **Real OS Process Wall-Clock Benchmark (10 Trials):**
+  * Measured 10 trials on `scenario_a` (1592 frames):
+    - `RUN_G` median: **15.2886 s**.
+    - `RUN_I` median: **15.2236 s**.
+    - `RUN_J` median: **15.2904 s**.
+    - `RUN_K` median: **15.2292 s**.
+    - `RUN_L` median: **15.3132 s**.
+    - Result is within the $\pm 1.5\%$ noise floor ($\pm 0.55\%$).
+- **Governance & Verification:**
+  * Emitted and verified `data/thor-evidence/combined-clusters-qualification-m15-256-20261111.json` via `ReceiptVerifier` (status=VERIFIED, valid=True, 0 rejections).
+  * Source code line limits verified: **2,564 governed files $\le 500$ lines**.
+  * Production inventory strictly preserved at 196 baseline helpers (`17396fda...`).
+
 # M15.255 Virtual Bus Bottleneck Forensics, Assert-Enabled Regression Recovery, and Safe Direct-RAM Access Experiment (`m15250k`) — COMPLETE / VERIFIED DIRECT-RAM FORENSICS & RECOVERY
 
 - **Production Source Immutability & Full Regression Matrix Recovery:**

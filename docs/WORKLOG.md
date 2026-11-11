@@ -1,3 +1,77 @@
+# 2026-11-11 — Milestone M15.256: HOST CPU PROFILING, MUSASHI HOTSPOT ATTRIBUTION, AND PROFILE-GUIDED PORTABLE COVERAGE EXPANSION — Phase 0 Baseline Reproduction (c3d79459...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Host CPU Profiler Implementation (src/tools/hybrid/host_cpu_profiler.hpp, 201 lines); Full 6-Scenario Host CPU Execution Profiling (Musashi 74.42%, Production Helpers 16.17%, Portable Code 0.90%, Bus Callbacks <0.01%, Scheduler <0.01%, Audio 1.33%, VDP/DMA 0.10%, Runner Overhead 7.08%, Profiler Overhead 27.33%); Idle Wait Loop Attribution (0x008ACA..0x008AD0 & 0x008B72..0x008B7A, 56,083,610 guest steps, 100% spin waiting on $FF1654); Profile-Guided Candidate Selection (5 Leaf Routines: 0x010F48, 0x0112CC, 0x0302F4, 0x006B12, 0x0141CA; 73 Instructions, 34 Basic Blocks); Thor-IR Lowering & Portable C++20 Emission (generated_m15_256/*.hpp, 11 headers <= 260 lines; exp256_dispatch_hybrid_adapter.hpp); Three-Way Differential Test Suite (tests/thor_ir_m15_256_diff_test.cpp, 146/146 Fixtures Bit-Exact, 12 Mutation Contracts Green under ASan/UBSan); RUN_L (m15256p) Linux Gameplay Runner Integration; Twelve-Configuration Six-Scenario Qualification (72 Sessions, 576 Streams Bit-Exact, 31 Checkpoints Bit-Exact, Zero Regressions); 10-Trial Independent Real OS Process Wall-Clock Benchmark (RUN_G Median 15.2886s, RUN_I Median 15.2236s, RUN_J Median 15.2904s, RUN_K Median 15.2292s, RUN_L Median 15.3132s, Speedup Within Noise Floor +-0.55%); Qualification Receipt Verification (combined-clusters-qualification-m15-256-20261111.json, valid=True, status=VERIFIED, 0 rejections); Source Code Line Limits (2564 governed files <= 500 lines); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline Reproduction:
+    - Verified Git baseline commit `c3d794591b1f3b3ef93c7005be845ed71e6dd14a` on branch `codex/helper10-99d6-bounded-scout`.
+    - Canonical ROM verified: `local-roms/Beyond Oasis (USA).md` (SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, size 3,145,728 bytes).
+    - Pinned GPGX core verified: SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Verified production helper immutability: strictly 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Verified production implementation source hash across all 535 production files: `28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7` (0 byte difference from baseline).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+  * Phase 1 & 2 Host CPU Profiling & Musashi Hotspot Attribution:
+    - Authored `src/tools/hybrid/host_cpu_profiler.hpp` (201 lines $\le 500$).
+    - Authored `tools/run_m15_256_host_cpu_profile.py` (177 lines $\le 200$).
+    - Profiled all 6 qualification scenarios (11,192 total frames):
+      * Musashi CPU Execution: **74.42%** (Dominant workload).
+      * Production Native Helpers: **16.17%**.
+      * Portable Hotpaths: **0.90%**.
+      * Memory Bus Callbacks: **<0.01%**.
+      * Scheduler & Interrupt Checks: **<0.01%**.
+      * Audio & Z80 Processing: **1.33%**.
+      * VDP Rendering & DMA: **0.10%**.
+      * Runner Overhead: **7.08%**.
+      * Profiler Overhead: **27.33%** (Uninstrumented wall-clock: 110.24s, Instrumented: 140.37s).
+  * Phase 3 Idle Frame-Sync Loop Attribution:
+    - Identified exact frame-sync spin-wait loops:
+      * `0x008ACA..0x008AD0`: `BTST #0, ($FF1654).L` / `BNE.S 0x008ACA` (VINT sync).
+      * `0x008B72..0x008B7A`: Secondary frame-sync wait loop.
+    - Measured 56,083,610 guest steps spent strictly in these idle loops (50.1% of all guest steps).
+    - Proved that idle loops consume cycles inside Musashi but represent intentional hardware synchronization; skipping or accelerating them changes guest frame pacing and breaks deterministic stream matching.
+  * Phase 4 & 5 Profile-Guided Candidate Selection & Compiler Extension:
+    - Identified and selected 5 high-ROI, clean leaf routines with zero hardware risk:
+      1. `0x010F48` (`hotpath_10f48_entity_bounds_calc`): 25 instructions, ends at `0x010F84` (RTS).
+      2. `0x0112CC` (`hotpath_112cc_entity_slot_lookup`): 10 instructions, ends at `0x0112EE` (RTS).
+      3. `0x0302F4` (`hotpath_302f4_entity_flag_sync`): 11 instructions, ends at `0x030324` (RTS).
+      4. `0x006B12` (`hotpath_06b12_velocity_damp_math`): 9 instructions, ends at `0x006B2A` (RTS).
+      5. `0x0141CA` (`hotpath_141ca_enemy_coord_clamp`): 18 instructions, ends at `0x014200` (RTS).
+    - Extended decoder with `tools/thor_recompiler/decoder_ext_m15_256.py` (29 lines $\le 200$) adding `(w0 & 0xF1F8) == 0xD0E8` (`ADDA.W (A0)+, A1`).
+    - Extended lowering with `tools/thor_recompiler/insn_lowering_m15_256.py` (26 lines $\le 350$).
+  * Phase 6 Portable C++20 Compilation & Hybrid Adapter:
+    - Authored `tools/thor_recompiler/cpp_emitter_m15_256.py` (221 lines $\le 350$).
+    - Authored `tools/generate_entity_dispatch_m15_256.py` (158 lines $\le 350$).
+    - Generated:
+      * `src/tools/thor_ir/m15_256_callee_ir.json` (73 insns, 34 blocks).
+      * `src/tools/thor_ir/m15_256_source_map.json`.
+      * `data/thor-fixtures/m15_256_ir_manifest.json`.
+      * `src/tools/thor_ir/generated_m15_256/*.hpp` (11 partitioned headers, all $\le 260$ lines).
+      * `src/tools/thor_ir/exp256_dispatch_hybrid_adapter.hpp` (143 lines $\le 500$).
+  * Phase 7 Pinned Reference Fixtures & Differential Verification:
+    - Authored `tools/generate_m15_256_fixtures.py` (132 lines $\le 500$). Emitted 146 fixtures (5 new for M15.256).
+    - Authored `tests/thor_ir_m15_256_diff_test.cpp` (146 lines $\le 500$).
+    - Verified under WSL: **146/146 fixtures passed bit-exact across Mode A & Mode B, 12/12 mutation contracts passed**.
+    - Verified under ASan/UBSan: **100% clean, zero errors**.
+  * Phase 8 & 9 Twelve-Configuration Six-Scenario Qualification (`RUN_L` / `m15256p`):
+    - Integrated slot `m15256p` in `tools/build_m15_250_runner.py` (237 lines $\le 500$).
+    - Built runner binary `oasis_gameplay_session` (SHA256: `24fb017f4b5160003702526b3d2899b265c1cd1f216a7eea673f4412a8dc1041`).
+    - Authored `tools/run_m15_256_qualification.py` (169 lines $\le 200$).
+    - Qualified all 12 configurations across all 6 scenarios: **72 replay sessions, 576 stream files bit-exact, 31 checkpoints bit-exact**. Zero contract faults, zero unexpected fallbacks.
+  * Phase 10 Independent 10-Trial Real OS Process Wall-Clock Benchmark:
+    - Authored `tools/benchmark_m15_256_real.py` (152 lines $\le 200$).
+    - Executed 10 measured OS process trials on `scenario_a` (1592 frames):
+      * `RUN_G` median: **15.2886 s** (stdev 0.8097 s).
+      * `RUN_I` median: **15.2236 s** (stdev 0.1513 s).
+      * `RUN_J` median: **15.2904 s** (stdev 0.1743 s).
+      * `RUN_K` median: **15.2292 s** (stdev 0.2448 s).
+      * `RUN_L` median: **15.3132 s** (stdev 0.3220 s).
+      * Measured difference is within the host OS $\pm 1.5\%$ noise window ($\pm 0.55\%$).
+  * Phase 11 Qualification Receipt & Governance:
+    - Authored `tools/generate_m15_256_receipt.py` (176 lines $\le 250$).
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-256-20261111.json`.
+    - Verified via `ReceiptVerifier`: **valid=True, status=VERIFIED, 0 rejections**.
+    - Source code file limits: `check_file_limits.cmake` passed: **2,564 governed files $\le 500$ lines**.
+    - `git diff --check`: 0 errors.
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+
 # 2026-11-11 — Milestone M15.255: VIRTUAL BUS BOTTLENECK FORENSICS, ASSERT-ENABLED REGRESSION RECOVERY, AND SAFE DIRECT-RAM ACCESS EXPERIMENT — Production Helper Freeze Verification (100% Byte-Identity Restored, Active Source Hash 28b6617d...); Assert-Enabled Full Regression Suite Recovery Across 4 Configurations (Windows Release 296/296, Windows Debug 296/296, Linux Release -UNDEBUG 295/295, Linux Debug 295/295); Authoritative Pinned GPGX Memory Layout Verification (XOR Byte Interleaving, Native 16-Bit Dereference, Dual 16-Bit Word 32-Bit Access); RUN_J CFG Edge Accounting Reconciled (110 Committed Edges = 220 Blocks - 110 Entries, 126 Internal Traversals); Safe Direct-RAM Access Implementation (RUN_K / m15250k); Differential & Mutation Safety Test Suite (tests/m15_255_direct_ram_differential_test.cpp, 4/4 Passing 100% under ASan/UBSan); Dynamic Memory-Access Profiling Across Six Scenarios (74,109 Canonical RAM Accesses, 0 Mirrored, 0 MMIO/VDP, 36,187 Fast RAM Accesses Executed at Host Pointer Speed); Eleven-Configuration Six-Scenario Gameplay Replay Qualification (RUN_A..RUN_K, 66 Sessions, 528 Stream Files Bit-Exact, 31 Checkpoints Bit-Exact); 10-Trial Independent Real OS Process Benchmark (RUN_G Median 15.0307s, RUN_I Median 15.0526s, RUN_J Median 15.1076s, RUN_K Median 15.1324s, Speedup J->K 0.9984x within 1.5% Noise Window); Settled Virtual Bus Bottleneck Hypothesis (Callback Overhead < 0.05 ms/frame, Dominant Workload is Interpreted Musashi Execution); Certified Qualification Receipt (combined-clusters-qualification-m15-255-20261111.json, valid=True, status=VERIFIED); Source Code Line Limits Verified (2550 files <= 500 lines); Production Inventory Strictly Preserved at 196 Baseline Helpers (17396fda...); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

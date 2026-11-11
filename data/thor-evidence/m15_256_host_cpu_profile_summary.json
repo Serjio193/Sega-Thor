@@ -1,0 +1,232 @@
+{
+  "runner_sha256": "9af840be35507c6755dbf117f0c5f6f762cd695ead589bb4535aefa2a21947d9",
+  "scenarios": {
+    "scenario_a": {
+      "frames": 1592,
+      "baseline_wall_sec": 16.7717,
+      "instrumented_wall_sec": 19.3758,
+      "perturbation_percent": 15.53,
+      "profile_data": {
+        "scenario": "scenario_a",
+        "total_frames": 0,
+        "total_cpu_ns": 17302452953,
+        "total_wall_ns": 19047041038,
+        "musashi_cpu_ns": 13104633869,
+        "production_native_cpu_ns": 2594314692,
+        "portable_cpu_ns": 98753757,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 143280,
+        "vdp_cpu_ns": 16684160,
+        "audio_z80_cpu_ns": 255177017,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 1232746178,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 75.7386,
+          "production_native": 14.9939,
+          "portable": 0.57075,
+          "bus": 0,
+          "scheduler": 0.000828091,
+          "vdp": 0.0964266,
+          "audio_z80": 1.4748,
+          "input_replay_evidence": 0,
+          "other": 7.12469
+        }
+      }
+    },
+    "scenario_b": {
+      "frames": 600,
+      "baseline_wall_sec": 6.2301,
+      "instrumented_wall_sec": 7.7553,
+      "perturbation_percent": 24.48,
+      "profile_data": {
+        "scenario": "scenario_b",
+        "total_frames": 0,
+        "total_cpu_ns": 6578934108,
+        "total_wall_ns": 7429885450,
+        "musashi_cpu_ns": 5042618744,
+        "production_native_cpu_ns": 930613716,
+        "portable_cpu_ns": 16432287,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 54000,
+        "vdp_cpu_ns": 6288000,
+        "audio_z80_cpu_ns": 78469726,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 504457635,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 76.648,
+          "production_native": 14.1454,
+          "portable": 0.249771,
+          "bus": 0,
+          "scheduler": 0.000820802,
+          "vdp": 0.0955778,
+          "audio_z80": 1.19274,
+          "input_replay_evidence": 0,
+          "other": 7.66777
+        }
+      }
+    },
+    "scenario_c": {
+      "frames": 1800,
+      "baseline_wall_sec": 17.3393,
+      "instrumented_wall_sec": 22.3653,
+      "perturbation_percent": 28.99,
+      "profile_data": {
+        "scenario": "scenario_c",
+        "total_frames": 0,
+        "total_cpu_ns": 19548163184,
+        "total_wall_ns": 21945419212,
+        "musashi_cpu_ns": 14677285326,
+        "production_native_cpu_ns": 2945473853,
+        "portable_cpu_ns": 245310008,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 162000,
+        "vdp_cpu_ns": 18864000,
+        "audio_z80_cpu_ns": 261010877,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 1400057120,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 75.0827,
+          "production_native": 15.0678,
+          "portable": 1.2549,
+          "bus": 0,
+          "scheduler": 0.000828722,
+          "vdp": 0.0965001,
+          "audio_z80": 1.33522,
+          "input_replay_evidence": 0,
+          "other": 7.16209
+        }
+      }
+    },
+    "longrun_3600f": {
+      "frames": 3600,
+      "baseline_wall_sec": 34.7986,
+      "instrumented_wall_sec": 45.938,
+      "perturbation_percent": 32.01,
+      "profile_data": {
+        "scenario": "longrun_3600f",
+        "total_frames": 0,
+        "total_cpu_ns": 39518391058,
+        "total_wall_ns": 45549028818,
+        "musashi_cpu_ns": 28425113279,
+        "production_native_cpu_ns": 7439822943,
+        "portable_cpu_ns": 390233388,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 324000,
+        "vdp_cpu_ns": 37728000,
+        "audio_z80_cpu_ns": 497485308,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 2727684140,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 71.9288,
+          "production_native": 18.8262,
+          "portable": 0.987473,
+          "bus": 0,
+          "scheduler": 0.000819871,
+          "vdp": 0.0954695,
+          "audio_z80": 1.25887,
+          "input_replay_evidence": 0,
+          "other": 6.90232
+        }
+      }
+    },
+    "longrun_alt_1800f": {
+      "frames": 1800,
+      "baseline_wall_sec": 17.7535,
+      "instrumented_wall_sec": 22.6028,
+      "perturbation_percent": 27.31,
+      "profile_data": {
+        "scenario": "longrun_alt_1800f",
+        "total_frames": 0,
+        "total_cpu_ns": 19699364513,
+        "total_wall_ns": 22174165348,
+        "musashi_cpu_ns": 14944022204,
+        "production_native_cpu_ns": 2945956037,
+        "portable_cpu_ns": 106230148,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 162000,
+        "vdp_cpu_ns": 18864000,
+        "audio_z80_cpu_ns": 283644865,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 1400485259,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 75.8604,
+          "production_native": 14.9546,
+          "portable": 0.539257,
+          "bus": 0,
+          "scheduler": 0.000822362,
+          "vdp": 0.0957594,
+          "audio_z80": 1.43987,
+          "input_replay_evidence": 0,
+          "other": 7.10929
+        }
+      }
+    },
+    "longrun_combat_1800f": {
+      "frames": 1800,
+      "baseline_wall_sec": 17.3445,
+      "instrumented_wall_sec": 22.3322,
+      "perturbation_percent": 28.76,
+      "profile_data": {
+        "scenario": "longrun_combat_1800f",
+        "total_frames": 0,
+        "total_cpu_ns": 19747840914,
+        "total_wall_ns": 21981735082,
+        "musashi_cpu_ns": 14895563443,
+        "production_native_cpu_ns": 2929748734,
+        "portable_cpu_ns": 245598303,
+        "bus_cpu_ns": 0,
+        "scheduler_cpu_ns": 162000,
+        "vdp_cpu_ns": 18864000,
+        "audio_z80_cpu_ns": 258110934,
+        "input_replay_evidence_cpu_ns": 0,
+        "other_runner_cpu_ns": 1399793500,
+        "idle_cpu_ns": 0,
+        "percentages": {
+          "musashi": 75.4288,
+          "production_native": 14.8358,
+          "portable": 1.24367,
+          "bus": 0,
+          "scheduler": 0.000820343,
+          "vdp": 0.0955244,
+          "audio_z80": 1.30703,
+          "input_replay_evidence": 0,
+          "other": 7.08834
+        }
+      }
+    }
+  },
+  "aggregated_totals": {
+    "musashi_cpu_ns": 91089236865,
+    "production_native_cpu_ns": 19785929975,
+    "portable_cpu_ns": 1102557891,
+    "bus_cpu_ns": 0,
+    "scheduler_cpu_ns": 1007280,
+    "vdp_cpu_ns": 117292160,
+    "audio_z80_cpu_ns": 1633898727,
+    "input_replay_evidence_cpu_ns": 0,
+    "other_runner_cpu_ns": 8665223832,
+    "total_cpu_ns": 122395146730,
+    "total_wall_ns": 138127274948,
+    "idle_cpu_ns": 0,
+    "total_frames": 0
+  },
+  "aggregated_percentages": {
+    "musashi": 74.42,
+    "production_native": 16.17,
+    "portable": 0.9,
+    "bus": 0.0,
+    "scheduler": 0.0,
+    "vdp": 0.1,
+    "audio_z80": 1.33,
+    "input_replay_evidence": 0.0,
+    "other": 7.08
+  },
+  "overall_uninstrumented_wall_sec": 110.2377,
+  "overall_instrumented_wall_sec": 140.3694,
+  "overall_profiler_overhead_percent": 27.33
+}

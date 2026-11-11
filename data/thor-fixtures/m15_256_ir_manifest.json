@@ -1,0 +1,243 @@
+{
+  "schema": "oasis.m15_256.manifest.v1",
+  "milestone": "M15.256",
+  "name": "m15_256_hotpath_manifest",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "entry_roots": {
+    "0x010F48": "hotpath_10f48_entity_bounds_calc",
+    "0x0112CC": "hotpath_112cc_entity_slot_lookup",
+    "0x0302F4": "hotpath_302f4_entity_flag_sync",
+    "0x006B12": "hotpath_06b12_velocity_damp_math",
+    "0x0141CA": "hotpath_141ca_enemy_coord_clamp"
+  },
+  "compiled_windows": [
+    [
+      "0x010F48",
+      "0x010F84"
+    ],
+    [
+      "0x0112CC",
+      "0x0112EE"
+    ],
+    [
+      "0x0302F4",
+      "0x030324"
+    ],
+    [
+      "0x006B12",
+      "0x006B2A"
+    ],
+    [
+      "0x0141CA",
+      "0x014200"
+    ]
+  ],
+  "total_basic_blocks": 34,
+  "total_instructions": 73,
+  "blocks": [
+    {
+      "block_id": "BB_00_0x006B12",
+      "start_pc": "0x006B12",
+      "end_pc": "0x006B18",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_01_0x006B18",
+      "start_pc": "0x006B18",
+      "end_pc": "0x006B1C",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_02_0x006B1C",
+      "start_pc": "0x006B1C",
+      "end_pc": "0x006B24",
+      "instruction_count": 3
+    },
+    {
+      "block_id": "BB_03_0x006B24",
+      "start_pc": "0x006B24",
+      "end_pc": "0x006B28",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_04_0x006B28",
+      "start_pc": "0x006B28",
+      "end_pc": "0x006B2A",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_05_0x010F48",
+      "start_pc": "0x010F48",
+      "end_pc": "0x010F5C",
+      "instruction_count": 6
+    },
+    {
+      "block_id": "BB_06_0x010F5C",
+      "start_pc": "0x010F5C",
+      "end_pc": "0x010F5E",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_07_0x010F5E",
+      "start_pc": "0x010F5E",
+      "end_pc": "0x010F62",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_08_0x010F62",
+      "start_pc": "0x010F62",
+      "end_pc": "0x010F64",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_09_0x010F64",
+      "start_pc": "0x010F64",
+      "end_pc": "0x010F68",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_10_0x010F68",
+      "start_pc": "0x010F68",
+      "end_pc": "0x010F6C",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_11_0x010F6C",
+      "start_pc": "0x010F6C",
+      "end_pc": "0x010F70",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_12_0x010F70",
+      "start_pc": "0x010F70",
+      "end_pc": "0x010F74",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_13_0x010F74",
+      "start_pc": "0x010F74",
+      "end_pc": "0x010F78",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_14_0x010F78",
+      "start_pc": "0x010F78",
+      "end_pc": "0x010F7C",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_15_0x010F7C",
+      "start_pc": "0x010F7C",
+      "end_pc": "0x010F7E",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_16_0x010F7E",
+      "start_pc": "0x010F7E",
+      "end_pc": "0x010F84",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_17_0x0112CC",
+      "start_pc": "0x0112CC",
+      "end_pc": "0x0112D8",
+      "instruction_count": 3
+    },
+    {
+      "block_id": "BB_18_0x0112D8",
+      "start_pc": "0x0112D8",
+      "end_pc": "0x0112DE",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_19_0x0112DE",
+      "start_pc": "0x0112DE",
+      "end_pc": "0x0112E6",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_20_0x0112E6",
+      "start_pc": "0x0112E6",
+      "end_pc": "0x0112EE",
+      "instruction_count": 3
+    },
+    {
+      "block_id": "BB_21_0x0141CA",
+      "start_pc": "0x0141CA",
+      "end_pc": "0x0141D0",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_22_0x0141D0",
+      "start_pc": "0x0141D0",
+      "end_pc": "0x0141D8",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_23_0x0141D8",
+      "start_pc": "0x0141D8",
+      "end_pc": "0x0141E0",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_24_0x0141E0",
+      "start_pc": "0x0141E0",
+      "end_pc": "0x0141E8",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_25_0x0141E8",
+      "start_pc": "0x0141E8",
+      "end_pc": "0x0141F0",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_26_0x0141F0",
+      "start_pc": "0x0141F0",
+      "end_pc": "0x0141FE",
+      "instruction_count": 7
+    },
+    {
+      "block_id": "BB_27_0x0141FE",
+      "start_pc": "0x0141FE",
+      "end_pc": "0x014200",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_28_0x0302F4",
+      "start_pc": "0x0302F4",
+      "end_pc": "0x0302FC",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_29_0x0302FC",
+      "start_pc": "0x0302FC",
+      "end_pc": "0x030304",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_30_0x030304",
+      "start_pc": "0x030304",
+      "end_pc": "0x030314",
+      "instruction_count": 3
+    },
+    {
+      "block_id": "BB_31_0x030314",
+      "start_pc": "0x030314",
+      "end_pc": "0x03031A",
+      "instruction_count": 1
+    },
+    {
+      "block_id": "BB_32_0x03031A",
+      "start_pc": "0x03031A",
+      "end_pc": "0x030322",
+      "instruction_count": 2
+    },
+    {
+      "block_id": "BB_33_0x030322",
+      "start_pc": "0x030322",
+      "end_pc": "0x030324",
+      "instruction_count": 1
+    }
+  ]
+}
