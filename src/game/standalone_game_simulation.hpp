@@ -56,6 +56,7 @@ struct TownCheckpointInitialState {
     std::int32_t intent_y_fixed{0};
     std::vector<NativeEntity> entities{};
     bool attract_banner_enabled{false};
+    int initial_walk_tick{0};
 };
 
 // Standalone C++ game simulation vertical slice.
@@ -283,6 +284,7 @@ private:
     int walk_tick_{0};
     bool initialized_{false};
     render::VdpDmaQueue dma_queue_{};
+    bool pending_vdp_stage_{false};
     bool attract_banner_enabled_{false};
     std::uint8_t town_water_timer_{7U};
     std::uint8_t town_water_phase_{0U};

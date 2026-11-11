@@ -42,4 +42,20 @@ void step_town_water_cycle(std::uint8_t& timer,
                            std::uint8_t& phase,
                            genesis::VdpState& vdp) noexcept;
 
+/// Stages ROM-driven Town SAT + DMA queue transfers from live camera, player, and entity state.
+void build_town_sat_and_dma(SatPipelineContract& sat,
+                            std::span<const std::uint8_t> rom,
+                            const camera::CameraController& camera,
+                            const player::PlayerState& player,
+                            std::uint16_t tick_counter,
+                            std::uint32_t frame_60hz,
+                            std::uint16_t player_x,
+                            std::uint16_t player_y,
+                            int walk_tick,
+                            std::size_t pose_idx,
+                            bool attract_banner_enabled,
+                            bool advance_ripples,
+                            std::span<NativeEntity> entities,
+                            VdpDmaQueue& dma_queue) noexcept;
+
 } // namespace oasis::game::render

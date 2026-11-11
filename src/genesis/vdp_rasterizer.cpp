@@ -214,6 +214,10 @@ void rasterize_vdp_internal(
         line_sprites.clear();
         for (const auto& spr : sprites) {
             if (spr.y <= y && y < spr.y + spr.h_cells * 8) {
+                // Mega Drive VDP sprite masking: x_raw == 0 (spr.x == -128) after a sprite stops scanline.
+                if (!line_sprites.empty() && spr.x == -128) {
+                    break;
+                }
                 line_sprites.push_back(&spr);
                 if (static_cast<int>(line_sprites.size()) >= max_sprites_per_line) {
                     break;

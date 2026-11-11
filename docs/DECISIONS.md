@@ -11473,3 +11473,18 @@ M16.37 established exact frame-aligned VDP & pixel comparison across 14 snapshot
    - Canon F779 achieved `Pat=0, PA=0, PB=0, Scr=0, Unu=0, CRAM=0, VSRAM=0, Regs=0`, reducing differing pixels from `20,932` to `3,564`.
    - Updated M16.37 assertion `first_canon_diff_addr >= 0x9500U` (`0x9504` moved to `0xd030` after pattern convergence).
    - Added 7 targeted DMA/VDP mutation guards in `tests/m16_38_dynamic_pattern_dma_test.cpp`.
+
+
+## Decision: M16.39 — VBlank SAT/DMA Staging Alignment, ROM `0x009BF2` Footprint Masking, and VDP Sprite Masking
+
+### Context
+At M16.38, Canonical `F779` had `0` differences in Pattern RAM, Plane A, Plane B, HScroll, CRAM, VSRAM, and VDP Registers, leaving `3,564` differing pixels attributable `100%` to `114` bytes in physical SAT `0xD000..0xD27F` (`103` active-chain + `11` inactive residue bytes).
+
+### Decision
+1. Model the authentic 1-frame Genesis VDP pipeline delay using `pending_vdp_stage_` and `initial_walk_tick`: build/stage SAT descriptors and pattern DMA entries on even ticks and commit `sat_pipeline_.commit_to_vdp` + `dma_queue_.drain_lifo` on the next odd VBlank tick, leaving stale SAT slots `[N..79]` untouched.
+2. Reconstruct ROM `0x009BF2` bounding-box terrain `AND` masking (`[x-base_half_w..x+base_half_w, y-base_half_w..y+base_half_w]`) and render-cadence `water_ripple_tick` updates instead of single-center-point water checks.
+3. Implement Mega Drive VDP hardware scanline sprite masking (`x_raw == 0` after the first sprite on a scanline terminates subsequent sprites on that scanline) in `vdp_rasterizer.cpp`.
+
+### Consequences
+- Canonical `F779` achieves **0 / 71,680** differing pixels and **0 / 65,536** differing VRAM bytes (`0` physical SAT residue diff) with zero snapshot injection or frame-number hardcoding.
+- `521/521` Canonical SAT, `350/350` Holdout SAT/PRNG, `51,476/51,476` entity fields, and Independent Holdout (`25,520 -> 24,542` px) remain preserved or improved.

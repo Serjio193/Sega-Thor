@@ -142,4 +142,48 @@ void step_town_water_cycle(std::uint8_t& timer,
     }
 }
 
+void build_town_sat_and_dma(SatPipelineContract& sat,
+                            std::span<const std::uint8_t> rom,
+                            const camera::CameraController& camera,
+                            const player::PlayerState& player,
+                            std::uint16_t tick_counter,
+                            std::uint32_t frame_60hz,
+                            std::uint16_t player_x,
+                            std::uint16_t player_y,
+                            int walk_tick,
+                            std::size_t pose_idx,
+                            bool attract_banner_enabled,
+                            bool advance_ripples,
+                            std::span<NativeEntity> entities,
+                            VdpDmaQueue& dma_queue) noexcept {
+    TownSatFrameContext sat_ctx{};
+    sat_ctx.camera_x = camera.camera_x();
+    sat_ctx.camera_y = camera.camera_y();
+    sat_ctx.tick_counter = tick_counter;
+    sat_ctx.frame_60hz = frame_60hz;
+    sat_ctx.hud_x_offset = (player_x < 80U) ? 0x138 : 0x20;
+    sat_ctx.attract_banner_enabled = attract_banner_enabled;
+    sat_ctx.player_x = player_x;
+    sat_ctx.player_y = player_y;
+    sat_ctx.player_facing = player.direction_code;
+    if (player.movement_state == 4U) {
+        sat_ctx.player_frame_dir = static_cast<std::uint16_t>(24U + (walk_tick / 2U) * 3U);
+        sat_ctx.player_overlay_3e = static_cast<std::uint16_t>(48U + (walk_tick / 2U) * 2U);
+    } else if (player.movement_state == 0x36U) {
+        sat_ctx.player_frame_dir = 186U;
+        sat_ctx.player_overlay_3e = 2328U;
+    } else {
+        sat_ctx.player_frame_dir = static_cast<std::uint16_t>(pose_idx * 3U);
+    }
+    if (advance_ripples) {
+        for (auto& ent : entities) {
+            if (ent.active && (ent.flags39 & 0x02U) != 0U && ent.world_z == 0) {
+                ent.water_ripple_tick = static_cast<std::uint8_t>((ent.water_ripple_tick + 1U) % 9U);
+            }
+        }
+    }
+    dma_queue.clear();
+    emit_town_combat_sat(sat, rom, sat_ctx, entities, &dma_queue);
+}
+
 } // namespace oasis::game::render

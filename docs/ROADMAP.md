@@ -6163,3 +6163,12 @@ full-game parity and remaining subsystem coverage. See
 - Converged Canonical F779 Pattern RAM (`783 -> 0`), Plane A (`46 -> 0`), CRAM (`8 -> 0`), VSRAM (`1 -> 0`), and VDP Registers (`2 -> 0`), reducing pixel diff `20,932 -> 3,564 / 71,680` (`95.0%` pixel exact).
 - Eliminated Plane A, CRAM, and VSRAM divergences across all 7 Holdout snapshots (`138,194 -> 25,520` px diff).
 - Added `tests/m16_38_dynamic_pattern_dma_test.cpp` (`7/7` DMA/VDP mutation guards killed).
+
+
+# M16.39 — SAT Physical Memory Forensics, Sprite Composition, and First Active Pixel-Exact Frame — PASS
+- Attributed 100% of Canonical `F779` (`3,564` px) M16.38 residual pixel differences to physical SAT `0xD000..0xD27F` (`114` bytes = `103` active-chain + `11` inactive `[28..32]` residue).
+- Traced GPGX even-tick SAT/DMA staging -> odd-tick VBlank commit (`0x002130`) and implemented `pending_vdp_stage_` + `initial_walk_tick` pipeline alignment in `StandaloneGameSimulation` and `build_town_sat_and_dma`.
+- Reconstructed ROM `0x009BF2` bounding-box `AND` terrain masking and render-cadence `water_ripple_tick` in `town_entity_scheduler.cpp`, eliminating false water immersion and ripple drift.
+- Audited `vdp_rasterizer.cpp` and added hardware `x_raw == 0` scanline sprite masking.
+- Achieved **0 / 71,680 differing pixels** (`100.0%` pixel-exact active frame, SHA256 `b6cf377d1feadd9d6b74c6cfd3d948cc30bce98700a30c1ced3f742b9b86d253`), **0 / 65,536 VRAM**, and **0 / 640 SAT** bytes at Canonical `F779`, and reduced Holdout pixel diff (`25,520 -> 24,542`).
+- Added `tests/m16_39_sat_forensics_pixel_exact_test.cpp` (`oasis_m16_39_sat_forensics_pixel_exact`, `4/4` mutation guards killed).

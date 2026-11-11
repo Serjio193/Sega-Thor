@@ -8954,3 +8954,14 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
 - **Attract Banner Flag (`$FF1996`)**: ROM `0x00A51A` (`tst.b ($FF1996)`) gates `0x00A7E6` `"PUSH START BUTTON"` SAT overlays (`tick_counter & 0x80 == 0`).
 - **Town Water CRAM Cycle**: CRAM words `[33..36]` (`bytes 66..73`) cycle `{0x0108, 0x01F0, 0x01D0, 0x0108}` every 10 frames in Town (initialized `timer=7, phase=0` at F775).
 - **Town VSRAM & Plane A Scroll**: `VSRAM[0]` wraps 8-bit `(camera_y + 136) & 0xFF`; upward camera deltas stream Plane A metatile rows into `0xCF80..`.
+
+
+## VBlank SAT/DMA Staging, Footprint Collision (`0x009BF2`), and VDP Sprite Masking (M16.39)
+- **Even-Tick Staging / Odd-Tick VBlank Commit**:
+  * Even presentation ticks (`F774` `tick=2390`, `F776` `tick=2392`, `F778` `tick=2394`) construct the SAT buffer (`$FF13CC`) and enqueue dynamic pattern DMAs using the preceding logic step's settled actor positions and `walk_tick` phase (`initial_walk_tick = 1` at `F775` `tick=2391`).
+  * The following odd tick's VBlank (`F775`, `F777`, `F779`) DMAs only the `N` active SAT entries (`[0..N-1]`, preserving stale bytes `[N..79]` in VRAM `0xD000..0xD27F`) and then drains the dynamic pattern queue LIFO (`0x002130`).
+  * At Canonical `F779`, native rendering matches live GPGX across all 71,680 pixels and all 65,536 VRAM bytes (`RGB24 SHA256 = b6cf377d1feadd9d6b74c6cfd3d948cc30bce98700a30c1ced3f742b9b86d253`).
+- **ROM `0x02E8C8 -> 0x009BF2` Terrain Footprint Check**:
+  * Water tile bit `0x20` (`$6E`) uses an `AND` mask across the entity's `[x-base_half_w..x+base_half_w, y-base_half_w..y+base_half_w]` terrain cells rather than a single center sample, keeping bank-edge Slot 7 `(181,340)` grounded (`0x01`) and suppressing spurious `[11..12]` water-ripple sprites. `water_ripple_tick` increments on SAT/render cadence.
+- **VDP Scanline Sprite Masking (`vdp_rasterizer.cpp`)**:
+  * When `line_sprites` already holds at least one non-zero-X sprite on the active scanline, encountering an SAT entry with `x_raw == 0` (`spr.x == -128`) stops trailing sprite rendering for that scanline.

@@ -30382,3 +30382,19 @@ RESULT: PASS.
   - Canonical F779 Pattern diff reduced `783 -> 0` bytes (`100%` exact `0x0000..0xBFFF`), Plane A `46 -> 0` bytes, CRAM `8 -> 0`, VSRAM `1 -> 0`, VDP Registers `2 -> 0`, and pixel diff `20,932 -> 3,564 / 71,680` (`95.0%` pixel exact, `83.0%` reduction).
   - Independent Holdout (all 7 snapshots F775..F1125): Plane A `0`, Plane B `0`, HScroll `0`, CRAM `0`, VSRAM `0` across every snapshot, with holdout pixels reduced `138,194 -> 25,520` (`81.5%` reduction).
 - **Regression & Mutation Suite**: Added `tests/m16_38_dynamic_pattern_dma_test.cpp` (`oasis_m16_38_dynamic_pattern_dma`) covering consistency audit, F779 DMA queue parity, 14-snapshot bounds, PPM visual diff artifacts, and 7 DMA/VDP negative mutations.
+
+
+# M16.39 Worklog — SAT Physical Memory Forensics, Sprite Composition, and First Active Pixel-Exact Frame
+
+## Execution & Results
+- **Phase 0..2 Attribution & SAT Byte Forensics**: Proved 100% of Canonical `F779` pixel differences (`3,564 / 71,680` px, bounding box `(44,0)..(287,223)`) originate exclusively from physical SAT `0xD000..0xD27F` (`114` bytes = `103` active-chain bytes across entries `[9..30]` + `11` inactive residue bytes in `[28..32]`, zero differences in Pattern RAM, Planes, CRAM, VSRAM, VDP Registers, or rasterizer logic).
+- **Phase 3 Original GPGX SAT DMA Trace**: Traced `canonical_beach_frame3600.state` and `town_free_control_f775.state` in pinned GPGX (`ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`), proving Mega Drive stages SAT+Pattern DMA buffers on even ticks (`F778` `tick=2394` builds `28` sprites from `F777` `px=70, cam=118, walk_tick=1`) and commits SAT `[0..27]` then LIFO Pattern DMAs on the following odd VBlank tick (`F779` `tick=2395`, leaving stale entries `[28..79]` intact).
+- **ROM-Grounded Native Fixes**:
+  - `src/game/entity/town_entity_scheduler.cpp`: Replaced single-center terrain water check with ROM `0x02E8C8 -> 0x009BF2` bounding-box `AND` mask across `[x-base_half_w..x+base_half_w, y-base_half_w..y+base_half_w]` (preventing false water immersion on bank-edge Slot 7) and synchronized `water_ripple_tick` increment to render cadence.
+  - `src/game/standalone_game_simulation.hpp/.cpp`, `src/game/render/town_combat_sat.hpp/.cpp`: Added `initial_walk_tick` and `pending_vdp_stage_` so even-tick `is_sat_step` stages SAT/DMA queues and the subsequent odd VBlank tick commits them without overwriting inactive SAT entries `[N..79]`.
+  - `src/genesis/vdp_rasterizer.cpp`: Added hardware scanline sprite masking (`x_raw == 0` / `spr.x == -128` after first sprite on scanline).
+  - `tests/m16_38_dynamic_pattern_dma_test.cpp`: Aligned canonical checkpoint initialization with true `F775` (`tick_counter = 2391U`, `initial_walk_tick = 1`).
+- **First Active Pixel-Exact Frame Achieved (`F779`)**:
+  - Canonical `F779`: `0 / 71,680` differing pixels (`100.0%` pixel-exact, RGB24 SHA-256 `b6cf377d1feadd9d6b74c6cfd3d948cc30bce98700a30c1ced3f742b9b86d253`), `0 / 65,536` VRAM, `0 / 640` physical SAT, `0` CRAM, `0` VSRAM, `0` VDP Registers.
+  - Full 14-snapshot measurement: Canonical sum = `148,820` px (`F779: 3,564 -> 0`), Independent Holdout sum = `24,542` px (`25,520 -> 24,542`), total = `173,362` px.
+- **Test Coverage**: Added `tests/m16_39_sat_forensics_pixel_exact_test.cpp` (`oasis_m16_39_sat_forensics_pixel_exact`) with VDP rasterizer audit (`x == 0` masking), 14-snapshot parity verification, and `4/4` M16.39 mutation guards.

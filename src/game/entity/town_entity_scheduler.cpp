@@ -452,22 +452,27 @@ void step_town_scheduler(std::vector<NativeEntity>& entities,
             }
             step_entity_002c(ent, entities, rom, ctx, sound_queue);
 
-            // ROM 0x02E8C8 water channel current & splash flag check
+            // ROM 0x02E8C8 -> 0x009BF2 footprint AND-mask check ($6E(a6) bit 5)
             ent.flags39 &= static_cast<std::uint8_t>(~0x02U);
             if (!terrain_collision.empty()) {
-                const int tx = std::clamp(ent.world_x >> 3, 0, 63);
-                const int ty = std::clamp(ent.world_y >> 3, 0, 63);
-                const std::uint8_t cell = terrain_collision[static_cast<std::size_t>(ty) * 64U + static_cast<std::size_t>(tx)];
-                if ((cell & 0x20U) != 0U && (ent.flags37 & 0x40U) == 0U) {
+                const int half = static_cast<int>(ent.base_half_w);
+                const int tx0 = std::clamp((ent.world_x - half) >> 3, 0, 63);
+                const int tx1 = std::clamp((ent.world_x + half) >> 3, 0, 63);
+                const int ty0 = std::clamp((ent.world_y - half) >> 3, 0, 63);
+                const int ty1 = std::clamp((ent.world_y + half) >> 3, 0, 63);
+                std::uint8_t and_mask = 0xFFU;
+                for (int ty = ty0; ty <= ty1; ++ty) {
+                    for (int tx = tx0; tx <= tx1; ++tx) {
+                        and_mask &= terrain_collision[static_cast<std::size_t>(ty) * 64U + static_cast<std::size_t>(tx)];
+                    }
+                }
+                if ((and_mask & 0x20U) != 0U && (ent.flags37 & 0x40U) == 0U) {
                     ent.flags39 |= 0x02U;
                     if (ent.world_z == 0 && ent.world_y < 0x1C0) {
                         ent.y_fp += (ent.world_y >= 0x1B0) ? 0x00010000 : 0x00020000;
                         sync_world_from_fixed_point(ent);
                     }
                 }
-            }
-            if ((ent.flags39 & 0x02U) != 0U && ent.world_z == 0) {
-                ent.water_ripple_tick = static_cast<std::uint8_t>((ent.water_ripple_tick + 1U) % 9U);
             }
         } else if (ent.type_id == 0x0060U) {
             step_entity_animation(ent, rom, kAnimTable0060);

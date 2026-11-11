@@ -14,6 +14,27 @@
 
 namespace oasis::game {
 
+namespace {
+void assign_default_town_entities(const world::LoadedTownScene& scene, std::vector<NativeEntity>& out) {
+    if (scene.entities.empty()) return;
+    out = scene.entities;
+    NativeEntity slot19{};
+    slot19.slot_index = 19U;
+    out.push_back(slot19);
+}
+
+camera::CameraConfig make_town_camera_config(camera::CameraController& cam,
+                                             const world::TownTransitionState& tr,
+                                             int cam_x, int cam_y, int vscroll_a, bool wrap8) {
+    camera::CameraConfig cfg = cam.config();
+    cfg.min_camera_x = 0; cfg.max_camera_x = tr.max_camera_x;
+    cfg.min_camera_y = 0; cfg.max_camera_y = tr.max_camera_y;
+    cfg.initial_camera_x = cam_x; cfg.initial_camera_y = cam_y;
+    cfg.initial_vscroll_a = vscroll_a; cfg.vscroll_wrap_8bit = wrap8;
+    return cfg;
+}
+} // namespace
+
 StandaloneGameSimulation::StandaloneGameSimulation() {
     terrain_buffer_.assign(128 * 128, 0x02U); // 0x02 = traversable ground
     terrain_ = world::ByteGridView(terrain_buffer_, 128, 128, 128, 7);
@@ -190,25 +211,13 @@ void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
     sim_state_.player_y = static_cast<std::uint16_t>(tr.player_y);
     sound_queue_.push(static_cast<int>(sim_state_.frame_counter), tr.music_stop_cmd);
 
-    camera::CameraConfig cfg = camera_.config();
-    cfg.min_camera_x = 0;
-    cfg.max_camera_x = tr.max_camera_x;
-    cfg.min_camera_y = 0;
-    cfg.max_camera_y = tr.max_camera_y;
-    cfg.initial_camera_x = tr.initial_cam_x;
-    cfg.initial_camera_y = settled_camera ? tr.settled_cam_y : tr.initial_cam_y;
-    cfg.initial_vscroll_a = tr.initial_vscroll_a;
+    const auto cfg = make_town_camera_config(
+        camera_, tr, tr.initial_cam_x, settled_camera ? tr.settled_cam_y : tr.initial_cam_y,
+        tr.initial_vscroll_a, false);
     camera_ = camera::CameraController(cfg);
     camera_.set_tracking_enabled(camera_tracking_);
 
-    if (!town_scene_.entities.empty()) {
-        entities_ = town_scene_.entities;
-        NativeEntity scratch_slot19{};
-        scratch_slot19.slot_index = 19U;
-        scratch_slot19.type_id = 0U;
-        scratch_slot19.active = false;
-        entities_.push_back(scratch_slot19);
-    }
+    assign_default_town_entities(town_scene_, entities_);
     if (town_prepared_) {
         world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
     }
@@ -239,32 +248,24 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     sim_state_.player_y = static_cast<std::uint16_t>(town_cp.y_fixed / 0x10000);
     sim_state_.frame_counter = town_cp.frame_counter;
     tick_counter_ = town_cp.tick_counter;
+    walk_tick_ = town_cp.initial_walk_tick;
     town_ctx_.prng_seed = town_cp.prng_seed;
 
-    camera::CameraConfig cfg = camera_.config();
-    cfg.min_camera_x = 0;
-    cfg.max_camera_x = town_scene_.transition.max_camera_x;
-    cfg.min_camera_y = 0;
-    cfg.max_camera_y = town_scene_.transition.max_camera_y;
-    cfg.initial_camera_x = town_cp.camera_x;
-    cfg.initial_camera_y = town_cp.camera_y;
-    cfg.initial_vscroll_a = (town_cp.camera_y + 136) & 0xFF;
-    cfg.vscroll_wrap_8bit = true;
+    const auto cfg = make_town_camera_config(
+        camera_, town_scene_.transition, town_cp.camera_x, town_cp.camera_y,
+        (town_cp.camera_y + 136) & 0xFF, true);
     camera_ = camera::CameraController(cfg);
     camera_.set_tracking_enabled(camera_tracking_);
     attract_banner_enabled_ = town_cp.attract_banner_enabled;
     town_water_timer_ = 7U;
     town_water_phase_ = 0U;
     dma_queue_.clear();
+    pending_vdp_stage_ = false;
 
     if (!town_cp.entities.empty()) {
         entities_ = town_cp.entities;
-    } else if (!town_scene_.entities.empty()) {
-        entities_ = town_scene_.entities;
-        NativeEntity s19{};
-        s19.slot_index = 19U;
-        s19.active = false;
-        entities_.push_back(s19);
+    } else {
+        assign_default_town_entities(town_scene_, entities_);
     }
     if (baseline_vdp_.is_display_enabled()) {
         const auto row_base = static_cast<std::uint16_t>(((baseline_vdp_.vsram[1] / 8U) & 0x1FU) * 128U);
@@ -303,6 +304,11 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
         : ((frame % 2U) == 1U);
 
     if (is_logic_step) {
+        if (pending_vdp_stage_) {
+            sat_pipeline_.commit_to_vdp(current_vdp_);
+            dma_queue_.drain_lifo(rom_bytes_, current_vdp_);
+            pending_vdp_stage_ = false;
+        }
         prev_render_player_x_ = sim_state_.player_x;
         prev_render_player_y_ = sim_state_.player_y;
         if (map_id_ == world::kTownMapId && player_.pending_damage > 0) {
@@ -461,31 +467,19 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
     if (map_id_ == world::kTownMapId) {
         if (!rom_bytes_.empty()) {
-            render::TownSatFrameContext sat_ctx{};
-            sat_ctx.camera_x = camera_.camera_x();
-            sat_ctx.camera_y = camera_.camera_y();
-            sat_ctx.tick_counter = tick_counter_;
-            sat_ctx.frame_60hz = sim_state_.frame_counter;
-            sat_ctx.hud_x_offset = (sim_state_.player_x < 80U) ? 0x138 : 0x20;
-            sat_ctx.attract_banner_enabled = attract_banner_enabled_;
-            sat_ctx.player_x = sim_state_.player_x;
-            sat_ctx.player_y = sim_state_.player_y;
-            sat_ctx.player_facing = player_.direction_code;
-            if (player_.movement_state == 4U) {
-                sat_ctx.player_frame_dir = static_cast<std::uint16_t>(24U + (walk_tick_ / 2U) * 3U);
-                sat_ctx.player_overlay_3e = static_cast<std::uint16_t>(48U + (walk_tick_ / 2U) * 2U);
-            } else if (player_.movement_state == 0x36U) {
-                sat_ctx.player_frame_dir = 186U;
-                sat_ctx.player_overlay_3e = 2328U;
-            } else {
-                sat_ctx.player_frame_dir = static_cast<std::uint16_t>(current_player_pose() * 3U);
+            render::build_town_sat_and_dma(
+                sat_pipeline_, rom_bytes_, camera_, player_, tick_counter_, sim_state_.frame_counter,
+                sim_state_.player_x, sim_state_.player_y, walk_tick_, current_player_pose(),
+                attract_banner_enabled_, baseline_vdp_.is_display_enabled(), entities_, dma_queue_);
+            if (baseline_vdp_.is_display_enabled()) {
+                pending_vdp_stage_ = true;
+                return;
             }
-            dma_queue_.clear();
-            render::emit_town_combat_sat(sat_pipeline_, rom_bytes_, sat_ctx, entities_, &dma_queue_);
+            sat_pipeline_.commit_to_vdp(vdp);
             dma_queue_.drain_lifo(rom_bytes_, vdp);
-        } else {
-            render::emit_town_combat_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, walk_tick_, entities_);
+            return;
         }
+        render::emit_town_combat_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, walk_tick_, entities_);
         sat_pipeline_.commit_to_vdp(vdp);
         return;
     }

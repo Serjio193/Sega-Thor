@@ -4130,3 +4130,5 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 
 - `src/game/render/vdp_dma_queue.hpp/.cpp` — Reconstructed Genesis `$FF10B4..$FF1892` DMA queue model (`DmaTransferEvent`, `VdpDmaQueue::drain_lifo`) with VDP R15/R19..R23 state updates (M16.38).
 - `tests/m16_38_dynamic_pattern_dma_test.cpp` — Differential qualification suite for M16.37 metric reconciliation, F779 pattern/PlaneA/CRAM/VSRAM/register convergence, 14-snapshot Holdout+Canonical checks, PPM diff outputs, and 7 DMA/VDP negative mutations (M16.38).
+
+- `tests/m16_39_sat_forensics_pixel_exact_test.cpp` — Differential M16.39 test verifying VDP `x==0` sprite masking, 100% bit-exact active frame convergence at Canonical `F779` (`0/71,680` pixels, `0/65,536` VRAM, `0/640` SAT), 14-snapshot VDP/pixel summary, and 4 M16.39 mutation guards (M16.39).

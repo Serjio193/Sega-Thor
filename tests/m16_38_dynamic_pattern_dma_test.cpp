@@ -291,13 +291,9 @@ void test_phase1_to_6_convergence_and_dma(const std::vector<std::uint8_t>& rom,
     OASIS_CHECK(rom[0x00AC3EU] == 0x24U && rom[0x00AC3FU] == 0xC7U); // move.l d7, (a2)+
     OASIS_CHECK(rom[0x00B15EU] == 0x08U && rom[0x00B15FU] == 0x05U); // btst #9, d5
 
-    // Canonical sequence replay with authentic F775 state
+    // Canonical sequence replay with authentic F775 state (tick_counter=2391U matches GPGX step 775)
     auto c_cp = build_cp(cp_bin);
-    c_cp.x_fixed = 73 * 0x10000;
-    c_cp.y_fixed = 200 * 0x10000;
-    c_cp.tick_counter = 2392U;
-    c_cp.turn_timer = 0U;
-    c_cp.intent_y_fixed = 0;
+    c_cp.initial_walk_tick = 1;
     c_cp.attract_banner_enabled = true;
 
     auto c_sim = std::make_unique<oasis::game::StandaloneGameSimulation>();
