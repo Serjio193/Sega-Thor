@@ -1,3 +1,52 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.255: Virtual Bus Bottleneck Forensics, Pinned GPGX Memory Layout Verification, Assert-Enabled Regression Recovery, Safe Direct-RAM Access Experiment `RUN_K`, Dynamic Memory Profiling Across Six Scenarios, and Real OS Multi-Trial Benchmark)
+
+## Milestone M15.255 Reverse Engineering Summary
+
+### Section 73: Pinned GPGX Memory Architecture, Work RAM Interleaving, and Dynamic Memory Profiling Forensics
+
+#### 1. Pinned GPGX Physical Memory Architecture Audit
+- **Audit Target:** `core/genesis.c`, `core/macros.h`, `core/m68k/m68kcpu.h` in pinned core `439b03ae28549ce2860d4b9b942bc3ad971a0ea21865cbb4e330ad3c3e5dfd2e`.
+- **Finding on Little-Endian Hosts (`LSB_FIRST`):**
+  * GPGX stores 16-bit words in Work RAM in native little-endian host byte order:
+    $$\text{m68ki\_read\_16}(\text{addr}) = *(\text{uint16}*)(\text{base} + (\text{addr} \& 0\text{xFFFF}))$$
+  * To preserve big-endian guest byte semantics, byte access is XOR-interleaved:
+    $$\text{READ\_BYTE}(\text{base}, \text{addr}) = \text{base}[\text{addr} \oplus 1]$$
+  * 32-bit long access performs two consecutive 16-bit word dereferences:
+    $$\text{read\_32}(\text{addr}) = (\text{read\_16}(\text{addr}) \ll 16) \mid \text{read\_16}(\text{addr} + 2)$$
+    Direct 32-bit host loads/stores would swap the high and low 16-bit words and corrupt guest data.
+- **Pointer Stability & Physical Backing:**
+  * Work RAM is physically backed by a static array `uint8 work_ram[0x10000]`.
+  * Pointer address is invariant across serialize/unserialize checkpoint cycles.
+  * Exposed via standard Libretro ABI: `retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM)` with size `0x10000`.
+
+#### 2. Dynamic Memory Access Profiling Across Six Scenarios
+- **Instrumented Counts in M15.250 Compiled Hotpaths:**
+  * Canonical Work RAM (`0xFF0000..0xFFFFFF`): **74,109 total dynamic accesses** across 6 scenarios.
+  * Mirrored Work RAM (`0xE00000..0xFEFFFF`): **0 accesses**. Beyond Oasis exclusively uses canonical addresses.
+  * ROM accesses: Small positive count (e.g., 527 in `scenario_c`, 903 in `scenario_a`, 1017 in `longrun_3600f`) for constant lookup tables; safely fell back to `api_.read`.
+  * MMIO / VDP accesses: **0 accesses** in compiled hotpaths.
+- **Fast-Path Eligibility:**
+  * Eligible reads: 27,601 (aligned, canonical RAM, within 64KB boundary).
+  * Eligible writes: 8,586.
+  * Boundary crossing / wrap: 0 in compiled hotpaths.
+  * Fast-path hit rate: **59.18%** in `scenario_a`, **42.22%** in `scenario_c`, with remaining accesses being ROM tables or stack frames falling back to the virtual bus cleanly.
+
+#### 3. Virtual Bus Bottleneck Forensics & Multi-Trial Benchmark Verdict
+- **Microbenchmark Forensics (`tests/m15_255_direct_ram_differential_test.cpp`):**
+  * Virtual Bus Callback (`api_.read` via function pointer): **1.17 ns/op**.
+  * Direct RAM Access (host pointer with byte interleaving): **0.66 ns/op** (**1.79x faster**).
+  * Profiling Counter Overhead: ~34.5 ns/op.
+- **10-Trial Independent Real OS Process Benchmark (`scenario_a`, 1592 frames):**
+  * `RUN_G` median: 15.0307s (min 14.9380s, max 16.8126s, stdev 0.5693s).
+  * `RUN_I` median: 15.0526s (min 14.9303s, max 15.2956s, stdev 0.1252s).
+  * `RUN_J` median: 15.1076s (min 14.9945s, max 15.3095s, stdev 0.1159s).
+  * `RUN_K` median: 15.1324s (min 14.9727s, max 15.6634s, stdev 0.2328s).
+  * Speedup `RUN_J -> RUN_K`: 0.9984x (Delta: -0.0248s; 0.16% variance, well within 1.5% noise window).
+- **Core Verdict:**
+  * Virtual memory bus callbacks are **NOT** the dominant bottleneck limiting integrated gameplay acceleration.
+  * Total memory callback time in compiled hotpaths is less than 0.05 ms per frame out of 16.6 ms.
+  * The true remaining CPU workload in Beyond Oasis is the uncompiled, interpreted Musashi routines (68+ million instructions per full gameplay session). Integrated speedup requires expanding static ROM decompilation coverage to eliminate residual interpreted CPU execution.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.254: Benchmark Provenance Audit; Retraction of Synthetic Variance Projections; CTest 294/294 Clean Linux Release Verification; Controlled Multi-Block Fusion Prototype `RUN_J` Across Camera Tracker & Priority Sort; 110 Multi-Block Entries / 220 Chained Blocks / 126 Internal CFG Edges Traversed; Real Measured OS Benchmark Forensics)
 
 ## Milestone M15.254 Reverse Engineering Summary

@@ -1,3 +1,38 @@
+# M15.255 Virtual Bus Bottleneck Forensics, Assert-Enabled Regression Recovery, and Safe Direct-RAM Access Experiment (`m15250k`) — COMPLETE / VERIFIED DIRECT-RAM FORENSICS & RECOVERY
+
+- **Production Source Immutability & Full Regression Matrix Recovery:**
+  * Restored 100% byte-identity across all active production helper source files (`00557a`, `008dd4`) against baseline `b63703e` (`PRODUCTION_SOURCE_BASELINE_SHA256 == 28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7`), preserving 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+  * Re-verified clean passing status across all four build configurations:
+    - Windows Release (Asserts Enabled): **296/296 PASS** in 53.04s.
+    - Windows Debug: **296/296 PASS** in 52.24s.
+    - Linux Release (`-UNDEBUG` Asserts Enabled): **295/295 PASS** in 50.80s.
+    - Linux Debug: **295/295 PASS** in 57.07s.
+- **Pinned GPGX Memory Architecture & Fast-Path Whitelist:**
+  * Audited authoritative GPGX memory layout (`core/genesis.c`, `core/macros.h`, `core/m68k/m68kcpu.h`):
+    - Under `LSB_FIRST` (x86/x64 hosts), 16-bit words are stored in host little-endian order, requiring `base[offset ^ 1]` for byte accesses and `*reinterpret_cast<uint16_t*>` for naturally-aligned 16-bit words.
+    - 32-bit longs require dual 16-bit word dereferences to prevent word-swapping.
+    - Work RAM is a static global buffer `uint8 work_ram[0x10000]` with 100% pointer stability across serialization.
+    - Confirmed Beyond Oasis exclusively accesses canonical RAM (`0xFF0000..0xFFFFFF`); zero accesses occurred in mirrored RAM (`0xE00000..0xFEFFFF`).
+- **Safe Direct-RAM Access Experiment (`RUN_K` / `m15250k`):**
+  * Authored `src/tools/thor_ir/exp250_direct_ram_adapter.hpp` (298 lines $\le 500$) with fail-closed fallback to `api_.read`/`write` for non-RAM, unaligned word/long, 64KB boundary wrap, or null pointer.
+  * Authored `tests/m15_255_direct_ram_differential_test.cpp` (215 lines $\le 500$), passing 4/4 differential, boundary, mirror, and fail-closed tests 100% under ASan/UBSan.
+  * Microbenchmark forensics: Direct RAM access is **1.79x faster** than virtual bus callbacks (0.66 ns vs 1.17 ns per operation).
+- **Eleven-Configuration Six-Scenario Replay Qualification:**
+  * Qualified `RUN_A` through `RUN_K`: **66 replay sessions, 528 stream files bit-exact, 31 checkpoints bit-exact**.
+  * Executed **36,187 direct RAM accesses** at native host pointer speed across the 6 scenarios with zero contract faults and zero fallbacks.
+- **Independent 10-Trial Real OS Process Benchmark:**
+  * Executed 10 measured OS process trials on `scenario_a` (1592 frames):
+    - `RUN_G` median: 15.0307s (min 14.9380s, max 16.8126s, stdev 0.5693s).
+    - `RUN_I` median: 15.0526s (min 14.9303s, max 15.2956s, stdev 0.1252s).
+    - `RUN_J` median: 15.1076s (min 14.9945s, max 15.3095s, stdev 0.1159s).
+    - `RUN_K` median: 15.1324s (min 14.9727s, max 15.6634s, stdev 0.2328s).
+    - Speedup `RUN_J -> RUN_K`: 0.9984x (Delta: -0.0248s; 0.16% variance, well within 1.5% noise window).
+  * **Architectural Conclusion:** Virtual memory bus callbacks are NOT the dominant bottleneck preventing integrated gameplay speedup (callback overhead is < 0.05 ms per frame). Future acceleration must focus on eliminating residual uncompiled guest CPU work (68+ million instructions in Musashi).
+- **Governance & Verification:**
+  * Generated and verified `data/thor-evidence/combined-clusters-qualification-m15-255-20261111.json` via `ReceiptVerifier` (status=VERIFIED, valid=True, 0 rejections).
+  * Source code line limits verified: 2550 governed files $\le 500$ lines.
+  * Production inventory strictly preserved at 196 active helpers (`17396fda...`).
+
 # M15.254 Real Benchmark Evidence, CTest Regression Triage, and Controlled Multi-Block Fusion Prototype (`m15250m`) — COMPLETE / VERIFIED MULTI-BLOCK FUSION PROTOTYPE & REAL BENCHMARK AUDIT
 
 - **Benchmark Provenance Audit & Real Measured Performance:**

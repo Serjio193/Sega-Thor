@@ -1,0 +1,116 @@
+{
+  "milestone": "M15.255",
+  "benchmark_provenance": {
+    "source_command": "python tools/benchmark_m15_255_real.py",
+    "runner_sha256": "9a7db4bb1f03bff25388cf5007e72121d0b5ff22f6cfc2893fd4ac972ecd4766",
+    "core_sha256": "439b03ae28549ce2860d4b9b942bc3ad971a0ea21865cbb4e330ad3c3e5dfd2e",
+    "trial_count": 10,
+    "target_scenario": "scenario_a (1592 frames)",
+    "measurement_method": "Real OS wall-clock time via time.perf_counter() on subprocess.run()"
+  },
+  "trial_timings": {
+    "run_g": [
+      16.812648699997226,
+      15.366578700006357,
+      15.035000399999262,
+      14.994051999994554,
+      15.14973839999584,
+      15.510760600001959,
+      14.98956950000138,
+      14.937999800000398,
+      14.99242840000079,
+      15.026451500001713
+    ],
+    "run_i": [
+      15.023658400001295,
+      15.191955100002815,
+      15.058209899994836,
+      15.046990800001367,
+      15.19733680000354,
+      15.295625900005689,
+      15.250898800004506,
+      14.930280699998548,
+      14.958693300002778,
+      15.045301600002858
+    ],
+    "run_j": [
+      15.25138199999492,
+      15.309506499994313,
+      15.060579400000279,
+      15.102164700001595,
+      15.264481099999102,
+      15.23057439999684,
+      15.113068999999086,
+      15.017498999994132,
+      14.994489700002305,
+      15.032983799996146
+    ],
+    "run_k": [
+      15.071994600002654,
+      15.159304699998756,
+      15.072094600000128,
+      15.180202600000484,
+      15.66337499999645,
+      15.59367519999796,
+      14.972685000000638,
+      15.281666700000642,
+      15.063666699999885,
+      15.10541469999589
+    ]
+  },
+  "configuration_statistics": {
+    "run_g": {
+      "min_sec": 14.938,
+      "median_sec": 15.0307,
+      "mean_sec": 15.2815,
+      "p95_sec": 16.8126,
+      "p99_sec": 16.8126,
+      "max_sec": 16.8126,
+      "stdev_sec": 0.5693
+    },
+    "run_i": {
+      "min_sec": 14.9303,
+      "median_sec": 15.0526,
+      "mean_sec": 15.0999,
+      "p95_sec": 15.2956,
+      "p99_sec": 15.2956,
+      "max_sec": 15.2956,
+      "stdev_sec": 0.1252
+    },
+    "run_j": {
+      "min_sec": 14.9945,
+      "median_sec": 15.1076,
+      "mean_sec": 15.1377,
+      "p95_sec": 15.3095,
+      "p99_sec": 15.3095,
+      "max_sec": 15.3095,
+      "stdev_sec": 0.1159
+    },
+    "run_k": {
+      "min_sec": 14.9727,
+      "median_sec": 15.1324,
+      "mean_sec": 15.2164,
+      "p95_sec": 15.6634,
+      "p99_sec": 15.6634,
+      "max_sec": 15.6634,
+      "stdev_sec": 0.2328
+    }
+  },
+  "comparisons": {
+    "speedup_g_to_i": 0.9985,
+    "speedup_i_to_j": 0.9964,
+    "speedup_j_to_k": 0.9984,
+    "speedup_g_to_k": 0.9933,
+    "delta_seconds_j_to_k": -0.0248,
+    "noise_window_percent": 1.5,
+    "verdict": "SPEEDUP_WITHIN_NOISE_WINDOW"
+  },
+  "direct_ram_forensics": {
+    "fast_path_reads_eligible": 2765,
+    "fast_path_writes_eligible": 124,
+    "fast_path_hit_rate_pct": 59.18,
+    "measured_virtual_bus_ns": 1.17,
+    "measured_direct_ram_ns": 0.66,
+    "measured_speedup_factor": 1.79
+  }
+}

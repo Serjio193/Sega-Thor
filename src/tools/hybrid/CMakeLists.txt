@@ -472,3 +472,12 @@ add_executable(oasis_gameplay_session_replay_diagnostic_test gameplay_session_re
     ${PROJECT_SOURCE_DIR}/tests/gameplay_session_replay_diagnostic_test.cpp)
 target_include_directories(oasis_gameplay_session_replay_diagnostic_test PRIVATE ${PROJECT_SOURCE_DIR}/src)
 add_test(NAME oasis_gameplay_session_replay_diagnostic COMMAND oasis_gameplay_session_replay_diagnostic_test)
+
+add_executable(oasis_m68k_00ceea_cmpa_regression_test
+    ${PROJECT_SOURCE_DIR}/tests/m68k_00ceea_cmpa_regression_test.cpp
+    m68k_00ceea_line_buffer.cpp
+    m68k_camera_scroll_step_ops.cpp
+    m68k_camera_scroll_step_ops_alu.cpp)
+target_include_directories(oasis_m68k_00ceea_cmpa_regression_test PRIVATE ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(oasis_m68k_00ceea_cmpa_regression_test PRIVATE oasis_hybrid_contract oasis_core)
+add_test(NAME oasis_m68k_00ceea_cmpa_regression COMMAND oasis_m68k_00ceea_cmpa_regression_test)

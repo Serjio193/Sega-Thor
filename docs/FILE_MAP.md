@@ -1,3 +1,12 @@
+# M15.255 Virtual Bus Bottleneck Forensics, Assert-Enabled Regression Recovery, and Safe Direct-RAM Access Experiment
+
+- `src/tools/thor_ir/exp250_direct_ram_adapter.hpp` — direct Work RAM fast-path bus adapter (`HybridM68kDirectRamBus250` / `step_m68k_portable_m15250_direct_ram`) with byte-interleaving awareness and fail-closed fallback.
+- `tests/m15_255_direct_ram_differential_test.cpp` — dedicated direct-RAM differential, mirror, boundary wrap, fail-closed, and microbenchmark test suite (4/4 passing under ASan/UBSan).
+- `tools/run_m15_255_direct_ram_ab.py` / `data/thor-evidence/m15_255_direct_ram_ab_summary.json` — 11-configuration qualification runner and dynamic memory profiling evidence summary across 6 scenarios.
+- `tools/benchmark_m15_255_real.py` / `data/thor-evidence/benchmark_m15_255_measured_summary.json` — 10-trial measured OS process benchmark report across RUN_G, RUN_I, RUN_J, RUN_K.
+- `tools/generate_m15_255_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-255-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_255_DIRECT_RAM_HANDOFF.md` — standalone track handoff for direct Work RAM access, memory layout, and bottleneck findings.
+
 # M15.254 Real Benchmark Evidence, CTest Regression Triage, and Controlled Multi-Block Fusion Prototype
 
 - `tests/m15_254_multiblock_adversarial_test.cpp` — dedicated adversarial multi-block fusion safety test suite (6/6 passing under ASan/UBSan).

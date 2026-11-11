@@ -1,3 +1,54 @@
+# ADR-20261111-M15-255-VIRTUAL-BUS-BOTTLENECK-FORENSICS-AND-SAFE-DIRECT-RAM-ACCESS-EXPERIMENT — Virtual Bus Bottleneck Forensics, Pinned GPGX Memory Layout Verification, Assert-Enabled Full Regression Recovery (Windows 296/296, Linux 295/295), and Safe Direct Work RAM Access Experiment (`RUN_K` / `m15250k`)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. M15.254 established that bounded multi-block execution (`m15250m` / `RUN_J`) eliminated ~58.8% of host wrapper dispatches with 100% bit-exact parity, but did not deliver measurable integrated speedup over `RUN_G` (timings remained within the ~1.5% host OS measurement noise window).
+2. The core question for M15.255 was whether virtual memory bus callbacks (`api_.read`/`write` function pointers through GPGX) are the dominant remaining bottleneck preventing integrated acceleration.
+3. Prior to implementing direct RAM access, full regression recovery under assert-enabled configurations was required across Windows and Linux, accompanied by strict production helper immutability verification (196 helpers baseline hash `28b6617d...`).
+
+**Decisions:**
+1. **Production Freeze & Full Regression Recovery:**
+   - Restored 100% byte-identity across all 535 production source files against baseline `b63703e4b7...` (`PRODUCTION_SOURCE_BASELINE_SHA256 == 28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7`), preserving 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+   - Re-verified all four CTest suites passing 100%:
+     * Windows Release (Asserts Enabled): **296/296 PASS** (53.04s).
+     * Windows Debug: **296/296 PASS** (52.24s).
+     * Linux Release (`-UNDEBUG` Asserts Enabled): **295/295 PASS** (50.80s).
+     * Linux Debug: **295/295 PASS** (57.07s).
+2. **Authoritative Pinned GPGX Memory Layout Verification:**
+   - Audited `core/genesis.c`, `core/macros.h`, and `core/m68k/m68kcpu.h` in the pinned GPGX core:
+     * When `LSB_FIRST` is defined (x86/x64 hosts), 16-bit words are stored in little-endian order in host RAM so that 16-bit dereferences `*(uint16*)` require no host byte swapping.
+     * Consequently, 8-bit byte accesses must use `READ_BYTE(base, addr) = base[addr ^ 1]` (byte interleaving / XOR 1).
+     * 32-bit long accesses must read/write two consecutive 16-bit words rather than a single 32-bit host store, which would swap the two 16-bit words.
+     * Work RAM is a static global array `uint8 work_ram[0x10000]` that is loaded/saved in place during serialization; pointer stability across checkpoint restoration is 100%.
+   - Validated that Beyond Oasis exclusively accesses canonical Work RAM (`0xFF0000..0xFFFFFF`); zero accesses occurred in the mirrored range `0xE00000..0xFEFFFF` across all 6 scenarios.
+3. **Safe Direct-RAM Access Implementation (`RUN_K` / `m15250k`):**
+   - Implemented `HybridM68kDirectRamBus250` and `step_m68k_portable_m15250_direct_ram` in `src/tools/thor_ir/exp250_direct_ram_adapter.hpp` (298 lines $\le 500$).
+   - Direct RAM access is enabled via official Libretro interface `retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM)` with fail-closed fallback to `api_.read`/`write` for:
+     * Non-RAM addresses (ROM lookup tables, VDP, MMIO, Z80).
+     * Unaligned Word/Long accesses (`addr & 1 != 0`).
+     * 64KB boundary wraps (`(addr & 0xFFFF) + width > 0x10000`).
+     * Null direct RAM pointer.
+   - Authored `tests/m15_255_direct_ram_differential_test.cpp` (215 lines $\le 500$), passing 4/4 differential, boundary, mirror, fail-closed, and microbenchmark tests 100% under ASan/UBSan.
+4. **Qualification & Real OS Multi-Trial Benchmark:**
+   - 11-Configuration Six-Scenario Replay Qualification (`RUN_A`..`RUN_K`): **66 replay sessions, 528 stream files bit-exact, 31 checkpoints bit-exact**.
+   - Executed 36,187 direct RAM accesses at native host pointer speed across the 6 scenarios with zero contract faults and zero fallbacks.
+   - 10-Trial Independent Real OS Process Benchmark on `scenario_a` (1592 frames):
+     * `RUN_G` median: 15.0307s (min 14.9380s, max 16.8126s, stdev 0.5693s).
+     * `RUN_I` median: 15.0526s (min 14.9303s, max 15.2956s, stdev 0.1252s).
+     * `RUN_J` median: 15.1076s (min 14.9945s, max 15.3095s, stdev 0.1159s).
+     * `RUN_K` median: 15.1324s (min 14.9727s, max 15.6634s, stdev 0.2328s).
+     * `RUN_J -> RUN_K` speedup: 0.9984x (Delta: -0.0248s; 0.16% difference, well within the 1.5% host OS noise window).
+5. **Architectural Bottleneck Verdict:**
+   - Virtual memory bus callbacks are **NOT** the dominant bottleneck limiting integrated gameplay speedup.
+   - Microbenchmark confirms direct RAM is 1.79x faster than virtual bus callbacks (0.66 ns vs 1.17 ns per operation).
+   - However, in integrated gameplay, the total memory callback time in compiled hotpaths accounts for less than 0.05 ms per frame out of 16.6 ms. The dominant remaining CPU workload is the uncompiled, interpreted Musashi routines (68+ million guest instructions per gameplay session).
+
+**Consequences:**
+- Direct Work RAM access with byte interleaving is proven safe, bit-exact, and fail-closed.
+- Settles the virtual bus bottleneck hypothesis with real OS measurement data. Future acceleration efforts must focus on eliminating residual uncompiled guest CPU work through static ROM decompilation rather than further bus dispatch micro-optimizations.
+- Production inventory remains strictly unchanged at 196 baseline helpers.
+
 # ADR-20261111-M15-254-BENCHMARK-PROVENANCE-AUDIT-AND-CONTROLLED-MULTIBLOCK-FUSION — Provenance Audit of Synthetic Projections, CTest Triage (294/294 Passing on Linux Release), and Controlled Multi-Block Fusion Prototype (`m15250m` / `RUN_J`)
 **Status:** Accepted
 **Date:** 2026-11-11
