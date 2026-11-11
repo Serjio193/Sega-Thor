@@ -160,8 +160,15 @@ void test_first_divergence_finder_and_causal_trace(const std::vector<std::uint8_
     town_cp.tick_counter = 2392U;
     town_cp.frame_counter = 775U;
     town_cp.prng_seed = 0x22BCU;
+    town_cp.turn_timer = 67U;
+    town_cp.entities = world::load_town_scene_from_rom(rom).entities;
+    if (town_cp.entities.size() > 1U) {
+        town_cp.entities[1].active = false;
+        town_cp.entities[1].type_id = 0U;
+    }
 
-    assert(sim.initialize_town_checkpoint(rom, town_cp));
+    const bool init_ok = sim.initialize_town_checkpoint(rom, town_cp);
+    assert(init_ok);
     sim.set_oracle_mode(false);
 
     FrameInput in_776{};

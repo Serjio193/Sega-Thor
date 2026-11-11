@@ -108,8 +108,8 @@ void test_rooftop_ambush_and_drop_physics(const std::vector<std::uint8_t>& rom) 
     entity::TownSchedulerContext sctx{};
     combat::SoundCommandQueue sq{};
     sctx.frame_60hz = 688;
-    sctx.player_x = 123;
-    sctx.player_y = 384; // distance dx=19, dy=39 -> sum=58 (outside 48 threshold)
+    sctx.player_x = 145;
+    sctx.player_y = 384; // distance dx=41, dy=39 -> Euclidean dist=56 (outside 48 threshold)
 
     // Position outside threshold: guard remains in State 0x14
     entity::step_town_scheduler(ents, rom, scene.terrain_collision, sctx, sq, true);

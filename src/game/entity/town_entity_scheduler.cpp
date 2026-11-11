@@ -73,7 +73,8 @@ void decide_002c_action(NativeEntity& ent, std::vector<NativeEntity>& entities,
     // ROM 0x0255D8
     const std::uint16_t var = ent.variant_96 & 3U;
     if (var != 0U && var != 3U && !ctx.player_invisible) {
-        const std::int32_t dist = rom_dist_f0d2(ctx.player_x, ctx.player_y, ent.world_x, ent.world_y);
+        // ROM 0x00E398 computes Manhattan distance |dx| + |dy| into d5
+        const std::int32_t dist = std::abs(ctx.player_x - ent.world_x) + std::abs(ctx.player_y - ent.world_y);
         bool try_throw = false;
         if (var == 1U) {
             if (dist < 0x50 && prng_mod(ctx.prng_seed, 4U) == 0U) {
@@ -366,21 +367,24 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
     }
     case 0x10U:
     case 0x14U: {
-        if (!ctx.player_invisible) {
+        // ROM 0x0257EE: player must not be invisible ($FF1A20 bit 3) and must be on ground (player_z == 0)
+        if (!ctx.player_invisible && ctx.player_z == 0) {
             const std::int32_t dist = rom_dist_f0d2(ctx.player_x, ctx.player_y, ent.world_x, ent.world_y);
             if (dist <= 0x30) {
                 ent.flags36 &= ~0x02U;
                 ent.flags37 &= ~0x01U;
                 ent.state = (ent.state == 0x10U) ? 0x12U : 0x16U;
-                ent.vz_fp = 0;
+                ent.vz_fp = 0; // ROM 0x025826..0x025838: starts at 0, accelerates by 0xC000/tick in state 0x16
             }
         }
         break;
     }
     case 0x16U: {
+        // ROM 0x02583E: z_fp -= vz_fp; if (z_fp <= 0) land; else vz_fp += 0xC000
         ent.z_fp -= ent.vz_fp;
         if (ent.z_fp <= 0) {
             ent.z_fp = 0;
+            ent.vz_fp = 0;
             ent.anim_step = 0U;
             ent.state = 0x18U;
             emit_sound(ent, ctx, q, (ent.flags39 & 0x02U) != 0U ? 0x00800270U : 0x00500342U);

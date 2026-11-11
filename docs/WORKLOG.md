@@ -1,3 +1,43 @@
+# 2026-11-11 — Milestone M16.35: PRNG CALL-ORDER CONVERGENCE, FULL-ENTITY BLIND HOLDOUT PARITY, AND VERIFIED VRAM DIFFERENTIALS — Elimination of First PRNG Divergence at F1012..F1013 (Full 350/350 PRNG Parity across Holdout F776..F1125); ROM Disassembly Forensics of Entity Distance Computation (Subroutine 0x00E398 Manhattan Distance |dx| + |dy| in Decide Throw vs 0x00F0D2 Integer Euclidean Distance); Rooftop Guard State 0x16 Drop Physics Correction (Initial vz_fp = 0, +0xC000/tick Acceleration); Pre-Move Player Perception Cadence in Genesis Main Loop (Entity Update reads Player Coordinates prior to Player Movement Step); Full Holdout Entity Parity (Player 350/350, Camera 350/350, HP 350/350, S11 350/350, S19 350/350, S5 350/350, S16 350/350); Verified Numerical VRAM Differentials across 14 VDP Snapshots (Total Compared: 917,504 VRAM Bytes, 1,792 CRAM Bytes, 1,120 VSRAM Bytes, 336 Reg Bytes); Canonical Replay Regression Prevention (521/521 Active SAT Parity, 246 Active-DMA, 275 Zero-DMA, F858 Reuse, F886 Launch, F944 Impact, F956 Despawn); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 209/221 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance across 958 Governed Files; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Baseline Verification:
+    - Baseline commit `1bc0f80ff9e77387fd8927897623d21eb15a4615`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Pinned Core SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+  * PRNG Call-Order & Entity Scheduler Convergence:
+    - Identified root cause of F1012..F1013 PRNG divergence: Guard 5 (0x002C variant 1) called `step_prng` twice at F907 due to Euclidean distance returning 62 < 80 instead of Manhattan distance 88 >= 80.
+    - Disassembled ROM `0x00E398`: verified `|dx| + |dy|` sum into register `d5`. Applied Manhattan distance in `decide_002c_action`, restoring exact single-call cadence `0xC8B1 -> 0x8B11` at F907.
+    - Disassembled ROM `0x025826..0x025838`: verified rooftop drop initial velocity is `vz_fp = 0` (accelerating by `+0xC000` per logic tick).
+    - Aligned entity player perception timing: Genesis entity loop updates entities using player coordinates before current-frame player movement runs (`prev_render_player_x_/y_`), precisely timing rooftop Guard 16 drop trigger to F931 and landing recovery completion to F1013.
+    - Achieved 100% exact PRNG parity: 350 / 350 frames across F776..F1125.
+  * Full Holdout Entity Parity:
+    - Player: 350 / 350 frames exact.
+    - Camera: 350 / 350 frames exact.
+    - HP / Damage: 350 / 350 frames exact.
+    - Guard Slot 11: 350 / 350 frames exact.
+    - Projectile Slot 19: 350 / 350 frames exact.
+    - Guard Slot 5: 350 / 350 frames exact.
+    - Rooftop Guard Slot 16: 350 / 350 frames exact.
+  * Verified Numerical VRAM Differentials:
+    - VRAM Total Bytes Compared: 65,536 * 14 = 917,504 bytes.
+    - CRAM Total Bytes Compared: 128 * 14 = 1,792 bytes.
+    - VSRAM Total Bytes Compared: 80 * 14 = 1,120 bytes.
+    - VDP Registers Total Bytes Compared: 24 * 14 = 336 bytes.
+    - Documented byte differentials across all 7 canonical and 7 holdout frames against initial baseline.
+  * Canonical Replay Regression Prevention:
+    - Preserved 521/521 active SAT parity across F595..F1115.
+    - 246 active-DMA frames + 275 zero-DMA frames verified.
+    - All canonical milestones confirmed: F858 slot reuse, F886 projectile launch, F944 ground impact, F956 despawn, F597 Beach->Town and F1112 Town->North transitions.
+  * Dual-Toolchain Verification & Governance:
+    - Added `tests/m16_35_prng_convergence_test.cpp` (324 lines, strictly <= 500 lines) and registered in `cmake/project_tests.cmake`.
+    - Resolved Debug assertion discrepancies in prior tests (`m16_25`, `m16_26`, `m16_27`, `m16_30`, `m16_31`).
+    - MinGW Release CTest: 209/221 passed (95%), exact 12 historical BizHawk failures preserved.
+    - MSVC Debug CTest: 209/221 passed (95%), exact 12 historical BizHawk failures preserved.
+    - `tests/check_file_limits.cmake` passed on all 958 governed source files (strictly <= 500 lines).
+    - Zero emulator / libretro / Musashi linkage in `oasis.exe` and `oasis_core`.
+    - Hybrid worktree `C:/Github/Sega-Thor` strictly untouched.
+
 # 2026-11-10 — Milestone M16.34: AUTHENTIC NEW GPGX HOLDOUT, BLIND NATIVE GENERALIZATION, AND MULTI-FRAME HARDWARE STATE VALIDATION — Fixture Provenance Audit (Prior Holdouts Reclassified; F779 VRAM b063f302 Disclosed As Early Beach Capture); Genuinely New Original GPGX Holdout Session Captured & Frozen (F775..F1125, Checkpoint 28ac7eb5, Inputs d54b9277, Trace c1178cf5, Holdout VDP 2eaa70a2, Canonical VDP 9bf84f58, Manifest m16_34_holdout_manifest.json); Blind First-Pass Native Replay Preserving Initial Divergence at F776 & Root Causes; General ROM Systems Implemented (Player State 0x0C Decel 0x006624, 4-Axis Repulsion Clamp 0x009DB0, Deferred Damage Mailbox 0x00BEE0, Town 30Hz Combo Combat 0x00BF28, Guard 11 Death Arc 0x00E502, Drop Table Roll 0x00F476, Integer Euclidean Distance 0x00F0D2, Interactive Banner Suppression 0x00A7E6); Post-Fix Convergence (Player, Camera, HP, Slot 11, S19 Projectile: 350/350 Frames Exact); Multi-Frame Full 64KB VRAM/VDP Audit & 20-Sprite Line Limit Validation; Metric Reconciliation (521 = 246 Active-DMA + 275 Zero-DMA vs 341 = 170 Active-DMA + 170 Zero-DMA + F775); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 208/220 Passing with 12 Historical BizHawk Failures Preserved); <=500 Line Limit Preserved Across 957 Files; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

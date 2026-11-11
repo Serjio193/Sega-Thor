@@ -394,8 +394,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
     if (map_id_ == world::kTownMapId && is_logic_step) {
         if (!rom_bytes_.empty()) {
-            town_ctx_.player_x = cur_x;
-            town_ctx_.player_y = cur_y;
+            town_ctx_.player_x = prev_render_player_x_;
+            town_ctx_.player_y = prev_render_player_y_;
+            town_ctx_.player_z = static_cast<std::int16_t>(player_.z_fixed / 0x10000);
             town_ctx_.player_state = player_.movement_state;
             town_ctx_.player_facing = player_.direction_code;
             town_ctx_.player_hp = player_.hp;

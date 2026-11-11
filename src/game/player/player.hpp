@@ -95,6 +95,8 @@ struct PlayerState {
     bool secondary_attack_fired{false};     // arrow spawned at frame 12
     std::uint8_t secondary_attack_direction{0}; // locked facing direction
     std::uint16_t last_weapon_hit{0};       // type ID of enemy hit by secondary weapon
+    std::int32_t z_fixed{0};                // player height / vertical offset
+
 
     [[nodiscard]] constexpr bool is_hurt() const noexcept { return hurt_timer > 0; }
     [[nodiscard]] constexpr bool is_invulnerable() const noexcept { return invuln_timer > 0; }

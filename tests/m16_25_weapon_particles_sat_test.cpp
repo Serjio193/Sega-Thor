@@ -264,6 +264,7 @@ void test_six_frame_exact_parity(const std::vector<std::uint8_t>& rom, const std
         total_active_sprites += gt.size();
 
         render::TownSatFrameContext sat_ctx{};
+        sat_ctx.attract_banner_enabled = true;
         sat_ctx.camera_x = fr.cam_x;
         sat_ctx.camera_y = fr.cam_y;
         sat_ctx.tick_counter = static_cast<std::uint16_t>(fr.tick);

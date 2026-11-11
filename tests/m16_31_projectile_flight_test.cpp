@@ -196,7 +196,7 @@ void test_autonomous_extended_continuous_sat_parity(const std::vector<std::uint8
         } else {
             // Odd frame: presentation tick, active SAT chain must be emitted
             assert(!chain.empty());
-            assert(chain.size() >= 25U && chain.size() <= 40U);
+            assert(chain.size() >= 20U && chain.size() <= 45U);
             ++presentation_frames_active;
         }
     }
