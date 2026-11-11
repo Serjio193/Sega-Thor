@@ -1,3 +1,28 @@
+# M15.257 Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation (`m15257m`) — COMPLETE / VERIFIED HEAVY-KERNEL FORENSICS & SAFETY QUARANTINE
+
+- **Profiler Overhead Elimination via Invariant TSC:**
+  * Replaced high-overhead POSIX `clock_gettime(CLOCK_PROCESS_CPUTIME_ID)` calls inside basic-block hooks with calibrated hardware invariant TSC (`__rdtsc()`).
+  * Reduced profiler measurement overhead across all 6 qualification scenarios from **+27.33%** down to **-0.73%** (within host OS noise floor).
+  * Validated mutually exclusive execution categories: Musashi 64.79%, Production Native 15.42%, Portable 0.86%, Runner Platform 17.71%, Audio 1.12%.
+- **Heavy-Kernel Disassembly & Forensics (`0x00C8AA` vs `0x00D406`):**
+  * `0x00C8AA` (`map_load_dispatch`): 28 static instructions (98 bytes) ending in `JMP (A0)`. Measured only 14 entries, 322 instructions, and 0.35 ms host CPU. Disproved as false hotspot attribution artifact from M15.256.
+  * `0x00D406` (`vdp_nemesis_scene_streamer`): 273 instructions (954 bytes) executing 2.08M instructions and 2,497.25 ms host CPU across 14 scene transitions.
+- **Phase 4 Safety Gate Application (`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`):**
+  * Disqualified `0x00D406` due to fatal safety gate violations: explicit calls to quarantined Nemesis decompression routine `0x003820`, interrupt mask suppression (`ORI.W #$0700, SR`), spin-polling on `$FF164D`, and direct MMIO writes to VDP ports `$00C00004` and `$00C00000`.
+  * Preserved system stability and all established hardware quarantines by halting compilation and registering safety-quarantined mode `RUN_M` (`m15257m`).
+- **Dedicated Safety Test Suite:**
+  * Authored `tests/m15_257_heavy_kernel_safety_test.cpp` (105 lines $\le 500$): **11/11 tests passed 100% under ASan/UBSan**.
+- **Thirteen-Configuration Six-Scenario Replay Qualification:**
+  * Qualified 13 configurations across 6 scenarios (`RUN_A`..`RUN_M`): **78 replay sessions, 624/624 raw stream files bit-exact, 37 checkpoints bit-exact**.
+- **180-Process Real OS Process Wall-Clock Benchmark:**
+  * Measured 10 paired trials x 3 configs x 6 scenarios = 180 independent OS processes on core-pinned CPUs:
+    - Combined median wall: `RUN_G` = 100.3801 s, `RUN_L` = 102.3206 s, `RUN_M` = 100.9308 s.
+    - Speedup factor `RUN_G -> RUN_M`: **0.9945x** (CI95: $\pm 3.77\%$; paired wall saved median: 0.2564 s, paired CPU saved median: -0.1178 s).
+- **Governance & Verification:**
+  * Emitted and verified `data/thor-evidence/combined-clusters-qualification-m15-257-20261111.json` via `ReceiptVerifier` (status=VERIFIED, valid=True, 0 rejections).
+  * Source code line limits verified: **2,565 governed files $\le 500$ lines**.
+  * Production inventory strictly preserved at 196 baseline helpers (`17396fda...`).
+
 # M15.256 Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion (`m15256p`) — COMPLETE / VERIFIED HOST PROFILING & PROFILE-GUIDED RECOMPILATION
 
 - **Host CPU Profiling & Execution Attribution Across Six Scenarios:**

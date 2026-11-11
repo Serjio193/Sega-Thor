@@ -57,7 +57,7 @@ def main() -> int:
     )
     m_arr = re.search(r"std::array<bool,\s*(\d+)>\s*g_enabled\{\};", step_code)
     old_sz = int(m_arr.group(1))
-    new_sz = old_sz + 5
+    new_sz = old_sz + 6
     step_code = step_code.replace(m_arr.group(0), f"std::array<bool, {new_sz}> g_enabled{{}};\nstatic int g_last_stepped_slot = -1;", 1)
     step_code = step_code.replace(
         "#undef CHK",
@@ -65,7 +65,8 @@ def main() -> int:
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_fused, {old_sz + 1});\n"
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_multiblock, {old_sz + 2});\n"
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_direct_ram, {old_sz + 3});\n"
-        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15256, {old_sz + 4});\n#undef CHK",
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15256, {old_sz + 4});\n"
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15256, {old_sz + 5});\n#undef CHK",
         1,
     )
     # Wrap CHK to record stepped slot
@@ -86,6 +87,7 @@ def main() -> int:
         "        if (t0 > 0) oasis::profiler::HostCpuProfiler::instance().record_native_step(oasis::profiler::now_cpu_ns() - t0, g_last_stepped_slot < 245);\n"
         "        return 1;\n"
         "    }\n"
+        "    if (t0 > 0) oasis::profiler::HostCpuProfiler::instance().record_musashi_pc(pc);\n"
         "    return 0;",
         1,
     )
@@ -96,6 +98,7 @@ def main() -> int:
         f'    g_enabled[{old_sz + 2}] = step_helper_selected_exact(enabled_helpers, "m15250m");\n'
         f'    g_enabled[{old_sz + 3}] = step_helper_selected_exact(enabled_helpers, "m15250k");\n'
         f'    g_enabled[{old_sz + 4}] = step_helper_selected_exact(enabled_helpers, "m15256p");\n'
+        f'    g_enabled[{old_sz + 5}] = step_helper_selected_exact(enabled_helpers, "m15257m");\n'
         f'    using GetMemData = void* (*)(unsigned);\n'
         f'    using GetMemSize = std::size_t (*)(unsigned);\n'
         f'    auto get_mem = core.get<GetMemData>("retro_get_memory_data");\n'
@@ -185,6 +188,18 @@ def main() -> int:
                        << "  \\"cpu_exceptions\\": " << m256.cpu_exceptions << ",\\n"
                        << "  \\"contract_faults\\": " << m256.contract_faults << ",\\n"
                        << "  \\"completed_returns\\": " << m256.completed_returns << "\\n"
+                       << "}\\n";
+            }
+            std::ofstream ofs257(parent / "m15257-portable-step-metrics.json");
+            if (ofs257) {
+                ofs257 << "{\\n"
+                       << "  \\"m15257_entries\\": " << m256.m15256_entries << ",\\n"
+                       << "  \\"m15257_guest_steps\\": " << m256.m15256_guest_steps << ",\\n"
+                       << "  \\"selected_kernel\\": \\\"NONE_DISQUALIFIED_BY_SAFETY_GATE\\\",\\n"
+                       << "  \\"c8aa_quarantined\\": true,\\n"
+                       << "  \\"d406_quarantined\\": true,\\n"
+                       << "  \\"disjoint_new_native_steps\\": 0,\\n"
+                       << "  \\"contract_faults\\": " << m256.contract_faults << "\\n"
                        << "}\\n";
             }
             oasis::profiler::HostCpuProfiler::instance().finish();

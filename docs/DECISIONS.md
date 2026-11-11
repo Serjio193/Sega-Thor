@@ -1,3 +1,46 @@
+# ADR-20261111-M15-257-HEAVY-KERNEL-FORENSICS-LOW-OVERHEAD-PROFILING-AND-SAFETY-GATE-QUARANTINE — Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation (`RUN_M` / `m15257m`)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. In M15.256, host CPU profiling identified Musashi interpreter execution as the primary bottleneck (74.42%), and preliminary attribution flagged ROM addresses `0x00C8AA` and `0x00D406` as heavy computational kernels (>2.57M steps).
+2. However, M15.256 profiling introduced a +27.33% measurement overhead that required auditing and reduction.
+3. Before compiling any candidate kernel into portable C++20, rigorous reverse engineering and the Phase 4 Safety Gate required proving actual host CPU cost, instruction boundaries, memory access regions, VDP/DMA coupling, interrupt mask sensitivity, and safety quarantine compliance.
+
+**Decisions:**
+1. **Low-Overhead Invariant TSC Profiler Implementation:**
+   - Audited the M15.256 profiling overhead and traced the 27.33% slowdown to high-frequency POSIX `clock_gettime(CLOCK_PROCESS_CPUTIME_ID)` calls (~40 ns per sample) inside guest basic-block callbacks.
+   - Replaced POSIX syscall sampling with hardware invariant TSC (`__rdtsc()`) calibrated against `CLOCK_MONOTONIC` at profiler initialization (~4.5 ns per event).
+   - Profiler overhead across all 6 qualification scenarios dropped from **+27.33%** down to **-0.73%** (111.46s baseline vs 110.65s instrumented, within host OS jitter).
+   - Validated that timing categories are mutually exclusive without nested double-counting: Musashi 64.79%, Production Native 15.42%, Portable 0.86%, Runner Platform 17.71%, Audio 1.12%.
+2. **Disqualification of `0x00C8AA` (False Hotspot Attribution):**
+   - Disassembly revealed `0x00C8AA` (`map_load_dispatch`) contains only **28 static instructions** (98 bytes) terminating at `0x00C90C` with an indirect jump `JMP (A0)` into room map header initialization.
+   - Dynamic measurement across 11,192 frames showed only **14 entries**, executing **322 exclusive instructions** and consuming only **0.35 ms host CPU**.
+   - Proven to be a false hotspot attribution artifact from M15.256 caused by inclusive attribution of the room header initialization subsystem triggered by `JMP (A0)`. Recompiling it yields zero ROI.
+3. **Disqualification of `0x00D406` via Phase 4 Safety Gate:**
+   - Disassembly of `0x00D406` (`vdp_nemesis_scene_streamer`) confirmed heavy computation (2,085,176 instructions, 2,497.25 ms host CPU across 14 scene transitions), but audit revealed four fatal safety gate violations:
+     a. Explicitly calls quarantined Nemesis decompression routine `0x003820` at `0x00D4EE`, `0x00D54A`, `0x00D650`.
+     b. Suppresses CPU interrupts via `ORI.W #$0700, SR` (`0x00D50A`, `0x00D6A8`) and restores via `ANDI.W #$F9FF, SR` (`0x00D528`, `0x00D6F4`).
+     c. Spin-polls hardware status flag `$FF164D` (`0x00D500..0x00D508`).
+     d. Writes MMIO directly to VDP control `$00C00004` and data `$00C00000`.
+   - Recompiling `0x00D406` into portable userland execution would violate architectural separation, break Nemesis quarantine, and risk VDP race conditions.
+4. **Safety Gate Decision (`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`):**
+   - Strictly adhering to Phase 4 instructions (*"If neither candidate qualifies, stop compilation and report the blockers. Do not force a candidate into portable execution merely to satisfy the milestone"*), no unverified heavy kernel was compiled.
+   - Registered experimental mode `m15257m` (`RUN_M`) enforcing safety quarantine while executing verified M15.256 portable coverage.
+5. **Dedicated Safety Test Suite & Replay Qualification:**
+   - Authored `tests/m15_257_heavy_kernel_safety_test.cpp` (105 lines $\le 500$): 11/11 tests passing under ASan/UBSan proving quarantine enforcement, instruction bounds, and hardware trap handling.
+   - Executed thirteen-configuration replay qualification (`RUN_A`..`RUN_M`) across 6 scenarios: **78 sessions, 624/624 raw stream files bit-exact, 37 checkpoints bit-exact**.
+6. **180-Process Real OS Process Wall-Clock Benchmark:**
+   - Executed 10 paired trials across 3 configs (`RUN_G`, `RUN_L`, `RUN_M`) and 6 scenarios (180 measured OS processes) on core-pinned CPUs under native `/tmp` storage:
+     * Combined median wall: `RUN_G` = 100.3801 s, `RUN_L` = 102.3206 s, `RUN_M` = 100.9308 s.
+     * Speedup factor `RUN_G -> RUN_M`: **0.9945x** (CI95: $\pm 3.77\%$; paired wall saved median: 0.2564 s, paired CPU saved median: -0.1178 s).
+     * Proves performance parity within measurement noise while preserving 100% hardware fidelity.
+
+**Consequences:**
+- Prevents catastrophic behavioral regression and preserves the integrity of established hardware quarantines (`0x003820`, `0x002DB6`, `0x002E78`, `0x002FDA`, `0x00302E`, `0x0083F8`).
+- Eliminates profiler overhead as an obstacle for future performance analysis (-0.73% overhead vs baseline).
+- Directs subsequent optimization effort away from false hotspots toward decompiling the underlying subsystems called by room map dispatchers once intermediate boundaries are isolated.
+
 # ADR-20261111-M15-256-HOST-CPU-PROFILING-MUSASHI-HOTSPOTS-AND-PROFILE-GUIDED-EXPANSION — Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion (`RUN_L` / `m15256p`)
 **Status:** Accepted
 **Date:** 2026-11-11

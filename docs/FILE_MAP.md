@@ -1,3 +1,15 @@
+# M15.257 Heavy-Kernel Forensics, Low-Overhead CPU Profiling, and Controlled ROM Recompilation
+
+- `src/tools/hybrid/host_cpu_profiler.hpp` — calibrated invariant TSC profiler hooks with kernel-specific attribution (`0x00C8AA`, `0x00D406`).
+- `tools/verify_m15_257_phase0.py` — Phase 0 baseline reproduction script verifying SHA256 hashes, production source hash across 535 files, and baseline fixtures.
+- `tools/analyze_m15_257_heavy_kernels.py` — automated disassembly and static inspection tool evaluating instruction bounds, memory access regions, VDP/DMA coupling, and Phase 4 Safety Gate compliance.
+- `tools/run_m15_257_host_cpu_profile.py` / `data/thor-evidence/m15_257_host_cpu_profile_summary.json` — 6-scenario TSC profiling harness and summary proving reduction of profiler overhead from +27.33% to -0.73%.
+- `tests/m15_257_heavy_kernel_safety_test.cpp` — dedicated safety gate test suite validating quarantine of `0x00C8AA` and `0x00D406`, boundary checks, and hardware trap handling (11/11 passing under ASan/UBSan).
+- `tools/run_m15_257_qualification.py` / `data/thor-evidence/m15_257_qualification_summary.json` — 13-configuration 6-scenario gameplay replay qualification harness and summary (78 sessions, 624/624 streams bit-exact, 37 checkpoints bit-exact).
+- `tools/benchmark_m15_257_worker.py` / `tools/benchmark_m15_257_real.py` / `data/thor-evidence/benchmark_m15_257_measured_summary.json` — 180-process real OS process wall-clock benchmark harness and evidence report.
+- `tools/generate_m15_257_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-257-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_257_HEAVY_KERNEL_HANDOFF.md` — comprehensive handoff document detailing heavy-kernel forensics, Phase 4 Safety Gate quarantine rationale, and roadmap to milestone M15.258.
+
 # M15.256 Host CPU Profiling, Musashi Hotspot Attribution, and Profile-Guided Portable Coverage Expansion
 
 - `src/tools/hybrid/host_cpu_profiler.hpp` — high-resolution host CPU execution time profiler instrumenting 9 categories of engine workload.

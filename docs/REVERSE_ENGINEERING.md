@@ -1,3 +1,71 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.257: Heavy-Kernel Forensics, Low-Overhead Invariant TSC CPU Profiling, and Phase 4 Safety Gate Evaluation of 0x00C8AA and 0x00D406)
+
+## Milestone M15.257 Reverse Engineering Summary
+
+### Section 75: Heavy-Kernel Disassembly, Boundary Forensics, and Hardware Coupling Safety Evaluation
+
+#### 1. Low-Overhead Host CPU Profiling via Invariant TSC
+- **Audit Target:** Profiler measurement overhead and timing distortion across 11,192 frames in 6 scenarios.
+- **Root Cause of M15.256 Overhead (+27.33%):**
+  High-frequency invocation of POSIX `clock_gettime(CLOCK_PROCESS_CPUTIME_ID)` inside guest basic-block callbacks (~40 ns per measurement).
+- **Resolution:**
+  Implemented calibrated hardware invariant TSC (`__rdtsc()`) sampling calibrated against `CLOCK_MONOTONIC` at profiler initialization (~4.5 ns per event).
+- **Verification Results:**
+  * Baseline uninstrumented wall-clock: **111.46 s**.
+  * Instrumented wall-clock: **110.65 s**.
+  * Measured profiler overhead: **-0.73%** (within host OS measurement jitter).
+  * Workload shares: Musashi interpreter **64.79%**, Production native helpers **15.42%**, Portable code **0.86%**, Runner platform **17.71%**, Audio **1.12%**.
+
+#### 2. Candidate `0x00C8AA` (`map_load_dispatch`) Forensics
+- **Static Boundary & Extent:**
+  Entry: `0x00C8AA`, Exit: `0x00C90C` (98 bytes, 28 static instructions).
+- **Control Flow:**
+  - Clears tilemap and collision buffers in Work RAM:
+    * `$FF0E1C` (tile buffer pointer)
+    * `$FF0E2C` (collision buffer pointer)
+    * `$FF0DB3` (map mode byte)
+  - Loads room map header address from master table at `0x00C92C` into register `A0`.
+  - Exits via an open-ended indirect jump: `JMP (A0)`.
+- **Dynamic Profile Across 11,192 Frames (6 Scenarios):**
+  - Total entries: **14**.
+  - Total exclusive dynamic instructions: **322**.
+  - Total exclusive host CPU time: **0.354 ms** (354,473 ns).
+- **Reverse Engineering Conclusion:**
+  The M15.256 attribution of >2.57M steps to `0x00C8AA` was an inclusive artifact of profiling across the indirect jump `JMP (A0)` into room map header initialization routines. The exclusive routine itself is a lightweight 28-instruction dispatch trampoline. Recompiling it yields zero measurable ROI.
+
+#### 3. Candidate `0x00D406` (`vdp_nemesis_scene_streamer`) Forensics
+- **Static Boundary & Extent:**
+  Entry: `0x00D406`, Exits: `0x00D700` and `0x00D7C0` (954 bytes, 273 static instructions).
+- **Dynamic Profile Across 11,192 Frames (6 Scenarios):**
+  - Total entries: **14** (invoked during major room/scene transitions).
+  - Total dynamic instructions: **2,085,176**.
+  - Total host CPU time: **2,497.25 ms** (2.497 s).
+- **Safety Gate Violations (Phase 4 Audit):**
+  1. **Calls to Quarantined Routines:**
+     Explicitly executes subroutines at `0x00D4EE`, `0x00D54A`, and `0x00D650` which jump into quarantined Nemesis decompression routine `0x003820`.
+  2. **Interrupt Mask Manipulation:**
+     Suppresses hardware interrupts by masking the Status Register:
+     ```m68k
+     00D50A: 007C 0700                ori.w   #$0700, sr
+     ...
+     00D528: 027C F9FF                andi.w  #$F9FF, sr
+     ```
+  3. **Hardware Polling:**
+     Spin-polls hardware synchronization flag `$FF164D` (`0x00D500..0x00D508`).
+  4. **Direct MMIO Hardware Access:**
+     Directly issues 32-bit control words and data stream writes to VDP MMIO registers:
+     - Control Port: `$00C00004`
+     - Data Port: `$00C00000`
+- **Reverse Engineering Conclusion:**
+  `0x00D406` is a VDP graphics streaming engine tightly coupled to custom Mega Drive hardware timing and quarantined decompression routines. Lowering it into unverified portable userland execution would violate the Phase 4 Safety Gate and corrupt deterministic stream synchronization.
+
+#### 4. Milestone Decision: Safety Gate Quarantine
+In strict compliance with Phase 4 instructions, both candidates were disqualified from portable compilation:
+- `0x00C8AA` disqualified due to low ROI (trampoline overcount).
+- `0x00D406` disqualified due to hardware coupling, interrupt suppression, and Nemesis quarantine violation.
+Decision: **`SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE`**.
+Registered experimental runner mode `RUN_M` (`m15257m`) enforcing safety quarantine while executing established M15.256 portable coverage.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.256: Host CPU Execution Profiling, Musashi Hotspot Attribution, Frame-Sync Spin Loop Analysis, and Profile-Guided Compilation of 5 Leaf Routines)
 
 ## Milestone M15.256 Reverse Engineering Summary
