@@ -79,6 +79,15 @@ public:
     bool initialize_town_checkpoint(std::span<const std::uint8_t> rom,
                                     const TownCheckpointInitialState& town_cp);
 
+    // Initializes simulation with authentic Town checkpoint state and initial VDP state.
+    bool initialize_town_checkpoint(std::span<const std::uint8_t> rom,
+                                    const TownCheckpointInitialState& town_cp,
+                                    const genesis::VdpState& initial_vdp) {
+        baseline_vdp_ = initial_vdp;
+        current_vdp_ = initial_vdp;
+        return initialize_town_checkpoint(rom, town_cp);
+    }
+
     // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
     bool load_rom_background(std::span<const std::uint8_t> rom);
 

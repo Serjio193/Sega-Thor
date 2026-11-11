@@ -1,3 +1,46 @@
+# M16.36 VRAM Difference Forensics, Hardware-Visible Sprite Parity, and Complete Entity Coverage — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- VRAM Difference Classification across 14 VDP Snapshots:
+  * Dynamic VDP register base addresses: SAT `0xD000..0xD27F` (reg 5 = 0x68), Plane A `0xC000..0xCFFF` (reg 2 = 0x30), Plane B `0xE000..0xEFFF` (reg 4 = 0x07), HScroll `0xDC00..0xDF7F` (reg 13 = 0x37), Window disabled.
+  * Total differing bytes across 14 snapshots against F775 baseline: 17,698 bytes.
+  * Categorized breakdown: SAT 1,946 bytes; Pattern tiles 10,809 bytes; Plane tables 3,676 bytes; Unused scratch residue 1,267 bytes; Unknown 0 bytes.
+- First-Cause Attribution & ROM Evidence:
+  * Earliest divergence: Frame 779 (canonical) and Frame 809 (holdout) at `0x9504` in Pattern RAM caused by ROM `0x00A2E8` / `0x00A380` DMA player walk pattern update (32-36 tiles per pose).
+  * Plane A divergence: ROM `0x005580` / `0x005676` tilemap streamer updates as camera viewport shifts.
+  * SAT divergence: ROM `0x009080` / `0x00AA7E` dynamic sprite link list commit (`$FF1400 -> VRAM $D000`).
+  * Unused residue: ROM `0x0037D2` / `0x003820` decompression scratch buffer retention at `0xF420..0xF4DF`.
+  * Exact CRAM parity: static colors identical; dynamic updates match 4-phase water animation cycle (`0x0820, 0x0EC0, 0x0E40, 0x0820`).
+  * Exact VSRAM parity: 80 bytes identical with camera vertical scroll matching.
+  * Exact Register parity: mode registers 0..18 identical across all snapshots; registers 19..23 reflect authentic DMA source/length.
+- Hardware-Visible Sprite Evaluation Contract:
+  * Validated SAT linked-list traversal, 80-entry table bound, H40 20-sprite per scanline limit, screen coordinate mapping `(x-128, y-128)`, priority, palette, flips, and offscreen culling.
+  * All 14 snapshots evaluated: Canonical sprite counts (29, 28, 26, 28, 27, 29, 20); Holdout sprite counts (29, 32, 33, 41, 33, 24, 23).
+  * 407 total hardware sprites verified (100% valid chains).
+  * Pixel-level render parity: explicitly reported as NOT_MEASURED.
+- Complete 20-Entity Slot Matrix Verification:
+  * Compared all 20 entity slots across F776..F1125: Slot 0 (Player), Slots 1..3 (Inactive), Slots 4..19 (16 scene entities: Archway, 14 Guards, Projectile).
+  * Field manifest checked: type_id, state, position (world_x, world_y, world_z, x_fp, y_fp, z_fp), hp, flags36, flags37, active lifecycle.
+  * Total entity slots compared: 20 slots (7,000 slot-frames).
+  * Total field comparisons: 51,476 fields compared.
+  * Entity comparisons matched: 51,476 / 51,476 (100% match).
+  * First entity divergence: NONE.
+- PRNG Call-Order Convergence:
+  * Independent holdout PRNG frame parity: 350 / 350 frames.
+  * Independent holdout PRNG call-order parity: 350 / 350 frames across all 38 transition frames.
+  * Intermediate calls verified to match ROM `0x00E268` / `0x00E2A2` LFSR stepper and modular sampler.
+- Canonical Replay Regression Prevention:
+  * Preserved 521/521 active SAT parity across F595..F1115 (246 active-DMA + 275 zero-DMA).
+  * Confirmed canonical milestones: F858 allocation, F886 launch, F944 impact, F956 despawn, scene transitions F597 and F1112.
+- Dual-Toolchain Verification & Governance:
+  * Created `tests/m16_36_vram_and_entity_matrix_test.cpp` (420 lines, strictly <= 500 lines).
+  * Modularized test registration into `cmake/project_tests_m16.cmake` (41 lines), bringing `cmake/project_tests.cmake` to 463 lines (both strictly <= 500 lines).
+  * MinGW Release CTest: 210/222 passed (95%), exact 12 historical BizHawk failures preserved.
+  * MSVC Debug CTest: 210/222 passed (95%), exact 12 historical BizHawk failures preserved.
+  * `tests/check_file_limits.cmake` passed on all 960 governed source files (strictly <= 500 lines).
+  * Zero emulator / libretro / Musashi linkage in `oasis.exe` and `oasis_core`.
+  * Hybrid worktree `C:/Github/Sega-Thor` strictly untouched.
+
 # M16.35 PRNG Call-Order Convergence, Full-Entity Blind Holdout Parity, and Verified VRAM Differentials — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

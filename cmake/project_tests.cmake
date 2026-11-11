@@ -138,39 +138,7 @@ add_executable(oasis_m16_26_continuous_ambush_combat_test tests/m16_26_continuou
 target_link_libraries(oasis_m16_26_continuous_ambush_combat_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_26_continuous_ambush_combat COMMAND oasis_m16_26_continuous_ambush_combat_test)
 
-add_executable(oasis_m16_27_first_divergence_test tests/m16_27_first_divergence_test.cpp)
-target_link_libraries(oasis_m16_27_first_divergence_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_27_first_divergence COMMAND oasis_m16_27_first_divergence_test)
-
-add_executable(oasis_m16_28_town_replay_test tests/m16_28_town_replay_test.cpp)
-target_link_libraries(oasis_m16_28_town_replay_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_28_town_replay COMMAND oasis_m16_28_town_replay_test)
-add_executable(oasis_m16_29_post_combat_sat_test tests/m16_29_post_combat_sat_test.cpp)
-target_link_libraries(oasis_m16_29_post_combat_sat_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_29_post_combat_sat COMMAND oasis_m16_29_post_combat_sat_test)
-add_executable(oasis_m16_30_projectile_slot_reuse_test tests/m16_30_projectile_slot_reuse_test.cpp)
-target_link_libraries(oasis_m16_30_projectile_slot_reuse_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_30_projectile_slot_reuse COMMAND oasis_m16_30_projectile_slot_reuse_test)
-
-add_executable(oasis_m16_31_projectile_flight_test tests/m16_31_projectile_flight_test.cpp)
-target_link_libraries(oasis_m16_31_projectile_flight_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_31_projectile_flight COMMAND oasis_m16_31_projectile_flight_test)
-
-add_executable(oasis_m16_32_town_replay_qualification_test tests/m16_32_town_replay_qualification_test.cpp)
-target_link_libraries(oasis_m16_32_town_replay_qualification_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_32_town_replay_qualification COMMAND oasis_m16_32_town_replay_qualification_test)
-
-add_executable(oasis_m16_33_generalization_test tests/m16_33_generalization_test.cpp)
-target_link_libraries(oasis_m16_33_generalization_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_33_generalization COMMAND oasis_m16_33_generalization_test)
-
-add_executable(oasis_m16_34_blind_generalization_test tests/m16_34_blind_generalization_test.cpp)
-target_link_libraries(oasis_m16_34_blind_generalization_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_34_blind_generalization COMMAND oasis_m16_34_blind_generalization_test)
-
-add_executable(oasis_m16_35_prng_convergence_test tests/m16_35_prng_convergence_test.cpp)
-target_link_libraries(oasis_m16_35_prng_convergence_test PRIVATE oasis_core)
-add_test(NAME oasis_m16_35_prng_convergence COMMAND oasis_m16_35_prng_convergence_test)
+include(${CMAKE_CURRENT_LIST_DIR}/project_tests_m16.cmake)
 add_executable(oasis_differential_oracle_comparison_test tests/differential_oracle_comparison_test.cpp)
 target_link_libraries(oasis_differential_oracle_comparison_test PRIVATE oasis_core)
 add_test(NAME oasis_differential_oracle_comparison COMMAND oasis_differential_oracle_comparison_test)
@@ -453,6 +421,7 @@ if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         oasis_m16_33_generalization
         oasis_m16_34_blind_generalization
         oasis_m16_35_prng_convergence
+        oasis_m16_36_vram_and_entity_matrix
         oasis_differential_oracle_comparison
         oasis_sat_pipeline_contract
         oasis_camera_controller

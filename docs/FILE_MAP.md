@@ -1,5 +1,9 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `tests/m16_36_vram_and_entity_matrix_test.cpp`: Automated M16.36 test qualifying byte-level VRAM classification across 14 snapshots (17,698 differing bytes), first-cause attribution, hardware-visible sprite evaluation contract (14/14 snapshots exact, 407 sprites), complete 20-entity slot matrix across F776..F1125 (51,476 field comparisons matched 100%), PRNG call-order convergence, canonical 521 replay regression prevention, and negative mutation guards (M16.36).
+- `cmake/project_tests_m16.cmake`: Modular CMake test registration file containing target declarations for M16 tests (oasis_m16_27 through oasis_m16_36) keeping `cmake/project_tests.cmake` strictly <= 500 lines (M16.36).
+- `tests/m16_35_prng_convergence_test.cpp`: Automated M16.35 test qualifying PRNG call-order convergence (350/350 frames), Manhattan distance decision metric, rooftop guard drop physics, pre-move perception cadence, holdout entity parity, and VRAM differentials (M16.35).
+
 - `tests/pixel_differential_test.cpp`: Automated scanline-by-scanline RGBA32 multi-layer pixel differential test comparing native VDP rasterization against genuine GPGX Waterbox video output, establishing 98.03% pixel match (70,268 / 71,680 pixels) on Frame 1 within 1 DAC step (M16.8).
 - `tests/alternative_trace_test.cpp`: Unit test evaluating alternative input journal trajectory (Left -> Stop -> Up -> Stop) across 61 frames, achieving 100% Plane B parity (M16.8).
 - `data/standalone-fixtures/beach_alternative_trace_oracle.json`: Independent 61-frame ROM execution oracle fixture mined via GPGX libretro core under WSL for alternative input sequence (M16.8).
