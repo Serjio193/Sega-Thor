@@ -117,7 +117,8 @@ void queue_dynamic_dmas(VdpDmaQueue& dma_queue,
         if (tcount > 0U) {
             DmaTransferEvent ev{};
             ev.guest_pc = guest_pc;
-            ev.src_byte_addr = pat_rom_base + static_cast<std::uint32_t>(pat_idx) * 32U;
+            const std::uint32_t bank_offset = static_cast<std::uint32_t>(sz_byte >> 4U) << 16U;
+            ev.src_byte_addr = pat_rom_base + bank_offset + static_cast<std::uint32_t>(pat_idx) * 32U;
             ev.dst_vram_addr = static_cast<std::uint16_t>(((vram_base + tile_accum) & 0x07FFU) * 32U);
             ev.length_words = static_cast<std::uint16_t>(tcount * 16U);
             ev.auto_inc = 2U;

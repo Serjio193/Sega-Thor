@@ -170,8 +170,24 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
         sat_ctx.player_frame_dir = static_cast<std::uint16_t>(24U + (walk_tick / 2U) * 3U);
         sat_ctx.player_overlay_3e = static_cast<std::uint16_t>(48U + (walk_tick / 2U) * 2U);
     } else if (player.movement_state == 0x36U) {
-        sat_ctx.player_frame_dir = 186U;
-        sat_ctx.player_overlay_3e = 2328U;
+        const std::uint16_t dir_off = (player.direction_code == 3U) ? 1U : player.direction_code;
+        std::uint16_t base_fdir = 177U;
+        std::uint16_t ov3e = 13U;
+        if (player.attack_timer == 1U) {
+            base_fdir = 180U;
+            ov3e = 22U;
+        } else if (player.attack_timer == 2U) {
+            base_fdir = 183U;
+            ov3e = 278U;
+        } else if (player.attack_timer == 3U || player.attack_timer == 4U) {
+            base_fdir = 186U;
+            ov3e = 2328U;
+        } else if (player.attack_timer >= 5U) {
+            base_fdir = 189U;
+            ov3e = 2328U;
+        }
+        sat_ctx.player_frame_dir = static_cast<std::uint16_t>(base_fdir + dir_off);
+        sat_ctx.player_overlay_3e = ov3e;
     } else {
         sat_ctx.player_frame_dir = static_cast<std::uint16_t>(pose_idx * 3U);
     }

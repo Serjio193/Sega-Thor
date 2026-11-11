@@ -8977,3 +8977,32 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
   * VRAM difference breakdown: `755` bytes in Pattern RAM `0x9500..0x97DF`, `47` SAT bytes across slots `[9..30]`. CRAM, VSRAM, Plane A, Plane B have `0` byte difference.
   * Root-cause trace: Input at F782/F784 contains Button B (`in = 0x1510`), triggering Ali sword slash attack (`pst = 54` / `0x36`). In authentic ROM, attacking generates a 9-entry dynamic pattern DMA queue (`$FF10B4..$FF10FC`) uploading slash body pose and sword overlay tiles (`0x9500..0x97DF`) instead of walking tiles (`0x9300..0x94FF`).
   * VDP registers R21..R23 reflect the bottom entry of the attack DMA queue (`0x09D84E`).
+
+
+## Sword Attack Dynamic Pattern DMA Reconstruction and Bank Selection Formula (M16.41)
+- **ROM Disassembly `0x00AC16..0x00AC3E` (Piece Descriptor Unpacking)**:
+  * Sprite animation frames store piece descriptors as 3-word records:
+    - Word 0: `[15:12] dy_sz`, `[11:0] dx`
+    - Word 1: `[15:12] tile_flags`, `[11:0] pat_idx`
+    - Word 2: `[15:8] attr_flags`, `[7:0] link`
+  * Routine `0x00AC16` unpacks the piece size and pattern bank:
+    Bits `[15:12]` of word 0 (`dy_sz`, i.e., `sz_byte >> 4`) select the 64KB ROM pattern bank.
+    `const std::uint32_t bank_offset = static_cast<std::uint32_t>(sz_byte >> 4U) << 16U;`
+    `src_byte_addr = pat_rom_base + bank_offset + static_cast<std::uint32_t>(pat_idx) * 32U;`
+  * For walk cycle frames, `sz_byte < 0x10` (`bank_offset == 0`), patterns are loaded from ROM base `0x0CAF60`.
+  * For attack frames (State `0x36`, Animation ID `0x3E`), `sz_byte >= 0x10` (`bank_offset == 0x10000`), resolving `0x0CAF60 + 0x10000 = 0x0DAF60`, perfectly matching pinned GPGX bit-for-bit.
+- **Dynamic Attack Pose and Weapon Overlay Stepping**:
+  * Button B edge at tick 2399 (F783) transitions player state to `0x36` (State 54).
+  * State `0x36` advances through 5 discrete attack animation steps:
+    - Step 0 (ticks 2399..2400, F784/F785): `base_fdir = 177U`, `ov3e = 13U`
+    - Step 1 (ticks 2401..2402, F786/F787): `base_fdir = 180U`, `ov3e = 22U`
+    - Step 2 (ticks 2403..2404, F788/F789): `base_fdir = 183U`, `ov3e = 278U`
+    - Step 3 (ticks 2405..2408, F790..F793): `base_fdir = 186U`, `ov3e = 2328U` (held apex)
+    - Step 4 (ticks 2409+, F794+): `base_fdir = 189U`, `ov3e = 2328U` (recovery)
+    - Facing direction offset: `(player.direction_code == 3U) ? 1U : player.direction_code`.
+- **Convergence Results**:
+  * Canonical F785: **0 differing pixels / 71,680**, **0 VRAM diff / 65,536**, **0 CRAM**, **0 VSRAM**, **0 Regs**, exact matching RGB24 SHA256 (`733d6f9efbbca903...`).
+  * Continuous Exact Prefix: extended to **12 consecutive frames: F775 through F786** with 0 differing pixels and 0 VRAM diff.
+  * Pattern RAM Parity: **0 Pattern RAM difference across all 21 frames (F775..F795)**.
+  * First Post-F786 Divergence: F787 exhibits 105 differing pixels, 29 bytes SAT diff (slots 23 and 24 water ripple scheduler interaction), 0 Pattern RAM diff.
+  * 14-Snapshot Regression Matrix: Canonical sum = 148,820 px; Independent Holdout sum reduced from 24,542 px to 21,270 px (improvement of 3,272 px).

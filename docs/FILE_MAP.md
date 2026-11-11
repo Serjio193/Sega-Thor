@@ -4135,3 +4135,6 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 
 - `data/standalone-fixtures/town_canonical_continuous_f775_f785.json` — Pinned continuous 11-frame GPGX VDP state fixture (F775..F785) with full VRAM, CRAM, VSRAM, registers, and SAT chain (M16.40).
 - `tests/m16_40_continuous_exact_prefix_test.cpp` — Differential qualification suite for 10-frame continuous exact prefix (F775..F784, 0 diff px, 0 VRAM, 0 CRAM, 0 VSRAM), F785 first-divergence quantification (1,352 px, 802 VRAM bytes), 14-snapshot regression matrix, and 4 mutation guards (M16.40).
+
+- `data/standalone-fixtures/town_canonical_continuous_f775_f795.json` — Pinned continuous 21-frame GPGX VDP state fixture (F775..F795) with full VRAM, CRAM, VSRAM, registers, and SAT active chain (M16.41).
+- `tests/m16_41_sword_attack_dma_test.cpp` — Differential qualification suite for 12-frame continuous exact prefix (F775..F786, 0 diff px, 0 VRAM diff), F785 exactness gate, zero Pattern RAM diff across all 21 continuous frames, earliest divergence identification at F787, 14-snapshot regression matrix, and 4 mutation guards (M16.41).

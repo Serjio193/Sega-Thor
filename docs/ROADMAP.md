@@ -6181,3 +6181,15 @@ full-game parity and remaining subsystem coverage. See
 - Extracted and committed continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f785.json` (11 frames, SHA256 `29ced496763e4114a1dc4188f3377536324db3225d60156ae482d41ccd8066e5`).
 - Added `tests/m16_40_continuous_exact_prefix_test.cpp` (`oasis_m16_40_continuous_exact_prefix`, 425 lines, 4 mutation guards).
 - CTest in MinGW Release and MSVC Debug: **214/226 passed** (exact 12 historical BizHawk failures preserved). Governed files <= 500 lines. Zero emulator linkage. Hybrid worktree untouched.
+
+
+# M16.41 — Sword Attack DMA Reconstruction and Continuous Pixel-Exact Prefix Expansion — PASS
+- Reconstructed dynamic ROM pattern bank offset formula in piece descriptor word 0 (`bank_offset = (sz_byte >> 4) << 16` per `0x00AC16..0x00AC3E`), directing sword attack tiles to authentic ROM bank `0x0D0000` (`0x0DAF60`).
+- Reconstructed dynamic attack pose sequence (base frames 177, 180, 183, 186, 189 with weapon overlays `ov3e = 13, 22, 278, 2328`) and attack timer tracking in State `0x36`.
+- Achieved **0 / 71,680 differing pixels**, **0 / 65,536 differing VRAM**, **0 CRAM**, **0 VSRAM**, **0 Regs** at Canonical F785, eliminating the 1,352-pixel baseline divergence.
+- Extended continuous bit-for-bit pixel-exact prefix to **12 consecutive frames: F775 through F786** (0 diff pixels, 0 VRAM diff across all 12 frames).
+- Eliminated Pattern RAM diff across all 21 evaluated continuous frames (F775..F795: **0 Pattern RAM diff**).
+- Identified earliest subsequent divergence at **F787** (105 diff pixels, 29 bytes SAT diff, 0 Pattern RAM diff).
+- Committed 21-frame continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f795.json` (SHA256 `63bb488d5ea8e1911fbc4323c1077da5beb339599805ca097bd69c34eec86601`).
+- Added `tests/m16_41_sword_attack_dma_test.cpp` (406 lines, 4 mutation guards).
+- CTest in MinGW Release and MSVC Debug: **215/227 passed** (95%, exact 12 historical BizHawk failures preserved). Governed files <= 500 lines. Zero emulator linkage. Hybrid worktree untouched.

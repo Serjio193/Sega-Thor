@@ -11505,3 +11505,26 @@ Following M16.39's first active pixel-exact frame at F779, extending continuous 
 - **10 consecutive bit-for-bit pixel-exact frames**: F775, F776, F777, F778, F779, F780, F781, F782, F783, F784 all have **0 / 71,680 differing pixels**, **0 / 65,536 VRAM diff**, **0 CRAM diff**, **0 VSRAM diff**, and **0 Reg diff**.
 - Zero regressions across Canonical and Independent Holdout snapshots (Canonical sum = 148,820 px, Holdout sum = 24,542 px).
 - MinGW Release and MSVC Debug CTest: **214/226 passed** (preserving exact 12 historical BizHawk failures). Zero emulator linkage. Governed files strictly `<= 500` lines.
+
+
+## Decision: M16.41 — Sword Attack DMA Reconstruction, Dynamic ROM Bank Selection, and Continuous Pixel-Exact Prefix Expansion (F775..F786)
+
+### Context
+Milestone M16.40 established a 10-frame bit-for-bit exact prefix (F775..F784) and identified the first divergence at F785 (1,352 diff pixels, 802 diff VRAM) caused by player Button B attack input. Tracing GPGX execution revealed that the attack initiated at tick 2399 (F783) requires dynamic attack pose sequencing, dynamic weapon overlay attachment (`ov3e`), and dynamic pattern DMA transfers. In particular, the attack tile DMAs read from ROM address `0x0DAF60` instead of `0x0CAF60`, diverging from the walk cycle pattern base.
+
+### Decision
+1. **Dynamic ROM Bank Offset Selection (`0x00AC16..0x00AC3E`)**:
+   Reverse-engineered the sprite piece descriptor unpacking in ROM routine `0x00AC16`: bits `[15:12]` of word 0 (`dy_sz`, i.e., `sz_byte >> 4`) select the 64KB ROM pattern bank. Implemented `bank_offset = (sz_byte >> 4) << 16` in `rom_sprite_decoder.cpp`, directing attack tiles (`sz_byte >= 0x10`) to ROM base `0x0D0000`, resolving `0x0DAF60` and eliminating the 755-byte Pattern RAM difference.
+2. **Dynamic Attack Pose & Overlay Stepping**:
+   Reconstructed State `0x36` attack progression in `town_combat_sat.cpp` across attack steps (base frames 177, 180, 183, 186, 189 with overlays 13, 22, 278, 2328), with direction offset `(player.direction_code == 3U) ? 1U : player.direction_code`. Synchronized `player.attack_timer` in `attack_controller.cpp` to track elapsed attack ticks.
+3. **Continuous Fixture & Milestone Qualification**:
+   Extracted and committed 21-frame continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f795.json`. Replaced F785 hardcoded check in `m16_40` with regression guard, and implemented `tests/m16_41_sword_attack_dma_test.cpp` verifying prefix expansion, mutation guards, and regression matrix.
+
+### Consequences
+- **Continuous Exact Prefix Extended to 12 Frames (F775..F786)**:
+  F775 through F786 have **0 / 71,680 differing pixels**, **0 / 65,536 differing VRAM**, **0 CRAM**, **0 VSRAM**, and **0 Regs** across all 12 frames.
+- **F785 Exactness Achieved**: 0 diff pixels, 0 VRAM diff (from 1,352 px and 802 bytes diff).
+- **Pattern RAM Exactness Across All 21 Frames (F775..F795)**: 0 Pattern RAM diff across all continuous evaluated frames.
+- **First Divergence Located at F787**: 105 diff pixels, 29 bytes SAT diff (scene water ripple interaction), 0 Pattern RAM diff.
+- **Regression Matrix**: Canonical sum = 148,820 px; Independent Holdout sum reduced to 21,270 px (improvement of 3,272 px).
+- MinGW Release and MSVC Debug CTest: **215/227 passed** (95%, exact 12 historical BizHawk failures). Governed files <= 500 lines. Zero emulator linkage. Hybrid worktree untouched.

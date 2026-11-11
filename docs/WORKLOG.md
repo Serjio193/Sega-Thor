@@ -30419,3 +30419,44 @@ RESULT: PASS.
     3. Full 14-snapshot regression matrix across Canonical and Holdout.
     4. 4 mutation guards (cadence, VSRAM offset 136 vs 139, VBlank staging, attack input trigger).
   - Both MinGW Release and MSVC Debug CTest: **214/226 passed** (95%), preserving exact 12 historical BizHawk failures. All 966 governed files `<= 500` lines. Zero emulator linkage. Hybrid worktree untouched.
+
+
+# M16.41 Worklog — Sword Attack DMA Reconstruction and Continuous Pixel-Exact Prefix Expansion
+
+## Execution & Results
+- **Phase 0 Baseline Reproduction**:
+  - Confirmed M16.40 baseline commit `0904127cd8029a911da5e46758e0a12753015e0c`.
+  - Re-verified 10-frame bit-for-bit exact prefix F775..F784 (0 diff px, 0 diff VRAM, 0 CRAM, 0 VSRAM, 0 Regs) and baseline F785 divergence (1,352 diff px, 802 diff VRAM).
+- **Phase 1 Original Attack Execution Trace**:
+  - Traced pinned GPGX execution at F781..F800 from `canonical_beach_frame3600.state`.
+  - Proved Button B edge detected at tick 2399 (F783) transitions player state to `0x36`, selects Animation ID `0x3E` (62), initial `fdir = 177`, and `ov3e = 13`.
+  - Traced dynamic pattern DMA queue at F784: 5 entries (1 weapon overlay piece at `0x13B01C -> 0x9D00`, 4 Ali body pieces at `0x0DAEE0..0x0DACE0 -> 0x9500..0x95E0`).
+- **Phase 2 & 3 Dynamic Attack & DMA Reconstruction**:
+  - Disassembled routine `0x00AC16..0x00AC3E` in `Beyond Oasis (USA).md` (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`):
+    Discovered that bits `[15:12]` of piece descriptor word 0 (`dy_sz`, i.e., `sz_byte >> 4`) select the 64KB ROM pattern bank:
+    `const std::uint32_t bank_offset = static_cast<std::uint32_t>(sz_byte >> 4U) << 16U;`
+    `ev.src_byte_addr = pat_rom_base + bank_offset + static_cast<std::uint32_t>(pat_idx) * 32U;`
+    For walk frames (`sz_byte < 0x10`), bank offset is 0. For attack frames (`sz_byte >= 0x10`), bank offset is `0x10000`, resolving `0x0CAF60 + 0x10000 = 0x0DAF60`, matching GPGX bit-for-bit!
+  - Reconstructed dynamic attack pose stepping in `src/game/render/town_combat_sat.cpp`:
+    Step 0 (ticks 2399..2400, F784/F785): `base_fdir = 177U`, `ov3e = 13U`
+    Step 1 (ticks 2401..2402, F786/F787): `base_fdir = 180U`, `ov3e = 22U`
+    Step 2 (ticks 2403..2404, F788/F789): `base_fdir = 183U`, `ov3e = 278U`
+    Step 3 (ticks 2405..2408, F790..F793): `base_fdir = 186U`, `ov3e = 2328U` (held)
+    Step 4 (ticks 2409+, F794+): `base_fdir = 189U`, `ov3e = 2328U`
+    Direction offset: `(player.direction_code == 3U) ? 1U : player.direction_code`.
+  - In `src/game/combat/attack_controller.cpp`, synchronized `player.attack_timer` to track `attack_elapsed_` during State `0x36`.
+- **Phase 4 & 5 Verification & Continuous Prefix Expansion**:
+  - **F785 Exactness Gate Achieved**: **0 / 71,680 differing pixels**, **0 differing VRAM bytes**, **0 CRAM**, **0 VSRAM**, **0 Regs**, exact matching RGB24 SHA256 (`733d6f9efbbca903...`).
+  - **Continuous Prefix Extended to 12 Consecutive Frames (F775..F786)**:
+    F775..F786: 12 frames with 0 diff pixels and 0 diff VRAM across all 12 frames!
+  - **Zero Pattern RAM Differences Across All 21 Frames (F775..F795)**:
+    Dumped 21-frame continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f795.json` (SHA256: `63bb488d5ea8e1911fbc4323c1077da5beb339599805ca097bd69c34eec86601`). Across all 21 frames, Pattern RAM diff is strictly 0 bytes.
+  - **First Post-F786 Divergence Located at F787**:
+    F787 exhibits 105 differing pixels, 29 bytes SAT diff (slots 23 and 24 water ripple scheduler interaction), 0 Pattern RAM diff, 0 CRAM, 0 VSRAM.
+  - **14-Snapshot Regression Matrix Improved**:
+    Canonical sum: 148,820 px. Independent Holdout sum: reduced from 24,542 px to 21,270 px (improvement of 3,272 pixels!).
+  - **Milestone Test & Multi-Compiler Verification**:
+    Added `tests/m16_41_sword_attack_dma_test.cpp` (406 lines) with 4 mutation guards.
+    MinGW Release CTest: **215/227 passed** (95%, exact 12 historical BizHawk failures).
+    MSVC Debug CTest: **215/227 passed** (95%, exact 12 historical BizHawk failures).
+    All 967 governed files <= 500 lines (`project_file_line_limit` passed). Zero emulator linkage in `oasis.exe`. Hybrid repository `C:/Github/Sega-Thor` 100% untouched.

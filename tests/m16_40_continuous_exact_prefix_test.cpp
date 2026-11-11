@@ -254,24 +254,13 @@ void test_continuous_exact_prefix_and_f785(
                   << std::setw(9) << m.vsram << " | "
                   << m.nat_sha.substr(0, 16) << "...\n";
 
-        if (snap.frame <= 784) {
-            // All 10 frames F775..F784 must be 100% bit-for-bit exact!
+        if (snap.frame <= 785) {
+            // All 11 frames F775..F785 are 100% bit-for-bit exact!
             OASIS_CHECK(m.px == 0U);
             OASIS_CHECK(m.vram_total() == 0U);
             OASIS_CHECK(m.cram == 0U);
             OASIS_CHECK(m.vsram == 0U);
             OASIS_CHECK(m.orig_sha == m.nat_sha);
-        } else if (snap.frame == 785) {
-            // First post-F779 divergence at F785: Ali sword slash dynamic pattern upload
-            OASIS_CHECK(m.px == 1352U);
-            OASIS_CHECK(m.vram_total() == 802U);
-            OASIS_CHECK(m.pat == 755U);
-            OASIS_CHECK(m.sat == 47U);
-            OASIS_CHECK(m.plane_total() == 0U);
-            OASIS_CHECK(m.cram == 0U);
-            OASIS_CHECK(m.vsram == 0U);
-            std::cout << "  [FIRST DIVERGENCE F785 VERIFIED] DiffPX=" << m.px
-                      << " DiffVRAM=" << m.vram_total() << " (Pat=" << m.pat << " SAT=" << m.sat << ")\n";
         }
     }
     std::cout << "[PASS] 10-Frame Continuous Bit-For-Bit Exact Prefix (F775..F784) Confirmed!\n";

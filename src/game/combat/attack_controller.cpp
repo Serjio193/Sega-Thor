@@ -73,6 +73,7 @@ void NativeAttackController::update_town_30hz(player::PlayerState& player,
         if (!attack_pressed) return;
         is_attacking_ = true;
         attack_elapsed_ = 0U;
+        player.attack_timer = 0U;
         sound_command_ = 0x0218U;
         if (player.movement_state == 2U || player.movement_state == 4U) {
             player.movement_state = 0x36U;
@@ -85,12 +86,14 @@ void NativeAttackController::update_town_30hz(player::PlayerState& player,
     }
 
     ++attack_elapsed_;
+    player.attack_timer = static_cast<std::uint8_t>(attack_elapsed_);
     if (attack_timer_ > 0U) {
         --attack_timer_;
     }
     if (attack_timer_ == 0U) {
         player.movement_state = 0U;
         is_attacking_ = false;
+        player.attack_timer = 0U;
         return;
     }
     if (player.movement_state == 0x0AU && attack_elapsed_ >= 2U) {
