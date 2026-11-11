@@ -6155,3 +6155,11 @@ full-game parity and remaining subsystem coverage. See
 - Resolved VDP metrics: confirmed `CONTINUOUS_521_VDP_PARITY` was `SELECTED_VDP_PARITY` (Plane A metatiles, scroll, water CRAM), while `FULL_80_ENTRY_SAT_PARITY` is `0/521` due to active-count DMA (`0x000976`), leaving `FULL_VDP_STATE_PARITY = NOT_MEASURED`.
 - Implemented and verified 14 comparator mutation tests in `tests/m16_29_post_combat_sat_test.cpp`.
 - Built and verified passing in MinGW Release (203/215 passed, 12 historical BizHawk failures preserved) and MSVC Debug. All governed files `<= 500` lines. Zero emulator linkage in `oasis.exe`. Hybrid worktree untouched.
+
+
+# M16.38 — Dynamic Pattern DMA Reconstruction and First Active-Frame Pixel Convergence — PASS
+- Reconciled M16.37 VRAM BEFORE (`17,739`) vs AFTER (`17,538`) sums (CRAM tracked separately) and reconciled 14-snapshot visible sprite count (`187 + 215 = 402`).
+- Implemented ROM-grounded `VdpDmaQueue` LIFO DMA channel (`0x00AC16..0x00AC5A`, `0x00B15E`, `0x002130`, `0x0027FC`), Town 10-frame water CRAM cycle, 8-bit VSRAM wrap, upward `TilemapStreamer`, and `attract_banner_enabled` flag.
+- Converged Canonical F779 Pattern RAM (`783 -> 0`), Plane A (`46 -> 0`), CRAM (`8 -> 0`), VSRAM (`1 -> 0`), and VDP Registers (`2 -> 0`), reducing pixel diff `20,932 -> 3,564 / 71,680` (`95.0%` pixel exact).
+- Eliminated Plane A, CRAM, and VSRAM divergences across all 7 Holdout snapshots (`138,194 -> 25,520` px diff).
+- Added `tests/m16_38_dynamic_pattern_dma_test.cpp` (`7/7` DMA/VDP mutation guards killed).

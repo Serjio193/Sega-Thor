@@ -8943,3 +8943,14 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
     - Layer composition: Backdrop: 69,039; Plane A: 2,641; Plane B: 0; Sprite: 0; Window: 0.
     - Buffer SHA256: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`.
 - **Status**: `NATIVE_RECOMPILATION_VERIFIED`. Implemented in `src/genesis/vdp_state.cpp`, `src/genesis/vdp_rasterizer.cpp`, validated via `tests/vdp_rasterizer_test.cpp` and `oasis_standalone_first_pixel`.
+
+
+## Dynamic Pattern DMA Queue & Town VDP Timing (M16.38)
+- **Producer -> Queue -> Consumer Path**:
+  * `0x00AC16..0x00AC5A`: Ali body descriptor pattern enqueue (`dst = 0x9500`, `auto_inc = 2`, word length).
+  * `0x00B15E`: Player weapon/sword overlay pattern enqueue (`dst = 0x9D00`, `auto_inc = 2`, word length).
+  * `$FF10B4..$FF1892`: Queue entries `(src_word_addr, dst_vram, length_words)`.
+  * `0x002130`: VBlank LIFO consumer (`subq.l #8, a0`) draining top-to-bottom into `0x0027FC` VDP control/data ports; leaves `R19..R23` reflecting the bottom-most drained entry (`Weapon Piece 0` `0x13BA3C -> 0x13BA5C`, `R21=0x2E, R22=0xDD, R23=0x09` at F779).
+- **Attract Banner Flag (`$FF1996`)**: ROM `0x00A51A` (`tst.b ($FF1996)`) gates `0x00A7E6` `"PUSH START BUTTON"` SAT overlays (`tick_counter & 0x80 == 0`).
+- **Town Water CRAM Cycle**: CRAM words `[33..36]` (`bytes 66..73`) cycle `{0x0108, 0x01F0, 0x01D0, 0x0108}` every 10 frames in Town (initialized `timer=7, phase=0` at F775).
+- **Town VSRAM & Plane A Scroll**: `VSRAM[0]` wraps 8-bit `(camera_y + 136) & 0xFF`; upward camera deltas stream Plane A metatile rows into `0xCF80..`.

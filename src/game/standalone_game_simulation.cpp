@@ -248,9 +248,14 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     cfg.max_camera_y = town_scene_.transition.max_camera_y;
     cfg.initial_camera_x = town_cp.camera_x;
     cfg.initial_camera_y = town_cp.camera_y;
-    cfg.initial_vscroll_a = town_scene_.transition.initial_vscroll_a;
+    cfg.initial_vscroll_a = (town_cp.camera_y + 136) & 0xFF;
+    cfg.vscroll_wrap_8bit = true;
     camera_ = camera::CameraController(cfg);
     camera_.set_tracking_enabled(camera_tracking_);
+    attract_banner_enabled_ = town_cp.attract_banner_enabled;
+    town_water_timer_ = 7U;
+    town_water_phase_ = 0U;
+    dma_queue_.clear();
 
     if (!town_cp.entities.empty()) {
         entities_ = town_cp.entities;
@@ -261,7 +266,10 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
         s19.active = false;
         entities_.push_back(s19);
     }
-    if (!baseline_vdp_.is_display_enabled()) {
+    if (baseline_vdp_.is_display_enabled()) {
+        const auto row_base = static_cast<std::uint16_t>(((baseline_vdp_.vsram[1] / 8U) & 0x1FU) * 128U);
+        streamer_.initialize(town_cp.camera_x, town_cp.camera_y, row_base, town_scene_.plane_a_metatiles);
+    } else {
         world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
         update_sat_sprites(current_vdp_);
     }
@@ -432,7 +440,11 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
 
     streamer_.step_frame(camera_.camera_x(), camera_.camera_y(), current_vdp_);
     camera_.apply_to_vdp(current_vdp_);
-    render::apply_player_patterns_and_water_cycle(walk_patterns_, current_player_pose(), frame, current_vdp_);
+    if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
+        render::step_town_water_cycle(town_water_timer_, town_water_phase_, current_vdp_);
+    } else {
+        render::apply_player_patterns_and_water_cycle(walk_patterns_, current_player_pose(), frame, current_vdp_);
+    }
 
     const bool is_sat_step = (map_id_ == world::kTownMapId)
         ? ((tick_counter_ % 2U) == 0U)
@@ -455,6 +467,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
             sat_ctx.tick_counter = tick_counter_;
             sat_ctx.frame_60hz = sim_state_.frame_counter;
             sat_ctx.hud_x_offset = (sim_state_.player_x < 80U) ? 0x138 : 0x20;
+            sat_ctx.attract_banner_enabled = attract_banner_enabled_;
             sat_ctx.player_x = sim_state_.player_x;
             sat_ctx.player_y = sim_state_.player_y;
             sat_ctx.player_facing = player_.direction_code;
@@ -467,7 +480,9 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
             } else {
                 sat_ctx.player_frame_dir = static_cast<std::uint16_t>(current_player_pose() * 3U);
             }
-            render::emit_town_combat_sat(sat_pipeline_, rom_bytes_, sat_ctx, entities_);
+            dma_queue_.clear();
+            render::emit_town_combat_sat(sat_pipeline_, rom_bytes_, sat_ctx, entities_, &dma_queue_);
+            dma_queue_.drain_lifo(rom_bytes_, vdp);
         } else {
             render::emit_town_combat_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, walk_tick_, entities_);
         }

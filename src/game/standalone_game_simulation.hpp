@@ -10,6 +10,7 @@
 #include "game/player/player.hpp"
 #include "game/render/hud_overlay.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
+#include "game/render/vdp_dma_queue.hpp"
 #include "game/standalone_game_loop.hpp"
 #include "game/world/byte_grid.hpp"
 #include "game/world/tilemap_streamer.hpp"
@@ -54,6 +55,7 @@ struct TownCheckpointInitialState {
     std::int32_t intent_x_fixed{0};
     std::int32_t intent_y_fixed{0};
     std::vector<NativeEntity> entities{};
+    bool attract_banner_enabled{false};
 };
 
 // Standalone C++ game simulation vertical slice.
@@ -89,6 +91,7 @@ public:
     }
 
     [[nodiscard]] const genesis::VdpState& current_vdp() const noexcept { return current_vdp_; }
+    [[nodiscard]] const render::VdpDmaQueue& dma_queue() const noexcept { return dma_queue_; }
 
     // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
     bool load_rom_background(std::span<const std::uint8_t> rom);
@@ -279,6 +282,10 @@ private:
     std::uint16_t landing_hold_ticks_{0};
     int walk_tick_{0};
     bool initialized_{false};
+    render::VdpDmaQueue dma_queue_{};
+    bool attract_banner_enabled_{false};
+    std::uint8_t town_water_timer_{7U};
+    std::uint8_t town_water_phase_{0U};
 };
 
 } // namespace oasis::game

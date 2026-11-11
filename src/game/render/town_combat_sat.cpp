@@ -9,8 +9,9 @@ namespace oasis::game::render {
 void emit_town_combat_sat(SatPipelineContract& sat,
                           std::span<const std::uint8_t> rom,
                           const TownSatFrameContext& frame_ctx,
-                          std::span<const NativeEntity> entities) noexcept {
-    emit_rom_town_sat(sat, rom, frame_ctx, entities);
+                          std::span<const NativeEntity> entities,
+                          VdpDmaQueue* dma_queue) noexcept {
+    emit_rom_town_sat(sat, rom, frame_ctx, entities, dma_queue);
 }
 
 void emit_town_combat_sat(SatPipelineContract& sat,
@@ -116,6 +117,28 @@ void apply_player_patterns_and_water_cycle(std::span<const std::uint8_t> walk_pa
         const std::uint16_t w = kWaterCycle[pal_phase][i];
         vdp.cram[cram_off] = static_cast<std::uint8_t>((w >> 8U) & 0xFFU);
         vdp.cram[cram_off + 1U] = static_cast<std::uint8_t>(w & 0xFFU);
+    }
+}
+
+void step_town_water_cycle(std::uint8_t& timer,
+                           std::uint8_t& phase,
+                           genesis::VdpState& vdp) noexcept {
+    static constexpr std::uint16_t kTownWaterCycle[4][4] = {
+        {0x0108U, 0x01F0U, 0x01D0U, 0x0108U},
+        {0x01F0U, 0x01D0U, 0x0108U, 0x0108U},
+        {0x01D0U, 0x0108U, 0x0108U, 0x01F0U},
+        {0x0108U, 0x0108U, 0x01F0U, 0x01D0U}
+    };
+    ++timer;
+    if (timer >= 10U) {
+        timer = 0U;
+        phase = static_cast<std::uint8_t>((phase + 1U) & 0x03U);
+    }
+    const auto& row = kTownWaterCycle[phase & 0x03U];
+    for (std::size_t i = 0; i < 4U; ++i) {
+        const std::size_t cram_off = (33U + i) * 2U;
+        vdp.cram[cram_off] = static_cast<std::uint8_t>((row[i] >> 8U) & 0xFFU);
+        vdp.cram[cram_off + 1U] = static_cast<std::uint8_t>(row[i] & 0xFFU);
     }
 }
 

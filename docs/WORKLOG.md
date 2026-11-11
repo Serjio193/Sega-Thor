@@ -30367,3 +30367,18 @@ RESULT: PASS.
 - **VDP Metrics Reconciliation**: Verified `CONTINUOUS_521_VDP_PARITY = 521/521` corresponds to `SELECTED_VDP_PARITY` (Plane A, scroll, water cycle CRAM), while `FULL_80_ENTRY_SAT_PARITY = 0/521` due to active-count DMA copying (`0x000976`), leaving `FULL_VDP_STATE_PARITY = NOT_MEASURED`.
 - **Automated Test Suite & Negative Mutations**: Created `tests/m16_29_post_combat_sat_test.cpp` (`oasis_m16_29_post_combat_sat`), verifying baseline hashes, manifest classifications, F856 differential, HP/VDP audits, 10 replay milestones, 61-frame holdout, and 14 negative mutation tests.
 - **Verification & Governance**: 203/215 CTests passed in MinGW Release (12 expected historical BizHawk M12 failures preserved). Built and passed in MSVC Debug. All 952 governed files strictly `<= 500` lines. Zero emulator linkage in `oasis.exe`. Hybrid worktree `C:/Github/Sega-Thor` strictly untouched.
+
+
+# M16.38 Worklog — Dynamic Pattern DMA Reconstruction and First Active-Frame Pixel Convergence
+
+## Execution & Results
+- **Phase 0 Evidence Consistency Audit**: Reconciled M16.37 BEFORE vs AFTER VRAM totals (`17,739` = `208 + 8,379 + 9,152` vs `17,538` = `0 + 8,379 + 9,159`; CRAM `61` B was tracked separately, not mixed into VRAM) and reconciled visible sprite descriptor totals (`187` canonical + `215` holdout = `402`; `407` in M16.36 prose was a manual arithmetic typo). Confirmed `ColorDacMode::GenesisPlusGx` rasterizer parity (`0` diff pixels at F775).
+- **Phase 1 ROM-Grounded DMA Forensics**: Traced dynamic pattern transfers in `Beyond Oasis (USA).md` (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`) to `$FF10B4..$FF1892` queue producers (`0x00AC16..0x00AC5A` for Ali body -> `0x9500`, `0x00B15E` for Weapon -> `0x9D00`) and ROM `0x002130` LIFO consumer (`subq.l #8, a0` -> `0x0027FC`). Also traced Town 10-frame water CRAM cycle `{0x0108, 0x01F0, 0x01D0, 0x0108}`, 8-bit Town VSRAM wrap `(camera_y + 136) & 0xFF`, upward Plane A row streaming, and attract banner flag (`$FF1996`).
+- **Native Runtime Reconstruction**:
+  - Created `src/game/render/vdp_dma_queue.hpp/.cpp` (`VdpDmaQueue`, `DmaTransferEvent`) modeling the LIFO queue drain and VDP R15/R19..R23 post-DMA register updates.
+  - Updated `rom_sprite_decoder.hpp/.cpp`, `town_combat_sat.hpp/.cpp`, `camera_controller.hpp/.cpp`, `tilemap_streamer.hpp/.cpp`, and `standalone_game_simulation.hpp/.cpp`.
+  - Updated `tests/m16_37_frame_aligned_pixel_exact_test.cpp` line 368 (`first_canon_diff_addr >= 0x9500U`) to reflect F779 pattern convergence (`0x9504` -> `0xd030`).
+- **F779 & 14-Snapshot Convergence**:
+  - Canonical F779 Pattern diff reduced `783 -> 0` bytes (`100%` exact `0x0000..0xBFFF`), Plane A `46 -> 0` bytes, CRAM `8 -> 0`, VSRAM `1 -> 0`, VDP Registers `2 -> 0`, and pixel diff `20,932 -> 3,564 / 71,680` (`95.0%` pixel exact, `83.0%` reduction).
+  - Independent Holdout (all 7 snapshots F775..F1125): Plane A `0`, Plane B `0`, HScroll `0`, CRAM `0`, VSRAM `0` across every snapshot, with holdout pixels reduced `138,194 -> 25,520` (`81.5%` reduction).
+- **Regression & Mutation Suite**: Added `tests/m16_38_dynamic_pattern_dma_test.cpp` (`oasis_m16_38_dynamic_pattern_dma`) covering consistency audit, F779 DMA queue parity, 14-snapshot bounds, PPM visual diff artifacts, and 7 DMA/VDP negative mutations.

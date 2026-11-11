@@ -4127,3 +4127,6 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `data/standalone-fixtures/frame_200_vdp_state.json` — Versioned VDP state fixture for Frame 200 (VRAM, CRAM, VSRAM, registers) (M16.0).
 - `data/standalone-fixtures/frame_200_reference.rgb24` — Authentic reference RGB24 framebuffer for Frame 200 (SHA256: `97287665eb8fc1e690fefeff5af4ea833b34d2384ffba2e110b5c493670d20f0`) (M16.0).
 - `docs/SEMANTIC_MAP.md` — Navigational map of canonical Beyond Oasis ROM by subsystem with explicit evidence levels and recompilation statuses (M16.0).
+
+- `src/game/render/vdp_dma_queue.hpp/.cpp` — Reconstructed Genesis `$FF10B4..$FF1892` DMA queue model (`DmaTransferEvent`, `VdpDmaQueue::drain_lifo`) with VDP R15/R19..R23 state updates (M16.38).
+- `tests/m16_38_dynamic_pattern_dma_test.cpp` — Differential qualification suite for M16.37 metric reconciliation, F779 pattern/PlaneA/CRAM/VSRAM/register convergence, 14-snapshot Holdout+Canonical checks, PPM diff outputs, and 7 DMA/VDP negative mutations (M16.38).

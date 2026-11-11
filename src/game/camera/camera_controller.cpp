@@ -40,9 +40,10 @@ void CameraController::set_camera_position(int world_x, int world_y) noexcept {
     state_.plane_b_hscroll = config_.plane_b_parallax
                                  ? static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF)
                                  : config_.initial_hscroll_b;
-    state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & 0x03FF);
+    const int vscroll_mask = config_.vscroll_wrap_8bit ? 0x00FF : 0x03FF;
+    state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & vscroll_mask);
     state_.plane_b_vscroll = config_.plane_b_parallax
-                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF)
+                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & vscroll_mask)
                                  : config_.initial_vscroll_b;
 
     state_.moved_this_frame = (state_.camera_world_x != state_.prev_camera_world_x) ||
@@ -127,9 +128,10 @@ void CameraController::update(int player_world_x, int player_world_y, int player
     state_.plane_b_hscroll = config_.plane_b_parallax
                                  ? static_cast<int>((config_.initial_hscroll_b - (total_dx / 2)) & 0x01FF)
                                  : config_.initial_hscroll_b;
-    state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & 0x03FF);
+    const int vscroll_mask = config_.vscroll_wrap_8bit ? 0x00FF : 0x03FF;
+    state_.plane_a_vscroll = static_cast<int>((config_.initial_vscroll_a + total_dy) & vscroll_mask);
     state_.plane_b_vscroll = config_.plane_b_parallax
-                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & 0x03FF)
+                                 ? static_cast<int>((config_.initial_vscroll_b + (total_dy / 2)) & vscroll_mask)
                                  : config_.initial_vscroll_b;
 
     state_.moved_this_frame = (state_.camera_world_x != state_.prev_camera_world_x) ||

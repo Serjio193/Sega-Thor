@@ -11455,3 +11455,21 @@ Milestone M16.29 resolves the apparent contradiction in M16.28 between reported 
 
 ### Consequences
 The standalone engine now has an audited, machine-readable parity manifest, complete post-combat slot reuse comprehension, and verified non-oracle active SAT parity.
+
+
+## Decision: M16.38 — Dynamic Pattern DMA Queue (`VdpDmaQueue`), Town VDP Sync, and F779 Convergence
+
+### Context
+M16.37 established exact frame-aligned VDP & pixel comparison across 14 snapshots (`17,538` differing VRAM bytes after checkpoint initialization). Post-checkpoint pattern divergences at `0x9500..0x9EFF`, upward Plane A row streaming omissions, 8-bit Town VSRAM wrapping, and Beach water CRAM contamination accounted for the earliest F779 rendering divergence (`925` VRAM bytes, `20,932` pixels).
+
+### Findings & Implementation
+1. **ROM-Grounded LIFO DMA Queue (`src/game/render/vdp_dma_queue.hpp/.cpp`)**:
+   - Reconstructed the 8-byte DMA queue at `$FF10B4..$FF1892` populated by producers (`0x00AC3E` Ali body -> `0x9500`, `0x00B15E` Weapon -> `0x9D00`) and drained LIFO (`subq.l #8, a0`) at `0x002130` into `0x0027FC`.
+   - Preserves inactive VRAM outside transferred spans and updates VDP registers `R15`, `R19..R23`.
+2. **Town VDP Pipeline Alignment**:
+   - Restricted Town water CRAM palette cycle (`{0x0108, 0x01F0, 0x01D0, 0x0108}`, 10-frame cadence) via `step_town_water_cycle`, preventing Beach CRAM palette overwrites.
+   - Enabled 8-bit VSRAM wrap (`vscroll_wrap_8bit`), upward Plane A row streaming (`stream_single_row_up`) without skipping frame 1, and optional `attract_banner_enabled` (`$FF1996`) SAT strip visibility.
+3. **Verification**:
+   - Canon F779 achieved `Pat=0, PA=0, PB=0, Scr=0, Unu=0, CRAM=0, VSRAM=0, Regs=0`, reducing differing pixels from `20,932` to `3,564`.
+   - Updated M16.37 assertion `first_canon_diff_addr >= 0x9500U` (`0x9504` moved to `0xd030` after pattern convergence).
+   - Added 7 targeted DMA/VDP mutation guards in `tests/m16_38_dynamic_pattern_dma_test.cpp`.

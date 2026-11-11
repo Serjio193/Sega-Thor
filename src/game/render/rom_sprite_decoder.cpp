@@ -90,6 +90,43 @@ void emit_descriptor_parts(SatPipelineContract& sat,
     }
 }
 
+void queue_dynamic_dmas(VdpDmaQueue& dma_queue,
+                        std::span<const std::uint8_t> rom,
+                        std::uint32_t desc_tbl_addr,
+                        std::uint32_t pat_rom_base,
+                        std::uint16_t frame_dir,
+                        std::uint16_t vram_base,
+                        std::uint32_t guest_pc) noexcept {
+    if (desc_tbl_addr == 0U || pat_rom_base == 0U || frame_dir == 0xFFFFU) {
+        return;
+    }
+    const std::size_t slot_off = desc_tbl_addr + static_cast<std::size_t>(frame_dir) * 2U;
+    const std::uint16_t rel = read_be16(rom, slot_off);
+    if (rel == 0U) {
+        return;
+    }
+    const std::size_t frame_ptr = slot_off + rel;
+    const std::size_t count = static_cast<std::size_t>(read_be16(rom, frame_ptr) & 0x3FU) + 1U;
+    std::uint16_t tile_accum = 0U;
+
+    for (std::size_t k = 0; k < count; ++k) {
+        const std::size_t rec = frame_ptr + 2U + k * 6U;
+        const std::uint8_t sz_byte = static_cast<std::uint8_t>((read_be16(rom, rec) >> 8U) & 0xFFU);
+        const std::uint16_t pat_idx = read_be16(rom, rec + 2U) & 0x07FFU;
+        const std::uint16_t tcount = read_be16(rom, kTileCountTableAddr + static_cast<std::size_t>(sz_byte & 0x0FU) * 2U);
+        if (tcount > 0U) {
+            DmaTransferEvent ev{};
+            ev.guest_pc = guest_pc;
+            ev.src_byte_addr = pat_rom_base + static_cast<std::uint32_t>(pat_idx) * 32U;
+            ev.dst_vram_addr = static_cast<std::uint16_t>(((vram_base + tile_accum) & 0x07FFU) * 32U);
+            ev.length_words = static_cast<std::uint16_t>(tcount * 16U);
+            ev.auto_inc = 2U;
+            dma_queue.enqueue(ev);
+            tile_accum = static_cast<std::uint16_t>(tile_accum + tcount);
+        }
+    }
+}
+
 void emit_water_ripple_half(SatPipelineContract& sat,
                             std::span<const std::uint8_t> rom,
                             std::uint16_t ripple_frame,
@@ -121,7 +158,8 @@ void emit_shadow(SatPipelineContract& sat,
 void emit_rom_town_sat(SatPipelineContract& sat,
                        std::span<const std::uint8_t> rom,
                        const TownSatFrameContext& ctx,
-                       std::span<const NativeEntity> entities) noexcept {
+                       std::span<const NativeEntity> entities,
+                       VdpDmaQueue* dma_queue) noexcept {
     sat.reset_frame();
     if (rom.size() < 0x300000U) {
         return;
@@ -143,9 +181,15 @@ void emit_rom_town_sat(SatPipelineContract& sat,
             sat.emit_rom_piece(0x00F0, 0x00E4, 0x0C, 0x879BU);
             sat.emit_rom_piece(0x0110, 0x00E4, 0x0C, 0x879FU);
             sat.emit_rom_piece(0x0130, 0x00E4, 0x0C, 0x87A3U);
+            if (dma_queue != nullptr && (ctx.tick_counter & 0x003FU) == 0U) {
+                dma_queue->enqueue({0x00A858U, 0x001543FAU, 0xF360U, 0x00C0U, 2U});
+            }
         } else {
             sat.emit_rom_piece(0x010C, 0x00E4, 0x08, 0x879BU);
             sat.emit_rom_piece(0x0124, 0x00E4, 0x04, 0x879EU);
+            if (dma_queue != nullptr && (ctx.tick_counter & 0x003FU) == 0U) {
+                dma_queue->enqueue({0x00A8B8U, 0x0015435AU, 0xF360U, 0x0050U, 2U});
+            }
         }
     }
 
@@ -232,17 +276,29 @@ void emit_rom_town_sat(SatPipelineContract& sat,
             }
 
             const std::uint32_t w_tbl = read_be32(rom, kEntityClassTableAddr + 0xA0U - 0x14U);
+            const std::uint32_t w_pat_base = read_be32(rom, kEntityClassTableAddr + 0xA0U - 0x10U);
+            const std::uint32_t ali_tbl = read_be32(rom, kEntityClassTableAddr + 12U);
+            const std::uint32_t ali_pat_base = read_be32(rom, kEntityClassTableAddr + 16U);
 
             if (w_active && !w_draw_after_body) {
                 emit_descriptor_parts(sat, rom, w_tbl, w_frame, ctx.player_weapon_vram, true, w_hflip, weapon_vdp_x, weapon_vdp_y);
             }
 
-            const std::uint32_t ali_tbl = read_be32(rom, kEntityClassTableAddr + 12U);
             emit_descriptor_parts(sat, rom, ali_tbl, ctx.player_frame_dir, ctx.player_vram_base,
                                   (ctx.player_flags36 & 0x01U) != 0U, hflip, vdp_x, vdp_y);
 
             if (w_active && w_draw_after_body) {
                 emit_descriptor_parts(sat, rom, w_tbl, w_frame, ctx.player_weapon_vram, true, w_hflip, weapon_vdp_x, weapon_vdp_y);
+            }
+
+            if (dma_queue != nullptr) {
+                // Queue weapon before Ali body so LIFO consumer drains Ali first and weapon piece 0 last
+                if (w_active) {
+                    queue_dynamic_dmas(*dma_queue, rom, w_tbl, w_pat_base, w_frame, ctx.player_weapon_vram, 0x00B15EU);
+                }
+                if ((ctx.player_flags36 & 0x01U) != 0U) {
+                    queue_dynamic_dmas(*dma_queue, rom, ali_tbl, ali_pat_base, ctx.player_frame_dir, ctx.player_vram_base, 0x00AC3EU);
+                }
             }
             continue;
         }

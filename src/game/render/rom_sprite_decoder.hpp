@@ -3,6 +3,7 @@
 #include "game/entity/native_entity.hpp"
 #include "game/player/player.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
+#include "game/render/vdp_dma_queue.hpp"
 
 #include <cstdint>
 #include <span>
@@ -42,6 +43,7 @@ struct TownSatFrameContext {
 void emit_rom_town_sat(SatPipelineContract& sat,
                        std::span<const std::uint8_t> rom,
                        const TownSatFrameContext& ctx,
-                       std::span<const NativeEntity> entities) noexcept;
+                       std::span<const NativeEntity> entities,
+                       VdpDmaQueue* dma_queue = nullptr) noexcept;
 
 } // namespace oasis::game::render

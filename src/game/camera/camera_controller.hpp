@@ -26,6 +26,7 @@ struct CameraConfig {
     int initial_vscroll_a{139};      // 0x00FF1726: default Plane A vertical scroll
     int initial_vscroll_b{0};        // Default Plane B vertical scroll
     bool plane_b_parallax{false};    // Beach scene Plane B is a fixed horizon (scroll = 0)
+    bool vscroll_wrap_8bit{false};   // 32-row Plane A vertical scroll wraps modulo 256 (0xFF)
 };
 
 // Current camera and VDP plane scroll state.

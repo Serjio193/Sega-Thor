@@ -53,6 +53,7 @@ private:
 
     void stream_single_column(genesis::VdpState& vdp);
     void stream_single_row(genesis::VdpState& vdp);
+    void stream_single_row_up(genesis::VdpState& vdp);
 
     std::vector<std::uint16_t> map_{};
     int cur_col_idx_{12};

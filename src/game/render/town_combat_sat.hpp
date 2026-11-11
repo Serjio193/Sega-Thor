@@ -17,7 +17,8 @@ namespace oasis::game::render {
 void emit_town_combat_sat(SatPipelineContract& sat,
                           std::span<const std::uint8_t> rom,
                           const TownSatFrameContext& frame_ctx,
-                          std::span<const NativeEntity> entities) noexcept;
+                          std::span<const NativeEntity> entities,
+                          VdpDmaQueue* dma_queue = nullptr) noexcept;
 
 // Legacy M16.22 fallback overload preserved for existing unit tests without loaded ROM slice.
 void emit_town_combat_sat(SatPipelineContract& sat,
@@ -35,5 +36,10 @@ void apply_player_patterns_and_water_cycle(std::span<const std::uint8_t> walk_pa
                                            std::size_t pose_idx,
                                            std::uint32_t frame,
                                            genesis::VdpState& vdp) noexcept;
+
+/// Steps Town Screen(1,3) Palette 2 animated water colors (CRAM 66..73) on a 10-frame cadence.
+void step_town_water_cycle(std::uint8_t& timer,
+                           std::uint8_t& phase,
+                           genesis::VdpState& vdp) noexcept;
 
 } // namespace oasis::game::render
