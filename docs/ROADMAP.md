@@ -1,3 +1,21 @@
+# M16.37 Pixel-Exact Rendering, DMA Pattern Forensics, and Frame-Aligned VDP Validation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- M16.36 VRAM Provenance Audit & Correction:
+  * Identified and relabeled M16.36's 17,698 VRAM byte difference as temporal change vs F775 (`c_snaps[0].vram`), replacing it with a true simultaneous frame-aligned differential harness.
+- Frame-Aligned VDP Differential Harness (14 Snapshot Pairs: 7 Canonical + 7 Holdout):
+  * F775 initial checkpoint: 0 VRAM diff bytes, 0 CRAM diff bytes, 0 VSRAM diff bytes, 0/71,680 differing pixels (100% pixel-exact).
+  * Holdout active frames (F809..F1125): 8,379 VRAM diff bytes (`979`, `1308`, `1460`, `1541`, `1541`, `1550`), first divergence at `0x9504` (F809); 138,194 differing pixels.
+  * Canonical active frames (F779..F1115): 9,159 VRAM diff bytes (`925`, `1454`, `1442`, `1620`, `1777`, `1941`), first divergence at `0x9504` (F779); 180,444 differing pixels.
+  * Combined simultaneous diffs after fix: 17,538 VRAM bytes and 318,638 differing pixels across all 14 frame-aligned pairs.
+- Original DMA Pattern Forensics & ROM-Grounded Fix:
+  * Verified ROM `0x00A2E8` / `0x00A380` guard walk DMA queue generation (`0x00A400`, `0x00A412`, `$FF1892`) driving pattern uploads into `0x9500..0xB8E0`.
+  * Preserved authentic initial `VdpState` in `StandaloneGameSimulation::initialize_town_checkpoint`, eliminating 61-byte CRAM corruption and 104-byte F775 SAT diff (cutting F775 pixel error from 68,389 to 0).
+- Hardware Sprite & Dual-Toolchain Verification:
+  * Validated 402 SAT hardware-visible sprite descriptors (`187` canonical + `215` holdout).
+  * Preserved 521/521 canonical active SAT parity, 350/350 holdout PRNG parity, 51,476/51,476 entity fields, and 22/22 mutations killed.
+  * MinGW Release & MSVC Debug CTest: 211/223 passed (95%), exact 12 historical BizHawk failures preserved; 961 governed files <= 500 lines.
+
 # M16.36 VRAM Difference Forensics, Hardware-Visible Sprite Parity, and Complete Entity Coverage — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

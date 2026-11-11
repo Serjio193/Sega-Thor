@@ -1,3 +1,22 @@
+# ADR-20261111-M16-37-PIXEL-EXACT-RENDERING-DMA-PATTERN-FORENSICS-AND-FRAME-ALIGNED-VDP-VALIDATION — Relabeling M16.36 17,698 Temporal VRAM Bytes; Frame-Aligned Simultaneous Native-vs-Original VDP Differential Harness (F775 Pixel-Exact 0/71,680; Total Simultaneous VRAM Diff 17,538 Bytes, Total Diff Pixels 318,638); Preserving Explicit Initial VdpState in `initialize_town_checkpoint`; ROM `0x00A2E8`/`0x00A380` Guard Walk DMA Forensics; Dual-Toolchain Verification (211/223 Passing, 12 Historical BizHawk Failures)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. Inspection of `tests/m16_36_vram_and_entity_matrix_test.cpp` revealed that the 17,698 reported differing VRAM bytes represented each GPGX snapshot compared against `c_snaps[0].vram` (F775), i.e., **temporal VRAM change** relative to F775 rather than simultaneous native-vs-original GPGX divergence at matching frames.
+2. Additionally, `StandaloneGameSimulation::initialize_town_checkpoint` unconditionally invoked `world::upload_town_tiles_to_vdp` and `update_sat_sprites` even when an explicit authentic `initial_vdp` was passed, overwriting F775 CRAM palettes (61 differing bytes) and stripping 3 F775 SAT banner sprites (104 VRAM bytes, causing 68,389 differing pixels on F775).
+
+**Decisions:**
+1. **Metric Correction & Honest Reporting:**
+   - Relabeled M16.36's 17,698 byte metric as **temporal VRAM change relative to F775**.
+   - Established true simultaneous frame-aligned VDP and RGB24 pixel comparison across all 14 snapshots (7 canonical + 7 holdout).
+2. **Authentic Initial VdpState Preservation:**
+   - Updated `StandaloneGameSimulation::initialize_town_checkpoint` in `src/game/standalone_game_simulation.cpp` to skip `upload_town_tiles_to_vdp` and initial `update_sat_sprites` when `baseline_vdp_.is_display_enabled()` is already true.
+   - Added `current_vdp()` const accessor to `src/game/standalone_game_simulation.hpp`.
+3. **DMA Pattern & Pixel-Level Measurement:**
+   - Attributed earliest simultaneous Pattern RAM divergence (`0x9504` at F779 canonical / F809 holdout) to ROM `0x00A2E8` / `0x00A380` guard walk pattern DMA queue entries.
+   - Reported pixel parity strictly as measured (`0/71,680` diff pixels at F775; `318,638` diff pixels across active frames F779..F1125 where dynamic guard pattern DMAs remain unemulated).
+
 # ADR-20261111-M16-36-VRAM-DIFFERENCE-FORENSICS-HARDWARE-VISIBLE-SPRITE-PARITY-AND-COMPLETE-ENTITY-COVERAGE — Byte-Level Classification across 14 VDP Snapshots (17,698 Differing Bytes: SAT 1,946 B, Pattern 10,809 B, Plane 3,676 B, Unused Residue 1,267 B, Unknown 0 B); First-Cause Attribution to Authentic ROM PC DMA / Pattern / SAT / Streamer Routines; Hardware-Visible Sprite Evaluation Contract Verified (14/14 Snapshots, 407 Total Sprites, 100% Valid SAT Traversal & Scanline Limits); Complete 20-Entity Slot Matrix across F776..F1125 (51,476 Field Comparisons Matched 100%, First Divergence NONE); PRNG Call-Order Convergence (350/350 Frame & Sequence Parity); Canonical Replay Regression Prevention (521/521 Active SAT Parity); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 210/222 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance across 960 Governed Files; Zero Emulator Linkage
 **Status:** Accepted
 **Date:** 2026-11-11

@@ -1,3 +1,22 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M16.37: Frame-Aligned Simultaneous VDP Validation, DMA Pattern Forensics, and Pixel-Exact Reference Verification)
+
+## Milestone M16.37 Reverse Engineering Summary
+
+### 1. M16.36 Metric Provenance Correction
+- **Temporal vs Simultaneous Comparison:**
+  * Audit of `tests/m16_36_vram_and_entity_matrix_test.cpp` confirmed that its 17,698 differing VRAM bytes measured `s.vram[i] != c_snaps[0].vram[i]` (each GPGX snapshot compared against initial frame F775), making it a temporal VRAM change measurement rather than a simultaneous native-vs-original GPGX comparison.
+  * M16.37 implements a true simultaneous frame-aligned comparison at matching logical frames across all 14 snapshots (Canonical: F775, F779, F858, F886, F944, F956, F1115; Holdout: F775, F809, F825, F833, F893, F941, F1125).
+
+### 2. ROM 0x00A2E8 / 0x00A380 Dynamic Pattern DMA Contract
+- **Instruction-Level Verification:**
+  * Verified ROM bytes at `0x00A380` (`0x4A39`: `tst.b $FF184F`), `0x00A400` (`0x0680 0x000AAEBB`: `addi.l #$000AAEBB, d0` source address offset), and `0x00A412` (`0x30FC 0xB8E0`: `move.w #$B8E0, (a0)+` destination VRAM write to queue at `$FF1892`, length `0x0090` at `0x00A416`).
+  * Earliest simultaneous native-vs-original Pattern RAM divergence occurs at `0x9504` (F779 canonical: 925 B VRAM diff; F809 holdout: 979 B VRAM diff) due to unemulated dynamic guard walk animation pattern DMAs.
+
+### 3. CRAM Palette & Initial VdpState Preservation Fix
+- **Root Cause & Impact:**
+  * Calling `world::upload_town_tiles_to_vdp` on top of an explicit `initial_vdp` in `StandaloneGameSimulation::initialize_town_checkpoint` overwrote CRAM palettes 2..3 (61 differing bytes, shifted values vs 9-bit `0000BBB0GGG0RRR0`) and dropped 3 F775 banner SAT entries (slots 6..8 at y=100, x=112/144/176, tiles `0x879B/0x879F/0x87A3`; 104 VRAM bytes).
+  * Skipping redundant overwrite when `baseline_vdp_.is_display_enabled()` restores **0 / 71,680** pixel-exact RGB24 match at F775 and cuts active-frame pixel divergence from 94-97% (`~70,000` px) to `20,125..35,355` px (`28.1%..49.3%`), with remaining differences isolated to dynamic pattern DMAs and downstream sprite/tile changes.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M16.36: VRAM Difference Forensics, Hardware-Visible Sprite Evaluation Contract, and Complete 20-Entity Slot Matrix)
 
 ## Milestone M16.36 Reverse Engineering Summary

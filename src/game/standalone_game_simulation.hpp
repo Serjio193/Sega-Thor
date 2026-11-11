@@ -88,6 +88,8 @@ public:
         return initialize_town_checkpoint(rom, town_cp);
     }
 
+    [[nodiscard]] const genesis::VdpState& current_vdp() const noexcept { return current_vdp_; }
+
     // Optional: streams authentic 64x28 background tilemap from ROM into baseline VRAM.
     bool load_rom_background(std::span<const std::uint8_t> rom);
 

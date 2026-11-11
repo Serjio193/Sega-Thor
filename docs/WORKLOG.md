@@ -1,3 +1,27 @@
+# 2026-11-11 — Milestone M16.37: PIXEL-EXACT RENDERING, DMA PATTERN FORENSICS, AND FRAME-ALIGNED VDP VALIDATION — Relabeled M16.36 17,698 VRAM Bytes as Temporal Changes Relative to F775; Established Frame-Aligned Simultaneous Native-vs-Original VDP Differential Harness across All 14 Snapshot Pairs (F775 Pixel-Exact 0/71,680 Diff Pixels after Authentic Initial VdpState Preservation Fix; Active Frames Quantified: Holdout Sum 8,379 B VRAM / 138,194 Diff Pixels, Canonical Sum 9,159 B VRAM / 180,444 Diff Pixels); First Confirmed VRAM Divergence at 0x9504 (F779 Canonical / F809 Holdout) Attributed to ROM 0x00A2E8 / 0x00A380 Guard Walk Pattern DMA Queue; Hardware-Visible Sprite Validation (402 Sprites Across 14 Snapshots); Preserved 521/521 Canonical Active SAT, 350/350 Holdout PRNG & 51,476/51,476 Entity Field Parity; 22/22 Mutations Killed; MinGW Release & MSVC Debug CTest 211/223 Passing (Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance across 961 Governed Files — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Reproduction & Metric Audit:
+    - Baseline commit `1ad8f6732287de19e3dc6aecdebfb3234a146889`.
+    - Verified M16.36 17,698 VRAM difference figure compared each snapshot against F775 (`c_snaps[0].vram`) rather than comparing native vs original GPGX at the same frame; relabeled accurately as temporal VRAM changes relative to F775.
+  * Phase 1 & 2 — Frame-Aligned VDP Differential Harness & DMA Forensics:
+    - Compared complete 65,536-byte VRAM, 128-byte CRAM, 80-byte VSRAM, and 24 VDP registers between simultaneous native and original GPGX states across all 14 snapshot pairs (7 canonical: F775, F779, F858, F886, F944, F956, F1115; 7 holdout: F775, F809, F825, F833, F893, F941, F1125).
+    - Earliest simultaneous VRAM divergence confirmed at `0x9504` in Pattern RAM (F779 canonical: 925 B diff; F809 holdout: 979 B diff).
+    - Disassembled and verified ROM `0x00A2E8` / `0x00A380` DMA queue entries (`0x00A400`: `addi.l #0x000AAEBBU, d0`; `0x00A412`: `move.w #0xB8E0, (a0)+`; queue pointer `$FF1892`) responsible for guard walk pattern uploads.
+    - Total simultaneous VRAM diff across 14 frame pairs: `17,538` bytes after fix (`8,379` B holdout F809..F1125 + `9,159` B canonical F779..F1115 + `0` B at both F775 pairs).
+  * Phase 3, 4 & 5 — Pixel Reference Capture, Native Rasterizer & Hardware Sprite Validation:
+    - Rendered 320x224 RGB24 images with `oasis::genesis::render_vdp_frame_rgb24` (`ColorDacMode::GenesisPlusGx`).
+    - Initial checkpoint frame F775 achieved **0 / 71,680** differing pixels (100% pixel-exact match; down from 68,389 differing pixels before fix).
+    - Active gameplay frames truthfully measured without false parity claims: `138,194` differing pixels across 6 holdout snapshots F809..F1125 (`24,094`, `24,175`, `24,449`, `24,822`, `20,529`, `20,125`) and `180,444` differing pixels across 6 canonical snapshots F779..F1115 (`20,932`, `27,939`, `31,059`, `32,452`, `32,707`, `35,355`), totaling `318,638` differing pixels across 14 frames.
+    - Validated SAT link chains across 402 hardware-visible sprite descriptors (`187` canonical + `215` holdout).
+  * Phase 6 — ROM-Grounded Fix:
+    - Updated `StandaloneGameSimulation::initialize_town_checkpoint` in `src/game/standalone_game_simulation.cpp` so when `baseline_vdp_.is_display_enabled()` (explicit initial `VdpState` provided), `upload_town_tiles_to_vdp` and `update_sat_sprites` do not overwrite authentic initial CRAM palettes or F775 SAT banner sprites.
+  * Phase 7 & 8 — Qualification & Governance:
+    - Added `tests/m16_37_frame_aligned_pixel_exact_test.cpp` (475 lines, <= 500) using always-active `OASIS_CHECK` assertions and registered `oasis_m16_37_frame_aligned_pixel_exact` in `cmake/project_tests_m16.cmake` (45 lines).
+    - MinGW Release CTest: 211/223 passed (95%), exact 12 historical BizHawk failures preserved.
+    - MSVC Debug CTest: 211/223 passed (95%), exact 12 historical BizHawk failures preserved.
+    - `tests/check_file_limits.cmake` passed on all 961 governed files (`<= 500` lines).
+
 # 2026-11-11 — Milestone M16.36: VRAM DIFFERENCE FORENSICS, HARDWARE-VISIBLE SPRITE PARITY, AND COMPLETE ENTITY COVERAGE — Byte-Level Classification across 14 VDP Snapshots (17,698 Differing Bytes: SAT 1,946 B, Pattern 10,809 B, Plane 3,676 B, Unused Residue 1,267 B, Unknown 0 B); First-Cause Attribution to Authentic ROM PC DMA / Pattern / SAT / Streamer Routines (Earliest Divergence F779/F809 at 0x9504 Pattern RAM); 100% CRAM / VSRAM / Register Parity; Hardware-Visible Sprite Evaluation Contract Verified (14/14 Snapshots, 407 Total Sprites, 100% Valid SAT Traversal & Scanline Limits); Complete 20-Entity Slot Matrix across F776..F1125 (51,476 Field Comparisons Matched 100%, First Divergence NONE); PRNG Call-Order Convergence (350/350 Frame & Sequence Parity); Canonical Replay Regression Prevention (521/521 Active SAT Parity, F858 Allocation, F886 Launch, F944 Impact, F956 Despawn); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 210/222 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance across 960 Governed Files; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

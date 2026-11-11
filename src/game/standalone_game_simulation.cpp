@@ -261,8 +261,10 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
         s19.active = false;
         entities_.push_back(s19);
     }
-    world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
-    update_sat_sprites(current_vdp_);
+    if (!baseline_vdp_.is_display_enabled()) {
+        world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
+        update_sat_sprites(current_vdp_);
+    }
     initialized_ = true;
     return true;
 }
