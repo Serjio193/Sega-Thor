@@ -54,12 +54,13 @@ def main() -> int:
     )
     m_arr = re.search(r"std::array<bool,\s*(\d+)>\s*g_enabled\{\};", step_code)
     old_sz = int(m_arr.group(1))
-    new_sz = old_sz + 2
+    new_sz = old_sz + 3
     step_code = step_code.replace(m_arr.group(0), f"std::array<bool, {new_sz}> g_enabled{{}};", 1)
     step_code = step_code.replace(
         "#undef CHK",
         f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250, {old_sz});\n"
-        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_fused, {old_sz + 1});\n#undef CHK",
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_fused, {old_sz + 1});\n"
+        f"    CHK(oasis::recompiler::ir::step_m68k_portable_m15250_multiblock, {old_sz + 2});\n#undef CHK",
         1,
     )
     step_code = step_code.replace(
@@ -67,6 +68,7 @@ def main() -> int:
         f'oasis::recompiler::ir::reset_exp249_dispatch_hybrid_metrics();\n'
         f'    g_enabled[{old_sz}] = step_helper_selected_exact(enabled_helpers, "m15250p");\n'
         f'    g_enabled[{old_sz + 1}] = step_helper_selected_exact(enabled_helpers, "m15250f");\n'
+        f'    g_enabled[{old_sz + 2}] = step_helper_selected_exact(enabled_helpers, "m15250m");\n'
         f"    oasis::recompiler::ir::reset_exp250_dispatch_hybrid_metrics();",
         1,
     )
@@ -92,7 +94,10 @@ def main() -> int:
                        << "  \\"cpu_exceptions\\": " << m250.cpu_exceptions << ",\\n"
                        << "  \\"contract_faults\\": " << m250.contract_faults << ",\\n"
                        << "  \\"completed_returns\\": " << m250.completed_returns << ",\\n"
-                       << "  \\"fused_blocks\\": " << m250.fused_blocks << "\\n"
+                       << "  \\"fused_blocks\\": " << m250.fused_blocks << ",\\n"
+                       << "  \\"multi_block_entries\\": " << m250.multi_block_entries << ",\\n"
+                       << "  \\"multi_block_chained_blocks\\": " << m250.multi_block_chained_blocks << ",\\n"
+                       << "  \\"internal_cfg_edges_traversed\\": " << m250.internal_cfg_edges_traversed << "\\n"
                        << "}\\n";
             }
         }

@@ -1,3 +1,11 @@
+# M15.254 Real Benchmark Evidence, CTest Regression Triage, and Controlled Multi-Block Fusion Prototype
+
+- `tests/m15_254_multiblock_adversarial_test.cpp` — dedicated adversarial multi-block fusion safety test suite (6/6 passing under ASan/UBSan).
+- `tools/benchmark_m15_254_real.py` / `data/thor-evidence/benchmark_m15_254_measured_summary.json` — multi-trial measured OS benchmark report and dispatch attribution forensics across 6 scenarios.
+- `tools/run_m15_254_multiblock_ab.py` / `data/thor-evidence/m15_254_multiblock_ab_summary.json` — 10-configuration qualification runner and evidence summary across 6 scenarios.
+- `tools/generate_m15_254_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-254-20261111.json` — certified qualification receipt verified by `ReceiptVerifier` (0 rejections).
+- `docs/handoffs/STANDALONE_M15_254_MULTIBLOCK_FUSION_HANDOFF.md` — standalone track handoff for multi-block fusion and native memory optimization.
+
 # M15.253 Fused Execution Performance Proof, Scheduler Boundary Validation, and Full Regression Recovery
 
 - `tests/m15_253_adversarial_timeslice_test.cpp` — dedicated adversarial timeslice and interrupt boundary test suite (6/6 passing under ASan/UBSan).

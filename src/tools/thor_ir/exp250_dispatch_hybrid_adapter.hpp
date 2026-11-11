@@ -21,6 +21,9 @@ struct Exp250DispatchHybridMetrics {
     std::uint64_t contract_faults{0};
     std::uint64_t completed_returns{0};
     std::uint64_t fused_blocks{0};
+    std::uint64_t multi_block_entries{0};
+    std::uint64_t multi_block_chained_blocks{0};
+    std::uint64_t internal_cfg_edges_traversed{0};
 };
 
 class HybridM68kStepBus250 final {

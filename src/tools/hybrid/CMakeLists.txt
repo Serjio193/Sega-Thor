@@ -21,7 +21,7 @@ add_library(oasis_hybrid_contract STATIC contract.cpp dispatch.cpp replacement.c
     generated_blocks_m1145_registry_2.cpp generated_blocks_m1145_registry_3.cpp
     generated_block_registry.cpp
     recomp_generator.cpp checkpoint_evidence.cpp gpgx_checkpoint_layout.cpp address_provenance.cpp runner_support.cpp
-    e268_state_transform.cpp m68k_e268_instruction_step.cpp m68k_613b2_instruction_step.cpp
+    e268_state_transform.cpp m68k_00e268_instruction_step.cpp m68k_613b2_instruction_step.cpp
     m68k_61e48_instruction_step.cpp m68k_9d_family_instruction_step.cpp
     m68k_61934_step_ops.cpp m68k_61934_step_moves.cpp m68k_61934_step_tail_ops.cpp m68k_61934_step_tail.cpp m68k_61934_instruction_step.cpp
     m68k_6147e_step_ops.cpp m68k_6147e_step_moves.cpp m68k_6147e_step_math.cpp m68k_6147e_instruction_step.cpp m68k_6147e_table1.cpp m68k_6147e_component_step.cpp m68k_6147e_table2.cpp
@@ -348,10 +348,10 @@ if(OASIS_HYBRID_GPGX_SOURCE)
         gameplay_session_metrics.cpp
         gameplay_session_step_trace.cpp
         m68k_9d70_instruction_step.cpp
-        m68k_94a2_instruction_step.cpp
+        m68k_0094a2_instruction_step.cpp
         m68k_9c40_instruction_step.cpp
         m68k_8ef8_instruction_step.cpp
-        m68k_e268_instruction_step.cpp
+        m68k_00e268_instruction_step.cpp
         m68k_613b2_instruction_step.cpp
         m68k_61e48_instruction_step.cpp
         m68k_9d_family_instruction_step.cpp

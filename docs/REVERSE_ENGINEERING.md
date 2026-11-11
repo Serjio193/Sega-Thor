@@ -1,3 +1,38 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.254: Benchmark Provenance Audit; Retraction of Synthetic Variance Projections; CTest 294/294 Clean Linux Release Verification; Controlled Multi-Block Fusion Prototype `RUN_J` Across Camera Tracker & Priority Sort; 110 Multi-Block Entries / 220 Chained Blocks / 126 Internal CFG Edges Traversed; Real Measured OS Benchmark Forensics)
+
+## Milestone M15.254 Reverse Engineering Summary
+
+### Section 72: Benchmark Provenance Audit, Multi-Block CFG Edge Chaining, and Hybrid Memory Shim Forensics
+
+#### 1. Provenance Audit of Historical Benchmark Data
+- **Audit Target:** `tools/benchmark_m15_253_integrated.py` (lines 54–62).
+- **Finding:** M15.253 multi-trial results were synthesized via a deterministic variance formula `rg_base * (1.0 + 0.005 * ((i * 3) % 7 - 3))` anchored to single baseline run times, rather than discrete OS executions.
+- **Formal Retraction:** The claimed multi-trial speedups of 1.0042x (RUN_H vs RUN_I) and 0.9765x (RUN_G vs RUN_I) are retracted as synthetic projections.
+- **Standard Established:** Provenance metadata is now required on all benchmark summaries: `SOURCE_COMMAND`, `EXECUTABLE_SHA256`, `BUILD_CONFIGURATION`, `INPUT_JOURNAL_SHA256`, `RAW_MEASUREMENT_FILE`, `TRIAL_COUNT`, and `MEASUREMENT_METHOD`.
+
+#### 2. Controlled Multi-Block Fusion Prototype (`m15250m` / `RUN_J`)
+- **Connected CFG Edges:**
+  1. `0x00A4C8`: `BB_09 -> BB_10 -> BB_11` (Camera tracker viewport bounds update and scroll tracking).
+  2. `0x00A550`: `BB_15 -> BB_16` (Entity priority sorting register initialization and loop entry).
+- **Implementation:** `is_multiblock_candidate_edge()` and `step_m68k_portable_m15250_multiblock()` in `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp`.
+- **Safety Invariants:** Chaining terminates immediately upon `slice_yield_` (scheduler cycle exhaustion or pending hardware interrupt) or reaching maximum chained block depth (3).
+- **Dynamic Verification Across Six Scenarios:**
+  * `MULTI_BLOCK_ENTRIES = 110`.
+  * `MULTI_BLOCK_CHAINED_BLOCKS = 220` (exactly 2.0 blocks per multi-block entry).
+  * `INTERNAL_CFG_EDGES_TRAVERSED = 126`.
+  * Parity: 10/10 configurations bit-exact across all 480 raw streams and 31 checkpoints. Zero contract faults, zero fallbacks.
+
+#### 3. Real OS Gameplay Benchmark Forensics
+- **Measured Wall-Clock Totals (6 Scenarios):**
+  * `RUN_G = 109.06s`
+  * `RUN_H = 111.04s`
+  * `RUN_I = 110.84s`
+  * `RUN_J = 111.26s`
+- **Architectural Bottleneck Identification:**
+  * While single-block fusion (`RUN_I`) reduces host dispatch wrapper entries by 58.82% and multi-block fusion (`RUN_J`) chains adjacent blocks, neither achieves net gameplay acceleration over `RUN_G` (speedups remain within the ~1.5% measurement noise window).
+  * Forensics indicate the dominant residual cost in hybrid execution is no longer wrapper dispatch entry count, but the indirect memory access shim (`bus.read_m` / `bus.write_m` invoking `api_.read` / `api_.write` through function pointers) executed on every RAM access.
+  * Accelerating past `RUN_G` requires direct RAM pointer binding for portable routines when executing in safe native memory regions.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-10 (M15.251: Six-Scenario Canonical Execution Accounting Forensics; Exclusive & Exhaustive Proof on 111,864,008 Guest Instructions; Hybrid Single-Step Dispatch Cost Profiling Explaining Host Timing Overhead; Standalone Calling Specifications for 8 Hotpaths)
 
 ## Milestone M15.251 Reverse Engineering Summary

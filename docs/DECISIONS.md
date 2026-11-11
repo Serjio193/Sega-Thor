@@ -1,3 +1,39 @@
+# ADR-20261111-M15-254-BENCHMARK-PROVENANCE-AUDIT-AND-CONTROLLED-MULTIBLOCK-FUSION — Provenance Audit of Synthetic Projections, CTest Triage (294/294 Passing on Linux Release), and Controlled Multi-Block Fusion Prototype (`m15250m` / `RUN_J`)
+**Status:** Accepted
+**Date:** 2026-11-11
+
+**Context:**
+1. M15.253 published integrated speedups (`1.0042x` and `0.9765x`) derived from a mathematical simulation model (`rg_base * (1.0 + 0.005 * ((i * 3) % 7 - 3))`) rather than discrete multi-trial OS executions. Provenance auditing was required to distinguish measured host performance from synthetic projections.
+2. The Windows MSVC CTest regression (294/302 passing, 8 failures) required triage and Linux clean build verification.
+3. Single-basic-block fusion (`RUN_I`) reduced host wrapper entries by 58.82% but did not exceed `RUN_G` wall-clock speed. A controlled multi-block fusion prototype (`RUN_J`) chaining connected internal CFG edges was needed to test whether chaining basic blocks within native C++ preserves bit-exact gameplay and provides measurable acceleration.
+
+**Decisions:**
+1. **Benchmark Provenance & Retraction of Synthetic Claims:**
+   - Audited `tools/benchmark_m15_253_integrated.py` and formally classified the M15.253 10-trial results as synthetic variance projections.
+   - Retracted claims of synthetic speedup in favor of real OS execution timings captured via `tools/benchmark_m15_254_real.py` and `tools/run_m15_254_multiblock_ab.py`.
+   - Established strict provenance metadata requirements (`SOURCE_COMMAND`, `EXECUTABLE_SHA256`, `BUILD_CONFIGURATION`, `INPUT_JOURNAL_SHA256`, `RAW_MEASUREMENT_FILE`, `TRIAL_COUNT`, `MEASUREMENT_METHOD`).
+2. **CTest Triage & Portability Verification:**
+   - Clean Linux Release CTest verified: **294/294 PASS 100% in 57.75s**.
+   - Missing Windows test binary (`oasis_m68k_00ceea_cmpa_regression`) triaged: orphaned target in untracked capture block `CMakeLists_captures.cmake`.
+   - 7 failing Windows helper unit tests triaged: mock metadata assertions pass under `-DNDEBUG` (Release), but fail in Debug builds due to mock harness state re-entrance assumptions.
+3. **Controlled Multi-Block Fusion Prototype (`RUN_J` / `m15250m`):**
+   - Implemented bounded chaining across internal CFG edges in `src/tools/thor_ir/exp250_fused_hybrid_adapter.hpp`:
+     * Camera Tracker (`0x00A4C8`): `BB_09 -> BB_10 -> BB_11`.
+     * Priority Sort (`0x00A550`): `BB_15 -> BB_16`.
+   - Bounded by cycle budget (`slice_yield_`), interrupt checks, and maximum 3 consecutive blocks.
+   - Verified 100% bit-exact parity across 10 configurations and 6 scenarios (480/480 streams, 31/31 checkpoints).
+   - Proved dynamic multi-block execution: 110 multi-block entries, 220 chained blocks, 126 internal CFG edges traversed.
+4. **Performance Gate Verdict:**
+   - Real aggregate wall-clock execution across 6 scenarios: `RUN_G = 109.06s`, `RUN_H = 111.04s`, `RUN_I = 110.84s`, `RUN_J = 111.26s`.
+   - Timings across configurations lie within the ~1.5% host measurement noise window. Multi-block fusion amortizes dispatch wrappers, but does not yet deliver net speedup over `RUN_G` due to the cost of bus memory callbacks on each read/write.
+5. **Governance & Production Hold:**
+   - Production inventory strictly preserved at 196 active baseline helpers (`17396fda...`).
+   - All source and test files verified $\le 500$ lines.
+
+**Consequences:**
+- Restores provenance integrity to the benchmarking pipeline with verified real OS execution timings.
+- Proves that multi-block fusion is bit-exact and safe under adversarial scheduler conditions, while establishing that native memory access optimization (amortizing bus shim overhead) is required to unlock net gameplay acceleration over RUN_G.
+
 # ADR-20261111-M15-253-FUSED-EXECUTION-PERFORMANCE-PROOF-AND-BOUNDARY-VALIDATION — Bounded Basic-Block Execution Qualification, Exact Scheduler Timeslice and Interrupt Boundary Proofs, Reconciled CTest Suite Status, and Multi-Block Fusion Architectural Gate
 **Status:** Accepted
 **Date:** 2026-11-11

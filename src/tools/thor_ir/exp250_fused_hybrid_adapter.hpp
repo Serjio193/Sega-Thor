@@ -185,4 +185,90 @@ inline oasis::hybrid::M68k9D70StepResult step_m68k_portable_m15250_fused(
     return oasis::hybrid::M68k9D70StepResult::InstructionStepped;
 }
 
+inline bool is_multiblock_candidate_edge(std::uint32_t from_pc, std::uint32_t to_pc) noexcept {
+    if (from_pc == 0x00A4C8U && (to_pc == 0x00A4E0U || to_pc == 0x00A4EEU)) return true;
+    if (from_pc == 0x00A4E0U && to_pc == 0x00A4EEU) return true;
+    if (from_pc == 0x00A550U && to_pc == 0x00A562U) return true;
+    return false;
+}
+
+inline oasis::hybrid::M68k9D70StepResult step_m68k_portable_m15250_multiblock(
+    unsigned pc_in, const oasis::hybrid::M68k9D70StepApi& api, bool enabled) noexcept {
+    const std::uint32_t pc = static_cast<std::uint32_t>(pc_in) & kBusAddressMask;
+    auto& m = detail::exp250_metrics_mut();
+    bool& in_port = detail::in_exp250_mut();
+
+    if (!enabled) return oasis::hybrid::M68k9D70StepResult::NotHandled;
+
+    if (!is_compiled_exp250_dispatch_pc(pc)) {
+        if (in_port) {
+            in_port = false;
+            ++m.valid_uncompiled_exits;
+        }
+        return oasis::hybrid::M68k9D70StepResult::NotHandled;
+    }
+
+    if (!in_port) {
+        in_port = true;
+        ++m.m15250_entries;
+    }
+
+    HybridM68kFusedBus250 bus{api};
+    std::uint32_t cur_pc = pc;
+    std::uint32_t next_pc = pc;
+    std::uint32_t fused_blocks = 0;
+    std::uint32_t fused_steps = 0;
+
+    while (true) {
+        const auto prev_steps = bus.step_count();
+        if (run_exp250_mode_b_all(bus, cur_pc, next_pc)) {
+            ++fused_blocks;
+            fused_steps += (bus.step_count() - prev_steps);
+            if (!bus.slice_yield() && is_multiblock_candidate_edge(cur_pc, next_pc) && fused_blocks < 3) {
+                cur_pc = next_pc;
+                ++m.internal_cfg_edges_traversed;
+                continue;
+            }
+            break;
+        } else if (bus.slice_yield()) {
+            fused_steps += (bus.step_count() - prev_steps);
+            next_pc = bus.last_next_pc();
+            break;
+        } else if (step_one_exp250_dispatch_ir(bus, cur_pc, next_pc)) {
+            fused_steps += (bus.step_count() - prev_steps);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    if (fused_steps == 0) {
+        if (bus.faulted()) {
+            ++m.cpu_exceptions;
+            ++m.original_cpu_fallbacks;
+            in_port = false;
+            return oasis::hybrid::M68k9D70StepResult::NotHandled;
+        }
+        ++m.contract_faults;
+        in_port = false;
+        return oasis::hybrid::M68k9D70StepResult::ContractFault;
+    }
+
+    m.m15250_guest_steps += fused_steps;
+    m.disjoint_new_native_steps += fused_steps;
+    m.fused_blocks += fused_blocks;
+
+    if (fused_blocks >= 2) {
+        ++m.multi_block_entries;
+        m.multi_block_chained_blocks += fused_blocks;
+    }
+
+    if (bus.last_op() == 0x4E75U) ++m.completed_returns;
+    if (!is_compiled_exp250_dispatch_pc(next_pc)) {
+        in_port = false;
+        ++m.valid_uncompiled_exits;
+    }
+    return oasis::hybrid::M68k9D70StepResult::InstructionStepped;
+}
+
 } // namespace oasis::recompiler::ir

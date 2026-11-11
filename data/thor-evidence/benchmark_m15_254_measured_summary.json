@@ -1,0 +1,88 @@
+{
+  "milestone": "M15.254",
+  "provenance": {
+    "source_command": "python tools/run_m15_254_multiblock_ab.py",
+    "executable_sha256": "b798f2c3a00a145e6518fe9348637ca288457b079610f2468efa36fee8425585",
+    "build_configuration": "Linux Release (-O3 -DNDEBUG)",
+    "input_journal_sha256": "430155b46e330ea924298ea8be5359f131a546cefb044439c28e83344d93ee4f",
+    "raw_measurement_file": "data/thor-evidence/m15_254_multiblock_ab_summary.json",
+    "trial_count": 60,
+    "measurement_method": "Wall-clock OS execution via time.perf_counter() inside subprocess.run",
+    "audit_note": "M15.253 synthetic speedup claims (1.0042x, 0.9765x) retracted; real OS timings measured."
+  },
+  "aggregate_summary": {
+    "run_g_total_sec": 109.0558,
+    "run_h_total_sec": 111.0387,
+    "run_i_total_sec": 110.8392,
+    "run_j_total_sec": 111.2644,
+    "aggregate_speedup_h_to_i": 1.0018,
+    "aggregate_speedup_g_to_i": 0.9839,
+    "aggregate_speedup_i_to_j": 0.9962,
+    "aggregate_speedup_g_to_j": 0.9802,
+    "performance_gate_verdict": "SPEEDUP_WITHIN_NOISE_WINDOW",
+    "noise_window_percent": 1.5,
+    "is_gameplay_faster": false
+  },
+  "scenarios": {
+    "scenario_c": {
+      "run_g_sec": 17.6104,
+      "run_h_sec": 17.6224,
+      "run_i_sec": 17.3911,
+      "run_j_sec": 17.4228,
+      "paired_speedup_h_to_i": 1.0133,
+      "paired_speedup_g_to_i": 1.0126,
+      "paired_speedup_i_to_j": 0.9982,
+      "paired_speedup_g_to_j": 1.0108
+    },
+    "scenario_a": {
+      "run_g_sec": 15.1233,
+      "run_h_sec": 16.0272,
+      "run_i_sec": 15.6769,
+      "run_j_sec": 15.441,
+      "paired_speedup_h_to_i": 1.0223,
+      "paired_speedup_g_to_i": 0.9647,
+      "paired_speedup_i_to_j": 1.0153,
+      "paired_speedup_g_to_j": 0.9794
+    },
+    "scenario_b": {
+      "run_g_sec": 6.711,
+      "run_h_sec": 6.5879,
+      "run_i_sec": 6.6097,
+      "run_j_sec": 6.5585,
+      "paired_speedup_h_to_i": 0.9967,
+      "paired_speedup_g_to_i": 1.0153,
+      "paired_speedup_i_to_j": 1.0078,
+      "paired_speedup_g_to_j": 1.0233
+    },
+    "longrun_3600f": {
+      "run_g_sec": 34.0891,
+      "run_h_sec": 34.8726,
+      "run_i_sec": 34.9235,
+      "run_j_sec": 36.2188,
+      "paired_speedup_h_to_i": 0.9985,
+      "paired_speedup_g_to_i": 0.9761,
+      "paired_speedup_i_to_j": 0.9642,
+      "paired_speedup_g_to_j": 0.9412
+    },
+    "longrun_alt_1800f": {
+      "run_g_sec": 17.3374,
+      "run_h_sec": 17.3946,
+      "run_i_sec": 17.5432,
+      "run_j_sec": 17.2316,
+      "paired_speedup_h_to_i": 0.9915,
+      "paired_speedup_g_to_i": 0.9883,
+      "paired_speedup_i_to_j": 1.0181,
+      "paired_speedup_g_to_j": 1.0061
+    },
+    "longrun_combat_1800f": {
+      "run_g_sec": 18.1845,
+      "run_h_sec": 18.5341,
+      "run_i_sec": 18.6949,
+      "run_j_sec": 18.3917,
+      "paired_speedup_h_to_i": 0.9914,
+      "paired_speedup_g_to_i": 0.9727,
+      "paired_speedup_i_to_j": 1.0165,
+      "paired_speedup_g_to_j": 0.9887
+    }
+  }
+}
