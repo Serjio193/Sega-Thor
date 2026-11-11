@@ -445,7 +445,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     }
 
     streamer_.step_frame(camera_.camera_x(), camera_.camera_y(), current_vdp_);
-    camera_.apply_to_vdp(current_vdp_);
+    if (map_id_ != world::kTownMapId || is_logic_step) {
+        camera_.apply_to_vdp(current_vdp_);
+    }
     if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
         render::step_town_water_cycle(town_water_timer_, town_water_phase_, current_vdp_);
     } else {

@@ -30398,3 +30398,24 @@ RESULT: PASS.
   - Canonical `F779`: `0 / 71,680` differing pixels (`100.0%` pixel-exact, RGB24 SHA-256 `b6cf377d1feadd9d6b74c6cfd3d948cc30bce98700a30c1ced3f742b9b86d253`), `0 / 65,536` VRAM, `0 / 640` physical SAT, `0` CRAM, `0` VSRAM, `0` VDP Registers.
   - Full 14-snapshot measurement: Canonical sum = `148,820` px (`F779: 3,564 -> 0`), Independent Holdout sum = `24,542` px (`25,520 -> 24,542`), total = `173,362` px.
 - **Test Coverage**: Added `tests/m16_39_sat_forensics_pixel_exact_test.cpp` (`oasis_m16_39_sat_forensics_pixel_exact`) with VDP rasterizer audit (`x == 0` masking), 14-snapshot parity verification, and `4/4` M16.39 mutation guards.
+
+
+# M16.40 Worklog — First Post-F779 Divergence, Continuous Frame Validation, and Graphics State Convergence
+
+## Execution & Results
+- **Phase 0 Baseline Reproduction**: Confirmed M16.39 baseline (`cf1d669ad7827adc36c11a22094c03fd68e7a0aa`). Canonical F775 and F779 verified at 0/71,680 differing pixels, 0 VRAM, 0 CRAM, 0 VSRAM, 0 Regs. Canonical SAT 521/521, Holdout PRNG 350/350, entity comparisons 51,476/51,476. Both CTest suites passing with exact 12 historical BizHawk failures preserved.
+- **Phase 1 Continuous Original Video Capture**: Stepped live pinned GPGX (`ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`) across frames 775..858 from `canonical_beach_frame3600.state`. Serialized full VRAM, CRAM, VSRAM, registers, SAT, and verified all 7 canonical snapshots against GPGX state with 0 byte difference. Extracted and committed continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f785.json` (11 frames, SHA256 `29ced496763e4114a1dc4188f3377536324db3225d60156ae482d41ccd8066e5`).
+- **Phase 2 & 3 Continuous Comparison & First Post-F779 Divergence Forensics**:
+  - Validated frame-by-frame comparison across F775..F785.
+  - Achieved **10 consecutive bit-for-bit pixel-exact frames: F775 through F784 (100.00% matching, 0/71,680 diff pixels, 0/65,536 VRAM, 0 CRAM, 0 VSRAM, 0 Regs)**!
+  - First remaining post-F779 divergence located at **F785** (`1,352` differing pixels, `802` VRAM bytes differing: `755` Pattern RAM bytes at `0x9500..0x97DF`, `47` SAT bytes across slots `[9..30]`).
+  - Cause attributed to Button B attack input (`in = 0x1510` at F782/F784) triggering Ali sword slash attack (`pst = 54` / `0x36`), generating a 9-entry dynamic pattern DMA queue (`$FF10B4..$FF10FC`) uploading slash body pose and sword overlay tiles (`0x9500..0x97DF`) instead of walking tiles (`0x9300..0x94FF`).
+- **Phase 4 Root-Cause Graphics State Correction**:
+  - Gated `camera_.apply_to_vdp(current_vdp_)` on `(map_id_ != world::kTownMapId || is_logic_step)` in `src/game/standalone_game_simulation.cpp`, ensuring Town 30Hz VSRAM is committed synchronously with presentation frames (odd frames) and staged across even logic frames, while preserving 60Hz camera scroll updates on Beach.
+- **Phase 5 Milestone Test Suite & Governance**:
+  - Created `tests/m16_40_continuous_exact_prefix_test.cpp` (`oasis_m16_40_continuous_exact_prefix_test`, 425 lines) asserting:
+    1. 10-frame continuous exact prefix F775..F784 (0 diff px, 0 VRAM, 0 CRAM, 0 VSRAM).
+    2. Exact divergence metrics at F785 (1,352 px, 802 VRAM bytes).
+    3. Full 14-snapshot regression matrix across Canonical and Holdout.
+    4. 4 mutation guards (cadence, VSRAM offset 136 vs 139, VBlank staging, attack input trigger).
+  - Both MinGW Release and MSVC Debug CTest: **214/226 passed** (95%), preserving exact 12 historical BizHawk failures. All 966 governed files `<= 500` lines. Zero emulator linkage. Hybrid worktree untouched.

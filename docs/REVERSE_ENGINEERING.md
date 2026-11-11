@@ -8965,3 +8965,15 @@ SOURCE_OWNED, or canonical SQLite authority changed. See
   * Water tile bit `0x20` (`$6E`) uses an `AND` mask across the entity's `[x-base_half_w..x+base_half_w, y-base_half_w..y+base_half_w]` terrain cells rather than a single center sample, keeping bank-edge Slot 7 `(181,340)` grounded (`0x01`) and suppressing spurious `[11..12]` water-ripple sprites. `water_ripple_tick` increments on SAT/render cadence.
 - **VDP Scanline Sprite Masking (`vdp_rasterizer.cpp`)**:
   * When `line_sprites` already holds at least one non-zero-X sprite on the active scanline, encountering an SAT entry with `x_raw == 0` (`spr.x == -128`) stops trailing sprite rendering for that scanline.
+
+
+## Continuous 10-Frame Exact Prefix & F785 Attack Divergence Forensics (M16.40)
+- **Town 30Hz VSRAM VBlank Staging**:
+  * In the authentic Mega Drive game loop, camera position tracking updates in internal logic ticks, but VDP registers and VSRAM writes (`vsram[1]`) are executed strictly during VBlank preceding presentation frames (odd frames: F775, F777, F779, F781, F783).
+  * On even logic frames (F776, F778, F780, F782, F784), VDP VSRAM is NOT updated and retains the previous frame's vertical scroll.
+  * In native `StandaloneGameSimulation`, gating `camera_.apply_to_vdp(current_vdp_)` on `(map_id_ != world::kTownMapId || is_logic_step)` synchronizes VSRAM updates with VBlank, producing **10 consecutive bit-for-bit pixel-exact frames: F775 through F784** (`0 / 71,680` differing pixels, `0 / 65,536` VRAM diff, `0` CRAM diff, `0` VSRAM diff).
+- **First Post-F779 Divergence Forensics at F785**:
+  * First diverging frame is **F785** (`1,352` differing pixels, `802` VRAM bytes differing).
+  * VRAM difference breakdown: `755` bytes in Pattern RAM `0x9500..0x97DF`, `47` SAT bytes across slots `[9..30]`. CRAM, VSRAM, Plane A, Plane B have `0` byte difference.
+  * Root-cause trace: Input at F782/F784 contains Button B (`in = 0x1510`), triggering Ali sword slash attack (`pst = 54` / `0x36`). In authentic ROM, attacking generates a 9-entry dynamic pattern DMA queue (`$FF10B4..$FF10FC`) uploading slash body pose and sword overlay tiles (`0x9500..0x97DF`) instead of walking tiles (`0x9300..0x94FF`).
+  * VDP registers R21..R23 reflect the bottom entry of the attack DMA queue (`0x09D84E`).

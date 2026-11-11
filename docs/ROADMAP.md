@@ -6172,3 +6172,12 @@ full-game parity and remaining subsystem coverage. See
 - Audited `vdp_rasterizer.cpp` and added hardware `x_raw == 0` scanline sprite masking.
 - Achieved **0 / 71,680 differing pixels** (`100.0%` pixel-exact active frame, SHA256 `b6cf377d1feadd9d6b74c6cfd3d948cc30bce98700a30c1ced3f742b9b86d253`), **0 / 65,536 VRAM**, and **0 / 640 SAT** bytes at Canonical `F779`, and reduced Holdout pixel diff (`25,520 -> 24,542`).
 - Added `tests/m16_39_sat_forensics_pixel_exact_test.cpp` (`oasis_m16_39_sat_forensics_pixel_exact`, `4/4` mutation guards killed).
+
+
+# M16.40 — First Post-F779 Divergence, Continuous Frame Validation, and Graphics State Convergence — PASS
+- Extended continuous bit-for-bit pixel-exact rendering across **10 consecutive frames: F775 through F784 (100.00% matching, 0 / 71,680 differing pixels, 0 / 65,536 VRAM diff, 0 CRAM diff, 0 VSRAM diff)**.
+- Gated `camera_.apply_to_vdp(current_vdp_)` on `(map_id_ != world::kTownMapId || is_logic_step)` in `StandaloneGameSimulation`, eliminating F776 premature VSRAM update while preserving Beach 60Hz scroll updates.
+- Identified first post-F779 divergence at **F785** (`1,352` differing pixels, `802` VRAM bytes = `755` Pattern RAM bytes at `0x9500..0x97DF`, `47` SAT bytes across slots `[9..30]`). Attributed to Button B attack input (`0x1510`) at F782/F784 triggering Ali sword slash attack and dynamic pattern queue (`$FF10B4..$FF10FC`).
+- Extracted and committed continuous reference fixture `data/standalone-fixtures/town_canonical_continuous_f775_f785.json` (11 frames, SHA256 `29ced496763e4114a1dc4188f3377536324db3225d60156ae482d41ccd8066e5`).
+- Added `tests/m16_40_continuous_exact_prefix_test.cpp` (`oasis_m16_40_continuous_exact_prefix`, 425 lines, 4 mutation guards).
+- CTest in MinGW Release and MSVC Debug: **214/226 passed** (exact 12 historical BizHawk failures preserved). Governed files <= 500 lines. Zero emulator linkage. Hybrid worktree untouched.

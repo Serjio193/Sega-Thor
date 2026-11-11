@@ -4132,3 +4132,6 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - `tests/m16_38_dynamic_pattern_dma_test.cpp` — Differential qualification suite for M16.37 metric reconciliation, F779 pattern/PlaneA/CRAM/VSRAM/register convergence, 14-snapshot Holdout+Canonical checks, PPM diff outputs, and 7 DMA/VDP negative mutations (M16.38).
 
 - `tests/m16_39_sat_forensics_pixel_exact_test.cpp` — Differential M16.39 test verifying VDP `x==0` sprite masking, 100% bit-exact active frame convergence at Canonical `F779` (`0/71,680` pixels, `0/65,536` VRAM, `0/640` SAT), 14-snapshot VDP/pixel summary, and 4 M16.39 mutation guards (M16.39).
+
+- `data/standalone-fixtures/town_canonical_continuous_f775_f785.json` — Pinned continuous 11-frame GPGX VDP state fixture (F775..F785) with full VRAM, CRAM, VSRAM, registers, and SAT chain (M16.40).
+- `tests/m16_40_continuous_exact_prefix_test.cpp` — Differential qualification suite for 10-frame continuous exact prefix (F775..F784, 0 diff px, 0 VRAM, 0 CRAM, 0 VSRAM), F785 first-divergence quantification (1,352 px, 802 VRAM bytes), 14-snapshot regression matrix, and 4 mutation guards (M16.40).

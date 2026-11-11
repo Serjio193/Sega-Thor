@@ -11488,3 +11488,20 @@ At M16.38, Canonical `F779` had `0` differences in Pattern RAM, Plane A, Plane B
 ### Consequences
 - Canonical `F779` achieves **0 / 71,680** differing pixels and **0 / 65,536** differing VRAM bytes (`0` physical SAT residue diff) with zero snapshot injection or frame-number hardcoding.
 - `521/521` Canonical SAT, `350/350` Holdout SAT/PRNG, `51,476/51,476` entity fields, and Independent Holdout (`25,520 -> 24,542` px) remain preserved or improved.
+
+
+## Decision: M16.40 — Synchronized Town VBlank Camera Scroll Cadence, 10-Frame Continuous Exact Prefix (F775..F784), and F785 Attack Divergence Forensics
+
+### Context
+Following M16.39's first active pixel-exact frame at F779, extending continuous pixel-exact rendering revealed that F776 exhibited premature vertical scroll update (`vsram[1] = 1` vs GPGX `4`), while frames F777..F784 matched bit-for-bit. Mega Drive Town 30Hz game loop logic ticks only commit VDP VSRAM during odd presentation frames (VBlank). On even logic frames, VDP VSRAM retains the previous frame's scroll.
+
+### Decision
+1. Gate `camera_.apply_to_vdp(current_vdp_)` on `(map_id_ != world::kTownMapId || is_logic_step)` in `StandaloneGameSimulation::step_frame`. This ensures:
+   - On Beach (60Hz), camera scroll is committed to VDP every frame as required by existing oracle contracts.
+   - On Town (30Hz), camera scroll is committed to VDP synchronously with VBlank on odd presentation frames (`is_logic_step`), keeping VSRAM unchanged on even frames.
+2. Characterize the first remaining divergence at **F785** (`1,352` differing pixels, `802` VRAM bytes = `755` Pattern RAM bytes + `47` SAT bytes across slots `[9..30]`). Forensic trace proves this is triggered by Button B attack input (`0x1510`) at F782/F784 initiating Ali's sword slash (`pst = 54`), generating an authentic 9-entry dynamic pattern DMA queue (`$FF10B4..$FF10FC`) uploading slash body pose and sword overlay tiles (`0x9500..0x97DF`).
+
+### Consequences
+- **10 consecutive bit-for-bit pixel-exact frames**: F775, F776, F777, F778, F779, F780, F781, F782, F783, F784 all have **0 / 71,680 differing pixels**, **0 / 65,536 VRAM diff**, **0 CRAM diff**, **0 VSRAM diff**, and **0 Reg diff**.
+- Zero regressions across Canonical and Independent Holdout snapshots (Canonical sum = 148,820 px, Holdout sum = 24,542 px).
+- MinGW Release and MSVC Debug CTest: **214/226 passed** (preserving exact 12 historical BizHawk failures). Zero emulator linkage. Governed files strictly `<= 500` lines.
