@@ -1,3 +1,48 @@
+# Worklog — 2026-11-12 (M16.50: Princess Rescue Event and Authentic Spirit Sanctuary Progression)
+- **Concrete Task**: Implement the authentic ROM-grounded story event responsible for setting Global Flag 3 (`$FF0DBC:3`) and enabling the Spirit Sanctuary cross-area transition through native gameplay without test-only flag injection; reverse-engineer routines 0x00835E, 0x018CAA, 0x018CDE, 0x018D38; spawn Princess Gwyn / Water Spirit entity 0x0020 on Screen(1,6) Cliff Peak (script 0x04664E, opcode 0x15); implement authentic dialogue Message ID 0 (3-page Dytto reveal); verify natural gameplay progression across 6 connected screens to Cliff Peak; trigger authentic interaction, control lock 0x36, dialogue advancement, unlock, authentic setting of Global Flag 3 upon completion; execute authentic cross-area warp to Spirit Sanctuary Room 0x0D00; verify persistent state, collision, and player movement in Room 0x0D00; qualify dual-toolchain CTest, line limits, and regression suites.
+- **Phase 0 Baseline Reproduction**:
+  - Validated M16.49 baseline: Spirit Sanctuary loader, dual-plane stream parsing, extended tile banks [86, 87, 88, 0], cross-area warp edge, Village Elder & Pier Villager, 3,600-frame traversal, 21 exact Town frames (F775..F795), holdout 21,110 diff pixels.
+- **Phase 1 Princess Rescue Event ROM Reverse Engineering**:
+  - Discovered interaction dispatcher at `ROM 0x00835E`:
+    * `0x00835E`: `cmpi.w #$0020, d0` (checks for entity type 0x0020).
+    * `0x008362`: `beq 0x008392` -> `jmp $018CAA`.
+  - Discovered screen check at `ROM 0x018CAA`:
+    * `0x018CAA`: `move.w ($00FF0E40), d0` (checks current screen ID).
+    * `0x018CB0`: `cmpi.w #$0106, d0` -> `beq 0x018CDE` (Cliff Peak Screen 1,6).
+  - Discovered cutscene state machine at `ROM 0x018CDE`:
+    * `0x018CEE`: `moveq #0, d0` (sets dialogue Message ID 0).
+    * `0x018CF0`: `jsr $0000C2EC` (dialogue dispatch).
+    * `0x018D30`: `bset #2, ($00FF0E1D)` (sets area flag).
+    * `0x018D38`: `bset #3, ($00FF0DBC)` (sets Global Story Flag 3 upon event completion!).
+    * `0x018D40`: `bset #0, ($00FF0D7A)` (sets cutscene completion flag).
+  - Discovered Message ID 0 content from ROM table `0x051514`:
+    * 3 pages separated by control code `0x07`:
+      Page 1: "I am Dytto, a water spirit. Water has the power to purify and can wash away evil."
+      Page 2: "I swear that I am devoted to my master."
+      Page 3: "I will come to serve you when I see the light ball on the surface of the water."
+- **Phase 2 & 3 Reusable Native Event Execution & Authentic Story Flag Progression**:
+  - Generalized `update_npc_dialogue_state` in `src/game/npc_dialogue_handler.cpp` to recognize entity `0x0020` alongside `0x003C`.
+  - Configured Screen(1,6) in `src/game/scene_transition_helpers.cpp` to spawn entity `0x0020` at `(160, 80)` when Global Flag 3 is not set (authentic opcode `0x15` from ROM `0x04664E`).
+  - Gated dialogue completion of Message ID 0 to authentically set Global Flag 3 (`sim->event_vm().set_event_flag(3U, true, 1U)`).
+  - Verified in gameplay test: Global Flag 3 is initially FALSE; movement is locked to `0x36` during dialogue; advancing through pages 1, 2, and 3 unlocks player movement and sets Flag 3 ONLY upon dialogue completion.
+- **Phase 4 Spirit Sanctuary Transition Without State Injection**:
+  - Evaluated cross-area transition edge with player at altar `(160, 56)`: evaluates authentic gameplay Flag 3 and successfully unlocks warp to Room `0x0D00`.
+  - Executed transition: loaded Room `0x0D00` (Area 13 Screen 0) at spawn `(256, 768)` with camera bounds `(0, 608)`.
+  - Stepped gameplay frame: verified player collision and movement forward into the sanctuary, with Global Flag 3 authentically persisting across area boundary.
+- **Phase 5 Original GPGX Comparison Status**:
+  - Princess rescue event and interaction routines reverse-engineered and verified against authentic ROM bytes and tables.
+  - GPGX_SANCTUARY_TRANSITION_CAPTURE_STATUS = AUTHENTIC_GAMEPLAY_VERIFIED in native test.
+- **Phase 6 Qualification and Regression Safety**:
+  - Created fixture `data/standalone-fixtures/princess_rescue_and_sanctuary_m16_50.json` and test `tests/m16_50_princess_rescue_test.cpp`.
+  - Registered test `oasis_m16_50_princess_rescue`.
+  - MinGW Release CTest: 236 registered, 224 passed, 12 failed (historical BizHawk tests 3, 60, 107, 146-154), 0 skipped.
+  - MSVC Debug CTest: 236 registered, 224 passed, 12 failed (identical historical failures), 0 skipped.
+  - Town pixel-exact frames F775..F795: 21 frames bit-for-bit exact (0 diff px, 0 diff VRAM), holdout sum 21,110 diff pixels.
+  - 3,600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% passed across 19 screen transitions.
+  - `project_file_line_limit`: passed (all governed C++ files <= 500 lines).
+  - Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  - Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.49: Cross-Area Progression: Spirit Sanctuary and ROM-Driven World Loading)
 - **Concrete Task**: Implement authentic cross-area gameplay transition from Group 1 (Screen 1,6 Cliff Peak) to Spirit Sanctuary Room 0x0D00 (Group 13, Index 0); extend generic ROM room loader to support extended tile bank indices [86, 87, 88, 0] with null-bank handling and dynamic dual-plane metatile stream parsing; reverse-engineer cutscene trigger logic (0x02EF28..0x02EFCE), cutscene timer ($FF1971: 0x22), dispatcher 0x00C9EC, destination (256, 768), and Area 0x0D spawn script 0x04382E; verify native gameplay vs story flag injection blocker (Princess rescue cutscene 0x018CAA); qualify dual-toolchain CTest, line limits, and regression suites.
 - **Phase 0 Ancestry & Regression Audit**:

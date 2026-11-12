@@ -1,3 +1,45 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.50: Princess Rescue Event 0x018CAA / 0x018CDE, Entity 0x0020 Dispatcher 0x00835E, Story Flag 3 Set Point 0x018D38, and Dialogue Message 0)
+
+## Milestone M16.50 Reverse Engineering Summary
+
+### 1. Entity Interaction Dispatcher (`ROM 0x008350..0x008398`)
+- In player entity interaction evaluation routine:
+  * `0x008352`: `move.w ($00, a0), d0` (loads entity type ID from entity struct).
+  * `0x00835E`: `cmpi.w #$0020, d0` (checks for entity type `0x0020` - Princess Gwyn / Water Spirit).
+  * `0x008362`: `beq 0x008392` -> `jmp $018CAA`.
+  * Proximity condition: `dx <= 28 && dy <= 28` (`0x008330..0x00834E`), facing North.
+
+### 2. Screen ID Check Routine (`ROM 0x018CAA`)
+- `0x018CAA`: `move.w ($00FF0E40), d0` (loads current screen ID).
+- `0x018CB0`: `cmpi.w #$0106, d0` (checks if current screen is `0x0106` Cliff Peak Screen 1,6).
+- `0x018CB4`: `beq 0x018CDE` (branches to Screen 1,6 cutscene state machine).
+
+### 3. Cutscene State Machine & Story Flag 3 SET Point (`ROM 0x018CDE..0x018D4C`)
+- `0x018CDE`: `move.w #$003F, ($0032, a6)` (lock state).
+- `0x018CEE`: `moveq #0, d0` (selects dialogue Message ID 0).
+- `0x018CF0`: `jsr $0000C2EC` (dispatches dialogue window).
+- `0x018CF6`: `lea ($00FF1CD8), a4` (loads entity slot).
+- `0x018D12`: `clr.w (a4)` (clears entity slot).
+- `0x018D30`: `bset #2, ($00FF0E1D)` (sets Area Flag bit 2 in `$FF0E1C+1`).
+- `0x018D38`: `bset #3, ($00FF0DBC)` (sets Global Story Flag 3!).
+- `0x018D40`: `bset #0, ($00FF0D7A)` (sets cutscene completion flag).
+- `0x018D48`: `ori.b #1, ccr` (sets success return flag).
+- `0x018D4C`: `rts`.
+
+### 4. Dialogue Message ID 0 Decoding (`ROM 0x051514` -> `0x0515FC`)
+- Decoded 3 pages separated by control code `0x07`:
+  * Page 1: "I am Dytto, a water spirit. Water has the power to purify and can wash away evil."
+  * Page 2: "I swear that I am devoted to my master."
+  * Page 3: "I will come to serve you when I see the light ball on the surface of the water."
+
+### 5. Screen(1,6) Spawn Script (`ROM 0x04664E`)
+- Opcode `0x15` (`VM_OP_SPAWN_GATED_PROP`):
+  * Bank: 1 (Global Flags `$FF0DBC`).
+  * Entity Type: `0x0020` (Princess Gwyn / Water Spirit).
+  * Gating Flag Index: 3 (spawns when Flag 3 == 0; once rescued, entity is not respawned).
+  * Coordinates: `(160, 80)`.
+  * Tile pattern: `0x0200`.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.49: Spirit Sanctuary Room 0x0D00 Descriptors, Extended Tile Banks [86, 87, 88, 0], Cross-Area Warp 0x02EFC0, and Area 13 Spawn Script 0x04382E)
 
 ## Milestone M16.49 Reverse Engineering Summary

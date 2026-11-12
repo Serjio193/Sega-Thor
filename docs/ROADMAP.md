@@ -1,3 +1,36 @@
+# M16.50 Princess Rescue Event and Authentic Spirit Sanctuary Progression — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Baseline Reproduction:
+  * Verified M16.49 baseline components: extended tile banks [86, 87, 88, 0], dynamic stream decoding, cross-area transition edge, Village Elder & Pier Villager, 3,600-frame traversal, Town 21 exact frames, and holdout 21,110 diff pixels.
+- Phase 1 — Original Princess Rescue Event Reverse Engineering:
+  * Reverse-engineered interaction dispatcher at `ROM 0x00835E` (`cmpi.w #$0020, d0` -> `jmp $018CAA`).
+  * Reverse-engineered screen check `ROM 0x018CAA` (`cmpi.w #$0106, d0` -> `beq 0x018CDE`).
+  * Reverse-engineered cutscene state machine `ROM 0x018CDE` dispatching dialogue Message ID 0.
+  * Reverse-engineered Story Flag 3 SET point at `ROM 0x018D38` (`bset #3, ($00FF0DBC)`).
+  * Decoded authentic 3-page Message ID 0 from `ROM 0x051514` ("I am Dytto, a water spirit...").
+  * Reverse-engineered Screen(1,6) spawn script `0x04664E` spawning entity `0x0020` gated by Flag 3.
+- Phase 2 & 3 — Reusable Native Event Execution & Authentic Story Flag Progression:
+  * Extended `update_npc_dialogue_state` to support entity `0x0020` and Message ID 0.
+  * Configured `assign_scene_entities` to spawn entity `0x0020` at `(160, 80)` on Screen(1,6).
+  * Gated dialogue completion of Message ID 0 to authentically set Global Flag 3 (`$FF0DBC:3`).
+  * Tested and verified: Flag 3 is initially FALSE; interaction locks player in state `0x36`; advancing pages 1, 2, and 3 unlocks player and sets Flag 3 without state injection.
+- Phase 4 — Spirit Sanctuary Transition Without State Injection:
+  * Reached altar at `(160, 56)` through natural player movement with Flag 3 active.
+  * Verified transition edge evaluates Flag 3 and unlocks cross-area warp to Room `0x0D00`.
+  * Transitioned to Room `0x0D00`, verified initial spawn `(256, 768)`, camera bounds `(0, 608)`, and stepped movement into Sanctuary with full flag persistence.
+- Phase 5 — Original GPGX Comparison Status:
+  * Differential analysis against ROM instructions and data tables confirms event structure, entity ID, screen ID, message ID, and flag bit index.
+- Phase 6 — Full Qualification & Dual-Toolchain Verification:
+  * Added `tests/m16_50_princess_rescue_test.cpp` and fixture `data/standalone-fixtures/princess_rescue_and_sanctuary_m16_50.json`.
+  * MinGW Release CTest: 236 registered, 224 passed, 12 failed (historical BizHawk tests 3, 60, 107, 146-154), 0 skipped.
+  * MSVC Debug CTest: 236 registered, 224 passed, 12 failed (identical historical failures), 0 skipped.
+  * Preserved Town 21-frame continuous exact prefix (F775..F795, 0 diff px) and Holdout sum of 21,110 diff pixels.
+  * Extended 3600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% pass across 19 screen transitions.
+  * File line limits: all governed source files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.49 Cross-Area Progression: Spirit Sanctuary and ROM-Driven World Loading — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,28 @@
+# ADR-20261112-M16-50-PRINCESS-RESCUE-EVENT-AND-AUTHENTIC-SPIRIT-SANCTUARY-PROGRESSION — Reverse Engineering of Entity 0x0020 Interaction Dispatcher (0x00835E), Screen 1,6 Check (0x018CAA), Cutscene State Machine (0x018CDE), and Story Flag 3 SET Point (0x018D38); Integration of Dialogue Message 0 (3-Page Dytto Water Spirit Revelation); Native Unlocked Gameplay Progression to Screen 1,6; Authentic Setting of Global Flag 3 upon Dialogue Completion; Checkpoint-Free Cross-Area Warp to Spirit Sanctuary Room 0x0D00; Dual-Toolchain Qualification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. In M16.49, the cross-area transition from Screen(1,6) to Spirit Sanctuary Room `0x0D00` was verified via isolated component test with flag injection because Global Flag 3 (`$FF0DBC:3`) was not yet set by natural gameplay.
+2. M16.50 requires implementing the authentic ROM-grounded story event responsible for setting Global Flag 3 so that Spirit Sanctuary is reached authentically through normal gameplay without state injection.
+3. Reverse engineering of ROM routines:
+   - `0x00835E`: checks if interacted entity is `0x0020` (`cmpi.w #$0020, d0`), branching to `0x008392` (`jmp $018CAA`).
+   - `0x018CAA`: checks if current screen is `0x0106` (`cmpi.w #$0106, d0`), branching to `0x018CDE`.
+   - `0x018CDE`: cutscene state machine setting dialogue Message ID 0 (`moveq #0, d0`) and calling dialogue dispatcher `0x00C2EC`.
+   - `0x018D38`: upon event completion, sets Global Flag 3 (`bset #3, ($00FF0DBC)`), area flag (`0x018D30`), and event flag (`0x018D40`).
+   - ROM Area 1 spawn script for Screen(1,6) at `0x04664E`: executes opcode `0x15` (`VM_OP_SPAWN_GATED_PROP`), bank 1, entity `0x0020` (Princess Gwyn / Water Spirit), flag 3 (spawn if Flag 3 == 0), at `(160, 80)` with VRAM tile `0x0200`.
+   - ROM dialogue table `0x051514` Message ID 0: 3 pages separated by control code `0x07` describing Dytto the water spirit.
+
+**Decisions:**
+1. **Entity 0x0020 Support in NPC Dialogue Handler:**
+   - Updated `update_npc_dialogue_state` to recognize entity `0x0020` in addition to `0x003C`.
+   - Dispatched Message ID 0 for entity `0x0020` in Screen(1,6).
+   - Set Global Flag 3 upon completion of Message ID 0 (`event_vm.set_event_flag(3U, true, 1U)`).
+2. **Screen(1,6) Entity Spawning in Scene Transition Helpers:**
+   - Wired Screen(1,6) in `assign_scene_entities` to spawn entity `0x0020` at `(160, 80)`.
+3. **Authentic Story Flag Progression & Cross-Area Warp:**
+   - In `tests/m16_50_princess_rescue_test.cpp`, player traverses to Screen(1,6) Cliff Peak, talks to entity `0x0020`, advances through all 3 dialogue pages, completes the event, authentically sets Global Flag 3, approaches the altar warp trigger at `(160, 56)`, executes the cross-area warp to Room `0x0D00`, and steps gameplay frames into the sanctuary with verified collision and flag persistence.
+
 # ADR-20261112-M16-49-CROSS-AREA-PROGRESSION-SPIRIT-SANCTUARY-AND-ROM-DRIVEN-WORLD-LOADING — Cross-Area Transition from Group 1 to Spirit Sanctuary Room 0x0D00 (Group 13, Index 0); Extended Tile Bank Resolution and Resource 0 Handling; Dynamic Dual-Plane Metatile Stream Parsing; ROM Trigger (0x02EF28..0x02EFCE), Cutscene Timer ($FF1971: 0x22), Dispatcher 0x00C9EC, and Area 0x0D Spawn Script 0x04382E; Princess Rescue Story Flag Blocker Analysis; Dual-Toolchain Qualification
 **Status:** Accepted
 **Date:** 2026-11-12

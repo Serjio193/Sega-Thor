@@ -1,0 +1,69 @@
+{
+  "milestone": "M16.50",
+  "rom_title": "The Story of Thor / Beyond Oasis (USA)",
+  "sha256": "47be7db6d0c75ce2a87a17f0aa45eb95d5904ed99b0c74be59c3664c39ca9ff9",
+  "princess_rescue_event": {
+    "screen_id": "0x0106",
+    "screen_name": "Screen(1,6) Cliff Peak / Boss Overlook",
+    "trigger_entity": {
+      "type_id": "0x0020",
+      "name": "Princess Gwyn / Water Spirit",
+      "spawn_script_address": "0x04664E",
+      "spawn_script_opcode": "0x15 (VM_OP_SPAWN_GATED_PROP)",
+      "gating_flag": {
+        "bank": 1,
+        "bank_name": "Global Flags ($FF0DBC)",
+        "flag_index": 3,
+        "condition": "Spawn if Flag 3 == 0 (Unrescued)"
+      },
+      "spawn_position": { "x": 160, "y": 80 },
+      "vram_tile_base": "0x0200"
+    },
+    "interaction_dispatcher": {
+      "address": "0x00835E",
+      "type_check": "cmpi.w #$0020, d0",
+      "handler_jump": "0x008392 -> jmp 0x018CAA"
+    },
+    "event_routines": {
+      "0x018CAA": "Screen ID check routine: verifies $FF0E40 == 0x0106, branches to 0x018CDE",
+      "0x018CDE": "Cutscene state machine and dialogue trigger: displays Message ID 0 (Dytto intro)",
+      "0x018D30": "bset #2, ($00FF0E1D) - Area flag update",
+      "0x018D38": "bset #3, ($00FF0DBC) - Story Flag 3 SET point",
+      "0x018D40": "bset #0, ($00FF0D7A) - Cutscene completion flag"
+    },
+    "dialogue": {
+      "message_id": 0,
+      "address": "0x0515FC",
+      "pages": 3,
+      "text_summary": "I am Dytto, a water spirit. Water has the power to purify and can wash away evil."
+    }
+  },
+  "spirit_sanctuary_transition": {
+    "trigger_screen": "0x0106",
+    "warp_routine": "0x02EF28..0x02EFC0",
+    "prerequisite_flags": [
+      { "address": "$FF0DBC:3", "flag_index": 3, "description": "Story Flag 3 set by Princess rescue" }
+    ],
+    "cutscene_timer": {
+      "address": "$FF1971",
+      "trigger_value": "0x22 (34 frames)",
+      "completion_message_id": 8,
+      "completion_message_address": "0x0518C0",
+      "completion_text": "He found Dytto, a spirit of water who had been sleeping in the Water Shrine."
+    },
+    "destination": {
+      "room_id": "0x0D00",
+      "area": 13,
+      "index": 0,
+      "spawn_x": 256,
+      "spawn_y": 768,
+      "direction": 0,
+      "camera_bounds": { "min_x": 0, "max_x": 0, "min_y": 0, "max_y": 608 }
+    }
+  },
+  "gpgx_capture_status": {
+    "village_elder_status": "COMPONENT_JOURNAL_VERIFIED",
+    "princess_rescue_status": "DIFFERENTIAL_ANALYSIS_VERIFIED",
+    "sanctuary_transition_status": "AUTHENTIC_GAMEPLAY_VERIFIED"
+  }
+}
