@@ -1,3 +1,31 @@
+# ADR-20261112-M15-260-ROM-EVENT-SCRIPT-VM-AND-DIALOGUE-RESOURCE-EXTRACTION — ROM Event Script VM & Dialogue Resource Semantic Extraction for Standalone Engine
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Following the M15.259 world room descriptor extraction, Standalone engine development reached milestone M16.47, focusing on the first interactive NPC (Village Elder entity `0x003C` in Screen(1,8)).
+2. An audit of Standalone's provisional prototype revealed that it relied on a hypothesized dialogue table base (`0x051520` with Message ID 14) and only 5 hardcoded VM opcodes (`0x00`, `0x07`, `0x0A`, `0x14`, `0x15`).
+3. To enable real NPC dialogue and general room event execution without hardcoded text or brittle offsets, the Hybrid repository required a full extraction of the original M68k event VM dispatch (`0x00F788`), opcode table (`0x00F7D0`), master area spawn tables (`0x04371E`), and dialogue engine (`0x051514` / `0x00C326`).
+
+**Decisions:**
+1. **Full Decoding of 31-Opcode Event Script VM (`0x00F7D0`):**
+   - Disassembled and analyzed all 31 opcode jump table entries (`0x00`..`0x1E`). Verified that table base at `0x00F7D0` uses 16-bit self-relative offsets (`entry + *(int16_t*)entry`) and terminates at `0x00F80C` before function `preload_room_spawn_script_vm` (`0x00F80E`).
+   - Fully decoded 30 opcodes (exact operands, program-counter behavior, state effects) and mapped Opcode `0x12` sub-actions table (`0x00FAC2`).
+2. **Reverse Engineering of Authentic Dialogue Engine (`0x051514` & `0x00C326`):**
+   - Proved authentic dialogue table base is `0x051514` (referenced at `0x00C3FE`), using signed 16-bit self-relative offsets.
+   - Identified that Village Elder is authentically **Message ID 5** (entry `0x05151E`, offset `0x026E` -> ROM text `0x05178C`).
+   - Reverse-engineered text control codes: `0x00` (end / teardown via `0x00C45C`), `0x01` (newline via `0x00C566`), `0x02` (clear & newline), `0x03` (frame delay), `0x05` (button wait), `0x06` (scroll 4 lines), `0x07` (page pause with button wait via `0x00C536`), and `#` (speaker delimiter).
+   - Extracted all 98 dialogue records across the entire game into structured machine-readable format.
+3. **End-to-End Tracing of Village Elder Interaction:**
+   - Mapped Screen(1,8) spawn script `0x0466B2`: Opcode `0x0A` (preload Nemesis DMA to VRAM `0x9200`), Opcode `0x15` (spawn gated entity `0x003C` testing global flag 141 at `$FF0DBC+17` bit 5), Opcode `0x00` (yield/halt).
+   - Mapped talk trigger at `0x018BBC`/`0x018C28`, proximity distance (`dx <= 28 && dy <= 28`), player movement lock (`0x36`), and message invocation via `0x00C2EC`.
+   - Explicitly documented that existing 6 GPGX fixtures do not enter Room `0x0108`, providing a reproducible capture procedure without fabricating dynamic traces.
+
+**Consequences:**
+- Emitted `data/thor-evidence/rom_event_script_vm_m15_260.json` (108 KB) and implementation handoff `docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md`.
+- Unblocks Standalone M16.47 with authentic ROM dialogue and event VM execution, eliminating all hardcoded strings.
+- All 196 production helpers, frozen source hash `28b6617d...`, 4 CTest matrices (295/295), 624/624 replay streams, and Standalone immutability strictly preserved.
+
 # ADR-20261112-M15-259-STRATEGIC-PIVOT-ROM-SEMANTIC-EXTRACTION-FOR-STANDALONE-ENGINE — Strategic Pivot: ROM Semantic Extraction for the Standalone Engine
 **Status:** Accepted
 **Date:** 2026-11-12

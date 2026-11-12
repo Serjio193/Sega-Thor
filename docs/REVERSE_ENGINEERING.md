@@ -1,3 +1,84 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M15.260: Event Script Bytecode VM, 31 Opcode Handlers, Master Spawn Table 0x04371E, Dialogue Engine 0x051514 / 0x00C326, and Village Elder NPC 0x003C Semantics)
+
+## Milestone M15.260 Reverse Engineering Summary
+
+### Section 78: Event Script Bytecode VM (`0x00F788`/`0x00F7D0`), Preload Dispatch (`0x00F80E`), Master Spawn Tables (`0x04371E`), Dialogue Engine (`0x051514`/`0x00C326`), and Village Elder Interaction (`0x018BBC`/`0x018C28`)
+
+#### 1. Event Script VM Execution Loop (`0x00F788`) and Opcode Table (`0x00F7D0`)
+- **Execution Loop (`0x00F788..0x00F7D0`):**
+  * Reads `$FF17B8:1` (pause flag); returns if set.
+  * Checks `$FF17B6` (wait frame timer); decrements and returns if non-zero.
+  * Checks `$FF17BD` (camera lock / cutscene mode); if non-zero, jumps to camera stepper at `0x00F894`.
+  * Loads script PC from `$FF17B2` into `A0`.
+  * Reads opcode byte `(A0)` into `D1.W`, multiplies by 2, and indexes table `0x00F7D0`.
+  * Table format: 31 self-relative 16-bit words (`0x00F7D0..0x00F80C`). Target handler computed as `A1 = entry + *(int16_t*)entry`.
+  * Calls handler via `jsr (A1)`, writes updated `A0` back to `$FF17B2`, and loops.
+- **Preload Dispatch Loop (`0x00F80E..0x00F854`):**
+  * Invoked inside `0x00D406` during room initialization before map decompression.
+  * Executes only leading opcodes `0x0A` (preload DMA), `0x12` (special tilemap/action), `0x13` (subroutine call), `0x14` (subroutine return). Exits immediately upon encountering any other opcode (such as `0x15` or `0x00`).
+- **Complete Opcode Inventory (31 Opcodes `0x00`..`0x1E`):**
+  * `0x00` (`0x00F91C`): `VM_OP_HALT_YIELD` (Pops return frame `addq.l #4, a7; rts`; ends frame execution loop).
+  * `0x01` (`0x00FCCE`): `VM_OP_SPAWN_ENEMY` (Checks enemy cap `$FF17B7` via `0x0101EC`, allocates slot via `0x00DA2A`, sets type and initializes via `0x008D06`).
+  * `0x02` (`0x00F920`): `VM_OP_LOAD_WORD_TABLE_17C6` (Loads words into `$FF17C6` until `$FFFF`).
+  * `0x03` (`0x00F942`): `VM_OP_LOAD_WORD_PAIRS_17E6` (Loads word coordinate pairs into `$FF17E6` until `$FFFF`).
+  * `0x04` (`0x00F96A`): `VM_OP_CONDITIONAL_BRANCH` (Evaluates 5 condition types: entity count/dead, player coords, item possession, timer, wave defeat; branches on match).
+  * `0x05` (`0x00FAAC`): `VM_OP_BRANCH_UNCONDITIONAL` (Relative branch: `adda.w 2(a0), a0`).
+  * `0x06` (`0x00FC6C`): `VM_OP_LOOP_DECREMENT_BRANCH` (Decrements counter `$FF1826[idx]`; branches if non-zero).
+  * `0x07` (`0x00FC94`): `VM_OP_SET_COUNTER` (Sets counter `$FF1826[idx] = count`).
+  * `0x08` (`0x00FCA6`): `VM_OP_WAIT_FRAMES` (Sets frame timer in `$FF17B6`, saves PC, yields execution via `0x00F91C`).
+  * `0x09` (`0x010034`): `VM_OP_SPAWN_PROJECTILE_SPECIAL` (Spawns special projectile entity type 8 via `0x00D9BE`).
+  * `0x0A` (`0x00FCB8`): `VM_OP_PRELOAD_NEMESIS_DMA` (Enqueues Nemesis decompression/DMA stream via `0x00D9A4` into VRAM).
+  * `0x0B` (`0x00FCC4`): `VM_OP_SET_MAX_ENEMIES` (Sets concurrency cap in `$FF17B7`).
+  * `0x0C` (`0x010086`): `VM_OP_LOAD_PALETTE_STAGE` (Stages 32 bytes from `0x05D046` into `$FF136C`).
+  * `0x0D` (`0x0100AA`): `VM_OP_LOAD_PALETTE_APPLY` (Stages palette and flags VDP reload `bset.b #0, $FF164D`).
+  * `0x0E` (`0x00FD8C`): `VM_OP_SPAWN_COMPLEX_ENEMY` (Spawns multi-piece enemy via `0x0102BE`).
+  * `0x0F` (`0x010140`): `VM_OP_SET_GLOBAL_FLAG` (Sets/clears/toggles bitflag in global table `$FF0DBC`).
+  * `0x10` (`0x010170`): `VM_OP_SET_AREA_FLAG` (Sets/clears/toggles bitflag in area table `$FF0E1C`).
+  * `0x11` (`0x0101A0`): `VM_OP_SET_ROOM_FLAG` (Sets/clears/toggles bitflag in room table `$FF0E2C`).
+  * `0x12` (`0x00FAB2`): `VM_OP_TILEMAP_SPECIAL_ACTION` (Sub-dispatcher via `0x00FAC2`: 12 tile/plane subroutines).
+  * `0x13` (`0x0101D0`): `VM_OP_CALL_SUBROUTINE` (Saves return PC in `$FF1836`, jumps to 24-bit target address).
+  * `0x14` (`0x0101E4`): `VM_OP_RETURN_SUBROUTINE` (Restores script PC from `$FF1836`).
+  * `0x15` (`0x00FEDE`): `VM_OP_SPAWN_GATED_PROP` (Tests flag in bank 1/2/3; if clear, spawns 18-byte record via `0x00DA2A` + `0x00DF54`; if set, skips 18-byte record).
+  * `0x16` (`0x00FF1A`): `VM_OP_SPAWN_STATIC_PROP` (Unconditionally spawns 18-byte record via `0x00DA2A` + `0x008D06` + `0x00DF54`).
+  * `0x17` (`0x00FE0A`): `VM_OP_SPAWN_ENEMY_WAVE` (Spawns paired wave entities `#$72`/`#$70` via `0x010300`).
+  * `0x18` (`0x00FF98`): `VM_OP_SPAWN_ITEM_CHEST` (Spawns item/chest entity via `0x00D9F0` with callback `0x009AD6`).
+  * `0x19` (`0x00FFDE`): `VM_OP_SPAWN_TRIGGER_OBJECT` (Spawns door/switch trigger entity with callback `0x017A96`).
+  * `0x1A` (`0x0100D6`): `VM_OP_PLAY_SOUND_EFFECT` (Dispatches SFX command to audio driver via `0x00E78E`).
+  * `0x1B` (`0x0100E4`): `VM_OP_PLAY_BGM_TRACK` (Dispatches BGM command to audio driver via `0x060004`).
+  * `0x1C` (`0x0100EE`): `VM_OP_SET_ROOM_PARAMETER` (Writes parameter word to `$FF17C4`).
+  * `0x1D` (`0x0100F8`): `VM_OP_PLANE_SCROLL_EFFECT` (Configures plane scroll delta via `0x00DB64`).
+  * `0x1E` (`0x00F854`): `VM_OP_CAMERA_CUTSCENE_LOCK` (Locks camera to cutscene target coords, sets `$FF1982=0xFF`, `$FF19EC=2`).
+
+#### 2. Master Room Spawn Script Tables (`0x04371E`)
+- Master Area Pointer Table at `0x04371E`: 21 32-bit pointers into per-area script offset tables.
+- Area 1 Table at `0x046332`: Contains 16-bit self-relative offsets (`entry + *(int16_t*)entry`) for each room.
+- Room 8 (Room `0x0108`, Screen(1,8)) entry at `0x046342` contains offset `0x0370`, resolving to `0x0466B2`.
+
+#### 3. Dialogue Engine Architecture (`0x051514` & `0x00C326`)
+- Authentic Dialogue Table at `0x051514` (referenced at `0x00C3FE`): 98 signed 16-bit self-relative offsets.
+- Engine entry at `0x00C326`: Passes `D0.W = message_id`. Decompresses font to `$FF2FA8` via Nemesis `0x003820`, initiates DMA.
+- Control codes in byte stream (`0x00C40E..0x00C4A8`):
+  * `0x00`: End of dialogue (waits button press via `0x00C536`, teardown via `0x00C45C`).
+  * `0x01`: Line feed (advances cursor via `0x00C566`).
+  * `0x02`: Clear page and newline.
+  * `0x03`: Frame delay (operand byte specifies duration).
+  * `0x05`: Wait button press (`0x00C536`).
+  * `0x06`: Scroll 4 lines.
+  * `0x07`: Page pause (waits button press via `0x00C536`, then clears page).
+  * `#`: Speaker border delimiter tag (stripped during text rendering).
+- Frame animation loop at `0x00C84E`: Sets `$FF185D = 0xFF`, updates audio (`0x008E22`), waits for VINT, refreshes SAT display (`0x00A196`).
+- Button wait loop at `0x00C536`: Polls `$FF165F` bits 4 (B), 5 (C), 6 (A).
+
+#### 4. Village Elder NPC Entity `0x003C` Semantics
+- Spawn Script `0x0466B2`:
+  * `0x0466B2`: Opcode `0x0A` (Preload DMA `0x166120` -> VRAM `0x9200`, tile base `0x0490`).
+  * `0x0466BA`: Opcode `0x15` (Spawn Gated Prop): flag bank 1 (`$FF0DBC`), type `0x003C`, flag index 141 (`0x008D` -> `$FF0DBC+17` bit 5), pos `(160, 160, 562)`, VRAM `0x0490`.
+  * `0x0466CC`: Opcode `0x00` (Yield/Halt).
+- Entity Init Handler: `0x017D12` (Table `0x00DF54 - 0x2C + 0x3C*2 = 0x00DFA0`).
+- Talk Trigger: `0x018BBC`/`0x018C28`. Proximity check `dx <= 28 && dy <= 28`. Sets player lock state `0x36` (`bset.b #1, $36(player)` in `0x018C72`). Reads `move.w $A0(npc), d0` (Message ID 5) and invokes dialogue engine via `0x00C2EC`.
+- Authentic Message: Message 5 (`0x05178C`). Page 1: "Prince Ali, are you all right? / I don't know who they were, / but you were their target." Page 2: "They may have attacked the / castle as well.  You must check / on your family."
+- Completion: Sets Event Flag 141 (`$FF0DBC+17` bit 5); clears player state `0x36`.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M15.259: World Room Descriptor Table, Room Transition Graph, and Spawn Bytecode VM Semantic Extraction)
 
 ## Milestone M15.259 Reverse Engineering Summary

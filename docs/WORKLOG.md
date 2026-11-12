@@ -1,3 +1,40 @@
+# 2026-11-12 — Milestone M15.260: ROM EVENT SCRIPT VM & DIALOGUE RESOURCE EXTRACTION FOR THE STANDALONE ENGINE — Phase 0 Baseline & Standalone M16.46/M16.47 Audit (229a7e64...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Event VM Dispatch & 31-Opcode Jump Table Decoding (0x00F788 Loop, 0x00F7D0 Jump Table, 0x00F80E Preload Dispatch, 30 Fully Decoded, 1 Partially Decoded, 0 Unknown); Phase 2 Village Elder NPC 0x003C Trace & Interaction Semantics (Screen(1,8), Room 0x0108, Script 0x0466B2, Gated Spawn Opcode 0x15 Testing Global Flag 141 at $FF0DBC+17 Bit 5, Proximity Check dx<=28 dy<=28, Player Lock State 0x36, Dialogue Invocation 0x00C2EC, Authentic Message ID 5 at 0x05178C); Phase 3 Dialogue Resource Table Extraction (0x051514 Table Base, 98 Extracted Dialogue Records, Text Delimiters 0x00/0x01/0x02/0x03/0x05/0x06/0x07/#, Frame Animation Loop 0x00C84E, Button Wait Routine 0x00C536); Phase 4 Machine-Readable Output (tools/extract_rom_event_script_vm.py 291 lines <= 500, data/thor-evidence/rom_event_script_vm_m15_260.json 108 KB, tests/rom_event_script_vm_test.py 120 lines <= 500 PASS); Phase 5 Implementation Handoff (docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md); Phase 6 Governance & Verification (Four 295/295 CTest Matrices Green, 624/624 Replay Streams Bit-Exact, Receipt VERIFIED with 0 Rejections, Governed Files <= 500 lines, Standalone Unchanged) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline & Governance Verification:
+    - Verified Git baseline commit `229a7e64dc23f0e19a7a375f2d73c55e1f31b2ff` on branch `codex/helper10-99d6-bounded-scout`.
+    - Canonical ROM verified: `local-roms/Beyond Oasis (USA).md` (SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, size 3,145,728 bytes).
+    - Production helper count strictly preserved: 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Production implementation source hash verified across 535 production files: `28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7` (0 byte difference from baseline).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` confirmed strictly read-only and unmodified.
+    - Audited Standalone M16.46 commit `81afa46` and M16.47 preparation: identified dialogue table base discrepancy (`0x051514` authentic vs. `0x051520` provisional), hardcoded 5-opcode VM limitation, and lack of master area spawn tables (`0x04371E`).
+  * Phase 1 Event Script VM Dispatch & Opcode Analysis:
+    - Reverse-engineered `0x00F788` execution loop, `0x00F80E` preload dispatch, and jump table `0x00F7D0`.
+    - Proved the table contains exactly 31 opcodes (`0x00`..`0x1E`) using self-relative 16-bit words (`entry + *(int16_t*)entry`), terminating at `0x00F80C` before function `0x00F80E`.
+    - Decoded all 31 opcodes: 30 fully decoded (exact operands, program-counter behavior, state effects) and 1 partially decoded (Opcode `0x12` sub-actions table `0x00FAC2`). 0 unknown opcodes.
+  * Phase 2 Village Elder NPC 0x003C Trace & Interaction Semantics:
+    - Located Village Elder entity `0x003C` in Room `0x0108` (Screen(1,8)) spawn script at `0x0466B2`:
+      * `0x0466B2`: Opcode `0x0A` (Preload Nemesis DMA `0x166120` -> VRAM `0x9200`, tile base `0x0490`).
+      * `0x0466BA`: Opcode `0x15` (Spawn Gated Prop): flag bank 1 (`$FF0DBC`), type `0x003C`, flag index 141 (`0x008D` -> `$FF0DBC+17` bit 5), pos `(160, 160, 562)`, VRAM `0x0490`.
+      * `0x0466CC`: Opcode `0x00` (Yield/Halt).
+    - Reverse-engineered entity init handler `0x017D12` (table `0x00DF54 - 0x2C + 0x3C*2 = 0x00DFA0`).
+    - Reverse-engineered NPC talk trigger at `0x018BBC`/`0x018C28`: checks proximity `dx <= 28 && dy <= 28`, locks player in state `0x36` (`bset.b #1, $36(player)` in `0x018C72`), reads `move.w $A0(npc), d0` (Message ID 5), and dispatches to dialogue engine via `0x00C2EC`.
+    - Verified GPGX status: existing 6 gameplay scenarios do not enter Room `0x0108`; explicitly documented reproducible capture procedure without fabricating dynamic traces.
+  * Phase 3 Dialogue Resource Table Extraction:
+    - Proved authentic dialogue table base is `0x051514` (referenced at `0x00C3FE`), using signed 16-bit self-relative offsets.
+    - Extracted all 98 dialogue messages across the game into machine-readable JSON.
+    - Verified Message 5 (Village Elder): Page 1 ("Prince Ali, are you all right?..."), Page 2 ("They may have attacked the castle as well...").
+    - Reverse-engineered control codes: `0x00` (end/teardown), `0x01` (newline), `0x02` (clear/newline), `0x03` (delay), `0x05` (button wait), `0x06` (scroll 4 lines), `0x07` (page pause / button wait via `0x00C536`), and `#` (speaker delimiter).
+    - Reverse-engineered in-dialogue frame animation loop at `0x00C84E` and controller poll loop at `0x00C536` (`$FF165F` bits 4, 5, 6).
+  * Phase 4 Machine-Readable Output & Deterministic Test:
+    - Authored `tools/extract_rom_event_script_vm.py` (291 lines $\le 500$) emitting `data/thor-evidence/rom_event_script_vm_m15_260.json` (108 KB).
+    - Authored `tests/rom_event_script_vm_test.py` (120 lines $\le 500$): 100% assertions passed verifying 31 opcodes, 98 dialogue messages, 21 area spawn tables, and Village Elder trace.
+  * Phase 5 Standalone Implementation Handoff:
+    - Authored `docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md` with exact ROM layouts, C++20 interfaces, opcode implementation order, Village Elder execution sequence, and acceptance criteria.
+  * Phase 6 Governance & Verification:
+    - Generated `data/thor-evidence/combined-clusters-qualification-m15-260-20261112.json` via `tools/generate_m15_260_receipt.py` (182 lines $\le 500$) and verified via `ReceiptVerifier` (`valid=True`, `status=VERIFIED`, `0` rejections).
+    - Confirmed all 4 CTest matrices at `295/295`, governed files $\le 500$ lines, frozen production source hash `28b6617d...`, and Standalone repository unmodified.
+
 # 2026-11-12 — Milestone M15.259: STRATEGIC PIVOT — ROM SEMANTIC EXTRACTION FOR THE STANDALONE ENGINE — Phase 0 Baseline Verification (5390076d...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Capability and Bottleneck Audit across 11 Extraction Categories; Phase 2 Read-Only Standalone Gap Analysis (Standalone 81bac48 M16.43 Audited across 7 Priority Areas, Top 3 Gameplay Blockers Identified); Phase 3 Automated ROM Knowledge Extraction Tool (tools/extract_rom_room_transition_semantics.py, 573 ROM Functions Analyzed, 188 Room Descriptors Across 21 Areas, 448 State Transitions, 25 Tables, 33 Spawn VM Opcodes, 65 Tile Banks); Phase 4 Pinned GPGX Multi-Scenario Validation (6 Scenarios: scenario_a, scenario_b, scenario_c, longrun_3600f, longrun_alt_1800f, longrun_combat_1800f, Two Multi-Room Chains 0x0100->0x0101->0x0102 and 0x0102->0x0103->0x0104->0x0105, 100% Agreement across 14 Transitions); Phase 5 Implementation-Ready Standalone Handoff (docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md); Phase 6 Product-Level Progress Model; Phase 7 Governance Verified (Four 295/295 CTest Matrices, 624/624 Replay Streams Bit-Exact, Receipt VERIFIED, Governed Files <= 500 lines, Standalone Unchanged) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

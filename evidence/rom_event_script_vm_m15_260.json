@@ -1,0 +1,3971 @@
+{
+  "milestone": "M15.260",
+  "rom_sha256": "eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263",
+  "summary_metrics": {
+    "vm_opcodes_discovered": 31,
+    "vm_opcodes_fully_decoded": 30,
+    "vm_opcodes_partially_decoded": 1,
+    "vm_opcodes_unknown": 0,
+    "dialogue_messages_extracted": 98,
+    "world_areas_extracted": 21,
+    "total_room_scripts_mapped": 221,
+    "village_elder_message_id": 5,
+    "village_elder_script_addr": "0x0466B2",
+    "village_elder_text_addr": "0x05178C"
+  },
+  "opcodes": {
+    "0x00": {
+      "opcode": "0x00",
+      "opcode_int": 0,
+      "entry_addr": "0x00F7D0",
+      "offset": 332,
+      "handler_addr": "0x00F91C",
+      "name": "VM_OP_HALT_YIELD",
+      "operand_bytes": 0,
+      "operand_types": [],
+      "status": "FULLY_DECODED",
+      "semantics": "Pops caller return frame (addq.l #4, a7; rts); terminates current frame execution loop."
+    },
+    "0x01": {
+      "opcode": "0x01",
+      "opcode_int": 1,
+      "entry_addr": "0x00F7D2",
+      "offset": 1276,
+      "handler_addr": "0x00FCCE",
+      "name": "VM_OP_SPAWN_ENEMY",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:flag",
+        "u16:enemy_type"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Checks enemy count ($FF17B7); allocates entity slot via 0x00DA2A; sets type and initializes via 0x008D06."
+    },
+    "0x02": {
+      "opcode": "0x02",
+      "opcode_int": 2,
+      "entry_addr": "0x00F7D4",
+      "offset": 332,
+      "handler_addr": "0x00F920",
+      "name": "VM_OP_LOAD_WORD_TABLE_17C6",
+      "operand_bytes": -1,
+      "operand_types": [
+        "u16[]:words_until_ffff"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Populates coordinate/parameter array at $FF17C6 until 0xFFFF terminator."
+    },
+    "0x03": {
+      "opcode": "0x03",
+      "opcode_int": 3,
+      "entry_addr": "0x00F7D6",
+      "offset": 364,
+      "handler_addr": "0x00F942",
+      "name": "VM_OP_LOAD_WORD_PAIRS_17E6",
+      "operand_bytes": -1,
+      "operand_types": [
+        "(u16,u16)[]:pairs_until_ffff"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Populates position pair array at $FF17E6 until 0xFFFF terminator."
+    },
+    "0x04": {
+      "opcode": "0x04",
+      "opcode_int": 4,
+      "entry_addr": "0x00F7D8",
+      "offset": 402,
+      "handler_addr": "0x00F96A",
+      "name": "VM_OP_CONDITIONAL_BRANCH",
+      "operand_bytes": 4,
+      "operand_types": [
+        "u8:cond_type",
+        "u8:param",
+        "i16:disp_or_thresh"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Evaluates condition (0=entity dead/count, 1=player coord, 2=item, 3=frame timer, 4=wave defeat); branches on match."
+    },
+    "0x05": {
+      "opcode": "0x05",
+      "opcode_int": 5,
+      "entry_addr": "0x00F7DA",
+      "offset": 722,
+      "handler_addr": "0x00FAAC",
+      "name": "VM_OP_BRANCH_UNCONDITIONAL",
+      "operand_bytes": 2,
+      "operand_types": [
+        "i16:relative_disp"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Relative jump in bytecode script: adda.w 2(a0), a0."
+    },
+    "0x06": {
+      "opcode": "0x06",
+      "opcode_int": 6,
+      "entry_addr": "0x00F7DC",
+      "offset": 1168,
+      "handler_addr": "0x00FC6C",
+      "name": "VM_OP_LOOP_DECREMENT_BRANCH",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:counter_idx",
+        "i16:relative_disp"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Decrements counter at $FF1826[counter_idx]; if non-zero, branches by displacement."
+    },
+    "0x07": {
+      "opcode": "0x07",
+      "opcode_int": 7,
+      "entry_addr": "0x00F7DE",
+      "offset": 1206,
+      "handler_addr": "0x00FC94",
+      "name": "VM_OP_SET_COUNTER",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:counter_idx",
+        "u16:count"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Initializes loop counter at $FF1826[counter_idx] to count."
+    },
+    "0x08": {
+      "opcode": "0x08",
+      "opcode_int": 8,
+      "entry_addr": "0x00F7E0",
+      "offset": 1222,
+      "handler_addr": "0x00FCA6",
+      "name": "VM_OP_WAIT_FRAMES",
+      "operand_bytes": 1,
+      "operand_types": [
+        "u8:frames"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sets wait frame countdown in $FF17B6, saves PC to $FF17B2, and yields execution."
+    },
+    "0x09": {
+      "opcode": "0x09",
+      "opcode_int": 9,
+      "entry_addr": "0x00F7E2",
+      "offset": 2130,
+      "handler_addr": "0x010034",
+      "name": "VM_OP_SPAWN_PROJECTILE_SPECIAL",
+      "operand_bytes": 7,
+      "operand_types": [
+        "u8:mode",
+        "u16:params",
+        "i16:x",
+        "i16:y"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Allocates entity slot via 0x00D9BE; initializes projectile type 8 at world coordinates."
+    },
+    "0x0A": {
+      "opcode": "0x0A",
+      "opcode_int": 10,
+      "entry_addr": "0x00F7E4",
+      "offset": 1236,
+      "handler_addr": "0x00FCB8",
+      "name": "VM_OP_PRELOAD_NEMESIS_DMA",
+      "operand_bytes": 7,
+      "operand_types": [
+        "u8:flag",
+        "u32:rom_src",
+        "u16:vram_dst"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Queues Nemesis pattern decompression/DMA stream via 0x00D9A4 into VRAM destination."
+    },
+    "0x0B": {
+      "opcode": "0x0B",
+      "opcode_int": 11,
+      "entry_addr": "0x00F7E6",
+      "offset": 1246,
+      "handler_addr": "0x00FCC4",
+      "name": "VM_OP_SET_MAX_ENEMIES",
+      "operand_bytes": 1,
+      "operand_types": [
+        "u8:max_count"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Updates active enemy concurrency threshold in $FF17B7."
+    },
+    "0x0C": {
+      "opcode": "0x0C",
+      "opcode_int": 12,
+      "entry_addr": "0x00F7E8",
+      "offset": 2206,
+      "handler_addr": "0x010086",
+      "name": "VM_OP_LOAD_PALETTE_STAGE",
+      "operand_bytes": 2,
+      "operand_types": [
+        "u16:palette_idx"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Copies 32 bytes from 0x05D046 to palette staging buffer $FF136C without immediate reload flag."
+    },
+    "0x0D": {
+      "opcode": "0x0D",
+      "opcode_int": 13,
+      "entry_addr": "0x00F7EA",
+      "offset": 2240,
+      "handler_addr": "0x0100AA",
+      "name": "VM_OP_LOAD_PALETTE_APPLY",
+      "operand_bytes": 2,
+      "operand_types": [
+        "u16:palette_idx"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Copies 32 bytes from 0x05D046 to $FF136C and flags VDP reload (bset.b #0, $FF164D)."
+    },
+    "0x0E": {
+      "opcode": "0x0E",
+      "opcode_int": 14,
+      "entry_addr": "0x00F7EC",
+      "offset": 1440,
+      "handler_addr": "0x00FD8C",
+      "name": "VM_OP_SPAWN_COMPLEX_ENEMY",
+      "operand_bytes": 11,
+      "operand_types": [
+        "u8:flags",
+        "u16:type",
+        "i16:x",
+        "i16:y",
+        "u32:extra"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Checks enemy cap, allocates entity slot, and initializes multi-piece enemy via 0x0102BE."
+    },
+    "0x0F": {
+      "opcode": "0x0F",
+      "opcode_int": 15,
+      "entry_addr": "0x00F7EE",
+      "offset": 2386,
+      "handler_addr": "0x010140",
+      "name": "VM_OP_SET_GLOBAL_FLAG",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:mode",
+        "u16:flag_index"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sets (1), clears (0), or toggles (2) bitflag in global table $FF0DBC (bit=idx&7, byte=idx>>3)."
+    },
+    "0x10": {
+      "opcode": "0x10",
+      "opcode_int": 16,
+      "entry_addr": "0x00F7F0",
+      "offset": 2432,
+      "handler_addr": "0x010170",
+      "name": "VM_OP_SET_AREA_FLAG",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:mode",
+        "u16:flag_index"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sets (1), clears (0), or toggles (2) bitflag in area table $FF0E1C."
+    },
+    "0x11": {
+      "opcode": "0x11",
+      "opcode_int": 17,
+      "entry_addr": "0x00F7F2",
+      "offset": 2478,
+      "handler_addr": "0x0101A0",
+      "name": "VM_OP_SET_ROOM_FLAG",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:mode",
+        "u16:flag_index"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sets (1), clears (0), or toggles (2) bitflag in room table $FF0E2C."
+    },
+    "0x12": {
+      "opcode": "0x12",
+      "opcode_int": 18,
+      "entry_addr": "0x00F7F4",
+      "offset": 702,
+      "handler_addr": "0x00FAB2",
+      "name": "VM_OP_TILEMAP_SPECIAL_ACTION",
+      "operand_bytes": -1,
+      "operand_types": [
+        "u8:action_id",
+        "varies"
+      ],
+      "status": "PARTIALLY_DECODED",
+      "semantics": "Sub-dispatcher via 0x00FAC2 (12 sub-actions: animated tiles, plane priority, water current, tile swapping)."
+    },
+    "0x13": {
+      "opcode": "0x13",
+      "opcode_int": 19,
+      "entry_addr": "0x00F7F6",
+      "offset": 2522,
+      "handler_addr": "0x0101D0",
+      "name": "VM_OP_CALL_SUBROUTINE",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u24:rom_target"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Saves current PC into $FF1836 and jumps to target bytecode subroutine address."
+    },
+    "0x14": {
+      "opcode": "0x14",
+      "opcode_int": 20,
+      "entry_addr": "0x00F7F8",
+      "offset": 2540,
+      "handler_addr": "0x0101E4",
+      "name": "VM_OP_RETURN_SUBROUTINE",
+      "operand_bytes": 0,
+      "operand_types": [],
+      "status": "FULLY_DECODED",
+      "semantics": "Restores script PC from $FF1836 (return from bytecode subroutine)."
+    },
+    "0x15": {
+      "opcode": "0x15",
+      "opcode_int": 21,
+      "entry_addr": "0x00F7FA",
+      "offset": 1764,
+      "handler_addr": "0x00FEDE",
+      "name": "VM_OP_SPAWN_GATED_PROP",
+      "operand_bytes": 17,
+      "operand_types": [
+        "u8:flag_bank",
+        "u16:type",
+        "u16:flag_idx",
+        "u8:f6",
+        "u8:f7",
+        "u16:msg_id",
+        "i16:x",
+        "i16:y",
+        "i16:z",
+        "u16:vram"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Tests bitflag (0=none, 1=$FF0DBC, 2=$FF0E1C, 3=$FF0E2C). If clear, spawns entity via 0x00DA2A + 0x00DF54. If set, skips 18-byte record."
+    },
+    "0x16": {
+      "opcode": "0x16",
+      "opcode_int": 22,
+      "entry_addr": "0x00F7FC",
+      "offset": 1822,
+      "handler_addr": "0x00FF1A",
+      "name": "VM_OP_SPAWN_STATIC_PROP",
+      "operand_bytes": 17,
+      "operand_types": [
+        "u8:flag_bank",
+        "u16:type",
+        "u16:flag_idx",
+        "u8:f6",
+        "u8:f7",
+        "u16:msg_id",
+        "i16:x",
+        "i16:y",
+        "i16:z",
+        "u16:vram"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Unconditionally spawns entity using standard 18-byte record via 0x00DA2A + 0x008D06 + 0x00DF54."
+    },
+    "0x17": {
+      "opcode": "0x17",
+      "opcode_int": 23,
+      "entry_addr": "0x00F7FE",
+      "offset": 1548,
+      "handler_addr": "0x00FE0A",
+      "name": "VM_OP_SPAWN_ENEMY_WAVE",
+      "operand_bytes": 5,
+      "operand_types": [
+        "u8:flags",
+        "u16:type_a",
+        "u16:type_b"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Spawns paired wave entities (#$72 and #$70) and synchronizes wave scheduler via 0x010300."
+    },
+    "0x18": {
+      "opcode": "0x18",
+      "opcode_int": 24,
+      "entry_addr": "0x00F800",
+      "offset": 1944,
+      "handler_addr": "0x00FF98",
+      "name": "VM_OP_SPAWN_ITEM_CHEST",
+      "operand_bytes": 11,
+      "operand_types": [
+        "u8:payload",
+        "u16:type",
+        "u32:func",
+        "i16:x",
+        "i16:y"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Allocates slot via 0x00D9F0; spawns chest or pickup object with payload ID and open callback 0x009AD6."
+    },
+    "0x19": {
+      "opcode": "0x19",
+      "opcode_int": 25,
+      "entry_addr": "0x00F802",
+      "offset": 2012,
+      "handler_addr": "0x00FFDE",
+      "name": "VM_OP_SPAWN_TRIGGER_OBJECT",
+      "operand_bytes": 17,
+      "operand_types": [
+        "u8:payload",
+        "u16:type",
+        "i16:x",
+        "i16:y",
+        "varies"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Spawns interactive trigger entity (door, floor switch, chest) with default trigger callback 0x017A96."
+    },
+    "0x1A": {
+      "opcode": "0x1A",
+      "opcode_int": 26,
+      "entry_addr": "0x00F804",
+      "offset": 2258,
+      "handler_addr": "0x0100D6",
+      "name": "VM_OP_PLAY_SOUND_EFFECT",
+      "operand_bytes": 8,
+      "operand_types": [
+        "u16:sound_id",
+        "u16:vol",
+        "u32:pan_mode"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sends sound effect command packet to Z80 audio driver via 0x00E78E."
+    },
+    "0x1B": {
+      "opcode": "0x1B",
+      "opcode_int": 27,
+      "entry_addr": "0x00F806",
+      "offset": 2270,
+      "handler_addr": "0x0100E4",
+      "name": "VM_OP_PLAY_BGM_TRACK",
+      "operand_bytes": 4,
+      "operand_types": [
+        "u32:bgm_command"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Sends BGM playback command to sound driver via 0x060004."
+    },
+    "0x1C": {
+      "opcode": "0x1C",
+      "opcode_int": 28,
+      "entry_addr": "0x00F808",
+      "offset": 2278,
+      "handler_addr": "0x0100EE",
+      "name": "VM_OP_SET_ROOM_PARAMETER",
+      "operand_bytes": 2,
+      "operand_types": [
+        "u16:param"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Stores room-specific parameter word in $FF17C4."
+    },
+    "0x1D": {
+      "opcode": "0x1D",
+      "opcode_int": 29,
+      "entry_addr": "0x00F80A",
+      "offset": 2286,
+      "handler_addr": "0x0100F8",
+      "name": "VM_OP_PLANE_SCROLL_EFFECT",
+      "operand_bytes": 3,
+      "operand_types": [
+        "u8:plane_sel",
+        "i16:scroll_delta"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Configures auto-scroll delta on Plane A ($FF1716) or Plane B ($FF173E) via 0x00DB64."
+    },
+    "0x1E": {
+      "opcode": "0x1E",
+      "opcode_int": 30,
+      "entry_addr": "0x00F80C",
+      "offset": 72,
+      "handler_addr": "0x00F854",
+      "name": "VM_OP_CAMERA_CUTSCENE_LOCK",
+      "operand_bytes": 5,
+      "operand_types": [
+        "u8:mode",
+        "u16:target_cam_x",
+        "u16:target_cam_y"
+      ],
+      "status": "FULLY_DECODED",
+      "semantics": "Locks camera on target coordinates, activates cutscene flag $FF1982=0xFF, sets camera mode $FF19EC=2, and yields execution."
+    }
+  },
+  "dialogue_resources": {
+    "table_address": "0x051514",
+    "addressing_mode": "self_relative_int16_offset (entry + offset)",
+    "control_codes": {
+      "0x00": "end_of_dialogue (waits button press via 0x00C536, teardown via 0x00C45C)",
+      "0x01": "line_feed (advances cursor to next line via 0x00C566)",
+      "0x02": "clear_and_newline",
+      "0x03": "frame_delay (byte operand specifies frame count)",
+      "0x05": "wait_button_press (bsr 0x00C536)",
+      "0x06": "scroll_four_lines",
+      "0x07": "page_pause (waits button press via 0x00C536, then clears page)",
+      "#": "speaker_border_delimiter (authentic tag in ROM text, omitted in rendered prose)"
+    },
+    "records": [
+      {
+        "message_id": 0,
+        "entry_addr": "0x051514",
+        "offset": 232,
+        "text_rom_addr": "0x0515FC",
+        "raw_byte_len": 207,
+        "page_count": 3,
+        "pages": [
+          [
+            "I am Dytto, a water spirit.",
+            "Water has the power to purify",
+            "and can wash away evil."
+          ],
+          [
+            "I swear that I am devoted to",
+            "my master."
+          ],
+          [
+            "I will come to serve you when",
+            "I see the light ball on the",
+            "surface of the water."
+          ]
+        ]
+      },
+      {
+        "message_id": 1,
+        "entry_addr": "0x051516",
+        "offset": 438,
+        "text_rom_addr": "0x0516CC",
+        "raw_byte_len": 10,
+        "page_count": 1,
+        "pages": [
+          [
+            "Hi, Ali!"
+          ]
+        ]
+      },
+      {
+        "message_id": 2,
+        "entry_addr": "0x051518",
+        "offset": 448,
+        "text_rom_addr": "0x0516D8",
+        "raw_byte_len": 51,
+        "page_count": 1,
+        "pages": [
+          [
+            "Hi, Ali.  What kind of junk",
+            "did you dig up today?"
+          ]
+        ]
+      },
+      {
+        "message_id": 3,
+        "entry_addr": "0x05151A",
+        "offset": 498,
+        "text_rom_addr": "0x05170C",
+        "raw_byte_len": 78,
+        "page_count": 1,
+        "pages": [
+          [
+            "Digging in the mud again, Ali?",
+            "Excavations, you say?  What's",
+            "the difference?"
+          ]
+        ]
+      },
+      {
+        "message_id": 4,
+        "entry_addr": "0x05151C",
+        "offset": 576,
+        "text_rom_addr": "0x05175C",
+        "raw_byte_len": 46,
+        "page_count": 1,
+        "pages": [
+          [
+            "Oh, Ali.  Nice armlet.  Where'd",
+            "you find it?"
+          ]
+        ]
+      },
+      {
+        "message_id": 5,
+        "entry_addr": "0x05151E",
+        "offset": 622,
+        "text_rom_addr": "0x05178C",
+        "raw_byte_len": 164,
+        "page_count": 2,
+        "pages": [
+          [
+            "Prince Ali, are you all right?",
+            "I don't know who they were,",
+            "but you were their target."
+          ],
+          [
+            "They may have attacked the",
+            "castle as well.  You must check",
+            "on your family."
+          ]
+        ]
+      },
+      {
+        "message_id": 6,
+        "entry_addr": "0x051520",
+        "offset": 786,
+        "text_rom_addr": "0x051832",
+        "raw_byte_len": 57,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, I have a special today!",
+            "Why don't you take a look?"
+          ]
+        ]
+      },
+      {
+        "message_id": 7,
+        "entry_addr": "0x051522",
+        "offset": 842,
+        "text_rom_addr": "0x05186C",
+        "raw_byte_len": 82,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali defeated the hostile group",
+            "which attacked him, and",
+            "hurried to see his teacher."
+          ]
+        ]
+      },
+      {
+        "message_id": 8,
+        "entry_addr": "0x051524",
+        "offset": 924,
+        "text_rom_addr": "0x0518C0",
+        "raw_byte_len": 76,
+        "page_count": 1,
+        "pages": [
+          [
+            "He found Dytto, a spirit of",
+            "water who had been sleeping in",
+            "the Water Shrine."
+          ]
+        ]
+      },
+      {
+        "message_id": 9,
+        "entry_addr": "0x051526",
+        "offset": 1000,
+        "text_rom_addr": "0x05190E",
+        "raw_byte_len": 97,
+        "page_count": 1,
+        "pages": [
+          [
+            "Efreet is my name.  I am fire",
+            "which burns away anything",
+            "unclean.  The Gold Armlet is",
+            "my master."
+          ]
+        ]
+      },
+      {
+        "message_id": 10,
+        "entry_addr": "0x051528",
+        "offset": 1096,
+        "text_rom_addr": "0x051970",
+        "raw_byte_len": 47,
+        "page_count": 1,
+        "pages": [
+          [
+            "Hey, take me to the ruins next",
+            "time!  Please!"
+          ]
+        ]
+      },
+      {
+        "message_id": 11,
+        "entry_addr": "0x05152A",
+        "offset": 1142,
+        "text_rom_addr": "0x0519A0",
+        "raw_byte_len": 72,
+        "page_count": 1,
+        "pages": [
+          [
+            "There have been many strangers",
+            "around here lately.  I don't",
+            "like them."
+          ]
+        ]
+      },
+      {
+        "message_id": 12,
+        "entry_addr": "0x05152C",
+        "offset": 1214,
+        "text_rom_addr": "0x0519EA",
+        "raw_byte_len": 157,
+        "page_count": 2,
+        "pages": [
+          [
+            "I appear from the void to",
+            "become your shadow.  My name is",
+            "Shade."
+          ],
+          [
+            "I pledge my allegiance to you,",
+            "Gold Armlet.  You may summon me",
+            "from your own reflection."
+          ]
+        ]
+      },
+      {
+        "message_id": 13,
+        "entry_addr": "0x05152E",
+        "offset": 1370,
+        "text_rom_addr": "0x051A88",
+        "raw_byte_len": 94,
+        "page_count": 1,
+        "pages": [
+          [
+            "I'm Bow!  You are my master.",
+            "I can be found inside plants.",
+            "Call me when there's lots to",
+            "eat!"
+          ]
+        ]
+      },
+      {
+        "message_id": 14,
+        "entry_addr": "0x051530",
+        "offset": 1464,
+        "text_rom_addr": "0x051AE8",
+        "raw_byte_len": 80,
+        "page_count": 1,
+        "pages": [
+          [
+            "He found Efreet, a spirit of",
+            "fire who had been sleeping",
+            "in the Waterfall Shrine."
+          ]
+        ]
+      },
+      {
+        "message_id": 15,
+        "entry_addr": "0x051532",
+        "offset": 1544,
+        "text_rom_addr": "0x051B3A",
+        "raw_byte_len": 73,
+        "page_count": 1,
+        "pages": [
+          [
+            "He captured the enemy base and",
+            "sneaked onto a ship staying in",
+            "the harbor."
+          ]
+        ]
+      },
+      {
+        "message_id": 16,
+        "entry_addr": "0x051534",
+        "offset": 1616,
+        "text_rom_addr": "0x051B84",
+        "raw_byte_len": 97,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali defeated the gargoyles.  He",
+            "headed his boat in the direction",
+            "where Silver Armlet disappeared."
+          ]
+        ]
+      },
+      {
+        "message_id": 17,
+        "entry_addr": "0x051536",
+        "offset": 1712,
+        "text_rom_addr": "0x051BE6",
+        "raw_byte_len": 94,
+        "page_count": 1,
+        "pages": [
+          [
+            "He defeated the monsters in the",
+            "cave and picked up a necklace",
+            "which had a mysterious radiance."
+          ]
+        ]
+      },
+      {
+        "message_id": 18,
+        "entry_addr": "0x051538",
+        "offset": 1806,
+        "text_rom_addr": "0x051C46",
+        "raw_byte_len": 62,
+        "page_count": 1,
+        "pages": [
+          [
+            "He left for the wall fortress",
+            "to continue after Silver Armlet."
+          ]
+        ]
+      },
+      {
+        "message_id": 19,
+        "entry_addr": "0x05153A",
+        "offset": 1868,
+        "text_rom_addr": "0x051C86",
+        "raw_byte_len": 65,
+        "page_count": 1,
+        "pages": [
+          [
+            "He defeated the monsters in the",
+            "fortress and got the Warp",
+            "Device."
+          ]
+        ]
+      },
+      {
+        "message_id": 20,
+        "entry_addr": "0x05153C",
+        "offset": 1932,
+        "text_rom_addr": "0x051CC8",
+        "raw_byte_len": 103,
+        "page_count": 1,
+        "pages": [
+          [
+            "He defeated the old dragon",
+            "in the crater and found Shade,",
+            "a spirit of shadow in the Shrine",
+            "of Darkness."
+          ]
+        ]
+      },
+      {
+        "message_id": 21,
+        "entry_addr": "0x05153E",
+        "offset": 2034,
+        "text_rom_addr": "0x051D30",
+        "raw_byte_len": 113,
+        "page_count": 1,
+        "pages": [
+          [
+            "It is said that there is a",
+            "hidden Shrine where a Spirit",
+            "sleeps.  Ali, go up along theriver to find the Shrine."
+          ]
+        ]
+      },
+      {
+        "message_id": 22,
+        "entry_addr": "0x051540",
+        "offset": 2146,
+        "text_rom_addr": "0x051DA2",
+        "raw_byte_len": 72,
+        "page_count": 1,
+        "pages": [
+          [
+            "He found Bow, a spirit of plants",
+            "who had been sleeping in Forest",
+            "Shrine."
+          ]
+        ]
+      },
+      {
+        "message_id": 23,
+        "entry_addr": "0x051542",
+        "offset": 2218,
+        "text_rom_addr": "0x051DEC",
+        "raw_byte_len": 48,
+        "page_count": 1,
+        "pages": [
+          [
+            "The stream lead into a",
+            "dungeon under the castle."
+          ]
+        ]
+      },
+      {
+        "message_id": 24,
+        "entry_addr": "0x051544",
+        "offset": 2266,
+        "text_rom_addr": "0x051E1E",
+        "raw_byte_len": 27,
+        "page_count": 1,
+        "pages": [
+          [
+            "He obtained the Large Cube."
+          ]
+        ]
+      },
+      {
+        "message_id": 25,
+        "entry_addr": "0x051546",
+        "offset": 2292,
+        "text_rom_addr": "0x051E3A",
+        "raw_byte_len": 90,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, did you find out who they",
+            "are?  It is our responsibility",
+            "to deal with these rebels."
+          ]
+        ]
+      },
+      {
+        "message_id": 26,
+        "entry_addr": "0x051548",
+        "offset": 2382,
+        "text_rom_addr": "0x051E96",
+        "raw_byte_len": 80,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali defeated the monster in",
+            "the non-entity, and fell into",
+            "a depth of darkness..."
+          ]
+        ]
+      },
+      {
+        "message_id": 27,
+        "entry_addr": "0x05154A",
+        "offset": 2462,
+        "text_rom_addr": "0x051EE8",
+        "raw_byte_len": 412,
+        "page_count": 1,
+        "pages": [
+          [
+            "Many ages ago, a devastating",
+            "battle was waged in the",
+            "shadowlands of the Kingdom of",
+            "Oasis.  It was between two",
+            "powerful sorcerers, Reharl and",
+            "Agito.Both sorcerers drew special",
+            "powers from their magical",
+            "Armlets.  Reharl used his Gold",
+            "Armlet to govern the spirits.",
+            "Agito used his Silver Armlet to",
+            "create chaos and destruction.The epic battle destroyed them",
+            "both.  The Armlets were",
+            "presumed to be lost as well."
+          ]
+        ]
+      },
+      {
+        "message_id": 28,
+        "entry_addr": "0x05154C",
+        "offset": 2874,
+        "text_rom_addr": "0x052086",
+        "raw_byte_len": 47,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, I am calling to you.",
+            "Please, pick me up."
+          ]
+        ]
+      },
+      {
+        "message_id": 29,
+        "entry_addr": "0x05154E",
+        "offset": 2920,
+        "text_rom_addr": "0x0520B6",
+        "raw_byte_len": 445,
+        "page_count": 1,
+        "pages": [
+          [
+            "I am what remains of this Gold",
+            "Armlet.  I now entrust its",
+            "power to you, for you have been",
+            "chosen to undergo a difficult",
+            "task.The Gold Armlet has its pair:",
+            "a Silver Armlet, which has",
+            "possessed the soul of another.",
+            "He will lead Oasis to ruin if",
+            "you do not stop him.The powers of the Gold Armlet",
+            "are now yours to wield.Find the four spirits this",
+            "Gold Armlet governs, and stop",
+            "the evil ambition of the one",
+            "with the Silver Armlet."
+          ]
+        ]
+      },
+      {
+        "message_id": 30,
+        "entry_addr": "0x051550",
+        "offset": 3364,
+        "text_rom_addr": "0x052274",
+        "raw_byte_len": 24,
+        "page_count": 1,
+        "pages": [
+          [
+            "Prince Ali, good luck!"
+          ]
+        ]
+      },
+      {
+        "message_id": 31,
+        "entry_addr": "0x051552",
+        "offset": 3388,
+        "text_rom_addr": "0x05228E",
+        "raw_byte_len": 123,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, have you been to the Water",
+            "Shrine? Go to the east through",
+            "the village.  The Spirit is atrustworthy partner for you."
+          ]
+        ]
+      },
+      {
+        "message_id": 32,
+        "entry_addr": "0x051554",
+        "offset": 3510,
+        "text_rom_addr": "0x05230A",
+        "raw_byte_len": 50,
+        "page_count": 1,
+        "pages": [
+          [
+            "My master, Gold Armlet, show",
+            "me your light ball."
+          ]
+        ]
+      },
+      {
+        "message_id": 33,
+        "entry_addr": "0x051556",
+        "offset": 3560,
+        "text_rom_addr": "0x05233E",
+        "raw_byte_len": 28,
+        "page_count": 1,
+        "pages": [
+          [
+            "Prince Ali!  Welcome back!"
+          ]
+        ]
+      },
+      {
+        "message_id": 34,
+        "entry_addr": "0x051558",
+        "offset": 3588,
+        "text_rom_addr": "0x05235C",
+        "raw_byte_len": 79,
+        "page_count": 1,
+        "pages": [
+          [
+            "The King and the Princess are",
+            "waiting for you in the main",
+            "hall up the stairs."
+          ]
+        ]
+      },
+      {
+        "message_id": 35,
+        "entry_addr": "0x05155A",
+        "offset": 3666,
+        "text_rom_addr": "0x0523AC",
+        "raw_byte_len": 104,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, please go and read the",
+            "books hidden in the back room",
+            "before you go.  I'm sure they",
+            "will help you."
+          ]
+        ]
+      },
+      {
+        "message_id": 36,
+        "entry_addr": "0x05155C",
+        "offset": 3770,
+        "text_rom_addr": "0x052416",
+        "raw_byte_len": 278,
+        "page_count": 3,
+        "pages": [
+          [
+            "Welcome back, my son!  Let me",
+            "see what you found."
+          ],
+          [
+            "Hmmm, I've heard this story",
+            "before...if this is really the",
+            "Gold Armlet, then IT was the",
+            "reason for that strange attacktoday."
+          ],
+          [
+            "The Gold Armlet governs the",
+            "wild spirits.  Ali, go find the",
+            "spirit sleeping in the Water",
+            "Shrine."
+          ]
+        ]
+      },
+      {
+        "message_id": 37,
+        "entry_addr": "0x05155E",
+        "offset": 4048,
+        "text_rom_addr": "0x05252E",
+        "raw_byte_len": 331,
+        "page_count": 3,
+        "pages": [
+          [
+            "So you found the Water Spirit?",
+            "Then the story must be true!"
+          ],
+          [
+            "I have instructed the soldiers",
+            "to find out who these strangers",
+            "are.  I will receive a report",
+            "sometime later."
+          ],
+          [
+            "Ali, you must go to the East",
+            "Waterfall before the soldiers",
+            "come back.  There must be",
+            "another Shrine where a spiritsleeps.  Find it to fulfill",
+            "your destiny."
+          ]
+        ]
+      },
+      {
+        "message_id": 38,
+        "entry_addr": "0x051560",
+        "offset": 4378,
+        "text_rom_addr": "0x05267A",
+        "raw_byte_len": 176,
+        "page_count": 2,
+        "pages": [
+          [
+            "Ali, the soldiers reported",
+            "that some strange groups are",
+            "camped out in the field",
+            "northeast of the Water Shrine."
+          ],
+          [
+            "You must investigate the area",
+            "before they hurt the",
+            "villagers."
+          ]
+        ]
+      },
+      {
+        "message_id": 39,
+        "entry_addr": "0x051562",
+        "offset": 4554,
+        "text_rom_addr": "0x05272C",
+        "raw_byte_len": 171,
+        "page_count": 2,
+        "pages": [
+          [
+            "Gold Armlet, you are brave to",
+            "come here.  But unfortunately, I",
+            "have no time to fool with you."
+          ],
+          [
+            "I am Silver Armlet.  You cannot",
+            "stop me, and you will be sorry",
+            "you tried!"
+          ]
+        ]
+      },
+      {
+        "message_id": 40,
+        "entry_addr": "0x051564",
+        "offset": 4724,
+        "text_rom_addr": "0x0527D8",
+        "raw_byte_len": 156,
+        "page_count": 3,
+        "pages": [
+          [
+            "He caught a faint conversation",
+            "from downstairs."
+          ],
+          [
+            "...is it to the north?"
+          ],
+          [
+            "Yes, in the wall fortress.",
+            "It is the key to go to the",
+            "west crater to see Shade..."
+          ]
+        ]
+      },
+      {
+        "message_id": 41,
+        "entry_addr": "0x051566",
+        "offset": 4880,
+        "text_rom_addr": "0x052876",
+        "raw_byte_len": 33,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, what did you dig up",
+            "today?"
+          ]
+        ]
+      },
+      {
+        "message_id": 42,
+        "entry_addr": "0x051568",
+        "offset": 4912,
+        "text_rom_addr": "0x052898",
+        "raw_byte_len": 78,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, it's you!  It has been a",
+            "long time!  Did you find",
+            "anything interesting?"
+          ]
+        ]
+      },
+      {
+        "message_id": 43,
+        "entry_addr": "0x05156A",
+        "offset": 4990,
+        "text_rom_addr": "0x0528E8",
+        "raw_byte_len": 132,
+        "page_count": 1,
+        "pages": [
+          [
+            "Are you all right, Ali?  I saw",
+            "a strange group in the village",
+            "and I was worried about you.It's not safe to wander around",
+            "outside."
+          ]
+        ]
+      },
+      {
+        "message_id": 44,
+        "entry_addr": "0x05156C",
+        "offset": 5122,
+        "text_rom_addr": "0x05296E",
+        "raw_byte_len": 56,
+        "page_count": 1,
+        "pages": [
+          [
+            "I have not seen you lately,",
+            "Ali.  Where have you been?"
+          ]
+        ]
+      },
+      {
+        "message_id": 45,
+        "entry_addr": "0x05156E",
+        "offset": 5178,
+        "text_rom_addr": "0x0529A8",
+        "raw_byte_len": 49,
+        "page_count": 1,
+        "pages": [
+          [
+            "Hello, Ali.  Do excavations",
+            "still interest you?"
+          ]
+        ]
+      },
+      {
+        "message_id": 46,
+        "entry_addr": "0x051570",
+        "offset": 5226,
+        "text_rom_addr": "0x0529DA",
+        "raw_byte_len": 311,
+        "page_count": 3,
+        "pages": [
+          [
+            "You've caught up with me much",
+            "earlier than I expected.  Well,",
+            "let me reward you."
+          ],
+          [
+            "Somewhere in this castle, there",
+            "is a device which can move you",
+            "through a warp of time and",
+            "space.  I don't need it, butyou will."
+          ],
+          [
+            "Show me your power, Gold",
+            "Armlet.  You must defeat my",
+            "minions to gain access to",
+            "the Warp Device!"
+          ]
+        ]
+      },
+      {
+        "message_id": 47,
+        "entry_addr": "0x051572",
+        "offset": 5536,
+        "text_rom_addr": "0x052B12",
+        "raw_byte_len": 93,
+        "page_count": 1,
+        "pages": [
+          [
+            "Welcome, Prince.  Yes, I know",
+            "everything.  This is yours.",
+            "That ring is a great help to",
+            "you."
+          ]
+        ]
+      },
+      {
+        "message_id": 48,
+        "entry_addr": "0x051574",
+        "offset": 5628,
+        "text_rom_addr": "0x052B70",
+        "raw_byte_len": 277,
+        "page_count": 3,
+        "pages": [
+          [
+            "The necklace you found belongs",
+            "to Princess Gwyn, your elder",
+            "sister."
+          ],
+          [
+            "As you know, she's been missing",
+            "for over ten years.  This may",
+            "mean she is still alive."
+          ],
+          [
+            "Now, go back to the castle.",
+            "Silver Armlet wants something",
+            "from inside it, and you must",
+            "hurry to protect your family."
+          ]
+        ]
+      },
+      {
+        "message_id": 49,
+        "entry_addr": "0x051576",
+        "offset": 5904,
+        "text_rom_addr": "0x052C86",
+        "raw_byte_len": 49,
+        "page_count": 1,
+        "pages": [
+          [
+            "It was a sudden attack!  Is the",
+            "King all right?"
+          ]
+        ]
+      },
+      {
+        "message_id": 50,
+        "entry_addr": "0x051578",
+        "offset": 5952,
+        "text_rom_addr": "0x052CB8",
+        "raw_byte_len": 109,
+        "page_count": 1,
+        "pages": [
+          [
+            "The underground passage there",
+            "leads to the dungeons of the",
+            "castle, but the entrance is",
+            "blocked by a grille."
+          ]
+        ]
+      },
+      {
+        "message_id": 51,
+        "entry_addr": "0x05157A",
+        "offset": 6060,
+        "text_rom_addr": "0x052D26",
+        "raw_byte_len": 112,
+        "page_count": 1,
+        "pages": [
+          [
+            "My grandpa said that there is",
+            "a Shrine in the northeast",
+            "forest.  Inside it is a monster",
+            "that eats up anything!"
+          ]
+        ]
+      },
+      {
+        "message_id": 52,
+        "entry_addr": "0x05157C",
+        "offset": 6172,
+        "text_rom_addr": "0x052D98",
+        "raw_byte_len": 15,
+        "page_count": 1,
+        "pages": [
+          [
+            "..............."
+          ]
+        ]
+      },
+      {
+        "message_id": 53,
+        "entry_addr": "0x05157E",
+        "offset": 6186,
+        "text_rom_addr": "0x052DA8",
+        "raw_byte_len": 80,
+        "page_count": 1,
+        "pages": [
+          [
+            "Go north once past the East",
+            "Gate.  You will find a large",
+            "cave in the mountain."
+          ]
+        ]
+      },
+      {
+        "message_id": 54,
+        "entry_addr": "0x051580",
+        "offset": 6266,
+        "text_rom_addr": "0x052DFA",
+        "raw_byte_len": 6,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali!"
+          ]
+        ]
+      },
+      {
+        "message_id": 55,
+        "entry_addr": "0x051582",
+        "offset": 6272,
+        "text_rom_addr": "0x052E02",
+        "raw_byte_len": 198,
+        "page_count": 2,
+        "pages": [
+          [
+            "Ha-ha-ha!  Hello, Gold Armlet.",
+            "I'll trade you a Princess for a",
+            "Large Cube hidden somewhere",
+            "inside this castle."
+          ],
+          [
+            "Come to Mt. Allat with the",
+            "Large Cube and I will trade you",
+            "for your younger sister."
+          ]
+        ]
+      },
+      {
+        "message_id": 56,
+        "entry_addr": "0x051584",
+        "offset": 6470,
+        "text_rom_addr": "0x052ECA",
+        "raw_byte_len": 123,
+        "page_count": 1,
+        "pages": [
+          [
+            "You broke my Seal.  I am the",
+            "origin of Agito's power and the",
+            "keeper of his soul.  His ancient",
+            "evil can be awakened by me."
+          ]
+        ]
+      },
+      {
+        "message_id": 57,
+        "entry_addr": "0x051586",
+        "offset": 6592,
+        "text_rom_addr": "0x052F46",
+        "raw_byte_len": 199,
+        "page_count": 3,
+        "pages": [
+          [
+            "Oh, Ali...it's you."
+          ],
+          [
+            "You found the Large Cube?",
+            "It is evil, and I hoped it",
+            "would never be recovered from",
+            "the dungeon."
+          ],
+          [
+            "Ali, you must do what you",
+            "think is right.  We...we are",
+            "all counting on you..."
+          ]
+        ]
+      },
+      {
+        "message_id": 58,
+        "entry_addr": "0x051588",
+        "offset": 6790,
+        "text_rom_addr": "0x05300E",
+        "raw_byte_len": 56,
+        "page_count": 1,
+        "pages": [
+          [
+            "Prince Ali, we will get to",
+            "the cave as soon as we can."
+          ]
+        ]
+      },
+      {
+        "message_id": 59,
+        "entry_addr": "0x05158A",
+        "offset": 6846,
+        "text_rom_addr": "0x053048",
+        "raw_byte_len": 71,
+        "page_count": 1,
+        "pages": [
+          [
+            "Love is beautiful, isn't it?",
+            "Ha-ha-ha!  Give me the Large",
+            "Cube first."
+          ]
+        ]
+      },
+      {
+        "message_id": 60,
+        "entry_addr": "0x05158C",
+        "offset": 6916,
+        "text_rom_addr": "0x053090",
+        "raw_byte_len": 100,
+        "page_count": 1,
+        "pages": [
+          [
+            "Good.  Now the Princess is",
+            "yours.  Take care of your",
+            "precious sister, she tends to",
+            "get lost easily!"
+          ]
+        ]
+      },
+      {
+        "message_id": 61,
+        "entry_addr": "0x05158E",
+        "offset": 7016,
+        "text_rom_addr": "0x0530F6",
+        "raw_byte_len": 221,
+        "page_count": 3,
+        "pages": [
+          [
+            "I'm sorry, you were unable",
+            "to do anything against that",
+            "foul creature because of",
+            "me..."
+          ],
+          [
+            "I know that nothing I can",
+            "say will stop you from",
+            "following, but..."
+          ],
+          [
+            "Please take this for good luck.",
+            "Come back safe and sound, Ali."
+          ]
+        ]
+      },
+      {
+        "message_id": 62,
+        "entry_addr": "0x051590",
+        "offset": 7236,
+        "text_rom_addr": "0x0531D4",
+        "raw_byte_len": 110,
+        "page_count": 1,
+        "pages": [
+          [
+            "Prince!  Princess!  Are you",
+            "all right?  It's dangerous",
+            "around here.  Please go back",
+            "to the castle, Princess."
+          ]
+        ]
+      },
+      {
+        "message_id": 63,
+        "entry_addr": "0x051592",
+        "offset": 7346,
+        "text_rom_addr": "0x053244",
+        "raw_byte_len": 178,
+        "page_count": 3,
+        "pages": [
+          [
+            "Welcome to the non-entity,",
+            "Gold Armlet."
+          ],
+          [
+            "This is the border between",
+            "the shadow and the human",
+            "world."
+          ],
+          [
+            "You cannot use the Armlet's",
+            "power here.  This is the end",
+            "of your journey!"
+          ]
+        ]
+      },
+      {
+        "message_id": 64,
+        "entry_addr": "0x051594",
+        "offset": 7524,
+        "text_rom_addr": "0x0532F8",
+        "raw_byte_len": 180,
+        "page_count": 2,
+        "pages": [
+          [
+            "I have been waiting for you."
+          ],
+          [
+            "It's been an interesting",
+            "game...but now it's time to",
+            "finish it.  You cannot stop",
+            "the revival of the Creatorof the Silver Armlet, my",
+            "master, Agito!"
+          ]
+        ]
+      },
+      {
+        "message_id": 65,
+        "entry_addr": "0x051596",
+        "offset": 7704,
+        "text_rom_addr": "0x0533AE",
+        "raw_byte_len": 98,
+        "page_count": 2,
+        "pages": [
+          [
+            "Well done.  I must reward you",
+            "for your persistence, Gold",
+            "Armlet!"
+          ],
+          [
+            "I reward you with your death!"
+          ]
+        ]
+      },
+      {
+        "message_id": 66,
+        "entry_addr": "0x051598",
+        "offset": 7802,
+        "text_rom_addr": "0x053412",
+        "raw_byte_len": 126,
+        "page_count": 2,
+        "pages": [
+          [
+            "You...won.  I misjudged your",
+            "superior...abilities."
+          ],
+          [
+            "But...you will not defeat",
+            "Agito.  He has returned to",
+            "resume his throne!"
+          ]
+        ]
+      },
+      {
+        "message_id": 67,
+        "entry_addr": "0x05159A",
+        "offset": 7928,
+        "text_rom_addr": "0x053492",
+        "raw_byte_len": 174,
+        "page_count": 3,
+        "pages": [
+          [
+            "Oh...oh...It's you, Ali.",
+            "It's me, your elder sister,",
+            "Gwyn."
+          ],
+          [
+            "I...heard your voice...",
+            "but...I could do nothing...",
+            "I was possessed."
+          ],
+          [
+            "Finally, I got back my...",
+            "my...memories."
+          ]
+        ]
+      },
+      {
+        "message_id": 68,
+        "entry_addr": "0x05159C",
+        "offset": 8102,
+        "text_rom_addr": "0x053542",
+        "raw_byte_len": 95,
+        "page_count": 1,
+        "pages": [
+          [
+            "I feel the power filling the",
+            "world.  Thank you, my master,",
+            "Gold Armlet.  You saved our",
+            "world."
+          ]
+        ]
+      },
+      {
+        "message_id": 69,
+        "entry_addr": "0x05159E",
+        "offset": 8196,
+        "text_rom_addr": "0x0535A2",
+        "raw_byte_len": 30,
+        "page_count": 1,
+        "pages": [
+          [
+            "But now we must remain here."
+          ]
+        ]
+      },
+      {
+        "message_id": 70,
+        "entry_addr": "0x0515A0",
+        "offset": 8226,
+        "text_rom_addr": "0x0535C2",
+        "raw_byte_len": 90,
+        "page_count": 1,
+        "pages": [
+          [
+            "I am proud to have both fought",
+            "for you and beside you.  You",
+            "shall be remembered forever."
+          ]
+        ]
+      },
+      {
+        "message_id": 71,
+        "entry_addr": "0x0515A2",
+        "offset": 8316,
+        "text_rom_addr": "0x05361E",
+        "raw_byte_len": 76,
+        "page_count": 1,
+        "pages": [
+          [
+            "Bow had fun time! Now this",
+            "Warp will bring you home.",
+            "Good-bye, friend Ali!"
+          ]
+        ]
+      },
+      {
+        "message_id": 72,
+        "entry_addr": "0x0515A4",
+        "offset": 8392,
+        "text_rom_addr": "0x05366C",
+        "raw_byte_len": 269,
+        "page_count": 4,
+        "pages": [
+          [
+            "Ali...wait."
+          ],
+          [
+            "I destroyed things and killed",
+            "people..."
+          ],
+          [
+            "Even though I was possessed",
+            "and controlled...I must make",
+            "atonement for my sin."
+          ],
+          [
+            "Ali, tell this to everyone.",
+            "Agito and the Silver Armlet",
+            "minion have been destroyed",
+            "forever.  They will neverendanger Oasis again."
+          ]
+        ]
+      },
+      {
+        "message_id": 73,
+        "entry_addr": "0x0515A6",
+        "offset": 8660,
+        "text_rom_addr": "0x05377A",
+        "raw_byte_len": 59,
+        "page_count": 1,
+        "pages": [
+          [
+            "Now, let me say good-bye...",
+            "and...thank you...my brother."
+          ]
+        ]
+      },
+      {
+        "message_id": 74,
+        "entry_addr": "0x0515A8",
+        "offset": 8718,
+        "text_rom_addr": "0x0537B6",
+        "raw_byte_len": 139,
+        "page_count": 1,
+        "pages": [
+          [
+            "Big Attack/Small AttackPress or tap Button B to attack",
+            "the enemies.  Ali jumps when",
+            "C button is tapped, and",
+            "ducks when Button C is held."
+          ]
+        ]
+      },
+      {
+        "message_id": 75,
+        "entry_addr": "0x0515AA",
+        "offset": 8856,
+        "text_rom_addr": "0x053842",
+        "raw_byte_len": 114,
+        "page_count": 1,
+        "pages": [
+          [
+            "RunAli runs to the direction of the",
+            "D-Pad.  Ali jumps when Button",
+            "C is tapped, and ducks when",
+            "Button C is held."
+          ]
+        ]
+      },
+      {
+        "message_id": 76,
+        "entry_addr": "0x0515AC",
+        "offset": 8970,
+        "text_rom_addr": "0x0538B6",
+        "raw_byte_len": 106,
+        "page_count": 1,
+        "pages": [
+          [
+            "Spin AttackOne of the special attacks with",
+            "a dagger.  D-Pad Forward, Left,",
+            "Back, Right + Button B held."
+          ]
+        ]
+      },
+      {
+        "message_id": 77,
+        "entry_addr": "0x0515AE",
+        "offset": 9076,
+        "text_rom_addr": "0x053922",
+        "raw_byte_len": 95,
+        "page_count": 1,
+        "pages": [
+          [
+            "Rolling SlashA special attack with the",
+            "dagger.",
+            "D-Pad Forward, Back, Forward",
+            "+ Button B held."
+          ]
+        ]
+      },
+      {
+        "message_id": 78,
+        "entry_addr": "0x0515B0",
+        "offset": 9170,
+        "text_rom_addr": "0x053982",
+        "raw_byte_len": 58,
+        "page_count": 1,
+        "pages": [
+          [
+            "Double Rolling SlashEnhanced attack of Rolling",
+            "Slash."
+          ]
+        ]
+      },
+      {
+        "message_id": 79,
+        "entry_addr": "0x0515B2",
+        "offset": 9228,
+        "text_rom_addr": "0x0539BE",
+        "raw_byte_len": 126,
+        "page_count": 1,
+        "pages": [
+          [
+            "Chaotic Sword SlashA special attack with a sword.",
+            "D-Pad Forward, Left, Back,",
+            "Right, Forward, Back, Forward +",
+            "Button B held."
+          ]
+        ]
+      },
+      {
+        "message_id": 80,
+        "entry_addr": "0x0515B4",
+        "offset": 9354,
+        "text_rom_addr": "0x053A3E",
+        "raw_byte_len": 261,
+        "page_count": 5,
+        "pages": [
+          [
+            "          Instructions"
+          ],
+          [
+            "Magic Bubble",
+            "Tap Button A to generate a",
+            "bubble that stuns enemies."
+          ],
+          [
+            "Healing",
+            "Tap Button A twice."
+          ],
+          [
+            "Magic Storm",
+            "Hold Button A for 1 second",
+            "to attack all enemies with",
+            "a water tornado."
+          ],
+          [
+            "Press A,B and C buttons together",
+            "to cancel the summons"
+          ]
+        ]
+      },
+      {
+        "message_id": 81,
+        "entry_addr": "0x0515B6",
+        "offset": 9614,
+        "text_rom_addr": "0x053B44",
+        "raw_byte_len": 279,
+        "page_count": 5,
+        "pages": [
+          [
+            "          Instructions"
+          ],
+          [
+            "Flame Breath",
+            "Tap Button A to create",
+            "a stream of fiery breath."
+          ],
+          [
+            "Fireball Attack",
+            "Tap Button A twice to turn",
+            "Efreet into a fireball."
+          ],
+          [
+            "Melt Bomber",
+            "Hold Button A for 1 second",
+            "to cause a fire inundation."
+          ],
+          [
+            "Press A,B and C buttons together",
+            "to cancel the summons"
+          ]
+        ]
+      },
+      {
+        "message_id": 82,
+        "entry_addr": "0x0515B8",
+        "offset": 9892,
+        "text_rom_addr": "0x053C5C",
+        "raw_byte_len": 312,
+        "page_count": 4,
+        "pages": [
+          [
+            "          Instructions"
+          ],
+          [
+            "Dark Claw",
+            "Tap Button A.  Shade attacks",
+            "enemies with his claws.Also can be used to grapple",
+            "out of reach items."
+          ],
+          [
+            "Doppelganger",
+            "Hold Button A for 1 second",
+            "to generate a duplicate which",
+            "can move around the area.Ali becomes invincible."
+          ],
+          [
+            "Press A,B and C buttons together",
+            "to cancel the summons"
+          ]
+        ]
+      },
+      {
+        "message_id": 83,
+        "entry_addr": "0x0515BA",
+        "offset": 10204,
+        "text_rom_addr": "0x053D96",
+        "raw_byte_len": 350,
+        "page_count": 5,
+        "pages": [
+          [
+            "          Instructions"
+          ],
+          [
+            "Bite Attack",
+            "Tap Button A to make Bow bite",
+            "his enemies."
+          ],
+          [
+            "Move Underground",
+            "Tap Button A twice to call Bow",
+            "to where Ali is standing.",
+            "Bow moves underground silently."
+          ],
+          [
+            "Poison Pollen",
+            "Hold Button A for 1 second.",
+            "Bow blows up, scattering",
+            "poison pollen which stunsthe enemies."
+          ],
+          [
+            "Press A,B and C buttons together",
+            "to cancel the summons"
+          ]
+        ]
+      },
+      {
+        "message_id": 84,
+        "entry_addr": "0x0515BC",
+        "offset": 10554,
+        "text_rom_addr": "0x053EF6",
+        "raw_byte_len": 72,
+        "page_count": 1,
+        "pages": [
+          [
+            "You have something nice, Ali.",
+            "Give it to me in return for ",
+            "this, okay?"
+          ]
+        ]
+      },
+      {
+        "message_id": 85,
+        "entry_addr": "0x0515BE",
+        "offset": 10626,
+        "text_rom_addr": "0x053F40",
+        "raw_byte_len": 28,
+        "page_count": 1,
+        "pages": [
+          [
+            "Ali, you sure showed them!"
+          ]
+        ]
+      },
+      {
+        "message_id": 86,
+        "entry_addr": "0x0515C0",
+        "offset": 10654,
+        "text_rom_addr": "0x053F5E",
+        "raw_byte_len": 17,
+        "page_count": 1,
+        "pages": [
+          [
+            "Thank you, Ali."
+          ]
+        ]
+      },
+      {
+        "message_id": 87,
+        "entry_addr": "0x0515C2",
+        "offset": 10670,
+        "text_rom_addr": "0x053F70",
+        "raw_byte_len": 19,
+        "page_count": 1,
+        "pages": [
+          [
+            "What unsafe days!"
+          ]
+        ]
+      },
+      {
+        "message_id": 88,
+        "entry_addr": "0x0515C4",
+        "offset": 10688,
+        "text_rom_addr": "0x053F84",
+        "raw_byte_len": 40,
+        "page_count": 1,
+        "pages": [
+          [
+            "I'm so afraid...I cannot go out",
+            "alone."
+          ]
+        ]
+      },
+      {
+        "message_id": 89,
+        "entry_addr": "0x0515C6",
+        "offset": 10728,
+        "text_rom_addr": "0x053FAE",
+        "raw_byte_len": 137,
+        "page_count": 2,
+        "pages": [
+          [
+            "Prince Ali.  I'm relieved to",
+            "see you safe! Have you returned",
+            "to your castle yet?"
+          ],
+          [
+            "The King and the Princess must",
+            "be worried about you."
+          ]
+        ]
+      },
+      {
+        "message_id": 90,
+        "entry_addr": "0x0515C8",
+        "offset": 10864,
+        "text_rom_addr": "0x054038",
+        "raw_byte_len": 16,
+        "page_count": 1,
+        "pages": [
+          [
+            "What was that?"
+          ]
+        ]
+      },
+      {
+        "message_id": 91,
+        "entry_addr": "0x0515CA",
+        "offset": 10880,
+        "text_rom_addr": "0x05404A",
+        "raw_byte_len": 47,
+        "page_count": 1,
+        "pages": [
+          [
+            "Teach me how to use a dagger",
+            "next time, okay?"
+          ]
+        ]
+      },
+      {
+        "message_id": 92,
+        "entry_addr": "0x0515CC",
+        "offset": 10926,
+        "text_rom_addr": "0x05407A",
+        "raw_byte_len": 44,
+        "page_count": 1,
+        "pages": [
+          [
+            "Too many strange things happen",
+            "these days!"
+          ]
+        ]
+      },
+      {
+        "message_id": 93,
+        "entry_addr": "0x0515CE",
+        "offset": 10970,
+        "text_rom_addr": "0x0540A8",
+        "raw_byte_len": 50,
+        "page_count": 1,
+        "pages": [
+          [
+            "Prince Ali, I pray for your",
+            "safety.  Be careful."
+          ]
+        ]
+      },
+      {
+        "message_id": 94,
+        "entry_addr": "0x0515D0",
+        "offset": 11020,
+        "text_rom_addr": "0x0540DC",
+        "raw_byte_len": 46,
+        "page_count": 1,
+        "pages": [
+          [
+            "My bubbles can open this water",
+            "gate, master."
+          ]
+        ]
+      },
+      {
+        "message_id": 95,
+        "entry_addr": "0x0515D2",
+        "offset": 11066,
+        "text_rom_addr": "0x05410C",
+        "raw_byte_len": 72,
+        "page_count": 1,
+        "pages": [
+          [
+            "I trust the soldiers guarding",
+            "the castle.  Please be",
+            "careful, brother."
+          ]
+        ]
+      },
+      {
+        "message_id": 96,
+        "entry_addr": "0x0515D4",
+        "offset": 11138,
+        "text_rom_addr": "0x054156",
+        "raw_byte_len": 87,
+        "page_count": 1,
+        "pages": [
+          [
+            "Father is very worried about",
+            "you...I am too.  Take care",
+            "and come back safe and sound."
+          ]
+        ]
+      },
+      {
+        "message_id": 97,
+        "entry_addr": "0x0515D6",
+        "offset": 11224,
+        "text_rom_addr": "0x0541AE",
+        "raw_byte_len": 78,
+        "page_count": 1,
+        "pages": [
+          [
+            "I know you're very tough,",
+            "but I'm still so worried.",
+            "Please, please be careful."
+          ]
+        ]
+      }
+    ]
+  },
+  "spawn_scripts": {
+    "master_table_addr": "0x04371E",
+    "areas": [
+      {
+        "area_index": 0,
+        "area_table_addr": "0x04379E",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0000",
+            "entry_addr": "0x04379E",
+            "offset": 144,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0001",
+            "entry_addr": "0x0437A0",
+            "offset": 222,
+            "script_addr": "0x04387E"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0002",
+            "entry_addr": "0x0437A2",
+            "offset": 958,
+            "script_addr": "0x043B60"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0003",
+            "entry_addr": "0x0437A4",
+            "offset": 1612,
+            "script_addr": "0x043DF0"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0004",
+            "entry_addr": "0x0437A6",
+            "offset": 136,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0005",
+            "entry_addr": "0x0437A8",
+            "offset": 1708,
+            "script_addr": "0x043E54"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0006",
+            "entry_addr": "0x0437AA",
+            "offset": 2190,
+            "script_addr": "0x044038"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0007",
+            "entry_addr": "0x0437AC",
+            "offset": 2760,
+            "script_addr": "0x044274"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0008",
+            "entry_addr": "0x0437AE",
+            "offset": 3170,
+            "script_addr": "0x044410"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0009",
+            "entry_addr": "0x0437B0",
+            "offset": 3676,
+            "script_addr": "0x04460C"
+          }
+        ]
+      },
+      {
+        "area_index": 1,
+        "area_table_addr": "0x046332",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0100",
+            "entry_addr": "0x046332",
+            "offset": 20,
+            "script_addr": "0x046346"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0101",
+            "entry_addr": "0x046334",
+            "offset": 72,
+            "script_addr": "0x04637C"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0102",
+            "entry_addr": "0x046336",
+            "offset": 210,
+            "script_addr": "0x046408"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0103",
+            "entry_addr": "0x046338",
+            "offset": 438,
+            "script_addr": "0x0464EE"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0104",
+            "entry_addr": "0x04633A",
+            "offset": 64,
+            "script_addr": "0x04637A"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0105",
+            "entry_addr": "0x04633C",
+            "offset": 740,
+            "script_addr": "0x046620"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0106",
+            "entry_addr": "0x04633E",
+            "offset": 784,
+            "script_addr": "0x04664E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0107",
+            "entry_addr": "0x046340",
+            "offset": 854,
+            "script_addr": "0x046696"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0108",
+            "entry_addr": "0x046342",
+            "offset": 880,
+            "script_addr": "0x0466B2"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0109",
+            "entry_addr": "0x046344",
+            "offset": 906,
+            "script_addr": "0x0466CE"
+          },
+          {
+            "room_slot": 10,
+            "room_id": "0x010A",
+            "entry_addr": "0x046346",
+            "offset": 2560,
+            "script_addr": "0x046D46"
+          },
+          {
+            "room_slot": 11,
+            "room_id": "0x010B",
+            "entry_addr": "0x046348",
+            "offset": 22,
+            "script_addr": "0x04635E"
+          },
+          {
+            "room_slot": 12,
+            "room_id": "0x010C",
+            "entry_addr": "0x04634A",
+            "offset": 15322,
+            "script_addr": "0x049F24"
+          },
+          {
+            "room_slot": 14,
+            "room_id": "0x010E",
+            "entry_addr": "0x04634E",
+            "offset": 2560,
+            "script_addr": "0x046D4E"
+          },
+          {
+            "room_slot": 15,
+            "room_id": "0x010F",
+            "entry_addr": "0x046350",
+            "offset": 22,
+            "script_addr": "0x046366"
+          }
+        ]
+      },
+      {
+        "area_index": 2,
+        "area_table_addr": "0x046B9A",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0200",
+            "entry_addr": "0x046B9A",
+            "offset": 18,
+            "script_addr": "0x046BAC"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0201",
+            "entry_addr": "0x046B9C",
+            "offset": 232,
+            "script_addr": "0x046C84"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0202",
+            "entry_addr": "0x046B9E",
+            "offset": 590,
+            "script_addr": "0x046DEC"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0203",
+            "entry_addr": "0x046BA0",
+            "offset": 1182,
+            "script_addr": "0x04703E"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0204",
+            "entry_addr": "0x046BA2",
+            "offset": 1438,
+            "script_addr": "0x047140"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0205",
+            "entry_addr": "0x046BA4",
+            "offset": 1700,
+            "script_addr": "0x047248"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0206",
+            "entry_addr": "0x046BA6",
+            "offset": 1828,
+            "script_addr": "0x0472CA"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0207",
+            "entry_addr": "0x046BA8",
+            "offset": 1902,
+            "script_addr": "0x047316"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0208",
+            "entry_addr": "0x046BAA",
+            "offset": 1928,
+            "script_addr": "0x047332"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0209",
+            "entry_addr": "0x046BAC",
+            "offset": 2560,
+            "script_addr": "0x0475AC"
+          },
+          {
+            "room_slot": 10,
+            "room_id": "0x020A",
+            "entry_addr": "0x046BAE",
+            "offset": 45,
+            "script_addr": "0x046BDB"
+          },
+          {
+            "room_slot": 11,
+            "room_id": "0x020B",
+            "entry_addr": "0x046BB0",
+            "offset": -14180,
+            "script_addr": "0x04344C"
+          },
+          {
+            "room_slot": 12,
+            "room_id": "0x020C",
+            "entry_addr": "0x046BB2",
+            "offset": 16384,
+            "script_addr": "0x04ABB2"
+          },
+          {
+            "room_slot": 13,
+            "room_id": "0x020D",
+            "entry_addr": "0x046BB4",
+            "offset": 2560,
+            "script_addr": "0x0475B4"
+          },
+          {
+            "room_slot": 14,
+            "room_id": "0x020E",
+            "entry_addr": "0x046BB6",
+            "offset": 45,
+            "script_addr": "0x046BE3"
+          },
+          {
+            "room_slot": 15,
+            "room_id": "0x020F",
+            "entry_addr": "0x046BB8",
+            "offset": -2396,
+            "script_addr": "0x04625C"
+          }
+        ]
+      },
+      {
+        "area_index": 3,
+        "area_table_addr": "0x04734E",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0300",
+            "entry_addr": "0x04734E",
+            "offset": 18,
+            "script_addr": "0x047360"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0301",
+            "entry_addr": "0x047350",
+            "offset": 296,
+            "script_addr": "0x047478"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0302",
+            "entry_addr": "0x047352",
+            "offset": 426,
+            "script_addr": "0x0474FC"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0303",
+            "entry_addr": "0x047354",
+            "offset": 660,
+            "script_addr": "0x0475E8"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0304",
+            "entry_addr": "0x047356",
+            "offset": 1198,
+            "script_addr": "0x047804"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0305",
+            "entry_addr": "0x047358",
+            "offset": 1502,
+            "script_addr": "0x047936"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0306",
+            "entry_addr": "0x04735A",
+            "offset": 1796,
+            "script_addr": "0x047A5E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0307",
+            "entry_addr": "0x04735C",
+            "offset": 2228,
+            "script_addr": "0x047C10"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0308",
+            "entry_addr": "0x04735E",
+            "offset": 2652,
+            "script_addr": "0x047DBA"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0309",
+            "entry_addr": "0x047360",
+            "offset": 2560,
+            "script_addr": "0x047D60"
+          }
+        ]
+      },
+      {
+        "area_index": 4,
+        "area_table_addr": "0x04735C",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0400",
+            "entry_addr": "0x04735C",
+            "offset": 2228,
+            "script_addr": "0x047C10"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0401",
+            "entry_addr": "0x04735E",
+            "offset": 2652,
+            "script_addr": "0x047DBA"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0402",
+            "entry_addr": "0x047360",
+            "offset": 2560,
+            "script_addr": "0x047D60"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0403",
+            "entry_addr": "0x047362",
+            "offset": 22,
+            "script_addr": "0x047378"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0404",
+            "entry_addr": "0x047364",
+            "offset": 15322,
+            "script_addr": "0x04AF3E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0405",
+            "entry_addr": "0x047366",
+            "offset": -28896,
+            "script_addr": "0x040286"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0406",
+            "entry_addr": "0x047368",
+            "offset": 2560,
+            "script_addr": "0x047D68"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0407",
+            "entry_addr": "0x04736A",
+            "offset": 22,
+            "script_addr": "0x047380"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0408",
+            "entry_addr": "0x04736C",
+            "offset": 24864,
+            "script_addr": "0x04D48C"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0409",
+            "entry_addr": "0x04736E",
+            "offset": -28160,
+            "script_addr": "0x04056E"
+          }
+        ]
+      },
+      {
+        "area_index": 5,
+        "area_table_addr": "0x047E98",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0500",
+            "entry_addr": "0x047E98",
+            "offset": 30,
+            "script_addr": "0x047EB6"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0501",
+            "entry_addr": "0x047E9A",
+            "offset": 720,
+            "script_addr": "0x04816A"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0502",
+            "entry_addr": "0x047E9C",
+            "offset": 800,
+            "script_addr": "0x0481BC"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0503",
+            "entry_addr": "0x047E9E",
+            "offset": 1218,
+            "script_addr": "0x048360"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0504",
+            "entry_addr": "0x047EA0",
+            "offset": 1604,
+            "script_addr": "0x0484E4"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0505",
+            "entry_addr": "0x047EA2",
+            "offset": 1742,
+            "script_addr": "0x048570"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0506",
+            "entry_addr": "0x047EA4",
+            "offset": 1826,
+            "script_addr": "0x0485C6"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0507",
+            "entry_addr": "0x047EA6",
+            "offset": 2462,
+            "script_addr": "0x048844"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0508",
+            "entry_addr": "0x047EA8",
+            "offset": 2738,
+            "script_addr": "0x04895A"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0509",
+            "entry_addr": "0x047EAA",
+            "offset": 3058,
+            "script_addr": "0x048A9C"
+          }
+        ]
+      },
+      {
+        "area_index": 6,
+        "area_table_addr": "0x049046",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0600",
+            "entry_addr": "0x049046",
+            "offset": 36,
+            "script_addr": "0x04906A"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0601",
+            "entry_addr": "0x049048",
+            "offset": 284,
+            "script_addr": "0x049164"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0602",
+            "entry_addr": "0x04904A",
+            "offset": 620,
+            "script_addr": "0x0492B6"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0603",
+            "entry_addr": "0x04904C",
+            "offset": 712,
+            "script_addr": "0x049314"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0604",
+            "entry_addr": "0x04904E",
+            "offset": 932,
+            "script_addr": "0x0493F2"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0605",
+            "entry_addr": "0x049050",
+            "offset": 1012,
+            "script_addr": "0x049444"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0606",
+            "entry_addr": "0x049052",
+            "offset": 1226,
+            "script_addr": "0x04951C"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0607",
+            "entry_addr": "0x049054",
+            "offset": 1394,
+            "script_addr": "0x0495C6"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0608",
+            "entry_addr": "0x049056",
+            "offset": 1676,
+            "script_addr": "0x0496E2"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0609",
+            "entry_addr": "0x049058",
+            "offset": 1876,
+            "script_addr": "0x0497AC"
+          }
+        ]
+      },
+      {
+        "area_index": 7,
+        "area_table_addr": "0x049DB0",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0700",
+            "entry_addr": "0x049DB0",
+            "offset": 12,
+            "script_addr": "0x049DBC"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0701",
+            "entry_addr": "0x049DB2",
+            "offset": 12,
+            "script_addr": "0x049DBE"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0702",
+            "entry_addr": "0x049DB4",
+            "offset": 1106,
+            "script_addr": "0x04A206"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0703",
+            "entry_addr": "0x049DB6",
+            "offset": 2730,
+            "script_addr": "0x04A860"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0704",
+            "entry_addr": "0x049DB8",
+            "offset": 2788,
+            "script_addr": "0x04A89C"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0705",
+            "entry_addr": "0x049DBA",
+            "offset": 2788,
+            "script_addr": "0x04A89E"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0706",
+            "entry_addr": "0x049DBC",
+            "offset": 0,
+            "script_addr": "0x049DBC"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0707",
+            "entry_addr": "0x049DBE",
+            "offset": 2560,
+            "script_addr": "0x04A7BE"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0708",
+            "entry_addr": "0x049DC0",
+            "offset": 22,
+            "script_addr": "0x049DD6"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0709",
+            "entry_addr": "0x049DC2",
+            "offset": 24178,
+            "script_addr": "0x04FC34"
+          }
+        ]
+      },
+      {
+        "area_index": 8,
+        "area_table_addr": "0x04A8CE",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0800",
+            "entry_addr": "0x04A8CE",
+            "offset": 16,
+            "script_addr": "0x04A8DE"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0801",
+            "entry_addr": "0x04A8D0",
+            "offset": 468,
+            "script_addr": "0x04AAA4"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0802",
+            "entry_addr": "0x04A8D2",
+            "offset": 1278,
+            "script_addr": "0x04ADD0"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0803",
+            "entry_addr": "0x04A8D4",
+            "offset": 2632,
+            "script_addr": "0x04B31C"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0804",
+            "entry_addr": "0x04A8D6",
+            "offset": 3062,
+            "script_addr": "0x04B4CC"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0805",
+            "entry_addr": "0x04A8D8",
+            "offset": 3250,
+            "script_addr": "0x04B58A"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0806",
+            "entry_addr": "0x04A8DA",
+            "offset": 3324,
+            "script_addr": "0x04B5D6"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0807",
+            "entry_addr": "0x04A8DC",
+            "offset": 3568,
+            "script_addr": "0x04B6CC"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0808",
+            "entry_addr": "0x04A8DE",
+            "offset": 4608,
+            "script_addr": "0x04BADE"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0809",
+            "entry_addr": "0x04A8E0",
+            "offset": 256,
+            "script_addr": "0x04A9E0"
+          }
+        ]
+      },
+      {
+        "area_index": 9,
+        "area_table_addr": "0x04B6CE",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0900",
+            "entry_addr": "0x04B6CE",
+            "offset": 26,
+            "script_addr": "0x04B6E8"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0901",
+            "entry_addr": "0x04B6D0",
+            "offset": 278,
+            "script_addr": "0x04B7E6"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0902",
+            "entry_addr": "0x04B6D2",
+            "offset": 438,
+            "script_addr": "0x04B888"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0903",
+            "entry_addr": "0x04B6D4",
+            "offset": 438,
+            "script_addr": "0x04B88A"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0904",
+            "entry_addr": "0x04B6D6",
+            "offset": 676,
+            "script_addr": "0x04B97A"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0905",
+            "entry_addr": "0x04B6D8",
+            "offset": 1308,
+            "script_addr": "0x04BBF4"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0906",
+            "entry_addr": "0x04B6DA",
+            "offset": 2666,
+            "script_addr": "0x04C144"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0907",
+            "entry_addr": "0x04B6DC",
+            "offset": 2842,
+            "script_addr": "0x04C1F6"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0908",
+            "entry_addr": "0x04B6DE",
+            "offset": 3072,
+            "script_addr": "0x04C2DE"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0909",
+            "entry_addr": "0x04B6E0",
+            "offset": 3242,
+            "script_addr": "0x04C38A"
+          }
+        ]
+      },
+      {
+        "area_index": 10,
+        "area_table_addr": "0x04C520",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0A00",
+            "entry_addr": "0x04C520",
+            "offset": 38,
+            "script_addr": "0x04C546"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0A01",
+            "entry_addr": "0x04C522",
+            "offset": 626,
+            "script_addr": "0x04C794"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0A02",
+            "entry_addr": "0x04C524",
+            "offset": 1152,
+            "script_addr": "0x04C9A4"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0A03",
+            "entry_addr": "0x04C526",
+            "offset": 1408,
+            "script_addr": "0x04CAA6"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0A04",
+            "entry_addr": "0x04C528",
+            "offset": 1668,
+            "script_addr": "0x04CBAC"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0A05",
+            "entry_addr": "0x04C52A",
+            "offset": 2110,
+            "script_addr": "0x04CD68"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0A06",
+            "entry_addr": "0x04C52C",
+            "offset": 2330,
+            "script_addr": "0x04CE46"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0A07",
+            "entry_addr": "0x04C52E",
+            "offset": 2438,
+            "script_addr": "0x04CEB4"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0A08",
+            "entry_addr": "0x04C530",
+            "offset": 2654,
+            "script_addr": "0x04CF8E"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0A09",
+            "entry_addr": "0x04C532",
+            "offset": 2804,
+            "script_addr": "0x04D026"
+          }
+        ]
+      },
+      {
+        "area_index": 11,
+        "area_table_addr": "0x04D5F4",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0B00",
+            "entry_addr": "0x04D5F4",
+            "offset": 32,
+            "script_addr": "0x04D614"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0B01",
+            "entry_addr": "0x04D5F6",
+            "offset": 256,
+            "script_addr": "0x04D6F6"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0B02",
+            "entry_addr": "0x04D5F8",
+            "offset": 466,
+            "script_addr": "0x04D7CA"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0B03",
+            "entry_addr": "0x04D5FA",
+            "offset": 530,
+            "script_addr": "0x04D80C"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0B04",
+            "entry_addr": "0x04D5FC",
+            "offset": 1106,
+            "script_addr": "0x04DA4E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0B05",
+            "entry_addr": "0x04D5FE",
+            "offset": 1364,
+            "script_addr": "0x04DB52"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0B06",
+            "entry_addr": "0x04D600",
+            "offset": 1480,
+            "script_addr": "0x04DBC8"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0B07",
+            "entry_addr": "0x04D602",
+            "offset": 1806,
+            "script_addr": "0x04DD10"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0B08",
+            "entry_addr": "0x04D604",
+            "offset": 2050,
+            "script_addr": "0x04DE06"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0B09",
+            "entry_addr": "0x04D606",
+            "offset": 2214,
+            "script_addr": "0x04DEAC"
+          }
+        ]
+      },
+      {
+        "area_index": 12,
+        "area_table_addr": "0x04E5E2",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0C00",
+            "entry_addr": "0x04E5E2",
+            "offset": 48,
+            "script_addr": "0x04E612"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0C01",
+            "entry_addr": "0x04E5E4",
+            "offset": 224,
+            "script_addr": "0x04E6C4"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0C02",
+            "entry_addr": "0x04E5E6",
+            "offset": 576,
+            "script_addr": "0x04E826"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0C03",
+            "entry_addr": "0x04E5E8",
+            "offset": 916,
+            "script_addr": "0x04E97C"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0C04",
+            "entry_addr": "0x04E5EA",
+            "offset": 1076,
+            "script_addr": "0x04EA1E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0C05",
+            "entry_addr": "0x04E5EC",
+            "offset": 1400,
+            "script_addr": "0x04EB64"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0C06",
+            "entry_addr": "0x04E5EE",
+            "offset": 1906,
+            "script_addr": "0x04ED60"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0C07",
+            "entry_addr": "0x04E5F0",
+            "offset": 2040,
+            "script_addr": "0x04EDE8"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0C08",
+            "entry_addr": "0x04E5F2",
+            "offset": 2182,
+            "script_addr": "0x04EE78"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0C09",
+            "entry_addr": "0x04E5F4",
+            "offset": 2182,
+            "script_addr": "0x04EE7A"
+          }
+        ]
+      },
+      {
+        "area_index": 13,
+        "area_table_addr": "0x0437F0",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0D00",
+            "entry_addr": "0x0437F0",
+            "offset": 62,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0D01",
+            "entry_addr": "0x0437F2",
+            "offset": 60,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0D02",
+            "entry_addr": "0x0437F4",
+            "offset": 58,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0D03",
+            "entry_addr": "0x0437F6",
+            "offset": 56,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0D04",
+            "entry_addr": "0x0437F8",
+            "offset": 54,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0D05",
+            "entry_addr": "0x0437FA",
+            "offset": 52,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0D06",
+            "entry_addr": "0x0437FC",
+            "offset": 50,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0D07",
+            "entry_addr": "0x0437FE",
+            "offset": 48,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0D08",
+            "entry_addr": "0x043800",
+            "offset": 46,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0D09",
+            "entry_addr": "0x043802",
+            "offset": 44,
+            "script_addr": "0x04382E"
+          }
+        ]
+      },
+      {
+        "area_index": 14,
+        "area_table_addr": "0x05016A",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0E00",
+            "entry_addr": "0x05016A",
+            "offset": 10,
+            "script_addr": "0x050174"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0E01",
+            "entry_addr": "0x05016C",
+            "offset": 252,
+            "script_addr": "0x050268"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0E02",
+            "entry_addr": "0x05016E",
+            "offset": 584,
+            "script_addr": "0x0503B6"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0E03",
+            "entry_addr": "0x050170",
+            "offset": 930,
+            "script_addr": "0x050512"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0E04",
+            "entry_addr": "0x050172",
+            "offset": 1172,
+            "script_addr": "0x050606"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0E05",
+            "entry_addr": "0x050174",
+            "offset": 4608,
+            "script_addr": "0x051374"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0E06",
+            "entry_addr": "0x050176",
+            "offset": 256,
+            "script_addr": "0x050276"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0E07",
+            "entry_addr": "0x050178",
+            "offset": 45,
+            "script_addr": "0x0501A5"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0E08",
+            "entry_addr": "0x05017A",
+            "offset": 242,
+            "script_addr": "0x05026C"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0E09",
+            "entry_addr": "0x05017C",
+            "offset": 4608,
+            "script_addr": "0x05137C"
+          }
+        ]
+      },
+      {
+        "area_index": 15,
+        "area_table_addr": "0x0437D8",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x0F00",
+            "entry_addr": "0x0437D8",
+            "offset": 10764,
+            "script_addr": "0x0461E4"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x0F01",
+            "entry_addr": "0x0437DA",
+            "offset": 10816,
+            "script_addr": "0x04621A"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x0F02",
+            "entry_addr": "0x0437DC",
+            "offset": 82,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x0F03",
+            "entry_addr": "0x0437DE",
+            "offset": 80,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x0F04",
+            "entry_addr": "0x0437E0",
+            "offset": 78,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x0F05",
+            "entry_addr": "0x0437E2",
+            "offset": 76,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x0F06",
+            "entry_addr": "0x0437E4",
+            "offset": 74,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x0F07",
+            "entry_addr": "0x0437E6",
+            "offset": 72,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x0F08",
+            "entry_addr": "0x0437E8",
+            "offset": 70,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x0F09",
+            "entry_addr": "0x0437EA",
+            "offset": 68,
+            "script_addr": "0x04382E"
+          }
+        ]
+      },
+      {
+        "area_index": 16,
+        "area_table_addr": "0x0437F0",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x1000",
+            "entry_addr": "0x0437F0",
+            "offset": 62,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x1001",
+            "entry_addr": "0x0437F2",
+            "offset": 60,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x1002",
+            "entry_addr": "0x0437F4",
+            "offset": 58,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x1003",
+            "entry_addr": "0x0437F6",
+            "offset": 56,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x1004",
+            "entry_addr": "0x0437F8",
+            "offset": 54,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x1005",
+            "entry_addr": "0x0437FA",
+            "offset": 52,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x1006",
+            "entry_addr": "0x0437FC",
+            "offset": 50,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x1007",
+            "entry_addr": "0x0437FE",
+            "offset": 48,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x1008",
+            "entry_addr": "0x043800",
+            "offset": 46,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x1009",
+            "entry_addr": "0x043802",
+            "offset": 44,
+            "script_addr": "0x04382E"
+          }
+        ]
+      },
+      {
+        "area_index": 17,
+        "area_table_addr": "0x0437F0",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x1100",
+            "entry_addr": "0x0437F0",
+            "offset": 62,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x1101",
+            "entry_addr": "0x0437F2",
+            "offset": 60,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x1102",
+            "entry_addr": "0x0437F4",
+            "offset": 58,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x1103",
+            "entry_addr": "0x0437F6",
+            "offset": 56,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x1104",
+            "entry_addr": "0x0437F8",
+            "offset": 54,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x1105",
+            "entry_addr": "0x0437FA",
+            "offset": 52,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x1106",
+            "entry_addr": "0x0437FC",
+            "offset": 50,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x1107",
+            "entry_addr": "0x0437FE",
+            "offset": 48,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x1108",
+            "entry_addr": "0x043800",
+            "offset": 46,
+            "script_addr": "0x04382E"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x1109",
+            "entry_addr": "0x043802",
+            "offset": 44,
+            "script_addr": "0x04382E"
+          }
+        ]
+      },
+      {
+        "area_index": 18,
+        "area_table_addr": "0x050646",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x1200",
+            "entry_addr": "0x050646",
+            "offset": 6,
+            "script_addr": "0x05064C"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x1201",
+            "entry_addr": "0x050648",
+            "offset": 3300,
+            "script_addr": "0x05132C"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x1202",
+            "entry_addr": "0x05064A",
+            "offset": 3434,
+            "script_addr": "0x0513B4"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x1203",
+            "entry_addr": "0x05064C",
+            "offset": 2560,
+            "script_addr": "0x05104C"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x1204",
+            "entry_addr": "0x05064E",
+            "offset": 22,
+            "script_addr": "0x050664"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x1205",
+            "entry_addr": "0x050650",
+            "offset": 17962,
+            "script_addr": "0x054C7A"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x1206",
+            "entry_addr": "0x050652",
+            "offset": 16384,
+            "script_addr": "0x054652"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x1207",
+            "entry_addr": "0x050654",
+            "offset": 2560,
+            "script_addr": "0x051054"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x1208",
+            "entry_addr": "0x050656",
+            "offset": 38,
+            "script_addr": "0x05067C"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x1209",
+            "entry_addr": "0x050658",
+            "offset": -8994,
+            "script_addr": "0x04E336"
+          }
+        ]
+      },
+      {
+        "area_index": 19,
+        "area_table_addr": "0x050648",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x1300",
+            "entry_addr": "0x050648",
+            "offset": 3300,
+            "script_addr": "0x05132C"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x1301",
+            "entry_addr": "0x05064A",
+            "offset": 3434,
+            "script_addr": "0x0513B4"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x1302",
+            "entry_addr": "0x05064C",
+            "offset": 2560,
+            "script_addr": "0x05104C"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x1303",
+            "entry_addr": "0x05064E",
+            "offset": 22,
+            "script_addr": "0x050664"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x1304",
+            "entry_addr": "0x050650",
+            "offset": 17962,
+            "script_addr": "0x054C7A"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x1305",
+            "entry_addr": "0x050652",
+            "offset": 16384,
+            "script_addr": "0x054652"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x1306",
+            "entry_addr": "0x050654",
+            "offset": 2560,
+            "script_addr": "0x051054"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x1307",
+            "entry_addr": "0x050656",
+            "offset": 38,
+            "script_addr": "0x05067C"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x1308",
+            "entry_addr": "0x050658",
+            "offset": -8994,
+            "script_addr": "0x04E336"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x1309",
+            "entry_addr": "0x05065A",
+            "offset": 17536,
+            "script_addr": "0x054ADA"
+          }
+        ]
+      },
+      {
+        "area_index": 20,
+        "area_table_addr": "0x05064A",
+        "scripts": [
+          {
+            "room_slot": 0,
+            "room_id": "0x1400",
+            "entry_addr": "0x05064A",
+            "offset": 3434,
+            "script_addr": "0x0513B4"
+          },
+          {
+            "room_slot": 1,
+            "room_id": "0x1401",
+            "entry_addr": "0x05064C",
+            "offset": 2560,
+            "script_addr": "0x05104C"
+          },
+          {
+            "room_slot": 2,
+            "room_id": "0x1402",
+            "entry_addr": "0x05064E",
+            "offset": 22,
+            "script_addr": "0x050664"
+          },
+          {
+            "room_slot": 3,
+            "room_id": "0x1403",
+            "entry_addr": "0x050650",
+            "offset": 17962,
+            "script_addr": "0x054C7A"
+          },
+          {
+            "room_slot": 4,
+            "room_id": "0x1404",
+            "entry_addr": "0x050652",
+            "offset": 16384,
+            "script_addr": "0x054652"
+          },
+          {
+            "room_slot": 5,
+            "room_id": "0x1405",
+            "entry_addr": "0x050654",
+            "offset": 2560,
+            "script_addr": "0x051054"
+          },
+          {
+            "room_slot": 6,
+            "room_id": "0x1406",
+            "entry_addr": "0x050656",
+            "offset": 38,
+            "script_addr": "0x05067C"
+          },
+          {
+            "room_slot": 7,
+            "room_id": "0x1407",
+            "entry_addr": "0x050658",
+            "offset": -8994,
+            "script_addr": "0x04E336"
+          },
+          {
+            "room_slot": 8,
+            "room_id": "0x1408",
+            "entry_addr": "0x05065A",
+            "offset": 17536,
+            "script_addr": "0x054ADA"
+          },
+          {
+            "room_slot": 9,
+            "room_id": "0x1409",
+            "entry_addr": "0x05065C",
+            "offset": 2560,
+            "script_addr": "0x05105C"
+          }
+        ]
+      }
+    ]
+  },
+  "village_elder_trace": {
+    "screen_id": "Screen(1, 8)",
+    "room_id": "0x0108",
+    "descriptor_addr": "0x02F116",
+    "spawn_script_addr": "0x0466B2",
+    "entity_type_id": "0x003C",
+    "entity_name": "Village Elder",
+    "opcode_sequence": [
+      {
+        "step": 1,
+        "pc": "0x0466B2",
+        "opcode": "0x0A",
+        "name": "VM_OP_PRELOAD_NEMESIS_DMA",
+        "params": {
+          "flag": 0,
+          "rom_src": "0x166120",
+          "vram_dst": "0x9200",
+          "vram_tile_base": "0x0490"
+        }
+      },
+      {
+        "step": 2,
+        "pc": "0x0466BA",
+        "opcode": "0x15",
+        "name": "VM_OP_SPAWN_GATED_PROP",
+        "params": {
+          "flag_bank": 1,
+          "flag_bank_name": "$FF0DBC (Global)",
+          "flag_index": 141,
+          "flag_byte_offset": 17,
+          "flag_bit_index": 5,
+          "flag_address": "0x00FF0DBC + 17",
+          "entity_type": "0x003C",
+          "world_x": 160,
+          "world_y": 160,
+          "world_z": 562,
+          "vram_tile_base": "0x0490",
+          "message_id_param": 0
+        }
+      },
+      {
+        "step": 3,
+        "pc": "0x0466CC",
+        "opcode": "0x00",
+        "name": "VM_OP_HALT_YIELD",
+        "params": {}
+      }
+    ],
+    "interaction_mechanics": {
+      "entity_init_handler": "0x017D12 (Table 0x00DF54 - 0x2C + 0x3C*2)",
+      "interaction_collision_check": "0x00818A (Checks target type 0x003C)",
+      "talk_trigger_routine": "0x018C28 (Reads entity message index and calls 0x00C2EC)",
+      "proximity_threshold_px": 28,
+      "trigger_buttons": [
+        "A",
+        "C"
+      ],
+      "player_state_lock": "0x36 (bset.b #1, $36(player) in 0x018C72)",
+      "authentic_message_id": 5,
+      "message_entry_addr": "0x05151E",
+      "message_text_addr": "0x05178C",
+      "dialogue_engine_entry": "0x00C326",
+      "dialogue_frame_step_loop": "0x00C84E (Maintains animation while waiting input)",
+      "button_wait_routine": "0x00C536 (Tests bits 4,5,6 of $FF165F)",
+      "completion_state": "Sets global event flag 141 ($FF0DBC+17 bit 5); clears player lock; unfreezes simulation"
+    },
+    "text_content": {
+      "message_id": 5,
+      "entry_addr": "0x05151E",
+      "offset": 622,
+      "text_rom_addr": "0x05178C",
+      "raw_byte_len": 164,
+      "page_count": 2,
+      "pages": [
+        [
+          "Prince Ali, are you all right?",
+          "I don't know who they were,",
+          "but you were their target."
+        ],
+        [
+          "They may have attacked the",
+          "castle as well.  You must check",
+          "on your family."
+        ]
+      ]
+    },
+    "gpgx_trace_status": {
+      "reached_in_existing_fixtures": false,
+      "reason": "Existing 6 scenarios (scenario_a..c, longrun_3600f, longrun_alt_1800f, longrun_combat_1800f) cover Beach (0x0100..0x0102) and Town/Waterway (0x0103..0x0105), but do not enter Village House interior 0x0108.",
+      "reproducible_capture_procedure": "1. Load scenario_b or canonical_beach_frame3600 checkpoint (Screen 0x0102). 2. Navigate to Beach North doorway at [168, 272] triggering AABB 0x00C1CE transition to Room 0x0108. 3. In Room 0x0108, walk to [160, 160] facing North towards Village Elder (0x003C). 4. Press Button A or C; observe dialogue window opening, frame loop at 0x00C84E, button advance at 0x00C536, and flag 141 set."
+    }
+  }
+}

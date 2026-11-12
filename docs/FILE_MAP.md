@@ -1,3 +1,11 @@
+# M15.260 ROM Event Script VM & Dialogue Resource Extraction for Standalone Engine
+
+- `tools/extract_rom_event_script_vm.py` — reusable ROM semantic extractor for the Event Script Bytecode VM (`0x00F788`/`0x00F7D0`), Preload Dispatch (`0x00F80E`), Master Area Spawn Tables (`0x04371E`), Dialogue Engine (`0x051514`/`0x00C326`), and Village Elder Interaction (`0x018BBC`/`0x018C28`).
+- `data/thor-evidence/rom_event_script_vm_m15_260.json` — structured machine-readable semantic knowledge base (31 VM opcodes, 98 dialogue records from `0x051514`, 21 area spawn tables from `0x04371E`, and complete Village Elder Screen(1,8) trace).
+- `tests/rom_event_script_vm_test.py` — automated verification suite validating extracted VM opcodes, jump table offsets, dialogue text records, area tables, and Village Elder trace semantics.
+- `tools/generate_m15_260_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-260-20261112.json` — certified qualification receipt generator and verified receipt (`ReceiptVerifier` status=VERIFIED, valid=True, 0 rejections).
+- `docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md` — implementation-ready Standalone handoff covering Event VM dispatch, 31 opcode definitions, dialogue engine architecture, Village Elder execution sequence, C++20 interfaces, and acceptance criteria.
+
 # M15.259 Strategic Pivot: ROM Semantic Extraction for the Standalone Engine
 
 - `tools/extract_rom_room_transition_semantics.py` — reusable ROM semantic extractor for the World Room Descriptor Table (`0x00C90E`/`0x00C92C`), Universal Room Streamer (`0x00D406`), Transition Entrypoints (`0x00C9EC`..`0x00CA38`), and Room Spawn Bytecode VM (`0x04371E`/`0x00F788`/`0x00F7D0`).

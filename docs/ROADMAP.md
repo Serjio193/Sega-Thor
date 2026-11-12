@@ -1,3 +1,27 @@
+# M15.260 ROM Event Script VM & Dialogue Resource Extraction for Standalone Engine — COMPLETE / VERIFIED EVENT VM & DIALOGUE EXTRACTION
+
+- **Phase 0 Baseline & Standalone M16.46/M16.47 Gap Analysis:**
+  * Verified Git baseline commit `229a7e64...`, all 196 active helpers, frozen source hash `28b6617d...`, and read-only Standalone repository.
+  * Audited Standalone M16.46/M16.47: discovered provisional dialogue table discrepancy (`0x051520` provisional vs `0x051514` authentic), 5-opcode hardcoding limitation, and lack of master area spawn tables (`0x04371E`).
+- **Phase 1 Event Script VM Dispatch & 31-Opcode Jump Table Decoding:**
+  * Reverse-engineered `0x00F788` execution loop, `0x00F80E` preload dispatch, and jump table `0x00F7D0`.
+  * Fully decoded 30 opcodes and mapped Opcode `0x12` sub-actions table `0x00FAC2` (31 opcodes total `0x00`..`0x1E`, 0 unknown).
+- **Phase 2 Village Elder NPC 0x003C Trace & Interaction Semantics:**
+  * Located Village Elder in Screen(1,8) (Room `0x0108`) spawn script `0x0466B2`: Opcode `0x0A` (preload DMA `0x166120` -> `0x9200`), Opcode `0x15` (spawn gated entity `0x003C` testing global flag 141 at `$FF0DBC+17` bit 5, pos `(160, 160, 562)`), Opcode `0x00` (halt/yield).
+  * Mapped talk trigger at `0x018BBC`/`0x018C28`, proximity check `dx <= 28 && dy <= 28`, player movement lock state `0x36`, and message invocation via `0x00C2EC`.
+  * Explicitly documented that existing 6 GPGX scenarios do not enter Room `0x0108`, providing reproducible capture procedure without fabricating traces.
+- **Phase 3 Dialogue Resource Table Extraction (0x051514 & 0x00C326):**
+  * Proved authentic dialogue table base is `0x051514` using signed 16-bit self-relative offsets.
+  * Extracted all 98 dialogue messages across the game. Verified Message 5 is authentic Village Elder dialogue.
+  * Reverse-engineered control codes: `0x00` (end/teardown), `0x01` (newline), `0x02` (clear/newline), `0x03` (delay), `0x05` (button wait), `0x06` (scroll 4 lines), `0x07` (page pause / button wait via `0x00C536`), and `#` (speaker delimiter).
+  * Reverse-engineered in-dialogue frame animation loop at `0x00C84E` and button poll loop at `0x00C536` (`$FF165F` bits 4, 5, 6).
+- **Phase 4 Machine-Readable Output & Tests (`tools/extract_rom_event_script_vm.py`):**
+  * Emitted `data/thor-evidence/rom_event_script_vm_m15_260.json` (108 KB) and verified via `tests/rom_event_script_vm_test.py` (100% assertions passed).
+- **Phase 5 Standalone Implementation Handoff:**
+  * Published `docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md` with exact ROM layouts, C++20 interfaces, opcode implementation order, Village Elder execution sequence, and acceptance criteria.
+- **Phase 6 Governance & Verification:**
+  * Preserved all 196 production helpers, frozen production source hash (`28b6617d...`), four `295/295` CTest matrices, `624/624` bit-exact replay streams, governed file line limits ($\le 500$ lines), verified qualification receipt (`combined-clusters-qualification-m15-260-20261112.json`), and read-only Standalone worktree.
+
 # M15.259 Strategic Pivot: ROM Semantic Extraction for the Standalone Engine — COMPLETE / VERIFIED ROM SEMANTIC EXTRACTION & STANDALONE HANDOFF
 
 - **Phase 1 Capability & Bottleneck Audit:**
