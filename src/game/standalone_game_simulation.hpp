@@ -9,6 +9,7 @@
 #include "game/interaction/interaction_system.hpp"
 #include "game/player/player.hpp"
 #include "game/render/hud_overlay.hpp"
+#include "game/render/rom_sprite_decoder.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/render/vdp_dma_queue.hpp"
 #include "game/standalone_game_loop.hpp"
@@ -238,6 +239,8 @@ public:
     void set_prng_seed(std::uint16_t seed) noexcept { town_ctx_.prng_seed = seed; }
     [[nodiscard]] std::uint16_t tick_counter() const noexcept { return tick_counter_; }
     void set_tick_counter(std::uint16_t tick) noexcept { tick_counter_ = tick; }
+    [[nodiscard]] std::span<const render::TownEffect> town_effects() const noexcept { return town_effects_; }
+    [[nodiscard]] std::span<render::TownEffect> town_effects() noexcept { return town_effects_; }
 
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
@@ -288,6 +291,7 @@ private:
     bool attract_banner_enabled_{false};
     std::uint8_t town_water_timer_{7U};
     std::uint8_t town_water_phase_{0U};
+    std::array<render::TownEffect, 4> town_effects_{};
 };
 
 } // namespace oasis::game

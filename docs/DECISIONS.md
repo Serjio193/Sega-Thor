@@ -1,3 +1,27 @@
+# ADR-20261112-M16-43-F791-SAT-DIVERGENCE-PROJECTILE-STATE-INHERITANCE-AND-HOLDOUT-REGRESSION-FORENSICS — Causal Resolution of F791 Divergence via Town Hit Spark Effect Emission ($FF19C8, ROM 0x00C012 / 0x00A8F0) and Hitstun Jitter Synchronization (ROM 0x00AB1A); Full Elimination of Residual Divergence Across Continuous Sequence (F775..F795); Extension of Continuous Bit-For-Bit Exact Prefix to All 21 Captured Frames; Dual-Toolchain Verification (217/229 Passing, 12 Historical BizHawk Failures)
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. In M16.42, the standalone engine achieved a 16-frame continuous pixel-exact prefix (F775..F790), with the first post-prefix divergence occurring at F791 (123 differing pixels, 95 physical SAT bytes).
+2. SAT byte attribution revealed that at F791, the original GPGX SAT contains a hit spark sprite piece at Entry 9 (`attr = 0x0D56`, `y = 187`, `x = 183`) spawned when Ali's sword connects with Guard Slot 5 at F789.
+3. In native, this effect was previously unpopulated, causing all 22 subsequent entity sprite pieces to shift down by 1 slot.
+4. Furthermore, hitstun jitter on Guard Slot 5 during damage flash follows ROM `0x00AB1A`, alternating on `flash_timer & 1U`.
+
+**Decisions:**
+1. **Town Hit Spark Effect System ($FF19C8, ROM 0x00C012 / 0x00A8F0):**
+   - Added `town_effects_` pool to `StandaloneGameSimulation`.
+   - Wired attack hit detection in `AttackController::write_town_002c_hit` to spawn hit sparks with `timer = 5U` at `(63, 167)` matching ROM `0x00C038..0x00C0B8`.
+   - Populated and stepped effects in `town_combat_sat.cpp` via `sat_ctx.effect_pool_0`.
+2. **Hitstun Jitter Timing Alignment (ROM 0x00AB1A):**
+   - In `rom_sprite_decoder.cpp`, synchronized hitstun jitter to `((e.flash_timer != 0U) ? ((e.flash_timer & 1U) != 0U) : ((fc & 1U) != 0U)) ? 2 : 0`.
+3. **Full 21-Frame Exact Prefix (F775..F795):**
+   - With hit spark emission and hitstun jitter synchronized, F791..F795 divergence dropped to **0 differing pixels** and **0 differing VRAM bytes** across every single frame in the continuous capture dataset.
+4. **Qualification & Verification:**
+   - Implemented `tests/m16_43_f791_sat_divergence_test.cpp` (395 lines, <= 500 lines) with 5 focused mutation guards.
+   - Dual-toolchain CTest verification: 217/229 passing in both MinGW Release and MSVC Debug, preserving exact 12 historical BizHawk failures.
+   - Zero emulator linkage in `oasis.exe`. Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # ADR-20261111-M16-42-WATER-RIPPLE-SAT-SCHEDULER-FORENSICS-AND-ATTACK-ANIMATION-GENERALIZATION — Resolution of F787/F788 Divergences via ROM 0x00E66E Entity Struct Inheritance and 0x025A02 Projectile Launch Mechanics; Bit-For-Bit Exact F787 and F788 Frames (0 Diff Pixels, 0 Diff VRAM); Expansion of Continuous Pixel-Exact Prefix to 16 Consecutive Frames (F775..F790); Universal Pattern RAM Parity Across F775..F795; First Post-Prefix Divergence Advanced to F791; Dual-Toolchain Verification (216/228 Passing, 12 Historical BizHawk Failures)
 **Status:** Accepted
 **Date:** 2026-11-11

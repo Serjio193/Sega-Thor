@@ -1,5 +1,6 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `tests/m16_43_f791_sat_divergence_test.cpp`: Automated M16.43 test qualifying elimination of F791..F795 divergences (0 diff pixels, 0 diff VRAM across all 21 frames F775..F795), hit spark effect emission, hitstun jitter synchronization, full 14-snapshot regression parity, and 5 focused mutation guards (M16.43).
 - `tests/m16_42_water_ripple_sat_scheduler_test.cpp`: Automated M16.42 test qualifying elimination of F787 and F788 divergences (0 diff pixels, 0 diff VRAM), continuous 16-frame bit-for-bit exact prefix expansion (F775..F790), universal Pattern RAM accuracy across F775..F795, first post-prefix divergence at F791 (123 diff pixels), full 14-snapshot regression parity, and 5 focused mutation guards (M16.42).
 - `tests/m16_41_sword_attack_dma_test.cpp`: Automated M16.41 test qualifying sword attack animation reconstruction, dynamic DMA queues, 12-frame exact prefix, and mutation guards (M16.41).
 

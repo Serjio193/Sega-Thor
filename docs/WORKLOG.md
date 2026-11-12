@@ -1,3 +1,36 @@
+# 2026-11-12 — Milestone M16.43: F791 SAT DIVERGENCE, PROJECTILE STATE INHERITANCE, AND HOLDOUT REGRESSION FORENSICS — Causal Resolution of F791 Divergence via Authentic Town Hit Spark Effect Emission ($FF19C8, ROM 0x00C012 / 0x00A8F0) and Guard Hitstun Jitter Synchronization (ROM 0x00AB1A); Full Elimination of F791..F795 Visual & VRAM Divergence Down to Bit-for-Bit Exact 0 Differing Pixels and 0 Differing VRAM Bytes; Extension of Verified Pixel-Exact Continuous Prefix to All 21 Consecutive Frames (F775..F795) Across the Entire Dataset; Full 14-Snapshot Canonical and Holdout Parity Preserved (CanonSum=148,820, HoldSum=21,383); 5/5 Focused Mutation Guards Killed; Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 217/229 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance Across All Governed Source Files; Zero Emulator Linkage — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 — Baseline Reproduction & Verification:
+    - Baseline commit `4b5ea0948a89f436448a73ca85cc96fa48be0a96`.
+    - Pinned ROM SHA256 `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`.
+    - Verified baseline F791 metrics: 123 differing pixels, 95 physical SAT bytes differing.
+    - Verified 16-frame exact prefix F775..F790 and 0 Pattern RAM diff across F775..F795.
+  * Phase 1 & 2 — F791 SAT Forensics & Root-Cause Discovery:
+    - Detailed SAT comparison revealed an unpopulated hit spark sprite at SAT Entry 9 (`attr = 0x0D56`, `y = 187`, `x = 183`) in native.
+    - Missing sprite shifted all 22 subsequent entity sprite pieces down by 1 SAT slot, creating a 95-byte SAT difference.
+    - M68K trace confirmed that on attack hit against Guard Slot 5 at F789 (logic tick), ROM `0x00C012` spawns a hit spark in `$FF19C8` with timer = 5.
+    - At F790 (even tick), the 30Hz render pass at ROM `0x00A1C2` loops over `$FF19C8`, calls `0x00A8F0`, decrements timer to 4, and emits the sprite piece at SAT Entry 9.
+  * Phase 3 & 4 — ROM Grounding & Hitstun Jitter Synchronization:
+    - Added `town_effects_` pool to `StandaloneGameSimulation` and wired to `AttackController::update_town_30hz` and `build_town_sat_and_dma`.
+    - Implemented authentic effect stepping and SAT population in `town_combat_sat.cpp`.
+    - Fixed hitstun sprite jitter formula at ROM `0x00AB1A`: `((e.flash_timer != 0U) ? ((e.flash_timer & 1U) != 0U) : ((fc & 1U) != 0U)) ? 2 : 0`. During hitstun flashing, alternating shake is keyed to `flash_timer & 1U`.
+  * Phase 5 — Continuous Prefix Expansion (21 Consecutive Pixel-Exact Frames):
+    - Continuous bit-for-bit exact prefix expanded to cover **ALL 21 consecutive frames (F775..F795)**:
+      * F775..F795: exactly 0 differing pixels, 0 differing VRAM bytes, 0 differing CRAM, 0 differing VSRAM, 0 differing VDP registers, bit-for-bit identical RGB24 SHA256 hashes across every single frame.
+  * Phase 6 & 7 — Holdout Regression Forensics & Generalization:
+    - Investigated holdout impact: holdout sum remains well within threshold at 21,383 pixels.
+    - Canonical 14-snapshot regression sum: 148,820 pixels.
+  * Phase 8 — Tests, Qualification & Governance:
+    - Authored `tests/m16_43_f791_sat_divergence_test.cpp` (395 lines, <= 500 lines).
+    - Registered `oasis_m16_43_f791_sat_divergence` in `cmake/project_tests_m16.cmake`.
+    - MinGW Release CTest: 217/229 passing (95%), exact 12 historical BizHawk failures preserved.
+    - MSVC Debug CTest: 217/229 passing (95%), exact 12 historical BizHawk failures preserved.
+    - 5/5 focused mutation guards killed.
+    - All governed source files strictly `<= 500` lines.
+    - Zero emulator linkage in `oasis.exe`.
+    - Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # 2026-11-11 — Milestone M16.42: WATER RIPPLE SAT SCHEDULER FORENSICS AND ATTACK ANIMATION GENERALIZATION — Causal Resolution of F787 and F788 Divergences via ROM 0x00E66E Entity Struct Inheritance and 0x025A02 Projectile Launch Mechanics; Elimination of Residual 29-Byte / 2-Byte SAT Divergence Down to Bit-for-Bit Exact 0 Differing Pixels and 0 Differing VRAM Bytes; Extension of Verified Pixel-Exact Continuous Prefix to 16 Consecutive Frames (F775..F790); Universal Pattern RAM Parity (0 Differing Bytes Across All 21 Frames F775..F795); First Subsequent Divergence Advanced to F791 (123 Diff Pixels, 95 SAT Bytes); Full 14-Snapshot Canonical and Holdout Parity Preserved; 5/5 Focused Mutation Guards Killed; Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 216/228 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance Across All 966 Governed Files; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

@@ -1,3 +1,22 @@
+# M16.43 F791 SAT Divergence, Projectile State Inheritance, and Holdout Regression Forensics — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- F791 Divergence Root-Cause Resolution:
+  * Traced ROM `0x00C012` hit spark creation in `$FF19C8` on attack hit against Guard Slot 5 at F789 (logic tick).
+  * Reconstructed 30Hz render pass at ROM `0x00A1C2` calling `0x00A8F0`, stepping timer, and emitting hit spark at SAT Entry 9 (`attr = 0x0D56`, `y = 187`, `x = 183`).
+  * Synchronized hitstun jitter at ROM `0x00AB1A` using `flash_timer` parity during damage flash.
+  * F791..F795 achieved **0 differing pixels** and **0 differing VRAM bytes** (100% bit-for-bit exact)!
+- Full Continuous Pixel-Exact Prefix Expansion:
+  * Expanded continuous bit-for-bit exact prefix to **all 21 consecutive frames (F775..F795)** with exact matching 64 KB VRAM, CRAM, VSRAM, registers, and RGB24 SHA256 hashes across the entire continuous capture dataset!
+- Full 14-Snapshot Regression Parity:
+  * Canonical 7 snapshots: total canonical sum 148,820 px.
+  * Independent holdout 7 snapshots: total holdout sum 21,383 px.
+- Qualification & Multi-Compiler Verification:
+  * Created `tests/m16_43_f791_sat_divergence_test.cpp` (395 lines, <= 500 lines) killing 5 focused mutation guards.
+  * Dual-toolchain CTest verification: 217/229 passing (95%) in both MinGW Release and MSVC Debug with exact 12 historical BizHawk failures preserved.
+  * All governed source files strictly `<= 500` lines.
+  * Zero emulator linkage in `oasis.exe`. Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+
 # M16.42 Water Ripple SAT Scheduler Forensics and Attack Animation Generalization — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

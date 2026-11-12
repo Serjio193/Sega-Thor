@@ -140,30 +140,24 @@ void StandaloneGameSimulation::reset() {
     movement_config_.diagonal_x_speed = 0x2A000;
     movement_config_.diagonal_y_speed = 0x25800;
     movement_config_.footprint_radius = 10;
-
     velocity_context_ = player::VelocityAdjustContext{};
-    walk_tick_ = 0;
-    tick_counter_ = 0;
-    replay_player_trajectory_ = false;
-
+    walk_tick_ = 0; tick_counter_ = 0; replay_player_trajectory_ = false;
     camera_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y);
     camera_.set_tracking_enabled(camera_tracking_);
     streamer_.reset(checkpoint_state_.camera_x, checkpoint_state_.camera_y, 2176);
     current_vdp_ = baseline_vdp_;
-
     sim_state_.frame_counter = 0;
     sim_state_.player_x = static_cast<std::uint16_t>(player_.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(player_.y_fixed / 0x10000);
     prev_render_player_x_ = sim_state_.player_x;
     prev_render_player_y_ = sim_state_.player_y;
     sim_state_.paused = false;
-
     map_id_ = world::kBeachMapId;
     sound_queue_.clear();
     interaction_system_.reset();
     attack_controller_.reset();
-    landing_velocity_x_ = 0;
-    landing_hold_ticks_ = 0;
+    town_effects_.fill(render::TownEffect{});
+    landing_velocity_x_ = 0; landing_hold_ticks_ = 0;
 
     if (!entities_.empty()) {
         if (entities_.size() > 2U) entities_.resize(2U);
@@ -230,20 +224,13 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     const TownCheckpointInitialState& town_cp) {
     if (!prepare_town_from_rom(rom)) return false;
     map_id_ = world::kTownMapId;
-    player_.x_fixed = town_cp.x_fixed;
-    player_.y_fixed = town_cp.y_fixed;
-    player_.movement_state = town_cp.movement_state;
-    player_.direction_code = town_cp.direction_code;
+    player_.x_fixed = town_cp.x_fixed; player_.y_fixed = town_cp.y_fixed;
+    player_.movement_state = town_cp.movement_state; player_.direction_code = town_cp.direction_code;
     player_.turn_timer = town_cp.turn_timer;
-    player_.intent_x_fixed = town_cp.intent_x_fixed;
-    player_.intent_y_fixed = town_cp.intent_y_fixed;
-    player_.decel_timer = 0U;
-    player_.pending_damage = 0;
-    player_.hurt_timer = 0U;
-    attack_controller_.reset();
-    attack_controller_.set_allow_experimental_combat(false);
-    player_.hp = town_cp.hp;
-    player_.max_hp = town_cp.max_hp;
+    player_.intent_x_fixed = town_cp.intent_x_fixed; player_.intent_y_fixed = town_cp.intent_y_fixed;
+    player_.decel_timer = 0U; player_.pending_damage = 0; player_.hurt_timer = 0U;
+    attack_controller_.reset(); attack_controller_.set_allow_experimental_combat(false);
+    player_.hp = town_cp.hp; player_.max_hp = town_cp.max_hp;
     sim_state_.player_x = static_cast<std::uint16_t>(town_cp.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(town_cp.y_fixed / 0x10000);
     sim_state_.frame_counter = town_cp.frame_counter;
@@ -259,6 +246,7 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     attract_banner_enabled_ = town_cp.attract_banner_enabled;
     town_water_timer_ = 7U;
     town_water_phase_ = 0U;
+    town_effects_.fill(render::TownEffect{});
     dma_queue_.clear();
     pending_vdp_stage_ = false;
 
@@ -317,7 +305,7 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
             if (player_.movement_state != 0x36U) { player_.movement_state = 0x18U; player_.hurt_timer = 4U; }
         }
         if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
-            attack_controller_.update_town_30hz(player_, sim_state_.player_x, sim_state_.player_y, input.controller_1, entities_);
+            attack_controller_.update_town_30hz(player_, sim_state_.player_x, sim_state_.player_y, input.controller_1, entities_, town_effects_);
         }
 
         if (replay_player_trajectory_) {
@@ -327,15 +315,10 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
             walk_tick_ = 0;
         } else if (map_id_ == world::kBeachMapId && checkpoint_state_.movement_state == 4U &&
                    player_.movement_state == 4U) {
-            if (frame == 1U) {
-                player_.x_fixed += 0x00050000;
-            } else if (frame == 3U) {
-                player_.x_fixed += 0x00030000;
-            } else if (frame == 7U || frame == 9U) {
-                player_.y_fixed += 0x00020000;
-            } else if (frame == 11U) {
-                player_.y_fixed += 0x00030000;
-            }
+            if (frame == 1U) player_.x_fixed += 0x00050000;
+            else if (frame == 3U) player_.x_fixed += 0x00030000;
+            else if (frame == 7U || frame == 9U) player_.y_fixed += 0x00020000;
+            else if (frame == 11U) player_.y_fixed += 0x00030000;
 
             if (player_.turn_timer > 4) {
                 --player_.turn_timer;
@@ -472,7 +455,8 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
             render::build_town_sat_and_dma(
                 sat_pipeline_, rom_bytes_, camera_, player_, tick_counter_, sim_state_.frame_counter,
                 sim_state_.player_x, sim_state_.player_y, walk_tick_, current_player_pose(),
-                attract_banner_enabled_, baseline_vdp_.is_display_enabled(), entities_, dma_queue_);
+                attract_banner_enabled_, baseline_vdp_.is_display_enabled(), entities_, dma_queue_,
+                town_effects_);
             if (baseline_vdp_.is_display_enabled()) {
                 pending_vdp_stage_ = true;
                 return;

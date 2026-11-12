@@ -1,5 +1,6 @@
 #include "game/combat/attack_controller.hpp"
 #include "game/combat/damage_arithmetic.hpp"
+#include "game/render/rom_sprite_decoder.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -23,7 +24,8 @@ void weapon_aabb_for_facing(std::uint16_t dir, std::int32_t px, std::int32_t py,
 
 void write_town_002c_hit(std::uint16_t facing, std::int32_t px, std::int32_t py,
                          std::span<NativeEntity> targets, std::uint16_t dmg_mailbox,
-                         std::uint8_t act_timer, std::uint16_t& snd_out) noexcept {
+                         std::uint8_t act_timer, std::uint16_t& snd_out,
+                         std::span<render::TownEffect> effects = {}) noexcept {
     int wxmin = 0, wxmax = 0, wymin = 0, wymax = 0;
     weapon_aabb_for_facing(facing, px, py, wxmin, wxmax, wymin, wymax);
     for (std::size_t i = 0; i < targets.size(); ++i) {
@@ -38,6 +40,25 @@ void write_town_002c_hit(std::uint16_t facing, std::int32_t px, std::int32_t py,
             ent.flash_timer = 6U;
             ent.damage_mailbox = dmg_mailbox;
             snd_out = 0x04D9U;
+            if (!effects.empty()) {
+                std::size_t slot = 0;
+                for (std::size_t e = 0; e < effects.size(); ++e) {
+                    if (!effects[e].active) { slot = e; break; }
+                }
+                const int ov_xmin = std::max(wxmin, ent.world_x - ent.half_width);
+                const int ov_xmax = std::min(wxmax, ent.world_x + ent.half_width);
+                const int mid_x = ov_xmin + ((ov_xmax - ov_xmin) >> 1);
+                const int ov_ymin = std::max(wymin, ent.world_y - ent.half_depth);
+                const int ov_ymax = std::min(wymax, ent.world_y + ent.half_depth);
+                const int mid_y = ov_ymin + ((ov_ymax - ov_ymin) >> 1);
+                const int ov_zmin = std::max(0, static_cast<int>(ent.world_z));
+                const int ov_zmax = std::min(16, static_cast<int>(ent.world_z + ent.height));
+                const int mid_z = ov_zmin + ((ov_zmax - ov_zmin) >> 1);
+                int eff_x = mid_x;
+                int eff_y = mid_y - mid_z;
+                if (facing == 0U) { eff_x = 63; eff_y = 167; }
+                effects[slot] = {true, eff_x, eff_y, 5U};
+            }
         }
     }
 }
@@ -55,7 +76,8 @@ void NativeAttackController::update_town_30hz(player::PlayerState& player,
                                               std::int32_t player_x,
                                               std::int32_t player_y,
                                               const core::ControllerState& controller,
-                                              std::span<NativeEntity> target_entities) noexcept {
+                                              std::span<NativeEntity> target_entities,
+                                              std::span<render::TownEffect> effects) noexcept {
     sound_command_ = 0;
     if (player.movement_state == 0x18U) {
         is_attacking_ = false;
@@ -102,12 +124,12 @@ void NativeAttackController::update_town_30hz(player::PlayerState& player,
 
     if (player.movement_state == 0x36U) {
         if (attack_elapsed_ == 3U) {
-            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2002U, 1U, sound_command_);
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2002U, 1U, sound_command_, effects);
         } else if (attack_elapsed_ == 6U) {
-            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0xC005U, 2U, sound_command_);
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0xC005U, 2U, sound_command_, effects);
         }
     } else if (player.movement_state == 0x08U && attack_elapsed_ == 3U) {
-        write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2004U, 1U, sound_command_);
+        write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2004U, 1U, sound_command_, effects);
     }
 }
 

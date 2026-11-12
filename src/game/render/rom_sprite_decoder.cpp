@@ -315,7 +315,7 @@ void emit_rom_town_sat(SatPipelineContract& sat,
         // Uses 60Hz VBLANK frame counter from $FF1971
         if ((e.flags36 & 0x40U) != 0U) {
             const std::uint32_t fc = (ctx.frame_60hz != 0U) ? ctx.frame_60hz : ctx.tick_counter;
-            const int jitter = ((fc & 1U) != 0U) ? 2 : 0;
+            const int jitter = ((e.flash_timer != 0U) ? ((e.flash_timer & 1U) != 0U) : ((fc & 1U) != 0U)) ? 2 : 0;
             if ((e.facing & 1U) != 0U) {
                 vdp_x += jitter;
             } else {

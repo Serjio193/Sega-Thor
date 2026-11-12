@@ -155,7 +155,8 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
                             bool attract_banner_enabled,
                             bool advance_ripples,
                             std::span<NativeEntity> entities,
-                            VdpDmaQueue& dma_queue) noexcept {
+                            VdpDmaQueue& dma_queue,
+                            std::span<TownEffect> effects) noexcept {
     TownSatFrameContext sat_ctx{};
     sat_ctx.camera_x = camera.camera_x();
     sat_ctx.camera_y = camera.camera_y();
@@ -166,6 +167,14 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
     sat_ctx.player_x = player_x;
     sat_ctx.player_y = player_y;
     sat_ctx.player_facing = player.direction_code;
+    for (std::size_t i = 0; i < std::min(effects.size(), sat_ctx.effect_pool_0.size()); ++i) {
+        auto& eff = effects[i];
+        if (eff.active && eff.timer > 0U) {
+            --eff.timer;
+            if (eff.timer == 0U) eff.active = false;
+            else sat_ctx.effect_pool_0[i] = eff;
+        }
+    }
     if (player.movement_state == 4U) {
         sat_ctx.player_frame_dir = static_cast<std::uint16_t>(24U + (walk_tick / 2U) * 3U);
         sat_ctx.player_overlay_3e = static_cast<std::uint16_t>(48U + (walk_tick / 2U) * 2U);

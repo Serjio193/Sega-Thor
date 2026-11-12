@@ -56,6 +56,7 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
                             bool attract_banner_enabled,
                             bool advance_ripples,
                             std::span<NativeEntity> entities,
-                            VdpDmaQueue& dma_queue) noexcept;
+                            VdpDmaQueue& dma_queue,
+                            std::span<TownEffect> effects = {}) noexcept;
 
 } // namespace oasis::game::render

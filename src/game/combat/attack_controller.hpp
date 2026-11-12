@@ -9,6 +9,8 @@
 
 namespace oasis::game {
 
+namespace render { struct TownEffect; }
+
 // ============================================================================
 // ATTACK & COMBAT SUBSYSTEM
 //
@@ -50,7 +52,8 @@ public:
                           std::int32_t player_x,
                           std::int32_t player_y,
                           const core::ControllerState& controller,
-                          std::span<NativeEntity> target_entities) noexcept;
+                          std::span<NativeEntity> target_entities,
+                          std::span<render::TownEffect> effects = {}) noexcept;
 
     [[nodiscard]] bool is_attacking() const noexcept { return is_attacking_; }
     [[nodiscard]] std::uint16_t attack_timer() const noexcept { return attack_timer_; }

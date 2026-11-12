@@ -1,3 +1,26 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.43: Town Hit Spark Effect Emission 0x00C012 / 0x00A8F0, Hitstun Jitter 0x00AB1A, and Full 21-Frame Continuous Exact Prefix F775..F795)
+
+## Milestone M16.43 Reverse Engineering Summary
+
+### 1. Town Hit Spark Effect System ($FF19C8, ROM 0x00C012 / 0x00A8F0)
+- **M68K Disassembly & Memory Mechanics:**
+  * When Ali's sword connects with Guard Slot 5 at F789 (logic tick), ROM `0x00C012` spawns an effect in `$FF19C8`:
+    Sets active, initializes timer to 5, and records hit spark world position `(63, 167)`.
+  * During the 30Hz render pass at ROM `0x00A1C2`, the game loops over `$FF19C8`, calls `0x00A8F0`, decrements timer to 4, and emits the sprite piece at SAT Entry 9 (`attr = 0x0D56`, `y = 187`, `x = 183`, size `0x05` for 16x16 pixels).
+  * Missing this effect in native shifted all 22 subsequent entity sprite pieces down by 1 SAT slot, creating a 95-byte SAT difference and 123 differing pixels at F791.
+  * Adding the `town_effects_` pool and wiring it into `attack_controller.cpp` and `town_combat_sat.cpp` completely eliminates this divergence.
+
+### 2. Hitstun Jitter Synchronization (ROM 0x00AB1A)
+- **Shaking Coordinate Mechanics:**
+  * When `e.flags36 & 0x40U` is set (entity taking damage), the sprite Y coordinate jitters by 2 pixels on alternating frames.
+  * ROM `0x00AB1A` keys this alternation to `flash_timer & 1U` during hitstun flashing:
+    `((e.flash_timer != 0U) ? ((e.flash_timer & 1U) != 0U) : ((fc & 1U) != 0U)) ? 2 : 0`.
+  * Synchronizing this logic ensures bit-for-bit identical SAT entries and pixel rendering during damage frames F791..F795.
+
+### 3. Full 21-Frame Continuous Bit-for-Bit Exact Prefix (F775..F795)
+- **Complete Elimination of Continuous Dataset Divergence:**
+  * Across ALL 21 captured consecutive frames (F775 through F795), the standalone engine achieves 0 differing pixels, 0 differing VRAM bytes, 0 differing CRAM, 0 differing VSRAM, 0 differing VDP registers, and 100% bit-for-bit identical RGB24 SHA256 hashes!
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M16.42: Projectile Struct Copy 0x00E66E, Launch 0x025A02, and Exact Continuous Prefix Expansion F775..F790)
 
 ## Milestone M16.42 Reverse Engineering Summary
