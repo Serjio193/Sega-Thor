@@ -1,3 +1,11 @@
+# M15.259 Strategic Pivot: ROM Semantic Extraction for the Standalone Engine
+
+- `tools/extract_rom_room_transition_semantics.py` — reusable ROM semantic extractor for the World Room Descriptor Table (`0x00C90E`/`0x00C92C`), Universal Room Streamer (`0x00D406`), Transition Entrypoints (`0x00C9EC`..`0x00CA38`), and Room Spawn Bytecode VM (`0x04371E`/`0x00F788`/`0x00F7D0`).
+- `data/thor-evidence/rom_room_transition_semantics_m15_259.json` — structured machine-readable semantic knowledge base (`573` ROM functions analyzed, `188` room descriptors across `21` areas, `448` room transition edges, `25` tables, `33` spawn VM opcodes, `65` shared tile bank pointers, and `6` GPGX validation scenarios).
+- `tests/rom_room_transition_semantics_test.py` — automated verification suite validating extracted ROM room descriptors, transition graphs, spawn VM bytecode, and multi-scenario GPGX parity.
+- `tools/generate_m15_259_receipt.py` / `data/thor-evidence/combined-clusters-qualification-m15-259-20261112.json` — certified qualification receipt generator and verified receipt (`ReceiptVerifier` status=VERIFIED, valid=True, 0 rejections).
+- `docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md` — implementation-ready Standalone handoff covering Phase 1 capability audit, Phase 2 Standalone gap analysis, Phase 3 extracted room/transition/VM semantics, Phase 4 multi-scenario GPGX validation, Phase 5 C++20 interfaces, and Phase 6 product-level progress model.
+
 # M15.258 Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup
 
 - `tests/m15_258_computational_islands_safety_test.cpp` — dedicated safety gate test suite validating disqualification of `0x00D406` subregions and top Musashi hotspots (12/12 passing under ASan/UBSan).

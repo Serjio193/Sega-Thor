@@ -1,3 +1,24 @@
+# M15.259 Strategic Pivot: ROM Semantic Extraction for the Standalone Engine — COMPLETE / VERIFIED ROM SEMANTIC EXTRACTION & STANDALONE HANDOFF
+
+- **Phase 1 Capability & Bottleneck Audit:**
+  * Inventoried all 11 ROM extraction categories (`tools/thor_recompiler/decoder.py`, `cfg_builder.py`, `audit_m15_250_cfg_coverage.py`, `generate_entity_dispatch_m15_256.py`, etc.), separating automated vs. manual extraction costs and quantifying reuse across all 188 rooms.
+- **Phase 2 Read-Only Standalone Gap Analysis:**
+  * Audited `C:/Github/Sega-Thor-Standalone` (`81bac48`, M16.43) across 7 priority areas without modifying a single byte.
+  * Identified the Top 3 Gameplay Blockers: (1) `UNIVERSAL_ROOM_DESCRIPTOR_AND_MAP_TRANSITION_LOADER`, (2) `ROOM_SPAWN_AND_RESOURCE_BYTECODE_VM`, and (3) `CHECKPOINT_INDEPENDENT_SCENE_AND_COLD_BOOT_INITIALIZATION`.
+- **Phase 3 Automated ROM Knowledge Extraction (`tools/extract_rom_room_transition_semantics.py`):**
+  * Built reusable extractor (`459` lines $\le 500$) emitting `data/thor-evidence/rom_room_transition_semantics_m15_259.json`:
+    - `573` ROM functions analyzed (`15` core transition/loader/VM functions + `558` room `init_fn`, `pre_vblank_fn`, `post_vblank_fn` routines across `186` unique descriptors).
+    - `21` area tables (`0x00C92C` & `0x04371E`), `188` room descriptor slots (`186` unique 26-byte descriptors, `186/186` calling `0x00D406`).
+    - `448` room transition edges (`330` `CA24_FADE_SPAWN`, `70` `C9EC_PARAM_FADE`, `31` `CA38_SEAMLESS_SCROLL`, `17` `CA10_VERTICAL_FALL`).
+    - `25` tables extracted, `33` spawn VM opcodes (`0x00F7D0`), and `65` shared tile bank pointers (`0x05CE96`).
+- **Phase 4 Multi-Scenario Pinned GPGX Validation:**
+  * Validated extracted room descriptors, triggers, and transitions against all 6 pinned GPGX gameplay scenarios (`scenario_a`, `scenario_b`, `scenario_c`, `longrun_3600f`, `longrun_alt_1800f`, `longrun_combat_1800f`) covering two distinct multi-room chains (`0x0100 -> 0x0101 -> 0x0102` and `0x0102 -> 0x0103 -> 0x0104 -> 0x0105`, `14/14` `0x00C90E` calls, `0` fallbacks, `100%` accuracy).
+  * Verified via `tests/rom_room_transition_semantics_test.py` (100% assertions passed).
+- **Phase 5 & 6 Standalone Implementation Handoff & Product Progress Model:**
+  * Published `docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md` with exact ROM references, algorithms, tables, C++20 interfaces, update ordering, differential fixtures, and the 10-category Product-Level Progress Model.
+- **Phase 7 Governance & Verification:**
+  * Preserved all 196 production helpers (`17396fda...`), frozen production source hash (`28b6617d...`), four `295/295` CTest matrices, `624/624` bit-exact replay streams, governed file line limits ($\le 500$ lines), verified qualification receipt (`combined-clusters-qualification-m15-259-20261112.json`), and read-only Standalone worktree.
+
 # M15.258 Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup — COMPLETE / VERIFIED TEST REPAIR & SAFETY GATE ENFORCEMENT
 
 - **Debug Test Harness Triage & 100% CTest Recovery Across 4 Configurations:**

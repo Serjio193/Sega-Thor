@@ -1,3 +1,42 @@
+# 2026-11-12 — Milestone M15.259: STRATEGIC PIVOT — ROM SEMANTIC EXTRACTION FOR THE STANDALONE ENGINE — Phase 0 Baseline Verification (5390076d...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Capability and Bottleneck Audit across 11 Extraction Categories; Phase 2 Read-Only Standalone Gap Analysis (Standalone 81bac48 M16.43 Audited across 7 Priority Areas, Top 3 Gameplay Blockers Identified); Phase 3 Automated ROM Knowledge Extraction Tool (tools/extract_rom_room_transition_semantics.py, 573 ROM Functions Analyzed, 188 Room Descriptors Across 21 Areas, 448 State Transitions, 25 Tables, 33 Spawn VM Opcodes, 65 Tile Banks); Phase 4 Pinned GPGX Multi-Scenario Validation (6 Scenarios: scenario_a, scenario_b, scenario_c, longrun_3600f, longrun_alt_1800f, longrun_combat_1800f, Two Multi-Room Chains 0x0100->0x0101->0x0102 and 0x0102->0x0103->0x0104->0x0105, 100% Agreement across 14 Transitions); Phase 5 Implementation-Ready Standalone Handoff (docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md); Phase 6 Product-Level Progress Model; Phase 7 Governance Verified (Four 295/295 CTest Matrices, 624/624 Replay Streams Bit-Exact, Receipt VERIFIED, Governed Files <= 500 lines, Standalone Unchanged) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline & Governance Verification:
+    - Verified Git baseline commit `5390076dabb44ef869b884cac829913b8773bb1c` on branch `codex/helper10-99d6-bounded-scout`.
+    - Canonical ROM verified: `local-roms/Beyond Oasis (USA).md` (SHA256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`, size 3,145,728 bytes).
+    - Pinned GPGX core verified: SHA256 `ca4be3049e56b1fdfba9a7c727bebbdc645b3d50203d635a468048ba81165134`.
+    - Production helper count strictly preserved: 196 active helpers (`17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867`).
+    - Production implementation source hash verified across 535 production files: `28b6617d71065897eb5c2584e70f5b3c6e34ad92244e41f587cae4b2ec0c4ce7` (0 byte difference from baseline).
+    - Standalone worktree `C:/Github/Sega-Thor-Standalone` (`81bac48afe74269444164870cf6b9f789ff68fd1`, M16.43) confirmed strictly read-only and unmodified.
+  * Phase 1 Capability and Bottleneck Audit:
+    - Audited existing ROM extraction tools across 11 categories: ROM function boundaries (`tools/thor_recompiler/decoder.py`, `cfg_builder.py`), control-flow graphs (`cfg_builder.py`, `audit_m15_250_cfg_coverage.py`), entity state machines (`generate_entity_dispatch_m15_256.py`), animation tables (`src/assets/`), sprite/DMA descriptors (`src/render/`, `0x00D7C0`), VDP update sequences (`0x00D406`), map transitions (`0x00C8AA`..`0x00D6D0`), collision logic (`src/physics/`), input handling (`0x001D26`), PRNG (`0x0024FA`), and save/load (`0x008500`..`0x008A00`).
+    - Quantified automated vs. manual extraction costs and expected reuse across all 188 rooms.
+  * Phase 2 Standalone Gap Analysis:
+    - Audited read-only `C:/Github/Sega-Thor-Standalone` (`81bac48`, M16.43): `src/game/standalone_game_simulation.cpp`, `src/game/world/town_scene_loader.hpp/.cpp`, `docs/ROADMAP.md`, and `docs/WORKLOG.md`.
+    - Distinguished proven ROM-driven capabilities from checkpoint-dependent functionality across 7 priority areas (Cold boot, Room/map transitions, Multi-scene autonomous gameplay, Enemy AI/combat, Animation/sprites, DMA/VDP, Save/load).
+    - Identified the Top 3 Gameplay Blockers preventing complete standalone gameplay:
+      1. `UNIVERSAL_ROOM_DESCRIPTOR_AND_MAP_TRANSITION_LOADER` (`0x00C90E` / `0x00C92C` / `0x00D406` / `0x00C9EC..0x00CA38`).
+      2. `ROOM_SPAWN_AND_RESOURCE_BYTECODE_VM` (`0x04371E` / `0x00F788` / `0x00F7D0` / `0x00F80E`).
+      3. `CHECKPOINT_INDEPENDENT_SCENE_AND_COLD_BOOT_INITIALIZATION` (`0x00C8AA` / `0x00D406` without GPGX checkpoint seeding).
+  * Phase 3 Automated ROM Knowledge Extraction:
+    - Selected subsystem: `WORLD_ROOM_DESCRIPTOR_SPAWN_VM_AND_MAP_TRANSITION_SUBSYSTEM`.
+    - Authored reusable extractor `tools/extract_rom_room_transition_semantics.py` (459 lines $\le 500$) and emitted structured JSON `data/thor-evidence/rom_room_transition_semantics_m15_259.json`:
+      * `573` ROM functions analyzed (`15` core transition/loader/VM functions + `558` room `init_fn`, `pre_vblank_fn`, `post_vblank_fn` routines across `186` unique room descriptors).
+      * `21` area tables (`0x00C92C` & `0x04371E`), `188` room descriptor slots (`186` unique 26-byte descriptors, `186/186` calling `0x00D406` as `post_vblank_fn`).
+      * `448` state transitions extracted (`330` `CA24_FADE_SPAWN`, `70` `C9EC_PARAM_FADE`, `31` `CA38_SEAMLESS_SCROLL`, `17` `CA10_VERTICAL_FALL`; triggers: `228` `BOUNDARY_FLAG_40_41`, `154` `AABB_00C1CE`, `28` `COORD_THRESHOLD`, `17` `VERTICAL_FALL_CA10`, `21` `EVENT_OR_SCRIPT`).
+      * `25` tables extracted (`21` area descriptor tables + master pointer tables `0x00C92C`, `0x04371E`, `0x00F7D0`, `0x05CE96`), `33` spawn VM opcodes (`0x00F7D0`), and `65` shared tile bank pointers (`0x05CE96`).
+  * Phase 4 Independent Validation Against Pinned GPGX Execution:
+    - Validated extracted semantics against all 6 pinned GPGX gameplay scenarios (`scenario_a`, `scenario_b`, `scenario_c`, `longrun_3600f`, `longrun_alt_1800f`, `longrun_combat_1800f`) covering two distinct multi-room chains:
+      * Chain 1 (`scenario_a` 1592f, `longrun_alt_1800f` 1800f): `0x0100 -> 0x0101 -> 0x0102` (2 transitions).
+      * Chain 2 (`scenario_b` 600f: `0x0102 -> 0x0103`; `scenario_c` 1800f, `longrun_combat_1800f` 1800f, `longrun_3600f` 3600f: `0x0102 -> 0x0103 -> 0x0104 -> 0x0105`).
+    - Confirmed `14/14` dynamic `0x00C90E` lookups (`0` fallbacks) and 100% agreement between extracted ROM descriptors/triggers and GPGX dynamic traces.
+    - Authored `tests/rom_room_transition_semantics_test.py` (101 lines $\le 500$): 100% of assertions passed.
+  * Phase 5 & 6 Standalone Implementation Handoff & Product Progress Model:
+    - Authored `docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md` with exact ROM references, algorithms, tables, proposed C++20 interfaces (`RomRoomDescriptor`, `RomTransitionEdge`, `RoomTransitionTable`, `RoomSpawnBytecodeVm`), game-state fields, update ordering, differential fixtures, and the 10-category Product-Level Progress Model.
+  * Phase 7 Governance & Verification:
+    - Emitted `data/thor-evidence/combined-clusters-qualification-m15-259-20261112.json` via `tools/generate_m15_259_receipt.py` (181 lines $\le 500$) and verified via `ReceiptVerifier` (`valid=True`, `status=VERIFIED`, `0` rejections).
+    - Confirmed all 4 CTest matrices at `295/295`, governed files $\le 500$ lines, frozen production source hash `28b6617d...`, and Standalone repository unmodified.
+
 # 2026-11-11 — Milestone M15.258: SAFE COMPUTATIONAL ISLANDS, DEBUG HARNESS REPAIR, AND MEASURABLE NATIVE SPEEDUP — Phase 0 Baseline Verification (2d5c59a4...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Debug Harness Triage & 100% CTest Recovery Across 4 Configurations (Linux Debug 295/295, Linux Release 295/295, Windows Debug 295/295, Windows Release 295/295); Safe Computational Island Forensics & Profitability Modeling across 0x00D406 Subregions and Top Musashi Hotspots (0x0032E8, 0x002EE2, 0x0037D2, 0x0254EA, 0x00A4C8, 0x00D7C0); Safety Gate Application & Decision (SELECTED_KERNEL = NONE_DISQUALIFIED_BY_SAFETY_GATE); Dedicated Safety Test Suite (tests/m15_258_computational_islands_safety_test.cpp, 12/12 Passing under ASan/UBSan); Checkpoint Manifest Published (37 Checkpoints Bit-Exact across 6 Scenarios); Thirteen-Configuration Six-Scenario Gameplay Replay Qualification (78 Sessions, 624/624 Streams Bit-Exact, 37 Checkpoints Bit-Exact, Zero Regressions); 180-Process Real OS Process Wall-Clock Benchmark (10 Paired Trials x 3 Configurations x 6 Scenarios on Core-Pinned Workers, RUN_G Median 99.5846s, RUN_L Median 101.566s, RUN_M Median 101.0607s, Speedup 0.9854x +-7.17%); Certified Qualification Receipt Verified (combined-clusters-qualification-m15-258-20261111.json, valid=True, status=VERIFIED, 0 rejections); Source Code Line Limits (Governed Files <= 500 lines); Standalone Worktree Confirmed Read-Only and Unmodified — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

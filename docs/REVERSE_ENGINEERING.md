@@ -1,3 +1,60 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M15.259: World Room Descriptor Table, Room Transition Graph, and Spawn Bytecode VM Semantic Extraction)
+
+## Milestone M15.259 Reverse Engineering Summary
+
+### Section 77: World Room Descriptor Table (`0x00C90E`/`0x00C92C`), Room Streamer (`0x00D406`), Transition Entrypoints (`0x00C9EC`..`0x00CA38`), and Spawn Bytecode VM (`0x00F788`/`0x04371E`)
+
+#### 1. Master Room Descriptor Lookup (`0x00C8AA`, `0x00C90E`, `0x00C92C`)
+- **Original ROM Addresses:**
+  - `0x00C8AA..0x00C90C`: `map_load_dispatch` (clears Work RAM `$FF0E1C`, `$FF0E2C`, `$FF0DB3`, resolves room descriptor via `0x00C92C`, jumps to `init_fn`).
+  - `0x00C90E..0x00C92A`: `get_room_descriptor_ptr` (native helper `m68k_00c90e`).
+  - `0x00C92C..0x00C97F`: Master 21-Area Pointer Table (`21` 32-bit big-endian ROM pointers into `0x02C6B8..0x02CE3A`).
+- **Algorithm & Calling Convention (`0x00C90E`):**
+  - Input: `D0.W = $AAII` (`AA` = area index `0..20` in high byte, `II` = room index in low byte), stored at `$FF166C`.
+  - Computes `area_table_ptr = READ_BE32(0x00C92C + ((D0 >> 8) & 0xFF) * 4)`.
+  - Computes `desc_ptr = READ_BE32(area_table_ptr + (D0 & 0xFF) * 4)`.
+  - Returns `A0 = desc_ptr` pointing to a 26-byte (`0x1A`) room descriptor structure:
+    * `+0x00` (`u32`): `init_fn` (room initialization routine).
+    * `+0x04` (`u32`): `pre_vblank_fn` (per-frame transition/trigger check routine).
+    * `+0x08` (`u32`): `post_vblank_fn` (`0x00D406` in `186/186` unique descriptors).
+    * `+0x0C` (`u16`): `base_tile_x` (copied to `$FF0DA6`).
+    * `+0x0E` (`u16`): `base_tile_y` (copied to `$FF0DA8`).
+    * `+0x10..+0x13` (`s8[4]`): `bounds_min_x`, `bounds_min_y`, `bounds_max_x`, `bounds_max_y` (scaled by `8` into `$FF0DAE..$FF0DB4`).
+    * `+0x14` (`u8`): `room_flags_14` (`$FF0DC2`, bit 7 selects shared tile bank at `0x05CE96`).
+    * `+0x15` (`u8`): `palette_Or_env_id` (`$FF0DC3`, bits `0..4` index `0x05CE96` when bit 7 of `+0x14` is clear).
+    * `+0x16` (`u32`): `scene_asset_bundle_ptr` (`$FF0DCE`, 5-Longword asset bundle header).
+- **Evidence & Coverage:**
+  - Bounded across all 21 area tables (`0x02C6B8..0x02CE3A`), yielding `188` valid room slots (`186` unique descriptors; Area 1 slots `0x011A`/`0x011D` share `0x02EAD2` and `0x0121`/`0x0122` share `0x02EB6E`).
+
+#### 2. Four Canonical Room Transition Entrypoints (`0x00C9EC`, `0x00CA10`, `0x00CA24`, `0x00CA38`) & Trigger Helpers (`0x00C1CE`)
+- **Original ROM Addresses:**
+  - `0x00CA38..0x00CA78`: Seamless edge scroll transition (`$FF166C = D0.W`, `$FF0DA2 = 0`, `$FF0DA0 = 1`, `BSR.W 0x00CA7A`).
+  - `0x00CA24..0x00CA36`: Fade transition with explicit spawn coordinates (`$FF166E = D1.W`, `$FF1670 = D2.W`, `$FF0DA2 = 0xFFFF`, branches to `0x00CA40`).
+  - `0x00CA10..0x00CA22`: Vertical drop/pit transition (`D2.W = -1`, `$FF0DF0 = $FFFF`, falls through to `0x00CA24`).
+  - `0x00C9EC..0x00CA0E`: Parameterized transition with entry style `D3.W` (`$FF0DF0 = D3.W`, `$FF166E = D1.W`, `$FF1670 = D2.W`, `$FF0DA2 = 0xFFFF`).
+  - `0x00C1CE..0x00C1FA`: Trigger Zone AABB Tester (checks `D0.W` against `[D2.W, D2.W + D4.W]` and `D1.W` against `[D3.W, D3.W + D5.W]`, returning `D0 = 0` inside, `-1` outside).
+- **Extracted Transition Graph:**
+  - Static CFG + backward register slice across all `558` room handler functions (`init_fn`, `pre_vblank_fn`, `post_vblank_fn`) recovered **`448` room transition edges**:
+    * By entrypoint: `330` `CA24_FADE_SPAWN`, `70` `C9EC_PARAM_FADE`, `31` `CA38_SEAMLESS_SCROLL`, `17` `CA10_VERTICAL_FALL`.
+    * By trigger mechanism: `228` `BOUNDARY_FLAG_40_41` (`$FF0DF6` / `$FF0DF7`), `154` `AABB_00C1CE`, `28` `COORD_THRESHOLD` (`$FF5800` / `$FF5802`), `17` `VERTICAL_FALL_CA10`, `21` `EVENT_OR_SCRIPT`.
+
+#### 3. Universal Room Asset Streamer (`0x00D406`) & Shared Tile Bank (`0x05CE96`)
+- **Original ROM Addresses:**
+  - `0x00D406..0x00D6D0`: Universal room asset streamer (`vdp_nemesis_scene_streamer`).
+  - `0x05CE96..0x05CF99`: Shared environment tile bank pointer table (`65` 32-bit ROM pointers).
+- **Behavior:**
+  - Reads the 26-byte room descriptor via `0x00C90E`, unpacks world bounds into `$FF0DA6..$FF0DB4`, reads the 5-Longword `scene_asset_bundle_ptr` (`[+0x00]` Primary Nemesis tileset, `[+0x04]` Map block/chunk layout, `[+0x08]` Secondary Nemesis tileset, `[+0x0C]` Palette/CLUT descriptor, `[+0x10]` Room collision heightmap), and decompresses/streams room assets into Work RAM (`$FF6608`, `$FFAE08`) and VDP VRAM.
+
+#### 4. Room Spawn & Resource Bytecode VM (`0x04371E`, `0x00F788`, `0x00F7D0`, `0x00F80E`)
+- **Original ROM Addresses:**
+  - `0x04371E..0x043771`: Master 21-Area Spawn Script Pointer Table (`21` 32-bit pointers, parallel to `0x00C92C`).
+  - `0x00F788..0x00F7CE`: Room Spawn Bytecode Interpreter Entry (`execute_room_spawn_script`).
+  - `0x00F7D0..0x00F80D`: 33-Entry Relative Word Jump Table (`opcodes 0x00..0x20`, terminated by `0xFF` -> `0x00F852`).
+  - `0x00F80E..0x00F828`: Opcode `0x00` (`OP_00_LOAD_ENTITY_PALETTE_AND_VRAM_SLOTS`, reads `u8 pal_slot0, u8 pal_slot1, u8 vram_slot[6]`, resolving ROM pointers via `0x0213A0` and `0x020EE8`).
+- **Evidence & Verification:**
+  - Verified against Standalone `TownSceneLoader` (`src/game/world/town_scene_loader.cpp`): the hardcoded offset `0x046512` is byte-for-byte the Room `0x0103` script entry resolved from `0x04371E[1][3]`, where Opcode `0x00` reads `03 07 01 41 FF FF FF FF` (`pal_slot1 = 7 -> 0x0213A0[7] = 0x002AF51E`, `vram_slot[0] = 1 -> 0x020EE8[1] = 0x00163BDA`), and `0x046522` is the subsequent Opcode `0x03` entity placement table.
+  - Tested via `tests/rom_room_transition_semantics_test.py` (100% passing) and cross-checked against 6 pinned GPGX gameplay scenarios (`14/14` `0x00C90E` calls, `0` fallbacks).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-11 (M15.258: Safe Computational Islands, Debug Harness Repair, and Candidate Safety Forensics)
 
 ## Milestone M15.258 Reverse Engineering Summary

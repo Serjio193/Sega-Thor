@@ -1,3 +1,27 @@
+# ADR-20261112-M15-259-STRATEGIC-PIVOT-ROM-SEMANTIC-EXTRACTION-FOR-STANDALONE-ENGINE — Strategic Pivot: ROM Semantic Extraction for the Standalone Engine
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Milestones M15.250 through M15.258 demonstrated that isolated leaf-routine microkernel recompilation in the Hybrid runner has reached diminishing returns: remaining Musashi hotspots (`0x0032E8`, `0x002EE2`, `0x0037D2`, `0x0254EA`, `0x00A4C8`, `0x00D7C0`, `0x003820`, `0x00D406`) are either hardware spin-wait loops, VDP/DMA MMIO routines, interrupt-masking streams, or multi-callee dispatchers disqualified by the safety and ROI gates.
+2. Meanwhile, a read-only audit of the independent C++20 Standalone engine (`C:/Github/Sega-Thor-Standalone` at `81bac48`, M16.43) revealed that Standalone gameplay is bottlenecked by hardcoded single-scene loaders (`TownSceneLoader` with hardcoded ROM offsets `0x046512`, `0x046522`, `0x002AF51E`, `0x00163BDA`), a single real room transition (`0x0102 -> 0x0103`), a stubbed `0x0103 -> 0x0104` transition at `F1112` that never loads Room `0x0104` (`0x02E972`), and reliance on GPGX checkpoint snapshots (`checkpoint_0` / `checkpoint_1`) for scene state initialization.
+3. The Hybrid repository already possesses a complete M68k disassembler, CFG builder, Thor IR pipeline, 196 verified production helpers, and pinned 6-scenario GPGX replay oracle capable of extracting complete, machine-readable ROM subsystem semantics for Standalone consumption.
+
+**Decisions:**
+1. **Strategic Pivot to Reusable ROM Semantic Extraction:**
+   - Halted low-return microkernel leaf hunting while preserving all 196 frozen production helpers (`28b6617d...`), all safety quarantines, all four `295/295` CTest matrices, and 100% replay parity (`624/624` streams bit-exact).
+   - Directed Hybrid tooling to extract complete, machine-readable subsystem semantics and implementation-ready C++20 handoffs for the Standalone engine while keeping `C:/Github/Sega-Thor-Standalone` strictly read-only.
+2. **Automated Extraction of the World Room Descriptor, Spawn Bytecode VM, and Map Transition Subsystem (`tools/extract_rom_room_transition_semantics.py`):**
+   - Built a deterministic Python extractor (`459` lines $\le 500$) that parses the canonical ROM (`eb19bda4...`) and cross-validates against pinned GPGX traces to emit `data/thor-evidence/rom_room_transition_semantics_m15_259.json`.
+   - Extracted all `21` area tables (`0x00C92C` & `0x04371E`), all `188` room descriptor slots (`186` unique 26-byte descriptors, `186/186` invoking `0x00D406` as `post_vblank_fn`), `573` ROM functions (`15` core transition/loader/VM functions + `558` room `init_fn`/`pre_vblank_fn`/`post_vblank_fn` handlers), `448` room transition edges (`330` `CA24_FADE_SPAWN`, `70` `C9EC_PARAM_FADE`, `31` `CA38_SEAMLESS_SCROLL`, `17` `CA10_VERTICAL_FALL`), `33` spawn VM opcodes (`0x00F7D0`), and `65` shared tile bank pointers (`0x05CE96`).
+3. **Multi-Scenario Pinned GPGX Validation & Product-Level Progress Model:**
+   - Validated extracted room descriptors, triggers, and transitions against all 6 pinned GPGX gameplay scenarios (`scenario_a`, `scenario_b`, `scenario_c`, `longrun_3600f`, `longrun_alt_1800f`, `longrun_combat_1800f`) covering two distinct multi-room chains (`0x0100 -> 0x0101 -> 0x0102` and `0x0102 -> 0x0103 -> 0x0104 -> 0x0105`, `14/14` `0x00C90E` calls matched, `100%` accuracy).
+   - Established an explicit 10-category Product-Level Progress Model separating `Implemented and tested`, `Partially implemented`, `Checkpoint-dependent`, `Not implemented`, and `Unknown` capabilities without fabricated completion percentages.
+
+**Consequences:**
+- Provides the Standalone engine with complete, machine-readable ROM room descriptors, transition graphs, and spawn VM bytecode tables for all 188 rooms in the game (`docs/handoffs/STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md` and `data/thor-evidence/rom_room_transition_semantics_m15_259.json`).
+- Unblocks Standalone implementation of `0x0103 -> 0x0104 -> 0x0105` and `0x0100 -> 0x0101 -> 0x0102` multi-room chains and replaces hardcoded `TownSceneLoader` offsets with the universal `0x00C90E` / `0x00D406` / `0x00F788` architecture.
+
 # ADR-20261111-M15-258-SAFE-COMPUTATIONAL-ISLANDS-DEBUG-HARNESS-REPAIR-AND-MEASURABLE-SPEEDUP — Safe Computational Islands, Debug Harness Repair, and Measurable Native Speedup
 **Status:** Accepted
 **Date:** 2026-11-11
