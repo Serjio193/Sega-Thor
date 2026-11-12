@@ -344,7 +344,9 @@ void step_entity_002c(NativeEntity& ent, std::vector<NativeEntity>& entities,
             ctx.pending_player_damage += 2;
             emit_sound(ent, ctx, q, combat::kSndEnemy002cBodyHit1);
             emit_sound(ent, ctx, q, combat::kSndEnemy002cBodyHit2);
-            ent.z_fp = 0;
+            if (ctx.player_z != 0) {
+                ent.z_fp = 0;
+            }
             ent.state = 0x0EU;
             ent.anim_frame = 0x0EU;
         } else {

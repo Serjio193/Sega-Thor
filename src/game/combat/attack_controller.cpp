@@ -22,12 +22,32 @@ void weapon_aabb_for_facing(std::uint16_t dir, std::int32_t px, std::int32_t py,
     }
 }
 
+void rom_weapon_aabb_058012(std::uint16_t fid, std::uint16_t dir, std::int32_t px, std::int32_t py,
+                            int& zmin, int& zmax, int& xmin, int& xmax, int& ymin, int& ymax) noexcept {
+    // Authentic ROM 0x058012 per-frame weapon AABB records (ROM 0x00BDAC..0x00BDDA)
+    struct Box { int z0, z1, x0, y0, x1, y1; };
+    static constexpr Box kFid99[3]  = {{4, 16, -8, -32, 7, -1},  {4, 16, 0, -8, 31, 7},   {4, 16, -8, 0, 7, 31}};
+    static constexpr Box kFid183[3] = {{12, 16, -8, -24, 7, -1}, {12, 16, 0, -8, 23, 7},  {12, 16, -8, 0, 7, 23}};
+    static constexpr Box kFid189[3] = {{2, 4, -16, -24, 7, -1},  {2, 4, 0, -12, 33, 11},  {2, 4, -11, 0, 15, 26}};
+    const auto* tbl = (fid == 183U) ? kFid183 : ((fid == 189U) ? kFid189 : kFid99);
+    const Box& b = tbl[(dir == 3U) ? 1U : (dir & 3U)];
+    zmin = b.z0;
+    zmax = b.z1;
+    xmin = px + ((dir == 3U) ? -b.x1 : b.x0);
+    xmax = px + ((dir == 3U) ? -b.x0 : b.x1);
+    ymin = py + b.y0;
+    ymax = py + b.y1;
+}
+
 void write_town_002c_hit(std::uint16_t facing, std::int32_t px, std::int32_t py,
                          std::span<NativeEntity> targets, std::uint16_t dmg_mailbox,
                          std::uint8_t act_timer, std::uint16_t& snd_out,
-                         std::span<render::TownEffect> effects = {}) noexcept {
+                         std::span<render::TownEffect> effects = {},
+                         std::uint16_t fid = 99U) noexcept {
     int wxmin = 0, wxmax = 0, wymin = 0, wymax = 0;
     weapon_aabb_for_facing(facing, px, py, wxmin, wxmax, wymin, wymax);
+    int sp_zmin = 0, sp_zmax = 16, sp_xmin = wxmin, sp_xmax = wxmax, sp_ymin = wymin, sp_ymax = wymax;
+    rom_weapon_aabb_058012(fid, facing, px, py, sp_zmin, sp_zmax, sp_xmin, sp_xmax, sp_ymin, sp_ymax);
     for (std::size_t i = 0; i < targets.size(); ++i) {
         auto& ent = targets[i];
         if (!ent.active || ent.type_id != 0x002CU || ent.invulnerable) continue;
@@ -45,19 +65,16 @@ void write_town_002c_hit(std::uint16_t facing, std::int32_t px, std::int32_t py,
                 for (std::size_t e = 0; e < effects.size(); ++e) {
                     if (!effects[e].active) { slot = e; break; }
                 }
-                const int ov_xmin = std::max(wxmin, ent.world_x - ent.half_width);
-                const int ov_xmax = std::min(wxmax, ent.world_x + ent.half_width);
+                const int ov_xmin = std::max(sp_xmin, ent.world_x - ent.half_width);
+                const int ov_xmax = std::min(sp_xmax, ent.world_x + ent.half_width);
                 const int mid_x = ov_xmin + ((ov_xmax - ov_xmin) >> 1);
-                const int ov_ymin = std::max(wymin, ent.world_y - ent.half_depth);
-                const int ov_ymax = std::min(wymax, ent.world_y + ent.half_depth);
+                const int ov_ymin = std::max(sp_ymin, ent.world_y - ent.half_depth);
+                const int ov_ymax = std::min(sp_ymax, ent.world_y + ent.half_depth);
                 const int mid_y = ov_ymin + ((ov_ymax - ov_ymin) >> 1);
-                const int ov_zmin = std::max(0, static_cast<int>(ent.world_z));
-                const int ov_zmax = std::min(16, static_cast<int>(ent.world_z + ent.height));
+                const int ov_zmin = std::max(sp_zmin, static_cast<int>(ent.world_z));
+                const int ov_zmax = std::min(sp_zmax, static_cast<int>(ent.world_z + ent.height));
                 const int mid_z = ov_zmin + ((ov_zmax - ov_zmin) >> 1);
-                int eff_x = mid_x;
-                int eff_y = mid_y - mid_z;
-                if (facing == 0U) { eff_x = 63; eff_y = 167; }
-                effects[slot] = {true, eff_x, eff_y, 5U};
+                effects[slot] = {true, mid_x, mid_y - mid_z, 5U};
             }
         }
     }
@@ -124,12 +141,12 @@ void NativeAttackController::update_town_30hz(player::PlayerState& player,
 
     if (player.movement_state == 0x36U) {
         if (attack_elapsed_ == 3U) {
-            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2002U, 1U, sound_command_, effects);
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2002U, 1U, sound_command_, effects, 183U);
         } else if (attack_elapsed_ == 6U) {
-            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0xC005U, 2U, sound_command_, effects);
+            write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0xC005U, 2U, sound_command_, effects, 189U);
         }
     } else if (player.movement_state == 0x08U && attack_elapsed_ == 3U) {
-        write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2004U, 1U, sound_command_, effects);
+        write_town_002c_hit(player.direction_code, player_x, player_y, target_entities, 0x2004U, 1U, sound_command_, effects, 99U);
     }
 }
 

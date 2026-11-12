@@ -229,9 +229,17 @@ public:
     // Load authentic Town Screen(1,3) resources/spawns from ROM for continuous Beach->Town play.
     bool prepare_town_from_rom(std::span<const std::uint8_t> rom);
 
-    // Transition immediately into Town Screen(1,3) (MAP_ID=0x005A).
-    void transition_to_town(bool settled_camera = false);
+    // Cold-boot standalone gameplay directly from ROM with zero GPGX savestates or snapshots.
+    bool initialize_native_from_rom(std::span<const std::uint8_t> rom,
+                                    std::uint16_t start_map_id = world::kBeachMapId);
 
+    // Transition immediately into Town Screen(1,3) (MAP_ID=0x005A), Town North (0x005B), or Beach (0x003D).
+    void transition_to_town(bool settled_camera = false);
+    void transition_to_town_north();
+    void transition_to_beach();
+
+    [[nodiscard]] bool is_native_rom_session() const noexcept { return native_rom_session_; }
+    [[nodiscard]] std::uint32_t transition_count() const noexcept { return transition_count_; }
     [[nodiscard]] std::uint16_t map_id() const noexcept { return map_id_; }
     [[nodiscard]] const combat::SoundCommandQueue& sound_queue() const noexcept { return sound_queue_; }
     [[nodiscard]] const world::LoadedTownScene& town_scene() const noexcept { return town_scene_; }
@@ -292,6 +300,8 @@ private:
     std::uint8_t town_water_timer_{7U};
     std::uint8_t town_water_phase_{0U};
     std::array<render::TownEffect, 4> town_effects_{};
+    bool native_rom_session_{false};
+    std::uint32_t transition_count_{0};
 };
 
 } // namespace oasis::game

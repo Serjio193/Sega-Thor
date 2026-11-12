@@ -2,6 +2,7 @@
 
 #include "game/entity/native_entity.hpp"
 #include "game/world/screen_descriptor.hpp"
+#include "game/world/tilemap_streamer.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <array>
@@ -78,11 +79,31 @@ struct LoadedTownScene {
     return !locks.any_locked() && player_y <= kTownNorthExitThresholdY;
 }
 
+// Returns true when Town (Screen(1,3)) or Town North (Screen(1,4)) triggers south exit.
+[[nodiscard]] constexpr bool is_south_exit_triggered(
+    std::int32_t player_y, const ExitLockFlags& locks = {}) noexcept {
+    return !locks.any_locked() && player_y >= kTownSouthExitThresholdY;
+}
+
+// Decodes any Group 1 Screen(1, 2..4) 0x003820 compressed tilesets, 64x64 layout/collision/palette,
+// and screen entity spawns directly from authentic ROM bytes.
+[[nodiscard]] LoadedTownScene load_world_screen_from_rom(
+    std::span<const std::uint8_t> rom, ScreenId screen_id);
+
 // Decodes all 7 Town Screen(1,3) 0x003820 compressed streams, 64x64 layout/collision/palette,
 // and all 15 entity spawns directly from authentic ROM bytes.
 [[nodiscard]] LoadedTownScene load_town_scene_from_rom(std::span<const std::uint8_t> rom);
 
 // Uploads decoded Town 4bpp pattern chunks cleanly into VDP VRAM and CRAM without prerecorded snapshots.
 void upload_town_tiles_to_vdp(const LoadedTownScene& scene, genesis::VdpState& vdp);
+
+// Populates the 64x32 Plane A nametable (VRAM 0xC000) and initializes TilemapStreamer from scene metatiles.
+void populate_plane_a_from_scene(const LoadedTownScene& scene, int cam_x, int cam_y,
+                                 int vscroll_a, genesis::VdpState& vdp, TilemapStreamer& streamer);
+
+// Cold-boots VDP mode registers, CRAM Palettes 0..3, HUD/effect/player/guard banks, and Plane A from ROM alone.
+void initialize_native_vdp_from_rom(std::span<const std::uint8_t> rom, const LoadedTownScene& scene,
+                                    int cam_x, int cam_y, int vscroll_a,
+                                    genesis::VdpState& vdp, TilemapStreamer& streamer);
 
 } // namespace oasis::game::world

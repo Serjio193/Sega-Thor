@@ -1,3 +1,34 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.44: Per-Frame Weapon AABB Table 0x058012, Projectile Mid-Air Impact 0x025B0E, and Multi-Screen World Descriptors 0x02E57E)
+
+## Milestone M16.44 Reverse Engineering Summary
+
+### 1. Per-Frame Weapon Hitbox AABB Lookup (`ROM 0x00BDAC..0x00BDDA` -> Table `0x058012`)
+- **M68K Disassembly & Table Structure:**
+  * Routine `0x00BDAC` indexes table `0x058012` by player `frame_id` (`+0x32(a6)`), reading 6 signed bytes `(z_min, z_max, x_min, y_min, x_max, y_max)` per cardinal direction (`dir = 0` Up, `1` Right/Left with X negation, `2` Down):
+    - `fid = 99` (Standing slash `0x08` tick 3): Up `[4, 16, -8, -32, 7, -1]`, Right `[4, 16, 0, -8, 31, 7]`, Down `[4, 16, -8, 0, 7, 31]`.
+    - `fid = 183` (Moving combo `0x36` slash 1 tick 3): Up `[12, 16, -8, -24, 7, -1]`, Right `[12, 16, 0, -8, 23, 7]`, Down `[12, 16, -8, 0, 7, 23]`.
+    - `fid = 189` (Moving combo `0x36` slash 2 tick 6): Up `[0, 28, -8, -28, 16, -1]`, Right `[0, 28, 0, -8, 27, 16]`, Down `[0, 28, -16, 0, 7, 27]`.
+  * Routine `0x00C012` computes the intersection midpoint `(mid_x, mid_y - mid_z)` between this weapon AABB and the target entity AABB `(world_x ± half_w, world_y ± half_d, world_z .. world_z + height)`.
+  * Replacing the M16.43 `facing == 0` hardcode `(63, 167)` with `rom_weapon_aabb_058012` naturally reproduces `(63, 167)` on Canonical `F789` while computing exact Holdout `F826`/`F829` spark positions `(220, 211)` and `(230, 223)`, reducing Holdout `F833` pixel divergence from `2,806` to `2,592` (`-214` px).
+
+### 2. Guard Projectile (`0x002C` State `0x0C`) Mid-Air Player Impact (`ROM 0x025B0A..0x025B14`)
+- **M68K Disassembly:**
+  ```m68k
+  0x025B0A: tst.l     $10(a0)        ; test player z_fp ($FF19F8)
+  0x025B0E: beq.w     0x025AB4       ; if player is on ground (z == 0), preserve projectile z_fp!
+  0x025B12: clr.l     $10(a6)        ; only clear projectile z_fp if player was airborne
+  ```
+- **Visual Impact on Holdout `F809`:**
+  * When Slot 19 projectile hits grounded Ali (`player_z == 0`) at `F805`, `0x025B0E` branches to `0x025AB4` without clearing `ent.z_fp`, so the explosion (`State 0x0E`) renders at its impact altitude `z = 40` (`world_y - world_z = 188`) rather than dropping to the ground (`228`). Fixing this in `town_entity_scheduler.cpp` reduces Holdout `F809` pixel divergence from `3,708` to `3,649` (`-59` px).
+
+### 3. Screen Descriptors (`0x02E57E`) & Cold-Boot Graphics Banks
+- **Descriptor Offsets Verified in ROM:**
+  * `Screen(1, 2)` (`0x003D` Beach): `0x212CBA` (64x64 tilemap, collision, palettes, `0x3820` graphics tiles).
+  * `Screen(1, 3)` (`0x005A` Town): `0x213850` (64x64 tilemap, collision, palettes, `0x3820` graphics tiles).
+  * `Screen(1, 4)` (`0x005B` Town North): `0x213FE8` (64x64 tilemap, collision, palettes, `0x3820` graphics tiles).
+- **Common Sprite & HUD Banks Loaded by `initialize_native_vdp_from_rom`:**
+  * Palette 0 (`0x000474`), Palette 1 (`0x05D086`), HUD & font tiles (`0x15517E -> VRAM 0xA900`, `0x1545C8 -> VRAM 0xF000`), effect sprites (`0x15335A -> VRAM 0xB800`, `0x15457A -> VRAM 0xDB80`), and Town guard base sheet (`0x0C83A0 -> VRAM 0x9500`).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.43: Town Hit Spark Effect Emission 0x00C012 / 0x00A8F0, Hitstun Jitter 0x00AB1A, and Full 21-Frame Continuous Exact Prefix F775..F795)
 
 ## Milestone M16.43 Reverse Engineering Summary

@@ -1,3 +1,31 @@
+# M16.44 Product-Level Progress: Independent Boot, Playable Gameplay, and Systemic Divergence Audit — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 1 — Independent Gameplay Capability Audit (12 Capabilities Classified):
+  * `Start from a clean process without a GPGX checkpoint`: Fully working and independently tested (`StandaloneGameSimulation::initialize_native_from_rom` + `oasis_standalone_player`).
+  * `Initialize original game data directly from ROM`: Partially working (Screen descriptors `0x02E57E`, `0x3820` decompression, palettes, terrain collision, entity placement for Beach `0x003D`, Town `0x005A`, Town North `0x005B`; world-wide generic script interpreter `0x00F788` not yet translated).
+  * `Display the title screen`: Not implemented (ROM `0x015AE2` / `0x02CFAA` Sega logo & title sequence not yet translated).
+  * `Accept controller input`: Fully working and independently tested (`core::ControllerState` + live Win32 keyboard/controller input).
+  * `Start a new game`: Partially working (starts directly in playable Beach `0x003D` or Town `0x005A` via `initialize_native_from_rom`, bypassing title/file-select menus).
+  * `Enter a playable area`: Fully working and independently tested (cold-boots into Beach `0x003D`, Town `0x005A`, or Town North `0x005B` with `>40,000` non-black rendered pixels/frame from frame 0).
+  * `Move the player`: Fully working and independently tested (ROM `0x0085E2` / `0x008F12` 8-direction sub-pixel movement, `0x009BF2` terrain collision, `0x00CEEA` camera tracking, `0x0023CC`/`0x002512` Plane A streaming).
+  * `Attack and interact`: Partially working (Beach chest `0x0060` interaction `0x0063DA`, standing slash `0x0A->0x08` and moving combo `0x36`, ROM `0x01070A` damage arithmetic, ROM `0x058012` weapon AABB hit sparks; crouch/jump attacks and spirit summoning not yet implemented).
+  * `Simulate enemies autonomously`: Partially working (Town `0x002C` guards and `0x002E` projectiles run autonomously via `0x00DEEC` scheduler, `0x0254EA` state machine, `0x00B852` AI perception, `0x0259CE` bomb throws, `0x0264C6` rooftop ambushes; other enemy families not yet translated).
+  * `Transition between maps`: Partially working (3-screen bidirectional world graph `Beach 0x003D <-> Town 0x005A <-> Town North 0x005B` with full ROM scene reload; general warp/door table dispatcher not yet implemented).
+  * `Continue gameplay without original-emulator state injection`: Fully working and independently tested (zero GPGX/Musashi linkage; zero oracle state injection during gameplay).
+  * `Save and restore game progress`: Partially working (in-session deterministic reset/restore and checkpoint binary loading; battery SRAM `$200000` persistence not yet implemented).
+- Phase 2 — End-to-End Playability Test (1,800 Frames / 30.0 Seconds Native-Only):
+  * Implemented in `tests/m16_44_standalone_playability_audit_test.cpp`: boots from ROM only (`initialize_native_from_rom(rom, 0x003D)`), opens Beach Spirit Gem chest, executes dagger attacks, transitions `0x003D -> 0x005A -> 0x005B -> 0x005A -> 0x003D` (4 transitions), moves 539 steps, executes 23 combat actions, triggers 356 autonomous guard AI reactions, 164 rooftop ambush states, and 1 guard kill with 0 crashes/deadlocks.
+- Phase 3 & 4 — Top 3 Blockers & High-Impact Gameplay Implementation:
+  * Ranked top 3 blockers: (1) Checkpoint-Free Native Scene Initialization, Plane A Streaming, Autonomous ROM Guard Defense/AI Wakeup, and Multi-Screen World Transitions; (2) Event/Cutscene Script Interpreter (`0x00F788`) & Title/New-Game Boot Sequence (`0x015AE2`); (3) Extended Player Combat Moveset, Spirit Summoning & Additional Enemy Families.
+  * Implemented Blocker #1 across `town_scene_loader.hpp/.cpp` and `standalone_game_simulation.hpp/.cpp`.
+- Phase 5 & 6 — Systemic Graphics Differential & Holdout Regression Audit:
+  * Clustered post-F795 graphics differences into 4 systemic causes: (1) Unpopulated Plane A initial nametable & column/row streaming in Town; (2) Dynamic entity/player pattern DMA coverage beyond F795; (3) Per-frame weapon AABB hit spark coordinates (`0x058012`); (4) Mid-air projectile impact altitude (`0x025B0E`).
+  * Resolved the M16.41->M16.43 holdout regression (`21,270 -> 21,300 -> 21,383`) down to **`21,110`** (`-273` px vs M16.43, `-160` px vs M16.41) by implementing ROM `0x025B0E` mid-air bomb impact (`F809: 3,708 -> 3,649`) and ROM `0x058012` per-frame weapon AABB hit sparks (`F833: 2,806 -> 2,592`).
+- Phase 7 & 8 — Oracle Contracts, Dual-Toolchain Testing & Governance:
+  * Preserved 21-frame continuous pixel-exact prefix (`F775..F795`, 0 diff px, 0 diff VRAM), Canonical SAT `521/521`, Independent SAT `350/350`, PRNG `350/350`, Entity fields `51,476/51,476`.
+  * MinGW Release & MSVC Debug CTest: 218/230 passing (exact 12 historical BizHawk failures preserved); all governed files `<= 500` lines; zero emulator linkage in `oasis.exe`.
+
 # M16.43 F791 SAT Divergence, Projectile State Inheritance, and Holdout Regression Forensics — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

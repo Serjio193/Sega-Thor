@@ -1,3 +1,25 @@
+# ADR-20261112-M16-44-PRODUCT-LEVEL-PROGRESS-INDEPENDENT-BOOT-PLAYABLE-GAMEPLAY-AND-SYSTEMIC-DIVERGENCE-AUDIT — Checkpoint-Free Native ROM Initialization (`initialize_native_from_rom`), Multi-Screen Bidirectional World Transitions (`0x003D <-> 0x005A <-> 0x005B`), Autonomous ROM Guard Combat/AI Initialization, Causal Resolution of Holdout Pixel Regression (`21,383 -> 21,110` via ROM `0x025B0E` Mid-Air Bomb Impact & ROM `0x058012` Weapon AABB Hit Sparks), and 1,800-Frame Native-Only Playability Qualification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Milestone M16.44 shifts strategic focus from isolated next-frame pixel diffs to product-level standalone playability: determining and expanding how much of *The Story of Thor / Beyond Oasis* runs independently in the native C++ engine without GPGX checkpoints or oracle state injection, while preserving all established rendering and logic parity contracts.
+2. Auditing the standalone engine revealed that while Town (`0x005A`) and Beach (`0x003D`) simulation logic existed, cold-booting without a GPGX VDP snapshot left VRAM sprite banks and Plane A nametables uninitialized, ROM-spawned Town guards had `ai_timer = 0` and `defense = 0` (preventing autonomous AI wakeup and combat damage), and map transitions were limited to a one-way `0x003D -> 0x005A` edge.
+3. Furthermore, holdout pixel differences had crept up from `21,270` (M16.41) to `21,300` (M16.42, `+30` px on `F809`) and `21,383` (M16.43, `+104` px on `F833` minus `-21` px improvement on `F825`).
+
+**Decisions:**
+1. **Checkpoint-Free Native ROM Initialization & Multi-Screen World Transitions:**
+   - Implemented `world::load_world_screen_from_rom(rom, screen_id)` supporting Beach (`0x003D`, descriptor `0x212CBA`), Town (`0x005A`, `0x213850`), and Town North (`0x005B`, `0x213FE8`).
+   - Implemented `world::initialize_native_vdp_from_rom` to cold-boot VDP registers (`Display ON`, H40 `320x224`), load ROM palettes (`0x000474`, `0x05D086`, scene palettes), decompress common HUD/effect/guard `0x3820` graphics banks (`0x15517E`, `0x15335A`, `0x15457A`, `0x1545C8`, `0x0C83A0`) and scene tiles into VRAM, and populate Plane A (`0xC000..0xCFFF`) and Plane B (`0xE000..0xEFFF`).
+   - Populated authentic ROM guard `defense` (`0x0080 + kDefenseByVariant`) and initial `ai_timer = 10` in `make_guard_from_rom` so ROM-spawned guards wake up, patrol, attack, throw bombs, and take damage autonomously.
+   - Added bidirectional screen transitions (`0x003D <-> 0x005A <-> 0x005B`) and Plane A `TilemapStreamer` updates in `StandaloneGameSimulation`.
+2. **Holdout Regression Root-Cause Resolution (`21,383 -> 21,110`):**
+   - **F809 (`3,708 -> 3,649`, `-59` px):** In `town_entity_scheduler.cpp` (`case 0x0CU`), grounded player bomb impacts previously forced `ent.z_fp = 0`. Disassembly of ROM `0x025B0A: tst.l $10(a0); 0x025B0E: beq 0x025AB4` proved `z_fp` is only cleared when `player_z != 0`. Preserving `z_fp` when `player_z == 0` keeps the explosion at `z = 40` on `F809`.
+   - **F833 (`2,806 -> 2,592`, `-214` px):** In `attack_controller.cpp`, M16.43 computed hit spark midpoints from an approximate `weapon_aabb_for_facing` box with a hardcoded `(63, 167)` override for `facing == 0`. Replacing that with the authentic ROM `0x058012` per-frame weapon AABB lookup (`fid = 99, 183, 189` at `0x00BDAC..0x00BDDA`) preserves `(63, 167)` at `F789` while placing Holdout `F826`/`F829` hit sparks at exact ROM coordinates `(220, 211)` and `(230, 223)`.
+3. **Qualification & Governance:**
+   - Added `tests/m16_44_standalone_playability_audit_test.cpp` (494 lines `<= 500`).
+   - Verified 218/230 CTest targets passing in both MinGW Release and MSVC Debug (preserving exact 12 historical BizHawk failures), zero emulator linkage in `oasis.exe`, and `C:/Github/Sega-Thor` untouched.
+
 # ADR-20261112-M16-43-F791-SAT-DIVERGENCE-PROJECTILE-STATE-INHERITANCE-AND-HOLDOUT-REGRESSION-FORENSICS — Causal Resolution of F791 Divergence via Town Hit Spark Effect Emission ($FF19C8, ROM 0x00C012 / 0x00A8F0) and Hitstun Jitter Synchronization (ROM 0x00AB1A); Full Elimination of Residual Divergence Across Continuous Sequence (F775..F795); Extension of Continuous Bit-For-Bit Exact Prefix to All 21 Captured Frames; Dual-Toolchain Verification (217/229 Passing, 12 Historical BizHawk Failures)
 **Status:** Accepted
 **Date:** 2026-11-12

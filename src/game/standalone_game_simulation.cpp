@@ -52,30 +52,19 @@ StandaloneGameSimulation::StandaloneGameSimulation() {
 }
 
 bool StandaloneGameSimulation::initialize(const genesis::VdpState& baseline_vdp,
-                                          std::int32_t initial_x,
-                                          std::int32_t initial_y) {
+                                          std::int32_t initial_x, std::int32_t initial_y) {
     baseline_vdp_ = baseline_vdp;
-    checkpoint_state_.x_fixed = initial_x * 0x10000;
-    checkpoint_state_.y_fixed = initial_y * 0x10000;
-    checkpoint_state_.movement_state = 0;
-    checkpoint_state_.direction_code = 1;
-    checkpoint_state_.turn_timer = 0;
-    checkpoint_state_.camera_x = 96;
-    checkpoint_state_.camera_y = 3;
-    oracle_mode_ = false;
-    reset();
-    initialized_ = true;
+    checkpoint_state_.x_fixed = initial_x * 0x10000; checkpoint_state_.y_fixed = initial_y * 0x10000;
+    checkpoint_state_.movement_state = 0; checkpoint_state_.direction_code = 1;
+    checkpoint_state_.turn_timer = 0; checkpoint_state_.camera_x = 96; checkpoint_state_.camera_y = 3;
+    oracle_mode_ = false; reset(); initialized_ = true;
     return true;
 }
 
 bool StandaloneGameSimulation::initialize_from_checkpoint(
-    const genesis::VdpState& baseline_vdp,
-    const CheckpointInitialState& cp_state) {
-    baseline_vdp_ = baseline_vdp;
-    checkpoint_state_ = cp_state;
-    oracle_mode_ = true;
-    reset();
-    initialized_ = true;
+    const genesis::VdpState& baseline_vdp, const CheckpointInitialState& cp_state) {
+    baseline_vdp_ = baseline_vdp; checkpoint_state_ = cp_state;
+    oracle_mode_ = true; reset(); initialized_ = true;
     return true;
 }
 
@@ -99,9 +88,7 @@ bool StandaloneGameSimulation::load_rom_background(std::span<const std::uint8_t>
             }
         }
         return true;
-    } catch (...) {
-        return false;
-    }
+    } catch (...) { return false; }
 }
 
 bool StandaloneGameSimulation::load_screen_map(std::span<const std::uint16_t> map_data) {
@@ -131,14 +118,11 @@ void StandaloneGameSimulation::reset() {
     player_.direction_code = checkpoint_state_.direction_code;
     player_.turn_timer = checkpoint_state_.turn_timer;
     player_.orientation_flags = (checkpoint_state_.direction_code == 3) ? 0 : 1;
-    player_.hp = checkpoint_state_.hp;
-    player_.max_hp = checkpoint_state_.max_hp;
+    player_.hp = checkpoint_state_.hp; player_.max_hp = checkpoint_state_.max_hp;
 
     movement_config_ = player::PlayerMovementConfig{};
-    movement_config_.cardinal_x_speed = 0x36000;
-    movement_config_.cardinal_y_speed = 0x30000;
-    movement_config_.diagonal_x_speed = 0x2A000;
-    movement_config_.diagonal_y_speed = 0x25800;
+    movement_config_.cardinal_x_speed = 0x36000; movement_config_.cardinal_y_speed = 0x30000;
+    movement_config_.diagonal_x_speed = 0x2A000; movement_config_.diagonal_y_speed = 0x25800;
     movement_config_.footprint_radius = 10;
     velocity_context_ = player::VelocityAdjustContext{};
     walk_tick_ = 0; tick_counter_ = 0; replay_player_trajectory_ = false;
@@ -149,36 +133,24 @@ void StandaloneGameSimulation::reset() {
     sim_state_.frame_counter = 0;
     sim_state_.player_x = static_cast<std::uint16_t>(player_.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(player_.y_fixed / 0x10000);
-    prev_render_player_x_ = sim_state_.player_x;
-    prev_render_player_y_ = sim_state_.player_y;
-    sim_state_.paused = false;
-    map_id_ = world::kBeachMapId;
-    sound_queue_.clear();
-    interaction_system_.reset();
-    attack_controller_.reset();
+    prev_render_player_x_ = sim_state_.player_x; prev_render_player_y_ = sim_state_.player_y;
+    sim_state_.paused = false; map_id_ = world::kBeachMapId;
+    sound_queue_.clear(); interaction_system_.reset(); attack_controller_.reset();
     town_effects_.fill(render::TownEffect{});
     landing_velocity_x_ = 0; landing_hold_ticks_ = 0;
 
     if (!entities_.empty()) {
         if (entities_.size() > 2U) entities_.resize(2U);
-        entities_[0].type_id = 0x0060;
-        entities_[0].active = true;
-        entities_[0].world_x = 256;
-        entities_[0].world_y = 88;
-        entities_[0].state = 0;
-        entities_[0].tile_base = 0x04A8;
-        entities_[0].anim_frame = 0;
-        entities_[0].hp = 0;
+        entities_[0].type_id = 0x0060; entities_[0].active = true;
+        entities_[0].world_x = 256; entities_[0].world_y = 88;
+        entities_[0].state = 0; entities_[0].tile_base = 0x04A8;
+        entities_[0].anim_frame = 0; entities_[0].hp = 0;
     }
     if (entities_.size() > 1) {
-        entities_[1].type_id = 0x0098;
-        entities_[1].active = true;
-        entities_[1].world_x = 259;
-        entities_[1].world_y = 101;
-        entities_[1].state = 0;
-        entities_[1].tile_base = 0x069DU;
-        entities_[1].anim_frame = 0;
-        entities_[1].hp = 4;
+        entities_[1].type_id = 0x0098; entities_[1].active = true;
+        entities_[1].world_x = 259; entities_[1].world_y = 101;
+        entities_[1].state = 0; entities_[1].tile_base = 0x069DU;
+        entities_[1].anim_frame = 0; entities_[1].hp = 4;
     }
 }
 
@@ -189,18 +161,40 @@ bool StandaloneGameSimulation::prepare_town_from_rom(std::span<const std::uint8_
         town_scene_ = world::load_town_scene_from_rom(rom);
         town_prepared_ = true;
         return true;
-    } catch (...) {
-        return false;
+    } catch (...) { return false; }
+}
+
+bool StandaloneGameSimulation::initialize_native_from_rom(std::span<const std::uint8_t> rom,
+                                                          std::uint16_t start_map_id) {
+    if (!prepare_town_from_rom(rom)) return false;
+    baseline_vdp_ = genesis::VdpState{}; current_vdp_ = genesis::VdpState{};
+    checkpoint_state_.x_fixed = 258 * 0x10000; checkpoint_state_.y_fixed = 110 * 0x10000;
+    checkpoint_state_.movement_state = 0U; checkpoint_state_.direction_code = 0U;
+    checkpoint_state_.turn_timer = 0U; checkpoint_state_.camera_x = 96; checkpoint_state_.camera_y = 3;
+    oracle_mode_ = false; native_rom_session_ = true; transition_count_ = 0U; town_ctx_.prng_seed = 0x22BCU;
+    reset();
+    if (start_map_id == world::kTownMapId) {
+        transition_to_town(false);
+    } else if (start_map_id == world::kTownNorthMapId) {
+        transition_to_town_north();
+    } else {
+        const auto beach = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 2U});
+        world::initialize_native_vdp_from_rom(rom_bytes_, beach, 96, 3, 3, current_vdp_, streamer_);
+        update_sat_sprites(current_vdp_);
     }
+    initialized_ = true;
+    return true;
 }
 
 void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
+    ++transition_count_;
     map_id_ = world::kTownMapId;
+    if (native_rom_session_ && !rom_bytes_.empty()) {
+        town_scene_ = world::load_town_scene_from_rom(rom_bytes_);
+    }
     const auto& tr = town_scene_.transition;
-    player_.x_fixed = tr.player_x * 0x10000;
-    player_.y_fixed = tr.player_y * 0x10000;
-    player_.movement_state = 0;
-    player_.direction_code = 0;
+    player_.x_fixed = tr.player_x * 0x10000; player_.y_fixed = tr.player_y * 0x10000;
+    player_.movement_state = 0; player_.direction_code = 0;
     sim_state_.player_x = static_cast<std::uint16_t>(tr.player_x);
     sim_state_.player_y = static_cast<std::uint16_t>(tr.player_y);
     sound_queue_.push(static_cast<int>(sim_state_.frame_counter), tr.music_stop_cmd);
@@ -213,17 +207,51 @@ void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
 
     assign_default_town_entities(town_scene_, entities_);
     if (town_prepared_) {
-        world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
+        if (native_rom_session_) {
+            world::initialize_native_vdp_from_rom(rom_bytes_, town_scene_, camera_.camera_x(), camera_.camera_y(), tr.initial_vscroll_a, current_vdp_, streamer_);
+        } else {
+            world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
+        }
     }
     attack_controller_.reset();
     attack_controller_.set_allow_experimental_combat(false);
 }
 
+void StandaloneGameSimulation::transition_to_town_north() {
+    ++transition_count_;
+    map_id_ = world::kTownNorthMapId;
+    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), town_scene_.transition.music_stop_cmd);
+    if (!native_rom_session_ || rom_bytes_.empty()) return;
+    town_scene_ = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 4U});
+    set_player_position(160, 488);
+    player_.movement_state = 0U; player_.direction_code = 0U;
+    entities_.clear();
+    const auto cfg = make_town_camera_config(camera_, town_scene_.transition, 0, 288, 136, false);
+    camera_ = camera::CameraController(cfg);
+    camera_.set_tracking_enabled(camera_tracking_);
+    world::initialize_native_vdp_from_rom(rom_bytes_, town_scene_, 0, 288, 136, current_vdp_, streamer_);
+}
+
+void StandaloneGameSimulation::transition_to_beach() {
+    ++transition_count_;
+    map_id_ = world::kBeachMapId;
+    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), town_scene_.transition.music_stop_cmd);
+    set_player_position(258, 84);
+    player_.movement_state = 0U; player_.direction_code = 2U;
+    camera_.reset(96, 3); camera_.set_tracking_enabled(camera_tracking_);
+    entities_.resize(2U);
+    entities_[0] = NativeEntity{}; entities_[0].type_id = 0x0060; entities_[0].active = true; entities_[0].world_x = 256; entities_[0].world_y = 88; entities_[0].tile_base = 0x04A8;
+    entities_[1] = NativeEntity{}; entities_[1].type_id = 0x0098; entities_[1].active = true; entities_[1].world_x = 259; entities_[1].world_y = 101; entities_[1].tile_base = 0x069DU; entities_[1].hp = 4;
+    if (!rom_bytes_.empty()) {
+        const auto beach = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 2U});
+        world::initialize_native_vdp_from_rom(rom_bytes_, beach, 96, 3, 3, current_vdp_, streamer_);
+    }
+}
+
 bool StandaloneGameSimulation::initialize_town_checkpoint(
-    std::span<const std::uint8_t> rom,
-    const TownCheckpointInitialState& town_cp) {
+    std::span<const std::uint8_t> rom, const TownCheckpointInitialState& town_cp) {
     if (!prepare_town_from_rom(rom)) return false;
-    map_id_ = world::kTownMapId;
+    map_id_ = world::kTownMapId; native_rom_session_ = false;
     player_.x_fixed = town_cp.x_fixed; player_.y_fixed = town_cp.y_fixed;
     player_.movement_state = town_cp.movement_state; player_.direction_code = town_cp.direction_code;
     player_.turn_timer = town_cp.turn_timer;
@@ -234,27 +262,19 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     sim_state_.player_x = static_cast<std::uint16_t>(town_cp.x_fixed / 0x10000);
     sim_state_.player_y = static_cast<std::uint16_t>(town_cp.y_fixed / 0x10000);
     sim_state_.frame_counter = town_cp.frame_counter;
-    tick_counter_ = town_cp.tick_counter;
-    walk_tick_ = town_cp.initial_walk_tick;
+    tick_counter_ = town_cp.tick_counter; walk_tick_ = town_cp.initial_walk_tick;
     town_ctx_.prng_seed = town_cp.prng_seed;
 
     const auto cfg = make_town_camera_config(
         camera_, town_scene_.transition, town_cp.camera_x, town_cp.camera_y,
         (town_cp.camera_y + 136) & 0xFF, true);
-    camera_ = camera::CameraController(cfg);
-    camera_.set_tracking_enabled(camera_tracking_);
+    camera_ = camera::CameraController(cfg); camera_.set_tracking_enabled(camera_tracking_);
     attract_banner_enabled_ = town_cp.attract_banner_enabled;
-    town_water_timer_ = 7U;
-    town_water_phase_ = 0U;
-    town_effects_.fill(render::TownEffect{});
-    dma_queue_.clear();
-    pending_vdp_stage_ = false;
+    town_water_timer_ = 7U; town_water_phase_ = 0U;
+    town_effects_.fill(render::TownEffect{}); dma_queue_.clear(); pending_vdp_stage_ = false;
 
-    if (!town_cp.entities.empty()) {
-        entities_ = town_cp.entities;
-    } else {
-        assign_default_town_entities(town_scene_, entities_);
-    }
+    if (!town_cp.entities.empty()) entities_ = town_cp.entities;
+    else assign_default_town_entities(town_scene_, entities_);
     if (baseline_vdp_.is_display_enabled()) {
         const auto row_base = static_cast<std::uint16_t>(((baseline_vdp_.vsram[1] / 8U) & 0x1FU) * 128U);
         streamer_.initialize(town_cp.camera_x, town_cp.camera_y, row_base, town_scene_.plane_a_metatiles);
@@ -267,12 +287,9 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
 }
 
 void StandaloneGameSimulation::set_player_position(std::int32_t x, std::int32_t y) noexcept {
-    prev_render_player_x_ = sim_state_.player_x;
-    prev_render_player_y_ = sim_state_.player_y;
-    player_.x_fixed = x * 0x10000;
-    player_.y_fixed = y * 0x10000;
-    sim_state_.player_x = static_cast<std::uint16_t>(x);
-    sim_state_.player_y = static_cast<std::uint16_t>(y);
+    prev_render_player_x_ = sim_state_.player_x; prev_render_player_y_ = sim_state_.player_y;
+    player_.x_fixed = x * 0x10000; player_.y_fixed = y * 0x10000;
+    sim_state_.player_x = static_cast<std::uint16_t>(x); sim_state_.player_y = static_cast<std::uint16_t>(y);
 }
 
 std::size_t StandaloneGameSimulation::current_player_pose() const noexcept {
@@ -284,12 +301,10 @@ std::size_t StandaloneGameSimulation::current_player_pose() const noexcept {
 }
 
 void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpState& out_vdp) {
-    ++sim_state_.frame_counter;
-    ++tick_counter_;
+    ++sim_state_.frame_counter; ++tick_counter_;
     const auto frame = sim_state_.frame_counter;
-    const bool is_logic_step = (map_id_ == world::kTownMapId)
-        ? ((tick_counter_ % 2U) == 1U)
-        : ((frame % 2U) == 1U);
+    const bool is_town_mode = (map_id_ == world::kTownMapId) || (native_rom_session_ && map_id_ == world::kTownNorthMapId);
+    const bool is_logic_step = is_town_mode ? ((tick_counter_ % 2U) == 1U) : ((frame % 2U) == 1U);
 
     if (is_logic_step) {
         if (pending_vdp_stage_) {
@@ -299,12 +314,12 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
         }
         prev_render_player_x_ = sim_state_.player_x;
         prev_render_player_y_ = sim_state_.player_y;
-        if (map_id_ == world::kTownMapId && player_.pending_damage > 0) {
+        if (is_town_mode && player_.pending_damage > 0) {
             player_.hp = static_cast<std::int16_t>(std::max(0, static_cast<int>(player_.hp) - player_.pending_damage));
             player_.pending_damage = 0;
             if (player_.movement_state != 0x36U) { player_.movement_state = 0x18U; player_.hurt_timer = 4U; }
         }
-        if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
+        if (is_town_mode && !rom_bytes_.empty()) {
             attack_controller_.update_town_30hz(player_, sim_state_.player_x, sim_state_.player_y, input.controller_1, entities_, town_effects_);
         }
 
@@ -381,27 +396,31 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
         transition_to_town(false);
     } else if (map_id_ == world::kTownMapId && town_prepared_ &&
                world::is_town_to_north_exit_triggered(cur_y)) {
-        map_id_ = world::kTownNorthMapId;
-        sound_queue_.push(static_cast<int>(frame), town_scene_.transition.music_stop_cmd);
+        transition_to_town_north();
+    } else if (native_rom_session_ && map_id_ == world::kTownMapId &&
+               world::is_south_exit_triggered(cur_y)) {
+        transition_to_beach();
+    } else if (native_rom_session_ && map_id_ == world::kTownNorthMapId &&
+               world::is_south_exit_triggered(cur_y)) {
+        transition_to_town(false);
+        set_player_position(160, 116);
+        camera_.set_camera_position(0, 0);
+        world::populate_plane_a_from_scene(town_scene_, 0, 0, 136, current_vdp_, streamer_);
     }
 
     camera_.update(cur_x, cur_y, 0, is_logic_step);
     interaction_system_.update(cur_x, cur_y, input.controller_1, entities_);
-    if (!(map_id_ == world::kTownMapId && !rom_bytes_.empty())) {
+    if (!(is_town_mode && !rom_bytes_.empty())) {
         attack_controller_.update(player_, cur_x, cur_y, input.controller_1, entities_);
     }
 
-    if (map_id_ == world::kTownMapId && is_logic_step) {
+    if (is_town_mode && is_logic_step) {
         if (!rom_bytes_.empty()) {
-            town_ctx_.player_x = prev_render_player_x_;
-            town_ctx_.player_y = prev_render_player_y_;
+            town_ctx_.player_x = prev_render_player_x_; town_ctx_.player_y = prev_render_player_y_;
             town_ctx_.player_z = static_cast<std::int16_t>(player_.z_fixed / 0x10000);
-            town_ctx_.player_state = player_.movement_state;
-            town_ctx_.player_facing = player_.direction_code;
-            town_ctx_.player_hp = player_.hp;
-            town_ctx_.pending_player_damage = 0;
-            town_ctx_.frame_60hz = static_cast<int>(frame);
-            town_ctx_.skip_post_move_repulsion = true;
+            town_ctx_.player_state = player_.movement_state; town_ctx_.player_facing = player_.direction_code;
+            town_ctx_.player_hp = player_.hp; town_ctx_.pending_player_damage = 0;
+            town_ctx_.frame_60hz = static_cast<int>(frame); town_ctx_.skip_post_move_repulsion = true;
             entity::step_town_scheduler(entities_, rom_bytes_, town_scene_.terrain_collision, town_ctx_, sound_queue_, true);
             if (town_ctx_.pending_player_damage > 0) {
                 player_.pending_damage = static_cast<std::int16_t>(player_.pending_damage + town_ctx_.pending_player_damage);
@@ -414,43 +433,33 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
                 entity::apply_solid_body_repulsion(actor, ent);
                 combat::step_entity_combat_tick(ent);
                 entity::step_002c_death_and_velocity(ent, 136);
-                if (ent.last_sound_cmd != 0U) {
-                    sound_queue_.push(static_cast<int>(frame), ent.last_sound_cmd);
-                }
+                if (ent.last_sound_cmd != 0U) sound_queue_.push(static_cast<int>(frame), ent.last_sound_cmd);
             }
         }
     }
     for (auto& entity : entities_) {
         if (entity.active && entity.type_id != 0x002CU &&
-            !(map_id_ == world::kTownMapId && !rom_bytes_.empty() && entity.type_id == 0x0060U)) {
+            !(is_town_mode && !rom_bytes_.empty() && entity.type_id == 0x0060U)) {
             entity.anim_frame = static_cast<std::uint8_t>((entity.anim_frame + 1U) % 32U);
         }
     }
 
     streamer_.step_frame(camera_.camera_x(), camera_.camera_y(), current_vdp_);
-    if (map_id_ != world::kTownMapId || is_logic_step) {
-        camera_.apply_to_vdp(current_vdp_);
-    }
-    if (map_id_ == world::kTownMapId && !rom_bytes_.empty()) {
+    if (!is_town_mode || is_logic_step) camera_.apply_to_vdp(current_vdp_);
+    if (is_town_mode && !rom_bytes_.empty()) {
         render::step_town_water_cycle(town_water_timer_, town_water_phase_, current_vdp_);
     } else {
         render::apply_player_patterns_and_water_cycle(walk_patterns_, current_player_pose(), frame, current_vdp_);
     }
 
-    const bool is_sat_step = (map_id_ == world::kTownMapId)
-        ? ((tick_counter_ % 2U) == 0U)
-        : is_logic_step;
-    if (is_sat_step) {
-        update_sat_sprites(current_vdp_);
-    } else if (map_id_ == world::kTownMapId) {
-        sat_pipeline_.reset_frame();
-        sat_pipeline_.finalize_frame();
-    }
+    const bool is_sat_step = is_town_mode ? ((tick_counter_ % 2U) == 0U) : is_logic_step;
+    if (is_sat_step) update_sat_sprites(current_vdp_);
+    else if (is_town_mode) { sat_pipeline_.reset_frame(); sat_pipeline_.finalize_frame(); }
     out_vdp = current_vdp_;
 }
 
 void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
-    if (map_id_ == world::kTownMapId) {
+    if (map_id_ == world::kTownMapId || (native_rom_session_ && map_id_ == world::kTownNorthMapId)) {
         if (!rom_bytes_.empty()) {
             render::build_town_sat_and_dma(
                 sat_pipeline_, rom_bytes_, camera_, player_, tick_counter_, sim_state_.frame_counter,
