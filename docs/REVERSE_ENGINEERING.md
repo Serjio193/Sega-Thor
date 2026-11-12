@@ -1,3 +1,55 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.49: Spirit Sanctuary Room 0x0D00 Descriptors, Extended Tile Banks [86, 87, 88, 0], Cross-Area Warp 0x02EFC0, and Area 13 Spawn Script 0x04382E)
+
+## Milestone M16.49 Reverse Engineering Summary
+
+### 1. Screen Descriptor for Room 0x0D00 (Group 13, Index 0) (`ROM 0x037B44`)
+- Screen descriptor table index for Area 13 is resolved via `0x00C92C + 13*4 = 0x037B42`.
+- Descriptor entry at `0x037B44`:
+  * Pointer to primary stream: `0x259F78` (compressed bit-stream format).
+  * Shared tile bank resource IDs: `[86, 87, 88, 0]`.
+    - Resource 86: ROM `0x1DB546`
+    - Resource 87: ROM `0x1DBD46`
+    - Resource 88: ROM `0x1DC4DE`
+    - Resource 0: ROM `0x000000` (unallocated / null sentinel in `0x05CE96`).
+  * Palette index: 4.
+  * Music track ID: 13 (`0x0D`).
+
+### 2. Primary Stream Format (`ROM 0x259F78`, 10,308 bytes decompressed)
+- 4-byte stream header: `[w_code_a, h_code_a, w_code_b, h_code_b] = [2, 1, 2, 1]`.
+- Dimension calculation:
+  * Width tiles = `w_code * 32 = 64`.
+  * Height tiles = `h_code * 32 = 32`.
+  * Plane A metatiles = `64 * 32 = 2048` words (4,096 bytes).
+  * Plane B metatiles = `64 * 32 = 2048` words (4,096 bytes).
+  * Terrain collision = `64 * 32 = 2048` bytes.
+  * Palette = 64 bytes (4 palettes * 16 colors * 2 bytes).
+  * Total layout: `4 + 4096 + 4096 + 2048 + 64 = 10,308` bytes.
+
+### 3. Cross-Area Transition & Cutscene Trigger (`ROM 0x02EF28..0x02EFCE`)
+- Screen(1,6) boundary logic evaluates:
+  * `0x02EF28`: checks Global flag `$FF0DBD` bit 4.
+  * `0x02EF36`: checks Room flag `$FF0E2C` bit 0.
+  * `0x02EF46`: `btst #3, ($00FF0DBC)` (Story Flag 3).
+  * `0x02EF74`: `cmpi.b #0x22, ($00FF1971)` (Cutscene timer threshold 34 frames).
+  * `0x02EFC0`: Warp dispatch instruction:
+    - `move.w #$0D00, d0` (destination Room 0x0D00 = Area 13 Screen 0).
+    - `move.w #$0100, d3` (spawn X = 256).
+    - `move.w #$0300, d4` (spawn Y = 768).
+    - `moveq #2, d5`
+    - `jmp $00C9EC` (execute area/room load).
+
+### 4. Area 13 Spawn Script Table (`ROM 0x0437F0`) & Script (`ROM 0x04382E`)
+- Area 13 script table base `0x0437F0`.
+- Entry 0 (Room 0) offset: `0x003E` -> `0x0437F0 + 0x003E = 0x04382E`.
+- Opcode sequence at `0x04382E`:
+  * `0x00` (`VM_OP_HALT_YIELD`).
+  * Demonstrates that Room 0x0D00 entry has no initial persistent entity props or DMA preloads.
+
+### 5. Story Condition Blocker Analysis
+- Global Flag 3 (`$FF0DBC` bit 3) is set at ROM `0x018D38` by princess rescue cutscene routine `0x018CAA`/`0x018CDE`.
+- Because cutscene `0x018CAA` is not yet simulated in native gameplay, Flag 3 is blocked from being set through cold-boot gameplay alone.
+- Isolated component testing uses flag injection to exercise and verify the warp transition engine.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.48: Original NPC Parity, Area 1 Room 0 South Dock Script 0x046346, Pier Villager Msg 4, and Event VM Flag Opcodes 0x0F, 0x10, 0x11)
 
 ## Milestone M16.48 Reverse Engineering Summary

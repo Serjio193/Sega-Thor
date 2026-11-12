@@ -1,3 +1,28 @@
+# ADR-20261112-M16-49-CROSS-AREA-PROGRESSION-SPIRIT-SANCTUARY-AND-ROM-DRIVEN-WORLD-LOADING — Cross-Area Transition from Group 1 to Spirit Sanctuary Room 0x0D00 (Group 13, Index 0); Extended Tile Bank Resolution and Resource 0 Handling; Dynamic Dual-Plane Metatile Stream Parsing; ROM Trigger (0x02EF28..0x02EFCE), Cutscene Timer ($FF1971: 0x22), Dispatcher 0x00C9EC, and Area 0x0D Spawn Script 0x04382E; Princess Rescue Story Flag Blocker Analysis; Dual-Toolchain Qualification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Standalone milestones M16.45..M16.48 established full playability across all 9 Group 1 screens and 2 NPC interactions.
+2. M16.49 requires cross-area gameplay transition from Group 1 (Screen 1,6 Cliff Peak) to Spirit Sanctuary Room 0x0D00 (Group 13, Index 0) using authentic ROM descriptors, tile banks, and spawn scripts.
+3. Area 13 Screen 0 descriptor at ROM `0x037B44` uses shared tile banks `[86, 87, 88, 0]`. Resource 0 is an unallocated null sentinel (`0x000000` at `0x05CE96`). Bypassing bank 0 prevents invalid decompression.
+4. Primary stream `0x259F78` decompresses to 10,308 bytes. Header bytes `[0..3]` encode `(w_code_a, h_code_a, w_code_b, h_code_b)`: dual 64x32 planes (Plane A = 4096 bytes, Plane B = 4096 bytes, collision = 2048 bytes, palette = 64 bytes).
+5. Cross-area warp trigger at `0x02EFC0..0x02EFCE` is governed by condition check `0x02EF28..0x02EF66` testing Global Flag `$FF0DBC` bit 3 (Flag 3), set at ROM `0x018D38` during princess rescue cutscene `0x018CAA`.
+
+**Decisions:**
+1. **Extended Tile Bank Resolution & Null Sentinel:**
+   - In `town_scene_loader.cpp`, tile bank decompression checks `if (rid != 0U)` before fetching `kResourceTableAddress + rid * 4`.
+2. **Dynamic Dual-Plane Metatile Stream Parsing:**
+   - Replaced fixed single-plane metatile offsets with dynamic parsing driven by stream header bytes `[0..3]`, calculating Plane A, Plane B, collision, and palette offsets.
+3. **CrossAreaWarp Edge in World Graph:**
+   - Added `TransitionEdgeType::CrossAreaWarp` to `world_graph.hpp`.
+   - Added warp edge `Screen(1,6) -> Screen(13,0)` with trigger AABB `[18..22] x [5..9]`, facing North, spawn `(256, 768)`, camera `(96, 560)`, bounds `(0, 608)`.
+   - Kept `get_group1_world_edges()` returning 18 internal edges for legacy test compatibility and `get_world_edges()` returning all 19 edges.
+4. **Authentic Spawn Script Execution:**
+   - Area 13 spawn script table `0x0437F0` entry 0 -> `0x04382E`, executing opcode `0x00` (halt/yield; no initial entity props).
+5. **Story Condition Blocker Documentation:**
+   - Identified that Flag 3 is set at `0x018D38` by cutscene `0x018CAA`. Because this cutscene is not yet simulated in native gameplay, Flag 3 is marked as blocked from authentic gameplay reachability and injected only in isolated component tests.
+
 # ADR-20261112-M16-48-ORIGINAL-NPC-PARITY-REUSABLE-DIALOGUE-ENGINE-SECOND-ROM-INTERACTION-AND-EVENT-VM-FLAG-GENERALIZATION — Validation of Village Elder Differential Parity Against ROM Semantics; Reusable Dynamic Message ID NPC Dispatch; Second Independent ROM-Grounded Interaction (Pier Villager Message ID 4 in Screen 1,0); Event VM Flag Opcodes 0x0F, 0x10, 0x11 Generalization (Modes Clear/Set/Toggle Across Global, Area, and Room Banks); Dual-Toolchain Qualification
 **Status:** Accepted
 **Date:** 2026-11-12

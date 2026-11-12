@@ -37,8 +37,8 @@ bool TilemapStreamer::load_map_from_file(const char* file_path) {
 }
 
 void TilemapStreamer::reset(int cam_x, int cam_y, std::uint16_t initial_nt_off) {
-    cur_col_idx_ = cam_x / 8;
-    cur_row_idx_ = cam_y / 8;
+    cur_col_idx_ = static_cast<int>((cam_x / 8) % static_cast<int>(kMapWidth));
+    cur_row_idx_ = static_cast<int>((cam_y / 8) % static_cast<int>(kMapHeight));
     nt_off_ = initial_nt_off;
     prev_cam_x_ = cam_x;
     prev_cam_y_ = cam_y;
@@ -51,15 +51,15 @@ void TilemapStreamer::step_frame(int cam_x, int cam_y, genesis::VdpState& vdp) {
 
     if (map_.empty()) return;
 
-    const int target_col = cam_x / 8;
-    const int target_row = cam_y / 8;
+    const int target_col = static_cast<int>((cam_x / 8) % static_cast<int>(kMapWidth));
+    const int target_row = static_cast<int>((cam_y / 8) % static_cast<int>(kMapHeight));
 
     // Authentic Beyond Oasis dispatch (ROM 0x00D188):
     // When camera advances past 8-pixel tile boundaries, queue streaming
     // with deterministic 2-frame pipeline delay (+2 VDP frames = 1 30Hz loop tick).
     {
-        const int prev_col = prev_cam_x_ / 8;
-        const int prev_row = prev_cam_y_ / 8;
+        const int prev_col = static_cast<int>((prev_cam_x_ / 8) % static_cast<int>(kMapWidth));
+        const int prev_row = static_cast<int>((prev_cam_y_ / 8) % static_cast<int>(kMapHeight));
         if (target_col != prev_col || target_row != prev_row) {
             StreamCommand cmd{};
             cmd.target_frame = frame_counter_ + 2;
@@ -77,13 +77,15 @@ void TilemapStreamer::step_frame(int cam_x, int cam_y, genesis::VdpState& vdp) {
         const auto cmd = pending_commands_.front();
         pending_commands_.pop_front();
 
-        while (cur_col_idx_ < cmd.target_col) {
+        int max_col_steps = 64;
+        while (cur_col_idx_ != cmd.target_col && max_col_steps-- > 0) {
             stream_single_column(vdp);
         }
-        while (cur_row_idx_ < cmd.target_row) {
+        int max_row_steps = 64;
+        while (cur_row_idx_ < cmd.target_row && max_row_steps-- > 0) {
             stream_single_row(vdp);
         }
-        while (cur_row_idx_ > cmd.target_row) {
+        while (cur_row_idx_ > cmd.target_row && max_row_steps-- > 0) {
             stream_single_row_up(vdp);
         }
     }

@@ -6,6 +6,7 @@
 #include "game/combat/sound_command_queue.hpp"
 #include "game/entity/native_entity.hpp"
 #include "game/entity/town_entity_scheduler.hpp"
+#include "game/event/event_vm.hpp"
 #include "game/interaction/interaction_system.hpp"
 #include "game/player/player.hpp"
 #include "game/render/hud_overlay.hpp"
@@ -258,6 +259,8 @@ public:
     void set_tick_counter(std::uint16_t tick) noexcept { tick_counter_ = tick; }
     [[nodiscard]] std::span<const render::TownEffect> town_effects() const noexcept { return town_effects_; }
     [[nodiscard]] std::span<render::TownEffect> town_effects() noexcept { return town_effects_; }
+    [[nodiscard]] event::EventVm& event_vm() noexcept { return event_vm_; }
+    [[nodiscard]] const event::EventVm& event_vm() const noexcept { return event_vm_; }
 
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
@@ -313,6 +316,7 @@ private:
     std::uint32_t transition_count_{0};
     world::ScreenId current_screen_id_{1U, 2U};
     bool chest_opened_global_{false};
+    event::EventVm event_vm_{};
     std::unordered_map<std::uint32_t, std::vector<NativeEntity>> saved_screen_entities_{};
 };
 

@@ -1,0 +1,44 @@
+{
+  "milestone": "M16.49",
+  "generated_at": "2026-11-12T19:40:00Z",
+  "source_rom_sha256": "5c68b64e525492f5825cd41c2c2f82cf8e785501f224905cfef7869680387b92",
+  "cross_area_transitions": [
+    {
+      "name": "Screen(1,6) Cliff Peak -> Room 0x0D00 Spirit Sanctuary Entrance",
+      "source_screen": "0x0106",
+      "dest_screen": "0x0D00",
+      "trigger_address": "0x02EFC0",
+      "trigger_type": "cross_area_warp",
+      "trigger_aabb_tiles": { "x_min": 18, "y_min": 5, "x_max": 22, "y_max": 9 },
+      "required_facing": "UP (0)",
+      "story_condition": {
+        "global_flag_byte": "$FF0DBC",
+        "global_flag_bit": 3,
+        "global_flag_index": 3,
+        "description": "Princess rescue / water shrine access flag"
+      },
+      "spawn_point": { "x": 256, "y": 768, "z": 0 },
+      "camera": {
+        "initial_x": 96,
+        "initial_y": 560,
+        "max_cx": 0,
+        "max_cy": 608,
+        "vscroll_a": 136
+      },
+      "dest_area_descriptor": {
+        "group": 13,
+        "index": 0,
+        "descriptor_rom_address": "0x037B44",
+        "primary_stream_pointer": "0x259F78",
+        "shared_tile_bank_ids": [86, 87, 88, 0],
+        "tile_bank_pointers": ["0x1DB546", "0x1DBD46", "0x1DC4DE", "0x000000"],
+        "spawn_script_address": "0x04382E"
+      }
+    }
+  ],
+  "gpgx_status": {
+    "spirit_sanctuary_cross_area": "NOT_REACHED_IN_EXISTING_FIXTURES",
+    "village_elder_dialogue": "NOT_REACHED_IN_EXISTING_FIXTURES",
+    "reason": "Existing 6 GPGX fixture replays cover Beach (0x0100..0x0102) and Town combat (0x0103..0x0105); none enter House (0x0108) or reach Cliff Peak transition (0x0106) with Flag 3 set."
+  }
+}

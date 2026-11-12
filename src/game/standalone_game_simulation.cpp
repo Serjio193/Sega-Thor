@@ -187,7 +187,8 @@ void StandaloneGameSimulation::transition_to_screen(const world::ScreenTransitio
     set_player_position(target.player_x, target.player_y);
     player_.movement_state = 0U;
     if (target.type == world::TransitionEdgeType::BoundaryNorth ||
-        target.type == world::TransitionEdgeType::DoorWarp) {
+        target.type == world::TransitionEdgeType::DoorWarp ||
+        target.type == world::TransitionEdgeType::CrossAreaWarp) {
         player_.direction_code = 0U; // Up
     } else if (target.type == world::TransitionEdgeType::BoundarySouth ||
                target.type == world::TransitionEdgeType::DoorExit) {
@@ -388,8 +389,9 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
     if (chest_opened()) chest_opened_global_ = true;
     if (native_rom_session_) {
+        const bool story_flag_3 = event_vm_.get_event_flag(3U, 1U);
         const auto tr = world::evaluate_world_transition(
-            current_screen_id_, cur_x, cur_y, player_.direction_code);
+            current_screen_id_, cur_x, cur_y, player_.direction_code, false, story_flag_3);
         if (tr.has_value()) {
             transition_to_screen(*tr);
         }

@@ -16,6 +16,7 @@ enum class TransitionEdgeType : std::uint8_t {
     TileBoxWarp,
     DoorWarp,
     DoorExit,
+    CrossAreaWarp,
 };
 
 struct WorldTransitionEdge {
@@ -52,7 +53,8 @@ struct ScreenTransitionTarget {
     TransitionEdgeType type{TransitionEdgeType::BoundaryNorth};
 };
 
-// Returns the full list of verified Group 1 world graph transition edges.
+// Returns the full list of verified Group 1 world graph transition edges (intra-group and cross-area).
+[[nodiscard]] std::span<const WorldTransitionEdge> get_world_edges() noexcept;
 [[nodiscard]] std::span<const WorldTransitionEdge> get_group1_world_edges() noexcept;
 
 // Evaluates whether player position and facing in current_screen triggers a transition edge.
@@ -61,7 +63,8 @@ struct ScreenTransitionTarget {
     std::int32_t player_x,
     std::int32_t player_y,
     std::uint16_t player_facing,
-    bool locks_active = false) noexcept;
+    bool locks_active = false,
+    bool story_flag_3_active = false) noexcept;
 
 // Look up default camera bounds for Group 1 screens.
 void get_group1_screen_bounds(ScreenId screen_id, int& out_max_cx, int& out_max_cy) noexcept;

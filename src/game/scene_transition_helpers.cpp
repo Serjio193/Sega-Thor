@@ -54,6 +54,10 @@ void assign_scene_entities(world::ScreenId id, const world::LoadedTownScene& sce
         out[0].hp = 100;
         out[0].active = true;
         out[0].message_id = 4U; // Pier Villager: "Oh, Ali.  Nice armlet.  Where'd you find it?"
+    } else if (id.group == 13U && id.index == 0U) {
+        // Area 0x0D Room 0 (Spirit Sanctuary Entrance)
+        // Spawn script 0x04382E executes opcode 0x00 (no persistent entities at entrance)
+        out.clear();
     } else {
         out.clear();
     }

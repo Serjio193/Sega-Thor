@@ -6,7 +6,7 @@ namespace oasis::game::world {
 
 namespace {
 
-constexpr std::array<WorldTransitionEdge, 18> kGroup1Edges = {{
+constexpr std::array<WorldTransitionEdge, 19> kGroup1Edges = {{
     // Screen(1,0) South Dock
     {ScreenId{1, 0}, ScreenId{1, 1}, TransitionEdgeType::BoundaryNorth,
      0x02E5C0U, 108, true, 0, 0, 0, 0, -1, 160, 296, 0, 96, 0, 96, 136},
@@ -60,12 +60,22 @@ constexpr std::array<WorldTransitionEdge, 18> kGroup1Edges = {{
     // Screen(1,6) Cliff Peak / Boss Overlook
     {ScreenId{1, 6}, ScreenId{1, 7}, TransitionEdgeType::BoundarySouth,
      0x02EFE4U, 308, false, 0, 0, 0, 0, -1, 160, 120, 0, 8, 0, 32, 136},
+
+    // Screen(1,6) -> Room 0x0D00 Spirit Sanctuary (Cross-Area Warp: 0x02EFC0..0x02EFCE)
+    // Destination: ScreenId{13, 0}, pos (256, 768), camera bounds (0, 608), initial cam (96, 560), vscroll 136
+    {ScreenId{1, 6}, ScreenId{13, 0}, TransitionEdgeType::CrossAreaWarp,
+     0x02EFC0U, -1, true, 18, 5, 22, 9, 0, 256, 768, 96, 560, 0, 608, 136},
 }};
 
 } // namespace
 
-std::span<const WorldTransitionEdge> get_group1_world_edges() noexcept {
+std::span<const WorldTransitionEdge> get_world_edges() noexcept {
     return kGroup1Edges;
+}
+
+std::span<const WorldTransitionEdge> get_group1_world_edges() noexcept {
+    // Legacy Group 1 internal edges (18 intra-group edges excluding cross-area warp)
+    return std::span<const WorldTransitionEdge>{kGroup1Edges.data(), 18U};
 }
 
 void get_group1_screen_bounds(ScreenId screen_id, int& out_max_cx, int& out_max_cy) noexcept {
@@ -95,7 +105,8 @@ std::optional<ScreenTransitionTarget> evaluate_world_transition(
     std::int32_t player_x,
     std::int32_t player_y,
     std::uint16_t player_facing,
-    bool locks_active) noexcept {
+    bool locks_active,
+    bool story_flag_3_active) noexcept {
     if (locks_active) return std::nullopt;
 
     const std::uint8_t tile_x = static_cast<std::uint8_t>((player_x >> 3) & 0xFF);
@@ -120,7 +131,12 @@ std::optional<ScreenTransitionTarget> evaluate_world_transition(
                     edge.max_camera_x, edge.max_camera_y, edge.initial_vscroll_a,
                     0x00000002U, edge.type};
             }
-        } else if (edge.type == TransitionEdgeType::TileBoxWarp || edge.type == TransitionEdgeType::DoorWarp) {
+        } else if (edge.type == TransitionEdgeType::TileBoxWarp ||
+                   edge.type == TransitionEdgeType::DoorWarp ||
+                   edge.type == TransitionEdgeType::CrossAreaWarp) {
+            if (edge.type == TransitionEdgeType::CrossAreaWarp && !story_flag_3_active) {
+                continue;
+            }
             if (edge.required_facing >= 0 && static_cast<std::int16_t>(player_facing) != edge.required_facing) {
                 continue;
             }

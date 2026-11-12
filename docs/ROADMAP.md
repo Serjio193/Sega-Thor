@@ -1,3 +1,34 @@
+# M16.49 Cross-Area Progression: Spirit Sanctuary and ROM-Driven World Loading — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Commit Ancestry & Regression Audit:
+  * Reconciled Git ancestry: confirmed M16.47 amended commit `97fd4eb` is direct parent of M16.48 `793fd0e`.
+  * Verified all M16.47/M16.48 fixes (MSVC CRT assertion fix, dialogue base 0x051514, Village Elder Message 5, Event VM opcodes 0x0F/0x10/0x11, Pier Villager interaction) are fully present and verified.
+- Phase 1 — Spirit Sanctuary ROM Audit:
+  * Screen descriptor for Room 0x0D00 (Group 13, Index 0) at ROM `0x037B44`.
+  * Shared tile bank resource IDs `[86, 87, 88, 0]`.
+  * Cross-area warp trigger at `0x02EFC0..0x02EFCE`, cutscene timer `$FF1971: 0x22`, dispatcher `0x00C9EC`, destination `(256, 768)`.
+  * Area 13 spawn script table `0x0437F0` entry 0 -> Room 0x0D00 script `0x04382E` (opcode `0x00` halt/yield; no initial entity props).
+- Phase 2 — Extended Tile Bank & Dynamic Dual-Plane Stream Support:
+  * Supported null sentinel bank ID 0 (`0x000000` at `0x05CE96`) without invalid ROM decompression.
+  * Dynamically parsed primary bit-stream header bytes `[0..3]` for dual 64x32 planes (Plane A 4096 bytes, Plane B 4096 bytes, collision 2048 bytes, palette 64 bytes = 10,308 bytes).
+- Phase 3 & 4 — Cross-Area Transition & Room 0x0D00 Execution:
+  * Added `TransitionEdgeType::CrossAreaWarp` to world graph.
+  * Added warp edge `Screen(1,6) -> Screen(13,0)` with trigger AABB `[18..22] x [5..9]`, facing North, spawn `(256, 768)`, camera `(96, 560)`, bounds `(0, 608)`.
+  * Handled player North orientation and entity clearing for Room 0x0D00.
+- Phase 5 — Native Gameplay & Story Condition Blocker Analysis:
+  * Documented story blocker: Flag 3 (`$FF0DBC` bit 3) is set at `0x018D38` by princess rescue cutscene `0x018CAA`. Because cutscene is not yet simulated, authentic gameplay transition is blocked.
+  * Verified engine behavior with isolated flag injection component tests.
+- Phase 6 — Full Qualification & Dual-Toolchain Verification:
+  * Added `tests/m16_49_cross_area_sanctuary_test.cpp` and fixture `data/standalone-fixtures/cross_area_spirit_sanctuary_m16_49.json`.
+  * MinGW Release CTest: 235 registered, 223 passed, 12 failed (historical BizHawk tests 3, 60, 107, 146-154), 0 skipped.
+  * MSVC Debug CTest: 235 registered, 223 passed, 12 failed (identical historical failures), 0 skipped.
+  * Preserved Town 21-frame continuous exact prefix (F775..F795, 0 diff px) and Holdout sum of 21,110 diff pixels.
+  * Extended 3600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% pass across 19 screen transitions.
+  * File line limits: all governed source files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.48 Original NPC Parity, Reusable Dialogue Engine, Second ROM-Driven Interaction, and Event VM Flag Generalization — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

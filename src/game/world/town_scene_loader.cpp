@@ -127,34 +127,51 @@ LoadedTownScene load_world_screen_from_rom(std::span<const std::uint8_t> rom, Sc
     scene.descriptor = load_screen_descriptor(rom, screen_id);
     const auto rids = scene.descriptor.resource_ids();
 
-    // 1..4: ScreenDescriptor resource IDs 13, 14, 15, 16 resolved via 0x05CE96
+    // 1..4: ScreenDescriptor resource IDs 13, 14, 15, 16 resolved via 0x05CE96 (or 0 if not allocated)
     for (std::size_t i = 0; i < 4U; ++i) {
-        const std::uint32_t ptr = read_be32(
-            rom, kResourceTableAddress + static_cast<std::size_t>(rids[i]) * 4U);
-        scene.stream_chunks[i] = decompress_rom_stream(rom, ptr);
+        const std::uint8_t rid = rids[i];
+        if (rid != 0U) {
+            const std::uint32_t ptr = read_be32(
+                rom, kResourceTableAddress + static_cast<std::size_t>(rid) * 4U);
+            if (ptr != 0U && ptr < rom.size()) {
+                scene.stream_chunks[i] = decompress_rom_stream(rom, ptr);
+            }
+        }
     }
 
     // 5..6: Town Screen(1,3) object/sprite tile banks referenced from 0x0464EE / 0x0464F6
     scene.stream_chunks[4] = decompress_rom_stream(rom, read_be32(rom, kTownScriptObjBankPtr1));
     scene.stream_chunks[5] = decompress_rom_stream(rom, read_be32(rom, kTownScriptObjBankPtr2));
 
-    // 7: Primary Screen map layout stream (e.g. 0x212CBA Beach, 0x213850 Town, 0x213FE8 Town North)
+    // 7: Primary Screen map layout stream (e.g. 0x212CBA Beach, 0x213850 Town, 0x259F78 Spirit Sanctuary)
     scene.stream_chunks[6] = decompress_rom_stream(rom, scene.descriptor.primary_stream_pointer());
     const auto& map_bytes = scene.stream_chunks[6].decoded_bytes;
     if (map_bytes.size() >= 4U) {
-        const std::size_t meta_count = (map_bytes.size() < 10000U) ? 2048U : 4096U;
-        if (map_bytes.size() >= 4U + meta_count * 2U) {
-            scene.plane_a_metatiles.resize(meta_count);
-            for (std::size_t i = 0; i < meta_count; ++i) {
+        const std::uint8_t w_code_a = map_bytes[0] & 0x7FU;
+        const std::uint8_t h_code_a = map_bytes[1] & 0x7FU;
+        const std::uint8_t w_code_b = map_bytes[2] & 0x7FU;
+        const std::uint8_t h_code_b = map_bytes[3] & 0x7FU;
+
+        const std::size_t meta_a = (w_code_a > 0U && h_code_a > 0U)
+            ? static_cast<std::size_t>(w_code_a * 32U) * static_cast<std::size_t>(h_code_a * 32U)
+            : 2048U;
+        const std::size_t meta_b = (w_code_b > 0U && h_code_b > 0U)
+            ? static_cast<std::size_t>(w_code_b * 32U) * static_cast<std::size_t>(h_code_b * 32U)
+            : 0U;
+
+        if (map_bytes.size() >= 4U + meta_a * 2U) {
+            scene.plane_a_metatiles.resize(meta_a);
+            for (std::size_t i = 0; i < meta_a; ++i) {
                 scene.plane_a_metatiles[i] = read_be16(map_bytes, 4U + i * 2U);
             }
         }
-        const std::size_t coll_offset = 4U + meta_count * 2U;
-        if (map_bytes.size() >= coll_offset + meta_count) {
+        const std::size_t coll_offset = 4U + meta_a * 2U + meta_b * 2U;
+        const std::size_t coll_count = meta_a; // 1 collision byte per Plane A metatile
+        if (map_bytes.size() >= coll_offset + coll_count) {
             scene.terrain_collision.assign(map_bytes.begin() + static_cast<std::ptrdiff_t>(coll_offset),
-                                           map_bytes.begin() + static_cast<std::ptrdiff_t>(coll_offset + meta_count));
+                                           map_bytes.begin() + static_cast<std::ptrdiff_t>(coll_offset + coll_count));
         }
-        const std::size_t pal_offset = coll_offset + meta_count;
+        const std::size_t pal_offset = coll_offset + coll_count;
         if (map_bytes.size() >= pal_offset + 64U) {
             for (std::size_t i = 0; i < 32U; ++i) {
                 scene.scene_palette_words[i] = read_be16(map_bytes, pal_offset + i * 2U);

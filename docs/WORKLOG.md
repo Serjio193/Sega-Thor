@@ -1,3 +1,44 @@
+# Worklog — 2026-11-12 (M16.49: Cross-Area Progression: Spirit Sanctuary and ROM-Driven World Loading)
+- **Concrete Task**: Implement authentic cross-area gameplay transition from Group 1 (Screen 1,6 Cliff Peak) to Spirit Sanctuary Room 0x0D00 (Group 13, Index 0); extend generic ROM room loader to support extended tile bank indices [86, 87, 88, 0] with null-bank handling and dynamic dual-plane metatile stream parsing; reverse-engineer cutscene trigger logic (0x02EF28..0x02EFCE), cutscene timer ($FF1971: 0x22), dispatcher 0x00C9EC, destination (256, 768), and Area 0x0D spawn script 0x04382E; verify native gameplay vs story flag injection blocker (Princess rescue cutscene 0x018CAA); qualify dual-toolchain CTest, line limits, and regression suites.
+- **Phase 0 Ancestry & Regression Audit**:
+  - Reconciled Git ancestry: confirmed M16.47 amended commit `97fd4eb` is direct parent of M16.48 `793fd0e`.
+  - Confirmed all M16.47/M16.48 fixes (MSVC CRT assertion fix, dialogue base 0x051514, Village Elder Message 5, Event VM opcodes 0x0F/0x10/0x11, Pier Villager interaction) are fully present and verified.
+- **Phase 1 Spirit Sanctuary ROM Reverse Engineering**:
+  - Screen descriptor for Room 0x0D00 (Group 13, Index 0) located at ROM `0x037B44` (resolved from area screen table index 13 at `0x00C92C + 13*4 = 0x037B42`).
+  - Primary tilemap stream at `0x259F78` (compressed bit-stream format, 10,308 bytes decompressed).
+  - Area 13 spawn script table at `0x0437F0`; entry 0 offset `0x003E` -> Room 0x0D00 spawn script at `0x04382E`. Script opcode is `0x00` (halt/yield; no initial entity props).
+  - Cross-area transition trigger at `0x02EFC0..0x02EFCE`:
+    * Trigger check `0x02EF28..0x02EF66`: tests Global flag `$FF0DBD` bit 4, Room flag `$FF0E2C` bit 0, and Story flag `$FF0DBC` bit 3 (Flag 3).
+    * Timer `$FF1971` comparison at `0x02EF74`: `cmpi.b #0x22, ($00FF1971)`.
+    * Warp dispatch at `0x02EFC0`: `move.w #$0D00, d0`, `move.w #$0100, d3` (X=256), `move.w #$0300, d4` (Y=768), `moveq #2, d5`, `jmp $00C9EC`.
+- **Phase 2 Extended Tile Bank & Dual-Plane Metatile Stream Support**:
+  - Area 13 shared tile banks: `[86, 87, 88, 0]`.
+    * Bank 86 (`0x1DB546`), Bank 87 (`0x1DBD46`), Bank 88 (`0x1DC4DE`), Bank 0 (`0x000000`, null unallocated bank).
+    * Updated `load_world_screen_from_rom` in `town_scene_loader.cpp` to check `rid != 0U`, avoiding invalid decompression at ROM offset 0.
+  - Decompressed stream format: 4-byte header `[w_code_a, h_code_a, w_code_b, h_code_b]`.
+    * For Room 0x0D00 (64x32 dual-plane): `meta_a` = 2048 words (4096 bytes), `meta_b` = 2048 words (4096 bytes), `collision` = 2048 bytes, `palette` = 64 bytes (total 10,308 bytes).
+    * Dynamically calculated plane offsets and lengths based on header bytes, supporting both dual-plane and single-plane maps.
+- **Phase 3 & 4 Cross-Area Transition & Room 0x0D00 Loading**:
+  - Added `TransitionEdgeType::CrossAreaWarp` to `world_graph.hpp`.
+  - Added cross-area warp edge `Screen(1,6) -> Screen(13,0)` at `0x02EFC0` with trigger AABB `[18..22] x [5..9]`, facing North, spawn `(256, 768)`, camera `(96, 560)`, bounds `(0, 608)`.
+  - Maintained `get_group1_world_edges()` returning 18 internal edges for legacy test compatibility while providing `get_world_edges()` returning all 19 edges.
+  - Handled player North orientation and entity clearing for Room 0x0D00.
+- **Phase 5 Native Gameplay & Story Condition Blocker Analysis**:
+  - Evaluated condition Flag 3 (`$FF0DBC` bit 3). Flag 3 is set at ROM `0x018D38` during the princess rescue cutscene sequence (`0x018CAA`/`0x018CDE`).
+  - Because cutscene `0x018CAA` is not yet simulated in normal gameplay, Flag 3 is NOT reached by gameplay alone.
+  - Documented blocker: `STORY_FLAG_REACHED_BY_GAMEPLAY = FALSE (Blocked: princess rescue cutscene at 0x018CAA not yet implemented)`.
+  - Documented engine validation: `FLAG_INJECTION_USED = TRUE (Component test only for transition engine; authentic gameplay blocked)`.
+- **Phase 6 Qualification and Regression Safety**:
+  - Created fixture `data/standalone-fixtures/cross_area_spirit_sanctuary_m16_49.json` and test `tests/m16_49_cross_area_sanctuary_test.cpp`.
+  - Registered test `oasis_m16_49_cross_area_sanctuary`.
+  - MinGW Release CTest: 235 registered, 223 passed, 12 failed (historical), 0 skipped.
+  - MSVC Debug CTest: 235 registered, 223 passed, 12 failed (historical), 0 skipped.
+  - Town pixel-exact frames F775..F795: 21 frames bit-for-bit exact (0 diff px, 0 diff VRAM), holdout sum 21,110 diff pixels.
+  - 3,600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% passed across 19 screen transitions.
+  - `project_file_line_limit`: passed (all governed C++ files <= 500 lines).
+  - Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  - Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.48: Original NPC Parity, Reusable Dialogue Engine, Second ROM-Driven Interaction, and Event VM Flag Generalization)
 - **Concrete Task**: Validate the Village Elder interaction against differential ROM semantics and original execution logic; generalize the native dialogue/NPC implementation across entities via dynamic message ID dispatch; implement and validate a second reachable ROM-grounded interaction (Pier Villager at Screen(1,0) South Dock, Message ID 4: "Oh, Ali.  Nice armlet.  Where'd\nyou find it?"); generalize Event VM flag opcodes 0x0F, 0x10, 0x11 (modes 0=clear, 1=set, 2=toggle for global, area, and room banks); qualify dual-toolchain CTest, line limits, and regression suites.
 - **Phase 0 Baseline Qualification**:
