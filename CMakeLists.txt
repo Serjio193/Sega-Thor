@@ -53,6 +53,8 @@ add_library(oasis_core
     src/game/world/terrain_collision.cpp
     src/game/world/tilemap_streamer.cpp
     src/game/world/town_scene_loader.cpp
+    src/game/world/world_graph.cpp
+    src/game/scene_transition_helpers.cpp
     src/game/interaction/interaction_system.cpp
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp

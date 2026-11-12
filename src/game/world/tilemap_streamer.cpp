@@ -10,6 +10,9 @@ bool TilemapStreamer::initialize(int initial_cam_x,
                                  std::span<const std::uint16_t> map_data) {
     if (!map_data.empty()) {
         map_.assign(map_data.begin(), map_data.end());
+        if (map_.size() < kMapTotalWords) {
+            map_.resize(kMapTotalWords, 0U);
+        }
     }
     reset(initial_cam_x, initial_cam_y, initial_nt_off);
     return !map_.empty();
@@ -106,7 +109,8 @@ void TilemapStreamer::stream_single_column(genesis::VdpState& vdp) {
     // Write 29 rows (0x24C8: d7 = 0x1C)
     for (int r = 0; r < 29; ++r) {
         const int map_r = (cur_row_idx_ + r) % static_cast<int>(kMapHeight);
-        const auto word = map_[static_cast<std::size_t>(map_r) * kMapWidth + static_cast<std::size_t>(fetch_col)];
+        const std::size_t idx = static_cast<std::size_t>(map_r) * kMapWidth + static_cast<std::size_t>(fetch_col);
+        const auto word = (idx < map_.size()) ? map_[idx] : 0U;
         const int vr = (vram_start_row + r) % 32;
         const std::size_t vram_addr = kPlaneVramBase + (static_cast<std::size_t>(vr) * 64U + static_cast<std::size_t>(vram_col)) * 2U;
         if (vram_addr + 1U < vdp.vram.size()) {
@@ -125,7 +129,8 @@ static void write_row_to_vram(const std::vector<std::uint16_t>& map,
     const int vram_start_col = static_cast<int>((nt_off & 0x007EU) / 2U);
     for (int c = 0; c < 41; ++c) {
         const int map_c = (cur_col_idx + c) % static_cast<int>(TilemapStreamer::kMapWidth);
-        const auto word = map[static_cast<std::size_t>(fetch_row) * TilemapStreamer::kMapWidth + static_cast<std::size_t>(map_c)];
+        const std::size_t idx = static_cast<std::size_t>(fetch_row) * TilemapStreamer::kMapWidth + static_cast<std::size_t>(map_c);
+        const auto word = (idx < map.size()) ? map[idx] : 0U;
         const int vc = (vram_start_col + c) % 64;
         const std::size_t vram_addr = TilemapStreamer::kPlaneVramBase +
             (static_cast<std::size_t>(vram_row) * 64U + static_cast<std::size_t>(vc)) * 2U;

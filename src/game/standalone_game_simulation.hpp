@@ -16,12 +16,14 @@
 #include "game/world/byte_grid.hpp"
 #include "game/world/tilemap_streamer.hpp"
 #include "game/world/town_scene_loader.hpp"
+#include "game/world/world_graph.hpp"
 #include "genesis/vdp_state.hpp"
 
 #include <array>
 #include <cstdint>
 #include <span>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace oasis::game {
@@ -233,10 +235,15 @@ public:
     bool initialize_native_from_rom(std::span<const std::uint8_t> rom,
                                     std::uint16_t start_map_id = world::kBeachMapId);
 
+    // Generic transition driven by verified world graph target.
+    void transition_to_screen(const world::ScreenTransitionTarget& target);
+
     // Transition immediately into Town Screen(1,3) (MAP_ID=0x005A), Town North (0x005B), or Beach (0x003D).
     void transition_to_town(bool settled_camera = false);
     void transition_to_town_north();
     void transition_to_beach();
+
+    [[nodiscard]] world::ScreenId screen_id() const noexcept { return current_screen_id_; }
 
     [[nodiscard]] bool is_native_rom_session() const noexcept { return native_rom_session_; }
     [[nodiscard]] std::uint32_t transition_count() const noexcept { return transition_count_; }
@@ -302,6 +309,9 @@ private:
     std::array<render::TownEffect, 4> town_effects_{};
     bool native_rom_session_{false};
     std::uint32_t transition_count_{0};
+    world::ScreenId current_screen_id_{1U, 2U};
+    bool chest_opened_global_{false};
+    std::unordered_map<std::uint32_t, std::vector<NativeEntity>> saved_screen_entities_{};
 };
 
 } // namespace oasis::game

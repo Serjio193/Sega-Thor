@@ -1,3 +1,32 @@
+# Worklog — 2026-11-12 (M16.45: ROM World Graph Integration & Native Playability Expansion)
+- **Concrete Task**: Ingest validated ROM room-transition data produced by Hybrid M15.259 into native Standalone engine; expand playable world coverage without one-off room-specific C++ handlers.
+- **Phase 0 & 1 Handoff Audit & Disassembly Verification**:
+  - Ingested M15.259 handoff (`STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md`, `rom_room_transition_semantics_m15_259.json`, `extract_rom_room_transition_semantics.py`).
+  - Conducted independent M68K disassembly audit against `Beyond Oasis (USA).md` (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+  - Identified and causally resolved 6 discrepancies:
+    1. Spawn script VM opcode `0x12` byte length is 8 bytes (`lea $8(a0), a0`), not 6 bytes.
+    2. Compound AABB + coordinate trigger on `0x0102 -> 0x0101` South Pier exit (`0x02E828`).
+    3. Direction guard (`direction_code == 0`, `$2A(a0) == 0x20`, facing north) on doorway transitions in `0x0101` and `0x0102`.
+    4. Shared descriptor `0x02F116` disambiguation via `BOUNDARY_FLAG_40_41` (`0x0A`) and `$FF0E41` (`0x08` vs `0x09`).
+    5. Primary map stream header bytes `[0..3]` and camera bound computation with `$FF177A` / `$FF177C` overrides.
+    6. Boss arena exit lock (`0x00C9B2`) and event-scripted warp in `0x0106` (`0x0106 -> 0x0D00`).
+- **Phase 2 & 3 Generic Room Loader & Data-Driven Transition Dispatcher**:
+  - Implemented `src/game/world/world_graph.hpp` and `src/game/world/world_graph.cpp` with 18 verified Group 1 transition edges, camera bounds, and `evaluate_world_transition`.
+  - Generalized `load_world_screen_from_rom` in `town_scene_loader.cpp` and `screen_descriptor.hpp` for arbitrary Plane A metatile stream dimensions and collision grids.
+  - Implemented `saved_screen_entities_` and chest persistence in `StandaloneGameSimulation`.
+- **Phase 4 & 5 Extended 3,600-Frame Native-Only Gameplay Session**:
+  - Extended checkpoint-free native-only playability session to 3,600 frames (60.0s).
+  - Traversed 8 distinct screens (`0x0100`..`0x0107`) across 19 successful transitions with active player combat, chest interaction, and guard reactions.
+- **Phase 6 & 7 Regression Safety & Dual-Toolchain Verification**:
+  - Added `tests/m16_45_world_graph_playability_test.cpp` (445 lines `<= 500`).
+  - Preserved continuous 21-frame bit-for-bit exact prefix `F775..F795` (0 diff px, 0 diff VRAM).
+  - Preserved Holdout 7-snapshot baseline (`21,110` diff px).
+  - All 19 M16 gameplay/regression tests passing (`19/19`).
+  - MinGW Release CTest passing; MSVC Debug CTest verified.
+  - All governed source files `<= 500` lines.
+  - Hybrid repository `C:/Github/Sega-Thor` 100% untouched (`git status --short -uno` empty).
+  - Zero emulator linkage in `oasis.exe`.
+
 # 2026-11-12 — Milestone M16.44: PRODUCT-LEVEL PROGRESS: INDEPENDENT BOOT, PLAYABLE GAMEPLAY, AND SYSTEMIC DIVERGENCE AUDIT — Complete 12-Capability Standalone Audit; Checkpoint-Free Native ROM Initialization (`initialize_native_from_rom`); 3-Screen Bidirectional World Graph (`Beach 0x003D <-> Town 0x005A <-> Town North 0x005B`); Autonomous ROM Guard AI/Combat Activation; 1,800-Frame (30.0s) Reproducible Native-Only End-to-End Playability Session; Causal Resolution of Holdout Pixel Regression (`21,270 -> 21,300 -> 21,383 -> 21,110` via ROM `0x025B0E` Mid-Air Projectile Impact & ROM `0x058012` Per-Frame Weapon AABB Hit Sparks); Preservation of 21-Frame Continuous Bit-for-Bit Exact Prefix (`F775..F795`); Dual-Toolchain Verification (MinGW Release & MSVC Debug CTest 218/230 Passing with Exact 12 Historical BizHawk Failures Preserved); <=500 Line Governance; Zero Emulator Linkage — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

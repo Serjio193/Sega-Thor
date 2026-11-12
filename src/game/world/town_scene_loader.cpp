@@ -141,19 +141,24 @@ LoadedTownScene load_world_screen_from_rom(std::span<const std::uint8_t> rom, Sc
     // 7: Primary Screen map layout stream (e.g. 0x212CBA Beach, 0x213850 Town, 0x213FE8 Town North)
     scene.stream_chunks[6] = decompress_rom_stream(rom, scene.descriptor.primary_stream_pointer());
     const auto& map_bytes = scene.stream_chunks[6].decoded_bytes;
-    if (map_bytes.size() >= 4U + 8192U) {
-        scene.plane_a_metatiles.resize(4096U);
-        for (std::size_t i = 0; i < 4096U; ++i) {
-            scene.plane_a_metatiles[i] = read_be16(map_bytes, 4U + i * 2U);
+    if (map_bytes.size() >= 4U) {
+        const std::size_t meta_count = (map_bytes.size() < 10000U) ? 2048U : 4096U;
+        if (map_bytes.size() >= 4U + meta_count * 2U) {
+            scene.plane_a_metatiles.resize(meta_count);
+            for (std::size_t i = 0; i < meta_count; ++i) {
+                scene.plane_a_metatiles[i] = read_be16(map_bytes, 4U + i * 2U);
+            }
         }
-    }
-    if (map_bytes.size() >= 4U + 8192U + 4096U) {
-        scene.terrain_collision.assign(map_bytes.begin() + 4 + 8192,
-                                       map_bytes.begin() + 4 + 8192 + 4096);
-    }
-    if (map_bytes.size() >= 4U + 8192U + 4096U + 64U) {
-        for (std::size_t i = 0; i < 32U; ++i) {
-            scene.scene_palette_words[i] = read_be16(map_bytes, 4U + 8192U + 4096U + i * 2U);
+        const std::size_t coll_offset = 4U + meta_count * 2U;
+        if (map_bytes.size() >= coll_offset + meta_count) {
+            scene.terrain_collision.assign(map_bytes.begin() + static_cast<std::ptrdiff_t>(coll_offset),
+                                           map_bytes.begin() + static_cast<std::ptrdiff_t>(coll_offset + meta_count));
+        }
+        const std::size_t pal_offset = coll_offset + meta_count;
+        if (map_bytes.size() >= pal_offset + 64U) {
+            for (std::size_t i = 0; i < 32U; ++i) {
+                scene.scene_palette_words[i] = read_be16(map_bytes, pal_offset + i * 2U);
+            }
         }
     }
 
@@ -242,21 +247,24 @@ void upload_town_tiles_to_vdp(const LoadedTownScene& scene, genesis::VdpState& v
 
 void populate_plane_a_from_scene(const LoadedTownScene& scene, int cam_x, int cam_y,
                                  int vscroll_a, genesis::VdpState& vdp, TilemapStreamer& streamer) {
-    if (scene.plane_a_metatiles.size() < 4096U) {
+    if (scene.plane_a_metatiles.empty()) {
         return;
     }
-    const int map_col0 = (cam_x / 8) & 63;
-    const int map_row0 = (cam_y / 8) & 63;
+    const int map_cols = 64;
+    const int map_rows = (scene.plane_a_metatiles.size() <= 2048U) ? 32 : 64;
+    const int map_col0 = (cam_x / 8) & (map_cols - 1);
+    const int map_row0 = (cam_y / 8) & (map_rows - 1);
     const int vram_col0 = map_col0;
     const int vram_row0 = ((vscroll_a / 8) & 31);
     const auto nt_off = static_cast<std::uint16_t>((vram_row0 * 128) | (vram_col0 * 2));
     for (int r = 0; r < 32; ++r) {
-        const int mr = (map_row0 + r) & 63;
+        const int mr = (map_row0 + r) & (map_rows - 1);
         const int vr = (vram_row0 + r) & 31;
         for (int c = 0; c < 64; ++c) {
-            const int mc = (map_col0 + c) & 63;
+            const int mc = (map_col0 + c) & (map_cols - 1);
             const int vc = (vram_col0 + c) & 63;
-            const std::uint16_t word = scene.plane_a_metatiles[static_cast<std::size_t>(mr) * 64U + static_cast<std::size_t>(mc)];
+            const std::size_t idx = static_cast<std::size_t>(mr) * static_cast<std::size_t>(map_cols) + static_cast<std::size_t>(mc);
+            const std::uint16_t word = (idx < scene.plane_a_metatiles.size()) ? scene.plane_a_metatiles[idx] : 0U;
             const std::size_t addr = TilemapStreamer::kPlaneVramBase + (static_cast<std::size_t>(vr) * 64U + static_cast<std::size_t>(vc)) * 2U;
             if (addr + 1U < vdp.vram.size()) {
                 vdp.vram[addr] = static_cast<std::uint8_t>((word >> 8U) & 0xFFU);

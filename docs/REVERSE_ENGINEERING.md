@@ -1,3 +1,26 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.45: ROM Room-Transition Semantics, Group 1 World Graph Verification, and 6 Discrepancy Resolutions)
+
+## Milestone M16.45 Reverse Engineering Summary
+
+### 1. Independent ROM Disassembly & Verification of Hybrid M15.259 Room Transitions
+- Original ROM: `Beyond Oasis (USA).md` (SHA-256: `eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`).
+- Audited routines: `0x00C8AA` (screen setup), `0x00C92C` (descriptor dispatcher), `0x00CA38` (seamless scrolling), `0x00CA24` (fade spawn), `0x00C9EC` (param fade), `0x00D406` (primary map decompression & Plane A/B layout), `0x00C1CE` (tile AABB collision check), `0x00F80E` (spawn script preload VM), `0x00F788` (runtime spawn interpreter).
+
+### 2. Discrepancy Forensic Breakdown & Exact Fixes
+1. **Spawn VM Opcode `0x12` (`VM_BRANCH_IF_CONDITION`) Byte Length (`0x00FAB2..0x00FBAA`):**
+   - The hybrid M15.259 report listed `0x12` as 6 bytes.
+   - ROM inspection at `0x00FBA0` (`adda.w $6(a0), a0`) and `0x00FBA6` (`lea $8(a0), a0`) proves the opcode size is 8 bytes (`[op:1, pad:1, category:1, subop:1, target:2, disp:2]`).
+2. **Compound AABB + Coordinate Trigger on `0x0102 -> 0x0101` South Pier Exit (`0x02E78A..0x02E7A2`):**
+   - Exit requires both `jsr 0x00C1CE` testing tile box `(29, 63)..(34, 63)` (`pixel_box [232, 504..279, 511]`) AND `cmpi.w #$1f4, d0; bcc $2e816` (`player_y >= 500`).
+3. **Facing Up Guard on Doorway Transitions in `0x0101` & `0x0102` (`0x02E66A`, `0x02E7A4`):**
+   - The 6 doorway transitions are guarded on `cmpi.w #$20, $2a(a0)` (`direction_code == 0`, walking/facing north).
+4. **Shared Descriptor Disambiguation (`0x02F116` for `0x0108` and `0x0109`):**
+   - `0x0108` (West House) and `0x0109` (East House) share descriptor `0x02F116`. Exit requires `(player.$41 & 0x0A) == 0x0A` and routes based on `$FF0E41` (`cmpi.b #$8, $ff0e41.l`).
+5. **Primary Map Layout Stream Headers & Camera Bounds (`0x00D554..0x00D796`):**
+   - Map header bytes `[0..3]` define dual-plane layout flags and dimensions. Default camera bounds are `max_cx = (tiles_w - 40) * 8` and `max_cy = (tiles_h - 28) * 8`, overridden by immediate moves to `$FF177A` and `$FF177C`.
+6. **Boss/Scripted Locks (`0x0105`, `0x0106`):**
+   - Boss arena exit lock (`0x00C9B2`) in `0x0105` and event-scripted warp in `0x0106` (`0x0106 -> 0x0D00`) must not be triggered prematurely by coordinate checks.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.44: Per-Frame Weapon AABB Table 0x058012, Projectile Mid-Air Impact 0x025B0E, and Multi-Screen World Descriptors 0x02E57E)
 
 ## Milestone M16.44 Reverse Engineering Summary

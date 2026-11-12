@@ -10,6 +10,8 @@ namespace oasis::game::world {
 struct ScreenId {
     std::uint8_t group{};
     std::uint8_t index{};
+
+    constexpr bool operator==(const ScreenId&) const noexcept = default;
 };
 
 struct ScreenDescriptorRaw {

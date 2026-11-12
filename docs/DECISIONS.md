@@ -1,3 +1,32 @@
+# ADR-20261112-M16-45-INTEGRATE-M15-259-ROM-WORLD-GRAPH-AND-EXPAND-NATIVE-PLAYABILITY — Integration of Validated M15.259 Room-Transition World Graph; Reusable ROM-Driven Room Loader (`load_world_screen_from_rom`); Data-Driven Generic Transition Dispatch (`evaluate_world_transition`); Independent Verification and Causal Resolution of 6 ROM World Graph Semantic Discrepancies; Extended 3,600-Frame (60.0s) Native-Only Gameplay Traversing 8 Connected Screens with 19 Transitions; 100% Preservation of 21-Frame Exact Prefix (F775..F795) and Holdout Baseline (21,110 Diff Pixels)
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Milestone M15.259 in the hybrid track extracted 448 ROM room transition edges across 188 room slots, establishing a machine-readable world graph and transition execution models (CA38 seamless scrolling, CA24 fade spawn, C9EC parameter fade).
+2. Milestone M16.45 ingests these transition semantics into the native Standalone C++ engine to expand playable world coverage without one-off room-specific C++ transition handlers.
+3. Independent disassembly audit of the original ROM (`eb19bda4982366a2fd43d65ab8a7f9709d83a8cc902c14a682c088c16359c263`) uncovered 6 concrete semantic discrepancies in the initial static extraction that had to be corrected for authentic execution:
+   - Spawn script VM opcode `0x12` (`VM_BRANCH_IF_CONDITION`) is 8 bytes (`lea $8(a0), a0`), not 6 bytes.
+   - `0x0102 -> 0x0101` South Pier exit requires both `AABB [232..279, 504..511]` AND `player_y >= 500`.
+   - Village doorway transitions in `0x0101` and `0x0102` are guarded on player facing north (`direction_code == 0`, `$2A(a0) == 0x20`).
+   - Shared descriptor `0x02F116` (`0x0108` and `0x0109`) disambiguates exit spawn via `BOUNDARY_FLAG_40_41` (`0x0A`) and `$FF0E41` (`0x08` vs `0x09`).
+   - Primary map stream header bytes `[0..3]` define dual-plane layout flags and dimensions, with default camera bounds computed from tile counts and overridden by immediate writes to `$FF177A` / `$FF177C`.
+   - Boss arena exit lock (`0x00C9B2`) in `0x0105` and event-scripted warp in `0x0106` (`0x0106 -> 0x0D00`) are blocked from premature geometric activation.
+
+**Decisions:**
+1. **Generic World Graph & Transition Dispatcher:**
+   - Implemented `src/game/world/world_graph.hpp` and `src/game/world/world_graph.cpp` with 18 verified Group 1 transition edges, camera bounds, and `evaluate_world_transition`.
+   - Refactored `StandaloneGameSimulation::step_frame` to use data-driven `evaluate_world_transition` and `transition_to_screen`, removing hardcoded transition chains.
+2. **Reusable ROM Screen Loader:**
+   - Extended `load_world_screen_from_rom` in `town_scene_loader.cpp` and `screen_descriptor.hpp` to dynamically handle variable height Plane A maps (32x96 or 64x64) and collision/palette streams.
+3. **Autonomous Multi-Screen Gameplay & Persistence:**
+   - Implemented `saved_screen_entities_` to preserve scene entities and opened chest state across multiple screen transitions.
+   - Validated extended 3,600-frame (60.0s) continuous session without checkpoints or teleports, visiting 8 distinct screens (`0x0100`..`0x0107`) with 19 successful transitions.
+4. **Regression Safety & Dual-Toolchain Verification:**
+   - Added `tests/m16_45_world_graph_playability_test.cpp` (445 lines, `<= 500`).
+   - Verified 100% preservation of 21-frame continuous bit-for-bit exact prefix (`F775..F795`, 0 diff px, 0 diff VRAM) and Holdout 7-snapshot baseline (`21,110` diff px).
+   - Zero emulator linkage in `oasis.exe`; hybrid repository `C:/Github/Sega-Thor` strictly read-only.
+
 # ADR-20261112-M16-44-PRODUCT-LEVEL-PROGRESS-INDEPENDENT-BOOT-PLAYABLE-GAMEPLAY-AND-SYSTEMIC-DIVERGENCE-AUDIT — Checkpoint-Free Native ROM Initialization (`initialize_native_from_rom`), Multi-Screen Bidirectional World Transitions (`0x003D <-> 0x005A <-> 0x005B`), Autonomous ROM Guard Combat/AI Initialization, Causal Resolution of Holdout Pixel Regression (`21,383 -> 21,110` via ROM `0x025B0E` Mid-Air Bomb Impact & ROM `0x058012` Weapon AABB Hit Sparks), and 1,800-Frame Native-Only Playability Qualification
 **Status:** Accepted
 **Date:** 2026-11-12

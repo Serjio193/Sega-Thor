@@ -5,6 +5,7 @@
 #include "game/render/player_sprite_composer.hpp"
 #include "game/render/rom_sprite_decoder.hpp"
 #include "game/render/town_combat_sat.hpp"
+#include "game/scene_transition_helpers.hpp"
 #include "game/screen_instance.hpp"
 
 #include <algorithm>
@@ -13,27 +14,6 @@
 #include <fstream>
 
 namespace oasis::game {
-
-namespace {
-void assign_default_town_entities(const world::LoadedTownScene& scene, std::vector<NativeEntity>& out) {
-    if (scene.entities.empty()) return;
-    out = scene.entities;
-    NativeEntity slot19{};
-    slot19.slot_index = 19U;
-    out.push_back(slot19);
-}
-
-camera::CameraConfig make_town_camera_config(camera::CameraController& cam,
-                                             const world::TownTransitionState& tr,
-                                             int cam_x, int cam_y, int vscroll_a, bool wrap8) {
-    camera::CameraConfig cfg = cam.config();
-    cfg.min_camera_x = 0; cfg.max_camera_x = tr.max_camera_x;
-    cfg.min_camera_y = 0; cfg.max_camera_y = tr.max_camera_y;
-    cfg.initial_camera_x = cam_x; cfg.initial_camera_y = cam_y;
-    cfg.initial_vscroll_a = vscroll_a; cfg.vscroll_wrap_8bit = wrap8;
-    return cfg;
-}
-} // namespace
 
 StandaloneGameSimulation::StandaloneGameSimulation() {
     terrain_buffer_.assign(128 * 128, 0x02U); // 0x02 = traversable ground
@@ -186,66 +166,88 @@ bool StandaloneGameSimulation::initialize_native_from_rom(std::span<const std::u
     return true;
 }
 
-void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
+void StandaloneGameSimulation::transition_to_screen(const world::ScreenTransitionTarget& target) {
     ++transition_count_;
-    map_id_ = world::kTownMapId;
-    if (native_rom_session_ && !rom_bytes_.empty()) {
-        town_scene_ = world::load_town_scene_from_rom(rom_bytes_);
+    if (!entities_.empty()) {
+        saved_screen_entities_[static_cast<std::uint32_t>((current_screen_id_.group << 8U) | current_screen_id_.index)] = entities_;
     }
-    const auto& tr = town_scene_.transition;
-    player_.x_fixed = tr.player_x * 0x10000; player_.y_fixed = tr.player_y * 0x10000;
-    player_.movement_state = 0; player_.direction_code = 0;
-    sim_state_.player_x = static_cast<std::uint16_t>(tr.player_x);
-    sim_state_.player_y = static_cast<std::uint16_t>(tr.player_y);
-    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), tr.music_stop_cmd);
+    current_screen_id_ = target.destination_screen;
+    if (current_screen_id_.group == 1U && current_screen_id_.index == 3U) {
+        map_id_ = world::kTownMapId;
+    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 4U) {
+        map_id_ = world::kTownNorthMapId;
+    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 2U) {
+        map_id_ = world::kBeachMapId;
+    } else {
+        map_id_ = static_cast<std::uint16_t>((current_screen_id_.group << 8U) | current_screen_id_.index);
+    }
 
-    const auto cfg = make_town_camera_config(
-        camera_, tr, tr.initial_cam_x, settled_camera ? tr.settled_cam_y : tr.initial_cam_y,
-        tr.initial_vscroll_a, false);
+    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), target.music_stop_cmd);
+    set_player_position(target.player_x, target.player_y);
+    player_.movement_state = 0U;
+    if (target.type == world::TransitionEdgeType::BoundaryNorth) {
+        player_.direction_code = 0U; // Up
+    } else if (target.type == world::TransitionEdgeType::BoundarySouth) {
+        player_.direction_code = 2U; // Down
+    }
+
+    const auto cfg = make_scene_camera_config(
+        camera_, target.max_camera_x, target.max_camera_y,
+        target.camera_x, target.camera_y, target.vscroll_a, false);
     camera_ = camera::CameraController(cfg);
     camera_.set_tracking_enabled(camera_tracking_);
 
-    assign_default_town_entities(town_scene_, entities_);
-    if (town_prepared_) {
-        if (native_rom_session_) {
-            world::initialize_native_vdp_from_rom(rom_bytes_, town_scene_, camera_.camera_x(), camera_.camera_y(), tr.initial_vscroll_a, current_vdp_, streamer_);
-        } else {
-            world::upload_town_tiles_to_vdp(town_scene_, current_vdp_);
+    if (!rom_bytes_.empty()) {
+        town_scene_ = world::load_world_screen_from_rom(rom_bytes_, current_screen_id_);
+    }
+
+    const std::uint32_t screen_key = static_cast<std::uint32_t>((current_screen_id_.group << 8U) | current_screen_id_.index);
+    auto it = saved_screen_entities_.find(screen_key);
+    if (it != saved_screen_entities_.end()) {
+        entities_ = it->second;
+    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 3U) {
+        assign_default_town_entities(town_scene_, entities_);
+    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 2U) {
+        entities_.resize(2U);
+        entities_[0] = NativeEntity{}; entities_[0].type_id = 0x0060; entities_[0].active = true;
+        entities_[0].world_x = 256; entities_[0].world_y = 88; entities_[0].tile_base = 0x04A8;
+        if (chest_opened_global_) {
+            entities_[0].state = 0x6AU;
         }
+        entities_[1] = NativeEntity{}; entities_[1].type_id = 0x0098; entities_[1].active = true;
+        entities_[1].world_x = 259; entities_[1].world_y = 101; entities_[1].tile_base = 0x069DU; entities_[1].hp = 4;
+    } else {
+        entities_.clear();
+    }
+
+    if (!rom_bytes_.empty() && native_rom_session_) {
+        world::initialize_native_vdp_from_rom(
+            rom_bytes_, town_scene_, camera_.camera_x(), camera_.camera_y(),
+            target.vscroll_a, current_vdp_, streamer_);
     }
     attack_controller_.reset();
     attack_controller_.set_allow_experimental_combat(false);
 }
 
+void StandaloneGameSimulation::transition_to_town(bool settled_camera) {
+    world::ScreenTransitionTarget tr{
+        world::ScreenId{1U, 3U}, 160, 488, 0, settled_camera ? 288 : 376, 0, 288, 136, 0x00000002U,
+        world::TransitionEdgeType::BoundaryNorth};
+    transition_to_screen(tr);
+}
+
 void StandaloneGameSimulation::transition_to_town_north() {
-    ++transition_count_;
-    map_id_ = world::kTownNorthMapId;
-    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), town_scene_.transition.music_stop_cmd);
-    if (!native_rom_session_ || rom_bytes_.empty()) return;
-    town_scene_ = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 4U});
-    set_player_position(160, 488);
-    player_.movement_state = 0U; player_.direction_code = 0U;
-    entities_.clear();
-    const auto cfg = make_town_camera_config(camera_, town_scene_.transition, 0, 288, 136, false);
-    camera_ = camera::CameraController(cfg);
-    camera_.set_tracking_enabled(camera_tracking_);
-    world::initialize_native_vdp_from_rom(rom_bytes_, town_scene_, 0, 288, 136, current_vdp_, streamer_);
+    world::ScreenTransitionTarget tr{
+        world::ScreenId{1U, 4U}, 160, 488, 0, 288, 0, 288, 136, 0x00000002U,
+        world::TransitionEdgeType::BoundaryNorth};
+    transition_to_screen(tr);
 }
 
 void StandaloneGameSimulation::transition_to_beach() {
-    ++transition_count_;
-    map_id_ = world::kBeachMapId;
-    sound_queue_.push(static_cast<int>(sim_state_.frame_counter), town_scene_.transition.music_stop_cmd);
-    set_player_position(258, 84);
-    player_.movement_state = 0U; player_.direction_code = 2U;
-    camera_.reset(96, 3); camera_.set_tracking_enabled(camera_tracking_);
-    entities_.resize(2U);
-    entities_[0] = NativeEntity{}; entities_[0].type_id = 0x0060; entities_[0].active = true; entities_[0].world_x = 256; entities_[0].world_y = 88; entities_[0].tile_base = 0x04A8;
-    entities_[1] = NativeEntity{}; entities_[1].type_id = 0x0098; entities_[1].active = true; entities_[1].world_x = 259; entities_[1].world_y = 101; entities_[1].tile_base = 0x069DU; entities_[1].hp = 4;
-    if (!rom_bytes_.empty()) {
-        const auto beach = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 2U});
-        world::initialize_native_vdp_from_rom(rom_bytes_, beach, 96, 3, 3, current_vdp_, streamer_);
-    }
+    world::ScreenTransitionTarget tr{
+        world::ScreenId{1U, 2U}, 258, 84, 96, 3, 192, 288, 3, 0x00000002U,
+        world::TransitionEdgeType::BoundarySouth};
+    transition_to_screen(tr);
 }
 
 bool StandaloneGameSimulation::initialize_town_checkpoint(
@@ -265,8 +267,9 @@ bool StandaloneGameSimulation::initialize_town_checkpoint(
     tick_counter_ = town_cp.tick_counter; walk_tick_ = town_cp.initial_walk_tick;
     town_ctx_.prng_seed = town_cp.prng_seed;
 
-    const auto cfg = make_town_camera_config(
-        camera_, town_scene_.transition, town_cp.camera_x, town_cp.camera_y,
+    const auto cfg = make_scene_camera_config(
+        camera_, town_scene_.transition.max_camera_x, town_scene_.transition.max_camera_y,
+        town_cp.camera_x, town_cp.camera_y,
         (town_cp.camera_y + 136) & 0xFF, true);
     camera_ = camera::CameraController(cfg); camera_.set_tracking_enabled(camera_tracking_);
     attract_banner_enabled_ = town_cp.attract_banner_enabled;
@@ -391,21 +394,19 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     const auto cur_y = static_cast<std::int32_t>(player_.y_fixed / 0x10000);
     sim_state_.player_x = static_cast<std::uint16_t>(cur_x);
     sim_state_.player_y = static_cast<std::uint16_t>(cur_y);
-    if (map_id_ == world::kBeachMapId && town_prepared_ &&
-        world::is_beach_to_town_exit_triggered(cur_x, cur_y)) {
+    if (chest_opened()) chest_opened_global_ = true;
+    if (native_rom_session_) {
+        const auto tr = world::evaluate_world_transition(
+            current_screen_id_, cur_x, cur_y, player_.direction_code);
+        if (tr.has_value()) {
+            transition_to_screen(*tr);
+        }
+    } else if (map_id_ == world::kBeachMapId && town_prepared_ &&
+               world::is_beach_to_town_exit_triggered(cur_x, cur_y)) {
         transition_to_town(false);
     } else if (map_id_ == world::kTownMapId && town_prepared_ &&
                world::is_town_to_north_exit_triggered(cur_y)) {
         transition_to_town_north();
-    } else if (native_rom_session_ && map_id_ == world::kTownMapId &&
-               world::is_south_exit_triggered(cur_y)) {
-        transition_to_beach();
-    } else if (native_rom_session_ && map_id_ == world::kTownNorthMapId &&
-               world::is_south_exit_triggered(cur_y)) {
-        transition_to_town(false);
-        set_player_position(160, 116);
-        camera_.set_camera_position(0, 0);
-        world::populate_plane_a_from_scene(town_scene_, 0, 0, 136, current_vdp_, streamer_);
     }
 
     camera_.update(cur_x, cur_y, 0, is_logic_step);
