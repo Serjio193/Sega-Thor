@@ -185,7 +185,7 @@ void test_phase1_and_phase2_world_graph_and_loader(const std::vector<std::uint8_
         oasis::game::world::ScreenId sid{1U, idx};
         int max_cx = 0, max_cy = 0;
         oasis::game::world::get_group1_screen_bounds(sid, max_cx, max_cy);
-        OASIS_CHECK(max_cx >= 0 && max_cy >= 32);
+        OASIS_CHECK(max_cx >= 0 && (idx == 8U ? max_cy >= 0 : max_cy >= 32));
 
         const auto scene = oasis::game::world::load_world_screen_from_rom(rom, sid);
         OASIS_CHECK(!scene.plane_a_metatiles.empty());

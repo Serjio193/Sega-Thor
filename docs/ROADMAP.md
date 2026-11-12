@@ -1,3 +1,29 @@
+# M16.46 World Graph Integration, Original-Game Transition Parity, and First Scripted Door — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Baseline Reproduction:
+  * 3,600 native-only frames, 8 distinct screens, 19 transitions, zero forced teleports, 21-frame exact prefix F775..F795, holdout 21,110 diff pixels.
+- Phase 1 — M15.259 Handoff Integration & Pinning:
+  * Audited M15.259 handoff JSON and pinned SHA-256 `AEDFFB3D0703490A1A425F21690F3A3F70576E715C44CC187A058420C7373546`.
+  * Created `tools/generate_rom_world_graph.py` to extract Group 1 data directly from ROM without hybrid repository dependencies.
+- Phase 2 & 3 — Verify World Graph & Transition Differential:
+  * Audited all 18 Group 1 edges: 5 dynamically confirmed in GPGX across 11,192 frames, 13 statically verified from ROM code.
+  * Authored `data/standalone-fixtures/gpgx_transition_differential_m16_46.json`.
+- Phase 4 — First Scripted Door Transition:
+  * Implemented Beach Screen(1,2) <-> West Village House Interior Screen(1,8) door warp and exit.
+  * Verified doorway trigger AABB, camera clamping `(0, 0)`, and NPC `0x003C` spawn.
+- Phase 5 — Generalization & Persistence:
+  * Tested multi-direction entry, round-trips, blocked wall boundaries, and non-square 64x32 tilemaps.
+  * Verified persistence of player HP, chest open state, and PRNG.
+- Phase 6 — Fixture Provenance & Holdout Regression:
+  * Audited holdout fixture snapshots: identified historical mislabels F875 and F925 in M16.45 report as fixture frames F893 and F941.
+  * Preserved 21-frame continuous exact prefix (F775..F795, 0 diff px) and holdout total (21,110 diff px).
+- Dual-Toolchain Verification:
+  * MinGW Release and MSVC Debug CTest: 220/232 passed (exact 12 historical BizHawk failures preserved).
+  * File limit check: 976 governed files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.45 ROM World Graph Integration & Native Playability Expansion — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

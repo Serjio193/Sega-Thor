@@ -27,11 +27,11 @@ constexpr std::array<WorldTransitionEdge, 18> kGroup1Edges = {{
     {ScreenId{1, 2}, ScreenId{1, 1}, TransitionEdgeType::BoundarySouth,
      0x02E78AU, 500, false, 0, 0, 0, 0, -1, 160, 120, 0, 8, 0, 96, 136},
     {ScreenId{1, 2}, ScreenId{1, 8}, TransitionEdgeType::DoorWarp,
-     0x02E7ACU, -1, true, 18, 30, 23, 30, 0, 160, 232, 0, 0, 0, 32, 136},
+     0x02E7ACU, -1, true, 18, 29, 23, 31, 0, 160, 232, 0, 0, 0, 0, 136},
 
     // Screen(1,8) Village House Interior
     {ScreenId{1, 8}, ScreenId{1, 2}, TransitionEdgeType::DoorExit,
-     0x02F150U, 240, false, 0, 0, 0, 0, -1, 168, 264, 72, 128, 192, 288, 136},
+     0x02F150U, 240, false, 0, 0, 0, 0, -1, 168, 272, 8, 160, 192, 288, 136},
 
     // Screen(1,3) Town Combat Plaza
     {ScreenId{1, 3}, ScreenId{1, 4}, TransitionEdgeType::BoundaryNorth,
@@ -81,8 +81,10 @@ void get_group1_screen_bounds(ScreenId screen_id, int& out_max_cx, int& out_max_
             out_max_cx = 0; out_max_cy = 288; break;
         case 5U:
             out_max_cx = 192; out_max_cy = 96; break;
-        case 7U: case 8U:
+        case 7U:
             out_max_cx = 0; out_max_cy = 32; break;
+        case 8U:
+            out_max_cx = 0; out_max_cy = 0; break;
         default:
             break;
     }

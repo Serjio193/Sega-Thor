@@ -1,3 +1,30 @@
+# ADR-20261112-M16-46-WORLD-GRAPH-INTEGRATION-ORIGINAL-GAME-TRANSITION-PARITY-AND-FIRST-SCRIPTED-DOOR — Integration of M15.259 Room-Transition World Graph; Original-Game Transition Parity Classification (5 Dynamically Confirmed, 13 Statically Verified); Implementation of First Scripted Door Warp (Beach Screen 1,2 <-> West Village House Interior Screen 1,8); Screen Clamping & NPC 0x003C Spawn; Holdout Fixture Provenance Audit; Dual-Toolchain Verification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. M16.45 implemented the initial 18-edge Group 1 world graph and 3,600-frame multi-screen traversal.
+2. M16.46 audits transition correctness against original Mega Drive execution evidence and integrates the first ROM-grounded scripted door transition.
+3. Hybrid artifact `rom_room_transition_semantics_m15_259.json` was audited and pinned to SHA-256 `AEDFFB3D0703490A1A425F21690F3A3F70576E715C44CC187A058420C7373546`.
+4. Investigation of ROM doorway triggers at `0x02E7B0..0x02E83E` and `0x02F130..0x02F18A` revealed authentic AABB overlap logic (`0x00C1CE`), facing orientation guards, and camera clamping:
+   - Beach Screen(1,2) doorway at `[144, 191] x [240, 247]` (tiles `[18, 29]..[23, 31]`, facing north) branches to `0x02E82E` -> `0x00CA24` fade spawn to Screen(1,8) at `(160, 232)`.
+   - Screen(1,8) has camera bounds clamped to `max_camera_x = 0, max_camera_y = 0` (fixed interior) and spawns Village NPC `0x003C` at `(160, 160)`.
+   - Screen(1,8) exit at `y >= 240` (facing south) branches to `0x02F170` -> `0x00CA24` returning to Beach Screen(1,2) at `(168, 272)` with camera `(8, 160)`.
+5. Holdout snapshot provenance was audited, confirming that historical references in the M16.45 report to "F875" and "F925" were typographical errors for fixture frames F893 (3,948 diff px) and F941 (4,259 diff px).
+
+**Decisions:**
+1. **Provenance Pinning & Standalone Generator:**
+   - Pinned M15.259 handoff JSON SHA-256 `AEDFFB3D0703490A1A425F21690F3A3F70576E715C44CC187A058420C7373546`.
+   - Authored `tools/generate_rom_world_graph.py` to extract Group 1 descriptors and edges directly from ROM without runtime dependencies on the hybrid repository.
+2. **Transition Parity Classification:**
+   - Recorded 5 dynamically confirmed transitions across 11,192 GPGX frames and 13 statically verified transitions in `data/standalone-fixtures/gpgx_transition_differential_m16_46.json`.
+3. **First Scripted Door Implementation:**
+   - Added `DoorWarp` and `DoorExit` edge types in `world_graph.cpp` and `StandaloneGameSimulation`.
+   - Wired `assign_scene_entities` to spawn NPC `0x003C` in Screen(1,8) and restore Beach chest state.
+4. **Generalization & Regression Safety:**
+   - Verified non-square 64x32 tilemaps in `TilemapStreamer`.
+   - Added `tests/m16_46_world_transition_parity_test.cpp` verifying door round-trips, blocked wall locks, exact prefix F775..F795 (0 diff px), and holdout total (21,110 diff px).
+
 # ADR-20261112-M16-45-INTEGRATE-M15-259-ROM-WORLD-GRAPH-AND-EXPAND-NATIVE-PLAYABILITY — Integration of Validated M15.259 Room-Transition World Graph; Reusable ROM-Driven Room Loader (`load_world_screen_from_rom`); Data-Driven Generic Transition Dispatch (`evaluate_world_transition`); Independent Verification and Causal Resolution of 6 ROM World Graph Semantic Discrepancies; Extended 3,600-Frame (60.0s) Native-Only Gameplay Traversing 8 Connected Screens with 19 Transitions; 100% Preservation of 21-Frame Exact Prefix (F775..F795) and Holdout Baseline (21,110 Diff Pixels)
 **Status:** Accepted
 **Date:** 2026-11-12

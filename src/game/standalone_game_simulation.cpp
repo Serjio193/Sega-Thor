@@ -159,6 +159,7 @@ bool StandaloneGameSimulation::initialize_native_from_rom(std::span<const std::u
         transition_to_town_north();
     } else {
         const auto beach = world::load_world_screen_from_rom(rom_bytes_, world::ScreenId{1U, 2U});
+        assign_scene_entities(current_screen_id_, beach, chest_opened_global_, entities_);
         world::initialize_native_vdp_from_rom(rom_bytes_, beach, 96, 3, 3, current_vdp_, streamer_);
         update_sat_sprites(current_vdp_);
     }
@@ -185,9 +186,11 @@ void StandaloneGameSimulation::transition_to_screen(const world::ScreenTransitio
     sound_queue_.push(static_cast<int>(sim_state_.frame_counter), target.music_stop_cmd);
     set_player_position(target.player_x, target.player_y);
     player_.movement_state = 0U;
-    if (target.type == world::TransitionEdgeType::BoundaryNorth) {
+    if (target.type == world::TransitionEdgeType::BoundaryNorth ||
+        target.type == world::TransitionEdgeType::DoorWarp) {
         player_.direction_code = 0U; // Up
-    } else if (target.type == world::TransitionEdgeType::BoundarySouth) {
+    } else if (target.type == world::TransitionEdgeType::BoundarySouth ||
+               target.type == world::TransitionEdgeType::DoorExit) {
         player_.direction_code = 2U; // Down
     }
 
@@ -205,19 +208,8 @@ void StandaloneGameSimulation::transition_to_screen(const world::ScreenTransitio
     auto it = saved_screen_entities_.find(screen_key);
     if (it != saved_screen_entities_.end()) {
         entities_ = it->second;
-    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 3U) {
-        assign_default_town_entities(town_scene_, entities_);
-    } else if (current_screen_id_.group == 1U && current_screen_id_.index == 2U) {
-        entities_.resize(2U);
-        entities_[0] = NativeEntity{}; entities_[0].type_id = 0x0060; entities_[0].active = true;
-        entities_[0].world_x = 256; entities_[0].world_y = 88; entities_[0].tile_base = 0x04A8;
-        if (chest_opened_global_) {
-            entities_[0].state = 0x6AU;
-        }
-        entities_[1] = NativeEntity{}; entities_[1].type_id = 0x0098; entities_[1].active = true;
-        entities_[1].world_x = 259; entities_[1].world_y = 101; entities_[1].tile_base = 0x069DU; entities_[1].hp = 4;
     } else {
-        entities_.clear();
+        assign_scene_entities(current_screen_id_, town_scene_, chest_opened_global_, entities_);
     }
 
     if (!rom_bytes_.empty() && native_rom_session_) {

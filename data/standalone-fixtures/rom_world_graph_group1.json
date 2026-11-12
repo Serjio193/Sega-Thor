@@ -150,7 +150,7 @@
       "spawn_script_address": "0x0466B2",
       "gfx_resource_ids": [13, 14, 15, 16],
       "max_camera_x": 0,
-      "max_camera_y": 32,
+      "max_camera_y": 0,
       "confidence": "VERIFIED_ROM_CODE"
     }
   ],
@@ -289,7 +289,7 @@
       "type": "DOOR_WARP_WEST_HOUSE",
       "rom_branch_pc": "0x02E7AC",
       "rom_dispatch_pc": "0x00CA24",
-      "tile_box": [18, 30, 23, 30],
+      "tile_box": [18, 29, 23, 31],
       "required_facing": 0,
       "entry_player_x": 160,
       "entry_player_y": 232,
@@ -307,9 +307,9 @@
       "rom_dispatch_pc": "0x00CA24",
       "trigger_y_gte": 240,
       "entry_player_x": 168,
-      "entry_player_y": 264,
-      "initial_camera_x": 72,
-      "initial_camera_y": 128,
+      "entry_player_y": 272,
+      "initial_camera_x": 8,
+      "initial_camera_y": 160,
       "required_condition": "NONE",
       "supported": true,
       "confidence": "VERIFIED_ROM_CODE"

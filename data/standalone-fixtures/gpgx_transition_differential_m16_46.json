@@ -1,0 +1,133 @@
+{
+  "milestone": "M16.46",
+  "audit_date": "2026-11-12",
+  "hybrid_reference_commit": "229a7e64dc23f0e19a7a375f2d73c55e1f31b2ff",
+  "hybrid_artifact_sha256": "AEDFFB3D0703490A1A425F21690F3A3F70576E715C44CC187A058420C7373546",
+  "summary": {
+    "total_group1_edges": 18,
+    "dynamically_confirmed_edges": 5,
+    "statically_confirmed_edges": 13,
+    "scripted_door_edges": 2,
+    "total_screens": 9
+  },
+  "dynamically_confirmed_transitions": [
+    {
+      "edge_id": "0x0100_EAST_TO_0x0101",
+      "source_screen": "0x0100",
+      "dest_screen": "0x0101",
+      "trigger_type": "boundary_east",
+      "trigger_condition": "player_x >= 320",
+      "gpgx_trace_frame": 184,
+      "entry_player_x": 0,
+      "entry_player_y": 140,
+      "facing_direction": "EAST",
+      "camera_x": 0,
+      "camera_y": 0,
+      "hp_preserved": true,
+      "prng_preserved": true
+    },
+    {
+      "edge_id": "0x0101_EAST_TO_0x0102",
+      "source_screen": "0x0101",
+      "dest_screen": "0x0102",
+      "trigger_type": "boundary_east",
+      "trigger_condition": "player_x >= 320",
+      "gpgx_trace_frame": 366,
+      "entry_player_x": 0,
+      "entry_player_y": 180,
+      "facing_direction": "EAST",
+      "camera_x": 0,
+      "camera_y": 0,
+      "hp_preserved": true,
+      "prng_preserved": true
+    },
+    {
+      "edge_id": "0x0102_NORTH_TO_0x0103",
+      "source_screen": "0x0102",
+      "dest_screen": "0x0103",
+      "trigger_type": "boundary_north",
+      "trigger_condition": "player_y <= 0",
+      "gpgx_trace_frame": 594,
+      "entry_player_x": 160,
+      "entry_player_y": 224,
+      "facing_direction": "NORTH",
+      "camera_x": 0,
+      "camera_y": 16,
+      "hp_preserved": true,
+      "prng_preserved": true
+    },
+    {
+      "edge_id": "0x0103_NORTH_TO_0x0104",
+      "source_screen": "0x0103",
+      "dest_screen": "0x0104",
+      "trigger_type": "boundary_north",
+      "trigger_condition": "player_y <= 0",
+      "gpgx_trace_frame": 834,
+      "entry_player_x": 160,
+      "entry_player_y": 224,
+      "facing_direction": "NORTH",
+      "camera_x": 0,
+      "camera_y": 0,
+      "hp_preserved": true,
+      "prng_preserved": true
+    },
+    {
+      "edge_id": "0x0104_EAST_TO_0x0105",
+      "source_screen": "0x0104",
+      "dest_screen": "0x0105",
+      "trigger_type": "boundary_east",
+      "trigger_condition": "player_x >= 320",
+      "gpgx_trace_frame": 1088,
+      "entry_player_x": 0,
+      "entry_player_y": 128,
+      "facing_direction": "EAST",
+      "camera_x": 0,
+      "camera_y": 0,
+      "hp_preserved": true,
+      "prng_preserved": true
+    }
+  ],
+  "scripted_door_transitions": [
+    {
+      "edge_id": "DOOR_WARP_WEST_HOUSE",
+      "source_screen": "0x0102",
+      "dest_screen": "0x0108",
+      "trigger_type": "door_warp_aabb",
+      "trigger_condition": "x in [144, 191] and y in [240, 247] and facing == NORTH",
+      "rom_routine": "0x02E810",
+      "entry_player_x": 160,
+      "entry_player_y": 232,
+      "facing_direction": "NORTH",
+      "camera_x": 0,
+      "camera_y": 0,
+      "max_camera_x": 0,
+      "max_camera_y": 0,
+      "spawned_entities": [
+        {
+          "type_id": "0x003C",
+          "name": "Village Elder / NPC",
+          "x": 160,
+          "y": 160
+        }
+      ],
+      "status": "statically_verified_and_implemented"
+    },
+    {
+      "edge_id": "DOOR_EXIT_WEST_HOUSE",
+      "source_screen": "0x0108",
+      "dest_screen": "0x0102",
+      "trigger_type": "door_exit_boundary",
+      "trigger_condition": "y >= 240 and facing == SOUTH",
+      "rom_routine": "0x02F170",
+      "entry_player_x": 168,
+      "entry_player_y": 272,
+      "facing_direction": "SOUTH",
+      "camera_x": 8,
+      "camera_y": 160,
+      "max_camera_x": 160,
+      "max_camera_y": 240,
+      "spawned_entities": [],
+      "status": "statically_verified_and_implemented"
+    }
+  ]
+}

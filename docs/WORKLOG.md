@@ -1,3 +1,36 @@
+# Worklog — 2026-11-12 (M16.46: World Graph Integration, Original-Game Transition Parity, and First Scripted Door)
+- **Concrete Task**: Turn M16.45 world graph into verified foundation; prove transition parity with original Mega Drive game; implement first ROM-grounded scripted door transition (Screen 1,2 Beach <-> Screen 1,8 West Village House Interior).
+- **Phase 0 Baseline Reproduction**:
+  - Re-executed `oasis_m16_45_world_graph_playability_test` on baseline `ba80047218074c2f0d96836e9ece6063b3b93f51`.
+  - Confirmed 3,600 frames, 8 distinct screens, 19 transitions, 21-frame bit-for-bit exact prefix F775..F795, and holdout 21,110 pixel diff.
+- **Phase 1 Handoff Integration & Pinning**:
+  - Audited M15.259 handoff (`STANDALONE_M15_259_ROOM_TRANSITION_SEMANTICS_HANDOFF.md`, `rom_room_transition_semantics_m15_259.json`).
+  - Pinned SHA-256 of `rom_room_transition_semantics_m15_259.json`: `AEDFFB3D0703490A1A425F21690F3A3F70576E715C44CC187A058420C7373546`.
+  - Created standalone build-time generator `tools/generate_rom_world_graph.py` (152 lines <= 500) extracting Group 1 descriptors and transitions directly from ROM `0x00C92C` -> `0x02E56A`.
+- **Phase 2 & 3 Transition Parity & Machine-Readable Differential**:
+  - Audited all 18 Group 1 edges (`0x0100`..`0x0108`).
+  - Classified 5 dynamically confirmed edges across 11,192 GPGX frames and 13 statically verified ROM edges.
+  - Authored machine-readable differential fixture `data/standalone-fixtures/gpgx_transition_differential_m16_46.json`.
+- **Phase 4 First Scripted Door Transition**:
+  - Disassembled and verified ROM doorway routines at `0x02E7B0..0x02E83E` (Beach -> West House) and `0x02F130..0x02F18A` (West House -> Beach).
+  - Implemented `DoorWarp` trigger at Beach Screen(1,2) `[144, 191] x [240, 247]` (`tile_box [18, 29]..[23, 31]`, facing north) invoking `0x00CA24` fade-spawn to Screen(1,8) at `(160, 232)`.
+  - Configured Screen(1,8) camera bounds clamping (`max_camera_x = 0, max_camera_y = 0`) and spawned Village Elder NPC `0x003C` at `(160, 160)`.
+  - Implemented `DoorExit` trigger at Screen(1,8) (`player_y >= 240`, facing south) returning to Beach Screen(1,2) at exact ROM spawn `(168, 272)` with camera `(8, 160)`.
+- **Phase 5 Generalization & Persistence**:
+  - Verified non-square 64x32 tilemap streaming (`TilemapStreamer` bounds-safe up to 4096 words).
+  - Verified blocked exit boundary locks: attempting to walk through non-exit walls does not cause false transitions.
+  - Verified persistent chest opened state and player HP across door warps and round-trips.
+- **Phase 6 Provenance & Holdout Regression Audit**:
+  - Inspected `town_independent_holdout_vdp.json` snapshots: confirmed 7 frames (775, 809, 825, 833, 893, 941, 1125).
+  - Clarified historical typographical error in M16.45 report mislabeling F893 and F941 as F875 and F925.
+  - Preserved continuous 21-frame bit-for-bit exact prefix F775..F795 (0 diff px, 0 diff VRAM) and Holdout sum of 21,110 diff pixels.
+- **Regression Safety & Dual-Toolchain Verification**:
+  - Created `tests/m16_46_world_transition_parity_test.cpp` (422 lines <= 500).
+  - MinGW Release and MSVC Debug CTest: 220/232 passed (exact 12 historical BizHawk failures preserved).
+  - Governed source files: 976 files <= 500 lines.
+  - Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+  - Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.45: ROM World Graph Integration & Native Playability Expansion)
 - **Concrete Task**: Ingest validated ROM room-transition data produced by Hybrid M15.259 into native Standalone engine; expand playable world coverage without one-off room-specific C++ handlers.
 - **Phase 0 & 1 Handoff Audit & Disassembly Verification**:

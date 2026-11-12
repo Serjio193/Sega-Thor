@@ -1,3 +1,41 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.46: Scripted Door Transition Mechanics, Doorway AABB Trigger 0x00C1CE, and Interior Screen 1,8 Mechanics)
+
+## Milestone M16.46 Reverse Engineering Summary
+
+### 1. Village House Doorway Trigger Logic (`ROM 0x02E7B0..0x02E83E`)
+- **M68K Disassembly & Trigger Conditions:**
+  * Routine `0x02E7B0` initializes AABB parameters:
+    - `move.l #$0012001E, d1`: tile coordinates `(X=18, Y=30) -> pixel_box [144, 240]`.
+    - `move.l #$0017001E, d2`: tile coordinates `(X=23, Y=30) -> pixel_box [191, 247]`.
+  * Calls `jsr 0x00C1CE` (AABB overlap check against player entity `$FF19E8` with radius `$46(a0)`).
+  * `0x02E7BE: bcs.s 0x02E82E` branches on carry set (collision contact).
+  * At `0x02E82E`:
+    - `move.w #$0108, d0`: destination screen `0x0108` (West Village House Interior).
+    - `move.w #$00A0, d3`: entry player X = 160.
+    - `move.w #$00E8, d4`: entry player Y = 232.
+    - `jmp 0x00CA24`: authentic fade-spawn dispatch.
+
+### 2. West Village House Interior Screen(1,8) Exit Routine (`ROM 0x02F130..0x02F18A`)
+- **M68K Disassembly & Screen Constraints:**
+  * Screen descriptor at `0x02F116` sets single-screen interior dimensions with fixed camera:
+    - `max_camera_x = 0, max_camera_y = 0`.
+  * Spawns Village Elder NPC `0x003C` at `(world_x = 160, world_y = 160)`.
+  * Exit routine `0x02F170`:
+    - Evaluates `player_y >= 240` with facing South (`direction_code == 2`).
+    - Dispatches to Beach Screen(1,2) at `d4 = 0x0110` (Y = 272), `d3 = 0x00A8` (X = 168), camera `(8, 160)`.
+    - `jmp 0x00CA24` returns player to Beach outside doorway.
+
+### 3. Holdout Snapshot Provenance Confirmation
+- Fixture file `data/standalone-fixtures/town_independent_holdout_vdp.json` contains 7 snapshots at frames:
+  - F775 (0 diff px)
+  - F809 (3,649 diff px)
+  - F825 (2,576 diff px)
+  - F833 (2,592 diff px)
+  - F893 (3,948 diff px) — historically mislabeled "F875" in M16.45 report prose
+  - F941 (4,259 diff px) — historically mislabeled "F925" in M16.45 report prose
+  - F1125 (4,086 diff px)
+- Total holdout sum is exactly `21,110` differing pixels. Fixture content and SHA-256 are unchanged.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.45: ROM Room-Transition Semantics, Group 1 World Graph Verification, and 6 Discrepancy Resolutions)
 
 ## Milestone M16.45 Reverse Engineering Summary

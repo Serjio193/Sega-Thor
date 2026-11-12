@@ -10,6 +10,41 @@ void assign_default_town_entities(const world::LoadedTownScene& scene, std::vect
     out.push_back(slot19);
 }
 
+void assign_scene_entities(world::ScreenId id, const world::LoadedTownScene& scene,
+                           bool chest_opened, std::vector<NativeEntity>& out) {
+    if (id.group == 1U && id.index == 3U) {
+        assign_default_town_entities(scene, out);
+    } else if (id.group == 1U && id.index == 2U) {
+        out.resize(2U);
+        out[0] = NativeEntity{};
+        out[0].type_id = 0x0060U;
+        out[0].active = true;
+        out[0].world_x = 256;
+        out[0].world_y = 88;
+        out[0].tile_base = 0x04A8U;
+        if (chest_opened) out[0].state = 0x6AU;
+        out[1] = NativeEntity{};
+        out[1].type_id = 0x0098U;
+        out[1].active = true;
+        out[1].world_x = 259;
+        out[1].world_y = 101;
+        out[1].tile_base = 0x069DU;
+        out[1].hp = 4;
+    } else if (id.group == 1U && id.index == 8U) {
+        out.resize(1U);
+        out[0] = NativeEntity{};
+        out[0].slot_index = 4U;
+        out[0].type_id = 0x003CU; // Village NPC
+        out[0].world_x = 160;
+        out[0].world_y = 160;
+        out[0].tile_base = 0x0490U;
+        out[0].hp = 100;
+        out[0].active = true;
+    } else {
+        out.clear();
+    }
+}
+
 camera::CameraConfig make_scene_camera_config(camera::CameraController& cam,
                                              int max_cx, int max_cy,
                                              int cam_x, int cam_y,

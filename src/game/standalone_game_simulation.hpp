@@ -156,6 +156,7 @@ public:
 
     // Directly set player world coordinates.
     void set_player_position(std::int32_t x, std::int32_t y) noexcept;
+    void set_player_direction(std::uint16_t dir) noexcept { player_.direction_code = dir; }
 
     // Viewport camera origin.
     [[nodiscard]] int camera_x() const noexcept { return camera_.camera_x(); }
@@ -193,6 +194,7 @@ public:
     [[nodiscard]] bool chest_opened() const noexcept {
         return !entities_.empty() && entities_[0].state == 0x6AU;
     }
+    [[nodiscard]] bool chest_opened_global() const noexcept { return chest_opened_global_; }
     [[nodiscard]] std::uint16_t sound_command() const noexcept {
         if (attack_controller_.sound_command() != 0U) return attack_controller_.sound_command();
         return interaction_system_.sound_command();
