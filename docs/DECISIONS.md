@@ -1,3 +1,33 @@
+# ADR-20261112-M15-262-DYTTO-SPAWN-ANIMATION-AND-FOLLOW-MECHANICS — Dytto Spawn, Animation and Follow Mechanics Reverse Engineering
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Following the M15.261 discovery of the Spirit Awakening Dispatcher (`0x018CAA`) and Dytto Water Shrine liberation event (`0x018CDE`), Standalone engine development required the complete authentic lifecycle of Dytto.
+2. Specifically, the engine needed exact specifications for: entity allocation (`0x014668`), SP parameters, graphics Nemesis ROM streams and VRAM destinations (`0x01454C`), the awakening animation timeline (State `0x1A` at `0x014F60`), and the follow-player physics and angular steering (`0x0150A0`).
+
+**Decisions:**
+1. **Dytto Spawn Routine (`0x014668`):**
+   - Mapped entity allocation to `0x008D06` for entity `0x0018`.
+   - Identified SP pool size of 100 at `$88(A6)` and `$8A(A6)`, drain rate of 10 at `$8C(A6)` and `$8E(A6)`, and active spirit decrementation on `$FF19A7`.
+2. **Graphics & VRAM DMA (`0x01454C`):**
+   - Mapped Dytto Nemesis sprite stream to ROM address `0x00141580`, decompression work buffer `$00FF2FA8`, and target VRAM tile `0x04D0` (byte address `0x9A00`).
+3. **State Machine & Awakening Timeline (State `0x1A` at `0x014F60`):**
+   - Reverse-engineered state table `0x014914` and State `0x1A` frame milestones:
+     * 180 frames: Appearance burst & SFX.
+     * 240 frames: Palette pulse effect.
+     * 300 frames: Dialogue completion handoff.
+     * 360 frames: Camera tracking restored.
+     * 420 frames: Transition to normal Follow State `0x04`.
+4. **Follow Steering & Physics (`0x0150A0`):**
+   - Reverse-engineered target angle calculation via `0x00E6F0` (atan2), angular steering step of 8 units per frame stored in `$AE(A6)`, and velocity damping `ASR.L #7` stored in `$B0(A6)`.
+5. **Tooling & Handoff:**
+   - Emitted `tools/extract_rom_dytto_spawn_follow.py`, `tests/rom_dytto_spawn_follow_test.py`, `data/thor-evidence/rom_dytto_spawn_follow_m15_262.json`, and `docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md`.
+
+**Consequences:**
+- Standalone engine receives exact, ROM-grounded mechanics for spawning and animating Dytto and following Prince Ali.
+- All 196 active production helpers, frozen source hash `28b6617d...`, file size policy ($\le 500$ lines), and Standalone immutability strictly preserved.
+
 # ADR-20261112-M15-261-ROM-SPIRIT-AWAKENING-DISPATCHER-AND-SHRINE-EVENTS — ROM Spirit Awakening Dispatcher, Shrine Events, and Global Flag 3 Extraction
 **Status:** Accepted
 **Date:** 2026-11-12

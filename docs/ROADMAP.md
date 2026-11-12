@@ -1,3 +1,23 @@
+# M15.262 Dytto Spawn, Animation and Follow Mechanics Reverse Engineering — COMPLETE / VERIFIED DYTTO LIFECYCLE EXTRACTION
+
+- **Phase 0 Baseline & Architecture Audit:**
+  * Baseline Git commit `219f13e9...`, production helper count preserved (196 active helpers, hash `28b6617d...`), Standalone repository untouched.
+- **Phase 1 Dytto Spawn Routine (`0x014668..0x0146BE`):**
+  * Disassembled entity allocation via `0x008D06` for entity `0x0018` (Dytto Spirit).
+  * Extracted SP configuration (Max SP = 100 at `$88`, drain rate = 10 at `$8C`), initial coordinates, facing angle, collision flags, and VRAM base.
+- **Phase 2 Spirit Graphics & VRAM DMA Allocation (`0x014522` / `0x01454C`):**
+  * Extracted Nemesis compressed sprite source address `0x00141580`, work buffer `$00FF2FA8`, and target VRAM tile `0x04D0` (byte address `0x9A00`).
+- **Phase 3 Spirit State Machine & Awakening Timeline (State `0x1A`):**
+  * Mapped state table `0x014914` and State `0x1A` (APPEAR) handler `0x014F60` timeline: 180f burst, 240f pulse, 300f dialogue complete, 360f camera unlock, 420f transition to Follow State `0x04`.
+- **Phase 4 Follow-Player Steering & Physics (`0x0150A0..0x015112`):**
+  * Decoded angle calculation via `0x00E6F0`, angular turn rate (8 units/tick at `$AE`), velocity damping (`ASR.L #7` at `$B0`), and player offset tracking.
+- **Phase 5 Extractor, Automated Tests & Handoff:**
+  * Authored `tools/extract_rom_dytto_spawn_follow.py` (151 lines $\le 500$) emitting `data/thor-evidence/rom_dytto_spawn_follow_m15_262.json`.
+  * Authored `tests/rom_dytto_spawn_follow_test.py` (73 lines $\le 500$, passed 5/5).
+  * Published `docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md`.
+- **Phase 6 Governance & Verification:**
+  * Governed file line limits preserved ($\le 500$ lines), Standalone worktree strictly unmodified.
+
 # M15.261 ROM Spirit Awakening Dispatcher & Shrine Event Semantic Extraction — COMPLETE / VERIFIED SPIRIT SHRINE & GLOBAL FLAGS EXTRACTION
 
 - **Phase 0 Baseline & Architecture Audit:**

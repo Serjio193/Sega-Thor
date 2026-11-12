@@ -1,3 +1,39 @@
+# 2026-11-12 — Milestone M15.262: DYTTO SPAWN, ANIMATION AND FOLLOW MECHANICS REVERSE ENGINEERING — Phase 0 Baseline & Architecture Audit (219f13e9...); Phase 1 Dytto Spawn Routine Disassembly (0x014668..0x0146BE, Entity 0x0018 allocation via 0x008D06, Max SP 100 at $88, Drain rate 10 at $8C, Base state 0x02, Base action 0x04); Phase 2 Graphics & VRAM DMA Allocation (0x014522 / 0x01454C, Nemesis ROM stream 0x00141580 decompressed to 0x00FF2FA8, VRAM Tile 0x04D0 / Byte 0x9A00 via DMA queue $FF1892); Phase 3 Spirit State Machine & Awakening Timeline (State Table 0x014914, State 0x1A APPEAR handler 0x014F60 milestones at 180f, 240f, 300f, 360f, and 420f transition to Follow); Phase 4 Follow-Player Physics & Steering (0x0150A0..0x015112, Target angle calc 0x00E6F0, turn rate 8 units/tick at $AE, velocity damping ASR.L #7 at $B0); Phase 5 Automated Extractor & Unit Tests (tools/extract_rom_dytto_spawn_follow.py 151 lines <= 500, tests/rom_dytto_spawn_follow_test.py 73 lines <= 500 PASS 5/5); Phase 6 Implementation Handoff (docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md); Phase 7 Governance (196 active helpers preserved, hash 28b6617d... preserved, Standalone worktree read-only) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline & Governance:
+    - Verified Git baseline commit `219f13e99e0bdd59ab70be116b38b06662ef95ed`.
+    - Preserved 196 active production helpers, source hash `28b6617d...`, and kept `C:/Github/Sega-Thor-Standalone` strictly read-only.
+  * Phase 1 Dytto Spawn Routine (`0x014668..0x0146BE`):
+    - Reverse-engineered entity allocation via `0x008D06` for entity type `0x0018`.
+    - Decoded field initializations: `$16` collision flags `0x0002`, `$18` VRAM tile base `0x04F8`, `$88`/`$8A` SP pool (100 / 100), `$8C`/`$8E` SP consumption drain rate (10 / 10), initial coordinates at `$08`/`$0C`/`$10` copied from registers `D0`/`D1`/`D2`.
+  * Phase 2 Spirit Graphics & VRAM DMA (`0x014522` / `0x01454C`):
+    - Decoded Nemesis sprite graphics location: ROM address `0x00141580`.
+    - Identified decompression work buffer: `$00FF2FA8`.
+    - Identified target VRAM destination: tile `0x04D0` (byte address `0x9A00`).
+    - Verified DMA command `$007F97D4` published to DMA queue at `$FF1892`.
+  * Phase 3 State Machine & Awakening Timeline (State `0x1A`):
+    - Disassembled spirit state jump table at `0x014914` (dispatched from `0x014908`).
+    - Analyzed State `0x1A` (APPEAR) handler `0x014F60` frame milestones:
+      * 180 frames (3.0s): Appearance particle burst / SFX.
+      * 240 frames (4.0s): Palette pulse / fade effect.
+      * 300 frames (5.0s): Dialogue handoff completion.
+      * 360 frames (6.0s): Camera unlock and player tick restore.
+      * 420 frames (7.0s): State transition to normal Follow State `0x04`.
+  * Phase 4 Follow-Player Steering & Physics (`0x0150A0..0x015112`):
+    - Decoded target angular calculation via `0x00E6F0` (atan2 from spirit to player).
+    - Mapped angular turn step: 8 units per frame stored in entity field `$AE(A6)`.
+    - Mapped velocity damping: arithmetic right shift by 7 (`ASR.L #7, D6`) stored in `$B0(A6)`.
+    - Mapped target offsets: `$A6(A6)` and `$AA(A6)`.
+  * Phase 5 Extractor & Unit Tests:
+    - Authored `tools/extract_rom_dytto_spawn_follow.py` (151 lines $\le 500$) emitting `data/thor-evidence/rom_dytto_spawn_follow_m15_262.json`.
+    - Authored `tests/rom_dytto_spawn_follow_test.py` (73 lines $\le 500$, passed 5/5 unit tests).
+  * Phase 6 Standalone Implementation Handoff:
+    - Authored `docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md`.
+  * Phase 7 Governance & Verification:
+    - Governed file size policy confirmed ($\le 500$ lines).
+    - Standalone worktree strictly read-only.
+
 # 2026-11-12 — Milestone M15.261: ROM SPIRIT AWAKENING DISPATCHER & SHRINE EVENT SEMANTIC EXTRACTION — Phase 0 Baseline & Critical Mislabeling Discovery (0x018CAA proven as Spirit Awakening Dispatcher, 0x018CDE as Dytto Awakening, and Global Flag 3 as Dytto Acquisition / Freedom, correcting Standalone M16.50 Princess Rescue mislabeling); Phase 1 Disassembly & Mapping of All 5 Spirit/Shrine Handlers (Dytto 0x018CDE Room 0x0106 Msg 0, Efreet 0x018D4E Room 0x0206 Msg 9, Shade 0x018DAA Room 0x0805 Msg 12, Bow 0x018E12 Room 0x0A10 Msg 13, Agito 0x018E7A Room 0x090B Msg 56); Phase 2 Altar Entity 0x0020 Gated Spawning (Opcode 0x15 in Room 0x0106 script 0x04664E gated on Global Flag 3 at $FF0DBC bit 3, position 160,80,0, VRAM 0x0200); Phase 3 Automated Extractor (tools/extract_rom_spirit_shrine_events.py 261 lines <= 500, data/thor-evidence/rom_spirit_shrine_events_m15_261.json); Phase 4 Automated Unit Testing (tests/rom_spirit_shrine_events_test.py 76 lines <= 500 PASS 5/5); Phase 5 Implementation Handoff (docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md); Phase 6 Governance (Production helpers immutability preserved, source hash 28b6617d... preserved, Standalone worktree strictly read-only) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

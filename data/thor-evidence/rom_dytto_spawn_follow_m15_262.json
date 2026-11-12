@@ -1,0 +1,107 @@
+{
+  "milestone": "M15.262",
+  "description": "ROM Dytto Spirit Lifecycle, Spawning, Follow Mechanics, and Animation Semantics",
+  "spawn_routine": {
+    "address": "0x014668",
+    "entity_type": "0x0018",
+    "entity_allocator": "0x008D06",
+    "initial_fields": {
+      "0x00_type": "0x0018",
+      "0x16_collision_flags": "0x0002",
+      "0x18_vram_tile": "0x04F8",
+      "0x88_max_sp": 100,
+      "0x8A_current_sp": 100,
+      "0x8C_sp_drain_rate": 10,
+      "0x8E_sp_drain_timer": 10,
+      "0x04_initial_state": "0x0002",
+      "0x2A_initial_action": "0x0004"
+    },
+    "sp_counter_ram": "0x00FF19A7"
+  },
+  "graphics_and_dma": {
+    "loader_routine": "0x014522",
+    "dytto_resource_branch": "0x01454C",
+    "nemesis_rom_source": "0x00141580",
+    "decompression_buffer": "0x00FF2FA8",
+    "vram_tile_base": "0x04D0",
+    "vram_byte_offset": "0x9A00",
+    "dma_queue_pointer": "0x00FF1892",
+    "interrupt_mask_ori_sr": "0x0700"
+  },
+  "state_machine": {
+    "dispatcher_routine": "0x014908",
+    "state_table_address": "0x014914",
+    "state_handlers": {
+      "0x00": "0x014932",
+      "0x02": "0x014930",
+      "0x04": "0x014A5C",
+      "0x06": "0x014ABC",
+      "0x08": "0x014AEA",
+      "0x0A": "0x014B50",
+      "0x0C": "0x014D1A",
+      "0x0E": "0x014EE6",
+      "0x10": "0x014A72",
+      "0x12": "0x014E1A",
+      "0x14": "0x014E0C",
+      "0x16": "0x014B7C",
+      "0x18": "0x014BB8",
+      "0x1A": "0x014F60"
+    },
+    "state_0x1A_appear": {
+      "handler_address": "0x014F60",
+      "subtimer_field": "$02(A6)",
+      "milestones": [
+        {
+          "frame": 180,
+          "hex": "0x00B4",
+          "event": "Appearance burst and sfx invocation"
+        },
+        {
+          "frame": 240,
+          "hex": "0x00F0",
+          "event": "Visual fade / pulse effect"
+        },
+        {
+          "frame": 300,
+          "hex": "0x012C",
+          "event": "Dialogue advance handoff"
+        },
+        {
+          "frame": 360,
+          "hex": "0x0168",
+          "event": "Camera unlock and restore player tick"
+        },
+        {
+          "frame": 420,
+          "hex": "0x01A4",
+          "event": "Transition to normal follow (ST $FF164F; CLR $FF1CD8)"
+        }
+      ]
+    }
+  },
+  "follow_mechanics": {
+    "math_routine": "0x0150A0",
+    "angle_calc_helper": "0x00E6F0",
+    "angular_step_per_tick": 8,
+    "speed_damping_shift": 7,
+    "entity_fields": {
+      "0xAE_current_angle": "u16 (0..255 binary angle)",
+      "0xB0_velocity": "u32 fixed point speed",
+      "0xA6_target_x": "i16 player X offset target",
+      "0xAA_target_y": "i16 player Y offset target",
+      "0x08_world_x": "i32 world coordinate X",
+      "0x0C_world_y": "i32 world coordinate Y",
+      "0x10_world_z": "i32 elevation Z"
+    }
+  },
+  "active_spirit_semantics": {
+    "ram_address": "0x00FF0D7A",
+    "bit_assignment": {
+      "bit_0": "Dytto (Water)",
+      "bit_1": "Efreet (Fire)",
+      "bit_2": "Shade (Shadow)",
+      "bit_3": "Bow (Plant)"
+    },
+    "selection_rule": "Engine tests bit 0 of $FF0D7A to verify Dytto summon eligibility and HUD display."
+  }
+}

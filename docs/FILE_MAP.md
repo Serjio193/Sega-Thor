@@ -1,3 +1,10 @@
+# M15.262 Dytto Spawn, Animation and Follow Mechanics Reverse Engineering
+
+- `tools/extract_rom_dytto_spawn_follow.py` — reusable ROM semantic extractor for Dytto spawn routine (`0x014668`), graphics DMA loader (`0x014522`/`0x01454C`), state machine jump table (`0x014914`), State `0x1A` timeline (`0x014F60`), and follow physics (`0x0150A0`).
+- `data/thor-evidence/rom_dytto_spawn_follow_m15_262.json` — structured machine-readable knowledge base for Dytto lifecycle, SP fields, VRAM allocation, and follow math.
+- `tests/rom_dytto_spawn_follow_test.py` — automated unit test suite verifying spawn bytes, DMA pointers, state milestones, and steering contracts.
+- `docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md` — implementation-ready Standalone handoff covering Dytto lifecycle, SP management, timeline, physics, and C++20 structures.
+
 # M15.261 ROM Spirit Awakening Dispatcher & Shrine Event Semantic Extraction
 
 - `tools/extract_rom_spirit_shrine_events.py` — reusable ROM semantic extractor for the Spirit Awakening Dispatcher (`0x018CAA`), 5 shrine event handlers (`0x018CDE`, `0x018D4E`, `0x018DAA`, `0x018E12`, `0x018E7A`), Dialogue triggers (`0x00C2EC`), Spirit entity spawn helpers (`0x014668` etc.), Altar gating, and Global Flag 3.
