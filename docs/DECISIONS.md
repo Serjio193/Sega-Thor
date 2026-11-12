@@ -1,3 +1,34 @@
+# ADR-20261112-M16-48-ORIGINAL-NPC-PARITY-REUSABLE-DIALOGUE-ENGINE-SECOND-ROM-INTERACTION-AND-EVENT-VM-FLAG-GENERALIZATION — Validation of Village Elder Differential Parity Against ROM Semantics; Reusable Dynamic Message ID NPC Dispatch; Second Independent ROM-Grounded Interaction (Pier Villager Message ID 4 in Screen 1,0); Event VM Flag Opcodes 0x0F, 0x10, 0x11 Generalization (Modes Clear/Set/Toggle Across Global, Area, and Room Banks); Dual-Toolchain Qualification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. M16.47 established authentic dialogue decoding from `0x051514` and initial single-encounter Village Elder interaction in Screen(1,8).
+2. M16.48 requires proving that the dialogue and NPC interaction engine is reusable beyond the single Village Elder encounter, validating differential parity against ROM logic, implementing a second reachable ROM-driven interaction, and generalizing Event VM flag manipulation opcodes `0x0F`, `0x10`, `0x11`.
+3. Reverse engineering of ROM Area 1 Room 0 (0x0100) South Dock script at `0x046346`:
+   - `0x046356`: Opcode `0x15` (`VM_OP_SPAWN_GATED_PROP`), bank 2, entity type `0x003C` (Pier Villager) at `(160, 216)`, VRAM tile `0x0490`.
+   - Dialogue message ID `4` at ROM `0x05175C`: "Oh, Ali.  Nice armlet.  Where'd\nyou find it?".
+4. Reverse engineering of Event VM flag opcodes in ROM:
+   - `0x0F` (`0x010140`): Global flag operation (`$FF0DBC`).
+   - `0x10` (`0x010170`): Area flag operation (`$FF0E1C`).
+   - `0x11` (`0x0101A0`): Room flag operation (`$FF0E2C`).
+   - Instruction layout: 3 operand bytes `[mode:u8, flag_idx:u16]`. Mode semantics: 0 = clear bit, 1 = set bit, 2 = toggle bit.
+
+**Decisions:**
+1. **Dynamic Message ID Dispatch in NativeEntity & NPC Handler:**
+   - Added `message_id` (+0xA0 / `0x018C28`) to `NativeEntity` structure.
+   - Refactored `update_npc_dialogue_state` to query `ent.message_id` dynamically rather than relying on a hardcoded message ID constant, maintaining backward compatibility by defaulting to 5 for Village Elder.
+   - Dialogue completion records entity-specific flags (Elder: 141, Pier Villager: 142).
+2. **Second ROM-Grounded NPC Interaction (Pier Villager):**
+   - Wired Screen(1,0) in `scene_transition_helpers.cpp` to spawn entity `0x003C` at `(160, 216)` with `message_id = 4`.
+   - Validated single-page dialogue flow, button wait, text layout, and control unlock.
+3. **Event VM Flag Generalization (Opcodes 0x0F, 0x10, 0x11):**
+   - Implemented `modify_event_flag(mode, flag_index, bank)` supporting modes 0, 1, 2 across Global (`$FF0DBC`), Area (`$FF0E1C`), and Room (`$FF0E2C`) banks.
+   - Implemented instruction execution in `EventVm::execute_next_instruction()`.
+4. **Validation and Dual-Toolchain Qualification:**
+   - Created `tests/m16_48_npc_dialogue_parity_test.cpp` and fixture `data/standalone-fixtures/npc_interaction_differential_m16_48.json`.
+   - Verified 100% test pass on MinGW Release and MSVC Debug. Preserved Town 21-frame bit-for-bit exact prefix F775..F795 and Holdout sum of 21,110 diff pixels.
+
 # ADR-20261112-M16-47-AUTHENTIC-ROM-DIALOGUE-TABLE-ROOM-SPAWN-SCRIPT-VM-AND-INTERACTIVE-NPC — Integration of Verified M15.260 Dialogue Table (0x051514, Self-Relative 16-Bit Offsets, Message ID 5) and Room 0x0108 Spawn Script VM (0x0466B2); Authentic Control Codes; Proximity (dx<=28, dy<=28), Player Talk Lock 0x36, and Event Flag 141 Lifecycle; Checkpoint-Free End-to-End Dialogue Gameplay; Zero Regression on Town F775..F795 (21 Frames, 0 Diff) and Holdout Baseline (21,110 Diff Pixels)
 **Status:** Accepted
 **Date:** 2026-11-12

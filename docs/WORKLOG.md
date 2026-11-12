@@ -1,3 +1,47 @@
+# Worklog — 2026-11-12 (M16.48: Original NPC Parity, Reusable Dialogue Engine, Second ROM-Driven Interaction, and Event VM Flag Generalization)
+- **Concrete Task**: Validate the Village Elder interaction against differential ROM semantics and original execution logic; generalize the native dialogue/NPC implementation across entities via dynamic message ID dispatch; implement and validate a second reachable ROM-grounded interaction (Pier Villager at Screen(1,0) South Dock, Message ID 4: "Oh, Ali.  Nice armlet.  Where'd\nyou find it?"); generalize Event VM flag opcodes 0x0F, 0x10, 0x11 (modes 0=clear, 1=set, 2=toggle for global, area, and room banks); qualify dual-toolchain CTest, line limits, and regression suites.
+- **Phase 0 Baseline Qualification**:
+  - MinGW Release CTest: 233 registered, 221 passed, 12 failed (historical BizHawk ring runner tests 3, 60, 107, 146-154), 0 skipped/excluded.
+  - MSVC Debug CTest: 233 registered, 221 passed, 12 failed (identical historical failures), 0 skipped/excluded.
+  - Investigated and confirmed MSVC CRT assertion from M16.46 was caused by running tests directly from outside `build-debug` without CTest working directory configuration; when run through CTest inside `build-debug`, zero CRT assertion dialogs or failures occur.
+- **Phase 1 & 2 Original Village Elder Differential Parity**:
+  - Validated Village Elder entity `0x003C` interaction logic at `0x018BBC` / `0x018C28` and `0x00C2EC`:
+    * Trigger proximity: `dx <= 28 && dy <= 28` with player facing north (`direction_code == 0` or `py > ent.world_y`).
+    * Player state lock: `0x36` (`0x018C72`).
+    * Dialogue Message ID 5 (`0x05178C`, 2 pages).
+    * Page progression on button press (A, B, C).
+    * Control restoration (movement state `0`) and Global Flag 141 (`$FF0DBC+17` bit 5) set upon completion.
+    * Re-entry persistence: opcode `0x15` in `0x0466B2` blocks re-spawn when flag 141 is set.
+- **Phase 3 Dialogue Presentation Parity**:
+  - Verified window geometry (36x6 tiles, start tile `(2, 20)` centered in lower playfield).
+  - Validated font glyph rendering and layout across multi-line dialogue boxes.
+  - Validated control codes `0x00` (terminate), `0x01`/`0x06` (newline/scroll), `0x02`/`0x07` (clear page / button wait), `0x03` (frame delay), `0x05` (inline button wait), and `#` (speaker tag).
+  - Verified zero visual or frame regressions to Town exact pixel frames (F775..F795 21 frames bit-for-bit exact).
+- **Phase 4 Second Independent ROM-Grounded Interaction (Pier Villager)**:
+  - Reverse-engineered Area 1 Room 0 (0x0100) South Dock script at `0x046346` / `0x046356`:
+    * Spawns entity type `0x003C` at `(160, 216)`, VRAM tile `0x0490`.
+    * Dialogue Message ID 4 at `0x05175C`: "Oh, Ali.  Nice armlet.  Where'd\nyou find it?".
+  - Generalized `NativeEntity` with authentic `message_id` (+0xA0 / 0x018C28).
+  - Generalized `npc_dialogue_handler.cpp` to dynamically dispatch dialogue by `ent.message_id` (fallback to 5 for Elder).
+  - Spawned Pier Villager at Screen(1,0) and verified full end-to-end conversation flow, button wait, single-page completion, player unlock, and interaction recording.
+- **Phase 5 Event VM Generalization (Flag Operations)**:
+  - Reverse-engineered and implemented Event VM opcodes:
+    * `0x0F` (`0x010140`): Global flag operation (`$FF0DBC`).
+    * `0x10` (`0x010170`): Area flag operation (`$FF0E1C`).
+    * `0x11` (`0x0101A0`): Room flag operation (`$FF0E2C`).
+  - Implemented 3-byte instruction format: `[opcode:u8, mode:u8, flag_idx:u16]`.
+  - Mode semantics: `mode 0` = clear (`&= ~mask`), `mode 1` = set (`|= mask`), `mode 2` = toggle (`^= mask`).
+  - Added unit and script tests in `tests/m16_48_npc_dialogue_parity_test.cpp` verifying all 3 banks and all 3 modes.
+- **Phase 6 Qualification and Regression Safety**:
+  - Registered and passed `oasis_m16_48_npc_dialogue_parity` across both MinGW Release and MSVC Debug.
+  - MinGW Release CTest: 234 registered, 222 passed, 12 failed (historical), 0 skipped.
+  - MSVC Debug CTest: 234 registered, 222 passed, 12 failed (historical), 0 skipped.
+  - Verified 21-frame continuous exact prefix F775..F795 (0 diff px, 0 diff VRAM) and Holdout sum of 21,110 diff pixels.
+  - Extended 3600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% pass across 19 screen transitions.
+  - `project_file_line_limit`: passed (all governed C++ files <= 500 lines).
+  - Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  - Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.47: Authentic ROM Dialogue Table, Room 0x0108 Spawn Script VM, and Interactive Village Elder Conversation)
 - **Concrete Task**: Ingest and integrate verified ROM NPC & dialogue semantics extracted by Hybrid milestone M15.260 (`a81dfaa0ed815467d7874e49aa05dc8623fe2dbe`); complete the first authentic, interactive Village Elder conversation in Screen(1,8); execute authentic Room `0x0108` spawn script from ROM without hardcoding text strings or guessing IDs.
 - **Phase 0 Baseline Reproduction & Handoff Audit**:

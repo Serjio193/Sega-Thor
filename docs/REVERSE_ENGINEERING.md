@@ -1,3 +1,49 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.48: Original NPC Parity, Area 1 Room 0 South Dock Script 0x046346, Pier Villager Msg 4, and Event VM Flag Opcodes 0x0F, 0x10, 0x11)
+
+## Milestone M16.48 Reverse Engineering Summary
+
+### 1. Area 1 Room 0 (0x0100) South Dock Spawn Script (`ROM 0x046346`)
+- In Area 1 spawn script jump table (`0x046332`), entry 0 points to offset `0x0004`, giving script address `0x046346`:
+  * `0x046346`: Opcode `0x0A` (preload DMA `0x166120 -> 0x9200`).
+  * `0x046356`: Opcode `0x15` (`VM_OP_SPAWN_GATED_PROP`):
+    - Operand 0: `0x02` (Bank 2 = Area Flags `$FF0E1C`).
+    - Operand 1-2: `0x003C` (Entity type ID: Villager/Elder class).
+    - Operand 3-4: `0x0000` (Flag index 0 in Area bank).
+    - Operand 5-6: `0x00 0x00` (padding/submodes).
+    - Operand 7-8: `0x0004` (Message ID 4: Pier Villager dialogue).
+    - Operand 9-10: `0x00A0` (World X = 160).
+    - Operand 11-12: `0x00D8` (World Y = 216).
+    - Operand 13-14: `0x1000` (World Z = 4096 / elevation).
+    - Operand 15-16: `0x0490` (VRAM tile base pattern).
+  * `0x046368`: Opcode `0x00` (`VM_OP_HALT_YIELD`).
+
+### 2. Pier Villager Dialogue Message ID 4 (`ROM 0x05175C`)
+- Entry in dialogue table `0x051514` at index 4 (`0x05151C`):
+  * Offset value: `0x0240`.
+  * Pointer target: `0x05151C + 0x0240 = 0x05175C`.
+  * Byte stream: `b"#Oh, Ali.  Nice armlet.  Where'd\x01you find it?#\x00\x00"`.
+  * Decoded prose:
+    - Line 1: `"Oh, Ali.  Nice armlet.  Where'd"`
+    - Line 2: `"you find it?"`
+  * Control codes: starts/ends with speaker tag `#`, line break `0x01`, ends with dialogue terminator `0x00`.
+
+### 3. Event VM Flag Bytecode Operations (`ROM 0x010140`, 0x010170, 0x0101A0)
+- Dispatch loop at `0x00F788` indexes jump table at `0x00F7D0`.
+- **Opcode `0x0F` (`0x010140`) — Global Flag Operation:**
+  * Operands: `mode:u8, flag_idx:u16` (3 bytes).
+  * Target RAM base: Global flag buffer `$FF0DBC` (64 bytes / 512 flags).
+  * `mode == 0`: `bclr` (clear flag).
+  * `mode == 1`: `bset` (set flag).
+  * `mode == 2`: `bchg` (toggle flag).
+- **Opcode `0x10` (`0x010170`) — Area Flag Operation:**
+  * Operands: `mode:u8, flag_idx:u16` (3 bytes).
+  * Target RAM base: Area flag buffer `$FF0E1C` (16 bytes / 128 flags).
+  * Identical mode semantics (0=clear, 1=set, 2=toggle).
+- **Opcode `0x11` (`0x0101A0`) — Room Flag Operation:**
+  * Operands: `mode:u8, flag_idx:u16` (3 bytes).
+  * Target RAM base: Room flag buffer `$FF0E2C` (16 bytes / 128 flags).
+  * Identical mode semantics (0=clear, 1=set, 2=toggle).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.47: Authentic Dialogue Table 0x051514, Room 0x0108 Spawn Script 0x0466B2, and NPC Interaction 0x018BBC / 0x018C28)
 
 ## Milestone M16.47 Reverse Engineering Summary

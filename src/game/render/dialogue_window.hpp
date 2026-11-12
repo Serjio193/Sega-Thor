@@ -36,6 +36,7 @@ public:
 
     [[nodiscard]] bool is_open() const noexcept { return is_open_; }
     [[nodiscard]] const event::DialogueSequence& sequence() const noexcept { return sequence_; }
+    [[nodiscard]] std::uint16_t message_id() const noexcept { return sequence_.message_id; }
     [[nodiscard]] std::size_t current_page_index() const noexcept { return current_page_index_; }
 
     // Advances to next page, or closes if on last page. Returns true if still open.

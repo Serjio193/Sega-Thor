@@ -1,0 +1,48 @@
+{
+  "milestone": "M16.48",
+  "generated_at": "2026-11-12T19:00:00Z",
+  "source_rom_sha256": "5c68b64e525492f5825cd41c2c2f82cf8e785501f224905cfef7869680387b92",
+  "interactions": [
+    {
+      "name": "Village Elder",
+      "room_id": "0x0108",
+      "spawn_script": "0x0466B2",
+      "entity_type": "0x003C",
+      "message_id": 5,
+      "dialogue_rom_address": "0x05178C",
+      "proximity_threshold": 28,
+      "player_lock_state": "0x36",
+      "completion_flag": {
+        "bank": "global",
+        "index": 141,
+        "pre_state": false,
+        "post_state": true
+      },
+      "pages_count": 2,
+      "reentry_spawn_gated": true
+    },
+    {
+      "name": "Pier Villager",
+      "room_id": "0x0100",
+      "spawn_script": "0x046346",
+      "entity_type": "0x003C",
+      "message_id": 4,
+      "dialogue_rom_address": "0x05175C",
+      "proximity_threshold": 28,
+      "player_lock_state": "0x36",
+      "completion_flag": {
+        "bank": "global",
+        "index": 142,
+        "pre_state": false,
+        "post_state": true
+      },
+      "pages_count": 1,
+      "text": "Oh, Ali.  Nice armlet.  Where'd you find it?"
+    }
+  ],
+  "event_vm_flag_ops": [
+    { "opcode": "0x0F", "bank": "global", "address": "$FF0DBC", "modes": ["clear", "set", "toggle"] },
+    { "opcode": "0x10", "bank": "area", "address": "$FF0E1C", "modes": ["clear", "set", "toggle"] },
+    { "opcode": "0x11", "bank": "room", "address": "$FF0E2C", "modes": ["clear", "set", "toggle"] }
+  ]
+}

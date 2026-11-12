@@ -164,6 +164,22 @@ void EventVm::set_event_flag(std::uint16_t flag_index, bool value, std::uint8_t 
     }
 }
 
+void EventVm::modify_event_flag(std::uint8_t mode, std::uint16_t flag_index, std::uint8_t bank) noexcept {
+    std::span<std::uint8_t> flags = (bank == 2U) ? std::span<std::uint8_t>(area_flags_)
+                                  : (bank == 3U) ? std::span<std::uint8_t>(room_flags_)
+                                                 : std::span<std::uint8_t>(global_flags_);
+    const std::size_t byte_idx = static_cast<std::size_t>(flag_index >> 3U);
+    if (byte_idx >= flags.size()) return;
+    const std::uint8_t bit_mask = static_cast<std::uint8_t>(1U << (flag_index & 0x07U));
+    if (mode == 0U) {
+        flags[byte_idx] &= static_cast<std::uint8_t>(~bit_mask);
+    } else if (mode == 1U) {
+        flags[byte_idx] |= bit_mask;
+    } else {
+        flags[byte_idx] ^= bit_mask;
+    }
+}
+
 void EventVm::step_frame(bool advance_dialogue_input) noexcept {
     if (state_ == EventVmState::WaitingTimer) {
         if (wait_timer_ > 0U) {
@@ -238,6 +254,42 @@ void EventVm::execute_next_instruction() noexcept {
     case 0x0AU: { // Preload Nemesis DMA (0x00FCB8: u8:flag, u32:rom_src, u16:vram_dst)
         if (pc_ + 7U <= rom_.size()) {
             pc_ += 7U; // Preload enqueued / consumed
+        } else {
+            state_ = EventVmState::Error;
+        }
+        break;
+    }
+
+    case 0x0FU: { // Global flag operation (0x010140: mode:u8, flag_idx:u16)
+        if (pc_ + 3U <= rom_.size()) {
+            const std::uint8_t mode = rom_[pc_++];
+            const std::uint16_t flag_idx = static_cast<std::uint16_t>((static_cast<std::uint16_t>(rom_[pc_]) << 8U) | rom_[pc_ + 1U]);
+            pc_ += 2U;
+            modify_event_flag(mode, flag_idx, 1U); // Bank 1: Global flags ($FF0DBC)
+        } else {
+            state_ = EventVmState::Error;
+        }
+        break;
+    }
+
+    case 0x10U: { // Area flag operation (0x010170: mode:u8, flag_idx:u16)
+        if (pc_ + 3U <= rom_.size()) {
+            const std::uint8_t mode = rom_[pc_++];
+            const std::uint16_t flag_idx = static_cast<std::uint16_t>((static_cast<std::uint16_t>(rom_[pc_]) << 8U) | rom_[pc_ + 1U]);
+            pc_ += 2U;
+            modify_event_flag(mode, flag_idx, 2U); // Bank 2: Area flags ($FF0E1C)
+        } else {
+            state_ = EventVmState::Error;
+        }
+        break;
+    }
+
+    case 0x11U: { // Room flag operation (0x0101A0: mode:u8, flag_idx:u16)
+        if (pc_ + 3U <= rom_.size()) {
+            const std::uint8_t mode = rom_[pc_++];
+            const std::uint16_t flag_idx = static_cast<std::uint16_t>((static_cast<std::uint16_t>(rom_[pc_]) << 8U) | rom_[pc_ + 1U]);
+            pc_ += 2U;
+            modify_event_flag(mode, flag_idx, 3U); // Bank 3: Room flags ($FF0E2C)
         } else {
             state_ = EventVmState::Error;
         }

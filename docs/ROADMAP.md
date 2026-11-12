@@ -1,3 +1,33 @@
+# M16.48 Original NPC Parity, Reusable Dialogue Engine, Second ROM-Driven Interaction, and Event VM Flag Generalization — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Baseline Qualification:
+  * Full CTest MinGW Release: 233 registered, 221 passed, 12 failed (historical BizHawk ring runner tests 3, 60, 107, 146-154), 0 skipped.
+  * Full CTest MSVC Debug: 233 registered, 221 passed, 12 failed (same historical failures), 0 skipped.
+  * Confirmed resolution of MSVC CRT assertion issue from M16.46.
+- Phase 1 & 2 — Village Elder Differential Parity:
+  * Verified Village Elder proximity trigger (`dx <= 28, dy <= 28`), talk lock state `0x36`, dialogue lookup from ROM table `0x051514` (Message ID 5), button wait states (A/B/C), player unlock, Global Flag 141 set lifecycle, and re-entry spawn gating.
+- Phase 3 — Dialogue Presentation Parity:
+  * Verified window geometry (36x6 tiles, start `(2, 20)` centered), font glyph rendering, line spacing, text pacing, and control codes `0x00`..`0x07`.
+  * Zero regression on Town pixel-exact frames (F775..F795 21 frames bit-for-bit exact).
+- Phase 4 — Second Independent ROM-Grounded Interaction (Pier Villager):
+  * Reverse-engineered Area 1 Room 0 (0x0100) South Dock script `0x046346` / `0x046356`: opcode `0x15` spawns entity `0x003C` at `(160, 216)`, tile `0x0490`, Message ID 4 (`0x05175C`).
+  * Generalized `NativeEntity` with authentic `message_id` (+0xA0).
+  * Refactored `npc_dialogue_handler.cpp` to dynamically dispatch dialogue by `ent.message_id`.
+  * Validated complete interaction flow and text display: "Oh, Ali.  Nice armlet.  Where'd\nyou find it?".
+- Phase 5 — Event VM Flag Generalization:
+  * Implemented and validated opcodes `0x0F` (Global flags `$FF0DBC`), `0x10` (Area flags `$FF0E1C`), `0x11` (Room flags `$FF0E2C`).
+  * Mode semantics: mode 0 (clear), mode 1 (set), mode 2 (toggle).
+- Phase 6 — Full Qualification & Dual-Toolchain Verification:
+  * Added `tests/m16_48_npc_dialogue_parity_test.cpp` and fixture `data/standalone-fixtures/npc_interaction_differential_m16_48.json`.
+  * MinGW Release CTest: 234 registered, 222 passed, 12 failed (historical), 0 skipped.
+  * MSVC Debug CTest: 234 registered, 222 passed, 12 failed (historical), 0 skipped.
+  * Preserved 21-frame continuous exact prefix (F775..F795, 0 diff px) and Holdout sum of 21,110 diff pixels.
+  * Extended 3600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% pass across 19 screen transitions.
+  * File line limits: all governed source files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.47 Authentic ROM Dialogue Table, Room 0x0108 Spawn Script VM, and Interactive Village Elder Conversation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

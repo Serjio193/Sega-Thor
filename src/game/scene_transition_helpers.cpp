@@ -34,12 +34,26 @@ void assign_scene_entities(world::ScreenId id, const world::LoadedTownScene& sce
         out.resize(1U);
         out[0] = NativeEntity{};
         out[0].slot_index = 4U;
-        out[0].type_id = 0x003CU; // Village NPC
+        out[0].type_id = 0x003CU; // Village Elder NPC
         out[0].world_x = 160;
         out[0].world_y = 160;
         out[0].tile_base = 0x0490U;
         out[0].hp = 100;
         out[0].active = true;
+        out[0].message_id = 5U; // Village Elder message ID
+    } else if (id.group == 1U && id.index == 0U) {
+        // Area 1 Room 0 (South Dock / Pier) - Authentic entity 0x003C (Pier Villager)
+        // Spawned by opcode 0x15 in room script at 0x046356, pos (160, 216), tile 0x0490, message ID 4
+        out.resize(1U);
+        out[0] = NativeEntity{};
+        out[0].slot_index = 4U;
+        out[0].type_id = 0x003CU;
+        out[0].world_x = 160;
+        out[0].world_y = 216;
+        out[0].tile_base = 0x0490U;
+        out[0].hp = 100;
+        out[0].active = true;
+        out[0].message_id = 4U; // Pier Villager: "Oh, Ali.  Nice armlet.  Where'd you find it?"
     } else {
         out.clear();
     }

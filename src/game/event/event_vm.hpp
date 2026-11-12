@@ -98,6 +98,7 @@ public:
     // Direct flag management ($FF0DBC global, $FF0E1C area, $FF0E2C room)
     [[nodiscard]] bool get_event_flag(std::uint16_t flag_index, std::uint8_t bank = 1) const noexcept;
     void set_event_flag(std::uint16_t flag_index, bool value = true, std::uint8_t bank = 1) noexcept;
+    void modify_event_flag(std::uint8_t mode, std::uint16_t flag_index, std::uint8_t bank = 1) noexcept;
 
     [[nodiscard]] EventVmState state() const noexcept { return state_; }
     [[nodiscard]] bool is_active() const noexcept {

@@ -57,6 +57,7 @@ struct NativeEntity {
     std::uint16_t prng_mask_a0{0x0703U};    // PRNG idle/hop decision mask (+0xA0 from 0x025570)
     std::int16_t linked_slot_9e{-1};        // Linked thrown object slot (+0x9E / 0xBC)
     std::uint8_t water_ripple_tick{0};      // Water ripple 0..8 counter (+0x99)
+    std::uint16_t message_id{0};            // Dialogue message ID for NPC interaction (+0xA0 / 0x018C28)
     std::uint8_t init_sub{0};               // Spawn init sub-mode (+0x66)
 };
 
