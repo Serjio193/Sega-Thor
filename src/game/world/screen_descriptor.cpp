@@ -62,6 +62,12 @@ std::array<std::uint16_t, 5> ScreenDescriptorRaw::trailing_words() const noexcep
 }
 
 ScreenDescriptorRaw load_screen_descriptor(std::span<const std::uint8_t> rom, ScreenId id) {
+    if (id.group == 13U && id.index == 1U) {
+        // Area 0x0D Room 1: Spirit Sanctuary Inner Chamber / Altar Room
+        // Authentically resolves to Area 0x0F Room 1 (descriptor at 0x02E48C, map stream 0x25A3C4, tile banks [86, 87, 88, 0])
+        return load_screen_descriptor(rom, ScreenId{15U, 1U});
+    }
+
     if (id.group >= kGroupCount) {
         throw std::out_of_range("screen group is outside confirmed dispatcher table");
     }

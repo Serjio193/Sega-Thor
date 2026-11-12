@@ -1,0 +1,61 @@
+{
+  "milestone": "M16.51",
+  "rom_title": "The Story of Thor / Beyond Oasis (USA)",
+  "sha256": "47be7db6d0c75ce2a87a17f0aa45eb95d5904ed99b0c74be59c3664c39ca9ff9",
+  "sanctuary_network": {
+    "group_id": "0x0D",
+    "area_name": "Spirit Sanctuary",
+    "rooms": {
+      "0x0D00": {
+        "name": "Spirit Sanctuary Entrance Hall",
+        "descriptor_address": "0x037B44",
+        "map_stream_rom_address": "0x259F78",
+        "tile_banks": [86, 87, 88, 0],
+        "palette_index": 8,
+        "bgm_index": 8,
+        "spawn_script_address": "0x04382E",
+        "spawn_script_opcode": "0x00 (VM_OP_HALT_YIELD)",
+        "camera_bounds": { "min_x": 0, "max_x": 0, "min_y": 0, "max_y": 608 },
+        "transitions": [
+          {
+            "target_room": "0x0D01",
+            "trigger": "BOUNDARY_FLAG_40_41_NORTH",
+            "trigger_threshold_y": 120,
+            "rom_branch_pc": "0x02E452",
+            "spawn_position": { "x": 256, "y": 112 },
+            "ingress_mode": "CA24_FADE_SPAWN"
+          }
+        ]
+      },
+      "0x0D01": {
+        "name": "Spirit Sanctuary Inner Chamber / Altar Room",
+        "canonical_alias_descriptor": "0x02E48C (Area 15 Room 1)",
+        "map_stream_rom_address": "0x25A3C4",
+        "tile_banks": [86, 87, 88, 0],
+        "palette_index": 2,
+        "bgm_index": 6,
+        "spawn_script_address": "0x04382E",
+        "spawn_script_opcode": "0x00 (VM_OP_HALT_YIELD)",
+        "camera_bounds": { "min_x": 0, "max_x": 0, "min_y": 0, "max_y": 76 },
+        "transitions": [
+          {
+            "target_room": "0x0D00",
+            "trigger": "BOUNDARY_FLAG_40_41_SOUTH",
+            "trigger_threshold_y": 230,
+            "rom_branch_pc": "0x02E524",
+            "spawn_position": { "x": 256, "y": 160 },
+            "ingress_mode": "CA24_FADE_SPAWN"
+          }
+        ]
+      }
+    }
+  },
+  "progression_chain": [
+    { "step": 1, "action": "Cold boot on Beach Screen(1,2)", "flag_3": false },
+    { "step": 2, "action": "Traverse to Cliff Peak Screen(1,6)", "flag_3": false },
+    { "step": 3, "action": "Princess rescue dialogue (Msg 0)", "flag_3": true },
+    { "step": 4, "action": "Cross-area warp (0x02EFC0) to Sanctuary Room 0x0D00", "flag_3": true },
+    { "step": 5, "action": "Traverse North, doorway transition (0x02E452) to Sanctuary Room 0x0D01", "flag_3": true },
+    { "step": 6, "action": "Traverse South, doorway return transition (0x02E524) to Sanctuary Room 0x0D00", "flag_3": true }
+  ]
+}

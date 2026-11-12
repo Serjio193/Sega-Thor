@@ -1,3 +1,29 @@
+# M16.51 Spirit Sanctuary Playability and Room-to-Room Progression — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Baseline Verification:
+  * Verified M16.50 gameplay scenario: cold boot on Beach Screen(1,2), traverse to Screen(1,6), trigger Princess rescue, set Global Flag 3 via authentic 3-page dialogue, enter Spirit Sanctuary Room 0x0D00 without state injection.
+- Phase 1 — Sanctuary World Structure Reverse Engineering:
+  * Room 0x0D00 Entrance Hall: descriptor at ROM `0x037B44`, primary stream `0x259F78`, tile banks `[86, 87, 88, 0]`, spawn script `0x04382E` (opcode 0x00 halt/yield).
+  * Room 0x0D01 Inner Chamber / Altar Room: canonical descriptor at ROM `0x02E48C` (Area 15 Room 1 alias), primary stream `0x25A3C4`, tile banks `[86, 87, 88, 0]`, palette 2, BGM 6.
+  * In-Sanctuary North transition at `ROM 0x02E44C..0x02E458` (`move.w #$0001, d0; move.w #$0100, d3; move.w #$0070, d4; jmp $00CA24`), spawn `(256, 112)`.
+  * In-Sanctuary South return transition at `ROM 0x02E518..0x02E524` (`move.w #$0003, d0; move.w #$003B, d3; move.w #$0150, d4; jmp $00CA24`), spawn `(256, 160)`.
+- Phase 2 — Generic Room Loading for Sanctuary Network:
+  * Verified `load_world_screen_from_rom` dynamically loads both Room `0x0D00` and Room `0x0D01` without one-off hardcoded rendering paths.
+  * Extracted and validated Plane A metatiles, collision grids, tile streaming, palette words, and camera bounds (`max_camera_y = 608` for Room 0, `max_camera_y = 76` for Room 1).
+- Phase 3 & 4 — In-Sanctuary Gameplay and Continuous Native Progression:
+  * Unbroken gameplay session: start on Beach Screen(1,2), traverse to Screen(1,6), rescue Princess, cross-area warp to Room `0x0D00` at `(256, 768)`.
+  * Traverse North in Room 0, reach doorway threshold (`player_y <= 120`), authentically trigger transition into Room `0x0D01`.
+  * Verify Room `0x0D01` active at `(256, 112)` with camera limits `max_camera_y = 76`.
+  * Step player inside Room 1 (move South, facing Down), reach South doorway threshold (`player_y >= 230`), authentically trigger return transition into Room `0x0D00` at `(256, 160)` with camera limits restored to `608`.
+  * Verified persistent player state and Global Flag 3 across all transitions with zero crashes and zero state resets.
+- Phase 5 — Full Qualification & Dual-Toolchain Verification:
+  * MinGW Release CTest: 237 registered, 225 passed, 12 failed (historical BizHawk tests), 0 skipped, 0 excluded.
+  * MSVC Debug CTest: 237 registered, 225 passed, 12 failed (identical historical failures), 0 skipped, 0 excluded.
+  * File line limits: all governed source files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.50 Princess Rescue Event and Authentic Spirit Sanctuary Progression — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

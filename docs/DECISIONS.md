@@ -1,3 +1,33 @@
+# ADR-20261112-M16-51-SPIRIT-SANCTUARY-PLAYABILITY-AND-ROOM-TO-ROOM-PROGRESSION — Multi-Room Spirit Sanctuary Architecture (Area 13 Room 0x0D00 Entrance & Room 0x0D01 Inner Chamber / Altar); Canonical Area 15 Room 1 Alias Resolution (Descriptor 0x02E48C, Stream 0x25A3C4); Generic ROM-Driven Loading, Collision Grids, and Tile Streaming; In-Sanctuary Bidirectional Doorway Transitions (0x02E452 & 0x02E524); Dynamic Camera Bounds (608 & 76); Continuous Unbroken Gameplay Progression; Dual-Toolchain Qualification
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. M16.50 successfully unlocked the cross-area warp into Spirit Sanctuary Room `0x0D00` through authentic native gameplay (Princess rescue event setting Global Flag 3).
+2. M16.51 requires extending Spirit Sanctuary from a loaded entrance into a genuinely playable multi-room area with ROM-defined room descriptors, tile banks, collision, camera bounds, and room-to-room transitions without hardcoded rendering paths or state injection.
+3. ROM Reverse Engineering of Area 13 and Area 15:
+   - Area 13 Screen Table at `0x037B42`: contains 1 room slot at `0x037B44` (Room `0x0D00` Entrance Hall), mapping to primary stream `0x259F78` and tile banks `[86, 87, 88, 0]`.
+   - Area 15 Screen Table at `0x02C6F2`: contains 2 room slots:
+     * Room 0 at `0x02E3A8`: primary stream `0x259F78`, tile banks `[86, 87, 88, 0]`, palette 8, BGM 8 (identical stream and assets to Room `0x0D00`).
+     * Room 1 at `0x02E48C`: primary stream `0x25A3C4`, tile banks `[86, 87, 88, 0]`, palette 2, BGM 6 (Sanctuary Inner Chamber / Altar Room).
+   - In-Sanctuary Transitions:
+     * Room 0 North exit at `ROM 0x02E44C..0x02E458`: `move.w #$0001, d0; move.w #$0100, d3; move.w #$0070, d4; jmp $00CA24` (transitions to Room 1, spawn `(256, 112)`).
+     * Room 1 South exit at `ROM 0x02E518..0x02E524`: `move.w #$0003, d0; move.w #$003B, d3; move.w #$0150, d4; jmp $00CA24` (returns to Room 0, spawn `(256, 160)`).
+   - Spawn script at `0x04382E`: executes opcode `0x00` (halt/yield; no persistent enemy props).
+
+**Decisions:**
+1. **Screen Descriptor Resolution for Sanctuary Network:**
+   - In `screen_descriptor.cpp`, mapped `ScreenId{13, 1}` to `load_screen_descriptor(rom, ScreenId{15, 1})`, cleanly linking the Area 13 entrance to the authentic Sanctuary Inner Chamber descriptor at `0x02E48C` (stream `0x25A3C4`, tile banks `[86, 87, 88, 0]`).
+2. **Generic Room Loading & Camera Bounds:**
+   - Utilized generic `load_world_screen_from_rom` which decodes `0x25A3C4` dynamically without hardcoded paths, extracting Plane A metatiles, collision bytes, and scene palette words.
+   - Updated `get_group1_screen_bounds` for `ScreenId{13, 1}` to `max_cx = 0, max_cy = 76` (matching ROM descriptor camera limit `0x004C = 76`).
+3. **World Graph Transition Edges:**
+   - Added bidirectional edges in `world_graph.cpp`:
+     * `ScreenId{13, 0} -> ScreenId{13, 1}`: `BoundaryNorth`, trigger Y <= 120, spawn `(256, 112)`, camera `(96, 0)`, bounds `(0, 76)`.
+     * `ScreenId{13, 1} -> ScreenId{13, 0}`: `BoundarySouth`, trigger Y >= 230, spawn `(256, 160)`, camera `(96, 0)`, bounds `(0, 608)`.
+4. **Continuous Native Progression Session:**
+   - In `tests/m16_51_sanctuary_playability_test.cpp`, verified unbroken continuous session from cold boot Beach -> Princess rescue -> Global Flag 3 -> Sanctuary Room 0 -> Sanctuary Room 1 -> return to Room 0, with zero state injection and zero test-only teleportation.
+
 # ADR-20261112-M16-50-PRINCESS-RESCUE-EVENT-AND-AUTHENTIC-SPIRIT-SANCTUARY-PROGRESSION — Reverse Engineering of Entity 0x0020 Interaction Dispatcher (0x00835E), Screen 1,6 Check (0x018CAA), Cutscene State Machine (0x018CDE), and Story Flag 3 SET Point (0x018D38); Integration of Dialogue Message 0 (3-Page Dytto Water Spirit Revelation); Native Unlocked Gameplay Progression to Screen 1,6; Authentic Setting of Global Flag 3 upon Dialogue Completion; Checkpoint-Free Cross-Area Warp to Spirit Sanctuary Room 0x0D00; Dual-Toolchain Qualification
 **Status:** Accepted
 **Date:** 2026-11-12

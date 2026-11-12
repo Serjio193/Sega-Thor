@@ -1,3 +1,34 @@
+# Worklog — 2026-11-12 (M16.51: Spirit Sanctuary Playability and Room-to-Room Progression)
+- **Concrete Task**: Extend Spirit Sanctuary from a loaded entrance into a genuinely playable multi-room area; reverse-engineer Area 13 and Area 15 room structures, descriptors (0x037B44, 0x02E48C), streams (0x259F78, 0x25A3C4), tile banks [86, 87, 88, 0], and in-sanctuary transition handlers (0x02E44C..0x02E458 North exit to Room 1 at spawn 256,112, 0x02E518..0x02E524 South return to Room 0 at spawn 256,160); extend generic ROM loader to decompress and parse Room 0x0D01 without hardcoded rendering paths; implement dynamic camera bounds (max_camera_y 608 for Room 0, 76 for Room 1); verify player movement, collision, camera boundaries, and room-to-room transitions inside Sanctuary; verify unbroken continuous gameplay progression session from Beach cold boot to Sanctuary Room 0 -> Room 1 -> return to Room 0 without state injection; qualify dual-toolchain CTest, line limits, and regression suites.
+- **Phase 0 Baseline Verification**:
+  * Reproduced M16.50 gameplay scenario: cold start on Beach Screen(1,2), traverse to Screen(1,6), trigger Princess rescue, set Global Flag 3 via authentic 3-page dialogue, enter Spirit Sanctuary Room 0x0D00 without state injection.
+- **Phase 1 Sanctuary World Structure Reverse Engineering**:
+  * Resolved Area 13 (`0x037B42`) and Area 15 (`0x02C6F2`) screen descriptor tables:
+    - Room 0x0D00 Entrance Hall: descriptor at ROM `0x037B44`, primary stream `0x259F78`, tile banks `[86, 87, 88, 0]`.
+    - Room 0x0D01 Inner Chamber / Altar Room: canonical descriptor at ROM `0x02E48C` (Area 15 Room 1 alias), primary stream `0x25A3C4`, tile banks `[86, 87, 88, 0]`, palette 2, BGM 6.
+    - Spawn script `0x04382E`: opcode `0x00` (halt/yield; no persistent enemy props).
+  * Reverse-engineered in-sanctuary transitions:
+    - North doorway from Entrance Hall at `ROM 0x02E44C`: `move.w #$0001, d0; move.w #$0100, d3; move.w #$0070, d4; jmp $00CA24` (transitions to Room 1, spawn `(256, 112)`).
+    - South doorway from Inner Chamber at `ROM 0x02E518`: `move.w #$0003, d0; move.w #$003B, d3; move.w #$0150, d4; jmp $00CA24` (returns to Room 0, spawn `(256, 160)`).
+- **Phase 2 Generic Room Loading**:
+  * Verified `load_world_screen_from_rom` dynamically loads both Room `0x0D00` and Room `0x0D01` without one-off hardcoded rendering paths.
+  * Extracted and validated Plane A metatiles, collision grids, tile streaming, palette words, and camera bounds (`max_camera_y = 608` for Room 0, `max_camera_y = 76` for Room 1).
+- **Phase 3 & 4 In-Sanctuary Gameplay and Continuous Progression Session**:
+  * Unbroken gameplay session: start on Beach Screen(1,2), traverse to Screen(1,6), rescue Princess, cross-area warp to Room `0x0D00` at `(256, 768)`.
+  * Traverse North in Room 0, reach doorway threshold (`player_y <= 120`), authentically trigger transition into Room `0x0D01`.
+  * Verify Room `0x0D01` active at `(256, 112)` with camera limits `max_camera_y = 76`.
+  * Step player inside Room 1 (move South, facing Down), reach South doorway threshold (`player_y >= 230`), authentically trigger return transition into Room `0x0D00` at `(256, 160)` with camera limits restored to `608`.
+  * Verified persistent player state and Global Flag 3 across all transitions with zero crashes and zero state resets.
+- **Phase 5 Full Qualification & Dual-Toolchain Verification**:
+  * Added `tests/m16_51_sanctuary_playability_test.cpp` and fixture `data/standalone-fixtures/sanctuary_multi_room_m16_51.json`.
+  * MinGW Release CTest: 237 registered, 225 passed, 12 failed (historical BizHawk tests 3, 60, 107, 146-154), 0 skipped, 0 excluded.
+  * MSVC Debug CTest: 237 registered, 225 passed, 12 failed (identical historical failures), 0 skipped, 0 excluded.
+  * Preserved Town 21-frame continuous exact prefix (F775..F795, 0 diff px) and Holdout sum of 21,110 diff pixels.
+  * Extended 3600-frame traversal test (`oasis_m16_45_world_graph_playability`): 100% pass across 19 screen transitions.
+  * File line limits: all governed source files <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor`: 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.50: Princess Rescue Event and Authentic Spirit Sanctuary Progression)
 - **Concrete Task**: Implement the authentic ROM-grounded story event responsible for setting Global Flag 3 (`$FF0DBC:3`) and enabling the Spirit Sanctuary cross-area transition through native gameplay without test-only flag injection; reverse-engineer routines 0x00835E, 0x018CAA, 0x018CDE, 0x018D38; spawn Princess Gwyn / Water Spirit entity 0x0020 on Screen(1,6) Cliff Peak (script 0x04664E, opcode 0x15); implement authentic dialogue Message ID 0 (3-page Dytto reveal); verify natural gameplay progression across 6 connected screens to Cliff Peak; trigger authentic interaction, control lock 0x36, dialogue advancement, unlock, authentic setting of Global Flag 3 upon completion; execute authentic cross-area warp to Spirit Sanctuary Room 0x0D00; verify persistent state, collision, and player movement in Room 0x0D00; qualify dual-toolchain CTest, line limits, and regression suites.
 - **Phase 0 Baseline Reproduction**:

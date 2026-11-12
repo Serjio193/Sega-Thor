@@ -1,3 +1,44 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.51: Spirit Sanctuary Area 0x0D & Area 0x0F Room Structure, Descriptors 0x037B44 & 0x02E48C, Tile Banks [86, 87, 88, 0], Streams 0x259F78 & 0x25A3C4, Transitions 0x02E452 & 0x02E524)
+
+## Milestone M16.51 Reverse Engineering Summary
+
+### 1. Sanctuary World Network Structure (Areas 0x0D & 0x0F)
+- Area Table at `ROM 0x00C92C`:
+  * Area 13 (0x0D) pointer at `0x00C960`: `0x037B42`. Table contains Room 0 entry pointing to descriptor `0x037B44`.
+  * Area 15 (0x0F) pointer at `0x00C968`: `0x02C6F2`. Table contains:
+    - Room 0 entry (`rel = 0x1CB6`) pointing to descriptor `0x02E3A8` (Entrance Hall).
+    - Room 1 entry (`rel = 0x1D98`) pointing to descriptor `0x02E48C` (Inner Chamber / Altar Room).
+- Stream & Tile Bank Correlation:
+  * Room `0x0D00` and Room `0x0F00` share primary stream `0x259F78`, tile banks `[86, 87, 88, 0]`, palette 8, BGM 8.
+  * Room `0x0D01` and Room `0x0F01` share primary stream `0x25A3C4`, tile banks `[86, 87, 88, 0]`, palette 2, BGM 6.
+
+### 2. In-Sanctuary Room Transition Routines
+- North Exit from Entrance Hall (`ROM 0x02E434..0x02E45C`):
+  * `0x02E434`: `lea ($00FF19E8), a0` (player entity pointer).
+  * `0x02E43A`: `move.b $41(a0), d0` (boundary collision flags).
+  * `0x02E43E`: `btst #3, d0` (North boundary hit test).
+  * `0x02E442`: `beq.s +6`.
+  * `0x02E444`: `btst #1, d0`.
+  * `0x02E448`: `bne.s +2`.
+  * `0x02E44A`: `rts`.
+  * `0x02E44C`: `move.w #$0001, d0` (target room: Room 1).
+  * `0x02E450`: `move.w #$0100, d3` (spawn X = 256).
+  * `0x02E454`: `move.w #$0070, d4` (spawn Y = 112).
+  * `0x02E458`: `jmp $0000CA24` (fade spawn transition dispatcher).
+- South Return from Inner Chamber (`ROM 0x02E4DA..0x02E53A`):
+  * `0x02E4DA`: `jsr $0000C9B2` (check room exit locks).
+  * `0x02E4E0`: `lea ($00FF19E8), a0`.
+  * `0x02E4E6`: `move.l #$0000001C, d1` / `0x02E4EC`: `move.l #$0400001C, d2`.
+  * `0x02E4F2`: `jsr $0000C1CE` (player tile AABB test at doorway).
+  * `0x02E4F8`: `bcs +30` (-> `0x02E518`).
+  * `0x02E518`: `move.w #$0003, d0` (target room: Room 0 / Outer Approach).
+  * `0x02E51C`: `move.w #$003B, d3` / `0x02E520`: `move.w #$0150, d4` (spawn X = 256, Y = 160).
+  * `0x02E524`: `jmp $0000CA24`.
+
+### 3. Spawn Script & Entity Properties
+- Spawn Script Table `0x0437F0` (Area 13) entry 0 -> `0x04382E`:
+  * Opcode `0x00`: VM_OP_HALT_YIELD (no initial persistent enemy entities spawned at entrance or altar).
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.50: Princess Rescue Event 0x018CAA / 0x018CDE, Entity 0x0020 Dispatcher 0x00835E, Story Flag 3 Set Point 0x018D38, and Dialogue Message 0)
 
 ## Milestone M16.50 Reverse Engineering Summary

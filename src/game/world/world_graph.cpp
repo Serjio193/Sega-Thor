@@ -6,7 +6,7 @@ namespace oasis::game::world {
 
 namespace {
 
-constexpr std::array<WorldTransitionEdge, 19> kGroup1Edges = {{
+constexpr std::array<WorldTransitionEdge, 21> kGroup1Edges = {{
     // Screen(1,0) South Dock
     {ScreenId{1, 0}, ScreenId{1, 1}, TransitionEdgeType::BoundaryNorth,
      0x02E5C0U, 108, true, 0, 0, 0, 0, -1, 160, 296, 0, 96, 0, 96, 136},
@@ -65,6 +65,16 @@ constexpr std::array<WorldTransitionEdge, 19> kGroup1Edges = {{
     // Destination: ScreenId{13, 0}, pos (256, 768), camera bounds (0, 608), initial cam (96, 560), vscroll 136
     {ScreenId{1, 6}, ScreenId{13, 0}, TransitionEdgeType::CrossAreaWarp,
      0x02EFC0U, -1, true, 18, 5, 22, 9, 0, 256, 768, 96, 560, 0, 608, 136},
+
+    // Room 0x0D00 Spirit Sanctuary Entrance -> Room 0x0D01 Inner Chamber (ROM 0x02E44C..0x02E458)
+    // Destination: ScreenId{13, 1}, pos (256, 112), camera bounds (0, 76), initial cam (96, 0), vscroll 136
+    {ScreenId{13, 0}, ScreenId{13, 1}, TransitionEdgeType::BoundaryNorth,
+     0x02E452U, 120, true, 0, 0, 0, 0, -1, 256, 112, 96, 0, 0, 76, 136},
+
+    // Room 0x0D01 Inner Chamber -> Room 0x0D00 Spirit Sanctuary Entrance (ROM 0x02E518..0x02E524)
+    // Destination: ScreenId{13, 0}, pos (256, 160), camera bounds (0, 608), initial cam (96, 0), vscroll 136
+    {ScreenId{13, 1}, ScreenId{13, 0}, TransitionEdgeType::BoundarySouth,
+     0x02E524U, 230, false, 0, 0, 0, 0, -1, 256, 160, 96, 0, 0, 608, 136},
 }};
 
 } // namespace
@@ -81,6 +91,18 @@ std::span<const WorldTransitionEdge> get_group1_world_edges() noexcept {
 void get_group1_screen_bounds(ScreenId screen_id, int& out_max_cx, int& out_max_cy) noexcept {
     out_max_cx = 0;
     out_max_cy = 288;
+    if (screen_id.group == 13U) {
+        if (screen_id.index == 0U) {
+            out_max_cx = 0;
+            out_max_cy = 608;
+            return;
+        }
+        if (screen_id.index == 1U) {
+            out_max_cx = 0;
+            out_max_cy = 76;
+            return;
+        }
+    }
     if (screen_id.group != 1U) return;
     switch (screen_id.index) {
         case 0U: case 1U: case 6U:
