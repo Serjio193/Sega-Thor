@@ -1,3 +1,10 @@
+# M15.261 ROM Spirit Awakening Dispatcher & Shrine Event Semantic Extraction
+
+- `tools/extract_rom_spirit_shrine_events.py` — reusable ROM semantic extractor for the Spirit Awakening Dispatcher (`0x018CAA`), 5 shrine event handlers (`0x018CDE`, `0x018D4E`, `0x018DAA`, `0x018E12`, `0x018E7A`), Dialogue triggers (`0x00C2EC`), Spirit entity spawn helpers (`0x014668` etc.), Altar gating, and Global Flag 3.
+- `data/thor-evidence/rom_spirit_shrine_events_m15_261.json` — structured machine-readable semantic knowledge base for all 5 spirit/shrine events, state transitions, flag offsets, and altar spawn records.
+- `tests/rom_spirit_shrine_events_test.py` — automated verification suite validating dispatcher bytecode, shrine opcodes, Dytto flag assignments, and Altar 0x0020 gating in Room 0x0106.
+- `docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md` — implementation-ready Standalone handoff correcting M16.50 mislabeling, detailing spirit awakening flow, state transitions, C++20 structures, and acceptance criteria.
+
 # M15.260 ROM Event Script VM & Dialogue Resource Extraction for Standalone Engine
 
 - `tools/extract_rom_event_script_vm.py` — reusable ROM semantic extractor for the Event Script Bytecode VM (`0x00F788`/`0x00F7D0`), Preload Dispatch (`0x00F80E`), Master Area Spawn Tables (`0x04371E`), Dialogue Engine (`0x051514`/`0x00C326`), and Village Elder Interaction (`0x018BBC`/`0x018C28`).

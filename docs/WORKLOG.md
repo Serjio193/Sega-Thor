@@ -1,3 +1,36 @@
+# 2026-11-12 — Milestone M15.261: ROM SPIRIT AWAKENING DISPATCHER & SHRINE EVENT SEMANTIC EXTRACTION — Phase 0 Baseline & Critical Mislabeling Discovery (0x018CAA proven as Spirit Awakening Dispatcher, 0x018CDE as Dytto Awakening, and Global Flag 3 as Dytto Acquisition / Freedom, correcting Standalone M16.50 Princess Rescue mislabeling); Phase 1 Disassembly & Mapping of All 5 Spirit/Shrine Handlers (Dytto 0x018CDE Room 0x0106 Msg 0, Efreet 0x018D4E Room 0x0206 Msg 9, Shade 0x018DAA Room 0x0805 Msg 12, Bow 0x018E12 Room 0x0A10 Msg 13, Agito 0x018E7A Room 0x090B Msg 56); Phase 2 Altar Entity 0x0020 Gated Spawning (Opcode 0x15 in Room 0x0106 script 0x04664E gated on Global Flag 3 at $FF0DBC bit 3, position 160,80,0, VRAM 0x0200); Phase 3 Automated Extractor (tools/extract_rom_spirit_shrine_events.py 261 lines <= 500, data/thor-evidence/rom_spirit_shrine_events_m15_261.json); Phase 4 Automated Unit Testing (tests/rom_spirit_shrine_events_test.py 76 lines <= 500 PASS 5/5); Phase 5 Implementation Handoff (docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md); Phase 6 Governance (Production helpers immutability preserved, source hash 28b6617d... preserved, Standalone worktree strictly read-only) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Phase 0 Baseline & Architecture Audit:
+    - Verified Git baseline commit `a81dfaa0ed815467d7874e49aa05dc8623fe2dbe`.
+    - Identified and corrected the Standalone M16.50 assumption: ROM `0x018CAA` / `0x018CDE` / `0x018D38` and Global Flag 3 (`$FF0DBC` bit 3) are the authentic spirit awakening / shrine pipeline, not a Princess Rescue event.
+    - Verified ROM SHA256 (`eb19bda4...`) and preserved all 196 active production helpers with frozen source hash (`28b6617d...`).
+    - Verified `C:/Github/Sega-Thor-Standalone` remained strictly untouched.
+  * Phase 1 Spirit Awakening Dispatcher & Shrine Handler Analysis:
+    - Reverse-engineered dispatcher `0x018CAA` invoked from prop entity interaction check `0x008352..0x008392` when entity type is `0x0020`.
+    - Mapped routing on `$FF0E40.W` (Room ID):
+      * Room `0x0106` -> `0x018CDE` (Dytto, Water Shrine, Area 1 Room 6).
+      * Room `0x0206` -> `0x018D4E` (Efreet, Fire Shrine, Area 2 Room 6).
+      * Room `0x0805` -> `0x018DAA` (Shade, Shadow Shrine, Area 8 Room 5).
+      * Room `0x0A10` -> `0x018E12` (Bow, Plant Shrine, Area 10 Room 16).
+      * Room `0x090B` -> `0x018E7A` (Agito Seal Chamber, Area 9 Room 11).
+    - Reverse-engineered execution sequence: entity freeze (`MOVE.W #$003F, $32(A6)`), authentic dialogue invocation via `0x00C2EC`, slot coordinate extraction, prop slot clearing (`CLR.W (A4)`), spirit allocation via helper `0x014668` (`0x0146D6`, `0x014742`, `0x014798`, `0x00F53C`), state assignment `0x1A` (APPEAR) / action `0x22`, area flag setting (`$FF0E1D` bit 2 for Dytto), global flag setting (`$FF0DBC` bit 3 for Dytto), active spirit selection (`$FF0D7A` bit 0 for Dytto).
+  * Phase 2 Altar Entity 0x0020 Gating:
+    - Located Room `0x0106` spawn script at `0x04664E` (Area 1 table `0x046332`).
+    - Decoded Opcode `0x15` record at `0x04665E`: Bank 1 (`$FF0DBC`), Entity Type `0x0020`, Flag Index 3, Coords `(160, 80, 0)`, VRAM `0x0200`.
+    - Proved that setting Global Flag 3 prevents the altar from respawning after Dytto is acquired.
+  * Phase 3 Extractor & Evidence Output:
+    - Authored `tools/extract_rom_spirit_shrine_events.py` (261 lines $\le 500$).
+    - Generated `data/thor-evidence/rom_spirit_shrine_events_m15_261.json` documenting all 5 shrines, exact offsets, dialogue texts, flags, and spawn records.
+  * Phase 4 Automated Unit Testing:
+    - Authored `tests/rom_spirit_shrine_events_test.py` (76 lines $\le 500$).
+    - Passed 5/5 unit tests verifying dispatcher byte sequence, Dytto handler opcodes, Altar gating, and shrine metadata.
+  * Phase 5 Standalone Implementation Handoff:
+    - Published `docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md`.
+  * Phase 6 Governance & Verification:
+    - Governed file size policy respected ($\le 500$ lines).
+    - Standalone worktree strictly read-only.
+
 # 2026-11-12 — Milestone M15.260: ROM EVENT SCRIPT VM & DIALOGUE RESOURCE EXTRACTION FOR THE STANDALONE ENGINE — Phase 0 Baseline & Standalone M16.46/M16.47 Audit (229a7e64...); Production Helper Immutability Preserved (Strictly 196 Baseline Helpers, Source Hash 28b6617d...); Phase 1 Event VM Dispatch & 31-Opcode Jump Table Decoding (0x00F788 Loop, 0x00F7D0 Jump Table, 0x00F80E Preload Dispatch, 30 Fully Decoded, 1 Partially Decoded, 0 Unknown); Phase 2 Village Elder NPC 0x003C Trace & Interaction Semantics (Screen(1,8), Room 0x0108, Script 0x0466B2, Gated Spawn Opcode 0x15 Testing Global Flag 141 at $FF0DBC+17 Bit 5, Proximity Check dx<=28 dy<=28, Player Lock State 0x36, Dialogue Invocation 0x00C2EC, Authentic Message ID 5 at 0x05178C); Phase 3 Dialogue Resource Table Extraction (0x051514 Table Base, 98 Extracted Dialogue Records, Text Delimiters 0x00/0x01/0x02/0x03/0x05/0x06/0x07/#, Frame Animation Loop 0x00C84E, Button Wait Routine 0x00C536); Phase 4 Machine-Readable Output (tools/extract_rom_event_script_vm.py 291 lines <= 500, data/thor-evidence/rom_event_script_vm_m15_260.json 108 KB, tests/rom_event_script_vm_test.py 120 lines <= 500 PASS); Phase 5 Implementation Handoff (docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md); Phase 6 Governance & Verification (Four 295/295 CTest Matrices Green, 624/624 Replay Streams Bit-Exact, Receipt VERIFIED with 0 Rejections, Governed Files <= 500 lines, Standalone Unchanged) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

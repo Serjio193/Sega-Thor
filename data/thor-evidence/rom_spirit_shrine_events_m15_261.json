@@ -1,0 +1,209 @@
+{
+  "milestone": "M15.261",
+  "description": "ROM Spirit Awakening Dispatcher, Shrine Events, and Global Flag 3 Extraction",
+  "dispatcher": {
+    "address": "0x018CAA",
+    "caller_trigger_address": "0x008392",
+    "caller_condition": "entity_type == 0x0020 (Altar / Prop)",
+    "room_id_ram_address": "0x00FF0E40",
+    "branches": [
+      {
+        "room_id": "0x0106",
+        "target": "0x018CDE",
+        "spirit": "Dytto"
+      },
+      {
+        "room_id": "0x0206",
+        "target": "0x018D4E",
+        "spirit": "Efreet"
+      },
+      {
+        "room_id": "0x0805",
+        "target": "0x018DAA",
+        "spirit": "Shade"
+      },
+      {
+        "room_id": "0x0A10",
+        "target": "0x018E12",
+        "spirit": "Bow"
+      },
+      {
+        "room_id": "0x090B",
+        "target": "0x018E7A",
+        "spirit": "Agito"
+      }
+    ]
+  },
+  "shrines": [
+    {
+      "spirit_name": "Dytto",
+      "element": "Water",
+      "room_id": "0x0106",
+      "handler_address": "0x018CDE",
+      "handler_end_address": "0x018D4E",
+      "spawn_helper_address": "0x014668",
+      "dialogue_message_id": 0,
+      "dialogue_text": "#I am Dytto, a water spirit.\nWater has the power to purify\nand can wash away evil.#\n--- PAGE ---\n#I swear that I am devoted to\nmy master.#\n--- PAGE ---\n#I will come to serve you when\nI see the light ball on the\nsurface of the water.#",
+      "global_flag": {
+        "index": 3,
+        "ram_address": "0x00FF0DBC",
+        "bit": 3
+      },
+      "active_spirit_bit": 0,
+      "area_flag": {
+        "ram_address": "0x00FF0E1D",
+        "bit": 2
+      },
+      "altar_spawn_record": {
+        "script_addr": "0x04664E",
+        "opcode_offset": "0x04665E",
+        "bank": 1,
+        "entity_type": "0x0020",
+        "flag_index": 3,
+        "position": {
+          "x": 160,
+          "y": 80,
+          "z": 0
+        },
+        "vram_tile_base": "0x0200"
+      }
+    },
+    {
+      "spirit_name": "Efreet",
+      "element": "Fire",
+      "room_id": "0x0206",
+      "handler_address": "0x018D4E",
+      "handler_end_address": "0x018DAA",
+      "spawn_helper_address": "0x0146D6",
+      "dialogue_message_id": 9,
+      "dialogue_text": "#Efreet is my name.  I am fire\nwhich burns away anything\nunclean.  The Gold Armlet is\nmy master.#",
+      "global_flag": {
+        "index": 27,
+        "ram_address": "0x00FF0DBF",
+        "bit": 3
+      },
+      "active_spirit_bit": 1,
+      "area_flag": {
+        "ram_address": null,
+        "bit": null
+      },
+      "altar_spawn_record": {
+        "script_addr": "0x0472CA",
+        "opcode_offset": "0x0472DE",
+        "bank": 1,
+        "entity_type": "0x0020",
+        "flag_index": 27,
+        "position": {
+          "x": 160,
+          "y": 80,
+          "z": 0
+        },
+        "vram_tile_base": "0x2200"
+      }
+    },
+    {
+      "spirit_name": "Shade",
+      "element": "Shadow",
+      "room_id": "0x0805",
+      "handler_address": "0x018DAA",
+      "handler_end_address": "0x018E12",
+      "spawn_helper_address": "0x014742",
+      "dialogue_message_id": 12,
+      "dialogue_text": "#I appear from the void to\nbecome your shadow.  My name is\nShade.#\n--- PAGE ---\n#I pledge my allegiance to you,\nGold Armlet.  You may summon me\nfrom your own reflection.#",
+      "global_flag": {
+        "index": 63,
+        "ram_address": "0x00FF0DC3",
+        "bit": 7
+      },
+      "active_spirit_bit": 2,
+      "area_flag": {
+        "ram_address": null,
+        "bit": null
+      },
+      "altar_spawn_record": {
+        "script_addr": "0x04B58A",
+        "opcode_offset": "0x04B59E",
+        "bank": 1,
+        "entity_type": "0x0020",
+        "flag_index": 63,
+        "position": {
+          "x": 160,
+          "y": 56,
+          "z": 0
+        },
+        "vram_tile_base": "0x2200"
+      }
+    },
+    {
+      "spirit_name": "Bow",
+      "element": "Plant",
+      "room_id": "0x0A10",
+      "handler_address": "0x018E12",
+      "handler_end_address": "0x018E7A",
+      "spawn_helper_address": "0x014798",
+      "dialogue_message_id": 13,
+      "dialogue_text": "#I'm Bow!  You are my master.\nI can be found inside plants.\nCall me when there's lots to\neat!#",
+      "global_flag": {
+        "index": 20,
+        "ram_address": "0x00FF0DBE",
+        "bit": 4
+      },
+      "active_spirit_bit": 3,
+      "area_flag": {
+        "ram_address": null,
+        "bit": null
+      },
+      "altar_spawn_record": {
+        "script_addr": "0x04D52E",
+        "opcode_offset": "0x04D53A",
+        "bank": 1,
+        "entity_type": "0x0020",
+        "flag_index": 20,
+        "position": {
+          "x": 160,
+          "y": 96,
+          "z": 0
+        },
+        "vram_tile_base": "0x2200"
+      }
+    },
+    {
+      "spirit_name": "Agito",
+      "element": "Dark/Seal",
+      "room_id": "0x090B",
+      "handler_address": "0x018E7A",
+      "handler_end_address": "0x018EBC",
+      "spawn_helper_address": "0x00F53C",
+      "dialogue_message_id": 56,
+      "dialogue_text": "#You broke my Seal.  I am the\norigin of Agito's power and the\nkeeper of his soul.  His ancient\nevil can be awakened by me.#",
+      "global_flag": {
+        "index": 54,
+        "ram_address": "0x00FF0DC2",
+        "bit": 6
+      },
+      "active_spirit_bit": null,
+      "area_flag": {
+        "ram_address": null,
+        "bit": null
+      },
+      "altar_spawn_record": {}
+    }
+  ],
+  "architectural_notes": {
+    "m16_50_correction": "Standalone M16.50 previously mislabeled ROM 0x018CAA / Global Flag 3 as a 'Princess Rescue' cutscene. Static ROM analysis definitively proves that 0x018CAA is the Spirit Awakening Dispatcher, and Global Flag 3 ($FF0DBC, bit 3) is the Dytto Water Spirit acquisition flag. Altar trigger entity 0x0020 in Room 0x0106 gates spawning on Global Flag 3.",
+    "state_transition_sequence": [
+      "1. Entity 0x0020 proximity / button interaction triggers 0x008352..0x008392.",
+      "2. Dispatcher 0x018CAA reads room ID from $FF0E40 and jumps to shrine handler.",
+      "3. Handler freezes trigger entity by setting state 0x3F in $32(A6).",
+      "4. JSR 0x00C2EC starts authentic dialogue (Msg 0 for Dytto).",
+      "5. Coordinates and orientation read from prop slot ($FF1CD8 or $FF1F0C).",
+      "6. Prop entity deactivated by clearing $00(prop).",
+      "7. BSR spawn helper creates spirit entity attached to player base ($FF1AA4).",
+      "8. Spirit entity state set to 0x1A (APPEAR), action/anim to 0x22.",
+      "9. Area flag set if applicable (e.g. $FF0E1D bit 2 for Water Shrine).",
+      "10. Global flag set ($FF0DBC bit 3 for Dytto).",
+      "11. Active spirit flag set ($FF0D7A bit 0 for Dytto).",
+      "12. Returns with carry set (ORI.B #1, CCR; RTS)."
+    ]
+  }
+}

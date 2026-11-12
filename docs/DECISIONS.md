@@ -1,3 +1,29 @@
+# ADR-20261112-M15-261-ROM-SPIRIT-AWAKENING-DISPATCHER-AND-SHRINE-EVENTS — ROM Spirit Awakening Dispatcher, Shrine Events, and Global Flag 3 Extraction
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Prior research in Standalone milestone M16.50 hypothesized that ROM addresses `0x018CAA`, `0x018CDE`, and `0x018D38` along with Global Flag 3 (`$FF0DBC` bit 3) represented a "Princess Rescue" cutscene.
+2. Exhaustive M68k disassembly and cross-reference analysis in the Hybrid repository revealed that `0x018CAA` is actually the Spirit Awakening Dispatcher, routing by Room ID (`$FF0E40`), and that `0x018CDE..0x018D4E` executes the awakening and liberation of the Water Spirit Dytto in Room `0x0106`.
+3. Setting Global Flag 3 is the persistent game flag denoting Dytto acquisition, which also gates the Altar Entity `0x0020` in Room `0x0106` spawn script (`0x04665E`) from respawning.
+4. Standalone needs exact ROM semantics and a handoff documenting the true architecture to correct the mislabeling and implement spirit shrine interactions accurately.
+
+**Decisions:**
+1. **Accurate Subsystem Identification:**
+   - Formalized `0x018CAA` as `spirit_awakening_dispatcher` and mapped all 5 target shrine handlers: Dytto (`0x018CDE`), Efreet (`0x018D4E`), Shade (`0x018DAA`), Bow (`0x018E12`), and Agito (`0x018E7A`).
+   - Mapped the exact state transition order: trigger freeze `0x3F`, dialogue invocation, coordinate extraction from prop slot, prop deactivation, spirit allocation helper invocation (`0x014668` etc.), entity state `0x1A` / action `0x22`, area flag setting (`$FF0E1D` bit 2 for Water Shrine), global flag setting (`$FF0DBC` bit 3 for Dytto), and active spirit selection (`$FF0D7A` bit 0 for Dytto).
+2. **Automated Extraction and Evidence Generation:**
+   - Authored `tools/extract_rom_spirit_shrine_events.py` and emitted machine-readable evidence `data/thor-evidence/rom_spirit_shrine_events_m15_261.json`.
+3. **Automated Unit Testing:**
+   - Authored `tests/rom_spirit_shrine_events_test.py` covering all byte contracts, flag offsets, and altar spawn gating.
+4. **Standalone Handoff Publication:**
+   - Published `docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md` with explicit clarification of the M16.50 mislabeling.
+
+**Consequences:**
+- Standalone engine receives accurate, verified data for spirit shrines and global flags, preventing architectural errors.
+- Production source files and active helpers (196) remain untouched and immutably preserved.
+- Standalone repository remained strictly read-only.
+
 # ADR-20261112-M15-260-ROM-EVENT-SCRIPT-VM-AND-DIALOGUE-RESOURCE-EXTRACTION — ROM Event Script VM & Dialogue Resource Semantic Extraction for Standalone Engine
 **Status:** Accepted
 **Date:** 2026-11-12

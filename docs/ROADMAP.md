@@ -1,3 +1,23 @@
+# M15.261 ROM Spirit Awakening Dispatcher & Shrine Event Semantic Extraction — COMPLETE / VERIFIED SPIRIT SHRINE & GLOBAL FLAGS EXTRACTION
+
+- **Phase 0 Baseline & Architecture Audit:**
+  * Verified Git baseline commit `a81dfaa0...`, all 196 active helpers, frozen source hash `28b6617d...`, and read-only Standalone repository.
+  * Corrected Standalone M16.50 mislabeling: proved ROM `0x018CAA`, `0x018CDE`, `0x018D38`, and Global Flag 3 (`$FF0DBC` bit 3) belong to the spirit awakening / shrine pipeline (Dytto acquisition), not a Princess Rescue scene.
+- **Phase 1 Spirit Awakening Dispatcher & 5 Shrine Handlers:**
+  * Disassembled and analyzed dispatcher `0x018CAA` invoked from prop entity check `0x008352..0x008392` for entity type `0x0020`.
+  * Fully mapped routing to 5 handlers by Room ID: Dytto (`0x0106` -> `0x018CDE`), Efreet (`0x0206` -> `0x018D4E`), Shade (`0x0805` -> `0x018DAA`), Bow (`0x0A10` -> `0x018E12`), and Agito (`0x090B` -> `0x018E7A`).
+  * Mapped exact state transition: trigger entity freeze `0x3F`, dialogue invocation, prop slot coordinates extraction, spirit spawn helper allocation (`0x014668` etc.), state `0x1A` (APPEAR) / action `0x22`, area flag setting (`$FF0E1D` bit 2), global flag setting (`$FF0DBC` bit 3), and active spirit selection (`$FF0D7A` bit 0).
+- **Phase 2 Altar Entity 0x0020 Spawn Gating:**
+  * Decoded Room `0x0106` spawn script at `0x04664E` (Opcode `0x15` at `0x04665E`) gating entity `0x0020` on Global Flag 3 at `(160, 80, 0)` with VRAM tile `0x0200`.
+- **Phase 3 Extractor & Evidence Output:**
+  * Authored `tools/extract_rom_spirit_shrine_events.py` (261 lines $\le 500$) and emitted `data/thor-evidence/rom_spirit_shrine_events_m15_261.json`.
+- **Phase 4 Automated Unit Testing:**
+  * Authored `tests/rom_spirit_shrine_events_test.py` (76 lines $\le 500$): 5/5 assertions passed 100%.
+- **Phase 5 Standalone Implementation Handoff:**
+  * Published `docs/handoffs/STANDALONE_M15_261_SPIRIT_SHRINE_AND_FLAGS_HANDOFF.md`.
+- **Phase 6 Governance & Verification:**
+  * Governed file line limits preserved ($\le 500$ lines), production helper count preserved (196 helpers, hash `28b6617d...`), and Standalone worktree strictly unmodified.
+
 # M15.260 ROM Event Script VM & Dialogue Resource Extraction for Standalone Engine — COMPLETE / VERIFIED EVENT VM & DIALOGUE EXTRACTION
 
 - **Phase 0 Baseline & Standalone M16.46/M16.47 Gap Analysis:**
