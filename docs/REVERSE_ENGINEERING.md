@@ -1,3 +1,38 @@
+# Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.47: Authentic Dialogue Table 0x051514, Room 0x0108 Spawn Script 0x0466B2, and NPC Interaction 0x018BBC / 0x018C28)
+
+## Milestone M16.47 Reverse Engineering Summary
+
+### 1. Authentic ROM Dialogue Table Architecture (`ROM 0x051514`)
+- **Table Lookup Formula:**
+  * Routine `0x00C3FE` loads base address `0x051514`.
+  * Given Message ID `d0.w`: `entry = 0x051514 + d0.w * 2`.
+  * Pointer offset is a signed 16-bit word relative to entry: `text_address = entry + *(int16_t*)entry`.
+- **Village Elder Message ID 5 (`0x05178C`):**
+  * Entry address: `0x05151E`. Offset value: `0x026E`.
+  * Target text address: `0x05151E + 0x026E = 0x05178C`.
+  * Page 1: `"Prince Ali, are you all right?\nI don't know who they were,\nbut you were their target."` (ends with control code `0x07` page pause).
+  * Page 2: `"They may have attacked the\ncastle as well.  You must check\non your family."` (ends with control code `0x00` end of dialogue).
+- **Dialogue Control Codes Decoded:**
+  * `0x00`: End of dialogue (waits for button press via `0x00C536`, window teardown via `0x00C45C`).
+  * `0x01`: Newline (`0x00C566`).
+  * `0x02`: Clear page & newline.
+  * `0x03`: Frame delay operand (skip 1 byte).
+  * `0x05`: Wait button press inline (`0x00C536`).
+  * `0x06`: Scroll 4 lines.
+  * `0x07`: Page pause (waits for player confirmation via `0x00C536`, then clears page).
+  * `#`: Speaker border delimiter tag (stripped during display).
+
+### 2. Room 0x0108 Spawn Script (`ROM 0x0466B2`)
+- In Area 1 spawn table (`0x046332`), entry 8 (`0x046342`) contains offset `0x0370`, resolving to script `0x0466B2`:
+  * `0x0466B2: 0A 00 00 16 61 20 92 00` -> Opcode `0x0A` (`VM_OP_PRELOAD_NEMESIS_DMA`): preloads Nemesis pattern stream from ROM `0x166120` to VRAM `0x9200` (tile base `0x0490`).
+  * `0x0466BA: 15 01 00 3C 00 8D 00 00 00 00 00 A0 00 A0 02 32 04 90` -> Opcode `0x15` (`VM_OP_SPAWN_GATED_PROP`): evaluates Event Flag `0x008D` (141, bit 5 of `$FF0DBC+17`). If clear, spawns entity `0x003C` (Village Elder) at `(world_x=160, world_y=160, world_z=562)` with VRAM tile base `0x0490`. If set, skips spawn.
+  * `0x0466CC: 00` -> Opcode `0x00` (`VM_OP_HALT_YIELD`): halts script execution.
+
+### 3. NPC Interaction Logic & Player State (`ROM 0x018BBC`, 0x018C28, 0x018C72)
+- **Proximity Detection:** Player `(px, py)` within distance `dx <= 28, dy <= 28` of NPC `(160, 160)` with player facing north (`direction_code == 0` or `py > 160`).
+- **Player Movement Lock:** Routine `0x018C72` executes `bset.b #1, $36(player)`, locking movement in state `0x36`.
+- **Dialogue Completion:** Advances through pages on A/B/C button triggers (`0x00C536`). Upon completion of page 2, sets Event Flag 141 (`$FF0DBC+17` bit 5) and restores player movement state `0`.
+
 # Autonomous Reverse Engineering & Provenance Audit — 2026-11-12 (M16.46: Scripted Door Transition Mechanics, Doorway AABB Trigger 0x00C1CE, and Interior Screen 1,8 Mechanics)
 
 ## Milestone M16.46 Reverse Engineering Summary

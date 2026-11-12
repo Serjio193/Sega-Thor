@@ -212,7 +212,7 @@ void StandaloneGameSimulation::transition_to_screen(const world::ScreenTransitio
         assign_scene_entities(current_screen_id_, town_scene_, chest_opened_global_, entities_);
     }
 
-    if (!rom_bytes_.empty() && native_rom_session_) {
+    if (!rom_bytes_.empty()) {
         world::initialize_native_vdp_from_rom(
             rom_bytes_, town_scene_, camera_.camera_x(), camera_.camera_y(),
             target.vscroll_a, current_vdp_, streamer_);

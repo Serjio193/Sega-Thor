@@ -1,0 +1,80 @@
+{
+  "milestone": "M16.47",
+  "track": "STANDALONE_RUNTIME",
+  "npc_entity": {
+    "type_id": "0x003C",
+    "name": "Village Elder",
+    "screen_id": "Screen(1, 8)",
+    "screen_name": "Village House Interior",
+    "room_id": "0x0108",
+    "room_spawn_script_address": "0x0466B2",
+    "spawn_coordinates": {
+      "world_x": 160,
+      "world_y": 160,
+      "world_z": 562
+    },
+    "vram_tile_base": "0x0490",
+    "event_flag_index": 141,
+    "event_flag_ram_byte": "0x00FF0DBC + 17",
+    "event_flag_bit": 5
+  },
+  "interaction_rules": {
+    "proximity_threshold_x": 28,
+    "proximity_threshold_y": 28,
+    "required_player_facing": "North (0) or player_y > npc_y",
+    "trigger_buttons": ["A", "B", "C"],
+    "player_movement_state_locked": "0x36"
+  },
+  "dialogue_resource": {
+    "table_base_address": "0x051514",
+    "message_id": 5,
+    "table_entry_address": "0x05151E",
+    "table_offset_value": "0x026E",
+    "rom_text_address": "0x05178C",
+    "control_codes": {
+      "0x00": "end_of_dialogue",
+      "0x01": "newline",
+      "0x02": "clear_page_and_newline",
+      "0x03": "frame_delay_operand",
+      "0x05": "wait_button_press",
+      "0x06": "scroll_lines",
+      "0x07": "page_pause_and_wait_button",
+      "#": "speaker_border_delimiter"
+    },
+    "pages": [
+      {
+        "page_index": 1,
+        "lines": [
+          "Prince Ali, are you all right?",
+          "I don't know who they were,",
+          "but you were their target."
+        ]
+      },
+      {
+        "page_index": 2,
+        "lines": [
+          "They may have attacked the",
+          "castle as well.  You must check",
+          "on your family."
+        ]
+      }
+    ]
+  },
+  "event_vm": {
+    "opcodes_implemented": [
+      { "opcode": "0x00", "meaning": "Halt / Yield script", "rom_routine": "0x00F91C / 0x00FCCE" },
+      { "opcode": "0x07", "meaning": "Set loop counter", "rom_routine": "0x00FC94" },
+      { "opcode": "0x08", "meaning": "Wait frames countdown", "rom_routine": "0x00FCA6" },
+      { "opcode": "0x0A", "meaning": "Preload Nemesis DMA", "rom_routine": "0x00FCB8" },
+      { "opcode": "0x14", "meaning": "Subroutine return", "rom_routine": "0x0101E4" },
+      { "opcode": "0x15", "meaning": "Spawn gated prop on flag clear", "rom_routine": "0x00FEDE" },
+      { "opcode": "0x16", "meaning": "Spawn static prop unconditional", "rom_routine": "0x00FF1A" }
+    ]
+  },
+  "verification": {
+    "zero_gpgx_checkpoint_injection": true,
+    "continuous_exact_prefix_frames": "F775..F795 (21 frames, 0 diff)",
+    "holdout_aggregate_differing_pixels": 21110,
+    "governance_max_lines": 500
+  }
+}

@@ -1,3 +1,29 @@
+# ADR-20261112-M16-47-AUTHENTIC-ROM-DIALOGUE-TABLE-ROOM-SPAWN-SCRIPT-VM-AND-INTERACTIVE-NPC — Integration of Verified M15.260 Dialogue Table (0x051514, Self-Relative 16-Bit Offsets, Message ID 5) and Room 0x0108 Spawn Script VM (0x0466B2); Authentic Control Codes; Proximity (dx<=28, dy<=28), Player Talk Lock 0x36, and Event Flag 141 Lifecycle; Checkpoint-Free End-to-End Dialogue Gameplay; Zero Regression on Town F775..F795 (21 Frames, 0 Diff) and Holdout Baseline (21,110 Diff Pixels)
+**Status:** Accepted
+**Date:** 2026-11-12
+
+**Context:**
+1. Hybrid milestone M15.260 extracted authentic ROM bytecode VM and dialogue tables, revealing:
+   - Dialogue table base is at `0x051514` (referenced at `0x00C3FE`), using signed 16-bit self-relative offsets (`entry + *(int16_t*)entry`).
+   - Village Elder is Message ID `5` (offset `0x026E` -> `0x05178C`), not Message ID `14` (which was a provisional guess).
+   - Room `0x0108` spawn script at `0x0466B2` executes opcode `0x0A` (preload DMA `0x166120 -> 0x9200`), opcode `0x15` (spawn gated entity `0x003C` with flag 141), and opcode `0x00` (halt/yield).
+   - NPC interaction proximity is `dx <= 28, dy <= 28` (`0x018BBC` / `0x018C28`), setting player lock state `0x36` (`0x018C72`), and setting Event Flag 141 (`$FF0DBC+17` bit 5) upon dialogue completion.
+2. Standalone milestone M16.47 ingests these authentic ROM semantics to implement the first interactive NPC dialogue without hardcoded text strings or guessed message IDs.
+
+**Decisions:**
+1. **Authentic ROM Dialogue Table Decoder:**
+   - Implemented `resolve_dialogue_address`, `decode_dialogue_from_rom`, and `decode_dialogue_by_id` in `src/game/event/event_vm.hpp` and `event_vm.cpp`.
+   - Supported authentic control codes `0x00`, `0x01`, `0x02`, `0x03`, `0x05`, `0x06`, `0x07`, and stripped boundary tags (`#`).
+2. **Room Spawn Script Bytecode Interpreter:**
+   - Implemented `EventVm` handling opcodes `0x00`, `0x07`, `0x08`, `0x0A`, `0x14`, `0x15`, `0x16`.
+   - Opcode `0x15` evaluates Event Flag 141 in global flag bank `$FF0DBC` and gates entity prop spawning.
+3. **Interactive NPC Dialogue System:**
+   - Implemented `update_npc_dialogue_state` in `src/game/npc_dialogue_handler.cpp` and `render::DialogueWindow` in `src/game/render/dialogue_window.cpp`.
+   - Connects proximity detection, player movement lock `0x36`, controller input progression (A/B/C), and flag 141 lifecycle.
+4. **Validation & Regression Safety:**
+   - Added `tests/m16_47_npc_interaction_event_test.cpp` verifying cold-boot door entry, script execution, proximity talk, two-page progression, control restoration, house exit, and re-entry spawn gating.
+   - Preserved 21-frame bit-for-bit exact prefix F775..F795 (0 diff px) and Holdout sum (21,110 diff px).
+
 # ADR-20261112-M16-46-WORLD-GRAPH-INTEGRATION-ORIGINAL-GAME-TRANSITION-PARITY-AND-FIRST-SCRIPTED-DOOR — Integration of M15.259 Room-Transition World Graph; Original-Game Transition Parity Classification (5 Dynamically Confirmed, 13 Statically Verified); Implementation of First Scripted Door Warp (Beach Screen 1,2 <-> West Village House Interior Screen 1,8); Screen Clamping & NPC 0x003C Spawn; Holdout Fixture Provenance Audit; Dual-Toolchain Verification
 **Status:** Accepted
 **Date:** 2026-11-12

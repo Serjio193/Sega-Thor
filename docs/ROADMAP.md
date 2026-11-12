@@ -1,3 +1,33 @@
+# M16.47 Authentic ROM Dialogue Table, Room 0x0108 Spawn Script VM, and Interactive Village Elder Conversation — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Phase 0 — Baseline Reproduction & Handoff Audit:
+  * Ingested Hybrid M15.260 handoff and evidence artifact `rom_event_script_vm_m15_260.json`.
+  * Corrected dialogue table base to authentic `0x051514` with signed 16-bit self-relative offsets.
+  * Corrected Village Elder Message ID to authentic `5` (offset `0x026E` -> ROM text `0x05178C`).
+- Phase 1 — Authentic ROM Dialogue Table Decoder:
+  * Implemented `resolve_dialogue_address`, `decode_dialogue_from_rom`, and `decode_dialogue_by_id` in `src/game/event/event_vm.hpp` and `event_vm.cpp`.
+  * Decoded authentic two-page text stream with full control code semantics (`0x00`, `0x01`, `0x02`, `0x03`, `0x05`, `0x06`, `0x07`, `#`).
+- Phase 2 — Room 0x0108 Spawn Script VM Execution:
+  * Reverse-engineered and executed Room `0x0108` spawn script at `0x0466B2`: opcode `0x0A` (preload Nemesis DMA), opcode `0x15` (spawn gated entity `0x003C` with flag 141), opcode `0x00` (halt).
+  * Implemented bytecode interpreter in `EventVm` handling opcodes `0x00`, `0x07`, `0x08`, `0x0A`, `0x14`, `0x15`, `0x16`.
+- Phase 3 — Authentic NPC Interaction:
+  * Implemented ROM-grounded proximity check `dx <= 28 && dy <= 28` (`0x018BBC` / `0x018C28`).
+  * Implemented player talk lock state `0x36` (`0x018C72`).
+  * Implemented controller input progression (A/B/C) and Event Flag 141 lifecycle.
+- Phase 4 — Authentic Dialogue Window Presentation:
+  * Implemented `render::DialogueWindow` in `src/game/render/dialogue_window.hpp` and `dialogue_window.cpp` supporting VDP nametable updates and RGB24 text overlay rendering.
+- Phase 5 — Checkpoint-Free End-to-End Native Gameplay Flow:
+  * Cold-boot Beach Screen(1,2) -> doorway into Screen(1,8) -> approach Elder -> Button A talk -> advance Page 1 -> complete Page 2 on Button C -> control restored -> exit to Beach -> re-enter (Elder gated off).
+  * Validated via `tests/m16_47_npc_interaction_event_test.cpp`.
+- Phase 6 — GPGX Validation Status:
+  * Verified 0 existing GPGX captures reached Room `0x0108`: recorded `NOT_REACHED_IN_EXISTING_FIXTURES` with reproducible capture procedure.
+- Dual-Toolchain Verification:
+  * MinGW Release CTest passing 221 tests (all baseline + new M16.47 test; exact 12 historical BizHawk failures preserved).
+  * Governed source files: all <= 500 lines.
+  * Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+  * Zero emulator linkage in `oasis.exe`.
+
 # M16.46 World Graph Integration, Original-Game Transition Parity, and First Scripted Door — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

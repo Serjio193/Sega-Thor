@@ -1,3 +1,51 @@
+# Worklog — 2026-11-12 (M16.47: Authentic ROM Dialogue Table, Room 0x0108 Spawn Script VM, and Interactive Village Elder Conversation)
+- **Concrete Task**: Ingest and integrate verified ROM NPC & dialogue semantics extracted by Hybrid milestone M15.260 (`a81dfaa0ed815467d7874e49aa05dc8623fe2dbe`); complete the first authentic, interactive Village Elder conversation in Screen(1,8); execute authentic Room `0x0108` spawn script from ROM without hardcoding text strings or guessing IDs.
+- **Phase 0 Baseline Reproduction & Handoff Audit**:
+  - Audited Hybrid M15.260 handoff documents: `docs/handoffs/STANDALONE_M15_260_EVENT_VM_AND_NPC_HANDOFF.md`, `data/thor-evidence/rom_event_script_vm_m15_260.json`, and `tools/extract_rom_event_script_vm.py`.
+  - Discovered authentic dialogue table base is `0x051514` (indexed via self-relative signed 16-bit offset `entry + *(int16_t*)entry`), correcting provisional prototype guess `0x051520`.
+  - Discovered Village Elder is authentic **Message ID 5** (offset `0x026E` -> ROM text `0x05178C`), not Message ID 14 (which is Efreet lore text).
+- **Phase 1 Authentic ROM Dialogue Decoder**:
+  - Implemented `resolve_dialogue_address`, `decode_dialogue_from_rom`, and `decode_dialogue_by_id` in `src/game/event/event_vm.hpp` and `event_vm.cpp`.
+  - Fully modeled authentic control codes: `0x00` (end of dialogue), `0x01` (newline), `0x02` (clear page & newline), `0x03` (frame delay operand), `0x05` (inline button wait), `0x06` (scroll lines), `0x07` (page pause), and `#` (speaker boundary tag stripped).
+  - Verified 2 authentic pages decoded directly from ROM at `0x05178C`:
+    * Page 1: "Prince Ali, are you all right?\nI don't know who they were,\nbut you were their target."
+    * Page 2: "They may have attacked the\ncastle as well.  You must check\non your family."
+- **Phase 2 Authentic Room 0x0108 Spawn Script Execution**:
+  - Reverse-engineered and executed Room `0x0108` script at `0x0466B2`:
+    * Opcode `0x0A`: preload Nemesis DMA (`flag=0`, `rom_src=0x166120`, `vram_dst=0x9200`, tile base `0x0490`).
+    * Opcode `0x15`: gated spawn of entity type `0x003C` (Village Elder) at `(160, 160, 562)` with VRAM base `0x0490` conditioned on Event Flag 141 (`$FF0DBC+17` bit 5) being clear.
+    * Opcode `0x00`: halt/yield script execution.
+  - Implemented bytecode interpreter in `EventVm` handling opcodes `0x00`, `0x07`, `0x08`, `0x0A`, `0x14`, `0x15`, `0x16`.
+- **Phase 3 Authentic NPC Interaction Logic**:
+  - Implemented ROM-grounded interaction in `src/game/npc_dialogue_handler.cpp`:
+    * Proximity trigger: `dx <= 28 && dy <= 28` (`0x018BBC` / `0x018C28`) with player facing north (`direction_code == 0` or `py > npc_y`).
+    * Player movement lock: state `0x36` (`0x018C72`), freezing movement during dialogue.
+    * Dialogue advance on controller buttons A, B, or C.
+    * Lifecycle: upon page 2 completion, sets Event Flag 141 (`$FF0DBC+17` bit 5) and restores player movement state `0`.
+- **Phase 4 Authentic Dialogue Window Presentation**:
+  - Implemented `render::DialogueWindow` in `src/game/render/dialogue_window.hpp` and `dialogue_window.cpp` (210 lines <= 500).
+  - Supports page progression, frame pacing, VDP nametable commitment, and RGB24 text overlay rendering with font glyphs.
+- **Phase 5 Checkpoint-Free End-to-End Native Gameplay Flow**:
+  - Implemented `tests/m16_47_npc_interaction_event_test.cpp` (266 lines <= 500):
+    1. Cold-boot Beach Screen(1,2) from ROM.
+    2. Walk into Village House through authentic doorway into Screen(1,8).
+    3. Run Room `0x0108` spawn script: spawns Elder at `(160, 160)`.
+    4. Approach Elder using normal player movement to `(160, 184)` (`dx=0, dy=24`).
+    5. Press Button A to trigger conversation: locks player in state `0x36`.
+    6. Press Button B to advance to Page 2.
+    7. Press Button C to complete dialogue: clears lock, restores player control, sets Event Flag 141.
+    8. Walk south through door back to Beach Screen(1,2).
+    9. Re-enter house and verify spawn gate logic with Flag 141 active: Elder is gated off.
+- **Phase 6 GPGX Dynamic Validation Status**:
+  - Analyzed existing 6 original GPGX replays (11,192 frames): none entered Room `0x0108` or talked to the Elder.
+  - Correctly recorded status as `NOT_REACHED_IN_EXISTING_FIXTURES` and documented reproducible capture procedure.
+- **Regression Safety & Dual-Toolchain Verification**:
+  - Verified 221 CTest tests passing (baseline 220 + `oasis_m16_47_npc_interaction_event`).
+  - Preserved continuous 21-frame bit-for-bit exact prefix F775..F795 (0 diff px, 0 diff VRAM) and Holdout sum of 21,110 diff pixels.
+  - Governed source files: all <= 500 lines.
+  - Hybrid repository `C:/Github/Sega-Thor` 100% untouched.
+  - Zero emulator linkage in `oasis.exe`.
+
 # Worklog — 2026-11-12 (M16.46: World Graph Integration, Original-Game Transition Parity, and First Scripted Door)
 - **Concrete Task**: Turn M16.45 world graph into verified foundation; prove transition parity with original Mega Drive game; implement first ROM-grounded scripted door transition (Screen 1,2 Beach <-> Screen 1,8 West Village House Interior).
 - **Phase 0 Baseline Reproduction**:

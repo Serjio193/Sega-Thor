@@ -55,6 +55,9 @@ add_library(oasis_core
     src/game/world/town_scene_loader.cpp
     src/game/world/world_graph.cpp
     src/game/scene_transition_helpers.cpp
+    src/game/event/event_vm.cpp
+    src/game/npc_dialogue_handler.cpp
+    src/game/render/dialogue_window.cpp
     src/game/interaction/interaction_system.cpp
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp

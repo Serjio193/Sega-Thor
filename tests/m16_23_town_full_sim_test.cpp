@@ -27,11 +27,10 @@ namespace fs = std::filesystem;
 namespace {
 
 std::string resolve_path(const std::string& rel) {
-    if (fs::exists(rel)) return rel;
-    const auto p1 = fs::path("..") / rel;
-    if (fs::exists(p1)) return p1.string();
-    const auto p2 = fs::path("../..") / rel;
-    if (fs::exists(p2)) return p2.string();
+    for (const auto* p : {"", "../", "../../", "../../../"}) {
+        const auto candidate = fs::path(p) / rel;
+        if (fs::exists(candidate)) return candidate.string();
+    }
     return rel;
 }
 
