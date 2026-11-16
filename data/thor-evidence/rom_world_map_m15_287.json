@@ -1,0 +1,336 @@
+{
+  "milestone": "M15.287",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "world_map": {
+    "entry_addr": "0x004950",
+    "coord_calc_addr": "0x004B4E",
+    "close_sfx": "0xA00347",
+    "screen_center_x": 160,
+    "screen_center_y": 120,
+    "overworld_shift_bits": 6,
+    "special_dungeon_0f01_offset": 6,
+    "gfx_chunks": [
+      {
+        "rom_addr": "0x15BAC2",
+        "vram_addr": "0x9500",
+        "dma_words": 1600
+      },
+      {
+        "rom_addr": "0x15C238",
+        "vram_addr": "0xA180",
+        "dma_words": 1600
+      },
+      {
+        "rom_addr": "0x15CA9C",
+        "vram_addr": "0xAE00",
+        "dma_words": 1600
+      }
+    ]
+  },
+  "overworld_areas": [
+    {
+      "area_id": 0,
+      "area_hex": "0x00",
+      "dx": 52,
+      "dy": 24
+    },
+    {
+      "area_id": 1,
+      "area_hex": "0x01",
+      "dx": 12,
+      "dy": 32
+    },
+    {
+      "area_id": 2,
+      "area_hex": "0x02",
+      "dx": -20,
+      "dy": 28
+    },
+    {
+      "area_id": 3,
+      "area_hex": "0x03",
+      "dx": -20,
+      "dy": 44
+    },
+    {
+      "area_id": 4,
+      "area_hex": "0x04",
+      "dx": -8,
+      "dy": -20
+    },
+    {
+      "area_id": 5,
+      "area_hex": "0x05",
+      "dx": -12,
+      "dy": 28
+    },
+    {
+      "area_id": 6,
+      "area_hex": "0x06",
+      "dx": 4,
+      "dy": 16
+    },
+    {
+      "area_id": 7,
+      "area_hex": "0x07",
+      "dx": 20,
+      "dy": 32
+    },
+    {
+      "area_id": 8,
+      "area_hex": "0x08",
+      "dx": 36,
+      "dy": 32
+    },
+    {
+      "area_id": 9,
+      "area_hex": "0x09",
+      "dx": 12,
+      "dy": 8
+    },
+    {
+      "area_id": 10,
+      "area_hex": "0x0A",
+      "dx": 52,
+      "dy": 24
+    },
+    {
+      "area_id": 11,
+      "area_hex": "0x0B",
+      "dx": 8,
+      "dy": -16
+    },
+    {
+      "area_id": 12,
+      "area_hex": "0x0C",
+      "dx": 52,
+      "dy": -16
+    },
+    {
+      "area_id": 13,
+      "area_hex": "0x0D",
+      "dx": -52,
+      "dy": 28
+    },
+    {
+      "area_id": 14,
+      "area_hex": "0x0E",
+      "dx": -40,
+      "dy": 16
+    },
+    {
+      "area_id": 15,
+      "area_hex": "0x0F",
+      "dx": -36,
+      "dy": 28
+    },
+    {
+      "area_id": 16,
+      "area_hex": "0x10",
+      "dx": -24,
+      "dy": 16
+    },
+    {
+      "area_id": 17,
+      "area_hex": "0x11",
+      "dx": -12,
+      "dy": 0
+    },
+    {
+      "area_id": 18,
+      "area_hex": "0x12",
+      "dx": -24,
+      "dy": -16
+    },
+    {
+      "area_id": 19,
+      "area_hex": "0x13",
+      "dx": 4,
+      "dy": -36
+    },
+    {
+      "area_id": 20,
+      "area_hex": "0x14",
+      "dx": 12,
+      "dy": -44
+    },
+    {
+      "area_id": 21,
+      "area_hex": "0x15",
+      "dx": 0,
+      "dy": -56
+    },
+    {
+      "area_id": 22,
+      "area_hex": "0x16",
+      "dx": -16,
+      "dy": -48
+    },
+    {
+      "area_id": 23,
+      "area_hex": "0x17",
+      "dx": -28,
+      "dy": -40
+    },
+    {
+      "area_id": 24,
+      "area_hex": "0x18",
+      "dx": -64,
+      "dy": -28
+    },
+    {
+      "area_id": 25,
+      "area_hex": "0x19",
+      "dx": -72,
+      "dy": -32
+    },
+    {
+      "area_id": 26,
+      "area_hex": "0x1A",
+      "dx": 8,
+      "dy": 34
+    },
+    {
+      "area_id": 27,
+      "area_hex": "0x1B",
+      "dx": 12,
+      "dy": 44
+    },
+    {
+      "area_id": 28,
+      "area_hex": "0x1C",
+      "dx": 12,
+      "dy": 16
+    }
+  ],
+  "dungeon_pins": [
+    {
+      "dungeon_id": 0,
+      "dungeon_hex": "0x00",
+      "dx": 0,
+      "dy": 0,
+      "screen_x": 160,
+      "screen_y": 120
+    },
+    {
+      "dungeon_id": 1,
+      "dungeon_hex": "0x01",
+      "dx": 41,
+      "dy": 40,
+      "screen_x": 201,
+      "screen_y": 160
+    },
+    {
+      "dungeon_id": 2,
+      "dungeon_hex": "0x02",
+      "dx": 17,
+      "dy": 9,
+      "screen_x": 177,
+      "screen_y": 129
+    },
+    {
+      "dungeon_id": 3,
+      "dungeon_hex": "0x03",
+      "dx": 55,
+      "dy": 17,
+      "screen_x": 215,
+      "screen_y": 137
+    },
+    {
+      "dungeon_id": 4,
+      "dungeon_hex": "0x04",
+      "dx": 56,
+      "dy": 7,
+      "screen_x": 216,
+      "screen_y": 127
+    },
+    {
+      "dungeon_id": 5,
+      "dungeon_hex": "0x05",
+      "dx": 46,
+      "dy": -12,
+      "screen_x": 206,
+      "screen_y": 108
+    },
+    {
+      "dungeon_id": 6,
+      "dungeon_hex": "0x06",
+      "dx": -4,
+      "dy": -17,
+      "screen_x": 156,
+      "screen_y": 103
+    },
+    {
+      "dungeon_id": 7,
+      "dungeon_hex": "0x07",
+      "dx": 16,
+      "dy": -54,
+      "screen_x": 176,
+      "screen_y": 66
+    },
+    {
+      "dungeon_id": 8,
+      "dungeon_hex": "0x08",
+      "dx": -19,
+      "dy": -36,
+      "screen_x": 141,
+      "screen_y": 84
+    },
+    {
+      "dungeon_id": 9,
+      "dungeon_hex": "0x09",
+      "dx": -16,
+      "dy": 32,
+      "screen_x": 144,
+      "screen_y": 152
+    },
+    {
+      "dungeon_id": 10,
+      "dungeon_hex": "0x0A",
+      "dx": -30,
+      "dy": 27,
+      "screen_x": 130,
+      "screen_y": 147
+    },
+    {
+      "dungeon_id": 11,
+      "dungeon_hex": "0x0B",
+      "dx": -21,
+      "dy": -13,
+      "screen_x": 139,
+      "screen_y": 107
+    },
+    {
+      "dungeon_id": 12,
+      "dungeon_hex": "0x0C",
+      "dx": -21,
+      "dy": -13,
+      "screen_x": 139,
+      "screen_y": 107
+    },
+    {
+      "dungeon_id": 13,
+      "dungeon_hex": "0x0D",
+      "dx": -70,
+      "dy": 7,
+      "screen_x": 90,
+      "screen_y": 127
+    },
+    {
+      "dungeon_id": 14,
+      "dungeon_hex": "0x0E",
+      "dx": -16,
+      "dy": 32,
+      "screen_x": 144,
+      "screen_y": 152
+    },
+    {
+      "dungeon_id": 15,
+      "dungeon_hex": "0x0F",
+      "dx": 16,
+      "dy": 34,
+      "screen_x": 176,
+      "screen_y": 154
+    }
+  ]
+}

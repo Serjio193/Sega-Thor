@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.287: ROM WORLD MAP SCREEN & PIN COORDINATE TABLES (`0x004950`..`0x004C27`) — 29 Overworld Offsets (`0x004BAE`), 16 Dungeon Pins (`0x004BE8`), 3 GFX Chunks; Extractor (`tools/extract_rom_world_map.py` <= 500 lines), Tests (`tests/rom_world_map_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_287_WORLD_MAP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x004950..0x004C27` and dumped `0x004BAE` / `0x004BE8` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_world_map.py` and `python tests/rom_world_map_test.py` (2/2 PASS).
+- Next: Commit & push M15.287, await M16.71 completion, and continue.
+
 # 2026-11-17 — Milestone M15.286: ROM ALI COMPLETE 59-STATE TABLE (`0x00..0x74`) & DEATH/AUTO-REVIVE (`0x005F92`, `0x00611E`) — 59 States (`0x0059BA..0x005A2F`), Auto-Revive `+3 HP/+3 SP`; Extractor (`tools/extract_rom_player_extended_states.py` <= 500 lines), Tests (`tests/rom_player_extended_states_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_286_PLAYER_EXTENDED_STATES_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0059BA..0x005A2F`, `0x005F92..0x006020`, and `0x00611E..0x006170` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_player_extended_states.py` (59 states) and `python tests/rom_player_extended_states_test.py` (2/2 PASS).

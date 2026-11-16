@@ -1,3 +1,9 @@
+# M15.287 ROM World Map Screen & Pin Coordinate Tables
+- `tools/extract_rom_world_map.py` — Extracts World Map GFX chunks, 29 overworld offsets (`0x004BAE`), and 16 dungeon pins (`0x004BE8`).
+- `tests/rom_world_map_test.py` — Unit tests verifying map coordinate tables and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_world_map_m15_287.json` — Extracted World Map evidence.
+- `docs/handoffs/STANDALONE_M15_287_WORLD_MAP_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.286 ROM Ali Complete 59-State Table & Death/Auto-Revive
 - `tools/extract_rom_player_extended_states.py` — Extracts full 59-state table (`0x0059BA..0x005A2F`) & death/revive constants.
 - `tests/rom_player_extended_states_test.py` — Unit tests verifying all 59 states and JSON artifact (`2/2 PASS`).

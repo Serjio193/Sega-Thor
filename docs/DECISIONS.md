@@ -1,3 +1,7 @@
+# ADR-20261117-M15-287-WORLD-MAP — World Map Screen & Pin Coordinate Tables (`0x004950`..`0x004C27`)
+- **Decision:** Model the World Map pin placement in Standalone via `0x004B4E`: `(160, 120) + dungeon_pin[$FF0E40]` when inside a dungeon (`+6` for `0x0F01`), or `(160, 120) + overworld_area[$FF0E41] + (player_x >> 6, player_y >> 6)` in the overworld.
+- **Evidence:** Direct Capstone M68K disassembly of `0x004950..0x004C27` and `(s8, s8)` tables `0x004BAE` / `0x004BE8` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-286-PLAYER-EXTENDED-STATES — Ali Complete 59-State Table & Death/Auto-Revive (`0x0059BA`, `0x005F92`, `0x00611E`)
 - **Decision:** Extend Ali's player state machine in Standalone to all 59 states (`0x00..0x74` at `0x0059BA..0x005A2F`) and model `0x5E` death -> `0x0061CC` auto-revive (`0x6C`, `+3 HP / +3 SP` alternating frames) vs `0x60` Game Over (`40`-frame fade).
 - **Evidence:** Direct Capstone M68K disassembly of `0x0059BA..0x005A2F`, `0x005F92..0x006020`, and `0x00611E..0x006170` in `local-roms/Beyond Oasis (USA).md`.

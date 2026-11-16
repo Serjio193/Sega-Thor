@@ -1,3 +1,7 @@
+# M15.287 ROM World Map Screen & Pin Coordinate Tables (`0x004950`..`0x004C27`) — COMPLETE / VERIFIED
+- Decoded World Map graphics upload (`0x15BAC2`, `0x15C238`, `0x15CA9C`), Ali pin coordinate math (`0x004B4E`), 29 overworld area `(s8 dx, s8 dy)` offsets (`0x004BAE`), and 16 dungeon pins (`0x004BE8`, plus `0x0F01 -> +6`).
+- Authored `tools/extract_rom_world_map.py`, `tests/rom_world_map_test.py` (`2/2 PASS`), `data/thor-evidence/rom_world_map_m15_287.json`, and `docs/handoffs/STANDALONE_M15_287_WORLD_MAP_HANDOFF.md`.
+
 # M15.286 ROM Ali Complete 59-State Table (`0x00..0x74`) & Death/Auto-Revive (`0x005F92`, `0x00611E`) — COMPLETE / VERIFIED
 - Decoded all 59 player states (`0x0059BA..0x005A2F`, `0x00..0x74`), death revive-item check (`0x005F92` -> `0x0061CC`), Game Over fade (`0x60` at `0x005FEA`, `40` frames), and `+3 HP / +3 SP` alternating-frame auto-revive refill (`0x6C` at `0x00611E`).
 - Authored `tools/extract_rom_player_extended_states.py`, `tests/rom_player_extended_states_test.py` (`2/2 PASS`), `data/thor-evidence/rom_player_extended_states_m15_286.json`, and `docs/handoffs/STANDALONE_M15_286_PLAYER_EXTENDED_STATES_HANDOFF.md`.
