@@ -1,3 +1,7 @@
+# M15.281 ROM Dialogue / Text Engine & 116-Entry String Table (`0x00C386`..`0x00C755`, `0x051514`) — COMPLETE / VERIFIED
+- Decoded font decompression (`0x16943C` via `0x003820`), 7 dialogue control codes (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07` at `0x00C40E..0x00C534`), glyph DMA emitter (`0x00C6BE`), epilogue drawer (`0x03D160`), and all 116 entries from `0x051514`.
+- Authored `tools/extract_rom_dialogue_engine.py`, `tests/rom_dialogue_engine_test.py` (`2/2 PASS`), `data/thor-evidence/rom_dialogue_engine_m15_281.json`, and `docs/handoffs/STANDALONE_M15_281_DIALOGUE_ENGINE_HANDOFF.md`.
+
 # M15.280 ROM Event VM Main 31-Opcode ISA (`0x00F788`..`0x00F80D`) — COMPLETE / VERIFIED
 - Decoded Event VM tick entry (`0x00F788`), fetch/dispatch loop (`0x00F7B4`), VM RAM state (`$FF17B2..$FF1836`), and all 31 opcode targets (`0x00..0x1E`) from `0x00F7D0`.
 - Authored `tools/extract_rom_event_vm_isa.py`, `tests/rom_event_vm_isa_test.py` (`2/2 PASS`), `data/thor-evidence/rom_event_vm_isa_m15_280.json`, and `docs/handoffs/STANDALONE_M15_280_EVENT_VM_ISA_HANDOFF.md`.

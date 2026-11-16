@@ -1,3 +1,7 @@
+# ADR-20261116-M15-281-DIALOGUE-ENGINE — Dialogue / Text Engine (`0x00C386`..`0x00C755`, `0x051514`)
+- **Decision:** Model the Beyond Oasis dialogue renderer in Standalone using the 8x8 4bpp font (`0x16943C`, `(ch - 0x20) << 5`), the 116-entry `0x051514` self-relative `u16` string table, and the 7 control codes (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07`).
+- **Evidence:** Direct Capstone M68K disassembly of `0x00C386..0x00C755` and `0x03D160..0x03D210` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-280-EVENT-VM-ISA — Event VM Main 31-Opcode ISA (`0x00F788`..`0x00F80D`)
 - **Decision:** Model the Beyond Oasis Event VM in Standalone as a 31-opcode (`0x00..0x1E`) frame-driven bytecode interpreter with PC `$FF17B2`, frame wait `$FF17B6`, single-level call stack `$FF1836`, and loop counters `$FF1826`.
 - **Evidence:** Direct Capstone M68K disassembly of `0x00F788..0x0101EA` and `0x00F7D0` jump table in `local-roms/Beyond Oasis (USA).md`.

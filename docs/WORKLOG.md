@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.281: ROM DIALOGUE / TEXT ENGINE & 116-ENTRY STRING TABLE (`0x00C386`..`0x00C755`, `0x051514`) — Font `0x16943C`, 7 Control Codes (`0x00..0x07`), 116 Strings; Extractor (`tools/extract_rom_dialogue_engine.py` <= 500 lines), Tests (`tests/rom_dialogue_engine_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_281_DIALOGUE_ENGINE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00C386..0x00C755` and `0x03D160..0x03D210` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_dialogue_engine.py` (116 entries) and `python tests/rom_dialogue_engine_test.py` (2/2 PASS).
+- Next: Check Standalone M16.69 status and continue with M15.282.
+
 # 2026-11-16 — Milestone M15.280: ROM EVENT VM MAIN 31-OPCODE ISA (`0x00F788`..`0x00F80D`) — All 31 Opcodes (`0x00..0x1E`), VM RAM State (`$FF17B2..$FF1836`); Extractor (`tools/extract_rom_event_vm_isa.py` <= 500 lines), Tests (`tests/rom_event_vm_isa_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_280_EVENT_VM_ISA_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00F780..0x00F80D` and previewed all 31 opcode targets in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_event_vm_isa.py` (31 opcodes) and `python tests/rom_event_vm_isa_test.py` (2/2 PASS).

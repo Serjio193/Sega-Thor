@@ -1,3 +1,9 @@
+# M15.281 ROM Dialogue / Text Engine & 116-Entry String Table
+- `tools/extract_rom_dialogue_engine.py` — Extracts dialogue control codes, font ref `0x16943C`, and 116 strings from `0x051514`.
+- `tests/rom_dialogue_engine_test.py` — Unit tests verifying 116 dialogue entries and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_dialogue_engine_m15_281.json` — Extracted dialogue engine & string table evidence.
+- `docs/handoffs/STANDALONE_M15_281_DIALOGUE_ENGINE_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.280 ROM Event VM Main 31-Opcode ISA
 - `tools/extract_rom_event_vm_isa.py` — Extracts Event VM jump table `0x00F7D0` (`0x00..0x1E`, 31 opcodes) & VM RAM state.
 - `tests/rom_event_vm_isa_test.py` — Unit tests verifying key opcode targets and JSON artifact (`2/2 PASS`).
