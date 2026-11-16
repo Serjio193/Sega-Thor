@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.74: World Map Pin Math, SRAM Clear Records & Attract Demo Stream Table)
+- **Concrete Task**: Implement `src/game/ui/world_map_and_records.hpp/.cpp` with `compute_world_map_pin` (`0x004B4E`: `(160, 120)` center, `0x004BE8` dungeon pins with `+6` for `0x0F01`, `0x004BAE` 29 overworld offsets + `(x >> 6, y >> 6)`), `encode_rank00_sram_block` / `decode_rank00_sram_block` (`"Rank00"` + 130 bytes + `u16_be` byte-sum checksum at stride 2), `decode_race00_best_time` (`"Race00"` + `u32_be` at stride 2), `lookup_attract_demo_rom_addr` (`0x008A94`, 9 slots relative to `0x1698FE`), and `delta_decode_demo_stream` (`0x008A30` prefix-sum mod 256); add `tests/m16_74_world_map_and_records_test.cpp`; qualify full 34-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/world_map_and_records.hpp` / `src/game/ui/world_map_and_records.cpp`.
+  * Added `tests/m16_74_world_map_and_records_test.cpp` (registered as `oasis_m16_74_world_map_and_records` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 34/34 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_74`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 34/34 regression run.
+  * Remaining unknowns: Visual VDP rendering of the 3 World Map Nemesis chunks (`0x15BAC2..0x15CA9C`) and live attract demo playback (`0x0089FA`) are deferred to frontend/attract-mode integration.
+
 # Worklog — 2026-11-17 (M16.73: Ali Player Complete 59-State Table, Pre-Dispatch Tick & Death/Auto-Revive)
 - **Concrete Task**: Implement `src/game/player/player_action_machine.hpp/.cpp` with the 59-state `PlayerActionState` enum/table (`0x00..0x74` even IDs matching `0x0059BA..0x005A2F`), `lookup_player_state_handler_addr(rom, state_id)`, `PlayerPreTickState::step_pre_dispatch_tick()` (Low HP `0xA0038C`, Low SP `0xA004DD`, safe respawn `$FF1972`, hazard damage 16/8f, passive SP regen 8/4f), and `step_death_and_revive()` (`0x5E` -> `0x61CC` auto-revive `0x2A`/`0x00D00355` -> `0x6C` `+3 HP/+3 SP` vs `0x60` 40-frame Game Over); add `tests/m16_73_player_action_machine_test.cpp`; qualify full 33-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

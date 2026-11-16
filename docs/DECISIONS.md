@@ -1,3 +1,14 @@
+# ADR-20261117-M16-74-WORLD-MAP-RECORDS-ATTRACT — World Map Pin Math, SRAM Clear Records & Attract Demo Stream Table
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.287, M15.288, and M15.289 extracted World Map pin math (`0x004B4E`, `0x004BAE`, `0x004BE8`), `"Rank00"`/`"Race00"` odd-byte SRAM clear records (`$2025CD`, `$2026E1`), and the 9-slot Attract/Demo stream table (`0x008A94`, `0x1698FE`, `0x008A30` delta-decode).
+
+**Decisions:**
+1. **Dedicated `world_map_and_records` Module:**
+   - Added `src/game/ui/world_map_and_records.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-73-PLAYER-ACTION-MACHINE — Ali Player 59-State Table, Pre-Dispatch Tick & Death/Auto-Revive
 **Status:** Accepted
 **Date:** 2026-11-17

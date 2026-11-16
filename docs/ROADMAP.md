@@ -1,3 +1,9 @@
+# M16.74 World Map Pin Math (0x004950..0x004C27), SRAM Clear Records ("Rank00"/"Race00") & Attract/Demo Stream Table (0x008A94) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_world_map_pin` (`0x004B4E`/`0x004BAE`/`0x004BE8`), `encode_rank00_sram_block` / `decode_rank00_sram_block` (`"Rank00"` + 130B + `u16_be` sum), `decode_race00_best_time` (`"Race00"` + `u32_be`), `lookup_attract_demo_rom_addr` (`0x008A94`, 9 slots relative to `0x1698FE`), and `delta_decode_demo_stream` (`0x008A30`) in `src/game/ui/world_map_and_records.hpp/.cpp`.
+- Qualified `oasis_m16_74_world_map_and_records` and full 34-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.73 Ali Player Complete 59-State Table (0x0059BA..0x005A2F), Pre-Dispatch Tick & Death/Auto-Revive — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

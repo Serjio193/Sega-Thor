@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/world_map_and_records.hpp` / `src/game/ui/world_map_and_records.cpp`: World Map pin math (`0x004B4E`/`0x004BAE`/`0x004BE8`), `"Rank00"`/`"Race00"` odd-byte SRAM clear-record codecs (`0x001DDC..0x001ECE`), and Attract/Demo stream lookup + delta-decoder (`0x008A94`/`0x008A30`) (M16.74).
+- `tests/m16_74_world_map_and_records_test.cpp`: Automated M16.74 test qualifying overworld/dungeon pin math, `"Rank00"`/`"Race00"` SRAM codecs, and attract demo lookup/delta-decoding (M16.74).
 - `src/game/player/player_action_machine.hpp` / `src/game/player/player_action_machine.cpp`: Complete 59-state Ali player table (`0x0059BA..0x005A2F`), pre-dispatch HP/SP warnings/regen/hazard/respawn tick (`0x005580..0x0057AE`), and death/auto-revive/game-over state machine (`0x005F92`, `0x00611E`) (M16.73).
 - `tests/m16_73_player_action_machine_test.cpp`: Automated M16.73 test qualifying 59-state lookup, pre-dispatch timers/regen, and `0x5E -> 0x6C` / `0x60` transitions (M16.73).
 - `src/game/ui/game_mode_flow.hpp` / `src/game/ui/game_mode_flow.cpp`: Top-level game mode state machine (`0x00045E`, `$FF10AC`/`$FF10AE`), Title Screen (`0x0032F8`: `720`-frame attract timeout, `128`-frame blink duty, 4 Start chords), and Best 5 Players Clear Records (`0x03E4FA`, BGM `0x0121`, SRAM magic clear) (M16.72).
