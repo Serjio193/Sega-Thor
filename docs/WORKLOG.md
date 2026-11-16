@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.279: ROM EVENT VM OPCODE `0x12` CONDITIONAL BRANCH (`0x00FAB2`..`0x00FC6B`) — 12 Sub-Actions (`0x00FAC2`, `0x00..0x0B`), 6 Comparators (`0x00FB64`), Helpers (`0x0101EC`, `0x010232`, `0x010254`, `0x010268`); Extractor (`tools/extract_rom_event_vm_op12.py` <= 500 lines), Tests (`tests/rom_event_vm_op12_test.py` 3/3 PASS), Handoff (`docs/handoffs/STANDALONE_M15_279_EVENT_VM_OP12_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00FAB2..0x00FC6B` and `0x0101EC..0x01027A` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_event_vm_op12.py` (12 sub-actions, 6 comparators) and `python tests/rom_event_vm_op12_test.py` (3/3 PASS).
+- Next: M15.280 (Event VM Opcode `0x14`..`0x1F` or Room Event Trigger Dispatcher).
+
 # 2026-11-16 — Milestone M15.278: ROM BGM SEQUENCE OFFSET TABLE (`0x0638D4`) & Z80 HANDSHAKE (`0x060B50`) — All Valid BGM Tracks (0x0100->0x063CD4), Z80 Bus Req ($00A11100, 0x83->$00A00003); Extractor (tools/extract_rom_bgm_track_table.py <= 500 lines), Tests (tests/rom_bgm_track_table_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_278_BGM_TRACK_TABLE_HANDOFF.md) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

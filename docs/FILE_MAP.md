@@ -1,3 +1,9 @@
+# M15.279 ROM Event VM Opcode `0x12` Conditional Branch
+- `tools/extract_rom_event_vm_op12.py` — Extracts Event VM Opcode `0x12` 12 sub-actions (`0x00FAC2`) & 6 comparators (`0x00FB64`).
+- `tests/rom_event_vm_op12_test.py` — Unit tests verifying ROM targets and JSON artifact (`3/3 PASS`).
+- `data/thor-evidence/rom_event_vm_op12_m15_279.json` — Extracted Opcode `0x12` evidence.
+- `docs/handoffs/STANDALONE_M15_279_EVENT_VM_OP12_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.278 ROM BGM Track Table & Z80 Handshake
 
 - `tools/extract_rom_bgm_track_table.py` — reusable ROM semantic extractor for `0x0638D4` BGM sequence table and `0x060B50` Z80 bus handshake.

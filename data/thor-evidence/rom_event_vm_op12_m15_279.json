@@ -1,0 +1,204 @@
+{
+  "milestone": "M15.279",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "dispatcher": {
+    "addr": "0x00FAB2",
+    "sub_action_table_addr": "0x00FAC2",
+    "comparator_table_addr": "0x00FB64",
+    "true_branch_addr": "0x00FBA0",
+    "false_branch_addr": "0x00FBA6",
+    "instruction_format": {
+      "size_bytes_on_false": 8,
+      "offset_0_u8": "opcode (0x12)",
+      "offset_1_u8": "padding/unused",
+      "offset_2_u8": "sub_action (0x00..0x0B)",
+      "offset_3_u8": "comparator_selector (0,2,4,6,8,10) or negate_flag (0=true, !=0=false)",
+      "offset_4_u16": "imm16 (threshold, bit_index, or entity_id)",
+      "offset_6_s16": "true_branch_rel_offset (added to a0 at 0x00FBA0)"
+    }
+  },
+  "helpers": {
+    "count_active_non_spirit_entities": {
+      "addr": "0x0101EC",
+      "entity_table_base": "0xFF1CD8",
+      "slot_count": 17,
+      "slot_stride_bytes": 188,
+      "condition": "word[+0] > 0 && (byte[+0x3A] & 1) == 0"
+    },
+    "find_entity_id": {
+      "addr": "0x010232",
+      "entity_table_base": "0xFF1CD8",
+      "slot_count": 17,
+      "slot_stride_bytes": 188,
+      "condition": "word[+0] == d1 (returns carry=1 if found)"
+    },
+    "player_hp_percent": {
+      "addr": "0x010254",
+      "formula": "($FF1A72 * 100) / $FF1A70"
+    },
+    "player_sp_percent": {
+      "addr": "0x010268",
+      "formula": "($FF1A76 * 100) / $FF1A74"
+    }
+  },
+  "sub_actions": [
+    {
+      "index": 0,
+      "name": "active_non_spirit_entity_count",
+      "entry_addr": "0x00FAC2",
+      "rel_offset": 24,
+      "target_addr": "0x00FADA",
+      "reference": "0x0101EC",
+      "description": "Compare count of active non-spirit entities ($FF1CD8)"
+    },
+    {
+      "index": 1,
+      "name": "global_event_flag_bit",
+      "entry_addr": "0x00FAC4",
+      "rel_offset": 232,
+      "target_addr": "0x00FBAC",
+      "reference": "0xFF0DBC",
+      "description": "Test bit imm16 in global event flags $FF0DBC"
+    },
+    {
+      "index": 2,
+      "name": "chest_pickup_flag_bit",
+      "entry_addr": "0x00FAC6",
+      "rel_offset": 278,
+      "target_addr": "0x00FBDC",
+      "reference": "0xFF0E1C",
+      "description": "Test bit imm16 in chest/pickup flags $FF0E1C"
+    },
+    {
+      "index": 3,
+      "name": "secondary_flag_bit",
+      "entry_addr": "0x00FAC8",
+      "rel_offset": 308,
+      "target_addr": "0x00FBFC",
+      "reference": "0xFF0E2C",
+      "description": "Test bit imm16 in secondary flags $FF0E2C"
+    },
+    {
+      "index": 4,
+      "name": "entity_id_present",
+      "entry_addr": "0x00FACA",
+      "rel_offset": 338,
+      "target_addr": "0x00FC1C",
+      "reference": "0x010232",
+      "description": "Test if entity ID imm16 is present in $FF1CD8"
+    },
+    {
+      "index": 5,
+      "name": "player_hp_percent",
+      "entry_addr": "0x00FACC",
+      "rel_offset": 28,
+      "target_addr": "0x00FAE8",
+      "reference": "0x010254",
+      "description": "Compare player HP% ($FF1A72*100/$FF1A70)"
+    },
+    {
+      "index": 6,
+      "name": "player_sp_percent",
+      "entry_addr": "0x00FACE",
+      "rel_offset": 40,
+      "target_addr": "0x00FAF6",
+      "reference": "0x010268",
+      "description": "Compare player SP% ($FF1A76*100/$FF1A74)"
+    },
+    {
+      "index": 7,
+      "name": "active_spirit_id",
+      "entry_addr": "0x00FAD0",
+      "rel_offset": 370,
+      "target_addr": "0x00FC42",
+      "reference": "0xFF1AA4",
+      "description": "Compare active spirit ID $FF1AA4 against imm16"
+    },
+    {
+      "index": 8,
+      "name": "player_x",
+      "entry_addr": "0x00FAD2",
+      "rel_offset": 50,
+      "target_addr": "0x00FB04",
+      "reference": "0xFF19F0",
+      "description": "Compare player X ($FF19F0)"
+    },
+    {
+      "index": 9,
+      "name": "player_y",
+      "entry_addr": "0x00FAD4",
+      "rel_offset": 64,
+      "target_addr": "0x00FB14",
+      "reference": "0xFF19F4",
+      "description": "Compare player Y ($FF19F4)"
+    },
+    {
+      "index": 10,
+      "name": "spirit_x_if_1a",
+      "entry_addr": "0x00FAD6",
+      "rel_offset": 78,
+      "target_addr": "0x00FB24",
+      "reference": "0xFF1AAC",
+      "description": "If $FF1AA4 == 0x1A, compare spirit X ($FF1AAC)"
+    },
+    {
+      "index": 11,
+      "name": "spirit_y_if_1a",
+      "entry_addr": "0x00FAD8",
+      "rel_offset": 104,
+      "target_addr": "0x00FB40",
+      "reference": "0xFF1AB0",
+      "description": "If $FF1AA4 == 0x1A, compare spirit Y ($FF1AB0)"
+    }
+  ],
+  "comparators": [
+    {
+      "selector_byte": 0,
+      "operator": "eq",
+      "entry_addr": "0x00FB64",
+      "rel_offset": 12,
+      "target_addr": "0x00FB70",
+      "branch_insn": "beq.w 0x00FBA0"
+    },
+    {
+      "selector_byte": 2,
+      "operator": "ne",
+      "entry_addr": "0x00FB66",
+      "rel_offset": 18,
+      "target_addr": "0x00FB78",
+      "branch_insn": "bne.w 0x00FBA0"
+    },
+    {
+      "selector_byte": 4,
+      "operator": "gt",
+      "entry_addr": "0x00FB68",
+      "rel_offset": 24,
+      "target_addr": "0x00FB80",
+      "branch_insn": "bgt.w 0x00FBA0"
+    },
+    {
+      "selector_byte": 6,
+      "operator": "ge",
+      "entry_addr": "0x00FB6A",
+      "rel_offset": 30,
+      "target_addr": "0x00FB88",
+      "branch_insn": "bge.w 0x00FBA0"
+    },
+    {
+      "selector_byte": 8,
+      "operator": "le",
+      "entry_addr": "0x00FB6C",
+      "rel_offset": 36,
+      "target_addr": "0x00FB90",
+      "branch_insn": "ble.w 0x00FBA0"
+    },
+    {
+      "selector_byte": 10,
+      "operator": "lt",
+      "entry_addr": "0x00FB6E",
+      "rel_offset": 42,
+      "target_addr": "0x00FB98",
+      "branch_insn": "blt.w 0x00FBA0"
+    }
+  ]
+}

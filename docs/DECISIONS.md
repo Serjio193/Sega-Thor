@@ -1,3 +1,7 @@
+# ADR-20261116-M15-279-EVENT-VM-OP12 — Event VM Opcode `0x12` Conditional Branch (`0x00FAB2`..`0x00FC6B`)
+- **Decision:** Model Event VM Opcode `0x12` in Standalone as an 8-byte conditional branch instruction dispatching sub-actions `0x00..0x0B` (`0x00FAC2`) and numeric comparators `0, 2, 4, 6, 8, 10` (`0x00FB64`) with signed 16-bit relative jump at `+6` on pass or `+8` advance on fail.
+- **Evidence:** Direct Capstone M68K disassembly of `0x00FAB2..0x00FC6B` and helpers `0x0101EC..0x01027A` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-278-BGM-TRACK-TABLE — ROM BGM Sequence Offset Table (`0x0638D4`) & Z80 Handshake (`0x060B50`)
 **Status:** Accepted
 **Date:** 2026-11-16

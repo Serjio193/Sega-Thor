@@ -1,3 +1,7 @@
+# M15.279 ROM Event VM Opcode `0x12` Conditional Branch (`0x00FAB2`..`0x00FC6B`) — COMPLETE / VERIFIED
+- Decoded 12-entry sub-action jump table (`0x00FAC2`, `0x00..0x0B`), 6-entry comparator table (`0x00FB64`, `==, !=, >, >=, <=, <`), and helper routines (`0x0101EC` active entity count, `0x010232` entity ID search, `0x010254` HP%, `0x010268` SP%).
+- Authored `tools/extract_rom_event_vm_op12.py`, `tests/rom_event_vm_op12_test.py` (`3/3 PASS`), `data/thor-evidence/rom_event_vm_op12_m15_279.json`, and `docs/handoffs/STANDALONE_M15_279_EVENT_VM_OP12_HANDOFF.md`.
+
 # M15.278 ROM BGM Sequence Offset Table (`0x0638D4`) & Z80 Bus Handshake (`0x060B50`) — COMPLETE / VERIFIED
 
 - **Phase 1 BGM Sequence Table & Z80 Handshake:**
