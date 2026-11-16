@@ -1,0 +1,197 @@
+{
+  "milestone": "M15.285",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "player_tick": {
+    "entry_addr": "0x005580",
+    "dispatcher_addr": "0x005670",
+    "state_table_addr": "0x0059BA",
+    "player_struct_addr": "0xFF19E8",
+    "safe_respawn_addr": "0xFF1972",
+    "low_hp_threshold": 64,
+    "low_hp_sfx": "0xA0038C",
+    "low_sp_threshold": 24,
+    "low_sp_sfx": "0xA004DD"
+  },
+  "states": [
+    {
+      "index": 0,
+      "state_id": 0,
+      "state_hex": "0x00",
+      "name": "idle_standing",
+      "entry_addr": "0x0059BA",
+      "rel_offset": 2108,
+      "target_addr": "0x0061F6"
+    },
+    {
+      "index": 1,
+      "state_id": 2,
+      "state_hex": "0x02",
+      "name": "walking",
+      "entry_addr": "0x0059BC",
+      "rel_offset": 2344,
+      "target_addr": "0x0062E4"
+    },
+    {
+      "index": 2,
+      "state_id": 4,
+      "state_hex": "0x04",
+      "name": "running_or_dash",
+      "entry_addr": "0x0059BE",
+      "rel_offset": 2904,
+      "target_addr": "0x006516"
+    },
+    {
+      "index": 3,
+      "state_id": 6,
+      "state_hex": "0x06",
+      "name": "jumping_airborne",
+      "entry_addr": "0x0059C0",
+      "rel_offset": 5138,
+      "target_addr": "0x006DD2"
+    },
+    {
+      "index": 4,
+      "state_id": 8,
+      "state_hex": "0x08",
+      "name": "knockback_hurt",
+      "entry_addr": "0x0059C2",
+      "rel_offset": 7824,
+      "target_addr": "0x007852"
+    },
+    {
+      "index": 5,
+      "state_id": 10,
+      "state_hex": "0x0A",
+      "name": "climbing",
+      "entry_addr": "0x0059C4",
+      "rel_offset": 7314,
+      "target_addr": "0x007656"
+    },
+    {
+      "index": 6,
+      "state_id": 12,
+      "state_hex": "0x0C",
+      "name": "swimming",
+      "entry_addr": "0x0059C6",
+      "rel_offset": 3192,
+      "target_addr": "0x00663E"
+    },
+    {
+      "index": 7,
+      "state_id": 14,
+      "state_hex": "0x0E",
+      "name": "falling_landing",
+      "entry_addr": "0x0059C8",
+      "rel_offset": 6162,
+      "target_addr": "0x0071DA"
+    },
+    {
+      "index": 8,
+      "state_id": 16,
+      "state_hex": "0x10",
+      "name": "crouching",
+      "entry_addr": "0x0059CA",
+      "rel_offset": 4732,
+      "target_addr": "0x006C46"
+    },
+    {
+      "index": 9,
+      "state_id": 18,
+      "state_hex": "0x12",
+      "name": "crouch_recovery",
+      "entry_addr": "0x0059CC",
+      "rel_offset": 4718,
+      "target_addr": "0x006C3A"
+    },
+    {
+      "index": 10,
+      "state_id": 20,
+      "state_hex": "0x14",
+      "name": "spirit_summon_cast",
+      "entry_addr": "0x0059CE",
+      "rel_offset": 8258,
+      "target_addr": "0x007A10"
+    },
+    {
+      "index": 11,
+      "state_id": 22,
+      "state_hex": "0x16",
+      "name": "jump_attack",
+      "entry_addr": "0x0059D0",
+      "rel_offset": 5954,
+      "target_addr": "0x007112"
+    },
+    {
+      "index": 12,
+      "state_id": 24,
+      "state_hex": "0x18",
+      "name": "stun_recovery",
+      "entry_addr": "0x0059D2",
+      "rel_offset": 758,
+      "target_addr": "0x005CC8"
+    },
+    {
+      "index": 13,
+      "state_id": 26,
+      "state_hex": "0x1A",
+      "name": "primary_attack_start",
+      "entry_addr": "0x0059D4",
+      "rel_offset": 804,
+      "target_addr": "0x005CF8"
+    },
+    {
+      "index": 14,
+      "state_id": 28,
+      "state_hex": "0x1C",
+      "name": "primary_attack_hold",
+      "entry_addr": "0x0059D6",
+      "rel_offset": 1010,
+      "target_addr": "0x005DC8"
+    },
+    {
+      "index": 15,
+      "state_id": 30,
+      "state_hex": "0x1E",
+      "name": "attack_follow_through",
+      "entry_addr": "0x0059D8",
+      "rel_offset": 1036,
+      "target_addr": "0x005DE4"
+    },
+    {
+      "index": 16,
+      "state_id": 32,
+      "state_hex": "0x20",
+      "name": "secondary_attack_start",
+      "entry_addr": "0x0059DA",
+      "rel_offset": 798,
+      "target_addr": "0x005CF8"
+    },
+    {
+      "index": 17,
+      "state_id": 34,
+      "state_hex": "0x22",
+      "name": "secondary_attack_hold",
+      "entry_addr": "0x0059DC",
+      "rel_offset": 1004,
+      "target_addr": "0x005DC8"
+    },
+    {
+      "index": 18,
+      "state_id": 36,
+      "state_hex": "0x24",
+      "name": "attack_recovery",
+      "entry_addr": "0x0059DE",
+      "rel_offset": 1426,
+      "target_addr": "0x005F70"
+    },
+    {
+      "index": 19,
+      "state_id": 38,
+      "state_hex": "0x26",
+      "name": "aerial_special",
+      "entry_addr": "0x0059E0",
+      "rel_offset": 5370,
+      "target_addr": "0x006EDA"
+    }
+  ]
+}

@@ -1,3 +1,7 @@
+# M15.285 ROM Ali Player 20-State Action & Combat Machine (`0x005580`..`0x0059E2`) — COMPLETE / VERIFIED
+- Decoded player tick (`0x005580`), low-HP/low-SP warning timers (`<= 0x40` / `<= 0x18`), safe respawn tracking (`$FF1972`), hazard damage & passive SP regen, and all 20 state handlers (`0x00..0x26`) from `0x0059BA`.
+- Authored `tools/extract_rom_player_state_machine.py`, `tests/rom_player_state_machine_test.py` (`2/2 PASS`), `data/thor-evidence/rom_player_state_machine_m15_285.json`, and `docs/handoffs/STANDALONE_M15_285_PLAYER_STATE_MACHINE_HANDOFF.md`.
+
 # M15.284 ROM Best 5 Players / Clear Records Screen (`0x03E034`..`0x03E60D`) — COMPLETE / VERIFIED
 - Decoded Clear Records screen (`0x03E4FA`), `"BEST 5 PLAYERS"` / `TIME` / `RANK` / `KILLS` / `JEWELS` / `1st..5th` UI labels (`0x03E034`), SRAM record clear (`0x001E98`, `$2025CD`/`$2026E1`), BGM `0x0121`, and Start soft-reset (`0x00020E`).
 - Authored `tools/extract_rom_clear_records_screen.py`, `tests/rom_clear_records_screen_test.py` (`2/2 PASS`), `data/thor-evidence/rom_clear_records_screen_m15_284.json`, and `docs/handoffs/STANDALONE_M15_284_CLEAR_RECORDS_SCREEN_HANDOFF.md`.

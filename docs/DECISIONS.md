@@ -1,3 +1,7 @@
+# ADR-20261116-M15-285-PLAYER-STATE-MACHINE — Ali Player 20-State Action & Combat Machine (`0x005580`..`0x0059E2`)
+- **Decision:** Model Ali's per-frame player controller in Standalone via the 20-state jump table at `0x0059BA` (`0x00..0x26`) and the pre-dispatch low-HP/SP chime, safe-respawn, hazard, and passive SP-regen rules at `0x005580..0x0057AE`.
+- **Evidence:** Direct Capstone M68K disassembly of `0x005580..0x0059E2` and `0x0059BA` jump table in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-284-CLEAR-RECORDS-SCREEN — Best 5 Players / Clear Records Screen (`0x03E034`..`0x03E60D`)
 - **Decision:** Model the secret `"BEST 5 PLAYERS"` Clear Records screen (`0x03E4FA`) in Standalone with 5 ranking slots (`TIME`, `RANK`, `KILLS`, `JEWELS`), BGM `0x0121`, and SRAM record clear (`0x001E98`, `$2025CD`/`$2026E1`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x001E98..0x001F10`, `0x03E25E..0x03E60D`, and ASCII table `0x03E034..0x03E097` in `local-roms/Beyond Oasis (USA).md`.

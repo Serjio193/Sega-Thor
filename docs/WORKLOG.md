@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.285: ROM ALI PLAYER 20-STATE ACTION & COMBAT MACHINE (`0x005580`..`0x0059E2`) — 20 States (`0x00..0x26`), Pre-Dispatch HP/SP Timers & Regen; Extractor (`tools/extract_rom_player_state_machine.py` <= 500 lines), Tests (`tests/rom_player_state_machine_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_285_PLAYER_STATE_MACHINE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x005580..0x0059E2` and `0x0059BA` jump table in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_player_state_machine.py` (20 states) and `python tests/rom_player_state_machine_test.py` (2/2 PASS).
+- Next: Commit & push M15.285, check Standalone M16.69 completion.
+
 # 2026-11-16 — Milestone M15.284: ROM BEST 5 PLAYERS / CLEAR RECORDS SCREEN (`0x03E034`..`0x03E60D`) — 5 Slots x 4 Stats, BGM `0x0121`, SRAM Clear `0x001E98`; Extractor (`tools/extract_rom_clear_records_screen.py` <= 500 lines), Tests (`tests/rom_clear_records_screen_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_284_CLEAR_RECORDS_SCREEN_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x001E98..0x001F10`, `0x03E25E..0x03E60D`, and `0x03E034..0x03E097` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_clear_records_screen.py` and `python tests/rom_clear_records_screen_test.py` (2/2 PASS).

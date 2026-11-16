@@ -1,3 +1,9 @@
+# M15.285 ROM Ali Player 20-State Action & Combat Machine
+- `tools/extract_rom_player_state_machine.py` — Extracts Ali's 20-state jump table (`0x0059BA`) & pre-dispatch tick rules.
+- `tests/rom_player_state_machine_test.py` — Unit tests verifying all 20 state targets and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_player_state_machine_m15_285.json` — Extracted player state machine evidence.
+- `docs/handoffs/STANDALONE_M15_285_PLAYER_STATE_MACHINE_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.284 ROM Best 5 Players / Clear Records Screen
 - `tools/extract_rom_clear_records_screen.py` — Extracts Clear Records UI strings, BGM/SFX IDs, and SRAM record addresses.
 - `tests/rom_clear_records_screen_test.py` — Unit tests verifying labels, BGM `0x0121`, and JSON artifact (`2/2 PASS`).
