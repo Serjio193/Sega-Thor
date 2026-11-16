@@ -1,3 +1,17 @@
+# M15.277 ROM Heavy & Boss Enemy Families Dispatch
+
+- `tools/extract_rom_heavy_enemy_dispatch.py` — reusable ROM semantic extractor for `0x0068`, `0x0074`, `0x0076`, `0x0080` substate dispatchers.
+- `data/thor-evidence/rom_heavy_enemy_dispatch_m15_277.json` — machine-readable heavy/boss enemy dispatch specification.
+- `tests/rom_heavy_enemy_dispatch_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_277_HEAVY_ENEMY_DISPATCH_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.276 ROM Dungeon Enemy Families Dispatch (0x006C..0x0072)
+
+- `tools/extract_rom_dungeon_enemy_dispatch.py` — reusable ROM semantic extractor for `0x006C`, `0x006E`, `0x0070`, `0x0072` substate dispatchers.
+- `data/thor-evidence/rom_dungeon_enemy_dispatch_m15_276.json` — machine-readable dungeon enemy dispatch specification.
+- `tests/rom_dungeon_enemy_dispatch_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_276_DUNGEON_ENEMY_DISPATCH_HANDOFF.md` — implementation-ready Standalone handoff.
+
 # M15.275 ROM Universal Interaction Dispatcher & Story NPCs
 
 - `tools/extract_rom_interaction_dispatcher.py` — reusable ROM semantic extractor for `0x008330` (interaction routes) and `0x018EBE` (story NPCs).

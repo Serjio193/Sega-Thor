@@ -1,3 +1,17 @@
+# M15.277 ROM Heavy & Boss Enemy Families (`0x0068`, `0x0074`, `0x0076`, `0x0080`) Substate Dispatch — COMPLETE / VERIFIED
+
+- **Phase 1 Heavy / Boss Enemy Families (`$66(A6)`):**
+  * Decoded `0x0068` (`0x025B32`, 5 substates), `0x0074` (`0x027C8A`, 5 substates), `0x0076` (`0x0283E6`, 4 substates `& 0x7F`, 20f timer), and `0x0080` (`0x028810`, 3 substates, 40f timer).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_heavy_enemy_dispatch.py` ($\le 500$ lines), `tests/rom_heavy_enemy_dispatch_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_277_HEAVY_ENEMY_DISPATCH_HANDOFF.md`.
+
+# M15.276 ROM Dungeon Enemy Families (`0x006C..0x0072`) Substate Dispatch — COMPLETE / VERIFIED
+
+- **Phase 1 Dungeon Enemy Families (`$66(A6)`):**
+  * Decoded `0x006C` (`0x01F5A4`, 3 substates + variant table `0x01F5C8` `[3, 6, 9, 12]`), `0x006E` (`0x01EB54`, 10 substates), `0x0070` (`0x01DF1C`, 6 substates), and `0x0072` (`0x01D140`, 10-substate jump table `0x01D152`).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_dungeon_enemy_dispatch.py` ($\le 500$ lines), `tests/rom_dungeon_enemy_dispatch_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_276_DUNGEON_ENEMY_DISPATCH_HANDOFF.md`.
+
 # M15.275 ROM Universal Interaction Dispatcher (`0x008330`) & Story NPCs (`0x018EBE`) — COMPLETE / VERIFIED
 
 - **Phase 1 Interaction Dispatcher (`0x008330..0x0083D2`):**

@@ -1,0 +1,44 @@
+{
+  "milestone": "M15.276",
+  "description": "ROM Dungeon Enemy Families (0x006C, 0x006E, 0x0070, 0x0072) Substate Dispatch Contracts",
+  "substate_field": "$66(A6)",
+  "families": {
+    "0x006C": {
+      "handler": "0x01F5A4",
+      "substate_count": 3,
+      "variant_table": "0x01F5C8",
+      "variants": [
+        3,
+        6,
+        9,
+        12
+      ]
+    },
+    "0x006E": {
+      "handler": "0x01EB54",
+      "substate_count": 10
+    },
+    "0x0070": {
+      "handler": "0x01DF1C",
+      "substate_count": 6,
+      "shared_helper": "0x01DFA4"
+    },
+    "0x0072": {
+      "handler": "0x01D140",
+      "substate_count": 10,
+      "jump_table": "0x01D152",
+      "substates": {
+        "0": "0x01D412",
+        "1": "0x01DA20",
+        "2": "0x01DC14",
+        "3": "0x01D166",
+        "4": "0x01D194",
+        "5": "0x01D1D4",
+        "6": "0x01D226",
+        "7": "0x01D22E",
+        "8": "0x01D236",
+        "9": "0x01D23E"
+      }
+    }
+  }
+}

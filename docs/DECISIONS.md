@@ -1,3 +1,31 @@
+# ADR-20261116-M15-277-HEAVY-ENEMY-DISPATCH — ROM Heavy & Boss Enemy Families (`0x0068`, `0x0074`, `0x0076`, `0x0080`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone late-game/boss progression needed the `$66(A6)` substate dispatch structure for `0x0068`, `0x0074`, `0x0076`, `0x0080`.
+
+**Decisions:**
+1. **Heavy/Boss Dispatchers (`0x025B32`, `0x027C8A`, `0x0283E6`, `0x028810`):**
+   - Documented substate counts (5, 5, 4, 3), `& 0x7F` mask on `0x0076`, and initial timers (20f, 40f).
+
+**Consequences:**
+- Standalone receives verified heavy/boss enemy dispatch scaffolding; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-276-DUNGEON-ENEMY-DISPATCH — ROM Dungeon Enemy Families (`0x006C..0x0072`) Substate Dispatch
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone dungeon progression needed the `$66(A6)` substate dispatch structure for core enemy families `0x006C`, `0x006E`, `0x0070`, `0x0072`.
+
+**Decisions:**
+1. **Dungeon Enemy Dispatchers (`0x01F5A4`, `0x01EB54`, `0x01DF1C`, `0x01D140`):**
+   - Documented substate counts (3, 10, 6, 10), `0x006C` variant table `[3, 6, 9, 12]`, and `0x0072` jump table `0x01D152`.
+
+**Consequences:**
+- Standalone receives verified dungeon enemy dispatch scaffolding; all code/test files $\le 500$ lines.
+
 # ADR-20261116-M15-275-INTERACTION-DISPATCHER — ROM Universal Interaction Dispatcher (`0x008330`) & Story NPCs (`0x018EBE`)
 **Status:** Accepted
 **Date:** 2026-11-16

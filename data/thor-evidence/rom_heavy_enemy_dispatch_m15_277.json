@@ -1,0 +1,32 @@
+{
+  "milestone": "M15.277",
+  "description": "ROM Heavy / Boss Enemy Families (0x0068, 0x0074, 0x0076, 0x0080) Substate Dispatch",
+  "substate_field": "$66(A6)",
+  "families": {
+    "0x0068": {
+      "handler": "0x025B32",
+      "substate_count": 5,
+      "substate_0_target": "0x025D30",
+      "substate_1_target": "0x0263FA"
+    },
+    "0x0074": {
+      "handler": "0x027C8A",
+      "substate_count": 5,
+      "substate_0_target": "0x027DDA",
+      "substate_1_target": "0x027CAA"
+    },
+    "0x0076": {
+      "handler": "0x0283E6",
+      "substate_mask": "0x7F",
+      "substate_count": 4,
+      "substate_0_target": "0x0284E8",
+      "init_timer_frames": 20
+    },
+    "0x0080": {
+      "handler": "0x028810",
+      "substate_count": 3,
+      "substate_0_target": "0x0288C2",
+      "init_timer_frames": 40
+    }
+  }
+}

@@ -1,3 +1,17 @@
+# 2026-11-16 — Milestone M15.277: ROM HEAVY & BOSS ENEMY FAMILIES (`0x0068`, `0x0074`, `0x0076`, `0x0080`) — 0x0068 (5 substates), 0x0074 (5 substates), 0x0076 (4 substates & 0x7F, 20f), 0x0080 (3 substates, 40f); Extractor (tools/extract_rom_heavy_enemy_dispatch.py <= 500 lines), Tests (tests/rom_heavy_enemy_dispatch_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_277_HEAVY_ENEMY_DISPATCH_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x025B32`, `0x027C8A`, `0x0283E6`, and `0x028810`.
+  * Authored `tools/extract_rom_heavy_enemy_dispatch.py`, `tests/rom_heavy_enemy_dispatch_test.py` (3/3 PASS), `data/thor-evidence/rom_heavy_enemy_dispatch_m15_277.json`, and `docs/handoffs/STANDALONE_M15_277_HEAVY_ENEMY_DISPATCH_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.276: ROM DUNGEON ENEMY FAMILIES (`0x006C..0x0072`) SUBSTATE DISPATCH — 0x006C (3 substates, [3,6,9,12]), 0x006E (10 substates), 0x0070 (6 substates), 0x0072 (10-entry table 0x01D152); Extractor (tools/extract_rom_dungeon_enemy_dispatch.py <= 500 lines), Tests (tests/rom_dungeon_enemy_dispatch_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_276_DUNGEON_ENEMY_DISPATCH_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x01F5A4` (`0x006C`), `0x01EB54` (`0x006E`), `0x01DF1C` (`0x0070`), and `0x01D140` (`0x0072`).
+  * Authored `tools/extract_rom_dungeon_enemy_dispatch.py`, `tests/rom_dungeon_enemy_dispatch_test.py` (3/3 PASS), `data/thor-evidence/rom_dungeon_enemy_dispatch_m15_276.json`, and `docs/handoffs/STANDALONE_M15_276_DUNGEON_ENEMY_DISPATCH_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
 # 2026-11-16 — Milestone M15.275: ROM UNIVERSAL INTERACTION DISPATCHER (`0x008330`) & STORY NPCS (`0x018EBE`) — 16px Proximity (0x00B852), Routes 0x0032/0x0020/0x0094/0x0096/0x00BE/0x00B0 (SFX 0xA00264); Extractor (tools/extract_rom_interaction_dispatcher.py <= 500 lines), Tests (tests/rom_interaction_dispatcher_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_275_INTERACTION_DISPATCHER_HANDOFF.md) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
