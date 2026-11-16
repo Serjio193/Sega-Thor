@@ -1,3 +1,7 @@
+# M15.282 ROM Top-Level Game Mode State Machine (`0x00034E`..`0x000471`) — COMPLETE / VERIFIED
+- Decoded boot sequence (`0x00034E` checksum, `0x0003E6` WRAM clear `$FF0BFE`, `0x000412` sound init), `$FF10AC`/`$FF10AE` mode latch loop (`0x00042C`), and all 5 mode handlers (`0x00..0x10`) at `0x00045E`.
+- Authored `tools/extract_rom_game_modes.py`, `tests/rom_game_modes_test.py` (`2/2 PASS`), `data/thor-evidence/rom_game_modes_m15_282.json`, and `docs/handoffs/STANDALONE_M15_282_GAME_MODES_HANDOFF.md`.
+
 # M15.281 ROM Dialogue / Text Engine & 116-Entry String Table (`0x00C386`..`0x00C755`, `0x051514`) — COMPLETE / VERIFIED
 - Decoded font decompression (`0x16943C` via `0x003820`), 7 dialogue control codes (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07` at `0x00C40E..0x00C534`), glyph DMA emitter (`0x00C6BE`), epilogue drawer (`0x03D160`), and all 116 entries from `0x051514`.
 - Authored `tools/extract_rom_dialogue_engine.py`, `tests/rom_dialogue_engine_test.py` (`2/2 PASS`), `data/thor-evidence/rom_dialogue_engine_m15_281.json`, and `docs/handoffs/STANDALONE_M15_281_DIALOGUE_ENGINE_HANDOFF.md`.

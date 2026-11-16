@@ -1,3 +1,7 @@
+# ADR-20261116-M15-282-GAME-MODES — Top-Level Game Mode State Machine (`0x00034E`..`0x000471`)
+- **Decision:** Model Beyond Oasis's top-level application loop in Standalone via the 5-mode dispatch table at `0x00045E` (`0x00` Sega logo, `0x04` Title/Save Select, `0x08`/`0x0C` Gameplay, `0x10` Ending/Credits) latched from `$FF10AC` into `$FF10AE`.
+- **Evidence:** Direct Capstone M68K disassembly of `0x000200..0x000472`, `0x00307A`, `0x0032F8`, and `0x03A748` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-281-DIALOGUE-ENGINE — Dialogue / Text Engine (`0x00C386`..`0x00C755`, `0x051514`)
 - **Decision:** Model the Beyond Oasis dialogue renderer in Standalone using the 8x8 4bpp font (`0x16943C`, `(ch - 0x20) << 5`), the 116-entry `0x051514` self-relative `u16` string table, and the 7 control codes (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x00C386..0x00C755` and `0x03D160..0x03D210` in `local-roms/Beyond Oasis (USA).md`.

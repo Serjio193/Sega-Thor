@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.282: ROM TOP-LEVEL GAME MODE STATE MACHINE (`0x00034E`..`0x000471`) — 5 Modes (`0x00, 0x04, 0x08, 0x0C, 0x10`), `$FF10AC`/`$FF10AE` Latch; Extractor (`tools/extract_rom_game_modes.py` <= 500 lines), Tests (`tests/rom_game_modes_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_282_GAME_MODES_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x000200..0x000472` and mode entries `0x00307A`, `0x0032F8`, `0x03A748` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_game_modes.py` (5 modes, 9 `$FF10AC` refs) and `python tests/rom_game_modes_test.py` (2/2 PASS).
+- Next: Check Standalone M16.69 completion & push; continue with M15.283.
+
 # 2026-11-16 — Milestone M15.281: ROM DIALOGUE / TEXT ENGINE & 116-ENTRY STRING TABLE (`0x00C386`..`0x00C755`, `0x051514`) — Font `0x16943C`, 7 Control Codes (`0x00..0x07`), 116 Strings; Extractor (`tools/extract_rom_dialogue_engine.py` <= 500 lines), Tests (`tests/rom_dialogue_engine_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_281_DIALOGUE_ENGINE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00C386..0x00C755` and `0x03D160..0x03D210` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_dialogue_engine.py` (116 entries) and `python tests/rom_dialogue_engine_test.py` (2/2 PASS).

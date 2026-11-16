@@ -1,3 +1,9 @@
+# M15.282 ROM Top-Level Game Mode State Machine
+- `tools/extract_rom_game_modes.py` — Extracts mode table `0x00045E` (`0x00..0x10`) & `$FF10AC` transition sites.
+- `tests/rom_game_modes_test.py` — Unit tests verifying all 5 mode handler pointers and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_game_modes_m15_282.json` — Extracted game mode state machine evidence.
+- `docs/handoffs/STANDALONE_M15_282_GAME_MODES_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.281 ROM Dialogue / Text Engine & 116-Entry String Table
 - `tools/extract_rom_dialogue_engine.py` — Extracts dialogue control codes, font ref `0x16943C`, and 116 strings from `0x051514`.
 - `tests/rom_dialogue_engine_test.py` — Unit tests verifying 116 dialogue entries and JSON artifact (`2/2 PASS`).
