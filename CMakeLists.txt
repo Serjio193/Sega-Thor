@@ -38,6 +38,7 @@ add_library(oasis_core
     src/game/items/item_attribute_tables.cpp
     src/game/ui/ring_menu_and_rank.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp
+    src/game/enemy/dungeon_enemy_dispatch.cpp
     src/game/audio/sound_command_dispatch.cpp
     src/game/spirits/efreet_controller.cpp
     src/game/spirits/shade_bow_controllers.cpp
@@ -74,6 +75,7 @@ add_library(oasis_core
     src/game/spirits/dytto_abilities.cpp
     src/game/spirits/dytto_controller.cpp
     src/game/interaction/interaction_system.cpp
+    src/game/interaction/interaction_dispatcher.cpp
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp
 )

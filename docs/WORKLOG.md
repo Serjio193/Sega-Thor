@@ -1,3 +1,33 @@
+# Worklog — 2026-11-16 (M16.67: Dungeon Enemy Families 0x006C..0x0072 Substate Dispatch)
+- **Concrete Task**: Implement `src/game/enemy/dungeon_enemy_dispatch.hpp/.cpp` with `DungeonEnemyFamilySpec`, `lookup_dungeon_enemy_family` (`0x006C` `0x01F5A4` 3 substates / `[3, 6, 9, 12]` at `0x01F5C8`, `0x006E` `0x01EB54` 10 substates, `0x0070` `0x01DF1C` 6 substates / helper `0x01DFA4`, `0x0072` `0x01D140` 10-substate jump table `0x01D152`), and `DungeonEnemySubstateController` (`$66(A6)` clamping/reset, `0x006C` `$96 -> $90`, `0x0072` target resolution `0..9`); add `tests/m16_67_dungeon_enemy_dispatch_test.cpp`; qualify full 27-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/enemy/dungeon_enemy_dispatch.hpp` / `src/game/enemy/dungeon_enemy_dispatch.cpp`.
+  * Added `tests/m16_67_dungeon_enemy_dispatch_test.cpp` (registered as `oasis_m16_67_dungeon_enemy_dispatch` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 27/27 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_67`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 27/27 regression run.
+  * Remaining unknowns: Full per-substate AI behavior inside `0x006C..0x0072` handlers is deferred to dungeon room integration.
+
+# Worklog — 2026-11-16 (M16.66: Universal Interaction Dispatcher & Story NPCs / Signposts)
+- **Concrete Task**: Implement `src/game/interaction/interaction_dispatcher.hpp/.cpp` with `InteractionRoute`, `evaluate_interaction_proximity_and_facing` (`0x008330`: `16` px proximity `0x00B852` + facing check `0x00E338`), `dispatch_interaction_by_type` (`0x0032 -> 0x018BBC`, `0x0020 -> 0x018CAA`, `0x0094`/`0x0096`/`0x00BE -> 0x018EBE`, `0x00B0 -> 0x00839E` SFX `0xA00264`, freeze `0x3F`, dialogue `0x00C2EC`), and `resolve_story_npc_post_dialogue_hook` (`0x24 -> 0x018FAA`, `0x2F -> 0x018FF0`, `0x30 -> 0x01903C`, `0x39 -> 0x019048`); add `tests/m16_66_interaction_dispatcher_test.cpp`; qualify full 26-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/interaction/interaction_dispatcher.hpp` / `src/game/interaction/interaction_dispatcher.cpp`.
+  * Added `tests/m16_66_interaction_dispatcher_test.cpp` (registered as `oasis_m16_66_interaction_dispatcher` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 26/26 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_66`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 26/26 regression run.
+  * Remaining unknowns: Full runtime wiring of `0x00B0` Signpost freeze `0x3F` and `0x018EBE` Story NPC post-dialogue cutscenes into `StandaloneGameSimulation::step_frame` is deferred to future scene/story integration.
+
+# Worklog — 2026-11-16 (M16.65: Shade & Bow Controllers & Abilities)
+- **Concrete Task**: Implement `src/game/spirits/shade_bow_controllers.hpp/.cpp` with `ShadeSpiritController` (`0x001C`, state table `0x013008`, 40-frame SP drain, despawn `0x0136CC`, Shadow Tether `0x013036` `7` SP -> State `0x06` / Action `0x02` / `$FF1982 = 0xFF`, Shadow Surge `0x013180` -> State `0x0C` / Action `0x0E`) and `BowSpiritController` (`0x001E`, state table `0x0138E6`, 30-frame SP drain, despawn `0x013F22`, Bite `0x013934` `4` SP, Pollen / Vine `0x0139BA` `9` SP -> helper `0x013FDC` / State `0x04` / Action `0x00`, Plant Storm `0x013A18` `28` SP -> State `0x0A` / Action `0x10`); add `tests/m16_65_shade_bow_abilities_test.cpp`; qualify full 25-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/spirits/shade_bow_controllers.hpp` / `src/game/spirits/shade_bow_controllers.cpp`.
+  * Added `tests/m16_65_shade_bow_abilities_test.cpp` (registered as `oasis_m16_65_shade_bow_abilities` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 25/25 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_65`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 25/25 regression run.
+  * Remaining unknowns: Shade/Bow SAT sprite rendering and combat hitbox damage are deferred to future spirit-rendering/combat integration.
+
 # Worklog — 2026-11-16 (M16.64: Shared Spirit SP-Cost Guard & Efreet Abilities)
 - **Concrete Task**: Implement `src/game/spirits/efreet_controller.hpp/.cpp` with `try_consume_spirit_ability_sp` (`0x011B28`: `player_sp - cost >= 1`) and `EfreetSpiritController` (`0x001A`, state table `0x0125AE`, 35-frame SP drain, despawn `0x012BA8`, Fire Dash `8` SP -> State `0x08` / Action `0x0C` / speed `0x0100` / SFX `0x800258`, Flame Pillar `6` SP -> State `0x0A` / Action `0x02` / helper `$FF1C1C`, Meltdown `25` SP -> State `0x0C` / Action `0x08` / duration `96 + level`, Dismiss `0` SP -> State `0x10` / Action `0x0A`); add `tests/m16_64_efreet_abilities_test.cpp`; qualify full 24-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,21 @@
+# M16.67 Dungeon Enemy Families (0x006C..0x0072) Substate Dispatch — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `DungeonEnemyFamilySpec`, `lookup_dungeon_enemy_family`, `lookup_006c_variant_param` (`[3, 6, 9, 12]` at `0x01F5C8`), `resolve_0072_substate_target` (`0x01D152`), and `DungeonEnemySubstateController` in `src/game/enemy/dungeon_enemy_dispatch.hpp/.cpp`.
+- Qualified `oasis_m16_67_dungeon_enemy_dispatch` and full 27-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.66 Universal Interaction Dispatcher (0x008330) & Story NPCs / Signposts (0x018EBE, 0x00B0) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `InteractionRoute`, `evaluate_interaction_proximity_and_facing` (`0x00B852` 16 px + `0x00E338` facing), `dispatch_interaction_by_type` (`0x0032`, `0x0020`, `0x0094`/`0x0096`/`0x00BE`, `0x00B0`), and `resolve_story_npc_post_dialogue_hook` (`0x24`, `0x2F`, `0x30`, `0x39`) in `src/game/interaction/interaction_dispatcher.hpp/.cpp`.
+- Qualified `oasis_m16_66_interaction_dispatcher` and full 26-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.65 Shade (0x001C) & Bow (0x001E) Controllers & Abilities — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `ShadeSpiritController` (`0x001C`: Shadow Tether `7` SP / State `0x06` / Action `0x02` / `$FF1982 = 0xFF`, Shadow Surge State `0x0C` / Action `0x0E`, 40-frame SP drain) and `BowSpiritController` (`0x001E`: Bite `4` SP, Pollen / Vine `9` SP / helper `0x013FDC` / State `0x04` / Action `0x00`, Plant Storm `28` SP / State `0x0A` / Action `0x10`, 30-frame SP drain) in `src/game/spirits/shade_bow_controllers.hpp/.cpp`.
+- Qualified `oasis_m16_65_shade_bow_abilities` and full 25-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.64 Shared Spirit SP-Cost Guard (0x011B28) & Efreet (0x001A) Abilities — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

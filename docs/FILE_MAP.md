@@ -1,5 +1,11 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/enemy/dungeon_enemy_dispatch.hpp` / `src/game/enemy/dungeon_enemy_dispatch.cpp`: Dungeon enemy families (`0x006C..0x0072`) `$66(A6)` substate dispatch specs, `0x006C` variant table `0x01F5C8` (`[3, 6, 9, 12]`), `0x0072` jump table `0x01D152`, and `DungeonEnemySubstateController` (M16.67).
+- `tests/m16_67_dungeon_enemy_dispatch_test.cpp`: Automated M16.67 test qualifying `0x006C..0x0072` family specs, `0x006C` variants, `0x0072` substate target PCs, and `$66(A6)` clamping/wrapping (M16.67).
+- `src/game/interaction/interaction_dispatcher.hpp` / `src/game/interaction/interaction_dispatcher.cpp`: Universal Interaction Dispatcher (`0x008330`, `0x00B852` 16 px proximity, `0x00E338` facing) routing `0x0032`, `0x0020`, `0x0094`/`0x0096`/`0x00BE` (`0x018EBE` + hooks `0x24`/`0x2F`/`0x30`/`0x39`), and `0x00B0` Signpost (`0x00839E`, SFX `0xA00264`, freeze `0x3F`) (M16.66).
+- `tests/m16_66_interaction_dispatcher_test.cpp`: Automated M16.66 test qualifying `0x008330` proximity/facing gate, entity-type routing, and Story NPC post-dialogue hooks (M16.66).
+- `src/game/spirits/shade_bow_controllers.hpp` / `src/game/spirits/shade_bow_controllers.cpp`: Shade (`0x001C`: Shadow Tether `7` SP, Shadow Surge, 40-frame SP drain) and Bow (`0x001E`: Bite `4` SP, Pollen / Vine `9` SP, Plant Storm `28` SP, 30-frame SP drain) controllers (M16.65).
+- `tests/m16_65_shade_bow_abilities_test.cpp`: Automated M16.65 test qualifying Shade and Bow ability SP guards, state/action transitions, and 40/30-frame SP drain despawn (M16.65).
 - `src/game/spirits/efreet_controller.hpp` / `src/game/spirits/efreet_controller.cpp`: Shared spirit SP-cost guard (`0x011B28`) and Efreet (`0x001A`) controller implementing Fire Dash (`8` SP), Flame Pillar (`6` SP), Meltdown (`25` SP), Dismiss (`0` SP), and 35-frame SP drain (M16.64).
 - `tests/m16_64_efreet_abilities_test.cpp`: Automated M16.64 test qualifying `0x011B28` SP guard, Efreet abilities, and 35-frame SP drain despawn (M16.64).
 - `src/game/items/item_attribute_tables.hpp` / `src/game/items/item_attribute_tables.cpp`: ROM 64-byte Item Attribute Table (`0x05CE16` bit 5 non-discardable), Pickup Fanfare Tier Table (`0x05CE56`/`0x007A6C`), and pickup persistent flag setter (`0x007AF0`) (M16.63).

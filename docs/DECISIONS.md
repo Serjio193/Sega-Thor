@@ -1,3 +1,36 @@
+# ADR-20261116-M16-67-DUNGEON-ENEMY-DISPATCH — Dungeon Enemy Families (0x006C..0x0072) Substate Dispatch
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.276 extracted `$66(A6)` substate dispatch contracts for dungeon enemy families `0x006C` (`0x01F5A4`, 3 substates, `[3, 6, 9, 12]` at `0x01F5C8`), `0x006E` (`0x01EB54`, 10 substates), `0x0070` (`0x01DF1C`, 6 substates, helper `0x01DFA4`), and `0x0072` (`0x01D140`, 10-substate jump table `0x01D152`).
+
+**Decisions:**
+1. **Dedicated `dungeon_enemy_dispatch` Module:**
+   - Added `src/game/enemy/dungeon_enemy_dispatch.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
+# ADR-20261116-M16-66-INTERACTION-DISPATCHER — Universal Interaction Dispatcher (0x008330) & Story NPCs / Signposts
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.275 extracted the Universal Interaction Dispatcher (`0x008330`: 16 px proximity `0x00B852` + facing check `0x00E338`), entity-type routing (`0x0032 -> 0x018BBC`, `0x0020 -> 0x018CAA`, `0x0094`/`0x0096`/`0x00BE -> 0x018EBE`, `0x00B0 -> 0x00839E`), and Story NPC post-dialogue hooks (`0x24`, `0x2F`, `0x30`, `0x39`).
+
+**Decisions:**
+1. **Dedicated `interaction_dispatcher` Module:**
+   - Added `src/game/interaction/interaction_dispatcher.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
+# ADR-20261116-M16-65-SHADE-BOW-CONTROLLERS — Shade (0x001C) & Bow (0x001E) Controllers & Abilities
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.274 extracted Shade's (`0x001C`, state table `0x013008`, 40-frame SP drain, despawn `0x0136CC`) Shadow Tether (`0x013036`: `7` SP, State `0x06`, Action `0x02`, `$FF1982 = 0xFF`) and Shadow Surge (`0x013180`: State `0x0C`, Action `0x0E`), plus Bow's (`0x001E`, state table `0x0138E6`, 30-frame SP drain, despawn `0x013F22`) Bite (`0x013934`: `4` SP), Pollen / Vine (`0x0139BA`: `9` SP, helper `0x013FDC`, State `0x04`, Action `0x00`), and Plant Storm (`0x013A18`: `28` SP, State `0x0A`, Action `0x10`).
+
+**Decisions:**
+1. **Dedicated `shade_bow_controllers` Module:**
+   - Added `src/game/spirits/shade_bow_controllers.hpp/.cpp` reusing `try_consume_spirit_ability_sp` (`0x011B28`) from `efreet_controller.hpp`, keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
 # ADR-20261116-M16-64-EFREET-ABILITIES-AND-SP-GUARD — Shared Spirit SP-Cost Guard (0x011B28) & Efreet (0x001A) Abilities
 **Status:** Accepted
 **Date:** 2026-11-16
