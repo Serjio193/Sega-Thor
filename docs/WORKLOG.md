@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.71: Dialogue / Text Engine & 116-Entry String Table)
+- **Concrete Task**: Implement `src/game/dialogue/dialogue_engine.hpp/.cpp` with `DialogueControlCode` (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07`), `lookup_dialogue_rom_addr` (`0x051514` 116-entry self-relative `u16` offset table), `glyph_rom_offset` (`(ch - 0x20) * 32` in `0x16943C` font), and `DialogueEngineState` / `DialogueEngine::step_frame(button_pressed)` (`$FF187E` col, `$FF1880` line `0..3`, `$FF1876..$FF187C` `{0x0C, 0x18, 0x24, 0x30}`, delay countdown, button-wait); add `tests/m16_71_dialogue_engine_test.cpp`; qualify full 31-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/dialogue/dialogue_engine.hpp` / `src/game/dialogue/dialogue_engine.cpp`.
+  * Added `tests/m16_71_dialogue_engine_test.cpp` (registered as `oasis_m16_71_dialogue_engine` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 31/31 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_71`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 31/31 regression run.
+  * Remaining unknowns: Direct VDP nametable/DMA glyph streaming from `DialogueEngine` into `DialogueWindow` is deferred to future UI/VDP unification.
+
 # Worklog — 2026-11-17 (M16.70: Event VM Main 31-Opcode ISA & Opcode 0x12 Conditional Branch)
 - **Concrete Task**: Implement `src/game/events/event_vm.hpp/.cpp` modeling `EventVmState` (`$FF17B2..$FF1836`, flags `$FF0DBC/$FF0E1C/$FF0E2C`, player/spirit coords/HP/SP, 17-slot entity table `$FF1CD8`), all 31 Event VM opcodes (`0x00..0x1E` per `0x00F7D0`), `step_frame()` / `execute_opcode()` (`0x00F788..0x00F80D`), and full Opcode `0x12` (`0x00FAB2`) conditional branch evaluator (12 sub-actions `0x00..0x0B` at `0x00FAC2`, 6 comparators `0,2,4,6,8,10` at `0x00FB64`, `pc += s16(+6)` or `pc += 8`); add `tests/m16_70_event_vm_test.cpp`; qualify full 30-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

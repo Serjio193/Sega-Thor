@@ -71,6 +71,7 @@ add_library(oasis_core
     src/game/event/event_vm.cpp
     src/game/events/event_vm.cpp
     src/game/npc_dialogue_handler.cpp
+    src/game/dialogue/dialogue_engine.cpp
     src/game/render/dialogue_window.cpp
     src/game/render/dytto_sat_renderer.cpp
     src/game/spirits/spirit_awakening.cpp

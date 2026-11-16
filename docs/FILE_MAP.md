@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/dialogue/dialogue_engine.hpp` / `src/game/dialogue/dialogue_engine.cpp`: Dialogue/text engine (`0x00C386..0x00C755`), 116-entry `0x051514` string table lookup, `0x16943C` font glyph indexing, and 7 control codes (`0x00..0x07`) (M16.71).
+- `tests/m16_71_dialogue_engine_test.cpp`: Automated M16.71 test qualifying `0x051514` string lookup, glyph offset math, and frame-by-frame control code execution (M16.71).
 - `src/game/events/event_vm.hpp` / `src/game/events/event_vm.cpp`: Event VM 31-opcode ISA (`0x00F788..0x00F80D`, opcodes `0x00..0x1E`) and Opcode `0x12` conditional branch evaluator (`0x00FAB2..0x00FC6B`, 12 sub-actions, 6 comparators) (M16.70).
 - `tests/m16_70_event_vm_test.cpp`: Automated M16.70 test qualifying all 31 opcode targets, 6 comparators, 12 Opcode `0x12` sub-actions, and multi-frame script execution (M16.70).
 - `tests/m16_69_bgm_track_table_test.cpp`: Automated M16.69 test qualifying `0x0638D4` BGM sequence offset table resolution, `Z80BusHandshakeState` (`0x060B68..0x060BC4`), and `SoundDriverState::dispatch_queue` BGM ROM address tracking (M16.69).

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-71-DIALOGUE-ENGINE — Dialogue / Text Engine & 116-Entry String Table (0x00C386..0x00C755)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.281 extracted the ROM dialogue engine (`0x00C386..0x00C755`), 116-entry `u16` self-relative string table (`0x051514`), `0x16943C` font (`(ch - 0x20) * 32`), and 7 control codes (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07`).
+
+**Decisions:**
+1. **Dedicated `dialogue_engine` Module:**
+   - Added `src/game/dialogue/dialogue_engine.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-70-EVENT-VM-ISA-AND-OP12 — Event VM Main 31-Opcode ISA (0x00F788..0x00F80D) & Opcode 0x12 Conditional Branch
 **Status:** Accepted
 **Date:** 2026-11-17

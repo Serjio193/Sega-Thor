@@ -1,3 +1,9 @@
+# M16.71 Dialogue / Text Engine & 116-Entry String Table (0x00C386..0x00C755, 0x051514, Font 0x16943C) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `DialogueControlCode` (`0x00..0x07`), `lookup_dialogue_rom_addr` (`0x051514`, 116 entries), `glyph_rom_offset` (`(ch - 0x20) * 32`), and `DialogueEngine::step_frame()` in `src/game/dialogue/dialogue_engine.hpp/.cpp`.
+- Qualified `oasis_m16_71_dialogue_engine` and full 31-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.70 Event VM Main 31-Opcode ISA (0x00F788..0x00F80D) & Opcode 0x12 Conditional Branch (0x00FAB2..0x00FC6B) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

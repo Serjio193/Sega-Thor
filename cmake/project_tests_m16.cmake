@@ -175,3 +175,7 @@ add_test(NAME oasis_m16_69_bgm_track_table COMMAND oasis_m16_69_bgm_track_table_
 add_executable(oasis_m16_70_event_vm_test tests/m16_70_event_vm_test.cpp)
 target_link_libraries(oasis_m16_70_event_vm_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_70_event_vm COMMAND oasis_m16_70_event_vm_test)
+
+add_executable(oasis_m16_71_dialogue_engine_test tests/m16_71_dialogue_engine_test.cpp)
+target_link_libraries(oasis_m16_71_dialogue_engine_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_71_dialogue_engine COMMAND oasis_m16_71_dialogue_engine_test)
