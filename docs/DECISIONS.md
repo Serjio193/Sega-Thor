@@ -1,3 +1,25 @@
+# ADR-20261116-M16-64-EFREET-ABILITIES-AND-SP-GUARD — Shared Spirit SP-Cost Guard (0x011B28) & Efreet (0x001A) Abilities
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.273 extracted the shared spirit SP-cost guard (`0x011B28`: `player_sp - cost >= 1`) and Efreet's (`0x001A`, state table `0x0125AE`) Fire Dash (`8` SP), Flame Pillar (`6` SP), Meltdown (`25` SP), and Dismiss (`0` SP) contracts.
+
+**Decisions:**
+1. **Dedicated `efreet_controller` Module:**
+   - Added `src/game/spirits/efreet_controller.hpp/.cpp` providing `try_consume_spirit_ability_sp` and `EfreetSpiritController`, keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
+# ADR-20261116-M16-63-ITEM-ATTRIBUTE-TABLES — Item Attribute (0x05CE16) & Pickup Fanfare Tier Tables (0x05CE56, 0x007A6C)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.272 extracted the 64-byte Item Attribute Table (`0x05CE16`, bit 5 non-discardable), 64-byte Pickup Fanfare Tier Table (`0x05CE56`, tiers 0..4 at `0x007A6C`), and pickup persistent flag setter (`0x007AF0`).
+
+**Decisions:**
+1. **Dedicated `item_attribute_tables` Module & Discard Guard:**
+   - Added `src/game/items/item_attribute_tables.hpp/.cpp` and wired `is_item_non_discardable` into `discard_inventory_slot` (`item_effects.hpp/.cpp`), keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
 # ADR-20261116-M16-62-SPIRITS-SP-DRAIN-AND-DESPAWN — All-Spirits Live SP Drain (45/35/40/30f) & Despawn Contracts
 **Status:** Accepted
 **Date:** 2026-11-16

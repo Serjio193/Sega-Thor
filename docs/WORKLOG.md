@@ -1,3 +1,24 @@
+# Worklog — 2026-11-16 (M16.64: Shared Spirit SP-Cost Guard & Efreet Abilities)
+- **Concrete Task**: Implement `src/game/spirits/efreet_controller.hpp/.cpp` with `try_consume_spirit_ability_sp` (`0x011B28`: `player_sp - cost >= 1`) and `EfreetSpiritController` (`0x001A`, state table `0x0125AE`, 35-frame SP drain, despawn `0x012BA8`, Fire Dash `8` SP -> State `0x08` / Action `0x0C` / speed `0x0100` / SFX `0x800258`, Flame Pillar `6` SP -> State `0x0A` / Action `0x02` / helper `$FF1C1C`, Meltdown `25` SP -> State `0x0C` / Action `0x08` / duration `96 + level`, Dismiss `0` SP -> State `0x10` / Action `0x0A`); add `tests/m16_64_efreet_abilities_test.cpp`; qualify full 24-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/spirits/efreet_controller.hpp` / `src/game/spirits/efreet_controller.cpp`.
+  * Added `tests/m16_64_efreet_abilities_test.cpp` (registered as `oasis_m16_64_efreet_abilities` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 24/24 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_64`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 24/24 regression run.
+  * Remaining unknowns: Efreet SAT sprite rendering and Fire-elemental combat hitbox damage (`0x0126AC..0x012914`) are deferred to future spirit-rendering/combat integration.
+
+# Worklog — 2026-11-16 (M16.63: Item Attribute & Pickup Fanfare Tier Tables)
+- **Concrete Task**: Implement `src/game/items/item_attribute_tables.hpp/.cpp` with `get_item_attribute_byte` / `is_item_non_discardable` (`0x05CE16` bit 5 / `0x20`), `resolve_pickup_outcome` (`0x05CE56` / `0x007A6C`: Tier 0 `0xC0035F`, Tier 1 `0xC00360`, Tier 2 `0xC00361`, Tier 3 Fanfare `0x0508` + State `0x44`/`Action 0x4A`, Tier 4 Fanfare `0x050D` + State `0x44`/`Action 0x4A`), and `apply_pickup_persistent_flag` (`0x007AF0` across banks 1/2/3); wire `is_item_non_discardable` into `discard_inventory_slot` (`src/game/items/item_effects.hpp/.cpp`); add `tests/m16_63_item_attribute_tables_test.cpp`; qualify full 23-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/items/item_attribute_tables.hpp` / `src/game/items/item_attribute_tables.cpp`.
+  * Added `discard_inventory_slot` with `is_item_non_discardable` guard in `src/game/items/item_effects.hpp/.cpp`.
+  * Added `tests/m16_63_item_attribute_tables_test.cpp` (registered as `oasis_m16_63_item_attribute_tables` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 23/23 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_63`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 23/23 regression run.
+  * Remaining unknowns: Tier 3/4 fanfare Player State `0x44` / Action `0x4A` animation playback is not yet wired into `StandaloneGameSimulation::step_frame`.
+
 # Worklog — 2026-11-16 (M16.62: All-Spirits Live SP Drain & Despawn Contracts)
 - **Concrete Task**: Extend `SpiritResourceSpec` in `src/game/spirits/all_spirits_registry.hpp/.cpp` with `sp_drain_interval_frames` (`45` Dytto, `35` Efreet, `40` Shade, `30` Bow), `despawn_handler_pc` (`0x012314`, `0x012BA8`, `0x0136CC`, `0x013F22`), and `state_table_pc` (`0x011BAC`, `0x0125AE`, `0x013008`, `0x0138E6`); implement `ActiveSpiritController::step_sp_drain(uint16_t& player_sp)` modeling `$8E(A6)` countdown and clean despawn on 0 SP; add `tests/m16_62_spirits_sp_drain_test.cpp`; qualify full 22-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

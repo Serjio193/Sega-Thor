@@ -35,9 +35,12 @@ add_library(oasis_core
     src/game/combat/elemental_damage.cpp
     src/game/save/sram_save_system.cpp
     src/game/items/item_effects.cpp
+    src/game/items/item_attribute_tables.cpp
     src/game/ui/ring_menu_and_rank.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp
     src/game/audio/sound_command_dispatch.cpp
+    src/game/spirits/efreet_controller.cpp
+    src/game/spirits/shade_bow_controllers.cpp
     src/game/spirits/all_spirits_registry.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp

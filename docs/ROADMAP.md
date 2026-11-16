@@ -1,3 +1,16 @@
+# M16.64 Shared Spirit SP-Cost Guard (0x011B28) & Efreet (0x001A) Abilities — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `try_consume_spirit_ability_sp` (`0x011B28`) and `EfreetSpiritController` (`0x001A`: Fire Dash `8` SP, Flame Pillar `6` SP, Meltdown `25` SP `96 + level`, Dismiss `0` SP, 35-frame SP drain) in `src/game/spirits/efreet_controller.hpp/.cpp`.
+- Qualified `oasis_m16_64_efreet_abilities` and full 24-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.63 Item Attribute (0x05CE16) & Pickup Fanfare Tier Tables (0x05CE56, 0x007A6C) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `get_item_attribute_byte`, `is_item_non_discardable` (`0x05CE16` bit 5), `resolve_pickup_outcome` (`0x05CE56`/`0x007A6C` tiers 0..4), and `apply_pickup_persistent_flag` (`0x007AF0` banks 1/2/3) in `src/game/items/item_attribute_tables.hpp/.cpp`.
+- Wired `is_item_non_discardable` into `discard_inventory_slot` (`src/game/items/item_effects.hpp/.cpp`).
+- Qualified `oasis_m16_63_item_attribute_tables` and full 23-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.62 All-Spirits Live SP Drain (45/35/40/30 frames) & Despawn Contracts — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

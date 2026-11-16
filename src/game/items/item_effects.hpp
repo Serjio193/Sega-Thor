@@ -73,4 +73,11 @@ ItemEffectResult use_inventory_slot(
     std::int32_t spawn_x = 0,
     std::int32_t spawn_y = 0) noexcept;
 
+// Attempts to discard `slot_index` from `wram`; returns false if item is empty or
+// marked non-discardable (bit 5 / 0x20) in ROM 0x05CE16.
+bool discard_inventory_slot(
+    save::PersistentWramBlock& wram,
+    std::size_t slot_index,
+    std::span<const std::uint8_t> rom) noexcept;
+
 } // namespace oasis::game::items

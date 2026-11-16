@@ -1,4 +1,5 @@
 #include "game/items/item_effects.hpp"
+#include "game/items/item_attribute_tables.hpp"
 
 #include <algorithm>
 
@@ -153,6 +154,19 @@ ItemEffectResult use_inventory_slot(
     }
 
     return res;
+}
+
+bool discard_inventory_slot(
+    save::PersistentWramBlock& wram,
+    std::size_t slot_index,
+    std::span<const std::uint8_t> rom) noexcept {
+    const std::uint8_t item_id = wram.item_id(slot_index);
+    const std::uint8_t count = wram.item_count(slot_index);
+    if (item_id == 0U || count == 0U || is_item_non_discardable(rom, item_id)) {
+        return false;
+    }
+    wram.set_item_slot(slot_index, 0U, 0U);
+    return true;
 }
 
 } // namespace oasis::game::items

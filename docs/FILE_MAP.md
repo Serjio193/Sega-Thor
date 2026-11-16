@@ -1,5 +1,9 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/spirits/efreet_controller.hpp` / `src/game/spirits/efreet_controller.cpp`: Shared spirit SP-cost guard (`0x011B28`) and Efreet (`0x001A`) controller implementing Fire Dash (`8` SP), Flame Pillar (`6` SP), Meltdown (`25` SP), Dismiss (`0` SP), and 35-frame SP drain (M16.64).
+- `tests/m16_64_efreet_abilities_test.cpp`: Automated M16.64 test qualifying `0x011B28` SP guard, Efreet abilities, and 35-frame SP drain despawn (M16.64).
+- `src/game/items/item_attribute_tables.hpp` / `src/game/items/item_attribute_tables.cpp`: ROM 64-byte Item Attribute Table (`0x05CE16` bit 5 non-discardable), Pickup Fanfare Tier Table (`0x05CE56`/`0x007A6C`), and pickup persistent flag setter (`0x007AF0`) (M16.63).
+- `tests/m16_63_item_attribute_tables_test.cpp`: Automated M16.63 test qualifying `0x05CE16` attributes, `0x05CE56` tiers 0..4, `0x007AF0` flag setter, and `discard_inventory_slot` key-item protection (M16.63).
 - `tests/m16_62_spirits_sp_drain_test.cpp`: Automated M16.62 test qualifying `45/35/40/30`-frame SP drain intervals, despawn handlers (`0x012314..0x013F22`), state tables (`0x011BAC..0x0138E6`), and `ActiveSpiritController::step_sp_drain` clean despawn (M16.62).
 - `src/game/audio/sound_command_dispatch.hpp` / `src/game/audio/sound_command_dispatch.cpp`: ROM sound driver entrypoints (`0x060000..0x060008` -> `0x060090`, `0x06042A`, `0x061232`) and `d0.L` command classifier/dispatcher (`0x00..0x08` & `0x0100..0x0500`) (M16.61).
 - `tests/m16_61_sound_command_dispatch_test.cpp`: Automated M16.61 test qualifying ROM `0x060000..0x060008` branch targets, command classification (`0x80034F`, `0x800399`, `0x8004D9`, `0xA00234`, `0x0002`), and `SoundCommandQueue` dispatch (M16.61).
