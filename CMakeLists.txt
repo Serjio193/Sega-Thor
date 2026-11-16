@@ -39,6 +39,7 @@ add_library(oasis_core
     src/game/ui/ring_menu_and_rank.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp
     src/game/enemy/dungeon_enemy_dispatch.cpp
+    src/game/enemy/heavy_enemy_dispatch.cpp
     src/game/audio/sound_command_dispatch.cpp
     src/game/spirits/efreet_controller.cpp
     src/game/spirits/shade_bow_controllers.cpp

@@ -1,3 +1,13 @@
+# Worklog — 2026-11-16 (M16.68: Heavy & Boss Enemy Families 0x0068, 0x0074, 0x0076, 0x0080 Substate Dispatch)
+- **Concrete Task**: Implement `src/game/enemy/heavy_enemy_dispatch.hpp/.cpp` with `HeavyEnemyFamilySpec`, `lookup_heavy_enemy_family` (`0x0068` `0x025B32` 5 substates `0x025D30`/`0x0263FA`, `0x0074` `0x027C8A` 5 substates `0x027DDA`/`0x027CAA`, `0x0076` `0x0283E6` 4 substates `& 0x7F` `0x0284E8` timer `20` Z `0x20` `$90 = $96`, `0x0080` `0x028810` 3 substates `0x0288C2` timer `40` State `6` Action `4` `$90 = $96`), and `HeavyEnemySubstateController`; add `tests/m16_68_heavy_enemy_dispatch_test.cpp`; qualify full 28-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/enemy/heavy_enemy_dispatch.hpp` / `src/game/enemy/heavy_enemy_dispatch.cpp`.
+  * Added `tests/m16_68_heavy_enemy_dispatch_test.cpp` (registered as `oasis_m16_68_heavy_enemy_dispatch` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 28/28 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_68`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 28/28 regression run.
+  * Remaining unknowns: Full per-substate AI behavior inside `0x0068`/`0x0074`/`0x0076`/`0x0080` handlers is deferred to boss/dungeon integration.
+
 # Worklog — 2026-11-16 (M16.67: Dungeon Enemy Families 0x006C..0x0072 Substate Dispatch)
 - **Concrete Task**: Implement `src/game/enemy/dungeon_enemy_dispatch.hpp/.cpp` with `DungeonEnemyFamilySpec`, `lookup_dungeon_enemy_family` (`0x006C` `0x01F5A4` 3 substates / `[3, 6, 9, 12]` at `0x01F5C8`, `0x006E` `0x01EB54` 10 substates, `0x0070` `0x01DF1C` 6 substates / helper `0x01DFA4`, `0x0072` `0x01D140` 10-substate jump table `0x01D152`), and `DungeonEnemySubstateController` (`$66(A6)` clamping/reset, `0x006C` `$96 -> $90`, `0x0072` target resolution `0..9`); add `tests/m16_67_dungeon_enemy_dispatch_test.cpp`; qualify full 27-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,9 @@
+# M16.68 Heavy & Boss Enemy Families (0x0068, 0x0074, 0x0076, 0x0080) Substate Dispatch — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `HeavyEnemyFamilySpec`, `lookup_heavy_enemy_family`, and `HeavyEnemySubstateController` (`0x0068`, `0x0074`, `0x0076` `& 0x7F` mask / timer 20 / Z `0x20`, `0x0080` timer 40 / State 6 / Action 4) in `src/game/enemy/heavy_enemy_dispatch.hpp/.cpp`.
+- Qualified `oasis_m16_68_heavy_enemy_dispatch` and full 28-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.67 Dungeon Enemy Families (0x006C..0x0072) Substate Dispatch — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

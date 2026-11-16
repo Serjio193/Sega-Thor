@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/enemy/heavy_enemy_dispatch.hpp` / `src/game/enemy/heavy_enemy_dispatch.cpp`: Heavy/Boss enemy families (`0x0068`, `0x0074`, `0x0076`, `0x0080`) `$66(A6)` substate dispatch specs, `& 0x7F` masking, init timer/state/action setup, and `HeavyEnemySubstateController` (M16.68).
+- `tests/m16_68_heavy_enemy_dispatch_test.cpp`: Automated M16.68 test qualifying `0x0068`/`0x0074`/`0x0076`/`0x0080` family specs, `& 0x7F` masking, init timer/state/action setup, and substate wrapping (M16.68).
 - `src/game/enemy/dungeon_enemy_dispatch.hpp` / `src/game/enemy/dungeon_enemy_dispatch.cpp`: Dungeon enemy families (`0x006C..0x0072`) `$66(A6)` substate dispatch specs, `0x006C` variant table `0x01F5C8` (`[3, 6, 9, 12]`), `0x0072` jump table `0x01D152`, and `DungeonEnemySubstateController` (M16.67).
 - `tests/m16_67_dungeon_enemy_dispatch_test.cpp`: Automated M16.67 test qualifying `0x006C..0x0072` family specs, `0x006C` variants, `0x0072` substate target PCs, and `$66(A6)` clamping/wrapping (M16.67).
 - `src/game/interaction/interaction_dispatcher.hpp` / `src/game/interaction/interaction_dispatcher.cpp`: Universal Interaction Dispatcher (`0x008330`, `0x00B852` 16 px proximity, `0x00E338` facing) routing `0x0032`, `0x0020`, `0x0094`/`0x0096`/`0x00BE` (`0x018EBE` + hooks `0x24`/`0x2F`/`0x30`/`0x39`), and `0x00B0` Signpost (`0x00839E`, SFX `0xA00264`, freeze `0x3F`) (M16.66).

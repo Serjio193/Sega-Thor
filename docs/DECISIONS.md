@@ -1,3 +1,14 @@
+# ADR-20261116-M16-68-HEAVY-ENEMY-DISPATCH — Heavy & Boss Enemy Families (0x0068, 0x0074, 0x0076, 0x0080) Substate Dispatch
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.277 extracted `$66(A6)` substate dispatch contracts for heavy/boss enemy families `0x0068` (`0x025B32`), `0x0074` (`0x027C8A`), `0x0076` (`0x0283E6`, `& 0x7F` mask, timer `20`), and `0x0080` (`0x028810`, timer `40`, State `6`, Action `4`).
+
+**Decisions:**
+1. **Dedicated `heavy_enemy_dispatch` Module:**
+   - Added `src/game/enemy/heavy_enemy_dispatch.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261116-M16-67-DUNGEON-ENEMY-DISPATCH — Dungeon Enemy Families (0x006C..0x0072) Substate Dispatch
 **Status:** Accepted
 **Date:** 2026-11-16
