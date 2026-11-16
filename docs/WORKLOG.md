@@ -1,3 +1,24 @@
+# 2026-11-16 — Milestone M15.275: ROM UNIVERSAL INTERACTION DISPATCHER (`0x008330`) & STORY NPCS (`0x018EBE`) — 16px Proximity (0x00B852), Routes 0x0032/0x0020/0x0094/0x0096/0x00BE/0x00B0 (SFX 0xA00264); Extractor (tools/extract_rom_interaction_dispatcher.py <= 500 lines), Tests (tests/rom_interaction_dispatcher_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_275_INTERACTION_DISPATCHER_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x008330..0x0083D2` and `0x018EBE..0x018F48`.
+  * Authored `tools/extract_rom_interaction_dispatcher.py`, `tests/rom_interaction_dispatcher_test.py` (3/3 PASS), `data/thor-evidence/rom_interaction_dispatcher_m15_275.json`, and `docs/handoffs/STANDALONE_M15_275_INTERACTION_DISPATCHER_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.274: ROM SHADE (`0x001C`) & BOW (`0x001E`) ABILITIES & SP COSTS — Shade Shadow Tether (7 SP, 0x06), Shadow Surge (0x0C), Bow Bite (4 SP), Pollen/Vine (9 SP, 0x04), Plant Storm (28 SP, 0x0A); Extractor (tools/extract_rom_shade_bow_abilities.py <= 500 lines), Tests (tests/rom_shade_bow_abilities_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_274_SHADE_BOW_ABILITIES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled Shade (`0x013036..0x01319E`) and Bow (`0x0138E0..0x013A3A`) ability SP checks (`0x011B28`).
+  * Authored `tools/extract_rom_shade_bow_abilities.py`, `tests/rom_shade_bow_abilities_test.py` (3/3 PASS), `data/thor-evidence/rom_shade_bow_abilities_m15_274.json`, and `docs/handoffs/STANDALONE_M15_274_SHADE_BOW_ABILITIES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.273: ROM EFREET (`0x001A`) ABILITIES & SHARED SP GUARD (`0x011B28`) — Remaining SP >= 1, 12-State Table (0x0125AE), Fire Dash (8 SP), Flame Pillar (6 SP), Meltdown (25 SP); Extractor (tools/extract_rom_efreet_abilities.py <= 500 lines), Tests (tests/rom_efreet_abilities_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_273_EFREET_ABILITIES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x011B28..0x011B4E` (shared SP guard) and `0x0125AE..0x01267E` (Efreet state table and 3 abilities).
+  * Authored `tools/extract_rom_efreet_abilities.py`, `tests/rom_efreet_abilities_test.py` (3/3 PASS), `data/thor-evidence/rom_efreet_abilities_m15_273.json`, and `docs/handoffs/STANDALONE_M15_273_EFREET_ABILITIES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
 # 2026-11-16 — Milestone M15.272: ROM ITEM ATTRIBUTE (`0x05CE16`) & PICKUP FANFARE TABLES (`0x05CE56`, `0x007A6C`) — 64B Key-Item Flags, 5 Pickup Tiers (0xC0035F..0xC00361, 0x0508, 0x050D), Flag Setter (0x007AF0); Extractor (tools/extract_rom_item_attribute_tables.py <= 500 lines), Tests (tests/rom_item_attribute_tables_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_272_ITEM_ATTRIBUTE_TABLES_HANDOFF.md) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

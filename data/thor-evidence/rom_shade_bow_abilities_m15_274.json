@@ -1,0 +1,43 @@
+{
+  "milestone": "M15.274",
+  "description": "ROM Shade (0x001C) and Bow (0x001E) Abilities, SP Costs (0x011B28), and State Transitions",
+  "shared_sp_guard": "0x011B28",
+  "shade_0x001C": {
+    "state_table": "0x013008",
+    "abilities": {
+      "shadow_tether": {
+        "pc": "0x013036",
+        "sp_cost": 7,
+        "next_state": "0x06",
+        "action": "0x02"
+      },
+      "shadow_surge": {
+        "pc": "0x013180",
+        "next_state": "0x0C",
+        "action": "0x0E"
+      }
+    }
+  },
+  "bow_0x001E": {
+    "state_table": "0x0138E6",
+    "abilities": {
+      "bite": {
+        "pc": "0x013934",
+        "sp_cost": 4
+      },
+      "pollen_vine": {
+        "pc": "0x0139BA",
+        "sp_cost": 9,
+        "helper": "0x013FDC",
+        "next_state": "0x04",
+        "action": "0x00"
+      },
+      "plant_storm": {
+        "pc": "0x013A18",
+        "sp_cost": 28,
+        "next_state": "0x0A",
+        "action": "0x10"
+      }
+    }
+  }
+}

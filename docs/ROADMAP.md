@@ -1,3 +1,24 @@
+# M15.275 ROM Universal Interaction Dispatcher (`0x008330`) & Story NPCs (`0x018EBE`) — COMPLETE / VERIFIED
+
+- **Phase 1 Interaction Dispatcher (`0x008330..0x0083D2`):**
+  * Decoded `16px` proximity (`0x00B852`), facing check (`0x00E338`), and 6 entity routes (`0x0032 -> 0x018BBC`, `0x0020 -> 0x018CAA`, `0x0094/0x0096/0x00BE -> 0x018EBE`, `0x00B0 -> 0x00839E` SFX `0xA00264`).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_interaction_dispatcher.py` ($\le 500$ lines), `tests/rom_interaction_dispatcher_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_275_INTERACTION_DISPATCHER_HANDOFF.md`.
+
+# M15.274 ROM Shade (`0x001C`) & Bow (`0x001E`) Abilities & SP Costs — COMPLETE / VERIFIED
+
+- **Phase 1 Shade (`0x001C`) & Bow (`0x001E`) Abilities (`0x011B28`):**
+  * Decoded Shade Shadow Tether (`7` SP, `State 0x06`) & Shadow Surge (`State 0x0C`), plus Bow Bite (`4` SP), Pollen/Vine (`9` SP, `State 0x04`), and Plant Storm (`28` SP, `State 0x0A`).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_shade_bow_abilities.py` ($\le 500$ lines), `tests/rom_shade_bow_abilities_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_274_SHADE_BOW_ABILITIES_HANDOFF.md`.
+
+# M15.273 ROM Efreet (`0x001A`) Abilities, State Table (`0x0125AE`) & Shared SP Guard (`0x011B28`) — COMPLETE / VERIFIED
+
+- **Phase 1 Shared SP Guard & Efreet Abilities:**
+  * Decoded `0x011B28` (`player_sp - cost >= 1`), 12-state table `0x0125AE`, Fire Dash (`8` SP, `0x08`, SFX `0x800258`), Flame Pillar (`6` SP, `0x0A`), Meltdown (`25` SP, `0x0C`, `96f + $FF0DB7`), and Dismiss (`0x10`).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_efreet_abilities.py` ($\le 500$ lines), `tests/rom_efreet_abilities_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_273_EFREET_ABILITIES_HANDOFF.md`.
+
 # M15.272 ROM Item Attribute (`0x05CE16`) & Pickup Fanfare Tables (`0x05CE56`, `0x007A6C`) — COMPLETE / VERIFIED
 
 - **Phase 1 64-Byte Item Attribute & Pickup Tables (`0x05CE16`, `0x05CE56`):**

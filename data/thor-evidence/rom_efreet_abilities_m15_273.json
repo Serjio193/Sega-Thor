@@ -1,0 +1,56 @@
+{
+  "milestone": "M15.273",
+  "description": "ROM Efreet (0x001A) Abilities, State Table (0x0125AE), and Shared Spirit SP-Cost Guard (0x011B28)",
+  "shared_sp_guard": {
+    "routine": "0x011B28",
+    "player_sp_field": "$8E($FF19E8)",
+    "min_remaining_sp": 1
+  },
+  "efreet_state_table": {
+    "address": "0x0125AE",
+    "states": {
+      "0x00": "0x012988",
+      "0x02": "0x012988",
+      "0x04": "0x012680",
+      "0x06": "0x012BF0",
+      "0x08": "0x0126AC",
+      "0x0A": "0x0127A4",
+      "0x0C": "0x012802",
+      "0x0E": "0x0127C0",
+      "0x10": "0x012988",
+      "0x12": "0x0126CE",
+      "0x14": "0x012702",
+      "0x16": "0x012914"
+    }
+  },
+  "efreet_abilities": {
+    "fire_dash": {
+      "pc": "0x0125CA",
+      "sp_cost": 8,
+      "next_state": "0x08",
+      "action": "0x0C",
+      "sfx": "0x800258"
+    },
+    "flame_pillar": {
+      "pc": "0x012608",
+      "sp_cost": 6,
+      "next_state": "0x0A",
+      "action": "0x02",
+      "helper_slot": "0x00FF1C1C"
+    },
+    "meltdown": {
+      "pc": "0x01263C",
+      "sp_cost": 25,
+      "next_state": "0x0C",
+      "action": "0x08",
+      "base_duration": 96,
+      "level_ram": "0x00FF0DB7"
+    },
+    "dismiss": {
+      "pc": "0x012672",
+      "sp_cost": 0,
+      "next_state": "0x10",
+      "action": "0x0A"
+    }
+  }
+}

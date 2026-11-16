@@ -1,0 +1,41 @@
+{
+  "milestone": "M15.275",
+  "description": "ROM Universal Interaction Dispatcher (0x008330) and Story NPC Handler (0x018EBE)",
+  "dispatcher_addr": "0x008330",
+  "proximity_radius_px": 16,
+  "proximity_helper": "0x00B852",
+  "facing_helper": "0x00E338",
+  "routes": {
+    "0x0032": {
+      "target": "0x018BBC",
+      "role": "Town NPCs / Village Elder"
+    },
+    "0x0020": {
+      "target": "0x018CAA",
+      "role": "Spirit Awakening Dispatcher"
+    },
+    "0x0094": {
+      "target": "0x018EBE",
+      "role": "Story NPC Dialogue"
+    },
+    "0x0096": {
+      "target": "0x018EBE",
+      "role": "Story NPC Dialogue"
+    },
+    "0x00BE": {
+      "target": "0x018EBE",
+      "role": "Story NPC Dialogue"
+    },
+    "0x00B0": {
+      "target": "0x00839E",
+      "role": "Signpost / Tablet",
+      "sfx": "0xA00264"
+    }
+  },
+  "story_npc_post_dialogue_hooks": {
+    "0x24": "0x018FAA",
+    "0x2F": "0x018FF0",
+    "0x30": "0x01903C",
+    "0x39": "0x019048"
+  }
+}

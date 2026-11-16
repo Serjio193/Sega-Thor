@@ -1,3 +1,45 @@
+# ADR-20261116-M15-275-INTERACTION-DISPATCHER — ROM Universal Interaction Dispatcher (`0x008330`) & Story NPCs (`0x018EBE`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone needed the remaining interactive prop/NPC/signpost routes beyond `0x003C` and `0x0020`.
+
+**Decisions:**
+1. **Universal Interaction Dispatcher (`0x008330`):**
+   - Documented `0x0032`, `0x0020`, `0x0094`/`0x0096`/`0x00BE` (`0x018EBE`), and `0x00B0` (`0x00839E`, SFX `0xA00264`).
+
+**Consequences:**
+- Standalone receives verified interaction routing for all NPCs, shrines, and signposts; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-274-SHADE-BOW-ABILITIES — ROM Shade (`0x001C`) & Bow (`0x001E`) Abilities & SP Costs
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Following M15.273 (Efreet), Standalone needed the ability SP costs and state transitions for Shade (`0x001C`) and Bow (`0x001E`) to complete all 4 elemental spirits.
+
+**Decisions:**
+1. **Shade (`0x013008`) & Bow (`0x0138E6`):**
+   - Documented Shade (`7` SP Shadow Tether, `State 0x06`/`0x0C`) and Bow (`4` SP Bite, `9` SP Pollen/Vine, `28` SP Plant Storm).
+
+**Consequences:**
+- All 4 elemental spirits now have verified ROM ability/SP contracts; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-273-EFREET-ABILITIES — ROM Efreet (`0x001A`) Abilities & Shared SP Guard (`0x011B28`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone needed the shared spirit ability SP-cost guard (`0x011B28`) and Efreet's 3 combat abilities (`0x0125CA..0x01267E`).
+
+**Decisions:**
+1. **Shared SP Guard (`0x011B28`) & Efreet (`0x0125AE`):**
+   - Documented `remaining_sp >= 1`, Fire Dash (`8` SP), Flame Pillar (`6` SP), Meltdown (`25` SP), and 12-state table `0x0125AE`.
+
+**Consequences:**
+- Standalone receives verified Efreet ability contracts; all code/test files $\le 500$ lines.
+
 # ADR-20261116-M15-272-ITEM-ATTRIBUTE-TABLES — ROM Item Attribute (`0x05CE16`) & Pickup Fanfare Tables (`0x05CE56`)
 **Status:** Accepted
 **Date:** 2026-11-16

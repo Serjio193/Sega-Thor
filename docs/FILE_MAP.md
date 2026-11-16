@@ -1,3 +1,24 @@
+# M15.275 ROM Universal Interaction Dispatcher & Story NPCs
+
+- `tools/extract_rom_interaction_dispatcher.py` — reusable ROM semantic extractor for `0x008330` (interaction routes) and `0x018EBE` (story NPCs).
+- `data/thor-evidence/rom_interaction_dispatcher_m15_275.json` — machine-readable interaction dispatcher specification.
+- `tests/rom_interaction_dispatcher_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_275_INTERACTION_DISPATCHER_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.274 ROM Shade & Bow Abilities & SP Costs
+
+- `tools/extract_rom_shade_bow_abilities.py` — reusable ROM semantic extractor for Shade (`0x001C`) and Bow (`0x001E`) abilities & SP costs (`0x011B28`).
+- `data/thor-evidence/rom_shade_bow_abilities_m15_274.json` — machine-readable Shade & Bow abilities specification.
+- `tests/rom_shade_bow_abilities_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_274_SHADE_BOW_ABILITIES_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.273 ROM Efreet Abilities & Shared SP Guard
+
+- `tools/extract_rom_efreet_abilities.py` — reusable ROM semantic extractor for `0x011B28` (SP guard), `0x0125AE` (12 states), and Efreet Fire Dash/Flame Pillar/Meltdown.
+- `data/thor-evidence/rom_efreet_abilities_m15_273.json` — machine-readable Efreet abilities specification.
+- `tests/rom_efreet_abilities_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_273_EFREET_ABILITIES_HANDOFF.md` — implementation-ready Standalone handoff.
+
 # M15.272 ROM Item Attribute & Pickup Fanfare Tables
 
 - `tools/extract_rom_item_attribute_tables.py` — reusable ROM semantic extractor for `0x05CE16` (64B attributes) and `0x05CE56` (64B pickup SFX/fanfare tiers).
