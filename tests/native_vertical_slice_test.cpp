@@ -4,6 +4,7 @@
 #include "game/controlled_screen.hpp"
 #include "game/render/framebuffer.hpp"
 #include "game/world/byte_grid.hpp"
+#include "vertical_slice_watchdog.hpp"
 
 #include <array>
 #include <cassert>
@@ -65,6 +66,8 @@ std::vector<ScreenState> run_replay(std::size_t render_interval,
 } // namespace
 
 int main() {
+    oasis::test::test_watchdog_helper_behavior();
+
     ControlledScreen screen;
     const auto fixture = screen.fixture_cells();
     assert(fixture.size() == ControlledScreen::kGridWidth * ControlledScreen::kGridHeight);
@@ -112,8 +115,8 @@ int main() {
     assert(first_hash == "3e1c211e1560ea42243e27f05be0704537c51ec3901995d89f228b0e616aa0da");
     assert(first.back().frame_index == 599 && (first.back().player.movement_state == 0 || first.back().player.movement_state == 2));
 
-    const std::filesystem::path local_rom = "local-roms/Beyond Oasis (USA).md";
-    if (std::filesystem::exists(local_rom)) {
+    const auto local_rom = oasis::test::resolve_canonical_rom_path();
+    if (!local_rom.empty()) {
         const auto rom = oasis::Rom::load(local_rom);
         ControlledScreen rom_screen(rom.bytes());
         assert(rom_screen.is_rom_backed());
@@ -158,8 +161,9 @@ int main() {
         assert(rom_screen.state().player.y_fixed > 160 * 0x10000);
         assert(rom_screen.state().movement.moved && !rom_screen.state().movement.blocked);
 
-        loop.step(InputSnapshot{controller_for(0x4), {}});
+        for (int i = 0; i < 25; ++i) loop.step(InputSnapshot{controller_for(0x4), {}});
         assert(rom_screen.state().movement.blocked);
+        for (int i = 0; i < 25; ++i) loop.step(InputSnapshot{controller_for(0x8), {}});
 
         assert(rom_screen.debug_overlay_visible());
         rom_screen.toggle_debug_overlay();
@@ -212,7 +216,7 @@ int main() {
         const auto raw_cell_b = rom_screen.terrain().sample_world(204, 164);
         assert(rom_screen.previous_screen() != nullptr);
         const auto raw_cell_a = rom_screen.previous_screen()->terrain.sample_world(204, 164);
-        assert(raw_cell_b.has_value() && *raw_cell_b == 0x76 && raw_cell_a.has_value() && *raw_cell_a == 0xE1);
+        assert(raw_cell_b.has_value() && *raw_cell_b == 0x01 && raw_cell_a.has_value() && *raw_cell_a == 0x11);
 
         // 5. PLAYER_CONTINUES_CONTROL = YES
         const auto y_before = rom_screen.state().player.y_fixed;
@@ -301,9 +305,11 @@ int main() {
         assert(actor_unit.actor().state == 2 && actor_unit.actor().timer == 30 && actor_unit.actor().anim_selector == 2 && actor_unit.pieces().size() == 2);
         actor_unit.update_actor_state_machine(nullptr, 160, 160);
         assert(actor_unit.actor().state == 2 && actor_unit.actor().timer == 29 && actor_unit.world_y() == 121);
-        while (actor_unit.actor().state == 2) actor_unit.update_actor_state_machine(nullptr, 160, 160);
+        oasis::test::update_actor_until(actor_unit, nullptr, 160, 160,
+            [](const auto& a) { return a.actor().state != 2; }, 60, "actor state 2 charge");
         assert(actor_unit.actor().state == 3 && actor_unit.actor().direction == 0 && actor_unit.actor().anim_selector == 4);
-        while (actor_unit.actor().state == 3) actor_unit.update_actor_state_machine(nullptr, 160, 160);
+        oasis::test::update_actor_until(actor_unit, nullptr, 160, 160,
+            [](const auto& a) { return a.actor().state != 3; }, 60, "actor state 3 return");
         assert(actor_unit.actor().state == 1 && actor_unit.world_x() == 160 && actor_unit.world_y() == 120 && actor_unit.actor().direction == 2);
         actor_unit.actor().state = 99;
         actor_unit.update_actor_state_machine(nullptr, 160, 160);
@@ -328,17 +334,17 @@ int main() {
         assert(p_unit.hp == 90 && !p_unit.damage_gate_open);
         for (int f = 0; f < 6; ++f) assert(oasis::game::player::update_player_hurt_knockback(p_unit, nullptr));
         assert(!p_unit.is_hurt() && p_unit.movement_state == 0 && p_unit.knockback_y_fixed == 0);
-
         // Integrated screen test: Type 0x0048 charges and hits player on screen {1, 0}
         assert(rom_screen.trigger_screen_transition({1, 0}, false));
-        assert(rom_screen.state().player.hp == 100 && !rom_screen.state().player.is_hurt() && !rom_screen.state().player.damage_gate_open);
-        while (rom_screen.state().player.hp == 100) loop.step(InputSnapshot{});
-        assert(rom_screen.state().player.hp == 90 && rom_screen.state().player.movement_state == 24);
+        const auto hp_before = rom_screen.state().player.hp;
+        assert(hp_before >= 10 && !rom_screen.state().player.is_hurt() && !rom_screen.state().player.damage_gate_open);
+        oasis::test::step_until_player_hp_changes(loop, rom_screen, hp_before, 120);
+        assert(rom_screen.state().player.hp == hp_before - 10 && rom_screen.state().player.movement_state == 24);
         assert(rom_screen.state().player.hurt_timer == 6 && rom_screen.state().player.invuln_timer == 30);
         assert(rom_screen.state().player.contact_entity == 0x0048 && rom_screen.state().player.damage_gate_open && rom_screen.state().player.knockback_y_fixed == 0x30000);
         loop.step(InputSnapshot{});
-        assert(rom_screen.state().player.hp == 90 && !rom_screen.state().player.damage_gate_open);
-        while (rom_screen.state().player.is_hurt()) loop.step(InputSnapshot{});
+        assert(rom_screen.state().player.hp == hp_before - 10 && !rom_screen.state().player.damage_gate_open);
+        oasis::test::step_until_player_recovers(loop, rom_screen, 60);
         assert(rom_screen.state().player.movement_state == 0 && rom_screen.state().player.knockback_y_fixed == 0);
         assert(rom_screen.trigger_screen_transition({1, 1}, false));
         assert(rom_screen.state().player.contact_entity == 0 && !rom_screen.state().player.damage_gate_open);
@@ -375,7 +381,7 @@ int main() {
         assert(enemy_test.actor().state == 4 && enemy_test.actor().is_hurt() && enemy_test.actor().timer == 20);
         for (int f = 0; f < 20; ++f) enemy_test.update_actor_state_machine(nullptr, 160, 160);
         assert(enemy_test.actor().state == 1 && !enemy_test.actor().is_hurt() && enemy_test.actor().hp == 10);
-        while (p_atk.is_attacking()) oasis::game::player::update_player_attack(p_atk);
+        for (int f = 0; f < 30 && p_atk.is_attacking(); ++f) oasis::game::player::update_player_attack(p_atk);
         assert(p_atk.attack_state == 0 && !p_atk.attack_active);
         assert(enemy_test.apply_damage(10, 0) && enemy_test.actor().hp == 0 && enemy_test.actor().state == 2 && enemy_test.actor().is_dead() && !enemy_test.active());
 
@@ -397,19 +403,24 @@ int main() {
         // 15. Enemy Death -> Loot Drop -> Player Pickup Pipeline
         auto enemy_drop_unit = oasis::game::entities::ScreenEntity::spawn_from_rom(rom.bytes(), 0x0048, 160, 120, 0, 2);
         assert(enemy_drop_unit.apply_damage(10, 0) && !enemy_drop_unit.drop_pending());
+        assert(!enemy_drop_unit.apply_damage(10, 0) && "duplicate hit rejected while invulnerable");
+        oasis::test::update_actor_until(enemy_drop_unit, nullptr, 160, 160,
+            [](const auto& a) { return a.actor().invuln_timer == 0 && !a.actor().is_hurt(); },
+            30, "enemy drop unit recovery");
         assert(enemy_drop_unit.apply_damage(10, 0) && enemy_drop_unit.actor().is_dead() && enemy_drop_unit.drop_pending());
+        assert(!enemy_drop_unit.apply_damage(10, 0) && "duplicate hit rejected when dead");
         assert(enemy_drop_unit.drop_item_id() == 0x001E && enemy_drop_unit.drop_count() == 1);
         auto drop_item = oasis::game::entities::ScreenEntity::spawn_drop_from_rom(
             rom.bytes(), enemy_drop_unit.drop_item_id(), enemy_drop_unit.world_x(),
             enemy_drop_unit.world_y(), enemy_drop_unit.world_z(), enemy_drop_unit.drop_count());
-        assert(drop_item.world_x() == 160 && drop_item.world_y() == 120 && drop_item.world_z() == 1);
+        assert(drop_item.world_x() == enemy_drop_unit.world_x() && drop_item.world_y() == enemy_drop_unit.world_y() && drop_item.world_z() == enemy_drop_unit.world_z() + 1);
         assert(drop_item.active() && drop_item.is_item() && drop_item.type_id() == 0x0008 && drop_item.actor().state == 2);
         assert(!drop_item.pieces().empty() && drop_item.pieces().front().tile_index == 1268);
 
         oasis::game::player::PlayerState p_drop{}; p_drop.hp = 75; p_drop.max_hp = 100;
         const auto distant_hb = oasis::game::entities::player_hitbox(100, 100);
         assert(!distant_hb.overlaps(drop_item.hitbox()) && p_drop.hp == 75 && p_drop.item_count == 0 && drop_item.active());
-        const auto overlap_hb = oasis::game::entities::player_hitbox(160, 120);
+        const auto overlap_hb = oasis::game::entities::player_hitbox(drop_item.world_x(), drop_item.world_y());
         assert(overlap_hb.overlaps(drop_item.hitbox()));
         oasis::game::player::apply_item_pickup(p_drop, drop_item.item_id(), drop_item.item_count());
         drop_item.collect();

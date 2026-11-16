@@ -1,0 +1,30 @@
+{
+  "milestone": "M15.268",
+  "description": "ROM Pause Ring Menu Icon Renderer (0x0042E8) and Player Rank / MaxHP Scaling Formula (0x007BF6)",
+  "ring_menu": {
+    "weapon_ring_renderer": "0x0042E8",
+    "item_ring_renderer": "0x004388",
+    "icon_tileset_rom_addr": "0x155D76",
+    "tiles_per_icon": 9,
+    "weapon_slots_ram": "0x00FF0D80",
+    "weapon_slot_count": 8,
+    "weapon_cursor_ram": "0x00FF0E50",
+    "item_slots_ram": "0x00FF0D90",
+    "item_slot_count": 16,
+    "item_cursor_ram": "0x00FF0E51",
+    "slot_spacing_px": 24
+  },
+  "rank_and_stats": {
+    "rank_up_routine": "0x007BF6",
+    "rank_ram": "0x00FF1A7E",
+    "max_hp_ram": "0x00FF1A70",
+    "current_hp_ram": "0x00FF1A72",
+    "max_sp_ram": "0x00FF1A74",
+    "current_sp_ram": "0x00FF1A76",
+    "max_rank": 200,
+    "base_max_hp": 198,
+    "max_hp_formula": "198 + 2 * rank",
+    "sp_pickup_step": 5,
+    "gem_counters_ram": "0x00FF0DB2"
+  }
+}

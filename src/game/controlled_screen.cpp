@@ -121,20 +121,6 @@ void ControlledScreen::update(const core::FrameContext& frame) {
 
     const bool in_hurt = player::update_player_hurt_knockback(
         state_.player, current_screen_ ? &current_screen_->terrain : nullptr);
-    const bool a_pressed = frame.input.port1.pressed(core::Button::A);
-    if (!spirit_.active) {
-        if (a_pressed && !button_a_held_) {
-            const auto px = static_cast<std::int32_t>(state_.player.x_fixed / 0x10000);
-            const auto py = static_cast<std::int32_t>(state_.player.y_fixed / 0x10000);
-            spirits::try_summon_spirit(spirit_, spirit_slots_, 0, px, py, 0, state_.player, rom_);
-        }
-    } else {
-        const auto cmd = spirits::decode_dytto_command_input(spirit_, a_pressed);
-        if (cmd > 0) spirits::try_execute_dytto_command(spirit_, cmd, state_.player, rom_);
-    }
-    button_a_held_ = a_pressed;
-    spirits::update_active_spirit(spirit_, state_.player, state_.player);
-    spirits::update_dytto_ability(spirit_, rom_, current_screen_ ? &current_screen_->entities : nullptr);
 
     const bool y_pressed = frame.input.port1.pressed(core::Button::Y);
     if (y_pressed && !button_y_held_) player::cycle_secondary_weapon(weapon_inventory_, state_.player);
@@ -219,17 +205,12 @@ void ControlledScreen::update(const core::FrameContext& frame) {
                 interaction_target_type_ == entity.type_id()) {
                 interaction_state_str_ = "OPENED";
             }
-
-            if (const auto atk = entity.attack_hitbox(); atk && cur_hitbox.overlaps(*atk)) {
-                player::apply_enemy_contact_damage(state_.player, entity.type_id(),
-                    entity.is_actor() ? entity.actor().direction : 2,
-                    entity.is_flame() ? 15 : 10);
-            }
         }
 
         if (state_.player.attack_active && !state_.player.attack_hit_latched) {
             if (const auto weapon_box = player::player_attack_hitbox(state_.player)) {
-                for (auto& entity : current_screen_->entities) {
+                for (std::size_t i = 0; i < current_screen_->entities.size(); ++i) {
+                    auto& entity = current_screen_->entities[i];
                     if (!entity.active() || !entity.is_actor()) continue;
                     if (weapon_box->overlaps(entity.hitbox()) && entity.apply_damage(10, state_.player.attack_direction)) {
                         state_.player.attack_hit_latched = true; state_.player.last_hit_damage = 10;
@@ -243,7 +224,13 @@ void ControlledScreen::update(const core::FrameContext& frame) {
                 }
             }
         }
+
         for (auto& entity : current_screen_->entities) {
+            if (const auto atk = entity.attack_hitbox(); atk && cur_hitbox.overlaps(*atk)) {
+                player::apply_enemy_contact_damage(state_.player, entity.type_id(),
+                    entity.is_actor() ? entity.actor().direction : 2,
+                    entity.is_flame() ? 15 : 10);
+            }
             if (entity.active() && entity.is_item() && cur_hitbox.overlaps(entity.hitbox())) {
                 player::apply_item_pickup(state_.player, entity.item_id(), entity.item_count());
                 entity.collect();
@@ -279,6 +266,24 @@ void ControlledScreen::update(const core::FrameContext& frame) {
             trigger_screen_transition({1, 0}, false);
         }
     }
+
+    const bool a_pressed = frame.input.port1.pressed(core::Button::A);
+    const bool interacting = (interaction_target_type_ != 0 ||
+                              interaction_state_str_ == "READY" ||
+                              interaction_state_str_ == "TRIGGERED (OPENING)");
+    if (!spirit_.active) {
+        if (a_pressed && !button_a_held_ && !interacting) {
+            const auto px = static_cast<std::int32_t>(state_.player.x_fixed / 0x10000);
+            const auto py = static_cast<std::int32_t>(state_.player.y_fixed / 0x10000);
+            spirits::try_summon_spirit(spirit_, spirit_slots_, 0, px, py, 0, state_.player, rom_);
+        }
+    } else {
+        const auto cmd = spirits::decode_dytto_command_input(spirit_, a_pressed);
+        if (cmd > 0) spirits::try_execute_dytto_command(spirit_, cmd, state_.player, rom_);
+    }
+    button_a_held_ = a_pressed;
+    spirits::update_active_spirit(spirit_, state_.player, state_.player);
+    spirits::update_dytto_ability(spirit_, rom_, current_screen_ ? &current_screen_->entities : nullptr);
 }
 
 void ControlledScreen::render(std::span<std::uint32_t> destination) const noexcept {
@@ -408,72 +413,6 @@ void ControlledScreen::render(std::span<std::uint32_t> destination) const noexce
     fill_rect(destination, kPlayer, (state_.player.x_fixed / 0x10000) - 5, (state_.player.y_fixed / 0x10000) - 5, 11, 11);
 }
 
-void ControlledScreen::render_debug_overlay(std::span<std::uint32_t> destination) const noexcept {
-    const auto px = static_cast<std::int32_t>(state_.player.x_fixed / 0x10000);
-    const auto py = static_cast<std::int32_t>(state_.player.y_fixed / 0x10000);
-    const auto raw_val = terrain_.sample_world(px, py).value_or(0xFFU);
-
-    std::string enemy_hp = "NONE", enemy_hurt = "NONE", enemy_st = "NONE";
-    std::string drop_t = "NONE", drop_st = "NONE", drop_xy = "NONE", drop_act = "NO", pk_tgt = "NONE";
-    std::string env_type = "NONE", env_st = "NONE", env_xy = "NONE", env_react = "NO", wflag = "0";
-    if (current_screen_) {
-        for (const auto& e : current_screen_->entities) {
-            if (e.is_actor()) {
-                enemy_hp = std::to_string(e.actor().hp) + "/" + std::to_string(e.actor().max_hp);
-                enemy_hurt = (e.actor().is_hurt() ? "YES (" : "NO (") + std::to_string(e.actor().timer) + ")";
-                enemy_st = (e.actor().halted ? "HALT" : std::to_string(e.actor().state)) + " D=" + std::to_string(e.actor().direction);
-            } else if (e.is_item()) {
-                drop_t = "0x" + hex_str(e.item_id(), 4); drop_st = std::to_string(e.actor().state);
-                drop_xy = std::to_string(e.world_x()) + "/" + std::to_string(e.world_y());
-                drop_act = e.active() ? "YES" : "NO"; if (e.active()) pk_tgt = "0x0008";
-            } else if (e.is_flame()) {
-                env_type = "0x004C";
-                env_st = (e.flame_substate() == 0) ? "BURNING" : (e.active() ? ("EXTINGUISHING(" + std::to_string(e.flame_timer()) + ")") : "EXTINGUISHED");
-                env_xy = std::to_string(e.world_x()) + "/" + std::to_string(e.world_y());
-                env_react = "YES";
-                wflag = is_persistent_flag_set(e.persistent_id()) ? "SET" : "CLR";
-            }
-        }
-    }
-
-    std::string atk_box = "NONE";
-    if (const auto ab = player::player_attack_hitbox(state_.player)) {
-        atk_box = "L=" + std::to_string(ab->left) + " T=" + std::to_string(ab->top) + " R=" + std::to_string(ab->right) + " B=" + std::to_string(ab->bottom);
-    }
-    const std::string tgt = (interaction_target_type_ != 0) ? ("0x" + hex_str(interaction_target_type_, 4)) : "NONE";
-    const std::string last_pk = (state_.player.last_pickup_type != 0)
-        ? ("0x" + hex_str(state_.player.last_pickup_type, 4) + " (+" + std::to_string(state_.player.last_pickup_heal) + ")") : "NONE";
-    const std::string b_state = spirit_.projectile_active ? (std::to_string(spirit_.projectile_state) + (spirit_.projectile_state == 16 ? " (FLY)" : " (POP)")) : "NONE";
-    const std::string elem_hit = (spirit_.target_entity_hit == 0x004C) ? "WATER" : "NONE";
-
-    const std::array<std::string, 21> lines{{
-        "CURRENT SETUP: " + hex_str(current_screen_setup_id(), 4) + " PREV: " + (previous_screen_setup_id_ != 0 ? hex_str(previous_screen_setup_id_, 4) : "NONE"),
-        "PLAYER: HP=" + std::to_string(state_.player.hp) + "/" + std::to_string(state_.player.max_hp) + " CURR=" + std::to_string(state_.player.currency) + " ITEMS=" + std::to_string(state_.player.item_count),
-        "SPIRIT: ACT=" + std::string(spirit_.active ? "YES" : "NO") + " T=" + (spirit_.active ? ("0x" + hex_str(spirit_.type_id, 4)) : "NONE") + " ST=" + std::to_string(spirit_.state) + " SP=" + std::to_string(state_.player.sp) + "/" + std::to_string(state_.player.max_sp),
-        "SPIRIT_CMD: C=" + std::to_string(spirit_.last_command_code) + " ST=" + std::to_string(spirit_.command_state) + " T=" + std::to_string(spirit_.command_timer) + " SP_COST=" + std::to_string(spirit_.last_command_sp_cost),
-        "SPIRIT_EFFECT: BUBBLE_STATE=" + b_state + " LAST_ELEMENT_HIT=" + elem_hit + " TGT=" + (spirit_.target_entity_hit != 0 ? ("0x" + hex_str(spirit_.target_entity_hit, 4)) : "NONE"),
-        "ENV_TARGET: T=" + env_type + " ST=" + env_st + " XY=" + env_xy + " REACT=" + env_react + " WFLAG=" + wflag,
-        "SEC_WEAPON: 0x" + hex_str(state_.player.secondary_weapon, 2) + " AMMO=" + std::to_string(state_.player.secondary_ammo) + " ST=" + std::to_string(state_.player.secondary_attack_state) + " T=" + std::to_string(state_.player.secondary_attack_timer),
-        "SEC_PROJ: T=" + (arrow_.active ? ("0x" + hex_str(arrow_.type_id, 4)) : "NONE") + " XY=" + (arrow_.active ? (std::to_string(arrow_.world_x) + "/" + std::to_string(arrow_.world_y)) : "NONE") + " HIT=" + (state_.player.last_weapon_hit != 0 ? ("0x" + hex_str(state_.player.last_weapon_hit, 4)) : "NONE"),
-        "DROP: T=" + drop_t + " S=" + drop_st + " XY=" + drop_xy + " ACT=" + drop_act + " PK=" + pk_tgt,
-        "LAST_PICKUP: " + last_pk,
-        "PLAYER_STATE: " + std::to_string(state_.player.movement_state) + (state_.player.is_hurt() ? " (HURT)" : " (NORM)") + " INVULN=" + std::to_string(state_.player.invuln_timer),
-        "PLAYER_ATK: ST=" + std::to_string(state_.player.attack_state) + " T=" + std::to_string(state_.player.attack_timer) + " ACT=" + (state_.player.attack_active ? "YES" : "NO"),
-        "PLAYER_ATK_BOX: " + atk_box,
-        "ENEMY: HP=" + enemy_hp + " HURT=" + enemy_hurt + " " + enemy_st,
-        "LAST_HIT_DAMAGE: " + std::to_string(state_.player.last_hit_damage),
-        "KNOCKBACK_X/Y: " + std::to_string(state_.player.knockback_x_fixed / 0x10000) + "/" + std::to_string(state_.player.knockback_y_fixed / 0x10000),
-        "CONTACT_ENTITY: " + (state_.player.contact_entity != 0 ? ("0x" + hex_str(state_.player.contact_entity, 4)) : "NONE"),
-        "DAMAGE_GATE: " + std::string(state_.player.damage_gate_open ? "OPEN (DAMAGE)" : "CLOSED"),
-        "ENTITY COUNT: " + std::to_string(current_screen_ ? current_screen_->entities.size() : 0U) + " TGT: " + tgt,
-        "INTERACTION_STATE: " + interaction_state_str_,
-        "WATER_REACTIVE: " + env_react + " WORLD_FLAG: " + wflag
-    }};
-
-    render::fill_debug_rect(destination, 320, 224, 6, 2, 224, 220, 0xCC101018U);
-    for (std::size_t i = 0; i < lines.size(); ++i) {
-        render::draw_debug_text(destination, 320, 224, 10, 4 + static_cast<std::int32_t>(i) * 9, lines[i], 0xFF00FFCCU);
-    }
-}
-
 } // namespace oasis::game::screen
+
+#include "game/controlled_screen_debug_overlay.hpp"

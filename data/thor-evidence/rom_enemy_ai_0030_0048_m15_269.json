@@ -1,0 +1,54 @@
+{
+  "milestone": "M15.269",
+  "description": "ROM Enemy AI Contracts for Entity 0x0048 (Charger) and Entity 0x0030 (Room 0x0105 Gate Boss)",
+  "entity_0048_charger": {
+    "update_handler": "0x01778C",
+    "substate_field": "$A6(A6)",
+    "aabb_table_addr": "0x01783E",
+    "aabb_boxes": [
+      {
+        "facing": 0,
+        "dx1": -1,
+        "dy1": -24,
+        "dx2": 1,
+        "dy2": -1
+      },
+      {
+        "facing": 1,
+        "dx1": 1,
+        "dy1": -1,
+        "dx2": 24,
+        "dy2": 1
+      },
+      {
+        "facing": 2,
+        "dx1": -1,
+        "dy1": 1,
+        "dx2": 1,
+        "dy2": 24
+      },
+      {
+        "facing": 3,
+        "dx1": -24,
+        "dy1": -1,
+        "dx2": -1,
+        "dy2": 1
+      }
+    ],
+    "trigger_sfx": "0x800399",
+    "helpers": {
+      "aabb_check": "0x00C1CE",
+      "velocity_init": "0x00E2D4",
+      "collision_step": "0x00BC8E",
+      "return_home_step": "0x00E45E"
+    }
+  },
+  "entity_0030_gate_boss": {
+    "update_handler": "0x015AE2",
+    "substate_field": "$66(A6)",
+    "vram_base": "0x4200",
+    "child_slots_spawned": 5,
+    "child_slot_stride_bytes": 188,
+    "child_init_helper": "0x00E66E"
+  }
+}

@@ -1,3 +1,82 @@
+# 2026-11-16 — Milestone M15.272: ROM ITEM ATTRIBUTE (`0x05CE16`) & PICKUP FANFARE TABLES (`0x05CE56`, `0x007A6C`) — 64B Key-Item Flags, 5 Pickup Tiers (0xC0035F..0xC00361, 0x0508, 0x050D), Flag Setter (0x007AF0); Extractor (tools/extract_rom_item_attribute_tables.py <= 500 lines), Tests (tests/rom_item_attribute_tables_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_272_ITEM_ATTRIBUTE_TABLES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x007A6C..0x007B28` and extracted 64-byte tables `0x05CE16` and `0x05CE56`.
+  * Authored `tools/extract_rom_item_attribute_tables.py`, `tests/rom_item_attribute_tables_test.py` (3/3 PASS), `data/thor-evidence/rom_item_attribute_tables_m15_272.json`, and `docs/handoffs/STANDALONE_M15_272_ITEM_ATTRIBUTE_TABLES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.271: ROM ALL-SPIRITS LIVE SP DRAIN & STATE TABLES — Dytto 45f (0x011BAC), Efreet 35f (0x0125AE), Shade 40f (0x013008), Bow 30f (0x0138E6); Extractor (tools/extract_rom_spirits_sp_and_state_tables.py <= 500 lines), Tests (tests/rom_spirits_sp_and_state_tables_test.py 4/4 PASS), Handoff (docs/handoffs/STANDALONE_M15_271_SPIRITS_SP_AND_STATE_TABLES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x011B4E`, `0x01254C`, `0x012F1E`, `0x01387C` for SP drain timers (`45/35/40/30` frames), despawn handlers, and state jump tables.
+  * Authored `tools/extract_rom_spirits_sp_and_state_tables.py`, `tests/rom_spirits_sp_and_state_tables_test.py` (4/4 PASS), `data/thor-evidence/rom_spirits_sp_and_state_tables_m15_271.json`, and `docs/handoffs/STANDALONE_M15_271_SPIRITS_SP_AND_STATE_TABLES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.270: ROM SOUND DRIVER ENTRYPOINTS (`0x060000..0x060008`) & COMMAND DISPATCHER (`0x06042A`) — 3 Entrypoints (0x060090/0x06042A/0x061232), 9 System Cmds (0x00..0x08), 5 Category Handlers (0x0100..0x0500); Extractor (tools/extract_rom_sound_command_dispatch.py <= 500 lines), Tests (tests/rom_sound_command_dispatch_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_270_SOUND_COMMAND_DISPATCH_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x060000..0x06000C` and `0x06042A..0x0604BC` (sound driver entrypoints and command routing).
+  * Authored `tools/extract_rom_sound_command_dispatch.py`, `tests/rom_sound_command_dispatch_test.py` (3/3 PASS), `data/thor-evidence/rom_sound_command_dispatch_m15_270.json`, and `docs/handoffs/STANDALONE_M15_270_SOUND_COMMAND_DISPATCH_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.269: ROM ENEMY AI CONTRACTS (`0x0048` CHARGER & `0x0030` GATE BOSS) — 0x0048 4-Substate Loop (0x01778C, 0x01783E AABB, SFX 0x800399), 0x0030 Multi-Slot Boss (0x015AE2, 5 Children +$BC, VRAM 0x4200); Extractor (tools/extract_rom_enemy_ai_0030_0048.py <= 500 lines), Tests (tests/rom_enemy_ai_0030_0048_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_269_ENEMY_AI_0030_0048_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x01778C..0x0178E8` (`0x0048`) and `0x015AE2..0x015B9C` (`0x0030`).
+  * Authored `tools/extract_rom_enemy_ai_0030_0048.py`, `tests/rom_enemy_ai_0030_0048_test.py` (3/3 PASS), `data/thor-evidence/rom_enemy_ai_0030_0048_m15_269.json`, and `docs/handoffs/STANDALONE_M15_269_ENEMY_AI_0030_0048_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.268: ROM PAUSE RING MENU (`0x0042E8`, `0x00155D76`) & PLAYER RANK/MAXHP SCALING (`0x007BF6`) — 8 Weapon Slots ($FF0D80), 16 Item Slots ($FF0D90), 9 Tiles/Icon, MaxHP = 198 + 2*Rank (Cap 200), +5 SP Pickup (0x007BCA); Extractor (tools/extract_rom_hud_menu_and_rank.py <= 500 lines), Tests (tests/rom_hud_menu_and_rank_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_268_HUD_MENU_AND_RANK_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x0042E8..0x0043AC` (ring menu icon renderer) and `0x007BCA..0x007C1C` (Rank/MaxHP scaling).
+  * Authored `tools/extract_rom_hud_menu_and_rank.py`, `tests/rom_hud_menu_and_rank_test.py` (3/3 PASS), `data/thor-evidence/rom_hud_menu_and_rank_m15_268.json`, and `docs/handoffs/STANDALONE_M15_268_HUD_MENU_AND_RANK_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.267: ROM ALL-SPIRITS RESOURCES, NEMESIS DMA & SPAWN CONTRACTS — Dytto (0x00141580/0x04D0), Efreet (0x001425AE/0x0450), Shade (0x00143262/0x0280), Bow (0x00143A42/0x0360); Spawn (0x014668..0x014798) & Update Handlers (0x00DF54); Extractor (tools/extract_rom_all_spirits_resources.py <= 500 lines), Tests (tests/rom_all_spirits_resources_test.py 4/4 PASS), Handoff (docs/handoffs/STANDALONE_M15_267_ALL_SPIRITS_RESOURCES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x014522..0x014624` (4-spirit Nemesis DMA loader) and `0x0146D6..0x0147DE` (Efreet, Shade, Bow spawn routines).
+  * Authored `tools/extract_rom_all_spirits_resources.py`, `tests/rom_all_spirits_resources_test.py` (4/4 PASS), `data/thor-evidence/rom_all_spirits_resources_m15_267.json`, and `docs/handoffs/STANDALONE_M15_267_ALL_SPIRITS_RESOURCES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.266: ROM CONSUMABLE ITEM EFFECTS (`0x00530C`), ELIGIBILITY (`0x005236`) & SPIRIT SUMMON DISPATCH — 17-Entry Jump Table (0x00532C, 0x1A..0x2A), Spirit Rings (0x007E9E), HP/SP/Dual 25/50/75/100% Formulas, Key-Item Guard (0x05CE16:5); Extractor (tools/extract_rom_item_effects.py <= 500 lines), Tests (tests/rom_item_effects_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_266_ITEM_EFFECTS_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x00482A..0x0048E0` (pause item use & `0x05CE16` bit-5 key-item guard), `0x005236` (eligibility), and `0x00530C..0x005472` (17-entry jump table `0x00532C` for IDs `0x1A..0x2A`).
+  * Authored `tools/extract_rom_item_effects.py`, `tests/rom_item_effects_test.py` (3/3 PASS), `data/thor-evidence/rom_item_effects_m15_266.json`, and `docs/handoffs/STANDALONE_M15_266_ITEM_EFFECTS_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.265: ROM SRAM SAVE/LOAD SYSTEM (`0x001182..0x001360`) & PERSISTENT INVENTORY LAYOUT (`$FF0BFE..$FF0E51`) — 4 Primary/Backup SRAM Slots ($200009..$202111), 6-Byte Magic (0x001754), 596-Byte Checksum (0x00129A), Backup Repair (0x0012E8), 7 Weapon Slots ($FF0D82) & 16 Item Slots ($FF0D90); Extractor (tools/extract_rom_sram_and_inventory.py <= 500 lines), Tests (tests/rom_sram_and_inventory_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_265_SRAM_AND_INVENTORY_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Decoded SRAM slot scanner (`0x001182`), validator (`0x00129A`), repair copy (`0x0012E8`), and new-game clear (`0x001300`) across 4 primary + 4 backup odd-byte SRAM slots (`$200009..$202111`, `$00A130F1` ctrl).
+  * Verified 6-byte magic (`0x001754`: `1A BC 00 02 2A 4E`) and 596-byte (`0x254`) WRAM persistence block `$FF0BFE..$FF0E51`.
+  * Mapped `$FF0D82` (7 weapon slots `0x05FE..0x0BFE`), `$FF0D90` (16 item slots `0x1A..0x28`, `0x2A`), `$FF0DB6`/`$FF0DBA`/`$FF0D7A` spirit state, and `$FF0DBC`/`$FF0E1C`/`$FF0E2C` flags.
+  * Authored `tools/extract_rom_sram_and_inventory.py`, `tests/rom_sram_and_inventory_test.py` (3/3 PASS), `data/thor-evidence/rom_sram_and_inventory_m15_265.json`, and `docs/handoffs/STANDALONE_M15_265_SRAM_AND_INVENTORY_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.264: ROM ENTITY MASTER TABLES (`0x00DF54`, `0x03F2FA`) & ELEMENTAL DAMAGE PIPELINE (`0x017E30`) — Extracted 89 Entity Update Handlers (0x0016..0x00C6), 99 32-Byte Descriptors (0x0002..0x00C6), and Universal Damage/Elemental Bit-13 Routine (0x017E30, $92(A6) defense, min-1 clamp, 0x8004D9 SFX); Extractor (tools/extract_rom_entity_master_tables.py <= 500 lines), Tests (tests/rom_entity_master_tables_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_264_ENTITY_MASTER_TABLES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Decoded all 89 32-bit handler pointers in `0x00DF54..0x00E0B8` (`0x0016..0x00C6`) ending at `0x00E0B8` (`RTS`).
+  * Decoded all 99 32-byte entity descriptors (`0x0002..0x00C6`) at `0x03F2FA - 0x20 + (type_id << 4)` per `0x008D06`.
+  * Disassembled and verified `0x017E30..0x017E9E` (`btst #13` elemental bit -> `$39(A6):3` + SFX `0x8004D9`, `0x0FFF` mask, `$92(A6)` defense subtraction, min-1 clamp, `$8A(A6)` HP, death `State 2` via `0x008EF8`).
+  * Authored `tools/extract_rom_entity_master_tables.py`, `tests/rom_entity_master_tables_test.py` (3/3 PASS), `data/thor-evidence/rom_entity_master_tables_m15_264.json`, and `docs/handoffs/STANDALONE_M15_264_ENTITY_MASTER_TABLES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
+# 2026-11-16 — Milestone M15.263: DYTTO SPIRIT ABILITIES, STATE MACHINE (0x00..0x1A) & WATER DAMAGE REVERSE ENGINEERING — Complete 14-State Table (0x014914), State 0x00 PRNG Dispatch (0x014932), State 0x10 3-Way Spread (0x014A72/0x015214), State 0x06/0x08/0x0A Magic Burst (0x015136), State 0x12/0x14 Water Damage 0x2008/0xA008 (0x014E1A/0x014E86), State 0x16/0x18 Ali Buff (0x014B7C/0x014BB8), State 0x0E Knockback (0x014EE6); Extractor (tools/extract_rom_dytto_abilities.py <= 500 lines), Tests (tests/rom_dytto_abilities_test.py 5/5 PASS), Handoff (docs/handoffs/STANDALONE_M15_263_DYTTO_ABILITIES_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled and verified all 14 entries (`0x00..0x1A`) of Spirit State Table `0x014914`.
+  * Decoded `State 0x00` (`0x014932`) PRNG `0x00E268` thresholds (`0x2000`, `0x6000`, `0x9000`).
+  * Decoded `State 0x10` (`0x014A72`) -> `0x015214` (Dytto `$30 == 0x0018` 3-way spread of Type `0x0024` at angles `0, +28, -28`).
+  * Decoded `State 0x06/0x08/0x0A` (`0x014ABC..0x014B7A`) -> `0x015136` magic burst (`Type 0x0024` in `State 0x0C`).
+  * Decoded `State 0x12` (`0x014E1A` -> `0x014E86`) applying Water Elemental damage `0x2008` (ground) / `0xA008` (airborne) + SFX `0x700345`.
+  * Decoded `State 0x16/0x18` (`0x014B7C..0x014C1A`) Ali contact buff (`$FF1940 = 0x014C04`) and `State 0x0E` (`0x014EE6`) knockback recovery.
+  * Authored `tools/extract_rom_dytto_abilities.py`, `tests/rom_dytto_abilities_test.py` (5/5 PASS), `data/thor-evidence/rom_dytto_abilities_m15_263.json`, and `docs/handoffs/STANDALONE_M15_263_DYTTO_ABILITIES_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines for all governed code/test files).
+
 # 2026-11-12 — Milestone M15.262: DYTTO SPAWN, ANIMATION AND FOLLOW MECHANICS REVERSE ENGINEERING — Phase 0 Baseline & Architecture Audit (219f13e9...); Phase 1 Dytto Spawn Routine Disassembly (0x014668..0x0146BE, Entity 0x0018 allocation via 0x008D06, Max SP 100 at $88, Drain rate 10 at $8C, Base state 0x02, Base action 0x04); Phase 2 Graphics & VRAM DMA Allocation (0x014522 / 0x01454C, Nemesis ROM stream 0x00141580 decompressed to 0x00FF2FA8, VRAM Tile 0x04D0 / Byte 0x9A00 via DMA queue $FF1892); Phase 3 Spirit State Machine & Awakening Timeline (State Table 0x014914, State 0x1A APPEAR handler 0x014F60 milestones at 180f, 240f, 300f, 360f, and 420f transition to Follow); Phase 4 Follow-Player Physics & Steering (0x0150A0..0x015112, Target angle calc 0x00E6F0, turn rate 8 units/tick at $AE, velocity damping ASR.L #7 at $B0); Phase 5 Automated Extractor & Unit Tests (tools/extract_rom_dytto_spawn_follow.py 151 lines <= 500, tests/rom_dytto_spawn_follow_test.py 73 lines <= 500 PASS 5/5); Phase 6 Implementation Handoff (docs/handoffs/STANDALONE_M15_262_DYTTO_SPAWN_FOLLOW_HANDOFF.md); Phase 7 Governance (196 active helpers preserved, hash 28b6617d... preserved, Standalone worktree read-only) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**
@@ -30806,3 +30885,31 @@ RESULT: PASS.
    - Emitted formal verification receipt: data/thor-evidence/combined-clusters-qualification-m15-227-20261108.json.
    - Verified receipt using ReceiptVerifier: 58/58 physical files valid, 48/48 streams valid, overall_valid = true.
    - Source-code size policy verified: all touched and created C++/Python files strictly <= 500 lines.
+
+## 2026-11-16 - Campaign relocation to one shared project
+
+User requested both Gemini workers operate in C:/Github/Sega-Thor on independent
+non-overlapping tasks. Preserved original A/B worktrees, task IDs, conversation
+histories and generation 7. Backed up campaign state and task database; migrated
+active records/lifecycle/task metadata transactionally with replay journal.
+Authoritative relocation baseline: 0ec3f6c8d0146cdcc9bfafba7c43fc946c1b8d56,
+branch codex/helper10-99d6-bounded-scout. No divergent gameplay sources were merged.
+Both real CLI invocations report the shared cwd. B confirmed root/branch/HEAD and
+readable test files and resumed bounded test implementation. A is completing
+read-only source/checkpoint work. Backend terminals can retain old cwd; commands
+must explicitly select the shared root and use absolute file paths.
+Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
+The Codex 15-minute campaign remains disabled per the user's prior request.
+
+## 2026-11-16 - Native Vertical Slice Collision & Test Recovery (In-Progress Fix)
+
+- **Root Cause:** `ScreenInstance::rebind_views()` in `src/game/screen_instance.cpp` bound `terrain` at offset `0x204U` (inside Plane A metatiles) instead of the authentic `0x00D406` collision grid offset `0x2004U` (`+4` header + `8192` bytes Plane A metatiles). That caused `oasis_native_vertical_slice` to hit synthetic metatile bytes (`0xCC`/`0x40`) instead of real ROM collision.
+- **Changes:**
+  - `src/game/screen_instance.cpp`: Updated `rebind_views()` terrain offset from `0x204U` to `0x2004U`.
+  - `tests/native_vertical_slice_test.cpp`: Updated wall-blocking walk to reach the real Screen `0x0100` left cliff (`25` steps), updated `sample_world(204, 164)` assertions to real collision bytes (`0x01` on `0x0101`, `0x11` on `0x0100`), preserved authentic persistent player HP across screen transitions (`hp_before - 10`), and compared drop item coordinates against `enemy_drop_unit` after recovery frames (`500` lines $\le 500$).
+- **Verification:**
+  - `build-current-debug` (`oasis_native_vertical_slice`): **PASSED** (6.25s).
+  - `build-current-release` (`oasis_native_vertical_slice`): **PASSED** (0.57s).
+  - `cmake -P tests/check_file_limits.cmake`: **PASSED** (2,573 governed files $\le 500$ lines).
+  - `git diff --check`: **PASSED** (0 errors).
+- **Next Step:** Commit or clean remaining untracked scratch artifacts in `Sega-Thor` and proceed with M15.263 (Dytto magic/summon `State 0x08` + Water Shrine enemies).

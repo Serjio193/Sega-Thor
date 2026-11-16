@@ -1,3 +1,108 @@
+# M15.272 ROM Item Attribute (`0x05CE16`) & Pickup Fanfare Tables (`0x05CE56`, `0x007A6C`) — COMPLETE / VERIFIED
+
+- **Phase 1 64-Byte Item Attribute & Pickup Tables (`0x05CE16`, `0x05CE56`):**
+  * Extracted bit-5 key-item/non-discardable flags (`0x05CE16`) and 5 pickup SFX/fanfare tiers (`0x05CE56`: `0xC0035F..0xC00361`, `0x0508`, `0x050D` + `State 0x44`/`Action 0x4A`), plus pickup flag setter `0x007AF0`.
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_item_attribute_tables.py` ($\le 500$ lines), `tests/rom_item_attribute_tables_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_272_ITEM_ATTRIBUTE_TABLES_HANDOFF.md`.
+
+# M15.271 ROM All-Spirits Live SP Drain Intervals & State Jump Tables — COMPLETE / VERIFIED
+
+- **Phase 1 Live SP Drain & Despawn Contracts (`$8E(A6)` -> `$8E($FF19E8)`):**
+  * Decoded exact SP drain intervals: Dytto (`45f` / `0x012314`), Efreet (`35f` / `0x012BA8`), Shade (`40f` / `0x0136CC`), Bow (`30f` / `0x013F22`).
+- **Phase 2 Per-Spirit State Jump Tables:**
+  * Decoded `0x011BAC` (Dytto), `0x0125AE` (Efreet), `0x013008` (Shade), and `0x0138E6` (Bow).
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_spirits_sp_and_state_tables.py` ($\le 500$ lines), `tests/rom_spirits_sp_and_state_tables_test.py` (4/4 passed), and `docs/handoffs/STANDALONE_M15_271_SPIRITS_SP_AND_STATE_TABLES_HANDOFF.md`.
+
+# M15.270 ROM Sound Driver Entrypoints (`0x060000..0x060008`) & Command Dispatcher (`0x06042A`) — COMPLETE / VERIFIED
+
+- **Phase 1 Sound Driver Entrypoints (`0x060000..0x06000C`):**
+  * Decoded `0x060000 -> 0x060090` (Init/Tick), `0x060004 -> 0x06042A` (Enqueue), and `0x060008 -> 0x061232` (Z80/FM/PSG Tick).
+- **Phase 2 Command Dispatcher (`0x06042A`):**
+  * Mapped 9 system commands (`0x00..0x08`) and 5 category dispatchers (`0x0100..0x0500`: BGM `0x060B50`, SFX banks `0x06112E`/`0x060F1C`/`0x060F54`, Category 5 `0x060CDA`).
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_sound_command_dispatch.py` ($\le 500$ lines), `tests/rom_sound_command_dispatch_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_270_SOUND_COMMAND_DISPATCH_HANDOFF.md`.
+
+# M15.269 ROM Enemy AI Contracts: Entity 0x0048 Charger (`0x01778C`) & Entity 0x0030 Gate Boss (`0x015AE2`) — COMPLETE / VERIFIED
+
+- **Phase 1 Entity `0x0048` Charger (`0x01778C..0x0178E8`):**
+  * Decoded 4-substate AI (`$A6(A6)`), 16-byte directional tile AABB table `0x01783E`, SFX `0x800399`, charge/deceleration (`0x01784E`), and return-home (`0x0178B2`).
+- **Phase 2 Entity `0x0030` Gate Boss (`0x015AE2..0x015B9C`):**
+  * Decoded 4-substate AI (`$66(A6)`), 5 linked child slots (`+$BC` stride) via `0x00E66E`, and VRAM base `0x4200`.
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_enemy_ai_0030_0048.py` ($\le 500$ lines), `tests/rom_enemy_ai_0030_0048_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_269_ENEMY_AI_0030_0048_HANDOFF.md`.
+
+# M15.268 ROM Pause Ring Menu Icon Renderer (`0x0042E8`) & Player Rank/MaxHP Scaling (`0x007BF6`) — COMPLETE / VERIFIED
+
+- **Phase 1 Ring Menu Icon Renderer (`0x0042E8..0x0043AC`):**
+  * Decoded ROM icon tileset `0x00155D76` (`3x3 = 9` tiles/icon), 8 weapon slots (`$FF0D80`, cursor `$FF0E50`), 16 item slots (`$FF0D90`, cursor `$FF0E51`), 24px spacing.
+- **Phase 2 Player Rank & MaxHP Scaling (`0x007BF6..0x007C1C`):**
+  * Verified Rank `$FF1A7E` (cap `200`), `MaxHP = 198 + 2 * Rank` (`$FF1A70`), `+2` HP on rank-up, `+5` SP pickup (`0x007BCA`), and gem counters `$FF0DB2`.
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_hud_menu_and_rank.py` ($\le 500$ lines), `tests/rom_hud_menu_and_rank_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_268_HUD_MENU_AND_RANK_HANDOFF.md`.
+
+# M15.267 ROM All-Spirits Resources, Nemesis DMA & Spawn Contracts (Dytto/Efreet/Shade/Bow) — COMPLETE / VERIFIED
+
+- **Phase 1 Shared Spirit DMA Loader (`0x014522..0x014624`):**
+  * Decoded all 4 spirit Nemesis sprite streams and VRAM targets: Dytto (`0x00141580` -> `0x04D0`/`0x9A00`), Efreet (`0x001425AE` -> `0x0450`/`0x8A00`), Shade (`0x00143262` -> `0x0280`/`0x5000`), and Bow (`0x00143A42` -> `0x0360`/`0x6C00`).
+- **Phase 2 Spawn & Update Contracts (`0x014668..0x014798`, `0x00DF54`):**
+  * Verified spawn routines (`0x014668`, `0x0146D6`, `0x014742`, `0x014798`) and master update handlers (`0x011B4E`, `0x01254C`, `0x012F1E`, `0x01387C`).
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_all_spirits_resources.py` ($\le 500$ lines) emitting `data/thor-evidence/rom_all_spirits_resources_m15_267.json`.
+  * Authored `tests/rom_all_spirits_resources_test.py` ($\le 500$ lines, 4/4 passed).
+  * Published `docs/handoffs/STANDALONE_M15_267_ALL_SPIRITS_RESOURCES_HANDOFF.md`.
+
+# M15.266 ROM Consumable Item Effects (`0x00530C`), Eligibility (`0x005236`) & Spirit Summon Dispatch — COMPLETE / VERIFIED
+
+- **Phase 1 Item Eligibility & Attribute Guard (`0x005236`, `0x05CE16`):**
+  * Decoded area `0x10` lock, spirit ring eligibility (`$FF16F1:0`, `$FF1AA4`, `$FF1A76`, `$FF0D7A`), HP/SP/Dual restore conditions, and key-item bit 5 (`0x05CE16`).
+- **Phase 2 17-Entry Item Effect Jump Table (`0x00532C`, IDs `0x1A..0x2A`):**
+  * Verified Spirit Rings `0x1A..0x1D` (`0x005378..0x005384` -> `0x007E9E`), HP Food `0x1E..0x21` (25/50/75/100%), SP Potions `0x22..0x25` (25/50/75/100%), and Dual Elixirs `0x26..0x2A` (25/50/75/100%).
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_item_effects.py` ($\le 500$ lines) emitting `data/thor-evidence/rom_item_effects_m15_266.json`.
+  * Authored `tests/rom_item_effects_test.py` ($\le 500$ lines, 3/3 passed).
+  * Published `docs/handoffs/STANDALONE_M15_266_ITEM_EFFECTS_HANDOFF.md`.
+
+# M15.265 ROM SRAM Save/Load System (`0x001182..0x001360`) & Persistent Inventory Layout (`$FF0BFE..$FF0E51`) — COMPLETE / VERIFIED
+
+- **Phase 1 SRAM Slot Architecture (`0x001182..0x001298`):**
+  * Decoded `$00A130F1` lock/unlock (`0x03`/`0x02`), 4 primary + 4 backup odd-byte SRAM slots (`$200009..$202111`), valid-slot bitmask `$FF10AA`, and last-slot `$2025C9 -> $FF10A8`.
+  * Verified `0x00129A` 6-byte magic (`0x001754`: `1A BC 00 02 2A 4E`), **596-byte** payload checksum, and `0x0012E8` automatic backup-to-primary repair.
+- **Phase 2 Persistent WRAM Block & Inventory (`$FF0BFE..$FF0E51`):**
+  * Mapped `$FF0D7A` spirit bits, `$FF0D7E` power, `$FF0D82` 7 weapon slots (`0x05FE..0x0BFE`), `$FF0D90` 16 item slots (`0x1A..0x28`, `0x2A`), `$FF0DB6` spirit levels, `$FF0DBC` global flags, `$FF0E1C` area flags, `$FF0E2C` room flags, and `$FF0E40` room ID.
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_sram_and_inventory.py` ($\le 500$ lines) emitting `data/thor-evidence/rom_sram_and_inventory_m15_265.json`.
+  * Authored `tests/rom_sram_and_inventory_test.py` ($\le 500$ lines, 3/3 passed).
+  * Published `docs/handoffs/STANDALONE_M15_265_SRAM_AND_INVENTORY_HANDOFF.md`.
+
+# M15.264 ROM Entity Master Tables (`0x00DF54`, `0x03F2FA`) & Elemental Damage Pipeline (`0x017E30`) — COMPLETE / VERIFIED
+
+- **Phase 1 Entity Master Update Dispatch Table (`0x00DF54..0x00E0B8`):**
+  * Extracted all 89 even entity type update handlers (`0x0016..0x00C6`), terminating at `RTS` (`0x4E75`) at `0x00E0B8`.
+- **Phase 2 32-Byte Entity Descriptor Table (`0x03F2FA`, `0x008D06`):**
+  * Extracted all 99 entity descriptors (`0x0002..0x00C6`) with Z/XY radii, dimensions, render priority, mass, flags, 4 animation pointers, and AI pointer `$5E(A6)`.
+- **Phase 3 Universal Damage & Elemental Bit-13 Pipeline (`0x017E30`):**
+  * Decoded `$86(A6)` damage intake, bit 13 elemental check (`$39(A6)` bit 3 + SFX `0x8004D9`), `0x0FFF` magnitude mask, `$92(A6)` defense subtraction (clamped `>= 1`), `$8A(A6)` HP update, and death `State 2` via `0x008EF8`.
+- **Phase 4 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_entity_master_tables.py` ($\le 500$ lines) emitting `data/thor-evidence/rom_entity_master_tables_m15_264.json`.
+  * Authored `tests/rom_entity_master_tables_test.py` ($\le 500$ lines, 3/3 passed).
+  * Published `docs/handoffs/STANDALONE_M15_264_ENTITY_MASTER_TABLES_HANDOFF.md`.
+
+# M15.263 Dytto Spirit Abilities, State Machine (0x00..0x1A) & Water Damage Reverse Engineering — COMPLETE / VERIFIED
+
+- **Phase 1 Complete Spirit State Table (`0x014914`, 14 states `0x00..0x1A`):**
+  * Verified all 14 self-relative state handlers (`0x014932`, `0x014930`, `0x014A5C`, `0x014ABC`, `0x014AEA`, `0x014B50`, `0x014D1A`, `0x014EE6`, `0x014A72`, `0x014E1A`, `0x014E0C`, `0x014B7C`, `0x014BB8`, `0x014F60`).
+- **Phase 2 Autonomous Dispatch & Ability States:**
+  * Decoded `State 0x00` (`0x014932`) PRNG `0x00E268` thresholds (`0x2000`, `0x6000`, `0x9000`) routing to `State 0x06`, `State 0x10`, `State 0x16`, and `0x014958` wander (`State 0x04`).
+  * Decoded `State 0x10` (`0x014A72`) -> `0x015214` (Dytto `$30 == 0x0018` 3-way spread of Type `0x0024` at angles `0, +28, -28` in `State 0x12`).
+  * Decoded `State 0x06/0x08/0x0A` (`0x014ABC..0x014B7A`) -> `0x015136` magic burst (`Type 0x0024` in `State 0x0C`).
+  * Decoded `State 0x12` (`0x014E1A` -> `0x014E86`): collision `0x00B922` applying Water Elemental damage `0x2008` (ground) / `0xA008` (airborne) + SFX `0x700345`.
+  * Decoded `State 0x16/0x18` (`0x014B7C..0x014C1A`) Ali contact buff (`$FF1940 = 0x014C04`, `0x00BCE2`) and `State 0x0E` (`0x014EE6`) knockback damping (`0x8000` XY, `0xA000` Z).
+- **Phase 3 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_dytto_abilities.py` (<= 500 lines) emitting `data/thor-evidence/rom_dytto_abilities_m15_263.json`.
+  * Authored `tests/rom_dytto_abilities_test.py` (<= 500 lines, 5/5 passed).
+  * Published `docs/handoffs/STANDALONE_M15_263_DYTTO_ABILITIES_HANDOFF.md`.
+
 # M15.262 Dytto Spawn, Animation and Follow Mechanics Reverse Engineering — COMPLETE / VERIFIED DYTTO LIFECYCLE EXTRACTION
 
 - **Phase 0 Baseline & Architecture Audit:**

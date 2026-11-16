@@ -1,0 +1,74 @@
+{
+  "milestone": "M15.265",
+  "description": "ROM SRAM Save/Load System (0x001182..0x001360) and Persistent WRAM Inventory/Flags Layout",
+  "sram_system": {
+    "slot_scanner_routine": "0x001182",
+    "slot_validator_routine": "0x00129A",
+    "slot_repair_copy_routine": "0x0012E8",
+    "new_game_clear_routine": "0x001300",
+    "sram_ctrl_reg": "0x00A130F1",
+    "sram_unlock_val": "0x03",
+    "sram_lock_val": "0x02",
+    "valid_slots_bitmask_ram": "0x00FF10AA",
+    "last_slot_ram": "0x00FF10A8",
+    "magic_addr": "0x001754",
+    "magic_hex": "1abc00022a4e",
+    "payload_bytes": 596,
+    "checksum_type": "16-bit unsigned sum of 596 payload bytes",
+    "slots": [
+      {
+        "slot": 0,
+        "primary": "0x200009",
+        "backup": "0x2012E9"
+      },
+      {
+        "slot": 1,
+        "primary": "0x2004C1",
+        "backup": "0x2017A1"
+      },
+      {
+        "slot": 2,
+        "primary": "0x200979",
+        "backup": "0x201C59"
+      },
+      {
+        "slot": 3,
+        "primary": "0x200E31",
+        "backup": "0x202111"
+      }
+    ],
+    "last_slot_sram": "0x2025C9"
+  },
+  "persistent_wram_block": {
+    "base_addr": "0x00FF0BFE",
+    "end_addr_inclusive": "0x00FF0E51",
+    "size_bytes": 596,
+    "key_fields": {
+      "0x00FF0D7A": "Active/unlocked spirit bitmask (bits 0..3: Dytto, Efreet, Shade, Bow)",
+      "0x00FF0D7E": "Power / Score word (copied to Player +$06)",
+      "0x00FF0D80": "Equipment / status word (0x01FF on init)",
+      "0x00FF0D82": "7 Weapon Slots (2 bytes each: (weapon_id << 8) | ammo_or_0xFE)",
+      "0x00FF0D90": "16 Item/Consumable Slots (2 bytes each: item_id, count)",
+      "0x00FF0DB6": "4 Spirit Level bytes (0x0F0F0F0F on full unlock)",
+      "0x00FF0DBA": "Spirit slot flags (bits 0..3)",
+      "0x00FF0DBC": "Global Story Flags (32 bytes)",
+      "0x00FF0E1C": "Area Flags (16 bytes, cleared on area change)",
+      "0x00FF0E2C": "Room Flags (16 bytes, cleared on room change)",
+      "0x00FF0E40": "Current Room ID (0xMMRR)"
+    }
+  },
+  "inventory_defaults_0x001450": {
+    "weapon_slots_count": 7,
+    "weapon_init_words": [
+      "0x05FE",
+      "0x07FE",
+      "0x08FE",
+      "0x0CFE",
+      "0x09FE",
+      "0x0AFE",
+      "0x0BFE"
+    ],
+    "item_slots_count": 16,
+    "item_ids_range": "0x1A..0x28 plus 0x2A"
+  }
+}

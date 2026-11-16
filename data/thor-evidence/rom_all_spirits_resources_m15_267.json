@@ -1,0 +1,61 @@
+{
+  "milestone": "M15.267",
+  "description": "ROM Resource, Nemesis VRAM DMA, Spawn & Update Dispatch Contracts for All 4 Spirits",
+  "shared_dma_loader": "0x014522",
+  "dma_queue_ram": "0x00FF1892",
+  "active_spirit_flags_ram": "0x00FF0D7A",
+  "spirits": {
+    "Dytto": {
+      "entity_type": "0x0018",
+      "active_flag_bit": 0,
+      "spawn_routine": "0x014668",
+      "update_handler": "0x011B4E",
+      "max_sp": 100,
+      "sp_drain_rate": 10,
+      "dma_branch_pc": "0x01454C",
+      "nemesis_rom_addr": "0x141580",
+      "work_buffer_ram": "0x00FF2FA8",
+      "vram_tile": "0x04D0",
+      "vram_byte_addr": "0x9A00"
+    },
+    "Efreet": {
+      "entity_type": "0x001A",
+      "active_flag_bit": 1,
+      "spawn_routine": "0x0146D6",
+      "update_handler": "0x01254C",
+      "max_sp": 100,
+      "sp_drain_rate": 10,
+      "dma_branch_pc": "0x014582",
+      "nemesis_rom_addr": "0x1425AE",
+      "work_buffer_ram": "0x00FF2FA8",
+      "vram_tile": "0x0450",
+      "vram_byte_addr": "0x8A00"
+    },
+    "Shade": {
+      "entity_type": "0x001C",
+      "active_flag_bit": 2,
+      "spawn_routine": "0x014742",
+      "update_handler": "0x012F1E",
+      "max_sp": 100,
+      "sp_drain_rate": 10,
+      "dma_branch_pc": "0x0145B8",
+      "nemesis_rom_addr": "0x143262",
+      "work_buffer_ram": "0x00FF2FA8",
+      "vram_tile": "0x0280",
+      "vram_byte_addr": "0x5000"
+    },
+    "Bow": {
+      "entity_type": "0x001E",
+      "active_flag_bit": 3,
+      "spawn_routine": "0x014798",
+      "update_handler": "0x01387C",
+      "max_sp": 100,
+      "sp_drain_rate": 10,
+      "dma_branch_pc": "0x0145F0",
+      "nemesis_rom_addr": "0x143A42",
+      "work_buffer_ram": "0x00FF2FA8",
+      "vram_tile": "0x0360",
+      "vram_byte_addr": "0x6C00"
+    }
+  }
+}

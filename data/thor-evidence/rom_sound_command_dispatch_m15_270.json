@@ -1,0 +1,32 @@
+{
+  "milestone": "M15.270",
+  "description": "ROM Sound Driver Entrypoints (0x060000..0x060008) and Command Dispatcher (0x06042A)",
+  "entrypoints": {
+    "driver_init_or_tick": "0x060090",
+    "enqueue_command": "0x06042A",
+    "hardware_tick": "0x061232"
+  },
+  "system_commands_0x00_0x08": {
+    "0x00": "0x0604E6",
+    "0x01": "0x060A8A",
+    "0x02": "0x06064C",
+    "0x03": "0x06074E",
+    "0x04": "0x060884",
+    "0x05": "0x0609BC",
+    "0x06": "0x0609C6",
+    "0x07": "0x060516",
+    "0x08": "0x060D10"
+  },
+  "category_commands_0x0100_0x0500": {
+    "0x0100_bgm": "0x060B50",
+    "0x0200_sfx_bank2": "0x06112E",
+    "0x0300_sfx_bank3": "0x060F1C",
+    "0x0400_sfx_bank4": "0x060F54",
+    "0x0500_category5": "0x060CDA"
+  },
+  "wram_addresses": {
+    "driver_state_base": "0x00FF001A",
+    "bgm_channel_a": "0x00FF0628",
+    "bgm_channel_b": "0x00FF06F2"
+  }
+}

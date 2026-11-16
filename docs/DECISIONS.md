@@ -1,3 +1,162 @@
+# ADR-20261116-M15-272-ITEM-ATTRIBUTE-TABLES — ROM Item Attribute (`0x05CE16`) & Pickup Fanfare Tables (`0x05CE56`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone inventory & pickup handling needed the full 64-entry `0x05CE16` key-item/discardability mask and `0x05CE56` pickup fanfare/SFX tier table.
+
+**Decisions:**
+1. **Item Attribute & Pickup Tables (`0x05CE16`, `0x05CE56`, `0x007A6C`):**
+   - Documented all 64 entries (`0x00..0x3F`), tier contracts (`0..4`), and `0x007AF0` flag setter.
+
+**Consequences:**
+- Standalone receives verified item attribute and pickup fanfare tables; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-271-SPIRITS-SP-AND-STATE-TABLES — ROM All-Spirits Live SP Drain Intervals & State Jump Tables
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone needed the exact live SP drain cadence and per-spirit state jump tables for Efreet, Shade, and Bow alongside Dytto.
+
+**Decisions:**
+1. **Live SP Drain & State Tables (`0x011B4E`, `0x01254C`, `0x012F1E`, `0x01387C`):**
+   - Documented 45f/35f/40f/30f SP drain intervals, despawn handlers (`0x012314`, `0x012BA8`, `0x0136CC`, `0x013F22`), and state tables (`0x011BAC`, `0x0125AE`, `0x013008`, `0x0138E6`).
+
+**Consequences:**
+- Standalone receives verified SP drain and state-table contracts for all 4 spirits; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-270-SOUND-COMMAND-DISPATCH — ROM Sound Driver Entrypoints (`0x060000..0x060008`) & Command Dispatcher (`0x06042A`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone audio integration needed the complete `0x060000` driver jump table and `0x06042A` command category routing.
+
+**Decisions:**
+1. **Sound Driver Routing (`0x060000`, `0x06042A`):**
+   - Documented `0x060090`/`0x06042A`/`0x061232` entrypoints, 9 system commands (`0x00..0x08`), and 5 category handlers (`0x0100..0x0500`).
+
+**Consequences:**
+- Standalone receives verified sound command routing contracts; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-269-ENEMY-AI-0030-0048 — ROM Enemy AI Contracts (`0x0048` Charger & `0x0030` Gate Boss)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone Room `0x0105` (Waterfall Gate Arena) and dungeon combat required ROM AI contracts for `0x0048` (Charger) and `0x0030` (Gate Boss).
+
+**Decisions:**
+1. **Entity `0x0048` (`0x01778C`) & `0x0030` (`0x015AE2`):**
+   - Documented `0x0048`'s 4-substate loop and `0x01783E` AABB table, plus `0x0030`'s 5-child slot initialization and VRAM `0x4200`.
+
+**Consequences:**
+- Standalone receives verified enemy AI specs; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-268-HUD-MENU-AND-RANK — ROM Pause Ring Menu (`0x0042E8`) & Player Rank/MaxHP Scaling (`0x007BF6`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone needed the ROM icon tileset and slot geometry for the pause ring menus and the exact Rank-to-MaxHP formula.
+
+**Decisions:**
+1. **Ring Menu (`0x0042E8`, `0x004388`) & Rank Scaling (`0x007BF6`):**
+   - Documented `0x00155D76` (`9` tiles/icon), `$FF0D80`/`$FF0D90` rings, and `MaxHP = 198 + 2 * Rank` (`Rank <= 200`).
+
+**Consequences:**
+- Standalone receives verified ring menu and rank-up formulas; all code/test files $\le 500$ lines.
+
+# ADR-20261116-M15-267-ALL-SPIRITS-RESOURCES — ROM All-Spirits Resources, Nemesis DMA & Spawn Contracts (`0x014522..0x0147DE`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Following M15.262/M15.263 (Dytto), Standalone needed the exact Nemesis ROM addresses, VRAM tile bases, spawn routines, and `0x00DF54` update handlers for the remaining 3 spirits (Efreet `0x001A`, Shade `0x001C`, Bow `0x001E`).
+
+**Decisions:**
+1. **All-Spirits DMA & Spawn Table (`0x014522..0x0147DE`):**
+   - Documented Dytto (`0x00141580`/`0x04D0`), Efreet (`0x001425AE`/`0x0450`), Shade (`0x00143262`/`0x0280`), and Bow (`0x00143A42`/`0x0360`), shared work buffer `$00FF2FA8`, and `0x00DF54` handlers (`0x011B4E`, `0x01254C`, `0x012F1E`, `0x01387C`).
+
+**Consequences:**
+- Standalone receives verified sprite/VRAM/spawn contracts for all 4 elemental spirits.
+- All governed code/test files remain $\le 500$ lines, and `Sega-Thor-Standalone` remained untouched by Track 1.
+
+# ADR-20261116-M15-266-ITEM-EFFECTS-AND-SUMMON-DISPATCH — ROM Consumable Item Effects (`0x00530C`), Eligibility (`0x005236`) & Spirit Summon Dispatch
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Following M15.265's mapping of the 16 consumable/item slots (`$FF0D90`), Standalone needed the exact eligibility rules and effect formulas for all 17 item IDs (`0x1A..0x2A`).
+
+**Decisions:**
+1. **Item Eligibility (`0x005236`) & Effect Table (`0x00532C`):**
+   - Documented spirit ring summon (`0x1A..0x1D` -> `0x007E9E`), HP food (`0x1E..0x21`: 25/50/75/100% MaxHP), SP potions (`0x22..0x25`: 25/50/75/100% MaxSP), and dual elixirs (`0x26..0x2A`: 25/50/75/100% both), plus `0x05CE16` bit-5 key-item guard.
+
+**Consequences:**
+- Standalone receives exact formulas and SFX contracts (`0xA00234`, `0xA00256`) for the entire consumable item system.
+- All governed code/test files remain $\le 500$ lines, and `Sega-Thor-Standalone` remained untouched by Track 1.
+
+# ADR-20261116-M15-265-SRAM-AND-PERSISTENT-INVENTORY — ROM SRAM Save/Load System (`0x001182..0x001360`) & Persistent Inventory Layout (`$FF0BFE..$FF0E51`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone progression and inventory persistence required exact ROM specifications for Mega Drive SRAM slot addressing, checksum validation, backup repair, and the WRAM persistence block (`$FF0BFE..$FF0E51`).
+
+**Decisions:**
+1. **SRAM Slot & Checksum Contract (`0x001182`, `0x00129A`, `0x0012E8`):**
+   - Documented `$00A130F1` unlock/lock, 4 primary + 4 backup odd-byte SRAM slots (`$200009..$202111`), 6-byte magic (`0x001754`), 596-byte payload sum checksum, and automatic backup-to-primary repair.
+2. **Persistent WRAM Inventory & Flag Block (`$FF0BFE..$FF0E51`):**
+   - Documented `$FF0D82` (7 weapon slots), `$FF0D90` (16 item slots), `$FF0D7A`/`$FF0DB6`/`$FF0DBA` (spirits), and `$FF0DBC`/`$FF0E1C`/`$FF0E2C` (story/area/room flags).
+
+**Consequences:**
+- Standalone receives an exact binary specification for save/load serialization and player inventory slots.
+- All governed code/test files remain $\le 500$ lines, and `Sega-Thor-Standalone` remained untouched by Track 1.
+
+# ADR-20261116-M15-264-ENTITY-MASTER-TABLES-AND-ELEMENTAL-DAMAGE — ROM Entity Master Tables (`0x00DF54`, `0x03F2FA`) & Elemental Damage Pipeline (`0x017E30`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone scaling beyond Town (`0x002C`) required the complete ROM entity update dispatch table (`0x00DF54`), 32-byte entity descriptors (`0x03F2FA`), and resolution of the elemental bit-13 / defense subtraction unknowns (`0x017E4A`, `$92(A6)`).
+
+**Decisions:**
+1. **Entity Update Dispatch Table (`0x00DF54..0x00E0B8`):**
+   - Extracted all 89 32-bit handler pointers (`0x0016..0x00C6`) ending at `RTS` (`0x00E0B8`).
+2. **32-Byte Entity Descriptor Table (`0x03F2FA`):**
+   - Extracted all 99 descriptors (`0x0002..0x00C6`) using `0x03F2FA - 0x20 + (type_id << 4)`.
+3. **Damage & Elemental Bit-13 Pipeline (`0x017E30`):**
+   - Verified `btst.b #$d, d0` (`$39(A6)` bit 3 + SFX `0x8004D9`), `andi.w #$0FFF, d0`, `sub.w $92(A6), d0` (clamped `>= 1`), and death `State 2` via `0x008EF8`.
+
+**Consequences:**
+- Standalone receives a complete machine-readable catalog of all 99 ROM entity descriptors and 89 update handlers, plus exact damage/defense/elemental semantics.
+- All governed code/test files remain $\le 500$ lines, and `Sega-Thor-Standalone` remained untouched by Track 1.
+
+# ADR-20261116-M15-263-DYTTO-ABILITIES-AND-WATER-DAMAGE — Dytto Spirit Abilities, State Machine (0x00..0x1A) & Water Damage Reverse Engineering
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Following M15.262 (Dytto spawn, `State 0x1A` awakening, and `State 0x04` follow steering), Standalone engine development needed the remaining spirit state machine handlers (`0x00..0x18`), projectile spawners, and elemental damage contracts.
+
+**Decisions:**
+1. **Complete 14-State Spirit Table (`0x014914`):**
+   - Verified all 14 entries `0x00..0x1A` via `tools/extract_rom_dytto_abilities.py`.
+2. **Autonomous Dispatch & Ability States:**
+   - Mapped `State 0x00` (`0x014932`) PRNG thresholds (`0x2000`, `0x6000`, `0x9000`) via `0x00E268`.
+   - Mapped `State 0x10` (`0x014A72`) -> `0x015214` (Dytto `$30 == 0x0018` 3-way spread of Type `0x0024` at angles `0, +28, -28` in `State 0x12`).
+   - Mapped `State 0x06/0x08/0x0A` (`0x014ABC..0x014B7A`) -> `0x015136` magic burst (`Type 0x0024` in `State 0x0C`).
+   - Mapped `State 0x12` (`0x014E1A` -> `0x014E86`): collision `0x00B922` applying Water Elemental damage `0x2008` (ground) / `0xA008` (airborne) where bit 13 (`0x2000`) is the Water Elemental flag and `0x08` is base damage.
+   - Mapped `State 0x16/0x18` (`0x014B7C..0x014C1A`) Ali contact buff (`$FF1940 = 0x014C04`) and `State 0x0E` (`0x014EE6`) knockback recovery.
+3. **Tooling & Handoff:**
+   - Emitted `tools/extract_rom_dytto_abilities.py`, `tests/rom_dytto_abilities_test.py`, `data/thor-evidence/rom_dytto_abilities_m15_263.json`, and `docs/handoffs/STANDALONE_M15_263_DYTTO_ABILITIES_HANDOFF.md`.
+
+**Consequences:**
+- Standalone engine receives exact, ROM-grounded semantics for all 14 spirit states and Dytto's water projectile/support behaviors.
+- All governed code/test files remain $\le 500$ lines, and `Sega-Thor-Standalone` remained untouched by Track 1.
+
 # ADR-20261112-M15-262-DYTTO-SPAWN-ANIMATION-AND-FOLLOW-MECHANICS — Dytto Spawn, Animation and Follow Mechanics Reverse Engineering
 **Status:** Accepted
 **Date:** 2026-11-12
@@ -11586,3 +11745,17 @@ Second-oracle determinism is proven and certified as frame-exact reference. The 
    - C:/Github/Sega-Thor-Standalone kept strictly READ-ONLY (0 modifications).
    - Production active helpers remain strictly 196 (ACTIVE_SET_SHA256 = 17396fdaf9c566d36ca8317d40bb334f0f3467c73f1aebe0e26a36f8d4951867). Slots 222-229 remain experimental and disabled by default.
    - All 2,112 governed code files verified <= 500 lines.
+
+## 2026-11-16 - Shared Gemini campaign workspace (user-authorized)
+
+The user replaces separate A/B working copies with one authoritative project at
+C:/Github/Sega-Thor. A and B retain distinct persistent conversation IDs and
+unaccepted task IDs. A owns gameplay implementation/ROM research; B owns tests
+and independent validation. Manager checks writable-scope overlap on assignment
+and continuation; task contracts and review enforce file responsibility. This is
+not claimed as an operating-system per-file write allowlist. Separate build and
+report directories avoid toolchain/output conflicts. Codex owns Git operations
+and shared governance documents. Old worktrees remain preserved; their divergent
+sources are not copied blindly over the canonical branch. Every resumed shell
+command explicitly selects the shared root because backend terminals may retain
+old cwd state. Sandbox protection remains enabled.

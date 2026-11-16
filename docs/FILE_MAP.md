@@ -1,3 +1,73 @@
+# M15.272 ROM Item Attribute & Pickup Fanfare Tables
+
+- `tools/extract_rom_item_attribute_tables.py` — reusable ROM semantic extractor for `0x05CE16` (64B attributes) and `0x05CE56` (64B pickup SFX/fanfare tiers).
+- `data/thor-evidence/rom_item_attribute_tables_m15_272.json` — machine-readable item attribute & pickup tier database.
+- `tests/rom_item_attribute_tables_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_272_ITEM_ATTRIBUTE_TABLES_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.271 ROM All-Spirits Live SP Drain & State Jump Tables
+
+- `tools/extract_rom_spirits_sp_and_state_tables.py` — reusable ROM semantic extractor for all 4 spirits' SP drain timers, despawn handlers, and state jump tables.
+- `data/thor-evidence/rom_spirits_sp_and_state_tables_m15_271.json` — machine-readable SP drain & state table specification.
+- `tests/rom_spirits_sp_and_state_tables_test.py` — automated verification suite (4/4 passed).
+- `docs/handoffs/STANDALONE_M15_271_SPIRITS_SP_AND_STATE_TABLES_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.270 ROM Sound Driver Entrypoints & Command Dispatcher
+
+- `tools/extract_rom_sound_command_dispatch.py` — reusable ROM semantic extractor for Sound Driver entrypoints (`0x060000..0x060008`) and Command Dispatcher (`0x06042A`).
+- `data/thor-evidence/rom_sound_command_dispatch_m15_270.json` — machine-readable sound command dispatch specification.
+- `tests/rom_sound_command_dispatch_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_270_SOUND_COMMAND_DISPATCH_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.269 ROM Enemy AI Contracts (0x0048 Charger & 0x0030 Gate Boss)
+
+- `tools/extract_rom_enemy_ai_0030_0048.py` — reusable ROM semantic extractor for Entity `0x0048` (`0x01778C`) and Entity `0x0030` (`0x015AE2`).
+- `data/thor-evidence/rom_enemy_ai_0030_0048_m15_269.json` — machine-readable enemy AI contracts.
+- `tests/rom_enemy_ai_0030_0048_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_269_ENEMY_AI_0030_0048_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.268 ROM Pause Ring Menu & Player Rank/MaxHP Scaling
+
+- `tools/extract_rom_hud_menu_and_rank.py` — reusable ROM semantic extractor for ring menu icon rendering (`0x0042E8`, `0x00155D76`) and Rank/MaxHP scaling (`0x007BF6`).
+- `data/thor-evidence/rom_hud_menu_and_rank_m15_268.json` — machine-readable ring menu and rank scaling specification.
+- `tests/rom_hud_menu_and_rank_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_268_HUD_MENU_AND_RANK_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.267 ROM All-Spirits Resources, Nemesis DMA & Spawn Contracts
+
+- `tools/extract_rom_all_spirits_resources.py` — reusable ROM semantic extractor for all 4 spirits (Dytto `0x0018`, Efreet `0x001A`, Shade `0x001C`, Bow `0x001E`): Nemesis streams (`0x014522`), VRAM tiles, spawn routines, and `0x00DF54` update handlers.
+- `data/thor-evidence/rom_all_spirits_resources_m15_267.json` — machine-readable specification for all 4 spirits.
+- `tests/rom_all_spirits_resources_test.py` — automated verification suite (4/4 passed).
+- `docs/handoffs/STANDALONE_M15_267_ALL_SPIRITS_RESOURCES_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.266 ROM Consumable Item Effects & Spirit Summon Dispatch
+
+- `tools/extract_rom_item_effects.py` — reusable ROM semantic extractor for item eligibility (`0x005236`), 17-entry jump table (`0x00532C`), spirit ring summon (`0x1A..0x1D`), and HP/SP/Dual heal formulas (`0x1E..0x2A`).
+- `data/thor-evidence/rom_item_effects_m15_266.json` — machine-readable item effect and eligibility database.
+- `tests/rom_item_effects_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_266_ITEM_EFFECTS_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.265 ROM SRAM Save/Load System & Persistent Inventory Layout
+
+- `tools/extract_rom_sram_and_inventory.py` — reusable ROM semantic extractor for SRAM slots (`0x001182..0x001298`), checksum/magic validation (`0x00129A`, `0x001754`), and the 596-byte persistent WRAM block (`$FF0BFE..$FF0E51`).
+- `data/thor-evidence/rom_sram_and_inventory_m15_265.json` — machine-readable SRAM slot, checksum, weapon slot, and item slot specification.
+- `tests/rom_sram_and_inventory_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_265_SRAM_AND_INVENTORY_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.264 ROM Entity Master Tables & Elemental Damage Pipeline
+
+- `tools/extract_rom_entity_master_tables.py` — reusable ROM semantic extractor for the 89-entry Entity Update Dispatch Table (`0x00DF54..0x00E0B8`), 99 32-byte Entity Descriptors (`0x03F2FA`), and Universal Damage/Elemental Bit-13 Pipeline (`0x017E30`).
+- `data/thor-evidence/rom_entity_master_tables_m15_264.json` — machine-readable entity descriptor, update handler, and damage pipeline database (`0x0002..0x00C6`).
+- `tests/rom_entity_master_tables_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_264_ENTITY_MASTER_TABLES_HANDOFF.md` — implementation-ready Standalone handoff.
+
+# M15.263 Dytto Spirit Abilities, State Machine & Water Damage Reverse Engineering
+
+- `tools/extract_rom_dytto_abilities.py` — reusable ROM semantic extractor for the 14-entry Spirit State Table (`0x014914`), `State 0x00` PRNG dispatch (`0x014932`), Dytto 3-way spread (`0x014A72`/`0x015214`), magic burst (`0x014AEA`/`0x015136`), projectile hit/water damage (`0x014E1A`/`0x014E86`), Ali contact buff (`0x014B7C`/`0x014BB8`), and knockback recovery (`0x014EE6`).
+- `data/thor-evidence/rom_dytto_abilities_m15_263.json` — structured machine-readable knowledge base for Dytto abilities, state handlers, and elemental water damage contracts.
+- `tests/rom_dytto_abilities_test.py` — automated unit test suite verifying all 14 state handlers, PRNG thresholds, 3-way spread contracts, and `0x2008`/`0xA008` water damage words (5/5 passed).
+- `docs/handoffs/STANDALONE_M15_263_DYTTO_ABILITIES_HANDOFF.md` — implementation-ready Standalone handoff for Dytto combat/support abilities.
+
 # M15.262 Dytto Spawn, Animation and Follow Mechanics Reverse Engineering
 
 - `tools/extract_rom_dytto_spawn_follow.py` — reusable ROM semantic extractor for Dytto spawn routine (`0x014668`), graphics DMA loader (`0x014522`/`0x01454C`), state machine jump table (`0x014914`), State `0x1A` timeline (`0x014F60`), and follow physics (`0x0150A0`).
@@ -4617,3 +4687,8 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - tools/generate_m15_246_receipt.py — Qualification receipt generator & `ReceiptVerifier` runner for M15.246 (`139` checked files, `0` rejections) (M15.246).
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
+
+### Shared Gemini campaign handoffs
+
+- docs/agent-handoffs/worker-a.md - Worker A relocation, gameplay ownership and historical evidence.
+- docs/agent-handoffs/worker-b.md - Worker B relocation, independent test ownership and historical evidence.

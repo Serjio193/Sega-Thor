@@ -1,0 +1,88 @@
+{
+  "milestone": "M15.271",
+  "description": "ROM Live SP Drain Intervals, Despawn Handlers, and State Jump Tables for All 4 Spirits",
+  "player_sp_field": "$8E($FF19E8)",
+  "spirit_drain_timer_field": "$8E(A6)",
+  "spirits": {
+    "Dytto": {
+      "entity_type": "0x0018",
+      "sp_drain_interval_frames": 45,
+      "despawn_handler": "0x012314",
+      "state_table_addr": "0x011BAC",
+      "state_count": 12,
+      "states": {
+        "0x00": "0x0121AA",
+        "0x02": "0x0120D4",
+        "0x04": "0x012150",
+        "0x06": "0x012104",
+        "0x08": "0x011FF6",
+        "0x0A": "0x01202A",
+        "0x0C": "0x012086",
+        "0x0E": "0x011DB6",
+        "0x10": "0x011ED2",
+        "0x12": "0x011C7A",
+        "0x14": "0x011D7C",
+        "0x16": "0x011F98"
+      }
+    },
+    "Efreet": {
+      "entity_type": "0x001A",
+      "sp_drain_interval_frames": 35,
+      "despawn_handler": "0x012BA8",
+      "state_table_addr": "0x0125AE",
+      "state_count": 12,
+      "states": {
+        "0x00": "0x012988",
+        "0x02": "0x012988",
+        "0x04": "0x012680",
+        "0x06": "0x012BF0",
+        "0x08": "0x0126AC",
+        "0x0A": "0x0127A4",
+        "0x0C": "0x012802",
+        "0x0E": "0x0127C0",
+        "0x10": "0x012988",
+        "0x12": "0x0126CE",
+        "0x14": "0x012702",
+        "0x16": "0x012914"
+      }
+    },
+    "Shade": {
+      "entity_type": "0x001C",
+      "sp_drain_interval_frames": 40,
+      "despawn_handler": "0x0136CC",
+      "state_table_addr": "0x013008",
+      "state_count": 10,
+      "states": {
+        "0x00": "0x01366A",
+        "0x02": "0x013716",
+        "0x04": "0x0136AC",
+        "0x06": "0x0132AA",
+        "0x08": "0x0133D0",
+        "0x0A": "0x01341A",
+        "0x0C": "0x0131AE",
+        "0x0E": "0x01325E",
+        "0x10": "0x0136F8",
+        "0x12": "0x01301C"
+      }
+    },
+    "Bow": {
+      "entity_type": "0x001E",
+      "sp_drain_interval_frames": 30,
+      "despawn_handler": "0x013F22",
+      "state_table_addr": "0x0138E6",
+      "state_count": 10,
+      "states": {
+        "0x00": "0x013CB4",
+        "0x02": "0x013F6E",
+        "0x04": "0x013BF2",
+        "0x06": "0x013C7C",
+        "0x08": "0x013B36",
+        "0x0A": "0x013A5C",
+        "0x0C": "0x013AE8",
+        "0x0E": "0x0138F8",
+        "0x10": "0x013F5A",
+        "0x12": "0x014126"
+      }
+    }
+  }
+}

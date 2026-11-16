@@ -1,0 +1,419 @@
+{
+  "milestone": "M15.272",
+  "description": "ROM 64-Byte Item Attribute Table (0x05CE16), Pickup Fanfare Table (0x05CE56), and Pickup Flag Setter (0x007A6C)",
+  "attr_table_addr": "0x05CE16",
+  "pickup_tier_table_addr": "0x05CE56",
+  "pickup_handler_addr": "0x007A6C",
+  "tier_contracts": {
+    "0": {
+      "sfx": "0xC0035F",
+      "fanfare": false
+    },
+    "1": {
+      "sfx": "0xC00360",
+      "fanfare": false
+    },
+    "2": {
+      "sfx": "0xC00361",
+      "fanfare": false
+    },
+    "3": {
+      "cmd": "0x0508",
+      "fanfare": true,
+      "player_state": "0x44",
+      "player_action": "0x4A"
+    },
+    "4": {
+      "cmd": "0x050D",
+      "fanfare": true,
+      "player_state": "0x44",
+      "player_action": "0x4A"
+    }
+  },
+  "items": [
+    {
+      "item_id": "0x00",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x01",
+      "attr_byte": "0xA1",
+      "non_discardable": true,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x02",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x03",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x04",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x05",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x06",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x07",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x08",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x09",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x0A",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x0B",
+      "attr_byte": "0x01",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x0C",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x0D",
+      "attr_byte": "0xA2",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x0E",
+      "attr_byte": "0xA2",
+      "non_discardable": true,
+      "pickup_tier": 0
+    },
+    {
+      "item_id": "0x0F",
+      "attr_byte": "0xA2",
+      "non_discardable": true,
+      "pickup_tier": 0
+    },
+    {
+      "item_id": "0x10",
+      "attr_byte": "0xA2",
+      "non_discardable": true,
+      "pickup_tier": 0
+    },
+    {
+      "item_id": "0x11",
+      "attr_byte": "0x04",
+      "non_discardable": false,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x12",
+      "attr_byte": "0xA4",
+      "non_discardable": true,
+      "pickup_tier": 4
+    },
+    {
+      "item_id": "0x13",
+      "attr_byte": "0xA4",
+      "non_discardable": true,
+      "pickup_tier": 4
+    },
+    {
+      "item_id": "0x14",
+      "attr_byte": "0xA4",
+      "non_discardable": true,
+      "pickup_tier": 4
+    },
+    {
+      "item_id": "0x15",
+      "attr_byte": "0xA4",
+      "non_discardable": true,
+      "pickup_tier": 4
+    },
+    {
+      "item_id": "0x16",
+      "attr_byte": "0x88",
+      "non_discardable": false,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x17",
+      "attr_byte": "0x88",
+      "non_discardable": false,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x18",
+      "attr_byte": "0x88",
+      "non_discardable": false,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x19",
+      "attr_byte": "0x88",
+      "non_discardable": false,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x1A",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x1B",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x1C",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x1D",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x1E",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x1F",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x20",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x21",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x22",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x23",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x24",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x25",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x26",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x27",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x28",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x29",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 2
+    },
+    {
+      "item_id": "0x2A",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x2B",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x2C",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x2D",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x2E",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x2F",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x30",
+      "attr_byte": "0x00",
+      "non_discardable": false,
+      "pickup_tier": 1
+    },
+    {
+      "item_id": "0x31",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x32",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x33",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x34",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x35",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x36",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x37",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x38",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x39",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3A",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3B",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3C",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3D",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3E",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    },
+    {
+      "item_id": "0x3F",
+      "attr_byte": "0xA0",
+      "non_discardable": true,
+      "pickup_tier": 3
+    }
+  ]
+}

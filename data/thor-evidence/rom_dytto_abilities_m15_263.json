@@ -1,0 +1,132 @@
+{
+  "milestone": "M15.263",
+  "description": "ROM Dytto Spirit Abilities, State Machine (0x00..0x1A), Projectiles, and Elemental Damage",
+  "state_table": {
+    "address": "0x014914",
+    "dispatcher": "0x014908",
+    "entry_count": 14,
+    "handlers": {
+      "0x00": "0x014932",
+      "0x02": "0x014930",
+      "0x04": "0x014A5C",
+      "0x06": "0x014ABC",
+      "0x08": "0x014AEA",
+      "0x0A": "0x014B50",
+      "0x0C": "0x014D1A",
+      "0x0E": "0x014EE6",
+      "0x10": "0x014A72",
+      "0x12": "0x014E1A",
+      "0x14": "0x014E0C",
+      "0x16": "0x014B7C",
+      "0x18": "0x014BB8",
+      "0x1A": "0x014F60"
+    }
+  },
+  "autonomous_dispatch_0x00": {
+    "address": "0x014932",
+    "lock_flag_ram": "0x00FF1987",
+    "prng_helper": "0x00E268",
+    "branches": [
+      {
+        "condition": "prng <= 0x2000",
+        "probability": "12.5%",
+        "next_state": "0x06",
+        "action": "0x02",
+        "sfx": "0x800251"
+      },
+      {
+        "condition": "0x2000 < prng <= 0x6000",
+        "probability": "25.0%",
+        "next_state": "0x10",
+        "action": "0x12",
+        "note": "Dytto 3-way spread"
+      },
+      {
+        "condition": "0x6000 < prng <= 0x9000",
+        "probability": "18.75%",
+        "next_state": "0x16",
+        "action": "0x18",
+        "sfx": "0x800251"
+      },
+      {
+        "condition": "prng > 0x9000 or lock != 0",
+        "probability": "43.75%",
+        "next_state": "0x04",
+        "timer_frames": 10,
+        "note": "Wander around Ali"
+      }
+    ]
+  },
+  "dytto_special_spread_0x10": {
+    "state_handler": "0x014A72",
+    "spawner_routine": "0x015214",
+    "entity_type_guard": "$30(A6) == 0x0018",
+    "projectile_type": "0x0024",
+    "projectile_count": 3,
+    "spread_angle_offsets": [
+      0,
+      28,
+      -28
+    ],
+    "projectile_state": "0x12",
+    "projectile_action": "0x14",
+    "hitbox_radius": 5,
+    "sfx": "0x80034F"
+  },
+  "magic_burst_0x06_0x08_0x0A": {
+    "stage1_handler": "0x014ABC",
+    "stage2_handler": "0x014AEA",
+    "recovery_handler": "0x014B50",
+    "spawner_routine": "0x015136",
+    "spawn_cadence": "Every 3rd frame ($FF1971 % 3 == 0) while $32(A6) == 0x0C",
+    "projectile_type": "0x0024",
+    "projectile_state": "0x0C",
+    "projectile_action": "0x06",
+    "hitbox_radius": 8,
+    "initial_vz_fixed": "-0x00050000",
+    "sfx": "0x80034F"
+  },
+  "projectile_collision_and_damage": {
+    "spread_flight_handler": "0x014E1A",
+    "pop_despawn_handler": "0x014E0C",
+    "hit_apply_helper": "0x014E86",
+    "collision_helper": "0x00B922",
+    "damage_word_ground": "0x2008",
+    "damage_word_airborne": "0xA008",
+    "base_damage": 8,
+    "elemental_bit_13": true,
+    "hit_sfx": "0x700345"
+  },
+  "ali_contact_buff_0x16_0x18": {
+    "approach_handler": "0x014B7C",
+    "contact_handler": "0x014BB8",
+    "callback_address": "0x014C04",
+    "callback_pointer_ram": "0x00FF1940",
+    "hitbox_table": "0x058CE6",
+    "overlap_helper": "0x00BAAC",
+    "effect_helper": "0x00BCE2"
+  },
+  "knockback_recovery_0x0E": {
+    "handler": "0x014EE6",
+    "xy_damping_step": "0x00008000",
+    "z_damping_step": "0x0000A000"
+  },
+  "verified_rom_contracts": {
+    "prng_thresholds": [
+      "0x2000",
+      "0x6000",
+      "0x9000"
+    ],
+    "dytto_special_guard_type": "0x0018",
+    "spread_angles": [
+      0,
+      28,
+      -28
+    ],
+    "projectile_entity_type": "0x0024",
+    "water_damage_ground": "0x2008",
+    "water_damage_airborne": "0xA008",
+    "knockback_xy_damping": "0x00008000",
+    "knockback_z_damping": "0x0000A000"
+  }
+}
