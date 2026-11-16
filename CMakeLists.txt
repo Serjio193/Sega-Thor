@@ -69,6 +69,7 @@ add_library(oasis_core
     src/game/world/world_graph.cpp
     src/game/scene_transition_helpers.cpp
     src/game/event/event_vm.cpp
+    src/game/events/event_vm.cpp
     src/game/npc_dialogue_handler.cpp
     src/game/render/dialogue_window.cpp
     src/game/render/dytto_sat_renderer.cpp

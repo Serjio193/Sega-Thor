@@ -171,3 +171,7 @@ add_test(NAME oasis_m16_68_heavy_enemy_dispatch COMMAND oasis_m16_68_heavy_enemy
 add_executable(oasis_m16_69_bgm_track_table_test tests/m16_69_bgm_track_table_test.cpp)
 target_link_libraries(oasis_m16_69_bgm_track_table_test PRIVATE oasis_core)
 add_test(NAME oasis_m16_69_bgm_track_table COMMAND oasis_m16_69_bgm_track_table_test)
+
+add_executable(oasis_m16_70_event_vm_test tests/m16_70_event_vm_test.cpp)
+target_link_libraries(oasis_m16_70_event_vm_test PRIVATE oasis_core)
+add_test(NAME oasis_m16_70_event_vm COMMAND oasis_m16_70_event_vm_test)

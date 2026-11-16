@@ -1,3 +1,9 @@
+# M16.70 Event VM Main 31-Opcode ISA (0x00F788..0x00F80D) & Opcode 0x12 Conditional Branch (0x00FAB2..0x00FC6B) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `EventVmState`, `EventVmOpcode` (`0x00..0x1E`), `evaluate_op12_comparator`, `evaluate_op12_condition` (12 sub-actions `0x00..0x0B`), and `EventVmInterpreter::step_frame()` / `execute_opcode()` in `src/game/events/event_vm.hpp/.cpp`.
+- Qualified `oasis_m16_70_event_vm` and full 30-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.69 BGM Sequence Offset Table (0x0638D4) & Z80 Bus Handshake (0x060B50) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

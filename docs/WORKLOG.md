@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.70: Event VM Main 31-Opcode ISA & Opcode 0x12 Conditional Branch)
+- **Concrete Task**: Implement `src/game/events/event_vm.hpp/.cpp` modeling `EventVmState` (`$FF17B2..$FF1836`, flags `$FF0DBC/$FF0E1C/$FF0E2C`, player/spirit coords/HP/SP, 17-slot entity table `$FF1CD8`), all 31 Event VM opcodes (`0x00..0x1E` per `0x00F7D0`), `step_frame()` / `execute_opcode()` (`0x00F788..0x00F80D`), and full Opcode `0x12` (`0x00FAB2`) conditional branch evaluator (12 sub-actions `0x00..0x0B` at `0x00FAC2`, 6 comparators `0,2,4,6,8,10` at `0x00FB64`, `pc += s16(+6)` or `pc += 8`); add `tests/m16_70_event_vm_test.cpp`; qualify full 30-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/events/event_vm.hpp` / `src/game/events/event_vm.cpp`.
+  * Added `tests/m16_70_event_vm_test.cpp` (registered as `oasis_m16_70_event_vm` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 30/30 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_70`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 30/30 regression run.
+  * Remaining unknowns: Full runtime wiring of `events::EventVmInterpreter` into `StandaloneGameSimulation::step_frame` entity spawning (`0x01`, `0x0E`, `0x16..0x19`) is deferred to cutscene/room-script integration.
+
 # Worklog — 2026-11-16 (M16.69: BGM Sequence Offset Table & Z80 Bus Handshake)
 - **Concrete Task**: Extend `src/game/audio/sound_command_dispatch.hpp/.cpp` with `lookup_bgm_sequence_rom_addr` (`0x0638D4 + u32_be(0x0638D4 + track_id * 4)`, returning `std::nullopt` if `rel == 0` or OOB), `Z80BusHandshakeState` (`0x060B68..0x060BC4`: `$00A11100 = 0x0100`, `0x83 -> $00A00003`, release bus, poll `$00A00003 == 0`), and `SoundDriverState::dispatch_queue(queue, rom)` resolving `last_bgm_rom_addr`; add `tests/m16_69_bgm_track_table_test.cpp`; qualify full 29-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-70-EVENT-VM-ISA-AND-OP12 — Event VM Main 31-Opcode ISA (0x00F788..0x00F80D) & Opcode 0x12 Conditional Branch
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.279 and M15.280 extracted the full 31-opcode Event VM ISA (`0x00..0x1E` at `0x00F7D0`) and the Opcode `0x12` conditional branch evaluator (`0x00FAB2`, 12 sub-actions at `0x00FAC2`, 6 comparators at `0x00FB64`).
+
+**Decisions:**
+1. **Dedicated `events::EventVmInterpreter` Module:**
+   - Added `src/game/events/event_vm.hpp/.cpp` under `oasis::game::events` alongside the existing room-spawn `oasis::game::EventVm` (`src/game/event/event_vm.hpp/.cpp`), keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
 # ADR-20261116-M16-69-BGM-TRACK-TABLE — BGM Sequence Offset Table (0x0638D4) & Z80 Bus Handshake (0x060B50)
 **Status:** Accepted
 **Date:** 2026-11-16
