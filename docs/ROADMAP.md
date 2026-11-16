@@ -1,3 +1,7 @@
+# M15.286 ROM Ali Complete 59-State Table (`0x00..0x74`) & Death/Auto-Revive (`0x005F92`, `0x00611E`) — COMPLETE / VERIFIED
+- Decoded all 59 player states (`0x0059BA..0x005A2F`, `0x00..0x74`), death revive-item check (`0x005F92` -> `0x0061CC`), Game Over fade (`0x60` at `0x005FEA`, `40` frames), and `+3 HP / +3 SP` alternating-frame auto-revive refill (`0x6C` at `0x00611E`).
+- Authored `tools/extract_rom_player_extended_states.py`, `tests/rom_player_extended_states_test.py` (`2/2 PASS`), `data/thor-evidence/rom_player_extended_states_m15_286.json`, and `docs/handoffs/STANDALONE_M15_286_PLAYER_EXTENDED_STATES_HANDOFF.md`.
+
 # M15.285 ROM Ali Player 20-State Action & Combat Machine (`0x005580`..`0x0059E2`) — COMPLETE / VERIFIED
 - Decoded player tick (`0x005580`), low-HP/low-SP warning timers (`<= 0x40` / `<= 0x18`), safe respawn tracking (`$FF1972`), hazard damage & passive SP regen, and all 20 state handlers (`0x00..0x26`) from `0x0059BA`.
 - Authored `tools/extract_rom_player_state_machine.py`, `tests/rom_player_state_machine_test.py` (`2/2 PASS`), `data/thor-evidence/rom_player_state_machine_m15_285.json`, and `docs/handoffs/STANDALONE_M15_285_PLAYER_STATE_MACHINE_HANDOFF.md`.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.286: ROM ALI COMPLETE 59-STATE TABLE (`0x00..0x74`) & DEATH/AUTO-REVIVE (`0x005F92`, `0x00611E`) — 59 States (`0x0059BA..0x005A2F`), Auto-Revive `+3 HP/+3 SP`; Extractor (`tools/extract_rom_player_extended_states.py` <= 500 lines), Tests (`tests/rom_player_extended_states_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_286_PLAYER_EXTENDED_STATES_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0059BA..0x005A2F`, `0x005F92..0x006020`, and `0x00611E..0x006170` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_player_extended_states.py` (59 states) and `python tests/rom_player_extended_states_test.py` (2/2 PASS).
+- Next: Commit & push M15.286, await M16.70 completion, and continue with M15.287.
+
 # 2026-11-16 — Milestone M15.285: ROM ALI PLAYER 20-STATE ACTION & COMBAT MACHINE (`0x005580`..`0x0059E2`) — 20 States (`0x00..0x26`), Pre-Dispatch HP/SP Timers & Regen; Extractor (`tools/extract_rom_player_state_machine.py` <= 500 lines), Tests (`tests/rom_player_state_machine_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_285_PLAYER_STATE_MACHINE_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x005580..0x0059E2` and `0x0059BA` jump table in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_player_state_machine.py` (20 states) and `python tests/rom_player_state_machine_test.py` (2/2 PASS).

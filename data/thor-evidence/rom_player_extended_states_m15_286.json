@@ -1,0 +1,555 @@
+{
+  "milestone": "M15.286",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "table": {
+    "addr": "0x0059BA",
+    "end_addr": "0x005A2F",
+    "total_states": 59
+  },
+  "death_and_revive": {
+    "death_state_id": "0x5E",
+    "death_handler_addr": "0x005F92",
+    "revive_item_check_addr": "0x0061CC",
+    "revive_sfx": "0x00D00355",
+    "revive_item_id": "0x2A",
+    "revive_state_id": "0x6C",
+    "revive_handler_addr": "0x00611E",
+    "revive_step_per_frame": 3,
+    "game_over_state_id": "0x60",
+    "game_over_handler_addr": "0x005FEA",
+    "game_over_delay_frames": 40
+  },
+  "states": [
+    {
+      "index": 0,
+      "state_id": 0,
+      "state_hex": "0x00",
+      "role": "base_state_0x00",
+      "entry_addr": "0x0059BA",
+      "rel_offset": 2108,
+      "target_addr": "0x0061F6"
+    },
+    {
+      "index": 1,
+      "state_id": 2,
+      "state_hex": "0x02",
+      "role": "base_state_0x02",
+      "entry_addr": "0x0059BC",
+      "rel_offset": 2344,
+      "target_addr": "0x0062E4"
+    },
+    {
+      "index": 2,
+      "state_id": 4,
+      "state_hex": "0x04",
+      "role": "base_state_0x04",
+      "entry_addr": "0x0059BE",
+      "rel_offset": 2904,
+      "target_addr": "0x006516"
+    },
+    {
+      "index": 3,
+      "state_id": 6,
+      "state_hex": "0x06",
+      "role": "base_state_0x06",
+      "entry_addr": "0x0059C0",
+      "rel_offset": 5138,
+      "target_addr": "0x006DD2"
+    },
+    {
+      "index": 4,
+      "state_id": 8,
+      "state_hex": "0x08",
+      "role": "base_state_0x08",
+      "entry_addr": "0x0059C2",
+      "rel_offset": 7824,
+      "target_addr": "0x007852"
+    },
+    {
+      "index": 5,
+      "state_id": 10,
+      "state_hex": "0x0A",
+      "role": "base_state_0x0A",
+      "entry_addr": "0x0059C4",
+      "rel_offset": 7314,
+      "target_addr": "0x007656"
+    },
+    {
+      "index": 6,
+      "state_id": 12,
+      "state_hex": "0x0C",
+      "role": "base_state_0x0C",
+      "entry_addr": "0x0059C6",
+      "rel_offset": 3192,
+      "target_addr": "0x00663E"
+    },
+    {
+      "index": 7,
+      "state_id": 14,
+      "state_hex": "0x0E",
+      "role": "base_state_0x0E",
+      "entry_addr": "0x0059C8",
+      "rel_offset": 6162,
+      "target_addr": "0x0071DA"
+    },
+    {
+      "index": 8,
+      "state_id": 16,
+      "state_hex": "0x10",
+      "role": "base_state_0x10",
+      "entry_addr": "0x0059CA",
+      "rel_offset": 4732,
+      "target_addr": "0x006C46"
+    },
+    {
+      "index": 9,
+      "state_id": 18,
+      "state_hex": "0x12",
+      "role": "base_state_0x12",
+      "entry_addr": "0x0059CC",
+      "rel_offset": 4718,
+      "target_addr": "0x006C3A"
+    },
+    {
+      "index": 10,
+      "state_id": 20,
+      "state_hex": "0x14",
+      "role": "base_state_0x14",
+      "entry_addr": "0x0059CE",
+      "rel_offset": 8258,
+      "target_addr": "0x007A10"
+    },
+    {
+      "index": 11,
+      "state_id": 22,
+      "state_hex": "0x16",
+      "role": "base_state_0x16",
+      "entry_addr": "0x0059D0",
+      "rel_offset": 5954,
+      "target_addr": "0x007112"
+    },
+    {
+      "index": 12,
+      "state_id": 24,
+      "state_hex": "0x18",
+      "role": "base_state_0x18",
+      "entry_addr": "0x0059D2",
+      "rel_offset": 758,
+      "target_addr": "0x005CC8"
+    },
+    {
+      "index": 13,
+      "state_id": 26,
+      "state_hex": "0x1A",
+      "role": "base_state_0x1A",
+      "entry_addr": "0x0059D4",
+      "rel_offset": 804,
+      "target_addr": "0x005CF8"
+    },
+    {
+      "index": 14,
+      "state_id": 28,
+      "state_hex": "0x1C",
+      "role": "base_state_0x1C",
+      "entry_addr": "0x0059D6",
+      "rel_offset": 1010,
+      "target_addr": "0x005DC8"
+    },
+    {
+      "index": 15,
+      "state_id": 30,
+      "state_hex": "0x1E",
+      "role": "base_state_0x1E",
+      "entry_addr": "0x0059D8",
+      "rel_offset": 1036,
+      "target_addr": "0x005DE4"
+    },
+    {
+      "index": 16,
+      "state_id": 32,
+      "state_hex": "0x20",
+      "role": "base_state_0x20",
+      "entry_addr": "0x0059DA",
+      "rel_offset": 798,
+      "target_addr": "0x005CF8"
+    },
+    {
+      "index": 17,
+      "state_id": 34,
+      "state_hex": "0x22",
+      "role": "base_state_0x22",
+      "entry_addr": "0x0059DC",
+      "rel_offset": 1004,
+      "target_addr": "0x005DC8"
+    },
+    {
+      "index": 18,
+      "state_id": 36,
+      "state_hex": "0x24",
+      "role": "base_state_0x24",
+      "entry_addr": "0x0059DE",
+      "rel_offset": 1426,
+      "target_addr": "0x005F70"
+    },
+    {
+      "index": 19,
+      "state_id": 38,
+      "state_hex": "0x26",
+      "role": "base_state_0x26",
+      "entry_addr": "0x0059E0",
+      "rel_offset": 5370,
+      "target_addr": "0x006EDA"
+    },
+    {
+      "index": 20,
+      "state_id": 40,
+      "state_hex": "0x28",
+      "role": "climb_dir_0",
+      "entry_addr": "0x0059E2",
+      "rel_offset": 448,
+      "target_addr": "0x005BA2"
+    },
+    {
+      "index": 21,
+      "state_id": 42,
+      "state_hex": "0x2A",
+      "role": "climb_dir_1",
+      "entry_addr": "0x0059E4",
+      "rel_offset": 486,
+      "target_addr": "0x005BCA"
+    },
+    {
+      "index": 22,
+      "state_id": 44,
+      "state_hex": "0x2C",
+      "role": "climb_dir_2",
+      "entry_addr": "0x0059E6",
+      "rel_offset": 506,
+      "target_addr": "0x005BE0"
+    },
+    {
+      "index": 23,
+      "state_id": 46,
+      "state_hex": "0x2E",
+      "role": "climb_dir_3",
+      "entry_addr": "0x0059E8",
+      "rel_offset": 562,
+      "target_addr": "0x005C1A"
+    },
+    {
+      "index": 24,
+      "state_id": 48,
+      "state_hex": "0x30",
+      "role": "dash_or_step",
+      "entry_addr": "0x0059EA",
+      "rel_offset": 2382,
+      "target_addr": "0x006338"
+    },
+    {
+      "index": 25,
+      "state_id": 50,
+      "state_hex": "0x32",
+      "role": "push_or_pull_start",
+      "entry_addr": "0x0059EC",
+      "rel_offset": 3722,
+      "target_addr": "0x006876"
+    },
+    {
+      "index": 26,
+      "state_id": 52,
+      "state_hex": "0x34",
+      "role": "push_or_pull_hold",
+      "entry_addr": "0x0059EE",
+      "rel_offset": 3918,
+      "target_addr": "0x00693C"
+    },
+    {
+      "index": 27,
+      "state_id": 54,
+      "state_hex": "0x36",
+      "role": "boss_or_cutscene_lock_36",
+      "entry_addr": "0x0059F0",
+      "rel_offset": 7944,
+      "target_addr": "0x0078F8"
+    },
+    {
+      "index": 28,
+      "state_id": 56,
+      "state_hex": "0x38",
+      "role": "swim_hurt_knockback",
+      "entry_addr": "0x0059F2",
+      "rel_offset": 3256,
+      "target_addr": "0x0066AA"
+    },
+    {
+      "index": 29,
+      "state_id": 58,
+      "state_hex": "0x3A",
+      "role": "wall_or_ledge_action",
+      "entry_addr": "0x0059F4",
+      "rel_offset": 8244,
+      "target_addr": "0x007A28"
+    },
+    {
+      "index": 30,
+      "state_id": 60,
+      "state_hex": "0x3C",
+      "role": "special_action_3c",
+      "entry_addr": "0x0059F6",
+      "rel_offset": 8774,
+      "target_addr": "0x007C3C"
+    },
+    {
+      "index": 31,
+      "state_id": 62,
+      "state_hex": "0x3E",
+      "role": "pit_fall",
+      "entry_addr": "0x0059F8",
+      "rel_offset": 3592,
+      "target_addr": "0x006800"
+    },
+    {
+      "index": 32,
+      "state_id": 64,
+      "state_hex": "0x40",
+      "role": "throw_or_lift_40",
+      "entry_addr": "0x0059FA",
+      "rel_offset": 7700,
+      "target_addr": "0x00780E"
+    },
+    {
+      "index": 33,
+      "state_id": 66,
+      "state_hex": "0x42",
+      "role": "attack_combo_42",
+      "entry_addr": "0x0059FC",
+      "rel_offset": 4990,
+      "target_addr": "0x006D7A"
+    },
+    {
+      "index": 34,
+      "state_id": 68,
+      "state_hex": "0x44",
+      "role": "spirit_interaction_44",
+      "entry_addr": "0x0059FE",
+      "rel_offset": 8492,
+      "target_addr": "0x007B2A"
+    },
+    {
+      "index": 35,
+      "state_id": 70,
+      "state_hex": "0x46",
+      "role": "weapon_swing_46",
+      "entry_addr": "0x005A00",
+      "rel_offset": 6716,
+      "target_addr": "0x00743C"
+    },
+    {
+      "index": 36,
+      "state_id": 72,
+      "state_hex": "0x48",
+      "role": "jump_weapon_48",
+      "entry_addr": "0x005A02",
+      "rel_offset": 5434,
+      "target_addr": "0x006F3C"
+    },
+    {
+      "index": 37,
+      "state_id": 74,
+      "state_hex": "0x4A",
+      "role": "weapon_combo_4a",
+      "entry_addr": "0x005A04",
+      "rel_offset": 5022,
+      "target_addr": "0x006DA2"
+    },
+    {
+      "index": 38,
+      "state_id": 76,
+      "state_hex": "0x4C",
+      "role": "weapon_charge_4c",
+      "entry_addr": "0x005A06",
+      "rel_offset": 6236,
+      "target_addr": "0x007262"
+    },
+    {
+      "index": 39,
+      "state_id": 78,
+      "state_hex": "0x4E",
+      "role": "weapon_release_4e",
+      "entry_addr": "0x005A08",
+      "rel_offset": 6370,
+      "target_addr": "0x0072EA"
+    },
+    {
+      "index": 40,
+      "state_id": 80,
+      "state_hex": "0x50",
+      "role": "weapon_special_50",
+      "entry_addr": "0x005A0A",
+      "rel_offset": 6490,
+      "target_addr": "0x007364"
+    },
+    {
+      "index": 41,
+      "state_id": 82,
+      "state_hex": "0x52",
+      "role": "weapon_special_52",
+      "entry_addr": "0x005A0C",
+      "rel_offset": 6624,
+      "target_addr": "0x0073EC"
+    },
+    {
+      "index": 42,
+      "state_id": 84,
+      "state_hex": "0x54",
+      "role": "bow_or_projectile_54",
+      "entry_addr": "0x005A0E",
+      "rel_offset": 6978,
+      "target_addr": "0x007550"
+    },
+    {
+      "index": 43,
+      "state_id": 86,
+      "state_hex": "0x56",
+      "role": "knockdown_56",
+      "entry_addr": "0x005A10",
+      "rel_offset": 5500,
+      "target_addr": "0x006F8C"
+    },
+    {
+      "index": 44,
+      "state_id": 88,
+      "state_hex": "0x58",
+      "role": "knockdown_ground_58",
+      "entry_addr": "0x005A12",
+      "rel_offset": 4376,
+      "target_addr": "0x006B2A"
+    },
+    {
+      "index": 45,
+      "state_id": 90,
+      "state_hex": "0x5A",
+      "role": "knockdown_rise_5a",
+      "entry_addr": "0x005A14",
+      "rel_offset": 4404,
+      "target_addr": "0x006B48"
+    },
+    {
+      "index": 46,
+      "state_id": 92,
+      "state_hex": "0x5C",
+      "role": "spin_or_finisher_5c",
+      "entry_addr": "0x005A16",
+      "rel_offset": 7022,
+      "target_addr": "0x007584"
+    },
+    {
+      "index": 47,
+      "state_id": 94,
+      "state_hex": "0x5E",
+      "role": "death_and_revive_check",
+      "entry_addr": "0x005A18",
+      "rel_offset": 1402,
+      "target_addr": "0x005F92"
+    },
+    {
+      "index": 48,
+      "state_id": 96,
+      "state_hex": "0x60",
+      "role": "game_over_fade",
+      "entry_addr": "0x005A1A",
+      "rel_offset": 1488,
+      "target_addr": "0x005FEA"
+    },
+    {
+      "index": 49,
+      "state_id": 98,
+      "state_hex": "0x62",
+      "role": "item_pickup_or_chest_62",
+      "entry_addr": "0x005A1C",
+      "rel_offset": 5576,
+      "target_addr": "0x006FE4"
+    },
+    {
+      "index": 50,
+      "state_id": 100,
+      "state_hex": "0x64",
+      "role": "item_pickup_or_chest_64",
+      "entry_addr": "0x005A1E",
+      "rel_offset": 5628,
+      "target_addr": "0x00701A"
+    },
+    {
+      "index": 51,
+      "state_id": 102,
+      "state_hex": "0x66",
+      "role": "item_pickup_or_chest_66",
+      "entry_addr": "0x005A20",
+      "rel_offset": 5680,
+      "target_addr": "0x007050"
+    },
+    {
+      "index": 52,
+      "state_id": 104,
+      "state_hex": "0x68",
+      "role": "item_hold_68",
+      "entry_addr": "0x005A22",
+      "rel_offset": 5688,
+      "target_addr": "0x00705A"
+    },
+    {
+      "index": 53,
+      "state_id": 106,
+      "state_hex": "0x6A",
+      "role": "timed_pause_6a",
+      "entry_addr": "0x005A24",
+      "rel_offset": 2624,
+      "target_addr": "0x006464"
+    },
+    {
+      "index": 54,
+      "state_id": 108,
+      "state_hex": "0x6C",
+      "role": "auto_revive_hp_sp_refill",
+      "entry_addr": "0x005A26",
+      "rel_offset": 1784,
+      "target_addr": "0x00611E"
+    },
+    {
+      "index": 55,
+      "state_id": 110,
+      "state_hex": "0x6E",
+      "role": "warp_or_door_6e",
+      "entry_addr": "0x005A28",
+      "rel_offset": 3510,
+      "target_addr": "0x0067DE"
+    },
+    {
+      "index": 56,
+      "state_id": 112,
+      "state_hex": "0x70",
+      "role": "game_over_alt_70",
+      "entry_addr": "0x005A2A",
+      "rel_offset": 1464,
+      "target_addr": "0x005FE2"
+    },
+    {
+      "index": 57,
+      "state_id": 114,
+      "state_hex": "0x72",
+      "role": "boss_or_cutscene_lock_72",
+      "entry_addr": "0x005A2C",
+      "rel_offset": 7934,
+      "target_addr": "0x00792A"
+    },
+    {
+      "index": 58,
+      "state_id": 116,
+      "state_hex": "0x74",
+      "role": "event_wait_74",
+      "entry_addr": "0x005A2E",
+      "rel_offset": 3338,
+      "target_addr": "0x006738"
+    }
+  ]
+}

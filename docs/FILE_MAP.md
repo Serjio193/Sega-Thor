@@ -1,3 +1,9 @@
+# M15.286 ROM Ali Complete 59-State Table & Death/Auto-Revive
+- `tools/extract_rom_player_extended_states.py` — Extracts full 59-state table (`0x0059BA..0x005A2F`) & death/revive constants.
+- `tests/rom_player_extended_states_test.py` — Unit tests verifying all 59 states and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_player_extended_states_m15_286.json` — Extracted 59-state & death/revive evidence.
+- `docs/handoffs/STANDALONE_M15_286_PLAYER_EXTENDED_STATES_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.285 ROM Ali Player 20-State Action & Combat Machine
 - `tools/extract_rom_player_state_machine.py` — Extracts Ali's 20-state jump table (`0x0059BA`) & pre-dispatch tick rules.
 - `tests/rom_player_state_machine_test.py` — Unit tests verifying all 20 state targets and JSON artifact (`2/2 PASS`).

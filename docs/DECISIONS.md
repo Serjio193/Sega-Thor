@@ -1,3 +1,7 @@
+# ADR-20261116-M15-286-PLAYER-EXTENDED-STATES — Ali Complete 59-State Table & Death/Auto-Revive (`0x0059BA`, `0x005F92`, `0x00611E`)
+- **Decision:** Extend Ali's player state machine in Standalone to all 59 states (`0x00..0x74` at `0x0059BA..0x005A2F`) and model `0x5E` death -> `0x0061CC` auto-revive (`0x6C`, `+3 HP / +3 SP` alternating frames) vs `0x60` Game Over (`40`-frame fade).
+- **Evidence:** Direct Capstone M68K disassembly of `0x0059BA..0x005A2F`, `0x005F92..0x006020`, and `0x00611E..0x006170` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-285-PLAYER-STATE-MACHINE — Ali Player 20-State Action & Combat Machine (`0x005580`..`0x0059E2`)
 - **Decision:** Model Ali's per-frame player controller in Standalone via the 20-state jump table at `0x0059BA` (`0x00..0x26`) and the pre-dispatch low-HP/SP chime, safe-respawn, hazard, and passive SP-regen rules at `0x005580..0x0057AE`.
 - **Evidence:** Direct Capstone M68K disassembly of `0x005580..0x0059E2` and `0x0059BA` jump table in `local-roms/Beyond Oasis (USA).md`.
