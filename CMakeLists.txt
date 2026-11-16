@@ -47,6 +47,7 @@ add_library(oasis_core
     src/game/spirits/all_spirits_registry.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
+    src/game/player/player_action_machine.cpp
     src/game/player/secondary_weapon.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-73-PLAYER-ACTION-MACHINE — Ali Player 59-State Table, Pre-Dispatch Tick & Death/Auto-Revive
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.285 and M15.286 extracted Ali's complete 59-state jump table (`0x0059BA..0x005A2F`, `0x00..0x74`), pre-dispatch HP/SP warnings/regen/hazard/respawn (`0x005580..0x0057AE`), and death/auto-revive/game-over (`0x005F92`, `0x005FEA`, `0x00611E`).
+
+**Decisions:**
+1. **Dedicated `player_action_machine` Module:**
+   - Added `src/game/player/player_action_machine.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-72-GAME-MODE-FLOW — Top-Level Game Mode State Machine, Title Screen & Clear Records Screen
 **Status:** Accepted
 **Date:** 2026-11-17

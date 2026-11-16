@@ -1,3 +1,9 @@
+# M16.73 Ali Player Complete 59-State Table (0x0059BA..0x005A2F), Pre-Dispatch Tick & Death/Auto-Revive — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `PlayerActionState` (59 states `0x00..0x74`), `lookup_player_state_handler_addr` (`0x0059BA`), `PlayerPreTickState::step_pre_dispatch_tick()` (Low HP/SP warnings, safe respawn, hazard damage, passive SP regen), and `step_death_and_revive()` (`0x5E` -> `0x6C` `+3 HP/+3 SP` vs `0x60` 40-frame fade) in `src/game/player/player_action_machine.hpp/.cpp`.
+- Qualified `oasis_m16_73_player_action_machine` and full 33-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.72 Top-Level Game Mode State Machine (0x00045E), Title Screen (0x0032F8) & Best 5 Players Clear Records (0x03E4FA) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

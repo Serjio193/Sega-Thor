@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.73: Ali Player Complete 59-State Table, Pre-Dispatch Tick & Death/Auto-Revive)
+- **Concrete Task**: Implement `src/game/player/player_action_machine.hpp/.cpp` with the 59-state `PlayerActionState` enum/table (`0x00..0x74` even IDs matching `0x0059BA..0x005A2F`), `lookup_player_state_handler_addr(rom, state_id)`, `PlayerPreTickState::step_pre_dispatch_tick()` (Low HP `0xA0038C`, Low SP `0xA004DD`, safe respawn `$FF1972`, hazard damage 16/8f, passive SP regen 8/4f), and `step_death_and_revive()` (`0x5E` -> `0x61CC` auto-revive `0x2A`/`0x00D00355` -> `0x6C` `+3 HP/+3 SP` vs `0x60` 40-frame Game Over); add `tests/m16_73_player_action_machine_test.cpp`; qualify full 33-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/player/player_action_machine.hpp` / `src/game/player/player_action_machine.cpp`.
+  * Added `tests/m16_73_player_action_machine_test.cpp` (registered as `oasis_m16_73_player_action_machine` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 33/33 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_73`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 33/33 regression run.
+  * Remaining unknowns: Per-state movement/combat handlers for the extended states (`0x28..0x74`) beyond `0x5E`/`0x60`/`0x6C` are deferred to future player-physics integration.
+
 # Worklog — 2026-11-17 (M16.72: Top-Level Game Mode State Machine, Title Screen & Clear Records Screen)
 - **Concrete Task**: Implement `src/game/ui/game_mode_flow.hpp/.cpp` with `TopLevelGameMode` (`0x00, 0x04, 0x08, 0x0C, 0x10`), `lookup_mode_handler_addr` (`0x00045E`), `GameModeStateMachine` (`$FF10AC`/`$FF10AE` latch), `TitleScreenState` (`0x0032F8`: `720`-frame attract timeout, `128`-frame blink duty `< 96`, 4 Start-button chords `0x90`/`0xD5`/`0x8A`/normal), and `ClearRecordsScreenState` (`0x03E4FA`: 5-slot `"BEST 5 PLAYERS"`, BGM `0x0121`, Start -> SFX `0x0007` + `0x00020E`, `clear_sram_record_magic`); add `tests/m16_72_game_mode_flow_test.cpp`; qualify full 32-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
