@@ -1,3 +1,9 @@
+# M15.284 ROM Best 5 Players / Clear Records Screen
+- `tools/extract_rom_clear_records_screen.py` — Extracts Clear Records UI strings, BGM/SFX IDs, and SRAM record addresses.
+- `tests/rom_clear_records_screen_test.py` — Unit tests verifying labels, BGM `0x0121`, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_clear_records_screen_m15_284.json` — Extracted Clear Records screen evidence.
+- `docs/handoffs/STANDALONE_M15_284_CLEAR_RECORDS_SCREEN_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.283 ROM Title Screen, Attract Timeout & Secret Input Chords
 - `tools/extract_rom_title_and_sound_test.py` — Extracts Title Screen constants, credits strings, and Start chords (`0x0032F8..0x003586`).
 - `tests/rom_title_and_sound_test_test.py` — Unit tests verifying attract timeout, blink duty, and chords (`2/2 PASS`).

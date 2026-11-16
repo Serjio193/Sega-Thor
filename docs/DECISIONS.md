@@ -1,3 +1,7 @@
+# ADR-20261116-M15-284-CLEAR-RECORDS-SCREEN — Best 5 Players / Clear Records Screen (`0x03E034`..`0x03E60D`)
+- **Decision:** Model the secret `"BEST 5 PLAYERS"` Clear Records screen (`0x03E4FA`) in Standalone with 5 ranking slots (`TIME`, `RANK`, `KILLS`, `JEWELS`), BGM `0x0121`, and SRAM record clear (`0x001E98`, `$2025CD`/`$2026E1`).
+- **Evidence:** Direct Capstone M68K disassembly of `0x001E98..0x001F10`, `0x03E25E..0x03E60D`, and ASCII table `0x03E034..0x03E097` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-283-TITLE-AND-SOUND-TEST — Title Screen, Attract Timeout & Secret Input Chords (`0x0032F8`..`0x003586`)
 - **Decision:** Model Title Screen (`Mode 0x04`) in Standalone with the `720`-frame attract timeout (`0x2D0`), `128`-frame blink duty (`< 0x60`), BGM `0x0104`, and all 4 Start-button chord branches (`0x90`, `0xD5`, `0x8A`, normal).
 - **Evidence:** Direct Capstone M68K disassembly of `0x0032F8..0x003586` in `local-roms/Beyond Oasis (USA).md`.

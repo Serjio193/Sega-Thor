@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.284: ROM BEST 5 PLAYERS / CLEAR RECORDS SCREEN (`0x03E034`..`0x03E60D`) — 5 Slots x 4 Stats, BGM `0x0121`, SRAM Clear `0x001E98`; Extractor (`tools/extract_rom_clear_records_screen.py` <= 500 lines), Tests (`tests/rom_clear_records_screen_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_284_CLEAR_RECORDS_SCREEN_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x001E98..0x001F10`, `0x03E25E..0x03E60D`, and `0x03E034..0x03E097` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_clear_records_screen.py` and `python tests/rom_clear_records_screen_test.py` (2/2 PASS).
+- Next: Commit & push M15.284, check Standalone M16.69 MSVC Debug completion.
+
 # 2026-11-16 — Milestone M15.283: ROM TITLE SCREEN, ATTRACT TIMEOUT & SECRET INPUT CHORDS (`0x0032F8`..`0x003586`) — 720-Frame Attract Timer (`0x2D0`), Blink Duty (`0x7F < 0x60`), 4 Start Chords (`0x90`/`0xD5`/`0x8A`/normal); Extractor (`tools/extract_rom_title_and_sound_test.py` <= 500 lines), Tests (`tests/rom_title_and_sound_test_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_283_TITLE_AND_SOUND_TEST_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x0032F8..0x003586` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_title_and_sound_test.py` and `python tests/rom_title_and_sound_test_test.py` (2/2 PASS).

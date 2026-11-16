@@ -1,0 +1,36 @@
+{
+  "milestone": "M15.284",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "screen": {
+    "entry_addr": "0x03E4FA",
+    "layout_renderer_addr": "0x03E25E",
+    "sram_loader_addr": "0x001DDC",
+    "sram_clear_addr": "0x001E98",
+    "sram_magic_addrs": [
+      "0x2025CD",
+      "0x2026E1"
+    ],
+    "sram_enable_reg": "0xA130F1",
+    "bgm_id": "0x0121",
+    "exit_sfx_id": "0x0007",
+    "soft_reset_target": "0x00020E",
+    "record_slots": 5,
+    "categories": 4
+  },
+  "labels": {
+    "title": "BEST 5 PLAYERS",
+    "col_time": "TIME",
+    "col_rank": "RANK",
+    "col_kills": "KILLS",
+    "col_jewels": "JEWELS",
+    "rank_1st": "1st",
+    "rank_2nd": "2nd",
+    "rank_3rd": "3rd",
+    "rank_4th": "4th",
+    "rank_5th": "5th",
+    "dash_time": "---------- ---",
+    "dash_rank": "---",
+    "dash_kills": "---",
+    "dash_jewels": "---"
+  }
+}

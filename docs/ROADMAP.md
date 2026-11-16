@@ -1,3 +1,7 @@
+# M15.284 ROM Best 5 Players / Clear Records Screen (`0x03E034`..`0x03E60D`) — COMPLETE / VERIFIED
+- Decoded Clear Records screen (`0x03E4FA`), `"BEST 5 PLAYERS"` / `TIME` / `RANK` / `KILLS` / `JEWELS` / `1st..5th` UI labels (`0x03E034`), SRAM record clear (`0x001E98`, `$2025CD`/`$2026E1`), BGM `0x0121`, and Start soft-reset (`0x00020E`).
+- Authored `tools/extract_rom_clear_records_screen.py`, `tests/rom_clear_records_screen_test.py` (`2/2 PASS`), `data/thor-evidence/rom_clear_records_screen_m15_284.json`, and `docs/handoffs/STANDALONE_M15_284_CLEAR_RECORDS_SCREEN_HANDOFF.md`.
+
 # M15.283 ROM Title Screen, Attract Timeout & Secret Input Chords (`0x0032F8`..`0x003586`) — COMPLETE / VERIFIED
 - Decoded title screen setup (`0x0032F8`, BGM `0x0104`, font `0x16943C`, title gfx `0x180C56`), `720`-frame (`0x2D0`) attract timeout, `128`-frame blink duty (`< 0x60`), credits strings, and Start input chords (`0x90`, `0xD5`, `0x8A`, normal).
 - Authored `tools/extract_rom_title_and_sound_test.py`, `tests/rom_title_and_sound_test_test.py` (`2/2 PASS`), `data/thor-evidence/rom_title_and_sound_test_m15_283.json`, and `docs/handoffs/STANDALONE_M15_283_TITLE_AND_SOUND_TEST_HANDOFF.md`.
