@@ -1,0 +1,31 @@
+{
+  "milestone": "M15.288",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "sram_control": {
+    "enable_reg": "0xA130F1",
+    "mode_write": "0x01",
+    "mode_lock": "0x02",
+    "mode_read": "0x03",
+    "stride_bytes": 2
+  },
+  "rank_block": {
+    "sram_base_addr": "0x2025CD",
+    "magic_rom_addr": "0x0004BA",
+    "magic_ascii": "Rank00",
+    "magic_len": 6,
+    "payload_bytes": 130,
+    "checksum_type": "u16_be_byte_sum",
+    "load_addr": "0x001DDC",
+    "save_addr": "0x001E46",
+    "clear_addr": "0x001E98"
+  },
+  "race_block": {
+    "sram_base_addr": "0x2026E1",
+    "magic_rom_addr": "0x0004C0",
+    "magic_ascii": "Race00",
+    "magic_len": 6,
+    "payload_type": "u32_be_best_time",
+    "load_addr": "0x001ECE",
+    "clear_addr": "0x001E98"
+  }
+}

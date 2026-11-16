@@ -1,3 +1,9 @@
+# M15.288 ROM SRAM Clear Records & Best Time Persistence
+- `tools/extract_rom_sram_clear_records.py` — Extracts `"Rank00"` / `"Race00"` SRAM magic headers, payload sizes, and `$A130F1` control flow.
+- `tests/rom_sram_clear_records_test.py` — Unit tests verifying magic headers, payload size, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_sram_clear_records_m15_288.json` — Extracted SRAM clear records & best-time evidence.
+- `docs/handoffs/STANDALONE_M15_288_SRAM_CLEAR_RECORDS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.287 ROM World Map Screen & Pin Coordinate Tables
 - `tools/extract_rom_world_map.py` — Extracts World Map GFX chunks, 29 overworld offsets (`0x004BAE`), and 16 dungeon pins (`0x004BE8`).
 - `tests/rom_world_map_test.py` — Unit tests verifying map coordinate tables and JSON artifact (`2/2 PASS`).

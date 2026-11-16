@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.288: ROM SRAM CLEAR RECORDS & BEST TIME PERSISTENCE (`0x001DDC`..`0x001F20`) — `"Rank00"` (`$2025CD`, `130`B + `u16_be` sum), `"Race00"` (`$2026E1`, `u32_be`); Extractor (`tools/extract_rom_sram_clear_records.py` <= 500 lines), Tests (`tests/rom_sram_clear_records_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_288_SRAM_CLEAR_RECORDS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x001DDC..0x001F20` and verified `"Rank00"` (`0x0004BA`) and `"Race00"` (`0x0004C0`) in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_sram_clear_records.py` and `python tests/rom_sram_clear_records_test.py` (2/2 PASS).
+- Next: Commit & push M15.288, await M16.72 completion.
+
 # 2026-11-17 — Milestone M15.287: ROM WORLD MAP SCREEN & PIN COORDINATE TABLES (`0x004950`..`0x004C27`) — 29 Overworld Offsets (`0x004BAE`), 16 Dungeon Pins (`0x004BE8`), 3 GFX Chunks; Extractor (`tools/extract_rom_world_map.py` <= 500 lines), Tests (`tests/rom_world_map_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_287_WORLD_MAP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x004950..0x004C27` and dumped `0x004BAE` / `0x004BE8` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_world_map.py` and `python tests/rom_world_map_test.py` (2/2 PASS).

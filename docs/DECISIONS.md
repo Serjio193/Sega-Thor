@@ -1,3 +1,7 @@
+# ADR-20261117-M15-288-SRAM-CLEAR-RECORDS — SRAM Clear Records & Best Time Persistence (`0x001DDC`..`0x001F20`)
+- **Decision:** Model Beyond Oasis's clear-records & speedrun SRAM blocks in Standalone using `"Rank00"` (`$2025CD`, `130` bytes + `u16_be` byte-sum checksum) and `"Race00"` (`$2026E1`, `u32_be` best time) with odd-byte stride `2`.
+- **Evidence:** Direct Capstone M68K disassembly of `0x001DDC..0x001F20` and raw PC-relative magic reads at `0x0004BA` / `0x0004C0` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-287-WORLD-MAP — World Map Screen & Pin Coordinate Tables (`0x004950`..`0x004C27`)
 - **Decision:** Model the World Map pin placement in Standalone via `0x004B4E`: `(160, 120) + dungeon_pin[$FF0E40]` when inside a dungeon (`+6` for `0x0F01`), or `(160, 120) + overworld_area[$FF0E41] + (player_x >> 6, player_y >> 6)` in the overworld.
 - **Evidence:** Direct Capstone M68K disassembly of `0x004950..0x004C27` and `(s8, s8)` tables `0x004BAE` / `0x004BE8` in `local-roms/Beyond Oasis (USA).md`.
