@@ -1,3 +1,9 @@
+# M16.69 BGM Sequence Offset Table (0x0638D4) & Z80 Bus Handshake (0x060B50) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Extended `src/game/audio/sound_command_dispatch.hpp/.cpp` with `lookup_bgm_sequence_rom_addr` (`0x0638D4`), `Z80BusHandshakeState` (`$00A11100 = 0x0100`, `0x83 -> $00A00003`, release, poll `0`), and `SoundDriverState::dispatch_queue(queue, rom)` resolving `last_bgm_rom_addr`.
+- Qualified `oasis_m16_69_bgm_track_table` and full 29-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.68 Heavy & Boss Enemy Families (0x0068, 0x0074, 0x0076, 0x0080) Substate Dispatch — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,5 +1,6 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `tests/m16_69_bgm_track_table_test.cpp`: Automated M16.69 test qualifying `0x0638D4` BGM sequence offset table resolution, `Z80BusHandshakeState` (`0x060B68..0x060BC4`), and `SoundDriverState::dispatch_queue` BGM ROM address tracking (M16.69).
 - `src/game/enemy/heavy_enemy_dispatch.hpp` / `src/game/enemy/heavy_enemy_dispatch.cpp`: Heavy/Boss enemy families (`0x0068`, `0x0074`, `0x0076`, `0x0080`) `$66(A6)` substate dispatch specs, `& 0x7F` masking, init timer/state/action setup, and `HeavyEnemySubstateController` (M16.68).
 - `tests/m16_68_heavy_enemy_dispatch_test.cpp`: Automated M16.68 test qualifying `0x0068`/`0x0074`/`0x0076`/`0x0080` family specs, `& 0x7F` masking, init timer/state/action setup, and substate wrapping (M16.68).
 - `src/game/enemy/dungeon_enemy_dispatch.hpp` / `src/game/enemy/dungeon_enemy_dispatch.cpp`: Dungeon enemy families (`0x006C..0x0072`) `$66(A6)` substate dispatch specs, `0x006C` variant table `0x01F5C8` (`[3, 6, 9, 12]`), `0x0072` jump table `0x01D152`, and `DungeonEnemySubstateController` (M16.67).

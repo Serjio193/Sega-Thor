@@ -1,3 +1,14 @@
+# ADR-20261116-M16-69-BGM-TRACK-TABLE — BGM Sequence Offset Table (0x0638D4) & Z80 Bus Handshake (0x060B50)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.278 extracted the BGM Sequence Offset Table (`0x0638D4 + u32_be(0x0638D4 + track_id * 4)`) and Z80 Bus Handshake (`0x060B68..0x060BC4`: `$00A11100 = 0x0100`, `0x83 -> $00A00003`, release, poll `0`).
+
+**Decisions:**
+1. **Extend `sound_command_dispatch` with BGM Table & Z80 Handshake:**
+   - Added `lookup_bgm_sequence_rom_addr`, `Z80BusHandshakeState`, and optional `rom` span parameter on `SoundDriverState::dispatch_queue` in `src/game/audio/sound_command_dispatch.hpp/.cpp`, keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
 # ADR-20261116-M16-68-HEAVY-ENEMY-DISPATCH — Heavy & Boss Enemy Families (0x0068, 0x0074, 0x0076, 0x0080) Substate Dispatch
 **Status:** Accepted
 **Date:** 2026-11-16
