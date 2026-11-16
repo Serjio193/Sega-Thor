@@ -1,3 +1,9 @@
+# M15.283 ROM Title Screen, Attract Timeout & Secret Input Chords
+- `tools/extract_rom_title_and_sound_test.py` — Extracts Title Screen constants, credits strings, and Start chords (`0x0032F8..0x003586`).
+- `tests/rom_title_and_sound_test_test.py` — Unit tests verifying attract timeout, blink duty, and chords (`2/2 PASS`).
+- `data/thor-evidence/rom_title_and_sound_test_m15_283.json` — Extracted title screen & input chord evidence.
+- `docs/handoffs/STANDALONE_M15_283_TITLE_AND_SOUND_TEST_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.282 ROM Top-Level Game Mode State Machine
 - `tools/extract_rom_game_modes.py` — Extracts mode table `0x00045E` (`0x00..0x10`) & `$FF10AC` transition sites.
 - `tests/rom_game_modes_test.py` — Unit tests verifying all 5 mode handler pointers and JSON artifact (`2/2 PASS`).

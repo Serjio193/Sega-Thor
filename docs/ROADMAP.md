@@ -1,3 +1,7 @@
+# M15.283 ROM Title Screen, Attract Timeout & Secret Input Chords (`0x0032F8`..`0x003586`) — COMPLETE / VERIFIED
+- Decoded title screen setup (`0x0032F8`, BGM `0x0104`, font `0x16943C`, title gfx `0x180C56`), `720`-frame (`0x2D0`) attract timeout, `128`-frame blink duty (`< 0x60`), credits strings, and Start input chords (`0x90`, `0xD5`, `0x8A`, normal).
+- Authored `tools/extract_rom_title_and_sound_test.py`, `tests/rom_title_and_sound_test_test.py` (`2/2 PASS`), `data/thor-evidence/rom_title_and_sound_test_m15_283.json`, and `docs/handoffs/STANDALONE_M15_283_TITLE_AND_SOUND_TEST_HANDOFF.md`.
+
 # M15.282 ROM Top-Level Game Mode State Machine (`0x00034E`..`0x000471`) — COMPLETE / VERIFIED
 - Decoded boot sequence (`0x00034E` checksum, `0x0003E6` WRAM clear `$FF0BFE`, `0x000412` sound init), `$FF10AC`/`$FF10AE` mode latch loop (`0x00042C`), and all 5 mode handlers (`0x00..0x10`) at `0x00045E`.
 - Authored `tools/extract_rom_game_modes.py`, `tests/rom_game_modes_test.py` (`2/2 PASS`), `data/thor-evidence/rom_game_modes_m15_282.json`, and `docs/handoffs/STANDALONE_M15_282_GAME_MODES_HANDOFF.md`.

@@ -1,3 +1,7 @@
+# ADR-20261116-M15-283-TITLE-AND-SOUND-TEST — Title Screen, Attract Timeout & Secret Input Chords (`0x0032F8`..`0x003586`)
+- **Decision:** Model Title Screen (`Mode 0x04`) in Standalone with the `720`-frame attract timeout (`0x2D0`), `128`-frame blink duty (`< 0x60`), BGM `0x0104`, and all 4 Start-button chord branches (`0x90`, `0xD5`, `0x8A`, normal).
+- **Evidence:** Direct Capstone M68K disassembly of `0x0032F8..0x003586` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261116-M15-282-GAME-MODES — Top-Level Game Mode State Machine (`0x00034E`..`0x000471`)
 - **Decision:** Model Beyond Oasis's top-level application loop in Standalone via the 5-mode dispatch table at `0x00045E` (`0x00` Sega logo, `0x04` Title/Save Select, `0x08`/`0x0C` Gameplay, `0x10` Ending/Credits) latched from `$FF10AC` into `$FF10AE`.
 - **Evidence:** Direct Capstone M68K disassembly of `0x000200..0x000472`, `0x00307A`, `0x0032F8`, and `0x03A748` in `local-roms/Beyond Oasis (USA).md`.

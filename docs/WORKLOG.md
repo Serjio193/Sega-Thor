@@ -1,3 +1,8 @@
+# 2026-11-16 — Milestone M15.283: ROM TITLE SCREEN, ATTRACT TIMEOUT & SECRET INPUT CHORDS (`0x0032F8`..`0x003586`) — 720-Frame Attract Timer (`0x2D0`), Blink Duty (`0x7F < 0x60`), 4 Start Chords (`0x90`/`0xD5`/`0x8A`/normal); Extractor (`tools/extract_rom_title_and_sound_test.py` <= 500 lines), Tests (`tests/rom_title_and_sound_test_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_283_TITLE_AND_SOUND_TEST_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0032F8..0x003586` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_title_and_sound_test.py` and `python tests/rom_title_and_sound_test_test.py` (2/2 PASS).
+- Next: Check Standalone M16.69 completion & push; continue with M15.284.
+
 # 2026-11-16 — Milestone M15.282: ROM TOP-LEVEL GAME MODE STATE MACHINE (`0x00034E`..`0x000471`) — 5 Modes (`0x00, 0x04, 0x08, 0x0C, 0x10`), `$FF10AC`/`$FF10AE` Latch; Extractor (`tools/extract_rom_game_modes.py` <= 500 lines), Tests (`tests/rom_game_modes_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_282_GAME_MODES_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x000200..0x000472` and mode entries `0x00307A`, `0x0032F8`, `0x03A748` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_game_modes.py` (5 modes, 9 `$FF10AC` refs) and `python tests/rom_game_modes_test.py` (2/2 PASS).

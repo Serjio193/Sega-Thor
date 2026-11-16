@@ -1,0 +1,49 @@
+{
+  "milestone": "M15.283",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "title_screen": {
+    "entry_addr": "0x0032F8",
+    "font_addr": "0x16943C",
+    "font_vram_addr": "0xF020",
+    "title_gfx_addr": "0x180C56",
+    "title_bgm_id": "0x0104",
+    "attract_timeout_frames": 720,
+    "blink_mask": 127,
+    "blink_on_threshold": 96,
+    "prompt_text": "PRESS START BUTTON",
+    "copyright_text": "TM & @ 1995 SEGA",
+    "music_credit_text": "Music @ 1994 Yuzo Koshiro"
+  },
+  "input_chords": [
+    {
+      "pad_byte_ff165e": "0x90",
+      "handler_addr": "0x0034BE",
+      "sound_cmd": "0xA003AA",
+      "target_addr": "0x03E4FA",
+      "role": "Sound Test / Secret Menu (A + Start)"
+    },
+    {
+      "pad_byte_ff165e": "0xD5",
+      "handler_addr": "0x0034E4",
+      "sound_cmd": "0xA00205",
+      "helper_addr": "0x001E98",
+      "target_addr": "0x03E4FA",
+      "role": "Alternate Debug / Stage Select"
+    },
+    {
+      "pad_byte_ff165e": "0x8A",
+      "handler_addr": "0x003428",
+      "next_mode": "0x08",
+      "ram_demo_flag_ff1996": "0xFF",
+      "role": "Immediate Demo / Attract Mode"
+    },
+    {
+      "pad_byte_ff165e": "any_other_with_start",
+      "handler_addr": "0x00347C",
+      "sound_cmd": "0x00000002",
+      "next_mode": "0x0C",
+      "ram_demo_flag_ff1996": "0x00",
+      "role": "Normal Start -> File Select / Gameplay"
+    }
+  ]
+}
