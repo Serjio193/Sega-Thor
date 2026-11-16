@@ -1,3 +1,9 @@
+# M15.289 ROM Attract/Demo Stream Table
+- `tools/extract_rom_attract_demos.py` — Extracts 9 attract demo stream offsets (`0x008A94` rel to `0x1698FE`) & delta-decode setup.
+- `tests/rom_attract_demos_test.py` — Unit tests verifying demo offsets and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_attract_demos_m15_289.json` — Extracted attract demo table evidence.
+- `docs/handoffs/STANDALONE_M15_289_ATTRACT_DEMOS_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.288 ROM SRAM Clear Records & Best Time Persistence
 - `tools/extract_rom_sram_clear_records.py` — Extracts `"Rank00"` / `"Race00"` SRAM magic headers, payload sizes, and `$A130F1` control flow.
 - `tests/rom_sram_clear_records_test.py` — Unit tests verifying magic headers, payload size, and JSON artifact (`2/2 PASS`).

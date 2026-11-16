@@ -1,3 +1,7 @@
+# ADR-20261117-M15-289-ATTRACT-DEMOS — Attract/Demo Stream Table (`0x008A94`, 9 Demos at `0x1698FE`)
+- **Decision:** Model Attract/Demo playback in Standalone using the 9-entry `u16` offset table at `0x008A94` (relative to `0x1698FE`), `0x003820` decompression, `0x1FFF`-byte delta-decoding at `$FFDFB2`, and `(room_id, x, y)` stream header.
+- **Evidence:** Direct Capstone M68K disassembly of `0x0089B2..0x008AA5` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-288-SRAM-CLEAR-RECORDS — SRAM Clear Records & Best Time Persistence (`0x001DDC`..`0x001F20`)
 - **Decision:** Model Beyond Oasis's clear-records & speedrun SRAM blocks in Standalone using `"Rank00"` (`$2025CD`, `130` bytes + `u16_be` byte-sum checksum) and `"Race00"` (`$2026E1`, `u32_be` best time) with odd-byte stride `2`.
 - **Evidence:** Direct Capstone M68K disassembly of `0x001DDC..0x001F20` and raw PC-relative magic reads at `0x0004BA` / `0x0004C0` in `local-roms/Beyond Oasis (USA).md`.

@@ -1,3 +1,7 @@
+# M15.289 ROM Attract/Demo Stream Table (`0x008A94`, 9 Demos at `0x1698FE`) — COMPLETE / VERIFIED
+- Decoded Attract/Demo playback setup (`0x0089FA..0x008A93`), 9-entry `u16` offset table (`0x008A94`), `0x003820` decompression to `$FFBFAC`, `0x1FFF`-byte delta-decoding at `$FFDFB2`, and `(room_id, player_x, player_y)` header -> `0x00CA24`.
+- Authored `tools/extract_rom_attract_demos.py`, `tests/rom_attract_demos_test.py` (`2/2 PASS`), `data/thor-evidence/rom_attract_demos_m15_289.json`, and `docs/handoffs/STANDALONE_M15_289_ATTRACT_DEMOS_HANDOFF.md`.
+
 # M15.288 ROM SRAM Clear Records & Best Time Persistence (`0x001DDC`..`0x001F20`) — COMPLETE / VERIFIED
 - Decoded `"Rank00"` (`0x0004BA`, `$2025CD`, `130` bytes + `u16_be` sum checksum) load/save (`0x001DDC`/`0x001E46`), `"Race00"` (`0x0004C0`, `$2026E1`, `u32_be` best time) load (`0x001ECE`), and `$A130F1` SRAM lock/unlock clear (`0x001E98`).
 - Authored `tools/extract_rom_sram_clear_records.py`, `tests/rom_sram_clear_records_test.py` (`2/2 PASS`), `data/thor-evidence/rom_sram_clear_records_m15_288.json`, and `docs/handoffs/STANDALONE_M15_288_SRAM_CLEAR_RECORDS_HANDOFF.md`.

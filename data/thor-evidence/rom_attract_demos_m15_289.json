@@ -1,0 +1,75 @@
+{
+  "milestone": "M15.289",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "attract_setup": {
+    "entry_addr": "0x0089B2",
+    "demo_branch_addr": "0x0089FA",
+    "table_addr": "0x008A94",
+    "stream_base_addr": "0x1698FE",
+    "demo_count": 9,
+    "decompressor_addr": "0x003820",
+    "decomp_ram_dest": "0xFFBFAC",
+    "delta_buffer_addr": "0xFFDFB2",
+    "delta_decode_bytes": 8191,
+    "ram_demo_slot": "0xFF0BFC",
+    "ram_demo_active": "0xFF1996",
+    "ram_demo_stream_ptr": "0xFF1998",
+    "gameplay_entry_addr": "0x00CA24"
+  },
+  "demos": [
+    {
+      "slot": 0,
+      "table_entry_addr": "0x008A94",
+      "rel_offset": 0,
+      "rom_addr": "0x1698FE"
+    },
+    {
+      "slot": 1,
+      "table_entry_addr": "0x008A96",
+      "rel_offset": 1068,
+      "rom_addr": "0x169D2A"
+    },
+    {
+      "slot": 2,
+      "table_entry_addr": "0x008A98",
+      "rel_offset": 3008,
+      "rom_addr": "0x16A4BE"
+    },
+    {
+      "slot": 3,
+      "table_entry_addr": "0x008A9A",
+      "rel_offset": 4610,
+      "rom_addr": "0x16AB00"
+    },
+    {
+      "slot": 4,
+      "table_entry_addr": "0x008A9C",
+      "rel_offset": 5196,
+      "rom_addr": "0x16AD4A"
+    },
+    {
+      "slot": 5,
+      "table_entry_addr": "0x008A9E",
+      "rel_offset": 5832,
+      "rom_addr": "0x16AFC6"
+    },
+    {
+      "slot": 6,
+      "table_entry_addr": "0x008AA0",
+      "rel_offset": 6368,
+      "rom_addr": "0x16B1DE"
+    },
+    {
+      "slot": 7,
+      "table_entry_addr": "0x008AA2",
+      "rel_offset": 7912,
+      "rom_addr": "0x16B7E6"
+    },
+    {
+      "slot": 8,
+      "table_entry_addr": "0x008AA4",
+      "rel_offset": 8222,
+      "rom_addr": "0x16B91C"
+    }
+  ]
+}

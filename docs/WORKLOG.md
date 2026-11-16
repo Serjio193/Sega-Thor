@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.289: ROM ATTRACT/DEMO STREAM TABLE (`0x008A94`, 9 Demos at `0x1698FE`) — `0x003820` Decomp + `0x1FFF`-Byte Delta-Decode; Extractor (`tools/extract_rom_attract_demos.py` <= 500 lines), Tests (`tests/rom_attract_demos_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_289_ATTRACT_DEMOS_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0089B2..0x008AA5` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_attract_demos.py` (9 demos) and `python tests/rom_attract_demos_test.py` (2/2 PASS).
+- Next: Commit & push M15.289, await M16.73 completion.
+
 # 2026-11-17 — Milestone M15.288: ROM SRAM CLEAR RECORDS & BEST TIME PERSISTENCE (`0x001DDC`..`0x001F20`) — `"Rank00"` (`$2025CD`, `130`B + `u16_be` sum), `"Race00"` (`$2026E1`, `u32_be`); Extractor (`tools/extract_rom_sram_clear_records.py` <= 500 lines), Tests (`tests/rom_sram_clear_records_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_288_SRAM_CLEAR_RECORDS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x001DDC..0x001F20` and verified `"Rank00"` (`0x0004BA`) and `"Race00"` (`0x0004C0`) in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_sram_clear_records.py` and `python tests/rom_sram_clear_records_test.py` (2/2 PASS).
