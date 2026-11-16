@@ -1,0 +1,298 @@
+{
+  "milestone": "M15.280",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "vm_state": {
+    "tick_entry_addr": "0x00F788",
+    "loop_entry_addr": "0x00F7B4",
+    "jump_table_addr": "0x00F7D0",
+    "opcode_count": 31,
+    "ram_pc": "0xFF17B2",
+    "ram_wait_frames": "0xFF17B6",
+    "ram_max_active_enemies": "0xFF17B7",
+    "ram_vm_flags": "0xFF17B8",
+    "ram_pan_state": "0xFF17BD",
+    "ram_loop_counters": "0xFF1826",
+    "ram_return_pc": "0xFF1836"
+  },
+  "opcodes": [
+    {
+      "opcode": 0,
+      "opcode_hex": "0x00",
+      "name": "end_script_yield",
+      "entry_addr": "0x00F7D0",
+      "rel_offset": 332,
+      "target_addr": "0x00F91C",
+      "description": "Pop return addr (0x00F91C) and yield"
+    },
+    {
+      "opcode": 1,
+      "opcode_hex": "0x01",
+      "name": "spawn_enemy_if_cap",
+      "entry_addr": "0x00F7D2",
+      "rel_offset": 1276,
+      "target_addr": "0x00FCCE",
+      "description": "Spawn entity if active count < $FF17B7"
+    },
+    {
+      "opcode": 2,
+      "opcode_hex": "0x02",
+      "name": "set_spawn_table_1",
+      "entry_addr": "0x00F7D4",
+      "rel_offset": 332,
+      "target_addr": "0x00F920",
+      "description": "Load u16 list (0xFFFF-terminated) into $FF17C6"
+    },
+    {
+      "opcode": 3,
+      "opcode_hex": "0x03",
+      "name": "set_spawn_table_2",
+      "entry_addr": "0x00F7D6",
+      "rel_offset": 364,
+      "target_addr": "0x00F942",
+      "description": "Load (u16,u16) pairs (0xFFFF-terminated) into $FF17E6"
+    },
+    {
+      "opcode": 4,
+      "opcode_hex": "0x04",
+      "name": "wait_until_condition",
+      "entry_addr": "0x00F7D8",
+      "rel_offset": 402,
+      "target_addr": "0x00F96A",
+      "description": "Poll condition 0..7; yield without advancing PC if false"
+    },
+    {
+      "opcode": 5,
+      "opcode_hex": "0x05",
+      "name": "jump_rel16",
+      "entry_addr": "0x00F7DA",
+      "rel_offset": 722,
+      "target_addr": "0x00FAAC",
+      "description": "Unconditional relative jump a0 += s16(+2(a0))"
+    },
+    {
+      "opcode": 6,
+      "opcode_hex": "0x06",
+      "name": "loop_counter_dec_branch",
+      "entry_addr": "0x00F7DC",
+      "rel_offset": 1168,
+      "target_addr": "0x00FC6C",
+      "description": "Dec $FF1826[+1(a0)]; branch if nonzero else a0 += 4"
+    },
+    {
+      "opcode": 7,
+      "opcode_hex": "0x07",
+      "name": "loop_counter_set",
+      "entry_addr": "0x00F7DE",
+      "rel_offset": 1206,
+      "target_addr": "0x00FC94",
+      "description": "Set $FF1826[+1(a0)] = u16(+2(a0))"
+    },
+    {
+      "opcode": 8,
+      "opcode_hex": "0x08",
+      "name": "wait_frames",
+      "entry_addr": "0x00F7E0",
+      "rel_offset": 1222,
+      "target_addr": "0x00FCA6",
+      "description": "Set $FF17B6 = +1(a0), save PC, and yield"
+    },
+    {
+      "opcode": 9,
+      "opcode_hex": "0x09",
+      "name": "spawn_effect_09",
+      "entry_addr": "0x00F7E2",
+      "rel_offset": 2130,
+      "target_addr": "0x010034",
+      "description": "Allocate slot via 0x00D9BE, set entity type 0x0008"
+    },
+    {
+      "opcode": 10,
+      "opcode_hex": "0x0A",
+      "name": "call_entity_handler_0A",
+      "entry_addr": "0x00F7E4",
+      "rel_offset": 1236,
+      "target_addr": "0x00FCB8",
+      "description": "Call 0x00D9A4 with a6=u32(+2), d6=u16(+6)"
+    },
+    {
+      "opcode": 11,
+      "opcode_hex": "0x0B",
+      "name": "set_max_active_enemies",
+      "entry_addr": "0x00F7E6",
+      "rel_offset": 1246,
+      "target_addr": "0x00FCC4",
+      "description": "Set $FF17B7 = +1(a0)"
+    },
+    {
+      "opcode": 12,
+      "opcode_hex": "0x0C",
+      "name": "load_palette_0C",
+      "entry_addr": "0x00F7E8",
+      "rel_offset": 2206,
+      "target_addr": "0x010086",
+      "description": "Load palette to $FF136C from 0x05D046 (id in +2(a0))"
+    },
+    {
+      "opcode": 13,
+      "opcode_hex": "0x0D",
+      "name": "load_palette_0D",
+      "entry_addr": "0x00F7EA",
+      "rel_offset": 2240,
+      "target_addr": "0x0100AA",
+      "description": "Load palette to $FF136C from 0x05D046 (id in +2(a0))"
+    },
+    {
+      "opcode": 14,
+      "opcode_hex": "0x0E",
+      "name": "spawn_entity_0E",
+      "entry_addr": "0x00F7EC",
+      "rel_offset": 1440,
+      "target_addr": "0x00FD8C",
+      "description": "Spawn entity if active count < $FF17B7 via 0x0102BE"
+    },
+    {
+      "opcode": 15,
+      "opcode_hex": "0x0F",
+      "name": "set_clear_global_flag",
+      "entry_addr": "0x00F7EE",
+      "rel_offset": 2386,
+      "target_addr": "0x010140",
+      "description": "Set/clear bit u16(+2(a0)) in $FF0DBC"
+    },
+    {
+      "opcode": 16,
+      "opcode_hex": "0x10",
+      "name": "set_clear_chest_flag",
+      "entry_addr": "0x00F7F0",
+      "rel_offset": 2432,
+      "target_addr": "0x010170",
+      "description": "Set/clear bit u16(+2(a0)) in $FF0E1C"
+    },
+    {
+      "opcode": 17,
+      "opcode_hex": "0x11",
+      "name": "set_clear_secondary_flag",
+      "entry_addr": "0x00F7F2",
+      "rel_offset": 2478,
+      "target_addr": "0x0101A0",
+      "description": "Set/clear bit u16(+2(a0)) in $FF0E2C"
+    },
+    {
+      "opcode": 18,
+      "opcode_hex": "0x12",
+      "name": "branch_if_condition",
+      "entry_addr": "0x00F7F4",
+      "rel_offset": 702,
+      "target_addr": "0x00FAB2",
+      "description": "Conditional branch (12 sub-actions at 0x00FAC2, M15.279)"
+    },
+    {
+      "opcode": 19,
+      "opcode_hex": "0x13",
+      "name": "call_subroutine_24bit",
+      "entry_addr": "0x00F7F6",
+      "rel_offset": 2522,
+      "target_addr": "0x0101D0",
+      "description": "Save return PC in $FF1836; jump to 24-bit ROM ptr"
+    },
+    {
+      "opcode": 20,
+      "opcode_hex": "0x14",
+      "name": "return_from_subroutine",
+      "entry_addr": "0x00F7F8",
+      "rel_offset": 2540,
+      "target_addr": "0x0101E4",
+      "description": "Restore PC from $FF1836"
+    },
+    {
+      "opcode": 21,
+      "opcode_hex": "0x15",
+      "name": "branch_if_flag_15",
+      "entry_addr": "0x00F7FA",
+      "rel_offset": 1764,
+      "target_addr": "0x00FEDE",
+      "description": "Branch on flag bit in $FF0DBC/$FF0E1C/$FF0E2C"
+    },
+    {
+      "opcode": 22,
+      "opcode_hex": "0x16",
+      "name": "spawn_item_or_trigger_16",
+      "entry_addr": "0x00F7FC",
+      "rel_offset": 1822,
+      "target_addr": "0x00FF1A",
+      "description": "Allocate slot via 0x00DA2A; set type/+0xA2/+0xA4"
+    },
+    {
+      "opcode": 23,
+      "opcode_hex": "0x17",
+      "name": "spawn_entity_cap_minus_1",
+      "entry_addr": "0x00F7FE",
+      "rel_offset": 1548,
+      "target_addr": "0x00FE0A",
+      "description": "Spawn entity if active count < ($FF17B7 - 1)"
+    },
+    {
+      "opcode": 24,
+      "opcode_hex": "0x18",
+      "name": "spawn_special_18",
+      "entry_addr": "0x00F800",
+      "rel_offset": 1944,
+      "target_addr": "0x00FF98",
+      "description": "Allocate slot via 0x00D9F0 and init entity"
+    },
+    {
+      "opcode": 25,
+      "opcode_hex": "0x19",
+      "name": "spawn_special_19",
+      "entry_addr": "0x00F802",
+      "rel_offset": 2012,
+      "target_addr": "0x00FFDE",
+      "description": "Allocate slot via 0x00D9F0 and init entity"
+    },
+    {
+      "opcode": 26,
+      "opcode_hex": "0x1A",
+      "name": "trigger_vdp_or_tile_1A",
+      "entry_addr": "0x00F804",
+      "rel_offset": 2258,
+      "target_addr": "0x0100D6",
+      "description": "Jump to 0x00E78E with d1=u16(+2), d2=u16(+4), d0=u32(+6)"
+    },
+    {
+      "opcode": 27,
+      "opcode_hex": "0x1B",
+      "name": "play_sound_cmd",
+      "entry_addr": "0x00F806",
+      "rel_offset": 2270,
+      "target_addr": "0x0100E4",
+      "description": "Jump to 0x060004 with sound command d0=u32(+2(a0))"
+    },
+    {
+      "opcode": 28,
+      "opcode_hex": "0x1C",
+      "name": "set_event_var_1C",
+      "entry_addr": "0x00F808",
+      "rel_offset": 2278,
+      "target_addr": "0x0100EE",
+      "description": "Set $FF17C4 = u16(+2(a0))"
+    },
+    {
+      "opcode": 29,
+      "opcode_hex": "0x1D",
+      "name": "set_camera_target_1D",
+      "entry_addr": "0x00F80A",
+      "rel_offset": 2286,
+      "target_addr": "0x0100F8",
+      "description": "Update camera/scroll table $FF1716[+1(a0)]"
+    },
+    {
+      "opcode": 30,
+      "opcode_hex": "0x1E",
+      "name": "camera_pan_or_fade_1E",
+      "entry_addr": "0x00F80C",
+      "rel_offset": 72,
+      "target_addr": "0x00F854",
+      "description": "Set $FF17BD, $FF183A, $FF183C, $FF1982=0xFF"
+    }
+  ]
+}

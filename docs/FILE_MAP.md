@@ -1,3 +1,9 @@
+# M15.280 ROM Event VM Main 31-Opcode ISA
+- `tools/extract_rom_event_vm_isa.py` — Extracts Event VM jump table `0x00F7D0` (`0x00..0x1E`, 31 opcodes) & VM RAM state.
+- `tests/rom_event_vm_isa_test.py` — Unit tests verifying key opcode targets and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_event_vm_isa_m15_280.json` — Extracted Event VM ISA evidence.
+- `docs/handoffs/STANDALONE_M15_280_EVENT_VM_ISA_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.279 ROM Event VM Opcode `0x12` Conditional Branch
 - `tools/extract_rom_event_vm_op12.py` — Extracts Event VM Opcode `0x12` 12 sub-actions (`0x00FAC2`) & 6 comparators (`0x00FB64`).
 - `tests/rom_event_vm_op12_test.py` — Unit tests verifying ROM targets and JSON artifact (`3/3 PASS`).

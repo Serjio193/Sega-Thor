@@ -1,3 +1,7 @@
+# M15.280 ROM Event VM Main 31-Opcode ISA (`0x00F788`..`0x00F80D`) — COMPLETE / VERIFIED
+- Decoded Event VM tick entry (`0x00F788`), fetch/dispatch loop (`0x00F7B4`), VM RAM state (`$FF17B2..$FF1836`), and all 31 opcode targets (`0x00..0x1E`) from `0x00F7D0`.
+- Authored `tools/extract_rom_event_vm_isa.py`, `tests/rom_event_vm_isa_test.py` (`2/2 PASS`), `data/thor-evidence/rom_event_vm_isa_m15_280.json`, and `docs/handoffs/STANDALONE_M15_280_EVENT_VM_ISA_HANDOFF.md`.
+
 # M15.279 ROM Event VM Opcode `0x12` Conditional Branch (`0x00FAB2`..`0x00FC6B`) — COMPLETE / VERIFIED
 - Decoded 12-entry sub-action jump table (`0x00FAC2`, `0x00..0x0B`), 6-entry comparator table (`0x00FB64`, `==, !=, >, >=, <=, <`), and helper routines (`0x0101EC` active entity count, `0x010232` entity ID search, `0x010254` HP%, `0x010268` SP%).
 - Authored `tools/extract_rom_event_vm_op12.py`, `tests/rom_event_vm_op12_test.py` (`3/3 PASS`), `data/thor-evidence/rom_event_vm_op12_m15_279.json`, and `docs/handoffs/STANDALONE_M15_279_EVENT_VM_OP12_HANDOFF.md`.
