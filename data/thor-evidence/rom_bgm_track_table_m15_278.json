@@ -1,0 +1,1076 @@
+{
+  "milestone": "M15.278",
+  "description": "ROM BGM Sequence Offset Table (0x0638D4) and Z80 Bus Handshake (0x060B50)",
+  "loader_addr": "0x060B50",
+  "table_base": "0x0638D4",
+  "z80_handshake": {
+    "bus_req_addr": "0x00A11100",
+    "z80_cmd_addr": "0x00A00003",
+    "z80_stop_byte": "0x83"
+  },
+  "valid_track_count": 177,
+  "tracks": [
+    {
+      "track_id": "0x00",
+      "command_word": "0x0100",
+      "rel_offset": "0x000400",
+      "rom_addr": "0x063CD4"
+    },
+    {
+      "track_id": "0x01",
+      "command_word": "0x0101",
+      "rel_offset": "0x000C3A",
+      "rom_addr": "0x06450E"
+    },
+    {
+      "track_id": "0x02",
+      "command_word": "0x0102",
+      "rel_offset": "0x000EC8",
+      "rom_addr": "0x06479C"
+    },
+    {
+      "track_id": "0x03",
+      "command_word": "0x0103",
+      "rel_offset": "0x001308",
+      "rom_addr": "0x064BDC"
+    },
+    {
+      "track_id": "0x04",
+      "command_word": "0x0104",
+      "rel_offset": "0x0014F4",
+      "rom_addr": "0x064DC8"
+    },
+    {
+      "track_id": "0x05",
+      "command_word": "0x0105",
+      "rel_offset": "0x002AB1",
+      "rom_addr": "0x066385"
+    },
+    {
+      "track_id": "0x06",
+      "command_word": "0x0106",
+      "rel_offset": "0x002E5B",
+      "rom_addr": "0x06672F"
+    },
+    {
+      "track_id": "0x07",
+      "command_word": "0x0107",
+      "rel_offset": "0x003635",
+      "rom_addr": "0x066F09"
+    },
+    {
+      "track_id": "0x08",
+      "command_word": "0x0108",
+      "rel_offset": "0x004B23",
+      "rom_addr": "0x0683F7"
+    },
+    {
+      "track_id": "0x09",
+      "command_word": "0x0109",
+      "rel_offset": "0x004BC5",
+      "rom_addr": "0x068499"
+    },
+    {
+      "track_id": "0x0A",
+      "command_word": "0x010A",
+      "rel_offset": "0x005236",
+      "rom_addr": "0x068B0A"
+    },
+    {
+      "track_id": "0x0B",
+      "command_word": "0x010B",
+      "rel_offset": "0x0059FD",
+      "rom_addr": "0x0692D1"
+    },
+    {
+      "track_id": "0x0C",
+      "command_word": "0x010C",
+      "rel_offset": "0x006411",
+      "rom_addr": "0x069CE5"
+    },
+    {
+      "track_id": "0x0D",
+      "command_word": "0x010D",
+      "rel_offset": "0x007A11",
+      "rom_addr": "0x06B2E5"
+    },
+    {
+      "track_id": "0x0E",
+      "command_word": "0x010E",
+      "rel_offset": "0x007A90",
+      "rom_addr": "0x06B364"
+    },
+    {
+      "track_id": "0x0F",
+      "command_word": "0x010F",
+      "rel_offset": "0x008444",
+      "rom_addr": "0x06BD18"
+    },
+    {
+      "track_id": "0x10",
+      "command_word": "0x0110",
+      "rel_offset": "0x008F8B",
+      "rom_addr": "0x06C85F"
+    },
+    {
+      "track_id": "0x11",
+      "command_word": "0x0111",
+      "rel_offset": "0x0098AC",
+      "rom_addr": "0x06D180"
+    },
+    {
+      "track_id": "0x12",
+      "command_word": "0x0112",
+      "rel_offset": "0x00ABB6",
+      "rom_addr": "0x06E48A"
+    },
+    {
+      "track_id": "0x13",
+      "command_word": "0x0113",
+      "rel_offset": "0x00BC8D",
+      "rom_addr": "0x06F561"
+    },
+    {
+      "track_id": "0x14",
+      "command_word": "0x0114",
+      "rel_offset": "0x00BE5B",
+      "rom_addr": "0x06F72F"
+    },
+    {
+      "track_id": "0x15",
+      "command_word": "0x0115",
+      "rel_offset": "0x00BFDA",
+      "rom_addr": "0x06F8AE"
+    },
+    {
+      "track_id": "0x16",
+      "command_word": "0x0116",
+      "rel_offset": "0x00D38F",
+      "rom_addr": "0x070C63"
+    },
+    {
+      "track_id": "0x17",
+      "command_word": "0x0117",
+      "rel_offset": "0x00DD0A",
+      "rom_addr": "0x0715DE"
+    },
+    {
+      "track_id": "0x18",
+      "command_word": "0x0118",
+      "rel_offset": "0x00E2B2",
+      "rom_addr": "0x071B86"
+    },
+    {
+      "track_id": "0x19",
+      "command_word": "0x0119",
+      "rel_offset": "0x00E73A",
+      "rom_addr": "0x07200E"
+    },
+    {
+      "track_id": "0x1A",
+      "command_word": "0x011A",
+      "rel_offset": "0x00E99B",
+      "rom_addr": "0x07226F"
+    },
+    {
+      "track_id": "0x1B",
+      "command_word": "0x011B",
+      "rel_offset": "0x00F44E",
+      "rom_addr": "0x072D22"
+    },
+    {
+      "track_id": "0x1C",
+      "command_word": "0x011C",
+      "rel_offset": "0x013067",
+      "rom_addr": "0x07693B"
+    },
+    {
+      "track_id": "0x1D",
+      "command_word": "0x011D",
+      "rel_offset": "0x01401E",
+      "rom_addr": "0x0778F2"
+    },
+    {
+      "track_id": "0x1E",
+      "command_word": "0x011E",
+      "rel_offset": "0x014C18",
+      "rom_addr": "0x0784EC"
+    },
+    {
+      "track_id": "0x1F",
+      "command_word": "0x011F",
+      "rel_offset": "0x015189",
+      "rom_addr": "0x078A5D"
+    },
+    {
+      "track_id": "0x20",
+      "command_word": "0x0120",
+      "rel_offset": "0x016461",
+      "rom_addr": "0x079D35"
+    },
+    {
+      "track_id": "0x21",
+      "command_word": "0x0121",
+      "rel_offset": "0x01760C",
+      "rom_addr": "0x07AEE0"
+    },
+    {
+      "track_id": "0x40",
+      "command_word": "0x0140",
+      "rel_offset": "0x0177E9",
+      "rom_addr": "0x07B0BD"
+    },
+    {
+      "track_id": "0x41",
+      "command_word": "0x0141",
+      "rel_offset": "0x017832",
+      "rom_addr": "0x07B106"
+    },
+    {
+      "track_id": "0x42",
+      "command_word": "0x0142",
+      "rel_offset": "0x017883",
+      "rom_addr": "0x07B157"
+    },
+    {
+      "track_id": "0x43",
+      "command_word": "0x0143",
+      "rel_offset": "0x0178B2",
+      "rom_addr": "0x07B186"
+    },
+    {
+      "track_id": "0x44",
+      "command_word": "0x0144",
+      "rel_offset": "0x0178DB",
+      "rom_addr": "0x07B1AF"
+    },
+    {
+      "track_id": "0x45",
+      "command_word": "0x0145",
+      "rel_offset": "0x017922",
+      "rom_addr": "0x07B1F6"
+    },
+    {
+      "track_id": "0x46",
+      "command_word": "0x0146",
+      "rel_offset": "0x017965",
+      "rom_addr": "0x07B239"
+    },
+    {
+      "track_id": "0x47",
+      "command_word": "0x0147",
+      "rel_offset": "0x0179C6",
+      "rom_addr": "0x07B29A"
+    },
+    {
+      "track_id": "0x48",
+      "command_word": "0x0148",
+      "rel_offset": "0x0179F1",
+      "rom_addr": "0x07B2C5"
+    },
+    {
+      "track_id": "0x49",
+      "command_word": "0x0149",
+      "rel_offset": "0x017A32",
+      "rom_addr": "0x07B306"
+    },
+    {
+      "track_id": "0x4A",
+      "command_word": "0x014A",
+      "rel_offset": "0x017A69",
+      "rom_addr": "0x07B33D"
+    },
+    {
+      "track_id": "0x4B",
+      "command_word": "0x014B",
+      "rel_offset": "0x017AC0",
+      "rom_addr": "0x07B394"
+    },
+    {
+      "track_id": "0x4C",
+      "command_word": "0x014C",
+      "rel_offset": "0x017AE5",
+      "rom_addr": "0x07B3B9"
+    },
+    {
+      "track_id": "0x4D",
+      "command_word": "0x014D",
+      "rel_offset": "0x017B20",
+      "rom_addr": "0x07B3F4"
+    },
+    {
+      "track_id": "0x4E",
+      "command_word": "0x014E",
+      "rel_offset": "0x017B5B",
+      "rom_addr": "0x07B42F"
+    },
+    {
+      "track_id": "0x4F",
+      "command_word": "0x014F",
+      "rel_offset": "0x017BA2",
+      "rom_addr": "0x07B476"
+    },
+    {
+      "track_id": "0x50",
+      "command_word": "0x0150",
+      "rel_offset": "0x017BF9",
+      "rom_addr": "0x07B4CD"
+    },
+    {
+      "track_id": "0x51",
+      "command_word": "0x0151",
+      "rel_offset": "0x017C38",
+      "rom_addr": "0x07B50C"
+    },
+    {
+      "track_id": "0x52",
+      "command_word": "0x0152",
+      "rel_offset": "0x017C5F",
+      "rom_addr": "0x07B533"
+    },
+    {
+      "track_id": "0x53",
+      "command_word": "0x0153",
+      "rel_offset": "0x017C9A",
+      "rom_addr": "0x07B56E"
+    },
+    {
+      "track_id": "0x54",
+      "command_word": "0x0154",
+      "rel_offset": "0x017D09",
+      "rom_addr": "0x07B5DD"
+    },
+    {
+      "track_id": "0x55",
+      "command_word": "0x0155",
+      "rel_offset": "0x017D51",
+      "rom_addr": "0x07B625"
+    },
+    {
+      "track_id": "0x56",
+      "command_word": "0x0156",
+      "rel_offset": "0x017D97",
+      "rom_addr": "0x07B66B"
+    },
+    {
+      "track_id": "0x57",
+      "command_word": "0x0157",
+      "rel_offset": "0x017DCA",
+      "rom_addr": "0x07B69E"
+    },
+    {
+      "track_id": "0x58",
+      "command_word": "0x0158",
+      "rel_offset": "0x017E03",
+      "rom_addr": "0x07B6D7"
+    },
+    {
+      "track_id": "0x59",
+      "command_word": "0x0159",
+      "rel_offset": "0x017E3C",
+      "rom_addr": "0x07B710"
+    },
+    {
+      "track_id": "0x5A",
+      "command_word": "0x015A",
+      "rel_offset": "0x017E88",
+      "rom_addr": "0x07B75C"
+    },
+    {
+      "track_id": "0x5B",
+      "command_word": "0x015B",
+      "rel_offset": "0x017EE7",
+      "rom_addr": "0x07B7BB"
+    },
+    {
+      "track_id": "0x5C",
+      "command_word": "0x015C",
+      "rel_offset": "0x017F35",
+      "rom_addr": "0x07B809"
+    },
+    {
+      "track_id": "0x5D",
+      "command_word": "0x015D",
+      "rel_offset": "0x017F6A",
+      "rom_addr": "0x07B83E"
+    },
+    {
+      "track_id": "0x5E",
+      "command_word": "0x015E",
+      "rel_offset": "0x017FAD",
+      "rom_addr": "0x07B881"
+    },
+    {
+      "track_id": "0x5F",
+      "command_word": "0x015F",
+      "rel_offset": "0x017FEB",
+      "rom_addr": "0x07B8BF"
+    },
+    {
+      "track_id": "0x60",
+      "command_word": "0x0160",
+      "rel_offset": "0x018023",
+      "rom_addr": "0x07B8F7"
+    },
+    {
+      "track_id": "0x61",
+      "command_word": "0x0161",
+      "rel_offset": "0x018067",
+      "rom_addr": "0x07B93B"
+    },
+    {
+      "track_id": "0x62",
+      "command_word": "0x0162",
+      "rel_offset": "0x01809D",
+      "rom_addr": "0x07B971"
+    },
+    {
+      "track_id": "0x63",
+      "command_word": "0x0163",
+      "rel_offset": "0x0180C2",
+      "rom_addr": "0x07B996"
+    },
+    {
+      "track_id": "0x64",
+      "command_word": "0x0164",
+      "rel_offset": "0x0180EB",
+      "rom_addr": "0x07B9BF"
+    },
+    {
+      "track_id": "0x65",
+      "command_word": "0x0165",
+      "rel_offset": "0x018114",
+      "rom_addr": "0x07B9E8"
+    },
+    {
+      "track_id": "0x66",
+      "command_word": "0x0166",
+      "rel_offset": "0x01813D",
+      "rom_addr": "0x07BA11"
+    },
+    {
+      "track_id": "0x67",
+      "command_word": "0x0167",
+      "rel_offset": "0x018166",
+      "rom_addr": "0x07BA3A"
+    },
+    {
+      "track_id": "0x68",
+      "command_word": "0x0168",
+      "rel_offset": "0x01818F",
+      "rom_addr": "0x07BA63"
+    },
+    {
+      "track_id": "0x69",
+      "command_word": "0x0169",
+      "rel_offset": "0x0181B8",
+      "rom_addr": "0x07BA8C"
+    },
+    {
+      "track_id": "0x6A",
+      "command_word": "0x016A",
+      "rel_offset": "0x0181E1",
+      "rom_addr": "0x07BAB5"
+    },
+    {
+      "track_id": "0x6B",
+      "command_word": "0x016B",
+      "rel_offset": "0x01820A",
+      "rom_addr": "0x07BADE"
+    },
+    {
+      "track_id": "0x6C",
+      "command_word": "0x016C",
+      "rel_offset": "0x018233",
+      "rom_addr": "0x07BB07"
+    },
+    {
+      "track_id": "0x6D",
+      "command_word": "0x016D",
+      "rel_offset": "0x01825C",
+      "rom_addr": "0x07BB30"
+    },
+    {
+      "track_id": "0x6E",
+      "command_word": "0x016E",
+      "rel_offset": "0x018285",
+      "rom_addr": "0x07BB59"
+    },
+    {
+      "track_id": "0x6F",
+      "command_word": "0x016F",
+      "rel_offset": "0x0182AE",
+      "rom_addr": "0x07BB82"
+    },
+    {
+      "track_id": "0x70",
+      "command_word": "0x0170",
+      "rel_offset": "0x0182D7",
+      "rom_addr": "0x07BBAB"
+    },
+    {
+      "track_id": "0x71",
+      "command_word": "0x0171",
+      "rel_offset": "0x018300",
+      "rom_addr": "0x07BBD4"
+    },
+    {
+      "track_id": "0x72",
+      "command_word": "0x0172",
+      "rel_offset": "0x018329",
+      "rom_addr": "0x07BBFD"
+    },
+    {
+      "track_id": "0x73",
+      "command_word": "0x0173",
+      "rel_offset": "0x01837E",
+      "rom_addr": "0x07BC52"
+    },
+    {
+      "track_id": "0x74",
+      "command_word": "0x0174",
+      "rel_offset": "0x0183D3",
+      "rom_addr": "0x07BCA7"
+    },
+    {
+      "track_id": "0x75",
+      "command_word": "0x0175",
+      "rel_offset": "0x018428",
+      "rom_addr": "0x07BCFC"
+    },
+    {
+      "track_id": "0x76",
+      "command_word": "0x0176",
+      "rel_offset": "0x01847D",
+      "rom_addr": "0x07BD51"
+    },
+    {
+      "track_id": "0x77",
+      "command_word": "0x0177",
+      "rel_offset": "0x0184A6",
+      "rom_addr": "0x07BD7A"
+    },
+    {
+      "track_id": "0x78",
+      "command_word": "0x0178",
+      "rel_offset": "0x0184F8",
+      "rom_addr": "0x07BDCC"
+    },
+    {
+      "track_id": "0x79",
+      "command_word": "0x0179",
+      "rel_offset": "0x018548",
+      "rom_addr": "0x07BE1C"
+    },
+    {
+      "track_id": "0x7A",
+      "command_word": "0x017A",
+      "rel_offset": "0x018586",
+      "rom_addr": "0x07BE5A"
+    },
+    {
+      "track_id": "0x7B",
+      "command_word": "0x017B",
+      "rel_offset": "0x0185C2",
+      "rom_addr": "0x07BE96"
+    },
+    {
+      "track_id": "0x7C",
+      "command_word": "0x017C",
+      "rel_offset": "0x0185F7",
+      "rom_addr": "0x07BECB"
+    },
+    {
+      "track_id": "0x7D",
+      "command_word": "0x017D",
+      "rel_offset": "0x01862F",
+      "rom_addr": "0x07BF03"
+    },
+    {
+      "track_id": "0x7E",
+      "command_word": "0x017E",
+      "rel_offset": "0x01866F",
+      "rom_addr": "0x07BF43"
+    },
+    {
+      "track_id": "0x7F",
+      "command_word": "0x017F",
+      "rel_offset": "0x0186B8",
+      "rom_addr": "0x07BF8C"
+    },
+    {
+      "track_id": "0x80",
+      "command_word": "0x0180",
+      "rel_offset": "0x0186EC",
+      "rom_addr": "0x07BFC0"
+    },
+    {
+      "track_id": "0x81",
+      "command_word": "0x0181",
+      "rel_offset": "0x01873A",
+      "rom_addr": "0x07C00E"
+    },
+    {
+      "track_id": "0x82",
+      "command_word": "0x0182",
+      "rel_offset": "0x018770",
+      "rom_addr": "0x07C044"
+    },
+    {
+      "track_id": "0x83",
+      "command_word": "0x0183",
+      "rel_offset": "0x0187C7",
+      "rom_addr": "0x07C09B"
+    },
+    {
+      "track_id": "0x84",
+      "command_word": "0x0184",
+      "rel_offset": "0x01881F",
+      "rom_addr": "0x07C0F3"
+    },
+    {
+      "track_id": "0x85",
+      "command_word": "0x0185",
+      "rel_offset": "0x01885C",
+      "rom_addr": "0x07C130"
+    },
+    {
+      "track_id": "0x86",
+      "command_word": "0x0186",
+      "rel_offset": "0x0188BE",
+      "rom_addr": "0x07C192"
+    },
+    {
+      "track_id": "0x87",
+      "command_word": "0x0187",
+      "rel_offset": "0x018908",
+      "rom_addr": "0x07C1DC"
+    },
+    {
+      "track_id": "0x88",
+      "command_word": "0x0188",
+      "rel_offset": "0x018973",
+      "rom_addr": "0x07C247"
+    },
+    {
+      "track_id": "0x89",
+      "command_word": "0x0189",
+      "rel_offset": "0x0189B5",
+      "rom_addr": "0x07C289"
+    },
+    {
+      "track_id": "0x8A",
+      "command_word": "0x018A",
+      "rel_offset": "0x018A0B",
+      "rom_addr": "0x07C2DF"
+    },
+    {
+      "track_id": "0x8B",
+      "command_word": "0x018B",
+      "rel_offset": "0x018A61",
+      "rom_addr": "0x07C335"
+    },
+    {
+      "track_id": "0x8C",
+      "command_word": "0x018C",
+      "rel_offset": "0x018AC9",
+      "rom_addr": "0x07C39D"
+    },
+    {
+      "track_id": "0x8D",
+      "command_word": "0x018D",
+      "rel_offset": "0x018B08",
+      "rom_addr": "0x07C3DC"
+    },
+    {
+      "track_id": "0x8E",
+      "command_word": "0x018E",
+      "rel_offset": "0x018B5D",
+      "rom_addr": "0x07C431"
+    },
+    {
+      "track_id": "0x8F",
+      "command_word": "0x018F",
+      "rel_offset": "0x018BA1",
+      "rom_addr": "0x07C475"
+    },
+    {
+      "track_id": "0x90",
+      "command_word": "0x0190",
+      "rel_offset": "0x018BE6",
+      "rom_addr": "0x07C4BA"
+    },
+    {
+      "track_id": "0x91",
+      "command_word": "0x0191",
+      "rel_offset": "0x018C1B",
+      "rom_addr": "0x07C4EF"
+    },
+    {
+      "track_id": "0x92",
+      "command_word": "0x0192",
+      "rel_offset": "0x018C67",
+      "rom_addr": "0x07C53B"
+    },
+    {
+      "track_id": "0x93",
+      "command_word": "0x0193",
+      "rel_offset": "0x018CA9",
+      "rom_addr": "0x07C57D"
+    },
+    {
+      "track_id": "0x94",
+      "command_word": "0x0194",
+      "rel_offset": "0x018CFA",
+      "rom_addr": "0x07C5CE"
+    },
+    {
+      "track_id": "0x95",
+      "command_word": "0x0195",
+      "rel_offset": "0x018D4F",
+      "rom_addr": "0x07C623"
+    },
+    {
+      "track_id": "0x96",
+      "command_word": "0x0196",
+      "rel_offset": "0x018D9E",
+      "rom_addr": "0x07C672"
+    },
+    {
+      "track_id": "0x97",
+      "command_word": "0x0197",
+      "rel_offset": "0x018DDC",
+      "rom_addr": "0x07C6B0"
+    },
+    {
+      "track_id": "0x98",
+      "command_word": "0x0198",
+      "rel_offset": "0x018E30",
+      "rom_addr": "0x07C704"
+    },
+    {
+      "track_id": "0x99",
+      "command_word": "0x0199",
+      "rel_offset": "0x018E7D",
+      "rom_addr": "0x07C751"
+    },
+    {
+      "track_id": "0x9A",
+      "command_word": "0x019A",
+      "rel_offset": "0x018EC8",
+      "rom_addr": "0x07C79C"
+    },
+    {
+      "track_id": "0x9B",
+      "command_word": "0x019B",
+      "rel_offset": "0x018EF9",
+      "rom_addr": "0x07C7CD"
+    },
+    {
+      "track_id": "0x9C",
+      "command_word": "0x019C",
+      "rel_offset": "0x018F38",
+      "rom_addr": "0x07C80C"
+    },
+    {
+      "track_id": "0x9D",
+      "command_word": "0x019D",
+      "rel_offset": "0x018F6A",
+      "rom_addr": "0x07C83E"
+    },
+    {
+      "track_id": "0x9E",
+      "command_word": "0x019E",
+      "rel_offset": "0x018FC6",
+      "rom_addr": "0x07C89A"
+    },
+    {
+      "track_id": "0x9F",
+      "command_word": "0x019F",
+      "rel_offset": "0x0190D8",
+      "rom_addr": "0x07C9AC"
+    },
+    {
+      "track_id": "0xA0",
+      "command_word": "0x01A0",
+      "rel_offset": "0x0191B8",
+      "rom_addr": "0x07CA8C"
+    },
+    {
+      "track_id": "0xA1",
+      "command_word": "0x01A1",
+      "rel_offset": "0x019217",
+      "rom_addr": "0x07CAEB"
+    },
+    {
+      "track_id": "0xA2",
+      "command_word": "0x01A2",
+      "rel_offset": "0x01926E",
+      "rom_addr": "0x07CB42"
+    },
+    {
+      "track_id": "0xA3",
+      "command_word": "0x01A3",
+      "rel_offset": "0x0192AC",
+      "rom_addr": "0x07CB80"
+    },
+    {
+      "track_id": "0xA4",
+      "command_word": "0x01A4",
+      "rel_offset": "0x0192DB",
+      "rom_addr": "0x07CBAF"
+    },
+    {
+      "track_id": "0xA5",
+      "command_word": "0x01A5",
+      "rel_offset": "0x01931A",
+      "rom_addr": "0x07CBEE"
+    },
+    {
+      "track_id": "0xA6",
+      "command_word": "0x01A6",
+      "rel_offset": "0x01934F",
+      "rom_addr": "0x07CC23"
+    },
+    {
+      "track_id": "0xA7",
+      "command_word": "0x01A7",
+      "rel_offset": "0x019379",
+      "rom_addr": "0x07CC4D"
+    },
+    {
+      "track_id": "0xA8",
+      "command_word": "0x01A8",
+      "rel_offset": "0x0194A9",
+      "rom_addr": "0x07CD7D"
+    },
+    {
+      "track_id": "0xA9",
+      "command_word": "0x01A9",
+      "rel_offset": "0x019562",
+      "rom_addr": "0x07CE36"
+    },
+    {
+      "track_id": "0xAA",
+      "command_word": "0x01AA",
+      "rel_offset": "0x019597",
+      "rom_addr": "0x07CE6B"
+    },
+    {
+      "track_id": "0xAB",
+      "command_word": "0x01AB",
+      "rel_offset": "0x0195E0",
+      "rom_addr": "0x07CEB4"
+    },
+    {
+      "track_id": "0xAC",
+      "command_word": "0x01AC",
+      "rel_offset": "0x01961A",
+      "rom_addr": "0x07CEEE"
+    },
+    {
+      "track_id": "0xAD",
+      "command_word": "0x01AD",
+      "rel_offset": "0x019654",
+      "rom_addr": "0x07CF28"
+    },
+    {
+      "track_id": "0xAE",
+      "command_word": "0x01AE",
+      "rel_offset": "0x01968E",
+      "rom_addr": "0x07CF62"
+    },
+    {
+      "track_id": "0xAF",
+      "command_word": "0x01AF",
+      "rel_offset": "0x0196C8",
+      "rom_addr": "0x07CF9C"
+    },
+    {
+      "track_id": "0xB0",
+      "command_word": "0x01B0",
+      "rel_offset": "0x019702",
+      "rom_addr": "0x07CFD6"
+    },
+    {
+      "track_id": "0xB1",
+      "command_word": "0x01B1",
+      "rel_offset": "0x01973C",
+      "rom_addr": "0x07D010"
+    },
+    {
+      "track_id": "0xB2",
+      "command_word": "0x01B2",
+      "rel_offset": "0x019776",
+      "rom_addr": "0x07D04A"
+    },
+    {
+      "track_id": "0xB3",
+      "command_word": "0x01B3",
+      "rel_offset": "0x0197B0",
+      "rom_addr": "0x07D084"
+    },
+    {
+      "track_id": "0xB4",
+      "command_word": "0x01B4",
+      "rel_offset": "0x0197EA",
+      "rom_addr": "0x07D0BE"
+    },
+    {
+      "track_id": "0xB5",
+      "command_word": "0x01B5",
+      "rel_offset": "0x019824",
+      "rom_addr": "0x07D0F8"
+    },
+    {
+      "track_id": "0xB6",
+      "command_word": "0x01B6",
+      "rel_offset": "0x01985E",
+      "rom_addr": "0x07D132"
+    },
+    {
+      "track_id": "0xB7",
+      "command_word": "0x01B7",
+      "rel_offset": "0x019898",
+      "rom_addr": "0x07D16C"
+    },
+    {
+      "track_id": "0xB8",
+      "command_word": "0x01B8",
+      "rel_offset": "0x0198D2",
+      "rom_addr": "0x07D1A6"
+    },
+    {
+      "track_id": "0xB9",
+      "command_word": "0x01B9",
+      "rel_offset": "0x01990C",
+      "rom_addr": "0x07D1E0"
+    },
+    {
+      "track_id": "0xBA",
+      "command_word": "0x01BA",
+      "rel_offset": "0x019946",
+      "rom_addr": "0x07D21A"
+    },
+    {
+      "track_id": "0xBB",
+      "command_word": "0x01BB",
+      "rel_offset": "0x019980",
+      "rom_addr": "0x07D254"
+    },
+    {
+      "track_id": "0xBC",
+      "command_word": "0x01BC",
+      "rel_offset": "0x0199B7",
+      "rom_addr": "0x07D28B"
+    },
+    {
+      "track_id": "0xBD",
+      "command_word": "0x01BD",
+      "rel_offset": "0x0199EC",
+      "rom_addr": "0x07D2C0"
+    },
+    {
+      "track_id": "0xD0",
+      "command_word": "0x01D0",
+      "rel_offset": "0x019A25",
+      "rom_addr": "0x07D2F9"
+    },
+    {
+      "track_id": "0xD1",
+      "command_word": "0x01D1",
+      "rel_offset": "0x019A6B",
+      "rom_addr": "0x07D33F"
+    },
+    {
+      "track_id": "0xD2",
+      "command_word": "0x01D2",
+      "rel_offset": "0x019AA8",
+      "rom_addr": "0x07D37C"
+    },
+    {
+      "track_id": "0xD3",
+      "command_word": "0x01D3",
+      "rel_offset": "0x019B4F",
+      "rom_addr": "0x07D423"
+    },
+    {
+      "track_id": "0xD4",
+      "command_word": "0x01D4",
+      "rel_offset": "0x019B86",
+      "rom_addr": "0x07D45A"
+    },
+    {
+      "track_id": "0xD5",
+      "command_word": "0x01D5",
+      "rel_offset": "0x019BBB",
+      "rom_addr": "0x07D48F"
+    },
+    {
+      "track_id": "0xD6",
+      "command_word": "0x01D6",
+      "rel_offset": "0x019BFC",
+      "rom_addr": "0x07D4D0"
+    },
+    {
+      "track_id": "0xD7",
+      "command_word": "0x01D7",
+      "rel_offset": "0x019C48",
+      "rom_addr": "0x07D51C"
+    },
+    {
+      "track_id": "0xD8",
+      "command_word": "0x01D8",
+      "rel_offset": "0x019C80",
+      "rom_addr": "0x07D554"
+    },
+    {
+      "track_id": "0xD9",
+      "command_word": "0x01D9",
+      "rel_offset": "0x019CC5",
+      "rom_addr": "0x07D599"
+    },
+    {
+      "track_id": "0xDA",
+      "command_word": "0x01DA",
+      "rel_offset": "0x019D0F",
+      "rom_addr": "0x07D5E3"
+    },
+    {
+      "track_id": "0xDB",
+      "command_word": "0x01DB",
+      "rel_offset": "0x019D41",
+      "rom_addr": "0x07D615"
+    },
+    {
+      "track_id": "0xDC",
+      "command_word": "0x01DC",
+      "rel_offset": "0x019D7E",
+      "rom_addr": "0x07D652"
+    },
+    {
+      "track_id": "0xDD",
+      "command_word": "0x01DD",
+      "rel_offset": "0x019DAC",
+      "rom_addr": "0x07D680"
+    },
+    {
+      "track_id": "0xDE",
+      "command_word": "0x01DE",
+      "rel_offset": "0x019DF2",
+      "rom_addr": "0x07D6C6"
+    },
+    {
+      "track_id": "0xDF",
+      "command_word": "0x01DF",
+      "rel_offset": "0x019E2B",
+      "rom_addr": "0x07D6FF"
+    },
+    {
+      "track_id": "0xE0",
+      "command_word": "0x01E0",
+      "rel_offset": "0x019E6E",
+      "rom_addr": "0x07D742"
+    }
+  ]
+}

@@ -1,3 +1,10 @@
+# M15.278 ROM BGM Track Table & Z80 Handshake
+
+- `tools/extract_rom_bgm_track_table.py` — reusable ROM semantic extractor for `0x0638D4` BGM sequence table and `0x060B50` Z80 bus handshake.
+- `data/thor-evidence/rom_bgm_track_table_m15_278.json` — machine-readable BGM track offset table.
+- `tests/rom_bgm_track_table_test.py` — automated verification suite (3/3 passed).
+- `docs/handoffs/STANDALONE_M15_278_BGM_TRACK_TABLE_HANDOFF.md` — implementation-ready Standalone handoff.
+
 # M15.277 ROM Heavy & Boss Enemy Families Dispatch
 
 - `tools/extract_rom_heavy_enemy_dispatch.py` — reusable ROM semantic extractor for `0x0068`, `0x0074`, `0x0076`, `0x0080` substate dispatchers.

@@ -1,3 +1,10 @@
+# M15.278 ROM BGM Sequence Offset Table (`0x0638D4`) & Z80 Bus Handshake (`0x060B50`) — COMPLETE / VERIFIED
+
+- **Phase 1 BGM Sequence Table & Z80 Handshake:**
+  * Decoded `0x0638D4` relative offset table (`0x060B50`), extracting all valid BGM tracks (`0x0100 -> 0x063CD4` etc.) and Z80 bus reset handshake (`$00A11100`, `0x83 -> $00A00003`).
+- **Phase 2 Extractor, Tests & Handoff:**
+  * Authored `tools/extract_rom_bgm_track_table.py` ($\le 500$ lines), `tests/rom_bgm_track_table_test.py` (3/3 passed), and `docs/handoffs/STANDALONE_M15_278_BGM_TRACK_TABLE_HANDOFF.md`.
+
 # M15.277 ROM Heavy & Boss Enemy Families (`0x0068`, `0x0074`, `0x0076`, `0x0080`) Substate Dispatch — COMPLETE / VERIFIED
 
 - **Phase 1 Heavy / Boss Enemy Families (`$66(A6)`):**

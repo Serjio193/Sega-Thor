@@ -1,3 +1,10 @@
+# 2026-11-16 — Milestone M15.278: ROM BGM SEQUENCE OFFSET TABLE (`0x0638D4`) & Z80 HANDSHAKE (`0x060B50`) — All Valid BGM Tracks (0x0100->0x063CD4), Z80 Bus Req ($00A11100, 0x83->$00A00003); Extractor (tools/extract_rom_bgm_track_table.py <= 500 lines), Tests (tests/rom_bgm_track_table_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_278_BGM_TRACK_TABLE_HANDOFF.md) — COMPLETE / VERIFIED
+
+- **Concrete Task & Acceptance Criteria:**
+  * Disassembled `0x060B50..0x060C00` and extracted `0x0638D4` BGM sequence offsets.
+  * Authored `tools/extract_rom_bgm_track_table.py`, `tests/rom_bgm_track_table_test.py` (3/3 PASS), `data/thor-evidence/rom_bgm_track_table_m15_278.json`, and `docs/handoffs/STANDALONE_M15_278_BGM_TRACK_TABLE_HANDOFF.md`.
+  * Verified `cmake -P tests/check_file_limits.cmake` (`<= 500` lines).
+
 # 2026-11-16 — Milestone M15.277: ROM HEAVY & BOSS ENEMY FAMILIES (`0x0068`, `0x0074`, `0x0076`, `0x0080`) — 0x0068 (5 substates), 0x0074 (5 substates), 0x0076 (4 substates & 0x7F, 20f), 0x0080 (3 substates, 40f); Extractor (tools/extract_rom_heavy_enemy_dispatch.py <= 500 lines), Tests (tests/rom_heavy_enemy_dispatch_test.py 3/3 PASS), Handoff (docs/handoffs/STANDALONE_M15_277_HEAVY_ENEMY_DISPATCH_HANDOFF.md) — COMPLETE / VERIFIED
 
 - **Concrete Task & Acceptance Criteria:**

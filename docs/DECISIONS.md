@@ -1,3 +1,17 @@
+# ADR-20261116-M15-278-BGM-TRACK-TABLE — ROM BGM Sequence Offset Table (`0x0638D4`) & Z80 Handshake (`0x060B50`)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Standalone audio integration needed the ROM BGM track pointer table (`0x0638D4`) and Z80 reset handshake (`0x060B50`).
+
+**Decisions:**
+1. **BGM Table (`0x0638D4`) & Z80 Handshake (`0x060B68`):**
+   - Documented `0x0638D4 + u32_be(0x0638D4 + track_id * 4)` lookup and `$00A11100` / `$00A00003` (`0x83`) handshake.
+
+**Consequences:**
+- Standalone can resolve every BGM track's ROM sequence address; all code/test files $\le 500$ lines.
+
 # ADR-20261116-M15-277-HEAVY-ENEMY-DISPATCH — ROM Heavy & Boss Enemy Families (`0x0068`, `0x0074`, `0x0076`, `0x0080`)
 **Status:** Accepted
 **Date:** 2026-11-16
