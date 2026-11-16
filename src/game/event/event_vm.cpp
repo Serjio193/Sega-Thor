@@ -110,6 +110,7 @@ void EventVm::reset() noexcept {
     global_flags_.fill(0U);
     area_flags_.fill(0U);
     room_flags_.fill(0U);
+    active_spirit_flags_ = 0U;
     spawned_props_.clear();
     active_dialogue_ = {};
     active_page_index_ = 0;

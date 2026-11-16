@@ -1,3 +1,124 @@
+# Worklog — 2026-11-16 (M16.62: All-Spirits Live SP Drain & Despawn Contracts)
+- **Concrete Task**: Extend `SpiritResourceSpec` in `src/game/spirits/all_spirits_registry.hpp/.cpp` with `sp_drain_interval_frames` (`45` Dytto, `35` Efreet, `40` Shade, `30` Bow), `despawn_handler_pc` (`0x012314`, `0x012BA8`, `0x0136CC`, `0x013F22`), and `state_table_pc` (`0x011BAC`, `0x0125AE`, `0x013008`, `0x0138E6`); implement `ActiveSpiritController::step_sp_drain(uint16_t& player_sp)` modeling `$8E(A6)` countdown and clean despawn on 0 SP; add `tests/m16_62_spirits_sp_drain_test.cpp`; qualify full 22-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Updated `src/game/spirits/all_spirits_registry.hpp` / `src/game/spirits/all_spirits_registry.cpp`.
+  * Added `tests/m16_62_spirits_sp_drain_test.cpp` (registered as `oasis_m16_62_spirits_sp_drain` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 22/22 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_62`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 22/22 regression run.
+  * Remaining unknowns: `StandaloneGameSimulation::step_frame` does not yet invoke `ActiveSpiritController::step_sp_drain` against `PlayerState::sp` (kept decoupled in `ActiveSpiritController` to preserve `standalone_game_simulation.cpp` at 494 lines).
+
+# Worklog — 2026-11-16 (M16.61: Sound Driver Entrypoints & Command Dispatcher)
+- **Concrete Task**: Implement `src/game/audio/sound_command_dispatch.hpp/.cpp` with `SoundCommandCategory`, `classify_sound_command` (`0x00..0x08` system commands including `0x02` Fade/Stop BGM `0x06064C`, and `0x0100..0x0500` category routing `0x060B50` BGM, `0x06112E` SFX2 with priority `d0[23:16]`, `0x060F1C` SFX3, `0x060F54` SFX4, `0x060CDA` Cat5), and `SoundDriverState` (3 ROM entrypoints `0x060090`, `0x06042A`, `0x061232` + `dispatch_queue`); add `tests/m16_61_sound_command_dispatch_test.cpp`; qualify full 21-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/audio/sound_command_dispatch.hpp` / `src/game/audio/sound_command_dispatch.cpp`.
+  * Added `tests/m16_61_sound_command_dispatch_test.cpp` (registered as `oasis_m16_61_sound_command_dispatch` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 21/21 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_61`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 21/21 regression run.
+  * Remaining unknowns: Actual YM2612/PSG audio synthesis and PCM output from the classified commands are deferred to a future audio backend milestone.
+
+# Worklog — 2026-11-16 (M16.60: Enemy AI Contracts — 0x0048 Charger & 0x0030 Gate Boss)
+- **Concrete Task**: Implement `src/game/enemy/enemy_ai_0030_0048.hpp/.cpp` with `Charger0048Ai` (4-substate `$A6` state machine `0x01778C`, 16-byte directional AABB table `0x01783E`, SFX `0x800399`, accelerate/decelerate charge & return home) and `GateBoss0030Ai` (4-substate `$66` state machine `0x015AE2`, 5 linked child slots `+$BC` stride, `action 0x3A/0x3C`, VRAM `0x4200` for Room `0x0105`); add `tests/m16_60_enemy_ai_0030_0048_test.cpp`; qualify full 20-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/enemy/enemy_ai_0030_0048.hpp` / `src/game/enemy/enemy_ai_0030_0048.cpp`.
+  * Added `tests/m16_60_enemy_ai_0030_0048_test.cpp` (registered as `oasis_m16_60_enemy_ai_0030_0048` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 20/20 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_60`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 20/20 regression run.
+  * Remaining unknowns: `Charger0048Ai` and `GateBoss0030Ai` are not yet wired into `StandaloneGameSimulation::step_frame` for Room `0x0105` live gameplay (deferred to Room `0x0105` integration).
+
+# Worklog — 2026-11-16 (M16.59: Pause Ring Menu Model & Player Rank/MaxHP Scaling)
+- **Concrete Task**: Implement `src/game/ui/ring_menu_and_rank.hpp/.cpp` with `RingMenuState` (8-slot weapon ring `$FF0D80` / cursor `$FF0E50`, 16-slot item ring `$FF0D90` / cursor `$FF0E51`, 24px spacing, `kIconTilesetRomAddr = 0x00155D76` with `3x3 = 9` tiles per icon) and `PlayerRankStats` (`0x007BF6`: `max_hp_for_rank = 198 + 2 * min(rank, 200)`, `apply_rank_up`, `apply_sp_pickup` `+5` via `0x007BCA`, `increment_gem_counter` `$FF0DB2` via `0x007BD4`); add `tests/m16_59_ring_menu_and_rank_test.cpp`; qualify full 19-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/ring_menu_and_rank.hpp` / `src/game/ui/ring_menu_and_rank.cpp`.
+  * Added `tests/m16_59_ring_menu_and_rank_test.cpp` (registered as `oasis_m16_59_ring_menu_and_rank` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 19/19 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_59`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 19/19 regression run.
+  * Remaining unknowns: Visual SAT/nametable rendering of the 3x3 icon tiles from `0x00155D76` during Pause state is modeled as data/layout in `RingMenuState` and not yet drawn to `VdpState`.
+
+# Worklog — 2026-11-16 (M16.58: All-Spirits Registry, Nemesis VRAM DMA & Summon Integration)
+- **Concrete Task**: Implement `src/game/spirits/all_spirits_registry.hpp/.cpp` with `SpiritResourceSpec` for all 4 spirits (Dytto `0x0018`, Efreet `0x001A`, Shade `0x001C`, Bow `0x001E`), `upload_spirit_tiles_to_vram` (via `0x00003820`), and `ActiveSpiritController` / `summon_spirit_by_index`; wire into `use_inventory_slot` (`src/game/items/item_effects.hpp/.cpp`) for rings `0x1A..0x1D`; add `tests/m16_58_all_spirits_resources_test.cpp`; qualify full 18-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/spirits/all_spirits_registry.hpp` / `src/game/spirits/all_spirits_registry.cpp`.
+  * Added `ActiveSpiritController` overload of `use_inventory_slot` in `src/game/items/item_effects.hpp/.cpp`.
+  * Added `tests/m16_58_all_spirits_resources_test.cpp` (registered as `oasis_m16_58_all_spirits_resources` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 18/18 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_58`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 18/18 regression run.
+  * Remaining unknowns: Efreet (`0x01254C`), Shade (`0x012F1E`), and Bow (`0x01387C`) update/combat state machines beyond initial spawn/SP/VRAM upload are deferred to future spirit-specific milestones.
+
+# Worklog — 2026-11-16 (M16.57: Consumable Item Effects, Eligibility Rules & Spirit Summon Dispatch)
+- **Concrete Task**: Implement `src/game/items/item_effects.hpp/.cpp` modeling `can_use_item` (`0x005236`), `apply_item_effect` (`0x00530C`/`0x00532C` for Spirit Rings `0x1A..0x1D`, HP Food `0x1E..0x21`, SP Potions `0x22..0x25`, Dual Elixirs `0x26..0x2A`, SFX `0xA00234`), and `use_inventory_slot` (consumable stack decrement and `DyttoSpiritController` summon on ring `0x1A`); add `tests/m16_57_item_effects_and_summon_test.cpp`; qualify full parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/items/item_effects.hpp` / `src/game/items/item_effects.cpp`.
+  * Added `tests/m16_57_item_effects_and_summon_test.cpp` (registered as `oasis_m16_57_item_effects_and_summon` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 17/17 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_57`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 17/17 regression run.
+  * Remaining unknowns: Efreet (`0x1B`), Shade (`0x1C`), and Bow (`0x1D`) summon dispatchers set `summon_requested` and `summon_spirit_index` (`1..3`), while their dedicated spirit controllers are not yet implemented.
+
+# Worklog — 2026-11-16 (M16.56: SRAM Save/Load & Persistent Inventory/Progression Block)
+- **Concrete Task**: Implement `src/game/save/sram_save_system.hpp/.cpp` modeling the 596-byte (`0x254`) persistent WRAM block (`$FF0BFE..$FF0E51`), 4 primary + 4 backup odd-byte SRAM slots (`$200009..$202111`), 6-byte magic (`1A BC 00 02 2A 4E` at `0x001754`), 16-bit unsigned byte-sum checksum (`0x00129A`), automatic backup-to-primary repair (`0x0012E8`), and `capture_simulation_to_wram` / `restore_wram_to_simulation` helpers; add `tests/m16_56_sram_save_and_inventory_test.cpp`; qualify full parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/save/sram_save_system.hpp` / `src/game/save/sram_save_system.cpp` (`PersistentWramBlock`, `compute_sram_checksum`, `SramSaveBank`, `capture_simulation_to_wram`, `restore_wram_to_simulation`).
+  * Added flag-bank span accessors to `EventVm` (`src/game/event/event_vm.hpp`) so `standalone_game_simulation.cpp` stays at 494 lines (<= 500).
+  * Added `tests/m16_56_sram_save_and_inventory_test.cpp` (registered as `oasis_m16_56_sram_save_and_inventory` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`) and MSVC Debug (`build-debug`) full parity + pixel-exact regression suites + `project_file_line_limit` + `git diff --check`.
+  * Remaining unknowns: `StandaloneGameSimulation` does not yet serialize player HP/max_hp/position or `NativeEntity` weapon/item inventory into `PersistentWramBlock` (only `EventVm` flags, `$FF0D7A` active spirit bits, `$FF0E40` room ID, and Dytto active state are captured/restored).
+
+# Worklog — 2026-11-16 (M16.55: ROM Entity Descriptor Registry, Update Dispatch Table & Elemental/Defense Damage Pipeline)
+- **Concrete Task**: Implement ROM-backed `RomEntityDescriptor` (`0x03F2FA - 0x20 + (type_id << 4)`, 32-byte layout) and `RomEntityUpdateTable` (`0x00DF54 - 0x2C + type_id * 2`, `0x0016..0x00C6`) loader/lookup module, plus the universal damage & elemental bit-13 / defense `$92(A6)` pipeline (`0x017E30`: `btst #13`, `0x0FFF` mask, `max(1, dmg - defense)`, death `State 2` when HP hits 0); wire `DyttoProjectile` (`0x0024`) Water Elemental damage (`0x2008` / `0xA008`) through the new pipeline; add M16.55 tests and qualify MinGW Release, MSVC Debug, `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entity/rom_entity_tables.hpp` / `src/game/entity/rom_entity_tables.cpp` implementing `load_rom_entity_descriptor`, `apply_descriptor_to_entity`, and `lookup_entity_update_handler`.
+  * Added `src/game/combat/elemental_damage.hpp` / `src/game/combat/elemental_damage.cpp` implementing `apply_universal_elemental_damage` (`0x017E30`).
+  * Wired `apply_universal_elemental_damage` into `step_dytto_projectiles(..., apply_damage_immediately)` in `src/game/spirits/dytto_abilities.hpp/.cpp`.
+  * Added `tests/m16_55_entity_master_tables_test.cpp` (registered as `oasis_m16_55_entity_master_tables`).
+- **Validation**:
+  * MinGW Release (`build`): 7/7 passed (`m16_50..m16_55`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 7/7 passed (`m16_50..m16_55`, `project_file_line_limit`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Full runtime dispatch loop invoking all 89 ROM update handlers (`0x00DF54`) is not yet wired into `StandaloneGameSimulation` (deferred to future entity-dispatch milestones).
+
+# Worklog — 2026-11-16 (M16.54: Dytto Combat/Support Abilities & Town SAT Rendering)
+- **Concrete Task**: Implement Dytto's autonomous dispatch (`State 0x00` at `0x014932` with PRNG thresholds `0x2000`/`0x6000`/`0x9000`), 3-way spread (`State 0x10` `0x014A72` -> `0x015214`, 3x `0x0024` projectiles at angles `0, +28, -28`), magic burst (`State 0x06/0x08/0x0A` -> `0x015136`), projectile flight/hit (`State 0x12/0x14`, `0x014E1A`/`0x014E86` applying Water Elemental damage `0x2008` ground / `0xA008` airborne), Ali contact buff (`State 0x16/0x18`), and knockback recovery (`State 0x0E`); wire `DyttoSpiritController` SAT sprite emission into the Town-mode SAT path (`emit_rom_town_sat` / `build_town_sat_and_dma`); add M16.54 tests and qualify MinGW Release, MSVC Debug, `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/spirits/dytto_abilities.hpp` / `src/game/spirits/dytto_abilities.cpp` implementing `DyttoAbilityConfig`, `DyttoProjectile`, `spawn_dytto_spread_projectiles`, `spawn_dytto_magic_burst_projectile`, `step_dytto_projectiles` (Water damage `0x2008` / `0xA008`), and `decelerate_toward_zero`.
+  * Extended `DyttoSpiritController` (`src/game/spirits/dytto_controller.hpp/.cpp`) with the full 14-state machine (`0x00..0x1A`), `dispatch_autonomous_command`, and `trigger_knockback`.
+  * Wired `emit_dytto_sat_at` into `emit_rom_town_sat` (`src/game/render/rom_sprite_decoder.hpp/.cpp`), `emit_town_combat_sat` / `build_town_sat_and_dma` (`src/game/render/town_combat_sat.hpp/.cpp`), and `StandaloneGameSimulation::update_sat_sprites` (keeping `standalone_game_simulation.cpp` at 494 lines <= 500).
+  * Added `tests/m16_54_dytto_abilities_and_town_sat_test.cpp` (registered as `oasis_m16_54_dytto_abilities_and_town_sat`).
+- **Validation**:
+  * MinGW Release (`build`): 7/7 passed (`m16_45`, `m16_50..m16_54`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): verified in parallel build/test run.
+  * Remaining unknowns: `AliContactBuff` (`State 0x18`) records `ali_buff_triggered_` and callback address `0x014C04`, while the exact HP/SP buff amount inside `0x014C04` is not yet wired to `PlayerState`.
+
+# Worklog — 2026-11-16 (M16.53: Dytto Sprite Decompression, VRAM 0x9A00 DMA Upload & SAT Rendering Integration)
+- **Concrete Task**: Wire Dytto's Nemesis-compressed sprite stream (`0x00141580` -> VRAM tile `0x04D0` / byte `0x9A00` via `0x00003820` `decompress_graphics`) and SAT sprite emission from `DyttoSpiritController` into `StandaloneGameSimulation` and `emit_beach_sat` so Dytto is visibly rendered during `State 0x1A` (Appear) and `State 0x04` (Follow); add M16.53 tests and qualify MinGW Release, MSVC Debug, `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/render/dytto_sat_renderer.hpp` / `src/game/render/dytto_sat_renderer.cpp` implementing `upload_dytto_tiles_to_vram` (`0x00141580` -> 2464 bytes / 77 tiles at VRAM `0x9A00`) and `emit_dytto_sat` (State `0x1A` elevated sprite + 180f burst sparkle + 240f palette pulse + shadow; State `0x04` directional H-flip + shadow).
+  * Wired `emit_dytto_sat` into `emit_beach_sat` (`src/game/render/beach_sat_emitter.hpp/.cpp`) and `upload_dytto_tiles_to_vram` into `StandaloneGameSimulation::step_frame` / `spawn_dytto_awakening` (`src/game/standalone_game_simulation.cpp`).
+  * Added `clear_dma_requested()` to `DyttoSpiritController` (`src/game/spirits/dytto_controller.hpp`).
+  * Added `tests/m16_53_dytto_vram_sat_render_test.cpp` (registered as `oasis_m16_53_dytto_vram_sat_render` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_45_world_graph_playability`, `oasis_m16_50_princess_rescue`, `oasis_m16_51_sanctuary_playability`, `oasis_m16_52_spirit_awakening_dytto`, `oasis_m16_53_dytto_vram_sat_render`, and `project_file_line_limit` all passed (6/6).
+  * MSVC Debug (`build-debug`): `oasis_m16_50_princess_rescue`, `oasis_m16_51_sanctuary_playability`, `oasis_m16_52_spirit_awakening_dytto`, `oasis_m16_53_dytto_vram_sat_render`, and `project_file_line_limit` all passed (5/5).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Town-mode SAT path (`emit_rom_town_sat` / `build_town_sat_and_dma`) does not yet emit `DyttoSpiritController` sprites when Dytto follows Ali into Town; deferred to future Town-spirit integration.
+
+# Worklog — 2026-11-16 (M16.52: Spirit Awakening Dispatcher & Dytto Spawn/Animation/Follow Integration)
+- **Concrete Task**: Correct the M16.50 mislabeling (`0x018CAA` is the Spirit Awakening Dispatcher, `0x018CDE` is the Dytto Water Shrine event in Room `0x0106`, Global Flag 3 `$FF0DBC:3` is Dytto acquisition, `$FF0E1D:2` is Water Shrine area flag, `$FF0D7A:0` is active spirit Dytto); implement `dispatch_spirit_awakening` (`0x018CAA`) and `DyttoSpiritController` (`0x0018` spawn `0x014668` with Max SP 100 / drain 10 / VRAM `0x04D0` / ROM `0x00141580`, State `0x1A` 420-frame awakening timeline `0x014F60`, State `0x04` follow-player steering `0x0150A0` with `atan2` `0x00E6F0`, angular step 8, and `ASR.L #7` damping); integrate into `EventVm`, `npc_dialogue_handler`, and `StandaloneGameSimulation`; add automated tests and qualify MinGW Release, MSVC Debug, line limits, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/spirits/spirit_awakening.hpp` / `src/game/spirits/spirit_awakening.cpp` implementing `ShrineEventConfig` and `dispatch_spirit_awakening(room_id)` for all 5 branches of `0x018CAA` (`0x0106` Dytto, `0x0206` Efreet, `0x0805` Shade, `0x0A10` Bow, `0x090B` Agito).
+  * Added `src/game/spirits/dytto_controller.hpp` / `src/game/spirits/dytto_controller.cpp` implementing `DyttoSpiritController` (`0x0018` spawn `0x014668`, State `0x1A` milestones at 180f/240f/300f/360f/420f, State `0x04` follow steering with `binary_atan2`, `step_angle_toward` step 8, and `damp_velocity_asr7`).
+  * Extended `EventVm` (`$FF0D7A` active spirit flags), `update_npc_dialogue_state` (`room_id` + optional `DyttoSpiritController*`), `scene_transition_helpers.cpp`, and `StandaloneGameSimulation` (`dytto_controller_`, `spawn_dytto_awakening`).
+  * Added `tests/m16_52_spirit_awakening_dytto_test.cpp` (registered as `oasis_m16_52_spirit_awakening_dytto`).
+- **Validation**:
+  * MinGW Release (`build`): `oasis_m16_45_world_graph_playability`, `oasis_m16_50_princess_rescue`, `oasis_m16_51_sanctuary_playability`, `oasis_m16_52_spirit_awakening_dytto`, and `project_file_line_limit` all passed (5/5).
+  * MSVC Debug (`build-debug`): `oasis_m16_50_princess_rescue`, `oasis_m16_51_sanctuary_playability`, `oasis_m16_52_spirit_awakening_dytto`, and `project_file_line_limit` all passed (4/4).
+  * Remaining unknowns: Full CTest suite (including the 12 historical BizHawk tests) was not re-run in full; Dytto SAT sprite rendering and Nemesis VRAM DMA upload (`0x00141580 -> 0x9A00`) during `StandaloneGameSimulation` frames are not yet emitted to `SatPipelineContract` (deferred to a follow-up rendering milestone).
+
 # Worklog — 2026-11-12 (M16.51: Spirit Sanctuary Playability and Room-to-Room Progression)
 - **Concrete Task**: Extend Spirit Sanctuary from a loaded entrance into a genuinely playable multi-room area; reverse-engineer Area 13 and Area 15 room structures, descriptors (0x037B44, 0x02E48C), streams (0x259F78, 0x25A3C4), tile banks [86, 87, 88, 0], and in-sanctuary transition handlers (0x02E44C..0x02E458 North exit to Room 1 at spawn 256,112, 0x02E518..0x02E524 South return to Room 0 at spawn 256,160); extend generic ROM loader to decompress and parse Room 0x0D01 without hardcoded rendering paths; implement dynamic camera bounds (max_camera_y 608 for Room 0, 76 for Room 1); verify player movement, collision, camera boundaries, and room-to-room transitions inside Sanctuary; verify unbroken continuous gameplay progression session from Beach cold boot to Sanctuary Room 0 -> Room 1 -> return to Room 0 without state injection; qualify dual-toolchain CTest, line limits, and regression suites.
 - **Phase 0 Baseline Verification**:

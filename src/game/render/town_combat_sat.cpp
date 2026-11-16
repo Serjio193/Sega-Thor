@@ -10,8 +10,9 @@ void emit_town_combat_sat(SatPipelineContract& sat,
                           std::span<const std::uint8_t> rom,
                           const TownSatFrameContext& frame_ctx,
                           std::span<const NativeEntity> entities,
-                          VdpDmaQueue* dma_queue) noexcept {
-    emit_rom_town_sat(sat, rom, frame_ctx, entities, dma_queue);
+                          VdpDmaQueue* dma_queue,
+                          const spirits::DyttoSpiritController* dytto) noexcept {
+    emit_rom_town_sat(sat, rom, frame_ctx, entities, dma_queue, dytto);
 }
 
 void emit_town_combat_sat(SatPipelineContract& sat,
@@ -156,7 +157,8 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
                             bool advance_ripples,
                             std::span<NativeEntity> entities,
                             VdpDmaQueue& dma_queue,
-                            std::span<TownEffect> effects) noexcept {
+                            std::span<TownEffect> effects,
+                            const spirits::DyttoSpiritController* dytto) noexcept {
     TownSatFrameContext sat_ctx{};
     sat_ctx.camera_x = camera.camera_x();
     sat_ctx.camera_y = camera.camera_y();
@@ -208,7 +210,7 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
         }
     }
     dma_queue.clear();
-    emit_town_combat_sat(sat, rom, sat_ctx, entities, &dma_queue);
+    emit_town_combat_sat(sat, rom, sat_ctx, entities, &dma_queue, dytto);
 }
 
 } // namespace oasis::game::render

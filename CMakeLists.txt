@@ -31,6 +31,14 @@ add_library(oasis_core
     src/game/entity/entity_physics.cpp
     src/game/entity/town_entity_animation.cpp
     src/game/entity/town_entity_scheduler.cpp
+    src/game/entity/rom_entity_tables.cpp
+    src/game/combat/elemental_damage.cpp
+    src/game/save/sram_save_system.cpp
+    src/game/items/item_effects.cpp
+    src/game/ui/ring_menu_and_rank.cpp
+    src/game/enemy/enemy_ai_0030_0048.cpp
+    src/game/audio/sound_command_dispatch.cpp
+    src/game/spirits/all_spirits_registry.cpp
     src/game/spirits/spirit_slots.cpp
     src/game/player/player.cpp
     src/game/player/secondary_weapon.cpp
@@ -58,6 +66,10 @@ add_library(oasis_core
     src/game/event/event_vm.cpp
     src/game/npc_dialogue_handler.cpp
     src/game/render/dialogue_window.cpp
+    src/game/render/dytto_sat_renderer.cpp
+    src/game/spirits/spirit_awakening.cpp
+    src/game/spirits/dytto_abilities.cpp
+    src/game/spirits/dytto_controller.cpp
     src/game/interaction/interaction_system.cpp
     src/game/combat/attack_controller.cpp
     src/game/standalone_game_simulation.cpp

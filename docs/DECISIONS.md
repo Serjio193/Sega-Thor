@@ -1,3 +1,142 @@
+# ADR-20261116-M16-62-SPIRITS-SP-DRAIN-AND-DESPAWN — All-Spirits Live SP Drain (45/35/40/30f) & Despawn Contracts
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.271 extracted the `$8E(A6)` SP drain intervals (`45` Dytto, `35` Efreet, `40` Shade, `30` Bow), despawn handlers (`0x012314..0x013F22`), and state jump tables (`0x011BAC..0x0138E6`).
+
+**Decisions:**
+1. **Unified `step_sp_drain` in `ActiveSpiritController`:**
+   - Extended `SpiritResourceSpec` and `ActiveSpiritController` in `src/game/spirits/all_spirits_registry.hpp/.cpp` with `$8E(A6)` countdown and clean despawn (including `dytto_.reset()`), keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+
+# ADR-20261116-M16-61-SOUND-COMMAND-DISPATCH — Sound Driver Entrypoints (0x060000..0x060008) & Command Dispatcher (0x06042A)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.270 extracted the 3 sound driver entrypoints (`0x060090`, `0x06042A`, `0x061232`), system command handlers (`0x00..0x08`), and category routing (`0x0100..0x0500`).
+
+**Decisions:**
+1. **Isolated `sound_command_dispatch` Module:**
+   - Added `src/game/audio/sound_command_dispatch.hpp/.cpp` consuming `combat::SoundCommandQueue` without modifying `standalone_game_simulation.cpp` (which stays at 494 lines).
+
+# ADR-20261116-M16-60-ENEMY-AI-0030-0048 — Enemy AI Contracts for 0x0048 Charger (0x01778C) & 0x0030 Room 0x0105 Gate Boss (0x015AE2)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.269 extracted the `0x0048` Charger 4-substate `$A6` machine (`0x01778C`, directional AABB table `0x01783E`, SFX `0x800399`) and `0x0030` Gate Boss 4-substate `$66` machine (`0x015AE2`, 5 linked child slots `+$BC`, VRAM `0x4200` for Room `0x0105`).
+
+**Decisions:**
+1. **Dedicated `enemy_ai_0030_0048` Module:**
+   - Added `src/game/enemy/enemy_ai_0030_0048.hpp/.cpp` implementing `Charger0048Ai` and `GateBoss0030Ai` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
+# ADR-20261116-M16-59-RING-MENU-AND-RANK — Pause Ring Menu Model (0x0042E8/0x00155D76) & Player Rank/MaxHP Scaling (0x007BF6)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.268 extracted the Pause Ring Menu icon renderer (`0x0042E8`/`0x004388`, tileset `0x00155D76`, 24px spacing) and Player Rank/MaxHP scaling (`0x007BF6`: `198 + 2 * rank`, cap 200; `+5` SP pickup `0x007BCA`; gem counters `$FF0DB2` `0x007BD4`).
+
+**Decisions:**
+1. **Dedicated `ring_menu_and_rank` Module:**
+   - Added `src/game/ui/ring_menu_and_rank.hpp/.cpp` encapsulating `RingMenuState` and `PlayerRankStats` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
+# ADR-20261116-M16-58-ALL-SPIRITS-REGISTRY-AND-VRAM-DMA — All-Spirits Registry (0x014522, 0x014668..0x014798), Nemesis VRAM Upload & Ring Summon Integration
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.267 extracted the shared Nemesis DMA loader (`0x014522`), spawn routines (`0x014668..0x014798`), update handlers (`0x011B4E..0x01387C`), and VRAM tile destinations (`0x04D0`/`0x9A00`, `0x0450`/`0x8A00`, `0x0280`/`0x5000`, `0x0360`/`0x6C00`) for Dytto, Efreet, Shade, and Bow.
+
+**Decisions:**
+1. **Unified `ActiveSpiritController` & `SpiritResourceSpec` Table:**
+   - Added `src/game/spirits/all_spirits_registry.hpp/.cpp` managing all 4 spirits and delegating Dytto (`index == 0`) to `DyttoSpiritController`, keeping `standalone_game_simulation.cpp` untouched at 494 lines.
+2. **Overloaded `use_inventory_slot`:**
+   - Added an `ActiveSpiritController&` overload in `item_effects.hpp/.cpp` so rings `0x1A..0x1D` summon and upload VRAM for all 4 spirits without breaking M16.57 callers.
+
+# ADR-20261116-M16-57-ITEM-EFFECTS-AND-SUMMON — Consumable Item Effects (0x1A..0x2A), Eligibility Rules (0x005236) & Spirit Summon Dispatch (0x00530C)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.266 documented item eligibility (`0x005236`) and effect dispatch (`0x00530C` / `0x00532C`) for Spirit Rings (`0x1A..0x1D`), HP Food (`0x1E..0x21`), SP Potions (`0x22..0x25`), and Dual Elixirs (`0x26..0x2A`).
+
+**Decisions:**
+1. **Isolated `item_effects` Module:**
+   - Implemented `can_use_item`, `apply_item_effect`, and `use_inventory_slot` in `src/game/items/item_effects.hpp/.cpp` operating on `PersistentWramBlock` and `DyttoSpiritController`, keeping `standalone_game_simulation.cpp` at 494 lines.
+
+# ADR-20261116-M16-56-SRAM-SAVE-AND-INVENTORY — SRAM Save/Load (0x001182/0x00129A) & 596-Byte Persistent WRAM Block ($FF0BFE..$FF0E51)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.265 documented the Genesis odd-byte SRAM layout (`$200009..$2025C9`, 4 primary + 4 backup slots of `0x4B8` SRAM bytes), 6-byte magic (`1A BC 00 02 2A 4E` at `0x001754`), 16-bit byte-sum checksum (`0x00129A`), backup-to-primary repair (`0x0012E8`), and the 596-byte (`0x254`) persistent WRAM block (`$FF0BFE..$FF0E51`).
+
+**Decisions:**
+1. **Isolated `sram_save_system` Module:**
+   - Implemented `PersistentWramBlock` and `SramSaveBank` in `src/game/save/sram_save_system.hpp/.cpp` with free helpers `capture_simulation_to_wram` / `restore_wram_to_simulation` using `EventVm` span accessors, keeping `standalone_game_simulation.cpp` at 494 lines.
+
+# ADR-20261116-M16-55-ENTITY-MASTER-TABLES-AND-ELEMENTAL-DAMAGE — ROM Entity Descriptor Registry (0x03F2FA), Update Dispatch Table (0x00DF54) & Universal Elemental Bit-13 Damage Pipeline (0x017E30)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. Hybrid M15.264 extracted the 99-entry 32-byte Entity Descriptor Table (`0x03F2FA`), the 89-entry Entity Master Update Dispatch Table (`0x00DF54..0x00E0B8`), and the universal elemental bit-13 / defense `$92(A6)` damage pipeline (`0x017E30`).
+
+**Decisions:**
+1. **Separate `rom_entity_tables` and `elemental_damage` Modules:**
+   - Added `src/game/entity/rom_entity_tables.hpp/.cpp` and `src/game/combat/elemental_damage.hpp/.cpp` to keep `damage_arithmetic.hpp` and `standalone_game_simulation.cpp` unchanged and well within the 500-line limit.
+2. **Backward-Compatible `step_dytto_projectiles` Integration:**
+   - Added `bool apply_damage_immediately = false` to `step_dytto_projectiles`, preserving `damage_mailbox` inspection in M16.54 while allowing immediate `0x017E30` elemental/defense resolution in M16.55+.
+
+# ADR-20261116-M16-54-DYTTO-ABILITIES-AND-TOWN-SAT — Dytto 14-State Combat/Support Machine (0x014914), Water Elemental Damage (0x2008/0xA008), and Town SAT Rendering Integration
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. M16.53 integrated Dytto VRAM `0x9A00` DMA upload and Beach/generic SAT emission, leaving Dytto's combat/support states (`0x00..0x18`) and Town SAT emission (`emit_rom_town_sat`) to be completed.
+2. Hybrid M15.263 documented the 14-state machine at `0x014914`, PRNG dispatch thresholds (`0x2000`/`0x6000`/`0x9000` at `0x014932`), 3-way spread (`0x015214`), magic burst (`0x015136`), Water Elemental damage (`0x014E86`), Ali contact buff (`0x014B7C`/`0x014BB8`), and knockback recovery (`0x014EE6`).
+
+**Decisions:**
+1. **Modular `dytto_abilities` Split:**
+   - Added `src/game/spirits/dytto_abilities.hpp/.cpp` to isolate projectile spawning, flight/collision, and knockback math so `dytto_controller.cpp` and `standalone_game_simulation.cpp` remain well below 500 lines.
+2. **Town SAT Integration (`emit_rom_town_sat`):**
+   - Added optional `const spirits::DyttoSpiritController* dytto = nullptr` to `emit_rom_town_sat`, `emit_town_combat_sat`, and `build_town_sat_and_dma`, preserving zero-diff parity for all existing Town tests when Dytto is inactive.
+
+# ADR-20261116-M16-53-DYTTO-VRAM-DMA-AND-SAT-RENDERING — Dytto Nemesis Sprite Decompression (0x00141580 -> VRAM 0x9A00 / Tile 0x04D0) and State 0x1A / 0x04 SAT Emission Integration
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. M16.52 integrated `DyttoSpiritController` into `StandaloneGameSimulation`, leaving VRAM tile upload (`0x00141580` -> `0x9A00`) and SAT sprite emission deferred.
+2. ROM `0x01454C` decompresses `0x00141580` via `0x003820` into RAM `$FF2FA8` and transfers the resulting 77 tiles (2464 bytes) to VRAM `0x9A00` (tile `0x04D0`).
+
+**Decisions:**
+1. **Dedicated `dytto_sat_renderer` Module:**
+   - Added `src/game/render/dytto_sat_renderer.hpp/.cpp` to isolate `upload_dytto_tiles_to_vram` and `emit_dytto_sat` while keeping `standalone_game_simulation.cpp` and `beach_sat_emitter.cpp` below 500 lines.
+2. **Direct Decompressed VRAM Upload:**
+   - `upload_dytto_tiles_to_vram` calls `decompress_graphics` (`0x003820`) on `0x00141580` and copies the 2464 decompressed bytes to `vdp.vram[0x9A00..]` once per spawn (`dma_requested_`).
+3. **SAT Emission in `emit_beach_sat`:**
+   - Added optional `const spirits::DyttoSpiritController* dytto = nullptr` to `emit_beach_sat`, preserving all existing callers while emitting Dytto before `sat.finalize_frame()`.
+
+# ADR-20261116-M16-52-SPIRIT-AWAKENING-DISPATCHER-AND-DYTTO-INTEGRATION — Correction of M16.50 Mislabeling (0x018CAA Spirit Awakening Dispatcher, 0x018CDE Water Shrine Dytto Event, Global Flag 3 Dytto Acquisition, $FF0E1D:2 Area Flag, $FF0D7A:0 Active Spirit); Dytto (0x0018) Spawn (0x014668), State 0x1A Awakening Timeline (0x014F60), and State 0x04 Follow Steering (0x0150A0)
+**Status:** Accepted
+**Date:** 2026-11-16
+
+**Context:**
+1. M16.50 mislabeled ROM `0x018CAA`, `0x018CDE`, `0x018D38`, and Global Flag 3 (`$FF0DBC:3`) as a "Princess Rescue" scene.
+2. Hybrid M15.261 & M15.262 handoffs proved that `0x018CAA` is the Spirit Awakening Dispatcher routing by Room ID (`$FF0E40.W`), `0x018CDE` is the Water Shrine Dytto Awakening Event in Room `0x0106`, Global Flag 3 (`$FF0DBC:3`) is Dytto acquisition, `$FF0E1D:2` is the Water Shrine area flag, and `$FF0D7A:0` is the active spirit Dytto bit.
+3. M16.52 integrates the dispatcher and Dytto (`0x0018`) spawn (`0x014668`), State `0x1A` 420-frame awakening timeline (`0x014F60`), and State `0x04` follow-player steering (`0x0150A0`) into the standalone runtime.
+
+**Decisions:**
+1. **Dedicated Spirit Awakening & Dytto Modules:**
+   - Created `src/game/spirits/spirit_awakening.hpp/.cpp` and `src/game/spirits/dytto_controller.hpp/.cpp` to keep `standalone_game_simulation.cpp` and `npc_dialogue_handler.cpp` modular and under the 500-line limit.
+2. **Active Spirit Flags (`$FF0D7A`) in `EventVm`:**
+   - Added `active_spirit_flags_` and bit accessors to `EventVm` alongside Global, Area, and Room flag banks.
+3. **Backward-Compatible `update_npc_dialogue_state`:**
+   - Added optional `room_id = 0x0106U` and `DyttoSpiritController* dytto_controller = nullptr` parameters so existing M16.47..M16.51 tests continue to pass without modification while new callers dispatch through `0x018CAA` and spawn Dytto on completion.
+
 # ADR-20261112-M16-51-SPIRIT-SANCTUARY-PLAYABILITY-AND-ROOM-TO-ROOM-PROGRESSION — Multi-Room Spirit Sanctuary Architecture (Area 13 Room 0x0D00 Entrance & Room 0x0D01 Inner Chamber / Altar); Canonical Area 15 Room 1 Alias Resolution (Descriptor 0x02E48C, Stream 0x25A3C4); Generic ROM-Driven Loading, Collision Grids, and Tile Streaming; In-Sanctuary Bidirectional Doorway Transitions (0x02E452 & 0x02E524); Dynamic Camera Bounds (608 & 76); Continuous Unbroken Gameplay Progression; Dual-Toolchain Qualification
 **Status:** Accepted
 **Date:** 2026-11-12

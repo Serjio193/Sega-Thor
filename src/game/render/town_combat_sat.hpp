@@ -6,6 +6,7 @@
 #include "game/render/hud_overlay.hpp"
 #include "game/render/rom_sprite_decoder.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
+#include "game/spirits/dytto_controller.hpp"
 
 #include <cstdint>
 #include <span>
@@ -18,7 +19,8 @@ void emit_town_combat_sat(SatPipelineContract& sat,
                           std::span<const std::uint8_t> rom,
                           const TownSatFrameContext& frame_ctx,
                           std::span<const NativeEntity> entities,
-                          VdpDmaQueue* dma_queue = nullptr) noexcept;
+                          VdpDmaQueue* dma_queue = nullptr,
+                          const spirits::DyttoSpiritController* dytto = nullptr) noexcept;
 
 // Legacy M16.22 fallback overload preserved for existing unit tests without loaded ROM slice.
 void emit_town_combat_sat(SatPipelineContract& sat,
@@ -57,6 +59,7 @@ void build_town_sat_and_dma(SatPipelineContract& sat,
                             bool advance_ripples,
                             std::span<NativeEntity> entities,
                             VdpDmaQueue& dma_queue,
-                            std::span<TownEffect> effects = {}) noexcept;
+                            std::span<TownEffect> effects = {},
+                            const spirits::DyttoSpiritController* dytto = nullptr) noexcept;
 
 } // namespace oasis::game::render

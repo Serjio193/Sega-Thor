@@ -1,5 +1,6 @@
 #include "game/render/beach_sat_emitter.hpp"
 
+#include "game/render/dytto_sat_renderer.hpp"
 #include "game/render/player_sprite_composer.hpp"
 
 namespace oasis::game::render {
@@ -12,7 +13,8 @@ void emit_beach_sat(SatPipelineContract& sat,
                     std::uint16_t player_y,
                     std::size_t current_pose,
                     int walk_tick,
-                    std::span<const NativeEntity> entities) noexcept {
+                    std::span<const NativeEntity> entities,
+                    const spirits::DyttoSpiritController* dytto) noexcept {
     sat.reset_frame();
 
     // 1. Authentic HUD overlay from ROM routine 0x003FA0 (Slots 0..5)
@@ -72,6 +74,11 @@ void emit_beach_sat(SatPipelineContract& sat,
         if (ex >= -24 && ex <= 320 && ey >= -24 && ey <= 224) {
             sat.emit_piece(ex, ey, 3, 3, entity.tile_base, 0, false, false, false);
         }
+    }
+
+    // 6. Active Dytto spirit sprite (State 0x1A appear or State 0x04 follow)
+    if (dytto != nullptr) {
+        emit_dytto_sat(sat, camera, *dytto);
     }
 
     sat.finalize_frame();

@@ -95,10 +95,32 @@ public:
     // `advance_dialogue_input` is true if player pressed an action confirmation button.
     void step_frame(bool advance_dialogue_input = false) noexcept;
 
-    // Direct flag management ($FF0DBC global, $FF0E1C area, $FF0E2C room)
+    // Direct flag management ($FF0DBC global, $FF0E1C area, $FF0E2C room, $FF0D7A active spirit)
     [[nodiscard]] bool get_event_flag(std::uint16_t flag_index, std::uint8_t bank = 1) const noexcept;
     void set_event_flag(std::uint16_t flag_index, bool value = true, std::uint8_t bank = 1) noexcept;
     void modify_event_flag(std::uint8_t mode, std::uint16_t flag_index, std::uint8_t bank = 1) noexcept;
+
+    [[nodiscard]] std::uint8_t active_spirit_flags() const noexcept { return active_spirit_flags_; }
+    [[nodiscard]] bool has_active_spirit(std::uint8_t spirit_bit) const noexcept {
+        return (spirit_bit < 8U) && ((active_spirit_flags_ & static_cast<std::uint8_t>(1U << spirit_bit)) != 0U);
+    }
+    void set_active_spirit_bit(std::uint8_t spirit_bit, bool value = true) noexcept {
+        if (spirit_bit >= 8U) return;
+        const auto mask = static_cast<std::uint8_t>(1U << spirit_bit);
+        if (value) {
+            active_spirit_flags_ |= mask;
+        } else {
+            active_spirit_flags_ &= static_cast<std::uint8_t>(~mask);
+        }
+    }
+    void set_active_spirit_flags(std::uint8_t flags) noexcept { active_spirit_flags_ = flags; }
+
+    [[nodiscard]] std::span<const std::uint8_t> global_flags_bytes() const noexcept { return global_flags_; }
+    [[nodiscard]] std::span<std::uint8_t> global_flags_bytes_mut() noexcept { return global_flags_; }
+    [[nodiscard]] std::span<const std::uint8_t> area_flags_bytes() const noexcept { return area_flags_; }
+    [[nodiscard]] std::span<std::uint8_t> area_flags_bytes_mut() noexcept { return area_flags_; }
+    [[nodiscard]] std::span<const std::uint8_t> room_flags_bytes() const noexcept { return room_flags_; }
+    [[nodiscard]] std::span<std::uint8_t> room_flags_bytes_mut() noexcept { return room_flags_; }
 
     [[nodiscard]] EventVmState state() const noexcept { return state_; }
     [[nodiscard]] bool is_active() const noexcept {
@@ -136,10 +158,11 @@ private:
     std::uint8_t last_opcode_{0};
     std::uint32_t executed_count_{0};
 
-    // Flag banks: Global ($FF0DBC), Area ($FF0E1C), Room ($FF0E2C)
+    // Flag banks: Global ($FF0DBC), Area ($FF0E1C), Room ($FF0E2C), Active Spirit ($FF0D7A)
     std::array<std::uint8_t, kGlobalFlagBytes> global_flags_{};
     std::array<std::uint8_t, kAreaFlagBytes> area_flags_{};
     std::array<std::uint8_t, kRoomFlagBytes> room_flags_{};
+    std::uint8_t active_spirit_flags_{0};
 
     // Spawn records recorded during script execution
     std::vector<SpawnPropRecord> spawned_props_{};

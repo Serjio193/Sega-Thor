@@ -1,3 +1,76 @@
+# M16.62 All-Spirits Live SP Drain (45/35/40/30 frames) & Despawn Contracts — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Added `sp_drain_interval_frames` (`45/35/40/30`), `despawn_handler_pc` (`0x012314`/`0x012BA8`/`0x0136CC`/`0x013F22`), `state_table_pc` (`0x011BAC`/`0x0125AE`/`0x013008`/`0x0138E6`), and `ActiveSpiritController::step_sp_drain` in `src/game/spirits/all_spirits_registry.hpp/.cpp`.
+- Qualified `oasis_m16_62_spirits_sp_drain` and full 22-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.61 Sound Driver Entrypoints (0x060000..0x060008) & Command Dispatcher (0x06042A) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `SoundCommandCategory`, `classify_sound_command`, and `SoundDriverState` (`0x060090`, `0x06042A`, `0x061232`, `0x00..0x08` system commands, `0x0100..0x0500` category routing, and `SoundCommandQueue` dispatch) in `src/game/audio/sound_command_dispatch.hpp/.cpp`.
+- Qualified `oasis_m16_61_sound_command_dispatch` and full 21-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.60 Enemy AI Contracts — 0x0048 Charger (0x01778C) & 0x0030 Room 0x0105 Gate Boss (0x015AE2) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `Charger0048Ai` (`0x01778C`, 16-byte directional AABB table `0x01783E`, SFX `0x800399`, 4-substate `$A6` machine) and `GateBoss0030Ai` (`0x015AE2`, 5 linked child slots `+$BC` stride, `action 0x3A`/`0x3C`, VRAM `0x4200` for Room `0x0105`) in `src/game/enemy/enemy_ai_0030_0048.hpp/.cpp`.
+- Qualified `oasis_m16_60_enemy_ai_0030_0048` and full 20-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.59 Pause Ring Menu Model (0x0042E8/0x00155D76) & Player Rank/MaxHP Scaling (0x007BF6) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `RingMenuState` (`0x0042E8`/`0x004388`/`0x00155D76`: 8 weapon slots, 16 item slots, 24px spacing, cursor wrapping, WRAM sync) and `PlayerRankStats` (`0x007BF6`: `198 + 2 * min(rank, 200)`, `apply_rank_up`, `apply_sp_pickup` `+5`, `increment_gem_counter` `$FF0DB2`) in `src/game/ui/ring_menu_and_rank.hpp/.cpp`.
+- Qualified `oasis_m16_59_ring_menu_and_rank` and full 19-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.58 All-Spirits Registry, Nemesis VRAM DMA & Summon Integration — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `SpiritResourceSpec` (`kAllSpiritSpecs`), `upload_spirit_tiles_to_vram`, and `ActiveSpiritController` in `src/game/spirits/all_spirits_registry.hpp/.cpp` for Dytto (`0x0018`, `0x9A00`), Efreet (`0x001A`, `0x8A00`), Shade (`0x001C`, `0x5000`), and Bow (`0x001E`, `0x6C00`).
+- Wired `ActiveSpiritController` into `use_inventory_slot` (`src/game/items/item_effects.hpp/.cpp`) for rings `0x1A..0x1D`.
+- Qualified `oasis_m16_58_all_spirits_resources` and full 18-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.57 Consumable Item Effects (0x1A..0x2A), Eligibility Rules (0x005236) & Spirit Summon Dispatch (0x00530C) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `can_use_item` (`0x005236`), `apply_item_effect` (`0x00530C`/`0x00532C`), and `use_inventory_slot` in `src/game/items/item_effects.hpp/.cpp` covering Spirit Rings (`0x1A..0x1D`), HP Food (`0x1E..0x21`), SP Potions (`0x22..0x25`), Dual Elixirs (`0x26..0x2A`), and `DyttoSpiritController` summon on ring `0x1A`.
+- Qualified `oasis_m16_57_item_effects_and_summon` and full 17-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.56 SRAM Save/Load (0x001182/0x00129A) & Persistent Inventory/Progression Block ($FF0BFE..$FF0E51) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `PersistentWramBlock` (596-byte `$FF0BFE..$FF0E51` layout), `SramSaveBank` (4 primary + 4 backup odd-byte SRAM slots `$200009..$202111`, 6-byte magic `1A BC 00 02 2A 4E`, 16-bit byte-sum checksum `0x00129A`, automatic backup repair `0x0012E8`), and `capture_simulation_to_wram` / `restore_wram_to_simulation` in `src/game/save/sram_save_system.hpp/.cpp`.
+- Qualified `oasis_m16_56_sram_save_and_inventory` and full parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
+# M16.55 ROM Entity Descriptor Registry (0x03F2FA), Update Dispatch Table (0x00DF54) & Elemental/Defense Damage Pipeline (0x017E30) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `RomEntityDescriptor` (`0x03F2FA`) and `RomEntityUpdateTable` (`0x00DF54..0x00E0B8`) in `src/game/entity/rom_entity_tables.hpp/.cpp`.
+- Implemented universal damage & elemental bit-13 / defense `$92(A6)` pipeline (`0x017E30`) in `src/game/combat/elemental_damage.hpp/.cpp` and wired it into `DyttoProjectile` (`0x0024`).
+- Qualified `oasis_m16_55_entity_master_tables` alongside `m16_50..m16_54` and `project_file_line_limit` on both MinGW Release and MSVC Debug.
+
+# M16.54 Dytto Combat/Support Abilities & Town SAT Rendering — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented Dytto's 14-state machine (`0x00..0x1A` at `0x014914`) including autonomous PRNG dispatch (`0x014932`: `0x2000`/`0x6000`/`0x9000`), 3-way spread (`0x015214`: 3x `0x0024` at `0, +28, -28`), magic burst (`0x015136`: `State 0x06/0x08/0x0A` -> `0x0C`), Water Elemental damage (`0x014E86`: `0x2008` ground / `0xA008` airborne), Ali contact buff (`0x014B7C`/`0x014BB8`), and knockback recovery (`0x014EE6`).
+- Wired `DyttoSpiritController` SAT sprite emission (`emit_dytto_sat_at`) into `emit_rom_town_sat` and `build_town_sat_and_dma`.
+- Qualified `oasis_m16_54_dytto_abilities_and_town_sat` alongside `m16_50..m16_53` and `project_file_line_limit`.
+
+# M16.53 Dytto Sprite Decompression, VRAM 0x9A00 DMA Upload & SAT Rendering Integration — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `upload_dytto_tiles_to_vram` (`0x00141580` -> `0x00003820` Nemesis decompression -> 2464 bytes / 77 tiles at VRAM `0x9A00` / tile `0x04D0`) and `emit_dytto_sat` (State `0x1A` appear + burst + palette pulse; State `0x04` follow + H-flip + shadow) in `src/game/render/dytto_sat_renderer.hpp/.cpp`.
+- Wired VRAM upload and SAT emission into `StandaloneGameSimulation` and `emit_beach_sat`.
+- Qualified `oasis_m16_53_dytto_vram_sat_render` alongside `m16_50..m16_52` and `project_file_line_limit` on both MinGW Release and MSVC Debug.
+
+# M16.52 Spirit Awakening Dispatcher & Dytto Spawn/Animation/Follow Integration — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Corrected M16.50 mislabeling: `0x018CAA` is the Spirit Awakening Dispatcher (`0x018CDE` = Dytto Water Shrine in Room `0x0106`), Global Flag 3 (`$FF0DBC:3`) is Dytto acquisition, `$FF0E1D:2` is Water Shrine area flag, `$FF0D7A:0` is active spirit Dytto.
+- Implemented `dispatch_spirit_awakening` (`0x018CAA`) covering all 5 shrine branches (`0x0106`, `0x0206`, `0x0805`, `0x0A10`, `0x090B`) in `src/game/spirits/spirit_awakening.hpp/.cpp`.
+- Implemented `DyttoSpiritController` (`src/game/spirits/dytto_controller.hpp/.cpp`) covering `0x014668` spawn (`0x0018`, Max SP 100, drain 10, VRAM `0x04D0`, ROM `0x00141580`), State `0x1A` 420-frame awakening timeline (`0x014F60`), and State `0x04` follow-player steering (`0x0150A0`: `binary_atan2`, step 8, `ASR.L #7` damping).
+- Integrated `$FF0D7A` active spirit flags into `EventVm`, `update_npc_dialogue_state`, and `StandaloneGameSimulation`.
+- Qualified `oasis_m16_52_spirit_awakening_dytto` alongside `m16_50`, `m16_51`, and `project_file_line_limit` on both MinGW Release and MSVC Debug.
+
 # M16.51 Spirit Sanctuary Playability and Room-to-Room Progression — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

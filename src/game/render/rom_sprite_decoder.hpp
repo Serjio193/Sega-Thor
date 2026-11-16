@@ -4,6 +4,7 @@
 #include "game/player/player.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/render/vdp_dma_queue.hpp"
+#include "game/spirits/dytto_controller.hpp"
 
 #include <cstdint>
 #include <span>
@@ -44,6 +45,7 @@ void emit_rom_town_sat(SatPipelineContract& sat,
                        std::span<const std::uint8_t> rom,
                        const TownSatFrameContext& ctx,
                        std::span<const NativeEntity> entities,
-                       VdpDmaQueue* dma_queue = nullptr) noexcept;
+                       VdpDmaQueue* dma_queue = nullptr,
+                       const spirits::DyttoSpiritController* dytto = nullptr) noexcept;
 
 } // namespace oasis::game::render

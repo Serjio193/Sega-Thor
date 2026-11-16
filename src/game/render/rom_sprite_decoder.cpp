@@ -1,4 +1,5 @@
 #include "game/render/rom_sprite_decoder.hpp"
+#include "game/render/dytto_sat_renderer.hpp"
 
 #include <algorithm>
 #include <array>
@@ -160,7 +161,8 @@ void emit_rom_town_sat(SatPipelineContract& sat,
                        std::span<const std::uint8_t> rom,
                        const TownSatFrameContext& ctx,
                        std::span<const NativeEntity> entities,
-                       VdpDmaQueue* dma_queue) noexcept {
+                       VdpDmaQueue* dma_queue,
+                       const spirits::DyttoSpiritController* dytto) noexcept {
     sat.reset_frame();
     if (rom.size() < 0x300000U) {
         return;
@@ -351,6 +353,10 @@ void emit_rom_town_sat(SatPipelineContract& sat,
         if (has_shadow) {
             emit_shadow(sat, rom, e.shadow_idx, vdp_x, ground_y);
         }
+    }
+
+    if (dytto != nullptr && dytto->is_active()) {
+        emit_dytto_sat_at(sat, ctx.camera_x, ctx.camera_y, *dytto);
     }
 
     sat.finalize_frame();

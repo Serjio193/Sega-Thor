@@ -2,6 +2,7 @@
 #include "game/combat/damage_arithmetic.hpp"
 #include "game/entity/entity_physics.hpp"
 #include "game/render/beach_sat_emitter.hpp"
+#include "game/render/dytto_sat_renderer.hpp"
 #include "game/render/player_sprite_composer.hpp"
 #include "game/render/rom_sprite_decoder.hpp"
 #include "game/render/town_combat_sat.hpp"
@@ -115,7 +116,7 @@ void StandaloneGameSimulation::reset() {
     sim_state_.player_y = static_cast<std::uint16_t>(player_.y_fixed / 0x10000);
     prev_render_player_x_ = sim_state_.player_x; prev_render_player_y_ = sim_state_.player_y;
     sim_state_.paused = false; map_id_ = world::kBeachMapId;
-    sound_queue_.clear(); interaction_system_.reset(); attack_controller_.reset();
+    sound_queue_.clear(); interaction_system_.reset(); attack_controller_.reset(); dytto_controller_.reset();
     town_effects_.fill(render::TownEffect{});
     landing_velocity_x_ = 0; landing_hold_ticks_ = 0;
 
@@ -404,6 +405,11 @@ void StandaloneGameSimulation::step_frame(const FrameInput& input, genesis::VdpS
     }
 
     camera_.update(cur_x, cur_y, 0, is_logic_step);
+    dytto_controller_.update_frame(cur_x, cur_y, entities_, town_ctx_.prng_seed, false);
+    if (dytto_controller_.is_active() && dytto_controller_.dma_requested() && !rom_bytes_.empty()) {
+        render::upload_dytto_tiles_to_vram(rom_bytes_, current_vdp_);
+        dytto_controller_.clear_dma_requested();
+    }
     interaction_system_.update(cur_x, cur_y, input.controller_1, entities_);
     if (!(is_town_mode && !rom_bytes_.empty())) {
         attack_controller_.update(player_, cur_x, cur_y, input.controller_1, entities_);
@@ -460,7 +466,7 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
                 sat_pipeline_, rom_bytes_, camera_, player_, tick_counter_, sim_state_.frame_counter,
                 sim_state_.player_x, sim_state_.player_y, walk_tick_, current_player_pose(),
                 attract_banner_enabled_, baseline_vdp_.is_display_enabled(), entities_, dma_queue_,
-                town_effects_);
+                town_effects_, &dytto_controller_);
             if (baseline_vdp_.is_display_enabled()) {
                 pending_vdp_stage_ = true;
                 return;
@@ -473,8 +479,16 @@ void StandaloneGameSimulation::update_sat_sprites(genesis::VdpState& vdp) {
         sat_pipeline_.commit_to_vdp(vdp);
         return;
     }
-    render::emit_beach_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, current_player_pose(), walk_tick_, entities_);
+    render::emit_beach_sat(sat_pipeline_, hud_, camera_, player_, sim_state_.player_x, sim_state_.player_y, current_player_pose(), walk_tick_, entities_, &dytto_controller_);
     sat_pipeline_.commit_to_vdp(vdp);
+}
+
+void StandaloneGameSimulation::spawn_dytto_awakening(std::int32_t x, std::int32_t y, std::int32_t z) noexcept {
+    dytto_controller_.init_spawn(x, y, z, 2U, true);
+    if (!rom_bytes_.empty()) {
+        render::upload_dytto_tiles_to_vram(rom_bytes_, current_vdp_);
+        dytto_controller_.clear_dma_requested();
+    }
 }
 
 } // namespace oasis::game

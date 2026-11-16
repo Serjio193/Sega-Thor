@@ -55,13 +55,13 @@ void assign_scene_entities(world::ScreenId id, const world::LoadedTownScene& sce
         out[0].active = true;
         out[0].message_id = 4U; // Pier Villager: "Oh, Ali.  Nice armlet.  Where'd you find it?"
     } else if (id.group == 1U && id.index == 6U) {
-        // Screen(1,6) Cliff Peak / Boss Overlook
+        // Screen(1,6) Water Shrine Altar / Cliff Peak
         // Authentic ROM script at 0x04664E: opcode 0x15 spawns entity 0x0020 at (160, 80), tile 0x0200
-        // Gated by Global Flag 3: if flag 3 is already set, entity 0x0020 is not spawned.
+        // Gated by Global Flag 3 ($FF0DBC:3, Dytto acquisition): if flag 3 is already set, entity 0x0020 is not spawned.
         out.resize(1U);
         out[0] = NativeEntity{};
         out[0].slot_index = 4U;
-        out[0].type_id = 0x0020U; // Princess Gwyn entity
+        out[0].type_id = 0x0020U; // Shrine Altar Trigger Prop (0x018CAA -> 0x018CDE Dytto Awakening)
         out[0].world_x = 160;
         out[0].world_y = 80;
         out[0].tile_base = 0x0200U;

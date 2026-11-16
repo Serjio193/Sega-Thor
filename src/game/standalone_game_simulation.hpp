@@ -13,6 +13,7 @@
 #include "game/render/rom_sprite_decoder.hpp"
 #include "game/render/sat_pipeline_contract.hpp"
 #include "game/render/vdp_dma_queue.hpp"
+#include "game/spirits/dytto_controller.hpp"
 #include "game/standalone_game_loop.hpp"
 #include "game/world/byte_grid.hpp"
 #include "game/world/tilemap_streamer.hpp"
@@ -261,6 +262,9 @@ public:
     [[nodiscard]] std::span<render::TownEffect> town_effects() noexcept { return town_effects_; }
     [[nodiscard]] event::EventVm& event_vm() noexcept { return event_vm_; }
     [[nodiscard]] const event::EventVm& event_vm() const noexcept { return event_vm_; }
+    [[nodiscard]] spirits::DyttoSpiritController& dytto_controller() noexcept { return dytto_controller_; }
+    [[nodiscard]] const spirits::DyttoSpiritController& dytto_controller() const noexcept { return dytto_controller_; }
+    void spawn_dytto_awakening(std::int32_t x, std::int32_t y, std::int32_t z = 0) noexcept;
 
     // State-driven player animation pose query.
     [[nodiscard]] std::size_t current_player_pose() const noexcept;
@@ -317,6 +321,7 @@ private:
     world::ScreenId current_screen_id_{1U, 2U};
     bool chest_opened_global_{false};
     event::EventVm event_vm_{};
+    spirits::DyttoSpiritController dytto_controller_{};
     std::unordered_map<std::uint32_t, std::vector<NativeEntity>> saved_screen_entities_{};
 };
 
