@@ -1,3 +1,9 @@
+# M16.72 Top-Level Game Mode State Machine (0x00045E), Title Screen (0x0032F8) & Best 5 Players Clear Records (0x03E4FA) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `TopLevelGameMode`, `lookup_mode_handler_addr` (`0x00045E`), `GameModeStateMachine` (`$FF10AC`/`$FF10AE`), `TitleScreenState` (`720`-frame attract timeout, `128`-frame blink duty, 4 Start chords `0x90`/`0xD5`/`0x8A`/normal), and `ClearRecordsScreenState` (5-slot `"BEST 5 PLAYERS"`, BGM `0x0121`, `clear_sram_record_magic`, Start -> `0x00020E`) in `src/game/ui/game_mode_flow.hpp/.cpp`.
+- Qualified `oasis_m16_72_game_mode_flow` and full 32-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.71 Dialogue / Text Engine & 116-Entry String Table (0x00C386..0x00C755, 0x051514, Font 0x16943C) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

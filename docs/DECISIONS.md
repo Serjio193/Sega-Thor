@@ -1,3 +1,14 @@
+# ADR-20261117-M16-72-GAME-MODE-FLOW — Top-Level Game Mode State Machine, Title Screen & Clear Records Screen
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.282, M15.283, and M15.284 extracted the top-level mode table (`0x00045E`), `$FF10AC`/`$FF10AE` latch semantics, Title Screen (`0x0032F8`, `720`-frame attract timeout, `128`-frame blink duty, 4 Start chords), and Best 5 Players Clear Records (`0x03E4FA`, BGM `0x0121`, SRAM magic `$2025CD`/`$2026E1`).
+
+**Decisions:**
+1. **Dedicated `game_mode_flow` Module:**
+   - Added `src/game/ui/game_mode_flow.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-71-DIALOGUE-ENGINE — Dialogue / Text Engine & 116-Entry String Table (0x00C386..0x00C755)
 **Status:** Accepted
 **Date:** 2026-11-17

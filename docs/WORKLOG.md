@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.72: Top-Level Game Mode State Machine, Title Screen & Clear Records Screen)
+- **Concrete Task**: Implement `src/game/ui/game_mode_flow.hpp/.cpp` with `TopLevelGameMode` (`0x00, 0x04, 0x08, 0x0C, 0x10`), `lookup_mode_handler_addr` (`0x00045E`), `GameModeStateMachine` (`$FF10AC`/`$FF10AE` latch), `TitleScreenState` (`0x0032F8`: `720`-frame attract timeout, `128`-frame blink duty `< 96`, 4 Start-button chords `0x90`/`0xD5`/`0x8A`/normal), and `ClearRecordsScreenState` (`0x03E4FA`: 5-slot `"BEST 5 PLAYERS"`, BGM `0x0121`, Start -> SFX `0x0007` + `0x00020E`, `clear_sram_record_magic`); add `tests/m16_72_game_mode_flow_test.cpp`; qualify full 32-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/game_mode_flow.hpp` / `src/game/ui/game_mode_flow.cpp`.
+  * Added `tests/m16_72_game_mode_flow_test.cpp` (registered as `oasis_m16_72_game_mode_flow` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 32/32 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_72`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 32/32 regression run.
+  * Remaining unknowns: Visual VDP Plane A/B rendering of the Sega logo (`0x00307A`), Title (`0x0032F8`), and Best 5 Players (`0x03E4FA`) screens is deferred to frontend/boot-flow integration.
+
 # Worklog — 2026-11-17 (M16.71: Dialogue / Text Engine & 116-Entry String Table)
 - **Concrete Task**: Implement `src/game/dialogue/dialogue_engine.hpp/.cpp` with `DialogueControlCode` (`0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07`), `lookup_dialogue_rom_addr` (`0x051514` 116-entry self-relative `u16` offset table), `glyph_rom_offset` (`(ch - 0x20) * 32` in `0x16943C` font), and `DialogueEngineState` / `DialogueEngine::step_frame(button_pressed)` (`$FF187E` col, `$FF1880` line `0..3`, `$FF1876..$FF187C` `{0x0C, 0x18, 0x24, 0x30}`, delay countdown, button-wait); add `tests/m16_71_dialogue_engine_test.cpp`; qualify full 31-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
