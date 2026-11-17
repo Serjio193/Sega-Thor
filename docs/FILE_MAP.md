@@ -1,3 +1,9 @@
+# M15.337 ROM Debug Stage/Room Warp Menu & Spawn Table
+- `tools/extract_rom_debug_warp_menu.py` — ROM extractor & verifier for `0x004C9C..0x004F20` & `0x0005D918` (32-area debug warp spawn table, 10f/3f repeat delays, `(tile_x, tile_y) << 3` warp).
+- `tests/rom_debug_warp_menu_test.py` — Unit tests verifying active areas and 8px-aligned spawn coordinates.
+- `data/thor-evidence/rom_debug_warp_menu_m15_337.json` — Verified evidence JSON for M15.337.
+- `docs/handoffs/STANDALONE_M15_337_DEBUG_WARP_MENU_HANDOFF.md` — C++20 Standalone handoff for M16.121.
+
 # M15.336 ROM Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics
 - `tools/extract_rom_ai_steering_gravity.py` — ROM extractor & verifier for `0x00E398..0x00E520` (4-way steering, Manhattan distance, 16.16 fixed-point aim, `0x300`/`0x2E0` launch arc, `0x0000C000` Z-gravity).
 - `tests/rom_ai_steering_gravity_test.py` — Unit tests verifying AI steering, fixed-point aim, and Z-gravity zero-skip.

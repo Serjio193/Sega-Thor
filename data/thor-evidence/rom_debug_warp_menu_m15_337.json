@@ -1,0 +1,220 @@
+{
+  "milestone": "M15.337",
+  "title": "ROM Debug Stage/Room Warp Menu & Spawn Table",
+  "routine": {
+    "start": "0x004C9C",
+    "end": "0x004F20"
+  },
+  "spawn_table_rom": "0x0005D918",
+  "constants": {
+    "max_area_index": 31,
+    "repeat_initial_frames": 10,
+    "repeat_held_frames": 3,
+    "spawn_tile_shift": 3,
+    "confirm_sfx": "0x00A00256",
+    "cancel_sfx": "0x00A00347"
+  },
+  "active_area_count": 20,
+  "areas": [
+    {
+      "area_id": 0,
+      "max_room_id": 28,
+      "valid_rooms": 28,
+      "first_room": {
+        "room_id": 1,
+        "spawn_x_px": 128,
+        "spawn_y_px": 128
+      }
+    },
+    {
+      "area_id": 1,
+      "max_room_id": 9,
+      "valid_rooms": 10,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 296
+      }
+    },
+    {
+      "area_id": 2,
+      "max_room_id": 8,
+      "valid_rooms": 9,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 120
+      }
+    },
+    {
+      "area_id": 3,
+      "max_room_id": 6,
+      "valid_rooms": 7,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 256,
+        "spawn_y_px": 472
+      }
+    },
+    {
+      "area_id": 4,
+      "max_room_id": 1,
+      "valid_rooms": 2,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 216,
+        "spawn_y_px": 400
+      }
+    },
+    {
+      "area_id": 5,
+      "max_room_id": 14,
+      "valid_rooms": 15,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 88,
+        "spawn_y_px": 96
+      }
+    },
+    {
+      "area_id": 6,
+      "max_room_id": 17,
+      "valid_rooms": 18,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 152,
+        "spawn_y_px": 152
+      }
+    },
+    {
+      "area_id": 7,
+      "max_room_id": 5,
+      "valid_rooms": 6,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 256,
+        "spawn_y_px": 72
+      }
+    },
+    {
+      "area_id": 8,
+      "max_room_id": 6,
+      "valid_rooms": 7,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 176,
+        "spawn_y_px": 144
+      }
+    },
+    {
+      "area_id": 9,
+      "max_room_id": 12,
+      "valid_rooms": 13,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 128
+      }
+    },
+    {
+      "area_id": 10,
+      "max_room_id": 18,
+      "valid_rooms": 19,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 128
+      }
+    },
+    {
+      "area_id": 11,
+      "max_room_id": 15,
+      "valid_rooms": 16,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 176,
+        "spawn_y_px": 144
+      }
+    },
+    {
+      "area_id": 12,
+      "max_room_id": 22,
+      "valid_rooms": 23,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 288,
+        "spawn_y_px": 192
+      }
+    },
+    {
+      "area_id": 14,
+      "max_room_id": 4,
+      "valid_rooms": 5,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 152,
+        "spawn_y_px": 256
+      }
+    },
+    {
+      "area_id": 15,
+      "max_room_id": 1,
+      "valid_rooms": 2,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 144
+      }
+    },
+    {
+      "area_id": 16,
+      "max_room_id": 8,
+      "valid_rooms": 1,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 152
+      }
+    },
+    {
+      "area_id": 17,
+      "max_room_id": 8,
+      "valid_rooms": 2,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 472,
+        "spawn_y_px": 56
+      }
+    },
+    {
+      "area_id": 18,
+      "max_room_id": 8,
+      "valid_rooms": 1,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 160,
+        "spawn_y_px": 1672
+      }
+    },
+    {
+      "area_id": 19,
+      "max_room_id": 8,
+      "valid_rooms": 1,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 248,
+        "spawn_y_px": 104
+      }
+    },
+    {
+      "area_id": 20,
+      "max_room_id": 8,
+      "valid_rooms": 1,
+      "first_room": {
+        "room_id": 0,
+        "spawn_x_px": 72,
+        "spawn_y_px": 352
+      }
+    }
+  ]
+}

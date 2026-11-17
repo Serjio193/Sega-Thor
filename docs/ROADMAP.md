@@ -1,3 +1,4 @@
+# M15.337 ROM Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C`..`0x004F20`, `0x005D918`) — COMPLETE / VERIFIED
 # M15.336 ROM Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics (`0x00E398`..`0x00E520`) — COMPLETE / VERIFIED
 # M15.335 ROM Entity Sprite-DMA Budget Throttle & Frame Lookup (`0x00A9A0`..`0x00AAA5`) — COMPLETE / VERIFIED
 # M15.334 ROM HUD Frame SAT & Item-Toast DMA Emitter (`0x00A342`..`0x00A436`) — COMPLETE / VERIFIED

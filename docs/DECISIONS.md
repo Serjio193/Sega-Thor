@@ -1,3 +1,8 @@
+# ADR-20261117-M15-337-DEBUG-WARP-MENU — Debug Stage/Room Warp Menu & Spawn Table (`0x004C9C`..`0x004F20`, `0x005D918`)
+- **Context:** The secret debug warp menu (`0x004C9C`) browses non-empty areas (`0..31`) and rooms in `0x0005D918` with `10f`/`3f` key repeat, reading `(tile_x, tile_y)` and warping via `0x00CA24`.
+- **Decision:** Extracted all active areas, room counts, and spawn coordinates into `data/thor-evidence/rom_debug_warp_menu_m15_337.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.121 can expose the original debug room warp table for testing any room directly.
+
 # ADR-20261117-M15-336-AI-STEERING-GRAVITY — Enemy AI Steering, Fixed-Point Aim & Z-Gravity Physics (`0x00E398`..`0x00E520`)
 - **Context:** Enemy AI and projectile helpers (`0x00E398..0x00E520`) compute 4-way facing + Manhattan distance, normalized 16.16 aim vectors, `0x300`/`0x2E0` knockback launch arcs (`vz = +6.0`), and `0x0000C000` Z-gravity with exact-zero sentinel skip.
 - **Decision:** Extracted all constants and physics formulas into `data/thor-evidence/rom_ai_steering_gravity_m15_336.json` with 2/2 passing tests and Standalone handoff.
