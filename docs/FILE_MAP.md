@@ -1,3 +1,9 @@
+# M15.295 ROM CRAM Palette Fade Engine
+- `tools/extract_rom_palette_fade.py` — Extracts 64-color CRAM Fade In/Out constants & BGR333 `/ 7` scaling kernel (`0x002FDA`).
+- `tests/rom_palette_fade_test.py` — Unit tests verifying fade constants, `0x0EEE` ramp, and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_palette_fade_m15_295.json` — Extracted CRAM palette fade evidence.
+- `docs/handoffs/STANDALONE_M15_295_PALETTE_FADE_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.294 ROM Secret Sound Test & 34-Track Named OST
 - `tools/extract_rom_sound_test_ost.py` — Extracts Sound Test UI labels, 34 BGM IDs (`0x03ED7E`), and all 34 OST track names (`0x03EDA0`).
 - `tests/rom_sound_test_ost_test.py` — Unit tests verifying Sound Test labels, 34 OST tracks, and JSON artifact (`2/2 PASS`).

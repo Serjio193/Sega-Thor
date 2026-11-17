@@ -1,3 +1,7 @@
+# M15.295 ROM CRAM Palette Fade Engine (`0x002D58`..`0x00302D`) — COMPLETE / VERIFIED
+- Decoded 64-color CRAM shadow (`$FF134C`, backup `$FF18A6`), blocking/async Fade In (`0x002D84`/`0x002DB6`, steps `0..7`) & Fade Out (`0x002E1E`/`0x002E78`, steps `7..0`), and exact BGR333 channel scaling (`((c & mask) * step / 7) & mask` at `0x002FDA`).
+- Authored `tools/extract_rom_palette_fade.py`, `tests/rom_palette_fade_test.py` (`2/2 PASS`), `data/thor-evidence/rom_palette_fade_m15_295.json`, and `docs/handoffs/STANDALONE_M15_295_PALETTE_FADE_HANDOFF.md`.
+
 # M15.294 ROM Secret Sound Test & 34-Track Named OST (`0x03E7F4`..`0x03F047`) — COMPLETE / VERIFIED
 - Decoded Secret Sound Test (`0x03E7F4`, unlocked via `0x90000000`), UI labels (`"SOUND TEST"`, `"BGM"`, `"SFX"`, `"PCM"`, `"EXIT"` at `0x03ED48`), 34-byte BGM ID map (`0x03ED7E`), and all 34 OST track titles (`0x03EDA0..0x03F047`).
 - Authored `tools/extract_rom_sound_test_ost.py`, `tests/rom_sound_test_ost_test.py` (`2/2 PASS`), `data/thor-evidence/rom_sound_test_ost_m15_294.json`, and `docs/handoffs/STANDALONE_M15_294_SOUND_TEST_OST_HANDOFF.md`.

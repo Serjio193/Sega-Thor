@@ -1,0 +1,35 @@
+{
+  "milestone": "M15.295",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "palette_fade": {
+    "cram_shadow_addr": "0xFF134C",
+    "fade_backup_addr": "0xFF18A6",
+    "ram_fade_step": "0xFF189A",
+    "ram_fade_delay": "0xFF1898",
+    "ram_vdp_flags": "0xFF164D",
+    "fade_in_blocking_addr": "0x002D84",
+    "fade_in_async_addr": "0x002DB6",
+    "fade_out_blocking_addr": "0x002E1E",
+    "fade_out_async_addr": "0x002E78",
+    "scale_kernel_addr": "0x002FDA",
+    "color_count": 64,
+    "fade_in_step_end": 8,
+    "fade_out_step_start": 7,
+    "channel_divisor": 7,
+    "masks": {
+      "r": "0x00E",
+      "g": "0x0E0",
+      "b": "0xE00"
+    }
+  },
+  "sample_0x0EEE_ramp": [
+    "0x000",
+    "0x222",
+    "0x444",
+    "0x666",
+    "0x888",
+    "0xAAA",
+    "0xCCC",
+    "0xEEE"
+  ]
+}

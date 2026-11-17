@@ -1,3 +1,7 @@
+# ADR-20261117-M15-295-PALETTE-FADE — CRAM Palette Fade Engine (`0x002D58`..`0x00302D`)
+- **Decision:** Model Mega Drive 64-color CRAM fading in Standalone via `0x002FDA`'s 8-step (`0..7`) BGR333 scaling formula `((c & mask) * step / 7) & mask` across `$FF134C` / `$FF18A6`.
+- **Evidence:** Direct Capstone M68K disassembly of `0x002D58..0x00302D` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-294-SOUND-TEST-OST — Secret Sound Test & 34-Track Named OST (`0x03E7F4`..`0x03F047`)
 - **Decision:** Model the Secret Sound Test menu (`0x03E7F4`) and 34-track named OST catalog (`0x03ED7E` + `0x03EDA0..0x03F047`) in Standalone for authentic track names and BGM command mapping (`0x0100..0x0121`).
 - **Evidence:** Direct Capstone M68K disassembly of `0x03E7F4..0x03E8AE` and raw ROM string/ID table extraction at `0x03ED48..0x03F047` in `local-roms/Beyond Oasis (USA).md`.

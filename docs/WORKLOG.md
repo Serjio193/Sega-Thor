@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.295: ROM CRAM PALETTE FADE ENGINE (`0x002D58`..`0x00302D`) — 64 Colors, Steps `0..7`, `((c & mask) * step / 7) & mask`; Extractor (`tools/extract_rom_palette_fade.py` <= 500 lines), Tests (`tests/rom_palette_fade_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_295_PALETTE_FADE_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x002D58..0x00302D` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_palette_fade.py` and `python tests/rom_palette_fade_test.py` (2/2 PASS).
+- Next: Commit & push M15.295, await M16.78 completion, and continue.
+
 # 2026-11-17 — Milestone M15.294: ROM SECRET SOUND TEST & 34-TRACK NAMED OST (`0x03E7F4`..`0x03F047`) — `"SOUND TEST"`, 34 BGM IDs & Titles; Extractor (`tools/extract_rom_sound_test_ost.py` <= 500 lines), Tests (`tests/rom_sound_test_ost_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_294_SOUND_TEST_OST_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x03E7F4..0x03E8AE` and extracted `0x03ED48..0x03F047` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_sound_test_ost.py` (34 OST tracks) and `python tests/rom_sound_test_ost_test.py` (2/2 PASS).
