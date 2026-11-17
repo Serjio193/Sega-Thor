@@ -119,6 +119,7 @@ add_library(oasis_core
     src/game/player/slope_elevation_engine.cpp
     src/game/player/bounding_box_pushable_latch.cpp
     src/game/player/world_boundary_clamps.cpp
+    src/game/player/horizontal_entity_sweeps.cpp
     src/game/input/mash_tripletap_detectors.cpp
     src/game/controlled_screen.cpp
     src/game/screen_instance.cpp

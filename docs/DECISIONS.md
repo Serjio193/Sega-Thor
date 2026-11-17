@@ -1,3 +1,33 @@
+# ADR-20261117-M16-157-HORIZONTAL-ENTITY-SWEEPS — ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps (0x009DD6..0x009F9E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.408 extracted ROM routines `0x009DD6..0x009F9E` governing horizontal solid dynamic entity collision sweeps across 21 Group 2 entities at `$FF19E8` (stride 188B):
+   - `0x009DD6..0x009EB8`: `sweep_entities_pos_x`:
+     * Checks intangible bit 2 on `+0x38(a6)`.
+     * Precomputes self right edge `d1 = x + rad_x`, elevation interval `a2 = z + ground_h` to `a2 + height`, and ground Y interval `y + ground_h ± rad_y`.
+     * Loops across 21 slots (`d7 = 0x14`):
+       - Filters `type <= 0`, target intangible `+0x38` bit 2, ignore collision `+0x3a` bit 1.
+       - Requires `target.x > self.x`.
+       - Computes `dist = (target.x - target.rad_x) - (self.x + self.rad_x)`.
+       - Tests `dist < dx`.
+       - Tests Y-axis overlap against self Y interval.
+       - Tests Z-axis elevation overlap against self elevation interval.
+       - On 3D collision: sets `+0x40 |= 0x80`, writes target address to `+0x68`, sets reaction code 3 into `+0x6C`, clamps `dx = dist`.
+       - On flush contact `dist == 0`: if `!(self.flags_37 & 0x20)` and `!(target.flags_37 & 0x40)`, pushes target right: `target.vel_x += 1`.
+   - `0x009EBA..0x009F9E`: `sweep_entities_neg_x`:
+     * Mirrors +X sweep for negative movement: requires `target.x < self.x`.
+     * Computes `dist = (self.x - self.rad_x) - (target.x + target.rad_x)`.
+     * Clamps `dx = dist`, sets `+0x40 |= 0x80`, writes target to `+0x68`, reaction code 3.
+     * On flush contact `dist == 0`: if push allowed, pushes target left: `target.vel_x -= 1`.
+
+**Decisions:**
+1. **Dedicated `horizontal_entity_sweeps` Module:**
+   - Added `src/game/player/horizontal_entity_sweeps.hpp/.cpp` modeling pure `sweep_entities_pos_x`, `sweep_entities_neg_x`, and raw byte span helpers `sweep_slot_entities_pos_x` and `sweep_slot_entities_neg_x`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (137/137 M16 tests).
+
 # ADR-20261117-M16-156-WORLD-BOUNDARY-CLAMPS — ROM 4-Direction World Boundary Clamp Subsystem (0x009D4E..0x009DD6)
 **Status:** Accepted
 **Date:** 2026-11-17

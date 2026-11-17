@@ -1,3 +1,12 @@
+# M16.157 ROM Horizontal (±X) Solid Dynamic Entity Collision Sweeps (`0x009DD6..0x009F9E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `sweep_entities_pos_x`, `sweep_entities_neg_x`, `sweep_slot_entities_pos_x`, and `sweep_slot_entities_neg_x` in `src/game/player/horizontal_entity_sweeps.hpp/.cpp`:
+  - `sweep_entities_pos_x` (`0x009DD6..0x009EB8`): checks self intangible bit 2 on `+0x38`; calculates self right edge `x + rad_x`, ground Y bounds `y + ground_h ± rad_y`, and elevation bounds `z + ground_h + [0..height]`; iterates across 21 Group 2 entities at `$FF19E8` (stride 188B); filters by active `type > 0`, target intangible bit 2 clear, ignore collision bit 1 clear, and `target.x > self.x`; calculates distance `dist = (target.x - target.rad_x) - (self.x + self.rad_x)`; checks `dist < dx`; evaluates 2D Y overlap and 3D elevation Z overlap; sets collision flag `+0x40 |= 0x80` (bit 7 dynamic hit), saves collided entity pointer into `+0x68`, sets reaction code 3 into `+0x6C`, and clamps `dx = dist`; if flush contact `dx == 0`, checks self cannot push bit 5 and target cannot be pushed bit 6 on `+0x37`, applying push `target.vel_x += 1`.
+  - `sweep_entities_neg_x` (`0x009EBA..0x009F9E`): mirrors +X sweep with opposite direction: filters `target.x < self.x`; calculates distance `dist = (self.x - self.rad_x) - (target.x + target.rad_x)`; clamps `dx = dist`, sets `+0x40 |= 0x80`, writes target pointer to `+0x68` and reaction code 3 to `+0x6C`; if `dx == 0` and push allowed, applies push `target.vel_x -= 1`.
+  - Raw slot stepping integration helpers `sweep_slot_entities_pos_x` and `sweep_slot_entities_neg_x` operating directly on byte spans.
+- Qualified `oasis_m16_157_horizontal_entity_sweeps` and the 137-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.156 ROM 4-Direction World Boundary Clamp Subsystem (`0x009D4E..0x009DD6`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
