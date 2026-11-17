@@ -142,6 +142,7 @@ add_library(oasis_core
     src/game/render/static_fast_sat_compositor.cpp
     src/game/render/weapon_overlay_compositor.cpp
     src/game/render/dynamic_fx_renderer_p1.cpp
+    src/game/render/dynamic_fx_renderer_p2.cpp
     src/game/render/vdp_dma_queue.cpp
     src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp

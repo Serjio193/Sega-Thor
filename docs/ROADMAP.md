@@ -1,3 +1,28 @@
+# M16.168 ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2) (`0x00B56E..0x00B79A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_fx_tile_attr`, `compute_swirl_y_offset`, `compute_secondary_swirl_y_offset`, `is_dynamic_fx_p2_clipped`, `get_fx_frame_pieces`, `blit_fx_frame`, `blit_raw_pieces`, `step_halo_fx`, `step_swirl_fx`, `dispatch_dynamic_fx_p2`, and `dispatch_dynamic_fx_p2_raw` in `src/game/render/dynamic_fx_renderer_p2.hpp/.cpp` and `include/game/render/dynamic_fx_renderer_p2.hpp`:
+  - `0x00B56E..0x00B5CE`: Bit 2 Pulsing Halo Emitter:
+    - Counter at `+0x9A` (or `+0x03` for secondary pool entities >= `$FF2954`).
+    - Decrements counter unless paused via `$FF185D.b`.
+    - When counter reaches 0, resets bit 2 of `+0x39` (`0x00B5C8`) and terminates.
+    - 21-entry offset table `0x00B5D0` with flag 255 skips and tiles 4..6.
+    - Adds 3D elevation Z at `+0x10` to Y coordinate.
+  - `0x00B610..0x00B65E`: Bit 1 Ground Energy Swirl Emitter:
+    - Grounded check: only active when `elevation == 0`.
+    - Modulo-9 counter advance at `+0x99` (or `+0x03`).
+    - Shadow preset Y shift `(preset >> 2) - 6` (or `-((preset >> 2) + 2)` for secondary variant `0x00B66A`).
+    - 9-byte frame sequence table `0x00B660`.
+  - `0x00B6A6..0x00B72E`: Universal FX Piece Blitter:
+    - Frame base definitions from `0x0003F326`.
+    - Base VRAM tile `0x055E` with entity priority mask `(entity_tile_18 & 0x8000)`.
+    - Viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+    - Hardware 80-sprite link limit enforcement.
+  - `0x00B730..0x00B798`: Static Raw Piece Blitter:
+    - Direct piece blitter for pre-formatted raw sprite lists with `+0x80` screen coordinate bias.
+  - Raw 64KB RAM window integration helper `dispatch_dynamic_fx_p2_raw`.
+- Qualified `oasis_m16_168_dynamic_fx_renderer_p2` and the 148-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.167 ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1) (`0x00B34C..0x00B56E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

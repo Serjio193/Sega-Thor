@@ -1,3 +1,35 @@
+# ADR-20261118-M16-168-DYNAMIC-FX-RENDERER-P2 — ROM Entity Special Dynamic FX Halo, Swirl & SAT Piece Compositor Subsystem (Part 2) (0x00B56E..0x00B79A)
+**Status:** Accepted
+**Date:** 2026-11-18
+
+**Context:**
+1. Hybrid M15.419 extracted ROM routines `0x00B56E..0x00B79A` governing entity dynamic FX halo, swirl, universal FX piece blitter, and static raw piece blitter:
+   - `0x00B56E..0x00B5CE`: Bit 2 Pulsing Halo Emitter:
+     * Frame counter at `+0x9A` (or `+0x03` for entities at or above `$FF2954`).
+     * Decrements counter unless global freeze flag `$FF185D.b` is set.
+     * When counter reaches 0, branches to `0x00B5C8` to clear bit 2 in `+0x39(a6)` and terminate.
+     * 21-entry offset table `0x00B5D0` with flag 255 skips and tiles 4..6.
+     * Evaluates 3D elevation Z at `+0x10` and adds to screen Y.
+   - `0x00B610..0x00B65E`: Bit 1 Ground Energy Swirl Emitter:
+     * Grounded check `tst.l $10(a6)`: inactive when airborne (`elevation != 0`).
+     * Modulo-9 counter advance at `+0x99` (or `+0x03`).
+     * Shadow preset Y shift `(preset >> 2) - 6` (or `-((preset >> 2) + 2)` for secondary variant `0x00B66A`).
+     * 9-byte sequence table `0x00B660`.
+   - `0x00B6A6..0x00B72E`: Universal FX Piece Blitter:
+     * Frame definitions resolved from `0x0003F326`.
+     * Base VRAM tile `0x055E` with entity priority mask `(entity_tile_18 & 0x8000)`.
+     * Viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+     * Hardware 80-sprite link limit enforcement.
+   - `0x00B730..0x00B798`: Static Raw Piece Blitter:
+     * Direct piece blitter for preformatted sprite lists with `+0x80` screen coordinate bias.
+   - Raw 64KB RAM window integration `dispatch_dynamic_fx_p2_raw`.
+
+**Decisions:**
+1. **Dedicated `dynamic_fx_renderer_p2` Module:**
+   - Added `src/game/render/dynamic_fx_renderer_p2.hpp/.cpp` and `include/game/render/dynamic_fx_renderer_p2.hpp` modeling halo emitter, swirl emitter, universal blitter, static raw blitter, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (148/148 M16 tests).
+
 # ADR-20261117-M16-167-DYNAMIC-FX-RENDERER-P1 — ROM Entity Special Dynamic FX, Aura, Wave & Attachment SAT Renderer (Part 1) (0x00B34C..0x00B56E)
 **Status:** Accepted
 **Date:** 2026-11-17
