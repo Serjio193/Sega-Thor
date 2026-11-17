@@ -1,3 +1,25 @@
+# ADR-20261117-M16-133-KILL-COUNTER-VM-TICK — Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.349 extracted `0x00F64C..0x00F7CE`: `reclaim_pickup_slot` (`0x00F64C..0x00F6E0`), `update_kill_counter_and_bonus_drop` (`0x00F740..0x00F786`), and `step_event_vm_tick` (`0x00F788..0x00F7CE`).
+2. Pickup reclaimer manages 8-slot `$FF2ABC` pool (stride 90 bytes `0x5A`, VRAM base tile `0x0694 + 9*i`):
+   - Pass 1: reclaims first slot where `!item_has_flag_bit7(item_id) && is_offscreen`.
+   - Pass 2: reclaims first slot where `!item_has_flag_bit7(item_id)` (even if on-screen).
+   - Fallback: checks bit 5 of pending drop item attribute `0x0005CE16[item_id]`. If non-discardable key item, triggers fatal overflow error (`jmp $206`); otherwise harmlessly suppresses drop (`$F644`).
+3. Kill-counter & bonus drop routine:
+   - If `fixed_drop == 0` and bonus drop flag `$FF0DBB != 0`: clears `$FF0DBB = 0` and sets `fixed_drop = 0x1101`.
+   - If attacker was Ali (`$FF19E8`) and `!(enemy_flags_3a & 1)`: increments 16-bit saturating kill counter at `$FF1A7C` (clamped at `0xFFFF`).
+4. Event VM tick routine:
+   - If paused (`$FF17B8 & 2 != 0`): returns without decrementing wait-timer, `should_dispatch = false`.
+   - If `wait_timer > 0` (`$FF17B6`): decrements `wait_timer--`, returns `should_dispatch = false`.
+   - If `wait_timer == 0`: returns `should_dispatch = true`.
+
+**Decisions:**
+1. **Dedicated `kill_counter_vm_tick` Module:**
+   - Added `src/game/combat/kill_counter_vm_tick.hpp/.cpp` modeling `reclaim_pickup_slot`, `is_item_key_essential`, `update_kill_counter_and_bonus_drop`, `increment_kill_counter_sat`, `step_event_vm_wait`, and `step_event_vm_tick`.
+
 # ADR-20261117-M16-132-ENEMY-LOOT-DROP — Enemy Loot / 2-Tier Drop-Table Roller
 **Status:** Accepted
 **Date:** 2026-11-17

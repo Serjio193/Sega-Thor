@@ -1,3 +1,13 @@
+# M16.133 Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick (`0x00F64C..0x00F7CE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `reclaim_pickup_slot`, `is_item_key_essential`, `update_kill_counter_and_bonus_drop`, `increment_kill_counter_sat`, `step_event_vm_wait`, and `step_event_vm_tick` in `src/game/combat/kill_counter_vm_tick.hpp/.cpp` covering:
+  - 8-slot `$FF2ABC` pickup slot reclaimer (pass 1 offscreen non-bit7, pass 2 on-screen non-bit7, fallback bit 5 non-discardable item check triggering fatal overflow `jmp $206` vs drop suppression `$F644`).
+  - Bonus drop flag `$FF0DBB` clearing and setting guaranteed drop item `0x1101`.
+  - 16-bit saturating kill counter at `$FF1A7C` incremented only on Ali attacker (`$FF19E8`) when enemy `flags_3a & 1` is clear.
+  - Event VM wait-timer tick and pause flag guard (bit 1 of `$FF17B8`).
+- Qualified `oasis_m16_133_kill_counter_vm_tick` and the 114-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.132 Enemy Loot / 2-Tier Drop-Table Roller (`0x00F476..0x00F53A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
