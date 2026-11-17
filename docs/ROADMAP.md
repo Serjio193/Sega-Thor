@@ -1,3 +1,6 @@
+# M15.414 ROM Demo Mode Overlay SAT Compositor & Camera Particle Spark Generator (`0x00A7E6`..`0x00A9A0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_demo_hud_spark_generator.py`, `tests/rom_demo_hud_spark_generator_test.py` (`6/6 PASS`), `data/thor-evidence/rom_demo_hud_spark_generator_m15_414.json`, and `docs/handoffs/STANDALONE_M15_414_DEMO_HUD_SPARK_GENERATOR_HANDOFF.md`.
+
 # M15.413 ROM Shadow & Special Effects SAT Composition Pass (`0x00A6A0`..`0x00A7E6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_shadow_sat_pass.py`, `tests/rom_shadow_sat_pass_test.py` (`4/4 PASS`), `data/thor-evidence/rom_shadow_sat_pass_m15_413.json`, and `docs/handoffs/STANDALONE_M15_413_SHADOW_SAT_PASS_HANDOFF.md`.
 

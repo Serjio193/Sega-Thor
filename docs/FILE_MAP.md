@@ -1,3 +1,9 @@
+# M15.414 ROM Demo Mode Overlay SAT Compositor & Camera Particle Spark Generator
+- `tools/extract_rom_demo_hud_spark_generator.py` — extractor for `0x00A7E6..0x00A9A0` (demo mode overlay SAT compositor, DMA queue to VRAM `$F360`, and camera-relative particle spark sprite generator).
+- `tests/rom_demo_hud_spark_generator_test.py` — `6` unit tests verifying ROM constants, demo overlay mode selection, DMA transfers, spark lifetime expiration, and screen clipping.
+- `data/thor-evidence/rom_demo_hud_spark_generator_m15_414.json` — extracted M15.414 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_414_DEMO_HUD_SPARK_GENERATOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.413 ROM Shadow & Special Effects SAT Composition Pass
 - `tools/extract_rom_shadow_sat_pass.py` — extractor for `0x00A6A0..0x00A7E6` (shadow and special effects sprite pass, shadow flag filtering bit 2 of `$3A`, descending-Y selection sort, and VDP SAT terminator).
 - `tests/rom_shadow_sat_pass_test.py` — `4` unit tests verifying ROM constants, shadow flag filtering, descending-Y sorting order, and custom SAT target selection.

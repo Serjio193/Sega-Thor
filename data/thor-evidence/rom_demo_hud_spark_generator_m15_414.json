@@ -1,0 +1,45 @@
+{
+  "milestone": "M15.414",
+  "title": "ROM Demo Mode Overlay SAT Compositor & Camera Particle Spark Generator",
+  "address_range": {
+    "start": "0x00A7E6",
+    "end": "0x00A9A0",
+    "bytes": 442
+  },
+  "demo_overlay": {
+    "status_reg": "0x00FF1656",
+    "mode_3_sprite": {
+      "dma_src": "0x000AA1FD",
+      "dma_vram": "0xF360",
+      "dma_words": "0xC0",
+      "sprites_x": [
+        240,
+        272,
+        304
+      ],
+      "y": 228
+    },
+    "mode_2_sprite": {
+      "dma_src": "0x000AA1AD",
+      "dma_vram": "0xF360",
+      "dma_words": "0x50",
+      "sprites_x": [
+        268,
+        292
+      ],
+      "y": 228
+    }
+  },
+  "spark_particle": {
+    "lifetime_offset": "0x06",
+    "x_offset": "0x04",
+    "y_offset": "0x02",
+    "camera_plane_1": "0x00FF1716",
+    "camera_plane_2": "0x00FF173E",
+    "screen_offset": 120,
+    "bounds": {
+      "max_y": 240,
+      "max_x": 336
+    }
+  }
+}
