@@ -1,3 +1,12 @@
+# M16.134 Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher (`0x007D8A..0x007E9C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `poll_buffered_input`, `poll_buffered_input_recent`, `dispatch_ali_buffered_buttons`, and `is_attack_action` in `src/game/player/ali_input_dispatch.hpp/.cpp` covering:
+  - 64-frame input ring buffer `$FF1668` sampling with wrap mask `0x7E` and input lock guard `$FF1983`.
+  - Idle flag activation `$FF1986 = 0xFF` on `sub_action == 0 && !(flags_6f & 0x80)`.
+  - Priority dispatch: Button C (bit 6: spirit-ball summon, state 20, SFX `0x00900359`, guards for SP, active spirit, cutscene lock, sub-action 4) -> Button A (bit 4: buffered or held attack) -> Button B (bit 5: jump).
+- Qualified `oasis_m16_134_ali_input_dispatch` and the 115-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.133 Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick (`0x00F64C..0x00F7CE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,35 @@
+# ADR-20261117-M16-134-ALI-INPUT-DISPATCH — Ali 5-Frame Input-Buffer Action & Spirit-Ball Dispatcher
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.350 extracted `0x007D8A..0x007E9C`: `poll_buffered_input` (`0x007D8A..0x007DC6`) and `dispatch_ali_buffered_buttons` (`0x007DC8..0x007E9C`).
+2. `poll_buffered_input`:
+   - Checks input lock flag `$FF1983 != 0`; if locked or ring count is 0, returns 0.
+   - Samples up to `max_frames` words from 64-frame ring buffer `$FF1668` starting at `$FF16E8` wrapping with mask `0x7E` (128 bytes).
+   - Returns bitwise OR of all sampled frame words.
+3. `dispatch_ali_buffered_buttons`:
+   - Checks input lock flag `$FF1983 != 0`; if locked, returns `Action::None`.
+   - If `sub_action == 0` and `!(flags_6f & 0x80)`, sets idle flag `$FF1986 = 0xFF`.
+   - Samples up to 5 recent frames (`dbra 4`). If ring count is 0, returns `Action::None`.
+   - Evaluates composite button mask with strict priority order:
+     * Button C (bit 6: 0x40): Spirit-ball summon / call.
+       - If cutscene lock flag `$FF1985 != 0`: sets `$FF1985 = 1` and returns `Action::None`.
+       - If `sub_action == 4`: returns `Action::None`.
+       - If active spirit ID `$FF1AA4 != 0`: returns `Action::None`.
+       - If Ali SP (+0x8E) == 0: returns `Action::None`.
+       - On success: sets `state = 20`, `sub_action = 20`, decrements `$FF1990`, plays SFX `0x00900359`, and returns `Action::SummonSpiritBall`.
+     * Button A (bit 4: 0x10): Attack.
+       - If buffered in last 5 frames: returns `Action::AttackBuffered`.
+       - If currently held in `$FF165E`: returns `Action::AttackHeld`.
+     * Button B (bit 5: 0x20): Jump.
+       - If buffered in last 5 frames: returns `Action::Jump`.
+     * Default: returns `Action::None`.
+
+**Decisions:**
+1. **Dedicated `ali_input_dispatch` Module:**
+   - Added `src/game/player/ali_input_dispatch.hpp/.cpp` modeling `poll_buffered_input`, `poll_buffered_input_recent`, `dispatch_ali_buffered_buttons`, and `is_attack_action`.
+
 # ADR-20261117-M16-133-KILL-COUNTER-VM-TICK — Pickup Overflow Reclaimer, Kill-Counter & Event VM Wait-Tick
 **Status:** Accepted
 **Date:** 2026-11-17
