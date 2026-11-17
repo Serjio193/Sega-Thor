@@ -1,3 +1,9 @@
+# M16.111 Ring/Spirit Menu Entry Guard & Input Loop (`0x004416..0x00455C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `can_open_ring_menu` (`0x004416..0x004438`: `$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and `decode_ring_menu_action` (`0x004480..0x00455C`: `$FF1996` A/BC swap, close SFX `0x00A00347`, confirm, start, directions) in `src/game/ui/ring_menu_loop.hpp/.cpp`.
+- Qualified `oasis_m16_111_ring_menu_loop` and the 92-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.110 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE..0x00C178`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.111: Ring/Spirit Menu Entry Guard & Input Loop)
+- **Concrete Task**: Implement `src/game/ui/ring_menu_loop.hpp/.cpp` with `can_open_ring_menu(menu_block, player_state)` (`0x004416..0x004438`: `$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and `decode_ring_menu_action(joypad, button_swap)` (`0x004480..0x00455C`: `$FF1996` A/BC swap, `close` SFX `0x00A00347`, `confirm`, `start`, `up`/`down`/`left`/`right`); add `tests/m16_111_ring_menu_loop_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/ring_menu_loop.hpp` / `src/game/ui/ring_menu_loop.cpp`.
+  * Added `tests/m16_111_ring_menu_loop_test.cpp` (registered as `oasis_m16_111_ring_menu_loop` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `92/92` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `92/92` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `can_open_ring_menu()` and `decode_ring_menu_action()` directly into `RingMenuState` and `StandaloneGameSimulation` pause-menu loop is deferred to future menu-UI unification.
+
 # Worklog — 2026-11-17 (M16.110: 5-Digit Decimal-to-ASCII Formatter)
 - **Concrete Task**: Implement `src/game/ui/decimal_ascii.hpp/.cpp` with `format_u16_dec_zero_padded(uint16_t val)` (`0x00C0BE..0x00C112` -> `"00000".."65535"`) and `format_u16_dec_space_padded(uint16_t val)` (`0x00C114..0x00C178` -> `"    0".."65535"`); add `tests/m16_110_decimal_ascii_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

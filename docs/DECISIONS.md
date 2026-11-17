@@ -1,3 +1,14 @@
+# ADR-20261117-M16-111-RING-MENU-LOOP — Ring/Spirit Menu Entry Guard & Input Loop
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.327 extracted `0x004416..0x00455C`: `can_open_ring_menu` (`$FF1A6E == 0 && $FF19EC <= 2`, error SFX `0x00A00253`) and `decode_ring_menu_action` (`$FF1996` A/BC swap, close SFX `0x00A00347`).
+
+**Decisions:**
+1. **Dedicated `ring_menu_loop` Module:**
+   - Added `src/game/ui/ring_menu_loop.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp`.
+
 # ADR-20261117-M16-110-DECIMAL-ASCII — 5-Digit Decimal-to-ASCII Formatter
 **Status:** Accepted
 **Date:** 2026-11-17
