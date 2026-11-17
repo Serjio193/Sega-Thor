@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/entities/entity_struct_layout.hpp` / `src/game/entities/entity_struct_layout.cpp`: Universal entity constructor (`0x008D06`), pointer re-init (`0x008DA4`), and `0x03F2FA` 32-byte master descriptor decoder (`EntityDescriptor32`, `EntityConstructorState`, `0x5D`/`0x2C` clear words, `< $FF2954` `secondary_ai_ptr` gating) (M16.86).
+- `tests/m16_86_entity_struct_layout_test.cpp`: Automated M16.86 test qualifying 16-field descriptor decoding, full vs lightweight slot constructor, `0x008DA4` pointer re-init, and Ali ID 2 ROM parity (M16.86).
 - `src/game/audio/sound_channels.hpp` / `src/game/audio/sound_channels.cpp`: Sound driver 11-channel FM/PSG/SFX RAM map (`$FF0022..$FF07BB`, `0xCA`/`0x8A` strides), `stop_all` (`0x0604E6`), and `start_fade_all` (`0x060516`, step `2`, timer `0x7E`, `+0x75` bit 4) (M16.85).
 - `tests/m16_85_sound_channels_test.cpp`: Automated M16.85 test qualifying all 11 channel RAM addresses, `start_fade_all` attenuation ramp, and `stop_all` mute/clear (M16.85).
 - `src/game/ui/hud_gauge_bars.hpp` / `src/game/ui/hud_gauge_bars.cpp`: HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C..0x0027A4`, `compute_gauge_fill_rows`, differential row-delta writes, `0x00EEEE00` erase mask) (M16.84).

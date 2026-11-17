@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.86: Entity Struct Constructor & `0x03F2FA` 32-Byte Descriptor Field Map)
+- **Concrete Task**: Implement `src/game/entities/entity_struct_layout.hpp/.cpp` with `EntityDescriptor32`, `decode_entity_descriptor32(rom, entity_id)` (`0x03F2FA + (entity_id - 2) * 16`), `EntityConstructorState` (all 16 unpacked fields + `secondary_ai_ptr` gated by `< $FF2954`), `init_entity_from_descriptor(rom, entity_id, is_lightweight_slot)` (`0x008D06`: clears `0x5D` or `0x2C` words and sets timers `0x5C/0x2C/0x34 = 0xFFFF`), and `reinit_entity_pointers(...)` (`0x008DA4`); add `tests/m16_86_entity_struct_layout_test.cpp`; qualify full 46-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/entity_struct_layout.hpp` / `src/game/entities/entity_struct_layout.cpp`.
+  * Added `tests/m16_86_entity_struct_layout_test.cpp` (registered as `oasis_m16_86_entity_struct_layout` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 46/46 regression run.
+  * MSVC Debug (`build-debug`): 46/46 regression run.
+  * Remaining unknowns: Consolidating `EntityConstructorState` with `NativeEntity` / `ScreenEntity` slot pools is deferred until full entity-pool unification.
+
 # Worklog — 2026-11-17 (M16.85: Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute)
 - **Concrete Task**: Implement `src/game/audio/sound_channels.hpp/.cpp` with `SoundChannelKind` (`Fm`, `Psg`, `SfxFm`, `SfxPsg`), `SoundChannelState` (11 channels: 6 FM `$FF0022..$FF0414` stride `0xCA`, 3 PSG `$FF049E..$FF05B2` stride `0x8A`, 2 SFX `$FF0628`/`$FF06F2` stride `0xCA`, `+0x6D` fade rate, `+0x6E` fade counter, `+0x75` bit 4), and `SoundChannelBank` (`stop_all()` `0x0604E6`, `start_fade_all(rate)` `0x060516` step `2` / timer `0x7E`, `step_frame()`); add `tests/m16_85_sound_channels_test.cpp`; qualify full 45-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-86-ENTITY-STRUCT-LAYOUT — Entity Struct Constructor & 0x03F2FA 32-Byte Descriptor Field Map
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.302 extracted the universal entity constructor (`0x008D06`), pointer re-init (`0x008DA4`), and full 16-field `0x03F2FA` 32-byte descriptor mapping into the `0xBC`-byte entity struct (`0x5D` vs `0x2C` clear words, `< $FF2954` gating on `+0x5E`, `0xFFFF` timers at `+0x5C/+0x2C/+0x34`).
+
+**Decisions:**
+1. **Dedicated `entity_struct_layout` Module:**
+   - Added `src/game/entities/entity_struct_layout.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-85-SOUND-CHANNELS — Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute
 **Status:** Accepted
 **Date:** 2026-11-17

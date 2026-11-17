@@ -1,3 +1,9 @@
+# M16.86 Entity Struct Constructor & `0x03F2FA` 32-Byte Descriptor Field Map (`0x008D06..0x008DCE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `EntityDescriptor32`, `decode_entity_descriptor32` (`0x03F2FA`), `EntityConstructorState` (16 unpacked fields, `< $FF2954` gating), `init_entity_from_descriptor` (`0x008D06`, `0x5D`/`0x2C` clear words, `0xFFFF` timers), and `reinit_entity_pointers` (`0x008DA4`) in `src/game/entities/entity_struct_layout.hpp/.cpp`.
+- Qualified `oasis_m16_86_entity_struct_layout` and full 46-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.85 Sound Driver 11-Channel FM/PSG/SFX RAM Map & System Fade/Mute (0x0604E6..0x06064B) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
