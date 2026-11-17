@@ -1,3 +1,6 @@
+# M15.400 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher (`0x0091F6`..`0x00938E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_vertical_raycaster.py`, `tests/rom_vertical_raycaster_test.py` (`5/5 PASS`), `data/thor-evidence/rom_vertical_raycaster_m15_400.json`, and `docs/handoffs/STANDALONE_M15_400_VERTICAL_RAYCASTER_HANDOFF.md`.
+
 # M15.399 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & 0x0096E8 Terrain LUT (`0x009084`..`0x0091F6`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_horizontal_raycaster.py`, `tests/rom_horizontal_raycaster_test.py` (`5/5 PASS`), `data/thor-evidence/rom_horizontal_raycaster_m15_399.json`, and `docs/handoffs/STANDALONE_M15_399_HORIZONTAL_RAYCASTER_HANDOFF.md`.
 

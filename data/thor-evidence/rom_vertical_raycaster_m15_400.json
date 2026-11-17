@@ -1,0 +1,67 @@
+{
+  "milestone": "M15.400",
+  "title": "ROM Vertical (\u00b1Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher",
+  "routines": {
+    "pos_y_raycaster": {
+      "start": "0x00920C",
+      "end": "0x0092B0",
+      "bytes": 164,
+      "direction_code": "0x12",
+      "boundary_clamp": "0x009D92",
+      "solid_entity_sweep": "0x009FA0",
+      "tile_solid_probe": "0x0095AA",
+      "surface_height_probe": "0x009BF2",
+      "surface_height_store": "0x009AD6",
+      "terrain_lut_addr": "0x0096E8"
+    },
+    "neg_y_raycaster": {
+      "start": "0x0092B0",
+      "end": "0x00934E",
+      "bytes": 158,
+      "direction_code": "0x10",
+      "boundary_clamp": "0x009DB4",
+      "solid_entity_sweep": "0x00A09A",
+      "tile_solid_probe": "0x0094D2",
+      "surface_height_probe": "0x009BF2",
+      "surface_height_store": "0x009AD6",
+      "terrain_lut_addr": "0x0096E8"
+    },
+    "final_y_write_and_cleanup": {
+      "start": "0x00934E",
+      "end": "0x009382",
+      "bytes": 52,
+      "y_pos_offset": "0x0C",
+      "y_vel_offset": "0x76"
+    },
+    "entity_return_dispatcher": {
+      "start": "0x009382",
+      "end": "0x00938E",
+      "bytes": 12,
+      "return_vector_ptr": "0x00FF193C",
+      "instruction": "jmp (a0)"
+    },
+    "terrain_surface_lut": {
+      "start": "0x0096E8",
+      "end": "0x0096F8",
+      "bytes": 16,
+      "table": [
+        "0xFF",
+        "0x00",
+        "0x02",
+        "0x01",
+        "0x04",
+        "0xFF",
+        "0x03",
+        "0xFF",
+        "0x06",
+        "0x07",
+        "0xFF",
+        "0xFF",
+        "0x05",
+        "0xFF",
+        "0xFF",
+        "0xFF"
+      ]
+    }
+  }
+}

@@ -1,3 +1,9 @@
+# M15.400 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher
+- `tools/extract_rom_vertical_raycaster.py` — extractor for `0x0091F6..0x00938E` (positive/negative Y raycaster, subpixel Y integration, 8-px row step distances, boundary/entity clamps, and recovery return vector `$FF193C`).
+- `tests/rom_vertical_raycaster_test.py` — `5` unit tests verifying ROM constants, LUT mappings, tile row distances, and vertical raycasting sweeps.
+- `data/thor-evidence/rom_vertical_raycaster_m15_400.json` — extracted M15.400 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_400_VERTICAL_RAYCASTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.399 ROM Horizontal (±X) Tilemap Raycaster, Surface Height Probe & 0x0096E8 Terrain LUT
 - `tools/extract_rom_horizontal_raycaster.py` — extractor for `0x009084..0x0091F6` (positive/negative X raycaster, subpixel integration, 8-px tile step distances, boundary/entity clamps, and 16-byte surface type table `0x0096E8`).
 - `tests/rom_horizontal_raycaster_test.py` — `5` unit tests verifying ROM constants, LUT mappings, tile boundary distances, and horizontal raycasting sweeps.
