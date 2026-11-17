@@ -1,3 +1,9 @@
+# M15.363 ROM Entity Animation Keyframe Stepper & Velocity Damper
+- `tools/extract_rom_entity_anim_stepper.py` — extractor for `0x008F12..0x00904A` (`+0x9C` hitstop / `$FF17B8` time-stop & slow-mo damper, `4B` keyframe stepper with bit-15 loop marker & halved durations).
+- `tests/rom_entity_anim_stepper_test.py` — `2` unit tests verifying ROM opcodes and multi-frame keyframe advance/loop-wrap pulse.
+- `data/thor-evidence/rom_entity_anim_stepper_m15_363.json` — extracted M15.363 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_363_ENTITY_ANIM_STEPPER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.362 ROM Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher
 - `tools/extract_rom_palette_anim_pool_dispatch.py` — extractor for `0x008E22..0x008F10` (`$FF17A2` CRAM palette animation linked list -> `$FF134C`, 3-pool AI/script dispatcher, `0x008EF8` anim-state reset helper).
 - `tests/rom_palette_anim_pool_dispatch_test.py` — `2` unit tests verifying ROM pool descriptors and CRAM keyframe cycling/wrapping.

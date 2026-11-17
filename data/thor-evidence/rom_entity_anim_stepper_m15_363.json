@@ -1,0 +1,29 @@
+{
+  "milestone": "M15.363",
+  "rom_range": "0x008F12..0x00904A",
+  "hitstop_and_slowmo": {
+    "global_flags_addr": "0xFF17B8",
+    "slowmo_bit": 0,
+    "timestop_bit": 1,
+    "freeze_timer_word_offset": "0x9C",
+    "freeze_byte_offset": "0x9D",
+    "vx_offset": "0x72",
+    "vy_offset": "0x76"
+  },
+  "animation_stepper": {
+    "anim_table_ptr_offset": "0x26",
+    "anim_id_offset": "0x2A",
+    "cached_anim_id_offset": "0x2C",
+    "delay_offset": "0x2E",
+    "cursor_offset": "0x30",
+    "frame_id_offset": "0x32",
+    "flags_offset": "0x37",
+    "end_pulse_bit": 1,
+    "end_of_seq_bit": 2,
+    "skip_anim_bit": 0,
+    "keyframe_stride_bytes": 4,
+    "initial_cursor": -4,
+    "duration_end_bit": 15,
+    "duration_shift_right": 1
+  }
+}

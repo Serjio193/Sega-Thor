@@ -1,3 +1,7 @@
+# ADR-20261117-M15-363-ENTITY-ANIM-STEPPER — Entity Animation Keyframe Stepper & Velocity Damper (`0x008F12`..`0x00904A`)
+- **Context:** `0x008F12..0x00904A` runs hitstop/time-stop/slow-mo velocity damping (`+0x9C`, `$FF17B8`) and steps `4B` `[frame_id, raw_dur]` animation keyframes (`+0x26` table, bit 15 loop sentinel, `(raw_dur >> 1) - 1` tick count) for all entities.
+- **Decision:** Model the exact bit-flag transitions (`+0x37` bits `0..2`), initial `-4` cursor reset, and `>> 1` duration halving in `tools/extract_rom_entity_anim_stepper.py` and `docs/handoffs/STANDALONE_M15_363_ENTITY_ANIM_STEPPER_HANDOFF.md`.
+
 # ADR-20261117-M15-362-PALETTE-ANIM-POOL-DISPATCH — Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher (`0x008E22`..`0x008F10`)
 - **Context:** `0x008E22..0x008F10` implements the per-frame CRAM palette-cycling linked-list animator (`$FF17A2` -> `$FF134C`) and the 3-pool entity AI/script dispatcher (`$FF2954`, `$FF19E8`, `$FF2D8C`).
 - **Decision:** Model the exact node layout (`+0x00..+0x08` + 4B keyframes), `1/2`-frame advance threshold, `$FF164D` dirty bit, and 3-pool continuation contract in `tools/extract_rom_palette_anim_pool_dispatch.py` and `docs/handoffs/STANDALONE_M15_362_PALETTE_ANIM_POOL_DISPATCH_HANDOFF.md`.

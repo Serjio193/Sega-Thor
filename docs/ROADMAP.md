@@ -1,3 +1,6 @@
+# M15.363 ROM Entity Animation Keyframe Stepper & Hitstop/Slow-Mo Damper (`0x008F12`..`0x00904A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_anim_stepper.py`, `tests/rom_entity_anim_stepper_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_anim_stepper_m15_363.json`, and `docs/handoffs/STANDALONE_M15_363_ENTITY_ANIM_STEPPER_HANDOFF.md`.
+
 # M15.362 ROM Linked-List CRAM Palette Animator & 3-Pool AI Dispatcher (`0x008E22`..`0x008F10`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_palette_anim_pool_dispatch.py`, `tests/rom_palette_anim_pool_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_palette_anim_pool_dispatch_m15_362.json`, and `docs/handoffs/STANDALONE_M15_362_PALETTE_ANIM_POOL_DISPATCH_HANDOFF.md`.
 
