@@ -1,3 +1,7 @@
+# M15.291 ROM New Game Initialization (`0x001300`..`0x00144F`) — COMPLETE / VERIFIED
+- Decoded New Game WRAM clear (`$FF0BFE`, `0x12A` words), starting stats (`MaxHP=HP=200`, `MaxSP=SP=0`, `ATK=10`, `spirit=0`), 4 P1+P2 secret chords, and initial spawn (`Room 0x001B`, `Cam (96, 0)`, `Ali (256, 80)`).
+- Authored `tools/extract_rom_new_game_init.py`, `tests/rom_new_game_init_test.py` (`2/2 PASS`), `data/thor-evidence/rom_new_game_init_m15_291.json`, and `docs/handoffs/STANDALONE_M15_291_NEW_GAME_INIT_HANDOFF.md`.
+
 # M15.290 ROM Save/Load File Select Menu (`0x0004C6`..`0x000D30`) — COMPLETE / VERIFIED
 - Decoded 2x3 File Select grid (`$FF10A8`, slots `0..3` + `4` Copy `0x000B04` + `5` Erase `0x000C46`), 2D grid navigation (`0x0006F6`, `d3` exclusion), occupied bitmask (`$FF10AA`), last-slot SRAM `$2025C9`, and SFX (`0x00A00256`, `0x006003A6`, `0x00A00253`).
 - Authored `tools/extract_rom_file_select_menu.py`, `tests/rom_file_select_menu_test.py` (`2/2 PASS`), `data/thor-evidence/rom_file_select_menu_m15_290.json`, and `docs/handoffs/STANDALONE_M15_290_FILE_SELECT_MENU_HANDOFF.md`.

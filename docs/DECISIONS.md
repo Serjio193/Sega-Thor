@@ -1,3 +1,7 @@
+# ADR-20261117-M15-291-NEW-GAME-INIT — New Game Initialization (`0x001300`..`0x00144F`)
+- **Decision:** Model New Game initialization in Standalone with `MaxHP = HP = 200`, `MaxSP = SP = 0`, `ATK = 10` (`$FF0D7E`), `Room 0x001B`, `Cam (96, 0)`, `Ali (256, 80)`, and the 4 secret P1+P2 input chords.
+- **Evidence:** Direct Capstone M68K disassembly of `0x001300..0x00144F` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-290-FILE-SELECT-MENU — Save/Load File Select Menu (`0x0004C6`..`0x000D30`)
 - **Decision:** Model the File Select screen in Standalone as a 2x3 grid (`$FF10A8`, `0..3` slots, `4` Copy, `5` Erase) with `$FF10AA` occupied-slot bitmask, Copy `dest != src` exclusion (`0x0006F6`), Erase empty-slot guard (`0x00A00253`), and `$2025C9` last-slot persistence.
 - **Evidence:** Direct Capstone M68K disassembly of `0x0004C6..0x0007C0`, `0x000B04..0x000B60`, and `0x000C46..0x000CA0` in `local-roms/Beyond Oasis (USA).md`.

@@ -1,0 +1,47 @@
+{
+  "milestone": "M15.291",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "new_game": {
+    "entry_addr": "0x001300",
+    "clear_base": "0xFF0BFE",
+    "clear_words": 298,
+    "world_flags_ff0d80": "0x01FF",
+    "entity_id": 2,
+    "facing": 2,
+    "max_hp": 200,
+    "hp": 200,
+    "max_sp": 0,
+    "sp": 0,
+    "base_attack_ff0d7e": 10,
+    "active_spirit_ff1aa4": 0,
+    "intro_cutscene_addr": "0x03BF86",
+    "start_room_id": 27,
+    "start_cam_x": 96,
+    "start_cam_y": 0,
+    "start_x": 256,
+    "start_y": 80,
+    "gameplay_entry_addr": "0x00CA38"
+  },
+  "secret_chords": [
+    {
+      "mask_ff165e": "0xD6000100",
+      "target": "0x03C8DE",
+      "role": "Secret menu / sound test"
+    },
+    {
+      "mask_ff165e": "0xC9000200",
+      "target": "0x001450",
+      "role": "Debug / super start"
+    },
+    {
+      "mask_ff165e": "0xCA000100",
+      "target": "0x001394",
+      "role": "Special flag $FF0D7A=0x80"
+    },
+    {
+      "mask_ff165e": "0x90000000",
+      "target": "0x03E7F4",
+      "role": "A+Start alternate screen"
+    }
+  ]
+}

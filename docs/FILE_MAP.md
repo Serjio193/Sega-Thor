@@ -1,3 +1,9 @@
+# M15.291 ROM New Game Initialization
+- `tools/extract_rom_new_game_init.py` — Extracts New Game starting stats, Room `0x001B` spawn, and 4 secret P1+P2 chords.
+- `tests/rom_new_game_init_test.py` — Unit tests verifying starting values and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_new_game_init_m15_291.json` — Extracted New Game init evidence.
+- `docs/handoffs/STANDALONE_M15_291_NEW_GAME_INIT_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.290 ROM Save/Load File Select Menu
 - `tools/extract_rom_file_select_menu.py` — Extracts File Select 2x3 grid cursor, Copy/Erase guards, SFX IDs, and SRAM last-slot `$2025C9`.
 - `tests/rom_file_select_menu_test.py` — Unit tests verifying File Select constants and JSON artifact (`2/2 PASS`).
