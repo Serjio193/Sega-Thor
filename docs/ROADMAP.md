@@ -1,3 +1,12 @@
+# M16.153 ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (`0x0098EC..0x0099EE`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `sample_point_tile_attr`, `read_point_tile_raw`, and `point_tile_solidity_probe` in `src/game/player/point_tile_integrator.hpp/.cpp`:
+  - `point_tile_solidity_probe` (`0x0098EC..0x0099B8`): queries target elevation at `(X, Y)` via probe hook `0x009AD0`; if `target_h < 0` (void/pit), checks ramp bit mask `0x90` on raw tile attribute — if ramp, proceeds to ramp handling, otherwise sets Carry (blocked wall); if current height `< 0` (entering ground from void), writes `target_h` to `+0x14` and clears Carry; evaluates `delta = cur_h - target_h`; if `delta == 0`, checks ramp bit `0x90` and clears Carry; performs clearance check `air_h + delta < 0` setting Carry (blocked wall); performs slope pixel integration looping 1 pixel at a time: for `delta > 0` steps `Y += 1, air_h += 1, delta -= 1` testing tile boundary `(Y & 7) == 0` for attribute changes, for `delta < 0` steps `Y -= 1, air_h -= 1, delta += 1` testing tile boundary `(Y & 7) == 7` for attribute changes; re-probes final ground elevation at updated `(X, Y)`, stores updated `Y` into `+0x0C`, ground height into `+0x14`, and clears Carry (passable).
+  - `sample_point_tile_attr` (`0x0099B8..0x0099D6`): calculates layer byte offset `((y >> 3) << stride_shift) + (x >> 3)` and masks result with `0x0F`.
+  - `read_point_tile_raw` (`0x0099D6..0x0099EE`): reads unmasked raw tile attribute byte from active layer buffer.
+- Qualified `oasis_m16_153_point_tile_integrator` and the 133-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.152 ROM Flying/Projectile Dual-Axis Tilemap Raycaster & Point Collision Dispatcher (`0x009708..0x0098EC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

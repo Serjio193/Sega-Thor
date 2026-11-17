@@ -1,3 +1,28 @@
+# ADR-20261117-M16-153-POINT-TILE-INTEGRATOR — ROM Point Tile Solidity, Air/Elevation Integrator & Tile Attribute Sampler (0x0098EC..0x0099EE)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.404 extracted ROM routines `0x0098EC..0x0099EE` governing point tile solidity testing, elevation integration across slopes, air height clearance tests, and tile attribute sampling:
+   - `0x0098EC..0x0099B8`: `point_tile_solidity_probe`:
+     * Queries target elevation at `(X, Y)` via elevation probe `0x009AD0`.
+     * If `target_h < 0` (void/pit): reads raw tile byte via `read_point_tile_raw`. If `(raw & 0x90) == 0x90`, it is a ramp, branches to ramp handler; otherwise blocks as wall (sets Carry).
+     * If `cur_h < 0` (entering ground from void): writes `target_h` into `+0x14(a6)` and clears Carry (passable).
+     * Calculates `delta = cur_h - target_h`. If `delta == 0`: checks ramp bit `0x90` and clears Carry.
+     * Clearance test: `air_h + delta >= 0`. If `< 0`: blocked wall (sets Carry).
+     * Slope pixel integration:
+       - Descending (`delta > 0`): loops `Y += 1, air_h += 1, delta -= 1`. At tile boundaries `(Y & 7) == 0`, checks if tile attribute changed; if changed, steps back `Y -= 1` and stops.
+       - Ascending (`delta < 0`): loops `Y -= 1, air_h -= 1, delta += 1`. At tile boundaries `(Y & 7) == 7`, checks if tile attribute changed; if changed, steps back `Y += 1` and stops.
+     * Re-queries ground elevation at updated `(X, Y)`, stores updated `Y` into `+0x0C(a6)` and ground height into `+0x14(a6)`, clears Carry (passable).
+   - `0x0099B8..0x0099D6`: `sample_point_tile_attr`: computes offset `((y >> 3) << stride_shift) + (x >> 3)` and reads byte masked with `0x0F`.
+   - `0x0099D6..0x0099EE`: `read_point_tile_raw`: reads unmasked raw tile attribute byte.
+
+**Decisions:**
+1. **Dedicated `point_tile_integrator` Module:**
+   - Added `src/game/player/point_tile_integrator.hpp/.cpp` modeling `sample_point_tile_attr`, `read_point_tile_raw`, and `point_tile_solidity_probe` with configurable `PointTileIntegratorEnvironment` hooks for elevation probe `0x009AD0`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (133/133 M16 tests).
+
 # ADR-20261117-M16-152-FLYING-RAYCASTER — ROM Flying/Projectile Dual-Axis Tilemap Raycaster & Point Collision Dispatcher (0x009708..0x0098EC)
 **Status:** Accepted
 **Date:** 2026-11-17
