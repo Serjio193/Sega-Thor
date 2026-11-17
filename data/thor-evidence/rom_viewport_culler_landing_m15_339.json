@@ -1,0 +1,29 @@
+{
+  "milestone": "M15.339",
+  "title": "ROM Entity Camera-Viewport Culler & Airborne Landing Handler",
+  "routines": {
+    "airborne_move_and_land": {
+      "start": "0x00E522",
+      "end": "0x00E5AC"
+    },
+    "is_offscreen_with_z": {
+      "start": "0x00E5AE",
+      "end": "0x00E60E"
+    },
+    "is_offscreen_ground": {
+      "start": "0x00E610",
+      "end": "0x00E66C"
+    },
+    "copy_entity_struct_0xbc": {
+      "start": "0x00E66E",
+      "end": "0x00E67E"
+    }
+  },
+  "constants": {
+    "viewport_width_px": 320,
+    "viewport_height_px": 224,
+    "landing_stun_frames": 15,
+    "landing_thud_sfx": "0x00800270",
+    "entity_copy_words": 94
+  }
+}

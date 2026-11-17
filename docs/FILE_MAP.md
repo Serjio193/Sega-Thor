@@ -1,3 +1,9 @@
+# M15.339 ROM Entity Camera-Viewport Culler & Airborne Landing
+- `tools/extract_rom_viewport_culler_landing.py` — ROM extractor & verifier for `0x00E522..0x00E67E` (airborne landing `15f` stun + `0x00800270`, `320x224` + margin viewport cullers, 94-word `0xBC` struct copy).
+- `tests/rom_viewport_culler_landing_test.py` — Unit tests verifying viewport culling with and without Z-offset.
+- `data/thor-evidence/rom_viewport_culler_landing_m15_339.json` — Verified evidence JSON for M15.339.
+- `docs/handoffs/STANDALONE_M15_339_VIEWPORT_CULLER_LANDING_HANDOFF.md` — C++20 Standalone handoff for M16.123.
+
 # M15.338 ROM Spirit Summon Trigger & Weapon Quick-Equip Class Mapper
 - `tools/extract_rom_weapon_equip_summon.py` — ROM extractor & verifier for `0x007E9E..0x007F80` (summon state `20` `0x00900359`, quick-equip toggle to slot `0`, weapon class `0x0A`/`0x0C`/`0x0E`/`0x10`, `60f` toast).
 - `tests/rom_weapon_equip_summon_test.py` — Unit tests verifying weapon class mapping.

@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.339: ROM ENTITY CAMERA-VIEWPORT CULLER & AIRBORNE LANDING (`0x00E522`..`0x00E67E`) — `320x224`+Margin Culler, `15f` Land Stun, `94w` Copy; Extractor (`tools/extract_rom_viewport_culler_landing.py` <= 500 lines), Tests (`tests/rom_viewport_culler_landing_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_339_VIEWPORT_CULLER_LANDING_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00E522..0x00E67E` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_viewport_culler_landing.py`, `python -m unittest tests/rom_viewport_culler_landing_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.339, check M16.111 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.338: ROM SPIRIT SUMMON TRIGGER & WEAPON QUICK-EQUIP CLASS MAPPER (`0x007E9E`..`0x007F80`) — State `20` Summon, Class `0x0A..0x10`, `60f` Toast; Extractor (`tools/extract_rom_weapon_equip_summon.py` <= 500 lines), Tests (`tests/rom_weapon_equip_summon_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_338_WEAPON_EQUIP_SUMMON_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x007E9E..0x007F80` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_weapon_equip_summon.py`, `python -m unittest tests/rom_weapon_equip_summon_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

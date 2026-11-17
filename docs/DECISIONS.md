@@ -1,3 +1,8 @@
+# ADR-20261117-M15-339-VIEWPORT-CULLER-LANDING — Entity Camera-Viewport Culler & Airborne Landing (`0x00E522`..`0x00E67E`)
+- **Context:** `0x00E522` integrates airborne velocity and handles landing (`15f` stun, `0x00800270`), while `0x00E5AE` and `0x00E610` cull entities against the `320x224` camera viewport (`$FF1716`/`$FF173E`) plus `margin`, with or without `-z`.
+- **Decision:** Extracted all viewport dimensions, landing parameters, and copy word count (`94`) into `data/thor-evidence/rom_viewport_culler_landing_m15_339.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.123 can cull offscreen entities and handle airborne landing parity.
+
 # ADR-20261117-M15-338-WEAPON-EQUIP-SUMMON — Spirit Summon Trigger & Weapon Quick-Equip Class Mapper (`0x007E9E`..`0x007F80`)
 - **Context:** `0x007E9E` initiates spirit summoning (Ali state `0x14`, SFX `0x00900359`), while `0x007EC4` quick-equips inventory weapons, toggling back to slot `0` if re-selected, mapping IDs to weapon classes `0x0A`..`0x10` (`$FF0D7E`), and starting a 60-frame toast.
 - **Decision:** Extracted all class mappings, timers, and SFX IDs into `data/thor-evidence/rom_weapon_equip_summon_m15_338.json` with 2/2 passing tests and Standalone handoff.
