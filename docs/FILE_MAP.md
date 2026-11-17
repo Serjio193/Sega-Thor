@@ -1,3 +1,9 @@
+# M15.371 ROM Ali Airborne Knockdown Physics & Landing Recovery
+- `tools/extract_rom_ali_knockdown_physics.py` — extractor for `0x005CF8..0x005DE2` (16-pixel prone height, `0x0080035D` wall impact, `-0xC000` gravity, `0x5E` death vs landing recovery countdown).
+- `tests/rom_ali_knockdown_physics_test.py` — `2` unit tests verifying ROM constants, wall bounce zeroing, gravity step, and recovery wake-up timing.
+- `data/thor-evidence/rom_ali_knockdown_physics_m15_371.json` — extracted M15.371 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_371_ALI_KNOCKDOWN_PHYSICS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.370 ROM Ali Ledge Vault Launch & 12-Frame Climb-Hold Gate
 - `tools/extract_rom_ali_ledge_vault_gate.py` — extractor for `0x005BA2..0x005C80` (4-dir vault velocities `vx/vy/vz`, 12-frame climb hold gate `0x005C82`, state `0x0E` vault trigger & SFX `0x00800340`).
 - `tests/rom_ali_ledge_vault_gate_test.py` — `2` unit tests verifying ROM velocity/SFX constants and 12-frame climb hold gate state transitions.

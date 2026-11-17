@@ -1,0 +1,32 @@
+{
+  "milestone": "M15.371",
+  "rom_range": "0x005CF8..0x005DE2",
+  "prone_height": 16,
+  "wall_impact": {
+    "sfx_id": "0x0080035D",
+    "x_wall_bit": 6,
+    "y_wall_bit": 6
+  },
+  "airborne_gravity": {
+    "gravity_step": -49152,
+    "zero_nudge": -1,
+    "probe_helper": "0x00B79A"
+  },
+  "ground_landing": {
+    "landed_flag_offset": "0x39",
+    "landed_flag_bit": 2,
+    "dust_shake_timer": 15,
+    "recovery_delay_base": 10,
+    "recovery_delay_long": 20,
+    "recovery_anim_28_bonus": 10
+  },
+  "death_transition": {
+    "death_state": "0x5E",
+    "death_anim_front": "0x68",
+    "death_anim_back": "0x6C"
+  },
+  "recovery_wake_up": {
+    "state_advance": 2,
+    "anim_advance": 2
+  }
+}

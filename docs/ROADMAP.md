@@ -1,3 +1,6 @@
+# M15.371 ROM Ali Airborne Knockdown Physics, Wall Impact & Landing Recovery (`0x005CF8`..`0x005DE2`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_knockdown_physics.py`, `tests/rom_ali_knockdown_physics_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_knockdown_physics_m15_371.json`, and `docs/handoffs/STANDALONE_M15_371_ALI_KNOCKDOWN_PHYSICS_HANDOFF.md`.
+
 # M15.370 ROM Ali 4-Dir Ledge Vault Launch & 12-Frame Climb-Hold Gate (`0x005BA2`..`0x005C80`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_ledge_vault_gate.py`, `tests/rom_ali_ledge_vault_gate_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_ledge_vault_gate_m15_370.json`, and `docs/handoffs/STANDALONE_M15_370_ALI_LEDGE_VAULT_GATE_HANDOFF.md`.
 

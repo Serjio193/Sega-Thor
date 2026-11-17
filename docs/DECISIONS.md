@@ -1,3 +1,7 @@
+# ADR-20261117-M15-371-ALI-KNOCKDOWN-PHYSICS — Ali Airborne Knockdown Physics & Landing Recovery (`0x005CF8`..`0x005DE2`)
+- **Context:** `0x005CF8..0x005DE2` handles Ali's airborne knockdown phase: prone 16px height, X/Y wall impact (`bit 6`, SFX `0x0080035D`), `-0xC000` gravity integration, ground landing (`z=0`, `+0x9A=0x0F` dust), death state `0x5E` (`0x68/0x6C` anim), and wake-up recovery timer (`+0x02`, `10/20/30` frames).
+- **Decision:** Extract exact wall collision masks, gravity delta, ground landing transitions, and recovery wake-up state/anim advances in `tools/extract_rom_ali_knockdown_physics.py` and `docs/handoffs/STANDALONE_M15_371_ALI_KNOCKDOWN_PHYSICS_HANDOFF.md`.
+
 # ADR-20261117-M15-370-ALI-LEDGE-VAULT-GATE — Ali Ledge Vault Launch & 12-Frame Climb-Hold Gate (`0x005BA2`..`0x005C80`)
 - **Context:** `0x005BA2..0x005C80` implements Ali's 4-directional ledge vault launch (`state 0x0E`, `anim 6`, `0x00800340` SFX, directional `(vx, vy, vz)` profiles) gated by the 12-frame D-pad hold checker at `0x005C82` (which aborts to idle on D-pad release).
 - **Decision:** Extract exact directional velocities (`±0x2B333` X, `-0x26666`/`+0x21999` Y, `0x20000`/`0x30000` Z), the 12-frame `$FF1970` hold threshold, and vault flags in `tools/extract_rom_ali_ledge_vault_gate.py` and `docs/handoffs/STANDALONE_M15_370_ALI_LEDGE_VAULT_GATE_HANDOFF.md`.
