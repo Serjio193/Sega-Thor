@@ -1,3 +1,6 @@
+# M15.376 ROM Ali Crawl Movement, Multi-Surface Footstep SFX & Skid Deceleration (`0x006516`..`0x006700`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_crawl_skid.py`, `tests/rom_ali_crawl_skid_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_crawl_skid_m15_376.json`, and `docs/handoffs/STANDALONE_M15_376_ALI_CRAWL_SKID_HANDOFF.md`.
+
 # M15.375 ROM Ali Push Physics, Jewel Socket Inserter & Isometric Velocity Scaler (`0x0062E4`..`0x006514`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_push_terrain.py`, `tests/rom_ali_push_terrain_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_push_terrain_m15_375.json`, and `docs/handoffs/STANDALONE_M15_375_ALI_PUSH_TERRAIN_HANDOFF.md`.
 

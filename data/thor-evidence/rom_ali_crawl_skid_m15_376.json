@@ -1,0 +1,33 @@
+{
+  "milestone": "M15.376",
+  "title": "ROM Ali Crawl Movement, Multi-Surface Footstep SFX & Skid Deceleration",
+  "routines": {
+    "ali_crawl_walk_and_surface_sfx": {
+      "start": "0x006516",
+      "end": "0x006616"
+    },
+    "ali_skid_stop_friction": {
+      "start": "0x006618",
+      "end": "0x0066A8"
+    },
+    "ali_combat_slide_decel": {
+      "start": "0x0066AA",
+      "end": "0x006700"
+    }
+  },
+  "constants": {
+    "crawl_x_nudge": 172032,
+    "crawl_y_nudge": 153600,
+    "water_footstep_1": "0x02400357",
+    "dust_footstep_1": "0x0040038E",
+    "water_footstep_2": "0x02400358",
+    "dust_footstep_2": "0x0040038F",
+    "creep_footstep": "0x01500218",
+    "min_skid_run_frames": 6,
+    "skid_dust_frames": 21,
+    "skid_scrape_sfx": "0x1B400344",
+    "skid_decel_step": 44236,
+    "slide_impact_sfx": "0x00600343",
+    "slide_decel_step": 32768
+  }
+}

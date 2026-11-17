@@ -1,3 +1,9 @@
+# M15.376 ROM Ali Crawl Movement, Multi-Surface Footstep SFX & Skid Deceleration
+- `tools/extract_rom_ali_crawl_skid.py` — extractor for `0x006516..0x006700` (perpendicular crawl nudges `±0x2A000` X / `±0x25800` Y, water/dust/creep footstep SFX, 6-frame skid gate, state `0x0C` 21f dust, scrape SFX `0x1B400344`, friction decel `0xACCC` / `0x8000`).
+- `tests/rom_ali_crawl_skid_test.py` — `2` unit tests verifying ROM constants, perpendicular crawl nudging, and friction deceleration math.
+- `data/thor-evidence/rom_ali_crawl_skid_m15_376.json` — extracted M15.376 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_376_ALI_CRAWL_SKID_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.375 ROM Ali Push Physics, Jewel Socket Inserter & Isometric Velocity Scaler
 - `tools/extract_rom_ali_push_terrain.py` — extractor for `0x0062E4..0x006514` (walk cycle footstep SFX `0x01500218`, block push half-speed physics & scraping SFX `0x00800390`, jewel socket insert `0x6A` & chime SFX `0x00B00385`, Megadrive 2:1 isometric terrain velocity scaling).
 - `tests/rom_ali_push_terrain_test.py` — `2` unit tests verifying ROM constants, isometric terrain velocity scaling, and block push mechanics.
