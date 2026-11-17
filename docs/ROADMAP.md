@@ -1,3 +1,6 @@
+# M15.443 ROM Tilemap Rectangle Fill & Block Copy Subsystem (`0x00DB1A`..`0x00DC26`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_tilemap_rect_ops.py`, `tests/rom_tilemap_rect_ops_test.py` (`5/5 PASS`), `data/thor-evidence/rom_tilemap_rect_ops_m15_443.json`, and `docs/handoffs/STANDALONE_M15_443_TILEMAP_RECT_OPS_HANDOFF.md`.
+
 # M15.442 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers (`0x00D9A4`..`0x00DB1A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_alloc_sound_dispatch.py`, `tests/rom_entity_alloc_sound_dispatch_test.py` (`5/5 PASS`), `data/thor-evidence/rom_entity_alloc_sound_dispatch_m15_442.json`, and `docs/handoffs/STANDALONE_M15_442_ENTITY_ALLOC_SOUND_DISPATCH_HANDOFF.md`.
 

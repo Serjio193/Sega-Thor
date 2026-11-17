@@ -1,3 +1,9 @@
+# M15.443 ROM Tilemap Rectangle Fill & Block Copy Subsystem
+- `tools/extract_rom_tilemap_rect_ops.py` — extractor for `0x00DB1A..0x00DC26` (tilemap byte fill, word block copy with VRAM sync, and auxiliary byte block copy).
+- `tests/rom_tilemap_rect_ops_test.py` — `5` unit tests verifying ROM constants, byte fill loop, word tile copy loop, auxiliary byte copy loop, and 2D rectangular stride math.
+- `data/thor-evidence/rom_tilemap_rect_ops_m15_443.json` — extracted M15.443 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_443_TILEMAP_RECT_OPS_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.442 ROM Projectile/Effect Entity Pool Allocators & Sound Driver Command Dispatchers
 - `tools/extract_rom_entity_alloc_sound_dispatch.py` — extractor for `0x00D9A4..0x00DB1A` (projectile pool allocation, spark pool allocation, general entity slot searches, NPC spawning, and sound driver track control).
 - `tests/rom_entity_alloc_sound_dispatch_test.py` — `5` unit tests verifying ROM constants, projectile pool slot indexing, spark pool bounds, general entity pools (18/17 slots), NPC spawn fields, and sound command parameters.
