@@ -1,0 +1,387 @@
+{
+  "milestone": "M15.364",
+  "rom_range": "0x00DEEC..0x00E150",
+  "entity_ai_loop_00deec": {
+    "timestop_addr": "0xFF17B8",
+    "timestop_bit": 1,
+    "pool_base_addr": "0xFF1AA4",
+    "slot_count": 20,
+    "slot_stride_bytes": 188,
+    "min_type_id": "0x16",
+    "table_origin_pc": "0x00DF28",
+    "first_entry_addr": "0x00DF54",
+    "handler_count": 89,
+    "handlers": [
+      {
+        "type_id": "0x16",
+        "handler_addr": "0x0115C8"
+      },
+      {
+        "type_id": "0x18",
+        "handler_addr": "0x011B4E"
+      },
+      {
+        "type_id": "0x1A",
+        "handler_addr": "0x01254C"
+      },
+      {
+        "type_id": "0x1C",
+        "handler_addr": "0x012F1E"
+      },
+      {
+        "type_id": "0x1E",
+        "handler_addr": "0x01387C"
+      },
+      {
+        "type_id": "0x20",
+        "handler_addr": "0x00E20A"
+      },
+      {
+        "type_id": "0x22",
+        "handler_addr": "0x01A184"
+      },
+      {
+        "type_id": "0x24",
+        "handler_addr": "0x014848"
+      },
+      {
+        "type_id": "0x26",
+        "handler_addr": "0x021F44"
+      },
+      {
+        "type_id": "0x28",
+        "handler_addr": "0x0194AE"
+      },
+      {
+        "type_id": "0x2A",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x2C",
+        "handler_addr": "0x0254EA"
+      },
+      {
+        "type_id": "0x2E",
+        "handler_addr": "0x00E25C"
+      },
+      {
+        "type_id": "0x30",
+        "handler_addr": "0x015AE2"
+      },
+      {
+        "type_id": "0x32",
+        "handler_addr": "0x018072"
+      },
+      {
+        "type_id": "0x34",
+        "handler_addr": "0x00EA04"
+      },
+      {
+        "type_id": "0x36",
+        "handler_addr": "0x01C772"
+      },
+      {
+        "type_id": "0x38",
+        "handler_addr": "0x01AC90"
+      },
+      {
+        "type_id": "0x3A",
+        "handler_addr": "0x00EDAA"
+      },
+      {
+        "type_id": "0x3C",
+        "handler_addr": "0x017D12"
+      },
+      {
+        "type_id": "0x3E",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x40",
+        "handler_addr": "0x016BD0"
+      },
+      {
+        "type_id": "0x42",
+        "handler_addr": "0x016C5C"
+      },
+      {
+        "type_id": "0x44",
+        "handler_addr": "0x016CBE"
+      },
+      {
+        "type_id": "0x46",
+        "handler_addr": "0x0173D6"
+      },
+      {
+        "type_id": "0x48",
+        "handler_addr": "0x01778C"
+      },
+      {
+        "type_id": "0x4A",
+        "handler_addr": "0x016D5C"
+      },
+      {
+        "type_id": "0x4C",
+        "handler_addr": "0x016DCE"
+      },
+      {
+        "type_id": "0x4E",
+        "handler_addr": "0x016F7C"
+      },
+      {
+        "type_id": "0x50",
+        "handler_addr": "0x0170E0"
+      },
+      {
+        "type_id": "0x52",
+        "handler_addr": "0x0171C4"
+      },
+      {
+        "type_id": "0x54",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x56",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x58",
+        "handler_addr": "0x021B2C"
+      },
+      {
+        "type_id": "0x5A",
+        "handler_addr": "0x0178EA"
+      },
+      {
+        "type_id": "0x5C",
+        "handler_addr": "0x0178EA"
+      },
+      {
+        "type_id": "0x5E",
+        "handler_addr": "0x0178EA"
+      },
+      {
+        "type_id": "0x60",
+        "handler_addr": "0x0178EA"
+      },
+      {
+        "type_id": "0x62",
+        "handler_addr": "0x017908"
+      },
+      {
+        "type_id": "0x64",
+        "handler_addr": "0x0179A8"
+      },
+      {
+        "type_id": "0x66",
+        "handler_addr": "0x0179D4"
+      },
+      {
+        "type_id": "0x68",
+        "handler_addr": "0x025B32"
+      },
+      {
+        "type_id": "0x6A",
+        "handler_addr": "0x00E144"
+      },
+      {
+        "type_id": "0x6C",
+        "handler_addr": "0x01F5A4"
+      },
+      {
+        "type_id": "0x6E",
+        "handler_addr": "0x01EB54"
+      },
+      {
+        "type_id": "0x70",
+        "handler_addr": "0x01DF1C"
+      },
+      {
+        "type_id": "0x72",
+        "handler_addr": "0x01D140"
+      },
+      {
+        "type_id": "0x74",
+        "handler_addr": "0x027C8A"
+      },
+      {
+        "type_id": "0x76",
+        "handler_addr": "0x0283E6"
+      },
+      {
+        "type_id": "0x78",
+        "handler_addr": "0x00E9DE"
+      },
+      {
+        "type_id": "0x7A",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x7C",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0x7E",
+        "handler_addr": "0x0172C2"
+      },
+      {
+        "type_id": "0x80",
+        "handler_addr": "0x028810"
+      },
+      {
+        "type_id": "0x82",
+        "handler_addr": "0x028D8C"
+      },
+      {
+        "type_id": "0x84",
+        "handler_addr": "0x02903C"
+      },
+      {
+        "type_id": "0x86",
+        "handler_addr": "0x01CD5A"
+      },
+      {
+        "type_id": "0x88",
+        "handler_addr": "0x020BDA"
+      },
+      {
+        "type_id": "0x8A",
+        "handler_addr": "0x020684"
+      },
+      {
+        "type_id": "0x8C",
+        "handler_addr": "0x01FA78"
+      },
+      {
+        "type_id": "0x8E",
+        "handler_addr": "0x029452"
+      },
+      {
+        "type_id": "0x90",
+        "handler_addr": "0x0269EE"
+      },
+      {
+        "type_id": "0x92",
+        "handler_addr": "0x029E32"
+      },
+      {
+        "type_id": "0x94",
+        "handler_addr": "0x019098"
+      },
+      {
+        "type_id": "0x96",
+        "handler_addr": "0x01933E"
+      },
+      {
+        "type_id": "0x98",
+        "handler_addr": "0x016EBC"
+      },
+      {
+        "type_id": "0x9A",
+        "handler_addr": "0x015316"
+      },
+      {
+        "type_id": "0x9C",
+        "handler_addr": "0x02A652"
+      },
+      {
+        "type_id": "0x9E",
+        "handler_addr": "0x02A374"
+      },
+      {
+        "type_id": "0xA0",
+        "handler_addr": "0x02A9F4"
+      },
+      {
+        "type_id": "0xA2",
+        "handler_addr": "0x02AD2C"
+      },
+      {
+        "type_id": "0xA4",
+        "handler_addr": "0x02B194"
+      },
+      {
+        "type_id": "0xA6",
+        "handler_addr": "0x02BDF2"
+      },
+      {
+        "type_id": "0xA8",
+        "handler_addr": "0x02C27A"
+      },
+      {
+        "type_id": "0xAA",
+        "handler_addr": "0x02BF3E"
+      },
+      {
+        "type_id": "0xAC",
+        "handler_addr": "0x023D02"
+      },
+      {
+        "type_id": "0xAE",
+        "handler_addr": "0x0246CC"
+      },
+      {
+        "type_id": "0xB0",
+        "handler_addr": "0x00E0B8"
+      },
+      {
+        "type_id": "0xB2",
+        "handler_addr": "0x016ADE"
+      },
+      {
+        "type_id": "0xB4",
+        "handler_addr": "0x022CE0"
+      },
+      {
+        "type_id": "0xB6",
+        "handler_addr": "0x017E28"
+      },
+      {
+        "type_id": "0xB8",
+        "handler_addr": "0x02B582"
+      },
+      {
+        "type_id": "0xBA",
+        "handler_addr": "0x016A64"
+      },
+      {
+        "type_id": "0xBC",
+        "handler_addr": "0x016F10"
+      },
+      {
+        "type_id": "0xBE",
+        "handler_addr": "0x01906C"
+      },
+      {
+        "type_id": "0xC0",
+        "handler_addr": "0x0247AA"
+      },
+      {
+        "type_id": "0xC2",
+        "handler_addr": "0x025054"
+      },
+      {
+        "type_id": "0xC4",
+        "handler_addr": "0x025114"
+      },
+      {
+        "type_id": "0xC6",
+        "handler_addr": "0x016CBE"
+      }
+    ]
+  },
+  "fx_callback_loop_00e0ba": {
+    "pool_base_addr": "0xFF2D8C",
+    "slot_count": 6,
+    "slot_stride_bytes": 90,
+    "fn_ptr_offset": "0x56"
+  },
+  "toast_and_pickup_loop_00e0f4": {
+    "toast_timer_addr": "0xFF1856",
+    "pool_base_addr": "0xFF2ABC",
+    "slot_count": 8,
+    "slot_stride_bytes": 90,
+    "state_offset": "0x04",
+    "jump_table_addr": "0x00E140"
+  }
+}

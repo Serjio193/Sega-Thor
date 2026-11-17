@@ -1,3 +1,6 @@
+# M15.364 ROM Entity AI Dispatch Table, Iso Extent Updater & FX Loops (`0x00DEEC`..`0x00E150`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_entity_ai_fx_dispatch.py`, `tests/rom_entity_ai_fx_dispatch_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_ai_fx_dispatch_m15_364.json`, and `docs/handoffs/STANDALONE_M15_364_ENTITY_AI_FX_DISPATCH_HANDOFF.md`.
+
 # M15.363 ROM Entity Animation Keyframe Stepper & Hitstop/Slow-Mo Damper (`0x008F12`..`0x00904A`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_entity_anim_stepper.py`, `tests/rom_entity_anim_stepper_test.py` (`2/2 PASS`), `data/thor-evidence/rom_entity_anim_stepper_m15_363.json`, and `docs/handoffs/STANDALONE_M15_363_ENTITY_ANIM_STEPPER_HANDOFF.md`.
 

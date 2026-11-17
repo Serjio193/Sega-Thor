@@ -1,3 +1,7 @@
+# ADR-20261117-M15-364-ENTITY-AI-FX-DISPATCH — Entity AI Dispatch Table, Iso Extent Updater & FX Loops (`0x00DEEC`..`0x00E150`)
+- **Context:** `0x00DEEC..0x00E150` implements the 3 main-loop entity/FX/pickup update loops (`0x00DEEC`, `0x00E0BA`, `0x00E0F4`), the 89-entry AI pointer table (`0x00DF54..0x00E0B7` for types `0x16..0xC6`), and the facing-swapped isometric `0.75 * h` hitbox half-extent updater.
+- **Decision:** Extract all 89 ROM AI handler pointers, `$FF17B8` bit-1 time-stop guards, and the isometric half-extent formula in `tools/extract_rom_entity_ai_fx_dispatch.py` and `docs/handoffs/STANDALONE_M15_364_ENTITY_AI_FX_DISPATCH_HANDOFF.md`.
+
 # ADR-20261117-M15-363-ENTITY-ANIM-STEPPER — Entity Animation Keyframe Stepper & Velocity Damper (`0x008F12`..`0x00904A`)
 - **Context:** `0x008F12..0x00904A` runs hitstop/time-stop/slow-mo velocity damping (`+0x9C`, `$FF17B8`) and steps `4B` `[frame_id, raw_dur]` animation keyframes (`+0x26` table, bit 15 loop sentinel, `(raw_dur >> 1) - 1` tick count) for all entities.
 - **Decision:** Model the exact bit-flag transitions (`+0x37` bits `0..2`), initial `-4` cursor reset, and `>> 1` duration halving in `tools/extract_rom_entity_anim_stepper.py` and `docs/handoffs/STANDALONE_M15_363_ENTITY_ANIM_STEPPER_HANDOFF.md`.

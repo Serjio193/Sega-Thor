@@ -1,3 +1,9 @@
+# M15.364 ROM Entity AI Dispatch Table, Iso Extent Updater & FX Loops
+- `tools/extract_rom_entity_ai_fx_dispatch.py` — extractor for `0x00DEEC..0x00E150` (89-entry AI handler table `0x00DF54..0x00E0B7`, isometric half-extent updater, `$FF2D8C` 6-slot FX loop, `$FF2ABC` 8-slot pickup loop).
+- `tests/rom_entity_ai_fx_dispatch_test.py` — `2` unit tests verifying the 89-entry AI table and isometric `0.75` half-extent formula.
+- `data/thor-evidence/rom_entity_ai_fx_dispatch_m15_364.json` — extracted M15.364 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_364_ENTITY_AI_FX_DISPATCH_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.363 ROM Entity Animation Keyframe Stepper & Velocity Damper
 - `tools/extract_rom_entity_anim_stepper.py` — extractor for `0x008F12..0x00904A` (`+0x9C` hitstop / `$FF17B8` time-stop & slow-mo damper, `4B` keyframe stepper with bit-15 loop marker & halved durations).
 - `tests/rom_entity_anim_stepper_test.py` — `2` unit tests verifying ROM opcodes and multi-frame keyframe advance/loop-wrap pulse.
