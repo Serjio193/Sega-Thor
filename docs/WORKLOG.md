@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.96: V-Int Sound Tick & HUD Slide)
+- **Concrete Task**: Implement `src/game/ui/vint_hud_slide.hpp/.cpp` with `step_hud_slide_offset(offset, reverse_dir)` (`0x002380..0x0023CA`: step `2` px, `dir == 0` stops at `0x20` wrapping `>= 0x158 -> 0`, `dir != 0` stops at `0x138` wrapping `< 0 -> 0x158`) and `VintTailState` / `step_vint_tail()` (`0x060000` sound tick); add `tests/m16_96_vint_hud_slide_test.cpp`; qualify full 56-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/vint_hud_slide.hpp` / `src/game/ui/vint_hud_slide.cpp`.
+  * Added `tests/m16_96_vint_hud_slide_test.cpp` (registered as `oasis_m16_96_vint_hud_slide` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 56/56 regression run.
+  * MSVC Debug (`build-debug`): 56/56 regression run.
+  * Remaining unknowns: Wiring `step_vint_tail()` directly into the live VDP HScroll/VScroll HUD-split scanline driver is deferred to future HUD-scroll integration.
+
 # Worklog — 2026-11-17 (M16.95: Wrap-Around VDP Plane Blitter)
 - **Concrete Task**: Implement `src/game/world/vdp_plane_blitter.hpp/.cpp` with `BlitDimensions` (`cols`, `rows`), `select_blit_dimensions(tiles_w, tiles_h, force_full_bit1)` (`0x00D820..0x00D846`: `(64, 32)` vs `(41, 29)`), and `blit_wrapped_plane_window(...)` (`0x00D8C4..0x00D946`: `64x32` VDP nametable `0x1000`B / `0x80`B row stride with dual modulo wrap on source `(tiles_w, tiles_h)` and VDP `(64, 32)`); add `tests/m16_95_vdp_plane_blitter_test.cpp`; qualify full 55-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

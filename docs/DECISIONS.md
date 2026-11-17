@@ -1,3 +1,14 @@
+# ADR-20261117-M16-96-VINT-HUD-SLIDE — V-Int Sound Tick & HUD Slide
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.312 extracted the V-Int tail (`0x002380..0x0023CA`): `0x060000` sound driver tick and `$FF185A` HUD slide offset (`2` px step, `0x20`/`0x138` stops, `0x158` wrap).
+
+**Decisions:**
+1. **Dedicated `vint_hud_slide` Module:**
+   - Added `src/game/ui/vint_hud_slide.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-95-VDP-PLANE-BLITTER — Wrap-Around VDP Plane Blitter
 **Status:** Accepted
 **Date:** 2026-11-17

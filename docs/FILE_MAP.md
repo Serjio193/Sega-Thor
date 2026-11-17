@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/vint_hud_slide.hpp` / `src/game/ui/vint_hud_slide.cpp`: V-Int tail sound driver tick (`0x060000`) and HUD slide offset state machine (`0x002380..0x0023CA`, `$FF1859`/`$FF185A`, stops `0x20`/`0x138`, wrap `0x158`) (M16.96).
+- `tests/m16_96_vint_hud_slide_test.cpp`: Automated M16.96 test qualifying constants, forward/reverse HUD slide stops and wraps, and `VintTailState` tick (M16.96).
 - `src/game/world/vdp_plane_blitter.hpp` / `src/game/world/vdp_plane_blitter.cpp`: Wrap-around VDP Plane A/B blitter (`0x00D800..0x00D94E`, `(64, 32)` vs `(41, 29)` selection and dual-modulo `64x32` nametable copy) (M16.95).
 - `tests/m16_95_vdp_plane_blitter_test.cpp`: Automated M16.95 test qualifying full-plane vs viewport dimension selection and dual-modulo wrap blitting (M16.95).
 - `src/game/entities/entity_anim_sequencer.hpp` / `src/game/entities/entity_anim_sequencer.cpp`: 4-byte entity animation keyframe sequencer (`0x008FF0..0x009041`, `AnimKeyframe4`, `EntityAnimState`, `step_anim_keyframe`, `step_anim_tick`) (M16.94).

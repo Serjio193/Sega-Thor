@@ -1,3 +1,9 @@
+# M16.96 V-Int Sound Tick & HUD Slide (`0x002380..0x0023CA`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `step_hud_slide_offset` (`0x20` / `0x138` stops, `0x158` wrap, `2` px step) and `VintTailState` / `step_vint_tail` (`0x060000` sound tick) in `src/game/ui/vint_hud_slide.hpp/.cpp`.
+- Qualified `oasis_m16_96_vint_hud_slide` and full 56-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.95 Wrap-Around VDP Plane Blitter (`0x00D800..0x00D94E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
