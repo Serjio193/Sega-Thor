@@ -1,0 +1,39 @@
+{
+  "routine": "dialogue_scroll_vdp_and_glyph_dma_streamer",
+  "start_address": "0x00C566",
+  "end_address": "0x00C756",
+  "size_bytes": 496,
+  "entry_points": {
+    "dialogue_advance_line_and_scroll": "0x00C566",
+    "dialogue_vdp_clear_line": "0x00C66A",
+    "dialogue_render_glyph_dma": "0x00C6BE",
+    "dialogue_queue_blank_dma": "0x00C734"
+  },
+  "line_offsets_init": [
+    12,
+    24,
+    36,
+    48
+  ],
+  "line_recycle_val": 48,
+  "step_decrement": 2,
+  "line_tile_row_stride": 1024,
+  "glyph_tile_size_bytes": 32,
+  "dma_queue_entry_size_bytes": 8,
+  "blank_dma_words": 512,
+  "blank_rom_source": "0x007F9DD4",
+  "memory_map": {
+    "FF1872": "plane_vram_top_base",
+    "FF1874": "plane_vram_bottom_base",
+    "FF1876": "line1_row_offset",
+    "FF1878": "line2_row_offset",
+    "FF187A": "line3_row_offset",
+    "FF187C": "line4_row_offset",
+    "FF187E": "cursor_tile_x",
+    "FF1880": "line_counter",
+    "FF1892": "dma_queue_pointer",
+    "FF164E": "vint_flags",
+    "FF2FA8": "glyph_tile_buffer_base"
+  },
+  "code_hex": "427900ff187e323900ff1880524133c100ff18800c41000362024e7548e70080557900ff1876557900ff1878557900ff187a557900ff187c610002ae0839000000ff164e66f6323900ff1876343900ff1878363900ff187a383900ff187c4a4167464a4267564a43676a4a44677a303900ff18720c41000c65200640040032020c42000c6514303900ff187432030c43000c6506064004003204343c000a9441610000626000ff7a303900ff18726100011e33fc003000ff18766042303900ff1872064004006100010633fc003000ff1878602a303900ff1874610000f233fc003000ff187a6016303900ff187406400400610000da33fc003000ff187c4cdf01004e750c4200086400004ce54ad04245f900c0000049ea00043a003c00e55d0245000302463fff00464000007c070038bc8f20323c0003388638854243383c001f348351ccfffc544651c9ffec38bc8f02027cf9ff4e7548e700800440002045f900ff2fa8eb48d4c0200ae288323900ff188002410003343900ff18720c4100026506343900ff187402410001670406420400323900ff187eeb49d242007c0700207900ff189220c030c130fc001023c800ff1892027cf9ff08f9000100ff164e527900ff187e4cdf01004e75007c0700207900ff189220fc007f9dd430c030fc020023c800ff1892027cf9ff4e75"
+}

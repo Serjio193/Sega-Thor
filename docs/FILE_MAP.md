@@ -1,3 +1,9 @@
+# M15.429 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer
+- `tools/extract_rom_dialogue_scroll_dma.py` — extractor for `0x00C566..0x00C756` (4-line circular buffer scroll `dialogue_advance_line_and_scroll`, direct VDP clearer `0x00C66A`, glyph DMA streamer `0x00C6BE`, and blank DMA helper `0x00C734`).
+- `tests/rom_dialogue_scroll_dma_test.py` — `5` unit tests verifying ROM constants, fast line advance without scrolling, 4-line circular buffer scroll recycling to `0x30`, glyph DMA queue construction, and blank buffer DMA helper.
+- `data/thor-evidence/rom_dialogue_scroll_dma_m15_429.json` — extracted M15.429 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_429_DIALOGUE_SCROLL_DMA_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.428 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller
 - `tools/extract_rom_dialogue_script_vm.py` — extractor for `0x00C2EC..0x00C566` (universal entrypoint `display_dialogue_message`, 98-entry string table at `0x051514`, bytecode interpreter, interactive button wait `0x00C536`, and entity lifecycle).
 - `tests/rom_dialogue_script_vm_test.py` — `6` unit tests verifying ROM constants, debug test condition branching, string table offset resolution, bytecode interpreter execution, button wait loops, and multi-page prologue text.

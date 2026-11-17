@@ -1,3 +1,6 @@
+# M15.429 ROM Dialogue Window 4-Line Circular Scroll Engine, VDP Direct Clearer & Glyph DMA Streamer (`0x00C566`..`0x00C756`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dialogue_scroll_dma.py`, `tests/rom_dialogue_scroll_dma_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dialogue_scroll_dma_m15_429.json`, and `docs/handoffs/STANDALONE_M15_429_DIALOGUE_SCROLL_DMA_HANDOFF.md`.
+
 # M15.428 ROM Dialogue Script Virtual Machine & Message Window Presentation Controller (`0x00C2EC`..`0x00C566`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_dialogue_script_vm.py`, `tests/rom_dialogue_script_vm_test.py` (`6/6 PASS`), `data/thor-evidence/rom_dialogue_script_vm_m15_428.json`, and `docs/handoffs/STANDALONE_M15_428_DIALOGUE_SCRIPT_VM_HANDOFF.md`.
 
