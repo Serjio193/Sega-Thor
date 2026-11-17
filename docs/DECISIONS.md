@@ -1,3 +1,14 @@
+# ADR-20261117-M16-84-HUD-GAUGE-BARS — HUD HP/SP/Enemy Gauge Bar VDP Renderer (0x00267C..0x0027A4)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.300 extracted the 48-row differential HUD gauge bar renderer (`0x00267C..0x0027A4`) for Ali HP (`0x70E00003`), Ali SP (`0x72800003`), and Target Enemy HP (`0x74200003`, `$FF184F` & `!demo`).
+
+**Decisions:**
+1. **Dedicated `hud_gauge_bars` Module:**
+   - Added `src/game/ui/hud_gauge_bars.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-83-SPECIAL-MOVE-INPUTS — Ali Command-Input Special Moves (0x0086B4 & 0x008778)
 **Status:** Accepted
 **Date:** 2026-11-17

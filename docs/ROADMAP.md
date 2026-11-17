@@ -1,3 +1,9 @@
+# M16.84 HUD HP/SP/Enemy Gauge Bar VDP Renderer (0x00267C..0x0027A4) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_gauge_fill_rows` (`0x00271C`), `HudGaugeConfig` (`0x70E00003`/`0x72800003`/`0x74200003`, `0x00EEEE00` erase mask), and `HudGaugeState::update_differential` (`0x002744..0x0027A4`) in `src/game/ui/hud_gauge_bars.hpp/.cpp`.
+- Qualified `oasis_m16_84_hud_gauge_bars` and full 44-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.83 Ali Command-Input Special Moves (0x0086B4 360° Spin Slash & 0x008778 F-B-F Lunge) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

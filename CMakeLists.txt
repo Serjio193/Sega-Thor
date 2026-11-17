@@ -44,6 +44,7 @@ add_library(oasis_core
     src/game/ui/file_select_menu.cpp
     src/game/ui/new_game_init.cpp
     src/game/ui/continue_and_checkpoint.cpp
+    src/game/ui/hud_gauge_bars.cpp
     src/game/video/palette_fade.cpp
     src/game/video/vint_dma_and_input_ring.cpp
     src/game/enemy/enemy_ai_0030_0048.cpp

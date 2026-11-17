@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/ui/hud_gauge_bars.hpp` / `src/game/ui/hud_gauge_bars.cpp`: HUD HP/SP/Enemy Gauge Bar VDP Renderer (`0x00267C..0x0027A4`, `compute_gauge_fill_rows`, differential row-delta writes, `0x00EEEE00` erase mask) (M16.84).
+- `tests/m16_84_hud_gauge_bars_test.cpp`: Automated M16.84 test qualifying gauge fill-row math, differential caching, erase OR-mask, and enemy timer/demo gating (M16.84).
 - `src/game/player/special_move_inputs.hpp` / `src/game/player/special_move_inputs.cpp`: Ali command-input special moves (`0x0086B4` 360° Spin Slash via LUT `0x008768` & `0x008778` F-B-F Lunge via `0x0087F4`) (M16.83).
 - `tests/m16_83_special_move_inputs_test.cpp`: Automated M16.83 test qualifying CW/CCW 360° spin, F-B-F lunge, perpendicular abort, and `$FF16EA` count clear (M16.83).
 - `src/game/combat/hit_reactions_and_sparks.hpp` / `src/game/combat/hit_reactions_and_sparks.cpp`: Hit-reaction knockback physics (`0x00BF26`, profiles `0/2/4/6`), shield parry recoil (`0x00BFAE`, SFX `0x00900202`, weapon `6`/`10`), and 4-slot hit-spark pool (`0x00C012`, `$FF19C8`, `timer = 5`) (M16.82).

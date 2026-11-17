@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.84: HUD HP/SP/Enemy Gauge Bar VDP Renderer)
+- **Concrete Task**: Implement `src/game/ui/hud_gauge_bars.hpp/.cpp` with `compute_gauge_fill_rows(cur, max_val)` (`0x00271C`: `0 -> 0`, `cur >= max -> 48`, else `((cur * 47) / max) + 1`), `HudGaugeConfig` (Ali HP `0x70E00003`/`0x4E2222E4`, Ali SP `0x72800003`/`0x4E6666E4`, Enemy HP `0x74200003`/`0xDE4444ED` gated by `$FF184F` & `!demo`, erase mask `0x00EEEE00`), and `HudGaugeState::update_differential(...)` (`0x002744..0x0027A4`); add `tests/m16_84_hud_gauge_bars_test.cpp`; qualify full 44-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/ui/hud_gauge_bars.hpp` / `src/game/ui/hud_gauge_bars.cpp`.
+  * Added `tests/m16_84_hud_gauge_bars_test.cpp` (registered as `oasis_m16_84_hud_gauge_bars` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 44/44 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_84`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 44/44 regression run.
+  * Remaining unknowns: Wiring `HudGaugeState::update_differential()` directly into `VdpState::vram` during V-Int is deferred to future HUD/VDP unification.
+
 # Worklog — 2026-11-17 (M16.83: Ali Command-Input Special Moves)
 - **Concrete Task**: Implement `src/game/player/special_move_inputs.hpp/.cpp` with `detect_spin_360(InputHistoryRing64&)` (`0x0086B4`: 30-frame scan, 16-byte LUT `0x008768`, 4 consecutive CW/CCW cardinal steps, clears `ring.count()` on match) and `detect_fbf_lunge(InputHistoryRing64&, uint8_t facing)` (`0x008778` / `0x0087F4`: Up `1,2,1,0`, Right `8,4,8,0`, Down `2,1,2,0`, Left `4,8,4,0`, perpendicular abort, clears `ring.count()` on match); add `clear_count()` to `InputHistoryRing64`; add `tests/m16_83_special_move_inputs_test.cpp`; qualify full 43-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:
