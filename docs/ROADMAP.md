@@ -1,3 +1,21 @@
+# M16.163 ROM Attract Demo Player Script Driver, HUD Frame Render Hook & Hit Spark Generator (`0x00A738..0x00A9A0` / `0x00A7E6..0x00A9A0`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `process_demo_overlay`, `process_spark_particle`, `step_spark_pool`, and `process_demo_hud_spark_raw` in `src/game/render/demo_hud_spark_generator.hpp/.cpp`:
+  - `0x00A7E6..0x00A8EE`: Demo Mode Overlay SAT Compositor:
+    - Status register `$FF1656.w` bit 7 suppression check.
+    - Mode 3 (`status & 0x0040 != 0`): 3 sprites at Y=0xE4 (228), X=[0xF0, 0x110, 0x130], conditional DMA from `0x000AA1FD` to VRAM `$F360` (`$C0` words) when `$FF17C0.b != 1`.
+    - Mode 2 (`status & 0x0040 == 0`): 2 sprites at Y=0xE4 (228), X=[0x10C, 0x124], conditional DMA from `0x000AA1AD` to VRAM `$F360` (`$50` words) when `$FF17C0.b != 0xFF`.
+    - Capped by hardware 80-sprite limit check on `$FF188A.w`.
+  - `0x00A8F0..0x00A99E`: Camera-Relative Particle Spark SAT Generator:
+    - Decrements lifetime at `+0x06`, clearing `type = 0` on expiry.
+    - Capped by hardware sprite count `$FF188A >= 80`.
+    - Camera scroll plane selection via bit 7 of `$FF16F0.b` (Layer 1 `$FF1716` vs Layer 2 `$FF173E`).
+    - Screen projection `screen = world - cam + 120`.
+    - Screen bounds clipping relative to margin 112 against height 240 and width 336.
+  - Raw 64KB RAM window integration helper `process_demo_hud_spark_raw`.
+- Qualified `oasis_m16_163_demo_hud_spark_generator` and the 143-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.162 ROM Shadow SAT Sprite Pass & Elevation Stacking Engine (`0x00A5A2..0x00A738` / `0x00A6A0..0x00A786`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

@@ -1,3 +1,28 @@
+# ADR-20261117-M16-163-DEMO-HUD-SPARK-GENERATOR — ROM Attract Demo Player Script Driver, HUD Frame Render Hook & Hit Spark Generator (0x00A738..0x00A9A0 / 0x00A7E6..0x00A9A0)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.414 extracted ROM routines `0x00A7E6..0x00A9A0` governing demo mode overlay SAT composition and camera-relative particle spark generation:
+   - `0x00A7E6..0x00A8EE`: Demo Mode Overlay SAT Compositor:
+     * Reads status register `$FF1656.w`: bit 7 set suppresses demo overlay.
+     * Bit 6 set (Mode 3): emits 3 sprites at Y=0xE4 (228), X=[0xF0, 0x110, 0x130]. Queues DMA transfer from ROM `0x000AA1FD` to VRAM `$F360` (size `0xC0` words) if `$FF17C0.b != 1`.
+     * Bit 6 clear (Mode 2): emits 2 sprites at Y=0xE4 (228), X=[0x10C, 0x124]. Queues DMA transfer from ROM `0x000AA1AD` to VRAM `$F360` (size `0x50` words) if `$FF17C0.b != 0xFF`.
+     * Enforces hardware 80-sprite limit check on `$FF188A.w` before emitting SAT entries into `$FF13CC + $FF188C.w`.
+   - `0x00A8F0..0x00A99E`: Camera-Relative Particle Spark SAT Generator:
+     * Decrements lifetime timer at `+0x06`. If `<= 0`, clears slot type `clr.w (a6)` and returns.
+     * Capped by hardware sprite count `$FF188A >= 0x50`.
+     * Selects camera scroll plane via bit 7 of `$FF16F0.b` (Layer 1 `$FF1716` vs Layer 2 `$FF173E`).
+     * Computes screen coordinates: `screen = world - cam + 120`.
+     * Applies screen bounds clipping: `adj_y = screen_y - 112` clipped to `[0..240]`, `adj_x = screen_x - 112` clipped to `[0..336]`.
+     * Emits SAT sprite on within-bounds condition, incrementing sprite count by 1 and SAT byte offset by 8.
+
+**Decisions:**
+1. **Dedicated `demo_hud_spark_generator` Module:**
+   - Added `src/game/render/demo_hud_spark_generator.hpp/.cpp` modeling pure `process_demo_overlay`, `process_spark_particle`, `step_spark_pool`, and raw memory integration `process_demo_hud_spark_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (143/143 M16 tests).
+
 # ADR-20261117-M16-162-SHADOW-SAT-PASS — ROM Shadow SAT Sprite Pass & Elevation Stacking Engine (0x00A5A2..0x00A738 / 0x00A6A0..0x00A786)
 **Status:** Accepted
 **Date:** 2026-11-17

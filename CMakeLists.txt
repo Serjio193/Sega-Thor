@@ -137,6 +137,7 @@ add_library(oasis_core
     src/game/render/dialogue_sprite_subsystem.cpp
     src/game/render/pass_b_sat_dispatcher.cpp
     src/game/render/shadow_sat_pass.cpp
+    src/game/render/demo_hud_spark_generator.cpp
     src/game/render/vdp_dma_queue.cpp
     src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp
