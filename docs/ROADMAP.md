@@ -1,3 +1,9 @@
+# M16.116 3D AABB Solid Sweep (-X, +Y, -Y) (`0x009EBA..0x00A194`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `sweep_aabb_solid_3axis` (`0x009EBA` `-X`, `0x009FA0` `+Y`, `0x00A09A` `-Y` across the 21-slot `0xBC`-stride entity pool, 3D AABB gap clamping, and zero-gap `±1` push) in `src/game/world/aabb_solid_sweep_3axis.hpp/.cpp` (reusing `SolidSweepBlocker` from `solid_entity_sweep.hpp`).
+- Qualified `oasis_m16_116_aabb_solid_sweep_3axis` and the 97-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.115 In-Game Save Prompt & Save-Allowed Guard (`0x005472..0x005578`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

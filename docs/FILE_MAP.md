@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/world/aabb_solid_sweep_3axis.hpp` / `src/game/world/aabb_solid_sweep_3axis.cpp`: 3D AABB solid sweep for `-X` (`0x009EBA`), `+Y` (`0x009FA0`), and `-Y` (`0x00A09A`) across 21 `0xBC`-stride slots with zero-gap `±1` push, reusing `SolidSweepBlocker` (M16.116).
+- `tests/m16_116_aabb_solid_sweep_3axis_test.cpp`: Automated M16.116 test qualifying `-X`, `+Y`, `-Y` gap clamping, Z non-overlap skip, and zero-gap `±1` push (M16.116).
 - `src/game/ui/save_prompt.hpp` / `src/game/ui/save_prompt.cpp`: In-game save prompt & save-allowed guard (`0x005472..0x005578`, `can_open_save_prompt`, `step_save_prompt` `3=YES`/`4=NO`, toggle `0x006003A5`, confirm `0x00A003AA`, cancel `0x00A00347`, error `0x00A00253`) (M16.115).
 - `tests/m16_115_save_prompt_test.cpp`: Automated M16.115 test qualifying the save-allowed guard and YES/NO prompt state machine (M16.115).
 - `src/game/player/consumable_effects.hpp` / `src/game/player/consumable_effects.cpp`: Player-facing consumable item validation (`0x005236..0x00530A`) and HP/SP/Spirit restore (`0x00530C..0x005472`) delegating to `oasis::game::items` (M16.114).

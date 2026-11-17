@@ -1,3 +1,14 @@
+# Worklog — 2026-11-17 (M16.116: 3D AABB Solid Sweep (-X, +Y, -Y))
+- **Concrete Task**: Implement `src/game/world/aabb_solid_sweep_3axis.hpp/.cpp` with `sweep_aabb_solid_3axis(...)` (`0x009EBA` `-X`, `0x009FA0` `+Y`, `0x00A09A` `-Y` across the 21-slot `0xBC`-stride entity pool, clamping movement to nearest 3D AABB gap and pushing obstacle by `±1` when `gap == 0` and push flags allow), reusing `SolidSweepBlocker` from `src/game/entities/solid_entity_sweep.hpp`; add `tests/m16_116_aabb_solid_sweep_3axis_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/world/aabb_solid_sweep_3axis.hpp` / `src/game/world/aabb_solid_sweep_3axis.cpp`.
+  * Added `tests/m16_116_aabb_solid_sweep_3axis_test.cpp` (registered as `oasis_m16_116_aabb_solid_sweep_3axis` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): `97/97` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * MSVC Debug (`build-debug`): `97/97` passed (`-R "oasis_m16_|project_file_line_limit"`).
+  * `git diff --check`: clean.
+  * Remaining unknowns: Wiring `sweep_aabb_solid_3axis()` alongside `sweep_solid_x_pos()` into `StandaloneGameSimulation` entity movement is deferred to future entity-physics unification.
+
 # Worklog — 2026-11-17 (M16.115: In-Game Save Prompt & Save-Allowed Guard)
 - **Concrete Task**: Implement `src/game/ui/save_prompt.hpp/.cpp` with `can_open_save_prompt(...)` (`0x005488..0x0054C6`: `$FF1996 == 0`, `$FF17C1 == 0`, `$FF19EC <= 2`, and `room_save_allowed || debug_override`, error SFX `0x00A00253`) and `step_save_prompt(choice, joypad)` (`0x0054E2..0x00555E`: `3=YES`, `4=NO`, Up/Down toggle SFX `0x006003A5`, A on YES confirm SFX `0x00A003AA`, cancel SFX `0x00A00347`); add `tests/m16_115_save_prompt_test.cpp`; register in `CMakeLists.txt` and `cmake/project_tests_m16.cmake`; qualify M16 + line-limit regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

@@ -1,3 +1,14 @@
+# ADR-20261117-M16-116-AABB-SOLID-SWEEP-3AXIS — 3D AABB Solid Sweep (-X, +Y, -Y)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.332 extracted `0x009EBA..0x00A194` (`-X`, `+Y`, `-Y` 3D AABB solid sweeps, companion to M16.89 `+X` sweep `0x009DD6`).
+
+**Decisions:**
+1. **Dedicated `aabb_solid_sweep_3axis` Module:**
+   - Added `src/game/world/aabb_solid_sweep_3axis.hpp/.cpp` reusing `entities::SolidSweepBlocker` and `kSolidSweepSlotCount` from `solid_entity_sweep.hpp` via a single parameterized loop for all 3 axes.
+
 # ADR-20261117-M16-115-SAVE-PROMPT — In-Game Save Prompt & Save-Allowed Guard
 **Status:** Accepted
 **Date:** 2026-11-17
