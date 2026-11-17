@@ -1,3 +1,9 @@
+# M15.331 ROM In-Game Save Prompt & Save-Allowed Guard
+- `tools/extract_rom_save_prompt.py` — ROM extractor & verifier for `0x005472..0x005578` (`$FF16F1` bit-6 save guard, `3=YES`/`4=NO` `$FF1862` prompt, SFX `0x006003A5`/`0x00A003AA`/`0x00A00347`/`0x00A00253`, `0x001726` SRAM save).
+- `tests/rom_save_prompt_test.py` — Unit tests verifying save-allowed guard and YES/NO prompt state machine.
+- `data/thor-evidence/rom_save_prompt_m15_331.json` — Verified evidence JSON for M15.331.
+- `docs/handoffs/STANDALONE_M15_331_SAVE_PROMPT_HANDOFF.md` — C++20 Standalone handoff for M16.115.
+
 # M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore
 - `tools/extract_rom_consumable_effects.py` — ROM extractor & verifier for `0x005236..0x005472` (17-entry jump table `0x00532C` for IDs `0x1A..0x2A`, spirit summon & 25/50/75/100% HP/SP heal tiers, `0x00A00234` SFX).
 - `tests/rom_consumable_effects_test.py` — Unit tests verifying consumable validation rules and heal tiers.

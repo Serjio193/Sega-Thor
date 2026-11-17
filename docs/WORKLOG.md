@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.331: ROM IN-GAME SAVE PROMPT & SAVE-ALLOWED GUARD (`0x005472`..`0x005578`) — `$FF16F1` Bit 6, YES(`3`)/NO(`4`), `0x001726` Save; Extractor (`tools/extract_rom_save_prompt.py` <= 500 lines), Tests (`tests/rom_save_prompt_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_331_SAVE_PROMPT_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x005472..0x005578` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_save_prompt.py`, `python -m unittest tests/rom_save_prompt_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.331, check M16.106 subagent, and continue.
+
 # 2026-11-17 — Milestone M15.330: ROM CONSUMABLE ITEM VALIDATION & HP/SP/SPIRIT RESTORE (`0x005236`..`0x005472`) — `0x1A..0x2A` (17 Entries `0x00532C`), 25/50/75/100% Heal, `0x00A00234`; Extractor (`tools/extract_rom_consumable_effects.py` <= 500 lines), Tests (`tests/rom_consumable_effects_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_330_CONSUMABLE_EFFECTS_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x005236..0x005472` and extracted 17-entry jump table `0x00532C` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_consumable_effects.py`, `python -m unittest tests/rom_consumable_effects_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

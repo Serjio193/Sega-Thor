@@ -1,0 +1,20 @@
+{
+  "milestone": "M15.331",
+  "title": "ROM In-Game Save Prompt & Save-Allowed Guard",
+  "routine": {
+    "start": "0x005472",
+    "end": "0x005578"
+  },
+  "constants": {
+    "choice_yes": 3,
+    "choice_no": 4,
+    "default_choice": 4,
+    "room_save_allowed_bit": 6,
+    "max_player_state": 2,
+    "toggle_sfx": "0x006003A5",
+    "confirm_sfx": "0x00A003AA",
+    "cancel_sfx": "0x00A00347",
+    "error_sfx": "0x00A00253",
+    "sram_save_routine": "0x00001726"
+  }
+}

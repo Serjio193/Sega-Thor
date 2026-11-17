@@ -1,3 +1,4 @@
+# M15.331 ROM In-Game Save Prompt & Save-Allowed Guard (`0x005472`..`0x005578`) — COMPLETE / VERIFIED
 # M15.330 ROM Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`) — COMPLETE / VERIFIED
 # M15.329 ROM 4x4 Food/Consumable Menu Use & Drop (`0x00474E`..`0x00494A`) — COMPLETE / VERIFIED
 # M15.328 ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E`..`0x0046E2`) — COMPLETE / VERIFIED

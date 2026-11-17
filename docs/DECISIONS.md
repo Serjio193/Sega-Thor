@@ -1,3 +1,8 @@
+# ADR-20261117-M15-331-SAVE-PROMPT — In-Game Save Prompt & Save-Allowed Guard (`0x005472`..`0x005578`)
+- **Context:** In-game saving (`0x005472`) checks lock flags `$FF1996`/`$FF17C1`, player state `$FF19EC <= 2`, and room flag `$FF16F1` bit 6 before opening a YES(`3`)/NO(`4`) prompt (`$FF1862`) that invokes `0x001726` on confirmation.
+- **Decision:** Extracted all guard flags, choice constants, and SFX IDs into `data/thor-evidence/rom_save_prompt_m15_331.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.115 can implement exact in-game save gating and prompt flow.
+
 # ADR-20261117-M15-330-CONSUMABLE-EFFECTS — Consumable Item Validation & HP/SP/Spirit Restore (`0x005236`..`0x005472`)
 - **Context:** Consumables (`0x1A..0x2A`) validate against Area `0x10`, spirit unlock/active flags (`$FF0D7A`, `$FF1AA4`), and `HP < MaxHP` / `SP < MaxSP`, then dispatch via `0x00532C` to summon spirits or restore 25%/50%/75%/100% HP/SP (`0x00A00234`).
 - **Decision:** Extracted the 17-entry jump table, validation predicates, and heal tiers into `data/thor-evidence/rom_consumable_effects_m15_330.json` with 2/2 passing tests and Standalone handoff.
