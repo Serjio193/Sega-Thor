@@ -1,0 +1,52 @@
+{
+  "routine": "camera_deadzone_tracking_and_boundary_controller",
+  "start_address": "0x00CEEA",
+  "end_address": "0x00D146",
+  "size_bytes": 604,
+  "entry_points": {
+    "camera_tracker_update": "0x00CEEA",
+    "camera_tracker_start_panning": "0x00CF06",
+    "camera_fixed_axis_direct_follow": "0x00D0C4",
+    "clamp_camera_viewport_bounds": "0x00D118"
+  },
+  "deadzone_parameters": {
+    "horizontal": {
+      "left_deadzone_bias_edge": 80,
+      "right_deadzone_bias_edge": 240,
+      "left_pan_threshold": 120,
+      "right_pan_threshold": 200,
+      "smooth_min_speed": 3,
+      "smooth_fast_catchup_threshold": 32,
+      "smooth_fast_catchup_offset": 30
+    },
+    "vertical": {
+      "top_pan_threshold": 104,
+      "bottom_pan_threshold": 128,
+      "smooth_min_speed": 3,
+      "smooth_fast_catchup_threshold": 32,
+      "smooth_fast_catchup_offset": 30,
+      "max_negative_speed": -6
+    },
+    "viewport_tiles": {
+      "screen_width_tiles": 40,
+      "screen_height_tiles": 28,
+      "tile_size_shift": 3
+    }
+  },
+  "hardware_and_ram_flags": {
+    "player_x": "0xFF19F0",
+    "player_y": "0xFF19F4",
+    "player_elevation_z": "0xFF19F8",
+    "warp_sfx_trigger": "0xFF17BB",
+    "instant_snap_flag": "0xFF17BA",
+    "room_custom_flag": "0xFF16F1",
+    "max_camera_x": "0xFF177A",
+    "max_camera_y": "0xFF177C",
+    "camera_offset_x": "0xFF177E",
+    "camera_offset_y": "0xFF1780",
+    "screen_shake_timer": "0xFF17C4",
+    "scroll_bias_flag": "0xFF1859",
+    "scroll_bias_target": "0xFF185A"
+  },
+  "byte_hash": "-3af0e71529fee676"
+}

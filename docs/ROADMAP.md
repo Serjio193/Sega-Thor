@@ -1,3 +1,6 @@
+# M15.435 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller (`0x00CEEA`..`0x00D146`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_camera_controller.py`, `tests/rom_camera_controller_test.py` (`5/5 PASS`), `data/thor-evidence/rom_camera_controller_m15_435.json`, and `docs/handoffs/STANDALONE_M15_435_CAMERA_CONTROLLER_HANDOFF.md`.
+
 # M15.434 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle (`0x00CD64`..`0x00CEEA`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_room_presentation_jingle.py`, `tests/rom_room_presentation_jingle_test.py` (`5/5 PASS`), `data/thor-evidence/rom_room_presentation_jingle_m15_434.json`, and `docs/handoffs/STANDALONE_M15_434_ROOM_PRESENTATION_JINGLE_HANDOFF.md`.
 

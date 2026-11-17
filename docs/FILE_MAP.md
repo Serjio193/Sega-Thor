@@ -1,3 +1,9 @@
+# M15.435 ROM Camera Deadzone Tracking, Boundary Clamp & Screen Shake Controller
+- `tools/extract_rom_camera_controller.py` — extractor for `0x00CEEA..0x00D146` (camera deadzone tracking, left/right edge panning, top/bottom edge panning, screen shake oscillation, direct follow mode, and viewport boundary clamp).
+- `tests/rom_camera_controller_test.py` — `5` unit tests verifying ROM constants, horizontal deadzone [120..200] and panning speed clamps, vertical deadzone [104..128] and speed clamps, screen shake oscillation, and direct follow with tilemap clamp.
+- `data/thor-evidence/rom_camera_controller_m15_435.json` — extracted M15.435 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_435_CAMERA_CONTROLLER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.434 ROM Room Entry Presentation Manager, Palette Crossfader & Footstep Audio Jingle
 - `tools/extract_rom_room_presentation_jingle.py` — extractor for `0x00CD64..0x00CEEA` (presentation manager, whiteout flash, 33-step crossfade, instant warp with footstep audio, and CRAM palette line copy).
 - `tests/rom_room_presentation_jingle_test.py` — `5` unit tests verifying ROM constants and opcode sequence, whiteout flash to pure white, 33-step palette crossfade loop, standard fade vs instant warp with SFX, and footstep jingle sequence.
