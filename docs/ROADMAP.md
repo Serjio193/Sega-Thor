@@ -1,3 +1,12 @@
+# M16.152 ROM Flying/Projectile Dual-Axis Tilemap Raycaster & Point Collision Dispatcher (`0x009708..0x0098EC`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `calculate_flying_horizontal_raycast`, `calculate_flying_vertical_raycast`, `calculate_flying_dual_axis_raycast`, and `step_flying_entity_simulation` in `src/game/player/flying_raycaster.hpp/.cpp`:
+  - Flying horizontal raycast (`0x009708..0x0097E6`): direction codes `0x11` (+X) and `0x13` (-X), 32-bit subpixel X accumulation, tile boundary distance math (`7 - (X & 7)` and `X & 7`), point wall probe `0x0098EC`, wall hit bit 6 on `+0x40`, final X pos `+0x08`, and velocity clear `+0x72 = 0`.
+  - Flying vertical raycast (`0x0097E6..0x0098C2`): direction codes `0x12` (+Y) and `0x10` (-Y), 32-bit subpixel Y accumulation, tile boundary distance math (`7 - (Y & 7)` and `Y & 7`), point wall probe `0x0098EC`, wall hit bit 6 on `+0x41`, final Y pos `+0x0C`, and velocity clear `+0x76 = 0`.
+  - Flying surface sample & return dispatch (`0x0098C2..0x0098EC`): tests step count `a3 != 0`, samples ground surface height using radius `+0x46`, updates `+0x14`, and dispatches to entity return vector `0x009382`.
+- Qualified `oasis_m16_152_flying_raycaster` and the 132-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.151 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (`0x0094D2..0x0096E8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

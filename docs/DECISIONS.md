@@ -1,3 +1,30 @@
+# ADR-20261117-M16-152-FLYING-RAYCASTER — ROM Flying/Projectile Dual-Axis Tilemap Raycaster & Point Collision Dispatcher (0x009708..0x0098EC)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.403 extracted ROM routines `0x009708..0x0098EC` governing flying/projectile dual-axis (±X, ±Y) tilemap point raycasting, boundary clamping, entity sweeping, point wall collision, and surface height sampling:
+   - `0x009708..0x0097E6`: `flying_horizontal_raycast`:
+     * Clear step counter `a3 = 0`. Read `X = +0x08(a6)`, `X_vel = +0x72(a6)`.
+     * If `X_vel == 0`: skip horizontal step, clear `+0x72(a6) = 0`.
+     * +X: Direction code `0x11` at `+0x40(a6)`. Tile boundary distance `7 - (X & 7)`. Steps in 8-pixel increments testing point wall probe `0x0098EC`. On wall contact: sets bit 6 on `+0x40(a6)`, stores final X pos `+0x08(a6)`, clears `+0x72(a6) = 0`.
+     * -X: Direction code `0x13` at `+0x40(a6)`. Tile boundary distance `X & 7`. Steps in 8-pixel increments testing point wall probe `0x0098EC`. On wall contact: sets bit 6 on `+0x40(a6)`, stores final X pos `+0x08(a6)`, clears `+0x72(a6) = 0`.
+   - `0x0097E6..0x0098C2`: `flying_vertical_raycast`:
+     * Analogous vertical raycasting logic for Y axis.
+     * +Y sets direction code `0x12` at `+0x41(a6)`. Distance `7 - (Y & 7)`.
+     * -Y sets direction code `0x10` at `+0x41(a6)`. Distance `Y & 7`.
+     * On wall contact: sets bit 6 on `+0x41(a6)`. Stores final Y pos `+0x0C(a6)`, clears `+0x76(a6) = 0`.
+   - `0x0098C2..0x0098EC`: `flying_surface_sample_and_exit`:
+     * If `a3 != 0`: samples ground surface height with `(X, Y, radius +0x46(a6))` via height probe `0x009BF2`.
+     * Stores ground surface height into `+0x14(a6)`.
+     * Unconditionally branches `bra.w $9382` to entity return vector dispatcher.
+
+**Decisions:**
+1. **Dedicated `flying_raycaster` Module:**
+   - Added `src/game/player/flying_raycaster.hpp/.cpp` modeling `calculate_flying_horizontal_raycast`, `calculate_flying_vertical_raycast`, `calculate_flying_dual_axis_raycast`, and `step_flying_entity_simulation` with configurable `FlyingRaycastEnvironment` hooks.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (132/132 M16 tests).
+
 # ADR-20261117-M16-151-VERTICAL-WALL-PROBE — ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (0x0094D2..0x0096E8)
 **Status:** Accepted
 **Date:** 2026-11-17
