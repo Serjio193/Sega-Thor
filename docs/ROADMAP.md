@@ -1,3 +1,12 @@
+# M16.142 ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (`0x008814..0x00890E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `recognize_chained_super_motion_direct` and `detect_chained_super_motion` in `src/game/player/ali_chained_super_motion.hpp/.cpp`:
+  - Full-range ring buffer scan: searches backwards up to the full `$FF16EA` frame count without a 30-frame clamp.
+  - Phase 1 F-B-F recognition: rejects perpendicular D-pad inputs immediately, matching 3-step sequence per Ali facing direction from pattern table `0x0087F4`.
+  - Phase 2 seamless 360° spin: branches immediately to `0x00887E` reusing the 3rd F-B-F sample as the starting cardinal without advancing the ring pointer, detecting CW/CCW 4-cardinal steps via LUT `0x008768`, and clearing `$FF16EA = 0` on match.
+- Qualified `oasis_m16_142_chained_super_motion` and the 123-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.141 ROM 360-Spin & F-B-F Command-Motion Recognizers (`0x0086B4..0x008813`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

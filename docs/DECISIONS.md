@@ -1,3 +1,25 @@
+# ADR-20261117-M16-142-CHAINED-SUPER-MOTION — ROM Chained F-B-F + 360-Spin Super-Motion Recognizer (0x008814..0x00890E)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.358 extracted ROM routines `0x008814..0x00890E` governing Ali's chained super-motion recognition combining Forward-Back-Forward (F-B-F) and 360° spin in a single seamless execution:
+   - `0x008814..0x00887C`: Phase 1 — F-B-F Command Recognition:
+     * Reads head offset `$FF16E8` and frame counter `$FF16EA` from the 64-entry input ring buffer at `$FF1668`.
+     * Unlike `0x0086B4` (which enforces a 30-frame window limit), `0x008814` scans backwards up to the entire available frame count `$FF16EA`.
+     * Inspects sample window for perpendicular D-pad inputs (`4/8` Left/Right for Up/Down facings, `1/2` Up/Down for Left/Right facings); rejects immediately if encountered.
+     * Matches 3-step sequence from `0x0087F4 + facing * 8` (`Facing 0 Up: 1->2->1`, `Facing 1 Right: 8->4->8`, `Facing 2 Down: 2->1->2`, `Facing 3 Left: 4->8->4`).
+   - `0x00887E..0x00890E`: Phase 2 — Seamless 360° Spin Recognition:
+     * Continues from the exact ring offset `d5` and remaining frame counter `d7` where Phase 1 completed — the 3rd matching sample of Phase 1 is evaluated as the 1st sample (Stage 0 starting cardinal) of Phase 2 without consuming an extra frame.
+     * Evaluates subsequent frames against 16-entry cardinal LUT `0x008768`, detecting CW (`+2 mod 8`) vs CCW (`-2 mod 8`) rotation at Stage 1, followed by Stages 2 and 3 in the same direction.
+     * On full match, clears frame counter `$FF16EA = 0` and returns `true`.
+
+**Decisions:**
+1. **Dedicated `ali_chained_super_motion` Module:**
+   - Added `src/game/player/ali_chained_super_motion.hpp/.cpp` modeling `recognize_chained_super_motion_direct` and `detect_chained_super_motion`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate.
+
 # ADR-20261117-M16-141-COMMAND-MOTIONS — ROM 360-Spin & F-B-F Command-Motion Recognizers (0x0086B4..0x008813)
 **Status:** Accepted
 **Date:** 2026-11-17
