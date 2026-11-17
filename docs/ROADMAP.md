@@ -1,3 +1,9 @@
+# M16.89 3D AABB Solid Entity Sweep & Push-Contact Kernel (`0x009DD6..0x009EB8`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `SolidSweepBlocker`, `SolidSweepResult`, `is_solid_sweep_eligible`, and `sweep_solid_x_pos` (`0x009DD6`, 21-slot `$FF19E8` sweep, 3D AABB, `$40` bit 7, `3`-frame `$6C` push timer, `+1px` pushable nudge) in `src/game/entities/solid_entity_sweep.hpp/.cpp`.
+- Qualified `oasis_m16_89_solid_entity_sweep` and full 49-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.88 Terrain Probe LUT & 4-Side Room Boundary Clamp (`0x009D00..0x009DD5`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

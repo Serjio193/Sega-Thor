@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.89: 3D AABB Solid Entity Sweep & Push-Contact Kernel)
+- **Concrete Task**: Implement `src/game/entities/solid_entity_sweep.hpp/.cpp` with `SolidSweepBlocker`, `SolidSweepResult`, `is_solid_sweep_eligible($3A, $38)`, and `sweep_solid_x_pos(...)` (`0x009DD6`: sweeps up to `21` slots `$FF19E8` stride `0xBC`, skips `$3A` bit 1 / `$38` bit 2, 3D AABB overlap in `(x +/- $42, y + floor_z +/- $44, z + floor_z .. +$4A)`, clamps `dx`, sets `$40` bit 7, `push_timer = 3` (`$6C`), and `nudge_blocker` `+1px` when clearance == `0` and pushable); add `tests/m16_89_solid_entity_sweep_test.cpp`; qualify full 49-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/entities/solid_entity_sweep.hpp` / `src/game/entities/solid_entity_sweep.cpp`.
+  * Added `tests/m16_89_solid_entity_sweep_test.cpp` (registered as `oasis_m16_89_solid_entity_sweep` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 49/49 regression run.
+  * MSVC Debug (`build-debug`): 49/49 regression run.
+  * Remaining unknowns: Symmetric `-X` and `+/-Y` sweep entry points and wiring `nudge_blocker` directly into crate/boulder entity controllers are deferred to future entity-physics integration.
+
 # Worklog — 2026-11-17 (M16.88: Terrain Probe LUT & 4-Side Room Boundary Clamp)
 - **Concrete Task**: Implement `src/game/world/terrain_probe_and_clamp.hpp/.cpp` with `kTerrainSurfaceLut16` (`0x0096E8`: `{0xFF, 0, 2, 1, 4, 0xFF, 3, 0xFF, 6, 7, 0xFF, 0xFF, 5, 0xFF, 0xFF, 0xFF}`), `lookup_terrain_surface_effect(tile_byte)`, `select_terrain_layer_desc(alt_layer_bit7)` (`$FF1766`/`$FF1770`), `RoomClampResult`, and `clamp_entity_to_room_bounds(x, y, dx, dy, radius, room_tiles_w, room_tiles_h)` (`0x009D4E..0x009DD4`, `[0, tiles * 8 - 1]` +/- `radius`, `0x48` edge-wall flag); add `tests/m16_88_terrain_probe_and_clamp_test.cpp`; qualify full 48-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

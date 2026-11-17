@@ -1,3 +1,14 @@
+# ADR-20261117-M16-89-SOLID-ENTITY-SWEEP — 3D AABB Solid Entity Sweep & Push-Contact Kernel
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.305 extracted the `+X` solid entity-vs-entity sweep (`0x009DD6`) across 21 active `$FF19E8` slots (stride `0xBC`), 3D AABB overlap, `$40` bit 7 collision flag, `3`-frame `$6C` push timer, and `+1px` pushable nudge.
+
+**Decisions:**
+1. **Dedicated `solid_entity_sweep` Module:**
+   - Added `src/game/entities/solid_entity_sweep.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-88-TERRAIN-PROBE-AND-CLAMP — Terrain Probe LUT & 4-Side Room Boundary Clamp
 **Status:** Accepted
 **Date:** 2026-11-17
