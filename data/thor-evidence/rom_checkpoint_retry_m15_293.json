@@ -1,0 +1,26 @@
+{
+  "milestone": "M15.293",
+  "rom_path": "local-roms\\Beyond Oasis (USA).md",
+  "checkpoint_retry": {
+    "snapshot_addr": "0x0017DA",
+    "retry_restore_addr": "0x001828",
+    "ram_room_cam_pos": "0xFF0E42",
+    "ram_save_buf": "0xFF0BFE",
+    "ram_retry_buf": "0xFF0E52",
+    "ram_player_entity": "0xFF19E8",
+    "ram_spirit_entity": "0xFF1AA4",
+    "ram_continue_count": "0xFF0E3E",
+    "entity_copy_words": 188,
+    "entity_copy_bytes": 376,
+    "snapshot_words": 298,
+    "snapshot_bytes": 596,
+    "preserved_on_retry": [
+      "0xFF0D76",
+      "0xFF1A7E",
+      "0xFF1A70 (MaxHP)"
+    ],
+    "retry_restores_full_hp": true,
+    "spirit_resource_loader_addr": "0x014522",
+    "post_retry_invuln_frames": 30
+  }
+}

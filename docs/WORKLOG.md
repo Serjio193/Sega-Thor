@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.293: ROM CHECKPOINT SNAPSHOT & RETRY RESTORE (`0x0017DA`..`0x001900`) — `596`B `$FF0E52`, `HP=MaxHP`, `$FF0E3E+=1`, `30`f Invuln; Extractor (`tools/extract_rom_checkpoint_retry.py` <= 500 lines), Tests (`tests/rom_checkpoint_retry_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_293_CHECKPOINT_RETRY_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x0017DA..0x001900` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_checkpoint_retry.py` and `python tests/rom_checkpoint_retry_test.py` (2/2 PASS).
+- Next: Commit & push M15.293, await M16.76 completion.
+
 # 2026-11-17 — Milestone M15.292: ROM CONTINUE GAME SRAM LOAD & ENTITY RESTORE (`0x00161C`..`0x001730`) — Primary/Backup Fallback, `596`B Sum, `376`B Restore, `30`f Invuln; Extractor (`tools/extract_rom_continue_game_load.py` <= 500 lines), Tests (`tests/rom_continue_game_load_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_292_CONTINUE_GAME_LOAD_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x00161C..0x001710` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_continue_game_load.py` and `python tests/rom_continue_game_load_test.py` (2/2 PASS).

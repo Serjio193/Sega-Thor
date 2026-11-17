@@ -1,3 +1,9 @@
+# M15.293 ROM Checkpoint Snapshot & Retry Restore
+- `tools/extract_rom_checkpoint_retry.py` — Extracts checkpoint snapshot (`0x0017DA`) & Game-Over retry restore (`0x001828`) constants.
+- `tests/rom_checkpoint_retry_test.py` — Unit tests verifying snapshot/retry sizes and JSON artifact (`2/2 PASS`).
+- `data/thor-evidence/rom_checkpoint_retry_m15_293.json` — Extracted checkpoint/retry evidence.
+- `docs/handoffs/STANDALONE_M15_293_CHECKPOINT_RETRY_HANDOFF.md` — C++20 Standalone handoff.
+
 # M15.292 ROM Continue Game SRAM Load & Entity Restore
 - `tools/extract_rom_continue_game_load.py` — Extracts Continue Game primary/backup SRAM fallback, `596`B checksum, `376`B entity copy, and `30`f invulnerability.
 - `tests/rom_continue_game_load_test.py` — Unit tests verifying Continue Game constants and JSON artifact (`2/2 PASS`).

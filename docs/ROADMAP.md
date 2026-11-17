@@ -1,3 +1,7 @@
+# M15.293 ROM Checkpoint Snapshot & Retry Restore (`0x0017DA`..`0x001900`) — COMPLETE / VERIFIED
+- Decoded room-entry checkpoint snapshot (`0x0017DA`: `$FF0E42`, `376`B Ali+Spirit, `596`B `$FF0E52` retry buffer, skipped in demo) and Game-Over retry restore (`0x001828`: preserves `$FF0D76`/`$FF1A7E`/`$FF1A70` MaxHP, restores `HP = MaxHP`, reloads spirit `0x014522`, increments `$FF0E3E`, sets `30`f invulnerability).
+- Authored `tools/extract_rom_checkpoint_retry.py`, `tests/rom_checkpoint_retry_test.py` (`2/2 PASS`), `data/thor-evidence/rom_checkpoint_retry_m15_293.json`, and `docs/handoffs/STANDALONE_M15_293_CHECKPOINT_RETRY_HANDOFF.md`.
+
 # M15.292 ROM Continue Game SRAM Load & Entity Restore (`0x00161C`..`0x001730`) — COMPLETE / VERIFIED
 - Decoded primary/backup SRAM fallback (`0x001112`/`0x00114A` -> `0x0016F4`, `596` bytes + `u16_be` sum checksum, soft reset `0x00020E` on double failure), `376`-byte (`0xBC` words) Ali+Spirit restore, `0x014522` spirit reload, and `30`-frame (`0x1E`) post-load invulnerability.
 - Authored `tools/extract_rom_continue_game_load.py`, `tests/rom_continue_game_load_test.py` (`2/2 PASS`), `data/thor-evidence/rom_continue_game_load_m15_292.json`, and `docs/handoffs/STANDALONE_M15_292_CONTINUE_GAME_LOAD_HANDOFF.md`.

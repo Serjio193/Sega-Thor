@@ -1,3 +1,7 @@
+# ADR-20261117-M15-293-CHECKPOINT-RETRY — Checkpoint Snapshot & Retry Restore (`0x0017DA`..`0x001900`)
+- **Decision:** Model Beyond Oasis's in-RAM checkpoint snapshot (`0x0017DA`, `596`B `$FF0E52`, skipped in demo) and Game-Over retry restore (`0x001828`, preserves `$FF0D76`/`$FF1A7E`/`MaxHP`, sets `HP = MaxHP`, `30`f invulnerability, `$FF0E3E += 1`) in Standalone.
+- **Evidence:** Direct Capstone M68K disassembly of `0x0017DA..0x001900` in `local-roms/Beyond Oasis (USA).md`.
+
 # ADR-20261117-M15-292-CONTINUE-GAME-LOAD — Continue Game SRAM Load & Entity Restore (`0x00161C`..`0x001730`)
 - **Decision:** Model Continue Game save loading in Standalone with primary/backup SRAM fallback (`0x001112`/`0x00114A`, `596`B + `u16_be` sum checksum), `376`B Ali+Spirit restore, `0x014522` spirit reload, and `30`-frame post-load invulnerability.
 - **Evidence:** Direct Capstone M68K disassembly of `0x00161C..0x001710` in `local-roms/Beyond Oasis (USA).md`.
