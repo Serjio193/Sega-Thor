@@ -1,0 +1,123 @@
+{
+  "routine": "bg_tile_pattern_decompressor_and_dma_streamer",
+  "start_address": "0x00D3B2",
+  "end_address": "0x00D406",
+  "size_bytes": 84,
+  "entry_points": {
+    "decompress_and_dma_bg_tiles": "0x00D3B2"
+  },
+  "tile_pattern_table": {
+    "address": "0x05CE96",
+    "sample_entries": [
+      {
+        "index": 0,
+        "address": "0x000000",
+        "valid": false
+      },
+      {
+        "index": 1,
+        "address": "0x1AD000",
+        "valid": true
+      },
+      {
+        "index": 2,
+        "address": "0x1AD9D4",
+        "valid": true
+      },
+      {
+        "index": 3,
+        "address": "0x1AE1A8",
+        "valid": true
+      },
+      {
+        "index": 4,
+        "address": "0x1AE8AA",
+        "valid": true
+      },
+      {
+        "index": 5,
+        "address": "0x1AF034",
+        "valid": true
+      },
+      {
+        "index": 6,
+        "address": "0x1AF998",
+        "valid": true
+      },
+      {
+        "index": 7,
+        "address": "0x1B03E0",
+        "valid": true
+      },
+      {
+        "index": 8,
+        "address": "0x1B0BA4",
+        "valid": true
+      },
+      {
+        "index": 9,
+        "address": "0x1B12B8",
+        "valid": true
+      },
+      {
+        "index": 10,
+        "address": "0x1B18E2",
+        "valid": true
+      },
+      {
+        "index": 11,
+        "address": "0x1B2198",
+        "valid": true
+      },
+      {
+        "index": 12,
+        "address": "0x1B2826",
+        "valid": true
+      },
+      {
+        "index": 13,
+        "address": "0x1B2FEE",
+        "valid": true
+      },
+      {
+        "index": 14,
+        "address": "0x1B38B6",
+        "valid": true
+      },
+      {
+        "index": 15,
+        "address": "0x1B4014",
+        "valid": true
+      },
+      {
+        "index": 16,
+        "address": "0x1B4948",
+        "valid": true
+      },
+      {
+        "index": 17,
+        "address": "0x1B5346",
+        "valid": true
+      },
+      {
+        "index": 18,
+        "address": "0x1B5EAE",
+        "valid": true
+      },
+      {
+        "index": 19,
+        "address": "0x1B670A",
+        "valid": true
+      }
+    ]
+  },
+  "dma_parameters": {
+    "source_ram_buffer": "0xFF2FA8",
+    "bus_source_address": "0x007F97D4",
+    "transfer_length_words": 2048,
+    "dma_queue_ptr_ram": "0xFF1892",
+    "vint_sync_flags_ram": "0xFF164E",
+    "dma_request_bit": "bit 1 (0x02)"
+  },
+  "byte_hash": "-73a829aeffc8e080"
+}

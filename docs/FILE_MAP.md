@@ -1,3 +1,9 @@
+# M15.438 ROM Background Tile Pattern Decompressor & 4KB VRAM DMA Streamer
+- `tools/extract_rom_bg_tile_dma.py` — extractor for `0x00D3B2..0x00D406` (background tile pattern decompression via table `0x05CE96`, DMA queue packaging, and V-Int sync).
+- `tests/rom_bg_tile_dma_test.py` — `4` unit tests verifying ROM constants, pointer table validity, 4KB DMA entry construction, and multiple pattern streaming.
+- `data/thor-evidence/rom_bg_tile_dma_m15_438.json` — extracted M15.438 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_438_BG_TILE_DMA_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.437 ROM VDP Dual-Plane H/V Scroll Table Builder, Scanline/Strip Mode Dispatcher & V-Int DMA Sync Trigger
 - `tools/extract_rom_vdp_scroll_builder.py` — extractor for `0x00D2B4..0x00D3B2` (VDP horizontal and vertical scroll table generator, fullscreen/strip/scanline modes, and V-Int DMA sync commit).
 - `tests/rom_vdp_scroll_builder_test.py` — `5` unit tests verifying ROM constants, fullscreen scroll modes for Plane A and B, 16-px tile strip H-scroll table, 1-line scanline parallax table, and 2-cell column V-scroll table with DMA commit.
