@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.81: Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block)
+- **Concrete Task**: Implement `src/game/combat/combat_hitbox_kernel.hpp/.cpp` with `compute_ali_kill_rank_bonus` (`0x00BD40`: `10/20/30/40/50 -> +1` each, `100 -> +2`, `200 -> +4`, max `+11`), `is_shield_block` (`0x00BFAE`: `guard_flag_6d != 0 && (attacker_facing ^ 2) == defender_facing`), and `resolve_combat_hit` (`dir 3 -> dir 1` mirror, kill-rank bonus, shield block, `90`-frame `0x5A` enemy HP HUD timer `$FF184F`, `6`-frame hit-flash `$83`, reaction dispatch `0, 2, 4, 6` at `0x00BF26`); add `tests/m16_81_combat_hitbox_kernel_test.cpp`; qualify full 41-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/combat/combat_hitbox_kernel.hpp` / `src/game/combat/combat_hitbox_kernel.cpp`.
+  * Added `tests/m16_81_combat_hitbox_kernel_test.cpp` (registered as `oasis_m16_81_combat_hitbox_kernel` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 41/41 passed (`m16_40`, `m16_42`, `m16_43`, `m16_45`, `m16_46`, `m16_48`, `m16_50..m16_81`, `oasis_pixel_differential`, `oasis_holdout_trace`, `project_file_line_limit`).
+  * MSVC Debug (`build-debug`): 41/41 regression run.
+  * Remaining unknowns: Wiring `resolve_combat_hit` directly into `AttackController` / `StandaloneGameSimulation` 17-slot enemy loop (`$FF1CD8`) is deferred to future combat-pipeline unification.
+
 # Worklog — 2026-11-17 (M16.80: V-Int LIFO DMA Queue & 64-Frame Input History Ring)
 - **Concrete Task**: Implement `src/game/video/vint_dma_and_input_ring.hpp/.cpp` with `VdpDmaEntry` / `VdpDmaQueue` (LIFO flush from tail down to base `$FF10B4` gated by `$FF164E` bit 1), `InputHistoryRing64` (`$FF1668` 64-word ring, `(index - 2) & 0x7E`, `count` clamped to `0x3F`, `frames_ago(0..63)`, `is_soft_reset_combo` `0xE0000202`), and `VintFrameTimers` (`$FF1656 += 1`, `$FF1658`/`$FF1654` countdown); add `tests/m16_80_vint_dma_and_input_ring_test.cpp`; qualify full 40-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

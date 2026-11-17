@@ -1,3 +1,14 @@
+# ADR-20261117-M16-81-COMBAT-HITBOX-KERNEL — Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.297 extracted the universal hitbox collision kernel (`0x00BCBA..0x00BF26`), 7-tier Ali kill-rank damage bonus (`0x00BD40`, max `+11`), shield opposite-facing block (`0x00BFAE`), `90`-frame enemy HP HUD timer (`$FF184F`), `6`-frame hit-flash (`$83`), and reaction table (`0x00BF26`).
+
+**Decisions:**
+1. **Dedicated `combat_hitbox_kernel` Module:**
+   - Added `src/game/combat/combat_hitbox_kernel.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-80-VINT-DMA-INPUT-RING — V-Int LIFO DMA Queue & 64-Frame Input History Ring (0x001F76..0x002218)
 **Status:** Accepted
 **Date:** 2026-11-17

@@ -1,3 +1,9 @@
+# M16.81 Combat Hitbox Collision, Kill-Rank Damage Scaling & Shield Block (0x00BCBA..0x00BF26) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `compute_ali_kill_rank_bonus` (`+11` max across 7 tiers), `is_shield_block` (`guard_flag_6d != 0 && (attacker ^ 2) == defender`), and `resolve_combat_hit` (`dir 3 -> dir 1`, `90`-frame enemy HP HUD `$FF184F`, `6`-frame hit-flash `$83`, reaction `0/2/4/6`) in `src/game/combat/combat_hitbox_kernel.hpp/.cpp`.
+- Qualified `oasis_m16_81_combat_hitbox_kernel` and full 41-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.80 V-Int LIFO DMA Queue & 64-Frame Input History Ring (0x001F76..0x002218) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

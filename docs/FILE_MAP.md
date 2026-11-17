@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/combat/combat_hitbox_kernel.hpp` / `src/game/combat/combat_hitbox_kernel.cpp`: Combat hitbox collision & kill-rank scaling (`0x00BCBA..0x00BF26`, 7-tier `+11` max bonus, shield block `0x00BFAE`, `90`-frame enemy HP HUD `$FF184F`, `6`-frame hit-flash `$83`, reaction `0/2/4/6`) (M16.81).
+- `tests/m16_81_combat_hitbox_kernel_test.cpp`: Automated M16.81 test qualifying kill-rank bonus tiers, dir 3->1 mirror, shield block, and HUD/flash/reaction outputs (M16.81).
 - `src/game/video/vint_dma_and_input_ring.hpp` / `src/game/video/vint_dma_and_input_ring.cpp`: V-Int LIFO DMA queue (`0x002112`, `$FF164E` bit 1), 64-frame input history ring (`0x0021B2`, `$FF1668`, `0xE0000202` soft-reset), and V-Int frame/countdown timers (`0x0021EC`) (M16.80).
 - `tests/m16_80_vint_dma_and_input_ring_test.cpp`: Automated M16.80 test qualifying LIFO DMA flush, 64-frame input ring wrap/clamp, soft-reset combo, and frame timers (M16.80).
 - `src/game/video/palette_fade.hpp` / `src/game/video/palette_fade.cpp`: CRAM Palette Fade Engine (`0x002D58..0x00302D`), `scale_bgr333_color` (`0x002FDA`), 64-entry `$FF134C`/`$FF18A6` fade-in/fade-out, and `$FF164D` CRAM DMA / unblank flags (M16.79).
