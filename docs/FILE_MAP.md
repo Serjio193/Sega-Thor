@@ -1,3 +1,9 @@
+# M15.440 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane A/B Layout Configurator, Stride Shift Calculator & Full Plane Initializer
+- `tools/extract_rom_dual_plane_loader.py` — extractor for `0x00D542..0x00D7C0` (dual tilemap plane unpacking, VRAM Plane A/B layout configuration, log2 stride calculation, hardware scroll clears, initial visible tile uploads, palette load, and camera limits).
+- `tests/rom_dual_plane_loader_test.py` — `5` unit tests verifying ROM constants, Plane A/B layout, hardware scroll clears, camera limit formulas, and log2 byte stride shift exponent simulation.
+- `data/thor-evidence/rom_dual_plane_loader_m15_440.json` — extracted M15.440 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_440_DUAL_PLANE_LOADER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.439 ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine
 - `tools/extract_rom_scene_header_dma.py` — extractor for `0x00D406..0x00D542` (scene script header unpacking, elevation height bands, dual camera reset, 4-block pattern decompressor, and 16KB VRAM DMA upload).
 - `tests/rom_scene_header_dma_test.py` — `5` unit tests verifying ROM constants, script header unpacking, elevation threshold math and sentinel $F000, 8-pixel grid alignment, and 16KB VRAM DMA queueing.

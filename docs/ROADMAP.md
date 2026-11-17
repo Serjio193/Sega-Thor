@@ -1,3 +1,6 @@
+# M15.440 ROM Dual Tilemap Plane Header Unpacker, VRAM Plane A/B Layout Configurator, Stride Shift Calculator & Full Plane Initializer (`0x00D542`..`0x00D7C0`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_dual_plane_loader.py`, `tests/rom_dual_plane_loader_test.py` (`5/5 PASS`), `data/thor-evidence/rom_dual_plane_loader_m15_440.json`, and `docs/handoffs/STANDALONE_M15_440_DUAL_PLANE_LOADER_HANDOFF.md`.
+
 # M15.439 ROM Scene Script Header Unpacker, Dual-Plane Camera Initializer & 16KB VRAM DMA Upload Engine (`0x00D406`..`0x00D542`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_scene_header_dma.py`, `tests/rom_scene_header_dma_test.py` (`5/5 PASS`), `data/thor-evidence/rom_scene_header_dma_m15_439.json`, and `docs/handoffs/STANDALONE_M15_439_SCENE_HEADER_DMA_HANDOFF.md`.
 
