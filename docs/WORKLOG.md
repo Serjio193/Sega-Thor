@@ -31418,6 +31418,17 @@ must explicitly select the shared root and use absolute file paths.
 Orchestration checks: 171 tests passed; no gameplay parity/acceptance claimed.
 The Codex 15-minute campaign remains disabled per the user's prior request.
 
+## 2026-11-17 - Milestone M15.390: ROM Ali Spirit Power Invocation, Item Proximity Scanner, Object Inspector & 4-Direction Normalizer (0x00822C..0x0083F8)
+
+- Decoded and tested Spirit Power Button A invocation (`0x00822C..0x0082AC`): Air Call (`state = 0x16, anim = 0x16`, `vz = 0x70000`, `+$197E += 8`) vs Ground Summon (`state = 0x10, anim = 0x10`, `vz = 0x70000`, zero horizontal velocities, clear `$FF1980` and ring count).
+- Decoded and tested pickup proximity scanner (`0x0082AE..0x0082F6`): 12x12 bounding box search, absorbs type 8 entity, packs `(id << 8) | sub` into `$FF1976.l`.
+- Decoded and tested interactive object and NPC inspector (`0x0082F8..0x0083D2`): 4-way probe box, alignment validation via `0xE338`, dispatch to NPC (`0x32`), Save Book (`0x20`), Cutscene (`0x94/0x96/0xBE`), and Chest Open (`0xB0` with SFX `#$A00264`, anim 2, Ali state `0x3F`).
+- Decoded and tested 4-direction rotation normalizer (`0x0083D4..0x0083F8`): maps facings 0->0, 1->3, 2->1, 3->2.
+- Extracted JSON evidence `data/thor-evidence/rom_ali_spirit_power_inspector_m15_390.json` (4 routines, 460 bytes).
+- Unit tests: `tests/rom_ali_spirit_power_inspector_test.py` (`4/4 PASS`).
+- Generated Standalone handoff `docs/handoffs/STANDALONE_M15_390_ALI_SPIRIT_POWER_INSPECTOR_HANDOFF.md`.
+- Next Step: Commit and push M15.390 to `codex/helper10-99d6-bounded-scout`.
+
 ## 2026-11-17 - Milestone M15.389: ROM Ali Weapon Combat Attack Initializers (Sword, Bow, Bomb & Sprint Strikes) (0x00803C..0x00822C)
 
 - Decoded and tested Sword attack variations (`0x00803C..0x00808E`): leap slash (`state = 0x5C, anim = 0x66`) via Dash Leap `0x8814`, running slash (`state = 0x54, anim = 0x60`), and stationary slash (`state = 0x46, anim = 0x4E`).

@@ -5330,6 +5330,10 @@ provenance. Its metadata-only machine receipt is emitted under ignored `build/`.
 - data/thor-evidence/combined-clusters-qualification-m15-246-20261110.json — Certified M15.246 qualification receipt verified by `ReceiptVerifier` (`overall_valid=True`) (M15.246).
 - docs/handoffs/STANDALONE_M15_246_CALLEES_AND_MATH_HANDOFF.md — Read-only standalone handoff covering M15.246 callees, math/shift/MOVEM/JSR primitives, and long-run capture hashes (M15.246).
 
+- tools/extract_rom_ali_spirit_power_inspector.py — M15.390 ROM Ali spirit power invocation, item proximity & object inspector extractor.
+- tests/rom_ali_spirit_power_inspector_test.py — M15.390 unit tests for spirit power, item proximity, interactive objects, and facing normalizer.
+- data/thor-evidence/rom_ali_spirit_power_inspector_m15_390.json — M15.390 evidence database.
+- docs/handoffs/STANDALONE_M15_390_ALI_SPIRIT_POWER_INSPECTOR_HANDOFF.md — M15.390 C++20 Standalone handoff.
 - tools/extract_rom_ali_weapon_attacks.py — M15.389 ROM Ali weapon combat attack initializers extractor.
 - tests/rom_ali_weapon_attacks_test.py — M15.389 unit tests for sword attacks, bow draw, bomb placement, sprint tackle, and attack commit.
 - data/thor-evidence/rom_ali_weapon_attacks_m15_389.json — M15.389 evidence database.
