@@ -1,0 +1,65 @@
+{
+  "milestone": "M15.402",
+  "title": "ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem",
+  "routines": {
+    "tile_solid_probe_neg_y": {
+      "start": "0x0094D2",
+      "end": "0x0095AA",
+      "bytes": 216,
+      "flags_38_offset": "0x38",
+      "collision_flags_offset": "0x41",
+      "wall_collision_bit": 6,
+      "ledge_drop_bit": 5,
+      "elevation_lut_ram": "0x00FF1706",
+      "ledge_drop_height_ram": "0x00FF196E"
+    },
+    "tile_solid_probe_pos_y": {
+      "start": "0x0095AA",
+      "end": "0x009678",
+      "bytes": 206,
+      "flags_38_offset": "0x38",
+      "collision_flags_offset": "0x41",
+      "wall_collision_bit": 6,
+      "ledge_drop_bit": 5,
+      "elevation_lut_ram": "0x00FF1706",
+      "ledge_drop_height_ram": "0x00FF196E"
+    },
+    "scan_tile_row_solidity": {
+      "start": "0x009678",
+      "end": "0x0096BA",
+      "bytes": 66,
+      "max_scan_extent": "0x0180",
+      "step_size": 8
+    },
+    "sample_tile_row_span": {
+      "start": "0x0096BA",
+      "end": "0x0096E8",
+      "bytes": 46,
+      "base_layer_offset": "0x00",
+      "column_stride_shift_offset": "0x08"
+    },
+    "terrain_surface_lut": {
+      "start": "0x0096E8",
+      "end": "0x0096F8",
+      "bytes": 16,
+      "table": [
+        "0xFF",
+        "0x00",
+        "0x02",
+        "0x01",
+        "0x04",
+        "0xFF",
+        "0x03",
+        "0xFF",
+        "0x06",
+        "0x07",
+        "0xFF",
+        "0xFF",
+        "0x05",
+        "0xFF",
+        "0xFF",
+        "0xFF"
+      ]
+    }
+  }
+}

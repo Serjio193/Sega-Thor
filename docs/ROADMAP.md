@@ -1,3 +1,6 @@
+# M15.402 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem (`0x0094D2`..`0x0096E8`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_vertical_wall_probe.py`, `tests/rom_vertical_wall_probe_test.py` (`4/4 PASS`), `data/thor-evidence/rom_vertical_wall_probe_m15_402.json`, and `docs/handoffs/STANDALONE_M15_402_VERTICAL_WALL_PROBE_HANDOFF.md`.
+
 # M15.401 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector (`0x00938E`..`0x0094D2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_horizontal_wall_probe.py`, `tests/rom_horizontal_wall_probe_test.py` (`5/5 PASS`), `data/thor-evidence/rom_horizontal_wall_probe_m15_401.json`, and `docs/handoffs/STANDALONE_M15_401_HORIZONTAL_WALL_PROBE_HANDOFF.md`.
 

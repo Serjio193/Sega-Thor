@@ -1,3 +1,9 @@
+# M15.402 ROM Vertical Tilemap Wall Collision, Row Sampler & Height Step Subsystem
+- `tools/extract_rom_vertical_wall_probe.py` — extractor for `0x0094D2..0x0096E8` (vertical tile solid probes ±Y, Y-collision byte `$41` updates, row solidity scanner, and row span sampler).
+- `tests/rom_vertical_wall_probe_test.py` — `4` unit tests verifying ROM constants, steep wall collisions on `$41`, climb disabling, and vertical ledge drops.
+- `data/thor-evidence/rom_vertical_wall_probe_m15_402.json` — extracted M15.402 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_402_VERTICAL_WALL_PROBE_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.401 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector
 - `tools/extract_rom_horizontal_wall_probe.py` — extractor for `0x00938E..0x0094D2` (horizontal tile solid probe, surface elevation deltas, ledge drop capability & elevation table `$FF1706`, column solidity scanner).
 - `tests/rom_horizontal_wall_probe_test.py` — `5` unit tests verifying ROM constants, intangible pass-through, steep wall collision, void collision, and ledge drop triggers.
