@@ -1,3 +1,18 @@
+# M16.166 ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor (`0x00B15E..0x00B34C`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `requires_weapon_dma`, `get_weapon_descriptor_offset`, `is_weapon_overlay_clipped`, `compose_weapon_overlay`, and `compose_weapon_overlay_raw` in `src/game/render/weapon_overlay_compositor.hpp/.cpp` and `include/game/render/weapon_overlay_compositor.hpp`:
+  - `0x00B15E`: Mode routing checking bit 9 of mode word `+0x3E(a6)`:
+    - If bit 9 == 0: DMA Overlay Path (`0x00B166..0x00B28C`), evaluating weapon frame cache at `+0x5C(a6)` and queueing DMA transfer on frame change.
+    - If bit 9 == 1: Non-DMA Overlay Path (`0x00B28E..0x00B34A`), using pre-allocated weapon tiles without DMA transfers.
+  - `0x00B1AA`: Descriptor lookup: `0x0003F2FA + (entity_type * 16) - 20`.
+  - Auxiliary VRAM tile base offset read from `+0x5A(a6)` applied to sprite piece tile attributes.
+  - Coordinate calculation with 3D elevation Z at `+0x10`: `screen_x = world_x - cam_x + 128`, `screen_y = (world_y - cam_y + 128) - elev_z`.
+  - Viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+  - Hardware 80-sprite limit check on `$FF188A.w`.
+  - Raw 64KB RAM window integration helper `compose_weapon_overlay_raw`.
+- Qualified `oasis_m16_166_weapon_overlay_compositor` and the 146-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.165 ROM Static Entity & Shadowless Fast SAT Sprite Compositors (`0x00AD76..0x00B15E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

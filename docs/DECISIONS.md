@@ -1,3 +1,24 @@
+# ADR-20261117-M16-166-WEAPON-OVERLAY-COMPOSITOR — ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor (0x00B15E..0x00B34C)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.417 extracted ROM routines `0x00B15E..0x00B34C` governing equipped weapon and auxiliary attachment SAT overlay sprite composition:
+   - `0x00B15E`: Mode routing checking bit 9 of mode word `+0x3E(a6)`:
+     * If bit 9 is clear (0) -> DMA Overlay Path (`0x00B166..0x00B28C`): streams weapon graphics into VRAM when frames change, caching the active frame in `+0x5C(a6)`.
+     * If bit 9 is set (1) -> Non-DMA Overlay Path (`0x00B28E..0x00B34A`): uses static / pre-allocated weapon tiles without DMA transfers.
+   - `0x00B1AA`: Descriptor lookup resolves entity descriptor entry at `0x0003F2FA + (entity_type * 16) - 20`.
+   - Reads auxiliary VRAM tile base offset from `+0x5A(a6)` and adds to piece tile attributes.
+   - Evaluates 3D elevation Z at `+0x10`: `screen_x = world_x - cam_x + 128`, `screen_y = (world_y - cam_y + 128) - elev_z`.
+   - Viewport clipping: `[0x60, 0x160]` for Y and `[0x60, 0x1C0]` for X.
+   - Enforces hardware 80-sprite limit check on `$FF188A.w` before emitting SAT entries into `$FF13CC + $FF188C.w`.
+
+**Decisions:**
+1. **Dedicated `weapon_overlay_compositor` Module:**
+   - Added `src/game/render/weapon_overlay_compositor.hpp/.cpp` and `include/game/render/weapon_overlay_compositor.hpp` modeling pure mode checking, descriptor address math, viewport clipping, weapon overlay composition, and raw memory integration.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (146/146 M16 tests).
+
 # ADR-20261117-M16-165-STATIC-FAST-SAT-COMPOSITOR — ROM Static Entity & Shadowless Fast SAT Sprite Compositors (0x00AD76..0x00B15E)
 **Status:** Accepted
 **Date:** 2026-11-17
