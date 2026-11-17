@@ -1,3 +1,12 @@
+# M16.150 ROM Horizontal Tilemap Wall Collision, Surface Height Step & Ledge Drop Detector (`0x00938E..0x0094D2`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `probe_horizontal_wall`, `scan_tile_column_solidity`, and `sample_tile_column_span` in `src/game/player/horizontal_wall_probe.hpp/.cpp`:
+  - Horizontal tile solid probe (`0x00938E..0x009460`): checks intangible bit 0 on `+0x38`, translates target surface via 16-byte LUT `0x0096E8`, evaluates surface height delta (`delta >= 2` wall hit, `delta == 1` incline with climb disable bit 5 check, `delta == 0` flat step with slope bit 7 check, `delta <= -2` ledge drop with bit 4 drop capability, on-ground `+0x10 == 0`, even surface type, `$FF1706` elevation delta vs scan extent, `$FF196E` drop height write, `+0x76` vel_y clear, and `+0x40 |= 0x20` ledge drop bit trigger).
+  - Tile column solidity scanner (`0x009460..0x0094A2`): sweeps across entity Y radius `d3` within 0x180 bounds, computing scan extent `a4` and accumulating tile solidity mask bytes.
+  - Tile coordinate sampler & boundary clamp (`0x0094A2..0x0094D2`): computes tile row span `(y - rad) >> 3` to `(y + rad) >> 3`, reads layer descriptor `(base, row_stride, col_shift)`, accumulating `d4 |= byte` and `d5 &= byte`.
+- Qualified `oasis_m16_150_horizontal_wall_probe` and the 130-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.149 ROM Vertical (±Y) Tilemap Raycaster, Collision Sweep & Entity Return Dispatcher (`0x0091F6..0x00938E`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:
