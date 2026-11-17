@@ -1,3 +1,6 @@
+# M15.416 ROM Static Entity & Shadowless Fast SAT Sprite Compositors (`0x00AD76`..`0x00B15E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_static_fast_sat_compositor.py`, `tests/rom_static_fast_sat_compositor_test.py` (`5/5 PASS`), `data/thor-evidence/rom_static_fast_sat_compositor_m15_416.json`, and `docs/handoffs/STANDALONE_M15_416_STATIC_FAST_SAT_COMPOSITOR_HANDOFF.md`.
+
 # M15.415 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter (`0x00A9A0`..`0x00AD76`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_master_sat_compositor.py`, `tests/rom_master_sat_compositor_test.py` (`6/6 PASS`), `data/thor-evidence/rom_master_sat_compositor_m15_415.json`, and `docs/handoffs/STANDALONE_M15_415_MASTER_SAT_COMPOSITOR_HANDOFF.md`.
 

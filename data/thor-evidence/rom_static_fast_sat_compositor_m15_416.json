@@ -1,0 +1,49 @@
+{
+  "subsystem": "ROM Static Entity & Shadowless Fast SAT Sprite Compositors",
+  "milestone": "M15.416",
+  "rom_range": {
+    "start": "0x00AD76",
+    "end": "0x00B15E",
+    "size_bytes": 1000,
+    "sha256": "f856c327cbb7bdb790f996ca9e6b2838913929bea6989ac536339b56069a771e"
+  },
+  "routines": {
+    "static_sat_compositor": {
+      "start": "0x00AD76",
+      "end": "0x00B022",
+      "size_bytes": 684,
+      "exit_rts": "0x00B010",
+      "features": [
+        "Early visibility exit: btst.b #1, $36(a6)",
+        "Status code 3 check with flag 0x8000001",
+        "Direct cache update in +0x34(a6) without DMA quota check",
+        "Secondary animation lookup +0x5E(a6) with -$8 offset",
+        "Flash palette counter setup (+0x3E = 0x200 or 0x300)",
+        "Camera-relative coordinate transform (+0x80) with plane A/B selection",
+        "Screen coordinate bypass mode (bit 4 of $36 set)",
+        "Subpixel camera jitter application (+0x17 bit 0)",
+        "Sprite piece blitting with screen viewport clipping [0x60, 0x160] Y and [0x60, 0x1C0] X",
+        "Max 80 sprites link limit enforcement",
+        "Dynamic shadow blitter referencing table 0x00ACFE",
+        "SAT buffer offset and link count writeback"
+      ]
+    },
+    "shadowless_fast_sat_compositor": {
+      "start": "0x00B022",
+      "end": "0x00B15E",
+      "size_bytes": 316,
+      "exit_rts": "0x00B15C",
+      "features": [
+        "Zero register overhead (no register saving)",
+        "No DMA queueing or tile dimension accumulation",
+        "No shadow sprite generation",
+        "Lightweight screen viewport clipping [0x60, 0x160] Y and [0x60, 0x1C0] X",
+        "Fast SAT attribute write and buffer offset writeback"
+      ]
+    }
+  },
+  "dispatch_mechanics": {
+    "mode_select_bit": "bit 0 of +0x36(a6)",
+    "rule": "If bit 0 clear (0) -> static compositor (0x00AD76); if bit 0 set (1) -> dynamic DMA compositor (0x00A9A0)"
+  }
+}

@@ -1,3 +1,9 @@
+# M15.416 ROM Static Entity & Shadowless Fast SAT Sprite Compositors
+- `tools/extract_rom_static_fast_sat_compositor.py` — extractor for `0x00AD76..0x00B15E` (static entity SAT compositor, shadowless fast sprite compositor, dispatch mode bit 0 of `$36`, dynamic tails, and screen viewport clipping).
+- `tests/rom_static_fast_sat_compositor_test.py` — `5` unit tests verifying ROM constants, dispatch selection, viewport clipping, fast compositor characteristics, and dynamic tail branch targets.
+- `data/thor-evidence/rom_static_fast_sat_compositor_m15_416.json` — extracted M15.416 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_416_STATIC_FAST_SAT_COMPOSITOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.415 ROM Master Entity SAT Sprite Compositor, Screen Clipping & Dynamic Shadow Blitter
 - `tools/extract_rom_master_sat_compositor.py` — extractor for `0x00A9A0..0x00AD76` (master entity SAT sprite compositor, frame cache validation, VRAM quota check, viewport clipping `0x60..0x160`/`0x60..0x1C0`, 4x4 tile count table `0x00AD56`, and dynamic shadow generator `0x00ACFE`).
 - `tests/rom_master_sat_compositor_test.py` — `6` unit tests verifying ROM constants, frame caching, camera coordinate projection, viewport clipping, 4x4 tile count table, and shadow generator presets.
