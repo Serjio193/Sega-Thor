@@ -1,3 +1,8 @@
+# ADR-20261117-M15-328-RING-MENU-DROP — Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E`..`0x0046E2`)
+- **Context:** The 4x2 weapon/item ring menu wraps cursor coordinates modulo `(4, 2)` (`$FF0E50`) with SFX `0x006003A6`, and dropping an item checks `cursor != $FF0DB0`, `0x009C40` terrain bit 7, and `item_id >= 2` before emitting `(id | 0x80, qty)` to `$FF1864`/`$FF1865`.
+- **Decision:** Extracted all masks, guards, and RAM addresses into `data/thor-evidence/rom_ring_menu_drop_m15_328.json` with 2/2 passing tests and Standalone handoff.
+- **Consequences:** Standalone M16.112 can implement 4x2 cursor navigation and item-drop validation.
+
 # ADR-20261117-M15-327-RING-MENU-LOOP — Ring/Spirit Menu Entry Guard & Input Loop (`0x004416`..`0x00455C`)
 - **Context:** Opening the ring/spirit menu (`0x004416`) checks `$FF1A6E == 0` and Ali's action state `$FF19EC <= 2` (playing `0x00A00253` on error), and its input poll (`0x004480`) honors the A/BC button-swap flag `$FF1996`.
 - **Decision:** Extracted the guard, SFX IDs, and button-swap mappings into `data/thor-evidence/rom_ring_menu_loop_m15_327.json` with 2/2 passing tests and Standalone handoff.

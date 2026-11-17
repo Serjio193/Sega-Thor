@@ -1,0 +1,25 @@
+{
+  "milestone": "M15.328",
+  "title": "ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler",
+  "routines": {
+    "step_cursor_4x2": {
+      "start": "0x00462E",
+      "end": "0x004670"
+    },
+    "try_drop_inventory_item": {
+      "start": "0x004674",
+      "end": "0x0046E2"
+    }
+  },
+  "constants": {
+    "col_mask": 3,
+    "row_mask": 1,
+    "cursor_move_sfx": "0x006003A6",
+    "min_droppable_item_id": 2,
+    "drop_flag_bit": 7,
+    "inventory_ram": "0x00FF0D80",
+    "protected_slot_ram": "0x00FF0DB0",
+    "drop_item_id_ram": "0x00FF1864",
+    "drop_item_qty_ram": "0x00FF1865"
+  }
+}

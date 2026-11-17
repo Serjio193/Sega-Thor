@@ -1,3 +1,4 @@
+# M15.328 ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler (`0x00462E`..`0x0046E2`) — COMPLETE / VERIFIED
 # M15.327 ROM Ring/Spirit Menu Entry Guard & Input Loop (`0x004416`..`0x00455C`) — COMPLETE / VERIFIED
 # M15.326 ROM 5-Digit Decimal-to-ASCII Formatter (`0x00C0BE`..`0x00C178`) — COMPLETE / VERIFIED
 # M15.325 ROM 1-bpp Dialogue Glyph Outliner & 4-Tile VDP Rasterizer (`0x00C222`..`0x00C2EA`) — COMPLETE / VERIFIED

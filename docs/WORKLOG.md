@@ -1,3 +1,8 @@
+# 2026-11-17 — Milestone M15.328: ROM RING MENU 4X2 CURSOR WRAP & ITEM DROP HANDLER (`0x00462E`..`0x0046E2`) — 4x2 Wrap `0x006003A6`, Drop Guard (`$FF0DB0`/`0x009C40`/`id>=2`); Extractor (`tools/extract_rom_ring_menu_drop.py` <= 500 lines), Tests (`tests/rom_ring_menu_drop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_328_RING_MENU_DROP_HANDOFF.md`) — COMPLETE / VERIFIED
+- Disassembled `0x00462E..0x0046E2` in `local-roms/Beyond Oasis (USA).md`.
+- Verified `python tools/extract_rom_ring_menu_drop.py`, `python -m unittest tests/rom_ring_menu_drop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.
+- Next: Commit & push M15.328, check M16.105 status, and continue.
+
 # 2026-11-17 — Milestone M15.327: ROM RING/SPIRIT MENU ENTRY GUARD & INPUT LOOP (`0x004416`..`0x00455C`) — `$FF1A6E`/`$FF19EC <= 2`, `$FF1996` A/BC Swap, `0x00A00253`/`0x00A00347`; Extractor (`tools/extract_rom_ring_menu_loop.py` <= 500 lines), Tests (`tests/rom_ring_menu_loop_test.py` 2/2 PASS), Handoff (`docs/handoffs/STANDALONE_M15_327_RING_MENU_LOOP_HANDOFF.md`) — COMPLETE / VERIFIED
 - Disassembled `0x004416..0x00455C` in `local-roms/Beyond Oasis (USA).md`.
 - Verified `python tools/extract_rom_ring_menu_loop.py`, `python -m unittest tests/rom_ring_menu_loop_test.py` (2/2 PASS), and `cmake -P tests/check_file_limits.cmake`.

@@ -1,3 +1,9 @@
+# M15.328 ROM Ring Menu 4x2 Cursor Wrap & Item Drop Handler
+- `tools/extract_rom_ring_menu_drop.py` — ROM extractor & verifier for `0x00462E..0x0046E2` (4x2 cursor wrap `$FF0E50`, SFX `0x006003A6`, item drop guard & `$FF1864`/`$FF1865` emission).
+- `tests/rom_ring_menu_drop_test.py` — Unit tests verifying 4x2 cursor wrap and item-drop validation.
+- `data/thor-evidence/rom_ring_menu_drop_m15_328.json` — Verified evidence JSON for M15.328.
+- `docs/handoffs/STANDALONE_M15_328_RING_MENU_DROP_HANDOFF.md` — C++20 Standalone handoff for M16.112.
+
 # M15.327 ROM Ring/Spirit Menu Entry Guard & Input Loop
 - `tools/extract_rom_ring_menu_loop.py` — ROM extractor & verifier for `0x004416..0x00455C` (entry guard `$FF1A6E == 0 && $FF19EC <= 2`, `$FF1996` A/BC swap, SFX `0x00A00253`/`0x00A00347`).
 - `tests/rom_ring_menu_loop_test.py` — Unit tests verifying menu entry guard and A/BC button-swap decoding.
