@@ -1,0 +1,19 @@
+{
+  "routine": "Fixed-Width & Space-Padded Decimal String Formatters",
+  "start_address": "0x00C0BE",
+  "end_address": "0x00C17A",
+  "size_bytes": 188,
+  "buffer_address": "0x00FF192A",
+  "buffer_len": 5,
+  "entry_points": {
+    "format_dec_fixed5": "0x00C0BE",
+    "format_dec_spaces": "0x00C114"
+  },
+  "divisors": [
+    10000,
+    1000,
+    100,
+    10
+  ],
+  "sha256": "91cff60f80cda4fef36db2e9c5c646fdcc924e5010e22cc7c32ac8a9e8b898a2"
+}

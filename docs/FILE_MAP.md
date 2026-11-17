@@ -1,3 +1,9 @@
+# M15.425 ROM Fixed-Width & Space-Padded Decimal String Formatters
+- `tools/extract_rom_decimal_string_formatter.py` — extractor for `0x00C0BE..0x00C17A` (fixed 5-digit zero-padded `format_dec_fixed5` and leading-space padded `format_dec_spaces` decimal string formatters, buffer `$FF192A`, and divisor cascade).
+- `tests/rom_decimal_string_formatter_test.py` — `4` unit tests verifying ROM constants, fixed 5-digit formatting, leading-space suppression, and pointer rewind mechanics.
+- `data/thor-evidence/rom_decimal_string_formatter_m15_425.json` — extracted M15.425 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_425_DECIMAL_STRING_FORMATTER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.424 ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator
 - `tools/extract_rom_hit_spark_generator.py` — extractor for `0x00C012..0x00C0BE` (hit spark particle generator, 4-slot ring buffer `$FF19C8`, lifetime 5 frames, clamped 3D bounding box intersection, and 2D projected midpoint coordinates).
 - `tests/rom_hit_spark_generator_test.py` — `4` unit tests verifying ROM constants, clamped 3D midpoint calculations, 4-slot ring buffer allocation limit, and ground-level spark projection.

@@ -1,3 +1,6 @@
+# M15.425 ROM Fixed-Width & Space-Padded Decimal String Formatters (`0x00C0BE`..`0x00C17A`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_decimal_string_formatter.py`, `tests/rom_decimal_string_formatter_test.py` (`4/4 PASS`), `data/thor-evidence/rom_decimal_string_formatter_m15_425.json`, and `docs/handoffs/STANDALONE_M15_425_DECIMAL_STRING_FORMATTER_HANDOFF.md`.
+
 # M15.424 ROM Combat Hit Spark Particle Generator & 3D Overlap Centerpoint Calculator (`0x00C012`..`0x00C0BE`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_hit_spark_generator.py`, `tests/rom_hit_spark_generator_test.py` (`4/4 PASS`), `data/thor-evidence/rom_hit_spark_generator_m15_424.json`, and `docs/handoffs/STANDALONE_M15_424_HIT_SPARK_GENERATOR_HANDOFF.md`.
 
