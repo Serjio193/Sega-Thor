@@ -1,0 +1,37 @@
+{
+  "subsystem": "ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor",
+  "milestone": "M15.417",
+  "rom_range": {
+    "start": "0x00B15E",
+    "end": "0x00B34C",
+    "size_bytes": 494,
+    "sha256": "ef4ad599d3d45a5780ce78608267f9c3ecd01ea052a5b24b8bf7a400d327f675"
+  },
+  "paths": {
+    "dma_weapon_overlay": {
+      "start": "0x00B15E",
+      "exit": "0x00B28C",
+      "descriptor_table": "0x0003F2FA",
+      "aux_vram_tile_offset": "+0x5A(a6)",
+      "cache_offset": "+0x5C(a6)",
+      "tile_count_table": "0x00AD56"
+    },
+    "nondma_weapon_overlay": {
+      "start": "0x00B28E",
+      "exit": "0x00B34A",
+      "descriptor_table": "0x0003F2FA",
+      "aux_vram_tile_offset": "+0x5A(a6)"
+    }
+  },
+  "clipping_limits": {
+    "viewport_y": [
+      "0x60",
+      "0x160"
+    ],
+    "viewport_x": [
+      "0x60",
+      "0x1C0"
+    ],
+    "max_sprites": 80
+  }
+}

@@ -1,3 +1,9 @@
+# M15.417 ROM Entity Secondary Weapon & Auxiliary Overlay SAT Compositor
+- `tools/extract_rom_weapon_overlay_compositor.py` — extractor for `0x00B15E..0x00B34C` (secondary weapon overlay compositor, DMA vs non-DMA routing bit 9 of `$3E`, descriptor table `0x0003F2FA`, auxiliary VRAM base `$5A`, and screen viewport clipping).
+- `tests/rom_weapon_overlay_compositor_test.py` — `5` unit tests verifying ROM constants, mode routing, descriptor offsets, viewport clipping, and cache updates.
+- `data/thor-evidence/rom_weapon_overlay_compositor_m15_417.json` — extracted M15.417 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_417_WEAPON_OVERLAY_COMPOSITOR_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.416 ROM Static Entity & Shadowless Fast SAT Sprite Compositors
 - `tools/extract_rom_static_fast_sat_compositor.py` — extractor for `0x00AD76..0x00B15E` (static entity SAT compositor, shadowless fast sprite compositor, dispatch mode bit 0 of `$36`, dynamic tails, and screen viewport clipping).
 - `tests/rom_static_fast_sat_compositor_test.py` — `5` unit tests verifying ROM constants, dispatch selection, viewport clipping, fast compositor characteristics, and dynamic tail branch targets.
