@@ -1,0 +1,54 @@
+{
+  "milestone": "M15.372",
+  "rom_range": "0x005DE4..0x005F6E",
+  "jump_takeoff": {
+    "initial_vz": 327680,
+    "horizontal_air_speed": 384,
+    "takeoff_sfx": "0x00800340",
+    "gravity_step": 49152
+  },
+  "landing_impact": {
+    "normal_landing_sfx": "0x00500342",
+    "roll_landing_sfx": "0x00800203",
+    "roll_anim_id": "0x4C",
+    "pit_fall_state": "0x3E"
+  },
+  "post_landing_buffer": {
+    "invuln_frames": 12,
+    "input_buffer_evaluator": "0x007D8A",
+    "buffer_window_frames": 10,
+    "command_motions": [
+      {
+        "order": 1,
+        "name": "chained_fbf_360",
+        "checker": "0x008814",
+        "target": "0x00776C"
+      },
+      {
+        "order": 2,
+        "name": "spin_360",
+        "checker": "0x0086B4",
+        "target": "0x00770C"
+      },
+      {
+        "order": 3,
+        "name": "fbf_dash",
+        "checker": "0x008778",
+        "target": "0x007742"
+      },
+      {
+        "order": 4,
+        "name": "rapid_mash",
+        "checker": "0x008910",
+        "target": "0x0077AE"
+      },
+      {
+        "order": 5,
+        "name": "triple_tap",
+        "checker": "0x008950",
+        "target": "0x0077CE"
+      }
+    ],
+    "fallback_idle": "0x0062CC"
+  }
+}

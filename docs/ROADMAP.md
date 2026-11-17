@@ -1,3 +1,6 @@
+# M15.372 ROM Ali Jump Arc, Landing Impact & Command-Motion Buffer (`0x005DE4`..`0x005F6E`) — COMPLETE / VERIFIED
+- Delivered `tools/extract_rom_ali_jump_landing_buffer.py`, `tests/rom_ali_jump_landing_buffer_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_jump_landing_buffer_m15_372.json`, and `docs/handoffs/STANDALONE_M15_372_ALI_JUMP_LANDING_BUFFER_HANDOFF.md`.
+
 # M15.371 ROM Ali Airborne Knockdown Physics, Wall Impact & Landing Recovery (`0x005CF8`..`0x005DE2`) — COMPLETE / VERIFIED
 - Delivered `tools/extract_rom_ali_knockdown_physics.py`, `tests/rom_ali_knockdown_physics_test.py` (`2/2 PASS`), `data/thor-evidence/rom_ali_knockdown_physics_m15_371.json`, and `docs/handoffs/STANDALONE_M15_371_ALI_KNOCKDOWN_PHYSICS_HANDOFF.md`.
 

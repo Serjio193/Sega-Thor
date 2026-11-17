@@ -1,3 +1,9 @@
+# M15.372 ROM Ali Jump Arc, Landing & Command-Motion Buffer
+- `tools/extract_rom_ali_jump_landing_buffer.py` — extractor for `0x005DE4..0x005F6E` (`vz = 0x50000` takeoff, `0x180` air speed, pit vs safe landing, 12f post-landing invuln & 5-tier command motion cascade).
+- `tests/rom_ali_jump_landing_buffer_test.py` — `2` unit tests verifying ROM command motion priority hierarchy and jump arc gravity/landing transitions.
+- `data/thor-evidence/rom_ali_jump_landing_buffer_m15_372.json` — extracted M15.372 evidence artifact.
+- `docs/handoffs/STANDALONE_M15_372_ALI_JUMP_LANDING_BUFFER_HANDOFF.md` — C++20 standalone handoff.
+
 # M15.371 ROM Ali Airborne Knockdown Physics & Landing Recovery
 - `tools/extract_rom_ali_knockdown_physics.py` — extractor for `0x005CF8..0x005DE2` (16-pixel prone height, `0x0080035D` wall impact, `-0xC000` gravity, `0x5E` death vs landing recovery countdown).
 - `tests/rom_ali_knockdown_physics_test.py` — `2` unit tests verifying ROM constants, wall bounce zeroing, gravity step, and recovery wake-up timing.

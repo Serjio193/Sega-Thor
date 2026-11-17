@@ -1,3 +1,7 @@
+# ADR-20261117-M15-372-ALI-JUMP-LANDING-BUFFER — Ali Jump Arc, Landing & Command-Motion Buffer (`0x005DE4`..`0x005F6E`)
+- **Context:** `0x005DE4..0x005F6E` links Ali's jump arc (`vz = 0x50000`, `0x180` horizontal velocity), terrain impact (pit detection vs normal SFX `0x00500342` / roll SFX `0x00800203`), 12-frame post-landing invulnerability (`$FF198E = 12`), and 5-stage special command-motion cascade (`0x008814 -> 0x0086B4 -> 0x008778 -> 0x008910 -> 0x008950`).
+- **Decision:** Extract exact jump velocity constants, landing SFX IDs, and command-motion priority order in `tools/extract_rom_ali_jump_landing_buffer.py` and `docs/handoffs/STANDALONE_M15_372_ALI_JUMP_LANDING_BUFFER_HANDOFF.md`.
+
 # ADR-20261117-M15-371-ALI-KNOCKDOWN-PHYSICS — Ali Airborne Knockdown Physics & Landing Recovery (`0x005CF8`..`0x005DE2`)
 - **Context:** `0x005CF8..0x005DE2` handles Ali's airborne knockdown phase: prone 16px height, X/Y wall impact (`bit 6`, SFX `0x0080035D`), `-0xC000` gravity integration, ground landing (`z=0`, `+0x9A=0x0F` dust), death state `0x5E` (`0x68/0x6C` anim), and wake-up recovery timer (`+0x02`, `10/20/30` frames).
 - **Decision:** Extract exact wall collision masks, gravity delta, ground landing transitions, and recovery wake-up state/anim advances in `tools/extract_rom_ali_knockdown_physics.py` and `docs/handoffs/STANDALONE_M15_371_ALI_KNOCKDOWN_PHYSICS_HANDOFF.md`.
