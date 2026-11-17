@@ -1,3 +1,13 @@
+# Worklog — 2026-11-17 (M16.103: Camera Deadzone Follow, Screen Shake & HUD Slide Trigger)
+- **Concrete Task**: Implement `src/game/camera/camera_follow.hpp/.cpp` with `CameraFollowState` and `step_camera_follow(state)` (`0x00CEEA..0x00D114`: deadzone `X in [0x78, 0xC8]`, `Y in [0x68, 0x80]`, smooth `±3` / `±0x1E` ramp with upward Y clamp `>= -6`, HUD slide triggers `rel_x <= 0x50` / `>= 0xF0` + `0x0138`/`0x0020` snap, locked-center mode `$FF16F1 & 8`, and `$FF17C4` screen shake); add `tests/m16_103_camera_follow_test.cpp`; qualify full 63-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
+- **Delivered**:
+  * Added `src/game/camera/camera_follow.hpp` / `src/game/camera/camera_follow.cpp`.
+  * Added `tests/m16_103_camera_follow_test.cpp` (registered as `oasis_m16_103_camera_follow` in `cmake/project_tests_m16.cmake`).
+- **Validation**:
+  * MinGW Release (`build`): 63/63 regression run.
+  * MSVC Debug (`build-debug`): 63/63 regression run.
+  * Remaining unknowns: Consolidating `step_camera_follow()` with `CameraController` / `VdpState` scroll registers in `StandaloneGameSimulation` is deferred to future camera unification.
+
 # Worklog — 2026-11-17 (M16.102: Room Update Hooks & Warp Transition Sequence)
 - **Concrete Task**: Implement `src/game/world/room_warp_sequence.hpp/.cpp` with `can_run_room_update_hooks()` (`0x00C980`/`0x00C998`), `can_trigger_room_warp()` (`0x00C9B2..0x00C9EA`: 6-flag warp lock guard), and `execute_room_warp_sequence()` (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611` redirect, half-screen camera centering `(spawn_x - 160, spawn_y - 112)`, checkpoint bit 6 trigger, transition flag reset, sound cmd `2`, fade speed `4`); add `tests/m16_102_room_warp_sequence_test.cpp`; qualify full 62-test parity + pixel-exact regression suite in both MinGW Release (`build`) and MSVC Debug (`build-debug`), `project_file_line_limit`, and `git diff --check`.
 - **Delivered**:

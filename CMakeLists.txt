@@ -85,6 +85,7 @@ add_library(oasis_core
     src/game/render/vdp_dma_queue.cpp
     src/game/render/town_combat_sat.cpp
     src/game/camera/camera_controller.cpp
+    src/game/camera/camera_follow.cpp
     src/game/world/byte_grid.cpp
     src/game/world/screen_descriptor.cpp
     src/game/world/terrain_collision.cpp

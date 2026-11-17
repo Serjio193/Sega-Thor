@@ -1,5 +1,7 @@
 # M16 Standalone Native Runtime, Frame Sequencer & Interactive Simulation V1
 
+- `src/game/camera/camera_follow.hpp` / `src/game/camera/camera_follow.cpp`: Camera deadzone follow (`0x00CEEA..0x00D114`: `[0x78,0xC8]`/`[0x68,0x80]`, `±3`/`±0x1E` ramp, HUD slide `0x50`/`0xF0`, locked-center mode, `$FF17C4` screen shake) (M16.103).
+- `tests/m16_103_camera_follow_test.cpp`: Automated M16.103 test qualifying deadzone, smooth catch-up, HUD slide triggers, locked-center mode, and screen shake (M16.103).
 - `src/game/world/room_warp_sequence.hpp` / `src/game/world/room_warp_sequence.cpp`: Room update hook guard (`0x00C980`/`0x00C998`), 6-flag warp lock guard (`0x00C9B2..0x00C9EA`), and warp transition sequence (`0x00C9EC..0x00CB0A`: `0x0004 -> 0x0611`, camera centering, checkpoint bit 6, flag reset, fade `4`) (M16.102).
 - `tests/m16_102_room_warp_sequence_test.cpp`: Automated M16.102 test qualifying the 6-flag warp lock guard, `0x0004 -> 0x0611` redirect, camera centering, checkpoint trigger, and flag reset (M16.102).
 - `src/game/ui/dialogue_sat_builder.hpp` / `src/game/ui/dialogue_sat_builder.cpp`: Dialogue cursor & 4x8 border SAT builder (`0x00C756..0x00C84C`, `0x86DC`/`0x96DC` blinking cursor, `0x0C00` border bars, `80`-sprite cap) (M16.101).

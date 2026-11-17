@@ -1,3 +1,9 @@
+# M16.103 Camera Deadzone Follow, Screen Shake & HUD Slide Trigger (`0x00CEEA..0x00D114`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `CameraFollowState` and `step_camera_follow` (`0x00CEEA..0x00D114`: deadzone `[0x78,0xC8]`/`[0x68,0x80]`, smooth `±3`/`±0x1E` ramp, HUD slide `0x50`/`0xF0` + `0x0138`/`0x0020` snap, locked-center mode, `$FF17C4` shake) in `src/game/camera/camera_follow.hpp/.cpp`.
+- Qualified `oasis_m16_103_camera_follow` and full 63-test parity + pixel-exact regression suite on both MinGW Release and MSVC Debug.
+
 # M16.102 Room Update Hooks & Warp Transition Sequence (`0x00C980..0x00CB0A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

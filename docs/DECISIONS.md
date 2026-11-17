@@ -1,3 +1,14 @@
+# ADR-20261117-M16-103-CAMERA-FOLLOW — Camera Deadzone Follow, Screen Shake & HUD Slide Trigger
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.319 extracted `0x00CEEA..0x00D114`: deadzone follow, `±3`/`±0x1E` catch-up ramp (upward Y `>= -6`), HUD slide triggers (`0x50`/`0xF0` + `0x0138`/`0x0020` snap), locked-center mode (`$FF16F1 & 8`), and `$FF17C4` screen shake.
+
+**Decisions:**
+1. **Dedicated `camera_follow` Module:**
+   - Added `src/game/camera/camera_follow.hpp/.cpp` cleanly outside `standalone_game_simulation.cpp` (which stays at 494 lines).
+
 # ADR-20261117-M16-102-ROOM-WARP-SEQUENCE — Room Update Hooks & Warp Transition Sequence
 **Status:** Accepted
 **Date:** 2026-11-17
