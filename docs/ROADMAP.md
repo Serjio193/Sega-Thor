@@ -1,3 +1,20 @@
+# M16.162 ROM Shadow SAT Sprite Pass & Elevation Stacking Engine (`0x00A5A2..0x00A738` / `0x00A6A0..0x00A786`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
+
+Delivered:
+- Implemented `build_shadow_inactive_mask`, `sort_group2_shadows_y_depth_order`, `dispatch_shadow_sat_pass`, and `dispatch_shadow_sat_raw` in `src/game/render/shadow_sat_pass.hpp/.cpp`:
+  - `0x00A6A0`: Shadow composition entry invoking pre-composition reset helper `0x00A342`.
+  - 4-pass multi-pool shadow pipeline:
+    - Pass 1 (`0x00A6A4..0x00A6C2`): Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride), testing `type > 0` and shadow bit 2 on `+0x3A` (`flags_3a & 0x04`), dispatching to Custom SAT `0x00A9A0` or Normal SAT `0x00AD76`.
+    - Pass 2 (`0x00A6C6..0x00A738`): Group 2 Shadow Depth Sorter (`$FF19E8`, 21 slots, 188B stride), building 21-bit shadow inactive mask filtering `type <= 0` and `!(flags_3a & 0x04)`, selection sorting active shadows in descending Y order with sentinel -1 (`moveq #-1, d5`), writing done mask to `$FF188E.l`.
+    - Pass 3 (`0x00A73C..0x00A750`): Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+    - Pass 4 (`0x00A754..0x00A768`): Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+  - Elevation Stacking Engine:
+    - Ground plane contact `ground_y = y + ground_h` vs airborne visual sprite position `y + ground_h - z`.
+    - 4 shadow scale tiers: Full (`z <= 8`), Medium (`z <= 24`), Small (`z <= 48`), Tiny (`z > 48`).
+  - `0x00A76C..0x00A784`: SAT Link Terminator, advancing zero offset to 8 (`addq.w #8, d7`), writing link terminator `0` at `-5(a6, d7.w)` in `$FF13CC`.
+  - Raw 64KB RAM window integration helper `dispatch_shadow_sat_raw`.
+- Qualified `oasis_m16_162_shadow_sat_pass` and the 142-test M16 + `project_file_line_limit` suite on both MinGW Release and MSVC Debug.
+
 # M16.161 ROM Entity Pass B SAT Sprite Dispatcher & Camera Window Filter (`0x00A524..0x00A69A`) — COMPLETE / VERIFIED STANDALONE RUNTIME TRACK
 
 Delivered:

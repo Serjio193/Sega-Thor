@@ -1,3 +1,30 @@
+# ADR-20261117-M16-162-SHADOW-SAT-PASS — ROM Shadow SAT Sprite Pass & Elevation Stacking Engine (0x00A5A2..0x00A738 / 0x00A6A0..0x00A786)
+**Status:** Accepted
+**Date:** 2026-11-17
+
+**Context:**
+1. Hybrid M15.413 extracted ROM routines `0x00A6A0..0x00A786` governing shadow and reflection sprite SAT composition and elevation stacking:
+   - `0x00A6A0`: Shadow composition entry, invoking pre-composition reset helper `0x00A342`.
+   - `0x00A6A4..0x00A6C2`: Group 1 High-Priority FX (`$FF2954`, 4 slots, 90B stride):
+     * Tests `type > 0` and bit 2 of `+0x3A` (`flags_3a & 0x04`). Skips entities without active shadow flag.
+     * Routes active shadows to Normal SAT `0x00AD76` or Custom SAT `0x00A9A0` based on `flags_36 & 0x01`.
+   - `0x00A6C6..0x00A738`: Group 2 Shadow Depth Sorter (`$FF19E8`, 21 slots, 188B stride):
+     * Builds 21-bit inactive shadow mask in `d7`: sets bit `i` if `type <= 0` or if `(flags_3a & 0x04) == 0`.
+     * Runs descending-Y selection sort loop over active shadow slots using sentinel -1 (`moveq #-1, d5`).
+     * Dispatches each shadow in top-down depth order to `$AD76` (Normal SAT) or `$A9A0` (Custom SAT).
+   - `0x00A73C..0x00A750`: Group 4 Ground/Shadow FX (`$FF2ABC`, 8 slots, 90B stride).
+   - `0x00A754..0x00A768`: Group 3 Floor FX (`$FF2D8C`, 6 slots, 90B stride).
+   - `0x00A76C..0x00A784`: SAT Link Terminator: writes link terminator `0` to `-5(a6, d7.w)` in SAT buffer `$FF13CC` (advancing offset 0 to 8 via `addq.w #8, d7`).
+2. Elevation Stacking Engine:
+   - Determines ground plane contact `ground_y = y + ground_h` vs airborne visual sprite position `y + ground_h - z`.
+   - Air elevation `z` governs shadow scaling tier (Full for `z <= 8`, Medium for `z <= 24`, Small for `z <= 48`, Tiny for `z > 48`).
+
+**Decisions:**
+1. **Dedicated `shadow_sat_pass` Module:**
+   - Added `src/game/render/shadow_sat_pass.hpp/.cpp` modeling pure `build_shadow_inactive_mask`, `sort_group2_shadows_y_depth_order`, `dispatch_shadow_sat_pass`, and raw memory integration `dispatch_shadow_sat_raw`.
+2. **Dual Toolchain Parity:**
+   - Validated across both MinGW GCC Release and MSVC Debug test suites with 100% pass rate (142/142 M16 tests).
+
 # ADR-20261117-M16-161-PASS-B-SAT-DISPATCHER — ROM Entity Pass B SAT Sprite Dispatcher & Camera Window Filter (0x00A524..0x00A69A)
 **Status:** Accepted
 **Date:** 2026-11-17
